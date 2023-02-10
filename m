@@ -2,57 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 035046922A7
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 16:52:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EB9692332
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 17:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232638AbjBJPw2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 10:52:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
+        id S232628AbjBJQWc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 11:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231954AbjBJPwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 10:52:25 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA8C4B749
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:52:24 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id rp23so16977819ejb.7
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:52:24 -0800 (PST)
+        with ESMTP id S232047AbjBJQWb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 11:22:31 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3321CADC
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 08:22:27 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id qb15so15186708ejc.1
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 08:22:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ROduZYJpSejdajCsBZSHrHuAACG1d4aq3VU3Cfv3Yt4=;
-        b=qAM8LzdtIzHzZx9Kf1mmuf82NNGWVm/JOZKSidHNH/flRfQFR6mcHEVPmS+xWBBlng
-         xasUroz0oZpe/l3/em7/BN9N6XRzOxO2hnrVQu6cxuSaA9K8aD3TrmDOekcOuYxYbZBP
-         3dYQPagXm7Qp8CpTytNoRFPG9+YbB5EwO42RA=
+        d=tessares.net; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KEhwVLBjChhK6i3IlnyyjqYdz5D+IzhEfJKipY92B1A=;
+        b=jMNSSl9HoLF2U+Rkdua5iPXAikFU6kD5x7p8DIl6052ZPjbONJtjeLwSw5aTXJbbwG
+         GZ3iBVMEz1V8c0r3ARAZhMl6KBVGbFIoS2oA3K53FyblmcJZDqEMsLiLNBWD3TPzqO/P
+         7uoMMm5X1/V4UWFRVh5gVLkjFHfnWD0RYKzkYPc00ZqVvAPPj2ipuj62Xne4UCS+La+V
+         V2v5XtDFPGxWUUOCv+UnuLLb72IX/u6OUskRqMCsT4ot1xMLWPbPgUYci7HLXYGicg9b
+         qeTtitDzt/D1Djbz18M7gbyy/t9Y0RMk3+KwrSa1XgyH6An6C7KvIrWGGq87RF7AvPMU
+         v8DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ROduZYJpSejdajCsBZSHrHuAACG1d4aq3VU3Cfv3Yt4=;
-        b=OnXvDwzXdpC0J8pG6t5EXcslUvym+FkVDq1jSFSMNoDXtOEp9sguiFmpzRPRZ6Wuuw
-         qiTE1ACIQemxTOsHTdHS7a/Xstoi+J07TDm7RJHBenCvrW3VS5fFnPS0twQQ/h/iiPGf
-         1EDMKzdQ+KJPMb0wTVkPHr1Ml5gGJQIZIdIJJia2rbFgs1HJwiLuUJ5xHvotMhg+FZKu
-         QbC0nL3H8RWHd+5nGNDKdydRA3f2STwfKiBSjQguaEZJ7nSosaiwU6en7UPX/oeSVWDi
-         5yjqJCMdSkcYYL284dL4s8zm5NjeBU/1IJoISmwWijDNGZch4B0PDfc/NKsJmUvSbMxZ
-         aniA==
-X-Gm-Message-State: AO0yUKXFu55r6Qh9oNXNgmRnIsPdxQ5SNYVTPWOSPqKgE/O4U5tUFcVH
-        FmewRTGTI2insiLw74Ex0AM5C9whl7FEl14gOIV1zQ==
-X-Google-Smtp-Source: AK7set9DRrfJ8emvNMJ4bkS2cGPib1PAntVERZKX/H6AbXR1QQgyUoIWPbU2nZm7VGO/zeuCODpjgQVksVs8Lq6XoUc=
-X-Received: by 2002:a17:906:718d:b0:8ab:4931:ca26 with SMTP id
- h13-20020a170906718d00b008ab4931ca26mr1302015ejk.5.1676044342787; Fri, 10 Feb
- 2023 07:52:22 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KEhwVLBjChhK6i3IlnyyjqYdz5D+IzhEfJKipY92B1A=;
+        b=F9tS4ZFPQaOWK4z5HPceBu2DDV6HaH6DAsgFDAmtYw1Lwzzb5WQLcOLM5jzlcZK8Rz
+         XW7SCtF4kR+DFDs/MJoNPOuyfhM/z1EmcwrR+zsBS2vi6UDrg0QyW7BJl8ewk3qD2wTp
+         aDuagVXVScPBc5KjV2Sff954A7BIAMddzDYsLpfQuARMQ1pogR1SaMFAQq6/wb3+Loqg
+         6rQUK33i9UmfZNH4vvzLaexJ5XT43HmhFhHXn2F1l2zaci8bAMJMAD+3FIRDIf/BDDEG
+         fDJEaDLY4unNva8jDv2EEybAf+0+wa2DgbxEBOIxIHoS2LY832/hrW5DPGa3Lf042kV2
+         +1mA==
+X-Gm-Message-State: AO0yUKVpNSWe4VYMqt7/OAgtXeMSrnCkkgRlpjmhylInAaiccnSA3k0o
+        rcsmp5PmmpS2oAbEwO2711Fk+g==
+X-Google-Smtp-Source: AK7set+3YfULw1kTxf3qFffGXDUDjZkeoUSY2n9ekPb7p7FzKfdw74DFAmWrrWeD3RSVbwRNEh3pmg==
+X-Received: by 2002:a17:906:c310:b0:86a:833d:e7d8 with SMTP id s16-20020a170906c31000b0086a833de7d8mr14833032ejz.17.1676046145572;
+        Fri, 10 Feb 2023 08:22:25 -0800 (PST)
+Received: from [10.44.2.5] ([81.246.10.41])
+        by smtp.gmail.com with ESMTPSA id n8-20020a1709065e0800b0087fa83790d8sm2613656eju.13.2023.02.10.08.22.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Feb 2023 08:22:25 -0800 (PST)
+Message-ID: <6f0a72ee-ec30-8c97-0285-6c53db3d4477@tessares.net>
+Date:   Fri, 10 Feb 2023 17:22:24 +0100
 MIME-Version: 1.0
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 10 Feb 2023 16:52:12 +0100
-Message-ID: <CAJfpegu6xqH3U1icRcY1SeyVh0h-CirXJ-oaCXUsLCZGQgExUQ@mail.gmail.com>
-Subject: [LSF/MM/BPF TOPIC] fuse passthrough solutions and status
-To:     lsf-pc@lists.linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org,
-        Alessio Balsini <balsini@android.com>,
-        Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH bpf] selftests/bpf: enable mptcp before testing
+Content-Language: en-GB
+To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Felix Maurer <fmaurer@redhat.com>,
+        Nicolas Rybowski <nicolas.rybowski@tessares.net>,
+        Davide Caratti <dcaratti@redhat.com>
+References: <20230210093205.1378597-1-liuhangbin@gmail.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+In-Reply-To: <20230210093205.1378597-1-liuhangbin@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,45 +86,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Several fuse based filesystems pass file data from an underlying
-filesystem without modification.  The added value can come from
-changed directory structure, changed metadata or the ability to
-intercept I/O only in special cases.  This pattern is very common, so
-optimizing it could be very worthwhile.
+Hi Hangbin Liu,
 
-I'd like to discuss proposed solutions to enabling data passthrough.
-There are several prototypes:
+On 10/02/2023 10:32, Hangbin Liu wrote:
+> Some distros may not enable mptcp by default. Enable it before start the
+> mptcp server. To use the {read/write}_int_sysctl() functions, I moved
+> them to test_progs.c
+> 
+> Fixes: 8039d353217c ("selftests/bpf: Add MPTCP test base")
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  .../testing/selftests/bpf/prog_tests/mptcp.c  | 15 ++++++-
 
- - fuse2[1] (myself, very old)
- - fuse-passthrough[2] (Alessio Balsini, more recent)
- - fuse-bpf[3] (Daniel Rosenberg, new)
+Thank you for the patch!
 
-The scope of fuse-bpf is much wider, but it does offer conditional
-passthrough behavior as well.
+The modifications linked to MPTCP look good to me.
 
-One of the questions is how to reference underlying files.  Passing
-open file descriptors directly in the fuse messages could be
-dangerous[4].  Setting up the mapping from an open file descriptor to
-the kernel using an ioctl() instead should be safe.
+But I don't think it is needed here: I maybe didn't look properly at
+'bpf/test_progs.c' file but I think each program from 'prog_tests'
+directory is executed in a dedicated netns, no?
 
-Other open issues:
+I don't have an environment ready to validate that but if yes, it means
+that on a "vanilla" kernel, net.mptcp.enabled sysctl knob should be set
+to 1. In this case, this modification would be specific to these distros
+patching MPTCP code to disable it by default. It might then be better to
+add this patch next to the one disabling MPTCP by default, no? (or
+revert it to have MPTCP available by default for the applications asking
+for it :) )
 
- - what shall be the lifetime of the mapping?
-
- - does the mapped open file need to be visible to userspace?
-Remember, this is a kernel module, so there's no process involved
-where you could look at /proc/PID/fd.  Adding a kernel thread for each
-fuse instance that installs these mapped fds as actual file descriptor
-might be the solution.
-
-Thanks,
-Miklos
-
-
-[1] https://lore.kernel.org/all/CAJfpegtjEoE7H8tayLaQHG9fRSBiVuaspnmPr2oQiOZXVB1+7g@mail.gmail.com/
-
-[2] https://lore.kernel.org/all/20210125153057.3623715-1-balsini@android.com/
-
-[3] https://lore.kernel.org/all/20221122021536.1629178-1-drosen@google.com/
-
-[4] https://lore.kernel.org/all/CAG48ez17uXtjCTa7xpa=JWz3iBbNDQTKO2hvn6PAZtfW3kXgcA@mail.gmail.com/
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
