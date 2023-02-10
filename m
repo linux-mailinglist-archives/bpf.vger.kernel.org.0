@@ -2,280 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C76F691B63
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 10:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D1A691B9F
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 10:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbjBJJcb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 04:32:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
+        id S230286AbjBJJiv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 04:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231945AbjBJJc1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 04:32:27 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B99459E6C;
-        Fri, 10 Feb 2023 01:32:26 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id r17so3086759pff.9;
-        Fri, 10 Feb 2023 01:32:26 -0800 (PST)
+        with ESMTP id S231434AbjBJJiu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 04:38:50 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2875ACFB
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 01:38:46 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id qb15so12152663ejc.1
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 01:38:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+kj35ks66WHHoBPnrkWUWvEbE3+zc9azQZ+XX4tuL+U=;
-        b=mj1BkU6JTNKiu9qykCyJV7BHA3eiWWH/1vrF36+r8B/ztUuBpsVo7JpFySd8FcJ5zH
-         B0pN6kW/a1RfNN+a04Z8SA3yuAaKkEkgGk5gsq7waB23J071H/PKCNDCDOVImIwMpbjJ
-         KcKrugRniL8HJD/bfHF3oqRDQIGsElufku6yiqTZLJX03WmBEHnbpJj2otImz6t9ys3D
-         0A5oNY0Ud4G+E0aeymFyoYV7a70Gf01Cya7XUbmNVfilQN+0wpY1QHDtff//8qKWrHtG
-         hNrw1+8IzanqfA06LG0WCn3wVa2qc+TD/fsd4qjGMuOd0K3WprFE9pCJd6n1ejGMGt2F
-         RxMA==
+        d=szeredi.hu; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+CSs87Bv4X9FdOPYmZI8I7ZXN+lGBiiiGHWUaDXWUyA=;
+        b=TC+YKkjyiydGRtrpmt7wSjvM/iGER/SrtSoz1eGq5Dh+7INoGE3CAvWyT6gFuHJw0+
+         a+sJLH1pyilAt0mtGhC3FfEB5gEjShtpNWb2dwOI6qQYjTGCc03QzygAayckUSGy9sNH
+         EFRK6CyM68LY8wjf+82mfK7pKtnF3BNXmwkjU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+kj35ks66WHHoBPnrkWUWvEbE3+zc9azQZ+XX4tuL+U=;
-        b=yZPGMpsJ2KTmEJsDBRTH1Hr5fxuXHLEldADmgb6TpPbUlFoo16r6yqAlUcbAGdSRNJ
-         drUiWKvekRMwKwSuAVCr9/SRrmMCyWVs3N/pwxtRfjEPSe7EA861M9sFFv+kOo9BRT7X
-         SNgaOyeL7T3B7Ul0NZDxkU5wUAqHu7yaB3hsl9T9WsWGMUMw3z87h7MWWNxuOE/010lz
-         hORBtl+wuhpZ5iKIt60fYkM8CnXrng8KtJtEjnpktnQn/XcQclUpVek7NZ+UfVDcI/jA
-         PsEsxk0SzX1GdvZy1KyqZY16E5CdgOE01p+VJP4KoR51tb6HAR+ZqXpkEMZ0SK4Ec9OJ
-         YMsQ==
-X-Gm-Message-State: AO0yUKUq12lwgwsO2dvxm0/W328Mi5NXr5Tis0m+zN/IQI6N6aaEZ4Xw
-        uGHjkSprTtVDfxLoM+DFuHo5Y9/Aqha32BTm
-X-Google-Smtp-Source: AK7set/M+g3fFo9kHQW36E4RFcnXT+sdJu0m1NSDkUL3A/qF7v2OdhoaLXZ49cE3hQd91VZ9K/zBNA==
-X-Received: by 2002:a62:15c9:0:b0:5a8:4ba7:584b with SMTP id 192-20020a6215c9000000b005a84ba7584bmr7769893pfv.26.1676021545184;
-        Fri, 10 Feb 2023 01:32:25 -0800 (PST)
-Received: from Laptop-X1.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id c19-20020a62e813000000b00593edee1af6sm2860621pfi.67.2023.02.10.01.32.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 01:32:24 -0800 (PST)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Felix Maurer <fmaurer@redhat.com>,
-        Nicolas Rybowski <nicolas.rybowski@tessares.net>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCH bpf] selftests/bpf: enable mptcp before testing
-Date:   Fri, 10 Feb 2023 17:32:05 +0800
-Message-Id: <20230210093205.1378597-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.38.1
+        bh=+CSs87Bv4X9FdOPYmZI8I7ZXN+lGBiiiGHWUaDXWUyA=;
+        b=t2N+VEjGrz2KTiIADgwyIXF/pbcBc4CQaIQwejKpYw5teSYcnoOgNP0EG+Hcu0ibKA
+         sPb7kOHP6lT0WG7eTQqlnmDY4cyLZR4esiVfK+zUaaK4oq7Rn604lEb7Z1Glr9J5qxcY
+         XCTCFR+n/zgS9p7sZeDDNpKAvAelT+8Zz6KpMko/H8YMbPRHEhNgv79LOyNe2Y2ExIZ2
+         ByNVVi5nWPv3Tt2GyLApKfsTB5dOJHu66+PjvAMRrFDya0T0x8ZaoVUMvqAP703qAIet
+         ehLuFJYlzjk1mE8GbqSnoOeN2pYOTuPiQBHcpXelbbMWxcIbkHyDRNeoh16VqrAqhQYF
+         1OEg==
+X-Gm-Message-State: AO0yUKXTCyxNVMh3XPO0md7suTRDLIsDwt420cQ1WKluTqrIQXW6iwob
+        fmhEFl870DBLC+T3Adv/mjiey9DHfWwt+5BWvDh54A==
+X-Google-Smtp-Source: AK7set8/uxRNe2y4k4ko7foqw0oR4bOtlspjtdSF2d3Obo3NZCeZRWVf990nwhUQ7Rv9MBGaypXSr2ym9HkQHAkPwKM=
+X-Received: by 2002:a17:906:7242:b0:889:a006:7db5 with SMTP id
+ n2-20020a170906724200b00889a0067db5mr3229286ejk.138.1676021925106; Fri, 10
+ Feb 2023 01:38:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20221122021536.1629178-1-drosen@google.com> <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
+ <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com>
+ <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm> <CAOQ4uxiBD5NXLMXFev7vsCLU5-_o8-_H-XcoMY1aqhOwnADo9w@mail.gmail.com>
+ <283b5344-3ef5-7799-e243-13c707388cd8@fastmail.fm> <CAOQ4uxjvUukDSBk977csO5cX=-1HiMHmyQxycbYQgrpLaanddw@mail.gmail.com>
+In-Reply-To: <CAOQ4uxjvUukDSBk977csO5cX=-1HiMHmyQxycbYQgrpLaanddw@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 10 Feb 2023 10:38:34 +0100
+Message-ID: <CAJfpegvHKkCn0UnNRVxFXjjnkOuq0N4xLN4WzpqVX+56DqdjUw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem Extension for FUSE
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Daniel Rosenberg <drosen@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@android.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Nikolaus Rath <Nikolaus@rath.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Some distros may not enable mptcp by default. Enable it before start the
-mptcp server. To use the {read/write}_int_sysctl() functions, I moved
-them to test_progs.c
+On Fri, 3 Feb 2023 at 12:43, Amir Goldstein <amir73il@gmail.com> wrote:
 
-Fixes: 8039d353217c ("selftests/bpf: Add MPTCP test base")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- .../testing/selftests/bpf/prog_tests/mptcp.c  | 15 ++++++-
- .../bpf/prog_tests/select_reuseport.c         | 43 -------------------
- tools/testing/selftests/bpf/test_progs.c      | 36 ++++++++++++++++
- tools/testing/selftests/bpf/test_progs.h      |  9 ++++
- 4 files changed, 59 insertions(+), 44 deletions(-)
+> > Thanks a lot Amir, I'm going to send out an invitation tomorrow. Maybe
+> > Nikolaus as libfuse maintainer could also attend?
+> >
+>
+> Since this summit is about kernel filesystem development, I am not sure
+> on-prem attendance will be the best option for Nikolaus as we do have
+> a quota for
+> on-prem attendees, but we should have an option for connecting specific
+> attendees remotely for specific sessions, so that could be great.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-index 59f08d6d1d53..c0a0ee7abd06 100644
---- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-@@ -11,6 +11,8 @@
- #define TCP_CA_NAME_MAX	16
- #endif
- 
-+#define MPTCP_ENABLED_SYSCTL "/proc/sys/net/mptcp/enabled"
-+
- struct mptcp_storage {
- 	__u32 invoked;
- 	__u32 is_mptcp;
-@@ -138,7 +140,7 @@ static int run_test(int cgroup_fd, int server_fd, bool is_mptcp)
- 
- static void test_base(void)
- {
--	int server_fd, cgroup_fd;
-+	int server_fd, cgroup_fd, saved_mptcp_enabled = -1;
- 
- 	cgroup_fd = test__join_cgroup("/mptcp");
- 	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
-@@ -155,6 +157,14 @@ static void test_base(void)
- 
- with_mptcp:
- 	/* with MPTCP */
-+	saved_mptcp_enabled = read_int_sysctl(MPTCP_ENABLED_SYSCTL);
-+	if (saved_mptcp_enabled < 0)
-+		goto close_cgroup_fd;
-+
-+	if (saved_mptcp_enabled == 0 &&
-+	    write_int_sysctl(MPTCP_ENABLED_SYSCTL, 1))
-+		goto close_cgroup_fd;
-+
- 	server_fd = start_mptcp_server(AF_INET, NULL, 0, 0);
- 	if (!ASSERT_GE(server_fd, 0, "start_mptcp_server"))
- 		goto close_cgroup_fd;
-@@ -164,6 +174,9 @@ static void test_base(void)
- 	close(server_fd);
- 
- close_cgroup_fd:
-+	if (saved_mptcp_enabled == 0)
-+		write_int_sysctl(MPTCP_ENABLED_SYSCTL, saved_mptcp_enabled);
-+
- 	close(cgroup_fd);
- }
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-index 64c5f5eb2994..cdf9dd626877 100644
---- a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-+++ b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-@@ -56,13 +56,6 @@ static union sa46 {
- 	}								\
- })
- 
--#define RET_ERR(condition, tag, format...) ({				\
--	if (CHECK_FAIL(condition)) {					\
--		printf(tag " " format);					\
--		return -1;						\
--	}								\
--})
--
- static int create_maps(enum bpf_map_type inner_type)
- {
- 	LIBBPF_OPTS(bpf_map_create_opts, opts);
-@@ -157,42 +150,6 @@ static void sa46_init_inany(union sa46 *sa, sa_family_t family)
- 		sa->v4.sin_addr.s_addr = INADDR_ANY;
- }
- 
--static int read_int_sysctl(const char *sysctl)
--{
--	char buf[16];
--	int fd, ret;
--
--	fd = open(sysctl, 0);
--	RET_ERR(fd == -1, "open(sysctl)",
--		"sysctl:%s fd:%d errno:%d\n", sysctl, fd, errno);
--
--	ret = read(fd, buf, sizeof(buf));
--	RET_ERR(ret <= 0, "read(sysctl)",
--		"sysctl:%s ret:%d errno:%d\n", sysctl, ret, errno);
--
--	close(fd);
--	return atoi(buf);
--}
--
--static int write_int_sysctl(const char *sysctl, int v)
--{
--	int fd, ret, size;
--	char buf[16];
--
--	fd = open(sysctl, O_RDWR);
--	RET_ERR(fd == -1, "open(sysctl)",
--		"sysctl:%s fd:%d errno:%d\n", sysctl, fd, errno);
--
--	size = snprintf(buf, sizeof(buf), "%d", v);
--	ret = write(fd, buf, size);
--	RET_ERR(ret != size, "write(sysctl)",
--		"sysctl:%s ret:%d size:%d errno:%d\n",
--		sysctl, ret, size, errno);
--
--	close(fd);
--	return 0;
--}
--
- static void restore_sysctls(void)
- {
- 	if (saved_tcp_fo != -1)
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 4716e38e153a..d50599ccba9a 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -967,6 +967,42 @@ int write_sysctl(const char *sysctl, const char *value)
- 	return 0;
- }
- 
-+int read_int_sysctl(const char *sysctl)
-+{
-+	char buf[16];
-+	int fd, ret;
-+
-+	fd = open(sysctl, 0);
-+	RET_ERR(fd == -1, "open(sysctl)",
-+		"sysctl:%s fd:%d errno:%d\n", sysctl, fd, errno);
-+
-+	ret = read(fd, buf, sizeof(buf));
-+	RET_ERR(ret <= 0, "read(sysctl)",
-+		"sysctl:%s ret:%d errno:%d\n", sysctl, ret, errno);
-+
-+	close(fd);
-+	return atoi(buf);
-+}
-+
-+int write_int_sysctl(const char *sysctl, int v)
-+{
-+	int fd, ret, size;
-+	char buf[16];
-+
-+	fd = open(sysctl, O_RDWR);
-+	RET_ERR(fd == -1, "open(sysctl)",
-+		"sysctl:%s fd:%d errno:%d\n", sysctl, fd, errno);
-+
-+	size = snprintf(buf, sizeof(buf), "%d", v);
-+	ret = write(fd, buf, size);
-+	RET_ERR(ret != size, "write(sysctl)",
-+		"sysctl:%s ret:%d size:%d errno:%d\n",
-+		sysctl, ret, size, errno);
-+
-+	close(fd);
-+	return 0;
-+}
-+
- #define MAX_BACKTRACE_SZ 128
- void crash_handler(int signum)
- {
-diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-index 3f058dfadbaf..1522ea930bf6 100644
---- a/tools/testing/selftests/bpf/test_progs.h
-+++ b/tools/testing/selftests/bpf/test_progs.h
-@@ -376,6 +376,13 @@ int test__join_cgroup(const char *path);
- 	___ok;								\
- })
- 
-+#define RET_ERR(condition, tag, format...) ({				\
-+	if (CHECK_FAIL(condition)) {					\
-+		printf(tag " " format);					\
-+		return -1;						\
-+	}								\
-+})
-+
- static inline __u64 ptr_to_u64(const void *ptr)
- {
- 	return (__u64) (unsigned long) ptr;
-@@ -394,6 +401,8 @@ int kern_sync_rcu(void);
- int trigger_module_test_read(int read_sz);
- int trigger_module_test_write(int write_sz);
- int write_sysctl(const char *sysctl, const char *value);
-+int read_int_sysctl(const char *sysctl);
-+int write_int_sysctl(const char *sysctl, int v);
- 
- #ifdef __x86_64__
- #define SYS_NANOSLEEP_KPROBE_NAME "__x64_sys_nanosleep"
--- 
-2.38.1
+Not sure.  I think including non-kernel people might be beneficial to
+the whole fs development community.  Not saying LSF is the best place,
+but it's certainly a possibility.
 
+Nikolaus, I don't even know where you're located.  Do you think it
+would make sense for you to attend?
+
+Thanks,
+Miklos
