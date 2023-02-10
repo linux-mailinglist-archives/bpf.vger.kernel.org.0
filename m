@@ -2,153 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 567366922A0
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 16:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 035046922A7
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 16:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbjBJPsJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 10:48:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
+        id S232638AbjBJPw2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 10:52:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbjBJPsH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 10:48:07 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D6878D57;
-        Fri, 10 Feb 2023 07:48:05 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id n3so3964308pgr.9;
-        Fri, 10 Feb 2023 07:48:05 -0800 (PST)
+        with ESMTP id S231954AbjBJPwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 10:52:25 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA8C4B749
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:52:24 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id rp23so16977819ejb.7
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:52:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3BzE4dHWY04pl7eRXElI/6nAwQrbbF33iW2gxKhD+d4=;
-        b=j+gxHQfBd7YR9DKjd+QCY3jhunM0qE502k1Q1kOFjTYec6K5h0eypt2BdeB7fPrask
-         zyOtXXHaIaHjLTKHKppAk+Iy+jmgbTPFqltPNUJ8CKtzG4mVYDU3DV9d/VNVRXP8ypOf
-         lK6HEtis6SdYcjcUu0PABvv/+/8NvYPV7hnLtRbdKElboXcv350wk00qsAXJKMK3Fy+g
-         XXIjW6cnwBzFFcNKYrzsNYgo5j/TBfrHuKQOy5NrkBMgMceLhjn1k0+oWJKmb0Qoq8Z4
-         qJX68FnAXTZOjPtdUc3wYrlty43ptBoVJ6kLPOUWuI1ZILmy8c8lp1GSGuApFVrT5irw
-         ISmA==
+        d=szeredi.hu; s=google;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ROduZYJpSejdajCsBZSHrHuAACG1d4aq3VU3Cfv3Yt4=;
+        b=qAM8LzdtIzHzZx9Kf1mmuf82NNGWVm/JOZKSidHNH/flRfQFR6mcHEVPmS+xWBBlng
+         xasUroz0oZpe/l3/em7/BN9N6XRzOxO2hnrVQu6cxuSaA9K8aD3TrmDOekcOuYxYbZBP
+         3dYQPagXm7Qp8CpTytNoRFPG9+YbB5EwO42RA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3BzE4dHWY04pl7eRXElI/6nAwQrbbF33iW2gxKhD+d4=;
-        b=TyQ3Djh1QSSaIKlmwh3gltgA7J2zJKDBe+KBX//2UmeDSi6tEGYsZVCLwXSoibZGqF
-         cr1kaIL//Jko/OBFb23WZ5a5/H4jD62WBB9AmJqZTfKSXVQHNblw/SH2FNSvmLQHZT79
-         6B23AOWdXBufUYTbuQGVvCLvycxCgTTANuLRQAjXmUsdrTUSTiVO4nlHFRXHsfzvJc5B
-         f9a9vi/bW8DJsq8JtbrQXK6TluRBnOdhj3PQ4IdQRzfO390Y2KIO8C6ywKnRLAteOi9F
-         M3Dd3MBghUACBQoXuXQ2vaLZ+z6QLEiowOofnENOLoe5Tm8Co4PL8R461wAq1qpPgHeG
-         tCvQ==
-X-Gm-Message-State: AO0yUKU6sKDoP3dbzNbRKtVU6nvcb3dRELdJ1DZelUyfzpUfC2ErY2aF
-        D/n/PoYUrhxQ8FO4KhwitP4=
-X-Google-Smtp-Source: AK7set8W5dANe0k+W3DZarFPjaiIci6Hk8I9WJxnZToYOnQzh2s0R3baoCshnGT3Pp6WNhUtjdz6zw==
-X-Received: by 2002:a62:6d87:0:b0:5a8:58b5:bfa7 with SMTP id i129-20020a626d87000000b005a858b5bfa7mr4558913pfc.5.1676044084887;
-        Fri, 10 Feb 2023 07:48:04 -0800 (PST)
-Received: from vultr.guest ([2001:19f0:7001:2f6a:5400:4ff:fe4c:e050])
-        by smtp.gmail.com with ESMTPSA id t20-20020aa79394000000b005921c46cbadsm3520069pfe.99.2023.02.10.07.48.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 07:48:04 -0800 (PST)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     tj@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, akpm@linux-foundation.org
-Cc:     bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v2 4/4] bpf: allow to disable bpf prog memory accounting
-Date:   Fri, 10 Feb 2023 15:47:34 +0000
-Message-Id: <20230210154734.4416-5-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230210154734.4416-1-laoar.shao@gmail.com>
-References: <20230210154734.4416-1-laoar.shao@gmail.com>
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ROduZYJpSejdajCsBZSHrHuAACG1d4aq3VU3Cfv3Yt4=;
+        b=OnXvDwzXdpC0J8pG6t5EXcslUvym+FkVDq1jSFSMNoDXtOEp9sguiFmpzRPRZ6Wuuw
+         qiTE1ACIQemxTOsHTdHS7a/Xstoi+J07TDm7RJHBenCvrW3VS5fFnPS0twQQ/h/iiPGf
+         1EDMKzdQ+KJPMb0wTVkPHr1Ml5gGJQIZIdIJJia2rbFgs1HJwiLuUJ5xHvotMhg+FZKu
+         QbC0nL3H8RWHd+5nGNDKdydRA3f2STwfKiBSjQguaEZJ7nSosaiwU6en7UPX/oeSVWDi
+         5yjqJCMdSkcYYL284dL4s8zm5NjeBU/1IJoISmwWijDNGZch4B0PDfc/NKsJmUvSbMxZ
+         aniA==
+X-Gm-Message-State: AO0yUKXFu55r6Qh9oNXNgmRnIsPdxQ5SNYVTPWOSPqKgE/O4U5tUFcVH
+        FmewRTGTI2insiLw74Ex0AM5C9whl7FEl14gOIV1zQ==
+X-Google-Smtp-Source: AK7set9DRrfJ8emvNMJ4bkS2cGPib1PAntVERZKX/H6AbXR1QQgyUoIWPbU2nZm7VGO/zeuCODpjgQVksVs8Lq6XoUc=
+X-Received: by 2002:a17:906:718d:b0:8ab:4931:ca26 with SMTP id
+ h13-20020a170906718d00b008ab4931ca26mr1302015ejk.5.1676044342787; Fri, 10 Feb
+ 2023 07:52:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 10 Feb 2023 16:52:12 +0100
+Message-ID: <CAJfpegu6xqH3U1icRcY1SeyVh0h-CirXJ-oaCXUsLCZGQgExUQ@mail.gmail.com>
+Subject: [LSF/MM/BPF TOPIC] fuse passthrough solutions and status
+To:     lsf-pc@lists.linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org,
+        Alessio Balsini <balsini@android.com>,
+        Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We can simply disable the bpf prog memory accouting by not setting the
-GFP_ACCOUNT.
+Several fuse based filesystems pass file data from an underlying
+filesystem without modification.  The added value can come from
+changed directory structure, changed metadata or the ability to
+intercept I/O only in special cases.  This pattern is very common, so
+optimizing it could be very worthwhile.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
----
- kernel/bpf/core.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+I'd like to discuss proposed solutions to enabling data passthrough.
+There are several prototypes:
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 16da510..3390961 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -35,6 +35,7 @@
- #include <linux/bpf_verifier.h>
- #include <linux/nodemask.h>
- #include <linux/bpf_mem_alloc.h>
-+#include <linux/memcontrol.h>
- 
- #include <asm/barrier.h>
- #include <asm/unaligned.h>
-@@ -87,7 +88,7 @@ void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb, int k, uns
- 
- struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flags)
- {
--	gfp_t gfp_flags = GFP_KERNEL_ACCOUNT | __GFP_ZERO | gfp_extra_flags;
-+	gfp_t gfp_flags = bpf_memcg_flags(GFP_KERNEL | __GFP_ZERO | gfp_extra_flags);
- 	struct bpf_prog_aux *aux;
- 	struct bpf_prog *fp;
- 
-@@ -96,12 +97,12 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 	if (fp == NULL)
- 		return NULL;
- 
--	aux = kzalloc(sizeof(*aux), GFP_KERNEL_ACCOUNT | gfp_extra_flags);
-+	aux = kzalloc(sizeof(*aux), bpf_memcg_flags(GFP_KERNEL | gfp_extra_flags));
- 	if (aux == NULL) {
- 		vfree(fp);
- 		return NULL;
- 	}
--	fp->active = alloc_percpu_gfp(int, GFP_KERNEL_ACCOUNT | gfp_extra_flags);
-+	fp->active = alloc_percpu_gfp(int, bpf_memcg_flags(GFP_KERNEL | gfp_extra_flags));
- 	if (!fp->active) {
- 		vfree(fp);
- 		kfree(aux);
-@@ -126,7 +127,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 
- struct bpf_prog *bpf_prog_alloc(unsigned int size, gfp_t gfp_extra_flags)
- {
--	gfp_t gfp_flags = GFP_KERNEL_ACCOUNT | __GFP_ZERO | gfp_extra_flags;
-+	gfp_t gfp_flags = bpf_memcg_flags(GFP_KERNEL | __GFP_ZERO | gfp_extra_flags);
- 	struct bpf_prog *prog;
- 	int cpu;
- 
-@@ -159,7 +160,7 @@ int bpf_prog_alloc_jited_linfo(struct bpf_prog *prog)
- 
- 	prog->aux->jited_linfo = kvcalloc(prog->aux->nr_linfo,
- 					  sizeof(*prog->aux->jited_linfo),
--					  GFP_KERNEL_ACCOUNT | __GFP_NOWARN);
-+					  bpf_memcg_flags(GFP_KERNEL | __GFP_NOWARN));
- 	if (!prog->aux->jited_linfo)
- 		return -ENOMEM;
- 
-@@ -234,7 +235,7 @@ void bpf_prog_fill_jited_linfo(struct bpf_prog *prog,
- struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
- 				  gfp_t gfp_extra_flags)
- {
--	gfp_t gfp_flags = GFP_KERNEL_ACCOUNT | __GFP_ZERO | gfp_extra_flags;
-+	gfp_t gfp_flags = bpf_memcg_flags(GFP_KERNEL | __GFP_ZERO | gfp_extra_flags);
- 	struct bpf_prog *fp;
- 	u32 pages;
- 
--- 
-1.8.3.1
+ - fuse2[1] (myself, very old)
+ - fuse-passthrough[2] (Alessio Balsini, more recent)
+ - fuse-bpf[3] (Daniel Rosenberg, new)
 
+The scope of fuse-bpf is much wider, but it does offer conditional
+passthrough behavior as well.
+
+One of the questions is how to reference underlying files.  Passing
+open file descriptors directly in the fuse messages could be
+dangerous[4].  Setting up the mapping from an open file descriptor to
+the kernel using an ioctl() instead should be safe.
+
+Other open issues:
+
+ - what shall be the lifetime of the mapping?
+
+ - does the mapped open file need to be visible to userspace?
+Remember, this is a kernel module, so there's no process involved
+where you could look at /proc/PID/fd.  Adding a kernel thread for each
+fuse instance that installs these mapped fds as actual file descriptor
+might be the solution.
+
+Thanks,
+Miklos
+
+
+[1] https://lore.kernel.org/all/CAJfpegtjEoE7H8tayLaQHG9fRSBiVuaspnmPr2oQiOZXVB1+7g@mail.gmail.com/
+
+[2] https://lore.kernel.org/all/20210125153057.3623715-1-balsini@android.com/
+
+[3] https://lore.kernel.org/all/20221122021536.1629178-1-drosen@google.com/
+
+[4] https://lore.kernel.org/all/CAG48ez17uXtjCTa7xpa=JWz3iBbNDQTKO2hvn6PAZtfW3kXgcA@mail.gmail.com/
