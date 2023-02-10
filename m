@@ -2,170 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 056EF692429
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 18:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CF1692435
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 18:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbjBJRLW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 12:11:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
+        id S232227AbjBJRNm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 12:13:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbjBJRLI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 12:11:08 -0500
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D44661D00;
-        Fri, 10 Feb 2023 09:11:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676049067; x=1707585067;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0dcojjiE789BDMJg+GPh0TiqtbrZeBsVGaGIrqQQlIk=;
-  b=bxfURKlIlSISWVxfzFRUr2HFurlEis2tvm5g7dvbSP5m8JVm559abx0D
-   wGmBosoISKEXZZ6JQOAP+heBLor+T84eYSjACytFzcckK2qKTlFtNAS5G
-   3DwHfez4WZ/5QNc3Wh+P1aTJy1dtPhQG/FYaakrxgrzomQG1ZRYWtPViU
-   vBZ+MIZJ9ykbLJwLFI0ipFKzHg3fZlBc9OCtQ/ugX8y2WY0ucHrAxNgbT
-   Lj3kQCZxyXtk+HOlVTN/eYV5tO8i+S0JTnWBrxMC4nx1V5fUmQZ9vLUL8
-   ZCa1X6JmBQioNH/K/rt7t0FNxDUNntG2NHT2aFH9j1nOZJLCPdWIdgue2
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10617"; a="395076740"
-X-IronPort-AV: E=Sophos;i="5.97,287,1669104000"; 
-   d="scan'208";a="395076740"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2023 09:07:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10617"; a="668107556"
-X-IronPort-AV: E=Sophos;i="5.97,287,1669104000"; 
-   d="scan'208";a="668107556"
-Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga002.jf.intel.com with ESMTP; 10 Feb 2023 09:07:28 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail002.ir.intel.com (Postfix) with ESMTP id 6A9CE3C624;
-        Fri, 10 Feb 2023 17:07:27 +0000 (GMT)
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S232466AbjBJRNl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 12:13:41 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E335D79B3A
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 09:13:12 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id mi9so5796871pjb.4
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 09:13:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KhHlalZmywOH+WNQmjNbQaoqBvPW7xEH+ibb/WHMVVw=;
+        b=HetRwpcYUvN9JuRiaOjD6jHqaTowwERRGtkmd80/HGIZX3pxeOuwGBzQLgdA0o3/fB
+         fRz6lsapSpJ8c/tDJ22TMtK50PMZ3cGdn9i4KdrXMC/C54CyQY/BfdyEobDvnkd/sn7C
+         +1wiyT0ZLuuQechgPicqpqmh1XaXwi8m+gpFWFV2J0wMxmucN9Sy1d4NSqnZWWCNRQ+Z
+         YuR5WgfzRNM1DQzazIC+mIWaqnBcG0E8vDt6L8sg4GaqTiUUy6TOlWVUpZZKfEB3IaiY
+         1vFrECyYLaCyTbBACG7ky+Tf1zPj+/4aZ8GENi9IpAKmwt+b2nXYNXQnjZGpEEiKpxHD
+         6hfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KhHlalZmywOH+WNQmjNbQaoqBvPW7xEH+ibb/WHMVVw=;
+        b=55gw6tVwbyTZeP+9kNDcl1F0s0yCclA8vhrr+0DwGDpxkpq4VoGgIdxaZPWRd4ibJv
+         zNnBJA/Y203IbQ9s/imSS2X8OhjdEurmPp6t0hGbn2hw45dWHgdKvJitii+AXVhu6Adn
+         fLcrhSawDRvdd7CG740bY/SJMUl+3+Dk40ng698ISSakGyJixRgQGEiEEjoGojxEcBgd
+         0Wq4nqSmcaL2sTv/MLh8PzcW4XNsFfPXJEDSO/oOjBo9mGi7x5Ji3C8LXH1mNzgXzBAr
+         /s09wZWAsOpjoSLY5sjY4ImSG6gH+7+ttgpGfm1sAnq9cmNsnX0OfsOLeq8O8Bkbe5M3
+         LlJg==
+X-Gm-Message-State: AO0yUKW5h1CqXc11cpVelp37dPQnZ5GErMPTI8OIeNn+Fc9DY3OCJBOK
+        cjJt1trzmVrsdu5fT+7tyQXm/rMIm0E=
+X-Google-Smtp-Source: AK7set99eeQdSlpoqzZEOHkGW9UzPsJ46GupHy6fg8uH8cA85tZr2KQxiRvPRMIIpFFZ80FZA38i7A==
+X-Received: by 2002:a17:903:182:b0:193:2bed:3325 with SMTP id z2-20020a170903018200b001932bed3325mr18842524plg.15.1676049192165;
+        Fri, 10 Feb 2023 09:13:12 -0800 (PST)
+Received: from MacBook-Pro-6.local ([2620:10d:c090:400::5:c6db])
+        by smtp.gmail.com with ESMTPSA id v22-20020a170902e8d600b001949f21e1d2sm21481plg.308.2023.02.10.09.13.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Feb 2023 09:13:11 -0800 (PST)
+Date:   Fri, 10 Feb 2023 09:13:09 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 6/6] ice: micro-optimize .ndo_xdp_xmit() path
-Date:   Fri, 10 Feb 2023 18:06:18 +0100
-Message-Id: <20230210170618.1973430-7-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230210170618.1973430-1-alexandr.lobakin@intel.com>
-References: <20230210170618.1973430-1-alexandr.lobakin@intel.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 01/11] bpf: Migrate release_on_unlock logic
+ to non-owning ref semantics
+Message-ID: <20230210171309.mognngvzkzx5vztt@MacBook-Pro-6.local>
+References: <20230209174144.3280955-1-davemarchevsky@fb.com>
+ <20230209174144.3280955-2-davemarchevsky@fb.com>
+ <20230210132413.o3nokabu5vk3mtgn@apollo>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230210132413.o3nokabu5vk3mtgn@apollo>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After the recent mbuf changes, ice_xmit_xdp_ring() became a 3-liner.
-It makes no sense to keep it global in a different file than its caller.
-Move it just next to the sole call site and mark static. Also, it
-doesn't need a full xdp_convert_frame_to_buff(). Save several cycles
-and fill only the fields used by __ice_xmit_xdp_ring() later on.
-Finally, since it doesn't modify @xdpf anyhow, mark the argument const
-to save some more (whole -11 bytes of .text! :D).
+On Fri, Feb 10, 2023 at 02:24:13PM +0100, Kumar Kartikeya Dwivedi wrote:
+> > [...]
+> > +static void invalidate_non_owning_refs(struct bpf_verifier_env *env,
+> > +				       struct bpf_active_lock *lock)
+> > +{
+> > +	struct bpf_func_state *unused;
+> > +	struct bpf_reg_state *reg;
+> > +
+> > +	bpf_for_each_reg_in_vstate(env->cur_state, unused, reg, ({
+> > +		if (reg->non_owning_ref_lock.ptr &&
+> > +		    reg->non_owning_ref_lock.ptr == lock->ptr &&
+> > +		    reg->non_owning_ref_lock.id == lock->id)
+> > +			__mark_reg_unknown(env, reg);
+> 
+> Probably better to do:
+> 
+> 	if (!env->allow_ptr_leaks)
+> 		__mark_reg_not_init(...);
+> 	else
+> 		__mark_reg_unknown(...);
 
-Thanks to 1 jump less and less calcs as well, this yields as many as
-6.7 Mpps per queue. `xdp.data_hard_start = xdpf` is fully intentional
-again (see xdp_convert_buff_to_frame()) and just works when there are
-no source device's driver issues.
-
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_txrx.c     | 21 ++++++++++++++++++-
- drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 13 ------------
- drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  1 -
- 3 files changed, 20 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-index e451276a37b6..aaf313a95368 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-@@ -605,6 +605,25 @@ ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
- 		ice_set_rx_bufs_act(xdp, rx_ring, ret);
- }
- 
-+/**
-+ * ice_xmit_xdp_ring - submit frame to XDP ring for transmission
-+ * @xdpf: XDP frame that will be converted to XDP buff
-+ * @xdp_ring: XDP ring for transmission
-+ */
-+static int ice_xmit_xdp_ring(const struct xdp_frame *xdpf,
-+			     struct ice_tx_ring *xdp_ring)
-+{
-+	struct xdp_buff xdp;
-+
-+	xdp.data_hard_start = (void *)xdpf;
-+	xdp.data = xdpf->data;
-+	xdp.data_end = xdp.data + xdpf->len;
-+	xdp.frame_sz = xdpf->frame_sz;
-+	xdp.flags = xdpf->flags;
-+
-+	return __ice_xmit_xdp_ring(&xdp, xdp_ring, true);
-+}
-+
- /**
-  * ice_xdp_xmit - submit packets to XDP ring for transmission
-  * @dev: netdev
-@@ -650,7 +669,7 @@ ice_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 
- 	tx_buf = &xdp_ring->tx_buf[xdp_ring->next_to_use];
- 	for (i = 0; i < n; i++) {
--		struct xdp_frame *xdpf = frames[i];
-+		const struct xdp_frame *xdpf = frames[i];
- 		int err;
- 
- 		err = ice_xmit_xdp_ring(xdpf, xdp_ring);
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-index 6d98c34d99fc..7bc5aa340c7d 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-@@ -434,19 +434,6 @@ int __ice_xmit_xdp_ring(struct xdp_buff *xdp, struct ice_tx_ring *xdp_ring,
- 	return ICE_XDP_CONSUMED;
- }
- 
--/**
-- * ice_xmit_xdp_ring - submit frame to XDP ring for transmission
-- * @xdpf: XDP frame that will be converted to XDP buff
-- * @xdp_ring: XDP ring for transmission
-- */
--int ice_xmit_xdp_ring(struct xdp_frame *xdpf, struct ice_tx_ring *xdp_ring)
--{
--	struct xdp_buff xdp;
--
--	xdp_convert_frame_to_buff(xdpf, &xdp);
--	return __ice_xmit_xdp_ring(&xdp, xdp_ring, true);
--}
--
- /**
-  * ice_finalize_xdp_rx - Bump XDP Tx tail and/or flush redirect map
-  * @xdp_ring: XDP ring
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-index 79efc20c46d9..115969ecdf7b 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-@@ -142,7 +142,6 @@ static inline u32 ice_set_rs_bit(const struct ice_tx_ring *xdp_ring)
- 
- void ice_finalize_xdp_rx(struct ice_tx_ring *xdp_ring, unsigned int xdp_res, u32 first_idx);
- int ice_xmit_xdp_buff(struct xdp_buff *xdp, struct ice_tx_ring *xdp_ring);
--int ice_xmit_xdp_ring(struct xdp_frame *xdpf, struct ice_tx_ring *xdp_ring);
- int __ice_xmit_xdp_ring(struct xdp_buff *xdp, struct ice_tx_ring *xdp_ring,
- 			bool frame);
- void ice_release_rx_desc(struct ice_rx_ring *rx_ring, u16 val);
--- 
-2.39.1
-
+That's redundant. kfuncs and any PTR_TO_BTF_ID access requires allow_ptr_leaks.
+See first check in check_ptr_to_btf_access()
