@@ -2,158 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1117692EF0
-	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 07:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4E4692EF6
+	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 08:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbjBKGwC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Feb 2023 01:52:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        id S229550AbjBKHJA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Feb 2023 02:09:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjBKGwA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Feb 2023 01:52:00 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4C5303F9;
-        Fri, 10 Feb 2023 22:51:59 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id pj3so7540662pjb.1;
-        Fri, 10 Feb 2023 22:51:59 -0800 (PST)
+        with ESMTP id S229468AbjBKHI7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Feb 2023 02:08:59 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E4232CF6
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 23:08:58 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id x40so11672135lfu.12
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 23:08:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OIJb0r8t3n2Yk0XQfpoH27yVjCpWtLB6DeuY/Wb6quo=;
-        b=Z7IzasDHo9swANAoqL5CiUU5IyZy2IsZkDhHJqWn3NIRleyTHOykxtZO45sBo2RJkN
-         bXNsFhXfAKhqWHp/B0zOYDULNlIsHSgWQU42f2Z8WM4k49U1uuFEcBHmhyyAgD1OrE5s
-         Jw0lb29GoNC2pMI2jly4BI7xCmYVjMG6jDs0fECPtZteEdlkXWtviJRdpPT8mfkQPDX6
-         bsKgwYCbtznZ3V/exAD4c4f4ZB9NZpg1pLEpOiWz9vV5w9DpsRLVAil9gz4YUlhcrVwE
-         zqi8RnTrC924P7RZMDu5LUBZ8+c+bBM3hjZ1o/rkhXBNn/svbMNATH4fclZwCRd/+jTe
-         6emQ==
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gG2bwUXIP61zGd1tmGDPnIS3wZmxKRhgu2x3mZQdWR8=;
+        b=HIJaNLDxrEQJn/Mqr29kpolx4DCKIqK6OyB8qYnkh3GHbNSegVbE1oVY1P3UIHSe+y
+         uthXqPiPs4/AGeZV3h2hHlHAezAm14ODnU1H5a0O2uAuxT9YxcpQu/f+6bUaaG6yO4Fd
+         /fLqecGrWNmjB/RgEJn6YVV9ycf/ZIN2xAoGSKcXNm+rfUzHfiPgiD5RgQSOdMjRVgFz
+         nZYOf9S2NTtMWM7Sb3IDdtvm7Y7x++EQHrFauBsIJdajIjxL20xhc6TXr9Q9MIfD0L2s
+         ZyUFOElgn9YGNVKDAxmakBdukPnvTEzVC1iSKHL4IVM8S1hEMZlr5O6jmeNAKBOrjYRI
+         GpBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OIJb0r8t3n2Yk0XQfpoH27yVjCpWtLB6DeuY/Wb6quo=;
-        b=ifnSDiHk2OL3x/Ao1qTGd7CATdSo5y/7BsfKSxzz3iyeN6iEXiK45wYWP3wzEYYTa2
-         Vi2P73lOP0dnRIe6cfg+XcUAwpR2qEyT+rGE0rMOQxsJwt05QvalGDDuu8cL8VY5yRHS
-         00i2UvieLmpT4EJv6vLWw4FPBmelIOs+YRyFBZfg/8ptISF27mmXrAQQ1svwePgl12Yb
-         ziNWMNZt25eaHAR7TdZuL0zHRctoCuiI9drUxRvQxnmgD+pd6HWHgw6Wasqb18xzn6KD
-         i5Qq6p8BayjR4W5H9uMYmgVOwg51/+MjY/jhPXVZsv24XdZVH4Wi3lEIWQjB2J7PSXqK
-         pobg==
-X-Gm-Message-State: AO0yUKU2ZqbL6hB+oTBdc5nkshtBWRjGXlmwPHxwXH8gxvWJ8xc+rjgQ
-        wclcx6WONh3Ll+cmLSimt4I=
-X-Google-Smtp-Source: AK7set9D/VYWvWqPx2jqG7EvlW3NF3CIUMlLuKCdWAbri3HAZ2aa3TKnXtlOTGB2Oax1s+MelNKYuw==
-X-Received: by 2002:a17:903:182:b0:198:c4ff:1c6 with SMTP id z2-20020a170903018200b00198c4ff01c6mr20585323plg.4.1676098318868;
-        Fri, 10 Feb 2023 22:51:58 -0800 (PST)
-Received: from KERNELXING-MB0.tencent.com ([114.253.32.213])
-        by smtp.gmail.com with ESMTPSA id f22-20020a170902ab9600b0019a7385079esm2219705plr.123.2023.02.10.22.51.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 22:51:58 -0800 (PST)
-From:   Jason Xing <kerneljasonxing@gmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, dsahern@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kerneljasonxing@gmail.com,
-        Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next] net: Kconfig.debug: wrap socket refcnt debug into an option
-Date:   Sat, 11 Feb 2023 14:51:53 +0800
-Message-Id: <20230211065153.54116-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gG2bwUXIP61zGd1tmGDPnIS3wZmxKRhgu2x3mZQdWR8=;
+        b=TDrNi0R/l/j8MoDJlRkYj7nyNwKKoBivc7iHUZkJ5+pSy6PAMD5uDtqI1BGreJKRKD
+         n11dQrPlkekxotCX7pDxj2lHyxFB7U83vXo8WP//DCPDO+RGG94aa0Rrne59kIi/wdHW
+         4lFWUCEbohceYeH+ZNGimHutmSM4R03X1eGc8UNO+mhc3jlkKREh92YDaGvv4wpzQlDp
+         o2fPe9eiybR0s+V1o1jM5ttY1GA7/tWXBTeyl9bwm19BcX6t/r9Q9U6uNXgykhArF6qe
+         xYkgqCKhWHxc1M98Ix/QqoCeJv82zlSEwUSEUWktVb/BoQBT3QBNQmJuy09OZuoP69Sx
+         qa2g==
+X-Gm-Message-State: AO0yUKUKxJzTU0oHEKEMABYWVS5YRVsUyUNdjdzju0CPux5RwPx6QTau
+        ymDzxTcH2Zw4xrrdcidsDq49u/vstAbNMOQmI34=
+X-Google-Smtp-Source: AK7set+7Uhk+oieBYYlXpJFntdCBB4LOp2KtrZ7AbtNB0jrXPjfdjHnnumsIfynDMXTj+9lJTS/jZttpNM+FzYO8mTg=
+X-Received: by 2002:ac2:4a64:0:b0:4d8:580b:2f23 with SMTP id
+ q4-20020ac24a64000000b004d8580b2f23mr2945961lfp.132.1676099337012; Fri, 10
+ Feb 2023 23:08:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:a05:651c:1a29:0:0:0:0 with HTTP; Fri, 10 Feb 2023 23:08:56
+ -0800 (PST)
+Reply-To: loubes1212@gmail.com
+From:   Mrs Louisa Besson <78055889a@gmail.com>
+Date:   Sat, 11 Feb 2023 07:08:56 +0000
+Message-ID: <CAEMAy4FirZ7MmM0pStzJMYEcMs1eKT6roQ2c5hOZ5=BQs_TFfw@mail.gmail.com>
+Subject: Best regards,
+To:     loubes1212@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_60,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jason Xing <kernelxing@tencent.com>
+Hello my friend,
 
-Since commit 463c84b97f24 ("[NET]: Introduce inet_connection_sock")
-commented out the definition of SOCK_REFCNT_DEBUG and later another
-patch deleted it, we need to enable it through defining it manually
-somewhere. Wrapping it into an option in Kconfig.debug could make
-it much clearer and easier for some developers to do things based
-on this change.
+How are you doing today, I am Mrs Louisa from France, I am writing to
+you from my sick bed. I urgently need someone I can trust with a
+donation for charity. I will contact you with more details about the
+donation immediately I read from you, have a great day ahead.
 
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
----
- include/net/sock.h            | 8 ++++----
- net/Kconfig.debug             | 8 ++++++++
- net/ipv4/inet_timewait_sock.c | 2 +-
- 3 files changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/include/net/sock.h b/include/net/sock.h
-index dcd72e6285b2..1b001efeb9b5 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1349,7 +1349,7 @@ struct proto {
- 	char			name[32];
- 
- 	struct list_head	node;
--#ifdef SOCK_REFCNT_DEBUG
-+#ifdef CONFIG_SOCK_REFCNT_DEBUG
- 	atomic_t		socks;
- #endif
- 	int			(*diag_destroy)(struct sock *sk, int err);
-@@ -1359,7 +1359,7 @@ int proto_register(struct proto *prot, int alloc_slab);
- void proto_unregister(struct proto *prot);
- int sock_load_diag_module(int family, int protocol);
- 
--#ifdef SOCK_REFCNT_DEBUG
-+#ifdef CONFIG_SOCK_REFCNT_DEBUG
- static inline void sk_refcnt_debug_inc(struct sock *sk)
- {
- 	atomic_inc(&sk->sk_prot->socks);
-@@ -1378,11 +1378,11 @@ static inline void sk_refcnt_debug_release(const struct sock *sk)
- 		printk(KERN_DEBUG "Destruction of the %s socket %p delayed, refcnt=%d\n",
- 		       sk->sk_prot->name, sk, refcount_read(&sk->sk_refcnt));
- }
--#else /* SOCK_REFCNT_DEBUG */
-+#else /* CONFIG_SOCK_REFCNT_DEBUG */
- #define sk_refcnt_debug_inc(sk) do { } while (0)
- #define sk_refcnt_debug_dec(sk) do { } while (0)
- #define sk_refcnt_debug_release(sk) do { } while (0)
--#endif /* SOCK_REFCNT_DEBUG */
-+#endif /* CONFIG_SOCK_REFCNT_DEBUG */
- 
- INDIRECT_CALLABLE_DECLARE(bool tcp_stream_memory_free(const struct sock *sk, int wake));
- 
-diff --git a/net/Kconfig.debug b/net/Kconfig.debug
-index 5e3fffe707dd..667396d70e10 100644
---- a/net/Kconfig.debug
-+++ b/net/Kconfig.debug
-@@ -18,6 +18,14 @@ config NET_NS_REFCNT_TRACKER
- 	  Enable debugging feature to track netns references.
- 	  This adds memory and cpu costs.
- 
-+config SOCK_REFCNT_DEBUG
-+	bool "Enable socket refcount debug"
-+	depends on DEBUG_KERNEL && NET
-+	default n
-+	help
-+	  Enable debugging feature to track socket references.
-+	  This adds memory and cpu costs.
-+
- config DEBUG_NET
- 	bool "Add generic networking debug"
- 	depends on DEBUG_KERNEL && NET
-diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
-index beed32fff484..e313516b64ce 100644
---- a/net/ipv4/inet_timewait_sock.c
-+++ b/net/ipv4/inet_timewait_sock.c
-@@ -77,7 +77,7 @@ void inet_twsk_free(struct inet_timewait_sock *tw)
- {
- 	struct module *owner = tw->tw_prot->owner;
- 	twsk_destructor((struct sock *)tw);
--#ifdef SOCK_REFCNT_DEBUG
-+#ifdef CONFIG_SOCK_REFCNT_DEBUG
- 	pr_debug("%s timewait_sock %p released\n", tw->tw_prot->name, tw);
- #endif
- 	kmem_cache_free(tw->tw_prot->twsk_prot->twsk_slab, tw);
--- 
-2.37.3
-
+Best regards,
+Mrs Louisa Besson
