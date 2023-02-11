@@ -2,157 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BBB6932EC
-	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 18:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5349693329
+	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 20:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbjBKRzV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Feb 2023 12:55:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
+        id S229503AbjBKTAT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Feb 2023 14:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjBKRzV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Feb 2023 12:55:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E21B3;
-        Sat, 11 Feb 2023 09:55:19 -0800 (PST)
+        with ESMTP id S229496AbjBKTAS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Feb 2023 14:00:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0A2199E0;
+        Sat, 11 Feb 2023 11:00:17 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 43403B80966;
-        Sat, 11 Feb 2023 17:55:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EC92C433EF;
-        Sat, 11 Feb 2023 17:55:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676138116;
-        bh=Cimg2dplNjIVjTVkvDDsDJ8LuO9N1uHdmJusLzhU7z8=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=SB8VKgJ7x06WR/kTHhb1EVQZRzuNIWs3f3IpE4j3fUYVpvpfODIfP/nyYK3n2utRZ
-         xvxNqtreM5BDIW2MhK+qIoCCODNyA+4GFBhAOvXSWzRA2hmWfeOxa4LD0bY7CW5cnN
-         /fGH5zbSMA2WFBDJ4nrY3+J04TCQHh3YBqho6Z8sCYHArqjGBTWrLEK8OVI5HyvXSe
-         qdhGjoMbaHuKI8ZBz6a/Bl6kPjUwVefxsyHAtZEOdj03XUbvvqg6NB5zZ92IqK8bXS
-         Tz6ZOglY12j65Nyyhq5WHRcGbzpf3+GKf+l/R62CUdaYKNGhye23TfhHDWDi89fJ8L
-         TvXoMM6f0FhtA==
-Date:   Sat, 11 Feb 2023 09:55:09 -0800
-From:   Kees Cook <kees@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>
-CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Haowen Bai <baihaowen@meizu.com>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4455860B63;
+        Sat, 11 Feb 2023 19:00:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B82C0C433EF;
+        Sat, 11 Feb 2023 19:00:13 +0000 (UTC)
+Date:   Sat, 11 Feb 2023 14:00:11 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     John Stultz <jstultz@google.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Network Development <netdev@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] bpf: Deprecate "data" member of bpf_lpm_trie_key
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAADnVQJed84rqugpNDY2u1r89QEOyAMMKZHLHefX=GRWZ3haoQ@mail.gmail.com>
-References: <20230209192337.never.690-kees@kernel.org> <CAEf4BzZXrf48wsTP=2H2gkX6T+MM0B45o0WNswi50DQ_B-WG4Q@mail.gmail.com> <63e5521a.170a0220.297d7.3a80@mx.google.com> <CAADnVQKsB2n0=hShYpYnTr5yFYRt5MX2QMWo3V9SB9JrM6GhTg@mail.gmail.com> <63e561d8.a70a0220.250aa.3eb9@mx.google.com> <CAADnVQJed84rqugpNDY2u1r89QEOyAMMKZHLHefX=GRWZ3haoQ@mail.gmail.com>
-Message-ID: <E8CE1CDC-27F2-4F14-9AFF-3AE409B82F6C@kernel.org>
+        bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Qais Yousef <qyousef@google.com>,
+        Daniele Di Proietto <ddiproietto@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 7/7] tools/testing/selftests/bpf: replace open-coded
+ 16 with TASK_COMM_LEN
+Message-ID: <20230211140011.4f15a633@gandalf.local.home>
+In-Reply-To: <20230208213343.40ee15a5@gandalf.local.home>
+References: <20211120112738.45980-1-laoar.shao@gmail.com>
+        <20211120112738.45980-8-laoar.shao@gmail.com>
+        <Y+QaZtz55LIirsUO@google.com>
+        <CAADnVQ+nf8MmRWP+naWwZEKBFOYr7QkZugETgAVfjKcEVxmOtg@mail.gmail.com>
+        <CANDhNCo_=Q3pWc7h=ruGyHdRVGpsMKRY=C2AtZgLDwtGzRz8Kw@mail.gmail.com>
+        <20230208212858.477cd05e@gandalf.local.home>
+        <20230208213343.40ee15a5@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On February 9, 2023 2:01:15 PM PST, Alexei Starovoitov <alexei=2Estarovoito=
-v@gmail=2Ecom> wrote:
->On Thu, Feb 9, 2023 at 1:12 PM Kees Cook <keescook@chromium=2Eorg> wrote:
->>
->> On Thu, Feb 09, 2023 at 12:50:28PM -0800, Alexei Starovoitov wrote:
->> > On Thu, Feb 9, 2023 at 12:05 PM Kees Cook <keescook@chromium=2Eorg> w=
-rote:
->> > >
->> > > On Thu, Feb 09, 2023 at 11:52:10AM -0800, Andrii Nakryiko wrote:
->> > > > Do we need to add a new type to UAPI at all here? We can make thi=
-s new
->> > > > struct internal to kernel code (e=2Eg=2E struct bpf_lpm_trie_key_=
-kern) and
->> > > > point out that it should match the layout of struct bpf_lpm_trie_=
-key=2E
->> > > > User-space can decide whether to use bpf_lpm_trie_key as-is, or i=
-f
->> > > > just to ensure their custom struct has the same layout (I see som=
-e
->> > > > internal users at Meta do just this, just make sure that they hav=
-e
->> > > > __u32 prefixlen as first member)=2E
->> > >
->> > > The uses outside the kernel seemed numerous enough to justify a new=
- UAPI
->> > > struct (samples, selftests, etc)=2E It also paves a single way forw=
-ard
->> > > when the userspace projects start using modern compiler options (e=
-=2Eg=2E
->> > > systemd is usually pretty quick to adopt new features)=2E
->> >
->> > I don't understand how the new uapi struct bpf_lpm_trie_key_u8 helps=
-=2E
->> > cilium progs and progs/map_ptr_kern=2Ec
->> > cannot do s/bpf_lpm_trie_key/bpf_lpm_trie_key_u8/=2E
->> > They will fail to build, so they're stuck with bpf_lpm_trie_key=2E
->>
->> Right -- I'm proposing not changing bpf_lpm_trie_key=2E I'm proposing
->> _adding_ bpf_lpm_trie_key_u8 for new users who will be using modern
->> compiler options (i=2Ee=2E where "data[0]" is nonsense)=2E
->>
->> > Can we do just
->> > struct bpf_lpm_trie_key_kern {
->> >   __u32   prefixlen;
->> >   __u8    data[];
->> > };
->> > and use it in the kernel?
->>
->> Yeah, I can do that if that's preferred, but it leaves userspace hangin=
-g
->> when they eventually trip over this in their code when they enable
->> -fstrict-flex-arrays=3D3 too=2E
->>
->> > What is the disadvantage?
->>
->> It seemed better to give a working example of how to migrate this code=
-=2E
->
->I understand and agree with intent, but I'm still missing
->how you're going to achieve this migration=2E
->bpf_lpm_trie_key_u8 doesn't provide a migration path to cilium progs
->and pretty much all bpf progs that use LPM map=2E
->Sure, one can change the user space part, like you did in test_lpm_map=2E=
-c,
->but it doesn't address the full scope=2E
->imo half way is worse than not doing it=2E
+On Wed, 8 Feb 2023 21:33:43 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Maybe I'm missing something, but if a program isn't building with -fstrict=
--flex-arrays=3D3, it can keep on using struct bpf_lpm_trie_key as before=2E=
- If/when it starts using -fsfa, if can use struct bpf_lpm_trie_key in compo=
-site structs as a header just like before, but if it has places using the "=
-data" member as an array of u8, it can switch to something using struct bpf=
-_lpm_trie_key_u8, either directly or as a union with whatever ever struct t=
-hey have=2E (And this replacement is what I did for all the samples/selftes=
-ts=2E)
+> OK, so it doesn't break perf, trace-cmd and rasdaemon, because the enum is
+> only needed in the print_fmt part. It can handle it in the field portion.
+> 
+> That is:
+> 
+> 
+> system: sched
+> name: sched_switch
+> ID: 285
+> format:
+> 	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
+> 	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
+> 	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
+> 	field:int common_pid;	offset:4;	size:4;	signed:1;
+> 
+> 	field:char prev_comm[TASK_COMM_LEN];	offset:8;	size:16;	signed:0;
+>                              ^^^^^^^^^^^^^^                          ^^
+>                             is ignored                             is used
+> 
+> 
+> 	field:pid_t prev_pid;	offset:24;	size:4;	signed:1;
+> 	field:int prev_prio;	offset:28;	size:4;	signed:1;
+> 	field:long prev_state;	offset:32;	size:8;	signed:1;
+> 	field:char next_comm[TASK_COMM_LEN];	offset:40;	size:16;	signed:0;
+> 	field:pid_t next_pid;	offset:56;	size:4;	signed:1;
+> 	field:int next_prio;	offset:60;	size:4;	signed:1;
+> 
+> print fmt: "prev_comm=%s prev_pid=%d prev_prio=%d prev_state=%s%s ==> next_comm=%s next_pid=%d next_prio=%d", REC->prev_comm, REC->prev_pid, REC->prev_prio, (REC->prev_state & ((((0x00000000 | 0x00000001 | 0x00000002 | 0x00000004 | 0x00000008 | 0x00000010 | 0x00000020 | 0x00000040) + 1) << 1) - 1)) ? __print_flags(REC->prev_state & ((((0x00000000 | 0x00000001 | 0x00000002 | 0x00000004 | 0x00000008 | 0x00000010 | 0x00000020 | 0x00000040) + 1) << 1) - 1), "|", { 0x00000001, "S" }, { 0x00000002, "D" }, { 0x00000004, "T" }, { 0x00000008, "t" }, { 0x00000010, "X" }, { 0x00000020, "Z" }, { 0x00000040, "P" }, { 0x00000080, "I" }) : "R", REC->prev_state & (((0x00000000 | 0x00000001 | 0x00000002 | 0x00000004 | 0x00000008 | 0x00000010 | 0x00000020 | 0x00000040) + 1) << 1) ? "+" : "", REC->next_comm, REC->next_pid, REC->next_prio
+> 
+>    ^^^^^^^
+> 
+> Is what requires the conversions. So I take that back. It only breaks
+> perfetto, and that's because it writes its own parser and doesn't use
+> libtraceevent.
 
+Actually, there are cases that this needs to be a number, as b3bc8547d3be6
+("tracing: Have TRACE_DEFINE_ENUM affect trace event types as well") made
+it update fields as well as the printk fmt.
 
+I think because libtraceevent noticed that it was a "char" array, it just
+defaults to "size". But this does have meaning for all other types, and I
+can see other parsers requiring that.
 
---=20
-Kees Cook
+-- Steve
