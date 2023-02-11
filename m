@@ -2,125 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74325692B7F
-	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 00:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CA0692BD9
+	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 01:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbjBJXlD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 18:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
+        id S229667AbjBKAPr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 19:15:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbjBJXlC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 18:41:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01143C78D
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 15:40:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4F2B3B8261A
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 23:40:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0F5B9C433D2;
-        Fri, 10 Feb 2023 23:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676072421;
-        bh=3U8sq/QHpK9mmvkIONCiKcShpVmmqe44OvWijyP5XPg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Rd8aVXX2G/kOBTX05FyPuOC3Lv4sQMFP+E2kewCf4xqmsEzYFpXmCB2mFWy2qh4uy
-         kOxNvkCmgXK2sDZvqwFs0YGBBxv5bNIIZnke+XLKblnAplDppURhZdIHA1EvBPvukM
-         Kfn6wTmEdSxOjq8IbAl7aW8HGQUc/7GUrGyC3aNQUyaI+nI98g3717u3h5OK0lj9Tj
-         FxH25uMcYUdjfG6Pf7OxvfrarLGrbWMG1Xp4QU6sSixe9HP6xlN1QnVzX45R2WKVEJ
-         VN0d50YjACfaN2g7zqMrrvurQe6LdiTSt0yStQjtCwoAb7MvFkQNUuTVSkNNBbhQ85
-         UJdUzEy4HmlqA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E28DDE21EC5;
-        Fri, 10 Feb 2023 23:40:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229677AbjBKAPq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 19:15:46 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2609282197
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 16:15:44 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id 65so2586382iou.3
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 16:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qbkcBCzqB6Bhnw08ObqB4UKeNk62tom/v69d4G2QaHo=;
+        b=ADJ+NDsgKyHyN8uoAdicRC4TZYYcp9IncDhQqJ/pK3xuapGF2kXR16aWyA3vBiCQp0
+         /sDAp9j9LtU1F707Vz870jS59vZ+QIvkPxitLoXLcGtzQhM5XeXyQjnpQRM1PF81gN39
+         qL/KvKn0G3q6tNs1860AZIEcQM0srawlAwoiA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qbkcBCzqB6Bhnw08ObqB4UKeNk62tom/v69d4G2QaHo=;
+        b=UkuEvSSKH959vleGWV5cu9Y4rW75ZToutcEx2iu+ooeVv0RyCG08H3uv3diuR9apGK
+         Z/KInG19hRiFkU/MzzztVmulq7Q5n/IsPMt6e//GVxAOUvrYM6qUsaZmVdSe5pscbbe2
+         NKfzQEKC8McGA4BuaQdwMcvSr2BS3TUc5wlOsWTKI68uTe/ZYgqg36ypzkU/3mUEFnLc
+         swKfckWg6JFOrszqK4sf/Uo6qJGYiTZvFXyjWxtr2h+LwLqD1+r1Xxsc4aq5PdJbI6W+
+         MTCrZmQXADOKJjf0g58aNlucfzbqCW1g6UQCea6gJ+KX+OEVwij9CbgwICvLUrULmJF8
+         ceJA==
+X-Gm-Message-State: AO0yUKVSrY9GEuO+Hhhxi4ad1qUIUj7d2aO6/ak2VGphreiW0JWE5pdP
+        hbKSdBkqG3b46QjIi/9l1B3Bmw==
+X-Google-Smtp-Source: AK7set/LYZ0DlptJM/8MELucz4/oGHkq3EnrHPTYhMfuT7mKai/9dPxEnYLdjBR81HUtP0VXeg3Zow==
+X-Received: by 2002:a5d:9046:0:b0:71d:63e5:7b5f with SMTP id v6-20020a5d9046000000b0071d63e57b5fmr11461339ioq.2.1676074543415;
+        Fri, 10 Feb 2023 16:15:43 -0800 (PST)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id n10-20020a5ed90a000000b0073a312aaae5sm1725931iop.36.2023.02.10.16.15.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Feb 2023 16:15:42 -0800 (PST)
+Message-ID: <dae27584-faf7-f132-1272-cb21248e5fa9@linuxfoundation.org>
+Date:   Fri, 10 Feb 2023 17:15:41 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 00/34] selftests: Fix incorrect kernel headers search path
+Content-Language: en-US
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, linuxppc-dev@lists.ozlabs.org
+References: <20230127135755.79929-1-mathieu.desnoyers@efficios.com>
+ <560824bd-da2d-044c-4f71-578fc34a47cd@linuxfoundation.org>
+ <799b87d9-af19-0e6a-01b7-419b4893a0df@linuxfoundation.org>
+ <975995d6-366a-88e3-2321-f0728f7e22a7@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <975995d6-366a-88e3-2321-f0728f7e22a7@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 00/16] selftests/bpf: Add Memory Sanitizer support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167607242092.8376.16236928310453239357.git-patchwork-notify@kernel.org>
-Date:   Fri, 10 Feb 2023 23:40:20 +0000
-References: <20230210001210.395194-1-iii@linux.ibm.com>
-In-Reply-To: <20230210001210.395194-1-iii@linux.ibm.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Fri, 10 Feb 2023 01:11:54 +0100 you wrote:
-> v1: https://lore.kernel.org/bpf/20230208205642.270567-1-iii@linux.ibm.com/
-> v1 -> v2:
-> - Apply runqslower's EXTRA_CFLAGS and EXTRA_LDFLAGS unconditionally.
-> - Use u64 for uretprobe_byname2_rc.
-> - Use BPF_UPROBE() instead of PT_REGS_xxx().
-> - Use void * instead of char * for pointer arithmetic.
-> - Rename libbpf_mark_defined() to __libbpf_mark_mem_written(), add
->   convenience wrappers.
-> - Add a comment about defined(__has_feature) &&
->   __has_feature(memory_sanitizer).
-> - Extract is_percpu_bpf_map_type().
-> - Introduce bpf_get_{map,prog,link,btf}_info_by_fd() and convert all
->   code to use them. If it's too early for that, in particular for
->   samples and perf, the respective patches can be dropped.
-> - Unpoison infos returned by these functions, paying attention to
->   potentially missing fields. Use macros to reduce boilerplate.
-> - Move capget() unpoisoning to LLVM [5].
-> - With that, only a few cases remain where data needs to be
->   unpoisoned in selftests.
+On 2/3/23 18:06, Shuah Khan wrote:
+> On 2/1/23 19:07, Shuah Khan wrote:
+>> Hi Mathieu,
+>>
+>> On 1/30/23 15:29, Shuah Khan wrote:
+>>> On 1/27/23 06:57, Mathieu Desnoyers wrote:
+>>>> Hi,
+>>>>
+>>>> This series fixes incorrect kernel header search path in kernel
+>>>> selftests.
+>>>>
+>>>> Near the end of the series, a few changes are not tagged as "Fixes"
+>>>> because the current behavior is to rely on the kernel sources uapi files
+>>>> rather than on the installed kernel header files. Nevertheless, those
+>>>> are updated for consistency.
+>>>>
+>>>> There are situations where "../../../../include/" was added to -I search
+>>>> path, which is bogus for userspace tests and caused issues with types.h.
+>>>> Those are removed.
+>>>>
+>>
+>> Thanks again for taking care of this. I did out of tree build testing on
+>> x86 on linux-kselftest next with these patches below. I haven't seen
+>> any problems introduced by the patch set.
+>>
+>>>>    selftests: dma: Fix incorrect kernel headers search path
+>> This one needs a change and I will send a patch on top of yours.
+>> Even with that this test depends on unexported header from the
+>> repo and won't build out of tree. This is not related to your
+>> change.
+>>
+>>>>    selftests: mount_setattr: Fix incorrect kernel headers search path
+>> This one fails to build with our without patch - an existing error.
+>>
+>> I have to do cross-build tests on arm64 and other arch patches still.
+>> This will happen later this week.
 > 
-> [...]
+> arm64, s390 patches look good.
+> 
 
-Here is the summary with links:
-  - [bpf-next,v2,01/16] selftests/bpf: Quote host tools
-    https://git.kernel.org/bpf/bpf-next/c/795deb3f9747
-  - [bpf-next,v2,02/16] tools: runqslower: Add EXTRA_CFLAGS and EXTRA_LDFLAGS support
-    https://git.kernel.org/bpf/bpf-next/c/585bf4640ebe
-  - [bpf-next,v2,03/16] selftests/bpf: Split SAN_CFLAGS and SAN_LDFLAGS
-    https://git.kernel.org/bpf/bpf-next/c/0589d16475ae
-  - [bpf-next,v2,04/16] selftests/bpf: Forward SAN_CFLAGS and SAN_LDFLAGS to runqslower and libbpf
-    https://git.kernel.org/bpf/bpf-next/c/24a87b477c65
-  - [bpf-next,v2,05/16] selftests/bpf: Attach to fopen()/fclose() in uprobe_autoattach
-    https://git.kernel.org/bpf/bpf-next/c/907300c7a66b
-  - [bpf-next,v2,06/16] selftests/bpf: Attach to fopen()/fclose() in attach_probe
-    https://git.kernel.org/bpf/bpf-next/c/202702e890a4
-  - [bpf-next,v2,07/16] libbpf: Fix alen calculation in libbpf_nla_dump_errormsg()
-    https://git.kernel.org/bpf/bpf-next/c/17bcd27a08a2
-  - [bpf-next,v2,08/16] libbpf: Introduce bpf_{btf,link,map,prog}_get_info_by_fd()
-    (no matching commit)
-  - [bpf-next,v2,09/16] libbpf: Use bpf_{btf,link,map,prog}_get_info_by_fd()
-    (no matching commit)
-  - [bpf-next,v2,10/16] bpftool: Use bpf_{btf,link,map,prog}_get_info_by_fd()
-    (no matching commit)
-  - [bpf-next,v2,11/16] perf: Use bpf_{btf,link,map,prog}_get_info_by_fd()
-    (no matching commit)
-  - [bpf-next,v2,12/16] samples/bpf: Use bpf_{btf,link,map,prog}_get_info_by_fd()
-    (no matching commit)
-  - [bpf-next,v2,13/16] selftests/bpf: Use bpf_{btf,link,map,prog}_get_info_by_fd()
-    (no matching commit)
-  - [bpf-next,v2,14/16] libbpf: Factor out is_percpu_bpf_map_type()
-    (no matching commit)
-  - [bpf-next,v2,15/16] libbpf: Add MSan annotations
-    (no matching commit)
-  - [bpf-next,v2,16/16] selftests/bpf: Add MSan annotations
-    (no matching commit)
+I am seeing problem with selftests/dma and selfttests/user_events.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+1. selftests: dma: Fix incorrect kernel headers search path
+
+dma test no longer builds. This test depends on linux/map_benchmark.h
+which is not included in uapi
+
+The order of include directorries -isystem followed by installed kernel
+headers, breaks the test build with the change to use KHDR_INCLUDES
+
+
+I am going to revert this patch for now and figure a longer term fix.
+The problem is the dependency on a non-uapi file: linux/map_benchmark.h
+
+Fixes: 8ddde07a3d28 ("dma-mapping: benchmark: extract a common
+header file for map_benchmark definition") change added this
+dependency on including linux/map_benchmark.h
+
+Christoph, Do you see this map_benchmark.h as part of uapi?
+
+
+2. selftests: user_events: Fix incorrect kernel headers search path
+This one depends on linux/user_events.h which has bee removed from
+uapi in this commit:
+
+commit 5cfff569cab8bf544bab62c911c5d6efd5af5e05
+Author: Steven Rostedt (Google) <rostedt@goodmis.org>
+Date:   Fri Apr 1 14:39:03 2022 -0400
+
+     tracing: Move user_events.h temporarily out of include/uapi
+
+This isn't a regression from 6.2 - this test stopped building once
+user_events.h has been removed from uapi. I will add a note that
+this test depends on a non-uapi header and can't be built at the
+moment.
+
+thanks,
+-- Shuah
+
+
+
 
 
