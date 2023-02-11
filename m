@@ -2,76 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4E4692EF6
-	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 08:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305CF692EF8
+	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 08:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbjBKHJA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Feb 2023 02:09:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        id S229558AbjBKHKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Feb 2023 02:10:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjBKHI7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Feb 2023 02:08:59 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E4232CF6
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 23:08:58 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id x40so11672135lfu.12
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 23:08:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gG2bwUXIP61zGd1tmGDPnIS3wZmxKRhgu2x3mZQdWR8=;
-        b=HIJaNLDxrEQJn/Mqr29kpolx4DCKIqK6OyB8qYnkh3GHbNSegVbE1oVY1P3UIHSe+y
-         uthXqPiPs4/AGeZV3h2hHlHAezAm14ODnU1H5a0O2uAuxT9YxcpQu/f+6bUaaG6yO4Fd
-         /fLqecGrWNmjB/RgEJn6YVV9ycf/ZIN2xAoGSKcXNm+rfUzHfiPgiD5RgQSOdMjRVgFz
-         nZYOf9S2NTtMWM7Sb3IDdtvm7Y7x++EQHrFauBsIJdajIjxL20xhc6TXr9Q9MIfD0L2s
-         ZyUFOElgn9YGNVKDAxmakBdukPnvTEzVC1iSKHL4IVM8S1hEMZlr5O6jmeNAKBOrjYRI
-         GpBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gG2bwUXIP61zGd1tmGDPnIS3wZmxKRhgu2x3mZQdWR8=;
-        b=TDrNi0R/l/j8MoDJlRkYj7nyNwKKoBivc7iHUZkJ5+pSy6PAMD5uDtqI1BGreJKRKD
-         n11dQrPlkekxotCX7pDxj2lHyxFB7U83vXo8WP//DCPDO+RGG94aa0Rrne59kIi/wdHW
-         4lFWUCEbohceYeH+ZNGimHutmSM4R03X1eGc8UNO+mhc3jlkKREh92YDaGvv4wpzQlDp
-         o2fPe9eiybR0s+V1o1jM5ttY1GA7/tWXBTeyl9bwm19BcX6t/r9Q9U6uNXgykhArF6qe
-         xYkgqCKhWHxc1M98Ix/QqoCeJv82zlSEwUSEUWktVb/BoQBT3QBNQmJuy09OZuoP69Sx
-         qa2g==
-X-Gm-Message-State: AO0yUKUKxJzTU0oHEKEMABYWVS5YRVsUyUNdjdzju0CPux5RwPx6QTau
-        ymDzxTcH2Zw4xrrdcidsDq49u/vstAbNMOQmI34=
-X-Google-Smtp-Source: AK7set+7Uhk+oieBYYlXpJFntdCBB4LOp2KtrZ7AbtNB0jrXPjfdjHnnumsIfynDMXTj+9lJTS/jZttpNM+FzYO8mTg=
-X-Received: by 2002:ac2:4a64:0:b0:4d8:580b:2f23 with SMTP id
- q4-20020ac24a64000000b004d8580b2f23mr2945961lfp.132.1676099337012; Fri, 10
- Feb 2023 23:08:57 -0800 (PST)
+        with ESMTP id S229468AbjBKHKV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Feb 2023 02:10:21 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17E532CF6;
+        Fri, 10 Feb 2023 23:10:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 522C860A4A;
+        Sat, 11 Feb 2023 07:10:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9A665C433D2;
+        Sat, 11 Feb 2023 07:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676099418;
+        bh=IYS1UXEO949wArIgsINV5rvcHrLkfM5cJb+SmCbKbNQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=umY86AB+wKf1J1/6UxDpMDn9AlI7GSQ3rBUJM7bEi9PlHfypfObSTswAiVI5/TEXw
+         9mAbkPULSOM3rHA1GDLSyNXB+/KUyS1LvHZ/MlsXOQPYLyrBq6zw7f/laBFFMO18yu
+         mPn39/vQRRbMnWu1vJyihtpBHnq4AZuxn2E/O6s4uPftzgS/QhqiCOeV211rrzVEzE
+         essChqKwfnA2gfwrXgA+naR41bkJf7U+qu0j3KbVg5LDgDWHubjAips6gFE5GTlZiw
+         MornHY3KRSrrokdDqguozFg6+whdbnMwYm8OfBT1KO06/d1kLyJfRHiWS9VVEaY5W+
+         8hbUNrLEA02zA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7BEF3E55F00;
+        Sat, 11 Feb 2023 07:10:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:a05:651c:1a29:0:0:0:0 with HTTP; Fri, 10 Feb 2023 23:08:56
- -0800 (PST)
-Reply-To: loubes1212@gmail.com
-From:   Mrs Louisa Besson <78055889a@gmail.com>
-Date:   Sat, 11 Feb 2023 07:08:56 +0000
-Message-ID: <CAEMAy4FirZ7MmM0pStzJMYEcMs1eKT6roQ2c5hOZ5=BQs_TFfw@mail.gmail.com>
-Subject: Best regards,
-To:     loubes1212@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_60,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/4] bpf, mm: introduce cgroup.memory=nobpf 
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167609941850.20060.1828725334029145544.git-patchwork-notify@kernel.org>
+Date:   Sat, 11 Feb 2023 07:10:18 +0000
+References: <20230210154734.4416-1-laoar.shao@gmail.com>
+In-Reply-To: <20230210154734.4416-1-laoar.shao@gmail.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     tj@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, akpm@linux-foundation.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello my friend,
+Hello:
 
-How are you doing today, I am Mrs Louisa from France, I am writing to
-you from my sick bed. I urgently need someone I can trust with a
-donation for charity. I will contact you with more details about the
-donation immediately I read from you, have a great day ahead.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Best regards,
-Mrs Louisa Besson
+On Fri, 10 Feb 2023 15:47:30 +0000 you wrote:
+> The bpf memory accouting has some known problems in contianer
+> environment,
+> 
+> - The container memory usage is not consistent if there's pinned bpf
+>   program
+>   After the container restart, the leftover bpf programs won't account
+>   to the new generation, so the memory usage of the container is not
+>   consistent. This issue can be resolved by introducing selectable
+>   memcg, but we don't have an agreement on the solution yet. See also
+>   the discussions at https://lwn.net/Articles/905150/ .
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2,1/4] mm: memcontrol: add new kernel parameter cgroup.memory=nobpf
+    https://git.kernel.org/bpf/bpf-next/c/b6c1a8af5b1e
+  - [bpf-next,v2,2/4] bpf: use bpf_map_kvcalloc in bpf_local_storage
+    https://git.kernel.org/bpf/bpf-next/c/ddef81b5fd1d
+  - [bpf-next,v2,3/4] bpf: allow to disable bpf map memory accounting
+    https://git.kernel.org/bpf/bpf-next/c/ee53cbfb1ebf
+  - [bpf-next,v2,4/4] bpf: allow to disable bpf prog memory accounting
+    https://git.kernel.org/bpf/bpf-next/c/bf3965082491
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
