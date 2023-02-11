@@ -2,115 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22885693280
-	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 17:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0F2693298
+	for <lists+bpf@lfdr.de>; Sat, 11 Feb 2023 17:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbjBKQez (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Feb 2023 11:34:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
+        id S229687AbjBKQv2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Feb 2023 11:51:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjBKQey (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Feb 2023 11:34:54 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D866426848;
-        Sat, 11 Feb 2023 08:34:53 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id fi26so7866902edb.7;
-        Sat, 11 Feb 2023 08:34:53 -0800 (PST)
+        with ESMTP id S229477AbjBKQv2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Feb 2023 11:51:28 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E61C5BA2
+        for <bpf@vger.kernel.org>; Sat, 11 Feb 2023 08:51:23 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id n13so5920044wmr.4
+        for <bpf@vger.kernel.org>; Sat, 11 Feb 2023 08:51:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GdQ9tak96Dy9uB/Zmg/NLNczt6OnEeM92nMXwoZd93E=;
-        b=j/XocirCN1GQGaNpx7o9M7HdBkAiQZEPUJT8heh9E1WS2ZPPYaPbHYYfXeu6CqaN78
-         jYpjZTMnszG7xIqAayZcmFWDHFBiSafIfAz3vMEN+d2jnc68yseajI7qUqc0OmpsCRW9
-         FeHccKg+ukNHvZJ6e7iskwxsd/U3aoNJpNJh1Dw5gRYZXy5NS8zSvNTSvQZd1apce5K3
-         Ql3SgzUwBZZr++Cf7KMhg7caMFeOCxuZVsKdwI20iSNbQ1GNLvPdTpKCB3PRvWp6zCNv
-         gouUaqLR4LhFZKaxbLfblKAymiajjiCX41NSQouM2qTd6Armpi3DOI5QehRy1zYbvOqK
-         Yw7Q==
+        d=layalina-io.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V3dLOUyD2qLLZeL+RCBFqBDU+r6K7Onh/Gy2tm5yVZc=;
+        b=ER9ivdRQA46j70AsRtLo3uCWnNMEK1js+A1odjy8Q0Z3FMBTW+wMfXjciKmV+z6gW1
+         k8VkV1E+uBYcsO8SvacDa6fyImvMFIzgtocB2MjOTLT0R0EaDu9jszSbGiTeXetIw81K
+         yHCVKShSA2+RdAwVEqdQLXvrsVSYxRbps4YjQL3gFfW8Q12WxO1WoMpit3RYvCcLYLJw
+         wd1I/Gd+PbRPUMBJ4svv5nAc4RiZRM74ZEd5KQyXsUAnhJ2KD1xN0Ya2j6VrIyGpXSy/
+         9L/oFg6Smvz+NKUvzRDYsgn9WBqBhOUD2cfoTgFSfBopcysBA3dBAWTc77y6jTPjPvy4
+         HueA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GdQ9tak96Dy9uB/Zmg/NLNczt6OnEeM92nMXwoZd93E=;
-        b=q9db780jT+HtzFYNd82qgcgAMMmbcpeHpaq6xMw/QcLWGuNTaEheVzRkBDGQGnrynE
-         vgv0pHJ/+uPNztdTccIym+LUvIFFf0fWHV/43hlEKRShivySLcFWSX06S8vrf0AxnoOL
-         7XWLD02BVnDT19k0PLqbdUgUD99QXVBBK49uF/ha6MB+yUV6YreN3iBLVW2K07C3OFo7
-         zZnOWgbPK9OQC1npWwSdLNnZYvByOwyx8WNMwnZhKNNqwDa/SQUm4vCAQLf8AvvzKUZg
-         pDIMzI5V2srEcl54pvNasScPuAfim5RJ9asfI1vyHXMcInMibqeFd22c6e3+uRbGMcAP
-         5elg==
-X-Gm-Message-State: AO0yUKUkwp7YvXAy7ulDSeqWFVcHzw2GiLwufR3hsG4nDrxESeQfdfvQ
-        /32pTT2aLpkcrAEb9HzY7Wt7DaOF4jYftavu/ms=
-X-Google-Smtp-Source: AK7set/udMjRCmrE595y7OkiYi0r2K55VF2upVtW7pM9hXpaRlhrxkWzwICuC73Ho/bh+qt0NPmFgM2z9ozhamsDIJk=
-X-Received: by 2002:a50:9f65:0:b0:4ac:b38f:51a1 with SMTP id
- b92-20020a509f65000000b004acb38f51a1mr1307807edf.6.1676133292290; Sat, 11 Feb
- 2023 08:34:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com> <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com> <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com> <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
- <20230210163258.phekigglpquitq33@apollo> <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
- <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com> <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
-In-Reply-To: <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 11 Feb 2023 08:34:41 -0800
-Message-ID: <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V3dLOUyD2qLLZeL+RCBFqBDU+r6K7Onh/Gy2tm5yVZc=;
+        b=MXTHJbVQWn/AFRJxYnjG/g45JOCjbAIbMTRIIiinTevJOy8QqItkKeuRd8g8LV7uCk
+         FNxdpTB+m0ZrtvV7L+FLyexBumryIsRXLxjFi8Keci7FjLB0GB7K5qksze2Lp11M6/Gn
+         eRJI4GZGCbuexW3hzNBZ41vgzDjRNpQ1co5HXhjB8DJZb7cCe9qlABWn6wNsT5zAFOte
+         sBkpllDtE76ZIQ0JWNl4Jw6nsz2OdMo/D4OBTa06cbwloJHjQXNuA6a1ilzcmqhKHX8v
+         e4VZAG+/TQbSf/q/BRwjhGIyWR2tBzmDZNmFc8uoAdw2nLoqfl9IgvlgOPPojH1CilF5
+         r/FQ==
+X-Gm-Message-State: AO0yUKXsTiSN+HDrjFSk/bnv4SjUK1Jx10HEzR766XeMcOqdDLGg1LLw
+        LimaLbTUvKV5ZDZfOjak0FmqSKFSaieVUoiB
+X-Google-Smtp-Source: AK7set/CFEhOT8NQgm8Y1FA7us6RejO5nTqrWa3aLjIDDJhY7POSdEi1Rr+Jp4XzmhMfDx7bAQd+FA==
+X-Received: by 2002:a05:600c:331c:b0:3df:ee43:860b with SMTP id q28-20020a05600c331c00b003dfee43860bmr15481946wmp.23.1676134282119;
+        Sat, 11 Feb 2023 08:51:22 -0800 (PST)
+Received: from airbuntu (host86-163-35-10.range86-163.btcentralplus.com. [86.163.35.10])
+        by smtp.gmail.com with ESMTPSA id r18-20020a05600c459200b003db03725e86sm9729083wmo.8.2023.02.11.08.51.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Feb 2023 08:51:21 -0800 (PST)
+Date:   Sat, 11 Feb 2023 16:51:20 +0000
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        John Stultz <jstultz@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        David Hildenbrand <david@redhat.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Qais Yousef <qyousef@google.com>,
+        Daniele Di Proietto <ddiproietto@google.com>
+Subject: Re: [PATCH v2 7/7] tools/testing/selftests/bpf: replace open-coded
+ 16 with TASK_COMM_LEN
+Message-ID: <20230211165120.byivmbfhwyegiyae@airbuntu>
+References: <20211120112738.45980-1-laoar.shao@gmail.com>
+ <20211120112738.45980-8-laoar.shao@gmail.com>
+ <Y+QaZtz55LIirsUO@google.com>
+ <CAADnVQ+nf8MmRWP+naWwZEKBFOYr7QkZugETgAVfjKcEVxmOtg@mail.gmail.com>
+ <CANDhNCo_=Q3pWc7h=ruGyHdRVGpsMKRY=C2AtZgLDwtGzRz8Kw@mail.gmail.com>
+ <08e1c9d0-376f-d669-6fe8-559b2fbc2f2b@efficios.com>
+ <CALOAHbBsmajStJ8TrnqEL_pv=UOt-vv0CH30EqThVq=JYXfi8A@mail.gmail.com>
+ <Y+UCxSktKM0CzMlA@e126311.manchester.arm.com>
+ <CALOAHbCdNZ21oBE2ii_XBxecYLSxM7Ws2LRMirdEOpeULiNk4g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CALOAHbCdNZ21oBE2ii_XBxecYLSxM7Ws2LRMirdEOpeULiNk4g@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 11, 2023 at 8:33 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Feb 10, 2023 at 5:10 PM Hou Tao <houtao@huaweicloud.com> wrote:
-> > >> Hou, are you plannning to resubmit this change? I also hit this while testing my
-> > >> changes on bpf-next.
-> > > Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
-> > > The former will take a long time to settle.
-> > > The latter is trivial.
-> > > To unblock yourself just add GFP_ZERO in an extra patch?
-> > Sorry for the long delay. Just find find out time to do some tests to compare
-> > the performance of bzero and ctor. After it is done, will resubmit on next week.
->
-> I still don't like ctor as a concept. In general the callbacks in the critical
-> path are guaranteed to be slow due to retpoline overhead.
-> Please send a patch to add GFP_ZERO.
->
-> Also I realized that we can make the BPF_REUSE_AFTER_RCU_GP flag usable
-> without risking OOM by only waiting for normal rcu GP and not rcu_tasks_trace.
-> This approach will work for inner nodes of qptrie, since bpf progs
-> never see pointers to them. It will work for local storage
-> converted to bpf_mem_alloc too. It wouldn't need to use its own call_rcu.
-> It's also safe without uaf caveat in sleepable progs and sleepable progs
+On 02/09/23 23:37, Yafang Shao wrote:
+> On Thu, Feb 9, 2023 at 10:28 PM Kajetan Puchalski
+> <kajetan.puchalski@arm.com> wrote:
+> >
+> > On Thu, Feb 09, 2023 at 02:20:36PM +0800, Yafang Shao wrote:
+> >
+> > [...]
+> >
+> > Hi Yafang,
+> >
+> > > Many thanks for the detailed analysis. Seems it can work.
+> > >
+> > > Hi John,
+> > >
+> > > Could you pls. try the attached fix ? I have verified it in my test env.
+> >
+> > I tested the patch on my environment where I found the issue with newer
+> > kernels + older Perfetto. The patch does improve things so that's nice.
+> 
+> Thanks for the test. I don't have Perfetto in hand, so I haven't
+> verify Perfetto.
 
-I meant 'safe with uaf caveat'.
-Safe because we wait for rcu_task_trace later before returning to kernel memory.
+FWIW, perfetto is not android specific and can run on normal linux distro setup
+(which I do but haven't noticed this breakage).
 
-> can use explicit bpf_rcu_read_lock() when they want to avoid uaf.
-> So please respin the set with rcu gp only and that new flag.
+It's easy to download the latest release (including for android though I never
+tried that) from github
+
+	https://github.com/google/perfetto/releases
+
+Kajetan might try to see if he can pick the latest version which IIUC contains
+a workaround.
+
+If this simple patch can be tweaked to make it work again against older
+versions that'd be nice though.
+
+HTH.
+
+
+Cheers
+
+--
+Qais Yousef
