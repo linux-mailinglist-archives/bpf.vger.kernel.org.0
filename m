@@ -2,294 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E26693870
-	for <lists+bpf@lfdr.de>; Sun, 12 Feb 2023 17:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF70693A5F
+	for <lists+bpf@lfdr.de>; Sun, 12 Feb 2023 23:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbjBLQV2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Feb 2023 11:21:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38678 "EHLO
+        id S229604AbjBLWAj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 12 Feb 2023 17:00:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjBLQV1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Feb 2023 11:21:27 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23846E95;
-        Sun, 12 Feb 2023 08:21:26 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31CFuCvM002147;
-        Sun, 12 Feb 2023 08:21:15 -0800
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3np98ujadh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 12 Feb 2023 08:21:15 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RyFBiU7Oc3rPRnnxlosn8N9X7iST/1MLUjHW+FOAF3RMyPZHEB4oEL2o3o93cjSkF61TR5ecLVoCM5VNUCJUcRqqmppQODFWYSAy1I71MvVQuuo8jY5X43tL9B2ZZfCEm7EiXPrFK4zGNyGx4ZY14860NQBf01gE2Rgg17pG3eECRDWNiTGFvKd5dcm7PDHy0QQHLhyV8izkLmO1VnW78TgqjUvF2qPTbTeeAw471aEYwaJ6FPMKnf6nVKZs26xTat3v9DgvVt30yJlzmVqXRgziCdzNQOdansSQ6ADZrCULp1DRvGXo1rdkWUIAbR0FxMiDicQIMREjr5YvVedgsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=S9lUEIApv8NLli5loieOAzPZ7H+2S77yKQOXCx0d9oI=;
- b=fJzpP5FmSrg6vVeZt3q+yPBufYG3b5lD1vN8IEWukR2AFCTfsQErQRJ4Zkexlt2s82h5PizQuIf6840W99V7sFSgImfoMGPYsPItGeSQZDyDEz7Bq8GUVIzCYLgIeXguRhfh5lGy7DLCkSxbyD90GUTvbcthHr4EfO6kEu+gjOHe4gEL8gkMra05Ln5GPI8a8mgkKgLYuJigjksRwQyC7ec1j5LAnw0uV/CDIZ6x9vzzglPSszOYiOW5kM0QbssWX0w+l7EAYWL9PXpWqz49qOdGOStzMrthf1GfEj5AOyMfVoGC0UzBxjdMOmC9K7PWfG5MsnTPabXnUIRmJX7e0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        with ESMTP id S229556AbjBLWAi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 12 Feb 2023 17:00:38 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D0BDBE4
+        for <bpf@vger.kernel.org>; Sun, 12 Feb 2023 14:00:36 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id m2so11688784plg.4
+        for <bpf@vger.kernel.org>; Sun, 12 Feb 2023 14:00:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S9lUEIApv8NLli5loieOAzPZ7H+2S77yKQOXCx0d9oI=;
- b=GIivKln6nEj77TGbR+gtFcQeNVNbLbvNf7aChc4F5NGtfjFrE1Y8XzJToWPyNuHx82zXvpGpbUN29BXRQrC2wDlkol53ZUal0DKy5H29N5UxUue3UOjjs7iiBoeacbdUQv3m3kHDlKva30xYaKm8FNsudQbe5LEiJ943NwRt9T4=
-Received: from PH0PR18MB4474.namprd18.prod.outlook.com (2603:10b6:510:ea::22)
- by DS0PR18MB5477.namprd18.prod.outlook.com (2603:10b6:8:162::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.23; Sun, 12 Feb
- 2023 16:21:12 +0000
-Received: from PH0PR18MB4474.namprd18.prod.outlook.com
- ([fe80::e6ca:f949:a109:b83e]) by PH0PR18MB4474.namprd18.prod.outlook.com
- ([fe80::e6ca:f949:a109:b83e%2]) with mapi id 15.20.6086.023; Sun, 12 Feb 2023
- 16:21:12 +0000
-From:   Hariprasad Kelam <hkelam@marvell.com>
-To:     Simon Horman <simon.horman@corigine.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        "jhs@mojatatu.com" <jhs@mojatatu.com>,
-        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
-        "jiri@resnulli.us" <jiri@resnulli.us>,
-        "saeedm@nvidia.com" <saeedm@nvidia.com>,
-        "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        "tariqt@nvidia.com" <tariqt@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "maxtram95@gmail.com" <maxtram95@gmail.com>,
-        Naveen Mamindlapalli <naveenm@marvell.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "hariprasad.netdev@gmail.com" <hariprasad.netdev@gmail.com>
-Subject: Re: [net-next Patch V4 3/4] octeontx2-pf: Refactor schedular queue
- alloc/free calls
-Thread-Topic: [net-next Patch V4 3/4] octeontx2-pf: Refactor schedular queue
- alloc/free calls
-Thread-Index: AQHZPv4FNS+AGWAAjECq6I+pSwUS4Q==
-Date:   Sun, 12 Feb 2023 16:21:12 +0000
-Message-ID: <PH0PR18MB447442487D0968D52D3030ACDEDC9@PH0PR18MB4474.namprd18.prod.outlook.com>
-References: <20230210111051.13654-1-hkelam@marvell.com>
- <20230210111051.13654-4-hkelam@marvell.com> <Y+Zdi48x+g/Ypre+@corigine.com>
-In-Reply-To: <Y+Zdi48x+g/Ypre+@corigine.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-rorf: true
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcaGtlbGFtXGFw?=
- =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
- =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctNDI1MTJkZjAtYWFmMS0xMWVkLWI2ZDQtZDQzYjA0?=
- =?us-ascii?Q?N2UyYmEwXGFtZS10ZXN0XDQyNTEyZGYyLWFhZjEtMTFlZC1iNmQ0LWQ0M2Iw?=
- =?us-ascii?Q?NDdlMmJhMGJvZHkudHh0IiBzej0iMjk4NCIgdD0iMTMzMjA2OTI0NzA1MDc3?=
- =?us-ascii?Q?OTA1IiBoPSJvL2R0QXRod1FFYmcvd0REWDVFRVp6UWhsNzg9IiBpZD0iIiBi?=
- =?us-ascii?Q?bD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFIWUlBQUNS?=
- =?us-ascii?Q?R3FzRS9qN1pBZTRQdWxXMDBrVEk3Zys2VmJUU1JNZ05BQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBSEFBQUFBR0NBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?RUFBUUFCQUFBQTFGSDNhQUFBQUFBQUFBQUFBQUFBQUo0QUFBQmhBR1FBWkFC?=
- =?us-ascii?Q?eUFHVUFjd0J6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
- =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdNQWRRQnpBSFFBYndCdEFGOEFjQUJs?=
- =?us-ascii?Q?QUhJQWN3QnZBRzRBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
- =?us-ascii?Q?QUFDZUFBQUFZd0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJnQjFB?=
- =?us-ascii?Q?RzBBWWdCbEFISUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCakFIVUFj?=
- =?us-ascii?Q?d0IwQUc4QWJRQmZBSE1BY3dCdUFGOEFaQUJoQUhNQWFBQmZBSFlBTUFBeUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01B?=
- =?us-ascii?Q?ZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdCckFHVUFlUUIzQUc4QWNnQmtB?=
- =?us-ascii?Q?SE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFY?=
- =?us-ascii?Q?d0J6QUhNQWJnQmZBRzRBYndCa0FHVUFiQUJwQUcwQWFRQjBBR1VBY2dCZkFI?=
- =?us-ascii?Q?WUFNQUF5QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFB?=
- =?us-ascii?Q?QUlBQUFBQUFKNEFBQUJqQUhVQWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QWN3?=
- =?us-ascii?Q?QndBR0VBWXdCbEFGOEFkZ0F3QURJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
- =?us-ascii?Q?UUFiQUJ3QUY4QWN3QnJBSGtBY0FCbEFGOEFZd0JvQUdFQWRBQmZBRzBBWlFC?=
- =?us-ascii?Q?ekFITUFZUUJuQUdVQVh3QjJBREFBTWdBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWkFCc0FIQUFYd0J6QUd3?=
- =?us-ascii?Q?QVlRQmpBR3NBWHdCakFHZ0FZUUIwQUY4QWJRQmxBSE1BY3dCaEFHY0FaUUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reftwo: =?us-ascii?Q?QUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQmtBR3dBY0FCZkFI?=
- =?us-ascii?Q?UUFaUUJoQUcwQWN3QmZBRzhBYmdCbEFHUUFjZ0JwQUhZQVpRQmZBR1lBYVFC?=
- =?us-ascii?Q?c0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFB?=
- =?us-ascii?Q?QUFBQUFBQWdBQUFBQUFuZ0FBQUdVQWJRQmhBR2tBYkFCZkFHRUFaQUJrQUhJ?=
- =?us-ascii?Q?QVpRQnpBSE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUF3QUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFD?=
- =?us-ascii?Q?ZUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFB?=
- =?us-ascii?Q?WHdCakFHOEFaQUJsQUhNQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0Iy?=
- =?us-ascii?Q?QUdVQWJBQnNBRjhBZEFCbEFISUFiUUJwQUc0QWRRQnpBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
- =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQSIvPjwvbWV0YT4=3D?=
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR18MB4474:EE_|DS0PR18MB5477:EE_
-x-ms-office365-filtering-correlation-id: e5a243fc-ab4d-419b-a56c-08db0d152852
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JgJG5o8rTO3sAk8RDzDSZ8r8eFsrKSQWSOYquCHZ+sFboxW5OcuJvSam1N8CrO9GTXjybiPv/k0fpKzttLPN3bpT4JKxXj6Ur5EbLSmxrQq2m4iE1+orrp8et6LHuK34M4S0JwsY0yDWJjGhuQGUb8eMgikOlfbGJwWUjVoN6A5zw9E8jWBtcajVn8C8mwwncvjjg6vxRQb00xisks0M3zOMoHgK4iW2j59KLvC2EUtBtHtET2xxz0INr09h76s+vWf+osFVAOmqFmnqn2K15lQoVjZ8EKGgVjZL7sGAbuP9s5PiOwP4AIVzyJxpSeCy6q3eghshENHUNyWFz9bWd3D/E+4AkZGrz0fojO0jhlsdG4Kg4b/Wl1oA89TVhcS6NMMOpfzHtv17n8VFUPxGm6/HT43QD8Fs6i2GU/cyaWP3N6x5ds851NiHVY8oNS0G3nI2hvATK96mIGUcajlWs/Hiqbvmk8NUvYV0k48U3QVfDd6O550T/QBg1mRkH3pae8tKnKyiAfot6vGHqEo6FZUtQ5PB40+oNduEM1bybCPsrirzRwcah/6dFSOinCBSskiJu7jJAL23hD8AkaCmg6mq4S2ac03P5UKTyWM9J5fhUBQlmnBH1hOUqDrOKgtyfgpT+h09wl6NVk8wWy2iif8tL+acLrs/l2Vsrdz92/EOAZVJgJB4vTgEqCUvn8RjgRINkrVXA19ti4DjYK3n5g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB4474.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(136003)(396003)(376002)(346002)(366004)(39850400004)(451199018)(5660300002)(316002)(54906003)(52536014)(66556008)(8676002)(66476007)(8936002)(4326008)(6916009)(66946007)(76116006)(7416002)(66446008)(64756008)(71200400001)(41300700001)(2906002)(7696005)(478600001)(186003)(6506007)(9686003)(26005)(33656002)(55016003)(83380400001)(86362001)(122000001)(38100700002)(38070700005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Alr3r1IZaPyb0YCuYcv7RbQzDkF5G7C6E1ke7WCqKJIbxidv7BEUew0H9bIh?=
- =?us-ascii?Q?MdE8OUKeo+LL75MBuNmCoRqfn5EOvQVbqiHsp5PDuNgPnVb9MX8d3gNzayTf?=
- =?us-ascii?Q?mWY8Ko5g2xV2zSJUcxe3c8ByI9/X3La/a8zN21vFzs4Ahm9LZTnLOegPzOrU?=
- =?us-ascii?Q?cpnOKsG6ANqSSBfg1HhMl97NOXOWLm8nV8Xlme/FVJ8Iks0SmLjfduxopmmQ?=
- =?us-ascii?Q?mL08tJQlaSfllGDgeQDJYnNXjPbAJYu0/bPx+o3VRgBzy4QbjIxPs18ifVN3?=
- =?us-ascii?Q?IFDcDBV6CXHPnbWkRxFWmG17EepywkvCAcJkD+2P90mFjc2vynac0g9GlZOC?=
- =?us-ascii?Q?d+oMiY8I4bhxjPO5yiACPrilBY5ir+LpbUsaBKA4f1sPPNItPfNzFGOmN3Nc?=
- =?us-ascii?Q?BqGsIap7RBqWAGeyaDv8Ch7CwurWMeA+GYLoO8HvJK8rwt06/tvdXSGdDEsi?=
- =?us-ascii?Q?7G6lMIL76Q8EfNSISN1FJ6UfJ4ElaBtVe4QTix2Wm7/3noBxugDX8vznV+nM?=
- =?us-ascii?Q?tNgYK2nZaiU7h1s4n4L4X+1Uke5UJO5MrJSzh8leG1vLTS9Buu6J6iLKwaoB?=
- =?us-ascii?Q?0Q22BXl5dUqLlo8kG00ye0xi+2fuKSwQsYA9xjLfw5UiPp9RwXEm2x6Vsgx3?=
- =?us-ascii?Q?7vfgUYqa4n79Cw9ACbJ+Quhb82dbig2K/Vq+p7Ppa8fwNViXC0A4MsmvLLGp?=
- =?us-ascii?Q?Z5H54Kmduas7hZ7GdyIDO7IBZNx0TmB9O8pwibJQUEuCvOXXZnX5IL1O3UYe?=
- =?us-ascii?Q?G00bu1vEB4zSuRzntt+ol0z5SKSOG4GL1hSfs7ERxKgL+RADxyamnid5xvq0?=
- =?us-ascii?Q?Z6ptp79k4SbSxJ6scbuEikKrQowRCJS9bxo5+dFu3kiybXyFW+yvs8slaaEF?=
- =?us-ascii?Q?CusBBfDyxsNNfn6Q90nm4FI9hKYgo7BUBZWdsxyeLOSGed1o76VquSudBIJO?=
- =?us-ascii?Q?+w2X3hTGQ2QOqoqlnP+73jxYRqnmamo0y/sTBRFE5Nz/GyGwPBPEpkU5FTf8?=
- =?us-ascii?Q?4bQG+6fEkNNwMhM6huQjSuKer4OICSzyHxLfzEeaIDXW/3evklU0/Ck/LeL+?=
- =?us-ascii?Q?Hg+XB9oa2oPeoOrW1J8bD7rpLvsfeCEpYzwqzce15F9v+Vvpv7u58PxlyF1z?=
- =?us-ascii?Q?Q1DpR7HYdb+g2lU/Q1pyOItF/qhkubdIwwHs6XFehLL57/G5ktDG6UnqbUG4?=
- =?us-ascii?Q?E6SmmPxsZNXr2SLaKKcYey7BXWZvzjHpBJKnrqY9DYxUCcqn2hzVNAfyHhgF?=
- =?us-ascii?Q?YzL0Ukxnz4W+daRm2hXTRVhIHqcU3H2uZekiSAjekHTvVO51rVBnjENdxy8r?=
- =?us-ascii?Q?ycmjKNUTzmaECh0iTL6xLz28lP5oQtAUSWmd1GdJVT3/xyqDVogeh6Si5dwl?=
- =?us-ascii?Q?EwUAcFYGXT7RjqwEeEIcHxl6244QA+10Lk6lEd198+ETfr7emgdNUfAhGl0e?=
- =?us-ascii?Q?i2uYTIOKdFmxc5NCXwW3OuwyHxaqX7F3UN3kavKGWDwRPZU6NROtqZIiUP/P?=
- =?us-ascii?Q?F+IhH/O2h3LHtnNXa5PCZwjq0IEG/coQ4ospCFqmv6i347kzKXJPioXZXS2x?=
- =?us-ascii?Q?voceQr8Gxw7FfA/mw5oUeDO1Y2S8tu/aKp74gPXw?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=paul-moore.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=66Qj76jDtLqMKQ1ONBOOUWaAju4+iVhgaW6iZJJpGeI=;
+        b=GI1qAntTuk3fnNN77umUgFisba+NJvlyh/e0bPmzAv/DnZliruV0m8iu6UD23shTCs
+         0398ZN2XKGl4V03203RX/E2i0nX0l1iPYAopHL2aJgHxLjOdqRZkfwcfuflM4tWl5cpI
+         Weprd4AAdiy4TFt459usO3mn4YpT7+U/MUlnDrj2/7EWuwLIqoq68+GKhMY/m19gEhXz
+         peSYI5XeObqH0n/uWb0oYttxEUD/hHqrKGYPSIPv6EiGp81JSWNUX1us0lxH8wmPbi9S
+         FpL/4cu+ghau+TsUDBtXmO1ZIOOP4qpOkn3UnOaZ+fXQdR1CFv0LDKCGNyzKqpv1KSTU
+         PD7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=66Qj76jDtLqMKQ1ONBOOUWaAju4+iVhgaW6iZJJpGeI=;
+        b=0aSKxhJrtzAmFK0zkynqpExgWoeUPV6LM6rDomsL8dMxUmLISPyAtE1tXfua4cZfwl
+         hLSlns4/C0cdbvyMuBx/vvrFX+xG1m66gbxjL5YT2WXgXlfn98DAls7ufh70Qlwt9+UY
+         +8ovCTqa994LJEosd8N3ie+cDvViBFZmxCzvOzY8D5ho0C7LtF92jgJaBMwtQUMB3LML
+         F/EEKNLsrG1WGiqk4rF+WlJDroKAfuB6delgJTtsim6K0hzBPL1cdKSzBirTz8msjDLC
+         0DQi7f+ObMaTeq+7WHeW/Fi2hvoJz48cTRTmtUfaHJ9V28ggPdDH1VWHz5sqyOqTFGY7
+         ojtQ==
+X-Gm-Message-State: AO0yUKWI5HuUSXQLA2Y/EHxgI1UaUP5fGdAmfgKXZ1Dl2gxDQanaSusW
+        qAlCyPijukfWJAcQ2GGo2TaRqTIxdl5sGJpDaFOT
+X-Google-Smtp-Source: AK7set/hNH8kF86n5/5FzMu5RNAjME7KLuHBESyzfUOoDICk6MkHS+QwhaDATiqEVX08S8kKI+0Vo/dntv+YeTsHAu4=
+X-Received: by 2002:a17:90a:4f85:b0:22c:41c7:c7ed with SMTP id
+ q5-20020a17090a4f8500b0022c41c7c7edmr4034565pjh.61.1676239236187; Sun, 12 Feb
+ 2023 14:00:36 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB4474.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5a243fc-ab4d-419b-a56c-08db0d152852
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2023 16:21:12.4879
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MaI1GuFIF4SSbcP0OhU89Rw5IAbi0eOPut3PjG0JqcQ90bIttaB/w0wuAMzZpSsI3iAeGnyPSzev0nB95aqnaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR18MB5477
-X-Proofpoint-GUID: ovJcgreWGaC5o6-SRfh-FK_hmLHdANaI
-X-Proofpoint-ORIG-GUID: ovJcgreWGaC5o6-SRfh-FK_hmLHdANaI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-12_06,2023-02-09_03,2023-02-09_01
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230119231033.1307221-1-kpsingh@kernel.org> <CAHC9VhRpsXME9Wht_RuSACuU97k359dihye4hW15nWwSQpxtng@mail.gmail.com>
+ <63e525a8.170a0220.e8217.2fdb@mx.google.com> <CAHC9VhTCiCNjfQBZOq2DM7QteeiE1eRBxW77eVguj4=y7kS+eQ@mail.gmail.com>
+ <98799a20-1025-3677-d215-69b13ac73ee5@schaufler-ca.com>
+In-Reply-To: <98799a20-1025-3677-d215-69b13ac73ee5@schaufler-ca.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sun, 12 Feb 2023 17:00:25 -0500
+Message-ID: <CAHC9VhTo=VDuFFfX7o__CRwbHTT-OTDBQ090-ZwbTRQYdO-_Gg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/4] Reduce overhead of LSMs with static calls
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Kees Cook <keescook@chromium.org>, KP Singh <kpsingh@kernel.org>,
+        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, jackmanb@google.com,
+        renauld@google.com, song@kernel.org, revest@chromium.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Feb 10, 2023 at 9:32 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 2/10/2023 12:03 PM, Paul Moore wrote:
+> > On Thu, Feb 9, 2023 at 11:56 AM Kees Cook <keescook@chromium.org> wrote:
+> >> On Fri, Jan 27, 2023 at 03:16:38PM -0500, Paul Moore wrote:
+> >>> On Thu, Jan 19, 2023 at 6:10 PM KP Singh <kpsingh@kernel.org> wrote:
+> >>>> # Background
+> >>>>
+> >>>> LSM hooks (callbacks) are currently invoked as indirect function calls. These
+> >>>> callbacks are registered into a linked list at boot time as the order of the
+> >>>> LSMs can be configured on the kernel command line with the "lsm=" command line
+> >>>> parameter.
+> >>> Thanks for sending this KP.  I had hoped to make a proper pass through
+> >>> this patchset this week but I ended up getting stuck trying to wrap my
+> >>> head around some network segmentation offload issues and didn't quite
+> >>> make it here.  Rest assured it is still in my review queue.
+> >>>
+> >>> However, I did manage to take a quick look at the patches and one of
+> >>> the first things that jumped out at me is it *looks* like this
+> >>> patchset is attempting two things: fix a problem where one LSM could
+> >>> trample another (especially problematic with the BPF LSM due to its
+> >>> nature), and reduce the overhead of making LSM calls.  I realize that
+> >>> in this patchset the fix and the optimization are heavily
+> >>> intermingled, but I wonder what it would take to develop a standalone
+> >>> fix using the existing indirect call approach?  I'm guessing that is
+> >>> going to potentially be a pretty significant patch, but if we could
+> >>> add a little standardization to the LSM hooks without adding too much
+> >>> in the way of code complexity or execution overhead I think that might
+> >>> be a win independent of any changes to how we call the hooks.
+> >>>
+> >>> Of course this could be crazy too, but I'm the guy who has to ask
+> >>> these questions :)
+> >> Hm, I am expecting this patch series to _not_ change any semantics of
+> >> the LSM "stack". I would agree: nothing should change in this series, as
+> >> it should be strictly a mechanical change from "iterate a list of
+> >> indirect calls" to "make a series of direct calls". Perhaps I missed
+> >> a logical change?
+> > I might be missing something too, but I'm thinking of patch 4/4 in
+> > this series that starts with this sentence:
+> >
+> >  "BPF LSM hooks have side-effects (even when a default value is
+> >   returned), as some hooks end up behaving differently due to
+> >   the very presence of the hook."
+>
+> My understanding of the current "agreement" is that we keep BPF
+> hooks at the end for this very reason.
 
+It would be nice to not have these conventions.  I get that it's the
+only knob we have at the moment to tweak, but I would hope that we
+could do better in the future.
 
-> On Fri, Feb 10, 2023 at 04:40:50PM +0530, Hariprasad Kelam wrote:
-> > Multiple transmit scheduler queues can be configured at different
-> > levels to support traffic shaping and scheduling. But on txschq free
-> > requests, the transmit schedular config in hardware is not getting
-> > reset. This patch adds support to reset the stale config.
-> >
-> > The txschq alloc response handler updates the default txschq array
-> > which is used to configure the transmit packet path from SMQ to TL2
-> > levels. However, for new features such as QoS offload that requires
-> > it's own txschq queues, this handler is still invoked and results in
-> > undefined behavior. The code now handles txschq response in the mbox
-> > caller function.
-> >
-> > Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-> > Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
-> > Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-> > ---
-> >  .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 45
-> +++++++++++++++++++
-> >  .../marvell/octeontx2/nic/otx2_common.c       | 36 ++++++++-------
-> >  .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  4 --
-> > .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |  4 --
-> >  4 files changed, 64 insertions(+), 25 deletions(-)
->=20
-> ...
->=20
-> > diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-> > b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-> > index 73c8d36b6e12..4cb3fab8baae 100644
-> > --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-> > +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-> > @@ -716,7 +716,8 @@ EXPORT_SYMBOL(otx2_smq_flush);  int
-> > otx2_txsch_alloc(struct otx2_nic *pfvf)  {
-> >  	struct nix_txsch_alloc_req *req;
-> > -	int lvl;
-> > +	struct nix_txsch_alloc_rsp *rsp;
-> > +	int lvl, schq, rc;
-> >
-> >  	/* Get memory to put this msg */
-> >  	req =3D otx2_mbox_alloc_msg_nix_txsch_alloc(&pfvf->mbox);
-> > @@ -726,8 +727,24 @@ int otx2_txsch_alloc(struct otx2_nic *pfvf)
-> >  	/* Request one schq per level */
-> >  	for (lvl =3D 0; lvl < NIX_TXSCH_LVL_CNT; lvl++)
-> >  		req->schq[lvl] =3D 1;
-> > +	rc =3D otx2_sync_mbox_msg(&pfvf->mbox);
-> > +	if (rc)
-> > +		return rc;
-> >
-> > -	return otx2_sync_mbox_msg(&pfvf->mbox);
-> > +	rsp =3D (struct nix_txsch_alloc_rsp *)
-> > +	      otx2_mbox_get_rsp(&pfvf->mbox.mbox, 0, &req->hdr);
-> > +	if (IS_ERR(rsp))
-> > +		return PTR_ERR(rsp);
-> > +
-> > +	/* Setup transmit scheduler list */
-> > +	for (lvl =3D 0; lvl < NIX_TXSCH_LVL_CNT; lvl++)
-> > +		for (schq =3D 0; schq < rsp->schq[lvl]; schq++)
-> > +			pfvf->hw.txschq_list[lvl][schq] =3D
-> > +				rsp->schq_list[lvl][schq];
-> > +
-> > +	pfvf->hw.txschq_link_cfg_lvl     =3D rsp->link_cfg_lvl;
->=20
-> nit: extra whitespace before '=3D'
->=20
-ACK , will fix in next version.
+> > Ignoring the static call changes for a moment, I'm curious what it
+> > would look like to have a better mechanism for handling things like
+> > this.  What would it look like if we expanded the individual LSM error
+> > reporting back to the LSM layer to have a bit more information, e.g.
+> > "this LSM erred, but it is safe to continue evaluating other LSMs" and
+> > "this LSM erred, and it was too severe to continue evaluating other
+> > LSMs"?  Similarly, would we want to expand the hook registration to
+> > have more info, e.g. "run this hook even when other LSMs have failed"
+> > and "if other LSMs have failed, do not run this hook"?
+>
+> I really don't want another LSM to have sway over Smack enforcement.
 
-Thanks,
-Hariprasad k
-> > +
-> > +	return 0;
-> >  }
+I think we can all agree that the one LSM should not have the ability
+to affect the operation of another, especially when it would cause the
+violation of a different LSM's security policy.
+
+> I would hate to see, for example, an LSM decide that because it has
+> initialized an inode no other LSM should be allowed to, even in an
+> error situation. There are really only two options Call all the hooks
+> every time and either succeed on all or report the most important
+> error. Or, "bail on fail", and acknowledge that following hooks may
+> not be called. Really, does "I failed, but it's not that important"
+> make sense as a return value?
+
+Of the two things I tossed out, richer return values and richer hook
+registration, perhaps it's really only the latter, richer hook
+registration that is important here.  It would allow a LSM to indicate
+to the LSM hook layer how the individual hook implementation should be
+called: always, or only if previously called implementations have not
+failed.  I believe that should eliminate any worry of a BPF LSM, or
+any LSM for that matter, from impacting the security policy of
+another.  However, I will admit that I haven't spent the necessary
+amount of time chasing down all the hooks to verify if that is 100%
+correct.
+
+> > I realize that loading a BPF LSM is a privileged operation so we've
+> > largely mitigated the risk there, but with stacking on it's way to
+> > being more full featured, and IMA slowly working its way to proper LSM
+> > status, it seems to me like having a richer, and proper way to handle
+> > individual LSM failures would be a good thing.  I feel like patch 4/4
+> > definitely hints at this, but I could be mistaken.
+>
+> We have bigger issues with BPF. There's nothing to prevent BPF from
+> implementing a secid_to_secctx() hook and making a system with SELinux
+> go cattywampus. BPF is stacked as if it isn't a "major" LSM, while
+> allowing it to do "major" LSM things. One reason we need full stacking
+> is to address this.
+
+That's a different issue, and one of the reasons why I suggested
+taking an all-or-nothing approach to stacking many years ago, but ...
+well, you know how that worked out.  I promise to not keep saying "I
+told you so" if you promise to not keep bringing up LSM stacking as
+the answer to all that ails you ;)
+
+-- 
+paul-moore.com
