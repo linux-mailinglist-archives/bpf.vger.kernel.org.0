@@ -2,176 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF70693A5F
-	for <lists+bpf@lfdr.de>; Sun, 12 Feb 2023 23:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42AC693B0E
+	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 00:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjBLWAj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Feb 2023 17:00:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
+        id S229629AbjBLXVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 12 Feb 2023 18:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjBLWAi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Feb 2023 17:00:38 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D0BDBE4
-        for <bpf@vger.kernel.org>; Sun, 12 Feb 2023 14:00:36 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id m2so11688784plg.4
-        for <bpf@vger.kernel.org>; Sun, 12 Feb 2023 14:00:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=66Qj76jDtLqMKQ1ONBOOUWaAju4+iVhgaW6iZJJpGeI=;
-        b=GI1qAntTuk3fnNN77umUgFisba+NJvlyh/e0bPmzAv/DnZliruV0m8iu6UD23shTCs
-         0398ZN2XKGl4V03203RX/E2i0nX0l1iPYAopHL2aJgHxLjOdqRZkfwcfuflM4tWl5cpI
-         Weprd4AAdiy4TFt459usO3mn4YpT7+U/MUlnDrj2/7EWuwLIqoq68+GKhMY/m19gEhXz
-         peSYI5XeObqH0n/uWb0oYttxEUD/hHqrKGYPSIPv6EiGp81JSWNUX1us0lxH8wmPbi9S
-         FpL/4cu+ghau+TsUDBtXmO1ZIOOP4qpOkn3UnOaZ+fXQdR1CFv0LDKCGNyzKqpv1KSTU
-         PD7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=66Qj76jDtLqMKQ1ONBOOUWaAju4+iVhgaW6iZJJpGeI=;
-        b=0aSKxhJrtzAmFK0zkynqpExgWoeUPV6LM6rDomsL8dMxUmLISPyAtE1tXfua4cZfwl
-         hLSlns4/C0cdbvyMuBx/vvrFX+xG1m66gbxjL5YT2WXgXlfn98DAls7ufh70Qlwt9+UY
-         +8ovCTqa994LJEosd8N3ie+cDvViBFZmxCzvOzY8D5ho0C7LtF92jgJaBMwtQUMB3LML
-         F/EEKNLsrG1WGiqk4rF+WlJDroKAfuB6delgJTtsim6K0hzBPL1cdKSzBirTz8msjDLC
-         0DQi7f+ObMaTeq+7WHeW/Fi2hvoJz48cTRTmtUfaHJ9V28ggPdDH1VWHz5sqyOqTFGY7
-         ojtQ==
-X-Gm-Message-State: AO0yUKWI5HuUSXQLA2Y/EHxgI1UaUP5fGdAmfgKXZ1Dl2gxDQanaSusW
-        qAlCyPijukfWJAcQ2GGo2TaRqTIxdl5sGJpDaFOT
-X-Google-Smtp-Source: AK7set/hNH8kF86n5/5FzMu5RNAjME7KLuHBESyzfUOoDICk6MkHS+QwhaDATiqEVX08S8kKI+0Vo/dntv+YeTsHAu4=
-X-Received: by 2002:a17:90a:4f85:b0:22c:41c7:c7ed with SMTP id
- q5-20020a17090a4f8500b0022c41c7c7edmr4034565pjh.61.1676239236187; Sun, 12 Feb
- 2023 14:00:36 -0800 (PST)
+        with ESMTP id S229713AbjBLXVI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 12 Feb 2023 18:21:08 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D45510262
+        for <bpf@vger.kernel.org>; Sun, 12 Feb 2023 15:20:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676244059; x=1707780059;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=N7b9YyBHcRUPxz/axnNKKkMFESVIYOC0Hbm4TQUMW04=;
+  b=Ka+LbNaT6or1Zb6zIqMY0PEp0rhrpJ56pybGLnYOKb2ZDTj8vfiQQ2JW
+   pdGFBG2GA8KlBIn9pAqKtSSEGKo8VwBnkDYNAW/KmYXQyZX5G2uTuPACF
+   EERF+lRsPVdub4WULI5BTCCcSAyJVoURTPoxwkF+aL6CvPs/4qpIGuH7D
+   +LwugWewy+WlC1CD086+ce8ktln5c5Lov3ai2wPR8YCThBoMWlg1Vypz9
+   X62+ddHV8BFE75su3BlAAF2pTL4HQjLXWQeVY0sG+1Ja7jaoyQbEYUnID
+   NDiRPNXBQ8pPxCsL+XFqRYB+bCNVDupzP2AuKrBC2GcXwzI/MOJNugmVx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="314411539"
+X-IronPort-AV: E=Sophos;i="5.97,291,1669104000"; 
+   d="scan'208";a="314411539"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2023 15:20:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="811402585"
+X-IronPort-AV: E=Sophos;i="5.97,291,1669104000"; 
+   d="scan'208";a="811402585"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Feb 2023 15:20:57 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pRLeS-0007Qb-1l;
+        Sun, 12 Feb 2023 23:20:56 +0000
+Date:   Mon, 13 Feb 2023 07:20:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Dave Thaler <dthaler1968@googlemail.com>, bpf@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, bpf@ietf.org,
+        Dave Thaler <dthaler@microsoft.com>
+Subject: Re: [PATCH bpf-next v2] bpf, docs: Explain helper functions
+Message-ID: <202302130706.NBSii5FS-lkp@intel.com>
+References: <20230206191647.2075-1-dthaler1968@googlemail.com>
 MIME-Version: 1.0
-References: <20230119231033.1307221-1-kpsingh@kernel.org> <CAHC9VhRpsXME9Wht_RuSACuU97k359dihye4hW15nWwSQpxtng@mail.gmail.com>
- <63e525a8.170a0220.e8217.2fdb@mx.google.com> <CAHC9VhTCiCNjfQBZOq2DM7QteeiE1eRBxW77eVguj4=y7kS+eQ@mail.gmail.com>
- <98799a20-1025-3677-d215-69b13ac73ee5@schaufler-ca.com>
-In-Reply-To: <98799a20-1025-3677-d215-69b13ac73ee5@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Sun, 12 Feb 2023 17:00:25 -0500
-Message-ID: <CAHC9VhTo=VDuFFfX7o__CRwbHTT-OTDBQ090-ZwbTRQYdO-_Gg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] Reduce overhead of LSMs with static calls
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Kees Cook <keescook@chromium.org>, KP Singh <kpsingh@kernel.org>,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, jackmanb@google.com,
-        renauld@google.com, song@kernel.org, revest@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230206191647.2075-1-dthaler1968@googlemail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 10, 2023 at 9:32 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 2/10/2023 12:03 PM, Paul Moore wrote:
-> > On Thu, Feb 9, 2023 at 11:56 AM Kees Cook <keescook@chromium.org> wrote:
-> >> On Fri, Jan 27, 2023 at 03:16:38PM -0500, Paul Moore wrote:
-> >>> On Thu, Jan 19, 2023 at 6:10 PM KP Singh <kpsingh@kernel.org> wrote:
-> >>>> # Background
-> >>>>
-> >>>> LSM hooks (callbacks) are currently invoked as indirect function calls. These
-> >>>> callbacks are registered into a linked list at boot time as the order of the
-> >>>> LSMs can be configured on the kernel command line with the "lsm=" command line
-> >>>> parameter.
-> >>> Thanks for sending this KP.  I had hoped to make a proper pass through
-> >>> this patchset this week but I ended up getting stuck trying to wrap my
-> >>> head around some network segmentation offload issues and didn't quite
-> >>> make it here.  Rest assured it is still in my review queue.
-> >>>
-> >>> However, I did manage to take a quick look at the patches and one of
-> >>> the first things that jumped out at me is it *looks* like this
-> >>> patchset is attempting two things: fix a problem where one LSM could
-> >>> trample another (especially problematic with the BPF LSM due to its
-> >>> nature), and reduce the overhead of making LSM calls.  I realize that
-> >>> in this patchset the fix and the optimization are heavily
-> >>> intermingled, but I wonder what it would take to develop a standalone
-> >>> fix using the existing indirect call approach?  I'm guessing that is
-> >>> going to potentially be a pretty significant patch, but if we could
-> >>> add a little standardization to the LSM hooks without adding too much
-> >>> in the way of code complexity or execution overhead I think that might
-> >>> be a win independent of any changes to how we call the hooks.
-> >>>
-> >>> Of course this could be crazy too, but I'm the guy who has to ask
-> >>> these questions :)
-> >> Hm, I am expecting this patch series to _not_ change any semantics of
-> >> the LSM "stack". I would agree: nothing should change in this series, as
-> >> it should be strictly a mechanical change from "iterate a list of
-> >> indirect calls" to "make a series of direct calls". Perhaps I missed
-> >> a logical change?
-> > I might be missing something too, but I'm thinking of patch 4/4 in
-> > this series that starts with this sentence:
-> >
-> >  "BPF LSM hooks have side-effects (even when a default value is
-> >   returned), as some hooks end up behaving differently due to
-> >   the very presence of the hook."
->
-> My understanding of the current "agreement" is that we keep BPF
-> hooks at the end for this very reason.
+Hi Dave,
 
-It would be nice to not have these conventions.  I get that it's the
-only knob we have at the moment to tweak, but I would hope that we
-could do better in the future.
+Thank you for the patch! Perhaps something to improve:
 
-> > Ignoring the static call changes for a moment, I'm curious what it
-> > would look like to have a better mechanism for handling things like
-> > this.  What would it look like if we expanded the individual LSM error
-> > reporting back to the LSM layer to have a bit more information, e.g.
-> > "this LSM erred, but it is safe to continue evaluating other LSMs" and
-> > "this LSM erred, and it was too severe to continue evaluating other
-> > LSMs"?  Similarly, would we want to expand the hook registration to
-> > have more info, e.g. "run this hook even when other LSMs have failed"
-> > and "if other LSMs have failed, do not run this hook"?
->
-> I really don't want another LSM to have sway over Smack enforcement.
+[auto build test WARNING on bpf-next/master]
 
-I think we can all agree that the one LSM should not have the ability
-to affect the operation of another, especially when it would cause the
-violation of a different LSM's security policy.
+url:    https://github.com/intel-lab-lkp/linux/commits/Dave-Thaler/bpf-docs-Explain-helper-functions/20230207-031845
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230206191647.2075-1-dthaler1968%40googlemail.com
+patch subject: [PATCH bpf-next v2] bpf, docs: Explain helper functions
+reproduce:
+        # https://github.com/intel-lab-lkp/linux/commit/b579d93fed53b16ad7241911226cbeb3b42f8266
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Dave-Thaler/bpf-docs-Explain-helper-functions/20230207-031845
+        git checkout b579d93fed53b16ad7241911226cbeb3b42f8266
+        make menuconfig
+        # enable CONFIG_COMPILE_TEST, CONFIG_WARN_MISSING_DOCUMENTS, CONFIG_WARN_ABI_ERRORS
+        make htmldocs
 
-> I would hate to see, for example, an LSM decide that because it has
-> initialized an inode no other LSM should be allowed to, even in an
-> error situation. There are really only two options Call all the hooks
-> every time and either succeed on all or report the most important
-> error. Or, "bail on fail", and acknowledge that following hooks may
-> not be called. Really, does "I failed, but it's not that important"
-> make sense as a return value?
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202302130706.NBSii5FS-lkp@intel.com/
 
-Of the two things I tossed out, richer return values and richer hook
-registration, perhaps it's really only the latter, richer hook
-registration that is important here.  It would allow a LSM to indicate
-to the LSM hook layer how the individual hook implementation should be
-called: always, or only if previously called implementations have not
-failed.  I believe that should eliminate any worry of a BPF LSM, or
-any LSM for that matter, from impacting the security policy of
-another.  However, I will admit that I haven't spent the necessary
-amount of time chasing down all the hooks to verify if that is 100%
-correct.
+All warnings (new ones prefixed by >>):
 
-> > I realize that loading a BPF LSM is a privileged operation so we've
-> > largely mitigated the risk there, but with stacking on it's way to
-> > being more full featured, and IMA slowly working its way to proper LSM
-> > status, it seems to me like having a richer, and proper way to handle
-> > individual LSM failures would be a good thing.  I feel like patch 4/4
-> > definitely hints at this, but I could be mistaken.
->
-> We have bigger issues with BPF. There's nothing to prevent BPF from
-> implementing a secid_to_secctx() hook and making a system with SELinux
-> go cattywampus. BPF is stacked as if it isn't a "major" LSM, while
-> allowing it to do "major" LSM things. One reason we need full stacking
-> is to address this.
+>> Documentation/bpf/clang-notes.rst:24: WARNING: Title underline too short.
 
-That's a different issue, and one of the reasons why I suggested
-taking an all-or-nothing approach to stacking many years ago, but ...
-well, you know how that worked out.  I promise to not keep saying "I
-told you so" if you promise to not keep bringing up LSM stacking as
-the answer to all that ails you ;)
+vim +24 Documentation/bpf/clang-notes.rst
+
+    22	
+    23	Reserved instructions
+  > 24	====================
+    25	
 
 -- 
-paul-moore.com
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
