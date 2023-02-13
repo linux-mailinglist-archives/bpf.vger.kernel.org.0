@@ -2,40 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C0D694BEF
-	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 17:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C00CD694BF0
+	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 17:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbjBMQB2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Feb 2023 11:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
+        id S231367AbjBMQBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Feb 2023 11:01:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbjBMQBU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Feb 2023 11:01:20 -0500
+        with ESMTP id S231392AbjBMQB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Feb 2023 11:01:29 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704091F933
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 08:00:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CF11F5FC
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 08:00:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1676304013;
+        s=mimecast20190719; t=1676304017;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=lLKR8qjHl4DW+ozihot8HzkcFeBycVD7uPgmihQyePM=;
-        b=NGfDopaf9eCyFSl9IvlQOlR5QcFx0zQ44YwVqBF0KWmmIwuNslBtnGkBaYTmQYKdpWmzLb
-        BETbhi99/eSsnoH3zi9aqZGhCNp6xmEcCPUpsHnblb9QtdI86mWt+Wux8YjzkGI42J31sa
-        73ncBMyEr9J6x2KHqYDP9F94bvdEQxU=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FdvKR7VPYoqBgT/1LVRwrhfRYbIchyAo3VMsaTizChU=;
+        b=VOuV1Wua157HAUtzlvqdXTSdiDUJXCSfVDhmuZ2ZjE1Z68E415n+FfwYT31r/nfTiyHURS
+        FjsPQupYVdw4nh9aHH7BffsUkserExv4vutuVT2Bt9nPT3h9CdnnpANAFTkS38dcdnkAJX
+        xoXiYRhT3m9AJrCLIS4oBqWLOVVO8hI=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-479-r7C2d5I1Paiys9wpxyow9w-1; Mon, 13 Feb 2023 11:00:11 -0500
-X-MC-Unique: r7C2d5I1Paiys9wpxyow9w-1
+ us-mta-567-0GRmLySsPDOOiDPrthrdQA-1; Mon, 13 Feb 2023 11:00:14 -0500
+X-MC-Unique: 0GRmLySsPDOOiDPrthrdQA-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D021B101B429;
-        Mon, 13 Feb 2023 16:00:07 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0E68A85CBEC;
+        Mon, 13 Feb 2023 16:00:11 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.33.37.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 193C52026D2C;
-        Mon, 13 Feb 2023 16:00:04 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2B1A62026D2C;
+        Mon, 13 Feb 2023 16:00:07 +0000 (UTC)
 From:   Viktor Malik <vmalik@redhat.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -49,9 +50,11 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Luis Chamberlain <mcgrof@kernel.org>,
         Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v5 0/2] Fix attaching fentry/fexit/fmod_ret/lsm to modules
-Date:   Mon, 13 Feb 2023 16:59:57 +0100
-Message-Id: <cover.1676302508.git.vmalik@redhat.com>
+Subject: [PATCH bpf-next v5 1/2] bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
+Date:   Mon, 13 Feb 2023 16:59:58 +0100
+Message-Id: <14feaab32b06bd76b1689ade6f4709e246a77bbe.1676302508.git.vmalik@redhat.com>
+In-Reply-To: <cover.1676302508.git.vmalik@redhat.com>
+References: <cover.1676302508.git.vmalik@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
@@ -65,67 +68,258 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After some time, posting another version of this patchset.
+This resolves two problems with attachment of fentry/fexit/fmod_ret/lsm
+to functions located in modules:
 
-Context: I noticed that the verifier behaves incorrectly when attaching
-to fentry of multiple functions of the same name located in different
-modules (or in vmlinux). The reason for this is that if the target
-program is not specified, the verifier will search kallsyms for the
-trampoline address to attach to. The entire kallsyms is always searched,
-not respecting the module in which the function to attach to is located.
+1. The verifier tries to find the address to attach to in kallsyms. This
+   is always done by searching the entire kallsyms, not respecting the
+   module in which the function is located. Such approach causes an
+   incorrect attachment address to be computed if the function to attach
+   to is shadowed by a function of the same name located earlier in
+   kallsyms.
 
-As Yonghong correctly pointed out, there is yet another issue - the
-trampoline acquires the module reference in register_fentry which means
-that if the module is unloaded between the place where the address is
-found in the verifier and register_fentry, it is possible that another
-module is loaded to the same address in the meantime, which may lead to
-errors.
+2. If the address to attach to is located in a module, the module
+   reference is only acquired in register_fentry. If the module is
+   unloaded between the place where the address is found
+   (bpf_check_attach_target in the verifier) and register_fentry, it is
+   possible that another module is loaded to the same address which may
+   lead to potential errors.
 
-This patch fixes the above issues by extracting the module name from the
-BTF of the attachment target (which must be specified) and by doing the
-search in kallsyms of the correct module. At the same time, the module
-reference is acquired right after the address is found and only released
-right before the trampoline itself is removed.
+Since the attachment must contain the BTF of the program to attach to,
+we extract the module from it and search for the function address in the
+correct module (resolving problem no. 1). Then, the module reference is
+taken directly in bpf_check_attach_target and it is later passed to the
+trampoline in bpf_trampoline_get. The reference is only released in the
+corresponding bpf_trampoline_put (resolving problem no. 2).
 
+Since bpf_trampoline_get may be called multiple times, we make sure that
+the reference is only acquired and released once. If an error occurs
+between bpf_check_attach_target and bpf_trampoline_get, the module
+reference (stored in tgt_info) must be released.
+
+Signed-off-by: Viktor Malik <vmalik@redhat.com>
 ---
-Changes in v5:
-- fixed acquiring and releasing of module references by trampolines to
-  prevent modules being unloaded between address lookup and trampoline
-  allocation
+ include/linux/bpf.h      |  1 +
+ kernel/bpf/syscall.c     |  2 ++
+ kernel/bpf/trampoline.c  | 44 +++++++++++++++-------------------------
+ kernel/bpf/verifier.c    | 27 +++++++++++++++++++++---
+ kernel/module/internal.h |  5 +++++
+ 5 files changed, 48 insertions(+), 31 deletions(-)
 
-Changes in v4:
-- reworked module kallsyms lookup approach using existing functions,
-  verifier now calls btf_try_get_module to retrieve the module and
-  find_kallsyms_symbol_value to get the symbol address (suggested by
-  Alexei)
-- included Jiri Olsa's comments
-- improved description of the new test and added it as a comment into
-  the test source
-
-Changes in v3:
-- added trivial implementation for kallsyms_lookup_name_in_module() for
-  !CONFIG_MODULES (noticed by test robot, fix suggested by Hao Luo)
-
-Changes in v2:
-- introduced and used more space-efficient kallsyms lookup function,
-  suggested by Jiri Olsa
-- included Hao Luo's comments
-
-Viktor Malik (2):
-  bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
-  bpf/selftests: Test fentry attachment to shadowed functions
-
- include/linux/bpf.h                           |   1 +
- kernel/bpf/syscall.c                          |   2 +
- kernel/bpf/trampoline.c                       |  44 +++---
- kernel/bpf/verifier.c                         |  27 +++-
- kernel/module/internal.h                      |   5 +
- net/bpf/test_run.c                            |   5 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   6 +
- .../bpf/prog_tests/module_attach_shadow.c     | 131 ++++++++++++++++++
- 8 files changed, 190 insertions(+), 31 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 4385418118f6..8619bac13721 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1058,6 +1058,7 @@ struct bpf_trampoline {
+ struct bpf_attach_target_info {
+ 	struct btf_func_model fmodel;
+ 	long tgt_addr;
++	struct module *tgt_mod;
+ 	const char *tgt_name;
+ 	const struct btf_type *tgt_type;
+ };
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index cda8d00f3762..7072217ccffc 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3087,6 +3087,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+ 
+ 		tr = bpf_trampoline_get(key, &tgt_info);
+ 		if (!tr) {
++			if (tgt_info.tgt_mod)
++				module_put(tgt_info.tgt_mod);
+ 			err = -ENOMEM;
+ 			goto out_unlock;
+ 		}
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index d0ed7d6f5eec..e33c051592f0 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -172,26 +172,6 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+ 	return tr;
+ }
+ 
+-static int bpf_trampoline_module_get(struct bpf_trampoline *tr)
+-{
+-	struct module *mod;
+-	int err = 0;
+-
+-	preempt_disable();
+-	mod = __module_text_address((unsigned long) tr->func.addr);
+-	if (mod && !try_module_get(mod))
+-		err = -ENOENT;
+-	preempt_enable();
+-	tr->mod = mod;
+-	return err;
+-}
+-
+-static void bpf_trampoline_module_put(struct bpf_trampoline *tr)
+-{
+-	module_put(tr->mod);
+-	tr->mod = NULL;
+-}
+-
+ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
+ {
+ 	void *ip = tr->func.addr;
+@@ -202,8 +182,6 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
+ 	else
+ 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
+ 
+-	if (!ret)
+-		bpf_trampoline_module_put(tr);
+ 	return ret;
+ }
+ 
+@@ -238,9 +216,6 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+ 		tr->func.ftrace_managed = true;
+ 	}
+ 
+-	if (bpf_trampoline_module_get(tr))
+-		return -ENOENT;
+-
+ 	if (tr->func.ftrace_managed) {
+ 		ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 1);
+ 		ret = register_ftrace_direct_multi(tr->fops, (long)new_addr);
+@@ -248,8 +223,6 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+ 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
+ 	}
+ 
+-	if (ret)
+-		bpf_trampoline_module_put(tr);
+ 	return ret;
+ }
+ 
+@@ -719,8 +692,11 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+ 
+ 	bpf_lsm_find_cgroup_shim(prog, &bpf_func);
+ 	tr = bpf_trampoline_get(key, &tgt_info);
+-	if (!tr)
++	if (!tr) {
++		if (tgt_info.tgt_mod)
++			module_put(tgt_info.tgt_mod);
+ 		return  -ENOMEM;
++	}
+ 
+ 	mutex_lock(&tr->mutex);
+ 
+@@ -800,6 +776,14 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+ 		return NULL;
+ 
+ 	mutex_lock(&tr->mutex);
++	if (tgt_info->tgt_mod) {
++		if (tr->mod)
++			/* we already have the module reference, release tgt_info reference */
++			module_put(tgt_info->tgt_mod);
++		else
++			/* take ownership of the module reference */
++			tr->mod = tgt_info->tgt_mod;
++	}
+ 	if (tr->func.addr)
+ 		goto out;
+ 
+@@ -819,6 +803,10 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+ 	mutex_lock(&trampoline_mutex);
+ 	if (!refcount_dec_and_test(&tr->refcnt))
+ 		goto out;
++	if (tr->mod) {
++		module_put(tr->mod);
++		tr->mod = NULL;
++	}
+ 	WARN_ON_ONCE(mutex_is_locked(&tr->mutex));
+ 
+ 	for (i = 0; i < BPF_TRAMP_MAX; i++)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 388245e8826e..ae7ba40eb535 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -24,6 +24,7 @@
+ #include <linux/bpf_lsm.h>
+ #include <linux/btf_ids.h>
+ #include <linux/poison.h>
++#include "../module/internal.h"
+ 
+ #include "disasm.h"
+ 
+@@ -16868,6 +16869,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 	const char *tname;
+ 	struct btf *btf;
+ 	long addr = 0;
++	struct module *mod = NULL;
+ 
+ 	if (!btf_id) {
+ 		bpf_log(log, "Tracing programs must provide btf_id\n");
+@@ -17041,7 +17043,17 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 			else
+ 				addr = (long) tgt_prog->aux->func[subprog]->bpf_func;
+ 		} else {
+-			addr = kallsyms_lookup_name(tname);
++			if (btf_is_module(btf)) {
++				preempt_disable();
++				mod = btf_try_get_module(btf);
++				if (mod)
++					addr = find_kallsyms_symbol_value(mod, tname);
++				else
++					addr = 0;
++				preempt_enable();
++			} else {
++				addr = kallsyms_lookup_name(tname);
++			}
+ 			if (!addr) {
+ 				bpf_log(log,
+ 					"The address of function %s cannot be found\n",
+@@ -17103,6 +17115,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 		break;
+ 	}
+ 	tgt_info->tgt_addr = addr;
++	tgt_info->tgt_mod = mod;
+ 	tgt_info->tgt_name = tname;
+ 	tgt_info->tgt_type = t;
+ 	return 0;
+@@ -17201,17 +17214,25 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 
+ 	if (prog->type == BPF_PROG_TYPE_LSM) {
+ 		ret = bpf_lsm_verify_prog(&env->log, prog);
+-		if (ret < 0)
++		if (ret < 0) {
++			if (tgt_info.tgt_mod)
++				module_put(tgt_info.tgt_mod);
+ 			return ret;
++		}
+ 	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
+ 		   btf_id_set_contains(&btf_id_deny, btf_id)) {
++		if (tgt_info.tgt_mod)
++			module_put(tgt_info.tgt_mod);
+ 		return -EINVAL;
+ 	}
+ 
+ 	key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
+ 	tr = bpf_trampoline_get(key, &tgt_info);
+-	if (!tr)
++	if (!tr) {
++		if (tgt_info.tgt_mod)
++			module_put(tgt_info.tgt_mod);
+ 		return -ENOMEM;
++	}
+ 
+ 	prog->aux->dst_trampoline = tr;
+ 	return 0;
+diff --git a/kernel/module/internal.h b/kernel/module/internal.h
+index 2e2bf236f558..5cb103a46018 100644
+--- a/kernel/module/internal.h
++++ b/kernel/module/internal.h
+@@ -256,6 +256,11 @@ static inline bool sect_empty(const Elf_Shdr *sect)
+ static inline void init_build_id(struct module *mod, const struct load_info *info) { }
+ static inline void layout_symtab(struct module *mod, struct load_info *info) { }
+ static inline void add_kallsyms(struct module *mod, const struct load_info *info) { }
++static inline unsigned long find_kallsyms_symbol_value(struct module *mod
++						       const char *name)
++{
++	return 0;
++}
+ #endif /* CONFIG_KALLSYMS */
+ 
+ #ifdef CONFIG_SYSFS
 -- 
 2.39.1
 
