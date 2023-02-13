@@ -2,72 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D798695332
-	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 22:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2411569536A
+	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 22:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbjBMViM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Feb 2023 16:38:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
+        id S230264AbjBMVxy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Feb 2023 16:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbjBMViL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Feb 2023 16:38:11 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08A78A42
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 13:37:52 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id j32-20020a05600c1c2000b003dc4fd6e61dso12253408wms.5
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 13:37:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2kFpTi21EROoZ3UCd/jRbkmPmSRuIk/rq/xKTB3p6kE=;
-        b=AQ/zv1GIcF9g3oQ4z3cw2nnlWrtm7rnMJG6yLfJm/Uf+5uQaCAVNaaJYnnicaqIRD8
-         0MX8vSzo1fpb9pdYpNwdahYAVULzmgC7h6kPHxHqzkorVCPDUoOURcNvQ5V4EwmsQ+Yu
-         do6Vj5EzNE5IFA7OE2e3kwPhik7Q2THeuJKe3vzhDSJ5ns/UqufSsdI6gOp89JJ7CQ0E
-         /nJcejFHq0WAQ6iYPKknXiP4ef9VfnxQYCKldyeBq2pMykVL/a1ATZfzK6N0bP1n8piM
-         /6R4qliIkmuqrY+6Bdye/MuVxe00fGKRQGTxXSi7ADK98HGNH2Kl7CZPPVI376yYs4cI
-         LLEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2kFpTi21EROoZ3UCd/jRbkmPmSRuIk/rq/xKTB3p6kE=;
-        b=wOnwWnJ74+cShnDFrJ9CFagHjgy6m8D/fE8Han1j2UFCOz6YowxNPqv83SYu52n0yl
-         wCp1h4U9+GQvPx2ItV0zgRmVUvAO/uED3ZX+tXvfBJZNgUQjALizlzdLFO8DyIAXynVj
-         awKnzo7RBJHoiLMEB8sg0SxXOMGkt0n0B78YO/nS+jtFKPNm+nZo5LY150b/Ms6IL6C0
-         bijpZcAyK92eS0Dbw59Wh1jfl9zHaZdxWspJJxNlnNRww3Qb7njl1yfA7aUluZUgykCU
-         6rMMemul0NzpPBbdw1Lvg9WEqc1CVGFunhc6BCWjteT4w9tUTI3nSoFpE4VCkBL2p8m9
-         vmpw==
-X-Gm-Message-State: AO0yUKU0LOms1hDpbrZ8H5norQnFWnOd/UM44aNUldTrTxI2mPK78wMn
-        hxfbBSPc58gfMEAezo3jItKBwDcMWquV7y99WMazx4wO
-X-Google-Smtp-Source: AK7set8JiN95agMI6tLvdxiiGwiKzecaiZrHBRpC2gNQca9agNdnxFMm10bDjA45WPw4lsoBOZoRXQ==
-X-Received: by 2002:a05:600c:3310:b0:3dc:405b:99bf with SMTP id q16-20020a05600c331000b003dc405b99bfmr100659wmp.15.1676324271108;
-        Mon, 13 Feb 2023 13:37:51 -0800 (PST)
-Received: from ?IPV6:2a02:8011:e80c:0:e444:af40:8c53:f900? ([2a02:8011:e80c:0:e444:af40:8c53:f900])
-        by smtp.gmail.com with ESMTPSA id z9-20020a05600c114900b003e1df9bc86csm8337343wmz.3.2023.02.13.13.37.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Feb 2023 13:37:50 -0800 (PST)
-Message-ID: <cb82a360-dac1-4bf7-2dc4-63b3fb34425c@isovalent.com>
-Date:   Mon, 13 Feb 2023 21:37:50 +0000
+        with ESMTP id S229686AbjBMVxx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Feb 2023 16:53:53 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266F113D47;
+        Mon, 13 Feb 2023 13:53:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B0F166130D;
+        Mon, 13 Feb 2023 21:53:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF9F6C433A8;
+        Mon, 13 Feb 2023 21:53:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676325230;
+        bh=e8dQo3F0EIPQ9ZETyfBUQ97sr1WZutIWag6P8qcCbCo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t2CymvjCgODR3hdwfvcE/OJk3Zd+CEMEv0lnAXYlMlpusd4fdH7fY8lSj7bnROMr3
+         YpQkgxLSWUetu0QhOURxgd3Hvq0qxHADD22uhr/T7ThSWBc5Cu5Gzzd6lOZsb5mjw2
+         dKcEtTLOr+u8Nad/eZ3WjHbGAq7zH13UC8P4F0IYEEdC86LslXKSNAJhfvEcCn3CRm
+         VW+qF4j+HxAEMJhf9Tz7wFi9yQQsjQSGIowI0s+8VFYSwSEJWjP+FYcg2/Gf/HsfWT
+         4QdpslFCS6sxb31rYbW7r4Bk3WMPbRJO+I+w/XT+9B3riLhpi7S02rtOyygY6Vc8p9
+         b6vi66WFzrYOg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CC7EF40025; Mon, 13 Feb 2023 18:53:46 -0300 (-03)
+Date:   Mon, 13 Feb 2023 18:53:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Eric Curtin <ecurtin@redhat.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        linux-kernel@vger.kernel.org, Neal Gompa <neal@gompa.dev>,
+        bpf@vger.kernel.org, rust-for-linux@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: Re: pahole issues with Rust DWARF was: Re: [PATCH 1/1] pahole/Rust:
+ Check that we're adding DW_TAG_member sorted by byte offset
+Message-ID: <Y+qxas4DsaO8nUze@kernel.org>
+References: <20230111152050.559334-1-yakoyoku@gmail.com>
+ <aaf97a61-73c9-ff90-422d-9f3a79b0acd6@iogearbox.net>
+ <CANiq72m+8D8OGtkyEjmyqCynp48DCKEw4-zLZ4pm6-OmFe4p1w@mail.gmail.com>
+ <bec74b32-e35f-9489-4748-cbb241b31be7@iogearbox.net>
+ <CANiq72nLrUTcQ+Gx6FTBtOR7+Ad2cNAC-0dEE7mUdk7nQ8T6ag@mail.gmail.com>
+ <Y+atpJV5rqo08dQJ@kernel.org>
+ <Y+oofL/aJmUjcxIR@kernel.org>
+ <CANiq72=Ghy2awR_+DACyiq_DAtscx3yoKb4tJ+GkpqVCcV_HEQ@mail.gmail.com>
+ <CAOgh=FzBjR7V+sQOy2OEV+YXxB0_YzapNTO+-Xf3uGnLfA0Vxw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Subject: Re: Proposal for patch - Extend bpftool prog run to accept cpu and
- flags options
-Content-Language: en-GB
-To:     Stanislav Fomichev <sdf@google.com>,
-        Alan Jowett <Alan.Jowett@microsoft.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-References: <CH2PR21MB14309C209861239DB568C3C1FADD9@CH2PR21MB1430.namprd21.prod.outlook.com>
- <Y+qKjbYJV7WhiSYA@google.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <Y+qKjbYJV7WhiSYA@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOgh=FzBjR7V+sQOy2OEV+YXxB0_YzapNTO+-Xf3uGnLfA0Vxw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,32 +71,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2023-02-13 11:07 UTC-0800 ~ Stanislav Fomichev <sdf@google.com>
-> On 02/13, Alan Jowett wrote:
->> BPF,
+Em Mon, Feb 13, 2023 at 12:53:38PM +0000, Eric Curtin escreveu:
+> On Mon, 13 Feb 2023 at 12:45, Miguel Ojeda
+> <miguel.ojeda.sandonis@gmail.com> wrote:
+> >
+> > Hi Arnaldo,
+> >
+> > On Mon, Feb 13, 2023 at 1:09 PM Arnaldo Carvalho de Melo
+> > <arnaldo.melo@gmail.com> wrote:
+> > >
+> > > The namespace.o seems to be ok:
+> >
+> > I saw the other message too -- this looks great, thanks a ton.
+> >
+> > > The core one needs work:
+> >
+> > If `core.o` works, then I think it is likely other things will work :)
 > 
->> The existing bpf_test_run_opts structure exposes additional fields
->> including "flags" and "cpu". I propose extending the bpftool prog run
->> to accept options so set these additional fields.
+> Hi Guys,
 > 
->> Use case:
->> Some BPF programs access state that is potentially shared between
->> programs running on different CPUs. This can impact the performance of
->> a BPF program. To permit users to more accurately assess how their BPF
->> program will perform when being invoked on multiple CPUs in parallel I
->> am proposing adding the ability for bpftool to set the cpu field in 
->> bpf_test_run_opts struct when calling the syscall.
-> 
->> If no one else is working on this or there are no objections, I will
->> submit a patch using bpf-next https://github.com/xdp-project/bpf-next/.
-> 
-> Patches are welcome. I don't see anything controversial with extending
-> bpftool with those extra fields.
-> 
-> PTAL at [0] on how and where to submit the patches.
-> 
-> 0: https://www.kernel.org/doc/Documentation/bpf/bpf_devel_QA.rst
+> I'll leave this to the experts, but if we get this to the point where
+> we are happy to enable again for Rust CUs, could we request another
+> version bump? It just makes it easier to integrate with the kernel
 
-Hi Alan, I agree with Stanislav, this is a welcome addition to bpftool.
+Sure, as we improve the support for encoding BTF from DWARF generated
+for Rust code, and the subset that is used in the kernel is handled, we
+will just adjust scripts/pahole-flags.sh to skip Rust DWARF if the
+version is >= the version where excluding DWARF generated from some
+languages (Rust in this case) but < the version where we're confortable
+with generating BTF for Rust DWARF.
 
-Quentin
+- Arnaldo
+
+> scripts when we want to enable again.
+> 
+> >
+> > I can try to extract the cases for those into simpler `.o` files, if
+> > you would find simpler test cases useful (perhaps for the test suite
+> > etc.).
+> >
+> > Cheers,
+> > Miguel
+> >
+> 
+
+-- 
+
+- Arnaldo
