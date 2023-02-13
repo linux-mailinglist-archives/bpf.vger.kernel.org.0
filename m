@@ -2,605 +2,312 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E0369505C
-	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 20:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF83695045
+	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 20:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjBMTGL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Feb 2023 14:06:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        id S229576AbjBMTFA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Feb 2023 14:05:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231156AbjBMTFv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Feb 2023 14:05:51 -0500
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECDD227BD;
-        Mon, 13 Feb 2023 11:05:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676315128; x=1707851128;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=fBgVYvtbzgrBBLck45LAyx3N3g59QM8PlHKvDOI1KFQ=;
-  b=V0pmoWkm8spw3rR3kSw1tpW2+dw3vKhT50qUf5jZLJ5TraHulyVCcAn8
-   bZR9zzu0NpjUAozuab8RYbGjgci0DzyLWDO06uUPYWLNGoYz14f4n04Z+
-   tmhpgcu400FS5ZpRpSZH1Lp093eo6vQLALslFLGHLJ7EFu9I55Z+qBMBu
-   Em0AVHWW3P/igAPyHpC+hoJ15+6VGkJUjztBcJr1nn0zzUGMb5wFnpoPT
-   3wn7CTYz5b3XVg0ljBzHzvALAjRqCmM1vh24662k23MJ7DZjLrEl9UfOx
-   TDHq24FwF6HQNXgjLAhgRI5x2FIVUXXaNCb8CJvtcFMHCZX+9WMYL1Bsc
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="332281427"
-X-IronPort-AV: E=Sophos;i="5.97,294,1669104000"; 
-   d="scan'208";a="332281427"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2023 11:03:39 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="670929062"
-X-IronPort-AV: E=Sophos;i="5.97,294,1669104000"; 
-   d="scan'208";a="670929062"
-Received: from paamrpdk12-s2600bpb.aw.intel.com ([10.228.151.145])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2023 11:03:37 -0800
-From:   Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com
-Subject: [PATCH intel-next v2 8/8] i40e: add support for XDP multi-buffer Rx
-Date:   Tue, 14 Feb 2023 00:18:28 +0530
-Message-Id: <20230213184828.39404-9-tirthendu.sarkar@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230213184828.39404-1-tirthendu.sarkar@intel.com>
-References: <20230213184828.39404-1-tirthendu.sarkar@intel.com>
+        with ESMTP id S231217AbjBMTE7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Feb 2023 14:04:59 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642AF5B8D
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 11:04:42 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id w5so14498324plg.8
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 11:04:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1676315081;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rjjOYPRmhaM+wATLrynbUxHs/MiROBVLAdTjN4+mQaI=;
+        b=Ll5hlG2MLDvK5iXigNRRniO5+eUS/wAKKOECr3Bqa+gH509smhffGWo6EsWWhbSvcf
+         SnYYBOFx7lobO7byVnvggPO4QclpEBnby+pItP55L+4QC7dkpaxS+ChzzFv29Ej0nw9O
+         JSTv/j3c8jmp93pWKOkhJis59qG56Ad6VXZihbyitRo402R/Ve80IrX0Fm9w4ojdaIau
+         WMMvHQZr93+V9Rhw6e9wLrRL9+HG6/VNCLS+8VR6TGyA+GcfBZxuHa/qvkExTTR79RIf
+         q1LO5I9kpqBKdwqHxXe+OdmXQKnASe0batZSQkbS9YFhgbIiWPRgl5RrPKaKeow4XEtI
+         dXhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1676315081;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rjjOYPRmhaM+wATLrynbUxHs/MiROBVLAdTjN4+mQaI=;
+        b=1LAAEck5KlAqP9Gqxg9cGyMc4A9N8BFNEn1AwN6bu0d3v8im41xES9vFa61cDc2fug
+         onVVUnHwS4EvSkvJdsZHJRJxmHXr5e27rQeqpGFwT1sLqraP/ZghIJPdGNJIBXPau4al
+         FsGinvgzgMUgls6IbLHFeb+WVU5Ij/DxE9Mk5Lm7G+qTUSRgLe1QBzFwyAslNN05Nbug
+         UFMFclU0q6uc18I7FUTEIIIrZj2gROg6T7fPY3U6q2wVltKexc3CyHRFqpgYLv2G2o8B
+         edRq7A0Bq6phx/LMH3GiC1Ngs1AmfCwHURvy9thd+2l15LLDynqcqtCiMd5A2H2/bvCE
+         HoNg==
+X-Gm-Message-State: AO0yUKXpWh6Z/YKZY4NiidOx+dytrEbiS2fTNBRkjM7rdNRJepbpNgpk
+        foPVLfEY/jffvS2TAk9l0jM0/qqVagslEHadT0iNTCxJuYE=
+X-Google-Smtp-Source: AK7set+T3+RyfT6ox+DeqQKiji9Fj/UJtuShrZhiEBA8mtPjG9F+oxlVw+R1gPZ5Dk4gCIw6sRmgShBSqD2UgHQbr7Y=
+X-Received: by 2002:a17:902:7c94:b0:199:1f95:9ad5 with SMTP id
+ y20-20020a1709027c9400b001991f959ad5mr5703797pll.28.1676315081219; Mon, 13
+ Feb 2023 11:04:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CAK3+h2wv6D+ZnOJ9HwXZLF8HN2zcqv2gKn=p3y40z+qoeeiegw@mail.gmail.com>
+In-Reply-To: <CAK3+h2wv6D+ZnOJ9HwXZLF8HN2zcqv2gKn=p3y40z+qoeeiegw@mail.gmail.com>
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Mon, 13 Feb 2023 11:04:29 -0800
+Message-ID: <CAK3+h2wLh5Kq6PvXcRURH6CKEzNcq7gMKz0uriLo9UrpJX4W1w@mail.gmail.com>
+Subject: Re: XDP SYNProxy SYN+ACK packet missing?
+To:     bpf <bpf@vger.kernel.org>
+Cc:     maximmi@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds multi-buffer support for the i40e_driver.
+On Thu, Feb 9, 2023 at 10:02 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
+>
+> Hi,
+>
+> Sorry for the lengthy and user related question, I configured firehol
+> synproxy https://firehol.org/firehol-manual/firehol-synproxy/ to use
+> iptables synproxy, which works great. Then I  thought about why not
+> use the almost production ready XDP synproxy acceleration code to
+> accelerate the synproxy. so I compiled the
+> xdp_synproxy.c/xdp_synproxy.kern.bpf.c from bpf-next and copied the
+> xdp_synproxy binary and xdp_synproxy.kern.bpf.o to an Ubuntu 20.04
+> running Ubuntu PPA mainline kernel 6.1.10
+> https://kernel.ubuntu.com/~kernel-ppa/mainline/v6.1.10/
+>
+> attached the XDP program
+>
+> root@vli-2004:/home/vincent# ./xdp_synproxy --iface ens192  --mss4
+> 1460 --mss6 1440 --ports 80 --wscale 7 --ttl 64 --single
+>
+> Replacing allowed ports
+> Added port 80
+> Replacing TCP/IP options
+> Total SYNACKs generated: 0
+>
+> root@vli-2004:/home/vincent# ip l list dev ens192
+>
+> 3: ens192: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc
+> mq state UP mode DEFAULT group default qlen 1000
+>     link/ether 00:50:56:9d:b2:72 brd ff:ff:ff:ff:ff:ff
+>     prog/xdp id 18 tag f895ef43d8481528 jited
+>     altname enp11s0
+>
+> I ran curl test to the target 10.169.72.117 which should be DNAT to
+> protected real server 10.1.72.187, it works
+>
+> I ran client hping3 to send one SYN packet to the target 10.169.72.117
+> which should be dropped by XDP SYNPROXY, it works great
+>
+>  hping3 10.169.72.117 -S -p 80 -c 1
+>
+> but I did not see SYN+ACK with syncookie packet sent to the client
+> when I run tcpdump on the hping3 client side ( I understand I will not
+> see SYN and SYN+ACK on firewall with tcpdump because XDP processed
+> packet early in the path)
+>
+> I used pwru to trace the SYN packet:
+>
+> root@vli-2004:/home/vincent# time ./pwru --filter-src-ip 10.169.72.114
+> --output-tuple --backend kprobe-multi
+>
+>
+> 2023/02/09 04:15:42 Per cpu buffer size: 4096 bytes
+>
+> 2023/02/09 04:15:42 Attaching kprobes (via kprobe-multi)...
+>
+> 1517 / 1517 [-----------------------------------------------------------------------------------------------------------------------------]
+> 100.00% ? p/s
+>
+> 2023/02/09 04:15:42 Attached (ignored 0)
+>
+> 2023/02/09 04:15:42 Listening for events..
+>
+>                SKB    CPU          PROCESS                     FUNC
+> 0xffff8fbc5939c900      0        [<empty>]           do_xdp_generic
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+> 0xffff8fbc5939c900      0        [<empty>] netif_receive_generic_xdp
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+> 0xffff8fbc5939c900      0        [<empty>]         pskb_expand_head
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+> 0xffff8fbc5939c900      0        [<empty>]            skb_free_head
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+> 0xffff8fbc5939c900      0        [<empty>] bpf_prog_run_generic_xdp
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+> 0xffff8fbc5939c900      0        [<empty>]
+> kfree_skb_reason(SKB_DROP_REASON_NOT_SPECIFIED)
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+> 0xffff8fbc5939c900      0        [<empty>]   skb_release_head_state
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+> 0xffff8fbc5939c900      0        [<empty>]         skb_release_data
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+> 0xffff8fbc5939c900      0        [<empty>]            skb_free_head
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+> 0xffff8fbc5939c900      0        [<empty>]             kfree_skbmem
+> 10.169.72.114:17664->10.169.72.117:40(tcp)
+>
+> This is not big deal since the protection works :)  but I am just
+> curious why I did not see the SYN+ACK with syncookie packet sent to
+> the hping3 client.
+>
+> here is my firehol.conf
+>
+> version 6
+>
+> # The network of our eth0 LAN.
+>
+> home_ips="10.1.72.0/24"
+> mgmt_ips="10.3.0.0/16"
+>
+> ipv4 synproxy input inface ens192 dst 10.169.72.117 dport 80 dnat to 10.1.72.187
+>
+> interface4 ens160 mgmt src "${mgmt_ips}"
+>     policy accept
+>     server "http ssh icmp"        accept
+>     client "icmp"                 accept
+>
+> interface4 ens224 home src "${home_ips}"
+>     policy reject
+>     server "http ssh icmp"        accept
+>     client "icmp"                 accept
+>
+> interface4 ens192 internet src not "${home_ips} ${UNROUTABLE_IPS}"
+>     protection strong 10/sec 10
+>     server "http icmp" accept
+>     client all    accept
+>
+> router4 internet2home inface ens192 outface ens224
+>     masquerade reverse
+>     server "http" accept dst 10.1.72.187
+>     client all   accept
+>     server ident reject with tcp-reset
+>
+>
+> Resulting iptables rules related to SYNPROXY
+>
+> *raw
+>
+> :PREROUTING ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> :SYNPROXY2SERVER_OUT - [0:0]
+> :SYNPROXY2SERVER_PRE - [0:0]
+> [0:0] -A PREROUTING -p tcp -m mark --mark 0x2000/0x2000 -j SYNPROXY2SERVER_PRE
+> [0:0] -A PREROUTING -d 10.169.72.117/32 -i ens192 -p tcp -m tcp
+> --dport 80 -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j CT --notrack
+> [0:0] -A OUTPUT -p tcp -m mark --mark 0x2000/0x2000 -j SYNPROXY2SERVER_OUT
+> [0:0] -A SYNPROXY2SERVER_OUT -j ACCEPT
+> [0:0] -A SYNPROXY2SERVER_PRE -j ACCEPT
+> COMMIT
+>
+> *nat
+>
+> :PREROUTING ACCEPT [0:0]
+> :INPUT ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> :POSTROUTING ACCEPT [0:0]
+> :SYNPROXY2SERVER_OUT - [0:0]
+> :SYNPROXY2SERVER_PRE - [0:0]
+> [0:0] -A PREROUTING -p tcp -m conntrack --ctstate NEW -m mark --mark
+> 0x2000/0x2000 -j SYNPROXY2SERVER_PRE
+> [0:0] -A OUTPUT -p tcp -m conntrack --ctstate NEW -m mark --mark
+> 0x2000/0x2000 -j SYNPROXY2SERVER_OUT
+> [0:0] -A POSTROUTING -o ens192 -m conntrack --ctstate NEW -j MASQUERADE
+> [0:0] -A SYNPROXY2SERVER_OUT -d 10.169.72.117/32 -p tcp -m tcp --dport
+> 80 -m conntrack --ctstate NEW -j DNAT --to-destination 10.1.72.187
+> [0:0] -A SYNPROXY2SERVER_OUT -j ACCEPT
+> [0:0] -A SYNPROXY2SERVER_PRE -j ACCEPT
+> COMMIT
+>
+> *mangle
+>
+> :PREROUTING ACCEPT [0:0]
+> :INPUT ACCEPT [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> :POSTROUTING ACCEPT [0:0]
+> [0:0] -A PREROUTING -m conntrack --ctstate RELATED,ESTABLISHED -j
+> CONNMARK --restore-mark --nfmask 0x1fff --ctmask 0x1fff
+> [0:0] -A INPUT -m conntrack --ctstate NEW -j CONNMARK --save-mark
+> --nfmask 0x1fff --ctmask 0x1fff
+> [0:0] -A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j CONNMARK
+> --restore-mark --nfmask 0x1fff --ctmask 0x1fff
+> [0:0] -A OUTPUT -d 10.169.72.117/32 -p tcp -m tcp --dport 80 -m
+> conntrack --ctstate NEW -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j MARK
+> --set-xmark 0x2000/0x2000
+> [0:0] -A POSTROUTING -m conntrack --ctstate NEW -j CONNMARK
+> --save-mark --nfmask 0x1fff --ctmask 0x1fff
+> COMMIT
+>
+> *filter
+>
+> :INPUT DROP [0:0]
+> :FORWARD DROP [0:0]
+> :OUTPUT DROP [0:0]
+> :SMART_REJECT - [0:0]
+> :SYNPROXY2SERVER_IN - [0:0]
+> :SYNPROXY2SERVER_OUT - [0:0]
+>
+> [0:0] -A INPUT -p tcp -m conntrack --ctstate NEW -m mark --mark
+> 0x2000/0x2000 -j SYNPROXY2SERVER_IN
+> [0:0] -A INPUT -d 10.169.72.117/32 -i ens192 -p tcp -m tcp --dport 80
+> -m conntrack --ctstate INVALID,UNTRACKED -j SYNPROXY --sack-perm
+> --timestamp --wscale 7 --mss 1460
+>
+> [0:0] -A FORWARD -s 10.1.72.187/32 -o ens192 -p tcp -m tcp --sport 80
+> -m conntrack --ctstate INVALID -m tcp --tcp-flags RST,ACK ACK -j DROP
+> [0:0] -A FORWARD -p tcp -m tcp --tcp-flags FIN,ACK FIN,ACK -m
+> conntrack --ctstate INVALID,NEW -j DROP
+> [0:0] -A FORWARD -p tcp -m tcp --tcp-flags RST,ACK RST,ACK -m
+> conntrack --ctstate INVALID,NEW -j DROP
+> [0:0] -A FORWARD -p tcp -m tcp --tcp-flags ACK ACK -m conntrack
+> --ctstate INVALID,NEW -j DROP
+> [0:0] -A FORWARD -p tcp -m tcp --tcp-flags RST RST -m conntrack
+> --ctstate INVALID,NEW -j DROP
+> [0:0] -A FORWARD -p icmp -m icmp --icmp-type 3 -m conntrack --ctstate
+> INVALID,NEW -j DROP
+> [0:0] -A FORWARD -m conntrack --ctstate INVALID -m limit --limit 1/sec
+> -j LOG --log-prefix "BLOCKED INVALID FORWARD:"
+> [0:0] -A FORWARD -m conntrack --ctstate INVALID -j DROP
+> [0:0] -A FORWARD -p icmp -m conntrack --ctstate RELATED -j ACCEPT
+> [0:0] -A FORWARD -p tcp -m conntrack --ctstate RELATED -m tcp
+> --tcp-flags FIN,SYN,RST,PSH,ACK,URG RST,ACK -j ACCEPT
+> [0:0] -A FORWARD -m limit --limit 1/sec -j LOG --log-prefix "PASS-unknown:"
+> [0:0] -A FORWARD -j DROP
+>
+> [0:0] -A OUTPUT -p tcp -m conntrack --ctstate NEW -m mark --mark
+> 0x2000/0x2000 -j SYNPROXY2SERVER_OUT
+> [0:0] -A OUTPUT -s 10.169.72.117/32 -o ens192 -p tcp -m tcp --sport 80
+> -m conntrack --ctstate INVALID,UNTRACKED -m tcp --tcp-flags
+> SYN,RST,ACK SYN,ACK -j ACCEPT
+>
+> [0:0] -A SYNPROXY2SERVER_IN -m limit --limit 1/sec -j LOG --log-prefix
+> "ORPHAN SYNPROXY->SERVER filte"
+> [0:0] -A SYNPROXY2SERVER_IN -j DROP
+> [0:0] -A SYNPROXY2SERVER_OUT -d 10.1.72.187/32 -p tcp -m tcp --dport
+> 80 -j ACCEPT
+> [0:0] -A SYNPROXY2SERVER_OUT -m limit --limit 1/sec -j LOG
+> --log-prefix "ORPHAN SYNPROXY->SERVER filte"
+> [0:0] -A SYNPROXY2SERVER_OUT -j DROP
 
-i40e_clean_rx_irq() is modified to collate all the buffers of a packet
-before calling the XDP program. xdp_buff is built for the first frag of
-the packet and subsequent frags are added to it. 'next_to_process' is
-incremented for all non-EOP frags while 'next_to_clean' stays at the
-first descriptor of the packet. XDP program is called only on receiving
-EOP frag.
+after adding bpf_printk in
+tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c like
 
-New functions are added for adding frags to xdp_buff and for post
-processing of the buffers once the xdp prog has run. For XDP_PASS this
-results in a skb with multiple fragments.
+        if (hdr->ipv4) {
+                /* TCP doesn't normally use fragments, and XDP can't reassemble
+                 * them.
+                 */
+                if ((hdr->ipv4->frag_off & bpf_htons(IP_DF | IP_MF |
+IP_OFFSET)) != bpf_htons(IP_DF)) {
+                        bpf_printk("tcp_lookup in syncookie_part1
+return 1, fragments\n");
+                        return XDP_DROP;
+                }
 
-i40e_build_skb() builds the skb around xdp buffer that already contains
-frags data. So i40e_add_rx_frag() helper function is now removed. Since
-fields before 'dataref' in skb_shared_info are cleared during
-napi_skb_build(), xdp_update_skb_shared_info() is called to set those.
-
-For i40e_construct_skb(), all the frags data needs to be copied from
-xdp_buffer's shared_skb_info to newly constructed skb's shared_skb_info.
-
-This also means 'skb' does not need to be preserved across i40e_napi_poll()
-calls and hence is removed from i40e_ring structure.
-
-Previously i40e_alloc_rx_buffers() was called for every 32 cleaned
-buffers. For multi-buffers this may not be optimal as there may be more
-cleaned buffers in each i40e_clean_rx_irq() call. So this is now called
-when at least half of the ring size has been cleaned.
-
-Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c |   4 +-
- drivers/net/ethernet/intel/i40e/i40e_txrx.c | 320 +++++++++++++-------
- drivers/net/ethernet/intel/i40e/i40e_txrx.h |   8 -
- 3 files changed, 215 insertions(+), 117 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index a6b0516a81c0..0b04b1ded18e 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -2919,7 +2919,7 @@ static int i40e_max_vsi_frame_size(struct i40e_vsi *vsi,
- 	u16 rx_buf_len = i40e_calculate_vsi_rx_buf_len(vsi);
- 	u16 chain_len;
- 
--	if (xdp_prog)
-+	if (xdp_prog && !xdp_prog->aux->xdp_has_frags)
- 		chain_len = 1;
- 	else
- 		chain_len = I40E_MAX_CHAINED_RX_BUFFERS;
-@@ -13329,7 +13329,7 @@ static int i40e_xdp_setup(struct i40e_vsi *vsi, struct bpf_prog *prog,
- 
- 	/* Don't allow frames that span over multiple buffers */
- 	if (vsi->netdev->mtu > frame_size - I40E_PACKET_HDR_PAD) {
--		NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP");
-+		NL_SET_ERR_MSG_MOD(extack, "MTU too large for linear frames and XDP prog does not support frags");
- 		return -EINVAL;
- 	}
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index dc2c9aae0ffe..394292711e62 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -1477,9 +1477,6 @@ void i40e_clean_rx_ring(struct i40e_ring *rx_ring)
- 	if (!rx_ring->rx_bi)
- 		return;
- 
--	dev_kfree_skb(rx_ring->skb);
--	rx_ring->skb = NULL;
--
- 	if (rx_ring->xsk_pool) {
- 		i40e_xsk_clean_rx_ring(rx_ring);
- 		goto skip_free;
-@@ -2033,36 +2030,6 @@ static void i40e_rx_buffer_flip(struct i40e_rx_buffer *rx_buffer,
- #endif
- }
- 
--/**
-- * i40e_add_rx_frag - Add contents of Rx buffer to sk_buff
-- * @rx_ring: rx descriptor ring to transact packets on
-- * @rx_buffer: buffer containing page to add
-- * @skb: sk_buff to place the data into
-- * @size: packet length from rx_desc
-- *
-- * This function will add the data contained in rx_buffer->page to the skb.
-- * It will just attach the page as a frag to the skb.
-- *
-- * The function will then update the page offset.
-- **/
--static void i40e_add_rx_frag(struct i40e_ring *rx_ring,
--			     struct i40e_rx_buffer *rx_buffer,
--			     struct sk_buff *skb,
--			     unsigned int size)
--{
--#if (PAGE_SIZE < 8192)
--	unsigned int truesize = i40e_rx_pg_size(rx_ring) / 2;
--#else
--	unsigned int truesize = SKB_DATA_ALIGN(size + rx_ring->rx_offset);
--#endif
--
--	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buffer->page,
--			rx_buffer->page_offset, size, truesize);
--
--	/* page is being used so we must update the page offset */
--	i40e_rx_buffer_flip(rx_buffer, truesize);
--}
--
- /**
-  * i40e_get_rx_buffer - Fetch Rx buffer and synchronize data for use
-  * @rx_ring: rx descriptor ring to transact packets on
-@@ -2099,20 +2066,82 @@ static struct i40e_rx_buffer *i40e_get_rx_buffer(struct i40e_ring *rx_ring,
- }
- 
- /**
-- * i40e_construct_skb - Allocate skb and populate it
-+ * i40e_put_rx_buffer - Clean up used buffer and either recycle or free
-  * @rx_ring: rx descriptor ring to transact packets on
-  * @rx_buffer: rx buffer to pull data from
-+ *
-+ * This function will clean up the contents of the rx_buffer.  It will
-+ * either recycle the buffer or unmap it and free the associated resources.
-+ */
-+static void i40e_put_rx_buffer(struct i40e_ring *rx_ring,
-+			       struct i40e_rx_buffer *rx_buffer)
-+{
-+	if (i40e_can_reuse_rx_page(rx_buffer, &rx_ring->rx_stats)) {
-+		/* hand second half of page back to the ring */
-+		i40e_reuse_rx_page(rx_ring, rx_buffer);
-+	} else {
-+		/* we are not reusing the buffer so unmap it */
-+		dma_unmap_page_attrs(rx_ring->dev, rx_buffer->dma,
-+				     i40e_rx_pg_size(rx_ring),
-+				     DMA_FROM_DEVICE, I40E_RX_DMA_ATTR);
-+		__page_frag_cache_drain(rx_buffer->page,
-+					rx_buffer->pagecnt_bias);
-+		/* clear contents of buffer_info */
-+		rx_buffer->page = NULL;
-+	}
-+}
-+
-+/**
-+ * i40e_process_rx_buffs- Processing of buffers post XDP prog or on error
-+ * @rx_ring: Rx descriptor ring to transact packets on
-+ * @xdp_res: Result of the XDP program
-+ * @xdp: xdp_buff pointing to the data
-+ **/
-+static void i40e_process_rx_buffs(struct i40e_ring *rx_ring, int xdp_res,
-+				  struct xdp_buff *xdp)
-+{
-+	u16 next = rx_ring->next_to_clean;
-+	struct i40e_rx_buffer *rx_buffer;
-+
-+	xdp->flags = 0;
-+
-+	while (1) {
-+		rx_buffer = i40e_rx_bi(rx_ring, next);
-+		if (++next == rx_ring->count)
-+			next = 0;
-+
-+		if (!rx_buffer->page)
-+			continue;
-+
-+		if (xdp_res == I40E_XDP_CONSUMED)
-+			rx_buffer->pagecnt_bias++;
-+		else
-+			i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
-+
-+		/* EOP buffer will be put in i40e_clean_rx_irq() */
-+		if (next == rx_ring->next_to_process)
-+			return;
-+
-+		i40e_put_rx_buffer(rx_ring, rx_buffer);
-+	}
-+}
-+
-+/**
-+ * i40e_construct_skb - Allocate skb and populate it
-+ * @rx_ring: rx descriptor ring to transact packets on
-  * @xdp: xdp_buff pointing to the data
-+ * @nr_frags: number of buffers for the packet
-  *
-  * This function allocates an skb.  It then populates it with the page
-  * data from the current receive descriptor, taking care to set up the
-  * skb correctly.
-  */
- static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
--					  struct i40e_rx_buffer *rx_buffer,
--					  struct xdp_buff *xdp)
-+					  struct xdp_buff *xdp,
-+					  u32 nr_frags)
- {
- 	unsigned int size = xdp->data_end - xdp->data;
-+	struct i40e_rx_buffer *rx_buffer;
- 	unsigned int headlen;
- 	struct sk_buff *skb;
- 
-@@ -2152,13 +2181,17 @@ static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
- 	memcpy(__skb_put(skb, headlen), xdp->data,
- 	       ALIGN(headlen, sizeof(long)));
- 
-+	rx_buffer = i40e_rx_bi(rx_ring, rx_ring->next_to_clean);
- 	/* update all of the pointers */
- 	size -= headlen;
- 	if (size) {
-+		if (unlikely(nr_frags >= MAX_SKB_FRAGS)) {
-+			dev_kfree_skb(skb);
-+			return NULL;
-+		}
- 		skb_add_rx_frag(skb, 0, rx_buffer->page,
- 				rx_buffer->page_offset + headlen,
- 				size, xdp->frame_sz);
--
- 		/* buffer is used by skb, update page_offset */
- 		i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
- 	} else {
-@@ -2166,21 +2199,40 @@ static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
- 		rx_buffer->pagecnt_bias++;
- 	}
- 
-+	if (unlikely(xdp_buff_has_frags(xdp))) {
-+		struct skb_shared_info *sinfo, *skinfo = skb_shinfo(skb);
-+
-+		sinfo = xdp_get_shared_info_from_buff(xdp);
-+		memcpy(&skinfo->frags[skinfo->nr_frags], &sinfo->frags[0],
-+		       sizeof(skb_frag_t) * nr_frags);
-+
-+		xdp_update_skb_shared_info(skb, skinfo->nr_frags + nr_frags,
-+					   sinfo->xdp_frags_size,
-+					   nr_frags * xdp->frame_sz,
-+					   xdp_buff_is_frag_pfmemalloc(xdp));
-+
-+		/* First buffer has already been processed, so bump ntc */
-+		if (++rx_ring->next_to_clean == rx_ring->count)
-+			rx_ring->next_to_clean = 0;
-+
-+		i40e_process_rx_buffs(rx_ring, I40E_XDP_PASS, xdp);
-+	}
-+
- 	return skb;
- }
- 
- /**
-  * i40e_build_skb - Build skb around an existing buffer
-  * @rx_ring: Rx descriptor ring to transact packets on
-- * @rx_buffer: Rx buffer to pull data from
-  * @xdp: xdp_buff pointing to the data
-+ * @nr_frags: number of buffers for the packet
-  *
-  * This function builds an skb around an existing Rx buffer, taking care
-  * to set up the skb correctly and avoid any memcpy overhead.
-  */
- static struct sk_buff *i40e_build_skb(struct i40e_ring *rx_ring,
--				      struct i40e_rx_buffer *rx_buffer,
--				      struct xdp_buff *xdp)
-+				      struct xdp_buff *xdp,
-+				      u32 nr_frags)
- {
- 	unsigned int metasize = xdp->data - xdp->data_meta;
- 	struct sk_buff *skb;
-@@ -2203,36 +2255,25 @@ static struct sk_buff *i40e_build_skb(struct i40e_ring *rx_ring,
- 	if (metasize)
- 		skb_metadata_set(skb, metasize);
- 
--	/* buffer is used by skb, update page_offset */
--	i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
-+	if (unlikely(xdp_buff_has_frags(xdp))) {
-+		struct skb_shared_info *sinfo;
- 
--	return skb;
--}
-+		sinfo = xdp_get_shared_info_from_buff(xdp);
-+		xdp_update_skb_shared_info(skb, nr_frags,
-+					   sinfo->xdp_frags_size,
-+					   nr_frags * xdp->frame_sz,
-+					   xdp_buff_is_frag_pfmemalloc(xdp));
- 
--/**
-- * i40e_put_rx_buffer - Clean up used buffer and either recycle or free
-- * @rx_ring: rx descriptor ring to transact packets on
-- * @rx_buffer: rx buffer to pull data from
-- *
-- * This function will clean up the contents of the rx_buffer.  It will
-- * either recycle the buffer or unmap it and free the associated resources.
-- */
--static void i40e_put_rx_buffer(struct i40e_ring *rx_ring,
--			       struct i40e_rx_buffer *rx_buffer)
--{
--	if (i40e_can_reuse_rx_page(rx_buffer, &rx_ring->rx_stats)) {
--		/* hand second half of page back to the ring */
--		i40e_reuse_rx_page(rx_ring, rx_buffer);
-+		i40e_process_rx_buffs(rx_ring, I40E_XDP_PASS, xdp);
- 	} else {
--		/* we are not reusing the buffer so unmap it */
--		dma_unmap_page_attrs(rx_ring->dev, rx_buffer->dma,
--				     i40e_rx_pg_size(rx_ring),
--				     DMA_FROM_DEVICE, I40E_RX_DMA_ATTR);
--		__page_frag_cache_drain(rx_buffer->page,
--					rx_buffer->pagecnt_bias);
--		/* clear contents of buffer_info */
--		rx_buffer->page = NULL;
-+		struct i40e_rx_buffer *rx_buffer;
-+
-+		rx_buffer = i40e_rx_bi(rx_ring, rx_ring->next_to_clean);
-+		/* buffer is used by skb, update page_offset */
-+		i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
- 	}
-+
-+	return skb;
- }
- 
- /**
-@@ -2387,6 +2428,61 @@ static void i40e_inc_ntp(struct i40e_ring *rx_ring)
- 	prefetch(I40E_RX_DESC(rx_ring, ntp));
- }
- 
-+/**
-+ * i40e_add_xdp_frag: Add a frag to xdp_buff
-+ * @xdp: xdp_buff pointing to the data
-+ * @nr_frags: return number of buffers for the packet
-+ * @rx_buffer: rx_buffer holding data of the current frag
-+ * @size: size of data of current frag
-+ */
-+static int i40e_add_xdp_frag(struct xdp_buff *xdp, u32 *nr_frags,
-+			     struct i40e_rx_buffer *rx_buffer, u32 size)
-+{
-+	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-+	int ret = 0;
-+
-+	if (!xdp_buff_has_frags(xdp)) {
-+		sinfo->nr_frags = 0;
-+		sinfo->xdp_frags_size = 0;
-+		xdp_buff_set_frags_flag(xdp);
-+	} else if (unlikely(sinfo->nr_frags >= MAX_SKB_FRAGS)) {
-+		/* Overflowing packet: All frags need to be dropped. Keep
-+		 * counting the frags that need to be cleaned till EOP
-+		 */
-+		sinfo->nr_frags++;
-+		ret = -ENOMEM;
-+		goto ret_err;
-+	}
-+
-+	__skb_fill_page_desc_noacc(sinfo, sinfo->nr_frags++, rx_buffer->page,
-+				   rx_buffer->page_offset, size);
-+
-+	sinfo->xdp_frags_size += size;
-+
-+	if (page_is_pfmemalloc(rx_buffer->page))
-+		xdp_buff_set_frag_pfmemalloc(xdp);
-+ret_err:
-+	*nr_frags = sinfo->nr_frags;
-+	return ret;
-+}
-+
-+/**
-+ * i40e_consume_rx_buffs - Consume all the buffers of the packet
-+ * @rx_ring: rx descriptor ring to transact packets on
-+ * @xdp: xdp_buff pointing to the data
-+ * @rx_buffer: rx_buffer of eop
-+ */
-+static void i40e_consume_rx_buffs(struct i40e_ring *rx_ring,
-+				  struct xdp_buff *xdp,
-+				  struct i40e_rx_buffer *rx_buffer)
-+{
-+	if (unlikely(xdp_buff_has_frags(xdp)))
-+		i40e_process_rx_buffs(rx_ring, I40E_XDP_CONSUMED, xdp);
-+	i40e_put_rx_buffer(rx_ring, rx_buffer);
-+	rx_ring->next_to_clean = rx_ring->next_to_process;
-+	xdp->data = NULL;
-+}
-+
- /**
-  * i40e_clean_rx_irq - Clean completed descriptors from Rx ring - bounce buf
-  * @rx_ring: rx descriptor ring to transact packets on
-@@ -2405,9 +2501,9 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
- {
- 	unsigned int total_rx_bytes = 0, total_rx_packets = 0;
- 	u16 cleaned_count = I40E_DESC_UNUSED(rx_ring);
-+	u16 clean_threshold = rx_ring->count / 2;
- 	unsigned int offset = rx_ring->rx_offset;
- 	struct xdp_buff *xdp = &rx_ring->xdp;
--	struct sk_buff *skb = rx_ring->skb;
- 	unsigned int xdp_xmit = 0;
- 	struct bpf_prog *xdp_prog;
- 	bool failure = false;
-@@ -2419,11 +2515,14 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
- 		u16 ntp = rx_ring->next_to_process;
- 		struct i40e_rx_buffer *rx_buffer;
- 		union i40e_rx_desc *rx_desc;
-+		struct sk_buff *skb;
- 		unsigned int size;
-+		u32 nfrags = 0;
-+		bool neop;
- 		u64 qword;
- 
- 		/* return some buffers to hardware, one at a time is too slow */
--		if (cleaned_count >= I40E_RX_BUFFER_WRITE) {
-+		if (cleaned_count >= clean_threshold) {
- 			failure = failure ||
- 				  i40e_alloc_rx_buffers(rx_ring, cleaned_count);
- 			cleaned_count = 0;
-@@ -2461,76 +2560,83 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
- 			break;
- 
- 		i40e_trace(clean_rx_irq, rx_ring, rx_desc, xdp);
-+		/* retrieve a buffer from the ring */
- 		rx_buffer = i40e_get_rx_buffer(rx_ring, size);
- 
--		/* retrieve a buffer from the ring */
--		if (!skb) {
-+		neop = i40e_is_non_eop(rx_ring, rx_desc);
-+		i40e_inc_ntp(rx_ring);
-+
-+		if (!xdp->data) {
- 			unsigned char *hard_start;
- 
- 			hard_start = page_address(rx_buffer->page) +
- 				     rx_buffer->page_offset - offset;
- 			xdp_prepare_buff(xdp, hard_start, offset, size, true);
--			xdp_buff_clear_frags_flag(xdp);
- #if (PAGE_SIZE > 4096)
- 			/* At larger PAGE_SIZE, frame_sz depend on len size */
- 			xdp->frame_sz = i40e_rx_frame_truesize(rx_ring, size);
- #endif
--			xdp_res = i40e_run_xdp(rx_ring, xdp, xdp_prog);
-+		} else if (i40e_add_xdp_frag(xdp, &nfrags, rx_buffer, size) &&
-+			   !neop) {
-+			/* Overflowing packet: Drop all frags on EOP */
-+			i40e_consume_rx_buffs(rx_ring, xdp, rx_buffer);
-+			break;
- 		}
- 
-+		if (neop)
-+			continue;
-+
-+		xdp_res = i40e_run_xdp(rx_ring, xdp, xdp_prog);
-+
- 		if (xdp_res) {
--			if (xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR)) {
--				xdp_xmit |= xdp_res;
-+			xdp_xmit |= xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR);
-+
-+			if (unlikely(xdp_buff_has_frags(xdp))) {
-+				i40e_process_rx_buffs(rx_ring, xdp_res, xdp);
-+				size = xdp_get_buff_len(xdp);
-+			} else if (xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR)) {
- 				i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
- 			} else {
- 				rx_buffer->pagecnt_bias++;
- 			}
- 			total_rx_bytes += size;
--			total_rx_packets++;
--		} else if (skb) {
--			i40e_add_rx_frag(rx_ring, rx_buffer, skb, size);
--		} else if (ring_uses_build_skb(rx_ring)) {
--			skb = i40e_build_skb(rx_ring, rx_buffer, xdp);
- 		} else {
--			skb = i40e_construct_skb(rx_ring, rx_buffer, xdp);
--		}
-+			if (ring_uses_build_skb(rx_ring))
-+				skb = i40e_build_skb(rx_ring, xdp, nfrags);
-+			else
-+				skb = i40e_construct_skb(rx_ring, xdp, nfrags);
-+
-+			/* drop if we failed to retrieve a buffer */
-+			if (!skb) {
-+				rx_ring->rx_stats.alloc_buff_failed++;
-+				i40e_consume_rx_buffs(rx_ring, xdp, rx_buffer);
-+				break;
-+			}
- 
--		/* exit if we failed to retrieve a buffer */
--		if (!xdp_res && !skb) {
--			rx_ring->rx_stats.alloc_buff_failed++;
--			rx_buffer->pagecnt_bias++;
--			break;
--		}
-+			if (i40e_cleanup_headers(rx_ring, skb, rx_desc))
-+				goto process_next;
- 
--		i40e_put_rx_buffer(rx_ring, rx_buffer);
--		cleaned_count++;
-+			/* probably a little skewed due to removing CRC */
-+			total_rx_bytes += skb->len;
- 
--		i40e_inc_ntp(rx_ring);
--		rx_ring->next_to_clean = rx_ring->next_to_process;
--		if (i40e_is_non_eop(rx_ring, rx_desc))
--			continue;
-+			/* populate checksum, VLAN, and protocol */
-+			i40e_process_skb_fields(rx_ring, rx_desc, skb);
- 
--		if (xdp_res || i40e_cleanup_headers(rx_ring, skb, rx_desc)) {
--			skb = NULL;
--			continue;
-+			i40e_trace(clean_rx_irq_rx, rx_ring, rx_desc, xdp);
-+			napi_gro_receive(&rx_ring->q_vector->napi, skb);
- 		}
- 
--		/* probably a little skewed due to removing CRC */
--		total_rx_bytes += skb->len;
--
--		/* populate checksum, VLAN, and protocol */
--		i40e_process_skb_fields(rx_ring, rx_desc, skb);
--
--		i40e_trace(clean_rx_irq_rx, rx_ring, rx_desc, xdp);
--		napi_gro_receive(&rx_ring->q_vector->napi, skb);
--		skb = NULL;
--
- 		/* update budget accounting */
- 		total_rx_packets++;
-+process_next:
-+		cleaned_count += nfrags + 1;
-+		i40e_put_rx_buffer(rx_ring, rx_buffer);
-+		rx_ring->next_to_clean = rx_ring->next_to_process;
-+
-+		xdp->data = NULL;
- 	}
- 
- 	i40e_finalize_xdp_rx(rx_ring, xdp_xmit);
--	rx_ring->skb = skb;
- 
- 	i40e_update_rx_stats(rx_ring, total_rx_bytes, total_rx_packets);
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.h b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-index e86abc25bb5e..14ad074639ab 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-@@ -393,14 +393,6 @@ struct i40e_ring {
- 
- 	struct rcu_head rcu;		/* to avoid race on free */
- 	u16 next_to_alloc;
--	struct sk_buff *skb;		/* When i40e_clean_rx_ring_irq() must
--					 * return before it sees the EOP for
--					 * the current packet, we save that skb
--					 * here and resume receiving this
--					 * packet the next time
--					 * i40e_clean_rx_ring_irq() is called
--					 * for this ring.
--					 */
- 
- 	struct i40e_channel *ch;
- 	u16 rx_offset;
--- 
-2.34.1
-
+It is my hping3 test  hping3 10.169.72.117 -S -p 80 -c 1 not setting
+DF flag and result in above XDP_DROP, so no SYNACK cookie sent, run
+hping3 with hping3 10.169.72.117 -S -y -p 80 -c 1 to set DF flag, the
+hping3 client received the SYNACK with syncookie. sorry for the noise.
