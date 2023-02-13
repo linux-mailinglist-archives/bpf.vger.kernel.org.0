@@ -2,101 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C42AC693B0E
-	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 00:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E231C693CBD
+	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 04:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbjBLXVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Feb 2023 18:21:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
+        id S229747AbjBMDCB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 12 Feb 2023 22:02:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjBLXVI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Feb 2023 18:21:08 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D45510262
-        for <bpf@vger.kernel.org>; Sun, 12 Feb 2023 15:20:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676244059; x=1707780059;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=N7b9YyBHcRUPxz/axnNKKkMFESVIYOC0Hbm4TQUMW04=;
-  b=Ka+LbNaT6or1Zb6zIqMY0PEp0rhrpJ56pybGLnYOKb2ZDTj8vfiQQ2JW
-   pdGFBG2GA8KlBIn9pAqKtSSEGKo8VwBnkDYNAW/KmYXQyZX5G2uTuPACF
-   EERF+lRsPVdub4WULI5BTCCcSAyJVoURTPoxwkF+aL6CvPs/4qpIGuH7D
-   +LwugWewy+WlC1CD086+ce8ktln5c5Lov3ai2wPR8YCThBoMWlg1Vypz9
-   X62+ddHV8BFE75su3BlAAF2pTL4HQjLXWQeVY0sG+1Ja7jaoyQbEYUnID
-   NDiRPNXBQ8pPxCsL+XFqRYB+bCNVDupzP2AuKrBC2GcXwzI/MOJNugmVx
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="314411539"
-X-IronPort-AV: E=Sophos;i="5.97,291,1669104000"; 
-   d="scan'208";a="314411539"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2023 15:20:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="811402585"
-X-IronPort-AV: E=Sophos;i="5.97,291,1669104000"; 
-   d="scan'208";a="811402585"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Feb 2023 15:20:57 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pRLeS-0007Qb-1l;
-        Sun, 12 Feb 2023 23:20:56 +0000
-Date:   Mon, 13 Feb 2023 07:20:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dave Thaler <dthaler1968@googlemail.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, bpf@ietf.org,
-        Dave Thaler <dthaler@microsoft.com>
-Subject: Re: [PATCH bpf-next v2] bpf, docs: Explain helper functions
-Message-ID: <202302130706.NBSii5FS-lkp@intel.com>
-References: <20230206191647.2075-1-dthaler1968@googlemail.com>
+        with ESMTP id S229675AbjBMDCA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 12 Feb 2023 22:02:00 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C51BA6185
+        for <bpf@vger.kernel.org>; Sun, 12 Feb 2023 19:01:58 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8BxrOokqOljkOQRAA--.35408S3;
+        Mon, 13 Feb 2023 11:01:56 +0800 (CST)
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax97wjqOljlAUyAA--.27550S3;
+        Mon, 13 Feb 2023 11:01:56 +0800 (CST)
+Subject: Re: [PATCH 1/2] LoongArch: BPF: Treat function address as 64-bit
+ value
+To:     Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org,
+        loongarch@lists.linux.dev
+References: <20230212035236.1436532-1-hengqi.chen@gmail.com>
+ <20230212035236.1436532-2-hengqi.chen@gmail.com>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <07edfd3b-9895-f711-47a7-a805a4e92691@loongson.cn>
+Date:   Mon, 13 Feb 2023 11:01:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230206191647.2075-1-dthaler1968@googlemail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230212035236.1436532-2-hengqi.chen@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8Ax97wjqOljlAUyAA--.27550S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvJXoW7tr1fAry5uFyUCryDuw4Durg_yoW8tFykpr
+        s8CFs5CrW8Xr47WFnxJa18WFnIyFs8K3yUX3W7t3yFkanxXr93XF1kKw4a9as8G3y8Cw4I
+        vrW0kw15Zan0ka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        bI8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
+        1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4
+        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
+        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4xG64xvF2
+        IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4U
+        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487Mx
+        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
+        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwI
+        xGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8
+        JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcV
+        C2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Dave,
+Hi Hengqi,
 
-Thank you for the patch! Perhaps something to improve:
+On 02/12/2023 11:52 AM, Hengqi Chen wrote:
+> Let's always use 4 instructions for function address in JIT.
+> So that the instruction sequences don't change between the first
+> pass and the extra pass for function calls.
+>
+> Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  arch/loongarch/net/bpf_jit.c | 23 ++++++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index c4b1947ebf76..2d952110be72 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -446,6 +446,27 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>  	return 0;
+>  }
+>
+> +static inline void emit_addr_move(struct jit_ctx *ctx, enum loongarch_gpr rd, u64 addr)
+> +{
+> +	u64 imm_11_0, imm_31_12, imm_51_32, imm_63_52;
+> +
+> +	/* lu12iw rd, imm_31_12 */
+> +	imm_31_12 = (addr >> 12) & 0xfffff;
+> +	emit_insn(ctx, lu12iw, rd, imm_31_12);
+> +
+> +	/* ori rd, rd, imm_11_0 */
+> +	imm_11_0 = addr & 0xfff;
+> +	emit_insn(ctx, ori, rd, rd, imm_11_0);
+> +
+> +	/* lu32id rd, imm_51_32 */
+> +	imm_51_32 = (addr >> 32) & 0xfffff;
+> +	emit_insn(ctx, lu32id, rd, imm_51_32);
+> +
+> +	/* lu52id rd, rd, imm_63_52 */
+> +	imm_63_52 = (addr >> 52) & 0xfff;
+> +	emit_insn(ctx, lu52id, rd, rd, imm_63_52);
+> +}
+> +
+>  static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx, bool extra_pass)
+>  {
+>  	u8 tm = -1;
+> @@ -841,7 +862,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx, bool ext
+>  		if (ret < 0)
+>  			return ret;
+>
+> -		move_imm(ctx, t1, func_addr, is32);
+> +		emit_addr_move(ctx, t1, func_addr);
+>  		emit_insn(ctx, jirl, t1, LOONGARCH_GPR_RA, 0);
+>  		move_reg(ctx, regmap[BPF_REG_0], LOONGARCH_GPR_A0);
+>  		break;
+>
 
-[auto build test WARNING on bpf-next/master]
+The code itself looks good to me.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Dave-Thaler/bpf-docs-Explain-helper-functions/20230207-031845
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230206191647.2075-1-dthaler1968%40googlemail.com
-patch subject: [PATCH bpf-next v2] bpf, docs: Explain helper functions
-reproduce:
-        # https://github.com/intel-lab-lkp/linux/commit/b579d93fed53b16ad7241911226cbeb3b42f8266
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Dave-Thaler/bpf-docs-Explain-helper-functions/20230207-031845
-        git checkout b579d93fed53b16ad7241911226cbeb3b42f8266
-        make menuconfig
-        # enable CONFIG_COMPILE_TEST, CONFIG_WARN_MISSING_DOCUMENTS, CONFIG_WARN_ABI_ERRORS
-        make htmldocs
+Could you please give more detailed info in the commit message?
+For example, description of problem, steps to reproduce, ...
+I think the descriptions in the cover letter are useful, it is
+better to record them in the commit message.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202302130706.NBSii5FS-lkp@intel.com/
+Additionally, emit_addr_move() is similar with move_imm(), it is
+better to define emit_addr_move() before move_imm() in bpf_jit.h.
 
-All warnings (new ones prefixed by >>):
+Thanks,
+Tiezhu
 
->> Documentation/bpf/clang-notes.rst:24: WARNING: Title underline too short.
-
-vim +24 Documentation/bpf/clang-notes.rst
-
-    22	
-    23	Reserved instructions
-  > 24	====================
-    25	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
