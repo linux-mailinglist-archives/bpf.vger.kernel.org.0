@@ -2,138 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15178694E95
-	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 19:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88220694F00
+	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 19:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbjBMSB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Feb 2023 13:01:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        id S229750AbjBMSOk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Feb 2023 13:14:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjBMSB2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Feb 2023 13:01:28 -0500
-Received: from DM6FTOPR00CU001-vft-obe.outbound.protection.outlook.com (mail-cusazon11020026.outbound.protection.outlook.com [52.101.61.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8073116330
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 10:01:27 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jJQgQRjRSy0DiCJ7+yLmIH50/pbSfhavHUQbiw741R20+Gnu4iYcCMbkNkv4rsNk80+Og4ze3/Sq+7pTkpbeamUFDnTPrhUa+EpmnAiU6goZcG6x1NMh6PhYK2LQoRsGV2BiWhLs1X9AouN6jbN7Imi1LfD6f/gUiW9GBp4bk9nOGiBUywLuzchzGDIUAEm5xgVQ2CwyXb9VMdgeGhnhRAb/zAgmS+VTwWS/HP7a4vyXNwWbxj8CqnZCQw92RBwQpenoVp3H9kSD3cTVDzWk1M562lamIF0tDF+Bm7E44gq+VE+lL2q1RGIgdtmhrnQuZLPwnXE+PSkXRzYKAGy3sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2D8ld2cFseTqMZ5jTe+qBSe39hR57XOlEJdxRehXjeY=;
- b=FfZzANA+cm9U15e5I3MThfH6jx6i3G8w2Ct8WiAF+FYVXj8mBiLhvVtySGWp/uuPcRYdnL/l2pkZUnE1TVIerjOEik1iJA9Fq2ABXougzRNQOBRx26hGDFXe/1hcWFC4Bmzgv6ZhuovUaq6w4A/3vntjFUzvmbwVg7qy/GyTwUzjfr2IlcDrLHA8ntymoTpG3WmBYLkbpTxeYz3vFWIPBr/e2JoxKtTucx7x7/XxUxnRRZZyz5s7z/5HuLyPCaXgFd5/M3VkcCv5rrZIUGGKfloUp0AdmMqPUqKkL7rwg+a5mepdDNKnj+aPnulM3fpo+tnPV0Dr9H0fuOsB6ZpyAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2D8ld2cFseTqMZ5jTe+qBSe39hR57XOlEJdxRehXjeY=;
- b=elSm2rnpdgTC02d/2hhf5d34DgwpF/wpr/a/QZmsezBOLmEmZdvcryYP/WSGdbdDt6MSvHsqn+D0oHHx4ndkQQPY7Ze1K8JHme2NyktYyPVdQK3PS0IKD+4JzQhZe15b5WGoAiAj0m/g9Zi8dDaDLDBQ8q+3EMj+f+WQXuPjc+I=
-Received: from CH2PR21MB1430.namprd21.prod.outlook.com (2603:10b6:610:80::17)
- by PH7PR21MB3311.namprd21.prod.outlook.com (2603:10b6:510:1dc::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.1; Mon, 13 Feb
- 2023 18:01:24 +0000
-Received: from CH2PR21MB1430.namprd21.prod.outlook.com
- ([fe80::e545:f176:7f99:d103]) by CH2PR21MB1430.namprd21.prod.outlook.com
- ([fe80::e545:f176:7f99:d103%6]) with mapi id 15.20.6134.002; Mon, 13 Feb 2023
- 18:01:24 +0000
-From:   Alan Jowett <Alan.Jowett@microsoft.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Proposal for patch - Extend bpftool prog run to accept cpu and flags
- options
-Thread-Topic: Proposal for patch - Extend bpftool prog run to accept cpu and
- flags options
-Thread-Index: Adk/1OCKl1f+Ad+XRFKnlmrR3XpApQ==
-Date:   Mon, 13 Feb 2023 18:01:24 +0000
-Message-ID: <CH2PR21MB14309C209861239DB568C3C1FADD9@CH2PR21MB1430.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a817af4c-763d-4738-93f0-836a49863d55;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-02-13T17:43:53Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH2PR21MB1430:EE_|PH7PR21MB3311:EE_
-x-ms-office365-filtering-correlation-id: fbafa771-6fd1-4175-1d93-08db0dec524e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zkqahToPCyeXMxPWWv2eT0h3zeQ9VYUSJRWQoUDBjUuaANJLJhu8Qq+RxDgEwUw7vu9seh+dy4WAjDjDEf5cHOeQ0avKtMAHHuIPdGsxBbboxwf9I/xBo/Qo+COdaKs36bsVaHcGbRz7yBM5ud38uH6UgxjVBFMd/deaPfXd7JuhUxF9wlS6iLYzeMdOrjbVc+z6YOHyp/ELsAy/asq85RuwkblYxVxfVYqhqXdA9CmY6AyUefK3bw6HNLdRUGprHcAEsf/O0p5QOZ+HwD1JyAMlA/y/oK+3AndCoPr70aQj0oayAfPtok4RfwAMTeHeaKWxicYxzBmwwE0O0uv00DFvm4e9ByrAAfOmytO4UF/o8fEI4J52Y9dCEH01FigCZ1P95dZsu9zdik8n1fWrqivb+veR+0rJkMpYtEQ19/jc6DKfonZwDm1aOv11V4+cDsu4qs5pfJtoErRmsLGNAdQfIwIe+hGbe8hG2dj9fmXYG6LVP8ieNvm+dSIF20EtNMrIdA+1+LnXhNUi5Q7P3oA03bqN37GKMJKxUAFpFZkAEqMxOSGmc4F0q3DSpT70F8x7NYQVpqwmdz4XMl2A8IvCYVWs+KxwAsMSex8vCC6wBoGaiDU6MOaJi4Hoj2kw9QsozdKBZ8Sr0yMDEH/91gq4yE4+XXQAxbGXZbRL0nwJYG/GMAnL1DTmqVspVGmAokE63PZzI8yXJ0u+HKMkLbDBGc+gvNXAqPVlK27GfkNoZZJ2Q+BmzsjUS9qspD/5ylx1/yA2JvpTrTrbf8FNng==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR21MB1430.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(346002)(366004)(396003)(376002)(136003)(451199018)(82950400001)(82960400001)(122000001)(38070700005)(38100700002)(41300700001)(33656002)(478600001)(2906002)(8990500004)(8936002)(6916009)(52536014)(86362001)(4744005)(5660300002)(64756008)(55016003)(66446008)(66556008)(26005)(6506007)(83380400001)(186003)(316002)(66476007)(76116006)(71200400001)(10290500003)(966005)(7696005)(66946007)(9686003)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WHNWL2diOE51VkptWEV1cVBpbEdYZzB1THdWcGFtZGw2MUNEM0s1bjU0YWZM?=
- =?utf-8?B?NFo2bUI3MnQ5ZkFLeC96NlFYdjg4bDRUcXN4WklZbWtzcHhUSlc0a1lhaXVM?=
- =?utf-8?B?cTFydkVCcFM4ajdNQ3lkcmpabVA2U081VmlQNEhMNFJnckpFU3dqaHYya0ha?=
- =?utf-8?B?N3BGdFd4N1ZOZ2hTTnh5OFR5WVRaZmRGWEVTdzduWnFjNmNNQXBNdnA2V1E4?=
- =?utf-8?B?Wk82c01oMEpicGtpWTNGc25ZRDN4TjZvZ0JUWnE0UGhPOFdNcStQSXZSdG9l?=
- =?utf-8?B?Yks1eTlmVXZ1dkFlcHdhWUM2UWppbkp5Ui84OWlDbXZoMXo0Ny9aeWZFVDFr?=
- =?utf-8?B?cTJ1TFdqUkkzaEs3T2dPNno2Q0dqaFVhbFhkZHRNdzJDdFo2RnQ3TTZOVUhu?=
- =?utf-8?B?VlhmZXU3MzJya3hlVUNqZzZOZDJhcTQ0WjVneUI4dVB2QVgrTVZDLzh4bm5M?=
- =?utf-8?B?dUtBWXBKSVplZFQva2Z2TVdnN256bUx0bzI4VHNmc0lPY25DRCs5b0pOeXg3?=
- =?utf-8?B?YTRHNkxBQ1pvWFZWREwyMlpuc2lFVHEzVkZOcFlyTlBScERJOHUvbXdjZWlW?=
- =?utf-8?B?RjA2cWpuallZdGQ2K2lWeW5aclRBcUJSdHBlNWJWZHVoanlHUzl4Z25yUUFp?=
- =?utf-8?B?QzRWc3NWR1IwdllUWEVtSXFRdEtOc0NPTjF5YjZsdFFkNEgrRlQzK3NmTklP?=
- =?utf-8?B?VFJkZ2dQZ3Q1QVhmSnJCcHBLbTd5amlRWlBub2NUalRDaDJPYzJIY3dISTBL?=
- =?utf-8?B?a2JvdDB3TmRGWFpKQXJpZE5vNlhydEIrNVNPL1k0UGpuQkpVNVNsMTIrM1ZV?=
- =?utf-8?B?c1BGWGgzVTFJOVR4Wk5SZEg2RFRDSjN0VFZ6cWFkZFdYTDA0Sm5ZYURYeEcr?=
- =?utf-8?B?MC9RUms3eG5zLzVPK3NEcTV0aFZJWUZFNVAySHNMVWNsRURRc2JLUUw2Tmc4?=
- =?utf-8?B?dkwzVGNqbUJRQ1dJQWNJL29jQmdCZVRueGl5V3lFNDhLeFk3czZUUVV3ZUph?=
- =?utf-8?B?ZHo0Um5Kc0VaZEQ0NnBYeElyUFRqYUg2ZFY2WXZDcCtJTDFzekFmcHdwWlMv?=
- =?utf-8?B?Q1FyWmdweUEwRkJqU0VNNU4wS2dTS09IRnJlNE5pYVNOVzk0cU51TlVaS0t4?=
- =?utf-8?B?MURIaWxkSU5CYlNDVURrc1NHd0FTTTRoTnB3Tm5FamwwTDljVG9PT0t1SmtV?=
- =?utf-8?B?NzNLR2lkT3Yvb3MrUzNPc3dEU0tvV2I5ZldXYnd1aFgwKzl1Q3R2MkhrS1J5?=
- =?utf-8?B?cVdXcVUzK0NHc2lCVkNMbUYrNGtaMmpJT0gxYmdjZXRxUkF4Qi9kVWNXak55?=
- =?utf-8?B?ZmJyNWxXaFFqWUEvb1lkRlZwVFJwVitVSE5kY2RrOWF3ZGcwa3lueHFUTlZC?=
- =?utf-8?B?V1ZEUy85WnMrdm91eDB1NklsU2RFajM5VzM3WlhUWktOREZ0b0lSTXBVNUJQ?=
- =?utf-8?B?azNDUXhuVEdXV3QxdklHbEx2dGdtYUdRT0Q5QlB2Mmg4K0NOYlg1RTRrejlq?=
- =?utf-8?B?MXZrWEJTdUxIMlBVemp0b21QYVBJb1FvT1JyeEZWcVkrSlVZOXZMSk5ESVp5?=
- =?utf-8?B?R243VENaQmIvRzZtdTlFSk1HQVN1NnNodTlmQzFtVmdkakZrdmZ6VnFSYno0?=
- =?utf-8?B?MTg1N1ZIQVdNa2tEMTRjNU1rb0xvQ255aUV4SW5ndGdXei9YcEduMzJBR2k2?=
- =?utf-8?B?UXVrRk5EbGNTTjBIMDQ5cWdnVTJ5T2xQUXJUVDhOeXo0RkZoQ0h1N2Y0V1Yv?=
- =?utf-8?B?SlEwWmh0YS84T1Y5TlBKVEtQZnNFOUl6bTZ1QXhJeWRUdjYyUEtzSnNydUFk?=
- =?utf-8?B?NkdBU1RkaC8xYjZtc0crYWpKb2R5bjRqL0tiK3JIU1FjcWZoZlo4SmNGdlhu?=
- =?utf-8?B?MHdvNU9YWHlKUUplRXk2Q2RTUCtHdmRwUHk0OFVhVDBXNTB2Z2NFTmVZQm9z?=
- =?utf-8?B?WkNJV1lxOEF0eGZqUVFwbERWVkdreDR0YVVxVCtWNzg3TlRkRkpSYlV6THBi?=
- =?utf-8?B?ZStuMC8xWGpvZklJNEhWNndiN3Y2amx5U0VOY2w1Smk0NnY3eGQvVUZNWVpY?=
- =?utf-8?B?RnloUzRCR1V6bmZQRzBNSldocnpielppSUw0RzVFVnhGNGJNNjM4d01TaTFS?=
- =?utf-8?Q?3n36Gw7gOXMeen/w+QEa8CPWW?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S229641AbjBMSOj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Feb 2023 13:14:39 -0500
+Received: from sonic311-30.consmr.mail.ne1.yahoo.com (sonic311-30.consmr.mail.ne1.yahoo.com [66.163.188.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFE518B
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 10:14:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1676312077; bh=RKMD+yY8dulLx8938IJ/Cp89VmQElQ25HeNolFr7j4A=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=XO4GfIMRrUxGHilAvi5qXmlsWRumqa5gum1Wl3gsvm0FxD/11cUbL0JIoGR9LAwCJsU8Mbu+DFOSuJrU7gewbqi3owKVqzJ54jWnH20UoRuS3rv+4PkUDQjp8x3qMTRPvIwRPJUjHocCjSdDffGyuOnXVskn/+H/A5RniWwpH8LMtO4THaFWf40jAeJrne/6mrNoxqkFlvi00lZJ6FQ3tJLC7qabws0HrrXfZGVNPwK70IU96iB/9+Kx2p6eB/hnbYA49xKBzW5dMcA0gmaOZdwwOA+GIR+POfNzsPpITgFY0eMue+cv+5TA7QwX8YZpKYnJpLrI9KgT3HQyxkMYLA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1676312077; bh=w1YzeiwoT/uHewaRPWB+vhnCe9MIgQdfWhg/fxW2go/=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=A+hcUgL8t8Awl/HtH1GYlTstOw85BF1lebDwGwtyTyfxGpWnT36NVD2s/xdSmhXjBMeoJQWVb0Ij0ahTv+IAcRixIBNQLUBSo2faQxB3MJWT4s09qCwnRiX6M/AL7SViF46tO8OyNlPFmHeTD6snCLkA/LBtLvmuBCqgJu7fnuJy+/bTeQ5WipJvL97RLLdI+ox7F97irM5+/3x3+BB8no5tjMu9QwKGhX2Pqpobw8OUCYboqRKqVjherWIQnQ7Bqk311DWLQ5fF6qvvXeK3du+Ar0uNAlTJWozuHqCdb2QILai1WGekQqIUcYJDu/OqYGuqn2/elf078vTNmSnevQ==
+X-YMail-OSG: wbqsAxMVM1k6feaekGr9lFJG4Cg_9YQ1XuxkNFKdnwYE4lvlGcwNEVlpzFJCLRn
+ kYQ1ShMEM4mpq3SMa8jR0c.vbicMP.gJ8UTgP9gbJstU0jjFbLSnZE6.6fq_7BLhPk4WxYmdnRsD
+ 1Pkrf1d5CeLMRkLvoeA38XysDRF2.0RxNEK58N4LlwOj_HVmW_NTTHa_e.QvrgjKKKWSM2fhhNa9
+ MdAS5e1qPdiUmxDUgcUrqpYY.9JEFOUJr2n_OHzR7YOjTlMET_G7nnsKIhyp7WzZWrzLYXLPHcsZ
+ 6PlTW0njy9pT9j5vIn2JspLP6P18_9PZuwZqV._YZiJ6NuisMu1Bgq9Bgg6KE5FjAryWdpOZ7NYS
+ OyP97SQRXvYdcj8WE7Sju_SsTkJMaFiSmjWORPwODHA2BxwSo48tJikAhiaN0Y7w96z2VvzFCIkm
+ 9a5ED1LdWyzMy19yHzRAFImoADIpSCWF6UFBiPU7Nq50CCCwzxCtiOJhsxvPAswWBZyS6DWfCJl9
+ hLm8f1iECGKuAJQpGoVxQ6LBlGXQLT6pyZTBA5ukbmYN1Fd0_dqLaF59ihKlPgEYNgv5qznSmhTi
+ KrnFVpHtr_BISiqnexCden8QXxIlxcZhx4ReZnWhB8DM4YLE19HzzeamX442IsNUcr_yz7YPW4PR
+ BW05AEijSZQxpH0TNnSlGgkfRf7uVdJ.mty2p80NoMCfhIAGI7szmi0aOVUnrbRAxFl9Fkkaxp1p
+ _GjEfYbIH5AoYKmj_1FZFIPFIXEnjs_sHzO4h1G3eSkV6fgvhAtwEQ_SxuuJnsgJBtsqx7.zZCja
+ HrKcJsy3Ir6Yz6qfcXsa3NIoI8XmBZzNHhb4ccWMh2RDEDqG0bbMzYvQp9KuZtplpaXCLDIeJZHL
+ uDOW4zZW6fd64Qkeu0WNd.czflDtztStKWSl4SCuRiKJA4vyz7o0_BNXgU5LSavIAsS.7hM3qk6F
+ 4lrUXWYavP21NgqW05MU3.MmAamR_MT4za7ptHjYjtCJ25GHmEVVOM49WV_twXrQwfpebsJSmo.B
+ HhiV9UzNYsHxz1hLr2M6xCzePP3vb_esKZfAw6zFfkLngF.4llw1n.717QAKaSQIHb2FiM_4R1Yo
+ nscqZV1k8Y3dNsVSzKnjLzQkozxzKf.1Rfe4ZyfYWgg_xvLemy1ZJAl1l1U2aO7.HysJD4rPGiTF
+ S1.jrJVLrF8fMK7J9yBSu2TyARrNGe8kjVuJ8jrgkqsCWjWWbsGvwkcn5uz2uOzY3FXmI.tJQObO
+ 00tef5OEw3uf.PWVAOSFpFTSuwNuUR7ENdgppxxf3axgstrsauUVj_4tASCIHVqT5HFpo6v07jGO
+ iITLKYTxaSqgBQeEpBu5CbvX3tboJQGKzlFdDf9mAmn8qcc1qB9juND9ATgBwhMvqxciFyhfkBQz
+ r_nYCn7XPbmj8c47ZLEOXpnd7aWptt2AbQtdYHafpYDtZ4_khh8cLIHrSCJkxUh3mnHIvfCEYOrv
+ of_YfpaztjCoO1KPhHMpA.N02YPugmhRZPdEFBhf03X5T0ORZsXpJMcRI1_H_PzjlBylbbAYJZsg
+ o3CsTKpY6NvzqXKwLrY6YHfmf32aSLjVcTAlEfw0PR6Dh_FE.suH6EWJ6BIPKt2GHf7jMKF1VOUJ
+ fMwC64jYDntAkpTf8cw.05wpybKwpsGEH9b0qub0BqBQNj9zarvk0CdKnB4sCRi0Sc2ItzAFbn.F
+ GUep58q4F2Kh0amnEf874KlGZDdQJaLX8KIszA0vVW0FsoUK.ihmNRBOcbyfSw9nQRs5Nc0.HM_O
+ c1yuonvbgf9LyY0.DN3xVd_p3NBVDvvtM2jYrzv58o8nePufpbhPdWV9fqU0EYI1T4zeN88ZQbE7
+ arYCYGz9B7znkAqoB_RDEYvG6YnuHsQIkyQ_._Cp1EEaPFpJ.s6cVQ_qYvUUySdfYFeeGmE14r65
+ .q_55s_yYsnDD93q608s.oGMX5BFJjQki9gfP4QPyo0bAKbJx4FVYszAEmD6Beb49dLLT_EGgvMF
+ btU8EFit8Bz5ikLPPFDobk26IvkpAy6EPLkg1AYXANg9e0f_hy.m.sJIhlI23PQ2D6jYKC0A8dao
+ lUjtn4E8w7WYp0ef6rh2IcEWa7vqeNKmAWsagbdPf3CWq.xzMwZDZ_4u_XSMqsNsJnr1w2jWBsJb
+ 0ca8v6DPD_5.FtvnZ_T82RbQV7WX6gEfsSodAD7GNjpf95gPjp4aVEZxZ9Qv53eckILXzixB0YbP
+ Iir4b3h9GLKGOXqr_cowMdQ--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Mon, 13 Feb 2023 18:14:37 +0000
+Received: by hermes--production-gq1-655ddccc9-spmtr (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID b074ad83ffd3b6b789ae4e31a6313cb6;
+          Mon, 13 Feb 2023 18:04:05 +0000 (UTC)
+Message-ID: <2160af7d-eaf6-511a-72a4-9bac352891e4@schaufler-ca.com>
+Date:   Mon, 13 Feb 2023 10:04:03 -0800
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR21MB1430.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fbafa771-6fd1-4175-1d93-08db0dec524e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Feb 2023 18:01:24.7038
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5XfCLvyz6Lf4j/Xj+beMs0XwKgJSX/vFtOquc4BSho6S23z8td/mZID4+rHWLxOUQpRFi2PvUQw2NiakSv8nEQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR21MB3311
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH bpf-next 0/4] Reduce overhead of LSMs with static calls
+Content-Language: en-US
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Kees Cook <keescook@chromium.org>, KP Singh <kpsingh@kernel.org>,
+        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, jackmanb@google.com,
+        renauld@google.com, song@kernel.org, revest@chromium.org
+References: <20230119231033.1307221-1-kpsingh@kernel.org>
+ <CAHC9VhRpsXME9Wht_RuSACuU97k359dihye4hW15nWwSQpxtng@mail.gmail.com>
+ <63e525a8.170a0220.e8217.2fdb@mx.google.com>
+ <CAHC9VhTCiCNjfQBZOq2DM7QteeiE1eRBxW77eVguj4=y7kS+eQ@mail.gmail.com>
+ <98799a20-1025-3677-d215-69b13ac73ee5@schaufler-ca.com>
+ <CAHC9VhTo=VDuFFfX7o__CRwbHTT-OTDBQ090-ZwbTRQYdO-_Gg@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CAHC9VhTo=VDuFFfX7o__CRwbHTT-OTDBQ090-ZwbTRQYdO-_Gg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21183 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-QlBGLA0KDQpUaGUgZXhpc3RpbmcgYnBmX3Rlc3RfcnVuX29wdHMgc3RydWN0dXJlIGV4cG9zZXMg
-YWRkaXRpb25hbCBmaWVsZHMgaW5jbHVkaW5nICJmbGFncyIgYW5kICJjcHUiLiBJIHByb3Bvc2Ug
-ZXh0ZW5kaW5nIHRoZSBicGZ0b29sIHByb2cgcnVuIHRvIGFjY2VwdCBvcHRpb25zIHNvIHNldCB0
-aGVzZSBhZGRpdGlvbmFsIGZpZWxkcy4NCg0KVXNlIGNhc2U6DQpTb21lIEJQRiBwcm9ncmFtcyBh
-Y2Nlc3Mgc3RhdGUgdGhhdCBpcyBwb3RlbnRpYWxseSBzaGFyZWQgYmV0d2VlbiBwcm9ncmFtcyBy
-dW5uaW5nIG9uIGRpZmZlcmVudCBDUFVzLiBUaGlzIGNhbiBpbXBhY3QgdGhlIHBlcmZvcm1hbmNl
-IG9mIGEgQlBGIHByb2dyYW0uIFRvIHBlcm1pdCB1c2VycyB0byBtb3JlIGFjY3VyYXRlbHkgYXNz
-ZXNzIGhvdyB0aGVpciBCUEYgcHJvZ3JhbSB3aWxsIHBlcmZvcm0gd2hlbiBiZWluZyBpbnZva2Vk
-IG9uIG11bHRpcGxlIENQVXMgaW4gcGFyYWxsZWwgSSBhbSBwcm9wb3NpbmcgYWRkaW5nIHRoZSBh
-YmlsaXR5IGZvciBicGZ0b29sIHRvIHNldCB0aGUgY3B1IGZpZWxkIGluICBicGZfdGVzdF9ydW5f
-b3B0cyBzdHJ1Y3Qgd2hlbiBjYWxsaW5nIHRoZSBzeXNjYWxsLg0KDQpJZiBubyBvbmUgZWxzZSBp
-cyB3b3JraW5nIG9uIHRoaXMgb3IgdGhlcmUgYXJlIG5vIG9iamVjdGlvbnMsIEkgd2lsbCBzdWJt
-aXQgYSBwYXRjaCB1c2luZyBicGYtbmV4dCBodHRwczovL2dpdGh1Yi5jb20veGRwLXByb2plY3Qv
-YnBmLW5leHQvLg0KDQpSZWdhcmRzLA0KQWxhbiBKb3dldHQNCg==
+On 2/12/2023 2:00 PM, Paul Moore wrote:
+> On Fri, Feb 10, 2023 at 9:32 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>> On 2/10/2023 12:03 PM, Paul Moore wrote:
+>>> On Thu, Feb 9, 2023 at 11:56 AM Kees Cook <keescook@chromium.org> wrote:
+>>>> On Fri, Jan 27, 2023 at 03:16:38PM -0500, Paul Moore wrote:
+>>>>> On Thu, Jan 19, 2023 at 6:10 PM KP Singh <kpsingh@kernel.org> wrote:
+>>>>>> # Background
+>>>>>>
+>>>>>> LSM hooks (callbacks) are currently invoked as indirect function calls. These
+>>>>>> callbacks are registered into a linked list at boot time as the order of the
+>>>>>> LSMs can be configured on the kernel command line with the "lsm=" command line
+>>>>>> parameter.
+>>>>> Thanks for sending this KP.  I had hoped to make a proper pass through
+>>>>> this patchset this week but I ended up getting stuck trying to wrap my
+>>>>> head around some network segmentation offload issues and didn't quite
+>>>>> make it here.  Rest assured it is still in my review queue.
+>>>>>
+>>>>> However, I did manage to take a quick look at the patches and one of
+>>>>> the first things that jumped out at me is it *looks* like this
+>>>>> patchset is attempting two things: fix a problem where one LSM could
+>>>>> trample another (especially problematic with the BPF LSM due to its
+>>>>> nature), and reduce the overhead of making LSM calls.  I realize that
+>>>>> in this patchset the fix and the optimization are heavily
+>>>>> intermingled, but I wonder what it would take to develop a standalone
+>>>>> fix using the existing indirect call approach?  I'm guessing that is
+>>>>> going to potentially be a pretty significant patch, but if we could
+>>>>> add a little standardization to the LSM hooks without adding too much
+>>>>> in the way of code complexity or execution overhead I think that might
+>>>>> be a win independent of any changes to how we call the hooks.
+>>>>>
+>>>>> Of course this could be crazy too, but I'm the guy who has to ask
+>>>>> these questions :)
+>>>> Hm, I am expecting this patch series to _not_ change any semantics of
+>>>> the LSM "stack". I would agree: nothing should change in this series, as
+>>>> it should be strictly a mechanical change from "iterate a list of
+>>>> indirect calls" to "make a series of direct calls". Perhaps I missed
+>>>> a logical change?
+>>> I might be missing something too, but I'm thinking of patch 4/4 in
+>>> this series that starts with this sentence:
+>>>
+>>>  "BPF LSM hooks have side-effects (even when a default value is
+>>>   returned), as some hooks end up behaving differently due to
+>>>   the very presence of the hook."
+>> My understanding of the current "agreement" is that we keep BPF
+>> hooks at the end for this very reason.
+> It would be nice to not have these conventions.  I get that it's the
+> only knob we have at the moment to tweak, but I would hope that we
+> could do better in the future.
+
+Agreed. I don't care much for it.
+
+>
+> Ignoring the static call changes for a moment, I'm curious what it
+> would look like to have a better mechanism for handling things like
+> this.  What would it look like if we expanded the individual LSM error
+> reporting back to the LSM layer to have a bit more information, e.g.
+> "this LSM erred, but it is safe to continue evaluating other LSMs" and
+> "this LSM erred, and it was too severe to continue evaluating other
+> LSMs"?  Similarly, would we want to expand the hook registration to
+> have more info, e.g. "run this hook even when other LSMs have failed"
+> and "if other LSMs have failed, do not run this hook"?
+>> I really don't want another LSM to have sway over Smack enforcement.
+> I think we can all agree that the one LSM should not have the ability
+> to affect the operation of another, especially when it would cause the
+> violation of a different LSM's security policy.
+>
+>> I would hate to see, for example, an LSM decide that because it has
+>> initialized an inode no other LSM should be allowed to, even in an
+>> error situation. There are really only two options Call all the hooks
+>> every time and either succeed on all or report the most important
+>> error. Or, "bail on fail", and acknowledge that following hooks may
+>> not be called. Really, does "I failed, but it's not that important"
+>> make sense as a return value?
+> Of the two things I tossed out, richer return values and richer hook
+> registration, perhaps it's really only the latter, richer hook
+> registration that is important here.  It would allow a LSM to indicate
+> to the LSM hook layer how the individual hook implementation should be
+> called: always, or only if previously called implementations have not
+> failed.  I believe that should eliminate any worry of a BPF LSM, or
+> any LSM for that matter, from impacting the security policy of
+> another.  However, I will admit that I haven't spent the necessary
+> amount of time chasing down all the hooks to verify if that is 100%
+> correct.
+>
+>>> I realize that loading a BPF LSM is a privileged operation so we've
+>>> largely mitigated the risk there, but with stacking on it's way to
+>>> being more full featured, and IMA slowly working its way to proper LSM
+>>> status, it seems to me like having a richer, and proper way to handle
+>>> individual LSM failures would be a good thing.  I feel like patch 4/4
+>>> definitely hints at this, but I could be mistaken.
+>> We have bigger issues with BPF. There's nothing to prevent BPF from
+>> implementing a secid_to_secctx() hook and making a system with SELinux
+>> go cattywampus. BPF is stacked as if it isn't a "major" LSM, while
+>> allowing it to do "major" LSM things. One reason we need full stacking
+>> is to address this.
+> That's a different issue, and one of the reasons why I suggested
+> taking an all-or-nothing approach to stacking many years ago, but ...
+> well, you know how that worked out.  I promise to not keep saying "I
+> told you so" if you promise to not keep bringing up LSM stacking as
+> the answer to all that ails you ;)
+>
