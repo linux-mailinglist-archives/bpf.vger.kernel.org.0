@@ -2,168 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF7F694DF7
-	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 18:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21270694E45
+	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 18:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbjBMRaC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Feb 2023 12:30:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
+        id S230093AbjBMRnj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Feb 2023 12:43:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjBMRaC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Feb 2023 12:30:02 -0500
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7812D54;
-        Mon, 13 Feb 2023 09:30:01 -0800 (PST)
+        with ESMTP id S229666AbjBMRni (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Feb 2023 12:43:38 -0500
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993711CF60;
+        Mon, 13 Feb 2023 09:43:36 -0800 (PST)
+Received: by mail-vk1-xa31.google.com with SMTP id bj54so2101944vkb.12;
+        Mon, 13 Feb 2023 09:43:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1676309402; x=1707845402;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OXlmuN9Z7tYjafYF+DUI69ISpL+HB5AknBHBtTrE5z8=;
-  b=CEq+kSC7tFU0Uwbum7tKFO6UXQPiLVZsEe0lUWR0ijunEswaqIJDzi3c
-   dCyoynzhaBO7xuv7hmYeHRgK53qR2RjKQ1jDhTDVhWPDSvjB+l5ReXQlz
-   0T3Gq3nPjPFDkIxMN8PCSpYKKkEAS1mcgrWyhYetCCH+xHMXhqO7YP/dn
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.97,294,1669075200"; 
-   d="scan'208";a="310451287"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-d8e96288.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2023 17:29:55 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1d-m6i4x-d8e96288.us-east-1.amazon.com (Postfix) with ESMTPS id 222238234D;
-        Mon, 13 Feb 2023 17:29:50 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.45; Mon, 13 Feb 2023 17:29:50 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.161.198) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.24;
- Mon, 13 Feb 2023 17:29:47 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <kerneljasonxing@gmail.com>
-CC:     <bpf@vger.kernel.org>, <davem@davemloft.net>, <dsahern@kernel.org>,
-        <edumazet@google.com>, <kernelxing@tencent.com>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <pabeni@redhat.com>, <kuniyu@amazon.com>
-Subject: Re: [PATCH net-next] net: Kconfig.debug: wrap socket refcnt debug into an option
-Date:   Mon, 13 Feb 2023 09:29:39 -0800
-Message-ID: <20230213172939.39449-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230211065153.54116-1-kerneljasonxing@gmail.com>
-References: <20230211065153.54116-1-kerneljasonxing@gmail.com>
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9482UVrO1xOex3fDG9vOfHJvbLYfZSOVxzqODqZLrhM=;
+        b=pB2tn5tHtfdCBMJjYMpCnJdlfezc6ccapdYO+jtaejPe3lAp31vt7hDCh/K1Qmk+an
+         iT+5ExitRyh2ov/ygn+EM2zyfFsJOrlA0tdr04jXPHVVGKG3L0T/SZoNY8SBtnGHXe+B
+         F/iAH2FmUy7ZlvOTvTc3+n9Bc2tNwmAiuypafTYDtfBnlg08SaTzS3elt8Xq0fPrGZ83
+         nGa8MLNwHr7g5pG5KKnkp6VHc/sDxyUNCeo52VFtfey7pB0o6d69Hhk4O3/FvOOzF3YT
+         hHUSIun+9lxMk+VcHUR/MXqlrzU31901zhjtB6kVCrFFk3TwbOKoqoteKAzeUDH09+IO
+         H20w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9482UVrO1xOex3fDG9vOfHJvbLYfZSOVxzqODqZLrhM=;
+        b=gwr4b6ZIRYrNX73VlVfcZIRjeYVZJwOYuIHunETzsp/SN8t42/ewfjejVj8L5FsOMk
+         UFqOA/oEKZJbi0qUR0VOu8m2eOXbBj8iCvXhbBg3UpKiGZ46RNxcTDZOjJI8R7mVHSfQ
+         FDRBhtBztLUAFHlhaP3S9yxaiGxsPD/yjPBL8zuolDB/swBQDeWH3VPsHNA86RTArcMw
+         9yOMgTfu+PB7lxKGZQZN+CVz0TI/s26BbmgYTGielifefwp/6ibyPqIfbmLDRGqc7LhJ
+         Y3fujni2ftKzA9u05dJIqi5HhM9GYnv1MOx+0sUPNiA8MIhKjfzP5EGzURdDFhS5AIRk
+         O35w==
+X-Gm-Message-State: AO0yUKVSj9NJPaqHfLxhkJfk4Ipy5VFnkyR1QqeLy3GBrwf/ubnmq5UQ
+        dT7VJfc8d9tKVtMkXbHzJCvGhldph4K6D4UtI/2zNoLd
+X-Google-Smtp-Source: AK7set9naPVyKCrqkGR7F/qNK9P9Tk3CooQcQ6h1dj4d/zgb+ama5O2Sbg2TvqL3Nq/Ktr1Ruv/ioL+LSUFZ1zV47KU=
+X-Received: by 2002:a1f:3883:0:b0:401:58fe:533 with SMTP id
+ f125-20020a1f3883000000b0040158fe0533mr968170vka.25.1676310215561; Mon, 13
+ Feb 2023 09:43:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.198]
-X-ClientProxiedBy: EX13D40UWA001.ant.amazon.com (10.43.160.53) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20211120112738.45980-1-laoar.shao@gmail.com> <20211120112738.45980-8-laoar.shao@gmail.com>
+ <Y+QaZtz55LIirsUO@google.com> <CAADnVQ+nf8MmRWP+naWwZEKBFOYr7QkZugETgAVfjKcEVxmOtg@mail.gmail.com>
+ <CANDhNCo_=Q3pWc7h=ruGyHdRVGpsMKRY=C2AtZgLDwtGzRz8Kw@mail.gmail.com>
+ <20230208212858.477cd05e@gandalf.local.home> <20230208213343.40ee15a5@gandalf.local.home>
+ <20230211140011.4f15a633@gandalf.local.home> <CALOAHbAnFHAiMH4QDgS6xN16B31qfhG8tfQ+iioCr9pw3sP=bw@mail.gmail.com>
+ <20230211224455.0a4b2914@gandalf.local.home>
+In-Reply-To: <20230211224455.0a4b2914@gandalf.local.home>
+From:   Namhyung Kim <namhyung@gmail.com>
+Date:   Mon, 13 Feb 2023 09:43:23 -0800
+Message-ID: <CAM9d7chx+azdxfNVVtaC_8eM2a57aBFa3hjh0TvjFt-6Xc7r7w@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] tools/testing/selftests/bpf: replace open-coded 16
+ with TASK_COMM_LEN
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        John Stultz <jstultz@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Qais Yousef <qyousef@google.com>,
+        Daniele Di Proietto <ddiproietto@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Sat, 11 Feb 2023 14:51:53 +0800
-> From: Jason Xing <kernelxing@tencent.com>
-> 
-> Since commit 463c84b97f24 ("[NET]: Introduce inet_connection_sock")
-> commented out the definition of SOCK_REFCNT_DEBUG and later another
-> patch deleted it,
+Hi Steve,
 
-e48c414ee61f ("[INET]: Generalise the TCP sock ID lookup routines")
-is the commit which commented out SOCK_REFCNT_DEBUG, and 463c84b97f24
-removed it.
+On Sat, Feb 11, 2023 at 8:07 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Sun, 12 Feb 2023 11:38:52 +0800
+> Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> > > Actually, there are cases that this needs to be a number, as b3bc8547d3be6
+> > > ("tracing: Have TRACE_DEFINE_ENUM affect trace event types as well") made
+> > > it update fields as well as the printk fmt.
+> > >
+> >
+> > It seems that TRACE_DEFINE_ENUM(TASK_COMM_LEN) in the trace events
+> > header files would be a better fix.
+>
+> NACK! I much prefer the proper fix that adds the length.
 
+Can we just have both enum and macro at the same time?
+I guess the enum would fill the BTF and the macro would provide
+backward compatibility.
 
-> we need to enable it through defining it manually
-> somewhere. Wrapping it into an option in Kconfig.debug could make
-> it much clearer and easier for some developers to do things based
-> on this change.
-
-Considering SOCK_REFCNT_DEBUG is removed in 2005, how about removing
-the whole feature?  I think we can track the same info easily with
-bpftrace + kprobe.
-
-
-> 
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> ---
->  include/net/sock.h            | 8 ++++----
->  net/Kconfig.debug             | 8 ++++++++
->  net/ipv4/inet_timewait_sock.c | 2 +-
->  3 files changed, 13 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index dcd72e6285b2..1b001efeb9b5 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1349,7 +1349,7 @@ struct proto {
->  	char			name[32];
->  
->  	struct list_head	node;
-> -#ifdef SOCK_REFCNT_DEBUG
-> +#ifdef CONFIG_SOCK_REFCNT_DEBUG
->  	atomic_t		socks;
->  #endif
->  	int			(*diag_destroy)(struct sock *sk, int err);
-> @@ -1359,7 +1359,7 @@ int proto_register(struct proto *prot, int alloc_slab);
->  void proto_unregister(struct proto *prot);
->  int sock_load_diag_module(int family, int protocol);
->  
-> -#ifdef SOCK_REFCNT_DEBUG
-> +#ifdef CONFIG_SOCK_REFCNT_DEBUG
->  static inline void sk_refcnt_debug_inc(struct sock *sk)
->  {
->  	atomic_inc(&sk->sk_prot->socks);
-> @@ -1378,11 +1378,11 @@ static inline void sk_refcnt_debug_release(const struct sock *sk)
->  		printk(KERN_DEBUG "Destruction of the %s socket %p delayed, refcnt=%d\n",
->  		       sk->sk_prot->name, sk, refcount_read(&sk->sk_refcnt));
->  }
-> -#else /* SOCK_REFCNT_DEBUG */
-> +#else /* CONFIG_SOCK_REFCNT_DEBUG */
->  #define sk_refcnt_debug_inc(sk) do { } while (0)
->  #define sk_refcnt_debug_dec(sk) do { } while (0)
->  #define sk_refcnt_debug_release(sk) do { } while (0)
-> -#endif /* SOCK_REFCNT_DEBUG */
-> +#endif /* CONFIG_SOCK_REFCNT_DEBUG */
->  
->  INDIRECT_CALLABLE_DECLARE(bool tcp_stream_memory_free(const struct sock *sk, int wake));
->  
-> diff --git a/net/Kconfig.debug b/net/Kconfig.debug
-> index 5e3fffe707dd..667396d70e10 100644
-> --- a/net/Kconfig.debug
-> +++ b/net/Kconfig.debug
-> @@ -18,6 +18,14 @@ config NET_NS_REFCNT_TRACKER
->  	  Enable debugging feature to track netns references.
->  	  This adds memory and cpu costs.
->  
-> +config SOCK_REFCNT_DEBUG
-> +	bool "Enable socket refcount debug"
-> +	depends on DEBUG_KERNEL && NET
-> +	default n
-> +	help
-> +	  Enable debugging feature to track socket references.
-> +	  This adds memory and cpu costs.
-> +
->  config DEBUG_NET
->  	bool "Add generic networking debug"
->  	depends on DEBUG_KERNEL && NET
-> diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
-> index beed32fff484..e313516b64ce 100644
-> --- a/net/ipv4/inet_timewait_sock.c
-> +++ b/net/ipv4/inet_timewait_sock.c
-> @@ -77,7 +77,7 @@ void inet_twsk_free(struct inet_timewait_sock *tw)
->  {
->  	struct module *owner = tw->tw_prot->owner;
->  	twsk_destructor((struct sock *)tw);
-> -#ifdef SOCK_REFCNT_DEBUG
-> +#ifdef CONFIG_SOCK_REFCNT_DEBUG
->  	pr_debug("%s timewait_sock %p released\n", tw->tw_prot->name, tw);
->  #endif
->  	kmem_cache_free(tw->tw_prot->twsk_prot->twsk_slab, tw);
-> -- 
-> 2.37.3
+Thanks,
+Namhyung
