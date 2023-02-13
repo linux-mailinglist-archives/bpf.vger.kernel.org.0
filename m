@@ -2,145 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E181694FAE
-	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 19:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740CB69504F
+	for <lists+bpf@lfdr.de>; Mon, 13 Feb 2023 20:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbjBMSrc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Feb 2023 13:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
+        id S230087AbjBMTFZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Feb 2023 14:05:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjBMSrc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Feb 2023 13:47:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C8D1CAF5
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 10:46:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1676314005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R4rwifJ7hzrsSf9oaL2M6mHp/2UWoIjZ6w4a9g1fuFQ=;
-        b=OW56Xy7mIuT2tdxpBoEQ8XczamvdmH+tMeOAHCMS3DOeLJlY49sL8IkfuRdexA5orImX1B
-        oMlYpoKfZNarGaLE1mFb28F1jCZBg/P9/KqV0nECpZWwFLVGH1UdwsE4nplcC0b2tW2BZ5
-        qFEwUTh5ZBPdwIBxkmU81Dva/26D3As=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-561-s7xgfYdYN8C7cCQcY0V9Mw-1; Mon, 13 Feb 2023 13:46:44 -0500
-X-MC-Unique: s7xgfYdYN8C7cCQcY0V9Mw-1
-Received: by mail-wm1-f69.google.com with SMTP id s11-20020a05600c384b00b003dffc7343c3so6573426wmr.0
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 10:46:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R4rwifJ7hzrsSf9oaL2M6mHp/2UWoIjZ6w4a9g1fuFQ=;
-        b=oIjIs17esUKZPF5iPBNLoH2ZawaZviLzolhYaqfEhHLoE991hIkxgM9EDuR4G7gRrh
-         db6npuMU57nQQSbxJEUK3r3Z48GEtsYbb2Yd+iRix4RLJt6cuFkQlPt2Y0RzQqXB00MS
-         igLC8KYjR+Wm2m5xY8GLHrxQmOjZsM1Lpu3DiecqYhsuLwEZX42pGYbsaOplPDLSeibh
-         Zx5bqYnD8sQYWnA4E6jRA4r0diZUDcIyvf8uaCrYV3fmtEOP17NQwN7v4Ndp42yU5Mr0
-         ytWJAGyL0ur0OkSQ88rxuCdncBYy/DTWhLl9rDrw/2XCF1kbzEb6Vsr6cECj6ePMpZjE
-         vAdA==
-X-Gm-Message-State: AO0yUKWt1Wy2le+NoKO2LrxKnrLwExEx4d9H4u1mfTSmbdqPE6RL4GTi
-        VJ1d0hJvQKzFqLlBEicIg58dmB4LUwpcaDG3m2ZQfxMEikqSdV/CNWERqj/aaU+FiwxE5RUO/4p
-        PXBZ+7+wqB/rp
-X-Received: by 2002:a5d:4c8d:0:b0:2c5:4cd0:4b86 with SMTP id z13-20020a5d4c8d000000b002c54cd04b86mr8390461wrs.68.1676314002954;
-        Mon, 13 Feb 2023 10:46:42 -0800 (PST)
-X-Google-Smtp-Source: AK7set8use60YTtQ/nRWeIZymvYK4ScWliIaAORlA6GNgU1FMqvJBqOmyH9rxadQJtH8qL54QVA4QA==
-X-Received: by 2002:a5d:4c8d:0:b0:2c5:4cd0:4b86 with SMTP id z13-20020a5d4c8d000000b002c54cd04b86mr8390442wrs.68.1676314002696;
-        Mon, 13 Feb 2023 10:46:42 -0800 (PST)
-Received: from localhost (net-188-216-77-84.cust.vodafonedsl.it. [188.216.77.84])
-        by smtp.gmail.com with ESMTPSA id u13-20020a5d468d000000b002c54c92e125sm7816543wrq.46.2023.02.13.10.46.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Feb 2023 10:46:41 -0800 (PST)
-Date:   Mon, 13 Feb 2023 19:46:39 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
-        andrii@kernel.org, horatiu.vultur@microchip.com,
-        UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH bpf-next] net: lan966x: set xdp_features flag
-Message-ID: <Y+qFj2YIE4OAWcld@lore-desk>
-References: <01f4412f28899d97b0054c9c1a63694201301b42.1676055718.git.lorenzo@kernel.org>
- <Y+isP2HNYKTHtHjf@lore-desk>
- <cfcc4936-086c-62f6-142f-1db1c42fb9d3@iogearbox.net>
+        with ESMTP id S230074AbjBMTFU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Feb 2023 14:05:20 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0209D658B;
+        Mon, 13 Feb 2023 11:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676315101; x=1707851101;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vduEa+aiPXYPGE8wexexfc+l1PDUMEyrG/6ljt4OTtQ=;
+  b=enb0DCmL/isuENiqBUlAYX32GkRM9hbGD3ZS0w0GM+Btih304XFQpR3B
+   1QejjXXUTyXdQP+E82qnoVpSM7AIe57b7CDMyq4DHkd5vAa8mC1v1fpWG
+   iag1hqlg08CfcTVjwC4row4SKcHtknrbeDK50dxGZajm8BsZCbL29zbBm
+   0m1ltABfF8kR6rDaMh1Aj3wwjtuZfuBoPC9eHbtjOAMbGjSOixKnSpEsj
+   Bu0hg/oKnphiXIoKPVRoYkx4MavbOAVtpFyDnqJuensdLEgK/DQ1u6A7X
+   BqGAy640j4NRvDMGkBxDv/Hhvpr5nowKByJ/4ioEw0DhyCWxUjyEqcPkk
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="332281387"
+X-IronPort-AV: E=Sophos;i="5.97,294,1669104000"; 
+   d="scan'208";a="332281387"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2023 11:03:32 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="670928942"
+X-IronPort-AV: E=Sophos;i="5.97,294,1669104000"; 
+   d="scan'208";a="670928942"
+Received: from paamrpdk12-s2600bpb.aw.intel.com ([10.228.151.145])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2023 11:03:31 -0800
+From:   Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com
+Subject: [PATCH intel-next v2 0/8] i40e: support XDP multi-buffer
+Date:   Tue, 14 Feb 2023 00:18:20 +0530
+Message-Id: <20230213184828.39404-1-tirthendu.sarkar@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="E9xNBS9TCKbvrYlU"
-Content-Disposition: inline
-In-Reply-To: <cfcc4936-086c-62f6-142f-1db1c42fb9d3@iogearbox.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patchset adds multi-buffer support for XDP. Tx side already has
+support for multi-buffer. This patchset focuses on Rx side. The last
+patch contains actual multi-buffer changes while the previous ones are
+preparatory patches.
 
---E9xNBS9TCKbvrYlU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On receiving the first buffer of a packet, xdp_buff is built and its
+subsequent buffers are added to it as frags. While 'next_to_clean' keeps
+pointing to the first descriptor, the newly introduced 'next_to_process'
+keeps track of every descriptor for the packet. 
 
-> On 2/12/23 10:07 AM, Lorenzo Bianconi wrote:
-> > > Set xdp_features netdevice flag if lan966x nic supports xdp mode.
-> > >=20
-> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > ---
-> > >   drivers/net/ethernet/microchip/lan966x/lan966x_main.c | 5 +++++
-> > >   1 file changed, 5 insertions(+)
-> > >=20
-> > > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c b/=
-drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-> > > index 580c91d24a52..b24e55e61dc5 100644
-> > > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-> > > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-> > > @@ -823,6 +823,11 @@ static int lan966x_probe_port(struct lan966x *la=
-n966x, u32 p,
-> > >   	port->phylink =3D phylink;
-> > > +	if (lan966x->fdma)
-> > > +		dev->xdp_features =3D NETDEV_XDP_ACT_BASIC |
-> > > +				    NETDEV_XDP_ACT_REDIRECT |
-> > > +				    NETDEV_XDP_ACT_NDO_XMIT;
-> > > +
-> > >   	err =3D register_netdev(dev);
-> > >   	if (err) {
-> > >   		dev_err(lan966x->dev, "register_netdev failed\n");
-> >=20
-> > Since the xdp-features series is now merged in net-next, do you think i=
-t is
-> > better to target this patch to net-next?
->=20
-> Yes, that would be better given it's a pure driver change. I moved delega=
-te
-> to netdev.
+On receiving EOP buffer the XDP program is called and appropriate action
+is taken (building skb for XDP_PASS, reusing page for XDP_DROP, adjusting
+page offsets for XDP_{REDIRECT,TX}).
 
-ack, thx, in this way I do not need to repost :)
+The patchset also streamlines page offset adjustments for buffer reuse
+to make it easier to post process the rx_buffers after running XDP prog.
 
-Regards,
-Lorenzo
+With this patchset there does not seem to be any performance degradation
+for XDP_PASS and some improvement (~1% for XDP_TX, ~5% for XDP_DROP) when
+measured using xdp_rxq_info program from samples/bpf/ for 64B packets.
 
->=20
-> Thanks,
-> Daniel
->=20
+Changelog:
+    v1 -> v2:
+    - Instead of building xdp_buff on eop now it is built incrementally.
+    - xdp_buff is now added to i40e_ring struct for preserving across
+      napi calls. [Alexander Duyck]
+    - Post XDP program rx_buffer processing has been simplified.
+    - Rx buffer allocation pull out is reverted to avoid performance 
+      issues for smaller ring sizes and now done when at least half of
+      the ring has been cleaned. With v1 there was ~75% drop for
+      XDP_PASS with the smallest ring size of 64 which is mitigated by
+      v2 [Alexander Duyck]
+    - Instead of retrying skb allocation on previous failure now the
+      packet is dropped. [Maciej]
+    - Simplified page offset adjustments by using xdp->frame_sz instead
+      of recalculating truesize. [Maciej]
+    - Change i40e_trace() to use xdp instead of skb [Maciej]
+    - Reserve tailroom for legacy-rx [Maciej]
+    - Centralize max frame size calculation
 
---E9xNBS9TCKbvrYlU
-Content-Type: application/pgp-signature; name="signature.asc"
+Tirthendu Sarkar (8):
+  i40e: consolidate maximum frame size calculation for vsi
+  i40e: change Rx buffer size for legacy-rx to support XDP multi-buffer
+  i40e: add pre-xdp page_count in rx_buffer
+  i40e: Change size to truesize when using i40e_rx_buffer_flip()
+  i40e: use frame_sz instead of recalculating truesize for building skb
+  i40e: introduce next_to_process to i40e_ring
+  i40e: add xdp_buff to i40e_ring struct
+  i40e: add support for XDP multi-buffer Rx
 
------BEGIN PGP SIGNATURE-----
+ drivers/net/ethernet/intel/i40e/i40e_main.c  |  75 ++--
+ drivers/net/ethernet/intel/i40e/i40e_trace.h |  20 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c  | 426 +++++++++++--------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h  |  21 +-
+ 4 files changed, 311 insertions(+), 231 deletions(-)
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY+qFjwAKCRA6cBh0uS2t
-rAOfAP4tRV/NAj+9UfwP9fdY8qaRv0tonn9AKHsgEVpHEAcIwwEA9fTxC/+TRrqE
-A+0VburuW01QpOQTDCZxB37wZjLJaQc=
-=CuV2
------END PGP SIGNATURE-----
-
---E9xNBS9TCKbvrYlU--
+-- 
+2.34.1
 
