@@ -2,241 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE916969EB
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 17:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2784696A63
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 17:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbjBNQl3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 11:41:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S232720AbjBNQxu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 11:53:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjBNQl2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 11:41:28 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792D12B2A1
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 08:41:02 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id r18so11373271wmq.5
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 08:41:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QVEVZPx0K3ZOcm8VgbJ77zWaJWVs4WHPzqQwX9jExfU=;
-        b=FYBQbwR3oOM1QbI57RCqMbveqZ8gYey9bS5JB17GDW5lSZn+K+WPL2yfzSyxyzzWPG
-         kMY2xEYvNsFc6t0i93QQEKaAQk5eBu8K4AvVfv34PNTF/zNo6GGzUOuS1zjohLmRGM6j
-         AarqS97tRd3NwufRRVLLekhI7bwdedlHLTDpPWBLm2YFSnk3+S9yRi9ty4AGW1MZSrGY
-         fKFPVOPREUh5TTG7Vy4rIbbytTXaZsrbqbxDieSfhGk+ooTQlNffwldJdVhwFdqePewt
-         OEW/mSvVFXI2eCR4/7ukgwtyZGLlhXQ4iU4FHMxdiX3gTHFgeQ7C/GNSq6zuTyGBC4vg
-         svVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QVEVZPx0K3ZOcm8VgbJ77zWaJWVs4WHPzqQwX9jExfU=;
-        b=rF4roqpKy+fx4EZZMhEZjJroPN2dSwuJiH2icSaahpyBOTQ0AEGofKYInsqKCyOQf3
-         nZMJmfiGKYrJ+Qt7AlOohGWGJUYiUP1RYU6pIsSHcwMZjz+51E19V9KoceYTjHsME1Hp
-         HLjfh4FvsYwZ7Qx4leWnVWexMA6kWHCGuimJCrL9wg3w4zWKVkDyEQ7vWG6pyww0Xae1
-         xcAu2YMUxXOZC0mH+ApdFXmX5UGSzGxIywpsgu9o7R9Am4tTHdisIVa3cuLc0BtEolDP
-         yQl2ER+4or9zuuoPTqHNKtUGel1ljcw7iWTMgvXWwrTw/D68LpKkucSXXQtjli1uorwn
-         mbTw==
-X-Gm-Message-State: AO0yUKWuJnl7uoq1E5w3W3dUMkr7D4qev3W4GOEbRRRFrqdRr9CzfKrp
-        2MhYM55vLC/Ab26aBtV7icBu789avY34dzlul8PXOQ==
-X-Google-Smtp-Source: AK7set+m/D6oq+FxwDf17S592BJEibi99RpP2MpAg9c+81twvi+rqernjlbr+zMOrHh2ZFANu4b7C4yovxkXcM7AwfA=
-X-Received: by 2002:a7b:cdf0:0:b0:3db:1d5e:699 with SMTP id
- p16-20020a7bcdf0000000b003db1d5e0699mr11361wmj.195.1676392860546; Tue, 14 Feb
- 2023 08:41:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20230214050452.26390-1-namhyung@kernel.org> <20230214050452.26390-5-namhyung@kernel.org>
-In-Reply-To: <20230214050452.26390-5-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 14 Feb 2023 08:40:48 -0800
-Message-ID: <CAP-5=fWV+VCheBocBpXg-jRHr+vkNnKWbH4Rjma9imQRJpis+w@mail.gmail.com>
-Subject: Re: [PATCH 4/7] perf record: Record dropped sample count
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S232671AbjBNQxu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 11:53:50 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C687727D7C;
+        Tue, 14 Feb 2023 08:53:48 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id A20B35C0178;
+        Tue, 14 Feb 2023 11:53:44 -0500 (EST)
+Received: from imap45 ([10.202.2.95])
+  by compute3.internal (MEProxy); Tue, 14 Feb 2023 11:53:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rath.org; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1676393624; x=
+        1676480024; bh=iWRZ71muFH5nPOBHkd4LTGSf+xAdZhitSiFH+zzKi10=; b=N
+        01jp7DSdkTr1oqYNSRd9ds8gv3S3zV7CL7GZwJQV1tkd3Cl2B7TPzJFmQtviJ/ZY
+        nNnZ/RUj2HqF+rkMlnJubLYlYg/XipJKgqn+wLGhQXqHkJpZKL5uSol063Pya8KA
+        tHSiA08Idp51+IFPAMPl4/t7tr3jcY3Hns6svcK0ZAp+k5Kgwd+GeOOTZH1pG1jQ
+        DohnGUHUh5Y3IjNRj2x/coKnJDFL/QC0O0j9R3bhhSvdTUrM1OtYUQ5RWWlI3Qtn
+        RkhYtpoXjYtktOYCRki0d5+IMjPVdhFDAp35TdXrgQavkKbrRswTTWKXGoMDoFHs
+        XO//0XQM2TUbph1LdtNuw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1676393624; x=
+        1676480024; bh=iWRZ71muFH5nPOBHkd4LTGSf+xAdZhitSiFH+zzKi10=; b=M
+        3GEHH+nl2rXpyAvrfvLeSYHfA1jLsLc7l5E0Lzi1v8ECVKkoCCRarrZhl02/hVUW
+        3dyodFJMDhG2pW3L/NzMd8zk6hQIa3LthPn2Ax6dgwc/8zBC0xNpsDp9xjkHXcLA
+        HNCw7cxM9trifld9LXPYXj+G5qNIfAEzYhLmbZdmTRU6mTzAVXvLCjNHBJSDp+LB
+        Q2RI9SprPF1Qy/WNgBUuU4tMLMoW0ZMF7B/h/U5HAYLYFtb/kSLRMlw5ukiJHG5P
+        4WYtaOLk8WlxhiPt+rvUpCV+i0EkKS2Oj87a0zS8+5HZR+rIhM4H5WR+B7fp6Ihl
+        EZ5e8MwTWvIFIxeVOGUmw==
+X-ME-Sender: <xms:mLzrY3g_vd82jtKIn7_GdnQnG70OJhGMr77JVB5015O1QiVmmSEYcg>
+    <xme:mLzrY0DyLyVzlB_akk1kn59nO-2BjPkFO6rwZBTLIDWgJ4OTeFNMxoV7izWIgUwtV
+    2TcYBKKVjbDI7Sf>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeifedgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfp
+    ihhkohhlrghushcutfgrthhhfdcuoehnihhkohhlrghushesrhgrthhhrdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpeegudeihffggefglefgveevkedtlefhudeiveeikeeijedvkefg
+    kedtfeejvedujeenucffohhmrghinheplhhinhhugihfohhunhgurghtihhonhdrohhrgh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnihhk
+    ohhlrghushesrhgrthhhrdhorhhg
+X-ME-Proxy: <xmx:mLzrY3H9b7OSRrzt3ZzZ7Zz2tDYTrZFlgeAIsiJP9tycbyXGJDYSuA>
+    <xmx:mLzrY0TbcetEoJCs3K6_noj-VhydyD2XY75Km_A1JH7HUrnTkkQZCw>
+    <xmx:mLzrY0w4beFR1ztqUj42szQQtr80P3ko5qjSY_dQxO-V0TyD9NlssA>
+    <xmx:mLzrY5p1AqqZD0JhDdNVrv5C52-slrteYqRB8gM3JF6vajV2m5ZqoA>
+Feedback-ID: i53a843ae:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 4AEB1272007A; Tue, 14 Feb 2023 11:53:44 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-156-g081acc5ed5-fm-20230206.001-g081acc5e
+Mime-Version: 1.0
+Message-Id: <56d5ac0e-4c54-46b7-85d3-5de127562630@app.fastmail.com>
+In-Reply-To: <CAJfpegsocoi-KobnSpD9dHvZDeDwG+ZPKRV9Yo-4i8utZa5Jww@mail.gmail.com>
+References: <20221122021536.1629178-1-drosen@google.com>
+ <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
+ <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com>
+ <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm>
+ <CAOQ4uxiBD5NXLMXFev7vsCLU5-_o8-_H-XcoMY1aqhOwnADo9w@mail.gmail.com>
+ <283b5344-3ef5-7799-e243-13c707388cd8@fastmail.fm>
+ <CAOQ4uxjvUukDSBk977csO5cX=-1HiMHmyQxycbYQgrpLaanddw@mail.gmail.com>
+ <CAJfpegvHKkCn0UnNRVxFXjjnkOuq0N4xLN4WzpqVX+56DqdjUw@mail.gmail.com>
+ <81e010cc-b52b-4b20-8d08-631ce8ca7fad@app.fastmail.com>
+ <CAJfpegsocoi-KobnSpD9dHvZDeDwG+ZPKRV9Yo-4i8utZa5Jww@mail.gmail.com>
+Date:   Tue, 14 Feb 2023 16:53:09 +0000
+From:   "Nikolaus Rath" <nikolaus@rath.org>
+To:     "Miklos Szeredi" <miklos@szeredi.hu>
+Cc:     "Amir Goldstein" <amir73il@gmail.com>,
+        "Bernd Schubert" <bernd.schubert@fastmail.fm>,
+        "Daniel Rosenberg" <drosen@google.com>,
+        "Linux FS Devel" <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@android.com>,
+        "Vivek Goyal" <vgoyal@redhat.com>,
+        "Josef Bacik" <josef@toxicpanda.com>
+Subject: Attending LFS (was: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem
+ Extension for FUSE)
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 13, 2023 at 9:05 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> When it uses bpf filters, event might drop some samples.  It'd be nice
-> if it can report how many samples it lost.  As LOST_SAMPLES event can
-> carry the similar information, let's use it for bpf filters.
->
-> To indicate it's from BPF filters, add a new misc flag for that and
-> do not display cpu load warnings.
+Hi folks,
 
-Can you potentially have lost samples from being too slow to drain the
-ring buffer and dropped samples because of BPF? Is it possible to
-distinguish lost and dropped with this approach?
+I've looked into this in more detail. =20
 
-Thanks,
-Ian
+I wouldn't be able to get the travel funded by my employer, and I don't =
+think I'm a suitable recipient for the Linux Foundation's travel fund. T=
+herefore, I think it would make more sense for me to attend potentially =
+relevant sessions remotely.
 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/builtin-record.c  | 37 ++++++++++++++++++++++--------------
->  tools/perf/util/bpf-filter.c |  7 +++++++
->  tools/perf/util/bpf-filter.h |  5 +++++
->  tools/perf/util/session.c    |  3 ++-
->  4 files changed, 37 insertions(+), 15 deletions(-)
+If there's anything I need to do for that, please let me know. Otherwise=
+ I'll assume that at some point I'll get a meeting invite from someone :=
+-).
+
+If there's a way to schedule these sessions in a Europe-friendly time th=
+at would be much appreciated!
+
+Best,
+-Nikolaus
+
+--
+GPG Fingerprint: ED31 791B 2C5C 1613 AF38 8B8A D113 FCAC 3C4E 599F
+
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ =C2=BBTime flies like an arrow, fruit flies like a Banana.=C2=AB
+
+On Fri, 10 Feb 2023, at 10:53, Miklos Szeredi wrote:
+> On Fri, 10 Feb 2023 at 10:42, Nikolaus Rath <nikolaus@rath.org> wrote:
+>>
+>> On Fri, 10 Feb 2023, at 09:38, Miklos Szeredi wrote:
+>> > On Fri, 3 Feb 2023 at 12:43, Amir Goldstein <amir73il@gmail.com> wr=
+ote:
+>> >
+>> >> > Thanks a lot Amir, I'm going to send out an invitation tomorrow.=
+ Maybe
+>> >> > Nikolaus as libfuse maintainer could also attend?
+>> >> >
+>> >>
+>> >> Since this summit is about kernel filesystem development, I am not=
+ sure
+>> >> on-prem attendance will be the best option for Nikolaus as we do h=
+ave
+>> >> a quota for
+>> >> on-prem attendees, but we should have an option for connecting spe=
+cific
+>> >> attendees remotely for specific sessions, so that could be great.
+>> >
+>> > Not sure.  I think including non-kernel people might be beneficial =
+to
+>> > the whole fs development community.  Not saying LSF is the best pla=
+ce,
+>> > but it's certainly a possibility.
+>> >
+>> > Nikolaus, I don't even know where you're located.  Do you think it
+>> > would make sense for you to attend?
+>>
+>> Hi folks,
+>>
+>> I'm located in London.
+>>
+>> I've never been at LHS, so it's hard for me to tell if I'd be useful =
+there or not. If there's interest, then I would make an effort to attend.
+>>
+>> Are we talking about the event in Vancouver on May 8th?
 >
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index c81047a78f3e..3201d1a1ea1f 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -1869,24 +1869,16 @@ record__switch_output(struct record *rec, bool at_exit)
->         return fd;
->  }
+> Yes, that's the one.
 >
-> -static void __record__read_lost_samples(struct record *rec, struct evsel *evsel,
-> +static void __record__save_lost_samples(struct record *rec, struct evsel *evsel,
->                                         struct perf_record_lost_samples *lost,
-> -                                       int cpu_idx, int thread_idx)
-> +                                       int cpu_idx, int thread_idx, u64 lost_count,
-> +                                       u16 misc_flag)
->  {
-> -       struct perf_counts_values count;
->         struct perf_sample_id *sid;
->         struct perf_sample sample = {};
->         int id_hdr_size;
+> I'd certainly think it would be useful, since there will be people
+> with interest in fuse filesystems and hashing out the development
+> direction involves libfuse as well.
 >
-> -       if (perf_evsel__read(&evsel->core, cpu_idx, thread_idx, &count) < 0) {
-> -               pr_err("read LOST count failed\n");
-> -               return;
-> -       }
-> -
-> -       if (count.lost == 0)
-> -               return;
-> -
-> -       lost->lost = count.lost;
-> +       lost->lost = lost_count;
->         if (evsel->core.ids) {
->                 sid = xyarray__entry(evsel->core.sample_id, cpu_idx, thread_idx);
->                 sample.id = sid->id;
-> @@ -1895,6 +1887,7 @@ static void __record__read_lost_samples(struct record *rec, struct evsel *evsel,
->         id_hdr_size = perf_event__synthesize_id_sample((void *)(lost + 1),
->                                                        evsel->core.attr.sample_type, &sample);
->         lost->header.size = sizeof(*lost) + id_hdr_size;
-> +       lost->header.misc = misc_flag;
->         record__write(rec, NULL, lost, lost->header.size);
->  }
+> Here's the CFP and attendance request if you are interested:
 >
-> @@ -1918,6 +1911,7 @@ static void record__read_lost_samples(struct record *rec)
+>   https://events.linuxfoundation.org/lsfmm/program/cfp/
 >
->         evlist__for_each_entry(session->evlist, evsel) {
->                 struct xyarray *xy = evsel->core.sample_id;
-> +               u64 lost_count;
->
->                 if (xy == NULL || evsel->core.fd == NULL)
->                         continue;
-> @@ -1929,12 +1923,27 @@ static void record__read_lost_samples(struct record *rec)
->
->                 for (int x = 0; x < xyarray__max_x(xy); x++) {
->                         for (int y = 0; y < xyarray__max_y(xy); y++) {
-> -                               __record__read_lost_samples(rec, evsel, lost, x, y);
-> +                               struct perf_counts_values count;
-> +
-> +                               if (perf_evsel__read(&evsel->core, x, y, &count) < 0) {
-> +                                       pr_err("read LOST count failed\n");
-> +                                       goto out;
-> +                               }
-> +
-> +                               if (count.lost) {
-> +                                       __record__save_lost_samples(rec, evsel, lost,
-> +                                                                   x, y, count.lost, 0);
-> +                               }
->                         }
->                 }
-> +
-> +               lost_count = perf_bpf_filter__lost_count(evsel);
-> +               if (lost_count)
-> +                       __record__save_lost_samples(rec, evsel, lost, 0, 0, lost_count,
-> +                                                   PERF_RECORD_MISC_LOST_SAMPLES_BPF);
->         }
-> +out:
->         free(lost);
-> -
->  }
->
->  static volatile sig_atomic_t workload_exec_errno;
-> diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-> index f47420cf81c9..11fb391c92e9 100644
-> --- a/tools/perf/util/bpf-filter.c
-> +++ b/tools/perf/util/bpf-filter.c
-> @@ -76,6 +76,13 @@ int perf_bpf_filter__destroy(struct evsel *evsel)
->         return 0;
->  }
->
-> +u64 perf_bpf_filter__lost_count(struct evsel *evsel)
-> +{
-> +       struct sample_filter_bpf *skel = evsel->bpf_skel;
-> +
-> +       return skel ? skel->bss->dropped : 0;
-> +}
-> +
->  struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flags,
->                                                        enum perf_bpf_filter_op op,
->                                                        unsigned long val)
-> diff --git a/tools/perf/util/bpf-filter.h b/tools/perf/util/bpf-filter.h
-> index 6077930073f9..36b44c8188ab 100644
-> --- a/tools/perf/util/bpf-filter.h
-> +++ b/tools/perf/util/bpf-filter.h
-> @@ -22,6 +22,7 @@ struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flag
->  int perf_bpf_filter__parse(struct list_head *expr_head, const char *str);
->  int perf_bpf_filter__prepare(struct evsel *evsel);
->  int perf_bpf_filter__destroy(struct evsel *evsel);
-> +u64 perf_bpf_filter__lost_count(struct evsel *evsel);
->
->  #else /* !HAVE_BPF_SKEL */
->
-> @@ -38,5 +39,9 @@ static inline int perf_bpf_filter__destroy(struct evsel *evsel)
->  {
->         return -ENOSYS;
->  }
-> +static inline u64 perf_bpf_filter__lost_count(struct evsel *evsel)
-> +{
-> +       return 0;
-> +}
->  #endif /* HAVE_BPF_SKEL*/
->  #endif /* PERF_UTIL_BPF_FILTER_H */
-> \ No newline at end of file
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 749d5b5c135b..7d8d057d1772 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1582,7 +1582,8 @@ static int machines__deliver_event(struct machines *machines,
->                         evlist->stats.total_lost += event->lost.lost;
->                 return tool->lost(tool, event, sample, machine);
->         case PERF_RECORD_LOST_SAMPLES:
-> -               if (tool->lost_samples == perf_event__process_lost_samples)
-> +               if (tool->lost_samples == perf_event__process_lost_samples &&
-> +                   !(event->header.misc & PERF_RECORD_MISC_LOST_SAMPLES_BPF))
->                         evlist->stats.total_lost_samples += event->lost_samples.lost;
->                 return tool->lost_samples(tool, event, sample, machine);
->         case PERF_RECORD_READ:
-> --
-> 2.39.1.581.gbfd45094c4-goog
->
+> Thanks,
+> Miklos
