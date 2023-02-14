@@ -2,173 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CE6696780
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 16:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EC0696835
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 16:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbjBNPA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 10:00:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
+        id S232507AbjBNPhO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 10:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbjBNPA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 10:00:57 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B84526847;
-        Tue, 14 Feb 2023 07:00:55 -0800 (PST)
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id AA34F60027FD9;
-        Tue, 14 Feb 2023 16:00:52 +0100 (CET)
-Message-ID: <6a5ded96-2425-ff9b-c1b1-eca1c103164c@molgen.mpg.de>
-Date:   Tue, 14 Feb 2023 16:00:52 +0100
+        with ESMTP id S232111AbjBNPhN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 10:37:13 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019024231
+        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 07:37:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xDPWxkb1Dpl/Rsp18kmYjvpgSfwJsX8cvah/ksG9Rvk=; b=EWkh9thJQtSTNp2DxQKM6ZPiy+
+        2RpiNP0J7Yi0kuPipB4sWfAWJIYzNUXDfhZWmDlawtC1CbdQBUsVMbTZWbQ833S5jzaCDcNoz0/lF
+        RyM4bn1MTIxVMTSCAeYTkgV8Inw3o/iFXDfyNlcRRnT6+sOEoCJ6yuzgBOEaPvq/ei7glISZrJmX0
+        0i6WOOG/v63zLXFhE9oNYyN4ybnIqWYHdt214bP6RBgQltXFW+S8FachyDT7N/pWmBnazGS+S2Pqm
+        dSvBk5OuYkUFZXIYLBhGPlsV5NDaSC7Rjv2mazP5v7VflxWD3kjh0vazX1G7i08alnhchb2gHbwgA
+        aPjm7wpQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pRxMO-006bVL-Py; Tue, 14 Feb 2023 15:36:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18569300244;
+        Tue, 14 Feb 2023 12:21:09 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F3EAC20B4E943; Tue, 14 Feb 2023 12:21:08 +0100 (CET)
+Date:   Tue, 14 Feb 2023 12:21:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        kernel test robot <lkp@intel.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Joao Moreira <joao@overdrivepizza.com>
+Subject: Re: [PATCH v5 bpf-next 3/9] bpf: Add bpf_rbtree_{add,remove,first}
+ kfuncs
+Message-ID: <Y+tupCQ/X38AlvY0@hirez.programming.kicks-ass.net>
+References: <20230212092715.1422619-4-davemarchevsky@fb.com>
+ <202302121936.t36vlAFG-lkp@intel.com>
+ <d04d33ff-0f8f-2bbd-3a67-9b8b813a799b@meta.com>
+ <CAKwvOdketskm5z25aPRY7OsBOZe2kzvXV-i9RDTbwcLpZSAT0A@mail.gmail.com>
+ <CAADnVQ+qJMAugDDQXaerRbh0g4QdRygMZ_0UVmXViR2aJ4OLDQ@mail.gmail.com>
+ <CABCJKucDXNeGCdD6uT7phYhpm+OgYm19EkfCNMB9AJ66k4NcvQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Subject: Re: [Intel-wired-lan] [PATCH bpf-next V1] igc: enable and fix RX hash
- usage by netstack
-Content-Language: en-US
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, xdp-hints@xdp-project.net,
-        martin.lau@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, ast@kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        yoong.siang.song@intel.com, anthony.l.nguyen@intel.com,
-        intel-wired-lan@lists.osuosl.org
-References: <167604167956.1726972.7266620647404438534.stgit@firesoul>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <167604167956.1726972.7266620647404438534.stgit@firesoul>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABCJKucDXNeGCdD6uT7phYhpm+OgYm19EkfCNMB9AJ66k4NcvQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Jesper,
-
-
-Thank you very much for your patch.
-
-Am 10.02.23 um 16:07 schrieb Jesper Dangaard Brouer:
-> When function igc_rx_hash() was introduced in v4.20 via commit 0507ef8a0372
-> ("igc: Add transmit and receive fastpath and interrupt handlers"), the
-> hardware wasn't configured to provide RSS hash, thus it made sense to not
-> enable net_device NETIF_F_RXHASH feature bit.
+On Mon, Feb 13, 2023 at 03:31:21PM -0800, Sami Tolvanen wrote:
+> On Mon, Feb 13, 2023 at 2:17 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Feb 13, 2023 at 12:49 PM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > I haven't looked at the series in question, but note that this compile
+> > > time warning is meant to help us catch Control Flow Integrity runtime
+> > > violations, which may result in a panic.
 > 
-> The NIC hardware was configured to enable RSS hash info in v5.2 via commit
-> 2121c2712f82 ("igc: Add multiple receive queues control supporting"), but
-> forgot to set the NETIF_F_RXHASH feature bit.
+> Here's the tracking issue for the other warnings of this type in the
+> kernel, nearly all the warnings are in one driver:
 > 
-> The original implementation of igc_rx_hash() didn't extract the associated
-> pkt_hash_type, but statically set PKT_HASH_TYPE_L3. The largest portions of
-> this patch are about extracting the RSS Type from the hardware and mapping
-> this to enum pkt_hash_types. This were based on Foxville i225 software user
-
-s/This were/This was/
-
-> manual rev-1.3.1 and tested on Intel Ethernet Controller I225-LM (rev 03).
+> https://github.com/ClangBuiltLinux/linux/issues/1724
 > 
-> For UDP it's worth noting that RSS (type) hashing have been disabled both for
-> IPv4 and IPv6 (see IGC_MRQC_RSS_FIELD_IPV4_UDP + IGC_MRQC_RSS_FIELD_IPV6_UDP)
-> because hardware RSS doesn't handle fragmented pkts well when enabled (can
-> cause out-of-order). This result in PKT_HASH_TYPE_L3 for UDP packets, and
-
-result*s*
-
-> hash value doesn't include UDP port numbers. Not being PKT_HASH_TYPE_L4, have
-> the effect that netstack will do a software based hash calc calling into
-> flow_dissect, but only when code calls skb_get_hash(), which doesn't
-> necessary happen for local delivery.
-
-Excuse my ignorance, but is that bug visible in practice by users 
-(performance?) or is that fix needed for future work?
-
-> Fixes: 2121c2712f82 ("igc: Add multiple receive queues control supporting")
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->   drivers/net/ethernet/intel/igc/igc.h      |   52 +++++++++++++++++++++++++++++
->   drivers/net/ethernet/intel/igc/igc_main.c |   35 +++++++++++++++++---
->   2 files changed, 83 insertions(+), 4 deletions(-)
+> > It's a transition from kernel to bpf prog.
+> > If CFI trips on it it will trip on all transitions.
+> > All calls from kernel into bpf are more or less the same.
+> > Not sure what it means for other archs, but on x86 JIT emits 'endbr'
+> > insn to make IBT/CFI happy.
 > 
-> diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-> index df3e26c0cf01..a112eeb59525 100644
-> --- a/drivers/net/ethernet/intel/igc/igc.h
-> +++ b/drivers/net/ethernet/intel/igc/igc.h
-> @@ -311,6 +311,58 @@ extern char igc_driver_name[];
->   #define IGC_MRQC_RSS_FIELD_IPV4_UDP	0x00400000
->   #define IGC_MRQC_RSS_FIELD_IPV6_UDP	0x00800000
->   
-> +/* RX-desc Write-Back format RSS Type's */
-> +enum igc_rss_type_num {
-> +	IGC_RSS_TYPE_NO_HASH		= 0,
-> +	IGC_RSS_TYPE_HASH_TCP_IPV4	= 1,
-> +	IGC_RSS_TYPE_HASH_IPV4		= 2,
-> +	IGC_RSS_TYPE_HASH_TCP_IPV6	= 3,
-> +	IGC_RSS_TYPE_HASH_IPV6_EX	= 4,
-> +	IGC_RSS_TYPE_HASH_IPV6		= 5,
-> +	IGC_RSS_TYPE_HASH_TCP_IPV6_EX	= 6,
-> +	IGC_RSS_TYPE_HASH_UDP_IPV4	= 7,
-> +	IGC_RSS_TYPE_HASH_UDP_IPV6	= 8,
-> +	IGC_RSS_TYPE_HASH_UDP_IPV6_EX	= 9,
-> +	IGC_RSS_TYPE_MAX		= 10,
-> +};
-> +#define IGC_RSS_TYPE_MAX_TABLE		16
-> +#define IGC_RSS_TYPE_MASK		0xF
-> +
-> +/* igc_rss_type - Rx descriptor RSS type field */
-> +static inline u8 igc_rss_type(union igc_adv_rx_desc *rx_desc)
-> +{
-> +	/* RSS Type 4-bit number: 0-9 (above 9 is reserved) */
-> +	return rx_desc->wb.lower.lo_dword.hs_rss.pkt_info & IGC_RSS_TYPE_MASK;
-> +}
+> While IBT allows indirect calls to any function that starts with
+> endbr, CFI is more fine-grained and requires the function pointer type
+> to match the function type, which further limits possible call
+> targets. To actually enforce this, the compiler emits a type hash
+> prefix for each function, and a check before each indirect call to
+> ensure the call target has the expected prefix. The commit message
+> here has an example of the code the compiler generates:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c516f89e17e56b4738f05588e51267e295b5e63
 
-Is it necessary to specficy the length of the return value, or could it 
-be `unsigned int`. Using “native” types is normally more performant [1]. 
-`scripts/bloat-o-meter` might help to verify that.
+Another good commit to look at is:
 
-[…]
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=931ab63664f02b17d2213ef36b83e1e50190a0aa
 
->   static inline void igc_rx_hash(struct igc_ring *ring,
->   			       union igc_adv_rx_desc *rx_desc,
->   			       struct sk_buff *skb)
->   {
-> -	if (ring->netdev->features & NETIF_F_RXHASH)
-> -		skb_set_hash(skb,
-> -			     le32_to_cpu(rx_desc->wb.lower.hi_dword.rss),
-> -			     PKT_HASH_TYPE_L3);
-> +	if (ring->netdev->features & NETIF_F_RXHASH) {
-> +		u32 rss_hash = le32_to_cpu(rx_desc->wb.lower.hi_dword.rss);
-> +		u8  rss_type = igc_rss_type(rx_desc);
+That includes the FineIBT variant too.
 
-Amongst others, also here.
+> As calling a JIT compiled function would obviously trip CFI, indirect
+> call checking is currently disabled in BPF dispatcher functions (using
+> the __nocfi attribute). However, BPF trampolines still have the same
+> problem, I believe. I wouldn't mind coming up with a solution for
+> CFI+BPF JIT compatibility, but I haven't had much time to look into
+> this. Basically, in places where we currently emit an endbr
+> instruction, we should also emit a type hash prefix.
+> 
+> Generating type prefixes for functions called through a dispatcher
+> shouldn't be that hard because the function type is always the same,
+> but figuring out the correct type for indirect calls that don't go
+> through a dispatcher might not be entirely trivial, although I'm sure
+> the BPF verifier/compiler must have this information. FineIBT also
+> complicates matters a bit here as the actual prefix format differs
+> from the basic KCFI prefix.
+> 
+> I'm not sure if Peter or Joao have had time to look at this, but I
+> would be happy to hear any suggestions you might have.
 
-> +		enum pkt_hash_types hash_type;
-> +
-> +		hash_type = igc_rss_type_table[rss_type].hash_type;
-> +		skb_set_hash(skb, rss_hash, hash_type);
-> +	}
->   }
->   
->   static void igc_rx_vlan(struct igc_ring *rx_ring,
-> @@ -6501,6 +6527,7 @@ static int igc_probe(struct pci_dev *pdev,
->   	netdev->features |= NETIF_F_TSO;
->   	netdev->features |= NETIF_F_TSO6;
->   	netdev->features |= NETIF_F_TSO_ECN;
-> +	netdev->features |= NETIF_F_RXHASH;
->   	netdev->features |= NETIF_F_RXCSUM;
->   	netdev->features |= NETIF_F_HW_CSUM;
->   	netdev->features |= NETIF_F_SCTP_CRC;
+I've not had time to look at this -- but afair BPF will only emit an
+indirect jump (tail-call even, irrc), it doesn't do indirect calls
+otherwise (this is also the only place we have RETPOLINE magic in the
+JIT).
+
+(ooh, also dispatcher thing)
+
+This generates an unadorned indirect jump, that is, it doesn't have any
+kCFI magic included, eg. traditional calling convention.
+
+The other case, which you allude to I think, is control transfer to the
+JIT'ed code which is currently __nocfi annotated. I've only briefly
+thought about how to change this, but basically it would entail the JIT
+emitting the correct prefix bytes and setting the entry point at +16.
+
+Given the JIT will only run after we've selected kCFI/FineIBT it knows
+which form to pick from and can emit the right prefix. Then if we remove
+the __nocfi annotation from the call into JIT'ed code, everything should
+work.
+
+None of this should be exceptionally hard, but I've not had time to
+actually do much about it yet.
 
 
-Kind regards,
-
-Paul
-
-
-[1]: https://notabs.org/coding/smallIntsBigPenalty.htm
