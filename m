@@ -2,179 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2784696A63
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 17:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 995E8696A92
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 18:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbjBNQxu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 11:53:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
+        id S229996AbjBNRAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 12:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232671AbjBNQxu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 11:53:50 -0500
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C687727D7C;
-        Tue, 14 Feb 2023 08:53:48 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id A20B35C0178;
-        Tue, 14 Feb 2023 11:53:44 -0500 (EST)
-Received: from imap45 ([10.202.2.95])
-  by compute3.internal (MEProxy); Tue, 14 Feb 2023 11:53:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rath.org; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1676393624; x=
-        1676480024; bh=iWRZ71muFH5nPOBHkd4LTGSf+xAdZhitSiFH+zzKi10=; b=N
-        01jp7DSdkTr1oqYNSRd9ds8gv3S3zV7CL7GZwJQV1tkd3Cl2B7TPzJFmQtviJ/ZY
-        nNnZ/RUj2HqF+rkMlnJubLYlYg/XipJKgqn+wLGhQXqHkJpZKL5uSol063Pya8KA
-        tHSiA08Idp51+IFPAMPl4/t7tr3jcY3Hns6svcK0ZAp+k5Kgwd+GeOOTZH1pG1jQ
-        DohnGUHUh5Y3IjNRj2x/coKnJDFL/QC0O0j9R3bhhSvdTUrM1OtYUQ5RWWlI3Qtn
-        RkhYtpoXjYtktOYCRki0d5+IMjPVdhFDAp35TdXrgQavkKbrRswTTWKXGoMDoFHs
-        XO//0XQM2TUbph1LdtNuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1676393624; x=
-        1676480024; bh=iWRZ71muFH5nPOBHkd4LTGSf+xAdZhitSiFH+zzKi10=; b=M
-        3GEHH+nl2rXpyAvrfvLeSYHfA1jLsLc7l5E0Lzi1v8ECVKkoCCRarrZhl02/hVUW
-        3dyodFJMDhG2pW3L/NzMd8zk6hQIa3LthPn2Ax6dgwc/8zBC0xNpsDp9xjkHXcLA
-        HNCw7cxM9trifld9LXPYXj+G5qNIfAEzYhLmbZdmTRU6mTzAVXvLCjNHBJSDp+LB
-        Q2RI9SprPF1Qy/WNgBUuU4tMLMoW0ZMF7B/h/U5HAYLYFtb/kSLRMlw5ukiJHG5P
-        4WYtaOLk8WlxhiPt+rvUpCV+i0EkKS2Oj87a0zS8+5HZR+rIhM4H5WR+B7fp6Ihl
-        EZ5e8MwTWvIFIxeVOGUmw==
-X-ME-Sender: <xms:mLzrY3g_vd82jtKIn7_GdnQnG70OJhGMr77JVB5015O1QiVmmSEYcg>
-    <xme:mLzrY0DyLyVzlB_akk1kn59nO-2BjPkFO6rwZBTLIDWgJ4OTeFNMxoV7izWIgUwtV
-    2TcYBKKVjbDI7Sf>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeifedgkeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfp
-    ihhkohhlrghushcutfgrthhhfdcuoehnihhkohhlrghushesrhgrthhhrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpeegudeihffggefglefgveevkedtlefhudeiveeikeeijedvkefg
-    kedtfeejvedujeenucffohhmrghinheplhhinhhugihfohhunhgurghtihhonhdrohhrgh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnihhk
-    ohhlrghushesrhgrthhhrdhorhhg
-X-ME-Proxy: <xmx:mLzrY3H9b7OSRrzt3ZzZ7Zz2tDYTrZFlgeAIsiJP9tycbyXGJDYSuA>
-    <xmx:mLzrY0TbcetEoJCs3K6_noj-VhydyD2XY75Km_A1JH7HUrnTkkQZCw>
-    <xmx:mLzrY0w4beFR1ztqUj42szQQtr80P3ko5qjSY_dQxO-V0TyD9NlssA>
-    <xmx:mLzrY5p1AqqZD0JhDdNVrv5C52-slrteYqRB8gM3JF6vajV2m5ZqoA>
-Feedback-ID: i53a843ae:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4AEB1272007A; Tue, 14 Feb 2023 11:53:44 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-156-g081acc5ed5-fm-20230206.001-g081acc5e
-Mime-Version: 1.0
-Message-Id: <56d5ac0e-4c54-46b7-85d3-5de127562630@app.fastmail.com>
-In-Reply-To: <CAJfpegsocoi-KobnSpD9dHvZDeDwG+ZPKRV9Yo-4i8utZa5Jww@mail.gmail.com>
-References: <20221122021536.1629178-1-drosen@google.com>
- <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
- <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com>
- <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm>
- <CAOQ4uxiBD5NXLMXFev7vsCLU5-_o8-_H-XcoMY1aqhOwnADo9w@mail.gmail.com>
- <283b5344-3ef5-7799-e243-13c707388cd8@fastmail.fm>
- <CAOQ4uxjvUukDSBk977csO5cX=-1HiMHmyQxycbYQgrpLaanddw@mail.gmail.com>
- <CAJfpegvHKkCn0UnNRVxFXjjnkOuq0N4xLN4WzpqVX+56DqdjUw@mail.gmail.com>
- <81e010cc-b52b-4b20-8d08-631ce8ca7fad@app.fastmail.com>
- <CAJfpegsocoi-KobnSpD9dHvZDeDwG+ZPKRV9Yo-4i8utZa5Jww@mail.gmail.com>
-Date:   Tue, 14 Feb 2023 16:53:09 +0000
-From:   "Nikolaus Rath" <nikolaus@rath.org>
-To:     "Miklos Szeredi" <miklos@szeredi.hu>
-Cc:     "Amir Goldstein" <amir73il@gmail.com>,
-        "Bernd Schubert" <bernd.schubert@fastmail.fm>,
-        "Daniel Rosenberg" <drosen@google.com>,
-        "Linux FS Devel" <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@android.com>,
-        "Vivek Goyal" <vgoyal@redhat.com>,
-        "Josef Bacik" <josef@toxicpanda.com>
-Subject: Attending LFS (was: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem
- Extension for FUSE)
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229930AbjBNQ7g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 11:59:36 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0140D2E0E6;
+        Tue, 14 Feb 2023 08:59:13 -0800 (PST)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31EGXk5t027870;
+        Tue, 14 Feb 2023 16:57:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2022-7-12;
+ bh=COxPmLf+paRDDdFuvH25Zi2bcrkGUWbmw1AV1Vzz6fg=;
+ b=YLvFKW+EqHo4lJihtKam5O2u/Ez9btXYR9UATFH2zB8Iu5e5Y/RW6Fp0KY6CkhCradAN
+ WTilqdKWZFcLKiqsqfa4V8mYN1ZQvBadLk2TsOnIkEtZUKsfbgOWWK7HvSPFJKd8W46X
+ 6I8lZN4dOtwp7sy+z6JM8Hyy2wb+bAGvhr+gIyRw8kVIAEWVmTfaTTf5O0Ec6XCJ2W+/
+ s+ECjqJ+6XkIgXtXUIiTIJDq/ia5qoW1iTGafvouFXOp0XKQKEIPCwqm6SXEU/hwPFGd
+ rIIwhMwB2pOtB0Be/uO7OEApgaB8P0mSiaWnOpESEKGFyDpTBPCUpGUYLIbIrtBSw8Fd aQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3np2mtdxts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Feb 2023 16:57:48 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 31EGuKPb009707;
+        Tue, 14 Feb 2023 16:57:47 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3np1f5uuka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Feb 2023 16:57:47 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31EGuHor039739;
+        Tue, 14 Feb 2023 16:57:45 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3np1f5uuff-9;
+        Tue, 14 Feb 2023 16:57:45 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Len Brown <len.brown@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, alsa-devel@alsa-project.org,
+        coresight@lists.linaro.org, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, isdn4linux@listserv.isdn4linux.de,
+        keyrings@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-sgx@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-mm@kvack.org,
+        openrisc@lists.librecores.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org
+Subject: Re: (subset) [PATCH 00/35] Documentation: correct lots of spelling errors (series 1)
+Date:   Tue, 14 Feb 2023 11:57:35 -0500
+Message-Id: <167639371105.486235.1228754650636546815.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230127064005.1558-1-rdunlap@infradead.org>
+References: <20230127064005.1558-1-rdunlap@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-14_11,2023-02-14_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 mlxlogscore=997 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302140144
+X-Proofpoint-GUID: F9bpdPmEiXIR5xn5JduF_4kuCVCc4so3
+X-Proofpoint-ORIG-GUID: F9bpdPmEiXIR5xn5JduF_4kuCVCc4so3
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi folks,
+On Thu, 26 Jan 2023 22:39:30 -0800, Randy Dunlap wrote:
 
-I've looked into this in more detail. =20
+> Correct many spelling errors in Documentation/ as reported by codespell.
+> 
+> Maintainers of specific kernel subsystems are only Cc-ed on their
+> respective patches, not the entire series. [if all goes well]
+> 
+> These patches are based on linux-next-20230125.
+> 
+> [...]
 
-I wouldn't be able to get the travel funded by my employer, and I don't =
-think I'm a suitable recipient for the Linux Foundation's travel fund. T=
-herefore, I think it would make more sense for me to attend potentially =
-relevant sessions remotely.
+Applied to 6.3/scsi-queue, thanks!
 
-If there's anything I need to do for that, please let me know. Otherwise=
- I'll assume that at some point I'll get a meeting invite from someone :=
--).
+[28/35] Documentation: target: correct spelling
+        https://git.kernel.org/mkp/scsi/c/c57ac5748be5
 
-If there's a way to schedule these sessions in a Europe-friendly time th=
-at would be much appreciated!
-
-Best,
--Nikolaus
-
---
-GPG Fingerprint: ED31 791B 2C5C 1613 AF38 8B8A D113 FCAC 3C4E 599F
-
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- =C2=BBTime flies like an arrow, fruit flies like a Banana.=C2=AB
-
-On Fri, 10 Feb 2023, at 10:53, Miklos Szeredi wrote:
-> On Fri, 10 Feb 2023 at 10:42, Nikolaus Rath <nikolaus@rath.org> wrote:
->>
->> On Fri, 10 Feb 2023, at 09:38, Miklos Szeredi wrote:
->> > On Fri, 3 Feb 2023 at 12:43, Amir Goldstein <amir73il@gmail.com> wr=
-ote:
->> >
->> >> > Thanks a lot Amir, I'm going to send out an invitation tomorrow.=
- Maybe
->> >> > Nikolaus as libfuse maintainer could also attend?
->> >> >
->> >>
->> >> Since this summit is about kernel filesystem development, I am not=
- sure
->> >> on-prem attendance will be the best option for Nikolaus as we do h=
-ave
->> >> a quota for
->> >> on-prem attendees, but we should have an option for connecting spe=
-cific
->> >> attendees remotely for specific sessions, so that could be great.
->> >
->> > Not sure.  I think including non-kernel people might be beneficial =
-to
->> > the whole fs development community.  Not saying LSF is the best pla=
-ce,
->> > but it's certainly a possibility.
->> >
->> > Nikolaus, I don't even know where you're located.  Do you think it
->> > would make sense for you to attend?
->>
->> Hi folks,
->>
->> I'm located in London.
->>
->> I've never been at LHS, so it's hard for me to tell if I'd be useful =
-there or not. If there's interest, then I would make an effort to attend.
->>
->> Are we talking about the event in Vancouver on May 8th?
->
-> Yes, that's the one.
->
-> I'd certainly think it would be useful, since there will be people
-> with interest in fuse filesystems and hashing out the development
-> direction involves libfuse as well.
->
-> Here's the CFP and attendance request if you are interested:
->
->   https://events.linuxfoundation.org/lsfmm/program/cfp/
->
-> Thanks,
-> Miklos
+-- 
+Martin K. Petersen	Oracle Linux Engineering
