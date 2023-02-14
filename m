@@ -2,92 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EAA696C54
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 19:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BCD696D53
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 19:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjBNSGw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 13:06:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
+        id S232171AbjBNSwZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 13:52:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbjBNSGv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 13:06:51 -0500
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8803D40E2;
-        Tue, 14 Feb 2023 10:06:48 -0800 (PST)
-Received: by mail-vk1-f182.google.com with SMTP id bs10so8396562vkb.3;
-        Tue, 14 Feb 2023 10:06:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KrQm1/EFavHyFPihiEA+04y1YzVp/FTphoUcyDODtiU=;
-        b=1eUHz/xRl+jwcqfb9Kc+JFJCTUeSLpZMGMH2tU04axq3YtKDBfxuVMnvc0iWSHmzZV
-         jdiJwTMLFxfvgdO3EEV6bNHyh/g1bGyySAaYtluhhTczW/2AoENPX5LZM+D1TXNlEBG2
-         H4hfU5BUmfalrY0hu0E7mIYDNPNq2imdXj/35+yaHbPqFk76DRO3DWBbQ+osCIcUAzNZ
-         zLik78pj2yhUl8SLuFJOcpCVvH7sjTo/1tqBcayzCK3LtIE5PMKHXYt30Ptf+VKRht/U
-         xs14rjkA5++IYsjPZpSnDt0HnpsC4pzb3Tpc30yqc7TIr95Yfuup82sOTdPSBd06fI+c
-         qkjA==
-X-Gm-Message-State: AO0yUKXLURTRLnOoq9OxXUeLrgGks3DzQTxFWOn6Sn7gZtNVmUWoE0lu
-        nOmQUHQ5EpKfQ1oyg8Fb2UTBgEKD1yYH8UiA9sc=
-X-Google-Smtp-Source: AK7set9DyOIWzAEHf2w4JiY6NohRsF9v8/HH3brHwyUo6IdtREUtQdjy8HQC/QZMvWHphz7qN7f7ZBMN33o/dyqbH1I=
-X-Received: by 2002:a1f:a258:0:b0:401:b89:5375 with SMTP id
- l85-20020a1fa258000000b004010b895375mr526413vke.22.1676398007610; Tue, 14 Feb
- 2023 10:06:47 -0800 (PST)
+        with ESMTP id S229808AbjBNSwY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 13:52:24 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0796A65;
+        Tue, 14 Feb 2023 10:52:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676400744; x=1707936744;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TwKXloFTMv0mpCZYsinPeWhooTMYzzGCQwRknxpBWOA=;
+  b=Ww3fzjQ7tYT/6mX9kOi8lG6PuxcmbRMet7/Cbxa9gmZn1woSaReZEnNc
+   cuVcaQtqcroI7tOWopkOxc6ovlpCcia8oqCqiMe4jBBSg994HXSvfAU+9
+   Am4InHkV4ro8geOvzJd44LF/LO1BD/7eJWF1AspP5Wjz87S/ACEmuG494
+   5gy1yja82cnnJwmCXFU2O7g/UmjbXoAyYxvSWl4afphAV8uk3u1HLS7g5
+   Rwt0OGm6XlQJ7d0CoGIJ1Vri3/yAUuKqcTfqSb9hcr9OO3k4U68DoSHc/
+   q7U/sFcxOHIzm/XdxeqzQcLuCF/CRuDYFNMhgkxukpobcoQOr5r5ePbZV
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="329866032"
+X-IronPort-AV: E=Sophos;i="5.97,297,1669104000"; 
+   d="scan'208";a="329866032"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2023 10:52:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="619159892"
+X-IronPort-AV: E=Sophos;i="5.97,297,1669104000"; 
+   d="scan'208";a="619159892"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by orsmga003.jf.intel.com with ESMTP; 14 Feb 2023 10:52:23 -0800
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org, bjorn@kernel.org
+Subject: [PATCH net 0/3][pull request] Intel Wired LAN Driver Updates 2023-02-14 (ixgbe, i40e)
+Date:   Tue, 14 Feb 2023 10:51:43 -0800
+Message-Id: <20230214185146.1305819-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-References: <20230214050452.26390-1-namhyung@kernel.org> <20230214050452.26390-5-namhyung@kernel.org>
- <CAP-5=fWV+VCheBocBpXg-jRHr+vkNnKWbH4Rjma9imQRJpis+w@mail.gmail.com>
-In-Reply-To: <CAP-5=fWV+VCheBocBpXg-jRHr+vkNnKWbH4Rjma9imQRJpis+w@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 14 Feb 2023 10:06:36 -0800
-Message-ID: <CAM9d7ch9pLB7ZvNjisASruLqaQTw_DdZDjJQFSir7zntQHNnhw@mail.gmail.com>
-Subject: Re: [PATCH 4/7] perf record: Record dropped sample count
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 14, 2023 at 8:41 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Mon, Feb 13, 2023 at 9:05 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > When it uses bpf filters, event might drop some samples.  It'd be nice
-> > if it can report how many samples it lost.  As LOST_SAMPLES event can
-> > carry the similar information, let's use it for bpf filters.
-> >
-> > To indicate it's from BPF filters, add a new misc flag for that and
-> > do not display cpu load warnings.
->
-> Can you potentially have lost samples from being too slow to drain the
-> ring buffer and dropped samples because of BPF? Is it possible to
-> distinguish lost and dropped with this approach?
+This series contains updates to ixgbe and i40e drivers.
 
-Yeah, the former is exactly what LOST_SAMPLES event gives you.
-It should come from the kernel while BPF filters keep a separate
-counter for dropped samples and inject LOST_SAMPLES events
-with the new misc flag.  So we can differentiate them using the misc
-flag and that's how I suppress the warning for BPF dropped ones.
+Jason Xing corrects comparison of frame sizes for setting MTU with XDP on
+ixgbe and adjusts frame size to account for a second VLAN header on ixgbe
+and i40e.
 
-Thanks,
-Namhyung
+The following are changes since commit 05d7623a892a9da62da0e714428e38f09e4a64d8:
+  net: stmmac: Restrict warning on disabling DMA store and fwd mode
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue 10GbE
+
+Jason Xing (3):
+  ixgbe: allow to increase MTU to 3K with XDP enabled
+  i40e: add double of VLAN header when computing the max MTU
+  ixgbe: add double of VLAN header when computing the max MTU
+
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe.h      |  2 ++
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 28 +++++++++++--------
+ 3 files changed, 20 insertions(+), 12 deletions(-)
+
+-- 
+2.38.1
+
