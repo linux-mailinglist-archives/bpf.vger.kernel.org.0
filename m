@@ -2,53 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C6669579A
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 04:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E32406957B8
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 05:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbjBNDuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Feb 2023 22:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        id S231358AbjBNEK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Feb 2023 23:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbjBNDuX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Feb 2023 22:50:23 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15980A5FA
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 19:50:22 -0800 (PST)
+        with ESMTP id S231204AbjBNEKW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Feb 2023 23:10:22 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E5517CEE;
+        Mon, 13 Feb 2023 20:10:21 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B39E1B81AD2
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 03:50:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4388EC4339B;
-        Tue, 14 Feb 2023 03:50:19 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 32F85B81B2A;
+        Tue, 14 Feb 2023 04:10:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D611DC433AA;
+        Tue, 14 Feb 2023 04:10:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676346619;
-        bh=F1WspPDMe4aBluesCzwtn1tmB1AF8053ec7oCwGE/OY=;
+        s=k20201202; t=1676347818;
+        bh=VinC5e70MSejP0NPx3FPvl1BxXRD+hMW9yvUgkbEVp0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fIsuWGxSuZkM2bquiOjPxtxl39gYPm33D6akF0UAp074Hg+hydi3cjAgS7hT4mYwi
-         Psnj0huKaC3E5W2mqONPDc6c5MbVTqPt2cXor5dXWJ0R+uXcU1yKvQj3nlRUpxiP4q
-         BBiVH/MZkhDpPWtKgAEtC9QBsNbUTEJfXo71tLkHxWfbdhT6G5pwfX2SOCfkmZGUOH
-         zTfnwAAjI7pGZrm56D5Qy8MnenOe6HkAogPHUXtAcIPVpz8+Cy5psh0WgRIJYvg6CO
-         l8d9aGCH8UXwFYQboTJ3jPIKcQqF2mLPIqJ0AOfoYE/ri2uqpneClZvpE6JvP/IFSG
-         w/zDV0OFiPRJw==
+        b=HgqVrwKOO+nLJP+ellkzGw5iL5jNfeeF5mjzd/AlPgWZbyjVKUcvrKY6v9YDpgmQz
+         7w3fJSGlNe6de7tgUz49BIwKPJiX9QXBVX+4Z3jmVY7ziqQ0hddnB0Sti2tJBDN5wW
+         thpsL00+h9XNJ55gJZbj2h/PCi6UsLABDHE7GVh61SQ01CHjpqIZi3Npw/PPAUMI6V
+         ZBbBVFrBk+X2dwbOYzcsmxNKzsRJ+1jWwkXZ7Q72ibMMfZaTNVLnmL7nDNy+7sA+Wz
+         zQvt4jo9Qw2ILDh3TDurDlO09GQhMFlz2I9oIMAEuO/o6iDjw/6CQFAKyyJb+SLCoc
+         brNFJRaan03GA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 292F3E68D2D;
-        Tue, 14 Feb 2023 03:50:19 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B2959E49FA8;
+        Tue, 14 Feb 2023 04:10:18 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6 bpf-next 0/8] BPF rbtree next-gen datastructure
+Subject: Re: [PATCH net-next] hv_netvsc: add missing NETDEV_XDP_ACT_NDO_XMIT
+ xdp-features flag
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167634661916.22468.7213826080881850256.git-patchwork-notify@kernel.org>
-Date:   Tue, 14 Feb 2023 03:50:19 +0000
-References: <20230214004017.2534011-1-davemarchevsky@fb.com>
-In-Reply-To: <20230214004017.2534011-1-davemarchevsky@fb.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, memxor@gmail.com,
-        tj@kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Message-Id: <167634781871.18399.10317859838984239710.git-patchwork-notify@kernel.org>
+Date:   Tue, 14 Feb 2023 04:10:18 +0000
+References: <8e3747018f0fd0b5d6e6b9aefe8d9448ca3a3288.1676195726.git.lorenzo@kernel.org>
+In-Reply-To: <8e3747018f0fd0b5d6e6b9aefe8d9448ca3a3288.1676195726.git.lorenzo@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, kys@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        lorenzo.bianconi@redhat.com, bpf@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,36 +61,21 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon, 13 Feb 2023 16:40:09 -0800 you wrote:
-> This series adds a rbtree datastructure following the "next-gen
-> datastructure" precedent set by recently-added linked-list [0]. This is
-> a reimplementation of previous rbtree RFC [1] to use kfunc + kptr
-> instead of adding a new map type. This series adds a smaller set of API
-> functions than that RFC - just the minimum needed to support current
-> cgfifo example scheduler in ongoing sched_ext effort [2], namely:
+On Sun, 12 Feb 2023 10:57:58 +0100 you wrote:
+> Add missing ndo_xdp_xmit bit to xdp_features capability flag.
 > 
-> [...]
+> Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  drivers/net/hyperv/netvsc_drv.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [v6,bpf-next,1/8] bpf: Add basic bpf_rb_{root,node} support
-    https://git.kernel.org/bpf/bpf-next/c/9c395c1b99bd
-  - [v6,bpf-next,2/8] bpf: Add bpf_rbtree_{add,remove,first} kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/bd1279ae8a69
-  - [v6,bpf-next,3/8] bpf: Add support for bpf_rb_root and bpf_rb_node in kfunc args
-    https://git.kernel.org/bpf/bpf-next/c/cd6791b4b6f6
-  - [v6,bpf-next,4/8] bpf: Add callback validation to kfunc verifier logic
-    https://git.kernel.org/bpf/bpf-next/c/5d92ddc3de1b
-  - [v6,bpf-next,5/8] bpf: Special verifier handling for bpf_rbtree_{remove, first}
-    https://git.kernel.org/bpf/bpf-next/c/a40d3632436b
-  - [v6,bpf-next,6/8] bpf: Add bpf_rbtree_{add,remove,first} decls to bpf_experimental.h
-    https://git.kernel.org/bpf/bpf-next/c/c834df847ee6
-  - [v6,bpf-next,7/8] selftests/bpf: Add rbtree selftests
-    https://git.kernel.org/bpf/bpf-next/c/215249f6adc0
-  - [v6,bpf-next,8/8] bpf, documentation: Add graph documentation for non-owning refs
-    https://git.kernel.org/bpf/bpf-next/c/c31315c3aa09
+  - [net-next] hv_netvsc: add missing NETDEV_XDP_ACT_NDO_XMIT xdp-features flag
+    https://git.kernel.org/netdev/net-next/c/450bdf5bd6c6
 
 You are awesome, thank you!
 -- 
