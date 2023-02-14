@@ -2,53 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 068226968FC
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 17:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D69D669691D
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 17:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbjBNQNg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 11:13:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        id S229849AbjBNQST (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 11:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232391AbjBNQNT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 11:13:19 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE33AB755;
-        Tue, 14 Feb 2023 08:13:01 -0800 (PST)
+        with ESMTP id S231269AbjBNQSS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 11:18:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030C5212BB
+        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 08:18:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E5EF61734;
-        Tue, 14 Feb 2023 16:13:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C01B2C433EF;
-        Tue, 14 Feb 2023 16:12:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D11061787
+        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 16:17:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42BA1C4339B;
+        Tue, 14 Feb 2023 16:17:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676391180;
-        bh=2D4vutaGGAQcjBv/Y+hlE6mTI66xLbC0P40xjGHa1tM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sq6Unzyxw2YZ6sPTYEqvxGx17YI8sxm4J/SL/bYvMolmdGb1tCpQA8AhpS5JheHbT
-         KcUV51d7Rp4fWg3AxqSbBc8MS8eKnA65sRAm+WGRB+uuqP2aOKygWQpdigzb8vWpBL
-         fxyz1hpBleEmpNGpt6jEi4pf6rBgsMlDz2vNEapfO2SWI+N4WLrqf2QD7/GRWZ2fQq
-         +H4Gl+1HBPfdm24fVECmTphM3DF7keMAouhbMiOBt6tPksimqNtKUV6Xjpr6fKLRuK
-         +s2ziHoskdrFUEMZ3L3JHXf6RRKycavRt6xhxdGov8i/hnA0AvohR8OsQ4akOfmZpY
-         Vz4Xsbjl+YsAA==
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        s=k20201202; t=1676391478;
+        bh=IDyaCFdXUgNyjib3ei7T0kXZdZDmnYwJHZO+itZBSms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MXMWbrW3snA0P/o79E0MBkmNmYsmVPcqdYFqXpTCbVThLhlnBs4CDoCsTpsrlR+hK
+         2KCiNj1RHnnQC11pgDgFIXhqMyeHiSIcGZ8HuqDLIP3IRxQLHIaAAylmPLVwZbWFm+
+         b0jowyHJ86cDo+IqgkpkuBij3mzyIALwMmVVckCHpDXG4sbAikg8cVZp1Aocy0JuBB
+         WNsZsBwe7fhV28hDqrHaNiMTbJK0VDTNcgeZSCW5b/sPD6V2LjeUj4nOH9Fr1EJ6Zc
+         M9Jq3H1Y70mWR1T6fHnRZLj2N3Ah4kafcrofSkD4A9opp9GnnI/s+KYkTbAkM3ZJGF
+         whOM7e7hjo5PA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1984E40025; Tue, 14 Feb 2023 13:17:56 -0300 (-03)
+Date:   Tue, 14 Feb 2023 13:17:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Zachary Leaf <zachary.leaf@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2] selftests/bpf: Cross-compile bpftool
-Date:   Tue, 14 Feb 2023 17:12:53 +0100
-Message-Id: <20230214161253.183458-1-bjorn@kernel.org>
-X-Mailer: git-send-email 2.37.2
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: add
+ --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags
+ for v1.25
+Message-ID: <Y+u0NMmLGG3zJJUx@kernel.org>
+References: <1675949331-27935-1-git-send-email-alan.maguire@oracle.com>
+ <CAADnVQ+hfQ9LEmEFXneB7hm17NvRniXSShrHLaM-1BrguLjLQw@mail.gmail.com>
+ <Y+t+P2OOpEZ7UemB@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y+t+P2OOpEZ7UemB@krava>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,112 +69,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn@rivosinc.com>
+Em Tue, Feb 14, 2023 at 01:27:43PM +0100, Jiri Olsa escreveu:
+> On Mon, Feb 13, 2023 at 07:12:33PM -0800, Alexei Starovoitov wrote:
+> > On Thu, Feb 9, 2023 at 5:29 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> > >
+> > > v1.25 of pahole supports filtering out functions with multiple
+> > > inconsistent function prototypes or optimized-out parameters
+> > > from the BTF representation.  These present problems because
+> > > there is no additional info in BTF saying which inconsistent
+> > > prototype matches which function instance to help guide
+> > > attachment, and functions with optimized-out parameters can
+> > > lead to incorrect assumptions about register contents.
+> > >
+> > > So for now, filter out such functions while adding BTF
+> > > representations for functions that have "."-suffixes
+> > > (foo.isra.0) but not optimized-out parameters.
+> > >
+> > > This patch assumes changes in [1] land and pahole is bumped
+> > > to v1.25.
+> > >
+> > > [1] https://lore.kernel.org/bpf/1675790102-23037-1-git-send-email-alan.maguire@oracle.com/
+> > >
+> > > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > > Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > >
+> > > ---
+> > >  scripts/pahole-flags.sh | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
+> > > index 1f1f1d3..728d551 100755
+> > > --- a/scripts/pahole-flags.sh
+> > > +++ b/scripts/pahole-flags.sh
+> > > @@ -23,5 +23,8 @@ if [ "${pahole_ver}" -ge "124" ]; then
+> > >         # see PAHOLE_HAS_LANG_EXCLUDE
+> > >         extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
+> > >  fi
+> > > +if [ "${pahole_ver}" -ge "125" ]; then
+> > > +       extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
+> > > +fi
+> > 
+> > We landed this too soon.
+> > #229     tracing_struct:FAIL
+> > is failing now.
+> > since bpf_testmod.ko is missing a bunch of functions though they're global.
+> > 
+> 
+> hum, didn't see this one failing.. I'll try that again
 
-When the BPF selftests are cross-compiled, only the a host version of
-bpftool is built. This version of bpftool is used on the host-side to
-generate various intermediates, e.g., skeletons.
+/me too, redoing tests her, with gcc and clang, running selftests on a
+system booted with a kernel built with pahole 1.25, etc.
 
-The test runners are also using bpftool, so the Makefile will symlink
-bpftool from the selftest/bpf root, where the test runners will look
-the tool:
-
-  | $(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bootstrap/bpftool \
-  |    $(OUTPUT)/$(if $2,$2/)bpftool
-
-There are two problems for cross-compilation builds:
-
- 1. There is no native (cross-compilation target) of bpftool
- 2. The bootstrap/bpftool is never cross-compiled (by design)
-
-Make sure that a native/cross-compiled version of bpftool is built,
-and if CROSS_COMPILE is set, symlink the native/non-bootstrap version.
-
-Acked-by: Quentin Monnet <quentin@isovalent.com>
-Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
----
-v1->v2: Added the target bpftool version to install target (Zachary)
-        Double-slash cosmetics (Quentin)
-
----
- tools/testing/selftests/bpf/Makefile | 30 ++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index c4b5c44cdee2..3108352e65de 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -158,8 +158,9 @@ $(notdir $(TEST_GEN_PROGS)						\
- 	 $(TEST_CUSTOM_PROGS)): %: $(OUTPUT)/% ;
+- Arnaldo
  
- # sort removes libbpf duplicates when not cross-building
--MAKE_DIRS := $(sort $(BUILD_DIR)/libbpf $(HOST_BUILD_DIR)/libbpf	       \
--	       $(HOST_BUILD_DIR)/bpftool $(HOST_BUILD_DIR)/resolve_btfids      \
-+MAKE_DIRS := $(sort $(BUILD_DIR)/libbpf $(HOST_BUILD_DIR)/libbpf	\
-+	       $(BUILD_DIR)/bpftool $(HOST_BUILD_DIR)/bpftool		\
-+	       $(HOST_BUILD_DIR)/resolve_btfids				\
- 	       $(RUNQSLOWER_OUTPUT) $(INCLUDE_DIR))
- $(MAKE_DIRS):
- 	$(call msg,MKDIR,,$@)
-@@ -209,6 +210,14 @@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_tes
- 	$(Q)cp bpf_testmod/bpf_testmod.ko $@
- 
- DEFAULT_BPFTOOL := $(HOST_SCRATCH_DIR)/sbin/bpftool
-+ifneq ($(CROSS_COMPILE),)
-+CROSS_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
-+TRUNNER_BPFTOOL := $(CROSS_BPFTOOL)
-+USE_BOOTSTRAP := ""
-+else
-+TRUNNER_BPFTOOL := $(DEFAULT_BPFTOOL)
-+USE_BOOTSTRAP := "bootstrap/"
-+endif
- 
- $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
- 	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	       \
-@@ -220,7 +229,7 @@ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
- 		    EXTRA_LDFLAGS='$(SAN_LDFLAGS)' &&			       \
- 		    cp $(RUNQSLOWER_OUTPUT)runqslower $@
- 
--TEST_GEN_PROGS_EXTENDED += $(DEFAULT_BPFTOOL)
-+TEST_GEN_PROGS_EXTENDED += $(TRUNNER_BPFTOOL)
- 
- $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(BPFOBJ)
- 
-@@ -258,6 +267,18 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
- 		    LIBBPF_DESTDIR=$(HOST_SCRATCH_DIR)/			       \
- 		    prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install-bin
- 
-+ifneq ($(CROSS_COMPILE),)
-+$(CROSS_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)	\
-+		    $(BPFOBJ) | $(BUILD_DIR)/bpftool
-+	$(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)				\
-+		    ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE)			\
-+		    EXTRA_CFLAGS='-g -O0'					\
-+		    OUTPUT=$(BUILD_DIR)/bpftool/				\
-+		    LIBBPF_OUTPUT=$(BUILD_DIR)/libbpf/				\
-+		    LIBBPF_DESTDIR=$(SCRATCH_DIR)/				\
-+		    prefix= DESTDIR=$(SCRATCH_DIR)/ install-bin
-+endif
-+
- all: docs
- 
- docs:
-@@ -523,11 +544,12 @@ endif
- $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     $(TRUNNER_EXTRA_OBJS) $$(BPFOBJ)		\
- 			     $(RESOLVE_BTFIDS)				\
-+			     $(TRUNNER_BPFTOOL)				\
- 			     | $(TRUNNER_BINARY)-extras
- 	$$(call msg,BINARY,,$$@)
- 	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
- 	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@
--	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bootstrap/bpftool \
-+	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/$(USE_BOOTSTRAP)bpftool \
- 		   $(OUTPUT)/$(if $2,$2/)bpftool
- 
- endef
+> jirka
+> 
+> > I've tried a bunch of different flags and attributes, but none of them
+> > helped.
+> > The only thing that works is:
+> > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > index 46500636d8cd..5fd0f75d5d20 100644
+> > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > @@ -28,6 +28,7 @@ struct bpf_testmod_struct_arg_2 {
+> >         long b;
+> >  };
+> > 
+> > +__attribute__((optimize("-O0")))
+> >  noinline int
+> >  bpf_testmod_test_struct_arg_1(struct bpf_testmod_struct_arg_2 a, int
+> > b, int c) {
+> > 
+> > We cannot do:
+> > --- a/tools/testing/selftests/bpf/bpf_testmod/Makefile
+> > +++ b/tools/testing/selftests/bpf/bpf_testmod/Makefile
+> > @@ -10,7 +10,7 @@ endif
+> >  MODULES = bpf_testmod.ko
+> > 
+> >  obj-m += bpf_testmod.o
+> > -CFLAGS_bpf_testmod.o = -I$(src)
+> > +CFLAGS_bpf_testmod.o = -I$(src) -O0
+> > 
+> > The build fails due to asm stuff.
+> > 
+> > Maybe we should make scripts/pahole-flags.sh selective
+> > and don't apply skip_encoding_btf_inconsiste to bpf_testmod ?
+> > 
+> > Thoughts?
 
-base-commit: ab86cf337a5b64f0456d2d0d01edc939ad5c20bb
 -- 
-2.37.2
 
+- Arnaldo
