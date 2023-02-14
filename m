@@ -2,67 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA20696EC0
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 21:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C803696ED6
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 22:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjBNU5k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 15:57:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
+        id S229648AbjBNVGQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 16:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbjBNU5j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 15:57:39 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB252B636
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 12:57:38 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id lf10so11339071ejc.5
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 12:57:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=apSwcHBNbsjMzWMwAM8wLfBeeqE78HEez52v75M+bGE=;
-        b=cNpq8+hgZXHGe0pPDvGpNBpt/yXRChPhjD2Ne9I8XM7Zyf4NkBmVCHE+PQHkihDkow
-         gEMxXnlYZM9AQkvhW+IBII40ru112DvhuPnxc6vrwckNE5IduSNBGZ+FnLQ8eNU7dBz6
-         oJgrSwNJ1LbTzvAnKN9SVoeOuCAMGawHDMu6zDOKIGJ2JWHQedg82D3mvtIkak+zawHA
-         awrYmmHeMhrGI4Lb+mwTZ/nLUCTs0YQYTt9Gr8AYHFQ1ngPgZd8njUjRfEXtLIiti7b+
-         CxS+Nq1ucQ4ZRrB1LDSNCU3gWdzCQHzcihH/NvzWPEOajdx0UlZidKoe2WPxnAzWf197
-         70Cg==
+        with ESMTP id S229551AbjBNVGP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 16:06:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029AB2D5B
+        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 13:05:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676408733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AELL4BbeEqV25hegmyOJQqKGiK6ReUAWwnkV+eA1m2c=;
+        b=JEeCKe4D+NtAUCpRx8omayQ5dAuarKdgbTVRedHc2vW6UhA/pPRayb2B9bCj/DCDNY8EPj
+        FHFsRMnHEzAehJoMYP5ynikFX050O9vZsWOEFmWiqNmxsfBkFtcQ5kqEKTgYfQdsycb6nL
+        eycr4FxWdE3IXxU+jPhVinPbr4PDhFA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-371-KbDS9EuyNlyMu_5oaoYk4Q-1; Tue, 14 Feb 2023 16:05:32 -0500
+X-MC-Unique: KbDS9EuyNlyMu_5oaoYk4Q-1
+Received: by mail-ed1-f69.google.com with SMTP id fi21-20020a056402551500b004acb5c6e52bso6826482edb.1
+        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 13:05:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=apSwcHBNbsjMzWMwAM8wLfBeeqE78HEez52v75M+bGE=;
-        b=lgfd0sDFIF6al43H8GER1LlmHbgwmvTkN4lKnLC219+CtmaGFo4UmCMZphG/Nu5l0s
-         W39IfmrNejY1o2sA7Q+OtLPVfv1eTE8RWz+pAFtsPtlgCRaU0FUlvMQusuwPBQ2eE5lS
-         t/0x4pPqnsdQebV69QSPKxfY1Y07n6SIqPqsgTD/pKlTeTn2qdCM4oo7LWtk5DMg0O/n
-         5TxMk93VR5YlH6iUaKsHGBeP6P968WuO+B7nx/B0MdRiB1VLEdEwjrYAz9JrhYyCeDta
-         ku10yzyk1LZl2Ivct7vwcha9ds0B8aXTBng+KMp0+naUPD4ibY9c6zcobhPnRkXU4kqy
-         zOdg==
-X-Gm-Message-State: AO0yUKXw3p9Pikau/6ha1lvbGxZ5PZOrp0iLEbg0tn+C6gFo6P/fFgxs
-        qNot61zp2fagOO9CI+d0Vx2UdW7b09Pzst4GeVFA0D0dFws=
-X-Google-Smtp-Source: AK7set+DRqXZHRtcvQXEsX4Vhod/GSQm+BipVh2Ta7T3xnLW1hNcRRL6o9KILwZTPAtXIRd8qfH9qKl440Rhp3RWwxs=
-X-Received: by 2002:a17:907:984a:b0:87b:dce7:c245 with SMTP id
- jj10-20020a170907984a00b0087bdce7c245mr1978672ejc.3.1676408256709; Tue, 14
- Feb 2023 12:57:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20230214043350.3497406-1-joannelkoong@gmail.com>
-In-Reply-To: <20230214043350.3497406-1-joannelkoong@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 14 Feb 2023 12:57:25 -0800
-Message-ID: <CAADnVQJsrjo7-mbEa1MWG4E53=0QUN8iWzjEjkahzgfzmwP_Cw@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next] bpf: Update kfunc __sz documentation
-To:     Joanne Koong <joannelkoong@gmail.com>, Eddy Z <eddyz87@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AELL4BbeEqV25hegmyOJQqKGiK6ReUAWwnkV+eA1m2c=;
+        b=c7SXEDWXPu2st1tPF+kCa+p/tpML5QOrHlPucWDC/KXghCwR0cj5wFRrQ31ZhNPtEC
+         C3Xu5KrN2JQZU/KZYcpFI3TSAyNyTw9adQa9DhSjMF7MThVKuKcqG//MWn696BAU64ae
+         KhYQe1UiYT7W5xFyBLM9kcIdXuBOdirWUOux4Hecf6k92JE0sQpZd8p7gHdtgfda2rwO
+         6dw/rmA+R2kRbk5+NZuqbG2l/C5fUix/mF3AVF+xC7iqqVArjf3UrAtblxCdO+k2rIGq
+         VD8gS6JHyCRx5cX8TVxAKb37Zea0wbjCTBzceyWsNTXgUzZH7SnHut2Wby57KSRV/Oyr
+         PnDQ==
+X-Gm-Message-State: AO0yUKV+x+K5APpbjkIF+9ByKzk/mkAcAVf7Lfi9U75B0NecPvIqTqaK
+        hI+PZJReAD4mG59Pex9dOY+mahEZ7B7+AMHBXXm1Zo+jPTQwSip7pMrqdE+DAsR+LvccxRisJ7E
+        d3HgXTphHHprz
+X-Received: by 2002:a50:ccd8:0:b0:4aa:c4bb:2372 with SMTP id b24-20020a50ccd8000000b004aac4bb2372mr4573575edj.32.1676408729047;
+        Tue, 14 Feb 2023 13:05:29 -0800 (PST)
+X-Google-Smtp-Source: AK7set9Uyxlpig9y1kVJXIASZeYdrU28RpASpxg7IAE3jGK5UaDxpDu0wUPlx5YFtVygWXSji4bLgw==
+X-Received: by 2002:a50:ccd8:0:b0:4aa:c4bb:2372 with SMTP id b24-20020a50ccd8000000b004aac4bb2372mr4573491edj.32.1676408727264;
+        Tue, 14 Feb 2023 13:05:27 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id c61-20020a509fc3000000b004acbe0b36d2sm4859653edf.6.2023.02.14.13.05.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Feb 2023 13:05:26 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 53473974284; Tue, 14 Feb 2023 22:05:26 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Song Liu <song@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 bpf] bpf, test_run: fix &xdp_frame misplacement for
+ LIVE_FRAMES
+In-Reply-To: <e62296a6-7016-c98a-8419-69428f65d9cc@intel.com>
+References: <20230213142747.3225479-1-alexandr.lobakin@intel.com>
+ <8fffeae7-06a7-158e-e494-c17f4fdc689f@iogearbox.net>
+ <6823f918-7b6c-7349-abb7-7bfb5c7600c2@intel.com>
+ <e62296a6-7016-c98a-8419-69428f65d9cc@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 14 Feb 2023 22:05:26 +0100
+Message-ID: <87bklwt0tl.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,83 +90,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 13, 2023 at 8:35 PM Joanne Koong <joannelkoong@gmail.com> wrote:
->
-> A bpf program calling a kfunc with a __sz-annotated arg must explicitly
-> initialize the stack themselves if the pointer to the memory region is
-> a pointer to the stack. This is because in the verifier, we do not
-> explicitly initialize the stack space for reg type PTR_TO_STACK
-> kfunc args. Thus, the verifier will reject the program with:
->
-> invalid indirect read from stack
-> arg#0 arg#1 memory, len pair leads to invalid memory access
->
-> Alternatively, the verifier could support initializing the stack
-> space on behalf of the program for KF_ARG_PTR_TO_MEM_SIZE args,
-> but this has some drawbacks. For example this would not allow the
-> verifier to reject a program for passing in an uninitialized
-> PTR_TO_STACK for an arg that should have valid data. Another example is
-> that since there's no current way in a kfunc to differentiate between
-> whether the arg should be treated as uninitialized or not, additional
-> check_mem_access calls would need to be called even on PTR_TO_STACKs
-> that have been initialized, which is inefficient. Please note
-> that non-kfuncs don't have this problem because of the MEM_UNINIT tag;
-> only if the arg is tagged as MEM_UNINIT, then do we call
-> check_mem_access byte-by-byte for the size of the buffer.
->
-> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> ---
->  Documentation/bpf/kfuncs.rst | 35 +++++++++++++++++++++++++++++++----
->  1 file changed, 31 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-> index ca96ef3f6896..97497a7879d6 100644
-> --- a/Documentation/bpf/kfuncs.rst
-> +++ b/Documentation/bpf/kfuncs.rst
-> @@ -71,10 +71,37 @@ An example is given below::
->          ...
->          }
->
-> -Here, the verifier will treat first argument as a PTR_TO_MEM, and second
-> -argument as its size. By default, without __sz annotation, the size of the type
-> -of the pointer is used. Without __sz annotation, a kfunc cannot accept a void
-> -pointer.
-> +Here, the verifier will treat first argument (KF_ARG_PTR_TO_MEM_SIZE) as a
-> +pointer to the memory region and second argument as its size. By default,
-> +without __sz annotation, the size of the type of the pointer is used. Without
-> +__sz annotation, a kfunc cannot accept a void pointer.
-> +
-> +Please note that if the memory is on the stack, the stack space must be
-> +explicitly initialized by the program. For example:
-> +
-> +.. code-block:: c
-> +
-> +       SEC("tc")
-> +       int prog(struct __sk_buff *skb)
-> +       {
-> +               char buf[8];
-> +
-> +               bpf_memzero(buf, sizeof(buf));
-> +       ...
-> +       }
-> +
-> +should be
-> +
-> +.. code-block:: c
-> +
-> +       SEC("tc")
-> +       int prog(struct __sk_buff *skb)
-> +       {
-> +               char buf[8] = {};
-> +
-> +               bpf_memzero(buf, sizeof(buf));
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-Actually we might go the other way.
-Instead of asking users to explicitly init things
-we will allow uninit memory.
-See this discussion:
-https://lore.kernel.org/bpf/082fd8451321a832f334882a1872b5cee240d811.camel@gmail.com/
+> From: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Date: Tue, 14 Feb 2023 16:39:25 +0100
+>
+>> From: Daniel Borkmann <daniel@iogearbox.net>
+>> Date: Tue, 14 Feb 2023 16:24:10 +0100
+>>=20
+>>> On 2/13/23 3:27 PM, Alexander Lobakin wrote:
+>
+> [...]
+>
+>>>> Fixes: b530e9e1063e ("bpf: Add "live packet" mode for XDP in
+>>>> BPF_PROG_RUN")
+>>>> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+>>>
+>>> Could you double check BPF CI? Looks like a number of XDP related tests
+>>> are failing on your patch which I'm not seeing on other patches where r=
+uns
+>>> are green, for example test_progs on several archs report the below:
+>>>
+>>> https://github.com/kernel-patches/bpf/actions/runs/4164593416/jobs/7207=
+290499
+>>>
+>>> =C2=A0 [...]
+>>> =C2=A0 test_xdp_do_redirect:PASS:prog_run 0 nsec
+>>> =C2=A0 test_xdp_do_redirect:PASS:pkt_count_xdp 0 nsec
+>>> =C2=A0 test_xdp_do_redirect:PASS:pkt_count_zero 0 nsec
+>>> =C2=A0 test_xdp_do_redirect:PASS:pkt_count_tc 0 nsec
+>>> =C2=A0 test_max_pkt_size:PASS:prog_run_max_size 0 nsec
+>>> =C2=A0 test_max_pkt_size:FAIL:prog_run_too_big unexpected prog_run_too_=
+big:
+>>> actual -28 !=3D expected -22
+>>> =C2=A0 close_netns:PASS:setns 0 nsec
+>>> =C2=A0 #275=C2=A0=C2=A0=C2=A0=C2=A0 xdp_do_redirect:FAIL
+>>> =C2=A0 Summary: 273/1581 PASSED, 21 SKIPPED, 2 FAILED
+>> Ah I see. xdp_do_redirect.c test defines:
+>>=20
+>> /* The maximum permissible size is: PAGE_SIZE -
+>>  * sizeof(struct xdp_page_head) - sizeof(struct skb_shared_info) -
+>>  * XDP_PACKET_HEADROOM =3D 3368 bytes
+>>  */
+>> #define MAX_PKT_SIZE 3368
+>>=20
+>> This needs to be updated as it now became bigger. The test checks that
+>> this size passes and size + 1 fails, but now it doesn't.
+>> Will send v3 in a couple minutes.
+>
+> Problem :s
+>
+> This 3368/3408 assumes %L1_CACHE_BYTES is 64 and we're running on a
+> 64-bit arch. For 32 bits the value will be bigger, also for cachelines
+> bigger than 64 it will be smaller (skb_shared_info has to be aligned).
+> Given that selftests are generic / arch-independent, how to approach
+> this? I added a static_assert() to test_run.c to make sure this value
+> is in sync to not run into the same problem in future, but then realized
+> it will fail on a number of architectures.
+>
+> My first thought was to hardcode the worst-case value (64 bit, cacheline
+> is 128) in test_run.c for every architecture, but there might be more
+> elegant ways.
 
-Eduard, is about to send those verifier patches.
+The 32/64 bit split should be straight-forward to handle for the head;
+an xdp_buff is 6*sizeof(void)+8 bytes long, and xdp_page_head is just
+two of those after this patch. The skb_shared_info size is a bit harder;
+do we have the alignment / size macros available to userspace somewhere?
 
-In parallel we can relax __sz to accept uninit under allow_uninit_stack.
+Hmm, the selftests generate a vmlinux.h file which would have the
+structure definitions; maybe something could be generated from that? Not
+straight-forward to include it in a userspace application, though.
+
+Otherwise, does anyone run the selftests on architectures that don't
+have a 64-byte cache-line size? Or even on 32-bit arches? We don't
+handle larger page sizes either...
+
+-Toke
+
