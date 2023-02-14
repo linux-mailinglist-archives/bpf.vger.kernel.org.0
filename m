@@ -2,133 +2,477 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D5E6954CF
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 00:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C65EE695576
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 01:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjBMXcD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Feb 2023 18:32:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44772 "EHLO
+        id S229520AbjBNAke (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Feb 2023 19:40:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbjBMXcA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Feb 2023 18:32:00 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CA62114
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 15:31:59 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id c1so11331347edt.4
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 15:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AdtOWowEtcNb0fBYdv2IT4vsABesICSFaMSOMAEIWRA=;
-        b=cMkCqggcOpdERZkrVimIABE58AgahEXS7SwagsUDcIRe0tNifo2rJfrWITLM84bj3K
-         VT5r6oGAIGSGGDmoZBcOwmMPCOvD3aq/FKOf9TwOedY7huCgbqUgCnQ6+X86crrWF7SZ
-         5VDY9yc3NpyZDyY9eqTyFXhi4MAyC4IRGt3fF3EF9LXiwuNUfJ7Vh1EP7wzHIAz+zeMk
-         LQNPZ+j+qikdWWBHXQ/JyifmHUPvaLcYGRYJaNsjunDi4EJQuNa/aJ+GqU2VMkfOvLMC
-         I1o6GsFdF+x/Zfx8Yi9iQHJMlpt4NzVFNMbxqcXxBCVg5Tpwb4V8B8nM7pNf0K89hzOU
-         M+ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AdtOWowEtcNb0fBYdv2IT4vsABesICSFaMSOMAEIWRA=;
-        b=gbDgFCtp4ACAEIt4/TNPfX3mq9qlkGABkZQEC2XTzc95xlFYeIlfjWcTnO0D6L85Yq
-         5moOaSOx300npmFnpQjS89uwRP+ocpAzUeyBbbpd4wmyTfN11haA2LZobYDEqCRHhsqs
-         aCY/XSQf55nSdazLuFU5yHGdnNR8uOoHVIDeREgZ9QMq2WLfpTJdRlyoQjYfugPJyZjw
-         Zk+mHKb+FtGbb9/p4dioYDWgdDrkG9Wcz089ilT3pRPbRM+bfvhvCbVGQKhaa19KPq85
-         EPvG06ZURhUeuib7cHFw1Txeb9xGYcFVZDx6TZjZPS+NKx6WHRYQQijfhHObrR5Ym1j1
-         FK9w==
-X-Gm-Message-State: AO0yUKUZIFSPcYbcoRIWqzIInjttrFqcn5hLFnLdv2geOWycS+s8nz+D
-        TtE11qYCghv1bva0yJLe6f0xuQ/uIlzrQud4QW0f1Q==
-X-Google-Smtp-Source: AK7set+4DODG3YNHkQGmaxQz8GUJTeGHYRXYvtMPa+YrS0XW+8xHHLnTrKDEV48T4miR6kX7dk0P0b0Y8J5TeDE8q/A=
-X-Received: by 2002:a50:d513:0:b0:4ac:c720:207c with SMTP id
- u19-20020a50d513000000b004acc720207cmr198637edi.5.1676331117332; Mon, 13 Feb
- 2023 15:31:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20230212092715.1422619-4-davemarchevsky@fb.com>
- <202302121936.t36vlAFG-lkp@intel.com> <d04d33ff-0f8f-2bbd-3a67-9b8b813a799b@meta.com>
- <CAKwvOdketskm5z25aPRY7OsBOZe2kzvXV-i9RDTbwcLpZSAT0A@mail.gmail.com> <CAADnVQ+qJMAugDDQXaerRbh0g4QdRygMZ_0UVmXViR2aJ4OLDQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+qJMAugDDQXaerRbh0g4QdRygMZ_0UVmXViR2aJ4OLDQ@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Mon, 13 Feb 2023 15:31:21 -0800
-Message-ID: <CABCJKucDXNeGCdD6uT7phYhpm+OgYm19EkfCNMB9AJ66k4NcvQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 3/9] bpf: Add bpf_rbtree_{add,remove,first} kfuncs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        kernel test robot <lkp@intel.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        bpf <bpf@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229485AbjBNAkd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Feb 2023 19:40:33 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8233DEFBC
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 16:40:31 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31DN93e7023111
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 16:40:31 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=h2DNn4TEY5sWxxvNaDCI/fMLvhM1IhGHrjkHmxH49gg=;
+ b=U6wo4rTyMtMY1/00vwLZiPXk49wpsN1nazdt7e/7UgmuIAi6QCOWyap3vT91sF6PzCeR
+ fBObK/cHkGXPUqBErkluj+kBNypqu44njIrCDNc+SWgaU7sjNTFp0IMAK2SildIzE3rm
+ 3txEMQJ/52ZeLp2QxEM4cBNPIdBtbJ0RyxA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3np9kuf4hq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 16:40:30 -0800
+Received: from twshared26225.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Mon, 13 Feb 2023 16:40:30 -0800
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id 91D3616ED5D52; Mon, 13 Feb 2023 16:40:22 -0800 (PST)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Kernel Team <kernel-team@fb.com>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joao Moreira <joao@overdrivepizza.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tejun Heo <tj@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH v6 bpf-next 0/8] BPF rbtree next-gen datastructure
+Date:   Mon, 13 Feb 2023 16:40:09 -0800
+Message-ID: <20230214004017.2534011-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: IuWFA1okjDKRymyvhAA8q6JVBoQ1LmIb
+X-Proofpoint-GUID: IuWFA1okjDKRymyvhAA8q6JVBoQ1LmIb
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-13_12,2023-02-13_01,2023-02-09_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 13, 2023 at 2:17 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Feb 13, 2023 at 12:49 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > I haven't looked at the series in question, but note that this compile
-> > time warning is meant to help us catch Control Flow Integrity runtime
-> > violations, which may result in a panic.
+This series adds a rbtree datastructure following the "next-gen
+datastructure" precedent set by recently-added linked-list [0]. This is
+a reimplementation of previous rbtree RFC [1] to use kfunc + kptr
+instead of adding a new map type. This series adds a smaller set of API
+functions than that RFC - just the minimum needed to support current
+cgfifo example scheduler in ongoing sched_ext effort [2], namely:
 
-Here's the tracking issue for the other warnings of this type in the
-kernel, nearly all the warnings are in one driver:
+  bpf_rbtree_add
+  bpf_rbtree_remove
+  bpf_rbtree_first
 
-https://github.com/ClangBuiltLinux/linux/issues/1724
+The meat of this series is bugfixes and verifier infra work to support
+these API functions. Adding more rbtree kfuncs in future patches should
+be straightforward as a result.
 
-> It's a transition from kernel to bpf prog.
-> If CFI trips on it it will trip on all transitions.
-> All calls from kernel into bpf are more or less the same.
-> Not sure what it means for other archs, but on x86 JIT emits 'endbr'
-> insn to make IBT/CFI happy.
+First, the series refactors and extends linked_list's release_on_unlock
+logic. The concept of "reference to node that was added to data
+structure" is formalized as "non-owning reference". From linked_list's
+perspective this non-owning reference after
+linked_list_push_{front,back} has same semantics as release_on_unlock,
+with the addition of writes to such references being valid in the
+critical section. Such references are no longer marked PTR_UNTRUSTED.
+Patches 2 and 13 go into more detail.
 
-While IBT allows indirect calls to any function that starts with
-endbr, CFI is more fine-grained and requires the function pointer type
-to match the function type, which further limits possible call
-targets. To actually enforce this, the compiler emits a type hash
-prefix for each function, and a check before each indirect call to
-ensure the call target has the expected prefix. The commit message
-here has an example of the code the compiler generates:
+The series then adds rbtree API kfuncs and necessary verifier support
+for them - namely support for callback args to kfuncs and some
+non-owning reference interactions that linked_list didn't need.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c516f89e17e56b4738f05588e51267e295b5e63
+BPF rbtree uses struct rb_root_cached + existing rbtree lib under the
+hood. From the BPF program writer's perspective, a BPF rbtree is very
+similar to existing linked list. Consider the following example:
 
-As calling a JIT compiled function would obviously trip CFI, indirect
-call checking is currently disabled in BPF dispatcher functions (using
-the __nocfi attribute). However, BPF trampolines still have the same
-problem, I believe. I wouldn't mind coming up with a solution for
-CFI+BPF JIT compatibility, but I haven't had much time to look into
-this. Basically, in places where we currently emit an endbr
-instruction, we should also emit a type hash prefix.
+  struct node_data {
+    long key;
+    long data;
+    struct bpf_rb_node node;
+  }
 
-Generating type prefixes for functions called through a dispatcher
-shouldn't be that hard because the function type is always the same,
-but figuring out the correct type for indirect calls that don't go
-through a dispatcher might not be entirely trivial, although I'm sure
-the BPF verifier/compiler must have this information. FineIBT also
-complicates matters a bit here as the actual prefix format differs
-from the basic KCFI prefix.
+  static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
+  {
+    struct node_data *node_a;
+    struct node_data *node_b;
 
-I'm not sure if Peter or Joao have had time to look at this, but I
-would be happy to hear any suggestions you might have.
+    node_a =3D container_of(a, struct node_data, node);
+    node_b =3D container_of(b, struct node_data, node);
 
-Sami
+    return node_a->key < node_b->key;
+  }
+
+  private(A) struct bpf_spin_lock glock;
+  private(A) struct bpf_rb_root groot __contains(node_data, node);
+
+  /* ... in BPF program */
+  struct node_data *n, *m;
+  struct bpf_rb_node *res;
+
+  n =3D bpf_obj_new(typeof(*n));
+  if (!n)
+    /* skip */
+  n->key =3D 5;
+  n->data =3D 10;
+
+  bpf_spin_lock(&glock);
+  bpf_rbtree_add(&groot, &n->node, less);
+  bpf_spin_unlock(&glock);
+
+  bpf_spin_lock(&glock);
+  res =3D bpf_rbtree_first(&groot);
+  if (!res)
+    /* skip */
+  res =3D bpf_rbtree_remove(&groot, res);
+  if (!res)
+    /* skip */
+  bpf_spin_unlock(&glock);
+
+  m =3D container_of(res, struct node_data, node);
+  bpf_obj_drop(m);
+
+Some obvious similarities:
+
+  * Special bpf_rb_root and bpf_rb_node types have same semantics
+    as bpf_list_head and bpf_list_node, respectively
+  * __contains is used to associated node type with root
+  * The spin_lock associated with a rbtree must be held when using
+    rbtree API kfuncs
+  * Nodes are allocated via bpf_obj_new and dropped via bpf_obj_drop
+  * Rbtree takes ownership of node lifetime when a node is added.
+    Removing a node gives ownership back to the program, requiring a
+    bpf_obj_drop before program exit
+
+Some new additions as well:
+
+  * Support for callbacks in kfunc args is added to enable 'less'
+    callback use above
+  * bpf_rbtree_first is the first graph API function to return a
+    non-owning reference instead of convering an arg from own->non-own
+  * Because all references to nodes already added to the rbtree are
+    non-owning, bpf_rbtree_remove must accept such a reference in order
+    to remove it from the tree
+
+Summary of patches:
+  Patches 1 - 5 implement the meat of rbtree-specific support in this
+  series, gradually building up to implemented kfuncs that verify as
+  expected.
+
+  Patch 6 adds the bpf_rbtree_{add,first,remove} to bpf_experimental.h.
+
+  Patch 7 adds tests, Patch 9 adds documentation.
+
+  [0]: lore.kernel.org/bpf/20221118015614.2013203-1-memxor@gmail.com
+  [1]: lore.kernel.org/bpf/20220830172759.4069786-1-davemarchevsky@fb.com
+  [2]: lore.kernel.org/bpf/20221130082313.3241517-1-tj@kernel.org
+
+Changelog:
+
+v5 -> v6: lore.kernel.org/bpf/20230212092715.1422619-1-davemarchevsky@fb.co=
+m/
+
+Patch #'s below refer to the patch's number in v5 unless otherwise stated.
+
+* General / Patch 1
+  * Rebase onto latest bpf-next: "bpf: Migrate release_on_unlock logic to n=
+on-owning ref semantics"
+  * This was Patch 1 of v4, was applied, not included in v6
+
+* Patch 3 - "bpf: Add bpf_rbtree_{add,remove,first} kfuncs"
+  * Use bpf_callback_t instead of plain-C fn ptr for bpf_rbtree_add. This
+    necessitated having bpf_rbtree_add duplicate rbtree_add's functionality.
+    Wrapper function was used w/ internal __bpf_rbtree_add helper so that
+    bpf_experimental.h proto could continue to use plain-C fn ptr so BPF pr=
+ogs
+    could benefit from typechecking (Alexei)
+
+
+v4 -> v5: lore.kernel.org/bpf/20230209174144.3280955-1-davemarchevsky@fb.co=
+m/
+
+Patch #'s below refer to the patch's number in v4 unless otherwise stated.
+
+* General
+  * Rebase onto latest bpf-next: "Merge branch 'bpf, mm: introduce cgroup.m=
+emory=3Dnobpf'"
+
+* Patches 1-3 are squashed into "bpf: Migrate release_on_unlock logic to no=
+n-owning ref semantics".
+  * Added type_is_non_owning_ref helper (Alexei)
+  * Use a NON_OWN_REF type flag instead of separate bool (Alexei)
+
+* Patch 8 - "bpf: Special verifier handling for bpf_rbtree_{remove, first}"
+  * When doing btf_parse_fields, reject structs with both bpf_list_node and
+    bpf_rb_node fields. This is a temporary measure that can be removed aft=
+er
+    "collection identity" followup. See comment added in btf_parse_fields f=
+or
+    more detail (Kumar, Alexei)
+  * Add linked_list BTF test exercising check added to btf_parse_fields
+  * Minor changes and moving around of some reg type checks due to NON_OWN_=
+REF type flag
+    introduction
+
+* Patch 10 - "selftests/bpf: Add rbtree selftests"
+  * Migrate failure tests to RUN_TESTS, __failure, __msg() framework (Alexe=
+i)
+
+
+v3 -> v4: lore.kernel.org/bpf/20230131180016.3368305-1-davemarchevsky@fb.co=
+m/
+
+Patch #'s below refer to the patch's number in v3 unless otherwise stated.
+
+* General
+  * Don't base this series on "bpf: Refactor release_regno searching logic",
+    which was submitted separately as a refactor.
+  * Rebase onto latest bpf-next: "samples/bpf: Add openat2() enter/exit tra=
+cepoint to syscall_tp sample"
+
+* Patch 2 - "bpf: Improve bpf_reg_state space usage for non-owning ref lock"
+  * print_verifier_state change was adding redundant comma after "non_own_r=
+ef",
+    fix it to put comma in correct place
+  * invalidate_non_owning_refs no longer needs to take bpf_active_lock para=
+m,
+    since any non-owning ref reg in env's cur_state is assumed to use that
+    state's active_lock (Alexei)
+  * invalidate_non_owning_refs' reg loop should check that the reg being
+    inspected is a PTR_TO_BTF_ID before checking reg->non_owning_ref_lock,
+    since that field is part of a union and may be filled w/ meaningless by=
+tes
+    if reg !=3D PTR_TO_BTF_ID (Alexei)
+
+* Patch 3 - "selftests/bpf: Update linked_list tests for non-owning ref sem=
+antics"
+  * Change the string searched for by the following tests:
+    * linked_list/incorrect_node_off1
+    * linked_list/double_push_front
+    * linked_list/double_push_back
+
+    necessary due to rebase / dropping of "release_regno searching logic" p=
+atch
+    (see "General" changes)
+
+* Patch 8 - "bpf: Special verifier handling for bpf_rbtree_{remove, first}"
+  * Just call invalidate_non_owning_refs w/ env instead of env, lock. (see
+    Patch 2 changes)
+
+* Patch 11 - "bpf, documentation: Add graph documentation for non-owning re=
+fs"
+  * Fix documentation formatting and improve content (David)
+  * v3's version of patch 11 was missing some changes, v4's patch 11 is sti=
+ll
+    addressing David's feedback from v2
+
+
+v2 -> v3: lore.kernel.org/bpf/20221217082506.1570898-1-davemarchevsky@fb.co=
+m/
+
+Patch #'s below refer to the patch's number in v2 unless otherwise stated.
+
+* Patch 1 - "bpf: Support multiple arg regs w/ ref_obj_id for kfuncs"
+  * No longer needed as v3 doesn't have multiple ref_obj_id arg regs
+  * The refactoring pieces were submitted separately
+    (https://lore.kernel.org/bpf/20230121002417.1684602-1-davemarchevsky@fb=
+.com/)
+
+* Patch 2 - "bpf: Migrate release_on_unlock logic to non-owning ref semanti=
+cs"
+  * Remove KF_RELEASE_NON_OWN flag from list API push methods, just match
+    against specific kfuncs for now (Alexei, David)
+  * Separate "release non owning reference" logic from KF_RELEASE logic
+    (Alexei, David)
+  * reg_find_field_offset now correctly tests 'rec' instead of 'reg' after
+    calling reg_btf_record (Dan Carpenter)
+
+* New patch added after Patch 2 - "bpf: Improve bpf_reg_state space usage f=
+or non-owning ref lock"
+  * Eliminates extra bpf_reg_state memory usage by using a bool instead of
+    copying lock identity
+
+* Patch 4 - "bpf: rename list_head -> graph_root in field info types"
+  * v2's version was applied to bpf-next, not including in respins
+
+* Patch 6 - "bpf: Add bpf_rbtree_{add,remove,first} kfuncs"
+  * Remove KF_RELEASE_NON_OWN flag from rbtree_add, just add it to specific
+    kfunc matching (Alexei, David)
+
+* Patch 9 - "bpf: Special verifier handling for bpf_rbtree_{remove, first}"
+  * Remove KF_INVALIDATE_NON_OWN kfunc flag, just match against specific kf=
+unc
+    for now (Alexei, David)
+
+* Patch 11 - "libbpf: Make BTF mandatory if program BTF has spin_lock or al=
+loc_obj type"
+  * Drop for now, will submit separately
+
+* Patch 12 - "selftests/bpf: Add rbtree selftests"
+  * Some expected-failure tests have different error messages due to "relea=
+se
+    non-owning reference logic" being separated from KF_RELEASE logic in Pa=
+tch
+    2 changes
+
+* Patch 13 - "bpf, documentation: Add graph documentation for non-owning re=
+fs"
+  * Fix documentation formatting and improve content (David)
+
+
+v1 -> v2: lore.kernel.org/bpf/20221206231000.3180914-1-davemarchevsky@fb.co=
+m/
+
+Series-wide changes:
+  * Rename datastructure_{head,node,api} -> graph_{root,node,api} (Alexei)
+  * "graph datastructure" in patch summaries to refer to linked_list + rbtr=
+ee
+    instead of "next-gen datastructure" (Alexei)
+  * Move from hacky marking of non-owning references as PTR_UNTRUSTED to
+    cleaner implementation (Alexei)
+  * Add invalidation of non-owning refs to rbtree_remove (Kumar, Alexei)
+
+Patch #'s below refer to the patch's number in v1 unless otherwise stated.
+
+Note that in v1 most of the meaty verifier changes were in the latter half
+of the series. Here, about half of that complexity has been moved to
+"bpf: Migrate release_on_unlock logic to non-owning ref semantics" - was Pa=
+tch
+3 in v1.
+
+* Patch 1 - "bpf: Loosen alloc obj test in verifier's reg_btf_record"
+  * Was applied, dropped from further iterations
+
+* Patch 2 - "bpf: map_check_btf should fail if btf_parse_fields fails"
+  * Dropped in favor of verifier check-on-use: when some normal verifier
+    checking expects the map to have btf_fields correctly parsed, it won't
+    find any and verification will fail
+
+* New patch added before Patch 3 - "bpf: Support multiple arg regs w/ ref_o=
+bj_id for kfuncs"
+  * Addition of KF_RELEASE_NON_OWN flag, which requires KF_RELEASE, and tag=
+ging
+    of bpf_list_push_{front,back} KF_RELEASE | KF_RELEASE_NON_OWN, means th=
+at
+    list-in-list push_{front,back} will trigger "only one ref_obj_id arg re=
+g"
+    logic. This is because "head" arg to those functions can be a list-in-l=
+ist,
+    which itself can be an owning reference with ref_obj_id. So need to
+    support multiple ref_obj_id for release kfuncs.
+
+* Patch 3 - "bpf: Minor refactor of ref_set_release_on_unlock"
+  * Now a major refactor w/ a rename to reflect this
+    * "bpf: Migrate release_on_unlock logic to non-owning ref semantics"
+  * Replaces release_on_unlock with active_lock logic as discussed in v1
+
+* New patch added after Patch 3 - "selftests/bpf: Update linked_list tests =
+for non_owning_ref logic"
+  * Removes "write after push" linked_list failure tests - no longer failure
+    scenarios.
+
+* Patch 4 - "bpf: rename list_head -> datastructure_head in field info type=
+s"
+  * rename to graph_root instead. Similar renamings across the series - see
+    series-wide changes.
+
+* Patch 5 - "bpf: Add basic bpf_rb_{root,node} support"
+  * OWNER_FIELD_MASK -> GRAPH_ROOT_MASK, OWNEE_FIELD_MASK -> GRAPH_NODE_MAS=
+K,
+    and change of "owner"/"ownee" in big btf_check_and_fixup_fields comment=
+ to
+    "root"/"node" (Alexei)
+
+* Patch 6 - "bpf: Add bpf_rbtree_{add,remove,first} kfuncs"
+  * bpf_rbtree_remove can no longer return NULL. v2 continues v1's "use type
+    system to prevent remove of node that isn't in a datastructure" approac=
+h,
+    so rbtree_remove should never have been able to return NULL
+
+* Patch 7 - "bpf: Add support for bpf_rb_root and bpf_rb_node in kfunc args"
+  * is_bpf_datastructure_api_kfunc -> is_bpf_graph_api_kfunc (Alexei)
+
+* Patch 8 - "bpf: Add callback validation to kfunc verifier logic"
+  * Explicitly disallow rbtree_remove in rbtree callback
+  * Explicitly disallow bpf_spin_{lock,unlock} call in rbtree callback,
+    preventing possibility of "unbalanced" unlock (Alexei)
+
+* Patch 10 - "bpf, x86: BPF_PROBE_MEM handling for insn->off < 0"
+  * Now that non-owning refs aren't marked PTR_UNTRUSTED it's not necessary=
+ to
+    include this patch as part of the series
+  * After conversation w/ Alexei, did another pass and submitted as an
+    independent series (lore.kernel.org/bpf/20221213182726.325137-1-davemar=
+chevsky@fb.com/)
+
+* Patch 13 - "selftests/bpf: Add rbtree selftests"
+  * Since bpf_rbtree_remove can no longer return null, remove null checks
+  * Remove test confirming that rbtree_first isn't allowed in callback. We =
+want
+    this to be possible
+  * Add failure test confirming that rbtree_remove's new non-owning referen=
+ce
+    invalidation behavior behaves as expected
+  * Add SEC("license") to rbtree_btf_fail__* progs. They were previously
+    failing due to lack of this section. Now they're failing for correct
+    reasons.
+  * rbtree_btf_fail__add_wrong_type.c - add locking around rbtree_add, rena=
+me
+    the bpf prog to something reasonable
+
+* New patch added after patch 13 - "bpf, documentation: Add graph documenta=
+tion for non-owning refs"
+  * Summarizes details of owning and non-owning refs which we hashed out in
+    v1
+
+Dave Marchevsky (8):
+  bpf: Add basic bpf_rb_{root,node} support
+  bpf: Add bpf_rbtree_{add,remove,first} kfuncs
+  bpf: Add support for bpf_rb_root and bpf_rb_node in kfunc args
+  bpf: Add callback validation to kfunc verifier logic
+  bpf: Special verifier handling for bpf_rbtree_{remove, first}
+  bpf: Add bpf_rbtree_{add,remove,first} decls to bpf_experimental.h
+  selftests/bpf: Add rbtree selftests
+  bpf, documentation: Add graph documentation for non-owning refs
+
+ Documentation/bpf/graph_ds_impl.rst           | 266 +++++++++++
+ Documentation/bpf/other.rst                   |   3 +-
+ include/linux/bpf.h                           |  20 +-
+ include/uapi/linux/bpf.h                      |  11 +
+ kernel/bpf/btf.c                              | 186 +++++---
+ kernel/bpf/helpers.c                          |  93 ++++
+ kernel/bpf/syscall.c                          |  28 +-
+ kernel/bpf/verifier.c                         | 420 ++++++++++++++++--
+ tools/include/uapi/linux/bpf.h                |  11 +
+ .../testing/selftests/bpf/bpf_experimental.h  |  24 +
+ .../selftests/bpf/prog_tests/linked_list.c    |  49 +-
+ .../testing/selftests/bpf/prog_tests/rbtree.c | 117 +++++
+ tools/testing/selftests/bpf/progs/rbtree.c    | 176 ++++++++
+ .../progs/rbtree_btf_fail__add_wrong_type.c   |  52 +++
+ .../progs/rbtree_btf_fail__wrong_node_type.c  |  49 ++
+ .../testing/selftests/bpf/progs/rbtree_fail.c | 322 ++++++++++++++
+ 16 files changed, 1707 insertions(+), 120 deletions(-)
+ create mode 100644 Documentation/bpf/graph_ds_impl.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rbtree.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rbtree.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rbtree_btf_fail__add_=
+wrong_type.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rbtree_btf_fail__wron=
+g_node_type.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rbtree_fail.c
+
+--=20
+2.30.2
+
