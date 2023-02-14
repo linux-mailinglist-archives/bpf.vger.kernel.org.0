@@ -2,246 +2,751 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1307F69581D
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 06:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4412569583E
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 06:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbjBNFFa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 00:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35570 "EHLO
+        id S229806AbjBNFOP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 00:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbjBNFFZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 00:05:25 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FCA199FF;
-        Mon, 13 Feb 2023 21:05:07 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id bg2so4716860pjb.4;
-        Mon, 13 Feb 2023 21:05:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VOPNCVA20E0uVUS+CW/b7qI/sayGHYZXibfTiD56j0M=;
-        b=f5NRaWWERGOECvFzBnZbdLHQ6WIMpG2pTeO4wzJth1Z6GbyDCP6dxNCTciZ+egFMI1
-         sAKTMUbo6q7vaNJqGodDt7wwkeRXkbPptHxqON25oUo+BB6eM2hWMvo1uvAfrl4gndbq
-         s5HVg2/Nj1+ijpF179J9WZQ6LdpWjakk2typsHRghFmKTn2/buBG2n+OifFJnpr9724m
-         Y1M2b5DO3lYm1gq0wiNsILWV0Sy24fbuWzibMx3doc7/5D12XRMt9MTtDhdIWwmyIYBg
-         fKelriVVc3z/0GwxYBwZFWpbTYOSCM+TDfC3aS3WyQ5ue5druCgSbUOTBwf9hsCOXoSs
-         SvDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=VOPNCVA20E0uVUS+CW/b7qI/sayGHYZXibfTiD56j0M=;
-        b=dFlXdbxQtus7mIchpSMIx15MLdQMz8+ue15Epv9Ry7JJliDnizCacS1Hx0qVCIobAr
-         rECEKvfuRG04qMBZRRPpCqIMBZyBvxQQV111zuxOx8VdnGrGIs0xNDM7R+ANX2S0jcWc
-         9zvCcK6GyrxmsE6tUGE/ChesRBpl3nQy1iKQAs2P8RrIXCvsW25GYwvDvwPX7Ivcq3CK
-         3y7Afl+BXIYIgeFv5DxCp4JxGY4AOcH/Hj5cnGOk5DJ5lun/UZvYOsAoMjRZXWDrUiFb
-         CS7OLNfT2EZSZxMqk8eXBay8qzqasV1DV83StaIPef0OoI4JVOM1H6JLt823+28dnKbd
-         rqww==
-X-Gm-Message-State: AO0yUKXVmfWBtn6c2LM5HGqtT0Q5WJ3P/8EqTY6OIVXSt19DlintTLZM
-        hFnUNnIFQxHwBglnHbi3IQQ=
-X-Google-Smtp-Source: AK7set+b/WQBdI/xNbpUPfjZ43S1ny0Ui6i+gGAyN51Pf1Poq6VcErFDMvljbuDFACCqKfK7mAHTCQ==
-X-Received: by 2002:a17:902:e851:b0:19a:7758:e5e6 with SMTP id t17-20020a170902e85100b0019a7758e5e6mr1743500plg.48.1676351106335;
-        Mon, 13 Feb 2023 21:05:06 -0800 (PST)
-Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:de3c:c4c2:3f15:764d])
-        by smtp.gmail.com with ESMTPSA id k18-20020a170902761200b001932a9e4f2csm9045593pll.255.2023.02.13.21.05.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Feb 2023 21:05:06 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 7/7] perf bpf filter: Add data_src sample data support
-Date:   Mon, 13 Feb 2023 21:04:52 -0800
-Message-Id: <20230214050452.26390-8-namhyung@kernel.org>
-X-Mailer: git-send-email 2.39.1.581.gbfd45094c4-goog
-In-Reply-To: <20230214050452.26390-1-namhyung@kernel.org>
-References: <20230214050452.26390-1-namhyung@kernel.org>
+        with ESMTP id S229632AbjBNFOO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 00:14:14 -0500
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29281BF2
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 21:14:12 -0800 (PST)
+Received: by devvm15675.prn0.facebook.com (Postfix, from userid 115148)
+        id 45EA765F54ED; Mon, 13 Feb 2023 21:14:00 -0800 (PST)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        martin.lau@linux.dev, kernel-team@fb.com,
+        Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 bpf-next 1/2] selftests/bpf: Clean up user_ringbuf, cgrp_kfunc, kfunc_dynptr_param tests
+Date:   Mon, 13 Feb 2023 21:13:31 -0800
+Message-Id: <20230214051332.4007131-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The data_src has many entries to express memory behaviors.  Add each
-term separately so that users can combine them for their purpose.
+Clean up user_ringbuf, cgrp_kfunc, and kfunc_dynptr_param tests to use
+the generic verification tester for checking verifier rejections.
+The generic verification tester uses btf_decl_tag-based annotations
+for verifying that the tests fail with the expected log messages.
 
-I didn't add prefix for the constants for simplicity as they are mostly
-distinguishable but I had to use l1_miss and l2_hit for mem_dtlb since
-mem_lvl has different values for the same names.  Note that I decided
-mem_lvl to be used as an alias of mem_lvlnum as it's deprecated now.
-According to the comment in the UAPI header, users should use the mix
-of mem_lvlnum, mem_remote and mem_snoop.  Also the SNOOPX bits are
-concatenated to mem_snoop for simplicity.
-
-The following terms are used for data_src and the corresponding perf
-sample data fields:
-
- * mem_op : { load, store, pfetch, exec }
- * mem_lvl: { l1, l2, l3, l4, cxl, io, any_cache, lfb, ram, pmem }
- * mem_snoop: { none, hit, miss, hitm, fwd, peer }
- * mem_remote: { remote }
- * mem_lock: { locked }
- * mem_dtlb { l1_hit, l1_miss, l2_hit, l2_miss, any_hit, any_miss, walk, fault }
- * mem_blk { by_data, by_addr }
- * mem_hops { hops0, hops1, hops2, hops3 }
-
-We can now use a filter expression like below:
-
-  'bpf: mem_op == load, mem_lvl <= l2, mem_dtlb == l1_hit'
-  'bpf: mem_dtlb == l2_miss, mem_hops > hops1'
-  'bpf: mem_lvl == ram, mem_remote == 1'
-
-Note that 'na' is shared among the terms as it has the same value except
-for mem_lvl.  I don't have a good idea to handle that for now.
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+Acked-by: David Vernet <void@manifault.com>
+Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- tools/perf/util/bpf-filter.l                 | 61 ++++++++++++++++++++
- tools/perf/util/bpf_skel/sample_filter.bpf.c | 23 ++++++++
- 2 files changed, 84 insertions(+)
+ .../selftests/bpf/prog_tests/cgrp_kfunc.c     | 69 +-----------------
+ .../bpf/prog_tests/kfunc_dynptr_param.c       | 72 ++++---------------
+ .../selftests/bpf/prog_tests/user_ringbuf.c   | 62 +---------------
+ .../selftests/bpf/progs/cgrp_kfunc_failure.c  | 17 ++++-
+ .../bpf/progs/test_kfunc_dynptr_param.c       |  4 ++
+ .../selftests/bpf/progs/user_ringbuf_fail.c   | 31 +++++---
+ 6 files changed, 58 insertions(+), 197 deletions(-)
 
-diff --git a/tools/perf/util/bpf-filter.l b/tools/perf/util/bpf-filter.l
-index bdc06babb028..3af9331302cf 100644
---- a/tools/perf/util/bpf-filter.l
-+++ b/tools/perf/util/bpf-filter.l
-@@ -41,6 +41,12 @@ static int value(int base)
- 	return BFT_NUM;
- }
- 
-+static int constant(int val)
-+{
-+	perf_bpf_filter_lval.num = val;
-+	return BFT_NUM;
-+}
-+
- %}
- 
- num_dec		[0-9]+
-@@ -70,6 +76,15 @@ retire_lat	{ return sample_part(PERF_SAMPLE_WEIGHT_STRUCT, 3); } /* alias for we
- phys_addr	{ return sample(PERF_SAMPLE_PHYS_ADDR); }
- code_pgsz	{ return sample(PERF_SAMPLE_CODE_PAGE_SIZE); }
- data_pgsz	{ return sample(PERF_SAMPLE_DATA_PAGE_SIZE); }
-+mem_op		{ return sample_part(PERF_SAMPLE_DATA_SRC, 1); }
-+mem_lvlnum	{ return sample_part(PERF_SAMPLE_DATA_SRC, 2); }
-+mem_lvl		{ return sample_part(PERF_SAMPLE_DATA_SRC, 2); } /* alias for mem_lvlnum */
-+mem_snoop	{ return sample_part(PERF_SAMPLE_DATA_SRC, 3); } /* include snoopx */
-+mem_remote	{ return sample_part(PERF_SAMPLE_DATA_SRC, 4); }
-+mem_lock	{ return sample_part(PERF_SAMPLE_DATA_SRC, 5); }
-+mem_dtlb	{ return sample_part(PERF_SAMPLE_DATA_SRC, 6); }
-+mem_blk		{ return sample_part(PERF_SAMPLE_DATA_SRC, 7); }
-+mem_hops	{ return sample_part(PERF_SAMPLE_DATA_SRC, 8); }
- 
- "=="		{ return operator(PBF_OP_EQ); }
- "!="		{ return operator(PBF_OP_NEQ); }
-@@ -79,6 +94,52 @@ data_pgsz	{ return sample(PERF_SAMPLE_DATA_PAGE_SIZE); }
- "<="		{ return operator(PBF_OP_LE); }
- "&"		{ return operator(PBF_OP_AND); }
- 
-+na		{ return constant(PERF_MEM_OP_NA); }
-+load		{ return constant(PERF_MEM_OP_LOAD); }
-+store		{ return constant(PERF_MEM_OP_STORE); }
-+pfetch		{ return constant(PERF_MEM_OP_PFETCH); }
-+exec		{ return constant(PERF_MEM_OP_EXEC); }
-+
-+l1		{ return constant(PERF_MEM_LVLNUM_L1); }
-+l2		{ return constant(PERF_MEM_LVLNUM_L2); }
-+l3		{ return constant(PERF_MEM_LVLNUM_L3); }
-+l4		{ return constant(PERF_MEM_LVLNUM_L4); }
-+cxl		{ return constant(PERF_MEM_LVLNUM_CXL); }
-+io		{ return constant(PERF_MEM_LVLNUM_IO); }
-+any_cache	{ return constant(PERF_MEM_LVLNUM_ANY_CACHE); }
-+lfb		{ return constant(PERF_MEM_LVLNUM_LFB); }
-+ram		{ return constant(PERF_MEM_LVLNUM_RAM); }
-+pmem		{ return constant(PERF_MEM_LVLNUM_PMEM); }
-+
-+none		{ return constant(PERF_MEM_SNOOP_NONE); }
-+hit		{ return constant(PERF_MEM_SNOOP_HIT); }
-+miss		{ return constant(PERF_MEM_SNOOP_MISS); }
-+hitm		{ return constant(PERF_MEM_SNOOP_HITM); }
-+fwd		{ return constant(PERF_MEM_SNOOPX_FWD); }
-+peer		{ return constant(PERF_MEM_SNOOPX_PEER); }
-+
-+remote		{ return constant(PERF_MEM_REMOTE_REMOTE); }
-+
-+locked		{ return constant(PERF_MEM_LOCK_LOCKED); }
-+
-+l1_hit		{ return constant(PERF_MEM_TLB_L1 | PERF_MEM_TLB_HIT); }
-+l1_miss		{ return constant(PERF_MEM_TLB_L1 | PERF_MEM_TLB_MISS); }
-+l2_hit		{ return constant(PERF_MEM_TLB_L2 | PERF_MEM_TLB_HIT); }
-+l2_miss		{ return constant(PERF_MEM_TLB_L2 | PERF_MEM_TLB_MISS); }
-+any_hit		{ return constant(PERF_MEM_TLB_HIT); }
-+any_miss	{ return constant(PERF_MEM_TLB_MISS); }
-+walk		{ return constant(PERF_MEM_TLB_WK); }
-+os		{ return constant(PERF_MEM_TLB_OS); }
-+fault		{ return constant(PERF_MEM_TLB_OS); } /* alias for os */
-+
-+by_data		{ return constant(PERF_MEM_BLK_DATA); }
-+by_addr		{ return constant(PERF_MEM_BLK_ADDR); }
-+
-+hops0		{ return constant(PERF_MEM_HOPS_0); }
-+hops1		{ return constant(PERF_MEM_HOPS_1); }
-+hops2		{ return constant(PERF_MEM_HOPS_2); }
-+hops3		{ return constant(PERF_MEM_HOPS_3); }
-+
- ","		{ return ','; }
- .		{ }
- 
-diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
-index 5b239f194fa9..0148b47de7b9 100644
---- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
-+++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
-@@ -62,6 +62,29 @@ static inline __u64 perf_get_sample(struct bpf_perf_event_data_kern *kctx,
- 		return kctx->data->code_page_size;
- 	case PERF_SAMPLE_DATA_PAGE_SIZE:
- 		return kctx->data->data_page_size;
-+	case PERF_SAMPLE_DATA_SRC:
-+		if (entry->part == 1)
-+			return kctx->data->data_src.mem_op;
-+		if (entry->part == 2)
-+			return kctx->data->data_src.mem_lvl_num;
-+		if (entry->part == 3) {
-+			__u32 snoop = kctx->data->data_src.mem_snoop;
-+			__u32 snoopx = kctx->data->data_src.mem_snoopx;
-+
-+			return (snoopx << 5) | snoop;
-+		}
-+		if (entry->part == 4)
-+			return kctx->data->data_src.mem_remote;
-+		if (entry->part == 5)
-+			return kctx->data->data_src.mem_lock;
-+		if (entry->part == 6)
-+			return kctx->data->data_src.mem_dtlb;
-+		if (entry->part == 7)
-+			return kctx->data->data_src.mem_blk;
-+		if (entry->part == 8)
-+			return kctx->data->data_src.mem_hops;
-+		/* return the whole word */
-+		return kctx->data->data_src.val;
- 	default:
- 		break;
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c b/tools/=
+testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+index f3bb0e16e088..b3f7985c8504 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+@@ -8,9 +8,6 @@
+ #include "cgrp_kfunc_failure.skel.h"
+ #include "cgrp_kfunc_success.skel.h"
+=20
+-static size_t log_buf_sz =3D 1 << 20; /* 1 MB */
+-static char obj_log_buf[1048576];
+-
+ static struct cgrp_kfunc_success *open_load_cgrp_kfunc_skel(void)
+ {
+ 	struct cgrp_kfunc_success *skel;
+@@ -89,65 +86,6 @@ static const char * const success_tests[] =3D {
+ 	"test_cgrp_get_ancestors",
+ };
+=20
+-static struct {
+-	const char *prog_name;
+-	const char *expected_err_msg;
+-} failure_tests[] =3D {
+-	{"cgrp_kfunc_acquire_untrusted", "Possibly NULL pointer passed to trust=
+ed arg0"},
+-	{"cgrp_kfunc_acquire_fp", "arg#0 pointer type STRUCT cgroup must point"=
+},
+-	{"cgrp_kfunc_acquire_unsafe_kretprobe", "reg type unsupported for arg#0=
+ function"},
+-	{"cgrp_kfunc_acquire_trusted_walked", "R1 must be referenced or trusted=
+"},
+-	{"cgrp_kfunc_acquire_null", "Possibly NULL pointer passed to trusted ar=
+g0"},
+-	{"cgrp_kfunc_acquire_unreleased", "Unreleased reference"},
+-	{"cgrp_kfunc_get_non_kptr_param", "arg#0 expected pointer to map value"=
+},
+-	{"cgrp_kfunc_get_non_kptr_acquired", "arg#0 expected pointer to map val=
+ue"},
+-	{"cgrp_kfunc_get_null", "arg#0 expected pointer to map value"},
+-	{"cgrp_kfunc_xchg_unreleased", "Unreleased reference"},
+-	{"cgrp_kfunc_get_unreleased", "Unreleased reference"},
+-	{"cgrp_kfunc_release_untrusted", "arg#0 is untrusted_ptr_or_null_ expec=
+ted ptr_ or socket"},
+-	{"cgrp_kfunc_release_fp", "arg#0 pointer type STRUCT cgroup must point"=
+},
+-	{"cgrp_kfunc_release_null", "arg#0 is ptr_or_null_ expected ptr_ or soc=
+ket"},
+-	{"cgrp_kfunc_release_unacquired", "release kernel function bpf_cgroup_r=
+elease expects"},
+-};
+-
+-static void verify_fail(const char *prog_name, const char *expected_err_=
+msg)
+-{
+-	LIBBPF_OPTS(bpf_object_open_opts, opts);
+-	struct cgrp_kfunc_failure *skel;
+-	int err, i;
+-
+-	opts.kernel_log_buf =3D obj_log_buf;
+-	opts.kernel_log_size =3D log_buf_sz;
+-	opts.kernel_log_level =3D 1;
+-
+-	skel =3D cgrp_kfunc_failure__open_opts(&opts);
+-	if (!ASSERT_OK_PTR(skel, "cgrp_kfunc_failure__open_opts"))
+-		goto cleanup;
+-
+-	for (i =3D 0; i < ARRAY_SIZE(failure_tests); i++) {
+-		struct bpf_program *prog;
+-		const char *curr_name =3D failure_tests[i].prog_name;
+-
+-		prog =3D bpf_object__find_program_by_name(skel->obj, curr_name);
+-		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
+-			goto cleanup;
+-
+-		bpf_program__set_autoload(prog, !strcmp(curr_name, prog_name));
+-	}
+-
+-	err =3D cgrp_kfunc_failure__load(skel);
+-	if (!ASSERT_ERR(err, "unexpected load success"))
+-		goto cleanup;
+-
+-	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err=
+_msg")) {
+-		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
+-		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
+-	}
+-
+-cleanup:
+-	cgrp_kfunc_failure__destroy(skel);
+-}
+-
+ void test_cgrp_kfunc(void)
+ {
+ 	int i, err;
+@@ -163,12 +101,7 @@ void test_cgrp_kfunc(void)
+ 		run_success_test(success_tests[i]);
  	}
--- 
-2.39.1.581.gbfd45094c4-goog
+=20
+-	for (i =3D 0; i < ARRAY_SIZE(failure_tests); i++) {
+-		if (!test__start_subtest(failure_tests[i].prog_name))
+-			continue;
+-
+-		verify_fail(failure_tests[i].prog_name, failure_tests[i].expected_err_=
+msg);
+-	}
++	RUN_TESTS(cgrp_kfunc_failure);
+=20
+ cleanup:
+ 	cleanup_cgroup_environment();
+diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c =
+b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
+index 72800b1e8395..8cd298b78e44 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
++++ b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
+@@ -10,17 +10,11 @@
+ #include <test_progs.h>
+ #include "test_kfunc_dynptr_param.skel.h"
+=20
+-static size_t log_buf_sz =3D 1048576; /* 1 MB */
+-static char obj_log_buf[1048576];
+-
+ static struct {
+ 	const char *prog_name;
+-	const char *expected_verifier_err_msg;
+ 	int expected_runtime_err;
+ } kfunc_dynptr_tests[] =3D {
+-	{"not_valid_dynptr", "cannot pass in dynptr at an offset=3D-8", 0},
+-	{"not_ptr_to_stack", "arg#0 expected pointer to stack or dynptr_ptr", 0=
+},
+-	{"dynptr_data_null", NULL, -EBADMSG},
++	{"dynptr_data_null", -EBADMSG},
+ };
+=20
+ static bool kfunc_not_supported;
+@@ -38,29 +32,15 @@ static int libbpf_print_cb(enum libbpf_print_level le=
+vel, const char *fmt,
+ 	return 0;
+ }
+=20
+-static void verify_fail(const char *prog_name, const char *expected_err_=
+msg)
++static bool has_pkcs7_kfunc_support(void)
+ {
+ 	struct test_kfunc_dynptr_param *skel;
+-	LIBBPF_OPTS(bpf_object_open_opts, opts);
+ 	libbpf_print_fn_t old_print_cb;
+-	struct bpf_program *prog;
+ 	int err;
+=20
+-	opts.kernel_log_buf =3D obj_log_buf;
+-	opts.kernel_log_size =3D log_buf_sz;
+-	opts.kernel_log_level =3D 1;
+-
+-	skel =3D test_kfunc_dynptr_param__open_opts(&opts);
+-	if (!ASSERT_OK_PTR(skel, "test_kfunc_dynptr_param__open_opts"))
+-		goto cleanup;
+-
+-	prog =3D bpf_object__find_program_by_name(skel->obj, prog_name);
+-	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
+-		goto cleanup;
+-
+-	bpf_program__set_autoload(prog, true);
+-
+-	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
++	skel =3D test_kfunc_dynptr_param__open();
++	if (!ASSERT_OK_PTR(skel, "test_kfunc_dynptr_param__open"))
++		return false;
+=20
+ 	kfunc_not_supported =3D false;
+=20
+@@ -72,26 +52,18 @@ static void verify_fail(const char *prog_name, const =
+char *expected_err_msg)
+ 		fprintf(stderr,
+ 		  "%s:SKIP:bpf_verify_pkcs7_signature() kfunc not supported\n",
+ 		  __func__);
+-		test__skip();
+-		goto cleanup;
+-	}
+-
+-	if (!ASSERT_ERR(err, "unexpected load success"))
+-		goto cleanup;
+-
+-	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err=
+_msg")) {
+-		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
+-		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
++		test_kfunc_dynptr_param__destroy(skel);
++		return false;
+ 	}
+=20
+-cleanup:
+ 	test_kfunc_dynptr_param__destroy(skel);
++
++	return true;
+ }
+=20
+ static void verify_success(const char *prog_name, int expected_runtime_e=
+rr)
+ {
+ 	struct test_kfunc_dynptr_param *skel;
+-	libbpf_print_fn_t old_print_cb;
+ 	struct bpf_program *prog;
+ 	struct bpf_link *link;
+ 	__u32 next_id;
+@@ -103,21 +75,7 @@ static void verify_success(const char *prog_name, int=
+ expected_runtime_err)
+=20
+ 	skel->bss->pid =3D getpid();
+=20
+-	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
+-
+-	kfunc_not_supported =3D false;
+-
+-	old_print_cb =3D libbpf_set_print(libbpf_print_cb);
+ 	err =3D test_kfunc_dynptr_param__load(skel);
+-	libbpf_set_print(old_print_cb);
+-
+-	if (err < 0 && kfunc_not_supported) {
+-		fprintf(stderr,
+-		  "%s:SKIP:bpf_verify_pkcs7_signature() kfunc not supported\n",
+-		  __func__);
+-		test__skip();
+-		goto cleanup;
+-	}
+=20
+ 	if (!ASSERT_OK(err, "test_kfunc_dynptr_param__load"))
+ 		goto cleanup;
+@@ -147,15 +105,15 @@ void test_kfunc_dynptr_param(void)
+ {
+ 	int i;
+=20
++	if (!has_pkcs7_kfunc_support())
++		return;
++
+ 	for (i =3D 0; i < ARRAY_SIZE(kfunc_dynptr_tests); i++) {
+ 		if (!test__start_subtest(kfunc_dynptr_tests[i].prog_name))
+ 			continue;
+=20
+-		if (kfunc_dynptr_tests[i].expected_verifier_err_msg)
+-			verify_fail(kfunc_dynptr_tests[i].prog_name,
+-			  kfunc_dynptr_tests[i].expected_verifier_err_msg);
+-		else
+-			verify_success(kfunc_dynptr_tests[i].prog_name,
+-				kfunc_dynptr_tests[i].expected_runtime_err);
++		verify_success(kfunc_dynptr_tests[i].prog_name,
++			kfunc_dynptr_tests[i].expected_runtime_err);
+ 	}
++	RUN_TESTS(test_kfunc_dynptr_param);
+ }
+diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c b/tool=
+s/testing/selftests/bpf/prog_tests/user_ringbuf.c
+index dae68de285b9..3a13e102c149 100644
+--- a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
++++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
+@@ -19,8 +19,6 @@
+=20
+ #include "../progs/test_user_ringbuf.h"
+=20
+-static size_t log_buf_sz =3D 1 << 20; /* 1 MB */
+-static char obj_log_buf[1048576];
+ static const long c_sample_size =3D sizeof(struct sample) + BPF_RINGBUF_=
+HDR_SZ;
+ static const long c_ringbuf_size =3D 1 << 12; /* 1 small page */
+ static const long c_max_entries =3D c_ringbuf_size / c_sample_size;
+@@ -663,23 +661,6 @@ static void test_user_ringbuf_blocking_reserve(void)
+ 	user_ringbuf_success__destroy(skel);
+ }
+=20
+-static struct {
+-	const char *prog_name;
+-	const char *expected_err_msg;
+-} failure_tests[] =3D {
+-	/* failure cases */
+-	{"user_ringbuf_callback_bad_access1", "negative offset dynptr_ptr ptr"}=
+,
+-	{"user_ringbuf_callback_bad_access2", "dereference of modified dynptr_p=
+tr ptr"},
+-	{"user_ringbuf_callback_write_forbidden", "invalid mem access 'dynptr_p=
+tr'"},
+-	{"user_ringbuf_callback_null_context_write", "invalid mem access 'scala=
+r'"},
+-	{"user_ringbuf_callback_null_context_read", "invalid mem access 'scalar=
+'"},
+-	{"user_ringbuf_callback_discard_dynptr", "cannot release unowned const =
+bpf_dynptr"},
+-	{"user_ringbuf_callback_submit_dynptr", "cannot release unowned const b=
+pf_dynptr"},
+-	{"user_ringbuf_callback_invalid_return", "At callback return the regist=
+er R0 has value"},
+-	{"user_ringbuf_callback_reinit_dynptr_mem", "Dynptr has to be an uninit=
+ialized dynptr"},
+-	{"user_ringbuf_callback_reinit_dynptr_ringbuf", "Dynptr has to be an un=
+initialized dynptr"},
+-};
+-
+ #define SUCCESS_TEST(_func) { _func, #_func }
+=20
+ static struct {
+@@ -700,42 +681,6 @@ static struct {
+ 	SUCCESS_TEST(test_user_ringbuf_blocking_reserve),
+ };
+=20
+-static void verify_fail(const char *prog_name, const char *expected_err_=
+msg)
+-{
+-	LIBBPF_OPTS(bpf_object_open_opts, opts);
+-	struct bpf_program *prog;
+-	struct user_ringbuf_fail *skel;
+-	int err;
+-
+-	opts.kernel_log_buf =3D obj_log_buf;
+-	opts.kernel_log_size =3D log_buf_sz;
+-	opts.kernel_log_level =3D 1;
+-
+-	skel =3D user_ringbuf_fail__open_opts(&opts);
+-	if (!ASSERT_OK_PTR(skel, "dynptr_fail__open_opts"))
+-		goto cleanup;
+-
+-	prog =3D bpf_object__find_program_by_name(skel->obj, prog_name);
+-	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
+-		goto cleanup;
+-
+-	bpf_program__set_autoload(prog, true);
+-
+-	bpf_map__set_max_entries(skel->maps.user_ringbuf, getpagesize());
+-
+-	err =3D user_ringbuf_fail__load(skel);
+-	if (!ASSERT_ERR(err, "unexpected load success"))
+-		goto cleanup;
+-
+-	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err=
+_msg")) {
+-		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
+-		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
+-	}
+-
+-cleanup:
+-	user_ringbuf_fail__destroy(skel);
+-}
+-
+ void test_user_ringbuf(void)
+ {
+ 	int i;
+@@ -747,10 +692,5 @@ void test_user_ringbuf(void)
+ 		success_tests[i].test_callback();
+ 	}
+=20
+-	for (i =3D 0; i < ARRAY_SIZE(failure_tests); i++) {
+-		if (!test__start_subtest(failure_tests[i].prog_name))
+-			continue;
+-
+-		verify_fail(failure_tests[i].prog_name, failure_tests[i].expected_err_=
+msg);
+-	}
++	RUN_TESTS(user_ringbuf_fail);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c b/too=
+ls/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
+index a1369b5ebcf8..4ad7fe24966d 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
++++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
+@@ -5,6 +5,7 @@
+ #include <bpf/bpf_tracing.h>
+ #include <bpf/bpf_helpers.h>
+=20
++#include "bpf_misc.h"
+ #include "cgrp_kfunc_common.h"
+=20
+ char _license[] SEC("license") =3D "GPL";
+@@ -28,6 +29,7 @@ static struct __cgrps_kfunc_map_value *insert_lookup_cg=
+rp(struct cgroup *cgrp)
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("Possibly NULL pointer passed to trusted arg0")
+ int BPF_PROG(cgrp_kfunc_acquire_untrusted, struct cgroup *cgrp, const ch=
+ar *path)
+ {
+ 	struct cgroup *acquired;
+@@ -45,6 +47,7 @@ int BPF_PROG(cgrp_kfunc_acquire_untrusted, struct cgrou=
+p *cgrp, const char *path
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("arg#0 pointer type STRUCT cgroup must point")
+ int BPF_PROG(cgrp_kfunc_acquire_fp, struct cgroup *cgrp, const char *pat=
+h)
+ {
+ 	struct cgroup *acquired, *stack_cgrp =3D (struct cgroup *)&path;
+@@ -57,6 +60,7 @@ int BPF_PROG(cgrp_kfunc_acquire_fp, struct cgroup *cgrp=
+, const char *path)
+ }
+=20
+ SEC("kretprobe/cgroup_destroy_locked")
++__failure __msg("reg type unsupported for arg#0 function")
+ int BPF_PROG(cgrp_kfunc_acquire_unsafe_kretprobe, struct cgroup *cgrp)
+ {
+ 	struct cgroup *acquired;
+@@ -69,6 +73,7 @@ int BPF_PROG(cgrp_kfunc_acquire_unsafe_kretprobe, struc=
+t cgroup *cgrp)
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("cgrp_kfunc_acquire_trusted_walked")
+ int BPF_PROG(cgrp_kfunc_acquire_trusted_walked, struct cgroup *cgrp, con=
+st char *path)
+ {
+ 	struct cgroup *acquired;
+@@ -80,8 +85,8 @@ int BPF_PROG(cgrp_kfunc_acquire_trusted_walked, struct =
+cgroup *cgrp, const char
+ 	return 0;
+ }
+=20
+-
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("Possibly NULL pointer passed to trusted arg0")
+ int BPF_PROG(cgrp_kfunc_acquire_null, struct cgroup *cgrp, const char *p=
+ath)
+ {
+ 	struct cgroup *acquired;
+@@ -96,6 +101,7 @@ int BPF_PROG(cgrp_kfunc_acquire_null, struct cgroup *c=
+grp, const char *path)
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("Unreleased reference")
+ int BPF_PROG(cgrp_kfunc_acquire_unreleased, struct cgroup *cgrp, const c=
+har *path)
+ {
+ 	struct cgroup *acquired;
+@@ -108,6 +114,7 @@ int BPF_PROG(cgrp_kfunc_acquire_unreleased, struct cg=
+roup *cgrp, const char *pat
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("arg#0 expected pointer to map value")
+ int BPF_PROG(cgrp_kfunc_get_non_kptr_param, struct cgroup *cgrp, const c=
+har *path)
+ {
+ 	struct cgroup *kptr;
+@@ -123,6 +130,7 @@ int BPF_PROG(cgrp_kfunc_get_non_kptr_param, struct cg=
+roup *cgrp, const char *pat
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("arg#0 expected pointer to map value")
+ int BPF_PROG(cgrp_kfunc_get_non_kptr_acquired, struct cgroup *cgrp, cons=
+t char *path)
+ {
+ 	struct cgroup *kptr, *acquired;
+@@ -141,6 +149,7 @@ int BPF_PROG(cgrp_kfunc_get_non_kptr_acquired, struct=
+ cgroup *cgrp, const char *
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("arg#0 expected pointer to map value")
+ int BPF_PROG(cgrp_kfunc_get_null, struct cgroup *cgrp, const char *path)
+ {
+ 	struct cgroup *kptr;
+@@ -156,6 +165,7 @@ int BPF_PROG(cgrp_kfunc_get_null, struct cgroup *cgrp=
+, const char *path)
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("Unreleased reference")
+ int BPF_PROG(cgrp_kfunc_xchg_unreleased, struct cgroup *cgrp, const char=
+ *path)
+ {
+ 	struct cgroup *kptr;
+@@ -175,6 +185,7 @@ int BPF_PROG(cgrp_kfunc_xchg_unreleased, struct cgrou=
+p *cgrp, const char *path)
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("Unreleased reference")
+ int BPF_PROG(cgrp_kfunc_get_unreleased, struct cgroup *cgrp, const char =
+*path)
+ {
+ 	struct cgroup *kptr;
+@@ -194,6 +205,7 @@ int BPF_PROG(cgrp_kfunc_get_unreleased, struct cgroup=
+ *cgrp, const char *path)
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("arg#0 is untrusted_ptr_or_null_ expected ptr_ or socket=
+")
+ int BPF_PROG(cgrp_kfunc_release_untrusted, struct cgroup *cgrp, const ch=
+ar *path)
+ {
+ 	struct __cgrps_kfunc_map_value *v;
+@@ -209,6 +221,7 @@ int BPF_PROG(cgrp_kfunc_release_untrusted, struct cgr=
+oup *cgrp, const char *path
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("arg#0 pointer type STRUCT cgroup must point")
+ int BPF_PROG(cgrp_kfunc_release_fp, struct cgroup *cgrp, const char *pat=
+h)
+ {
+ 	struct cgroup *acquired =3D (struct cgroup *)&path;
+@@ -220,6 +233,7 @@ int BPF_PROG(cgrp_kfunc_release_fp, struct cgroup *cg=
+rp, const char *path)
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("arg#0 is ptr_or_null_ expected ptr_ or socket")
+ int BPF_PROG(cgrp_kfunc_release_null, struct cgroup *cgrp, const char *p=
+ath)
+ {
+ 	struct __cgrps_kfunc_map_value local, *v;
+@@ -251,6 +265,7 @@ int BPF_PROG(cgrp_kfunc_release_null, struct cgroup *=
+cgrp, const char *path)
+ }
+=20
+ SEC("tp_btf/cgroup_mkdir")
++__failure __msg("release kernel function bpf_cgroup_release expects")
+ int BPF_PROG(cgrp_kfunc_release_unacquired, struct cgroup *cgrp, const c=
+har *path)
+ {
+ 	/* Cannot release trusted cgroup pointer which was not acquired. */
+diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c =
+b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
+index f4a8250329b2..2fbef3cc7ad8 100644
+--- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
++++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
+@@ -10,6 +10,7 @@
+ #include <errno.h>
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
+=20
+ extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
+ extern void bpf_key_put(struct bpf_key *key) __ksym;
+@@ -19,6 +20,7 @@ extern int bpf_verify_pkcs7_signature(struct bpf_dynptr=
+ *data_ptr,
+=20
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, 4096);
+ } ringbuf SEC(".maps");
+=20
+ struct {
+@@ -33,6 +35,7 @@ int err, pid;
+ char _license[] SEC("license") =3D "GPL";
+=20
+ SEC("?lsm.s/bpf")
++__failure __msg("cannot pass in dynptr at an offset=3D-8")
+ int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned i=
+nt size)
+ {
+ 	unsigned long val;
+@@ -42,6 +45,7 @@ int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr =
+*attr, unsigned int size)
+ }
+=20
+ SEC("?lsm.s/bpf")
++__failure __msg("arg#0 expected pointer to stack or dynptr_ptr")
+ int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned i=
+nt size)
+ {
+ 	unsigned long val;
+diff --git a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c b/tool=
+s/testing/selftests/bpf/progs/user_ringbuf_fail.c
+index f3201dc69a60..03ee946c6bf7 100644
+--- a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
++++ b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
+@@ -16,6 +16,7 @@ struct sample {
+=20
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_USER_RINGBUF);
++	__uint(max_entries, 4096);
+ } user_ringbuf SEC(".maps");
+=20
+ struct {
+@@ -39,7 +40,8 @@ bad_access1(struct bpf_dynptr *dynptr, void *context)
+ /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callbac=
+k should
+  * not be able to read before the pointer.
+  */
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("negative offset dynptr_ptr ptr")
+ int user_ringbuf_callback_bad_access1(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, bad_access1, NULL, 0);
+@@ -61,7 +63,8 @@ bad_access2(struct bpf_dynptr *dynptr, void *context)
+ /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callbac=
+k should
+  * not be able to read past the end of the pointer.
+  */
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("dereference of modified dynptr_ptr ptr")
+ int user_ringbuf_callback_bad_access2(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, bad_access2, NULL, 0);
+@@ -80,7 +83,8 @@ write_forbidden(struct bpf_dynptr *dynptr, void *contex=
+t)
+ /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callbac=
+k should
+  * not be able to write to that pointer.
+  */
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("invalid mem access 'dynptr_ptr'")
+ int user_ringbuf_callback_write_forbidden(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, write_forbidden, NULL, 0);
+@@ -99,7 +103,8 @@ null_context_write(struct bpf_dynptr *dynptr, void *co=
+ntext)
+ /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callbac=
+k should
+  * not be able to write to that pointer.
+  */
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("invalid mem access 'scalar'")
+ int user_ringbuf_callback_null_context_write(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, null_context_write, NULL, 0);
+@@ -120,7 +125,8 @@ null_context_read(struct bpf_dynptr *dynptr, void *co=
+ntext)
+ /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callbac=
+k should
+  * not be able to write to that pointer.
+  */
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("invalid mem access 'scalar'")
+ int user_ringbuf_callback_null_context_read(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, null_context_read, NULL, 0);
+@@ -139,7 +145,8 @@ try_discard_dynptr(struct bpf_dynptr *dynptr, void *c=
+ontext)
+ /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callbac=
+k should
+  * not be able to read past the end of the pointer.
+  */
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("cannot release unowned const bpf_dynptr")
+ int user_ringbuf_callback_discard_dynptr(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, try_discard_dynptr, NULL, 0);
+@@ -158,7 +165,8 @@ try_submit_dynptr(struct bpf_dynptr *dynptr, void *co=
+ntext)
+ /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callbac=
+k should
+  * not be able to read past the end of the pointer.
+  */
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("cannot release unowned const bpf_dynptr")
+ int user_ringbuf_callback_submit_dynptr(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, try_submit_dynptr, NULL, 0);
+@@ -175,7 +183,8 @@ invalid_drain_callback_return(struct bpf_dynptr *dynp=
+tr, void *context)
+ /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callbac=
+k should
+  * not be able to write to that pointer.
+  */
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("At callback return the register R0 has value")
+ int user_ringbuf_callback_invalid_return(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, invalid_drain_callback_return, NU=
+LL, 0);
+@@ -197,14 +206,16 @@ try_reinit_dynptr_ringbuf(struct bpf_dynptr *dynptr=
+, void *context)
+ 	return 0;
+ }
+=20
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("Dynptr has to be an uninitialized dynptr")
+ int user_ringbuf_callback_reinit_dynptr_mem(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, try_reinit_dynptr_mem, NULL, 0);
+ 	return 0;
+ }
+=20
+-SEC("?raw_tp/")
++SEC("?raw_tp")
++__failure __msg("Dynptr has to be an uninitialized dynptr")
+ int user_ringbuf_callback_reinit_dynptr_ringbuf(void *ctx)
+ {
+ 	bpf_user_ringbuf_drain(&user_ringbuf, try_reinit_dynptr_ringbuf, NULL, =
+0);
+--=20
+2.30.2
 
