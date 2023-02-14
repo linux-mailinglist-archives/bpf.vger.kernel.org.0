@@ -2,21 +2,21 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EFC695586
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 01:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59F469557F
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 01:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbjBNArp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Feb 2023 19:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52416 "EHLO
+        id S229556AbjBNAnw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Feb 2023 19:43:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjBNArp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Feb 2023 19:47:45 -0500
+        with ESMTP id S229462AbjBNAnv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Feb 2023 19:43:51 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF92EFBC
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 16:47:43 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31E0O7V6025094
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 16:47:43 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED792E064
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 16:43:49 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31DN9F76021496
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 16:43:49 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
@@ -24,14 +24,14 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc
  b=mmc2/ZU/UhPp55DjsNgJi/CdqticOQb0thwOjaRnG2wt3CKZ4A40scPRm1HZhL1pvU2o
  db5sPkL/Sqx4LSDpzY2VYVeYjydTBNjc1iJ2+6ounWwRWe51ph4NTaDBj58e/NgyzqkI
  /Of4+cind/MnHlNz/asuKkPKsCuMirkCDqQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nqyqmr3wj-1
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nqpw942d3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 16:47:43 -0800
-Received: from twshared24004.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 13 Feb 2023 16:43:49 -0800
+Received: from twshared43869.37.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 13 Feb 2023 16:47:41 -0800
+ 15.1.2507.17; Mon, 13 Feb 2023 16:43:48 -0800
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
         id BD66D16ED5DC1; Mon, 13 Feb 2023 16:40:35 -0800 (PST)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
@@ -53,15 +53,15 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: IpWRyezU9fokBNOgBOwoBdLEKt9dn6Iv
-X-Proofpoint-ORIG-GUID: IpWRyezU9fokBNOgBOwoBdLEKt9dn6Iv
+X-Proofpoint-GUID: 4NB52oHJ6-KspPJCqi5-MIjYp1wem0wn
+X-Proofpoint-ORIG-GUID: 4NB52oHJ6-KspPJCqi5-MIjYp1wem0wn
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
  definitions=2023-02-13_12,2023-02-13_01,2023-02-09_01
 X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
