@@ -2,164 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4016F696741
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 15:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CE6696780
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 16:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbjBNOqb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 09:46:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        id S233271AbjBNPA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 10:00:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232882AbjBNOqa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 09:46:30 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44983586;
-        Tue, 14 Feb 2023 06:46:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676385989; x=1707921989;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Ur//5LJb0xBMZ29KpapanRNKh+mw05AFdJR9xotzgF0=;
-  b=kXyuU/pqTGcQrfUYFVAFGn8MHQvBs8yh02P190wXUtPCkPfBFBXmSrq3
-   SVa2NbAM3pIMFGqqxyGCen41n/Gr9/hLxEFUARMFwXwq6oHvnolPo2IjO
-   BgPSpkjisaWC6Sz3Jol6CU4LUTtPkNjsCjMWNnsEw3tGmt30GMjANWoN7
-   4Sb74SRszyPRo2U2OK0vRk5ACuhuSrZLDfogNueLPJPmMKupXwGViuhDv
-   qTQxu52Co4ZlEFnvmNPBc3CRFa53i5uIM6igD4GtgKx6tR+WPxh05EIC9
-   IKzSxbeDLJIUgO54Oq8bJ51Jh5htOSafjsIZOiiiDS8Er7PYcxSU9X/kR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="331172294"
-X-IronPort-AV: E=Sophos;i="5.97,296,1669104000"; 
-   d="scan'208";a="331172294"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2023 06:46:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="914762540"
-X-IronPort-AV: E=Sophos;i="5.97,296,1669104000"; 
-   d="scan'208";a="914762540"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga006.fm.intel.com with ESMTP; 14 Feb 2023 06:46:28 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Tue, 14 Feb 2023 06:46:28 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Tue, 14 Feb 2023 06:46:28 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.170)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Tue, 14 Feb 2023 06:46:28 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DvV91bQpdyJdsUKW3HHlTFKnN9gxeZnl3gdyBWCPfmsk3IOL7ug0p59zjbq+ow84ieZLS1Nwhlc/yPaJ115w7GC56a/xHgDV4AxWSAHDS8ho70ZRJXc2rcMfy/+Xr6xGmYDX1Jxvcq/YZ3CR3e5heDpKqq+CYALLpJdTyLyZxAXBLOZEPfvooH6MVllLFGWKFb7jdwIaiT0ssJ8jps/uLp9n73pbe3Rfpj4jowxWf5RjcHXGdAez1JD+hw2+4q+e7TW0leDnwWmO/OoIqamjWTbkGE3g1ySk9j3/fn6vcD5X4puX6hwU9DwiRIyb2EU+mXYqWeT78QwNyiXgDbqyFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=srm9u0QDzcMTohiKPHOqFTIKgiKZf6e/fLG8Xc/IxhE=;
- b=d+8X2Vn9rHvsJkHt2Zv1akyE7Rxa7Ms0pS2YbK4t4duRSUWUnAxouAJOsbIKjlYdwPRo4TGqesc/Hi/HkZklSjCYkRxS+TDEvOhC5HqI7/Nzusgml7ZsxjXEP9F4hzvvyG0YLiGlCDUIWQfh6YhlKCjFI2KJZX4g6N3XMA+sjK+SwfvinbPU+/7dZjBy2muGZkj2pmZlgZ++eSGWW7LB17HSmJ+lrYnAKO/fYPuJctXAIL2jDrmoNzqE2m0hO/SWSO/07QpTiLrD1P7PbevneNG7w/cvKTb9VZ0btZcb9dShkHKeoQK5jgAEb45op9hLo1zaingMyf0A91NpFAmEGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by IA1PR11MB8150.namprd11.prod.outlook.com (2603:10b6:208:44c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.26; Tue, 14 Feb
- 2023 14:46:24 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::3ff6:ca60:f9fe:6934]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::3ff6:ca60:f9fe:6934%4]) with mapi id 15.20.6086.024; Tue, 14 Feb 2023
- 14:46:24 +0000
-Message-ID: <3cfe3c9b-1c8c-363c-6dcb-343cabc2f369@intel.com>
-Date:   Tue, 14 Feb 2023 15:45:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v3] xsk: support use vaddr as ring
-Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-CC:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-References: <20230214015112.12094-1-xuanzhuo@linux.alibaba.com>
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-In-Reply-To: <20230214015112.12094-1-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0136.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:96::10) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+        with ESMTP id S233139AbjBNPA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 10:00:57 -0500
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B84526847;
+        Tue, 14 Feb 2023 07:00:55 -0800 (PST)
+Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id AA34F60027FD9;
+        Tue, 14 Feb 2023 16:00:52 +0100 (CET)
+Message-ID: <6a5ded96-2425-ff9b-c1b1-eca1c103164c@molgen.mpg.de>
+Date:   Tue, 14 Feb 2023 16:00:52 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|IA1PR11MB8150:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99967eb3-4161-4ec1-6b60-08db0e9a3e98
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2/kmYCOISPiqXdH7xaPvKrk+vA3MVfPNp8lH4oKoIobj9BE9dH8+VW8joFwCoiGk9/nUYkrXKM754mFiIVkuATRF9XHN9Xh01PY2VeKrMtfSwu2Ge5Bz57SZF59tf7PV7RcZist9yylFfJBwB0vKSdPFKKFHWSM2R8BoDOekhGbwq/EbX1lKRswchWhqNk2Wj/+wWhXhiBeH/oWR5n/hg2Fk8ueLZWwriGHELm7xulI/7CN3N9tvboI8NYgXnpTQvCgasAW8w2goaEXBto1aUkrlyDOY/D6JQBysvhIxMywp9ZaBGJupWyokggY2/Shwng9aqVu7fWcCBJEJhsD2PSJJjnVLOOnJ+VyHvnKCv0cu9sAOake+N6L3QSOtS7JUnhw1PCPWh5Fs/+2CqevZe4/PL36nWPc5ZQ0zkBCPgQJIVwB8dkasVyDnu4/2MPdUcWd7kZJWEq84wvx5ftcXf0lYUJhtayZ4sMocMuS+H5219+gAmpix7r0BVGlfn2SlZU0vJwN3P1799uhlVCEKonXDOlHbWA04OPf4s5D7daRGHorzfrv2WZ0MtYtkHHrGlwLDU/tBtLaE6bHu8KCd9EX+1WWka/Nqgr7vVW2BkGgROY7+CJXh8FC0wjV7JhCe4xwDgi1Q3T4CJGedjYNevHWhgxZqgJxV5wzk/fKxV3nze2U2rv5cFtMEl46SXOP5sVOAEwJKbYpHJ0LbDs9VJESDSTa6uibHS1A+VDuRqjo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(396003)(39860400002)(376002)(346002)(136003)(366004)(451199018)(6506007)(31686004)(26005)(6666004)(186003)(82960400001)(6512007)(38100700002)(86362001)(2616005)(31696002)(478600001)(6486002)(2906002)(5660300002)(7416002)(41300700001)(8936002)(4326008)(6916009)(8676002)(36756003)(66946007)(66556008)(66476007)(83380400001)(54906003)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VHk4VzhiRFBtN0VqeXFwRzdlRzhzc20vc1NlK1BXSDl3Tll2VGhJT3A0bGE5?=
- =?utf-8?B?ejVwQlpwK2pOVFB4dnVzQTVIdWJuM3FzUytHWWlMcTB3QWxIdDZYMXB2bExE?=
- =?utf-8?B?T3dUbU9XR0dFK095L2o3QlRaY0c4UjRlM2FKZFhOUEM1SnNTR2FBMzVOcG5W?=
- =?utf-8?B?Mmp1TDQ5dXBGc0I3T1U3SG5HeG10cXJHTGo0cEFFVFVaaXJjeTE1Q3dndDN3?=
- =?utf-8?B?ck5uRHBCWTdKdnBlMWVaTDFkMFd4bm0rbS9tamNHaWd2V0duRUp4QnhjTklu?=
- =?utf-8?B?dnNTQVBuVllicUJVZEExWXpLelVMMnUyVTNqVXFoZUt3RU05bmw3QmVwd1Nt?=
- =?utf-8?B?eG1LTCtwWWk0S0s2dWRnUGo1bmNad05LQ0RTU0QvNHhMMzY0bmZSQWdITnNO?=
- =?utf-8?B?RlZ1dkovc2tDZlArMzJmZHlTeXN3azJwV1V4RmxiMWhUMnVnaHhVYXJtaWxK?=
- =?utf-8?B?YnlkQmV2STBsYWJQTm5GQ1AwSWxpVGJDSDhKVWluTHVsamRsOW1WQjY5Y3pv?=
- =?utf-8?B?bWM1aU9Vb1BTYk82K3RrV0NVSWhVM0ZQeTNLYzZNamJXWDFzRmhWdXVtSjFq?=
- =?utf-8?B?Z3p2eHp3L3R2ZmNSZGdUQmVDSTZISUkzd3UyUzcycWYvQWNZaVN4cTZQaENt?=
- =?utf-8?B?UWZGWG5jbTl4Q3lOWnBubnpTL1ppZWRxUGZFTkNiQnNMNnNEWmd3WXd3eDdF?=
- =?utf-8?B?Z1FUM2U5VFpPNFdhVkkxdk11SWtPeCtHYVdjWGt3dHRDRXFvUDZ2N0p1a0RE?=
- =?utf-8?B?OWNKc1lwTjdvTUlnRWQxR2lPVnE5eHdFbDBRaDg0VlVvUHBLSWZvUmF5VGYr?=
- =?utf-8?B?ZExGbDBMNXBpYmo1U04yWVRsbEgwZUc3T0tEOGF0VFhyUEZMYmZ6d25TRHZi?=
- =?utf-8?B?c2ZUeERjekxqNzcraitBckMyUEpEamJvYmhKNk1PSHZnODlmcktjWU1vRGpy?=
- =?utf-8?B?VEwxL0RmalBCSmxjMitaMGtJRWZkNWFiZm5YaEE4aXB4SCs2Z3ZoRUw4ZTFl?=
- =?utf-8?B?RUdKZDV6R2UrK0I1QVkwVFZ2b2ZqSnBrZE5jNXMzdlU1anVuUHpZYXA1UTBB?=
- =?utf-8?B?QUlCRFBiVmxqSlh0ZURVQ0R2K0Z4bWkrWmhRQjY1NGRmL2x4LzJoSHhod3Fl?=
- =?utf-8?B?UHhhWjJvRXNJQmVkVTRJTEJUV1VDOGI5dVFkZ0thdEhKQ0trVWRnNjdkbUpz?=
- =?utf-8?B?V3dzUEJWb01YUUVXN1ZYMEpxWVRJV2dBRTBHVkJIV1ptYzQ0WkhmZ21uelVi?=
- =?utf-8?B?WDNoVzc4WCtnT0ZHS3JPY3lZMWR1UVVzbGdLU3FkN2phUDlqVUhHNXR5YWhm?=
- =?utf-8?B?bElNNkhyekhveUpnWHhUZkp2b2pEcXlqYlVPbm9IQ1pnTzFzVWRjdFVvdko2?=
- =?utf-8?B?M2tqQ0k1cWNHVWNyUUNnSzFIRTNwY0hFM2taVjE2TjJtOXhjQjZQd2NMZlNt?=
- =?utf-8?B?Y1RXZzdxL0pYbHBDRVVqaGpwNldhdGlJSW4yeDMzSThzRVc3WEVsTm1NTXM3?=
- =?utf-8?B?YXZwalMveHdnZ0JIa1dkZndwTUlyOTI2cjJZZDNXZTJlR2IvSll0Q2xFTGpw?=
- =?utf-8?B?MHhpSDVhSW16bkcwcTB2QmM2Ym1LQkVvc1pwZHFtQVd4cmxmMWxHcUJYV1Ja?=
- =?utf-8?B?cUxad25JWjh2WG43OGVqc0ZhWnVUeWpkeis2aE9aL2xxZkNmM1QyNkpmTWtY?=
- =?utf-8?B?K0lPbWIyRi9SSTNKL3h1Y2E2VElsQi9mekFTTEtNMHh1ZGVHdU8vNkRCREVx?=
- =?utf-8?B?bDlwZ0t0NXpvLy9vYzFHc1JmeWFBZGw1cVJCNmROWXJGak5zblBpSzlwbDlO?=
- =?utf-8?B?ai9HVDRYZkNyNzhFYjNtSkdJRVJpQU9Qc1dBeWxmdEZsMDIxSXNzWkVrZjh3?=
- =?utf-8?B?YWtOajJNRW1sdmdzK3ppOUFDckIxQmc3ZlZheE5iSG9XV242T1dNS3hJRXZs?=
- =?utf-8?B?QXhDSnU1MHN3eEdTSXk4NFlOblZxOWVLU0lNVzNBakRCZnJwU3lmZjVXTzJs?=
- =?utf-8?B?bW5QNmdWUHNHMjNkRVZ5R2EvZG14ZTljV2wzZk1XRmxRM0diYmNxUU9uNWFQ?=
- =?utf-8?B?MUpBL1kyWnBhODQrcHMxVWN1YVRXQXJ2aGZ0ZG81U1hEeXQ5RGN2dld1M2R4?=
- =?utf-8?B?cUIwdmIzMWVjTmN5R09UNEN5MVpTWXdZREczTEhsTFJPRWVQbU12Z3VnZGFY?=
- =?utf-8?B?Y0E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99967eb3-4161-4ec1-6b60-08db0e9a3e98
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2023 14:46:24.3485
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IgS6sEtSTi1lXDed1eRLJO+FVE5NCTOwdu92WAZoXEXZab40rHScGLT7xBXXeBTUUCg5DEMr7vy65BI8cXe15L4DXlXBN0ANN8NPnGXJXw8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB8150
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [Intel-wired-lan] [PATCH bpf-next V1] igc: enable and fix RX hash
+ usage by netstack
+Content-Language: en-US
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, xdp-hints@xdp-project.net,
+        martin.lau@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, ast@kernel.org,
+        Stanislav Fomichev <sdf@google.com>,
+        yoong.siang.song@intel.com, anthony.l.nguyen@intel.com,
+        intel-wired-lan@lists.osuosl.org
+References: <167604167956.1726972.7266620647404438534.stgit@firesoul>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <167604167956.1726972.7266620647404438534.stgit@firesoul>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -167,99 +50,125 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Date: Tue, 14 Feb 2023 09:51:12 +0800
+Dear Jesper,
 
-> When we try to start AF_XDP on some machines with long running time, due
-> to the machine's memory fragmentation problem, there is no sufficient
-> contiguous physical memory that will cause the start failure.
 
-[...]
+Thank you very much for your patch.
 
-> @@ -1319,13 +1317,10 @@ static int xsk_mmap(struct file *file, struct socket *sock,
->  
->  	/* Matches the smp_wmb() in xsk_init_queue */
->  	smp_rmb();
-> -	qpg = virt_to_head_page(q->ring);
-> -	if (size > page_size(qpg))
-> +	if (size > PAGE_ALIGN(q->ring_size))
+Am 10.02.23 um 16:07 schrieb Jesper Dangaard Brouer:
+> When function igc_rx_hash() was introduced in v4.20 via commit 0507ef8a0372
+> ("igc: Add transmit and receive fastpath and interrupt handlers"), the
+> hardware wasn't configured to provide RSS hash, thus it made sense to not
+> enable net_device NETIF_F_RXHASH feature bit.
+> 
+> The NIC hardware was configured to enable RSS hash info in v5.2 via commit
+> 2121c2712f82 ("igc: Add multiple receive queues control supporting"), but
+> forgot to set the NETIF_F_RXHASH feature bit.
+> 
+> The original implementation of igc_rx_hash() didn't extract the associated
+> pkt_hash_type, but statically set PKT_HASH_TYPE_L3. The largest portions of
+> this patch are about extracting the RSS Type from the hardware and mapping
+> this to enum pkt_hash_types. This were based on Foxville i225 software user
 
-You can set q->ring_size as PAGE_ALIGN(size) already at the allocation
-to simplify this. I don't see any other places where you use it.
+s/This were/This was/
 
->  		return -EINVAL;
->  
-> -	pfn = virt_to_phys(q->ring) >> PAGE_SHIFT;
-> -	return remap_pfn_range(vma, vma->vm_start, pfn,
-> -			       size, vma->vm_page_prot);
-> +	return remap_vmalloc_range(vma, q->ring, 0);
->  }
->  
->  static int xsk_notifier(struct notifier_block *this,
-> diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
-> index 6cf9586e5027..247316bdfcbe 100644
-> --- a/net/xdp/xsk_queue.c
-> +++ b/net/xdp/xsk_queue.c
-> @@ -7,6 +7,7 @@
->  #include <linux/slab.h>
->  #include <linux/overflow.h>
->  #include <net/xdp_sock_drv.h>
-> +#include <linux/vmalloc.h>
+> manual rev-1.3.1 and tested on Intel Ethernet Controller I225-LM (rev 03).
+> 
+> For UDP it's worth noting that RSS (type) hashing have been disabled both for
+> IPv4 and IPv6 (see IGC_MRQC_RSS_FIELD_IPV4_UDP + IGC_MRQC_RSS_FIELD_IPV6_UDP)
+> because hardware RSS doesn't handle fragmented pkts well when enabled (can
+> cause out-of-order). This result in PKT_HASH_TYPE_L3 for UDP packets, and
 
-Alphabetic order maybe?
+result*s*
 
->  
->  #include "xsk_queue.h"
->  
-> @@ -23,7 +24,6 @@ static size_t xskq_get_ring_size(struct xsk_queue *q, bool umem_queue)
->  struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
->  {
->  	struct xsk_queue *q;
-> -	gfp_t gfp_flags;
->  	size_t size;
->  
->  	q = kzalloc(sizeof(*q), GFP_KERNEL);
-> @@ -33,12 +33,10 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
->  	q->nentries = nentries;
->  	q->ring_mask = nentries - 1;
->  
-> -	gfp_flags = GFP_KERNEL | __GFP_ZERO | __GFP_NOWARN |
-> -		    __GFP_COMP  | __GFP_NORETRY;
->  	size = xskq_get_ring_size(q, umem_queue);
->  
-> -	q->ring = (struct xdp_ring *)__get_free_pages(gfp_flags,
-> -						      get_order(size));
-> +	q->ring_size = size;
+> hash value doesn't include UDP port numbers. Not being PKT_HASH_TYPE_L4, have
+> the effect that netstack will do a software based hash calc calling into
+> flow_dissect, but only when code calls skb_get_hash(), which doesn't
+> necessary happen for local delivery.
 
-Maybe assign size only after successful allocation?
+Excuse my ignorance, but is that bug visible in practice by users 
+(performance?) or is that fix needed for future work?
 
-> +	q->ring = (struct xdp_ring *)vmalloc_user(size);
+> Fixes: 2121c2712f82 ("igc: Add multiple receive queues control supporting")
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>   drivers/net/ethernet/intel/igc/igc.h      |   52 +++++++++++++++++++++++++++++
+>   drivers/net/ethernet/intel/igc/igc_main.c |   35 +++++++++++++++++---
+>   2 files changed, 83 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
+> index df3e26c0cf01..a112eeb59525 100644
+> --- a/drivers/net/ethernet/intel/igc/igc.h
+> +++ b/drivers/net/ethernet/intel/igc/igc.h
+> @@ -311,6 +311,58 @@ extern char igc_driver_name[];
+>   #define IGC_MRQC_RSS_FIELD_IPV4_UDP	0x00400000
+>   #define IGC_MRQC_RSS_FIELD_IPV6_UDP	0x00800000
+>   
+> +/* RX-desc Write-Back format RSS Type's */
+> +enum igc_rss_type_num {
+> +	IGC_RSS_TYPE_NO_HASH		= 0,
+> +	IGC_RSS_TYPE_HASH_TCP_IPV4	= 1,
+> +	IGC_RSS_TYPE_HASH_IPV4		= 2,
+> +	IGC_RSS_TYPE_HASH_TCP_IPV6	= 3,
+> +	IGC_RSS_TYPE_HASH_IPV6_EX	= 4,
+> +	IGC_RSS_TYPE_HASH_IPV6		= 5,
+> +	IGC_RSS_TYPE_HASH_TCP_IPV6_EX	= 6,
+> +	IGC_RSS_TYPE_HASH_UDP_IPV4	= 7,
+> +	IGC_RSS_TYPE_HASH_UDP_IPV6	= 8,
+> +	IGC_RSS_TYPE_HASH_UDP_IPV6_EX	= 9,
+> +	IGC_RSS_TYPE_MAX		= 10,
+> +};
+> +#define IGC_RSS_TYPE_MAX_TABLE		16
+> +#define IGC_RSS_TYPE_MASK		0xF
+> +
+> +/* igc_rss_type - Rx descriptor RSS type field */
+> +static inline u8 igc_rss_type(union igc_adv_rx_desc *rx_desc)
+> +{
+> +	/* RSS Type 4-bit number: 0-9 (above 9 is reserved) */
+> +	return rx_desc->wb.lower.lo_dword.hs_rss.pkt_info & IGC_RSS_TYPE_MASK;
+> +}
 
-The cast from `void *` is redundant. It was needed for
-__get_free_pages() since it returns pointer as long.
+Is it necessary to specficy the length of the return value, or could it 
+be `unsigned int`. Using “native” types is normally more performant [1]. 
+`scripts/bloat-o-meter` might help to verify that.
 
->  	if (!q->ring) {
->  		kfree(q);
->  		return NULL;
-> @@ -52,6 +50,6 @@ void xskq_destroy(struct xsk_queue *q)
->  	if (!q)
->  		return;
->  
-> -	page_frag_free(q->ring);
-> +	vfree(q->ring);
->  	kfree(q);
->  }
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index c6fb6b763658..35922b8b92a8 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -45,6 +45,7 @@ struct xsk_queue {
->  	struct xdp_ring *ring;
->  	u64 invalid_descs;
->  	u64 queue_empty_descs;
-> +	size_t ring_size;
->  };
->  
->  /* The structure of the shared state of the rings are a simple
-Thanks,
-Olek
+[…]
+
+>   static inline void igc_rx_hash(struct igc_ring *ring,
+>   			       union igc_adv_rx_desc *rx_desc,
+>   			       struct sk_buff *skb)
+>   {
+> -	if (ring->netdev->features & NETIF_F_RXHASH)
+> -		skb_set_hash(skb,
+> -			     le32_to_cpu(rx_desc->wb.lower.hi_dword.rss),
+> -			     PKT_HASH_TYPE_L3);
+> +	if (ring->netdev->features & NETIF_F_RXHASH) {
+> +		u32 rss_hash = le32_to_cpu(rx_desc->wb.lower.hi_dword.rss);
+> +		u8  rss_type = igc_rss_type(rx_desc);
+
+Amongst others, also here.
+
+> +		enum pkt_hash_types hash_type;
+> +
+> +		hash_type = igc_rss_type_table[rss_type].hash_type;
+> +		skb_set_hash(skb, rss_hash, hash_type);
+> +	}
+>   }
+>   
+>   static void igc_rx_vlan(struct igc_ring *rx_ring,
+> @@ -6501,6 +6527,7 @@ static int igc_probe(struct pci_dev *pdev,
+>   	netdev->features |= NETIF_F_TSO;
+>   	netdev->features |= NETIF_F_TSO6;
+>   	netdev->features |= NETIF_F_TSO_ECN;
+> +	netdev->features |= NETIF_F_RXHASH;
+>   	netdev->features |= NETIF_F_RXCSUM;
+>   	netdev->features |= NETIF_F_HW_CSUM;
+>   	netdev->features |= NETIF_F_SCTP_CRC;
+
+
+Kind regards,
+
+Paul
+
+
+[1]: https://notabs.org/coding/smallIntsBigPenalty.htm
