@@ -2,599 +2,322 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2946963C3
-	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 13:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A20A69648D
+	for <lists+bpf@lfdr.de>; Tue, 14 Feb 2023 14:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbjBNMpA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 07:45:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59862 "EHLO
+        id S231796AbjBNNWt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 08:22:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232474AbjBNMow (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 07:44:52 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33418227B1;
-        Tue, 14 Feb 2023 04:44:50 -0800 (PST)
+        with ESMTP id S231827AbjBNNWp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 08:22:45 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8745265B3;
+        Tue, 14 Feb 2023 05:22:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676378690; x=1707914690;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Clc6+/e2w+nx/BrG33NC+qxk3VeB5OIPC/QwgNdqFIc=;
-  b=b5yvDOZslvbjLmZoF/o2lBFfFeBKLN74GBSr3Viu8/kEfW5V+/BILAvY
-   FBorfLiMNLdxYTQuxIWyl7hofm3HKRRQI0wZhD60XDD9SAoFgsqwTHEdW
-   fMnUSwOyHdJ2EW3b3SRFtfeXMXwrYf53HH8Fh+X15tVV6c8jbGqNjCg4G
-   eDl3RtmuRLXUr6g8Casej/Ez4nv0Zp31IumDPrTwdz5XPkY3K6/YSPkVg
-   tvGvzQRH+znnjlZpsOpMJ1lrurJVAeLphLJBY7O20zZgUbPiBIXLf0iyh
-   qkhwkQ85LwHShEJLaj+0JklcQUxYxaIn/teisPh4xpXasHYp2/HOkwzsm
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="417371218"
+  t=1676380956; x=1707916956;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=//Tkd9cd0hxXdRVpMuO6SVsODqanSHErUkh6B7jEOio=;
+  b=fJavqvmwdSrf8AH8r+nbL8ICoTYHuPEBZ6jWacRwlrA8C8/hAm6uo/ON
+   Oi8NK2MgU05MeyhtogWfbdWPegO8+mo0EFsN/h2XX5iREC9eL8Kxp97Pr
+   d699mgUc4JuU68tIzGbxqo8wNhRmL3s7fyOSDRdCi+VS0XKpxvS7wtz3Z
+   mE+mX+9zlzzMmesKXIWBeTjLLIjBgPA6t/cFfI+S8P+wtA1b76Bmw6SbH
+   nCgdyS89fC29wUBPTpQKvr6K1lkEQIYz9X17apOTjq5/fpR4SXJCFpq3y
+   aAnav6cbHZ/1pjmjuPI0E0UXLOULeqgQVpe0yy9W/QHUAl1adYiDYzX8X
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="329783000"
 X-IronPort-AV: E=Sophos;i="5.97,296,1669104000"; 
-   d="scan'208";a="417371218"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2023 04:44:50 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="778308632"
+   d="scan'208";a="329783000"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2023 05:22:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="843167198"
 X-IronPort-AV: E=Sophos;i="5.97,296,1669104000"; 
-   d="scan'208";a="778308632"
-Received: from unknown (HELO paamrpdk12-S2600BPB.aw.intel.com) ([10.228.151.145])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2023 04:44:49 -0800
-From:   Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        tirthendu.sarkar@intel.com
-Subject: [PATCH intel-next v3 8/8] i40e: add support for XDP multi-buffer Rx
-Date:   Tue, 14 Feb 2023 18:00:18 +0530
-Message-Id: <20230214123018.54386-9-tirthendu.sarkar@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230214123018.54386-1-tirthendu.sarkar@intel.com>
-References: <20230214123018.54386-1-tirthendu.sarkar@intel.com>
+   d="scan'208";a="843167198"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga005.jf.intel.com with ESMTP; 14 Feb 2023 05:22:20 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Tue, 14 Feb 2023 05:22:20 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Tue, 14 Feb 2023 05:22:20 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Tue, 14 Feb 2023 05:22:20 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Tue, 14 Feb 2023 05:22:19 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oDXGeqBOJI4u7hc5tCuRjidqzahcZ2CtLBZt50KEduzh9YCXt4YeodJisqwwD3hDvLBuJsNn0FQ0nqdCSntXMqgfaTVzTFdOFqsUFppdEoBkVU3Sd3aM89SaDtfwPzOcDCnex6kpEiol0LiJuBNLM0fs16+DRUmweYVJHWDpw70mPvxL9e87cbcBrWcosC7Doqge2Gc8N+2pij3clUoIP9RTgbj80w+OjLRzUMUHTxUFmKVUned8l96UWJK9jrKSPPEqdtfB0S8jSOFPKgy14qqi1f7aDnCSIZn4AP0SE321Ig+vlSuydrMen5ogoOaMWoc9AGxz6k/GALEOaeHQ7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eHwCQVo/h2EN3+nH1M/o8TeJSQBoRo8MaRz4HrdKvcQ=;
+ b=Svhqn63SkdMfYkbgk2Tq28eUxZkFvsqrSgpNjhWXHI8PGNUTWYqOc/vt5tIu7nThPjy03dOP9l+3Bu4oiVbNDHbGlRGT5TCtOMd18Xgzww0mZXoV5tJF606m01KnckF3bWOQ1QsTnjKA97Y8t934RwsW8L5BEuDtp5eXdUhYMvdHWdUcXjgPx5UxxHzTRPcLAuzxpC6a1iOv7t4HhnUKnqg9gANsTGsEHpobal7wTBYkK7NUH+4NsdE22N4Jdp6oqkRvnIQG5q3LlbDxFlONeOITDgwmuaSgDE1SzKwmAjuXCDtWZMKj2S58eAM/m/ifIDIyRVvHQAHvxkwwDraP2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by PH0PR11MB5949.namprd11.prod.outlook.com (2603:10b6:510:144::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.24; Tue, 14 Feb
+ 2023 13:22:12 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::3ff6:ca60:f9fe:6934]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::3ff6:ca60:f9fe:6934%4]) with mapi id 15.20.6086.024; Tue, 14 Feb 2023
+ 13:22:12 +0000
+Message-ID: <af69e040-3884-aa73-1241-99207aa577b4@intel.com>
+Date:   Tue, 14 Feb 2023 14:21:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH bpf-next V1] igc: enable and fix RX hash usage by netstack
+Content-Language: en-US
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, <martin.lau@kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>,
+        <yoong.siang.song@intel.com>, <anthony.l.nguyen@intel.com>,
+        <intel-wired-lan@lists.osuosl.org>, <xdp-hints@xdp-project.net>
+References: <167604167956.1726972.7266620647404438534.stgit@firesoul>
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+In-Reply-To: <167604167956.1726972.7266620647404438534.stgit@firesoul>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0109.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a3::9) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|PH0PR11MB5949:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4df424cd-a7ff-44c6-6b7a-08db0e8e7b15
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bDxc7Ex+p+sNiBMwnfxK3k7LzvHcXXhsZynt432LDTZpFVcWFvk+XXOAFZyf3IYUrg6X8f+EUCWNNNiEyoJsia/Dc/CgBZ8DCknkFQNiLUbLE5Nn4MEa40F7D3/YmR7QmUfLhM6wUMikoHoZDn11OihqT7NTIuOsNzsqVQYNanb6tMbj8gHHZLmu1zKD4DQDy/4jToyTnb1efwst+iCwus0YCGULaZdU5Hj8P70NuddZxVvEijT54mnZSt0NrY5JRin52eEVcwiJeCtrPuIyQmwhNONg7t/wPLnGpWjwfyhNF2VuNN9x4Iy9IXUdtxt1uBxy7Ni3qm1aAreG9Lf4pfJ7d5vpEbB6ILKSllBgGzIGuPcFDhmy3V5xUEO52266EhUv/4k9MpQ+wNNyN7TOesmLe74lb3tXmbcOyl28e4OQwg1H4ROURNlqTKNJtwxgTEDPmz2vfRLD9gDF2aZmAw+h03Yy51IDCdyZmBDFU9hYWh+MxFER4jzIzMZsFiLtQw7L4F2zFUNDAHC429tSAs4QbJsTgX+jKzhbC/4PmnzKtMgv1zJEmH7Sqngf5f7E1WcoWk8D2zsrK1xmFmeTd142Tb1hVZlfEcyhAmVukZQ5SRk4vjuhQzG11VrlTL4woXoExrrUcu9B3O28RAL7oW7xGzD/D4QW0euSPgmWJDeo+ts5N5Wdzb+KQAMEyo81lNVgJ84ubowVpxLLIoO75rG2NxIOpGUh1qA3rUr8C+0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(376002)(39860400002)(366004)(136003)(346002)(396003)(451199018)(31686004)(8936002)(6506007)(4326008)(41300700001)(6916009)(5660300002)(36756003)(38100700002)(31696002)(8676002)(66946007)(66476007)(66556008)(82960400001)(86362001)(6486002)(478600001)(2616005)(2906002)(316002)(6666004)(26005)(186003)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bnlMMS9Ub2t6a25KczFKSUF3KzZFeW4rSHlGTDF0NUpMZkdtMjU0N3pZU2Vo?=
+ =?utf-8?B?cDdOYTREZUlNZGtUcmVRM213bWhUaE5TYi96d0JqTVd2VE5jZVd6Qk02Sldl?=
+ =?utf-8?B?cTNJakhHaVByUFU4cmVNWXlZSXdMZGxWSTZDTFZXT1hrV2lmYkxwMkFIV0Vz?=
+ =?utf-8?B?Uk1OQks5Tngzd1Jlbmp0Tm9hNDNpY21SZTY3UGNHc0pVNmxic2hNNUxTbTB3?=
+ =?utf-8?B?UnVCSmMzWmc5UVJ2VWVMVGVzS3UvR1JFSlpJNXJoS09NbFpxNXhtQjZQME1h?=
+ =?utf-8?B?T0tyVThDdGN3WVh0eG9aRDZGKzBiSDVHcFdpVzUrS0VsT1VvREp3SnlWV0Vq?=
+ =?utf-8?B?VmhRNlRQN1EvMEc4UGNBZnZxT2htTklaYzRKVHBySDJpWklFR2tIWnJYL0pk?=
+ =?utf-8?B?R002ZFFGNVVyZUtBYkwxS2xaWkltd3NiVU0wTmZabGxXc24wbVZoQTlJdlhJ?=
+ =?utf-8?B?WUc1UTlHV3VWb0N4VXhkcFdCajJVWDV3aW02K2Y0NlBZN2xZNGI4a0Mvc0Rt?=
+ =?utf-8?B?RDF4VG1IMmNGSmNvQ1pick9iN0g4SFFMSnl5Y0NJdEhsWWltTVZkRGFJcUgz?=
+ =?utf-8?B?OHdEckpKV1dYb3FHK2N4blNEVE40NFBrU2lwaXlxQjlGNlpmNy9YNDdyTUFL?=
+ =?utf-8?B?eWJwYWVPS1lNenByNnR4eW1DV1dxNElLTlBUQ3ZHb25kc3htZWMzQWdETm1l?=
+ =?utf-8?B?OGIvWU5mMEUwU1hTVnlpRm5kVVJFZndDSXB5WHZOOHhNbERKeEVhTUdNZDdk?=
+ =?utf-8?B?MzhLUUJaR3p1TDlsZEZDZmhEcTFvdklZNjFJVmhMK1VDSDY0NEdmRlVuRlY0?=
+ =?utf-8?B?eTVJZGJoR04yamw4Sk4va3ZZcGJEbjMvcjdTWlJmNlA1cWQyYkJieFRKbFNz?=
+ =?utf-8?B?MmdTUUxlbDIrY1gwUGl5MVZacU16LzUwKzdMMCswSTRpazg1eWdNSFpmYjZk?=
+ =?utf-8?B?YnA2elIwR2NiUWZNYUZGVGFFSXdHZlVyTEVwd0xOZ1BpczQ3amFtYnd4UmRv?=
+ =?utf-8?B?c1JKZEYrZlh6NFBrSXlzZHF4eTBqeXlpS3JhR041WlVJQWFtZUQwODdXd2t4?=
+ =?utf-8?B?b21PdDM3QlBLOExQNzV6bTRsUlJnVUVGTjhsQTZhbVBibjNHK3BqcWVlYTBh?=
+ =?utf-8?B?ckVHbHB3OTZ5eEo0Mmh1WWVISldhMGt0STU4ZDh6OStLTTZ4bHZHY2YzZmtU?=
+ =?utf-8?B?ZnJadWo1bi9Vb25BcUZRVE5hZDJaTktaT2VYb1NZYW1oaElLZGhNb2MrVlE2?=
+ =?utf-8?B?Zk1aZmkzNVRXaFNFTm40bWZ4cEtUcm5UUU1QOVdRNWthclQ3MW1XZzBZY1lk?=
+ =?utf-8?B?Q0ZDSlhOWUZlM2lUa3N4c3JqRml4b3owcHpNUzhHRVNiZHhLRXI3RTVIYWth?=
+ =?utf-8?B?RGZuMUViYUdLUEFacURrVHo0L2d0OTk1b01LSXlYTFBLKzlVYWp1SWhnSWwz?=
+ =?utf-8?B?YU1FRG1mZUxwbU4wTmJsYjA2Q1BkZko3ZGJLYmRXQjArMkw4NklLRU5Cb1h5?=
+ =?utf-8?B?L1lhUkFOSGsxeUNhazFWZFJxeGNTdTNQbVY5Mi95SFJGMnJQWlpCNnlCUjA4?=
+ =?utf-8?B?WEtkL0RGRHFvV3pmT012UkRkcXAzQjVCNWZjZnJrKzZYYStmME9SMnBOUzh1?=
+ =?utf-8?B?bHpFblhLMm1vZjBZZnJ4aUVJak00Q3pxak1Vb1VVMEY1dU50bmcyWmZBbEZR?=
+ =?utf-8?B?dnlGQ0djVHJ4NDhXelhMaDJpZnhaSEZNVUtlR1lMazBqdGUwZHBrNGFSWTQx?=
+ =?utf-8?B?WUxLM3UyaGphMnlLclBQalRETEVHZjQrYWNNMmdCY3pPYTh2OTRzYk9WempI?=
+ =?utf-8?B?NWo3SG5WQXlraDNscm1HcUJKcmRCNUw1RFpOc2JwYmpZMnN3S3ZSZkdZeGhD?=
+ =?utf-8?B?VXNjc1J4TUs0SXBhUmZwWXVqV3FacnBjTjhzMVg5NjJiMXVRYkJNTjBaNUNn?=
+ =?utf-8?B?dkw4dUNUMXZSSzA3UjVHbHkrYlA5SXdmTi9XNk9NYldGejRqdDNFTGN3WHhz?=
+ =?utf-8?B?NlR2QWtnS2JGQW5DWTV6VHplU0QxQ0dZcGg3QnpFTDVnb3lZN1cybEhQZVlS?=
+ =?utf-8?B?RWtGUHJOamt3S0ZRMmJ2eW9LTUFYSnVXcUk2OXhBQkl0UUpaVVJ3RTFnNktU?=
+ =?utf-8?B?UEh6alhIS0loM0hENVYxOHo3VjI1MzFSK2lKMEs0bTdDS0tRaHJtYVNGNFda?=
+ =?utf-8?B?N3c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4df424cd-a7ff-44c6-6b7a-08db0e8e7b15
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2023 13:22:11.9015
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6VvCtkEYA2sx6pPOB0cyl56MvKq8H2Zol54wCY3lwgIW1Rf5Xxer/7xvlLRBPhKB/KalTuhHMEQ5bsj1iYOGEmUeJaCE2gGr5tezPXzZzT0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5949
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds multi-buffer support for the i40e_driver.
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+Date: Fri, 10 Feb 2023 16:07:59 +0100
 
-i40e_clean_rx_irq() is modified to collate all the buffers of a packet
-before calling the XDP program. xdp_buff is built for the first frag of
-the packet and subsequent frags are added to it. 'next_to_process' is
-incremented for all non-EOP frags while 'next_to_clean' stays at the
-first descriptor of the packet. XDP program is called only on receiving
-EOP frag.
+> When function igc_rx_hash() was introduced in v4.20 via commit 0507ef8a0372
+> ("igc: Add transmit and receive fastpath and interrupt handlers"), the
+> hardware wasn't configured to provide RSS hash, thus it made sense to not
+> enable net_device NETIF_F_RXHASH feature bit.
 
-New functions are added for adding frags to xdp_buff and for post
-processing of the buffers once the xdp prog has run. For XDP_PASS this
-results in a skb with multiple fragments.
+[...]
 
-i40e_build_skb() builds the skb around xdp buffer that already contains
-frags data. So i40e_add_rx_frag() helper function is now removed. Since
-fields before 'dataref' in skb_shared_info are cleared during
-napi_skb_build(), xdp_update_skb_shared_info() is called to set those.
+> @@ -311,6 +311,58 @@ extern char igc_driver_name[];
+>  #define IGC_MRQC_RSS_FIELD_IPV4_UDP	0x00400000
+>  #define IGC_MRQC_RSS_FIELD_IPV6_UDP	0x00800000
+>  
+> +/* RX-desc Write-Back format RSS Type's */
+> +enum igc_rss_type_num {
+> +	IGC_RSS_TYPE_NO_HASH		= 0,
+> +	IGC_RSS_TYPE_HASH_TCP_IPV4	= 1,
+> +	IGC_RSS_TYPE_HASH_IPV4		= 2,
+> +	IGC_RSS_TYPE_HASH_TCP_IPV6	= 3,
+> +	IGC_RSS_TYPE_HASH_IPV6_EX	= 4,
+> +	IGC_RSS_TYPE_HASH_IPV6		= 5,
+> +	IGC_RSS_TYPE_HASH_TCP_IPV6_EX	= 6,
+> +	IGC_RSS_TYPE_HASH_UDP_IPV4	= 7,
+> +	IGC_RSS_TYPE_HASH_UDP_IPV6	= 8,
+> +	IGC_RSS_TYPE_HASH_UDP_IPV6_EX	= 9,
+> +	IGC_RSS_TYPE_MAX		= 10,
+> +};
+> +#define IGC_RSS_TYPE_MAX_TABLE		16
+> +#define IGC_RSS_TYPE_MASK		0xF
 
-For i40e_construct_skb(), all the frags data needs to be copied from
-xdp_buffer's shared_skb_info to newly constructed skb's shared_skb_info.
+GENMASK()?
 
-This also means 'skb' does not need to be preserved across i40e_napi_poll()
-calls and hence is removed from i40e_ring structure.
+> +
+> +/* igc_rss_type - Rx descriptor RSS type field */
+> +static inline u8 igc_rss_type(union igc_adv_rx_desc *rx_desc)
 
-Previously i40e_alloc_rx_buffers() was called for every 32 cleaned
-buffers. For multi-buffers this may not be optimal as there may be more
-cleaned buffers in each i40e_clean_rx_irq() call. So this is now called
-when at least half of the ring size has been cleaned.
+Why use types shorter than u32 on the stack?
+Why this union is not const here, since there are no modifications?
 
-Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c |   4 +-
- drivers/net/ethernet/intel/i40e/i40e_txrx.c | 314 +++++++++++++-------
- drivers/net/ethernet/intel/i40e/i40e_txrx.h |   8 -
- 3 files changed, 209 insertions(+), 117 deletions(-)
+> +{
+> +	/* RSS Type 4-bit number: 0-9 (above 9 is reserved) */
+> +	return rx_desc->wb.lower.lo_dword.hs_rss.pkt_info & IGC_RSS_TYPE_MASK;
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index a6b0516a81c0..0b04b1ded18e 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -2919,7 +2919,7 @@ static int i40e_max_vsi_frame_size(struct i40e_vsi *vsi,
- 	u16 rx_buf_len = i40e_calculate_vsi_rx_buf_len(vsi);
- 	u16 chain_len;
- 
--	if (xdp_prog)
-+	if (xdp_prog && !xdp_prog->aux->xdp_has_frags)
- 		chain_len = 1;
- 	else
- 		chain_len = I40E_MAX_CHAINED_RX_BUFFERS;
-@@ -13329,7 +13329,7 @@ static int i40e_xdp_setup(struct i40e_vsi *vsi, struct bpf_prog *prog,
- 
- 	/* Don't allow frames that span over multiple buffers */
- 	if (vsi->netdev->mtu > frame_size - I40E_PACKET_HDR_PAD) {
--		NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP");
-+		NL_SET_ERR_MSG_MOD(extack, "MTU too large for linear frames and XDP prog does not support frags");
- 		return -EINVAL;
- 	}
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index dc2c9aae0ffe..b7c9871a41df 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -1477,9 +1477,6 @@ void i40e_clean_rx_ring(struct i40e_ring *rx_ring)
- 	if (!rx_ring->rx_bi)
- 		return;
- 
--	dev_kfree_skb(rx_ring->skb);
--	rx_ring->skb = NULL;
--
- 	if (rx_ring->xsk_pool) {
- 		i40e_xsk_clean_rx_ring(rx_ring);
- 		goto skip_free;
-@@ -2033,36 +2030,6 @@ static void i40e_rx_buffer_flip(struct i40e_rx_buffer *rx_buffer,
- #endif
- }
- 
--/**
-- * i40e_add_rx_frag - Add contents of Rx buffer to sk_buff
-- * @rx_ring: rx descriptor ring to transact packets on
-- * @rx_buffer: buffer containing page to add
-- * @skb: sk_buff to place the data into
-- * @size: packet length from rx_desc
-- *
-- * This function will add the data contained in rx_buffer->page to the skb.
-- * It will just attach the page as a frag to the skb.
-- *
-- * The function will then update the page offset.
-- **/
--static void i40e_add_rx_frag(struct i40e_ring *rx_ring,
--			     struct i40e_rx_buffer *rx_buffer,
--			     struct sk_buff *skb,
--			     unsigned int size)
--{
--#if (PAGE_SIZE < 8192)
--	unsigned int truesize = i40e_rx_pg_size(rx_ring) / 2;
--#else
--	unsigned int truesize = SKB_DATA_ALIGN(size + rx_ring->rx_offset);
--#endif
--
--	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buffer->page,
--			rx_buffer->page_offset, size, truesize);
--
--	/* page is being used so we must update the page offset */
--	i40e_rx_buffer_flip(rx_buffer, truesize);
--}
--
- /**
-  * i40e_get_rx_buffer - Fetch Rx buffer and synchronize data for use
-  * @rx_ring: rx descriptor ring to transact packets on
-@@ -2099,20 +2066,82 @@ static struct i40e_rx_buffer *i40e_get_rx_buffer(struct i40e_ring *rx_ring,
- }
- 
- /**
-- * i40e_construct_skb - Allocate skb and populate it
-+ * i40e_put_rx_buffer - Clean up used buffer and either recycle or free
-  * @rx_ring: rx descriptor ring to transact packets on
-  * @rx_buffer: rx buffer to pull data from
-+ *
-+ * This function will clean up the contents of the rx_buffer.  It will
-+ * either recycle the buffer or unmap it and free the associated resources.
-+ */
-+static void i40e_put_rx_buffer(struct i40e_ring *rx_ring,
-+			       struct i40e_rx_buffer *rx_buffer)
-+{
-+	if (i40e_can_reuse_rx_page(rx_buffer, &rx_ring->rx_stats)) {
-+		/* hand second half of page back to the ring */
-+		i40e_reuse_rx_page(rx_ring, rx_buffer);
-+	} else {
-+		/* we are not reusing the buffer so unmap it */
-+		dma_unmap_page_attrs(rx_ring->dev, rx_buffer->dma,
-+				     i40e_rx_pg_size(rx_ring),
-+				     DMA_FROM_DEVICE, I40E_RX_DMA_ATTR);
-+		__page_frag_cache_drain(rx_buffer->page,
-+					rx_buffer->pagecnt_bias);
-+		/* clear contents of buffer_info */
-+		rx_buffer->page = NULL;
-+	}
-+}
-+
-+/**
-+ * i40e_process_rx_buffs- Processing of buffers post XDP prog or on error
-+ * @rx_ring: Rx descriptor ring to transact packets on
-+ * @xdp_res: Result of the XDP program
-+ * @xdp: xdp_buff pointing to the data
-+ **/
-+static void i40e_process_rx_buffs(struct i40e_ring *rx_ring, int xdp_res,
-+				  struct xdp_buff *xdp)
-+{
-+	u16 next = rx_ring->next_to_clean;
-+	struct i40e_rx_buffer *rx_buffer;
-+
-+	xdp->flags = 0;
-+
-+	while (1) {
-+		rx_buffer = i40e_rx_bi(rx_ring, next);
-+		if (++next == rx_ring->count)
-+			next = 0;
-+
-+		if (!rx_buffer->page)
-+			continue;
-+
-+		if (xdp_res == I40E_XDP_CONSUMED)
-+			rx_buffer->pagecnt_bias++;
-+		else
-+			i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
-+
-+		/* EOP buffer will be put in i40e_clean_rx_irq() */
-+		if (next == rx_ring->next_to_process)
-+			return;
-+
-+		i40e_put_rx_buffer(rx_ring, rx_buffer);
-+	}
-+}
-+
-+/**
-+ * i40e_construct_skb - Allocate skb and populate it
-+ * @rx_ring: rx descriptor ring to transact packets on
-  * @xdp: xdp_buff pointing to the data
-+ * @nr_frags: number of buffers for the packet
-  *
-  * This function allocates an skb.  It then populates it with the page
-  * data from the current receive descriptor, taking care to set up the
-  * skb correctly.
-  */
- static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
--					  struct i40e_rx_buffer *rx_buffer,
--					  struct xdp_buff *xdp)
-+					  struct xdp_buff *xdp,
-+					  u32 nr_frags)
- {
- 	unsigned int size = xdp->data_end - xdp->data;
-+	struct i40e_rx_buffer *rx_buffer;
- 	unsigned int headlen;
- 	struct sk_buff *skb;
- 
-@@ -2152,13 +2181,17 @@ static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
- 	memcpy(__skb_put(skb, headlen), xdp->data,
- 	       ALIGN(headlen, sizeof(long)));
- 
-+	rx_buffer = i40e_rx_bi(rx_ring, rx_ring->next_to_clean);
- 	/* update all of the pointers */
- 	size -= headlen;
- 	if (size) {
-+		if (unlikely(nr_frags >= MAX_SKB_FRAGS)) {
-+			dev_kfree_skb(skb);
-+			return NULL;
-+		}
- 		skb_add_rx_frag(skb, 0, rx_buffer->page,
- 				rx_buffer->page_offset + headlen,
- 				size, xdp->frame_sz);
--
- 		/* buffer is used by skb, update page_offset */
- 		i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
- 	} else {
-@@ -2166,21 +2199,40 @@ static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
- 		rx_buffer->pagecnt_bias++;
- 	}
- 
-+	if (unlikely(xdp_buff_has_frags(xdp))) {
-+		struct skb_shared_info *sinfo, *skinfo = skb_shinfo(skb);
-+
-+		sinfo = xdp_get_shared_info_from_buff(xdp);
-+		memcpy(&skinfo->frags[skinfo->nr_frags], &sinfo->frags[0],
-+		       sizeof(skb_frag_t) * nr_frags);
-+
-+		xdp_update_skb_shared_info(skb, skinfo->nr_frags + nr_frags,
-+					   sinfo->xdp_frags_size,
-+					   nr_frags * xdp->frame_sz,
-+					   xdp_buff_is_frag_pfmemalloc(xdp));
-+
-+		/* First buffer has already been processed, so bump ntc */
-+		if (++rx_ring->next_to_clean == rx_ring->count)
-+			rx_ring->next_to_clean = 0;
-+
-+		i40e_process_rx_buffs(rx_ring, I40E_XDP_PASS, xdp);
-+	}
-+
- 	return skb;
- }
- 
- /**
-  * i40e_build_skb - Build skb around an existing buffer
-  * @rx_ring: Rx descriptor ring to transact packets on
-- * @rx_buffer: Rx buffer to pull data from
-  * @xdp: xdp_buff pointing to the data
-+ * @nr_frags: number of buffers for the packet
-  *
-  * This function builds an skb around an existing Rx buffer, taking care
-  * to set up the skb correctly and avoid any memcpy overhead.
-  */
- static struct sk_buff *i40e_build_skb(struct i40e_ring *rx_ring,
--				      struct i40e_rx_buffer *rx_buffer,
--				      struct xdp_buff *xdp)
-+				      struct xdp_buff *xdp,
-+				      u32 nr_frags)
- {
- 	unsigned int metasize = xdp->data - xdp->data_meta;
- 	struct sk_buff *skb;
-@@ -2203,36 +2255,25 @@ static struct sk_buff *i40e_build_skb(struct i40e_ring *rx_ring,
- 	if (metasize)
- 		skb_metadata_set(skb, metasize);
- 
--	/* buffer is used by skb, update page_offset */
--	i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
-+	if (unlikely(xdp_buff_has_frags(xdp))) {
-+		struct skb_shared_info *sinfo;
- 
--	return skb;
--}
-+		sinfo = xdp_get_shared_info_from_buff(xdp);
-+		xdp_update_skb_shared_info(skb, nr_frags,
-+					   sinfo->xdp_frags_size,
-+					   nr_frags * xdp->frame_sz,
-+					   xdp_buff_is_frag_pfmemalloc(xdp));
- 
--/**
-- * i40e_put_rx_buffer - Clean up used buffer and either recycle or free
-- * @rx_ring: rx descriptor ring to transact packets on
-- * @rx_buffer: rx buffer to pull data from
-- *
-- * This function will clean up the contents of the rx_buffer.  It will
-- * either recycle the buffer or unmap it and free the associated resources.
-- */
--static void i40e_put_rx_buffer(struct i40e_ring *rx_ring,
--			       struct i40e_rx_buffer *rx_buffer)
--{
--	if (i40e_can_reuse_rx_page(rx_buffer, &rx_ring->rx_stats)) {
--		/* hand second half of page back to the ring */
--		i40e_reuse_rx_page(rx_ring, rx_buffer);
-+		i40e_process_rx_buffs(rx_ring, I40E_XDP_PASS, xdp);
- 	} else {
--		/* we are not reusing the buffer so unmap it */
--		dma_unmap_page_attrs(rx_ring->dev, rx_buffer->dma,
--				     i40e_rx_pg_size(rx_ring),
--				     DMA_FROM_DEVICE, I40E_RX_DMA_ATTR);
--		__page_frag_cache_drain(rx_buffer->page,
--					rx_buffer->pagecnt_bias);
--		/* clear contents of buffer_info */
--		rx_buffer->page = NULL;
-+		struct i40e_rx_buffer *rx_buffer;
-+
-+		rx_buffer = i40e_rx_bi(rx_ring, rx_ring->next_to_clean);
-+		/* buffer is used by skb, update page_offset */
-+		i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
- 	}
-+
-+	return skb;
- }
- 
- /**
-@@ -2387,6 +2428,55 @@ static void i40e_inc_ntp(struct i40e_ring *rx_ring)
- 	prefetch(I40E_RX_DESC(rx_ring, ntp));
- }
- 
-+/**
-+ * i40e_add_xdp_frag: Add a frag to xdp_buff
-+ * @xdp: xdp_buff pointing to the data
-+ * @nr_frags: return number of buffers for the packet
-+ * @rx_buffer: rx_buffer holding data of the current frag
-+ * @size: size of data of current frag
-+ */
-+static int i40e_add_xdp_frag(struct xdp_buff *xdp, u32 *nr_frags,
-+			     struct i40e_rx_buffer *rx_buffer, u32 size)
-+{
-+	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-+
-+	if (!xdp_buff_has_frags(xdp)) {
-+		sinfo->nr_frags = 0;
-+		sinfo->xdp_frags_size = 0;
-+		xdp_buff_set_frags_flag(xdp);
-+	} else if (unlikely(sinfo->nr_frags >= MAX_SKB_FRAGS)) {
-+		/* Overflowing packet: All frags need to be dropped */
-+		return  -ENOMEM;
-+	}
-+
-+	__skb_fill_page_desc_noacc(sinfo, sinfo->nr_frags++, rx_buffer->page,
-+				   rx_buffer->page_offset, size);
-+
-+	sinfo->xdp_frags_size += size;
-+
-+	if (page_is_pfmemalloc(rx_buffer->page))
-+		xdp_buff_set_frag_pfmemalloc(xdp);
-+	*nr_frags = sinfo->nr_frags;
-+
-+	return 0;
-+}
-+
-+/**
-+ * i40e_consume_xdp_buff - Consume all the buffers of the packet and update ntc
-+ * @rx_ring: rx descriptor ring to transact packets on
-+ * @xdp: xdp_buff pointing to the data
-+ * @rx_buffer: rx_buffer of eop desc
-+ */
-+static void i40e_consume_xdp_buff(struct i40e_ring *rx_ring,
-+				  struct xdp_buff *xdp,
-+				  struct i40e_rx_buffer *rx_buffer)
-+{
-+	i40e_process_rx_buffs(rx_ring, I40E_XDP_CONSUMED, xdp);
-+	i40e_put_rx_buffer(rx_ring, rx_buffer);
-+	rx_ring->next_to_clean = rx_ring->next_to_process;
-+	xdp->data = NULL;
-+}
-+
- /**
-  * i40e_clean_rx_irq - Clean completed descriptors from Rx ring - bounce buf
-  * @rx_ring: rx descriptor ring to transact packets on
-@@ -2405,9 +2495,9 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
- {
- 	unsigned int total_rx_bytes = 0, total_rx_packets = 0;
- 	u16 cleaned_count = I40E_DESC_UNUSED(rx_ring);
-+	u16 clean_threshold = rx_ring->count / 2;
- 	unsigned int offset = rx_ring->rx_offset;
- 	struct xdp_buff *xdp = &rx_ring->xdp;
--	struct sk_buff *skb = rx_ring->skb;
- 	unsigned int xdp_xmit = 0;
- 	struct bpf_prog *xdp_prog;
- 	bool failure = false;
-@@ -2419,11 +2509,14 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
- 		u16 ntp = rx_ring->next_to_process;
- 		struct i40e_rx_buffer *rx_buffer;
- 		union i40e_rx_desc *rx_desc;
-+		struct sk_buff *skb;
- 		unsigned int size;
-+		u32 nfrags = 0;
-+		bool neop;
- 		u64 qword;
- 
- 		/* return some buffers to hardware, one at a time is too slow */
--		if (cleaned_count >= I40E_RX_BUFFER_WRITE) {
-+		if (cleaned_count >= clean_threshold) {
- 			failure = failure ||
- 				  i40e_alloc_rx_buffers(rx_ring, cleaned_count);
- 			cleaned_count = 0;
-@@ -2461,76 +2554,83 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
- 			break;
- 
- 		i40e_trace(clean_rx_irq, rx_ring, rx_desc, xdp);
-+		/* retrieve a buffer from the ring */
- 		rx_buffer = i40e_get_rx_buffer(rx_ring, size);
- 
--		/* retrieve a buffer from the ring */
--		if (!skb) {
-+		neop = i40e_is_non_eop(rx_ring, rx_desc);
-+		i40e_inc_ntp(rx_ring);
-+
-+		if (!xdp->data) {
- 			unsigned char *hard_start;
- 
- 			hard_start = page_address(rx_buffer->page) +
- 				     rx_buffer->page_offset - offset;
- 			xdp_prepare_buff(xdp, hard_start, offset, size, true);
--			xdp_buff_clear_frags_flag(xdp);
- #if (PAGE_SIZE > 4096)
- 			/* At larger PAGE_SIZE, frame_sz depend on len size */
- 			xdp->frame_sz = i40e_rx_frame_truesize(rx_ring, size);
- #endif
--			xdp_res = i40e_run_xdp(rx_ring, xdp, xdp_prog);
-+		} else if (i40e_add_xdp_frag(xdp, &nfrags, rx_buffer, size) &&
-+			   !neop) {
-+			/* Overflowing packet: Drop all frags on EOP */
-+			i40e_consume_xdp_buff(rx_ring, xdp, rx_buffer);
-+			break;
- 		}
- 
-+		if (neop)
-+			continue;
-+
-+		xdp_res = i40e_run_xdp(rx_ring, xdp, xdp_prog);
-+
- 		if (xdp_res) {
--			if (xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR)) {
--				xdp_xmit |= xdp_res;
-+			xdp_xmit |= xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR);
-+
-+			if (unlikely(xdp_buff_has_frags(xdp))) {
-+				i40e_process_rx_buffs(rx_ring, xdp_res, xdp);
-+				size = xdp_get_buff_len(xdp);
-+			} else if (xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR)) {
- 				i40e_rx_buffer_flip(rx_buffer, xdp->frame_sz);
- 			} else {
- 				rx_buffer->pagecnt_bias++;
- 			}
- 			total_rx_bytes += size;
--			total_rx_packets++;
--		} else if (skb) {
--			i40e_add_rx_frag(rx_ring, rx_buffer, skb, size);
--		} else if (ring_uses_build_skb(rx_ring)) {
--			skb = i40e_build_skb(rx_ring, rx_buffer, xdp);
- 		} else {
--			skb = i40e_construct_skb(rx_ring, rx_buffer, xdp);
--		}
-+			if (ring_uses_build_skb(rx_ring))
-+				skb = i40e_build_skb(rx_ring, xdp, nfrags);
-+			else
-+				skb = i40e_construct_skb(rx_ring, xdp, nfrags);
-+
-+			/* drop if we failed to retrieve a buffer */
-+			if (!skb) {
-+				rx_ring->rx_stats.alloc_buff_failed++;
-+				i40e_consume_xdp_buff(rx_ring, xdp, rx_buffer);
-+				break;
-+			}
- 
--		/* exit if we failed to retrieve a buffer */
--		if (!xdp_res && !skb) {
--			rx_ring->rx_stats.alloc_buff_failed++;
--			rx_buffer->pagecnt_bias++;
--			break;
--		}
-+			if (i40e_cleanup_headers(rx_ring, skb, rx_desc))
-+				goto process_next;
- 
--		i40e_put_rx_buffer(rx_ring, rx_buffer);
--		cleaned_count++;
-+			/* probably a little skewed due to removing CRC */
-+			total_rx_bytes += skb->len;
- 
--		i40e_inc_ntp(rx_ring);
--		rx_ring->next_to_clean = rx_ring->next_to_process;
--		if (i40e_is_non_eop(rx_ring, rx_desc))
--			continue;
-+			/* populate checksum, VLAN, and protocol */
-+			i40e_process_skb_fields(rx_ring, rx_desc, skb);
- 
--		if (xdp_res || i40e_cleanup_headers(rx_ring, skb, rx_desc)) {
--			skb = NULL;
--			continue;
-+			i40e_trace(clean_rx_irq_rx, rx_ring, rx_desc, xdp);
-+			napi_gro_receive(&rx_ring->q_vector->napi, skb);
- 		}
- 
--		/* probably a little skewed due to removing CRC */
--		total_rx_bytes += skb->len;
--
--		/* populate checksum, VLAN, and protocol */
--		i40e_process_skb_fields(rx_ring, rx_desc, skb);
--
--		i40e_trace(clean_rx_irq_rx, rx_ring, rx_desc, xdp);
--		napi_gro_receive(&rx_ring->q_vector->napi, skb);
--		skb = NULL;
--
- 		/* update budget accounting */
- 		total_rx_packets++;
-+process_next:
-+		cleaned_count += nfrags + 1;
-+		i40e_put_rx_buffer(rx_ring, rx_buffer);
-+		rx_ring->next_to_clean = rx_ring->next_to_process;
-+
-+		xdp->data = NULL;
- 	}
- 
- 	i40e_finalize_xdp_rx(rx_ring, xdp_xmit);
--	rx_ring->skb = skb;
- 
- 	i40e_update_rx_stats(rx_ring, total_rx_bytes, total_rx_packets);
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.h b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-index e86abc25bb5e..14ad074639ab 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-@@ -393,14 +393,6 @@ struct i40e_ring {
- 
- 	struct rcu_head rcu;		/* to avoid race on free */
- 	u16 next_to_alloc;
--	struct sk_buff *skb;		/* When i40e_clean_rx_ring_irq() must
--					 * return before it sees the EOP for
--					 * the current packet, we save that skb
--					 * here and resume receiving this
--					 * packet the next time
--					 * i40e_clean_rx_ring_irq() is called
--					 * for this ring.
--					 */
- 
- 	struct i40e_channel *ch;
- 	u16 rx_offset;
--- 
-2.34.1
+The most important I wanted to mention: doesn't this function make the
+CPU read the uncached field again, while you could just read it once
+onto the stack and then extract all such data from there?
 
+> +}
+> +
+> +/* Packet header type identified by hardware (when BIT(11) is zero).
+> + * Even when UDP ports are not part of RSS hash HW still parse and mark UDP bits
+> + */
+> +enum igc_pkt_type_bits {
+> +	IGC_PKT_TYPE_HDR_IPV4	=	BIT(0),
+> +	IGC_PKT_TYPE_HDR_IPV4_WITH_OPT=	BIT(1), /* IPv4 Hdr includes IP options */
+> +	IGC_PKT_TYPE_HDR_IPV6	=	BIT(2),
+> +	IGC_PKT_TYPE_HDR_IPV6_WITH_EXT=	BIT(3), /* IPv6 Hdr includes extensions */
+> +	IGC_PKT_TYPE_HDR_L4_TCP	=	BIT(4),
+> +	IGC_PKT_TYPE_HDR_L4_UDP	=	BIT(5),
+> +	IGC_PKT_TYPE_HDR_L4_SCTP=	BIT(6),
+> +	IGC_PKT_TYPE_HDR_NFS	=	BIT(7),
+> +	/* Above only valid when BIT(11) is zero */
+> +	IGC_PKT_TYPE_L2		=	BIT(11),
+> +	IGC_PKT_TYPE_VLAN	=	BIT(12),
+> +	IGC_PKT_TYPE_MASK	=	0x1FFF, /* 13-bits */
+
+Also GENMASK().
+
+> +};
+> +
+> +/* igc_pkt_type - Rx descriptor Packet type field */
+> +static inline u16 igc_pkt_type(union igc_adv_rx_desc *rx_desc)
+
+Also short types and consts.
+
+> +{
+> +	u32 data = le32_to_cpu(rx_desc->wb.lower.lo_dword.data);
+> +	/* Packet type is 13-bits - as bits (16:4) in lower.lo_dword*/
+> +	u16 pkt_type = (data >> 4) & IGC_PKT_TYPE_MASK;
+
+Perfect candidate for FIELD_GET(). No, even for le32_get_bits().
+
+Also my note above about excessive expensive reads.
+
+> +
+> +	return pkt_type;
+> +}
+> +
+>  /* Interrupt defines */
+>  #define IGC_START_ITR			648 /* ~6000 ints/sec */
+>  #define IGC_4K_ITR			980
+> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+> index 8b572cd2c350..42a072509d2a 100644
+> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+> @@ -1677,14 +1677,40 @@ static void igc_rx_checksum(struct igc_ring *ring,
+>  		   le32_to_cpu(rx_desc->wb.upper.status_error));
+>  }
+>  
+> +/* Mapping HW RSS Type to enum pkt_hash_types */
+> +struct igc_rss_type {
+> +	u8 hash_type; /* can contain enum pkt_hash_types */
+
+Why make a struct for one field? + short type note
+
+> +} igc_rss_type_table[IGC_RSS_TYPE_MAX_TABLE] = {
+> +	[IGC_RSS_TYPE_NO_HASH].hash_type	  = PKT_HASH_TYPE_L2,
+> +	[IGC_RSS_TYPE_HASH_TCP_IPV4].hash_type	  = PKT_HASH_TYPE_L4,
+> +	[IGC_RSS_TYPE_HASH_IPV4].hash_type	  = PKT_HASH_TYPE_L3,
+> +	[IGC_RSS_TYPE_HASH_TCP_IPV6].hash_type	  = PKT_HASH_TYPE_L4,
+> +	[IGC_RSS_TYPE_HASH_IPV6_EX].hash_type	  = PKT_HASH_TYPE_L3,
+> +	[IGC_RSS_TYPE_HASH_IPV6].hash_type	  = PKT_HASH_TYPE_L3,
+> +	[IGC_RSS_TYPE_HASH_TCP_IPV6_EX].hash_type = PKT_HASH_TYPE_L4,
+> +	[IGC_RSS_TYPE_HASH_UDP_IPV4].hash_type	  = PKT_HASH_TYPE_L4,
+> +	[IGC_RSS_TYPE_HASH_UDP_IPV6].hash_type	  = PKT_HASH_TYPE_L4,
+> +	[IGC_RSS_TYPE_HASH_UDP_IPV6_EX].hash_type = PKT_HASH_TYPE_L4,
+> +	[10].hash_type = PKT_HASH_TYPE_L2, /* RSS Type above 9 "Reserved" by HW */
+> +	[11].hash_type = PKT_HASH_TYPE_L2,
+> +	[12].hash_type = PKT_HASH_TYPE_L2,
+> +	[13].hash_type = PKT_HASH_TYPE_L2,
+> +	[14].hash_type = PKT_HASH_TYPE_L2,
+> +	[15].hash_type = PKT_HASH_TYPE_L2,
+
+Why define those empty if you could do a bound check in the code
+instead? E.g. `if (unlikely(bigger_than_9)) return PKT_HASH_TYPE_L2`.
+
+> +};
+> +
+>  static inline void igc_rx_hash(struct igc_ring *ring,
+>  			       union igc_adv_rx_desc *rx_desc,
+>  			       struct sk_buff *skb)
+>  {
+> -	if (ring->netdev->features & NETIF_F_RXHASH)
+> -		skb_set_hash(skb,
+> -			     le32_to_cpu(rx_desc->wb.lower.hi_dword.rss),
+> -			     PKT_HASH_TYPE_L3);
+> +	if (ring->netdev->features & NETIF_F_RXHASH) {
+
+	if (!(feature & HASH))
+		return;
+
+and -1 indent level?
+
+> +		u32 rss_hash = le32_to_cpu(rx_desc->wb.lower.hi_dword.rss);
+> +		u8  rss_type = igc_rss_type(rx_desc);
+> +		enum pkt_hash_types hash_type;
+> +
+> +		hash_type = igc_rss_type_table[rss_type].hash_type;
+> +		skb_set_hash(skb, rss_hash, hash_type);
+> +	}
+>  }
+
+[...]
+
+Thanks,
+Olek
