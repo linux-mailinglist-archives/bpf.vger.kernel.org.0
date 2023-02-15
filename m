@@ -2,87 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3F9697C0B
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 13:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EEC697C67
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 13:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbjBOMnK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 07:43:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59218 "EHLO
+        id S233791AbjBOM5v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 07:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233681AbjBOMnJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 07:43:09 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77666311CD;
-        Wed, 15 Feb 2023 04:43:08 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4PGyRF73j9z4x7w;
-        Wed, 15 Feb 2023 23:43:05 +1100 (AEDT)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org, Hao Luo <haoluo@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        KP Singh <kpsingh@kernel.org>, Song Liu <song@kernel.org>
-In-Reply-To: <4fd69ef7945518c3e27f96b95046a5c1468d35bf.1675245773.git.christophe.leroy@csgroup.eu>
-References: <4fd69ef7945518c3e27f96b95046a5c1468d35bf.1675245773.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH v2 1/9] powerpc: Remove __kernel_text_address() in show_instructions()
-Message-Id: <167646484231.1421441.4745112349089639781.b4-ty@ellerman.id.au>
-Date:   Wed, 15 Feb 2023 23:40:42 +1100
+        with ESMTP id S233325AbjBOM5v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 07:57:51 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E35D4;
+        Wed, 15 Feb 2023 04:57:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676465869; x=1708001869;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7dlWOH/Qpt7bh7ECKlipjSjpc/PPCjtj6keVbKZqS+Q=;
+  b=jYq0bNDgMV4Je+0bvauAs4jDjK2PA1MI2IQz3YPyP7XN0K8aogl+7hiN
+   4NZaoZPW3MCyIfbEcA9JErPHFnocJ8p/ejXknObQAKHEzT5pKd6ZjVuFN
+   3UH1mVT/3tPHVqWx5izRM/d+bWNYkLvMTkgfW00XRg4/9h0xxcfdDLj9U
+   eUPvDUoVEQ73XPLY5i+uagkTR7mi+vSjC/AyRzu0GyjgKkg7fWGlfg+UB
+   70b/ZUjw+BIHOTKxeXDy2o1tnDjtZFCNyRPVYq3xG7X+sVP841W5OPqmQ
+   sdLHYRvzysvzMv5LkZhelEy7t2dCSytX+NtJnZYPADFR68aogvTQTdWyZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="393822004"
+X-IronPort-AV: E=Sophos;i="5.97,299,1669104000"; 
+   d="scan'208";a="393822004"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2023 04:57:48 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="998478588"
+X-IronPort-AV: E=Sophos;i="5.97,299,1669104000"; 
+   d="scan'208";a="998478588"
+Received: from unknown (HELO paamrpdk12-S2600BPB.aw.intel.com) ([10.228.151.145])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2023 04:57:47 -0800
+From:   Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        tirthendu.sarkar@intel.com
+Subject: [PATCH intel-next v4 0/8] i40e: support XDP multi-buffer
+Date:   Wed, 15 Feb 2023 18:12:57 +0530
+Message-Id: <20230215124305.76075-1-tirthendu.sarkar@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 1 Feb 2023 11:04:23 +0100, Christophe Leroy wrote:
-> That test was introducted in 2006 by
-> commit 00ae36de49cc ("[POWERPC] Better check in show_instructions").
-> At that time, there was no BPF progs.
-> 
-> As seen in message of commit 89d21e259a94 ("powerpc/bpf/32: Fix Oops
-> on tail call tests"), when a page fault occurs in test_bpf.ko for
-> instance, the code is dumped as XXXXXXXXs. Allthough
-> __kernel_text_address() checks is_bpf_text_address(), it seems it is
-> not enough.
-> 
-> [...]
+This patchset adds multi-buffer support for XDP. Tx side already has
+support for multi-buffer. This patchset focuses on Rx side. The last
+patch contains actual multi-buffer changes while the previous ones are
+preparatory patches.
 
-Applied to powerpc/next.
+On receiving the first buffer of a packet, xdp_buff is built and its
+subsequent buffers are added to it as frags. While 'next_to_clean' keeps
+pointing to the first descriptor, the newly introduced 'next_to_process'
+keeps track of every descriptor for the packet. 
 
-[1/9] powerpc: Remove __kernel_text_address() in show_instructions()
-      https://git.kernel.org/powerpc/c/d9ab6da64fd15608c9feb20d769d8df1a32fe212
-[2/9] powerpc/bpf/32: No need to zeroise r4 when not doing tail call
-      https://git.kernel.org/powerpc/c/6376ed8feca829039d31a208216b958f0e439d87
-[3/9] powerpc/bpf/32: Only set a stack frame when necessary
-      https://git.kernel.org/powerpc/c/d084dcf256bc4565b4b1af9b00297ac7b51c7049
-[4/9] powerpc/bpf/32: BPF prog is never called with more than one arg
-      https://git.kernel.org/powerpc/c/7dd0e2848764306d7a70943b97584ffdc7754708
-[5/9] powerpc/bpf: Perform complete extra passes to update addresses
-      https://git.kernel.org/powerpc/c/85e031154c7c14edee0705532a9ffc8a2fe591d0
-[6/9] powerpc/bpf: Only pad length-variable code at initial pass
-      https://git.kernel.org/powerpc/c/d3921cbb6cd663193cecf04f0b170a30c6d0e390
-[7/9] powerpc/bpf/32: Optimise some particular const operations
-      https://git.kernel.org/powerpc/c/8616045fe785229b53a24b8698631826298d1500
-[8/9] powerpc/bpf/32: introduce a second source register for ALU operations
-      https://git.kernel.org/powerpc/c/c88da29b4d2ce8d0070646b8f99729e9b355a4bf
-[9/9] powerpc/bpf/32: perform three operands ALU operations
-      https://git.kernel.org/powerpc/c/19daf0aef84f33bde9c742ed41b4ded567b8dfbf
+On receiving EOP buffer the XDP program is called and appropriate action
+is taken (building skb for XDP_PASS, reusing page for XDP_DROP, adjusting
+page offsets for XDP_{REDIRECT,TX}).
 
-cheers
+The patchset also streamlines page offset adjustments for buffer reuse
+to make it easier to post process the rx_buffers after running XDP prog.
+
+With this patchset there does not seem to be any performance degradation
+for XDP_PASS and some improvement (~1% for XDP_TX, ~5% for XDP_DROP) when
+measured using xdp_rxq_info program from samples/bpf/ for 64B packets.
+
+Changelog:
+    v3 -> v4:
+    - Added non-linear XDP buffer support to xdp_features. [Maciej]
+    - Removed double space. [Maciej]
+
+    v2 -> v3:
+    - Fixed buffer cleanup for single buffer packets on skb alloc
+      failure.
+    - Better naming of cleanup function.
+    - Stop incrementing nr_frags for overflowing packets.
+ 
+    v1 -> v2:
+    - Instead of building xdp_buff on eop now it is built incrementally.
+    - xdp_buff is now added to i40e_ring struct for preserving across
+      napi calls. [Alexander Duyck]
+    - Post XDP program rx_buffer processing has been simplified.
+    - Rx buffer allocation pull out is reverted to avoid performance 
+      issues for smaller ring sizes and now done when at least half of
+      the ring has been cleaned. With v1 there was ~75% drop for
+      XDP_PASS with the smallest ring size of 64 which is mitigated by
+      v2 [Alexander Duyck]
+    - Instead of retrying skb allocation on previous failure now the
+      packet is dropped. [Maciej]
+    - Simplified page offset adjustments by using xdp->frame_sz instead
+      of recalculating truesize. [Maciej]
+    - Change i40e_trace() to use xdp instead of skb [Maciej]
+    - Reserve tailroom for legacy-rx [Maciej]
+    - Centralize max frame size calculation
+
+Tirthendu Sarkar (8):
+  i40e: consolidate maximum frame size calculation for vsi
+  i40e: change Rx buffer size for legacy-rx to support XDP multi-buffer
+  i40e: add pre-xdp page_count in rx_buffer
+  i40e: Change size to truesize when using i40e_rx_buffer_flip()
+  i40e: use frame_sz instead of recalculating truesize for building skb
+  i40e: introduce next_to_process to i40e_ring
+  i40e: add xdp_buff to i40e_ring struct
+  i40e: add support for XDP multi-buffer Rx
+
+ drivers/net/ethernet/intel/i40e/i40e_main.c  |  78 ++--
+ drivers/net/ethernet/intel/i40e/i40e_trace.h |  20 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c  | 420 +++++++++++--------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h  |  21 +-
+ 4 files changed, 307 insertions(+), 232 deletions(-)
+
+-- 
+2.34.1
+
