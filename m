@@ -2,202 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEE969749C
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 03:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5526974A1
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 04:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjBOC6O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 21:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
+        id S229551AbjBODA0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 22:00:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjBOC6O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 21:58:14 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86752749F
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 18:58:03 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id oo13-20020a17090b1c8d00b0022936a63a22so375046pjb.8
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 18:58:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OrnnhttW8o5jppQu6CGekge3hogvq4Llv3K4cmrNAEk=;
-        b=R8w+1GO9/fK3naU2BZC34B1qjEucjMXw+Mju6gGGNt2YEWNDvy1DWZH21y9ciRvZfu
-         ZjgpsjRHB+NYjRspDGIOm/b0PQz1jjee/PwZ1/Db/uyMs2HVdpB9/WsYQj5It7XFj0QS
-         rz5JdWFnZjsRfl955RjFMPtpyf4r8CZGvyH/Xp93cCLZpbp0s3fKngDXG1XWq+5l58te
-         hYIXpuD6c2bwUwx/9AGrniaYxOkRDttzAxtNrjmZ0rwk6tYy2Wne7/LEut+BR+3wt49a
-         qkgOF3lgNeZsY/UHhnHWfeaiQ+la9j9x/M8wTjZDGjPXoIfMwK0/0rjuHxdDInEaok/j
-         LClA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OrnnhttW8o5jppQu6CGekge3hogvq4Llv3K4cmrNAEk=;
-        b=pwpHmpPrSjZtyChe3hQ1eAYUg7o1I5qVG1rIqRzWaa1zGhA/65/gOhZIlHwyRORcAe
-         j0TL1EGAnNsZJPYJ4Q+lWDuSsITCnGudTOfkbfTN1tx0RmZOuXj3Jgo+swIHm9GtGqoB
-         oHtRpr3JYCSC4rgfMA1ITY1bvdUgNfXyupuEEjZc09oD/mJsYKPjpZWryKcCcLNjVvlC
-         BC5V81tPbahFCyY0wtNUDr7ywRVfD9A6CD5hsp4iLHxlUZ5q3sDHts0aSQdaEJggm2zD
-         WvrKJ1wYO7VjnWUU57CvSYhcniBiXyUYSqWZ48B0CtJbMQ2MgCj3l1u1elb8FEoqhkV4
-         hYJA==
-X-Gm-Message-State: AO0yUKV7KABP8rQpGS0w2oABaXl7HBWP8tXJgLNX/VM3xKJrNYFCBWv4
-        U+POeylkyvR3hb7OhR36Lnnrd3Q=
-X-Google-Smtp-Source: AK7set8rJxdvbVtgN1eiHXMhLl1rqBwe99RitYnBSMF21lnB7oomKd8UzcoMEvK/Imr217yiSkWbc/U=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:2911:0:b0:4fb:a525:3eae with SMTP id
- bt17-20020a632911000000b004fba5253eaemr101798pgb.1.1676429883242; Tue, 14 Feb
- 2023 18:58:03 -0800 (PST)
-Date:   Tue, 14 Feb 2023 18:58:02 -0800
-In-Reply-To: <20230214221718.503964-5-kuifeng@meta.com>
-Mime-Version: 1.0
-References: <20230214221718.503964-1-kuifeng@meta.com> <20230214221718.503964-5-kuifeng@meta.com>
-Message-ID: <Y+xKOq4gW58IDMWE@google.com>
-Subject: Re: [PATCH bpf-next 4/7] libbpf: Create a bpf_link in bpf_map__attach_struct_ops().
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Kui-Feng Lee <kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, kernel-team@meta.com, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229506AbjBODAZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 22:00:25 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2131C10F2;
+        Tue, 14 Feb 2023 19:00:24 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PGjVq2HKPz4f3jZJ;
+        Wed, 15 Feb 2023 11:00:19 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgAnGObBSuxj6AZiDg--.28401S2;
+        Wed, 15 Feb 2023 11:00:21 +0800 (CST)
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
+ <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
+ <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
+ <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+ <20230210163258.phekigglpquitq33@apollo>
+ <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
+ <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
+ <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
+ <19bf22cd-2344-4029-a2ee-ce4bcc1db048@huaweicloud.com>
+ <CAADnVQ+ZVDgiBMFrCpqjZK6kTLfOF_2zxRBMqvHZmoUZW5p3=A@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <97dad4c5-91ed-2e2e-eb90-e9fa6c160e0a@huaweicloud.com>
+Date:   Wed, 15 Feb 2023 11:00:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAADnVQ+ZVDgiBMFrCpqjZK6kTLfOF_2zxRBMqvHZmoUZW5p3=A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgAnGObBSuxj6AZiDg--.28401S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cry7ZF4fury5Jw1UAFW8JFb_yoW8KF4UpF
+        Wxt3WSqa9rWFnxAws2yr48ZFyUK3yrGr4UZw4rKry3uas8CF1rWFs7WF4FkFW8Crn5CF1a
+        vw4DZ34S9F4j93DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02/14, Kui-Feng Lee wrote:
-> bpf_map__attach_struct_ops() was creating a dummy bpf_link as a
-> placeholder, but now it is constructing an authentic one by calling
-> bpf_link_create() if the map has the BPF_F_LINK flag.
+Hi,
 
-> You can flag a struct_ops map with BPF_F_LINK by calling
-> bpf_map__set_map_flags().
+On 2/15/2023 10:42 AM, Alexei Starovoitov wrote:
+> On Tue, Feb 14, 2023 at 6:36 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi,
+>>
+>> On 2/12/2023 12:33 AM, Alexei Starovoitov wrote:
+>>> On Fri, Feb 10, 2023 at 5:10 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>>>> Hou, are you plannning to resubmit this change? I also hit this while testing my
+>>>>>> changes on bpf-next.
+>>>>> Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
+>>>>> The former will take a long time to settle.
+>>>>> The latter is trivial.
+>>>>> To unblock yourself just add GFP_ZERO in an extra patch?
+>>>> Sorry for the long delay. Just find find out time to do some tests to compare
+>>>> the performance of bzero and ctor. After it is done, will resubmit on next week.
+>>> I still don't like ctor as a concept. In general the callbacks in the critical
+>>> path are guaranteed to be slow due to retpoline overhead.
+>>> Please send a patch to add GFP_ZERO.
+>> I see. Will do. But i think it is better to know the coarse overhead of these
+>> two methods, so I hack map_perf_test to support customizable value size for
+>> hash_map_alloc and do some benchmarks to show the overheads of ctor and
+>> GFP_ZERO. These benchmark are conducted on a KVM-VM with 8-cpus, it seems when
+>> the number of allocated elements is small, the overheads of ctor and bzero are
+>> basically the same, but when the number of allocated element increases (e.g.,
+>> half full), the overhead of ctor will be bigger. For big value size, the
+>> overhead of ctor and zero are basically the same, and it seems due to the main
+>> overhead comes from slab allocation. The following is the detailed results:
+> and with retpoline?
+Yes. Forge to mention that. The following is the output of vulnerabilities
+directory:
 
-> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
-> ---
->   tools/lib/bpf/libbpf.c | 73 +++++++++++++++++++++++++++++++++---------
->   1 file changed, 58 insertions(+), 15 deletions(-)
+# cd /sys/devices/system/cpu/vulnerabilities
+# grep . *
+itlb_multihit:Processor vulnerable
+l1tf:Mitigation: PTE Inversion
+mds:Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown
+meltdown:Mitigation: PTI
+mmio_stale_data:Unknown: No mitigations
+retbleed:Not affected
+spec_store_bypass:Vulnerable
+spectre_v1:Mitigation: usercopy/swapgs barriers and __user pointer sanitization
+spectre_v2:Mitigation: Retpolines, STIBP: disabled, RSB filling, PBRSB-eIBRS:
+Not affected
+srbds:Not affected
+tsx_async_abort:Not affected
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 75ed95b7e455..1eff6a03ddd9 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -11430,29 +11430,41 @@ struct bpf_link *bpf_program__attach(const  
-> struct bpf_program *prog)
->   	return link;
->   }
-
-> +struct bpf_link_struct_ops_map {
-> +	struct bpf_link link;
-> +	int map_fd;
-> +};
-
-Ah, ok, now you're adding bpf_link_struct_ops_map. I guess I'm now
-confused why you haven't done it in the first patch :-/
-
-And what are these fake bpf_links? Can you share more about it means?
-
-> +
->   static int bpf_link__detach_struct_ops(struct bpf_link *link)
->   {
-> +	struct bpf_link_struct_ops_map *st_link;
->   	__u32 zero = 0;
-
-> -	if (bpf_map_delete_elem(link->fd, &zero))
-> +	st_link = container_of(link, struct bpf_link_struct_ops_map, link);
-> +
-> +	if (st_link->map_fd < 0) {
-> +		/* Fake bpf_link */
-> +		if (bpf_map_delete_elem(link->fd, &zero))
-> +			return -errno;
-> +		return 0;
-> +	}
-> +
-> +	if (bpf_map_delete_elem(st_link->map_fd, &zero))
-> +		return -errno;
-> +
-> +	if (close(link->fd))
->   		return -errno;
-
->   	return 0;
->   }
-
-> -struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
-> +/*
-> + * Update the map with the prepared vdata.
-> + */
-> +static int bpf_map__update_vdata(const struct bpf_map *map)
->   {
->   	struct bpf_struct_ops *st_ops;
-> -	struct bpf_link *link;
->   	__u32 i, zero = 0;
-> -	int err;
-> -
-> -	if (!bpf_map__is_struct_ops(map) || map->fd == -1)
-> -		return libbpf_err_ptr(-EINVAL);
-> -
-> -	link = calloc(1, sizeof(*link));
-> -	if (!link)
-> -		return libbpf_err_ptr(-EINVAL);
-
->   	st_ops = map->st_ops;
->   	for (i = 0; i < btf_vlen(st_ops->type); i++) {
-> @@ -11468,17 +11480,48 @@ struct bpf_link  
-> *bpf_map__attach_struct_ops(const struct bpf_map *map)
->   		*(unsigned long *)kern_data = prog_fd;
->   	}
-
-> -	err = bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
-> +	return bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
-> +}
-> +
-> +struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
-> +{
-> +	struct bpf_link_struct_ops_map *link;
-> +	int err, fd;
-> +
-> +	if (!bpf_map__is_struct_ops(map) || map->fd == -1)
-> +		return libbpf_err_ptr(-EINVAL);
-> +
-> +	link = calloc(1, sizeof(*link));
-> +	if (!link)
-> +		return libbpf_err_ptr(-EINVAL);
-> +
-> +	err = bpf_map__update_vdata(map);
->   	if (err) {
->   		err = -errno;
->   		free(link);
->   		return libbpf_err_ptr(err);
->   	}
-
-> -	link->detach = bpf_link__detach_struct_ops;
-> -	link->fd = map->fd;
-> +	link->link.detach = bpf_link__detach_struct_ops;
-
-> -	return link;
-> +	if (!(map->def.map_flags & BPF_F_LINK)) {
-> +		/* Fake bpf_link */
-> +		link->link.fd = map->fd;
-> +		link->map_fd = -1;
-> +		return &link->link;
-> +	}
-> +
-> +	fd = bpf_link_create(map->fd, -1, BPF_STRUCT_OPS_MAP, NULL);
-> +	if (fd < 0) {
-> +		err = -errno;
-> +		free(link);
-> +		return libbpf_err_ptr(err);
-> +	}
-> +
-> +	link->link.fd = fd;
-> +	link->map_fd = map->fd;
-> +
-> +	return &link->link;
->   }
-
->   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct  
-> perf_event_header *hdr,
-> --
-> 2.30.2
 
