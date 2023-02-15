@@ -2,91 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91753697A5C
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 12:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 331B7697BD2
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 13:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbjBOLBV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 06:01:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
+        id S233443AbjBOMdJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 07:33:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjBOLBU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 06:01:20 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4FD7B728B;
-        Wed, 15 Feb 2023 03:01:14 -0800 (PST)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8CxC9p5u+xjpuUAAA--.2271S3;
-        Wed, 15 Feb 2023 19:01:13 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxf+R4u+xjg9UzAA--.61731S2;
-        Wed, 15 Feb 2023 19:01:13 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230492AbjBOMdG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 07:33:06 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797803669C;
+        Wed, 15 Feb 2023 04:33:05 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id be8so20085885plb.7;
+        Wed, 15 Feb 2023 04:33:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1IsC8ng/nt0IIOs5zLEhvzEjLU5ZtX7trPinF9wC4HY=;
+        b=XpjVcbaAfAVK6cvQGU8LDsYr96rqAbvOVHsTzUlNZqTf6q6zEyEXhHiraiEGhgr6a4
+         f8PSxKnB5I5nSqeED5HwnD7OFwqfdrbjru1pzgA0SzLob3RBUE/f22Sks3NVtY7if7PN
+         LCvI/3Ug6wKAf5ihUKtvqERBxvgW0eFHx3n4iWOtDrliTYYvaiuQYFmpRef3q/+t4wNV
+         ylIQA66PF8DlHMoCTeXnJq2RXyqBXBIdto+B4MZTSP0prH6tT3sY7OJbLUFZvsXPWr1Y
+         v+F/zLqf9Wla01E4HQtZ0lJncCLgOB5vT41JeiqEeDxKpEg2gNRFNh2Qp8XWYf/FcDYB
+         DhnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1IsC8ng/nt0IIOs5zLEhvzEjLU5ZtX7trPinF9wC4HY=;
+        b=c80ieYSvL+YEUhXOWq3d6zH0kD/EVGzJPWFzpEBWxYtpSv6kXYSnT8v3d2mx7vTA06
+         +60bWUlNzURoyK8rIRnlr3r5U98dRXLIZM/mK8rNEw2RwO8DifU1Q/5UK6Ts3TqwMWy0
+         e5WJSGd02xtB8jTnPcPPgA3kq2ry45ALTL1wLfPmEiY6NAdn+k9sAXvm9RUlkvvQ9u8m
+         65UJkWkskLTuUp/jPyoIK8Xm+QWSYXOqEJ46u0NOiyHedaBkQFULpHBLloZDHH5nHiMj
+         W99fkZ65Uizzc19CiQbL7XyueCunjggZcp82hpeC5NbvjEpz4aQIDMV6U/JGIs64gqkf
+         1pYQ==
+X-Gm-Message-State: AO0yUKWp1rdIK4h95rQlPGLWZJEkiuJnbnLYwtYU9Qxj9zojxDBZMJsq
+        oPSfVM3zfK2+cEJ2Un8WBKQ=
+X-Google-Smtp-Source: AK7set9sYhrmqIc2PoBdRatAonL/QL6fPII6/8bPAa4/6SESq5JoJ9lV3XsruwM0w5/4COASa9t/rQ==
+X-Received: by 2002:a05:6a20:e688:b0:b8:78dd:5fa2 with SMTP id mz8-20020a056a20e68800b000b878dd5fa2mr1533864pzb.52.1676464384335;
+        Wed, 15 Feb 2023 04:33:04 -0800 (PST)
+Received: from debian.me (subs03-180-214-233-93.three.co.id. [180.214.233.93])
+        by smtp.gmail.com with ESMTPSA id u9-20020a63a909000000b004790eb3fee1sm10219535pge.90.2023.02.15.04.33.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Feb 2023 04:33:03 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 70F8C1055EA; Wed, 15 Feb 2023 19:32:58 +0700 (WIB)
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Power Management <linux-pm@vger.kernel.org>,
+        Linux BPF Development <bpf@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Huang Rui <ray.huang@amd.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: Fix build error for LoongArch
-Date:   Wed, 15 Feb 2023 19:01:07 +0800
-Message-Id: <1676458867-22052-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8Cxf+R4u+xjg9UzAA--.61731S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjvJXoW7tF1kGryxWF47Gr1rCFykKrg_yoW8Jw4fpa
-        ykCrs0kr4FgrW7Cwn5Ar12qryUG395Wr40qFy8Zw1DCFWFq3yDXF4xKFnIyF1fJa10qFyr
-        A347Kry3Zw1DXaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        b7kYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-        1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4
-        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc02F40EFcxC0V
-        AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1l
-        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
-        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJV
-        W8JbIYCTnIWIevJa73UjIFyTuYvjxU2ID7UUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Perry Yuan <perry.yuan@amd.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Wyes Karny <wyes.karny@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        oe-kbuild-all@lists.linux.dev
+Subject: [PATCH 0/3] Documentation fixes for next-20230215
+Date:   Wed, 15 Feb 2023 19:32:50 +0700
+Message-Id: <20230215123253.41552-1-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.39.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=832; i=bagasdotme@gmail.com; h=from:subject; bh=/OLtDi2ZSSHFwhtEVzxXuHzhqWiXCRsIhg/ssojQQRs=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDMlvLry90P20YdMKq8sTi8OPLpn7s4x/y//U2uoXJT6mT/YV O+236ChlYRDjYpAVU2SZlMjXdHqXkciF9rWOMHNYmUCGMHBxCsBEUsQZ/md7dP5oNzG4fMz6/uOM62 vmpoTuMGs48nJlW+dHNekTttKMDPsNG7c8vf/mur7iF6c7rXpXuT311luYpmws56mVXf17GRMA
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There exists build error when make -C tools/testing/selftests/bpf/
-on LoongArch:
+Here are fixes for documentation (htmldocs) warnings as reported for
+next-20230215. The changelog below should be self-explanatory.
 
-  BINARY   test_verifier
-In file included from test_verifier.c:27:
-tools/include/uapi/linux/bpf_perf_event.h:14:28: error: field 'regs' has incomplete type
-   14 |         bpf_user_pt_regs_t regs;
-      |                            ^~~~
-make: *** [Makefile:577: tools/testing/selftests/bpf/test_verifier] Error 1
-make: Leaving directory 'tools/testing/selftests/bpf'
+Each patch can be applied separately by respective maintainers.
 
-Add missing uapi header for LoongArch to use the following definition:
-typedef struct user_pt_regs bpf_user_pt_regs_t;
+Bagas Sanjaya (3):
+  Documentation: hw-vuln: Wrap mitigate_smt_rsb example in literal code
+    block
+  Documentation: bpf: Add missing line break separator in node_data
+    struct code block
+  Documentation: amd-pstate: disambiguate user space sections
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- tools/include/uapi/asm/bpf_perf_event.h | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/admin-guide/hw-vuln/cross-thread-rsb.rst | 3 ++-
+ Documentation/admin-guide/pm/amd-pstate.rst            | 8 ++++----
+ Documentation/bpf/graph_ds_impl.rst                    | 1 +
+ 3 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/tools/include/uapi/asm/bpf_perf_event.h b/tools/include/uapi/asm/bpf_perf_event.h
-index d7dfeab..ff52668 100644
---- a/tools/include/uapi/asm/bpf_perf_event.h
-+++ b/tools/include/uapi/asm/bpf_perf_event.h
-@@ -6,6 +6,8 @@
- #include "../../arch/s390/include/uapi/asm/bpf_perf_event.h"
- #elif defined(__riscv)
- #include "../../arch/riscv/include/uapi/asm/bpf_perf_event.h"
-+#elif defined(__loongarch__)
-+#include "../../arch/loongarch/include/uapi/asm/bpf_perf_event.h"
- #else
- #include <uapi/asm-generic/bpf_perf_event.h>
- #endif
+
+base-commit: 9d9019bcea1aac7eed64a1a4966282b6b7b141c8
 -- 
-2.1.0
+An old man doll... just what I always wanted! - Clara
 
