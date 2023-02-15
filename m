@@ -2,165 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3926697497
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 03:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEE969749C
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 03:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232381AbjBOC5n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 21:57:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
+        id S229515AbjBOC6O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 21:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjBOC5m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 21:57:42 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FEF2B639;
-        Tue, 14 Feb 2023 18:57:40 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4PGjRg1rGVz4x4q;
-        Wed, 15 Feb 2023 13:57:35 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1676429856;
-        bh=SuXpWZnEeQFvY/oeKHZrR5GwTlkroYww7DMqncK//mk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=M3Wfg1uf/0W5iQnJJ6oXNGFVjHfRu7odY7ooaP4Wj2qmjYPPAUs9KMv+5kbU3Sez4
-         edB0V5kuibXnkusRLsVph+6gciQc7vMFhQ5EYq89pi5dQzYhkYv7IhHlkACj7/Yrz7
-         p1iR/ISutxdWc89+PpTrJmOPhxsO5YQatsStwxWtrqlkpwZj7PLsmvPGMnzI+e7Apl
-         xSdZOlrCEbWwz5aFp69NM8KCqGEabVJMEaZ3ql0k5UnyJvvWv0XsPgS2nddv4+Ee7M
-         kw9F6J7H0mJGE3daP9aVmWsknhze4yVvFSBdg43pZbh2y2qx+d6/NXLotzcL6Edafd
-         Avc9aG0h+OQyA==
-Date:   Wed, 15 Feb 2023 13:57:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: linux-next: manual merge of the mm tree with the bpf-next tree
-Message-ID: <20230215135734.4dffcd39@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fUyJ4JZH/K==rq=60W7H0TR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229581AbjBOC6O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 21:58:14 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86752749F
+        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 18:58:03 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id oo13-20020a17090b1c8d00b0022936a63a22so375046pjb.8
+        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 18:58:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OrnnhttW8o5jppQu6CGekge3hogvq4Llv3K4cmrNAEk=;
+        b=R8w+1GO9/fK3naU2BZC34B1qjEucjMXw+Mju6gGGNt2YEWNDvy1DWZH21y9ciRvZfu
+         ZjgpsjRHB+NYjRspDGIOm/b0PQz1jjee/PwZ1/Db/uyMs2HVdpB9/WsYQj5It7XFj0QS
+         rz5JdWFnZjsRfl955RjFMPtpyf4r8CZGvyH/Xp93cCLZpbp0s3fKngDXG1XWq+5l58te
+         hYIXpuD6c2bwUwx/9AGrniaYxOkRDttzAxtNrjmZ0rwk6tYy2Wne7/LEut+BR+3wt49a
+         qkgOF3lgNeZsY/UHhnHWfeaiQ+la9j9x/M8wTjZDGjPXoIfMwK0/0rjuHxdDInEaok/j
+         LClA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OrnnhttW8o5jppQu6CGekge3hogvq4Llv3K4cmrNAEk=;
+        b=pwpHmpPrSjZtyChe3hQ1eAYUg7o1I5qVG1rIqRzWaa1zGhA/65/gOhZIlHwyRORcAe
+         j0TL1EGAnNsZJPYJ4Q+lWDuSsITCnGudTOfkbfTN1tx0RmZOuXj3Jgo+swIHm9GtGqoB
+         oHtRpr3JYCSC4rgfMA1ITY1bvdUgNfXyupuEEjZc09oD/mJsYKPjpZWryKcCcLNjVvlC
+         BC5V81tPbahFCyY0wtNUDr7ywRVfD9A6CD5hsp4iLHxlUZ5q3sDHts0aSQdaEJggm2zD
+         WvrKJ1wYO7VjnWUU57CvSYhcniBiXyUYSqWZ48B0CtJbMQ2MgCj3l1u1elb8FEoqhkV4
+         hYJA==
+X-Gm-Message-State: AO0yUKV7KABP8rQpGS0w2oABaXl7HBWP8tXJgLNX/VM3xKJrNYFCBWv4
+        U+POeylkyvR3hb7OhR36Lnnrd3Q=
+X-Google-Smtp-Source: AK7set8rJxdvbVtgN1eiHXMhLl1rqBwe99RitYnBSMF21lnB7oomKd8UzcoMEvK/Imr217yiSkWbc/U=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:2911:0:b0:4fb:a525:3eae with SMTP id
+ bt17-20020a632911000000b004fba5253eaemr101798pgb.1.1676429883242; Tue, 14 Feb
+ 2023 18:58:03 -0800 (PST)
+Date:   Tue, 14 Feb 2023 18:58:02 -0800
+In-Reply-To: <20230214221718.503964-5-kuifeng@meta.com>
+Mime-Version: 1.0
+References: <20230214221718.503964-1-kuifeng@meta.com> <20230214221718.503964-5-kuifeng@meta.com>
+Message-ID: <Y+xKOq4gW58IDMWE@google.com>
+Subject: Re: [PATCH bpf-next 4/7] libbpf: Create a bpf_link in bpf_map__attach_struct_ops().
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Kui-Feng Lee <kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, kernel-team@meta.com, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/fUyJ4JZH/K==rq=60W7H0TR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 02/14, Kui-Feng Lee wrote:
+> bpf_map__attach_struct_ops() was creating a dummy bpf_link as a
+> placeholder, but now it is constructing an authentic one by calling
+> bpf_link_create() if the map has the BPF_F_LINK flag.
 
-Hi all,
+> You can flag a struct_ops map with BPF_F_LINK by calling
+> bpf_map__set_map_flags().
 
-Today's linux-next merge of the mm tree got conflicts in:
+> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+> ---
+>   tools/lib/bpf/libbpf.c | 73 +++++++++++++++++++++++++++++++++---------
+>   1 file changed, 58 insertions(+), 15 deletions(-)
 
-  include/linux/memcontrol.h
-  mm/memcontrol.c
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 75ed95b7e455..1eff6a03ddd9 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -11430,29 +11430,41 @@ struct bpf_link *bpf_program__attach(const  
+> struct bpf_program *prog)
+>   	return link;
+>   }
 
-between commit:
+> +struct bpf_link_struct_ops_map {
+> +	struct bpf_link link;
+> +	int map_fd;
+> +};
 
-  b6c1a8af5b1e ("mm: memcontrol: add new kernel parameter cgroup.memory=3Dn=
-obpf")
+Ah, ok, now you're adding bpf_link_struct_ops_map. I guess I'm now
+confused why you haven't done it in the first patch :-/
 
-from the bpf-next tree and commit:
+And what are these fake bpf_links? Can you share more about it means?
 
-  2006d382484e ("mm: memcontrol: rename memcg_kmem_enabled()")
+> +
+>   static int bpf_link__detach_struct_ops(struct bpf_link *link)
+>   {
+> +	struct bpf_link_struct_ops_map *st_link;
+>   	__u32 zero = 0;
 
-from the mm tree.
+> -	if (bpf_map_delete_elem(link->fd, &zero))
+> +	st_link = container_of(link, struct bpf_link_struct_ops_map, link);
+> +
+> +	if (st_link->map_fd < 0) {
+> +		/* Fake bpf_link */
+> +		if (bpf_map_delete_elem(link->fd, &zero))
+> +			return -errno;
+> +		return 0;
+> +	}
+> +
+> +	if (bpf_map_delete_elem(st_link->map_fd, &zero))
+> +		return -errno;
+> +
+> +	if (close(link->fd))
+>   		return -errno;
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+>   	return 0;
+>   }
 
---=20
-Cheers,
-Stephen Rothwell
+> -struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+> +/*
+> + * Update the map with the prepared vdata.
+> + */
+> +static int bpf_map__update_vdata(const struct bpf_map *map)
+>   {
+>   	struct bpf_struct_ops *st_ops;
+> -	struct bpf_link *link;
+>   	__u32 i, zero = 0;
+> -	int err;
+> -
+> -	if (!bpf_map__is_struct_ops(map) || map->fd == -1)
+> -		return libbpf_err_ptr(-EINVAL);
+> -
+> -	link = calloc(1, sizeof(*link));
+> -	if (!link)
+> -		return libbpf_err_ptr(-EINVAL);
 
-diff --cc include/linux/memcontrol.h
-index e7310363f0cb,5567319027d1..000000000000
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@@ -1776,17 -1776,11 +1776,17 @@@ struct obj_cgroup *get_obj_cgroup_from_
-  int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size);
-  void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size);
- =20
- +extern struct static_key_false memcg_bpf_enabled_key;
- +static inline bool memcg_bpf_enabled(void)
- +{
- +	return static_branch_likely(&memcg_bpf_enabled_key);
- +}
- +
-- extern struct static_key_false memcg_kmem_enabled_key;
-+ extern struct static_key_false memcg_kmem_online_key;
- =20
-- static inline bool memcg_kmem_enabled(void)
-+ static inline bool memcg_kmem_online(void)
-  {
-- 	return static_branch_likely(&memcg_kmem_enabled_key);
-+ 	return static_branch_likely(&memcg_kmem_online_key);
-  }
- =20
-  static inline int memcg_kmem_charge_page(struct page *page, gfp_t gfp,
-@@@ -1860,12 -1854,7 +1860,12 @@@ static inline struct obj_cgroup *get_ob
-  	return NULL;
-  }
- =20
- +static inline bool memcg_bpf_enabled(void)
- +{
- +	return false;
- +}
- +
-- static inline bool memcg_kmem_enabled(void)
-+ static inline bool memcg_kmem_online(void)
-  {
-  	return false;
-  }
-diff --cc mm/memcontrol.c
-index 186a3a56dd7c,3e3cdb9bed95..000000000000
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@@ -348,11 -345,8 +348,11 @@@ static void memcg_reparent_objcgs(struc
-   * conditional to this static branch, we'll have to allow modules that do=
-es
-   * kmem_cache_alloc and the such to see this symbol as well
-   */
-- DEFINE_STATIC_KEY_FALSE(memcg_kmem_enabled_key);
-- EXPORT_SYMBOL(memcg_kmem_enabled_key);
-+ DEFINE_STATIC_KEY_FALSE(memcg_kmem_online_key);
-+ EXPORT_SYMBOL(memcg_kmem_online_key);
- +
- +DEFINE_STATIC_KEY_FALSE(memcg_bpf_enabled_key);
- +EXPORT_SYMBOL(memcg_bpf_enabled_key);
-  #endif
- =20
-  /**
+>   	st_ops = map->st_ops;
+>   	for (i = 0; i < btf_vlen(st_ops->type); i++) {
+> @@ -11468,17 +11480,48 @@ struct bpf_link  
+> *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>   		*(unsigned long *)kern_data = prog_fd;
+>   	}
 
---Sig_/fUyJ4JZH/K==rq=60W7H0TR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> -	err = bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+> +	return bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+> +}
+> +
+> +struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+> +{
+> +	struct bpf_link_struct_ops_map *link;
+> +	int err, fd;
+> +
+> +	if (!bpf_map__is_struct_ops(map) || map->fd == -1)
+> +		return libbpf_err_ptr(-EINVAL);
+> +
+> +	link = calloc(1, sizeof(*link));
+> +	if (!link)
+> +		return libbpf_err_ptr(-EINVAL);
+> +
+> +	err = bpf_map__update_vdata(map);
+>   	if (err) {
+>   		err = -errno;
+>   		free(link);
+>   		return libbpf_err_ptr(err);
+>   	}
 
------BEGIN PGP SIGNATURE-----
+> -	link->detach = bpf_link__detach_struct_ops;
+> -	link->fd = map->fd;
+> +	link->link.detach = bpf_link__detach_struct_ops;
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmPsSh4ACgkQAVBC80lX
-0Gxa+Qf/abbZhDuKtWmpJs/t/LThpHp4uYKNTFBA66rnXueNTp2NXIZHQt4IT4Ix
-btNitQjfYVfWWDfNVgBVh8jNO8qRiUqqEkXEjIjZThn0z41SzMQ0DlUS6XDOIwsY
-lj1Bc4TU3JFWI7uufu5htz2qXpQKte+Zd2TC7Qy4/a6b62WHPE9KbA3ALPP77FqD
-nYKkrXgygFCRggy9l80lCgNduw1Z3DT5yFkyOLaaxfHfJpxds2VCxCKgFcr+gQIN
-gMqqoWUcoakXNhjnXrtxchz2YIiU7lYkOs7yyWGC6CDLtK4nNrwI/dfiKr3Hj80E
-azCVuBAWa1jGN0ySrpMqIFCiVTVwfg==
-=OmX7
------END PGP SIGNATURE-----
+> -	return link;
+> +	if (!(map->def.map_flags & BPF_F_LINK)) {
+> +		/* Fake bpf_link */
+> +		link->link.fd = map->fd;
+> +		link->map_fd = -1;
+> +		return &link->link;
+> +	}
+> +
+> +	fd = bpf_link_create(map->fd, -1, BPF_STRUCT_OPS_MAP, NULL);
+> +	if (fd < 0) {
+> +		err = -errno;
+> +		free(link);
+> +		return libbpf_err_ptr(err);
+> +	}
+> +
+> +	link->link.fd = fd;
+> +	link->map_fd = map->fd;
+> +
+> +	return &link->link;
+>   }
 
---Sig_/fUyJ4JZH/K==rq=60W7H0TR--
+>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct  
+> perf_event_header *hdr,
+> --
+> 2.30.2
+
