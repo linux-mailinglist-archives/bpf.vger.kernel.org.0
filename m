@@ -2,73 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1776969835C
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 19:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBA36983B9
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 19:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbjBOSdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 13:33:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S229747AbjBOSpV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 13:45:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbjBOSdn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 13:33:43 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D69392AC
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 10:33:42 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id p4-20020a654904000000b004fb64e929f2so5526845pgs.7
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 10:33:42 -0800 (PST)
+        with ESMTP id S229509AbjBOSpV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 13:45:21 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44B93E625
+        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 10:44:48 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id k13so21217152plg.0
+        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 10:44:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1676486022;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6UXTvWwUFJWr5BzlgUFMsM18ujQqqLYolMUOknwRGJg=;
-        b=W/Ih9D6nPk4LWSTgKRVtAhgmh/04VKATBtUdyECOK+FsIVvWDvP3OjJbmMnI98sPLG
-         +p9ZXP2UcdDXFUSWkw558phr78z6IqYxluIvZIgrfDzzq0gBpup4Ei65FfDidYtKNVdi
-         mg24cIO9ipFRvItHHhFpv5Ck8FR2zf3oAzIhFpPm3JEAkGt0whobDY03+9rqxoGaC2ew
-         xec0h2GsRq6BNuBShHjiDMf0psvCx+1NbJ+T5nrb1NfVJqfdMkCMLuXu8QniA9bIv/We
-         0GYgG1vqim5FEnAxnM9axnTiS/Yb4bSDT9HCm82llzBacyuBTyWjpVZ0bSt7U0xqK4oy
-         8PwA==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S0KA2uCZnqmqgPCfDAfmDXtMzOkX3aSRPkGCBdYDBqs=;
+        b=pMX4Lt16WI5jYdetrMDwKyJL4vP9wD+NhXkhatIEdGMZCliLRBnDjKBB+XYoF3bapE
+         VXEuMVHfJ2Lf+n4xQmTWOBclNjdJKkTd3dd15gXC8rCgHC8GRV9zJYOIhObwQ3s0s4En
+         a8Xrgltb7kWtjgnBvp0Qms1+BSPDu4+kdOc9c3Q3OCKXdLPScqQ2xsy+xHW5x0rs607O
+         urCUgg990S8Ber+6ZvzKQAAGScFCjnop7p4pqkZFbx87wjWFDmP5sXpnALvHox9eBhj+
+         y/1A/UIX+hJlP04twMRVD3x7iZ7cnwAoE3CMcrhOYLTRg1cUMEae0dappSuv9f+Zv1uj
+         0wTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1676486022;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6UXTvWwUFJWr5BzlgUFMsM18ujQqqLYolMUOknwRGJg=;
-        b=gra+uEcsdz7w4k81Q78C67FbAMQZ+yfme+leasBL7XAxZ5O/Vj9n2yyjkhSjzL+uaV
-         8AbaymH6wuAKIIuzf9jJJ/WhjvTGZ+lLUmQBmM4srxWN80ZyUE19R8UA7QiDcX1TyUoV
-         fJqNnwBf8/2kr3YrF5DAFQyHyeI9aTX2kX5l9lnBVIa5fwAclhB+oShC1br9185P5Syp
-         d/FAkGLjEJOxIfKPfKdgLub/OonLp7f77K/yTDMMyexdNKY6Ms7gzZEZh9fNKxgh12hj
-         4RNuxrgcLCGHlXZDSDNGJmmuyM/1nWnFomd3geReeLGgihH/HiiSkb1NSk6Uj24bAmDT
-         AL4A==
-X-Gm-Message-State: AO0yUKUS+TBsel713LANnG5Mbz2Jyz4vcNkDcRLqSqZXKosWmQiXHgGg
-        Yl5DLNdjx9vygDa9B5spO7NBmjU=
-X-Google-Smtp-Source: AK7set8ntGxePsKnOHIgmjUqnnPnKjhMl2BBkaLRrXFaw3WtaMT+san0Pcb4a+86BEaytfVQ7A5EleY=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:aa7:8f04:0:b0:592:5d81:8306 with SMTP id
- x4-20020aa78f04000000b005925d818306mr540460pfr.18.1676486021967; Wed, 15 Feb
- 2023 10:33:41 -0800 (PST)
-Date:   Wed, 15 Feb 2023 10:33:40 -0800
-In-Reply-To: <33d548b6b265af07b7578c529e09751b58fe92ed.camel@linux.ibm.com>
-Mime-Version: 1.0
-References: <20230214212809.242632-1-iii@linux.ibm.com> <20230214212809.242632-2-iii@linux.ibm.com>
- <Y+wgDzf9zjfwgFwA@google.com> <7a2d61865e0fb1ef8db5bee8f7b95b3e983e59d4.camel@linux.ibm.com>
- <Y+0Zve9/LTWaZ96a@google.com> <33d548b6b265af07b7578c529e09751b58fe92ed.camel@linux.ibm.com>
-Message-ID: <Y+0lhD1Um5K9Z1CG@google.com>
-Subject: Re: [PATCH RFC bpf-next 1/1] bpf: Support 64-bit pointers to kfuncs
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S0KA2uCZnqmqgPCfDAfmDXtMzOkX3aSRPkGCBdYDBqs=;
+        b=az/hhO+7/tgK2LMy5UTk8d8j/NW3vWkVWfm85FKKTCsqQzzGtYnifD21rmD08w3WH/
+         3CeB7Iq7btIZDD8c0LDbQkW9230D3K27AwglZcF6M81hHh5RDD0K8IlkRfQl45xCHqEA
+         iENBOHTjtIUYt3ZFXIvmlLrIGK7BiTis/3G6hVtMsHRhtUhXqYojOLSfzweWQmNirhvA
+         Du4l1/uMSDaO5H7JBKBvlWQiBmXyxqONjTkPZELZH4JZDFfUu5jtXo/fbhBdWShb6upC
+         y9iCb9MXkB/L/akZ/HOlj40KHYoRI0MF7trvU226unTJBCrif2S+d61+CGp084mMzGL5
+         4Ckg==
+X-Gm-Message-State: AO0yUKUV8vVIkGCfSL72rivlOBJ+lkh8F/jobUrCyrqux2DP/SLYkyS/
+        vJqnzX+acIaHPPZlFD3GSHE=
+X-Google-Smtp-Source: AK7set828GBarcDnJxTM6XblTy3BdI4CG7ugjB2pNWPbCqt2qVNcBmSvw006ZH+emD10n1Y6HLHK7w==
+X-Received: by 2002:a05:6a20:3c8b:b0:be:22b4:9e6a with SMTP id b11-20020a056a203c8b00b000be22b49e6amr3604168pzj.61.1676486654824;
+        Wed, 15 Feb 2023 10:44:14 -0800 (PST)
+Received: from ?IPV6:2620:10d:c085:21e8::1452? ([2620:10d:c090:400::5:1af8])
+        by smtp.gmail.com with ESMTPSA id s15-20020a63924f000000b004e28be19d1csm3916425pgn.32.2023.02.15.10.44.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Feb 2023 10:44:14 -0800 (PST)
+Message-ID: <7149cfe4-7ae4-a8e9-6f85-38e488080f28@gmail.com>
+Date:   Wed, 15 Feb 2023 10:44:12 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH bpf-next 4/7] libbpf: Create a bpf_link in
+ bpf_map__attach_struct_ops().
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        Kui-Feng Lee <kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, kernel-team@meta.com, andrii@kernel.org
+References: <20230214221718.503964-1-kuifeng@meta.com>
+ <20230214221718.503964-5-kuifeng@meta.com> <Y+xKOq4gW58IDMWE@google.com>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <Y+xKOq4gW58IDMWE@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,62 +77,153 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMDIvMTUsIElseWEgTGVvc2hrZXZpY2ggd3JvdGU6DQo+IE9uIFdlZCwgMjAyMy0wMi0xNSBh
-dCAwOTo0MyAtMDgwMCwgU3RhbmlzbGF2IEZvbWljaGV2IHdyb3RlOg0KPiA+IE9uIDAyLzE1LCBJ
-bHlhIExlb3Noa2V2aWNoIHdyb3RlOg0KPiA+ID4gT24gVHVlLCAyMDIzLTAyLTE0IGF0IDE1OjU4
-IC0wODAwLCBTdGFuaXNsYXYgRm9taWNoZXYgd3JvdGU6DQo+ID4gPiA+IE9uIDAyLzE0LCBJbHlh
-IExlb3Noa2V2aWNoIHdyb3RlOg0KPiA+ID4gPiA+IHRlc3Rfa3N5bXNfbW9kdWxlIGZhaWxzIHRv
-IGVtaXQgYSBrZnVuYyBjYWxsIHRhcmdldGluZyBhIG1vZHVsZQ0KPiA+ID4gPiA+IG9uDQo+ID4g
-PiA+ID4gczM5MHgsIGJlY2F1c2UgdGhlIHZlcmlmaWVyIHN0b3JlcyB0aGUgZGlmZmVyZW5jZSBi
-ZXR3ZWVuIGtmdW5jDQo+ID4gPiA+ID4gYWRkcmVzcyBhbmQgX19icGZfY2FsbF9iYXNlIGluIGJw
-Zl9pbnNuLmltbSwgd2hpY2ggaXMgczMyLCBhbmQNCj4gPiA+ID4gPiBtb2R1bGVzDQo+ID4gPiA+
-ID4gYXJlIHJvdWdobHkgKDEgPDwgNDIpIGJ5dGVzIGF3YXkgZnJvbSB0aGUga2VybmVsIG9uIHMz
-OTB4Lg0KPiA+ID4gPg0KPiA+ID4gPiA+IEZpeCBieSBrZWVwaW5nIEJURiBpZCBpbiBicGZfaW5z
-bi5pbW0gZm9yDQo+ID4gPiA+ID4gQlBGX1BTRVVET19LRlVOQ19DQUxMcywNCj4gPiA+ID4gPiBh
-bmQgc3RvcmluZyB0aGUgYWJzb2x1dGUgYWRkcmVzcyBpbiBicGZfa2Z1bmNfZGVzYywgd2hpY2gg
-SklUcw0KPiA+ID4gPiA+IHJldHJpZXZlDQo+ID4gPiA+ID4gYXMgdXN1YWwgYnkgY2FsbGluZyBi
-cGZfaml0X2dldF9mdW5jX2FkZHIoKS4NCj4gPiA+ID4NCj4gPiA+ID4gPiBUaGlzIGFsc28gZml4
-ZXMgdGhlIHByb2JsZW0gd2l0aCBYRFAgbWV0YWRhdGEgZnVuY3Rpb25zDQo+ID4gPiA+ID4gb3V0
-bGluZWQgaW4NCj4gPiA+ID4gPiB0aGUgZGVzY3JpcHRpb24gb2YgY29tbWl0IDYzZDdiNTNhYjU5
-ZiAoInMzOTAvYnBmOiBJbXBsZW1lbnQNCj4gPiA+ID4gPiBicGZfaml0X3N1cHBvcnRzX2tmdW5j
-X2NhbGwoKSIpIGJ5IHJlcGxhY2luZyBhZGRyZXNzIGxvb2t1cHMNCj4gPiA+ID4gPiB3aXRoDQo+
-ID4gPiA+ID4gQlRGDQo+ID4gPiA+ID4gaWQgbG9va3Vwcy4gVGhpcyBlbGltaW5hdGVzIHRoZSBp
-bmNvbnNpc3RlbmN5IGJldHdlZW4NCj4gPiA+ID4gPiAiYWJzdHJhY3QiDQo+ID4gPiA+ID4gWERQ
-DQo+ID4gPiA+ID4gbWV0YWRhdGEgZnVuY3Rpb25zJyBCVEYgaWRzIGFuZCB0aGVpciBjb25jcmV0
-ZSBhZGRyZXNzZXMuDQo+ID4gPiA+DQo+ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogSWx5YSBMZW9z
-aGtldmljaCA8aWlpQGxpbnV4LmlibS5jb20+DQo+ID4gPiA+ID4gLS0tDQo+ID4gPiA+ID4g77+9
-IGluY2x1ZGUvbGludXgvYnBmLmjvv73vv70gfO+/vSAyICsrDQo+ID4gPiA+ID4g77+9IGtlcm5l
-bC9icGYvY29yZS5j77+977+977+977+9IHwgMjMgKysrKysrKysrKy0tLQ0KPiA+ID4gPiA+IO+/
-vSBrZXJuZWwvYnBmL3ZlcmlmaWVyLmMgfCA3OSArKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tDQo+ID4gPiA+ID4gLS0tLQ0KPiA+ID4gPiA+IC0tLS0tDQo+ID4gPiA+ID4g77+9IDMg
-ZmlsZXMgY2hhbmdlZCwgNDUgaW5zZXJ0aW9ucygrKSwgNTkgZGVsZXRpb25zKC0pDQo+ID4gPg0K
-DQo+IFsuLi5dDQoNCj4gPiA+ID4gPiAraW50IGJwZl9nZXRfa2Z1bmNfYWRkcihjb25zdCBzdHJ1
-Y3QgYnBmX3Byb2cgKnByb2csIHUzMg0KPiA+ID4gPiA+IGZ1bmNfaWQsDQo+ID4gPiA+ID4gdTE2
-77+9DQo+ID4gPiA+ID4gb2Zmc2V0LA0KPiA+ID4gPiA+ICvvv73vv73vv73vv73vv73vv73vv73v
-v73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv70gdTggKipmdW5jX2FkZHIp
-DQo+ID4gPiA+ID4gK3sNCj4gPiA+ID4gPiAr77+977+977+977+977+977+977+9Y29uc3Qgc3Ry
-dWN0IGJwZl9rZnVuY19kZXNjICpkZXNjOw0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiAr77+977+9
-77+977+977+977+977+9ZGVzYyA9IGZpbmRfa2Z1bmNfZGVzYyhwcm9nLCBmdW5jX2lkLCBvZmZz
-ZXQpOw0KPiA+ID4gPiA+ICvvv73vv73vv73vv73vv73vv73vv71pZiAoV0FSTl9PTl9PTkNFKCFk
-ZXNjKSkNCj4gPiA+ID4gPiAr77+977+977+977+977+977+977+977+977+977+977+977+977+9
-77+977+9cmV0dXJuIC1FSU5WQUw7DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICvvv73vv73vv73v
-v73vv73vv73vv70qZnVuY19hZGRyID0gKHU4ICopZGVzYy0+YWRkcjsNCj4gPiA+ID4gPiAr77+9
-77+977+977+977+977+977+9cmV0dXJuIDA7DQo+ID4gPiA+ID4gK30NCj4gPiA+ID4NCj4gPiA+
-ID4gVGhpcyBmdW5jdGlvbiBpc24ndCBkb2luZyBtdWNoIGFuZCBoYXMgYSBzaW5nbGUgY2FsbGVy
-LiBTaG91bGQgd2UNCj4gPiA+ID4ganVzdA0KPiA+ID4gPiBleHBvcnQgZmluZF9rZnVuY19kZXNj
-Pw0KPiA+DQo+ID4gPiBXZSB3b3VsZCBoYXZlIHRvIGV4cG9ydCBzdHJ1Y3QgYnBmX2tmdW5jX2Rl
-c2MgYXMgd2VsbDsgSSB0aG91Z2h0DQo+ID4gPiBpdCdzDQo+ID4gPiBiZXR0ZXIgdG8gYWRkIGFu
-IGV4dHJhIGZ1bmN0aW9uIHNvIHRoYXQgd2UgY291bGQga2VlcCBoaWRpbmcgdGhlDQo+ID4gPiBz
-dHJ1Y3QuDQo+ID4NCj4gPiBBaCwgZ29vZCBwb2ludC4gSW4gdGhpcyBjYXNlIHNlZW1zIG9rIHRv
-IGhhdmUgdGhpcyBleHRyYSB3cmFwcGVyLg0KPiA+IE9uIHRoYXQgbm90ZTogd2hhdCdzIHRoZSBw
-dXJwb3NlIG9mIFdBUk5fT05fT05DRSBoZXJlPw0KDQo+IFdlIGNhbiBoaXQgdGhpcyBvbmx5IGR1
-ZSB0byBhbiBpbnRlcm5hbCB2ZXJpZmllci9KSVQgZXJyb3IsIHNvIGl0IHdvdWxkDQo+IGJlIGdv
-b2QgdG8gZ2V0IHNvbWUgaW5kaWNhdGlvbiBvZiB0aGlzIGhhcHBlbmluZy4gSW4gdmVyaWZpZXIu
-YyB3ZSBoYXZlDQo+IHZlcmJvc2UoKSBmdW5jdGlvbiBmb3IgdGhhdCwgYnV0IHRoaXMgZnVuY3Rp
-b24gaXMgY2FsbGVkIGR1cmluZyBKSVRpbmcuDQoNCj4gWy4uLl0NCg0KIEZyb20gbXkgcG9pbnQg
-b2YgdmlldywgcmVhZGluZyB0aGUgY29kZSwgaXQgbWFrZXMgaXQgYSBiaXQgY29uZnVzaW5nLiBJ
-ZiAgDQp0aGVyZQ0KaXMgYSBXQVJOX09OX09OQ0UsIEknbSBhc3N1bWluZyBpdCdzIGd1YXJkaW5n
-IGFnYWluc3Qgc29tZSBraW5kIG9mIGludGVybmFsDQppbmNvbnNpc3RlbmN5IHRoYXQgY2FuIGhh
-cHBlbi4NCg0KV2hhdCBraW5kIG9mIGluY29uc2lzdGVuY3kgaXMgaXQgZ3VhcmRpbmcgYWdhaW5z
-dCBoZXJlPyBXZSBzZWVtIHRvIGhhdmUNCmZpbmRfa2Z1bmNfZGVzYyBpbiBmaXh1cF9rZnVuY19j
-YWxsIHRoYXQgY2hlY2tzIHRoZSBzYW1lIGluc24tPmltbQ0KYW5kIHJldHVybnMgZWFybHkuDQo=
+
+On 2/14/23 18:58, Stanislav Fomichev wrote:
+> On 02/14, Kui-Feng Lee wrote:
+>> bpf_map__attach_struct_ops() was creating a dummy bpf_link as a
+>> placeholder, but now it is constructing an authentic one by calling
+>> bpf_link_create() if the map has the BPF_F_LINK flag.
+>
+>> You can flag a struct_ops map with BPF_F_LINK by calling
+>> bpf_map__set_map_flags().
+>
+>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 73 +++++++++++++++++++++++++++++++++---------
+>>   1 file changed, 58 insertions(+), 15 deletions(-)
+>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 75ed95b7e455..1eff6a03ddd9 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -11430,29 +11430,41 @@ struct bpf_link *bpf_program__attach(const 
+>> struct bpf_program *prog)
+>>       return link;
+>>   }
+>
+>> +struct bpf_link_struct_ops_map {
+>> +    struct bpf_link link;
+>> +    int map_fd;
+>> +};
+>
+> Ah, ok, now you're adding bpf_link_struct_ops_map. I guess I'm now
+> confused why you haven't done it in the first patch :-/
+
+Just won't to mix the libbpf part and kernel part in one patch.
+
+
+>
+> And what are these fake bpf_links? Can you share more about it means?
+
+For the next version, I will detail it in the commit log. In a nutshell, 
+before this point, there was no bpf_link for struct_ops. Libbpf 
+attempted to create an equivalent interface to other BPF programs by 
+providing a simulated bpf_link instead of a true one from the kernel; 
+that fake bpf_link stores FDs associated with struct_ops maps rather 
+than real bpf_links.
+
+
+>
+>> +
+>>   static int bpf_link__detach_struct_ops(struct bpf_link *link)
+>>   {
+>> +    struct bpf_link_struct_ops_map *st_link;
+>>       __u32 zero = 0;
+>
+>> -    if (bpf_map_delete_elem(link->fd, &zero))
+>> +    st_link = container_of(link, struct bpf_link_struct_ops_map, link);
+>> +
+>> +    if (st_link->map_fd < 0) {
+>> +        /* Fake bpf_link */
+>> +        if (bpf_map_delete_elem(link->fd, &zero))
+>> +            return -errno;
+>> +        return 0;
+>> +    }
+>> +
+>> +    if (bpf_map_delete_elem(st_link->map_fd, &zero))
+>> +        return -errno;
+>> +
+>> +    if (close(link->fd))
+>>           return -errno;
+>
+>>       return 0;
+>>   }
+>
+>> -struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>> +/*
+>> + * Update the map with the prepared vdata.
+>> + */
+>> +static int bpf_map__update_vdata(const struct bpf_map *map)
+>>   {
+>>       struct bpf_struct_ops *st_ops;
+>> -    struct bpf_link *link;
+>>       __u32 i, zero = 0;
+>> -    int err;
+>> -
+>> -    if (!bpf_map__is_struct_ops(map) || map->fd == -1)
+>> -        return libbpf_err_ptr(-EINVAL);
+>> -
+>> -    link = calloc(1, sizeof(*link));
+>> -    if (!link)
+>> -        return libbpf_err_ptr(-EINVAL);
+>
+>>       st_ops = map->st_ops;
+>>       for (i = 0; i < btf_vlen(st_ops->type); i++) {
+>> @@ -11468,17 +11480,48 @@ struct bpf_link 
+>> *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>>           *(unsigned long *)kern_data = prog_fd;
+>>       }
+>
+>> -    err = bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+>> +    return bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+>> +}
+>> +
+>> +struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>> +{
+>> +    struct bpf_link_struct_ops_map *link;
+>> +    int err, fd;
+>> +
+>> +    if (!bpf_map__is_struct_ops(map) || map->fd == -1)
+>> +        return libbpf_err_ptr(-EINVAL);
+>> +
+>> +    link = calloc(1, sizeof(*link));
+>> +    if (!link)
+>> +        return libbpf_err_ptr(-EINVAL);
+>> +
+>> +    err = bpf_map__update_vdata(map);
+>>       if (err) {
+>>           err = -errno;
+>>           free(link);
+>>           return libbpf_err_ptr(err);
+>>       }
+>
+>> -    link->detach = bpf_link__detach_struct_ops;
+>> -    link->fd = map->fd;
+>> +    link->link.detach = bpf_link__detach_struct_ops;
+>
+>> -    return link;
+>> +    if (!(map->def.map_flags & BPF_F_LINK)) {
+>> +        /* Fake bpf_link */
+>> +        link->link.fd = map->fd;
+>> +        link->map_fd = -1;
+>> +        return &link->link;
+>> +    }
+>> +
+>> +    fd = bpf_link_create(map->fd, -1, BPF_STRUCT_OPS_MAP, NULL);
+>> +    if (fd < 0) {
+>> +        err = -errno;
+>> +        free(link);
+>> +        return libbpf_err_ptr(err);
+>> +    }
+>> +
+>> +    link->link.fd = fd;
+>> +    link->map_fd = map->fd;
+>> +
+>> +    return &link->link;
+>>   }
+>
+>>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct 
+>> perf_event_header *hdr,
+>> -- 
+>> 2.30.2
+>
