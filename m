@@ -2,109 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F32D6974FA
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 04:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0BC697506
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 04:45:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjBODn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 22:43:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        id S232949AbjBODpS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 22:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjBODn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 22:43:58 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1787330184;
-        Tue, 14 Feb 2023 19:43:57 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id d2so16965639pjd.5;
-        Tue, 14 Feb 2023 19:43:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QXx6lEwD2TEgOQrVayIfHTVdxpHuO1zPkPYf3xv3xtw=;
-        b=Q1rTsXnoB3obtyVtX4GfqR/zWDu/Df5wVPlIDHjKg46vnqPGJc0+28fiedhAQFF6KC
-         FNX/m0sbtLZG1vkxuGXh7IvbQ3mmXfjiQ7kmlm6bktfbGYnSLXIfJaq9vMT04jl3A3Ta
-         D1//u5n2di7srwVBCwF7mq5DdNVdUJ16MDpEbe24w+M4Q9E9MfFCAN7LPKI7IVH15o87
-         pvZSF4GoI6LLquasg7RzvIkioVRMhEydDKRH/ZQVX53h0wlm9B7KJqIFBa8ereiFHIvD
-         23hUZ8ZoBFmkMDASqdKU5WY0mtIbZCs+d+/xPpAsU2UyU+S7rktpf/Vth6IDo7LqW+Ha
-         aPXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QXx6lEwD2TEgOQrVayIfHTVdxpHuO1zPkPYf3xv3xtw=;
-        b=fGdH2n6V6rx7N9idlpXG1jmJvO2C35+Ca1FSneHqRYxoHaNAgmivitvTpSalPGyFVz
-         W+owGlvh1SbPYvvObkZc/wWT/VlyxnozEfKHj5WGCb6lSZBPFrMvX54cmMgc0Bb0QUXS
-         ipJhajrWRzbgfenmGI9Q2j0mDg6fxPzp/Z5HZ/3vIzg9OtKWjyn2plzyB6zKEkKKjXyf
-         bPBJC397FnluTqfKJ/4eoCWqbtDWDvpQf8TO88pHM2CRywSouk3p3351xjThMI5BccFT
-         xgdLDWbPxd2ob2i9E3gq2XQH96pVpEuI5zr0uP5IZqN/wow2a2bxzbH5T4w85XqJ+yy+
-         u2+A==
-X-Gm-Message-State: AO0yUKVCideQyyU2Tpw9nF5LIWMzBgDvw7I3DVQY5/8ZQI+k0gMKnqqK
-        hh+E6hDYfYk3GeJtAlFvwnG9MdvMA8UkoQ==
-X-Google-Smtp-Source: AK7set+aDPeR/pNnHNeLF5I8RiB6SfJjYY8z+6cPCM7Ze4rq8zHobFTUM5eMqWl9QQveSfcVMj4ZQA==
-X-Received: by 2002:a17:902:e80b:b0:196:725c:6ea with SMTP id u11-20020a170902e80b00b00196725c06eamr1045418plg.19.1676432636542;
-        Tue, 14 Feb 2023 19:43:56 -0800 (PST)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id e18-20020a170902ed9200b0019904abc93dsm10948008plj.250.2023.02.14.19.43.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Feb 2023 19:43:54 -0800 (PST)
-Date:   Wed, 15 Feb 2023 11:43:46 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Felix Maurer <fmaurer@redhat.com>,
-        Davide Caratti <dcaratti@redhat.com>
-Subject: Re: [PATCH bpf] selftests/bpf: enable mptcp before testing
-Message-ID: <Y+xU8i7BCwXJuqlw@Laptop-X1>
-References: <20230210093205.1378597-1-liuhangbin@gmail.com>
- <6f0a72ee-ec30-8c97-0285-6c53db3d4477@tessares.net>
- <Y+m4KufriYKd39ot@Laptop-X1>
- <19a6a29d-85f3-b8d7-c9d9-3c97a625bd13@tessares.net>
- <Y+r78ZUqIsvaWjQG@Laptop-X1>
- <78481d57-4710-aa06-0ff7-fee075458aae@linux.dev>
+        with ESMTP id S232761AbjBODpS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 22:45:18 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B4E3346D;
+        Tue, 14 Feb 2023 19:45:08 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4PGkVV4jPhz4x1h;
+        Wed, 15 Feb 2023 14:45:06 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1676432707;
+        bh=CRIFzpVkyuOkr+34RToeNN4kalv1EkVdunzNX/+rO68=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CWtlVs5kCJ4+NDRgz4XfnmzmRzNQbYgn/QUJ0SSD8U7MuzKnsKMaCWHyVL7J6mU/b
+         jm8rvN7bRMFatDWqzDuZmY2qCvPhj9Em2iFYqZZaMqMX09OFZ2RfFvHWAH/ccujS/y
+         8fuwkoXNlV7UCPtsqH2pNJVO56EKVXp2cplQz8NpbPoN2losqwdWCWOvH8seZR/4I7
+         HOq0WzF0vFyrgsx9qX90/mZEwY1fV3j+iPFlbCTxqv/uWEKFLzatcN+XaXnCTSKU7O
+         MRfEMNU6pnX7ddlRrXGl4s23087UiqIYo1aJTUpCV/lVA5XT4XBIpYKHQ3UV6uayrX
+         eB/QaJX0QD87Q==
+Date:   Wed, 15 Feb 2023 14:45:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the bpf-next tree
+Message-ID: <20230215144505.4751d823@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78481d57-4710-aa06-0ff7-fee075458aae@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/+dqpjlbrDuqyM.GoP5Eh1NK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 14, 2023 at 11:22:58AM -0800, Martin KaFai Lau wrote:
-> On 2/13/23 7:11 PM, Hangbin Liu wrote:
-> > On Mon, Feb 13, 2023 at 05:28:19PM +0100, Matthieu Baerts wrote:
-> > > But again, I'm not totally against that, I'm just saying that if these
-> > > tests are executed in dedicated netns, this modification is not needed
-> > > when using a vanilla kernel ;-)
-> > > 
-> > > Except if I misunderstood and these tests are not executed in dedicated
-> > > netns?
-> > 
-> > I tried on my test machine, it looks the test is executed in init netns.
-> 
-> The new test is needed to run under its own netns whenever possible. The
-> existing mptcp test should be changed to run in its own netns also. Then
-> changing any pernet sysctl (eg. mptcp.enabled) is a less concern to other
-> tests. You can take a look at how other tests doing it (eg. decap_sanity.c).
+--Sig_/+dqpjlbrDuqyM.GoP5Eh1NK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the reference. I will update the patch to make mptcp run in it's
-own netns.
+Hi all,
 
-Hangbin
+After merging the bpf-next tree, today's linux-next build (htmldocs)
+produced this warning:
+
+Documentation/bpf/graph_ds_impl.rst:62: ERROR: Error in "code-block" direct=
+ive:
+maximum 1 argument(s) allowed, 12 supplied.
+
+.. code-block:: c
+        struct node_data {
+          long key;
+          long data;
+          struct bpf_rb_node node;
+        };
+
+        struct bpf_spin_lock glock;
+        struct bpf_rb_root groot __contains(node_data, node);
+
+
+Introduced by commit
+
+  c31315c3aa09 ("bpf, documentation: Add graph documentation for non-owning=
+ refs")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+dqpjlbrDuqyM.GoP5Eh1NK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmPsVUEACgkQAVBC80lX
+0GzDRQf/QmMclFZ2lTiLNLWSx5VZIGgPfi8rrrXh63awbM5icW8gJmouZofTLwXN
+/aA27CZHv7bHFQK1p7953F/gpOIabBRhtbWlgXPi0PIWa3M2RbFxTJc7lMl77DrI
+nSylufBCDSGh8zO5M5wcCSv04YOigTowiX8qnjmunvw1tvWdhCjlvCI38kv3MC43
+hWhSfJciTatygJjAlDVMIyVTup3Ucgc0WHJvCOo6AbI2jUlu4rKHe6WhpiEUWmnE
+blqEnfmLghhLsySrTVl8CVlXAHXt9qonk/4hhxC1lkcDA2+eMQJZdNUcC9bppok/
+mDq7ti6jMBIXOb3Cpgp1O9QWHPyRWQ==
+=Ug18
+-----END PGP SIGNATURE-----
+
+--Sig_/+dqpjlbrDuqyM.GoP5Eh1NK--
