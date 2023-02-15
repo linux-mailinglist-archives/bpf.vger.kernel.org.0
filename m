@@ -2,75 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FC46987BA
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 23:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 482156987C4
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 23:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbjBOWVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 17:21:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
+        id S229570AbjBOWXo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 17:23:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjBOWVC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 17:21:02 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE6E25941
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 14:21:01 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id i18so170809pli.3
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 14:21:01 -0800 (PST)
+        with ESMTP id S229493AbjBOWXo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 17:23:44 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228F23756D;
+        Wed, 15 Feb 2023 14:23:43 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id bx22so32826pjb.3;
+        Wed, 15 Feb 2023 14:23:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rqXfX8v+xWMTHGf3BmHlQmgzP8hPkQH+NLzWYL4gRYI=;
-        b=opmlyhNHQCGyN8EfVpBnqWjx/b3BJiPZu36pqZWHyOe7Cr8zAx+Fkr1a4JbSkV3OKc
-         8AuiHmW/oNcG6lBDBx4OYPwql0m7/xOPeh9TsE+Jq8lPdPFx8dJBfkf5R+P4flJxO9en
-         SVGpNCCRyo2Upa3M3TFElUw1/hgHNLWsrA4pA7SRPMPrAzP4xDRimcm6knVFeLjvnnQJ
-         z0Nk2uaioHnEdNEc92FmOo15DYJED4gd5clHn1m24P1vNdrtzQRV/1Tosu5Af8/RPi9I
-         xl65LBKC0YWfATKm1QEg1RWqIYaAfpbcwU1zibi/GXvUpS/bky69YROPQA+aupQ2Q/fd
-         kBCQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hpypx6T5XDDDNoNi8TTx7yOf2XIJqA8Pjt15g1zmZbo=;
+        b=cS7PmGaVrFmLkYxWGDRmQ59YKWBu0JVRqPaamF13RriATsggPhhTMscs+vOSLyHrxn
+         8Uo4mHgzDwtcO5mt5YdcvWwbQffrgJI5Ekj3lcU8U/zXY9N0si70RloO4QnUBJsXXg7v
+         MStNTHJqf9UM0H4dGTWe4sQcsF5hEF0paInaHDAVPWsYTlYXqSUWfHNBdXKCt5ChIRC/
+         RXHaDolf3EskVHEcX3jF2bDDOlt3ZOi06FbTDLDhMTr4yomQFtST7fX6iopABQparXx8
+         BzRh1L2ftYZfAi63Rvr45om0HYDmlXToaG0Sdf3Vb46ccOdOqQU2jjdVQ9nyyQikjkVe
+         3/Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rqXfX8v+xWMTHGf3BmHlQmgzP8hPkQH+NLzWYL4gRYI=;
-        b=U9qq72rV/4qjDxFNdprXs+Fr/8knvmnHADr1m2CtsgPZxV6NMbdEmGX7Ey4/xrUQSR
-         ycQyfzPJ2lo/9OT17qrdqu+F9SDgd75AAFatTzkEfnywM1arg9tAbwydcy9gA9N7GKHK
-         ukRxK+Wrib9MKYbcz+7Hhnrt9gL4V6IWnMEqOgROku3N/qIA9u1aM3r+czP6bKlIq8wj
-         vdsi+FdlLJ50cwJWc54eYuFyizud2zHCylf5NLFelVcANUx0m/1EZRYzRnWF3qF7/5bv
-         nTnTX6h4ZTTnJLeQiHE+Yr9ZZQwfZLmAYU2tE5pT6H43cFidVhoTZMaMb2StwHkvQT6Q
-         nenA==
-X-Gm-Message-State: AO0yUKUxJqDzsJyuGagbBXYPfKuEfrL46+i+4CFuoFZQId5Ndi+JHzui
-        ygxJDC/gJ46bO/xF/XbSDIE=
-X-Google-Smtp-Source: AK7set/T0o6l3gPil8r7BvHO7B551BnW8qk2YeByAbcSNMpAvhCAeORg4RcAsmORsEjqSBI8EjLaLw==
-X-Received: by 2002:a17:902:da84:b0:196:f00:c8f9 with SMTP id j4-20020a170902da8400b001960f00c8f9mr4717787plx.10.1676499661224;
-        Wed, 15 Feb 2023 14:21:01 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21e8::1452? ([2620:10d:c090:400::5:1af8])
-        by smtp.gmail.com with ESMTPSA id iw3-20020a170903044300b0019ab3308554sm4352523plb.85.2023.02.15.14.20.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Feb 2023 14:21:00 -0800 (PST)
-Message-ID: <08f81013-d073-6616-aa8b-6c54216f291a@gmail.com>
-Date:   Wed, 15 Feb 2023 14:20:58 -0800
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hpypx6T5XDDDNoNi8TTx7yOf2XIJqA8Pjt15g1zmZbo=;
+        b=3QGIxpgvG4iv58khBwlAb3M62KcJbkK67LY7y7c56ou5TYrjBqXN937Nd5OzUnoxvo
+         zo8YNI0uqFvnzI6m9z9xCQrmv53y0cYvAlstX3hf1QDVZKXtFdp3tWguJHKudSY5Q7pw
+         SC/YG+p+3AAI2VOEcQW2hD0KPQBn4lkGzouXTmM7nGv8r54MT0OxmUNRlqjsTahQqdYD
+         SXXUW1YHrZgR1Os3sJA6XSoaVw5JZQAHsd4lR0uky56xiv1jbkAgv8QSAODyl0YuZiwT
+         XwYvYgsGmLYYiNVp7sdMEFzRNpw1S1pjoWZZcE9SUiZIeb/afJ52uKI4c0UB5Hwfe4yF
+         097A==
+X-Gm-Message-State: AO0yUKWgqEUtFLS5Ck90adI4TvozF1znyuB0LAwdjfntJNsCpuerzZqf
+        kZd6pi05+NgkkKnkO0CVYgg=
+X-Google-Smtp-Source: AK7set+XyPzMZb6C3llGtiWgZ/FFc/krLa7vj7YI4avV5/rDihGRzmh8vHwp6UBjoAveGMkE8u1rVw==
+X-Received: by 2002:a05:6a20:3d0c:b0:c1:2037:554f with SMTP id y12-20020a056a203d0c00b000c12037554fmr4240436pzi.62.1676499822424;
+        Wed, 15 Feb 2023 14:23:42 -0800 (PST)
+Received: from MacBook-Pro-6.local ([2620:10d:c090:500::7:f55d])
+        by smtp.gmail.com with ESMTPSA id j4-20020aa78dc4000000b00590163e1762sm12177505pfr.200.2023.02.15.14.23.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Feb 2023 14:23:41 -0800 (PST)
+Date:   Wed, 15 Feb 2023 14:23:38 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, void@manifault.com, davemarchevsky@meta.com,
+        tj@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 2/4] bpf: Introduce kptr_rcu.
+Message-ID: <20230215222338.hxzub5jdftcvfqxx@MacBook-Pro-6.local>
+References: <20230215065812.7551-1-alexei.starovoitov@gmail.com>
+ <20230215065812.7551-3-alexei.starovoitov@gmail.com>
+ <20230215104837.gm3ohqzownrtky5k@apollo>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH bpf-next 4/7] libbpf: Create a bpf_link in
- bpf_map__attach_struct_ops().
-Content-Language: en-US, en-ZW
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org
-References: <20230214221718.503964-1-kuifeng@meta.com>
- <20230214221718.503964-5-kuifeng@meta.com> <Y+xKOq4gW58IDMWE@google.com>
- <7149cfe4-7ae4-a8e9-6f85-38e488080f28@gmail.com>
- <CAKH8qBvUhDrMjveh-_MZPkcy9sUf2UJ1kL1sx=Tt+yWwf+XBtQ@mail.gmail.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAKH8qBvUhDrMjveh-_MZPkcy9sUf2UJ1kL1sx=Tt+yWwf+XBtQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230215104837.gm3ohqzownrtky5k@apollo>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,172 +74,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 2/15/23 10:48, Stanislav Fomichev wrote:
-> On Wed, Feb 15, 2023 at 10:44 AM Kui-Feng Lee <sinquersw@gmail.com> wrote:
->>
->>
->> On 2/14/23 18:58, Stanislav Fomichev wrote:
->>> On 02/14, Kui-Feng Lee wrote:
->>>> bpf_map__attach_struct_ops() was creating a dummy bpf_link as a
->>>> placeholder, but now it is constructing an authentic one by calling
->>>> bpf_link_create() if the map has the BPF_F_LINK flag.
->>>
->>>> You can flag a struct_ops map with BPF_F_LINK by calling
->>>> bpf_map__set_map_flags().
->>>
->>>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
->>>> ---
->>>>    tools/lib/bpf/libbpf.c | 73 +++++++++++++++++++++++++++++++++---------
->>>>    1 file changed, 58 insertions(+), 15 deletions(-)
->>>
->>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>>> index 75ed95b7e455..1eff6a03ddd9 100644
->>>> --- a/tools/lib/bpf/libbpf.c
->>>> +++ b/tools/lib/bpf/libbpf.c
->>>> @@ -11430,29 +11430,41 @@ struct bpf_link *bpf_program__attach(const
->>>> struct bpf_program *prog)
->>>>        return link;
->>>>    }
->>>
->>>> +struct bpf_link_struct_ops_map {
->>>> +    struct bpf_link link;
->>>> +    int map_fd;
->>>> +};
->>>
->>> Ah, ok, now you're adding bpf_link_struct_ops_map. I guess I'm now
->>> confused why you haven't done it in the first patch :-/
->>
->> Just won't to mix the libbpf part and kernel part in one patch.
+On Wed, Feb 15, 2023 at 11:48:37AM +0100, Kumar Kartikeya Dwivedi wrote:
+> On Wed, Feb 15, 2023 at 07:58:10AM CET, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > The life time of certain kernel structures like 'struct cgroup' is protected by RCU.
+> > Hence it's safe to dereference them directly from kptr-s in bpf maps.
+> > The resulting pointer is PTR_TRUSTED and can be passed to kfuncs that expect KF_TRUSTED_ARGS.
 > 
-> Ah, shoot, I completely missed that it's libbpf. So in this case, can
-> we use the same strategy for the kernel links? Instead of a union,
-> have an outer struct + container_of? If not, why not?
+> But I thought PTR_TRUSTED was meant to ensure that the refcount is always > 0?
+> E.g. in [0] you said that kernel code should ensure refcount is held while
+> passing trusted pointer as tracepoint args. It's also clear from what functions
+> that operate on PTR_TRUSTED are doing. bpf_cgroup_acquire is doing css_get and
+> not css_tryget. Similarly bpf_cgroup_ancestor also calls cgroup_get which does
+> css_get instead of css_tryget.
+> 
+>   [0]: https://lore.kernel.org/bpf/CAADnVQJfj9mrFZ+mBfwh8Xba333B6EyHRMdb6DE4s6te_5_V_A@mail.gmail.com
 
-The reason I use `container_of` here is we need both FDs in libbpf to 
-keep it as consistent with its existing behavior as possible.  The value 
-of the struct_ops map should be deleted if a bpf_link is detached.
+In that link I was saying:
+"
+But imagine there is only RCU protected pointer that
+is passed into tracepoint somewhere.
+The verifier doesn't recognize refcnt++ on it and ref_obj_id == 0
+the kernel code doesn't do refcnt++ either.
+But it's still safe and this arg should still be
+PTR_TO_BTF_ID | PTR_TRUSTED.
+The bpf prog can pass it further into kfunc that has KF_TRUSTED_ARGS.
+Since RCU is held before calling into tracepoint the bpf prog
+has to be non sleepable. Additional rcu_read_lock done by
+the prog is redundant, but doesn't hurt.
+When prog is calling kfunc the pointer is still valid and
+kfunc can safely operate on it assuming that object is not going away.
+That is the definition of KF_TRUSTED_ARGS from pov of kfunc.
+"
 
-Back to your question.  We can go the `container_of` approach.  Only 
-concern I have is additional few bytes although it is not a big issue. I 
-will move to this approach in the next version.
+I'm still saying the same.
+But you have a good point about bpf_cgroup_acquire().
+It needs to do cgroup_tryget().
+
+In general atomic_inc is only tiny bit faster than atomic_inc_not_zero(),
+so we can convert all KF_TRUSTED_ARGS kfuncs to deal with RCU protected
+pointers which refcnt could have reached zero.
+
+imo kptr_rcu closes usability gap we have with kptrs.
+Accessing the same kernel pointer from multiple cpus just not feasible
+with kptr_xchg. Inventing refcnt mechanisms and doing ++ on all cpus
+will be too slow. RCU is perfect for the case of lots of
+concurrent reads with few updates.
+
+I think we can remove KF_RCU as well.
+
+> And if we want to do RCU + css_tryget, we already have that in the form of
+> kptr_get.
+
+With kptr_rcu bpf_kptr_get() will become explicit in bpf progs.
+Instead of bpf_cgroup_kptr_get() the prog can do:
+bpf_rcu_read_lock(); // if sleepable
+cgrp = val->cgrp;
+if (cgrp) {
+    cgrp_refcnted = bpf_cgroup_acquire(cgrp);
+    if (cgrp_refcnted) ...
+
+Less special kfuncs the better.
+
+> I think we've had a similar discussion about this in
+> https://lore.kernel.org/bpf/20220216214405.tn7thpnvqkxuvwhd@ast-mbp.dhcp.thefacebook.com,
+> where you advised against directly assuming pointers to RCU protected objects as
+> trusted where refcount could drop to 0. So then we went the kptr_get route,
+> because explicit RCU sections weren't available back then to load + inc_not_zero
+> directly (for sleepable programs).
+
+yep. bpf_rcu_read_lock() wasn't available at that time and it felt
+that the mechanism should work the same way in sleepable and non-sleepable bpf progs,
+but sleepable progs have OOM issue if they hold to any kernel object.
+So it's better to enforce in the verifier that both sleepable and non-sleepable
+access kernel objects under RCU. We don't have to do it for all kptrs,
+but for some it's probably necessary.
 
 > 
-> 
->>
->>>
->>> And what are these fake bpf_links? Can you share more about it means?
->>
->> For the next version, I will detail it in the commit log. In a nutshell,
->> before this point, there was no bpf_link for struct_ops. Libbpf
->> attempted to create an equivalent interface to other BPF programs by
->> providing a simulated bpf_link instead of a true one from the kernel;
->> that fake bpf_link stores FDs associated with struct_ops maps rather
->> than real bpf_links.
->>
->>
->>>
->>>> +
->>>>    static int bpf_link__detach_struct_ops(struct bpf_link *link)
->>>>    {
->>>> +    struct bpf_link_struct_ops_map *st_link;
->>>>        __u32 zero = 0;
->>>
->>>> -    if (bpf_map_delete_elem(link->fd, &zero))
->>>> +    st_link = container_of(link, struct bpf_link_struct_ops_map, link);
->>>> +
->>>> +    if (st_link->map_fd < 0) {
->>>> +        /* Fake bpf_link */
->>>> +        if (bpf_map_delete_elem(link->fd, &zero))
->>>> +            return -errno;
->>>> +        return 0;
->>>> +    }
->>>> +
->>>> +    if (bpf_map_delete_elem(st_link->map_fd, &zero))
->>>> +        return -errno;
->>>> +
->>>> +    if (close(link->fd))
->>>>            return -errno;
->>>
->>>>        return 0;
->>>>    }
->>>
->>>> -struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
->>>> +/*
->>>> + * Update the map with the prepared vdata.
->>>> + */
->>>> +static int bpf_map__update_vdata(const struct bpf_map *map)
->>>>    {
->>>>        struct bpf_struct_ops *st_ops;
->>>> -    struct bpf_link *link;
->>>>        __u32 i, zero = 0;
->>>> -    int err;
->>>> -
->>>> -    if (!bpf_map__is_struct_ops(map) || map->fd == -1)
->>>> -        return libbpf_err_ptr(-EINVAL);
->>>> -
->>>> -    link = calloc(1, sizeof(*link));
->>>> -    if (!link)
->>>> -        return libbpf_err_ptr(-EINVAL);
->>>
->>>>        st_ops = map->st_ops;
->>>>        for (i = 0; i < btf_vlen(st_ops->type); i++) {
->>>> @@ -11468,17 +11480,48 @@ struct bpf_link
->>>> *bpf_map__attach_struct_ops(const struct bpf_map *map)
->>>>            *(unsigned long *)kern_data = prog_fd;
->>>>        }
->>>
->>>> -    err = bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
->>>> +    return bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
->>>> +}
->>>> +
->>>> +struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
->>>> +{
->>>> +    struct bpf_link_struct_ops_map *link;
->>>> +    int err, fd;
->>>> +
->>>> +    if (!bpf_map__is_struct_ops(map) || map->fd == -1)
->>>> +        return libbpf_err_ptr(-EINVAL);
->>>> +
->>>> +    link = calloc(1, sizeof(*link));
->>>> +    if (!link)
->>>> +        return libbpf_err_ptr(-EINVAL);
->>>> +
->>>> +    err = bpf_map__update_vdata(map);
->>>>        if (err) {
->>>>            err = -errno;
->>>>            free(link);
->>>>            return libbpf_err_ptr(err);
->>>>        }
->>>
->>>> -    link->detach = bpf_link__detach_struct_ops;
->>>> -    link->fd = map->fd;
->>>> +    link->link.detach = bpf_link__detach_struct_ops;
->>>
->>>> -    return link;
->>>> +    if (!(map->def.map_flags & BPF_F_LINK)) {
->>>> +        /* Fake bpf_link */
->>>> +        link->link.fd = map->fd;
->>>> +        link->map_fd = -1;
->>>> +        return &link->link;
->>>> +    }
->>>> +
->>>> +    fd = bpf_link_create(map->fd, -1, BPF_STRUCT_OPS_MAP, NULL);
->>>> +    if (fd < 0) {
->>>> +        err = -errno;
->>>> +        free(link);
->>>> +        return libbpf_err_ptr(err);
->>>> +    }
->>>> +
->>>> +    link->link.fd = fd;
->>>> +    link->map_fd = map->fd;
->>>> +
->>>> +    return &link->link;
->>>>    }
->>>
->>>>    typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct
->>>> perf_event_header *hdr,
->>>> --
->>>> 2.30.2
->>>
+> > Derefrence of other kptr-s returns PTR_UNTRUSTED.
+> >
+> > For example:
+> > struct map_value {
+> >    struct cgroup __kptr_rcu *cgrp;
+> > };
+> >
+> > SEC("tp_btf/cgroup_mkdir")
+> > int BPF_PROG(test_cgrp_get_ancestors, struct cgroup *cgrp_arg, const char *path)
+> > {
+> >   struct cgroup *cg, *cg2;
+> >
+> >   cg = bpf_cgroup_acquire(cgrp_arg); // cg is PTR_TRUSTED and ref_obj_id > 0
+> >   bpf_kptr_xchg(&v->cgrp, cg);
+> >
+> >   cg2 = v->cgrp; // cg2 is PTR_TRUSTED | MEM_RCU. This is new feature introduced by this patch.
+> >
+> >   bpf_cgroup_ancestor(cg2, level); // safe to do. cg2 will not disappear
+> 							^^ But it's percpu_ref
+> 							can drop to zero, right?
+
+Correct.
+bpf_cgroup_ancestor() also needs to do cgroup_tryget().
