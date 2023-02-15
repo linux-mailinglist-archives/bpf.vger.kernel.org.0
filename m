@@ -2,151 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB5E6974E6
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 04:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F32D6974FA
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 04:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbjBOD0h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 22:26:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        id S229686AbjBODn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 22:43:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbjBOD0g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 22:26:36 -0500
-Received: from out-211.mta1.migadu.com (out-211.mta1.migadu.com [95.215.58.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CF5212B1
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 19:26:35 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1676431591;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XG+N5atD3rrv7wgr8NJ0OpTu4DQAngSsJs+pfFUmnvU=;
-        b=bcqN3uimJ2WM7odUPXF7pnV6QmTy6rjqbf7OigFo29YUcKFP/1nBJMj7cw4vO9B4RKyETE
-        VbE39ZMdjLDkw9ohdyNE5OJAcX6znFzPzWTDq+MjyVdE5wWHox88fbogF5RG89yXYwEXai
-        UCeX7scQiksU4zUx+haZWNDkU6n+SPY=
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-MIME-Version: 1.0
-Subject: Re: linux-next: manual merge of the mm tree with the bpf-next tree
-Date:   Tue, 14 Feb 2023 19:26:18 -0800
-Message-Id: <99651DE3-38E2-43FA-B7F7-9B06ECDCDD34@linux.dev>
-References: <20230215135734.4dffcd39@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        with ESMTP id S229454AbjBODn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 22:43:58 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1787330184;
+        Tue, 14 Feb 2023 19:43:57 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id d2so16965639pjd.5;
+        Tue, 14 Feb 2023 19:43:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QXx6lEwD2TEgOQrVayIfHTVdxpHuO1zPkPYf3xv3xtw=;
+        b=Q1rTsXnoB3obtyVtX4GfqR/zWDu/Df5wVPlIDHjKg46vnqPGJc0+28fiedhAQFF6KC
+         FNX/m0sbtLZG1vkxuGXh7IvbQ3mmXfjiQ7kmlm6bktfbGYnSLXIfJaq9vMT04jl3A3Ta
+         D1//u5n2di7srwVBCwF7mq5DdNVdUJ16MDpEbe24w+M4Q9E9MfFCAN7LPKI7IVH15o87
+         pvZSF4GoI6LLquasg7RzvIkioVRMhEydDKRH/ZQVX53h0wlm9B7KJqIFBa8ereiFHIvD
+         23hUZ8ZoBFmkMDASqdKU5WY0mtIbZCs+d+/xPpAsU2UyU+S7rktpf/Vth6IDo7LqW+Ha
+         aPXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QXx6lEwD2TEgOQrVayIfHTVdxpHuO1zPkPYf3xv3xtw=;
+        b=fGdH2n6V6rx7N9idlpXG1jmJvO2C35+Ca1FSneHqRYxoHaNAgmivitvTpSalPGyFVz
+         W+owGlvh1SbPYvvObkZc/wWT/VlyxnozEfKHj5WGCb6lSZBPFrMvX54cmMgc0Bb0QUXS
+         ipJhajrWRzbgfenmGI9Q2j0mDg6fxPzp/Z5HZ/3vIzg9OtKWjyn2plzyB6zKEkKKjXyf
+         bPBJC397FnluTqfKJ/4eoCWqbtDWDvpQf8TO88pHM2CRywSouk3p3351xjThMI5BccFT
+         xgdLDWbPxd2ob2i9E3gq2XQH96pVpEuI5zr0uP5IZqN/wow2a2bxzbH5T4w85XqJ+yy+
+         u2+A==
+X-Gm-Message-State: AO0yUKVCideQyyU2Tpw9nF5LIWMzBgDvw7I3DVQY5/8ZQI+k0gMKnqqK
+        hh+E6hDYfYk3GeJtAlFvwnG9MdvMA8UkoQ==
+X-Google-Smtp-Source: AK7set+aDPeR/pNnHNeLF5I8RiB6SfJjYY8z+6cPCM7Ze4rq8zHobFTUM5eMqWl9QQveSfcVMj4ZQA==
+X-Received: by 2002:a17:902:e80b:b0:196:725c:6ea with SMTP id u11-20020a170902e80b00b00196725c06eamr1045418plg.19.1676432636542;
+        Tue, 14 Feb 2023 19:43:56 -0800 (PST)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id e18-20020a170902ed9200b0019904abc93dsm10948008plj.250.2023.02.14.19.43.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Feb 2023 19:43:54 -0800 (PST)
+Date:   Wed, 15 Feb 2023 11:43:46 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>
-In-Reply-To: <20230215135734.4dffcd39@canb.auug.org.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-X-Migadu-Flow: FLOW_OUT
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Felix Maurer <fmaurer@redhat.com>,
+        Davide Caratti <dcaratti@redhat.com>
+Subject: Re: [PATCH bpf] selftests/bpf: enable mptcp before testing
+Message-ID: <Y+xU8i7BCwXJuqlw@Laptop-X1>
+References: <20230210093205.1378597-1-liuhangbin@gmail.com>
+ <6f0a72ee-ec30-8c97-0285-6c53db3d4477@tessares.net>
+ <Y+m4KufriYKd39ot@Laptop-X1>
+ <19a6a29d-85f3-b8d7-c9d9-3c97a625bd13@tessares.net>
+ <Y+r78ZUqIsvaWjQG@Laptop-X1>
+ <78481d57-4710-aa06-0ff7-fee075458aae@linux.dev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78481d57-4710-aa06-0ff7-fee075458aae@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Stephen,
+On Tue, Feb 14, 2023 at 11:22:58AM -0800, Martin KaFai Lau wrote:
+> On 2/13/23 7:11 PM, Hangbin Liu wrote:
+> > On Mon, Feb 13, 2023 at 05:28:19PM +0100, Matthieu Baerts wrote:
+> > > But again, I'm not totally against that, I'm just saying that if these
+> > > tests are executed in dedicated netns, this modification is not needed
+> > > when using a vanilla kernel ;-)
+> > > 
+> > > Except if I misunderstood and these tests are not executed in dedicated
+> > > netns?
+> > 
+> > I tried on my test machine, it looks the test is executed in init netns.
+> 
+> The new test is needed to run under its own netns whenever possible. The
+> existing mptcp test should be changed to run in its own netns also. Then
+> changing any pernet sysctl (eg. mptcp.enabled) is a less concern to other
+> tests. You can take a look at how other tests doing it (eg. decap_sanity.c).
 
-the merge looks good to me. Thank you for doing this!
+Thanks for the reference. I will update the patch to make mptcp run in it's
+own netns.
 
-Roman
-
-> On Feb 14, 2023, at 6:57 PM, Stephen Rothwell <sfr@canb.auug.org.au> wrote=
-:
->=20
-> =EF=BB=BFHi all,
->=20
-> Today's linux-next merge of the mm tree got conflicts in:
->=20
->  include/linux/memcontrol.h
->  mm/memcontrol.c
->=20
-> between commit:
->=20
->  b6c1a8af5b1e ("mm: memcontrol: add new kernel parameter cgroup.memory=3Dn=
-obpf")
->=20
-> from the bpf-next tree and commit:
->=20
->  2006d382484e ("mm: memcontrol: rename memcg_kmem_enabled()")
->=20
-> from the mm tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc include/linux/memcontrol.h
-> index e7310363f0cb,5567319027d1..000000000000
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@@ -1776,17 -1776,11 +1776,17 @@@ struct obj_cgroup *get_obj_cgroup_from_=
-
->  int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size);
->  void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size);
->=20
-> +extern struct static_key_false memcg_bpf_enabled_key;
-> +static inline bool memcg_bpf_enabled(void)
-> +{
-> +    return static_branch_likely(&memcg_bpf_enabled_key);
-> +}
-> +
-> - extern struct static_key_false memcg_kmem_enabled_key;
-> + extern struct static_key_false memcg_kmem_online_key;
->=20
-> - static inline bool memcg_kmem_enabled(void)
-> + static inline bool memcg_kmem_online(void)
->  {
-> -    return static_branch_likely(&memcg_kmem_enabled_key);
-> +    return static_branch_likely(&memcg_kmem_online_key);
->  }
->=20
->  static inline int memcg_kmem_charge_page(struct page *page, gfp_t gfp,
-> @@@ -1860,12 -1854,7 +1860,12 @@@ static inline struct obj_cgroup *get_ob
->      return NULL;
->  }
->=20
-> +static inline bool memcg_bpf_enabled(void)
-> +{
-> +    return false;
-> +}
-> +
-> - static inline bool memcg_kmem_enabled(void)
-> + static inline bool memcg_kmem_online(void)
->  {
->      return false;
->  }
-> diff --cc mm/memcontrol.c
-> index 186a3a56dd7c,3e3cdb9bed95..000000000000
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@@ -348,11 -345,8 +348,11 @@@ static void memcg_reparent_objcgs(struc
->   * conditional to this static branch, we'll have to allow modules that do=
-es
->   * kmem_cache_alloc and the such to see this symbol as well
->   */
-> - DEFINE_STATIC_KEY_FALSE(memcg_kmem_enabled_key);
-> - EXPORT_SYMBOL(memcg_kmem_enabled_key);
-> + DEFINE_STATIC_KEY_FALSE(memcg_kmem_online_key);
-> + EXPORT_SYMBOL(memcg_kmem_online_key);
-> +
-> +DEFINE_STATIC_KEY_FALSE(memcg_bpf_enabled_key);
-> +EXPORT_SYMBOL(memcg_bpf_enabled_key);
->  #endif
->=20
->  /**
+Hangbin
