@@ -2,142 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C896976DA
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 08:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F126F69774D
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 08:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbjBOHAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 02:00:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
+        id S231645AbjBOHXJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 02:23:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233645AbjBOG71 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 01:59:27 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4701DDBFF;
-        Tue, 14 Feb 2023 22:58:39 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id bt4-20020a17090af00400b002341621377cso1173734pjb.2;
-        Tue, 14 Feb 2023 22:58:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cw3/EfBuwTrSjbNBCeLzC+B32hPzmMgYrzTGmtXxuo8=;
-        b=DpCz9mhO5+896qDYTs/fk00gd7A8McjNWhWnSes0Q/PDOhc7iXHYdBB7abi1F+GAEC
-         oVzR5b8lr6Arys1fRnw+NYe3OBqbknm7kKutbtR7q/wfKmyX960CP1ewMj0w+5jUxLIH
-         KP/8HGJnVVDotamvv3giP6wuD2X1OxnjOZLZno9P4REHI1GLXk0QGFq7pIKl7q/2UHT2
-         vJCNIRNgG7WCvp8FpQZcC+K7SECSzC+zH6M/mPA99CTtqIzrM4/GtYmYh33PYE1yNu5F
-         xKMiZeHryqkY4wYPmWO/AmptdSUekH75M9YnwP6pLs/00iXuBkWsKftnXbPTxjXF/7tA
-         lKyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cw3/EfBuwTrSjbNBCeLzC+B32hPzmMgYrzTGmtXxuo8=;
-        b=fBW1J6mNEVIpoRdVsvEGunfqB01QEXjxB/2/gE3zHaYj/gGuhY4AK2c3elDBxWiNOv
-         AQEL63uxT1urMonFwyO+DpO9P9oxi0da0DhQ1hD+q8ZCu3fGQtUKZwPDCr/ePODshEnX
-         4QJwhWPxPH5tZOgPRd/85feWM2dyIK0ogZk1eS3GVhHRyXgjnhiaTMizxl1/5cHa4hOw
-         IHPszEZCJgmGnEjhKGsvaWQgJCmi6auBqO8pRSeg8b+cpiQCd7Uz8y9hvvwQj98s0LgX
-         vF12Ot+8VnqgIKlifop10qzSPwoljHXhC/vx+Mhs4Meb/qumaBJ1BC7c2tUlr3LqPjdh
-         ZZVA==
-X-Gm-Message-State: AO0yUKU4xqE6qZTwOoH/h55y1z1enKrHcaSBhqQn5FhA2m+s8tCUkmka
-        4rOZb8J0vJ9jm+Oh+AR7ToM=
-X-Google-Smtp-Source: AK7set8yS9f2Abxgh8bld/qvREPc9GQvrX5uMfseGJgV0azs4oNtVNktDKCMzb6f3B1Jib0Z2FPbzg==
-X-Received: by 2002:a17:902:c641:b0:19a:9434:af30 with SMTP id s1-20020a170902c64100b0019a9434af30mr1168342pls.18.1676444312269;
-        Tue, 14 Feb 2023 22:58:32 -0800 (PST)
-Received: from localhost.localdomain ([2620:10d:c090:400::5:d0de])
-        by smtp.gmail.com with ESMTPSA id 19-20020a170902c15300b0019a9751096asm5956868plj.305.2023.02.14.22.58.30
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 14 Feb 2023 22:58:31 -0800 (PST)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        void@manifault.com, davemarchevsky@meta.com, tj@kernel.org,
-        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH bpf-next 4/4] selftests/bpf: Tweak cgroup kfunc test.
-Date:   Tue, 14 Feb 2023 22:58:12 -0800
-Message-Id: <20230215065812.7551-5-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20230215065812.7551-1-alexei.starovoitov@gmail.com>
-References: <20230215065812.7551-1-alexei.starovoitov@gmail.com>
+        with ESMTP id S229840AbjBOHXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 02:23:09 -0500
+Received: from out-73.mta0.migadu.com (out-73.mta0.migadu.com [IPv6:2001:41d0:1004:224b::49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2058229147
+        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 23:23:07 -0800 (PST)
+Message-ID: <2b1ddc4c-9905-899a-a903-e66a6e8b4d58@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1676445784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IFiqL85OMFiRUxyY50Wh6JnMy06nSoBtvKZlaWOzJak=;
+        b=pTC20R3V5mXzsnvFhHTGaTwPyiELMUxm6Mfwm3iPy68yN/RrB9lJC0T0YY6r2v9x8ElQWP
+        EufUsXqckHqPffgzaKEk75vD0XQvzBfuZZpIOgreayX00NYDnc6uF/kkX9r6xcJl26CTG+
+        uyr6OB/smMlXzz6oqzKgNM9jRCE6ydU=
+Date:   Tue, 14 Feb 2023 23:22:56 -0800
 MIME-Version: 1.0
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+Content-Language: en-US
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
+ <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
+ <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
+ <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+ <20230210163258.phekigglpquitq33@apollo>
+ <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
+ <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
+ <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
+ <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
+ <6d48c284-42eb-9688-4259-79b7f096e294@linux.dev>
+ <7fef4ece-0982-cb43-ed39-e73791436355@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <7fef4ece-0982-cb43-ed39-e73791436355@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On 2/14/23 8:02 PM, Hou Tao wrote:
+>> For local storage, when its owner (sk/task/inode/cgrp) is going away, the
+>> memory can be reused immediately. No rcu gp is needed.
+> Now it seems it will wait for RCU GP and i think it is still necessary, because
+> when the process exits, other processes may still access the local storage
+> through pidfd or task_struct of the exited process.
 
-Adjust cgroup kfunc test to dereference RCU protected cgroup pointer
-as PTR_TRUSTED and pass into KF_TRUSTED_ARGS kfunc.
+When its owner (sk/task/cgrp...) is going away, its owner has reached refcnt 0 
+and will be kfree immediately next. eg. bpf_sk_storage_free is called just 
+before the sk is about to be kfree. No bpf prog should have a hold on this sk. 
+The same should go for the task.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h  | 2 +-
- tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c | 2 +-
- tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c | 9 ++++++++-
- 3 files changed, 10 insertions(+), 3 deletions(-)
+The current rcu gp waiting during bpf_{sk,task,cgrp...}_storage_free is because 
+the racing with the map destruction bpf_local_storage_map_free().
 
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
-index 50d8660ffa26..eb5bf3125816 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
-+++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
-@@ -10,7 +10,7 @@
- #include <bpf/bpf_tracing.h>
- 
- struct __cgrps_kfunc_map_value {
--	struct cgroup __kptr * cgrp;
-+	struct cgroup __kptr_rcu * cgrp;
- };
- 
- struct hash_map {
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c b/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
-index 4ad7fe24966d..d5a53b5e708f 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
-+++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
-@@ -205,7 +205,7 @@ int BPF_PROG(cgrp_kfunc_get_unreleased, struct cgroup *cgrp, const char *path)
- }
- 
- SEC("tp_btf/cgroup_mkdir")
--__failure __msg("arg#0 is untrusted_ptr_or_null_ expected ptr_ or socket")
-+__failure __msg("bpf_cgroup_release expects refcounted")
- int BPF_PROG(cgrp_kfunc_release_untrusted, struct cgroup *cgrp, const char *path)
- {
- 	struct __cgrps_kfunc_map_value *v;
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c b/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
-index 0c23ea32df9f..0ce9cb00dad2 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
-+++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
-@@ -61,7 +61,7 @@ int BPF_PROG(test_cgrp_acquire_leave_in_map, struct cgroup *cgrp, const char *pa
- SEC("tp_btf/cgroup_mkdir")
- int BPF_PROG(test_cgrp_xchg_release, struct cgroup *cgrp, const char *path)
- {
--	struct cgroup *kptr;
-+	struct cgroup *kptr, *cg;
- 	struct __cgrps_kfunc_map_value *v;
- 	long status;
- 
-@@ -80,6 +80,13 @@ int BPF_PROG(test_cgrp_xchg_release, struct cgroup *cgrp, const char *path)
- 		return 0;
- 	}
- 
-+	kptr = v->cgrp;
-+	if (!kptr)
-+		return 0;
-+	cg = bpf_cgroup_ancestor(kptr, 1);
-+	if (cg)
-+		bpf_cgroup_release(cg);
-+
- 	kptr = bpf_kptr_xchg(&v->cgrp, NULL);
- 	if (!kptr) {
- 		err = 3;
--- 
-2.30.2
+>>
+>> The local storage delete case (eg. bpf_sk_storage_delete) is the only one that
+>> needs to be freed by tasks_trace gp because another bpf prog (reader) may be
+>> under the rcu_read_lock_trace(). I think the idea (BPF_REUSE_AFTER_RCU_GP) on
+>> allowing reuse after vanilla rcu gp and free (if needed) after tasks_trace gp
+>> can be extended to the local storage delete case. I think we can extend the
+>> assumption that "sleepable progs (reader) can use explicit bpf_rcu_read_lock()
+>> when they want to avoid uaf" to bpf_{sk,task,inode,cgrp}_storage_get() also.
+>>
+> It seems bpf_rcu_read_lock() & bpf_rcu_read_unlock() will be used to protect not
+> only bpf_task_storage_get(), but also the dereferences of the returned local
+> storage ptr, right ? I think qp-trie may also need this.
+
+I think bpf_rcu_read_lock() is primarily for bpf prog.
+
+The bpf_{sk,task,...}_storage_get() internal is easier to handle and probably 
+will need to do its own rcu_read_lock() instead of depending on the bpf prog 
+doing the bpf_rcu_read_lock() because the bpf prog may decide uaf is fine.
+
+>> I also need the GFP_ZERO in bpf_mem_alloc, so will work on the GFP_ZERO and
+>> the BPF_REUSE_AFTER_RCU_GP idea.  Probably will get the GFP_ZERO out first.
+> I will continue work on this patchset for GFP_ZERO and reuse flag. Do you mean
+> that you want to work together to implement BPF_REUSE_AFTER_RCU_GP ? How do we
+> cooperate together to accomplish that ?
+Please submit the GFP_ZERO patch first. Kumar and I can use it immediately.
+
+I have been hacking to make bpf's memalloc safe for the 
+bpf_{sk,task,cgrp..}_storage_delete() and this safe-on-reuse piece still need 
+works. The whole thing is getting pretty long, so my current plan is to put the 
+safe-on-reuse piece aside for now, focus back on the immediate goal and make the 
+common case deadlock free first. Meaning the 
+bpf_*_storage_get(BPF_*_STORAGE_GET_F_CREATE) and the bpf_*_storage_free() will 
+use the bpf_mem_cache_{alloc,free}. The bpf_*_storage_delete() will stay as-is 
+to go through the call_rcu_tasks_trace() for now since delete is not the common 
+use case.
+
+In parallel, if you can post the BPF_REUSE_AFTER_RCU_GP, we can discuss based on 
+your work. That should speed up the progress. If I finished the immediate goal 
+for local storage and this piece is still pending, I will ping you first.  Thoughts?
 
