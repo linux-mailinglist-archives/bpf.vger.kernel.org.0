@@ -2,66 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5862C698798
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 23:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9FC46987BA
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 23:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjBOWAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 17:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47144 "EHLO
+        id S229502AbjBOWVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 17:21:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjBOWAt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 17:00:49 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFF17A81
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 14:00:47 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a3so575374ejb.3
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 14:00:47 -0800 (PST)
+        with ESMTP id S229493AbjBOWVC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 17:21:02 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE6E25941
+        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 14:21:01 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id i18so170809pli.3
+        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 14:21:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4pdUXKHq/PIzkQGD6HoGwMCAYXEDoz8DV3EkDd7Cof8=;
-        b=KLpupcWDbwE940/SkpoIgjwzTgmC29YG4UcsU0ykt2alT9KIiaJBm5BmyNOF3O5urO
-         l2powZrARFluDYt0JH7ItyFJlVsoHUZ58V5tlLNOgOIJJ/D28KTZ6oqqKuV+LZIHza34
-         lGzKqGcA4IJvbXOp7o+kkhJ64CP3zggjkYDEYuZkC3rJwV+NLNwz08XJ00F4zyxKTFb7
-         dcro9ajRai3KSNabQ02+clEzVjo6I6TUNe+DGaJ9JYWrgafiGe4i+drPZFJz9YETG2ft
-         M7wPe2dlW/qn3ZbEpkD0IoWqJd+vjqAmVvRO94uhFAuowKLk5tmtn4Scj7w8nPUu7+Dh
-         BX0g==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rqXfX8v+xWMTHGf3BmHlQmgzP8hPkQH+NLzWYL4gRYI=;
+        b=opmlyhNHQCGyN8EfVpBnqWjx/b3BJiPZu36pqZWHyOe7Cr8zAx+Fkr1a4JbSkV3OKc
+         8AuiHmW/oNcG6lBDBx4OYPwql0m7/xOPeh9TsE+Jq8lPdPFx8dJBfkf5R+P4flJxO9en
+         SVGpNCCRyo2Upa3M3TFElUw1/hgHNLWsrA4pA7SRPMPrAzP4xDRimcm6knVFeLjvnnQJ
+         z0Nk2uaioHnEdNEc92FmOo15DYJED4gd5clHn1m24P1vNdrtzQRV/1Tosu5Af8/RPi9I
+         xl65LBKC0YWfATKm1QEg1RWqIYaAfpbcwU1zibi/GXvUpS/bky69YROPQA+aupQ2Q/fd
+         kBCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4pdUXKHq/PIzkQGD6HoGwMCAYXEDoz8DV3EkDd7Cof8=;
-        b=tYQ7vqGd1Wm1Xng7WQxR6W6z1+N1UxSzOIpc6qgJIlR0DqQ4Lzn0VsLRqvW97JkqQm
-         JSGpHHS/2Lq5CugI/0UiXTHb3vVPZyL8QW6Q6FMndch/3D8tkMAFjRbvp7PMyZ2m2JAo
-         3YTNXb5lk1y0X9uYBy6RkvNoCQD7W+5mpmxoE6J4EExUCKzkeRstyZ0EvX0ZODNBrZ+f
-         9OKGt/i3+hFpJmiqnSaaED+i/VD/3JoXhx0ZcfzVjAUvM7oo1Pe7iyL+WBpZPF4U1/na
-         gagVIZXRy0zIJ9ZcXmGPTbYAefXDvVF/mGPUGN3/PnmzWJwQSx0jyUo7IjWoqRzRoJbl
-         tNQA==
-X-Gm-Message-State: AO0yUKVTSOl8YK1eEZITt/8SNjaUqbz8LhhD0s1zthJzykSepJ3jLJyA
-        hQV/eKKMvKq6v2Omazk0vmKBaAR7WagEB4JD3uA=
-X-Google-Smtp-Source: AK7set//UbrXMZovD+CYaZJikKXAb5Q0PDiO2cMuh10YrL/QnkBr7OYPq8uvQy8tKDLbPxtU/e6jR5bv/7DhWI+RXrU=
-X-Received: by 2002:a17:906:76d7:b0:879:9c05:f5fb with SMTP id
- q23-20020a17090676d700b008799c05f5fbmr1820381ejn.5.1676498445481; Wed, 15 Feb
- 2023 14:00:45 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rqXfX8v+xWMTHGf3BmHlQmgzP8hPkQH+NLzWYL4gRYI=;
+        b=U9qq72rV/4qjDxFNdprXs+Fr/8knvmnHADr1m2CtsgPZxV6NMbdEmGX7Ey4/xrUQSR
+         ycQyfzPJ2lo/9OT17qrdqu+F9SDgd75AAFatTzkEfnywM1arg9tAbwydcy9gA9N7GKHK
+         ukRxK+Wrib9MKYbcz+7Hhnrt9gL4V6IWnMEqOgROku3N/qIA9u1aM3r+czP6bKlIq8wj
+         vdsi+FdlLJ50cwJWc54eYuFyizud2zHCylf5NLFelVcANUx0m/1EZRYzRnWF3qF7/5bv
+         nTnTX6h4ZTTnJLeQiHE+Yr9ZZQwfZLmAYU2tE5pT6H43cFidVhoTZMaMb2StwHkvQT6Q
+         nenA==
+X-Gm-Message-State: AO0yUKUxJqDzsJyuGagbBXYPfKuEfrL46+i+4CFuoFZQId5Ndi+JHzui
+        ygxJDC/gJ46bO/xF/XbSDIE=
+X-Google-Smtp-Source: AK7set/T0o6l3gPil8r7BvHO7B551BnW8qk2YeByAbcSNMpAvhCAeORg4RcAsmORsEjqSBI8EjLaLw==
+X-Received: by 2002:a17:902:da84:b0:196:f00:c8f9 with SMTP id j4-20020a170902da8400b001960f00c8f9mr4717787plx.10.1676499661224;
+        Wed, 15 Feb 2023 14:21:01 -0800 (PST)
+Received: from ?IPV6:2620:10d:c085:21e8::1452? ([2620:10d:c090:400::5:1af8])
+        by smtp.gmail.com with ESMTPSA id iw3-20020a170903044300b0019ab3308554sm4352523plb.85.2023.02.15.14.20.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Feb 2023 14:21:00 -0800 (PST)
+Message-ID: <08f81013-d073-6616-aa8b-6c54216f291a@gmail.com>
+Date:   Wed, 15 Feb 2023 14:20:58 -0800
 MIME-Version: 1.0
-References: <CAGQdkDvVW1QhPdjOS_8yDidZA3qyW8O-H3Seb7RZHU34GGrmiA@mail.gmail.com>
- <Y75zBpkr1tLXKMWX@krava> <CAEf4BzZDfTAaahM3zwkKwcF2RG4C0HPN+ZPzT7XH517QsvDmTw@mail.gmail.com>
- <CAGQdkDsHuR2+zuDiFKJWpAYYf+fBgkpAFJVs5qUEWV-nOhxztA@mail.gmail.com>
- <CAEf4BzbYoGY2e_Nf1EOgzDdjGOLbSjJ5OmHRDFnYUA_VDYD6zQ@mail.gmail.com>
- <CAGQdkDuJ49w_=V59exbyWbW2qB7d8Pz71Vcbkk6fWLwBPeAXtQ@mail.gmail.com> <CAEf4BzZL-PCtnDirUpvNA6USyJfkO5WCnOk9PYsj4nV8LPUauQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZL-PCtnDirUpvNA6USyJfkO5WCnOk9PYsj4nV8LPUauQ@mail.gmail.com>
-From:   andrea terzolo <andreaterzolo3@gmail.com>
-Date:   Wed, 15 Feb 2023 23:00:33 +0100
-Message-ID: <CAGQdkDs8i0ETFWCjnr-Cy2kBCPwt3+6hZV8FyV-4O1bj2vns6A@mail.gmail.com>
-Subject: Re: [QUESTION] usage of BPF_MAP_TYPE_RINGBUF
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH bpf-next 4/7] libbpf: Create a bpf_link in
+ bpf_map__attach_struct_ops().
+Content-Language: en-US, en-ZW
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
+        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org
+References: <20230214221718.503964-1-kuifeng@meta.com>
+ <20230214221718.503964-5-kuifeng@meta.com> <Y+xKOq4gW58IDMWE@google.com>
+ <7149cfe4-7ae4-a8e9-6f85-38e488080f28@gmail.com>
+ <CAKH8qBvUhDrMjveh-_MZPkcy9sUf2UJ1kL1sx=Tt+yWwf+XBtQ@mail.gmail.com>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAKH8qBvUhDrMjveh-_MZPkcy9sUf2UJ1kL1sx=Tt+yWwf+XBtQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,166 +79,172 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Il giorno mer 15 feb 2023 alle ore 02:35 Andrii Nakryiko
-<andrii.nakryiko@gmail.com> ha scritto:
->
-> On Sun, Feb 5, 2023 at 7:28 AM andrea terzolo <andreaterzolo3@gmail.com> wrote:
-> >
-> > Il giorno ven 27 gen 2023 alle ore 19:54 Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> ha scritto:
-> > >
-> > > On Sun, Jan 15, 2023 at 9:10 AM andrea terzolo <andreaterzolo3@gmail.com> wrote:
-> > > >
-> > > > Il giorno ven 13 gen 2023 alle ore 23:57 Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> ha scritto:
-> > > > >
-> > > > > On Wed, Jan 11, 2023 at 12:27 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > > > >
-> > > > > > On Tue, Jan 10, 2023 at 02:49:59PM +0100, andrea terzolo wrote:
-> > > > > > > Hello!
-> > > > > > >
-> > > > > > > If I can I would ask a question regarding the BPF_MAP_TYPE_RINGBUF
-> > > > > > > map. Looking at the kernel implementation [0] it seems that data pages
-> > > > > > > are mapped 2 times to have a more efficient and simpler
-> > > > > > > implementation. This seems to be a ring buffer peculiarity, the perf
-> > > > > > > buffer didn't have such an implementation. In the Falco project [1] we
-> > > > > > > use huge per-CPU buffers to collect almost all the syscalls that the
-> > > > > > > system throws and the default size of each buffer is 8 MB. This means
-> > > > > > > that using the ring buffer approach on a system with 128 CPUs, we will
-> > > > > > > have (128*8*2) MB, while with the perf buffer only (128*8) MB. The
-> > > > > >
-> > > > > > hum IIUC it's not allocated twice but pages are just mapped twice,
-> > > > > > to cope with wrap around samples, described in git log:
-> > > > > >
-> > > > > >     One interesting implementation bit, that significantly simplifies (and thus
-> > > > > >     speeds up as well) implementation of both producers and consumers is how data
-> > > > > >     area is mapped twice contiguously back-to-back in the virtual memory. This
-> > > > > >     allows to not take any special measures for samples that have to wrap around
-> > > > > >     at the end of the circular buffer data area, because the next page after the
-> > > > > >     last data page would be first data page again, and thus the sample will still
-> > > > > >     appear completely contiguous in virtual memory. See comment and a simple ASCII
-> > > > > >     diagram showing this visually in bpf_ringbuf_area_alloc().
-> > > > >
-> > > > > yes, exactly, there is no duplication of memory, it's just mapped
-> > > > > twice to make working with records that wrap around simple and
-> > > > > efficient
-> > > > >
-> > > >
-> > > > Thank you very much for the quick response, my previous question was
-> > > > quite unclear, sorry for that, I will try to explain me better with
-> > > > some data. I've collected in this document [3] some thoughts regarding
-> > > > 2 simple examples with perf buffer and ring buffer. Without going into
-> > > > too many details about the document, I've noticed a strange value of
-> > > > "Resident set size" (RSS) in the ring buffer example. Probably is
-> > > > perfectly fine but I really don't understand why the "RSS" for each
-> > > > ring buffer assumes the same value of the Virtual memory size and I'm
-> > > > just asking myself if this fact could impact the OOM score computation
-> > > > making the program that uses ring buffers more vulnerable to the OOM
-> > > > killer.
-> > > >
-> > > > [3]: https://hackmd.io/@l56JYH1SS9-QXhSNXKanMw/r1Z8APWso
-> > > >
-> > >
-> > > I'm not an mm expert, unfortunately. Perhaps because we have twice as
-> > > many pages mapped (even though they are using only 8MB of physical
-> > > memory), it is treated as if process' RSS usage is 2x of that. I can
-> > > see how that might be a concern for OOM score, but I'm not sure what
-> > > can be done about this...
-> > >
-> >
-> > Yes, this is weird behavior. Unfortunately, a process that uses a ring
-> > buffer for each CPU is penalized from this point of view with respect
-> > to one that uses a perf buffer. Do you know by chance someone who can
-> > help us with this strange memory reservation?
->
-> So I checked with MM expert, and he confirmed that currently there is
-> no way to avoid this double-accounting of memory reserved by BPF
-> ringbuf. But this doesn't seem to be a problem unique to BPF ringbuf,
-> generally RSS accounting is known to have problems with double
-> counting memory in some situations.
->
-Thank you for reporting this and for all the help in this thread,
-really appreciated!
 
-> One relatively clean suggested way to solve this problem would be to
-> add a new memory counter (in addition to existing MM_SHMEMPAGES,
-> MM_SWAPENTS, MM_ANONPAGES, MM_FILEPAGES) to compensate for cases like
-> this.
->
-> But it does look like a pretty big overkill here, tbh. Sorry, I don't
-> have a good solution for you here.
->
-> >
-> > > > > >
-> > > > > > > issue is that this memory requirement could be too much for some
-> > > > > > > systems and also in Kubernetes environments where there are strict
-> > > > > > > resource limits... Our actual workaround is to use ring buffers shared
-> > > > > > > between more than one CPU with a BPF_MAP_TYPE_ARRAY_OF_MAPS, so for
-> > > > > > > example we allocate a ring buffer for each CPU pair. Unfortunately,
-> > > > > > > this solution has a price since we increase the contention on the ring
-> > > > > > > buffers and as highlighted here [2], the presence of multiple
-> > > > > > > competing writers on the same buffer could become a real bottleneck...
-> > > > > > > Sorry for the long introduction, my question here is, are there any
-> > > > > > > other approaches to manage such a scenario? Will there be a
-> > > > > > > possibility to use the ring buffer without the kernel double mapping
-> > > > > > > in the near future? The ring buffer has such amazing features with
-> > > > > > > respect to the perf buffer, but in a scenario like the Falco one,
-> > > > > > > where we have aggressive multiple producers, this double mapping could
-> > > > > > > become a limitation.
-> > > > > >
-> > > > > > AFAIK the bpf ring buffer can be used across cpus, so you don't need
-> > > > > > to have extra copy for each cpu if you don't really want to
-> > > > > >
-> > > > >
-> > > > > seems like they do share, but only between CPUs. But nothing prevents
-> > > > > you from sharing between more than 2 CPUs, right? It's a tradeoff
-> > > >
-> > > > Yes exactly, we can and we will do it
-> > > >
-> > > > > between contention and overall memory usage (but as pointed out,
-> > > > > ringbuf doesn't use 2x more memory). Do you actually see a lot of
-> > > > > contention when sharing ringbuf between 2 CPUs? There are multiple
-> > > >
-> > > > Actually no, I've not seen a lot of contention with this
-> > > > configuration, it seems to handle throughput quite well. BTW it's
-> > > > still an experimental solution so it is not much tested against
-> > > > real-world workloads.
-> > > >
-> > > > > applications that share a single ringbuf between all CPUs, and no one
-> > > > > really complained about high contention so far. You'd need to push
-> > > > > tons of data non-stop, probably, at which point I'd worry about
-> > > > > consumers not being able to keep up (and definitely not doing much
-> > > > > useful with all this data). But YMMV, of course.
-> > > > >
-> > > >
-> > > > We are a little bit worried about the single ring buffer scenario,
-> > > > mainly when we have something like 64 CPUs and all syscalls enabled,
-> > > > but as you correctly highlighted in this case we would have also some
-> > > > issues userspace side because we wouldn't be able to handle all this
-> > > > traffic, causing tons of event drops. BTW thank you for the feedback!
-> > > >
-> > >
-> > > If you decide to use ringbuf, I'd leverage its ability to be used
-> > > across multiple CPUs and thus reduce the OOM score concern. This is
-> > > what we see in practice here at Meta: at the same or even smaller
-> > > total amount of memory used for ringbuf(s), compared to perfbuf, we
-> > > see less (or no) event drops due to bigger shared buffer that can
-> > > absorb temporary spikes in the amount of events produced.
-> > >
-> >
-> > Thank you for the precious feedback about shared ring buffers, we are
-> > already experimenting with similar solutions to mitigate the OOM score
-> > issue, maybe this could be the right way to go also for our use case!
->
-> Hopefully this will work for you.
->
-> >
-> > > > > > jirka
-> > > > > >
-> > > > > > >
-> > > > > > > Thank you in advance for your time,
-> > > > > > > Andrea
-> > > > > > >
-> > > > > > > 0: https://github.com/torvalds/linux/blob/master/kernel/bpf/ringbuf.c#L107
-> > > > > > > 1: https://github.com/falcosecurity/falco
-> > > > > > > 2: https://patchwork.ozlabs.org/project/netdev/patch/20200529075424.3139988-5-andriin@fb.com/
+
+On 2/15/23 10:48, Stanislav Fomichev wrote:
+> On Wed, Feb 15, 2023 at 10:44 AM Kui-Feng Lee <sinquersw@gmail.com> wrote:
+>>
+>>
+>> On 2/14/23 18:58, Stanislav Fomichev wrote:
+>>> On 02/14, Kui-Feng Lee wrote:
+>>>> bpf_map__attach_struct_ops() was creating a dummy bpf_link as a
+>>>> placeholder, but now it is constructing an authentic one by calling
+>>>> bpf_link_create() if the map has the BPF_F_LINK flag.
+>>>
+>>>> You can flag a struct_ops map with BPF_F_LINK by calling
+>>>> bpf_map__set_map_flags().
+>>>
+>>>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+>>>> ---
+>>>>    tools/lib/bpf/libbpf.c | 73 +++++++++++++++++++++++++++++++++---------
+>>>>    1 file changed, 58 insertions(+), 15 deletions(-)
+>>>
+>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>>> index 75ed95b7e455..1eff6a03ddd9 100644
+>>>> --- a/tools/lib/bpf/libbpf.c
+>>>> +++ b/tools/lib/bpf/libbpf.c
+>>>> @@ -11430,29 +11430,41 @@ struct bpf_link *bpf_program__attach(const
+>>>> struct bpf_program *prog)
+>>>>        return link;
+>>>>    }
+>>>
+>>>> +struct bpf_link_struct_ops_map {
+>>>> +    struct bpf_link link;
+>>>> +    int map_fd;
+>>>> +};
+>>>
+>>> Ah, ok, now you're adding bpf_link_struct_ops_map. I guess I'm now
+>>> confused why you haven't done it in the first patch :-/
+>>
+>> Just won't to mix the libbpf part and kernel part in one patch.
+> 
+> Ah, shoot, I completely missed that it's libbpf. So in this case, can
+> we use the same strategy for the kernel links? Instead of a union,
+> have an outer struct + container_of? If not, why not?
+
+The reason I use `container_of` here is we need both FDs in libbpf to 
+keep it as consistent with its existing behavior as possible.  The value 
+of the struct_ops map should be deleted if a bpf_link is detached.
+
+Back to your question.  We can go the `container_of` approach.  Only 
+concern I have is additional few bytes although it is not a big issue. I 
+will move to this approach in the next version.
+
+> 
+> 
+>>
+>>>
+>>> And what are these fake bpf_links? Can you share more about it means?
+>>
+>> For the next version, I will detail it in the commit log. In a nutshell,
+>> before this point, there was no bpf_link for struct_ops. Libbpf
+>> attempted to create an equivalent interface to other BPF programs by
+>> providing a simulated bpf_link instead of a true one from the kernel;
+>> that fake bpf_link stores FDs associated with struct_ops maps rather
+>> than real bpf_links.
+>>
+>>
+>>>
+>>>> +
+>>>>    static int bpf_link__detach_struct_ops(struct bpf_link *link)
+>>>>    {
+>>>> +    struct bpf_link_struct_ops_map *st_link;
+>>>>        __u32 zero = 0;
+>>>
+>>>> -    if (bpf_map_delete_elem(link->fd, &zero))
+>>>> +    st_link = container_of(link, struct bpf_link_struct_ops_map, link);
+>>>> +
+>>>> +    if (st_link->map_fd < 0) {
+>>>> +        /* Fake bpf_link */
+>>>> +        if (bpf_map_delete_elem(link->fd, &zero))
+>>>> +            return -errno;
+>>>> +        return 0;
+>>>> +    }
+>>>> +
+>>>> +    if (bpf_map_delete_elem(st_link->map_fd, &zero))
+>>>> +        return -errno;
+>>>> +
+>>>> +    if (close(link->fd))
+>>>>            return -errno;
+>>>
+>>>>        return 0;
+>>>>    }
+>>>
+>>>> -struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>>>> +/*
+>>>> + * Update the map with the prepared vdata.
+>>>> + */
+>>>> +static int bpf_map__update_vdata(const struct bpf_map *map)
+>>>>    {
+>>>>        struct bpf_struct_ops *st_ops;
+>>>> -    struct bpf_link *link;
+>>>>        __u32 i, zero = 0;
+>>>> -    int err;
+>>>> -
+>>>> -    if (!bpf_map__is_struct_ops(map) || map->fd == -1)
+>>>> -        return libbpf_err_ptr(-EINVAL);
+>>>> -
+>>>> -    link = calloc(1, sizeof(*link));
+>>>> -    if (!link)
+>>>> -        return libbpf_err_ptr(-EINVAL);
+>>>
+>>>>        st_ops = map->st_ops;
+>>>>        for (i = 0; i < btf_vlen(st_ops->type); i++) {
+>>>> @@ -11468,17 +11480,48 @@ struct bpf_link
+>>>> *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>>>>            *(unsigned long *)kern_data = prog_fd;
+>>>>        }
+>>>
+>>>> -    err = bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+>>>> +    return bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+>>>> +}
+>>>> +
+>>>> +struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>>>> +{
+>>>> +    struct bpf_link_struct_ops_map *link;
+>>>> +    int err, fd;
+>>>> +
+>>>> +    if (!bpf_map__is_struct_ops(map) || map->fd == -1)
+>>>> +        return libbpf_err_ptr(-EINVAL);
+>>>> +
+>>>> +    link = calloc(1, sizeof(*link));
+>>>> +    if (!link)
+>>>> +        return libbpf_err_ptr(-EINVAL);
+>>>> +
+>>>> +    err = bpf_map__update_vdata(map);
+>>>>        if (err) {
+>>>>            err = -errno;
+>>>>            free(link);
+>>>>            return libbpf_err_ptr(err);
+>>>>        }
+>>>
+>>>> -    link->detach = bpf_link__detach_struct_ops;
+>>>> -    link->fd = map->fd;
+>>>> +    link->link.detach = bpf_link__detach_struct_ops;
+>>>
+>>>> -    return link;
+>>>> +    if (!(map->def.map_flags & BPF_F_LINK)) {
+>>>> +        /* Fake bpf_link */
+>>>> +        link->link.fd = map->fd;
+>>>> +        link->map_fd = -1;
+>>>> +        return &link->link;
+>>>> +    }
+>>>> +
+>>>> +    fd = bpf_link_create(map->fd, -1, BPF_STRUCT_OPS_MAP, NULL);
+>>>> +    if (fd < 0) {
+>>>> +        err = -errno;
+>>>> +        free(link);
+>>>> +        return libbpf_err_ptr(err);
+>>>> +    }
+>>>> +
+>>>> +    link->link.fd = fd;
+>>>> +    link->map_fd = map->fd;
+>>>> +
+>>>> +    return &link->link;
+>>>>    }
+>>>
+>>>>    typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct
+>>>> perf_event_header *hdr,
+>>>> --
+>>>> 2.30.2
+>>>
