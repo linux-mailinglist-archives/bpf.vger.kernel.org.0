@@ -2,64 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0068B6974B3
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 04:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8653A6974C7
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 04:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjBODNm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 22:13:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        id S229597AbjBODUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 22:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjBODNm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 22:13:42 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F572A16B
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 19:13:41 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-52ec7c792b1so160915247b3.5
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 19:13:41 -0800 (PST)
+        with ESMTP id S229526AbjBODUY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 22:20:24 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A940241D6;
+        Tue, 14 Feb 2023 19:20:23 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id dr8so44866905ejc.12;
+        Tue, 14 Feb 2023 19:20:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=A/AAFTBuE2KaU7hLwkAk2+VtBqEh4PsWDoE3E/98iw8=;
-        b=q4IugXwFRMDzBMgVurjkAA4NYgocRL5Xu+i+12j7/3P32DB0ItB17+3TarXbLxwK9f
-         nUk63uOp8AJ1XqQE/VNlS+HjIaBK0uSBbHlASuKQyLK8pRFqEiFPB0jwDW7UIM12n67X
-         oAQZzBdC/C3d9LlBw3AaJo21OZRpJ/tbWyHQNC1xPWQE1mFHXN5yitofdO6K/joy6i2m
-         WLYH3uwu1mmTrX4aksFNn2/qfRqepndhJa/3pSkwLF6HbB7QE4at/Tem2qQXi2HjPmRN
-         5fsZXa/gD4w5K4GaHSaodJyOT26yB8WWTM06xT5Hthc3hI7OTBPiAOe939GKTPjnAKNB
-         Cegw==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MVTV7J8dNFxFa/D5iy9X5YDRMbmFZSzQ8pjo81gKHQo=;
+        b=Et60NALXt1hiBg38fHeOJMzLGMk8qE1QEr1HeBk67urDbk49kIGw0+RTt/wTKbFveE
+         DYAKU8LhrqAufzFiA0g44beOI7pbNNoEy9ebDxgn7nM1OZvT5QvjY/j5QBOdUx2vFOIz
+         1cXIKZRUUaTNQ6xl+lDmatm0TSBYa+k6aQsawvCkluybZVFDgiqy+Ng/VOkKurtj/D+K
+         IpAniTb/ZdRlgd26th1hWdkR78A6RoEFUPnN2YVVtzUsPLF+VakFLkN6U9e7vaN+KsF7
+         1JT7LW/UCMPTGYtx/IosvkKgGBetTKLftfxAQ4l2Tu9lk0/XlF/0SNDgZMS8rSimTDSg
+         fKGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A/AAFTBuE2KaU7hLwkAk2+VtBqEh4PsWDoE3E/98iw8=;
-        b=s5ZJsi0qo3aPNLuDsfERRYpsLwv+jJskE3Fw0fnE+9zsgnlvRDwSxxMVkBBQEkFZE2
-         jKPGdRNXUcAC3/DZd7tT4IyuDhpMhbgIxIhed1gzpBKUvg+m0ho2j8MrgTtoKZlf+7sD
-         nWQy14xH629TUrh7+kORWT+17WlRAmokiOQahiKbA4ZJQmfrjmDdB64h/1M7buIAGX4J
-         oNOeiTyD82FYliWzHoWW8onGuq3zgqltX/r94qpOxjAnqF/GFPN7b6p0aDZGPs4DGgh6
-         ASQM7GyAO7T3deO0axtsptoPHTVzTIECWKFKQDXQrB74n7UuXPhX3ojDl/p7etTWs8Zs
-         Vy3w==
-X-Gm-Message-State: AO0yUKX+rB/cf383ojmPm/51vOavzm6LbxmcxIXLgR1B4616PPDaNoOk
-        Xm8cis00vNA5s2vIlUJBCZ36UTY=
-X-Google-Smtp-Source: AK7set9l0PcIefitkqpmg2i1QXn4gcjLUKGr79VYuxwCD5p1Fvxze5f31TBtVVHYoMLK91IZLr9NKzY=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a5b:52:0:b0:801:e845:5eb9 with SMTP id
- e18-20020a5b0052000000b00801e8455eb9mr92439ybp.469.1676430820366; Tue, 14 Feb
- 2023 19:13:40 -0800 (PST)
-Date:   Tue, 14 Feb 2023 19:13:38 -0800
-In-Reply-To: <20230215001439.748696-1-andrii@kernel.org>
-Mime-Version: 1.0
-References: <20230215001439.748696-1-andrii@kernel.org>
-Message-ID: <Y+xN4kdLsSB7kJVJ@google.com>
-Subject: Re: [PATCH bpf-next 0/3] Fix BPF verifier global subprog context
- argument logic
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MVTV7J8dNFxFa/D5iy9X5YDRMbmFZSzQ8pjo81gKHQo=;
+        b=3ljY1WgWBHT6qrlRvvLfpmksqOcvDkhNQkjEsX8Jlv/m7mxAqLbXh1JUPd+4BZNj9E
+         XJIspra5LZ25Uu3Td4347l5cnc5RIOLPfxwR+6S7PFO3GU8YbSneaY2rMO8SgnzMTUcL
+         Y/Ldt9wN5PQ6SGPpJCmngHwcmG8MpetyED9q3cJ/mQGFb0WU6u6Q/tCSuxEz8QxjQdBe
+         EKs0f1eLqoFkPS3nP/QSdKPNOm5oQI3br3q3okMiQxRCvNSbQJlidqXpFIAOynt8Lz2k
+         W/dmBBMQhLjcINQxiBaCUuvRIKsKpuqmExJgKbe7IUphnxeyheBcQmlClCCpzXef6czT
+         lgng==
+X-Gm-Message-State: AO0yUKWC3d8jzEMn16XG8oJyfyCJAVTenimnEyW00UbLdJT++frcix1W
+        vI7fCGXEYYv8meTbMTYrk0OzsSaradshnuGywSVQOkiRbJY=
+X-Google-Smtp-Source: AK7set/CccW0OVkhUL62a/+dY74R81zwPyHhn+FYNX5hOD2OqMauppu9rWASHDXgVNQPxI9RuYgP+B8YdkOD94HoSKk=
+X-Received: by 2002:a17:906:bcd5:b0:8ae:9f1e:a1c5 with SMTP id
+ lw21-20020a170906bcd500b008ae9f1ea1c5mr346690ejb.3.1676431221799; Tue, 14 Feb
+ 2023 19:20:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20230214235051.22938-1-alexei.starovoitov@gmail.com> <Y+xLXcmf1pxl43dn@google.com>
+In-Reply-To: <Y+xLXcmf1pxl43dn@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 14 Feb 2023 19:20:10 -0800
+Message-ID: <CAADnVQLCdMMGm1TGDbC5eUSSZWF+-au5cPr1OsKUz=SxM4bnCA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix map_kptr test.
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,52 +71,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02/14, Andrii Nakryiko wrote:
-> Fix kernel bug in determining whether global subprog's argument is  
-> PTR_TO_CTX,
-> which is done based on type names. Currently KPROBE programs are broken.
+On Tue, Feb 14, 2023 at 7:02 PM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> On 02/14, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+>
+> > The compiler is optimizing out majority of unref_ptr read/writes, so the
+> > test
+> > wasn't testing much. For example, one could delete '__kptr' tag from
+> > 'struct prog_test_ref_kfunc __kptr *unref_ptr;' and the test would
+> > still "pass".
+>
+> > Convert it to volatile stores. Confirmed by comparing bpf asm
+> > before/after.
+>
+> > Fixes: 2cbc469a6fc3 ("selftests/bpf: Add C tests for kptr")
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>
+> Acked-by: Stanislav Fomichev <sdf@google.com>
+>
+> > ---
+> >   tools/testing/selftests/bpf/progs/map_kptr.c | 12 +++++++-----
+> >   1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> > diff --git a/tools/testing/selftests/bpf/progs/map_kptr.c
+> > b/tools/testing/selftests/bpf/progs/map_kptr.c
+> > index eb8217803493..228ec45365a8 100644
+> > --- a/tools/testing/selftests/bpf/progs/map_kptr.c
+> > +++ b/tools/testing/selftests/bpf/progs/map_kptr.c
+> > @@ -62,21 +62,23 @@ extern struct prog_test_ref_kfunc *
+> >   bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int
+> > b) __ksym;
+> >   extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
+> > __ksym;
+>
+>
+> [..]
+>
+> > +#define WRITE_ONCE(x, val) ((*(volatile typeof(x) *) &(x)) = (val))
+>
+> (thinking out loud)
+>
+> Maybe time for us to put these into some common headers in the
+> selftests.
+> progs/test_ksyms_btf_null_check.c READ_ONCE as well..
 
-> Add few tests validating that KPROBE context can be passed to global  
-> subprog.
-> For that also refactor test_global_funcs test to use test_loader  
-> framework.
-
-Acked-by: Stanislav Fomichev <sdf@google.com>
-
-That endless loop+again in the first patch raised my brows a bit.
-But I'm assuming they are fine since we are working on a verified
-btf_vmlinux at this point...
-
-
-> Andrii Nakryiko (3):
->    bpf: fix global subprog context argument resolution logic
->    selftests/bpf: convert test_global_funcs test to test_loader framework
->    selftests/bpf: add global subprog context passing tests
-
->   kernel/bpf/btf.c                              |  13 +-
->   .../bpf/prog_tests/test_global_funcs.c        | 133 +++++-------------
->   .../selftests/bpf/progs/test_global_func1.c   |   6 +-
->   .../selftests/bpf/progs/test_global_func10.c  |   4 +-
->   .../selftests/bpf/progs/test_global_func11.c  |   4 +-
->   .../selftests/bpf/progs/test_global_func12.c  |   4 +-
->   .../selftests/bpf/progs/test_global_func13.c  |   4 +-
->   .../selftests/bpf/progs/test_global_func14.c  |   4 +-
->   .../selftests/bpf/progs/test_global_func15.c  |   4 +-
->   .../selftests/bpf/progs/test_global_func16.c  |   4 +-
->   .../selftests/bpf/progs/test_global_func17.c  |   4 +-
->   .../selftests/bpf/progs/test_global_func2.c   |  43 +++++-
->   .../selftests/bpf/progs/test_global_func3.c   |  10 +-
->   .../selftests/bpf/progs/test_global_func4.c   |  55 +++++++-
->   .../selftests/bpf/progs/test_global_func5.c   |   4 +-
->   .../selftests/bpf/progs/test_global_func6.c   |   4 +-
->   .../selftests/bpf/progs/test_global_func7.c   |   4 +-
->   .../selftests/bpf/progs/test_global_func8.c   |   4 +-
->   .../selftests/bpf/progs/test_global_func9.c   |   4 +-
->   .../bpf/progs/test_global_func_ctx_args.c     | 105 ++++++++++++++
->   20 files changed, 292 insertions(+), 125 deletions(-)
->   create mode 100644  
-> tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-
-> --
-> 2.30.2
-
+Not quite. There is no READ_ONCE there. Only comment about it :)
+But yeah a follow up is necessary, but it's not that simple.
+I think it's ok to use WRITE_ONCE here, but
+saying it's a generic thing for all bpf programs to use
+is not something we can do without defining a BPF memory model.
+So it's a whole can of worms that I'd rather not open right now.
