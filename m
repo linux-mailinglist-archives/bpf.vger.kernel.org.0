@@ -2,187 +2,267 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4D7697E40
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 15:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE660697E66
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 15:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjBOOVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 09:21:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
+        id S229550AbjBOOda (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 09:33:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjBOOVE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 09:21:04 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2049.outbound.protection.outlook.com [40.107.220.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4486181;
-        Wed, 15 Feb 2023 06:21:03 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c4bSiCO9mt5Y9+7XioKSb5E+CSsHx1u/A0WmPOEfbjvslzE89Wkv8QGipoO1R2RcBCSzgqNENzhBHmELr+FRxtoAw6yDmnV+r5SiahyUEA+VWKlJAt4z5zAmvFy9jx9Bxdp5G2OcKEmhfLraW7MAWaXcOIMHyHAoAko1epKBNVMfFesTBi4Uf2shH5cJ5W6xHlvzX5PDILv1v7VBx8hZ9X7xzvLmImGpVESFUmhHMzWgHlL/+u/m8+0RvbN3w8Uo5nIuwQQeWWdYUDW3tcgyuF1T4NN7x0Z6NMrP0MCZooFaS2xGDJdTtbn/o86e2Jepl0FUtZ10ITtAkkWGuEMKFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PpghRHhP48F6cyIWS3wNILyM8ZqA5uE+/H1tIRPRi9s=;
- b=MEb9WWa5RFG2luVOzzhkOsFFsxN/SZ2Fj1hqq8t86PajisWrEwYiujAsmCLE8dYG7hcVNGPBFgdzOQYf0tvQbS5Sl+YFbIXqktyIz+GTQdnoPv9N/3/oB+WmIiv7a9bMZDru6cbH9xRvIzQWYm9z1z9Gi8U7Yo3IBQFPkwCwy+bMLDE1h2EF9gaHXFCSkvjre1UXkCXGqThxnqGfLPE939PE2gSZSm8MAYOVx0zj17sxGXP7jRfmXqiNhEvj09CxD4u+J410ZtYxYvscCW95+yX74ukHfC3NXFBw0jbBK0Ki4PGFYzsxzHHc4Ya9BaR/i/lu57luIFUVupdFogt11Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PpghRHhP48F6cyIWS3wNILyM8ZqA5uE+/H1tIRPRi9s=;
- b=DkM2N/NLnkY9XtKm5oGSq5hK5MEo1kWXXPGM3ZA1JXUll00kefn41HcTU1WHlth9IVa5Bx0h1BIWE9KrFZTVwc0NjknPJaZy83WYuCpkAX0oY/D6K+GNSYT4Poeuu1bj7a3lBpDZOAz/dc4V0hzrd1QlupfCaqidr14OA6O/8Dk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB2504.namprd12.prod.outlook.com (2603:10b6:4:b5::19) by
- DM4PR12MB5344.namprd12.prod.outlook.com (2603:10b6:5:39a::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6086.26; Wed, 15 Feb 2023 14:20:57 +0000
-Received: from DM5PR12MB2504.namprd12.prod.outlook.com
- ([fe80::93f9:c1df:8ca3:fc5b]) by DM5PR12MB2504.namprd12.prod.outlook.com
- ([fe80::93f9:c1df:8ca3:fc5b%7]) with mapi id 15.20.6086.024; Wed, 15 Feb 2023
- 14:20:57 +0000
-Date:   Wed, 15 Feb 2023 22:20:26 +0800
-From:   Huang Rui <ray.huang@amd.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Power Management <linux-pm@vger.kernel.org>,
-        Linux BPF Development <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        "Yuan, Perry" <Perry.Yuan@amd.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Karny, Wyes" <Wyes.Karny@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 3/3] Documentation: amd-pstate: disambiguate user space
- sections
-Message-ID: <Y+zqKk1BTvIe5+5r@amd.com>
-References: <20230215123253.41552-1-bagasdotme@gmail.com>
- <20230215123253.41552-4-bagasdotme@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230215123253.41552-4-bagasdotme@gmail.com>
-X-ClientProxiedBy: SI2P153CA0012.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::15) To DM5PR12MB2504.namprd12.prod.outlook.com
- (2603:10b6:4:b5::19)
+        with ESMTP id S229622AbjBOOd2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 09:33:28 -0500
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5843638E8E;
+        Wed, 15 Feb 2023 06:33:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676471604; x=1708007604;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pjbSoT8ChIHW0+uvtStscNPPtzAWkHto7nEOVYxT0GM=;
+  b=cTivuFDXn1UDlP6Bn+Vzx7B7XLpF8LUQW9cY2z+/xp1V7aRu0vi8U5fr
+   dkdxN0NNr46iynBXLZqbERBjWNLdrNjk6xTLhJMgW9QUmKO5UNIoonqMV
+   4I+TcF7Mfp+HcCXIWdjwR4aOVSK9ocVJZ0g5pWquZaXVleAsx8CeYt1tk
+   09Z5gZ/oUS5ZOQ0onUUiryS9NyggFrOOHJ6pQTmKEnfv/WBjbjwh9/Rjj
+   CswBrprlVBi1cfV0+QlKWGz8f6lje5ZneznnfsCyeacThXkJCL1LghT5s
+   0t3XrC5gkZEi6iGCadkZPLbUahNug4msUlBBBCY2KPJRf5mJGi6DIBxNF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="358862084"
+X-IronPort-AV: E=Sophos;i="5.97,299,1669104000"; 
+   d="scan'208";a="358862084"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2023 06:33:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="998508215"
+X-IronPort-AV: E=Sophos;i="5.97,299,1669104000"; 
+   d="scan'208";a="998508215"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Feb 2023 06:33:12 -0800
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org, michal.kubiak@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf] xsk: check IFF_UP earlier in Tx path
+Date:   Wed, 15 Feb 2023 15:33:09 +0100
+Message-Id: <20230215143309.13145-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR12MB2504:EE_|DM4PR12MB5344:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5368bbf0-9e65-4a48-14da-08db0f5fdaa2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bYK1eFOj+8z3j5jWMC0Fq8DIStngzsRXEB7vvvzwJnPEgCIi8Up696lXrLtMV7IioTE1oy8ahBMZZQC5XtsrKFgspO9fHsjJiOyKUFAIRdXzInBCKcLBcmKt0LTbJHbYSKLqHMIy5zh27QM867bQH9eFXERjmEkXNw2YoGrmLjcBHuxKE//09hKhjx5R9Y/o9kGYYAt2woK1hq1v/sF+ZBOeqlougesFeKLWY0L4nLVpMi4GMjHcBfye4lsuotYcmsJ2ETSkIqmRJlHfYpf5CIrw7XMiqoH9ezXZdBvKB55A6vIUHkNmHCXFM8c04Dk++r+SXhrN9MCPlaK685SQTEjy1Jj2dhOECzXJCDG/ekQNwUsV5++W2bMUjiJNJyKbSihbgjwGTJHnNRp/Sar+Yb4yvWHH9901cpdHhwpGKTCQNpGjR0SQMm9WlD2bAbbweepre6+Gi72L0RrIuFWL5wsaKRSpZTkZSYWT/49p0biIdNOBs64Td+EJxG9uwUTqTCdq8jRQAyoorOnoM/Y+Gvv5TgxblxRDZ+FTrFF62uBDPWXe/5aagLHvWoZohWugxBzvQLD/L0d59JyAiEclrNBlE4/K1K5FKy7s/fdn/GRgVlpXMJnIp/s+p/9VP/Ml
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB2504.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(346002)(396003)(366004)(39860400002)(376002)(136003)(451199018)(5660300002)(2616005)(6916009)(36756003)(6666004)(478600001)(66556008)(966005)(86362001)(66476007)(316002)(4326008)(54906003)(66946007)(6486002)(6512007)(8676002)(26005)(8936002)(186003)(41300700001)(6506007)(2906002)(38100700002)(83380400001)(7416002)(66899018);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EiK39BGoWO5EC4pGFMrI8r7x0w5mmWOCYfCdyUZRZc8S/rOIwecMZDXgRRU1?=
- =?us-ascii?Q?0/dtwxCZNW9AUTBm39ZvxDk/ijQvTy8aN1xb0RPkWTsq58dGn0X3Gqq8RxyX?=
- =?us-ascii?Q?wrywAkch9iAbaIUJ99KSNnqhZ+b0WRr+hbnVqrsXxYIA2X2GfiPPwmGn3le+?=
- =?us-ascii?Q?vzTt7fwUPKlGp69rJ75Hwl7UYxmJt8ZRHBdMCvebV5MqoL/Uwu9xqzyhNplU?=
- =?us-ascii?Q?u1N4CKxxk+Caer55auUu8yjDtsLkfFKbBRjejCLYkVDLhR+o7cDdCeSRG59R?=
- =?us-ascii?Q?XsL5q57wxd77UpsZrGXJcy7Vyz7/mKmJkvD0jW982kW1nTgb+V6UYU1zxi4y?=
- =?us-ascii?Q?lFkm3ayc2SwLRQX1Gtfucwh1t7awoFPC0hrgdFp1FQj0czXeBqJwDSEcp9Sw?=
- =?us-ascii?Q?ObvuJHi5E+QX9SKjax9xgdFlnwT1t6d16BzvH+i/9CpeTh8V3X23pb3GBLA+?=
- =?us-ascii?Q?E12olnVfuMhBLeI5+En7uAK61fXcYHi4yUsiMQDVuTHboZQBN2fwLZxGfl7O?=
- =?us-ascii?Q?zsMsGrMltFb/VLQZbmJd03pMuS4HHGAQ8SNDqMQQU3EI6NFmdh5BA5E29J/g?=
- =?us-ascii?Q?KbkL6X8tTt4PDEaevVWUloCLxnFX5wahAEQs2Rr0nxKC75PAWSGodrtCuQHA?=
- =?us-ascii?Q?D4BIikfoBvetPG56ujle3xsFgO35OhapVIQWKs3MUsyaLfxwU32P08y6yiiX?=
- =?us-ascii?Q?PmTdxVHlESjsqwMzlNK93jfvjkxDZlkqCaUGYCgkZl/ihbuUAzeaZRmVE76E?=
- =?us-ascii?Q?6XRL6S5t+r5RavmmcBki6jWVHgaOMaEElA4sSnbER+pkuq0NJQZI3EwoRq0I?=
- =?us-ascii?Q?ZhxeVtTl8uuI1703vBJv7M6hJxbQs2fID25WSnRE+iXOKbp2fGNAtuHnS37+?=
- =?us-ascii?Q?+J2BPnkuDTosDUPhTD/pPda7NzeeImC6iAN8rybcubYOYqQofftU5IotioHq?=
- =?us-ascii?Q?5r2b1/UolTdU31/o0ryz6jhk89bRno3wsnpJnTPuKCknwswHY/6f56GaZkqx?=
- =?us-ascii?Q?XtkD2ured1c0/6PjqPHmxTKtrVhh2P1vSeV6FP5jlBO3FiOlB1j1Bp6G0NpA?=
- =?us-ascii?Q?3ycbzI5fEclqrnjQnsztfasTcetsH9NKy2Oqyd2U2tbsoYncdTWPMuwR8cM4?=
- =?us-ascii?Q?DvMJEr8qyKQprB/Z2UdAqhigzYGqZM4qRyhyTYplHHBWUqaDWFEDUwja80bt?=
- =?us-ascii?Q?+hBAkXzqCKGLQdxP78hSjAqp26qTlgZ2T8sAZlgHEcBYHPUXGk+2DU+ENx2g?=
- =?us-ascii?Q?cpdtuaSuB+juT2DMqgsacjyWQ1xXo1aVZuA92v83LSsuYLjVM3vQ1cXlKm+7?=
- =?us-ascii?Q?Jjn3wgkfZE8pqoaWJvEMXvlTZcBcwLcmQNnlmmq93VDSqPaugSO28hd1MMYr?=
- =?us-ascii?Q?kvragXKxHzRXAd/7HjtRKBU7ubGYA5MGAYi7gYVwN6GyDkKaN3lniFu5hABy?=
- =?us-ascii?Q?xOAvyNm2XeUiZBAryW9s3DNsa96DBsKz93WzB6vTLHyx7YTolxZBVSlycWOj?=
- =?us-ascii?Q?Xy+FhWdcyM4lo2OVc6aCubenTYtDzPdR9nQQUhnm89bLftBiToQaUYD44agH?=
- =?us-ascii?Q?EH3A904vccsRXnNYA5X+rWxXBgtARlmfC2jqXtt9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5368bbf0-9e65-4a48-14da-08db0f5fdaa2
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB2504.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2023 14:20:57.0546
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Vi8afux5p3XqMRJduVvRjW6fRPy5/tVVrhZ29thNYI97zNwHPZeq9Wc7Q2QRvkqw5eYePle1GZ0WgIGUol+fPg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5344
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 15, 2023 at 08:32:53PM +0800, Bagas Sanjaya wrote:
-> kernel test robot reported htmldocs warning:
-> 
-> Documentation/admin-guide/pm/amd-pstate.rst:343: WARNING: duplicate label admin-guide/pm/amd-pstate:user space interface in ``sysfs``, other instance in Documentation/admin-guide/pm/amd-pstate.rst
-> 
-> The documentation contains two sections with the same "User Space Interface
-> in ``sysfs``" title. The first one deals with per-policy sysfs and the
-> second one is about general attributes (currently only global attributes
-> are documented).
-> 
-> Disambiguate title text of both sections to fix the warning.
-> 
-> Link: https://lore.kernel.org/linux-doc/202302151041.0SWs1RHK-lkp@intel.com/
-> Fixes: b9e6a2d47b2565 ("Documentation: amd-pstate: introduce new global sysfs attributes")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Xsk Tx can be triggered via either sendmsg() or poll() syscalls. These
+two paths share a call to common function xsk_xmit() which has two
+sanity checks within. A pseudo code example to show the two paths:
 
-Acked-by: Huang Rui <ray.huang@amd.com>
+__xsk_sendmsg() :                       xsk_poll():
+if (unlikely(!xsk_is_bound(xs)))        if (unlikely(!xsk_is_bound(xs)))
+    return -ENXIO;                          return mask;
+if (unlikely(need_wait))                (...)
+    return -EOPNOTSUPP;                 xsk_xmit()
+mark napi id
+(...)
+xsk_xmit()
 
-> ---
->  Documentation/admin-guide/pm/amd-pstate.rst | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
-> index bca9a0ebee3ed8..6e5298b521b18b 100644
-> --- a/Documentation/admin-guide/pm/amd-pstate.rst
-> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
-> @@ -230,8 +230,8 @@ with :c:macro:`MSR_AMD_CPPC_ENABLE` or ``cppc_set_enable``, it will respond
->  to the request from AMD P-States.
->  
->  
-> -User Space Interface in ``sysfs``
-> -==================================
-> +User Space Interface in ``sysfs`` - Per-policy control
-> +======================================================
->  
->  ``amd-pstate`` exposes several global attributes (files) in ``sysfs`` to
->  control its functionality at the system level. They are located in the
-> @@ -339,8 +339,8 @@ processor must provide at least nominal performance requested and go higher if c
->  operating conditions allow.
->  
->  
-> -User Space Interface in ``sysfs``
-> -=================================
-> +User Space Interface in ``sysfs`` - General
-> +===========================================
->  
->  Global Attributes
->  -----------------
-> -- 
-> An old man doll... just what I always wanted! - Clara
-> 
+xsk_xmit():
+if (unlikely(!(xs->dev->flags & IFF_UP)))
+	return -ENETDOWN;
+if (unlikely(!xs->tx))
+	return -ENOBUFS;
+
+As it can be observed above, in sendmsg() napi id can be marked on
+interface that was not brought up and this causes a NULL ptr
+dereference:
+
+[31757.505631] BUG: kernel NULL pointer dereference, address: 0000000000000018
+[31757.512710] #PF: supervisor read access in kernel mode
+[31757.517936] #PF: error_code(0x0000) - not-present page
+[31757.523149] PGD 0 P4D 0
+[31757.525726] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[31757.530154] CPU: 26 PID: 95641 Comm: xdpsock Not tainted 6.2.0-rc5+ #40
+[31757.536871] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+[31757.547457] RIP: 0010:xsk_sendmsg+0xde/0x180
+[31757.551799] Code: 00 75 a2 48 8b 00 a8 04 75 9b 84 d2 74 69 8b 85 14 01 00 00 85 c0 75 1b 48 8b 85 28 03 00 00 48 8b 80 98 00 00 00 48 8b 40 20 <8b> 40 18 89 85 14 01 00 00 8b bd 14 01 00 00 81 ff 00 01 00 00 0f
+[31757.570840] RSP: 0018:ffffc90034f27dc0 EFLAGS: 00010246
+[31757.576143] RAX: 0000000000000000 RBX: ffffc90034f27e18 RCX: 0000000000000000
+[31757.583389] RDX: 0000000000000001 RSI: ffffc90034f27e18 RDI: ffff88984cf3c100
+[31757.590631] RBP: ffff88984714a800 R08: ffff88984714a800 R09: 0000000000000000
+[31757.597877] R10: 0000000000000001 R11: 0000000000000000 R12: 00000000fffffffa
+[31757.605123] R13: 0000000000000000 R14: 0000000000000003 R15: 0000000000000000
+[31757.612364] FS:  00007fb4c5931180(0000) GS:ffff88afdfa00000(0000) knlGS:0000000000000000
+[31757.620571] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[31757.626406] CR2: 0000000000000018 CR3: 000000184b41c003 CR4: 00000000007706e0
+[31757.633648] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[31757.640894] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[31757.648139] PKRU: 55555554
+[31757.650894] Call Trace:
+[31757.653385]  <TASK>
+[31757.655524]  sock_sendmsg+0x8f/0xa0
+[31757.659077]  ? sockfd_lookup_light+0x12/0x70
+[31757.663416]  __sys_sendto+0xfc/0x170
+[31757.667051]  ? do_sched_setscheduler+0xdb/0x1b0
+[31757.671658]  __x64_sys_sendto+0x20/0x30
+[31757.675557]  do_syscall_64+0x38/0x90
+[31757.679197]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[31757.687969] Code: 8e f6 ff 44 8b 4c 24 2c 4c 8b 44 24 20 41 89 c4 44 8b 54 24 28 48 8b 54 24 18 b8 2c 00 00 00 48 8b 74 24 10 8b 7c 24 08 0f 05 <48> 3d 00 f0 ff ff 77 3a 44 89 e7 48 89 44 24 08 e8 b5 8e f6 ff 48
+[31757.707007] RSP: 002b:00007ffd49c73c70 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
+[31757.714694] RAX: ffffffffffffffda RBX: 000055a996565380 RCX: 00007fb4c5727c16
+[31757.721939] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+[31757.729184] RBP: 0000000000000040 R08: 0000000000000000 R09: 0000000000000000
+[31757.736429] R10: 0000000000000040 R11: 0000000000000293 R12: 0000000000000000
+[31757.743673] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[31757.754940]  </TASK>
+
+To fix this, let's make xsk_xmit a function that will be responsible for
+generic Tx, where RCU is handled accordingly and pull out sanity checks
+and xs->zc handling. Populate sanity checks to __xsk_sendmsg() and
+xsk_poll().
+
+Fixes: ca2e1a627035 ("xsk: Mark napi_id on sendmsg()")
+Fixes: 18b1ab7aa76b ("xsk: Fix race at socket teardown")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+ net/xdp/xsk.c | 59 ++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 33 insertions(+), 26 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 9f0561b67c12..13f62d2402e7 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -511,7 +511,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 	return skb;
+ }
+ 
+-static int xsk_generic_xmit(struct sock *sk)
++static int __xsk_generic_xmit(struct sock *sk)
+ {
+ 	struct xdp_sock *xs = xdp_sk(sk);
+ 	u32 max_batch = TX_BATCH_SIZE;
+@@ -594,22 +594,13 @@ static int xsk_generic_xmit(struct sock *sk)
+ 	return err;
+ }
+ 
+-static int xsk_xmit(struct sock *sk)
++static int xsk_generic_xmit(struct sock *sk)
+ {
+-	struct xdp_sock *xs = xdp_sk(sk);
+ 	int ret;
+ 
+-	if (unlikely(!(xs->dev->flags & IFF_UP)))
+-		return -ENETDOWN;
+-	if (unlikely(!xs->tx))
+-		return -ENOBUFS;
+-
+-	if (xs->zc)
+-		return xsk_wakeup(xs, XDP_WAKEUP_TX);
+-
+ 	/* Drop the RCU lock since the SKB path might sleep. */
+ 	rcu_read_unlock();
+-	ret = xsk_generic_xmit(sk);
++	ret = __xsk_generic_xmit(sk);
+ 	/* Reaquire RCU lock before going into common code. */
+ 	rcu_read_lock();
+ 
+@@ -627,17 +618,31 @@ static bool xsk_no_wakeup(struct sock *sk)
+ #endif
+ }
+ 
++static int xsk_check_common(struct xdp_sock *xs)
++{
++	if (unlikely(!xsk_is_bound(xs)))
++		return -ENXIO;
++	if (unlikely(!(xs->dev->flags & IFF_UP)))
++		return -ENETDOWN;
++
++	return 0;
++}
++
+ static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+ {
+ 	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
+ 	struct sock *sk = sock->sk;
+ 	struct xdp_sock *xs = xdp_sk(sk);
+ 	struct xsk_buff_pool *pool;
++	int err;
+ 
+-	if (unlikely(!xsk_is_bound(xs)))
+-		return -ENXIO;
++	err = xsk_check_common(xs);
++	if (err)
++		return err;
+ 	if (unlikely(need_wait))
+ 		return -EOPNOTSUPP;
++	if (unlikely(!xs->tx))
++		return -ENOBUFS;
+ 
+ 	if (sk_can_busy_loop(sk)) {
+ 		if (xs->zc)
+@@ -649,8 +654,11 @@ static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len
+ 		return 0;
+ 
+ 	pool = xs->pool;
+-	if (pool->cached_need_wakeup & XDP_WAKEUP_TX)
+-		return xsk_xmit(sk);
++	if (pool->cached_need_wakeup & XDP_WAKEUP_TX) {
++		if (xs->zc)
++			return xsk_wakeup(xs, XDP_WAKEUP_TX);
++		return xsk_generic_xmit(sk);
++	}
+ 	return 0;
+ }
+ 
+@@ -670,11 +678,11 @@ static int __xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int
+ 	bool need_wait = !(flags & MSG_DONTWAIT);
+ 	struct sock *sk = sock->sk;
+ 	struct xdp_sock *xs = xdp_sk(sk);
++	int err;
+ 
+-	if (unlikely(!xsk_is_bound(xs)))
+-		return -ENXIO;
+-	if (unlikely(!(xs->dev->flags & IFF_UP)))
+-		return -ENETDOWN;
++	err = xsk_check_common(xs);
++	if (err)
++		return err;
+ 	if (unlikely(!xs->rx))
+ 		return -ENOBUFS;
+ 	if (unlikely(need_wait))
+@@ -713,21 +721,20 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+ 	sock_poll_wait(file, sock, wait);
+ 
+ 	rcu_read_lock();
+-	if (unlikely(!xsk_is_bound(xs))) {
+-		rcu_read_unlock();
+-		return mask;
+-	}
++	if (xsk_check_common(xs))
++		goto skip_tx;
+ 
+ 	pool = xs->pool;
+ 
+ 	if (pool->cached_need_wakeup) {
+ 		if (xs->zc)
+ 			xsk_wakeup(xs, pool->cached_need_wakeup);
+-		else
++		else if (xs->tx)
+ 			/* Poll needs to drive Tx also in copy mode */
+-			xsk_xmit(sk);
++			xsk_generic_xmit(sk);
+ 	}
+ 
++skip_tx:
+ 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
+ 		mask |= EPOLLIN | EPOLLRDNORM;
+ 	if (xs->tx && xsk_tx_writeable(xs))
+-- 
+2.34.1
+
