@@ -2,200 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9056569728F
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 01:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1EA6972A9
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 01:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjBOAO6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 14 Feb 2023 19:14:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        id S231564AbjBOA0b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 19:26:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjBOAO4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 19:14:56 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DBB2FCE9
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 16:14:55 -0800 (PST)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 31F03Igs005560
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 16:14:55 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3nqxkc8eex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 16:14:55 -0800
-Received: from twshared22948.15.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 14 Feb 2023 16:14:53 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id A3724278768CD; Tue, 14 Feb 2023 16:14:48 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: add global subprog context passing tests
-Date:   Tue, 14 Feb 2023 16:14:39 -0800
-Message-ID: <20230215001439.748696-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230215001439.748696-1-andrii@kernel.org>
-References: <20230215001439.748696-1-andrii@kernel.org>
+        with ESMTP id S230196AbjBOA0a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 19:26:30 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC9A2E0E5
+        for <bpf@vger.kernel.org>; Tue, 14 Feb 2023 16:26:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676420788; x=1707956788;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CzNKNpDpsPp9Q6X5ZRGUEKmuoVnRfG09vhZj53z3rlY=;
+  b=FryLC5Da6+4vgeaJPHUJoQjG79aaDbarjAmOdlo296i+j9xBxa06KLPM
+   xRKu7p9Lj87xtWs6JOP2+26T+6PxDdrFK5kFBPXt4njXBAlTxxQHijgzs
+   UtOgKqwYSPRo3Qy1Rr0Cytoj5v6vzy0yKqj/U+a/bfPKZ8I3jyi6Rq1X7
+   16R+QDU/TibY098OT0mNn/Vo1Sih4NvlM+b/2gdh4YLTPP3TqEOfS37ZW
+   tvEDxV5eeNXwk0paOWPRmY6ziEHIUHEx2QWNH4epVaeP+3c2K8tZKZLuJ
+   Pd+rbmlTifXuVhoA2Xpz6kM4jxXM2t0LCmetZLUGhhngIeTvMq5ZLL+Wd
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="310938430"
+X-IronPort-AV: E=Sophos;i="5.97,298,1669104000"; 
+   d="scan'208";a="310938430"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2023 16:26:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="998269639"
+X-IronPort-AV: E=Sophos;i="5.97,298,1669104000"; 
+   d="scan'208";a="998269639"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 14 Feb 2023 16:26:26 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pS5cv-0008se-2Q;
+        Wed, 15 Feb 2023 00:26:25 +0000
+Date:   Wed, 15 Feb 2023 08:26:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
+        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, Kui-Feng Lee <kuifeng@meta.com>
+Subject: Re: [PATCH bpf-next 1/7] bpf: Create links for BPF struct_ops maps.
+Message-ID: <202302150809.TbWg3iN6-lkp@intel.com>
+References: <20230214221718.503964-2-kuifeng@meta.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: pDYToa1FZKL_WPayCPGwcAb5i4a3QAPb
-X-Proofpoint-ORIG-GUID: pDYToa1FZKL_WPayCPGwcAb5i4a3QAPb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-14_16,2023-02-14_01,2023-02-09_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230214221718.503964-2-kuifeng@meta.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests validating that it's possible to pass context arguments into
-global subprogs for various types of programs, including a particularly
-tricky KPROBE programs (which cover kprobes, uprobes, USDTs, a vast and
-important class of programs).
+Hi Kui-Feng,
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../bpf/prog_tests/test_global_funcs.c        |   2 +
- .../bpf/progs/test_global_func_ctx_args.c     | 105 ++++++++++++++++++
- 2 files changed, 107 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+Thank you for the patch! Perhaps something to improve:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-index 2ff4d5c7abfc..e0879df38639 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-@@ -18,6 +18,7 @@
- #include "test_global_func15.skel.h"
- #include "test_global_func16.skel.h"
- #include "test_global_func17.skel.h"
-+#include "test_global_func_ctx_args.skel.h"
- 
- void test_test_global_funcs(void)
- {
-@@ -38,4 +39,5 @@ void test_test_global_funcs(void)
- 	RUN_TESTS(test_global_func15);
- 	RUN_TESTS(test_global_func16);
- 	RUN_TESTS(test_global_func17);
-+	RUN_TESTS(test_global_func_ctx_args);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-new file mode 100644
-index 000000000000..4b765f117180
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+static long stack[256];
-+
-+/*
-+ * KPROBE contexts
-+ */
-+
-+__weak int kprobe_typedef_ctx_subprog(bpf_user_pt_regs_t *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?kprobe")
-+__success
-+int kprobe_typedef_ctx(void *ctx)
-+{
-+	return kprobe_typedef_ctx_subprog(ctx);
-+}
-+
-+#define pt_regs_struct_t typeof(*(__PT_REGS_CAST((struct pt_regs *)NULL)))
-+
-+__weak int kprobe_struct_ctx_subprog(pt_regs_struct_t *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?kprobe")
-+__success
-+int kprobe_resolved_ctx(void *ctx)
-+{
-+	return kprobe_struct_ctx_subprog(ctx);
-+}
-+
-+/* this is current hack to make this work on old kernels */
-+struct bpf_user_pt_regs_t {};
-+
-+__weak int kprobe_workaround_ctx_subprog(struct bpf_user_pt_regs_t *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?kprobe")
-+__success
-+int kprobe_workaround_ctx(void *ctx)
-+{
-+	return kprobe_workaround_ctx_subprog(ctx);
-+}
-+
-+/*
-+ * RAW_TRACEPOINT contexts
-+ */
-+
-+__weak int raw_tp_ctx_subprog(struct bpf_raw_tracepoint_args *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?raw_tp")
-+__success
-+int raw_tp_ctx(void *ctx)
-+{
-+	return raw_tp_ctx_subprog(ctx);
-+}
-+
-+/*
-+ * RAW_TRACEPOINT_WRITABLE contexts
-+ */
-+
-+__weak int raw_tp_writable_ctx_subprog(struct bpf_raw_tracepoint_args *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?raw_tp")
-+__success
-+int raw_tp_writable_ctx(void *ctx)
-+{
-+	return raw_tp_writable_ctx_subprog(ctx);
-+}
-+
-+/*
-+ * PERF_EVENT contexts
-+ */
-+
-+__weak int perf_event_ctx_subprog(struct bpf_perf_event_data *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?perf_event")
-+__success
-+int perf_event_ctx(void *ctx)
-+{
-+	return perf_event_ctx_subprog(ctx);
-+}
-+
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Kui-Feng-Lee/bpf-Create-links-for-BPF-struct_ops-maps/20230215-061816
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230214221718.503964-2-kuifeng%40meta.com
+patch subject: [PATCH bpf-next 1/7] bpf: Create links for BPF struct_ops maps.
+config: powerpc-allyesconfig (https://download.01.org/0day-ci/archive/20230215/202302150809.TbWg3iN6-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/c186fe88190559d4872279724d598b8d45ba3092
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Kui-Feng-Lee/bpf-Create-links-for-BPF-struct_ops-maps/20230215-061816
+        git checkout c186fe88190559d4872279724d598b8d45ba3092
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=powerpc olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=powerpc SHELL=/bin/bash kernel/bpf/
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202302150809.TbWg3iN6-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/bpf/bpf_struct_ops.c:736:5: warning: no previous prototype for 'link_create_struct_ops_map' [-Wmissing-prototypes]
+     736 | int link_create_struct_ops_map(union bpf_attr *attr, bpfptr_t uattr)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/link_create_struct_ops_map +736 kernel/bpf/bpf_struct_ops.c
+
+   735	
+ > 736	int link_create_struct_ops_map(union bpf_attr *attr, bpfptr_t uattr)
+   737	{
+   738		struct bpf_link_primer link_primer;
+   739		struct bpf_map *map;
+   740		struct bpf_link *link = NULL;
+   741		int err;
+   742	
+   743		map = bpf_map_get(attr->link_create.prog_fd);
+   744		if (map->map_type != BPF_MAP_TYPE_STRUCT_OPS)
+   745			return -EINVAL;
+   746	
+   747		link = kzalloc(sizeof(*link), GFP_USER);
+   748		if (!link) {
+   749			err = -ENOMEM;
+   750			goto err_out;
+   751		}
+   752		bpf_link_init(link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL);
+   753		link->map = map;
+   754	
+   755		err = bpf_link_prime(link, &link_primer);
+   756		if (err)
+   757			goto err_out;
+   758	
+   759		return bpf_link_settle(&link_primer);
+   760	
+   761	err_out:
+   762		bpf_map_put(map);
+   763		kfree(link);
+   764		return err;
+   765	}
+   766	
+
 -- 
-2.30.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
