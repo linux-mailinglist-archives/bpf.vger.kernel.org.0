@@ -2,28 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B15697DD3
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 14:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 340EF697DE7
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 14:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjBONuB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 08:50:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37886 "EHLO
+        id S229751AbjBONxT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 08:53:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjBONtz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 08:49:55 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE292B083;
-        Wed, 15 Feb 2023 05:49:53 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PGzwC40YWz4f3k5v;
-        Wed, 15 Feb 2023 21:49:47 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.67.175.61])
-        by APP1 (Coremail) with SMTP id cCh0CgDnUSz64uxjC3LEDQ--.36740S6;
-        Wed, 15 Feb 2023 21:49:49 +0800 (CST)
-From:   Pu Lehui <pulehui@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        with ESMTP id S229666AbjBONxM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 08:53:12 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2070.outbound.protection.outlook.com [40.107.243.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466EA9ECE;
+        Wed, 15 Feb 2023 05:53:10 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZLNHF/TvxwF+A4NtGZa+uQzVvm+b8Us+Wobi8UwA6knvrKZcLURfzFxybNqi+mkIb4Gfh5cd/APj8I1yQm1E/HpbFbvH0oRJz6QzjX3CYj80DIw8aRQwY23cBj2eDpEPOzC+HilqOCnHiCj+aQyWRWVnqbMwHJ4pb3dGcDqv9su0ppVV3yr3usXJUE4Neo8vxxggy9yCRzySVTlcWPo9NnZ0Y6vfVTjRvgDD4NUIbNEMLKQFrUxI17dOs/E0/q6Wu28AeZu66tFJStWsAlGrEHULDsOGBfagYGwSchwJz4VyBCVWfLBv2yRdLjsSM4qwKr/tiVkvJukY5Wi8WHgP2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eygaEIfp/BCk0yBFZvXYTLPy4s+cXoCjjYs/5Fs/f34=;
+ b=AZPuILiHT79S0aHZuzBcTkxqyz0xSBHB6LrFEmW931xJRwBM3vvmT0wv06L1C3yIJ+5T+mCcaywsQqmYkvHDx8YWyMUiWQ2/rTERSiem9f27XZay6JYe76dPycfVxUBFDzvDE2UB6/VlxnTy7qHySHsQ+0pF1ixw6SHqvKlvmLN1RJ3jIcZ8xxBiggkffpqU/fL1+gney4Itg+OVYMMzw5X3EKBL5brzKH1+tstrkfYS+cngN/3mpbwGICRNO08K/IRHKBOXCROghPzC/jhA+HUmhWXEwGPxQsk95J2yVmIudkj9Q5LYU4xWFWcf9H8dq4lJCkbI9wSVo6kqIZMOYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eygaEIfp/BCk0yBFZvXYTLPy4s+cXoCjjYs/5Fs/f34=;
+ b=kISuFyobFzrmYVJXN2N55zR4EOZQzWCcabcDrASHQjUfV0docyaaFL525/iXAhyOpGbvBcAn6yPnx0zMca14U+I8iWjE90dVZ9YDekErlMNOHoE7QngEsl78wdjnfQLleUU8Twr8XP+dk6LImrtclM50hafiRo+q0HSaQDjQeaE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BY5PR12MB3876.namprd12.prod.outlook.com (2603:10b6:a03:1a7::26)
+ by DM6PR12MB4516.namprd12.prod.outlook.com (2603:10b6:5:2ac::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.12; Wed, 15 Feb
+ 2023 13:53:03 +0000
+Received: from BY5PR12MB3876.namprd12.prod.outlook.com
+ ([fe80::4ac9:c4f8:b0f:a863]) by BY5PR12MB3876.namprd12.prod.outlook.com
+ ([fe80::4ac9:c4f8:b0f:a863%7]) with mapi id 15.20.6086.024; Wed, 15 Feb 2023
+ 13:53:03 +0000
+Date:   Wed, 15 Feb 2023 13:52:46 +0000
+From:   Wyes Karny <wyes.karny@amd.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Power Management <linux-pm@vger.kernel.org>,
+        Linux BPF Development <bpf@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Huang Rui <ray.huang@amd.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -33,393 +58,134 @@ Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Guo Ren <guoren@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf-next v1 4/4] riscv, bpf: Add bpf trampoline support for RV64
-Date:   Wed, 15 Feb 2023 21:52:05 +0800
-Message-Id: <20230215135205.1411105-5-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230215135205.1411105-1-pulehui@huaweicloud.com>
-References: <20230215135205.1411105-1-pulehui@huaweicloud.com>
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Perry Yuan <perry.yuan@amd.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        oe-kbuild-all@lists.linux.dev, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 3/3] Documentation: amd-pstate: disambiguate user space
+ sections
+Message-ID: <Y+zjrjladvHd9QRS@beas>
+References: <20230215123253.41552-1-bagasdotme@gmail.com>
+ <20230215123253.41552-4-bagasdotme@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230215123253.41552-4-bagasdotme@gmail.com>
+X-ClientProxiedBy: PN3PR01CA0025.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:97::9) To BY5PR12MB3876.namprd12.prod.outlook.com
+ (2603:10b6:a03:1a7::26)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDnUSz64uxjC3LEDQ--.36740S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxtrWUJFyDCryDWw43AF48tFb_yoWDJw4xp3
-        ZxKrW5AFW0qF4FqaykXF1UXF4aka1qvFnFkFy3Grnavr45XrZakw1rKF4Yvr98Crn5Zr1f
-        JFs0ya9IkF17WrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-        kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-        0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQ
-        SdkUUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR12MB3876:EE_|DM6PR12MB4516:EE_
+X-MS-Office365-Filtering-Correlation-Id: e7dd1e6f-7bfb-4789-6b0b-08db0f5bf4e0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: umEm15/rLDiEJ/Ws0CWokhnW658POPFR0GGAFz71RBR7n8jDJ+65lp7LzNrS8G511TWIko/A9KfFdi0slJ2KL5134uYy6WHb6PYYQwOprprt7j9RGFru1moDtXmWQNo6/9cDxhs94c2KhBeyA2tC/UVLLJz60XnUrV2hrbaWz+5koiIk6jwhC8bbi2Ntoh2ng5PeCO8jXtm0wq/FP+/V9v+ZJ+mWIsVDoV+8xwczYk1sbSJy/RPyo4exBFJ2jpu8ovdLi9hQVcxm4QuSQc7E9qWbz3U691WYJEaVA/A8nBEr9ZGA9M57AiI3GWE4wOiBHLq6AVwSNjAHuV7V0FqJeVWaGfbBhRIl4dsgDoxjA6hz3XnVsr0BmwCZwN+BeEcdUKwK+EYKFHiwP1bt6x4jeJVXWYxQIvXJFb/xbQCkjeUskGDjh4MTlpEj/tvWdjw2w8fFBjr+i5B1A3mVOiVfbqL88zTv1GTviLLeS8nqvIPjmfCwdjsSWHxxYVgIgHIDe1HBlV6SFpK64xysefsXzkbw5fP/8jpkyzaKhA20/AGGpqVi+IAl0Q7qFSnl6zOlxvAdiMSGAu2yNyD5ofeuolX52jjQszeC+ndR1Pa7TQj9V0irucy6wz+mJzAh1glZpOfjwXC0754pTrCB9RSq8t69yFgn3yZf6J8l4w+GeGF2kKvK6b9YJUWHX6i6X5SE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3876.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(4636009)(366004)(136003)(39860400002)(376002)(346002)(396003)(451199018)(38100700002)(86362001)(33716001)(8676002)(6916009)(4326008)(66556008)(66476007)(66946007)(41300700001)(54906003)(316002)(7416002)(8936002)(2906002)(44832011)(5660300002)(83380400001)(6486002)(966005)(478600001)(26005)(9686003)(6512007)(186003)(6506007)(6666004)(66899018)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IJeV0yOgeIQdfJCBW59NytuMocUau06Fp14zpcAqzI7IUN5x4tMLBV+DiURb?=
+ =?us-ascii?Q?QTUssPdJEooWptSmZ0tV2pxMEQ+JeZ96Pfdi+0WaVJKxjOyF2kGNc1u56uGX?=
+ =?us-ascii?Q?9rBEZlK7YPe2qsM1DRC01HBRx4owO4cRoV30+vAHzhD2b4uSUpZ+MbGQ1TUA?=
+ =?us-ascii?Q?07534YKfbxCn/zCmdVwnBl6Zj8+dAKyRE/64tOHMsPYFf4UMwJX5yZ7xhjrm?=
+ =?us-ascii?Q?IGIMUfwikZzKHXJSQWc1wV0DJKvEfI3zdqWicnoPRUufNmiVQOinz/PCvRlS?=
+ =?us-ascii?Q?nxjcMaz3HTKfpqJrMTaYGqmnlk0kJp+va14TsSSdJdN5+M1DuMF4iyGs464G?=
+ =?us-ascii?Q?XgTB/YujWSbiF2S4wegU1Q8JQc5+Y/bYW+DgUwv6iBXHkDGlR5YUxuE2vSu1?=
+ =?us-ascii?Q?gfQls3SfuEkR8Qa2JE1OoAb+ox02TT5J7q8GQhIFJlcPVfAbYqZFZOU3AgOg?=
+ =?us-ascii?Q?t8ACj0cCZSScd39KDLvffEqmYRzvjk8YqjuvZT2zWHpII64tRGXrwPsUmg68?=
+ =?us-ascii?Q?Bxp2pZV4xhJoeXU7nlNvmLic+hxu5fSR+NRnO5oV/swLuzVuTREx7+J2Yy77?=
+ =?us-ascii?Q?ZMKVSz8+bRrbPwEGT/g/jCXYFz545pBrj/3ifv4soQfaqodLpFhB4Jg/Iyto?=
+ =?us-ascii?Q?c1aNAF1p7Qt1pRfItkqGJaXXAVBup7htyQqgA2N8Ox9V1OumMIS5jwyFztcL?=
+ =?us-ascii?Q?BRVp8nWPekYaTuWdTn/3zJhwuJnzW4QDJREzzt5muTRFvqriNnopqs/pekGu?=
+ =?us-ascii?Q?IGTbrBrsQE2DYWRUNJLkODjd7MplInHhyL+CWSMWk3GDURWxkC/zI49qM9Xn?=
+ =?us-ascii?Q?vX0pkuDxh5FpiyZ5SufUk2dSwy/J9AD7ztAtfDZ4Et1ajqnm2nheA4DaUJkc?=
+ =?us-ascii?Q?41sUydHmtc8+bdrvtf9fE6VrCOWRgJz5HJoBseaxyGwLIAVMrFSqqFdyOxCM?=
+ =?us-ascii?Q?wVtd5O+1tS32fqr1vR+Zr/kJcVCYeCHu468NJsnTx94VRIyfGR3hC9UqPX8r?=
+ =?us-ascii?Q?t/YbG1oi6ul8H8is1R0YylpMn1cKLxM7CLw7juQzoG0EXeQA0t5kzuO0UrOb?=
+ =?us-ascii?Q?xPb4Ui/AbVp3bK9cb75vmFqlyQk8j2+R6O4FV1AJTcZH5swbP4rM70Tpzbat?=
+ =?us-ascii?Q?zttXNcZqJpK17s+tAo5aQItWA106NdLsx06sRTxWpFW5dhwmrUM6Tc/hmH54?=
+ =?us-ascii?Q?mv1Wdq2fLJIj9Z3wqyenmO0q8vkALeWdwAgUEjlZL3fQWr4jQQrjlfYGt3P3?=
+ =?us-ascii?Q?OVb6cESmlfnQBkToQcdJ7mrcL4dcPc/csVOjVxGHLI3EcU8mLp0C5Wn1241F?=
+ =?us-ascii?Q?+VSwdB03pnaY/iO/sC2XSXOsZ4MQ5UBMt6l+wljDijK9dXQuNIshMQVvS6ku?=
+ =?us-ascii?Q?x+dpEDMvKW5G4Ma/refMa8eDtdY94uen+cnj/FzyhzUm+wpZ2hp1A025iMgU?=
+ =?us-ascii?Q?m5FViM4LTGTSq9k5oC0EpfTXb1ADEyTGRoLibZMlL/GuuLSaes+XRNEe0UJU?=
+ =?us-ascii?Q?uptO1YFdP7ans50S0/aqSfXcHHR02itLcnFaq2Q6veyXYchaT0U8lVoZ05Ov?=
+ =?us-ascii?Q?CvcQUaqfSS27+jFGe7SNh1Mt6WSK+CHWv6OLBMZM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7dd1e6f-7bfb-4789-6b0b-08db0f5bf4e0
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3876.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2023 13:53:03.1126
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BQ8hedGS5OqsQSPAz5dJh5uqPWOx+KeumV1qqZ1Zeb7YWDLICcpDt9sf5Hi8LCdlwfFqwekHvTyrqxg2KOMsuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4516
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Pu Lehui <pulehui@huawei.com>
+On 15 Feb 19:32, Bagas Sanjaya wrote:
+> kernel test robot reported htmldocs warning:
+> 
+> Documentation/admin-guide/pm/amd-pstate.rst:343: WARNING: duplicate label admin-guide/pm/amd-pstate:user space interface in ``sysfs``, other instance in Documentation/admin-guide/pm/amd-pstate.rst
+> 
+> The documentation contains two sections with the same "User Space Interface
+> in ``sysfs``" title. The first one deals with per-policy sysfs and the
+> second one is about general attributes (currently only global attributes
+> are documented).
+> 
+> Disambiguate title text of both sections to fix the warning.
+> 
+> Link: https://lore.kernel.org/linux-doc/202302151041.0SWs1RHK-lkp@intel.com/
+> Fixes: b9e6a2d47b2565 ("Documentation: amd-pstate: introduce new global sysfs attributes")
+> Reported-by: kernel test robot <lkp@intel.com>
 
-BPF trampoline is the critical infrastructure of the bpf
-subsystem, acting as a mediator between kernel functions
-and BPF programs. Numerous important features, such as
-using ebpf program for zero overhead kernel introspection,
-rely on this key component. We can't wait to support bpf
-trampoline on RV64. The related tests have passed, as well
-as the test_verifier with no new failure ceses.
+Reviewed-by: Wyes Karny <wyes.karny@amd.com>
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- arch/riscv/net/bpf_jit_comp64.c | 319 ++++++++++++++++++++++++++++++++
- 1 file changed, 319 insertions(+)
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> ---
+>  Documentation/admin-guide/pm/amd-pstate.rst | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
+> index bca9a0ebee3ed8..6e5298b521b18b 100644
+> --- a/Documentation/admin-guide/pm/amd-pstate.rst
+> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
+> @@ -230,8 +230,8 @@ with :c:macro:`MSR_AMD_CPPC_ENABLE` or ``cppc_set_enable``, it will respond
+>  to the request from AMD P-States.
+>  
+>  
+> -User Space Interface in ``sysfs``
+> -==================================
+> +User Space Interface in ``sysfs`` - Per-policy control
+> +======================================================
+>  
+>  ``amd-pstate`` exposes several global attributes (files) in ``sysfs`` to
+>  control its functionality at the system level. They are located in the
+> @@ -339,8 +339,8 @@ processor must provide at least nominal performance requested and go higher if c
+>  operating conditions allow.
+>  
+>  
+> -User Space Interface in ``sysfs``
+> -=================================
+> +User Space Interface in ``sysfs`` - General
+> +===========================================
+>  
+>  Global Attributes
+>  -----------------
+> -- 
+> An old man doll... just what I always wanted! - Clara
+> 
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index b6b9bbcc977a..ef79c54a8eb2 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -695,6 +695,325 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
- 	return ret;
- }
- 
-+static void store_args(int nregs, int args_off, struct rv_jit_context *ctx)
-+{
-+	int i;
-+
-+	for (i = 0; i < nregs; i++) {
-+		emit_sd(RV_REG_FP, -args_off, RV_REG_A0 + i, ctx);
-+		args_off -= 8;
-+	}
-+}
-+
-+static void restore_args(int nregs, int args_off, struct rv_jit_context *ctx)
-+{
-+	int i;
-+
-+	for (i = 0; i < nregs; i++) {
-+		emit_ld(RV_REG_A0 + i, -args_off, RV_REG_FP, ctx);
-+		args_off -= 8;
-+	}
-+}
-+
-+static int invoke_bpf_prog(struct bpf_tramp_link *l, int args_off, int retval_off,
-+			   int run_ctx_off, bool save_ret, struct rv_jit_context *ctx)
-+{
-+	int ret, branch_off;
-+	struct bpf_prog *p = l->link.prog;
-+	int cookie_off = offsetof(struct bpf_tramp_run_ctx, bpf_cookie);
-+
-+	if (l->cookie) {
-+		emit_imm(RV_REG_T1, l->cookie, ctx);
-+		emit_sd(RV_REG_FP, -run_ctx_off + cookie_off, RV_REG_T1, ctx);
-+	} else {
-+		emit_sd(RV_REG_FP, -run_ctx_off + cookie_off, RV_REG_ZERO, ctx);
-+	}
-+
-+	/* arg1: prog */
-+	emit_imm(RV_REG_A0, (const s64)p, ctx);
-+	/* arg2: &run_ctx */
-+	emit_addi(RV_REG_A1, RV_REG_FP, -run_ctx_off, ctx);
-+	ret = emit_call((const u64)bpf_trampoline_enter(p), true, ctx);
-+	if (ret)
-+		return ret;
-+
-+	/* if (__bpf_prog_enter(prog) == 0)
-+	 *	goto skip_exec_of_prog;
-+	 */
-+	branch_off = ctx->ninsns;
-+	/* nop reserved for conditional jump */
-+	emit(rv_nop(), ctx);
-+
-+	/* store prog start time */
-+	emit_mv(RV_REG_S1, RV_REG_A0, ctx);
-+
-+	/* arg1: &args_off */
-+	emit_addi(RV_REG_A0, RV_REG_FP, -args_off, ctx);
-+	if (!p->jited)
-+		/* arg2: progs[i]->insnsi for interpreter */
-+		emit_imm(RV_REG_A1, (const s64)p->insnsi, ctx);
-+	ret = emit_call((const u64)p->bpf_func, true, ctx);
-+	if (ret)
-+		return ret;
-+
-+	if (save_ret)
-+		emit_sd(RV_REG_FP, -retval_off, regmap[BPF_REG_0], ctx);
-+
-+	/* update branch with beqz */
-+	if (ctx->insns) {
-+		int offset = ninsns_rvoff(ctx->ninsns - branch_off);
-+		u32 insn = rv_beq(RV_REG_A0, RV_REG_ZERO, offset >> 1);
-+		*(u32 *)(ctx->insns + branch_off) = insn;
-+	}
-+
-+	/* arg1: prog */
-+	emit_imm(RV_REG_A0, (const s64)p, ctx);
-+	/* arg2: prog start time */
-+	emit_mv(RV_REG_A1, RV_REG_S1, ctx);
-+	/* arg3: &run_ctx */
-+	emit_addi(RV_REG_A2, RV_REG_FP, -run_ctx_off, ctx);
-+	ret = emit_call((const u64)bpf_trampoline_exit(p), true, ctx);
-+
-+	return ret;
-+}
-+
-+static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
-+					 const struct btf_func_model *m,
-+					 struct bpf_tramp_links *tlinks,
-+					 void *func_addr, u32 flags,
-+					 struct rv_jit_context *ctx)
-+{
-+	int i, ret, offset;
-+	int *branches_off = NULL;
-+	int stack_size = 0, nregs = m->nr_args;
-+	int retaddr_off, fp_off, retval_off, args_off;
-+	int nregs_off, ip_off, run_ctx_off, sreg_off;
-+	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
-+	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
-+	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
-+	void *orig_call = func_addr;
-+	bool save_ret;
-+	u32 insn;
-+
-+	/* Generated trampoline stack layout:
-+	 *
-+	 * FP - 8	    [ RA of parent func	] return address of parent
-+	 *					  function
-+	 * FP - retaddr_off [ RA of traced func	] return address of traced
-+	 *					  function
-+	 * FP - fp_off	    [ FP of parent func ]
-+	 *
-+	 * FP - retval_off  [ return value      ] BPF_TRAMP_F_CALL_ORIG or
-+	 *					  BPF_TRAMP_F_RET_FENTRY_RET
-+	 *                  [ argN              ]
-+	 *                  [ ...               ]
-+	 * FP - args_off    [ arg1              ]
-+	 *
-+	 * FP - nregs_off   [ regs count        ]
-+	 *
-+	 * FP - ip_off      [ traced func	] BPF_TRAMP_F_IP_ARG
-+	 *
-+	 * FP - run_ctx_off [ bpf_tramp_run_ctx ]
-+	 *
-+	 * FP - sreg_off    [ callee saved reg	]
-+	 *
-+	 *		    [ pads              ] pads for 16 bytes alignment
-+	 */
-+
-+	if (flags & (BPF_TRAMP_F_ORIG_STACK | BPF_TRAMP_F_SHARE_IPMODIFY))
-+		return -ENOTSUPP;
-+
-+	/* extra regiters for struct arguments */
-+	for (i = 0; i < m->nr_args; i++)
-+		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
-+			nregs += round_up(m->arg_size[i], 8) / 8 - 1;
-+
-+	/* 8 arguments passed by registers */
-+	if (nregs > 8)
-+		return -ENOTSUPP;
-+
-+	/* room for parent function return address */
-+	stack_size += 8;
-+
-+	stack_size += 8;
-+	retaddr_off = stack_size;
-+
-+	stack_size += 8;
-+	fp_off = stack_size;
-+
-+	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
-+	if (save_ret) {
-+		stack_size += 8;
-+		retval_off = stack_size;
-+	}
-+
-+	stack_size += nregs * 8;
-+	args_off = stack_size;
-+
-+	stack_size += 8;
-+	nregs_off = stack_size;
-+
-+	if (flags & BPF_TRAMP_F_IP_ARG) {
-+		stack_size += 8;
-+		ip_off = stack_size;
-+	}
-+
-+	stack_size += round_up(sizeof(struct bpf_tramp_run_ctx), 8);
-+	run_ctx_off = stack_size;
-+
-+	stack_size += 8;
-+	sreg_off = stack_size;
-+
-+	stack_size = round_up(stack_size, 16);
-+
-+	emit_addi(RV_REG_SP, RV_REG_SP, -stack_size, ctx);
-+
-+	emit_sd(RV_REG_SP, stack_size - retaddr_off, RV_REG_RA, ctx);
-+	emit_sd(RV_REG_SP, stack_size - fp_off, RV_REG_FP, ctx);
-+
-+	emit_addi(RV_REG_FP, RV_REG_SP, stack_size, ctx);
-+
-+	/* callee saved register S1 to pass start time */
-+	emit_sd(RV_REG_FP, -sreg_off, RV_REG_S1, ctx);
-+
-+	/* store ip address of the traced function */
-+	if (flags & BPF_TRAMP_F_IP_ARG) {
-+		emit_imm(RV_REG_T1, (const s64)func_addr, ctx);
-+		emit_sd(RV_REG_FP, -ip_off, RV_REG_T1, ctx);
-+	}
-+
-+	emit_li(RV_REG_T1, nregs, ctx);
-+	emit_sd(RV_REG_FP, -nregs_off, RV_REG_T1, ctx);
-+
-+	store_args(nregs, args_off, ctx);
-+
-+	/* skip to actual body of traced function */
-+	if (flags & BPF_TRAMP_F_SKIP_FRAME)
-+		orig_call += 16;
-+
-+	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-+		emit_imm(RV_REG_A0, (const s64)im, ctx);
-+		ret = emit_call((const u64)__bpf_tramp_enter, true, ctx);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	for (i = 0; i < fentry->nr_links; i++) {
-+		ret = invoke_bpf_prog(fentry->links[i], args_off, retval_off, run_ctx_off,
-+				      flags & BPF_TRAMP_F_RET_FENTRY_RET, ctx);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (fmod_ret->nr_links) {
-+		branches_off = kcalloc(fmod_ret->nr_links, sizeof(int), GFP_KERNEL);
-+		if (!branches_off)
-+			return -ENOMEM;
-+
-+		/* cleanup to avoid garbage return value confusion */
-+		emit_sd(RV_REG_FP, -retval_off, RV_REG_ZERO, ctx);
-+		for (i = 0; i < fmod_ret->nr_links; i++) {
-+			ret = invoke_bpf_prog(fmod_ret->links[i], args_off, retval_off,
-+					      run_ctx_off, true, ctx);
-+			if (ret)
-+				goto out;
-+			emit_ld(RV_REG_T1, -retval_off, RV_REG_FP, ctx);
-+			branches_off[i] = ctx->ninsns;
-+			/* nop reserved for conditional jump */
-+			emit(rv_nop(), ctx);
-+		}
-+	}
-+
-+	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-+		restore_args(nregs, args_off, ctx);
-+		ret = emit_call((const u64)orig_call, true, ctx);
-+		if (ret)
-+			goto out;
-+		emit_sd(RV_REG_FP, -retval_off, RV_REG_A0, ctx);
-+		im->ip_after_call = ctx->insns + ctx->ninsns;
-+		/* 2 nops reserved for auipc+jalr pair */
-+		emit(rv_nop(), ctx);
-+		emit(rv_nop(), ctx);
-+	}
-+
-+	/* update branches saved in invoke_bpf_mod_ret with bnez */
-+	for (i = 0; ctx->insns && i < fmod_ret->nr_links; i++) {
-+		offset = ninsns_rvoff(ctx->ninsns - branches_off[i]);
-+		insn = rv_bne(RV_REG_T1, RV_REG_ZERO, offset >> 1);
-+		*(u32 *)(ctx->insns + branches_off[i]) = insn;
-+	}
-+
-+	for (i = 0; i < fexit->nr_links; i++) {
-+		ret = invoke_bpf_prog(fexit->links[i], args_off, retval_off,
-+				      run_ctx_off, false, ctx);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-+		im->ip_epilogue = ctx->insns + ctx->ninsns;
-+		emit_imm(RV_REG_A0, (const s64)im, ctx);
-+		ret = emit_call((const u64)__bpf_tramp_exit, true, ctx);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	if (flags & BPF_TRAMP_F_RESTORE_REGS)
-+		restore_args(nregs, args_off, ctx);
-+
-+	if (save_ret)
-+		emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
-+
-+	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
-+
-+	if (flags & BPF_TRAMP_F_SKIP_FRAME)
-+		/* return address of parent function */
-+		emit_ld(RV_REG_RA, stack_size - 8, RV_REG_SP, ctx);
-+	else
-+		/* return address of traced function */
-+		emit_ld(RV_REG_RA, stack_size - retaddr_off, RV_REG_SP, ctx);
-+
-+	emit_ld(RV_REG_FP, stack_size - fp_off, RV_REG_SP, ctx);
-+	emit_addi(RV_REG_SP, RV_REG_SP, stack_size, ctx);
-+
-+	emit_jalr(RV_REG_ZERO, RV_REG_RA, 0, ctx);
-+
-+	ret = ctx->ninsns;
-+out:
-+	if (branches_off)
-+		kfree(branches_off);
-+
-+	return ret;
-+}
-+
-+int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
-+				void *image_end, const struct btf_func_model *m,
-+				u32 flags, struct bpf_tramp_links *tlinks,
-+				void *func_addr)
-+{
-+	int ret;
-+	struct rv_jit_context ctx;
-+
-+	ctx.ninsns = 0;
-+	ctx.insns = NULL;
-+	ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, flags, &ctx);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ninsns_rvoff(ret) > (long)image_end - (long)image)
-+		return -EFBIG;
-+
-+	ctx.ninsns = 0;
-+	ctx.insns = image;
-+	ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, flags, &ctx);
-+	if (ret < 0)
-+		return ret;
-+
-+	bpf_flush_icache(ctx.insns, ctx.insns + ctx.ninsns);
-+
-+	return ninsns_rvoff(ret);
-+}
-+
- int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 		      bool extra_pass)
- {
--- 
-2.25.1
-
+Thanks,
+Wyes
