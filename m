@@ -2,160 +2,261 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8CE697519
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 05:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4044697576
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 05:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbjBOECa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 23:02:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
+        id S232686AbjBOEiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 23:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjBOEC3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 23:02:29 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59622B629;
-        Tue, 14 Feb 2023 20:02:27 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PGktQ2ZtWz4f3l7T;
-        Wed, 15 Feb 2023 12:02:22 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgBXSOZMWexj68hkDg--.30292S2;
-        Wed, 15 Feb 2023 12:02:24 +0800 (CST)
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
- <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
- <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
- <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
- <20230210163258.phekigglpquitq33@apollo>
- <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
- <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
- <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
- <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
- <6d48c284-42eb-9688-4259-79b7f096e294@linux.dev>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <7fef4ece-0982-cb43-ed39-e73791436355@huaweicloud.com>
-Date:   Wed, 15 Feb 2023 12:02:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <6d48c284-42eb-9688-4259-79b7f096e294@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S229536AbjBOEiB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 23:38:01 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5364C27;
+        Tue, 14 Feb 2023 20:37:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676435873; x=1707971873;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=pMjZB9bxX8ZZUzH+uEhA9+3SxGuP4o+Uu0xOjXM7ji0=;
+  b=W9hDZjlGA+t+uyJ/AEtBdtX6AUUzCnSB71EGZZNjfWeu2/l2n1YfCqg4
+   iJCzrDJLzfhEu/1h8SctSmzMtJAHpe/zG6ov72ClghL2AuNQt/a7vG6Lv
+   Wjw6/wDgWkQ4EV6veT9nqJaK3qI1KsVsBO2DOw0f/4JGFAqJ0DfKfltt/
+   nqEBBZHfSyL7ZUVeej3eNQJ7YLG/t7EMLYYjvL41ZNJpvLP1VmUQ5ACZ+
+   sVZHZ9sqj0mCTlj8I5J4lCR0YL+kvoL1ydYi2PNpKsshIyB30rvdKF4Z1
+   X1BS8TzwQ5B9qKVSf7Gh/QBwUUYacYHO2XBIefpTXu4peT4+v9bHB+7yH
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="310974248"
+X-IronPort-AV: E=Sophos;i="5.97,298,1669104000"; 
+   d="scan'208";a="310974248"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2023 20:37:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="662795444"
+X-IronPort-AV: E=Sophos;i="5.97,298,1669104000"; 
+   d="scan'208";a="662795444"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga007.jf.intel.com with ESMTP; 14 Feb 2023 20:37:49 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Tue, 14 Feb 2023 20:37:49 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Tue, 14 Feb 2023 20:37:49 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Tue, 14 Feb 2023 20:37:49 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OGlMlFYGO9W+QjvxPizAUUgE6XNIoH0xP3bNLEbrN/sHS38Y9M23Mc85MGycPYaUxCFnwJ4zaq8HpSOEygxb7gv9joTrht1qH+Tz8WiK+Cfqx0Kqg7Vo3h/JPHF9KKa0zagBFpkIvfgY6UecUciYjnMhOh2xpZjJlZUjSa5FFubjRACSSyHayTTNsej2OTdUUYpu678f3VjfnHguuU7AtWdLtnsUFtb0bxvYhl7sB06zxIjD99f13w9FIhJK0Zgq4vg1QlMcC3WC0RUKm60+Go2gKLgd9LJXRa9CBHSIGxNUB/oR7zQ1y/F1K7Z5uweqWbyxAQbQi/loAZDlcpKH6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fueHtQzM1RD7+PGsi8PELFA3IrIBQzB+phZOztcBtGc=;
+ b=g1GaUIl2lBINWEbboxy8UPrn+AuSBglBGFrYOrpOft/1LCgBM13Quqp5TiT7zHTdzjPRPPw8zqV4GgS+q75G+fbQ2LW0lbl2/BIi3Ec8eHpRX11Ckc33CN0fv5e9pbd6tzseBdYMFkPa/g+xajjvfn6tiVicm8FZ54xTUvMM2Lm3NqCFW9s7EIpgdm7uSEEEv2wdmwkboLOM6EkgtB8UcAzt4cACSDZN23L0O+6lIvxxvlyIEcuP8K9s8U+K5FHrX7IvLRINr5SjeFOm/l3ot5gjbiseDZX2htzKVBbUZjg7zd7G1OSbaPvAa1YOvuc/bJzAWMT7xOQh/6vvLYEVGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CY4PR1101MB2360.namprd11.prod.outlook.com (2603:10b6:903:b9::9)
+ by MW4PR11MB7008.namprd11.prod.outlook.com (2603:10b6:303:227::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.24; Wed, 15 Feb
+ 2023 04:37:47 +0000
+Received: from CY4PR1101MB2360.namprd11.prod.outlook.com
+ ([fe80::ca4b:b3ce:b8a0:f0da]) by CY4PR1101MB2360.namprd11.prod.outlook.com
+ ([fe80::ca4b:b3ce:b8a0:f0da%11]) with mapi id 15.20.6086.026; Wed, 15 Feb
+ 2023 04:37:47 +0000
+From:   "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>
+To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+CC:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: RE: [PATCH intel-next v3 8/8] i40e: add support for XDP multi-buffer
+ Rx
+Thread-Topic: [PATCH intel-next v3 8/8] i40e: add support for XDP multi-buffer
+ Rx
+Thread-Index: AQHZQHImdH8aDiB8C0qjnCvdyK/ZYK7OqxGAgADAfzA=
+Date:   Wed, 15 Feb 2023 04:37:47 +0000
+Message-ID: <CY4PR1101MB2360B76C18FDEECAFE3169EE90A39@CY4PR1101MB2360.namprd11.prod.outlook.com>
+References: <20230214123018.54386-1-tirthendu.sarkar@intel.com>
+ <20230214123018.54386-9-tirthendu.sarkar@intel.com> <Y+u+aUJJ2EQYEdJB@boxer>
+In-Reply-To: <Y+u+aUJJ2EQYEdJB@boxer>
+Accept-Language: en-US
 Content-Language: en-US
-X-CM-TRANSID: Syh0CgBXSOZMWexj68hkDg--.30292S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw1UJFWrZw1xGr43JFyxXwb_yoWrGF17pF
-        Waqas8Ar1kJw43K3s2qrs7ZFy5t3s5GrWUtr4rKr1UCr98Zr9agryxKFW5uF98Cr4fW3yj
-        vry5Zas3Jw48AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY4PR1101MB2360:EE_|MW4PR11MB7008:EE_
+x-ms-office365-filtering-correlation-id: 11033951-9887-4d43-24cb-08db0f0e6370
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IeqYSdxG/Xfn4WBZ5kJvNlFRLL6NTpQFNOMuTS4yECKPTSJYXXAsQfggtz2wLf8XGkUmxzQ1ALXGABjfnZzUHZSO0ZaeYGAs4iH/52QHv6Wta1/lLGS9iO+R2MhbAKnXbL2Y5Bq8+CFxhjF8my/xL9QDihcbtm6vnQYNT8gZRwXbfUxW3yXpFspO7qA+/BV7z1mFckD7vXkYvMsDv4dRZAxeveAybPuwXztDiNwBZk9JXcqqERiNTWDNGhHJ+MkpkwSA66h8w6556Uab/+eoKmIB1w4K6169zfk1yEmoRfBmeKxA85S2rLn45sAG6n5YzllhGf+0d0yZcjVtwXIUOFmEF/Uj+v0pAcra3tMgAmneApYJa8PkI5dyfxYAWGu/PMKgtaAkPuFdrTS7zAuT74cpQm1Jc0vpwDcU7UVFMwN8UxEwoE88W91V5o4JFeznZKotS6vWHLcuAgVU6XZIQwBM0TAsKgmEeSCDKgFw7odVApvPFRh5CkrB7TBMn10MIK+0nLeIt4Zz5r0cdxvrQjz/OCb9GM4REZAShp932L5oDDpUZqiayd0W2bQ6CAIWAJN4cRgc8ybD3G2bbT17syiL5rNEczQqJpNw/hN2bvo8Vdn1IBZPDR4F15Iwy8BiUIJKLLiAmMCvpXuZrNn2AK3SBN3iQo9dwMAfOkBa3Gx8axY/K6XCCo0QpE5Az+apXd7H4p3RFlpKoViY+ZWWcPp2ahTZnWVnhH74aggMBb8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2360.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(39860400002)(136003)(366004)(376002)(396003)(346002)(451199018)(82960400001)(66946007)(38100700002)(76116006)(5660300002)(66476007)(4326008)(33656002)(107886003)(6862004)(38070700005)(7696005)(55016003)(41300700001)(71200400001)(66556008)(8936002)(8676002)(64756008)(478600001)(2906002)(6636002)(54906003)(66446008)(316002)(83380400001)(26005)(186003)(9686003)(52536014)(86362001)(122000001)(6506007)(83323001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ZGuvk7RMa4BztddTw9yIyT3EJoLfrRauujGtS5BKSubcMabTJkh9pGYeuEpS?=
+ =?us-ascii?Q?pNy8CN1dfe4G1gYe3zIX6fD+YjOLt6OXG1UwsA1Tc6jMgyEO48f3INJMTv0E?=
+ =?us-ascii?Q?S0ZBVvgQq5Lvzw+7gKdL/LXlNcKURXn1iTs5MnotwDqUDUAz24Nw9oHzLvBH?=
+ =?us-ascii?Q?4MuNg+WIITu4N1pCdpyFt88QyMyUMiryworCF0ap4/pz075jfhD44p5nTty0?=
+ =?us-ascii?Q?pklZgTow2j/fsADve1MmWD/JKDu1+GrpRlqwECWZJBEFick57/4Q9VowLoh9?=
+ =?us-ascii?Q?NRoC5i9Uplr+7oCAobXTiUFVfPx+XWXifN+lSRIUb+DPdAsfmWA8amIdhZ+j?=
+ =?us-ascii?Q?ipazqYbxK33Fu1e7nOLYZY6kKSWHZ8PDBEmpJGkbsQsGqxRXEA+Y4XJ6mQwT?=
+ =?us-ascii?Q?rb1FfjTo8J+rNMQdjVOlAdx8P+6auRLHmmm6feP1+8ejFGNyJOAGnGyb9rFe?=
+ =?us-ascii?Q?e1Gdq64H6+bbZR2g7BHlstXrqRgM+ZRtmz+WK9iv5G4fasK5sHFZHL3DEKsv?=
+ =?us-ascii?Q?yIucAvUTdNEPhGUP5RE+iUh9Thn7yUb5Yzo/YBM2MuYWbNxnvebVEYKMeEue?=
+ =?us-ascii?Q?xnOqNwwIM1o2B7m8SmT/L/RRpzU1fzdQ/+dXcNXupeRcj9XK9THi+omoAkLW?=
+ =?us-ascii?Q?avh/uDGTA/+BR2V+aAPazY2PLe66CAUiWaGb9tyF858v25OToTEQQ3i9+M2I?=
+ =?us-ascii?Q?TqGRvoCe8e0oQtHBBADgbpPiHaPCHn9ZzsgD9POn9wqx2aznmv2B2wePReEj?=
+ =?us-ascii?Q?Bh/lhCxQDr5TPSlk5gfn7rf1ILzdPgcBNGLd6CGQEmHpp100kuuf8hiDfVv3?=
+ =?us-ascii?Q?QJN/CcZyVJsvQnDjw9AUgk4E+bUNckW1d7hkEzwMWy8HL/93tLTpy7jYtE0Y?=
+ =?us-ascii?Q?JqgGBMoqz1StIl3CqApdGXHJw/xKjVnX61Znu8Lfz/X+ALcPfyTCh0CaReh9?=
+ =?us-ascii?Q?Tt57AseYbPYal5WulOEbd+mBZWaa3ubAXkO+rwxDsnm2Um09lzVvHu/M//nP?=
+ =?us-ascii?Q?WmizMXczDo+ravmCPi1VtrSUArc611BCPzCh51GyJeaRzm/JLiTu8ipaZ6pa?=
+ =?us-ascii?Q?AKSt+xKD1G0dY/hFC9nGaPgoOF6Y/pgPMF9o6YQHhoEtF0LEYdl15COTXAJ5?=
+ =?us-ascii?Q?aWuP8IqnyuqlNd1mQQ3+dotRNoJKNzo5+YQZWLJsnoAPiotN0h18QcZYBp0c?=
+ =?us-ascii?Q?6P76w/AMBGtKyuLF9j7CGXXLVml/dBZEr8U5nhkC/apTQpzcb6vvmZf2s74L?=
+ =?us-ascii?Q?as+1JFBi+yXJhJULeuzyfZkwTVq/AZy3YEZOToxSADqxp8J3NUBwWi0unt5R?=
+ =?us-ascii?Q?9S7s4/xofKlb9vNORWzOqWScF3x+TpcaNGlSdRjpEh8mDjHDBQSsNJYlWXPh?=
+ =?us-ascii?Q?wuen9q8SEhbiTeafjdjEtQ7X/YfznHzdKCg6rPZ6c0bdUj2AmCQd34Gsir9b?=
+ =?us-ascii?Q?dEAi/eSqr+emZkpOw3dUQZs6PJxAC2TVoqkxeVVimK7Yjj3tLJaRZx2qxz/b?=
+ =?us-ascii?Q?hDiLCgWcR+kDM7wzpWXabNljpU477YReLceskUqxx6gCssrAEYaUq4fdB/Ga?=
+ =?us-ascii?Q?Wt/n76CtWScf+45646W9nOsiQve0umbTSR2/yAIP+Gdq0qsPyx0w9sTM1Bd2?=
+ =?us-ascii?Q?5g=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2360.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11033951-9887-4d43-24cb-08db0f0e6370
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Feb 2023 04:37:47.5153
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qTiiHKapuG1BwdEgotNYl3XkVXMlxRJyEvXiV5YcuegJwjwdZcQdi3w0Iwds/h78fN/wSKScumN/T4bMni/b03gFT6Bg955GI3cNxqT0ZfA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7008
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+> -----Original Message-----
+> From: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
 
-On 2/15/2023 9:54 AM, Martin KaFai Lau wrote:
-> On 2/11/23 8:34 AM, Alexei Starovoitov wrote:
->> On Sat, Feb 11, 2023 at 8:33 AM Alexei Starovoitov
->> <alexei.starovoitov@gmail.com> wrote:
->>>
->>> On Fri, Feb 10, 2023 at 5:10 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>>>>> Hou, are you plannning to resubmit this change? I also hit this while
->>>>>> testing my
->>>>>> changes on bpf-next.
->>>>> Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
->>>>> The former will take a long time to settle.
->>>>> The latter is trivial.
->>>>> To unblock yourself just add GFP_ZERO in an extra patch?
->>>> Sorry for the long delay. Just find find out time to do some tests to compare
->>>> the performance of bzero and ctor. After it is done, will resubmit on next
->>>> week.
->>>
->>> I still don't like ctor as a concept. In general the callbacks in the critical
->>> path are guaranteed to be slow due to retpoline overhead.
->>> Please send a patch to add GFP_ZERO.
->>>
->>> Also I realized that we can make the BPF_REUSE_AFTER_RCU_GP flag usable
->>> without risking OOM by only waiting for normal rcu GP and not rcu_tasks_trace.
->>> This approach will work for inner nodes of qptrie, since bpf progs
->>> never see pointers to them. It will work for local storage
->>> converted to bpf_mem_alloc too. It wouldn't need to use its own call_rcu.
->>> It's also safe without uaf caveat in sleepable progs and sleepable progs
->>
->> I meant 'safe with uaf caveat'.
->> Safe because we wait for rcu_task_trace later before returning to kernel memory.
-For qp-trie, I had added reuse checking for qp-trie inner node by adding a
-version in both child pointer and child node itself and it seemed works, but
-using BPF_REUSE_AFTER_RCU_GP for inner node will be much simpler for the
-implementation. And it seems for qp-trie leaf node, BPF_REUSE_AFTER_RCU_GP is
-needed as well, else the value returned to caller in bpf program or syscall may
-be reused just like hash-table during its usage. We can change qp-trie to act as
-a set only (e.g., no value), but that will limit its usage scenario. Maybe
-requiring the caller to use bpf_rcu_read_lock() is solution as well. What do you
-think ?
+[...]
+> > Previously i40e_alloc_rx_buffers() was called for every 32 cleaned
+> > buffers. For multi-buffers this may not be optimal as there may be more
+> > cleaned buffers in each i40e_clean_rx_irq() call. So this is now called
+> > when at least half of the ring size has been cleaned.
+>=20
+> Please align this patch with xdp_features update
 >
-> For local storage, when its owner (sk/task/inode/cgrp) is going away, the
-> memory can be reused immediately. No rcu gp is needed.
-Now it seems it will wait for RCU GP and i think it is still necessary, because
-when the process exits, other processes may still access the local storage
-through pidfd or task_struct of the exited process.
->
-> The local storage delete case (eg. bpf_sk_storage_delete) is the only one that
-> needs to be freed by tasks_trace gp because another bpf prog (reader) may be
-> under the rcu_read_lock_trace(). I think the idea (BPF_REUSE_AFTER_RCU_GP) on
-> allowing reuse after vanilla rcu gp and free (if needed) after tasks_trace gp
-> can be extended to the local storage delete case. I think we can extend the
-> assumption that "sleepable progs (reader) can use explicit bpf_rcu_read_lock()
-> when they want to avoid uaf" to bpf_{sk,task,inode,cgrp}_storage_get() also.
->
-It seems bpf_rcu_read_lock() & bpf_rcu_read_unlock() will be used to protect not
-only bpf_task_storage_get(), but also the dereferences of the returned local
-storage ptr, right ? I think qp-trie may also need this.
-> I also need the GFP_ZERO in bpf_mem_alloc, so will work on the GFP_ZERO and
-> the BPF_REUSE_AFTER_RCU_GP idea.  Probably will get the GFP_ZERO out first.
-I will continue work on this patchset for GFP_ZERO and reuse flag. Do you mean
-that you want to work together to implement BPF_REUSE_AFTER_RCU_GP ? How do we
-cooperate together to accomplish that ?
 
+ACK
+=20
+> >
+> > Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+> > ---
+> >  drivers/net/ethernet/intel/i40e/i40e_main.c |   4 +-
+> >  drivers/net/ethernet/intel/i40e/i40e_txrx.c | 314 +++++++++++++-------
+> >  drivers/net/ethernet/intel/i40e/i40e_txrx.h |   8 -
+> >  3 files changed, 209 insertions(+), 117 deletions(-)
+> >
+>=20
+> (...)
+>=20
+> >  }
+> >
+> > +/**
+> > + * i40e_add_xdp_frag: Add a frag to xdp_buff
+> > + * @xdp: xdp_buff pointing to the data
+> > + * @nr_frags: return number of buffers for the packet
+> > + * @rx_buffer: rx_buffer holding data of the current frag
+> > + * @size: size of data of current frag
+> > + */
+> > +static int i40e_add_xdp_frag(struct xdp_buff *xdp, u32 *nr_frags,
+> > +			     struct i40e_rx_buffer *rx_buffer, u32 size)
+> > +{
+> > +	struct skb_shared_info *sinfo =3D
+> xdp_get_shared_info_from_buff(xdp);
+> > +
+> > +	if (!xdp_buff_has_frags(xdp)) {
+> > +		sinfo->nr_frags =3D 0;
+> > +		sinfo->xdp_frags_size =3D 0;
+> > +		xdp_buff_set_frags_flag(xdp);
+> > +	} else if (unlikely(sinfo->nr_frags >=3D MAX_SKB_FRAGS)) {
+> > +		/* Overflowing packet: All frags need to be dropped */
+> > +		return  -ENOMEM;
+>=20
+> nit: double space
+>=20
 
->
->>
->>> can use explicit bpf_rcu_read_lock() when they want to avoid uaf.
->>> So please respin the set with rcu gp only and that new flag.
+ACK
 
+[...]
+> > +		xdp_res =3D i40e_run_xdp(rx_ring, xdp, xdp_prog);
+> > +
+> >  		if (xdp_res) {
+> > -			if (xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR)) {
+> > -				xdp_xmit |=3D xdp_res;
+> > +			xdp_xmit |=3D xdp_res & (I40E_XDP_TX |
+> I40E_XDP_REDIR);
+>=20
+> what was wrong with having above included in the
+>=20
+> 	} else if (xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR)) {
+>=20
+> branch?
+>=20
+
+For multi-buffer packets, only the first 'if' branch will be executed. We n=
+eed to set
+xdp_xmit for both single and multi-buffer packets.
+
+[...]
+> > diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.h
+> b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
+> > index e86abc25bb5e..14ad074639ab 100644
+> > --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.h
+> > +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
+> > @@ -393,14 +393,6 @@ struct i40e_ring {
+> >
+> >  	struct rcu_head rcu;		/* to avoid race on free */
+> >  	u16 next_to_alloc;
+> > -	struct sk_buff *skb;		/* When i40e_clean_rx_ring_irq()
+> must
+> > -					 * return before it sees the EOP for
+> > -					 * the current packet, we save that
+> skb
+> > -					 * here and resume receiving this
+> > -					 * packet the next time
+> > -					 * i40e_clean_rx_ring_irq() is called
+> > -					 * for this ring.
+> > -					 */
+>=20
+> this comment was valuable to me back when i was getting started with i40e=
+,
+> so maybe we could have something equivalent around xdp_buff now?
+>=20
+
+We have a similar comment for xdp_buff in patch #7 where it was introduced.
+
+> >
+> >  	struct i40e_channel *ch;
+> >  	u16 rx_offset;
+> > --
+> > 2.34.1
+> >
