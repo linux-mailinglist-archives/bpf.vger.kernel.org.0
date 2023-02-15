@@ -2,364 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4936972C6
-	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 01:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 104316972D1
+	for <lists+bpf@lfdr.de>; Wed, 15 Feb 2023 01:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbjBOAld (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Feb 2023 19:41:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
+        id S229578AbjBOAqY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Feb 2023 19:46:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232454AbjBOAlb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Feb 2023 19:41:31 -0500
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D854E2D14D;
-        Tue, 14 Feb 2023 16:41:28 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VbhRiW3_1676421685;
-Received: from localhost(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0VbhRiW3_1676421685)
+        with ESMTP id S229461AbjBOAqX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Feb 2023 19:46:23 -0500
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA5310CD;
+        Tue, 14 Feb 2023 16:46:21 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VbhQck6_1676421978;
+Received: from localhost(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0VbhQck6_1676421978)
           by smtp.aliyun-inc.com;
-          Wed, 15 Feb 2023 08:41:25 +0800
+          Wed, 15 Feb 2023 08:46:19 +0800
 From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
 To:     linux-block@vger.kernel.org, io-uring@vger.kernel.org,
         bpf@vger.kernel.org
 Cc:     ming.lei@redhat.com, axboe@kernel.dk, asml.silence@gmail.com,
         ZiyangZhang@linux.alibaba.com
-Subject: [RFC 3/3] ublk_drv: add ebpf support
-Date:   Wed, 15 Feb 2023 08:41:22 +0800
-Message-Id: <20230215004122.28917-4-xiaoguang.wang@linux.alibaba.com>
+Subject: [UBLKSRV] Add ebpf support.
+Date:   Wed, 15 Feb 2023 08:46:18 +0800
+Message-Id: <20230215004618.35503-1-xiaoguang.wang@linux.alibaba.com>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20230215004122.28917-1-xiaoguang.wang@linux.alibaba.com>
 References: <20230215004122.28917-1-xiaoguang.wang@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currenly only one bpf_ublk_queue_sqe() ebpf is added, ublksrv target
-can use this helper to write ebpf prog to support ublk kernel & usersapce
-zero copy, please see ublksrv test codes for more info.
-
 Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
 ---
- drivers/block/ublk_drv.c       | 207 ++++++++++++++++++++++++++++++++-
- include/uapi/linux/bpf.h       |   1 +
- include/uapi/linux/ublk_cmd.h  |  11 ++
- scripts/bpf_doc.py             |   4 +
- tools/include/uapi/linux/bpf.h |   8 ++
- 5 files changed, 229 insertions(+), 2 deletions(-)
+ bpf/ublk.bpf.c         | 168 +++++++++++++++++++++++++++++++++++++++++
+ include/ublk_cmd.h     |   2 +
+ include/ublksrv.h      |   8 ++
+ include/ublksrv_priv.h |   1 +
+ include/ublksrv_tgt.h  |   1 +
+ lib/ublksrv.c          |   4 +
+ lib/ublksrv_cmd.c      |  21 ++++++
+ tgt_loop.cpp           |  31 +++++++-
+ ublksrv_tgt.cpp        |  33 ++++++++
+ 9 files changed, 268 insertions(+), 1 deletion(-)
+ create mode 100644 bpf/ublk.bpf.c
 
-diff --git a/drivers/block/ublk_drv.c b/drivers/block/ublk_drv.c
-index b628e9eaefa6..44c289b72864 100644
---- a/drivers/block/ublk_drv.c
-+++ b/drivers/block/ublk_drv.c
-@@ -61,6 +61,7 @@
- struct ublk_rq_data {
- 	struct llist_node node;
- 	struct callback_head work;
-+	struct io_mapped_kbuf *kbuf;
- };
- 
- struct ublk_uring_cmd_pdu {
-@@ -163,6 +164,9 @@ struct ublk_device {
- 	unsigned int		nr_queues_ready;
- 	atomic_t		nr_aborted_queues;
- 
-+	struct bpf_prog		*io_prep_prog;
-+	struct bpf_prog		*io_submit_prog;
+diff --git a/bpf/ublk.bpf.c b/bpf/ublk.bpf.c
+new file mode 100644
+index 0000000..80e79de
+--- /dev/null
++++ b/bpf/ublk.bpf.c
+@@ -0,0 +1,168 @@
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_core_read.h>
 +
- 	/*
- 	 * Our ubq->daemon may be killed without any notification, so
- 	 * monitor each queue's daemon periodically
-@@ -189,10 +193,46 @@ static DEFINE_MUTEX(ublk_ctl_mutex);
- 
- static struct miscdevice ublk_misc;
- 
-+struct ublk_io_bpf_ctx {
-+	struct ublk_bpf_ctx ctx;
-+	struct ublk_device *ub;
-+	struct callback_head work;
++
++static long (*bpf_ublk_queue_sqe)(void *ctx, struct io_uring_sqe *sqe,
++		u32 sqe_len, u32 fd) = (void *) 212;
++
++int target_fd = -1;
++
++struct sqe_key {
++	u16 q_id;
++	u16 tag;
++	u32 res;
++	u64 offset;
 +};
 +
-+BPF_CALL_4(bpf_ublk_queue_sqe, struct ublk_io_bpf_ctx *, bpf_ctx,
-+	   struct io_uring_sqe *, sqe, u32, sqe_len, u32, fd)
-+{
-+	struct request *rq;
-+	struct ublk_rq_data *data;
-+	struct io_mapped_kbuf *kbuf;
-+	u16 q_id = bpf_ctx->ctx.q_id;
-+	u16 tag = bpf_ctx->ctx.tag;
-+
-+	rq = blk_mq_tag_to_rq(bpf_ctx->ub->tag_set.tags[q_id], tag);
-+	data = blk_mq_rq_to_pdu(rq);
-+	kbuf = data->kbuf;
-+	io_uring_submit_sqe(fd, sqe, sqe_len, kbuf);
-+	return 0;
-+}
-+
-+const struct bpf_func_proto ublk_bpf_queue_sqe_proto = {
-+	.func = bpf_ublk_queue_sqe,
-+	.gpl_only = false,
-+	.ret_type = RET_INTEGER,
-+	.arg1_type = ARG_ANYTHING,
-+	.arg2_type = ARG_ANYTHING,
-+	.arg3_type = ARG_ANYTHING,
++struct sqe_data {
++	char data[128];
 +};
 +
- static const struct bpf_func_proto *
- ublk_bpf_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
--	return bpf_base_func_proto(func_id);
-+	switch (func_id) {
-+	case BPF_FUNC_ublk_queue_sqe:
-+		return &ublk_bpf_queue_sqe_proto;
-+	default:
-+		return bpf_base_func_proto(func_id);
-+	}
- }
- 
- static bool ublk_bpf_is_valid_access(int off, int size,
-@@ -200,6 +240,23 @@ static bool ublk_bpf_is_valid_access(int off, int size,
- 			const struct bpf_prog *prog,
- 			struct bpf_insn_access_aux *info)
- {
-+	if (off < 0 || off >= sizeof(struct ublk_bpf_ctx))
-+		return false;
-+	if (off % size != 0)
-+		return false;
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 8192);
++	__type(key, struct sqe_key);
++	__type(value, struct sqe_data);
++} sqes_map SEC(".maps");
 +
-+	switch (off) {
-+	case offsetof(struct ublk_bpf_ctx, q_id):
-+		return size == sizeof_field(struct ublk_bpf_ctx, q_id);
-+	case offsetof(struct ublk_bpf_ctx, tag):
-+		return size == sizeof_field(struct ublk_bpf_ctx, tag);
-+	case offsetof(struct ublk_bpf_ctx, op):
-+		return size == sizeof_field(struct ublk_bpf_ctx, op);
-+	case offsetof(struct ublk_bpf_ctx, nr_sectors):
-+		return size == sizeof_field(struct ublk_bpf_ctx, nr_sectors);
-+	case offsetof(struct ublk_bpf_ctx, start_sector):
-+		return size == sizeof_field(struct ublk_bpf_ctx, start_sector);
-+	}
- 	return false;
- }
- 
-@@ -324,7 +381,7 @@ static void ublk_put_device(struct ublk_device *ub)
- static inline struct ublk_queue *ublk_get_queue(struct ublk_device *dev,
- 		int qid)
- {
--       return (struct ublk_queue *)&(dev->__queues[qid * dev->queue_size]);
-+	return (struct ublk_queue *)&(dev->__queues[qid * dev->queue_size]);
- }
- 
- static inline bool ublk_rq_has_data(const struct request *rq)
-@@ -492,12 +549,16 @@ static inline int ublk_copy_user_pages(struct ublk_map_data *data,
- static int ublk_map_io(const struct ublk_queue *ubq, const struct request *req,
- 		struct ublk_io *io)
- {
-+	struct ublk_device *ub = ubq->dev;
- 	const unsigned int rq_bytes = blk_rq_bytes(req);
- 	/*
- 	 * no zero copy, we delay copy WRITE request data into ublksrv
- 	 * context and the big benefit is that pinning pages in current
- 	 * context is pretty fast, see ublk_pin_user_pages
- 	 */
-+	if ((req_op(req) == REQ_OP_WRITE) && ub->io_prep_prog)
-+		return rq_bytes;
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 128);
++	__type(key, int);
++	__type(value, int);
++} uring_fd_map SEC(".maps");
 +
- 	if (req_op(req) != REQ_OP_WRITE && req_op(req) != REQ_OP_FLUSH)
- 		return rq_bytes;
- 
-@@ -860,6 +921,89 @@ static void ublk_queue_cmd(struct ublk_queue *ubq, struct request *rq)
- 	}
- }
- 
-+static void ublk_bpf_io_submit_fn(struct callback_head *work)
++static inline void io_uring_prep_rw(__u8 op, struct io_uring_sqe *sqe, int fd,
++				    const void *addr, unsigned len,
++				    __u64 offset)
 +{
-+	struct ublk_io_bpf_ctx *bpf_ctx = container_of(work,
-+			struct ublk_io_bpf_ctx, work);
-+
-+	if (bpf_ctx->ub->io_submit_prog)
-+		bpf_prog_run_pin_on_cpu(bpf_ctx->ub->io_submit_prog, bpf_ctx);
-+	kfree(bpf_ctx);
++	sqe->opcode = op;
++	sqe->flags = 0;
++	sqe->ioprio = 0;
++	sqe->fd = fd;
++	sqe->off = offset;
++	sqe->addr = (unsigned long) addr;
++	sqe->len = len;
++	sqe->fsync_flags = 0;
++	sqe->buf_index = 0;
++	sqe->personality = 0;
++	sqe->splice_fd_in = 0;
++	sqe->addr3 = 0;
++	sqe->__pad2[0] = 0;
 +}
 +
-+static int ublk_init_uring_kbuf(struct request *rq)
++static inline void io_uring_prep_nop(struct io_uring_sqe *sqe)
 +{
-+	struct bio_vec *bvec;
-+	struct req_iterator rq_iter;
-+	struct bio_vec tmp;
-+	int nr_bvec = 0;
-+	struct io_mapped_kbuf *kbuf;
-+	struct ublk_rq_data *data = blk_mq_rq_to_pdu(rq);
++	io_uring_prep_rw(IORING_OP_NOP, sqe, -1, 0, 0, 0);
++}
 +
-+	/* Drop previous allocation */
-+	if (data->kbuf) {
-+		kfree(data->kbuf->bvec);
-+		kfree(data->kbuf);
-+		data->kbuf = NULL;
++static inline void io_uring_prep_read(struct io_uring_sqe *sqe, int fd,
++			void *buf, unsigned nbytes, off_t offset)
++{
++	io_uring_prep_rw(IORING_OP_READ, sqe, fd, buf, nbytes, offset);
++}
++
++static inline void io_uring_prep_write(struct io_uring_sqe *sqe, int fd,
++	const void *buf, unsigned nbytes, off_t offset)
++{
++	io_uring_prep_rw(IORING_OP_WRITE, sqe, fd, buf, nbytes, offset);
++}
++
++/*
++static u64 submit_sqe(struct bpf_map *map, void *key, void *value, void *data)
++{
++	struct io_uring_sqe *sqe = (struct io_uring_sqe *)value;
++	struct ublk_bpf_ctx *ctx = ((struct callback_ctx *)data)->ctx;
++	struct sqe_key *skey = (struct sqe_key *)key;
++	char fmt[] ="submit sqe for req[qid:%u tag:%u]\n";
++	char fmt2[] ="submit sqe test prep\n";
++	u16 qid, tag;
++	int q_id = skey->q_id, *ring_fd;
++
++	bpf_trace_printk(fmt2, sizeof(fmt2));
++	ring_fd = bpf_map_lookup_elem(&uring_fd_map, &q_id);
++	if (ring_fd) {
++		bpf_trace_printk(fmt, sizeof(fmt), qid, skey->tag);
++		bpf_ublk_queue_sqe(ctx, sqe, 128, *ring_fd);
++		bpf_map_delete_elem(map, key);
 +	}
++	return 0;
++}
++*/
 +
-+	kbuf = kmalloc(sizeof(struct io_mapped_kbuf), GFP_NOIO);
-+	if (!kbuf)
-+		return -EIO;
++static inline __u64 build_user_data(unsigned tag, unsigned op,
++			unsigned tgt_data, unsigned is_target_io,
++			unsigned is_bpf_io)
++{
++	return tag | (op << 16) | (tgt_data << 24) | (__u64)is_target_io << 63 |
++		(__u64)is_bpf_io << 60;
++}
 +
-+	rq_for_each_bvec(tmp, rq, rq_iter)
-+		nr_bvec++;
++SEC("ublk.s/")
++int ublk_io_prep_prog(struct ublk_bpf_ctx *ctx)
++{
++	struct io_uring_sqe *sqe;
++	struct sqe_data sd = {0};
++	struct sqe_key key;
++	u16 q_id = ctx->q_id;
++	u8 op; // = ctx->op;
++	u32 nr_sectors = ctx->nr_sectors;
++	u64 start_sector = ctx->start_sector;
++	char fmt_1[] ="ublk_io_prep_prog %d %d\n";
 +
-+	bvec = kmalloc_array(nr_bvec, sizeof(struct bio_vec), GFP_NOIO);
-+	if (!bvec) {
-+		kfree(kbuf);
-+		return -EIO;
++	key.q_id = ctx->q_id;
++	key.tag = ctx->tag;
++	key.offset = 0;
++	key.res = 0;
++
++	bpf_probe_read_kernel(&op, 1, &ctx->op);
++	bpf_trace_printk(fmt_1, sizeof(fmt_1), q_id, op);
++	sqe = (struct io_uring_sqe *)&sd;
++	if (op == REQ_OP_READ) {
++		char fmt[] ="add read sae\n";
++
++		bpf_trace_printk(fmt, sizeof(fmt));
++		io_uring_prep_read(sqe, target_fd, 0, nr_sectors << 9,
++				   start_sector << 9);
++		sqe->user_data = build_user_data(ctx->tag, op, 0, 1, 1);
++		bpf_map_update_elem(&sqes_map, &key, &sd, BPF_NOEXIST);
++	} else if (op == REQ_OP_WRITE) {
++		char fmt[] ="add write sae\n";
++
++		bpf_trace_printk(fmt, sizeof(fmt));
++
++		io_uring_prep_write(sqe, target_fd, 0, nr_sectors << 9,
++				    start_sector << 9);
++		sqe->user_data = build_user_data(ctx->tag, op, 0, 1, 1);
++		bpf_map_update_elem(&sqes_map, &key, &sd, BPF_NOEXIST);
++	} else {
++		;
 +	}
-+	kbuf->bvec = bvec;
-+	rq_for_each_bvec(tmp, rq, rq_iter) {
-+		*bvec = tmp;
-+		bvec++;
-+	}
-+
-+	kbuf->count = blk_rq_bytes(rq);
-+	kbuf->nr_bvecs = nr_bvec;
-+	data->kbuf = kbuf;
 +	return 0;
 +}
 +
-+static int ublk_run_bpf_prog(struct ublk_queue *ubq, struct request *rq)
++SEC("ublk.s/")
++int ublk_io_submit_prog(struct ublk_bpf_ctx *ctx)
 +{
-+	int err;
-+	struct ublk_device *ub = ubq->dev;
-+	struct bpf_prog *prog = ub->io_prep_prog;
-+	struct ublk_io_bpf_ctx *bpf_ctx;
++	struct io_uring_sqe *sqe;
++	char fmt[] ="submit sqe for req[qid:%u tag:%u]\n";
++	int q_id = ctx->q_id, *ring_fd;
++	struct sqe_key key;
 +
-+	if (!prog)
-+		return 0;
++	key.q_id = ctx->q_id;
++	key.tag = ctx->tag;
++	key.offset = 0;
++	key.res = 0;
 +
-+	bpf_ctx = kmalloc(sizeof(struct ublk_io_bpf_ctx), GFP_NOIO);
-+	if (!bpf_ctx)
-+		return -EIO;
-+
-+	err = ublk_init_uring_kbuf(rq);
-+	if (err < 0) {
-+		kfree(bpf_ctx);
-+		return -EIO;
++	sqe = bpf_map_lookup_elem(&sqes_map, &key);
++	ring_fd = bpf_map_lookup_elem(&uring_fd_map, &q_id);
++	if (ring_fd) {
++		bpf_trace_printk(fmt, sizeof(fmt), key.q_id, key.tag);
++		bpf_ublk_queue_sqe(ctx, sqe, 128, *ring_fd);
++		bpf_map_delete_elem(&sqes_map, &key);
 +	}
-+	bpf_ctx->ub = ub;
-+	bpf_ctx->ctx.q_id = ubq->q_id;
-+	bpf_ctx->ctx.tag = rq->tag;
-+	bpf_ctx->ctx.op = req_op(rq);
-+	bpf_ctx->ctx.nr_sectors = blk_rq_sectors(rq);
-+	bpf_ctx->ctx.start_sector = blk_rq_pos(rq);
-+	bpf_prog_run_pin_on_cpu(prog, bpf_ctx);
-+
-+	init_task_work(&bpf_ctx->work, ublk_bpf_io_submit_fn);
-+	if (task_work_add(ubq->ubq_daemon, &bpf_ctx->work, TWA_SIGNAL_NO_IPI))
-+		kfree(bpf_ctx);
 +	return 0;
 +}
 +
- static blk_status_t ublk_queue_rq(struct blk_mq_hw_ctx *hctx,
- 		const struct blk_mq_queue_data *bd)
- {
-@@ -872,6 +1016,9 @@ static blk_status_t ublk_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	if (unlikely(res != BLK_STS_OK))
- 		return BLK_STS_IOERR;
- 
-+	/* Currently just for test. */
-+	ublk_run_bpf_prog(ubq, rq);
-+
- 	/* With recovery feature enabled, force_abort is set in
- 	 * ublk_stop_dev() before calling del_gendisk(). We have to
- 	 * abort all requeued and new rqs here to let del_gendisk()
-@@ -2009,6 +2156,56 @@ static int ublk_ctrl_end_recovery(struct io_uring_cmd *cmd)
- 	return ret;
- }
- 
-+static int ublk_ctrl_reg_bpf_prog(struct io_uring_cmd *cmd)
-+{
-+	struct ublksrv_ctrl_cmd *header = (struct ublksrv_ctrl_cmd *)cmd->cmd;
-+	struct ublk_device *ub;
-+	struct bpf_prog *prog;
-+	int ret = 0;
-+
-+	ub = ublk_get_device_from_id(header->dev_id);
-+	if (!ub)
-+		return -EINVAL;
-+
-+	mutex_lock(&ub->mutex);
-+	prog = bpf_prog_get_type(header->data[0], BPF_PROG_TYPE_UBLK);
-+	if (IS_ERR(prog)) {
-+		ret = PTR_ERR(prog);
-+		goto out_unlock;
-+	}
-+	ub->io_prep_prog = prog;
-+
-+	prog = bpf_prog_get_type(header->data[1], BPF_PROG_TYPE_UBLK);
-+	if (IS_ERR(prog)) {
-+		ret = PTR_ERR(prog);
-+		goto out_unlock;
-+	}
-+	ub->io_submit_prog = prog;
-+
-+out_unlock:
-+	mutex_unlock(&ub->mutex);
-+	ublk_put_device(ub);
-+	return ret;
-+}
-+
-+static int ublk_ctrl_unreg_bpf_prog(struct io_uring_cmd *cmd)
-+{
-+	struct ublksrv_ctrl_cmd *header = (struct ublksrv_ctrl_cmd *)cmd->cmd;
-+	struct ublk_device *ub;
-+
-+	ub = ublk_get_device_from_id(header->dev_id);
-+	if (!ub)
-+		return -EINVAL;
-+
-+	mutex_lock(&ub->mutex);
-+	bpf_prog_put(ub->io_prep_prog);
-+	bpf_prog_put(ub->io_submit_prog);
-+	ub->io_prep_prog = NULL;
-+	ub->io_submit_prog = NULL;
-+	mutex_unlock(&ub->mutex);
-+	ublk_put_device(ub);
-+	return 0;
-+}
- static int ublk_ctrl_uring_cmd(struct io_uring_cmd *cmd,
- 		unsigned int issue_flags)
- {
-@@ -2059,6 +2256,12 @@ static int ublk_ctrl_uring_cmd(struct io_uring_cmd *cmd,
- 	case UBLK_CMD_END_USER_RECOVERY:
- 		ret = ublk_ctrl_end_recovery(cmd);
- 		break;
-+	case UBLK_CMD_REG_BPF_PROG:
-+		ret = ublk_ctrl_reg_bpf_prog(cmd);
-+		break;
-+	case UBLK_CMD_UNREG_BPF_PROG:
-+		ret = ublk_ctrl_unreg_bpf_prog(cmd);
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 515b7b995b3a..578d65e9f30e 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5699,6 +5699,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(ublk_queue_sqe, 212, ##ctx)			\
- 	/* */
- 
- /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
-diff --git a/include/uapi/linux/ublk_cmd.h b/include/uapi/linux/ublk_cmd.h
-index 8f88e3a29998..a43b1864de51 100644
---- a/include/uapi/linux/ublk_cmd.h
-+++ b/include/uapi/linux/ublk_cmd.h
++char LICENSE[] SEC("license") = "GPL";
+diff --git a/include/ublk_cmd.h b/include/ublk_cmd.h
+index f6238cc..893ba8c 100644
+--- a/include/ublk_cmd.h
++++ b/include/ublk_cmd.h
 @@ -17,6 +17,8 @@
  #define	UBLK_CMD_STOP_DEV	0x07
  #define	UBLK_CMD_SET_PARAMS	0x08
@@ -368,69 +241,256 @@ index 8f88e3a29998..a43b1864de51 100644
 +#define UBLK_CMD_UNREG_BPF_PROG		0x0b
  #define	UBLK_CMD_START_USER_RECOVERY	0x10
  #define	UBLK_CMD_END_USER_RECOVERY	0x11
- /*
-@@ -230,4 +232,13 @@ struct ublk_params {
- 	struct ublk_param_discard	discard;
+ #define	UBLK_CMD_GET_DEV_INFO2		0x12
+diff --git a/include/ublksrv.h b/include/ublksrv.h
+index d38bd46..f5deddb 100644
+--- a/include/ublksrv.h
++++ b/include/ublksrv.h
+@@ -106,6 +106,7 @@ struct ublksrv_tgt_info {
+ 	unsigned int nr_fds;
+ 	int fds[UBLKSRV_TGT_MAX_FDS];
+ 	void *tgt_data;
++	void *tgt_bpf_obj;
+ 
+ 	/*
+ 	 * Extra IO slots for each queue, target code can reserve some
+@@ -263,6 +264,8 @@ struct ublksrv_tgt_type {
+ 	int (*init_queue)(const struct ublksrv_queue *, void **queue_data_ptr);
+ 	void (*deinit_queue)(const struct ublksrv_queue *);
+ 
++	int (*init_queue_bpf)(const struct ublksrv_dev *dev, const struct ublksrv_queue *q);
++
+ 	unsigned long reserved[5];
  };
  
-+struct ublk_bpf_ctx {
-+	__u32	t_val;
-+	__u16	q_id;
-+	__u16	tag;
-+	__u8	op;
-+	__u32	nr_sectors;
-+	__u64	start_sector;
-+};
-+
- #endif
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index e8d90829f23e..f8672294e145 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -700,6 +700,8 @@ class PrinterHelpers(Printer):
-             'struct bpf_dynptr',
-             'struct iphdr',
-             'struct ipv6hdr',
-+            'struct ublk_io_bpf_ctx',
-+            'struct io_uring_sqe',
-     ]
-     known_types = {
-             '...',
-@@ -755,6 +757,8 @@ class PrinterHelpers(Printer):
-             'const struct bpf_dynptr',
-             'struct iphdr',
-             'struct ipv6hdr',
-+            'struct ublk_io_bpf_ctx',
-+            'struct io_uring_sqe',
-     }
-     mapped_types = {
-             'u8': '__u8',
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 515b7b995b3a..530094246e2a 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5485,6 +5485,13 @@ union bpf_attr {
-  *		0 on success.
-  *
-  *		**-ENOENT** if the bpf_local_storage cannot be found.
-+ *
-+ * u64 bpf_ublk_queue_sqe(struct ublk_io_bpf_ctx *ctx, struct io_uring_sqe *sqe, u32 offset, u32 len)
-+ *	Description
-+ *		Submit ublk io requests.
-+ *	Return
-+ *		0 on success.
-+ *
-  */
- #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
- 	FN(unspec, 0, ##ctx)				\
-@@ -5699,6 +5706,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(ublk_queue_sqe, 212, ##ctx)			\
- 	/* */
+@@ -318,6 +321,11 @@ extern void ublksrv_ctrl_prep_recovery(struct ublksrv_ctrl_dev *dev,
+ 		const char *recovery_jbuf);
+ extern const char *ublksrv_ctrl_get_recovery_jbuf(const struct ublksrv_ctrl_dev *dev);
  
- /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
++extern void ublksrv_ctrl_set_bpf_obj_info(struct ublksrv_ctrl_dev *dev,
++					  void *obj);
++extern int ublksrv_ctrl_reg_bpf_prog(struct ublksrv_ctrl_dev *dev,
++				     int io_prep_fd, int io_submit_fd);
++
+ /* ublksrv device ("/dev/ublkcN") level APIs */
+ extern const struct ublksrv_dev *ublksrv_dev_init(const struct ublksrv_ctrl_dev *
+ 		ctrl_dev);
+diff --git a/include/ublksrv_priv.h b/include/ublksrv_priv.h
+index 2996baa..8da8866 100644
+--- a/include/ublksrv_priv.h
++++ b/include/ublksrv_priv.h
+@@ -42,6 +42,7 @@ struct ublksrv_ctrl_dev {
+ 
+ 	const char *tgt_type;
+ 	const struct ublksrv_tgt_type *tgt_ops;
++	void *bpf_obj;
+ 
+ 	/*
+ 	 * default is UBLKSRV_RUN_DIR but can be specified via command line,
+diff --git a/include/ublksrv_tgt.h b/include/ublksrv_tgt.h
+index 234d31e..e0db7d9 100644
+--- a/include/ublksrv_tgt.h
++++ b/include/ublksrv_tgt.h
+@@ -9,6 +9,7 @@
+ #include <getopt.h>
+ #include <string.h>
+ #include <stdarg.h>
++#include <limits.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
+diff --git a/lib/ublksrv.c b/lib/ublksrv.c
+index 96bed95..110ccb3 100644
+--- a/lib/ublksrv.c
++++ b/lib/ublksrv.c
+@@ -603,6 +603,9 @@ skip_alloc_buf:
+ 		goto fail;
+ 	}
+ 
++	if (dev->tgt.ops->init_queue_bpf)
++		dev->tgt.ops->init_queue_bpf(tdev, local_to_tq(q));
++
+ 	ublksrv_dev_init_io_cmds(dev, q);
+ 
+ 	/*
+@@ -723,6 +726,7 @@ const struct ublksrv_dev *ublksrv_dev_init(const struct ublksrv_ctrl_dev *ctrl_d
+ 	}
+ 
+ 	tgt->fds[0] = dev->cdev_fd;
++	tgt->tgt_bpf_obj = ctrl_dev->bpf_obj;
+ 
+ 	ret = ublksrv_tgt_init(dev, ctrl_dev->tgt_type, ctrl_dev->tgt_ops,
+ 			ctrl_dev->tgt_argc, ctrl_dev->tgt_argv);
+diff --git a/lib/ublksrv_cmd.c b/lib/ublksrv_cmd.c
+index 0d7265d..0101cb9 100644
+--- a/lib/ublksrv_cmd.c
++++ b/lib/ublksrv_cmd.c
+@@ -502,6 +502,27 @@ int ublksrv_ctrl_end_recovery(struct ublksrv_ctrl_dev *dev, int daemon_pid)
+ 	return ret;
+ }
+ 
++int ublksrv_ctrl_reg_bpf_prog(struct ublksrv_ctrl_dev *dev,
++			      int io_prep_fd, int io_submit_fd)
++{
++	struct ublksrv_ctrl_cmd_data data = {
++		.cmd_op = UBLK_CMD_REG_BPF_PROG,
++		.flags = CTRL_CMD_HAS_DATA,
++	};
++	int ret;
++
++	data.data[0] = io_prep_fd;
++	data.data[1] = io_submit_fd;
++
++	ret = __ublksrv_ctrl_cmd(dev, &data);
++	return ret;
++}
++
++void ublksrv_ctrl_set_bpf_obj_info(struct ublksrv_ctrl_dev *dev,  void *obj)
++{
++	dev->bpf_obj = obj;
++}
++
+ const struct ublksrv_ctrl_dev_info *ublksrv_ctrl_get_dev_info(
+ 		const struct ublksrv_ctrl_dev *dev)
+ {
+diff --git a/tgt_loop.cpp b/tgt_loop.cpp
+index 79a65d3..b1568fe 100644
+--- a/tgt_loop.cpp
++++ b/tgt_loop.cpp
+@@ -4,7 +4,11 @@
+ 
+ #include <poll.h>
+ #include <sys/epoll.h>
++#include <linux/bpf.h>
++#include <bpf/bpf.h>
++#include <bpf/libbpf.h>
+ #include "ublksrv_tgt.h"
++#include "bpf/.tmp/ublk.skel.h"
+ 
+ static bool backing_supports_discard(char *name)
+ {
+@@ -88,6 +92,20 @@ static int loop_recovery_tgt(struct ublksrv_dev *dev, int type)
+ 	return 0;
+ }
+ 
++static int loop_init_queue_bpf(const struct ublksrv_dev *dev,
++			       const struct ublksrv_queue *q)
++{
++	int ret, q_id, ring_fd;
++	const struct ublksrv_tgt_info *tgt = &dev->tgt;
++	struct ublk_bpf *obj = (struct ublk_bpf*)tgt->tgt_bpf_obj;
++
++	q_id = q->q_id;
++	ring_fd = q->ring_ptr->ring_fd;
++	ret = bpf_map_update_elem(bpf_map__fd(obj->maps.uring_fd_map), &q_id,
++				  &ring_fd,  0);
++	return ret;
++}
++
+ static int loop_init_tgt(struct ublksrv_dev *dev, int type, int argc, char
+ 		*argv[])
+ {
+@@ -125,6 +143,7 @@ static int loop_init_tgt(struct ublksrv_dev *dev, int type, int argc, char
+ 		},
+ 	};
+ 	bool can_discard = false;
++	struct ublk_bpf *bpf_obj;
+ 
+ 	strcpy(tgt_json.name, "loop");
+ 
+@@ -218,6 +237,10 @@ static int loop_init_tgt(struct ublksrv_dev *dev, int type, int argc, char
+ 			jbuf = ublksrv_tgt_realloc_json_buf(dev, &jbuf_size);
+ 	} while (ret < 0);
+ 
++	if (tgt->tgt_bpf_obj) {
++		bpf_obj = (struct ublk_bpf *)tgt->tgt_bpf_obj;
++		bpf_obj->data->target_fd = tgt->fds[1];
++	}
+ 	return 0;
+ }
+ 
+@@ -252,9 +275,14 @@ static int loop_queue_tgt_io(const struct ublksrv_queue *q,
+ 		const struct ublk_io_data *data, int tag)
+ {
+ 	const struct ublksrv_io_desc *iod = data->iod;
+-	struct io_uring_sqe *sqe = io_uring_get_sqe(q->ring_ptr);
++	struct io_uring_sqe *sqe;
+ 	unsigned ublk_op = ublksrv_get_op(iod);
+ 
++	/* ebpf prog wil handle read/write requests. */
++	if ((ublk_op == UBLK_IO_OP_READ) || (ublk_op == UBLK_IO_OP_WRITE))
++		return 1;
++
++	sqe = io_uring_get_sqe(q->ring_ptr);
+ 	if (!sqe)
+ 		return 0;
+ 
+@@ -374,6 +402,7 @@ struct ublksrv_tgt_type  loop_tgt_type = {
+ 	.type	= UBLKSRV_TGT_TYPE_LOOP,
+ 	.name	=  "loop",
+ 	.recovery_tgt = loop_recovery_tgt,
++	.init_queue_bpf = loop_init_queue_bpf,
+ };
+ 
+ static void tgt_loop_init() __attribute__((constructor));
+diff --git a/ublksrv_tgt.cpp b/ublksrv_tgt.cpp
+index 5ed328d..d3796cf 100644
+--- a/ublksrv_tgt.cpp
++++ b/ublksrv_tgt.cpp
+@@ -2,6 +2,7 @@
+ 
+ #include "config.h"
+ #include "ublksrv_tgt.h"
++#include "bpf/.tmp/ublk.skel.h"
+ 
+ /* per-task variable */
+ static pthread_mutex_t jbuf_lock;
+@@ -575,6 +576,31 @@ static void ublksrv_tgt_set_params(struct ublksrv_ctrl_dev *cdev,
+ 	}
+ }
+ 
++static int ublksrv_tgt_load_bpf_prog(struct ublksrv_ctrl_dev *cdev)
++{
++	struct ublk_bpf *obj;
++	int ret, io_prep_fd, io_submit_fd;
++
++	obj = ublk_bpf__open();
++	if (!obj) {
++		fprintf(stderr, "failed to open BPF object\n");
++		return -1;
++	}
++	ret = ublk_bpf__load(obj);
++	if (ret) {
++		fprintf(stderr, "failed to load BPF object\n");
++		return -1;
++	}
++
++
++	io_prep_fd = bpf_program__fd(obj->progs.ublk_io_prep_prog);
++	io_submit_fd = bpf_program__fd(obj->progs.ublk_io_submit_prog);
++	ret = ublksrv_ctrl_reg_bpf_prog(cdev, io_prep_fd, io_submit_fd);
++	if (!ret)
++		ublksrv_ctrl_set_bpf_obj_info(cdev, obj);
++	return ret;
++}
++
+ static int cmd_dev_add(int argc, char *argv[])
+ {
+ 	static const struct option longopts[] = {
+@@ -696,6 +722,13 @@ static int cmd_dev_add(int argc, char *argv[])
+ 		goto fail;
+ 	}
+ 
++	ret = ublksrv_tgt_load_bpf_prog(dev);
++	if (ret < 0) {
++		fprintf(stderr, "dev %d load bpf prog failed, ret %d\n",
++			data.dev_id, ret);
++		goto fail_stop_daemon;
++	}
++
+ 	{
+ 		const struct ublksrv_ctrl_dev_info *info =
+ 			ublksrv_ctrl_get_dev_info(dev);
 -- 
 2.31.1
 
