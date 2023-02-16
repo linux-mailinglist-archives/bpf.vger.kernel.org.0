@@ -2,97 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B51A698956
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 01:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F2B698998
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 02:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbjBPAkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 19:40:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39382 "EHLO
+        id S229595AbjBPBCt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 20:02:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjBPAkV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 19:40:21 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B735542DEA
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 16:40:20 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 55A6C61E19
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 00:40:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A02F5C433EF;
-        Thu, 16 Feb 2023 00:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676508019;
-        bh=iT0vRrkhFwpkGUrs4iMrGRxRMwZQsATo05gIixrbc/s=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=D9iMESCkL2WF6jW1qOieNK9OTsJGrXpzAi+hLr6ltMPeTP2xWrbzSbIPJ94ZTJUsB
-         6E685poCN4CEgVeBo+zY7XRqKNxQMijCEbz5aECkuDRTLgkhA2Wx/oX6G8HamNFXL6
-         U7gnrvkdS3tkG3+vu4ZKFSUi1lcaYP+KYqhOhJa9oCUdV3sp90O57sBuu4nyW/tCDz
-         XsKqKkuUUrEUd3dZoSpZuawGbzQl7h/gre+LQQ+XcU80oznmR0LLopdEV6EE5xrxFk
-         f74Yd2xTz2azD1e+Z6f+Udux7ckhikVY+GgrwJKM3y46wc3EKknbYQtr+X6IPrLtf4
-         kqaAXDt7SOx+g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4A919C4166F;
-        Thu, 16 Feb 2023 00:40:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229454AbjBPBCt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 20:02:49 -0500
+Received: from out-244.mta0.migadu.com (out-244.mta0.migadu.com [91.218.175.244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC902D149
+        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 17:02:47 -0800 (PST)
+Message-ID: <2651cae9-43a5-451b-b93f-874b3624e990@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1676509365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mQr8urEZ2l1H3V7fpN2XdDib3U5eCJK4YpglC2m2KfQ=;
+        b=iaarCdaJIVLrg6FXVi27wRb4dtxx50WQPzNzLF3vicVTfBgaew7oaHqSHgEKO/v/pmHgrW
+        oKjD8e84TAisQvwicKV4aV0imRwpA8TCMTMgfYL0ZGKJl2GjieBiuLAwL/1To6s2rtyQFD
+        s6kYXvZoTaiTDYX1W2Eq5TWfZmHOECs=
+Date:   Wed, 15 Feb 2023 17:02:34 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/7] New benchmark for hashmap lookups
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167650801929.17484.16570791858939648263.git-patchwork-notify@kernel.org>
-Date:   Thu, 16 Feb 2023 00:40:19 +0000
-References: <20230213091519.1202813-1-aspsk@isovalent.com>
-In-Reply-To: <20230213091519.1202813-1-aspsk@isovalent.com>
-To:     Anton Protopopov <aspsk@isovalent.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, john.fastabend@gmail.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next 5/7] bpf: Update the struct_ops of a bpf_link.
+Content-Language: en-US
+To:     Kui-Feng Lee <kuifeng@meta.com>
+References: <20230214221718.503964-1-kuifeng@meta.com>
+ <20230214221718.503964-6-kuifeng@meta.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org
+In-Reply-To: <20230214221718.503964-6-kuifeng@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On 2/14/23 2:17 PM, Kui-Feng Lee wrote:
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index d16ca06cf09a..d329621fc721 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -752,11 +752,66 @@ static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
+>   	return 0;
+>   }
+>   
+> +static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map *new_map)
+> +{
+> +	struct bpf_struct_ops_value *kvalue;
+> +	struct bpf_struct_ops_map *st_map, *old_st_map;
+> +	struct bpf_map *old_map;
+> +	int err;
+> +
+> +	if (new_map->map_type != BPF_MAP_TYPE_STRUCT_OPS || !(new_map->map_flags & BPF_F_LINK))
+> +		return -EINVAL;
+> +
+> +	old_map = link->map;
+> +
+> +	/* It does nothing if the new map is the same as the old one.
+> +	 * A struct_ops that backs a bpf_link can not be updated or
+> +	 * its kvalue would be updated and causes inconsistencies.
+> +	 */
+> +	if (old_map == new_map)
+> +		return 0;
+> +
+> +	/* The new and old struct_ops must be the same type. */
+> +	st_map = (struct bpf_struct_ops_map *)new_map;
+> +	old_st_map = (struct bpf_struct_ops_map *)old_map;
+> +	if (st_map->st_ops != old_st_map->st_ops)
+> +		return -EINVAL;
+> +
+> +	/* Assure the struct_ops is updated (has value) and not
+> +	 * backing any other link.
+> +	 */
+> +	kvalue = &st_map->kvalue;
+> +	if (kvalue->state != BPF_STRUCT_OPS_STATE_INUSE ||
+> +	    refcount_read(&kvalue->refcnt) != 0)
+> +		return -EINVAL;
+> +
+> +	bpf_map_inc(new_map);
+> +	refcount_set(&kvalue->refcnt, 1);
+> +
+> +	set_memory_rox((long)st_map->image, 1);
+> +	err = st_map->st_ops->update(kvalue->data, old_st_map->kvalue.data);
+> +	if (err) {
+> +		refcount_set(&kvalue->refcnt, 0);
+> +
+> +		set_memory_nx((long)st_map->image, 1);
+> +		set_memory_rw((long)st_map->image, 1);
+> +		bpf_map_put(new_map);
+> +		return err;
+> +	}
+> +
+> +	link->map = new_map;
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Similar here, does this link_update operation needs a lock?
 
-On Mon, 13 Feb 2023 09:15:12 +0000 you wrote:
-> Add a new benchmark for hashmap lookups and fix several typos.
-> 
-> In commit 3 I've patched the bench utility so that now command line options
-> can be reused by different benchmarks.
-> 
-> The benchmark itself is added in the last commit 7. I was using this benchmark
-> to test map lookup productivity when using a different hash function [1]. When
-> run with --quiet, the results can be easily plotted [2].  The results provided
-> by the benchmark look reasonable and match the results of my different
-> benchmarks (requiring to patch kernel to get actual statistics on map lookups).
-> 
-> [...]
+> +
+> +	bpf_struct_ops_kvalue_put(&old_st_map->kvalue);
+> +
+> +	return 0;
+> +}
+> +
+>   static const struct bpf_link_ops bpf_struct_ops_map_lops = {
+>   	.release = bpf_struct_ops_map_link_release,
+>   	.dealloc = bpf_struct_ops_map_link_dealloc,
+>   	.show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
+>   	.fill_link_info = bpf_struct_ops_map_link_fill_link_info,
+> +	.update_struct_ops = bpf_struct_ops_map_link_update,
 
-Here is the summary with links:
-  - [bpf-next,v2,1/7] selftest/bpf/benchs: fix a typo in bpf_hashmap_full_update
-    https://git.kernel.org/bpf/bpf-next/c/4db98ab445c5
-  - [bpf-next,v2,2/7] selftest/bpf/benchs: make a function static in bpf_hashmap_full_update
-    https://git.kernel.org/bpf/bpf-next/c/2f1c59637fb1
-  - [bpf-next,v2,3/7] selftest/bpf/benchs: enhance argp parsing
-    https://git.kernel.org/bpf/bpf-next/c/22ff7aeaa9e3
-  - [bpf-next,v2,4/7] selftest/bpf/benchs: remove an unused header
-    https://git.kernel.org/bpf/bpf-next/c/9644546260ea
-  - [bpf-next,v2,5/7] selftest/bpf/benchs: make quiet option common
-    https://git.kernel.org/bpf/bpf-next/c/90c22503cd89
-  - [bpf-next,v2,6/7] selftest/bpf/benchs: print less if the quiet option is set
-    https://git.kernel.org/bpf/bpf-next/c/a237dda05e91
-  - [bpf-next,v2,7/7] selftest/bpf/benchs: Add benchmark for hashmap lookups
-    https://git.kernel.org/bpf/bpf-next/c/f371f2dc53d1
+This seems a little non-intuitive to add a struct_ops specific thing to the 
+generic bpf_link_ops. May be avoid adding ".update_struct_ops" and directly call 
+the bpf_struct_ops_map_link_update() from link_update()?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
+>   };
+>   
+>   int link_create_struct_ops_map(union bpf_attr *attr, bpfptr_t uattr)
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 54e172d8f5d1..1341634863b5 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -4650,6 +4650,32 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+>   	return ret;
+>   }
+>   
+> +#define BPF_LINK_UPDATE_STRUCT_OPS_LAST_FIELD link_update_struct_ops.new_map_fd
+
+Why it is needed? Does it hit error without it?
+
+> +
+> +static int link_update_struct_ops(struct bpf_link *link, union bpf_attr *attr)
+> +{
+> +	struct bpf_map *new_map;
+> +	int ret = 0;
+> +
+> +	new_map = bpf_map_get(attr->link_update.new_map_fd);
+> +	if (IS_ERR(new_map))
+> +		return -EINVAL;
+> +
+> +	if (new_map->map_type != BPF_MAP_TYPE_STRUCT_OPS) {
+> +		ret = -EINVAL;
+> +		goto out_put_map;
+> +	}
+
+How about BPF_F_REPLACE?
+
+> +
+> +	if (link->ops->update_struct_ops)
+> +		ret = link->ops->update_struct_ops(link, new_map); > +	else
+> +		ret = -EINVAL;
+> +
+> +out_put_map:
+> +	bpf_map_put(new_map);
+> +	return ret;
+> +}
+> +
+>   #define BPF_LINK_UPDATE_LAST_FIELD link_update.old_prog_fd
+>   
+>   static int link_update(union bpf_attr *attr)
+> @@ -4670,6 +4696,11 @@ static int link_update(union bpf_attr *attr)
+>   	if (IS_ERR(link))
+>   		return PTR_ERR(link);
+>   
+> +	if (link->type == BPF_LINK_TYPE_STRUCT_OPS) {
+> +		ret = link_update_struct_ops(link, attr);
+> +		goto out_put_link;
+> +	}
+> +
+>   	new_prog = bpf_prog_get(attr->link_update.new_prog_fd);
+>   	if (IS_ERR(new_prog)) {
+>   		ret = PTR_ERR(new_prog);
+> diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+> index 66ce5fadfe42..558b01d5250f 100644
+> --- a/net/ipv4/bpf_tcp_ca.c
+> +++ b/net/ipv4/bpf_tcp_ca.c
+> @@ -239,8 +239,6 @@ static int bpf_tcp_ca_init_member(const struct btf_type *t,
+>   		if (bpf_obj_name_cpy(tcp_ca->name, utcp_ca->name,
+>   				     sizeof(tcp_ca->name)) <= 0)
+>   			return -EINVAL;
+> -		if (tcp_ca_find(utcp_ca->name))
+> -			return -EEXIST;
+
+This change is not obvious. Please put some comment in the commit message about 
+this change.
 
