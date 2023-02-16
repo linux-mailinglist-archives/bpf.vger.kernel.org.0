@@ -2,95 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A661698E03
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 08:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52331698E07
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 08:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbjBPHr1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 02:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
+        id S229478AbjBPHtl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 02:49:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjBPHr0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 02:47:26 -0500
-Received: from out-239.mta1.migadu.com (out-239.mta1.migadu.com [95.215.58.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD61B3D085
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 23:47:20 -0800 (PST)
-Message-ID: <1232a3da-a58f-8cfb-b881-c049abadc203@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1676533638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oxHYczO7SNKQh0DoSP0lv1HbkL73XKakjcKSCpkdv6Y=;
-        b=sOEUenTBaYzvNGIKHFvZm1SYk2ZyUu8rK+DvfV2Q1PDmdu4BZP5lC8NZ/1j9aaqu3VhKWe
-        uhCB3i7Vio05F/qF0VSR8IGRdgjXOksYuSlBXtMw6KrFSgbDfq/SBPdSmYrlfcBliRtJKq
-        09c2MxuznuSH61osWalzsHyZoWmFWp4=
-Date:   Wed, 15 Feb 2023 23:47:03 -0800
+        with ESMTP id S229460AbjBPHtk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 02:49:40 -0500
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0091141B5F;
+        Wed, 15 Feb 2023 23:49:37 -0800 (PST)
+Received: from [192.168.0.2] (ip5f5aeab7.dynamic.kabel-deutschland.de [95.90.234.183])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 4182960027FD7;
+        Thu, 16 Feb 2023 08:49:35 +0100 (CET)
+Message-ID: <10c0dcb4-f353-41a8-dfff-e99d2dca7fb2@molgen.mpg.de>
+Date:   Thu, 16 Feb 2023 08:49:34 +0100
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [Intel-wired-lan] [PATCH intel-next v4 4/8] i40e: Change size to
+ truesize when using i40e_rx_buffer_flip()
+To:     Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        bpf@vger.kernel.org, magnus.karlsson@intel.com
+References: <20230215124305.76075-1-tirthendu.sarkar@intel.com>
+ <20230215124305.76075-5-tirthendu.sarkar@intel.com>
 Content-Language: en-US
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
- <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
- <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
- <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
- <20230210163258.phekigglpquitq33@apollo>
- <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
- <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
- <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
- <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
- <6d48c284-42eb-9688-4259-79b7f096e294@linux.dev>
- <7fef4ece-0982-cb43-ed39-e73791436355@huaweicloud.com>
- <2b1ddc4c-9905-899a-a903-e66a6e8b4d58@linux.dev>
- <5f22c315-ed38-b677-f36b-496d89847467@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <5f22c315-ed38-b677-f36b-496d89847467@huaweicloud.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20230215124305.76075-5-tirthendu.sarkar@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/15/23 6:11 PM, Hou Tao wrote:
->>>> For local storage, when its owner (sk/task/inode/cgrp) is going away, the
->>>> memory can be reused immediately. No rcu gp is needed.
->>> Now it seems it will wait for RCU GP and i think it is still necessary, because
->>> when the process exits, other processes may still access the local storage
->>> through pidfd or task_struct of the exited process.
->> When its owner (sk/task/cgrp...) is going away, its owner has reached refcnt 0
->> and will be kfree immediately next. eg. bpf_sk_storage_free is called just
->> before the sk is about to be kfree. No bpf prog should have a hold on this sk.
->> The same should go for the task.
-> A bpf syscall may have already found the task local storage through a pidfd,
-> then the target task exits and the local storage is free immediately, then bpf
-> syscall starts to copy the local storage and there will be a UAF, right ? Did I
-> missing something here ?
-bpf syscall like bpf_pid_task_storage_lookup_elem and you meant 
-__put_task_struct() will be called while the syscall's bpf_map_copy_value() is 
-still under rcu_read_lock()?
+Dear Tirthendu,
+
+
+Thank you for your patch.
+
+Am 15.02.23 um 13:43 schrieb Tirthendu Sarkar:
+> Truesize is now passed directly to i40e_rx_buffer_flip() instead of size
+> so that it does not need to recalculate truesize from size using
+> i40e_rx_frame_truesize() before adjusting page offset.
+
+Did the compiler not optimize that well enough?
+
+> With these change the function can now be used during skb building and
+> adding frags. In later patches it will also be easier for adjusting
+> page offsets for multi-buffers.
+
+Why couldn’t the function be used before?
+
+> Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+> ---
+>   drivers/net/ethernet/intel/i40e/i40e_txrx.c | 54 ++++++++-------------
+>   1 file changed, 19 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> index a7fba294a8f4..019abd7273a2 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> @@ -2018,6 +2018,21 @@ static bool i40e_can_reuse_rx_page(struct i40e_rx_buffer *rx_buffer,
+>   	return true;
+>   }
+>   
+> +/**
+> + * i40e_rx_buffer_flip - adjusted rx_buffer to point to an unused region
+> + * @rx_buffer: Rx buffer to adjust
+> + * @size: Size of adjustment
+> + **/
+> +static void i40e_rx_buffer_flip(struct i40e_rx_buffer *rx_buffer,
+> +				unsigned int truesize)
+> +{
+> +#if (PAGE_SIZE < 8192)
+> +	rx_buffer->page_offset ^= truesize;
+> +#else
+> +	rx_buffer->page_offset += truesize;
+> +#endif
+
+It’d be great if you sent a patch on top, doing the check not in the 
+preprocessor but in native C code.
+
+> +}
+> +
+>   /**
+>    * i40e_add_rx_frag - Add contents of Rx buffer to sk_buff
+>    * @rx_ring: rx descriptor ring to transact packets on
+> @@ -2045,11 +2060,7 @@ static void i40e_add_rx_frag(struct i40e_ring *rx_ring,
+>   			rx_buffer->page_offset, size, truesize);
+>   
+>   	/* page is being used so we must update the page offset */
+> -#if (PAGE_SIZE < 8192)
+> -	rx_buffer->page_offset ^= truesize;
+> -#else
+> -	rx_buffer->page_offset += truesize;
+> -#endif
+> +	i40e_rx_buffer_flip(rx_buffer, truesize);
+>   }
+>   
+>   /**
+> @@ -2154,11 +2165,7 @@ static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
+>   				size, truesize);
+>   
+>   		/* buffer is used by skb, update page_offset */
+> -#if (PAGE_SIZE < 8192)
+> -		rx_buffer->page_offset ^= truesize;
+> -#else
+> -		rx_buffer->page_offset += truesize;
+> -#endif
+> +		i40e_rx_buffer_flip(rx_buffer, truesize);
+>   	} else {
+>   		/* buffer is unused, reset bias back to rx_buffer */
+>   		rx_buffer->pagecnt_bias++;
+> @@ -2209,11 +2216,7 @@ static struct sk_buff *i40e_build_skb(struct i40e_ring *rx_ring,
+>   		skb_metadata_set(skb, metasize);
+>   
+>   	/* buffer is used by skb, update page_offset */
+> -#if (PAGE_SIZE < 8192)
+> -	rx_buffer->page_offset ^= truesize;
+> -#else
+> -	rx_buffer->page_offset += truesize;
+> -#endif
+> +	i40e_rx_buffer_flip(rx_buffer, truesize);
+>   
+>   	return skb;
+>   }
+> @@ -2326,25 +2329,6 @@ static int i40e_run_xdp(struct i40e_ring *rx_ring, struct xdp_buff *xdp, struct
+>   	return result;
+>   }
+>   
+> -/**
+> - * i40e_rx_buffer_flip - adjusted rx_buffer to point to an unused region
+> - * @rx_ring: Rx ring
+> - * @rx_buffer: Rx buffer to adjust
+> - * @size: Size of adjustment
+> - **/
+> -static void i40e_rx_buffer_flip(struct i40e_ring *rx_ring,
+> -				struct i40e_rx_buffer *rx_buffer,
+> -				unsigned int size)
+> -{
+> -	unsigned int truesize = i40e_rx_frame_truesize(rx_ring, size);
+> -
+> -#if (PAGE_SIZE < 8192)
+> -	rx_buffer->page_offset ^= truesize;
+> -#else
+> -	rx_buffer->page_offset += truesize;
+> -#endif
+> -}
+> -
+>   /**
+>    * i40e_xdp_ring_update_tail - Updates the XDP Tx ring tail register
+>    * @xdp_ring: XDP Tx ring
+> @@ -2513,7 +2497,7 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
+>   		if (xdp_res) {
+>   			if (xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR)) {
+>   				xdp_xmit |= xdp_res;
+> -				i40e_rx_buffer_flip(rx_ring, rx_buffer, size);
+> +				i40e_rx_buffer_flip(rx_buffer, xdp.frame_sz);
+
+Why is `xdp.frame_sz` the correct size now?
+
+>   			} else {
+>   				rx_buffer->pagecnt_bias++;
+>   			}
+
+
+Kind regards,
+
+Paul
