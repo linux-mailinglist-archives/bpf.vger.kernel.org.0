@@ -2,74 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDC5698F1B
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 09:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DC3698F85
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 10:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229489AbjBPI4D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 03:56:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
+        id S229702AbjBPJRV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 04:17:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjBPI4C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 03:56:02 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA81E3B3E6;
-        Thu, 16 Feb 2023 00:56:00 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id r9-20020a17090a2e8900b00233ba727724so5457627pjd.1;
-        Thu, 16 Feb 2023 00:56:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ypi8jQ7F2+zD7Ox/61oWOym5Eew8ohAKNg0g1aHiunk=;
-        b=jmBYNAyIxzvxr2+s7uIfnBlKzM3Kz3T57j6LAwRlPGFbMiFfzctEwMpN1BQCoUOnm+
-         v1RjH3c6GDudgpMRQk4veiluPqAqUWoUHZ4o9C4LJ7W+ci7McT1Y99WTz+HblLzpD+ap
-         NKhdGAJm2sN180PxiPiL2NO1/taUFef9APoAHMuGc27IXe447eg4mGD0y2gZpiKEIWK6
-         9yczPNTpDww8j/ATNnKS0oMRpBwsOsRs5IuXyN0H+3lZi8/3X5bCOQzeZWd9jVaCiPV/
-         xLUGRttLE+vjU+eDQNBJP3P4COnzBkMz8W2GMJyzh6nhCfYixAR/cWMHHwvnY+fkWB5w
-         jwhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ypi8jQ7F2+zD7Ox/61oWOym5Eew8ohAKNg0g1aHiunk=;
-        b=YgdWHdasb+dqgAx8jN4x1HzE+UmdzywbRNHDLgHE8GURrXB4PCoak/S03DKaU01DDK
-         w32HlrXdtYlpzg41GcBTD33GQxGD+/km//cL9+xcpz86anlN/HASrlJM6AMWLmHcpKj7
-         qliJ3TFJ6zb2fCjh1sSKGM0bB9cga+bx++4P+Azi6DVtjozJLM8wXZ2cMWbMblzoWQ26
-         Hnsdperz0rakil88doGVy1Q/4dIMvSbFkn2RbDxa14V6EJr5O5ncd9lfxLU/ce8urVSy
-         G+HaFPW+KtfSdEZ0WHp6riwCRUtSTwjoI1CDDlQOlJ/fVVxTznV0Jw8C6F7cuWGV0VCL
-         irzw==
-X-Gm-Message-State: AO0yUKUQLcZIqdcD9vvRMaNg3rBd/btkBGrsAFNRyvKeXtTxpl6ykW8J
-        HtNmF08LghGySkAGst+EFaY=
-X-Google-Smtp-Source: AK7set8JIRuzrIc0YG6+epfKd8EkZjZOU6eprUOONq+l5Y7ucy02vOt6JBegFr3roBLKx2DXJListA==
-X-Received: by 2002:a17:902:e84a:b0:19a:a267:f16c with SMTP id t10-20020a170902e84a00b0019aa267f16cmr7371554plg.31.1676537760249;
-        Thu, 16 Feb 2023 00:56:00 -0800 (PST)
-Received: from localhost.localdomain (arc.lsta.media.kyoto-u.ac.jp. [130.54.10.65])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902ee4d00b0019a88c1cf63sm754427plo.180.2023.02.16.00.55.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Feb 2023 00:55:59 -0800 (PST)
-From:   Taichi Nishimura <awkrail01@gmail.com>
-To:     andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        shuah@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
-        trix@redhat.com, awkrail01@gmail.com, iii@linux.ibm.com,
-        ytcoode@gmail.com, deso@posteo.net, memxor@gmail.com,
-        joannelkoong@gmail.com, rdunlap@infradead.org
-Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: [PATCH bpf-next] Fix typos in selftest/bpf files
-Date:   Thu, 16 Feb 2023 17:55:37 +0900
-Message-Id: <20230216085537.519062-1-awkrail01@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229523AbjBPJRU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 04:17:20 -0500
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A7A13D61;
+        Thu, 16 Feb 2023 01:17:17 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vbnt2n2_1676539034;
+Received: from 30.221.150.53(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0Vbnt2n2_1676539034)
+          by smtp.aliyun-inc.com;
+          Thu, 16 Feb 2023 17:17:15 +0800
+Message-ID: <3af6e401-5b18-ceff-d603-bd16d70ceef4@linux.alibaba.com>
+Date:   Thu, 16 Feb 2023 17:17:13 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+Subject: Re: [UBLKSRV] Add ebpf support.
+Content-Language: en-US
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-block@vger.kernel.org, io-uring@vger.kernel.org,
+        bpf@vger.kernel.org, axboe@kernel.dk, asml.silence@gmail.com,
+        ZiyangZhang@linux.alibaba.com
+References: <20230215004122.28917-1-xiaoguang.wang@linux.alibaba.com>
+ <20230215004618.35503-1-xiaoguang.wang@linux.alibaba.com>
+ <Y+3pR991R9nrdg5Y@T590>
+From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+In-Reply-To: <Y+3pR991R9nrdg5Y@T590>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,172 +46,425 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Run spell checker on files in selftest/bpf and fixed typos.
+hello,
 
-Signed-off-by: Taichi Nishimura <awkrail01@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c  | 2 +-
- tools/testing/selftests/bpf/prog_tests/trampoline_count.c   | 2 +-
- .../testing/selftests/bpf/progs/btf_dump_test_case_syntax.c | 2 +-
- tools/testing/selftests/bpf/progs/dynptr_fail.c             | 2 +-
- tools/testing/selftests/bpf/progs/strobemeta.h              | 2 +-
- tools/testing/selftests/bpf/progs/test_cls_redirect.c       | 6 +++---
- tools/testing/selftests/bpf/progs/test_subprogs.c           | 2 +-
- tools/testing/selftests/bpf/progs/test_xdp_vlan.c           | 2 +-
- tools/testing/selftests/bpf/test_cpp.cpp                    | 2 +-
- tools/testing/selftests/bpf/veristat.c                      | 4 ++--
- 10 files changed, 13 insertions(+), 13 deletions(-)
+> On Wed, Feb 15, 2023 at 08:46:18AM +0800, Xiaoguang Wang wrote:
+>> Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+>> ---
+>>  bpf/ublk.bpf.c         | 168 +++++++++++++++++++++++++++++++++++++++++
+>>  include/ublk_cmd.h     |   2 +
+>>  include/ublksrv.h      |   8 ++
+>>  include/ublksrv_priv.h |   1 +
+>>  include/ublksrv_tgt.h  |   1 +
+>>  lib/ublksrv.c          |   4 +
+>>  lib/ublksrv_cmd.c      |  21 ++++++
+>>  tgt_loop.cpp           |  31 +++++++-
+>>  ublksrv_tgt.cpp        |  33 ++++++++
+>>  9 files changed, 268 insertions(+), 1 deletion(-)
+>>  create mode 100644 bpf/ublk.bpf.c
+>>
+>> diff --git a/bpf/ublk.bpf.c b/bpf/ublk.bpf.c
+>> new file mode 100644
+>> index 0000000..80e79de
+>> --- /dev/null
+>> +++ b/bpf/ublk.bpf.c
+>> @@ -0,0 +1,168 @@
+>> +#include "vmlinux.h"
+> Where is vmlinux.h?
+Sorry, I forgot to attach Makefile in this commit, which will
+show how to generate vmlinux.h and how to compile ebpf
+prog object. I'll prepare v2 patch set to fix this issue soon.
+Thanks for review.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-index eb2feaac81fe..653b0a20fab9 100644
---- a/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-+++ b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-@@ -488,7 +488,7 @@ static void run_test(struct migrate_reuseport_test_case *test_case,
- 			goto close_servers;
- 	}
- 
--	/* Tie requests to the first four listners */
-+	/* Tie requests to the first four listeners */
- 	err = start_clients(test_case);
- 	if (!ASSERT_OK(err, "start_clients"))
- 		goto close_clients;
-diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-index 8fd4c0d78089..e91d0d1769f1 100644
---- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-+++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-@@ -79,7 +79,7 @@ void serial_test_trampoline_count(void)
- 	if (!ASSERT_EQ(link, NULL, "ptr_is_null"))
- 		goto cleanup;
- 
--	/* and finaly execute the probe */
-+	/* and finally execute the probe */
- 	prog_fd = bpf_program__fd(prog);
- 	if (!ASSERT_GE(prog_fd, 0, "bpf_program__fd"))
- 		goto cleanup;
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-index 26fffb02ed10..ad21ee8c7e23 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-@@ -84,7 +84,7 @@ typedef void (*printf_fn_t)(const char *, ...);
-  *	typedef int (*fn_t)(int);
-  *	typedef char * const * (*fn_ptr2_t)(s_t, fn_t);
-  *
-- * - `fn_complext_t`: pointer to a function returning struct and accepting
-+ * - `fn_complex_t`: pointer to a function returning struct and accepting
-  *   union and struct. All structs and enum are anonymous and defined inline.
-  *
-  * - `signal_t: pointer to a function accepting a pointer to a function as an
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-index 5950ad6ec2e6..aa5b69354b91 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-@@ -630,7 +630,7 @@ static int release_twice_callback_fn(__u32 index, void *data)
- }
- 
- /* Test that releasing a dynptr twice, where one of the releases happens
-- * within a calback function, fails
-+ * within a callback function, fails
-  */
- SEC("?raw_tp")
- __failure __msg("arg 1 is an unacquired reference")
-diff --git a/tools/testing/selftests/bpf/progs/strobemeta.h b/tools/testing/selftests/bpf/progs/strobemeta.h
-index 753718595c26..e562be6356f3 100644
---- a/tools/testing/selftests/bpf/progs/strobemeta.h
-+++ b/tools/testing/selftests/bpf/progs/strobemeta.h
-@@ -135,7 +135,7 @@ struct strobe_value_loc {
- 	 * tpidr_el0 for aarch64).
- 	 * TLS_IMM_EXEC: absolute address of GOT entry containing offset
- 	 * from thread pointer;
--	 * TLS_GENERAL_DYN: absolute addres of double GOT entry
-+	 * TLS_GENERAL_DYN: absolute address of double GOT entry
- 	 * containing tls_index_t struct;
- 	 */
- 	int64_t offset;
-diff --git a/tools/testing/selftests/bpf/progs/test_cls_redirect.c b/tools/testing/selftests/bpf/progs/test_cls_redirect.c
-index 2833ad722cb7..66b304982245 100644
---- a/tools/testing/selftests/bpf/progs/test_cls_redirect.c
-+++ b/tools/testing/selftests/bpf/progs/test_cls_redirect.c
-@@ -600,7 +600,7 @@ static INLINING ret_t get_next_hop(buf_t *pkt, encap_headers_t *encap,
- 		return TC_ACT_SHOT;
- 	}
- 
--	/* Skip the remainig next hops (may be zero). */
-+	/* Skip the remaining next hops (may be zero). */
- 	return skip_next_hops(pkt, encap->unigue.hop_count -
- 					   encap->unigue.next_hop - 1);
- }
-@@ -610,8 +610,8 @@ static INLINING ret_t get_next_hop(buf_t *pkt, encap_headers_t *encap,
-  *
-  *    fill_tuple(&t, foo, sizeof(struct iphdr), 123, 321)
-  *
-- * clang will substitue a costant for sizeof, which allows the verifier
-- * to track it's value. Based on this, it can figure out the constant
-+ * clang will substitute a constant for sizeof, which allows the verifier
-+ * to track its value. Based on this, it can figure out the constant
-  * return value, and calling code works while still being "generic" to
-  * IPv4 and IPv6.
-  */
-diff --git a/tools/testing/selftests/bpf/progs/test_subprogs.c b/tools/testing/selftests/bpf/progs/test_subprogs.c
-index f8e9256cf18d..a8d602d7c88a 100644
---- a/tools/testing/selftests/bpf/progs/test_subprogs.c
-+++ b/tools/testing/selftests/bpf/progs/test_subprogs.c
-@@ -47,7 +47,7 @@ static __noinline int sub5(int v)
- 	return sub1(v) - 1; /* compensates sub1()'s + 1 */
- }
- 
--/* unfortunately verifier rejects `struct task_struct *t` as an unkown pointer
-+/* unfortunately verifier rejects `struct task_struct *t` as an unknown pointer
-  * type, so we need to accept pointer as integer and then cast it inside the
-  * function
-  */
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_vlan.c b/tools/testing/selftests/bpf/progs/test_xdp_vlan.c
-index cdf3c48d6cbb..4ddcb6dfe500 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_vlan.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_vlan.c
-@@ -98,7 +98,7 @@ bool parse_eth_frame(struct ethhdr *eth, void *data_end, struct parse_pkt *pkt)
- 	return true;
- }
- 
--/* Hint, VLANs are choosen to hit network-byte-order issues */
-+/* Hint, VLANs are chosen to hit network-byte-order issues */
- #define TESTVLAN 4011 /* 0xFAB */
- // #define TO_VLAN  4000 /* 0xFA0 (hint 0xOA0 = 160) */
- 
-diff --git a/tools/testing/selftests/bpf/test_cpp.cpp b/tools/testing/selftests/bpf/test_cpp.cpp
-index 0bd9990e83fa..f4936834f76f 100644
---- a/tools/testing/selftests/bpf/test_cpp.cpp
-+++ b/tools/testing/selftests/bpf/test_cpp.cpp
-@@ -91,7 +91,7 @@ static void try_skeleton_template()
- 
- 	skel.detach();
- 
--	/* destructor will destory underlying skeleton */
-+	/* destructor will destroy underlying skeleton */
- }
- 
- int main(int argc, char *argv[])
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index f961b49b8ef4..83231456d3c5 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -144,7 +144,7 @@ static struct env {
- 	struct verif_stats *prog_stats;
- 	int prog_stat_cnt;
- 
--	/* baseline_stats is allocated and used only in comparsion mode */
-+	/* baseline_stats is allocated and used only in comparison mode */
- 	struct verif_stats *baseline_stats;
- 	int baseline_stat_cnt;
- 
-@@ -882,7 +882,7 @@ static int process_obj(const char *filename)
- 		 * that BPF object file is incomplete and has to be statically
- 		 * linked into a final BPF object file; instead of bailing
- 		 * out, report it into stderr, mark it as skipped, and
--		 * proceeed
-+		 * proceed
- 		 */
- 		fprintf(stderr, "Failed to open '%s': %d\n", filename, -errno);
- 		env.files_skipped++;
--- 
-2.25.1
+Regards,
+Xiaoguang Wang
+
+>
+>> +#include <bpf/bpf_helpers.h>
+>> +#include <bpf/bpf_core_read.h>
+>> +
+>> +
+>> +static long (*bpf_ublk_queue_sqe)(void *ctx, struct io_uring_sqe *sqe,
+>> +		u32 sqe_len, u32 fd) = (void *) 212;
+>> +
+>> +int target_fd = -1;
+>> +
+>> +struct sqe_key {
+>> +	u16 q_id;
+>> +	u16 tag;
+>> +	u32 res;
+>> +	u64 offset;
+>> +};
+>> +
+>> +struct sqe_data {
+>> +	char data[128];
+>> +};
+>> +
+>> +struct {
+>> +	__uint(type, BPF_MAP_TYPE_HASH);
+>> +	__uint(max_entries, 8192);
+>> +	__type(key, struct sqe_key);
+>> +	__type(value, struct sqe_data);
+>> +} sqes_map SEC(".maps");
+>> +
+>> +struct {
+>> +	__uint(type, BPF_MAP_TYPE_ARRAY);
+>> +	__uint(max_entries, 128);
+>> +	__type(key, int);
+>> +	__type(value, int);
+>> +} uring_fd_map SEC(".maps");
+>> +
+>> +static inline void io_uring_prep_rw(__u8 op, struct io_uring_sqe *sqe, int fd,
+>> +				    const void *addr, unsigned len,
+>> +				    __u64 offset)
+>> +{
+>> +	sqe->opcode = op;
+>> +	sqe->flags = 0;
+>> +	sqe->ioprio = 0;
+>> +	sqe->fd = fd;
+>> +	sqe->off = offset;
+>> +	sqe->addr = (unsigned long) addr;
+>> +	sqe->len = len;
+>> +	sqe->fsync_flags = 0;
+>> +	sqe->buf_index = 0;
+>> +	sqe->personality = 0;
+>> +	sqe->splice_fd_in = 0;
+>> +	sqe->addr3 = 0;
+>> +	sqe->__pad2[0] = 0;
+>> +}
+>> +
+>> +static inline void io_uring_prep_nop(struct io_uring_sqe *sqe)
+>> +{
+>> +	io_uring_prep_rw(IORING_OP_NOP, sqe, -1, 0, 0, 0);
+>> +}
+>> +
+>> +static inline void io_uring_prep_read(struct io_uring_sqe *sqe, int fd,
+>> +			void *buf, unsigned nbytes, off_t offset)
+>> +{
+>> +	io_uring_prep_rw(IORING_OP_READ, sqe, fd, buf, nbytes, offset);
+>> +}
+>> +
+>> +static inline void io_uring_prep_write(struct io_uring_sqe *sqe, int fd,
+>> +	const void *buf, unsigned nbytes, off_t offset)
+>> +{
+>> +	io_uring_prep_rw(IORING_OP_WRITE, sqe, fd, buf, nbytes, offset);
+>> +}
+>> +
+>> +/*
+>> +static u64 submit_sqe(struct bpf_map *map, void *key, void *value, void *data)
+>> +{
+>> +	struct io_uring_sqe *sqe = (struct io_uring_sqe *)value;
+>> +	struct ublk_bpf_ctx *ctx = ((struct callback_ctx *)data)->ctx;
+>> +	struct sqe_key *skey = (struct sqe_key *)key;
+>> +	char fmt[] ="submit sqe for req[qid:%u tag:%u]\n";
+>> +	char fmt2[] ="submit sqe test prep\n";
+>> +	u16 qid, tag;
+>> +	int q_id = skey->q_id, *ring_fd;
+>> +
+>> +	bpf_trace_printk(fmt2, sizeof(fmt2));
+>> +	ring_fd = bpf_map_lookup_elem(&uring_fd_map, &q_id);
+>> +	if (ring_fd) {
+>> +		bpf_trace_printk(fmt, sizeof(fmt), qid, skey->tag);
+>> +		bpf_ublk_queue_sqe(ctx, sqe, 128, *ring_fd);
+>> +		bpf_map_delete_elem(map, key);
+>> +	}
+>> +	return 0;
+>> +}
+>> +*/
+>> +
+>> +static inline __u64 build_user_data(unsigned tag, unsigned op,
+>> +			unsigned tgt_data, unsigned is_target_io,
+>> +			unsigned is_bpf_io)
+>> +{
+>> +	return tag | (op << 16) | (tgt_data << 24) | (__u64)is_target_io << 63 |
+>> +		(__u64)is_bpf_io << 60;
+>> +}
+>> +
+>> +SEC("ublk.s/")
+>> +int ublk_io_prep_prog(struct ublk_bpf_ctx *ctx)
+>> +{
+>> +	struct io_uring_sqe *sqe;
+>> +	struct sqe_data sd = {0};
+>> +	struct sqe_key key;
+>> +	u16 q_id = ctx->q_id;
+>> +	u8 op; // = ctx->op;
+>> +	u32 nr_sectors = ctx->nr_sectors;
+>> +	u64 start_sector = ctx->start_sector;
+>> +	char fmt_1[] ="ublk_io_prep_prog %d %d\n";
+>> +
+>> +	key.q_id = ctx->q_id;
+>> +	key.tag = ctx->tag;
+>> +	key.offset = 0;
+>> +	key.res = 0;
+>> +
+>> +	bpf_probe_read_kernel(&op, 1, &ctx->op);
+>> +	bpf_trace_printk(fmt_1, sizeof(fmt_1), q_id, op);
+>> +	sqe = (struct io_uring_sqe *)&sd;
+>> +	if (op == REQ_OP_READ) {
+>> +		char fmt[] ="add read sae\n";
+>> +
+>> +		bpf_trace_printk(fmt, sizeof(fmt));
+>> +		io_uring_prep_read(sqe, target_fd, 0, nr_sectors << 9,
+>> +				   start_sector << 9);
+>> +		sqe->user_data = build_user_data(ctx->tag, op, 0, 1, 1);
+>> +		bpf_map_update_elem(&sqes_map, &key, &sd, BPF_NOEXIST);
+>> +	} else if (op == REQ_OP_WRITE) {
+>> +		char fmt[] ="add write sae\n";
+>> +
+>> +		bpf_trace_printk(fmt, sizeof(fmt));
+>> +
+>> +		io_uring_prep_write(sqe, target_fd, 0, nr_sectors << 9,
+>> +				    start_sector << 9);
+>> +		sqe->user_data = build_user_data(ctx->tag, op, 0, 1, 1);
+>> +		bpf_map_update_elem(&sqes_map, &key, &sd, BPF_NOEXIST);
+>> +	} else {
+>> +		;
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +SEC("ublk.s/")
+>> +int ublk_io_submit_prog(struct ublk_bpf_ctx *ctx)
+>> +{
+>> +	struct io_uring_sqe *sqe;
+>> +	char fmt[] ="submit sqe for req[qid:%u tag:%u]\n";
+>> +	int q_id = ctx->q_id, *ring_fd;
+>> +	struct sqe_key key;
+>> +
+>> +	key.q_id = ctx->q_id;
+>> +	key.tag = ctx->tag;
+>> +	key.offset = 0;
+>> +	key.res = 0;
+>> +
+>> +	sqe = bpf_map_lookup_elem(&sqes_map, &key);
+>> +	ring_fd = bpf_map_lookup_elem(&uring_fd_map, &q_id);
+>> +	if (ring_fd) {
+>> +		bpf_trace_printk(fmt, sizeof(fmt), key.q_id, key.tag);
+>> +		bpf_ublk_queue_sqe(ctx, sqe, 128, *ring_fd);
+>> +		bpf_map_delete_elem(&sqes_map, &key);
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +char LICENSE[] SEC("license") = "GPL";
+>> diff --git a/include/ublk_cmd.h b/include/ublk_cmd.h
+>> index f6238cc..893ba8c 100644
+>> --- a/include/ublk_cmd.h
+>> +++ b/include/ublk_cmd.h
+>> @@ -17,6 +17,8 @@
+>>  #define	UBLK_CMD_STOP_DEV	0x07
+>>  #define	UBLK_CMD_SET_PARAMS	0x08
+>>  #define	UBLK_CMD_GET_PARAMS	0x09
+>> +#define UBLK_CMD_REG_BPF_PROG		0x0a
+>> +#define UBLK_CMD_UNREG_BPF_PROG		0x0b
+>>  #define	UBLK_CMD_START_USER_RECOVERY	0x10
+>>  #define	UBLK_CMD_END_USER_RECOVERY	0x11
+>>  #define	UBLK_CMD_GET_DEV_INFO2		0x12
+>> diff --git a/include/ublksrv.h b/include/ublksrv.h
+>> index d38bd46..f5deddb 100644
+>> --- a/include/ublksrv.h
+>> +++ b/include/ublksrv.h
+>> @@ -106,6 +106,7 @@ struct ublksrv_tgt_info {
+>>  	unsigned int nr_fds;
+>>  	int fds[UBLKSRV_TGT_MAX_FDS];
+>>  	void *tgt_data;
+>> +	void *tgt_bpf_obj;
+>>  
+>>  	/*
+>>  	 * Extra IO slots for each queue, target code can reserve some
+>> @@ -263,6 +264,8 @@ struct ublksrv_tgt_type {
+>>  	int (*init_queue)(const struct ublksrv_queue *, void **queue_data_ptr);
+>>  	void (*deinit_queue)(const struct ublksrv_queue *);
+>>  
+>> +	int (*init_queue_bpf)(const struct ublksrv_dev *dev, const struct ublksrv_queue *q);
+>> +
+>>  	unsigned long reserved[5];
+>>  };
+>>  
+>> @@ -318,6 +321,11 @@ extern void ublksrv_ctrl_prep_recovery(struct ublksrv_ctrl_dev *dev,
+>>  		const char *recovery_jbuf);
+>>  extern const char *ublksrv_ctrl_get_recovery_jbuf(const struct ublksrv_ctrl_dev *dev);
+>>  
+>> +extern void ublksrv_ctrl_set_bpf_obj_info(struct ublksrv_ctrl_dev *dev,
+>> +					  void *obj);
+>> +extern int ublksrv_ctrl_reg_bpf_prog(struct ublksrv_ctrl_dev *dev,
+>> +				     int io_prep_fd, int io_submit_fd);
+>> +
+>>  /* ublksrv device ("/dev/ublkcN") level APIs */
+>>  extern const struct ublksrv_dev *ublksrv_dev_init(const struct ublksrv_ctrl_dev *
+>>  		ctrl_dev);
+>> diff --git a/include/ublksrv_priv.h b/include/ublksrv_priv.h
+>> index 2996baa..8da8866 100644
+>> --- a/include/ublksrv_priv.h
+>> +++ b/include/ublksrv_priv.h
+>> @@ -42,6 +42,7 @@ struct ublksrv_ctrl_dev {
+>>  
+>>  	const char *tgt_type;
+>>  	const struct ublksrv_tgt_type *tgt_ops;
+>> +	void *bpf_obj;
+>>  
+>>  	/*
+>>  	 * default is UBLKSRV_RUN_DIR but can be specified via command line,
+>> diff --git a/include/ublksrv_tgt.h b/include/ublksrv_tgt.h
+>> index 234d31e..e0db7d9 100644
+>> --- a/include/ublksrv_tgt.h
+>> +++ b/include/ublksrv_tgt.h
+>> @@ -9,6 +9,7 @@
+>>  #include <getopt.h>
+>>  #include <string.h>
+>>  #include <stdarg.h>
+>> +#include <limits.h>
+>>  #include <sys/types.h>
+>>  #include <sys/stat.h>
+>>  #include <sys/ioctl.h>
+>> diff --git a/lib/ublksrv.c b/lib/ublksrv.c
+>> index 96bed95..110ccb3 100644
+>> --- a/lib/ublksrv.c
+>> +++ b/lib/ublksrv.c
+>> @@ -603,6 +603,9 @@ skip_alloc_buf:
+>>  		goto fail;
+>>  	}
+>>  
+>> +	if (dev->tgt.ops->init_queue_bpf)
+>> +		dev->tgt.ops->init_queue_bpf(tdev, local_to_tq(q));
+>> +
+>>  	ublksrv_dev_init_io_cmds(dev, q);
+>>  
+>>  	/*
+>> @@ -723,6 +726,7 @@ const struct ublksrv_dev *ublksrv_dev_init(const struct ublksrv_ctrl_dev *ctrl_d
+>>  	}
+>>  
+>>  	tgt->fds[0] = dev->cdev_fd;
+>> +	tgt->tgt_bpf_obj = ctrl_dev->bpf_obj;
+>>  
+>>  	ret = ublksrv_tgt_init(dev, ctrl_dev->tgt_type, ctrl_dev->tgt_ops,
+>>  			ctrl_dev->tgt_argc, ctrl_dev->tgt_argv);
+>> diff --git a/lib/ublksrv_cmd.c b/lib/ublksrv_cmd.c
+>> index 0d7265d..0101cb9 100644
+>> --- a/lib/ublksrv_cmd.c
+>> +++ b/lib/ublksrv_cmd.c
+>> @@ -502,6 +502,27 @@ int ublksrv_ctrl_end_recovery(struct ublksrv_ctrl_dev *dev, int daemon_pid)
+>>  	return ret;
+>>  }
+>>  
+>> +int ublksrv_ctrl_reg_bpf_prog(struct ublksrv_ctrl_dev *dev,
+>> +			      int io_prep_fd, int io_submit_fd)
+>> +{
+>> +	struct ublksrv_ctrl_cmd_data data = {
+>> +		.cmd_op = UBLK_CMD_REG_BPF_PROG,
+>> +		.flags = CTRL_CMD_HAS_DATA,
+>> +	};
+>> +	int ret;
+>> +
+>> +	data.data[0] = io_prep_fd;
+>> +	data.data[1] = io_submit_fd;
+>> +
+>> +	ret = __ublksrv_ctrl_cmd(dev, &data);
+>> +	return ret;
+>> +}
+>> +
+>> +void ublksrv_ctrl_set_bpf_obj_info(struct ublksrv_ctrl_dev *dev,  void *obj)
+>> +{
+>> +	dev->bpf_obj = obj;
+>> +}
+>> +
+>>  const struct ublksrv_ctrl_dev_info *ublksrv_ctrl_get_dev_info(
+>>  		const struct ublksrv_ctrl_dev *dev)
+>>  {
+>> diff --git a/tgt_loop.cpp b/tgt_loop.cpp
+>> index 79a65d3..b1568fe 100644
+>> --- a/tgt_loop.cpp
+>> +++ b/tgt_loop.cpp
+>> @@ -4,7 +4,11 @@
+>>  
+>>  #include <poll.h>
+>>  #include <sys/epoll.h>
+>> +#include <linux/bpf.h>
+>> +#include <bpf/bpf.h>
+>> +#include <bpf/libbpf.h>
+>>  #include "ublksrv_tgt.h"
+>> +#include "bpf/.tmp/ublk.skel.h"
+> Where is bpf/.tmp/ublk.skel.h?
+>
+>>  
+>>  static bool backing_supports_discard(char *name)
+>>  {
+>> @@ -88,6 +92,20 @@ static int loop_recovery_tgt(struct ublksrv_dev *dev, int type)
+>>  	return 0;
+>>  }
+>>  
+>> +static int loop_init_queue_bpf(const struct ublksrv_dev *dev,
+>> +			       const struct ublksrv_queue *q)
+>> +{
+>> +	int ret, q_id, ring_fd;
+>> +	const struct ublksrv_tgt_info *tgt = &dev->tgt;
+>> +	struct ublk_bpf *obj = (struct ublk_bpf*)tgt->tgt_bpf_obj;
+>> +
+>> +	q_id = q->q_id;
+>> +	ring_fd = q->ring_ptr->ring_fd;
+>> +	ret = bpf_map_update_elem(bpf_map__fd(obj->maps.uring_fd_map), &q_id,
+>> +				  &ring_fd,  0);
+>> +	return ret;
+>> +}
+>> +
+>>  static int loop_init_tgt(struct ublksrv_dev *dev, int type, int argc, char
+>>  		*argv[])
+>>  {
+>> @@ -125,6 +143,7 @@ static int loop_init_tgt(struct ublksrv_dev *dev, int type, int argc, char
+>>  		},
+>>  	};
+>>  	bool can_discard = false;
+>> +	struct ublk_bpf *bpf_obj;
+>>  
+>>  	strcpy(tgt_json.name, "loop");
+>>  
+>> @@ -218,6 +237,10 @@ static int loop_init_tgt(struct ublksrv_dev *dev, int type, int argc, char
+>>  			jbuf = ublksrv_tgt_realloc_json_buf(dev, &jbuf_size);
+>>  	} while (ret < 0);
+>>  
+>> +	if (tgt->tgt_bpf_obj) {
+>> +		bpf_obj = (struct ublk_bpf *)tgt->tgt_bpf_obj;
+>> +		bpf_obj->data->target_fd = tgt->fds[1];
+>> +	}
+>>  	return 0;
+>>  }
+>>  
+>> @@ -252,9 +275,14 @@ static int loop_queue_tgt_io(const struct ublksrv_queue *q,
+>>  		const struct ublk_io_data *data, int tag)
+>>  {
+>>  	const struct ublksrv_io_desc *iod = data->iod;
+>> -	struct io_uring_sqe *sqe = io_uring_get_sqe(q->ring_ptr);
+>> +	struct io_uring_sqe *sqe;
+>>  	unsigned ublk_op = ublksrv_get_op(iod);
+>>  
+>> +	/* ebpf prog wil handle read/write requests. */
+>> +	if ((ublk_op == UBLK_IO_OP_READ) || (ublk_op == UBLK_IO_OP_WRITE))
+>> +		return 1;
+>> +
+>> +	sqe = io_uring_get_sqe(q->ring_ptr);
+>>  	if (!sqe)
+>>  		return 0;
+>>  
+>> @@ -374,6 +402,7 @@ struct ublksrv_tgt_type  loop_tgt_type = {
+>>  	.type	= UBLKSRV_TGT_TYPE_LOOP,
+>>  	.name	=  "loop",
+>>  	.recovery_tgt = loop_recovery_tgt,
+>> +	.init_queue_bpf = loop_init_queue_bpf,
+>>  };
+>>  
+>>  static void tgt_loop_init() __attribute__((constructor));
+>> diff --git a/ublksrv_tgt.cpp b/ublksrv_tgt.cpp
+>> index 5ed328d..d3796cf 100644
+>> --- a/ublksrv_tgt.cpp
+>> +++ b/ublksrv_tgt.cpp
+>> @@ -2,6 +2,7 @@
+>>  
+>>  #include "config.h"
+>>  #include "ublksrv_tgt.h"
+>> +#include "bpf/.tmp/ublk.skel.h"
+> Same with above
+>
+>
+> Thanks, 
+> Ming
 
