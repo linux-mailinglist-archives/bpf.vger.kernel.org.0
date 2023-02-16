@@ -2,80 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F16699A1B
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 17:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A313E699A34
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 17:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbjBPQel (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 11:34:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33198 "EHLO
+        id S229482AbjBPQf2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 11:35:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjBPQek (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 11:34:40 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA805598;
-        Thu, 16 Feb 2023 08:34:37 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id m10so2437013wrn.4;
-        Thu, 16 Feb 2023 08:34:37 -0800 (PST)
+        with ESMTP id S229940AbjBPQf0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 11:35:26 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFECF4ECC8;
+        Thu, 16 Feb 2023 08:35:25 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id u21so5052844edv.3;
+        Thu, 16 Feb 2023 08:35:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V5mbbHr7+rxGbIXSGncjaubKdnUrIww50oZqIFjYJZo=;
-        b=BopkFU8dI1eMwvqpTHwxXPMlaxwMzh3V1KpkAyDnAEYyuni3jQqx0v3fR9FPfPGl1/
-         TPL59TjF1gTqIejaFGD8Y0DFla1UqZnD6kcIIEhFLyi8URhhpqYnOPupDFSek+AWC7nH
-         JHQspuQLuPg/I9ycUdLZ9qrOwQFdDajxjAqhlTK+pbgm0Hy1ApIeVFQRYKj3IDvlhLU0
-         Mh6+LVg4KKjiEQrWUg2gRLb2Py0fYiPHZWteonRaWewkqADCZY6P1Rtj6aZcSbKSBlrK
-         hSrbS6gkeqTLHeHyQwFrxqmfUJ3Pb0GtxO7DrRam5k1t+I4BkcDcn2dZEsMwS34w/F3w
-         TJxg==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9ZLZdKvW1QVCmUWsXtgHPZR5cuWnVGfKqKD47mtzUA=;
+        b=KAZ0xYp++drIOklGW2WrpnwBMImSXOIkW8OONTj7yFEzHFzBQwzoH6BF67+jXlMtnY
+         Z/XtC5J/yUWxcOf4ZLghWNaM1pyPiBIg+twhxdBVPNiqXzTHGEJ+h5KJ3mtfW/VzHpr7
+         8WuZsnXskkbuDGN1QSU7gEOD91rbPF4ipLJazXqG5MBMrZmR+VPZpDP61dIi7n+NFT+o
+         J8zyyb0iKwi3xtD5/hnCDgRSTIosoDgITLGU5pmA9rRz392tsC12fLngrU1EG83enydf
+         mHLBZuaV9oBWYH2i7nhzSb4CnhbzF0/flXaZLNqcpEQezJrZjAjecpf6QYpwdOpukjc5
+         VwSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V5mbbHr7+rxGbIXSGncjaubKdnUrIww50oZqIFjYJZo=;
-        b=jHtVK//lmKPFueYxRMFlrhKUplkng8wk4RvhBM8jOgcnzplbXQUrWXto/JsqKHVjdc
-         jPt0cIrd/1PgYl8mb6BSXgU/78SILTm+1THGZSuSOds5jRyfgX4urx9K9NXx1x1CH7YZ
-         TFYzdihfMakJLLr/vwe5HJFzEVI+9y4GByiVQHWo1jKPDWoNOASqfQVzbwuvuz951kv2
-         wwdaNOhafwDtwwDXZlJlavvpLSpj7GUmSiQmxkSK5wfZMvZ1QzuiqYSCo3PbrmJj1ZhW
-         8PDKkM0cQBcTMfa1hZTtBtqc+0Iju7evZPZkoCtSdTcYCUFPXuWnBfDOSDIm+R7wf3oL
-         czLQ==
-X-Gm-Message-State: AO0yUKWfniFIt4HNTQbQpcnnEnaM+6Sd+SFspJrAiRzAXgYaWintoyuH
-        ejMeed8DE1P1qYHLDdNHFOo=
-X-Google-Smtp-Source: AK7set+cF5ukJVIj32LL2ud5SKNxFU7d1pPyGv2S4UZaYDjB/c+b5fRC/Jywu3sz+0NhCCjZ0ClJTQ==
-X-Received: by 2002:adf:fa45:0:b0:2c5:56f6:52c7 with SMTP id y5-20020adffa45000000b002c556f652c7mr5923045wrr.64.1676565276294;
-        Thu, 16 Feb 2023 08:34:36 -0800 (PST)
-Received: from krava ([81.6.34.132])
-        by smtp.gmail.com with ESMTPSA id n13-20020adfe34d000000b002c546d169ddsm1950227wrj.11.2023.02.16.08.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Feb 2023 08:34:35 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 16 Feb 2023 17:34:33 +0100
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 4/7] perf record: Record dropped sample count
-Message-ID: <Y+5bGS9clWPS+B5J@krava>
-References: <20230214050452.26390-1-namhyung@kernel.org>
- <20230214050452.26390-5-namhyung@kernel.org>
- <Y+5YaQt7Fme65a78@krava>
- <Y+5ajnitOAxjdn2C@kernel.org>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O9ZLZdKvW1QVCmUWsXtgHPZR5cuWnVGfKqKD47mtzUA=;
+        b=IQlUs8R/OxOPUoRq0PRz4Y77gOtsqugGzKQkdWpSprCjlUVm1WxcXV6AjN1xl/emV8
+         f/DiEx5X9RGHCiG5vCmhhnkbVan1G1B8uWxTBdnUIZq4X6rVXiaSoyTnSMGh6BmTNuUI
+         WziXYQs/PJSiMGrbOiDmkKEnnATQ1Yus+KPd+YaW+uFoiZ2mu9XDUnzuC2OcfrhnecF5
+         yXKRMwG3nxpEWNA7j3dSR0iA4n//znfJUkkyF4VlYG5CZcTz+jAZdNsRWPv69g2dfdUs
+         FYZur6z6mkZAXkowEWA17xhPDHURi2WUIvZZJMBPSSK9WUtla+SpS8tZjC4xzKnn4UhQ
+         7exw==
+X-Gm-Message-State: AO0yUKUI7biRJNewMue7ozGgn57/gioMUosSlSKwIGaPKiK5Ish+LKLn
+        VqfnNOeTz8mXqiR8x+NiPOWEhQo/njX0HEXQDB0=
+X-Google-Smtp-Source: AK7set/yQbfJr6jPNdlRCXcB2E8cqwTRu/Dw+/XSgBtyhOS+8ChyUo4BL5tNXIAKl5KqiKSv4Twt3k+pRBTABRW8i48=
+X-Received: by 2002:a17:906:497:b0:883:ba3b:eb94 with SMTP id
+ f23-20020a170906049700b00883ba3beb94mr3055424eja.3.1676565324200; Thu, 16 Feb
+ 2023 08:35:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y+5ajnitOAxjdn2C@kernel.org>
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com> <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com> <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com> <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+ <20230210163258.phekigglpquitq33@apollo> <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
+ <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com> <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
+ <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com> <e16811cc-2d44-73a0-6430-d247605bc836@huaweicloud.com>
+In-Reply-To: <e16811cc-2d44-73a0-6430-d247605bc836@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 16 Feb 2023 08:35:12 -0800
+Message-ID: <CAADnVQ+w9h4T6k+F5cLGVVx1jkHvKCF7=ki_Fb1oCp1SF1ZDNA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Martin KaFai Lau <martin.lau@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -86,42 +86,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 01:32:14PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Feb 16, 2023 at 05:23:05PM +0100, Jiri Olsa escreveu:
-> > On Mon, Feb 13, 2023 at 09:04:49PM -0800, Namhyung Kim wrote:
-> > 
-> > SNIP
-> > 
-> > > @@ -1929,12 +1923,27 @@ static void record__read_lost_samples(struct record *rec)
-> > >  
-> > >  		for (int x = 0; x < xyarray__max_x(xy); x++) {
-> > >  			for (int y = 0; y < xyarray__max_y(xy); y++) {
-> > > -				__record__read_lost_samples(rec, evsel, lost, x, y);
-> > > +				struct perf_counts_values count;
-> > > +
-> > > +				if (perf_evsel__read(&evsel->core, x, y, &count) < 0) {
-> > > +					pr_err("read LOST count failed\n");
-> > > +					goto out;
-> > > +				}
-> > > +
-> > > +				if (count.lost) {
-> > > +					__record__save_lost_samples(rec, evsel, lost,
-> > > +								    x, y, count.lost, 0);
-> > > +				}
-> > >  			}
-> > >  		}
-> > > +
-> > > +		lost_count = perf_bpf_filter__lost_count(evsel);
-> > > +		if (lost_count)
-> > > +			__record__save_lost_samples(rec, evsel, lost, 0, 0, lost_count,
-> > > +						    PERF_RECORD_MISC_LOST_SAMPLES_BPF);
-> > 
-> > hi,
-> > I can't see PERF_RECORD_MISC_LOST_SAMPLES_BPF in the tip/perf/core so can't compile,
-> > what do I miss?
-> 
-> Humm, but you shouldn't need kernel headers to build tools/perf/, right?
+On Thu, Feb 16, 2023 at 5:55 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>
+> Beside BPF_REUSE_AFTER_RCU_GP, is BPF_FREE_AFTER_RCU_GP a feasible solution ?
 
-right, should be also in tools/include headers
+The idea is for bpf_mem_free to wait normal RCU GP before adding
+the elements back to the free list and free the elem to global kernel memory
+only after both rcu and rcu_tasks_trace GPs as it's doing now.
 
-jirka
+> Its downside is that it will enforce sleep-able program to use
+> bpf_rcu_read_{lock,unlock}() to access these returned pointers ?
+
+sleepable can access elems without kptrs/spin_locks
+even when not using rcu_read_lock, since it's safe, but there is uaf.
+Some progs might be fine with it.
+When sleepable needs to avoid uaf they will use bpf_rcu_read_lock.
