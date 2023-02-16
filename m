@@ -2,241 +2,291 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089666995D2
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 14:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6AE69964C
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 14:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbjBPNal (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 08:30:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
+        id S229482AbjBPNub (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 08:50:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjBPNak (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 08:30:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A800564A8
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 05:29:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1676554187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sz//L1El2Opn1dz+ci3fGP9Fc6Go64iupeUlUG/RMd4=;
-        b=Og+oDTlVccU+NRuJDTmFAF+sAmHT5f69JjMQPBYkpdIAoa6DcXMQ4JEdRKnHGNLOjuMABg
-        NAfqPKBwd06Ojy/yemwWsSJna7vBikKO9FLlAZ4zQIerXopIx/8YW1++GS+wM0BdcbSiu/
-        T5VS2np/gNRPJe6a4kDEVfY/E7aebrw=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-385-7SZIXOo4NcmihYbb8hXUvQ-1; Thu, 16 Feb 2023 08:29:46 -0500
-X-MC-Unique: 7SZIXOo4NcmihYbb8hXUvQ-1
-Received: by mail-ej1-f69.google.com with SMTP id a10-20020a170906244a00b008b161835075so1263277ejb.20
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 05:29:46 -0800 (PST)
+        with ESMTP id S229791AbjBPNub (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 08:50:31 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9C539BBE
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 05:50:29 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id f23-20020a05600c491700b003dff4480a17so4074819wmp.1
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 05:50:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=u2RIvPfSWQeqAkQEyLsftQl284fKknRFrmh407Jeda0=;
+        b=GUcbUeFHFmB8vHxf+3We7CjxvTXx/tf3eHldM3B0uIz46BmBfp8a8FzBDvtuFKZPav
+         zVguWT9XLvqvPJmLHejOVHXERxdRLc132VNfNEciJDXA3nWEDL4PBwiT6cYqNzZZ5P1O
+         KOAEVpoNKU5YDm2e0ySVNVafiOTYnS+Jdr/XbzZ0oFJ/XpUe7fcRmFVn4xOztqX+3ATo
+         ti3KiV2X+uh3xlZAC2hMH1jCDBLI4RHE2MLZFfS0z5cPbZ6IR2xK1bxR+jCywFZgXtA2
+         TL83TMrjAJGZ+eprvXnooEVgNO/LCG0M36inXsSBBXihQjit1HfcwnKLi9MZ7cS1X2sg
+         izHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sz//L1El2Opn1dz+ci3fGP9Fc6Go64iupeUlUG/RMd4=;
-        b=niQnplewRVX6rq4WfMlyZ+ZsdizK+PDQA6Js97m+wMrkd/hoBNjq/hvs8C3T2I/d44
-         Db+gLcoj5H2OBK1V8O5oRZmmQNr6BYR4KJaNSHo5OluwJfX8g+iM7gNUpQrIQX3RS+AL
-         k/T/vaer8TkpH0Ol5e3Uaqgm9flbCS4OHLnZYx9pcITHgFkbKWW8S1TRnwHaOXvUXDia
-         39MxJZ1LeCmU29+376mEUxCJPLabiVhb2n7qXd3SbFJcnqdTAlUh6zkVHRq5eTQqWBtu
-         /nWjisdOOWrHHdMZo1g0QeBtDzyW0LBNgdJWV88sBxTQ+ku/rVcSpg2ICZLMfyZf43eJ
-         FVAA==
-X-Gm-Message-State: AO0yUKVVH9g6Wipu7S7ZiPPIg2z+Nzqzh+AK9+OcgnEUN7YWKd7am5mS
-        nLFipiyI93ihyoIelHOkIrc9D5m/b6mMOYktSsDJfwN6UfMMZ4Pe/ClxzbuvwwlWnHYtBi+tjYw
-        iN+MCZlzxthUF
-X-Received: by 2002:a17:906:4750:b0:878:42af:aa76 with SMTP id j16-20020a170906475000b0087842afaa76mr6836245ejs.54.1676554185657;
-        Thu, 16 Feb 2023 05:29:45 -0800 (PST)
-X-Google-Smtp-Source: AK7set/WfnsQWHXHhLv72NFdkNfTntbKlY/vDmqk3nHG/xh7pKFkqClgitPqxQd+pnKHF5dU3t9vKg==
-X-Received: by 2002:a17:906:4750:b0:878:42af:aa76 with SMTP id j16-20020a170906475000b0087842afaa76mr6836226ejs.54.1676554185350;
-        Thu, 16 Feb 2023 05:29:45 -0800 (PST)
-Received: from [192.168.42.100] (nat-cgn9-185-107-15-52.static.kviknet.net. [185.107.15.52])
-        by smtp.gmail.com with ESMTPSA id gz17-20020a170907a05100b00882f9130eb3sm794276ejc.223.2023.02.16.05.29.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Feb 2023 05:29:44 -0800 (PST)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <88e5c6b2-8acc-6585-100d-7b62320e5555@redhat.com>
-Date:   Thu, 16 Feb 2023 14:29:43 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, xdp-hints@xdp-project.net,
-        martin.lau@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, ast@kernel.org,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u2RIvPfSWQeqAkQEyLsftQl284fKknRFrmh407Jeda0=;
+        b=Ho9qvstC81Zu9Io9Z8tMJ09/Bw9EVUn3FArxEFNi6l5LzBxyf3zFKa0AzH94+z/iBz
+         /cpy9thMaxEAlFLgC6ikXiLQQVamP90e7K8x3Fnz/tEAXx7wfV3oYBDQ6tUtxlFaOxYc
+         pMFAoU1QuNTEMmYDXsC01qY9QUe2PGAMCkkVvBJ7cKB9oswz9jV1+/vOReI9qvY4DP2q
+         7SL/F8sWukl1kE++dpkxdrstR2oGQukvxxPWVtGSn8jRmUseQW13kxn0qY4RjRgcHYp3
+         XwdImcQyOmylCOnEsqkpJuPexjZ9hXftdEkK1zngHiUkJAfJD7JPxoKfmB100tbD/md4
+         nO0Q==
+X-Gm-Message-State: AO0yUKVTJvLi8TJUBBILvfkXaQtu+Qtt72tzuLWjetuaKsKEVq+3+AIV
+        quGHjqXMtSTeHCfaGUoPFTo=
+X-Google-Smtp-Source: AK7set9aHU6QYFwYJ1mJFNvr6zPpAEf94wNMCPo1Mo1w60Mz371AGRj7QGW3ps3srgMNjBrVmUfFvQ==
+X-Received: by 2002:a05:600c:130e:b0:3dc:5ab8:7d74 with SMTP id j14-20020a05600c130e00b003dc5ab87d74mr4845652wmf.3.1676555428059;
+        Thu, 16 Feb 2023 05:50:28 -0800 (PST)
+Received: from krava ([81.6.34.132])
+        by smtp.gmail.com with ESMTPSA id a4-20020a05600c348400b003df5be8987esm5467986wmq.20.2023.02.16.05.50.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Feb 2023 05:50:27 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 16 Feb 2023 14:50:26 +0100
+To:     Viktor Malik <vmalik@redhat.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        yoong.siang.song@intel.com, anthony.l.nguyen@intel.com,
-        intel-wired-lan@lists.osuosl.org
-Subject: Re: [xdp-hints] Re: [Intel-wired-lan] [PATCH bpf-next V1] igc: enable
- and fix RX hash usage by netstack
-Content-Language: en-US
-To:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>
-References: <167604167956.1726972.7266620647404438534.stgit@firesoul>
- <6a5ded96-2425-ff9b-c1b1-eca1c103164c@molgen.mpg.de>
-In-Reply-To: <6a5ded96-2425-ff9b-c1b1-eca1c103164c@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH bpf-next v6 1/2] bpf: Fix attaching
+ fentry/fexit/fmod_ret/lsm to modules
+Message-ID: <Y+40os27pQ8det/o@krava>
+References: <cover.1676542796.git.vmalik@redhat.com>
+ <e627742ab86ed28632bc9b6c56ef65d7f98eadbc.1676542796.git.vmalik@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e627742ab86ed28632bc9b6c56ef65d7f98eadbc.1676542796.git.vmalik@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Feb 16, 2023 at 11:32:41AM +0100, Viktor Malik wrote:
+> This resolves two problems with attachment of fentry/fexit/fmod_ret/lsm
+> to functions located in modules:
+> 
+> 1. The verifier tries to find the address to attach to in kallsyms. This
+>    is always done by searching the entire kallsyms, not respecting the
+>    module in which the function is located. Such approach causes an
+>    incorrect attachment address to be computed if the function to attach
+>    to is shadowed by a function of the same name located earlier in
+>    kallsyms.
+> 
+> 2. If the address to attach to is located in a module, the module
+>    reference is only acquired in register_fentry. If the module is
+>    unloaded between the place where the address is found
+>    (bpf_check_attach_target in the verifier) and register_fentry, it is
+>    possible that another module is loaded to the same address which may
+>    lead to potential errors.
+> 
+> Since the attachment must contain the BTF of the program to attach to,
+> we extract the module from it and search for the function address in the
+> correct module (resolving problem no. 1). Then, the module reference is
+> taken directly in bpf_check_attach_target and stored in the bpf program
+> (in bpf_prog_aux). The reference is only released when the program is
+> unloaded (resolving problem no. 2).
+> 
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> ---
+>  include/linux/bpf.h      |  1 +
+>  kernel/bpf/syscall.c     |  2 ++
+>  kernel/bpf/trampoline.c  | 27 ---------------------------
+>  kernel/bpf/verifier.c    | 20 +++++++++++++++++++-
+>  kernel/module/internal.h |  5 +++++
+>  5 files changed, 27 insertions(+), 28 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 4385418118f6..2aadc78fe3c1 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1330,6 +1330,7 @@ struct bpf_prog_aux {
+>  	 * main prog always has linfo_idx == 0
+>  	 */
+>  	u32 linfo_idx;
+> +	struct module *mod;
+>  	u32 num_exentries;
+>  	struct exception_table_entry *extable;
+>  	union {
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index cda8d00f3762..5b8227e08182 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2064,6 +2064,8 @@ static void bpf_prog_put_deferred(struct work_struct *work)
+>  	prog = aux->prog;
+>  	perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_UNLOAD, 0);
+>  	bpf_audit_prog(prog, BPF_AUDIT_UNLOAD);
+> +	if (aux->mod)
+> +		module_put(aux->mod);
 
-On 14/02/2023 16.00, Paul Menzel wrote:
-> 
-> Thank you very much for your patch.
+you can call just module_put, there's != NULL check inside
 
-Thanks for your review :-)
+also should we call it from __bpf_prog_put_noref instead
+to cover bpf_prog_load error path?
 
-> Am 10.02.23 um 16:07 schrieb Jesper Dangaard Brouer:
->> When function igc_rx_hash() was introduced in v4.20 via commit 
->> 0507ef8a0372
->> ("igc: Add transmit and receive fastpath and interrupt handlers"), the
->> hardware wasn't configured to provide RSS hash, thus it made sense to not
->> enable net_device NETIF_F_RXHASH feature bit.
->>
->> The NIC hardware was configured to enable RSS hash info in v5.2 via 
->> commit
->> 2121c2712f82 ("igc: Add multiple receive queues control supporting"), but
->> forgot to set the NETIF_F_RXHASH feature bit.
->>
->> The original implementation of igc_rx_hash() didn't extract the associated
->> pkt_hash_type, but statically set PKT_HASH_TYPE_L3. The largest portions of
->> this patch are about extracting the RSS Type from the hardware and mapping
->> this to enum pkt_hash_types. This were based on Foxville i225 software 
->> user
-> 
-> s/This were/This was/
+>  	bpf_prog_free_id(prog);
+>  	__bpf_prog_put_noref(prog, true);
+>  }
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index d0ed7d6f5eec..ebb20bf252c7 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -172,26 +172,6 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+>  	return tr;
+>  }
+>  
+> -static int bpf_trampoline_module_get(struct bpf_trampoline *tr)
+> -{
+> -	struct module *mod;
+> -	int err = 0;
+> -
+> -	preempt_disable();
+> -	mod = __module_text_address((unsigned long) tr->func.addr);
+> -	if (mod && !try_module_get(mod))
+> -		err = -ENOENT;
+> -	preempt_enable();
+> -	tr->mod = mod;
+> -	return err;
+> -}
+> -
+> -static void bpf_trampoline_module_put(struct bpf_trampoline *tr)
+> -{
+> -	module_put(tr->mod);
+> -	tr->mod = NULL;
+> -}
+> -
+>  static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
+>  {
+>  	void *ip = tr->func.addr;
+> @@ -202,8 +182,6 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
+>  	else
+>  		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
+>  
+> -	if (!ret)
+> -		bpf_trampoline_module_put(tr);
+>  	return ret;
+>  }
+>  
+> @@ -238,9 +216,6 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+>  		tr->func.ftrace_managed = true;
+>  	}
+>  
+> -	if (bpf_trampoline_module_get(tr))
+> -		return -ENOENT;
+> -
+>  	if (tr->func.ftrace_managed) {
+>  		ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 1);
+>  		ret = register_ftrace_direct_multi(tr->fops, (long)new_addr);
+> @@ -248,8 +223,6 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+>  		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
+>  	}
+>  
+> -	if (ret)
+> -		bpf_trampoline_module_put(tr);
+>  	return ret;
+>  }
+>  
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 388245e8826e..6a19bd450558 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/bpf_lsm.h>
+>  #include <linux/btf_ids.h>
+>  #include <linux/poison.h>
+> +#include "../module/internal.h"
+>  
+>  #include "disasm.h"
+>  
+> @@ -16868,6 +16869,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  	const char *tname;
+>  	struct btf *btf;
+>  	long addr = 0;
+> +	struct module *mod = NULL;
+>  
+>  	if (!btf_id) {
+>  		bpf_log(log, "Tracing programs must provide btf_id\n");
+> @@ -17041,7 +17043,17 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  			else
+>  				addr = (long) tgt_prog->aux->func[subprog]->bpf_func;
+>  		} else {
+> -			addr = kallsyms_lookup_name(tname);
+> +			if (btf_is_module(btf)) {
+> +				preempt_disable();
 
-Fixed for V2
+btf_try_get_module takes mutex, so you can't preempt_disable in here,
+I got this when running the test:
 
->> manual rev-1.3.1 and tested on Intel Ethernet Controller I225-LM (rev 
->> 03).
->>
->> For UDP it's worth noting that RSS (type) hashing have been disabled both for
->> IPv4 and IPv6 (see IGC_MRQC_RSS_FIELD_IPV4_UDP + IGC_MRQC_RSS_FIELD_IPV6_UDP)
->> because hardware RSS doesn't handle fragmented pkts well when enabled 
->> (can cause out-of-order). This result in PKT_HASH_TYPE_L3 for UDP packets, and
-> 
-> result*s*
+[  691.916989][ T2585] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:580
 
-Fixed for V2
+> +				mod = btf_try_get_module(btf);
+> +				if (mod)
+> +					addr = find_kallsyms_symbol_value(mod, tname);
+> +				else
+> +					addr = 0;
+> +				preempt_enable();
+> +			} else {
+> +				addr = kallsyms_lookup_name(tname);
+> +			}
+>  			if (!addr) {
+>  				bpf_log(log,
+>  					"The address of function %s cannot be found\n",
+> @@ -17105,6 +17117,12 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  	tgt_info->tgt_addr = addr;
+>  	tgt_info->tgt_name = tname;
+>  	tgt_info->tgt_type = t;
+> +	if (mod) {
+> +		if (!prog->aux->mod)
+> +			prog->aux->mod = mod;
 
-> 
->> hash value doesn't include UDP port numbers. Not being PKT_HASH_TYPE_L4, have
->> the effect that netstack will do a software based hash calc calling into
->> flow_dissect, but only when code calls skb_get_hash(), which doesn't
->> necessary happen for local delivery.
-> 
-> Excuse my ignorance, but is that bug visible in practice by users 
-> (performance?) or is that fix needed for future work?
-> 
->> Fixes: 2121c2712f82 ("igc: Add multiple receive queues control supporting")
->> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
->> ---
->>   drivers/net/ethernet/intel/igc/igc.h      |   52 
->> +++++++++++++++++++++++++++++
->>   drivers/net/ethernet/intel/igc/igc_main.c |   35 +++++++++++++++++---
->>   2 files changed, 83 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/intel/igc/igc.h 
->> b/drivers/net/ethernet/intel/igc/igc.h
->> index df3e26c0cf01..a112eeb59525 100644
->> --- a/drivers/net/ethernet/intel/igc/igc.h
->> +++ b/drivers/net/ethernet/intel/igc/igc.h
->> @@ -311,6 +311,58 @@ extern char igc_driver_name[];
->>   #define IGC_MRQC_RSS_FIELD_IPV4_UDP    0x00400000
->>   #define IGC_MRQC_RSS_FIELD_IPV6_UDP    0x00800000
->> +/* RX-desc Write-Back format RSS Type's */
->> +enum igc_rss_type_num {
->> +    IGC_RSS_TYPE_NO_HASH        = 0,
->> +    IGC_RSS_TYPE_HASH_TCP_IPV4    = 1,
->> +    IGC_RSS_TYPE_HASH_IPV4        = 2,
->> +    IGC_RSS_TYPE_HASH_TCP_IPV6    = 3,
->> +    IGC_RSS_TYPE_HASH_IPV6_EX    = 4,
->> +    IGC_RSS_TYPE_HASH_IPV6        = 5,
->> +    IGC_RSS_TYPE_HASH_TCP_IPV6_EX    = 6,
->> +    IGC_RSS_TYPE_HASH_UDP_IPV4    = 7,
->> +    IGC_RSS_TYPE_HASH_UDP_IPV6    = 8,
->> +    IGC_RSS_TYPE_HASH_UDP_IPV6_EX    = 9,
->> +    IGC_RSS_TYPE_MAX        = 10,
->> +};
->> +#define IGC_RSS_TYPE_MAX_TABLE        16
->> +#define IGC_RSS_TYPE_MASK        0xF
->> +
->> +/* igc_rss_type - Rx descriptor RSS type field */
->> +static inline u8 igc_rss_type(union igc_adv_rx_desc *rx_desc)
->> +{
->> +    /* RSS Type 4-bit number: 0-9 (above 9 is reserved) */
->> +    return rx_desc->wb.lower.lo_dword.hs_rss.pkt_info & IGC_RSS_TYPE_MASK;
->> +}
-> 
-> Is it necessary to specficy the length of the return value, or could it 
-> be `unsigned int`. Using “native” types is normally more performant [1]. 
-> `scripts/bloat-o-meter` might help to verify that.
-> 
+can this actually happen? would it be better to have bpf_check_attach_target
+just to take take the module ref and return it in tgt_info->tgt_mod and it'd
+be up to caller to decide what to do with that
 
-Thanks for the link[1].
-Alex/Olek also pointed this out.
+thanks,
+jirka
 
-The Agner's instruction latency tables[2] do indicate the latency is
-slightly higher for r8 and r16 (and m8/m16).  And we likely need to look 
-at the zero-extend variants movzx.
-
-I think we should investigate this with "tool" godbolt.org as
-scripts/bloat-o-meter will only tell us about code size.
-I will experiment a bit and report back :-)
-
-[2] https://www.agner.org/optimize/instruction_tables.pdf
-
-> […]
+> +		else
+> +			module_put(mod);
+> +	}
+>  	return 0;
+>  }
+>  
+> diff --git a/kernel/module/internal.h b/kernel/module/internal.h
+> index 2e2bf236f558..5cb103a46018 100644
+> --- a/kernel/module/internal.h
+> +++ b/kernel/module/internal.h
+> @@ -256,6 +256,11 @@ static inline bool sect_empty(const Elf_Shdr *sect)
+>  static inline void init_build_id(struct module *mod, const struct load_info *info) { }
+>  static inline void layout_symtab(struct module *mod, struct load_info *info) { }
+>  static inline void add_kallsyms(struct module *mod, const struct load_info *info) { }
+> +static inline unsigned long find_kallsyms_symbol_value(struct module *mod
+> +						       const char *name)
+> +{
+> +	return 0;
+> +}
+>  #endif /* CONFIG_KALLSYMS */
+>  
+>  #ifdef CONFIG_SYSFS
+> -- 
+> 2.39.1
 > 
->>   static inline void igc_rx_hash(struct igc_ring *ring,
->>                      union igc_adv_rx_desc *rx_desc,
->>                      struct sk_buff *skb)
->>   {
->> -    if (ring->netdev->features & NETIF_F_RXHASH)
->> -        skb_set_hash(skb,
->> -                 le32_to_cpu(rx_desc->wb.lower.hi_dword.rss),
->> -                 PKT_HASH_TYPE_L3);
->> +    if (ring->netdev->features & NETIF_F_RXHASH) {
->> +        u32 rss_hash = le32_to_cpu(rx_desc->wb.lower.hi_dword.rss);
->> +        u8  rss_type = igc_rss_type(rx_desc);
-> 
-> Amongst others, also here.
-
-Do notice I expect compiler to optimize this, such that is doesn't place 
-this variable on the stack.
-
->> +        enum pkt_hash_types hash_type;
->> +
->> +        hash_type = igc_rss_type_table[rss_type].hash_type;
->> +        skb_set_hash(skb, rss_hash, hash_type);
->> +    }
->>   }
->>   static void igc_rx_vlan(struct igc_ring *rx_ring,
->> @@ -6501,6 +6527,7 @@ static int igc_probe(struct pci_dev *pdev,
->>       netdev->features |= NETIF_F_TSO;
->>       netdev->features |= NETIF_F_TSO6;
->>       netdev->features |= NETIF_F_TSO_ECN;
->> +    netdev->features |= NETIF_F_RXHASH;
->>       netdev->features |= NETIF_F_RXCSUM;
->>       netdev->features |= NETIF_F_HW_CSUM;
->>       netdev->features |= NETIF_F_SCTP_CRC;
-> 
-> 
-> Kind regards,
-> 
-> Paul
-> 
-> 
-> [1]: https://notabs.org/coding/smallIntsBigPenalty.htm
-> 
-
