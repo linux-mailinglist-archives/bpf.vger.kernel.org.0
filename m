@@ -2,158 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E812C699451
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 13:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CBB699522
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 14:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbjBPM2x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 07:28:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        id S229922AbjBPNGX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 08:06:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjBPM2w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 07:28:52 -0500
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752552202E;
-        Thu, 16 Feb 2023 04:28:51 -0800 (PST)
+        with ESMTP id S229838AbjBPNGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 08:06:22 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D71FBDCD;
+        Thu, 16 Feb 2023 05:06:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676550531; x=1708086531;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gzSkb7Yln6um4SZcuaIYR/kVFncxRVh2mAf2hPXjHuM=;
-  b=Y/Dx5YxWqoM34ifLkcl7lIu1ea37V4P1TRxapaL2M/xbAtymOarnz/s1
-   B1IXfC/isbLrhY5vrdT4NrKxBHIiv2o8MUakvlTv4ZyYJLhtf6Oukgxro
-   bV7PT8Y6j34gn3OcT/4ouyyRRB8mddCD9W0Tfi95NM2FkoMkEcFqi+NL5
-   L2iooJjKcBrfU7M/AU/f6uUTyglYT5F7Wbemj+R9oxXkJdnd0Ar/H6F7n
-   YI7Ss1/zCdHsR90WURydDFyfpJ6t1vfer7eZaY32GdWc+kDu/jVNR43Wh
-   egrBOKKyTI4keHwIi/DCUwoUd3Q97TLysosZY+f8Ro3lL2g9N+AXAWZTY
+  t=1676552781; x=1708088781;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=BLkY0KeXWnKCGXhPmXTQUY3r+GbzDXgIEAcyxf0+k4E=;
+  b=hEDzamr0ksG/D+kbPOcOK5QqRgqzd4wV7hfq0dnqnkeOzzgc14mDt5N9
+   F/1kaiVZ/nv+1eYHEt84flFOTzfoUjP2eJwaYmPuR+AlHpI/FuRYKeqTK
+   bZlBSPRcyFopRGt60ii/5s3fWq7J8W4l0Wqsj8K6tyKCLv4DV20fr2aFZ
+   Bc/tEbJtNs3nwTi15wGBYuFsrE2h4b3XBfd+8OPkh+mVPginou5H54STt
+   FPL2mrs4m3JowVNEHJ5wVWvoyo0V35qr5qqeFkxdNxVXXub6Cs5wm8EKz
+   +J54c8EggDwKor9WIJHVSgMHvUcH1tcvohemRaV6SobFkGYtKn3GiMHI3
    g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="311334087"
+X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="331707605"
 X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
-   d="scan'208";a="311334087"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 04:28:51 -0800
+   d="scan'208";a="331707605"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 05:06:21 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="619972846"
+X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="672145432"
 X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
-   d="scan'208";a="619972846"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orsmga003.jf.intel.com with ESMTP; 16 Feb 2023 04:28:49 -0800
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anthony.l.nguyen@intel.com, magnus.karlsson@intel.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH intel-net] ice: xsk: disable txq irq before flushing hw
-Date:   Thu, 16 Feb 2023 13:28:39 +0100
-Message-Id: <20230216122839.6878-1-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.35.3
+   d="scan'208";a="672145432"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga007.fm.intel.com with ESMTP; 16 Feb 2023 05:06:20 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Thu, 16 Feb 2023 05:06:20 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Thu, 16 Feb 2023 05:06:19 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Thu, 16 Feb 2023 05:06:19 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Thu, 16 Feb 2023 05:06:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MHHAwvDRpF3nv5qyAqMALB177X4aDVWH6sZn7A9L4fy94yab2A0d7qucpPNkXmu82rzAIg8A8YclGwgnIfIGIYTr53f4yNHaKr5+sq3jSopgAYG77Is0FkhN5+t5SLErzEDBq+p+bjTe5Aisth3bSbW0Tc9zQRa89qR+OxoAxS9q++tau51VWdbgmgwcIN1/hV/Q9KSDbEIk2W5rodIwftDAddsq5FcBVpuWf3Ue31hXFY2O/xwhg5nyxFHliprEulfEVCJcU0sGw/pTna4GqCpg4HCXdQet67knffIocZbVuvDGwAWq6N+Ea1EKGKFfA8K4TGb3BXF/JLv/28eq0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0f/rAekPVj6CziZFBx0UAJLsMF++zPTrPBU7cnryVds=;
+ b=Xo368W0zae/qq15yBMzXolLx5za/k1lmcF3Hmnqg96FhbPoWdo4PtmTEn5amAh+YdcLcKqGw1H+HeqikvCSZed2+NvQIpakqzhTY+kkiVm7Zv9gXhGAnBzy9NiNeQj2UdbHcz8v9pyC26iCFR9AoaO868S+UUyDXcT9vkVFQLk+nOElyPeDlPcPfZenCmUhmpF6WxG1Zc69w/u//E9gzHXQM/I+qtEGFQG4MHigy0U1tGyGFSdFrZnKGFiJqskF3OLFNt/LNqTvGRszi4PHmaIaK7VqAzEoSfnLNW8hnQy7kgmgKwO4LvdamJb8E+iHuOdr0h2UpzEJrYKSBIB9s/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by PH0PR11MB5612.namprd11.prod.outlook.com (2603:10b6:510:e7::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.13; Thu, 16 Feb
+ 2023 13:06:16 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::3ff6:ca60:f9fe:6934]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::3ff6:ca60:f9fe:6934%4]) with mapi id 15.20.6086.026; Thu, 16 Feb 2023
+ 13:06:16 +0000
+Message-ID: <779078a5-a4c8-6f75-2063-912d02e47bc7@intel.com>
+Date:   Thu, 16 Feb 2023 14:04:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v4] xsk: support use vaddr as ring
+Content-Language: en-US
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC:     <netdev@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        "Maciej Fijalkowski" <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "John Fastabend" <john.fastabend@gmail.com>, <bpf@vger.kernel.org>
+References: <20230216083047.93525-1-xuanzhuo@linux.alibaba.com>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20230216083047.93525-1-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0094.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a9::14) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|PH0PR11MB5612:EE_
+X-MS-Office365-Filtering-Correlation-Id: b456e8c9-5693-4830-d8e6-08db101e962b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xV39J+rCyfPZt9CilLWDKJCaoiP8tkW0Wn6Jp8KZgoOfj9zw6lcZxHiB4VZdGuU5/9LxIJUdDaiy5Q89wDBksd1CILek96fexD8lBOqEZXLiBhj6dTnx9uGsCje3yLke/npeNEfihC80Q59FNvFE5tbRJzL+/HNZkCkjtcuGEb0nvjourXIp+qSRQjxo+u2RENHowOq/nF1wUG4AO1H/gFnF2llDOXl/SYRUBuBEwXym4RkSWst16sm7U6oGKuL+pnKAuoxkIQz8wHbQzzyi+9e8vZqUe7LLUabZ6KAWa6aLfnIJ3EluM26WQe4OLyYzfk5f4jnhURpPbqdxweozlDNbqVBSwHzWYJ5Icv4CgiaGoOMoN4pNIqFGubPyXXykp5ZAzU8bYjREA/vUQD2STY6Bk4Nb3m9QPoKicP7B7Vv399ViYbKuBWGbpYbMyJn8BAuh/QSyUqQkLhVcz6thhJow4E0c3SEdlmvBlND/sYXQG00AZbGnaGkOuEHQtZ5DAXntBK2Q66pf5cH9rNptlH9oWxPveYX5E5QTvC5fTRVIuLHofklctPV+hQB2T+5BzkJ/kfqsVooF2YXiSA45xPjREPv0NEGBylLPKtEUAck5Ho/L1GQ62Y4VQqdoNhcBUiwZ61xIUOrJzlTOwLG52dX70o+f0qDXJYtTa41zMM5NKwjEnWpWUCqCXXVJvH1M6abfZ+n535Lu7GUM5jglQWM78MKpq02F7MRjScEstOE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(346002)(396003)(376002)(39860400002)(136003)(366004)(451199018)(31686004)(54906003)(8936002)(6916009)(41300700001)(8676002)(66476007)(66556008)(316002)(66946007)(5660300002)(7416002)(4326008)(2906002)(478600001)(6486002)(6666004)(6512007)(6506007)(186003)(26005)(2616005)(36756003)(83380400001)(38100700002)(82960400001)(31696002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z0VHZUQ2UGdxQ0daNHBvb2thclJvZ3RmRWZJRWE2TDExdlJsakpZb0ZMMGlS?=
+ =?utf-8?B?U3hOZE40TFVIM01nV1NRczNEOUxhZmZzNWNQYUpySTNxdHFwWkovdmRyL0FH?=
+ =?utf-8?B?bGwrQjRqYWhoUWgxYlBwS0ZBTmc4NlNYdkZpZ0FVcHUwektBZVJOZVNyMXk4?=
+ =?utf-8?B?TFF5UEFoc1ArMjUyVDJMQ1BHOWFpYUpkYUwySExrUHdrQ3ZtYWx4RnJzTmpi?=
+ =?utf-8?B?WGtrd3N3NW1YUGU1djlQcm13YjZjUmRoUC81RWxNWGlydXFEeVJTY0VaOHFP?=
+ =?utf-8?B?RVI2dklJZll3K3VFREM0QjhuSk5hazR5MkRmd0hBSGpPUWFrclRtNCtmZlJG?=
+ =?utf-8?B?d0FSa3FqcjlEa3Y3eU9SQ0VYcGR3V0Jhd1NqY3h5N3FEV0pud3Q4R0lvWTBP?=
+ =?utf-8?B?RERzNjVNOFVwRmN5anYrVy9sNk5LcFZzUVJKUjVuWW9FdHFNajNoczNQQjhD?=
+ =?utf-8?B?RmJLR2JVRU1XbEFiM3dsUldybmJ2SDFJM0RETTdoMEsyYnBQYjBpeTVueGdy?=
+ =?utf-8?B?MXVKRERaaTFRakZVY3poTmxZdFdSOWI0SjJ3WUdUZ1J5NVpCWWlPb2c2REJj?=
+ =?utf-8?B?dW9yNnZYeno0TkFJcnJnbVBJcXdVZ2RydkhzSkM3Q0hVZDFPeDJEcGRtZVl3?=
+ =?utf-8?B?cnBSalVtbjVvSUViOW9nNVoyVnN5UFZSaHdCUDBYWHBGdWE5aEJqSmVSTXpV?=
+ =?utf-8?B?eml5RFhRdm1zMTN1M0VDNi9GUlMyclc3VnZZMVIyWFVtU0h4T2ZUdzk2QTJz?=
+ =?utf-8?B?dWVEeVNIRmhyL1dWR0pBaFZFM1d6S3pZaGZncGVkNEx2TFd3djRMd3VPYTlY?=
+ =?utf-8?B?WTU5YjZyT09QQmxoRWMzYTJjc0dWelRQUUVhU3A1b2JWU21aQjJtaUVGbjc3?=
+ =?utf-8?B?RkhEWEtsWjZHbU5ObG1HZ2xDbkJFZUZTUHJuOUVrVHdXWEhTZFpoUW9JQWw2?=
+ =?utf-8?B?aEVzUXR6SC9UWnJGYkwyb2g2VzZiSWNMZlVObFpmMVNyK3owenliRytZSHVZ?=
+ =?utf-8?B?Y01teTdlczZJemJwNUpEVStsbDdnVmhraFdsbWpBYjZsTGVhRXFPYXpuWllJ?=
+ =?utf-8?B?UUtJU09kNFF5cnJBZ3VjWm9HOFJLOUxPYis2eXR6NkFsM2s5Mko5RjBMUDZz?=
+ =?utf-8?B?d2FNOWF1d2x1T0VyTVJPUGJDTWk5NVhCcnFKd25NeldESFFndDVaT3dISW5N?=
+ =?utf-8?B?RUZLM2dEcFB4TmlFZG9yb3AxL2RIaE1YVGhTTjVXOERZUGR0bTdYTktvOW5a?=
+ =?utf-8?B?Y3ZOOUZVbHI5d2tlMHVtcThkcjdXUStGMWZ3c05qejFoSXQ4TzAxUU96UmV2?=
+ =?utf-8?B?M2JCV3NTUWFZWWNnRWFVS1NtbUtsRWdDdkUrQVFMcHI4QXM3WXo5dEhBNm5T?=
+ =?utf-8?B?emNaU3IyOFZ6SFdvRW9vbUZ5bU1MaXJLUkNLZnRQOVBuL2lGRDRzRzNjb2RB?=
+ =?utf-8?B?ZnJCWkU5NHNKZ3VoSWhiV0FDSmhQZHBFM3dQbkxqS1BBSkIxN1YyM21jZWlF?=
+ =?utf-8?B?ajRoV0FiNDBpZ2VDUzJjUnJMdTNhZ21vdmo5SzJIekxaSXB3T3RiSkhkQk9C?=
+ =?utf-8?B?UnVvTUxpa2NwTjcxSHVjaXFqR0tmWUcwWHJ3aHVtek1hbTg4MVZqdGVCT1Bt?=
+ =?utf-8?B?Ym5vLzU4UnRCZWcvZEpLTGJzOHlTS3VWZEJyYy8ra0J0WjRSbUNDNmNJSUdN?=
+ =?utf-8?B?K0lmMEtpSEk0R0NQUVB6aHNNeDBIblJqNERZdWdEZUIxdUIxcEpxbkFoM1FH?=
+ =?utf-8?B?TjJSYm9wdklMRWxHNndld0UxMnplQVJWUUhKdXgvS1haVXNBQkVMSTdVVWhZ?=
+ =?utf-8?B?c1BMUU00K1pTNlpHdi9uTDNJU3N5NWNlSkc4UDBTZ01Ic0xiQXFYZ1VNVVNM?=
+ =?utf-8?B?cWtSaWJxWjNZcUw0SGtBV2R6YWNVZHJtN2d0ZU9ZdGRPZHVkdU9Jc1pPRW1U?=
+ =?utf-8?B?aXRnWmo3V3Eyd3NTbXdUV3JtREZYTXdLNThWQXpIOWlqNEJoK0xDcnMyOWJw?=
+ =?utf-8?B?RDVza2grb1ptN3VYeGF0SW1QZWZXQ29uSGdaYnczVEFBWkxuWkRjSUJzMVZE?=
+ =?utf-8?B?RE1QdzZ3c1MwZWdnTUpQMkxwTTN0VUFpVE5vSXliTytvWG9pVjZ6RW05c2lu?=
+ =?utf-8?B?YTdMblJ4NXVwNXhsUXFaUmpxL3hFRVE5WWJnQmx5T25paHpWYTZPb2cwWVNG?=
+ =?utf-8?Q?GOwgzIeSa9SXPdKH7N5cjHs=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b456e8c9-5693-4830-d8e6-08db101e962b
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 13:06:16.0076
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u354RT0yJdpu+BSErzJuQDiKxzipQq7HegYLT4R5/9nzbqspLlviRrLU2TyeOxM+8o2npoAbCfIy/i9MWrdcOj/8B17uovnOapKaZ8iXQw4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5612
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-ice_qp_dis() intends to stop a given queue pair that is a target of xsk
-pool attach/detach. One of the steps is to disable interrupts on these
-queues. It currently is broken in a way that txq irq is turned off
-*after* HW flush which in turn takes no effect.
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Date: Thu, 16 Feb 2023 16:30:47 +0800
 
-ice_qp_dis():
--> ice_qvec_dis_irq()
---> disable rxq irq
---> flush hw
--> ice_vsi_stop_tx_ring()
--->disable txq irq
+> When we try to start AF_XDP on some machines with long running time, due
+> to the machine's memory fragmentation problem, there is no sufficient
+> contiguous physical memory that will cause the start failure.
+> 
+> If the size of the queue is 8 * 1024, then the size of the desc[] is
+> 8 * 1024 * 8 = 16 * PAGE, but we also add struct xdp_ring size, so it is
+> 16page+. This is necessary to apply for a 4-order memory. If there are a
+> lot of queues, it is difficult to these machine with long running time.
+> 
+> Here, that we actually waste 15 pages. 4-Order memory is 32 pages, but
+> we only use 17 pages.
+> 
+> This patch replaces __get_free_pages() by vmalloc() to allocate memory
+> to solve these problems.
+> 
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
 
-Below splat can be triggered by following steps:
-- start xdpsock WITHOUT loading xdp prog
-- run xdp_rxq_info with XDP_TX action on this interface
-- start traffic
-- terminate xdpsock
+[...]
 
-[  256.312485] BUG: kernel NULL pointer dereference, address: 0000000000000018
-[  256.319560] #PF: supervisor read access in kernel mode
-[  256.324775] #PF: error_code(0x0000) - not-present page
-[  256.329994] PGD 0 P4D 0
-[  256.332574] Oops: 0000 [#1] PREEMPT SMP NOPTI
-[  256.337006] CPU: 3 PID: 32 Comm: ksoftirqd/3 Tainted: G           OE      6.2.0-rc5+ #51
-[  256.345218] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-[  256.355807] RIP: 0010:ice_clean_rx_irq_zc+0x9c/0x7d0 [ice]
-[  256.361423] Code: b7 8f 8a 00 00 00 66 39 ca 0f 84 f1 04 00 00 49 8b 47 40 4c 8b 24 d0 41 0f b7 45 04 66 25 ff 3f 66 89 04 24 0f 84 85 02 00 00 <49> 8b 44 24 18 0f b7 14 24 48 05 00 01 00 00 49 89 04 24 49 89 44
-[  256.380463] RSP: 0018:ffffc900088bfd20 EFLAGS: 00010206
-[  256.385765] RAX: 000000000000003c RBX: 0000000000000035 RCX: 000000000000067f
-[  256.393012] RDX: 0000000000000775 RSI: 0000000000000000 RDI: ffff8881deb3ac80
-[  256.400256] RBP: 000000000000003c R08: ffff889847982710 R09: 0000000000010000
-[  256.407500] R10: ffffffff82c060c0 R11: 0000000000000004 R12: 0000000000000000
-[  256.414746] R13: ffff88811165eea0 R14: ffffc9000d255000 R15: ffff888119b37600
-[  256.421990] FS:  0000000000000000(0000) GS:ffff8897e0cc0000(0000) knlGS:0000000000000000
-[  256.430207] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  256.436036] CR2: 0000000000000018 CR3: 0000000005c0a006 CR4: 00000000007706e0
-[  256.443283] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  256.450527] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  256.457770] PKRU: 55555554
-[  256.460529] Call Trace:
-[  256.463015]  <TASK>
-[  256.465157]  ? ice_xmit_zc+0x6e/0x150 [ice]
-[  256.469437]  ice_napi_poll+0x46d/0x680 [ice]
-[  256.473815]  ? _raw_spin_unlock_irqrestore+0x1b/0x40
-[  256.478863]  __napi_poll+0x29/0x160
-[  256.482409]  net_rx_action+0x136/0x260
-[  256.486222]  __do_softirq+0xe8/0x2e5
-[  256.489853]  ? smpboot_thread_fn+0x2c/0x270
-[  256.494108]  run_ksoftirqd+0x2a/0x50
-[  256.497747]  smpboot_thread_fn+0x1c1/0x270
-[  256.501907]  ? __pfx_smpboot_thread_fn+0x10/0x10
-[  256.506594]  kthread+0xea/0x120
-[  256.509785]  ? __pfx_kthread+0x10/0x10
-[  256.513597]  ret_from_fork+0x29/0x50
-[  256.517238]  </TASK>
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index c6fb6b763658..bfb2a7e50c26 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -45,6 +45,7 @@ struct xsk_queue {
+>  	struct xdp_ring *ring;
+>  	u64 invalid_descs;
+>  	u64 queue_empty_descs;
+> +	size_t ring_vmalloc_size;
 
-In fact, irqs were not disabled and napi managed to be scheduled and run
-while xsk_pool pointer was still valid, but SW ring of xdp_buff pointers
-was already freed.
+The name looks a bit long to me, but that might be just personal
+preference. The code itself now looks good to me.
 
-To fix this, call ice_qvec_dis_irq() after ice_vsi_stop_tx_ring(). Also
-while at it, remove redundant ice_clean_rx_ring() call - this is handled
-in ice_qp_clean_rings().
+Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
-Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_xsk.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+>  };
+>  
+>  /* The structure of the shared state of the rings are a simple
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 917c75e530ca..6b8aeaa32d0b 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -184,8 +184,6 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
- 	}
- 	netif_tx_stop_queue(netdev_get_tx_queue(vsi->netdev, q_idx));
- 
--	ice_qvec_dis_irq(vsi, rx_ring, q_vector);
--
- 	ice_fill_txq_meta(vsi, tx_ring, &txq_meta);
- 	err = ice_vsi_stop_tx_ring(vsi, ICE_NO_RESET, 0, tx_ring, &txq_meta);
- 	if (err)
-@@ -200,10 +198,11 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
- 		if (err)
- 			return err;
- 	}
-+	ice_qvec_dis_irq(vsi, rx_ring, q_vector);
-+
- 	err = ice_vsi_ctrl_one_rx_ring(vsi, false, q_idx, true);
- 	if (err)
- 		return err;
--	ice_clean_rx_ring(rx_ring);
- 
- 	ice_qvec_toggle_napi(vsi, q_vector, false);
- 	ice_qp_clean_rings(vsi, q_idx);
--- 
-2.34.1
+Next time pls make sure you added all of the reviewers to the Cc list
+when sending a new revision. I noticed you posted v4 only by monitoring
+the ML.
 
+Thanks,
+Olek
