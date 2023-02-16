@@ -2,184 +2,573 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52331698E07
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 08:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5619D698E0B
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 08:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbjBPHtl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 02:49:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
+        id S229509AbjBPHvI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 02:51:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjBPHtk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 02:49:40 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0091141B5F;
-        Wed, 15 Feb 2023 23:49:37 -0800 (PST)
-Received: from [192.168.0.2] (ip5f5aeab7.dynamic.kabel-deutschland.de [95.90.234.183])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 4182960027FD7;
-        Thu, 16 Feb 2023 08:49:35 +0100 (CET)
-Message-ID: <10c0dcb4-f353-41a8-dfff-e99d2dca7fb2@molgen.mpg.de>
-Date:   Thu, 16 Feb 2023 08:49:34 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Subject: Re: [Intel-wired-lan] [PATCH intel-next v4 4/8] i40e: Change size to
- truesize when using i40e_rx_buffer_flip()
-To:     Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        bpf@vger.kernel.org, magnus.karlsson@intel.com
-References: <20230215124305.76075-1-tirthendu.sarkar@intel.com>
- <20230215124305.76075-5-tirthendu.sarkar@intel.com>
-Content-Language: en-US
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20230215124305.76075-5-tirthendu.sarkar@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229490AbjBPHvI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 02:51:08 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D895D41B5F;
+        Wed, 15 Feb 2023 23:51:04 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Axrtpn4O1j+T0BAA--.3137S3;
+        Thu, 16 Feb 2023 15:51:03 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Axeb1l4O1jIGg0AA--.31712S2;
+        Thu, 16 Feb 2023 15:51:01 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] selftests/bpf: Remove not used headers
+Date:   Thu, 16 Feb 2023 15:51:01 +0800
+Message-Id: <1676533861-27508-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8Axeb1l4O1jIGg0AA--.31712S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvAXoW3Cryftw43KrWkXw45Kw18uFg_yoW8Gw4UKo
+        W5Jr9Igw4xG3WxAF4kGw10qr4DZr1vqasFqw47A3ykAr13WrnrGry5Aa4vq3Wftry5Krnx
+        X34Yy3WDJas5Krs3n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXasCq-sGcSsGvf
+        J3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnRJU
+        UUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s
+        0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1l84
+        ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4
+        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWx
+        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I
+        8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AK
+        xVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcV
+        AFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8I
+        cIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
+        1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j0sjUUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Tirthendu,
+The following three uapi headers:
 
+    tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
+    tools/arch/s390/include/uapi/asm/bpf_perf_event.h
+    tools/arch/s390/include/uapi/asm/ptrace.h
 
-Thank you for your patch.
+were introduced in commit 618e165b2a8e ("selftests/bpf: sync kernel headers
+and introduce arch support in Makefile"), they are not used any more after
+commit 720f228e8d31 ("bpf: fix broken BPF selftest build"), so remove them.
 
-Am 15.02.23 um 13:43 schrieb Tirthendu Sarkar:
-> Truesize is now passed directly to i40e_rx_buffer_flip() instead of size
-> so that it does not need to recalculate truesize from size using
-> i40e_rx_frame_truesize() before adjusting page offset.
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/arch/arm64/include/uapi/asm/bpf_perf_event.h |   9 -
+ tools/arch/s390/include/uapi/asm/bpf_perf_event.h  |   9 -
+ tools/arch/s390/include/uapi/asm/ptrace.h          | 458 ---------------------
+ 3 files changed, 476 deletions(-)
+ delete mode 100644 tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
+ delete mode 100644 tools/arch/s390/include/uapi/asm/bpf_perf_event.h
+ delete mode 100644 tools/arch/s390/include/uapi/asm/ptrace.h
 
-Did the compiler not optimize that well enough?
+diff --git a/tools/arch/arm64/include/uapi/asm/bpf_perf_event.h b/tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
+deleted file mode 100644
+index b551b74..0000000
+--- a/tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
++++ /dev/null
+@@ -1,9 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _UAPI__ASM_BPF_PERF_EVENT_H__
+-#define _UAPI__ASM_BPF_PERF_EVENT_H__
+-
+-#include <asm/ptrace.h>
+-
+-typedef struct user_pt_regs bpf_user_pt_regs_t;
+-
+-#endif /* _UAPI__ASM_BPF_PERF_EVENT_H__ */
+diff --git a/tools/arch/s390/include/uapi/asm/bpf_perf_event.h b/tools/arch/s390/include/uapi/asm/bpf_perf_event.h
+deleted file mode 100644
+index 0a8e37a..0000000
+--- a/tools/arch/s390/include/uapi/asm/bpf_perf_event.h
++++ /dev/null
+@@ -1,9 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _UAPI__ASM_BPF_PERF_EVENT_H__
+-#define _UAPI__ASM_BPF_PERF_EVENT_H__
+-
+-#include "ptrace.h"
+-
+-typedef user_pt_regs bpf_user_pt_regs_t;
+-
+-#endif /* _UAPI__ASM_BPF_PERF_EVENT_H__ */
+diff --git a/tools/arch/s390/include/uapi/asm/ptrace.h b/tools/arch/s390/include/uapi/asm/ptrace.h
+deleted file mode 100644
+index ad64d67..0000000
+--- a/tools/arch/s390/include/uapi/asm/ptrace.h
++++ /dev/null
+@@ -1,458 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-/*
+- *  S390 version
+- *    Copyright IBM Corp. 1999, 2000
+- *    Author(s): Denis Joseph Barrow (djbarrow@de.ibm.com,barrow_dj@yahoo.com)
+- */
+-
+-#ifndef _UAPI_S390_PTRACE_H
+-#define _UAPI_S390_PTRACE_H
+-
+-/*
+- * Offsets in the user_regs_struct. They are used for the ptrace
+- * system call and in entry.S
+- */
+-#ifndef __s390x__
+-
+-#define PT_PSWMASK  0x00
+-#define PT_PSWADDR  0x04
+-#define PT_GPR0     0x08
+-#define PT_GPR1     0x0C
+-#define PT_GPR2     0x10
+-#define PT_GPR3     0x14
+-#define PT_GPR4     0x18
+-#define PT_GPR5     0x1C
+-#define PT_GPR6     0x20
+-#define PT_GPR7     0x24
+-#define PT_GPR8     0x28
+-#define PT_GPR9     0x2C
+-#define PT_GPR10    0x30
+-#define PT_GPR11    0x34
+-#define PT_GPR12    0x38
+-#define PT_GPR13    0x3C
+-#define PT_GPR14    0x40
+-#define PT_GPR15    0x44
+-#define PT_ACR0     0x48
+-#define PT_ACR1     0x4C
+-#define PT_ACR2     0x50
+-#define PT_ACR3     0x54
+-#define PT_ACR4	    0x58
+-#define PT_ACR5	    0x5C
+-#define PT_ACR6	    0x60
+-#define PT_ACR7	    0x64
+-#define PT_ACR8	    0x68
+-#define PT_ACR9	    0x6C
+-#define PT_ACR10    0x70
+-#define PT_ACR11    0x74
+-#define PT_ACR12    0x78
+-#define PT_ACR13    0x7C
+-#define PT_ACR14    0x80
+-#define PT_ACR15    0x84
+-#define PT_ORIGGPR2 0x88
+-#define PT_FPC	    0x90
+-/*
+- * A nasty fact of life that the ptrace api
+- * only supports passing of longs.
+- */
+-#define PT_FPR0_HI  0x98
+-#define PT_FPR0_LO  0x9C
+-#define PT_FPR1_HI  0xA0
+-#define PT_FPR1_LO  0xA4
+-#define PT_FPR2_HI  0xA8
+-#define PT_FPR2_LO  0xAC
+-#define PT_FPR3_HI  0xB0
+-#define PT_FPR3_LO  0xB4
+-#define PT_FPR4_HI  0xB8
+-#define PT_FPR4_LO  0xBC
+-#define PT_FPR5_HI  0xC0
+-#define PT_FPR5_LO  0xC4
+-#define PT_FPR6_HI  0xC8
+-#define PT_FPR6_LO  0xCC
+-#define PT_FPR7_HI  0xD0
+-#define PT_FPR7_LO  0xD4
+-#define PT_FPR8_HI  0xD8
+-#define PT_FPR8_LO  0XDC
+-#define PT_FPR9_HI  0xE0
+-#define PT_FPR9_LO  0xE4
+-#define PT_FPR10_HI 0xE8
+-#define PT_FPR10_LO 0xEC
+-#define PT_FPR11_HI 0xF0
+-#define PT_FPR11_LO 0xF4
+-#define PT_FPR12_HI 0xF8
+-#define PT_FPR12_LO 0xFC
+-#define PT_FPR13_HI 0x100
+-#define PT_FPR13_LO 0x104
+-#define PT_FPR14_HI 0x108
+-#define PT_FPR14_LO 0x10C
+-#define PT_FPR15_HI 0x110
+-#define PT_FPR15_LO 0x114
+-#define PT_CR_9	    0x118
+-#define PT_CR_10    0x11C
+-#define PT_CR_11    0x120
+-#define PT_IEEE_IP  0x13C
+-#define PT_LASTOFF  PT_IEEE_IP
+-#define PT_ENDREGS  0x140-1
+-
+-#define GPR_SIZE	4
+-#define CR_SIZE		4
+-
+-#define STACK_FRAME_OVERHEAD	96	/* size of minimum stack frame */
+-
+-#else /* __s390x__ */
+-
+-#define PT_PSWMASK  0x00
+-#define PT_PSWADDR  0x08
+-#define PT_GPR0     0x10
+-#define PT_GPR1     0x18
+-#define PT_GPR2     0x20
+-#define PT_GPR3     0x28
+-#define PT_GPR4     0x30
+-#define PT_GPR5     0x38
+-#define PT_GPR6     0x40
+-#define PT_GPR7     0x48
+-#define PT_GPR8     0x50
+-#define PT_GPR9     0x58
+-#define PT_GPR10    0x60
+-#define PT_GPR11    0x68
+-#define PT_GPR12    0x70
+-#define PT_GPR13    0x78
+-#define PT_GPR14    0x80
+-#define PT_GPR15    0x88
+-#define PT_ACR0     0x90
+-#define PT_ACR1     0x94
+-#define PT_ACR2     0x98
+-#define PT_ACR3     0x9C
+-#define PT_ACR4	    0xA0
+-#define PT_ACR5	    0xA4
+-#define PT_ACR6	    0xA8
+-#define PT_ACR7	    0xAC
+-#define PT_ACR8	    0xB0
+-#define PT_ACR9	    0xB4
+-#define PT_ACR10    0xB8
+-#define PT_ACR11    0xBC
+-#define PT_ACR12    0xC0
+-#define PT_ACR13    0xC4
+-#define PT_ACR14    0xC8
+-#define PT_ACR15    0xCC
+-#define PT_ORIGGPR2 0xD0
+-#define PT_FPC	    0xD8
+-#define PT_FPR0     0xE0
+-#define PT_FPR1     0xE8
+-#define PT_FPR2     0xF0
+-#define PT_FPR3     0xF8
+-#define PT_FPR4     0x100
+-#define PT_FPR5     0x108
+-#define PT_FPR6     0x110
+-#define PT_FPR7     0x118
+-#define PT_FPR8     0x120
+-#define PT_FPR9     0x128
+-#define PT_FPR10    0x130
+-#define PT_FPR11    0x138
+-#define PT_FPR12    0x140
+-#define PT_FPR13    0x148
+-#define PT_FPR14    0x150
+-#define PT_FPR15    0x158
+-#define PT_CR_9     0x160
+-#define PT_CR_10    0x168
+-#define PT_CR_11    0x170
+-#define PT_IEEE_IP  0x1A8
+-#define PT_LASTOFF  PT_IEEE_IP
+-#define PT_ENDREGS  0x1B0-1
+-
+-#define GPR_SIZE	8
+-#define CR_SIZE		8
+-
+-#define STACK_FRAME_OVERHEAD	160	 /* size of minimum stack frame */
+-
+-#endif /* __s390x__ */
+-
+-#define NUM_GPRS	16
+-#define NUM_FPRS	16
+-#define NUM_CRS		16
+-#define NUM_ACRS	16
+-
+-#define NUM_CR_WORDS	3
+-
+-#define FPR_SIZE	8
+-#define FPC_SIZE	4
+-#define FPC_PAD_SIZE	4 /* gcc insists on aligning the fpregs */
+-#define ACR_SIZE	4
+-
+-
+-#define PTRACE_OLDSETOPTIONS		21
+-#define PTRACE_SYSEMU			31
+-#define PTRACE_SYSEMU_SINGLESTEP	32
+-#ifndef __ASSEMBLY__
+-#include <linux/stddef.h>
+-#include <linux/types.h>
+-
+-typedef union {
+-	float	f;
+-	double	d;
+-	__u64	ui;
+-	struct
+-	{
+-		__u32 hi;
+-		__u32 lo;
+-	} fp;
+-} freg_t;
+-
+-typedef struct {
+-	__u32	fpc;
+-	__u32	pad;
+-	freg_t	fprs[NUM_FPRS];
+-} s390_fp_regs;
+-
+-#define FPC_EXCEPTION_MASK	0xF8000000
+-#define FPC_FLAGS_MASK		0x00F80000
+-#define FPC_DXC_MASK		0x0000FF00
+-#define FPC_RM_MASK		0x00000003
+-
+-/* this typedef defines how a Program Status Word looks like */
+-typedef struct {
+-	unsigned long mask;
+-	unsigned long addr;
+-} __attribute__ ((aligned(8))) psw_t;
+-
+-#ifndef __s390x__
+-
+-#define PSW_MASK_PER		0x40000000UL
+-#define PSW_MASK_DAT		0x04000000UL
+-#define PSW_MASK_IO		0x02000000UL
+-#define PSW_MASK_EXT		0x01000000UL
+-#define PSW_MASK_KEY		0x00F00000UL
+-#define PSW_MASK_BASE		0x00080000UL	/* always one */
+-#define PSW_MASK_MCHECK		0x00040000UL
+-#define PSW_MASK_WAIT		0x00020000UL
+-#define PSW_MASK_PSTATE		0x00010000UL
+-#define PSW_MASK_ASC		0x0000C000UL
+-#define PSW_MASK_CC		0x00003000UL
+-#define PSW_MASK_PM		0x00000F00UL
+-#define PSW_MASK_RI		0x00000000UL
+-#define PSW_MASK_EA		0x00000000UL
+-#define PSW_MASK_BA		0x00000000UL
+-
+-#define PSW_MASK_USER		0x0000FF00UL
+-
+-#define PSW_ADDR_AMODE		0x80000000UL
+-#define PSW_ADDR_INSN		0x7FFFFFFFUL
+-
+-#define PSW_DEFAULT_KEY		(((unsigned long) PAGE_DEFAULT_ACC) << 20)
+-
+-#define PSW_ASC_PRIMARY		0x00000000UL
+-#define PSW_ASC_ACCREG		0x00004000UL
+-#define PSW_ASC_SECONDARY	0x00008000UL
+-#define PSW_ASC_HOME		0x0000C000UL
+-
+-#else /* __s390x__ */
+-
+-#define PSW_MASK_PER		0x4000000000000000UL
+-#define PSW_MASK_DAT		0x0400000000000000UL
+-#define PSW_MASK_IO		0x0200000000000000UL
+-#define PSW_MASK_EXT		0x0100000000000000UL
+-#define PSW_MASK_BASE		0x0000000000000000UL
+-#define PSW_MASK_KEY		0x00F0000000000000UL
+-#define PSW_MASK_MCHECK		0x0004000000000000UL
+-#define PSW_MASK_WAIT		0x0002000000000000UL
+-#define PSW_MASK_PSTATE		0x0001000000000000UL
+-#define PSW_MASK_ASC		0x0000C00000000000UL
+-#define PSW_MASK_CC		0x0000300000000000UL
+-#define PSW_MASK_PM		0x00000F0000000000UL
+-#define PSW_MASK_RI		0x0000008000000000UL
+-#define PSW_MASK_EA		0x0000000100000000UL
+-#define PSW_MASK_BA		0x0000000080000000UL
+-
+-#define PSW_MASK_USER		0x0000FF0180000000UL
+-
+-#define PSW_ADDR_AMODE		0x0000000000000000UL
+-#define PSW_ADDR_INSN		0xFFFFFFFFFFFFFFFFUL
+-
+-#define PSW_DEFAULT_KEY		(((unsigned long) PAGE_DEFAULT_ACC) << 52)
+-
+-#define PSW_ASC_PRIMARY		0x0000000000000000UL
+-#define PSW_ASC_ACCREG		0x0000400000000000UL
+-#define PSW_ASC_SECONDARY	0x0000800000000000UL
+-#define PSW_ASC_HOME		0x0000C00000000000UL
+-
+-#endif /* __s390x__ */
+-
+-
+-/*
+- * The s390_regs structure is used to define the elf_gregset_t.
+- */
+-typedef struct {
+-	psw_t psw;
+-	unsigned long gprs[NUM_GPRS];
+-	unsigned int  acrs[NUM_ACRS];
+-	unsigned long orig_gpr2;
+-} s390_regs;
+-
+-/*
+- * The user_pt_regs structure exports the beginning of
+- * the in-kernel pt_regs structure to user space.
+- */
+-typedef struct {
+-	unsigned long args[1];
+-	psw_t psw;
+-	unsigned long gprs[NUM_GPRS];
+-} user_pt_regs;
+-
+-/*
+- * Now for the user space program event recording (trace) definitions.
+- * The following structures are used only for the ptrace interface, don't
+- * touch or even look at it if you don't want to modify the user-space
+- * ptrace interface. In particular stay away from it for in-kernel PER.
+- */
+-typedef struct {
+-	unsigned long cr[NUM_CR_WORDS];
+-} per_cr_words;
+-
+-#define PER_EM_MASK 0xE8000000UL
+-
+-typedef struct {
+-#ifdef __s390x__
+-	unsigned		       : 32;
+-#endif /* __s390x__ */
+-	unsigned em_branching	       : 1;
+-	unsigned em_instruction_fetch  : 1;
+-	/*
+-	 * Switching on storage alteration automatically fixes
+-	 * the storage alteration event bit in the users std.
+-	 */
+-	unsigned em_storage_alteration : 1;
+-	unsigned em_gpr_alt_unused     : 1;
+-	unsigned em_store_real_address : 1;
+-	unsigned		       : 3;
+-	unsigned branch_addr_ctl       : 1;
+-	unsigned		       : 1;
+-	unsigned storage_alt_space_ctl : 1;
+-	unsigned		       : 21;
+-	unsigned long starting_addr;
+-	unsigned long ending_addr;
+-} per_cr_bits;
+-
+-typedef struct {
+-	unsigned short perc_atmid;
+-	unsigned long address;
+-	unsigned char access_id;
+-} per_lowcore_words;
+-
+-typedef struct {
+-	unsigned perc_branching		 : 1;
+-	unsigned perc_instruction_fetch  : 1;
+-	unsigned perc_storage_alteration : 1;
+-	unsigned perc_gpr_alt_unused	 : 1;
+-	unsigned perc_store_real_address : 1;
+-	unsigned			 : 3;
+-	unsigned atmid_psw_bit_31	 : 1;
+-	unsigned atmid_validity_bit	 : 1;
+-	unsigned atmid_psw_bit_32	 : 1;
+-	unsigned atmid_psw_bit_5	 : 1;
+-	unsigned atmid_psw_bit_16	 : 1;
+-	unsigned atmid_psw_bit_17	 : 1;
+-	unsigned si			 : 2;
+-	unsigned long address;
+-	unsigned			 : 4;
+-	unsigned access_id		 : 4;
+-} per_lowcore_bits;
+-
+-typedef struct {
+-	union {
+-		per_cr_words   words;
+-		per_cr_bits    bits;
+-	} control_regs;
+-	/*
+-	 * The single_step and instruction_fetch bits are obsolete,
+-	 * the kernel always sets them to zero. To enable single
+-	 * stepping use ptrace(PTRACE_SINGLESTEP) instead.
+-	 */
+-	unsigned  single_step	    : 1;
+-	unsigned  instruction_fetch : 1;
+-	unsigned		    : 30;
+-	/*
+-	 * These addresses are copied into cr10 & cr11 if single
+-	 * stepping is switched off
+-	 */
+-	unsigned long starting_addr;
+-	unsigned long ending_addr;
+-	union {
+-		per_lowcore_words words;
+-		per_lowcore_bits  bits;
+-	} lowcore;
+-} per_struct;
+-
+-typedef struct {
+-	unsigned int  len;
+-	unsigned long kernel_addr;
+-	unsigned long process_addr;
+-} ptrace_area;
+-
+-/*
+- * S/390 specific non posix ptrace requests. I chose unusual values so
+- * they are unlikely to clash with future ptrace definitions.
+- */
+-#define PTRACE_PEEKUSR_AREA	      0x5000
+-#define PTRACE_POKEUSR_AREA	      0x5001
+-#define PTRACE_PEEKTEXT_AREA	      0x5002
+-#define PTRACE_PEEKDATA_AREA	      0x5003
+-#define PTRACE_POKETEXT_AREA	      0x5004
+-#define PTRACE_POKEDATA_AREA	      0x5005
+-#define PTRACE_GET_LAST_BREAK	      0x5006
+-#define PTRACE_PEEK_SYSTEM_CALL       0x5007
+-#define PTRACE_POKE_SYSTEM_CALL	      0x5008
+-#define PTRACE_ENABLE_TE	      0x5009
+-#define PTRACE_DISABLE_TE	      0x5010
+-#define PTRACE_TE_ABORT_RAND	      0x5011
+-
+-/*
+- * The numbers chosen here are somewhat arbitrary but absolutely MUST
+- * not overlap with any of the number assigned in <linux/ptrace.h>.
+- */
+-#define PTRACE_SINGLEBLOCK	12	/* resume execution until next branch */
+-
+-/*
+- * PT_PROT definition is loosely based on hppa bsd definition in
+- * gdb/hppab-nat.c
+- */
+-#define PTRACE_PROT			  21
+-
+-typedef enum {
+-	ptprot_set_access_watchpoint,
+-	ptprot_set_write_watchpoint,
+-	ptprot_disable_watchpoint
+-} ptprot_flags;
+-
+-typedef struct {
+-	unsigned long lowaddr;
+-	unsigned long hiaddr;
+-	ptprot_flags prot;
+-} ptprot_area;
+-
+-/* Sequence of bytes for breakpoint illegal instruction.  */
+-#define S390_BREAKPOINT     {0x0,0x1}
+-#define S390_BREAKPOINT_U16 ((__u16)0x0001)
+-#define S390_SYSCALL_OPCODE ((__u16)0x0a00)
+-#define S390_SYSCALL_SIZE   2
+-
+-/*
+- * The user_regs_struct defines the way the user registers are
+- * store on the stack for signal handling.
+- */
+-struct user_regs_struct {
+-	psw_t psw;
+-	unsigned long gprs[NUM_GPRS];
+-	unsigned int  acrs[NUM_ACRS];
+-	unsigned long orig_gpr2;
+-	s390_fp_regs fp_regs;
+-	/*
+-	 * These per registers are in here so that gdb can modify them
+-	 * itself as there is no "official" ptrace interface for hardware
+-	 * watchpoints. This is the way intel does it.
+-	 */
+-	per_struct per_info;
+-	unsigned long ieee_instruction_pointer;	/* obsolete, always 0 */
+-};
+-
+-#endif /* __ASSEMBLY__ */
+-
+-#endif /* _UAPI_S390_PTRACE_H */
+-- 
+2.1.0
 
-> With these change the function can now be used during skb building and
-> adding frags. In later patches it will also be easier for adjusting
-> page offsets for multi-buffers.
-
-Why couldn’t the function be used before?
-
-> Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-> ---
->   drivers/net/ethernet/intel/i40e/i40e_txrx.c | 54 ++++++++-------------
->   1 file changed, 19 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> index a7fba294a8f4..019abd7273a2 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> @@ -2018,6 +2018,21 @@ static bool i40e_can_reuse_rx_page(struct i40e_rx_buffer *rx_buffer,
->   	return true;
->   }
->   
-> +/**
-> + * i40e_rx_buffer_flip - adjusted rx_buffer to point to an unused region
-> + * @rx_buffer: Rx buffer to adjust
-> + * @size: Size of adjustment
-> + **/
-> +static void i40e_rx_buffer_flip(struct i40e_rx_buffer *rx_buffer,
-> +				unsigned int truesize)
-> +{
-> +#if (PAGE_SIZE < 8192)
-> +	rx_buffer->page_offset ^= truesize;
-> +#else
-> +	rx_buffer->page_offset += truesize;
-> +#endif
-
-It’d be great if you sent a patch on top, doing the check not in the 
-preprocessor but in native C code.
-
-> +}
-> +
->   /**
->    * i40e_add_rx_frag - Add contents of Rx buffer to sk_buff
->    * @rx_ring: rx descriptor ring to transact packets on
-> @@ -2045,11 +2060,7 @@ static void i40e_add_rx_frag(struct i40e_ring *rx_ring,
->   			rx_buffer->page_offset, size, truesize);
->   
->   	/* page is being used so we must update the page offset */
-> -#if (PAGE_SIZE < 8192)
-> -	rx_buffer->page_offset ^= truesize;
-> -#else
-> -	rx_buffer->page_offset += truesize;
-> -#endif
-> +	i40e_rx_buffer_flip(rx_buffer, truesize);
->   }
->   
->   /**
-> @@ -2154,11 +2165,7 @@ static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
->   				size, truesize);
->   
->   		/* buffer is used by skb, update page_offset */
-> -#if (PAGE_SIZE < 8192)
-> -		rx_buffer->page_offset ^= truesize;
-> -#else
-> -		rx_buffer->page_offset += truesize;
-> -#endif
-> +		i40e_rx_buffer_flip(rx_buffer, truesize);
->   	} else {
->   		/* buffer is unused, reset bias back to rx_buffer */
->   		rx_buffer->pagecnt_bias++;
-> @@ -2209,11 +2216,7 @@ static struct sk_buff *i40e_build_skb(struct i40e_ring *rx_ring,
->   		skb_metadata_set(skb, metasize);
->   
->   	/* buffer is used by skb, update page_offset */
-> -#if (PAGE_SIZE < 8192)
-> -	rx_buffer->page_offset ^= truesize;
-> -#else
-> -	rx_buffer->page_offset += truesize;
-> -#endif
-> +	i40e_rx_buffer_flip(rx_buffer, truesize);
->   
->   	return skb;
->   }
-> @@ -2326,25 +2329,6 @@ static int i40e_run_xdp(struct i40e_ring *rx_ring, struct xdp_buff *xdp, struct
->   	return result;
->   }
->   
-> -/**
-> - * i40e_rx_buffer_flip - adjusted rx_buffer to point to an unused region
-> - * @rx_ring: Rx ring
-> - * @rx_buffer: Rx buffer to adjust
-> - * @size: Size of adjustment
-> - **/
-> -static void i40e_rx_buffer_flip(struct i40e_ring *rx_ring,
-> -				struct i40e_rx_buffer *rx_buffer,
-> -				unsigned int size)
-> -{
-> -	unsigned int truesize = i40e_rx_frame_truesize(rx_ring, size);
-> -
-> -#if (PAGE_SIZE < 8192)
-> -	rx_buffer->page_offset ^= truesize;
-> -#else
-> -	rx_buffer->page_offset += truesize;
-> -#endif
-> -}
-> -
->   /**
->    * i40e_xdp_ring_update_tail - Updates the XDP Tx ring tail register
->    * @xdp_ring: XDP Tx ring
-> @@ -2513,7 +2497,7 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
->   		if (xdp_res) {
->   			if (xdp_res & (I40E_XDP_TX | I40E_XDP_REDIR)) {
->   				xdp_xmit |= xdp_res;
-> -				i40e_rx_buffer_flip(rx_ring, rx_buffer, size);
-> +				i40e_rx_buffer_flip(rx_buffer, xdp.frame_sz);
-
-Why is `xdp.frame_sz` the correct size now?
-
->   			} else {
->   				rx_buffer->pagecnt_bias++;
->   			}
-
-
-Kind regards,
-
-Paul
