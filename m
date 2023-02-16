@@ -2,158 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C8F699FA0
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 23:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1459F699FCE
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 23:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbjBPWNw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 17:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S229943AbjBPWiX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 17:38:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbjBPWNv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 17:13:51 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9F64A1F8
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 14:13:50 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id t16so8353335edd.10
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 14:13:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=buxUIpI9no/6Uagu80r8QwJj50kOh/FHVP/INqjpyGI=;
-        b=kuPOzkOOqZgAyFBjbFnGqzJTkmzTGxu5Mk/8sQQfWL07uGbFdcJQecnyIk/cWhhkfz
-         jWdgMSN5GMUTMSE8i8smz6tmkI7JqNl8zuzfiAjgReGEELkRX5i00BAORk8yUQzXOTo/
-         0jVhA3v5q1qSCByCatzIu6+IywjCVjm+pylzod1pR69vPdPFBAP+y5K2vH/z9nt8YiLZ
-         QcqrlX2cUcNu83DH+UcA3OAGnQr9a8FkbFOBw2bUaZP+Tbz5f20XzEFLtFsCNZKEF9/D
-         YR2+MClA7eSDXlRNAhR45HLo4yFtKDjpKCqYA5Wrh2mSQewx578w7LHB90Os5DGhMudM
-         ER+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=buxUIpI9no/6Uagu80r8QwJj50kOh/FHVP/INqjpyGI=;
-        b=BR1OuqjZarP5RVhBdUf19TGRCsEANi5Hy7O0mhoWEmtaxqyfqJv06Tc3an7SDQNHZJ
-         39GTDX7K+o74EaAkzB58x3Zw8B2H1/QYv9zqD9ltulhc/BKalEA+dpng0GbLzvA+DWio
-         /qSHBdbsontat60sKrmZgUXcBxVycnRHSncB8zq3ekCUJXp1cvh8fJPWBwdhfBnFfIy1
-         X2ka5fMIzyfPiCCYgiX7ticU8++8+xHxj6GM1nHoULe9GCnYWWt3oDy+0pTtvVsksUAB
-         F7fKyMzol48S7aiXf/tIHoWhfW39NbqcWaI60hnGPlIMIQdcj1MnLixI0Kr0tYnu848a
-         Vscw==
-X-Gm-Message-State: AO0yUKWkAck0Ln40UYL23aCvaWRozGZDbTVmFVHfOMfucFkrr7Yq3Uwc
-        qLCbsH6I0hjnF6WrUn8Up5cJTKhPPU1kgAsvdjM=
-X-Google-Smtp-Source: AK7set9ytAhX0odqulMi+hb2/3AUDPRQuVkQPTfBSig1ezK2+ZhGlwR7lNfTJbxgAFZgfRSGh1t1JeDSruXN1XQIJxk=
-X-Received: by 2002:a17:906:6896:b0:8a5:c8bd:4ac4 with SMTP id
- n22-20020a170906689600b008a5c8bd4ac4mr3580503ejr.15.1676585628658; Thu, 16
- Feb 2023 14:13:48 -0800 (PST)
+        with ESMTP id S229571AbjBPWiW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 17:38:22 -0500
+Received: from out-26.mta1.migadu.com (out-26.mta1.migadu.com [IPv6:2001:41d0:203:375::1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AAEA3CE2A
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 14:38:21 -0800 (PST)
+Message-ID: <64d1219c-3d07-733a-17cc-17bb8fd27827@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1676587098;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2rTMQeKT+IBbgviPNuxbtRnc33W3VLEfp8KwOYVMHx4=;
+        b=Dsj6M+pt7QMbU/ifO686uq+F2SUR7UxSUu7nXdNollI4pz8dn2qWQaY+dKMIPUyAi5nJm+
+        sYGibLB4rvGFSoJDbVAEx2ZkZk20RSsNriRo5VvtAvSjkwIw6FuvIXYp1gz6al4l2+6z7A
+        0mk8xUWq3wZ7f9zj8XC69pjGcyU7IKU=
+Date:   Thu, 16 Feb 2023 14:38:14 -0800
 MIME-Version: 1.0
-References: <CANk7y0joRFw2F4iAuN9r-dWWMvOmbFZz_J4rhGhgVFjdnxPTYw@mail.gmail.com>
- <Y+2J+jIFIxGOW32X@google.com>
-In-Reply-To: <Y+2J+jIFIxGOW32X@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Feb 2023 14:13:36 -0800
-Message-ID: <CAEf4BzaQJfB0Qh2Wn5wd9H0ZSURbzWBfKkav8xbkhozqTWXndw@mail.gmail.com>
-Subject: Re: [RFC] libbbpf/bpftool: Support 32-bit Architectures.
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Puranjay Mohan <puranjay12@gmail.com>, bpf@vger.kernel.org,
-        quentin@isovalent.com, ast@kernel.org, daniel@iogearbox.net,
-        memxor@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 3/7] bpf: Register and unregister a struct_ops by
+ their bpf_links.
+Content-Language: en-US
+To:     Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org
+References: <20230214221718.503964-1-kuifeng@meta.com>
+ <20230214221718.503964-4-kuifeng@meta.com>
+ <4f5012d6-e07a-2602-3526-d43244d9d978@linux.dev>
+ <28a01a8a-77d2-dcdc-eda4-a6ff7c7b54c0@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <28a01a8a-77d2-dcdc-eda4-a6ff7c7b54c0@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 15, 2023 at 5:48 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> On 02/15, Puranjay Mohan wrote:
-> > The BPF selftests fail to compile on 32-bit architectures as the skelet=
-on
-> > generated by bpftool doesn=E2=80=99t take into consideration the size d=
-ifference
-> > of
-> > variables on 32-bit/64-bit architectures.
->
-> > As an example,
-> > If a bpf program has a global variable of type: long, its skeleton will
-> > include
-> > a bss map that will have a field for this variable. The long variable i=
-n
-> > BPF is
-> > 64-bit. if we are working on a 32-bit machine, the generated skeleton h=
-as
-> > to
-> > compile for that machine where long is 32-bit.
->
-> > A reproducer for this issue:
-> >          root@56ec59aa632f:~# cat test.bpf.c
-> >          long var;
->
-> >          root@56ec59aa632f:~# clang -target bpf -g -c test.bpf.c
->
-> >          root@56ec59aa632f:~# bpftool btf dump file test.bpf.o format r=
-aw
-> >          [1] INT 'long int' size=3D8 bits_offset=3D0 nr_bits=3D64 encod=
-ing=3DSIGNED
-> >          [2] VAR 'var' type_id=3D1, linkage=3Dglobal
-> >          [3] DATASEC '.bss' size=3D0 vlen=3D1
-> >                 type_id=3D2 offset=3D0 size=3D8 (VAR 'var')
->
-> >         root@56ec59aa632f:~# bpftool gen skeleton test.bpf.o > skeleton=
-.h
->
-> >         root@56ec59aa632f:~# echo "#include \"skeleton.h\"" > test.c
->
-> >         root@56ec59aa632f:~# gcc test.c
-> >         In file included from test.c:1:
-> >         skeleton.h: In function 'test_bpf__assert':
-> >         skeleton.h:231:2: error: static assertion failed: "unexpected
-> > size of \'var\'"
-> >           231 |  _Static_assert(sizeof(s->bss->var) =3D=3D 8, "unexpect=
-ed
-> > size of 'var'");
-> >                  |  ^~~~~~~~~~~~~~
->
-> > One naive solution for this would be to map =E2=80=98long=E2=80=99 to =
-=E2=80=98long long=E2=80=99 and
-> > =E2=80=98unsigned long=E2=80=99 to =E2=80=98unsigned long long=E2=80=99=
-. But this doesn=E2=80=99t solve everything
-> > because this problem is also seen with pointers that are 64-bit in BPF =
-and
-> > 32-bit in 32-bit machines.
->
-> > I want to work on solving this and am looking for ideas to solve it
-> > efficiently.
-> > The main goal is to make libbbpf/bpftool host architecture agnostic.
->
-> Looks like bpftool needs to be aware of the target architecture. The
-> same way gcc is doing with build-host-target triplet. I don't
-> think this can be solved with a bunch of typedefs? But I've long
-> forgotten how a pure 32-bit machine looks, so I can't give any
-> useful input :-(
+On 2/16/23 8:42 AM, Kui-Feng Lee wrote:
+>>> @@ -638,6 +647,8 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union 
+>>> bpf_attr *attr)
+>>>       set_vm_flush_reset_perms(st_map->image);
+>>>       bpf_map_init_from_attr(map, attr);
+>>> +    map->map_flags |= attr->map_flags & BPF_F_LINK;
+>>
+>> This should have already been done in bpf_map_init_from_attr().
+> 
+> bpf_map_init_from_attr() will filter out all flags except BPF_F_RDONLY & 
+> BPF_F_WRONLY.
 
-Yeah, I'd rather avoid making bpftool aware of target architecture.
-Three is 32 vs 64 bitness, there is also little/big endianness, etc.
+should be the opposite:
 
-So I'd recommend never using "long" (and similar types that depend on
-bitness of the platform, like size_t, etc) for global variables. Also
-don't use pointer types as types of the variable. Stick to __u64,
-__u32, etc.
-
-Note that all this is irrelevant for static global variables, as they
-are not exposed in the BPF skeleton.
-
-In general, mixing 32-bit host architecture with (always) 64-bit BPF
-architecture always requires more care. And BPF skeleton is just one
-aspect of this.
-
->
->
-> > Thanks,
-> > Puranjay Mohan.
+static u32 bpf_map_flags_retain_permanent(u32 flags)
+{
+	/* Some map creation flags are not tied to the map object but
+          * rather to the map fd instead, so they have no meaning upon
+          * map object inspection since multiple file descriptors with
+          * different (access) properties can exist here. Thus, given
+          * this has zero meaning for the map itself, lets clear these
+          * from here.
+          */
+	return flags & ~(BPF_F_RDONLY | BPF_F_WRONLY);
+}
