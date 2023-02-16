@@ -2,513 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 963BF698B76
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 05:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB73698B7E
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 05:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbjBPEuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 23:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
+        id S229506AbjBPE4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 23:56:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjBPEuX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 23:50:23 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1438D30EA6
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 20:50:21 -0800 (PST)
+        with ESMTP id S229436AbjBPE4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 23:56:24 -0500
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C176BC165;
+        Wed, 15 Feb 2023 20:56:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676523021; x=1708059021;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lcszLOk4VDgbu6OWIPG2GRnidptZ6OMvUGF0DcVh9do=;
-  b=goyQFMQ1rFoGt8fJyDGTxQWM7Ah8C2oNwBug88g7u+BhH5Mwdv52UXX/
-   CgxHFocKsJa+qIeZph6FOcbL5beTsr9hS2dXZSCznpahDeZ7rqDPKdoOO
-   3dWpTtPHhxdc8LCozqUpshdCg+EwvvKJglBKbKLra/hdqdsQEX6GALneB
-   JQQi0sL5oIGxBUrDc2p4mR+sWEVZZiGwdH65V+DzAy/n8CZOmU5pbPHCU
-   HJLUYwJpi/52vArwcDhEtkbAvyF623SeJzPVbn25k9MtqK8Hzbpx80npn
-   dJMX5lBDn3F1oUQoT+Ucn+1YNqjV6ht+fhEJdaABSkMbFoGbA1HbGJAX5
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="311992300"
+  t=1676523383; x=1708059383;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=cx83NzUZfIIFuonucq7C/BEzi8Ew7ykdjpOXgyv4U+c=;
+  b=jOOYCBlZHOnuAQRNEwkA8Fiq8KTUlqH3tC5VVfybgnSvqfgBdb0/aQg6
+   px6js5I9ZbAyiL7KmweL80KBnVrklHUmh9d1D4z3tOZ3OOSGyEfnsN+Rh
+   u+j0ZhazvtBuTO835WMAw8p4rZMomTtaULpn6kzUn022lHwgCIcWEFyyi
+   hBaGZ3vbzHc7AUfTi4pl0QUNBQtYr2uWanIEUe9RprpxB+7sWkf7tBxSg
+   Y991zOK0YxlAw0TWatb/C+kr13+kuFiz80FDIaxZPkzFrtOkNIOERhAdZ
+   1QCQMCiwXRawobv13xlU0opc2vbq+b33D9qJatAfgh9KDzwpmh/F0q4AI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="359054090"
 X-IronPort-AV: E=Sophos;i="5.97,301,1669104000"; 
-   d="scan'208";a="311992300"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2023 20:50:20 -0800
+   d="scan'208";a="359054090"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2023 20:56:23 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="844005709"
+X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="779218417"
 X-IronPort-AV: E=Sophos;i="5.97,301,1669104000"; 
-   d="scan'208";a="844005709"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 15 Feb 2023 20:50:16 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pSWDn-000A1H-2C;
-        Thu, 16 Feb 2023 04:50:15 +0000
-Date:   Thu, 16 Feb 2023 12:49:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: Re: [PATCH bpf-next v5 1/2] bpf: Fix attaching
- fentry/fexit/fmod_ret/lsm to modules
-Message-ID: <202302161237.VATmhmIP-lkp@intel.com>
-References: <14feaab32b06bd76b1689ade6f4709e246a77bbe.1676302508.git.vmalik@redhat.com>
+   d="scan'208";a="779218417"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga002.fm.intel.com with ESMTP; 15 Feb 2023 20:56:23 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Wed, 15 Feb 2023 20:56:22 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Wed, 15 Feb 2023 20:56:22 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Wed, 15 Feb 2023 20:56:22 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S9XZZT1WPa2BFHLn3ZyYuXPPFHzkjk1ZoRtXSMAUaFQrVBZ4Qe0O0XstGTCCdf3fBhw2OBWtPETD7DL8a3OMUK/PR5qD5KlSNtuf/uaMWPScqqd0HSOlQuI6gRAaGyOQe9aOCJxrZfWW0QJ8/glgFJVR17/mBQSq5t/EAaEhwDQwkW4Jlf+OKhdLYaVLhww2Q/HjpbFhXKdgRVz1v49abZALHO+ceOLuSVvoItUZUnnCimQnofBO1QenQDX8wZaQq8WCCLMpQ8yZGCt02ZiA3PiBEUtdA8W74ToAPG6/d9k1lZEP9RbJM32iO/KDHids0BNUCHOwXT6nO26+NSTMlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cx83NzUZfIIFuonucq7C/BEzi8Ew7ykdjpOXgyv4U+c=;
+ b=cGhH7L8I8ZtNz3cIGp16QQ7D7UJFLbBsyqdWtEB43gNeF9L769bjkgALp/E7X16zMwnWk9Mjz0xRdV8+nY8oC59qtYj7chy7n5qAKBsKtFQMS8tfRFSW2YJ9uqd97QYBm42BwaPnzbUtt+jFaKJYlF+C752qTuo/JsvwNSWz4H8qXEpx37e0rrnw8f02tRGbH7VhW/HMWZNAdHGA2qcwb8elw6MUgcNEFu9prMoeynXZcR7IC6C8ron2/TolvD+xSwIxBaaAj70jzZ2nxJxZMOWwIah5N2/9UioKvjMZxV2qHYl1kGwH6KrIM+Y21OS2xEZhmZIsc/jFFwgLjTwkUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CY4PR1101MB2360.namprd11.prod.outlook.com (2603:10b6:903:b9::9)
+ by DS0PR11MB7406.namprd11.prod.outlook.com (2603:10b6:8:136::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.26; Thu, 16 Feb
+ 2023 04:56:16 +0000
+Received: from CY4PR1101MB2360.namprd11.prod.outlook.com
+ ([fe80::ca4b:b3ce:b8a0:f0da]) by CY4PR1101MB2360.namprd11.prod.outlook.com
+ ([fe80::ca4b:b3ce:b8a0:f0da%11]) with mapi id 15.20.6086.026; Thu, 16 Feb
+ 2023 04:56:15 +0000
+From:   "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>
+To:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+CC:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+Subject: RE: [PATCH intel-next v4 8/8] i40e: add support for XDP multi-buffer
+ Rx
+Thread-Topic: [PATCH intel-next v4 8/8] i40e: add support for XDP multi-buffer
+ Rx
+Thread-Index: AQHZQT0hbpGdu3N3TEq0KQ5WGv+W/q7QF22AgACaFoCAAFFJ8A==
+Date:   Thu, 16 Feb 2023 04:56:15 +0000
+Message-ID: <CY4PR1101MB23604F7E72CD838A3A4CBC7390A09@CY4PR1101MB2360.namprd11.prod.outlook.com>
+References: <20230215124305.76075-1-tirthendu.sarkar@intel.com>
+ <20230215124305.76075-9-tirthendu.sarkar@intel.com>
+ <Y+zxY07GZ8aI7LrV@lore-desk> <c78c5e12-1c5a-5215-812c-b10d4b892a1b@intel.com>
+In-Reply-To: <c78c5e12-1c5a-5215-812c-b10d4b892a1b@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY4PR1101MB2360:EE_|DS0PR11MB7406:EE_
+x-ms-office365-filtering-correlation-id: 2d7a1be3-6fc3-4225-0cb3-08db0fda2276
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8VcW2wVwmy2dZvJssL+cfRkDfZu2edBKKzksrA5W5ot7q1rw0CnVWNqlT2oB07KO8T1QHn6yRuPXxzd78+Gz2zrnvK5W01xDNToy3eemZCRJKSKAsqokbAdyDbZK/YD0IzuYpwgxMt+CJYZ2JAm0BpvPVYbdH7GXVLoR9j3ElEHDr6yMEbg5Q57M/VEAfR2FBm9QdmHyLW5HdaIq+pqTyCz9alG3cKifN8onKnQBwzHEuGd4+Z6KUE5ez7pyXBPYulD7MQj3cuEIk1eVEo5DX5YNmJzWMa8WQEQ9TMpGLbVX5O6vx66mwVNSjTrp4xzOjK9h7OPmJJSt+d9qJZZufckBOaE473c6ovqeUut0T4bFiOSm7FT/bg324AjWIKZWGl0JQ9C20S2rPhEBcWM0yy3L3pUDbju3jGqppTvuK52pwbW15IBXOmeOjnY9AL40lHh/xEanpbLxK57mkHBm0XdvfBTl4cJ4dLA3BYSAQZi9coPu83IOiSRctwbW2neiMiMIbWg10otsCCFdo1DrG/V3f9DLbH0PfUZW+8EEri5gfTgHXBVKrLD6780ObSSK55plM6QjfZumNToRTdRpFTo/DX4DxJt3KABjMRzVBHeTOF9rJDP/QfF/iiVQf3TcosA5djQaXnsCrn1tHw7F+zXKqmaGzWTgfTInbsJukS0Gczy2QpHRZivbikgvBol8YUvGIqjmZLM2rq47VN28PbYl1gRh6cdqmE20CJPrsbJUkM0FLwK4I9m5hxJzvSr1
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2360.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(396003)(136003)(346002)(39860400002)(376002)(366004)(451199018)(82960400001)(8936002)(5660300002)(33656002)(41300700001)(478600001)(966005)(52536014)(71200400001)(54906003)(76116006)(66556008)(7696005)(64756008)(8676002)(66476007)(86362001)(66946007)(110136005)(4326008)(9686003)(66446008)(6506007)(26005)(53546011)(2906002)(38070700005)(55016003)(107886003)(186003)(316002)(38100700002)(122000001)(83323001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MisvRUdnYUVlaGdFQVhGMHB5MEVmOVBCOS83cFNQTENLcUtGZkxsTzM4K0Rj?=
+ =?utf-8?B?UUVsYXpJeUVMRWJvSDlXY0IyT2w2ZjRXbnF6ZkluRm8rbVJxb2NsZGNrbnM3?=
+ =?utf-8?B?YzZpcDhEK05LQUVibE52eElRZURiVEd6YzBpZmlrRndCWStyaGc1cklRRDRz?=
+ =?utf-8?B?TTR3NkxmKzEreC9mS3JMeGRadnRtNVF5RGduV0JlYUtPblhzR0VGT0prZHVI?=
+ =?utf-8?B?dGVQQlZVT090R0VZb2FydEJ5dzh3bGZjbGppUDYrcTZpdEZxNDhybDh4ZXBT?=
+ =?utf-8?B?ZG8xNDlvVXUwejZNdmZxQWdkcUdsTXFiQk9QUVdrTElyUXBXSWF3Vzh1NGZr?=
+ =?utf-8?B?M2J1c0xZMHdGWnNpODJnL1lQOW04dlA0ZTVlQVdmWStzTFBCcnd0QWNRUkZx?=
+ =?utf-8?B?MEJkR0ljU0JyTkttMmUzMHFxOC9tTmZuQWo0YllvUFVwdU9RcUJ4allWRFpn?=
+ =?utf-8?B?N0NEdmR2SW8zbTg3ckNROWRlL2s3Qnl5bkpRSGNURkZKS256ZStpWUliVUE0?=
+ =?utf-8?B?TTliamg2VE45SktreEtVTnVEZk13ZnpvYy95dzQ3MmwrTHMxOWN3bkE0L05N?=
+ =?utf-8?B?dEtnNTN4RlhXL1ppSjVQWjJrV29tK0d5b3MraWRPZitMcytPcFA2USt2d3ZJ?=
+ =?utf-8?B?cHp0Q3E0c3ZYTlljNzVQb2pQNGFDYWxKZzFXMlU4elpmV1BXVGVzT01KYUVl?=
+ =?utf-8?B?eVBZcXNEUVBXdWdwbWxtL25aNFFUUE8vTmkrYkR3bXBwNUluaE9iY0VMeity?=
+ =?utf-8?B?ZWN5a291Y3RKRFJOQnp4L2ZGMWtMYUJVVUZreFVtN1FiT2FnclhHek45R1lk?=
+ =?utf-8?B?SGtET2JkVDdXT1pUZ3R2WW5XYXJYa3A4eEM5Yk9NNExYNnY2ajVBc0xPaHB3?=
+ =?utf-8?B?K1hzbEYwMGFCcFhYcndPa0ZNblgzS0hmYWJQY3hZYllXVzJwZ0Zma3QyZzRt?=
+ =?utf-8?B?c0c4enh4emtBOWk2QVY1VC8yV3NmTHBWeWozd3F6b2FvYzQ3S1MvaWNEd1N5?=
+ =?utf-8?B?TlNUN2ExZk5NSjErTVpJd3VmUXdTY282cTA4aGVxbi94NTBFOVFwTHdaRXBq?=
+ =?utf-8?B?RlEvU3VFWmZST2E5TWZadWpBRXA3VTByMXZ3K3VESk5lNnFUNmFaSjR0UDhj?=
+ =?utf-8?B?Z0oxaTI4ZDNzdUs5ZzhzUzVBM0NHN1FHQlZKZkNZZTRXZ0gwQ0ZmTUsyRk9s?=
+ =?utf-8?B?S1l5UmtDTjJLa1FjZGs2cEpnMFl3VXZoVFRlK081cUZVSFBMc3NpRXFLSTJZ?=
+ =?utf-8?B?Snc2MlJmd08vZ1Mzc3dhOW94a1VFYnE4WlBlSXY1QlhKZGwvbE8xUzFuWnpt?=
+ =?utf-8?B?WVZpN0lSQUJUd0UvTmpZRmIrTDVkV0hQTHdVTnMrei9oKzhROXpOVDRBZVpC?=
+ =?utf-8?B?YmhQSlZxUTlQanlDNlZwcmJjWXJkNGZqL2lJZFREbGtSdE0xWCtzOFc4MzQv?=
+ =?utf-8?B?TWFlWGNCT0tPM2syZnE0OUJuUkpnVDRKeTdsOVB6NjFqdzY5bXBkRjVRVTJZ?=
+ =?utf-8?B?d2hieGMzclJVaWRDdTkvYVFuQW1vbHpYN0JzUkZZUkJiWnpRbnV1TVM3RjNQ?=
+ =?utf-8?B?NHFkNTVSSUxLQ2lsVlZsV1pKNW1uUVRqZHNIbGIvWFZneTJnQ3FtaWxrQ3Fu?=
+ =?utf-8?B?T2FhZ0R4aGRQdTVJZXI5bW1ZRmUyUFB5c005U3Bza2M4dWVtd0gzYUdIdjNY?=
+ =?utf-8?B?RjBSTmRDWVIrN0JDR2JTUWtUbTRvRUdyd3NVcE9tR3puS0p4Z3BodGJ1ekc4?=
+ =?utf-8?B?MEk2cGwrak9yK2ljZVpPbUF3WVgvZVZVc2hzVnVKL2ltTEsyU0lFQ2hXTE5C?=
+ =?utf-8?B?WmVGK2xTUTNhWXlKZHQ3LzVwRW1Vc2Qvc0dFU3kwdEZUOXQ1ckhMRElFSVhz?=
+ =?utf-8?B?K3ZQbXJ4RjRNa2kvenZJVFI3WGFscmhPL0VCcVNEMkgweXkvc1AyRjBHZmRS?=
+ =?utf-8?B?ZmhxOXc4dGRvQTEwVm5JZ3pFRzBKbzByTEdwb2dsbmZQbm5oVzhKZHB0aWE4?=
+ =?utf-8?B?bmhJOStIeHFuYXdzVG41bFhlaTBBOEJaeDV0ODFPT3A4eDF2VlV4SXdrbzFu?=
+ =?utf-8?B?cmJJSzNCMmduV0NTeXpiNEcvOFBqc3RkVFZxekdZMUs3RVJYVW5BajhjcjUz?=
+ =?utf-8?B?dHJTdDd4NHdqSlhYb1ZVMGQrOHNaczlEZ2htd3hFR2s2VFRIWm5PWjJ3cEdy?=
+ =?utf-8?B?K1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14feaab32b06bd76b1689ade6f4709e246a77bbe.1676302508.git.vmalik@redhat.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2360.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d7a1be3-6fc3-4225-0cb3-08db0fda2276
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2023 04:56:15.8037
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6Q9uOOvjdhcJgjLyfIXJfDy9yKbscvHWDgS3zjo1sL94p2Ob+hglD8dSdtGUyQQ3fY+ACeYcsXBFmk7yow89DC9Abk/4GSi+wEx90nyZ8NM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7406
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Viktor,
-
-Thank you for the patch! Yet something to improve:
-
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Viktor-Malik/bpf-Fix-attaching-fentry-fexit-fmod_ret-lsm-to-modules/20230214-012627
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/14feaab32b06bd76b1689ade6f4709e246a77bbe.1676302508.git.vmalik%40redhat.com
-patch subject: [PATCH bpf-next v5 1/2] bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
-config: arm-randconfig-r005-20230213 (https://download.01.org/0day-ci/archive/20230216/202302161237.VATmhmIP-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/ae726649987118f58eb95cd056acd6a5f0619a0f
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Viktor-Malik/bpf-Fix-attaching-fentry-fexit-fmod_ret-lsm-to-modules/20230214-012627
-        git checkout ae726649987118f58eb95cd056acd6a5f0619a0f
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash kernel/bpf/ kernel/module/
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202302161237.VATmhmIP-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/container_of.h:5,
-                    from include/linux/list.h:5,
-                    from include/linux/timer.h:5,
-                    from include/linux/workqueue.h:9,
-                    from include/linux/bpf.h:10,
-                    from include/linux/bpf-cgroup.h:5,
-                    from kernel/bpf/verifier.c:7:
-   kernel/bpf/../module/internal.h: In function 'mod_find':
->> include/linux/container_of.h:20:54: error: invalid use of undefined type 'struct module'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |                                                      ^~
-   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                                        ^~~~
-   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |         ^~~~~~~~~~~~~
-   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |                       ^~~~~~~~~~~
-   include/linux/rculist.h:307:9: note: in expansion of macro 'container_of'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |         ^~~~~~~~~~~~
-   include/linux/rculist.h:391:20: note: in expansion of macro 'list_entry_rcu'
-     391 |              pos = list_entry_rcu((head)->next, typeof(*pos), member);  \
-         |                    ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:299:27: error: expression in static assertion is not an integer
-     299 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
-         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                                        ^~~~
-   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |         ^~~~~~~~~~~~~
-   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |                       ^~~~~~~~~~~
-   include/linux/rculist.h:307:9: note: in expansion of macro 'container_of'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |         ^~~~~~~~~~~~
-   include/linux/rculist.h:391:20: note: in expansion of macro 'list_entry_rcu'
-     391 |              pos = list_entry_rcu((head)->next, typeof(*pos), member);  \
-         |                    ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   In file included from include/uapi/linux/posix_types.h:5,
-                    from include/uapi/linux/types.h:14,
-                    from include/linux/types.h:6,
-                    from include/uapi/linux/btf.h:6,
-                    from kernel/bpf/verifier.c:6:
->> include/linux/stddef.h:16:33: error: invalid use of undefined type 'struct module'
-      16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
-         |                                 ^~~~~~~~~~~~~~~~~~
-   include/linux/container_of.h:23:28: note: in expansion of macro 'offsetof'
-      23 |         ((type *)(__mptr - offsetof(type, member))); })
-         |                            ^~~~~~~~
-   include/linux/rculist.h:307:9: note: in expansion of macro 'container_of'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |         ^~~~~~~~~~~~
-   include/linux/rculist.h:391:20: note: in expansion of macro 'list_entry_rcu'
-     391 |              pos = list_entry_rcu((head)->next, typeof(*pos), member);  \
-         |                    ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   In file included from include/linux/pid.h:5,
-                    from include/linux/sched.h:14,
-                    from include/linux/sched/mm.h:7,
-                    from include/linux/xarray.h:19,
-                    from include/linux/radix-tree.h:21,
-                    from include/linux/idr.h:15,
-                    from include/linux/kernfs.h:12,
-                    from include/linux/sysfs.h:16,
-                    from include/linux/kobject.h:20,
-                    from include/linux/module.h:21,
-                    from include/linux/bpf.h:20:
->> include/linux/rculist.h:392:21: error: invalid use of undefined type 'struct module'
-     392 |                 &pos->member != (head);                                 \
-         |                     ^~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                                         ^~
-   include/linux/container_of.h:19:33: note: in definition of macro 'container_of'
-      19 |         void *__mptr = (void *)(ptr);                                   \
-         |                                 ^~~
-   include/linux/compiler_types.h:346:9: note: in expansion of macro '__compiletime_assert'
-     346 |         __compiletime_assert(condition, msg, prefix, suffix)
-         |         ^~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:358:9: note: in expansion of macro '_compiletime_assert'
-     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |         ^~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |                            ^~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:49:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
-      49 |         compiletime_assert_rwonce_type(x);                              \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:307:22: note: in expansion of macro 'READ_ONCE'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |                      ^~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                                         ^~
-   include/linux/container_of.h:19:33: note: in definition of macro 'container_of'
-      19 |         void *__mptr = (void *)(ptr);                                   \
-         |                                 ^~~
-   include/linux/compiler_types.h:346:9: note: in expansion of macro '__compiletime_assert'
-     346 |         __compiletime_assert(condition, msg, prefix, suffix)
-         |         ^~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:358:9: note: in expansion of macro '_compiletime_assert'
-     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |         ^~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |                            ^~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:49:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
-      49 |         compiletime_assert_rwonce_type(x);                              \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:307:22: note: in expansion of macro 'READ_ONCE'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |                      ^~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                                         ^~
-   include/linux/container_of.h:19:33: note: in definition of macro 'container_of'
-      19 |         void *__mptr = (void *)(ptr);                                   \
-         |                                 ^~~
-   include/linux/compiler_types.h:346:9: note: in expansion of macro '__compiletime_assert'
-     346 |         __compiletime_assert(condition, msg, prefix, suffix)
-         |         ^~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:358:9: note: in expansion of macro '_compiletime_assert'
-     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |         ^~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |                            ^~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:49:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
-      49 |         compiletime_assert_rwonce_type(x);                              \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:307:22: note: in expansion of macro 'READ_ONCE'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |                      ^~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                                         ^~
-   include/linux/container_of.h:19:33: note: in definition of macro 'container_of'
-      19 |         void *__mptr = (void *)(ptr);                                   \
---
-         |                      ^~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                                         ^~
-   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                                        ^~~~
-   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |         ^~~~~~~~~~~~~
-   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |                       ^~~~~~~~~~~
-   include/linux/rculist.h:307:9: note: in expansion of macro 'container_of'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |         ^~~~~~~~~~~~
-   include/linux/compiler_types.h:346:9: note: in expansion of macro '__compiletime_assert'
-     346 |         __compiletime_assert(condition, msg, prefix, suffix)
-         |         ^~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:358:9: note: in expansion of macro '_compiletime_assert'
-     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |         ^~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:49:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
-      49 |         compiletime_assert_rwonce_type(x);                              \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:307:22: note: in expansion of macro 'READ_ONCE'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |                      ^~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                                         ^~
-   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                                        ^~~~
-   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |         ^~~~~~~~~~~~~
-   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |                       ^~~~~~~~~~~
-   include/linux/rculist.h:307:9: note: in expansion of macro 'container_of'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |         ^~~~~~~~~~~~
-   include/asm-generic/rwonce.h:44:43: note: in expansion of macro '__unqual_scalar_typeof'
-      44 | #define __READ_ONCE(x)  (*(const volatile __unqual_scalar_typeof(x) *)&(x))
-         |                                           ^~~~~~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:50:9: note: in expansion of macro '__READ_ONCE'
-      50 |         __READ_ONCE(x);                                                 \
-         |         ^~~~~~~~~~~
-   include/linux/rculist.h:307:22: note: in expansion of macro 'READ_ONCE'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |                      ^~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                                         ^~
-   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                                        ^~~~
-   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |         ^~~~~~~~~~~~~
-   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |                       ^~~~~~~~~~~
-   include/linux/rculist.h:307:9: note: in expansion of macro 'container_of'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |         ^~~~~~~~~~~~
-   include/asm-generic/rwonce.h:50:9: note: in expansion of macro '__READ_ONCE'
-      50 |         __READ_ONCE(x);                                                 \
-         |         ^~~~~~~~~~~
-   include/linux/rculist.h:307:22: note: in expansion of macro 'READ_ONCE'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |                      ^~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/container_of.h:20:54: error: invalid use of undefined type 'struct module'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |                                                      ^~
-   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                                        ^~~~
-   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |         ^~~~~~~~~~~~~
-   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |                       ^~~~~~~~~~~
-   include/linux/rculist.h:307:9: note: in expansion of macro 'container_of'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |         ^~~~~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                                         ^~
-   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                                        ^~~~
-   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |         ^~~~~~~~~~~~~
-   include/linux/container_of.h:21:23: note: in expansion of macro '__same_type'
-      21 |                       __same_type(*(ptr), void),                        \
-         |                       ^~~~~~~~~~~
-   include/linux/rculist.h:307:9: note: in expansion of macro 'container_of'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |         ^~~~~~~~~~~~
-   include/linux/compiler_types.h:346:9: note: in expansion of macro '__compiletime_assert'
-     346 |         __compiletime_assert(condition, msg, prefix, suffix)
-         |         ^~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:358:9: note: in expansion of macro '_compiletime_assert'
-     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |         ^~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |                            ^~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:49:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
-      49 |         compiletime_assert_rwonce_type(x);                              \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:307:22: note: in expansion of macro 'READ_ONCE'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |                      ^~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                                         ^~
-   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                                        ^~~~
-   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
-      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-         |         ^~~~~~~~~~~~~
-   include/linux/container_of.h:21:23: note: in expansion of macro '__same_type'
-      21 |                       __same_type(*(ptr), void),                        \
-         |                       ^~~~~~~~~~~
-   include/linux/rculist.h:307:9: note: in expansion of macro 'container_of'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |         ^~~~~~~~~~~~
-   include/linux/compiler_types.h:346:9: note: in expansion of macro '__compiletime_assert'
-     346 |         __compiletime_assert(condition, msg, prefix, suffix)
-         |         ^~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler_types.h:358:9: note: in expansion of macro '_compiletime_assert'
-     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |         ^~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |                            ^~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:49:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
-      49 |         compiletime_assert_rwonce_type(x);                              \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:307:22: note: in expansion of macro 'READ_ONCE'
-     307 |         container_of(READ_ONCE(ptr), type, member)
-         |                      ^~~~~~~~~
-   include/linux/rculist.h:393:23: note: in expansion of macro 'list_entry_rcu'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-         |                       ^~~~~~~~~~~~~~
-   kernel/bpf/../module/internal.h:212:9: note: in expansion of macro 'list_for_each_entry_rcu'
-     212 |         list_for_each_entry_rcu(mod, &modules, list,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rculist.h:393:41: error: invalid use of undefined type 'struct module'
-     393 |                 pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-..
-
-
-vim +20 include/linux/container_of.h
-
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08   9  
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  10  /**
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  11   * container_of - cast a member of a structure out to the containing structure
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  12   * @ptr:	the pointer to the member.
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  13   * @type:	the type of the container struct this is embedded in.
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  14   * @member:	the name of the member within the struct.
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  15   *
-7376e561fd2e01 Sakari Ailus     2022-10-24  16   * WARNING: any const qualifier of @ptr is lost.
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  17   */
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  18  #define container_of(ptr, type, member) ({				\
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  19  	void *__mptr = (void *)(ptr);					\
-e1edc277e6f6df Rasmus Villemoes 2021-11-08 @20  	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
-e1edc277e6f6df Rasmus Villemoes 2021-11-08  21  		      __same_type(*(ptr), void),			\
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  22  		      "pointer type mismatch in container_of()");	\
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  23  	((type *)(__mptr - offsetof(type, member))); })
-d2a8ebbf8192b8 Andy Shevchenko  2021-11-08  24  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+PiBGcm9tOiBOZ3V5ZW4sIEFudGhvbnkgTCA8YW50aG9ueS5sLm5ndXllbkBpbnRlbC5jb20+DQo+
+IFNlbnQ6IFRodXJzZGF5LCBGZWJydWFyeSAxNiwgMjAyMyA1OjMzIEFNDQo+IFN1YmplY3Q6IFJl
+OiBbUEFUQ0ggaW50ZWwtbmV4dCB2NCA4LzhdIGk0MGU6IGFkZCBzdXBwb3J0IGZvciBYRFAgbXVs
+dGktYnVmZmVyDQo+IFJ4DQo+IA0KPiBPbiAyLzE1LzIwMjMgNjo1MSBBTSwgTG9yZW56byBCaWFu
+Y29uaSB3cm90ZToNCj4gPj4gVGhpcyBwYXRjaCBhZGRzIG11bHRpLWJ1ZmZlciBzdXBwb3J0IGZv
+ciB0aGUgaTQwZV9kcml2ZXIuDQo+ID4+DQo+ID4NCj4gPiBbLi4uXQ0KPiA+DQo+ID4+DQo+ID4+
+ICAgCW5ldGRldi0+ZmVhdHVyZXMgJj0gfk5FVElGX0ZfSFdfVEM7DQo+ID4+ICAgCW5ldGRldi0+
+eGRwX2ZlYXR1cmVzID0gTkVUREVWX1hEUF9BQ1RfQkFTSUMgfA0KPiBORVRERVZfWERQX0FDVF9S
+RURJUkVDVCB8DQo+ID4+IC0JCQkgICAgICAgTkVUREVWX1hEUF9BQ1RfWFNLX1pFUk9DT1BZOw0K
+PiA+PiArCQkJICAgICAgIE5FVERFVl9YRFBfQUNUX1hTS19aRVJPQ09QWSB8DQo+ID4+ICsJCQkg
+ICAgICAgTkVUREVWX1hEUF9BQ1RfUlhfU0c7DQo+ID4NCj4gPiBIaSBUaXJ0aGVuZHUsDQo+ID4N
+Cj4gPiBJIGd1ZXNzIHdlIHNob3VsZCBzZXQgaXQganVzdCBmb3IgSTQwRV9WU0lfTUFJTiwgSSBw
+b3N0ZWQgYSBwYXRjaCB5ZXN0ZXJkYXkNCj4gPiB0byBmaXggaXQ6DQo+ID4NCj4gaHR0cHM6Ly9w
+YXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L25ldGRldmJwZi9wYXRjaC9mMmI1MzdmODZiMzRm
+YzE3NmYNCj4gYmM2YjNkMjQ5YjQ2YTIwYTg3YTJmMy4xNjc2NDA1MTMxLmdpdC5sb3JlbnpvQGtl
+cm5lbC5vcmcvDQo+ID4NCj4gPiBjYW4geW91IHBsZWFzZSByZWJhc2Ugb24gdG9wIG9mIGl0Pw0K
+PiANCj4gSmFrdWIsDQo+IA0KPiBJIGJlbGlldmUgeW91IGFyZSBwbGFubmluZyBvbiB0YWtpbmcg
+TG9yZW56bydzIGljZSBbMV0gYW5kIGk0MGUgWzJdDQo+IHBhdGNoIGJhc2VkIG9uIHRoZSBjb21t
+ZW50IG9mIHRha2luZyBmb2xsb3ctdXBzIGRpcmVjdGx5IFszXT8NCj4gDQo+IElmIHNvLCBUaXJ0
+aGVuZHUsIEknbGwgcmViYXNlIGFmdGVyIHRoaXMgaXMgcHVsbGVkIGJ5IG5ldGRldiwgdGhlbiBp
+Zg0KPiB5b3UgY2FuIGJhc2Ugb24gbmV4dC1xdWV1ZSBzbyBldmVyeXRoaW5nIHdpbGwgYXBwbHkg
+bmljZWx5Lg0KPiANCg0KSSBoYXZlIHJlYmFzZWQgaXQgYW5kIHdpbGwgc2VuZCB0aGUgdjUgb25j
+ZSB0aGUgMjRociBjdXJmZXcgb24gc2VuZGluZyBwYXRjaGVzIGlzIG92ZXIuDQoNClJlZ2FyZHMN
+ClRpcnRoZW5kdQ0KDQo+IFRoYW5rcywNCj4gVG9ueQ0KPiANCj4gPiBSZWdhcmRzLA0KPiA+IExv
+cmVuem8NCj4gDQo+IFsxXQ0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvOGE0NzgxNTEx
+YWI2ZTNjZDI4MGU5NDRlZWY2OTE1ODk1NGYxYTE1Zi4xNjcNCj4gNjM4NTM1MS5naXQubG9yZW56
+b0BrZXJuZWwub3JnLw0KPiBbMl0NCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL2YyYjUz
+N2Y4NmIzNGZjMTc2ZmJjNmIzZDI0OWI0NmEyMGE4N2EyZjMuMTY3Ng0KPiA0MDUxMzEuZ2l0Lmxv
+cmVuem9Aa2VybmVsLm9yZy8NCj4gWzNdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDIz
+MDIxMzE3MjM1OC43ZGYwZjA3Y0BrZXJuZWwub3JnLw0KDQo=
