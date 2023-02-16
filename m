@@ -2,166 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6540698EB5
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 09:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16791698EF2
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 09:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbjBPIa5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 03:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
+        id S229492AbjBPIrI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 03:47:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjBPIa4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 03:30:56 -0500
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1644743E;
-        Thu, 16 Feb 2023 00:30:50 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VbntXyA_1676536247;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VbntXyA_1676536247)
-          by smtp.aliyun-inc.com;
-          Thu, 16 Feb 2023 16:30:48 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        with ESMTP id S229600AbjBPIrH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 03:47:07 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B908138B6C
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 00:47:06 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id r28so616579wra.5
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 00:47:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IlUNRxM8S8gi/BdDzeX/+Eq/CsQesfLN0ayoMKaZyAk=;
+        b=HFy7pD8VGpJ7C/FKnZTZrs2vSiUzVXJ3QMDVlI42Rb/9oaX1MiqYFI1VtY+tJZAvys
+         /KOnl+pVI/Q/s9awZEqoJsvPzw4Mwvn8YLZ8iwprh3wiprh/tf0CW2IOIw9crsnRMkzU
+         XZRdptNZb7pw28q7PkmIvrvTn38aOivbg8GgS2ZD4reqYhoK+ljtBkGXTeaQXIP/0Cp4
+         MhfhGkcX4VB0ljxFBlLMbrqQmqLvqVLtYXinqaFug/bUaUhRYpkVlBsO+9T7U96G4hdB
+         3y7D/0pdyPGVolMB6rK2kTXSTmEd3udEq/D7XFnRZbTn7Uhe2hq/0k9TVtDQq9bkBR9G
+         43+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IlUNRxM8S8gi/BdDzeX/+Eq/CsQesfLN0ayoMKaZyAk=;
+        b=fbWtRtr5ZtfrhzMRRvNX31LtmviZhMDyMi5ltsWYqe4MQQ+JkCM/iaYDY0674KiZ8z
+         cM/GfsVXX87Bg0KGkXW4xw5+i/jhFP50Brxtc7XKP0npSe9uTTSIW0BLyTsJe0H2ZI3S
+         YVebKVCzFDbep8ZLvJuEoARZiaNml/eRtlgUNaAj6hZZqbXKiqy352I4lWM5MM51uUA1
+         RvRfwWAgOO1Fdm8kSDyUwPTckHZP6Fk4MVdb7IFESDKrvRcaakoyTGk3v30SqWhtRsbV
+         sQc1uONntNxoYrGBqw8maxMvj+epDa+qwsx4WYbsDUOHJTGIB3wviXEZZrhluduvzbE7
+         BZRA==
+X-Gm-Message-State: AO0yUKVMAsMbITwwaNj2kM+rvh8sfv3jl/xznhIFn5JJRqH62BI56PxI
+        fwM1TgulHiVxSSOzMYjpjqe6VbGvllb0lNpt
+X-Google-Smtp-Source: AK7set9GQwPQZuwLW/ewYlVOv8L1Q9baQ56aZs5RMbASMF0GbcD2E+7F5Ud7zPWKKfbIX9BaCE2R2w==
+X-Received: by 2002:a5d:6a10:0:b0:2c5:8c56:42d3 with SMTP id m16-20020a5d6a10000000b002c58c5642d3mr545794wru.23.1676537225086;
+        Thu, 16 Feb 2023 00:47:05 -0800 (PST)
+Received: from krava ([81.6.34.132])
+        by smtp.gmail.com with ESMTPSA id h17-20020a056000001100b002c54c8e70b1sm916785wrx.9.2023.02.16.00.47.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Feb 2023 00:47:04 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 16 Feb 2023 09:47:02 +0100
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: [PATCH net-next v4] xsk: support use vaddr as ring
-Date:   Thu, 16 Feb 2023 16:30:47 +0800
-Message-Id: <20230216083047.93525-1-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        David Vernet <void@manifault.com>, houtao1@huawei.com
+Subject: Re: [PATCH bpf-next v2] bpf: Only allocate one bpf_mem_cache for
+ bpf_cpumask_ma
+Message-ID: <Y+3thjLs1RwxaqfT@krava>
+References: <20230216024821.2202916-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
-X-Git-Hash: d7a9e9804406
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230216024821.2202916-1-houtao@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When we try to start AF_XDP on some machines with long running time, due
-to the machine's memory fragmentation problem, there is no sufficient
-contiguous physical memory that will cause the start failure.
+On Thu, Feb 16, 2023 at 10:48:21AM +0800, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> The size of bpf_cpumask is fixed, so there is no need to allocate many
+> bpf_mem_caches for bpf_cpumask_ma, just one bpf_mem_cache is enough.
+> Also add comments for bpf_mem_alloc_init() in bpf_mem_alloc.h to prevent
+> future miuse.
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+> v2: fix typo (forget to regenerate the patch after testing)
+> v1: https://lore.kernel.org/bpf/7736864d-af8d-4f74-086b-0ec125aae2a6@huawei.com/T/#t
 
-If the size of the queue is 8 * 1024, then the size of the desc[] is
-8 * 1024 * 8 = 16 * PAGE, but we also add struct xdp_ring size, so it is
-16page+. This is necessary to apply for a 4-order memory. If there are a
-lot of queues, it is difficult to these machine with long running time.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-Here, that we actually waste 15 pages. 4-Order memory is 32 pages, but
-we only use 17 pages.
+jirka
 
-This patch replaces __get_free_pages() by vmalloc() to allocate memory
-to solve these problems.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk.c       |  9 ++-------
- net/xdp/xsk_queue.c | 11 +++++------
- net/xdp/xsk_queue.h |  1 +
- 3 files changed, 8 insertions(+), 13 deletions(-)
-
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 9f0561b67c12..0a047a09a10f 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -1295,8 +1295,6 @@ static int xsk_mmap(struct file *file, struct socket *sock,
- 	unsigned long size = vma->vm_end - vma->vm_start;
- 	struct xdp_sock *xs = xdp_sk(sock->sk);
- 	struct xsk_queue *q = NULL;
--	unsigned long pfn;
--	struct page *qpg;
- 
- 	if (READ_ONCE(xs->state) != XSK_READY)
- 		return -EBUSY;
-@@ -1319,13 +1317,10 @@ static int xsk_mmap(struct file *file, struct socket *sock,
- 
- 	/* Matches the smp_wmb() in xsk_init_queue */
- 	smp_rmb();
--	qpg = virt_to_head_page(q->ring);
--	if (size > page_size(qpg))
-+	if (size > q->ring_vmalloc_size)
- 		return -EINVAL;
- 
--	pfn = virt_to_phys(q->ring) >> PAGE_SHIFT;
--	return remap_pfn_range(vma, vma->vm_start, pfn,
--			       size, vma->vm_page_prot);
-+	return remap_vmalloc_range(vma, q->ring, 0);
- }
- 
- static int xsk_notifier(struct notifier_block *this,
-diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
-index 6cf9586e5027..f8905400ee07 100644
---- a/net/xdp/xsk_queue.c
-+++ b/net/xdp/xsk_queue.c
-@@ -6,6 +6,7 @@
- #include <linux/log2.h>
- #include <linux/slab.h>
- #include <linux/overflow.h>
-+#include <linux/vmalloc.h>
- #include <net/xdp_sock_drv.h>
- 
- #include "xsk_queue.h"
-@@ -23,7 +24,6 @@ static size_t xskq_get_ring_size(struct xsk_queue *q, bool umem_queue)
- struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
- {
- 	struct xsk_queue *q;
--	gfp_t gfp_flags;
- 	size_t size;
- 
- 	q = kzalloc(sizeof(*q), GFP_KERNEL);
-@@ -33,17 +33,16 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
- 	q->nentries = nentries;
- 	q->ring_mask = nentries - 1;
- 
--	gfp_flags = GFP_KERNEL | __GFP_ZERO | __GFP_NOWARN |
--		    __GFP_COMP  | __GFP_NORETRY;
- 	size = xskq_get_ring_size(q, umem_queue);
-+	size = PAGE_ALIGN(size);
- 
--	q->ring = (struct xdp_ring *)__get_free_pages(gfp_flags,
--						      get_order(size));
-+	q->ring = vmalloc_user(size);
- 	if (!q->ring) {
- 		kfree(q);
- 		return NULL;
- 	}
- 
-+	q->ring_vmalloc_size = size;
- 	return q;
- }
- 
-@@ -52,6 +51,6 @@ void xskq_destroy(struct xsk_queue *q)
- 	if (!q)
- 		return;
- 
--	page_frag_free(q->ring);
-+	vfree(q->ring);
- 	kfree(q);
- }
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index c6fb6b763658..bfb2a7e50c26 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -45,6 +45,7 @@ struct xsk_queue {
- 	struct xdp_ring *ring;
- 	u64 invalid_descs;
- 	u64 queue_empty_descs;
-+	size_t ring_vmalloc_size;
- };
- 
- /* The structure of the shared state of the rings are a simple
--- 
-2.32.0.3.g01195cf9f
-
+> 
+>  include/linux/bpf_mem_alloc.h | 7 +++++++
+>  kernel/bpf/cpumask.c          | 6 +++---
+>  2 files changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
+> index 3e164b8efaa9..a7104af61ab4 100644
+> --- a/include/linux/bpf_mem_alloc.h
+> +++ b/include/linux/bpf_mem_alloc.h
+> @@ -14,6 +14,13 @@ struct bpf_mem_alloc {
+>  	struct work_struct work;
+>  };
+>  
+> +/* 'size != 0' is for bpf_mem_alloc which manages fixed-size objects.
+> + * Alloc and free are done with bpf_mem_cache_{alloc,free}().
+> + *
+> + * 'size = 0' is for bpf_mem_alloc which manages many fixed-size objects.
+> + * Alloc and free are done with bpf_mem_{alloc,free}() and the size of
+> + * the returned object is given by the size argument of bpf_mem_alloc().
+> + */
+>  int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu);
+>  void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
+>  
+> diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+> index 52b981512a35..2b3fbbfebdc5 100644
+> --- a/kernel/bpf/cpumask.c
+> +++ b/kernel/bpf/cpumask.c
+> @@ -55,7 +55,7 @@ __bpf_kfunc struct bpf_cpumask *bpf_cpumask_create(void)
+>  	/* cpumask must be the first element so struct bpf_cpumask be cast to struct cpumask. */
+>  	BUILD_BUG_ON(offsetof(struct bpf_cpumask, cpumask) != 0);
+>  
+> -	cpumask = bpf_mem_alloc(&bpf_cpumask_ma, sizeof(*cpumask));
+> +	cpumask = bpf_mem_cache_alloc(&bpf_cpumask_ma);
+>  	if (!cpumask)
+>  		return NULL;
+>  
+> @@ -123,7 +123,7 @@ __bpf_kfunc void bpf_cpumask_release(struct bpf_cpumask *cpumask)
+>  
+>  	if (refcount_dec_and_test(&cpumask->usage)) {
+>  		migrate_disable();
+> -		bpf_mem_free(&bpf_cpumask_ma, cpumask);
+> +		bpf_mem_cache_free(&bpf_cpumask_ma, cpumask);
+>  		migrate_enable();
+>  	}
+>  }
+> @@ -468,7 +468,7 @@ static int __init cpumask_kfunc_init(void)
+>  		},
+>  	};
+>  
+> -	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, 0, false);
+> +	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, sizeof(struct bpf_cpumask), false);
+>  	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &cpumask_kfunc_set);
+>  	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &cpumask_kfunc_set);
+>  	return  ret ?: register_btf_id_dtor_kfuncs(cpumask_dtors,
+> -- 
+> 2.29.2
+> 
