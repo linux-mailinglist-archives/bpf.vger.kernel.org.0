@@ -2,134 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F13D8698A70
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 03:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D648A698B0C
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 04:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjBPCUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 21:20:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
+        id S229605AbjBPDPS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 22:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjBPCUH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 21:20:07 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA852A17F
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 18:20:04 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PHJYq1ryWz4f3m6k
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:19:59 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgBH_rHMku1j6onSDg--.19120S4;
-        Thu, 16 Feb 2023 10:19:57 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Vernet <void@manifault.com>, houtao1@huawei.com
-Subject: [PATCH bpf-next v2] bpf: Only allocate one bpf_mem_cache for bpf_cpumask_ma
-Date:   Thu, 16 Feb 2023 10:48:21 +0800
-Message-Id: <20230216024821.2202916-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+        with ESMTP id S229619AbjBPDPR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 22:15:17 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6032FCCD;
+        Wed, 15 Feb 2023 19:15:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9A931B8238E;
+        Thu, 16 Feb 2023 03:15:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB96BC433D2;
+        Thu, 16 Feb 2023 03:15:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676517314;
+        bh=SkTYB1myVSbqy2YH5q5kjvenigagS1i5+u22wEHO37I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ul51m5MwAqXBaV/sRf0ie4VIlmiKstrEtuHlZ85bYxYCd/o1kljzWlbXjgmTMrxQ7
+         dhyXFrJlDCfTk4R3f/FC+jHrU86mHpLdyJeCkhvlF4AChQ8U8sgwvCesD8F1V6YptL
+         6ioKDO9tPBMlo2gDoi4sXdkuVWn3QdgqnQCCSdXqTkCu4AhgWYNX45VP9I7X1fm1xj
+         OTFkmmwzA+ylxgrcVOAbV+Nb/oY+GzjpRap9rS/plullo/2tdA5wseSBxoTzuMcJVV
+         wwsI6sI9lhuFUb5mH9W6sFoo6lfIuENaGhDzm5yIceeOGVBqBtbOWGH38mSu4qTspg
+         8PI/HI+mm1YQQ==
+Date:   Wed, 15 Feb 2023 19:15:12 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Tirthendu Sarkar <tirthendu.sarkar@intel.com>,
+        <intel-wired-lan@lists.osuosl.org>, <jesse.brandeburg@intel.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <magnus.karlsson@intel.com>, <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH intel-next v4 8/8] i40e: add support for XDP
+ multi-buffer Rx
+Message-ID: <20230215191512.569639f3@kernel.org>
+In-Reply-To: <c78c5e12-1c5a-5215-812c-b10d4b892a1b@intel.com>
+References: <20230215124305.76075-1-tirthendu.sarkar@intel.com>
+        <20230215124305.76075-9-tirthendu.sarkar@intel.com>
+        <Y+zxY07GZ8aI7LrV@lore-desk>
+        <c78c5e12-1c5a-5215-812c-b10d4b892a1b@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBH_rHMku1j6onSDg--.19120S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw4xAw43AryrZry3Ar13Arb_yoW5XFyUpF
-        4xJrW0krWDtF4kGw47X3WxAa45G34vgwn2ka4UWry5uFyfuw4kGF4DXFW7XFn09rWDCayx
-        Ar9Ygr409ryUJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+On Wed, 15 Feb 2023 16:02:45 -0800 Tony Nguyen wrote:
+> I believe you are planning on taking Lorenzo's ice [1] and i40e [2] 
+> patch based on the comment of taking follow-ups directly [3]?
+> 
+> If so, Tirthendu, I'll rebase after this is pulled by netdev, then if 
+> you can base on next-queue so everything will apply nicely.
 
-The size of bpf_cpumask is fixed, so there is no need to allocate many
-bpf_mem_caches for bpf_cpumask_ma, just one bpf_mem_cache is enough.
-Also add comments for bpf_mem_alloc_init() in bpf_mem_alloc.h to prevent
-future miuse.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
-v2: fix typo (forget to regenerate the patch after testing)
-v1: https://lore.kernel.org/bpf/7736864d-af8d-4f74-086b-0ec125aae2a6@huawei.com/T/#t
-
- include/linux/bpf_mem_alloc.h | 7 +++++++
- kernel/bpf/cpumask.c          | 6 +++---
- 2 files changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
-index 3e164b8efaa9..a7104af61ab4 100644
---- a/include/linux/bpf_mem_alloc.h
-+++ b/include/linux/bpf_mem_alloc.h
-@@ -14,6 +14,13 @@ struct bpf_mem_alloc {
- 	struct work_struct work;
- };
- 
-+/* 'size != 0' is for bpf_mem_alloc which manages fixed-size objects.
-+ * Alloc and free are done with bpf_mem_cache_{alloc,free}().
-+ *
-+ * 'size = 0' is for bpf_mem_alloc which manages many fixed-size objects.
-+ * Alloc and free are done with bpf_mem_{alloc,free}() and the size of
-+ * the returned object is given by the size argument of bpf_mem_alloc().
-+ */
- int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu);
- void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
- 
-diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-index 52b981512a35..2b3fbbfebdc5 100644
---- a/kernel/bpf/cpumask.c
-+++ b/kernel/bpf/cpumask.c
-@@ -55,7 +55,7 @@ __bpf_kfunc struct bpf_cpumask *bpf_cpumask_create(void)
- 	/* cpumask must be the first element so struct bpf_cpumask be cast to struct cpumask. */
- 	BUILD_BUG_ON(offsetof(struct bpf_cpumask, cpumask) != 0);
- 
--	cpumask = bpf_mem_alloc(&bpf_cpumask_ma, sizeof(*cpumask));
-+	cpumask = bpf_mem_cache_alloc(&bpf_cpumask_ma);
- 	if (!cpumask)
- 		return NULL;
- 
-@@ -123,7 +123,7 @@ __bpf_kfunc void bpf_cpumask_release(struct bpf_cpumask *cpumask)
- 
- 	if (refcount_dec_and_test(&cpumask->usage)) {
- 		migrate_disable();
--		bpf_mem_free(&bpf_cpumask_ma, cpumask);
-+		bpf_mem_cache_free(&bpf_cpumask_ma, cpumask);
- 		migrate_enable();
- 	}
- }
-@@ -468,7 +468,7 @@ static int __init cpumask_kfunc_init(void)
- 		},
- 	};
- 
--	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, 0, false);
-+	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, sizeof(struct bpf_cpumask), false);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &cpumask_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &cpumask_kfunc_set);
- 	return  ret ?: register_btf_id_dtor_kfuncs(cpumask_dtors,
--- 
-2.29.2
-
+Yup, applied now!
