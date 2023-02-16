@@ -2,199 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F2B698998
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 02:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AA56989CA
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 02:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjBPBCt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 20:02:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        id S229635AbjBPBST (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 20:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjBPBCt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 20:02:49 -0500
-Received: from out-244.mta0.migadu.com (out-244.mta0.migadu.com [91.218.175.244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC902D149
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 17:02:47 -0800 (PST)
-Message-ID: <2651cae9-43a5-451b-b93f-874b3624e990@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1676509365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mQr8urEZ2l1H3V7fpN2XdDib3U5eCJK4YpglC2m2KfQ=;
-        b=iaarCdaJIVLrg6FXVi27wRb4dtxx50WQPzNzLF3vicVTfBgaew7oaHqSHgEKO/v/pmHgrW
-        oKjD8e84TAisQvwicKV4aV0imRwpA8TCMTMgfYL0ZGKJl2GjieBiuLAwL/1To6s2rtyQFD
-        s6kYXvZoTaiTDYX1W2Eq5TWfZmHOECs=
-Date:   Wed, 15 Feb 2023 17:02:34 -0800
+        with ESMTP id S229462AbjBPBSS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 20:18:18 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DCE1F5D0;
+        Wed, 15 Feb 2023 17:18:17 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PHHBW2tHdz4f3l7l;
+        Thu, 16 Feb 2023 09:18:11 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+        by APP4 (Coremail) with SMTP id gCh0CgDHd6tUhO1jysPPDg--.59609S2;
+        Thu, 16 Feb 2023 09:18:13 +0800 (CST)
+Message-ID: <8ca81321-8842-eb0a-35f1-46a2616d5fba@huaweicloud.com>
+Date:   Thu, 16 Feb 2023 09:18:12 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 5/7] bpf: Update the struct_ops of a bpf_link.
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH bpf-next v1 1/4] riscv: Extend patch_text for multiple
+ instructions
 Content-Language: en-US
-To:     Kui-Feng Lee <kuifeng@meta.com>
-References: <20230214221718.503964-1-kuifeng@meta.com>
- <20230214221718.503964-6-kuifeng@meta.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org
-In-Reply-To: <20230214221718.503964-6-kuifeng@meta.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Guo Ren <guoren@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, Pu Lehui <pulehui@huawei.com>
+References: <20230215135205.1411105-1-pulehui@huaweicloud.com>
+ <20230215135205.1411105-2-pulehui@huaweicloud.com> <Y+1evzv1PkuETdVm@spud>
+From:   Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <Y+1evzv1PkuETdVm@spud>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgDHd6tUhO1jysPPDg--.59609S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYI7kC6x804xWl14x267AKxVW5JVWrJwAF
+        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/14/23 2:17 PM, Kui-Feng Lee wrote:
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index d16ca06cf09a..d329621fc721 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -752,11 +752,66 @@ static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
->   	return 0;
->   }
->   
-> +static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map *new_map)
-> +{
-> +	struct bpf_struct_ops_value *kvalue;
-> +	struct bpf_struct_ops_map *st_map, *old_st_map;
-> +	struct bpf_map *old_map;
-> +	int err;
-> +
-> +	if (new_map->map_type != BPF_MAP_TYPE_STRUCT_OPS || !(new_map->map_flags & BPF_F_LINK))
-> +		return -EINVAL;
-> +
-> +	old_map = link->map;
-> +
-> +	/* It does nothing if the new map is the same as the old one.
-> +	 * A struct_ops that backs a bpf_link can not be updated or
-> +	 * its kvalue would be updated and causes inconsistencies.
-> +	 */
-> +	if (old_map == new_map)
-> +		return 0;
-> +
-> +	/* The new and old struct_ops must be the same type. */
-> +	st_map = (struct bpf_struct_ops_map *)new_map;
-> +	old_st_map = (struct bpf_struct_ops_map *)old_map;
-> +	if (st_map->st_ops != old_st_map->st_ops)
-> +		return -EINVAL;
-> +
-> +	/* Assure the struct_ops is updated (has value) and not
-> +	 * backing any other link.
-> +	 */
-> +	kvalue = &st_map->kvalue;
-> +	if (kvalue->state != BPF_STRUCT_OPS_STATE_INUSE ||
-> +	    refcount_read(&kvalue->refcnt) != 0)
-> +		return -EINVAL;
-> +
-> +	bpf_map_inc(new_map);
-> +	refcount_set(&kvalue->refcnt, 1);
-> +
-> +	set_memory_rox((long)st_map->image, 1);
-> +	err = st_map->st_ops->update(kvalue->data, old_st_map->kvalue.data);
-> +	if (err) {
-> +		refcount_set(&kvalue->refcnt, 0);
-> +
-> +		set_memory_nx((long)st_map->image, 1);
-> +		set_memory_rw((long)st_map->image, 1);
-> +		bpf_map_put(new_map);
-> +		return err;
-> +	}
-> +
-> +	link->map = new_map;
-
-Similar here, does this link_update operation needs a lock?
-
-> +
-> +	bpf_struct_ops_kvalue_put(&old_st_map->kvalue);
-> +
-> +	return 0;
-> +}
-> +
->   static const struct bpf_link_ops bpf_struct_ops_map_lops = {
->   	.release = bpf_struct_ops_map_link_release,
->   	.dealloc = bpf_struct_ops_map_link_dealloc,
->   	.show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
->   	.fill_link_info = bpf_struct_ops_map_link_fill_link_info,
-> +	.update_struct_ops = bpf_struct_ops_map_link_update,
-
-This seems a little non-intuitive to add a struct_ops specific thing to the 
-generic bpf_link_ops. May be avoid adding ".update_struct_ops" and directly call 
-the bpf_struct_ops_map_link_update() from link_update()?
 
 
->   };
->   
->   int link_create_struct_ops_map(union bpf_attr *attr, bpfptr_t uattr)
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 54e172d8f5d1..1341634863b5 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -4650,6 +4650,32 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
->   	return ret;
->   }
->   
-> +#define BPF_LINK_UPDATE_STRUCT_OPS_LAST_FIELD link_update_struct_ops.new_map_fd
+On 2023/2/16 6:37, Conor Dooley wrote:
+> On Wed, Feb 15, 2023 at 09:52:02PM +0800, Pu Lehui wrote:
+>> From: Pu Lehui <pulehui@huawei.com>
+>>
+>> Extend patch_text for multiple instructions. This
+>> is the preparaiton for multiple instructions text
+>> patching in riscv bpf trampoline, and may be useful
+>> for other scenario.
+> 
+> In the future, please use the full width for your commit message (or
+> fix your editor if it thinks fifty-something chars is the full width).
+> 
 
-Why it is needed? Does it hit error without it?
+Thanks Conor, will try to fix it.
 
-> +
-> +static int link_update_struct_ops(struct bpf_link *link, union bpf_attr *attr)
-> +{
-> +	struct bpf_map *new_map;
-> +	int ret = 0;
-> +
-> +	new_map = bpf_map_get(attr->link_update.new_map_fd);
-> +	if (IS_ERR(new_map))
-> +		return -EINVAL;
-> +
-> +	if (new_map->map_type != BPF_MAP_TYPE_STRUCT_OPS) {
-> +		ret = -EINVAL;
-> +		goto out_put_map;
-> +	}
-
-How about BPF_F_REPLACE?
-
-> +
-> +	if (link->ops->update_struct_ops)
-> +		ret = link->ops->update_struct_ops(link, new_map); > +	else
-> +		ret = -EINVAL;
-> +
-> +out_put_map:
-> +	bpf_map_put(new_map);
-> +	return ret;
-> +}
-> +
->   #define BPF_LINK_UPDATE_LAST_FIELD link_update.old_prog_fd
->   
->   static int link_update(union bpf_attr *attr)
-> @@ -4670,6 +4696,11 @@ static int link_update(union bpf_attr *attr)
->   	if (IS_ERR(link))
->   		return PTR_ERR(link);
->   
-> +	if (link->type == BPF_LINK_TYPE_STRUCT_OPS) {
-> +		ret = link_update_struct_ops(link, attr);
-> +		goto out_put_link;
-> +	}
-> +
->   	new_prog = bpf_prog_get(attr->link_update.new_prog_fd);
->   	if (IS_ERR(new_prog)) {
->   		ret = PTR_ERR(new_prog);
-> diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
-> index 66ce5fadfe42..558b01d5250f 100644
-> --- a/net/ipv4/bpf_tcp_ca.c
-> +++ b/net/ipv4/bpf_tcp_ca.c
-> @@ -239,8 +239,6 @@ static int bpf_tcp_ca_init_member(const struct btf_type *t,
->   		if (bpf_obj_name_cpy(tcp_ca->name, utcp_ca->name,
->   				     sizeof(tcp_ca->name)) <= 0)
->   			return -EINVAL;
-> -		if (tcp_ca_find(utcp_ca->name))
-> -			return -EEXIST;
-
-This change is not obvious. Please put some comment in the commit message about 
-this change.
+> Otherwise, looks grand...
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> 
+> Thanks,
+> Conor.
+> 
 
