@@ -2,74 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E4F699BB6
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 18:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DFA699BC3
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 19:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjBPR7n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 12:59:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        id S229891AbjBPSD5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 13:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjBPR7m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 12:59:42 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76A310273
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 09:59:40 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id w20-20020a17090a8a1400b00233d7314c1cso6638685pjn.5
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 09:59:40 -0800 (PST)
+        with ESMTP id S230078AbjBPSD4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 13:03:56 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8124FAB9
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:03:55 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id w23-20020a63fb57000000b004fba35704a3so1154722pgj.13
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:03:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vP2SSh+4sG2GVJL8KRK4l33AqWoBjXBtS7qRAUdw3b4=;
-        b=g5Z2dx8FpsFMNczKEUar1fpqDip+m6h0anbrQhcfve7g1NehfzJC92BM2uqUNa+l5e
-         LTSBqaFjawAx5pJU55Y/QSloavfijst6ga6NPFiP2UOTx41iEHdQ6V7XStXtC8nHh/km
-         YERZp+AbI5BenSzaZoVk4UKdmJiA/2bEleA2sX7LywIFEpU8mh6jt4qt+Mytu/7uIuAQ
-         F3CLIgEELEY1HvAbA085y5papR88ZYSMmp4s7avvfCuvL6coT2nent0T1SrEfbQ6fcZf
-         O7Qt/x6x15xkaMuLrb928Wljuf0ffo+w6JmSsc6j4ypvFIYaYmSh1/T5mESazVmHYa5e
-         sNwQ==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YxK744UQFgToNEy/t2y54CJ0OuxRHUOp9cRPvcpf0qw=;
+        b=teuOA/6YjB3Uo8qhyzeAAbNgnvF7LadvQBC2JLvfQN9erQ0u273hZMp6bUYS0vz14+
+         6QuhSXZRpS1xauiwLqr44tE4Y6fakA/jnGOGcJ7ijgQPwQbwrtpHYXKXuDpZEhi2HCBx
+         1qqUw9dbnYTzKmDOaajmgIBV0ewIzr9dmNNuhK5dzyX/0N6WcC3zpeZg2halU1N1nnvQ
+         8GaDK1VTTx3YGRQAMWOWTt3EaHpG3t5SQHpEcpGN0LmNua5Wo2eJuOrvv4Vl9pMQh5/k
+         qnVSCS9DKv9vV4RT21dknUaVQpeAWtv2aj88s8Z4V3OYJzRwEN83s3wPdp3omiRQROY2
+         +AIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vP2SSh+4sG2GVJL8KRK4l33AqWoBjXBtS7qRAUdw3b4=;
-        b=qC5cN0AS11O3SE2SHnZqQ7ABlqgRjpxMd12DAa6yq8zLIloGTJyUgaOIkMAjkm9xsx
-         QH2Nuh59G0I3gogEy+hYaxFs0QElYRMnRATuXIrsXtB3ZIUV5xaAkxDUotEpq1XBwlmX
-         ug07z+FwqcfbZw2D7SkunPfA0nWvtYSBRYjRyNxtm+mBIurhAkbptqCNyKxH6OvEYEL6
-         jS80T7lwVgk2fTS4K4FUpWLidK3+He3ZPwabxTlYUPJA3bE7eG0i0e5lpO+U3NN+oFAb
-         V7Bt4W+ak7CCsD1j+ZsLnWvHWp8t+WW3WaeDSbzDJTbAv6sZeavHniB9uyZeT/AXG0tW
-         gKZg==
-X-Gm-Message-State: AO0yUKVsik3+rK/6cx56pLKVmgkFtPJF/SAVToj1S9rZydRC10WkmnDD
-        +peuH/ZSbo5kfqDB+fhTVnk=
-X-Google-Smtp-Source: AK7set9+e5cGxeJ0YRepYsT+QeWUreEgaseDhjLUAZrDu736JKTQ4wcRbKTyJLmazmM1Eoui/HEi7Q==
-X-Received: by 2002:a17:902:ebd0:b0:196:5839:b36a with SMTP id p16-20020a170902ebd000b001965839b36amr5817369plg.8.1676570379943;
-        Thu, 16 Feb 2023 09:59:39 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21e8::12ef? ([2620:10d:c090:400::5:962a])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170902684800b0019aa8149cb3sm1587605pln.219.2023.02.16.09.59.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Feb 2023 09:59:39 -0800 (PST)
-Message-ID: <25d9322f-a581-cc37-5b68-cc6c674b6ce8@gmail.com>
-Date:   Thu, 16 Feb 2023 09:59:36 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH bpf-next 1/7] bpf: Create links for BPF struct_ops maps.
-Content-Language: en-US, en-ZW
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Kui-Feng Lee <kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org
-References: <20230214221718.503964-1-kuifeng@meta.com>
- <20230214221718.503964-2-kuifeng@meta.com>
- <ff8faacb-c972-9698-61da-1ecfa077d716@linux.dev>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <ff8faacb-c972-9698-61da-1ecfa077d716@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YxK744UQFgToNEy/t2y54CJ0OuxRHUOp9cRPvcpf0qw=;
+        b=y10sIQoz/c5ioTWuI19mKNiWzZpddLY0lmNh1g1kgKBg2Xcx911sr0CJzlU6zBV2oT
+         WQcAk8eMErdAt2bD3O6H+NJhkhfMR/yyQfe5/QTVf7frmLxnPH4dBGTD6RYlnlZjn50j
+         KVP+6muW86cKjic6TKG+ujSpMVjp76uZrOgrQ5FjmFt3W6hgVta0bIX3F9sGJ4EPcnpf
+         UiFhO5X0RH+7cvjGY6SWusZTVbUlLtXe7skcVKvWj99JVxfo4cjNp6jbZZfm8HAp4ujM
+         LV/F61hhQHTRqAOYLMXYiTjGjcq/wXbqUCwLrDk8fDvfGU5a9NR2ei9dy6La4dQ6qwrj
+         AOdw==
+X-Gm-Message-State: AO0yUKX2x0hB6E+5wNmhhJMx0/7R1EvraNuWr/Ti3CicA48FmsqLIzUt
+        lU9GZPLtuNV/fMLDvNyyzSx91ZY=
+X-Google-Smtp-Source: AK7set8mNjEFKCj1GlpL0mlUZCbIK1cvddzz9v6WD9WjCwyheaNpOIgD4Ww1veDDTKAwPNzJjvTR318=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:2911:0:b0:4fb:323f:8bca with SMTP id
+ bt17-20020a632911000000b004fb323f8bcamr1029689pgb.1.1676570635049; Thu, 16
+ Feb 2023 10:03:55 -0800 (PST)
+Date:   Thu, 16 Feb 2023 10:03:53 -0800
+In-Reply-To: <CAADnVQJH6PRgGRMMZufDu6AZkQFF_40boz4oLHdYMWFNAj+zOA@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230215235931.380197-1-iii@linux.ibm.com> <20230215235931.380197-2-iii@linux.ibm.com>
+ <CAADnVQK-_MOk=ejM5USFZL9codbzosUqfAs4ppqQuC0y4uBLqw@mail.gmail.com>
+ <Y+5nCRZ3ns3u+Tun@google.com> <CAADnVQJH6PRgGRMMZufDu6AZkQFF_40boz4oLHdYMWFNAj+zOA@mail.gmail.com>
+Message-ID: <Y+5wCbT30EGsswMg@google.com>
+Subject: Re: [PATCH RFC bpf-next v2 1/4] bpf: Introduce BPF_HELPER_CALL
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,252 +74,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 02/16, Alexei Starovoitov wrote:
+> On Thu, Feb 16, 2023 at 9:25 AM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > On 02/16, Alexei Starovoitov wrote:
+> > > On Wed, Feb 15, 2023 at 3:59 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> > > wrote:
+> > > >
+> > > > Make the code more readable by introducing a symbolic constant
+> > > > instead of using 0.
+> > > >
+> > > > Suggested-by: Stanislav Fomichev <sdf@google.com>
+> > > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > > > ---
+> > > >  include/uapi/linux/bpf.h       |  4 ++++
+> > > >  kernel/bpf/disasm.c            |  2 +-
+> > > >  kernel/bpf/verifier.c          | 12 +++++++-----
+> > > >  tools/include/linux/filter.h   |  2 +-
+> > > >  tools/include/uapi/linux/bpf.h |  4 ++++
+> > > >  5 files changed, 17 insertions(+), 7 deletions(-)
+> > > >
+> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > > index 1503f61336b6..37f7588d5b2f 100644
+> > > > --- a/include/uapi/linux/bpf.h
+> > > > +++ b/include/uapi/linux/bpf.h
+> > > > @@ -1211,6 +1211,10 @@ enum bpf_link_type {
+> > > >   */
+> > > >  #define BPF_PSEUDO_FUNC                4
+> > > >
+> > > > +/* when bpf_call->src_reg == BPF_HELPER_CALL, bpf_call->imm ==  
+> index
+> > > of a bpf
+> > > > + * helper function (see ___BPF_FUNC_MAPPER below for a full list)
+> > > > + */
+> > > > +#define BPF_HELPER_CALL                0
+> >
+> > > I don't like this "cleanup".
+> > > The code reads fine as-is.
+> >
+> > Even in the context of patch 4? There would be the following switch
+> > without BPF_HELPER_CALL:
+> >
+> > switch (insn->src_reg) {
+> > case 0:
+> >         ...
+> >         break;
+> >
+> > case BPF_PSEUDO_CALL:
+> >         ...
+> >         break;
+> >
+> > case BPF_PSEUDO_KFUNC_CALL:
+> >         ...
+> >         break;
+> > }
+> >
+> > That 'case 0' feels like it deserves a name. But up to you, I'm fine
+> > either way.
 
+> It's philosophical.
+> Some people insist on if (ptr == NULL). I insist on if (!ptr).
+> That's why canonical bpf progs are written as:
+> val = bpf_map_lookup();
+> if (!val) ...
+> zero is zero. It doesn't need #define.
 
-On 2/15/23 14:58, Martin KaFai Lau wrote:
-> On 2/14/23 2:17 PM, Kui-Feng Lee wrote:
->> BPF struct_ops maps are employed directly to register TCP Congestion
->> Control algorithms. Unlike other BPF programs that terminate when
->> their links gone, the struct_ops program reduces its refcount solely
->> upon death of its FD. 
-> 
-> I think the refcount comment probably not needed for this patch.
+Are you sure we still want to apply the same logic here for src_reg? I
+agree that doing src_reg vs !src_reg made sense when we had a "helper"
+vs "non-helper" (bpf2bpf) situation. However now this src_reg feels more
+like an enum. And since we have an enum value for 1 and 2, it feels
+natural to have another one for 0?
 
-Got it!
-> 
->> The link of a BPF struct_ops map provides a
->> uniform experience akin to other types of BPF programs.  A TCP
->> Congestion Control algorithm will be unregistered upon destroying the
->> FD in the following patches.
-> 
-> 
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 17afd2b35ee5..1e6cdd0f355d 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
-> 
-> The existing BPF_LINK_TYPE_STRUCT_OPS enum is reused. Please explain why 
-> it can be reused in the commit message and also add comments around the 
-> existing "bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS...)" in 
-> bpf_struct_ops_map_update_elem().
+That second patch from the series ([0]) might be a good example on why
+we actually need it. I'm assuming at some point we've had:
+#define BPF_PSEUDO_CALL 1
 
-Sure!
-> 
->> @@ -1033,6 +1033,7 @@ enum bpf_attach_type {
->>       BPF_PERF_EVENT,
->>       BPF_TRACE_KPROBE_MULTI,
->>       BPF_LSM_CGROUP,
->> +    BPF_STRUCT_OPS_MAP,
-> 
-> nit. Only BPF_STRUCT_OPS. No need for "_MAP".
-> 
->>       __MAX_BPF_ATTACH_TYPE
->>   };
->> @@ -6354,6 +6355,9 @@ struct bpf_link_info {
->>           struct {
->>               __u32 ifindex;
->>           } xdp;
->> +        struct {
->> +            __u32 map_id;
->> +        } struct_ops_map;
-> 
-> nit. Same here, skip the "_map";
+So we ended up writing `src_reg != BPF_PSEUDO_CALL` instead of actually
+doing `src_reg == BPF_HELPER_CALL` (aka `src_reg == 0`).
+Afterwards, we've added BPF_PSEUDO_KFUNC_CALL=2 which broke our previous
+src_reg vs !src_reg assumptions...
 
-Got!
-
-> 
-> This looks good instead of union. In case the user space tool directly 
-> uses the prog_id without checking the type.
-> 
->>       };
->>   } __attribute__((aligned(8)));
->> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->> index ece9870cab68..621c8e24481a 100644
->> --- a/kernel/bpf/bpf_struct_ops.c
->> +++ b/kernel/bpf/bpf_struct_ops.c
->> @@ -698,3 +698,69 @@ void bpf_struct_ops_put(const void *kdata)
->>           call_rcu(&st_map->rcu, bpf_struct_ops_put_rcu);
->>       }
->>   }
->> +
->> +static void bpf_struct_ops_map_link_release(struct bpf_link *link)
->> +{
->> +    if (link->map) {
->> +        bpf_map_put(link->map);
->> +        link->map = NULL;
->> +    }
->> +}
->> +
->> +static void bpf_struct_ops_map_link_dealloc(struct bpf_link *link)
->> +{
->> +    kfree(link);
->> +}
->> +
->> +static void bpf_struct_ops_map_link_show_fdinfo(const struct bpf_link 
->> *link,
->> +                        struct seq_file *seq)
->> +{
->> +    seq_printf(seq, "map_id:\t%d\n",
->> +          link->map->id);
->> +}
->> +
->> +static int bpf_struct_ops_map_link_fill_link_info(const struct 
->> bpf_link *link,
->> +                           struct bpf_link_info *info)
->> +{
->> +    info->struct_ops_map.map_id = link->map->id;
->> +    return 0;
->> +}
->> +
->> +static const struct bpf_link_ops bpf_struct_ops_map_lops = {
->> +    .release = bpf_struct_ops_map_link_release,
->> +    .dealloc = bpf_struct_ops_map_link_dealloc,
->> +    .show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
->> +    .fill_link_info = bpf_struct_ops_map_link_fill_link_info,
->> +};
-> 
-> Can .detach be supported also?
-
-Sure!
-
-> 
->> +
->> +int link_create_struct_ops_map(union bpf_attr *attr, bpfptr_t uattr)
-> 
-> Does it need uattr?
-> 
-> nit. Rename to bpf_struct_ops_link_attach(), like how other link type's 
-> "attach" functions are named. or may be even just bpf_struct_ops_attach().
-
-Got it!
-
-> 
->> +{
->> +    struct bpf_link_primer link_primer;
->> +    struct bpf_map *map;
->> +    struct bpf_link *link = NULL;
->> +    int err;
->> +
->> +    map = bpf_map_get(attr->link_create.prog_fd);
-> 
-> This one looks weird. passing prog_fd to bpf_map_get(). I think in this 
-> case it makes sense to union map_fd with prog_fd in attr->link_create ?
-> 
->> +    if (map->map_type != BPF_MAP_TYPE_STRUCT_OPS)
-> 
-> map is leaked.
-
-Yes, I will fix it.
-> 
->> +        return -EINVAL;
->> +
->> +    link = kzalloc(sizeof(*link), GFP_USER);
->> +    if (!link) {
->> +        err = -ENOMEM;
->> +        goto err_out;
->> +    }
->> +    bpf_link_init(link, BPF_LINK_TYPE_STRUCT_OPS, 
->> &bpf_struct_ops_map_lops, NULL);
->> +    link->map = map;
->> +
->> +    err = bpf_link_prime(link, &link_primer);
->> +    if (err)
->> +        goto err_out;
->> +
->> +    return bpf_link_settle(&link_primer);
->> +
->> +err_out:
->> +    bpf_map_put(map);
->> +    kfree(link);
->> +    return err;
->> +}
->> +
-> 
-> [ ... ]
-> 
->> +extern int link_create_struct_ops_map(union bpf_attr *attr, bpfptr_t 
->> uattr);
-> 
-> Move it to bpf.h.
-> 
->> +
->>   #define BPF_LINK_CREATE_LAST_FIELD link_create.kprobe_multi.cookies
->>   static int link_create(union bpf_attr *attr, bpfptr_t uattr)
->>   {
->> @@ -4541,6 +4549,9 @@ static int link_create(union bpf_attr *attr, 
->> bpfptr_t uattr)
->>       if (CHECK_ATTR(BPF_LINK_CREATE))
->>           return -EINVAL;
->> +    if (attr->link_create.attach_type == BPF_STRUCT_OPS_MAP)
->> +        return link_create_struct_ops_map(attr, uattr);
->> +
->>       prog = bpf_prog_get(attr->link_create.prog_fd);
->>       if (IS_ERR(prog))
->>           return PTR_ERR(prog);
->> diff --git a/tools/include/uapi/linux/bpf.h 
->> b/tools/include/uapi/linux/bpf.h
->> index 17afd2b35ee5..1e6cdd0f355d 100644
->> --- a/tools/include/uapi/linux/bpf.h
->> +++ b/tools/include/uapi/linux/bpf.h
->> @@ -1033,6 +1033,7 @@ enum bpf_attach_type {
->>       BPF_PERF_EVENT,
->>       BPF_TRACE_KPROBE_MULTI,
->>       BPF_LSM_CGROUP,
->> +    BPF_STRUCT_OPS_MAP,
->>       __MAX_BPF_ATTACH_TYPE
->>   };
->> @@ -6354,6 +6355,9 @@ struct bpf_link_info {
->>           struct {
->>               __u32 ifindex;
->>           } xdp;
->> +        struct {
->> +            __u32 map_id;
->> +        } struct_ops_map;
->>       };
->>   } __attribute__((aligned(8)));
->> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
->> index 9aff98f42a3d..e44d49f17c86 100644
->> --- a/tools/lib/bpf/bpf.c
->> +++ b/tools/lib/bpf/bpf.c
-> 
-> Not necessary in this set and could be a follow up. Have you thought 
-> about how to generate a skel including the struct_ops link?
-
-The user must now call bpf_map__set_map_flags() between XXXX__open() and 
-XXX__load(). To simplify the process, skel should invoke 
-bpf_map__set_map_flags() in the function of XXX__open_and _load(). 
-Therefore, a method to indicate which struct_ops need a link is 
-necessary. For instance,
-
-SEC(".struct_ops")
-struct tcp_congestion_ops xxx_map = {
-  ...
-  .flags = BPF_F_LINK,
-  ...
-};
-
-We probably can do it without any change to the code generator.
-
-> 
->> @@ -731,6 +731,8 @@ int bpf_link_create(int prog_fd, int target_fd,
->>           if (!OPTS_ZEROED(opts, tracing))
->>               return libbpf_err(-EINVAL);
->>           break;
->> +    case BPF_STRUCT_OPS_MAP:
->> +        break;
->>       default:
->>           if (!OPTS_ZEROED(opts, flags))
->>               return libbpf_err(-EINVAL);
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 35a698eb825d..75ed95b7e455 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -115,6 +115,7 @@ static const char * const attach_type_name[] = {
->>       [BPF_SK_REUSEPORT_SELECT_OR_MIGRATE]    = 
->> "sk_reuseport_select_or_migrate",
->>       [BPF_PERF_EVENT]        = "perf_event",
->>       [BPF_TRACE_KPROBE_MULTI]    = "trace_kprobe_multi",
->> +    [BPF_STRUCT_OPS_MAP]        = "struct_ops_map",
->>   };
->>   static const char * const link_type_name[] = {
-> 
+[0]:  
+https://lore.kernel.org/bpf/20230215235931.380197-1-iii@linux.ibm.com/T/#mf87a26ef48a909b62ce950639acfdf5b296b487b
