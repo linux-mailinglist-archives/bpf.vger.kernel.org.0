@@ -2,76 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE7B699A5B
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 17:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F15699A74
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 17:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbjBPQmi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 11:42:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        id S229508AbjBPQrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 11:47:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjBPQmh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 11:42:37 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105E74ECFE
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 08:42:07 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id x13so1626470pfu.7
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 08:42:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P/QHmE5n2MpJ6B+BRNuVfaldfU22yAJCRLJMhu1uyp8=;
-        b=B8DbPiFe93mjW5tuuepVh/XwxnxTJp6dxd1Zhu7LxCP8yXRppGk7Wypt/rG1j92Gci
-         HB6t/nmyDBPbqSqFr3MO052QHK3ttnOWPgeJteeVh7Mq//QMEkwzYjcZgzgA8z+XMieS
-         54Qz/g2CLKYED/QcyeyA2XBxPDkJ4s+TvYa5t/At8quIdtf/PaKQ2xBf9hEMhGp2iCjn
-         ZlRw8zxrGoEF+JiTfrgZxdUcVj6IJOL04pBigahLaDEfYvfiGEmhdUPYhoflCFGU98R9
-         LhlAWZznSQuk9zoFAInSuxZMBi3YlUNKqVQGCXtOZ/jm5Ut5IGqbkvcLxCcTDeUlEtaS
-         qmqg==
+        with ESMTP id S229506AbjBPQrp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 11:47:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096164CC97
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 08:46:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676566019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=59uNXmnY+5xpfv8KNp1rUASo+YONUDHrOKaND1BYqkc=;
+        b=WuJxqrA6XtyXgNUJv5hnKOow2ckhalunrL149JS6JYyOn5K6JxENm3j1XfIyUr0CWPdq90
+        Ok6wiuoAlHhaGjby/AUXSxlLvqvuIHrfXF2EYs13XpNwInun1dYfRqIdvckaz+ZBGTwPEL
+        JevdXHyXqE6dd4ocMGrVzlMQ98jQfzE=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-615-VztFHasqO0ecOfZjEdhGNw-1; Thu, 16 Feb 2023 11:46:57 -0500
+X-MC-Unique: VztFHasqO0ecOfZjEdhGNw-1
+Received: by mail-ed1-f71.google.com with SMTP id t22-20020a056402525600b004ad51f8fc36so1684822edd.22
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 08:46:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P/QHmE5n2MpJ6B+BRNuVfaldfU22yAJCRLJMhu1uyp8=;
-        b=fsV+sNGQIO+6UnHe8VK+K0oiJHld2eCmGkxX/0nxnmdH4U5HQ8vLAUebSeVsQ6LO+6
-         ikzfz54usTi34qOqoCD2f8uzQ8Om486UYoHZKh2UBB6J3khsiL6R+xoTshmYELp0OxOb
-         C6NKlU/c3dgqZOGoVafd081rQDXHTjALTWz4A83Rf8yJWRgmPkkzuSEGCsI1ZHClv+iT
-         uJmTddlHRrA+F65OvbqWieQOYQ5ZaXFVzZDeBxglCTK4fA8gUsHdzm1wHPMaNVhgHfWE
-         MMnmjg/UxHxihp7FZsjk74fpUHT0X8dqxEo+beCOue2mlOL4jLmu/7mrIzFpQ2XVZ2dI
-         rgLg==
-X-Gm-Message-State: AO0yUKXq9VXP+Tk6TnTHYZAkjkAfnPeUlG6zXdvPnZCcAFycn6a9EBvJ
-        tK0sYCdGxdpUyn/mNR5erMvN1/vRbng=
-X-Google-Smtp-Source: AK7set9N3aNSnXhlkGxlArOtytZiY4nfl++1JkcJYCNlt2nVHwISPYQ3DJL5lEcpP4/ZKzfaKeZc8g==
-X-Received: by 2002:aa7:9717:0:b0:593:f191:966 with SMTP id a23-20020aa79717000000b00593f1910966mr5798119pfg.1.1676565726845;
-        Thu, 16 Feb 2023 08:42:06 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21e8::12ef? ([2620:10d:c090:400::5:962a])
-        by smtp.gmail.com with ESMTPSA id e25-20020a62aa19000000b005a8a61ca0bfsm1525974pff.61.2023.02.16.08.42.05
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=59uNXmnY+5xpfv8KNp1rUASo+YONUDHrOKaND1BYqkc=;
+        b=qKkrvsC0NFmfXXOfRxX8APXJGYUYsvbqf2Rgqv4Lm/13OV4XDs4h1IV3DIMuG/VTYu
+         vEpdB+/lklX72bawoEGbQnfxMhitHT7BYLpsYi7GSe1PnS+URI/khsEftJ8Z2CAjfZAE
+         4oRdm2gsaxEkcNG+nINER8IBnlzVFHQ5mupEDmFtviEVFrMe7xOYgcgmwcs2gg/BSEN4
+         gXlvSp56omt5zfwz91drHjnkYhzzzP2jaswjv3LW9uVgp2dRqqnvenbfKiUVDGeazT4q
+         KkGwcnSjKwJNLYT1uzWjs8RFdI1Yd1yT1jh8kqvD53gjX4jjWSrHat1b1wlyYM18Mt7u
+         2C2Q==
+X-Gm-Message-State: AO0yUKVPEvhDRf6nG+tcIs+xPX0Hx0TFqTxIA7Z46IeXNWLHpaNnF9Bm
+        NOIw8kbs94nTYz8df1OS+28RwIJLgC7yD53la1drLo3ksNAodmWWOawmICfu1vrvSPgMehnj/zn
+        D4DG5SRrKVfuy
+X-Received: by 2002:aa7:d28d:0:b0:4ac:bcef:505a with SMTP id w13-20020aa7d28d000000b004acbcef505amr6881335edq.38.1676566016259;
+        Thu, 16 Feb 2023 08:46:56 -0800 (PST)
+X-Google-Smtp-Source: AK7set80Fzbld5F2gDEWeKiKO6SZW4LBZxJ3poPT7SamcTW7fAXxk1srziilHzzaelgpB+gTsNh7sw==
+X-Received: by 2002:aa7:d28d:0:b0:4ac:bcef:505a with SMTP id w13-20020aa7d28d000000b004acbcef505amr6881312edq.38.1676566015902;
+        Thu, 16 Feb 2023 08:46:55 -0800 (PST)
+Received: from [192.168.42.100] (nat-cgn9-185-107-15-52.static.kviknet.net. [185.107.15.52])
+        by smtp.gmail.com with ESMTPSA id v14-20020a50c40e000000b004acaa4d51bdsm1136242edf.32.2023.02.16.08.46.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Feb 2023 08:42:06 -0800 (PST)
-Message-ID: <28a01a8a-77d2-dcdc-eda4-a6ff7c7b54c0@gmail.com>
-Date:   Thu, 16 Feb 2023 08:42:04 -0800
+        Thu, 16 Feb 2023 08:46:55 -0800 (PST)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <fe613404-9d1c-d816-404f-9af4526a42a3@redhat.com>
+Date:   Thu, 16 Feb 2023 17:46:53 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [PATCH bpf-next 3/7] bpf: Register and unregister a struct_ops by
- their bpf_links.
-Content-Language: en-US, en-ZW
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Kui-Feng Lee <kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org
-References: <20230214221718.503964-1-kuifeng@meta.com>
- <20230214221718.503964-4-kuifeng@meta.com>
- <4f5012d6-e07a-2602-3526-d43244d9d978@linux.dev>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <4f5012d6-e07a-2602-3526-d43244d9d978@linux.dev>
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Stanislav Fomichev <sdf@google.com>, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, yoong.siang.song@intel.com,
+        anthony.l.nguyen@intel.com, intel-wired-lan@lists.osuosl.org,
+        xdp-hints@xdp-project.net
+Subject: Re: [PATCH bpf-next V1] igc: enable and fix RX hash usage by netstack
+Content-Language: en-US
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+References: <167604167956.1726972.7266620647404438534.stgit@firesoul>
+ <af69e040-3884-aa73-1241-99207aa577b4@intel.com>
+In-Reply-To: <af69e040-3884-aa73-1241-99207aa577b4@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,271 +86,195 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
+On 14/02/2023 14.21, Alexander Lobakin wrote:
+> From: Jesper Dangaard Brouer <brouer@redhat.com>
+> Date: Fri, 10 Feb 2023 16:07:59 +0100
+> 
+>> When function igc_rx_hash() was introduced in v4.20 via commit 0507ef8a0372
+>> ("igc: Add transmit and receive fastpath and interrupt handlers"), the
+>> hardware wasn't configured to provide RSS hash, thus it made sense to not
+>> enable net_device NETIF_F_RXHASH feature bit.
+> 
+> [...]
+> 
+>> @@ -311,6 +311,58 @@ extern char igc_driver_name[];
+>>   #define IGC_MRQC_RSS_FIELD_IPV4_UDP	0x00400000
+>>   #define IGC_MRQC_RSS_FIELD_IPV6_UDP	0x00800000
+>>   
+>> +/* RX-desc Write-Back format RSS Type's */
+>> +enum igc_rss_type_num {
+>> +	IGC_RSS_TYPE_NO_HASH		= 0,
+>> +	IGC_RSS_TYPE_HASH_TCP_IPV4	= 1,
+>> +	IGC_RSS_TYPE_HASH_IPV4		= 2,
+>> +	IGC_RSS_TYPE_HASH_TCP_IPV6	= 3,
+>> +	IGC_RSS_TYPE_HASH_IPV6_EX	= 4,
+>> +	IGC_RSS_TYPE_HASH_IPV6		= 5,
+>> +	IGC_RSS_TYPE_HASH_TCP_IPV6_EX	= 6,
+>> +	IGC_RSS_TYPE_HASH_UDP_IPV4	= 7,
+>> +	IGC_RSS_TYPE_HASH_UDP_IPV6	= 8,
+>> +	IGC_RSS_TYPE_HASH_UDP_IPV6_EX	= 9,
+>> +	IGC_RSS_TYPE_MAX		= 10,
+>> +};
+>> +#define IGC_RSS_TYPE_MAX_TABLE		16
+>> +#define IGC_RSS_TYPE_MASK		0xF
+> 
+> GENMASK()?
+> 
 
-On 2/15/23 16:37, Martin KaFai Lau wrote:
-> On 2/14/23 2:17 PM, Kui-Feng Lee wrote:
->> Registration via bpf_links ensures a uniform behavior, just like other
->> BPF programs.  BPF struct_ops were registered/unregistered when
->> updating/deleting their values.  Only the maps of struct_ops having
->> the BPF_F_LINK flag are allowed to back a bpf_link.
->>
->> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
->> ---
->>   include/uapi/linux/bpf.h       |  3 ++
->>   kernel/bpf/bpf_struct_ops.c    | 59 +++++++++++++++++++++++++++++++---
->>   tools/include/uapi/linux/bpf.h |  3 ++
->>   3 files changed, 61 insertions(+), 4 deletions(-)
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 1e6cdd0f355d..48d8b3058aa1 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -1267,6 +1267,9 @@ enum {
->>   /* Create a map that is suitable to be an inner map with dynamic max 
->> entries */
->>       BPF_F_INNER_MAP        = (1U << 12),
+hmm... GENMASK(3,0) looks more confusing to me. The mask we need here is
+so simple that I prefer not to complicate this with GENMASK.
+
 >> +
->> +/* Create a map that will be registered/unregesitered by the backed 
->> bpf_link */
->> +    BPF_F_LINK        = (1U << 13),
->>   };
->>   /* Flags for BPF_PROG_QUERY. */
->> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->> index 621c8e24481a..d16ca06cf09a 100644
->> --- a/kernel/bpf/bpf_struct_ops.c
->> +++ b/kernel/bpf/bpf_struct_ops.c
->> @@ -390,7 +390,7 @@ static int bpf_struct_ops_map_update_elem(struct 
->> bpf_map *map, void *key,
->>       mutex_lock(&st_map->lock);
->> -    if (kvalue->state != BPF_STRUCT_OPS_STATE_INIT) {
->> +    if (kvalue->state != BPF_STRUCT_OPS_STATE_INIT || 
->> refcount_read(&kvalue->refcnt)) {
+>> +/* igc_rss_type - Rx descriptor RSS type field */
+>> +static inline u8 igc_rss_type(union igc_adv_rx_desc *rx_desc)
 > 
-> Why it needs a new refcount_read(&kvalue->refcnt) check?
+> Why use types shorter than u32 on the stack?
 
-It prohibits updating the value once it is registered.
-This refcnt is set to 1 when register it.
+Changing to u32 in V2
 
-But, yes, it is confusing since we never reset it back to *_INIT.
-The purpose of this refcount_read() will be clear once add *_UNREG, and 
-reset it back to *_INIT properly.
+> Why this union is not const here, since there are no modifications?
 
+Sure
 
-> 
->>           err = -EBUSY;
->>           goto unlock;
->>       }
->> @@ -491,6 +491,12 @@ static int bpf_struct_ops_map_update_elem(struct 
->> bpf_map *map, void *key,
->>           *(unsigned long *)(udata + moff) = prog->aux->id;
->>       }
->> +    if (st_map->map.map_flags & BPF_F_LINK) {
->> +        /* Let bpf_link handle registration & unregistration. */
->> +        smp_store_release(&kvalue->state, BPF_STRUCT_OPS_STATE_INUSE);
-> 
-> INUSE is for registered struct_ops. It needs a new UNREG state to mean 
-> initialized but not registered. The kvalue->state is not in uapi but the 
-> user space can still introspect it (thanks to BTF), so having a correct 
-> semantic state is useful. Try 'bpftool struct_ops dump ...':
-> 
->      "bpf_struct_ops_tcp_congestion_ops": {
->          "refcnt": {
->              "refs": {
->                  "counter": 1
->              }
->          },
->          "state": "BPF_STRUCT_OPS_STATE_INUSE",
-
-Ok! That make sense.
-
-> 
->> +        goto unlock;
->> +    }
->> +
->>       refcount_set(&kvalue->refcnt, 1);
->>       bpf_map_inc(map);
->> @@ -522,6 +528,7 @@ static int bpf_struct_ops_map_update_elem(struct 
->> bpf_map *map, void *key,
->>       kfree(tlinks);
->>       mutex_unlock(&st_map->lock);
->>       return err;
->> +
-> 
-> Unnecessary new line.
-> 
->>   }
->>   static int bpf_struct_ops_map_delete_elem(struct bpf_map *map, void 
->> *key)
->> @@ -535,6 +542,8 @@ static int bpf_struct_ops_map_delete_elem(struct 
->> bpf_map *map, void *key)
->>                    BPF_STRUCT_OPS_STATE_TOBEFREE);
->>       switch (prev_state) {
->>       case BPF_STRUCT_OPS_STATE_INUSE:
->> +        if (st_map->map.map_flags & BPF_F_LINK)
->> +            return 0;
-> 
-> This should be a -ENOTSUPP.
-Sure!
-
-> 
->>           st_map->st_ops->unreg(&st_map->kvalue.data);
->>           if (refcount_dec_and_test(&st_map->kvalue.refcnt))
->>               bpf_map_put(map);
->> @@ -585,7 +594,7 @@ static void bpf_struct_ops_map_free(struct bpf_map 
->> *map)
->>   static int bpf_struct_ops_map_alloc_check(union bpf_attr *attr)
->>   {
->>       if (attr->key_size != sizeof(unsigned int) || attr->max_entries 
->> != 1 ||
->> -        attr->map_flags || !attr->btf_vmlinux_value_type_id)
->> +        (attr->map_flags & ~BPF_F_LINK) || 
->> !attr->btf_vmlinux_value_type_id)
->>           return -EINVAL;
->>       return 0;
->>   }
->> @@ -638,6 +647,8 @@ static struct bpf_map 
->> *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->>       set_vm_flush_reset_perms(st_map->image);
->>       bpf_map_init_from_attr(map, attr);
->> +    map->map_flags |= attr->map_flags & BPF_F_LINK;
-> 
-> This should have already been done in bpf_map_init_from_attr().
-
-bpf_map_init_from_attr() will filter out all flags except BPF_F_RDONLY & 
-BPF_F_WRONLY.  But, I can move it to bpf_map_init_from_attr() by not 
-filtering out it.
-
-> 
->> +
->>       return map;
->>   }
->> @@ -699,10 +710,25 @@ void bpf_struct_ops_put(const void *kdata)
->>       }
->>   }
->> +static void bpf_struct_ops_kvalue_put(struct bpf_struct_ops_value 
->> *kvalue)
 >> +{
->> +    struct bpf_struct_ops_map *st_map;
->> +
->> +    if (refcount_dec_and_test(&kvalue->refcnt)) {
->> +        st_map = container_of(kvalue, struct bpf_struct_ops_map,
->> +                      kvalue);
->> +        bpf_map_put(&st_map->map);
->> +    }
+>> +	/* RSS Type 4-bit number: 0-9 (above 9 is reserved) */
+>> +	return rx_desc->wb.lower.lo_dword.hs_rss.pkt_info & IGC_RSS_TYPE_MASK;
+> 
+> The most important I wanted to mention: doesn't this function make the
+> CPU read the uncached field again, while you could just read it once
+> onto the stack and then extract all such data from there?
+
+I really don't think this is an issues here. The igc_adv_rx_desc is only
+16 bytes and it should be hot in CPU cache by now.
+
+To avoid the movzx I have changed this to do a u32 read instead.
+
 >> +}
 >> +
->>   static void bpf_struct_ops_map_link_release(struct bpf_link *link)
->>   {
->> +    struct bpf_struct_ops_map *st_map;
+>> +/* Packet header type identified by hardware (when BIT(11) is zero).
+>> + * Even when UDP ports are not part of RSS hash HW still parse and mark UDP bits
+>> + */
+>> +enum igc_pkt_type_bits {
+>> +	IGC_PKT_TYPE_HDR_IPV4	=	BIT(0),
+>> +	IGC_PKT_TYPE_HDR_IPV4_WITH_OPT=	BIT(1), /* IPv4 Hdr includes IP options */
+>> +	IGC_PKT_TYPE_HDR_IPV6	=	BIT(2),
+>> +	IGC_PKT_TYPE_HDR_IPV6_WITH_EXT=	BIT(3), /* IPv6 Hdr includes extensions */
+>> +	IGC_PKT_TYPE_HDR_L4_TCP	=	BIT(4),
+>> +	IGC_PKT_TYPE_HDR_L4_UDP	=	BIT(5),
+>> +	IGC_PKT_TYPE_HDR_L4_SCTP=	BIT(6),
+>> +	IGC_PKT_TYPE_HDR_NFS	=	BIT(7),
+>> +	/* Above only valid when BIT(11) is zero */
+>> +	IGC_PKT_TYPE_L2		=	BIT(11),
+>> +	IGC_PKT_TYPE_VLAN	=	BIT(12),
+>> +	IGC_PKT_TYPE_MASK	=	0x1FFF, /* 13-bits */
+> 
+> Also GENMASK().
+
+GENMASK would make more sense here.
+
+>> +};
 >> +
->>       if (link->map) {
->> -        bpf_map_put(link->map);
->> +        st_map = (struct bpf_struct_ops_map *)link->map;
->> +        st_map->st_ops->unreg(&st_map->kvalue.data);
->> +        bpf_struct_ops_kvalue_put(&st_map->kvalue);
->>           link->map = NULL;
+>> +/* igc_pkt_type - Rx descriptor Packet type field */
+>> +static inline u16 igc_pkt_type(union igc_adv_rx_desc *rx_desc)
 > 
-> Does it need a lock or something to protect the link_release? or I am 
-> missing something and lock is not needed?
-
-This function will be called by bpf_link_free() following the pointer in 
-bpf_link_ops.  And bpf_link_free() is called by bpf_link_put(). The 
-refcnt of bpf_link is maintained by bpf_link_put(), and the function 
-here indirectly only if the refcnt reachs 0.  If I don't miss anything, 
-it should be safe to release a link without a lock.
-
-> 
-> The kvalue->value state should become UNREG.
-> 
-> After UNREG, can the struct_ops map be used in creating a new link again?
+> Also short types and consts.
 > 
 
-It should be.
+Fixed in V2
 
->>       }
->>   }
->> @@ -735,13 +761,15 @@ static const struct bpf_link_ops 
->> bpf_struct_ops_map_lops = {
->>   int link_create_struct_ops_map(union bpf_attr *attr, bpfptr_t uattr)
->>   {
->> +    struct bpf_struct_ops_map *st_map;
->>       struct bpf_link_primer link_primer;
->> +    struct bpf_struct_ops_value *kvalue;
->>       struct bpf_map *map;
->>       struct bpf_link *link = NULL;
->>       int err;
->>       map = bpf_map_get(attr->link_create.prog_fd);
->> -    if (map->map_type != BPF_MAP_TYPE_STRUCT_OPS)
->> +    if (map->map_type != BPF_MAP_TYPE_STRUCT_OPS || !(map->map_flags 
->> & BPF_F_LINK))
->>           return -EINVAL;
->>       link = kzalloc(sizeof(*link), GFP_USER);
->> @@ -752,6 +780,29 @@ int link_create_struct_ops_map(union bpf_attr 
->> *attr, bpfptr_t uattr)
->>       bpf_link_init(link, BPF_LINK_TYPE_STRUCT_OPS, 
->> &bpf_struct_ops_map_lops, NULL);
->>       link->map = map;
->> +    if (map->map_flags & BPF_F_LINK) {
->> +        st_map = (struct bpf_struct_ops_map *)map;
->> +        kvalue = (struct bpf_struct_ops_value *)&st_map->kvalue;
->> +
->> +        if (kvalue->state != BPF_STRUCT_OPS_STATE_INUSE ||
->> +            refcount_read(&kvalue->refcnt) != 0) {
+>> +{
+>> +	u32 data = le32_to_cpu(rx_desc->wb.lower.lo_dword.data);
+>> +	/* Packet type is 13-bits - as bits (16:4) in lower.lo_dword*/
+>> +	u16 pkt_type = (data >> 4) & IGC_PKT_TYPE_MASK;
 > 
-> The refcount_read(&kvalue->refcnt) is to ensure it is not registered?
-> It seems the UNREG state is useful here.
+> Perfect candidate for FIELD_GET(). No, even for le32_get_bits().
 
-Yes!
+I adjusted this, but I could not find a central define for FIELD_GET 
+(but many drivers open code this).
 
-> 
->> +            err = -EINVAL;
->> +            goto err_out;
->> +        }
->> +
->> +        refcount_set(&kvalue->refcnt, 1);
-> 
-> If a struct_ops map is used to create multiple links in parallel, is it 
-> safe?
+> Also my note above about excessive expensive reads.
 > 
 >> +
->> +        set_memory_rox((long)st_map->image, 1);
->> +        err = st_map->st_ops->reg(kvalue->data);
-> 
-> After successful reg, the state can be changed from UNREG to INUSE.
-> 
->> +        if (err) {
->> +            refcount_set(&kvalue->refcnt, 0);
+>> +	return pkt_type;
+>> +}
 >> +
->> +            set_memory_nx((long)st_map->image, 1);
->> +            set_memory_rw((long)st_map->image, 1);
->> +            goto err_out;
->> +        }
->> +    }
+>>   /* Interrupt defines */
+>>   #define IGC_START_ITR			648 /* ~6000 ints/sec */
+>>   #define IGC_4K_ITR			980
+>> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+>> index 8b572cd2c350..42a072509d2a 100644
+>> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+>> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+>> @@ -1677,14 +1677,40 @@ static void igc_rx_checksum(struct igc_ring *ring,
+>>   		   le32_to_cpu(rx_desc->wb.upper.status_error));
+>>   }
+>>   
+>> +/* Mapping HW RSS Type to enum pkt_hash_types */
+>> +struct igc_rss_type {
+>> +	u8 hash_type; /* can contain enum pkt_hash_types */
 > 
-> This patch should be combined with patch 1. Otherwise, patch 1 is quite 
-> hard to understand without link_create_struct_ops_map() doing the actual 
-> "attach".
+> Why make a struct for one field? + short type note
+> 
+>> +} igc_rss_type_table[IGC_RSS_TYPE_MAX_TABLE] = {
+>> +	[IGC_RSS_TYPE_NO_HASH].hash_type	  = PKT_HASH_TYPE_L2,
+>> +	[IGC_RSS_TYPE_HASH_TCP_IPV4].hash_type	  = PKT_HASH_TYPE_L4,
+>> +	[IGC_RSS_TYPE_HASH_IPV4].hash_type	  = PKT_HASH_TYPE_L3,
+>> +	[IGC_RSS_TYPE_HASH_TCP_IPV6].hash_type	  = PKT_HASH_TYPE_L4,
+>> +	[IGC_RSS_TYPE_HASH_IPV6_EX].hash_type	  = PKT_HASH_TYPE_L3,
+>> +	[IGC_RSS_TYPE_HASH_IPV6].hash_type	  = PKT_HASH_TYPE_L3,
+>> +	[IGC_RSS_TYPE_HASH_TCP_IPV6_EX].hash_type = PKT_HASH_TYPE_L4,
+>> +	[IGC_RSS_TYPE_HASH_UDP_IPV4].hash_type	  = PKT_HASH_TYPE_L4,
+>> +	[IGC_RSS_TYPE_HASH_UDP_IPV6].hash_type	  = PKT_HASH_TYPE_L4,
+>> +	[IGC_RSS_TYPE_HASH_UDP_IPV6_EX].hash_type = PKT_HASH_TYPE_L4,
+>> +	[10].hash_type = PKT_HASH_TYPE_L2, /* RSS Type above 9 "Reserved" by HW */
+>> +	[11].hash_type = PKT_HASH_TYPE_L2,
+>> +	[12].hash_type = PKT_HASH_TYPE_L2,
+>> +	[13].hash_type = PKT_HASH_TYPE_L2,
+>> +	[14].hash_type = PKT_HASH_TYPE_L2,
+>> +	[15].hash_type = PKT_HASH_TYPE_L2,
+> 
+> Why define those empty if you could do a bound check in the code
+> instead? E.g. `if (unlikely(bigger_than_9)) return PKT_HASH_TYPE_L2`.
 
-Ok!
+Having a branch for this is likely slower.  On godbolt I see that this 
+generates suboptimal and larger code.
 
-> 
+
+>> +};
 >> +
->>       err = bpf_link_prime(link, &link_primer);
->>       if (err)
->>           goto err_out;
->> diff --git a/tools/include/uapi/linux/bpf.h 
->> b/tools/include/uapi/linux/bpf.h
->> index 1e6cdd0f355d..48d8b3058aa1 100644
->> --- a/tools/include/uapi/linux/bpf.h
->> +++ b/tools/include/uapi/linux/bpf.h
->> @@ -1267,6 +1267,9 @@ enum {
->>   /* Create a map that is suitable to be an inner map with dynamic max 
->> entries */
->>       BPF_F_INNER_MAP        = (1U << 12),
->> +
->> +/* Create a map that will be registered/unregesitered by the backed 
->> bpf_link */
->> +    BPF_F_LINK        = (1U << 13),
->>   };
->>   /* Flags for BPF_PROG_QUERY. */
+>>   static inline void igc_rx_hash(struct igc_ring *ring,
+>>   			       union igc_adv_rx_desc *rx_desc,
+>>   			       struct sk_buff *skb)
+>>   {
+>> -	if (ring->netdev->features & NETIF_F_RXHASH)
+>> -		skb_set_hash(skb,
+>> -			     le32_to_cpu(rx_desc->wb.lower.hi_dword.rss),
+>> -			     PKT_HASH_TYPE_L3);
+>> +	if (ring->netdev->features & NETIF_F_RXHASH) {
 > 
+> 	if (!(feature & HASH))
+> 		return;
+> 
+> and -1 indent level?
+
+Usually, yes, I also prefer early return style code.
+For one I just followed the existing style.
+
+Second, I tried to code it up, but it looks ugly in this case, as the
+variable defines need to get moved outside the if statement.
+
+>> +		u32 rss_hash = le32_to_cpu(rx_desc->wb.lower.hi_dword.rss);
+>> +		u8  rss_type = igc_rss_type(rx_desc);
+>> +		enum pkt_hash_types hash_type;
+>> +
+>> +		hash_type = igc_rss_type_table[rss_type].hash_type;
+>> +		skb_set_hash(skb, rss_hash, hash_type);
+>> +	}
+>>   }
+> 
+> [...]
+> 
+> Thanks,
+> Olek
+> 
+
