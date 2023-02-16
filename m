@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC03698A63
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 03:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F13D8698A70
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 03:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjBPCNR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Feb 2023 21:13:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35286 "EHLO
+        id S229520AbjBPCUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Feb 2023 21:20:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjBPCNR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Feb 2023 21:13:17 -0500
+        with ESMTP id S229489AbjBPCUH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Feb 2023 21:20:07 -0500
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C7B2007D
-        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 18:13:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA852A17F
+        for <bpf@vger.kernel.org>; Wed, 15 Feb 2023 18:20:04 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PHJPy2bCWz4f3jJ2
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:13:10 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PHJYq1ryWz4f3m6k
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:19:59 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgD3rLA2ke1j8zzSDg--.19561S4;
-        Thu, 16 Feb 2023 10:13:12 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgBH_rHMku1j6onSDg--.19120S4;
+        Thu, 16 Feb 2023 10:19:57 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org
 Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
@@ -33,28 +33,28 @@ Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
         Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         David Vernet <void@manifault.com>, houtao1@huawei.com
-Subject: [PATCH bpf-next] bpf: Only allocate one bpf_mem_cache for bpf_cpumask_ma
-Date:   Thu, 16 Feb 2023 10:41:34 +0800
-Message-Id: <20230216024134.2094999-1-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v2] bpf: Only allocate one bpf_mem_cache for bpf_cpumask_ma
+Date:   Thu, 16 Feb 2023 10:48:21 +0800
+Message-Id: <20230216024821.2202916-1-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3rLA2ke1j8zzSDg--.19561S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw4xur1kWr1UAFW3Jw4rAFb_yoW5Gry3pF
-        n7JrW0krWDtF4kGw17X3WxAa45G34vgwn2ka4UWry5uFyfWw4kGF4DXFy7XFn09rWDCayx
-        Ar9Ygr409ryUJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID: gCh0CgBH_rHMku1j6onSDg--.19120S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw4xAw43AryrZry3Ar13Arb_yoW5XFyUpF
+        4xJrW0krWDtF4kGw47X3WxAa45G34vgwn2ka4UWry5uFyfuw4kGF4DXFW7XFn09rWDCayx
+        Ar9Ygr409ryUJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
         vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
         xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
         0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
         Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
         cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
         IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
         42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
@@ -74,6 +74,9 @@ future miuse.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
+v2: fix typo (forget to regenerate the patch after testing)
+v1: https://lore.kernel.org/bpf/7736864d-af8d-4f74-086b-0ec125aae2a6@huawei.com/T/#t
+
  include/linux/bpf_mem_alloc.h | 7 +++++++
  kernel/bpf/cpumask.c          | 6 +++---
  2 files changed, 10 insertions(+), 3 deletions(-)
@@ -97,7 +100,7 @@ index 3e164b8efaa9..a7104af61ab4 100644
  void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
  
 diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-index 52b981512a35..711434b556fb 100644
+index 52b981512a35..2b3fbbfebdc5 100644
 --- a/kernel/bpf/cpumask.c
 +++ b/kernel/bpf/cpumask.c
 @@ -55,7 +55,7 @@ __bpf_kfunc struct bpf_cpumask *bpf_cpumask_create(void)
@@ -123,7 +126,7 @@ index 52b981512a35..711434b556fb 100644
  	};
  
 -	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, 0, false);
-+	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, sieof(struct bpf_cpumask), false);
++	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, sizeof(struct bpf_cpumask), false);
  	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &cpumask_kfunc_set);
  	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &cpumask_kfunc_set);
  	return  ret ?: register_btf_id_dtor_kfuncs(cpumask_dtors,
