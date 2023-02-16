@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB27699C62
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 19:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8FB699C63
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 19:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbjBPSg1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 13:36:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
+        id S229781AbjBPSg2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 13:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjBPSg0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 13:36:26 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F13137F06
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:36:22 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id v11so3907132edx.12
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:36:22 -0800 (PST)
+        with ESMTP id S229616AbjBPSg1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 13:36:27 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C5F4B50C
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:36:23 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id dz21so6283870edb.13
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:36:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N/S7Qaqnr/Qyc1sC60fsQVuqJJoKYeXLwctkAis/SaU=;
-        b=aywdcwdZvgXDq/tvn3CVoFkJg8FEesbnxEo5nK31DFHseWPTfW/TEB4AHMlEWczGwb
-         aNeDyEQx7+qqgSAakn76zDJetcErGwDaIsKcy33cfoI2BrCDc2PT70L2kzr3YR1PgDhn
-         nkoYkx1d+j9S0F1qyQNWCSMmR0SwCpYrxpxQTsPqVTt6nEImUC2rkzyL8jRdfRVHcG1O
-         gHr13BoWuYhHUjHfXHixeAK6Lqwj0j+lHD6/BnZxf+06GqKUjAVWpAt5FIdy/a2QVZ6D
-         CgEyWSCNckocPbyDC1DGOxSzrm5stfnCS6UD9/XDUFHcq0tbMZf0gR8khjcAHFUoCNwb
-         RDfg==
+        bh=n2eUn6kH9Ue6WSO1X4oIjaKzA1FvsQW4uMTZXal8grs=;
+        b=FRe1iRa2TIdtMdRDoz91Q84nezlZtittlaesBPQ5zbBECmudvaec+YfTXhCTDW9pZL
+         49mH/MmPjZVrRDfO9pUYFZ0W7j1BWlPGeAqhbJbtwXp4RCUz8G4m3UlWS698Cz0R5kE/
+         8LKpluq01rQ1Ds37z0+4J1VdRW24RmT2DSMCvzpvEd6TCjLlRcGYmdJZKsSjj4BxgXzL
+         hbE0fH7dOT12qDIkFBrxKNEBKj0WF6H3e7i0pG/nHmA4+/caGsngZnBMhcklrm1akVpL
+         +AkRvifKYVCJNE6xcP9MCIH2RAaY2cqRD6cIElt302K30psKffz9/8aEJq8rReccqtS5
+         hD0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N/S7Qaqnr/Qyc1sC60fsQVuqJJoKYeXLwctkAis/SaU=;
-        b=V1JjlG7V9jTqlqM6Ovf/zYuL3ekiRX1AAU0dNEQzWejr+4UJABSijlNGNYNzv/MV6v
-         Dfll+iCvNobbXJe2uXdsXTcHPVDwwlafR4JebeOB0rsRy0dq2bZYW/lIjHREnF4U3RGk
-         H9lRDIK/PbgK5m3767CUFClS2Vo+xTSRUZG6n/zM1oE+bHfxwf5DRJpng89nB30XE7fa
-         j2bOPQM7gk7lWjbwFYG/U2E0/bOp8EkRs1cuvtysn15R+31l9smhe1xb1HX/5dX4DFhP
-         keSr9icMf03gCWcVfdhrV4XO5/2rdlipA8blAjfZvn/uUakr3CXs6uMT6c+pIdCbqeq3
-         6VWw==
-X-Gm-Message-State: AO0yUKV5c0SX/8c8TdeK1d7FeudWc0seIzpo3+HET/OfQsdNUSVKro0v
-        1SZ3pPVSD1gPfcLtjI7gFFTceYlVRUY=
-X-Google-Smtp-Source: AK7set8e167X3RuSV+9qv99D8xOb0tKG/h8I2/0+JVxfzknhF6XWOsvOpDoAVkMURzFDGQ3GwsY3QA==
-X-Received: by 2002:a05:6402:14d0:b0:4ac:bd84:43d9 with SMTP id f16-20020a05640214d000b004acbd8443d9mr6555131edx.2.1676572580822;
-        Thu, 16 Feb 2023 10:36:20 -0800 (PST)
+        bh=n2eUn6kH9Ue6WSO1X4oIjaKzA1FvsQW4uMTZXal8grs=;
+        b=Fduq0YVlbPy+c0cVsiI1enDxy9BJyWkRRdG/2hV9ogdcIVHJdJMJzQtltWxpbvZIOK
+         VVktj3k2XNA5wY3hi2J8fXpuLTrJ62WZ9MPhDRKBJRtYCHLxTJWJpfBILBCXQlwPXp1h
+         MlHocmlrSbZkdsY1n4cvjvnTGjFLjlQrMJmfAp9AVq3XfWiI6QCX5nP7rq2dMDJCfdB8
+         HjnGKGOv/PCljSD9zIbM50aurGJ4Douk1UZ+gpKIIuuJQvn/sBFG4Y0r/DN0Kfu0I6Oy
+         aP9KUXaVELhQoG69aCfScXDB4W1cK1fzF2pWysENbnQVJW1lBP2mbdD11/brS4VExl2z
+         OKMw==
+X-Gm-Message-State: AO0yUKWg3nscr+t25gqc07gnGKEPtgWeWg+DVzB8OxsWps/BLfVcpCg1
+        lz6CMDji+g886GTBs8DZM90Oxq8g7IY=
+X-Google-Smtp-Source: AK7set+PXhdPxnERvHmKWUit0Q90yVvBMmLKLj+1Nkyf2B/swHniJcWP8DYbAX3O/PHUTUEaFYiocw==
+X-Received: by 2002:a05:6402:5484:b0:4aa:b228:eb72 with SMTP id fg4-20020a056402548400b004aab228eb72mr2827853edb.17.1676572581951;
+        Thu, 16 Feb 2023 10:36:21 -0800 (PST)
 Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id v28-20020a50d09c000000b004accc54a9edsm1237854edd.93.2023.02.16.10.36.19
+        by smtp.gmail.com with ESMTPSA id v28-20020a50d09c000000b004accc54a9edsm1237854edd.93.2023.02.16.10.36.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Feb 2023 10:36:20 -0800 (PST)
+        Thu, 16 Feb 2023 10:36:21 -0800 (PST)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
         kernel-team@fb.com, yhs@fb.com,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next  1/2] bpf: Allow reads from uninit stack
-Date:   Thu, 16 Feb 2023 20:36:05 +0200
-Message-Id: <20230216183606.2483834-2-eddyz87@gmail.com>
+Subject: [PATCH bpf-next  2/2] selftests/bpf: Tests for uninitialized stack reads
+Date:   Thu, 16 Feb 2023 20:36:06 +0200
+Message-Id: <20230216183606.2483834-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230216183606.2483834-1-eddyz87@gmail.com>
 References: <20230216183606.2483834-1-eddyz87@gmail.com>
@@ -64,599 +64,103 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_FILL_THIS_FORM_SHORT autolearn=ham autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commits updates the following functions to allow reads from
-uninitialized stack locations when env->allow_uninit_stack option is
-enabled:
-- check_stack_read_fixed_off()
-- check_stack_range_initialized(), called from:
-  - check_stack_read_var_off()
-  - check_helper_mem_access()
+Two testcases to make sure that stack reads from uninitialized
+locations are accepted by verifier when executed in privileged mode:
+- read from a fixed offset;
+- read from a variable offset.
 
-Such change allows to relax logic in stacksafe() to treat STACK_MISC
-and STACK_INVALID in a same way and make the following stack slot
-configurations equivalent:
-
-  |  Cached state    |  Current state   |
-  |   stack slot     |   stack slot     |
-  |------------------+------------------|
-  | STACK_INVALID or | STACK_INVALID or |
-  | STACK_MISC       | STACK_SPILL   or |
-  |                  | STACK_MISC    or |
-  |                  | STACK_ZERO    or |
-  |                  | STACK_DYNPTR     |
-
-This leads to significant verification speed gains (see below).
-
-The idea was suggested by Andrii Nakryiko [1] and initial patch was
-created by Alexei Starovoitov [2].
-
-Currently the env->allow_uninit_stack is allowed for programs loaded
-by users with CAP_PERFMON or CAP_SYS_ADMIN capabilities.
-
-A number of test cases from verifier/*.c were expecting uninitialized
-stack access to be an error. These test cases were updated to execute
-in unprivileged mode (thus preserving the tests).
-
-The test progs/test_global_func10.c expected "invalid indirect access
-to stack" error message because of the access to uninitialized memory
-region. The test is updated to provoke the same error message by
-accessing stack out of allocated range.
-
-The following tests had to be removed because these can't be made
-unprivileged:
-- verifier/sock.c:
-  - "sk_storage_get(map, skb->sk, &stack_value, 1): partially init
-  stack_value"
-  BPF_PROG_TYPE_SCHED_CLS programs are not executed in unprivileged mode.
-- verifier/var_off.c:
-  - "indirect variable-offset stack access, max_off+size > max_initialized"
-  - "indirect variable-offset stack access, uninitialized"
-  These tests verify that access to uninitialized stack values is
-  detected when stack offset is not a constant. However, variable
-  stack access is prohibited in unprivileged mode, thus these tests
-  are no longer valid.
-
- * * *
-
-Here is veristat log comparing this patch with current master on a
-set of selftest binaries listed in tools/testing/selftests/bpf/veristat.cfg
-and cilium BPF binaries (see [3]):
-
-$ ./veristat -e file,prog,states -C -f 'states_pct<-30' master.log current.log
-File                        Program                     States (A)  States (B)  States    (DIFF)
---------------------------  --------------------------  ----------  ----------  ----------------
-bpf_host.o                  tail_handle_ipv6_from_host         349         244    -105 (-30.09%)
-bpf_host.o                  tail_handle_nat_fwd_ipv4          1320         895    -425 (-32.20%)
-bpf_lxc.o                   tail_handle_nat_fwd_ipv4          1320         895    -425 (-32.20%)
-bpf_sock.o                  cil_sock4_connect                   70          48     -22 (-31.43%)
-bpf_sock.o                  cil_sock4_sendmsg                   68          46     -22 (-32.35%)
-bpf_xdp.o                   tail_handle_nat_fwd_ipv4          1554         803    -751 (-48.33%)
-bpf_xdp.o                   tail_lb_ipv4                      6457        2473   -3984 (-61.70%)
-bpf_xdp.o                   tail_lb_ipv6                      7249        3908   -3341 (-46.09%)
-pyperf600_bpf_loop.bpf.o    on_event                           287         145    -142 (-49.48%)
-strobemeta.bpf.o            on_event                         15915        4772  -11143 (-70.02%)
-strobemeta_nounroll2.bpf.o  on_event                         17087        3820  -13267 (-77.64%)
-xdp_synproxy_kern.bpf.o     syncookie_tc                     21271        6635  -14636 (-68.81%)
-xdp_synproxy_kern.bpf.o     syncookie_xdp                    23122        6024  -17098 (-73.95%)
---------------------------  --------------------------  ----------  ----------  ----------------
-
-Note: I limited selection by states_pct<-30%.
-
-Inspection of differences in pyperf600_bpf_loop behavior shows that
-the following patch for the test removes almost all differences:
-
-    - a/tools/testing/selftests/bpf/progs/pyperf.h
-    + b/tools/testing/selftests/bpf/progs/pyperf.h
-    @ -266,8 +266,8 @ int __on_event(struct bpf_raw_tracepoint_args *ctx)
-            }
-
-            if (event->pthread_match || !pidData->use_tls) {
-    -               void* frame_ptr;
-    -               FrameData frame;
-    +               void* frame_ptr = 0;
-    +               FrameData frame = {};
-                    Symbol sym = {};
-                    int cur_cpu = bpf_get_smp_processor_id();
-
-W/o this patch the difference comes from the following pattern
-(for different variables):
-
-    static bool get_frame_data(... FrameData *frame ...)
-    {
-        ...
-        bpf_probe_read_user(&frame->f_code, ...);
-        if (!frame->f_code)
-            return false;
-        ...
-        bpf_probe_read_user(&frame->co_name, ...);
-        if (frame->co_name)
-            ...;
-    }
-
-    int __on_event(struct bpf_raw_tracepoint_args *ctx)
-    {
-        FrameData frame;
-        ...
-        get_frame_data(... &frame ...) // indirectly via a bpf_loop & callback
-        ...
-    }
-
-    SEC("raw_tracepoint/kfree_skb")
-    int on_event(struct bpf_raw_tracepoint_args* ctx)
-    {
-        ...
-        ret |= __on_event(ctx);
-        ret |= __on_event(ctx);
-        ...
-    }
-
-With regards to value `frame->co_name` the following is important:
-- Because of the conditional `if (!frame->f_code)` each call to
-  __on_event() produces two states, one with `frame->co_name` marked
-  as STACK_MISC, another with it as is (and marked STACK_INVALID on a
-  first call).
-- The call to bpf_probe_read_user() does not mark stack slots
-  corresponding to `&frame->co_name` as REG_LIVE_WRITTEN but it marks
-  these slots as BPF_MISC, this happens because of the following loop
-  in the check_helper_call():
-
-	for (i = 0; i < meta.access_size; i++) {
-		err = check_mem_access(env, insn_idx, meta.regno, i, BPF_B,
-				       BPF_WRITE, -1, false);
-		if (err)
-			return err;
-	}
-
-  Note the size of the write, it is a one byte write for each byte
-  touched by a helper. The BPF_B write does not lead to write marks
-  for the target stack slot.
-- Which means that w/o this patch when second __on_event() call is
-  verified `if (frame->co_name)` will propagate read marks first to a
-  stack slot with STACK_MISC marks and second to a stack slot with
-  STACK_INVALID marks and these states would be considered different.
-
-[1] https://lore.kernel.org/bpf/CAEf4BzY3e+ZuC6HUa8dCiUovQRg2SzEk7M-dSkqNZyn=xEmnPA@mail.gmail.com/
-[2] https://lore.kernel.org/bpf/CAADnVQKs2i1iuZ5SUGuJtxWVfGYR9kDgYKhq3rNV+kBLQCu7rA@mail.gmail.com/
-[3] git@github.com:anakryiko/cilium.git
-
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c                         |  10 ++
- .../selftests/bpf/progs/test_global_func10.c  |   6 +-
- tools/testing/selftests/bpf/verifier/calls.c  |  13 ++-
- .../bpf/verifier/helper_access_var_len.c      | 104 ++++++++++++------
- .../testing/selftests/bpf/verifier/int_ptr.c  |   9 +-
- .../selftests/bpf/verifier/search_pruning.c   |  13 ++-
- tools/testing/selftests/bpf/verifier/sock.c   |  27 -----
- .../selftests/bpf/verifier/spill_fill.c       |   7 +-
- .../testing/selftests/bpf/verifier/var_off.c  |  52 ---------
- 9 files changed, 107 insertions(+), 134 deletions(-)
+ .../selftests/bpf/prog_tests/uninit_stack.c   |  9 +++
+ .../selftests/bpf/progs/uninit_stack.c        | 55 +++++++++++++++++++
+ 2 files changed, 64 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/uninit_stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uninit_stack.c
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 272563a0b770..6fbd0e25ccab 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3826,6 +3826,8 @@ static int check_stack_read_fixed_off(struct bpf_verifier_env *env,
- 						continue;
- 					if (type == STACK_MISC)
- 						continue;
-+					if (type == STACK_INVALID && env->allow_uninit_stack)
-+						continue;
- 					verbose(env, "invalid read from stack off %d+%d size %d\n",
- 						off, i, size);
- 					return -EACCES;
-@@ -3863,6 +3865,8 @@ static int check_stack_read_fixed_off(struct bpf_verifier_env *env,
- 				continue;
- 			if (type == STACK_ZERO)
- 				continue;
-+			if (type == STACK_INVALID && env->allow_uninit_stack)
-+				continue;
- 			verbose(env, "invalid read from stack off %d+%d size %d\n",
- 				off, i, size);
- 			return -EACCES;
-@@ -5761,6 +5765,8 @@ static int check_stack_range_initialized(
- 			}
- 			goto mark;
- 		}
-+		if (*stype == STACK_INVALID && env->allow_uninit_stack)
-+			goto mark;
- 
- 		if (is_spilled_reg(&state->stack[spi]) &&
- 		    (state->stack[spi].spilled_ptr.type == SCALAR_VALUE ||
-@@ -13936,6 +13942,10 @@ static bool stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old,
- 		if (old->stack[spi].slot_type[i % BPF_REG_SIZE] == STACK_INVALID)
- 			continue;
- 
-+		if (env->allow_uninit_stack &&
-+		    old->stack[spi].slot_type[i % BPF_REG_SIZE] == STACK_MISC)
-+			continue;
+diff --git a/tools/testing/selftests/bpf/prog_tests/uninit_stack.c b/tools/testing/selftests/bpf/prog_tests/uninit_stack.c
+new file mode 100644
+index 000000000000..e64c71948491
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/uninit_stack.c
+@@ -0,0 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- 		/* explored stack has more populated slots than current stack
- 		 * and these slots were used
- 		 */
-diff --git a/tools/testing/selftests/bpf/progs/test_global_func10.c b/tools/testing/selftests/bpf/progs/test_global_func10.c
-index 97b7031d0e22..9eb28721fdbc 100644
---- a/tools/testing/selftests/bpf/progs/test_global_func10.c
-+++ b/tools/testing/selftests/bpf/progs/test_global_func10.c
-@@ -4,12 +4,12 @@
- #include <bpf/bpf_helpers.h>
- 
- struct Small {
--	int x;
-+	long x;
- };
- 
- struct Big {
--	int x;
--	int y;
-+	long x;
-+	long y;
- };
- 
- __noinline int foo(const struct Big *big)
-diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
-index 9d993926bf0e..289ed202ec66 100644
---- a/tools/testing/selftests/bpf/verifier/calls.c
-+++ b/tools/testing/selftests/bpf/verifier/calls.c
-@@ -2221,19 +2221,22 @@
- 	 * that fp-8 stack slot was unused in the fall-through
- 	 * branch and will accept the program incorrectly
- 	 */
--	BPF_JMP_IMM(BPF_JGT, BPF_REG_1, 2, 2),
-+	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
-+	BPF_JMP_IMM(BPF_JGT, BPF_REG_0, 2, 2),
- 	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
- 	BPF_JMP_IMM(BPF_JA, 0, 0, 0),
- 	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
- 	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
- 	BPF_LD_MAP_FD(BPF_REG_1, 0),
- 	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_EXIT_INSN(),
- 	},
--	.fixup_map_hash_48b = { 6 },
--	.errstr = "invalid indirect read from stack R2 off -8+0 size 8",
--	.result = REJECT,
--	.prog_type = BPF_PROG_TYPE_XDP,
-+	.fixup_map_hash_48b = { 7 },
-+	.errstr_unpriv = "invalid indirect read from stack R2 off -8+0 size 8",
-+	.result_unpriv = REJECT,
-+	/* in privileged mode reads from uninitialized stack locations are permitted */
-+	.result = ACCEPT,
- },
- {
- 	"calls: ctx read at start of subprog",
-diff --git a/tools/testing/selftests/bpf/verifier/helper_access_var_len.c b/tools/testing/selftests/bpf/verifier/helper_access_var_len.c
-index a6c869a7319c..9c4885885aba 100644
---- a/tools/testing/selftests/bpf/verifier/helper_access_var_len.c
-+++ b/tools/testing/selftests/bpf/verifier/helper_access_var_len.c
-@@ -29,19 +29,30 @@
- {
- 	"helper access to variable memory: stack, bitwise AND, zero included",
- 	.insns = {
--	BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, 8),
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -64),
--	BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_2, -128),
--	BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, -128),
--	BPF_ALU64_IMM(BPF_AND, BPF_REG_2, 64),
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_EMIT_CALL(BPF_FUNC_probe_read_kernel),
-+	/* set max stack size */
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -128, 0),
-+	/* set r3 to a random value */
-+	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
-+	BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
-+	/* use bitwise AND to limit r3 range to [0, 64] */
-+	BPF_ALU64_IMM(BPF_AND, BPF_REG_3, 64),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -64),
-+	BPF_MOV64_IMM(BPF_REG_4, 0),
-+	/* Call bpf_ringbuf_output(), it is one of a few helper functions with
-+	 * ARG_CONST_SIZE_OR_ZERO parameter allowed in unpriv mode.
-+	 * For unpriv this should signal an error, because memory at &fp[-64] is
-+	 * not initialized.
-+	 */
-+	BPF_EMIT_CALL(BPF_FUNC_ringbuf_output),
- 	BPF_EXIT_INSN(),
- 	},
--	.errstr = "invalid indirect read from stack R1 off -64+0 size 64",
--	.result = REJECT,
--	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+	.fixup_map_ringbuf = { 4 },
-+	.errstr_unpriv = "invalid indirect read from stack R2 off -64+0 size 64",
-+	.result_unpriv = REJECT,
-+	/* in privileged mode reads from uninitialized stack locations are permitted */
-+	.result = ACCEPT,
- },
- {
- 	"helper access to variable memory: stack, bitwise AND + JMP, wrong max",
-@@ -183,20 +194,31 @@
- {
- 	"helper access to variable memory: stack, JMP, no min check",
- 	.insns = {
--	BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, 8),
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -64),
--	BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_2, -128),
--	BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, -128),
--	BPF_JMP_IMM(BPF_JGT, BPF_REG_2, 64, 3),
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_EMIT_CALL(BPF_FUNC_probe_read_kernel),
-+	/* set max stack size */
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -128, 0),
-+	/* set r3 to a random value */
-+	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
-+	BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
-+	/* use JMP to limit r3 range to [0, 64] */
-+	BPF_JMP_IMM(BPF_JGT, BPF_REG_3, 64, 6),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -64),
-+	BPF_MOV64_IMM(BPF_REG_4, 0),
-+	/* Call bpf_ringbuf_output(), it is one of a few helper functions with
-+	 * ARG_CONST_SIZE_OR_ZERO parameter allowed in unpriv mode.
-+	 * For unpriv this should signal an error, because memory at &fp[-64] is
-+	 * not initialized.
-+	 */
-+	BPF_EMIT_CALL(BPF_FUNC_ringbuf_output),
- 	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_EXIT_INSN(),
- 	},
--	.errstr = "invalid indirect read from stack R1 off -64+0 size 64",
--	.result = REJECT,
--	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+	.fixup_map_ringbuf = { 4 },
-+	.errstr_unpriv = "invalid indirect read from stack R2 off -64+0 size 64",
-+	.result_unpriv = REJECT,
-+	/* in privileged mode reads from uninitialized stack locations are permitted */
-+	.result = ACCEPT,
- },
- {
- 	"helper access to variable memory: stack, JMP (signed), no min check",
-@@ -564,29 +586,41 @@
- {
- 	"helper access to variable memory: 8 bytes leak",
- 	.insns = {
--	BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, 8),
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -64),
-+	/* set max stack size */
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -128, 0),
-+	/* set r3 to a random value */
-+	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
-+	BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -64),
- 	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -64),
- 	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -56),
- 	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -48),
- 	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -40),
-+	/* Note: fp[-32] left uninitialized */
- 	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -24),
- 	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -16),
- 	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
--	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -128),
--	BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_10, -128),
--	BPF_ALU64_IMM(BPF_AND, BPF_REG_2, 63),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, 1),
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_EMIT_CALL(BPF_FUNC_probe_read_kernel),
--	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_10, -16),
-+	/* Limit r3 range to [1, 64] */
-+	BPF_ALU64_IMM(BPF_AND, BPF_REG_3, 63),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 1),
-+	BPF_MOV64_IMM(BPF_REG_4, 0),
-+	/* Call bpf_ringbuf_output(), it is one of a few helper functions with
-+	 * ARG_CONST_SIZE_OR_ZERO parameter allowed in unpriv mode.
-+	 * For unpriv this should signal an error, because memory region [1, 64]
-+	 * at &fp[-64] is not fully initialized.
-+	 */
-+	BPF_EMIT_CALL(BPF_FUNC_ringbuf_output),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_EXIT_INSN(),
- 	},
--	.errstr = "invalid indirect read from stack R1 off -64+32 size 64",
--	.result = REJECT,
--	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+	.fixup_map_ringbuf = { 3 },
-+	.errstr_unpriv = "invalid indirect read from stack R2 off -64+32 size 64",
-+	.result_unpriv = REJECT,
-+	/* in privileged mode reads from uninitialized stack locations are permitted */
-+	.result = ACCEPT,
- },
- {
- 	"helper access to variable memory: 8 bytes no leak (init memory)",
-diff --git a/tools/testing/selftests/bpf/verifier/int_ptr.c b/tools/testing/selftests/bpf/verifier/int_ptr.c
-index 070893fb2900..02d9e004260b 100644
---- a/tools/testing/selftests/bpf/verifier/int_ptr.c
-+++ b/tools/testing/selftests/bpf/verifier/int_ptr.c
-@@ -54,12 +54,13 @@
- 		/* bpf_strtoul() */
- 		BPF_EMIT_CALL(BPF_FUNC_strtoul),
- 
--		BPF_MOV64_IMM(BPF_REG_0, 1),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
- 		BPF_EXIT_INSN(),
- 	},
--	.result = REJECT,
--	.prog_type = BPF_PROG_TYPE_CGROUP_SYSCTL,
--	.errstr = "invalid indirect read from stack R4 off -16+4 size 8",
-+	.result_unpriv = REJECT,
-+	.errstr_unpriv = "invalid indirect read from stack R4 off -16+4 size 8",
-+	/* in privileged mode reads from uninitialized stack locations are permitted */
-+	.result = ACCEPT,
- },
- {
- 	"ARG_PTR_TO_LONG misaligned",
-diff --git a/tools/testing/selftests/bpf/verifier/search_pruning.c b/tools/testing/selftests/bpf/verifier/search_pruning.c
-index d63fd8991b03..745d6b5842fd 100644
---- a/tools/testing/selftests/bpf/verifier/search_pruning.c
-+++ b/tools/testing/selftests/bpf/verifier/search_pruning.c
-@@ -128,9 +128,10 @@
- 		BPF_EXIT_INSN(),
- 	},
- 	.fixup_map_hash_8b = { 3 },
--	.errstr = "invalid read from stack off -16+0 size 8",
--	.result = REJECT,
--	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+	.errstr_unpriv = "invalid read from stack off -16+0 size 8",
-+	.result_unpriv = REJECT,
-+	/* in privileged mode reads from uninitialized stack locations are permitted */
-+	.result = ACCEPT,
- },
- {
- 	"precision tracking for u32 spill/fill",
-@@ -258,6 +259,8 @@
- 	BPF_EXIT_INSN(),
- 	},
- 	.flags = BPF_F_TEST_STATE_FREQ,
--	.errstr = "invalid read from stack off -8+1 size 8",
--	.result = REJECT,
-+	.errstr_unpriv = "invalid read from stack off -8+1 size 8",
-+	.result_unpriv = REJECT,
-+	/* in privileged mode reads from uninitialized stack locations are permitted */
-+	.result = ACCEPT,
- },
-diff --git a/tools/testing/selftests/bpf/verifier/sock.c b/tools/testing/selftests/bpf/verifier/sock.c
-index d11d0b28be41..108dd3ee1edd 100644
---- a/tools/testing/selftests/bpf/verifier/sock.c
-+++ b/tools/testing/selftests/bpf/verifier/sock.c
-@@ -530,33 +530,6 @@
- 	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
- 	.result = ACCEPT,
- },
--{
--	"sk_storage_get(map, skb->sk, &stack_value, 1): partially init stack_value",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_2, 0),
--	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_2, -8),
--	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct __sk_buff, sk)),
--	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
--	BPF_EXIT_INSN(),
--	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
--	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 2),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
--	BPF_EXIT_INSN(),
--	BPF_MOV64_IMM(BPF_REG_4, 1),
--	BPF_MOV64_REG(BPF_REG_3, BPF_REG_10),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, -8),
--	BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
--	BPF_LD_MAP_FD(BPF_REG_1, 0),
--	BPF_EMIT_CALL(BPF_FUNC_sk_storage_get),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_sk_storage_map = { 14 },
--	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
--	.result = REJECT,
--	.errstr = "invalid indirect read from stack",
--},
- {
- 	"bpf_map_lookup_elem(smap, &key)",
- 	.insns = {
-diff --git a/tools/testing/selftests/bpf/verifier/spill_fill.c b/tools/testing/selftests/bpf/verifier/spill_fill.c
-index 9bb302dade23..d1463bf4949a 100644
---- a/tools/testing/selftests/bpf/verifier/spill_fill.c
-+++ b/tools/testing/selftests/bpf/verifier/spill_fill.c
-@@ -171,9 +171,10 @@
- 	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_EXIT_INSN(),
- 	},
--	.result = REJECT,
--	.errstr = "invalid read from stack off -4+0 size 4",
--	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.result_unpriv = REJECT,
-+	.errstr_unpriv = "invalid read from stack off -4+0 size 4",
-+	/* in privileged mode reads from uninitialized stack locations are permitted */
-+	.result = ACCEPT,
- },
- {
- 	"Spill a u32 const scalar.  Refill as u16.  Offset to skb->data",
-diff --git a/tools/testing/selftests/bpf/verifier/var_off.c b/tools/testing/selftests/bpf/verifier/var_off.c
-index d37f512fad16..b183e26c03f1 100644
---- a/tools/testing/selftests/bpf/verifier/var_off.c
-+++ b/tools/testing/selftests/bpf/verifier/var_off.c
-@@ -212,31 +212,6 @@
- 	.result = REJECT,
- 	.prog_type = BPF_PROG_TYPE_LWT_IN,
- },
--{
--	"indirect variable-offset stack access, max_off+size > max_initialized",
--	.insns = {
--	/* Fill only the second from top 8 bytes of the stack. */
--	BPF_ST_MEM(BPF_DW, BPF_REG_10, -16, 0),
--	/* Get an unknown value. */
--	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, 0),
--	/* Make it small and 4-byte aligned. */
--	BPF_ALU64_IMM(BPF_AND, BPF_REG_2, 4),
--	BPF_ALU64_IMM(BPF_SUB, BPF_REG_2, 16),
--	/* Add it to fp.  We now have either fp-12 or fp-16, but we don't know
--	 * which. fp-12 size 8 is partially uninitialized stack.
--	 */
--	BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_10),
--	/* Dereference it indirectly. */
--	BPF_LD_MAP_FD(BPF_REG_1, 0),
--	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_map_hash_8b = { 5 },
--	.errstr = "invalid indirect read from stack R2 var_off",
--	.result = REJECT,
--	.prog_type = BPF_PROG_TYPE_LWT_IN,
--},
- {
- 	"indirect variable-offset stack access, min_off < min_initialized",
- 	.insns = {
-@@ -289,33 +264,6 @@
- 	.result = ACCEPT,
- 	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
- },
--{
--	"indirect variable-offset stack access, uninitialized",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_2, 6),
--	BPF_MOV64_IMM(BPF_REG_3, 28),
--	/* Fill the top 16 bytes of the stack. */
--	BPF_ST_MEM(BPF_W, BPF_REG_10, -16, 0),
--	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
--	/* Get an unknown value. */
--	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_1, 0),
--	/* Make it small and 4-byte aligned. */
--	BPF_ALU64_IMM(BPF_AND, BPF_REG_4, 4),
--	BPF_ALU64_IMM(BPF_SUB, BPF_REG_4, 16),
--	/* Add it to fp.  We now have either fp-12 or fp-16, we don't know
--	 * which, but either way it points to initialized stack.
--	 */
--	BPF_ALU64_REG(BPF_ADD, BPF_REG_4, BPF_REG_10),
--	BPF_MOV64_IMM(BPF_REG_5, 8),
--	/* Dereference it indirectly. */
--	BPF_EMIT_CALL(BPF_FUNC_getsockopt),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
--	BPF_EXIT_INSN(),
--	},
--	.errstr = "invalid indirect read from stack R4 var_off",
--	.result = REJECT,
--	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
--},
- {
- 	"indirect variable-offset stack access, ok",
- 	.insns = {
++#include <test_progs.h>
++#include "uninit_stack.skel.h"
++
++void test_uninit_stack(void)
++{
++	RUN_TESTS(uninit_stack);
++}
+diff --git a/tools/testing/selftests/bpf/progs/uninit_stack.c b/tools/testing/selftests/bpf/progs/uninit_stack.c
+new file mode 100644
+index 000000000000..20ff6a22c906
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/uninit_stack.c
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++/* Read an uninitialized value from stack at a fixed offset */
++SEC("socket")
++__naked int read_uninit_stack_fixed_off(void *ctx)
++{
++	asm volatile ("				\
++		// force stack depth to be 128	\
++		*(u64*)(r10 - 128) = r1;	\
++		r1 = *(u8 *)(r10 - 8 );		\
++		r1 = *(u8 *)(r10 - 11);		\
++		r1 = *(u8 *)(r10 - 13);		\
++		r1 = *(u8 *)(r10 - 15);		\
++		r1 = *(u16*)(r10 - 16);		\
++		r1 = *(u32*)(r10 - 32);		\
++		r1 = *(u64*)(r10 - 64);		\
++		// read from a spill of a wrong size, it is a separate	\
++		// branch in check_stack_read_fixed_off()		\
++		*(u32*)(r10 - 72) = r1;		\
++		r1 = *(u64*)(r10 - 72);		\
++		r0 = 0;				\
++		exit;				\
++"
++		      ::: __clobber_all);
++}
++
++/* Read an uninitialized value from stack at a variable offset */
++SEC("socket")
++__naked int read_uninit_stack_var_off(void *ctx)
++{
++	asm volatile ("				\
++		call %[bpf_get_prandom_u32];	\
++		// force stack depth to be 64	\
++		*(u64*)(r10 - 64) = r0;		\
++		r0 = -r0;			\
++		// give r0 a range [-31, -1]	\
++		if r0 s<= -32 goto exit_%=;	\
++		if r0 s>= 0 goto exit_%=;	\
++		// access stack using r0	\
++		r1 = r10;			\
++		r1 += r0;			\
++		r2 = *(u8*)(r1 + 0);		\
++exit_%=:	r0 = 0;				\
++		exit;				\
++"
++		      :
++		      : __imm(bpf_get_prandom_u32)
++		      : __clobber_all);
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.39.1
 
