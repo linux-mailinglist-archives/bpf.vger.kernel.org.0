@@ -2,202 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D4A6993F9
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 13:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BB569946C
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 13:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbjBPMM0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 07:12:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
+        id S229723AbjBPMfK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 07:35:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjBPMMZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 07:12:25 -0500
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBAF56483;
-        Thu, 16 Feb 2023 04:12:22 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vbof6OJ_1676549539;
-Received: from 30.221.150.53(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0Vbof6OJ_1676549539)
-          by smtp.aliyun-inc.com;
-          Thu, 16 Feb 2023 20:12:20 +0800
-Message-ID: <54043113-e524-6ca2-ce77-08d45099aff2@linux.alibaba.com>
-Date:   Thu, 16 Feb 2023 20:12:18 +0800
+        with ESMTP id S229501AbjBPMfJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 07:35:09 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF54564A3;
+        Thu, 16 Feb 2023 04:35:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676550908; x=1708086908;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=RvzoyO3S9d8UpnXYoHO0L1aMhWxzZ4vaqKE2T4/fPkc=;
+  b=KAvz66nSE9SiuSxX3KFYgn0tz1NBNhLgETjF39VDodfCciFnieejB9Om
+   qonHjHlPOdt4eF0LYk49h63o33NPskbpqco7Z88fit86QPDDlEEL2hP+6
+   yNVbX+u/5ClwxDzOALvM+xdPBt+JsYmLbNgkAkTOwWDGvD9kqbF5rOw/w
+   4chFnU/SGHeKXtZqnoukcg0/HXrfAaMefLggJGZ+S0LxoW1fzPPLkh82j
+   L2cLik5r9B+qW1wV0fQSpLmiQNnNSGlimor6daPRaLCkUzZdmNDu4cNzX
+   JtW8tkOYSLegxumobVxkE2qbsSehSEzt0jR+TNQpTudWO83iTN5eAI3eh
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="319767052"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="319767052"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 04:35:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="999019260"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="999019260"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Feb 2023 04:35:07 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Thu, 16 Feb 2023 04:35:06 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Thu, 16 Feb 2023 04:35:06 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Thu, 16 Feb 2023 04:35:06 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.108)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Thu, 16 Feb 2023 04:35:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PDBjRxe3F0wceeqgTQHIR2QIOs62A6+tMQk8Mxz14FmccfoYyfWWOK+GW/6p/LzEWd3UxUnuZb0ExNKtuDG2iWEJvq5nfzzVLJesN+Vg3UUHd3MjVY7HCS4ztterM1YM5fGY6TAXsTdKo87gduGKB1rXcy3ccmvj48I/lwaHGIGC55q9vb3xCOyc7y//tjCpAF+GmPwcT5F32DdvEoS3/D6FPQR9bHQakoQzKPd/orv4nB7n7qv+z3Cn7L/0pogPWk99rGHg+ci67g0Df2eUlhwN4XYc8c270u2OMqI4h0uldeTCQUiM/RzlLw2KDTKFlTjcTclRyHw7NOKOze1qdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ujTs6YXEbYjU72+yb6CzvAF+VcQZxj3Nsj7f9ayQWlA=;
+ b=R9tXlb+14WVeWvcUm/gL2Z4VJg8WE7hjxlQFipYM6XKG5etlB95PLPnqSJVeqAi19T59qDcO3Aem03KuqXY+3ZMABlV8ySwFkAEr1A5ijdzZIAL+qGEaLB+J8hWobeYNtJdGsktayDxSS8WjavdqCXU3QnY1eg7M2//aCwkQp+t1cWymOzOOaNC/S6tbI4r2ixa1jbDRUGqjEXV3ySeQU/ZsyPpk4qYKP/UDUnsL5ov3AmJRcXp204PYUdq/9+1rJqgLeohQ4bd7i+fSF2hRGuIHzztZrfcrj3pjHE6iMSeTOFl4js7kp98YyNJgavvq5xH64USsnCeAqzpy3TAfSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5471.namprd11.prod.outlook.com (2603:10b6:5:39d::10)
+ by PH8PR11MB6658.namprd11.prod.outlook.com (2603:10b6:510:1c1::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.26; Thu, 16 Feb
+ 2023 12:35:04 +0000
+Received: from DM4PR11MB5471.namprd11.prod.outlook.com
+ ([fe80::b7b7:8e90:2dcd:b8e9]) by DM4PR11MB5471.namprd11.prod.outlook.com
+ ([fe80::b7b7:8e90:2dcd:b8e9%7]) with mapi id 15.20.6111.013; Thu, 16 Feb 2023
+ 12:35:04 +0000
+Date:   Thu, 16 Feb 2023 13:16:41 +0100
+From:   Larysa Zaremba <larysa.zaremba@intel.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+CC:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        <brouer@redhat.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        <martin.lau@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <alexandr.lobakin@intel.com>, <xdp-hints@xdp-project.net>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next V1] xdp: bpf_xdp_metadata use
+ NODEV for no device support
+Message-ID: <Y+4eqeqeagWbWCMl@lincoln>
+References: <167645577609.1860229.12489295285473044895.stgit@firesoul>
+ <Y+z9/Wg7RZ3wJ8LZ@lincoln>
+ <c9be8991-1186-ef0f-449c-f2dd5046ca02@intel.com>
+ <836540e1-6f8c-cbef-5415-c9ebc55d94d6@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <836540e1-6f8c-cbef-5415-c9ebc55d94d6@redhat.com>
+X-ClientProxiedBy: FR3P281CA0137.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:95::11) To DM4PR11MB5471.namprd11.prod.outlook.com
+ (2603:10b6:5:39d::10)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [RFC 3/3] ublk_drv: add ebpf support
-Content-Language: en-US
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-block@vger.kernel.org, io-uring@vger.kernel.org,
-        bpf@vger.kernel.org, axboe@kernel.dk, asml.silence@gmail.com,
-        ZiyangZhang@linux.alibaba.com
-References: <20230215004122.28917-1-xiaoguang.wang@linux.alibaba.com>
- <20230215004122.28917-4-xiaoguang.wang@linux.alibaba.com>
- <Y+3lOn04pdFtdGbr@T590>
-From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-In-Reply-To: <Y+3lOn04pdFtdGbr@T590>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.3 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5471:EE_|PH8PR11MB6658:EE_
+X-MS-Office365-Filtering-Correlation-Id: e79984cf-7111-4071-01d4-08db101a3a59
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: flO3KzR6km6FuQaoPf4zElGW4bGPEkX5HUzgXqcsPnP6pdqaUeBTGIzLn04fqzzAgFKwMm8eoIzWiR3P20pwxjG8xkUcb0IDIKGSE7+QXmDFypgdrRU8/0Wv/fD9L664T5GJgLrnVvTGWqGviI/YSpCXhWapbqhGydwOBqnrDwl+ORFujyRqhgYnxJxAj2ruJJmDJTTxY20Gn7BFn+6bnstYZ70Y4OldVPBpjVefUYofQVBpN47EeB+wnv9lowk0aq4yyoFuuP9cb38ccmKMkZ2KXQrnrMyLBYVqgVtXCjYlLj8h9n3jecqFSYWzP+kk5mZdi/Y257SZtxRDMwptD7WiAreWMa5CJtIqRIvI2ZcgZtlPQTMHzXzISerivlYA8Z9wnZ8YvhD1L1THn/DSZk43PfltEFk8j2A/eP5irosT3eBnhyCW2F3Rdc4imfermZI57+MXJMChocLTXg2cpA+tfO3W0bunPvkIvo09K4qeCzMq5ZyWH9soFB345f5ck5Lbf7ZS0mib5v/yl1mAM8axOyPeKJruVxpyQ7Y3vBgr5ucqEWmt9Pv4HR5IBjNHjaVNyGCKyMxnlFRo4ZXRklOS4DexziEW8iDKjyo6nXIMBYY+UHdypAbzC4uov0f5VVK7jcCLuDsUbVs/8QA3heBtw30c101jrZ9syjBfaQBFZc6Y94Ll7RRxWTWW1+P4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5471.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(396003)(346002)(376002)(39860400002)(366004)(136003)(451199018)(6916009)(4326008)(66556008)(66946007)(66476007)(8676002)(6512007)(9686003)(6666004)(186003)(26005)(6506007)(83380400001)(86362001)(33716001)(316002)(6486002)(478600001)(54906003)(38100700002)(82960400001)(44832011)(5660300002)(66899018)(2906002)(41300700001)(8936002)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?F8ypXfyq6aE5UJ+cU5LAgkqnTdmm0edjBTNGRxRL/pCM1H83xLidedNtMsuR?=
+ =?us-ascii?Q?HWSsJlAWIG2ZRH2IWwEoe7+a55307vg0XYHAhf6MKR/mdK44pWNmfcq5D2SX?=
+ =?us-ascii?Q?yDVOJR81D/h8Lwtv/fg8MIKLMW5QpuVzw0aHoMiSOS7DcnNv3QBHMnXdjCQh?=
+ =?us-ascii?Q?G6VLruXr0t+v7Q5NmBlurMWBcnY2WCtpWqfd8kfUUWjVqU8lutglQOLdpY5k?=
+ =?us-ascii?Q?kRcpVXY8awO9EkvbQoh9T1QufGLSDi9G9XjMZVQTkl1zZN70KJrjoPeI4D83?=
+ =?us-ascii?Q?/ONH7UXvQAYrHfdmv5Blkor7Hl7EHwueYO8YupTri4obOIODTrnWCst5lXAw?=
+ =?us-ascii?Q?3H7hb1A8Cp4+KQbYvbsC+BubayoNbL1pceR5Gg3E2yMdKHuqxynISKuG3mPj?=
+ =?us-ascii?Q?a5u6Tu6GXaINXTt/Ovhzy3Oj9/3csUv1q+pYNppN5ZGSrRzi6O2B+QI2GIX1?=
+ =?us-ascii?Q?42Uc6r+EMXN3yAEczKye4n96nNDW7pRTrmye2cVeF4oY7PtQT+dhcFy+M+zm?=
+ =?us-ascii?Q?tn5qHRfX8XnvNVxFG3QYr1EVvc/WHO0AroRlcdNwVihKd6wt8eXrHCpK0zgX?=
+ =?us-ascii?Q?FMER13zmY0Wr5wh753t/DOiPhhGpI0NR8TjMU+MtEDDL7szyru77xAzJ82mV?=
+ =?us-ascii?Q?pHuS/USTLHSfE5/FsyC9MJsVhqV+2Xddjm9cIa5NgCRd+30yO77AyYUfkR1a?=
+ =?us-ascii?Q?KLov3laBb0mW6qhHd/hDlhRyyZET5GgFPgTz7+dUweT5ajxdNCUR+N06wrE7?=
+ =?us-ascii?Q?EssppFMOK1RfO7acrIbJLLhVx2RzuPXfaYn9ngWHdvRHAeNxEcwT8xabjYnv?=
+ =?us-ascii?Q?K5wBUl4angwmT5gbm1S1kNfaQLHVKnnzH4fvb1J2FKZ1pc5WJDxdWkSnIzXN?=
+ =?us-ascii?Q?lkmTPk17Z+VEhK/9Wt1SnCw6o0pVdGV7tyT/hKPF+FaSEIg+fFPJ2WVCHPjh?=
+ =?us-ascii?Q?J/5llPfqYtFkvs0TZ5r08WRcbcfXulqI5Qvc20UeaVSb8pr0uV8xcB/Y1DRa?=
+ =?us-ascii?Q?+zlhEUhiWRJ3cPHjDdcM+k/1yQkjtTw2RsZyyHctTBFbxxSJxzOO3EV1gsOU?=
+ =?us-ascii?Q?/OvyeFtLT9pvj8e50mGsEq/4FoIyFnoF5mX0kGqxBkme89tgFIK6ErQm2XJT?=
+ =?us-ascii?Q?C3R+gFQ+1grHV8JwUINbpgYXy7xHNfHJzgRydm4EVhdOjo5pmzKac+70/7I6?=
+ =?us-ascii?Q?YPHvlXcrPZ23JnIhwmlr95s2fN7W+Wi/YW+7Rh3UtBES8SAjHhsiDzvsWFsC?=
+ =?us-ascii?Q?Lz/HNfInltbRPY1GT02DPpq9OdMWSRVlqkw8sxR1s7Fd6ZHgA1U5kAMOO6/x?=
+ =?us-ascii?Q?AdI6BNOWsBI8uwDQ1snkEak/6e9aTqiuLU5Uv6IsfF3xqK/L6oDAEH6gOzY2?=
+ =?us-ascii?Q?Cu/Jpv3HLbBykiOc15dFlZS+P5RZ7wQcyxqY4Epdl+BleTlztoxdAu4fOq+4?=
+ =?us-ascii?Q?Tu2KQAOcp7rydddKfrLXDX/9t/DyDLZWaj44ALei4Leo323Dvko5L6Wo7WCD?=
+ =?us-ascii?Q?EC43apg7cJb8qzDzqI32sUZsVPdii6ZtT5v7Ro89CT+LZ4C/20lD8L8P94AM?=
+ =?us-ascii?Q?iuQC+pwbiZsp1n1yNn2zGlYyyfA1+H39fCRTyfPWyjbAmJ4gaZ1VRJrEWzmg?=
+ =?us-ascii?Q?jg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e79984cf-7111-4071-01d4-08db101a3a59
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5471.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 12:35:04.1359
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tgngFR085Nj516hWimo4yrzsbkhYbovuHzKvOtu2AUxYW9kR0v/y7K9c9IKBSUIq304RGxMlC1TWeyxTbQMpfoKuEnzhDmNzEiqQFdQIUhA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6658
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hello,
+On Wed, Feb 15, 2023 at 06:50:10PM +0100, Jesper Dangaard Brouer wrote:
+> 
+> On 15/02/2023 18.11, Alexander Lobakin wrote:
+> > From: Zaremba, Larysa <larysa.zaremba@intel.com>
+> > Date: Wed, 15 Feb 2023 16:45:18 +0100
+> > 
+> > > On Wed, Feb 15, 2023 at 11:09:36AM +0100, Jesper Dangaard Brouer wrote:
+> > > > With our XDP-hints kfunc approach, where individual drivers overload the
+> > > > default implementation, it can be hard for API users to determine
+> > > > whether or not the current device driver have this kfunc available.
+> > > > 
+> > > > Change the default implementations to use an errno (ENODEV), that
+> > > > drivers shouldn't return, to make it possible for BPF runtime to
+> > > > determine if bpf kfunc for xdp metadata isn't implemented by driver.
+> > > 
+> > > I think it diverts ENODEV usage from its original purpose too much.
+> 
+> Can you suggest a errno that is a better fit?
 
-> On Wed, Feb 15, 2023 at 08:41:22AM +0800, Xiaoguang Wang wrote:
->> Currenly only one bpf_ublk_queue_sqe() ebpf is added, ublksrv target
->> can use this helper to write ebpf prog to support ublk kernel & usersapce
->> zero copy, please see ublksrv test codes for more info.
->>
->>  	 */
->> +	if ((req_op(req) == REQ_OP_WRITE) && ub->io_prep_prog)
->> +		return rq_bytes;
-> Can you explain a bit why READ isn't supported? Because WRITE zero
-> copy is supposed to be supported easily with splice based approach,
-> and I am more interested in READ zc actually.
-No special reason, READ op can also be supported. I'll
-add this support in patch set v2.
-For this RFC patch set, I just tried to show the idea, so
-I must admit that current codes are not mature enough :)
+EOPNOTSUPP fits just fine.
 
->
->> +
->>  	if (req_op(req) != REQ_OP_WRITE && req_op(req) != REQ_OP_FLUSH)
->>  		return rq_bytes;
->>  
->> @@ -860,6 +921,89 @@ static void ublk_queue_cmd(struct ublk_queue *ubq, struct request *rq)
->>  	}
->>  }
->>  
->>
->> +	kbuf->bvec = bvec;
->> +	rq_for_each_bvec(tmp, rq, rq_iter) {
->> +		*bvec = tmp;
->> +		bvec++;
->> +	}
->> +
->> +	kbuf->count = blk_rq_bytes(rq);
->> +	kbuf->nr_bvecs = nr_bvec;
->> +	data->kbuf = kbuf;
->> +	return 0;
-> bio/req bvec table is immutable, so here you can pass its reference
-> to kbuf directly.
-Yeah, thanks.
+> 
+> > > Maybe providing information in dmesg would be a better solution?
+> 
+> IMHO we really don't want to print any information in this code path, as
+> this is being executed as part of the BPF-prog. This will lead to
+> unfortunate latency issues.  Also considering the packet rates this need
+> to operate at.
 
->
->> +}
->> +
->> +static int ublk_run_bpf_prog(struct ublk_queue *ubq, struct request *rq)
->> +{
->> +	int err;
->> +	struct ublk_device *ub = ubq->dev;
->> +	struct bpf_prog *prog = ub->io_prep_prog;
->> +	struct ublk_io_bpf_ctx *bpf_ctx;
->> +
->> +	if (!prog)
->> +		return 0;
->> +
->> +	bpf_ctx = kmalloc(sizeof(struct ublk_io_bpf_ctx), GFP_NOIO);
->> +	if (!bpf_ctx)
->> +		return -EIO;
->> +
->> +	err = ublk_init_uring_kbuf(rq);
->> +	if (err < 0) {
->> +		kfree(bpf_ctx);
->> +		return -EIO;
->> +	}
->> +	bpf_ctx->ub = ub;
->> +	bpf_ctx->ctx.q_id = ubq->q_id;
->> +	bpf_ctx->ctx.tag = rq->tag;
->> +	bpf_ctx->ctx.op = req_op(rq);
->> +	bpf_ctx->ctx.nr_sectors = blk_rq_sectors(rq);
->> +	bpf_ctx->ctx.start_sector = blk_rq_pos(rq);
-> The above is for setting up target io parameter, which is supposed
-> to be from userspace, cause it is result of user space logic. If
-> these parameters are from kernel, the whole logic has to be done
-> in io_prep_prog.
-Yeah, it's designed that io_prep_prog implements user space
-io logic.
+I meant printing messages at bpf program load time...
+When driver functions are patched-in, you have all the information you may need 
+to inform user, if the default implementation for a particular function is used 
+instead.
 
->
->> +	bpf_prog_run_pin_on_cpu(prog, bpf_ctx);
->> +
->> +	init_task_work(&bpf_ctx->work, ublk_bpf_io_submit_fn);
->> +	if (task_work_add(ubq->ubq_daemon, &bpf_ctx->work, TWA_SIGNAL_NO_IPI))
->> +		kfree(bpf_ctx);
-> task_work_add() is only available in case of ublk builtin.
-Yeah, I'm thinking how to work around it.
-
->
->> +	return 0;
->> +}
->> +
->>  static blk_status_t ublk_queue_rq(struct blk_mq_hw_ctx *hctx,
->>  		const struct blk_mq_queue_data *bd)
->>  {
->> @@ -872,6 +1016,9 @@ static blk_status_t ublk_queue_rq(struct blk_mq_hw_ctx *hctx,
->>  	if (unlikely(res != BLK_STS_OK))
->>  		return BLK_STS_IOERR;
->>  
->> +	/* Currently just for test. */
->> +	ublk_run_bpf_prog(ubq, rq);
-> Can you explain the above comment a bit? When is the io_prep_prog called
-> in the non-test version? Or can you post the non-test version in list
-> for review.
-Forgot to delete stale comments, sorry. I'm writing v2 patch set,
-
-> Here it is the key for understanding the whole idea, especially when
-> is io_prep_prog called finally? How to pass parameters to io_prep_prog?
-Let me explain more about the design:
-io_prep_prog has two types of parameters:
-1) its call argument: struct ublk_bpf_ctx, see ublk.bpf.c.
-ublk_bpf_ctx will describe one kernel io requests about
-its op, qid, sectors info. io_prep_prog uses these info to
-map target io.
-2) ebpf map structure, user space daemon can use map
-structure to pass much information from user space to
-io_prep_prog, which will help it to initialize target io if necessary.
-
-io_prep_prog is called when ublk_queue_rq() is called, this bpf
-prog will initialize one or more sqes according to user logic, and
-io_prep_prog will put these sqes in an ebpf map structure, then
-execute a task_work_add() to notify ubq_daemon to execute
-io_submit_prog. Note, we can not call io_uring_submit_sqe()
-in task context that calls ublk_queue_rq(), that context does not
-have io_uring instance owned by ubq_daemon.
-Later ubq_daemon will call io_submit_prog to submit sqes.
-
->
-> Given it is ebpf prog, I don't think any userspace parameter can be
-> passed to io_prep_prog when submitting IO, that means all user logic has
-> to be done inside io_prep_prog? If yes, not sure if it is one good way,
-> cause ebpf prog is very limited programming environment, but the user
-> logic could be as complicated as using btree to map io, or communicating
-> with remote machine for figuring out the mapping. Loop is just the
-> simplest direct mapping.
-Currently, we can use ebpf map structure to pass user space
-parameter to io_prep_prog. Also I agree with you that complicated
-logic maybe hard to be implemented in ebpf prog, hope ebpf
-community will improve this situation gradually.
-
-For userspace target implementations I met so far, they just use
-userspace block device solutions to visit distributed filesystem,
-involves socket programming and have simple map io logic. We
-can prepare socket fd in ebpf map structure, and these map io
-logic should be easily implemented in ebpf prog, though I don't
-apply this ebpf method to our internal business yet.
-
-Thanks for review.
-
-Regards,
-Xiaoguang Wang
-
->
->
-> Thanks, 
-> Ming
-
+> 
+> > 
+> > +1, -%ENODEV shouldn't be used here. It stands for "no device", for
+> > example the driver probing core doesn't treat it as an error or that
+> > something is not supported (rather than there's no device installed
+> > in a slot / on a bus etc.).
+> > 
+> 
+> I wanted to choose something that isn't natural for a device driver
+> developer to choose as a return code.  I choose the "no device", because
+> the "device" driver doesn't implement this.
+> 
+> The important part is help ourselves (and support) to reliably determine
+> if a device driver implements this kfunc or not. I'm not married to the
+> specific errno.
+> 
+> I hit this issue myself, when developing these kfuncs for igc.  I was
+> constantly loading and unloading the driver while developing this. And
+> my kfunc would return -EOPNOTSUPP in some cases, and I couldn't
+> understand why my code changes was not working, but in reality I was
+> hitting the default kfunc implementation as it wasn't the correct
+> version of the driver I had loaded.  It would in practice have save me
+> time while developing...
+> 
+> Please suggest a better errno if the color is important to you.
+> 
+> > > 
+> > > > 
+> > > > This is intended to ease supporting and troubleshooting setups. E.g.
+> > > > when users on mailing list report -19 (ENODEV) as an error, then we can
+> > > > immediately tell them their kernel is too old.
+> > > 
+> > > Do you mean driver being too old, not kernel?
+> 
+> Sure I guess, I do mean the driver version.
+> 
+> I guess you are thinking in the lines of Intel customers compiling Intel
+> out-of-tree kernel modules, this will also be practical and ease
+> troubleshooting for Intel support teams.
+> 
+> > > > 
+> > > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > > > ---
+> > [...]
+> > 
+> > Thanks,
+> > Olek
+> > 
+> 
