@@ -2,165 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8FB699C63
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 19:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E944699C6A
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 19:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjBPSg2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 13:36:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
+        id S229556AbjBPSiw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 13:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbjBPSg1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 13:36:27 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C5F4B50C
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:36:23 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id dz21so6283870edb.13
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 10:36:23 -0800 (PST)
+        with ESMTP id S229461AbjBPSiv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 13:38:51 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABB343930;
+        Thu, 16 Feb 2023 10:38:50 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id 24so1840470pgt.7;
+        Thu, 16 Feb 2023 10:38:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n2eUn6kH9Ue6WSO1X4oIjaKzA1FvsQW4uMTZXal8grs=;
-        b=FRe1iRa2TIdtMdRDoz91Q84nezlZtittlaesBPQ5zbBECmudvaec+YfTXhCTDW9pZL
-         49mH/MmPjZVrRDfO9pUYFZ0W7j1BWlPGeAqhbJbtwXp4RCUz8G4m3UlWS698Cz0R5kE/
-         8LKpluq01rQ1Ds37z0+4J1VdRW24RmT2DSMCvzpvEd6TCjLlRcGYmdJZKsSjj4BxgXzL
-         hbE0fH7dOT12qDIkFBrxKNEBKj0WF6H3e7i0pG/nHmA4+/caGsngZnBMhcklrm1akVpL
-         +AkRvifKYVCJNE6xcP9MCIH2RAaY2cqRD6cIElt302K30psKffz9/8aEJq8rReccqtS5
-         hD0Q==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SuLdwLtfLsyKrMS8dI+1/4NFezsn+c9OtrFVwK/ARsA=;
+        b=g7BW0FLF9CZ568xaYDBEUXjVspPkAaIk1NQp1MjeWnJC6NWS/5EC2HeQaOejVOXAa2
+         rnx2IjNt5yBPwecP9jkrTVCsT35F1fJ5UJbCrQwl9j1nbggCaKyJYZ/jeZlSX79sAss0
+         1DAX2SHHu7UeHAfH+biB99+2FcRoDk0oYmOeWajeIKzF9IRHTgNRYLWMWx1gpaIPFgjC
+         QxNHQgDrT71wwWHGv1row3zXEroWcF9QXR147Gr10WSlN6y2mKMMDppVvLknAjTprcLG
+         LgX8qkuMEUaNIZJXIlnodR+KgZw6KNPJBMNkjZi5R7ybWyoVDTWECotB7l1gxSgshjGV
+         tFaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n2eUn6kH9Ue6WSO1X4oIjaKzA1FvsQW4uMTZXal8grs=;
-        b=Fduq0YVlbPy+c0cVsiI1enDxy9BJyWkRRdG/2hV9ogdcIVHJdJMJzQtltWxpbvZIOK
-         VVktj3k2XNA5wY3hi2J8fXpuLTrJ62WZ9MPhDRKBJRtYCHLxTJWJpfBILBCXQlwPXp1h
-         MlHocmlrSbZkdsY1n4cvjvnTGjFLjlQrMJmfAp9AVq3XfWiI6QCX5nP7rq2dMDJCfdB8
-         HjnGKGOv/PCljSD9zIbM50aurGJ4Douk1UZ+gpKIIuuJQvn/sBFG4Y0r/DN0Kfu0I6Oy
-         aP9KUXaVELhQoG69aCfScXDB4W1cK1fzF2pWysENbnQVJW1lBP2mbdD11/brS4VExl2z
-         OKMw==
-X-Gm-Message-State: AO0yUKWg3nscr+t25gqc07gnGKEPtgWeWg+DVzB8OxsWps/BLfVcpCg1
-        lz6CMDji+g886GTBs8DZM90Oxq8g7IY=
-X-Google-Smtp-Source: AK7set+PXhdPxnERvHmKWUit0Q90yVvBMmLKLj+1Nkyf2B/swHniJcWP8DYbAX3O/PHUTUEaFYiocw==
-X-Received: by 2002:a05:6402:5484:b0:4aa:b228:eb72 with SMTP id fg4-20020a056402548400b004aab228eb72mr2827853edb.17.1676572581951;
-        Thu, 16 Feb 2023 10:36:21 -0800 (PST)
-Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id v28-20020a50d09c000000b004accc54a9edsm1237854edd.93.2023.02.16.10.36.21
+        bh=SuLdwLtfLsyKrMS8dI+1/4NFezsn+c9OtrFVwK/ARsA=;
+        b=iet5/37M6/qCC1aFDARVjrVX6VX3GbR5eQa0AhGzzGCWc0evA+kAkVXw+z3KZ57hvO
+         AnWglYJlrk8mc+fLgRWFlZQsPW8lMLidbp1S2ISa8EJP/ayphgnxpGYcpin1cX/58ObA
+         5x1Ve8cPHGMx1Zn2og9ZAv9wpVGZvYCSEdz3iORmd75Q/PXZr9gP75YAzELcaVl8tJ6V
+         Z1PR8NHmK7ojOHKN8pWrZtVKo6nW8ALm/69pbQa7/LmUxc1j/1JeFJONFrMw+8rV7gHO
+         76guClMWXmKUf8iBxpAQiuLLtZxfvXJfGDbI1/4G2OCnZBap6DMTutoX7b+FzHZhyQgQ
+         khUQ==
+X-Gm-Message-State: AO0yUKUa2mf5USs4mX2cbtdHeMkw0+wosfkXA6NqO/Bw1bl5Q+f9Ug7a
+        Tae++KbjM5Hnx/GrrIUmvrAF1P5mCNk=
+X-Google-Smtp-Source: AK7set/aje9IQy6+W9Gi4gllMJPg9aafvoLMyhy5QeuG1pEKiKWelzO3bLxDFZ6vwCo/oMvjCgiNtA==
+X-Received: by 2002:a62:5250:0:b0:596:15de:ea1e with SMTP id g77-20020a625250000000b0059615deea1emr5729416pfb.9.1676572730265;
+        Thu, 16 Feb 2023 10:38:50 -0800 (PST)
+Received: from google.com ([2620:15c:2d4:203:cb24:bfe1:41f4:4b12])
+        by smtp.gmail.com with ESMTPSA id n20-20020aa79054000000b005921c46cbadsm1663672pfo.99.2023.02.16.10.38.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Feb 2023 10:36:21 -0800 (PST)
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     bpf@vger.kernel.org, ast@kernel.org
-Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-        kernel-team@fb.com, yhs@fb.com,
-        Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next  2/2] selftests/bpf: Tests for uninitialized stack reads
-Date:   Thu, 16 Feb 2023 20:36:06 +0200
-Message-Id: <20230216183606.2483834-3-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230216183606.2483834-1-eddyz87@gmail.com>
-References: <20230216183606.2483834-1-eddyz87@gmail.com>
+        Thu, 16 Feb 2023 10:38:49 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+Date:   Thu, 16 Feb 2023 10:38:46 -0800
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 4/7] perf record: Record dropped sample count
+Message-ID: <Y+54Nla62F+dutdu@google.com>
+References: <20230214050452.26390-1-namhyung@kernel.org>
+ <20230214050452.26390-5-namhyung@kernel.org>
+ <Y+5YaQt7Fme65a78@krava>
+ <Y+5ajnitOAxjdn2C@kernel.org>
+ <Y+5bGS9clWPS+B5J@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Y+5bGS9clWPS+B5J@krava>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Two testcases to make sure that stack reads from uninitialized
-locations are accepted by verifier when executed in privileged mode:
-- read from a fixed offset;
-- read from a variable offset.
+Hi Jiri and Arnaldo,
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../selftests/bpf/prog_tests/uninit_stack.c   |  9 +++
- .../selftests/bpf/progs/uninit_stack.c        | 55 +++++++++++++++++++
- 2 files changed, 64 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/uninit_stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/uninit_stack.c
+On Thu, Feb 16, 2023 at 05:34:33PM +0100, Jiri Olsa wrote:
+> On Thu, Feb 16, 2023 at 01:32:14PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Thu, Feb 16, 2023 at 05:23:05PM +0100, Jiri Olsa escreveu:
+> > > On Mon, Feb 13, 2023 at 09:04:49PM -0800, Namhyung Kim wrote:
+> > > 
+> > > SNIP
+> > > 
+> > > > @@ -1929,12 +1923,27 @@ static void record__read_lost_samples(struct record *rec)
+> > > >  
+> > > >  		for (int x = 0; x < xyarray__max_x(xy); x++) {
+> > > >  			for (int y = 0; y < xyarray__max_y(xy); y++) {
+> > > > -				__record__read_lost_samples(rec, evsel, lost, x, y);
+> > > > +				struct perf_counts_values count;
+> > > > +
+> > > > +				if (perf_evsel__read(&evsel->core, x, y, &count) < 0) {
+> > > > +					pr_err("read LOST count failed\n");
+> > > > +					goto out;
+> > > > +				}
+> > > > +
+> > > > +				if (count.lost) {
+> > > > +					__record__save_lost_samples(rec, evsel, lost,
+> > > > +								    x, y, count.lost, 0);
+> > > > +				}
+> > > >  			}
+> > > >  		}
+> > > > +
+> > > > +		lost_count = perf_bpf_filter__lost_count(evsel);
+> > > > +		if (lost_count)
+> > > > +			__record__save_lost_samples(rec, evsel, lost, 0, 0, lost_count,
+> > > > +						    PERF_RECORD_MISC_LOST_SAMPLES_BPF);
+> > > 
+> > > hi,
+> > > I can't see PERF_RECORD_MISC_LOST_SAMPLES_BPF in the tip/perf/core so can't compile,
+> > > what do I miss?
+> > 
+> > Humm, but you shouldn't need kernel headers to build tools/perf/, right?
+> 
+> right, should be also in tools/include headers
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uninit_stack.c b/tools/testing/selftests/bpf/prog_tests/uninit_stack.c
-new file mode 100644
-index 000000000000..e64c71948491
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/uninit_stack.c
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
+Yeah, sorry about that.  I'm not sure how I missed the part.
+
+I put it in tools/lib/perf/include/perf/event.h only as it does nothing
+with kernel.  Will fix in v2.
+
+Thanks,
+Namhyung
+
+---8<---
+
+diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
+index ad47d7b31046..51b9338f4c11 100644
+--- a/tools/lib/perf/include/perf/event.h
++++ b/tools/lib/perf/include/perf/event.h
+@@ -70,6 +70,8 @@ struct perf_record_lost {
+        __u64                    lost;
+ };
+
++#define PERF_RECORD_MISC_LOST_SAMPLES_BPF (1 << 15)
 +
-+#include <test_progs.h>
-+#include "uninit_stack.skel.h"
-+
-+void test_uninit_stack(void)
-+{
-+	RUN_TESTS(uninit_stack);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/uninit_stack.c b/tools/testing/selftests/bpf/progs/uninit_stack.c
-new file mode 100644
-index 000000000000..20ff6a22c906
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/uninit_stack.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+/* Read an uninitialized value from stack at a fixed offset */
-+SEC("socket")
-+__naked int read_uninit_stack_fixed_off(void *ctx)
-+{
-+	asm volatile ("				\
-+		// force stack depth to be 128	\
-+		*(u64*)(r10 - 128) = r1;	\
-+		r1 = *(u8 *)(r10 - 8 );		\
-+		r1 = *(u8 *)(r10 - 11);		\
-+		r1 = *(u8 *)(r10 - 13);		\
-+		r1 = *(u8 *)(r10 - 15);		\
-+		r1 = *(u16*)(r10 - 16);		\
-+		r1 = *(u32*)(r10 - 32);		\
-+		r1 = *(u64*)(r10 - 64);		\
-+		// read from a spill of a wrong size, it is a separate	\
-+		// branch in check_stack_read_fixed_off()		\
-+		*(u32*)(r10 - 72) = r1;		\
-+		r1 = *(u64*)(r10 - 72);		\
-+		r0 = 0;				\
-+		exit;				\
-+"
-+		      ::: __clobber_all);
-+}
-+
-+/* Read an uninitialized value from stack at a variable offset */
-+SEC("socket")
-+__naked int read_uninit_stack_var_off(void *ctx)
-+{
-+	asm volatile ("				\
-+		call %[bpf_get_prandom_u32];	\
-+		// force stack depth to be 64	\
-+		*(u64*)(r10 - 64) = r0;		\
-+		r0 = -r0;			\
-+		// give r0 a range [-31, -1]	\
-+		if r0 s<= -32 goto exit_%=;	\
-+		if r0 s>= 0 goto exit_%=;	\
-+		// access stack using r0	\
-+		r1 = r10;			\
-+		r1 += r0;			\
-+		r2 = *(u8*)(r1 + 0);		\
-+exit_%=:	r0 = 0;				\
-+		exit;				\
-+"
-+		      :
-+		      : __imm(bpf_get_prandom_u32)
-+		      : __clobber_all);
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.39.1
+ struct perf_record_lost_samples {
+        struct perf_event_header header;
+        __u64                    lost;
 
