@@ -2,573 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5619D698E0B
-	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 08:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0A2698E43
+	for <lists+bpf@lfdr.de>; Thu, 16 Feb 2023 09:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjBPHvI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 02:51:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
+        id S229539AbjBPIF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 03:05:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjBPHvI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 02:51:08 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D895D41B5F;
-        Wed, 15 Feb 2023 23:51:04 -0800 (PST)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Axrtpn4O1j+T0BAA--.3137S3;
-        Thu, 16 Feb 2023 15:51:03 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Axeb1l4O1jIGg0AA--.31712S2;
-        Thu, 16 Feb 2023 15:51:01 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: Remove not used headers
-Date:   Thu, 16 Feb 2023 15:51:01 +0800
-Message-Id: <1676533861-27508-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8Axeb1l4O1jIGg0AA--.31712S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjvAXoW3Cryftw43KrWkXw45Kw18uFg_yoW8Gw4UKo
-        W5Jr9Igw4xG3WxAF4kGw10qr4DZr1vqasFqw47A3ykAr13WrnrGry5Aa4vq3Wftry5Krnx
-        X34Yy3WDJas5Krs3n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXasCq-sGcSsGvf
-        J3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnRJU
-        UUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s
-        0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1l84
-        ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
-        M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4
-        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWx
-        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I
-        8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AK
-        xVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcV
-        AFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8I
-        cIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
-        1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j0sjUUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229478AbjBPIFZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 03:05:25 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0FD193F0;
+        Thu, 16 Feb 2023 00:05:24 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id o8so1228408pls.11;
+        Thu, 16 Feb 2023 00:05:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XEQzmnVecLTob0AWJCV+IJlL7tCqU6c5uGFQJ2KJd/U=;
+        b=MZnMEao1Zfl9Y5XPKCJEpUVzIhjZL3PhctsE8M4xoNl5IiB3jB1BLxuXF+W2aGvxhL
+         RMpqOzRBJx50hcxxUY3KVAPxIeA4Auq40z0xNzwh8ENhWtMaaQ/a+e5m+qgODussSE5i
+         dKd02XfsKf5nA5KFkyoFeMQAIXKRlHTRZ7tQmMA71lMJ6ZELGrpO6t+dPjgc/aYhAi66
+         qLR64StZCZXCbJSDf3qq7TV62vYjKBQsfRI4JBHrtBZJS7g9QVMI7EJQGOknbeThJVr9
+         lYY9FkMq7M3lOKzYkVy4dj72Pv+LTKxAcDB4qFFOjkcXTJx1V0FEeHvtRMw15hET8mJ8
+         +85Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XEQzmnVecLTob0AWJCV+IJlL7tCqU6c5uGFQJ2KJd/U=;
+        b=u5UwNXRPIMXzjDe2AswQM+I1Di3EvQkK+BxpTCLRE/nKzhZuxcXma91V/sOwWWtbY8
+         fwifh7qq4mzgZ7mlc9peJN3I8w7KsxtjG0Zo7TmvFJJnnV8UROQmirdNqFwQAKtWxnle
+         fJX3Exu2LkPmM9coDyme3vHF/La3or0yiICFbPXc8Rcvs9tovQz8nNEgCXwU7+Qw9LTy
+         /1cPdKcGRAOPM9zPIxsa2JjuC0PvmoN5R+OYETXh0oHdIyMCmujbAIQlhnJIOF+Ehusa
+         0V6xL3r/I4rMxqW1kNoqBqHh1uq4gKSQSwboTjvBN4Dk2O6W/ZarvTX91dCHWRj72jNX
+         3kng==
+X-Gm-Message-State: AO0yUKX4MtFboWJ1AsyU8ECpal04UD9s+llbvGXNQKERmzhthZYSXGuQ
+        CKvPX7TaO3bdv5d/uYMNfO0=
+X-Google-Smtp-Source: AK7set9QjAWo6ZsPoG5UsOoD0zM7kanys0r0aqw196lzVZxzI5TtWYVwnvBvEPPdqwwBpDYKNz0Z4g==
+X-Received: by 2002:a05:6a20:7fa2:b0:c7:166d:686 with SMTP id d34-20020a056a207fa200b000c7166d0686mr2138453pzj.26.1676534723882;
+        Thu, 16 Feb 2023 00:05:23 -0800 (PST)
+Received: from localhost.localdomain (arc.lsta.media.kyoto-u.ac.jp. [130.54.10.65])
+        by smtp.gmail.com with ESMTPSA id ij21-20020a170902ab5500b00174f61a7d09sm626742plb.247.2023.02.16.00.05.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Feb 2023 00:05:23 -0800 (PST)
+From:   Taichi Nishimura <awkrail01@gmail.com>
+To:     andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        shuah@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com, awkrail01@gmail.com, iii@linux.ibm.com,
+        ytcoode@gmail.com, deso@posteo.net, memxor@gmail.com,
+        joannelkoong@gmail.com, rdunlap@infradead.org
+Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH bpf-next] Fix typos in selftest/bpf files
+Date:   Thu, 16 Feb 2023 17:04:23 +0900
+Message-Id: <20230216080423.513746-1-awkrail01@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The following three uapi headers:
+This patch is a re-submitting patch.
+I cloned bpf-next repo, run spell checker, and fixed typos.
+Included v1 and v2 patches to this one.
 
-    tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
-    tools/arch/s390/include/uapi/asm/bpf_perf_event.h
-    tools/arch/s390/include/uapi/asm/ptrace.h
+Could you review it again? 
+Let me know if I have any mistakes.
 
-were introduced in commit 618e165b2a8e ("selftests/bpf: sync kernel headers
-and introduce arch support in Makefile"), they are not used any more after
-commit 720f228e8d31 ("bpf: fix broken BPF selftest build"), so remove them.
+Best regards,
+Taichi Nishimura
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Taichi Nishimura <awkrail01@gmail.com>
 ---
- tools/arch/arm64/include/uapi/asm/bpf_perf_event.h |   9 -
- tools/arch/s390/include/uapi/asm/bpf_perf_event.h  |   9 -
- tools/arch/s390/include/uapi/asm/ptrace.h          | 458 ---------------------
- 3 files changed, 476 deletions(-)
- delete mode 100644 tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
- delete mode 100644 tools/arch/s390/include/uapi/asm/bpf_perf_event.h
- delete mode 100644 tools/arch/s390/include/uapi/asm/ptrace.h
+ tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c  | 2 +-
+ tools/testing/selftests/bpf/prog_tests/trampoline_count.c   | 2 +-
+ .../testing/selftests/bpf/progs/btf_dump_test_case_syntax.c | 2 +-
+ tools/testing/selftests/bpf/progs/dynptr_fail.c             | 2 +-
+ tools/testing/selftests/bpf/progs/strobemeta.h              | 2 +-
+ tools/testing/selftests/bpf/progs/test_cls_redirect.c       | 6 +++---
+ tools/testing/selftests/bpf/progs/test_subprogs.c           | 2 +-
+ tools/testing/selftests/bpf/progs/test_xdp_vlan.c           | 2 +-
+ tools/testing/selftests/bpf/test_cpp.cpp                    | 2 +-
+ tools/testing/selftests/bpf/veristat.c                      | 4 ++--
+ 10 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/tools/arch/arm64/include/uapi/asm/bpf_perf_event.h b/tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
-deleted file mode 100644
-index b551b74..0000000
---- a/tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
-+++ /dev/null
-@@ -1,9 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _UAPI__ASM_BPF_PERF_EVENT_H__
--#define _UAPI__ASM_BPF_PERF_EVENT_H__
--
--#include <asm/ptrace.h>
--
--typedef struct user_pt_regs bpf_user_pt_regs_t;
--
--#endif /* _UAPI__ASM_BPF_PERF_EVENT_H__ */
-diff --git a/tools/arch/s390/include/uapi/asm/bpf_perf_event.h b/tools/arch/s390/include/uapi/asm/bpf_perf_event.h
-deleted file mode 100644
-index 0a8e37a..0000000
---- a/tools/arch/s390/include/uapi/asm/bpf_perf_event.h
-+++ /dev/null
-@@ -1,9 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _UAPI__ASM_BPF_PERF_EVENT_H__
--#define _UAPI__ASM_BPF_PERF_EVENT_H__
--
--#include "ptrace.h"
--
--typedef user_pt_regs bpf_user_pt_regs_t;
--
--#endif /* _UAPI__ASM_BPF_PERF_EVENT_H__ */
-diff --git a/tools/arch/s390/include/uapi/asm/ptrace.h b/tools/arch/s390/include/uapi/asm/ptrace.h
-deleted file mode 100644
-index ad64d67..0000000
---- a/tools/arch/s390/include/uapi/asm/ptrace.h
-+++ /dev/null
-@@ -1,458 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--/*
-- *  S390 version
-- *    Copyright IBM Corp. 1999, 2000
-- *    Author(s): Denis Joseph Barrow (djbarrow@de.ibm.com,barrow_dj@yahoo.com)
-- */
--
--#ifndef _UAPI_S390_PTRACE_H
--#define _UAPI_S390_PTRACE_H
--
--/*
-- * Offsets in the user_regs_struct. They are used for the ptrace
-- * system call and in entry.S
-- */
--#ifndef __s390x__
--
--#define PT_PSWMASK  0x00
--#define PT_PSWADDR  0x04
--#define PT_GPR0     0x08
--#define PT_GPR1     0x0C
--#define PT_GPR2     0x10
--#define PT_GPR3     0x14
--#define PT_GPR4     0x18
--#define PT_GPR5     0x1C
--#define PT_GPR6     0x20
--#define PT_GPR7     0x24
--#define PT_GPR8     0x28
--#define PT_GPR9     0x2C
--#define PT_GPR10    0x30
--#define PT_GPR11    0x34
--#define PT_GPR12    0x38
--#define PT_GPR13    0x3C
--#define PT_GPR14    0x40
--#define PT_GPR15    0x44
--#define PT_ACR0     0x48
--#define PT_ACR1     0x4C
--#define PT_ACR2     0x50
--#define PT_ACR3     0x54
--#define PT_ACR4	    0x58
--#define PT_ACR5	    0x5C
--#define PT_ACR6	    0x60
--#define PT_ACR7	    0x64
--#define PT_ACR8	    0x68
--#define PT_ACR9	    0x6C
--#define PT_ACR10    0x70
--#define PT_ACR11    0x74
--#define PT_ACR12    0x78
--#define PT_ACR13    0x7C
--#define PT_ACR14    0x80
--#define PT_ACR15    0x84
--#define PT_ORIGGPR2 0x88
--#define PT_FPC	    0x90
--/*
-- * A nasty fact of life that the ptrace api
-- * only supports passing of longs.
-- */
--#define PT_FPR0_HI  0x98
--#define PT_FPR0_LO  0x9C
--#define PT_FPR1_HI  0xA0
--#define PT_FPR1_LO  0xA4
--#define PT_FPR2_HI  0xA8
--#define PT_FPR2_LO  0xAC
--#define PT_FPR3_HI  0xB0
--#define PT_FPR3_LO  0xB4
--#define PT_FPR4_HI  0xB8
--#define PT_FPR4_LO  0xBC
--#define PT_FPR5_HI  0xC0
--#define PT_FPR5_LO  0xC4
--#define PT_FPR6_HI  0xC8
--#define PT_FPR6_LO  0xCC
--#define PT_FPR7_HI  0xD0
--#define PT_FPR7_LO  0xD4
--#define PT_FPR8_HI  0xD8
--#define PT_FPR8_LO  0XDC
--#define PT_FPR9_HI  0xE0
--#define PT_FPR9_LO  0xE4
--#define PT_FPR10_HI 0xE8
--#define PT_FPR10_LO 0xEC
--#define PT_FPR11_HI 0xF0
--#define PT_FPR11_LO 0xF4
--#define PT_FPR12_HI 0xF8
--#define PT_FPR12_LO 0xFC
--#define PT_FPR13_HI 0x100
--#define PT_FPR13_LO 0x104
--#define PT_FPR14_HI 0x108
--#define PT_FPR14_LO 0x10C
--#define PT_FPR15_HI 0x110
--#define PT_FPR15_LO 0x114
--#define PT_CR_9	    0x118
--#define PT_CR_10    0x11C
--#define PT_CR_11    0x120
--#define PT_IEEE_IP  0x13C
--#define PT_LASTOFF  PT_IEEE_IP
--#define PT_ENDREGS  0x140-1
--
--#define GPR_SIZE	4
--#define CR_SIZE		4
--
--#define STACK_FRAME_OVERHEAD	96	/* size of minimum stack frame */
--
--#else /* __s390x__ */
--
--#define PT_PSWMASK  0x00
--#define PT_PSWADDR  0x08
--#define PT_GPR0     0x10
--#define PT_GPR1     0x18
--#define PT_GPR2     0x20
--#define PT_GPR3     0x28
--#define PT_GPR4     0x30
--#define PT_GPR5     0x38
--#define PT_GPR6     0x40
--#define PT_GPR7     0x48
--#define PT_GPR8     0x50
--#define PT_GPR9     0x58
--#define PT_GPR10    0x60
--#define PT_GPR11    0x68
--#define PT_GPR12    0x70
--#define PT_GPR13    0x78
--#define PT_GPR14    0x80
--#define PT_GPR15    0x88
--#define PT_ACR0     0x90
--#define PT_ACR1     0x94
--#define PT_ACR2     0x98
--#define PT_ACR3     0x9C
--#define PT_ACR4	    0xA0
--#define PT_ACR5	    0xA4
--#define PT_ACR6	    0xA8
--#define PT_ACR7	    0xAC
--#define PT_ACR8	    0xB0
--#define PT_ACR9	    0xB4
--#define PT_ACR10    0xB8
--#define PT_ACR11    0xBC
--#define PT_ACR12    0xC0
--#define PT_ACR13    0xC4
--#define PT_ACR14    0xC8
--#define PT_ACR15    0xCC
--#define PT_ORIGGPR2 0xD0
--#define PT_FPC	    0xD8
--#define PT_FPR0     0xE0
--#define PT_FPR1     0xE8
--#define PT_FPR2     0xF0
--#define PT_FPR3     0xF8
--#define PT_FPR4     0x100
--#define PT_FPR5     0x108
--#define PT_FPR6     0x110
--#define PT_FPR7     0x118
--#define PT_FPR8     0x120
--#define PT_FPR9     0x128
--#define PT_FPR10    0x130
--#define PT_FPR11    0x138
--#define PT_FPR12    0x140
--#define PT_FPR13    0x148
--#define PT_FPR14    0x150
--#define PT_FPR15    0x158
--#define PT_CR_9     0x160
--#define PT_CR_10    0x168
--#define PT_CR_11    0x170
--#define PT_IEEE_IP  0x1A8
--#define PT_LASTOFF  PT_IEEE_IP
--#define PT_ENDREGS  0x1B0-1
--
--#define GPR_SIZE	8
--#define CR_SIZE		8
--
--#define STACK_FRAME_OVERHEAD	160	 /* size of minimum stack frame */
--
--#endif /* __s390x__ */
--
--#define NUM_GPRS	16
--#define NUM_FPRS	16
--#define NUM_CRS		16
--#define NUM_ACRS	16
--
--#define NUM_CR_WORDS	3
--
--#define FPR_SIZE	8
--#define FPC_SIZE	4
--#define FPC_PAD_SIZE	4 /* gcc insists on aligning the fpregs */
--#define ACR_SIZE	4
--
--
--#define PTRACE_OLDSETOPTIONS		21
--#define PTRACE_SYSEMU			31
--#define PTRACE_SYSEMU_SINGLESTEP	32
--#ifndef __ASSEMBLY__
--#include <linux/stddef.h>
--#include <linux/types.h>
--
--typedef union {
--	float	f;
--	double	d;
--	__u64	ui;
--	struct
--	{
--		__u32 hi;
--		__u32 lo;
--	} fp;
--} freg_t;
--
--typedef struct {
--	__u32	fpc;
--	__u32	pad;
--	freg_t	fprs[NUM_FPRS];
--} s390_fp_regs;
--
--#define FPC_EXCEPTION_MASK	0xF8000000
--#define FPC_FLAGS_MASK		0x00F80000
--#define FPC_DXC_MASK		0x0000FF00
--#define FPC_RM_MASK		0x00000003
--
--/* this typedef defines how a Program Status Word looks like */
--typedef struct {
--	unsigned long mask;
--	unsigned long addr;
--} __attribute__ ((aligned(8))) psw_t;
--
--#ifndef __s390x__
--
--#define PSW_MASK_PER		0x40000000UL
--#define PSW_MASK_DAT		0x04000000UL
--#define PSW_MASK_IO		0x02000000UL
--#define PSW_MASK_EXT		0x01000000UL
--#define PSW_MASK_KEY		0x00F00000UL
--#define PSW_MASK_BASE		0x00080000UL	/* always one */
--#define PSW_MASK_MCHECK		0x00040000UL
--#define PSW_MASK_WAIT		0x00020000UL
--#define PSW_MASK_PSTATE		0x00010000UL
--#define PSW_MASK_ASC		0x0000C000UL
--#define PSW_MASK_CC		0x00003000UL
--#define PSW_MASK_PM		0x00000F00UL
--#define PSW_MASK_RI		0x00000000UL
--#define PSW_MASK_EA		0x00000000UL
--#define PSW_MASK_BA		0x00000000UL
--
--#define PSW_MASK_USER		0x0000FF00UL
--
--#define PSW_ADDR_AMODE		0x80000000UL
--#define PSW_ADDR_INSN		0x7FFFFFFFUL
--
--#define PSW_DEFAULT_KEY		(((unsigned long) PAGE_DEFAULT_ACC) << 20)
--
--#define PSW_ASC_PRIMARY		0x00000000UL
--#define PSW_ASC_ACCREG		0x00004000UL
--#define PSW_ASC_SECONDARY	0x00008000UL
--#define PSW_ASC_HOME		0x0000C000UL
--
--#else /* __s390x__ */
--
--#define PSW_MASK_PER		0x4000000000000000UL
--#define PSW_MASK_DAT		0x0400000000000000UL
--#define PSW_MASK_IO		0x0200000000000000UL
--#define PSW_MASK_EXT		0x0100000000000000UL
--#define PSW_MASK_BASE		0x0000000000000000UL
--#define PSW_MASK_KEY		0x00F0000000000000UL
--#define PSW_MASK_MCHECK		0x0004000000000000UL
--#define PSW_MASK_WAIT		0x0002000000000000UL
--#define PSW_MASK_PSTATE		0x0001000000000000UL
--#define PSW_MASK_ASC		0x0000C00000000000UL
--#define PSW_MASK_CC		0x0000300000000000UL
--#define PSW_MASK_PM		0x00000F0000000000UL
--#define PSW_MASK_RI		0x0000008000000000UL
--#define PSW_MASK_EA		0x0000000100000000UL
--#define PSW_MASK_BA		0x0000000080000000UL
--
--#define PSW_MASK_USER		0x0000FF0180000000UL
--
--#define PSW_ADDR_AMODE		0x0000000000000000UL
--#define PSW_ADDR_INSN		0xFFFFFFFFFFFFFFFFUL
--
--#define PSW_DEFAULT_KEY		(((unsigned long) PAGE_DEFAULT_ACC) << 52)
--
--#define PSW_ASC_PRIMARY		0x0000000000000000UL
--#define PSW_ASC_ACCREG		0x0000400000000000UL
--#define PSW_ASC_SECONDARY	0x0000800000000000UL
--#define PSW_ASC_HOME		0x0000C00000000000UL
--
--#endif /* __s390x__ */
--
--
--/*
-- * The s390_regs structure is used to define the elf_gregset_t.
-- */
--typedef struct {
--	psw_t psw;
--	unsigned long gprs[NUM_GPRS];
--	unsigned int  acrs[NUM_ACRS];
--	unsigned long orig_gpr2;
--} s390_regs;
--
--/*
-- * The user_pt_regs structure exports the beginning of
-- * the in-kernel pt_regs structure to user space.
-- */
--typedef struct {
--	unsigned long args[1];
--	psw_t psw;
--	unsigned long gprs[NUM_GPRS];
--} user_pt_regs;
--
--/*
-- * Now for the user space program event recording (trace) definitions.
-- * The following structures are used only for the ptrace interface, don't
-- * touch or even look at it if you don't want to modify the user-space
-- * ptrace interface. In particular stay away from it for in-kernel PER.
-- */
--typedef struct {
--	unsigned long cr[NUM_CR_WORDS];
--} per_cr_words;
--
--#define PER_EM_MASK 0xE8000000UL
--
--typedef struct {
--#ifdef __s390x__
--	unsigned		       : 32;
--#endif /* __s390x__ */
--	unsigned em_branching	       : 1;
--	unsigned em_instruction_fetch  : 1;
--	/*
--	 * Switching on storage alteration automatically fixes
--	 * the storage alteration event bit in the users std.
--	 */
--	unsigned em_storage_alteration : 1;
--	unsigned em_gpr_alt_unused     : 1;
--	unsigned em_store_real_address : 1;
--	unsigned		       : 3;
--	unsigned branch_addr_ctl       : 1;
--	unsigned		       : 1;
--	unsigned storage_alt_space_ctl : 1;
--	unsigned		       : 21;
--	unsigned long starting_addr;
--	unsigned long ending_addr;
--} per_cr_bits;
--
--typedef struct {
--	unsigned short perc_atmid;
--	unsigned long address;
--	unsigned char access_id;
--} per_lowcore_words;
--
--typedef struct {
--	unsigned perc_branching		 : 1;
--	unsigned perc_instruction_fetch  : 1;
--	unsigned perc_storage_alteration : 1;
--	unsigned perc_gpr_alt_unused	 : 1;
--	unsigned perc_store_real_address : 1;
--	unsigned			 : 3;
--	unsigned atmid_psw_bit_31	 : 1;
--	unsigned atmid_validity_bit	 : 1;
--	unsigned atmid_psw_bit_32	 : 1;
--	unsigned atmid_psw_bit_5	 : 1;
--	unsigned atmid_psw_bit_16	 : 1;
--	unsigned atmid_psw_bit_17	 : 1;
--	unsigned si			 : 2;
--	unsigned long address;
--	unsigned			 : 4;
--	unsigned access_id		 : 4;
--} per_lowcore_bits;
--
--typedef struct {
--	union {
--		per_cr_words   words;
--		per_cr_bits    bits;
--	} control_regs;
--	/*
--	 * The single_step and instruction_fetch bits are obsolete,
--	 * the kernel always sets them to zero. To enable single
--	 * stepping use ptrace(PTRACE_SINGLESTEP) instead.
--	 */
--	unsigned  single_step	    : 1;
--	unsigned  instruction_fetch : 1;
--	unsigned		    : 30;
--	/*
--	 * These addresses are copied into cr10 & cr11 if single
--	 * stepping is switched off
--	 */
--	unsigned long starting_addr;
--	unsigned long ending_addr;
--	union {
--		per_lowcore_words words;
--		per_lowcore_bits  bits;
--	} lowcore;
--} per_struct;
--
--typedef struct {
--	unsigned int  len;
--	unsigned long kernel_addr;
--	unsigned long process_addr;
--} ptrace_area;
--
--/*
-- * S/390 specific non posix ptrace requests. I chose unusual values so
-- * they are unlikely to clash with future ptrace definitions.
-- */
--#define PTRACE_PEEKUSR_AREA	      0x5000
--#define PTRACE_POKEUSR_AREA	      0x5001
--#define PTRACE_PEEKTEXT_AREA	      0x5002
--#define PTRACE_PEEKDATA_AREA	      0x5003
--#define PTRACE_POKETEXT_AREA	      0x5004
--#define PTRACE_POKEDATA_AREA	      0x5005
--#define PTRACE_GET_LAST_BREAK	      0x5006
--#define PTRACE_PEEK_SYSTEM_CALL       0x5007
--#define PTRACE_POKE_SYSTEM_CALL	      0x5008
--#define PTRACE_ENABLE_TE	      0x5009
--#define PTRACE_DISABLE_TE	      0x5010
--#define PTRACE_TE_ABORT_RAND	      0x5011
--
--/*
-- * The numbers chosen here are somewhat arbitrary but absolutely MUST
-- * not overlap with any of the number assigned in <linux/ptrace.h>.
-- */
--#define PTRACE_SINGLEBLOCK	12	/* resume execution until next branch */
--
--/*
-- * PT_PROT definition is loosely based on hppa bsd definition in
-- * gdb/hppab-nat.c
-- */
--#define PTRACE_PROT			  21
--
--typedef enum {
--	ptprot_set_access_watchpoint,
--	ptprot_set_write_watchpoint,
--	ptprot_disable_watchpoint
--} ptprot_flags;
--
--typedef struct {
--	unsigned long lowaddr;
--	unsigned long hiaddr;
--	ptprot_flags prot;
--} ptprot_area;
--
--/* Sequence of bytes for breakpoint illegal instruction.  */
--#define S390_BREAKPOINT     {0x0,0x1}
--#define S390_BREAKPOINT_U16 ((__u16)0x0001)
--#define S390_SYSCALL_OPCODE ((__u16)0x0a00)
--#define S390_SYSCALL_SIZE   2
--
--/*
-- * The user_regs_struct defines the way the user registers are
-- * store on the stack for signal handling.
-- */
--struct user_regs_struct {
--	psw_t psw;
--	unsigned long gprs[NUM_GPRS];
--	unsigned int  acrs[NUM_ACRS];
--	unsigned long orig_gpr2;
--	s390_fp_regs fp_regs;
--	/*
--	 * These per registers are in here so that gdb can modify them
--	 * itself as there is no "official" ptrace interface for hardware
--	 * watchpoints. This is the way intel does it.
--	 */
--	per_struct per_info;
--	unsigned long ieee_instruction_pointer;	/* obsolete, always 0 */
--};
--
--#endif /* __ASSEMBLY__ */
--
--#endif /* _UAPI_S390_PTRACE_H */
+diff --git a/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+index eb2feaac81fe..653b0a20fab9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
++++ b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+@@ -488,7 +488,7 @@ static void run_test(struct migrate_reuseport_test_case *test_case,
+ 			goto close_servers;
+ 	}
+ 
+-	/* Tie requests to the first four listners */
++	/* Tie requests to the first four listeners */
+ 	err = start_clients(test_case);
+ 	if (!ASSERT_OK(err, "start_clients"))
+ 		goto close_clients;
+diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
+index 8fd4c0d78089..e91d0d1769f1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
++++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
+@@ -79,7 +79,7 @@ void serial_test_trampoline_count(void)
+ 	if (!ASSERT_EQ(link, NULL, "ptr_is_null"))
+ 		goto cleanup;
+ 
+-	/* and finaly execute the probe */
++	/* and finally execute the probe */
+ 	prog_fd = bpf_program__fd(prog);
+ 	if (!ASSERT_GE(prog_fd, 0, "bpf_program__fd"))
+ 		goto cleanup;
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+index 26fffb02ed10..ad21ee8c7e23 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+@@ -84,7 +84,7 @@ typedef void (*printf_fn_t)(const char *, ...);
+  *	typedef int (*fn_t)(int);
+  *	typedef char * const * (*fn_ptr2_t)(s_t, fn_t);
+  *
+- * - `fn_complext_t`: pointer to a function returning struct and accepting
++ * - `fn_complex_t`: pointer to a function returning struct and accepting
+  *   union and struct. All structs and enum are anonymous and defined inline.
+  *
+  * - `signal_t: pointer to a function accepting a pointer to a function as an
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+index 5950ad6ec2e6..aa5b69354b91 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -630,7 +630,7 @@ static int release_twice_callback_fn(__u32 index, void *data)
+ }
+ 
+ /* Test that releasing a dynptr twice, where one of the releases happens
+- * within a calback function, fails
++ * within a callback function, fails
+  */
+ SEC("?raw_tp")
+ __failure __msg("arg 1 is an unacquired reference")
+diff --git a/tools/testing/selftests/bpf/progs/strobemeta.h b/tools/testing/selftests/bpf/progs/strobemeta.h
+index 753718595c26..e562be6356f3 100644
+--- a/tools/testing/selftests/bpf/progs/strobemeta.h
++++ b/tools/testing/selftests/bpf/progs/strobemeta.h
+@@ -135,7 +135,7 @@ struct strobe_value_loc {
+ 	 * tpidr_el0 for aarch64).
+ 	 * TLS_IMM_EXEC: absolute address of GOT entry containing offset
+ 	 * from thread pointer;
+-	 * TLS_GENERAL_DYN: absolute addres of double GOT entry
++	 * TLS_GENERAL_DYN: absolute address of double GOT entry
+ 	 * containing tls_index_t struct;
+ 	 */
+ 	int64_t offset;
+diff --git a/tools/testing/selftests/bpf/progs/test_cls_redirect.c b/tools/testing/selftests/bpf/progs/test_cls_redirect.c
+index 2833ad722cb7..66b304982245 100644
+--- a/tools/testing/selftests/bpf/progs/test_cls_redirect.c
++++ b/tools/testing/selftests/bpf/progs/test_cls_redirect.c
+@@ -600,7 +600,7 @@ static INLINING ret_t get_next_hop(buf_t *pkt, encap_headers_t *encap,
+ 		return TC_ACT_SHOT;
+ 	}
+ 
+-	/* Skip the remainig next hops (may be zero). */
++	/* Skip the remaining next hops (may be zero). */
+ 	return skip_next_hops(pkt, encap->unigue.hop_count -
+ 					   encap->unigue.next_hop - 1);
+ }
+@@ -610,8 +610,8 @@ static INLINING ret_t get_next_hop(buf_t *pkt, encap_headers_t *encap,
+  *
+  *    fill_tuple(&t, foo, sizeof(struct iphdr), 123, 321)
+  *
+- * clang will substitue a costant for sizeof, which allows the verifier
+- * to track it's value. Based on this, it can figure out the constant
++ * clang will substitute a constant for sizeof, which allows the verifier
++ * to track its value. Based on this, it can figure out the constant
+  * return value, and calling code works while still being "generic" to
+  * IPv4 and IPv6.
+  */
+diff --git a/tools/testing/selftests/bpf/progs/test_subprogs.c b/tools/testing/selftests/bpf/progs/test_subprogs.c
+index f8e9256cf18d..a8d602d7c88a 100644
+--- a/tools/testing/selftests/bpf/progs/test_subprogs.c
++++ b/tools/testing/selftests/bpf/progs/test_subprogs.c
+@@ -47,7 +47,7 @@ static __noinline int sub5(int v)
+ 	return sub1(v) - 1; /* compensates sub1()'s + 1 */
+ }
+ 
+-/* unfortunately verifier rejects `struct task_struct *t` as an unkown pointer
++/* unfortunately verifier rejects `struct task_struct *t` as an unknown pointer
+  * type, so we need to accept pointer as integer and then cast it inside the
+  * function
+  */
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_vlan.c b/tools/testing/selftests/bpf/progs/test_xdp_vlan.c
+index cdf3c48d6cbb..4ddcb6dfe500 100644
+--- a/tools/testing/selftests/bpf/progs/test_xdp_vlan.c
++++ b/tools/testing/selftests/bpf/progs/test_xdp_vlan.c
+@@ -98,7 +98,7 @@ bool parse_eth_frame(struct ethhdr *eth, void *data_end, struct parse_pkt *pkt)
+ 	return true;
+ }
+ 
+-/* Hint, VLANs are choosen to hit network-byte-order issues */
++/* Hint, VLANs are chosen to hit network-byte-order issues */
+ #define TESTVLAN 4011 /* 0xFAB */
+ // #define TO_VLAN  4000 /* 0xFA0 (hint 0xOA0 = 160) */
+ 
+diff --git a/tools/testing/selftests/bpf/test_cpp.cpp b/tools/testing/selftests/bpf/test_cpp.cpp
+index 0bd9990e83fa..f4936834f76f 100644
+--- a/tools/testing/selftests/bpf/test_cpp.cpp
++++ b/tools/testing/selftests/bpf/test_cpp.cpp
+@@ -91,7 +91,7 @@ static void try_skeleton_template()
+ 
+ 	skel.detach();
+ 
+-	/* destructor will destory underlying skeleton */
++	/* destructor will destroy underlying skeleton */
+ }
+ 
+ int main(int argc, char *argv[])
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+index f961b49b8ef4..83231456d3c5 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -144,7 +144,7 @@ static struct env {
+ 	struct verif_stats *prog_stats;
+ 	int prog_stat_cnt;
+ 
+-	/* baseline_stats is allocated and used only in comparsion mode */
++	/* baseline_stats is allocated and used only in comparison mode */
+ 	struct verif_stats *baseline_stats;
+ 	int baseline_stat_cnt;
+ 
+@@ -882,7 +882,7 @@ static int process_obj(const char *filename)
+ 		 * that BPF object file is incomplete and has to be statically
+ 		 * linked into a final BPF object file; instead of bailing
+ 		 * out, report it into stderr, mark it as skipped, and
+-		 * proceeed
++		 * proceed
+ 		 */
+ 		fprintf(stderr, "Failed to open '%s': %d\n", filename, -errno);
+ 		env.files_skipped++;
 -- 
-2.1.0
+2.25.1
 
