@@ -2,37 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D26369A2FF
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 01:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBF569A301
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 01:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbjBQAmC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 19:42:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
+        id S229553AbjBQAmD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 19:42:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjBQAmB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 19:42:01 -0500
-Received: from out-143.mta1.migadu.com (out-143.mta1.migadu.com [95.215.58.143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5037B5381A
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 16:41:58 -0800 (PST)
+        with ESMTP id S229587AbjBQAmC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 19:42:02 -0500
+Received: from out-127.mta1.migadu.com (out-127.mta1.migadu.com [IPv6:2001:41d0:203:375::7f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369B354D02
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 16:42:01 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1676594517;
+        t=1676594519;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=U4yHl9ElYv4hsxmnACxDjREG81Ji8UwANWSQPcHWxJQ=;
-        b=S/nnnAZhzHQ0GThAKwpQhPSNinVMRNO5PTyywJvi9Fa+xaYfSZDd/XLuzHLZTdwfr3q9gj
-        E01JiDldQY2gKQvtzKF+KjH8Q7GtVvpFlMapcSYZ5X8QMSKd7uj7LN9bNJEaWAs1jy4/86
-        PB7RteXj+KZiJEu228JybXTR2ipA0AI=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BK4EIwclfy9b/MVDGKaCXh3czkS81PrYon1iQIiRpwc=;
+        b=GU73UyrhtNDg/Ala8NLY7sXThPrHj4TDJ23rAyVbCMFyFOi3LWsMObWzJ4pI3OXb3LNgpS
+        a+e+AOkR8SvPowx/GH4z+iziyRzY62sx0qgIjn212Pb8bojT4XpkIAeyaHFGzGSMygQ0f6
+        hA/nEvufvKM89yCD6MSGKuQbyhlWbYc=
 From:   Martin KaFai Lau <martin.lau@linux.dev>
 To:     bpf@vger.kernel.org
 Cc:     'Alexei Starovoitov ' <ast@kernel.org>,
         'Andrii Nakryiko ' <andrii@kernel.org>,
         'Daniel Borkmann ' <daniel@iogearbox.net>,
         netdev@vger.kernel.org, kernel-team@meta.com
-Subject: [PATCH bpf-next 0/4] bpf: A fix and a change to bpf_fib_lookup
-Date:   Thu, 16 Feb 2023 16:41:46 -0800
-Message-Id: <20230217004150.2980689-1-martin.lau@linux.dev>
+Subject: [PATCH bpf-next 1/4] bpf: Disable bh in bpf_test_run for xdp and tc prog
+Date:   Thu, 16 Feb 2023 16:41:47 -0800
+Message-Id: <20230217004150.2980689-2-martin.lau@linux.dev>
+In-Reply-To: <20230217004150.2980689-1-martin.lau@linux.dev>
+References: <20230217004150.2980689-1-martin.lau@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -47,29 +50,35 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-This set fixes the bpf_fib_lookup such that it won't return
-a NUD_FAILED neigh which may have invalid dmac. It also
-adds a SKIP_NEIGH lookup flag to have bpf_fib_lookup skipping
-the neigh lookup.
+Some of the bpf helpers require bh disabled. eg. The bpf_fib_lookup
+helper that will be used in a latter selftest. In particular, it
+calls ___neigh_lookup_noref that expects the bh disabled.
 
-Please see individual patch for details.
+This patch disables bh before calling bpf_prog_run[_xdp], so
+the testing prog can also use those helpers.
 
-Martin KaFai Lau (4):
-  bpf: Disable bh in bpf_test_run for xdp and tc prog
-  bpf: bpf_fib_lookup should not return neigh in NUD_FAILED state
-  bpf: Add BPF_FIB_LOOKUP_SKIP_NEIGH for bpf_fib_lookup
-  selftests/bpf: Add bpf_fib_lookup test
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+---
+ net/bpf/test_run.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- include/uapi/linux/bpf.h                      |   1 +
- net/bpf/test_run.c                            |   2 +
- net/core/filter.c                             |  37 ++--
- tools/include/uapi/linux/bpf.h                |   1 +
- .../selftests/bpf/prog_tests/fib_lookup.c     | 187 ++++++++++++++++++
- .../testing/selftests/bpf/progs/fib_lookup.c  |  22 +++
- 6 files changed, 238 insertions(+), 12 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fib_lookup.c
- create mode 100644 tools/testing/selftests/bpf/progs/fib_lookup.c
-
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 1ab396a2b87f..982e81bba6cf 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -413,10 +413,12 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
+ 	old_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+ 	do {
+ 		run_ctx.prog_item = &item;
++		local_bh_disable();
+ 		if (xdp)
+ 			*retval = bpf_prog_run_xdp(prog, ctx);
+ 		else
+ 			*retval = bpf_prog_run(prog, ctx);
++		local_bh_enable();
+ 	} while (bpf_test_timer_continue(&t, 1, repeat, &ret, time));
+ 	bpf_reset_run_ctx(old_ctx);
+ 	bpf_test_timer_leave(&t);
 -- 
 2.30.2
 
