@@ -2,95 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26ABB69B44A
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 21:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A389569B458
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 22:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjBQU7T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 15:59:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
+        id S229489AbjBQVGb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 16:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjBQU7R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 15:59:17 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DA63B659;
-        Fri, 17 Feb 2023 12:59:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=6XqZGcFwGDlPUYhyro44Otgaqy95Gc+0z48vc18AVdM=; b=i/+U0PIKK3N7AJzizcArR8yQSk
-        d4CVvEW6gHYWOi3cOGZAmdVY8OqRCV1cotZI+tYL61rfOvJhg8pP/xXUHIQe9X1BrjxFkiLfDGV5P
-        GNMEluaGGBLnK8ufvKT79jCCVSbjjLnTGJDcLNIMEfT76cV27FcQO3TK/4dFLKZlM7+Io69sX6HXo
-        Afqse6blpNkGCPyaZXuLII2/Cky83Y/g1GAASnzH9640nUbXjDkHbjqfceV1dWf+sovznEiAes7LE
-        XC1/ReqhidldpY1XtrLBpFL4oHneBne1WfXKOa5f5Cv73UP8unQ2RhzCAlZbgBCHJ1kg6zrpwc3uf
-        B6zE5yRQ==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pT7p0-000FQz-Je; Fri, 17 Feb 2023 21:59:10 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pT7p0-000H52-6t; Fri, 17 Feb 2023 21:59:10 +0100
-Subject: Re: [PATCH bpf-next V2] igc: enable and fix RX hash usage by netstack
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
-        martin.lau@kernel.org, ast@kernel.org, alexandr.lobakin@intel.com,
-        yoong.siang.song@intel.com, anthony.l.nguyen@intel.com,
-        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
-        pmenzel@molgen.mpg.de
-References: <167656636587.1912541.8039324850101942090.stgit@firesoul>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <571350f8-3302-abc5-505a-8e5b1f77defe@iogearbox.net>
-Date:   Fri, 17 Feb 2023 21:59:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229463AbjBQVGb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 16:06:31 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31F05DE38
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 13:06:29 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id q9so2191129ybu.11
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 13:06:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PXi1BeBDBpANK7kqzMXZZEun61YLLhzkxWec/5pVmWM=;
+        b=a5n8T94H0486WroXEDN2F/Ntl9WFTJjhzJCmMLo970ZmJmj/DI5/V/f7zB0KfI3KV5
+         nNPDhNBhJ7LZZPwkfgIrTdgS8JcQJ3QZ8Hgn/3KIhA2LRxO7WJ88EQw/PdqEtLipHlJ4
+         IbyWrZ1F23smDeS/eWMVVXFxI64Yil7lzTeoSxV6rx2QxHgn/5SfVvhESidNZN434UEn
+         ArD6to7pzWV9bDSKrfVYwLNjvv1hNNtlpcWdDHMyVP2NNG1ePINhcIVElKB5w49XdY9H
+         1+IH17fEtCl7boivjnmZLiu/Cqt8hTJz2dmsaVBBhbG9vumknglAvYcjpaphbWZzORIk
+         sMiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PXi1BeBDBpANK7kqzMXZZEun61YLLhzkxWec/5pVmWM=;
+        b=Gcu2cPs/hCibuZtdc0oubVTT0M9VQUW5v5cgLUydoJH/w1zhgojCHFTRCMwyAGXL2s
+         pTHjM7snDbYGrjLa0ZFl4UOs0mUgP5zyY5GzpJ/netIegn/KbssJ+/shjQndW3YZ/PnY
+         pIRNODtgpRv+jY3O5PKX2ccXHzCwVdGBQkZn1xqbB/CBPtpEDO6fJYQfzVA8spN/lUj6
+         mfQXBtTjI9TiS6qgxoGnxbubiaJnjP4jN1DkZ/vIw3eXVt+Zdjiwh5EZZfWxC+Lfj0JL
+         MWEawn9Sjo+foLKMNs5D06dIWrQJzr6P2Ue5fgNE3BGKIZdtbN70l5FzUUacF5ePFu2b
+         C8Ag==
+X-Gm-Message-State: AO0yUKXlTLjTKe7mu7IZorMIR+djm4655Wjn+ex0KlIyjUU6atjbR+1g
+        zx1e7MDA5IGejbGEOooTUZ5B1yMJ1oaDYakWXhBMqEc8Kwo=
+X-Google-Smtp-Source: AK7set9DyLfTik7DqoSxDOJPgxiQ2kbvIIoR2gWTC3MNOaFkk9kE7CTaapzA6W3lT4dfxax/fb1WAgZYPLsu566synw=
+X-Received: by 2002:a5b:cc6:0:b0:90d:f673:2657 with SMTP id
+ e6-20020a5b0cc6000000b0090df6732657mr1336364ybr.500.1676667988815; Fri, 17
+ Feb 2023 13:06:28 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <167656636587.1912541.8039324850101942090.stgit@firesoul>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26815/Fri Feb 17 09:41:01 2023)
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230217005451.2438147-1-joannelkoong@gmail.com>
+ <Y+9Ddvey0iPgC8ZS@krava> <CAJnrk1a_2-L3Ldr+GaHdzE6bQ2EFSxDyxKSh95mc9vmrMajWAQ@mail.gmail.com>
+In-Reply-To: <CAJnrk1a_2-L3Ldr+GaHdzE6bQ2EFSxDyxKSh95mc9vmrMajWAQ@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Fri, 17 Feb 2023 13:06:17 -0800
+Message-ID: <CAJnrk1YvDoajRBcSC-tzsW4bOWkjdbzuajGUidtcsDyborUEsA@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next] bpf: Tidy up verifier checking
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     bpf@vger.kernel.org, martin.lau@kernel.org, andrii@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/16/23 5:52 PM, Jesper Dangaard Brouer wrote:
-> When function igc_rx_hash() was introduced in v4.20 via commit 0507ef8a0372
-> ("igc: Add transmit and receive fastpath and interrupt handlers"), the
-> hardware wasn't configured to provide RSS hash, thus it made sense to not
-> enable net_device NETIF_F_RXHASH feature bit.
-> 
-> The NIC hardware was configured to enable RSS hash info in v5.2 via commit
-> 2121c2712f82 ("igc: Add multiple receive queues control supporting"), but
-> forgot to set the NETIF_F_RXHASH feature bit.
-> 
-> The original implementation of igc_rx_hash() didn't extract the associated
-> pkt_hash_type, but statically set PKT_HASH_TYPE_L3. The largest portions of
-> this patch are about extracting the RSS Type from the hardware and mapping
-> this to enum pkt_hash_types. This was based on Foxville i225 software user
-> manual rev-1.3.1 and tested on Intel Ethernet Controller I225-LM (rev 03).
-> 
-> For UDP it's worth noting that RSS (type) hashing have been disabled both for
-> IPv4 and IPv6 (see IGC_MRQC_RSS_FIELD_IPV4_UDP + IGC_MRQC_RSS_FIELD_IPV6_UDP)
-> because hardware RSS doesn't handle fragmented pkts well when enabled (can
-> cause out-of-order). This results in PKT_HASH_TYPE_L3 for UDP packets, and
-> hash value doesn't include UDP port numbers. Not being PKT_HASH_TYPE_L4, have
-> the effect that netstack will do a software based hash calc calling into
-> flow_dissect, but only when code calls skb_get_hash(), which doesn't
-> necessary happen for local delivery.
-> 
-> Fixes: 2121c2712f82 ("igc: Add multiple receive queues control supporting")
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+On Fri, Feb 17, 2023 at 10:15 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+>
+> On Fri, Feb 17, 2023 at 1:06 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Thu, Feb 16, 2023 at 04:54:51PM -0800, Joanne Koong wrote:
+> > > This change refactors check_mem_access() to check against the base type of
+> > > the register, and uses switch case checking instead of if / else if
+> > > checks. This change also uses the existing clear_called_saved_regs()
+> > > function for resetting caller saved regs in check_helper_call().
+> > >
+> > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > > ---
+> > >  kernel/bpf/verifier.c | 67 +++++++++++++++++++++++++++++--------------
+> > >  1 file changed, 46 insertions(+), 21 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 272563a0b770..b40165be2943 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -5317,7 +5317,8 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+> > >       /* for access checks, reg->off is just part of off */
+> > >       off += reg->off;
+> > >
+> > > -     if (reg->type == PTR_TO_MAP_KEY) {
+> > > +     switch (base_type(reg->type)) {
+> > > +     case PTR_TO_MAP_KEY:
+> > >               if (t == BPF_WRITE) {
+> > >                       verbose(env, "write to change key R%d not allowed\n", regno);
+> > >                       return -EACCES;
+> > > @@ -5329,7 +5330,10 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+> > >                       return err;
+> > >               if (value_regno >= 0)
+> > >                       mark_reg_unknown(env, regs, value_regno);
+> > > -     } else if (reg->type == PTR_TO_MAP_VALUE) {
+> > > +
+> > > +             break;
+> > > +     case PTR_TO_MAP_VALUE:
+> > > +     {
+> >
+> > I'm getting failure in this test:
+> >   #92/1    jeq_infer_not_null/jeq_infer_not_null_ptr_to_btfid:FAIL
+> >
+> > I wonder with this change we execute this case even if there's PTR_MAYBE_NULL set,
+> > which we did not do before, so the test won't fail now as expected
+>
+> Thanks for reviewing this, I will investigate this test failure!
 
-I presume this should go via net-next, not bpf-next? (Didn't find specific
-dependencies, so moved to patchwork netdev bucket..)
+I'm going to abandon this patch, on a closer look I don't think it's
+accurate. For most of these matches, it needs to be a strict match (eg
+reg->type should be exactly PTR_TO_MAP_KEY) and any type modifiers
+should fail (eg PTR_MAYBE_NULL)
+
+>
+> >
+> > >               struct btf_field *kptr_field = NULL;
+> > >
+> > >               if (t == BPF_WRITE && value_regno >= 0 &&
+> > > @@ -5369,7 +5373,10 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+> > >                               mark_reg_unknown(env, regs, value_regno);
+> > >                       }
+> > >               }
+> > > -     } else if (base_type(reg->type) == PTR_TO_MEM) {
+> > > +             break;
+> > > +     }
+> >
+> > SNIP
+> >
+> > > @@ -5521,7 +5539,17 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+> > >
+> > >               if (!err && value_regno >= 0 && (rdonly_mem || t == BPF_READ))
+> > >                       mark_reg_unknown(env, regs, value_regno);
+> > > -     } else {
+> > > +             break;
+> > > +     }
+> > > +     case PTR_TO_BTF_ID:
+> > > +             if (!type_may_be_null(reg->type)) {
+> > > +                     err = check_ptr_to_btf_access(env, regs, regno, off, size, t,
+> > > +                                                   value_regno);
+> > > +                     break;
+> > > +             } else {
+> > > +                     fallthrough;
+> > > +             }
+> >
+> > nit, no need for the else branch, just use fallthrough directly
+> >
+> > > +     default:
+> > >               verbose(env, "R%d invalid mem access '%s'\n", regno,
+> > >                       reg_type_str(env, reg->type));
+> > >               return -EACCES;
+> > > @@ -8377,10 +8405,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> > >               return err;
+> > >
+> > >       /* reset caller saved regs */
+> >
+> > nit, we could remove the comment as well, the function name says it all
+> >
+> > jirka
+> >
+> > > -     for (i = 0; i < CALLER_SAVED_REGS; i++) {
+> > > -             mark_reg_not_init(env, regs, caller_saved[i]);
+> > > -             check_reg_arg(env, caller_saved[i], DST_OP_NO_MARK);
+> > > -     }
+> > > +     clear_caller_saved_regs(env, regs);
+> > >
+> > >       /* helper call returns 64-bit value. */
+> > >       regs[BPF_REG_0].subreg_def = DEF_NOT_SUBREG;
+> > > --
+> > > 2.30.2
+> > >
