@@ -2,82 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A1A69AD33
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 14:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6765669AF57
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 16:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjBQNxw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 08:53:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
+        id S229776AbjBQPSw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 10:18:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjBQNxv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 08:53:51 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89F63B3C5
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 05:53:32 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id i28so4029787eda.8
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 05:53:32 -0800 (PST)
+        with ESMTP id S230292AbjBQPSv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 10:18:51 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492186F3E9
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 07:18:46 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id r11so1348100wru.1
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 07:18:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ce2IYx1cxWdvUXB7PnSnCuxsADdC+K6046BpmKOpG94=;
-        b=seBIsagoJ8tPlbwarL6IK7dTQ8bdIeAtcb8sVl/PqajH2Usgrfz4nH7bUA3OfMITzF
-         opHBUl49CBhVpcaeTOa09ORmHIYXXi7eGSgGAZxRycw9GbI+rdmp5CP5Iz6irxs7VbLv
-         RzFe94uKqQ4my1/g3ZSduvegrQw+yMyiTYKx4G1Yv/MR7fHCD+GOYm4sI7F20vjB52he
-         VS1jzBdQ9qJTwOcTnROdeSqxFMa/JUdf4jfzc1Imza7Dy5XjFUlv7LwRCF+i/NGX80ZE
-         bEYoZ8+SisfnQWJPDuKAP11p3jFhjTTcbRoyTbkjHL5pjh/ROU8vzVvMk6/yDss3W/AA
-         lO6Q==
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GHpElbdT8yGvO2G+2wK7hH12e2y8DO+zHXf7OVoJ8YY=;
+        b=Xw/ILqWdiTi7Y5ML8FZgvK/UJFdWtP/qoxwRrlczOKWdxKZ3ltZr09E7i7Kb6hx3pg
+         CwaTCoeenVJmC58suWT4k7NVsQCIPpNt6mwkWd6wlcRVqP+3xr/wF+u8asvJYhM8SHCH
+         Y+ExaTAObLFUuT0b0f1DMpW/t+f20533EBThc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ce2IYx1cxWdvUXB7PnSnCuxsADdC+K6046BpmKOpG94=;
-        b=WbkFDJHZ8U73hNMDW8jEYi9VoiDfkBIwdE/NxJm3mRkqkKc4eql/LUlyJFVSpPUG6Q
-         Mfu0nZD2Zh4bcaLymhLuWiBLE759LCpe8LOxZjaklZtl87zcXH+zajrLTrwRRrKIoClG
-         kvgtoqIX7mRoWGdqwh/FjomG7OOGc+6dQdUoLF5lTxKuIdu2ogfdDlHFhXJ51F9KKA4W
-         ubFaZnU6sAu1AV1FKd5h9HzFcWO2HEJGguJZbw5J7RUDDKl8uZrtHnvhxWkmTWM7aAgu
-         xJ/N+8uNiy3kQay/LsWlQUfPmMXvOlCQCoKwqOQSckwXDz8zUtafN9bvQh3LuVPO738L
-         GAHQ==
-X-Gm-Message-State: AO0yUKWMw/Sh6LfI9XldqZ3UV0WZhoaM7O9gZnuFGNw5sAqDcNbViKva
-        12zLf7zMi4ekBnAlSrQ58xGQ9g==
-X-Google-Smtp-Source: AK7set9tVfirY8bLk7/aMJ57J1i/x8s+zHF7SSjuGKrnf+v9zNwFHqGTNqjzxDP+LL3yeu6ogQso+A==
-X-Received: by 2002:a17:906:f2d5:b0:8b2:7564:dfd5 with SMTP id gz21-20020a170906f2d500b008b27564dfd5mr1822108ejb.60.1676642005900;
-        Fri, 17 Feb 2023 05:53:25 -0800 (PST)
-Received: from ?IPV6:2a02:578:8593:1200:e048:140f:ea30:d130? ([2a02:578:8593:1200:e048:140f:ea30:d130])
-        by smtp.gmail.com with ESMTPSA id m18-20020a170906849200b0087bd4e34eb8sm2131010ejx.203.2023.02.17.05.53.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Feb 2023 05:53:25 -0800 (PST)
-Message-ID: <eb7bc302-8661-229b-f8b9-d5045bffbd19@tessares.net>
-Date:   Fri, 17 Feb 2023 14:53:24 +0100
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GHpElbdT8yGvO2G+2wK7hH12e2y8DO+zHXf7OVoJ8YY=;
+        b=i9yF2d3xNiNPAUnGunJUUxXIyndTFZayCL5MgnzodYRSoWezm1O8opIP99zVxcb7iY
+         JariZnyBrugj//EpmLZokKWG3NnB6CfO0O+pKG7iS1ZLmsXONNznBiT8idwoYqymmSgB
+         jdsK+wJ311Svv/zbzz2Hr3jt9cXkU3fZD7TdOWd7O9vOGQlJ/U0epPUFbMIpEUhEePFM
+         zIbGHfRcsHuIdYHgwhJzDTnbk5lf3mTsFAMUrFpj8K4AKSho3zlC9Hrslmurx5FOxOD5
+         Q6DwAEJjKGl7slBauBsjvqiwm+k08tafj+ZjexO89ORYT4pq8wsee2J9Yj4Arppx65JQ
+         dyhQ==
+X-Gm-Message-State: AO0yUKUbRSDWiI/JBpA4N4vqfx4awVCeux1kMW5XpdJsWx7REKUO1DEH
+        69I+3cPfbHaKS0mBAy6FmahTfWwq0A0VeCKSCPc=
+X-Google-Smtp-Source: AK7set9HOYCXPZnIl+FQkYUmovMzzNM5k0/e/5wKgplxSmbKJ77s6EqPKIFEntOkCwkD9eyurmqsYA==
+X-Received: by 2002:adf:f646:0:b0:2c6:e87f:f19 with SMTP id x6-20020adff646000000b002c6e87f0f19mr1491310wrp.57.1676647124414;
+        Fri, 17 Feb 2023 07:18:44 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:9d:6:1704:c044:3b31:aaca])
+        by smtp.gmail.com with ESMTPSA id 26-20020a05600c229a00b003dc49e0132asm1166420wmf.1.2023.02.17.07.18.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Feb 2023 07:18:43 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-kbuild@vger.kernel.org
+Cc:     andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, kpsingh@kernel.org, masahiroy@kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next] selftests/bpf: Fix cross compilation with CLANG_CROSS_FLAGS
+Date:   Fri, 17 Feb 2023 16:18:32 +0100
+Message-Id: <20230217151832.27784-1-revest@chromium.org>
+X-Mailer: git-send-email 2.39.2.637.g21b0678d19-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH bpf-next] selftests/bpf: run mptcp in a dedicated netns
-Content-Language: en-GB
-To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Felix Maurer <fmaurer@redhat.com>,
-        MPTCP Upstream <mptcp@lists.linux.dev>
-References: <20230217082607.3309391-1-liuhangbin@gmail.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-In-Reply-To: <20230217082607.3309391-1-liuhangbin@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,73 +69,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Hangbin,
+I cross-compile my BPF selftests with the following command:
 
-(+cc MPTCP ML)
+CLANG_CROSS_FLAGS="--target=aarch64-linux-gnu --sysroot=/sysroot/" \
+  make LLVM=1 CC=clang CROSS_COMPILE=aarch64-linux-gnu- SRCARCH=arm64
 
-On 17/02/2023 09:26, Hangbin Liu wrote:
-> The current mptcp test is run in init netns. If the user or default
-> system config disabled mptcp, the test will fail. Let's run the mptcp
-> test in a dedicated netns to avoid none kernel default mptcp setting.
+(Note the use of CLANG_CROSS_FLAGS to specify a custom sysroot instead
+of letting clang use gcc's default sysroot)
 
-Thank you for the patch!
+However, CLANG_CROSS_FLAGS gets propagated to host tools builds (libbpf
+and bpftool) and because they reference it directly in their Makefiles,
+they end up cross-compiling host objects which results in linking
+errors.
 
-I just have one request below if you don't mind:
+This patch ensures that CLANG_CROSS_FLAGS is reset if CROSS_COMPILE
+isn't set (for example when reaching a BPF host tool build).
 
-(...)
+Signed-off-by: Florent Revest <revest@chromium.org>
+---
+ tools/scripts/Makefile.include | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> index 59f08d6d1d53..8a4ed9510ec7 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-
-(...)
-
-> @@ -138,12 +148,20 @@ static int run_test(int cgroup_fd, int server_fd, bool is_mptcp)
->  
->  static void test_base(void)
->  {
-> +	struct nstoken *nstoken = NULL;
->  	int server_fd, cgroup_fd;
->  
->  	cgroup_fd = test__join_cgroup("/mptcp");
->  	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
->  		return;
->  
-> +	SYS("ip netns add %s", NS_TEST);
-> +	SYS("ip -net %s link set dev lo up", NS_TEST);
-> +
-> +	nstoken = open_netns(NS_TEST);
-> +	if (!ASSERT_OK_PTR(nstoken, "open_netns"))
-> +		goto cmd_fail;
-> +
->  	/* without MPTCP */
->  	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, 0, 0);
->  	if (!ASSERT_GE(server_fd, 0, "start_server"))
-> @@ -163,6 +181,12 @@ static void test_base(void)
->  
->  	close(server_fd);
->  
-> +cmd_fail:
-> +	if (nstoken)
-> +		close_netns(nstoken);
-> +
-> +	system("ip netns del " NS_TEST " >& /dev/null");
-> +
->  close_cgroup_fd:
-
-If I'm not mistaken, this label should no longer be needed: after the
-modification you did, the only 'goto close_cgroup_fd' used above should
-be replaced by 'goto cmd_fail', no?
-
-Apart from that, the rest looks good to me.
-
-Cheers,
-Matt
-
->  	close(cgroup_fd);
->  }
-
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+index 0efb8f2b33ce..ff527ac065cf 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -108,6 +108,8 @@ endif # GCC_TOOLCHAIN_DIR
+ endif # CLANG_CROSS_FLAGS
+ CFLAGS += $(CLANG_CROSS_FLAGS)
+ AFLAGS += $(CLANG_CROSS_FLAGS)
++else
++CLANG_CROSS_FLAGS :=
+ endif # CROSS_COMPILE
+ 
+ # Hack to avoid type-punned warnings on old systems such as RHEL5:
 -- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+2.39.2.637.g21b0678d19-goog
+
