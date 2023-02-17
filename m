@@ -2,287 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE65F69A307
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 01:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF64D69A332
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 01:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbjBQAmL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 19:42:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
+        id S229580AbjBQA4C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 19:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjBQAmJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 19:42:09 -0500
-Received: from out-217.mta1.migadu.com (out-217.mta1.migadu.com [IPv6:2001:41d0:203:375::d9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CAD58282
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 16:42:07 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1676594525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d8JlGmWjaBW0PigtuTiH40RnVXnYnrh8/QivQsx3kI4=;
-        b=Gr4U53zZB3RXRhewa759uwkwABCMrE+oE55+024/OC6rqX8oIcJ/JxOp1JCJQ7GCxs+vAY
-        M0XEqRrATtl0/uyP8uIqH3bGfdobJfGiANf63Pox3TcxBB3cSqkgglrldhKtY5ysSL6Mcs
-        81eBNpT0ZGMkjD44rpL/iQdOUeL3lwE=
-From:   Martin KaFai Lau <martin.lau@linux.dev>
+        with ESMTP id S229768AbjBQA4A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 19:56:00 -0500
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28215193FB
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 16:55:59 -0800 (PST)
+Received: by devvm15675.prn0.facebook.com (Postfix, from userid 115148)
+        id 9E14E6A86322; Thu, 16 Feb 2023 16:55:46 -0800 (PST)
+From:   Joanne Koong <joannelkoong@gmail.com>
 To:     bpf@vger.kernel.org
-Cc:     'Alexei Starovoitov ' <ast@kernel.org>,
-        'Andrii Nakryiko ' <andrii@kernel.org>,
-        'Daniel Borkmann ' <daniel@iogearbox.net>,
-        netdev@vger.kernel.org, kernel-team@meta.com
-Subject: [PATCH bpf-next 4/4] selftests/bpf: Add bpf_fib_lookup test
-Date:   Thu, 16 Feb 2023 16:41:50 -0800
-Message-Id: <20230217004150.2980689-5-martin.lau@linux.dev>
-In-Reply-To: <20230217004150.2980689-1-martin.lau@linux.dev>
-References: <20230217004150.2980689-1-martin.lau@linux.dev>
+Cc:     martin.lau@kernel.org, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH v1 bpf-next] bpf: Tidy up verifier checking
+Date:   Thu, 16 Feb 2023 16:54:51 -0800
+Message-Id: <20230217005451.2438147-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,HELO_MISC_IP,NML_ADSP_CUSTOM_MED,
+        RDNS_DYNAMIC,SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,
+        SPOOF_GMAIL_MID,TVD_RCVD_IP autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+This change refactors check_mem_access() to check against the base type o=
+f
+the register, and uses switch case checking instead of if / else if
+checks. This change also uses the existing clear_called_saved_regs()
+function for resetting caller saved regs in check_helper_call().
 
-This patch tests the bpf_fib_lookup helper when looking up
-a neigh in NUD_FAILED and NUD_STALE state. It also adds test
-for the new BPF_FIB_LOOKUP_SKIP_NEIGH flag.
-
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 ---
- .../selftests/bpf/prog_tests/fib_lookup.c     | 187 ++++++++++++++++++
- .../testing/selftests/bpf/progs/fib_lookup.c  |  22 +++
- 2 files changed, 209 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fib_lookup.c
- create mode 100644 tools/testing/selftests/bpf/progs/fib_lookup.c
+ kernel/bpf/verifier.c | 67 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 46 insertions(+), 21 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fib_lookup.c b/tools/testing/selftests/bpf/prog_tests/fib_lookup.c
-new file mode 100644
-index 000000000000..61ccddccf485
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/fib_lookup.c
-@@ -0,0 +1,187 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 272563a0b770..b40165be2943 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5317,7 +5317,8 @@ static int check_mem_access(struct bpf_verifier_env=
+ *env, int insn_idx, u32 regn
+ 	/* for access checks, reg->off is just part of off */
+ 	off +=3D reg->off;
+=20
+-	if (reg->type =3D=3D PTR_TO_MAP_KEY) {
++	switch (base_type(reg->type)) {
++	case PTR_TO_MAP_KEY:
+ 		if (t =3D=3D BPF_WRITE) {
+ 			verbose(env, "write to change key R%d not allowed\n", regno);
+ 			return -EACCES;
+@@ -5329,7 +5330,10 @@ static int check_mem_access(struct bpf_verifier_en=
+v *env, int insn_idx, u32 regn
+ 			return err;
+ 		if (value_regno >=3D 0)
+ 			mark_reg_unknown(env, regs, value_regno);
+-	} else if (reg->type =3D=3D PTR_TO_MAP_VALUE) {
 +
-+#include <sys/types.h>
-+#include <net/if.h>
-+
-+#include "test_progs.h"
-+#include "network_helpers.h"
-+#include "fib_lookup.skel.h"
-+
-+#define SYS(fmt, ...)						\
-+	({							\
-+		char cmd[1024];					\
-+		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
-+		if (!ASSERT_OK(system(cmd), cmd))		\
-+			goto fail;				\
-+	})
-+
-+#define NS_TEST			"fib_lookup_ns"
-+#define IPV6_IFACE_ADDR		"face::face"
-+#define IPV6_NUD_FAILED_ADDR	"face::1"
-+#define IPV6_NUD_STALE_ADDR	"face::2"
-+#define IPV4_IFACE_ADDR		"10.0.0.254"
-+#define IPV4_NUD_FAILED_ADDR	"10.0.0.1"
-+#define IPV4_NUD_STALE_ADDR	"10.0.0.2"
-+#define DMAC			"11:11:11:11:11:11"
-+#define DMAC_INIT { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, }
-+
-+struct fib_lookup_test {
-+	const char *desc;
-+	const char *daddr;
-+	int expected_ret;
-+	int lookup_flags;
-+	__u8 dmac[6];
-+};
-+
-+static const struct fib_lookup_test tests[] = {
-+	{ .desc = "IPv6 failed neigh",
-+	  .daddr = IPV6_NUD_FAILED_ADDR, .expected_ret = BPF_FIB_LKUP_RET_NO_NEIGH, },
-+	{ .desc = "IPv6 stale neigh",
-+	  .daddr = IPV6_NUD_STALE_ADDR, .expected_ret = BPF_FIB_LKUP_RET_SUCCESS,
-+	  .dmac = DMAC_INIT, },
-+	{ .desc = "IPv6 skip neigh",
-+	  .daddr = IPV6_NUD_FAILED_ADDR, .expected_ret = BPF_FIB_LKUP_RET_SUCCESS,
-+	  .lookup_flags = BPF_FIB_LOOKUP_SKIP_NEIGH, },
-+	{ .desc = "IPv4 failed neigh",
-+	  .daddr = IPV4_NUD_FAILED_ADDR, .expected_ret = BPF_FIB_LKUP_RET_NO_NEIGH, },
-+	{ .desc = "IPv4 stale neigh",
-+	  .daddr = IPV4_NUD_STALE_ADDR, .expected_ret = BPF_FIB_LKUP_RET_SUCCESS,
-+	  .dmac = DMAC_INIT, },
-+	{ .desc = "IPv4 skip neigh",
-+	  .daddr = IPV4_NUD_FAILED_ADDR, .expected_ret = BPF_FIB_LKUP_RET_SUCCESS,
-+	  .lookup_flags = BPF_FIB_LOOKUP_SKIP_NEIGH, },
-+};
-+
-+static int ifindex;
-+
-+static int setup_netns(void)
-+{
-+	int err;
-+
-+	SYS("ip link add veth1 type veth peer name veth2");
-+	SYS("ip link set dev veth1 up");
-+
-+	SYS("ip addr add %s/64 dev veth1 nodad", IPV6_IFACE_ADDR);
-+	SYS("ip neigh add %s dev veth1 nud failed", IPV6_NUD_FAILED_ADDR);
-+	SYS("ip neigh add %s dev veth1 lladdr %s nud stale", IPV6_NUD_STALE_ADDR, DMAC);
-+
-+	SYS("ip addr add %s/24 dev veth1 nodad", IPV4_IFACE_ADDR);
-+	SYS("ip neigh add %s dev veth1 nud failed", IPV4_NUD_FAILED_ADDR);
-+	SYS("ip neigh add %s dev veth1 lladdr %s nud stale", IPV4_NUD_STALE_ADDR, DMAC);
-+
-+	err = write_sysctl("/proc/sys/net/ipv4/conf/veth1/forwarding", "1");
-+	if (!ASSERT_OK(err, "write_sysctl(net.ipv4.conf.veth1.forwarding)"))
-+		goto fail;
-+
-+	err = write_sysctl("/proc/sys/net/ipv6/conf/veth1/forwarding", "1");
-+	if (!ASSERT_OK(err, "write_sysctl(net.ipv6.conf.veth1.forwarding)"))
-+		goto fail;
-+
-+	return 0;
-+fail:
-+	return -1;
-+}
-+
-+static int set_lookup_params(struct bpf_fib_lookup *params, const char *daddr)
-+{
-+	int ret;
-+
-+	memset(params, 0, sizeof(*params));
-+
-+	params->l4_protocol = IPPROTO_TCP;
-+	params->ifindex = ifindex;
-+
-+	if (inet_pton(AF_INET6, daddr, params->ipv6_dst) == 1) {
-+		params->family = AF_INET6;
-+		ret = inet_pton(AF_INET6, IPV6_IFACE_ADDR, params->ipv6_src);
-+		if (!ASSERT_EQ(ret, 1, "inet_pton(IPV6_IFACE_ADDR)"))
-+			return -1;
-+		return 0;
++		break;
++	case PTR_TO_MAP_VALUE:
++	{
+ 		struct btf_field *kptr_field =3D NULL;
+=20
+ 		if (t =3D=3D BPF_WRITE && value_regno >=3D 0 &&
+@@ -5369,7 +5373,10 @@ static int check_mem_access(struct bpf_verifier_en=
+v *env, int insn_idx, u32 regn
+ 				mark_reg_unknown(env, regs, value_regno);
+ 			}
+ 		}
+-	} else if (base_type(reg->type) =3D=3D PTR_TO_MEM) {
++		break;
 +	}
-+
-+	ret = inet_pton(AF_INET, daddr, &params->ipv4_dst);
-+	if (!ASSERT_EQ(ret, 1, "convert IP[46] address"))
-+		return -1;
-+	params->family = AF_INET;
-+	ret = inet_pton(AF_INET, IPV4_IFACE_ADDR, &params->ipv4_src);
-+	if (!ASSERT_EQ(ret, 1, "inet_pton(IPV4_IFACE_ADDR)"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static void mac_str(char *b, const __u8 *mac)
-+{
-+	sprintf(b, "%02X:%02X:%02X:%02X:%02X:%02X",
-+		mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-+}
-+
-+void test_fib_lookup(void)
-+{
-+	struct bpf_fib_lookup *fib_params;
-+	struct nstoken *nstoken = NULL;
-+	struct __sk_buff skb = { };
-+	struct fib_lookup *skel;
-+	int prog_fd, err, ret, i;
-+
-+	/* The test does not use the skb->data, so
-+	 * use pkt_v6 for both v6 and v4 test.
-+	 */
-+	LIBBPF_OPTS(bpf_test_run_opts, run_opts,
-+		    .data_in = &pkt_v6,
-+		    .data_size_in = sizeof(pkt_v6),
-+		    .ctx_in = &skb,
-+		    .ctx_size_in = sizeof(skb),
-+	);
-+
-+	skel = fib_lookup__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel open_and_load"))
-+		return;
-+	prog_fd = bpf_program__fd(skel->progs.fib_lookup);
-+
-+	SYS("ip netns add %s", NS_TEST);
-+
-+	nstoken = open_netns(NS_TEST);
-+	if (!ASSERT_OK_PTR(nstoken, "open_netns"))
-+		goto fail;
-+
-+	if (setup_netns())
-+		goto fail;
-+
-+	ifindex = if_nametoindex("veth1");
-+	skb.ifindex = ifindex;
-+	fib_params = &skel->bss->fib_params;
-+
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		printf("Testing %s\n", tests[i].desc);
-+
-+		if (set_lookup_params(fib_params, tests[i].daddr))
-+			continue;
-+		skel->bss->fib_lookup_ret = -1;
-+		skel->bss->lookup_flags = BPF_FIB_LOOKUP_OUTPUT |
-+			tests[i].lookup_flags;
-+
-+		err = bpf_prog_test_run_opts(prog_fd, &run_opts);
-+		if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
-+			continue;
-+
-+		ASSERT_EQ(tests[i].expected_ret, skel->bss->fib_lookup_ret,
-+			  "fib_lookup_ret");
-+
-+		ret = memcmp(tests[i].dmac, fib_params->dmac, sizeof(tests[i].dmac));
-+		if (!ASSERT_EQ(ret, 0, "dmac not match")) {
-+			char expected[18], actual[18];
-+
-+			mac_str(expected, tests[i].dmac);
-+			mac_str(actual, fib_params->dmac);
-+			printf("dmac expected %s actual %s\n", expected, actual);
++	case PTR_TO_MEM:
++	{
+ 		bool rdonly_mem =3D type_is_rdonly_mem(reg->type);
+=20
+ 		if (type_may_be_null(reg->type)) {
+@@ -5394,7 +5401,10 @@ static int check_mem_access(struct bpf_verifier_en=
+v *env, int insn_idx, u32 regn
+ 					      reg->mem_size, false);
+ 		if (!err && value_regno >=3D 0 && (t =3D=3D BPF_READ || rdonly_mem))
+ 			mark_reg_unknown(env, regs, value_regno);
+-	} else if (reg->type =3D=3D PTR_TO_CTX) {
++		break;
++	}
++	case PTR_TO_CTX:
++	{
+ 		enum bpf_reg_type reg_type =3D SCALAR_VALUE;
+ 		struct btf *btf =3D NULL;
+ 		u32 btf_id =3D 0;
+@@ -5438,8 +5448,9 @@ static int check_mem_access(struct bpf_verifier_env=
+ *env, int insn_idx, u32 regn
+ 			}
+ 			regs[value_regno].type =3D reg_type;
+ 		}
+-
+-	} else if (reg->type =3D=3D PTR_TO_STACK) {
++		break;
++	}
++	case PTR_TO_STACK:
+ 		/* Basic bounds checks. */
+ 		err =3D check_stack_access_within_bounds(env, regno, off, size, ACCESS=
+_DIRECT, t);
+ 		if (err)
+@@ -5456,7 +5467,9 @@ static int check_mem_access(struct bpf_verifier_env=
+ *env, int insn_idx, u32 regn
+ 		else
+ 			err =3D check_stack_write(env, regno, off, size,
+ 						value_regno, insn_idx);
+-	} else if (reg_is_pkt_pointer(reg)) {
++		break;
++	case PTR_TO_PACKET:
++	case PTR_TO_PACKET_META:
+ 		if (t =3D=3D BPF_WRITE && !may_access_direct_pkt_data(env, NULL, t)) {
+ 			verbose(env, "cannot write into packet\n");
+ 			return -EACCES;
+@@ -5470,7 +5483,8 @@ static int check_mem_access(struct bpf_verifier_env=
+ *env, int insn_idx, u32 regn
+ 		err =3D check_packet_access(env, regno, off, size, false);
+ 		if (!err && t =3D=3D BPF_READ && value_regno >=3D 0)
+ 			mark_reg_unknown(env, regs, value_regno);
+-	} else if (reg->type =3D=3D PTR_TO_FLOW_KEYS) {
++		break;
++	case PTR_TO_FLOW_KEYS:
+ 		if (t =3D=3D BPF_WRITE && value_regno >=3D 0 &&
+ 		    is_pointer_value(env, value_regno)) {
+ 			verbose(env, "R%d leaks addr into flow keys\n",
+@@ -5481,7 +5495,11 @@ static int check_mem_access(struct bpf_verifier_en=
+v *env, int insn_idx, u32 regn
+ 		err =3D check_flow_keys_access(env, off, size);
+ 		if (!err && t =3D=3D BPF_READ && value_regno >=3D 0)
+ 			mark_reg_unknown(env, regs, value_regno);
+-	} else if (type_is_sk_pointer(reg->type)) {
++		break;
++	case PTR_TO_SOCKET:
++	case PTR_TO_SOCK_COMMON:
++	case PTR_TO_TCP_SOCK:
++	case PTR_TO_XDP_SOCK:
+ 		if (t =3D=3D BPF_WRITE) {
+ 			verbose(env, "R%d cannot write into %s\n",
+ 				regno, reg_type_str(env, reg->type));
+@@ -5490,18 +5508,18 @@ static int check_mem_access(struct bpf_verifier_e=
+nv *env, int insn_idx, u32 regn
+ 		err =3D check_sock_access(env, insn_idx, regno, off, size, t);
+ 		if (!err && value_regno >=3D 0)
+ 			mark_reg_unknown(env, regs, value_regno);
+-	} else if (reg->type =3D=3D PTR_TO_TP_BUFFER) {
++		break;
++	case PTR_TO_TP_BUFFER:
+ 		err =3D check_tp_buffer_access(env, reg, regno, off, size);
+ 		if (!err && t =3D=3D BPF_READ && value_regno >=3D 0)
+ 			mark_reg_unknown(env, regs, value_regno);
+-	} else if (base_type(reg->type) =3D=3D PTR_TO_BTF_ID &&
+-		   !type_may_be_null(reg->type)) {
+-		err =3D check_ptr_to_btf_access(env, regs, regno, off, size, t,
+-					      value_regno);
+-	} else if (reg->type =3D=3D CONST_PTR_TO_MAP) {
++		break;
++	case CONST_PTR_TO_MAP:
+ 		err =3D check_ptr_to_map_access(env, regs, regno, off, size, t,
+ 					      value_regno);
+-	} else if (base_type(reg->type) =3D=3D PTR_TO_BUF) {
++		break;
++	case PTR_TO_BUF:
++	{
+ 		bool rdonly_mem =3D type_is_rdonly_mem(reg->type);
+ 		u32 *max_access;
+=20
+@@ -5521,7 +5539,17 @@ static int check_mem_access(struct bpf_verifier_en=
+v *env, int insn_idx, u32 regn
+=20
+ 		if (!err && value_regno >=3D 0 && (rdonly_mem || t =3D=3D BPF_READ))
+ 			mark_reg_unknown(env, regs, value_regno);
+-	} else {
++		break;
++	}
++	case PTR_TO_BTF_ID:
++		if (!type_may_be_null(reg->type)) {
++			err =3D check_ptr_to_btf_access(env, regs, regno, off, size, t,
++						      value_regno);
++			break;
++		} else {
++			fallthrough;
 +		}
-+	}
-+
-+fail:
-+	if (nstoken)
-+		close_netns(nstoken);
-+	system("ip netns del " NS_TEST " &> /dev/null");
-+	fib_lookup__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fib_lookup.c b/tools/testing/selftests/bpf/progs/fib_lookup.c
-new file mode 100644
-index 000000000000..c4514dd58c62
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fib_lookup.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#include <linux/types.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_tracing_net.h"
-+
-+struct bpf_fib_lookup fib_params = {};
-+int fib_lookup_ret = 0;
-+int lookup_flags = 0;
-+
-+SEC("tc")
-+int fib_lookup(struct __sk_buff *skb)
-+{
-+	fib_lookup_ret = bpf_fib_lookup(skb, &fib_params, sizeof(fib_params),
-+					lookup_flags);
-+
-+	return TC_ACT_SHOT;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
++	default:
+ 		verbose(env, "R%d invalid mem access '%s'\n", regno,
+ 			reg_type_str(env, reg->type));
+ 		return -EACCES;
+@@ -8377,10 +8405,7 @@ static int check_helper_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn
+ 		return err;
+=20
+ 	/* reset caller saved regs */
+-	for (i =3D 0; i < CALLER_SAVED_REGS; i++) {
+-		mark_reg_not_init(env, regs, caller_saved[i]);
+-		check_reg_arg(env, caller_saved[i], DST_OP_NO_MARK);
+-	}
++	clear_caller_saved_regs(env, regs);
+=20
+ 	/* helper call returns 64-bit value. */
+ 	regs[BPF_REG_0].subreg_def =3D DEF_NOT_SUBREG;
+--=20
 2.30.2
 
