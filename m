@@ -2,96 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF3069AF7E
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 16:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C2669B017
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 17:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbjBQP1w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 10:27:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
+        id S229723AbjBQQAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 11:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbjBQP1v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 10:27:51 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0C310D2
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 07:27:48 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id u14-20020a17090a4bce00b002341fadc370so1636588pjl.1
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 07:27:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FjhxRmxnq7g/s7HTg3+kkGL/XHuH+Vbf1L6uY1gtdZo=;
-        b=FI/KCZOninl4pna7XqfUzhnxFpGIrbQeTbMujiTucgT+kYUmTkqKvpqrY0BBWfyGHl
-         kGVHGRvlZzrxQgBr1yfxol8SKtKTNnefzdaSMXohxCDU/zWuaKWZDs+j15osVIse5Jbs
-         pPrmNP9mEpEy35h4of6Aq3SVWil9eh91QVjrY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FjhxRmxnq7g/s7HTg3+kkGL/XHuH+Vbf1L6uY1gtdZo=;
-        b=WJ5pfcvgYpqnoc9NNkJjJ9DfNkzI19EivvcKkxu2ALAy8Xnog+biJDFr8TMoNYvUbH
-         aalbBhG/hZGHGB465YrDibdWkxuuPhIhS1HS57bL9LCaHDX9b27kkm9FMMLn8bttCmgh
-         Idp6OI9846LOT995EyLv4qSt9E6KKFemRp5VAxDy1dPGQF4JY4qTca9fsCzKIV6brJpU
-         yFLPuues+tMjbo8Uy6KCi1goAk6QRrx2FcHYLvSxgcVAjNn7Ua3qDjkgtpOt3QDPGUwK
-         jgWB+A6UslJ98zmZD5yqfw2EuVQE+QLbRYgG3Kta+8HvFPbPv+1Mp9tRhwgBe0QjrmQi
-         uU8A==
-X-Gm-Message-State: AO0yUKXZagHTbjFd0pt5jw9q+LqLT75ucjExrbdgqfW8RF+SkxPBOCQo
-        ZFgnLZMFGJC4NI+FI2mjLE2/qf2tYCRptuVyNFukRPg2+vGEo9nI+XU=
-X-Google-Smtp-Source: AK7set+MhY2O08saH1T5RViqTcHgqAmXt9TEW6+Qid0bDYcQBDwu1dbJU5pEbkggOuOqzWdO29LJIwiJ55IFIJYYaW8=
-X-Received: by 2002:a17:90b:3a8f:b0:234:117c:970f with SMTP id
- om15-20020a17090b3a8f00b00234117c970fmr1596590pjb.28.1676647667935; Fri, 17
- Feb 2023 07:27:47 -0800 (PST)
+        with ESMTP id S229893AbjBQQAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 11:00:48 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D604553EE9;
+        Fri, 17 Feb 2023 08:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=TD/a4E0ry0yHp6CnCA73l03dkLjoV7YAC0/qw9WCwbo=; b=N/E+Zo035RXoAOladyHaDfvHfi
+        2DoE5azOJsZ/iqRsbPYhQZKCrvjUzwOMt0n0kHa9BKeukD8V5syWGqQSGJBvPhCRX8h8fY4JgJLdr
+        Ljd5aOoY2VCxm/9gjY/11wIbh+G2ci3Fs/t12EjzG/K3ZaRW8meqPmpQTr3057OjJmZbBtRpSKgvM
+        8d4N4RW6Qkvg33vjy4lul7GDkgDNV9ga7sdizwnvNSppX2st/DAlUO2/Haj1ua/+yvdJvEGmdYk5K
+        L3T3Nn3SmCASwdz0c+5BzBPjKncqIQ+mXzgREDmzc2CZHkCJzTkIwbjz+W2QJmKlYSIA7jtSeyBV0
+        /ek50vBw==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pT3A8-000FCp-1M; Fri, 17 Feb 2023 17:00:40 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pT3A7-000DQY-PN; Fri, 17 Feb 2023 17:00:39 +0100
+Subject: Re: [PATCH bpf-next 3/4] bpf: Add BPF_FIB_LOOKUP_SKIP_NEIGH for
+ bpf_fib_lookup
+To:     Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
+Cc:     'Alexei Starovoitov ' <ast@kernel.org>,
+        'Andrii Nakryiko ' <andrii@kernel.org>,
+        netdev@vger.kernel.org, kernel-team@meta.com
+References: <20230217004150.2980689-1-martin.lau@linux.dev>
+ <20230217004150.2980689-4-martin.lau@linux.dev>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <dd4e2b92-53c9-6973-86ff-8cb04913c3ca@iogearbox.net>
+Date:   Fri, 17 Feb 2023 17:00:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20230217151832.27784-1-revest@chromium.org>
-In-Reply-To: <20230217151832.27784-1-revest@chromium.org>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 17 Feb 2023 16:27:36 +0100
-Message-ID: <CABRcYmLpAt3R5_2r6AgpnYrSx+1GZ9=827EK0xByFJf=eROd1g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix cross compilation with CLANG_CROSS_FLAGS
-To:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-kbuild@vger.kernel.org
-Cc:     andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, kpsingh@kernel.org, masahiroy@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230217004150.2980689-4-martin.lau@linux.dev>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26815/Fri Feb 17 09:41:01 2023)
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 17, 2023 at 4:18 PM Florent Revest <revest@chromium.org> wrote:
->
-> I cross-compile my BPF selftests with the following command:
->
-> CLANG_CROSS_FLAGS="--target=aarch64-linux-gnu --sysroot=/sysroot/" \
->   make LLVM=1 CC=clang CROSS_COMPILE=aarch64-linux-gnu- SRCARCH=arm64
->
-> (Note the use of CLANG_CROSS_FLAGS to specify a custom sysroot instead
-> of letting clang use gcc's default sysroot)
->
-> However, CLANG_CROSS_FLAGS gets propagated to host tools builds (libbpf
-> and bpftool) and because they reference it directly in their Makefiles,
-> they end up cross-compiling host objects which results in linking
-> errors.
->
-> This patch ensures that CLANG_CROSS_FLAGS is reset if CROSS_COMPILE
-> isn't set (for example when reaching a BPF host tool build).
+On 2/17/23 1:41 AM, Martin KaFai Lau wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
+> 
+> The bpf_fib_lookup() also looks up the neigh table.
+> This was done before bpf_redirect_neigh() was added.
+> 
+> In the use case that does not manage the neigh table
+> and requires bpf_fib_lookup() to lookup a fib to
+> decide if it needs to redirect or not, the bpf prog can
+> depend only on using bpf_redirect_neigh() to lookup the
+> neigh. It also keeps the neigh entries fresh and connected.
+> 
+> This patch adds a bpf_fib_lookup flag, SKIP_NEIGH, to avoid
+> the double neigh lookup when the bpf prog always call
+> bpf_redirect_neigh() to do the neigh lookup.
+> 
+> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+> ---
+>   include/uapi/linux/bpf.h       |  1 +
+>   net/core/filter.c              | 33 +++++++++++++++++++++++----------
+>   tools/include/uapi/linux/bpf.h |  1 +
+>   3 files changed, 25 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 1503f61336b6..6c1956e36c97 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+[...]
+> @@ -5838,21 +5836,28 @@ static int bpf_ipv4_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+>   	if (likely(nhc->nhc_gw_family != AF_INET6)) {
+>   		if (nhc->nhc_gw_family)
+>   			params->ipv4_dst = nhc->nhc_gw.ipv4;
+> -
+> -		neigh = __ipv4_neigh_lookup_noref(dev,
+> -						 (__force u32)params->ipv4_dst);
+>   	} else {
+>   		struct in6_addr *dst = (struct in6_addr *)params->ipv6_dst;
+>   
+>   		params->family = AF_INET6;
+>   		*dst = nhc->nhc_gw.ipv6;
+> -		neigh = __ipv6_neigh_lookup_noref_stub(dev, dst);
+>   	}
+>   
+> +	if (flags & BPF_FIB_LOOKUP_SKIP_NEIGH)
+> +		goto set_fwd_params;
+> +
+> +	if (params->family == AF_INET6)
 
-Note: I'm not entirely sure which tree should take that patch. I
-tagged this patch as "bpf-next" because 1- that's the tree I know best
-2- as far as I can tell, only BPF tools Makefiles reference
-CLANG_CROSS_FLAGS directly and are currently broken in this way 3- I
-figured this would be a simple enough patch that it's not too hard for
-another tree to take it.
+Nit, would have probably more intuitive to keep the same test also here
+(nhc->nhc_gw_family != AF_INET6), but either way, lgtm.
 
-Anyway, I tried to CC other relevant folks, I figured there could be
-different opinions on how this should get solved, for example the bpf
-Makefiles using CLANG_CROSS_FLAGS could check whether CROSS_COMPILE is
-set first. I'd be happy to adapt a v2 to any suggestion.
+Are you still required to fill the params->smac in bpf_fib_set_fwd_params()
+in that case, meaning, shouldn't bpf_redirect_neigh() take care of it as well
+from neigh_output()? Looks unnecessary and could be moved out too.
+
+(Took in first 2 in the meantime which look good.)
+
+> +		neigh = __ipv6_neigh_lookup_noref_stub(dev, params->ipv6_dst);
+> +	else
+> +		neigh = __ipv4_neigh_lookup_noref(dev,
+> +						  (__force u32)params->ipv4_dst);
+> +
+>   	if (!neigh || !(neigh->nud_state & NUD_VALID))
+>   		return BPF_FIB_LKUP_RET_NO_NEIGH;
+> +	memcpy(params->dmac, neigh->ha, ETH_ALEN);
+>   
+> -	return bpf_fib_set_fwd_params(params, neigh, dev, mtu);
+> +set_fwd_params:
+> +	return bpf_fib_set_fwd_params(params, dev, mtu);
