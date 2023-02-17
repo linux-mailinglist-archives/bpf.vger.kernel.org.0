@@ -2,123 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6DB69A358
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 02:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BFE69A419
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 04:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjBQBTl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 20:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
+        id S229834AbjBQDDQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 22:03:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjBQBTk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 20:19:40 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042755036A;
-        Thu, 16 Feb 2023 17:19:38 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PHv9c4qQTz4f3wQh;
-        Fri, 17 Feb 2023 09:19:32 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgBnF6si1u5jniEQDw--.23368S2;
-        Fri, 17 Feb 2023 09:19:34 +0800 (CST)
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
- <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
- <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
- <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
- <20230210163258.phekigglpquitq33@apollo>
- <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
- <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
- <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
- <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
- <e16811cc-2d44-73a0-6430-d247605bc836@huaweicloud.com>
- <CAADnVQ+w9h4T6k+F5cLGVVx1jkHvKCF7=ki_Fb1oCp1SF1ZDNA@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <2a58c4a8-781f-6d84-e72a-f8b7117762b4@huaweicloud.com>
-Date:   Fri, 17 Feb 2023 09:19:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229525AbjBQDDP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 22:03:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C1A54D07
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 19:02:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676602950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RjjlCMVMb3EezHMkB/Mb8sIIpSZbgw8rx0/Qxei1PM4=;
+        b=c7wjxpvos5N1U6+UBp/Svq/XN/jGIcW21FSYG84cUFPjO2RS/NMugJeigqRrg0R+sq0Mc/
+        jgm3qQS5YZ8kHwV955S1deNPwHuqzVtl2jc9XNheWCzr1+vbaU+oxrh+eb3yHcovfHmgi8
+        sOh3mH2bIy52WC3aeOwm2MDt0AJm5/E=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-588-LJhmi1swO3u1DRqy4uGsiw-1; Thu, 16 Feb 2023 22:02:27 -0500
+X-MC-Unique: LJhmi1swO3u1DRqy4uGsiw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E17D3857A87;
+        Fri, 17 Feb 2023 03:02:26 +0000 (UTC)
+Received: from T590 (ovpn-8-19.pek2.redhat.com [10.72.8.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 88C31492B0E;
+        Fri, 17 Feb 2023 03:02:20 +0000 (UTC)
+Date:   Fri, 17 Feb 2023 11:02:14 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Cc:     linux-block@vger.kernel.org, io-uring@vger.kernel.org,
+        bpf@vger.kernel.org, axboe@kernel.dk, asml.silence@gmail.com,
+        ZiyangZhang@linux.alibaba.com, ming.lei@redhat.com
+Subject: Re: [RFC 3/3] ublk_drv: add ebpf support
+Message-ID: <Y+7uNpw7QBpJ4GHA@T590>
+References: <20230215004122.28917-1-xiaoguang.wang@linux.alibaba.com>
+ <20230215004122.28917-4-xiaoguang.wang@linux.alibaba.com>
+ <Y+3lOn04pdFtdGbr@T590>
+ <54043113-e524-6ca2-ce77-08d45099aff2@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+w9h4T6k+F5cLGVVx1jkHvKCF7=ki_Fb1oCp1SF1ZDNA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: gCh0CgBnF6si1u5jniEQDw--.23368S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW5XF1kWw48tryUCr4xtFb_yoW8ur1UpF
-        WfZ34UKrykCwnrArykZwn2q3W0vws5Gry2grW8Jr4UCwn5WrZ7Jr1Ivw4avF1rZrs7A3WY
-        vrZ8twnxXa4rZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54043113-e524-6ca2-ce77-08d45099aff2@linux.alibaba.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Thu, Feb 16, 2023 at 08:12:18PM +0800, Xiaoguang Wang wrote:
+> hello,
+> 
+> > On Wed, Feb 15, 2023 at 08:41:22AM +0800, Xiaoguang Wang wrote:
+> >> Currenly only one bpf_ublk_queue_sqe() ebpf is added, ublksrv target
+> >> can use this helper to write ebpf prog to support ublk kernel & usersapce
+> >> zero copy, please see ublksrv test codes for more info.
+> >>
+> >>  	 */
+> >> +	if ((req_op(req) == REQ_OP_WRITE) && ub->io_prep_prog)
+> >> +		return rq_bytes;
+> > Can you explain a bit why READ isn't supported? Because WRITE zero
+> > copy is supposed to be supported easily with splice based approach,
+> > and I am more interested in READ zc actually.
+> No special reason, READ op can also be supported. I'll
+> add this support in patch set v2.
+> For this RFC patch set, I just tried to show the idea, so
+> I must admit that current codes are not mature enough :)
 
-On 2/17/2023 12:35 AM, Alexei Starovoitov wrote:
-> On Thu, Feb 16, 2023 at 5:55 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> Beside BPF_REUSE_AFTER_RCU_GP, is BPF_FREE_AFTER_RCU_GP a feasible solution ?
-> The idea is for bpf_mem_free to wait normal RCU GP before adding
-> the elements back to the free list and free the elem to global kernel memory
-> only after both rcu and rcu_tasks_trace GPs as it's doing now.
->
->> Its downside is that it will enforce sleep-able program to use
->> bpf_rcu_read_{lock,unlock}() to access these returned pointers ?
-> sleepable can access elems without kptrs/spin_locks
-> even when not using rcu_read_lock, since it's safe, but there is uaf.
-> Some progs might be fine with it.
-> When sleepable needs to avoid uaf they will use bpf_rcu_read_lock.
-Thanks for the explanation for BPF_REUSE_AFTER_RCU_GP. It seems that
-BPF_REUSE_AFTER_RCU_GP may incur OOM easily, because before the expiration of
-one RCU GP, these freed elements will not available to both bpf ma or slab
-subsystem and after the expiration of RCU GP, these freed elements are only
-available for one bpf ma but the number of these freed elements maybe too many
-for one bpf ma, so part of these freed elements will be freed through
-call_rcu_tasks_trace() and these freed-again elements will not be available for
-slab subsystem untill the expiration of tasks trace RCU. In brief, after one RCU
-GP, part of these freed elements will be reused, but the majority of these
-elements will still be freed through call_rcu_tasks_trace(). Due to the doubt
-above, I proposed BPF_FREE_AFTER_RCU to directly free these elements after one
-RCU GP and enforce sleepable program to use bpf_rcu_read_lock() to access these
-elements, but the enforcement will break the existing sleepable programs, so
-BPF_FREE_AFTER_GP is still not a good idea. I will check whether or not these is
-still OOM risk for BPF_REUSE_AFTER_RCU_GP and try to mitigate if it is possible
-(e.g., share these freed elements between all bpf ma instead of one bpf ma which
-free it).
+OK.
+
+> 
+> >
+> >> +
+> >>  	if (req_op(req) != REQ_OP_WRITE && req_op(req) != REQ_OP_FLUSH)
+> >>  		return rq_bytes;
+> >>  
+> >> @@ -860,6 +921,89 @@ static void ublk_queue_cmd(struct ublk_queue *ubq, struct request *rq)
+> >>  	}
+> >>  }
+> >>  
+> >>
+> >> +	kbuf->bvec = bvec;
+> >> +	rq_for_each_bvec(tmp, rq, rq_iter) {
+> >> +		*bvec = tmp;
+> >> +		bvec++;
+> >> +	}
+> >> +
+> >> +	kbuf->count = blk_rq_bytes(rq);
+> >> +	kbuf->nr_bvecs = nr_bvec;
+> >> +	data->kbuf = kbuf;
+> >> +	return 0;
+> > bio/req bvec table is immutable, so here you can pass its reference
+> > to kbuf directly.
+> Yeah, thanks.
+
+Also if this request has multiple bios, either you need to submit
+multple sqes or copy all bvec into single table. And in case of single bio,
+the table reference can be used directly.
+
+> 
+> >
+> >> +}
+> >> +
+> >> +static int ublk_run_bpf_prog(struct ublk_queue *ubq, struct request *rq)
+> >> +{
+> >> +	int err;
+> >> +	struct ublk_device *ub = ubq->dev;
+> >> +	struct bpf_prog *prog = ub->io_prep_prog;
+> >> +	struct ublk_io_bpf_ctx *bpf_ctx;
+> >> +
+> >> +	if (!prog)
+> >> +		return 0;
+> >> +
+> >> +	bpf_ctx = kmalloc(sizeof(struct ublk_io_bpf_ctx), GFP_NOIO);
+> >> +	if (!bpf_ctx)
+> >> +		return -EIO;
+> >> +
+> >> +	err = ublk_init_uring_kbuf(rq);
+> >> +	if (err < 0) {
+> >> +		kfree(bpf_ctx);
+> >> +		return -EIO;
+> >> +	}
+> >> +	bpf_ctx->ub = ub;
+> >> +	bpf_ctx->ctx.q_id = ubq->q_id;
+> >> +	bpf_ctx->ctx.tag = rq->tag;
+> >> +	bpf_ctx->ctx.op = req_op(rq);
+> >> +	bpf_ctx->ctx.nr_sectors = blk_rq_sectors(rq);
+> >> +	bpf_ctx->ctx.start_sector = blk_rq_pos(rq);
+> > The above is for setting up target io parameter, which is supposed
+> > to be from userspace, cause it is result of user space logic. If
+> > these parameters are from kernel, the whole logic has to be done
+> > in io_prep_prog.
+> Yeah, it's designed that io_prep_prog implements user space
+> io logic.
+
+That could be the biggest weakness of this approach, because people
+really want to implement complicated logic in userspace, which should
+be the biggest value of ublk, but now seems you move kernel C
+programming into ebpf userspace programming, I don't think ebpf
+is good at handling complicated userspace logic.
+
+> 
+> >
+> >> +	bpf_prog_run_pin_on_cpu(prog, bpf_ctx);
+> >> +
+> >> +	init_task_work(&bpf_ctx->work, ublk_bpf_io_submit_fn);
+> >> +	if (task_work_add(ubq->ubq_daemon, &bpf_ctx->work, TWA_SIGNAL_NO_IPI))
+> >> +		kfree(bpf_ctx);
+> > task_work_add() is only available in case of ublk builtin.
+> Yeah, I'm thinking how to work around it.
+> 
+> >
+> >> +	return 0;
+> >> +}
+> >> +
+> >>  static blk_status_t ublk_queue_rq(struct blk_mq_hw_ctx *hctx,
+> >>  		const struct blk_mq_queue_data *bd)
+> >>  {
+> >> @@ -872,6 +1016,9 @@ static blk_status_t ublk_queue_rq(struct blk_mq_hw_ctx *hctx,
+> >>  	if (unlikely(res != BLK_STS_OK))
+> >>  		return BLK_STS_IOERR;
+> >>  
+> >> +	/* Currently just for test. */
+> >> +	ublk_run_bpf_prog(ubq, rq);
+> > Can you explain the above comment a bit? When is the io_prep_prog called
+> > in the non-test version? Or can you post the non-test version in list
+> > for review.
+> Forgot to delete stale comments, sorry. I'm writing v2 patch set,
+
+OK, got it, so looks ublk_run_bpf_prog is designed to run two progs
+loaded from two control commands.
+
+> 
+> > Here it is the key for understanding the whole idea, especially when
+> > is io_prep_prog called finally? How to pass parameters to io_prep_prog?
+> Let me explain more about the design:
+> io_prep_prog has two types of parameters:
+> 1) its call argument: struct ublk_bpf_ctx, see ublk.bpf.c.
+> ublk_bpf_ctx will describe one kernel io requests about
+> its op, qid, sectors info. io_prep_prog uses these info to
+> map target io.
+> 2) ebpf map structure, user space daemon can use map
+> structure to pass much information from user space to
+> io_prep_prog, which will help it to initialize target io if necessary.
+> 
+> io_prep_prog is called when ublk_queue_rq() is called, this bpf
+> prog will initialize one or more sqes according to user logic, and
+> io_prep_prog will put these sqes in an ebpf map structure, then
+> execute a task_work_add() to notify ubq_daemon to execute
+> io_submit_prog. Note, we can not call io_uring_submit_sqe()
+> in task context that calls ublk_queue_rq(), that context does not
+> have io_uring instance owned by ubq_daemon.
+> Later ubq_daemon will call io_submit_prog to submit sqes.
+
+Submitting sqe from kernel looks interesting, but I guess
+performance may be hurt, given plugging(batching) can't be applied
+any more, which is supposed to affect io perf a lot.
+
+
+
+Thanks,
+Ming
 
