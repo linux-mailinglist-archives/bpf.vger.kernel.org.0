@@ -2,228 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994D769AA8D
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 12:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FF369AAE9
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 12:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbjBQLhv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 06:37:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52220 "EHLO
+        id S230033AbjBQL7g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 06:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjBQLhu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 06:37:50 -0500
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F347E2117;
-        Fri, 17 Feb 2023 03:37:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676633868; x=1708169868;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=kHmVJ+OEkf2Jpbhjw+f9Lr6NQUu9JkCombLnUGVpNqs=;
-  b=H+6rpH0cspRfLzwwB1grAU2bo2PLkyZOeQ5depCd5F/zj909Ou/3jWsR
-   GeWbBcjRdIWf6aNK+QVmgJMHQtHh4sbtVe5xozMUHMbIIFjCHmDbTrspu
-   xrEGv3GP7MUX/L24VXCjs3q28v1l74lIZLCGy8mUR5GGDmCUelVnoTl78
-   0JSdlDUxg1IhMtIJqwnjqMROsPerJhtFPe3941iKx0PlhlBgp/fwi90eM
-   lYVWwfZ6p3KzaJhDq9VAwhl3nRhccBAGA5ROqlG6unEjylVFhoxxpde0N
-   k1mw1RIRmZtVMzNO6XDWEWJoJEPoWdWRzjnv5Cq8OO0cG9q953qUOT1Jv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="396642582"
-X-IronPort-AV: E=Sophos;i="5.97,304,1669104000"; 
-   d="scan'208";a="396642582"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2023 03:37:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="620369105"
-X-IronPort-AV: E=Sophos;i="5.97,304,1669104000"; 
-   d="scan'208";a="620369105"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga003.jf.intel.com with ESMTP; 17 Feb 2023 03:37:48 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Fri, 17 Feb 2023 03:37:47 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Fri, 17 Feb 2023 03:37:47 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Fri, 17 Feb 2023 03:37:47 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ixpOLH32BJVKrZMB/yvQdcvmJ/h3eMRkndutFpz7bkEovfymo+QH7T0T+I2Szcg16Gvk3DgJU/mOT0apfCa+Ifik/3NouAtCcFd49JeNYkQ8+QIabTwIWNwV4IjjqQGZTa0NSXmapenMGr8yjEIPHf880syzxEQvOYk9Gf6h6UJwp9n1XgiT1B+uj0kDgE7q7XrylBy5f7aOFX6kzzhgcShkwCyQ7zgAxXQDqT2RM+rgmWwxpuXZOY8lUarMwpjdIu1Qjp/cb2tVFGI27j6HKpf1gHtwYIqW5g3wZOGjDGS+iRezgNK96Y3s8RTET0hIHANNlcWx6BG6qoJxzrHEcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uojB0RSkiu6fzeTubxb8xgfgdbxNCvxSiJuQt8raIFk=;
- b=UsvN3hjALutQXaK0uHdKCH9kuyFMaM9hvF10Iu89duhz2o8mmSDI/la7fimKRFXHnEBOqJOgVEti2ybk9HYUAdpBPSR0wXXULxVMGtatOOfQGxjCdYUWKKRwlk0paTD7nVafPaqnje1K8nEqMZ4ciJNFKXxzj9MwCTIHYtN5z0xb3I8tyP8THM7GibnVZVwJFt0DsXueWQaR+TzyoerUGQyCIvq0ArSJf3iGuP3LGsDZZ4XhgAKMu9znBlSjHWExmgSPZ07aJjENmSv7JW3SG0dMwhXWpgAPes+TpiwF2qPvqOETgnDK4VxBArL/3w/DW8St3ThdpRyLAxRXSAQBBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB5471.namprd11.prod.outlook.com (2603:10b6:5:39d::10)
- by PH8PR11MB6973.namprd11.prod.outlook.com (2603:10b6:510:226::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.24; Fri, 17 Feb
- 2023 11:37:46 +0000
-Received: from DM4PR11MB5471.namprd11.prod.outlook.com
- ([fe80::b7b7:8e90:2dcd:b8e9]) by DM4PR11MB5471.namprd11.prod.outlook.com
- ([fe80::b7b7:8e90:2dcd:b8e9%7]) with mapi id 15.20.6111.013; Fri, 17 Feb 2023
- 11:37:46 +0000
-Date:   Fri, 17 Feb 2023 12:19:16 +0100
-From:   Larysa Zaremba <larysa.zaremba@intel.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-CC:     <netdev@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Felix Maurer <fmaurer@redhat.com>,
-        "Matthieu Baerts" <matthieu.baerts@tessares.net>
-Subject: Re: [PATCH bpf-next] selftests/bpf: run mptcp in a dedicated netns
-Message-ID: <Y+9itBDl8itgA0e3@lincoln>
-References: <20230217082607.3309391-1-liuhangbin@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230217082607.3309391-1-liuhangbin@gmail.com>
-X-ClientProxiedBy: FR3P281CA0136.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:95::9) To DM4PR11MB5471.namprd11.prod.outlook.com
- (2603:10b6:5:39d::10)
+        with ESMTP id S229513AbjBQL7e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 06:59:34 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFB066CD1
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 03:59:27 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id bt27so396001wrb.3
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 03:59:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DK/CgSsg2KwVUYyuOX48SIewHpMap41EOxdkYauGL+U=;
+        b=DaO8/T6pfK2bL6R+cFwOPAfo2qnGIEEq/pDwUjVNfgqTHtyJ/avOI7tJs35bCZhdOX
+         sOkX2pbuRPd5WdlVfRj8x8OskvFmaTmB37RqQbPYKTX72LDrJw7BfpR/kdxjz5zKww/C
+         h1uaHTghnuGauW5a0FFMUtFHURob5ic07Y2uv4R0Ky1l6ac3hpGW6ejlf91oNU3OWZnM
+         oW/5CUcBJ/rTHse/ipWRDhCq5mf0jiqkjSB8XwcmBffGoWFyYUOHM6oFWJbUgA73lT2S
+         Kxu2t3WFASjYHB4j2Lfk3Pj+YV5H15pBL4JtMlXXx1X+Um3KO7SQjMY3vUJetn2ry3Fl
+         +zww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DK/CgSsg2KwVUYyuOX48SIewHpMap41EOxdkYauGL+U=;
+        b=gPSrsOszOb5ln9rqVH/sKOUAU3eHlWJNoAMKIcCCa3x+24yW0BHXDVIIJsPsHeyzJv
+         A5sv9hrYLW+qaL28c7XxNH2WaIqot7UnTjvrngBGyZn1mozvU/3VC+XaXwIfL1qFlBBG
+         uvrfJyQkpPBcFDC/zicYlNvEQhlvJsvFLjdfnA7VVwTUXRXAMAwxGOi86QqfPz3vvgxS
+         2RA1WeQfkz9hO1cc+fHYYYcyPjTpDPn4Lg6gr3cyVecb6/mxKItduImWbIagk4DaCrTe
+         5Jj8dDCFunxIszKBYZfChSMcAPHeABhV5nFwdiX4SqzHaV8nFFV3syee/hDj4eqnhLjf
+         wqTA==
+X-Gm-Message-State: AO0yUKVv2L8hv36GP2CA4k+giIoPRYaUT95mbg7cVGYEhx3/VW7MAA5V
+        in0oMngcc8a7/DAf32GTnFbZfAXBEvtawGfZ1Qsjlw==
+X-Google-Smtp-Source: AK7set+Qveqt0pg/bWul6375wPA3LNybD2SBr+dVEeJo3j7HvJi6kFQrqjyJctyGZUwpvFKU+WEYPQ==
+X-Received: by 2002:a5d:5386:0:b0:2bf:f4f7:be9c with SMTP id d6-20020a5d5386000000b002bff4f7be9cmr66516wrv.14.1676635165906;
+        Fri, 17 Feb 2023 03:59:25 -0800 (PST)
+Received: from ?IPV6:2a02:8011:e80c:0:e171:8c51:c644:618e? ([2a02:8011:e80c:0:e171:8c51:c644:618e])
+        by smtp.gmail.com with ESMTPSA id a17-20020adff7d1000000b002c3d29d83d2sm4038818wrq.63.2023.02.17.03.59.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Feb 2023 03:59:25 -0800 (PST)
+Message-ID: <33f48f89-15d0-58a7-b5ce-a934f4379166@isovalent.com>
+Date:   Fri, 17 Feb 2023 11:59:24 +0000
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5471:EE_|PH8PR11MB6973:EE_
-X-MS-Office365-Filtering-Correlation-Id: ce772f3e-4719-40dd-e3f0-08db10db63a9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NR67laHgk2n8bm9vuwLNBYjg2iDPrazJhZqxO0p5tpr5zHdnCvQUKmiPWALO/wP0ScUfx6o0YGaZk+wyTQNc/yok4Qo1CaF1U5nqbBDSfkbzVSirwoT1q8OWOSFDNRsH671IUH/zj2aQGlPuuW9dglyDMoe46NImbM3H8ugeYaWQzjnYv1EnvFtY8gCCZeD1PfobKWx6Ntu1MJCVT+CLipLv+XKZ0EoacD3AmOblmj74vT3Abztb1SRnkwN3xfGeZuQmuUT/W+mg/owVFwsHDOP+rRX3cKJeBAnKJI2qs2nweDi7a0j2NyyLAMEZer3cMwUej0HMuN1IbOweKLokfcXG+UBwopa2+XYiNR9tyzBo/UFZNt/i9a7ChJCgtr8rlNNGj8Ql0Svp8FZXuIDYzQSYG0QmUQL3dcG0ZqjSETqJa5pgy0ZCJwLZo5xAwPwMVU+hugVpLLzu6+YojCINxdf1v6rr+B5JMlpH7aJibQYoL8lCWMjq6qytpSJZPZimC5RrjRoqDElfw/KiIRbdXey4EYCg1Vdh+Us96YvwoAXvKefMqi2Vsis9R2rNEwbI6Xhf7Ro482hRyWCDz/XcjmUw0YO5/v3EEHLm8nsRZ029MZW3vi8C46o4AJAC8O0oY35SjodBwR3FBHcfFqZ9G8lwWlDrhYsdakNiDFZ1hy/d30dTHSjC4g7f3HfL+fP7
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5471.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(136003)(39860400002)(376002)(346002)(366004)(396003)(451199018)(54906003)(83380400001)(6666004)(5660300002)(7416002)(316002)(2906002)(33716001)(6506007)(6486002)(41300700001)(8676002)(66476007)(66556008)(478600001)(86362001)(26005)(38100700002)(8936002)(6916009)(66946007)(4326008)(44832011)(82960400001)(9686003)(6512007)(186003)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HLAHBfassNUhaPBZ5lRYruBUzwSfpbOGFBk2CFRdpwY6pUsOSeywsdeYlYQ/?=
- =?us-ascii?Q?vSOsHai919KVeAiZZ0Bm96ghToFX/cT7QYJbewzWXYd4MOT5r4e6GUb5xilI?=
- =?us-ascii?Q?2RSHy3ig2FrRYZtKe9vxD30Dl4UtcPKnAM0g9IyPV6wl8bayJ65z+bgLv2xU?=
- =?us-ascii?Q?GJkuyY9rSBVZC1OclK3FB+hNhDUdOei84ys8oCztBHRyd2gxyGBBXg2nSHpn?=
- =?us-ascii?Q?5mL5ugHjIyfyX3C7R5I3gNI7kPO3oN9vRsU7Cwpl6kchzqZr+bb3yaWWqcyt?=
- =?us-ascii?Q?UXWYI5ccH0apVZw0bpcNgecKsrrQzvCAymPDBnIY3xfkZ7acSweFnz2USUXF?=
- =?us-ascii?Q?kaR7Xt+cWEyG5td50YunxQHcbKZqJLt87lwo/xw1oDa9vG4J4sjQrQ74dCIA?=
- =?us-ascii?Q?rUnGwYVgaMgGg4dDVi7pTh0ApsBRTwIeFPJMHs/sqAqzmhcWo3z+0jl2QNum?=
- =?us-ascii?Q?6q0KRng85MzDsqogtPM/L73tqkhQjyC3K+eeG5HsLKFykIyMZ0ExK9aGUoGX?=
- =?us-ascii?Q?DcjRBWrwGT/wOM4j4y8QPmmhdgGoLmR9Rkk2yn7ydz4tu9c/DTc5X/NtoeoV?=
- =?us-ascii?Q?Yo7OrKf1zbni2T+ejhzZsMGgSEurKsEJNeYuOqzQDi6OrzJANkKzh5g5c7cz?=
- =?us-ascii?Q?Jr2Mhvwgb6n4kdUFckte3iC1VQxUrEIoYmRf65z97x3Huyf/XELQdyV0tgJz?=
- =?us-ascii?Q?arLy8yd98nh/6rMtTeDv7NsEBi5fDsEE5nkeqm0R/Ud8cve82kgwr98jAD+9?=
- =?us-ascii?Q?nyTRlHNHj21ayP7EB2hAWmEk8kbYHryR3hp8e8AoGizO+P3Ns7w4XY4OUlpX?=
- =?us-ascii?Q?RqPW42yIltoe5SuExt9ywxVmZ6BsBANDpb12FvAv+6/25SkSzi/AMb6GeM6V?=
- =?us-ascii?Q?8+yyLXvD8XNRcVoL/Rz7weLuJ2PbWGTN4jBnzAKmOlDsnyXFl6ROtJop7Gst?=
- =?us-ascii?Q?emjq+pr/dDK7Ym4SyRkAaJPKmbqtdT3ZukRckpwP1aKv+fW7bTmyG1xNwU4V?=
- =?us-ascii?Q?rZTmtCbdfaKYE2h6AzrMizyEMGusseootykrcu/eUdxZQCzpyIRBggxsx+ym?=
- =?us-ascii?Q?dRxP97NgHkfFnWTSuLa2zIsrx8TAaNhaHX/aC4xT4flhSjBFuoEpmjN+vwkV?=
- =?us-ascii?Q?WvcVeRtWQrg68SNklOIHNQ+Yq3hgeimBzW+C5HTFhP1C4caFet78bA+eFmg2?=
- =?us-ascii?Q?dtikbAqXuzKUuF/1NE36jYj3UJhr7OjspETAxufeP7jW6+ZmNz2YcSBeX3CH?=
- =?us-ascii?Q?W9V2D2rFy02+jKPN1bARNTWijGArvu8UfUsZcG+tLvAW5g+o70RJ7GPdqANE?=
- =?us-ascii?Q?Qa3SB+sxNiuWsvwIWWAeP2zsV0M+XV/y2Br1FWGPfcBInIqafRNrazZ2io0x?=
- =?us-ascii?Q?bqTSAIeZLC+FEkV3Zee1d4P1yliAFp3iTuF6mJLpqOrdUbkMtdFWVP/c12Ws?=
- =?us-ascii?Q?fWYYPvdsXS2ny1PIZDgKrD72VfCNuGYqrqsw1A1Emg0m8dVCCxap1ijWwCgQ?=
- =?us-ascii?Q?g5cFKN4k39AFnGtuS+kzudDk5qvpLiEEjItHEWMPxw0Zm08HEy13T9BQXlV6?=
- =?us-ascii?Q?BzztQCcd46mSMrTk0GoqZIGT4LNQWYKjgpm/nlAZj0JRUfQWGwACx1uWVkZ7?=
- =?us-ascii?Q?fg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce772f3e-4719-40dd-e3f0-08db10db63a9
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5471.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2023 11:37:46.0892
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5Nofa+xa/zlQqv2UNPNMlPLB3gnaLGYLeaksZSfJb88bTQjA+oP5MXHLqZ7qb56aD/aQeCzGZdBv0SFTcot2NnNt53gSRCCMoPKsP/6FC3M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6973
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [RFC] libbbpf/bpftool: Support 32-bit Architectures.
+Content-Language: en-GB
+To:     Puranjay Mohan <puranjay12@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, memxor@gmail.com
+References: <CANk7y0joRFw2F4iAuN9r-dWWMvOmbFZz_J4rhGhgVFjdnxPTYw@mail.gmail.com>
+ <Y+2J+jIFIxGOW32X@google.com>
+ <CAEf4BzaQJfB0Qh2Wn5wd9H0ZSURbzWBfKkav8xbkhozqTWXndw@mail.gmail.com>
+ <CANk7y0iKQX7BdGabDgHmTa=BXc_WCh3rkh5xjqJqc56FJs-QUA@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <CANk7y0iKQX7BdGabDgHmTa=BXc_WCh3rkh5xjqJqc56FJs-QUA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 17, 2023 at 04:26:07PM +0800, Hangbin Liu wrote:
-> The current mptcp test is run in init netns. If the user or default
-> system config disabled mptcp, the test will fail. Let's run the mptcp
-> test in a dedicated netns to avoid none kernel default mptcp setting.
+2023-02-17 11:25 UTC+0100 ~ Puranjay Mohan <puranjay12@gmail.com>
+> Hi,
+> Thanks for the response.
 > 
-> Suggested-by: Martin KaFai Lau <martin.lau@linux.dev>
+> On Thu, Feb 16, 2023 at 11:13 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>>
+>> On Wed, Feb 15, 2023 at 5:48 PM Stanislav Fomichev <sdf@google.com> wrote:
+>>>
+>>> On 02/15, Puranjay Mohan wrote:
+>>>> The BPF selftests fail to compile on 32-bit architectures as the skeleton
+>>>> generated by bpftool doesn’t take into consideration the size difference
+>>>> of
+>>>> variables on 32-bit/64-bit architectures.
+>>>
+>>>> As an example,
+>>>> If a bpf program has a global variable of type: long, its skeleton will
+>>>> include
+>>>> a bss map that will have a field for this variable. The long variable in
+>>>> BPF is
+>>>> 64-bit. if we are working on a 32-bit machine, the generated skeleton has
+>>>> to
+>>>> compile for that machine where long is 32-bit.
+>>>
+>>>> A reproducer for this issue:
+>>>>          root@56ec59aa632f:~# cat test.bpf.c
+>>>>          long var;
+>>>
+>>>>          root@56ec59aa632f:~# clang -target bpf -g -c test.bpf.c
+>>>
+>>>>          root@56ec59aa632f:~# bpftool btf dump file test.bpf.o format raw
+>>>>          [1] INT 'long int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED
+>>>>          [2] VAR 'var' type_id=1, linkage=global
+>>>>          [3] DATASEC '.bss' size=0 vlen=1
+>>>>                 type_id=2 offset=0 size=8 (VAR 'var')
+>>>
+>>>>         root@56ec59aa632f:~# bpftool gen skeleton test.bpf.o > skeleton.h
+>>>
+>>>>         root@56ec59aa632f:~# echo "#include \"skeleton.h\"" > test.c
+>>>
+>>>>         root@56ec59aa632f:~# gcc test.c
+>>>>         In file included from test.c:1:
+>>>>         skeleton.h: In function 'test_bpf__assert':
+>>>>         skeleton.h:231:2: error: static assertion failed: "unexpected
+>>>> size of \'var\'"
+>>>>           231 |  _Static_assert(sizeof(s->bss->var) == 8, "unexpected
+>>>> size of 'var'");
+>>>>                  |  ^~~~~~~~~~~~~~
+>>>
+>>>> One naive solution for this would be to map ‘long’ to ‘long long’ and
+>>>> ‘unsigned long’ to ‘unsigned long long’. But this doesn’t solve everything
+>>>> because this problem is also seen with pointers that are 64-bit in BPF and
+>>>> 32-bit in 32-bit machines.
+>>>
+>>>> I want to work on solving this and am looking for ideas to solve it
+>>>> efficiently.
+>>>> The main goal is to make libbbpf/bpftool host architecture agnostic.
+>>>
+>>> Looks like bpftool needs to be aware of the target architecture. The
+>>> same way gcc is doing with build-host-target triplet. I don't
+>>> think this can be solved with a bunch of typedefs? But I've long
+>>> forgotten how a pure 32-bit machine looks, so I can't give any
+>>> useful input :-(
+>>
+>> Yeah, I'd rather avoid making bpftool aware of target architecture.
+>> Three is 32 vs 64 bitness, there is also little/big endianness, etc.
 
-Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
+I'd rather avoid that too, but for addressing the endianness issue with
+cross-compiling, reported by Christophe and where the bytecode is not
+stored with the right endianness in the skeleton file, do you see an
+alternative?
 
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  .../testing/selftests/bpf/prog_tests/mptcp.c  | 24 +++++++++++++++++++
->  1 file changed, 24 insertions(+)
+>>
+>> So I'd recommend never using "long" (and similar types that depend on
+>> bitness of the platform, like size_t, etc) for global variables. Also
+>> don't use pointer types as types of the variable. Stick to __u64,
+>> __u32, etc.
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> index 59f08d6d1d53..8a4ed9510ec7 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> @@ -7,6 +7,16 @@
->  #include "network_helpers.h"
->  #include "mptcp_sock.skel.h"
->  
-> +#define SYS(fmt, ...)						\
-> +	({							\
-> +		char cmd[1024];					\
-> +		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
-> +		if (!ASSERT_OK(system(cmd), cmd))		\
-> +			goto cmd_fail;				\
-> +	})
-> +
-> +#define NS_TEST "mptcp_ns"
-> +
->  #ifndef TCP_CA_NAME_MAX
->  #define TCP_CA_NAME_MAX	16
->  #endif
-> @@ -138,12 +148,20 @@ static int run_test(int cgroup_fd, int server_fd, bool is_mptcp)
->  
->  static void test_base(void)
->  {
-> +	struct nstoken *nstoken = NULL;
->  	int server_fd, cgroup_fd;
->  
->  	cgroup_fd = test__join_cgroup("/mptcp");
->  	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
->  		return;
->  
-> +	SYS("ip netns add %s", NS_TEST);
-> +	SYS("ip -net %s link set dev lo up", NS_TEST);
-> +
-> +	nstoken = open_netns(NS_TEST);
-> +	if (!ASSERT_OK_PTR(nstoken, "open_netns"))
-> +		goto cmd_fail;
-> +
->  	/* without MPTCP */
->  	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, 0, 0);
->  	if (!ASSERT_GE(server_fd, 0, "start_server"))
-> @@ -163,6 +181,12 @@ static void test_base(void)
->  
->  	close(server_fd);
->  
-> +cmd_fail:
-> +	if (nstoken)
-> +		close_netns(nstoken);
-> +
-> +	system("ip netns del " NS_TEST " >& /dev/null");
-> +
->  close_cgroup_fd:
->  	close(cgroup_fd);
->  }
-> -- 
-> 2.38.1
+> I feel if we follow. this convention then it will work out but
+> currently a lot of selftests use these
+> architecture dependent variable types and therefore don't even compile
+> for 32-bit architectures
+> because of the _Static_asserts in the skeleton.
 > 
+> Do you suggest replacing all these with __u64, __u32, etc. in the
+> selftests so that they compile on every architecture?
+> 
+>>
+>> Note that all this is irrelevant for static global variables, as they
+>> are not exposed in the BPF skeleton.
+>>
+>> In general, mixing 32-bit host architecture with (always) 64-bit BPF
+>> architecture always requires more care. And BPF skeleton is just one
+>> aspect of this.
+>>
+>>>
+>>>
+>>>> Thanks,
+>>>> Puranjay Mohan.
+> 
+> 
+> 
+
