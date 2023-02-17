@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CB069B50A
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 22:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A7169B523
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 22:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjBQVqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 16:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
+        id S229522AbjBQV5J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 16:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjBQVqi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 16:46:38 -0500
+        with ESMTP id S229570AbjBQV5I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 16:57:08 -0500
 Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A3A521EC
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 13:46:07 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id cz7so5942972edb.12
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 13:46:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3B959726
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 13:57:07 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id ee31so10934640edb.3
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 13:57:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=95CFI1JEtExC4HoFIM9zawTEgt2rn6abDAc3+6fSvT4=;
-        b=ilEYsN5xE7i3I9DkOQUj94Pf+6ATrHMzGXX6DSZC+DjpV/frQq4yKNlxlJewaZWDV5
-         Ca/rDeq7L7ycbVENqmNI8q19WoZMl/jlal02yNw1JmVsiHeLS9KwASCfJ7SIY7d30C0y
-         jZjS5J3sfIiJmzOAYqQkEk614gK43hGfzGyIGkS1xi5Gs+7BoeLrijUV/nHYphDt4mXe
-         bdiyHGBcLNPV/bo0FV4cTX6hRt3qMmrAbvGdah+NE5+0OMCQC/5LL869wwXzwCa4Rf8F
-         cOui3MW/+dyIwHKnaXMBN3qcWOkzkrEw+iSMKwUKK7K/CVI3B150WRbXRfj7xIhLTL1g
-         NBEA==
+        bh=623eX+szTKamTYW+1FUByhXrNuQryjgYFwxOLRHnWt0=;
+        b=IaOQst/YT+MwFn5TsxslGhRr1YxPpMTTPlrLhYBp4I30E0BDMRkvfSHRS5IkhW8lcf
+         o6SKGENXYIm8mH0KzTRum3rfuTO5B509WCKVQpGdL++p//98rlU4m1GjeTbrjTZfq4cJ
+         4UYgVFYasEbtD6h37IN1QqJlDw/I4dwzG9vwrhWhZ3/HfA2O8dlAa/3XLtfLYqb5nDGO
+         1W/cp9HkuCFjsHRqgln9KdxjCmfw7ZKyAHgEuDvyBqVBZsh1lQWL/nWeoYx/7zLA4feU
+         BzyyBGqYWy6AfS5ffoizZF73KdagIgms47IGcrxAPsptjoBzQ62sl2fbFibDEnicdBQv
+         EhLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=95CFI1JEtExC4HoFIM9zawTEgt2rn6abDAc3+6fSvT4=;
-        b=SYjDHjRG6qFROdkOxdMq7MyZdD5/qw3TMDtYqWoN9kotghsc9jTvXncJf+VCiF1dN9
-         iDj9LNt9gJTu/cjizYj4Xs6U3/4RQaOTorc3kMJgF1IIlHQf0mmWnW+tgSxijmij9Hzm
-         Oeeo+0sagcsoyMhlCivIBev26aGzu4+OixtYnN2kE1ElSZxd+EMVskCMj6TAFOMHX5c7
-         KManTa/ER2VWW+h+MGM5tGa+6syQDPklC2TDIN9y9OCFDBTZknXcEVH05gEwo4i8CEma
-         kIyEqceX0APM/WctH9o+dN8kd/OCI87t7vpxQMSzQ1SsMPD/BX0REct+lHM2qoHoOajz
-         V7Nw==
-X-Gm-Message-State: AO0yUKV+L6BRuK2wQSZVWaZl+FD+zCiRW6a9r9k9Zl2MCRJvkfmq3UwM
-        G+InmyhEzbHIhIYfu2QK7YfmJOVy735IysTvCqQ=
-X-Google-Smtp-Source: AK7set+HN4tjIYr+kmqXSgVxjgn5tw3KieX8NgfFkDh1gUuaZzrwXtrOD9AuzwSAo36zdfstZW/XEm/H1pWyrcWjvjE=
-X-Received: by 2002:a50:9f2f:0:b0:4ac:b626:378e with SMTP id
- b44-20020a509f2f000000b004acb626378emr1483886edf.5.1676670359576; Fri, 17 Feb
- 2023 13:45:59 -0800 (PST)
+        bh=623eX+szTKamTYW+1FUByhXrNuQryjgYFwxOLRHnWt0=;
+        b=rm/JQPl1oTdhCao7UhyvJ8+kuorkusDhiVF9OVrXVpdlxlg09gTIbzHuyMsH0TtjZC
+         OKBJmGGmOn3UWFkRKD63nxEUffasOl1sWPbQuJL0mxRwnQHx+rXYSkpyCFtYIJMLm5yl
+         xaJsjjMjKIzpiTt2nxWhGN0/5N2LNfslZzuMaw+j+b6aKHaEt9qAAF6NAnT6uwKToq+N
+         Rm9M164FvEBw3N5Qpw4GRpH5o/K1/J2eM9V+weSAiBc8VUn+uC8qCGnOS7oVaVmGx/SA
+         7g6AqNtt/cmsti67Pu2CBNh8z9AFN4j6oog9kWPVLV1wJZbi9jlvlO+xXYwg1tBvh5AW
+         8S7A==
+X-Gm-Message-State: AO0yUKU4VlcG3kY2sDEcw16YpXPiSddWF6VlHXDM0IItfwlcwRpo7NuM
+        EJ4zpkWXTlSuDu3AarYQ1U9/iHj2H9+7R0Lv6fI=
+X-Google-Smtp-Source: AK7set+YMvhFAnNvv4KNIrL2MT2+88NgbmCJLY9ZMJ3U/P0k66hgU66H74BomBuAuomUQIKRHwKsXSlJrWleaeqXe/k=
+X-Received: by 2002:a17:906:b746:b0:88d:64e7:a2be with SMTP id
+ fx6-20020a170906b74600b0088d64e7a2bemr1033102ejb.15.1676671025639; Fri, 17
+ Feb 2023 13:57:05 -0800 (PST)
 MIME-Version: 1.0
 References: <CANk7y0joRFw2F4iAuN9r-dWWMvOmbFZz_J4rhGhgVFjdnxPTYw@mail.gmail.com>
  <Y+2J+jIFIxGOW32X@google.com> <CAEf4BzaQJfB0Qh2Wn5wd9H0ZSURbzWBfKkav8xbkhozqTWXndw@mail.gmail.com>
- <CANk7y0iKQX7BdGabDgHmTa=BXc_WCh3rkh5xjqJqc56FJs-QUA@mail.gmail.com>
-In-Reply-To: <CANk7y0iKQX7BdGabDgHmTa=BXc_WCh3rkh5xjqJqc56FJs-QUA@mail.gmail.com>
+ <CANk7y0iKQX7BdGabDgHmTa=BXc_WCh3rkh5xjqJqc56FJs-QUA@mail.gmail.com> <33f48f89-15d0-58a7-b5ce-a934f4379166@isovalent.com>
+In-Reply-To: <33f48f89-15d0-58a7-b5ce-a934f4379166@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 17 Feb 2023 13:45:47 -0800
-Message-ID: <CAEf4BzbHZ3mJT7sMhAGjfEjENjgMT+vForcKr1d+75yUkme+Tw@mail.gmail.com>
+Date:   Fri, 17 Feb 2023 13:56:53 -0800
+Message-ID: <CAEf4BzYutCfUPgPk-DDDGFd9Uue6Dm5ymZ=GTpHokN6JM+_mxA@mail.gmail.com>
 Subject: Re: [RFC] libbbpf/bpftool: Support 32-bit Architectures.
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
-        quentin@isovalent.com, ast@kernel.org, daniel@iogearbox.net,
-        memxor@gmail.com
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, memxor@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,128 +71,130 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 17, 2023 at 2:25 AM Puranjay Mohan <puranjay12@gmail.com> wrote=
-:
+On Fri, Feb 17, 2023 at 3:59 AM Quentin Monnet <quentin@isovalent.com> wrot=
+e:
 >
-> Hi,
-> Thanks for the response.
->
-> On Thu, Feb 16, 2023 at 11:13 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> 2023-02-17 11:25 UTC+0100 ~ Puranjay Mohan <puranjay12@gmail.com>
+> > Hi,
+> > Thanks for the response.
 > >
-> > On Wed, Feb 15, 2023 at 5:48 PM Stanislav Fomichev <sdf@google.com> wro=
-te:
-> > >
-> > > On 02/15, Puranjay Mohan wrote:
-> > > > The BPF selftests fail to compile on 32-bit architectures as the sk=
-eleton
-> > > > generated by bpftool doesn=E2=80=99t take into consideration the si=
-ze difference
-> > > > of
-> > > > variables on 32-bit/64-bit architectures.
-> > >
-> > > > As an example,
-> > > > If a bpf program has a global variable of type: long, its skeleton =
-will
-> > > > include
-> > > > a bss map that will have a field for this variable. The long variab=
-le in
-> > > > BPF is
-> > > > 64-bit. if we are working on a 32-bit machine, the generated skelet=
-on has
-> > > > to
-> > > > compile for that machine where long is 32-bit.
-> > >
-> > > > A reproducer for this issue:
-> > > >          root@56ec59aa632f:~# cat test.bpf.c
-> > > >          long var;
-> > >
-> > > >          root@56ec59aa632f:~# clang -target bpf -g -c test.bpf.c
-> > >
-> > > >          root@56ec59aa632f:~# bpftool btf dump file test.bpf.o form=
-at raw
-> > > >          [1] INT 'long int' size=3D8 bits_offset=3D0 nr_bits=3D64 e=
-ncoding=3DSIGNED
-> > > >          [2] VAR 'var' type_id=3D1, linkage=3Dglobal
-> > > >          [3] DATASEC '.bss' size=3D0 vlen=3D1
-> > > >                 type_id=3D2 offset=3D0 size=3D8 (VAR 'var')
-> > >
-> > > >         root@56ec59aa632f:~# bpftool gen skeleton test.bpf.o > skel=
-eton.h
-> > >
-> > > >         root@56ec59aa632f:~# echo "#include \"skeleton.h\"" > test.=
-c
-> > >
-> > > >         root@56ec59aa632f:~# gcc test.c
-> > > >         In file included from test.c:1:
-> > > >         skeleton.h: In function 'test_bpf__assert':
-> > > >         skeleton.h:231:2: error: static assertion failed: "unexpect=
-ed
-> > > > size of \'var\'"
-> > > >           231 |  _Static_assert(sizeof(s->bss->var) =3D=3D 8, "unex=
-pected
-> > > > size of 'var'");
-> > > >                  |  ^~~~~~~~~~~~~~
-> > >
-> > > > One naive solution for this would be to map =E2=80=98long=E2=80=99 =
-to =E2=80=98long long=E2=80=99 and
-> > > > =E2=80=98unsigned long=E2=80=99 to =E2=80=98unsigned long long=E2=
-=80=99. But this doesn=E2=80=99t solve everything
-> > > > because this problem is also seen with pointers that are 64-bit in =
-BPF and
-> > > > 32-bit in 32-bit machines.
-> > >
-> > > > I want to work on solving this and am looking for ideas to solve it
-> > > > efficiently.
-> > > > The main goal is to make libbbpf/bpftool host architecture agnostic=
-.
-> > >
-> > > Looks like bpftool needs to be aware of the target architecture. The
-> > > same way gcc is doing with build-host-target triplet. I don't
-> > > think this can be solved with a bunch of typedefs? But I've long
-> > > forgotten how a pure 32-bit machine looks, so I can't give any
-> > > useful input :-(
-> >
-> > Yeah, I'd rather avoid making bpftool aware of target architecture.
-> > Three is 32 vs 64 bitness, there is also little/big endianness, etc.
-> >
-> > So I'd recommend never using "long" (and similar types that depend on
-> > bitness of the platform, like size_t, etc) for global variables. Also
-> > don't use pointer types as types of the variable. Stick to __u64,
-> > __u32, etc.
+> > On Thu, Feb 16, 2023 at 11:13 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >>
+> >> On Wed, Feb 15, 2023 at 5:48 PM Stanislav Fomichev <sdf@google.com> wr=
+ote:
+> >>>
+> >>> On 02/15, Puranjay Mohan wrote:
+> >>>> The BPF selftests fail to compile on 32-bit architectures as the ske=
+leton
+> >>>> generated by bpftool doesn=E2=80=99t take into consideration the siz=
+e difference
+> >>>> of
+> >>>> variables on 32-bit/64-bit architectures.
+> >>>
+> >>>> As an example,
+> >>>> If a bpf program has a global variable of type: long, its skeleton w=
+ill
+> >>>> include
+> >>>> a bss map that will have a field for this variable. The long variabl=
+e in
+> >>>> BPF is
+> >>>> 64-bit. if we are working on a 32-bit machine, the generated skeleto=
+n has
+> >>>> to
+> >>>> compile for that machine where long is 32-bit.
+> >>>
+> >>>> A reproducer for this issue:
+> >>>>          root@56ec59aa632f:~# cat test.bpf.c
+> >>>>          long var;
+> >>>
+> >>>>          root@56ec59aa632f:~# clang -target bpf -g -c test.bpf.c
+> >>>
+> >>>>          root@56ec59aa632f:~# bpftool btf dump file test.bpf.o forma=
+t raw
+> >>>>          [1] INT 'long int' size=3D8 bits_offset=3D0 nr_bits=3D64 en=
+coding=3DSIGNED
+> >>>>          [2] VAR 'var' type_id=3D1, linkage=3Dglobal
+> >>>>          [3] DATASEC '.bss' size=3D0 vlen=3D1
+> >>>>                 type_id=3D2 offset=3D0 size=3D8 (VAR 'var')
+> >>>
+> >>>>         root@56ec59aa632f:~# bpftool gen skeleton test.bpf.o > skele=
+ton.h
+> >>>
+> >>>>         root@56ec59aa632f:~# echo "#include \"skeleton.h\"" > test.c
+> >>>
+> >>>>         root@56ec59aa632f:~# gcc test.c
+> >>>>         In file included from test.c:1:
+> >>>>         skeleton.h: In function 'test_bpf__assert':
+> >>>>         skeleton.h:231:2: error: static assertion failed: "unexpecte=
+d
+> >>>> size of \'var\'"
+> >>>>           231 |  _Static_assert(sizeof(s->bss->var) =3D=3D 8, "unexp=
+ected
+> >>>> size of 'var'");
+> >>>>                  |  ^~~~~~~~~~~~~~
+> >>>
+> >>>> One naive solution for this would be to map =E2=80=98long=E2=80=99 t=
+o =E2=80=98long long=E2=80=99 and
+> >>>> =E2=80=98unsigned long=E2=80=99 to =E2=80=98unsigned long long=E2=80=
+=99. But this doesn=E2=80=99t solve everything
+> >>>> because this problem is also seen with pointers that are 64-bit in B=
+PF and
+> >>>> 32-bit in 32-bit machines.
+> >>>
+> >>>> I want to work on solving this and am looking for ideas to solve it
+> >>>> efficiently.
+> >>>> The main goal is to make libbbpf/bpftool host architecture agnostic.
+> >>>
+> >>> Looks like bpftool needs to be aware of the target architecture. The
+> >>> same way gcc is doing with build-host-target triplet. I don't
+> >>> think this can be solved with a bunch of typedefs? But I've long
+> >>> forgotten how a pure 32-bit machine looks, so I can't give any
+> >>> useful input :-(
+> >>
+> >> Yeah, I'd rather avoid making bpftool aware of target architecture.
+> >> Three is 32 vs 64 bitness, there is also little/big endianness, etc.
 >
-> I feel if we follow. this convention then it will work out but
-> currently a lot of selftests use these
-> architecture dependent variable types and therefore don't even compile
-> for 32-bit architectures
-> because of the _Static_asserts in the skeleton.
->
-> Do you suggest replacing all these with __u64, __u32, etc. in the
-> selftests so that they compile on every architecture?
+> I'd rather avoid that too, but for addressing the endianness issue with
+> cross-compiling, reported by Christophe and where the bytecode is not
+> stored with the right endianness in the skeleton file, do you see an
+> alternative?
 
-how many changes are we talking about? my initial reaction is that
-yeah, if this matters for correctness, we should be strict with __u64
-and __u32 use over long
+So bytecode is just a byte array, by itself endianness shouldn't
+matter. The contents of it (ELF itself) is supposed to be of correct
+target endianness, though, right? Or what problem we are talking about
+here? Can you please summarize?
+
 
 >
+> >>
+> >> So I'd recommend never using "long" (and similar types that depend on
+> >> bitness of the platform, like size_t, etc) for global variables. Also
+> >> don't use pointer types as types of the variable. Stick to __u64,
+> >> __u32, etc.
 > >
-> > Note that all this is irrelevant for static global variables, as they
-> > are not exposed in the BPF skeleton.
+> > I feel if we follow. this convention then it will work out but
+> > currently a lot of selftests use these
+> > architecture dependent variable types and therefore don't even compile
+> > for 32-bit architectures
+> > because of the _Static_asserts in the skeleton.
 > >
-> > In general, mixing 32-bit host architecture with (always) 64-bit BPF
-> > architecture always requires more care. And BPF skeleton is just one
-> > aspect of this.
+> > Do you suggest replacing all these with __u64, __u32, etc. in the
+> > selftests so that they compile on every architecture?
 > >
-> > >
-> > >
-> > > > Thanks,
-> > > > Puranjay Mohan.
+> >>
+> >> Note that all this is irrelevant for static global variables, as they
+> >> are not exposed in the BPF skeleton.
+> >>
+> >> In general, mixing 32-bit host architecture with (always) 64-bit BPF
+> >> architecture always requires more care. And BPF skeleton is just one
+> >> aspect of this.
+> >>
+> >>>
+> >>>
+> >>>> Thanks,
+> >>>> Puranjay Mohan.
+> >
+> >
+> >
 >
->
->
-> --
-> Thanks and Regards
->
-> Yours Truly,
->
-> Puranjay Mohan
