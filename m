@@ -2,98 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C674C69B10B
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 17:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECE369B163
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 17:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbjBQQgN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 11:36:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
+        id S229539AbjBQQvN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 11:51:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjBQQgM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 11:36:12 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0C9273E;
-        Fri, 17 Feb 2023 08:36:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=Gdyv0sz3iT3aR1Tw+q96FRim+vKlFcBoswmtm8cac7s=; b=jI1aFWf8eQ8rZPQQ+c7kq1tee9
-        ++p9oEkPbQNBkqioh8+54XwH0116L4IWG9lIwjKcZPHLAXRWRqXxheXERKzRpjTA8CKbkdhP+R2CH
-        E7lE/0YWNBp6nOhiv+nj0JTr0mg4fDacUpAv+uzAti+6a13Fl5FGlInKBrHLSxmtgvcnk9Dbik6pA
-        0BWBW2GJXLptsweViDwtAdkOpFcdFTGavF4owIHjSORoyIa1OnqXZ/B1ueYfTqNHoh/ZaKpsLJlNH
-        DcYp8yuzCz0e2G4WZpzDjhyjzBoa9U85x84WH+oJL0xRUp2jjqKkg2vt2B+sb9rZppiWSgg+85aSb
-        PSSkALFA==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pT3iP-000IhI-0Z; Fri, 17 Feb 2023 17:36:05 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pT3iO-0007l7-O1; Fri, 17 Feb 2023 17:36:04 +0100
-Subject: Re: [PATCH bpf-next] selftests/bpf: Remove not used headers
-To:     Stanislav Fomichev <sdf@google.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        acme@kernel.org, linux-kernel@vger.kernel.org
-References: <1676533861-27508-1-git-send-email-yangtiezhu@loongson.cn>
- <Y+52auqAlfPy/cNS@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a07641f4-5d92-94c0-9ca6-963c27869fc8@iogearbox.net>
-Date:   Fri, 17 Feb 2023 17:36:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229708AbjBQQvM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 11:51:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03606F3CE
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 08:50:36 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9ED85B82D04
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 16:50:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 440FBC433EF;
+        Fri, 17 Feb 2023 16:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676652618;
+        bh=l4VH8oUUVAj2k1rP6HnvN/ocVcW5u3Qd96dWC727kew=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qUh4Hoslh60K/iZn0C2lzOxQxqmXHhysYX1/66zNFaoerybFALpI7GvwwJldyyPzD
+         lmKUWm42n7Gvlv84/9QvLBrdOAXxkglBZ0EJ4o8VRQxlNAcWfmKjZSSTRfZl99yDDL
+         idoHxBU5omXG9cgE/penVs2TQTgl/ocb+uVjLPjJEvGKTdQhm+9L4aX1PTh3I9O/8k
+         vMdIB9wF4yWT5+Mv9SgQ8gFtP9694HNgg1fDqUcDNFFqLc8GCV+zqia/p9z0CduQDO
+         JROxFm6NgS9oFOvL+BPAn+056P6FhsHrQwC1eeCVT03JkthZVBa+aBJNVnTy7UrU7/
+         dQoHW69MxMwGw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2A6B2C1614B;
+        Fri, 17 Feb 2023 16:50:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <Y+52auqAlfPy/cNS@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26815/Fri Feb 17 09:41:01 2023)
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2] LoongArch: BPF: Use 4 instructions for function address in
+ JIT
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167665261816.376.14712223051383027532.git-patchwork-notify@kernel.org>
+Date:   Fri, 17 Feb 2023 16:50:18 +0000
+References: <20230214152633.2265699-1-hengqi.chen@gmail.com>
+In-Reply-To: <20230214152633.2265699-1-hengqi.chen@gmail.com>
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf@vger.kernel.org, loongarch@lists.linux.dev
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/16/23 7:31 PM, Stanislav Fomichev wrote:
-> On 02/16, Tiezhu Yang wrote:
->> The following three uapi headers:
-> 
->>      tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
->>      tools/arch/s390/include/uapi/asm/bpf_perf_event.h
->>      tools/arch/s390/include/uapi/asm/ptrace.h
-> 
->> were introduced in commit 618e165b2a8e ("selftests/bpf: sync kernel headers
->> and introduce arch support in Makefile"), they are not used any more after
->> commit 720f228e8d31 ("bpf: fix broken BPF selftest build"), so remove them.
-> 
-> Let's maybe CC Arnaldo to make sure it doesn't affect perf? BPF build
-> bots are happy it seems.
-> 
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   tools/arch/arm64/include/uapi/asm/bpf_perf_event.h |   9 -
->>   tools/arch/s390/include/uapi/asm/bpf_perf_event.h  |   9 -
->>   tools/arch/s390/include/uapi/asm/ptrace.h          | 458 ---------------------
->>   3 files changed, 476 deletions(-)
->>   delete mode 100644 tools/arch/arm64/include/uapi/asm/bpf_perf_event.h
->>   delete mode 100644 tools/arch/s390/include/uapi/asm/bpf_perf_event.h
->>   delete mode 100644 tools/arch/s390/include/uapi/asm/ptrace.h
+Hello:
 
-Lgtm, I think test_verifier.c was the only user via ...
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-   - include/uapi/linux/bpf_perf_event.h
-     -> include/uapi/asm/bpf_perf_event.h
-        -> arch/*/include/uapi/asm/bpf_perf_event.h
+On Tue, 14 Feb 2023 15:26:33 +0000 you wrote:
+> This patch fixes the following issue of function calls in JIT, like:
+> 
+>   [   29.346981] multi-func JIT bug 105 != 103
+> 
+> The issus can be reproduced by running the "inline simple bpf_loop call"
+> verifier test.
+> 
+> [...]
 
-... but we're actually pulling in the arch includes instead of the tooling
-arch include. So these look indeed unused.
+Here is the summary with links:
+  - [v2] LoongArch: BPF: Use 4 instructions for function address in JIT
+    https://git.kernel.org/bpf/bpf-next/c/64f50f657572
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
