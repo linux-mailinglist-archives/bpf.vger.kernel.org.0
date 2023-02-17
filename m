@@ -2,216 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C27769A97F
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 11:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 994D769AA8D
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 12:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbjBQK5t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 05:57:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
+        id S229812AbjBQLhv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 06:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjBQK5s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 05:57:48 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C1E5383B
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 02:57:46 -0800 (PST)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31H9sZEL030530;
-        Fri, 17 Feb 2023 10:57:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=E3bsyQyr2NL8yyqFCPUgoi24/tVYfRcLdt+MQ3qzDmc=;
- b=F29M+6EyWKJ7BeA0KmwAWMeIWxVK9qqNDdEEg9ELX7fvFv56KfKhrRc3MZ83T0fzMOxt
- oWQutg4V0wKNfSsD2FVEMINEDhCX5S+DfFBZNsPS7d4pQ4COKnOHrx2GnNfflvXzWr70
- YLliaL2BYvX0mdgbMuxreqDbF+2jzdW0Vm4jZFQakobe5pvmejoPshMiotq9Kd9ESm4Y
- yl6JmppmgzIWXHQUdEw3J/3hpQ1T1rpqD9qciwyJAthG/Sqk+v7VW31HLPhrUUKiwWfY
- lc4XBt2ypwX2KhXncrXhlcpMv/pvwT+TuXqltTi+cItXgv7t7Mj5zwf38lH0GqG73pLk iw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nt1f7s456-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Feb 2023 10:57:29 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31HAvTXW017369;
-        Fri, 17 Feb 2023 10:57:29 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nt1f7s44j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Feb 2023 10:57:28 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31GKwi6l009276;
-        Fri, 17 Feb 2023 10:57:26 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3np2n6dtqu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Feb 2023 10:57:26 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31HAvNxb24314394
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Feb 2023 10:57:23 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF7702004B;
-        Fri, 17 Feb 2023 10:57:22 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6647D20040;
-        Fri, 17 Feb 2023 10:57:22 +0000 (GMT)
-Received: from [9.171.8.126] (unknown [9.171.8.126])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Feb 2023 10:57:22 +0000 (GMT)
-Message-ID: <5a71852169384c3c60a763c6964d6798664dfa72.camel@linux.ibm.com>
-Subject: Re: [PATCH RFC bpf-next v2 1/4] bpf: Introduce BPF_HELPER_CALL
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 17 Feb 2023 11:57:22 +0100
-In-Reply-To: <Y+5wCbT30EGsswMg@google.com>
-References: <20230215235931.380197-1-iii@linux.ibm.com>
-         <20230215235931.380197-2-iii@linux.ibm.com>
-         <CAADnVQK-_MOk=ejM5USFZL9codbzosUqfAs4ppqQuC0y4uBLqw@mail.gmail.com>
-         <Y+5nCRZ3ns3u+Tun@google.com>
-         <CAADnVQJH6PRgGRMMZufDu6AZkQFF_40boz4oLHdYMWFNAj+zOA@mail.gmail.com>
-         <Y+5wCbT30EGsswMg@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: oShUW5bpMQxADU1OYc9WkJkQD7ujJKBJ
-X-Proofpoint-GUID: otpS3Az8rZuCevUDeoqNMQom6EbcVLX-
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S229663AbjBQLhu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 06:37:50 -0500
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F347E2117;
+        Fri, 17 Feb 2023 03:37:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676633868; x=1708169868;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=kHmVJ+OEkf2Jpbhjw+f9Lr6NQUu9JkCombLnUGVpNqs=;
+  b=H+6rpH0cspRfLzwwB1grAU2bo2PLkyZOeQ5depCd5F/zj909Ou/3jWsR
+   GeWbBcjRdIWf6aNK+QVmgJMHQtHh4sbtVe5xozMUHMbIIFjCHmDbTrspu
+   xrEGv3GP7MUX/L24VXCjs3q28v1l74lIZLCGy8mUR5GGDmCUelVnoTl78
+   0JSdlDUxg1IhMtIJqwnjqMROsPerJhtFPe3941iKx0PlhlBgp/fwi90eM
+   lYVWwfZ6p3KzaJhDq9VAwhl3nRhccBAGA5ROqlG6unEjylVFhoxxpde0N
+   k1mw1RIRmZtVMzNO6XDWEWJoJEPoWdWRzjnv5Cq8OO0cG9q953qUOT1Jv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="396642582"
+X-IronPort-AV: E=Sophos;i="5.97,304,1669104000"; 
+   d="scan'208";a="396642582"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2023 03:37:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="620369105"
+X-IronPort-AV: E=Sophos;i="5.97,304,1669104000"; 
+   d="scan'208";a="620369105"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga003.jf.intel.com with ESMTP; 17 Feb 2023 03:37:48 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Fri, 17 Feb 2023 03:37:47 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Fri, 17 Feb 2023 03:37:47 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Fri, 17 Feb 2023 03:37:47 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ixpOLH32BJVKrZMB/yvQdcvmJ/h3eMRkndutFpz7bkEovfymo+QH7T0T+I2Szcg16Gvk3DgJU/mOT0apfCa+Ifik/3NouAtCcFd49JeNYkQ8+QIabTwIWNwV4IjjqQGZTa0NSXmapenMGr8yjEIPHf880syzxEQvOYk9Gf6h6UJwp9n1XgiT1B+uj0kDgE7q7XrylBy5f7aOFX6kzzhgcShkwCyQ7zgAxXQDqT2RM+rgmWwxpuXZOY8lUarMwpjdIu1Qjp/cb2tVFGI27j6HKpf1gHtwYIqW5g3wZOGjDGS+iRezgNK96Y3s8RTET0hIHANNlcWx6BG6qoJxzrHEcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uojB0RSkiu6fzeTubxb8xgfgdbxNCvxSiJuQt8raIFk=;
+ b=UsvN3hjALutQXaK0uHdKCH9kuyFMaM9hvF10Iu89duhz2o8mmSDI/la7fimKRFXHnEBOqJOgVEti2ybk9HYUAdpBPSR0wXXULxVMGtatOOfQGxjCdYUWKKRwlk0paTD7nVafPaqnje1K8nEqMZ4ciJNFKXxzj9MwCTIHYtN5z0xb3I8tyP8THM7GibnVZVwJFt0DsXueWQaR+TzyoerUGQyCIvq0ArSJf3iGuP3LGsDZZ4XhgAKMu9znBlSjHWExmgSPZ07aJjENmSv7JW3SG0dMwhXWpgAPes+TpiwF2qPvqOETgnDK4VxBArL/3w/DW8St3ThdpRyLAxRXSAQBBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5471.namprd11.prod.outlook.com (2603:10b6:5:39d::10)
+ by PH8PR11MB6973.namprd11.prod.outlook.com (2603:10b6:510:226::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.24; Fri, 17 Feb
+ 2023 11:37:46 +0000
+Received: from DM4PR11MB5471.namprd11.prod.outlook.com
+ ([fe80::b7b7:8e90:2dcd:b8e9]) by DM4PR11MB5471.namprd11.prod.outlook.com
+ ([fe80::b7b7:8e90:2dcd:b8e9%7]) with mapi id 15.20.6111.013; Fri, 17 Feb 2023
+ 11:37:46 +0000
+Date:   Fri, 17 Feb 2023 12:19:16 +0100
+From:   Larysa Zaremba <larysa.zaremba@intel.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+CC:     <netdev@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Felix Maurer <fmaurer@redhat.com>,
+        "Matthieu Baerts" <matthieu.baerts@tessares.net>
+Subject: Re: [PATCH bpf-next] selftests/bpf: run mptcp in a dedicated netns
+Message-ID: <Y+9itBDl8itgA0e3@lincoln>
+References: <20230217082607.3309391-1-liuhangbin@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230217082607.3309391-1-liuhangbin@gmail.com>
+X-ClientProxiedBy: FR3P281CA0136.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:95::9) To DM4PR11MB5471.namprd11.prod.outlook.com
+ (2603:10b6:5:39d::10)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-17_05,2023-02-16_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=965
- suspectscore=0 phishscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302170091
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5471:EE_|PH8PR11MB6973:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce772f3e-4719-40dd-e3f0-08db10db63a9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NR67laHgk2n8bm9vuwLNBYjg2iDPrazJhZqxO0p5tpr5zHdnCvQUKmiPWALO/wP0ScUfx6o0YGaZk+wyTQNc/yok4Qo1CaF1U5nqbBDSfkbzVSirwoT1q8OWOSFDNRsH671IUH/zj2aQGlPuuW9dglyDMoe46NImbM3H8ugeYaWQzjnYv1EnvFtY8gCCZeD1PfobKWx6Ntu1MJCVT+CLipLv+XKZ0EoacD3AmOblmj74vT3Abztb1SRnkwN3xfGeZuQmuUT/W+mg/owVFwsHDOP+rRX3cKJeBAnKJI2qs2nweDi7a0j2NyyLAMEZer3cMwUej0HMuN1IbOweKLokfcXG+UBwopa2+XYiNR9tyzBo/UFZNt/i9a7ChJCgtr8rlNNGj8Ql0Svp8FZXuIDYzQSYG0QmUQL3dcG0ZqjSETqJa5pgy0ZCJwLZo5xAwPwMVU+hugVpLLzu6+YojCINxdf1v6rr+B5JMlpH7aJibQYoL8lCWMjq6qytpSJZPZimC5RrjRoqDElfw/KiIRbdXey4EYCg1Vdh+Us96YvwoAXvKefMqi2Vsis9R2rNEwbI6Xhf7Ro482hRyWCDz/XcjmUw0YO5/v3EEHLm8nsRZ029MZW3vi8C46o4AJAC8O0oY35SjodBwR3FBHcfFqZ9G8lwWlDrhYsdakNiDFZ1hy/d30dTHSjC4g7f3HfL+fP7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5471.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(136003)(39860400002)(376002)(346002)(366004)(396003)(451199018)(54906003)(83380400001)(6666004)(5660300002)(7416002)(316002)(2906002)(33716001)(6506007)(6486002)(41300700001)(8676002)(66476007)(66556008)(478600001)(86362001)(26005)(38100700002)(8936002)(6916009)(66946007)(4326008)(44832011)(82960400001)(9686003)(6512007)(186003)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HLAHBfassNUhaPBZ5lRYruBUzwSfpbOGFBk2CFRdpwY6pUsOSeywsdeYlYQ/?=
+ =?us-ascii?Q?vSOsHai919KVeAiZZ0Bm96ghToFX/cT7QYJbewzWXYd4MOT5r4e6GUb5xilI?=
+ =?us-ascii?Q?2RSHy3ig2FrRYZtKe9vxD30Dl4UtcPKnAM0g9IyPV6wl8bayJ65z+bgLv2xU?=
+ =?us-ascii?Q?GJkuyY9rSBVZC1OclK3FB+hNhDUdOei84ys8oCztBHRyd2gxyGBBXg2nSHpn?=
+ =?us-ascii?Q?5mL5ugHjIyfyX3C7R5I3gNI7kPO3oN9vRsU7Cwpl6kchzqZr+bb3yaWWqcyt?=
+ =?us-ascii?Q?UXWYI5ccH0apVZw0bpcNgecKsrrQzvCAymPDBnIY3xfkZ7acSweFnz2USUXF?=
+ =?us-ascii?Q?kaR7Xt+cWEyG5td50YunxQHcbKZqJLt87lwo/xw1oDa9vG4J4sjQrQ74dCIA?=
+ =?us-ascii?Q?rUnGwYVgaMgGg4dDVi7pTh0ApsBRTwIeFPJMHs/sqAqzmhcWo3z+0jl2QNum?=
+ =?us-ascii?Q?6q0KRng85MzDsqogtPM/L73tqkhQjyC3K+eeG5HsLKFykIyMZ0ExK9aGUoGX?=
+ =?us-ascii?Q?DcjRBWrwGT/wOM4j4y8QPmmhdgGoLmR9Rkk2yn7ydz4tu9c/DTc5X/NtoeoV?=
+ =?us-ascii?Q?Yo7OrKf1zbni2T+ejhzZsMGgSEurKsEJNeYuOqzQDi6OrzJANkKzh5g5c7cz?=
+ =?us-ascii?Q?Jr2Mhvwgb6n4kdUFckte3iC1VQxUrEIoYmRf65z97x3Huyf/XELQdyV0tgJz?=
+ =?us-ascii?Q?arLy8yd98nh/6rMtTeDv7NsEBi5fDsEE5nkeqm0R/Ud8cve82kgwr98jAD+9?=
+ =?us-ascii?Q?nyTRlHNHj21ayP7EB2hAWmEk8kbYHryR3hp8e8AoGizO+P3Ns7w4XY4OUlpX?=
+ =?us-ascii?Q?RqPW42yIltoe5SuExt9ywxVmZ6BsBANDpb12FvAv+6/25SkSzi/AMb6GeM6V?=
+ =?us-ascii?Q?8+yyLXvD8XNRcVoL/Rz7weLuJ2PbWGTN4jBnzAKmOlDsnyXFl6ROtJop7Gst?=
+ =?us-ascii?Q?emjq+pr/dDK7Ym4SyRkAaJPKmbqtdT3ZukRckpwP1aKv+fW7bTmyG1xNwU4V?=
+ =?us-ascii?Q?rZTmtCbdfaKYE2h6AzrMizyEMGusseootykrcu/eUdxZQCzpyIRBggxsx+ym?=
+ =?us-ascii?Q?dRxP97NgHkfFnWTSuLa2zIsrx8TAaNhaHX/aC4xT4flhSjBFuoEpmjN+vwkV?=
+ =?us-ascii?Q?WvcVeRtWQrg68SNklOIHNQ+Yq3hgeimBzW+C5HTFhP1C4caFet78bA+eFmg2?=
+ =?us-ascii?Q?dtikbAqXuzKUuF/1NE36jYj3UJhr7OjspETAxufeP7jW6+ZmNz2YcSBeX3CH?=
+ =?us-ascii?Q?W9V2D2rFy02+jKPN1bARNTWijGArvu8UfUsZcG+tLvAW5g+o70RJ7GPdqANE?=
+ =?us-ascii?Q?Qa3SB+sxNiuWsvwIWWAeP2zsV0M+XV/y2Br1FWGPfcBInIqafRNrazZ2io0x?=
+ =?us-ascii?Q?bqTSAIeZLC+FEkV3Zee1d4P1yliAFp3iTuF6mJLpqOrdUbkMtdFWVP/c12Ws?=
+ =?us-ascii?Q?fWYYPvdsXS2ny1PIZDgKrD72VfCNuGYqrqsw1A1Emg0m8dVCCxap1ijWwCgQ?=
+ =?us-ascii?Q?g5cFKN4k39AFnGtuS+kzudDk5qvpLiEEjItHEWMPxw0Zm08HEy13T9BQXlV6?=
+ =?us-ascii?Q?BzztQCcd46mSMrTk0GoqZIGT4LNQWYKjgpm/nlAZj0JRUfQWGwACx1uWVkZ7?=
+ =?us-ascii?Q?fg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce772f3e-4719-40dd-e3f0-08db10db63a9
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5471.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2023 11:37:46.0892
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5Nofa+xa/zlQqv2UNPNMlPLB3gnaLGYLeaksZSfJb88bTQjA+oP5MXHLqZ7qb56aD/aQeCzGZdBv0SFTcot2NnNt53gSRCCMoPKsP/6FC3M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6973
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2023-02-16 at 10:03 -0800, Stanislav Fomichev wrote:
-> On 02/16, Alexei Starovoitov wrote:
-> > On Thu, Feb 16, 2023 at 9:25 AM Stanislav Fomichev <sdf@google.com>
-> > wrote:
-> > >=20
-> > > On 02/16, Alexei Starovoitov wrote:
-> > > > On Wed, Feb 15, 2023 at 3:59 PM Ilya Leoshkevich
-> > > > <iii@linux.ibm.com>
-> > > > wrote:
-> > > > >=20
-> > > > > Make the code more readable by introducing a symbolic
-> > > > > constant
-> > > > > instead of using 0.
-> > > > >=20
-> > > > > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > > > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > > > ---
-> > > > > =C2=A0include/uapi/linux/bpf.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |=C2=A0 4 ++++
-> > > > > =C2=A0kernel/bpf/disasm.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
-> > > > > =C2=A0kernel/bpf/verifier.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 | 12 +++++++-----
-> > > > > =C2=A0tools/include/linux/filter.h=C2=A0=C2=A0 |=C2=A0 2 +-
-> > > > > =C2=A0tools/include/uapi/linux/bpf.h |=C2=A0 4 ++++
-> > > > > =C2=A05 files changed, 17 insertions(+), 7 deletions(-)
-> > > > >=20
-> > > > > diff --git a/include/uapi/linux/bpf.h
-> > > > > b/include/uapi/linux/bpf.h
-> > > > > index 1503f61336b6..37f7588d5b2f 100644
-> > > > > --- a/include/uapi/linux/bpf.h
-> > > > > +++ b/include/uapi/linux/bpf.h
-> > > > > @@ -1211,6 +1211,10 @@ enum bpf_link_type {
-> > > > > =C2=A0 */
-> > > > > =C2=A0#define BPF_PSEUDO_FUNC=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4
-> > > > >=20
-> > > > > +/* when bpf_call->src_reg =3D=3D BPF_HELPER_CALL, bpf_call->imm
-> > > > > =3D=3D=C2=A0=20
-> > index
-> > > > of a bpf
-> > > > > + * helper function (see ___BPF_FUNC_MAPPER below for a full
-> > > > > list)
-> > > > > + */
-> > > > > +#define BPF_HELPER_CALL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-> > >=20
-> > > > I don't like this "cleanup".
-> > > > The code reads fine as-is.
-> > >=20
-> > > Even in the context of patch 4? There would be the following
-> > > switch
-> > > without BPF_HELPER_CALL:
-> > >=20
-> > > switch (insn->src_reg) {
-> > > case 0:
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> > >=20
-> > > case BPF_PSEUDO_CALL:
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> > >=20
-> > > case BPF_PSEUDO_KFUNC_CALL:
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> > > }
-> > >=20
-> > > That 'case 0' feels like it deserves a name. But up to you, I'm
-> > > fine
-> > > either way.
->=20
-> > It's philosophical.
-> > Some people insist on if (ptr =3D=3D NULL). I insist on if (!ptr).
-> > That's why canonical bpf progs are written as:
-> > val =3D bpf_map_lookup();
-> > if (!val) ...
-> > zero is zero. It doesn't need #define.
->=20
-> Are you sure we still want to apply the same logic here for src_reg?
-> I
-> agree that doing src_reg vs !src_reg made sense when we had a
-> "helper"
-> vs "non-helper" (bpf2bpf) situation. However now this src_reg feels
-> more
-> like an enum. And since we have an enum value for 1 and 2, it feels
-> natural to have another one for 0?
->=20
-> That second patch from the series ([0]) might be a good example on
-> why
-> we actually need it. I'm assuming at some point we've had:
-> #define BPF_PSEUDO_CALL 1
->=20
-> So we ended up writing `src_reg !=3D BPF_PSEUDO_CALL` instead of
-> actually
-> doing `src_reg =3D=3D BPF_HELPER_CALL` (aka `src_reg =3D=3D 0`).
-> Afterwards, we've added BPF_PSEUDO_KFUNC_CALL=3D2 which broke our
-> previous
-> src_reg vs !src_reg assumptions...
->=20
-> [0]:=C2=A0=20
-> https://lore.kernel.org/bpf/20230215235931.380197-1-iii@linux.ibm.com/T/#=
-mf87a26ef48a909b62ce950639acfdf5b296b487b
+On Fri, Feb 17, 2023 at 04:26:07PM +0800, Hangbin Liu wrote:
+> The current mptcp test is run in init netns. If the user or default
+> system config disabled mptcp, the test will fail. Let's run the mptcp
+> test in a dedicated netns to avoid none kernel default mptcp setting.
+> 
+> Suggested-by: Martin KaFai Lau <martin.lau@linux.dev>
 
-FWIW the helper checks before this series had inconsistent style:
+Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
 
-- !insn->src_reg
-- insn->src_reg =3D=3D 0
-- insn->src_reg !=3D BPF_REG_0
-- insn[i].src_reg !=3D BPF_PSEUDO_CALL
-
-Now at least it's the same style everywhere, and also it's easy to
-grep=C2=A0for "where do we check for helper calls".
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  .../testing/selftests/bpf/prog_tests/mptcp.c  | 24 +++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> index 59f08d6d1d53..8a4ed9510ec7 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> @@ -7,6 +7,16 @@
+>  #include "network_helpers.h"
+>  #include "mptcp_sock.skel.h"
+>  
+> +#define SYS(fmt, ...)						\
+> +	({							\
+> +		char cmd[1024];					\
+> +		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
+> +		if (!ASSERT_OK(system(cmd), cmd))		\
+> +			goto cmd_fail;				\
+> +	})
+> +
+> +#define NS_TEST "mptcp_ns"
+> +
+>  #ifndef TCP_CA_NAME_MAX
+>  #define TCP_CA_NAME_MAX	16
+>  #endif
+> @@ -138,12 +148,20 @@ static int run_test(int cgroup_fd, int server_fd, bool is_mptcp)
+>  
+>  static void test_base(void)
+>  {
+> +	struct nstoken *nstoken = NULL;
+>  	int server_fd, cgroup_fd;
+>  
+>  	cgroup_fd = test__join_cgroup("/mptcp");
+>  	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
+>  		return;
+>  
+> +	SYS("ip netns add %s", NS_TEST);
+> +	SYS("ip -net %s link set dev lo up", NS_TEST);
+> +
+> +	nstoken = open_netns(NS_TEST);
+> +	if (!ASSERT_OK_PTR(nstoken, "open_netns"))
+> +		goto cmd_fail;
+> +
+>  	/* without MPTCP */
+>  	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, 0, 0);
+>  	if (!ASSERT_GE(server_fd, 0, "start_server"))
+> @@ -163,6 +181,12 @@ static void test_base(void)
+>  
+>  	close(server_fd);
+>  
+> +cmd_fail:
+> +	if (nstoken)
+> +		close_netns(nstoken);
+> +
+> +	system("ip netns del " NS_TEST " >& /dev/null");
+> +
+>  close_cgroup_fd:
+>  	close(cgroup_fd);
+>  }
+> -- 
+> 2.38.1
+> 
