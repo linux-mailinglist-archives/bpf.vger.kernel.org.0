@@ -2,150 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A21469A6E0
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 09:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3599469A7B5
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 10:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbjBQI0W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 03:26:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        id S229717AbjBQJBk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 04:01:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjBQI0U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 03:26:20 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D18A5F817;
-        Fri, 17 Feb 2023 00:26:18 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id ml23-20020a17090b361700b00234463de251so507088pjb.3;
-        Fri, 17 Feb 2023 00:26:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dsWPGE4uNMyVMUG7YACDGTy8ub0RCcGbyDw4MyN83aQ=;
-        b=Yn46E9eaEOpHG1xEIx3/c7eXSqiHNJDJw5ePEiqJ94iF/1Ze7RyMJxGu5UXnSuzVXr
-         FHnoUXKr5mP69NeZ+39k54Rb1arOF/9iXReKHuRrmDDOY4hAWrfOc4NXbOPZWtXqXV1X
-         K8jbcvrzqT8lfNLcALivSvrOZ+B3Fb+V7Qx7eNEdORnge04vNm5qDWrUAuAHTHcHe5we
-         A1rUvScyrxYVrFmNk2j4dWP4cOOj5k5kpBq9w3vLeA/DTo0TKtQx0wRziDk4sBt356sv
-         ABIhhM9plrq10IJu7vHBV532NYHXxz42Sf0YzTv6raZpPrzLDeXIxvOBI7KelDQc25+G
-         G8Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dsWPGE4uNMyVMUG7YACDGTy8ub0RCcGbyDw4MyN83aQ=;
-        b=rJqH19TAEEvEMvHz5RybWkovgHqd3wjlJTU64AnRyt2jo+l7cK/9Ri+P4vep8dEXYz
-         N1a8ONXdFEQjrKSdWO4WD7TE7GxwCekDydN8byAPEZGl4w+aicIWsOKU71eB+tevR02X
-         VeVnl95TBoaGSYARcUlAxgUaZKkHWdE4e8kdd+b+2dzJ86700gvTttRHWd8wWwyOoPf8
-         bGFiUDgew+aYHMhSm8WXGVcOrwlM1QjlRlFl27fVsYTPhzf7CGwPs3avxcilSp3M8Dvj
-         HOBNpVIe/+mOzAV8MdOF+9zsOsU6Kg8ZImhkm8GaIK+//F+qlu2aCoFoEPGUczUfqbmv
-         zMWA==
-X-Gm-Message-State: AO0yUKWbH/cEQGlEsOGSyKVFl+Oa/UmuJ9KII0hpfRzzfVx4wz9ZURXY
-        rVREMUL3sDqOuKszw/o4oeMK7Awpudg8jA==
-X-Google-Smtp-Source: AK7set+WbFYuRckcoYB3qUNKABE8UWzS8ofYbU03gF+53fGlpFZ8XxMzayOmscE8dDIsFETGG55Hiw==
-X-Received: by 2002:a17:90b:4f92:b0:22b:f0d4:9e1e with SMTP id qe18-20020a17090b4f9200b0022bf0d49e1emr99955pjb.8.1676622376976;
-        Fri, 17 Feb 2023 00:26:16 -0800 (PST)
-Received: from Laptop-X1.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id h14-20020a17090a604e00b002310ed024adsm562102pjm.12.2023.02.17.00.26.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Feb 2023 00:26:15 -0800 (PST)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        with ESMTP id S230005AbjBQJBh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 04:01:37 -0500
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2B760A79;
+        Fri, 17 Feb 2023 01:01:15 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vbs.KmO_1676624472;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vbs.KmO_1676624472)
+          by smtp.aliyun-inc.com;
+          Fri, 17 Feb 2023 17:01:13 +0800
+Message-ID: <1676624360.6165776-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v4] xsk: support use vaddr as ring
+Date:   Fri, 17 Feb 2023 16:59:20 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     <netdev@vger.kernel.org>,
+        =?utf-8?b?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Felix Maurer <fmaurer@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: run mptcp in a dedicated netns
-Date:   Fri, 17 Feb 2023 16:26:07 +0800
-Message-Id: <20230217082607.3309391-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.38.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        <bpf@vger.kernel.org>
+References: <20230216083047.93525-1-xuanzhuo@linux.alibaba.com>
+ <779078a5-a4c8-6f75-2063-912d02e47bc7@intel.com>
+In-Reply-To: <779078a5-a4c8-6f75-2063-912d02e47bc7@intel.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The current mptcp test is run in init netns. If the user or default
-system config disabled mptcp, the test will fail. Let's run the mptcp
-test in a dedicated netns to avoid none kernel default mptcp setting.
+On Thu, 16 Feb 2023 14:04:47 +0100, Alexander Lobakin <aleksander.lobakin@intel.com> wrote:
+> From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Date: Thu, 16 Feb 2023 16:30:47 +0800
+>
+> > When we try to start AF_XDP on some machines with long running time, due
+> > to the machine's memory fragmentation problem, there is no sufficient
+> > contiguous physical memory that will cause the start failure.
+> >
+> > If the size of the queue is 8 * 1024, then the size of the desc[] is
+> > 8 * 1024 * 8 = 16 * PAGE, but we also add struct xdp_ring size, so it is
+> > 16page+. This is necessary to apply for a 4-order memory. If there are a
+> > lot of queues, it is difficult to these machine with long running time.
+> >
+> > Here, that we actually waste 15 pages. 4-Order memory is 32 pages, but
+> > we only use 17 pages.
+> >
+> > This patch replaces __get_free_pages() by vmalloc() to allocate memory
+> > to solve these problems.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > ---
+>
+> [...]
+>
+> > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> > index c6fb6b763658..bfb2a7e50c26 100644
+> > --- a/net/xdp/xsk_queue.h
+> > +++ b/net/xdp/xsk_queue.h
+> > @@ -45,6 +45,7 @@ struct xsk_queue {
+> >  	struct xdp_ring *ring;
+> >  	u64 invalid_descs;
+> >  	u64 queue_empty_descs;
+> > +	size_t ring_vmalloc_size;
+>
+> The name looks a bit long to me, but that might be just personal
+> preference. The code itself now looks good to me.
+>
+> Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+>
+> >  };
+> >
+> >  /* The structure of the shared state of the rings are a simple
+>
+> Next time pls make sure you added all of the reviewers to the Cc list
+> when sending a new revision. I noticed you posted v4 only by monitoring
+> the ML.
 
-Suggested-by: Martin KaFai Lau <martin.lau@linux.dev>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- .../testing/selftests/bpf/prog_tests/mptcp.c  | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Oh, sorry. I always thought you were in the list. I did not notice this
+situation.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-index 59f08d6d1d53..8a4ed9510ec7 100644
---- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-@@ -7,6 +7,16 @@
- #include "network_helpers.h"
- #include "mptcp_sock.skel.h"
- 
-+#define SYS(fmt, ...)						\
-+	({							\
-+		char cmd[1024];					\
-+		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
-+		if (!ASSERT_OK(system(cmd), cmd))		\
-+			goto cmd_fail;				\
-+	})
-+
-+#define NS_TEST "mptcp_ns"
-+
- #ifndef TCP_CA_NAME_MAX
- #define TCP_CA_NAME_MAX	16
- #endif
-@@ -138,12 +148,20 @@ static int run_test(int cgroup_fd, int server_fd, bool is_mptcp)
- 
- static void test_base(void)
- {
-+	struct nstoken *nstoken = NULL;
- 	int server_fd, cgroup_fd;
- 
- 	cgroup_fd = test__join_cgroup("/mptcp");
- 	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
- 		return;
- 
-+	SYS("ip netns add %s", NS_TEST);
-+	SYS("ip -net %s link set dev lo up", NS_TEST);
-+
-+	nstoken = open_netns(NS_TEST);
-+	if (!ASSERT_OK_PTR(nstoken, "open_netns"))
-+		goto cmd_fail;
-+
- 	/* without MPTCP */
- 	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, 0, 0);
- 	if (!ASSERT_GE(server_fd, 0, "start_server"))
-@@ -163,6 +181,12 @@ static void test_base(void)
- 
- 	close(server_fd);
- 
-+cmd_fail:
-+	if (nstoken)
-+		close_netns(nstoken);
-+
-+	system("ip netns del " NS_TEST " >& /dev/null");
-+
- close_cgroup_fd:
- 	close(cgroup_fd);
- }
--- 
-2.38.1
+I will pay attention next time. Thank you for your reply.
 
+Thanks.
+
+
+>
+> Thanks,
+> Olek
