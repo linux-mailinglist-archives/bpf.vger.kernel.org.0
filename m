@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBF569A301
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 01:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF2A69A303
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 01:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbjBQAmD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 19:42:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        id S230309AbjBQAmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 19:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjBQAmC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 19:42:02 -0500
-Received: from out-127.mta1.migadu.com (out-127.mta1.migadu.com [IPv6:2001:41d0:203:375::7f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369B354D02
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 16:42:01 -0800 (PST)
+        with ESMTP id S229824AbjBQAmG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 19:42:06 -0500
+Received: from out-165.mta1.migadu.com (out-165.mta1.migadu.com [95.215.58.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281895381A
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 16:42:02 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1676594519;
+        t=1676594521;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BK4EIwclfy9b/MVDGKaCXh3czkS81PrYon1iQIiRpwc=;
-        b=GU73UyrhtNDg/Ala8NLY7sXThPrHj4TDJ23rAyVbCMFyFOi3LWsMObWzJ4pI3OXb3LNgpS
-        a+e+AOkR8SvPowx/GH4z+iziyRzY62sx0qgIjn212Pb8bojT4XpkIAeyaHFGzGSMygQ0f6
-        hA/nEvufvKM89yCD6MSGKuQbyhlWbYc=
+        bh=L7BZhouGy5/f4a60x0MUqcPVSvRlOuobJBu4MftYfrM=;
+        b=n4eUE0ML7Ivjb421cBcKSOdOBTz1X8USjjl+gK3pJFTb2clGhWyBsO6ChdSlh+0iCRjYB1
+        +2uyJEaR330yH8vITYPi82WA6UeNa6OgQaFJLUfrq2zmo+ITtBqMrwP4U7fiK1URgvJv3F
+        b5GnfDkd1ky0QZh0aIYj/KfgK8U79HI=
 From:   Martin KaFai Lau <martin.lau@linux.dev>
 To:     bpf@vger.kernel.org
 Cc:     'Alexei Starovoitov ' <ast@kernel.org>,
         'Andrii Nakryiko ' <andrii@kernel.org>,
         'Daniel Borkmann ' <daniel@iogearbox.net>,
         netdev@vger.kernel.org, kernel-team@meta.com
-Subject: [PATCH bpf-next 1/4] bpf: Disable bh in bpf_test_run for xdp and tc prog
-Date:   Thu, 16 Feb 2023 16:41:47 -0800
-Message-Id: <20230217004150.2980689-2-martin.lau@linux.dev>
+Subject: [PATCH bpf-next 2/4] bpf: bpf_fib_lookup should not return neigh in NUD_FAILED state
+Date:   Thu, 16 Feb 2023 16:41:48 -0800
+Message-Id: <20230217004150.2980689-3-martin.lau@linux.dev>
 In-Reply-To: <20230217004150.2980689-1-martin.lau@linux.dev>
 References: <20230217004150.2980689-1-martin.lau@linux.dev>
 MIME-Version: 1.0
@@ -50,35 +50,44 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-Some of the bpf helpers require bh disabled. eg. The bpf_fib_lookup
-helper that will be used in a latter selftest. In particular, it
-calls ___neigh_lookup_noref that expects the bh disabled.
+The bpf_fib_lookup() helper does not only look up the fib (ie. route)
+but it also looks up the neigh. Before returning the neigh, the helper
+does not check for NUD_VALID. When a neigh state (neigh->nud_state)
+is in NUD_FAILED, its dmac (neigh->ha) could be all zeros. The helper
+still returns SUCCESS instead of NO_NEIGH in this case. Because of the
+SUCCESS return value, the bpf prog directly uses the returned dmac
+and ends up filling all zero in the eth header.
 
-This patch disables bh before calling bpf_prog_run[_xdp], so
-the testing prog can also use those helpers.
+This patch checks for NUD_VALID and returns NO_NEIGH if the
+neigh is not valid.
 
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- net/bpf/test_run.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/core/filter.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 1ab396a2b87f..982e81bba6cf 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -413,10 +413,12 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 	old_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
- 	do {
- 		run_ctx.prog_item = &item;
-+		local_bh_disable();
- 		if (xdp)
- 			*retval = bpf_prog_run_xdp(prog, ctx);
- 		else
- 			*retval = bpf_prog_run(prog, ctx);
-+		local_bh_enable();
- 	} while (bpf_test_timer_continue(&t, 1, repeat, &ret, time));
- 	bpf_reset_run_ctx(old_ctx);
- 	bpf_test_timer_leave(&t);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2ce06a72a5ba..8daaaf76ab15 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5849,7 +5849,7 @@ static int bpf_ipv4_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+ 		neigh = __ipv6_neigh_lookup_noref_stub(dev, dst);
+ 	}
+ 
+-	if (!neigh)
++	if (!neigh || !(neigh->nud_state & NUD_VALID))
+ 		return BPF_FIB_LKUP_RET_NO_NEIGH;
+ 
+ 	return bpf_fib_set_fwd_params(params, neigh, dev, mtu);
+@@ -5964,7 +5964,7 @@ static int bpf_ipv6_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+ 	 * not needed here.
+ 	 */
+ 	neigh = __ipv6_neigh_lookup_noref_stub(dev, dst);
+-	if (!neigh)
++	if (!neigh || !(neigh->nud_state & NUD_VALID))
+ 		return BPF_FIB_LKUP_RET_NO_NEIGH;
+ 
+ 	return bpf_fib_set_fwd_params(params, neigh, dev, mtu);
 -- 
 2.30.2
 
