@@ -2,98 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2646A69B407
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 21:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1688869B420
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 21:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbjBQUhI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 15:37:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
+        id S229844AbjBQUqK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 15:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjBQUhI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 15:37:08 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C58D60A43
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 12:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=npOgItJ5NYWzMNY+MdDzmrvhz++FUDW/QzOOZSLC0kc=; b=Q75ul55bJGDSHPOQpSvwcOVK3n
-        qt9Y10CvwBAEiH+Yxpe1whBrcxqDtOHSoYsetTOmBWFFdlOp4J9jyfIGySdedWOqkMOY4lMkBbOTP
-        iI7HbWxCCJVkWCDc1kcHRH9Gl5N6K3bCpe1NqfO1GokVpmv+xo+vD5dijMjAOd8JvNx8puZWoFheQ
-        znImt+qDQkxbwyWez9F/YIMjbl0w4eEeAOqEvudUMYiUuZQLwAzcO8MCN2OjX88WNUJ5ZEEQFjwkX
-        stZWlNpc1+pzsLjBMO1sFOh10aBQyJsQZ9IXeIEhYVTPDWDgRonpum2VGZEwIzi7Rb64KGh4UiISB
-        HDBONfgA==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pT7Tc-000DoR-Tw; Fri, 17 Feb 2023 21:37:04 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pT7Tc-000FYU-KM; Fri, 17 Feb 2023 21:37:04 +0100
+        with ESMTP id S229752AbjBQUqJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 15:46:09 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04E056EF2
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 12:46:08 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id i28so8353840eda.8
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 12:46:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=81TqDRXgkUTUw+bWuOLyqnzL0soN9oP7ioHOkR1YQHU=;
+        b=PvlHDVp20iY71+gpNdY3tDFgjY39fwV6N3eGzSvtXRD/d/MaXfQanq2B1LVwEIrWKn
+         aYTjyIcKTVT65P3armP/jkQ3r6TUDqxpPET88YWepArtYzJEAcSmFHqMFeKF1W0A9w35
+         T7nBe03ktDunDIUk3G0Dso53tLFIDTqKm1GcimxzdZgJJvLdJHT3XvF74IIDY3bt1d5h
+         pRE2mOB4lIHmnHr2lp7DilkJ1h4ITiEXt+ue19mS2XNZd5SdAqTjgtZ6ygcDz7C46XSH
+         AxFCtAT8sYGUwwFWD9CSCLZWW5mv62k9aPaqeavatIu4fr+1Rz45xWUfcxz4Qf4u8DM2
+         w+Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=81TqDRXgkUTUw+bWuOLyqnzL0soN9oP7ioHOkR1YQHU=;
+        b=fSYRPBhV2MQMn6LLXTGRivcNv15KdQ8x6q2Kf/tMBmjwI94XxWMAv8IJ8ACcD6ZXDv
+         /JpVIKdvtTNSCCQaQ5EySA3RM+GsMMSGu4zmqWBEWa1reH1oGq5fAnGyy0q6xbSPxcRf
+         Phk3m6BniJ5hFdyuBcsOf2o+RKED4xuoWuB/7q/L0KVa7BdzHRfg5+GeR5pSGQUi3jnK
+         SaUD84up6AlpZfM9lxlceNYAw+cAszvRS6CZ4nJYnrvF62xUg664mYRg8zuo/ZGIErU+
+         9EcuLvfX/92tPfEsvUyFlCgK5vf+bYe1lIYIzCm282JOIM8viFw2jF8qrrineMVyEG0X
+         ckwQ==
+X-Gm-Message-State: AO0yUKUWi3b7KDiJyII4v4GDtiz7RIM6uxoFBtLPxmfC5IZ1ZcQcGb3y
+        sJaVbalo+BHy5RyxYg4aQMU=
+X-Google-Smtp-Source: AK7set90+JXKtqIQt+2WgwwXEqHXqd5b8+ZdEyDL5Vn0XwqNIrMw1lqkdm2ZVmC7BMOIiteCkeu7Vg==
+X-Received: by 2002:a17:906:22ce:b0:8b1:bab0:aa3d with SMTP id q14-20020a17090622ce00b008b1bab0aa3dmr3652071eja.8.1676666767106;
+        Fri, 17 Feb 2023 12:46:07 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id g9-20020a170906348900b008b11ba87bf4sm1391536ejb.209.2023.02.17.12.46.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Feb 2023 12:46:06 -0800 (PST)
+Message-ID: <fe4e2cf65d39ded9c6948ccf43e593eb29ab9753.camel@gmail.com>
 Subject: Re: [PATCH bpf-next 0/2] Allow reads from uninit stack
-To:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
         ast@kernel.org
 Cc:     andrii@kernel.org, martin.lau@linux.dev, kernel-team@fb.com,
         yhs@fb.com
+Date:   Fri, 17 Feb 2023 22:46:05 +0200
+In-Reply-To: <98d4936a-27de-95b3-d787-40b78654916d@iogearbox.net>
 References: <20230216183606.2483834-1-eddyz87@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <98d4936a-27de-95b3-d787-40b78654916d@iogearbox.net>
-Date:   Fri, 17 Feb 2023 21:37:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+         <98d4936a-27de-95b3-d787-40b78654916d@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20230216183606.2483834-1-eddyz87@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26815/Fri Feb 17 09:41:01 2023)
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/16/23 7:36 PM, Eduard Zingerman wrote:
-> This patch-set modifies BPF verifier to accept programs that read from
-> uninitialized stack locations, but only if executed in privileged mode.
-> This provides significant verification performance gains: 30% to 70% less
-> processed states for big number of test programs.
-> 
-> The reason for performance gains comes from treating STACK_MISC and
-> STACK_INVALID as compatible, when cached state is compared to current state
-> in verifier.c:stacksafe().
-> 
-> The change should not affect safety, because any value read from STACK_MISC
-> location has full binary range (e.g. 0x00-0xff for byte-sized reads).
-> 
-> Details and measurements are provided in the description for the patch #1.
-> 
-> The change was suggested by Andrii Nakryiko, the initial patch was created
-> by Alexei Starovoitov. The discussion could be found at [1].
-> 
-> [1] https://lore.kernel.org/bpf/CAADnVQKs2i1iuZ5SUGuJtxWVfGYR9kDgYKhq3rNV+kBLQCu7rA@mail.gmail.com/
+On Fri, 2023-02-17 at 21:37 +0100, Daniel Borkmann wrote:
+[...]
 
-Ptal, looks like BPF CI is complaining:
+> Ptal, looks like BPF CI is complaining:
+>=20
+> https://github.com/kernel-patches/bpf/actions/runs/4205832876/jobs/729848=
+8977
+>
 
-https://github.com/kernel-patches/bpf/actions/runs/4205832876/jobs/7298488977
+Yes, I messed up comments in the asm blocks when replaced '\n\' line
+endings with '\' before sending the patch w/o re-testing.
+Sorry about that.
 
-   [...]
-     GEN-SKEL [test_progs] bpf_mod_race.skel.h
-     GEN-SKEL [test_progs] trace_dummy_st_ops.skel.h
-   libbpf: sec 'socket': corrupted program 'read_uninit_stack_fixed_off', offset 0, size 0
-   Error: failed to open BPF object file: Invalid argument
-     GEN-SKEL [test_progs] test_raw_tp_test_run.skel.h
-   make: *** [Makefile:578: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/uninit_stack.skel.h] Error 234
-   make: *** Deleting file '/tmp/work/bpf/bpf/tools/testing/selftests/bpf/uninit_stack.skel.h'
-   make: *** Waiting for unfinished jobs....
-   make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
-   Error: Process completed with exit code 2.
+I'm waiting for answers from Andrii and will resend the patch-set.
+
+---
+
+Here is how the tests should look like:
+
+/* Read an uninitialized value from stack at a fixed offset */
+SEC("socket")
+__naked int read_uninit_stack_fixed_off(void *ctx)
+{
+	asm volatile ("					\
+		r0 =3D 0;					\
+		/* force stack depth to be 128 */	\
+		*(u64*)(r10 - 128) =3D r1;		\
+		r1 =3D *(u8 *)(r10 - 8 );			\
+		r0 +=3D r1;				\
+		r1 =3D *(u8 *)(r10 - 11);			\
+		r1 =3D *(u8 *)(r10 - 13);			\
+		r1 =3D *(u8 *)(r10 - 15);			\
+		r1 =3D *(u16*)(r10 - 16);			\
+		r1 =3D *(u32*)(r10 - 32);			\
+		r1 =3D *(u64*)(r10 - 64);			\
+		/* read from a spill of a wrong size, it is a separate	\
+		 * branch in check_stack_read_fixed_off()		\
+		 */					\
+		*(u32*)(r10 - 72) =3D r1;			\
+		r1 =3D *(u64*)(r10 - 72);			\
+		r0 =3D 0;					\
+		exit;					\
+"
+		      ::: __clobber_all);
+}
+
+/* Read an uninitialized value from stack at a variable offset */
+SEC("socket")
+__naked int read_uninit_stack_var_off(void *ctx)
+{
+	asm volatile ("					\
+		call %[bpf_get_prandom_u32];		\
+		/* force stack depth to be 64 */	\
+		*(u64*)(r10 - 64) =3D r0;			\
+		r0 =3D -r0;				\
+		/* give r0 a range [-31, -1] */		\
+		if r0 s<=3D -32 goto exit_%=3D;		\
+		if r0 s>=3D 0 goto exit_%=3D;		\
+		/* access stack using r0 */		\
+		r1 =3D r10;				\
+		r1 +=3D r0;				\
+		r2 =3D *(u8*)(r1 + 0);			\
+exit_%=3D:	r0 =3D 0;					\
+		exit;					\
+"
+		      :
+		      : __imm(bpf_get_prandom_u32)
+		      : __clobber_all);
+}
+
+[...]
