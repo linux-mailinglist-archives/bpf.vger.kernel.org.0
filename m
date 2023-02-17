@@ -2,219 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF64D69A332
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 01:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B1E69A330
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 01:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjBQA4C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Feb 2023 19:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
+        id S229534AbjBQAzo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Feb 2023 19:55:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbjBQA4A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Feb 2023 19:56:00 -0500
-Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28215193FB
-        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 16:55:59 -0800 (PST)
-Received: by devvm15675.prn0.facebook.com (Postfix, from userid 115148)
-        id 9E14E6A86322; Thu, 16 Feb 2023 16:55:46 -0800 (PST)
-From:   Joanne Koong <joannelkoong@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     martin.lau@kernel.org, andrii@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH v1 bpf-next] bpf: Tidy up verifier checking
-Date:   Thu, 16 Feb 2023 16:54:51 -0800
-Message-Id: <20230217005451.2438147-1-joannelkoong@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229508AbjBQAzn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Feb 2023 19:55:43 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC4F658F
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 16:55:42 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id n20so9785688edy.0
+        for <bpf@vger.kernel.org>; Thu, 16 Feb 2023 16:55:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MzoZgRnKchj+jGPOZqz411qiXWXQ0hOZqxeGhxmQMLU=;
+        b=h2RSzojhViGDd2QAWIQSJCqt4PJnr2JxIdfp1Wb4ka868dQVmgaDVtBcZR6oqbMMd+
+         lrLwsuhWd9NQAWc94UTr8mgQhUFSpN/EmVx0UiXC/N+PWAs22g2HdgQSgLnd3NOe1O/E
+         LuMDJeCIksFjBMz+faEIbwg5gh3ipFDsMOAOYV9P4bqF9YTAWjX9aNiydb1Xl9HvQpGA
+         pmMVXx8U16haDAaZCF34DRGXLmUpto6gmKcq1IrMDMIM4Pg4TGi7+Zre0vnfCn2ePrui
+         sJMBU374MJ/tmAcBVzddkEDiw4Za9GTo01yqIE09rrh6v+obUGHu5wLGYC11lX/Dq7tK
+         G2NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MzoZgRnKchj+jGPOZqz411qiXWXQ0hOZqxeGhxmQMLU=;
+        b=XJUxltk0tBznPTcB0SzULy2+ZZnXG6Wjh9dVXELogYR8R+XJ0TpsDf4eA+p3JVsagC
+         QI/kJP+MT2ulN7La9qsY2QwtRA8ZYjJRdN4NXbWlTEpBXgOTKdnrJpNubbY/l0KJ/U58
+         Uu2O7/nEuhTeOpoBlo6AeSsT/l0wJsyl4nlwQ/6hRsoDX1xrinEmfYn1cG/QVo8e+Ky4
+         ZWWGl2Ezw6xlGNP9t0IwFK0TiKps8TT+5SS6W/y0HEBvU3fYc0OzH0vycB077j0/9w5Q
+         njd1vByJPHU5iQIk38nwFBGChrT+FmQlHBLzxOF+JAoBdikUoVLTgpqQSKHjZpVllRJA
+         9aZA==
+X-Gm-Message-State: AO0yUKVe+GOQyzeWbI9Quidqfr5UMRwTPiL/VS5/O21NgaY/gUZ4pGvT
+        VDokJHiomNnB4QJiJOrJS9s7tvhP5gcv2/ywXGc=
+X-Google-Smtp-Source: AK7set9TjHzm32C4LhaH/wZ2d+zSNFxsfvoXsY7qepvOoqQ7E+fj334ge3fw/POlCzMGY+4Dxmo/5LWSeCECV7q8ZEQ=
+X-Received: by 2002:a50:a695:0:b0:4ac:b626:378e with SMTP id
+ e21-20020a50a695000000b004acb626378emr4043728edc.5.1676595341026; Thu, 16 Feb
+ 2023 16:55:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        FORGED_GMAIL_RCVD,FREEMAIL_FROM,HELO_MISC_IP,NML_ADSP_CUSTOM_MED,
-        RDNS_DYNAMIC,SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,
-        SPOOF_GMAIL_MID,TVD_RCVD_IP autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+References: <20230216183606.2483834-1-eddyz87@gmail.com> <20230216183606.2483834-3-eddyz87@gmail.com>
+In-Reply-To: <20230216183606.2483834-3-eddyz87@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 16 Feb 2023 16:55:29 -0800
+Message-ID: <CAEf4BzYPAE8EhgeGZWuUG5kjvxd8n5c1Qy_PCJveVYQ8=Fuipg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Tests for uninitialized stack reads
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+        yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change refactors check_mem_access() to check against the base type o=
-f
-the register, and uses switch case checking instead of if / else if
-checks. This change also uses the existing clear_called_saved_regs()
-function for resetting caller saved regs in check_helper_call().
+On Thu, Feb 16, 2023 at 10:36 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> Two testcases to make sure that stack reads from uninitialized
+> locations are accepted by verifier when executed in privileged mode:
+> - read from a fixed offset;
+> - read from a variable offset.
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  .../selftests/bpf/prog_tests/uninit_stack.c   |  9 +++
+>  .../selftests/bpf/progs/uninit_stack.c        | 55 +++++++++++++++++++
+>  2 files changed, 64 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/uninit_stack.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/uninit_stack.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/uninit_stack.c b/tools/testing/selftests/bpf/prog_tests/uninit_stack.c
+> new file mode 100644
+> index 000000000000..e64c71948491
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/uninit_stack.c
+> @@ -0,0 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <test_progs.h>
+> +#include "uninit_stack.skel.h"
+> +
+> +void test_uninit_stack(void)
+> +{
+> +       RUN_TESTS(uninit_stack);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/uninit_stack.c b/tools/testing/selftests/bpf/progs/uninit_stack.c
+> new file mode 100644
+> index 000000000000..20ff6a22c906
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/uninit_stack.c
+> @@ -0,0 +1,55 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +
+> +/* Read an uninitialized value from stack at a fixed offset */
+> +SEC("socket")
+> +__naked int read_uninit_stack_fixed_off(void *ctx)
+> +{
+> +       asm volatile ("                         \
+> +               // force stack depth to be 128  \
+> +               *(u64*)(r10 - 128) = r1;        \
+> +               r1 = *(u8 *)(r10 - 8 );         \
+> +               r1 = *(u8 *)(r10 - 11);         \
+> +               r1 = *(u8 *)(r10 - 13);         \
+> +               r1 = *(u8 *)(r10 - 15);         \
+> +               r1 = *(u16*)(r10 - 16);         \
+> +               r1 = *(u32*)(r10 - 32);         \
+> +               r1 = *(u64*)(r10 - 64);         \
+> +               // read from a spill of a wrong size, it is a separate  \
+> +               // branch in check_stack_read_fixed_off()               \
+> +               *(u32*)(r10 - 72) = r1;         \
+> +               r1 = *(u64*)(r10 - 72);         \
+> +               r0 = 0;                         \
+> +               exit;                           \
 
-Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
----
- kernel/bpf/verifier.c | 67 +++++++++++++++++++++++++++++--------------
- 1 file changed, 46 insertions(+), 21 deletions(-)
+would it be better to
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 272563a0b770..b40165be2943 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5317,7 +5317,8 @@ static int check_mem_access(struct bpf_verifier_env=
- *env, int insn_idx, u32 regn
- 	/* for access checks, reg->off is just part of off */
- 	off +=3D reg->off;
-=20
--	if (reg->type =3D=3D PTR_TO_MAP_KEY) {
-+	switch (base_type(reg->type)) {
-+	case PTR_TO_MAP_KEY:
- 		if (t =3D=3D BPF_WRITE) {
- 			verbose(env, "write to change key R%d not allowed\n", regno);
- 			return -EACCES;
-@@ -5329,7 +5330,10 @@ static int check_mem_access(struct bpf_verifier_en=
-v *env, int insn_idx, u32 regn
- 			return err;
- 		if (value_regno >=3D 0)
- 			mark_reg_unknown(env, regs, value_regno);
--	} else if (reg->type =3D=3D PTR_TO_MAP_VALUE) {
-+
-+		break;
-+	case PTR_TO_MAP_VALUE:
-+	{
- 		struct btf_field *kptr_field =3D NULL;
-=20
- 		if (t =3D=3D BPF_WRITE && value_regno >=3D 0 &&
-@@ -5369,7 +5373,10 @@ static int check_mem_access(struct bpf_verifier_en=
-v *env, int insn_idx, u32 regn
- 				mark_reg_unknown(env, regs, value_regno);
- 			}
- 		}
--	} else if (base_type(reg->type) =3D=3D PTR_TO_MEM) {
-+		break;
-+	}
-+	case PTR_TO_MEM:
-+	{
- 		bool rdonly_mem =3D type_is_rdonly_mem(reg->type);
-=20
- 		if (type_may_be_null(reg->type)) {
-@@ -5394,7 +5401,10 @@ static int check_mem_access(struct bpf_verifier_en=
-v *env, int insn_idx, u32 regn
- 					      reg->mem_size, false);
- 		if (!err && value_regno >=3D 0 && (t =3D=3D BPF_READ || rdonly_mem))
- 			mark_reg_unknown(env, regs, value_regno);
--	} else if (reg->type =3D=3D PTR_TO_CTX) {
-+		break;
-+	}
-+	case PTR_TO_CTX:
-+	{
- 		enum bpf_reg_type reg_type =3D SCALAR_VALUE;
- 		struct btf *btf =3D NULL;
- 		u32 btf_id =3D 0;
-@@ -5438,8 +5448,9 @@ static int check_mem_access(struct bpf_verifier_env=
- *env, int insn_idx, u32 regn
- 			}
- 			regs[value_regno].type =3D reg_type;
- 		}
--
--	} else if (reg->type =3D=3D PTR_TO_STACK) {
-+		break;
-+	}
-+	case PTR_TO_STACK:
- 		/* Basic bounds checks. */
- 		err =3D check_stack_access_within_bounds(env, regno, off, size, ACCESS=
-_DIRECT, t);
- 		if (err)
-@@ -5456,7 +5467,9 @@ static int check_mem_access(struct bpf_verifier_env=
- *env, int insn_idx, u32 regn
- 		else
- 			err =3D check_stack_write(env, regno, off, size,
- 						value_regno, insn_idx);
--	} else if (reg_is_pkt_pointer(reg)) {
-+		break;
-+	case PTR_TO_PACKET:
-+	case PTR_TO_PACKET_META:
- 		if (t =3D=3D BPF_WRITE && !may_access_direct_pkt_data(env, NULL, t)) {
- 			verbose(env, "cannot write into packet\n");
- 			return -EACCES;
-@@ -5470,7 +5483,8 @@ static int check_mem_access(struct bpf_verifier_env=
- *env, int insn_idx, u32 regn
- 		err =3D check_packet_access(env, regno, off, size, false);
- 		if (!err && t =3D=3D BPF_READ && value_regno >=3D 0)
- 			mark_reg_unknown(env, regs, value_regno);
--	} else if (reg->type =3D=3D PTR_TO_FLOW_KEYS) {
-+		break;
-+	case PTR_TO_FLOW_KEYS:
- 		if (t =3D=3D BPF_WRITE && value_regno >=3D 0 &&
- 		    is_pointer_value(env, value_regno)) {
- 			verbose(env, "R%d leaks addr into flow keys\n",
-@@ -5481,7 +5495,11 @@ static int check_mem_access(struct bpf_verifier_en=
-v *env, int insn_idx, u32 regn
- 		err =3D check_flow_keys_access(env, off, size);
- 		if (!err && t =3D=3D BPF_READ && value_regno >=3D 0)
- 			mark_reg_unknown(env, regs, value_regno);
--	} else if (type_is_sk_pointer(reg->type)) {
-+		break;
-+	case PTR_TO_SOCKET:
-+	case PTR_TO_SOCK_COMMON:
-+	case PTR_TO_TCP_SOCK:
-+	case PTR_TO_XDP_SOCK:
- 		if (t =3D=3D BPF_WRITE) {
- 			verbose(env, "R%d cannot write into %s\n",
- 				regno, reg_type_str(env, reg->type));
-@@ -5490,18 +5508,18 @@ static int check_mem_access(struct bpf_verifier_e=
-nv *env, int insn_idx, u32 regn
- 		err =3D check_sock_access(env, insn_idx, regno, off, size, t);
- 		if (!err && value_regno >=3D 0)
- 			mark_reg_unknown(env, regs, value_regno);
--	} else if (reg->type =3D=3D PTR_TO_TP_BUFFER) {
-+		break;
-+	case PTR_TO_TP_BUFFER:
- 		err =3D check_tp_buffer_access(env, reg, regno, off, size);
- 		if (!err && t =3D=3D BPF_READ && value_regno >=3D 0)
- 			mark_reg_unknown(env, regs, value_regno);
--	} else if (base_type(reg->type) =3D=3D PTR_TO_BTF_ID &&
--		   !type_may_be_null(reg->type)) {
--		err =3D check_ptr_to_btf_access(env, regs, regno, off, size, t,
--					      value_regno);
--	} else if (reg->type =3D=3D CONST_PTR_TO_MAP) {
-+		break;
-+	case CONST_PTR_TO_MAP:
- 		err =3D check_ptr_to_map_access(env, regs, regno, off, size, t,
- 					      value_regno);
--	} else if (base_type(reg->type) =3D=3D PTR_TO_BUF) {
-+		break;
-+	case PTR_TO_BUF:
-+	{
- 		bool rdonly_mem =3D type_is_rdonly_mem(reg->type);
- 		u32 *max_access;
-=20
-@@ -5521,7 +5539,17 @@ static int check_mem_access(struct bpf_verifier_en=
-v *env, int insn_idx, u32 regn
-=20
- 		if (!err && value_regno >=3D 0 && (rdonly_mem || t =3D=3D BPF_READ))
- 			mark_reg_unknown(env, regs, value_regno);
--	} else {
-+		break;
-+	}
-+	case PTR_TO_BTF_ID:
-+		if (!type_may_be_null(reg->type)) {
-+			err =3D check_ptr_to_btf_access(env, regs, regno, off, size, t,
-+						      value_regno);
-+			break;
-+		} else {
-+			fallthrough;
-+		}
-+	default:
- 		verbose(env, "R%d invalid mem access '%s'\n", regno,
- 			reg_type_str(env, reg->type));
- 		return -EACCES;
-@@ -8377,10 +8405,7 @@ static int check_helper_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn
- 		return err;
-=20
- 	/* reset caller saved regs */
--	for (i =3D 0; i < CALLER_SAVED_REGS; i++) {
--		mark_reg_not_init(env, regs, caller_saved[i]);
--		check_reg_arg(env, caller_saved[i], DST_OP_NO_MARK);
--	}
-+	clear_caller_saved_regs(env, regs);
-=20
- 	/* helper call returns 64-bit value. */
- 	regs[BPF_REG_0].subreg_def =3D DEF_NOT_SUBREG;
---=20
-2.30.2
+r0 = *(u64*)(r10 - 72);
+exit;
 
+to make sure that in the future verifier doesn't smartly optimize out
+unused reads?
+
+
+Either way, looks good to me:
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> +"
+> +                     ::: __clobber_all);
+> +}
+> +
+> +/* Read an uninitialized value from stack at a variable offset */
+> +SEC("socket")
+> +__naked int read_uninit_stack_var_off(void *ctx)
+> +{
+> +       asm volatile ("                         \
+> +               call %[bpf_get_prandom_u32];    \
+> +               // force stack depth to be 64   \
+> +               *(u64*)(r10 - 64) = r0;         \
+> +               r0 = -r0;                       \
+> +               // give r0 a range [-31, -1]    \
+> +               if r0 s<= -32 goto exit_%=;     \
+> +               if r0 s>= 0 goto exit_%=;       \
+> +               // access stack using r0        \
+> +               r1 = r10;                       \
+> +               r1 += r0;                       \
+> +               r2 = *(u8*)(r1 + 0);            \
+> +exit_%=:       r0 = 0;                         \
+> +               exit;                           \
+> +"
+> +                     :
+> +                     : __imm(bpf_get_prandom_u32)
+> +                     : __clobber_all);
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> --
+> 2.39.1
+>
