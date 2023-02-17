@@ -2,355 +2,372 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F5969AC16
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 14:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B87B269AC35
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 14:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbjBQNFq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 08:05:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34458 "EHLO
+        id S229573AbjBQNNj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 08:13:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjBQNFp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 08:05:45 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2026E4AFF3;
-        Fri, 17 Feb 2023 05:05:44 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B3074B82BF4;
-        Fri, 17 Feb 2023 13:05:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ADDBC4339B;
-        Fri, 17 Feb 2023 13:05:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676639141;
-        bh=LEp1XQy0hJEMTkmwkNJvxLOg+wrbhOGqVrxXx2bGgww=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=YBqI/F4v+AiDPtrVhS/j/K7nZGwNoTsd83KAv4FFfwdasb/8dmekzPk1+PiaGV3nj
-         l9clnKbzJiu3oVhbk2qKzALhhxjP097mpbclEE2jeDx6M7cpLsuSu6iIneiXjFvFLY
-         zDTS2fLcWYAK9dr2/hRufdgeKhl0L31TfG1qnI6vB90QJiTYMnzpIfLZaUrD372azG
-         M0V5U8R7Em4VOG9JWcz7EjZiWnSSDTJuJuYjSg9Ae/4uUfFOUY3zwNiZEDllvzxxOG
-         IwPyxvzRHov+rD231/3fY2QIUzB6RG7OgxwkNUOdPiEAAB2r9MwjPya5iAdboznXXV
-         NeaOUF+rq8kwQ==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 4BD13974854; Fri, 17 Feb 2023 14:05:38 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
-Cc:     martin.lau@kernel.org, andrii@kernel.org, memxor@gmail.com,
-        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        kernel-team@fb.com, Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH v10 bpf-next 9/9] selftests/bpf: tests for using dynptrs
- to parse skb and xdp buffers
-In-Reply-To: <20230216225524.1192789-10-joannelkoong@gmail.com>
-References: <20230216225524.1192789-1-joannelkoong@gmail.com>
- <20230216225524.1192789-10-joannelkoong@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 17 Feb 2023 14:05:38 +0100
-Message-ID: <87a61cqw65.fsf@toke.dk>
+        with ESMTP id S229475AbjBQNNi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 08:13:38 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CFB30B1D
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 05:13:37 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id co2so3620345edb.13
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 05:13:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sklOsBxELnmJjmw8mnPdqMYtGfhUi7hJNPkHTVUK0Pg=;
+        b=Au8tgpDa1MH326+ts4xXRjzMeIWRS8JI+mUT3yLFwL1p7Jhwww9JAZSOrZGijJp/Eg
+         miKhF5A2a6Fi7BHSWb7l35c1XQyV65pMdomCTKRlGFc1Hs76k6nMU2JWk96NWeZoISzr
+         KpzzMdkBv8896wZuS5RRGHTXUgf+O4MtST7JulgnIhsx7Fg8zZdQnjabddQtxqYQPi2I
+         lzvJHg12fvOIbaujvFgdzxQYD1zS8FWTKeUOePxUckqp/VeV2hl45IvTu3ZSQ5jHOjDO
+         rQluBiOAa8R5d0SrJXPrlxFPI6TmpbYazvukNTAxz6l/88T1TKNCUCazowOFKwRSqwth
+         TspQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sklOsBxELnmJjmw8mnPdqMYtGfhUi7hJNPkHTVUK0Pg=;
+        b=oPy25bbcqjTVJ6tzrxRwKzvH6c25KQFfj7k/9ttKzm1WetOTiEYoEwElGlb7CIjzwt
+         LG8llH+ZOzn0+y0Lr3cCLQeDmBSQt9JyjFxbTHttqeRUH04XIpj7pByi79JEKYVPvTpT
+         yFbhAElzSyraFuTaRtHGuXXcWYKy/B2C3dSGV4sELtOgJnYWGip3fOlaHWqE9eNvlGQl
+         p+AgnnGY6gpMSSBrEXP3pIa5h34+B/hUGUaLS8dRs2/ED5trpDdUg3cMIqAiTeV+C6UO
+         m28oe0jgz9hiIb/0ZUnensLiFWTMBS0i1Y3spus7oUZDIs5MBTft3JLptOs0ylTcZqx9
+         dlcQ==
+X-Gm-Message-State: AO0yUKWZ1Ir61urosgcv1A+KxHAHTpzBJ3BcebaWI1duWCZMNGw9eD4R
+        gpRJyVreH/KMpj7r4un+5jM=
+X-Google-Smtp-Source: AK7set/WEIm/NXFCkDitXBml5ynuAVzlNTEYPtj896qAJkRU0gnBVAaqboMutsfsCUeEF+MRIzWSZA==
+X-Received: by 2002:a05:6402:1a45:b0:4ad:7481:c2fe with SMTP id bf5-20020a0564021a4500b004ad7481c2femr3533849edb.22.1676639615291;
+        Fri, 17 Feb 2023 05:13:35 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id c72-20020a509fce000000b00499b6b50419sm2286608edf.11.2023.02.17.05.13.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Feb 2023 05:13:34 -0800 (PST)
+Message-ID: <15b495c31b7aa6ed5ec6805a7d04e914788c0d1a.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow reads from uninit stack
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+        yhs@fb.com
+Date:   Fri, 17 Feb 2023 15:13:33 +0200
+In-Reply-To: <CAEf4Bza5rbWbgHW96d+G5n3Wn6eUTs8USO3oXEsH3pFX8kVqbQ@mail.gmail.com>
+References: <20230216183606.2483834-1-eddyz87@gmail.com>
+         <20230216183606.2483834-2-eddyz87@gmail.com>
+         <CAEf4Bza5rbWbgHW96d+G5n3Wn6eUTs8USO3oXEsH3pFX8kVqbQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_FILL_THIS_FORM_SHORT autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Joanne Koong <joannelkoong@gmail.com> writes:
+On Thu, 2023-02-16 at 16:36 -0800, Andrii Nakryiko wrote:
+> On Thu, Feb 16, 2023 at 10:36 AM Eduard Zingerman <eddyz87@gmail.com> wro=
+te:
+> >=20
+> > This commits updates the following functions to allow reads from
+> > uninitialized stack locations when env->allow_uninit_stack option is
+> > enabled:
+> > - check_stack_read_fixed_off()
+> > - check_stack_range_initialized(), called from:
+> >   - check_stack_read_var_off()
+> >   - check_helper_mem_access()
+> >=20
+> > Such change allows to relax logic in stacksafe() to treat STACK_MISC
+> > and STACK_INVALID in a same way and make the following stack slot
+> > configurations equivalent:
+> >=20
+> >   |  Cached state    |  Current state   |
+> >   |   stack slot     |   stack slot     |
+> >   |------------------+------------------|
+> >   | STACK_INVALID or | STACK_INVALID or |
+> >   | STACK_MISC       | STACK_SPILL   or |
+> >   |                  | STACK_MISC    or |
+> >   |                  | STACK_ZERO    or |
+> >   |                  | STACK_DYNPTR     |
+> >=20
+> > This leads to significant verification speed gains (see below).
+> >=20
+> > The idea was suggested by Andrii Nakryiko [1] and initial patch was
+> > created by Alexei Starovoitov [2].
+> >=20
+> > Currently the env->allow_uninit_stack is allowed for programs loaded
+> > by users with CAP_PERFMON or CAP_SYS_ADMIN capabilities.
+> >=20
+> > A number of test cases from verifier/*.c were expecting uninitialized
+> > stack access to be an error. These test cases were updated to execute
+> > in unprivileged mode (thus preserving the tests).
+> >=20
+> > The test progs/test_global_func10.c expected "invalid indirect access
+> > to stack" error message because of the access to uninitialized memory
+> > region. The test is updated to provoke the same error message by
+> > accessing stack out of allocated range.
+> >=20
+> > The following tests had to be removed because these can't be made
+> > unprivileged:
+> > - verifier/sock.c:
+> >   - "sk_storage_get(map, skb->sk, &stack_value, 1): partially init
+> >   stack_value"
+> >   BPF_PROG_TYPE_SCHED_CLS programs are not executed in unprivileged mod=
+e.
+> > - verifier/var_off.c:
+> >   - "indirect variable-offset stack access, max_off+size > max_initiali=
+zed"
+> >   - "indirect variable-offset stack access, uninitialized"
+> >   These tests verify that access to uninitialized stack values is
+> >   detected when stack offset is not a constant. However, variable
+> >   stack access is prohibited in unprivileged mode, thus these tests
+> >   are no longer valid.
+> >=20
+> >  * * *
+> >=20
+> > Here is veristat log comparing this patch with current master on a
+> > set of selftest binaries listed in tools/testing/selftests/bpf/veristat=
+.cfg
+> > and cilium BPF binaries (see [3]):
+> >=20
+> > $ ./veristat -e file,prog,states -C -f 'states_pct<-30' master.log curr=
+ent.log
+> > File                        Program                     States (A)  Sta=
+tes (B)  States    (DIFF)
+> > --------------------------  --------------------------  ----------  ---=
+-------  ----------------
+> > bpf_host.o                  tail_handle_ipv6_from_host         349     =
+    244    -105 (-30.09%)
+> > bpf_host.o                  tail_handle_nat_fwd_ipv4          1320     =
+    895    -425 (-32.20%)
+> > bpf_lxc.o                   tail_handle_nat_fwd_ipv4          1320     =
+    895    -425 (-32.20%)
+> > bpf_sock.o                  cil_sock4_connect                   70     =
+     48     -22 (-31.43%)
+> > bpf_sock.o                  cil_sock4_sendmsg                   68     =
+     46     -22 (-32.35%)
+> > bpf_xdp.o                   tail_handle_nat_fwd_ipv4          1554     =
+    803    -751 (-48.33%)
+> > bpf_xdp.o                   tail_lb_ipv4                      6457     =
+   2473   -3984 (-61.70%)
+> > bpf_xdp.o                   tail_lb_ipv6                      7249     =
+   3908   -3341 (-46.09%)
+> > pyperf600_bpf_loop.bpf.o    on_event                           287     =
+    145    -142 (-49.48%)
+> > strobemeta.bpf.o            on_event                         15915     =
+   4772  -11143 (-70.02%)
+> > strobemeta_nounroll2.bpf.o  on_event                         17087     =
+   3820  -13267 (-77.64%)
+> > xdp_synproxy_kern.bpf.o     syncookie_tc                     21271     =
+   6635  -14636 (-68.81%)
+> > xdp_synproxy_kern.bpf.o     syncookie_xdp                    23122     =
+   6024  -17098 (-73.95%)
+> > --------------------------  --------------------------  ----------  ---=
+-------  ----------------
+> >=20
+> > Note: I limited selection by states_pct<-30%.
+> >=20
+> > Inspection of differences in pyperf600_bpf_loop behavior shows that
+> > the following patch for the test removes almost all differences:
+> >=20
+> >     - a/tools/testing/selftests/bpf/progs/pyperf.h
+> >     + b/tools/testing/selftests/bpf/progs/pyperf.h
+> >     @ -266,8 +266,8 @ int __on_event(struct bpf_raw_tracepoint_args *ct=
+x)
+> >             }
+> >=20
+> >             if (event->pthread_match || !pidData->use_tls) {
+> >     -               void* frame_ptr;
+> >     -               FrameData frame;
+> >     +               void* frame_ptr =3D 0;
+> >     +               FrameData frame =3D {};
+> >                     Symbol sym =3D {};
+> >                     int cur_cpu =3D bpf_get_smp_processor_id();
+> >=20
+> > W/o this patch the difference comes from the following pattern
+> > (for different variables):
+> >=20
+> >     static bool get_frame_data(... FrameData *frame ...)
+> >     {
+> >         ...
+> >         bpf_probe_read_user(&frame->f_code, ...);
+> >         if (!frame->f_code)
+> >             return false;
+> >         ...
+> >         bpf_probe_read_user(&frame->co_name, ...);
+> >         if (frame->co_name)
+> >             ...;
+> >     }
+> >=20
+> >     int __on_event(struct bpf_raw_tracepoint_args *ctx)
+> >     {
+> >         FrameData frame;
+> >         ...
+> >         get_frame_data(... &frame ...) // indirectly via a bpf_loop & c=
+allback
+> >         ...
+> >     }
+> >=20
+> >     SEC("raw_tracepoint/kfree_skb")
+> >     int on_event(struct bpf_raw_tracepoint_args* ctx)
+> >     {
+> >         ...
+> >         ret |=3D __on_event(ctx);
+> >         ret |=3D __on_event(ctx);
+> >         ...
+> >     }
+> >=20
+> > With regards to value `frame->co_name` the following is important:
+> > - Because of the conditional `if (!frame->f_code)` each call to
+> >   __on_event() produces two states, one with `frame->co_name` marked
+> >   as STACK_MISC, another with it as is (and marked STACK_INVALID on a
+> >   first call).
+> > - The call to bpf_probe_read_user() does not mark stack slots
+> >   corresponding to `&frame->co_name` as REG_LIVE_WRITTEN but it marks
+> >   these slots as BPF_MISC, this happens because of the following loop
+> >   in the check_helper_call():
+> >=20
+> >         for (i =3D 0; i < meta.access_size; i++) {
+> >                 err =3D check_mem_access(env, insn_idx, meta.regno, i, =
+BPF_B,
+> >                                        BPF_WRITE, -1, false);
+> >                 if (err)
+> >                         return err;
+> >         }
+> >=20
+> >   Note the size of the write, it is a one byte write for each byte
+> >   touched by a helper. The BPF_B write does not lead to write marks
+> >   for the target stack slot.
+> > - Which means that w/o this patch when second __on_event() call is
+> >   verified `if (frame->co_name)` will propagate read marks first to a
+> >   stack slot with STACK_MISC marks and second to a stack slot with
+> >   STACK_INVALID marks and these states would be considered different.
+> >=20
+> > [1] https://lore.kernel.org/bpf/CAEf4BzY3e+ZuC6HUa8dCiUovQRg2SzEk7M-dSk=
+qNZyn=3DxEmnPA@mail.gmail.com/
+> > [2] https://lore.kernel.org/bpf/CAADnVQKs2i1iuZ5SUGuJtxWVfGYR9kDgYKhq3r=
+NV+kBLQCu7rA@mail.gmail.com/
+> > [3] git@github.com:anakryiko/cilium.git
+> >=20
+> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > ---
+> >  kernel/bpf/verifier.c                         |  10 ++
+> >  .../selftests/bpf/progs/test_global_func10.c  |   6 +-
+> >  tools/testing/selftests/bpf/verifier/calls.c  |  13 ++-
+> >  .../bpf/verifier/helper_access_var_len.c      | 104 ++++++++++++------
+> >  .../testing/selftests/bpf/verifier/int_ptr.c  |   9 +-
+> >  .../selftests/bpf/verifier/search_pruning.c   |  13 ++-
+> >  tools/testing/selftests/bpf/verifier/sock.c   |  27 -----
+> >  .../selftests/bpf/verifier/spill_fill.c       |   7 +-
+> >  .../testing/selftests/bpf/verifier/var_off.c  |  52 ---------
+> >  9 files changed, 107 insertions(+), 134 deletions(-)
+> >=20
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 272563a0b770..6fbd0e25ccab 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3826,6 +3826,8 @@ static int check_stack_read_fixed_off(struct bpf_=
+verifier_env *env,
+> >                                                 continue;
+> >                                         if (type =3D=3D STACK_MISC)
+> >                                                 continue;
+> > +                                       if (type =3D=3D STACK_INVALID &=
+& env->allow_uninit_stack)
+> > +                                               continue;
+> >                                         verbose(env, "invalid read from=
+ stack off %d+%d size %d\n",
+> >                                                 off, i, size);
+> >                                         return -EACCES;
+> > @@ -3863,6 +3865,8 @@ static int check_stack_read_fixed_off(struct bpf_=
+verifier_env *env,
+> >                                 continue;
+> >                         if (type =3D=3D STACK_ZERO)
+> >                                 continue;
+> > +                       if (type =3D=3D STACK_INVALID && env->allow_uni=
+nit_stack)
+> > +                               continue;
+> >                         verbose(env, "invalid read from stack off %d+%d=
+ size %d\n",
+> >                                 off, i, size);
+> >                         return -EACCES;
+> > @@ -5761,6 +5765,8 @@ static int check_stack_range_initialized(
+> >                         }
+> >                         goto mark;
+> >                 }
+> > +               if (*stype =3D=3D STACK_INVALID && env->allow_uninit_st=
+ack)
+> > +                       goto mark;
+>=20
+> should we support clobber and conversion to STACK_MISC like we do for
+> STACK_ZERO? If yes, probably cleaner to just extend condition to
+>=20
+> if ((*stype =3D=3D STACK_ZERO) || (*stype =3D=3D STACK_INVALID &&
+> env->allow_uninit_stack))
+>=20
+> ?
 
-> Test skb and xdp dynptr functionality in the following ways:
+As far as I understand, conversion of STACK_ZERO to STACK_MISC is
+necessary for safety reasons (like we can't be sure that memory will
+remain STACK_ZERO after clobber call).
 
-One question on one of the usage examples:
+However for STACK_INVALID -> STACK_MISC case, I don't think there is a
+way to observe such change (apart from log output). After this patch
+there would be no difference between STACK_INVALID and STACK_MISC in
+privileged mode.
 
-[...]
+Hence, such change is a matter of style and does not affect verifier
+behavior. If you think that the following is more concise:
 
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c b/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
-> new file mode 100644
-> index 000000000000..4c49fd42da6f
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
-> @@ -0,0 +1,257 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Meta */
-> +#include <stddef.h>
-> +#include <string.h>
-> +#include <linux/bpf.h>
-> +#include <linux/if_ether.h>
-> +#include <linux/if_packet.h>
-> +#include <linux/ip.h>
-> +#include <linux/ipv6.h>
-> +#include <linux/in.h>
-> +#include <linux/udp.h>
-> +#include <linux/tcp.h>
-> +#include <linux/pkt_cls.h>
-> +#include <sys/socket.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +#include "test_iptunnel_common.h"
-> +
-> +extern int bpf_dynptr_from_xdp(struct xdp_md *xdp, __u64 flags,
-> +			       struct bpf_dynptr *ptr) __ksym;
-> +extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, __u32 offset,
-> +			      void *buffer, __u32 buffer__sz) __ksym;
-> +extern void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *ptr, __u32 offset,
-> +			      void *buffer, __u32 buffer__sz) __ksym;
-> +
-> +const size_t tcphdr_sz = sizeof(struct tcphdr);
-> +const size_t udphdr_sz = sizeof(struct udphdr);
-> +const size_t ethhdr_sz = sizeof(struct ethhdr);
-> +const size_t iphdr_sz = sizeof(struct iphdr);
-> +const size_t ipv6hdr_sz = sizeof(struct ipv6hdr);
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-> +	__uint(max_entries, 256);
-> +	__type(key, __u32);
-> +	__type(value, __u64);
-> +} rxcnt SEC(".maps");
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(max_entries, MAX_IPTNL_ENTRIES);
-> +	__type(key, struct vip);
-> +	__type(value, struct iptnl_info);
-> +} vip2tnl SEC(".maps");
-> +
-> +static __always_inline void count_tx(__u32 protocol)
-> +{
-> +	__u64 *rxcnt_count;
-> +
-> +	rxcnt_count = bpf_map_lookup_elem(&rxcnt, &protocol);
-> +	if (rxcnt_count)
-> +		*rxcnt_count += 1;
-> +}
-> +
-> +static __always_inline int get_dport(void *trans_data, __u8 protocol)
-> +{
-> +	struct tcphdr *th;
-> +	struct udphdr *uh;
-> +
-> +	switch (protocol) {
-> +	case IPPROTO_TCP:
-> +		th = (struct tcphdr *)trans_data;
-> +		return th->dest;
-> +	case IPPROTO_UDP:
-> +		uh = (struct udphdr *)trans_data;
-> +		return uh->dest;
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +static __always_inline void set_ethhdr(struct ethhdr *new_eth,
-> +				       const struct ethhdr *old_eth,
-> +				       const struct iptnl_info *tnl,
-> +				       __be16 h_proto)
-> +{
-> +	memcpy(new_eth->h_source, old_eth->h_dest, sizeof(new_eth->h_source));
-> +	memcpy(new_eth->h_dest, tnl->dmac, sizeof(new_eth->h_dest));
-> +	new_eth->h_proto = h_proto;
-> +}
-> +
-> +static __always_inline int handle_ipv4(struct xdp_md *xdp, struct bpf_dynptr *xdp_ptr)
-> +{
-> +	__u8 eth_buffer[ethhdr_sz + iphdr_sz + ethhdr_sz];
-> +	__u8 iph_buffer_tcp[iphdr_sz + tcphdr_sz];
-> +	__u8 iph_buffer_udp[iphdr_sz + udphdr_sz];
-> +	struct bpf_dynptr new_xdp_ptr;
-> +	struct iptnl_info *tnl;
-> +	struct ethhdr *new_eth;
-> +	struct ethhdr *old_eth;
-> +	__u32 transport_hdr_sz;
-> +	struct iphdr *iph;
-> +	__u16 *next_iph;
-> +	__u16 payload_len;
-> +	struct vip vip = {};
-> +	int dport;
-> +	__u32 csum = 0;
-> +	int i;
-> +
-> +	__builtin_memset(eth_buffer, 0, sizeof(eth_buffer));
-> +	__builtin_memset(iph_buffer_tcp, 0, sizeof(iph_buffer_tcp));
-> +	__builtin_memset(iph_buffer_udp, 0, sizeof(iph_buffer_udp));
-> +
-> +	if (ethhdr_sz + iphdr_sz + tcphdr_sz > xdp->data_end - xdp->data)
-> +		iph = bpf_dynptr_slice(xdp_ptr, ethhdr_sz, iph_buffer_udp, sizeof(iph_buffer_udp));
-> +	else
-> +		iph = bpf_dynptr_slice(xdp_ptr, ethhdr_sz, iph_buffer_tcp, sizeof(iph_buffer_tcp));
-> +
-> +	if (!iph)
-> +		return XDP_DROP;
-> +
-> +	dport = get_dport(iph + 1, iph->protocol);
-> +	if (dport == -1)
-> +		return XDP_DROP;
-> +
-> +	vip.protocol = iph->protocol;
-> +	vip.family = AF_INET;
-> +	vip.daddr.v4 = iph->daddr;
-> +	vip.dport = dport;
-> +	payload_len = bpf_ntohs(iph->tot_len);
-> +
-> +	tnl = bpf_map_lookup_elem(&vip2tnl, &vip);
-> +	/* It only does v4-in-v4 */
-> +	if (!tnl || tnl->family != AF_INET)
-> +		return XDP_PASS;
-> +
-> +	if (bpf_xdp_adjust_head(xdp, 0 - (int)iphdr_sz))
-> +		return XDP_DROP;
-> +
-> +	bpf_dynptr_from_xdp(xdp, 0, &new_xdp_ptr);
-> +	new_eth = bpf_dynptr_slice_rdwr(&new_xdp_ptr, 0, eth_buffer, sizeof(eth_buffer));
-> +	if (!new_eth)
-> +		return XDP_DROP;
+		if ((*stype =3D=3D STACK_ZERO) ||
+		    (*stype =3D=3D STACK_INVALID && env->allow_uninit_stack)) {
+			if (clobber) {
+				/* helper can write anything into the stack */
+				*stype =3D STACK_MISC;
+			}
+			goto mark;
+		}
 
-Here the program just gets a new pointer using bpf_dynptr_slice_rdwr()
-and proceeds to write to it directly without any further checks. But
-what happens if the pointer points to the eth_buffer? Presumably the
-program would need to check this and do a bpf_dynptr_write() at the end
-in this case? Would be good to have this in the example, as this is
-basically the only documentation that exists, and people are probably
-going to copy-paste code from here :)
+I can make this update and add appropriate test, checking log output.
+Personally, I that intent would be more clear if the current notation
+is preserved.
 
--Toke
+>=20
+>=20
+> Other than that, looks good:
+>=20
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>=20
+> >=20
+> >                 if (is_spilled_reg(&state->stack[spi]) &&
+> >                     (state->stack[spi].spilled_ptr.type =3D=3D SCALAR_V=
+ALUE ||
+> > @@ -13936,6 +13942,10 @@ static bool stacksafe(struct bpf_verifier_env =
+*env, struct bpf_func_state *old,
+> >                 if (old->stack[spi].slot_type[i % BPF_REG_SIZE] =3D=3D =
+STACK_INVALID)
+> >                         continue;
+> >=20
+> > +               if (env->allow_uninit_stack &&
+> > +                   old->stack[spi].slot_type[i % BPF_REG_SIZE] =3D=3D =
+STACK_MISC)
+> > +                       continue;
+> > +
+> >                 /* explored stack has more populated slots than current=
+ stack
+> >                  * and these slots were used
+> >                  */
+>=20
+> [...]
 
-
-
-> +	iph = (struct iphdr *)(new_eth + 1);
-> +	old_eth = (struct ethhdr *)(iph + 1);
-> +
-> +	set_ethhdr(new_eth, old_eth, tnl, bpf_htons(ETH_P_IP));
-> +
-> +	iph->version = 4;
-> +	iph->ihl = iphdr_sz >> 2;
-> +	iph->frag_off =	0;
-> +	iph->protocol = IPPROTO_IPIP;
-> +	iph->check = 0;
-> +	iph->tos = 0;
-> +	iph->tot_len = bpf_htons(payload_len + iphdr_sz);
-> +	iph->daddr = tnl->daddr.v4;
-> +	iph->saddr = tnl->saddr.v4;
-> +	iph->ttl = 8;
-> +
-> +	next_iph = (__u16 *)iph;
-> +	for (i = 0; i < iphdr_sz >> 1; i++)
-> +		csum += *next_iph++;
-> +
-> +	iph->check = ~((csum & 0xffff) + (csum >> 16));
-> +
-> +	count_tx(vip.protocol);
-> +
-> +	return XDP_TX;
-> +}
-> +
-> +static __always_inline int handle_ipv6(struct xdp_md *xdp, struct bpf_dynptr *xdp_ptr)
-> +{
-> +	__u8 eth_buffer[ethhdr_sz + ipv6hdr_sz + ethhdr_sz];
-> +	__u8 ip6h_buffer_tcp[ipv6hdr_sz + tcphdr_sz];
-> +	__u8 ip6h_buffer_udp[ipv6hdr_sz + udphdr_sz];
-> +	struct bpf_dynptr new_xdp_ptr;
-> +	struct iptnl_info *tnl;
-> +	struct ethhdr *new_eth;
-> +	struct ethhdr *old_eth;
-> +	__u32 transport_hdr_sz;
-> +	struct ipv6hdr *ip6h;
-> +	__u16 payload_len;
-> +	struct vip vip = {};
-> +	int dport;
-> +
-> +	__builtin_memset(eth_buffer, 0, sizeof(eth_buffer));
-> +	__builtin_memset(ip6h_buffer_tcp, 0, sizeof(ip6h_buffer_tcp));
-> +	__builtin_memset(ip6h_buffer_udp, 0, sizeof(ip6h_buffer_udp));
-> +
-> +	if (ethhdr_sz + iphdr_sz + tcphdr_sz > xdp->data_end - xdp->data)
-> +		ip6h = bpf_dynptr_slice(xdp_ptr, ethhdr_sz, ip6h_buffer_udp, sizeof(ip6h_buffer_udp));
-> +	else
-> +		ip6h = bpf_dynptr_slice(xdp_ptr, ethhdr_sz, ip6h_buffer_tcp, sizeof(ip6h_buffer_tcp));
-> +
-> +	if (!ip6h)
-> +		return XDP_DROP;
-> +
-> +	dport = get_dport(ip6h + 1, ip6h->nexthdr);
-> +	if (dport == -1)
-> +		return XDP_DROP;
-> +
-> +	vip.protocol = ip6h->nexthdr;
-> +	vip.family = AF_INET6;
-> +	memcpy(vip.daddr.v6, ip6h->daddr.s6_addr32, sizeof(vip.daddr));
-> +	vip.dport = dport;
-> +	payload_len = ip6h->payload_len;
-> +
-> +	tnl = bpf_map_lookup_elem(&vip2tnl, &vip);
-> +	/* It only does v6-in-v6 */
-> +	if (!tnl || tnl->family != AF_INET6)
-> +		return XDP_PASS;
-> +
-> +	if (bpf_xdp_adjust_head(xdp, 0 - (int)ipv6hdr_sz))
-> +		return XDP_DROP;
-> +
-> +	bpf_dynptr_from_xdp(xdp, 0, &new_xdp_ptr);
-> +	new_eth = bpf_dynptr_slice_rdwr(&new_xdp_ptr, 0, eth_buffer, sizeof(eth_buffer));
-> +	if (!new_eth)
-> +		return XDP_DROP;
-> +
-> +	ip6h = (struct ipv6hdr *)(new_eth + 1);
-> +	old_eth = (struct ethhdr *)(ip6h + 1);
-> +
-> +	set_ethhdr(new_eth, old_eth, tnl, bpf_htons(ETH_P_IPV6));
-> +
-> +	ip6h->version = 6;
-> +	ip6h->priority = 0;
-> +	memset(ip6h->flow_lbl, 0, sizeof(ip6h->flow_lbl));
-> +	ip6h->payload_len = bpf_htons(bpf_ntohs(payload_len) + ipv6hdr_sz);
-> +	ip6h->nexthdr = IPPROTO_IPV6;
-> +	ip6h->hop_limit = 8;
-> +	memcpy(ip6h->saddr.s6_addr32, tnl->saddr.v6, sizeof(tnl->saddr.v6));
-> +	memcpy(ip6h->daddr.s6_addr32, tnl->daddr.v6, sizeof(tnl->daddr.v6));
-> +
-> +	count_tx(vip.protocol);
-> +
-> +	return XDP_TX;
-> +}
-> +
-> +SEC("xdp")
-> +int _xdp_tx_iptunnel(struct xdp_md *xdp)
-> +{
-> +	__u8 buffer[ethhdr_sz];
-> +	struct bpf_dynptr ptr;
-> +	struct ethhdr *eth;
-> +	__u16 h_proto;
-> +
-> +	__builtin_memset(buffer, 0, sizeof(buffer));
-> +
-> +	bpf_dynptr_from_xdp(xdp, 0, &ptr);
-> +	eth = bpf_dynptr_slice(&ptr, 0, buffer, sizeof(buffer));
-> +	if (!eth)
-> +		return XDP_DROP;
-> +
-> +	h_proto = eth->h_proto;
-> +
-> +	if (h_proto == bpf_htons(ETH_P_IP))
-> +		return handle_ipv4(xdp, &ptr);
-> +	else if (h_proto == bpf_htons(ETH_P_IPV6))
-> +
-> +		return handle_ipv6(xdp, &ptr);
-> +	else
-> +		return XDP_DROP;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_tcp_hdr_options.h b/tools/testing/selftests/bpf/test_tcp_hdr_options.h
-> index 6118e3ab61fc..56c9f8a3ad3d 100644
-> --- a/tools/testing/selftests/bpf/test_tcp_hdr_options.h
-> +++ b/tools/testing/selftests/bpf/test_tcp_hdr_options.h
-> @@ -50,6 +50,7 @@ struct linum_err {
->  
->  #define TCPOPT_EOL		0
->  #define TCPOPT_NOP		1
-> +#define TCPOPT_MSS		2
->  #define TCPOPT_WINDOW		3
->  #define TCPOPT_EXP		254
->  
-> -- 
-> 2.30.2
