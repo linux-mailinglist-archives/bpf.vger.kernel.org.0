@@ -2,90 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E127069B3F3
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 21:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0405F69B3F9
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 21:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjBQUaU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 15:30:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        id S229530AbjBQUco (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 15:32:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjBQUaT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 15:30:19 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9893E632
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 12:30:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 87AA061FF2
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 20:30:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DA041C433EF;
-        Fri, 17 Feb 2023 20:30:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676665817;
-        bh=X+sSg6LiIKfYuFsEaBrqM3mCPloDNRqAVIoJ8sXY7TI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lo/gQsRvGmONU/H5BWcC6bkXFO5AkvpkM5el021/V1CmALoNP60+BhDWHf3j5583K
-         coO7A75nl3fZnKANDXCKpAOsM8BirxS4zd7tnI5S3j1G/Tim2M4UvoKpEEozo6MqtC
-         GVlK1VmJCPqaaaYJ7ONs3BwlZOi1x53bTPTTvWItva7gHlsDF8dSu3ZQblWFgfQXRJ
-         2VlbXriyqH03xSFlNXqzg+njL7/yAdvyGF0di1jrZQgMcIC2j8ih4BfKZl5vxwIqIT
-         9gYvnxEGuxvyaWptuOtuXlE5BbqOCpwu9higOkCt8QpmX0bawNeCUxRcx2e3uGQ+Jl
-         Ozlm9AuWhGakQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BCA42E21EC4;
-        Fri, 17 Feb 2023 20:30:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229669AbjBQUco (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 15:32:44 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5953E632;
+        Fri, 17 Feb 2023 12:32:42 -0800 (PST)
+Message-ID: <cd2fa388-573c-99d7-d199-f588d8d38bd5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1676665960;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+aseCJdFaeOdUJxOJzEaJC58L3YLEwHfHKCp1+fUKtc=;
+        b=tH/YKCIM/Y3cUIiZudHPJNalo/UwfHG2F9S/XTyTXqBhcEVrz5bcgCqbxcv9z/7LBw8a6X
+        6ET8EehOqEPYjuhCCytfPSG70EzlveD7gy/tmxbSt9OsuIh935OAwD53Zd4iCIvdA/ygww
+        m1hz+5Rbq2GhjADGsS/gwNVF1aDaTxE=
+Date:   Fri, 17 Feb 2023 12:32:36 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/3] Fix BPF verifier global subprog context
- argument logic
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167666581776.8842.4868500111566161313.git-patchwork-notify@kernel.org>
-Date:   Fri, 17 Feb 2023 20:30:17 +0000
-References: <20230216045954.3002473-1-andrii@kernel.org>
-In-Reply-To: <20230216045954.3002473-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next v4] bpf, test_run: fix &xdp_frame misplacement
+ for LIVE_FRAMES
+Content-Language: en-US
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Song Liu <song@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20230215185440.4126672-1-aleksander.lobakin@intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230215185440.4126672-1-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On 2/15/23 10:54 AM, Alexander Lobakin wrote:
+> +#if BITS_PER_LONG == 64 && PAGE_SIZE == SZ_4K
+> +/* tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c:%MAX_PKT_SIZE
+> + * must be updated accordingly when any of these changes, otherwise BPF
+> + * selftests will fail.
+> + */
+> +#ifdef __s390x__
+> +#define TEST_MAX_PKT_SIZE 3216
+> +#else
+> +#define TEST_MAX_PKT_SIZE 3408
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+I have to revert this patch for now. It is not right to assume cache line size:
+https://lore.kernel.org/bpf/50c35055-afa9-d01e-9a05-ea5351280e4f@intel.com/
 
-On Wed, 15 Feb 2023 20:59:51 -0800 you wrote:
-> Fix kernel bug in determining whether global subprog's argument is PTR_TO_CTX,
-> which is done based on type names. Currently KPROBE programs are broken.
-> 
-> Add few tests validating that KPROBE context can be passed to global subprog.
-> For that also refactor test_global_funcs test to use test_loader framework.
-> 
-> v1->v2:
->   - fix compilation warning on arm64 and s390x by force-casting ctx to
->     `void *`, to discard const from `const struct user_pt_regs *`, when
->     passing it to bpf_get_stack().
-> 
-> [...]
+Please resubmit and consider if this static_assert is really needed in the 
+kernel test_run.c.
 
-Here is the summary with links:
-  - [v2,bpf-next,1/3] bpf: fix global subprog context argument resolution logic
-    https://git.kernel.org/bpf/bpf-next/c/d384dce281ed
-  - [v2,bpf-next,2/3] selftests/bpf: convert test_global_funcs test to test_loader framework
-    https://git.kernel.org/bpf/bpf-next/c/95ebb376176c
-  - [v2,bpf-next,3/3] selftests/bpf: add global subprog context passing tests
-    https://git.kernel.org/bpf/bpf-next/c/e2b5cfc978f8
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+> +#endif
+> +static_assert(SKB_WITH_OVERHEAD(TEST_XDP_FRAME_SIZE - XDP_PACKET_HEADROOM) ==
+> +	      TEST_MAX_PKT_SIZE);
+> +#endif
 
