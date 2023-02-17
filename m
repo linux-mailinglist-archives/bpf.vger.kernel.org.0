@@ -2,67 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 949C869A910
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 11:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB90B69A962
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 11:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjBQKZ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 05:25:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
+        id S229790AbjBQKtd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 05:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjBQKZz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 05:25:55 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB74B627FB
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 02:25:54 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id d28so1053079lfv.13
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 02:25:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UUepSSrbRuLMxinPRyIoeldDv/xMPzoXMTZZn+X5BmA=;
-        b=Vfj2UHrFj/LoOaD0K5/Ln0QURGmnTUPBjdRODydP7X/V9oK1j6vXLaENce5DfxLHZV
-         wcs03tEmc3JIBqUyV/zd+jDQEaqgmPdx9c1xus51jZ4L1y/nlEYo7hBe7dd9h3jFVBER
-         2X3O8k+/6s05SPc4W+NwgvsPavKtgzJ96ZRe1ostN/1b38Ysq8iYnRtdrpAo4AzP2oyL
-         vaXWX6hdaRCp1kdDdllbN3WqAXVtFMJaI/rQKUaYnEIRNbPwsBcHts/Cssaty/4NwB/z
-         fe9TeZdlvDJqjI/BSnh4640C9B7y2lgSzb7J7ucTbaHOdLPnYuW+8vb8KSvwr1Hof7fS
-         wISw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UUepSSrbRuLMxinPRyIoeldDv/xMPzoXMTZZn+X5BmA=;
-        b=CW9JEQyi/CQqtDDWDYH+1z8Exz1/pPGgJaKrIAdhGGQVv41mZfDQ8YxWCSnFSWTpQs
-         6lIBMaQ7ZkUL8GQkLsG5TBiEKDkjw9pNmHluM61JqK0cJ4BJLQUwsiyvi3K1pyZ2fbtY
-         DFFhzM5W8Xnb12zuOFB182grNcEVQExmRs/Y9pjeSvh1uko2p6kRXDhugpLLAlZMm6f7
-         +SxPpfD4BN9Z7yMua0XU7SGj8zBHo07osNUYY7pDkTh6wcTLLWlhRx9WBNodKnMuQaXE
-         WjCSVcaNpaIX5BdHb8xPAPdezAj+Xfuja86sWqv4sX98JLdakekU48ZEQwdBYle3WiCP
-         5LOQ==
-X-Gm-Message-State: AO0yUKVXPYUys+TQAYtR8xg7YAcPjdlMtfK5qPXKdKQ921oojiu48m8I
-        eh6diBlD3qPrYu20VGuo6+SfBSepr59b+NYJRI8=
-X-Google-Smtp-Source: AK7set/eklb2geoxCjR/+mhhMSROz8ClpvJoKF+iWJ1uo7fI6HQwuKez2LlAsqN9OiLcVC7dk3ezMlvWZXcor4BDXi0=
-X-Received: by 2002:ac2:5204:0:b0:4db:266c:4337 with SMTP id
- a4-20020ac25204000000b004db266c4337mr251992lfl.1.1676629552649; Fri, 17 Feb
- 2023 02:25:52 -0800 (PST)
+        with ESMTP id S229525AbjBQKt1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 05:49:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C66635A2
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 02:48:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676630835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nwUbTMbbHG2T6u8qpzssOLb6gYft08svkJ0HnI5nE1g=;
+        b=Kdgz4wU3yEnlkkCp/mhhHJUZYDDoReu5devJPai1GE8MIaVLCwK7PlA1wGsBD3AjKWzEhv
+        dKK7WYjdZXPZcjUkXgPVh/7OXGAw9roVx8smDdi++MMUjcmuRgEUZvQ+P1QNr+lIVHKQMv
+        4b3dDcepUAvXl7hqwKuUwDtQGXbg2OA=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-655-yG6cCmpsM6qrrdZ_Vy_vUg-1; Fri, 17 Feb 2023 05:47:11 -0500
+X-MC-Unique: yG6cCmpsM6qrrdZ_Vy_vUg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 32EEA3C0DDA6;
+        Fri, 17 Feb 2023 10:47:11 +0000 (UTC)
+Received: from T590 (ovpn-8-26.pek2.redhat.com [10.72.8.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 49188C15BA0;
+        Fri, 17 Feb 2023 10:47:00 +0000 (UTC)
+Date:   Fri, 17 Feb 2023 18:46:55 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Cc:     linux-block@vger.kernel.org, io-uring@vger.kernel.org,
+        bpf@vger.kernel.org, axboe@kernel.dk, asml.silence@gmail.com,
+        ZiyangZhang@linux.alibaba.com, ming.lei@redhat.com
+Subject: Re: [RFC 3/3] ublk_drv: add ebpf support
+Message-ID: <Y+9bH9QXe2HPAJrZ@T590>
+References: <20230215004122.28917-1-xiaoguang.wang@linux.alibaba.com>
+ <20230215004122.28917-4-xiaoguang.wang@linux.alibaba.com>
+ <Y+3lOn04pdFtdGbr@T590>
+ <54043113-e524-6ca2-ce77-08d45099aff2@linux.alibaba.com>
+ <Y+7uNpw7QBpJ4GHA@T590>
 MIME-Version: 1.0
-References: <CANk7y0joRFw2F4iAuN9r-dWWMvOmbFZz_J4rhGhgVFjdnxPTYw@mail.gmail.com>
- <Y+2J+jIFIxGOW32X@google.com> <CAEf4BzaQJfB0Qh2Wn5wd9H0ZSURbzWBfKkav8xbkhozqTWXndw@mail.gmail.com>
-In-Reply-To: <CAEf4BzaQJfB0Qh2Wn5wd9H0ZSURbzWBfKkav8xbkhozqTWXndw@mail.gmail.com>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Fri, 17 Feb 2023 11:25:41 +0100
-Message-ID: <CANk7y0iKQX7BdGabDgHmTa=BXc_WCh3rkh5xjqJqc56FJs-QUA@mail.gmail.com>
-Subject: Re: [RFC] libbbpf/bpftool: Support 32-bit Architectures.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
-        quentin@isovalent.com, ast@kernel.org, daniel@iogearbox.net,
-        memxor@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y+7uNpw7QBpJ4GHA@T590>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,117 +64,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-Thanks for the response.
+On Fri, Feb 17, 2023 at 11:02:14AM +0800, Ming Lei wrote:
+> On Thu, Feb 16, 2023 at 08:12:18PM +0800, Xiaoguang Wang wrote:
+> > hello,
 
-On Thu, Feb 16, 2023 at 11:13 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Feb 15, 2023 at 5:48 PM Stanislav Fomichev <sdf@google.com> wrote=
-:
-> >
-> > On 02/15, Puranjay Mohan wrote:
-> > > The BPF selftests fail to compile on 32-bit architectures as the skel=
-eton
-> > > generated by bpftool doesn=E2=80=99t take into consideration the size=
- difference
-> > > of
-> > > variables on 32-bit/64-bit architectures.
-> >
-> > > As an example,
-> > > If a bpf program has a global variable of type: long, its skeleton wi=
-ll
-> > > include
-> > > a bss map that will have a field for this variable. The long variable=
- in
-> > > BPF is
-> > > 64-bit. if we are working on a 32-bit machine, the generated skeleton=
- has
-> > > to
-> > > compile for that machine where long is 32-bit.
-> >
-> > > A reproducer for this issue:
-> > >          root@56ec59aa632f:~# cat test.bpf.c
-> > >          long var;
-> >
-> > >          root@56ec59aa632f:~# clang -target bpf -g -c test.bpf.c
-> >
-> > >          root@56ec59aa632f:~# bpftool btf dump file test.bpf.o format=
- raw
-> > >          [1] INT 'long int' size=3D8 bits_offset=3D0 nr_bits=3D64 enc=
-oding=3DSIGNED
-> > >          [2] VAR 'var' type_id=3D1, linkage=3Dglobal
-> > >          [3] DATASEC '.bss' size=3D0 vlen=3D1
-> > >                 type_id=3D2 offset=3D0 size=3D8 (VAR 'var')
-> >
-> > >         root@56ec59aa632f:~# bpftool gen skeleton test.bpf.o > skelet=
-on.h
-> >
-> > >         root@56ec59aa632f:~# echo "#include \"skeleton.h\"" > test.c
-> >
-> > >         root@56ec59aa632f:~# gcc test.c
-> > >         In file included from test.c:1:
-> > >         skeleton.h: In function 'test_bpf__assert':
-> > >         skeleton.h:231:2: error: static assertion failed: "unexpected
-> > > size of \'var\'"
-> > >           231 |  _Static_assert(sizeof(s->bss->var) =3D=3D 8, "unexpe=
-cted
-> > > size of 'var'");
-> > >                  |  ^~~~~~~~~~~~~~
-> >
-> > > One naive solution for this would be to map =E2=80=98long=E2=80=99 to=
- =E2=80=98long long=E2=80=99 and
-> > > =E2=80=98unsigned long=E2=80=99 to =E2=80=98unsigned long long=E2=80=
-=99. But this doesn=E2=80=99t solve everything
-> > > because this problem is also seen with pointers that are 64-bit in BP=
-F and
-> > > 32-bit in 32-bit machines.
-> >
-> > > I want to work on solving this and am looking for ideas to solve it
-> > > efficiently.
-> > > The main goal is to make libbbpf/bpftool host architecture agnostic.
-> >
-> > Looks like bpftool needs to be aware of the target architecture. The
-> > same way gcc is doing with build-host-target triplet. I don't
-> > think this can be solved with a bunch of typedefs? But I've long
-> > forgotten how a pure 32-bit machine looks, so I can't give any
-> > useful input :-(
->
-> Yeah, I'd rather avoid making bpftool aware of target architecture.
-> Three is 32 vs 64 bitness, there is also little/big endianness, etc.
->
-> So I'd recommend never using "long" (and similar types that depend on
-> bitness of the platform, like size_t, etc) for global variables. Also
-> don't use pointer types as types of the variable. Stick to __u64,
-> __u32, etc.
+...
 
-I feel if we follow. this convention then it will work out but
-currently a lot of selftests use these
-architecture dependent variable types and therefore don't even compile
-for 32-bit architectures
-because of the _Static_asserts in the skeleton.
+> > io_prep_prog is called when ublk_queue_rq() is called, this bpf
+> > prog will initialize one or more sqes according to user logic, and
+> > io_prep_prog will put these sqes in an ebpf map structure, then
+> > execute a task_work_add() to notify ubq_daemon to execute
+> > io_submit_prog. Note, we can not call io_uring_submit_sqe()
+> > in task context that calls ublk_queue_rq(), that context does not
+> > have io_uring instance owned by ubq_daemon.
+> > Later ubq_daemon will call io_submit_prog to submit sqes.
+> 
+> Submitting sqe from kernel looks interesting, but I guess
+> performance may be hurt, given plugging(batching) can't be applied
+> any more, which is supposed to affect io perf a lot.
 
-Do you suggest replacing all these with __u64, __u32, etc. in the
-selftests so that they compile on every architecture?
+If submitting SQE in kernel is really doable, maybe we can add another
+command, such as, UBLK_IO_SUBMIT_SQE(just like UBLK_IO_NEED_GET_DATA),
+and pass the built SQE(which represents part of user logic result) as
+io_uring command payload, and ask ublk driver to build buffer for this
+SQE, then submit this SQE in kernel.
 
->
-> Note that all this is irrelevant for static global variables, as they
-> are not exposed in the BPF skeleton.
->
-> In general, mixing 32-bit host architecture with (always) 64-bit BPF
-> architecture always requires more care. And BPF skeleton is just one
-> aspect of this.
->
-> >
-> >
-> > > Thanks,
-> > > Puranjay Mohan.
+But there is SQE order problem, net usually requires SQEs to be linked
+and submitted in order, with this way, it becomes not easy to maintain
+SQEs order(some linked in user, and some in kernel).
 
+Thanks,
+Ming
 
-
---=20
-Thanks and Regards
-
-Yours Truly,
-
-Puranjay Mohan
