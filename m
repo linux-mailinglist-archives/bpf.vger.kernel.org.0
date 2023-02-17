@@ -2,76 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE4C69B1B1
-	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 18:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA2B69B1D3
+	for <lists+bpf@lfdr.de>; Fri, 17 Feb 2023 18:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbjBQRUw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 12:20:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        id S229816AbjBQRcY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 12:32:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjBQRUv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 12:20:51 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E9B6FF11
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 09:20:48 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id i10so987042pgm.4
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 09:20:48 -0800 (PST)
+        with ESMTP id S229942AbjBQRcX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 12:32:23 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29CA6FF18
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 09:32:20 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id n2-20020a17090aab8200b00234686df48fso800708pjq.8
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 09:32:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=prosimo.io; s=google;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dbvLQlUFHgCPUPgjcf0DI7lFZGst0e7Dzu3+/RiRdMQ=;
-        b=U+y/aNwodNrte7oCNI8QmGxyVFMQV1+JRZ0pQKdJ7l9t7ReYW/GG1u7M6QsiAezsHM
-         QuRx/NgPb15sockFgCaBe7XU7nxej0chDfOT5jlAy/3MtNVwazHXW9a336jTQ1zvwqyb
-         cLQgpuWhOHW2AyKOZdtfGn+VVqxj4DuZMJVQ4=
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DArjXXDNQRsYQhK6h63j4dzN+54MRI8O7eHfF2Zt/UU=;
+        b=NL9h4U5ep2E5sXOMhqy8I7wxmsEUWTdQW6RLDugopP/dGGeZWIuLRiWows0NlqGO9m
+         EvIL1/+V211wxawY7HlmhX4tFpudQbfrSdlxdTsH0Wt132+qTxYgpjz0hR7LgWSoWULi
+         uKzURgE1/GIEr2/YR/SW+9GQo4ZNDOcQtXpHhbgF7SWDKcJ2gydSUU6jYM/r6cHoVtkO
+         lCCzk56Wz4PBR6D29aNB0v9PkBC4V2o5VCJHC1VGFUnjht8VqAaka/i+JxPRGi/p3SFh
+         IJSPkR9z3FBbFPMWkF5JMjbIYcU4i0OgO0BQ9kVgxb06pBSiQPUnlxZVlByzCw1hV459
+         W7Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dbvLQlUFHgCPUPgjcf0DI7lFZGst0e7Dzu3+/RiRdMQ=;
-        b=2H7Pi4CIIWfHQ61l7rZJqrPecH/MMeLnMkoeEsehvK5pF9xgUWcBIdfsJLfiOWy8++
-         7MFI13Y+8700T3Q4PgxZRKyxBQG/oxtHoeHFdTUSokuwf1Ah9j2HZGyP77MVH1MucW9K
-         mgP+FYh1iG0OdHNhkp7BsTftZR173314+I9ZPY8xaU9/m+qnGq5Z0WW+/DgT/VEVkkhB
-         2JJV5ydFStVo4Ef/e0LGMyLhgjREbE+Oxb1zNJPqSySIoEQfYd4lQgyPQBDz6Vcd50Uj
-         B/XophCz7yfDHX/xHXyeo6XZmEIwyPHFZ66E1sPRcBPN5bWeS3Ire+ahnkParpOMiHnJ
-         POog==
-X-Gm-Message-State: AO0yUKUtVk59go4tm5BiZWaR9S/97HuH5GTFjYCJpSHLf3TvCwVMnWZu
-        DE5oC1EhZImfl06y3LJB3Sgb6C9NnLuyrP0f
-X-Google-Smtp-Source: AK7set+uKX8H11l3LQOpC54AZEg3h0dPHtp10Zv59FEz84Xa8ywHbtcYthjB/m81drn1u+AFgjrTzQ==
-X-Received: by 2002:a62:1590:0:b0:58d:9791:44bc with SMTP id 138-20020a621590000000b0058d979144bcmr1135043pfv.9.1676654447762;
-        Fri, 17 Feb 2023 09:20:47 -0800 (PST)
-Received: from smtpclient.apple (c-208-95-237-83.rev.sailinternet.net. [208.95.237.83])
-        by smtp.gmail.com with ESMTPSA id c10-20020aa781ca000000b005a909290425sm3425975pfn.172.2023.02.17.09.20.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Feb 2023 09:20:47 -0800 (PST)
-From:   Howard Chen <howard@prosimo.io>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.300.101.1.3\))
-Subject: [LSF/MM/BPF TOPIC] Multi-cloud networking and troubleshooting with
- eBPF
-Message-Id: <A2E950AB-D0CB-4E9E-A017-FE3119AC3DE4@prosimo.io>
-Date:   Fri, 17 Feb 2023 09:20:35 -0800
-Cc:     bpf@vger.kernel.org
-To:     lsf-pc@lists.linux-foundation.org
-X-Mailer: Apple Mail (2.3731.300.101.1.3)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DArjXXDNQRsYQhK6h63j4dzN+54MRI8O7eHfF2Zt/UU=;
+        b=VuIpJ3B4Di2KDv2WRma513JMwqpL6Ga+gwkWPy/O5Mab7haMSBjgyrVVHqbRe1CFos
+         RZLeYKy3NslODllEnG5tSFv1stbKew5otLGuTiVTh3WhchwW3mqP7xsesL57M2wBiYuB
+         Eh79c1XwEaj9OajnqvtIZHGeCmdOSk4mb6Axx7A3JIGr0Dy6AOus273bwsmIHTcCQron
+         Csjs+JMIE6EIIhGVeOsDstBKUDMm2Ukc0+XLyJtejaXeCgihrvbxSv24y17blj6ScKAK
+         Pv++lPmHUu+rp5Ga2o9Br73XZDA76ZnPqsYxyxisCANgPdctTvljkgz4Sc7fplYCUk5Q
+         zD4g==
+X-Gm-Message-State: AO0yUKUkURXpMAXTOvknPGK679iNQvXIwETbOFkuEALHnTSJUfrs8zj8
+        NLFs4AsyghxywkElI4XdmqNRY0A=
+X-Google-Smtp-Source: AK7set/E9LNtU03e6AkqmhQ3HuHBrklEb4lresK5t85/XOf5jl7DUccaOnTpEACX6xjESgavq2uPsU8=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:aa7:868d:0:b0:5a8:4dc1:5916 with SMTP id
+ d13-20020aa7868d000000b005a84dc15916mr272903pfo.2.1676655140286; Fri, 17 Feb
+ 2023 09:32:20 -0800 (PST)
+Date:   Fri, 17 Feb 2023 09:32:18 -0800
+In-Reply-To: <167663589722.1933643.15760680115820248363.stgit@firesoul>
+Mime-Version: 1.0
+References: <167663589722.1933643.15760680115820248363.stgit@firesoul>
+Message-ID: <Y++6IvP+PloUrCxs@google.com>
+Subject: Re: [PATCH bpf-next V2] xdp: bpf_xdp_metadata use NODEV for no device support
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We are a multi-cloud networking company that have recently adopted and =
-continuing to evolve our product using eBPF. Our eBPF use cases are =
-heavy on the networking application, particularly on XDP and TC-BPF. I =
-would like to discuss the problems we encountered, the real-world use =
-cases and how we use eBPF to solve these challenges.
+On 02/17, Jesper Dangaard Brouer wrote:
+> With our XDP-hints kfunc approach, where individual drivers overload the
+> default implementation, it can be hard for API users to determine
+> whether or not the current device driver have this kfunc available.
 
-Thanks,
-Howard=
+> Change the default implementations to use an errno (ENODEV), that
+> drivers shouldn't return, to make it possible for BPF runtime to
+> determine if bpf kfunc for xdp metadata isn't implemented by driver.
+
+> This is intended to ease supporting and troubleshooting setups. E.g.
+> when users on mailing list report -19 (ENODEV) as an error, then we can
+> immediately tell them their device driver is too old.
+
+I agree with the v1 comments that I'm not sure how it helps.
+Why can't we update the doc in the same fashion and say that
+the drivers shouldn't return EOPNOTSUPP?
+
+I'm fine with the change if you think it makes your/users life
+easier. Although I don't really understand how. We can, as Toke
+mentioned, ask the users to provide jited program dump if it's
+mostly about user reports.
+
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>   Documentation/networking/xdp-rx-metadata.rst |    3 ++-
+>   net/core/xdp.c                               |    8 ++++++--
+>   2 files changed, 8 insertions(+), 3 deletions(-)
+
+> diff --git a/Documentation/networking/xdp-rx-metadata.rst  
+> b/Documentation/networking/xdp-rx-metadata.rst
+> index aac63fc2d08b..89f6a7d1be38 100644
+> --- a/Documentation/networking/xdp-rx-metadata.rst
+> +++ b/Documentation/networking/xdp-rx-metadata.rst
+> @@ -26,7 +26,8 @@ consumers, an XDP program can store it into the  
+> metadata area carried
+>   ahead of the packet.
+
+>   Not all kfuncs have to be implemented by the device driver; when not
+> -implemented, the default ones that return ``-EOPNOTSUPP`` will be used.
+> +implemented, the default ones that return ``-ENODEV`` will be used to
+> +indicate the device driver have not implemented this kfunc.
+
+>   Within an XDP frame, the metadata layout (accessed via ``xdp_buff``) is
+>   as follows::
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 26483935b7a4..7bb5984ae4f7 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -722,10 +722,12 @@ __diag_ignore_all("-Wmissing-prototypes",
+>    * @timestamp: Return value pointer.
+>    *
+>    * Returns 0 on success or ``-errno`` on error.
+> + *
+> + *  -ENODEV (19): means device driver doesn't implement kfunc
+>    */
+>   __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,  
+> u64 *timestamp)
+>   {
+> -	return -EOPNOTSUPP;
+> +	return -ENODEV;
+>   }
+
+>   /**
+> @@ -734,10 +736,12 @@ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const  
+> struct xdp_md *ctx, u64 *tim
+>    * @hash: Return value pointer.
+>    *
+>    * Returns 0 on success or ``-errno`` on error.
+> + *
+> + *  -ENODEV (19): means device driver doesn't implement kfunc
+>    */
+>   __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32  
+> *hash)
+>   {
+> -	return -EOPNOTSUPP;
+> +	return -ENODEV;
+>   }
+
+>   __diag_pop();
+
+
