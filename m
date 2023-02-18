@@ -2,55 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE5369B911
-	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 10:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24FB69B985
+	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 11:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjBRJWX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Feb 2023 04:22:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
+        id S229530AbjBRKxd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Feb 2023 05:53:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjBRJWW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Feb 2023 04:22:22 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6421EFF
-        for <bpf@vger.kernel.org>; Sat, 18 Feb 2023 01:22:21 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id h10-20020a17090aa88a00b002349a303ca5so284427pjq.4
-        for <bpf@vger.kernel.org>; Sat, 18 Feb 2023 01:22:21 -0800 (PST)
+        with ESMTP id S229475AbjBRKxc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Feb 2023 05:53:32 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BE7193FE
+        for <bpf@vger.kernel.org>; Sat, 18 Feb 2023 02:53:32 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id d4so515184pjc.5
+        for <bpf@vger.kernel.org>; Sat, 18 Feb 2023 02:53:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=p2KNwfztIpdxjLo+ik66q9FmAfltTqBI/A6YNDGpBFk=;
-        b=O2pYFFwdOKX5ALavlOL/2xR2yIt/gM1Hg3If6AjUmXpRl4QVr46Qfu9vwGtTxJVqLE
-         NhnGbZTyEXNoK7S7MpBTJlG+lJ8AUvmKcfdDVTrZNc/ISXJOJugZEgWXEwCCQp2JzDSk
-         EOa18ZLtq3Je/q9CsEpztMwEP2pGtkUDdtzaV2Z+QH75yo+E4K7+BHITXDfzNKJ9zoQv
-         K89c9kUpK9zFeNOPI1Yp73aGt9dNN3wHUbY2urqEUswFFENdsK2Iv32kQhLPejDMs5H9
-         5bwBOF3JbT2qM2+YL71DAo4Q9p7PxcG+Bv4lMmm7iQpChrkb5/qmHEZSL/0/KXQp2CGY
-         ttpA==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9TwxY/+QXkZ8fBcKsVGyJDCPPvVyS+wPqYk8kS7rgxw=;
+        b=Pr/yVWGbJIpx2S1kqActFcyvZuFJY7TAZp8TtgX7IQ8WO356vA3EW79D4hSJzM5S0u
+         fX4jssoFgwoVikNRc8iwoxCVnPvjV4LKqvHQZvPbXpqfaB+EzFDUbtTz0HJYeQb6GdMC
+         wp0gYIMHywmT3uVbXnHDlnC2NwrPpFcSoo5kkmcAO7zsILqYU/QcDfxC3ZevEj/pnxFd
+         2CfPK4oA9lXQ7S3l/bWV0p+/43+GY7JYMZE65nqHDKgzCKRW4JhpP3C3j7xpvlXj/Y4W
+         X2d1d6TXRd+NJFVbpm5CQh+CDPk1KdlpcipM3YjlfU8EbI+pXvwtx7Wvl8SS3R2Ql2ay
+         n/zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p2KNwfztIpdxjLo+ik66q9FmAfltTqBI/A6YNDGpBFk=;
-        b=kQnGqYgZFA4tvR0bW1Z02b0eww13LP+qYQzQvQhCg2J0wrzT/TkA8Pvhah28UMi25l
-         5WdBIrp+E67o01/w0mt6Ao9Y2V3Zpit5kfdk4vHvK/8Qy9wK1iMr/GlL4DAovfB5Q62o
-         uM5QR00OrIQy73w9z7czFwo2kNCIXFhwpAAn3udh7LvE+J3jCSxKTFkJPU+X9Cq9/fIh
-         mQYMuzCM5NXe2eaBSwK/8JHf2x7Wu2jSBUHGT6DlcbN4Ue9DA/4lFn4v2FU6BoJ+R0gb
-         zvONyjWbT6uYRLcv/R/8ICIIi3bxEnTlw1tNR2ZDZ+SlSoYFXEKe7X9GqxcIY3YIvuaI
-         GpaQ==
-X-Gm-Message-State: AO0yUKVOOcSraYLDu3f9S5KNJMNSfliqRApBX+jzhKP1+O23TSInZq19
-        xKGhUlsNftpf5TnRv5DsmdgN00iRxO7fPabhiGt+Puh405zBgBkyEPGd0g==
-X-Google-Smtp-Source: AK7set/4xRIDgkNhqjZRXZSUssJAtpiJZf1CGBaFJzJmHEjwDDQMnemS/3IZgm0JvmhIxKaeu9zZkb4RLZDB1I+pUYA=
-X-Received: by 2002:a17:90b:528a:b0:234:dfe9:25b5 with SMTP id
- si10-20020a17090b528a00b00234dfe925b5mr216786pjb.4.1676712140742; Sat, 18 Feb
- 2023 01:22:20 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9TwxY/+QXkZ8fBcKsVGyJDCPPvVyS+wPqYk8kS7rgxw=;
+        b=OlcZ8ekba2sB91MYfv/kotjSP07ytwPaqsKjD/8fMgVJvoueosjE5bk77qjm8VsyEy
+         ZdQBMq8T8FrePEEONVFy7iX6WbrPYBmqrYbOV5rLXxygTvkV9d0z9sheIRKANYauNj+x
+         pZKyVMgxrLTB3YPSSD6uVSiy5ciuDymvcstUP4KrDYOmTDvGqjvy5zFAcD0IqIJ1QBqQ
+         28/z9kDsPHdu7ewFLKB8a32ZbiiV1q2KxUbj3NcCxHUiSfsATXDaa5L5ylsuvTabZUOm
+         HNtIiMFRrc7PwXoF6Ua4WlTXSVtkg1tOIZyrtojDKJtP11QrR8puztil7GtTTDdawDzV
+         Mf1A==
+X-Gm-Message-State: AO0yUKXfLgP2k1FwWW8yfUrkqlgFhuUC49hvgFxKsYaYKE27TZEf3Frl
+        R9a1h21H/6U4PM+Q7mbONOstHBRyHvM=
+X-Google-Smtp-Source: AK7set9F2IN0/X8ODA6RGcx1JbU5O0z7yoBeEix7U7LYPQgAiDiwCvKBLX19TDuJN+AasMKKaFSahQ==
+X-Received: by 2002:a17:90b:33d1:b0:22c:afd6:e597 with SMTP id lk17-20020a17090b33d100b0022cafd6e597mr758152pjb.17.1676717611639;
+        Sat, 18 Feb 2023 02:53:31 -0800 (PST)
+Received: from localhost.localdomain ([43.132.141.8])
+        by smtp.gmail.com with ESMTPSA id 1-20020a17090a0e8100b00234e6d2de3dsm654839pjx.11.2023.02.18.02.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Feb 2023 02:53:31 -0800 (PST)
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+To:     bpf@vger.kernel.org, loongarch@lists.linux.dev
+Cc:     hengqi.chen@gmail.com, yangtiezhu@loongson.cn
+Subject: [PATCH bpf-next] LoongArch: BPF: Support mixing bpf2bpf and tailcalls
+Date:   Sat, 18 Feb 2023 10:53:17 +0000
+Message-Id: <20230218105317.4139666-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-From:   Dropify Drop <d.dropify@gmail.com>
-Date:   Sat, 18 Feb 2023 14:52:09 +0530
-Message-ID: <CAJxriS2Up7DrF4r9LHX+L_6X0NhP5m4sUTqGGcE5SAna+HFWLA@mail.gmail.com>
-Subject: Removing clsact while eBPF program is still attached
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -61,18 +67,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-I am playing around with eBPF + TC and wrote some eBPF code to
-intercept egress and ingress traffic (clsact qdisc) .
-All works great but while the eBPF program is still attached I can via
-command line remove the associated clsact qdisc (tc qdisc del dev
-<interface> clsact) and the eBPF program no longer receives the
-traffic. It is kind of expected but any root user can silently disable
-it.
+The current implementation already allow such mixing.
+Let's enable it in JIT.
 
-Is there any better approach?
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ arch/loongarch/net/bpf_jit.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-eBPF program only allows traffic to/from some preconfigured IP & Ports.
+diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+index 288003a9f0ca..e70c846efaa1 100644
+--- a/arch/loongarch/net/bpf_jit.c
++++ b/arch/loongarch/net/bpf_jit.c
+@@ -1248,3 +1248,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 
-Thanks & regard,
-Dominic
+ 	return prog;
+ }
++
++/* Indicate the JIT backend supports mixing bpf2bpf and tailcalls. */
++bool bpf_jit_supports_subprog_tailcalls(void)
++{
++	return true;
++}
+--
+2.31.1
