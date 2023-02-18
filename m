@@ -2,195 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC65469BA72
-	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 15:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2C969BABF
+	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 16:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjBROiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Feb 2023 09:38:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
+        id S229510AbjBRPe4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Feb 2023 10:34:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjBROiC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Feb 2023 09:38:02 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B5813D7F
-        for <bpf@vger.kernel.org>; Sat, 18 Feb 2023 06:38:01 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229476AbjBRPez (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Feb 2023 10:34:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F6216AD3
+        for <bpf@vger.kernel.org>; Sat, 18 Feb 2023 07:34:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676734446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FqonhcsRGF6G8XrHZRMJ1BoKNDgNdFT99O2RJUO6t4Y=;
+        b=Th82gaFzA9Te7DW3NZlEU3wG1i2DP38SIekdX/wkTItPfAVEOQt2oFAxaxeGlGY1vu9xw+
+        m+1Uy4zmiSABEQXVQRGWPC0FFmsn0GoQjY+R9LNkhndjeO55UNHzCFl1vyG3BX5iNkyt5q
+        X+SMkoR1jfaMlWFeuM0xzBjfqkYzSoc=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-353-YYB29ZiIN1Kz8EDc6ZRKlQ-1; Sat, 18 Feb 2023 10:34:03 -0500
+X-MC-Unique: YYB29ZiIN1Kz8EDc6ZRKlQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B8C260BA0
-        for <bpf@vger.kernel.org>; Sat, 18 Feb 2023 14:38:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42AC3C433EF;
-        Sat, 18 Feb 2023 14:38:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676731080;
-        bh=frj/8mFetQb3wvKg17YYvz6OABajCqoXz5DjnU/QZfc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jhbS+mNCRfM3npwH0TCBNYELTYVJwlQKfIzpry51o/eKZosT/tIPUPoeSpRxVxMfU
-         2rdY99LNvNjmZl9S4kCl6k3+qvLrqgba0TeciMze85au7RKJdTJZkkFToZVoDGHo6A
-         3bHTHuCVPUv7os+a2ZyDUKiY1J7I9khtvMKfg/npVfV2I5IbmLf9dNI8s/a55Jv1Q6
-         b3IPdqSXohhpKgVBVrFUX66uGJCfCaqij1fSI5K/2L0HFU4EbvUP9sUb4wpbwzzYhA
-         XwCTbGBzxOH8wTbAuKxaxmztE8iHM6dhOheQdFNb7ZKDTBY3MYujk18tuc5NzIWSIf
-         vZtt9blJ+2Lrw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8A24340025; Sat, 18 Feb 2023 11:37:57 -0300 (-03)
-Date:   Sat, 18 Feb 2023 11:37:57 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     olsajiri@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, yhs@fb.com, eddyz87@gmail.com,
-        sinquersw@gmail.com, timo@incline.eu, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
-        haoluo@google.com, martin.lau@kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC dwarves 0/4] dwarves: change BTF encoding skip logic for
- functions
-Message-ID: <Y/DixRUF9SG+ORw5@kernel.org>
-References: <1676675433-10583-1-git-send-email-alan.maguire@oracle.com>
- <Y/Dc4hX5utdyZ+mN@kernel.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EF72B1C04B7C;
+        Sat, 18 Feb 2023 15:34:02 +0000 (UTC)
+Received: from firesoul.localdomain (ovpn-208-25.brq.redhat.com [10.40.208.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 563802026D4B;
+        Sat, 18 Feb 2023 15:34:02 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 0BB6230018F8B;
+        Sat, 18 Feb 2023 16:34:01 +0100 (CET)
+Subject: [PATCH bpf-next V3] xdp: bpf_xdp_metadata use EOPNOTSUPP for no
+ driver support
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Stanislav Fomichev <sdf@google.com>, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net
+Date:   Sat, 18 Feb 2023 16:34:00 +0100
+Message-ID: <167673444093.2179692.14745621008776172374.stgit@firesoul>
+User-Agent: StGit/1.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y/Dc4hX5utdyZ+mN@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sat, Feb 18, 2023 at 11:12:50AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Feb 17, 2023 at 11:10:29PM +0000, Alan Maguire escreveu:
-> > It has been observed [1] that the recent dwarves changes
-> > that skip BTF encoding for functions that have optimized-out
-> > parameters are too aggressive, leading to missing kfuncs
-> > which generate warnings and a BPF selftest failure.
-> > 
-> > Here a different approach is used; we observe that
-> > just because a function does not _use_ a parameter,
-> > it does not mean it was not passed to it.  What we
-> > are really keen to detect are cases where the calling
-> > conventions are violated such that a function will
-> > not have parameter values in the expected registers.
-> > In such cases, tracing and kfunc behaviour will be
-> > unstable.  We are not worried about parameters being
-> > optimized out, provided that optimization does not
-> > lead to other parameters being passed via
-> > unexpected registers.
-> > 
-> > So this series attempts to detect such cases by
-> > examining register (DW_OP_regX) values for
-> > parameters where available; if these match
-> > expectations, the function is deemed safe to add to
-> > BTF, even if parameters are optimized out.
-> > 
-> > Using this approach, the only functions that
-> > BTF generation is suppressed for are
-> > 
-> > 1. those with parameters that violate calling
-> >    conventions where present; and
-> > 2. those which have multiple inconsistent prototypes.
-> 
-> This sounds sensible at first sight, I've applied the patches so that it
-> can go thru further testing on the libbpf CI, for now its just on the
-> 'next' branch, the testing I did so far:
-> 
-> make allmodconfig + enablig BTF on bpf-next reverting that revert so
-> that we use the new options,
-> 
-> Now I'm building and booting a kernel with a fedora-ish config without
-> using the new options and then with them (reverting the revert) to
-> compare the tools/testing/selftests/bpf/ ./test-progs output
-> before/after.
+When driver doesn't implement a bpf_xdp_metadata kfunc the default
+implementation returns EOPNOTSUPP, which indicate device driver doesn't
+implement this kfunc.
 
--Summary: 274/1609 PASSED, 24 SKIPPED, 17 FAILED
-+Summary: 276/1612 PASSED, 24 SKIPPED, 15 FAILED
+Currently many drivers also return EOPNOTSUPP when the hint isn't
+available. Instead change drivers to return ENODATA in these cases.
+There can be natural cases why a driver doesn't provide any hardware
+info for a specific hint, even on a frame to frame basis (e.g. PTP).
+Lets keep these cases as separate return codes.
 
-Well, we're passing _more_ tests :-)
+When describing the return values, adjust the function kernel-doc layout
+to get proper rendering for the return values.
 
-And no messages about that kernel module, etc. Will redo with clang as
-time permits.
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ Documentation/networking/xdp-rx-metadata.rst     |    7 +++++--
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c       |    4 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |    4 ++--
+ drivers/net/veth.c                               |    4 ++--
+ net/core/xdp.c                                   |   10 ++++++++--
+ 5 files changed, 19 insertions(+), 10 deletions(-)
 
-- Arnaldo
+diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
+index aac63fc2d08b..25ce72af81c2 100644
+--- a/Documentation/networking/xdp-rx-metadata.rst
++++ b/Documentation/networking/xdp-rx-metadata.rst
+@@ -23,10 +23,13 @@ metadata is supported, this set will grow:
+ An XDP program can use these kfuncs to read the metadata into stack
+ variables for its own consumption. Or, to pass the metadata on to other
+ consumers, an XDP program can store it into the metadata area carried
+-ahead of the packet.
++ahead of the packet. Not all packets will necessary have the requested
++metadata available in which case the driver returns ``-ENODATA``.
  
-> Its an extended holiday down here, so I'll be spotty but want to get
-> this moving forward,
-> 
-> Thanks!
-> 
-> - Arnaldo
->  
-> > With these changes, running pahole on a gcc-built
-> > vmlinux skips
-> > 
-> > - 1164 functions due to multiple inconsistent function
-> >   prototypes.  Most of these are "."-suffixed optimized
-> >   fuctions.
-> > - 331 functions due to unexpected register usage
-> > 
-> > For a clang-built kernel, the numbers are
-> > 
-> > - 539 functions with inconsistent prototypes are skipped
-> > - 209 functions with unexpected register usage are skipped
-> > 
-> > One complication is that functions that are passed
-> > structs (or typedef structs) can use multiple registers
-> > to pass those structures.  Examples include
-> > bpf_lsm_socket_getpeersec_stream() (passing a typedef
-> > struct sockptr_t) and the bpf_testmod_test_struct_arg_1
-> > function in bpf_testmod.  Because multiple registers
-> > are used to represent the structure, this throws
-> > off expectations for any subsequent parameter->register
-> > mappings.  To handle this, simply exempt functions
-> > that have struct (or typedef struct) parameters from
-> > our register checks.
-> > 
-> > Note to test this series on bpf-next, the following
-> > commit should be reverted (reverting the revert
-> > so that the flags are added to BTF encoding when
-> > using pahole v1.25):
-> > 
-> > commit 1f5dfcc78ab4 ("Revert "bpf: Add --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags for v1.25"")
-> > 
-> > With these changes we also see tracing_struct now pass:
-> > 
-> > $ sudo ./test_progs -t tracing_struct
-> > #233     tracing_struct:OK
-> > Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> > 
-> > Further testing is needed - along with support for additional
-> > parameter index -> DWARF reg for more platforms.
-> > 
-> > Future work could also add annotations for optimized-out
-> > parameters via BTF tags to help guide tracing.
-> > 
-> > [1] https://lore.kernel.org/bpf/CAADnVQ+hfQ9LEmEFXneB7hm17NvRniXSShrHLaM-1BrguLjLQw@mail.gmail.com/
-> > 
-> > Alan Maguire (4):
-> >   dwarf_loader: mark functions that do not use expected registers for
-> >     params
-> >   btf_encoder: exclude functions with unexpected param register use not
-> >     optimizations
-> >   pahole: update descriptions for btf_gen_optimized,
-> >     skip_encoding_btf_inconsistent_proto
-> >   pahole: update man page for options also
-> > 
-> >  btf_encoder.c      |  24 +++++++---
-> >  dwarf_loader.c     | 109 ++++++++++++++++++++++++++++++++++++++++++---
-> >  dwarves.h          |   5 +++
-> >  man-pages/pahole.1 |   4 +-
-> >  pahole.c           |   4 +-
-> >  5 files changed, 129 insertions(+), 17 deletions(-)
-> > 
-> > -- 
-> > 2.31.1
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
+ Not all kfuncs have to be implemented by the device driver; when not
+-implemented, the default ones that return ``-EOPNOTSUPP`` will be used.
++implemented, the default ones that return ``-EOPNOTSUPP`` will be used
++to indicate the device driver have not implemented this kfunc.
++
+ 
+ Within an XDP frame, the metadata layout (accessed via ``xdp_buff``) is
+ as follows::
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index 0869d4fff17b..4b5e459b6d49 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -674,7 +674,7 @@ int mlx4_en_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+ 	struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
+ 
+ 	if (unlikely(_ctx->ring->hwtstamp_rx_filter != HWTSTAMP_FILTER_ALL))
+-		return -EOPNOTSUPP;
++		return -ENODATA;
+ 
+ 	*timestamp = mlx4_en_get_hwtstamp(_ctx->mdev,
+ 					  mlx4_en_get_cqe_ts(_ctx->cqe));
+@@ -686,7 +686,7 @@ int mlx4_en_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
+ 	struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
+ 
+ 	if (unlikely(!(_ctx->dev->features & NETIF_F_RXHASH)))
+-		return -EOPNOTSUPP;
++		return -ENODATA;
+ 
+ 	*hash = be32_to_cpu(_ctx->cqe->immed_rss_invalid);
+ 	return 0;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index f7d52b1d293b..32c444c01906 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -161,7 +161,7 @@ static int mlx5e_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+ 	const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
+ 
+ 	if (unlikely(!mlx5e_rx_hw_stamp(_ctx->rq->tstamp)))
+-		return -EOPNOTSUPP;
++		return -ENODATA;
+ 
+ 	*timestamp =  mlx5e_cqe_ts_to_ns(_ctx->rq->ptp_cyc2time,
+ 					 _ctx->rq->clock, get_cqe_ts(_ctx->cqe));
+@@ -173,7 +173,7 @@ static int mlx5e_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
+ 	const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
+ 
+ 	if (unlikely(!(_ctx->xdp.rxq->dev->features & NETIF_F_RXHASH)))
+-		return -EOPNOTSUPP;
++		return -ENODATA;
+ 
+ 	*hash = be32_to_cpu(_ctx->cqe->rss_hash_result);
+ 	return 0;
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 1bb54de7124d..046461ee42ea 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -1610,7 +1610,7 @@ static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+ 	struct veth_xdp_buff *_ctx = (void *)ctx;
+ 
+ 	if (!_ctx->skb)
+-		return -EOPNOTSUPP;
++		return -ENODATA;
+ 
+ 	*timestamp = skb_hwtstamps(_ctx->skb)->hwtstamp;
+ 	return 0;
+@@ -1621,7 +1621,7 @@ static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
+ 	struct veth_xdp_buff *_ctx = (void *)ctx;
+ 
+ 	if (!_ctx->skb)
+-		return -EOPNOTSUPP;
++		return -ENODATA;
+ 
+ 	*hash = skb_get_hash(_ctx->skb);
+ 	return 0;
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 26483935b7a4..b71fe21b5c3e 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -721,7 +721,10 @@ __diag_ignore_all("-Wmissing-prototypes",
+  * @ctx: XDP context pointer.
+  * @timestamp: Return value pointer.
+  *
+- * Returns 0 on success or ``-errno`` on error.
++ * Return:
++ * * Returns 0 on success or ``-errno`` on error.
++ * * ``-EOPNOTSUPP`` : means device driver does not implement kfunc
++ * * ``-ENODATA``    : means no RX-timestamp available for this frame
+  */
+ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+ {
+@@ -733,7 +736,10 @@ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *tim
+  * @ctx: XDP context pointer.
+  * @hash: Return value pointer.
+  *
+- * Returns 0 on success or ``-errno`` on error.
++ * Return:
++ *  * Returns 0 on success or ``-errno`` on error.
++ *  * ``-EOPNOTSUPP`` : means device driver doesn't implement kfunc
++ *  * ``-ENODATA``    : means no RX-hash available for this frame
+  */
+ __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash)
+ {
 
--- 
 
-- Arnaldo
