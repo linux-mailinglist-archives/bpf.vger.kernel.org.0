@@ -2,70 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D492269B6A7
-	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 01:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DE069B6A9
+	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 01:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbjBRAWX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 19:22:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        id S229616AbjBRAXa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 19:23:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjBRAWW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 19:22:22 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C549D627FF
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 16:22:21 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id z26so1254531pfw.1
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 16:22:21 -0800 (PST)
+        with ESMTP id S229477AbjBRAXa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 19:23:30 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF70A67830
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 16:23:28 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id ml23-20020a17090b361700b00234463de251so2998613pjb.3
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 16:23:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=LroIWrNfd5BMBmvoFEFk5RZAtl8CsR1+qZ1ssWNF0wQ=;
-        b=K6kb2JamcuRQ+bfGncGbuL/1s1on8gDqfrrKpHDnXMybXulRszVhtsFganUPKvnvWA
-         wYRm9SXUm6JKZPfRKpjs3lRr3bhd0yh9yF8uKukKYMwBg6rbnyPspbAjnP5ucVnvB18F
-         cipDFuhc4yf75xoWIoQM3UdkDB1Cdi2Y8Xyhhq+AiEjfDJqu3an20r2UiRap8CnEG+zd
-         Oq9gMzEG3EH3EvuChmBJnbHG2g8FdB8Ok9tdmCqjEKPShetNuBxWgAtU8WwIGw3rYz98
-         P9vC7A0hN4QtUzAXKAZPwb/c8kSVrfSmXQfwe8XQYx7WB3vIX0QGSWDlI5ZOAguwFGna
-         UNCw==
+        bh=J4fxRCSv+KJyGYriQ4w2jEoV2/PLz28LUQCJuDMXopo=;
+        b=PIFQjw3Tzhv2jt1zmIYMiK9KOKmbjBJIbchfGKGfGeBNj654iVwcgK+EmgyM18uN48
+         zZEx1qZDo5BaZZ9/fZh/qqYixQSjNlx5D5dGLLdBWDqYMDYZpFgGlFSbAARixDZL3op9
+         qkhS5Y3uBvTDMDNgf9SgrpRqvFYmGeqV22VNPCUyxfSvzz2bABJSvU5GZtFGNZ5rhpYU
+         aGfJX8K2leXtiG9KJmTvZrHP2UxhYVe6kaxLle75QI3n5aJKOW8utAYr165g61oEkSa9
+         nUD2WD/Rg3Zhs8RWZSDNgnvx0gJn9B0Cba0LfvucA+yc9Ns73yicFLm5gVQvbPCqUXva
+         m3uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LroIWrNfd5BMBmvoFEFk5RZAtl8CsR1+qZ1ssWNF0wQ=;
-        b=2lV3Nn8StMSqcMTbh6oSkvi6xxttbMWU8mC/TFpcHX5d7r/YQF7IJu5qt3MCWrycrV
-         4Gd2WUH5zF7iNgZq4vY1GF6akUpmUxdsNO+qrwLkcg1mPlVTd+ytio1oIyg39A6JbWBA
-         CJ4lxd8kzRXWDNM6X/OVpa6trgKEbPWHPFECVoBJTMuZl+kQVJSmNmIOeycOglbhAb5W
-         1WyrjHnGf7cSI/olQP5n6XYdBAaTddswpoLdi9ngJ46vSebHdHPds6T8+FscpQvMjUSu
-         bhm3DQFmiyUBEdF8hSvYwigF9RTcFqY7ibDgd9i/hg0hP3yCzIwOWmmdv1cLnsygy817
-         YQnQ==
-X-Gm-Message-State: AO0yUKU+jndoXUme1PbWtgJbswE9UQzR04AGFRy43nMj89mlgQGFEjFR
-        o/TnxvptttC43qD+RHnmePhmYkzu4Jk=
-X-Google-Smtp-Source: AK7set+jgmAOO1V9ktb1RHtTk754bX0a1LbgYVfVrD1QUSyx2uKXy4wFZ5lI9EOIhoGK/b/TGnZZPg==
-X-Received: by 2002:a62:840a:0:b0:5a9:9744:5757 with SMTP id k10-20020a62840a000000b005a997445757mr6153643pfd.21.1676679741157;
-        Fri, 17 Feb 2023 16:22:21 -0800 (PST)
+        bh=J4fxRCSv+KJyGYriQ4w2jEoV2/PLz28LUQCJuDMXopo=;
+        b=PJp0g4OwncefsWWDSR4vJwGGEaEedvlTj8H7kvP1pQ3rN6ukkJxmzz8e8rXeFAZ28t
+         hRBjRVBMrs/m5Z7XXsaHQRNzPMB2jqRft2f2hlqmNYPxry0TgkE/xgK+ZdnRBSOtyV7U
+         j+w5GvSzoSAnPVOU66xmL3k7UAFpffZ4Osub99mKkG/AN9RmFMWAhlMULKwRhBvJZHZS
+         QLsB2HIY/Ygf/TEGA8EScGNLTIqau3TVLzQkBxzfUzW68jR10w/cEV3JjIxevxalHfWU
+         8UwiNefAI9kPKoSWT+rvYzKr6JrQv9fIoKh5u7am9j0gabJ8sllZvqcqSqd/7gtlPJmt
+         XFDA==
+X-Gm-Message-State: AO0yUKXjaFJr98nrHHncTW4djeZ1qIYUF10GjlzYMnIHPlsdhxdZogDx
+        0fUCTWUfV1CBMTg6g2Yl1uM=
+X-Google-Smtp-Source: AK7set/vCHYCMf0B/hswavkSDPymCJlIzG1YYlT4TXaI7HVQRX2oqCq7DBqtX7eHypqE+MYedvGy6A==
+X-Received: by 2002:a17:903:790:b0:19a:a4f3:6d4c with SMTP id kn16-20020a170903079000b0019aa4f36d4cmr1533370plb.67.1676679808305;
+        Fri, 17 Feb 2023 16:23:28 -0800 (PST)
 Received: from ?IPV6:2620:10d:c085:21cf::1210? ([2620:10d:c090:400::5:2cec])
-        by smtp.gmail.com with ESMTPSA id j2-20020aa79282000000b00593cd0f37dcsm3577628pfa.169.2023.02.17.16.22.19
+        by smtp.gmail.com with ESMTPSA id t6-20020a1709027fc600b0019719f752c5sm3664240plb.59.2023.02.17.16.23.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Feb 2023 16:22:20 -0800 (PST)
-Message-ID: <e3c8beb3-5ff7-9de2-b4a8-3b23a111198f@gmail.com>
-Date:   Fri, 17 Feb 2023 16:22:18 -0800
+        Fri, 17 Feb 2023 16:23:27 -0800 (PST)
+Message-ID: <1e94cca4-2ec4-68d2-c0c8-73c7f2e4ecb1@gmail.com>
+Date:   Fri, 17 Feb 2023 16:23:25 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [PATCH bpf-next 6/7] libbpf: Update a bpf_link with another
- struct_ops.
+Subject: Re: [PATCH bpf-next 7/7] selftests/bpf: Test switching TCP Congestion
+ Control algorithms.
 Content-Language: en-US, en-ZW
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Kui-Feng Lee <kuifeng@meta.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
         song@kernel.org, kernel-team@meta.com, andrii@kernel.org
 References: <20230214221718.503964-1-kuifeng@meta.com>
- <20230214221718.503964-7-kuifeng@meta.com>
- <CAEf4BzaKRd2jif4XeKJ1s8Dfpp-wQyTTbXpF-Not6A5kpOGYqQ@mail.gmail.com>
+ <20230214221718.503964-8-kuifeng@meta.com>
+ <CAEf4BzbNtdRv089KMi+NS_VQq=ijbVAMt5nh8wWw5s2=sv6K5w@mail.gmail.com>
 From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAEf4BzaKRd2jif4XeKJ1s8Dfpp-wQyTTbXpF-Not6A5kpOGYqQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbNtdRv089KMi+NS_VQq=ijbVAMt5nh8wWw5s2=sv6K5w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -80,121 +80,114 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 2/16/23 14:48, Andrii Nakryiko wrote:
+On 2/16/23 14:50, Andrii Nakryiko wrote:
 > On Tue, Feb 14, 2023 at 2:17 PM Kui-Feng Lee <kuifeng@meta.com> wrote:
 >>
->> Introduce bpf_link__update_struct_ops(), which will allow you to
->> effortlessly transition the struct_ops map of any given bpf_link into
->> an alternative.
+>> Create a pair of sockets that utilize the congestion control algorithm
+>> under a particular name. Then switch up this congestion control
+>> algorithm to another implementation and check whether newly created
+>> connections using the same cc name now run the new implementation.
 >>
 >> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
 >> ---
->>   tools/lib/bpf/libbpf.c   | 35 +++++++++++++++++++++++++++++++++++
->>   tools/lib/bpf/libbpf.h   |  1 +
->>   tools/lib/bpf/libbpf.map |  1 +
->>   3 files changed, 37 insertions(+)
+>>   .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 48 ++++++++++++
+>>   .../selftests/bpf/progs/tcp_ca_update.c       | 75 +++++++++++++++++++
+>>   2 files changed, 123 insertions(+)
+>>   create mode 100644 tools/testing/selftests/bpf/progs/tcp_ca_update.c
 >>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 1eff6a03ddd9..6f7c72e312d4 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -11524,6 +11524,41 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
->>          return &link->link;
->>   }
->>
->> +/*
->> + * Swap the back struct_ops of a link with a new struct_ops map.
->> + */
->> +int bpf_link__update_struct_ops(struct bpf_link *link, const struct bpf_map *map)
 > 
-> we have bpf_link__update_program(), and so the generic counterpart for
-> map-based links would be bpf_link__update_map(). Let's call it that.
-> And it shouldn't probably assume so much struct_ops specific things.
-
-Sure
-
+> [...]
 > 
+>> diff --git a/tools/testing/selftests/bpf/progs/tcp_ca_update.c b/tools/testing/selftests/bpf/progs/tcp_ca_update.c
+>> new file mode 100644
+>> index 000000000000..cf51fe54ac01
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/tcp_ca_update.c
+>> @@ -0,0 +1,75 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +
+>> +#include "vmlinux.h"
+>> +
+>> +#include <bpf/bpf_helpers.h>
+>> +#include <bpf/bpf_tracing.h>
+>> +
+>> +char _license[] SEC("license") = "GPL";
+>> +
+>> +int ca1_cnt = 0;
+>> +int ca2_cnt = 0;
+>> +
+>> +#define USEC_PER_SEC 1000000UL
+>> +
+>> +#define min(a, b) ((a) < (b) ? (a) : (b))
+>> +
+>> +static inline struct tcp_sock *tcp_sk(const struct sock *sk)
 >> +{
->> +       struct bpf_link_struct_ops_map *st_ops_link;
->> +       int err, fd;
->> +
->> +       if (!bpf_map__is_struct_ops(map) || map->fd == -1)
->> +               return -EINVAL;
->> +
->> +       /* Ensure the type of a link is correct */
->> +       if (link->detach != bpf_link__detach_struct_ops)
->> +               return -EINVAL;
->> +
->> +       err = bpf_map__update_vdata(map);
-> 
-> it's a bit weird we do this at attach time, not when bpf_map is
-> actually instantiated. Should we move this map contents initialization
-> to bpf_object__load() phase? Same for bpf_map__attach_struct_ops().
-> What do we lose by doing it after all the BPF programs are loaded in
-> load phase?
-
-With the current behavior (w/o links), a struct_ops will be registered 
-when updating its value.  If we move bpf_map__update_vdata() to 
-bpf_object__load(), a congestion control algorithm will be activated at 
-the moment loading it before attaching it.  However, we should activate 
-an algorithm at attach time.
-
-
-> 
->> +       if (err) {
->> +               err = -errno;
->> +               free(link);
->> +               return err;
->> +       }
->> +
->> +       fd = bpf_link_update(link->fd, map->fd, NULL);
->> +       if (fd < 0) {
->> +               err = -errno;
->> +               free(link);
->> +               return err;
->> +       }
->> +
->> +       st_ops_link = container_of(link, struct bpf_link_struct_ops_map, link);
->> +       st_ops_link->map_fd = map->fd;
->> +
->> +       return 0;
+>> +       return (struct tcp_sock *)sk;
 >> +}
 >> +
->>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_event_header *hdr,
->>                                                            void *private_data);
->>
->> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->> index 2efd80f6f7b9..dd25cd6759d4 100644
->> --- a/tools/lib/bpf/libbpf.h
->> +++ b/tools/lib/bpf/libbpf.h
->> @@ -695,6 +695,7 @@ bpf_program__attach_freplace(const struct bpf_program *prog,
->>   struct bpf_map;
->>
->>   LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map);
->> +LIBBPF_API int bpf_link__update_struct_ops(struct bpf_link *link, const struct bpf_map *map);
+>> +SEC("struct_ops/ca_update_init")
+>> +void BPF_PROG(ca_update_init, struct sock *sk)
+>> +{
+>> +#ifdef ENABLE_ATOMICS_TESTS
 > 
-> let's rename to bpf_link__update_map() and put it next to
-> bpf_link__update_program() in libbpf.h
+> it's been 2 years since atomics were added to Clang, I think it's fine
+> to just assume atomic operations are supported and not do the
+> ENABLE_ATOMICS_TEST (and I'd clean up ENABLE_ATOMICS_TESTS now as
+> well)
+
+Sure!
+
 > 
->>
->>   struct bpf_iter_attach_opts {
->>          size_t sz; /* size of this struct for forward/backward compatibility */
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index 11c36a3c1a9f..ca6993c744b6 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -373,6 +373,7 @@ LIBBPF_1.1.0 {
->>          global:
->>                  bpf_btf_get_fd_by_id_opts;
->>                  bpf_link_get_fd_by_id_opts;
->> +               bpf_link__update_struct_ops;
->>                  bpf_map_get_fd_by_id_opts;
->>                  bpf_prog_get_fd_by_id_opts;
->>                  user_ring_buffer__discard;
-> 
-> we are in LIBBPF_1.2.0 already, please move
-> 
-> 
+>> +       __sync_bool_compare_and_swap(&sk->sk_pacing_status, SK_PACING_NONE,
+>> +                                    SK_PACING_NEEDED);
+>> +#else
+>> +       sk->sk_pacing_status = SK_PACING_NEEDED;
+>> +#endif
+>> +}
+>> +
+>> +SEC("struct_ops/ca_update_1_cong_control")
+>> +void BPF_PROG(ca_update_1_cong_control, struct sock *sk,
+>> +             const struct rate_sample *rs)
+>> +{
+>> +       ca1_cnt++;
+>> +}
+>> +
+>> +SEC("struct_ops/ca_update_2_cong_control")
+>> +void BPF_PROG(ca_update_2_cong_control, struct sock *sk,
+>> +             const struct rate_sample *rs)
+>> +{
+>> +       ca2_cnt++;
+>> +}
+>> +
+>> +SEC("struct_ops/ca_update_ssthresh")
+>> +__u32 BPF_PROG(ca_update_ssthresh, struct sock *sk)
+>> +{
+>> +       return tcp_sk(sk)->snd_ssthresh;
+>> +}
+>> +
+>> +SEC("struct_ops/ca_update_undo_cwnd")
+>> +__u32 BPF_PROG(ca_update_undo_cwnd, struct sock *sk)
+>> +{
+>> +       return tcp_sk(sk)->snd_cwnd;
+>> +}
+>> +
+>> +SEC(".struct_ops")
+>> +struct tcp_congestion_ops ca_update_1 = {
+>> +       .init = (void *)ca_update_init,
+>> +       .cong_control = (void *)ca_update_1_cong_control,
+>> +       .ssthresh = (void *)ca_update_ssthresh,
+>> +       .undo_cwnd = (void *)ca_update_undo_cwnd,
+>> +       .name = "tcp_ca_update",
+>> +};
+>> +
+>> +SEC(".struct_ops")
+>> +struct tcp_congestion_ops ca_update_2 = {
+>> +       .init = (void *)ca_update_init,
+>> +       .cong_control = (void *)ca_update_2_cong_control,
+>> +       .ssthresh = (void *)ca_update_ssthresh,
+>> +       .undo_cwnd = (void *)ca_update_undo_cwnd,
+>> +       .name = "tcp_ca_update",
+>> +};
 >> --
 >> 2.30.2
 >>
