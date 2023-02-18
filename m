@@ -2,61 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB0069B756
-	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 02:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A0869B770
+	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 02:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjBRBLL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 20:11:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S229607AbjBRBZJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 20:25:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjBRBLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 20:11:09 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57271457E9
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 17:11:08 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id co2so10204254edb.13
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 17:11:08 -0800 (PST)
+        with ESMTP id S229460AbjBRBZI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 20:25:08 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853E353EFE
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 17:25:04 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id h3so2937947ybi.5
+        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 17:25:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VOu1dyQE8U4lY27wC/YGtk+CrLBDaxyC0YMbqWYGens=;
-        b=I0ncZ2B7oCstbiS5TnIXtmyYrik7nuvuo5tVzL6/lvY4F5J0Ur6S623CrCDuLkgE2Q
-         DX+ushCw4V1WB1NbqEpZlUpuMUbUhEwbXS8sgfLgBO1cUN8HeCfhi/XH7hOsSHOy9g13
-         mqp7bGyN3lNkrHjE6kVJOsULfAfENtt+9bvcEkSu+AClru6TozRcqNtJqstgFRMjxnDf
-         uaY2oPLJdR0GKidT4j3x9QtyLbUANaRz4159E4444tNZ+qCAdvK3+m8NwiH3EgUVT8xY
-         PQSvxgJVV6D2pRaMKB+y2GKwSFA21oJ01j5ElcRYvFnrB3jrx/F8x9CK9jWR59xFWDEh
-         UZ8Q==
+        bh=sR5eHexHihsZ2D7X2joTXSOIZS9L59dzRpHsZy6ZnQg=;
+        b=Uqv3x8HB6cB3xDicvor5RlUClDpJfl364BznO/JXaaNQt9TFnNvAAvSyF9KSl9FXHI
+         rKRJtl+/HtJ1iiqNoblqVEkQ8YCaAziKeQqqPnKCNC+/SaB4pd9bCcn5On/lfqAn+vOP
+         5QkDXfg33RaT7PB7MIGmFvrL9uvqIRNATnce1JVrqeFg85ZzLt9N+51BZrr/wsGLqhE0
+         NZOBOW7ahUHXMndlxqhS1+c4WxN98IHMGSmlwIrYIk3RzfxUo/XkWVijcrkiEQkAXJTk
+         EYev1rRvXjzv9RgvZ3YxY5lFaj0hRKlfSbDbNnt8wftXS4eEyK3CupJo8BOfPZ7yrHag
+         NZQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VOu1dyQE8U4lY27wC/YGtk+CrLBDaxyC0YMbqWYGens=;
-        b=5G0uXYFkhlJg7uDFECIfzXNjboAMtPZnJnWkrChcKEEHuCxnAIXsTTlPWMrmSLDur1
-         ACd3hlqn7W8hO/8ZQmjb6hfVO61cHjIqlIEi1MHwOzHheB6NdFoxgMrWt2uS3W9+dveL
-         hSfAvPdQRiYBFwr3pDimmwE7e6pIv1INEfNpf0krL/qcaF6YCEOEUt0aY0czFT3dlWJO
-         aMyAumdHLMj7BvOD1Y6EKxPVHp6vUCVayIZxXXnwLuhacqmBZmfhHEV87/rH6aKo1YFG
-         nJwJwFqbPMMOGQ9xqDdptuEGsMgg6YzQWFHkv0WC62y06zCMestpIhduvTKQVx0+aozH
-         HAvQ==
-X-Gm-Message-State: AO0yUKVT+wc6suC2TINVlZhaPvqfj+gw7iRbV3B8DwotLRpuV6eCHGJV
-        WUpZ59mvUvI1LZNMN2vVJqqpA8SkA33uZb76rwl8HZycDLM=
-X-Google-Smtp-Source: AK7set+l5oFltV1D/YTsuKDXEGS5iGiqtewJ84fwBj/o2NDGonchTdN2xoBwfiGbjNsULZ+clTTJNBC9+NZNGrQHoSg=
-X-Received: by 2002:a17:906:f88f:b0:8b0:7e1d:f6fa with SMTP id
- lg15-20020a170906f88f00b008b07e1df6famr1182300ejb.15.1676682666825; Fri, 17
- Feb 2023 17:11:06 -0800 (PST)
+        bh=sR5eHexHihsZ2D7X2joTXSOIZS9L59dzRpHsZy6ZnQg=;
+        b=rryrIm95Hwgdhny488fh9+NtIY50ncqoKQzlyXUlKJvAvYDhGvO60lBp5OpiuR06TY
+         +aGg5PdGjGWerfjBe/VdrOK15VAzezqks+/pWE/kOSNtusQKoKWZ12mGxRu5kuGEpqGf
+         Ik5joPtt7kWYuxEZr+jZZHIKS1Ab5tpZ0GHozgqPXqtA9luGVEQ1BvyNhFAJC/xGipKG
+         +F3JtLYpzKTDlJp/oqXztSLr4nutUfIyebGwJYyqpkj8AXWQeyKUiHL4WbsyCogd5rMM
+         +yohWuDnqJOh7AoTQ3dN1cTFlgufPsBRObIYrvM74hFgxnxxb3xBg1ekbls6Q5LFissF
+         ZFAg==
+X-Gm-Message-State: AO0yUKUhI5c+xkIKPq96QO+bFt4lUhuW5H2MctmsaCJ1VhoG6NZ8LJBq
+        SgG7CMjpFt+btmwsY66NdnVJ9kvjtAlOyhhAHAwMW5gBVQ4=
+X-Google-Smtp-Source: AK7set9T/8lWQM/PFN40/yc87ZHnrwlck4IlZc7njsD0sPn6L/SUsQbi83wN0zKANWxSbJcyGuSFi6hsRI4719yFYTs=
+X-Received: by 2002:a25:8d08:0:b0:94a:ebba:cba7 with SMTP id
+ n8-20020a258d08000000b0094aebbacba7mr229978ybl.8.1676683503692; Fri, 17 Feb
+ 2023 17:25:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20230214221718.503964-1-kuifeng@meta.com> <20230214221718.503964-7-kuifeng@meta.com>
- <CAEf4BzaKRd2jif4XeKJ1s8Dfpp-wQyTTbXpF-Not6A5kpOGYqQ@mail.gmail.com> <e3c8beb3-5ff7-9de2-b4a8-3b23a111198f@gmail.com>
-In-Reply-To: <e3c8beb3-5ff7-9de2-b4a8-3b23a111198f@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 17 Feb 2023 17:10:54 -0800
-Message-ID: <CAEf4Bzap2F1E09Lw8fv+akZ8_RymuxzCTCO1O4yi7rqaqkPGeQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/7] libbpf: Update a bpf_link with another struct_ops.
-To:     Kui-Feng Lee <sinquersw@gmail.com>
-Cc:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org
+References: <20230214043350.3497406-1-joannelkoong@gmail.com> <CAADnVQJsrjo7-mbEa1MWG4E53=0QUN8iWzjEjkahzgfzmwP_Cw@mail.gmail.com>
+In-Reply-To: <CAADnVQJsrjo7-mbEa1MWG4E53=0QUN8iWzjEjkahzgfzmwP_Cw@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Fri, 17 Feb 2023 17:24:52 -0800
+Message-ID: <CAJnrk1bpHRcXZhL9H_T4u7CV7P1Mh8JtiqF_VWShTrM+etwbDw@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next] bpf: Update kfunc __sz documentation
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Eddy Z <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,130 +71,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 17, 2023 at 4:22 PM Kui-Feng Lee <sinquersw@gmail.com> wrote:
+On Tue, Feb 14, 2023 at 12:57 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->
->
-> On 2/16/23 14:48, Andrii Nakryiko wrote:
-> > On Tue, Feb 14, 2023 at 2:17 PM Kui-Feng Lee <kuifeng@meta.com> wrote:
-> >>
-> >> Introduce bpf_link__update_struct_ops(), which will allow you to
-> >> effortlessly transition the struct_ops map of any given bpf_link into
-> >> an alternative.
-> >>
-> >> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
-> >> ---
-> >>   tools/lib/bpf/libbpf.c   | 35 +++++++++++++++++++++++++++++++++++
-> >>   tools/lib/bpf/libbpf.h   |  1 +
-> >>   tools/lib/bpf/libbpf.map |  1 +
-> >>   3 files changed, 37 insertions(+)
-> >>
-> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >> index 1eff6a03ddd9..6f7c72e312d4 100644
-> >> --- a/tools/lib/bpf/libbpf.c
-> >> +++ b/tools/lib/bpf/libbpf.c
-> >> @@ -11524,6 +11524,41 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
-> >>          return &link->link;
-> >>   }
-> >>
-> >> +/*
-> >> + * Swap the back struct_ops of a link with a new struct_ops map.
-> >> + */
-> >> +int bpf_link__update_struct_ops(struct bpf_link *link, const struct bpf_map *map)
+> On Mon, Feb 13, 2023 at 8:35 PM Joanne Koong <joannelkoong@gmail.com> wrote:
 > >
-> > we have bpf_link__update_program(), and so the generic counterpart for
-> > map-based links would be bpf_link__update_map(). Let's call it that.
-> > And it shouldn't probably assume so much struct_ops specific things.
->
-> Sure
->
+> > A bpf program calling a kfunc with a __sz-annotated arg must explicitly
+> > initialize the stack themselves if the pointer to the memory region is
+> > a pointer to the stack. This is because in the verifier, we do not
+> > explicitly initialize the stack space for reg type PTR_TO_STACK
+> > kfunc args. Thus, the verifier will reject the program with:
 > >
-> >> +{
-> >> +       struct bpf_link_struct_ops_map *st_ops_link;
-> >> +       int err, fd;
-> >> +
-> >> +       if (!bpf_map__is_struct_ops(map) || map->fd == -1)
-> >> +               return -EINVAL;
-> >> +
-> >> +       /* Ensure the type of a link is correct */
-> >> +       if (link->detach != bpf_link__detach_struct_ops)
-> >> +               return -EINVAL;
-> >> +
-> >> +       err = bpf_map__update_vdata(map);
+> > invalid indirect read from stack
+> > arg#0 arg#1 memory, len pair leads to invalid memory access
 > >
-> > it's a bit weird we do this at attach time, not when bpf_map is
-> > actually instantiated. Should we move this map contents initialization
-> > to bpf_object__load() phase? Same for bpf_map__attach_struct_ops().
-> > What do we lose by doing it after all the BPF programs are loaded in
-> > load phase?
+> > Alternatively, the verifier could support initializing the stack
+> > space on behalf of the program for KF_ARG_PTR_TO_MEM_SIZE args,
+> > but this has some drawbacks. For example this would not allow the
+> > verifier to reject a program for passing in an uninitialized
+> > PTR_TO_STACK for an arg that should have valid data. Another example is
+> > that since there's no current way in a kfunc to differentiate between
+> > whether the arg should be treated as uninitialized or not, additional
+> > check_mem_access calls would need to be called even on PTR_TO_STACKs
+> > that have been initialized, which is inefficient. Please note
+> > that non-kfuncs don't have this problem because of the MEM_UNINIT tag;
+> > only if the arg is tagged as MEM_UNINIT, then do we call
+> > check_mem_access byte-by-byte for the size of the buffer.
+> >
+> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > ---
+> >  Documentation/bpf/kfuncs.rst | 35 +++++++++++++++++++++++++++++++----
+> >  1 file changed, 31 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> > index ca96ef3f6896..97497a7879d6 100644
+> > --- a/Documentation/bpf/kfuncs.rst
+> > +++ b/Documentation/bpf/kfuncs.rst
+> > @@ -71,10 +71,37 @@ An example is given below::
+> >          ...
+> >          }
+> >
+> > -Here, the verifier will treat first argument as a PTR_TO_MEM, and second
+> > -argument as its size. By default, without __sz annotation, the size of the type
+> > -of the pointer is used. Without __sz annotation, a kfunc cannot accept a void
+> > -pointer.
+> > +Here, the verifier will treat first argument (KF_ARG_PTR_TO_MEM_SIZE) as a
+> > +pointer to the memory region and second argument as its size. By default,
+> > +without __sz annotation, the size of the type of the pointer is used. Without
+> > +__sz annotation, a kfunc cannot accept a void pointer.
+> > +
+> > +Please note that if the memory is on the stack, the stack space must be
+> > +explicitly initialized by the program. For example:
+> > +
+> > +.. code-block:: c
+> > +
+> > +       SEC("tc")
+> > +       int prog(struct __sk_buff *skb)
+> > +       {
+> > +               char buf[8];
+> > +
+> > +               bpf_memzero(buf, sizeof(buf));
+> > +       ...
+> > +       }
+> > +
+> > +should be
+> > +
+> > +.. code-block:: c
+> > +
+> > +       SEC("tc")
+> > +       int prog(struct __sk_buff *skb)
+> > +       {
+> > +               char buf[8] = {};
+> > +
+> > +               bpf_memzero(buf, sizeof(buf));
 >
-> With the current behavior (w/o links), a struct_ops will be registered
-> when updating its value.  If we move bpf_map__update_vdata() to
-> bpf_object__load(), a congestion control algorithm will be activated at
-> the moment loading it before attaching it.  However, we should activate
-> an algorithm at attach time.
+> Actually we might go the other way.
+> Instead of asking users to explicitly init things
+> we will allow uninit memory.
+> See this discussion:
+> https://lore.kernel.org/bpf/082fd8451321a832f334882a1872b5cee240d811.camel@gmail.com/
 >
+> Eduard, is about to send those verifier patches.
+>
+> In parallel we can relax __sz to accept uninit under allow_uninit_stack.
 
-Of course. But I was thinking to move `bpf_map_update_elem(map->fd,
-&zero, st_ops->kern_vdata, 0);` part out of bpf_map__update_vdata()
-and make update_vdata() just prepare st_ops->kern_vdata only.
-
->
-> >
-> >> +       if (err) {
-> >> +               err = -errno;
-> >> +               free(link);
-> >> +               return err;
-> >> +       }
-> >> +
-> >> +       fd = bpf_link_update(link->fd, map->fd, NULL);
-> >> +       if (fd < 0) {
-> >> +               err = -errno;
-> >> +               free(link);
-> >> +               return err;
-> >> +       }
-> >> +
-> >> +       st_ops_link = container_of(link, struct bpf_link_struct_ops_map, link);
-> >> +       st_ops_link->map_fd = map->fd;
-> >> +
-> >> +       return 0;
-> >> +}
-> >> +
-> >>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_event_header *hdr,
-> >>                                                            void *private_data);
-> >>
-> >> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> >> index 2efd80f6f7b9..dd25cd6759d4 100644
-> >> --- a/tools/lib/bpf/libbpf.h
-> >> +++ b/tools/lib/bpf/libbpf.h
-> >> @@ -695,6 +695,7 @@ bpf_program__attach_freplace(const struct bpf_program *prog,
-> >>   struct bpf_map;
-> >>
-> >>   LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map);
-> >> +LIBBPF_API int bpf_link__update_struct_ops(struct bpf_link *link, const struct bpf_map *map);
-> >
-> > let's rename to bpf_link__update_map() and put it next to
-> > bpf_link__update_program() in libbpf.h
-> >
-> >>
-> >>   struct bpf_iter_attach_opts {
-> >>          size_t sz; /* size of this struct for forward/backward compatibility */
-> >> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> >> index 11c36a3c1a9f..ca6993c744b6 100644
-> >> --- a/tools/lib/bpf/libbpf.map
-> >> +++ b/tools/lib/bpf/libbpf.map
-> >> @@ -373,6 +373,7 @@ LIBBPF_1.1.0 {
-> >>          global:
-> >>                  bpf_btf_get_fd_by_id_opts;
-> >>                  bpf_link_get_fd_by_id_opts;
-> >> +               bpf_link__update_struct_ops;
-> >>                  bpf_map_get_fd_by_id_opts;
-> >>                  bpf_prog_get_fd_by_id_opts;
-> >>                  user_ring_buffer__discard;
-> >
-> > we are in LIBBPF_1.2.0 already, please move
-> >
-> >
-> >> --
-> >> 2.30.2
-> >>
+in that case, for kfuncs it needs to grow the stack state if the
+buffer + __sz is beyond the current allocated stack, or else
+check_stack_range_initialized() will automatically fail if the user
+tries to pass in an uninitialized buffer. i have a local patch for
+this in my tree, I'll tidy it up and submit it next week
