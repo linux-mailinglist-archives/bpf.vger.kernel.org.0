@@ -2,63 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DE669B6FD
-	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 01:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C70AA69B733
+	for <lists+bpf@lfdr.de>; Sat, 18 Feb 2023 01:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbjBRAlf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Feb 2023 19:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
+        id S229602AbjBRAzS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Feb 2023 19:55:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjBRAle (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Feb 2023 19:41:34 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88186D25A
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 16:40:52 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id y14so2655715ljq.10
-        for <bpf@vger.kernel.org>; Fri, 17 Feb 2023 16:40:52 -0800 (PST)
+        with ESMTP id S229475AbjBRAzR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Feb 2023 19:55:17 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3195EC82;
+        Fri, 17 Feb 2023 16:55:16 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id i28so10100001eda.8;
+        Fri, 17 Feb 2023 16:55:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0/Z1W0wEvuLo9yl4c/axSNeczppuJsAbTfAQ5W0V+7s=;
-        b=N00ka4wUzf+PRKX6zYwkpB6cHSu40vJ8MRD7qaqTqw5/b1mpergWasK6pLiaZ4i8ns
-         VbdCeIzze8cipxDcLXUvGuI/mo+c+j2/vCXb5WT+sA34QQIv4rKmamf1u4c4lOGviGIM
-         eLTcWz8tya/s4kurL8g28pn7xiEx86LMqPuLlRu+kqLGGIIyILNgvKBbUik/o3h6hzp3
-         h7j5kBPjbBkyblKQQBP8hh2v5VJ15tixbTAhp62jihFJKMFSpFhfsN9DJ6FpQmOav9NC
-         lsUJOoCs4lqE74BUEVik9BOKad4A2YsrPHcG1JLSUNnysUnjhdizZtucmzoV3vLt1RCA
-         TJMQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CNmN9i9I04usvowrOynVaiHCZz/BOIYMI3jRO+izgks=;
+        b=Pz80ikC3QUwINLyEWuiLFy6z5SpyCZQTxcbnCzzC7P+VZdavB3flh/bGIia5GC4rcS
+         b9PiYZCyRP7QHe2TZuoS9+RBwAOZFWQ4F0UrgCF181qNCC3Sm2y1evJnyUwZ9fnG4Kk2
+         HPNocltC6SM0GO5RGbRAgDOhiRz7duKQdAqGOVVdH6nTyKcJr887i4rs5F3cAqVSr21q
+         VsI6D9VS6dQjISwzhgC2XLLyuqPhKWSIfTlUBvb205HF32GTq7V+6k017E/ZRHj9hmJV
+         vOSC6PKDjppkag9MkI/f/Sesmr7sbd761/gT1C/HxmRh6i7lMZSarZlo7rnQCDYjVZuO
+         hF3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0/Z1W0wEvuLo9yl4c/axSNeczppuJsAbTfAQ5W0V+7s=;
-        b=YxcQD6AXo7ePJx1Zw33OsTH22dhKFWVFkiSjLDofQZN730blQcYsFUv8CgvARVdsj9
-         D1cib04BeTMAsivOaMebGriNFt1hh1sIucGT93ZedHxBm1Rob01TISCu42yILjK9tMb9
-         S3nO6LkYlrHrn1JY+J33fooqiencB8Jw0ozrkQYNxnjKB8fxaTxmcd2Ru7Yk3HIZu9j6
-         yiXHzMUJ9Ioq7mF6V6SoapFc330xD4rVzC+ly9NWLdVvLmYZSC6q/LXuVX/TM/cvYigP
-         olQSqbeiFpjUvXC5tqrq4+rm+R19X6+PZxzrK9N10WMMzDOhiRi5QTGZsTjKHt1amikF
-         3aXQ==
-X-Gm-Message-State: AO0yUKVLMjj4Jj8idrzZtxTEf5RtuChhhBEb5QV4e1p6BWqfsX3Ig6Ah
-        myIDLrMXdDsF7X8rnE5kpMHOy2//U++gKk7nmgg+VrlonyU=
-X-Google-Smtp-Source: AK7set9kNpSTb7rS+JyknwjBM4CL01+6yyG8NhhNMSnKCm8eU0I9ErVk4hSZWvVP1Xj/0dhu5fLI4sxA/Q7ajrpazJA=
-X-Received: by 2002:a05:6402:3890:b0:4ab:1f1b:95a1 with SMTP id
- fd16-20020a056402389000b004ab1f1b95a1mr5406889edb.0.1676680338051; Fri, 17
- Feb 2023 16:32:18 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CNmN9i9I04usvowrOynVaiHCZz/BOIYMI3jRO+izgks=;
+        b=52IuMWn+r54EHDlH1bocgLlAPo/uOxVJEVOFSnb+0W0g4b3E2tDD3EimHEWKchhgdM
+         VyUoVTyQkAp3RO5FyEt2IDE36whR7ovZ3BLLZaL5TlGiThepzuZl9eN9D6E0IjJEDn+I
+         hVn9OxriGAn7dnZLCdish+2mvEVDFiCAYkN62SoFSg9/IYaAbGtwshMrywomfdglHtm8
+         CXUOODQQtzz5glOlWALemfzCqorGco8tZBD77mm7JBmv9qNMLFRxO+7pY0eeX9frqQYi
+         QawP+NkBdSi/PGSjehbXTi2TVR7f1yO1F2O252wwC1dltHwFuVq2t26xS4KehXXzf0iV
+         ylxA==
+X-Gm-Message-State: AO0yUKXpaaI1ZDPsIxxwK8+EoebtQSAmaLBqzlEGZ/VomK2jjE8+GnQP
+        hPVEBbjTfEgWZgzyGNw15HbqIEiPoCFIuh3MRzs=
+X-Google-Smtp-Source: AK7set9Ix9rF5QlyxVAzzhxH/P0WvbwlMmvB2ClF+EorJYBEJV935ED3KnVrCQ/Sv3IeGgCjpkDnanwCV1C+Wy0p3rA=
+X-Received: by 2002:a17:906:f88f:b0:8b0:7e1d:f6fa with SMTP id
+ lg15-20020a170906f88f00b008b07e1df6famr1167986ejb.15.1676681714931; Fri, 17
+ Feb 2023 16:55:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20230217191908.1000004-1-deso@posteo.net> <20230217191908.1000004-4-deso@posteo.net>
-In-Reply-To: <20230217191908.1000004-4-deso@posteo.net>
+References: <20230216225524.1192789-1-joannelkoong@gmail.com> <20230216225524.1192789-7-joannelkoong@gmail.com>
+In-Reply-To: <20230216225524.1192789-7-joannelkoong@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 17 Feb 2023 16:32:05 -0800
-Message-ID: <CAEf4BzasONdYA6JPvF=pAjBW9hotVw34itVG3AoGRJV5pjERBA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] libbpf: Add support for attaching uprobes to
- shared objects in APKs
-To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com
+Date:   Fri, 17 Feb 2023 16:55:02 -0800
+Message-ID: <CAEf4BzYxAi9ECwW33EJAVbcDuF7qFAXwbMeyLBSzNpsSqQEiGw@mail.gmail.com>
+Subject: Re: [PATCH v10 bpf-next 6/9] bpf: Add skb dynptrs
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, martin.lau@kernel.org, andrii@kernel.org,
+        memxor@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,225 +67,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 17, 2023 at 11:19 AM Daniel M=C3=BCller <deso@posteo.net> wrote=
-:
+On Thu, Feb 16, 2023 at 2:56 PM Joanne Koong <joannelkoong@gmail.com> wrote:
 >
-> This change adds support for attaching uprobes to shared objects located
-> in APKs, which is relevant for Android systems where various libraries
-
-Is there a good link with description of APK that we can record
-somewhere in the comments for future us?
-
-Also, does .apk contains only shared libraries, or it could be also
-just a binary?
-
-> may reside in APKs. To make that happen, we extend the syntax for the
-> "binary path" argument to attach to with that supported by various
-> Android tools:
->   <archive>!/<binary-in-archive>
+> Add skb dynptrs, which are dynptrs whose underlying pointer points
+> to a skb. The dynptr acts on skb data. skb dynptrs have two main
+> benefits. One is that they allow operations on sizes that are not
+> statically known at compile-time (eg variable-sized accesses).
+> Another is that parsing the packet data through dynptrs (instead of
+> through direct access of skb->data and skb->data_end) can be more
+> ergonomic and less brittle (eg does not need manual if checking for
+> being within bounds of data_end).
 >
-> For example:
->   /system/app/test-app/test-app.apk!/lib/arm64-v8a/libc++_shared.so
+> For bpf prog types that don't support writes on skb data, the dynptr is
+> read-only (bpf_dynptr_write() will return an error)
 >
-> APKs need to be specified via full path, i.e., we do not attempt to
-> resolve mere file names by searching system directories.
-
-mere?
-
+> For reads and writes through the bpf_dynptr_read() and bpf_dynptr_write()
+> interfaces, reading and writing from/to data in the head as well as from/to
+> non-linear paged buffers is supported. Data slices through the
+> bpf_dynptr_data API are not supported; instead bpf_dynptr_slice() and
+> bpf_dynptr_slice_rdwr() (added in subsequent commit) should be used.
 >
-> We cannot currently test this functionality end-to-end in an automated
-> fashion, because it relies on an Android system being present, but there
-> is no support for that in CI. I have tested the functionality manually,
-> by creating a libbpf program containing a uretprobe, attaching it to a
-> function inside a shared object inside an APK, and verifying the sanity
-> of the returned values.
+> For examples of how skb dynptrs can be used, please see the attached
+> selftests.
 >
-> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 > ---
->  tools/lib/bpf/libbpf.c | 84 ++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 80 insertions(+), 4 deletions(-)
+>  include/linux/bpf.h            | 14 ++++++-
+>  include/linux/filter.h         | 18 ++++++++
+>  include/uapi/linux/bpf.h       | 14 ++++++-
+>  kernel/bpf/btf.c               | 18 ++++++++
+>  kernel/bpf/helpers.c           | 76 +++++++++++++++++++++++++++-------
+>  kernel/bpf/verifier.c          | 70 ++++++++++++++++++++++++++++++-
+>  net/core/filter.c              | 67 ++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 14 ++++++-
+>  8 files changed, 270 insertions(+), 21 deletions(-)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index a474f49..79ab85f 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -53,6 +53,7 @@
->  #include "libbpf_internal.h"
->  #include "hashmap.h"
->  #include "bpf_gen_internal.h"
-> +#include "zip.h"
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 296841a31749..3d18be35a5e6 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -607,11 +607,14 @@ enum bpf_type_flag {
+>          */
+>         NON_OWN_REF             = BIT(14 + BPF_BASE_TYPE_BITS),
 >
->  #ifndef BPF_FS_MAGIC
->  #define BPF_FS_MAGIC           0xcafe4a11
-> @@ -10702,6 +10703,60 @@ static long elf_find_func_offset_from_elf_file(c=
-onst char *binary_path, const ch
->         return ret;
+> +       /* DYNPTR points to sk_buff */
+> +       DYNPTR_TYPE_SKB         = BIT(15 + BPF_BASE_TYPE_BITS),
+> +
+>         __BPF_TYPE_FLAG_MAX,
+>         __BPF_TYPE_LAST_FLAG    = __BPF_TYPE_FLAG_MAX - 1,
+>  };
+>
+> -#define DYNPTR_TYPE_FLAG_MASK  (DYNPTR_TYPE_LOCAL | DYNPTR_TYPE_RINGBUF)
+> +#define DYNPTR_TYPE_FLAG_MASK  (DYNPTR_TYPE_LOCAL | DYNPTR_TYPE_RINGBUF | DYNPTR_TYPE_SKB)
+>
+>  /* Max number of base types. */
+>  #define BPF_BASE_TYPE_LIMIT    (1UL << BPF_BASE_TYPE_BITS)
+> @@ -1146,6 +1149,8 @@ enum bpf_dynptr_type {
+>         BPF_DYNPTR_TYPE_LOCAL,
+>         /* Underlying data is a ringbuf record */
+>         BPF_DYNPTR_TYPE_RINGBUF,
+> +       /* Underlying data is a sk_buff */
+> +       BPF_DYNPTR_TYPE_SKB,
+>  };
+>
+>  int bpf_dynptr_check_size(u32 size);
+> @@ -2846,6 +2851,8 @@ u32 bpf_sock_convert_ctx_access(enum bpf_access_type type,
+>                                 struct bpf_insn *insn_buf,
+>                                 struct bpf_prog *prog,
+>                                 u32 *target_size);
+> +int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
+> +                              struct bpf_dynptr_kern *ptr);
+>  #else
+>  static inline bool bpf_sock_common_is_valid_access(int off, int size,
+>                                                    enum bpf_access_type type,
+> @@ -2867,6 +2874,11 @@ static inline u32 bpf_sock_convert_ctx_access(enum bpf_access_type type,
+>  {
+>         return 0;
 >  }
->
-> +/* Find offset of function name in archive specified by path. Currently
-> + * supported are .zip files that do not compress their contents (as used=
- on
-> + * Android in the form of APKs, for example).  "file_name" is the name o=
-f the
-> + * ELF file inside the archive.  "func_name" matches symbol name or name=
-@@LIB
-> + * for library functions.
-
-These double spaces after dot were not intended, let's not add more.
-
-> + */
-> +static long elf_find_func_offset_from_archive(const char *archive_path, =
-const char *file_name,
-> +                                             const char *func_name)
+> +static inline int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
+> +                                            struct bpf_dynptr_kern *ptr)
 > +{
-> +       struct zip_archive *archive;
-> +       struct zip_entry entry;
-> +       long ret =3D -ENOENT;
-> +       Elf *elf;
-> +
-> +       archive =3D zip_archive_open(archive_path);
-> +       if (!archive) {
-> +               pr_warn("failed to open %s\n", archive_path);
+> +       return 0;
 
-add "zip: " prefix?
 
-> +               return -LIBBPF_ERRNO__FORMAT;
-> +       }
-> +
-> +       if (zip_archive_find_entry(archive, file_name, &entry)) {
-> +               pr_warn("zip: could not find archive member %s in %s\n", =
-file_name, archive_path);
-> +               ret =3D -LIBBPF_ERRNO__FORMAT;
-> +               goto out;
-> +       }
-> +
-> +       if (entry.compression) {
-> +               pr_warn("zip: entry %s of %s is compressed and cannot be =
-handled\n", file_name,
-> +                       archive_path);
-> +               ret =3D -LIBBPF_ERRNO__FORMAT;
-> +               goto out;
-> +       }
-> +
-> +       elf =3D elf_memory((void *)entry.data, entry.data_length);
-> +       if (!elf) {
-> +               pr_warn("elf: could not read elf file %s from %s: %s\n", =
-file_name, archive_path,
+should this return -EOPNOTSUPP instead?
 
-I kind of like preserving the "archive/path!/file/path" consistently
-through error messages when referring to file within APK, WDYT?
-
-> +                       elf_errmsg(-1));
-> +               ret =3D -LIBBPF_ERRNO__FORMAT;
-> +               goto out;
-> +       }
-> +
-> +       ret =3D elf_find_func_offset(elf, file_name, func_name);
-> +       if (ret > 0) {
-> +               ret +=3D entry.data_offset;
-> +               pr_debug("elf: symbol address match for '%s' in '%s': 0x%=
-lx\n", func_name,
-> +                        archive_path, ret);
-
-so for debugging I feel like we'll want to know both entry.data_offset
-and original ELF offset, let's report all three offset (including the
-final calculated one)?
-
-> +       }
-> +       elf_end(elf);
-> +
-> +out:
-> +       zip_archive_close(archive);
-> +       return ret;
 > +}
-> +
->  static const char *arch_specific_lib_paths(void)
->  {
->         /*
-> @@ -10789,6 +10844,9 @@ bpf_program__attach_uprobe_opts(const struct bpf_=
-program *prog, pid_t pid,
->  {
->         DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
->         char errmsg[STRERR_BUFSIZE], *legacy_probe =3D NULL;
-> +       const char *archive_path =3D NULL;
-> +       const char *archive_sep =3D NULL;
-
-nit: combine on a single line?
-
-> +       char full_archive_path[PATH_MAX];
->         char full_binary_path[PATH_MAX];
->         struct bpf_link *link;
->         size_t ref_ctr_off;
-> @@ -10806,9 +10864,21 @@ bpf_program__attach_uprobe_opts(const struct bpf=
-_program *prog, pid_t pid,
->         if (!binary_path)
->                 return libbpf_err_ptr(-EINVAL);
+>  #endif
 >
-> -       if (!strchr(binary_path, '/')) {
-> -               err =3D resolve_full_path(binary_path, full_binary_path,
-> -                                       sizeof(full_binary_path));
-> +       /* Check if "binary_path" refers to an archive. */
-> +       archive_sep =3D strstr(binary_path, "!/");
-> +       if (archive_sep) {
-> +               if (archive_sep - binary_path >=3D sizeof(full_archive_pa=
-th)) {
+>  #ifdef CONFIG_INET
 
-very unlikely to happen, I wouldn't bother checking, especially that
-strncpy will just truncate and make us fail anyways
-
-> +                       return libbpf_err_ptr(-EINVAL);
-> +               }
-> +
-> +               strncpy(full_archive_path, binary_path, archive_sep - bin=
-ary_path);
-
-let's use saner libbpf_strlcpy() instead of strncpy, we stopped using
-strncpy relatively recently
-
-> +               full_archive_path[archive_sep - binary_path] =3D 0;
-
-strlcpy makes sure the resulting string is zero-terminated.
-
-But note that full_archive_path[0] is not guaranteed to be zero, so
-strncpy/strlcpy might preserve some garbage in front. Let's make sure
-full_archive_path[0] =3D '\0'; before manipulating that buffer
-
-> +               archive_path =3D full_archive_path;
-> +
-> +               strcpy(full_binary_path, archive_sep + 2);
-> +               binary_path =3D full_binary_path;
-
-no need to copy, just `binary_path =3D archive_sep + 2;`? And thus we
-can reuse full_binary_path buffer for archive path (we can rename it
-to be more generic "full_path" name or something)
-
-> +       } else if (!strchr(binary_path, '/')) {
-> +               err =3D resolve_full_path(binary_path, full_binary_path, =
-sizeof(full_binary_path));
->                 if (err) {
->                         pr_warn("prog '%s': failed to resolve full path f=
-or '%s': %d\n",
->                                 prog->name, binary_path, err);
-> @@ -10820,7 +10890,13 @@ bpf_program__attach_uprobe_opts(const struct bpf=
-_program *prog, pid_t pid,
->         if (func_name) {
->                 long sym_off;
->
-> -               sym_off =3D elf_find_func_offset_from_elf_file(binary_pat=
-h, func_name);
-> +               if (archive_path) {
-> +                       sym_off =3D elf_find_func_offset_from_archive(arc=
-hive_path, binary_path,
-> +                                                                   func_=
-name);
-> +                       binary_path =3D archive_path;
-> +               } else {
-> +                       sym_off =3D elf_find_func_offset_from_elf_file(bi=
-nary_path, func_name);
-> +               }
->                 if (sym_off < 0)
->                         return libbpf_err_ptr(sym_off);
->                 func_offset +=3D sym_off;
-> --
-> 2.30.2
->
+[...]
