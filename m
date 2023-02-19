@@ -2,73 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C01969C2DF
-	for <lists+bpf@lfdr.de>; Sun, 19 Feb 2023 23:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B23869C327
+	for <lists+bpf@lfdr.de>; Mon, 20 Feb 2023 00:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbjBSWXh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Feb 2023 17:23:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
+        id S229539AbjBSXBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Feb 2023 18:01:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbjBSWXg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Feb 2023 17:23:36 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93A4EB4D
-        for <bpf@vger.kernel.org>; Sun, 19 Feb 2023 14:23:34 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id k5so6024557edo.3
-        for <bpf@vger.kernel.org>; Sun, 19 Feb 2023 14:23:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mcu3FFlI3Cl+PJaeR+LhESwSYtNrx+Z+dfvy/EIIt58=;
-        b=hfBiBRq+iWOI5Ytxg1P18nrzQecgUtRoG1wi3TNxbOs/i06pNAwzPlmQVtp+ldT+49
-         yVbak/cj961N0/pmSLk+qVVs8d26qtFaaJBhM2Nh5qq3Gt6m1woBSOHYUB7/PgyMdkqv
-         ccGwJCPlR9vcc1Z2HrVStZiSpVCtDO0eY6j4QDuWpPhzuyZpAeUsIG1PfmouiSkQMQIK
-         951qDWrKMePaXDgTZvYBd5SRr8tcwuu7OykP9QJZsfhtg6R3nbO33N9pt+jCCAZ34M/Q
-         FYsyB+gWVHJK/IBT36M+9Gr0BEY/VEv7/aaq2KnrKUWNk25AoRqqjzDUJeGhDP71Jdia
-         RzTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mcu3FFlI3Cl+PJaeR+LhESwSYtNrx+Z+dfvy/EIIt58=;
-        b=gIKZhnQ8M0k/LJetQauwTzn5iADD1xbL7AqOnjL+lxPbLfW37QNCu70oaO/y2AB54q
-         /NFdS/OJNvQ1AKi1OppF5IEpWWKbk9nouQf1LEy2tuKWTmVog8Pb66Tjg51LLrBeWKhr
-         7keit8lSvU7OhHv6yjjBLEln06A8VqQBdlEucGxx/QWV7eOrEGQz+WtbIC2PzwwegoQ6
-         a0ctd9Lq8+8HadYaSChcOGTcbS8NMKzLnZGZvCkay4f1/NR9vG+3FgKYtOYjKhN1K3g9
-         TYvRiy8lqgEjE/rnL+HFZ6KUFkce8T0Dzb49635OD9IhC9slZx8MJb9jFb1aG78K4gGq
-         BDTw==
-X-Gm-Message-State: AO0yUKVY1u4KAfDmGew9QvUQhSg+2oskH+DS9s/u9oNojArTbssCkhXO
-        0bq5WA8CfgeylNGZjWlf9dY=
-X-Google-Smtp-Source: AK7set94XJzYyJCNO/hmqI4C/0CIrhKZzQMOIZe4OV/5Cjq7OWlWvSbXZac0Owy7w0Cfc3LoqpqD6A==
-X-Received: by 2002:aa7:c552:0:b0:4ad:bb59:bc8b with SMTP id s18-20020aa7c552000000b004adbb59bc8bmr2526518edr.32.1676845412831;
-        Sun, 19 Feb 2023 14:23:32 -0800 (PST)
-Received: from krava ([83.240.60.112])
-        by smtp.gmail.com with ESMTPSA id s22-20020a50ab16000000b004acb6d659eesm1044074edc.52.2023.02.19.14.23.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Feb 2023 14:23:32 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sun, 19 Feb 2023 23:23:29 +0100
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     acme@kernel.org, olsajiri@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
-        eddyz87@gmail.com, sinquersw@gmail.com, timo@incline.eu,
-        songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
-        martin.lau@kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC dwarves 0/4] dwarves: change BTF encoding skip logic for
- functions
-Message-ID: <Y/KhYf+jipES0pQN@krava>
-References: <1676675433-10583-1-git-send-email-alan.maguire@oracle.com>
+        with ESMTP id S229530AbjBSXBF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Feb 2023 18:01:05 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8427919F3A;
+        Sun, 19 Feb 2023 15:01:00 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4PKgyK28rzz4x7y;
+        Mon, 20 Feb 2023 10:00:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1676847658;
+        bh=8ql69qLYLVAhMw3ceWj0faqhwOkcspKfnR4XgN8PKZQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uoZqQ2WQbJeO6Xs4WawluFLsW+wMwHKE4xuKqhtOmOiSaftaxH1BZMnCGj7HBCmvr
+         IPSgpTXbCZZjiGMFkmFibyKX228NNMBcyMaCYoE8PUM9RBC8O4Vh26dVG4s6Hghb/f
+         YFqXXXW84nmUBHK+B9jE9B0rg8iTiN4xrnhGqWQvQ9h7DHHWsWoh2FrpTfjGrAhsI8
+         a37dEoyr4MpkM7qw7wHiD7YVgPJN+uHURpVjx2caIYAMuO0OWcQDdx/pLwOVGwHnHT
+         CUOIeZ7BQiVcE+kcYrM72K69PQhAOAthUDdjhn1gDKnt01B0LKBImXk13tyI1lcEdi
+         H3KWndF0pkp/A==
+Date:   Mon, 20 Feb 2023 10:00:56 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the bpf-next tree with the net-next
+ tree
+Message-ID: <20230220100056.363793d7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1676675433-10583-1-git-send-email-alan.maguire@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; boundary="Sig_/4sV48rQdRWTBxFQGMeKYQ=6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,111 +55,97 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 17, 2023 at 11:10:29PM +0000, Alan Maguire wrote:
-> It has been observed [1] that the recent dwarves changes
-> that skip BTF encoding for functions that have optimized-out
-> parameters are too aggressive, leading to missing kfuncs
-> which generate warnings and a BPF selftest failure.
-> 
-> Here a different approach is used; we observe that
-> just because a function does not _use_ a parameter,
-> it does not mean it was not passed to it.  What we
-> are really keen to detect are cases where the calling
-> conventions are violated such that a function will
-> not have parameter values in the expected registers.
-> In such cases, tracing and kfunc behaviour will be
-> unstable.  We are not worried about parameters being
-> optimized out, provided that optimization does not
-> lead to other parameters being passed via
-> unexpected registers.
-> 
-> So this series attempts to detect such cases by
-> examining register (DW_OP_regX) values for
-> parameters where available; if these match
-> expectations, the function is deemed safe to add to
-> BTF, even if parameters are optimized out.
-> 
-> Using this approach, the only functions that
-> BTF generation is suppressed for are
-> 
-> 1. those with parameters that violate calling
->    conventions where present; and
-> 2. those which have multiple inconsistent prototypes.
-> 
-> With these changes, running pahole on a gcc-built
-> vmlinux skips
-> 
-> - 1164 functions due to multiple inconsistent function
->   prototypes.  Most of these are "."-suffixed optimized
->   fuctions.
-> - 331 functions due to unexpected register usage
-> 
-> For a clang-built kernel, the numbers are
-> 
-> - 539 functions with inconsistent prototypes are skipped
-> - 209 functions with unexpected register usage are skipped
-> 
-> One complication is that functions that are passed
-> structs (or typedef structs) can use multiple registers
-> to pass those structures.  Examples include
-> bpf_lsm_socket_getpeersec_stream() (passing a typedef
-> struct sockptr_t) and the bpf_testmod_test_struct_arg_1
-> function in bpf_testmod.  Because multiple registers
-> are used to represent the structure, this throws
-> off expectations for any subsequent parameter->register
-> mappings.  To handle this, simply exempt functions
-> that have struct (or typedef struct) parameters from
-> our register checks.
-> 
-> Note to test this series on bpf-next, the following
-> commit should be reverted (reverting the revert
-> so that the flags are added to BTF encoding when
-> using pahole v1.25):
-> 
-> commit 1f5dfcc78ab4 ("Revert "bpf: Add --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags for v1.25"")
-> 
-> With these changes we also see tracing_struct now pass:
-> 
-> $ sudo ./test_progs -t tracing_struct
-> #233     tracing_struct:OK
-> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Further testing is needed - along with support for additional
-> parameter index -> DWARF reg for more platforms.
-> 
-> Future work could also add annotations for optimized-out
-> parameters via BTF tags to help guide tracing.
-> 
-> [1] https://lore.kernel.org/bpf/CAADnVQ+hfQ9LEmEFXneB7hm17NvRniXSShrHLaM-1BrguLjLQw@mail.gmail.com/
-> 
-> Alan Maguire (4):
->   dwarf_loader: mark functions that do not use expected registers for
->     params
->   btf_encoder: exclude functions with unexpected param register use not
->     optimizations
->   pahole: update descriptions for btf_gen_optimized,
->     skip_encoding_btf_inconsistent_proto
->   pahole: update man page for options also
+--Sig_/4sV48rQdRWTBxFQGMeKYQ=6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-changes look good, but I don't have that much insight into dwarf part of
-the code
+Hi all,
 
-anyway I tested on x86 with gcc and clang bpf selftests and it looks good,
-and duplicate functions are gone
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
-Tested-by: Jiri Olsa <jolsa@kernel.org>
+  drivers/net/ethernet/intel/ice/ice_xsk.c
 
-thanks,
-jirka
+between commit:
 
-> 
->  btf_encoder.c      |  24 +++++++---
->  dwarf_loader.c     | 109 ++++++++++++++++++++++++++++++++++++++++++---
->  dwarves.h          |   5 +++
->  man-pages/pahole.1 |   4 +-
->  pahole.c           |   4 +-
->  5 files changed, 129 insertions(+), 17 deletions(-)
-> 
-> -- 
-> 2.31.1
-> 
+  675f176b4dcc ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netdev/net")
+
+from the net-next tree and commit:
+
+  aa1d3faf71a6 ("ice: Robustify cleaning/completing XDP Tx buffers")
+
+from the bpf-next tree.
+
+I fixed it up (I guessed - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/ethernet/intel/ice/ice_xsk.c
+index b2d96ae5668c,917c75e530ca..000000000000
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@@ -629,29 -613,28 +629,30 @@@ static void ice_clean_xdp_irq_zc(struc
+ =20
+  	last_rs =3D xdp_ring->next_to_use ? xdp_ring->next_to_use - 1 : cnt - 1;
+  	tx_desc =3D ICE_TX_DESC(xdp_ring, last_rs);
+ -	if (tx_desc->cmd_type_offset_bsz &
+ -	    cpu_to_le64(ICE_TX_DESC_DTYPE_DESC_DONE)) {
+ +	if ((tx_desc->cmd_type_offset_bsz &
+ +	    cpu_to_le64(ICE_TX_DESC_DTYPE_DESC_DONE))) {
+  		if (last_rs >=3D ntc)
+ -			xsk_frames =3D last_rs - ntc + 1;
+ +			completed_frames =3D last_rs - ntc + 1;
+  		else
+ -			xsk_frames =3D last_rs + cnt - ntc + 1;
+ +			completed_frames =3D last_rs + cnt - ntc + 1;
+  	}
+ =20
+ -	if (!xsk_frames)
+ +	if (!completed_frames)
+  		return;
+ =20
+ -	if (likely(!xdp_ring->xdp_tx_active))
+ +	if (likely(!xdp_ring->xdp_tx_active)) {
+ +		xsk_frames =3D completed_frames;
+  		goto skip;
+ +	}
+ =20
+  	ntc =3D xdp_ring->next_to_clean;
+ -	for (i =3D 0; i < xsk_frames; i++) {
+ +	for (i =3D 0; i < completed_frames; i++) {
+  		tx_buf =3D &xdp_ring->tx_buf[ntc];
+ =20
+- 		if (tx_buf->raw_buf) {
++ 		if (tx_buf->type =3D=3D ICE_TX_BUF_XSK_TX) {
++ 			tx_buf->type =3D ICE_TX_BUF_EMPTY;
+ -			xsk_buff_free(tx_buf->xdp);
+ -			xdp_ring->xdp_tx_active--;
+ +			ice_clean_xdp_tx_buf(xdp_ring, tx_buf);
+ +			tx_buf->raw_buf =3D NULL;
+  		} else {
+  			xsk_frames++;
+  		}
+
+--Sig_/4sV48rQdRWTBxFQGMeKYQ=6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmPyqigACgkQAVBC80lX
+0Gxcywf/d67R26+70qJRePcUA/2hLebeQO/NVhclP2sX1KENDkcnLqKEmwdqsq2l
+W4ztCvfHdq/g+9u7ZLnKG7hbkorlq3c8Y2NrUt+Ot1CS+KIeVGxGa394tsDS/Xyq
+Tu0d58L5+MMxiM6g9yArj+M2/KeHjLeNrj011fVJwCG/eK/NcYHTotiqYo/d5p8K
+qs3gbXFG1u0Tn4kdnZAJ2SJl7OV716GQx7jQ6L+iCCV2EVkXw8Qi+1oRWsHqlEoa
+t7+FPSjzLtF3ggTIeKNgHwd0ReMFp+29W2vjukf2GWK62beaBGMHof9sUhP8NPwK
+tdyjq+plMLlCEPtQl//rQBnCdyxH0w==
+=L/Ay
+-----END PGP SIGNATURE-----
+
+--Sig_/4sV48rQdRWTBxFQGMeKYQ=6--
