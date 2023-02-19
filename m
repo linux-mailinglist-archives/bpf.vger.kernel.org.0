@@ -2,67 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2079169C23D
-	for <lists+bpf@lfdr.de>; Sun, 19 Feb 2023 21:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C01969C2DF
+	for <lists+bpf@lfdr.de>; Sun, 19 Feb 2023 23:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbjBSUXA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Feb 2023 15:23:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S231543AbjBSWXh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Feb 2023 17:23:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbjBSUW7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Feb 2023 15:22:59 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0CDB756;
-        Sun, 19 Feb 2023 12:22:58 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id bj25so835619oib.7;
-        Sun, 19 Feb 2023 12:22:58 -0800 (PST)
+        with ESMTP id S231542AbjBSWXg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Feb 2023 17:23:36 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93A4EB4D
+        for <bpf@vger.kernel.org>; Sun, 19 Feb 2023 14:23:34 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id k5so6024557edo.3
+        for <bpf@vger.kernel.org>; Sun, 19 Feb 2023 14:23:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=T/lG1r/TbyB2QAMQC7qmr8BereB2Nt3IrsNpg8phS4g=;
-        b=jSmj+cXuN1LvCHr5ar1NNtxkiQcA//ACdciA3jS0KEuAHav3RyM6E6P1baFTXS8IYh
-         kCwiDrkxl02LFFbLGXFqSnUy0OARTjumqeCTmW5sSE/QTXokCyBz8zcQlThqD52ELaTF
-         Q6xBMECYEtLw3LbV+7h/0mUWz0FPx+MBcHH4ErzVtF0s+dZCdPtYgTJMvmEdyx0yOjfv
-         Uq2OqBQ9iYWCkZfvQvstEuvtVyxhd8z+NaffEUhsS8CbTx70ktbGouZMuQpMWlFJovOe
-         NLaMW9aGMHGVIIJTif9FyXOBWxR9qkwUx7zZ9hmQIgoroOv8+rK/qjGSufVjiuMRcyFb
-         WZeg==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mcu3FFlI3Cl+PJaeR+LhESwSYtNrx+Z+dfvy/EIIt58=;
+        b=hfBiBRq+iWOI5Ytxg1P18nrzQecgUtRoG1wi3TNxbOs/i06pNAwzPlmQVtp+ldT+49
+         yVbak/cj961N0/pmSLk+qVVs8d26qtFaaJBhM2Nh5qq3Gt6m1woBSOHYUB7/PgyMdkqv
+         ccGwJCPlR9vcc1Z2HrVStZiSpVCtDO0eY6j4QDuWpPhzuyZpAeUsIG1PfmouiSkQMQIK
+         951qDWrKMePaXDgTZvYBd5SRr8tcwuu7OykP9QJZsfhtg6R3nbO33N9pt+jCCAZ34M/Q
+         FYsyB+gWVHJK/IBT36M+9Gr0BEY/VEv7/aaq2KnrKUWNk25AoRqqjzDUJeGhDP71Jdia
+         RzTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T/lG1r/TbyB2QAMQC7qmr8BereB2Nt3IrsNpg8phS4g=;
-        b=50GIRgimzoYr7DTtSCyAfAkW4VwwxxCYDA/fX62Zy7VGq+VNr6h271FfJDHnvQE11r
-         zwC0MbYqnXUeHOyvwIj0D9gre/qmSUCLUZ9Wjh/Ti8PS3ykTLwiYhR5ek1UbUrTCn+gb
-         jr5VVXzav0/7aZ/zWfS459ri3OfaXtgRBn1OguSFjDP6qM0Hmcb85W9zigO30vFPYCbF
-         Dd1iLQxNDcC5QqnSS+f+4/E+mUKUYdIjOF6YH1NGfy5PDdo7bA2Oq+rn3N3KKj9I0Ymn
-         Q261/CPjGIa7Yrou5TaQyj9bSMHDmWf8ZRCY1e4WmFGgBKTVwHtukClv7Iao51kZxYSI
-         swLA==
-X-Gm-Message-State: AO0yUKWB2+iPVEnoGPpDJXI+HDl/yvqiJBpJnnhMQrYZYdVHbwoJVwsY
-        MXHuxb46TTf/6s5//JyABSFR/FTfw6g=
-X-Google-Smtp-Source: AK7set9nCvvp3LLgIWdut9vtnQO4cbDdcgUHBkWfxrycIxa7oIRLZo3EA4gc7Q2ZsbbCjtSgUO/RMg==
-X-Received: by 2002:aca:2106:0:b0:378:94c4:a912 with SMTP id 6-20020aca2106000000b0037894c4a912mr3623918oiz.24.1676838178085;
-        Sun, 19 Feb 2023 12:22:58 -0800 (PST)
-Received: from localhost ([2600:1700:65a0:ab60:c829:c422:d5dc:95ba])
-        by smtp.gmail.com with ESMTPSA id y21-20020a056830109500b0068bb73bd95esm4278400oto.58.2023.02.19.12.22.57
+        bh=Mcu3FFlI3Cl+PJaeR+LhESwSYtNrx+Z+dfvy/EIIt58=;
+        b=gIKZhnQ8M0k/LJetQauwTzn5iADD1xbL7AqOnjL+lxPbLfW37QNCu70oaO/y2AB54q
+         /NFdS/OJNvQ1AKi1OppF5IEpWWKbk9nouQf1LEy2tuKWTmVog8Pb66Tjg51LLrBeWKhr
+         7keit8lSvU7OhHv6yjjBLEln06A8VqQBdlEucGxx/QWV7eOrEGQz+WtbIC2PzwwegoQ6
+         a0ctd9Lq8+8HadYaSChcOGTcbS8NMKzLnZGZvCkay4f1/NR9vG+3FgKYtOYjKhN1K3g9
+         TYvRiy8lqgEjE/rnL+HFZ6KUFkce8T0Dzb49635OD9IhC9slZx8MJb9jFb1aG78K4gGq
+         BDTw==
+X-Gm-Message-State: AO0yUKVY1u4KAfDmGew9QvUQhSg+2oskH+DS9s/u9oNojArTbssCkhXO
+        0bq5WA8CfgeylNGZjWlf9dY=
+X-Google-Smtp-Source: AK7set94XJzYyJCNO/hmqI4C/0CIrhKZzQMOIZe4OV/5Cjq7OWlWvSbXZac0Owy7w0Cfc3LoqpqD6A==
+X-Received: by 2002:aa7:c552:0:b0:4ad:bb59:bc8b with SMTP id s18-20020aa7c552000000b004adbb59bc8bmr2526518edr.32.1676845412831;
+        Sun, 19 Feb 2023 14:23:32 -0800 (PST)
+Received: from krava ([83.240.60.112])
+        by smtp.gmail.com with ESMTPSA id s22-20020a50ab16000000b004acb6d659eesm1044074edc.52.2023.02.19.14.23.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Feb 2023 12:22:57 -0800 (PST)
-Date:   Sun, 19 Feb 2023 12:22:56 -0800
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     Yonghong Song <yhs@meta.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: Re: [Patch net-next] sock_map: dump socket map id via diag
-Message-ID: <Y/KFIBLicHQ+Am5R@pop-os.localdomain>
-References: <20230211201954.256230-1-xiyou.wangcong@gmail.com>
- <32ab89e1-84e9-75f1-18c1-81db9a40d0bb@meta.com>
+        Sun, 19 Feb 2023 14:23:32 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Sun, 19 Feb 2023 23:23:29 +0100
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     acme@kernel.org, olsajiri@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
+        eddyz87@gmail.com, sinquersw@gmail.com, timo@incline.eu,
+        songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
+        martin.lau@kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC dwarves 0/4] dwarves: change BTF encoding skip logic for
+ functions
+Message-ID: <Y/KhYf+jipES0pQN@krava>
+References: <1676675433-10583-1-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <32ab89e1-84e9-75f1-18c1-81db9a40d0bb@meta.com>
+In-Reply-To: <1676675433-10583-1-git-send-email-alan.maguire@oracle.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,36 +76,111 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Feb 12, 2023 at 10:29:11PM -0800, Yonghong Song wrote:
+On Fri, Feb 17, 2023 at 11:10:29PM +0000, Alan Maguire wrote:
+> It has been observed [1] that the recent dwarves changes
+> that skip BTF encoding for functions that have optimized-out
+> parameters are too aggressive, leading to missing kfuncs
+> which generate warnings and a BPF selftest failure.
 > 
+> Here a different approach is used; we observe that
+> just because a function does not _use_ a parameter,
+> it does not mean it was not passed to it.  What we
+> are really keen to detect are cases where the calling
+> conventions are violated such that a function will
+> not have parameter values in the expected registers.
+> In such cases, tracing and kfunc behaviour will be
+> unstable.  We are not worried about parameters being
+> optimized out, provided that optimization does not
+> lead to other parameters being passed via
+> unexpected registers.
 > 
-> On 2/11/23 12:19 PM, Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
-> > 
-> > Currently there is no way to know which sockmap a socket has been added
-> > to from outside, especially for that a socket can be added to multiple
-> > sockmap's. We could dump this via socket diag, as shown below.
-> > 
-> > Sample output:
-> > 
-> >    # ./iproute2/misc/ss -tnaie --sockmap
-> >    ESTAB  0      344329     127.0.0.1:1234     127.0.0.1:40912 ino:21098 sk:5 cgroup:/user.slice/user-0.slice/session-c1.scope <-> sockmap: 1
-> > 
-> >    # bpftool map
-> >    1: sockmap  flags 0x0
-> >    	key 4B  value 4B  max_entries 2  memlock 4096B
-> > 	pids echo-sockmap(549)
-> >    4: array  name pid_iter.rodata  flags 0x480
-> > 	key 4B  value 4B  max_entries 1  memlock 4096B
-> > 	btf_id 10  frozen
-> > 	pids bpftool(624)
-> > 
-> > In the future, we could dump other sockmap related stats too, hence I
-> > make it a nested attribute.
+> So this series attempts to detect such cases by
+> examining register (DW_OP_regX) values for
+> parameters where available; if these match
+> expectations, the function is deemed safe to add to
+> BTF, even if parameters are optimized out.
 > 
-> Have you considered to implement a sockmap iterator? This will be
+> Using this approach, the only functions that
+> BTF generation is suppressed for are
+> 
+> 1. those with parameters that violate calling
+>    conventions where present; and
+> 2. those which have multiple inconsistent prototypes.
+> 
+> With these changes, running pahole on a gcc-built
+> vmlinux skips
+> 
+> - 1164 functions due to multiple inconsistent function
+>   prototypes.  Most of these are "."-suffixed optimized
+>   fuctions.
+> - 331 functions due to unexpected register usage
+> 
+> For a clang-built kernel, the numbers are
+> 
+> - 539 functions with inconsistent prototypes are skipped
+> - 209 functions with unexpected register usage are skipped
+> 
+> One complication is that functions that are passed
+> structs (or typedef structs) can use multiple registers
+> to pass those structures.  Examples include
+> bpf_lsm_socket_getpeersec_stream() (passing a typedef
+> struct sockptr_t) and the bpf_testmod_test_struct_arg_1
+> function in bpf_testmod.  Because multiple registers
+> are used to represent the structure, this throws
+> off expectations for any subsequent parameter->register
+> mappings.  To handle this, simply exempt functions
+> that have struct (or typedef struct) parameters from
+> our register checks.
+> 
+> Note to test this series on bpf-next, the following
+> commit should be reverted (reverting the revert
+> so that the flags are added to BTF encoding when
+> using pahole v1.25):
+> 
+> commit 1f5dfcc78ab4 ("Revert "bpf: Add --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags for v1.25"")
+> 
+> With these changes we also see tracing_struct now pass:
+> 
+> $ sudo ./test_progs -t tracing_struct
+> #233     tracing_struct:OK
+> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Further testing is needed - along with support for additional
+> parameter index -> DWARF reg for more platforms.
+> 
+> Future work could also add annotations for optimized-out
+> parameters via BTF tags to help guide tracing.
+> 
+> [1] https://lore.kernel.org/bpf/CAADnVQ+hfQ9LEmEFXneB7hm17NvRniXSShrHLaM-1BrguLjLQw@mail.gmail.com/
+> 
+> Alan Maguire (4):
+>   dwarf_loader: mark functions that do not use expected registers for
+>     params
+>   btf_encoder: exclude functions with unexpected param register use not
+>     optimizations
+>   pahole: update descriptions for btf_gen_optimized,
+>     skip_encoding_btf_inconsistent_proto
+>   pahole: update man page for options also
 
-I think you understand it wrong, I don't want to dump the map, please
-double check the above requirement.
+changes look good, but I don't have that much insight into dwarf part of
+the code
 
-Thanks.
+anyway I tested on x86 with gcc and clang bpf selftests and it looks good,
+and duplicate functions are gone
+
+Tested-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
+
+> 
+>  btf_encoder.c      |  24 +++++++---
+>  dwarf_loader.c     | 109 ++++++++++++++++++++++++++++++++++++++++++---
+>  dwarves.h          |   5 +++
+>  man-pages/pahole.1 |   4 +-
+>  pahole.c           |   4 +-
+>  5 files changed, 129 insertions(+), 17 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
