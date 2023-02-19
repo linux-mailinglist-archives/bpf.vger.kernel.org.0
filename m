@@ -2,70 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C2E69C144
-	for <lists+bpf@lfdr.de>; Sun, 19 Feb 2023 16:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B8569C145
+	for <lists+bpf@lfdr.de>; Sun, 19 Feb 2023 16:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbjBSPw5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Feb 2023 10:52:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43904 "EHLO
+        id S230148AbjBSPw6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Feb 2023 10:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbjBSPw4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Feb 2023 10:52:56 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E29A46A3
-        for <bpf@vger.kernel.org>; Sun, 19 Feb 2023 07:52:54 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id fd2so2644320edb.8
-        for <bpf@vger.kernel.org>; Sun, 19 Feb 2023 07:52:54 -0800 (PST)
+        with ESMTP id S230146AbjBSPw5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Feb 2023 10:52:57 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59D8658B
+        for <bpf@vger.kernel.org>; Sun, 19 Feb 2023 07:52:55 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id ek25so2801645edb.7
+        for <bpf@vger.kernel.org>; Sun, 19 Feb 2023 07:52:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+dM2SLqS21zDKJx6x4MhUEm4dpwG3TWg25MgSQwFL7Y=;
-        b=p/Cx8BQ/bNWHyOq19eMxASOaPwam3r8iHCShtYDfmIvQdNnls1XOBpamCAZVTLJy+n
-         ht5a6AZ3Gp3H5TIrVZtSCE3yhgWDJ76YOh0ECyGzYoHJMO9H+Nfs9GYgLvws/g+U3jm5
-         4WrdhfvUfq7zcsruokgnE9oQnsMENQ98qeny0wqHSOECXOwEygpHP2zadXQuqrxR4Y0w
-         a2BkYoN1pFbx1WxdwzFDlN0u31X7tvHHzeaT7rLptwn9RL5LoIP7NxhjNHBiqtUZuhcq
-         civRwfCXN8EzWJk/WbfehcZ8Ag0pEnJYSqx8IQoT085ax67wA5PPtvKYUAu3Ddkbovfn
-         SS9w==
+        bh=PUNvfkVE+LmadH1Vh2pOdRNMkls/oHd969nUTmNAQ1g=;
+        b=omIkfPU90OuLYTUlPza9jnVGuAp5dqfqgnR8v3LoUfilQzF0CkR9wUfz8Q2H2COVwv
+         0tZ1gHvMi06RRj5HuHSWb4PkrPsaF2T13q6CcYk5/rZQ68SAsr+4qexYYegJUhDZvROe
+         LOTyvGgiD2Z8bj3+jBZsWqNtNrXtWfS6RY/zjqlcjaJeaNCFXmUdLf75HzPshcvxUYXO
+         EruQFxCWnINxu7rdRkwNrQ6OzTl1Ox7/iEwBC3b/oTRUoYPnDxpYVvB/tVZLlosASItX
+         SKuFYRiNmMRMXkXRY0lMQljavW8OPGO4iw+0IY9YskMPc5ykUZnrbypAQdvqMf/lY67v
+         NSOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+dM2SLqS21zDKJx6x4MhUEm4dpwG3TWg25MgSQwFL7Y=;
-        b=EvpyaPeQTwTLmncNDImVeUNQ/rAAI5b5RXunypEqr7f9M9Ulxdu7LBqck3zNLuJFqm
-         D7FzEyyFXJoeaDg0O2A/JOfsactuWQuOeLZEir5VjkJ88tjFUMqjUPsZ1wWvgOz/7oug
-         cQNvkX3hzzEjStL2n4XJCXM8E2S41g9YEpdOWRmwVLo7md6ShU03W/YPHHeYR+LJwTq0
-         zjTfVu2EzplpnBUP2whXzVTLVzEB0w9LaQsY9jiRcaGt124neb4L6quFRpqFaqIB4HAV
-         XnLtjJw5hy/WBZ9Y3ntG3Y/brBDgwSlR2lxiYKC3hZ6nT6nuUzpYsuvHH5GXs/pswPtL
-         UkKQ==
-X-Gm-Message-State: AO0yUKVf0UWy97OU6oEdVnvZRfyVE14GGZDGgmI21BgBzIvm1vDf05RT
-        ef+23U73Lm6r6NrkXRCPgVKWTZlV9TsNmw==
-X-Google-Smtp-Source: AK7set9ndrfBZfMG7t0SfgNxMRqLIjG5utl+uj0TjZ2HK+lC+MX5PuL6urC+P+PGgqKxVnuPwThLvw==
-X-Received: by 2002:a17:906:4f84:b0:8b1:32b0:2a25 with SMTP id o4-20020a1709064f8400b008b132b02a25mr7209943eju.10.1676821972226;
-        Sun, 19 Feb 2023 07:52:52 -0800 (PST)
+        bh=PUNvfkVE+LmadH1Vh2pOdRNMkls/oHd969nUTmNAQ1g=;
+        b=wIHJg0kaaGnQcgiRwhV0lrCp14lYkV1HDK5gl1Yq/E4Th+fQilDgLaQ75eFf8pmB1/
+         AFlwk0Yy4lUMdgzEXGKpqUsRtyHAOf1zxIJgOuOpLoqEbGJxQkJI58Epi2syRaPsV8oo
+         233/OqwSuyxz/8sGA8Y9afA/2YjObWNlKPjxgaF5A9bfCj0niFgcACS/jx0HzMsSoxDi
+         8MyNHXESEDW5z6k2V9GatvUBEph11iWGUeQJ8zLrDBDRSEQzlVVEW7V+J6vS0FJTQ/4R
+         9xu45BkDOvHRId2uu9P8gYpkE6uQdam4NX91hz30Ezy8k+8dtcLGbLyDUrUVBrfefAiz
+         o4bg==
+X-Gm-Message-State: AO0yUKXZtbtOg74+7Ibw33Keeb07GJJfrWYcMKMHyfHFOXpBZEcwbiIe
+        6xjTydOfo2LDLKufg7ZM46iq5b0SCpaEqQ==
+X-Google-Smtp-Source: AK7set8arj5whtYu2ObjEIxZJ2KW76Y2MqmYdLK9WUOv7xZuC7zteFPTbBgfaNYSklEV+W/DMkq+rQ==
+X-Received: by 2002:a05:6402:7c2:b0:4ae:eae1:21f7 with SMTP id u2-20020a05640207c200b004aeeae121f7mr2650670edy.37.1676821973774;
+        Sun, 19 Feb 2023 07:52:53 -0800 (PST)
 Received: from localhost ([2001:620:618:580:2:80b3:0:8d0])
-        by smtp.gmail.com with ESMTPSA id jy28-20020a170907763c00b008b17b123a47sm3702778ejc.208.2023.02.19.07.52.51
+        by smtp.gmail.com with ESMTPSA id m11-20020a50930b000000b004a27046b7a7sm655605eda.73.2023.02.19.07.52.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Feb 2023 07:52:51 -0800 (PST)
+        Sun, 19 Feb 2023 07:52:53 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Cc:     Martin KaFai Lau <martin.lau@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         David Vernet <void@manifault.com>
-Subject: [PATCH bpf-next v1 1/7] bpf: Support kptrs in percpu hashmap and percpu LRU hashmap
-Date:   Sun, 19 Feb 2023 16:52:43 +0100
-Message-Id: <20230219155249.1755998-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 2/7] bpf: Support kptrs in local storage maps
+Date:   Sun, 19 Feb 2023 16:52:44 +0100
+Message-Id: <20230219155249.1755998-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230219155249.1755998-1-memxor@gmail.com>
 References: <20230219155249.1755998-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6181; i=memxor@gmail.com; h=from:subject; bh=Y9p91t4feL/dpDYVE2Cl/S2CG69w6xu2l7fuqwPvi+k=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBj8kUeGndslOT9Tib4peABYZTK9T21wOGKJ4ZLkWdi FU0l8O6JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY/JFHgAKCRBM4MiGSL8RyhbNEA CaMQBzosGGX+I2vdqvxt8SW9ldwRwtiPeDVRX53iNeWVZGtj8RmTg4A6Bombpbq/MOMdItIEImpQkJ lVz1H4DAYosLZLRwLPWubn4FnRQqcBA+GYQGFqysuaExptNuhkOWhb4qWD01gHOXJ4XcnN3T33BF6p 79PfpQCSXmEywRe7jqtHNPGI60CqzIVNaIEzIjwHV692VT1jTYIGRY3t8ofRKa8dvck+KrcQyPqJi0 ajusM56iZgQ1eAdDeIJIUwpxj1npa41aApd6X7t85H3D4cNFo0U/mmztJ6MzSEBWrscn0nkSBWzpOm 0hiYTEyH7Gs/gyjcVJbkluKHepy+gffWHdlM6FQceHszg1C2KNPMKuyR4mTxclg4DscOcMkTKTGTbm Tj3raoTMIFZwiMyyNSrigkNSKhS98vxIJb583TVPX7VK+CGWZGb1oeSCgkPGUtWLvd0vCUBKWZIQa3 hCfkVzsBBPKUHaQ64m2WNQrL5v4eNy5gRWtiPMOWHXJkyH4UXLBtDjTZoEL2SPt0IryC1sQxRhHrBy UoRF4r5K0ZYwcFVvhtLMTeBkGIqZ0ZWCgKyf/3jEKZLmfQogfVx4t6pwWdOiR6vY0YZJivFP09RhZJ kvEe1aAIXU9ghycNTNJCvjbsEFM+8z1hgFIyAlqkOJifgFmttUKEZmulqC3Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5277; i=memxor@gmail.com; h=from:subject; bh=IZXotWh+grGo1i9hxQm1S3jtz8ac/rLZBYeMZigpPWw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBj8kUej1ABQo1uQPzbzgNBzwI5sojqXW7Ud/sm9ahT AaaZ+HyJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY/JFHgAKCRBM4MiGSL8Ryh+AD/ 9I4J0xLbi+t3dXHuMcDvGy6kyCfXmpKGoNl5xj2tIQ2D3yuAsyC0CGm5iflESj+d0WZqL1T4SY2TrD epvRbo1+2UxKpzJasx3QmhURVhbkFfHBTZeu2b1njN0ICMPjw6a30DQX9Du4wU5igaXlsQDCOTohS9 M93SHvv1Ii/1SXty8jnJH/CzNk38Etzhvj15Hy/izwt0OiAd6hbi7bPl1PTnq5KlbL0SsxGaMyEmLX jBx3r5RER0KfrWmNK+785wwhClYZa9oEGkoM7aTXl7koqvD2Y1XJeviJ8g0lNX+MQZFmI7Ne80/Jn6 sr6bj/MO6pFw7f9Ke8QkA8eIgKsxbjKfU4FgIX+X1UqJm7D1XalaaMXuDw412Fc1XkpLvzituK+h8l UyTExbz1GK8/p7kyRNHD6a9/4MgFsoAZBC/1PQU+hCEbskNLfOH5lZXxpVUpsBBqis233hXbRtYE05 cZYpSfGA3AsO9G+WN9ugdEd5QGQpNNtcdDT+1UoICBXdxl+9yR+GeYz43Oe0nzP2590d2lhMMwzRaM rZFVSHOhrXYA3M7c0p9jw3zuE+BpqakF5xu16n4hsq4n8lOeH9Yw8VSPJRUbUDR32waLZ+sxXCVY+s LypEpnDBXFEttk/IJSkJcbFaEJ17kuH3hTNyVmEfaER9//9eWWIDohUdxk/w==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,169 +79,141 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Enable support for kptrs in percpu BPF hashmap and percpu BPF LRU
-hashmap by wiring up the freeing of these kptrs from percpu map
-elements.
+Enable support for kptrs in local storage maps by wiring up the freeing
+of these kptrs from map value.
 
+Cc: Martin KaFai Lau <martin.lau@kernel.org>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/hashtab.c | 59 +++++++++++++++++++++++++++-----------------
- kernel/bpf/syscall.c |  2 ++
- 2 files changed, 39 insertions(+), 22 deletions(-)
+ kernel/bpf/bpf_local_storage.c | 35 ++++++++++++++++++++++++++++++----
+ kernel/bpf/syscall.c           |  6 +++++-
+ kernel/bpf/verifier.c          | 12 ++++++++----
+ 3 files changed, 44 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 5dfcb5ad0d06..653aeb481c79 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -249,7 +249,18 @@ static void htab_free_prealloced_fields(struct bpf_htab *htab)
- 		struct htab_elem *elem;
- 
- 		elem = get_htab_elem(htab, i);
--		bpf_obj_free_fields(htab->map.record, elem->key + round_up(htab->map.key_size, 8));
-+		if (htab_is_percpu(htab)) {
-+			void __percpu *pptr = htab_elem_get_ptr(elem, htab->map.key_size);
-+			int cpu;
-+
-+			for_each_possible_cpu(cpu) {
-+				bpf_obj_free_fields(htab->map.record, per_cpu_ptr(pptr, cpu));
-+				cond_resched();
-+			}
-+		} else {
-+			bpf_obj_free_fields(htab->map.record, elem->key + round_up(htab->map.key_size, 8));
-+			cond_resched();
-+		}
- 		cond_resched();
+diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+index 35f4138a54dc..4521d53d7d4d 100644
+--- a/kernel/bpf/bpf_local_storage.c
++++ b/kernel/bpf/bpf_local_storage.c
+@@ -75,6 +75,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
+ 	if (selem) {
+ 		if (value)
+ 			copy_map_value(&smap->map, SDATA(selem)->data, value);
++		/* No need to call check_and_init_map_value as memory is zero init */
+ 		return selem;
  	}
- }
-@@ -759,9 +770,17 @@ static int htab_lru_map_gen_lookup(struct bpf_map *map,
- static void check_and_free_fields(struct bpf_htab *htab,
- 				  struct htab_elem *elem)
- {
--	void *map_value = elem->key + round_up(htab->map.key_size, 8);
-+	if (htab_is_percpu(htab)) {
-+		void __percpu *pptr = htab_elem_get_ptr(elem, htab->map.key_size);
-+		int cpu;
  
--	bpf_obj_free_fields(htab->map.record, map_value);
-+		for_each_possible_cpu(cpu)
-+			bpf_obj_free_fields(htab->map.record, per_cpu_ptr(pptr, cpu));
-+	} else {
-+		void *map_value = elem->key + round_up(htab->map.key_size, 8);
+@@ -103,10 +104,17 @@ static void bpf_selem_free_rcu(struct rcu_head *rcu)
+ 	struct bpf_local_storage_elem *selem;
+ 
+ 	selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
++	bpf_obj_free_fields(SDATA(selem)->smap->map.record, SDATA(selem));
++	kfree(selem);
++}
 +
-+		bpf_obj_free_fields(htab->map.record, map_value);
++static void bpf_selem_free_tasks_trace_rcu(struct rcu_head *rcu)
++{
++	/* Free directly if Tasks Trace RCU GP also implies RCU GP */
+ 	if (rcu_trace_implies_rcu_gp())
+-		kfree(selem);
++		bpf_selem_free_rcu(rcu);
+ 	else
+-		kfree_rcu(selem, rcu);
++		call_rcu(rcu, bpf_selem_free_rcu);
+ }
+ 
+ /* local_storage->lock must be held and selem->local_storage == local_storage.
+@@ -160,9 +168,9 @@ static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_stor
+ 		RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
+ 
+ 	if (use_trace_rcu)
+-		call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
++		call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_tasks_trace_rcu);
+ 	else
+-		kfree_rcu(selem, rcu);
++		call_rcu(&selem->rcu, bpf_selem_free_rcu);
+ 
+ 	return free_local_storage;
+ }
+@@ -713,6 +721,25 @@ void bpf_local_storage_map_free(struct bpf_map *map,
+ 	 */
+ 	synchronize_rcu();
+ 
++	/* Only delay freeing of smap, buckets are not needed anymore */
+ 	kvfree(smap->buckets);
++
++	/* When local storage has special fields, callbacks for
++	 * bpf_selem_free_rcu and bpf_selem_free_tasks_trace_rcu will keep using
++	 * the map BTF record, we need to execute an RCU barrier to wait for
++	 * them as the record will be freed right after our map_free callback.
++	 */
++	if (!IS_ERR_OR_NULL(smap->map.record)) {
++		rcu_barrier_tasks_trace();
++		/* We cannot skip rcu_barrier() when rcu_trace_implies_rcu_gp()
++		 * is true, because while call_rcu invocation is skipped in that
++		 * case in bpf_selem_free_tasks_trace_rcu (and all local storage
++		 * maps pass use_trace_rcu = true), there can be call_rcu
++		 * callbacks based on use_trace_rcu = false in the earlier while
++		 * ((selem = ...)) loop or from bpf_local_storage_unlink_nolock
++		 * called from owner's free path.
++		 */
++		rcu_barrier();
 +	}
+ 	bpf_map_area_free(smap);
  }
- 
- /* It is called from the bpf_lru_list when the LRU needs to delete
-@@ -858,9 +877,9 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
- 
- static void htab_elem_free(struct bpf_htab *htab, struct htab_elem *l)
- {
-+	check_and_free_fields(htab, l);
- 	if (htab->map.map_type == BPF_MAP_TYPE_PERCPU_HASH)
- 		bpf_mem_cache_free(&htab->pcpu_ma, l->ptr_to_pptr);
--	check_and_free_fields(htab, l);
- 	bpf_mem_cache_free(&htab->ma, l);
- }
- 
-@@ -918,14 +937,13 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
- {
- 	if (!onallcpus) {
- 		/* copy true value_size bytes */
--		memcpy(this_cpu_ptr(pptr), value, htab->map.value_size);
-+		copy_map_value(&htab->map, this_cpu_ptr(pptr), value);
- 	} else {
- 		u32 size = round_up(htab->map.value_size, 8);
- 		int off = 0, cpu;
- 
- 		for_each_possible_cpu(cpu) {
--			bpf_long_memcpy(per_cpu_ptr(pptr, cpu),
--					value + off, size);
-+			copy_map_value_long(&htab->map, per_cpu_ptr(pptr, cpu), value + off);
- 			off += size;
- 		}
- 	}
-@@ -940,16 +958,14 @@ static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr,
- 	 * (onallcpus=false always when coming from bpf prog).
- 	 */
- 	if (!onallcpus) {
--		u32 size = round_up(htab->map.value_size, 8);
- 		int current_cpu = raw_smp_processor_id();
- 		int cpu;
- 
- 		for_each_possible_cpu(cpu) {
- 			if (cpu == current_cpu)
--				bpf_long_memcpy(per_cpu_ptr(pptr, cpu), value,
--						size);
--			else
--				memset(per_cpu_ptr(pptr, cpu), 0, size);
-+				copy_map_value_long(&htab->map, per_cpu_ptr(pptr, cpu), value);
-+			else /* Since elem is preallocated, we cannot touch special fields */
-+				zero_map_value(&htab->map, per_cpu_ptr(pptr, cpu));
- 		}
- 	} else {
- 		pcpu_copy_value(htab, pptr, value, onallcpus);
-@@ -1575,9 +1591,8 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
- 
- 			pptr = htab_elem_get_ptr(l, key_size);
- 			for_each_possible_cpu(cpu) {
--				bpf_long_memcpy(value + off,
--						per_cpu_ptr(pptr, cpu),
--						roundup_value_size);
-+				copy_map_value_long(&htab->map, value + off, per_cpu_ptr(pptr, cpu));
-+				check_and_init_map_value(&htab->map, value + off);
- 				off += roundup_value_size;
- 			}
- 		} else {
-@@ -1772,8 +1787,8 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 
- 			pptr = htab_elem_get_ptr(l, map->key_size);
- 			for_each_possible_cpu(cpu) {
--				bpf_long_memcpy(dst_val + off,
--						per_cpu_ptr(pptr, cpu), size);
-+				copy_map_value_long(&htab->map, dst_val + off, per_cpu_ptr(pptr, cpu));
-+				check_and_init_map_value(&htab->map, dst_val + off);
- 				off += size;
- 			}
- 		} else {
-@@ -2046,9 +2061,9 @@ static int __bpf_hash_map_seq_show(struct seq_file *seq, struct htab_elem *elem)
- 				roundup_value_size = round_up(map->value_size, 8);
- 				pptr = htab_elem_get_ptr(elem, map->key_size);
- 				for_each_possible_cpu(cpu) {
--					bpf_long_memcpy(info->percpu_value_buf + off,
--							per_cpu_ptr(pptr, cpu),
--							roundup_value_size);
-+					copy_map_value_long(map, info->percpu_value_buf + off,
-+							    per_cpu_ptr(pptr, cpu));
-+					check_and_init_map_value(map, info->percpu_value_buf + off);
- 					off += roundup_value_size;
- 				}
- 				ctx.value = info->percpu_value_buf;
-@@ -2292,8 +2307,8 @@ int bpf_percpu_hash_copy(struct bpf_map *map, void *key, void *value)
- 	 */
- 	pptr = htab_elem_get_ptr(l, map->key_size);
- 	for_each_possible_cpu(cpu) {
--		bpf_long_memcpy(value + off,
--				per_cpu_ptr(pptr, cpu), size);
-+		copy_map_value_long(map, value + off, per_cpu_ptr(pptr, cpu));
-+		check_and_init_map_value(map, value + off);
- 		off += size;
- 	}
- 	ret = 0;
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index e3fcdc9836a6..da117a2a83b2 100644
+index da117a2a83b2..eb50025b03c1 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -1059,7 +1059,9 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
- 			case BPF_KPTR_UNREF:
- 			case BPF_KPTR_REF:
- 				if (map->map_type != BPF_MAP_TYPE_HASH &&
-+				    map->map_type != BPF_MAP_TYPE_PERCPU_HASH &&
+@@ -1063,7 +1063,11 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
  				    map->map_type != BPF_MAP_TYPE_LRU_HASH &&
-+				    map->map_type != BPF_MAP_TYPE_LRU_PERCPU_HASH &&
+ 				    map->map_type != BPF_MAP_TYPE_LRU_PERCPU_HASH &&
  				    map->map_type != BPF_MAP_TYPE_ARRAY &&
- 				    map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) {
+-				    map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) {
++				    map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY &&
++				    map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
++				    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
++				    map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
++				    map->map_type != BPF_MAP_TYPE_CGRP_STORAGE) {
  					ret = -EOPNOTSUPP;
+ 					goto free_map_tab;
+ 				}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 272563a0b770..9a4e7efaf28f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7126,22 +7126,26 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+ 		break;
+ 	case BPF_MAP_TYPE_SK_STORAGE:
+ 		if (func_id != BPF_FUNC_sk_storage_get &&
+-		    func_id != BPF_FUNC_sk_storage_delete)
++		    func_id != BPF_FUNC_sk_storage_delete &&
++		    func_id != BPF_FUNC_kptr_xchg)
+ 			goto error;
+ 		break;
+ 	case BPF_MAP_TYPE_INODE_STORAGE:
+ 		if (func_id != BPF_FUNC_inode_storage_get &&
+-		    func_id != BPF_FUNC_inode_storage_delete)
++		    func_id != BPF_FUNC_inode_storage_delete &&
++		    func_id != BPF_FUNC_kptr_xchg)
+ 			goto error;
+ 		break;
+ 	case BPF_MAP_TYPE_TASK_STORAGE:
+ 		if (func_id != BPF_FUNC_task_storage_get &&
+-		    func_id != BPF_FUNC_task_storage_delete)
++		    func_id != BPF_FUNC_task_storage_delete &&
++		    func_id != BPF_FUNC_kptr_xchg)
+ 			goto error;
+ 		break;
+ 	case BPF_MAP_TYPE_CGRP_STORAGE:
+ 		if (func_id != BPF_FUNC_cgrp_storage_get &&
+-		    func_id != BPF_FUNC_cgrp_storage_delete)
++		    func_id != BPF_FUNC_cgrp_storage_delete &&
++		    func_id != BPF_FUNC_kptr_xchg)
+ 			goto error;
+ 		break;
+ 	case BPF_MAP_TYPE_BLOOM_FILTER:
 -- 
 2.39.2
 
