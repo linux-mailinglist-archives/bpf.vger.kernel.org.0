@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AB269C6FB
-	for <lists+bpf@lfdr.de>; Mon, 20 Feb 2023 09:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 260EC69C6F7
+	for <lists+bpf@lfdr.de>; Mon, 20 Feb 2023 09:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbjBTIs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Feb 2023 03:48:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
+        id S231293AbjBTIss (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Feb 2023 03:48:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbjBTIsa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Feb 2023 03:48:30 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CD66EAC;
-        Mon, 20 Feb 2023 00:48:28 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id t1so11686pgi.2;
-        Mon, 20 Feb 2023 00:48:28 -0800 (PST)
+        with ESMTP id S231297AbjBTIse (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Feb 2023 03:48:34 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D7793C2;
+        Mon, 20 Feb 2023 00:48:32 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id i2so1128747pfd.1;
+        Mon, 20 Feb 2023 00:48:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SLxhF1Vcq3GMM6HBucXQZ50MR4RWeTxfqHBKQ6buE0A=;
-        b=I4J9EXZYCSGkDr83/Pnd9GkqXLe6mpiAjVHt/Xg5CNf6Iew5Vq+8bdlh9MSxlNFCfL
-         FJgq/oEfkFE5ShI1P1i6q7CjwEJ7Jr80FJGibk7nufetPWazxGHkYPvZVJNPpYV9sPBu
-         3+NRaQbcNew13+CgZgqOexZLRbZfRfCLPzq8snB+vkUUOjqrjH0fpqye7WPBD5GO3RR7
-         cslsrK96Fcf7QeJd7MYBwVJQevbAz2lGorMkC62FFZw06dDBOIbvC3Cqr1iz0hsMIG/g
-         TNDSEPySQoT7Y7Nat3bf8dYtyU0BbpEGd/Rf/bx+ZO9dlIEySGbQ7t+EjtwX3rVHPRAm
-         WZ6Q==
+        bh=b+T2G7reDC26uTZgdg5DCDApdgKXuM9a5ZosVtFxu0Q=;
+        b=OZshz1W88On1qIGpmHVcCrRVKwonlCAuSQ6xKW3VkXbzBkqlzuHK0oWvhSvlyzGsrn
+         A5Suarpzvv8GLQ71A0zukvyf6cuMXbMc+GzjlEzyYsR8e19/uGztTJKEppLZSfOofRyf
+         D9I5PPzQDAbu64t336IzFb6dH4gplryKDJxsAc64MhAtGtd15fbcM1CMayF0qHJLxI4h
+         Rmf2AJZWuGj1cJZ7oQte6cF11hxJQk/VqlPxeQ37Z9sVcRP/06qAqT52+0vhwpo7ACk4
+         R4UoJVOhfmfI9I+VDUjfy/SxAHPeZTcg0yuCrOkRiD3WJ4zSaBnlt7gVqJizN9weqvZ+
+         abFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SLxhF1Vcq3GMM6HBucXQZ50MR4RWeTxfqHBKQ6buE0A=;
-        b=2b3c/0JyeQalfyg1SnOH5NVVauoDBEccBDK1ZP3ltaj2yoAXQzVRB0QCwh1LRmLupj
-         9Vc4VqRks+OlBhc92KEvqbj+SErVEG8oKSxp3LSJWGJrbBcomjY7QUpkj836MBj88IrY
-         STWRi5ch8M22i0GL1gz+4CUjGblxx/9hhFjERIVcihxvrz5+iLq+9FPW50PRQyTLI1Rr
-         buOifKiRz+WShqxrqxR4FPAvCx0R06IJhTmSH7cRgYEnrkavUSmv7TgAWUz6r4tjf4mx
-         kvQ0RJ7RyVHMkWa2xwG2V8oTjsGQt0qxWexCBB6qe8TkKef68xDoJ2hLQztPqIdziasQ
-         fWOg==
-X-Gm-Message-State: AO0yUKVRkVJr/FKdEstvm41hunEYSPtzmdPxfvMVRY4MfMjcVoBT9Ak1
-        4emPvD7qnmkCY0u9BnbxHp4=
-X-Google-Smtp-Source: AK7set91QE5NSsmHRUBpcvHf8sBpNsssH9L+Z8hFG1PjtFZzD9pqJ4oii0pl6ckbnnWU+ZOP+b+cLQ==
-X-Received: by 2002:a62:7957:0:b0:5a9:b4b4:6911 with SMTP id u84-20020a627957000000b005a9b4b46911mr3238651pfc.25.1676882907991;
-        Mon, 20 Feb 2023 00:48:27 -0800 (PST)
+        bh=b+T2G7reDC26uTZgdg5DCDApdgKXuM9a5ZosVtFxu0Q=;
+        b=Bl8SHU9G08PZsbLEYuq42M5dsnGXba63h4ceBfV3j+QXcMKu1d0A6ExhI6r3IX+t/D
+         SgOZ3flDa7HFmhEsb6bZYHpbtCVumse9vrUG5XFcpTj3Ve47zeXoNDEoQDvlHbKqmxG3
+         xVUAKfAqNW2P9b+qqnB0L56pjzpKyDZPGnkWlRmhoz1wv3afDRYLASdTWDysjjOtmJ4H
+         CjlTaNtP16B+K30CvxOqzRxqXIiUUOu8zOP3PBjrOoxwbfgg0gONcFtlhiJbhKD1E2NR
+         oIibWb9KfwaGllrY1IhSY+xmL1VPCnHlMt8ybvHUsrK/wyVuiol20+v88IZW0NKg2SX+
+         I8zQ==
+X-Gm-Message-State: AO0yUKVzMbssxHGLcwnNuL76rgVtnbxUldI4FnYNVARgVj7fLIUAOaRQ
+        trXGHgUKNdTulcjjNUCu8rxwLTrZVhvZtOC7
+X-Google-Smtp-Source: AK7set+558Uuxb1f0Ue2Iy01harcn4d5Fl90XiRAJlN9uvzIxbtkB6qmLrOvz8wmvz25BqSw3yjdrA==
+X-Received: by 2002:a62:1912:0:b0:5a8:d97d:59d7 with SMTP id 18-20020a621912000000b005a8d97d59d7mr1032903pfz.28.1676882911859;
+        Mon, 20 Feb 2023 00:48:31 -0800 (PST)
 Received: from localhost.localdomain ([203.205.141.21])
-        by smtp.gmail.com with ESMTPSA id n11-20020a62e50b000000b00586fbbdf6e4sm7136378pff.34.2023.02.20.00.48.24
+        by smtp.gmail.com with ESMTPSA id n11-20020a62e50b000000b00586fbbdf6e4sm7136378pff.34.2023.02.20.00.48.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Feb 2023 00:48:27 -0800 (PST)
+        Mon, 20 Feb 2023 00:48:31 -0800 (PST)
 From:   menglong8.dong@gmail.com
 X-Google-Original-From: imagedong@tencent.com
 To:     andrii.nakryiko@gmail.com, alan.maguire@oracle.com
@@ -57,9 +57,9 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
-Subject: [PATCH bpf-next v2 1/3] libbpf: add support to set kprobe/uprobe attach mode
-Date:   Mon, 20 Feb 2023 16:47:09 +0800
-Message-Id: <20230220084711.261642-2-imagedong@tencent.com>
+Subject: [PATCH bpf-next v2 2/3] selftests/bpf: split test_attach_probe into multi subtests
+Date:   Mon, 20 Feb 2023 16:47:10 +0800
+Message-Id: <20230220084711.261642-3-imagedong@tencent.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230220084711.261642-1-imagedong@tencent.com>
 References: <20230220084711.261642-1-imagedong@tencent.com>
@@ -77,194 +77,479 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Menglong Dong <imagedong@tencent.com>
 
-By default, libbpf will attach the kprobe/uprobe eBPF program in the
-latest mode that supported by kernel. In this patch, we add the support
-to let users manually attach kprobe/uprobe in legacy or perf mode.
+In order to adapt to the older kernel, now we split the "attach_probe"
+testing into multi subtests:
 
-There are 3 mode that supported by the kernel to attach kprobe/uprobe:
+  manual // manual attach tests for kprobe/uprobe
+  auto // auto-attach tests for kprobe and uprobe
+  kprobe-sleepable // kprobe sleepable test
+  uprobe-lib // uprobe tests for library function by name
+  uprobe-sleepabel // uprobe sleepable test
+  uprobe-ref_ctr // uprobe ref_ctr test
 
-  LEGACY: create perf event in legacy way and don't use bpf_link
-  PERF: create perf event with perf_event_open() and don't use bpf_link
-  LINK: create perf event with perf_event_open() and use bpf_link
+As sleepable kprobe needs to set BPF_F_SLEEPABLE flag before loading,
+we need to move it to a stand alone skel file, in case of it is not
+supported by kernel and make the whole loading fail.
 
-Users now can manually choose the mode with
-bpf_program__attach_uprobe_opts()/bpf_program__attach_kprobe_opts().
+Therefore, we can only enable part of the subtests for older kernel.
 
-Link: https://lore.kernel.org/bpf/20230113093427.1666466-1-imagedong@tencent.com/
 Signed-off-by: Menglong Dong <imagedong@tencent.com>
 ---
-v2:
-- rename no_link to force_ioctl_attach
-- rename probe_mode to probe_attach_mode
-- add more doc for probe_attach_mode
-- return -ENOTSUP when necessray in bpf_program__attach_uprobe_opts and
-  bpf_program__attach_kprobe_opts
----
- tools/lib/bpf/libbpf.c | 42 +++++++++++++++++++++++++++++++++++++++++-
- tools/lib/bpf/libbpf.h | 31 ++++++++++++++++++++++++++++---
- 2 files changed, 69 insertions(+), 4 deletions(-)
+ .../selftests/bpf/prog_tests/attach_probe.c   | 268 +++++++++++-------
+ .../bpf/progs/test_attach_kprobe_sleepable.c  |  23 ++
+ .../selftests/bpf/progs/test_attach_probe.c   |  23 +-
+ 3 files changed, 208 insertions(+), 106 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_attach_kprobe_sleepable.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 35a698eb825d..724ee5fab839 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9747,7 +9747,7 @@ struct bpf_link *bpf_program__attach_perf_event_opts(const struct bpf_program *p
- 	link->link.dealloc = &bpf_link_perf_dealloc;
- 	link->perf_event_fd = pfd;
+diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+index 56374c8b5436..9824a5eb8595 100644
+--- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
++++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <test_progs.h>
++#include "test_attach_kprobe_sleepable.skel.h"
+ #include "test_attach_probe.skel.h"
  
--	if (kernel_supports(prog->obj, FEAT_PERF_LINK)) {
-+	if (kernel_supports(prog->obj, FEAT_PERF_LINK) && !opts->force_ioctl_attach) {
- 		DECLARE_LIBBPF_OPTS(bpf_link_create_opts, link_opts,
- 			.perf_event.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0));
+ /* this is how USDT semaphore is actually defined, except volatile modifier */
+@@ -23,110 +24,63 @@ static noinline void trigger_func3(void)
+ 	asm volatile ("");
+ }
  
-@@ -10106,6 +10106,7 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
- 				const struct bpf_kprobe_opts *opts)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
-+	enum probe_attach_mode attach_mode;
- 	char errmsg[STRERR_BUFSIZE];
- 	char *legacy_probe = NULL;
- 	struct bpf_link *link;
-@@ -10116,11 +10117,30 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
- 	if (!OPTS_VALID(opts, bpf_kprobe_opts))
- 		return libbpf_err_ptr(-EINVAL);
- 
-+	attach_mode = OPTS_GET(opts, attach_mode, PROBE_ATTACH_MODE_DEFAULT);
- 	retprobe = OPTS_GET(opts, retprobe, false);
- 	offset = OPTS_GET(opts, offset, 0);
- 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
- 
- 	legacy = determine_kprobe_perf_type() < 0;
-+	switch (attach_mode) {
-+	case PROBE_ATTACH_MODE_LEGACY:
-+		legacy = true;
-+		pe_opts.force_ioctl_attach = true;
-+		break;
-+	case PROBE_ATTACH_MODE_PERF:
-+		if (legacy)
-+			return libbpf_err_ptr(-ENOTSUP);
-+		pe_opts.force_ioctl_attach = true;
-+		break;
-+	case PROBE_ATTACH_MODE_LINK:
-+		if (!kernel_supports(prog->obj, FEAT_PERF_LINK))
-+			return libbpf_err_ptr(-ENOTSUP);
-+		break;
-+	default:
-+		break;
-+	}
++/* attach point for ref_ctr */
++static noinline void trigger_func4(void)
++{
++	asm volatile ("");
++}
 +
- 	if (!legacy) {
- 		pfd = perf_event_open_probe(false /* uprobe */, retprobe,
- 					    func_name, offset,
-@@ -10774,6 +10794,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ static char test_data[] = "test_data";
+ 
+-void test_attach_probe(void)
++/* manual attach kprobe/kretprobe/uprobe/uretprobe testings */
++static void test_attach_probe_manual(struct test_attach_probe *skel)
  {
- 	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
- 	char errmsg[STRERR_BUFSIZE], *legacy_probe = NULL;
-+	enum probe_attach_mode attach_mode;
- 	char full_binary_path[PATH_MAX];
- 	struct bpf_link *link;
- 	size_t ref_ctr_off;
-@@ -10784,6 +10805,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 	if (!OPTS_VALID(opts, bpf_uprobe_opts))
- 		return libbpf_err_ptr(-EINVAL);
+ 	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
+ 	struct bpf_link *kprobe_link, *kretprobe_link;
+ 	struct bpf_link *uprobe_link, *uretprobe_link;
+-	struct test_attach_probe* skel;
+-	ssize_t uprobe_offset, ref_ctr_offset;
+-	struct bpf_link *uprobe_err_link;
+-	FILE *devnull;
+-	bool legacy;
+-
+-	/* Check if new-style kprobe/uprobe API is supported.
+-	 * Kernels that support new FD-based kprobe and uprobe BPF attachment
+-	 * through perf_event_open() syscall expose
+-	 * /sys/bus/event_source/devices/kprobe/type and
+-	 * /sys/bus/event_source/devices/uprobe/type files, respectively. They
+-	 * contain magic numbers that are passed as "type" field of
+-	 * perf_event_attr. Lack of such file in the system indicates legacy
+-	 * kernel with old-style kprobe/uprobe attach interface through
+-	 * creating per-probe event through tracefs. For such cases
+-	 * ref_ctr_offset feature is not supported, so we don't test it.
+-	 */
+-	legacy = access("/sys/bus/event_source/devices/kprobe/type", F_OK) != 0;
++	ssize_t uprobe_offset;
  
-+	attach_mode = OPTS_GET(opts, attach_mode, PROBE_ATTACH_MODE_DEFAULT);
- 	retprobe = OPTS_GET(opts, retprobe, false);
- 	ref_ctr_off = OPTS_GET(opts, ref_ctr_offset, 0);
- 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
-@@ -10812,6 +10834,24 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 	}
+ 	uprobe_offset = get_uprobe_offset(&trigger_func);
+ 	if (!ASSERT_GE(uprobe_offset, 0, "uprobe_offset"))
+ 		return;
  
- 	legacy = determine_uprobe_perf_type() < 0;
-+	switch (attach_mode) {
-+	case PROBE_ATTACH_MODE_LEGACY:
-+		legacy = true;
-+		pe_opts.force_ioctl_attach = true;
-+		break;
-+	case PROBE_ATTACH_MODE_PERF:
-+		if (legacy)
-+			return libbpf_err_ptr(-ENOTSUP);
-+		pe_opts.force_ioctl_attach = true;
-+		break;
-+	case PROBE_ATTACH_MODE_LINK:
-+		if (!kernel_supports(prog->obj, FEAT_PERF_LINK))
-+			return libbpf_err_ptr(-ENOTSUP);
-+		break;
-+	default:
-+		break;
-+	}
+-	ref_ctr_offset = get_rel_offset((uintptr_t)&uprobe_ref_ctr);
+-	if (!ASSERT_GE(ref_ctr_offset, 0, "ref_ctr_offset"))
+-		return;
+-
+-	skel = test_attach_probe__open();
+-	if (!ASSERT_OK_PTR(skel, "skel_open"))
+-		return;
+-
+-	/* sleepable kprobe test case needs flags set before loading */
+-	if (!ASSERT_OK(bpf_program__set_flags(skel->progs.handle_kprobe_sleepable,
+-		BPF_F_SLEEPABLE), "kprobe_sleepable_flags"))
+-		goto cleanup;
+-
+-	if (!ASSERT_OK(test_attach_probe__load(skel), "skel_load"))
+-		goto cleanup;
+-	if (!ASSERT_OK_PTR(skel->bss, "check_bss"))
+-		goto cleanup;
+-
+ 	/* manual-attach kprobe/kretprobe */
+ 	kprobe_link = bpf_program__attach_kprobe(skel->progs.handle_kprobe,
+ 						 false /* retprobe */,
+ 						 SYS_NANOSLEEP_KPROBE_NAME);
+ 	if (!ASSERT_OK_PTR(kprobe_link, "attach_kprobe"))
+-		goto cleanup;
++		return;
+ 	skel->links.handle_kprobe = kprobe_link;
+ 
+ 	kretprobe_link = bpf_program__attach_kprobe(skel->progs.handle_kretprobe,
+ 						    true /* retprobe */,
+ 						    SYS_NANOSLEEP_KPROBE_NAME);
+ 	if (!ASSERT_OK_PTR(kretprobe_link, "attach_kretprobe"))
+-		goto cleanup;
++		return;
+ 	skel->links.handle_kretprobe = kretprobe_link;
+ 
+-	/* auto-attachable kprobe and kretprobe */
+-	skel->links.handle_kprobe_auto = bpf_program__attach(skel->progs.handle_kprobe_auto);
+-	ASSERT_OK_PTR(skel->links.handle_kprobe_auto, "attach_kprobe_auto");
+-
+-	skel->links.handle_kretprobe_auto = bpf_program__attach(skel->progs.handle_kretprobe_auto);
+-	ASSERT_OK_PTR(skel->links.handle_kretprobe_auto, "attach_kretprobe_auto");
+-
+-	if (!legacy)
+-		ASSERT_EQ(uprobe_ref_ctr, 0, "uprobe_ref_ctr_before");
+-
++	/* manual-attach uprobe/uretprobe */
++	uprobe_opts.ref_ctr_offset = 0;
+ 	uprobe_opts.retprobe = false;
+-	uprobe_opts.ref_ctr_offset = legacy ? 0 : ref_ctr_offset;
+ 	uprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe,
+ 						      0 /* self pid */,
+ 						      "/proc/self/exe",
+ 						      uprobe_offset,
+ 						      &uprobe_opts);
+ 	if (!ASSERT_OK_PTR(uprobe_link, "attach_uprobe"))
+-		goto cleanup;
++		return;
+ 	skel->links.handle_uprobe = uprobe_link;
+ 
+-	if (!legacy)
+-		ASSERT_GT(uprobe_ref_ctr, 0, "uprobe_ref_ctr_after");
+-
+-	/* if uprobe uses ref_ctr, uretprobe has to use ref_ctr as well */
+ 	uprobe_opts.retprobe = true;
+-	uprobe_opts.ref_ctr_offset = legacy ? 0 : ref_ctr_offset;
+ 	uretprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe,
+ 							 -1 /* any pid */,
+ 							 "/proc/self/exe",
+ 							 uprobe_offset, &uprobe_opts);
+ 	if (!ASSERT_OK_PTR(uretprobe_link, "attach_uretprobe"))
+-		goto cleanup;
++		return;
+ 	skel->links.handle_uretprobe = uretprobe_link;
+ 
+-	/* verify auto-attach fails for old-style uprobe definition */
+-	uprobe_err_link = bpf_program__attach(skel->progs.handle_uprobe_byname);
+-	if (!ASSERT_EQ(libbpf_get_error(uprobe_err_link), -EOPNOTSUPP,
+-		       "auto-attach should fail for old-style name"))
+-		goto cleanup;
+-
++	/* attach uprobe by function name manually */
+ 	uprobe_opts.func_name = "trigger_func2";
+ 	uprobe_opts.retprobe = false;
+ 	uprobe_opts.ref_ctr_offset = 0;
+@@ -136,13 +90,62 @@ void test_attach_probe(void)
+ 							"/proc/self/exe",
+ 							0, &uprobe_opts);
+ 	if (!ASSERT_OK_PTR(skel->links.handle_uprobe_byname, "attach_uprobe_byname"))
+-		goto cleanup;
++		return;
 +
- 	if (!legacy) {
- 		pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
- 					    func_offset, pid, ref_ctr_off);
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 2efd80f6f7b9..ef8f68da42f9 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -451,8 +451,11 @@ struct bpf_perf_event_opts {
- 	size_t sz;
- 	/* custom user-provided value fetchable through bpf_get_attach_cookie() */
- 	__u64 bpf_cookie;
-+	/* don't use bpf_link when attach eBPF program */
-+	bool force_ioctl_attach;
-+	size_t :0;
- };
--#define bpf_perf_event_opts__last_field bpf_cookie
-+#define bpf_perf_event_opts__last_field force_ioctl_attach
++	/* trigger & validate kprobe && kretprobe */
++	usleep(1);
++
++	/* trigger & validate uprobe & uretprobe */
++	trigger_func();
++
++	/* trigger & validate uprobe attached by name */
++	trigger_func2();
++
++	ASSERT_EQ(skel->bss->kprobe_res, 1, "check_kprobe_res");
++	ASSERT_EQ(skel->bss->kretprobe_res, 2, "check_kretprobe_res");
++	ASSERT_EQ(skel->bss->uprobe_res, 3, "check_uprobe_res");
++	ASSERT_EQ(skel->bss->uretprobe_res, 4, "check_uretprobe_res");
++	ASSERT_EQ(skel->bss->uprobe_byname_res, 5, "check_uprobe_byname_res");
++}
++
++static void test_attach_probe_auto(struct test_attach_probe *skel)
++{
++	struct bpf_link *uprobe_err_link;
++
++	/* auto-attachable kprobe and kretprobe */
++	skel->links.handle_kprobe_auto = bpf_program__attach(skel->progs.handle_kprobe_auto);
++	ASSERT_OK_PTR(skel->links.handle_kprobe_auto, "attach_kprobe_auto");
++
++	skel->links.handle_kretprobe_auto = bpf_program__attach(skel->progs.handle_kretprobe_auto);
++	ASSERT_OK_PTR(skel->links.handle_kretprobe_auto, "attach_kretprobe_auto");
++
++	/* verify auto-attach fails for old-style uprobe definition */
++	uprobe_err_link = bpf_program__attach(skel->progs.handle_uprobe_byname);
++	if (!ASSERT_EQ(libbpf_get_error(uprobe_err_link), -EOPNOTSUPP,
++		       "auto-attach should fail for old-style name"))
++		return;
  
- LIBBPF_API struct bpf_link *
- bpf_program__attach_perf_event(const struct bpf_program *prog, int pfd);
-@@ -461,6 +464,24 @@ LIBBPF_API struct bpf_link *
- bpf_program__attach_perf_event_opts(const struct bpf_program *prog, int pfd,
- 				    const struct bpf_perf_event_opts *opts);
+ 	/* verify auto-attach works */
+ 	skel->links.handle_uretprobe_byname =
+ 			bpf_program__attach(skel->progs.handle_uretprobe_byname);
+ 	if (!ASSERT_OK_PTR(skel->links.handle_uretprobe_byname, "attach_uretprobe_byname"))
+-		goto cleanup;
++		return;
++
++	/* trigger & validate kprobe && kretprobe */
++	usleep(1);
++
++	/* trigger & validate uprobe attached by name */
++	trigger_func2();
++
++	ASSERT_EQ(skel->bss->kprobe2_res, 11, "check_kprobe_auto_res");
++	ASSERT_EQ(skel->bss->kretprobe2_res, 22, "check_kretprobe_auto_res");
++	ASSERT_EQ(skel->bss->uretprobe_byname_res, 6, "check_uretprobe_byname_res");
++}
++
++static void test_uprobe_lib(struct test_attach_probe *skel)
++{
++	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
++	FILE *devnull;
  
+ 	/* test attach by name for a library function, using the library
+ 	 * as the binary argument. libc.so.6 will be resolved via dlopen()/dlinfo().
+@@ -155,7 +158,7 @@ void test_attach_probe(void)
+ 							"libc.so.6",
+ 							0, &uprobe_opts);
+ 	if (!ASSERT_OK_PTR(skel->links.handle_uprobe_byname2, "attach_uprobe_byname2"))
+-		goto cleanup;
++		return;
+ 
+ 	uprobe_opts.func_name = "fclose";
+ 	uprobe_opts.retprobe = true;
+@@ -165,62 +168,137 @@ void test_attach_probe(void)
+ 							"libc.so.6",
+ 							0, &uprobe_opts);
+ 	if (!ASSERT_OK_PTR(skel->links.handle_uretprobe_byname2, "attach_uretprobe_byname2"))
++		return;
++
++	/* trigger & validate shared library u[ret]probes attached by name */
++	devnull = fopen("/dev/null", "r");
++	fclose(devnull);
++
++	ASSERT_EQ(skel->bss->uprobe_byname2_res, 7, "check_uprobe_byname2_res");
++	ASSERT_EQ(skel->bss->uretprobe_byname2_res, 8, "check_uretprobe_byname2_res");
++}
++
++static void test_uporbe_ref_ctr(struct test_attach_probe *skel)
++{
++	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
++	struct bpf_link *uprobe_link, *uretprobe_link;
++	ssize_t uprobe_offset, ref_ctr_offset;
++
++	uprobe_offset = get_uprobe_offset(&trigger_func4);
++	if (!ASSERT_GE(uprobe_offset, 0, "uprobe_offset_ref_ctr"))
++		return;
++
++	ref_ctr_offset = get_rel_offset((uintptr_t)&uprobe_ref_ctr);
++	if (!ASSERT_GE(ref_ctr_offset, 0, "ref_ctr_offset"))
++		return;
++
++	ASSERT_EQ(uprobe_ref_ctr, 0, "uprobe_ref_ctr_before");
++
++	uprobe_opts.retprobe = false;
++	uprobe_opts.ref_ctr_offset = ref_ctr_offset;
++	uprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe_ref_ctr,
++						      0 /* self pid */,
++						      "/proc/self/exe",
++						      uprobe_offset,
++						      &uprobe_opts);
++	if (!ASSERT_OK_PTR(uprobe_link, "attach_uprobe_ref_ctr"))
++		return;
++	skel->links.handle_uprobe_ref_ctr = uprobe_link;
++
++	ASSERT_GT(uprobe_ref_ctr, 0, "uprobe_ref_ctr_after");
++
++	/* if uprobe uses ref_ctr, uretprobe has to use ref_ctr as well */
++	uprobe_opts.retprobe = true;
++	uprobe_opts.ref_ctr_offset = ref_ctr_offset;
++	uretprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe_ref_ctr,
++							 -1 /* any pid */,
++							 "/proc/self/exe",
++							 uprobe_offset, &uprobe_opts);
++	if (!ASSERT_OK_PTR(uretprobe_link, "attach_uretprobe_ref_ctr"))
++		return;
++	skel->links.handle_uretprobe_ref_ctr = uretprobe_link;
++}
++
++static void test_kprobe_sleepable(void)
++{
++	struct test_attach_kprobe_sleepable *skel;
++
++	skel = test_attach_kprobe_sleepable__open();
++	if (!ASSERT_OK_PTR(skel, "skel_kprobe_sleepable_open"))
++		return;
++
++	/* sleepable kprobe test case needs flags set before loading */
++	if (!ASSERT_OK(bpf_program__set_flags(skel->progs.handle_kprobe_sleepable,
++		BPF_F_SLEEPABLE), "kprobe_sleepable_flags"))
++		goto cleanup;
++
++	if (!ASSERT_OK(test_attach_kprobe_sleepable__load(skel),
++		       "skel_kprobe_sleepable_load"))
+ 		goto cleanup;
+ 
+ 	/* sleepable kprobes should not attach successfully */
+ 	skel->links.handle_kprobe_sleepable = bpf_program__attach(skel->progs.handle_kprobe_sleepable);
+-	if (!ASSERT_ERR_PTR(skel->links.handle_kprobe_sleepable, "attach_kprobe_sleepable"))
+-		goto cleanup;
++	ASSERT_ERR_PTR(skel->links.handle_kprobe_sleepable, "attach_kprobe_sleepable");
++
++cleanup:
++	test_attach_kprobe_sleepable__destroy(skel);
++}
+ 
++static void test_uprobe_sleepable(struct test_attach_probe *skel)
++{
+ 	/* test sleepable uprobe and uretprobe variants */
+ 	skel->links.handle_uprobe_byname3_sleepable = bpf_program__attach(skel->progs.handle_uprobe_byname3_sleepable);
+ 	if (!ASSERT_OK_PTR(skel->links.handle_uprobe_byname3_sleepable, "attach_uprobe_byname3_sleepable"))
+-		goto cleanup;
++		return;
+ 
+ 	skel->links.handle_uprobe_byname3 = bpf_program__attach(skel->progs.handle_uprobe_byname3);
+ 	if (!ASSERT_OK_PTR(skel->links.handle_uprobe_byname3, "attach_uprobe_byname3"))
+-		goto cleanup;
++		return;
+ 
+ 	skel->links.handle_uretprobe_byname3_sleepable = bpf_program__attach(skel->progs.handle_uretprobe_byname3_sleepable);
+ 	if (!ASSERT_OK_PTR(skel->links.handle_uretprobe_byname3_sleepable, "attach_uretprobe_byname3_sleepable"))
+-		goto cleanup;
++		return;
+ 
+ 	skel->links.handle_uretprobe_byname3 = bpf_program__attach(skel->progs.handle_uretprobe_byname3);
+ 	if (!ASSERT_OK_PTR(skel->links.handle_uretprobe_byname3, "attach_uretprobe_byname3"))
+-		goto cleanup;
++		return;
+ 
+ 	skel->bss->user_ptr = test_data;
+ 
+-	/* trigger & validate kprobe && kretprobe */
+-	usleep(1);
+-
+-	/* trigger & validate shared library u[ret]probes attached by name */
+-	devnull = fopen("/dev/null", "r");
+-	fclose(devnull);
+-
+-	/* trigger & validate uprobe & uretprobe */
+-	trigger_func();
+-
+-	/* trigger & validate uprobe attached by name */
+-	trigger_func2();
+-
+ 	/* trigger & validate sleepable uprobe attached by name */
+ 	trigger_func3();
+ 
+-	ASSERT_EQ(skel->bss->kprobe_res, 1, "check_kprobe_res");
+-	ASSERT_EQ(skel->bss->kprobe2_res, 11, "check_kprobe_auto_res");
+-	ASSERT_EQ(skel->bss->kretprobe_res, 2, "check_kretprobe_res");
+-	ASSERT_EQ(skel->bss->kretprobe2_res, 22, "check_kretprobe_auto_res");
+-	ASSERT_EQ(skel->bss->uprobe_res, 3, "check_uprobe_res");
+-	ASSERT_EQ(skel->bss->uretprobe_res, 4, "check_uretprobe_res");
+-	ASSERT_EQ(skel->bss->uprobe_byname_res, 5, "check_uprobe_byname_res");
+-	ASSERT_EQ(skel->bss->uretprobe_byname_res, 6, "check_uretprobe_byname_res");
+-	ASSERT_EQ(skel->bss->uprobe_byname2_res, 7, "check_uprobe_byname2_res");
+-	ASSERT_EQ(skel->bss->uretprobe_byname2_res, 8, "check_uretprobe_byname2_res");
+ 	ASSERT_EQ(skel->bss->uprobe_byname3_sleepable_res, 9, "check_uprobe_byname3_sleepable_res");
+ 	ASSERT_EQ(skel->bss->uprobe_byname3_res, 10, "check_uprobe_byname3_res");
+ 	ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 11, "check_uretprobe_byname3_sleepable_res");
+ 	ASSERT_EQ(skel->bss->uretprobe_byname3_res, 12, "check_uretprobe_byname3_res");
++}
++
++void test_attach_probe(void)
++{
++	struct test_attach_probe *skel;
++
++	skel = test_attach_probe__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	if (!ASSERT_OK(test_attach_probe__load(skel), "skel_load"))
++		goto cleanup;
++	if (!ASSERT_OK_PTR(skel->bss, "check_bss"))
++		goto cleanup;
++
++	if (test__start_subtest("manual"))
++		test_attach_probe_manual(skel);
++	if (test__start_subtest("auto"))
++		test_attach_probe_auto(skel);
++	if (test__start_subtest("kprobe-sleepable"))
++		test_kprobe_sleepable();
++	if (test__start_subtest("uprobe-lib"))
++		test_uprobe_lib(skel);
++	if (test__start_subtest("uprobe-sleepable"))
++		test_uprobe_sleepable(skel);
++	if (test__start_subtest("uprobe-ref_ctr"))
++		test_uporbe_ref_ctr(skel);
+ 
+ cleanup:
+ 	test_attach_probe__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/progs/test_attach_kprobe_sleepable.c b/tools/testing/selftests/bpf/progs/test_attach_kprobe_sleepable.c
+new file mode 100644
+index 000000000000..f548b7446218
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_attach_kprobe_sleepable.c
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2017 Facebook
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_misc.h"
++
++int kprobe_res = 0;
 +
 +/**
-+ * enum probe_attach_mode - the mode to attach kprobe/uprobe
-+ *
-+ * force libbpf to attach kprobe/uprobe in specific mode, -ENOTSUP will
-+ * be returned if it is not supported by the kernel.
++ * This program will be manually made sleepable on the userspace side
++ * and should thus be unattachable.
 + */
-+enum probe_attach_mode {
-+	/* attach probe in latest supported mode by kernel */
-+	PROBE_ATTACH_MODE_DEFAULT = 0,
-+	/* attach probe in legacy mode */
-+	PROBE_ATTACH_MODE_LEGACY,
-+	/* create perf event with perf_event_open() syscall */
-+	PROBE_ATTACH_MODE_PERF,
-+	/* attach probe with bpf_link */
-+	PROBE_ATTACH_MODE_LINK,
-+};
++SEC("kprobe/" SYS_PREFIX "sys_nanosleep")
++int handle_kprobe_sleepable(struct pt_regs *ctx)
++{
++	kprobe_res = 1;
++	return 0;
++}
 +
- struct bpf_kprobe_opts {
- 	/* size of this struct, for forward/backward compatiblity */
- 	size_t sz;
-@@ -470,9 +491,11 @@ struct bpf_kprobe_opts {
- 	size_t offset;
- 	/* kprobe is return probe */
- 	bool retprobe;
-+	/* kprobe attach mode */
-+	enum probe_attach_mode attach_mode;
- 	size_t :0;
- };
--#define bpf_kprobe_opts__last_field retprobe
-+#define bpf_kprobe_opts__last_field attach_mode
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools/testing/selftests/bpf/progs/test_attach_probe.c
+index 3b5dc34d23e9..9e1e7163bb67 100644
+--- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
++++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
+@@ -37,17 +37,6 @@ int BPF_KSYSCALL(handle_kprobe_auto, struct __kernel_timespec *req, struct __ker
+ 	return 0;
+ }
  
- LIBBPF_API struct bpf_link *
- bpf_program__attach_kprobe(const struct bpf_program *prog, bool retprobe,
-@@ -570,9 +593,11 @@ struct bpf_uprobe_opts {
- 	 * binary_path.
- 	 */
- 	const char *func_name;
-+	/* uprobe attach mode */
-+	enum probe_attach_mode attach_mode;
- 	size_t :0;
- };
--#define bpf_uprobe_opts__last_field func_name
-+#define bpf_uprobe_opts__last_field attach_mode
+-/**
+- * This program will be manually made sleepable on the userspace side
+- * and should thus be unattachable.
+- */
+-SEC("kprobe/" SYS_PREFIX "sys_nanosleep")
+-int handle_kprobe_sleepable(struct pt_regs *ctx)
+-{
+-	kprobe_res = 2;
+-	return 0;
+-}
+-
+ SEC("kretprobe")
+ int handle_kretprobe(struct pt_regs *ctx)
+ {
+@@ -76,6 +65,18 @@ int handle_uretprobe(struct pt_regs *ctx)
+ 	return 0;
+ }
  
- /**
-  * @brief **bpf_program__attach_uprobe()** attaches a BPF program
++SEC("uprobe")
++int handle_uprobe_ref_ctr(struct pt_regs *ctx)
++{
++	return 0;
++}
++
++SEC("uretprobe")
++int handle_uretprobe_ref_ctr(struct pt_regs *ctx)
++{
++	return 0;
++}
++
+ SEC("uprobe")
+ int handle_uprobe_byname(struct pt_regs *ctx)
+ {
 -- 
 2.39.0
 
