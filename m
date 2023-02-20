@@ -2,61 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A35269D67D
-	for <lists+bpf@lfdr.de>; Mon, 20 Feb 2023 23:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9E269D743
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 00:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbjBTWwi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Feb 2023 17:52:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        id S232237AbjBTXmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Feb 2023 18:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232752AbjBTWwh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Feb 2023 17:52:37 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8173421973
-        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 14:52:32 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id nt5-20020a17090b248500b00237161e33f4so941235pjb.4
-        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 14:52:32 -0800 (PST)
+        with ESMTP id S230516AbjBTXmp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Feb 2023 18:42:45 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD041E1E1
+        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 15:42:44 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id h32so10662317eda.2
+        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 15:42:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HoLvfwc8NO/VMdHYFRY2VFkJ81v4zkjRrOeb4uiecw4=;
-        b=PUtr9BK6UG2xNZRKGkdI8i71W2ja/B8fElmqgaDaZKlZyldMLubrlOigPCVMMuP2kF
-         fcGND+gbHX/SYUtQ+hT4ZWJiRbyliRWKSX+AGXxEt9faZ2ryxErzp8cKTZdZaaEemVDF
-         aTsX5/RF2Xgin/SZR4rYJOnTRtn+VJlzzxG/Hy5dKEyfMr/uM8LZkamRLV7/G1qPYPo3
-         4t0udZIeM/tsu/cqzEOf1nbBi2wAwbPA479QUKejom4M3v0lFasMaCGzhqILWfA63M5o
-         pOgzWOiNMnWkMuXIhf2vk0chrdgbOvL2A9+U4nuUyp9Z8vgo4uCKKxhW9uXKMu9Fv6qf
-         r7SA==
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MepyRHlfykWJcIID9I9np5BfjPwEUVeeHLNS+geqWjM=;
+        b=BjwLNazQ45KljbKlUGpOIO+Msjg01UlbFLD63y2zkl6snEDBNZWD6gvqguy75TuX3y
+         V2WQq++Ch1XJlD1JQ9jc4TG+ickFAUqg/gOpUKlQiN7+c+gbvzVsF0IsqpmrrEKvMmWs
+         ndN+ZYoHhkz9f2qaCq/nC6GM59apv7t9UznlsnO+hBCmclSFVhasyfjlSt7qrWv3LexJ
+         Uy7Sj+h/0rUNLBcxdt5l5nGatCsPr0uyZ1GFNQc5yACbmrclTANMk/uhqBlizFuQsBJD
+         OqfOwHPclgog2DRt+JktTX6xGRC6534kNHt3MgE7xWQiWSOttLXHv5SlTW71On4IJMov
+         GW0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HoLvfwc8NO/VMdHYFRY2VFkJ81v4zkjRrOeb4uiecw4=;
-        b=AF8ge+DUFcOegUdrizeUW9DylAm/1171dlRYDdz+krLzlKaJn43/yfMCIZYLaH+/Gz
-         cfvi7Ep2+5IQHO1QSnw+HILsuoIEJqnc7cqxc7DyxcOD+YImiuOhLY6zddVjDjVhwE6z
-         JYst0ttWWiRu5BL/mk30BicwXgMySRWIA0jcS59Mk+C7W+2rZq3XRT6UY56ZsMWsUdGj
-         7Zk1VPCnJuHG8XJw2hNqmX9CnGQHgwDzflOT3p5Y5ARd27EVW8454B0bBJWrU4xr6PIA
-         jEAfFH6iByac+GuuojBpeDF/PFzcesOEG8X/bNv2NxpylgGwObv7eAYZxYN5DExqfp0+
-         qvvw==
-X-Gm-Message-State: AO0yUKWmK788LPstywb+KjXga8R1tweqi5shn4qHyVw/p96CVBUNQvwk
-        //HBEAb7OHbG7124A0dZs/t010QvZL0=
-X-Google-Smtp-Source: AK7set8QrjjPEBiw7DqeSsSACf3SZg4n20u/PwRvwfnE802PGeKRBN+IgSogsC9mItuvzJj0sNlvEQ==
-X-Received: by 2002:a17:902:c411:b0:19a:9833:708 with SMTP id k17-20020a170902c41100b0019a98330708mr4850928plk.64.1676933551611;
-        Mon, 20 Feb 2023 14:52:31 -0800 (PST)
-Received: from mariner-vm.. (c-71-197-160-159.hsd1.wa.comcast.net. [71.197.160.159])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170902684800b00198ef76ce8dsm8445067pln.72.2023.02.20.14.52.30
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MepyRHlfykWJcIID9I9np5BfjPwEUVeeHLNS+geqWjM=;
+        b=uEBvUMqew3oxPDXHwygcdfJWMMnnVj4NqLCwIEHHw50vVQPKaPWIXnG267+NZfsib2
+         B2F23aA9Pmi6Xl/ok5WMaGl8C3UHDVHoo8nnSqfmpRUnr5R/Q2uVmYgdywA56atdLdji
+         EWIPdVCAF4NRmDEf1ftn+lv4JGFLSOLRDVqhReMr6AJh0hhKnu3qseMbA4fmyoR00AYK
+         w3f4zRiKfUVV+nZ+uZ/qjX9KdboNSPKFbLZn1dknaX2fxFxfWF1uSwpl4XgJTZO9mPqV
+         zzmahpwWIb3Ic/R0DW3AbOqq5cuvm+iyt2zqw+qHDbq94QC+pvHrvhlc3n0+dZ4lIkjk
+         /PJQ==
+X-Gm-Message-State: AO0yUKUA8mSBgXcvRagdjudKW1iTtvAweaOMuiHKQyamicyAIne8Sep2
+        GV3A6mdO+VPgUOROdInmTl4=
+X-Google-Smtp-Source: AK7set/gBEzq8QBsaSsKbwVSFAwUkWFh4BalwcVlftFaMTyK22RysvHE26FQGB3us1gOE6lMCBMP5w==
+X-Received: by 2002:a05:6402:5299:b0:4a1:e4fa:7db2 with SMTP id en25-20020a056402529900b004a1e4fa7db2mr3944743edb.17.1676936562409;
+        Mon, 20 Feb 2023 15:42:42 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id 21-20020a508755000000b004acc02d1531sm1434986edv.14.2023.02.20.15.42.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Feb 2023 14:52:31 -0800 (PST)
-From:   Dave Thaler <dthaler1968@googlemail.com>
-To:     bpf@vger.kernel.org
-Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
-Subject: [PATCH bpf-next v3] bpf, docs: Explain helper functions
-Date:   Mon, 20 Feb 2023 22:52:28 +0000
-Message-Id: <20230220225228.2129-1-dthaler1968@googlemail.com>
-X-Mailer: git-send-email 2.33.4
+        Mon, 20 Feb 2023 15:42:41 -0800 (PST)
+Message-ID: <e783fb7cdfb7bfd40e723c67daab7c5f81d12fbf.camel@gmail.com>
+Subject: Re: BTF tag support in DWARF (notes for today's BPF Office Hours)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
+Cc:     david.faust@oracle.com, James Hilliard <james.hilliard1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        David Malcolm <dmalcolm@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>, elena.zannoni@oracle.com,
+        acme@redhat.com, Yonghong Song <yhs@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>
+Date:   Tue, 21 Feb 2023 01:42:40 +0200
+In-Reply-To: <877cy0j0kt.fsf@oracle.com>
+References: <87r0w9jjoq.fsf@oracle.com> <877cy0j0kt.fsf@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -67,96 +76,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Dave Thaler <dthaler@microsoft.com>
+On Thu, 2023-01-05 at 19:30 +0100, Jose E. Marchesi wrote:
+> We agreed in the meeting to implement Solution 2 below in both GCC and
+> clang.
+>=20
+> The DW_TAG_LLVM_annotation DIE number will be changed in order to make
+> it possible for pahole to handle the current tags.  The number of the
+> new tag will be shared by both GCC and clang.
+>=20
+> Thanks everyone for the feedback.
+>=20
+[...]
 
-Add text explaining helper functions.
-Note that text about runtime functions (kfuncs) is part of a separate patch,
-not this one.
+Hi Jose, David,
 
-Signed-off-by: Dave Thaler <dthaler@microsoft.com>
----
-V1 -> V2: addressed comments from Alexei and Stanislav
+Recently I've been working on implementation of the agreed btf_type_tag
+encoding scheme for clang [1] and pahole [2]. While working on this, I came
+to a conclusion that instead of introducing new DWARF tag (0x6001) we can
+reuse the same tag (0x6000), but have a different DW_AT_name field:
+"btf_type_tag:v2" instead of "btf_type_tag".
 
-V2 -> V3: addressed comments from David Vernet
----
- Documentation/bpf/clang-notes.rst     |  6 ++++++
- Documentation/bpf/instruction-set.rst | 19 ++++++++++++++++++-
- Documentation/bpf/linux-notes.rst     |  8 ++++++++
- 3 files changed, 32 insertions(+), 1 deletion(-)
+For example, the following C code:
 
-diff --git a/Documentation/bpf/clang-notes.rst b/Documentation/bpf/clang-notes.rst
-index 528feddf2db..2c872a1ee08 100644
---- a/Documentation/bpf/clang-notes.rst
-+++ b/Documentation/bpf/clang-notes.rst
-@@ -20,6 +20,12 @@ Arithmetic instructions
- For CPU versions prior to 3, Clang v7.0 and later can enable ``BPF_ALU`` support with
- ``-Xclang -target-feature -Xclang +alu32``.  In CPU version 3, support is automatically included.
- 
-+Jump instructions
-+=================
-+
-+If ``-O0`` is used, Clang will generate the ``BPF_CALL | BPF_X | BPF_JMP`` (0x8d)
-+instruction, which is not supported by the Linux kernel verifier.
-+
- Atomic operations
- =================
- 
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index af515de5fc3..148dd2a2e39 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -239,7 +239,7 @@ BPF_JSET  0x40   PC += off if dst & src
- BPF_JNE   0x50   PC += off if dst != src
- BPF_JSGT  0x60   PC += off if dst > src     signed
- BPF_JSGE  0x70   PC += off if dst >= src    signed
--BPF_CALL  0x80   function call
-+BPF_CALL  0x80   function call              see `Helper functions`_
- BPF_EXIT  0x90   function / program return  BPF_JMP only
- BPF_JLT   0xa0   PC += off if dst < src     unsigned
- BPF_JLE   0xb0   PC += off if dst <= src    unsigned
-@@ -250,6 +250,23 @@ BPF_JSLE  0xd0   PC += off if dst <= src    signed
- The eBPF program needs to store the return value into register R0 before doing a
- BPF_EXIT.
- 
-+Helper functions
-+~~~~~~~~~~~~~~~~
-+
-+Helper functions are a concept whereby BPF programs can call into a
-+set of function calls exposed by the runtime.  Each helper
-+function is identified by an integer used in a ``BPF_CALL`` instruction.
-+The available helper functions may differ for each program type.
-+
-+Conceptually, each helper function is implemented with a commonly shared function
-+signature defined as:
-+
-+  u64 function(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5)
-+
-+In actuality, each helper function is defined as taking between 0 and 5 arguments,
-+with the remaining registers being ignored.  The definition of a helper function
-+is responsible for specifying the type (e.g., integer, pointer, etc.) of the value returned,
-+the number of arguments, and the type of each argument.
- 
- Load and store instructions
- ===========================
-diff --git a/Documentation/bpf/linux-notes.rst b/Documentation/bpf/linux-notes.rst
-index 956b0c86699..f43b9c797bc 100644
---- a/Documentation/bpf/linux-notes.rst
-+++ b/Documentation/bpf/linux-notes.rst
-@@ -12,6 +12,14 @@ Byte swap instructions
- 
- ``BPF_FROM_LE`` and ``BPF_FROM_BE`` exist as aliases for ``BPF_TO_LE`` and ``BPF_TO_BE`` respectively.
- 
-+Jump instructions
-+=================
-+
-+``BPF_CALL | BPF_X | BPF_JMP`` (0x8d), where the helper function
-+integer would be read from a specified register, is not currently supported
-+by the verifier.  Any programs with this instruction will fail to load
-+until such support is added.
-+
- Legacy BPF Packet access instructions
- =====================================
- 
--- 
-2.33.4
+    struct st {
+      int __attribute__((btf_type_tag("a"))) a;
+    } g;
 
+Produces the following DWARF when [1] is used:
+
+0x00000029:   DW_TAG_structure_type
+                DW_AT_name      ("st")
+                ...
+
+0x0000002e:     DW_TAG_member
+                  DW_AT_name    ("a")
+                  DW_AT_type    (0x00000038 "int")
+                ...
+
+0x00000038:   DW_TAG_base_type
+                DW_AT_name      ("int")
+                ...
+
+0x0000003c:     DW_TAG_LLVM_annotation
+                  DW_AT_name    ("btf_type_tag:v2")
+                  DW_AT_const_value     ("a")
+
+I think that this is a tad better than abandoning 0x6000 tag because of
+two reasons:
+- tag numbers are a limited resource;
+- might simplify discussion with upstream.
+
+(It also makes some implementation details a bit simpler, but this is not
+ very significant).
+
+What do you think?
+
+Both [1] and [2] are in a workable state, but [2] lacks support for
+subroutine types and "void *" for now. If you are onboard with this change
+I'll proceed with finalizing [1] and [2]. (Also, ":v2" suffix might be not
+the best, I'm open to naming suggestions).
+
+As a somewhat orthogonal question, would it be possible for you to use the
+same 0x6000 tag on GCC side? I looked at master branch of [3] but can't
+find any mentions of btf_type_tag.
+
+Thanks,
+Eduard
+
+[1] https://reviews.llvm.org/D143967
+[2] https://github.com/eddyz87/dwarves/tree/btf-type-tag-v2
+[3] git://gcc.gnu.org/git/gcc.git
