@@ -2,291 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F3069D653
-	for <lists+bpf@lfdr.de>; Mon, 20 Feb 2023 23:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED34969D65D
+	for <lists+bpf@lfdr.de>; Mon, 20 Feb 2023 23:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjBTWal (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Feb 2023 17:30:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
+        id S232276AbjBTWgL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Feb 2023 17:36:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjBTWal (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Feb 2023 17:30:41 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C241E1EF
-        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 14:30:39 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id fb30so1241558pfb.13
-        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 14:30:39 -0800 (PST)
+        with ESMTP id S231970AbjBTWgL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Feb 2023 17:36:11 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58A51EFFA
+        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 14:36:04 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id a10so2605754ljq.1
+        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 14:36:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VKy8AOJlnqk2z9bd4BuGtXzV3BOH/XKBuEon+28lL+w=;
-        b=iMQXVLJUM2nQcSKc8u473CKeJjCVc/uqX3jnyZBinAMl5FfSqWxzMsZw68ICRSpeCc
-         9iqRzjYRgY0prT7ZLaEIctTUGAe/GvzNVr810pSPz83ieWfTAvJ8RlOWkKPSha6D+e0H
-         xLm5ygcbWi9fyPmFwzUTilZh9nzuA/g9OMRFV8MXMgeOQwYuppUqEid0DnP9RIL2/qz/
-         d56qrdIuGHpXUPT7TPhmtvO1C/RA4cY2eVeNcOSa1aIy+w1r0AQG35cbD2GToka02tJ2
-         9EscC0xmxh/FoUXoEM93oPW+GPsAV0lKV1u976NRuso73lXb6TbkskNsm1iL03XvU16D
-         he3g==
+        d=google.com; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gxSxCMQLDg74+qYSOVD5OnVif3VGIj0OD1vSeL1se8w=;
+        b=si16HQqcestAhdnFeXrujawBO3Cl6ESPM6/Zp32NifN1Yp2GJVfEsIiMc70yr2YxG0
+         mkvKsNuwhMGm77aJM5Ztr9fIr3x/P7WVhyuS+hVQTKJUQthyUmmDJTygZ9tJNjUFrAjt
+         dbPMprc0UeuMRumlUHxfvD1Y7LuGgVykfcxIxVrP0Ni+HBCIhHlPzvmeOdAG4hii8QSe
+         mrC4gN4/Av+85bkDO4K72YWhfh/B03Vg91nlLNotMPR1Ib26SAbgfl3oW6mrewVPkC3y
+         RiNOjxtWYqTFNskEyHzqd3rKoJLyB2njxKIjMYRsXCY79QGDzPoOLZJ/BN6KEsmFsOKZ
+         JKFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VKy8AOJlnqk2z9bd4BuGtXzV3BOH/XKBuEon+28lL+w=;
-        b=BhUuOtVKlB9RR/e9ljSry9HsS5uThkk2cCPWFmX83P7aQWSjU1aUay0kKYQkuV8kFB
-         FXLbYUy5omrNXz0KI9kraAGYWGZs4VcVpS2GotGKTdW7iXACvVPCrvnNHoH6DewvWQfc
-         6Mjj+y/QNyomDoMaprY1xSZklfO0UcQe/WGSSfeUi5Eed0vWySjiO62MEbuov1Maf6Cn
-         +hF4qGcXjJnBxlAJLiKPWMBqDG1pQlaByj4YqjlD7FwbiDQGAjGpvjRzaEwyL/S+K8vl
-         B0HoGUoFk+Wyll6Ypu3TBAr3OVF9w7969z8vbwu3mmSqfPU9jwpXlnrNgdzeghe3dqNo
-         qg9Q==
-X-Gm-Message-State: AO0yUKU38oS/KaDQ3uOC9GMUubBf1Nc0+pW7ee+fcAoPQ/7NGFtZqT+A
-        5FL5Q+Qm2190k+fNGWTMx84=
-X-Google-Smtp-Source: AK7set+Vm0Oe10NSO0KNRgqaA44wfh/lywOaffQqLfzGfqBN+HWNwBBUratRctFMQwECvby62OwmKg==
-X-Received: by 2002:a62:2f41:0:b0:5a8:808a:d3ce with SMTP id v62-20020a622f41000000b005a8808ad3cemr2791555pfv.8.1676932238816;
-        Mon, 20 Feb 2023 14:30:38 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:4542])
-        by smtp.gmail.com with ESMTPSA id e12-20020a62aa0c000000b005a8b4dcd21asm8431839pff.15.2023.02.20.14.30.36
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gxSxCMQLDg74+qYSOVD5OnVif3VGIj0OD1vSeL1se8w=;
+        b=s5X8DPONPOX+476YM5nIPDvb18Tw9VRk+fQOecPh6vWeZeYlTrcIAy5lUSmRdc3Hd1
+         wknsnS4wjVO4nsVZQc5mZbffoBuzyTjg6Grk95Lbqfqn58BxOW6o74rh67oeA3WOhR+3
+         myyl3XEoLqa9+8zkRO4gDNcKWcJiU7fLd1LM0jQfoXJtdjlFe6lxQ2Pj+vczyx8dhcXr
+         hB4sYX5XMvVlyoX5ZlpRM9KjcHBfqu/tb0wAE5g8o6gdHrB7xpLNCWqmpExjGuPTEno0
+         pn24b6niTHxrJBa0YJ9jVnigabbcROb0BYrHn6SQY49SsTTrAimX7cfBWB0ouRdW6+VH
+         Ouag==
+X-Gm-Message-State: AO0yUKUkIae61vz57ZwQz/qwRGS/vwL9Wm9yVC8M9YZ7/S0h0IR4StEy
+        3odaI3jyZVKWzbKEXCj7UJC9f4u3HSMYAvIuC4I=
+X-Google-Smtp-Source: AK7set+/LIQd479+c7P+tDIUBinbHdlRNi2iZwvba/yV8i57IsdmfmBVNEBp1xvoblx0Uj8cXhcDbg==
+X-Received: by 2002:a05:651c:54e:b0:294:6f53:ec14 with SMTP id q14-20020a05651c054e00b002946f53ec14mr1318308ljp.13.1676932562238;
+        Mon, 20 Feb 2023 14:36:02 -0800 (PST)
+Received: from google.com (38.165.88.34.bc.googleusercontent.com. [34.88.165.38])
+        by smtp.gmail.com with ESMTPSA id e13-20020a2e930d000000b002934b6236absm1735653ljh.95.2023.02.20.14.36.01
+        for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Feb 2023 14:30:38 -0800 (PST)
-Date:   Mon, 20 Feb 2023 14:30:34 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     acme@kernel.org, olsajiri@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
-        eddyz87@gmail.com, sinquersw@gmail.com, timo@incline.eu,
-        songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
-        martin.lau@kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC dwarves 1/4] dwarf_loader: mark functions that do not use
- expected registers for params
-Message-ID: <20230220223034.sgtda6mcrwuqwvk4@macbook-pro-6.dhcp.thefacebook.com>
-References: <1676675433-10583-1-git-send-email-alan.maguire@oracle.com>
- <1676675433-10583-2-git-send-email-alan.maguire@oracle.com>
- <20230220190335.bk6jzayfqivsh7rv@macbook-pro-6.dhcp.thefacebook.com>
- <0bf3e832-ef5b-6ab5-4d8b-1de8e957e166@oracle.com>
+        Mon, 20 Feb 2023 14:36:01 -0800 (PST)
+Date:   Mon, 20 Feb 2023 22:35:55 +0000
+From:   Matt Bobrowski <mattbobrowski@google.com>
+To:     bpf@vger.kernel.org
+Subject: bpf: Question about odd BPF verifier behaviour
+Message-ID: <Y/P1yxAuV6Wj3A0K@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0bf3e832-ef5b-6ab5-4d8b-1de8e957e166@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-16.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        LOCALPART_IN_SUBJECT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 20, 2023 at 07:42:15PM +0000, Alan Maguire wrote:
-> On 20/02/2023 19:03, Alexei Starovoitov wrote:
-> > On Fri, Feb 17, 2023 at 11:10:30PM +0000, Alan Maguire wrote:
-> >> Calling conventions dictate which registers are used for
-> >> function parameters.
-> >>
-> >> When a function is optimized however, we need to ensure that
-> >> the non-optimized parameters do not violate expectations about
-> >> register use as this would violate expectations for tracing.
-> >> At CU initialization, create a mapping from parameter index
-> >> to expected DW_OP_reg, and use it to validate parameters
-> >> match with expectations.  A parameter which is passed via
-> >> the stack, as a constant, or uses an unexpected register,
-> >> violates these expectations and it (and the associated
-> >> function) are marked as having unexpected register mapping.
-> >>
-> >> Note though that there is as exception here that needs to
-> >> be handled; when a (typedef) struct is passed as a parameter,
-> >> it can use multiple registers so will throw off later register
-> >> expectations.  Exempt functions that have unexpected
-> >> register usage _and_ struct parameters (examples are found
-> >> in the "tracing_struct" test).
-> >>
-> >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> >> ---
-> >>  dwarf_loader.c | 109 ++++++++++++++++++++++++++++++++++++++++++++++---
-> >>  dwarves.h      |   5 +++
-> >>  2 files changed, 109 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/dwarf_loader.c b/dwarf_loader.c
-> >> index acdb68d..014e130 100644
-> >> --- a/dwarf_loader.c
-> >> +++ b/dwarf_loader.c
-> >> @@ -1022,6 +1022,51 @@ static int arch__nr_register_params(const GElf_Ehdr *ehdr)
-> >>  	return 0;
-> >>  }
-> >>  
-> >> +/* map from parameter index (0 for first, ...) to expected DW_OP_reg.
-> >> + * This will allow us to identify cases where optimized-out parameters
-> >> + * interfere with expectations about register contents on function
-> >> + * entry.
-> >> + */
-> >> +static void arch__set_register_params(const GElf_Ehdr *ehdr, struct cu *cu)
-> >> +{
-> >> +	memset(cu->register_params, -1, sizeof(cu->register_params));
-> >> +
-> >> +	switch (ehdr->e_machine) {
-> >> +	case EM_S390:
-> >> +		/* https://github.com/IBM/s390x-abi/releases/download/v1.6/lzsabi_s390x.pdf */
-> >> +		cu->register_params[0] = DW_OP_reg2;	// %r2
-> >> +		cu->register_params[1] = DW_OP_reg3;	// %r3
-> >> +		cu->register_params[2] = DW_OP_reg4;	// %r4
-> >> +		cu->register_params[3] = DW_OP_reg5;	// %r5
-> >> +		cu->register_params[4] = DW_OP_reg6;	// %r6
-> >> +		return;
-> >> +	case EM_X86_64:
-> >> +		/* //en.wikipedia.org/wiki/X86_calling_conventions#System_V_AMD64_ABI */
-> >> +		cu->register_params[0] = DW_OP_reg5;	// %rdi
-> >> +		cu->register_params[1] = DW_OP_reg4;	// %rsi
-> >> +		cu->register_params[2] = DW_OP_reg1;	// %rdx
-> >> +		cu->register_params[3] = DW_OP_reg2;	// %rcx
-> >> +		cu->register_params[4] = DW_OP_reg8;	// %r8
-> >> +		cu->register_params[5] = DW_OP_reg9;	// %r9
-> >> +		return;
-> >> +	case EM_ARM:
-> >> +		/* https://github.com/ARM-software/abi-aa/blob/main/aapcs32/aapcs32.rst#machine-registers */
-> >> +	case EM_AARCH64:
-> >> +		/* https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst#machine-registers */
-> >> +		cu->register_params[0] = DW_OP_reg0;
-> >> +		cu->register_params[1] = DW_OP_reg1;
-> >> +		cu->register_params[2] = DW_OP_reg2;
-> >> +		cu->register_params[3] = DW_OP_reg3;
-> >> +		cu->register_params[4] = DW_OP_reg4;
-> >> +		cu->register_params[5] = DW_OP_reg5;
-> >> +		cu->register_params[6] = DW_OP_reg6;
-> >> +		cu->register_params[7] = DW_OP_reg7;
-> >> +		return;
-> >> +	default:
-> >> +		return;
-> >> +	}
-> >> +}
-> >> +
-> >>  static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
-> >>  					struct conf_load *conf, int param_idx)
-> >>  {
-> >> @@ -1075,18 +1120,28 @@ static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
-> >>  		if (parm->has_loc &&
-> >>  		    attr_location(die, &loc.expr, &loc.exprlen) == 0 &&
-> >>  			loc.exprlen != 0) {
-> >> +			int expected_reg = cu->register_params[param_idx];
-> >>  			Dwarf_Op *expr = loc.expr;
-> >>  
-> >>  			switch (expr->atom) {
-> >>  			case DW_OP_reg0 ... DW_OP_reg31:
-> >> +				/* mark parameters that use an unexpected
-> >> +				 * register to hold a parameter; these will
-> >> +				 * be problematic for users of BTF as they
-> >> +				 * violate expectations about register
-> >> +				 * contents.
-> >> +				 */
-> >> +				if (expected_reg >= 0 && expected_reg != expr->atom)
-> >> +					parm->unexpected_reg = 1;
-> >> +				break;
-> > 
-> > Overall I guess it's a step forward, since it addresses the immediate issue,
-> > but probably too fragile long term.
-> > 
-> > Your earlier example:
-> >  __bpf_kfunc void tcp_reno_cong_avoid(struct sock *sk, u32 ack, u32 acked)
-> > 
-> > had
-> > 0x0891dabe:     DW_TAG_formal_parameter
-> >                   DW_AT_location        (indexed (0x7a) loclist = 0x00f50eb1:
-> >                      [0xffffffff82031185, 0xffffffff8203119e): DW_OP_reg5 RDI
-> >                      [0xffffffff8203119e, 0xffffffff820311cc): DW_OP_reg3 RBX
-> >                      [0xffffffff820311cc, 0xffffffff820311d1): DW_OP_reg5 RDI
-> >                      [0xffffffff820311d1, 0xffffffff820311d2): DW_OP_reg3 RBX
-> >                      [0xffffffff820311d2, 0xffffffff820311d8): DW_OP_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
-> > 
-> > 0x0891dad4:     DW_TAG_formal_parameter
-> >                   DW_AT_location        (indexed (0x7b) loclist = 0x00f50eda:
-> >                      [0xffffffff82031185, 0xffffffff820311bc): DW_OP_reg1 RDX
-> >                      [0xffffffff820311bc, 0xffffffff820311c8): DW_OP_reg0 RAX
-> >                      [0xffffffff820311c8, 0xffffffff820311d1): DW_OP_reg1 RDX)
-> >                   DW_AT_name    ("acked")
-> > 
-> > Both args will fail above check. If I'm reading above code correctly.
-> > It checks that every reg in DW_AT_location matches ?
-> 
-> It checks location info for those that have it; so in this case the location
-> lists specify rdi on entry for the first parameter (sk)
-> 
-> 
-> 0x068a0f3b:     DW_TAG_formal_parameter
->                   DW_AT_location        (indexed (0x74) loclist = 0x00a4c5a0:
->                      [0xffffffff81b87849, 0xffffffff81b87866): DW_OP_reg5 RDI
->                      [0xffffffff81b87866, 0xffffffff81b87899): DW_OP_reg3 RBX
->                      [0xffffffff81b87899, 0xffffffff81b878a0): DW_OP_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
->                   DW_AT_name    ("sk")
->                   DW_AT_decl_file       ("/home/opc/src/clang/bpf-next/net/ipv4/tcp_cong.c")
->                   DW_AT_decl_line       (446)
->                   DW_AT_type    (0x06886461 "sock *")
-> 
-> 
-> no location info for the second (ack):
-> 
-> 0x068a0f47:     DW_TAG_formal_parameter
->                   DW_AT_name    ("ack")
->                   DW_AT_decl_file       ("/home/opc/src/clang/bpf-next/net/ipv4/tcp_cong.c")
->                   DW_AT_decl_line       (446)
->                   DW_AT_type    (0x06886451 "u32")
-> 
-> ...so matching it is skipped, and rdx as the first element in the location list
-> for the third parameter (acked):
-> 
-> 0x068a0f52:     DW_TAG_formal_parameter
->                   DW_AT_location        (indexed (0x75) loclist = 0x00a4c5bb:
->                      [0xffffffff81b87849, 0xffffffff81b87884): DW_OP_reg1 RDX
->                      [0xffffffff81b87884, 0xffffffff81b87890): DW_OP_reg0 RAX
->                      [0xffffffff81b87890, 0xffffffff81b87898): DW_OP_reg1 RDX)
->                   DW_AT_name    ("acked")
->                   DW_AT_decl_file       ("/home/opc/src/clang/bpf-next/net/ipv4/tcp_cong.c")
->                   DW_AT_decl_line       (446)
->                   DW_AT_type    (0x06886451 "u32")
-> 
-> 
-> So this would be okay using the register-checking approach.
+Hello!
 
-I meant in all that it's not clear that first and only first location info is used.
-Is that the behavior of attr_location() ?
+Whilst in the midst of testing a v5.19 to v6.1 kernel upgrade, we
+happened to notice that one of our sleepable LSM based eBPF programs
+was failing to load on the newer v6.1 kernel. Using the below trivial
+eBPF program as our reproducer:
 
+#include "vmlinux.h"
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_tracing.h>
 
-> > Or just first ?
-> > 
-> >>  			case DW_OP_breg0 ... DW_OP_breg31:
-> >>  				break;
-> >>  			default:
-> >> -				parm->optimized = 1;
-> >> +				parm->unexpected_reg = 1;
-> >>  				break;
-> >>  			}
-> >>  		} else if (has_const_value) {
-> >> -			parm->optimized = 1;
-> >> +			parm->unexpected_reg = 1;
-> > 
-> > Is this part too restrictive as well?
-> > Just because one arg is constant it doesn't mean that the calling convention
-> > is not correct for this and other args.
-> > 
-> 
-> Great catch; this part is wrong; should just be parm->optimized = 1 as it
-> was before.
+char LICENSE[] SEC("license") = "Dual BSD/GPL";
 
-Will this fix change the stats you've quoted earlier ?
+SEC("lsm.s/bprm_committed_creds")
+int BPF_PROG(dbg, struct linux_binprm *bprm)
+{
+	char buf[64] = {0};
+	bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
+	return 0;
+}
 
-"
-With these changes, running pahole on a gcc-built
-vmlinux skips
+The verifier emits the following error message when attempting to load
+the above eBPF program:
 
-- 1164 functions due to multiple inconsistent function
-  prototypes.  Most of these are "."-suffixed optimized
-  fuctions.
-- 331 functions due to unexpected register usage
+-- BEGIN PROG LOAD LOG --
+reg type unsupported for arg#0 function dbg#5
+0: R1=ctx(off=0,imm=0) R10=fp0
+; int BPF_PROG(dbg, struct linux_binprm *bprm)
+0: (79) r1 = *(u64 *)(r1 +0)
+func 'bpf_lsm_bprm_committed_creds' arg0 has btf_id 137293 type STRUCT 'linux_binprm'
+1: R1_w=ptr_linux_binprm(off=0,imm=0)
+1: (b7) r2 = 0                        ; R2_w=0
+; char buf[64] = {0};
+[...]
+; bpf_ima_file_hash(bprm->file, buf, 64);
+10: (79) r1 = *(u64 *)(r1 +64)        ; R1_w=ptr_file(off=0,imm=0)
+11: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+; 
+12: (07) r2 += -64                    ; R2_w=fp-64
+; bpf_ima_file_hash(bprm->file, buf, 64);
+13: (b7) r3 = 64                      ; R3_w=64
+14: (85) call bpf_ima_file_hash#193
+cannot access ptr member next with moff 0 in struct llist_node with off 0 size 1
+R1 is of type file but file is expected
+processed 15 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+-- END PROG LOAD LOG --
 
-For a clang-built kernel, the numbers are
+What particularly strikes out at me is the following 2 lines returned
+in the error message:
 
-- 539 functions with inconsistent prototypes are skipped
-- 209 functions with unexpected register usage are skipped
-"
+cannot access ptr member next with moff 0 in struct llist_node with off 0 size 1
+R1 is of type file but file is expected
 
-How does it compare before/after ?
-iirc there were ~2500 functions skipped in vmlinux-gcc and now it's down to 1164+331 ?
+In this particular case, the above message suggested to me that
+there's likely multiple struct file definitions that exist within the
+kernel's BTF and that the verifier is possibly getting confused about
+which one it should be using, or perhaps some of the struct file
+definitions included in the kernel's BTF actually differ and hence
+when performing the btf_struct_ids_match() check in check_reg_type()
+[0] the verifier fails with this error message? Could this potentially
+be a problem with the toolchain (Currently, using latest pahole/LLVM
+built from source)?
+
+Additionally, I also noticed that when we walk the BTF struct
+defintions via btf_struct_walk() from btf_struct_ids_match(), the size
+passed to btf_struct_walk() is explicitly set to 1. Yet, msize used
+throughout btf_struct_walk() can certainly be > 1 when evaluating a
+struct defintions members and hence why we're also tripping over this
+condition [1] in btf_struct_walk(). Don't completely understaed this
+code yet, so I don't know whether this is actually a problem or not.
+
+Keen to here what your thoughts are on this one.
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/bpf/verifier.c#n6278
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/bpf/btf.c#n6237
+
+/M
