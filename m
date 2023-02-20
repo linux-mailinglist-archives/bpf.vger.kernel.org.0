@@ -2,177 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2EF69D74F
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 00:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3269A69D756
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 00:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbjBTXu0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Feb 2023 18:50:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
+        id S229738AbjBTXy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Feb 2023 18:54:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjBTXuZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Feb 2023 18:50:25 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1951DCDCE
-        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 15:50:24 -0800 (PST)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31KLnsuS007170;
-        Mon, 20 Feb 2023 23:50:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=MnYIJRmz9xlKOFx0J7uWXvlWSkF2sS+AnuabnWUNy08=;
- b=tOhl9sLsu75UQLbphFwpEpU34PBzrvVLBIra7iH9Fjdd7JWrU5q+IzpmIgVXPOh290RJ
- q3Nn66uEbydta7g0zhDMnvae3i00Isb0CVj8AxtZszHwtf1BMmrqhOEBBlCxpqa3TgIa
- p8L5fAnHOfnodWqhWBEhg3jnVgPJr5XheF6gNd3MQ0XwVqnOLZJA+rRdhO4VykGmmcY1
- xfNnJyl5YFkf7P4w/YxFLgTi6HN+vL8PLr29uGNmzkZmf8FH3kFdDv9YmRTgYl6KcG0k
- MESH/EDcmNl9vagkydgpHP8nIIh138hvH8nTrDtXtRkg2ucNBhVKwiz7EM8Na962xDoK 4A== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nvh4fa83v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Feb 2023 23:50:09 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31KFJRSo001655;
-        Mon, 20 Feb 2023 23:50:08 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma02fra.de.ibm.com (PPS) with ESMTPS id 3ntpa62f9d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Feb 2023 23:50:08 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31KNo4D441353562
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Feb 2023 23:50:04 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 27BC020040;
-        Mon, 20 Feb 2023 23:50:04 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5947520043;
-        Mon, 20 Feb 2023 23:50:03 +0000 (GMT)
-Received: from heavy.boeblingen.de.ibm.com (unknown [9.171.34.203])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Feb 2023 23:50:03 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] libbpf: Document bpf_{btf,link,map,prog}_get_info_by_fd()
-Date:   Tue, 21 Feb 2023 00:49:58 +0100
-Message-Id: <20230220234958.764997-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.39.1
+        with ESMTP id S232295AbjBTXy0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Feb 2023 18:54:26 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E861E9F7
+        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 15:54:10 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id u10so2857199pjc.5
+        for <bpf@vger.kernel.org>; Mon, 20 Feb 2023 15:54:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HJUe+9v1CZXfift4Q5/8Wx6jYVo+7jdMbA9wEfyMc00=;
+        b=Aqj9LNYYsrRTbcPbICZWSgVbJ3N+yvI2KrJw7RvT6qaAGfOXMSgqk7AG3HYf08YILf
+         Lxkv7fYet2JsRNukf6VVgq5mGXhlHfu3RZ04jz4iePZiScr2K57jteJGyq2LdID0gB/w
+         11lBcjyGefGq2J5W1ESCo3DtqzJxlBKGEiQJli8nRF1iunIaD9LHvCBlG7dmz+Jjp+3A
+         hvE4lozMzcqMDCrl+BPmEEJI0Gj/9rKbGueyAWedrw8AHZQA2ZICQjBRoDlgEBn5CUz2
+         exM3nzye+wNE/IbuieAEeyxDegiXeYgvaZBBK5gbsx0GGLIeEkd3vaBYnWAkloxCs82/
+         SZAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HJUe+9v1CZXfift4Q5/8Wx6jYVo+7jdMbA9wEfyMc00=;
+        b=3f+BM68i03LlenLrcymFuvXWmuJRHvoZO6c0DkUMKnhIrY639osH9WlJRqzeu/PsTg
+         WjLBZWbYcXRvuj1ijtXAOXGevkqWkzxVrdBRMiu1F/JJSyZ6f2YkggjX6guSvcTQ/PGe
+         uCwTf/juMCYS6bncuNNtMJk9KBZWNiu2X0gE7K7Y+Ju/jNSPBf+5JZCxSXqiofjtUSo/
+         rQKvdiKDn6C35/gzuB4EUlTnTQGQWxc6Q9IDc7JH9q7+5TVxgJi03ekPwdQQYfFvuxPi
+         FvYIQPehtBFfYe1XCzFwHMhDDbMEkRY4ODbl9nx8Lz7l3+bvhCVBXsDclaCVs1mrRkp6
+         1t0g==
+X-Gm-Message-State: AO0yUKXe/3YHP4vhu7guiH/UtZ3EUIgnBMjHoym4CgLaiuwuhEFhT1Ni
+        Ts/axlxr79mzZIPnjSXgQNNgBdsfK5E=
+X-Google-Smtp-Source: AK7set++3PAIjlPuoG8UYbIyl0ZplVRx7/twqSHzLj6aGT50ABE3a7MSH5wd871NeYk82mls9G1HRg==
+X-Received: by 2002:a17:903:2291:b0:19b:33c0:4092 with SMTP id b17-20020a170903229100b0019b33c04092mr3395363plh.24.1676937249917;
+        Mon, 20 Feb 2023 15:54:09 -0800 (PST)
+Received: from mariner-vm.. (c-71-197-160-159.hsd1.wa.comcast.net. [71.197.160.159])
+        by smtp.gmail.com with ESMTPSA id u2-20020a170902bf4200b0019a6d3851afsm8480398pls.141.2023.02.20.15.54.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Feb 2023 15:54:09 -0800 (PST)
+From:   Dave Thaler <dthaler1968@googlemail.com>
+To:     bpf@vger.kernel.org
+Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
+Subject: [PATCH bpf-next v2] bpf, docs: Add docs on extended 64-bit immediate instructions
+Date:   Mon, 20 Feb 2023 23:54:05 +0000
+Message-Id: <20230220235405.4289-1-dthaler1968@googlemail.com>
+X-Mailer: git-send-email 2.33.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: gFLCo2xsm11ayWwmOugG80o-KsiC26fQ
-X-Proofpoint-GUID: gFLCo2xsm11ayWwmOugG80o-KsiC26fQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-20_17,2023-02-20_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 clxscore=1015 mlxscore=0 adultscore=0
- mlxlogscore=999 spamscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302200218
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Replace the short informal description with the proper doc comments.
+From: Dave Thaler <dthaler@microsoft.com>
 
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Add docs on extended 64-bit immediate instructions, including six instructions
+previously undocumented.  Include a brief description of map objects, and variables,
+as used by those instructions.
+
 ---
- tools/lib/bpf/bpf.h | 67 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 63 insertions(+), 4 deletions(-)
+V1 - V2: rebased on top of latest master
 
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 9ed9bceb4111..e8c5c5832359 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -386,14 +386,73 @@ LIBBPF_API int bpf_link_get_fd_by_id(__u32 id);
- LIBBPF_API int bpf_link_get_fd_by_id_opts(__u32 id,
- 				const struct bpf_get_fd_by_id_opts *opts);
- LIBBPF_API int bpf_obj_get_info_by_fd(int bpf_fd, void *info, __u32 *info_len);
--/* Type-safe variants of bpf_obj_get_info_by_fd(). The callers still needs to
-- * pass info_len, which should normally be
-- * sizeof(struct bpf_{prog,map,btf,link}_info), in order to be compatible with
-- * different libbpf and kernel versions.
-+
-+/**
-+ * @brief **bpf_prog_get_info_by_fd()** obtains information about the eBPF
-+ * program corresponding to *bpf_fd*.
-+ *
-+ * Populates up to *info_len* bytes of *info* and updates *info_len* with the
-+ * actual number of bytes written to *info*.
-+ *
-+ * @param bpf_fd eBPF program file descriptor
-+ * @param info pointer to **struct bpf_prog_info** that will be populated with
-+ * eBPF program information
-+ * @param info_len pointer to the size of *info*; on success updated with the
-+ * number of bytes written to *info*
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-  */
- LIBBPF_API int bpf_prog_get_info_by_fd(int prog_fd, struct bpf_prog_info *info, __u32 *info_len);
-+
-+/**
-+ * @brief **bpf_map_get_info_by_fd()** obtains information about the eBPF
-+ * map corresponding to *bpf_fd*.
-+ *
-+ * Populates up to *info_len* bytes of *info* and updates *info_len* with the
-+ * actual number of bytes written to *info*.
-+ *
-+ * @param bpf_fd eBPF map file descriptor
-+ * @param info pointer to **struct bpf_map_info** that will be populated with
-+ * eBPF map information
-+ * @param info_len pointer to the size of *info*; on success updated with the
-+ * number of bytes written to *info*
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-+ */
- LIBBPF_API int bpf_map_get_info_by_fd(int map_fd, struct bpf_map_info *info, __u32 *info_len);
-+
-+/**
-+ * @brief **bpf_btf_get_info_by_fd()** obtains information about the eBPF
-+ * BTF corresponding to *bpf_fd*.
-+ *
-+ * Populates up to *info_len* bytes of *info* and updates *info_len* with the
-+ * actual number of bytes written to *info*.
-+ *
-+ * @param bpf_fd eBPF BTF file descriptor
-+ * @param info pointer to **struct bpf_btf_info** that will be populated with
-+ * eBPF BTF information
-+ * @param info_len pointer to the size of *info*; on success updated with the
-+ * number of bytes written to *info*
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-+ */
- LIBBPF_API int bpf_btf_get_info_by_fd(int btf_fd, struct bpf_btf_info *info, __u32 *info_len);
-+
-+/**
-+ * @brief **bpf_btf_get_info_by_fd()** obtains information about the eBPF
-+ * link corresponding to *bpf_fd*.
-+ *
-+ * Populates up to *info_len* bytes of *info* and updates *info_len* with the
-+ * actual number of bytes written to *info*.
-+ *
-+ * @param bpf_fd eBPF link file descriptor
-+ * @param info pointer to **struct bpf_link_info** that will be populated with
-+ * eBPF link information
-+ * @param info_len pointer to the size of *info*; on success updated with the
-+ * number of bytes written to *info*
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-+ */
- LIBBPF_API int bpf_link_get_info_by_fd(int link_fd, struct bpf_link_info *info, __u32 *info_len);
+Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+---
+ Documentation/bpf/instruction-set.rst | 56 +++++++++++++++++++++++----
+ Documentation/bpf/linux-notes.rst     | 10 +++++
+ 2 files changed, 58 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+index af515de5fc3..d3ef8733795 100644
+--- a/Documentation/bpf/instruction-set.rst
++++ b/Documentation/bpf/instruction-set.rst
+@@ -371,14 +371,54 @@ and loaded back to ``R0``.
+ -----------------------------
  
- struct bpf_prog_query_opts {
+ Instructions with the ``BPF_IMM`` 'mode' modifier use the wide instruction
+-encoding for an extra imm64 value.
+-
+-There is currently only one such instruction.
+-
+-``BPF_LD | BPF_DW | BPF_IMM`` means::
+-
+-  dst = imm64
+-
++encoding defined in `Instruction encoding`_, and use the 'src' field of the
++basic instruction to hold an opcode subtype.
++
++The following instructions are defined, and use additional concepts defined below:
++
++=========================  ======  ===  =====================================  ===========  ==============
++opcode construction        opcode  src  pseudocode                             imm type     dst type
++=========================  ======  ===  =====================================  ===========  ==============
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x0  dst = imm64                            integer      integer
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x1  dst = map_by_fd(imm)                   map fd       map
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x2  dst = mva(map_by_fd(imm)) + next_imm   map fd       data pointer
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x3  dst = variable_addr(imm)               variable id  data pointer
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x4  dst = code_addr(imm)                   integer      code pointer
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x5  dst = map_by_idx(imm)                  map index    map
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x6  dst = mva(map_by_idx(imm)) + next_imm  map index    data pointer
++=========================  ======  ===  =====================================  ===========  ==============
++
++where
++
++* map_by_fd(fd) means to convert a 32-bit POSIX file descriptor into an address of a map object (see `Map objects`_)
++* map_by_index(index) means to convert a 32-bit index into an address of a map object
++* mva(map) gets the address of the first value in a given map object
++* variable_addr(id) gets the address of a variable (see `Variables`_) with a given id
++* code_addr(offset) gets the address of the instruction at a specified relative offset in units of 64-bit blocks
++* the 'imm type' can be used by disassemblers for display
++* the 'dst type' can be used for verification and JIT compilation purposes
++
++Map objects
++~~~~~~~~~~~
++
++Maps are shared memory regions accessible by eBPF programs on some platforms, where we use the term "map object"
++to refer to an object containing the data and metadata (e.g., size) about the memory region.
++A map can have various semantics as defined in a separate document, and may or may not have a single
++contiguous memory region, but the 'mva(map)' is currently only defined for maps that do have a single
++contiguous memory region.  Support for maps is optional.
++
++Each map object can have a POSIX file descriptor (fd) if supported by the platform,
++where 'map_by_fd(fd)' means to get the map with the specified file descriptor.
++Each eBPF program can also be defined to use a set of maps associated with the program
++at load time, and 'map_by_index(index)' means to get the map with the given index in the set
++associated with the eBPF program containing the instruction.
++
++Variables
++~~~~~~~~~
++
++Variables are memory regions, identified by integer ids, accessible by eBPF programs on
++some platforms.  The 'variable_addr(id)' operation means to get the address of the memory region
++identified by the given id.  Support for such variables is optional.
+ 
+ Legacy BPF Packet access instructions
+ -------------------------------------
+diff --git a/Documentation/bpf/linux-notes.rst b/Documentation/bpf/linux-notes.rst
+index 956b0c86699..9a1bdbb8ac0 100644
+--- a/Documentation/bpf/linux-notes.rst
++++ b/Documentation/bpf/linux-notes.rst
+@@ -12,6 +12,16 @@ Byte swap instructions
+ 
+ ``BPF_FROM_LE`` and ``BPF_FROM_BE`` exist as aliases for ``BPF_TO_LE`` and ``BPF_TO_BE`` respectively.
+ 
++Map objects
++===========
++
++Linux only supports the 'mva(map)' operation on array maps with a single element.
++
++Variables
++=========
++
++Linux uses BTF ids to identify variables.
++
+ Legacy BPF Packet access instructions
+ =====================================
+ 
 -- 
-2.39.1
+2.33.4
 
