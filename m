@@ -2,167 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C690269C399
-	for <lists+bpf@lfdr.de>; Mon, 20 Feb 2023 01:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BED6869C4F0
+	for <lists+bpf@lfdr.de>; Mon, 20 Feb 2023 06:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjBTA0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Feb 2023 19:26:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
+        id S229670AbjBTF3J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Feb 2023 00:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjBTA0x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Feb 2023 19:26:53 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3E1DBDD;
-        Sun, 19 Feb 2023 16:26:42 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id mi8-20020a17090b4b4800b002349579949aso1461464pjb.5;
-        Sun, 19 Feb 2023 16:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Aid80AoOgCsKIYJRxx6R1vr764XoE7wsH0DMzj93pss=;
-        b=IqACJvhr0i6zNfKHTJ6BvotylZrVYfiF1AziQ+cPMZ/Dukw+C8urjmv6hHyR2mifva
-         KH+EZMOgs87tqz7Bav5pjX7DAZI+G/STnl5LvRlNiC4p2lgi3zrMzoEVyOrqvJRtWUSf
-         bJw6z+DVanfDkElhowvrVWlHNOdr4r1b1a/EeBsIw1p1dP3kJ9o88IYGUfUcJcOkT9ns
-         zRSFa66sUikycVD95JTSMZwDtf9miW4u5NwxueSgh7mG78UpQoU/I85O7wPfiPKCTTcf
-         lpiUf6x47PaO2oC8c99y6zR3ewFJFU8mDjUibMvve6Yf0FRdF9UukCmklmsNBjLExMjx
-         ytCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Aid80AoOgCsKIYJRxx6R1vr764XoE7wsH0DMzj93pss=;
-        b=OhRTKQ1C1HJSKF5N/+csMuu4NTlRb4aSsEfK+HbH1Xx37aUY03QcvZZFyVevVDmsi9
-         LyaYIU75kMtSq/GJTSgCuZA7pl+ZCwbvkMcjOcqHcEsteuYY+VswsyyL0x+bcK/Orzcb
-         u45SqfzONRKIOox2GGIPB8cqbnZuXrQO+MIM14eATvEYQDZ/uv3iDjsiQ5A0YzeQulcY
-         wWP0GxgD9LaO7g756HyFLVpwEkGZ/ZkDlqzpy83OJamZIMTA9+uNtPFtUgNUKU32PSw1
-         4JRWCnUKBQN4FC8p5O/jSqvMTsQHVTH9P1GudrxdEtkFu4U6vXPIZRbtJrQKiZoi7gs5
-         gBqw==
-X-Gm-Message-State: AO0yUKWi1spn982rctZm09YBW8L657iCCtIl5tNZI/1HQOnGDnvX0mDU
-        TFw6XwxJKERJujYVfSPc5mceRujSfUY=
-X-Google-Smtp-Source: AK7set+pf7457cTW0y7+VZcatqwqZXsAkRdUhZcgSKYc0YtiagY6dsxMHtAPgHzUVvsT/gxGl5ZPoA==
-X-Received: by 2002:a17:902:fa83:b0:198:e393:dbf5 with SMTP id lc3-20020a170902fa8300b00198e393dbf5mr1955043plb.22.1676852801421;
-        Sun, 19 Feb 2023 16:26:41 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:4542])
-        by smtp.gmail.com with ESMTPSA id p23-20020a170902a41700b0018099c9618esm1451849plq.231.2023.02.19.16.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Feb 2023 16:26:40 -0800 (PST)
-Date:   Sun, 19 Feb 2023 16:26:37 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, martin.lau@kernel.org, andrii@kernel.org,
-        memxor@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v10 bpf-next 8/9] bpf: Add bpf_dynptr_slice and
- bpf_dynptr_slice_rdwr
-Message-ID: <20230220002637.xmmarcm5fxeyiotn@macbook-pro-6.dhcp.thefacebook.com>
-References: <20230216225524.1192789-1-joannelkoong@gmail.com>
- <20230216225524.1192789-9-joannelkoong@gmail.com>
+        with ESMTP id S229637AbjBTF3I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Feb 2023 00:29:08 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F241DB442
+        for <bpf@vger.kernel.org>; Sun, 19 Feb 2023 21:29:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676870947; x=1708406947;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8bf9iFk5+9dK64rYiv8pcnAkYcrbshioFiVlL55tCIg=;
+  b=TBzWyMC5FLGSEQJuMEpQAdFPTltSMWJh27sUqEGxp1xBe4Jr7wN8wTpp
+   Ed/dZs9ZCYsnp+yionajfZYGNODQWP9F6WWZGP7eKF3+PAyO+V4Y/YGyw
+   KbJDksM+hoIzm7INsKMiPhINwQorddjG5FoK161HyzMCdEwEBi0UBrbpR
+   8m2CSxZcpNUf+6J/TLHA6xUl+9WdYjSbvgOYt9d5/8ah8i/6RC3Rx8913
+   t2eU/Yd5K+pGTcvKAojW+qHgOidzmAcI7PZl+aZaJWpdiUX+yn6kEoeSN
+   pSebjE8xFxW0AXHqWdRjdkZHqc7+FOuIz5uUhMKemrQyCgZKd6+7Y7Q3l
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10626"; a="312691838"
+X-IronPort-AV: E=Sophos;i="5.97,311,1669104000"; 
+   d="scan'208";a="312691838"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2023 21:29:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10626"; a="648716796"
+X-IronPort-AV: E=Sophos;i="5.97,311,1669104000"; 
+   d="scan'208";a="648716796"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 19 Feb 2023 21:29:04 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pTyjX-000Dhl-1G;
+        Mon, 20 Feb 2023 05:29:03 +0000
+Date:   Mon, 20 Feb 2023 13:28:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        David Vernet <void@manifault.com>
+Subject: Re: [PATCH bpf-next v1 2/7] bpf: Support kptrs in local storage maps
+Message-ID: <202302201347.KsT4rWrN-lkp@intel.com>
+References: <20230219155249.1755998-3-memxor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230216225524.1192789-9-joannelkoong@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230219155249.1755998-3-memxor@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 02:55:23PM -0800, Joanne Koong wrote:
-> +
-> +/**
-> + * bpf_dynptr_slice_rdwr - Obtain a pointer to the dynptr data.
-> + *
-> + * For non-skb and non-xdp type dynptrs, there is no difference between
-> + * bpf_dynptr_slice and bpf_dynptr_data.
-> + *
-> + * @ptr: The dynptr whose data slice to retrieve
-> + * @offset: Offset into the dynptr
-> + * @buffer: User-provided buffer to copy contents into
-> + * @buffer__sz: Size (in bytes) of the buffer. This is the length of the
-> + * requested slice
-> + *
-> + * @returns: NULL if the call failed (eg invalid dynptr), pointer to a
-> + * data slice (can be either direct pointer to the data or a pointer to the user
-> + * provided buffer, with its contents containing the data, if unable to obtain
-> + * direct pointer)
+Hi Kumar,
 
-The doc probably should say that the returned pointer is writeable and
-the user must do if (ptr != buffer) bpf_dynptr_write() to reflect the changes.
+Thank you for the patch! Perhaps something to improve:
 
-Maybe document all kfuncs similar to Documentation/bpf/cpumasks.rst ?
+[auto build test WARNING on 168de0233586fb06c5c5c56304aa9a928a09b0ba]
 
-Should we also document that bpf_dynptr_slice[_rdwr] do not change skb
-configuration and because of that the ctx->data/data_end pointers are not invalidated
-by either skb_header_pointer or bpf_xdp_pointer ?
+url:    https://github.com/intel-lab-lkp/linux/commits/Kumar-Kartikeya-Dwivedi/bpf-Support-kptrs-in-percpu-hashmap-and-percpu-LRU-hashmap/20230219-235406
+base:   168de0233586fb06c5c5c56304aa9a928a09b0ba
+patch link:    https://lore.kernel.org/r/20230219155249.1755998-3-memxor%40gmail.com
+patch subject: [PATCH bpf-next v1 2/7] bpf: Support kptrs in local storage maps
+config: nios2-randconfig-s043-20230219 (https://download.01.org/0day-ci/archive/20230220/202302201347.KsT4rWrN-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 12.1.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-39-gce1a6720-dirty
+        # https://github.com/intel-lab-lkp/linux/commit/01f54156de471b78c6355e9aba9860afaf61cedb
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Kumar-Kartikeya-Dwivedi/bpf-Support-kptrs-in-percpu-hashmap-and-percpu-LRU-hashmap/20230219-235406
+        git checkout 01f54156de471b78c6355e9aba9860afaf61cedb
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=nios2 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=nios2 SHELL=/bin/bash kernel/bpf/
 
-> + */
-> +__bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
-> +					void *buffer, u32 buffer__sz)
-> +{
-> +	if (!ptr->data || bpf_dynptr_is_rdonly(ptr))
-> +		return 0;
-> +
-> +	/* bpf_dynptr_slice_rdwr is the same logic as bpf_dynptr_slice.
-> +	 *
-> +	 * For skb-type dynptrs, the verifier has already ensured that the skb
-> +	 * head is writable (see bpf_unclone_prologue()).
-> +	 */
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202302201347.KsT4rWrN-lkp@intel.com/
 
-This is way too terse. It needs much more detailed comment explaining why it's safe
-to write into the returned pointer.
-For example it's far from obvious that bpf_dynptr_slice()->skb_header_pointer()
-returns a pointer to a head or copies into a buffer. _only_. and no other logic.
-Without looking into implementation details one could come up with skb_header_pointer()
-behavior that returns a pointer to a middle part of a frag if {offset, len} combination allows.
-And in such case it will not be safe to write into such pointer.
-Because bpf_unclone_prologue() only makes sure that the head is writeable.
-One can look at bpf_unclone_prologue() and see that it's doing bpf_skb_pull_data(skb, 0);
-But without looking further it's also not at all obvious that arg2 == 0 means
-'make head writeable'.
+sparse warnings: (new ones prefixed by >>)
+>> kernel/bpf/bpf_local_storage.c:107:41: sparse: sparse: dereference of noderef expression
 
-Also 'For skb-type dynptrs, the verifier has already ensured that the skb head is writable'
-is partially true.
-skb-type dynptrs are available to cgroup-scoped skb hooks and there bpf_dynptr_slice_rdwr()
-will always be failing, since bpf_dynptr_is_rdonly() will be true.
-It probably will be better user experience if the verifier rejects
-bpf_dynptr_slice_rdwr() in hooks where may_access_direct_pkt_data() returns false.
+vim +107 kernel/bpf/bpf_local_storage.c
 
-> +	return bpf_dynptr_slice(ptr, offset, buffer, buffer__sz);
-> +}
-> +
-...
-> +			} else if (meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice] ||
-> +				   meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice_rdwr]) {
-> +				enum bpf_type_flag type_flag = get_dynptr_type_flag(meta.initialized_dynptr.type);
-> +
-> +				mark_reg_known_zero(env, regs, BPF_REG_0);
-> +
-> +				if (!tnum_is_const(regs[BPF_REG_4].var_off)) {
-> +					verbose(env, "mem_size must be a constant\n");
-> +					return -EINVAL;
-> +				}
-> +				regs[BPF_REG_0].mem_size = regs[BPF_REG_4].var_off.value;
-> +
-> +				/* PTR_MAYBE_NULL will be added when is_kfunc_ret_null is checked */
-> +				regs[BPF_REG_0].type = PTR_TO_MEM | type_flag;
-> +
-> +				if (meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice])
-> +					regs[BPF_REG_0].type |= MEM_RDONLY;
-> +				else
-> +					env->seen_direct_write = true;
+   101	
+   102	static void bpf_selem_free_rcu(struct rcu_head *rcu)
+   103	{
+   104		struct bpf_local_storage_elem *selem;
+   105	
+   106		selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
+ > 107		bpf_obj_free_fields(SDATA(selem)->smap->map.record, SDATA(selem));
+   108		kfree(selem);
+   109	}
+   110	
 
-This bit kinda makes it that bpf_dynptr_slice_rdwr() will "fail" in cg-skb hook,
-but it will do so with:
-        if (ops->gen_prologue || env->seen_direct_write) {
-                if (!ops->gen_prologue) {
-                        verbose(env, "bpf verifier is misconfigured\n");
-                        return -EINVAL;
-                }
-
-which will confuse users.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
