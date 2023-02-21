@@ -2,100 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CA869E17E
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 14:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8F869E195
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 14:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbjBUNkB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 08:40:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
+        id S234102AbjBUNpG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 08:45:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233721AbjBUNkA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 08:40:00 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F7029412;
-        Tue, 21 Feb 2023 05:39:54 -0800 (PST)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PLgM547Jhz16Nj4;
-        Tue, 21 Feb 2023 21:37:21 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 21 Feb 2023 21:39:49 +0800
-Message-ID: <1a02055f-deff-649f-9564-417ae916ddb3@huawei.com>
-Date:   Tue, 21 Feb 2023 21:39:48 +0800
+        with ESMTP id S234081AbjBUNpF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 08:45:05 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E595D1D92A;
+        Tue, 21 Feb 2023 05:45:02 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id b12so17389517edd.4;
+        Tue, 21 Feb 2023 05:45:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BPwLlLuY1FKXO4A9ZDz90DlqJ7cLNLdUerGapUJa9gU=;
+        b=aJwwRq2AZqVoYb4S5cgh9zg0KB/eBoVpq6yYEPRuMFEShiJ9+rm5Ddt1nUKN9nTtUo
+         soZ5Bddg38c8bJVtW9MVPr/89ASau8m4KN+vRyeJ5Qg+V+n6uTZEcDJRUw3553tGWbpx
+         Ywac+kcC6WOxXzOCkkpTZ66SyZBP0T0llTQFsKvRcRO8A2KCC9QJH9MKJ09IK59aMjNx
+         fGj7pcFQcwFxBRWQeM9e0F5D4UWImh6ct84Dis2m3WZl0bnCqZjJNHPRQNgQ8QVn0Vtt
+         uodCnY814hiXawBcKH2DbT+gDZY2kWxlMry5ZKWEZ0FKPk3rj6jYWuXFxmcjCjPSTLDn
+         +/0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BPwLlLuY1FKXO4A9ZDz90DlqJ7cLNLdUerGapUJa9gU=;
+        b=tRYRjdr5i/1yYEtmKxycArLFRHYHXIfpia9if7dalaJJJjeOXg3d+SQy2o0m05/Kup
+         +v5SmMorSdpEHLhKwdKgP0PuRbL2Wkp5Z9fkbUWyoPqkio13lE6HK5ZAPBlUL/CVTFhs
+         YotRwJHBGqdKdUWXew+sPSweYBsydNHyKmZwY82t0+/mSGn9GpnRjxNHGslNH00BvfPi
+         Ni+KwX5Y5niYSssC3v/nWqyExDWQUh4KtuhPRQNKT7NlY7b9PKQQu5Q0AG4w9rxGIZ+1
+         akOegyIc6DtJuNMMq41tS1XgHa8FgaaEuOf1psNjVNKUVYpIXhCHSdS4QitzW0Ntq1BV
+         vpuA==
+X-Gm-Message-State: AO0yUKW5p+ourVM7QZmRJKi2gi4PvMjxSZX0V/57Qs+E+drvIXyXPyMZ
+        //+aAymjbJZ0N4ayq0TdjDcPrUjp6wwPIr05iHY=
+X-Google-Smtp-Source: AK7set9xbFUj3ZmBDzg5UHj5LvyEdNutY/k8pkGpLbvIr6LYPYh+rw+c2EgdXEggmi+3a969dCfkYIB1Fkq0WCWVfIM=
+X-Received: by 2002:a17:906:9396:b0:8dd:70a:3a76 with SMTP id
+ l22-20020a170906939600b008dd070a3a76mr1542482ejx.11.1676987101312; Tue, 21
+ Feb 2023 05:45:01 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf-next v2] riscv, bpf: Add kfunc support for RV64
-Content-Language: en-US
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Pu Lehui <pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <87h6vffqlo.fsf@all.your.base.are.belong.to.us>
-From:   Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <87h6vffqlo.fsf@all.your.base.are.belong.to.us>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230221110344.82818-1-kerneljasonxing@gmail.com>
+ <48429c16fdaee59867df5ef487e73d4b1bf099af.camel@redhat.com> <CANn89iJjCXfwUQ4XxtCrNFChdCHciBMuWcK=Az4X1acBeqVDiQ@mail.gmail.com>
+In-Reply-To: <CANn89iJjCXfwUQ4XxtCrNFChdCHciBMuWcK=Az4X1acBeqVDiQ@mail.gmail.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Tue, 21 Feb 2023 21:44:25 +0800
+Message-ID: <CAL+tcoAdYO_NnkWLYbxxRgw0=muhM0TJo3FBEeCBYtBmsnfWUw@mail.gmail.com>
+Subject: Re: [PATCH net] udp: fix memory schedule error
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Paolo Abeni <pabeni@redhat.com>, willemdebruijn.kernel@gmail.com,
+        davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Feb 21, 2023 at 8:35 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Tue, Feb 21, 2023 at 1:27 PM Paolo Abeni <pabeni@redhat.com> wrote:
+> >
+> > On Tue, 2023-02-21 at 19:03 +0800, Jason Xing wrote:
+> > > From: Jason Xing <kernelxing@tencent.com>
+> > >
+> > > Quoting from the commit 7c80b038d23e ("net: fix sk_wmem_schedule()
+> > > and sk_rmem_schedule() errors"):
+> > >
+> > > "If sk->sk_forward_alloc is 150000, and we need to schedule 150001 bytes,
+> > > we want to allocate 1 byte more (rounded up to one page),
+> > > instead of 150001"
+> >
+> > I'm wondering if this would cause measurable (even small) performance
+> > regression? Specifically under high packet rate, with BH and user-space
+> > processing happening on different CPUs.
+> >
+> > Could you please provide the relevant performance figures?
+> >
+> > Thanks!
+> >
+> > Paolo
+> >
+>
+> Probably not a big deal.
+>
 
+> TCP skb truesize can easily reach 180 KB, but for UDP it's 99% below
+> or close to a 4K page.
 
-On 2023/2/21 15:02, Björn Töpel wrote:
-> Pu Lehui <pulehui@huaweicloud.com> writes:
-> 
->> On 2023/2/20 22:34, Björn Töpel wrote:
->>> Pu Lehui <pulehui@huaweicloud.com> writes:
->>>
->>>> From: Pu Lehui <pulehui@huawei.com>
->>>>
->>>> As another important missing piece of RV64 JIT, kfunc allow bpf programs
->>>> call kernel functions. For now, RV64 is sufficient to enable it.
->>>
->>> Thanks Lehui!
->>>
->>> Maybe we can reword/massage the commit message a bit? What do you think
->>> about something like:
->>>
->>> "Now that the BPF trampoline is supported by RISC-V, it is possible to
->>> use BPF programs with kfunc calls.
->>>
->>
->> kfunc and bpf trampoline are functionally independent. kfunc [1], like
->> bpf helper functions, allows bpf programs to call exported kernel
->> functions, while bpf trampoline provides a more efficient way than
->> kprobe to act as a mediator between kernel functions and bpf programs,
->> and between bpf programs.
->>
->> In fact, it was already supported before the bpf trampoline
->> implementation, I just turned it on.
-> 
-> Good point. I guess my (incorrect) kfunc mental model was that
-> struct_ops and kfunc were tightly coupled. (Then again, w/o struct_ops
-> working kfunc is a bit half-working in my view.)
-> 
-> Fair enough. I'm still a bit confused about the commit message, but
-> happy with the patch.
->  > Acked-by: Björn Töpel <bjorn@rivosinc.com>
+Yes.
 
-Thanks Bjorn, will rewrite commit message to make more sense, and send 
-new soon.
+>
+> I doubt this change makes any difference for UDP.
+
+Based on my understanding of this part, it could not neither cause
+much regression nor improve much performance. I think what you've done
+to the TCP stack is the right way to go so the UDP can probably follow
+this.
+Calculating extra memory is a little bit odd because we actually don't
+need that much when receiving skb everytime.
+
+Thanks,
+Jason
