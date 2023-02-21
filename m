@@ -2,107 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E475D69E727
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 19:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF7E69E7FC
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 20:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbjBUSKF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 13:10:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        id S229487AbjBUTED (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 14:04:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbjBUSJi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 13:09:38 -0500
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6EF92B63B;
-        Tue, 21 Feb 2023 10:09:00 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VcDHv8z_1677002908;
-Received: from 30.120.135.227(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VcDHv8z_1677002908)
-          by smtp.aliyun-inc.com;
-          Wed, 22 Feb 2023 02:08:30 +0800
-Message-ID: <8448beac-a119-330d-a2af-fc3531bdb930@linux.alibaba.com>
-Date:   Wed, 22 Feb 2023 02:08:28 +0800
+        with ESMTP id S229549AbjBUTEC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 14:04:02 -0500
+Received: from out-32.mta1.migadu.com (out-32.mta1.migadu.com [95.215.58.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98630DC
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 11:04:00 -0800 (PST)
+Message-ID: <d8c514c6-15bf-c2fd-11f9-23519cdc9177@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1677006238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fHZ9uFeGd1/sPkvqg90pH/bhVbOnjEvOk51cW9TJEMw=;
+        b=uyKlIPAeUQHKi4b2oNKrhj6HdBBAlXco3IByyMOZl4wXZR8dsxwxwiHGBFh9R0207ki0Y1
+        KylNQV5Crh9hVjUcZKZovfjJ/m8EeNcTe5/Bl6Fywwk78wZaTUR0QdDCvliy25kjv8XO/T
+        fVRRQZSDAeXSf7HENmjKQuZ77I1Pb7U=
+Date:   Tue, 21 Feb 2023 11:03:52 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [LSF/MM/BPF TOPIC] State Of The Page
-To:     Matthew Wilcox <willy@infradead.org>,
-        lsf-pc@lists.linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
-        bpf@vger.kernel.org
-References: <Y9KtCc+4n5uANB2f@casper.infradead.org>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <Y9KtCc+4n5uANB2f@casper.infradead.org>
+Subject: Re: [PATCH bpf-next V3] xdp: bpf_xdp_metadata use EOPNOTSUPP for no
+ driver support
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net
+References: <167673444093.2179692.14745621008776172374.stgit@firesoul>
+ <CAKH8qBt-wgiFTjbNfuWXC+CNbnDbVPWuoJFO_H_=tc4e3BZGPA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAKH8qBt-wgiFTjbNfuWXC+CNbnDbVPWuoJFO_H_=tc4e3BZGPA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 2/21/23 9:13 AM, Stanislav Fomichev wrote:
+> On Sat, Feb 18, 2023 at 7:34 AM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+>>
+>> When driver doesn't implement a bpf_xdp_metadata kfunc the default
+>> implementation returns EOPNOTSUPP, which indicate device driver doesn't
+>> implement this kfunc.
+>>
+>> Currently many drivers also return EOPNOTSUPP when the hint isn't
+>> available. Instead change drivers to return ENODATA in these cases.
+>> There can be natural cases why a driver doesn't provide any hardware
+>> info for a specific hint, even on a frame to frame basis (e.g. PTP).
+>> Lets keep these cases as separate return codes.
 
+> Long term probably still makes sense to export this info via xdp-features?
+> Not sure how long we can 100% ensure EOPNOTSUPP vs ENODATA convention :-)
 
-On 2023/1/27 00:40, Matthew Wilcox wrote:
-> I'd like to do another session on how the struct page dismemberment
-> is going and what remains to be done.  Given how widely struct page is
-> used, I think there will be interest from more than just MM, so I'd
-> suggest a plenary session.
-> 
-> If I were hosting this session today, topics would include:
-> 
-> Splitting out users:
-> 
->   - slab (done!)
->   - netmem (in progress)
->   - hugetlb (in akpm)
->   - tail pages (in akpm)
->   - page tables
->   - ZONE_DEVICE
-> 
-> Users that really should have their own types:
-> 
->   - zsmalloc
->   - bootmem
->   - percpu
->   - buddy
->   - vmalloc
-> 
-> Converting filesystems to folios:
-> 
->   - XFS (done)
->   - AFS (done)
->   - NFS (in progress)
->   - ext4 (in progress)
->   - f2fs (in progress)
->   - ... others?
-> 
-> Unresolved challenges:
-> 
->   - mapcount
->   - AnonExclusive
->   - Splitting anon & file folios apart
->   - Removing PG_error & PG_private
+I am also not sure if it makes the xdp-hints adoption easier for other drivers 
+by enforcing ENODATA or what other return values a driver should or should not 
+return while EOPNOTSUPP is a more common errno to use. May be the driver experts 
+can prove me wrong here.
 
-I'm interested in this topic too, also I'd like to get some idea of the
-future of the page dismemberment timeline so that I can have time to keep
-the pace with it since some embedded use cases like Android are
-memory-sensitive all the time.
+iiuc, it is for debugging if the bpf prog has been patched with the driver's xdp 
+kfunc. Others have suggested method like dumping the bpf prog insn. It could 
+also trace the driver xdp kfunc and see if it is actually called. Why these 
+won't work?
 
-Minor, it seems some apis still use ->lru field to chain bulk pages,
-perhaps it needs some changes as well:
-https://lore.kernel.org/r/20221222124412.rpnl2vojnx7izoow@techsingularity.net
-https://lore.kernel.org/r/20230214190221.1156876-2-shy828301@gmail.com
+Beside, it is more like a load time decision which should not need a runtime 
+return error value to decide. eg. With xdp-features, the bpf prog can check a 
+global const which can be set based on the query result from xdp-features. It 
+will then be dead code removed by verifier. This could also handle the older 
+kernel that does not have xdp-metadata support (ie. missing 
+bpf_xdp_metadata_rx_{timestamp,hash}).
 
-Thanks,
-Gao Xiang
-
-> 
-> This will probably all change before May.
-> 
-> I'd like to nominate Vishal Moola & Sidhartha Kumar as invitees based on
-> their work to convert various functions from pages to folios.
