@@ -2,97 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B7869DAE0
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 08:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3FC69DB7A
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 08:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbjBUHCz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 02:02:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
+        id S233589AbjBUHvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 02:51:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbjBUHCx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 02:02:53 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF77252B6;
-        Mon, 20 Feb 2023 23:02:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ABE9C60F06;
-        Tue, 21 Feb 2023 07:02:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FED7C433D2;
-        Tue, 21 Feb 2023 07:02:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676962966;
-        bh=KHMXE/LYnRNjuYWIFxQpGNwDw4WhCf5BXnM9jJyFYKc=;
-        h=From:To:Cc:Subject:In-Reply-To:Date:From;
-        b=Yhirujjn3Gs86md/vNl+4XmkPPjo94SNOAaKFnOQXjQX0yv6l93XMl4Rob/1p9Mz1
-         BildrxHwu/yefVQiDMIl7NerNxFloHYRyqcm2B4R4tbghBYAkiMhmCNPjpT1Od05VX
-         amluMYPMkNK+MpZbAwYf/8YLhEMvqDTzgSe3GeTjwLDOTUyttUSxZ7IKckID//bHdy
-         law45gIPLx1cUA8MzcuejYCUYm9QgN6v3pwGQeyhnP2oWDTUQKixA934HlVQ9vrnV2
-         eAmVeCjUaOlME832YphdHzsDFaUFjXu0u2WRsFWYtK5D31ISj2b1xYR7ciu0peUqlW
-         v7vDwyZ5fr6JQ==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S233634AbjBUHvr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 02:51:47 -0500
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F8A233C7;
+        Mon, 20 Feb 2023 23:51:44 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VcBErAe_1676965900;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VcBErAe_1676965900)
+          by smtp.aliyun-inc.com;
+          Tue, 21 Feb 2023 15:51:41 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     netdev@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Pu Lehui <pulehui@huawei.com>
-Subject: Re: [PATCH bpf-next v2] riscv, bpf: Add kfunc support for RV64
-In-Reply-To: <80e69e73-b873-6717-fe45-a854dbdd5476@huaweicloud.com>
-Date:   Tue, 21 Feb 2023 08:02:43 +0100
-Message-ID: <87h6vffqlo.fsf@all.your.base.are.belong.to.us>
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        bpf@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH net-next] xsk: add linux/vmalloc.h to xsk.c
+Date:   Tue, 21 Feb 2023 15:51:40 +0800
+Message-Id: <20230221075140.46988-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Git-Hash: 0548370bf7fd
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pu Lehui <pulehui@huaweicloud.com> writes:
+Fix the failure of the compilation under the sh4.
 
-> On 2023/2/20 22:34, Bj=C3=B6rn T=C3=B6pel wrote:
->> Pu Lehui <pulehui@huaweicloud.com> writes:
->>=20
->>> From: Pu Lehui <pulehui@huawei.com>
->>>
->>> As another important missing piece of RV64 JIT, kfunc allow bpf programs
->>> call kernel functions. For now, RV64 is sufficient to enable it.
->>=20
->> Thanks Lehui!
->>=20
->> Maybe we can reword/massage the commit message a bit? What do you think
->> about something like:
->>=20
->> "Now that the BPF trampoline is supported by RISC-V, it is possible to
->> use BPF programs with kfunc calls.
->>=20
->
-> kfunc and bpf trampoline are functionally independent. kfunc [1], like=20
-> bpf helper functions, allows bpf programs to call exported kernel=20
-> functions, while bpf trampoline provides a more efficient way than=20
-> kprobe to act as a mediator between kernel functions and bpf programs,=20
-> and between bpf programs.
->
-> In fact, it was already supported before the bpf trampoline=20
-> implementation, I just turned it on.
+Because we introduced remap_vmalloc_range() earlier, this has caused
+the compilation failure on the sh4 platform. So this introduction of the
+header file of linux/vmalloc.h.
 
-Good point. I guess my (incorrect) kfunc mental model was that
-struct_ops and kfunc were tightly coupled. (Then again, w/o struct_ops
-working kfunc is a bit half-working in my view.)
+config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20230221/202302210041.kpPQLlNQ-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/commit/?id=9f78bf330a66cd400b3e00f370f597e9fa939207
+        git remote add net-next https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+        git fetch --no-tags net-next master
+        git checkout 9f78bf330a66cd400b3e00f370f597e9fa939207
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sh olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sh SHELL=/bin/bash net/
 
-Fair enough. I'm still a bit confused about the commit message, but
-happy with the patch.
+Fixes: 9f78bf330a66 ("xsk: support use vaddr as ring")
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/oe-kbuild-all/202302210041.kpPQLlNQ-lkp@intel.com/
+---
+ net/xdp/xsk.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 45eef5af0a51..2ac58b282b5e 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -22,6 +22,7 @@
+ #include <linux/net.h>
+ #include <linux/netdevice.h>
+ #include <linux/rculist.h>
++#include <linux/vmalloc.h>
+ #include <net/xdp_sock_drv.h>
+ #include <net/busy_poll.h>
+ #include <net/xdp.h>
+-- 
+2.32.0.3.g01195cf9f
+
