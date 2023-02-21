@@ -2,145 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D6569DF58
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 12:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE7869DF61
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 12:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbjBULy5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 06:54:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
+        id S233624AbjBUL4M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 06:56:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233646AbjBULyt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 06:54:49 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED8E22018;
-        Tue, 21 Feb 2023 03:54:40 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id o12so16520629edb.9;
-        Tue, 21 Feb 2023 03:54:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DTe8w2Mu6IFu1qfOCr6RAIZxVkPkGvhO9qq+1dA1D+g=;
-        b=di0kkbeWcnUXsfPLDd7d8jWp0B5VvuE12Bp5jRLRVlS8nzcN405crfm5JYYl3GYEN9
-         jcIRoW8ztg2zb7SB8JtGeC7QN6DCLx/lmBtqwp3OplmDzpVN4cyQuy2104AYg+BtOqIx
-         RevDfYnoEOW6OPmMzv23cCTtGVe51l5oHB0OMC7z/dsJrVIuuFVUhcPijIGHcG9zL4o/
-         Mkl5PJ0oMkXyaTvgnhh6WQewaxwuc+7vrC/JdvWnX4aXfZnM7qfmBCF4511GSaAcr9h8
-         6bGB4Kvyq6oeOGDbQEz5DR676kIVkkTawCTVftwY7Qns5+NbTzK1058A4aUuSy5B5r2g
-         qpWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DTe8w2Mu6IFu1qfOCr6RAIZxVkPkGvhO9qq+1dA1D+g=;
-        b=UbxU8un5H752iDkjuHp1Xt0vz7PzdXPeUnJrTZF9Vo5x5o58tj5L4jN7gdK3V7mG2U
-         2ciBw+iud0SfrpIlqT2DKAs/t00JbLpNlWhNixbY2OQxUEh2TL9NNngdK1qoVnuB5Zlb
-         DfeXueJNtcEhKWiSP/s57dFBdOW9FE37IXoWP3owdpf4l610ukY9SXURxsryXv4CTS6o
-         HLAv1EE6Qv7zFrOGxahkIN8iN95tCKbcT+g44uGucyVNGN8VnpSh11R/Ppwcko5P+tZK
-         9RUO2TbPEE8l4Av4w0p4Upps+MLU2PSrkWCSxLx020F7qpvs8Q0tERANDtv3YahxhQAn
-         KDtw==
-X-Gm-Message-State: AO0yUKWo1RyNR0UjrRLcoLYdu1wEithQ4pdT1GKEWd8L17/TUEVUpjTl
-        MgWb0XHuXfxzha4WgkYzj4w=
-X-Google-Smtp-Source: AK7set+TpnDRd5Ij1SkE2P58yfgSGqSHJaJ/klSqdNy3MZnqNVmt9BcYBtUzrJ0hjRStF7VDBFQXCQ==
-X-Received: by 2002:a17:907:2147:b0:8b1:3a18:9daf with SMTP id rk7-20020a170907214700b008b13a189dafmr11303826ejb.74.1676980479054;
-        Tue, 21 Feb 2023 03:54:39 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id h20-20020a1709070b1400b008b907006d5dsm5025677ejl.173.2023.02.21.03.54.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Feb 2023 03:54:38 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 21 Feb 2023 12:54:36 +0100
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 2/8] perf bpf filter: Implement event sample filtering
-Message-ID: <Y/Sw/NGEvPJ9XdtN@krava>
-References: <20230219061329.1001079-1-namhyung@kernel.org>
- <20230219061329.1001079-3-namhyung@kernel.org>
+        with ESMTP id S233281AbjBUL4L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 06:56:11 -0500
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B3D27987;
+        Tue, 21 Feb 2023 03:55:51 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VcCOdes_1676980547;
+Received: from 30.221.149.204(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VcCOdes_1676980547)
+          by smtp.aliyun-inc.com;
+          Tue, 21 Feb 2023 19:55:48 +0800
+Message-ID: <7ff5ad40-7280-2060-4402-d3bada4ce200@linux.alibaba.com>
+Date:   Tue, 21 Feb 2023 19:55:46 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230219061329.1001079-3-namhyung@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.7.2
+Subject: Re: [PATCH bpf-next 1/2] net/smc: Introduce BPF injection capability
+ for SMC
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <1676966191-47736-2-git-send-email-alibuda@linux.alibaba.com>
+ <202302211908.BgagxpRo-lkp@intel.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <202302211908.BgagxpRo-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 18, 2023 at 10:13:23PM -0800, Namhyung Kim wrote:
 
-SNIP
+Thanks! I will repost a fixed patch.
 
-> +#define FD(e, x, y) (*(int *)xyarray__entry(e->core.fd, x, y))
-> +
-> +int perf_bpf_filter__prepare(struct evsel *evsel)
-> +{
-> +	int i, x, y, fd;
-> +	struct sample_filter_bpf *skel;
-> +	struct bpf_program *prog;
-> +	struct bpf_link *link;
-> +	struct perf_bpf_filter_expr *expr;
-> +
-> +	skel = sample_filter_bpf__open();
-> +	if (!skel) {
-> +		pr_err("Failed to open perf sample-filter BPF skeleton\n");
-> +		return -1;
-> +	}
-> +
-> +	bpf_map__set_max_entries(skel->maps.filters, MAX_FILTERS);
 
-is this needed? max_entries is defined in the bpf object
-
-jirka
-
-> +
-> +	if (sample_filter_bpf__load(skel) < 0) {
-> +		pr_err("Failed to load perf sample-filter BPF skeleton\n");
-> +		return -1;
-> +	}
-> +
-> +	i = 0;
-> +	fd = bpf_map__fd(skel->maps.filters);
-> +	list_for_each_entry(expr, &evsel->bpf_filters, list) {
-> +		struct perf_bpf_filter_entry entry = {
-> +			.op = expr->op,
-> +			.flags = expr->sample_flags,
-> +			.value = expr->val,
-> +		};
-> +		bpf_map_update_elem(fd, &i, &entry, BPF_ANY);
-> +		i++;
-> +	}
-> +
-> +	prog = skel->progs.perf_sample_filter;
-> +	for (x = 0; x < xyarray__max_x(evsel->core.fd); x++) {
-> +		for (y = 0; y < xyarray__max_y(evsel->core.fd); y++) {
-> +			link = bpf_program__attach_perf_event(prog, FD(evsel, x, y));
-> +			if (IS_ERR(link)) {
-> +				pr_err("Failed to attach perf sample-filter program\n");
-> +				return PTR_ERR(link);
-> +			}
-> +		}
-> +	}
-> +	evsel->bpf_skel = skel;
-> +	return 0;
-> +}
-> +
-
-SNIP
+On 2/21/23 7:30 PM, kernel test robot wrote:
+> Hi Wythe,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on bpf-next/master]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-Introduce-BPF-injection-capability-for-SMC/20230221-155712
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> patch link:    https://lore.kernel.org/r/1676966191-47736-2-git-send-email-alibuda%40linux.alibaba.com
+> patch subject: [PATCH bpf-next 1/2] net/smc: Introduce BPF injection capability for SMC
+> config: i386-randconfig-a013-20230220 (https://download.01.org/0day-ci/archive/20230221/202302211908.BgagxpRo-lkp@intel.com/config)
+> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://github.com/intel-lab-lkp/linux/commit/e2b31aece49068d7a07ca4bbd5fbdbd92f45a25e
+>          git remote add linux-review https://github.com/intel-lab-lkp/linux
+>          git fetch --no-tags linux-review D-Wythe/net-smc-Introduce-BPF-injection-capability-for-SMC/20230221-155712
+>          git checkout e2b31aece49068d7a07ca4bbd5fbdbd92f45a25e
+>          # save the config file
+>          mkdir build_dir && cp config build_dir/.config
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash net/
+> 
+> If you fix the issue, kindly add following tag where applicable
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Link: https://lore.kernel.org/oe-kbuild-all/202302211908.BgagxpRo-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>>> net/smc/bpf_smc_struct_ops.c:61:33: error: use of undeclared identifier 'BTF_SMC_TYPE_MAX'; did you mean 'BTF_SMC_TYPE_SOCK'?
+>     BTF_ID_LIST_GLOBAL(btf_smc_ids, BTF_SMC_TYPE_MAX)
+>                                     ^~~~~~~~~~~~~~~~
+>                                     BTF_SMC_TYPE_SOCK
+>     include/linux/btf_ids.h:211:61: note: expanded from macro 'BTF_ID_LIST_GLOBAL'
+>     #define BTF_ID_LIST_GLOBAL(name, n) u32 __maybe_unused name[n];
+>                                                                 ^
+>     include/linux/btf_ids.h:275:1: note: 'BTF_SMC_TYPE_SOCK' declared here
+>     BTF_SMC_TYPE_xxx
+>     ^
+>     include/linux/btf_ids.h:269:15: note: expanded from macro 'BTF_SMC_TYPE_xxx'
+>             BTF_SMC_TYPE(BTF_SMC_TYPE_SOCK, smc_sock)               \
+>                          ^
+>     1 error generated.
+> 
+> 
+> vim +61 net/smc/bpf_smc_struct_ops.c
+> 
+>      59	
+>      60	/* define global smc ID for smc_struct_ops */
+>    > 61	BTF_ID_LIST_GLOBAL(btf_smc_ids, BTF_SMC_TYPE_MAX)
+>      62	#define BTF_SMC_TYPE(name, type) BTF_ID(struct, type)
+>      63	BTF_SMC_TYPE_xxx
+>      64	#undef BTF_SMC_TYPE
+>      65	
+> 
