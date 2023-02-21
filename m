@@ -2,115 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8F869E195
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 14:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E83869E1ED
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 15:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbjBUNpG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 08:45:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
+        id S234319AbjBUOEy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 09:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234081AbjBUNpF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 08:45:05 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E595D1D92A;
-        Tue, 21 Feb 2023 05:45:02 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id b12so17389517edd.4;
-        Tue, 21 Feb 2023 05:45:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BPwLlLuY1FKXO4A9ZDz90DlqJ7cLNLdUerGapUJa9gU=;
-        b=aJwwRq2AZqVoYb4S5cgh9zg0KB/eBoVpq6yYEPRuMFEShiJ9+rm5Ddt1nUKN9nTtUo
-         soZ5Bddg38c8bJVtW9MVPr/89ASau8m4KN+vRyeJ5Qg+V+n6uTZEcDJRUw3553tGWbpx
-         Ywac+kcC6WOxXzOCkkpTZ66SyZBP0T0llTQFsKvRcRO8A2KCC9QJH9MKJ09IK59aMjNx
-         fGj7pcFQcwFxBRWQeM9e0F5D4UWImh6ct84Dis2m3WZl0bnCqZjJNHPRQNgQ8QVn0Vtt
-         uodCnY814hiXawBcKH2DbT+gDZY2kWxlMry5ZKWEZ0FKPk3rj6jYWuXFxmcjCjPSTLDn
-         +/0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BPwLlLuY1FKXO4A9ZDz90DlqJ7cLNLdUerGapUJa9gU=;
-        b=tRYRjdr5i/1yYEtmKxycArLFRHYHXIfpia9if7dalaJJJjeOXg3d+SQy2o0m05/Kup
-         +v5SmMorSdpEHLhKwdKgP0PuRbL2Wkp5Z9fkbUWyoPqkio13lE6HK5ZAPBlUL/CVTFhs
-         YotRwJHBGqdKdUWXew+sPSweYBsydNHyKmZwY82t0+/mSGn9GpnRjxNHGslNH00BvfPi
-         Ni+KwX5Y5niYSssC3v/nWqyExDWQUh4KtuhPRQNKT7NlY7b9PKQQu5Q0AG4w9rxGIZ+1
-         akOegyIc6DtJuNMMq41tS1XgHa8FgaaEuOf1psNjVNKUVYpIXhCHSdS4QitzW0Ntq1BV
-         vpuA==
-X-Gm-Message-State: AO0yUKW5p+ourVM7QZmRJKi2gi4PvMjxSZX0V/57Qs+E+drvIXyXPyMZ
-        //+aAymjbJZ0N4ayq0TdjDcPrUjp6wwPIr05iHY=
-X-Google-Smtp-Source: AK7set9xbFUj3ZmBDzg5UHj5LvyEdNutY/k8pkGpLbvIr6LYPYh+rw+c2EgdXEggmi+3a969dCfkYIB1Fkq0WCWVfIM=
-X-Received: by 2002:a17:906:9396:b0:8dd:70a:3a76 with SMTP id
- l22-20020a170906939600b008dd070a3a76mr1542482ejx.11.1676987101312; Tue, 21
- Feb 2023 05:45:01 -0800 (PST)
+        with ESMTP id S234296AbjBUOEp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 09:04:45 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0193D24CB7;
+        Tue, 21 Feb 2023 06:04:39 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PLgyP0dRVz4f3jJ0;
+        Tue, 21 Feb 2023 22:04:29 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.67.175.61])
+        by APP2 (Coremail) with SMTP id Syh0CgAnFuRtz_Rj_qv6Dw--.43008S2;
+        Tue, 21 Feb 2023 22:04:31 +0800 (CST)
+From:   Pu Lehui <pulehui@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next v3] riscv, bpf: Add kfunc support for RV64
+Date:   Tue, 21 Feb 2023 22:06:56 +0800
+Message-Id: <20230221140656.3480496-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230221110344.82818-1-kerneljasonxing@gmail.com>
- <48429c16fdaee59867df5ef487e73d4b1bf099af.camel@redhat.com> <CANn89iJjCXfwUQ4XxtCrNFChdCHciBMuWcK=Az4X1acBeqVDiQ@mail.gmail.com>
-In-Reply-To: <CANn89iJjCXfwUQ4XxtCrNFChdCHciBMuWcK=Az4X1acBeqVDiQ@mail.gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Tue, 21 Feb 2023 21:44:25 +0800
-Message-ID: <CAL+tcoAdYO_NnkWLYbxxRgw0=muhM0TJo3FBEeCBYtBmsnfWUw@mail.gmail.com>
-Subject: Re: [PATCH net] udp: fix memory schedule error
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Paolo Abeni <pabeni@redhat.com>, willemdebruijn.kernel@gmail.com,
-        davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgAnFuRtz_Rj_qv6Dw--.43008S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrury5AFWkAFy8Cr47Zr43Wrg_yoWDArg_Cr
+        Z7ta4Iy398Ja1xJF4j9r4fZrykG393WFy8Xrn7uryjywn8WF1Ut34kKr97Gry7Zr1FyrWx
+        Zrn3Ja92qw42qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxkFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
+        QVy7UUUUU==
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 21, 2023 at 8:35 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Tue, Feb 21, 2023 at 1:27 PM Paolo Abeni <pabeni@redhat.com> wrote:
-> >
-> > On Tue, 2023-02-21 at 19:03 +0800, Jason Xing wrote:
-> > > From: Jason Xing <kernelxing@tencent.com>
-> > >
-> > > Quoting from the commit 7c80b038d23e ("net: fix sk_wmem_schedule()
-> > > and sk_rmem_schedule() errors"):
-> > >
-> > > "If sk->sk_forward_alloc is 150000, and we need to schedule 150001 bytes,
-> > > we want to allocate 1 byte more (rounded up to one page),
-> > > instead of 150001"
-> >
-> > I'm wondering if this would cause measurable (even small) performance
-> > regression? Specifically under high packet rate, with BH and user-space
-> > processing happening on different CPUs.
-> >
-> > Could you please provide the relevant performance figures?
-> >
-> > Thanks!
-> >
-> > Paolo
-> >
->
-> Probably not a big deal.
->
+From: Pu Lehui <pulehui@huawei.com>
 
-> TCP skb truesize can easily reach 180 KB, but for UDP it's 99% below
-> or close to a 4K page.
+This patch adds kernel function call support for RV64. Since the offset
+from RV64 kernel and module functions to bpf programs is almost within
+the range of s32, the current infrastructure of RV64 is already
+sufficient for kfunc, so let's turn it on.
 
-Yes.
+Suggested-by: Björn Töpel <bjorn@rivosinc.com>
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+Acked-by: Björn Töpel <bjorn@rivosinc.com>
+---
+v3:
+- rewrite commit message to make more sense.
+- Add Acked-by of Björn.
 
->
-> I doubt this change makes any difference for UDP.
+ arch/riscv/net/bpf_jit_comp64.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Based on my understanding of this part, it could not neither cause
-much regression nor improve much performance. I think what you've done
-to the TCP stack is the right way to go so the UDP can probably follow
-this.
-Calculating extra memory is a little bit odd because we actually don't
-need that much when receiving skb everytime.
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index f5a668736c79..a9270366dc57 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -1751,3 +1751,8 @@ void bpf_jit_build_epilogue(struct rv_jit_context *ctx)
+ {
+ 	__build_epilogue(false, ctx);
+ }
++
++bool bpf_jit_supports_kfunc_call(void)
++{
++	return true;
++}
+-- 
+2.25.1
 
-Thanks,
-Jason
