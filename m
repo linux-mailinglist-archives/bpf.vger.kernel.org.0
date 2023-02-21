@@ -2,49 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD2A69D76A
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 01:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DDC69D787
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 01:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbjBUANC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Feb 2023 19:13:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
+        id S232500AbjBUAa1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Feb 2023 19:30:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbjBUANB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Feb 2023 19:13:01 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBDBCDE6;
-        Mon, 20 Feb 2023 16:12:59 -0800 (PST)
+        with ESMTP id S229560AbjBUAa0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Feb 2023 19:30:26 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342451E5F8;
+        Mon, 20 Feb 2023 16:30:26 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 966CAB80D3D;
-        Tue, 21 Feb 2023 00:12:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF96EC433D2;
-        Tue, 21 Feb 2023 00:12:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C771460F59;
+        Tue, 21 Feb 2023 00:30:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2A956C433EF;
+        Tue, 21 Feb 2023 00:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676938377;
-        bh=4faYiV3iBFka7fTWUT3lHxBKrVg5KJPfTjrPRg9FL1I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NKqqH7i8hGC+GaJr4j/EouBnGfsW4af1AENmATWENxVBWRGj21koo9/WS5LN0Uwr/
-         FpJNvfiwq54cICUSG2v+gFEjsc0UCaZwqn4LHyZg1xWRpeLta9bAWi09Xf+S0kC9z5
-         85xlAXWB+vTwsQy/GoCkmNJvt0nMh8icS0LviVwb5AfnjMya8AC9zuvi6AlhwgD1gS
-         MdN7PeeRo4DstVCCcLtg1RyhiUmmhy++74NQW3f8w5qVcSGkT23PxGcYHhwAioyRsk
-         cQvkd+7pCY3PCIPTJrPnhByThYdoSsgF8L2Wos1yg/vydLVr31uPtg0+hAvp1WR3nr
-         s+EAVZS8mMw4Q==
-Date:   Mon, 20 Feb 2023 16:12:55 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
-        ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        aleksander.lobakin@intel.com, maciej.fijalkowski@intel.com
-Subject: Re: pull-request: bpf-next 2023-02-17
-Message-ID: <20230220161255.79d9bc6b@kernel.org>
-In-Reply-To: <20230217221737.31122-1-daniel@iogearbox.net>
-References: <20230217221737.31122-1-daniel@iogearbox.net>
+        s=k20201202; t=1676939425;
+        bh=N4UMs9K3Q6FcoB3O3WnUZxZAbNJLgrg1AGUpLiW3hhQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YOPab8DASIgcFXkrU2x6y+YORDfX9mmbWCmquks6wth/VbpSLTI/sKU9CxgsdjTjJ
+         bJ7DKigqLGAuu0Cs0NCWT4A36hZAAe6ZCcpJnW2XUUwEsR0juodxBxof+8egmx7vJ6
+         7eFk+v3TrPPXjiFFZ4OC8g9O8egehgtYaaE7iMtjQ3TcofzDWLxzSO5O2w+H/TBJir
+         IPeeptixOvldmtgHEZmiufKP0omxseAN6W2yExH7sEpudQUUAyUSO0dVL8OfrK05dQ
+         EuyTWWeYx/SXkUAlfwoKNWfI/XwYiaQd9TLcVu2ClSjiJlmc77HtYufm0u9813Lkqz
+         qdbUC66VqZOJA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0D469C43161;
+        Tue, 21 Feb 2023 00:30:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf-next 2023-02-17
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167693942504.32365.4790420951036402826.git-patchwork-notify@kernel.org>
+Date:   Tue, 21 Feb 2023 00:30:25 +0000
+References: <20230217221737.31122-1-daniel@iogearbox.net>
+In-Reply-To: <20230217221737.31122-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        aleksander.lobakin@intel.com, maciej.fijalkowski@intel.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,22 +57,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 17 Feb 2023 23:17:37 +0100 Daniel Borkmann wrote:
-> There is a small merge conflict between aa1d3faf71a6 ("ice: Robustify
-> cleaning/completing XDP Tx buffers") from bpf-next and recent merge in
-> 675f176b4dcc ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netdev/net"),
-> result should look like the following (CC'ing Alexander & Maciej just in
-> case):
+Hello:
+
+This pull request was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 17 Feb 2023 23:17:37 +0100 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
 > 
->   [...]
->                 if (tx_buf->type == ICE_TX_BUF_XSK_TX) {
->                         tx_buf->type = ICE_TX_BUF_EMPTY;
->                         ice_clean_xdp_tx_buf(xdp_ring, tx_buf);
->                 } else {
->   [...]
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 64 non-merge commits during the last 7 day(s) which contain
+> a total of 158 files changed, 4190 insertions(+), 988 deletions(-).
+> 
+> [...]
 
-FWIW Olek provided a different resolution here:
+Here is the summary with links:
+  - pull-request: bpf-next 2023-02-17
+    https://git.kernel.org/netdev/net-next/c/7b18fa097af1
 
-https://lore.kernel.org/all/a472728a-a4eb-391a-c517-06133e6bbc8c@intel.com/
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I took his, it's different.
+
