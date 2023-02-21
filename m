@@ -2,64 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAC969E59D
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 18:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548BB69E5AB
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 18:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234749AbjBURKr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 12:10:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
+        id S234782AbjBURNl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 12:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234978AbjBURKn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 12:10:43 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9957523647
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 09:10:38 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id p5so2654529pgh.11
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 09:10:38 -0800 (PST)
+        with ESMTP id S234586AbjBURNk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 12:13:40 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1B6B450
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 09:13:36 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id i1-20020a17090ad34100b00234463de251so5539657pjx.3
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 09:13:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gEL4ASNYrYmUtX3CARtk2RZ23IJMaaAjPbfRvrnZ03k=;
-        b=rGFZFgoJ+w2kILzTXhJ2RlQ0OFoABf1Ab+sYsLcP/dIm4n8LJwyyVrUpOfvRLj6sHr
-         OzYf+/RWYfErYhiKmBnxZHYprGSGD5UpehomAFlZV5IcxDOYYPpRz3qNDelSy/9Z5DC0
-         zGH+VYQn9E65B1uNv6ywkIpylre+fivAMs+pibCRhyjMsjhiM5t9Lq1vkhDJbJq5wWcj
-         L1wt4D3c6E9Nah/7cDla2Xp73yqzqOAbLn/o3gcaXT9rC6pTqiDv2QLH16JP0Vd+prlf
-         BQ0Na6e4oaFHcjAmqpJbFbiehANa5kveQaEq77KhV1bYNLzB/SkwdU31m66SxrExP0dq
-         vGdw==
+        bh=nU5vzjl79IVycVRB2OQHoQVSxwNqWlzOBlgs7WDZ1NE=;
+        b=MuuvmSIYYlvR4Kz7eX7YQ6CwgrrykVG9erJCdk1/HkLTPsA9IEKUKZFxmRRaBXR++0
+         DC2xcsX0BcmptZZ0kS1x6u6m8g6HG9qoVlxAke3p6GrieBDgwi++HyDOClbZvQJo3KjA
+         GbrSXylqPQ7yNBMap+FCSH3veJ/YO/8RmU9PP9SrL/ZrMbZ7io+GT4ogdhs7jo3HOASs
+         XjAO8h36vzsa5bBqFPkyBEtCLbNXXjO49SjrZsPf6+h/k2RDePihTm25L+PVz+sfkhiU
+         upIC9SafDddIY9lO8gk1oY33YNf5CvB+GzYPa95CVbdZ4H9oiKKe6fq3H0ashUG6nt+H
+         eYiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gEL4ASNYrYmUtX3CARtk2RZ23IJMaaAjPbfRvrnZ03k=;
-        b=VeHEwcjEcrA66Z+kqeX7IrREQs05wi8AXVNnBsNgl70uquhdAZghhQvdiFqAQ6sdFQ
-         sdoIc/zTlVeMpyngypMC3EVjfgHP+lqPMUGfZ24qpyx74nT7qXxJqS4aLQd/hJetPGSK
-         NSz2l/a7QY9xtAOos4/yg+jdfBKuQ+K82fFUhJwPlLu9pkWEZbwqpHZDVN+zKG4KgXam
-         NDN49WopKZmTVLdOTggemVZsNtxSFzsZBLyS7pw7aTTvp9XWiN4Nq7XnFDC4Ys8iQq3F
-         FwYbv2+AJNCD9Q7iSS7UrleroljBLnYGe4qlKCc8eSuTJTdNiaMGXUAh7MYr2OvzVIPS
-         aN0w==
-X-Gm-Message-State: AO0yUKUQmVZBrS+uG10QXfQy7rINjdmJRehGK8PPLJKhU0MHLOor+4x3
-        AhUU2od++Y1RvzxosFUZfWYtXCFKGNvZH19OGsiMsw==
-X-Google-Smtp-Source: AK7set+SIIkRYcoA1DvfxPsvmL8MBGMmaNW0kc8npfLzFdMot6sZExhMOzDZ9gYgXWymOt+XugYa9xbT8N4+xD0kawE=
-X-Received: by 2002:a62:1457:0:b0:5a8:d7a9:46b5 with SMTP id
- 84-20020a621457000000b005a8d7a946b5mr684484pfu.5.1676999437804; Tue, 21 Feb
- 2023 09:10:37 -0800 (PST)
+        bh=nU5vzjl79IVycVRB2OQHoQVSxwNqWlzOBlgs7WDZ1NE=;
+        b=HiFbmzMUhMgjtANxWh53iEqsEFJllAuOEdLgOLUUxTbQ9Y9I3uM6x7Pcp9JHfasEn5
+         i2g9Vu2Blu1qvQZWQz0omPBPVgXEoTD9Bi6xyPsiuAk/l8/THACupQWopG4i4f1Zf8ix
+         wIapVs7vWBKT4A5Q5d9cUPQqx8nE05orSh1EuGdYH9JbS9ubHFYkoXZVF04eSSLfwwk2
+         oEl76Zl8Gs/H3sY/aBdnGAyte3XdpPoK8Jk9zBUr9LEUpaXEKNcpGrlfOKydz2u4ot4m
+         nGO7tpyLcDQhXGrhLeMEZkADOt70HQ1ZU0Nj9LeZhb1AjpVm9lTv9KnFWPgsoV8/dUcD
+         qyew==
+X-Gm-Message-State: AO0yUKVuc+tJ1PvmJp3YZUUOGMK5JyUtfKedYN2aSSQAkBuMbK2Nx4Ts
+        ea7BmmklKXeusTzfT79QfDscYgHF54CpJG8DcymqcA==
+X-Google-Smtp-Source: AK7set9mN3eV18T71Etlm/MmFnEQeHiiTGY32WKK46KWW9bcLXl6vlrTXBXKQKz0tE4CxYF/z5XDx//6EZ0+Shk36+U=
+X-Received: by 2002:a17:90b:3b92:b0:233:e796:7583 with SMTP id
+ pc18-20020a17090b3b9200b00233e7967583mr1516977pjb.1.1676999615324; Tue, 21
+ Feb 2023 09:13:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20230220163756.753713-1-iii@linux.ibm.com>
-In-Reply-To: <20230220163756.753713-1-iii@linux.ibm.com>
+References: <167673444093.2179692.14745621008776172374.stgit@firesoul>
+In-Reply-To: <167673444093.2179692.14745621008776172374.stgit@firesoul>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 21 Feb 2023 09:10:25 -0800
-Message-ID: <CAKH8qBsgvCjN3tp77S3TWbYH6iysqgLNFSKOMSnvsHwhEwusug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Check for helper calls in check_subprogs()
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 21 Feb 2023 09:13:23 -0800
+Message-ID: <CAKH8qBt-wgiFTjbNfuWXC+CNbnDbVPWuoJFO_H_=tc4e3BZGPA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V3] xdp: bpf_xdp_metadata use EOPNOTSUPP for no
+ driver support
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -72,38 +69,150 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 20, 2023 at 8:38 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Sat, Feb 18, 2023 at 7:34 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
 >
-> The condition src_reg != BPF_PSEUDO_CALL && imm == BPF_FUNC_tail_call
-> may be satisfied by a kfunc call. This would lead to unnecessarily
-> setting has_tail_call. Use src_reg == 0 instead.
+> When driver doesn't implement a bpf_xdp_metadata kfunc the default
+> implementation returns EOPNOTSUPP, which indicate device driver doesn't
+> implement this kfunc.
+>
+> Currently many drivers also return EOPNOTSUPP when the hint isn't
+> available. Instead change drivers to return ENODATA in these cases.
+> There can be natural cases why a driver doesn't provide any hardware
+> info for a specific hint, even on a frame to frame basis (e.g. PTP).
+> Lets keep these cases as separate return codes.
+>
+> When describing the return values, adjust the function kernel-doc layout
+> to get proper rendering for the return values.
 
 Acked-by: Stanislav Fomichev <sdf@google.com>
 
-(although not sure on src_reg == 0 vs !src_reg. Alexei seems to be
-favoring the latter?)
+Thanks! ENODATA seems like a better fit for the actual implementation.
+Long term probably still makes sense to export this info via xdp-features?
+Not sure how long we can 100% ensure EOPNOTSUPP vs ENODATA convention :-)
 
-
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > ---
->  kernel/bpf/verifier.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  Documentation/networking/xdp-rx-metadata.rst     |    7 +++++--
+>  drivers/net/ethernet/mellanox/mlx4/en_rx.c       |    4 ++--
+>  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |    4 ++--
+>  drivers/net/veth.c                               |    4 ++--
+>  net/core/xdp.c                                   |   10 ++++++++--
+>  5 files changed, 19 insertions(+), 10 deletions(-)
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index e63af41a7e95..6d4632476c9c 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -2462,8 +2462,8 @@ static int check_subprogs(struct bpf_verifier_env *env)
->                 u8 code = insn[i].code;
+> diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
+> index aac63fc2d08b..25ce72af81c2 100644
+> --- a/Documentation/networking/xdp-rx-metadata.rst
+> +++ b/Documentation/networking/xdp-rx-metadata.rst
+> @@ -23,10 +23,13 @@ metadata is supported, this set will grow:
+>  An XDP program can use these kfuncs to read the metadata into stack
+>  variables for its own consumption. Or, to pass the metadata on to other
+>  consumers, an XDP program can store it into the metadata area carried
+> -ahead of the packet.
+> +ahead of the packet. Not all packets will necessary have the requested
+> +metadata available in which case the driver returns ``-ENODATA``.
 >
->                 if (code == (BPF_JMP | BPF_CALL) &&
-> -                   insn[i].imm == BPF_FUNC_tail_call &&
-> -                   insn[i].src_reg != BPF_PSEUDO_CALL)
-> +                   insn[i].src_reg == 0 &&
-> +                   insn[i].imm == BPF_FUNC_tail_call)
->                         subprog[cur_subprog].has_tail_call = true;
->                 if (BPF_CLASS(code) == BPF_LD &&
->                     (BPF_MODE(code) == BPF_ABS || BPF_MODE(code) == BPF_IND))
-> --
-> 2.39.1
+>  Not all kfuncs have to be implemented by the device driver; when not
+> -implemented, the default ones that return ``-EOPNOTSUPP`` will be used.
+> +implemented, the default ones that return ``-EOPNOTSUPP`` will be used
+> +to indicate the device driver have not implemented this kfunc.
+> +
+>
+>  Within an XDP frame, the metadata layout (accessed via ``xdp_buff``) is
+>  as follows::
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> index 0869d4fff17b..4b5e459b6d49 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> @@ -674,7 +674,7 @@ int mlx4_en_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+>         struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
+>
+>         if (unlikely(_ctx->ring->hwtstamp_rx_filter != HWTSTAMP_FILTER_ALL))
+> -               return -EOPNOTSUPP;
+> +               return -ENODATA;
+>
+>         *timestamp = mlx4_en_get_hwtstamp(_ctx->mdev,
+>                                           mlx4_en_get_cqe_ts(_ctx->cqe));
+> @@ -686,7 +686,7 @@ int mlx4_en_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
+>         struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
+>
+>         if (unlikely(!(_ctx->dev->features & NETIF_F_RXHASH)))
+> -               return -EOPNOTSUPP;
+> +               return -ENODATA;
+>
+>         *hash = be32_to_cpu(_ctx->cqe->immed_rss_invalid);
+>         return 0;
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> index f7d52b1d293b..32c444c01906 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> @@ -161,7 +161,7 @@ static int mlx5e_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+>         const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
+>
+>         if (unlikely(!mlx5e_rx_hw_stamp(_ctx->rq->tstamp)))
+> -               return -EOPNOTSUPP;
+> +               return -ENODATA;
+>
+>         *timestamp =  mlx5e_cqe_ts_to_ns(_ctx->rq->ptp_cyc2time,
+>                                          _ctx->rq->clock, get_cqe_ts(_ctx->cqe));
+> @@ -173,7 +173,7 @@ static int mlx5e_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
+>         const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
+>
+>         if (unlikely(!(_ctx->xdp.rxq->dev->features & NETIF_F_RXHASH)))
+> -               return -EOPNOTSUPP;
+> +               return -ENODATA;
+>
+>         *hash = be32_to_cpu(_ctx->cqe->rss_hash_result);
+>         return 0;
+> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> index 1bb54de7124d..046461ee42ea 100644
+> --- a/drivers/net/veth.c
+> +++ b/drivers/net/veth.c
+> @@ -1610,7 +1610,7 @@ static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+>         struct veth_xdp_buff *_ctx = (void *)ctx;
+>
+>         if (!_ctx->skb)
+> -               return -EOPNOTSUPP;
+> +               return -ENODATA;
+>
+>         *timestamp = skb_hwtstamps(_ctx->skb)->hwtstamp;
+>         return 0;
+> @@ -1621,7 +1621,7 @@ static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
+>         struct veth_xdp_buff *_ctx = (void *)ctx;
+>
+>         if (!_ctx->skb)
+> -               return -EOPNOTSUPP;
+> +               return -ENODATA;
+>
+>         *hash = skb_get_hash(_ctx->skb);
+>         return 0;
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 26483935b7a4..b71fe21b5c3e 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -721,7 +721,10 @@ __diag_ignore_all("-Wmissing-prototypes",
+>   * @ctx: XDP context pointer.
+>   * @timestamp: Return value pointer.
+>   *
+> - * Returns 0 on success or ``-errno`` on error.
+> + * Return:
+> + * * Returns 0 on success or ``-errno`` on error.
+> + * * ``-EOPNOTSUPP`` : means device driver does not implement kfunc
+> + * * ``-ENODATA``    : means no RX-timestamp available for this frame
+>   */
+>  __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+>  {
+> @@ -733,7 +736,10 @@ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *tim
+>   * @ctx: XDP context pointer.
+>   * @hash: Return value pointer.
+>   *
+> - * Returns 0 on success or ``-errno`` on error.
+> + * Return:
+> + *  * Returns 0 on success or ``-errno`` on error.
+> + *  * ``-EOPNOTSUPP`` : means device driver doesn't implement kfunc
+> + *  * ``-ENODATA``    : means no RX-hash available for this frame
+>   */
+>  __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash)
+>  {
+>
 >
