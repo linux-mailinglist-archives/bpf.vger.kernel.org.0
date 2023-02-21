@@ -2,37 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9751169DB8A
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 08:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE90569DCE6
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 10:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233310AbjBUH4o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 02:56:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
+        id S233341AbjBUJ0s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 04:26:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232710AbjBUH4n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 02:56:43 -0500
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08601DBB0;
-        Mon, 20 Feb 2023 23:56:40 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VcBSN7C_1676966197;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VcBSN7C_1676966197)
-          by smtp.aliyun-inc.com;
-          Tue, 21 Feb 2023 15:56:37 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] bpf/selftests: Test for SMC protocol negotiate
-Date:   Tue, 21 Feb 2023 15:56:31 +0800
-Message-Id: <1676966191-47736-3-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1676966191-47736-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1676966191-47736-1-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        with ESMTP id S233073AbjBUJ0r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 04:26:47 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1129A25BB8
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 01:26:17 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id ck15so15643580edb.0
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 01:26:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=bixUIsGJDfGo1abl+ruQ/sGhtiLhGVJNIEz/N2FYZqM=;
+        b=FfTjz2QLdNwM6RmEUbv6AeF1gjmXl/D1h/tFbesU/P/KQeaTDfKfpSEGBVfJlg0JWK
+         zNxBIUwsTWvZmD55wb/7/z+VN4LUrCcNS/d8GASd9LLse1UTC4xod2uM4a7VVczKGlQP
+         RAWR2WLe24BTtLvLOzjredw1AwPRmcfpeUPkg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bixUIsGJDfGo1abl+ruQ/sGhtiLhGVJNIEz/N2FYZqM=;
+        b=Glz1PbVNhgf9TmiNISZ3ivszzpJ3cCKumlmVBm6h2H2z0Ixv8DcvHcgvHPYMD0UNtp
+         v0U+ZSmG5KO3E/mi0YJEoUFM8xY2WQRavMAhiY1EsU0Oaxx6fsX4+WqGgndseVtWxWdj
+         m+RaqhC/WhTGfnXJmbcsaSXl87k1Pkk7+B/KU/E6J1Yse5kczC6XP2Noy+ppuhn9ociC
+         7GZWSJrBY2Eqf5Q7dINZ/V7/l/bRjPzl2VW9FMtb29LQRO/FPIwsNFxo5AZBplX+tZcC
+         08pXmu6YhxAenYY6E/Tnpt/k/RCf++TOVX3rjQEPKsDAMzN++r0rb17UsU3oIiDhjvGZ
+         kTrQ==
+X-Gm-Message-State: AO0yUKVNzpV5xYO2ijMN+RYf9Nb26QRqYot4UktJ6uOpI9HI5l3FGn8a
+        3+g+ilemA7hzddm1Yowdhl9Mrg==
+X-Google-Smtp-Source: AK7set+XtneOb27Y5l0Rl0ChB5xAEtQc9sVAYL87fl4pX61KxAqVl4/F4ICB84EXPYz5cHqu5VttLQ==
+X-Received: by 2002:aa7:d8d9:0:b0:4ac:b2dc:8d55 with SMTP id k25-20020aa7d8d9000000b004acb2dc8d55mr5021988eds.14.1676971573567;
+        Tue, 21 Feb 2023 01:26:13 -0800 (PST)
+Received: from cloudflare.com (79.184.206.151.ipv4.supernova.orange.pl. [79.184.206.151])
+        by smtp.gmail.com with ESMTPSA id d25-20020a50cd59000000b004acd42c8be5sm2912629edj.90.2023.02.21.01.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Feb 2023 01:26:12 -0800 (PST)
+References: <20230211201954.256230-1-xiyou.wangcong@gmail.com>
+User-agent: mu4e 1.6.10; emacs 28.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: [Patch net-next] sock_map: dump socket map id via diag
+Date:   Tue, 21 Feb 2023 10:11:12 +0100
+In-reply-to: <20230211201954.256230-1-xiyou.wangcong@gmail.com>
+Message-ID: <871qmjjrnx.fsf@cloudflare.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,396 +69,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Sat, Feb 11, 2023 at 12:19 PM -08, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+>
+> Currently there is no way to know which sockmap a socket has been added
+> to from outside, especially for that a socket can be added to multiple
+> sockmap's. We could dump this via socket diag, as shown below.
+>
+> Sample output:
+>
+>   # ./iproute2/misc/ss -tnaie --sockmap
+>   ESTAB  0      344329     127.0.0.1:1234     127.0.0.1:40912 ino:21098 sk:5 cgroup:/user.slice/user-0.slice/session-c1.scope <-> sockmap: 1
+>
+>   # bpftool map
+>   1: sockmap  flags 0x0
+>   	key 4B  value 4B  max_entries 2  memlock 4096B
+> 	pids echo-sockmap(549)
+>   4: array  name pid_iter.rodata  flags 0x480
+> 	key 4B  value 4B  max_entries 1  memlock 4096B
+> 	btf_id 10  frozen
+> 	pids bpftool(624)
+>
+> In the future, we could dump other sockmap related stats too, hence I
+> make it a nested attribute.
+>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
 
-This PATCH adds a tiny selftest for SMC bpf capability,
-making decisions on whether to use SMC by collecting
-certain information from kernel smc sock.
+Sorry for not replying sooner. This sounds useful. Another use case I
+can see here is inspecting process' sockets:
 
-Follow the steps below to run this test.
+1. get a dup FD with pidfd_getfd()
+2. query sock_diag by socket cookie
+3. find out which maps socket is in.
 
-make -C tools/testing/selftests/bpf
-cd tools/testing/selftests/bpf
-sudo ./test_progs -t bpf_smc
 
-Results shows:
-18      bpf_smc:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+I don't know if it makes sense to tie the naming to sockmap. We also
+have also map type that can hold socket references -
+REUSEPORT_SOCKARRAY.
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- tools/testing/selftests/bpf/prog_tests/bpf_smc.c |  39 +++
- tools/testing/selftests/bpf/progs/bpf_smc.c      | 315 +++++++++++++++++++++++
- 2 files changed, 354 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+We might want to add sock_diag support for REUSEPORT_SOCKARRAY in the
+future as well. So a map-type-agnostic name for the new inet_diag ext
+might be more future proof. Like INET_DIAG_BPF_MAP.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-new file mode 100644
-index 0000000..b143932
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2019 Facebook */
-+
-+#include <linux/err.h>
-+#include <netinet/tcp.h>
-+#include <test_progs.h>
-+#include "bpf_smc.skel.h"
-+
-+void test_bpf_smc(void)
-+{
-+	struct bpf_smc *smc_skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	smc_skel = bpf_smc__open();
-+	if (!ASSERT_OK_PTR(smc_skel, "skel_open"))
-+		return;
-+
-+	err = bpf_map__set_type(smc_skel->maps.negotiator_map, BPF_MAP_TYPE_HASH);
-+	if (!ASSERT_OK(err, "bpf_map__set_type"))
-+		goto error;
-+
-+	err = bpf_map__set_max_entries(smc_skel->maps.negotiator_map, 1);
-+	if (!ASSERT_OK(err, "bpf_map__set_type"))
-+		goto error;
-+
-+	err =  bpf_smc__load(smc_skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto error;
-+
-+	link = bpf_map__attach_struct_ops(smc_skel->maps.ops);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-+		goto error;
-+
-+	bpf_link__destroy(link);
-+error:
-+	bpf_smc__destroy(smc_skel);
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
-new file mode 100644
-index 0000000..78c7976
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
-@@ -0,0 +1,315 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/bpf.h>
-+#include <linux/stddef.h>
-+#include <linux/smc.h>
-+#include <stdbool.h>
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define BPF_STRUCT_OPS(name, args...) \
-+	SEC("struct_ops/"#name) \
-+	BPF_PROG(name, args)
-+
-+#define SMC_LISTEN		(10)
-+#define SMC_SOCK_CLOSED_TIMING	(0)
-+extern unsigned long CONFIG_HZ __kconfig;
-+#define HZ CONFIG_HZ
-+
-+char _license[] SEC("license") = "GPL";
-+#define max(a, b) ((a) > (b) ? (a) : (b))
-+
-+struct sock_common {
-+	unsigned char	skc_state;
-+	__u16	skc_num;
-+} __attribute__((preserve_access_index));
-+
-+struct sock {
-+	struct sock_common	__sk_common;
-+	int	sk_sndbuf;
-+} __attribute__((preserve_access_index));
-+
-+struct inet_sock {
-+	struct sock	sk;
-+} __attribute__((preserve_access_index));
-+
-+struct inet_connection_sock {
-+	struct inet_sock	icsk_inet;
-+} __attribute__((preserve_access_index));
-+
-+struct tcp_sock {
-+	struct inet_connection_sock	inet_conn;
-+	__u32	rcv_nxt;
-+	__u32	snd_nxt;
-+	__u32	snd_una;
-+	__u32	delivered;
-+	__u8	syn_data:1,	/* SYN includes data */
-+		syn_fastopen:1,	/* SYN includes Fast Open option */
-+		syn_fastopen_exp:1,/* SYN includes Fast Open exp. option */
-+		syn_fastopen_ch:1, /* Active TFO re-enabling probe */
-+		syn_data_acked:1,/* data in SYN is acked by SYN-ACK */
-+		save_syn:1,	/* Save headers of SYN packet */
-+		is_cwnd_limited:1,/* forward progress limited by snd_cwnd? */
-+		syn_smc:1;	/* SYN includes SMC */
-+} __attribute__((preserve_access_index));
-+
-+struct socket {
-+	struct sock *sk;
-+} __attribute__((preserve_access_index));
-+
-+union smc_host_cursor {
-+	struct {
-+		__u16	reserved;
-+		__u16	wrap;
-+		__u32	count;
-+	};
-+} __attribute__((preserve_access_index));
-+
-+struct smc_connection {
-+	union smc_host_cursor	tx_curs_sent;
-+	union smc_host_cursor	rx_curs_confirmed;
-+} __attribute__((preserve_access_index));
-+
-+struct smc_sock {
-+	struct sock	sk;
-+	struct socket	*clcsock;	/* internal tcp socket */
-+	struct smc_connection	conn;
-+	int use_fallback;
-+} __attribute__((preserve_access_index));
-+
-+static __always_inline struct tcp_sock *tcp_sk(const struct sock *sk)
-+{
-+	return (struct tcp_sock *)sk;
-+}
-+
-+static __always_inline struct smc_sock *smc_sk(struct sock *sk)
-+{
-+	return (struct smc_sock *)sk;
-+}
-+
-+struct smc_prediction {
-+	/* protection for smc_prediction */
-+	struct bpf_spin_lock lock;
-+	/* start of time slice */
-+	__u64	start_tstamp;
-+	/* delta of pacing */
-+	__u64	pacing_delta;
-+	/* N of closed connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	closed_long_cc;
-+	/* N of closed connections in this time slice */
-+	__u32	closed_total_cc;
-+	/* N of incoming connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	incoming_long_cc;
-+	/* last splice rate of long cc */
-+	__u32	last_rate_of_lcc;
-+};
-+
-+#define SMC_PREDICTION_MIN_PACING_DELTA                (1llu)
-+#define SMC_PREDICTION_MAX_PACING_DELTA                (HZ << 3)
-+#define SMC_PREDICTION_MAX_LONGCC_PER_SPLICE           (8)
-+#define SMC_PREDICTION_MAX_PORT                        (64)
-+#define SMC_PREDICTION_MAX_SPLICE_GAP                  (1)
-+#define SMC_PREDICTION_LONGCC_RATE_THRESHOLD           (13189)
-+#define SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD        (100)
-+#define SMC_PREDICTION_LONGCC_BYTES_THRESHOLD	\
-+		(SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD * 1024)
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, SMC_PREDICTION_MAX_PORT);
-+	__type(key, __u16);
-+	__type(value, struct smc_prediction);
-+} negotiator_map SEC(".maps");
-+
-+
-+static inline __u32 smc_prediction_calt_rate(struct smc_prediction *smc_predictor)
-+{
-+	if (!smc_predictor->closed_total_cc)
-+		return smc_predictor->last_rate_of_lcc;
-+
-+	return (smc_predictor->closed_long_cc << 14) / smc_predictor->closed_total_cc;
-+}
-+
-+static inline struct smc_prediction *smc_prediction_get(const struct smc_sock *smc,
-+							const struct tcp_sock *tp, __u64 tstamp)
-+{
-+	struct smc_prediction zero = {}, *smc_predictor;
-+	__u16 key;
-+	__u32 gap;
-+	int err;
-+
-+	err = bpf_core_read(&key, sizeof(__u16), &tp->inet_conn.icsk_inet.sk.__sk_common.skc_num);
-+	if (err)
-+		return NULL;
-+
-+	/* BAD key */
-+	if (key == 0)
-+		return NULL;
-+
-+	smc_predictor = bpf_map_lookup_elem(&negotiator_map, &key);
-+	if (!smc_predictor) {
-+		zero.start_tstamp = bpf_jiffies64();
-+		zero.pacing_delta = SMC_PREDICTION_MIN_PACING_DELTA;
-+		bpf_map_update_elem(&negotiator_map, &key, &zero, 0);
-+		smc_predictor =  bpf_map_lookup_elem(&negotiator_map, &key);
-+		if (!smc_predictor)
-+			return NULL;
-+	}
-+
-+	if (tstamp) {
-+		bpf_spin_lock(&smc_predictor->lock);
-+		gap = (tstamp - smc_predictor->start_tstamp) / smc_predictor->pacing_delta;
-+		/* new splice */
-+		if (gap > 0) {
-+			smc_predictor->start_tstamp = tstamp;
-+			smc_predictor->last_rate_of_lcc =
-+				(smc_prediction_calt_rate(smc_predictor) * 7) >> (2 + gap);
-+			smc_predictor->closed_long_cc = 0;
-+			smc_predictor->closed_total_cc = 0;
-+			smc_predictor->incoming_long_cc = 0;
-+		}
-+		bpf_spin_unlock(&smc_predictor->lock);
-+	}
-+	return smc_predictor;
-+}
-+
-+/* BPF struct ops for smc protocol negotiator */
-+struct smc_sock_negotiator_ops {
-+	/* ret for negotiate */
-+	int (*negotiate)(struct smc_sock *smc);
-+
-+	/* info gathering timing */
-+	void (*collect_info)(struct smc_sock *smc, int timing);
-+};
-+
-+int BPF_STRUCT_OPS(bpf_smc_negotiate, struct smc_sock *smc)
-+{
-+	struct smc_prediction *smc_predictor;
-+	struct tcp_sock *tp;
-+	struct sock *clcsk;
-+	int ret = SK_DROP;
-+	__u32 rate = 0;
-+
-+	/* Only make decison during listen */
-+	if (smc->sk.__sk_common.skc_state != SMC_LISTEN)
-+		return SK_PASS;
-+
-+	clcsk = BPF_CORE_READ(smc, clcsock, sk);
-+	if (!clcsk)
-+		goto error;
-+
-+	tp = tcp_sk(clcsk);
-+	if (!tp)
-+		goto error;
-+
-+	smc_predictor = smc_prediction_get(smc, tp, bpf_jiffies64());
-+	if (!smc_predictor)
-+		return SK_PASS;
-+
-+	bpf_spin_lock(&smc_predictor->lock);
-+
-+	if (smc_predictor->incoming_long_cc == 0)
-+		goto out_locked_pass;
-+
-+	if (smc_predictor->incoming_long_cc > SMC_PREDICTION_MAX_LONGCC_PER_SPLICE) {
-+		ret = 100;
-+		goto out_locked_drop;
-+	}
-+
-+	rate = smc_prediction_calt_rate(smc_predictor);
-+	if (rate < SMC_PREDICTION_LONGCC_RATE_THRESHOLD) {
-+		ret = 200;
-+		goto out_locked_drop;
-+	}
-+out_locked_pass:
-+	smc_predictor->incoming_long_cc++;
-+	bpf_spin_unlock(&smc_predictor->lock);
-+	return SK_PASS;
-+out_locked_drop:
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return SK_DROP;
-+}
-+
-+void BPF_STRUCT_OPS(bpf_smc_collect_info, struct smc_sock *smc, int timing)
-+{
-+	struct smc_prediction *smc_predictor;
-+	int use_fallback, sndbuf, err;
-+	struct tcp_sock *tp;
-+	struct sock *clcsk;
-+	__u16 wrap, count;
-+	__u32 delivered;
-+	bool match = false;
-+
-+	/* only fouces on closed */
-+	if (timing != SMC_SOCK_CLOSED_TIMING)
-+		return;
-+
-+	clcsk = BPF_CORE_READ(smc, clcsock, sk);
-+	if (!clcsk)
-+		goto error;
-+
-+	tp = tcp_sk(clcsk);
-+	if (!tp)
-+		goto error;
-+
-+	smc_predictor = smc_prediction_get(smc, tp, 0);
-+	if (!smc_predictor)
-+		goto error;
-+
-+	err = bpf_core_read(&use_fallback, sizeof(use_fallback), &smc->use_fallback);
-+	if (err)
-+		goto error;
-+
-+	if (use_fallback) {
-+		err = bpf_core_read(&delivered, sizeof(delivered), &tp->delivered);
-+		if (err)
-+			goto error;
-+
-+		match = (delivered > SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD);
-+
-+	} else {
-+		delivered = 0;	/* tcp delivered */
-+		err = bpf_core_read(&wrap, sizeof(__u16), &smc->conn.tx_curs_sent.wrap);
-+		if (err)
-+			goto error;
-+		err = bpf_core_read(&count, sizeof(__u16), &smc->conn.tx_curs_sent.count);
-+		if (err)
-+			goto error;
-+		err = bpf_core_read(&sndbuf, sizeof(int), &clcsk->sk_sndbuf);
-+		if (err)
-+			goto error;
-+
-+		match = (count + wrap * sndbuf) > SMC_PREDICTION_LONGCC_BYTES_THRESHOLD;
-+	}
-+	bpf_spin_lock(&smc_predictor->lock);
-+	smc_predictor->closed_total_cc++;
-+	if (match) {
-+		/* increase stats */
-+		smc_predictor->closed_long_cc++;
-+		/* try more aggressive */
-+		if (smc_predictor->pacing_delta > SMC_PREDICTION_MIN_PACING_DELTA) {
-+			if (use_fallback) {
-+				smc_predictor->pacing_delta = max(SMC_PREDICTION_MIN_PACING_DELTA,
-+						(smc_predictor->pacing_delta * 3) >> 2);
-+			}
-+		}
-+	} else if (!use_fallback) {
-+		smc_predictor->pacing_delta <<= 1;
-+	}
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return;
-+}
-+
-+SEC(".struct_ops")
-+struct smc_sock_negotiator_ops ops = {
-+	.negotiate	= (void *)bpf_smc_negotiate,
-+	.collect_info	= (void *)bpf_smc_collect_info,
-+};
--- 
-1.8.3.1
 
+Also, can you please add a simple selftest? They often serve as the only
+documentation for the features. Perhaps in
+tools/testing/selftests/bpf/prog_tests/sockmap_basic.c.
+
+Thanks,
+Jakub
