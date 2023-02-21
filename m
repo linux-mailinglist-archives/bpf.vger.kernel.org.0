@@ -2,77 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C006269E9FD
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 23:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F08C69EA84
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 23:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbjBUWUQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 17:20:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        id S229589AbjBUW5i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 17:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjBUWUQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 17:20:16 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6252629152
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 14:20:15 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id q5so6682304plh.9
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 14:20:15 -0800 (PST)
+        with ESMTP id S229712AbjBUW5h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 17:57:37 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9A830B14
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 14:57:35 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id x10so22563527edd.13
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 14:57:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D0pPAHA+K8DXlhYZZ0GIB+Drt4eql/EQhRkaunmpr0E=;
-        b=fkzhokgSTicfu/HGNFGMJj0pTT/7X0qZ/h05FOJOcwAAv7NXWiBI+mULrpybdfxmUX
-         wF7Owp6qhGGTaKfFP/OUXg8E9l3UU0ftOJgZShdIUf45fyS6/NxwYwEx2sf8fZlBddyc
-         d/qjcRsqgUboDv1kYUSwOdXkzWy4WJle9Gzori8qE3XIQJC+05UuDYXsGJR8DWUaTa+a
-         FCJdVyDEy3OybC5LIFrVbWKqRKlRr6PqcVFOe1yiEJHVvB4nRveKPnwVSzVihrzCLf4d
-         rT9Ikuk4snXpm14PYMCAyP7LZyVmUL3pbLcwY5H3G6rMfiAL8DxmmxUCFZvwCWEqvX83
-         RXEw==
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=pJNodFSZd5cAl2tTcW3EwZkJrUwXKju3lV2mF0ekIHs=;
+        b=Rv9s6AwGlhSlVw49mbkh3FTV468NLGx2p4RjJRWmee0VfJP2SAyFAnkBb3TSZZ95vZ
+         QWv2ksxrXMKv2mgkK5M6zJgtObORd+pb7m2igX1+Ho5u4NUm1cGSiRZwFAYo3ae1s1Lz
+         qbIsrgJyeOloiu9+CrL71bHsGUrOW0rmZ6TsZF5oLA+WyNVLL1mRjFnRNd8zq805nOLo
+         Hm1sjZIwufaohs4xnCotNxuHgL9A+VKIWPHaLf0K8ArRosEEbHvuMrMcxey9ClUMHAsD
+         SAoorBS9WM6eVkvxdDqAgsjE/nrG17ajK98OI7ePhFPV62PJQP+nv7yx2NFPb3qkZi8K
+         KxcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D0pPAHA+K8DXlhYZZ0GIB+Drt4eql/EQhRkaunmpr0E=;
-        b=2rrr46ooYxppTOnQP98Zz51cLvwrr0jNZQWQHLkvH5jbGv72qig2f6YO0gqR84c6Ps
-         8f24f/mARPpsUj6Bc4iE8FaCkfQkFrIfk6J5FfcZ5/MVi1RAwcMEUx+Vm7IKdD/VDQXw
-         QC1Z1AHDBK60r9ERR3mJF9UrYSR39BhfUmlbMr1b3KLM7nbu0JoTEYA9izDQg7FFtQpY
-         rwoL66O61yaB1Iq/FzI0hgSHUwiyNFXr7JjnFTZwPoqL5s/juNtQpdebFEPHkjgR5gfT
-         LdXf3btAXehn3st5D9DqV2goV7PPJi6XR1S+eL1AA/y9LWEWgCeRnWXngqvsmPASJF9u
-         9KAg==
-X-Gm-Message-State: AO0yUKWxZPp05pfb01+I68synK3rSAVijSktHiFEcMxBD4lQXAPm/0bw
-        5lgYU24ZZ9Ul6wylyLmlwI0=
-X-Google-Smtp-Source: AK7set8OHzu4pi9WVrGRVDGnG0aSTXCqMsu+KnZ3qg/J1w/vvS15r4iLcEgScNeJ2r5zXjnevfnggw==
-X-Received: by 2002:a17:90b:350f:b0:234:b786:6867 with SMTP id ls15-20020a17090b350f00b00234b7866867mr7178375pjb.36.1677018014828;
-        Tue, 21 Feb 2023 14:20:14 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21e1::1308? ([2620:10d:c090:400::5:fde1])
-        by smtp.gmail.com with ESMTPSA id js10-20020a17090b148a00b002367325203fsm3262694pjb.50.2023.02.21.14.20.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Feb 2023 14:20:14 -0800 (PST)
-Message-ID: <fcef9223-7733-c20b-9cb7-9da868fe3faa@gmail.com>
-Date:   Tue, 21 Feb 2023 14:20:11 -0800
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pJNodFSZd5cAl2tTcW3EwZkJrUwXKju3lV2mF0ekIHs=;
+        b=5WAP+Fms5CEnk1zjDgm1oEtGwDrgR04L5v5b5WPdlR48DP8QE7J44jJD5sXxiOLa6C
+         H5e6NAUTW1UHkyxGIzJvrj3FxYYqC2vRMeZ4DRe+QtqdGb8iBxcQNOxrxUJN7nzI09e7
+         w/D0nP1O1xTZftoUOT9+5yuKc/rn1+u8thf5SrKbyNb44rIeazqU/IFrkW1UldQ+yDRv
+         ZG1C7N5L6lnQgaxbVXFh9DhGB5GdOAWKaHgvX0DEew283JT5EVj9ytDvx+wJcSWVPVvk
+         ow7ovTkDH48PIxKb3uAW4MTI8lqyOJ905lAw3BPBhBfn/CxlmiJH8JHRo/66OPK6tFsG
+         FVmQ==
+X-Gm-Message-State: AO0yUKWYkTQ64hhedgrKigfo1DM+SY/LYDd69DzZk3WY808jlczfMY91
+        HJryUr9hPlptOl6Q1Kr5Yi0=
+X-Google-Smtp-Source: AK7set8mUT6cuSjTAbE3LPidW/CY1m8cMWVjHFgFzK/YLiXhxnkoRZRoWgFv+SZ3InthiPu2Q4StpQ==
+X-Received: by 2002:a05:6402:6d1:b0:4af:593c:c06f with SMTP id n17-20020a05640206d100b004af593cc06fmr3165852edy.11.1677020254336;
+        Tue, 21 Feb 2023 14:57:34 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id rh16-20020a17090720f000b008b6aea4738esm5760377ejb.42.2023.02.21.14.57.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Feb 2023 14:57:33 -0800 (PST)
+Message-ID: <1b84d1477c3648e6d20bacaf1447724fb78e282f.camel@gmail.com>
+Subject: Re: BTF tag support in DWARF (notes for today's BPF Office Hours)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     David Faust <david.faust@oracle.com>,
+        "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        David Malcolm <dmalcolm@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>, elena.zannoni@oracle.com,
+        acme@redhat.com, Yonghong Song <yhs@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>
+Date:   Wed, 22 Feb 2023 00:57:32 +0200
+In-Reply-To: <1fe666d0-aab1-5b6f-8264-57ff282b5e52@oracle.com>
+References: <87r0w9jjoq.fsf@oracle.com> <877cy0j0kt.fsf@oracle.com>
+         <e783fb7cdfb7bfd40e723c67daab7c5f81d12fbf.camel@gmail.com>
+         <1fe666d0-aab1-5b6f-8264-57ff282b5e52@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH bpf-next 6/7] libbpf: Update a bpf_link with another
- struct_ops.
-Content-Language: en-US, en-ZW
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org
-References: <20230214221718.503964-1-kuifeng@meta.com>
- <20230214221718.503964-7-kuifeng@meta.com>
- <CAEf4BzaKRd2jif4XeKJ1s8Dfpp-wQyTTbXpF-Not6A5kpOGYqQ@mail.gmail.com>
- <e3c8beb3-5ff7-9de2-b4a8-3b23a111198f@gmail.com>
- <CAEf4Bzap2F1E09Lw8fv+akZ8_RymuxzCTCO1O4yi7rqaqkPGeQ@mail.gmail.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAEf4Bzap2F1E09Lw8fv+akZ8_RymuxzCTCO1O4yi7rqaqkPGeQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,77 +79,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, 2023-02-21 at 11:38 -0800, David Faust wrote:
+[...]
+> Very nice.
+> Keeping the 0x6000 tag and instead changing the name sounds good to us.
+>=20
+> From the GCC side, support for BTF tags will be new either way but
+> conserving DWARF tag numbers is a good idea.
 
+Great, thank you!
 
-On 2/17/23 17:10, Andrii Nakryiko wrote:
-> On Fri, Feb 17, 2023 at 4:22 PM Kui-Feng Lee <sinquersw@gmail.com> wrote:
->>
->>
->>
->> On 2/16/23 14:48, Andrii Nakryiko wrote:
->>> On Tue, Feb 14, 2023 at 2:17 PM Kui-Feng Lee <kuifeng@meta.com> wrote:
->>>>
->>>> Introduce bpf_link__update_struct_ops(), which will allow you to
->>>> effortlessly transition the struct_ops map of any given bpf_link into
->>>> an alternative.
->>>>
->>>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
->>>> ---
->>>>    tools/lib/bpf/libbpf.c   | 35 +++++++++++++++++++++++++++++++++++
->>>>    tools/lib/bpf/libbpf.h   |  1 +
->>>>    tools/lib/bpf/libbpf.map |  1 +
->>>>    3 files changed, 37 insertions(+)
->>>>
->>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>>> index 1eff6a03ddd9..6f7c72e312d4 100644
->>>> --- a/tools/lib/bpf/libbpf.c
->>>> +++ b/tools/lib/bpf/libbpf.c
->>>> @@ -11524,6 +11524,41 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
->>>>           return &link->link;
->>>>    }
->>>>
->>>> +/*
->>>> + * Swap the back struct_ops of a link with a new struct_ops map.
->>>> + */
->>>> +int bpf_link__update_struct_ops(struct bpf_link *link, const struct bpf_map *map)
->>>
->>> we have bpf_link__update_program(), and so the generic counterpart for
->>> map-based links would be bpf_link__update_map(). Let's call it that.
->>> And it shouldn't probably assume so much struct_ops specific things.
->>
->> Sure
->>
->>>
->>>> +{
->>>> +       struct bpf_link_struct_ops_map *st_ops_link;
->>>> +       int err, fd;
->>>> +
->>>> +       if (!bpf_map__is_struct_ops(map) || map->fd == -1)
->>>> +               return -EINVAL;
->>>> +
->>>> +       /* Ensure the type of a link is correct */
->>>> +       if (link->detach != bpf_link__detach_struct_ops)
->>>> +               return -EINVAL;
->>>> +
->>>> +       err = bpf_map__update_vdata(map);
->>>
->>> it's a bit weird we do this at attach time, not when bpf_map is
->>> actually instantiated. Should we move this map contents initialization
->>> to bpf_object__load() phase? Same for bpf_map__attach_struct_ops().
->>> What do we lose by doing it after all the BPF programs are loaded in
->>> load phase?
->>
->> With the current behavior (w/o links), a struct_ops will be registered
->> when updating its value.  If we move bpf_map__update_vdata() to
->> bpf_object__load(), a congestion control algorithm will be activated at
->> the moment loading it before attaching it.  However, we should activate
->> an algorithm at attach time.
->>
-> 
-> Of course. But I was thinking to move `bpf_map_update_elem(map->fd,
-> &zero, st_ops->kern_vdata, 0);` part out of bpf_map__update_vdata()
-> and make update_vdata() just prepare st_ops->kern_vdata only.
+> > Both [1] and [2] are in a workable state, but [2] lacks support for
+> > subroutine types and "void *" for now. If you are onboard with this cha=
+nge
+> > I'll proceed with finalizing [1] and [2]. (Also, ":v2" suffix might be =
+not
+> > the best, I'm open to naming suggestions).
+>=20
+> As for the name, I am not sure the ":v2" suffix is a good idea.
+>=20
+> If we need a new name anyway, this could be a good opportunity to use
+> something more generic. The annotation DIEs, especially with the new
+> format, could be more widely useful than exclusively for producing BTF.
+>=20
+> For example, some other tool may want to process these same user
+> annotations which are now recorded in DWARF, but may not involve BPF/BTF
+> at all. Tying "btf" into the name seems to unnecessarily discourage
+> those use cases.
+>=20
+> What do you think about something like "debug_type_tag" or=20
+> "debug_type_annotation" (and a similar update for the decl tags)?
+> The translation into BTF records would be the same, but the DWARF info
+> would stand on its own without being tied to BTF.
+>=20
+> (Naming is a bit tricky since terms like 'tag' are already in use by
+> DWARF, e.g. "type tag" in the context of DWARF DIEs makes me think of
+> DW_TAG_xxxx_type...)
+>=20
+> As far as I understand, early proposals for the tags were more generic
+> but the LLVM reviewers wished for something more specific due to the
+> relatively limited use of the tags at the time. Now that the tags and
+> their DWARF format have matured I think a good case can be made to
+> make these generic. We'd be happy to help push for such change.
 
-Ok! I will rename it as bpf_map_prepare_vdata(), and call 
-bpf_map_update_elem() separately.
+On the other hand, BTF is a thing we are using this annotation for.
+Any other tool can reuse DW_TAG_LLVM_annotation, but it will need a
+way to distinguish it's annotations from BTF annotations. And this can
+be done by using a different DW_AT_name. So, it seems logical to
+retain "btf" in the DW_AT_name. What do you think?
 
+> > As a somewhat orthogonal question, would it be possible for you to use =
+the
+> > same 0x6000 tag on GCC side? I looked at master branch of [3] but can't
+> > find any mentions of btf_type_tag.
+>=20
+> Yes, we plan to use the same 0x6000 in GCC. Support for btf_type_tag isn'=
+t
+> committed in master yet; I originally worked on patches [1] last spring b=
+ut
+> they were not committed due to some of the issues we've now worked out
+> (notably the attribute ordering/association problem). But 0x6000 is not
+> currently in use in GCC and didn't come up as a problem for those patches=
+,
+> so I don't think it should be an issue.
+
+Understood, thank you for the clarification.
+
+Thanks,
+Eduard
