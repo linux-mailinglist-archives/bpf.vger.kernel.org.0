@@ -2,111 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE7869DF61
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 12:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A36A69E01F
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 13:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbjBUL4M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 06:56:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33060 "EHLO
+        id S234547AbjBUMTr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 07:19:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233281AbjBUL4L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 06:56:11 -0500
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B3D27987;
-        Tue, 21 Feb 2023 03:55:51 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VcCOdes_1676980547;
-Received: from 30.221.149.204(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VcCOdes_1676980547)
+        with ESMTP id S234428AbjBUMTo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 07:19:44 -0500
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3F528D13;
+        Tue, 21 Feb 2023 04:19:16 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VcCKDT2_1676981919;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VcCKDT2_1676981919)
           by smtp.aliyun-inc.com;
-          Tue, 21 Feb 2023 19:55:48 +0800
-Message-ID: <7ff5ad40-7280-2060-4402-d3bada4ce200@linux.alibaba.com>
-Date:   Tue, 21 Feb 2023 19:55:46 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.7.2
-Subject: Re: [PATCH bpf-next 1/2] net/smc: Introduce BPF injection capability
- for SMC
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+          Tue, 21 Feb 2023 20:18:46 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
         bpf@vger.kernel.org
-References: <1676966191-47736-2-git-send-email-alibuda@linux.alibaba.com>
- <202302211908.BgagxpRo-lkp@intel.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <202302211908.BgagxpRo-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Subject: [PATCH bpf-next v2 0/2] net/smc: Introduce BPF injection capability 
+Date:   Tue, 21 Feb 2023 20:18:37 +0800
+Message-Id: <1676981919-64884-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-Thanks! I will repost a fixed patch.
+This PATCHes attempt to introduce BPF injection capability for SMC,
+and add selftest to ensure code stability.
 
+As we all know that the SMC protocol is not suitable for all scenarios,
+especially for short-lived. However, for most applications, they cannot
+guarantee that there are no such scenarios at all. Therefore, apps
+may need some specific strategies to decide shall we need to use SMC
+or not, for example, apps can limit the scope of the SMC to a specific
+IP address or port.
 
-On 2/21/23 7:30 PM, kernel test robot wrote:
-> Hi Wythe,
-> 
-> Thank you for the patch! Yet something to improve:
-> 
-> [auto build test ERROR on bpf-next/master]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-Introduce-BPF-injection-capability-for-SMC/20230221-155712
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> patch link:    https://lore.kernel.org/r/1676966191-47736-2-git-send-email-alibuda%40linux.alibaba.com
-> patch subject: [PATCH bpf-next 1/2] net/smc: Introduce BPF injection capability for SMC
-> config: i386-randconfig-a013-20230220 (https://download.01.org/0day-ci/archive/20230221/202302211908.BgagxpRo-lkp@intel.com/config)
-> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://github.com/intel-lab-lkp/linux/commit/e2b31aece49068d7a07ca4bbd5fbdbd92f45a25e
->          git remote add linux-review https://github.com/intel-lab-lkp/linux
->          git fetch --no-tags linux-review D-Wythe/net-smc-Introduce-BPF-injection-capability-for-SMC/20230221-155712
->          git checkout e2b31aece49068d7a07ca4bbd5fbdbd92f45a25e
->          # save the config file
->          mkdir build_dir && cp config build_dir/.config
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash net/
-> 
-> If you fix the issue, kindly add following tag where applicable
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Link: https://lore.kernel.org/oe-kbuild-all/202302211908.BgagxpRo-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
->>> net/smc/bpf_smc_struct_ops.c:61:33: error: use of undeclared identifier 'BTF_SMC_TYPE_MAX'; did you mean 'BTF_SMC_TYPE_SOCK'?
->     BTF_ID_LIST_GLOBAL(btf_smc_ids, BTF_SMC_TYPE_MAX)
->                                     ^~~~~~~~~~~~~~~~
->                                     BTF_SMC_TYPE_SOCK
->     include/linux/btf_ids.h:211:61: note: expanded from macro 'BTF_ID_LIST_GLOBAL'
->     #define BTF_ID_LIST_GLOBAL(name, n) u32 __maybe_unused name[n];
->                                                                 ^
->     include/linux/btf_ids.h:275:1: note: 'BTF_SMC_TYPE_SOCK' declared here
->     BTF_SMC_TYPE_xxx
->     ^
->     include/linux/btf_ids.h:269:15: note: expanded from macro 'BTF_SMC_TYPE_xxx'
->             BTF_SMC_TYPE(BTF_SMC_TYPE_SOCK, smc_sock)               \
->                          ^
->     1 error generated.
-> 
-> 
-> vim +61 net/smc/bpf_smc_struct_ops.c
-> 
->      59	
->      60	/* define global smc ID for smc_struct_ops */
->    > 61	BTF_ID_LIST_GLOBAL(btf_smc_ids, BTF_SMC_TYPE_MAX)
->      62	#define BTF_SMC_TYPE(name, type) BTF_ID(struct, type)
->      63	BTF_SMC_TYPE_xxx
->      64	#undef BTF_SMC_TYPE
->      65	
-> 
+Based on the consideration of transparent replacement, we hope that apps
+can remain transparent even if they need to formulate some specific
+strategies for SMC using. That is, do not need to recompile their code.
+
+On the other hand, we need to ensure the scalability of strategies
+implementation. Although it is simple to use socket options or sysctl,
+it will bring more complexity to subsequent expansion.
+
+Fortunately, BPF can solve these concerns very well, users can write
+thire own strategies in eBPF to choose whether to use SMC or not.
+And it's quite easy for them to modify their strategies in the future.
+
+This PATCHes implement injection capability for SMC via struct_ops.
+In that way, we can add new injection scenarios in the future.
+
+D. Wythe (2):
+  net/smc: Introduce BPF injection capability for SMC
+  bpf/selftests: Test for SMC protocol negotiate
+
+ include/linux/btf_ids.h                          |  15 ++
+ include/net/smc.h                                | 254 ++++++++++++++++++
+ kernel/bpf/bpf_struct_ops_types.h                |   4 +
+ net/Makefile                                     |   5 +
+ net/smc/af_smc.c                                 |  10 +-
+ net/smc/bpf_smc_struct_ops.c                     | 146 +++++++++++
+ net/smc/smc.h                                    | 220 ----------------
+ tools/testing/selftests/bpf/prog_tests/bpf_smc.c |  39 +++
+ tools/testing/selftests/bpf/progs/bpf_smc.c      | 315 +++++++++++++++++++++++
+ 9 files changed, 787 insertions(+), 221 deletions(-)
+ create mode 100644 net/smc/bpf_smc_struct_ops.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
+-- 
+1.8.3.1
+
