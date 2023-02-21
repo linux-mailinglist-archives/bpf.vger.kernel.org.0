@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A427269D908
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 03:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 501FD69D90C
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 03:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbjBUCzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Feb 2023 21:55:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
+        id S233356AbjBUCzV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Feb 2023 21:55:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbjBUCzA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Feb 2023 21:55:00 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658562724;
+        with ESMTP id S233461AbjBUCzB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Feb 2023 21:55:01 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8494D2D57;
         Mon, 20 Feb 2023 18:54:36 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id u10so3224896pjc.5;
+Received: by mail-pl1-x641.google.com with SMTP id bh1so3524290plb.11;
         Mon, 20 Feb 2023 18:54:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PYRU/rOAadesjlu86+EoUO57rm+/qhq46aQQu1E8Ap0=;
-        b=MVw0JTjA+bXaSMXGXE6cojjE+JiwSNEeBmDvFtWzVdbC09tcaAP3Pdkdnas42RKohp
-         mC6o0CYGdyOaBKVsdQyt9Ov7Z2TZ/PefDq+Qee6te51UvKHSdHSLCOMz0lWkjADO2xoO
-         r0DZYPxAnMS5H3zxx6qRLzgmf1hwmgbkKaZXPIaTYKho3TggLOmuLOfQRhBcurVmbDQC
-         LpRNnAXaKOTQNE2sl44ML0USuVbULWv92HWzoVDAOTLnz954z3chCv8oBo26pZCP3lNh
-         CZ4Q8bEDDOuIwBCmHRciE9UNvBOTM3qBRbClpd1QUz1mNi0/iz39jdLJ5QyZNzfdnNrI
-         TuZg==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PUWQmp5W8Kb/uIgiFWjF+mchWuzL4yG/Sn9X8F8cwr0=;
+        b=MNnplTUEN5wJIC1J7wEdQVJ5LmKkg3rvaRnqaZre5mNRTB6eSvNrhFdD0akR2cxhtg
+         qs6YKupDOOWPPaP85cXB7JIw8iVJaWISA5JwEnsmDSzeDQ1zQ4yD6kpqUqpSqCEGb5iI
+         bFTMXiaMjgK8889+RMtdbD63y/N/XX/VUpiaA43acdWMKOnQMSqkLw9LvYsjl5upPQW8
+         Jem43AWYhJYcHTL2cNy85bs5hDi8UVe8vrg0PlsYsVXXofo4wzadpmvZyHYQsF33ao89
+         cR7+VhHNs9c/2Dvy2mtE2YfKkOaObGE61G59nMJoRpv4+bM6cmk0F4W7KHVvrHXmwosT
+         3jGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PYRU/rOAadesjlu86+EoUO57rm+/qhq46aQQu1E8Ap0=;
-        b=Tiv6rtfoSwIQkhWbRGH4AVawjyDBdwh6EaOkkBnfpBjqlBfyNFuL9bS3qkhlyzzcr5
-         8MKzLBitDdGoJ7YUo0a48PnFFWAv34T8JrelRLIKrueRtK13eT5v+4wPIg7jDND48VQt
-         fEdZAyypOw1cvOoMHlRvuv0uxd+N80/o4HuPdoE2hW2dtHqWYzjfE80dIOgYHpoz9UbK
-         yT8MLflMDm8T/fcn7eU4DNrK/1+FwrNhiicNxX44RyjQCMy4qFynXtZanAdOhHru0mul
-         V67FXfKelDeBtUwbdQFLEjqVyNMdyjChHVGEnXjUfFCFU8ZJuBxE6xS+hpAPu0G1owNv
-         o43g==
-X-Gm-Message-State: AO0yUKVoZCeF0rQavcEZL+rmI9i4458FfNpIIgat2pgem6ZRJ7geeMz9
-        p+Lii4rKIuaerOlyCqq1aRFctC8v3BkklCVJ
-X-Google-Smtp-Source: AK7set8Nut7yeFFwYSaODhm/sNgK4Y4oFA/oTbVii6xWm3Z70gsQK42x3x1H/e4TRqxd3SULm2JPHg==
-X-Received: by 2002:a17:903:1205:b0:19a:b151:bf68 with SMTP id l5-20020a170903120500b0019ab151bf68mr2964627plh.38.1676948067813;
-        Mon, 20 Feb 2023 18:54:27 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PUWQmp5W8Kb/uIgiFWjF+mchWuzL4yG/Sn9X8F8cwr0=;
+        b=zfBoYCXuB+1s4BxhbdukAhFbbyICseCCtEEQM01FGI5MxDZ9UjRN5s//lpj6JCMHd+
+         XFYwvvSxucnTEThqUX7t0s76lPgCb9Or6RGCKbM6N+ZuJXQ2mEmXWZcbMtWnoJ1l39w/
+         2Q1GBf6STAzpquSXEgevHXvrlIUWs+pTy9ZXttDCuHkkp6bZD804pQBiStT+eViJn5XX
+         fs+nkFtIop4tQ90YYB4qE+uZaVyrkwsQx+vsnj7n6at7PPq1gHizF2Mp5POpAEcaHfLs
+         +yhUv2fxC7qMY04A9whVjCpfX4hmuc7ua1Jr+fXjsoGUWBDn0mHuqR+E41yqbRKeebfz
+         KX8A==
+X-Gm-Message-State: AO0yUKWieGqeDnJ6RcTmyrBP3Zrd1i+/DZUiSQ2tmD7/72GHGhV08QMC
+        jkrv/LXNPlUqG28mVjK1ZTE=
+X-Google-Smtp-Source: AK7set+KEvKlHyUDq0SyBMWLid2Dd4t0MSywmg9svJudMZzxx0JQwoYBvy/MXAHwnfPw5j1wgXf++Q==
+X-Received: by 2002:a17:903:18e:b0:19a:5933:936e with SMTP id z14-20020a170903018e00b0019a5933936emr6947129plg.38.1676948071724;
+        Mon, 20 Feb 2023 18:54:31 -0800 (PST)
 Received: from localhost.localdomain ([203.205.141.16])
-        by smtp.gmail.com with ESMTPSA id k3-20020a170902e90300b0019a837be977sm8590156pld.271.2023.02.20.18.54.23
+        by smtp.gmail.com with ESMTPSA id k3-20020a170902e90300b0019a837be977sm8590156pld.271.2023.02.20.18.54.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Feb 2023 18:54:27 -0800 (PST)
+        Mon, 20 Feb 2023 18:54:31 -0800 (PST)
 From:   menglong8.dong@gmail.com
 X-Google-Original-From: imagedong@tencent.com
 To:     andrii.nakryiko@gmail.com, alan.maguire@oracle.com
@@ -57,10 +58,12 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         haoluo@google.com, jolsa@kernel.org, benbjiang@tencent.com,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Menglong Dong <imagedong@tencent.com>
-Subject: [PATCH bpf-next v3 0/3] libbpf: allow users to set kprobe/uprobe attach mode
-Date:   Tue, 21 Feb 2023 10:53:44 +0800
-Message-Id: <20230221025347.389047-1-imagedong@tencent.com>
+Subject: [PATCH bpf-next v3 1/3] libbpf: add support to set kprobe/uprobe attach mode
+Date:   Tue, 21 Feb 2023 10:53:45 +0800
+Message-Id: <20230221025347.389047-2-imagedong@tencent.com>
 X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230221025347.389047-1-imagedong@tencent.com>
+References: <20230221025347.389047-1-imagedong@tencent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,38 +79,195 @@ X-Mailing-List: bpf@vger.kernel.org
 From: Menglong Dong <imagedong@tencent.com>
 
 By default, libbpf will attach the kprobe/uprobe eBPF program in the
-latest mode that supported by kernel. In this series, we add the support
-to let users manually attach kprobe/uprobe in legacy/perf/link mode in
-the 1th patch.
+latest mode that supported by kernel. In this patch, we add the support
+to let users manually attach kprobe/uprobe in legacy or perf mode.
 
-And in the 2th patch, we split the testing 'attach_probe' into multi
-subtests, as Andrii suggested.
+There are 3 mode that supported by the kernel to attach kprobe/uprobe:
 
-In the 3th patch, we add the testings for loading kprobe/uprobe in
-different mode.
+  LEGACY: create perf event in legacy way and don't use bpf_link
+  PERF: create perf event with perf_event_open() and don't use bpf_link
+  LINK: create perf event with perf_event_open() and use bpf_link
 
-Changes since v2:
-- fix the typo in the 2th patch
+Users now can manually choose the mode with
+bpf_program__attach_uprobe_opts()/bpf_program__attach_kprobe_opts().
 
-Changes since v1:
-- some small changes in the 1th patch, as Andrii suggested
-- split 'attach_probe' into multi subtests
+Link: https://lore.kernel.org/bpf/20230113093427.1666466-1-imagedong@tencent.com/
+Reviewed-by: Biao Jiang <benbjiang@tencent.com>
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+---
+v2:
+- rename no_link to force_ioctl_attach
+- rename probe_mode to probe_attach_mode
+- add more doc for probe_attach_mode
+- return -ENOTSUP when necessray in bpf_program__attach_uprobe_opts and
+  bpf_program__attach_kprobe_opts
+---
+ tools/lib/bpf/libbpf.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+ tools/lib/bpf/libbpf.h | 31 ++++++++++++++++++++++++++++---
+ 2 files changed, 69 insertions(+), 4 deletions(-)
 
-Menglong Dong (3):
-  libbpf: add support to set kprobe/uprobe attach mode
-  selftests/bpf: split test_attach_probe into multi subtests
-  selftests/bpf: add test for legacy/perf kprobe/uprobe attach mode
-
- tools/lib/bpf/libbpf.c                        |  42 ++-
- tools/lib/bpf/libbpf.h                        |  31 +-
- .../selftests/bpf/prog_tests/attach_probe.c   | 283 ++++++++++++------
- .../bpf/progs/test_attach_kprobe_sleepable.c  |  23 ++
- .../selftests/bpf/progs/test_attach_probe.c   |  45 +--
- .../bpf/progs/test_attach_probe_manual.c      |  53 ++++
- 6 files changed, 337 insertions(+), 140 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_attach_kprobe_sleepable.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_attach_probe_manual.c
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 05c4db355f28..d07a0d7b9edd 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9747,7 +9747,7 @@ struct bpf_link *bpf_program__attach_perf_event_opts(const struct bpf_program *p
+ 	link->link.dealloc = &bpf_link_perf_dealloc;
+ 	link->perf_event_fd = pfd;
+ 
+-	if (kernel_supports(prog->obj, FEAT_PERF_LINK)) {
++	if (kernel_supports(prog->obj, FEAT_PERF_LINK) && !opts->force_ioctl_attach) {
+ 		DECLARE_LIBBPF_OPTS(bpf_link_create_opts, link_opts,
+ 			.perf_event.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0));
+ 
+@@ -10106,6 +10106,7 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
+ 				const struct bpf_kprobe_opts *opts)
+ {
+ 	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
++	enum probe_attach_mode attach_mode;
+ 	char errmsg[STRERR_BUFSIZE];
+ 	char *legacy_probe = NULL;
+ 	struct bpf_link *link;
+@@ -10116,11 +10117,30 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
+ 	if (!OPTS_VALID(opts, bpf_kprobe_opts))
+ 		return libbpf_err_ptr(-EINVAL);
+ 
++	attach_mode = OPTS_GET(opts, attach_mode, PROBE_ATTACH_MODE_DEFAULT);
+ 	retprobe = OPTS_GET(opts, retprobe, false);
+ 	offset = OPTS_GET(opts, offset, 0);
+ 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
+ 
+ 	legacy = determine_kprobe_perf_type() < 0;
++	switch (attach_mode) {
++	case PROBE_ATTACH_MODE_LEGACY:
++		legacy = true;
++		pe_opts.force_ioctl_attach = true;
++		break;
++	case PROBE_ATTACH_MODE_PERF:
++		if (legacy)
++			return libbpf_err_ptr(-ENOTSUP);
++		pe_opts.force_ioctl_attach = true;
++		break;
++	case PROBE_ATTACH_MODE_LINK:
++		if (!kernel_supports(prog->obj, FEAT_PERF_LINK))
++			return libbpf_err_ptr(-ENOTSUP);
++		break;
++	default:
++		break;
++	}
++
+ 	if (!legacy) {
+ 		pfd = perf_event_open_probe(false /* uprobe */, retprobe,
+ 					    func_name, offset,
+@@ -10774,6 +10794,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ {
+ 	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
+ 	char errmsg[STRERR_BUFSIZE], *legacy_probe = NULL;
++	enum probe_attach_mode attach_mode;
+ 	char full_binary_path[PATH_MAX];
+ 	struct bpf_link *link;
+ 	size_t ref_ctr_off;
+@@ -10784,6 +10805,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 	if (!OPTS_VALID(opts, bpf_uprobe_opts))
+ 		return libbpf_err_ptr(-EINVAL);
+ 
++	attach_mode = OPTS_GET(opts, attach_mode, PROBE_ATTACH_MODE_DEFAULT);
+ 	retprobe = OPTS_GET(opts, retprobe, false);
+ 	ref_ctr_off = OPTS_GET(opts, ref_ctr_offset, 0);
+ 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
+@@ -10812,6 +10834,24 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 	}
+ 
+ 	legacy = determine_uprobe_perf_type() < 0;
++	switch (attach_mode) {
++	case PROBE_ATTACH_MODE_LEGACY:
++		legacy = true;
++		pe_opts.force_ioctl_attach = true;
++		break;
++	case PROBE_ATTACH_MODE_PERF:
++		if (legacy)
++			return libbpf_err_ptr(-ENOTSUP);
++		pe_opts.force_ioctl_attach = true;
++		break;
++	case PROBE_ATTACH_MODE_LINK:
++		if (!kernel_supports(prog->obj, FEAT_PERF_LINK))
++			return libbpf_err_ptr(-ENOTSUP);
++		break;
++	default:
++		break;
++	}
++
+ 	if (!legacy) {
+ 		pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
+ 					    func_offset, pid, ref_ctr_off);
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 2efd80f6f7b9..ef8f68da42f9 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -451,8 +451,11 @@ struct bpf_perf_event_opts {
+ 	size_t sz;
+ 	/* custom user-provided value fetchable through bpf_get_attach_cookie() */
+ 	__u64 bpf_cookie;
++	/* don't use bpf_link when attach eBPF program */
++	bool force_ioctl_attach;
++	size_t :0;
+ };
+-#define bpf_perf_event_opts__last_field bpf_cookie
++#define bpf_perf_event_opts__last_field force_ioctl_attach
+ 
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_perf_event(const struct bpf_program *prog, int pfd);
+@@ -461,6 +464,24 @@ LIBBPF_API struct bpf_link *
+ bpf_program__attach_perf_event_opts(const struct bpf_program *prog, int pfd,
+ 				    const struct bpf_perf_event_opts *opts);
+ 
++
++/**
++ * enum probe_attach_mode - the mode to attach kprobe/uprobe
++ *
++ * force libbpf to attach kprobe/uprobe in specific mode, -ENOTSUP will
++ * be returned if it is not supported by the kernel.
++ */
++enum probe_attach_mode {
++	/* attach probe in latest supported mode by kernel */
++	PROBE_ATTACH_MODE_DEFAULT = 0,
++	/* attach probe in legacy mode */
++	PROBE_ATTACH_MODE_LEGACY,
++	/* create perf event with perf_event_open() syscall */
++	PROBE_ATTACH_MODE_PERF,
++	/* attach probe with bpf_link */
++	PROBE_ATTACH_MODE_LINK,
++};
++
+ struct bpf_kprobe_opts {
+ 	/* size of this struct, for forward/backward compatiblity */
+ 	size_t sz;
+@@ -470,9 +491,11 @@ struct bpf_kprobe_opts {
+ 	size_t offset;
+ 	/* kprobe is return probe */
+ 	bool retprobe;
++	/* kprobe attach mode */
++	enum probe_attach_mode attach_mode;
+ 	size_t :0;
+ };
+-#define bpf_kprobe_opts__last_field retprobe
++#define bpf_kprobe_opts__last_field attach_mode
+ 
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_kprobe(const struct bpf_program *prog, bool retprobe,
+@@ -570,9 +593,11 @@ struct bpf_uprobe_opts {
+ 	 * binary_path.
+ 	 */
+ 	const char *func_name;
++	/* uprobe attach mode */
++	enum probe_attach_mode attach_mode;
+ 	size_t :0;
+ };
+-#define bpf_uprobe_opts__last_field func_name
++#define bpf_uprobe_opts__last_field attach_mode
+ 
+ /**
+  * @brief **bpf_program__attach_uprobe()** attaches a BPF program
 -- 
 2.39.0
 
