@@ -2,136 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8A269E29F
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 15:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD16269E2EB
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 16:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbjBUOsL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 09:48:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
+        id S234602AbjBUPBp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 10:01:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233673AbjBUOsK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 09:48:10 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2702F3C3B;
-        Tue, 21 Feb 2023 06:48:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676990889; x=1708526889;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ywd+JZNDR2jmJtryHqa+ea9UJUbbLZv/MDZRRFcw54g=;
-  b=XQv1+KNsbveNHPCNZGBEdBOrny0yg89phl+bjI7yDBXK8Vl6w35z4slg
-   oHThDp+5l3iOc7ndRYRn0+UuXwcfdpog5MFizZyc16aLOGGIGbenAMdy9
-   /3NdwVaNCOVUUrJdG/IIe4OmIODLFQqypG+aXv2bAomEFOWqLJk7Z/iLl
-   I55pJDJmcKQnpeRZU4A3thuKQzimmTohyciV6X/wdxph5CY+sVIApp7lC
-   vFezaHeM4jCLseFfw1psOHq/Y/6Bsg8ghdMHUsJxt0Jh8qMJp5mC4Tq/5
-   H0MkjmhShKegTmF7orFMZ5Y4pXmQ/D492mM/AR+z6sahRWv+595Y92NmR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10627"; a="395128096"
-X-IronPort-AV: E=Sophos;i="5.97,315,1669104000"; 
-   d="scan'208";a="395128096"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2023 06:48:08 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10627"; a="1000634665"
-X-IronPort-AV: E=Sophos;i="5.97,315,1669104000"; 
-   d="scan'208";a="1000634665"
-Received: from tveit-mobl.ger.corp.intel.com (HELO tkristo-desk.bb.dnainternet.fi) ([10.249.39.132])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2023 06:48:06 -0800
-From:   Tero Kristo <tero.kristo@linux.intel.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org
-Cc:     inux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: Add support for absolute value BPF timers
-Date:   Tue, 21 Feb 2023 16:48:03 +0200
-Message-Id: <20230221144803.2216876-1-tero.kristo@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S234601AbjBUPBk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 10:01:40 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5639EDA
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 07:01:38 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id o4so4764480wrs.4
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 07:01:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:subject:to:from:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=0yCZynoO7NU6PzzJvGRk5jacskvLZc+R3tEyPYlm5B0=;
+        b=nO7lLtMkE9ZRd1VtVz1NH2z8MKCwzdxUTNENEPA1tqAFNLP6+IoM/v2ckVW3Z7I+B2
+         nfrPzUmZRV7R0jVXWsZSY1Bi3suAPcSOUmjWXXoUM7A38L7rZ+eAgmK0MaoX/Jl6nlpN
+         ApjA3bt/G0BsqzZVQGTyu2GQqPChU8CZ7kiuWbZeoQ8Xwz0vhXoRCPgyCdraAG0RxxbJ
+         /UpKQoM4YBDqIVb/Yii5bFvYB2EPgW14sGFwOHJb2R3OEzEFaPsCcwKeJs9qeLTCoJ4y
+         1dwNruoo9YEb6nSR4pTpX91ixbOC2IDA7dYphd8Y5KjviRWIaDcLxUc0nDKZ5FXw3F/H
+         zxNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:subject:to:from:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0yCZynoO7NU6PzzJvGRk5jacskvLZc+R3tEyPYlm5B0=;
+        b=6IHC3DhLbWIP2/bj66yguWPyiQHvUt6pGCRLNOW0SX4ENHwgvu9dAfsfxLYWSzgyzS
+         pUg+ybpbJtzeOTllpIImfd15CZCKq7MQyxk7xohKX4XXZIKkHEWAEtuUNaZQjFB0lbyM
+         5izW5peipzhl9xGZUKRSUfrJ3/3RuztNy7hOWmD6eLJ/fez+j1GdQKTRl7YdvcAclsc4
+         aT2qv4f0Zs0AjAFqs4AZXPerZ0sSEgjvbWOpd3D2o1qe8o2aFfl6Pz2ZpBd8/1WBiLlF
+         3elKl5TSGYPlPTh/rOxjDAEfhOCRUtgOd17eJpiTRy6mCVylz+jXbbPQdyBExzN8hS0h
+         MuXA==
+X-Gm-Message-State: AO0yUKWibrVmEegRvWs7WZx3e6w/zrmLRBUZ+oNleG1UIxN35VfNproX
+        G8s9Z5jofNQMw9DiZUqPm5iepeWwlug=
+X-Google-Smtp-Source: AK7set+DSQJIY2LBfl7EAhaYzaiM+3Y77FfY16ZAGwLacfNWRLbh0Z21KgMUXjBrGPOD88VrmEgOtg==
+X-Received: by 2002:a5d:58c1:0:b0:2c5:52ef:3ff8 with SMTP id o1-20020a5d58c1000000b002c552ef3ff8mr5124009wrf.31.1676991697096;
+        Tue, 21 Feb 2023 07:01:37 -0800 (PST)
+Received: from DESKTOP-L1U6HLH ([39.42.138.70])
+        by smtp.gmail.com with ESMTPSA id n9-20020a5d4c49000000b002c54536c662sm4612095wrt.34.2023.02.21.07.01.35
+        for <bpf@vger.kernel.org>
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 21 Feb 2023 07:01:36 -0800 (PST)
+Message-ID: <63f4dcd0.5d0a0220.edec5.d71a@mx.google.com>
+Date:   Tue, 21 Feb 2023 07:01:36 -0800 (PST)
+X-Google-Original-Date: 21 Feb 2023 10:01:37 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+From:   ralph.dreamlandestimation@gmail.com
+To:     bpf@vger.kernel.org
+Subject: Building Estimates
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a new flag BPF_F_TIMER_ABS that can be passed to bpf_timer_start()
-to start an absolute value timer instead of the default relative value.
-This makes the timer expire at an exact point in time, instead of a time
-with latencies and jitter induced by both the BPF and timer subsystems.
-This is useful e.g. in certain time sensitive profiling cases, where we
-need a timer to expire at an exact point in time.
-
-Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
----
- include/uapi/linux/bpf.h | 15 +++++++++++++++
- kernel/bpf/helpers.c     | 11 +++++++++--
- 2 files changed, 24 insertions(+), 2 deletions(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 464ca3f01fe7..7f5b71847984 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4951,6 +4951,12 @@ union bpf_attr {
-  *		different maps if key/value layout matches across maps.
-  *		Every bpf_timer_set_callback() can have different callback_fn.
-  *
-+ *		*flags* can be one of:
-+ *
-+ *		**BPF_F_TIMER_ABS**
-+ *			Start the timer in absolute expire value instead of the
-+ *			default relative one.
-+ *
-  *	Return
-  *		0 on success.
-  *		**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier
-@@ -7050,4 +7056,13 @@ struct bpf_core_relo {
- 	enum bpf_core_relo_kind kind;
- };
- 
-+/*
-+ * Flags to control bpf_timer_start() behaviour.
-+ *     - BPF_F_TIMER_ABS: Timeout passed is absolute time, by default it is
-+ *       relative to current time.
-+ */
-+enum {
-+	BPF_F_TIMER_ABS = (1ULL << 0),
-+};
-+
- #endif /* _UAPI__LINUX_BPF_H__ */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index af30c6cbd65d..924849d89828 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1253,10 +1253,11 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, fla
- {
- 	struct bpf_hrtimer *t;
- 	int ret = 0;
-+	enum hrtimer_mode mode;
- 
- 	if (in_nmi())
- 		return -EOPNOTSUPP;
--	if (flags)
-+	if (flags > BPF_F_TIMER_ABS)
- 		return -EINVAL;
- 	__bpf_spin_lock_irqsave(&timer->lock);
- 	t = timer->timer;
-@@ -1264,7 +1265,13 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, fla
- 		ret = -EINVAL;
- 		goto out;
- 	}
--	hrtimer_start(&t->timer, ns_to_ktime(nsecs), HRTIMER_MODE_REL_SOFT);
-+
-+	if (flags & BPF_F_TIMER_ABS)
-+		mode = HRTIMER_MODE_ABS_SOFT;
-+	else
-+		mode = HRTIMER_MODE_REL_SOFT;
-+
-+	hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
- out:
- 	__bpf_spin_unlock_irqrestore(&timer->lock);
- 	return ret;
--- 
-2.25.1
+Hi,=0D=0A=0D=0AIn case you really want take-offs for a developmen=
+t project, we ought to be your consultancy of decision. Reach out=
+ to us assuming that you have any undertakings for departure whic=
+h could utilize our administrations.=0D=0A=0D=0ASend over the pla=
+ns and notice the exact extent of work you need us to assess.=0D=0A=
+We will hit you up with a statement on our administration charges=
+ and turnaround time.=0D=0AIn case you endorse that individual st=
+atement then we will continue further with the gauge.=0D=0A=0D=0A=
+For a superior comprehension of our work, go ahead and ask us que=
+stions .=0D=0A=0D=0AKind Regards=0D=0ARalph Jackson		=0D=0ADreaml=
+and Estimation, LLC
 
