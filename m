@@ -2,66 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1C769E6CE
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 19:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E475D69E727
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 19:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbjBUSFj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 13:05:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
+        id S229676AbjBUSKF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 13:10:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjBUSFi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 13:05:38 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6223C23300
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 10:05:20 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id q68-20020a632a47000000b004f74bc0c71fso1698637pgq.18
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 10:05:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JcHWxZkDLG8XUyiySDcL8tK+NfRaOXui97wD6jankdE=;
-        b=s+eejRNd0c/PTlEc/1UsQIfirjcY11RxVM8STGP4h3g+R1vbUs8KBI2p9DKZEhTFMo
-         f2gsjmgsYEAbAMCGJV0kFZDfQ20HaUVrRWVd1/Lot+9y5Cys1h+NHsFsDbj2PIaUsB5/
-         tPTQmVi3u4Cyi8Tth4SKR25pdIwLAtX3n9lQOGG3PcLKEJHiBNBvbuJ8fobWCtUCzaef
-         rQKPI64sKTSt8V4r3X5y2jOBFgwmBOWbgzmQJXgYVccjBOnNJaZ6ox3zEMZSUfG2jZof
-         CLNhdJhov+3wEWd801PP0E0vLGUyKirGPB3aD2pW+YFlM6puhKurktNSvYFqhynNHP0S
-         hhrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JcHWxZkDLG8XUyiySDcL8tK+NfRaOXui97wD6jankdE=;
-        b=od0thtk/qm4PqDihCwa0TFatfSbdwAPC24alfS28yODOXk88B4rNz4XNAbl6MiOSoa
-         xv/Ec7p0wboIjnokawncZn+eM/GMIAsqV5YrGXJcglXtK/fEaiKJeMVl5rZI/gtm0D2M
-         3zv88Ow/wGTVGM+vcw2c0g4OI2dQkMs+zUvdoliXmuG6lX996x+xsrlM1UroT+MHRvza
-         j1T3x/RBMByGYtBUHsB7EPCnODpEcz/xe9G6Ek5DisyBhMbU2bJV7xABrkDPGHASq/Ll
-         WXt2bOglLBJZs/fbWE4yPdvSoVQ7JojfijPoyl2n6oFEWzmqaZnY87p56M/+w/gzL3EU
-         QVQA==
-X-Gm-Message-State: AO0yUKWEpUcQdmnRqvjULJmBdSn74ap86SX4E/aXpXDmwa6rYM9eB2+x
-        xUG53BQMG6tH7sC/PLiZtjPHhJ5PQeEcdSj1v09JZIifJRDM9Uczi44Brr40J7rMTH0FcvbUeM4
-        n5lLQNR7/7cblGD+jlRNrkq240MDNsUnvaRWqsR9Epta/UeoSog==
-X-Google-Smtp-Source: AK7set//w5TJznK2K8ganyXtBPm2FkMiBz8dV/ugdOHe3QGmLtqxXetIQiD/HvcMEG2i44wKu4JsBFI=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90b:38c8:b0:230:8730:c1f7 with SMTP id
- nn8-20020a17090b38c800b002308730c1f7mr1526290pjb.27.1677002719742; Tue, 21
- Feb 2023 10:05:19 -0800 (PST)
-Date:   Tue, 21 Feb 2023 10:05:18 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.39.2.637.g21b0678d19-goog
-Message-ID: <20230221180518.2139026-1-sdf@google.com>
-Subject: [PATCH bpf-next] selftests/bpf: Fix BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL
- for empty flow label
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        with ESMTP id S231765AbjBUSJi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 13:09:38 -0500
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6EF92B63B;
+        Tue, 21 Feb 2023 10:09:00 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VcDHv8z_1677002908;
+Received: from 30.120.135.227(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VcDHv8z_1677002908)
+          by smtp.aliyun-inc.com;
+          Wed, 22 Feb 2023 02:08:30 +0800
+Message-ID: <8448beac-a119-330d-a2af-fc3531bdb930@linux.alibaba.com>
+Date:   Wed, 22 Feb 2023 02:08:28 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+Subject: Re: [LSF/MM/BPF TOPIC] State Of The Page
+To:     Matthew Wilcox <willy@infradead.org>,
+        lsf-pc@lists.linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        bpf@vger.kernel.org
+References: <Y9KtCc+4n5uANB2f@casper.infradead.org>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <Y9KtCc+4n5uANB2f@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,65 +45,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kernel's flow dissector continues to parse the packet when
-the (optional) IPv6 flow label is empty even when instructed
-to stop (via BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL). Do
-the same in our reference BPF reimplementation.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/prog_tests/flow_dissector.c | 24 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_flow.c  |  2 +-
- 2 files changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-index 7acca37a3d2b..c4773173a4e4 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-@@ -345,6 +345,30 @@ struct test tests[] = {
- 		.flags = BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL,
- 		.retval = BPF_OK,
- 	},
-+	{
-+		.name = "ipv6-empty-flow-label",
-+		.pkt.ipv6 = {
-+			.eth.h_proto = __bpf_constant_htons(ETH_P_IPV6),
-+			.iph.nexthdr = IPPROTO_TCP,
-+			.iph.payload_len = __bpf_constant_htons(MAGIC_BYTES),
-+			.iph.flow_lbl = { 0x00, 0x00, 0x00 },
-+			.tcp.doff = 5,
-+			.tcp.source = 80,
-+			.tcp.dest = 8080,
-+		},
-+		.keys = {
-+			.flags = BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL,
-+			.nhoff = ETH_HLEN,
-+			.thoff = ETH_HLEN + sizeof(struct ipv6hdr),
-+			.addr_proto = ETH_P_IPV6,
-+			.ip_proto = IPPROTO_TCP,
-+			.n_proto = __bpf_constant_htons(ETH_P_IPV6),
-+			.sport = 80,
-+			.dport = 8080,
-+		},
-+		.flags = BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL,
-+		.retval = BPF_OK,
-+	},
- 	{
- 		.name = "ipip-encap",
- 		.pkt.ipip = {
-diff --git a/tools/testing/selftests/bpf/progs/bpf_flow.c b/tools/testing/selftests/bpf/progs/bpf_flow.c
-index a20c5ed5e454..b04e092fac94 100644
---- a/tools/testing/selftests/bpf/progs/bpf_flow.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_flow.c
-@@ -337,7 +337,7 @@ PROG(IPV6)(struct __sk_buff *skb)
- 	keys->ip_proto = ip6h->nexthdr;
- 	keys->flow_label = ip6_flowlabel(ip6h);
- 
--	if (keys->flags & BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL)
-+	if (keys->flow_label && keys->flags & BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL)
- 		return export_flow_keys(keys, BPF_OK);
- 
- 	return parse_ipv6_proto(skb, ip6h->nexthdr);
--- 
-2.39.2.637.g21b0678d19-goog
+On 2023/1/27 00:40, Matthew Wilcox wrote:
+> I'd like to do another session on how the struct page dismemberment
+> is going and what remains to be done.  Given how widely struct page is
+> used, I think there will be interest from more than just MM, so I'd
+> suggest a plenary session.
+> 
+> If I were hosting this session today, topics would include:
+> 
+> Splitting out users:
+> 
+>   - slab (done!)
+>   - netmem (in progress)
+>   - hugetlb (in akpm)
+>   - tail pages (in akpm)
+>   - page tables
+>   - ZONE_DEVICE
+> 
+> Users that really should have their own types:
+> 
+>   - zsmalloc
+>   - bootmem
+>   - percpu
+>   - buddy
+>   - vmalloc
+> 
+> Converting filesystems to folios:
+> 
+>   - XFS (done)
+>   - AFS (done)
+>   - NFS (in progress)
+>   - ext4 (in progress)
+>   - f2fs (in progress)
+>   - ... others?
+> 
+> Unresolved challenges:
+> 
+>   - mapcount
+>   - AnonExclusive
+>   - Splitting anon & file folios apart
+>   - Removing PG_error & PG_private
 
+I'm interested in this topic too, also I'd like to get some idea of the
+future of the page dismemberment timeline so that I can have time to keep
+the pace with it since some embedded use cases like Android are
+memory-sensitive all the time.
+
+Minor, it seems some apis still use ->lru field to chain bulk pages,
+perhaps it needs some changes as well:
+https://lore.kernel.org/r/20221222124412.rpnl2vojnx7izoow@techsingularity.net
+https://lore.kernel.org/r/20230214190221.1156876-2-shy828301@gmail.com
+
+Thanks,
+Gao Xiang
+
+> 
+> This will probably all change before May.
+> 
+> I'd like to nominate Vishal Moola & Sidhartha Kumar as invitees based on
+> their work to convert various functions from pages to folios.
