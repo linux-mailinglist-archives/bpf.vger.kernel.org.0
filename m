@@ -2,100 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DAB69E07D
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 13:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EED69E0FA
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 14:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbjBUMfv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 07:35:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        id S233618AbjBUNDP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 08:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233708AbjBUMfu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 07:35:50 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCF8233C0
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 04:35:49 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id k37so151190wms.0
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 04:35:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=boB3QImnWTxd1SIqg7wv/Cf6QMLg6EWt7kIgnReisA8=;
-        b=DVivvD/m7YZayhczBWE6676/dMyJqp1+vNYIHHvo04Yagt83bWGSf4bD329CymKx50
-         rn60E3hgYG2iv7AYVxitlrWJsP2Rmj3O+cG/kc22XuCQfMuY0jIt5YzbGs2E5ylYI8AT
-         FYFju5Z/xI9LYZlcc0hgVd+Nc2mOtyGS0LGiuCV+YJMHO+J64HiEujm+YSHy6RGKGGJq
-         /37cifVvgUcBnOHTNkPYYfSbJ5KgA/eg10fkioQ97/sHQYpQM+Yw7Q6WCKle4QlLdRkr
-         oCr0yNFdnMtWl9QawT1zPx86o2R7F49BghGw+4LZiUv8Ta5V6oaORz/kVt3n5O392WHP
-         aWnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=boB3QImnWTxd1SIqg7wv/Cf6QMLg6EWt7kIgnReisA8=;
-        b=OMihQG7eZDQHQ0YJVBGNTBl2VaMpZTdB1Eh61RDR/FE/D+q/SDpE0frG/MAlPOjRjz
-         N/oFSeyp+M4tGFDjYT9LqXJGD+Xp6EdtNL6DKW1DOjCAUDt6CGF03Of1xuuKoaISFlI+
-         Js1h3z29tauS0aWc18uUKwVGz9XkV3t83ZguF7kHHWpRi+cyYuH/BaF/3TxK/a1jrkaH
-         uJ8c7gYDTQSt5YsZan1m2KH3aaO2Ht/jXELA8u+cgWtKwqiEhLREro73qSLffUtlUVEF
-         Zi9pGV+ifmwJTTKJenm1aZdNvj/I1uzLmaA57uLJcpyxlwU0yNUFYadWxplKUxnuXKwn
-         lmfQ==
-X-Gm-Message-State: AO0yUKXf+o9K7Z+yT3IlnVys/9XByX+8vgErEMiormMZT7tT+Yw2n2+h
-        7/XdL8POI9hGM9ClVWBBAanlZJpj//3TcID/VxJdSg==
-X-Google-Smtp-Source: AK7set9nV+EK0TLUdzmV7Dwu03/Rt6FDG/VqUsQnuEfbjE6nlw5NgOvcGE2UwfzJhi0VA0xR7FmDfYru30Rv2bm+cMQ=
-X-Received: by 2002:a05:600c:4e44:b0:3df:f862:fe42 with SMTP id
- e4-20020a05600c4e4400b003dff862fe42mr1874542wmq.10.1676982947772; Tue, 21 Feb
- 2023 04:35:47 -0800 (PST)
+        with ESMTP id S233481AbjBUNDO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 08:03:14 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17B512F11;
+        Tue, 21 Feb 2023 05:03:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676984593; x=1708520593;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/YrhD0FczvWSlv0RDCA4ZnD7EmSFcYMbG+9F2BlavwQ=;
+  b=DbxR5v1Yj688qn16zPxRn7bVPtNAlNn3imEkvkQHVKKF24lkRdIQKnY3
+   PT24HHaaW/wf4lRyu+AuILSqMw8ZMTphOXrPXLRnK+8w212QD40sDjiqt
+   S++vM0HhPWlptJajW+YdZQ120dPlreQTzNvHfipzLpVu0llry1ph1e7Tb
+   eaU+I3GYo9U9TB7fENGDcsio3Xn5DKnpBx3BlMoc5nr/EV4j3iriYVOJS
+   VwhjmhqL2T440y82F8u6E0+btJ+Vy3GjShzQUwkKW2ZFfu47eQsK3/eVZ
+   CjBOS+ZuaiwddcExXThGiw4jSZU/WvyycOlTGxZEsr4Hct1s3P/1Gkqao
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10627"; a="312250426"
+X-IronPort-AV: E=Sophos;i="5.97,315,1669104000"; 
+   d="scan'208";a="312250426"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2023 05:03:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10627"; a="814498922"
+X-IronPort-AV: E=Sophos;i="5.97,315,1669104000"; 
+   d="scan'208";a="814498922"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 21 Feb 2023 05:03:10 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pUSIX-000En7-2h;
+        Tue, 21 Feb 2023 13:03:09 +0000
+Date:   Tue, 21 Feb 2023 21:01:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/2] net/smc: Introduce BPF injection capability
+ for SMC
+Message-ID: <202302212036.S8wKuQqw-lkp@intel.com>
+References: <1676966191-47736-2-git-send-email-alibuda@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20230221110344.82818-1-kerneljasonxing@gmail.com> <48429c16fdaee59867df5ef487e73d4b1bf099af.camel@redhat.com>
-In-Reply-To: <48429c16fdaee59867df5ef487e73d4b1bf099af.camel@redhat.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 21 Feb 2023 13:35:35 +0100
-Message-ID: <CANn89iJjCXfwUQ4XxtCrNFChdCHciBMuWcK=Az4X1acBeqVDiQ@mail.gmail.com>
-Subject: Re: [PATCH net] udp: fix memory schedule error
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Jason Xing <kerneljasonxing@gmail.com>,
-        willemdebruijn.kernel@gmail.com, davem@davemloft.net,
-        dsahern@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1676966191-47736-2-git-send-email-alibuda@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 21, 2023 at 1:27 PM Paolo Abeni <pabeni@redhat.com> wrote:
->
-> On Tue, 2023-02-21 at 19:03 +0800, Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
-> >
-> > Quoting from the commit 7c80b038d23e ("net: fix sk_wmem_schedule()
-> > and sk_rmem_schedule() errors"):
-> >
-> > "If sk->sk_forward_alloc is 150000, and we need to schedule 150001 bytes,
-> > we want to allocate 1 byte more (rounded up to one page),
-> > instead of 150001"
->
-> I'm wondering if this would cause measurable (even small) performance
-> regression? Specifically under high packet rate, with BH and user-space
-> processing happening on different CPUs.
->
-> Could you please provide the relevant performance figures?
->
-> Thanks!
->
-> Paolo
->
+Hi Wythe,
 
-Probably not a big deal.
+Thank you for the patch! Yet something to improve:
 
-TCP skb truesize can easily reach 180 KB, but for UDP it's 99% below
-or close to a 4K page.
+[auto build test ERROR on bpf-next/master]
 
-I doubt this change makes any difference for UDP.
+url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-Introduce-BPF-injection-capability-for-SMC/20230221-155712
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/1676966191-47736-2-git-send-email-alibuda%40linux.alibaba.com
+patch subject: [PATCH bpf-next 1/2] net/smc: Introduce BPF injection capability for SMC
+config: x86_64-randconfig-a004-20230220 (https://download.01.org/0day-ci/archive/20230221/202302212036.S8wKuQqw-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/e2b31aece49068d7a07ca4bbd5fbdbd92f45a25e
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review D-Wythe/net-smc-Introduce-BPF-injection-capability-for-SMC/20230221-155712
+        git checkout e2b31aece49068d7a07ca4bbd5fbdbd92f45a25e
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 olddefconfig
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202302212036.S8wKuQqw-lkp@intel.com/
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+>> ERROR: modpost: "smc_sock_perform_collecting_info" [net/smc/smc.ko] undefined!
+>> ERROR: modpost: "smc_sock_should_select_smc" [net/smc/smc.ko] undefined!
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
