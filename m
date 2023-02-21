@@ -2,71 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E11CB69E8D2
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 21:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC7169E8D3
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 21:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjBUUGy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 15:06:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S230041AbjBUUG4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 15:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjBUUGy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230091AbjBUUGy (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 21 Feb 2023 15:06:54 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DF130B3F
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 12:06:52 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id x10so21141216edd.13
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 12:06:52 -0800 (PST)
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A0627997
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 12:06:53 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id f13so21417614edz.6
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 12:06:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+LChYyXkhlE5HW9JG8xAPc5FXE/dZC/OSRTkTH6gnD4=;
-        b=egUjmMBasbupOim318P/hqQYKjjT9ALuk+C02Lw6cLkwWWrJOIDlF5d2fBAfwtNxwN
-         bZx2iI+bfDV3rNWuqMpnMVpPjwHU8TvJS16oBvwIFtAtLbrxW8t3PylpiO4NEXSlbAQT
-         kD7r7rPPQzdipJ3v090MeMmpsVYPv2vlT0AmAzVyY1sy5l913wUUoPZ05ibrYTVD+EoO
-         Qtt3aqFvKwy7Uqsw44ZsOTZS1q/fmGfeAInyfzt7fjTPp/Ypg3gHG9lKY9MIKlrJlJHu
-         BZ5536nsHEp1mJHOET6N+UXR/4DwKDe4cMaR9f+3tjrkDgXtnxT5e28FmhLDVet5zJ1x
-         Btvw==
+        bh=iKxKQ9sJzV8fykIuAK7NqDRbhBj4NpFuno90ez4gL84=;
+        b=SPyGFmu/PE5tccHyDhwlmkvMBKGdvNR8TCQklSJ7U/0wwvq7aLXokhMkB7fMs6fNxh
+         ojXuoQ78g9H9QfbiNlwZ4dtR8iYVCibK+heSggMD/xntemAmogZCkFxkc3ET5rkj7jJX
+         p3/0hXJpRjZ0PQVnZZuDu4xlSxscgQfaRkHmzZP/8BnAl9S43wcvONCPkeB5l3B1UhQU
+         71O91n7N9aq+ep6PFDxrDb8GEGWpmU9aiUme+hDJgdqlRTTVFbZ6m9zF9Vq/coZ2JmK4
+         3If3Lpqt/nHqmk2p5ezVRYydEYm+EdhWlQWF1pmn7rWrYkyCmci3QuFQD6koTWVvCzF1
+         jyaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+LChYyXkhlE5HW9JG8xAPc5FXE/dZC/OSRTkTH6gnD4=;
-        b=GIww3HynJVrkTnT70uk2p/fGC4XtkrWBvxepQs6abT3+x3ZgInZrcIqGronEucSJ7m
-         xzcxRCRNfRJJ/fyd85RSBpAPfPQvpynJAW8hHq1AxwkwPZtdfCVNApeXjXHrgcGBWttg
-         bJV9OP7bIqkWq3piHabEzaybuvJ5w8AxOWE8SiHBMrv9/dQdLWFuud5/EtcCH2Tk7//q
-         15QEd5J9Ab32LgOWatW6g5SuA3/KvaCD3Ov13qepKodJoKpBkIDjlwVJYNPYsOR8u/lz
-         1pFXOgbvrQeGjnK9vkMG6ecv+VUIDL/QHskmDDLFah+G9ZsxUnX43czIghyso8p82Sot
-         jlyg==
-X-Gm-Message-State: AO0yUKWWx1IOIeDkCg74lv/TeKEx5GSYP8fpLdjzEKLBwtGZCT1XHCUK
-        ChdlPR/sGfU/gF678gfNLlzOvcVzyKTr/g==
-X-Google-Smtp-Source: AK7set80GD/iBVLGWzoZTeYV7XzkRfg2MRm/lEFs8U441a647/3W2w2KWclT08QIrUBzOgvNBnX+gw==
-X-Received: by 2002:a17:906:f88a:b0:8b1:32dd:3af with SMTP id lg10-20020a170906f88a00b008b132dd03afmr13655893ejb.28.1677010010514;
-        Tue, 21 Feb 2023 12:06:50 -0800 (PST)
+        bh=iKxKQ9sJzV8fykIuAK7NqDRbhBj4NpFuno90ez4gL84=;
+        b=60gcbAUIleEREBieuyEYFgyBPbtMV3kkj5IvYm8l5DW2d0txlC7WoJ3FU8sNP92Fbo
+         LYTfXR+7CpnztqCnPejrXaO+aJ7nfqX1WhBIYMAmNqRyOXUKDz1evj3SwDIWK0s4YzhR
+         lyEP7Miz8dAC3wpl0fYbbJw+kcyH8Ju6WrCznbenWl4wtz8ZMeuSdRxfMQ7u21Jd/cgM
+         yXUKaKSmG8DNFaQc2bpl40fyJ86j0sXmypUhouX9ZpHywjhhJHwXaN6VsqdMLf/qI0hA
+         ATJeI2CFmlKVX9TPJf/y4NVKgsNHoloeEDNy6SIUhAhfQ32HnJQC548con6IU56s3eFM
+         nopA==
+X-Gm-Message-State: AO0yUKUt8QNzM4fjVtzMvhNs6/VFKx1ggYE52XMT75WveDL9XB+bqapC
+        W5inXCv4HBXNBtNU2fnxFCAK0pjiuCR+ew==
+X-Google-Smtp-Source: AK7set+z0UC1jrYhOyjneVJ/vFhDcYdf2F45VelJymo+zjYpaxFronaUnn1zQLWwaj4A8ZNGuXAnrA==
+X-Received: by 2002:a17:907:98b1:b0:8e4:96c4:94a with SMTP id ju17-20020a17090798b100b008e496c4094amr1037751ejc.56.1677010012001;
+        Tue, 21 Feb 2023 12:06:52 -0800 (PST)
 Received: from localhost ([2001:620:618:580:2:80b3:0:6d0])
-        by smtp.gmail.com with ESMTPSA id s23-20020a170906501700b008b10d5b092csm7438526ejj.119.2023.02.21.12.06.49
+        by smtp.gmail.com with ESMTPSA id u4-20020a1709060b0400b008c607dd7cefsm4385714ejg.79.2023.02.21.12.06.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Feb 2023 12:06:50 -0800 (PST)
+        Tue, 21 Feb 2023 12:06:51 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Martin KaFai Lau <martin.lau@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         David Vernet <void@manifault.com>
-Subject: [PATCH bpf-next v2 2/7] bpf: Support kptrs in local storage maps
-Date:   Tue, 21 Feb 2023 21:06:41 +0100
-Message-Id: <20230221200646.2500777-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 3/7] bpf: Annotate data races in bpf_local_storage
+Date:   Tue, 21 Feb 2023 21:06:42 +0100
+Message-Id: <20230221200646.2500777-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230221200646.2500777-1-memxor@gmail.com>
 References: <20230221200646.2500777-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5283; i=memxor@gmail.com; h=from:subject; bh=/IKK2SSxTO6Dvec4kNAJOkXu2gKi23SAmz4Xy39MaTw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBj9SRLHp1PqjC3dbF4QiT1W026xEc7xJpizYBuOiiT JJFTLC2JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY/UkSwAKCRBM4MiGSL8RypT3D/ 929+4uDey8iVj8yHNe5lXGnK46+ZWSG8vEnDJi7rQ0b59EyH+3UaL4G/Ttz53f5Z92pLD7loZGOTSk zbQZmD86aDJ29CYypBSiorQYPHxOlFWkqlsItR5DMPe/OG4usCxYhpCQx3wJR2AsVILBK9wc3m3a2d WvEcz2QwJ4o8bYzHK/6ct+nax2jeEJm+JoY8UYuRx0v+FDxN0kwrGTFq/waKMWqlxjwdx6EXLQicg/ xPliadgt78XmtK70jNFKPk84YS1jldEMAtXcQHe3xHFBp9omFu5ExjjQ8ghFEOGKAh1fLzAkSiYFtd M5uaciBLy+foPC6OAJhGIWUqolH9b/BA3uNPzd+DSUZy5xLnfEx1jKSKMeSquyUuGNLdnWzcFBhIEO 76VAjP1c+cQjYP8V29T4VhM2JdhuPBRM5rXpMFvbdVq+9uWVw3EwCMRdkS9/DclxCv6Zm7qDcgQzDY vbQPdnk/RzOOXRGYJqVfN5SblEKeBmgUiYa7rTfBVliiQgeTpUDApYQoqgVyc3NPCWOEvhU6dC2Bu1 iBD7fS4ACuKjWZls1Kmz4mcS8j424bnYRrJ8NCp5oIDKbmaO11DJZ8E+IQAahCUzi/BtTBZggWP4Gv UUqtO1gf41Y6vtTxub79YG4hCm/jgKolf4aIrpXv2mLuKvXu6wLye7iuHd2Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2660; i=memxor@gmail.com; h=from:subject; bh=30/AAcSNo2Q5iYQoDav5BEz50DtTtdsaIGwvWTJd5tQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBj9SRLHQZnoUYeVaSBhDu/63T8K3Eq+JSqs4jVdf7G 0pHGjKqJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY/UkSwAKCRBM4MiGSL8RyoPTEA C6xkasGfZmUegv3OfN3C3l+EHpZQymhD7vpPSetkYQ5GWwPH8+Eu3b8rV9usH/V2DdDLIQE+iSTqQU 8aI6f/pQhZhiWC6BW9vNNQ1ZswXpaaM39GfwcAaem9C+dlSdPW7uPNY1mFUcspHDnphYt0iP5RDaJK 1m39Sb65ZlfX77aqM+3bKAx3z6/WXHVFs+TETWba7QhZfae+S1OdxxGWWcpqqdPcoXNnPOdH1oxSeP 3bizQGnt30J4rRhE1Vpa5J+IccdKQxjfnd0hbJsiHsDv9+dWUkArkFW+B9REBSIvkW6t+Ky9WOxpj8 o5igvAPX/HjXdMJKepXqGHSjdQM6sFcpFPu9kDZgW8WhQLlOralLVvyjCa88TfuZOIN4JYagVPCPxb jyprQr2ougfDdaVXNCuQ5k31vgmbGOElcv3TB0/ywrCLGwS1DKs18uVi9XeRfKD11bE3vC0nREiQyS gxr7PVmU2rKdS0JsF2xgjRgPJLzSb6Nuu3lOqNbQ4Rr3wVuuWEJRVhx14urf+lddJT6W+ySVtAVGu1 lyA3WecADJg5i0hoyP3MmHFrMGeX2TKp0YfxNq+dMXH97eozUJVlLcq3wO4MPoDtBO+AgJS4dw3yum HUBq7FsDa9rGg0s3pWNYh4otWIFAKu6nNj6QnsH4sSMgMFWnG7VccWoSVw9g==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,141 +78,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Enable support for kptrs in local storage maps by wiring up the freeing
-of these kptrs from map value.
+There are a few cases where hlist_node is checked to be unhashed without
+holding the lock protecting its modification. In this case, one must use
+hlist_unhashed_lockless to avoid load tearing and KCSAN reports. Fix
+this by using lockless variant in places not protected by the lock.
+
+Since this is not prompted by any actual KCSAN reports but only from
+code review, I have not included a fixes tag.
 
 Cc: Martin KaFai Lau <martin.lau@kernel.org>
 Cc: KP Singh <kpsingh@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/bpf_local_storage.c | 35 ++++++++++++++++++++++++++++++----
- kernel/bpf/syscall.c           |  6 +++++-
- kernel/bpf/verifier.c          | 12 ++++++++----
- 3 files changed, 44 insertions(+), 9 deletions(-)
+ kernel/bpf/bpf_local_storage.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index 35f4138a54dc..2803b85b30b2 100644
+index 2803b85b30b2..2f61b38db674 100644
 --- a/kernel/bpf/bpf_local_storage.c
 +++ b/kernel/bpf/bpf_local_storage.c
-@@ -75,6 +75,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
- 	if (selem) {
- 		if (value)
- 			copy_map_value(&smap->map, SDATA(selem)->data, value);
-+		/* No need to call check_and_init_map_value as memory is zero init */
- 		return selem;
- 	}
+@@ -51,11 +51,21 @@ owner_storage(struct bpf_local_storage_map *smap, void *owner)
+ 	return map->ops->map_owner_storage_ptr(owner);
+ }
  
-@@ -103,10 +104,17 @@ static void bpf_selem_free_rcu(struct rcu_head *rcu)
- 	struct bpf_local_storage_elem *selem;
- 
- 	selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
-+	bpf_obj_free_fields(SDATA(selem)->smap->map.record, SDATA(selem)->data);
-+	kfree(selem);
++static bool selem_linked_to_storage_lockless(const struct bpf_local_storage_elem *selem)
++{
++	return !hlist_unhashed_lockless(&selem->snode);
 +}
 +
-+static void bpf_selem_free_tasks_trace_rcu(struct rcu_head *rcu)
+ static bool selem_linked_to_storage(const struct bpf_local_storage_elem *selem)
+ {
+ 	return !hlist_unhashed(&selem->snode);
+ }
+ 
++static bool selem_linked_to_map_lockless(const struct bpf_local_storage_elem *selem)
 +{
-+	/* Free directly if Tasks Trace RCU GP also implies RCU GP */
- 	if (rcu_trace_implies_rcu_gp())
--		kfree(selem);
-+		bpf_selem_free_rcu(rcu);
- 	else
--		kfree_rcu(selem, rcu);
-+		call_rcu(rcu, bpf_selem_free_rcu);
- }
- 
- /* local_storage->lock must be held and selem->local_storage == local_storage.
-@@ -160,9 +168,9 @@ static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_stor
- 		RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
- 
- 	if (use_trace_rcu)
--		call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-+		call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_tasks_trace_rcu);
- 	else
--		kfree_rcu(selem, rcu);
-+		call_rcu(&selem->rcu, bpf_selem_free_rcu);
- 
- 	return free_local_storage;
- }
-@@ -713,6 +721,25 @@ void bpf_local_storage_map_free(struct bpf_map *map,
- 	 */
- 	synchronize_rcu();
- 
-+	/* Only delay freeing of smap, buckets are not needed anymore */
- 	kvfree(smap->buckets);
++	return !hlist_unhashed_lockless(&selem->map_node);
++}
 +
-+	/* When local storage has special fields, callbacks for
-+	 * bpf_selem_free_rcu and bpf_selem_free_tasks_trace_rcu will keep using
-+	 * the map BTF record, we need to execute an RCU barrier to wait for
-+	 * them as the record will be freed right after our map_free callback.
-+	 */
-+	if (!IS_ERR_OR_NULL(smap->map.record)) {
-+		rcu_barrier_tasks_trace();
-+		/* We cannot skip rcu_barrier() when rcu_trace_implies_rcu_gp()
-+		 * is true, because while call_rcu invocation is skipped in that
-+		 * case in bpf_selem_free_tasks_trace_rcu (and all local storage
-+		 * maps pass use_trace_rcu = true), there can be call_rcu
-+		 * callbacks based on use_trace_rcu = false in the earlier while
-+		 * ((selem = ...)) loop or from bpf_local_storage_unlink_nolock
-+		 * called from owner's free path.
-+		 */
-+		rcu_barrier();
-+	}
- 	bpf_map_area_free(smap);
- }
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index da117a2a83b2..eb50025b03c1 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1063,7 +1063,11 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
- 				    map->map_type != BPF_MAP_TYPE_LRU_HASH &&
- 				    map->map_type != BPF_MAP_TYPE_LRU_PERCPU_HASH &&
- 				    map->map_type != BPF_MAP_TYPE_ARRAY &&
--				    map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) {
-+				    map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY &&
-+				    map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
-+				    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
-+				    map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
-+				    map->map_type != BPF_MAP_TYPE_CGRP_STORAGE) {
- 					ret = -EOPNOTSUPP;
- 					goto free_map_tab;
- 				}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 272563a0b770..9a4e7efaf28f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7126,22 +7126,26 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 		break;
- 	case BPF_MAP_TYPE_SK_STORAGE:
- 		if (func_id != BPF_FUNC_sk_storage_get &&
--		    func_id != BPF_FUNC_sk_storage_delete)
-+		    func_id != BPF_FUNC_sk_storage_delete &&
-+		    func_id != BPF_FUNC_kptr_xchg)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_INODE_STORAGE:
- 		if (func_id != BPF_FUNC_inode_storage_get &&
--		    func_id != BPF_FUNC_inode_storage_delete)
-+		    func_id != BPF_FUNC_inode_storage_delete &&
-+		    func_id != BPF_FUNC_kptr_xchg)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_TASK_STORAGE:
- 		if (func_id != BPF_FUNC_task_storage_get &&
--		    func_id != BPF_FUNC_task_storage_delete)
-+		    func_id != BPF_FUNC_task_storage_delete &&
-+		    func_id != BPF_FUNC_kptr_xchg)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_CGRP_STORAGE:
- 		if (func_id != BPF_FUNC_cgrp_storage_get &&
--		    func_id != BPF_FUNC_cgrp_storage_delete)
-+		    func_id != BPF_FUNC_cgrp_storage_delete &&
-+		    func_id != BPF_FUNC_kptr_xchg)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_BLOOM_FILTER:
+ static bool selem_linked_to_map(const struct bpf_local_storage_elem *selem)
+ {
+ 	return !hlist_unhashed(&selem->map_node);
+@@ -182,7 +192,7 @@ static void __bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
+ 	bool free_local_storage = false;
+ 	unsigned long flags;
+ 
+-	if (unlikely(!selem_linked_to_storage(selem)))
++	if (unlikely(!selem_linked_to_storage_lockless(selem)))
+ 		/* selem has already been unlinked from sk */
+ 		return;
+ 
+@@ -216,7 +226,7 @@ void bpf_selem_unlink_map(struct bpf_local_storage_elem *selem)
+ 	struct bpf_local_storage_map_bucket *b;
+ 	unsigned long flags;
+ 
+-	if (unlikely(!selem_linked_to_map(selem)))
++	if (unlikely(!selem_linked_to_map_lockless(selem)))
+ 		/* selem has already be unlinked from smap */
+ 		return;
+ 
+@@ -428,7 +438,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+ 		err = check_flags(old_sdata, map_flags);
+ 		if (err)
+ 			return ERR_PTR(err);
+-		if (old_sdata && selem_linked_to_storage(SELEM(old_sdata))) {
++		if (old_sdata && selem_linked_to_storage_lockless(SELEM(old_sdata))) {
+ 			copy_map_value_locked(&smap->map, old_sdata->data,
+ 					      value, false);
+ 			return old_sdata;
 -- 
 2.39.2
 
