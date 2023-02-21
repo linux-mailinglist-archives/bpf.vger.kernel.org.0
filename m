@@ -2,44 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E22F369EB67
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 00:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D8969EB89
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 00:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbjBUXpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 18:45:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60286 "EHLO
+        id S229950AbjBUX40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 18:56:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjBUXpc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 18:45:32 -0500
+        with ESMTP id S229546AbjBUX4Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 18:56:25 -0500
 Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DC72CFF0
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 15:45:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A931125E10
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 15:56:15 -0800 (PST)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id E76E2240760
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 00:45:29 +0100 (CET)
+        by mout02.posteo.de (Postfix) with ESMTPS id 32804240769
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 00:56:14 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1677023129; bh=E5bwJxYBhQCm83HSmRUS6YqYenbAEm4H3FW5vqf3hzo=;
-        h=From:To:Subject:Date:From;
-        b=WH7M2AZwDiNY6zeTXuA98Z4cdPX1OQRfzNx2wKhd2ALo3LYeGxM8k9UoHE4qJxV9T
-         UfgLl3YVnpPy2RU+rAKI0MVhtfN/Conu4nKu4Cb4wb4g1EolAEb84Y7XZS+tuxuoX4
-         8xoNARE3MVSRxeyNXeWaLtRFv005a/F6dECRIN6eyl7F04mgFQ5ecAb7uM2ezFmGMc
-         0qf0OGNR3MW/0FG44xWSKQCU9oGolziFMjdcuFBjBCwQTBS6oodyvTFD7Ym8UgQydz
-         aNYM6a7C80/c7sK8/4FQ86dFFYealRZLr02gaTSmZKH7VawqXmog4UAtqZN4tmp/qO
-         JxZspz/BXoiNg==
+        t=1677023774; bh=m6Whec5ZykD7UtwGCOayuz5CqyboHAZzYp2p8t8UhRs=;
+        h=Date:From:To:Subject:From;
+        b=gA4dn/vyPbzq6G0SyNBnTkfR4WPr0MVROsZ+gyLD9CJQuMOUPzzU/h4vrlp0H3aI3
+         3stUmirJuGZikHt3Fht+lghXmdtiPteOxxfJRT/R9a+baKuk2j2sffbMmQuX1vFvNs
+         ZeRkiI96ZnGhKvhPOw87B/itMH9Y4sejyEBSmk8qjMCjZrEnkdt1rQrPaTFiYLAlDb
+         ukFEhzS0nkut3xnd3wPBlvNgCr4fZCINJuPSGL5r2N1dLKCgKR8Z+fEslIm2H0mS9t
+         5u8UJa3nIYPF2LvBsrW63javAAKjZ+a4k+8fHxaBUVBCR+QcdY0Lfwqm851vVSqLyI
+         1+7qytLPvlqZQ==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4PLwrn22zCz6tmN;
-        Wed, 22 Feb 2023 00:45:29 +0100 (CET)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
+        by submission (posteo.de) with ESMTPSA id 4PLx5773Dgz9rxB;
+        Wed, 22 Feb 2023 00:56:11 +0100 (CET)
+Date:   Tue, 21 Feb 2023 23:56:08 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com
-Subject: [PATCH bpf-next v2 3/3] libbpf: Add support for attaching uprobes to shared objects in APKs
-Date:   Tue, 21 Feb 2023 23:45:00 +0000
-Message-Id: <20230221234500.2653976-4-deso@posteo.net>
-In-Reply-To: <20230221234500.2653976-1-deso@posteo.net>
+Subject: Re: [PATCH bpf-next v2 0/3] Make uprobe attachment APK aware
+Message-ID: <20230221235608.cdpofdoog4hoqznn@muellerd-fedora-PC2BDTX9>
 References: <20230221234500.2653976-1-deso@posteo.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230221234500.2653976-1-deso@posteo.net>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -50,161 +51,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change adds support for attaching uprobes to shared objects located
-in APKs, which is relevant for Android systems where various libraries
-may reside in APKs. To make that happen, we extend the syntax for the
-"binary path" argument to attach to with that supported by various
-Android tools:
-  <archive>!/<binary-in-archive>
+The changelog ended up in a different file. Added it below now.
 
-For example:
-  /system/app/test-app/test-app.apk!/lib/arm64-v8a/libc++_shared.so
+On Tue, Feb 21, 2023 at 11:44:57PM +0000, Daniel Müller wrote:
+> On Android, APKs (android packages; zip packages with somewhat
+> prescriptive contents) are first class citizens in the system: the
+> shared objects contained in them don't exist in unpacked form on the
+> file system. Rather, they are mmaped directly from within the archive
+> and the archive is also what the kernel is aware of.
+> 
+> For users that complicates the process of attaching a uprobe to a
+> function contained in a shared object in one such APK: they'd have to
+> find the byte offset of said function from the beginning of the archive.
+> That is cumbersome to do manually and can be fragile, because various
+> changes could invalidate said offset.
+> 
+> That is why for uprobes inside ELF files (not inside an APK), commit
+> d112c9ce249b ("libbpf: Support function name-based attach uprobes") added
+> support for attaching to symbols by name. On Android, that mechanism
+> currently does not work, because this logic is not APK aware.
+> 
+> This patch set introduces first class support for attaching uprobes to
+> functions inside ELF objects contained in APKs via function names. We
+> add support for recognizing the following syntax for a binary path:
+>   <archive>!/<binary-in-archive>
+> 
+>   (e.g., /system/app/test-app.apk!/lib/arm64-v8a/libc++.so)
+> 
+> This syntax is common in the Android eco system and used by tools such
+> as simpleperf. It is also what is being proposed for bcc [0].
+> 
+> If the user provides such a binary path, we find <binary-in-archive>
+> (lib/arm64-v8a/libc++.so in the example) inside of <archive>
+> (/system/app/test-app.apk). We perform the regular ELF offset search
+> inside the binary and add that to the offset within the archive itself,
+> to retrieve the offset at which to attach the uprobe.
+> 
+> [0] https://github.com/iovisor/bcc/pull/4440
 
-APKs need to be specified via full path, i.e., we do not attempt to
-resolve mere file names by searching system directories.
+Changelog
+---------
+v1->v2:
+- removed unaligned_* types
+- switched to using __u32 and __u16
+- switched to using errno constants instead of hard-coded negative values
+- added another pr_debug() message
+- shortened central_directory_* to cd_*
+- inlined cd_file_header_at_offset() function
+- bunch of syntactical changes
 
-We cannot currently test this functionality end-to-end in an automated
-fashion, because it relies on an Android system being present, but there
-is no support for that in CI. I have tested the functionality manually,
-by creating a libbpf program containing a uretprobe, attaching it to a
-function inside a shared object inside an APK, and verifying the sanity
-of the returned values.
-
-Signed-off-by: Daniel MÃ¼ller <deso@posteo.net>
----
- tools/lib/bpf/libbpf.c | 87 ++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 80 insertions(+), 7 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 4543e9..a41993b 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -53,6 +53,7 @@
- #include "libbpf_internal.h"
- #include "hashmap.h"
- #include "bpf_gen_internal.h"
-+#include "zip.h"
- 
- #ifndef BPF_FS_MAGIC
- #define BPF_FS_MAGIC		0xcafe4a11
-@@ -10702,6 +10703,65 @@ static long elf_find_func_offset_from_file(const char *binary_path, const char *
- 	return ret;
- }
- 
-+/* Find offset of function name in archive specified by path. Currently
-+ * supported are .zip files that do not compress their contents, as used on
-+ * Android in the form of APKs, for example. "file_name" is the name of the ELF
-+ * file inside the archive. "func_name" matches symbol name or name@@LIB for
-+ * library functions.
-+ *
-+ * An overview of the APK format specifically provided here:
-+ * https://en.wikipedia.org/w/index.php?title=Apk_(file_format)&oldid=1139099120#Package_contents
-+ */
-+static long elf_find_func_offset_from_archive(const char *archive_path, const char *file_name,
-+					      const char *func_name)
-+{
-+	struct zip_archive *archive;
-+	struct zip_entry entry;
-+	long ret = -ENOENT;
-+	Elf *elf;
-+
-+	archive = zip_archive_open(archive_path);
-+	if (!archive) {
-+		pr_warn("zip: failed to open %s\n", archive_path);
-+		return -LIBBPF_ERRNO__FORMAT;
-+	}
-+
-+	if (zip_archive_find_entry(archive, file_name, &entry)) {
-+		pr_warn("zip: could not find archive member %s in %s\n", file_name, archive_path);
-+		ret = -LIBBPF_ERRNO__FORMAT;
-+		goto out;
-+	}
-+	pr_debug("zip: found entry for %s in %s at 0x%lx\n", file_name, archive_path,
-+		 (unsigned long)entry.data_offset);
-+
-+	if (entry.compression) {
-+		pr_warn("zip: entry %s of %s is compressed and cannot be handled\n", file_name,
-+			archive_path);
-+		ret = -LIBBPF_ERRNO__FORMAT;
-+		goto out;
-+	}
-+
-+	elf = elf_memory((void *)entry.data, entry.data_length);
-+	if (!elf) {
-+		pr_warn("elf: could not read elf file %s from %s: %s\n", file_name, archive_path,
-+			elf_errmsg(-1));
-+		ret = -LIBBPF_ERRNO__FORMAT;
-+		goto out;
-+	}
-+
-+	ret = elf_find_func_offset(elf, file_name, func_name);
-+	if (ret > 0) {
-+		ret += entry.data_offset;
-+		pr_debug("elf: symbol address match for %s of %s in %s: 0x%lx\n", func_name,
-+			 file_name, archive_path, ret);
-+	}
-+	elf_end(elf);
-+
-+out:
-+	zip_archive_close(archive);
-+	return ret;
-+}
-+
- static const char *arch_specific_lib_paths(void)
- {
- 	/*
-@@ -10787,9 +10847,10 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 				const char *binary_path, size_t func_offset,
- 				const struct bpf_uprobe_opts *opts)
- {
--	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
-+	const char *archive_path = NULL, *archive_sep = NULL;
- 	char errmsg[STRERR_BUFSIZE], *legacy_probe = NULL;
--	char full_binary_path[PATH_MAX];
-+	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
-+	char full_path[PATH_MAX];
- 	struct bpf_link *link;
- 	size_t ref_ctr_off;
- 	int pfd, err;
-@@ -10806,21 +10867,33 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 	if (!binary_path)
- 		return libbpf_err_ptr(-EINVAL);
- 
--	if (!strchr(binary_path, '/')) {
--		err = resolve_full_path(binary_path, full_binary_path,
--					sizeof(full_binary_path));
-+	/* Check if "binary_path" refers to an archive. */
-+	archive_sep = strstr(binary_path, "!/");
-+	if (archive_sep) {
-+		full_path[0] = '\0';
-+		libbpf_strlcpy(full_path, binary_path, archive_sep - binary_path + 1);
-+		archive_path = full_path;
-+		binary_path = archive_sep + 2;
-+	} else if (!strchr(binary_path, '/')) {
-+		err = resolve_full_path(binary_path, full_path, sizeof(full_path));
- 		if (err) {
- 			pr_warn("prog '%s': failed to resolve full path for '%s': %d\n",
- 				prog->name, binary_path, err);
- 			return libbpf_err_ptr(err);
- 		}
--		binary_path = full_binary_path;
-+		binary_path = full_path;
- 	}
- 	func_name = OPTS_GET(opts, func_name, NULL);
- 	if (func_name) {
- 		long sym_off;
- 
--		sym_off = elf_find_func_offset_from_file(binary_path, func_name);
-+		if (archive_path) {
-+			sym_off = elf_find_func_offset_from_archive(archive_path, binary_path,
-+								    func_name);
-+			binary_path = archive_path;
-+		} else {
-+			sym_off = elf_find_func_offset_from_file(binary_path, func_name);
-+		}
- 		if (sym_off < 0)
- 			return libbpf_err_ptr(sym_off);
- 		func_offset += sym_off;
--- 
-2.30.2
-
+> Daniel Müller (3):
+>   libbpf: Implement basic zip archive parsing support
+>   libbpf: Introduce elf_find_func_offset_from_file() function
+>   libbpf: Add support for attaching uprobes to shared objects in APKs
+> 
+>  tools/lib/bpf/Build    |   2 +-
+>  tools/lib/bpf/libbpf.c | 142 ++++++++++++++----
+>  tools/lib/bpf/zip.c    | 326 +++++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/zip.h    |  47 ++++++
+>  4 files changed, 489 insertions(+), 28 deletions(-)
+>  create mode 100644 tools/lib/bpf/zip.c
+>  create mode 100644 tools/lib/bpf/zip.h
+> 
+> -- 
+> 2.30.2
+> 
