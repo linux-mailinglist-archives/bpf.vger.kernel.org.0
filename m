@@ -2,183 +2,303 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E26169E82E
-	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 20:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B32769E853
+	for <lists+bpf@lfdr.de>; Tue, 21 Feb 2023 20:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbjBUTXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 14:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43284 "EHLO
+        id S229487AbjBUTcp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 14:32:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjBUTXl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 14:23:41 -0500
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1218021A2D
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 11:23:40 -0800 (PST)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id ABFD2240468
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 20:23:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1677007417; bh=qGaiI5LUmHhseRTwB8/EGgIjD/LZ0Lnpvy1nBTxeK7I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TyzK3inz65Vit2zkmAjqTQbya+5y/ganhjejaOIKcVA8RIbG5k9sy6U48NwilF0pu
-         d0C+Yz9+o3J9BbFJMbZ6EGBR9u3eLw4F8xD12P6ycdy/7Ymi9h5kRyVXUbh8yDCrnu
-         bFJzVXy+39kWooe/r3QO89FqoH/6yyLSCNK3pfayhOvw1Su2Vqo+EkWyJDbGqCSwva
-         m7mv05QiStIxvZEgnhKKZDlQxG3EFMFBs2TZASc4MyiONazJUezQMWsJ/W7pNLMBEO
-         m6y1TnBh4wyNxQArl1U3jkgtjO7OrKhGzeoTmjbW2k4cW2S7gcfm2iOA7NvkyH20u/
-         V73NRMh3rO0Jg==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4PLq2b14G3z6tnl;
-        Tue, 21 Feb 2023 20:23:34 +0100 (CET)
-Date:   Tue, 21 Feb 2023 19:23:31 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 2/3] libbpf: Introduce
- elf_find_func_offset_from_elf_file() function
-Message-ID: <20230221192331.5dg7cvwqkulmbfl7@muellerd-fedora-PC2BDTX9>
-References: <20230217191908.1000004-1-deso@posteo.net>
- <20230217191908.1000004-3-deso@posteo.net>
- <CAEf4BzaAeBi4MWu7gbQfTPVGq76nS1EEAtB8uRc8J87uVD8gTw@mail.gmail.com>
+        with ESMTP id S229441AbjBUTcp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 14:32:45 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C7DA275;
+        Tue, 21 Feb 2023 11:32:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677007963; x=1708543963;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=oBKvYMaQGACsbz1EqLukZAAjWQY7HrpNQl9o8pOFa2k=;
+  b=LkkUO5hv+PjUE2Bd/gfRjPF5Y/F81bZDQugXplaXXLHj+8kOZlxIhlZ+
+   UfZ3ZuOkj+SHQ8POCijDZO4ixnLwd+JgkThhhcR0VWli8P3WVpBo7aGKl
+   RkIZpjWf76Xh/iQaA7oUSzamf1MNGyw7vJN+ftMBRROig25rSQ9oR5gaM
+   NyeFrMWN97ABdkFx20sQY9WKF1sfEyXUZ41/No1Jdpk5bncTMfgpN29ux
+   WJFsB12JHjxdHZ07hd6/g6unVXKtWif76favlv4B5iJXs5m+P3/j9Xqtg
+   ZyPULZy1ibWkUPt2VKEKlpo2zSnONyHPGJLVjN+UddBgP3tfK/pauKlkG
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="316453905"
+X-IronPort-AV: E=Sophos;i="5.97,315,1669104000"; 
+   d="scan'208";a="316453905"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2023 11:32:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="649287478"
+X-IronPort-AV: E=Sophos;i="5.97,315,1669104000"; 
+   d="scan'208";a="649287478"
+Received: from lkp-server01.sh.intel.com (HELO eac18b5d7d93) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 21 Feb 2023 11:32:38 -0800
+Received: from kbuild by eac18b5d7d93 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pUYNS-0000C1-00;
+        Tue, 21 Feb 2023 19:32:38 +0000
+Date:   Wed, 22 Feb 2023 03:32:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     platform-driver-x86@vger.kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-arch@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        bpf@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ 465461cf48465b8a0a54025db5ae2b3df7a04577
+Message-ID: <63f51c3f.SKhEo/gg7HFz2Xwg%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaAeBi4MWu7gbQfTPVGq76nS1EEAtB8uRc8J87uVD8gTw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 17, 2023 at 04:14:12PM -0800, Andrii Nakryiko wrote:
-> On Fri, Feb 17, 2023 at 11:19 AM Daniel Müller <deso@posteo.net> wrote:
-> >
-> > This change splits the elf_find_func_offset() function in two:
-> > elf_find_func_offset(), which now accepts an already opened Elf object
-> > instead of a path to a file that is to be opened, as well as
-> > elf_find_func_offset_from_elf_file(), which opens a binary based on a
-> > path and then invokes elf_find_func_offset() on the Elf object. Having
-> > this split in responsibilities will allow us to call
-> > elf_find_func_offset() from other code paths on Elf objects that did not
-> > necessarily come from a file on disk.
-> >
-> > Signed-off-by: Daniel Müller <deso@posteo.net>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 55 +++++++++++++++++++++++++++---------------
-> >  1 file changed, 35 insertions(+), 20 deletions(-)
-> >
-> 
-> Looks good, just few pedantic nits
-> 
-> 
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 05c4db3..a474f49 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -10531,32 +10531,19 @@ static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, int sh_type, Elf_Scn *scn)
-> >         return NULL;
-> >  }
-> >
-> > -/* Find offset of function name in object specified by path.  "name" matches
-> > - * symbol name or name@@LIB for library functions.
-> > +/* Find offset of function name in the provided ELF object.  "binary_path" is
-> > + * the path to the ELF binary represented by "elf", and only used for error
-> > + * reporting matters.  "name" matches symbol name or name@@LIB for library
-> > + * functions.
-> >   */
-> > -static long elf_find_func_offset(const char *binary_path, const char *name)
-> > +static long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
-> >  {
-> > -       int fd, i, sh_types[2] = { SHT_DYNSYM, SHT_SYMTAB };
-> > +       int i, sh_types[2] = { SHT_DYNSYM, SHT_SYMTAB };
-> >         bool is_shared_lib, is_name_qualified;
-> > -       char errmsg[STRERR_BUFSIZE];
-> >         long ret = -ENOENT;
-> >         size_t name_len;
-> >         GElf_Ehdr ehdr;
-> > -       Elf *elf;
-> >
-> > -       fd = open(binary_path, O_RDONLY | O_CLOEXEC);
-> > -       if (fd < 0) {
-> > -               ret = -errno;
-> > -               pr_warn("failed to open %s: %s\n", binary_path,
-> > -                       libbpf_strerror_r(ret, errmsg, sizeof(errmsg)));
-> > -               return ret;
-> > -       }
-> > -       elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
-> > -       if (!elf) {
-> > -               pr_warn("elf: could not read elf from %s: %s\n", binary_path, elf_errmsg(-1));
-> > -               close(fd);
-> > -               return -LIBBPF_ERRNO__FORMAT;
-> > -       }
-> >         if (!gelf_getehdr(elf, &ehdr)) {
-> >                 pr_warn("elf: failed to get ehdr from %s: %s\n", binary_path, elf_errmsg(-1));
-> >                 ret = -LIBBPF_ERRNO__FORMAT;
-> > @@ -10682,6 +10669,34 @@ static long elf_find_func_offset(const char *binary_path, const char *name)
-> >                 }
-> >         }
-> >  out:
-> > +       return ret;
-> > +}
-> > +
-> > +/* Find offset of function name in ELF object specified by path.  "name" matches
-> 
-> nit: seems like it's original spelling, but let's remove these double
-> spaces (same above in elf_find_func_offset comment)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 465461cf48465b8a0a54025db5ae2b3df7a04577  Add linux-next specific files for 20230221
 
-Done.
+Error/Warning reports:
 
-> > + * symbol name or name@@LIB for library functions.
-> > + */
-> > +static long elf_find_func_offset_from_elf_file(const char *binary_path, const char *name)
-> 
-> "from_file" would be enough, reads a bit tautological otherwise
+https://lore.kernel.org/oe-kbuild-all/202302062224.ByzeTXh1-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302092211.54EYDhYH-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302111601.jtY4lKrA-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302112104.g75cGHZd-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302151041.0SWs1RHK-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302162019.2WhIRkSA-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302170355.Ljqlzucu-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302192254.EGOAcwpm-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302210350.lynWcL4t-lkp@intel.com
 
-Sure.
+Error/Warning: (recently discovered and may have been fixed)
 
-> > +{
-> > +       char errmsg[STRERR_BUFSIZE];
-> > +       long ret = -ENOENT;
-> > +       Elf *elf;
-> > +       int fd;
-> > +
-> > +       fd = open(binary_path, O_RDONLY | O_CLOEXEC);
-> 
-> btw, this reminded me that in patch #1 we probably want to pass
-> O_CLOEXEC as well?
+Documentation/admin-guide/pm/amd-pstate.rst:343: WARNING: duplicate label admin-guide/pm/amd-pstate:user space interface in ``sysfs``, other instance in Documentation/admin-guide/pm/amd-pstate.rst
+Documentation/sphinx/templates/kernel-toc.html: 1:36 Invalid token: #}
+ERROR: modpost: "__umoddi3" [fs/btrfs/btrfs.ko] undefined!
+arch/mips/include/asm/page.h:227:55: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+arch/mips/kernel/vpe.c:643:41: error: 'struct module' has no member named 'mod_mem'
+arch/riscv/net/bpf_jit_comp64.c:691:9: error: call to undeclared function 'patch_text'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_optc.c:294:6: warning: no previous prototype for 'optc3_wait_drr_doublebuffer_pending_clear' [-Wmissing-prototypes]
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn32/dcn32_resource_helpers.c:62:18: warning: variable 'cursor_bpp' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_detection.c:1199: warning: expecting prototype for dc_link_detect_connection_type(). Prototype was for link_detect_connection_type() instead
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_capability.c:1292:32: warning: variable 'result_write_min_hblank' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training.c:1586:38: warning: variable 'result' set but not used [-Wunused-but-set-variable]
+fs/btrfs/volumes.c:6514: undefined reference to `__umoddi3'
+fsl-edma.c:(.text+0x104e): undefined reference to `devm_platform_ioremap_resource'
+idma64.c:(.text+0x1d76): undefined reference to `devm_platform_ioremap_resource'
+include/asm-generic/div64.h:238:36: error: passing argument 1 of '__div64_32' from incompatible pointer type [-Werror=incompatible-pointer-types]
+s390-linux-ld: fsl-edma.c:(.text+0x1174): undefined reference to `devm_platform_ioremap_resource'
+volumes.c:(.text+0x7dd4): undefined reference to `__aeabi_uldivmod'
+volumes.c:(.text+0xb65b): undefined reference to `__umoddi3'
 
-Sounds good.
+Unverified Error/Warning (likely false positive, please contact us if interested):
 
-> > +       if (fd < 0) {
-> > +               ret = -errno;
-> > +               pr_warn("failed to open %s: %s\n", binary_path,
-> > +                       libbpf_strerror_r(ret, errmsg, sizeof(errmsg)));
-> > +               return ret;
-> > +       }
-> > +       elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
-> > +       if (!elf) {
-> > +               pr_warn("elf: could not read elf from %s: %s\n", binary_path, elf_errmsg(-1));
-> > +               close(fd);
-> > +               return -LIBBPF_ERRNO__FORMAT;
-> > +       }
-> > +
-> > +       ret = elf_find_func_offset(elf, binary_path, name);
-> >         elf_end(elf);
-> >         close(fd);
-> >         return ret;
-> > @@ -10805,7 +10820,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
-> >         if (func_name) {
-> >                 long sym_off;
-> >
-> > -               sym_off = elf_find_func_offset(binary_path, func_name);
-> > +               sym_off = elf_find_func_offset_from_elf_file(binary_path, func_name);
-> >                 if (sym_off < 0)
-> >                         return libbpf_err_ptr(sym_off);
-> >                 func_offset += sym_off;
-> > --
-> > 2.30.2
-> >
+drivers/gpu/drm/i915/display/intel_color.c:1400 intel_color_prepare_commit() warn: ignoring unreachable code.
+drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c:4393 guc_init_global_schedule_policy() error: uninitialized symbol 'ret'.
+drivers/gpu/drm/i915/i915_hwmon.c:383 hwm_power_max_read() error: uninitialized symbol 'r'.
+drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c:65 cpt_af_flt_intr_handler() error: uninitialized symbol 'eng'.
+drivers/net/ethernet/mellanox/mlx5/core/eq.c:1010 mlx5_comp_irq_get_affinity_mask() warn: iterator used outside loop: 'eq'
+drivers/platform/x86/mlx-platform.c:6013 mlxplat_mlxcpld_verify_bus_topology() error: uninitialized symbol 'shift'.
+drivers/usb/gadget/composite.c:2082:33: sparse: sparse: restricted __le16 degrades to integer
+drivers/usb/host/xhci-rcar.c:269:34: warning: unused variable 'usb_xhci_of_match' [-Wunused-const-variable]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|-- alpha-randconfig-s033-20230219
+|   `-- drivers-usb-gadget-composite.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|   `-- include-asm-generic-div64.h:error:passing-argument-of-__div64_32-from-incompatible-pointer-type
+|-- arm-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|   `-- include-asm-generic-div64.h:error:passing-argument-of-__div64_32-from-incompatible-pointer-type
+|-- arm-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|   `-- include-asm-generic-div64.h:error:passing-argument-of-__div64_32-from-incompatible-pointer-type
+|-- arm-randconfig-r035-20230219
+|   `-- volumes.c:(.text):undefined-reference-to-__aeabi_uldivmod
+|-- arm-randconfig-s052-20230219
+|   `-- drivers-usb-gadget-composite.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- arm64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dcn30-dcn30_optc.c:warning:no-previous-prototype-for-optc3_wait_drr_doublebuffer_pending_clear
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dcn32-dcn32_resource_helpers.c:warning:variable-cursor_bpp-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|-- csky-randconfig-s041-20230219
+|   `-- drivers-usb-gadget-composite.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- csky-randconfig-s042-20230219
+|   |-- include-asm-generic-cmpxchg-local.h:sparse:sparse:cast-truncates-bits-from-constant-value-(-becomes-)
+|   `-- include-asm-generic-cmpxchg-local.h:sparse:sparse:cast-truncates-bits-from-constant-value-(aaa31337-becomes-)
+|-- i386-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dcn30-dcn30_optc.c:warning:no-previous-prototype-for-optc3_wait_drr_doublebuffer_pending_clear
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dcn32-dcn32_resource_helpers.c:warning:variable-cursor_bpp-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|   `-- volumes.c:(.text):undefined-reference-to-__umoddi3
+|-- i386-debian-10.3
+|   `-- ERROR:__umoddi3-fs-btrfs-btrfs.ko-undefined
+|-- i386-debian-10.3-func
+|   `-- ERROR:__umoddi3-fs-btrfs-btrfs.ko-undefined
+|-- i386-debian-10.3-kselftests
+|   `-- ERROR:__umoddi3-fs-btrfs-btrfs.ko-undefined
+|-- i386-debian-10.3-kunit
+clang_recent_errors
+|-- hexagon-randconfig-r005-20230220
+|   `-- drivers-usb-host-xhci-rcar.c:warning:unused-variable-usb_xhci_of_match
+|-- i386-randconfig-a013-20230220
+|   `-- ERROR:__umoddi3-fs-btrfs-btrfs.ko-undefined
+`-- riscv-randconfig-r004-20230221
+    `-- arch-riscv-net-bpf_jit_comp64.c:error:call-to-undeclared-function-patch_text-ISO-C99-and-later-do-not-support-implicit-function-declarations
+
+elapsed time: 724m
+
+configs tested: 114
+configs skipped: 7
+
+gcc tested configs:
+alpha                            allyesconfig
+alpha                               defconfig
+arc                              allyesconfig
+arc                                 defconfig
+arc                  randconfig-r043-20230219
+arc                  randconfig-r043-20230220
+arm                              allmodconfig
+arm                              allyesconfig
+arm                         axm55xx_defconfig
+arm                                 defconfig
+arm                  randconfig-r046-20230220
+arm64                            allyesconfig
+arm64                               defconfig
+csky                                defconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                         debian-10.3-func
+i386                   debian-10.3-kselftests
+i386                        debian-10.3-kunit
+i386                          debian-10.3-kvm
+i386                                defconfig
+i386                 randconfig-a001-20230220
+i386                 randconfig-a002-20230220
+i386                 randconfig-a003-20230220
+i386                 randconfig-a004-20230220
+i386                 randconfig-a005-20230220
+i386                 randconfig-a006-20230220
+i386                          randconfig-c001
+ia64                             allmodconfig
+ia64                                defconfig
+loongarch                        allmodconfig
+loongarch                         allnoconfig
+loongarch                           defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                        m5307c3_defconfig
+m68k                           sun3_defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+mips                         cobalt_defconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc64                            defconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                     ep8248e_defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                       maple_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                     redwood_defconfig
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                randconfig-r042-20230219
+riscv                          rv32_defconfig
+s390                             allmodconfig
+s390                             allyesconfig
+s390                                defconfig
+s390                 randconfig-r044-20230219
+sh                               alldefconfig
+sh                               allmodconfig
+sh                        dreamcast_defconfig
+sh                          landisk_defconfig
+sh                          polaris_defconfig
+sh                          sdk7780_defconfig
+sparc                               defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                           alldefconfig
+x86_64                            allnoconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                                  kexec
+x86_64               randconfig-a001-20230220
+x86_64               randconfig-a002-20230220
+x86_64               randconfig-a003-20230220
+x86_64               randconfig-a004-20230220
+x86_64               randconfig-a005-20230220
+x86_64               randconfig-a006-20230220
+x86_64                               rhel-8.3
+xtensa                              defconfig
+xtensa                    xip_kc705_defconfig
+
+clang tested configs:
+arm                         bcm2835_defconfig
+arm                         lpc32xx_defconfig
+arm                            mmp2_defconfig
+arm                        mvebu_v5_defconfig
+arm                  randconfig-r046-20230219
+arm                        spear3xx_defconfig
+hexagon              randconfig-r041-20230219
+hexagon              randconfig-r041-20230220
+hexagon              randconfig-r045-20230219
+hexagon              randconfig-r045-20230220
+i386                 randconfig-a011-20230220
+i386                 randconfig-a012-20230220
+i386                 randconfig-a013-20230220
+i386                 randconfig-a014-20230220
+i386                 randconfig-a015-20230220
+i386                 randconfig-a016-20230220
+mips                       lemote2f_defconfig
+mips                        omega2p_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                      katmai_defconfig
+powerpc                   microwatt_defconfig
+powerpc                     skiroot_defconfig
+powerpc                      walnut_defconfig
+riscv                randconfig-r042-20230220
+s390                 randconfig-r044-20230220
+x86_64               randconfig-a011-20230220
+x86_64               randconfig-a012-20230220
+x86_64               randconfig-a013-20230220
+x86_64               randconfig-a014-20230220
+x86_64               randconfig-a015-20230220
+x86_64               randconfig-a016-20230220
+x86_64                        randconfig-k001
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
