@@ -2,67 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D836569F7C4
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 16:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 148E269F81E
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 16:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbjBVP3B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 10:29:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
+        id S232617AbjBVPe3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 10:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbjBVP26 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 10:28:58 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BAA2B29F
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 07:28:55 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id ee7so16836090edb.2
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 07:28:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i38xkA2hqxg0YJ86fYPq5VTBa5PbX+ROzB+VYqTDc/s=;
-        b=jHVwb2oReiUdgvhYdP7MWQy/dOvmUznFYd2DwZZ/uHNgxX4IDuWhqpuT/sKaH7hJOd
-         JthchwV/M4Gqay1AS0j7WxAc/jCtvlyQvCN3Vf0c78xegJewJR41TlsDE13kBN8rP2Pq
-         jVEXpzfEFt5OTvcFQ4S+pfMu9vFzGFboSjqmtQ0WkF5brWrGYM4JR9NKZZ5cnb9cBsFO
-         3Y8euxVLUHWGYyPhJM/vKJoC9N4E3yeOiFKGcvRC0YeCKDtqC0UWNOTDmKMMRm0haByl
-         On+n3gQtvwD2JHQmF8GbEIi2YLci/OoO4Si8rNEZgFvTm/DL1nT0rWznCQKVVjNkGWE4
-         4zqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=i38xkA2hqxg0YJ86fYPq5VTBa5PbX+ROzB+VYqTDc/s=;
-        b=0SL1/bJW5UsJKi0puCHzXterzO3ufDH3u2SleuB615ERk4bhZFSsQTgZEJDMX84pJx
-         PkzEpQjsFGilBHAUjLtcrqTF9njUEU2TUtRz6vCiYgV9QfZh9obFEuo7jnUxg2jWXHDC
-         0TB6ZMc8nVZPLRnAMXcZ6RiduCupJQpiXfFjlZU/rK0q9oc6nW9KabIWwcm/xln9Pm90
-         GGid+o9I6iG5ZqlbPeb1QGVC71byNjXKyF1ErO3REtcE1uGFRQSzVzh/5T3K4DmgsoLm
-         25ny1cC+UFM0xPr0ViikPbYJmSu/4enPnZQTGa7EnpcZVpxrd/8ID5youmLdq8Pydjcq
-         Wzvg==
-X-Gm-Message-State: AO0yUKXzeVyF8/bfBOqXEKXY2i/p1VNDucFnzRPRkLk5k9l8CyUCLRmN
-        h5mrI6JZO16fGupsjuhquRg0Qr69is7sig==
-X-Google-Smtp-Source: AK7set+FRbIABfdvvZJtPCh9ECeVyTpKxvkql87CbM+i9LeXCdCKtiN296P+DOcirFKERJ4GNC60YA==
-X-Received: by 2002:a17:907:7255:b0:880:3129:d84a with SMTP id ds21-20020a170907725500b008803129d84amr19084318ejc.60.1677079733816;
-        Wed, 22 Feb 2023 07:28:53 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id g21-20020a170906199500b008e34bcd7940sm1615773ejd.132.2023.02.22.07.28.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Feb 2023 07:28:53 -0800 (PST)
-Message-ID: <e9f7c86ff50b556e08362ebc0b6ce6729a2db7e7.camel@gmail.com>
-Subject: Re: bpf: Question about odd BPF verifier behaviour
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Matt Bobrowski <mattbobrowski@google.com>, bpf@vger.kernel.org
-Date:   Wed, 22 Feb 2023 17:28:52 +0200
-In-Reply-To: <Y/P1yxAuV6Wj3A0K@google.com>
-References: <Y/P1yxAuV6Wj3A0K@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S232571AbjBVPe0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 10:34:26 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72A63B852;
+        Wed, 22 Feb 2023 07:33:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677080036; x=1708616036;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+FuP9Tnn9stvSO6EVtOlDZOoca9s1FRRhxzWrUFgceE=;
+  b=IdzvlGImJqcZHZRtp3I+Lxme9/LYjMezCjhz0gd4ARPF0C+V/rj/Ovuz
+   Rwqq0LFUAGJyWB1UKdbRiQE15IZyzYQIcVYmYmCzJdyM+hh74Cgk3CVXa
+   Tw7R/WUasVju+CnDl4Th07Gh/1Aa4yg7vp+OmLzlbu4M0lERq/67ihdDa
+   yoH2Bm6r5JrxzPr/7I/wQOOHD9Iq/SGihfQ81QMU0iiTmMkP2s6/pKzPU
+   1zb2vfoVWYbIFCVx/3PNMyB6L3rSxFRz2wbD+uRXB6TfiqvNLmWEdcuP6
+   yR7UWiqnPPMGYChQPAroggbMTv0WIW1MA5uwAVA/THKUTwgZESVOg9jhi
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10629"; a="332954584"
+X-IronPort-AV: E=Sophos;i="5.97,319,1669104000"; 
+   d="scan'208";a="332954584"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 07:33:36 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10629"; a="781478044"
+X-IronPort-AV: E=Sophos;i="5.97,319,1669104000"; 
+   d="scan'208";a="781478044"
+Received: from tzinser-mobl.amr.corp.intel.com (HELO [10.209.49.182]) ([10.209.49.182])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 07:33:35 -0800
+Message-ID: <7189da9a-f634-01ae-194d-a4d14a319a1c@intel.com>
+Date:   Wed, 22 Feb 2023 07:33:34 -0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH] bpf: Fix undeclared function 'barrier_nospec' warning
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <9c476aa64c9588205817833dbaa622f87c0e0081.1677051600.git.viresh.kumar@linaro.org>
+ <CAMuHMdXd3876o+petD51xfnJRBOOg=oqkO_pdsmcr8=Uec2KDg@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <CAMuHMdXd3876o+petD51xfnJRBOOg=oqkO_pdsmcr8=Uec2KDg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,123 +75,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2023-02-20 at 22:35 +0000, Matt Bobrowski wrote:
-> Hello!
->=20
-> Whilst in the midst of testing a v5.19 to v6.1 kernel upgrade, we
-> happened to notice that one of our sleepable LSM based eBPF programs
-> was failing to load on the newer v6.1 kernel. Using the below trivial
-> eBPF program as our reproducer:
->=20
-> #include "vmlinux.h"
-> #include <bpf/bpf_helpers.h>
-> #include <bpf/bpf_tracing.h>
->=20
-> char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
->=20
-> SEC("lsm.s/bprm_committed_creds")
-> int BPF_PROG(dbg, struct linux_binprm *bprm)
-> {
-> 	char buf[64] =3D {0};
-> 	bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
-> 	return 0;
-> }
->=20
-> The verifier emits the following error message when attempting to load
-> the above eBPF program:
->=20
-> -- BEGIN PROG LOAD LOG --
-> reg type unsupported for arg#0 function dbg#5
-> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> ; int BPF_PROG(dbg, struct linux_binprm *bprm)
-> 0: (79) r1 =3D *(u64 *)(r1 +0)
-> func 'bpf_lsm_bprm_committed_creds' arg0 has btf_id 137293 type STRUCT 'l=
-inux_binprm'
-> 1: R1_w=3Dptr_linux_binprm(off=3D0,imm=3D0)
-> 1: (b7) r2 =3D 0                        ; R2_w=3D0
-> ; char buf[64] =3D {0};
-> [...]
-> ; bpf_ima_file_hash(bprm->file, buf, 64);
-> 10: (79) r1 =3D *(u64 *)(r1 +64)        ; R1_w=3Dptr_file(off=3D0,imm=3D0=
-)
-> 11: (bf) r2 =3D r10                     ; R2_w=3Dfp0 R10=3Dfp0
-> ;=20
-> 12: (07) r2 +=3D -64                    ; R2_w=3Dfp-64
-> ; bpf_ima_file_hash(bprm->file, buf, 64);
-> 13: (b7) r3 =3D 64                      ; R3_w=3D64
-> 14: (85) call bpf_ima_file_hash#193
-> cannot access ptr member next with moff 0 in struct llist_node with off 0=
- size 1
-> R1 is of type file but file is expected
-> processed 15 insns (limit 1000000) max_states_per_insn 0 total_states 0 p=
-eak_states 0 mark_read 0
-> -- END PROG LOAD LOG --
->=20
-> What particularly strikes out at me is the following 2 lines returned
-> in the error message:
->=20
-> cannot access ptr member next with moff 0 in struct llist_node with off 0=
- size 1
-> R1 is of type file but file is expected
+On 2/22/23 07:03, Geert Uytterhoeven wrote:
+> On Wed, Feb 22, 2023 at 9:26 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>> Add the missing header for architectures that don't define
+>> the barrier_nospec() macro. The nospec.h header is added after the
+>> inclusion of barrier.h to avoid redefining the macro for architectures
+>> that already define barrier_nospec() in their respective barrier.h
+>> headers.
+>>
+>> Fixes: 74e19ef0ff80 ("uaccess: Add speculation barrier to copy_from_user()")
+>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+>> ---
+>> Linus's master branch fails currently to build for arm64 without this commit.
+> Not just arm64 🙁
+> http://kisskb.ellerman.id.au/kisskb/head/5b7c4cabbb65f5c469464da6c5f614cbd7f730f2
 
-Hi Matt,
+Thanks for the fix, and sorry for the breakage, folks!  Obviously:
 
-I tried your program as a ./test_progs test using v6.1 kernel and
-don't see any error messages:
+Tested-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-VERIFIER LOG:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-func#0 @0
-reg type unsupported for arg#0 function dbg#5
-0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-; int BPF_PROG(dbg, struct linux_binprm *bprm)
-0: (79) r1 =3D *(u64 *)(r1 +0)
-func 'bpf_lsm_bprm_committed_creds' arg0 has btf_id 3061 type STRUCT 'linux=
-_binprm'
-1: R1_w=3Dptr_linux_binprm(off=3D0,imm=3D0)
-1: (b7) r2 =3D 0                        ; R2_w=3D0
-; char buf[64] =3D {0};
-2: (7b) *(u64 *)(r10 -8) =3D r2
-last_idx 2 first_idx 0
-regs=3D4 stack=3D0 before 1: (b7) r2 =3D 0
-3: R2_w=3DP0 R10=3Dfp0 fp-8_w=3D00000000
-3: (7b) *(u64 *)(r10 -16) =3D r2        ; R2_w=3DP0 R10=3Dfp0 fp-16_w=3D000=
-00000
-4: (7b) *(u64 *)(r10 -24) =3D r2        ; R2_w=3DP0 R10=3Dfp0 fp-24_w=3D000=
-00000
-5: (7b) *(u64 *)(r10 -32) =3D r2        ; R2_w=3DP0 R10=3Dfp0 fp-32_w=3D000=
-00000
-6: (7b) *(u64 *)(r10 -40) =3D r2        ; R2_w=3DP0 R10=3Dfp0 fp-40_w=3D000=
-00000
-7: (7b) *(u64 *)(r10 -48) =3D r2        ; R2_w=3DP0 R10=3Dfp0 fp-48_w=3D000=
-00000
-8: (7b) *(u64 *)(r10 -56) =3D r2        ; R2_w=3DP0 R10=3Dfp0 fp-56_w=3D000=
-00000
-9: (7b) *(u64 *)(r10 -64) =3D r2        ; R2_w=3DP0 R10=3Dfp0 fp-64_w=3D000=
-00000
-; bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
-10: (79) r1 =3D *(u64 *)(r1 +64)        ; R1_w=3Dptr_file(off=3D0,imm=3D0)
-11: (bf) r2 =3D r10                     ; R2_w=3Dfp0 R10=3Dfp0
-;=20
-12: (07) r2 +=3D -64                    ; R2_w=3Dfp-64
-; bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
-13: (b4) w3 =3D 64                      ; R3_w=3D64
-14: (85) call bpf_ima_file_hash#193
-last_idx 14 first_idx 0
-regs=3D8 stack=3D0 before 13: (b4) w3 =3D 64
-15: R0_w=3Dscalar() fp-8_w=3Dmmmmmmmm fp-16_w=3Dmmmmmmmm fp-24_w=3Dmmmmmmmm=
- fp-32_w=3Dmmmmmmmm fp-40_w=3Dmmmmmmmm fp-48_w=3Dmmmmmmmm fp-56_w=3Dmmmmmmm=
-m fp-64_w=3Dmmmmmmmm
-; int BPF_PROG(dbg, struct linux_binprm *bprm)
-15: (b4) w0 =3D 0                       ; R0_w=3D0
-16: (95) exit
+Now time to go make sure I have bpf turned on in all my cross builds.
 
-I use the following revision: 830b3c68c1fb "Linux 6.1".
-(also works with current bpf-next master).
 
-Could you please provide some details on how you compile/load the program?
-
-Thanks,
-Eduard
-
-[...]
