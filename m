@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D70969FFA5
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 00:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED40669FFAD
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 00:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbjBVXiu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 18:38:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
+        id S230231AbjBVXlK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 18:41:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232215AbjBVXit (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 18:38:49 -0500
+        with ESMTP id S229795AbjBVXlK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 18:41:10 -0500
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C702056E
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 15:38:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C7A1CF56
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 15:41:06 -0800 (PST)
 Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31MLLDMJ029969;
-        Wed, 22 Feb 2023 22:37:31 GMT
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31MLLCwb029922;
+        Wed, 22 Feb 2023 22:37:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=brW+pkAsZGo0TckLECCnXgBL1vTGpgLzIIaNVCg5uYo=;
- b=sIjgNTady9RdvcJ7h4hFCNRdPPBq087tD4QYVTEtuAdXC6DsxNsbGFWM9vml/4LV9Tl6
- fKSko2FnIkX1TifPxY/Yl009YvVzhg2FX78YBc8mZYkary8if3DwA9Gb3T7glO/QK6dB
- 15SrwpOcD0vqOsxMvwv+c9uMvd0z9i1YD3k2ln3OKPek0wGn9d8yeENkgI5DiNhQ+onE
- PZf/q0hZTqdIzE5f2CDD2zMB1eEkcxLK37jSqYP9KiliEXEqAU1BOXnG1x6ylP9uXD65
- 2RCa8gkmaIoahN3io+kCXCz7xJf4NnsO7EXwVY8hr2imz990mmN/Zf9OVYC6rlafGxB8 Yg== 
+ bh=VJ+WXVioIO4x4h6dcD1hMwkpfonwEnakdRvqYDgD6l0=;
+ b=nXveZAIkI83p1StctLpMskHBJe7vMsYWFqs5W4Y6mKJLpG8DKh0syc7C05zSyx6f3Y0+
+ PXCqG+7p+iZFXfEs5X3Q7i2yaAb8+mEYEilbqllEh44oqxZu8OJGY2Z+N0i7KJNvE6qe
+ qedKrQbcGijkQ2JagOx/N4acAGDivUHmGz2LMyazlrek+YN2Jy35neblSipiUwYILMdg
+ EBGMOGqrFyQevVET9AtvkU5qoBJOISc8FiTp0hUOfiyTuOvUuNDfK5ROOIMLKsWx1DNJ
+ zRwIfqTAoUZXWjcal4UfOsSXXVbNIn42GjQyyjZSqfuuUqbEK/FzvoX+Ypimdd0kcPY1 OQ== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nwtvysnf3-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nwtvysng0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Feb 2023 22:37:31 +0000
+        Wed, 22 Feb 2023 22:37:33 +0000
 Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31MMRcKW011997;
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31MMbCL0012833;
+        Wed, 22 Feb 2023 22:37:33 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nwtvysnf7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Feb 2023 22:37:33 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31MF6BVN019871;
         Wed, 22 Feb 2023 22:37:30 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nwtvysne4-1
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3ntnxf5wff-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Wed, 22 Feb 2023 22:37:30 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31MA7ST0008591;
-        Wed, 22 Feb 2023 22:37:28 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma06fra.de.ibm.com (PPS) with ESMTPS id 3ntnxf4g5v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Feb 2023 22:37:28 +0000
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31MMbOP448628026
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31MMbRKO23134500
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Feb 2023 22:37:24 GMT
+        Wed, 22 Feb 2023 22:37:27 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 758D020043;
-        Wed, 22 Feb 2023 22:37:24 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 0CD6F2005A;
+        Wed, 22 Feb 2023 22:37:27 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B185E2004B;
-        Wed, 22 Feb 2023 22:37:23 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 4A82320040;
+        Wed, 22 Feb 2023 22:37:26 +0000 (GMT)
 Received: from heavy.boeblingen.de.ibm.com (unknown [9.171.50.17])
         by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 22 Feb 2023 22:37:23 +0000 (GMT)
+        Wed, 22 Feb 2023 22:37:26 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,17 +68,17 @@ Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Stanislav Fomichev <sdf@google.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>,
         "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH bpf-next v3 04/12] bpf: sparc64: Emit fixed-length instructions for BPF_PSEUDO_FUNC
-Date:   Wed, 22 Feb 2023 23:37:06 +0100
-Message-Id: <20230222223714.80671-5-iii@linux.ibm.com>
+Subject: [PATCH bpf-next v3 06/12] bpf: sparc64: Use 32-bit tail call index
+Date:   Wed, 22 Feb 2023 23:37:08 +0100
+Message-Id: <20230222223714.80671-7-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230222223714.80671-1-iii@linux.ibm.com>
 References: <20230222223714.80671-1-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 3poLbGLbcq0ryIbk4NB76tyTk_msG5Fx
-X-Proofpoint-GUID: TTegQ7HCz9xwOOiqQaNmkak9eIXNKj6p
+X-Proofpoint-ORIG-GUID: qkGnz_qE7mKphg_W0VUY7JyFs8g4UqS0
+X-Proofpoint-GUID: QD4tscLp8nPS6CwhMwizbSZXtp7mCj8H
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
  definitions=2023-02-22_10,2023-02-22_02,2023-02-09_01
@@ -96,42 +96,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is the same as commit b54b6003612a ("riscv, bpf: Emit fixed-length
-instructions for BPF_PSEUDO_FUNC"), but for sparc64. The code sequence
-is borrowed from sparc64-linux-gnu-gcc -Os.
+The interpreter does the following:
+
+  u32 index = BPF_R3;
+
+and JITs should do the same.
 
 Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/sparc/net/bpf_jit_comp_64.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ arch/sparc/net/bpf_jit_comp_64.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
-index fa0759bfe498..59d2d9953aa7 100644
+index 0a3c18e39199..6c482685dc6c 100644
 --- a/arch/sparc/net/bpf_jit_comp_64.c
 +++ b/arch/sparc/net/bpf_jit_comp_64.c
-@@ -1243,10 +1243,19 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
- 	case BPF_LD | BPF_IMM | BPF_DW:
- 	{
- 		const struct bpf_insn insn1 = insn[1];
-+		const u8 tmp = bpf2sparc[TMP_REG_1];
- 		u64 imm64;
+@@ -856,6 +856,7 @@ static void emit_tail_call(struct jit_ctx *ctx)
  
--		imm64 = (u64)insn1.imm << 32 | (u32)imm;
--		emit_loadimm64(imm64, dst, ctx);
-+		if (bpf_pseudo_func(insn)) {
-+			/* fixed-length insns for extra jit pass */
-+			emit_set_const(dst, insn1.imm, ctx);
-+			emit_set_const(tmp, imm, ctx);
-+			emit_alu_K(SLLX, dst, 32, ctx);
-+			emit_alu3(ADD, dst, tmp, dst, ctx);
-+		} else {
-+			imm64 = (u64)insn1.imm << 32 | (u32)imm;
-+			emit_loadimm64(imm64, dst, ctx);
-+		}
+ 	ctx->saw_tail_call = true;
  
- 		return 1;
- 	}
++	emit_alu_K(SRL, bpf_index, 0, ctx);
+ 	off = offsetof(struct bpf_array, map.max_entries);
+ 	emit(LD32 | IMMED | RS1(bpf_array) | S13(off) | RD(tmp), ctx);
+ 	emit_cmp(bpf_index, tmp, ctx);
 -- 
 2.39.1
 
