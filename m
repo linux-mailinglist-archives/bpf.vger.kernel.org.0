@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FFF69F8B3
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 17:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B80669F8B6
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 17:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjBVQMh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 11:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
+        id S232103AbjBVQMi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 11:12:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232045AbjBVQMc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 11:12:32 -0500
+        with ESMTP id S232127AbjBVQMd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 11:12:33 -0500
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE103028D;
-        Wed, 22 Feb 2023 08:12:31 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id A37B45C0094;
-        Wed, 22 Feb 2023 11:12:30 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FB33D092;
+        Wed, 22 Feb 2023 08:12:32 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6123F5C00CD;
+        Wed, 22 Feb 2023 11:12:32 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 22 Feb 2023 11:12:30 -0500
+  by compute2.internal (MEProxy); Wed, 22 Feb 2023 11:12:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1677082350; x=1677168750; bh=6v
-        /zPwyX3MdA4FxDLq+vxFIi1peSuQrw2Jm0T+UWKJQ=; b=cZqOCSLoK5QsQv3siS
-        9J0QNdr0jy+UwcTnw7+2jp8lucxlqNy0N2nNy95AqBiYZfgQssnmCYANNCJHrhc/
-        10OCaQS9bWP9ULTcNYWjNz+fuFi1RDWRCiYkMZWWJb02Oy5FI5YJoVRb2EGijeeE
-        U+uiSnjgjpISkppftIo9LmQ5N4cmh0MuWC7l9/+72bI0bNbM4XTT0j2CjWzUjyWF
-        VJrSjk6C0bxyGkfsmeMoJhLQHA/NiCWzoe7gt8DrBV5WfmRy5QJrerF1ZFk/jXco
-        z0nC6jr4QrcESrcvF69onZVVCAV4WnqitSVshe24IScM1Raw1bnkFf2TWpSFT8YQ
-        9S5g==
+        :subject:subject:to:to; s=fm2; t=1677082352; x=1677168752; bh=6P
+        LncvDNe/nJ55qRYE4c+4zrSl5PSlFbdt4C/GIEcco=; b=aH62uEIk63UXx1CdBP
+        MrPiynszOEQQKeSVOgh5rzwrdmLksq7nprALqTARhAJH/9s8y/k4b0BmWrRclpCC
+        NSnuqUDJNkKazc5qxkxCbKgymEjhkO0d2oL7kaN9RfwVvh8I1ml00OS6g+6PFvJp
+        GDU+fLCa2xe0fJfsBSrLFTJg3fjEDJApuf6DStjP0ejIBduwKKC0c7JMgVuFC2xP
+        TRqUHBXfH0eDGu6IfYzSvOzpjnLduVEfl7EGf9NdjAQcUssJGhOkOuOjtF2jxnMr
+        lYXbJ94TSbPZ2DQUwItMBNiNyl7wNwplAEPcP2xU1U8V4RoLAHo5yeC6gKP7YuCL
+        JvHQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1677082350; x=1677168750; bh=6v/zPwyX3MdA4
-        FxDLq+vxFIi1peSuQrw2Jm0T+UWKJQ=; b=aZTMYZ7wt6iD2jakeE7Lvyy+KfX5g
-        vd3kOBE9fHHw905J4+++3XoNAqIaj2hWpJXEZY585ysSAyYgObUvFoyP/0oFHP4w
-        Eb9LS3nuyWCskaincwyjWB6qHuuzdG13ZVhcWXbT72UsCt+v0xR9CckmV5NgS3/g
-        fJGcuJD3zk6NaQpzhdI3Y7fTVFZtUQ9jBH/meaDAxuUPsHmFCX0LEuT4P3lco44B
-        xHSkHvPW0IsYhoNILhlt87zaw9m0FDlgxOkeeEfzMQ2OCJrhpCi4sZ848N9lTawQ
-        gdFogq5GpOnHKeRSu6GO+2N0pgw2mbwX/JunEKFyUvdTd8BU3nHJYa2ug==
-X-ME-Sender: <xms:7j72Y3PVnlAMRed2dzaBuWCutHC9IMgJl5HsCnQtPTbT_0y7DvIO0w>
-    <xme:7j72Yx9QYM_2AQe1YoX4JWG2v8YXrpiRxlYaRRwoJo_jj_PveCcBJAtEHOMyIC8J8
-    LW63snxSahfVf8mzgs>
-X-ME-Received: <xmr:7j72Y2RP8ok809RKG-L1HusCmXFkfEOMYGe5LITM_rhSkd6xP_3BtomW3qUM>
+        :x-sasl-enc; s=fm1; t=1677082352; x=1677168752; bh=6PLncvDNe/nJ5
+        5qRYE4c+4zrSl5PSlFbdt4C/GIEcco=; b=ldnB4JNPTsZqfVuigS5UjTIMcrR4l
+        GO5rL+RdG2I/uelk/zPpR+JWaVISGYsq3yzmFOZw5wDYNkMhX8Q8FX1UuDE7Pz+b
+        iYd0WsVeAp19f6UDfv22mS/UL+hVw9Od+OLECQTFKW3z1YyeM8livcxh+ILvl/B8
+        Y8hbJphQjpi4I5KcIIirX9yXv185tYjOsXZ0L8AzZmgbPIBQVsiX4aE9zFqZp+aD
+        sF4KZweYmyZ41RaayPcyNpxieX7mTWCHuKgQcL+n+qVdzp8qw7zH3QiOaY76aENy
+        kZdeOZoGG/EewPeqKEK1PENt1KqgPxVGg1OTz1ms+rkJ6hk99Ir9fxozw==
+X-ME-Sender: <xms:8D72Y2VSDVvtknQRC1WHidBWahODN70M9nphm1HSPjBsyYkxRMh4LQ>
+    <xme:8D72YynvxI-78bvSX5hE8_sBLEo-f88Png_rvAInX7KpVESVG-v6ztJKf7_CXjK6S
+    SlUiSWzHMLQA7_BqBo>
+X-ME-Received: <xmr:8D72Y6YC5SQS4Vcx4rXASwvzC19RvrxHL4wldgi3fnivNcK8_nPHMUoO2oPl>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudejledgkeegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
@@ -54,21 +54,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudejledgkeegucetufdoteggod
     dvgeekgfdvtdettdelieeihfegtedugeekhfdvhfejfedtnecuvehluhhsthgvrhfuihii
     vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
     hgohgrthdrtghomh
-X-ME-Proxy: <xmx:7j72Y7sRk5zWAum9H08BKEptwMyryJNVKMM-AvDgKJoQLTP2Og0uqg>
-    <xmx:7j72Y_dSNIuv0y50Ujd9Q88U0exCPktd6KrZAqx3mMuVsqZdmH0olQ>
-    <xmx:7j72Y33Za3a7vwJPWAqJIhFhf1IphOk3NAhVrzjYm_UmF5VLjbeGxg>
-    <xmx:7j72YwHGDTm0dRBaKRSaAHjZqbkMk0_O0rGVYqjCfUdWY3kw18k9CQ>
+X-ME-Proxy: <xmx:8D72Y9Wwzh9bdiFqf9LUNIY9Z4ZmhUQywnnN8wsUBAB_bnrxEhNvKA>
+    <xmx:8D72YwltgDSI5GsJuMbUku6i-JBwUdAiEhj8hRBu2_5o4kCgaOta5Q>
+    <xmx:8D72Yycf14-9d4ZRqke7DxC_P3tBmd4ZLV24wDN7rEEezjZAEKAHDw>
+    <xmx:8D72Y_tZbEatKZzO6f8o2gGJShfu9Fic-XRcTVos0-3Op_vONYcV7Q>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 22 Feb 2023 11:12:28 -0500 (EST)
+ 22 Feb 2023 11:12:30 -0500 (EST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
         johan.almbladh@anyfinetworks.com, paulburton@kernel.org,
         bpf@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 1/2] MIPS: ebpf jit: Implement DADDI workarounds
-Date:   Wed, 22 Feb 2023 16:12:21 +0000
-Message-Id: <20230222161222.11879-2-jiaxun.yang@flygoat.com>
+Subject: [PATCH 2/2] MIPS: ebpf jit: Implement R4000 workarounds
+Date:   Wed, 22 Feb 2023 16:12:22 +0000
+Message-Id: <20230222161222.11879-3-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20230222161222.11879-1-jiaxun.yang@flygoat.com>
 References: <20230222161222.11879-1-jiaxun.yang@flygoat.com>
@@ -83,51 +83,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For DADDI errata we just workaround by disable immediate operation
-for BPF_ADD / BPF_SUB to avoid generation of DADDIU.
+For R4000 erratas around multiplication and division instructions,
+as our use of those instructions are always followed by mflo/mfhi
+instructions, the only issue we need care is
 
-All other use cases in JIT won't cause overflow thus they are all safe.
+"MIPS R4000PC/SC Errata, Processor Revision 2.2 and 3.0" Errata 28:
+"A double-word or a variable shift may give an incorrect result if
+executed while an integer multiplication is in progress."
+
+We just emit a mfhi $0 to ensure the operation is completed after
+every multiplication instruction accorading to workaround suggestion
+in the document.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/Kconfig            | 1 -
- arch/mips/net/bpf_jit_comp.c | 8 ++++++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ arch/mips/Kconfig              | 4 +---
+ arch/mips/net/bpf_jit_comp32.c | 4 ++++
+ arch/mips/net/bpf_jit_comp64.c | 3 +++
+ 3 files changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 37072e15b263..df0910e3895c 100644
+index df0910e3895c..5ea07c833c5b 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -64,7 +64,6 @@ config MIPS
+@@ -63,9 +63,7 @@ config MIPS
+ 	select HAVE_DEBUG_STACKOVERFLOW
  	select HAVE_DMA_CONTIGUOUS
  	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
--				!CPU_DADDI_WORKAROUNDS && \
- 				!CPU_R4000_WORKAROUNDS && \
- 				!CPU_R4400_WORKAROUNDS
+-	select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
+-				!CPU_R4000_WORKAROUNDS && \
+-				!CPU_R4400_WORKAROUNDS
++	select HAVE_EBPF_JIT if !CPU_MICROMIPS
  	select HAVE_EXIT_THREAD
-diff --git a/arch/mips/net/bpf_jit_comp.c b/arch/mips/net/bpf_jit_comp.c
-index b17130d510d4..7110a6687f7a 100644
---- a/arch/mips/net/bpf_jit_comp.c
-+++ b/arch/mips/net/bpf_jit_comp.c
-@@ -218,9 +218,17 @@ bool valid_alu_i(u8 op, s32 imm)
- 		/* All legal eBPF values are valid */
- 		return true;
- 	case BPF_ADD:
-+#ifdef CONFIG_64BIT
-+		if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
-+			return false;
-+#endif
- 		/* imm must be 16 bits */
- 		return imm >= -0x8000 && imm <= 0x7fff;
- 	case BPF_SUB:
-+#ifdef CONFIG_64BIT
-+		if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
-+			return false;
-+#endif
- 		/* -imm must be 16 bits */
- 		return imm >= -0x7fff && imm <= 0x8000;
- 	case BPF_AND:
+ 	select HAVE_FAST_GUP
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
+index ace5db3fbd17..fee334544d2f 100644
+--- a/arch/mips/net/bpf_jit_comp32.c
++++ b/arch/mips/net/bpf_jit_comp32.c
+@@ -446,6 +446,9 @@ static void emit_mul_i64(struct jit_context *ctx, const u8 dst[], s32 imm)
+ 		} else {
+ 			emit(ctx, multu, hi(dst), src);
+ 			emit(ctx, mflo, hi(dst));
++			/* Ensure multiplication is completed */
++			if (IS_ENABLED(CONFIG_CPU_R4000_WORKAROUNDS))
++				emit(ctx, mfhi, MIPS_R_ZERO);
+ 		}
+ 
+ 		/* hi(dst) = hi(dst) - lo(dst) */
+@@ -504,6 +507,7 @@ static void emit_mul_r64(struct jit_context *ctx,
+ 	} else {
+ 		emit(ctx, multu, lo(dst), lo(src));
+ 		emit(ctx, mflo, lo(dst));
++		/* No need for workaround because we have this mfhi */
+ 		emit(ctx, mfhi, tmp);
+ 	}
+ 
+diff --git a/arch/mips/net/bpf_jit_comp64.c b/arch/mips/net/bpf_jit_comp64.c
+index 0e7c1bdcf914..5f5a93f997bc 100644
+--- a/arch/mips/net/bpf_jit_comp64.c
++++ b/arch/mips/net/bpf_jit_comp64.c
+@@ -228,6 +228,9 @@ static void emit_alu_r64(struct jit_context *ctx, u8 dst, u8 src, u8 op)
+ 		} else {
+ 			emit(ctx, dmultu, dst, src);
+ 			emit(ctx, mflo, dst);
++			/* Ensure multiplication is completed */
++			if (IS_ENABLED(CONFIG_CPU_R4000_WORKAROUNDS))
++				emit(ctx, mfhi, MIPS_R_ZERO);
+ 		}
+ 		break;
+ 	/* dst = dst / src */
 -- 
 2.37.1 (Apple Git-137.1)
 
