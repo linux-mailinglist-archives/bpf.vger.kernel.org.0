@@ -2,118 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C04069F27C
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 11:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A3169F315
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 12:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbjBVKIH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 05:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
+        id S230363AbjBVLBR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 06:01:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbjBVKIG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 05:08:06 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B7A5F525B;
-        Wed, 22 Feb 2023 02:08:02 -0800 (PST)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8BxttiB6fVjT4sDAA--.6824S3;
-        Wed, 22 Feb 2023 18:08:01 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxtOV+6fVjeas4AA--.4362S3;
-        Wed, 22 Feb 2023 18:07:58 +0800 (CST)
-Subject: Re: [PATCH] docs/bpf: Fix invalid link of "Documentation/bpf/btf.rst"
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <1677035401-3628-1-git-send-email-yangtiezhu@loongson.cn>
- <Y/XYM4D1SW/zyhNJ@debian.me>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <566b4d43-f952-8038-ec2f-988be014274f@loongson.cn>
-Date:   Wed, 22 Feb 2023 18:06:55 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        with ESMTP id S229907AbjBVLBQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 06:01:16 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EEC38674
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 03:01:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677063675; x=1708599675;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rdcpkSkVjM+SqRRdobfsImTfB/ySxzYGHClmkYUhqsM=;
+  b=eLgb3pBJwxGsuPbjkOrISfhJ12IGuCmOyUVScbY72mLruPlnAo2WOb2c
+   GCnX7IrggqrT997V2OLP57jHfqWlZzRn5Qgf1f3gYEXkv5lhAkMELRFaE
+   v7345WcgL4tvLpr6zX4Q8FluWFShImcuF/F1/8YeDTRljHz+/HugRxr8f
+   Haq5kgWBlme2NzkAYTqgu8ygElxyGk9sFKfbDwoeS5OJZvjsn6ptRvyhX
+   Ijwz6NEQYUr3nOM3oQNNrzPvhYDBn4BPE76C7st0tlH/iCPkhV0tHqBby
+   3hvsxwi6mDbhFuqkn1xHuWAib/jzXfelA0SZ2RfuUO4X8VKXR5q3JutnV
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="330620769"
+X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
+   d="scan'208";a="330620769"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 03:01:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="795864675"
+X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
+   d="scan'208";a="795864675"
+Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 22 Feb 2023 03:01:10 -0800
+Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pUms1-0000HV-2a;
+        Wed, 22 Feb 2023 11:01:09 +0000
+Date:   Wed, 22 Feb 2023 19:01:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, horenc@vt.edu, xiyou.wangcong@gmail.com
+Cc:     oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH bpf-next v2 17/18] bpf: offload map memory usage
+Message-ID: <202302221852.mOd5T9T6-lkp@intel.com>
+References: <20230222014553.47744-18-laoar.shao@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <Y/XYM4D1SW/zyhNJ@debian.me>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8BxtOV+6fVjeas4AA--.4362S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjvJXoW7KFW7Ww15tF43Gr1fWw45Jrb_yoW8Aw13pa
-        18JF4a9rsrKryrW3ykGa1UZF4SvayrX3W7C34DJw18Zrn8ZF95Zr1S9r45WanxtFykCFW7
-        A3ZakF909r17Z37anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        bIxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc02F40EFcxC0V
-        AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Cr0_Gr1U
-        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487Mx
-        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
-        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwI
-        xGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8
-        JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcV
-        C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1A9N7UUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230222014553.47744-18-laoar.shao@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Yafang,
+
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/bpf-add-new-map-ops-map_mem_usage/20230222-094856
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230222014553.47744-18-laoar.shao%40gmail.com
+patch subject: [PATCH bpf-next v2 17/18] bpf: offload map memory usage
+config: um-x86_64_defconfig (https://download.01.org/0day-ci/archive/20230222/202302221852.mOd5T9T6-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/e5742e839659b59ea26bc7a5804d04e577604aab
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Yafang-Shao/bpf-add-new-map-ops-map_mem_usage/20230222-094856
+        git checkout e5742e839659b59ea26bc7a5804d04e577604aab
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=um SUBARCH=x86_64 olddefconfig
+        make W=1 O=build_dir ARCH=um SUBARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202302221852.mOd5T9T6-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from kernel/fork.c:98:
+>> include/linux/bpf.h:2644:1: error: expected identifier or '(' before '{' token
+    2644 | {
+         | ^
+   kernel/fork.c:162:13: warning: no previous prototype for 'arch_release_task_struct' [-Wmissing-prototypes]
+     162 | void __weak arch_release_task_struct(struct task_struct *tsk)
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/fork.c:862:20: warning: no previous prototype for 'arch_task_cache_init' [-Wmissing-prototypes]
+     862 | void __init __weak arch_task_cache_init(void) { }
+         |                    ^~~~~~~~~~~~~~~~~~~~
+   kernel/fork.c:957:12: warning: no previous prototype for 'arch_dup_task_struct' [-Wmissing-prototypes]
+     957 | int __weak arch_dup_task_struct(struct task_struct *dst,
+         |            ^~~~~~~~~~~~~~~~~~~~
+   In file included from kernel/fork.c:98:
+   include/linux/bpf.h:2643:19: warning: 'bpf_map_offload_map_mem_usage' declared 'static' but never defined [-Wunused-function]
+    2643 | static inline u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map);
+         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from include/linux/filter.h:9,
+                    from kernel/sysctl.c:35:
+>> include/linux/bpf.h:2644:1: error: expected identifier or '(' before '{' token
+    2644 | {
+         | ^
+   In file included from include/linux/filter.h:9,
+                    from kernel/sysctl.c:35:
+   include/linux/bpf.h:2643:19: warning: 'bpf_map_offload_map_mem_usage' declared 'static' but never defined [-Wunused-function]
+    2643 | static inline u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map);
+         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from include/linux/filter.h:9,
+                    from kernel/kallsyms.c:25:
+>> include/linux/bpf.h:2644:1: error: expected identifier or '(' before '{' token
+    2644 | {
+         | ^
+   kernel/kallsyms.c:663:12: warning: no previous prototype for 'arch_get_kallsym' [-Wmissing-prototypes]
+     663 | int __weak arch_get_kallsym(unsigned int symnum, unsigned long *value,
+         |            ^~~~~~~~~~~~~~~~
+   In file included from include/linux/filter.h:9,
+                    from kernel/kallsyms.c:25:
+   include/linux/bpf.h:2643:19: warning: 'bpf_map_offload_map_mem_usage' declared 'static' but never defined [-Wunused-function]
+    2643 | static inline u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map);
+         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from include/linux/bpf-cgroup.h:5,
+                    from net/socket.c:55:
+>> include/linux/bpf.h:2644:1: error: expected identifier or '(' before '{' token
+    2644 | {
+         | ^
+   net/socket.c: In function '__sys_getsockopt':
+   net/socket.c:2300:13: warning: variable 'max_optlen' set but not used [-Wunused-but-set-variable]
+    2300 |         int max_optlen;
+         |             ^~~~~~~~~~
+   In file included from include/linux/bpf-cgroup.h:5,
+                    from net/socket.c:55:
+   net/socket.c: At top level:
+   include/linux/bpf.h:2643:19: warning: 'bpf_map_offload_map_mem_usage' declared 'static' but never defined [-Wunused-function]
+    2643 | static inline u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map);
+         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from include/linux/filter.h:9,
+                    from kernel/bpf/core.c:21:
+>> include/linux/bpf.h:2644:1: error: expected identifier or '(' before '{' token
+    2644 | {
+         | ^
+   kernel/bpf/core.c:1631:12: warning: no previous prototype for 'bpf_probe_read_kernel' [-Wmissing-prototypes]
+    1631 | u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
+         |            ^~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/core.c:2070:6: warning: no previous prototype for 'bpf_patch_call_args' [-Wmissing-prototypes]
+    2070 | void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
+         |      ^~~~~~~~~~~~~~~~~~~
+   In file included from include/linux/filter.h:9,
+                    from kernel/bpf/core.c:21:
+   include/linux/bpf.h:2643:19: warning: 'bpf_map_offload_map_mem_usage' declared 'static' but never defined [-Wunused-function]
+    2643 | static inline u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map);
+         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from include/linux/filter.h:9,
+                    from include/net/sock_reuseport.h:5,
+                    from include/net/tcp.h:35,
+                    from net/ipv4/route.c:95:
+>> include/linux/bpf.h:2644:1: error: expected identifier or '(' before '{' token
+    2644 | {
+         | ^
+   net/ipv4/route.c: In function 'ip_rt_send_redirect':
+   net/ipv4/route.c:880:13: warning: variable 'log_martians' set but not used [-Wunused-but-set-variable]
+     880 |         int log_martians;
+         |             ^~~~~~~~~~~~
+   In file included from include/linux/filter.h:9,
+                    from include/net/sock_reuseport.h:5,
+                    from include/net/tcp.h:35,
+                    from net/ipv4/route.c:95:
+   net/ipv4/route.c: At top level:
+   include/linux/bpf.h:2643:19: warning: 'bpf_map_offload_map_mem_usage' declared 'static' but never defined [-Wunused-function]
+    2643 | static inline u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map);
+         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-On 02/22/2023 04:54 PM, Bagas Sanjaya wrote:
-> On Wed, Feb 22, 2023 at 11:10:01AM +0800, Tiezhu Yang wrote:
->> "Documentation/bpf/btf.rst" is linked to the following invalid web page:
->>
->> https://www.kernel.org/doc/html/latest/bpf/btf.rst
->>
->> The correct link should be:
->>
->> https://www.kernel.org/doc/html/latest/bpf/btf.html
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->
-> Hi,
->
-> I have already submitted a different fix to the same problem at [1] (v2
-> at [2]). Please take a look at there.
+vim +2644 include/linux/bpf.h
 
-Oh, I am sorry, I did not notice these patches, I found this issue when
-I read the bpf doc.
+  2642	
+  2643	static inline u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map);
+> 2644	{
+  2645		return 0;
+  2646	}
+  2647	
 
->
-> [1]: https://lore.kernel.org/linux-doc/20230219030956.22662-1-bagasdotme@gmail.com/
-> [2]: https://lore.kernel.org/linux-doc/20230222083530.26136-1-bagasdotme@gmail.com/
->
->> diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
->> index 03d4993..f54c328 100644
->> --- a/Documentation/bpf/bpf_devel_QA.rst
->> +++ b/Documentation/bpf/bpf_devel_QA.rst
->> @@ -690,6 +690,7 @@ when:
->>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/
->>  .. _Documentation/dev-tools/kselftest.rst:
->>     https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
->> -.. _Documentation/bpf/btf.rst: btf.rst
->> +.. _Documentation/bpf/btf.rst:
->> +   https://www.kernel.org/doc/html/latest/bpf/btf.html
->>
->>  Happy BPF hacking!
->
-> For consistency with my fix above, can you please convert these in-tree links
-> from using external link to simply write the doc path instead?
->
-> Thanks.
->
-
-Please ignore my patch, you can go on to modify your changes.
-Please let me know if there is anything I need to do.
-
-Thanks,
-Tiezhu
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
