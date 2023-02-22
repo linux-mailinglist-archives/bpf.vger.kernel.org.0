@@ -2,67 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA79E69FD04
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 21:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFAB69FD2F
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 21:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbjBVUce (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 15:32:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
+        id S232725AbjBVUs0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 15:48:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232470AbjBVUcd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 15:32:33 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCE937541;
-        Wed, 22 Feb 2023 12:32:30 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id u14so6358634ple.7;
-        Wed, 22 Feb 2023 12:32:30 -0800 (PST)
+        with ESMTP id S232697AbjBVUsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 15:48:25 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A709CDC1
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 12:48:24 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id o12so36041510edb.9
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 12:48:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4SoNs2AKnQHfT4o3sdpr0qfSg+D9akMHdmyO9trz+Aw=;
-        b=qAGSz3cV0cyYhf6nHtki8Gm7b+iF27+pcWqifxWYW/g/aYORuXkGSGO6Nnc6+gM8Li
-         d909MOL+rPrEhg29f00/Vq/bB+stvMZyKjpgawhWlteCs4VkItFS4THNgny5F1pBqhwR
-         Wv8A9sbrXS6LjyfBZrU5jSGzzmilyhtKeDAv+DeoT/UN5u9UHyOHmrspFDVSMyylqmt5
-         yXJGj/u4Z9bw2uapOd8jmvWnpGnr3jzhS3+SATKpURztK1cbBFVJLx7NRw+J3LegzKCi
-         Jbolq/TmOjiQDHJZZWK7WJdxwRJzTxDUvw1koZJibGzWuQJ/ZCZPKF5X9sfiUz1x2UXP
-         yxJw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=x9vGqY04NE5YfY1Sw9ynv48O9DSd0JhmLYBt2mXX16w=;
+        b=G//UFa21+wHn//8ubd4EuVQ/8UDF+IhES4XVCeot6u4YsIjAwMhnFMAJKLGHWzDDWH
+         W3Sx9Fg10fPXoaDp/rTNMuol0bNUMES5la4oTdkcckM27uniHcJZQG01UvFur6P5srPD
+         evairGHstsMW01JfrDhVGsBJlMsBmA0VwluEK+6vpGnoQPDv8isT4gNTqkq/3veI+QAg
+         dBtKOo2aP8TZwIRGRmqe/8VdARjP+XHs6h5lAvj9+RMfvtI+O34oTepuoBgtamMq1svC
+         lqyTsu2YmqiAaYIIn1FNP4J54ToeLlEe6Up4/wdsiNerkVnJx61GD9YHWTbNSJaSBDkc
+         TBmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4SoNs2AKnQHfT4o3sdpr0qfSg+D9akMHdmyO9trz+Aw=;
-        b=IKlK3ZkcHVz2S3mniAiPk+o9r5tCagqBHsj/2yTSz6x8EwauJ6NPqzD8erzh7AYrIA
-         Kn1hu8zoCXmVHOEQMFcYCOF2gSz9Ry5E/L/htmIFgu2u/7S7FFd5T0oIFYb08jJN7Crq
-         iHsu5w1xmzAVcjVD3L7UROqXZUe+bAe91Q6pP1MjX5GLsKNucGSjl3eOrlzc9TmI2dK1
-         PCKjLLMOziHyPgS8dV8rAltl7oBZCs+E2jk4Oq3tYtsk5Jh1y2XROYeYHYZHxJ1vdYIy
-         1XCIURdfTXUhSxgxnwH7o7ltayc5GdSXzCpfn6PI1WN3rE4sZuFxTyP5zvCQYXX6vM3H
-         Itbw==
-X-Gm-Message-State: AO0yUKULlviV19ccSH8Ub0zErRQtYmVrsKwRAXL22JzVoFMxVfm2IZqD
-        /E3Dw8yfGWscM+TydAu9MEE=
-X-Google-Smtp-Source: AK7set/A+88kuxnSMd/VCcTL283WiNenLQTKBQLDG+GX39Va4ZYG2QFI+qWtMf5GXu4znAbsX91Ekg==
-X-Received: by 2002:a05:6a21:329c:b0:c7:7248:4e42 with SMTP id yt28-20020a056a21329c00b000c772484e42mr12686181pzb.18.1677097949342;
-        Wed, 22 Feb 2023 12:32:29 -0800 (PST)
-Received: from MacBook-Pro-6.local ([2620:10d:c090:400::5:9cb3])
-        by smtp.gmail.com with ESMTPSA id m18-20020a6562d2000000b005026c125d47sm5802061pgv.21.2023.02.22.12.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Feb 2023 12:32:28 -0800 (PST)
-Date:   Wed, 22 Feb 2023 12:32:26 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, martin.lau@kernel.org, andrii@kernel.org,
-        ast@kernel.org, memxor@gmail.com, daniel@iogearbox.net,
-        netdev@vger.kernel.org, kernel-team@fb.com, toke@kernel.org
-Subject: Re: [PATCH v11 bpf-next 09/10] bpf: Add bpf_dynptr_slice and
- bpf_dynptr_slice_rdwr
-Message-ID: <20230222203214.5e33mmjzljoaowbq@MacBook-Pro-6.local>
-References: <20230222060747.2562549-1-joannelkoong@gmail.com>
- <20230222060747.2562549-10-joannelkoong@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x9vGqY04NE5YfY1Sw9ynv48O9DSd0JhmLYBt2mXX16w=;
+        b=7xvV/7BvafzPi5eFXBSAqFCABOgpRbEx15+YGIIwJ6eePie4SObXKTIQMsyc1o5HEI
+         d8mEgELd1Ppm4XvdSqN7vEbs/AQSQUw7nn6FPrtmOMOhBwvN8oun2GHtbWu+/n3QI5ZA
+         xnXmPwrwvlXcIw1PzYPJzoXLGBSGnweUU/4W8Av/s/8guaAZZ1LEGEhjqVApWAuLIi8K
+         RP0NuRV0D0q14xdNv1M2fVZYXz4/3NXLU6zXFZwXRDnznU5XdYI3mDISUwtlcA1IT1Vp
+         chBENSBLd24TTdnJazQmjPqSrGvXv9U4iD/U1nlacoLX1382UybMdeI/HJDRexEmVUiW
+         qi/g==
+X-Gm-Message-State: AO0yUKXM+1h6gLX36FFPRcW6gRsTPmKQGOJ6MVu+nSasc2BiOGO0i/oM
+        etOUOsnl+JBsSO50S7n1BRYLsyqh5aVPl04zeJg=
+X-Google-Smtp-Source: AK7set9Xy0vcwrrNTKgPw52g9Hr1Fi0wdoXmGTB8WxIjA69a2TKn1NDiG4Lx+lmYSv4WEHEhfgR3PVZxgqSETYMuVrY=
+X-Received: by 2002:a17:906:5158:b0:883:ba3b:eb94 with SMTP id
+ jr24-20020a170906515800b00883ba3beb94mr7847521ejc.3.1677098902440; Wed, 22
+ Feb 2023 12:48:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230222060747.2562549-10-joannelkoong@gmail.com>
+References: <20230221200646.2500777-1-memxor@gmail.com> <20230221200646.2500777-3-memxor@gmail.com>
+In-Reply-To: <20230221200646.2500777-3-memxor@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 22 Feb 2023 12:48:11 -0800
+Message-ID: <CAADnVQ+HqZv+NXYMx2oa-eqnEM33SnYH8-1S2gEUkTX1Jx=ipg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/7] bpf: Support kptrs in local storage maps
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,83 +73,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 21, 2023 at 10:07:46PM -0800, Joanne Koong wrote:
-> @@ -9975,8 +10023,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->  		}
->  	}
->  
-> -	for (i = 0; i < CALLER_SAVED_REGS; i++)
-> -		mark_reg_not_init(env, regs, caller_saved[i]);
-> +	mark_reg_not_init(env, regs, caller_saved[BPF_REG_0]);
+On Tue, Feb 21, 2023 at 12:06 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> Enable support for kptrs in local storage maps by wiring up the freeing
+> of these kptrs from map value.
+>
+> Cc: Martin KaFai Lau <martin.lau@kernel.org>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  kernel/bpf/bpf_local_storage.c | 35 ++++++++++++++++++++++++++++++----
+>  kernel/bpf/syscall.c           |  6 +++++-
+>  kernel/bpf/verifier.c          | 12 ++++++++----
+>  3 files changed, 44 insertions(+), 9 deletions(-)
+>
+> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+> index 35f4138a54dc..2803b85b30b2 100644
+> --- a/kernel/bpf/bpf_local_storage.c
+> +++ b/kernel/bpf/bpf_local_storage.c
+> @@ -75,6 +75,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
+>         if (selem) {
+>                 if (value)
+>                         copy_map_value(&smap->map, SDATA(selem)->data, value);
+> +               /* No need to call check_and_init_map_value as memory is zero init */
+>                 return selem;
+>         }
+>
+> @@ -103,10 +104,17 @@ static void bpf_selem_free_rcu(struct rcu_head *rcu)
+>         struct bpf_local_storage_elem *selem;
+>
+>         selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
+> +       bpf_obj_free_fields(SDATA(selem)->smap->map.record, SDATA(selem)->data);
+> +       kfree(selem);
 
-...
+CI is saying that clang compiled kernel crashes here:
+https://github.com/kernel-patches/bpf/actions/runs/4239645973/jobs/7368557262
 
->  	/* Check return type */
->  	t = btf_type_skip_modifiers(desc_btf, func_proto->type, NULL);
-> @@ -10062,6 +10109,41 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->  				regs[BPF_REG_0].type = PTR_TO_BTF_ID | PTR_UNTRUSTED;
->  				regs[BPF_REG_0].btf = desc_btf;
->  				regs[BPF_REG_0].btf_id = meta.arg_constant.value;
-> +			} else if (meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice] ||
-> +				   meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice_rdwr]) {
-> +				enum bpf_type_flag type_flag = get_dynptr_type_flag(meta.initialized_dynptr.type);
-> +
-> +				mark_reg_known_zero(env, regs, BPF_REG_0);
-> +
-> +				if (!tnum_is_const(regs[BPF_REG_4].var_off)) {
-> +					verbose(env, "mem_size must be a constant\n");
-> +					return -EINVAL;
-> +				}
-> +				regs[BPF_REG_0].mem_size = regs[BPF_REG_4].var_off.value;
+[ 18.596262] BUG: unable to handle page fault for address: 00000000ffffffff
+[ 18.599128] RIP: 0010:bpf_obj_free_fields+0x29/0x110 [ 18.605706] <TASK>
+[ 18.605844] bpf_selem_free_tasks_trace_rcu+0x22/0x30
+[ 18.606171] rcu_tasks_invoke_cbs+0x150/0x210
+[ 18.606449] rcu_tasks_one_gp+0x401/0x430
+[ 18.606701] rcu_tasks_kthread+0x35/0x50
 
-This is a bit fragile.
-Instead of moving above 'for' may be let's use meta.arg_constant approach ?
-Just doing:
-if (is_kfunc_arg_constant(meta->btf, &args[i]) || is_kfunc_arg_mem_size(...))
-won't quite work, since we'll be doing mark_chain_precision() twice.
-(check_kfunc_mem_size_reg() will do it 2nd time).
+map.record somehow became (u32)-1 ?
 
-Another issue is that __sz allows var_off, but bpf_dynptr_slice() needs tnum_is_const
-and the patch is doing it explicitly.
-Ideally some combination of __sz and __k is needed.
+aarch64 failures look related too:
+libbpf: prog 'test_ls_map_kptr_ref1': failed to attach: ERROR:
+strerror_r(-524)=22
+test_map_kptr_success:FAIL:bpf_program__attach ref1 unexpected error: -524
+#124/26 map_kptr/success-map:FAIL
 
-I don't like our suffix logic, but maybe let's do quick "__szk" for now ?
-Then it can do normal __sz check and in addition do tnum_is_const() check
-and set meta.arg_constant ?
-
-Then 'for' will stay in place and regs[BPF_REG_4] won't be needed.
-
-> +
-> +				/* PTR_MAYBE_NULL will be added when is_kfunc_ret_null is checked */
-> +				regs[BPF_REG_0].type = PTR_TO_MEM | type_flag;
-> +
-> +				if (meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice]) {
-> +					regs[BPF_REG_0].type |= MEM_RDONLY;
-> +				} else {
-> +					/* this will set env->seen_direct_write to true */
-> +					if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE)) {
-> +						verbose(env, "the prog does not allow writes to packet data\n");
-> +						return -EINVAL;
-> +					}
-> +				}
-> +
-> +				if (!meta.initialized_dynptr.id) {
-> +					verbose(env, "verifier internal error: no dynptr id\n");
-> +					return -EFAULT;
-> +				}
-> +				regs[BPF_REG_0].dynptr_id = meta.initialized_dynptr.id;
-> +
-> +				/* we don't need to set BPF_REG_0's ref obj id
-> +				 * because packet slices are not refcounted (see
-> +				 * dynptr_type_refcounted)
-> +				 */
->  			} else {
->  				verbose(env, "kernel function %s unhandled dynamic return type\n",
->  					meta.func_name);
-> @@ -10121,6 +10203,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->  			regs[BPF_REG_0].id = ++env->id_gen;
->  	} /* else { add_kfunc_call() ensures it is btf_type_is_void(t) } */
->  
-> +	for (i = BPF_REG_1; i < CALLER_SAVED_REGS; i++)
-> +		mark_reg_not_init(env, regs, caller_saved[i]);
-> +
+Please pay attention to CI in the future.
+It's the developer's job to monitor it for their patches.
