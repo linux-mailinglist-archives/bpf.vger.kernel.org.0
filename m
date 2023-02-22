@@ -2,75 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3F569FDA5
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 22:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB94E69FDC7
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 22:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbjBVVUe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 16:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
+        id S229504AbjBVVjh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 16:39:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbjBVVUd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 16:20:33 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B1238EB0;
-        Wed, 22 Feb 2023 13:20:32 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id da10so37156049edb.3;
-        Wed, 22 Feb 2023 13:20:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JMMSmHe912RQvblGevXKqRKvjih/+Kh5utuEpNYnIfI=;
-        b=UyKkA8eOPcONc5JBguvchZ0OkPdUJAoPjZFLYswcWnAOwnH48WHE1vmiHhTiAJFS3P
-         CsJJNmEfsmtU5jHhJiosasHRnj2xDIb842L3g005sOpR9686i5WBqsTyBTdL+dsRF6Yw
-         QxvcnTgRo9pUftPBBW+Yngq880V27WRMTk4auC0+t/FIH/eSLZloQ7pCNchAsvLXJ9Rm
-         h1FY1dJza9xMT7C7fs2QkzvCzIODLGrFlBOh3xWlNNDvskzgSwYATI58+TVT3zUpQkyc
-         zvjgjebTS+B82wrVr0Bxp4QihojtF85BUYZvJJwIrxqVX71rR4VijDKX+P0Ssjl5/9yi
-         uSlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JMMSmHe912RQvblGevXKqRKvjih/+Kh5utuEpNYnIfI=;
-        b=JE13gwBJjJZsPKpI1nSe0VDyBqeSZONRkXq/qCV6iwEKUrr8UEPWXG09ONdLyehIIY
-         liAU+iRSyEKemtiyxOh3ELcfpzTASU5wZb6mRLOqoAFgpuUGf20sdrbPf9YUM18qr1xb
-         6ClRy0NRiqnra0K29UeYcX4Au39jnJ/hmcTgKdN/bdU65LE9/be5aodOCEhG+ElJcQf8
-         AFHxakRF2rMH1Y3BuVLwbpIbf7Mt1eTaBEVdjGscRqowN3j1/HZH+fWgeMFyKzTo8j/N
-         et6obRxknvKMm76hRXX8pnHWRwlys6gnPKzS/93wHaMBkAyTo5AlqcYX+8X9tjAakCnd
-         ijJQ==
-X-Gm-Message-State: AO0yUKU3/TacOwCXXFf61bZwIqIQQrWd3GGNy8lgJH6jeShVpIWh7AGV
-        N4tEV8R8TxJeEWVgq0ECRCURF4nUOWe4UfitzvY=
-X-Google-Smtp-Source: AK7set9OJHeC5ZH4wSlR5PXYLazKqODY9vCXdldP+gxc+StIlnZQAnXHlOYMSClz8ZxJMgP2Mt7lkBXrMLRC4B2cKM8=
-X-Received: by 2002:a17:906:5e42:b0:877:747d:4a85 with SMTP id
- b2-20020a1709065e4200b00877747d4a85mr8679376eju.3.1677100830688; Wed, 22 Feb
- 2023 13:20:30 -0800 (PST)
-MIME-Version: 1.0
-References: <Y/VA+jP0mB5cMZEz@slm.duckdns.org>
-In-Reply-To: <Y/VA+jP0mB5cMZEz@slm.duckdns.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Feb 2023 13:20:19 -0800
-Message-ID: <CAADnVQL0Zf3Dq=6wCMmj+R9bz1B1J4b=mUkvkObKfPQprUjyag@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add bpf_cgroup_from_id() kfunc
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S231684AbjBVVjg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 16:39:36 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C99A2DE55;
+        Wed, 22 Feb 2023 13:39:35 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4PMV114MNxz4x1h;
+        Thu, 23 Feb 2023 08:39:33 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1677101974;
+        bh=OTUn1q3utxkbFQDCyursLifFDedmceapAyJzXwEbnLU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=A62xzaC2+uD5F0WxjO+TNPQBri0O5n6nVap5Ma34ZCJs3huF4iCMbKtpY8XTVcUOq
+         jq1utDwKNAdZUoS1JvS2FjZfTbqoAajcNXS2HKvl53depDpb7QL7jQiUm5gdVyJv8O
+         AR8Xab7axrA+WrArB0eDSgd4Oe4MCdRGvkYH7Z8pLiJUW+em44pRktnf8IqGc8WhgC
+         394B8Ffpz48ToxUdzod5LH32pz4aZa/bnp5Wi9+wvX0UbccE6rdHhBpDFqhetZ4wYj
+         nSYQdwmVJdBa7CBP+Q9UqwTYT6rFw2+Ulq8kaDm442c4w1au4wgL0Yiq2JdhurnZlH
+         15q8tT2Ugnu7A==
+Date:   Thu, 23 Feb 2023 08:39:32 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        David Vernet <void@manifault.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the bpf tree
+Message-ID: <20230223083932.0272906f@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/JRqgbQ4N4E7IJLAyr_RT5Yc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,23 +55,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 21, 2023 at 2:09 PM Tejun Heo <tj@kernel.org> wrote:
->
-> cgroup ID is an userspace-visible 64bit value uniquely identifying a given
-> cgroup. As the IDs are used widely, it's useful to be able to look up the
-> matching cgroups. Add bpf_cgroup_from_id().
->
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> ---
->  Documentation/bpf/kfuncs.rst                  | 10 +++--
->  kernel/bpf/helpers.c                          | 18 ++++++++
->  .../selftests/bpf/prog_tests/cgrp_kfunc.c     |  1 +
->  .../selftests/bpf/progs/cgrp_kfunc_common.h   |  1 +
->  .../selftests/bpf/progs/cgrp_kfunc_success.c  | 42 +++++++++++++++++++
->  5 files changed, 69 insertions(+), 3 deletions(-)
+--Sig_/JRqgbQ4N4E7IJLAyr_RT5Yc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Looks great, but could you please split it into two patches:
-One for helpers.c and kfuncs.rst and another for selftests
-with [PATCH bpf-next] selftests/bpf: subject ?
-Doesn't matter much in this case, but it might ease backporting
-and easier to track patches grouped by subj.
+Hi all,
+
+The following commit is also in Linus Torvalds' tree as a different commit
+(but the same patch):
+
+  345d24a91c79 ("bpf: Include missing nospec.h to avoid build error.")
+
+This is commit
+
+  f3dd0c53370e ("bpf: add missing header file include")
+
+in Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/JRqgbQ4N4E7IJLAyr_RT5Yc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmP2i5QACgkQAVBC80lX
+0GyVbQf9GzToz130+z/mogNO8jvshZIPr1m1BqLrk25SdiGfdkXVOS9QCIv3btgh
+3p+F0rwt+WeZR81LZS4KtrHH8zasxlzgbp92jEUpYJiv8JNhUky0diJAWd3hl8FC
+Qe/ThlqR7/6t6Jps2vGP2pG5QX0X8wRNwyLC+DhdXBadye19vwGd7yOsyiD11Ifo
+/hV/RyNvUsSIjVfOS/BF8NYtizmLLtwP0f5GkVtxJA6l+OParihxov7BwjhC7Uzv
+bsLH4V90GnoNg5yQTK2HQtraPr2cfVbXDLuCLbORbx3BqOTrAwZntqFgSPPUJlFf
+knBoDUqs5mnqi2HlmT7FpIoF+iHcSQ==
+=0a4c
+-----END PGP SIGNATURE-----
+
+--Sig_/JRqgbQ4N4E7IJLAyr_RT5Yc--
