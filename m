@@ -2,107 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B13069F149
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 10:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C04069F27C
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 11:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbjBVJXQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 04:23:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
+        id S231272AbjBVKIH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 05:08:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjBVJXP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 04:23:15 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2B51BD9;
-        Wed, 22 Feb 2023 01:22:53 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B14F3612B2;
-        Wed, 22 Feb 2023 09:22:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52397C433D2;
-        Wed, 22 Feb 2023 09:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677057772;
-        bh=wVxpLcIjNUjf+mQzijoZyvptQZvmjN9A9iLI5F4lerU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DgfRf0zEaRL3mjMNDqswP4kHT4vai7LohB8AE5uxDW6zQLY6uekrG/Eak4gCCdOMi
-         vIdurb2jjhmbnlaZ8JV2ZvT49JAhpUI8L4a0/TzkkajHMd+Kfyv4lmVlLOamku/dzs
-         qO4wGMou1GK1XLRa3+rre6pEzoBfbBM0Xq5W6OJOXrjHOPF1VobAUS2u0TReb162m5
-         ce5K8HvJVvQxq9spq0gXjg/XCfUMoxpO1MyYHx/JnPVzlBprmj9VzwVxHDDkY1KVbB
-         Ak/V2OzF9puIUCWGBRVLcswjs13pFWrTKmakh0j9nQEukBFCDe/jlsAx9HF0dT5AX1
-         GPukBxjQtRKYg==
-Date:   Wed, 22 Feb 2023 11:22:47 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com,
-        Martyna Szapar-Mudlaw <martyna.szapar-mudlaw@linux.intel.com>,
-        netdev@vger.kernel.org, maciej.fijalkowski@intel.com,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
-        Chandan Kumar Rout <chandanx.rout@intel.com>
-Subject: Re: [PATCH net 1/1] ice: Fix missing cleanup routine in the case of
- partial memory allocation
-Message-ID: <Y/Xe53wd27MaQe6G@unreal>
-References: <20230221191750.1196493-1-anthony.l.nguyen@intel.com>
+        with ESMTP id S231357AbjBVKIG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 05:08:06 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B7A5F525B;
+        Wed, 22 Feb 2023 02:08:02 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8BxttiB6fVjT4sDAA--.6824S3;
+        Wed, 22 Feb 2023 18:08:01 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxtOV+6fVjeas4AA--.4362S3;
+        Wed, 22 Feb 2023 18:07:58 +0800 (CST)
+Subject: Re: [PATCH] docs/bpf: Fix invalid link of "Documentation/bpf/btf.rst"
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <1677035401-3628-1-git-send-email-yangtiezhu@loongson.cn>
+ <Y/XYM4D1SW/zyhNJ@debian.me>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <566b4d43-f952-8038-ec2f-988be014274f@loongson.cn>
+Date:   Wed, 22 Feb 2023 18:06:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230221191750.1196493-1-anthony.l.nguyen@intel.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y/XYM4D1SW/zyhNJ@debian.me>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxtOV+6fVjeas4AA--.4362S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvJXoW7KFW7Ww15tF43Gr1fWw45Jrb_yoW8Aw13pa
+        18JF4a9rsrKryrW3ykGa1UZF4SvayrX3W7C34DJw18Zrn8ZF95Zr1S9r45WanxtFykCFW7
+        A3ZakF909r17Z37anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        bIxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
+        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
+        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc02F40EFcxC0V
+        AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Cr0_Gr1U
+        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487Mx
+        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
+        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwI
+        xGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8
+        JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcV
+        C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1A9N7UUUUU==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 21, 2023 at 11:17:50AM -0800, Tony Nguyen wrote:
-> From: Martyna Szapar-Mudlaw <martyna.szapar-mudlaw@linux.intel.com>
-> 
-> Add missing memory free in the case of partial memory allocation
-> in the loop in ice_realloc_zc_buf function.
 
-I don't think that this is correct behaviour for realloc function to
-free memory of caller just because target allocation failed.
 
-It should be done in upper level.
+On 02/22/2023 04:54 PM, Bagas Sanjaya wrote:
+> On Wed, Feb 22, 2023 at 11:10:01AM +0800, Tiezhu Yang wrote:
+>> "Documentation/bpf/btf.rst" is linked to the following invalid web page:
+>>
+>> https://www.kernel.org/doc/html/latest/bpf/btf.rst
+>>
+>> The correct link should be:
+>>
+>> https://www.kernel.org/doc/html/latest/bpf/btf.html
+>>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>
+> Hi,
+>
+> I have already submitted a different fix to the same problem at [1] (v2
+> at [2]). Please take a look at there.
 
-Thanks
+Oh, I am sorry, I did not notice these patches, I found this issue when
+I read the bpf doc.
 
-> 
-> Fixes: 7e753eb675f0 ("ice: Fix DMA mappings leak")
-> Signed-off-by: Martyna Szapar-Mudlaw <martyna.szapar-mudlaw@linux.intel.com>
-> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com> (A Contingent Worker at Intel)
-> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_xsk.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> index 374b7f10b549..9ec02f80a2cf 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> @@ -377,8 +377,16 @@ int ice_realloc_zc_buf(struct ice_vsi *vsi, bool zc)
->  	for_each_set_bit(q, vsi->af_xdp_zc_qps,
->  			 max_t(int, vsi->alloc_txq, vsi->alloc_rxq)) {
->  		rx_ring = vsi->rx_rings[q];
-> -		if (ice_realloc_rx_xdp_bufs(rx_ring, zc))
-> +		if (ice_realloc_rx_xdp_bufs(rx_ring, zc)) {
-> +			unsigned long qid = q;
-> +
-> +			for_each_set_bit(q, vsi->af_xdp_zc_qps, qid) {
-> +				rx_ring = vsi->rx_rings[q];
-> +				zc ? kfree(rx_ring->xdp_buf) :
-> +				     kfree(rx_ring->rx_buf);
-> +			}
->  			return -ENOMEM;
-> +		}
->  	}
->  
->  	return 0;
-> -- 
-> 2.38.1
-> 
+>
+> [1]: https://lore.kernel.org/linux-doc/20230219030956.22662-1-bagasdotme@gmail.com/
+> [2]: https://lore.kernel.org/linux-doc/20230222083530.26136-1-bagasdotme@gmail.com/
+>
+>> diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+>> index 03d4993..f54c328 100644
+>> --- a/Documentation/bpf/bpf_devel_QA.rst
+>> +++ b/Documentation/bpf/bpf_devel_QA.rst
+>> @@ -690,6 +690,7 @@ when:
+>>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/
+>>  .. _Documentation/dev-tools/kselftest.rst:
+>>     https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+>> -.. _Documentation/bpf/btf.rst: btf.rst
+>> +.. _Documentation/bpf/btf.rst:
+>> +   https://www.kernel.org/doc/html/latest/bpf/btf.html
+>>
+>>  Happy BPF hacking!
+>
+> For consistency with my fix above, can you please convert these in-tree links
+> from using external link to simply write the doc path instead?
+>
+> Thanks.
+>
+
+Please ignore my patch, you can go on to modify your changes.
+Please let me know if there is anything I need to do.
+
+Thanks,
+Tiezhu
+
