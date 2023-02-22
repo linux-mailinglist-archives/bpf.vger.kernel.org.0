@@ -2,110 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B5269F01E
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 09:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7B569F05E
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 09:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjBVIYh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 03:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
+        id S230502AbjBVIgB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 03:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjBVIYg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 03:24:36 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6616E30B14
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 00:24:35 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id z10so4782417ple.6
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 00:24:35 -0800 (PST)
+        with ESMTP id S229560AbjBVIf6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 03:35:58 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7300230B36;
+        Wed, 22 Feb 2023 00:35:47 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id e5so8994287plg.8;
+        Wed, 22 Feb 2023 00:35:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ntjc1AG7bS/NZwMi6SdezQQErnVKK3wkQNeZ1LjsKAk=;
-        b=TcLEWNbJBNf5ZFkb4nP9BWfg1+PJbQUj3EZ9dX49ySrRedEOo3VATf0ck/p5J20M7s
-         ydPU/elb0EEJKqGu2A1qrgKM4VztYWKunfJIMorpgXUkNZ3SzFtaPRstBawWMkufopSQ
-         y1HVIrTgkguFLlKJ8yETBqQib35Tfw3I3cU7f0gUG3JloQmmCyvpKnPtM++DY9Jl6BSK
-         bGJYmSW01Yh9fpA9S3erjpV0SYClF3qx+v6UsUM9I7TtuCoZ7W/V7vuC3sWisNw0YJy4
-         BHNsRxH2lH9ngN5PoKFCsgh3AJhJiK0cgghEx0NwvR4CJhkru4v/qWCKcy7r9pW2iwHz
-         eYmA==
+        bh=kti8JgugRVGLXizNka/HYINXfKruoK/QDuSJAx3hfIU=;
+        b=qdPdPA9JC+RKYJV7GtxPcqGD/C42MNquMUh00lproMLqkg1EfHKK4IPtgQTB6Eb+Be
+         o1LU7+BR/OvnFKnaTp0QAY9U/Zq34ORx+2G/P745uFNHO2cJNY9kmZzfQuux1E5D+5h0
+         9abp6IzWr24g78juJ/xxxfzKmJDhr80FPO/YRyCrflB/fWWq5urnxa6yfC2AGbHNXaGB
+         MwpV/UujEw054q7l+nXMuJvyl6rkdV4ecJohC5aHnfHuxM2davf5Im7cWXKplAgODbtU
+         B79KVhfLgcp3m+nWVuqFmRqWoDJksVOAnJ6Ae7RlnGK22903KXwiNxcFN4kdNvwqJCTN
+         Lqyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ntjc1AG7bS/NZwMi6SdezQQErnVKK3wkQNeZ1LjsKAk=;
-        b=MEkP+Au9a70EXzr8bExybPAFcoujAQih3D/GnRLSsy21fGNVSZ4cBkXhq6phArq41D
-         LbO9HEQZw5LCfTbVDcHjagQY8EqW4dm9J9kF9GuO5VLjt9hGKpSSgO//oSlVHcqvOzhD
-         op/QoW4j6AsIpwdurMp+fww/3tASSbYlyXr5TfsBbk0RxZ/7YVntSdmVO5rwZI3PJaUS
-         O1QSUSwpZKL8sC1I+EW6PhspquNLZ3uwBzUK1DeVAo8rEOKBqmOB8qcAc7n7QdkWcyfv
-         AfbloQ66ESaMedw3vREi69vMQeQvbT274yq29fa3IuFzdnqhRF4j6FRRBL7HaSmH5Gsi
-         KcuQ==
-X-Gm-Message-State: AO0yUKUmBmHQO2sHPS7bFDzegvz+v31aYFDMuaIjKoukg/vBxt5VhiV5
-        r+mjTFSIgKrIw77M/aEEgbKNhg==
-X-Google-Smtp-Source: AK7set/BQ4/3js1DOgao1/ohxjXlwWMNW/T4wHiUuE50HYmjz45J+v6/R7Wztgr7KBqL4sjp15oYRg==
-X-Received: by 2002:a05:6a21:6d9f:b0:c7:8779:4168 with SMTP id wl31-20020a056a216d9f00b000c787794168mr8779993pzb.62.1677054274808;
-        Wed, 22 Feb 2023 00:24:34 -0800 (PST)
-Received: from localhost ([122.172.83.155])
-        by smtp.gmail.com with ESMTPSA id k22-20020aa792d6000000b0058bcb42dd1asm3801283pfa.111.2023.02.22.00.24.33
+        bh=kti8JgugRVGLXizNka/HYINXfKruoK/QDuSJAx3hfIU=;
+        b=S3CjmHXsOnfYbL1McN1lmoM86flahpBcBGwRr7Nx8j71aK6aeprjfpCJmL0HNJ2eQI
+         43aKjfh8Ety6Mkf+ffadEwWpQ3HBjKe4YlNsP+xzxVxMdRqXCZGI3yIxMnMGhWCYcEH2
+         fjoqnM6/K3pUleWxHhRALn1SF4Cgez2VBvGajwDfdA9edvnYCbOep6pNtxrY3LHY7F/W
+         xoux7KMqMsuWwU1/CEub8O4whX4nHjODUdc9vVERGU2f9w1ji1AK5cm3GNK8ztoSfoll
+         c3XOIRrAkDNCFHY86xiT/jjwc7F9wW48lIRLNIyqJH8rw3aN8lq4K2Gdl1drupJW6UbQ
+         u9Rg==
+X-Gm-Message-State: AO0yUKUuQzDFxrG2EmEJl6D2hg1EsbvU0G19drwI4ra7qKr45MraFRlx
+        47serhQgI30F7tX5HgC0Rtw=
+X-Google-Smtp-Source: AK7set+8KuBgbHI7br2D4+Z0RBwGinzpSWzxE0w3j++VzmdMaJuJkqx+d+nEga9GuWIKz/GhtDCPYA==
+X-Received: by 2002:a17:902:dad1:b0:196:5839:b374 with SMTP id q17-20020a170902dad100b001965839b374mr8650865plx.9.1677054946877;
+        Wed, 22 Feb 2023 00:35:46 -0800 (PST)
+Received: from debian.me (subs02-180-214-232-84.three.co.id. [180.214.232.84])
+        by smtp.gmail.com with ESMTPSA id o4-20020a170902bcc400b0019c901b35ecsm3014759pls.106.2023.02.22.00.35.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Feb 2023 00:24:34 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        Wed, 22 Feb 2023 00:35:46 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id B9D1C10658F; Wed, 22 Feb 2023 15:35:41 +0700 (WIB)
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux BPF <bpf@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: Fix undeclared function 'barrier_nospec' warning
-Date:   Wed, 22 Feb 2023 13:54:31 +0530
-Message-Id: <9c476aa64c9588205817833dbaa622f87c0e0081.1677051600.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+        Jonathan Corbet <corbet@lwn.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Ross Zwisler <zwisler@google.com>
+Subject: [PATCH v2] Documentation: bpf: Fix link to BTF doc
+Date:   Wed, 22 Feb 2023 15:35:30 +0700
+Message-Id: <20230222083530.26136-1-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2388; i=bagasdotme@gmail.com; h=from:subject; bh=oKNgKZHFEdu2il286nEDO6UrFE9zRMlSbKSG+cvR994=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDMlfL5+UnMD7bZ4JX0R8Rd6uJfcmic/bz/2MU0Zb5O/aJS21 iU7TOkpZGMS4GGTFFFkmJfI1nd5lJHKhfa0jzBxWJpAhDFycAjCRxFcM/7RfcHwX4sh31Q79d2nOSk HuwCWPVPaYJV9LDuPbYheVpcfIsOun+eOuy0q3glztHxs6H+vl98nYtlfD6n2xS6fOwqvVHAA=
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add the missing header for architectures that don't define
-the barrier_nospec() macro. The nospec.h header is added after the
-inclusion of barrier.h to avoid redefining the macro for architectures
-that already define barrier_nospec() in their respective barrier.h
-headers.
+Ross reported broken link to BTF documentation
+(Documentation/bpf/btf.rst) in Documentation/bpf/bpf_devel_QA.rst. The
+link in question is written using external link syntax, with the target
+refers to BTF doc in reST source (btf.rst), which doesn't exist in
+resulting HTML output.
 
-Fixes: 74e19ef0ff80 ("uaccess: Add speculation barrier to copy_from_user()")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Fix the link by replacing external link syntax with simply writing out
+the target doc, which the link will be generated to the correct HTML doc
+target.
+
+Link: https://lore.kernel.org/linux-doc/Y++09LKx25dtR4Ow@google.com/
+Fixes: 6736aa793c2b5f ("selftests/bpf: Add general instructions for test execution")
+Reported-by: Ross Zwisler <zwisler@google.com>
+Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
-Linus's master branch fails currently to build for arm64 without this commit.
+Changes since v1 [1]:
 
- kernel/bpf/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+  * Reword patch description (I don't see external link semantics on
+    Sphinx documentation [2] when I submit v1).
+  * Drop the corresponding orphan target definition.
+  * Rebase on top of current bpf tree.
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 933869983e2a..92aeb388e422 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -38,6 +38,8 @@
- #include <linux/memcontrol.h>
+Ross, do you want to give a Reviewed-by or Acked-by?
+
+[1]: https://lore.kernel.org/linux-doc/20230219030956.22662-1-bagasdotme@gmail.com/ 
+[2]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#external-links
+
+ Documentation/bpf/bpf_devel_QA.rst | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+index 03d4993eda6f05..715f7321020f27 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -469,7 +469,7 @@ under test should match the config file fragment in
+ tools/testing/selftests/bpf as closely as possible.
  
- #include <asm/barrier.h>
-+#include <linux/nospec.h>
-+
- #include <asm/unaligned.h>
+ Finally to ensure support for latest BPF Type Format features -
+-discussed in `Documentation/bpf/btf.rst`_ - pahole version 1.16
++discussed in Documentation/bpf/btf.rst - pahole version 1.16
+ is required for kernels built with CONFIG_DEBUG_INFO_BTF=y.
+ pahole is delivered in the dwarves package or can be built
+ from source at
+@@ -690,6 +690,5 @@ when:
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/
+ .. _Documentation/dev-tools/kselftest.rst:
+    https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+-.. _Documentation/bpf/btf.rst: btf.rst
  
- /* Registers */
+ Happy BPF hacking!
+
+base-commit: 345d24a91c79f408e355c8b7e873ccde0f097eea
 -- 
-2.31.1.272.g89b43f80a514
+An old man doll... just what I always wanted! - Clara
 
