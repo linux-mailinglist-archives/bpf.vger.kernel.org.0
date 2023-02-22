@@ -2,129 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFAB69FD2F
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 21:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE4869FD34
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 21:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbjBVUs0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 15:48:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
+        id S229672AbjBVUuW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 15:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbjBVUsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 15:48:25 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A709CDC1
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 12:48:24 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id o12so36041510edb.9
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 12:48:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=x9vGqY04NE5YfY1Sw9ynv48O9DSd0JhmLYBt2mXX16w=;
-        b=G//UFa21+wHn//8ubd4EuVQ/8UDF+IhES4XVCeot6u4YsIjAwMhnFMAJKLGHWzDDWH
-         W3Sx9Fg10fPXoaDp/rTNMuol0bNUMES5la4oTdkcckM27uniHcJZQG01UvFur6P5srPD
-         evairGHstsMW01JfrDhVGsBJlMsBmA0VwluEK+6vpGnoQPDv8isT4gNTqkq/3veI+QAg
-         dBtKOo2aP8TZwIRGRmqe/8VdARjP+XHs6h5lAvj9+RMfvtI+O34oTepuoBgtamMq1svC
-         lqyTsu2YmqiAaYIIn1FNP4J54ToeLlEe6Up4/wdsiNerkVnJx61GD9YHWTbNSJaSBDkc
-         TBmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x9vGqY04NE5YfY1Sw9ynv48O9DSd0JhmLYBt2mXX16w=;
-        b=7xvV/7BvafzPi5eFXBSAqFCABOgpRbEx15+YGIIwJ6eePie4SObXKTIQMsyc1o5HEI
-         d8mEgELd1Ppm4XvdSqN7vEbs/AQSQUw7nn6FPrtmOMOhBwvN8oun2GHtbWu+/n3QI5ZA
-         xnXmPwrwvlXcIw1PzYPJzoXLGBSGnweUU/4W8Av/s/8guaAZZ1LEGEhjqVApWAuLIi8K
-         RP0NuRV0D0q14xdNv1M2fVZYXz4/3NXLU6zXFZwXRDnznU5XdYI3mDISUwtlcA1IT1Vp
-         chBENSBLd24TTdnJazQmjPqSrGvXv9U4iD/U1nlacoLX1382UybMdeI/HJDRexEmVUiW
-         qi/g==
-X-Gm-Message-State: AO0yUKXM+1h6gLX36FFPRcW6gRsTPmKQGOJ6MVu+nSasc2BiOGO0i/oM
-        etOUOsnl+JBsSO50S7n1BRYLsyqh5aVPl04zeJg=
-X-Google-Smtp-Source: AK7set9Xy0vcwrrNTKgPw52g9Hr1Fi0wdoXmGTB8WxIjA69a2TKn1NDiG4Lx+lmYSv4WEHEhfgR3PVZxgqSETYMuVrY=
-X-Received: by 2002:a17:906:5158:b0:883:ba3b:eb94 with SMTP id
- jr24-20020a170906515800b00883ba3beb94mr7847521ejc.3.1677098902440; Wed, 22
- Feb 2023 12:48:22 -0800 (PST)
+        with ESMTP id S229598AbjBVUuV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 15:50:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7A44109B
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 12:50:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3DA89B8159B
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 20:50:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E3E7FC4339C;
+        Wed, 22 Feb 2023 20:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677099017;
+        bh=aW8DAwMC6PvEzaZDHKr+vgpjMXacJzpGhgyUIVUB+eE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qbLcllgYbBtbr2L1MQAHVpu0jFo73j1v93aDTDKNZUpYvntXstYHNTZqYEmFRcjcp
+         Hgspg+xql7PZfAfqs74mpsmEbwuYFb/mntJIPH5wqkC/7ynK0vwosX/sGdx9gI2GmF
+         ANKhASqAnFRkAueTlPXEH0v3aRV4hZM8TcRDdbsOALKgU3cnyUR5wknTktqul3sVL+
+         Fx2EClhFzFA+M9ivmkYzQPJ5K/NuK0lE4Ojbj2Kn7xYIik7Y+kBkTZjsL5g68CGXPC
+         B4LQNoSy34DPO3iuqLf/hFXYxvvAMBsSxqwuz3hApeiZ95vXhb6SyUlr/zUSMwcOgb
+         5BDLYO9Y6JL9Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CDF43C395DF;
+        Wed, 22 Feb 2023 20:50:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230221200646.2500777-1-memxor@gmail.com> <20230221200646.2500777-3-memxor@gmail.com>
-In-Reply-To: <20230221200646.2500777-3-memxor@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Feb 2023 12:48:11 -0800
-Message-ID: <CAADnVQ+HqZv+NXYMx2oa-eqnEM33SnYH8-1S2gEUkTX1Jx=ipg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/7] bpf: Support kptrs in local storage maps
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        David Vernet <void@manifault.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/2] bpf: Allow reads from uninit stack
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167709901684.29904.12690598164971386254.git-patchwork-notify@kernel.org>
+Date:   Wed, 22 Feb 2023 20:50:16 +0000
+References: <20230219200427.606541-1-eddyz87@gmail.com>
+In-Reply-To: <20230219200427.606541-1-eddyz87@gmail.com>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+        yhs@fb.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 21, 2023 at 12:06 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> Enable support for kptrs in local storage maps by wiring up the freeing
-> of these kptrs from map value.
->
-> Cc: Martin KaFai Lau <martin.lau@kernel.org>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  kernel/bpf/bpf_local_storage.c | 35 ++++++++++++++++++++++++++++++----
->  kernel/bpf/syscall.c           |  6 +++++-
->  kernel/bpf/verifier.c          | 12 ++++++++----
->  3 files changed, 44 insertions(+), 9 deletions(-)
->
-> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> index 35f4138a54dc..2803b85b30b2 100644
-> --- a/kernel/bpf/bpf_local_storage.c
-> +++ b/kernel/bpf/bpf_local_storage.c
-> @@ -75,6 +75,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
->         if (selem) {
->                 if (value)
->                         copy_map_value(&smap->map, SDATA(selem)->data, value);
-> +               /* No need to call check_and_init_map_value as memory is zero init */
->                 return selem;
->         }
->
-> @@ -103,10 +104,17 @@ static void bpf_selem_free_rcu(struct rcu_head *rcu)
->         struct bpf_local_storage_elem *selem;
->
->         selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
-> +       bpf_obj_free_fields(SDATA(selem)->smap->map.record, SDATA(selem)->data);
-> +       kfree(selem);
+Hello:
 
-CI is saying that clang compiled kernel crashes here:
-https://github.com/kernel-patches/bpf/actions/runs/4239645973/jobs/7368557262
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-[ 18.596262] BUG: unable to handle page fault for address: 00000000ffffffff
-[ 18.599128] RIP: 0010:bpf_obj_free_fields+0x29/0x110 [ 18.605706] <TASK>
-[ 18.605844] bpf_selem_free_tasks_trace_rcu+0x22/0x30
-[ 18.606171] rcu_tasks_invoke_cbs+0x150/0x210
-[ 18.606449] rcu_tasks_one_gp+0x401/0x430
-[ 18.606701] rcu_tasks_kthread+0x35/0x50
+On Sun, 19 Feb 2023 22:04:25 +0200 you wrote:
+> This patch-set modifies BPF verifier to accept programs that read from
+> uninitialized stack locations, but only if executed in privileged mode.
+> This provides significant verification performance gains: 30% to 70% less
+> processed states for big number of test programs.
+> 
+> The reason for performance gains comes from treating STACK_MISC and
+> STACK_INVALID as compatible, when cached state is compared to current state
+> in verifier.c:stacksafe().
+> 
+> [...]
 
-map.record somehow became (u32)-1 ?
+Here is the summary with links:
+  - [bpf-next,v2,1/2] bpf: Allow reads from uninit stack
+    https://git.kernel.org/bpf/bpf-next/c/6715df8d5d24
+  - [bpf-next,v2,2/2] selftests/bpf: Tests for uninitialized stack reads
+    https://git.kernel.org/bpf/bpf-next/c/6338a94d5ab4
 
-aarch64 failures look related too:
-libbpf: prog 'test_ls_map_kptr_ref1': failed to attach: ERROR:
-strerror_r(-524)=22
-test_map_kptr_success:FAIL:bpf_program__attach ref1 unexpected error: -524
-#124/26 map_kptr/success-map:FAIL
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Please pay attention to CI in the future.
-It's the developer's job to monitor it for their patches.
+
