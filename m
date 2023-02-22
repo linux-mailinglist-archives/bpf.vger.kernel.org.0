@@ -2,134 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B1C69FC63
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 20:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7C169FC74
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 20:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbjBVTnO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 14:43:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48284 "EHLO
+        id S232054AbjBVTs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 14:48:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbjBVTnN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 14:43:13 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BA526CF2
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 11:43:11 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id m6so11569180lfq.5
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 11:43:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=fHwuYHjpMTKH8TP6+CYz+g35OwX/KSIU/Q6aWMAJGCA=;
-        b=IOPNgiQXK2Imyjqp2ebDrENRrKZek2Wc3+HZTC//o417hwM/xkRLvXA/RH56i44Tkx
-         s3MbVN1u7h6F4evs7JLC92Xs9fZyJVY1syg3F0RkoLiWxgG1mcfhX4EoxPtzeaNwtJ5d
-         EZ89PMb9y2jX49bkkvZw/WoYSoHy53+fT4xI7ODjKyL/I4k4JJ+tl7QmzzQg73bvyY9d
-         Lp0ASZo+CegSCrWRjSkqF94pycLBeR5XcWHSrXGLS7Nh6/U32HcPjgcdYdoi3a9rD2Y9
-         Q0/79lKSlFotajrNtJhL64KPkIT95kA0vVU/sSYksnhCGKW9FPO+CGEHxj52IzYu3RKh
-         cseA==
+        with ESMTP id S231897AbjBVTs4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 14:48:56 -0500
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2AB27D7F;
+        Wed, 22 Feb 2023 11:48:55 -0800 (PST)
+Received: by mail-vs1-f52.google.com with SMTP id v3so10764566vse.0;
+        Wed, 22 Feb 2023 11:48:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fHwuYHjpMTKH8TP6+CYz+g35OwX/KSIU/Q6aWMAJGCA=;
-        b=0vkuP8AcvsEaR9WPXu+X6pqNLb4oUfLawxYf+hzDTpWqR5bRqzJZrnzgixXO8hCU2L
-         qiB4Yhhnd5kpEJ8AaUmW24ANrJeIcVfxcwFdrkSVedA9QIaoGDiAk2rpNLb3XlI5m3py
-         OlaPSkhO7iD7u6uNL5gqyrANT1Z0FmMe4oyR/3aRou1BTSeTMgiBQt566XyltOG3Itp/
-         M4ih6WumLOKYlTx9y0vogfvVK6Uugh5Nnk3OaXgXMirGsNx/WOv0JluksFdAvKHAEaap
-         VrXpfLWsmDWpMRZR448znCfvk1dWql23DoPelI0V7VYb+31Fx4U5hXzcD264Qc3hAsjC
-         4ZVw==
-X-Gm-Message-State: AO0yUKXRBHiJ1qBTBcWS/eZclt59pqznFi8ERb/stxRT58sIevz3tux4
-        JiJA0eKLcUwW7JpQVH35qt0=
-X-Google-Smtp-Source: AK7set8USxFjzis3fjB5IDwKnJU9dw9O2zrH/xgYgzhV2xx4NXT3DPYc5e97EPGvHZp7n4CIDWkkVQ==
-X-Received: by 2002:a19:f604:0:b0:4db:3ddf:2fbd with SMTP id x4-20020a19f604000000b004db3ddf2fbdmr3127624lfe.45.1677094989258;
-        Wed, 22 Feb 2023 11:43:09 -0800 (PST)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id a21-20020ac25215000000b004cb08757441sm396592lfl.199.2023.02.22.11.43.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Feb 2023 11:43:08 -0800 (PST)
-Message-ID: <d6f9fe3faa4aef62227420fc41f2e896f4d7eb2a.camel@gmail.com>
-Subject: Re: BTF tag support in DWARF (notes for today's BPF Office Hours)
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        David Faust <david.faust@oracle.com>
-Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        bpf <bpf@vger.kernel.org>,
-        James Hilliard <james.hilliard1@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        David Malcolm <dmalcolm@redhat.com>,
-        Julia Lawall <julia.lawall@inria.fr>, elena.zannoni@oracle.com,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Yonghong Song <yhs@fb.com>, Mykola Lysenko <mykolal@fb.com>
-Date:   Wed, 22 Feb 2023 21:43:07 +0200
-In-Reply-To: <CAADnVQ+QNAEaqgOM9PwDs+0dkiL3wmPafJN=XY5ckcgTzmsiEg@mail.gmail.com>
-References: <87r0w9jjoq.fsf@oracle.com> <877cy0j0kt.fsf@oracle.com>
-         <e783fb7cdfb7bfd40e723c67daab7c5f81d12fbf.camel@gmail.com>
-         <1fe666d0-aab1-5b6f-8264-57ff282b5e52@oracle.com>
-         <1b84d1477c3648e6d20bacaf1447724fb78e282f.camel@gmail.com>
-         <a71cd1ae-d4a0-7463-0afd-32d2e15a8882@oracle.com>
-         <CAADnVQ+QNAEaqgOM9PwDs+0dkiL3wmPafJN=XY5ckcgTzmsiEg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XM/lQi5N/iiNMtRIy5H0b7ls2dpYLYTqiw3Gl5EGGP8=;
+        b=3DLr0kLc5pVMx2L5ETn0W75sSNp5V8ejVqbJb1VTNUNbMyu7ohRz8fk2g1lOGVjmyO
+         SQrJ2Ni6W0sNcBdofx1hW4APGtVeBoICQVm2Nc+9IW5AGPXpthQ3up+DKia9GU4cav6c
+         FcqvgpC2tsD9HIMB3w7OV5OLVgm/5OtHqREVZq6oHDxSzBk20MSCC1fgsoTht2fSC+NK
+         Ex7eT9pVXZ26+WFNL9geVozn26yDnkjvzscLZvDK3uvS5YziSv+4KpcVYE7XqEP0wjpt
+         Uxj22+ox3sbigPJb/2HwS/DtTx6vvRI1UjWgCS0gd7COvzN60ojjyHEK6VfVngwTzeuR
+         4C1g==
+X-Gm-Message-State: AO0yUKUr/PbRGV2SA8BOPMlt6yGU1kzvCVsqKYouWxWGlLrx1BAgQY4d
+        QcCum6sorjLauFmgR+2iHo3yGLCY5XxsJgfjm64=
+X-Google-Smtp-Source: AK7set/JOuNdH1Xqx90bNX1Aqnfcv1+F2m1Exkm49i1plXuAeh7llPRwlEUfRRIxFP8Elkp8A+malkHf1PZvkQv5kB0=
+X-Received: by 2002:ab0:54da:0:b0:687:afc8:ffb9 with SMTP id
+ q26-20020ab054da000000b00687afc8ffb9mr1587192uaa.2.1677095334627; Wed, 22 Feb
+ 2023 11:48:54 -0800 (PST)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230219061329.1001079-1-namhyung@kernel.org> <20230219061329.1001079-3-namhyung@kernel.org>
+ <Y/IEpW77gNpQbpK2@kernel.org> <CAM9d7chrbQ+79HRJF=e3DLA7rDL-LdNw2fVW3enjJjY+E-ESsQ@mail.gmail.com>
+In-Reply-To: <CAM9d7chrbQ+79HRJF=e3DLA7rDL-LdNw2fVW3enjJjY+E-ESsQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 22 Feb 2023 11:48:43 -0800
+Message-ID: <CAM9d7cg_bnLuYN+SnS_m6gV2qto8hVGF1oYE7gSko=TuY-dpOQ@mail.gmail.com>
+Subject: Re: [PATCH 2/8] perf bpf filter: Implement event sample filtering
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2023-02-22 at 10:11 -0800, Alexei Starovoitov wrote:
-[...]
-> > > > What do you think about something like "debug_type_tag" or
-> > > > "debug_type_annotation" (and a similar update for the decl tags)?
-> > > > The translation into BTF records would be the same, but the DWARF i=
-nfo
-> > > > would stand on its own without being tied to BTF.
-> > > >=20
-> > > > (Naming is a bit tricky since terms like 'tag' are already in use b=
-y
-> > > > DWARF, e.g. "type tag" in the context of DWARF DIEs makes me think =
-of
-> > > > DW_TAG_xxxx_type...)
-> > > >=20
-> > > > As far as I understand, early proposals for the tags were more gene=
-ric
-> > > > but the LLVM reviewers wished for something more specific due to th=
-e
-> > > > relatively limited use of the tags at the time. Now that the tags a=
-nd
-> > > > their DWARF format have matured I think a good case can be made to
-> > > > make these generic. We'd be happy to help push for such change.
-> > >=20
-> > > On the other hand, BTF is a thing we are using this annotation for.
-> > > Any other tool can reuse DW_TAG_LLVM_annotation, but it will need a
-> > > way to distinguish it's annotations from BTF annotations. And this ca=
-n
-> > > be done by using a different DW_AT_name. So, it seems logical to
-> > > retain "btf" in the DW_AT_name. What do you think?
-> >=20
-> > OK I can understand keeping it BTF specific.
-> >=20
-> > Other than that, I don't come up with any significantly different idea
-> > than to use the ":v2" suffix, so let's go with "btf_type_tag:v2"?
->=20
-> I don't like v2 suffix either.
-> Please come up with something else.
+On Sun, Feb 19, 2023 at 8:48 AM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> On Sun, Feb 19, 2023 at 3:14 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Sat, Feb 18, 2023 at 10:13:23PM -0800, Namhyung Kim escreveu:
+> > > The BPF program will be attached to a perf_event and be triggered when
+> > > it overflows.  It'd iterate the filters map and compare the sample
+> > > value according to the expression.  If any of them fails, the sample
+> > > would be dropped.
+> > >
+> > > Also it needs to have the corresponding sample data for the expression
+> > > so it compares data->sample_flags with the given value.  To access the
+> > > sample data, it uses the bpf_cast_to_kern_ctx() kfunc which was added
+> > > in v6.2 kernel.
+> >
+> >   CLANG   /tmp/build/perf/util/bpf_skel/.tmp/sample_filter.bpf.o
+> > util/bpf_skel/sample_filter.bpf.c:26:19: error: no member named 'sample_flags' in 'struct perf_sample_data'
+> >         if ((kctx->data->sample_flags & entry->flags) == 0)
+> >              ~~~~~~~~~~  ^
+> > 1 error generated.
+> > make[2]: *** [Makefile.perf:1078: /tmp/build/perf/util/bpf_skel/.tmp/sample_filter.bpf.o] Error 1
+> > make[1]: *** [Makefile.perf:236: sub-make] Error 2
+> > make: *** [Makefile:113: install-bin] Error 2
+> > make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+> >
+> >  Performance counter stats for 'make -k BUILD_BPF_SKEL=1 CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin':
+>
+> Hmm.. strange.  In the include/linux/perf_event.h, the
+> perf_sample_data has sample_flags, but vmlinux.h doesn't.
 
-Nothing particularly good comes to mind:
-- btf_type_tag:wrapper
-- btf_type_tag:outer
-- btf_type_tag:own
-- exterior_btf_type_tag
-- outer_btf_tag
-- btf_type_prefix
-- btf_type_qualifier (as in const/volatile)
+It looks like the vmlinux.h came from the old kernel image (before v6.1).
+Please try again after building the kernel.  I'll add a check to prevent
+such a build error in v3.
 
-Or might as well use btf_type_tag:gcc, as you suggested earlier,
-but it is as confusing as the others.
+Thanks,
+Namhyung
