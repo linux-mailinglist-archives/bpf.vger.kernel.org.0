@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7C169FC74
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 20:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B0C69FC76
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 20:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbjBVTs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 14:48:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
+        id S232585AbjBVTt1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 14:49:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbjBVTs4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 14:48:56 -0500
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2AB27D7F;
-        Wed, 22 Feb 2023 11:48:55 -0800 (PST)
-Received: by mail-vs1-f52.google.com with SMTP id v3so10764566vse.0;
-        Wed, 22 Feb 2023 11:48:55 -0800 (PST)
+        with ESMTP id S229705AbjBVTt1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 14:49:27 -0500
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726482C648;
+        Wed, 22 Feb 2023 11:49:25 -0800 (PST)
+Received: by mail-vs1-f54.google.com with SMTP id u14so10658810vsp.8;
+        Wed, 22 Feb 2023 11:49:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XM/lQi5N/iiNMtRIy5H0b7ls2dpYLYTqiw3Gl5EGGP8=;
-        b=3DLr0kLc5pVMx2L5ETn0W75sSNp5V8ejVqbJb1VTNUNbMyu7ohRz8fk2g1lOGVjmyO
-         SQrJ2Ni6W0sNcBdofx1hW4APGtVeBoICQVm2Nc+9IW5AGPXpthQ3up+DKia9GU4cav6c
-         FcqvgpC2tsD9HIMB3w7OV5OLVgm/5OtHqREVZq6oHDxSzBk20MSCC1fgsoTht2fSC+NK
-         Ex7eT9pVXZ26+WFNL9geVozn26yDnkjvzscLZvDK3uvS5YziSv+4KpcVYE7XqEP0wjpt
-         Uxj22+ox3sbigPJb/2HwS/DtTx6vvRI1UjWgCS0gd7COvzN60ojjyHEK6VfVngwTzeuR
-         4C1g==
-X-Gm-Message-State: AO0yUKUr/PbRGV2SA8BOPMlt6yGU1kzvCVsqKYouWxWGlLrx1BAgQY4d
-        QcCum6sorjLauFmgR+2iHo3yGLCY5XxsJgfjm64=
-X-Google-Smtp-Source: AK7set/JOuNdH1Xqx90bNX1Aqnfcv1+F2m1Exkm49i1plXuAeh7llPRwlEUfRRIxFP8Elkp8A+malkHf1PZvkQv5kB0=
-X-Received: by 2002:ab0:54da:0:b0:687:afc8:ffb9 with SMTP id
- q26-20020ab054da000000b00687afc8ffb9mr1587192uaa.2.1677095334627; Wed, 22 Feb
- 2023 11:48:54 -0800 (PST)
+        bh=jPwmrZMQEF/WqljDsqQcVQAbBSuSNPhojo4n19aTh9s=;
+        b=RxKnw91l53egv9x4eQ1xpjnfQYA9cxhJNJ1Avx1FMUfgLavyXzYxG8nSJVtQYhqmcu
+         l/QM/7dpMEuW7Mnurxjpql9d253Ttm+JNLtTr56a1M1N4Mq5cB91HSDHh3DJJ2mloMqY
+         3pEBzEWGQmDnM/qQ083CgffpUgT4EYDpakC3oxpo0lKsxUDA/HUnzXteT0/6lLm5EDaB
+         xLBRU8Ly3ALIz4odQjlxG/7ydrpZFuN0rMpgbCIVezGxD+tzwcBjNaddQDz24vBfvbqW
+         rlsIEyA83/tc968Olqfa1nts/jX+1Km2hyeyurDrlntP4Qc2ze3IEBNWtmOw7ZibIkt/
+         8aLw==
+X-Gm-Message-State: AO0yUKWqLkhNQRrNzaBSM+nCu5wK6+vC9gipPWCaNUEtwDjdjJ3OKh0z
+        MR4oCqPuWu5iNuofmnzQJedxfReRJ9aOeiiHkfw=
+X-Google-Smtp-Source: AK7set8RYEDZQ1ZJVf/Cd883h0wazdej2RHkrYUvMC8AirqpmQ3FZMCdQA99Yv0BF6PHO/+1LqSFbbGCR3gWYsLOGNg=
+X-Received: by 2002:a05:6102:334a:b0:411:ac85:c5d0 with SMTP id
+ j10-20020a056102334a00b00411ac85c5d0mr2362279vse.8.1677095364554; Wed, 22 Feb
+ 2023 11:49:24 -0800 (PST)
 MIME-Version: 1.0
 References: <20230219061329.1001079-1-namhyung@kernel.org> <20230219061329.1001079-3-namhyung@kernel.org>
- <Y/IEpW77gNpQbpK2@kernel.org> <CAM9d7chrbQ+79HRJF=e3DLA7rDL-LdNw2fVW3enjJjY+E-ESsQ@mail.gmail.com>
-In-Reply-To: <CAM9d7chrbQ+79HRJF=e3DLA7rDL-LdNw2fVW3enjJjY+E-ESsQ@mail.gmail.com>
+ <Y/Sw/NGEvPJ9XdtN@krava>
+In-Reply-To: <Y/Sw/NGEvPJ9XdtN@krava>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 22 Feb 2023 11:48:43 -0800
-Message-ID: <CAM9d7cg_bnLuYN+SnS_m6gV2qto8hVGF1oYE7gSko=TuY-dpOQ@mail.gmail.com>
+Date:   Wed, 22 Feb 2023 11:49:13 -0800
+Message-ID: <CAM9d7ciwJXp2LEpZHSifgjbHwzhvAEkGEQxdas0LFMN3rNHCyg@mail.gmail.com>
 Subject: Re: [PATCH 2/8] perf bpf filter: Implement event sample filtering
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         Ian Rogers <irogers@google.com>,
@@ -68,40 +68,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Feb 19, 2023 at 8:48 AM Namhyung Kim <namhyung@kernel.org> wrote:
+On Tue, Feb 21, 2023 at 3:54 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> On Sun, Feb 19, 2023 at 3:14 AM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Em Sat, Feb 18, 2023 at 10:13:23PM -0800, Namhyung Kim escreveu:
-> > > The BPF program will be attached to a perf_event and be triggered when
-> > > it overflows.  It'd iterate the filters map and compare the sample
-> > > value according to the expression.  If any of them fails, the sample
-> > > would be dropped.
-> > >
-> > > Also it needs to have the corresponding sample data for the expression
-> > > so it compares data->sample_flags with the given value.  To access the
-> > > sample data, it uses the bpf_cast_to_kern_ctx() kfunc which was added
-> > > in v6.2 kernel.
-> >
-> >   CLANG   /tmp/build/perf/util/bpf_skel/.tmp/sample_filter.bpf.o
-> > util/bpf_skel/sample_filter.bpf.c:26:19: error: no member named 'sample_flags' in 'struct perf_sample_data'
-> >         if ((kctx->data->sample_flags & entry->flags) == 0)
-> >              ~~~~~~~~~~  ^
-> > 1 error generated.
-> > make[2]: *** [Makefile.perf:1078: /tmp/build/perf/util/bpf_skel/.tmp/sample_filter.bpf.o] Error 1
-> > make[1]: *** [Makefile.perf:236: sub-make] Error 2
-> > make: *** [Makefile:113: install-bin] Error 2
-> > make: Leaving directory '/var/home/acme/git/perf/tools/perf'
-> >
-> >  Performance counter stats for 'make -k BUILD_BPF_SKEL=1 CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin':
+> On Sat, Feb 18, 2023 at 10:13:23PM -0800, Namhyung Kim wrote:
 >
-> Hmm.. strange.  In the include/linux/perf_event.h, the
-> perf_sample_data has sample_flags, but vmlinux.h doesn't.
+> SNIP
+>
+> > +#define FD(e, x, y) (*(int *)xyarray__entry(e->core.fd, x, y))
+> > +
+> > +int perf_bpf_filter__prepare(struct evsel *evsel)
+> > +{
+> > +     int i, x, y, fd;
+> > +     struct sample_filter_bpf *skel;
+> > +     struct bpf_program *prog;
+> > +     struct bpf_link *link;
+> > +     struct perf_bpf_filter_expr *expr;
+> > +
+> > +     skel = sample_filter_bpf__open();
+> > +     if (!skel) {
+> > +             pr_err("Failed to open perf sample-filter BPF skeleton\n");
+> > +             return -1;
+> > +     }
+> > +
+> > +     bpf_map__set_max_entries(skel->maps.filters, MAX_FILTERS);
+>
+> is this needed? max_entries is defined in the bpf object
 
-It looks like the vmlinux.h came from the old kernel image (before v6.1).
-Please try again after building the kernel.  I'll add a check to prevent
-such a build error in v3.
+Nop, will remove.
 
 Thanks,
 Namhyung
