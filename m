@@ -2,105 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CAC69ED89
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 04:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D4C69EDA0
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 04:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbjBVDe0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 22:34:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58164 "EHLO
+        id S231432AbjBVDr5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 22:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjBVDe0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 22:34:26 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8862B3403B;
-        Tue, 21 Feb 2023 19:33:58 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 442AEB811C2;
-        Wed, 22 Feb 2023 03:33:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 766D2C4339B;
-        Wed, 22 Feb 2023 03:33:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677036835;
-        bh=KBzd04yF98MqM4KYPr3zWjD4jMUQbKAwM4nb1sqLd9Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aBRiJkavkTRHcoLyh/OO0vvqhcTD7Y7IHmFekryAc8S5ZvI6eH3xKguifk/TgPPMh
-         PWrysafPF37VOi4qWXzNdzwHiDFTW2dCfbWZnrcof6qI4Cw0tpzyfagUvgpl6BzCWg
-         vquBZan92zSJxCkkkuKo7+gpL14RsLq0IwIlkUfl4AchdCerPiQlw5cK8fZoODYiy+
-         OK42YfIVrCdkqLHjw3G4X4jLoH0knKGsSRT2aGTAIcHV298hU+9G6o97xot1UVNpj2
-         o0UL8OrplZJJ6/fLoD5BC3/YWORRfToYqFtBz5tT7/78ILmR4s9G9k8tEOK8KxuIcP
-         aVel8fWZ2yvSA==
-Date:   Tue, 21 Feb 2023 19:33:54 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pabeni@redhat.com,
-        bpf@vger.kernel.org, ast@kernel.org
-Subject: Re: [PULL] Networking for v6.3
-Message-ID: <20230221193354.166505bb@kernel.org>
-In-Reply-To: <CAHk-=wi_410KZqHwF-WL5U7QYxnpHHHNP-3xL=g_y89XnKc-uw@mail.gmail.com>
-References: <20230221233808.1565509-1-kuba@kernel.org>
-        <CAHk-=wi_410KZqHwF-WL5U7QYxnpHHHNP-3xL=g_y89XnKc-uw@mail.gmail.com>
+        with ESMTP id S231441AbjBVDrz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 22:47:55 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F270A2DE66;
+        Tue, 21 Feb 2023 19:47:44 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id f13so24705636edz.6;
+        Tue, 21 Feb 2023 19:47:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JTsXlkDchbsVNM/nwNQgg0wYui/RKX5XK9Zb2Km8MwE=;
+        b=V7/W1hgfvDAONcno96OpT6N8A4alYpITdl6yNt3D6Du105mXOO9iJDWUca1CaI/1K/
+         PtFGI9r/YaT3SyeNQlE7O3hCy6LsvyUEOnWc2CDvQs9QOHSx7qANwoUP/1UCpIv6sMcr
+         ctFhlLIeyWMx3vX0BdeGF3R5HO8iX96EHn+CEFqhopmDep+X9WanFWS/mD909T1JzJAe
+         2xy4jMhrgo4d7f4eldJrqIY1qHCHIbr0kwX1myas17Ech1UqN/8mAl4rMeRN7ax7+hvN
+         AsU1XagJzG9296HFLhl/yaCXBroyVWiaPb+4Glm5NP9+9D5qyB5xPfvYfLCX2PZGLdRF
+         B4FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JTsXlkDchbsVNM/nwNQgg0wYui/RKX5XK9Zb2Km8MwE=;
+        b=ly5QMt6+FGDlKS1O7T84YRtExQENghjqRPt/+j0udiPPEb7WU6fDAc5oyQTkLcHSfM
+         csG+cEiAW6Et+nYa+kR4MXuRt3H6487wqBkUCfqFNi2790Uwx2hErTycFJ6NVJ0paJgE
+         kwGTbNfLDxh2ev2Jn4kR05ImqQgVFQYkjt74UkFFhCIY2NJ0nT3LVztc1kDlEkziKvmW
+         n/ephBp4LZ85uG7N03oN2wuDj2LJmMQB87oJuPomAZ7fjaTSYf2Pc0aSxy+rz1qTHl9g
+         G2nqkuc73GTFK886v7+m+OGj+iKPW2uU07nUWhoih9dmFqfBF5n8cxTVO9iuOtdJKZM/
+         Te6g==
+X-Gm-Message-State: AO0yUKWyb7PoPF92NQwp5p9J+iA5ALEVznvOrIWTbxUcU2irqDTtPMFC
+        nl3IRB2N44sfiIBZXial/PqoVGxTvA8sTzMxOII=
+X-Google-Smtp-Source: AK7set/RhKw0VVjD4gRGKEN6BevelxlvRv1gKfP1doPNzdzG4PYgYnMJRTXhRZ9KLvEl86zfMhRWGc+uG0efyeEi2CE=
+X-Received: by 2002:a50:c052:0:b0:4ac:20b:96b7 with SMTP id
+ u18-20020a50c052000000b004ac020b96b7mr3183468edd.8.1677037663301; Tue, 21 Feb
+ 2023 19:47:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230221110344.82818-1-kerneljasonxing@gmail.com>
+ <48429c16fdaee59867df5ef487e73d4b1bf099af.camel@redhat.com>
+ <CAL+tcoD8PzL4khHq44z27qSHHGkcC4YUa91E3h+ki7O0u3SshQ@mail.gmail.com>
+ <aaf3d11ea5b247ab03d117dadae682fe2180d38a.camel@redhat.com> <CAL+tcoBZFFwOnUqzcDtSsNyfPgHENAOv0bPcvncxuMPwCn40+Q@mail.gmail.com>
+In-Reply-To: <CAL+tcoBZFFwOnUqzcDtSsNyfPgHENAOv0bPcvncxuMPwCn40+Q@mail.gmail.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Wed, 22 Feb 2023 11:47:06 +0800
+Message-ID: <CAL+tcoBGFkXea-GyzbO41Ve8_wUF3PT=YF43TxuzgM+adVa8gw@mail.gmail.com>
+Subject: Re: [PATCH net] udp: fix memory schedule error
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     willemdebruijn.kernel@gmail.com, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 21 Feb 2023 18:46:26 -0800 Linus Torvalds wrote:
-> On Tue, Feb 21, 2023 at 3:38 PM Jakub Kicinski <kuba@kernel.org> wrote:
+On Tue, Feb 21, 2023 at 11:46 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
+>
+> On Tue, Feb 21, 2023 at 10:46 PM Paolo Abeni <pabeni@redhat.com> wrote:
 > >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-6.3  
-> 
-> Ok, so this is a bit nitpicky, but commit c7ef8221ca7d ("ice: use GNSS
-> subsystem instead of TTY") ends up doing odd things to kernel configs.
-> 
-> My local configuration suddenly grew this:
-> 
->     CONFIG_ICE_GNSS=y
-> 
-> which is pretty much nonsensical.
-> 
-> The reason? It's defined as
-> 
->     config ICE_GNSS
->             def_bool GNSS = y || GNSS = ICE
-> 
-> and so it gets set even when both GNSS and ICE are both disabled,
-> because 'n' = 'n'.
-> 
-> Does it end up *mattering*? No. It's only used in the ICE driver, but
-> it really looks all kinds of odd, and it makes the resulting .config
-> files illogical.
-> 
-> Maybe I'm the only one who looks at those things. I do it because I
-> think they are sometimes easier to just edit directly, but also
-> because for me it's a quick way to see if somebody has sneaked in new
-> config options that are on by default when they shouldn't be.
+> > On Tue, 2023-02-21 at 21:39 +0800, Jason Xing wrote:
+> > > On Tue, Feb 21, 2023 at 8:27 PM Paolo Abeni <pabeni@redhat.com> wrote:
+> > > >
+> > > > On Tue, 2023-02-21 at 19:03 +0800, Jason Xing wrote:
+> > > > > From: Jason Xing <kernelxing@tencent.com>
+> > > > >
+> > > > > Quoting from the commit 7c80b038d23e ("net: fix sk_wmem_schedule()
+> > > > > and sk_rmem_schedule() errors"):
+> > > > >
+> > > > > "If sk->sk_forward_alloc is 150000, and we need to schedule 150001 bytes,
+> > > > > we want to allocate 1 byte more (rounded up to one page),
+> > > > > instead of 150001"
+> > > >
+> > > > I'm wondering if this would cause measurable (even small) performance
+> > > > regression? Specifically under high packet rate, with BH and user-space
+> > > > processing happening on different CPUs.
+> > > >
+> > > > Could you please provide the relevant performance figures?
+> > >
+> > > Sure, I've done some basic tests on my machine as below.
+> > >
+> > > Environment: 16 cpus, 60G memory
+> > > Server: run "iperf3 -s -p [port]" command and start 500 processes.
+> > > Client: run "iperf3 -u -c 127.0.0.1 -p [port]" command and start 500 processes.
+> >
+> > Just for the records, with the above command each process will send
+> > pkts at 1mbs - not very relevant performance wise.
+> >
+> > Instead you could do:
+> >
+>
+> > taskset 0x2 iperf -s &
+> > iperf -u -c 127.0.0.1 -b 0 -l 64
+> >
+>
+> Thanks for your guidance.
+>
+> Here're some numbers according to what you suggested, which I tested
+> several times.
+> ----------|IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s
+> Before: lo 411073.41 411073.41  36932.38  36932.38
+> After:   lo 410308.73 410308.73  36863.81  36863.81
+>
+> Above is one of many results which does not mean that the original
+> code absolutely outperforms.
+> The output is not that constant and stable, I think.
 
-Oh, we only check oldconfig so the hidden options don't pop up.
-Let me make a note...
+Today, I ran the same test on other servers, it looks the same as
+above. Those results fluctuate within ~2%.
 
-> I'd really prefer to not have the resulting config files polluted with
-> nonsensical config options.
-> 
-> I suspect it would be as simple as adding a
-> 
->         depends on ICE != n
-> 
-> to that thing, but I didn't get around to testing that. I thought it
-> would be better to notify the guilty parties.
-> 
-> Anyway, this has obviously not held up me pulling the networking
-> changes, and you should just see this as (yet another) sign of "yeah,
-> Linus cares about those config files to a somewhat unhealthy degree".
+Oh, one more thing I forgot to say is the output of iperf itself which
+doesn't show any difference.
+Before: Bitrate is 211 - 212 Mbits/sec
+After: Bitrate is 211 - 212 Mbits/sec
+So this result is relatively constant especially if we keep running
+the test over 2 minutes.
 
-Thanks! We'll take care of it shortly.
+Jason
+
+>
+> Please help me review those numbers.
+>
+> >
+> > > In theory, I have no clue about why it could cause some regression?
+> > > Maybe the memory allocation is not that enough compared to the
+> > > original code?
+> >
+> > As Eric noted, for UDP traffic, due to the expected average packet
+> > size, sk_forward_alloc is touched quite frequently, both with and
+> > without this patch, so there is little chance it will have any
+> > performance impact.
+>
+> Well, I see.
+>
+> Thanks,
+> Jason
+>
+> >
+> > Cheers,
+> >
+> > Paolo
+> >
