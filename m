@@ -2,157 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B80669F8B6
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 17:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBEB69F8FE
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 17:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbjBVQMi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 11:12:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
+        id S229950AbjBVQ3P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 11:29:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbjBVQMd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 11:12:33 -0500
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FB33D092;
-        Wed, 22 Feb 2023 08:12:32 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6123F5C00CD;
-        Wed, 22 Feb 2023 11:12:32 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 22 Feb 2023 11:12:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1677082352; x=1677168752; bh=6P
-        LncvDNe/nJ55qRYE4c+4zrSl5PSlFbdt4C/GIEcco=; b=aH62uEIk63UXx1CdBP
-        MrPiynszOEQQKeSVOgh5rzwrdmLksq7nprALqTARhAJH/9s8y/k4b0BmWrRclpCC
-        NSnuqUDJNkKazc5qxkxCbKgymEjhkO0d2oL7kaN9RfwVvh8I1ml00OS6g+6PFvJp
-        GDU+fLCa2xe0fJfsBSrLFTJg3fjEDJApuf6DStjP0ejIBduwKKC0c7JMgVuFC2xP
-        TRqUHBXfH0eDGu6IfYzSvOzpjnLduVEfl7EGf9NdjAQcUssJGhOkOuOjtF2jxnMr
-        lYXbJ94TSbPZ2DQUwItMBNiNyl7wNwplAEPcP2xU1U8V4RoLAHo5yeC6gKP7YuCL
-        JvHQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1677082352; x=1677168752; bh=6PLncvDNe/nJ5
-        5qRYE4c+4zrSl5PSlFbdt4C/GIEcco=; b=ldnB4JNPTsZqfVuigS5UjTIMcrR4l
-        GO5rL+RdG2I/uelk/zPpR+JWaVISGYsq3yzmFOZw5wDYNkMhX8Q8FX1UuDE7Pz+b
-        iYd0WsVeAp19f6UDfv22mS/UL+hVw9Od+OLECQTFKW3z1YyeM8livcxh+ILvl/B8
-        Y8hbJphQjpi4I5KcIIirX9yXv185tYjOsXZ0L8AzZmgbPIBQVsiX4aE9zFqZp+aD
-        sF4KZweYmyZ41RaayPcyNpxieX7mTWCHuKgQcL+n+qVdzp8qw7zH3QiOaY76aENy
-        kZdeOZoGG/EewPeqKEK1PENt1KqgPxVGg1OTz1ms+rkJ6hk99Ir9fxozw==
-X-ME-Sender: <xms:8D72Y2VSDVvtknQRC1WHidBWahODN70M9nphm1HSPjBsyYkxRMh4LQ>
-    <xme:8D72YynvxI-78bvSX5hE8_sBLEo-f88Png_rvAInX7KpVESVG-v6ztJKf7_CXjK6S
-    SlUiSWzHMLQA7_BqBo>
-X-ME-Received: <xmr:8D72Y6YC5SQS4Vcx4rXASwvzC19RvrxHL4wldgi3fnivNcK8_nPHMUoO2oPl>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudejledgkeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
-    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepfeeludefheegvdeuvd
-    dvgeekgfdvtdettdelieeihfegtedugeekhfdvhfejfedtnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
-    hgohgrthdrtghomh
-X-ME-Proxy: <xmx:8D72Y9Wwzh9bdiFqf9LUNIY9Z4ZmhUQywnnN8wsUBAB_bnrxEhNvKA>
-    <xmx:8D72YwltgDSI5GsJuMbUku6i-JBwUdAiEhj8hRBu2_5o4kCgaOta5Q>
-    <xmx:8D72Yycf14-9d4ZRqke7DxC_P3tBmd4ZLV24wDN7rEEezjZAEKAHDw>
-    <xmx:8D72Y_tZbEatKZzO6f8o2gGJShfu9Fic-XRcTVos0-3Op_vONYcV7Q>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 22 Feb 2023 11:12:30 -0500 (EST)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
-        johan.almbladh@anyfinetworks.com, paulburton@kernel.org,
-        bpf@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 2/2] MIPS: ebpf jit: Implement R4000 workarounds
-Date:   Wed, 22 Feb 2023 16:12:22 +0000
-Message-Id: <20230222161222.11879-3-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20230222161222.11879-1-jiaxun.yang@flygoat.com>
-References: <20230222161222.11879-1-jiaxun.yang@flygoat.com>
+        with ESMTP id S231916AbjBVQ3O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 11:29:14 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560132A157;
+        Wed, 22 Feb 2023 08:29:11 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id ec43so32221759edb.8;
+        Wed, 22 Feb 2023 08:29:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JXMSnD0TNrkNwGD3Y9+NOTvS6S1ymasxXdnswLBQDag=;
+        b=oVi4FXujqyY44krQnwtk++mlPPK6vFaXUeJA/Uoa4WRHPRcko3+m1sUzKOn1kV8NXR
+         8Q1T2j0HqwqWbec0G389VVRj537zf40l1BtRRXPj10kEw2SuwKutTDvUyuNNBt+fHJej
+         sX3HcidV51yGghhvlYWQ2ZH4WG8UTW9QEt1BZMetZg/cyh3xF1BajXnx8RPdamXpYYy2
+         FFNqeAiwSKZWcIEh9Sq6F3rs/FD+lykIAZnNI7VhxBsNDMJZLDUtSZy9gC3mwKtT9KMv
+         2suXgoFFDPiO3bHwLmbtc03XMFvvChzB/Uo4dSV/RiWZDj9Cvry08RNl66sB3JG6e/Ge
+         XmTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JXMSnD0TNrkNwGD3Y9+NOTvS6S1ymasxXdnswLBQDag=;
+        b=wPx+kJ67QQpqloA6L/UU3ArvIzYnlOGsOjPso0NqAfvDhxVJpM1gOKajEuecgmnBtZ
+         Sz67kZ3PEw7Xe6zFPoxJyf5TDxfz3fxpcjvCwOxmE1VLKbckykPRTpNdzFxBRLOEkH14
+         CE36mxObL6MgP7hmXWWsXrr2rLdWLe/I1aX0IZnT44yOK86QJlIebiAPymUFZrcMBuPm
+         c3ZXy1afif5ftaOcyuyZQTLzuOZ1gOrv+lUYlTyog0VRT1hK03CzWVpAbtYiIwI96aTa
+         dp/Q/5XxtQRU4Rjk1tplMRdBEwfq6C+XclmgEzwTq7pQSBpxl93OZFXWrEltSr8Qim86
+         PREg==
+X-Gm-Message-State: AO0yUKXfNnVXS+FV/eY2xJPQGs5KeMoohm+lv93hmu7frrEfn/bGGDVY
+        tBSnLBnIQEeN4/NUoj+TP5xJF7arAO8z07EPk7U=
+X-Google-Smtp-Source: AK7set99PBOT7bUquNmD5zN1zb4oeyIA44DqoRzzd+9HOUdTkllqn71L3NRU1cNFf/rVM7Cvky0CKlON9Ll/FEVQ8tg=
+X-Received: by 2002:a17:906:dfe8:b0:895:58be:963 with SMTP id
+ lc8-20020a170906dfe800b0089558be0963mr8142846ejc.3.1677083349630; Wed, 22 Feb
+ 2023 08:29:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <9c476aa64c9588205817833dbaa622f87c0e0081.1677051600.git.viresh.kumar@linaro.org>
+ <CAMuHMdXd3876o+petD51xfnJRBOOg=oqkO_pdsmcr8=Uec2KDg@mail.gmail.com> <7189da9a-f634-01ae-194d-a4d14a319a1c@intel.com>
+In-Reply-To: <7189da9a-f634-01ae-194d-a4d14a319a1c@intel.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 22 Feb 2023 08:28:58 -0800
+Message-ID: <CAADnVQKX0ZD=8Xu4U2H_vbyuNoXJv0UZ1OffUtqw3vs0v95ELQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix undeclared function 'barrier_nospec' warning
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For R4000 erratas around multiplication and division instructions,
-as our use of those instructions are always followed by mflo/mfhi
-instructions, the only issue we need care is
+On Wed, Feb 22, 2023 at 7:33 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> On 2/22/23 07:03, Geert Uytterhoeven wrote:
+> > On Wed, Feb 22, 2023 at 9:26 AM Viresh Kumar <viresh.kumar@linaro.org> =
+wrote:
+> >> Add the missing header for architectures that don't define
+> >> the barrier_nospec() macro. The nospec.h header is added after the
+> >> inclusion of barrier.h to avoid redefining the macro for architectures
+> >> that already define barrier_nospec() in their respective barrier.h
+> >> headers.
+> >>
+> >> Fixes: 74e19ef0ff80 ("uaccess: Add speculation barrier to copy_from_us=
+er()")
+> >> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> >> ---
+> >> Linus's master branch fails currently to build for arm64 without this =
+commit.
+> > Not just arm64 =F0=9F=99=81
+> > http://kisskb.ellerman.id.au/kisskb/head/5b7c4cabbb65f5c469464da6c5f614=
+cbd7f730f2
+>
+> Thanks for the fix, and sorry for the breakage, folks!  Obviously:
+>
+> Tested-by: Dave Hansen <dave.hansen@linux.intel.com>
+>
+> Now time to go make sure I have bpf turned on in all my cross builds.
 
-"MIPS R4000PC/SC Errata, Processor Revision 2.2 and 3.0" Errata 28:
-"A double-word or a variable shift may give an incorrect result if
-executed while an integer multiplication is in progress."
+Not clear why the broken commit got applied bypassing bpf@vger and not
+going through BPF CI. :(
 
-We just emit a mfhi $0 to ensure the operation is completed after
-every multiplication instruction accorading to workaround suggestion
-in the document.
+Yesterday I applied pretty much the same fix from Huacai Chen.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/Kconfig              | 4 +---
- arch/mips/net/bpf_jit_comp32.c | 4 ++++
- arch/mips/net/bpf_jit_comp64.c | 3 +++
- 3 files changed, 8 insertions(+), 3 deletions(-)
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=3D34=
+5d24a91c79f408e355c8b7e873ccde0f097eea
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index df0910e3895c..5ea07c833c5b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -63,9 +63,7 @@ config MIPS
- 	select HAVE_DEBUG_STACKOVERFLOW
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
--	select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
--				!CPU_R4000_WORKAROUNDS && \
--				!CPU_R4400_WORKAROUNDS
-+	select HAVE_EBPF_JIT if !CPU_MICROMIPS
- 	select HAVE_EXIT_THREAD
- 	select HAVE_FAST_GUP
- 	select HAVE_FTRACE_MCOUNT_RECORD
-diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
-index ace5db3fbd17..fee334544d2f 100644
---- a/arch/mips/net/bpf_jit_comp32.c
-+++ b/arch/mips/net/bpf_jit_comp32.c
-@@ -446,6 +446,9 @@ static void emit_mul_i64(struct jit_context *ctx, const u8 dst[], s32 imm)
- 		} else {
- 			emit(ctx, multu, hi(dst), src);
- 			emit(ctx, mflo, hi(dst));
-+			/* Ensure multiplication is completed */
-+			if (IS_ENABLED(CONFIG_CPU_R4000_WORKAROUNDS))
-+				emit(ctx, mfhi, MIPS_R_ZERO);
- 		}
- 
- 		/* hi(dst) = hi(dst) - lo(dst) */
-@@ -504,6 +507,7 @@ static void emit_mul_r64(struct jit_context *ctx,
- 	} else {
- 		emit(ctx, multu, lo(dst), lo(src));
- 		emit(ctx, mflo, lo(dst));
-+		/* No need for workaround because we have this mfhi */
- 		emit(ctx, mfhi, tmp);
- 	}
- 
-diff --git a/arch/mips/net/bpf_jit_comp64.c b/arch/mips/net/bpf_jit_comp64.c
-index 0e7c1bdcf914..5f5a93f997bc 100644
---- a/arch/mips/net/bpf_jit_comp64.c
-+++ b/arch/mips/net/bpf_jit_comp64.c
-@@ -228,6 +228,9 @@ static void emit_alu_r64(struct jit_context *ctx, u8 dst, u8 src, u8 op)
- 		} else {
- 			emit(ctx, dmultu, dst, src);
- 			emit(ctx, mflo, dst);
-+			/* Ensure multiplication is completed */
-+			if (IS_ENABLED(CONFIG_CPU_R4000_WORKAROUNDS))
-+				emit(ctx, mfhi, MIPS_R_ZERO);
- 		}
- 		break;
- 	/* dst = dst / src */
--- 
-2.37.1 (Apple Git-137.1)
+and BPF CI is now back to green.
 
+Linus,
+Since the blast radius is big, may be apply the fix directly ?
