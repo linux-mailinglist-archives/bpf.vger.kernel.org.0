@@ -2,67 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8327569FCF0
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 21:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA79E69FD04
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 21:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbjBVUSB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 15:18:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
+        id S232619AbjBVUce (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 15:32:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbjBVUSA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 15:18:00 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550A819F34;
-        Wed, 22 Feb 2023 12:17:59 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id s17so4922372pgv.4;
-        Wed, 22 Feb 2023 12:17:59 -0800 (PST)
+        with ESMTP id S232470AbjBVUcd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 15:32:33 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCE937541;
+        Wed, 22 Feb 2023 12:32:30 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id u14so6358634ple.7;
+        Wed, 22 Feb 2023 12:32:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GsUgRdz1n/LKYXZQUijuj95d7BI1OE+ziHYOj2b1wrk=;
-        b=iYJQfUSSxcHxFwHqQY6pt7G0cVaiO2IRi1YHDa6IohG7q7fHhaC0jGIWkSkn+WBvTH
-         gPyQy/R63VLQvjJ5SVRuJYJvxp2LsDcPoKQLNS7sc0kfQaMzjwXvGFFU6mPsHfOQypaz
-         XpFOlmB7XuA9IqfOAcQhRiaUB5yExAIAVAk3Dp3FShxPd/QaqQ3QmPH3drwo1rRXsJm3
-         oC2w0Gdlv0gOjQ2lS0G8DFU27X4WUDUcrqhket5eg9bhRWrfdduhzygZdWbqSmwrxOxH
-         LmtXZB9iRIdIZBHusNYalZit0VqbaM7jrsOeJqwXATyg7KrHfethx3Yy4jxQUCwPS+F3
-         dbZw==
+        bh=4SoNs2AKnQHfT4o3sdpr0qfSg+D9akMHdmyO9trz+Aw=;
+        b=qAGSz3cV0cyYhf6nHtki8Gm7b+iF27+pcWqifxWYW/g/aYORuXkGSGO6Nnc6+gM8Li
+         d909MOL+rPrEhg29f00/Vq/bB+stvMZyKjpgawhWlteCs4VkItFS4THNgny5F1pBqhwR
+         Wv8A9sbrXS6LjyfBZrU5jSGzzmilyhtKeDAv+DeoT/UN5u9UHyOHmrspFDVSMyylqmt5
+         yXJGj/u4Z9bw2uapOd8jmvWnpGnr3jzhS3+SATKpURztK1cbBFVJLx7NRw+J3LegzKCi
+         Jbolq/TmOjiQDHJZZWK7WJdxwRJzTxDUvw1koZJibGzWuQJ/ZCZPKF5X9sfiUz1x2UXP
+         yxJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GsUgRdz1n/LKYXZQUijuj95d7BI1OE+ziHYOj2b1wrk=;
-        b=1ZSydgR7rQe4BkB2CAHu31M9mtndt010SOfQt6/zhxA8/kjEl0GasNQZ/YoBRyoG9K
-         x8KNtjFyUfs9aEwN1M9ThaY16cA7H6j8l6DOMkxpt0bD8yQrBjskbQDHk8FpsMZlCIjQ
-         i4KaeGUY5xTT9nDMxa2W/Po+QZZgnDneLZh4CLIm4ujLToxV4qfWNw4plcPlHxchPNbb
-         nC9pSQAcsaMrsSmZJgTfdSab9tzLycLdsHZxIDxdgjXrP0AWRekl3iAaYq5WW/puxDL5
-         WUvJiw3S27upA1Y3zfQj9pQB3qQdRdJnbXlGofTsJa+OS5YJ+0fjOr8mjeQYZfnztKpU
-         D7AQ==
-X-Gm-Message-State: AO0yUKVzV3AOaKDMR7ZUkJARmT1E4KUkawVB45zgQ36gtSDIJFoDlzcb
-        O+a6X+MVpwM24TPxAMRSiXIVtebv2j4=
-X-Google-Smtp-Source: AK7set8igjQ4YKJ07R2COn3rV+IstQAnzzZ8774ocpbplJMlIPOuNUAHUV2ymeLavUyX/aAxKqwh5Q==
-X-Received: by 2002:a62:1b45:0:b0:5a9:d58e:796f with SMTP id b66-20020a621b45000000b005a9d58e796fmr7212177pfb.29.1677097077612;
-        Wed, 22 Feb 2023 12:17:57 -0800 (PST)
+        bh=4SoNs2AKnQHfT4o3sdpr0qfSg+D9akMHdmyO9trz+Aw=;
+        b=IKlK3ZkcHVz2S3mniAiPk+o9r5tCagqBHsj/2yTSz6x8EwauJ6NPqzD8erzh7AYrIA
+         Kn1hu8zoCXmVHOEQMFcYCOF2gSz9Ry5E/L/htmIFgu2u/7S7FFd5T0oIFYb08jJN7Crq
+         iHsu5w1xmzAVcjVD3L7UROqXZUe+bAe91Q6pP1MjX5GLsKNucGSjl3eOrlzc9TmI2dK1
+         PCKjLLMOziHyPgS8dV8rAltl7oBZCs+E2jk4Oq3tYtsk5Jh1y2XROYeYHYZHxJ1vdYIy
+         1XCIURdfTXUhSxgxnwH7o7ltayc5GdSXzCpfn6PI1WN3rE4sZuFxTyP5zvCQYXX6vM3H
+         Itbw==
+X-Gm-Message-State: AO0yUKULlviV19ccSH8Ub0zErRQtYmVrsKwRAXL22JzVoFMxVfm2IZqD
+        /E3Dw8yfGWscM+TydAu9MEE=
+X-Google-Smtp-Source: AK7set/A+88kuxnSMd/VCcTL283WiNenLQTKBQLDG+GX39Va4ZYG2QFI+qWtMf5GXu4znAbsX91Ekg==
+X-Received: by 2002:a05:6a21:329c:b0:c7:7248:4e42 with SMTP id yt28-20020a056a21329c00b000c772484e42mr12686181pzb.18.1677097949342;
+        Wed, 22 Feb 2023 12:32:29 -0800 (PST)
 Received: from MacBook-Pro-6.local ([2620:10d:c090:400::5:9cb3])
-        by smtp.gmail.com with ESMTPSA id x53-20020a056a000bf500b005a8c92f7c27sm5351167pfu.212.2023.02.22.12.17.55
+        by smtp.gmail.com with ESMTPSA id m18-20020a6562d2000000b005026c125d47sm5802061pgv.21.2023.02.22.12.32.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Feb 2023 12:17:57 -0800 (PST)
-Date:   Wed, 22 Feb 2023 12:17:54 -0800
+        Wed, 22 Feb 2023 12:32:28 -0800 (PST)
+Date:   Wed, 22 Feb 2023 12:32:26 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Joanne Koong <joannelkoong@gmail.com>
 Cc:     bpf@vger.kernel.org, martin.lau@kernel.org, andrii@kernel.org,
         ast@kernel.org, memxor@gmail.com, daniel@iogearbox.net,
         netdev@vger.kernel.org, kernel-team@fb.com, toke@kernel.org
-Subject: Re: [PATCH v11 bpf-next 10/10] selftests/bpf: tests for using
- dynptrs to parse skb and xdp buffers
-Message-ID: <20230222201754.vsqi7s4nhngolok5@MacBook-Pro-6.local>
+Subject: Re: [PATCH v11 bpf-next 09/10] bpf: Add bpf_dynptr_slice and
+ bpf_dynptr_slice_rdwr
+Message-ID: <20230222203214.5e33mmjzljoaowbq@MacBook-Pro-6.local>
 References: <20230222060747.2562549-1-joannelkoong@gmail.com>
- <20230222060747.2562549-11-joannelkoong@gmail.com>
+ <20230222060747.2562549-10-joannelkoong@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230222060747.2562549-11-joannelkoong@gmail.com>
+In-Reply-To: <20230222060747.2562549-10-joannelkoong@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,21 +73,83 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 21, 2023 at 10:07:47PM -0800, Joanne Koong wrote:
+On Tue, Feb 21, 2023 at 10:07:46PM -0800, Joanne Koong wrote:
+> @@ -9975,8 +10023,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  		}
+>  	}
 >  
-> -SEC("tp/syscalls/sys_enter_nanosleep")
-> +SEC("tracepoint/syscalls/sys_enter_nanosleep")
+> -	for (i = 0; i < CALLER_SAVED_REGS; i++)
+> -		mark_reg_not_init(env, regs, caller_saved[i]);
+> +	mark_reg_not_init(env, regs, caller_saved[BPF_REG_0]);
 
-Not sure what this was for, but s390 tests are failing:
-libbpf: prog 'test_read_write': can't attach BPF program w/o FD (did you load it?)
-libbpf: prog 'test_read_write': failed to attach to tracepoint 'syscalls/sys_enter_nanosleep': Invalid argument
-verify_success:FAIL:bpf_program__attach unexpected error: -22
-Please see:
-https://github.com/kernel-patches/bpf/actions/runs/4240181429/jobs/7374285371
+...
 
-> +extern int bpf_dynptr_from_skb(struct __sk_buff *skb, __u64 flags,
-> +			       struct bpf_dynptr *ptr__uninit) __ksym;
-> +extern void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *ptr, __u32 offset,
-> +			      void *buffer, __u32 buffer__sz) __ksym;
+>  	/* Check return type */
+>  	t = btf_type_skip_modifiers(desc_btf, func_proto->type, NULL);
+> @@ -10062,6 +10109,41 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  				regs[BPF_REG_0].type = PTR_TO_BTF_ID | PTR_UNTRUSTED;
+>  				regs[BPF_REG_0].btf = desc_btf;
+>  				regs[BPF_REG_0].btf_id = meta.arg_constant.value;
+> +			} else if (meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice] ||
+> +				   meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice_rdwr]) {
+> +				enum bpf_type_flag type_flag = get_dynptr_type_flag(meta.initialized_dynptr.type);
+> +
+> +				mark_reg_known_zero(env, regs, BPF_REG_0);
+> +
+> +				if (!tnum_is_const(regs[BPF_REG_4].var_off)) {
+> +					verbose(env, "mem_size must be a constant\n");
+> +					return -EINVAL;
+> +				}
+> +				regs[BPF_REG_0].mem_size = regs[BPF_REG_4].var_off.value;
 
-Please move it to some common header like bpf_experimental.h or any other.
+This is a bit fragile.
+Instead of moving above 'for' may be let's use meta.arg_constant approach ?
+Just doing:
+if (is_kfunc_arg_constant(meta->btf, &args[i]) || is_kfunc_arg_mem_size(...))
+won't quite work, since we'll be doing mark_chain_precision() twice.
+(check_kfunc_mem_size_reg() will do it 2nd time).
+
+Another issue is that __sz allows var_off, but bpf_dynptr_slice() needs tnum_is_const
+and the patch is doing it explicitly.
+Ideally some combination of __sz and __k is needed.
+
+I don't like our suffix logic, but maybe let's do quick "__szk" for now ?
+Then it can do normal __sz check and in addition do tnum_is_const() check
+and set meta.arg_constant ?
+
+Then 'for' will stay in place and regs[BPF_REG_4] won't be needed.
+
+> +
+> +				/* PTR_MAYBE_NULL will be added when is_kfunc_ret_null is checked */
+> +				regs[BPF_REG_0].type = PTR_TO_MEM | type_flag;
+> +
+> +				if (meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice]) {
+> +					regs[BPF_REG_0].type |= MEM_RDONLY;
+> +				} else {
+> +					/* this will set env->seen_direct_write to true */
+> +					if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE)) {
+> +						verbose(env, "the prog does not allow writes to packet data\n");
+> +						return -EINVAL;
+> +					}
+> +				}
+> +
+> +				if (!meta.initialized_dynptr.id) {
+> +					verbose(env, "verifier internal error: no dynptr id\n");
+> +					return -EFAULT;
+> +				}
+> +				regs[BPF_REG_0].dynptr_id = meta.initialized_dynptr.id;
+> +
+> +				/* we don't need to set BPF_REG_0's ref obj id
+> +				 * because packet slices are not refcounted (see
+> +				 * dynptr_type_refcounted)
+> +				 */
+>  			} else {
+>  				verbose(env, "kernel function %s unhandled dynamic return type\n",
+>  					meta.func_name);
+> @@ -10121,6 +10203,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  			regs[BPF_REG_0].id = ++env->id_gen;
+>  	} /* else { add_kfunc_call() ensures it is btf_type_is_void(t) } */
+>  
+> +	for (i = BPF_REG_1; i < CALLER_SAVED_REGS; i++)
+> +		mark_reg_not_init(env, regs, caller_saved[i]);
+> +
