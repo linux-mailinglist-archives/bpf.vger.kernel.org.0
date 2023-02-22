@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 462CD69EC86
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 02:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD24C69EC87
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 02:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbjBVBrY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 20:47:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55764 "EHLO
+        id S229961AbjBVBr2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 20:47:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjBVBrX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 20:47:23 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AFB32E6B
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 17:47:22 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id fb30so3537965pfb.13
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 17:47:22 -0800 (PST)
+        with ESMTP id S229591AbjBVBr2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 20:47:28 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB2732E65
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 17:47:25 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id a26so3673426pfo.9
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 17:47:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Oi+d4l8Cq9vDb+7VuIkyl4rONbcY2brBirVQtnXOQc8=;
-        b=Boge3vGhGikAFj9rcZjNnf/0TnD1sixP3DV/Fh8W1uU+butCf2/eJGzg5CqPNpotI1
-         pD9RVyyHGSSbxOyCGiTPzTVcOpjjmwqRvmbgZwBS0CjZbRt24PoRY8HtzRKhmSnW7YnK
-         9K8HPXWjS6hqVMJf+ceZBsAgxOq3nEtA/EO1OH0Pj+GdqOSznYjaeM3277sv9bK/wHQA
-         qC3lKE6PMTXM8cig2GUsmp0QXheEWjTr+rLrsF5loopGCGFeDMHW0DWKS5uJRTs0NQsa
-         faBWKrnzjAJCGhLpv2YWVRQdYm4kXsen4YqDdn+WzQBZL4ivyckBOYhzvGzvIVBUlOp+
-         mWlA==
+        bh=fcpM//UKIAW1ZQQm0nQY95pG6OE3zU7MKvM5PtfO9N4=;
+        b=Or5MTmCH/rH6K3N5US40bmr7KEA9Rc8U/mrEhDKi/xf8MEoQTQnx3DOVQUt3zqN6w2
+         r5veMZxnLCQGEoqq55y1H+NHkqxjCDHqEuSLNH9a1U/XxXOGWrXW5atZDzNmf/ml9P6u
+         niedfI0sXhy4ShGzv2+zVyTTf+AKcfM7CLIXMH6p/lDlzbHtT0xoLU0R3hgfWCGtZueM
+         ulhonukBk1+hjIVQGfmp+ORKmpgZHM+qw3mlw22FKUDoBVQdQ7JG3WvoA6SWGC9MGn5d
+         aILcSYbXh6pAPBFplH97zPgYHr5pDRCt0+g6UUA/fjVM0iUPldFodapFBsHbW3fti/cW
+         +wVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Oi+d4l8Cq9vDb+7VuIkyl4rONbcY2brBirVQtnXOQc8=;
-        b=JYnskxPrMAYS26W8UIXuyItE39t1mAJ5FUvUnXg/rJHeiHNFcwjX04J+HHP+t+7hJL
-         QDii7KkiufGzV1sryQPNidxCtqHwY4dg4Z+Q0UqcCYhN0AYzJe2T0UT9xOayVyb+X9jU
-         5y14ZxVa7ZjQ9/MwG0yhUSeT3DCSOpaAYous9rkwC5U/7pgAKoZyGANlbUOqLBOyy9nw
-         xbQIebrUXPpp88+2vU3Y38gp5aUiVpQkVsAFDRXoX4taZqLcFBP3b2H1QoZ5vW2Raxok
-         HEIF9d1UEHceTCtYU/+bS6NHTjaONkB6hWq4ARgyDDe80C/ThRKZfJQ0EK9FyUfrtGxc
-         Uulg==
-X-Gm-Message-State: AO0yUKWidy3aSc6k70D3HdFZ9PitFI9C4Ptyp/0WCTAQKz4ADne8/MyQ
-        zx2ANTULlVyRvYqAJLU8dAI=
-X-Google-Smtp-Source: AK7set94uSiUAI2xmCjuOo9ylXoh7FgmWsxX3b0uVgGa3lyL5Fga0+zEq4TPNUYPFE2HaNxXCtY3pA==
-X-Received: by 2002:a05:6a00:cd:b0:5d6:138f:5599 with SMTP id e13-20020a056a0000cd00b005d6138f5599mr256969pfj.26.1677030441676;
-        Tue, 21 Feb 2023 17:47:21 -0800 (PST)
+        bh=fcpM//UKIAW1ZQQm0nQY95pG6OE3zU7MKvM5PtfO9N4=;
+        b=eV51s5mAaIiGfJo5Mxs4tXwnhljXuDxdVrPtaxL7vWfqJJIlKQ1SjQm0rMItUVbkp8
+         HtyXttVIdva/yYM9eJZi+TnJn8T6pEl5fvgdOswQP2Eg4jPDBh4P+hLSATn/OdxyTULG
+         KTmr05ZtJWuiTq/+QeHgrV/TmAaIWWyuOcE7smIZNHclCsTys/tqEnBkGH0Rdj+dBXDR
+         5+rB/8VSA1IVY0h2phvYL5NqWZog+nlZ0iR4Cxk9ENJ89UE9pp9mg69LibhFl08Ydd7l
+         jsejZZQ/euxhgz8Weg4xd8Fw1UzNDQwioEDomKUFoj1c2/edrxZwQH53lgrkFu3lZAeg
+         C5mw==
+X-Gm-Message-State: AO0yUKU8FFbv1B6MRRAoT6Jxc/Vp06Db4Y1MgCBaKGuIDF4L/yZedfQZ
+        RmaHVietQwjYflqvE7MyVrE=
+X-Google-Smtp-Source: AK7set+sGhB05eCm8Kmyaup/AGZ/r60iCURbTQ3v6SY1hGj1jvukmoNwNjFDGlLQcQ7WvLH6Kjr4sA==
+X-Received: by 2002:a05:6a00:18a9:b0:594:1f1c:3d3b with SMTP id x41-20020a056a0018a900b005941f1c3d3bmr9161148pfh.16.1677030445096;
+        Tue, 21 Feb 2023 17:47:25 -0800 (PST)
 Received: from vultr.guest ([2001:19f0:7001:5cd8:5400:4ff:fe4e:5fe5])
-        by smtp.gmail.com with ESMTPSA id f15-20020aa78b0f000000b005ac419804d3sm3811509pfd.186.2023.02.21.17.47.18
+        by smtp.gmail.com with ESMTPSA id f15-20020aa78b0f000000b005ac419804d3sm3811509pfd.186.2023.02.21.17.47.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Feb 2023 17:47:21 -0800 (PST)
+        Tue, 21 Feb 2023 17:47:24 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -56,9 +56,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
         xiyou.wangcong@gmail.com
 Cc:     bpf@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v2 17/18] bpf: offload map memory usage
-Date:   Wed, 22 Feb 2023 01:45:52 +0000
-Message-Id: <20230222014553.47744-18-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v2 18/18] bpf: enforce all maps having memory usage callback
+Date:   Wed, 22 Feb 2023 01:45:53 +0000
+Message-Id: <20230222014553.47744-19-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230222014553.47744-1-laoar.shao@gmail.com>
 References: <20230222014553.47744-1-laoar.shao@gmail.com>
@@ -74,70 +74,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A new helper is introduced to calculate offload map memory usage. But
-currently the memory dynamically allocated in netdev dev_ops, like
-nsim_map_update_elem, is not counted. Let's just put it aside now.
+We have implemented memory usage callback for all maps, and we enforce
+any newly added map having a callback as well. Show a warning if it
+doesn't have.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/bpf.h  | 6 ++++++
- kernel/bpf/offload.c | 6 ++++++
- kernel/bpf/syscall.c | 1 +
- 3 files changed, 13 insertions(+)
+ kernel/bpf/syscall.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index bca0963..e50e5e1 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2568,6 +2568,7 @@ static inline bool bpf_map_is_offloaded(struct bpf_map *map)
- 
- struct bpf_map *bpf_map_offload_map_alloc(union bpf_attr *attr);
- void bpf_map_offload_map_free(struct bpf_map *map);
-+u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map);
- int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- 			      const union bpf_attr *kattr,
- 			      union bpf_attr __user *uattr);
-@@ -2639,6 +2640,11 @@ static inline void bpf_map_offload_map_free(struct bpf_map *map)
- {
- }
- 
-+static inline u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map);
-+{
-+	return 0;
-+}
-+
- static inline int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- 					    const union bpf_attr *kattr,
- 					    union bpf_attr __user *uattr)
-diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-index 0c85e06..d9c9f45 100644
---- a/kernel/bpf/offload.c
-+++ b/kernel/bpf/offload.c
-@@ -563,6 +563,12 @@ void bpf_map_offload_map_free(struct bpf_map *map)
- 	bpf_map_area_free(offmap);
- }
- 
-+u64 bpf_map_offload_map_mem_usage(const struct bpf_map *map)
-+{
-+	/* The memory dynamically allocated in netdev dev_ops is not counted */
-+	return sizeof(struct bpf_offloaded_map);
-+}
-+
- int bpf_map_offload_lookup_elem(struct bpf_map *map, void *key, void *value)
- {
- 	struct bpf_offloaded_map *offmap = map_to_offmap(map);
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8333aa0..e12b03e 100644
+index e12b03e..d814d4e 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -105,6 +105,7 @@ int bpf_check_uarg_tail_zero(bpfptr_t uaddr,
- 	.map_alloc = bpf_map_offload_map_alloc,
- 	.map_free = bpf_map_offload_map_free,
- 	.map_check_btf = map_check_no_btf,
-+	.map_mem_usage = bpf_map_offload_map_mem_usage,
- };
+@@ -775,13 +775,9 @@ static fmode_t map_get_sys_perms(struct bpf_map *map, struct fd f)
+ /* Show the memory usage of a bpf map */
+ static u64 bpf_map_memory_usage(const struct bpf_map *map)
+ {
+-	unsigned long size;
+-
+-	if (map->ops->map_mem_usage)
+-		return map->ops->map_mem_usage(map);
+-
+-	size = round_up(map->key_size + bpf_map_value_size(map), 8);
+-	return round_up(map->max_entries * size, PAGE_SIZE);
++	if (WARN_ON_ONCE(!map->ops->map_mem_usage))
++		return 0;
++	return map->ops->map_mem_usage(map);
+ }
  
- static struct bpf_map *find_and_alloc_map(union bpf_attr *attr)
+ static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
 -- 
 1.8.3.1
 
