@@ -2,101 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB89969F3C1
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 12:55:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCF669F549
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 14:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbjBVLz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 06:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
+        id S231584AbjBVN0N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 08:26:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231341AbjBVLz0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 06:55:26 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 349612822E;
-        Wed, 22 Feb 2023 03:55:22 -0800 (PST)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8DxUOWpAvZj8ZEDAA--.1698S3;
-        Wed, 22 Feb 2023 19:55:21 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx2r2nAvZjar04AA--.38065S5;
-        Wed, 22 Feb 2023 19:55:21 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Check __ARCH_WANT_SET_GET_RLIMIT before syscall(__NR_getrlimit)
-Date:   Wed, 22 Feb 2023 19:55:08 +0800
-Message-Id: <1677066908-15224-4-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1677066908-15224-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1677066908-15224-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf8Cx2r2nAvZjar04AA--.38065S5
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjvJXoW7KF4kJw15ArW8ury3tw47Jwb_yoW8Aw17pa
-        yrJa4Utr1SyF17tw10krW7ZryfJrs7ZFWFkF48Jr95Zw1DXa9aqryIgF4YgrsxKrZaqrsY
-        v348Kas7Zr4UA37anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        b7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64
-        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVWxJVW8Jr1l
-        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
-        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8jZX5UUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231185AbjBVN0M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 08:26:12 -0500
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1238D3B64F;
+        Wed, 22 Feb 2023 05:25:41 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VcH3mW5_1677072334;
+Received: from localhost(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0VcH3mW5_1677072334)
+          by smtp.aliyun-inc.com;
+          Wed, 22 Feb 2023 21:25:34 +0800
+From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+To:     linux-block@vger.kernel.org, io-uring@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     ming.lei@redhat.com, axboe@kernel.dk, asml.silence@gmail.com,
+        ZiyangZhang@linux.alibaba.com
+Subject: [RFC v2 0/4] Add io_uring & ebpf based methods to implement zero-copy for ublk
+Date:   Wed, 22 Feb 2023 21:25:30 +0800
+Message-Id: <20230222132534.114574-1-xiaoguang.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-__NR_getrlimit is defined only if __ARCH_WANT_SET_GET_RLIMIT is defined:
+Normally, userspace block device implementations need to copy data between
+kernel block layer's io requests and userspace block device's userspace
+daemon. For example, ublk and tcmu both have similar logic, but this
+operation will consume cpu resources obviously, especially for large io.
 
-  #ifdef __ARCH_WANT_SET_GET_RLIMIT
-  /* getrlimit and setrlimit are superseded with prlimit64 */
-  #define __NR_getrlimit 163
-  ...
-  #endif
+There are methods trying to reduce these cpu overheads, then userspace
+block device's io performance will be improved further. These methods
+contain: 1) use special hardware to do memory copy, but seems not all
+architectures have these special hardware; 2) software methods, such as
+mmap kernel block layer's io requests's data to userspace daemon [1],
+but it has page table's map/unmap, tlb flush overhead, security issue,
+etc, and it maybe only friendly to large io.
 
-Some archs do not define __ARCH_WANT_SET_GET_RLIMIT, it should check
-__ARCH_WANT_SET_GET_RLIMIT before syscall(__NR_getrlimit) to fix the
-following build error:
+To solve this problem, I'd propose a new method, which will combine the
+respective advantages of io_uring and ebpf. Add a new program type
+BPF_PROG_TYPE_UBLK for ublk, userspace block device daemon process will
+register ebpf progs, which will use bpf helper offered by ublk bpf prog
+type to submit io requests on behalf of daemon process in kernel, note
+io requests will use kernel block layer io reqeusts's pages to do io,
+then the memory copy overhead will be gone.
 
-    TEST-OBJ [test_progs] user_ringbuf.test.o
-  tools/testing/selftests/bpf/prog_tests/user_ringbuf.c: In function 'kick_kernel_cb':
-  tools/testing/selftests/bpf/prog_tests/user_ringbuf.c:593:17: error: '__NR_getrlimit' undeclared (first use in this function)
-    593 |         syscall(__NR_getrlimit);
-        |                 ^~~~~~~~~~~~~~
-  tools/testing/selftests/bpf/prog_tests/user_ringbuf.c:593:17: note: each undeclared identifier is reported only once for each function it appears in
-  make: *** [Makefile:573: tools/testing/selftests/bpf/user_ringbuf.test.o] Error 1
-  make: Leaving directory 'tools/testing/selftests/bpf'
+Currently only one helper has beed added:
+    u64 bpf_ublk_queue_sqe(struct ublk_io_bpf_ctx *bpf_ctx,
+                struct io_uring_sqe *sqe, u32 sqe_len, u32, fd)
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- tools/testing/selftests/bpf/prog_tests/user_ringbuf.c | 2 ++
- 1 file changed, 2 insertions(+)
+This helper will use io_uring to submit io requests, so we need to make
+io_uring be able to submit a sqe located in kernel(Some codes idea comes
+from Pavel's patchset [2], but pavel's patch needs sqe->buf comes from
+userspace addr). Bpf prog will initialize sqes, but does not need to
+initializes sqes' buf field, sqe->buf will come from kernel block layer
+io requests in some form. See patch 2 for more.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-index 3a13e10..0550307 100644
---- a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-@@ -590,7 +590,9 @@ static void *kick_kernel_cb(void *arg)
- 	/* Kick the kernel, causing it to drain the ring buffer and then wake
- 	 * up the test thread waiting on epoll.
- 	 */
-+#ifdef __ARCH_WANT_SET_GET_RLIMIT
- 	syscall(__NR_getrlimit);
-+#endif
- 
- 	return NULL;
- }
+By using ebpf, we can implement various userspace io logic in kernel,
+and the ultimate goal is to support users to build an in-kernel io
+agent for userspace daemon, userspace block device's daemon justs
+registers an ebpf at startup, though which I think there'll be a long
+way to go. There'll be advantages at least:
+  1. Remove memory copy between kernel block layer and userspace daemon
+completely.
+  2. Save memory. Userspace daemon doesn't need to maintain memory to
+issue and complete io requests, and use kernel block layer io requests
+memory directly.
+  2. We may reduce the number of round trips between kernel and userspace
+daemon, so may reduce kernel & userspace context switch overheads.
+
+HOW to test:
+  git clone https://github.com/ming1/ubdsrv
+  cd ubdsrv
+  git am -3 0001-Add-ebpf-support.patch
+  # replace "/root/ublk/" with your own linux build directory
+  cd bpf; make; cd ..;
+  ./build_with_liburing_src
+  ./ublk add -t loop -q 1 -d 128 -f loop.file
+
+fio job file:
+  [global]
+  direct=1
+  filename=/dev/ublkb0
+  time_based
+  runtime=60
+  numjobs=1
+  cpus_allowed=1
+
+  [rand-read-4k]
+  bs=2048K
+  iodepth=16
+  ioengine=libaio
+  rw=randwrite
+  stonewall
+
+Without this patch:
+  READ: bw=373MiB/s (392MB/s), 373MiB/s-373MiB/s (392MB/s-392MB/s), io=21.9GiB (23.5GB), run=60042-60042msec
+  WRITE: bw=371MiB/s (389MB/s), 371MiB/s-371MiB/s (389MB/s-389MB/s), io=21.8GiB (23.4GB), run=60042-60042msec
+  ublk daemon's cpu utilization is about 12.5%, showed by top tool.
+
+With this patch:
+  READ: bw=373MiB/s (392MB/s), 373MiB/s-373MiB/s (392MB/s-392MB/s), io=21.9GiB (23.5GB), run=60043-60043msec
+  WRITE: bw=371MiB/s (389MB/s), 371MiB/s-371MiB/s (389MB/s-389MB/s), io=21.8GiB (23.4GB), run=60043-60043msec
+ublk daemon's cpu utilization is about 1%, showed by top tool.
+
+From above tests, this method can reduce cpu copy overhead obviously.
+
+TODO:
+I must say this patchset is still just a RFC for design.
+
+1. Currently for this patchset, I just make ublk ebpf prog submit io requests
+using io_uring in kernel, cqe event still needs to be handled in userspace
+daemon. Once later we succeed in make io_uring handle cqe in kernel, ublk
+ebpf prog can implement io in kernel.
+
+2. I have not done much tests yet, will run liburing/ublk/blktests later.
+
+3. Try to build complicated ebpf prog.
+
+Any review and suggestions are welcome, thanks.
+
+[1] https://lore.kernel.org/all/20220318095531.15479-1-xiaoguang.wang@linux.alibaba.com/
+[2] https://lore.kernel.org/all/cover.1621424513.git.asml.silence@gmail.com/
+
+Xiaoguang Wang (4):
+  bpf: add UBLK program type
+  io_uring: enable io_uring to submit sqes located in kernel
+  io_uring: introduce IORING_URING_CMD_UNLOCK flag
+  ublk_drv: add ebpf support
+
+ drivers/block/ublk_drv.c       | 284 +++++++++++++++++++++++++++++++--
+ include/linux/bpf_types.h      |   2 +
+ include/linux/io_uring.h       |  12 ++
+ include/linux/io_uring_types.h |   8 +-
+ include/uapi/linux/bpf.h       |   2 +
+ include/uapi/linux/io_uring.h  |   5 +
+ include/uapi/linux/ublk_cmd.h  |  18 +++
+ io_uring/io_uring.c            |  59 ++++++-
+ io_uring/rsrc.c                |  18 +++
+ io_uring/rsrc.h                |   4 +
+ io_uring/rw.c                  |   7 +
+ io_uring/uring_cmd.c           |   6 +-
+ kernel/bpf/syscall.c           |   1 +
+ kernel/bpf/verifier.c          |  10 +-
+ scripts/bpf_doc.py             |   4 +
+ tools/include/uapi/linux/bpf.h |  10 ++
+ tools/lib/bpf/libbpf.c         |   1 +
+ 17 files changed, 434 insertions(+), 17 deletions(-)
+
 -- 
-2.1.0
+2.31.1
 
