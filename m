@@ -2,45 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D75E69F632
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 15:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C083C69F6AD
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 15:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbjBVONe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 09:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55914 "EHLO
+        id S231562AbjBVOgu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 09:36:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjBVONd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 09:13:33 -0500
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FB7303F8;
-        Wed, 22 Feb 2023 06:13:30 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VcHE1wA_1677075207;
-Received: from 30.221.149.207(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0VcHE1wA_1677075207)
-          by smtp.aliyun-inc.com;
-          Wed, 22 Feb 2023 22:13:27 +0800
-Message-ID: <fb36c119-87ec-a265-314c-bf6fc2f7964f@linux.alibaba.com>
-Date:   Wed, 22 Feb 2023 22:13:26 +0800
+        with ESMTP id S231200AbjBVOgt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 09:36:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72993A099
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 06:35:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1677076546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PWtjST2EvzDQN/5ZNTjcGKldX/fXW6isNSMao5GlJ7U=;
+        b=L7fEUEQt74klyrBVTYKN+sGRw/0L55FYlxqp55ilyMwzdm7iRt8D86tvwsK8JMDF0kyDNl
+        32vpWcA8StlwET0hlrvUTWcZ8GMa4KMjUxHnytGa8A3oaVYegxbX/FHGCU+lS70PTW7Cak
+        y93/Hmq4FVPv8++/eO8oz79GVb6H7gk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-397-cSGWp2AaM2K0-FElBPfBFA-1; Wed, 22 Feb 2023 09:35:41 -0500
+X-MC-Unique: cSGWp2AaM2K0-FElBPfBFA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 88E58108BD85;
+        Wed, 22 Feb 2023 14:35:35 +0000 (UTC)
+Received: from dhcph048.fit.vutbr.com (unknown [10.45.225.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 55D3A1415114;
+        Wed, 22 Feb 2023 14:35:33 +0000 (UTC)
+From:   Viktor Malik <vmalik@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: [PATCH bpf-next v8 0/2] Fix attaching fentry/fexit/fmod_ret/lsm to modules
+Date:   Wed, 22 Feb 2023 15:35:27 +0100
+Message-Id: <cover.1677075137.git.vmalik@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [RFC 3/3] ublk_drv: add ebpf support
-Content-Language: en-US
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-block@vger.kernel.org, io-uring@vger.kernel.org,
-        bpf@vger.kernel.org, axboe@kernel.dk, asml.silence@gmail.com,
-        ZiyangZhang@linux.alibaba.com
-References: <20230215004122.28917-1-xiaoguang.wang@linux.alibaba.com>
- <20230215004122.28917-4-xiaoguang.wang@linux.alibaba.com>
- <Y+3lOn04pdFtdGbr@T590>
- <54043113-e524-6ca2-ce77-08d45099aff2@linux.alibaba.com>
- <Y+7uNpw7QBpJ4GHA@T590>
-From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-In-Reply-To: <Y+7uNpw7QBpJ4GHA@T590>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,50 +65,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
+I noticed that the verifier behaves incorrectly when attaching to fentry
+of multiple functions of the same name located in different modules (or
+in vmlinux). The reason for this is that if the target program is not
+specified, the verifier will search kallsyms for the trampoline address
+to attach to. The entire kallsyms is always searched, not respecting the
+module in which the function to attach to is located.
 
-I spent some time to write v2, especially think about how to work
-around task_work_add is not exported, so sorry for late response.
->
->>> The above is for setting up target io parameter, which is supposed
->>> to be from userspace, cause it is result of user space logic. If
->>> these parameters are from kernel, the whole logic has to be done
->>> in io_prep_prog.
->> Yeah, it's designed that io_prep_prog implements user space
->> io logic.
-> That could be the biggest weakness of this approach, because people
-> really want to implement complicated logic in userspace, which should
-> be the biggest value of ublk, but now seems you move kernel C
-> programming into ebpf userspace programming, I don't think ebpf
-> is good at handling complicated userspace logic.
-Absolutely agree with you, ebpf has strict programming rules,
-I spent more time than I had thought at startup for support loop
-target ebpf prog(ublk.bpf.c). Later I'll try to collaborate with my
-colleagues, to see whether we can program their userspace logic
-into ebpf prog or partially.
- 
->> io_prep_prog is called when ublk_queue_rq() is called, this bpf
->> prog will initialize one or more sqes according to user logic, and
->> io_prep_prog will put these sqes in an ebpf map structure, then
->> execute a task_work_add() to notify ubq_daemon to execute
->> io_submit_prog. Note, we can not call io_uring_submit_sqe()
->> in task context that calls ublk_queue_rq(), that context does not
->> have io_uring instance owned by ubq_daemon.
->> Later ubq_daemon will call io_submit_prog to submit sqes.
-> Submitting sqe from kernel looks interesting, but I guess
-> performance may be hurt, given plugging(batching) can't be applied
-> any more, which is supposed to affect io perf a lot.
-Yes, agree, but I didn't have much time to improve this yet.
-Currently, I mainly try to use this feature on large ios, to
-reduce memory copy overhead, which consumes much
-cpu resource, our clients really hope we can reduce it.
+As Yonghong correctly pointed out, there is yet another issue - the
+trampoline acquires the module reference in register_fentry which means
+that if the module is unloaded between the place where the address is
+found in the verifier and register_fentry, it is possible that another
+module is loaded to the same address in the meantime, which may lead to
+errors.
 
-Regards,
-Xiaoguang Wang
+This patch fixes the above issues by extracting the module name from the
+BTF of the attachment target (which must be specified) and by doing the
+search in kallsyms of the correct module. At the same time, the module
+reference is acquired right after the address is found and only released
+right before the program itself is unloaded.
 
->
->
->
-> Thanks,
-> Ming
+---
+Changes in v8:
+- added module_put to error paths in bpf_check_attach_target after the
+  module reference is acquired
+
+Changes in v7:
+- refactored the module reference manipulation (comments by Jiri Olsa)
+- cleaned up the test (comments by Andrii Nakryiko)
+
+Changes in v6:
+- storing the module reference inside bpf_prog_aux instead of
+  bpf_trampoline and releasing it when the program is unloaded
+  (suggested by Jiri Olsa)
+
+Changes in v5:
+- fixed acquiring and releasing of module references by trampolines to
+  prevent modules being unloaded between address lookup and trampoline
+  allocation
+
+Changes in v4:
+- reworked module kallsyms lookup approach using existing functions,
+  verifier now calls btf_try_get_module to retrieve the module and
+  find_kallsyms_symbol_value to get the symbol address (suggested by
+  Alexei)
+- included Jiri Olsa's comments
+- improved description of the new test and added it as a comment into
+  the test source
+
+Changes in v3:
+- added trivial implementation for kallsyms_lookup_name_in_module() for
+  !CONFIG_MODULES (noticed by test robot, fix suggested by Hao Luo)
+
+Changes in v2:
+- introduced and used more space-efficient kallsyms lookup function,
+  suggested by Jiri Olsa
+- included Hao Luo's comments
+
+Viktor Malik (2):
+  bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
+  bpf/selftests: Test fentry attachment to shadowed functions
+
+ include/linux/bpf.h                           |   2 +
+ kernel/bpf/syscall.c                          |   6 +
+ kernel/bpf/trampoline.c                       |  27 ----
+ kernel/bpf/verifier.c                         |  18 ++-
+ kernel/module/internal.h                      |   5 +
+ net/bpf/test_run.c                            |   5 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   6 +
+ .../bpf/prog_tests/module_attach_shadow.c     | 128 ++++++++++++++++++
+ 8 files changed, 169 insertions(+), 28 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
+
+-- 
+2.39.1
 
