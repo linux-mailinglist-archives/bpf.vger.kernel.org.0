@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D9069EC7F
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 02:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D35D69EC80
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 02:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbjBVBrD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Feb 2023 20:47:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
+        id S229884AbjBVBrI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Feb 2023 20:47:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbjBVBrC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Feb 2023 20:47:02 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAE932E5A
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 17:47:01 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id x34so3728780pjj.0
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 17:47:01 -0800 (PST)
+        with ESMTP id S229779AbjBVBrH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Feb 2023 20:47:07 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A4B32E66
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 17:47:05 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 130so945033pgg.3
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 17:47:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eSsP2cTbcAO8kYH41y4wWbsUNHvs4mxp7DEwTns4GbQ=;
-        b=OOhKzFBu+9uyDipBpGpLxL28+xJdkqdVtSkdZkqgjMYj3DZKlRjCeYamE7dsq+Q8B9
-         gi6pFGyIITcc/Zu2xrxU5tUSDaPkpGTV/DBA9pJVlWSQwy8PaeqqLME9x2b1eNU8QQ+D
-         QNauFeZ+VRdWaRa7yXIjzpSfJg4XxL0NeJkLcbPZ9fX6i2V1179Gf5nlPAyKH1ID8uDA
-         tsTCftVr0b/vn3b1YSkD16s5KilGSUb4RrCZI3+pNj7FW59av3dlN/d4xrnsIBlXEnn9
-         QDYV5PDZwzJnmEGFl388P8QgonIKl6oc1KD6OwF8LuWytTq6dkELpdfv/TA43tdJIfYc
-         d6Ug==
+        bh=X8bqcj+fQi+LPKTwP58l/gYDYaKLYdssShQrHrw6wI4=;
+        b=RZtgrjFbj/qO4hAdXILOuF/v0FNCBCBrgYpBkHeDW+BX4n4CbVOvmrEkAzwL3PU/Xb
+         GXOLaPrcjOyiddRXJuRIybeffa/1xWZ9XmqAUsSoMTA8uFKboaT6xV2xjT+Bme7bFLLD
+         stHJM/Pa050uO8TroQddVYyIA8lrQINBFEGIwUo9qI6Y3xTbRysOyn/LhSVW2nI9dlmK
+         Xj6sza/w9LFEXwVWDK7V/rcSybvd7Wv5TqZLgK++0OgkuHW1VcbuRiOVYAkQDQJ8mKd0
+         TnL+pMsF1JWul4SipWlJm2bgd2hQLFAjDJSUFPJ3O5l2GmoL6BtolzN3ByX/FrPdZsWT
+         s9uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eSsP2cTbcAO8kYH41y4wWbsUNHvs4mxp7DEwTns4GbQ=;
-        b=1GekMozPVjWeR+X9swrge328ZIdvp1XFBq5cbrSOJ0uUUL0jjsRMIMMgBDsqoTambY
-         AWcf9OMTYB524bcGDbTCXItLq5wFD5Jcj+aBIfb4tL96Zp0yEl9BDATpxtqeTVz3EYg3
-         flpxf2RF8mdxG6VsfXe3w/3Ua27arPRzAdkbly+W5BVTyaqCpvpu2yJ3zL5ro1Uh/lco
-         pnfoHDnS1JiVtPgEBgw7rL1OQh6KLtJajZ1InxNdWzmxBgcmwS/tK9dli+5owoM/mceK
-         PbrExRFTNDlDO2TcDu4qKmI2HB/scR21FOiS3O3FYgWv3QF359VrUnefDxtvcfQhaeY2
-         IQgw==
-X-Gm-Message-State: AO0yUKWNziTaQngvARwSIdyZ96mEWLPtb+EX/oS8KX9ctjCRT5jqgAaw
-        sZjC5xEjsH86qTUiB0B0lyQ=
-X-Google-Smtp-Source: AK7set+D9qNiMIx6XcDDlT9yOlpqbVqSYsUTRZPEdPBbViEE6NH/lTbxtVGzR606uwrBdCcA/a1ZFQ==
-X-Received: by 2002:a05:6a20:d49b:b0:cb:c015:92b4 with SMTP id im27-20020a056a20d49b00b000cbc01592b4mr1081960pzb.45.1677030421110;
-        Tue, 21 Feb 2023 17:47:01 -0800 (PST)
+        bh=X8bqcj+fQi+LPKTwP58l/gYDYaKLYdssShQrHrw6wI4=;
+        b=0Yvi/jkUjyFa303yvUXsme6aFnHqN3CpJ8yFuJMvF5+sMkM+lyEEiGXAWitCj8U5bC
+         7e7vI54jB6dUWg1tcn2nf9bFDdN1Q7i8NLyf5o5ptXXLSUGUVeuk/bkMR8rc0ukcf1QJ
+         77bmiMTEybGCe33pwbyPpaYxll5RHdprwdsL8UNSQYiGIgUS1gJztIxqjo4rsJvB1wKS
+         Y8fDH0x+qsH4zj5FujcK5PFsZ8lTvtIe02o9kD8y+i+epRMbAD74ysIsxji94ZWKiXgV
+         XvFi4zpK0yCFp97tu+LDlNZva48j9WZRQYC+74XIkGoC4+N+wG8/1leQfCEhNSvllu1R
+         oalw==
+X-Gm-Message-State: AO0yUKWZKVMH/vR4CT4eX8MTq1kz33ULoPXEzhb3JZmOIl/afu1qyGbb
+        DOUKh6NeJrxcie6NZZjenn8=
+X-Google-Smtp-Source: AK7set/FboMQpCSCg3uI2cr7k8FYA1zdC8BAJC2CzJEwD+Bq6ezQPMoXSbCmZpu9gR6m/y9qencjKg==
+X-Received: by 2002:a62:1e45:0:b0:5a9:e8dd:80ea with SMTP id e66-20020a621e45000000b005a9e8dd80eamr6052241pfe.17.1677030424498;
+        Tue, 21 Feb 2023 17:47:04 -0800 (PST)
 Received: from vultr.guest ([2001:19f0:7001:5cd8:5400:4ff:fe4e:5fe5])
-        by smtp.gmail.com with ESMTPSA id f15-20020aa78b0f000000b005ac419804d3sm3811509pfd.186.2023.02.21.17.46.57
+        by smtp.gmail.com with ESMTPSA id f15-20020aa78b0f000000b005ac419804d3sm3811509pfd.186.2023.02.21.17.47.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Feb 2023 17:47:00 -0800 (PST)
+        Tue, 21 Feb 2023 17:47:04 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -56,9 +56,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
         xiyou.wangcong@gmail.com
 Cc:     bpf@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v2 11/18] bpf: queue_stack_maps memory usage
-Date:   Wed, 22 Feb 2023 01:45:46 +0000
-Message-Id: <20230222014553.47744-12-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v2 12/18] bpf: bpf_struct_ops memory usage
+Date:   Wed, 22 Feb 2023 01:45:47 +0000
+Message-Id: <20230222014553.47744-13-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230222014553.47744-1-laoar.shao@gmail.com>
 References: <20230222014553.47744-1-laoar.shao@gmail.com>
@@ -74,61 +74,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A new helper is introduced to calculate queue_stack_maps memory usage.
+A new helper is introduced to calculate bpf_struct_ops memory usage.
 
 The result as follows,
 
 - before
-20: queue  name count_map  flags 0x0
-        key 0B  value 4B  max_entries 65536  memlock 266240B
-21: stack  name count_map  flags 0x0
-        key 0B  value 4B  max_entries 65536  memlock 266240B
+1: struct_ops  name count_map  flags 0x0
+        key 4B  value 256B  max_entries 1  memlock 4096B
+        btf_id 73
 
 - after
-20: queue  name count_map  flags 0x0
-        key 0B  value 4B  max_entries 65536  memlock 524288B
-21: stack  name count_map  flags 0x0
-        key 0B  value 4B  max_entries 65536  memlock 524288B
+1: struct_ops  name count_map  flags 0x0
+        key 4B  value 256B  max_entries 1  memlock 5016B
+        btf_id 73
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/queue_stack_maps.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ kernel/bpf/bpf_struct_ops.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
-index 8a5e060..63ecbbc 100644
---- a/kernel/bpf/queue_stack_maps.c
-+++ b/kernel/bpf/queue_stack_maps.c
-@@ -246,6 +246,14 @@ static int queue_stack_map_get_next_key(struct bpf_map *map, void *key,
- 	return -EINVAL;
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index ece9870..38903fb 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -641,6 +641,21 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+ 	return map;
  }
  
-+static u64 queue_stack_map_mem_usage(const struct bpf_map *map)
++static u64 bpf_struct_ops_map_mem_usage(const struct bpf_map *map)
 +{
-+	u64 usage = sizeof(struct bpf_queue_stack);
++	struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
++	const struct bpf_struct_ops *st_ops = st_map->st_ops;
++	const struct btf_type *vt = st_ops->value_type;
++	u64 usage;
 +
-+	usage += ((u64)map->max_entries + 1) * map->value_size;
++	usage = sizeof(*st_map) +
++			vt->size - sizeof(struct bpf_struct_ops_value);
++	usage += vt->size;
++	usage += btf_type_vlen(vt) * sizeof(struct bpf_links *);
++	usage += PAGE_SIZE;
 +	return usage;
 +}
 +
- BTF_ID_LIST_SINGLE(queue_map_btf_ids, struct, bpf_queue_stack)
- const struct bpf_map_ops queue_map_ops = {
- 	.map_meta_equal = bpf_map_meta_equal,
-@@ -259,6 +267,7 @@ static int queue_stack_map_get_next_key(struct bpf_map *map, void *key,
- 	.map_pop_elem = queue_map_pop_elem,
- 	.map_peek_elem = queue_map_peek_elem,
- 	.map_get_next_key = queue_stack_map_get_next_key,
-+	.map_mem_usage = queue_stack_map_mem_usage,
- 	.map_btf_id = &queue_map_btf_ids[0],
+ BTF_ID_LIST_SINGLE(bpf_struct_ops_map_btf_ids, struct, bpf_struct_ops_map)
+ const struct bpf_map_ops bpf_struct_ops_map_ops = {
+ 	.map_alloc_check = bpf_struct_ops_map_alloc_check,
+@@ -651,6 +666,7 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+ 	.map_delete_elem = bpf_struct_ops_map_delete_elem,
+ 	.map_update_elem = bpf_struct_ops_map_update_elem,
+ 	.map_seq_show_elem = bpf_struct_ops_map_seq_show_elem,
++	.map_mem_usage = bpf_struct_ops_map_mem_usage,
+ 	.map_btf_id = &bpf_struct_ops_map_btf_ids[0],
  };
  
-@@ -274,5 +283,6 @@ static int queue_stack_map_get_next_key(struct bpf_map *map, void *key,
- 	.map_pop_elem = stack_map_pop_elem,
- 	.map_peek_elem = stack_map_peek_elem,
- 	.map_get_next_key = queue_stack_map_get_next_key,
-+	.map_mem_usage = queue_stack_map_mem_usage,
- 	.map_btf_id = &queue_map_btf_ids[0],
- };
 -- 
 1.8.3.1
 
