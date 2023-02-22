@@ -2,110 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A763869EEBF
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 07:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32DF569EF1B
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 08:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbjBVG1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 01:27:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
+        id S230473AbjBVHIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 02:08:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbjBVG1H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 01:27:07 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A6C34C1A
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 22:26:56 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id x10so25355160edd.13
-        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 22:26:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ALsjcHXIgpn49++9eK6lAxQQylZmgPcE6W49SaELvOY=;
-        b=aWIQsNP+WCCauxK9zPCxJ5A9pOdw1X2RQtFd/Ukf4UG+hr2KSmuw4nIW4yfFktDL3I
-         Vuw8NyoMer6DPxSMDa4x088/lCsh3NeUlnsX7SkfXugACZgMLAneCsMNO/WkKqYLCt8N
-         VTwr+m5rSf5ES+TGH6+O0lOTqAXjQcL1otgD5OJbFEq96XEynaaZAYXrJyt0tbUGi0vA
-         Xzm+sOryh3i6ZDrTzd1mL2G2qQxlpl4ZFp9Pt8DFt7tdUmowBCxzmB2InMR49MhEaGUZ
-         vffngQAlZVA+hsb8VSibTO44iCvNjYRcoIsUFDhIHOpxCQTuSKRvlW+pQFvg6KRcORvR
-         8vDA==
+        with ESMTP id S230213AbjBVHIb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 02:08:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE88F2122
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 23:07:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1677049668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nbKsdZx6cyQMcUZLX1wAuD7vcttcYvZxCKvh2HJTynQ=;
+        b=Zq29TvIPKFlVX5dnbtXyveqC1D2gtGderm6e+d4r5vviIdRfDu1cCpn2+7QKdNM9utsOF4
+        xEXIWUCKk66JkUwKEI5w1pEpNvQYFoGaiUxwHSdXCVDV5cRGcRUDkLKJfoh0gNd4KPPzZ1
+        pwjFn5aeS/rKIDa5dYlECmGJJtMKB5E=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-106-kor_y-_aM_S8hFumyToh3Q-1; Wed, 22 Feb 2023 02:07:47 -0500
+X-MC-Unique: kor_y-_aM_S8hFumyToh3Q-1
+Received: by mail-ed1-f69.google.com with SMTP id h13-20020a0564020e8d00b004a26ef05c34so8938732eda.16
+        for <bpf@vger.kernel.org>; Tue, 21 Feb 2023 23:07:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ALsjcHXIgpn49++9eK6lAxQQylZmgPcE6W49SaELvOY=;
-        b=UVuoYSVhMBn1XWu0H1mVwBWSVez10hdaYl3x60IrfveOBlBYfexFpEfm4IMgrN7yCy
-         JpwDNW0Ib9ZFyzLj4+mpvZw7hkbWYBFs9Df45tO5e/Y2XmJ1zOie/PT76kouNrFZJkiI
-         6d84Nx8RWJr75f2mWCe9AJoH2B/Dbyxt5T81WQAwZEWKXBzVcqyG9QqxV/DOkvbxgc1/
-         o3c39Su2D5ypJi4i7qAjq2oJOx3GiPGf0lGzF0rIf/meNrfRpEfiQhAHhHRgCfOlcYNw
-         evA1/VjKtGC7fO95PI61fobgQtKZNdktYPdslnI3A1D+z7XU9Xo+/xQIUYqIP9FOnphx
-         e9mA==
-X-Gm-Message-State: AO0yUKVOM8fJnKiyGtiE7xtEa+Sfo9e1hRIymwZdV2uPP6TGIvoLmcpf
-        X3Qzw8w0hxw1R/C9nRHCNgY95bkAp2TVGJbuzXX4Yiole+7Y0Q==
-X-Google-Smtp-Source: AK7set8lcgq1gG5QE7ws3N2sHnTWAKKXs218+7dhmLMAv3anORzWXMEjigDeoohJfOghLCaYoVANe2SkJUGgPLVpa4k=
-X-Received: by 2002:a17:906:2e98:b0:8a6:5720:9104 with SMTP id
- o24-20020a1709062e9800b008a657209104mr7205389eji.1.1677047215101; Tue, 21 Feb
- 2023 22:26:55 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nbKsdZx6cyQMcUZLX1wAuD7vcttcYvZxCKvh2HJTynQ=;
+        b=trYscj55YIN6GvgmFr6cKe/fyCvViTWtwfWtoQ12hAOrOewdfDpUIYB7nExokP5Ss2
+         NjrkgyTi25APwnxu7YXILOoya/rBafrWYOpkTQUM9y87fSDq13/i9Fl5slvGKeoREbbK
+         4LhSl8uoVVLZ8tkUl7WgdwfiiWMVBIceN1Y6ERjUgK3eR+T9QIqZRaZKPEqhG0rEdXYP
+         KUZDUN/gIFbz9REywu5q+ANbGSIA9/w0NuprDIHE54oFAdgrkxXhlP+8cp74w6LMcJI3
+         0lWXVLy/wHDrxwJWszjzI0CQ/rlGAA9b4mijEyZrPKuzPLM7AUCb2s78ZlFy0TPhSgy2
+         3Q9g==
+X-Gm-Message-State: AO0yUKVjtz2TEJH9XIrFXuiJClAYvs7VDdNSctZE4rdtG4Xog0V9M41/
+        J/wpMm6ivPthLB8aCfof14Er3RcmrJVwGvmAQfmDu4ExzOui2N+hZA/XEJgzmL6zvM82FmVXdos
+        3rw95EHOFPwnkz2Bigi0=
+X-Received: by 2002:aa7:c518:0:b0:4ad:1e35:771f with SMTP id o24-20020aa7c518000000b004ad1e35771fmr7936820edq.35.1677049666355;
+        Tue, 21 Feb 2023 23:07:46 -0800 (PST)
+X-Google-Smtp-Source: AK7set8QQ+yjK0oMUA4FAV4rJkFgNq0A+VEHn40AzygNIJqov7uhaumfAvS8MGJUDfP2lauKIB9T7g==
+X-Received: by 2002:aa7:c518:0:b0:4ad:1e35:771f with SMTP id o24-20020aa7c518000000b004ad1e35771fmr7936808edq.35.1677049665995;
+        Tue, 21 Feb 2023 23:07:45 -0800 (PST)
+Received: from ?IPV6:2001:67c:1220:8b4:fc:5b35:3b22:9bb9? ([2001:67c:1220:8b4:fc:5b35:3b22:9bb9])
+        by smtp.gmail.com with ESMTPSA id jx14-20020a170907760e00b008cc920469b5sm4277459ejc.18.2023.02.21.23.07.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Feb 2023 23:07:45 -0800 (PST)
+Message-ID: <8f4c902a-8dd2-1a5b-bc4f-f527b4f1c5f5@redhat.com>
+Date:   Wed, 22 Feb 2023 08:07:43 +0100
 MIME-Version: 1.0
-References: <20230222025048.3677315-1-chenhuacai@loongson.cn> <167704261767.377.7977555061947404632.git-patchwork-notify@kernel.org>
-In-Reply-To: <167704261767.377.7977555061947404632.git-patchwork-notify@kernel.org>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Wed, 22 Feb 2023 14:26:43 +0800
-Message-ID: <CAAhV-H4TkQ7Nf2PekGgpykzdoLtVbd7b_5UtiWMFOEZtbLDf4g@mail.gmail.com>
-Subject: Re: [PATCH] BPF: Include missing nospec.h to avoid build error
-To:     patchwork-bot+netdevbpf@kernel.org
-Cc:     Huacai Chen <chenhuacai@loongson.cn>, ast@kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        bpf@vger.kernel.org, lixuefeng@loongson.cn, yangtiezhu@loongson.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next v7 1/2] bpf: Fix attaching
+ fentry/fexit/fmod_ret/lsm to modules
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+References: <cover.1676888953.git.vmalik@redhat.com>
+ <ea9d4a1d140a78b2216f41020375fda604107162.1676888953.git.vmalik@redhat.com>
+ <Y/TgeuA579/zzikg@krava>
+Content-Language: en-US
+From:   Viktor Malik <vmalik@redhat.com>
+In-Reply-To: <Y/TgeuA579/zzikg@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Oh, I'm sorry but the modified commit message seems broken.
+On 2/21/23 16:17, Jiri Olsa wrote:
+> On Mon, Feb 20, 2023 at 11:42:52AM +0100, Viktor Malik wrote:
+> 
+> SNIP
+> 
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 388245e8826e..6da830df3ea5 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -24,6 +24,7 @@
+>>   #include <linux/bpf_lsm.h>
+>>   #include <linux/btf_ids.h>
+>>   #include <linux/poison.h>
+>> +#include "../module/internal.h"
+>>   
+>>   #include "disasm.h"
+>>   
+>> @@ -16868,6 +16869,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>>   	const char *tname;
+>>   	struct btf *btf;
+>>   	long addr = 0;
+>> +	struct module *mod = NULL;
+>>   
+>>   	if (!btf_id) {
+>>   		bpf_log(log, "Tracing programs must provide btf_id\n");
+>> @@ -17041,7 +17043,15 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>>   			else
+>>   				addr = (long) tgt_prog->aux->func[subprog]->bpf_func;
+>>   		} else {
+>> -			addr = kallsyms_lookup_name(tname);
+>> +			if (btf_is_module(btf)) {
+>> +				mod = btf_try_get_module(btf);
+>> +				if (mod)
+>> +					addr = find_kallsyms_symbol_value(mod, tname);
+>> +				else
+>> +					addr = 0;
+>> +			} else {
+>> +				addr = kallsyms_lookup_name(tname);
+>> +			}
+> 
+> there are some error paths below this point which I think we could
+> hit also for module id/address, so we need to put the mod ref
 
-Huacai
+Right, I didn't notice those, thanks. I'll fix that.
 
-On Wed, Feb 22, 2023 at 1:10 PM <patchwork-bot+netdevbpf@kernel.org> wrote:
->
-> Hello:
->
-> This patch was applied to bpf/bpf.git (master)
-> by Alexei Starovoitov <ast@kernel.org>:
->
-> On Wed, 22 Feb 2023 10:50:48 +0800 you wrote:
-> > Commit 74e19ef0ff8061ef55957c3a ("uaccess: Add speculation barrier to
-> > copy_from_user()") defines a default barrier_nospec() and removes the
-> > #ifdefs in kernel/bpf/core.c, but doesn't include nospec.h, which cause=
-s
-> > such a build error:
-> >
-> >   CC      kernel/bpf/core.o
-> > kernel/bpf/core.c: In function =E2=80=98___bpf_prog_run=E2=80=99:
-> > kernel/bpf/core.c:1913:3: error: implicit declaration of function =E2=
-=80=98barrier_nospec=E2=80=99; did you mean =E2=80=98barrier_data=E2=80=99?=
- [-Werror=3Dimplicit-function-declaration]
-> >    barrier_nospec();
-> >    ^~~~~~~~~~~~~~
-> >    barrier_data
-> > cc1: some warnings being treated as errors
-> >
-> > [...]
->
-> Here is the summary with links:
->   - BPF: Include missing nospec.h to avoid build error
->     https://git.kernel.org/bpf/bpf/c/345d24a91c79
->
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
->
->
+> 
+> also there's bpf_trampoline_link_cgroup_shim caller of
+> bpf_check_attach_target, but I'm not sure that could endup with
+> id/address in module code
+
+I did check this and IIUC, this is for BPF_LSM_CGROUP programs and
+bpf_lsm_* hooks are always placed in vmlinux, so this shouldn't occur.
+
+Viktor
+
+> 
+> jirka
+> 
+>>   			if (!addr) {
+>>   				bpf_log(log,
+>>   					"The address of function %s cannot be found\n",
+>> @@ -17105,6 +17115,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>>   	tgt_info->tgt_addr = addr;
+>>   	tgt_info->tgt_name = tname;
+>>   	tgt_info->tgt_type = t;
+>> +	tgt_info->tgt_mod = mod;
+>>   	return 0;
+>>   }
+>>   
+>> @@ -17184,6 +17195,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+>>   	/* store info about the attachment target that will be used later */
+>>   	prog->aux->attach_func_proto = tgt_info.tgt_type;
+>>   	prog->aux->attach_func_name = tgt_info.tgt_name;
+>> +	prog->aux->mod = tgt_info.tgt_mod;
+>>   
+>>   	if (tgt_prog) {
+>>   		prog->aux->saved_dst_prog_type = tgt_prog->type;
+>> diff --git a/kernel/module/internal.h b/kernel/module/internal.h
+>> index 2e2bf236f558..5cb103a46018 100644
+>> --- a/kernel/module/internal.h
+>> +++ b/kernel/module/internal.h
+>> @@ -256,6 +256,11 @@ static inline bool sect_empty(const Elf_Shdr *sect)
+>>   static inline void init_build_id(struct module *mod, const struct load_info *info) { }
+>>   static inline void layout_symtab(struct module *mod, struct load_info *info) { }
+>>   static inline void add_kallsyms(struct module *mod, const struct load_info *info) { }
+>> +static inline unsigned long find_kallsyms_symbol_value(struct module *mod
+>> +						       const char *name)
+>> +{
+>> +	return 0;
+>> +}
+>>   #endif /* CONFIG_KALLSYMS */
+>>   
+>>   #ifdef CONFIG_SYSFS
+>> -- 
+>> 2.39.1
+>>
+> 
+
