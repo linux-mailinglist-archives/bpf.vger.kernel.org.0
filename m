@@ -2,50 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC6069FE93
-	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 23:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8443969FECC
+	for <lists+bpf@lfdr.de>; Wed, 22 Feb 2023 23:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232940AbjBVWgL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 17:36:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
+        id S230191AbjBVW6Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 17:58:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbjBVWgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 17:36:09 -0500
-Received: from out-18.mta0.migadu.com (out-18.mta0.migadu.com [IPv6:2001:41d0:1004:224b::12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F2043930
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 14:36:04 -0800 (PST)
-Message-ID: <60991e56-dad5-c310-86bb-102ebf756b6b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1677105363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r79egUsv3m15L79oiKMJ2QqVMrMgUCfpCEuXDmIUhy8=;
-        b=KjjRKlsm9oF+NyrmhMWWStcjmM3g6yaNWc+2WQhuCY41nVlzhSV8VCANksN7lBkcXjyj1t
-        RK44wu9ltjAeS3AnuUPO3Wb0W7c5KUu0jZJRpkmeigHdkI5kWnmIOSHzgqii6T7O9T9ZEa
-        DrEp4iUDrFijc9LdfDzkX5+5Az6h24s=
-Date:   Wed, 22 Feb 2023 14:35:59 -0800
+        with ESMTP id S229468AbjBVW6Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 17:58:25 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A52412054
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 14:58:23 -0800 (PST)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31MLj5Mc010332;
+        Wed, 22 Feb 2023 22:37:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=9Nglydpq9Z4mt/bU+YJkmVXTpwppIqV497AisYsjKpw=;
+ b=PV2KzD953mppV8SKq1QcbeSONxAnfFyIZR90QMd/3TU9gLg5+gFaUYIQgJlUoICMij7R
+ 1uFYyrJMwphNkJ0jvQl5BlABtG1geaPS7W9GcKhR9fZbSI212CRWLy0QFngE4N6On+w4
+ vXQVzmfLoami+J8lfiZk++LkGx+7uQ1ktA7tq1rMFQcbjThl3at8/1x2OoX1cpunzQSv
+ nRBp0EXnaNdU3mhvE4JhSupU0kwpS5mIB12rKLaOjVsF5+ujLjMnxt38I+gNXd/4yuJ/
+ jmRciFfDnRoHPLZdLUQWb8DSskn4eJGQY/WRSA4RvWCbxuZ0g0It2Slz+NCRDfM+0iXH xQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nwu7x13y4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Feb 2023 22:37:25 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31MMajAB016597;
+        Wed, 22 Feb 2023 22:37:24 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nwu7x13xm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Feb 2023 22:37:24 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31MASW2Y014648;
+        Wed, 22 Feb 2023 22:37:23 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma04fra.de.ibm.com (PPS) with ESMTPS id 3ntpa64gdm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Feb 2023 22:37:22 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31MMbJ2h30277898
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Feb 2023 22:37:19 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3CFC420043;
+        Wed, 22 Feb 2023 22:37:19 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8D64120040;
+        Wed, 22 Feb 2023 22:37:18 +0000 (GMT)
+Received: from heavy.boeblingen.de.ibm.com (unknown [9.171.50.17])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 22 Feb 2023 22:37:18 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next v3 01/12] selftests/bpf: Finish folding after BPF_FUNC_csum_diff
+Date:   Wed, 22 Feb 2023 23:37:03 +0100
+Message-Id: <20230222223714.80671-2-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230222223714.80671-1-iii@linux.ibm.com>
+References: <20230222223714.80671-1-iii@linux.ibm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/2] bpf/selftests: add selftest for SMC bpf
- capability
-Content-Language: en-US
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, kgraul@linux.ibm.com, wenjia@linux.ibm.com,
-        jaka@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-References: <1676981919-64884-1-git-send-email-alibuda@linux.alibaba.com>
- <1676981919-64884-3-git-send-email-alibuda@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <1676981919-64884-3-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 8DT1mmDUyv8qElAU5EvcbBo59umV8Nte
+X-Proofpoint-GUID: E7sxXQsS69Xd77iprDa_6eClBgwNnCSi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-22_10,2023-02-22_02,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 spamscore=0 mlxscore=0 priorityscore=1501
+ phishscore=0 clxscore=1015 malwarescore=0 bulkscore=0 mlxlogscore=923
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302220195
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,224 +95,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/21/23 4:18 AM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> This PATCH adds a tiny selftest for SMC bpf capability,
-> making decisions on whether to use SMC by collecting
-> certain information from kernel smc sock.
-> 
-> Follow the steps below to run this test.
-> 
-> make -C tools/testing/selftests/bpf
-> cd tools/testing/selftests/bpf
-> sudo ./test_progs -t bpf_smc
-> 
-> Results shows:
-> 18      bpf_smc:OK
-> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->   tools/testing/selftests/bpf/prog_tests/bpf_smc.c |  39 +++
->   tools/testing/selftests/bpf/progs/bpf_smc.c      | 315 +++++++++++++++++++++++
->   2 files changed, 354 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
->   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-> new file mode 100644
-> index 0000000..b143932
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-> @@ -0,0 +1,39 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2019 Facebook */
+bpf_csum_diff() may return non-folded checksum, and the arm
+implementation actually does this. Finish folding in the test prog.
 
-copy-and-paste left-over...
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/verifier/array_access.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
-> new file mode 100644
-> index 0000000..78c7976
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
-> @@ -0,0 +1,315 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +#include <linux/bpf.h>
-> +#include <linux/stddef.h>
-> +#include <linux/smc.h>
-> +#include <stdbool.h>
-> +#include <linux/types.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_core_read.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +#define BPF_STRUCT_OPS(name, args...) \
-> +	SEC("struct_ops/"#name) \
-> +	BPF_PROG(name, args)
-> +
-> +#define SMC_LISTEN		(10)
-> +#define SMC_SOCK_CLOSED_TIMING	(0)
-> +extern unsigned long CONFIG_HZ __kconfig;
-> +#define HZ CONFIG_HZ
-> +
-> +char _license[] SEC("license") = "GPL";
-> +#define max(a, b) ((a) > (b) ? (a) : (b))
-> +
-> +struct sock_common {
-> +	unsigned char	skc_state;
-> +	__u16	skc_num;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct sock {
-> +	struct sock_common	__sk_common;
-> +	int	sk_sndbuf;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct inet_sock {
-> +	struct sock	sk;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct inet_connection_sock {
-> +	struct inet_sock	icsk_inet;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct tcp_sock {
-> +	struct inet_connection_sock	inet_conn;
-> +	__u32	rcv_nxt;
-> +	__u32	snd_nxt;
-> +	__u32	snd_una;
-> +	__u32	delivered;
-> +	__u8	syn_data:1,	/* SYN includes data */
-> +		syn_fastopen:1,	/* SYN includes Fast Open option */
-> +		syn_fastopen_exp:1,/* SYN includes Fast Open exp. option */
-> +		syn_fastopen_ch:1, /* Active TFO re-enabling probe */
-> +		syn_data_acked:1,/* data in SYN is acked by SYN-ACK */
-> +		save_syn:1,	/* Save headers of SYN packet */
-> +		is_cwnd_limited:1,/* forward progress limited by snd_cwnd? */
-> +		syn_smc:1;	/* SYN includes SMC */
-> +} __attribute__((preserve_access_index));
-> +
-> +struct socket {
-> +	struct sock *sk;
-> +} __attribute__((preserve_access_index));
-
-All these tcp_sock, socket, inet_sock definitions can go away if it includes 
-"vmlinux.h". tcp_ca_write_sk_pacing.c is a better example to follow. Try to 
-define the "common" (eg. tcp, tc...etc) missing macros in bpf_tracing_net.h. The 
-smc specific macros can stay in this file.
-
-> +static inline struct smc_prediction *smc_prediction_get(const struct smc_sock *smc,
-> +							const struct tcp_sock *tp, __u64 tstamp)
-> +{
-> +	struct smc_prediction zero = {}, *smc_predictor;
-> +	__u16 key;
-> +	__u32 gap;
-> +	int err;
-> +
-> +	err = bpf_core_read(&key, sizeof(__u16), &tp->inet_conn.icsk_inet.sk.__sk_common.skc_num);
-> +	if (err)
-> +		return NULL;
-> +
-> +	/* BAD key */
-> +	if (key == 0)
-> +		return NULL;
-> +
-> +	smc_predictor = bpf_map_lookup_elem(&negotiator_map, &key);
-> +	if (!smc_predictor) {
-> +		zero.start_tstamp = bpf_jiffies64();
-> +		zero.pacing_delta = SMC_PREDICTION_MIN_PACING_DELTA;
-> +		bpf_map_update_elem(&negotiator_map, &key, &zero, 0);
-> +		smc_predictor =  bpf_map_lookup_elem(&negotiator_map, &key);
-> +		if (!smc_predictor)
-> +			return NULL;
-> +	}
-> +
-> +	if (tstamp) {
-> +		bpf_spin_lock(&smc_predictor->lock);
-> +		gap = (tstamp - smc_predictor->start_tstamp) / smc_predictor->pacing_delta;
-> +		/* new splice */
-> +		if (gap > 0) {
-> +			smc_predictor->start_tstamp = tstamp;
-> +			smc_predictor->last_rate_of_lcc =
-> +				(smc_prediction_calt_rate(smc_predictor) * 7) >> (2 + gap);
-> +			smc_predictor->closed_long_cc = 0;
-> +			smc_predictor->closed_total_cc = 0;
-> +			smc_predictor->incoming_long_cc = 0;
-> +		}
-> +		bpf_spin_unlock(&smc_predictor->lock);
-> +	}
-> +	return smc_predictor;
-> +}
-> +
-> +/* BPF struct ops for smc protocol negotiator */
-> +struct smc_sock_negotiator_ops {
-> +	/* ret for negotiate */
-> +	int (*negotiate)(struct smc_sock *smc);
-> +
-> +	/* info gathering timing */
-> +	void (*collect_info)(struct smc_sock *smc, int timing);
-> +};
-> +
-> +int BPF_STRUCT_OPS(bpf_smc_negotiate, struct smc_sock *smc)
-> +{
-> +	struct smc_prediction *smc_predictor;
-> +	struct tcp_sock *tp;
-> +	struct sock *clcsk;
-> +	int ret = SK_DROP;
-> +	__u32 rate = 0;
-> +
-> +	/* Only make decison during listen */
-> +	if (smc->sk.__sk_common.skc_state != SMC_LISTEN)
-> +		return SK_PASS;
-> +
-> +	clcsk = BPF_CORE_READ(smc, clcsock, sk);
-
-Instead of using bpf_core_read here, why not directly gets the clcsk like the 
-'smc->sk.__sk_common.skc_state' above.
-
-> +	if (!clcsk)
-> +		goto error;
-> +
-> +	tp = tcp_sk(clcsk);
-
-There is a bpf_skc_to_tcp_sock(). Give it a try after changing the above 
-BPF_CORE_READ.
-
-> +	if (!tp)
-> +		goto error;
-> +
-> +	smc_predictor = smc_prediction_get(smc, tp, bpf_jiffies64());
-> +	if (!smc_predictor)
-> +		return SK_PASS;
-> +
-> +	bpf_spin_lock(&smc_predictor->lock);
-> +
-> +	if (smc_predictor->incoming_long_cc == 0)
-> +		goto out_locked_pass;
-> +
-> +	if (smc_predictor->incoming_long_cc > SMC_PREDICTION_MAX_LONGCC_PER_SPLICE) {
-> +		ret = 100;
-> +		goto out_locked_drop;
-> +	}
-> +
-> +	rate = smc_prediction_calt_rate(smc_predictor);
-> +	if (rate < SMC_PREDICTION_LONGCC_RATE_THRESHOLD) {
-> +		ret = 200;
-> +		goto out_locked_drop;
-> +	}
-> +out_locked_pass:
-> +	smc_predictor->incoming_long_cc++;
-> +	bpf_spin_unlock(&smc_predictor->lock);
-> +	return SK_PASS;
-> +out_locked_drop:
-> +	bpf_spin_unlock(&smc_predictor->lock);
-> +error:
-> +	return SK_DROP;
-> +}
-> +
-> +void BPF_STRUCT_OPS(bpf_smc_collect_info, struct smc_sock *smc, int timing)
-
-Try to stay with SEC("struct_ops/...") void BPF_PROG(....)
+diff --git a/tools/testing/selftests/bpf/verifier/array_access.c b/tools/testing/selftests/bpf/verifier/array_access.c
+index 1b138cd2b187..e570d6a95702 100644
+--- a/tools/testing/selftests/bpf/verifier/array_access.c
++++ b/tools/testing/selftests/bpf/verifier/array_access.c
+@@ -241,7 +241,7 @@
+ 	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+ 	BPF_LD_MAP_FD(BPF_REG_1, 0),
+ 	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+-	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 6),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 14),
+ 
+ 	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
+ 	BPF_MOV64_IMM(BPF_REG_2, 4),
+@@ -250,7 +250,15 @@
+ 	BPF_MOV64_IMM(BPF_REG_5, 0),
+ 	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+ 		     BPF_FUNC_csum_diff),
++	/* csum_partial() is allowed to return both 0xffffffe3 and 0x1ffe2 */
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
++	BPF_ALU64_IMM(BPF_RSH, BPF_REG_1, 16),
++	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 0xffff),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_1),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
++	BPF_ALU64_IMM(BPF_RSH, BPF_REG_1, 16),
+ 	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 0xffff),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_1),
+ 	BPF_EXIT_INSN(),
+ 	},
+ 	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+-- 
+2.39.1
 
