@@ -2,76 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B4F6A04CE
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 10:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7030E6A0509
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 10:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbjBWJbg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 04:31:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
+        id S233572AbjBWJhl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 04:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233446AbjBWJbf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 04:31:35 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96BA17159
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 01:31:33 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id j2so9936814wrh.9
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 01:31:33 -0800 (PST)
+        with ESMTP id S233645AbjBWJhj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 04:37:39 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EFF515F0
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 01:37:26 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id m7so12985250lfj.8
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 01:37:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JPO/JMXazXQ8Kyo/A/3o1pvRNp7LsXYtBLZ94I6IFD8=;
-        b=B6Px3m43o3CGzzrvmZOxz9aw8Usyg6hYdVtnNpXMHl8YNNYZI6YWmDknfEOe3zZozc
-         +TabUYYYhnm4bdjVUfuQnIrn/oDwuPSlzqkyYD7kjXQpSipNpIt/qKOYckCXQUIz3vnt
-         vFmASVz7el7Ifq+ykYwJIsXXPBoWyp9oznmJCU/ZJlCYDJYXL8E/3mzGWw6jWbGLucI3
-         C572tDcRrnxtDOud73vPA2uoZ2kWXpryZY4DnRD4MIrdVxZ+p0foaL3Bs2hBNfXapIsl
-         Cv5WnMFK/2kQz7TKGZrkAbfsHpJKk0Oc5ErXuRFW3gAIELLTbSy7/YMYsx77D2PDiz15
-         Ff8w==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=d4jcY3Hr7EE2Olq+/x/mn+U//ThHzLvzlE87RvTwn58=;
+        b=fi56/eYkJ2DbpmpHRWFHkOcoVy1p0Du6dybLu/JZxmQHv+oAuLOrbwDVwzoQIuzVNc
+         s8LnP0Kc5+yZhmHdATksfqgOVXQ3wjNEDv91P3N/04+n8PSvTC6wmVlLMOe60oZcTgU9
+         X4qYSOAMYIRo8t9N7kzsjlUkEmPIhMRlI3khGY014DlX6YWb2fRALYzETud+1tAbemu+
+         LjwQYkx8aBe37ioYFkgnYPCnvh6Qs9llPYwBZYmx3cAe10dRmeCSxoBh828LyvwFntLZ
+         jkTs9YE4dq+FhVKxH7jmhfEJQEZkKlcAh2Q73lYz+WGAxtH+ZaZfFY5FuRUZF6j6yxf/
+         4JXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JPO/JMXazXQ8Kyo/A/3o1pvRNp7LsXYtBLZ94I6IFD8=;
-        b=EbM9HUWs64Say04dtZnz8EL2ZyaJiMYfOPEqT9KccSsl7QXB6Hp8KhG2bmf73/Z34Z
-         RWhPnZoyyc+N5kw8yBRQvtvkNzAaJqGy5WXMrzoYXdj2A8ExdE9ZpU2jgK5a+Cni3kA7
-         1486SOLTiBmlegspa6hwxz/9YZ4eJ455k9G4n+AUgm+kpOeCdQyFrbwHhlTz80kZDq/N
-         5N+iMpLXjMqXYhJOCsNglaDe0z5vWk93X5ILgZvIidkwQnHiJSSnlyf2TBGn/bQbIn8t
-         bVa9C/KPB7uF66sgOuRv5HH21IWccSKef8O4j76z+1NUyiZVGsExkBDjZuL4wwGZO1TO
-         Qe/w==
-X-Gm-Message-State: AO0yUKUh7IL1N9mXaj61Q187p9ubybKrl8hALYMupl4c0oZ+0JqYKyBD
-        oK1ycxwOGzwODq+mMwxWb6SgsotGvA5uVA==
-X-Google-Smtp-Source: AK7set9EoUCU2u96D9k6cVjdwy+I92Dh4wFsbY8vCrKbyyw/xJlXECzFw+QD/rDyL0c92IARmHy+rA==
-X-Received: by 2002:a5d:66ce:0:b0:2c5:c71:4a84 with SMTP id k14-20020a5d66ce000000b002c50c714a84mr7973791wrw.68.1677144692200;
-        Thu, 23 Feb 2023 01:31:32 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id x13-20020a5d6b4d000000b002c6e8af1037sm12569816wrw.104.2023.02.23.01.31.31
+        bh=d4jcY3Hr7EE2Olq+/x/mn+U//ThHzLvzlE87RvTwn58=;
+        b=CWSTFZcTuEuieZWwTNRQYpUfxOv62IIRZQkYTO3F/lMCDzSkXxGI85c5XgvSo2DIMm
+         wegSc4FuZBgM27j1/PsNthEJHvVOIAITI8Pti3PNPnqlI3F9EBmeXUlOJM8LO8jbwlMn
+         geX4wzYfz6a6lHEdEKV+bxpD3ckxAG8w/Ir15CQeUAUQi6Pm0Eq1yBSxQpgqKDX5GWB2
+         x/GYLf/8cvDm6YPH86LWpBNlJ78tR0KbSNe2a3T6aK7nt3O+b5ilUMc5/cTxQFO2XyB1
+         gLZUi9VHfcU2e11rr7zytPN6EJUW6Noi8TMM2aWuijt4Azf+w5JLYV2Ol4YfXC62hAOd
+         Ijzw==
+X-Gm-Message-State: AO0yUKU5A5BeRb/LR5WBf3Is1twpAfb9UfT7m/te48mm9I4MfImLOvKh
+        M4gr1ACFZ+MdgFki1e8Sw6FDHw==
+X-Google-Smtp-Source: AK7set//EXFFlOIFfRU2EMgB2c+0LFTUgFbC+yoEIx912ZVpQZsn3qVOASd0fAbGqYfIvbTgk1sQtQ==
+X-Received: by 2002:ac2:554a:0:b0:4a4:68b9:66b7 with SMTP id l10-20020ac2554a000000b004a468b966b7mr3835638lfk.2.1677145040718;
+        Thu, 23 Feb 2023 01:37:20 -0800 (PST)
+Received: from google.com (38.165.88.34.bc.googleusercontent.com. [34.88.165.38])
+        by smtp.gmail.com with ESMTPSA id d27-20020ac244db000000b004cb10c151fasm780243lfm.88.2023.02.23.01.37.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Feb 2023 01:31:31 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 23 Feb 2023 10:31:29 +0100
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH bpf-next v3 08/12] bpf: sparc64: Use
- bpf_jit_get_func_addr()
-Message-ID: <Y/cycQibEW46BIUE@krava>
-References: <20230222223714.80671-1-iii@linux.ibm.com>
- <20230222223714.80671-9-iii@linux.ibm.com>
+        Thu, 23 Feb 2023 01:37:19 -0800 (PST)
+Date:   Thu, 23 Feb 2023 09:37:14 +0000
+From:   Matt Bobrowski <mattbobrowski@google.com>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, acme@redhat.com
+Subject: Re: bpf: Question about odd BPF verifier behaviour
+Message-ID: <Y/czygarUnMnDF9m@google.com>
+References: <Y/P1yxAuV6Wj3A0K@google.com>
+ <e9f7c86ff50b556e08362ebc0b6ce6729a2db7e7.camel@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230222223714.80671-9-iii@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <e9f7c86ff50b556e08362ebc0b6ce6729a2db7e7.camel@gmail.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,46 +71,217 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 22, 2023 at 11:37:10PM +0100, Ilya Leoshkevich wrote:
-> Preparation for moving kfunc address from bpf_insn.imm.
+Hey Eduard!
+
+
+On Wed, Feb 22, 2023 at 05:28:52PM +0200, Eduard Zingerman wrote:
+> On Mon, 2023-02-20 at 22:35 +0000, Matt Bobrowski wrote:
+> > Hello!
+> > 
+> > Whilst in the midst of testing a v5.19 to v6.1 kernel upgrade, we
+> > happened to notice that one of our sleepable LSM based eBPF programs
+> > was failing to load on the newer v6.1 kernel. Using the below trivial
+> > eBPF program as our reproducer:
+> > 
+> > #include "vmlinux.h"
+> > #include <bpf/bpf_helpers.h>
+> > #include <bpf/bpf_tracing.h>
+> > 
+> > char LICENSE[] SEC("license") = "Dual BSD/GPL";
+> > 
+> > SEC("lsm.s/bprm_committed_creds")
+> > int BPF_PROG(dbg, struct linux_binprm *bprm)
+> > {
+> > 	char buf[64] = {0};
+> > 	bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
+> > 	return 0;
+> > }
+> > 
+> > The verifier emits the following error message when attempting to load
+> > the above eBPF program:
+> > 
+> > -- BEGIN PROG LOAD LOG --
+> > reg type unsupported for arg#0 function dbg#5
+> > 0: R1=ctx(off=0,imm=0) R10=fp0
+> > ; int BPF_PROG(dbg, struct linux_binprm *bprm)
+> > 0: (79) r1 = *(u64 *)(r1 +0)
+> > func 'bpf_lsm_bprm_committed_creds' arg0 has btf_id 137293 type STRUCT 'linux_binprm'
+> > 1: R1_w=ptr_linux_binprm(off=0,imm=0)
+> > 1: (b7) r2 = 0                        ; R2_w=0
+> > ; char buf[64] = {0};
+> > [...]
+> > ; bpf_ima_file_hash(bprm->file, buf, 64);
+> > 10: (79) r1 = *(u64 *)(r1 +64)        ; R1_w=ptr_file(off=0,imm=0)
+> > 11: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+> > ; 
+> > 12: (07) r2 += -64                    ; R2_w=fp-64
+> > ; bpf_ima_file_hash(bprm->file, buf, 64);
+> > 13: (b7) r3 = 64                      ; R3_w=64
+> > 14: (85) call bpf_ima_file_hash#193
+> > cannot access ptr member next with moff 0 in struct llist_node with off 0 size 1
+> > R1 is of type file but file is expected
+> > processed 15 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+> > -- END PROG LOAD LOG --
+> > 
+> > What particularly strikes out at me is the following 2 lines returned
+> > in the error message:
+> > 
+> > cannot access ptr member next with moff 0 in struct llist_node with off 0 size 1
+> > R1 is of type file but file is expected
 > 
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  arch/sparc/net/bpf_jit_comp_64.c | 20 ++++++++++++++------
->  arch/x86/net/bpf_jit_comp32.c    |  7 +++++++
->  2 files changed, 21 insertions(+), 6 deletions(-)
+> Hi Matt,
 > 
-> diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
-> index 6c482685dc6c..b23083776718 100644
-> --- a/arch/sparc/net/bpf_jit_comp_64.c
-> +++ b/arch/sparc/net/bpf_jit_comp_64.c
-> @@ -893,7 +893,8 @@ static void emit_tail_call(struct jit_ctx *ctx)
->  	emit_nop(ctx);
->  }
->  
+> I tried your program as a ./test_progs test using v6.1 kernel and
+> don't see any error messages:
+>
+> VERIFIER LOG:
+> =============
+> func#0 @0
+> reg type unsupported for arg#0 function dbg#5
+> 0: R1=ctx(off=0,imm=0) R10=fp0
+> ; int BPF_PROG(dbg, struct linux_binprm *bprm)
+> 0: (79) r1 = *(u64 *)(r1 +0)
+> func 'bpf_lsm_bprm_committed_creds' arg0 has btf_id 3061 type STRUCT 'linux_binprm'
+> 1: R1_w=ptr_linux_binprm(off=0,imm=0)
+> 1: (b7) r2 = 0                        ; R2_w=0
+> ; char buf[64] = {0};
+> 2: (7b) *(u64 *)(r10 -8) = r2
+> last_idx 2 first_idx 0
+> regs=4 stack=0 before 1: (b7) r2 = 0
+> 3: R2_w=P0 R10=fp0 fp-8_w=00000000
+> 3: (7b) *(u64 *)(r10 -16) = r2        ; R2_w=P0 R10=fp0 fp-16_w=00000000
+> 4: (7b) *(u64 *)(r10 -24) = r2        ; R2_w=P0 R10=fp0 fp-24_w=00000000
+> 5: (7b) *(u64 *)(r10 -32) = r2        ; R2_w=P0 R10=fp0 fp-32_w=00000000
+> 6: (7b) *(u64 *)(r10 -40) = r2        ; R2_w=P0 R10=fp0 fp-40_w=00000000
+> 7: (7b) *(u64 *)(r10 -48) = r2        ; R2_w=P0 R10=fp0 fp-48_w=00000000
+> 8: (7b) *(u64 *)(r10 -56) = r2        ; R2_w=P0 R10=fp0 fp-56_w=00000000
+> 9: (7b) *(u64 *)(r10 -64) = r2        ; R2_w=P0 R10=fp0 fp-64_w=00000000
+> ; bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
+> 10: (79) r1 = *(u64 *)(r1 +64)        ; R1_w=ptr_file(off=0,imm=0)
+> 11: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+> ; 
+> 12: (07) r2 += -64                    ; R2_w=fp-64
+> ; bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
+> 13: (b4) w3 = 64                      ; R3_w=64
+> 14: (85) call bpf_ima_file_hash#193
+> last_idx 14 first_idx 0
+> regs=8 stack=0 before 13: (b4) w3 = 64
+> 15: R0_w=scalar() fp-8_w=mmmmmmmm fp-16_w=mmmmmmmm fp-24_w=mmmmmmmm fp-32_w=mmmmmmmm fp-40_w=mmmmmmmm fp-48_w=mmmmmmmm fp-56_w=mmmmmmmm fp-64_w=mmmmmmmm
+> ; int BPF_PROG(dbg, struct linux_binprm *bprm)
+> 15: (b4) w0 = 0                       ; R0_w=0
+> 16: (95) exit
+> 
+> I use the following revision: 830b3c68c1fb "Linux 6.1".
+> (also works with current bpf-next master).
+> 
+> Could you please provide some details on how you compile/load the program?
 
-SNIP
+Firstly, thanks for taking a peek at this! Secondly, I do apologies, I
+should've provided some more detailed on how I'm reproducing this in
+my initial email. Below you can find a transcript of how I'm
+conducting my tests:
 
-> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-> index 429a89c5468b..0abb4d6c9dec 100644
-> --- a/arch/x86/net/bpf_jit_comp32.c
-> +++ b/arch/x86/net/bpf_jit_comp32.c
-> @@ -2091,6 +2091,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
->  			if (insn->src_reg == BPF_PSEUDO_CALL)
->  				goto notyet;
->  
-> +			err = bpf_jit_get_func_addr(bpf_prog, insn, extra_pass,
-> +						    &func_addr,
-> +						    &func_addr_fixed);
-> +			if (err)
-> +				return err;
-> +			func = (u8 *)(unsigned long)func_addr;
-> +
->  			if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
->  				int err;
+The source OS which things (kernel and BPF reproducer program) are
+being built on:
 
-looks like this hunk should be in:
-  bpf, x86_32: Use bpf_jit_get_func_addr
+ $ cat /etc/os-release 
+ PRETTY_NAME="Debian GNU/Linux rodete"
+ NAME="Debian GNU/Linux"
+ VERSION_ID="rodete"
+ VERSION="12 (rodete)"
+ VERSION_CODENAME=rodete
+ ID=debian
 
-jirka
+Building latest LLVM and Pahole from source:
+
+ $ sudo apt install -y cmake
+
+ $ cmake --version
+ cmake version 3.25.1
+
+ $ git clone https://github.com/llvm/llvm-project.git  && cd llvm-project && \
+ mkdir build && \
+ cd build && \
+ cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../llvm && \
+ make -j $(nproc) && \
+ sudo make install
+
+ $ clang --version
+ clang version 17.0.0 (https://github.com/llvm/llvm-project.git bc85cf1687435f28fb01b1aa5303317e6118490c)
+ Target: x86_64-unknown-linux-gnu
+ Thread model: posix
+ InstalledDir: /usr/local/bin
+
+ $ sudo apt install -y libdwarf-dev libdw-dev
+
+ $ git clone git://git.kernel.org/pub/scm/devel/pahole/pahole.git && \
+ cd pahole && \
+ mkdir build && \
+ cd build && \
+ cmake -DCMAKE_INSTALL_PREFIX=/usr -D__LIB=lib .. && \
+ make -j $(nproc) && \
+ sudo make install
+
+ $ pahole --version
+ v1.25
+
+Building a test kernel:
+
+ $ git clone https://github.com/torvalds/linux.git && cd linux
+
+ $ make defconfig && make kvm_guest.config
+
+ $ scripts/config \
+ -e BPF \
+ -e BPF_SYSCALL \
+ -e BPF_LSM \
+ -e BPF_JIT \
+ -e BPF_EVENTS \
+ -e DEBUG_INFO \
+ -e DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT \
+ -e DEBUG_INFO_BTF \
+ -e DEBUG_INFO_BTF_MODULES \
+ -e PAHOLE_HAS_SPLIT_BTF \
+ -e FTRACE \
+ -e DYNAMIC_FTRACE \
+ -e FUNCTION_TRACER
+
+ $ make olddefconfig
+
+ $ make -j`nproc`
+
+Building the BPF reproducer program:
+
+ $ git clone https://github.com/libbpf/libbpf-bootstrap.git
+
+ # Both libbpf and bpftool should be the latest versions here.
+ $ git submodule update --init --recursive
+
+ $ cd examples/c
+
+ $ cat > fentry.bpf.c<<EOF
+ #include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+
+ char LICENSE[] SEC("license") = "Dual BSD/GPL";
+
+ SEC("lsm.s/bprm_committed_creds")
+ int BPF_PROG(dbg, struct linux_binprm *bprm)
+ {
+ char buf[64] = {0};
+ bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
+ return 0;
+ }
+ EOF
+
+ $ make -j`nproc` fentry
+
+
+At this point, I basically launch the built kernel using QEMU and push
+the built 'fentry' BPF program to the VM and run it. At that point, I
+face the BPF verifier issue.
+
+LMK whether you need any more information.
+
+/M
