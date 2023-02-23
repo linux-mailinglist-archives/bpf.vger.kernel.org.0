@@ -2,126 +2,306 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 124E86A129A
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 23:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A106A12A3
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 23:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbjBWWKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 17:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
+        id S229816AbjBWWMR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 17:12:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjBWWKN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 17:10:13 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062DA1A978
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 14:10:12 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id x10so46884675edd.13
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 14:10:11 -0800 (PST)
+        with ESMTP id S229817AbjBWWMQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 17:12:16 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC96584BC
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 14:12:15 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id nw10-20020a17090b254a00b00233d7314c1cso767727pjb.5
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 14:12:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q55m7iVQIlNDy9qn5FEsP6EXq9dX22jGRLXIOTB0JSc=;
-        b=SA9wRLy7g+gMifh4VFWibFCBmYgFvQDjf/6uBLb0nzTpnMzKBntn47pFmQeuPLBDWv
-         iep/9jmIfVtloOLCn3pqV35oZfhtSeCJkZS/G1eKTjAKxgG8blhGf6lkhgDhuksYeuW3
-         LP8ZMnMjG2Tqbk48rd9uq/AgwMD1Pl4kY07psrcUARDNi+FmhJlmqbsGOwpryWtWK3Uq
-         wNHOIeRQXXGOPXb/wTs1U5VtilyXwMUN3Qael+hIpYan9tCowWOuBfsPTNvQ0aAyCjTE
-         RK8b48mu3FVSTQXnsro0sBPSuELLSBw8x2vn++MFdYG0YJghfFdju+1T0W3ksDF1i9Rp
-         TCCw==
+        d=isovalent.com; s=google;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NgHmLcow5mNkR5VANAM+kNb9sAcNrB7+oiLAYWG/2Cc=;
+        b=RGY7aBWQrjc4VbUl9Kwpx5VhwrzSCUdJSjmViay1gdpUF8Uyd/7ZqkXN0dWDVFztPv
+         olwblrpy8UxjIAPDb1FYlXkiOCLjuXZgyKHFOgBiv5LVeRL5Xd/2tLGviX4cCwWN1wkE
+         bf8GFx+c0n/gC2Kl5bMGCuwCEhgjiQDZvItpldKS0sLINg7zMeUKPiyiORqphLZseyPQ
+         YuE2tiFDVzqwhj8mrCvcxdKC8MhXJI0qiZreRVEhQZ4T846cYvOSTdWi0NSj3agiYeJG
+         WapYtVgKk9QsCU5ARdLUS3BPhN4aujrQMWJH0IKjDRSbSP1uX4K42eAXQ6kVDxtk/x+3
+         /nlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q55m7iVQIlNDy9qn5FEsP6EXq9dX22jGRLXIOTB0JSc=;
-        b=vA6CtlG0vI/DJlG9NAJ80144g8L/t9xdvZCJh0WY2fcBAqtVF9BPPwOlm8XbOMCedw
-         7hi7I3hR3QzxZEAHFBULeStWKMSLBUA+mhAnCqeyPJuHHocGokhecAmuetbdVmlNtr6D
-         l13gDuRFrMSxWY/K6/qaah2yeSwxyQJ8Xd5GRL9sDl46keSUV/Cr6I9Dmh2wlwkjobjm
-         BOW5GD8M8rX2zMU8x5aoSsRITMETXaC66csjFTRbMMni4JTgadCiJAkzBJxmq4Im15ou
-         q804jcsX1RjuD4alu/UjCTq/N3jcNW+GqXFeqrtyEBgFaMOpDxtOl74GVCN2AfBU8ZSr
-         oU9g==
-X-Gm-Message-State: AO0yUKUyIBOgcUi0e8NyVoSa4tHumMYD7InMbe10eeszYmo0kubWKWB3
-        Pht9rLsWigC6KQ/m3IFBiDwqvzW43FOcXA==
-X-Google-Smtp-Source: AK7set+bhzDgzP/W29uk0lsbBS6moWXJ9AJc5Dd6GTq99vCuc4K361GHhpqzUTg1YOHz03FXI7+Qeg==
-X-Received: by 2002:a05:6402:1503:b0:4ad:7bd3:bb43 with SMTP id f3-20020a056402150300b004ad7bd3bb43mr12151794edw.21.1677190210332;
-        Thu, 23 Feb 2023 14:10:10 -0800 (PST)
-Received: from krava ([83.240.62.52])
-        by smtp.gmail.com with ESMTPSA id 19-20020a508e13000000b004aef609f747sm6331911edw.3.2023.02.23.14.10.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Feb 2023 14:10:10 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 23 Feb 2023 23:10:07 +0100
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NgHmLcow5mNkR5VANAM+kNb9sAcNrB7+oiLAYWG/2Cc=;
+        b=R+H6hgNkY6a9v6yR7gyS5ACN6KkWCYDdnZuRPy1hEcOqt93mPwBMjL4BIFM8Gx9HmS
+         JuslTt9l+trlJirvqDJj6CmBRI+KPDA/jOtFPXYyTc5o0n4UvYqdL+pqhCKRWgboePRd
+         q4pP78hc2LQqGOUM3TOBInEXacmP40+49lzdnxgIGF9MAvGamNCaKEqt163J2WAYbWdR
+         RM1V0AJq3yLw0yueej7z0ZzuMJkj2N5/k9F6HYWlJft2HVQcwYz7O4mU8ki0/uhr7j9h
+         TbOtN7yYgFK24snkPGkdx+kEsKi77J1Ch+D6U6J3+M5UC1mdQKYdae53oF//PdUxNQ8l
+         nxig==
+X-Gm-Message-State: AO0yUKWL3APV3Sch4cRy1EebsiBxXEbAnflXg4E1+HeyMaJ1MtgMMDDE
+        6Q1rWSlHLBrOvvpfADoUsIr5kjAyeRQfDukD
+X-Google-Smtp-Source: AK7set+tHZB3AoWXBnCVmzTv+zyAWaHeBIXNcNWEVMW2KWW/cfMZh953VMmhoBhYr4w2IGTh/+X0Pg==
+X-Received: by 2002:a17:902:fb4d:b0:196:8a80:4d91 with SMTP id lf13-20020a170902fb4d00b001968a804d91mr11882705plb.35.1677190334552;
+        Thu, 23 Feb 2023 14:12:14 -0800 (PST)
+Received: from ?IPv6:2601:647:4900:b6:28ee:5de8:8f1:37ad? ([2601:647:4900:b6:28ee:5de8:8f1:37ad])
+        by smtp.gmail.com with ESMTPSA id ij8-20020a170902ab4800b0019607aeda8bsm7847146plb.73.2023.02.23.14.12.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 Feb 2023 14:12:14 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
+Subject: Re: [PATCH 1/2] bpf: Add socket destroy capability
+From:   Aditi Ghag <aditi.ghag@isovalent.com>
+In-Reply-To: <d979c6ab-7afc-3c83-c7e6-27bad47c0a9c@oracle.com>
+Date:   Thu, 23 Feb 2023 14:12:12 -0800
+Cc:     bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <29E6F588-71C9-4022-80C0-B9B0405DDFAB@isovalent.com>
+References: <cover.1671242108.git.aditi.ghag@isovalent.com>
+ <c3b935a5a72b1371f9262348616a7fa84061b85f.1671242108.git.aditi.ghag@isovalent.com>
+ <d979c6ab-7afc-3c83-c7e6-27bad47c0a9c@oracle.com>
 To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     acme@kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        sinquersw@gmail.com, martin.lau@kernel.org, songliubraving@fb.com,
-        sdf@google.com, timo@incline.eu, yhs@fb.com, bpf@vger.kernel.org
-Subject: Re: [RFC dwarves 0/3] dwarves: improvements/fixes to BTF function
- skip logic
-Message-ID: <Y/fj28OdEdKJBLcy@krava>
-References: <1676994522-1557-1-git-send-email-alan.maguire@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1676994522-1557-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.7)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 21, 2023 at 03:48:39PM +0000, Alan Maguire wrote:
-> As discussed in [1], there are a few issues with how we determine
-> whether to skip functions for BTF encoding:
-> 
-> - when detecting unexpected registers, functions which have
->   struct parameters need to be skipped as they can use
->   multiple registers to pass the struct, and as a result
->   later parameters use unexpected registers.  However,
->   struct detection does not always work; it needs to be fixed for
->   const struct parameters and cases where a parameter references
->   the original parameter (which has the type info) via abstract
->   origin (patch 1)
-> - when looking for unexpected registers, location lists are not
->   supported.  Fix that by using dwarf_getlocations() (patch 2).
-> - when marking parameters as using unexpected registers, we should
->   stick to the case where we expect register x and register y is
->   used; other cases such as optimized-out parameters are no
->   guarantee that we were not _passed_ the correct parameters
->   (patch 3).
-> 
-> This series can be applied on top of the dwarves "next" branch,
-> as a follow-on to [2]
-> 
-> [1] https://lore.kernel.org/bpf/20230220190335.bk6jzayfqivsh7rv@macbook-pro-6.dhcp.thefacebook.com/
-> [2] https://lore.kernel.org/bpf/1676675433-10583-1-git-send-email-alan.maguire@oracle.com/
-> 
-> Alan Maguire (3):
->   dwarf_loader: fix detection of struct parameters
->   dwarf_loader: fix parameter location retrieval for location lists
->   dwarf_loader: only mark parameter as using an unexpected register when
->     it does
 
-I'm getting more functions in with this patchset
+> On Dec 20, 2022, at 2:26 AM, Alan Maguire <alan.maguire@oracle.com> =
+wrote:
+>=20
+> On 17/12/2022 01:57, Aditi Ghag wrote:
+>> The socket destroy helper is used to
+>> forcefully terminate sockets from certain
+>> BPF contexts. We plan to use the capability
+>> in Cilium to force client sockets to reconnect
+>> when their remote load-balancing backends are
+>> deleted. The other use case is on-the-fly
+>> policy enforcement where existing socket
+>> connections prevented by policies need to
+>> be terminated.
+>>=20
+>> The helper is currently exposed to iterator
+>> type BPF programs where users can filter,
+>> and terminate a set of sockets.
+>>=20
+>> Sockets are destroyed asynchronously using
+>> the work queue infrastructure. This allows
+>> for current the locking semantics within
+>> socket destroy handlers, as BPF iterators
+>> invoking the helper acquire *sock* locks.
+>> This also allows the helper to be invoked
+>> from non-sleepable contexts.
+>> The other approach to skip acquiring locks
+>> by passing an argument to the `diag_destroy`
+>> handler didn't work out well for UDP, as
+>> the UDP abort function internally invokes
+>> another function that ends up acquiring
+>> *sock* lock.
+>> While there are sleepable BPF iterators,
+>> these are limited to only certain map types.
+>> Furthermore, it's limiting in the sense that
+>> it wouldn't allow us to extend the helper
+>> to other non-sleepable BPF programs.
+>>=20
+>> The work queue infrastructure processes work
+>> items from per-cpu structures. As the sock
+>> destroy work items are executed asynchronously,
+>> we need to ref count sockets before they are
+>> added to the work queue. The 'work_pending'
+>> check prevents duplicate ref counting of sockets
+>> in case users invoke the destroy helper for a
+>> socket multiple times. The `{READ,WRITE}_ONCE`
+>> macros ensure that the socket pointer stored
+>> in a work queue item isn't clobbered while
+>> the item is being processed. As BPF programs
+>> are non-preemptible, we can expect that once
+>> a socket is ref counted, no other socket can
+>> sneak in before the ref counted socket is
+>> added to the work queue for asynchronous destroy.
+>> Finally, users are expected to retry when the
+>> helper fails to queue a work item for a socket
+>> to be destroyed in case there is another destroy
+>> operation is in progress.
+>>=20
+>> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+>> ---
+>> include/linux/bpf.h            |  1 +
+>> include/uapi/linux/bpf.h       | 17 +++++++++
+>> kernel/bpf/core.c              |  1 +
+>> kernel/trace/bpf_trace.c       |  2 +
+>> net/core/filter.c              | 70 =
+++++++++++++++++++++++++++++++++++
+>> tools/include/uapi/linux/bpf.h | 17 +++++++++
+>> 6 files changed, 108 insertions(+)
+>>=20
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 3de24cfb7a3d..60eaa05dfab3 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -2676,6 +2676,7 @@ extern const struct bpf_func_proto =
+bpf_get_retval_proto;
+>> extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
+>> extern const struct bpf_func_proto bpf_cgrp_storage_get_proto;
+>> extern const struct bpf_func_proto bpf_cgrp_storage_delete_proto;
+>> +extern const struct bpf_func_proto bpf_sock_destroy_proto;
+>>=20
+>> const struct bpf_func_proto *tracing_prog_func_proto(
+>>   enum bpf_func_id func_id, const struct bpf_prog *prog);
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 464ca3f01fe7..789ac7c59fdf 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -5484,6 +5484,22 @@ union bpf_attr {
+>>  *		0 on success.
+>>  *
+>>  *		**-ENOENT** if the bpf_local_storage cannot be found.
+>> + *
+>> + * int bpf_sock_destroy(struct sock *sk)
+>> + *	Description
+>> + *		Destroy the given socket with **ECONNABORTED** error =
+code.
+>> + *
+>> + *		*sk* must be a non-**NULL** pointer to a socket.
+>> + *
+>> + *	Return
+>> + *		The socket is destroyed asynchronosuly, so 0 return =
+value may
+>> + *		not suggest indicate that the socket was successfully =
+destroyed.
+>> + *
+>> + *		On error, may return **EPROTONOSUPPORT**, **EBUSY**, =
+**EINVAL**.
+>> + *
+>> + *		**-EPROTONOSUPPORT** if protocol specific destroy =
+handler is not implemented.
+>> + *
+>> + *		**-EBUSY** if another socket destroy operation is in =
+progress.
+>>  */
+>> #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
+>> 	FN(unspec, 0, ##ctx)				\
+>> @@ -5698,6 +5714,7 @@ union bpf_attr {
+>> 	FN(user_ringbuf_drain, 209, ##ctx)		\
+>> 	FN(cgrp_storage_get, 210, ##ctx)		\
+>> 	FN(cgrp_storage_delete, 211, ##ctx)		\
+>> +	FN(sock_destroy, 212, ##ctx)			\
+>> 	/* */
+>>=20
+>> /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that =
+don't
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index 7f98dec6e90f..c59bef9805e5 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -2651,6 +2651,7 @@ const struct bpf_func_proto =
+bpf_snprintf_btf_proto __weak;
+>> const struct bpf_func_proto bpf_seq_printf_btf_proto __weak;
+>> const struct bpf_func_proto bpf_set_retval_proto __weak;
+>> const struct bpf_func_proto bpf_get_retval_proto __weak;
+>> +const struct bpf_func_proto bpf_sock_destroy_proto __weak;
+>>=20
+>> const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
+>> {
+>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>> index 3bbd3f0c810c..016dbee6b5e4 100644
+>> --- a/kernel/trace/bpf_trace.c
+>> +++ b/kernel/trace/bpf_trace.c
+>> @@ -1930,6 +1930,8 @@ tracing_prog_func_proto(enum bpf_func_id =
+func_id, const struct bpf_prog *prog)
+>> 		return &bpf_get_socket_ptr_cookie_proto;
+>> 	case BPF_FUNC_xdp_get_buff_len:
+>> 		return &bpf_xdp_get_buff_len_trace_proto;
+>> +	case BPF_FUNC_sock_destroy:
+>> +		return &bpf_sock_destroy_proto;
+>> #endif
+>> 	case BPF_FUNC_seq_printf:
+>> 		return prog->expected_attach_type =3D=3D BPF_TRACE_ITER =
+?
+>> diff --git a/net/core/filter.c b/net/core/filter.c
+>> index 929358677183..9753606ecc26 100644
+>> --- a/net/core/filter.c
+>> +++ b/net/core/filter.c
+>> @@ -11569,6 +11569,8 @@ bpf_sk_base_func_proto(enum bpf_func_id =
+func_id)
+>> 		break;
+>> 	case BPF_FUNC_ktime_get_coarse_ns:
+>> 		return &bpf_ktime_get_coarse_ns_proto;
+>> +	case BPF_FUNC_sock_destroy:
+>> +		return &bpf_sock_destroy_proto;
+>> 	default:
+> This is a really neat feature! One question though; above it seems to
+> suggest that the helper is only exposed to BPF iterators, but by
 
-  1666 for gcc   (with 61678, without 60012)
-  9390 for clang (with 62128, without 52738)
+The v2 patch only exposes the capability to BPF iterators. The patch =
+series
+has details involving locking semantics due to which the kfunc is only =
+available
+for BPF iterators at the moment.=20
 
-but no duplicates and selftests are passing
+> adding it to bpf_sk_base_func_proto() won't it be available to
+> other BPF programs like sock_addr, sk_filter etc? If I've got that
+> right, we'd definitely want to exclude potentially unprivileged
+> programs from having access to this helper. And to be clear, I'd
+> definitely see value in having it accessible to other BPF program
+> types too like sockops if possible, but just wanted to check.=20
+>=20
+>> 		return bpf_base_func_proto(func_id);
+>> 	}
+>> @@ -11578,3 +11580,71 @@ bpf_sk_base_func_proto(enum bpf_func_id =
+func_id)
+>>=20
+>> 	return func;
+>> }
+>> +
+>> +struct sock_destroy_work {
+>> +	struct sock *sk;
+>> +	struct work_struct destroy;
+>> +};
+>> +
+>> +static DEFINE_PER_CPU(struct sock_destroy_work, =
+sock_destroy_workqueue);
+>> +
+>> +static void bpf_sock_destroy_fn(struct work_struct *work)
+>> +{
+>> +	struct sock_destroy_work *sd_work =3D container_of(work,
+>> +			struct sock_destroy_work, destroy);
+>> +	struct sock *sk =3D READ_ONCE(sd_work->sk);
+>> +
+>> +	sk->sk_prot->diag_destroy(sk, ECONNABORTED);
+>> +	sock_put(sk);
+>> +}
+>> +
+>> +static int __init bpf_sock_destroy_workqueue_init(void)
+>> +{
+>> +	int cpu;
+>> +	struct sock_destroy_work *work;
+>> +
+>> +	for_each_possible_cpu(cpu) {
+>> +		work =3D per_cpu_ptr(&sock_destroy_workqueue, cpu);
+>> +		INIT_WORK(&work->destroy, bpf_sock_destroy_fn);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +subsys_initcall(bpf_sock_destroy_workqueue_init);
+>> +
+>> +BPF_CALL_1(bpf_sock_destroy, struct sock *, sk)
+>> +{
+>> +	struct sock_destroy_work *sd_work;
+>> +
+>> +	if (!sk->sk_prot->diag_destroy)
+>=20
+> risk of a NULL sk here?
+>=20
+> Thanks!
+>=20
+> Alan
 
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
-> 
->  dwarf_loader.c | 30 ++++++++++++++++++------------
->  1 file changed, 18 insertions(+), 12 deletions(-)
-> 
-> -- 
-> 2.31.1
-> 
