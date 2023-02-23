@@ -2,81 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D84BD6A0FAE
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 19:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 256426A1012
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 20:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232030AbjBWSrj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 13:47:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
+        id S229554AbjBWTGG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 14:06:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232688AbjBWSr0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 13:47:26 -0500
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9651158B8
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 10:47:17 -0800 (PST)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5384ff97993so84777147b3.2
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 10:47:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WjA32Jpx57cVd32SZNOzuTDW+6o0QlN93xjAZYLFqW8=;
-        b=Et512GEBd/i+QztxG9BP68ZUka2FWMV/oMXCyp7HLAZl0+O3To3Kp2C3Puqw4RxUfs
-         ne7x2wh5uEYAwuDQiCtjd4+7+PfwDf7yJZAoyko3kPff+eukaUMR+DNt7sl/v0qOiN3D
-         D8vE3rHELk9k8etzpnjAuzvIqxC2qlcWLklCP5QAxYar8obSgaOTHY/zjBEIY7b6cTOh
-         zaq55yCvEsz0gS/dJrlKPs3o0iyom5iocEQ+RYzTiCWzf/rFWxLGchBy4nxhHQPQsDQ7
-         Skog1g8yfBFBOUiepq3XKDbO8FtV/rl9wMPaD5RQ8c9xJsQOvI44c6el6QOP5vttPaMU
-         EltA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WjA32Jpx57cVd32SZNOzuTDW+6o0QlN93xjAZYLFqW8=;
-        b=40f6ol4ABkYD9njCD9kgxnBnAZyrIMWTgF/eloH0afjNiCIModEZkPx+r8yV0pnmX3
-         GMqED1ibNtMiiYne2mpM17Lz69ISsEVod40OZ6xaLi/GjtzXIzWvIx+nlJcqqWtPy++0
-         vYFNp6/DMbKgjOjE5CW2ysDSB8/28djQF9gehM56GY8meAAQulyA+KEdtMCt8LiZWcGs
-         KXZuey3IQxkdgA3YInkTJ3m9nL6UsCk9OUYIrqKhnP1+deY33Lf4cBRMIsbzMavoyTgL
-         6xe6elx7NaJGLotwwdl5ES5tDmV6GZh31BQN5GLGQTqyalm8remGzVYsp2ekTfIuUpxM
-         FFcg==
-X-Gm-Message-State: AO0yUKXpKY70e+cPCsEGBLvWmAtV9RKJ7NmPsw6qM4hNtO+G/yH4J2ii
-        n7m5o/0t/B7D9sNA67ErN1DaB1pUSmC2HfG5bX/SHA==
-X-Google-Smtp-Source: AK7set98S9Wal9BCX+UN2eVq/NYxQWlplu7di3H8NX1Jc9j4OW0mPv3/2yhgLX+OIKLyZr60rmWfEOsxoQfG80GcRqo=
-X-Received: by 2002:a5b:907:0:b0:932:8dcd:3a13 with SMTP id
- a7-20020a5b0907000000b009328dcd3a13mr2538488ybq.5.1677178036613; Thu, 23 Feb
- 2023 10:47:16 -0800 (PST)
+        with ESMTP id S229518AbjBWTGF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 14:06:05 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100EF52DE4;
+        Thu, 23 Feb 2023 11:06:05 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 99A97616DE;
+        Thu, 23 Feb 2023 19:06:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46BBDC433D2;
+        Thu, 23 Feb 2023 19:06:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677179164;
+        bh=XppVl+0anAeipNeoaerXbgrBjpojEcKUhkLAUcnE1uE=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=oRT8O74pTNHQpp23rqc9KuvLMNsX1iIT7PCSAdC88ZyuIMYn3GUMaWVhGWbVl6283
+         Ny3vPGC5st/yninLEDXSKQ+cq9/KwkyCb03e3p8qnLeGkevdAWc327BrvxVi+ecGDU
+         hdR4bX/koQCxiYpBfyMBk+Y1jyNEWVKLgr0ZTKjtFFzsMfTTdrUxlhx4YXwUtn6M/J
+         eblZqx0j/HXbn/PtTVO+byYmaTndjuGAP7Iizv4Q9jW1lLFVTALHK2V8HwVkvOFpS1
+         0Tr29M4EL6faUmknHO6KMJknGhwKiJukPd6v+2ronylL4x6znIKnaiEZ81upAE6mo3
+         x5mO2ukHt2eYQ==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pabeni@redhat.com, bpf@vger.kernel.org, ast@kernel.org
+Subject: Re: [PULL] Networking for v6.3
+References: <20230221233808.1565509-1-kuba@kernel.org>
+        <CAHk-=wjTMgB0=PQt8synf1MRTfetVXAWWLOibnMKvv1ETn_1uw@mail.gmail.com>
+Date:   Thu, 23 Feb 2023 21:06:00 +0200
+In-Reply-To: <CAHk-=wjTMgB0=PQt8synf1MRTfetVXAWWLOibnMKvv1ETn_1uw@mail.gmail.com>
+        (Linus Torvalds's message of "Thu, 23 Feb 2023 09:21:38 -0800")
+Message-ID: <87pma02odj.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20230222192925.1778183-1-edliaw@google.com> <20230222192925.1778183-2-edliaw@google.com>
- <Y/crdG+quVvKMF0m@kroah.com>
-In-Reply-To: <Y/crdG+quVvKMF0m@kroah.com>
-From:   Edward Liaw <edliaw@google.com>
-Date:   Thu, 23 Feb 2023 10:46:50 -0800
-Message-ID: <CAG4es9Wa+PxomxmK348O8nxfXny8jo=9kqQ0KOYgQq82gTNeaQ@mail.gmail.com>
-Subject: Re: [PATCH 4.14 v2 1/4] bpf: Do not use ax register in interpreter on div/mod
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>, bpf@vger.kernel.org,
-        kernel-team <kernel-team@android.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> What is the git commit id in Linus's tree of this commit?
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Hi Greg,
-It is a partial revert of 144cd91c4c2bced6eb8a7e25e590f6618a11e854.
+> On Tue, Feb 21, 2023 at 3:38 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> --
+>> Networking changes for 6.3.
+>
+> Hmm. I just noticed another issue on my laptop: I get an absolute *flood* of
+>
+>   warning: 'ThreadPoolForeg' uses wireless extensions that are
+> deprecated for modern drivers: use nl80211
+>
+> introduced in commit dc09766c755c ("wifi: wireless: warn on most
+> wireless extension usage").
+>
+> This is on my xps13 with Atheros QCA6174 wireless ("Killer 1435
+> Wireless-AC", PCI ID 168c:003e, subsystem 1a56:143a).
+>
+> And yes, it uses 'pr_warn_ratelimited()', but the ratelimiting is a
+> joke. That means that I "only" get five warnings a second, and then it
+> pauses for a minute or two until it does it again.
+>
+> So that warning needs to go away - it flushed the whole kernel printk
+> buffer in no time.
 
-Thanks,
-Edward
+Ouch, sorry about that. The ratelimiting is really a joke here. We'll
+send a patch tomorrow.
+
+So that we can file a bug report about use of Wireless Extensions, what
+process is ThreadPoolForeg? I did a quick search and it seems to be
+Chromium related, but is it really from Chromium? The warning was
+applied over a month ago, I'm surprised nobody else has reported
+anything. I would expect that there are more Chromium users :)
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
