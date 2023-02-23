@@ -2,168 +2,310 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B666A0402
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 09:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C416A03FE
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 09:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbjBWIkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 03:40:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
+        id S233593AbjBWIkK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 03:40:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233640AbjBWIkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 03:40:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338BC13DC2
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 00:39:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677141562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5sPuPMmKl8Fh55oJyqKfdWjSTl4UX6ztUqAWilF1Ap8=;
-        b=WoxGTWYjPziAI076K06HglUX3Ov4DLC5GDT9UeMgHiRsyU7nGtvfO/f0o7tEmWCc6jyGFw
-        Bsi18+a8Cq5VCSbYGSqImBAlwL2K43QDSP+AQOdnmklI/c3ipLkfUJWZLlWX6bgMDIMwzo
-        ZNxVFVXecmISy0TFQJb5D+svpMN3ZGQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-313-AHsdILhqOiiXMZr9zXhAPQ-1; Thu, 23 Feb 2023 03:39:21 -0500
-X-MC-Unique: AHsdILhqOiiXMZr9zXhAPQ-1
-Received: by mail-wr1-f72.google.com with SMTP id 4-20020a5d47a4000000b002c5699ff08aso2035677wrb.9
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 00:39:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677141560;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5sPuPMmKl8Fh55oJyqKfdWjSTl4UX6ztUqAWilF1Ap8=;
-        b=iWfWoF/GU5ho3Ltyzn69oBaOLgUhQHGfPuzMkYMal7RiFV+wK2YVLCymwiswyrNE6E
-         3X4m0nkkolEyeogWVemUJP7AL3y87Pb9cx/RtANMvC+rtPaEsYfqm/Wsr95ecEQB2HH7
-         A8ho2g5ulDN9m3+kqY9/IIOAHZKAHnqIbZN7iyHfbuXjZojS0V3iaLFwN6kr74x2j6eq
-         aNAPCMUQ1snakwejX7ZRbmo28BqEZbFWgp5WDSbjZlJtQusq/8H0F1Bood1prGpE8au3
-         H+4DGHyrZkMCeKwFyQXkv+mFuxbCL/l6J3zsfMigyUPPCRhwih2l1YVCNdEndl9wmI0t
-         lWfA==
-X-Gm-Message-State: AO0yUKW7rGZ9Ue4Qfits2ii4p2yS+prmWM70VrTD20Zbxz9zygRMLP/O
-        KnGnlnl+1ECcTH8UUfUxBGjKGa1o8OcUWFSe5c7vuWMty956mb6p3cH8DpxTSR3r/9icKZsIyEL
-        /GBauh93gjkyO
-X-Received: by 2002:a1c:741a:0:b0:3e2:415:f09f with SMTP id p26-20020a1c741a000000b003e20415f09fmr10130671wmc.3.1677141559961;
-        Thu, 23 Feb 2023 00:39:19 -0800 (PST)
-X-Google-Smtp-Source: AK7set98+o6jJ1qOgbToOoRq/imOK3FoKhZ+VL6UYssekxL/stE0Ck+L7wA5jcx60YYmNlFc6d2hsA==
-X-Received: by 2002:a1c:741a:0:b0:3e2:415:f09f with SMTP id p26-20020a1c741a000000b003e20415f09fmr10130657wmc.3.1677141559590;
-        Thu, 23 Feb 2023 00:39:19 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-121-8.dyn.eolo.it. [146.241.121.8])
-        by smtp.gmail.com with ESMTPSA id u7-20020a05600c19c700b003e21f20b646sm12230241wmq.21.2023.02.23.00.39.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Feb 2023 00:39:18 -0800 (PST)
-Message-ID: <795aed3f0e433a89fb72a8af3fc736f58dea1bf1.camel@redhat.com>
-Subject: Re: [PATCH net] udp: fix memory schedule error
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Jason Xing <kerneljasonxing@gmail.com>
-Cc:     willemdebruijn.kernel@gmail.com, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Date:   Thu, 23 Feb 2023 09:39:17 +0100
-In-Reply-To: <CAL+tcoBGFkXea-GyzbO41Ve8_wUF3PT=YF43TxuzgM+adVa8gw@mail.gmail.com>
-References: <20230221110344.82818-1-kerneljasonxing@gmail.com>
-         <48429c16fdaee59867df5ef487e73d4b1bf099af.camel@redhat.com>
-         <CAL+tcoD8PzL4khHq44z27qSHHGkcC4YUa91E3h+ki7O0u3SshQ@mail.gmail.com>
-         <aaf3d11ea5b247ab03d117dadae682fe2180d38a.camel@redhat.com>
-         <CAL+tcoBZFFwOnUqzcDtSsNyfPgHENAOv0bPcvncxuMPwCn40+Q@mail.gmail.com>
-         <CAL+tcoBGFkXea-GyzbO41Ve8_wUF3PT=YF43TxuzgM+adVa8gw@mail.gmail.com>
+        with ESMTP id S233456AbjBWIkJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 03:40:09 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8544AFE6
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 00:40:08 -0800 (PST)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31N6WBT2009853;
+        Thu, 23 Feb 2023 08:39:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=QyXcbGD4Ur7hhsBakuhrsJdmACBzGvXvAonrrk0Xf6w=;
+ b=B8XT5hKK5kBxvcgihOIlsnU3wY55MSeun9LF+ZLfq0CPtFTJeFYZFKlkCqt2OlcQZ2A7
+ dfJi+UsBZhS4Mk9LR0vOil5fF8CUBlplGPaFPIwsN2wo/NtphWPVkZsKuo0VYpzycmhH
+ RmoI5Rz3BWF5uO/+2z3T7clk6tSVF+FCvE4WUG68mRsFD6UjNG8CzWvZUjLl/sTUBjXO
+ zsfOVhBzHDrgN28N5NdkVXtKgmG2Qp4GuTJQWlFE9QYt2aW8pAsUK4I0Am1n2tFOmap2
+ 5kQA3m0R5DrRTB6g3iLuSsfQQQQzc00cEpkRL7bh5+ujL8O04cNpBlDtH55zEY20sF1L jA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3nx2y72x7c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Feb 2023 08:39:53 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31N8Kc5L003113;
+        Thu, 23 Feb 2023 08:39:53 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3nx2y72x6g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Feb 2023 08:39:53 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31N6UBnm031888;
+        Thu, 23 Feb 2023 08:39:51 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3ntpa6cvg9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Feb 2023 08:39:51 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31N8dlYC56099122
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Feb 2023 08:39:47 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7B03A2004B;
+        Thu, 23 Feb 2023 08:39:47 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D1BA820043;
+        Thu, 23 Feb 2023 08:39:46 +0000 (GMT)
+Received: from [9.171.53.11] (unknown [9.171.53.11])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 23 Feb 2023 08:39:46 +0000 (GMT)
+Message-ID: <196da641abe62edf472f36be7eff9916b818831c.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v3 11/12] bpf: Support 64-bit pointers to kfuncs
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 23 Feb 2023 09:39:46 +0100
+In-Reply-To: <CAKH8qBsB0jgeODqhOwiJB1vUZZfWD27VU0nN+Bo8b4aJLBgESg@mail.gmail.com>
+References: <20230222223714.80671-1-iii@linux.ibm.com>
+         <20230222223714.80671-12-iii@linux.ibm.com>
+         <CAKH8qBsB0jgeODqhOwiJB1vUZZfWD27VU0nN+Bo8b4aJLBgESg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 3syp8RVr_gH9WcKD5HMUNIuMOuoqlTCg
+X-Proofpoint-GUID: yGmgQsTk_ygCOzWREPyHpBM02md3naV_
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-23_04,2023-02-22_02,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ suspectscore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 bulkscore=0 phishscore=0 impostorscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302230074
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2023-02-22 at 11:47 +0800, Jason Xing wrote:
-> On Tue, Feb 21, 2023 at 11:46 PM Jason Xing <kerneljasonxing@gmail.com> w=
-rote:
+On Wed, 2023-02-22 at 15:43 -0800, Stanislav Fomichev wrote:
+> On Wed, Feb 22, 2023 at 2:37 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> wrote:
 > >=20
-> > On Tue, Feb 21, 2023 at 10:46 PM Paolo Abeni <pabeni@redhat.com> wrote:
-> > >=20
-> > > On Tue, 2023-02-21 at 21:39 +0800, Jason Xing wrote:
-> > > > On Tue, Feb 21, 2023 at 8:27 PM Paolo Abeni <pabeni@redhat.com> wro=
-te:
-> > > > >=20
-> > > > > On Tue, 2023-02-21 at 19:03 +0800, Jason Xing wrote:
-> > > > > > From: Jason Xing <kernelxing@tencent.com>
-> > > > > >=20
-> > > > > > Quoting from the commit 7c80b038d23e ("net: fix sk_wmem_schedul=
-e()
-> > > > > > and sk_rmem_schedule() errors"):
-> > > > > >=20
-> > > > > > "If sk->sk_forward_alloc is 150000, and we need to schedule 150=
-001 bytes,
-> > > > > > we want to allocate 1 byte more (rounded up to one page),
-> > > > > > instead of 150001"
-> > > > >=20
-> > > > > I'm wondering if this would cause measurable (even small) perform=
-ance
-> > > > > regression? Specifically under high packet rate, with BH and user=
--space
-> > > > > processing happening on different CPUs.
-> > > > >=20
-> > > > > Could you please provide the relevant performance figures?
-> > > >=20
-> > > > Sure, I've done some basic tests on my machine as below.
-> > > >=20
-> > > > Environment: 16 cpus, 60G memory
-> > > > Server: run "iperf3 -s -p [port]" command and start 500 processes.
-> > > > Client: run "iperf3 -u -c 127.0.0.1 -p [port]" command and start 50=
-0 processes.
-> > >=20
-> > > Just for the records, with the above command each process will send
-> > > pkts at 1mbs - not very relevant performance wise.
-> > >=20
-> > > Instead you could do:
-> > >=20
+> > test_ksyms_module fails to emit a kfunc call targeting a module on
+> > s390x, because the verifier stores the difference between kfunc
+> > address and __bpf_call_base in bpf_insn.imm, which is s32, and
+> > modules
+> > are roughly (1 << 42) bytes away from the kernel on s390x.
 > >=20
-> > > taskset 0x2 iperf -s &
-> > > iperf -u -c 127.0.0.1 -b 0 -l 64
-> > >=20
+> > Fix by keeping BTF id in bpf_insn.imm for BPF_PSEUDO_KFUNC_CALLs,
+> > and storing the absolute address in bpf_kfunc_desc, which JITs
+> > retrieve
+> > as usual by calling bpf_jit_get_func_addr().
 > >=20
-> > Thanks for your guidance.
+> > Introduce bpf_get_kfunc_addr() instead of exposing both
+> > find_kfunc_desc() and struct bpf_kfunc_desc.
 > >=20
-> > Here're some numbers according to what you suggested, which I tested
-> > several times.
-> > ----------|IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s
-> > Before: lo 411073.41 411073.41  36932.38  36932.38
-> > After:   lo 410308.73 410308.73  36863.81  36863.81
+> > This also fixes the problem with XDP metadata functions outlined in
+> > the description of commit 63d7b53ab59f ("s390/bpf: Implement
+> > bpf_jit_supports_kfunc_call()") by replacing address lookups with
+> > BTF
+> > id lookups. This eliminates the inconsistency between "abstract"
+> > XDP
+> > metadata functions' BTF ids and their concrete addresses.
 > >=20
-> > Above is one of many results which does not mean that the original
-> > code absolutely outperforms.
-> > The output is not that constant and stable, I think.
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 >=20
-> Today, I ran the same test on other servers, it looks the same as
-> above. Those results fluctuate within ~2%.
+> Acked-by: Stanislav Fomichev <sdf@google.com>
 >=20
-> Oh, one more thing I forgot to say is the output of iperf itself which
-> doesn't show any difference.
-> Before: Bitrate is 211 - 212 Mbits/sec
-> After: Bitrate is 211 - 212 Mbits/sec
-> So this result is relatively constant especially if we keep running
-> the test over 2 minutes.
+> With a nit below (and an unrelated question).
+>=20
+> I'll wait a bit for the buildbots to finish until ack'ing the rest.
+> But the jit (except sparc quirks) and selftest changes also make
+> sense to me.
+>=20
+> > ---
+> > =C2=A0include/linux/bpf.h=C2=A0=C2=A0 |=C2=A0 2 ++
+> > =C2=A0kernel/bpf/core.c=C2=A0=C2=A0=C2=A0=C2=A0 | 21 ++++++++++--
+> > =C2=A0kernel/bpf/verifier.c | 79 +++++++++++++--------------------------
+> > ----
+> > =C2=A03 files changed, 44 insertions(+), 58 deletions(-)
+> >=20
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 520b238abd5a..e521eae334ea 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -2234,6 +2234,8 @@ bool bpf_prog_has_kfunc_call(const struct
+> > bpf_prog *prog);
+> > =C2=A0const struct btf_func_model *
+> > =C2=A0bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ const struct bpf_insn *insn);
+> > +int bpf_get_kfunc_addr(const struct bpf_prog *prog, u32 func_id,
+> > u16 offset,
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 **func_addr);
+> > =C2=A0struct bpf_core_ctx {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_verifier_log *log;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct btf *btf;
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index 933869983e2a..4d51782f17ab 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -1185,10 +1185,12 @@ int bpf_jit_get_func_addr(const struct
+> > bpf_prog *prog,
+> > =C2=A0{
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s16 off =3D insn->off;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s32 imm =3D insn->imm;
+>=20
+> [..]
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool fixed;
+>=20
+> nit: do we really need that extra fixed bool? Why not directly
+> *func_addr_fixes =3D true/false in all the places?
 
-Thanks for the testing. My personal take on this one is that is more a
-refactor than a bug fix - as the amount forward allocated memory should
-always be negligible for UDP.=20
+I introduced it in order to avoid touching func_addr_fixed if there
+is an error, but actually that's not necessary - it's assigned after
+all checks. I will drop it in v4.
 
-Still it could make sense keep the accounting schema consistent across
-different protocols. I suggest to repost for net-next, when it will re-
-open, additionally introducing __sk_mem_schedule() usage to avoid code
-duplication.
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 *addr;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err;
+> >=20
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *func_addr_fixed =3D insn->src_re=
+g !=3D BPF_PSEUDO_CALL;
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!*func_addr_fixed) {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 switch (insn->src_reg) {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_PSEUDO_CALL:
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 /* Place-holder address till the last pass has
+> > collected
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 * all addresses for JITed subprograms in which
+> > case we
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 * can pick them up from prog->aux.
+> > @@ -1200,15 +1202,28 @@ int bpf_jit_get_func_addr(const struct
+> > bpf_prog *prog,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 addr =
+=3D (u8 *)prog->aux->func[off]-
+> > >bpf_func;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 else
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retur=
+n -EINVAL;
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 fixed =3D false;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 break;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case 0:
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 /* Address of a BPF helper call. Since part of the
+> > core
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 * kernel, it's always at a fixed location.
+> > __bpf_call_base
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 * and the helper with imm relative to it are bo=
+th
+> > in core
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 * kernel.
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 addr =3D (u8 *)__bpf_call_base + imm;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 fixed =3D true;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 break;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_PSEUDO_KFUNC_CALL:
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 err =3D bpf_get_kfunc_addr(prog, imm, off, &addr);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 if (err)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return err;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 fixed =3D true;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 break;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 default:
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return -EINVAL;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> >=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *func_addr_fixed =3D fixed;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *func_addr =3D (unsigned lon=
+g)addr;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+> > =C2=A0}
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 574d2dfc6ada..6d4632476c9c 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -2115,8 +2115,8 @@ static int add_subprog(struct
+> > bpf_verifier_env *env, int off)
+> > =C2=A0struct bpf_kfunc_desc {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btf_func_model func_m=
+odel;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 func_id;
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s32 imm;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u16 offset;
+>=20
+> [..]
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long addr;
+>=20
+> Do we have some canonical type to store the address? I was using void
+> * in bpf_dev_bound_resolve_kfunc, but we are doing ulong here. We
+> seem
+> to be doing u64/void */unsigned long inconsistently.
 
-Thanks,
+IIUC u64 is for BPF progs [1]. I've seen unsigned long in a number of
+places, e.g. kallsyms. My personal heuristic is that if we don't
+dereference it on the C side, it can be unsigned long. But I don't have
+a strong opinion on this.
 
-Paolo
+> Also, maybe move it up a bit? To turn u32+u16+gap+u64 into
+> u64+u32+u16+padding ?
 
+You are right, we can do better here w.r.t. space efficiency:
+
+struct bpf_kfunc_desc {
+        struct btf_func_model      func_model;           /*     0    27
+*/
+
+        /* XXX 1 byte hole, try to pack */
+
+        u32                        func_id;              /*    28     4
+*/
+        u16                        offset;               /*    32     2
+*/
+
+        /* XXX 6 bytes hole, try to pack */
+
+        long unsigned int          addr;                 /*    40     8
+*/
+
+
+[1]
+https://lore.kernel.org/bpf/CAEf4BzaQJfB0Qh2Wn5wd9H0ZSURbzWBfKkav8xbkhozqTW=
+Xndw@mail.gmail.com/
+
+Best regards,
+Ilya
