@@ -2,67 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADD26A1281
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 23:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521686A128D
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 23:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbjBWWCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 17:02:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
+        id S229518AbjBWWFd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 17:05:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjBWWCq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 17:02:46 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C8A4FA8F
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 14:02:45 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id m8-20020a17090a4d8800b002377bced051so845024pjh.0
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 14:02:45 -0800 (PST)
+        with ESMTP id S229497AbjBWWFd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 17:05:33 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094DD5328C
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 14:05:32 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id y2so10249520pjg.3
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 14:05:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent.com; s=google;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aefPqGYo35E4R2oWUb7lQBXfGnT/EYSUyKdqK5kN3ik=;
-        b=JUodybYcYP/OzdIxthIaXEz6N9cz20mTnLjmQNmGKfgyWZA8oici/tSaDN4FuPK9yu
-         3AQPsnABb0y8P2FgXH+/caiPzJoA21pEv29dbjKMlPmhGq/Jm7Xb8ZzLHk3/5ppu0lJj
-         BYQYGNhhH6eWFpxFHEqpxh08P3MsTP8rTNBCqMc0WZZFK4pi9Ai+7+wyNMvlKgt1+0qa
-         KDoXhtKkNhTjgAwhiRY7jbLlKm7eWQ5VUwMtGtSwletoOKoO0Wpr/PVYtRB5Gn5DnzWL
-         /IhU8+7ZU6c3gvTj4/zlzHfJuApctrr+tAccKsR0SSnBLr40aM0OtKPtU2TTFDuxW/pG
-         fq7g==
+        bh=+Iki0SxqHDYy81C4hw0qtOagUo72DgS7GnsvaPctUPo=;
+        b=je+YfW804qTb8uxTZ8rREIZGVmMvmcvzIquuy4D7/DB/9/lq4AtrgUt6spDQ6Sthwh
+         Yxqfo00DL9Q9n0XNwhzJJVqrRcnJztqzviFtVWXjifH4wS7nu1xmXOY34bepnv+Bc+/l
+         WLDqzvC5PCPqjoT6Al2ZL6uCkUA6CW0vepgwNEba0PS0HW5+v+R8Ae15K8bPwX20fnKi
+         OJirSvvy5upv4zH1LZazQbwrhT60qLBWU2HjDMmpRUdLZR8dob6LXkZ2+78UzlrpA5AN
+         r2pXEyi1Ou9Vh3eGEDbpAjIFdSiYt4vCJMd2+P1JTllA/f01FEBokSLLlVJa9qCq97EK
+         mSXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aefPqGYo35E4R2oWUb7lQBXfGnT/EYSUyKdqK5kN3ik=;
-        b=pW0qsziaYWF2atYKSkF0aRzy/mefMj+/NJrgnE7GN6JbcM3fS5jRZdSqfpI7WOi6bT
-         65imlaf2BsaLGdNdIP96GlIbGYFT+LkxqlPxc2FgI7DX37N30yelSwfVDDBGdmEXquYr
-         yIOQs/12X5YP+hD3hbkNZ0B+lh0ImM6L7F7PfQPJl/9oXLTEDKVs5tdYQJraYNi2xDQD
-         Xf1LsEjv660d/6ujjSNZgGmvMkPV7y6DMVlbJviknOmJf9WAQ/hLotPn6IJ1PRs357HQ
-         IX0CMW19fXc9IJAiO1CstvXM0KNcMjsTK4l4lNEg/2B1INiD2M/F+j8zQ3+/v1Aq5HxA
-         dJBQ==
-X-Gm-Message-State: AO0yUKVPLyu/fLb03u12jV4Dd2e24MDK62b5imfEcrQboCFKbcYWrh4P
-        x7AV+X31Kvl2eFgUKZwy7T2jjw==
-X-Google-Smtp-Source: AK7set//RSWMQD3knshjG3NLEfWGS7a8ZTL8EzjqgkaMkMa22cc/AgqF0oipOg1UKLLu/xtEYR/U0w==
-X-Received: by 2002:a05:6a20:430e:b0:bc:9007:e53 with SMTP id h14-20020a056a20430e00b000bc90070e53mr14103688pzk.0.1677189764512;
-        Thu, 23 Feb 2023 14:02:44 -0800 (PST)
+        bh=+Iki0SxqHDYy81C4hw0qtOagUo72DgS7GnsvaPctUPo=;
+        b=x5X9KpX/ckPdGd+OaBKU5xaG7sSeQq4Mdv6n1rvT4est2MP4io6Zy8ivCnzzS8CuEp
+         MlM18G5glLnpHzQMVkEBXM+k0AYPSE0z3hecirBkOv2G99Ym3CNejwXPdMm7Tv/GQrKA
+         1FlT8IvBXjs4yaSrSJmCbNOO7Y5sNLb/QPCVONrBs06eQc2VleSlQTJI9tjIWC2gxrn6
+         T6XhGEdlGUbObl3Pp2CioFRbnUj8Yv4ZMziIGmY+iz0d0Y0Wb4OlqurriC8Nox/IOxfu
+         3EzxpgV2sDzWnNDeW00ETuPDYbBOavTlVIcHvo8YGwMWH4Dtds5sD5o1u0cBt8h3mJMv
+         +IpQ==
+X-Gm-Message-State: AO0yUKU+YOsXrDTRxvADFdhRUZHRr+swqn1YfMlo6yOE/uXJcxfx5+Ao
+        oGJP8IkPYcZAOov4KTpQvuIbEw==
+X-Google-Smtp-Source: AK7set9Y+eycRY2qceAAV7usCfBIb8UtNFtJ1jE2+Yt/qBJYpTyeXmaHiKHKdbFIHZn1ISidYrT6Vg==
+X-Received: by 2002:a17:902:d50d:b0:19a:93fc:c4d0 with SMTP id b13-20020a170902d50d00b0019a93fcc4d0mr14761266plg.12.1677189931372;
+        Thu, 23 Feb 2023 14:05:31 -0800 (PST)
 Received: from ?IPv6:2601:647:4900:b6:28ee:5de8:8f1:37ad? ([2601:647:4900:b6:28ee:5de8:8f1:37ad])
-        by smtp.gmail.com with ESMTPSA id m18-20020a6562d2000000b005026c125d47sm7541172pgv.21.2023.02.23.14.02.43
+        by smtp.gmail.com with ESMTPSA id e16-20020a17090301d000b0019aa8149cc9sm8311180plh.35.2023.02.23.14.05.30
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 Feb 2023 14:02:44 -0800 (PST)
+        Thu, 23 Feb 2023 14:05:31 -0800 (PST)
 Content-Type: text/plain;
         charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
 Subject: Re: [PATCH 1/2] bpf: Add socket destroy capability
 From:   Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <Y6Cr4X4h0buvET8U@google.com>
-Date:   Thu, 23 Feb 2023 14:02:42 -0800
-Cc:     bpf@vger.kernel.org
+In-Reply-To: <3d8066d4-b293-ec13-2437-1ee9b1ed4cc4@linux.dev>
+Date:   Thu, 23 Feb 2023 14:05:29 -0800
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@kernel.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <3CB96D06-044C-4DAC-8A06-43649366131F@isovalent.com>
+Message-Id: <BFF2A4D4-1401-48F5-ACFB-9FE64238E609@isovalent.com>
 References: <cover.1671242108.git.aditi.ghag@isovalent.com>
  <c3b935a5a72b1371f9262348616a7fa84061b85f.1671242108.git.aditi.ghag@isovalent.com>
- <Y6Cr4X4h0buvET8U@google.com>
-To:     sdf@google.com
+ <3d8066d4-b293-ec13-2437-1ee9b1ed4cc4@linux.dev>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
 X-Mailer: Apple Mail (2.3608.120.23.2.7)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -74,9 +74,10 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-> On Dec 19, 2022, at 10:22 AM, sdf@google.com wrote:
+> On Dec 21, 2022, at 9:08 PM, Martin KaFai Lau <martin.lau@linux.dev> =
+wrote:
 >=20
-> On 12/17, Aditi Ghag wrote:
+> On 12/16/22 5:57 PM, Aditi Ghag wrote:
 >> The socket destroy helper is used to
 >> forcefully terminate sockets from certain
 >> BPF contexts. We plan to use the capability
@@ -86,17 +87,12 @@ X-Mailing-List: bpf@vger.kernel.org
 >> policy enforcement where existing socket
 >> connections prevented by policies need to
 >> be terminated.
->=20
 >> The helper is currently exposed to iterator
 >> type BPF programs where users can filter,
 >> and terminate a set of sockets.
->=20
 >> Sockets are destroyed asynchronously using
 >> the work queue infrastructure. This allows
 >> for current the locking semantics within
->=20
-> s/current the/the current/ ?
->=20
 >> socket destroy handlers, as BPF iterators
 >> invoking the helper acquire *sock* locks.
 >> This also allows the helper to be invoked
@@ -109,276 +105,42 @@ X-Mailing-List: bpf@vger.kernel.org
 >> *sock* lock.
 >> While there are sleepable BPF iterators,
 >> these are limited to only certain map types.
->> Furthermore, it's limiting in the sense that
->> it wouldn't allow us to extend the helper
->> to other non-sleepable BPF programs.
 >=20
->> The work queue infrastructure processes work
->> items from per-cpu structures. As the sock
->> destroy work items are executed asynchronously,
->> we need to ref count sockets before they are
->> added to the work queue. The 'work_pending'
->> check prevents duplicate ref counting of sockets
->> in case users invoke the destroy helper for a
->> socket multiple times. The `{READ,WRITE}_ONCE`
->> macros ensure that the socket pointer stored
->> in a work queue item isn't clobbered while
->> the item is being processed. As BPF programs
->> are non-preemptible, we can expect that once
->> a socket is ref counted, no other socket can
->> sneak in before the ref counted socket is
->> added to the work queue for asynchronous destroy.
->> Finally, users are expected to retry when the
->> helper fails to queue a work item for a socket
->> to be destroyed in case there is another destroy
->> operation is in progress.
+> bpf-iter program can be sleepable and non sleepable. Both sleepable =
+and non sleepable tcp/unix bpf-iter programs have been able to call =
+bpf_setsockopt() synchronously. bpf_setsockopt() also requires the sock =
+lock to be held first. The situation on calling '.diag_destroy' from =
+bpf-iter should not be much different from calling bpf_setsockopt(). =
+=46rom a quick look at tcp_abort and udp_abort, I don't see they might =
+sleep also and you may want to double check. Even '.diag_destroy' was =
+only usable in sleepable 'bpf-iter' because it might sleep, the common =
+bpf map types are already available to the sleepable programs.
 >=20
-> nit: maybe reformat to fit into 80 characters per line? A bit hard to
-> read with this narrow formatting..
+> At the kernel side, the tcp and unix iter acquire the lock_sock() =
+first (eg. in bpf_iter_tcp_seq_show()) before calling the bpf-iter prog =
+. At the kernel setsockopt code (eg. do_ip_setsockopt()), it uses =
+sockopt_lock_sock() and avoids doing the lock if it has already been =
+guaranteed by the bpf running context.
 >=20
->=20
->> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
->> ---
->>  include/linux/bpf.h            |  1 +
->>  include/uapi/linux/bpf.h       | 17 +++++++++
->>  kernel/bpf/core.c              |  1 +
->>  kernel/trace/bpf_trace.c       |  2 +
->>  net/core/filter.c              | 70 =
-++++++++++++++++++++++++++++++++++
->>  tools/include/uapi/linux/bpf.h | 17 +++++++++
->>  6 files changed, 108 insertions(+)
->=20
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 3de24cfb7a3d..60eaa05dfab3 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -2676,6 +2676,7 @@ extern const struct bpf_func_proto =
-bpf_get_retval_proto;
->>  extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
->>  extern const struct bpf_func_proto bpf_cgrp_storage_get_proto;
->>  extern const struct bpf_func_proto bpf_cgrp_storage_delete_proto;
->> +extern const struct bpf_func_proto bpf_sock_destroy_proto;
->=20
->>  const struct bpf_func_proto *tracing_prog_func_proto(
->>    enum bpf_func_id func_id, const struct bpf_prog *prog);
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 464ca3f01fe7..789ac7c59fdf 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -5484,6 +5484,22 @@ union bpf_attr {
->>   *		0 on success.
->>   *
->>   *		**-ENOENT** if the bpf_local_storage cannot be found.
->> + *
->> + * int bpf_sock_destroy(struct sock *sk)
->> + *	Description
->> + *		Destroy the given socket with **ECONNABORTED** error =
-code.
->> + *
->> + *		*sk* must be a non-**NULL** pointer to a socket.
->> + *
->> + *	Return
->> + *		The socket is destroyed asynchronosuly, so 0 return =
-value may
->> + *		not suggest indicate that the socket was successfully =
-destroyed.
->=20
-> s/suggest indicate/ with either suggest or indicate?
->=20
->> + *
->> + *		On error, may return **EPROTONOSUPPORT**, **EBUSY**, =
-**EINVAL**.
->> + *
->> + *		**-EPROTONOSUPPORT** if protocol specific destroy =
-handler is not implemented.
->> + *
->> + *		**-EBUSY** if another socket destroy operation is in =
-progress.
->>   */
->>  #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
->>  	FN(unspec, 0, ##ctx)				\
->> @@ -5698,6 +5714,7 @@ union bpf_attr {
->>  	FN(user_ringbuf_drain, 209, ##ctx)		\
->>  	FN(cgrp_storage_get, 210, ##ctx)		\
->>  	FN(cgrp_storage_delete, 211, ##ctx)		\
->> +	FN(sock_destroy, 212, ##ctx)			\
->>  	/* */
->=20
->>  /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER =
-that don't
->> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> index 7f98dec6e90f..c59bef9805e5 100644
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -2651,6 +2651,7 @@ const struct bpf_func_proto =
-bpf_snprintf_btf_proto __weak;
->>  const struct bpf_func_proto bpf_seq_printf_btf_proto __weak;
->>  const struct bpf_func_proto bpf_set_retval_proto __weak;
->>  const struct bpf_func_proto bpf_get_retval_proto __weak;
->> +const struct bpf_func_proto bpf_sock_destroy_proto __weak;
->=20
->>  const struct bpf_func_proto * __weak =
-bpf_get_trace_printk_proto(void)
->>  {
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index 3bbd3f0c810c..016dbee6b5e4 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -1930,6 +1930,8 @@ tracing_prog_func_proto(enum bpf_func_id =
-func_id, const struct bpf_prog *prog)
->>  		return &bpf_get_socket_ptr_cookie_proto;
->>  	case BPF_FUNC_xdp_get_buff_len:
->>  		return &bpf_xdp_get_buff_len_trace_proto;
->> +	case BPF_FUNC_sock_destroy:
->> +		return &bpf_sock_destroy_proto;
->>  #endif
->>  	case BPF_FUNC_seq_printf:
->>  		return prog->expected_attach_type =3D=3D BPF_TRACE_ITER =
-?
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index 929358677183..9753606ecc26 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -11569,6 +11569,8 @@ bpf_sk_base_func_proto(enum bpf_func_id =
-func_id)
->>  		break;
->>  	case BPF_FUNC_ktime_get_coarse_ns:
->>  		return &bpf_ktime_get_coarse_ns_proto;
->> +	case BPF_FUNC_sock_destroy:
->> +		return &bpf_sock_destroy_proto;
->>  	default:
->>  		return bpf_base_func_proto(func_id);
->>  	}
->> @@ -11578,3 +11580,71 @@ bpf_sk_base_func_proto(enum bpf_func_id =
-func_id)
->=20
->>  	return func;
->>  }
->> +
->> +struct sock_destroy_work {
->> +	struct sock *sk;
->> +	struct work_struct destroy;
->> +};
->> +
->> +static DEFINE_PER_CPU(struct sock_destroy_work, =
-sock_destroy_workqueue);
->> +
->> +static void bpf_sock_destroy_fn(struct work_struct *work)
->> +{
->> +	struct sock_destroy_work *sd_work =3D container_of(work,
->> +			struct sock_destroy_work, destroy);
->> +	struct sock *sk =3D READ_ONCE(sd_work->sk);
->> +
->> +	sk->sk_prot->diag_destroy(sk, ECONNABORTED);
->> +	sock_put(sk);
->> +}
->> +
->> +static int __init bpf_sock_destroy_workqueue_init(void)
->> +{
->> +	int cpu;
->> +	struct sock_destroy_work *work;
->> +
->> +	for_each_possible_cpu(cpu) {
->> +		work =3D per_cpu_ptr(&sock_destroy_workqueue, cpu);
->> +		INIT_WORK(&work->destroy, bpf_sock_destroy_fn);
->> +	}
->> +
->> +	return 0;
->> +}
->> +subsys_initcall(bpf_sock_destroy_workqueue_init);
->> +
->> +BPF_CALL_1(bpf_sock_destroy, struct sock *, sk)
->> +{
->> +	struct sock_destroy_work *sd_work;
->> +
->> +	if (!sk->sk_prot->diag_destroy)
->> +		return -EOPNOTSUPP;
->> +
->> +	sd_work =3D this_cpu_ptr(&sock_destroy_workqueue);
->=20
-> [..]
->=20
->> +	/* This check prevents duplicate ref counting
->> +	 * of sockets, in case the handler is invoked
->> +	 * multiple times for the same socket.
->> +	 */
->=20
-> This means this helper can also be called for a single socket during
-> invocation; is it an ok compromise?
->=20
-> I'm also assuming it's still possible that this helper gets called for
-> the same socket on different cpus?
+> For udp, I don't see how the udp_abort acquires the sock lock =
+differently from tcp_abort.  I assume the actual problem seen in =
+udp_abort is related to the '->unhash()' part which acquires the =
+udp_table's bucket lock.  This is a problem for udp bpf-iter only =
+because the udp bpf-iter did not release the udp_table's bucket lock =
+before calling the bpf prog.  The tcp (and unix) bpf-iter releases the =
+bucket lock first before calling the bpf prog. This was done explicitly =
+to allow acquiring the sock lock before calling the bpf prog because =
+otherwise it will have a lock ordering issue. Hence, for this reason, =
+bpf_setsockopt() is only available to tcp and unix bpf-iter but not udp =
+bpf-iter. The udp-iter needs to do similar change like the tcp and unix =
+iter =
+(https://lore.kernel.org/bpf/20210701200535.1033513-1-kafai@fb.com/): =
+batch, release the bucket's lock, lock the sock, and then call bpf prog. =
+ This will allow udp-iter to call bpf_setsockopt() like its tcp and unix =
+counterpart.  That will also allow udp bpf-iter prog to directly do =
+'.diag_destroy'.
 
-Thanks for the review. The v2 patch series refactored this code path =
-significantly, and it executes the destroy handlers synchronously.=20
-
->=20
->> +	if (work_pending(&sd_work->destroy))
->> +		return -EBUSY;
->> +
->> +	/* Ref counting ensures that the socket
->> +	 * isn't deleted from underneath us before
->> +	 * the work queue item is processed.
->> +	 */
->> +	if (!refcount_inc_not_zero(&sk->sk_refcnt))
->> +		return -EINVAL;
->> +
->> +	WRITE_ONCE(sd_work->sk, sk);
->> +	if (!queue_work(system_wq, &sd_work->destroy)) {
->> +		sock_put(sk);
->> +		return -EBUSY;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +const struct bpf_func_proto bpf_sock_destroy_proto =3D {
->> +	.func		=3D bpf_sock_destroy,
->> +	.ret_type	=3D RET_INTEGER,
->> +	.arg1_type	=3D ARG_PTR_TO_BTF_ID_SOCK_COMMON,
->> +};
->> diff --git a/tools/include/uapi/linux/bpf.h =
-b/tools/include/uapi/linux/bpf.h
->> index 464ca3f01fe7..07154a4d92f9 100644
->> --- a/tools/include/uapi/linux/bpf.h
->> +++ b/tools/include/uapi/linux/bpf.h
->> @@ -5484,6 +5484,22 @@ union bpf_attr {
->>   *		0 on success.
->>   *
->>   *		**-ENOENT** if the bpf_local_storage cannot be found.
->> + *
->> + * int bpf_sock_destroy(void *sk)
->> + *	Description
->> + *		Destroy the given socket with **ECONNABORTED** error =
-code.
->> + *
->> + *		*sk* must be a non-**NULL** pointer to a socket.
->> + *
->> + *	Return
->> + *		The socket is destroyed asynchronosuly, so 0 return =
-value may
->> + *		not indicate that the socket was successfully destroyed.
->> + *
->> + *		On error, may return **EPROTONOSUPPORT**, **EBUSY**, =
-**EINVAL**.
->> + *
->> + *		**-EPROTONOSUPPORT** if protocol specific destroy =
-handler is not implemented.
->> + *
->> + *		**-EBUSY** if another socket destroy operation is in =
-progress.
->>   */
->>  #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
->>  	FN(unspec, 0, ##ctx)				\
->> @@ -5698,6 +5714,7 @@ union bpf_attr {
->>  	FN(user_ringbuf_drain, 209, ##ctx)		\
->>  	FN(cgrp_storage_get, 210, ##ctx)		\
->>  	FN(cgrp_storage_delete, 211, ##ctx)		\
->> +	FN(sock_destroy, 212, ##ctx)			\
->>  	/* */
->=20
->>  /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER =
-that don't
->> --
->> 2.34.1
+Pushed v2 patch series that implements the missing batching support for =
+UDP iterators. Sorry for the delay.=20
+Thanks for the well-documented batching code in TCP!
 
