@@ -2,102 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD8C6A03C2
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 09:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B666A0402
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 09:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjBWIYH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 03:24:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
+        id S233697AbjBWIkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 03:40:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbjBWIYH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 03:24:07 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EC0193F6
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 00:23:54 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id j17so10290281ljq.11
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 00:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/krrOzf32PMDRBi/P9qe9m671OONK8NSr+9AstJjJkE=;
-        b=enmI0tN7zqlN2rfSjPKH5Df9NY9kF1JpU13XAsuLLS4nTlj0ek0OLV0mKpQRDEYn2r
-         Ivn8aFvrt3+jVj+bCVnGfDptL1J6bLzFg4HvKNIhvdgwFDA74GN5yKbUfnBY/12d+xS1
-         e8Cl4+ONcJOhpsvi9n4OBI2tfgpQoUzt1KhPsX4b8KGFKYWObb0azD+kQxJ5o+oUOsys
-         Ts57p99F3cdZhp3jAvHLYdAl1pWWKnBYTvPf9ygnqejpX6OnkNbE3WBt/YLFFwl95X7a
-         YrJCN0hPx2Blsu1te4ne4VitoftmCqa6zobQLUDt2MG0tlYjitKZqRQDLPTWEXctj+iZ
-         uqgg==
+        with ESMTP id S233640AbjBWIkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 03:40:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338BC13DC2
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 00:39:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1677141562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5sPuPMmKl8Fh55oJyqKfdWjSTl4UX6ztUqAWilF1Ap8=;
+        b=WoxGTWYjPziAI076K06HglUX3Ov4DLC5GDT9UeMgHiRsyU7nGtvfO/f0o7tEmWCc6jyGFw
+        Bsi18+a8Cq5VCSbYGSqImBAlwL2K43QDSP+AQOdnmklI/c3ipLkfUJWZLlWX6bgMDIMwzo
+        ZNxVFVXecmISy0TFQJb5D+svpMN3ZGQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-313-AHsdILhqOiiXMZr9zXhAPQ-1; Thu, 23 Feb 2023 03:39:21 -0500
+X-MC-Unique: AHsdILhqOiiXMZr9zXhAPQ-1
+Received: by mail-wr1-f72.google.com with SMTP id 4-20020a5d47a4000000b002c5699ff08aso2035677wrb.9
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 00:39:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/krrOzf32PMDRBi/P9qe9m671OONK8NSr+9AstJjJkE=;
-        b=vi4GDEVanih5Z9mjE6PNzbj5Kayl98PbXbXuWL014rkaFL2g6kpEOFjeEXbqlKjj3d
-         4+TQpcjd2f9gM8U/Kc1/Ql/W7O9cRCgtun/GiQCNX5MFzhcmJyhae52q9QuUEGtaN87s
-         Ly3u87yUUpvZatJTbM4wHVjPT5+77/PQJtZkg60rFXl0fH2idcXCAmW0JPEi+1N4K5KQ
-         Bk9djlvVIFb0eknabOTnvOa5XffqGkv4amLpA8HEcq1L/D+TVwlbxbaJXtgr8hwEfqcT
-         Abs5NTz1WSf4OYzfO11APgzKpp63icBzWizWOST2HCHSGUC3tjc95HmUQtExg/JnlKRq
-         TCgw==
-X-Gm-Message-State: AO0yUKXRT0+7Zitnz26vC+wChCGJwnnZafWiniXZYTVYz2jV947kz2sC
-        nVAAQR3mr34U7W023teuHji9R2F0oh7ShBIezGM=
-X-Google-Smtp-Source: AK7set95aiMEdvWxgLjHOopfRgebqjWvDzzdkC1gHoNtOijM40JliCBlMaz771CuoKpd7t/6CAV8JjhVNOOqXgrg9uc=
-X-Received: by 2002:a05:651c:484:b0:295:8918:9d7e with SMTP id
- s4-20020a05651c048400b0029589189d7emr2507885ljc.1.1677140632683; Thu, 23 Feb
- 2023 00:23:52 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a2e:9550:0:0:0:0:0 with HTTP; Thu, 23 Feb 2023 00:23:52
- -0800 (PST)
-Reply-To: avamedicinemed3@gmail.com
-From:   DR AVA SMITH <tracymedicinemed005@gmail.com>
-Date:   Thu, 23 Feb 2023 09:23:52 +0100
-Message-ID: <CAGvfcMxhbELX_+vU96UzE-xuLWOkrDyi_GgEpBq128sv73_OSw@mail.gmail.com>
-Subject: From Dr Ava Smith from United States
-To:     undisclosed-recipients:;
+        d=1e100.net; s=20210112; t=1677141560;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5sPuPMmKl8Fh55oJyqKfdWjSTl4UX6ztUqAWilF1Ap8=;
+        b=iWfWoF/GU5ho3Ltyzn69oBaOLgUhQHGfPuzMkYMal7RiFV+wK2YVLCymwiswyrNE6E
+         3X4m0nkkolEyeogWVemUJP7AL3y87Pb9cx/RtANMvC+rtPaEsYfqm/Wsr95ecEQB2HH7
+         A8ho2g5ulDN9m3+kqY9/IIOAHZKAHnqIbZN7iyHfbuXjZojS0V3iaLFwN6kr74x2j6eq
+         aNAPCMUQ1snakwejX7ZRbmo28BqEZbFWgp5WDSbjZlJtQusq/8H0F1Bood1prGpE8au3
+         H+4DGHyrZkMCeKwFyQXkv+mFuxbCL/l6J3zsfMigyUPPCRhwih2l1YVCNdEndl9wmI0t
+         lWfA==
+X-Gm-Message-State: AO0yUKW7rGZ9Ue4Qfits2ii4p2yS+prmWM70VrTD20Zbxz9zygRMLP/O
+        KnGnlnl+1ECcTH8UUfUxBGjKGa1o8OcUWFSe5c7vuWMty956mb6p3cH8DpxTSR3r/9icKZsIyEL
+        /GBauh93gjkyO
+X-Received: by 2002:a1c:741a:0:b0:3e2:415:f09f with SMTP id p26-20020a1c741a000000b003e20415f09fmr10130671wmc.3.1677141559961;
+        Thu, 23 Feb 2023 00:39:19 -0800 (PST)
+X-Google-Smtp-Source: AK7set98+o6jJ1qOgbToOoRq/imOK3FoKhZ+VL6UYssekxL/stE0Ck+L7wA5jcx60YYmNlFc6d2hsA==
+X-Received: by 2002:a1c:741a:0:b0:3e2:415:f09f with SMTP id p26-20020a1c741a000000b003e20415f09fmr10130657wmc.3.1677141559590;
+        Thu, 23 Feb 2023 00:39:19 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-121-8.dyn.eolo.it. [146.241.121.8])
+        by smtp.gmail.com with ESMTPSA id u7-20020a05600c19c700b003e21f20b646sm12230241wmq.21.2023.02.23.00.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Feb 2023 00:39:18 -0800 (PST)
+Message-ID: <795aed3f0e433a89fb72a8af3fc736f58dea1bf1.camel@redhat.com>
+Subject: Re: [PATCH net] udp: fix memory schedule error
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Jason Xing <kerneljasonxing@gmail.com>
+Cc:     willemdebruijn.kernel@gmail.com, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Date:   Thu, 23 Feb 2023 09:39:17 +0100
+In-Reply-To: <CAL+tcoBGFkXea-GyzbO41Ve8_wUF3PT=YF43TxuzgM+adVa8gw@mail.gmail.com>
+References: <20230221110344.82818-1-kerneljasonxing@gmail.com>
+         <48429c16fdaee59867df5ef487e73d4b1bf099af.camel@redhat.com>
+         <CAL+tcoD8PzL4khHq44z27qSHHGkcC4YUa91E3h+ki7O0u3SshQ@mail.gmail.com>
+         <aaf3d11ea5b247ab03d117dadae682fe2180d38a.camel@redhat.com>
+         <CAL+tcoBZFFwOnUqzcDtSsNyfPgHENAOv0bPcvncxuMPwCn40+Q@mail.gmail.com>
+         <CAL+tcoBGFkXea-GyzbO41Ve8_wUF3PT=YF43TxuzgM+adVa8gw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:234 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [tracymedicinemed005[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [avamedicinemed3[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [tracymedicinemed005[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  3.0 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Hello Dear
-My name is Dr Ava Smith,a medical doctor from United States.
-I have Dual citizenship which is English and French.
-I will share pictures and more details about me as soon as i get
-a response from you
-Thanks
-Ava
+On Wed, 2023-02-22 at 11:47 +0800, Jason Xing wrote:
+> On Tue, Feb 21, 2023 at 11:46 PM Jason Xing <kerneljasonxing@gmail.com> w=
+rote:
+> >=20
+> > On Tue, Feb 21, 2023 at 10:46 PM Paolo Abeni <pabeni@redhat.com> wrote:
+> > >=20
+> > > On Tue, 2023-02-21 at 21:39 +0800, Jason Xing wrote:
+> > > > On Tue, Feb 21, 2023 at 8:27 PM Paolo Abeni <pabeni@redhat.com> wro=
+te:
+> > > > >=20
+> > > > > On Tue, 2023-02-21 at 19:03 +0800, Jason Xing wrote:
+> > > > > > From: Jason Xing <kernelxing@tencent.com>
+> > > > > >=20
+> > > > > > Quoting from the commit 7c80b038d23e ("net: fix sk_wmem_schedul=
+e()
+> > > > > > and sk_rmem_schedule() errors"):
+> > > > > >=20
+> > > > > > "If sk->sk_forward_alloc is 150000, and we need to schedule 150=
+001 bytes,
+> > > > > > we want to allocate 1 byte more (rounded up to one page),
+> > > > > > instead of 150001"
+> > > > >=20
+> > > > > I'm wondering if this would cause measurable (even small) perform=
+ance
+> > > > > regression? Specifically under high packet rate, with BH and user=
+-space
+> > > > > processing happening on different CPUs.
+> > > > >=20
+> > > > > Could you please provide the relevant performance figures?
+> > > >=20
+> > > > Sure, I've done some basic tests on my machine as below.
+> > > >=20
+> > > > Environment: 16 cpus, 60G memory
+> > > > Server: run "iperf3 -s -p [port]" command and start 500 processes.
+> > > > Client: run "iperf3 -u -c 127.0.0.1 -p [port]" command and start 50=
+0 processes.
+> > >=20
+> > > Just for the records, with the above command each process will send
+> > > pkts at 1mbs - not very relevant performance wise.
+> > >=20
+> > > Instead you could do:
+> > >=20
+> >=20
+> > > taskset 0x2 iperf -s &
+> > > iperf -u -c 127.0.0.1 -b 0 -l 64
+> > >=20
+> >=20
+> > Thanks for your guidance.
+> >=20
+> > Here're some numbers according to what you suggested, which I tested
+> > several times.
+> > ----------|IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s
+> > Before: lo 411073.41 411073.41  36932.38  36932.38
+> > After:   lo 410308.73 410308.73  36863.81  36863.81
+> >=20
+> > Above is one of many results which does not mean that the original
+> > code absolutely outperforms.
+> > The output is not that constant and stable, I think.
+>=20
+> Today, I ran the same test on other servers, it looks the same as
+> above. Those results fluctuate within ~2%.
+>=20
+> Oh, one more thing I forgot to say is the output of iperf itself which
+> doesn't show any difference.
+> Before: Bitrate is 211 - 212 Mbits/sec
+> After: Bitrate is 211 - 212 Mbits/sec
+> So this result is relatively constant especially if we keep running
+> the test over 2 minutes.
+
+Thanks for the testing. My personal take on this one is that is more a
+refactor than a bug fix - as the amount forward allocated memory should
+always be negligible for UDP.=20
+
+Still it could make sense keep the accounting schema consistent across
+different protocols. I suggest to repost for net-next, when it will re-
+open, additionally introducing __sk_mem_schedule() usage to avoid code
+duplication.
+
+Thanks,
+
+Paolo
+
