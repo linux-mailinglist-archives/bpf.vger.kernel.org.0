@@ -2,73 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A18A6A1227
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 22:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2346A1248
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 22:48:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbjBWVhy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 16:37:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
+        id S229547AbjBWVsu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 16:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjBWVhx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 16:37:53 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1139D527F
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 13:37:52 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id ec43so46877757edb.8
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 13:37:51 -0800 (PST)
+        with ESMTP id S229759AbjBWVst (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 16:48:49 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576E519F0C
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 13:48:46 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-536be78056eso147849087b3.1
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 13:48:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VAVWbTZhOahgbeoCVeCI3EwYDSoKydef03wO7/5d2JU=;
-        b=EqmoPqeQbjoafMObEf2fTe/r9LkSJInAKED/5JXgQjuokPaocNnxoYXIZxa7+0u47G
-         Iq8CMCkdmxpQmovC/3sbC8DBEkIaUWeV3emMIwGiCvdSW0vvXje7Y3y5mm7ukDXLAyFU
-         AFnhyHNojJDRIrxezCs45dDWnqoYhhXvMGcPI=
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/L9TEX9XsEMWWJyWpQrFp+fDijsMJCN1rjqPVwskjXQ=;
+        b=G1BhUDRpFuygxI4yGTiPHmcN4YT/xW/KM0IkziZxSo2kcv9fzRQMBEc3UTiIYolelW
+         oFor8FkfEVOQes3kX5MqKiPYwdGuBRAkXQIGhzdX4ym7Cdk8eENi4v28zVLQ0B3Mx9dB
+         CVtpTEcWGgeIqnjQQNE75647ckJG2F0Td0Wn7xOoPcLM6Ma+tNFDI0ZiG7jQQmxlse/8
+         XFOzOKZ1ovyVenhu75AgdnIcplund/6STvoiSnwBiwlGTTyDVdNjhlBYo811ywUrQAkG
+         n2fizUbnH4rPCDaxxEV0UB/BhJY5UQ6SNxHpXYZHrvF0WODUyas1ZktG9S4FvBju2rhy
+         yELw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VAVWbTZhOahgbeoCVeCI3EwYDSoKydef03wO7/5d2JU=;
-        b=M6ENBKISz3hJMvHWe9CxfzyxndJIi5Go0YK2ElSvzF/KRRA/+kJFzvx8RA2OEARDDR
-         EvIiROVBAX2128D2DQW7GS2PHyKzmiLVIsdyB94/U6iJ4vIjcOt2/nhZFUezF2OrNNmk
-         F/OD7sPqyLu/UUM2EPLNiMGTrLhuNKVw2j4iX71h9ok0pTBWJSLmOQxsKM6A5wJV3txP
-         J6MGKD7sRTgCl0hBniF4uHt1lstKjBmosqbtAMCEhWjgGAFfQbbObmCYKNrSDmEO+RRs
-         jar5PXnpezm9RzX/cuOOyGTzFX/FpXEH/dgG0Su/nSn/Mjfk8ko3qAXQPmI7Ah3gbP8J
-         gBTQ==
-X-Gm-Message-State: AO0yUKUXKWNwqY+UKU/tMYil6t7eUiJ8ZesajdgTOuEH8lnkReTpEllZ
-        l0igbeZMPAomCLj2aZZtiaFgRp0YwgpqVrc8HRM=
-X-Google-Smtp-Source: AK7set9Ruzrei4CpwjBphnTlNMlykQnAZY7nmXSuvm2UQxkEkfTNvV11cSI/erZ2ppYDJVOU7B55ag==
-X-Received: by 2002:a17:906:ff45:b0:8b2:a42:5c3a with SMTP id zo5-20020a170906ff4500b008b20a425c3amr20237597ejb.70.1677188270280;
-        Thu, 23 Feb 2023 13:37:50 -0800 (PST)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id b11-20020a170906038b00b008e17dc10decsm3426176eja.52.2023.02.23.13.37.48
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Feb 2023 13:37:49 -0800 (PST)
-Received: by mail-ed1-f50.google.com with SMTP id ec43so46877447edb.8
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 13:37:48 -0800 (PST)
-X-Received: by 2002:a17:906:b55:b0:8f1:4cc5:f14c with SMTP id
- v21-20020a1709060b5500b008f14cc5f14cmr933485ejg.0.1677188268445; Thu, 23 Feb
- 2023 13:37:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20230221233808.1565509-1-kuba@kernel.org> <CAHk-=wjTMgB0=PQt8synf1MRTfetVXAWWLOibnMKvv1ETn_1uw@mail.gmail.com>
- <87pma02odj.fsf@kernel.org>
-In-Reply-To: <87pma02odj.fsf@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 23 Feb 2023 13:37:31 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgOmTXMxm=ouCEKu0Agd5q-u3mrQ8=ne8412ciG2b-eJA@mail.gmail.com>
-Message-ID: <CAHk-=wgOmTXMxm=ouCEKu0Agd5q-u3mrQ8=ne8412ciG2b-eJA@mail.gmail.com>
-Subject: Re: [PULL] Networking for v6.3
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pabeni@redhat.com, bpf@vger.kernel.org, ast@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/L9TEX9XsEMWWJyWpQrFp+fDijsMJCN1rjqPVwskjXQ=;
+        b=a1/DoO3KYhwj4HVu49lIO0WTXFxr8Mm/xGWbL/R6cqCrk1GcLXo042mtkR3HNSqhPI
+         BNT3cU4277QkEx3PTIFq4Gu/u91TkNsdGIjAtspcHyPlrw84KbNU6zGDMNDIBfObNqF1
+         ASJ3BNaKTpCbzqu/C/HkXHHG6pazbeZJTqxMeW8BK/UJ8JbKXxjHTREFnkgdnStLWQ14
+         FmhyuMPY9RkjnmTlYZTghoKsyfa7U52iIOSO4kAgbejDAV4iCG4EjcKZZAJI+bW4KHHO
+         9palrh6Bcz/gj2oyqu6eJpCOq7LYKqeotpd0vNlyZCvn1qSlpZCgQZRqD9KGnV/PawZV
+         nt3A==
+X-Gm-Message-State: AO0yUKXta32xKVhn4NSCXRSz4T8I7Hy7edUNqr0oWVp2HgRJ7kidX9UE
+        SGbR1TVKQYFi1f0jt6IQAz8oKZk=
+X-Google-Smtp-Source: AK7set/7XPlW51SXtM3DgrBAF+nuZpiAZ4WF6G92bY2Tbi5zHTa8oHsBwOvFtM8coT3dLe3fGr6yVOo=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6902:1449:b0:a06:538f:265f with SMTP id
+ a9-20020a056902144900b00a06538f265fmr3414489ybv.4.1677188925571; Thu, 23 Feb
+ 2023 13:48:45 -0800 (PST)
+Date:   Thu, 23 Feb 2023 13:48:44 -0800
+In-Reply-To: <20230223030717.58668-5-alexei.starovoitov@gmail.com>
+Mime-Version: 1.0
+References: <20230223030717.58668-1-alexei.starovoitov@gmail.com> <20230223030717.58668-5-alexei.starovoitov@gmail.com>
+Message-ID: <Y/ffPMRzRANCZS+1@google.com>
+Subject: Re: [PATCH v2 bpf-next 4/4] selftests/bpf: Tweak cgroup kfunc test.
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, void@manifault.com, davemarchevsky@meta.com,
+        tj@kernel.org, memxor@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,29 +68,99 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 23, 2023 at 11:06 AM Kalle Valo <kvalo@kernel.org> wrote:
->
-> So that we can file a bug report about use of Wireless Extensions, what
-> process is ThreadPoolForeg?
+On 02/22, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 
-It is, as you already seem to have googled, just a sub-thread of google-chrome.
+> Adjust cgroup kfunc test to dereference RCU protected cgroup pointer
+> as PTR_TRUSTED and pass into KF_TRUSTED_ARGS kfunc.
 
-> The warning was applied over a month ago, I'm surprised nobody
-> else has reported anything.
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>   tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h  | 2 +-
+>   tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c | 2 +-
+>   tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c | 7 ++++++-
+>   3 files changed, 8 insertions(+), 3 deletions(-)
 
-Honestly, I'm not sure how many people actually _run_ a real desktop
-on linux-next. Getting merged into mainline really ends up resulting
-in a lot more testing (outside of the test robots that don't tend to
-really run desktop loads).
+> diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h  
+> b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
+> index 50d8660ffa26..eb5bf3125816 100644
+> --- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
+> +++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
+> @@ -10,7 +10,7 @@
+>   #include <bpf/bpf_tracing.h>
 
-I see it on my desktop too, but I actually noticed it on my laptop
-first, because it - once again - has started falling off the wireless
-network regularly and I was looking if there were any messages about
-it.
+>   struct __cgrps_kfunc_map_value {
+> -	struct cgroup __kptr * cgrp;
+> +	struct cgroup __kptr_rcu * cgrp;
+>   };
 
-(That ath driver really is flaky, and I've never figured out what the
-trigger is, it just sometimes goes dead and you have to disable and
-re-enable wireless. But that's not a new problem, it's just a "that's
-why I noticed")
+>   struct hash_map {
+> diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c  
+> b/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
+> index 4ad7fe24966d..d5a53b5e708f 100644
+> --- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
+> +++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
+> @@ -205,7 +205,7 @@ int BPF_PROG(cgrp_kfunc_get_unreleased, struct cgroup  
+> *cgrp, const char *path)
+>   }
 
-                 Linus
+>   SEC("tp_btf/cgroup_mkdir")
+> -__failure __msg("arg#0 is untrusted_ptr_or_null_ expected ptr_ or  
+> socket")
+> +__failure __msg("bpf_cgroup_release expects refcounted")
+>   int BPF_PROG(cgrp_kfunc_release_untrusted, struct cgroup *cgrp, const  
+> char *path)
+>   {
+>   	struct __cgrps_kfunc_map_value *v;
+> diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c  
+> b/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
+> index 0c23ea32df9f..37ed73186fba 100644
+> --- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
+> +++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
+> @@ -61,7 +61,7 @@ int BPF_PROG(test_cgrp_acquire_leave_in_map, struct  
+> cgroup *cgrp, const char *pa
+>   SEC("tp_btf/cgroup_mkdir")
+>   int BPF_PROG(test_cgrp_xchg_release, struct cgroup *cgrp, const char  
+> *path)
+>   {
+> -	struct cgroup *kptr;
+> +	struct cgroup *kptr, *cg;
+>   	struct __cgrps_kfunc_map_value *v;
+>   	long status;
+
+> @@ -80,6 +80,11 @@ int BPF_PROG(test_cgrp_xchg_release, struct cgroup  
+> *cgrp, const char *path)
+>   		return 0;
+>   	}
+
+
+[..]
+
+> +	kptr = v->cgrp;
+> +	cg = bpf_cgroup_ancestor(kptr, 1);
+> +	if (cg)
+> +		bpf_cgroup_release(cg);
+
+I went through the series, it all makes sense, I'm assuming Kumar
+will have another look eventually? (since he did for v1).
+
+One question here, should we have something like the following?
+
+if (cg) {
+	bpf_cgroup_release(cg);
+} else {
+	err = 4;
+	return 0;
+}
+
+Or are we just making sure here that the verifier is not complaining
+about bpf_cgroup_ancestor(v->cgrp) and don't really care whether
+bpf_cgroup_ancestor returns something useful or not?
+
+> +
+>   	kptr = bpf_kptr_xchg(&v->cgrp, NULL);
+>   	if (!kptr) {
+>   		err = 3;
+> --
+> 2.30.2
+
