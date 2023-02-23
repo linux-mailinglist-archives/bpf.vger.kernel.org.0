@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2662C6A1252
+	by mail.lfdr.de (Postfix) with ESMTP id C4A446A1254
 	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 22:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjBWVxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 16:53:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33632 "EHLO
+        id S229479AbjBWVxX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 16:53:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjBWVxV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 16:53:21 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD1037B5C
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 13:53:20 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id c23so9618114pjo.4
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 13:53:20 -0800 (PST)
+        with ESMTP id S229453AbjBWVxW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 16:53:22 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEEC37F1A
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 13:53:21 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id h17-20020a17090aea9100b0023739b10792so741191pjz.1
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 13:53:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent.com; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=35lc6n2VyrJft9B4AEHWYTRNg0rcyVdGd4m6J+XpmF8=;
-        b=Bchgv42bNqzPCf6Hn9manJQZwfOmAH7d2ReC1x6uAiCiTbeKcY9JL5D5Kjhb0An1ix
-         oMnRPt9HvzxiQD8STFcdXltRS918AKnisJngwZ9ZyO2qyEx2ZvUVriu6b1EioX0FeASi
-         6qQvO3rQ7uWEljyD9t978X/UzNGHYlxAFeiaBo7Y0cmiGzaQsBGSPnDkUh0J35NzY1BR
-         l2K/lwP+1p5vF9R8T7IfBkg0VaipwsKWgYjGtkXxxQcrCtB+FcNyIHTyPI1/33KnEvOY
-         FjamJB3cnAQgpRcmoTJOmxlvQmOaw3fbmMEfR4fiO3bY16xYiu+RmdCNfjU+qDuw9Kru
-         TH+A==
+        bh=iQsj6Auoo0IN8RyxVRlu6+qbOuFqvCmMHtfhRU40ih8=;
+        b=NEiC6ZZhVZqYjG89SLzMI8kKLXRAYOMPyavq5dURcLym6z2iLbqkkaEe0ZF5pm7pwF
+         3C0Hf9E3iYI/ZmccgiBBoZkjsfgEDSYwTA+iumnzY3aykwiB/DobAjBfqfJooRyHwLMZ
+         fDE4z2Sp5ekrWezrPY7mzhUteMQ36pN3ntVm0RnthNQvwb0N8MiPf2Jhr62BR3q1ObVE
+         kgereCitxOh74A7h5fOo/gEBjyb0BSsdgcaJMn+0vBmZbfxj8PZLgZod6zcHKj8KGNl7
+         HmhGgL7EGQ3BgjgOKSVEPRKN+qR8DKcKZHQ9tN/pcTxdOhAUQiAl5vuYigUkuKHmXoQX
+         BTXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=35lc6n2VyrJft9B4AEHWYTRNg0rcyVdGd4m6J+XpmF8=;
-        b=OpjX8ehDwtnaclvlP9whywrWr3mIFOHWbs7xIUEf3zzgUPtyY1+fC6V5pMKzQM6beo
-         NYeyTXL/3heNeKrHxm5JyRX6+9srw+gjrXmxMx9TEvtviPI+i3SSike2anDwTdiMKIAI
-         Jv30WQ9AEr6ZsfK4ghgfYQ07trNDpDMc3PTPTJB4caWcrjucAYq9AapitAxGNIUXxB+1
-         2b4s2zV1exLl2ov8UCBksLgH9cuOedJkZCs0t8cI1raXttOzyUMJPBxQRHtt8fMZ7hrO
-         Lc4yWcpcJm231fIgymjbjgrNSCYVrQsrRm4EwwmVYsOdpoTDpPUyLgS9BccDviEWJSKK
-         nuww==
-X-Gm-Message-State: AO0yUKWfvJr3qv/zzOF6oBYixaBcBBc3gUbfM1fe9CrOH3IECevtibmT
-        0BH7PDlSUGqLU77he0i/FTVtSkYZVTfRjmx3hnI=
-X-Google-Smtp-Source: AK7set9Dyp4VaV6bHXl5bCUQYRwAd5yA7uz1+06mwQMzvC6qyireNvkonTV7MxTk7smO9TGJnj9hJQ==
-X-Received: by 2002:a17:903:1205:b0:19c:36c9:2449 with SMTP id l5-20020a170903120500b0019c36c92449mr17100776plh.17.1677189199665;
-        Thu, 23 Feb 2023 13:53:19 -0800 (PST)
+        bh=iQsj6Auoo0IN8RyxVRlu6+qbOuFqvCmMHtfhRU40ih8=;
+        b=P2BAIUg54aUwdiYFjHIKTwtiH+F3hLKOtIOcmovuIqiVn609MEPs0OdWIeNJy+CPff
+         Tp+UqXOmTVjftaIZvAbl06lmTulxMWUqR1edV4bemKxp75cDYH0IV+sbp5pBMKM9uIT+
+         LRtgp9/T+bqDh9Z4EmL6tm9HrfNjgZvfBa4FBwjK7RIlid33YtEAqYhU8Zu6K6lnAXbK
+         EmcBqzzizfsaqeeUQjwAJTstbYWU3JlBOwNMBVgJfZO+PyQ8srNPtedT1rHQaWBSnhtt
+         W1fLiqJGpAfdN02jF1DhoNU7NAhEjcQ+c7nh7JjyonIGdJ49WC/rKD04+4/GEF+YNvC3
+         XVVg==
+X-Gm-Message-State: AO0yUKXSIsyeOWTLYZE2E6omL2rUJ8dv940I/1PBuhQKQzNp+0qM1YDA
+        jQN/FA9GYi3tXc5Av+MpmvvQfEM2Nq/8JqHy
+X-Google-Smtp-Source: AK7set+kD6dXwgRkn/MJ8Ek+A4SsZdZQN7E6EtH9OTgtLWEJjr7A6sqnjJ5Yrp+VF+PsUXuxoZFCWQ==
+X-Received: by 2002:a17:903:1c9:b0:19a:b683:e11f with SMTP id e9-20020a17090301c900b0019ab683e11fmr17037061plh.27.1677189200571;
+        Thu, 23 Feb 2023 13:53:20 -0800 (PST)
 Received: from localhost.localdomain ([2604:1380:4611:8100::1])
-        by smtp.gmail.com with ESMTPSA id e21-20020a170902d39500b0019c33ee4730sm8292686pld.146.2023.02.23.13.53.18
+        by smtp.gmail.com with ESMTPSA id e21-20020a170902d39500b0019c33ee4730sm8292686pld.146.2023.02.23.13.53.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Feb 2023 13:53:19 -0800 (PST)
+        Thu, 23 Feb 2023 13:53:20 -0800 (PST)
 From:   Aditi Ghag <aditi.ghag@isovalent.com>
 To:     bpf@vger.kernel.org
 Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
         aditi.ghag@isovalent.com
-Subject: [PATCH v2 bpf-next 2/3] bpf: Add bpf_sock_destroy kfunc
-Date:   Thu, 23 Feb 2023 21:53:10 +0000
-Message-Id: <20230223215311.926899-3-aditi.ghag@isovalent.com>
+Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: Add tests for bpf_sock_destroy
+Date:   Thu, 23 Feb 2023 21:53:11 +0000
+Message-Id: <20230223215311.926899-4-aditi.ghag@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230223215311.926899-1-aditi.ghag@isovalent.com>
 References: <20230223215311.926899-1-aditi.ghag@isovalent.com>
@@ -70,173 +70,298 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The socket destroy kfunc is used to forcefully terminate sockets from
-certain BPF contexts. We plan to use the capability in Cilium to force
-client sockets to reconnect when their remote load-balancing backends are
-deleted. The other use case is on-the-fly policy enforcement where existing
-socket connections prevented by policies need to be forcefully terminated.
-The helper allows terminating sockets that may or may not be actively
-sending traffic.
+The test cases for TCP and UDP iterators mirror the intended usages of the
+helper.
 
-The helper is currently exposed to certain BPF iterators where users can
-filter, and terminate selected sockets.  Additionally, the helper can only
-be called from these BPF contexts that ensure socket locking in order to
-allow synchronous execution of destroy helpers that also acquire socket
-locks. The previous commit that batches UDP sockets during iteration
-facilitated a synchronous invocation of the destroy helper from BPF context
-by skipping taking socket locks in the destroy handler. TCP iterators
-already supported batching.
+The destroy helpers set `ECONNABORTED` error code that we can validate in the
+test code with client sockets. But UDP sockets have an overriding error code
+from the disconnect called during abort, so the error code the validation is
+only done for TCP sockets.
 
-The helper takes `sock_common` type argument, even though it expects, and
-casts them to a `sock` pointer. This enables the verifier to allow the
-sock_destroy kfunc to be called for TCP with `sock_common` and UDP with
-`sock` structs. As a comparison, BPF helpers enable this behavior with the
-`ARG_PTR_TO_BTF_ID_SOCK_COMMON` argument type. However, there is no such
-option available with the verifier logic that handles kfuncs where BTF
-types are inferred. Furthermore, as `sock_common` only has a subset of
-certain fields of `sock`, casting pointer to the latter type might not
-always be safe. Hence, the BPF kfunc converts the argument to a full sock
-before casting.
+The `struct sock` is redefined as vmlinux.h forward declares the struct, and the
+loader fails to load the program as it finds the BTF FWD type for the struct
+incompatible with the BTF STRUCT type.
+
+Here are the snippets of the verifier error, and corresponding BTF output:
+
+```
+verifier error: extern (func ksym) ...: func_proto ... incompatible with kernel
+
+BTF for selftest prog binary:
+
+[104] FWD 'sock' fwd_kind=struct
+[70] PTR '(anon)' type_id=104
+[84] FUNC_PROTO '(anon)' ret_type_id=2 vlen=1
+	'(anon)' type_id=70
+[85] FUNC 'bpf_sock_destroy' type_id=84 linkage=extern
+--
+[96] DATASEC '.ksyms' size=0 vlen=1
+	type_id=85 offset=0 size=0 (FUNC 'bpf_sock_destroy')
+
+BTF for selftest vmlinux:
+
+[74923] FUNC 'bpf_sock_destroy' type_id=48965 linkage=static
+[48965] FUNC_PROTO '(anon)' ret_type_id=9 vlen=1
+	'sk' type_id=1340
+[1340] PTR '(anon)' type_id=2363
+[2363] STRUCT 'sock' size=1280 vlen=93
+```
 
 Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
 ---
- net/core/filter.c | 55 +++++++++++++++++++++++++++++++++++++++++++++++
- net/ipv4/tcp.c    | 17 ++++++++++-----
- net/ipv4/udp.c    |  7 ++++--
- 3 files changed, 72 insertions(+), 7 deletions(-)
+ .../selftests/bpf/prog_tests/sock_destroy.c   | 125 ++++++++++++++++++
+ .../selftests/bpf/progs/sock_destroy_prog.c   | 110 +++++++++++++++
+ 2 files changed, 235 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sock_destroy_prog.c
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 1d6f165923bf..79cd91ba13d0 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -11621,3 +11621,58 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
- 
- 	return func;
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/sock_destroy.c b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+new file mode 100644
+index 000000000000..d9da9d3578e2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+@@ -0,0 +1,125 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
 +
-+/* Disables missing prototype warnings */
-+__diag_push();
-+__diag_ignore_all("-Wmissing-prototypes",
-+		  "Global functions as their definitions will be in vmlinux BTF");
++#include "sock_destroy_prog.skel.h"
++#include "network_helpers.h"
 +
-+/* bpf_sock_destroy: Destroy the given socket with ECONNABORTED error code.
-+ *
-+ * The helper expects a non-NULL pointer to a full socket. It invokes
-+ * the protocol specific socket destroy handlers.
-+ *
-+ * The helper can only be called from BPF contexts that have acquired the socket
-+ * locks.
-+ *
-+ * Parameters:
-+ * @sock: Pointer to socket to be destroyed
-+ *
-+ * Return:
-+ * On error, may return EPROTONOSUPPORT, EINVAL.
-+ * EPROTONOSUPPORT if protocol specific destroy handler is not implemented.
-+ * 0 otherwise
-+ */
-+int bpf_sock_destroy(struct sock_common *sock)
++#define ECONNABORTED 103
++
++static int duration;
++
++static void start_iter_sockets(struct bpf_program *prog)
 +{
-+	/* Validates the socket can be type casted to a full socket. */
-+	struct sock *sk = sk_to_full_sk((struct sock *)sock);
++	struct bpf_link *link;
++	char buf[16] = {};
++	int iter_fd, len;
 +
-+	if (!sk)
-+		return -EINVAL;
++	link = bpf_program__attach_iter(prog, NULL);
++	if (!ASSERT_OK_PTR(link, "attach_iter"))
++		return;
 +
-+	/* The locking semantics that allow for synchronous execution of the
-+	 * destroy handlers are only supported for TCP and UDP.
-+	 */
-+	if (!sk->sk_prot->diag_destroy || sk->sk_protocol == IPPROTO_RAW)
-+		return -EOPNOTSUPP;
++	iter_fd = bpf_iter_create(bpf_link__fd(link));
++	if (!ASSERT_GE(iter_fd, 0, "create_iter"))
++		goto free_link;
 +
-+	return sk->sk_prot->diag_destroy(sk, ECONNABORTED);
++	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
++		;
++	CHECK(len < 0, "read", "read failed: %s\n", strerror(errno));
++
++	close(iter_fd);
++
++free_link:
++	bpf_link__destroy(link);
 +}
 +
-+__diag_pop()
++void test_tcp(struct sock_destroy_prog *skel)
++{
++	int serv = -1, clien = -1, n = 0;
 +
-+BTF_SET8_START(sock_destroy_kfunc_set)
-+BTF_ID_FLAGS(func, bpf_sock_destroy)
-+BTF_SET8_END(sock_destroy_kfunc_set)
++	serv = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
++	if (CHECK(serv < 0, "start_server", "failed to start server\n"))
++		goto cleanup_serv;
 +
-+static const struct btf_kfunc_id_set bpf_sock_destroy_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.set   = &sock_destroy_kfunc_set,
++	clien = connect_to_fd(serv, 0);
++	if (CHECK(clien < 0, "connect_to_fd", "errno %d\n", errno))
++		goto cleanup_serv;
++
++	serv = accept(serv, NULL, NULL);
++	if (CHECK(serv < 0, "accept", "errno %d\n", errno))
++		goto cleanup;
++
++	n = send(clien, "t", 1, 0);
++	if (CHECK(n < 0, "client_send", "client failed to send on socket\n"))
++		goto cleanup;
++
++	start_iter_sockets(skel->progs.iter_tcp6);
++
++	n = send(clien, "t", 1, 0);
++	if (CHECK(n > 0, "client_send after destroy", "succeeded on destroyed socket\n"))
++		goto cleanup;
++	CHECK(errno != ECONNABORTED, "client_send", "unexpected error code on destroyed socket\n");
++
++
++cleanup:
++	close(clien);
++cleanup_serv:
++	close(serv);
++}
++
++
++void test_udp(struct sock_destroy_prog *skel)
++{
++	int serv = -1, clien = -1, n = 0;
++
++	serv = start_server(AF_INET6, SOCK_DGRAM, NULL, 6161, 0);
++	if (CHECK(serv < 0, "start_server", "failed to start server\n"))
++		goto cleanup_serv;
++
++	clien = connect_to_fd(serv, 0);
++	if (CHECK(clien < 0, "connect_to_fd", "errno %d\n", errno))
++		goto cleanup_serv;
++
++	n = send(clien, "t", 1, 0);
++	if (CHECK(n < 0, "client_send", "client failed to send on socket\n"))
++		goto cleanup;
++
++	start_iter_sockets(skel->progs.iter_udp6);
++
++	n = send(clien, "t", 1, 0);
++	if (CHECK(n > 0, "client_send after destroy", "succeeded on destroyed socket\n"))
++		goto cleanup;
++	// UDP sockets have an overriding error code after they are disconnected.
++
++
++cleanup:
++	close(clien);
++cleanup_serv:
++	close(serv);
++}
++
++void test_sock_destroy(void)
++{
++	int cgroup_fd = 0;
++	struct sock_destroy_prog *skel;
++
++	skel = sock_destroy_prog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	cgroup_fd = test__join_cgroup("/sock_destroy");
++	if (CHECK(cgroup_fd < 0, "join_cgroup", "cgroup creation failed\n"))
++		goto close_cgroup_fd;
++
++	skel->links.sock_connect = bpf_program__attach_cgroup(
++		skel->progs.sock_connect, cgroup_fd);
++	if (!ASSERT_OK_PTR(skel->links.sock_connect, "prog_attach"))
++		goto close_cgroup_fd;
++
++	test_tcp(skel);
++	test_udp(skel);
++
++
++close_cgroup_fd:
++	close(cgroup_fd);
++	sock_destroy_prog__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/sock_destroy_prog.c b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+new file mode 100644
+index 000000000000..c6805a9b7594
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+@@ -0,0 +1,110 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#define sock sock___not_used
++#include "vmlinux.h"
++#undef sock
++
++#include <bpf/bpf_helpers.h>
++
++#define AF_INET6 10
++
++/* Redefine the struct: vmlinux.h forward declares it, and the loader fails
++ * to load the program as it finds the BTF FWD type for the struct incompatible
++ * with the BTF STRUCT type.
++ */
++struct sock {
++	struct sock_common	__sk_common;
++#define sk_family		__sk_common.skc_family
++#define sk_cookie		__sk_common.skc_cookie
 +};
 +
-+static int init_subsystem(void)
++int bpf_sock_destroy(struct sock_common *sk) __ksym;
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u64);
++} tcp_conn_sockets SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u64);
++} udp_conn_sockets SEC(".maps");
++
++SEC("cgroup/connect6")
++int sock_connect(struct bpf_sock_addr *ctx)
 +{
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_sock_destroy_kfunc_set);
++	int key = 0;
++	__u64 sock_cookie = 0;
++	__u32 keyc = 0;
++
++	if (ctx->family != AF_INET6 || ctx->user_family != AF_INET6)
++		return 1;
++
++	sock_cookie = bpf_get_socket_cookie(ctx);
++	if (ctx->protocol == IPPROTO_TCP)
++		bpf_map_update_elem(&tcp_conn_sockets, &key, &sock_cookie, 0);
++	else if (ctx->protocol == IPPROTO_UDP)
++		bpf_map_update_elem(&udp_conn_sockets, &keyc, &sock_cookie, 0);
++	else
++		return 1;
++
++	return 1;
 +}
-+late_initcall(init_subsystem);
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 33f559f491c8..8123c264d8ea 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -4678,8 +4678,10 @@ int tcp_abort(struct sock *sk, int err)
- 		return 0;
- 	}
- 
--	/* Don't race with userspace socket closes such as tcp_close. */
--	lock_sock(sk);
-+	/* BPF context ensures sock locking. */
-+	if (!has_current_bpf_ctx())
-+		/* Don't race with userspace socket closes such as tcp_close. */
-+		lock_sock(sk);
- 
- 	if (sk->sk_state == TCP_LISTEN) {
- 		tcp_set_state(sk, TCP_CLOSE);
-@@ -4688,7 +4690,9 @@ int tcp_abort(struct sock *sk, int err)
- 
- 	/* Don't race with BH socket closes such as inet_csk_listen_stop. */
- 	local_bh_disable();
--	bh_lock_sock(sk);
-+	if (!has_current_bpf_ctx())
-+		bh_lock_sock(sk);
 +
- 
- 	if (!sock_flag(sk, SOCK_DEAD)) {
- 		sk->sk_err = err;
-@@ -4700,10 +4704,13 @@ int tcp_abort(struct sock *sk, int err)
- 		tcp_done(sk);
- 	}
- 
--	bh_unlock_sock(sk);
-+	if (!has_current_bpf_ctx())
-+		bh_unlock_sock(sk);
++SEC("iter/tcp")
++int iter_tcp6(struct bpf_iter__tcp *ctx)
++{
++	struct sock_common *sk_common = ctx->sk_common;
++	struct seq_file *seq = ctx->meta->seq;
++	__u64 sock_cookie = 0;
++	__u64 *val;
++	int key = 0;
 +
- 	local_bh_enable();
- 	tcp_write_queue_purge(sk);
--	release_sock(sk);
-+	if (!has_current_bpf_ctx())
-+		release_sock(sk);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(tcp_abort);
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 2f3978de45f2..1bc9ad92c3d4 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2925,7 +2925,9 @@ EXPORT_SYMBOL(udp_poll);
- 
- int udp_abort(struct sock *sk, int err)
- {
--	lock_sock(sk);
-+	/* BPF context ensures sock locking. */
-+	if (!has_current_bpf_ctx())
-+		lock_sock(sk);
- 
- 	/* udp{v6}_destroy_sock() sets it under the sk lock, avoid racing
- 	 * with close()
-@@ -2938,7 +2940,8 @@ int udp_abort(struct sock *sk, int err)
- 	__udp_disconnect(sk, 0);
- 
- out:
--	release_sock(sk);
-+	if (!has_current_bpf_ctx())
-+		release_sock(sk);
- 
- 	return 0;
- }
++	if (!sk_common)
++		return 0;
++
++	if (sk_common->skc_family != AF_INET6)
++		return 0;
++
++	sock_cookie  = bpf_get_socket_cookie(sk_common);
++	val = bpf_map_lookup_elem(&tcp_conn_sockets, &key);
++
++	if (!val)
++		return 0;
++
++	if (sock_cookie == *val)
++		bpf_sock_destroy(sk_common);
++
++	return 0;
++}
++
++SEC("iter/udp")
++int iter_udp6(struct bpf_iter__udp *ctx)
++{
++	struct seq_file *seq = ctx->meta->seq;
++	struct udp_sock *udp_sk = ctx->udp_sk;
++	struct sock *sk = (struct sock *) udp_sk;
++	__u64 sock_cookie = 0;
++	int key = 0;
++	__u64 *val;
++
++	if (!sk)
++		return 0;
++
++	sock_cookie  = bpf_get_socket_cookie(sk);
++	val = bpf_map_lookup_elem(&udp_conn_sockets, &key);
++
++	if (!val)
++		return 0;
++
++	if (sock_cookie == *val)
++		bpf_sock_destroy((struct sock_common *)sk);
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.34.1
 
