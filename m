@@ -2,70 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEBB6A0E56
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 18:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 092C56A0E86
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 18:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbjBWRJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 12:09:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
+        id S229717AbjBWRSM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 12:18:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjBWRJm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 12:09:42 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8356C6E8C;
-        Thu, 23 Feb 2023 09:09:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 78E4E61761;
-        Thu, 23 Feb 2023 17:09:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 278BFC433EF;
-        Thu, 23 Feb 2023 17:09:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677172179;
-        bh=dJ+/lNry7X+lnSPXlyFnUhQfLm9BxG8cYx0kk/ZOK58=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eLOsVbsWZK5mGsZr3AYwNUg7PqA1i5DiOLMW7gOkUx7ZiaJuieBlJeUx93GUshoB4
-         vaLCQ/Aiss0rcG850KOkCi735fEyqFCECGqeNmIOCXmX8u09QN4vcJJRi1bWhIhHzG
-         uY0Ro7eeyz3ndBK7r4n7V2lfp+GVzfBxL85TBZV6TH96JZmjmbN80JTkHAy+pxAgAV
-         kkOIFvQLT7ectNqss0dCYKeEwuhyTAwMoxAs9skYFA1dqTrflg0AoQVlOknZVP9N/X
-         lwuf+7YGQtvs4rNjX8+Tyg1oSSNEeLRnuMR9E4ZFmjDZIJEbq35j/feb0NcG17ME3r
-         rn+Vy1UJlSMog==
-Date:   Thu, 23 Feb 2023 09:09:37 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        saeedm@nvidia.com, tariqt@nvidia.com, leon@kernel.org,
-        shayagr@amazon.com, akiyano@amazon.com, darinzon@amazon.com,
-        sgoutham@marvell.com, lorenzo.bianconi@redhat.com, toke@redhat.com
-Subject: Re: [RFC net-next 1/6] tools: ynl: fix render-max for flags
- definition
-Message-ID: <20230223090937.53103f89@kernel.org>
-In-Reply-To: <0252b7d3f7af70ce5d9da688bae4f883b8dfa9c7.1677153730.git.lorenzo@kernel.org>
-References: <cover.1677153730.git.lorenzo@kernel.org>
-        <0252b7d3f7af70ce5d9da688bae4f883b8dfa9c7.1677153730.git.lorenzo@kernel.org>
+        with ESMTP id S229715AbjBWRSL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 12:18:11 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C1F15568
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 09:18:08 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id d30so3534676eda.4
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 09:18:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=au5jpcCTAduRMEcpXj6Uru6Xd2+yhTvXIaB5P6uB/NY=;
+        b=T8yd1ig5UiMXuThDAsXVg1a5T+gPf+k5DfpCZCwCHCuLRJK5qkQ6WOi1x0m2Wem5wk
+         1MUw1sPb+hmy2xYgiyd+g97wxBLPU9x3N6vxAk/q+pzKDWDGSHCr+R+FCFu74dxU6gPD
+         z2ukrmN6Lu7ZhZHGsiD7MFPwlPcjyGV3L+fcGdNKNjxTl+KU53/5y4XHvfPpL8Ivas6F
+         1avhJd4bs8hTctRu9P9V+Jw7rLc49YTztYMvqsro4z5+ot/waWJE9rtkoRYV85isTJQJ
+         ZTFZ4S1BmuS2cxxuCxP9Gv/GIHoWsSk2IMhw3f/4MTxouLkkpXVPFEnbvd8Eft/VtrFn
+         r3/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=au5jpcCTAduRMEcpXj6Uru6Xd2+yhTvXIaB5P6uB/NY=;
+        b=30vPeFPUotHKsM29pddGhLtTb2SPpU/QF5wO6MN19PzNp+hCOdxqLw+5lbj2lMmOUw
+         dBdS6d0twg8MM6WQvgp4yUdHvjFh35TPLSo6V3A80uHjDwmSRmzzXKh3ome7HyhBYnsy
+         7/gL1Wu2q/nlbc4ncrQIhZGqigWKlpuMUusUKFloeV+SEUwBDHJIG/fdw7jfYCQmu/Gw
+         dVshIsbDUaTG3crSbUNFXt8BbMqdPTSU8wG6k+osiZflxI6IR7UjcbBKGUvleWGfnz62
+         CyO9By7Qbw8Llg/UVhfP+XX/gzxJf6/ReoOk/UCHm1mui+j5eJ/Z6ZCe+QAXGrLqwG3B
+         Q90w==
+X-Gm-Message-State: AO0yUKVXsD47QE0GQqLylUEU7zUojxNUrnbQ29pQRsuyWl5XASwVYN5B
+        B9gg+iLNLctLsNrgOb2zuFg+h9omUdjW8ieipqyUgItM
+X-Google-Smtp-Source: AK7set/u9Fo7GsaiCSV/RHSS4IVl0yV0vY6r1vxNLHluaOtLvH2CDsGG2EtGaVX0gHyIjFFbbJLrhxIS3gfoCp0dUu0=
+X-Received: by 2002:a50:d51d:0:b0:4ac:b618:7fb1 with SMTP id
+ u29-20020a50d51d000000b004acb6187fb1mr5681177edi.6.1677172686939; Thu, 23 Feb
+ 2023 09:18:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230222223714.80671-1-iii@linux.ibm.com>
+In-Reply-To: <20230222223714.80671-1-iii@linux.ibm.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 23 Feb 2023 09:17:55 -0800
+Message-ID: <CAADnVQ+c_+sCXgb63_Kqp8Qb_0cMDcHXrDsbtoP60LiWerWpkQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/12] bpf: Support 64-bit pointers to kfuncs
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 23 Feb 2023 13:11:33 +0100 Lorenzo Bianconi wrote:
-> +                if const['type'] == 'flags':
-> +                    max_name = c_upper(name_pfx + 'mask')
-> +                    max_val = f' = {(entry.user_value() << 1) - 1},'
-> +                    cw.p(max_name + max_val)
+On Wed, Feb 22, 2023 at 2:37 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> v2: https://lore.kernel.org/bpf/20230215235931.380197-1-iii@linux.ibm.com/
+> v2 -> v3: Drop BPF_HELPER_CALL (Alexei).
+>           Drop the merged check_subprogs() cleanup.
+>           Adjust arm, sparc and i386 JITs.
+>           Fix a few portability issues in test_verifier.
+>           Fix a few sparc64 issues.
+>           Trim s390x denylist.
 
-Could you use EnumSet::get_mask instead() ?
-
-I think it also needs to be fixed to actually walk the elements 
-and combine the user_value()s rather than count them and assume
-there are no gaps.
+I don't think it's a good idea to change a bunch of JITs
+that you cannot test just to address the s390 issue.
+Please figure out an approach that none of the JITs need changes.
