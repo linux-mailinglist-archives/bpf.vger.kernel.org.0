@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFDB6A0096
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 02:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BAD36A0099
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 02:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbjBWB3S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 20:29:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
+        id S229854AbjBWBaD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 20:30:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbjBWB3R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 20:29:17 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654103866F;
-        Wed, 22 Feb 2023 17:29:16 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id bh1so11074931plb.11;
-        Wed, 22 Feb 2023 17:29:16 -0800 (PST)
+        with ESMTP id S229795AbjBWBaC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 20:30:02 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE70139BAB;
+        Wed, 22 Feb 2023 17:30:01 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id z2so11219188plf.12;
+        Wed, 22 Feb 2023 17:30:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hig2Jmdl36rvUgg9VdhClX8PuuvijVWOMFe5/3goxHA=;
-        b=CEfFoeeBeUHuyEvu9jEedox2IDbdYrR/T0dya6a6j6kCN3bCb+bWXJmltjvG82x2iB
-         tkM6H279HdRBKQ0wxc6ji7DDzR+OL2vAWk5KGc0n3XfqJI/fDSCt99ZRXSiJPN8rRRFv
-         63E5zzcrfTn+0Z9ucEkO2nZ0jsqbtUa95+T8pOkI30PfHIuFmwNY8KCF0MAHg7YXfZYm
-         s5XsLNuLKlH/eXXSuQkcNTKBXVmABC5rWZCfxf/zorfLM/FSj4hm1DIIgRY7yoDhWYBN
-         tbn+XtQOTrKFt+1OyEKdXLLiCUuZJEX/PtLO0tFb2ETKhMDDfpnGBqGsfjVmFqf6E+yq
-         usZQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BFNflSpTSiIQfsf7cATy307KGQD32osdQzRAo98DNHk=;
+        b=pmNzrc1sJeAwnBrsf9xyxIs5L5VV+BqKSaysmwUINjo7LHA0zS7XMUZXYlTArTJWwG
+         x/Mgwdx4p9l9hL3IPsR94cu4EVT85u+B+rFRFOYNxUdci84jYYLSZ9U0NQ/L2WcKOu7T
+         GPVCgPI3ca2ghxM9LBW64oKs+MJTYHzVPByVvwDeHPzMf1PXx8v14/logZiDhg5b4waK
+         evkfUoX39fINxcFGcdVcr9gxBKifkK+oMP+expKmV48I+VXzkHOxk7GWhJiL8yNj4ba/
+         XqIEuEnD4hfRAdtbc/gfiQBt7RPuAXAK66UH+RKo9W2vsOyZSjsQ2wdkRT0LcRMS/Cmz
+         OYRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Hig2Jmdl36rvUgg9VdhClX8PuuvijVWOMFe5/3goxHA=;
-        b=bd8MHgOjIfh1Tw3g0C/PuFZxlimCdmRNC/WXKODm2ZqfvCKWnLM4D7usy6T/9/savg
-         YWScWr4VaSQcLj4sP0UNAr88RUkBRS4fVdOkQD0TSPzeFGtZuehQknPLDpSj75VQ/s3F
-         NL7oT9XnCTImJGLacDsYpCTcoIOC9oA4XmRbWn0YaSTa2CMQNoRvuUNmNNvDrCjSatM7
-         BcAMSXFmLeF7kFznealUOi8gibweErAQbOnno62Q83ksQdx4yPoGNpWfHt1vk1tgKfZM
-         8IqQbidzXnT6N3p6vx/FEdho/HBcEMKTe1HKwUGIFfWrtqp4nh0/KDsrPgKV/Pw23kl4
-         eLYQ==
-X-Gm-Message-State: AO0yUKWNJNdZGP+E9wKke4YXtNHTaLh7IedwSwQ136AzH6o0nVH1+Rd5
-        kuduoWgh+AVKq5Wl8aE1GTuBWvVxu5A=
-X-Google-Smtp-Source: AK7set+xfzBKyJiP7uZmep0JBjcBkjIJm10pNfPvNC9ZKmeIP/37wEB7GKSgkiDZ5eVhrOPFIyPaJg==
-X-Received: by 2002:a17:903:707:b0:19c:b7a9:d4a4 with SMTP id kk7-20020a170903070700b0019cb7a9d4a4mr1656452plb.37.1677115755603;
-        Wed, 22 Feb 2023 17:29:15 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BFNflSpTSiIQfsf7cATy307KGQD32osdQzRAo98DNHk=;
+        b=3sJb/mAIdEvhOibBimn4DslQJb5QVqJxUtmrV39BVylCxAjAkrC+iyCHtR5oMUQvJo
+         kaoDY7Po7EPDY12lbG6fQEzMX0GyjalL4FFHnRxALZaCzhXsLlatylmWG508AJ6fvPni
+         4Um/dFdOlLe6W9xu6mssnMe7ytc5FqrVThEsf6+qDgojLKEio8tcIdwwev/whu9SSe3q
+         mcFO3iM+yXSVicgSvncYMDuqcNMr4EZxRYXDb0dKAm/4D9/9cQ+9szvjvnzAz895ycQL
+         7B1YPoTVLnu+EIrwO1zVqbW51Myx36rKHiPko8d3WFo8QkNcD/V3siUN2Lqv9IdT1xRL
+         tFUA==
+X-Gm-Message-State: AO0yUKWlNbDI3dw8fXmCZ9iQFnyZzMxtepV9ehp5ZZ2018R0Vm6gLTD6
+        rOP7tDXloyqerpRXi2vKSoA=
+X-Google-Smtp-Source: AK7set8A0Lth0DJfah5RHEg9F7VEXHqH5g2RrTXzTTPm80or2qfv7Sh83+OTrnCHRcCdsHFHnOe4yQ==
+X-Received: by 2002:a17:903:786:b0:19a:8338:703b with SMTP id kn6-20020a170903078600b0019a8338703bmr8421907plb.57.1677115801008;
+        Wed, 22 Feb 2023 17:30:01 -0800 (PST)
 Received: from localhost ([2620:10d:c090:400::5:1bf3])
-        by smtp.gmail.com with ESMTPSA id 2-20020a170902c10200b00189743ed3b6sm1984627pli.64.2023.02.22.17.29.14
+        by smtp.gmail.com with ESMTPSA id ix3-20020a170902f80300b0019ac5d3ee9dsm2841943plb.157.2023.02.22.17.29.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Feb 2023 17:29:14 -0800 (PST)
+        Wed, 22 Feb 2023 17:30:00 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 22 Feb 2023 15:29:12 -1000
+Date:   Wed, 22 Feb 2023 15:29:58 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
@@ -63,11 +64,14 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         bpf@vger.kernel.org, Dave Marchevsky <davemarchevsky@meta.com>,
         David Vernet <void@manifault.com>,
         linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: [PATCH v2 1/2 bpf-next] bpf: Add bpf_cgroup_from_id() kfunc
-Message-ID: <Y/bBaG96t0/gQl9/@slm.duckdns.org>
+Subject: [PATCH v2 2/2 bpf-next] selftests/bpf: Add a test case for
+ bpf_cgroup_from_id()
+Message-ID: <Y/bBlt+tPozcQgws@slm.duckdns.org>
+References: <Y/bBaG96t0/gQl9/@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <Y/bBaG96t0/gQl9/@slm.duckdns.org>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -78,79 +82,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-cgroup ID is an userspace-visible 64bit value uniquely identifying a given
-cgroup. As the IDs are used widely, it's useful to be able to look up the
-matching cgroups. Add bpf_cgroup_from_id().
-
-v2: Separate out selftest into its own patch as suggested by Alexei.
-
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- Documentation/bpf/kfuncs.rst | 10 +++++++---
- kernel/bpf/helpers.c         | 18 ++++++++++++++++++
- 2 files changed, 25 insertions(+), 3 deletions(-)
+ .../selftests/bpf/prog_tests/cgrp_kfunc.c     |  1 +
+ .../selftests/bpf/progs/cgrp_kfunc_common.h   |  1 +
+ .../selftests/bpf/progs/cgrp_kfunc_success.c  | 42 +++++++++++++++++++
+ 3 files changed, 44 insertions(+)
 
-diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-index ca96ef3f6896..226313747be5 100644
---- a/Documentation/bpf/kfuncs.rst
-+++ b/Documentation/bpf/kfuncs.rst
-@@ -583,13 +583,17 @@ You may also acquire a reference to a ``struct cgroup`` kptr that's already
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+index b3f7985c8504..adda85f97058 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+@@ -84,6 +84,7 @@ static const char * const success_tests[] = {
+ 	"test_cgrp_xchg_release",
+ 	"test_cgrp_get_release",
+ 	"test_cgrp_get_ancestors",
++	"test_cgrp_from_id",
+ };
  
- ----
+ void test_cgrp_kfunc(void)
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
+index 7d30855bfe78..2f8de933b957 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
++++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
+@@ -24,6 +24,7 @@ struct cgroup *bpf_cgroup_acquire(struct cgroup *p) __ksym;
+ struct cgroup *bpf_cgroup_kptr_get(struct cgroup **pp) __ksym;
+ void bpf_cgroup_release(struct cgroup *p) __ksym;
+ struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level) __ksym;
++struct cgroup *bpf_cgroup_from_id(u64 cgid) __ksym;
  
--Another kfunc available for interacting with ``struct cgroup *`` objects is
--bpf_cgroup_ancestor(). This allows callers to access the ancestor of a cgroup,
--and return it as a cgroup kptr.
-+Other kfuncs available for interacting with ``struct cgroup *`` objects are
-+bpf_cgroup_ancestor() and bpf_cgroup_from_id(), allowing callers to access
-+the ancestor of a cgroup and find a cgroup by its ID, respectively. Both
-+return a cgroup kptr.
+ static inline struct __cgrps_kfunc_map_value *cgrps_kfunc_map_value_lookup(struct cgroup *cgrp)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c b/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
+index 0c23ea32df9f..42e13aebdd62 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
++++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
+@@ -168,3 +168,45 @@ int BPF_PROG(test_cgrp_get_ancestors, struct cgroup *cgrp, const char *path)
  
- .. kernel-doc:: kernel/bpf/helpers.c
-    :identifiers: bpf_cgroup_ancestor
- 
-+.. kernel-doc:: kernel/bpf/helpers.c
-+   :identifiers: bpf_cgroup_from_id
-+
- Eventually, BPF should be updated to allow this to happen with a normal memory
- load in the program itself. This is currently not possible without more work in
- the verifier. bpf_cgroup_ancestor() can be used as follows:
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 5b278a38ae58..a784be6f8bac 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2101,6 +2101,23 @@ __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
- 	cgroup_get(ancestor);
- 	return ancestor;
+ 	return 0;
  }
 +
-+/**
-+ * bpf_cgroup_from_id - Find a cgroup from its ID. A cgroup returned by this
-+ * kfunc which is not subsequently stored in a map, must be released by calling
-+ * bpf_cgroup_release().
-+ * @cgrp: The cgroup for which we're performing a lookup.
-+ * @level: The level of ancestor to look up.
-+ */
-+__bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
++SEC("tp_btf/cgroup_mkdir")
++int BPF_PROG(test_cgrp_from_id, struct cgroup *cgrp, const char *path)
 +{
-+	struct cgroup *cgrp;
++	struct cgroup *parent, *res;
++	u64 parent_cgid;
 +
-+	cgrp = cgroup_get_from_id(cgid);
-+	if (IS_ERR(cgrp))
-+		return NULL;
-+	return cgrp;
++	if (!is_test_kfunc_task())
++		return 0;
++
++	/* @cgrp's ID is not visible yet, let's test with the parent */
++	parent = bpf_cgroup_ancestor(cgrp, cgrp->level - 1);
++	if (!parent) {
++		err = 1;
++		return 0;
++	}
++
++	parent_cgid = parent->kn->id;
++	bpf_cgroup_release(parent);
++
++	res = bpf_cgroup_from_id(parent_cgid);
++	if (!res) {
++		err = 2;
++		return 0;
++	}
++
++	bpf_cgroup_release(res);
++
++	if (res != parent) {
++		err = 3;
++		return 0;
++	}
++
++	res = bpf_cgroup_from_id((u64)-1);
++	if (res) {
++		bpf_cgroup_release(res);
++		err = 4;
++		return 0;
++	}
++
++	return 0;
 +}
- #endif /* CONFIG_CGROUPS */
- 
- /**
-@@ -2167,6 +2184,7 @@ BTF_ID_FLAGS(func, bpf_cgroup_acquire, KF_ACQUIRE | KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_cgroup_kptr_get, KF_ACQUIRE | KF_KPTR_GET | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_cgroup_release, KF_RELEASE)
- BTF_ID_FLAGS(func, bpf_cgroup_ancestor, KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_cgroup_from_id, KF_ACQUIRE | KF_RET_NULL)
- #endif
- BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
- BTF_SET8_END(generic_btf_ids)
 -- 
 2.39.2
 
