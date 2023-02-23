@@ -2,177 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9695A6A0A5B
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 14:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F4F6A0A60
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 14:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjBWNTO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 08:19:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
+        id S234309AbjBWNUa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 08:20:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234480AbjBWNTN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 08:19:13 -0500
-Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BB64AFD6
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 05:19:10 -0800 (PST)
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
-        by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <jemarch@gnu.org>)
-        id 1pVBV3-00077r-Mg; Thu, 23 Feb 2023 08:19:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-        s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
-        From; bh=Fd7v4Q9SarRbklpd7FFW8IZ21xM2OD+pdu8JV5+3+qc=; b=ebRTcrGgg4zTqd3sQeBy
-        COiEp7kPpxKe/GbbNnlXkXwGKPAkIsqkcJfb6qcJ6i3PGzDGelccttDZNFSI42xb5QWJhCghK+0UU
-        2rnrfQE3Tr4K1rLh++84hOrSdko2ggnCTH81vE2yh1RFGKsMhQMu3WZafzA5DlWbxhoXlUBzJyCyB
-        ymWIe/hRykrQb09HCQIh0WWUdyvmigNmJZptWr/YZjCgl1+93ld2i1BIfnKaLrGFbJvXp78E8t0a0
-        xUeEdTe+AjZjtIRcXSMxk6LgAXJQ2dF8TjwDy2UcS4fvRpbh1gj87vS6gyiIQdRfDcULbfttDFuhX
-        UQmwIeS5u/2kiA==;
-Received: from [141.143.193.75] (helo=termi)
-        by fencepost.gnu.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <jemarch@gnu.org>)
-        id 1pVBV2-00087m-B3; Thu, 23 Feb 2023 08:19:05 -0500
-From:   "Jose E. Marchesi" <jemarch@gnu.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>,
-        bpf <bpf@vger.kernel.org>, bpf@ietf.org,
-        Dave Thaler <dthaler@microsoft.com>,
-        David Vernet <void@manifault.com>
-Subject: Re: [Bpf] [PATCH bpf-next v2] bpf, docs: Add explanation of endianness
-In-Reply-To: <CAADnVQ+k5HrxJbpi17yeowsP9f92fSbnpSXfndMrZ8r=zhx1mg@mail.gmail.com>
-        (Alexei Starovoitov's message of "Wed, 22 Feb 2023 17:56:43 -0800")
-References: <20230220223742.1347-1-dthaler1968@googlemail.com>
-        <CAADnVQ++hR7Cj3OXGLWpV_=4MnFndq5qS8r5b-YYPC_OB=gjQg@mail.gmail.com>
-        <87ttzdwagy.fsf@oracle.com>
-        <CAADnVQ+k5HrxJbpi17yeowsP9f92fSbnpSXfndMrZ8r=zhx1mg@mail.gmail.com>
-Date:   Thu, 23 Feb 2023 14:18:51 +0100
-Message-ID: <87bklkseo4.fsf@gnu.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        with ESMTP id S234566AbjBWNU3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 08:20:29 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C54F56537
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 05:20:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677158429; x=1708694429;
+  h=message-id:date:mime-version:to:from:subject:
+   content-transfer-encoding;
+  bh=l0GHKh5IMDUCkMZUPMVxjbBCs3eUpcaooaPM/UdCVgg=;
+  b=UlWYXj8//7zS59sgsToThTg/QtTbg3NBJIUT2AMtJCLrWODEnAL5EYhn
+   Qc32AqM3YVhQ0YRoz94+JYE4u0qlO5YF4sAMWxS/3bnJMzWef+t56wlpG
+   pk/g1guhiqYhcTigfaluMarMZYrLr7T67jsnA78o0IqP2Wq7NoSE73AhN
+   732koWWnGWWn/oqe8LaDQ9E18wy3GYNygJcL0pbz5P6x8ZTXjDN2Rn6Ad
+   wf1+Lm9Omz+JbtgpcjBjFMj85otCA0J+9Oznma01eAwhHdUP4QPHDHylT
+   LyjPZKTMyScdTJJ44LfOPCux6ohj5yQixlmMGjtiNHpVprOjciwz55oGI
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10630"; a="312837394"
+X-IronPort-AV: E=Sophos;i="5.97,320,1669104000"; 
+   d="scan'208";a="312837394"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2023 05:20:27 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10630"; a="736354084"
+X-IronPort-AV: E=Sophos;i="5.97,320,1669104000"; 
+   d="scan'208";a="736354084"
+Received: from arechkov-mobl.ger.corp.intel.com (HELO [10.249.39.184]) ([10.249.39.184])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2023 05:20:26 -0800
+Message-ID: <0838bc96-c8a8-c326-a8f0-80240cf6b31a@linux.intel.com>
+Date:   Thu, 23 Feb 2023 15:20:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Content-Language: en-US
+To:     bpf@vger.kernel.org
+From:   Tero Kristo <tero.kristo@linux.intel.com>
+Subject: bpf: RFC for platform specific BPF helper addition
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,LOCALPART_IN_SUBJECT,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi,
 
-> On Wed, Feb 22, 2023 at 3:23 PM Jose E. Marchesi
-> <jose.marchesi@oracle.com> wrote:
->>
->>
->> > On Mon, Feb 20, 2023 at 2:37 PM Dave Thaler
->> > <dthaler1968=40googlemail.com@dmarc.ietf.org> wrote:
->> >>
->> >> From: Dave Thaler <dthaler@microsoft.com>
->> >>
->> >> Document the discussion from the email thread on the IETF bpf list,
->> >> where it was explained that the raw format varies by endianness
->> >> of the processor.
->> >>
->> >> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
->> >>
->> >> Acked-by: David Vernet <void@manifault.com>
->> >> ---
->> >>
->> >> V1 -> V2: rebased on top of latest master
->> >> ---
->> >>  Documentation/bpf/instruction-set.rst | 16 ++++++++++++++--
->> >>  1 file changed, 14 insertions(+), 2 deletions(-)
->> >>
->> >> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
->> >> index af515de5fc3..1d473f060fa 100644
->> >> --- a/Documentation/bpf/instruction-set.rst
->> >> +++ b/Documentation/bpf/instruction-set.rst
->> >> @@ -38,8 +38,9 @@ eBPF has two instruction encodings:
->> >>  * the wide instruction encoding, which appends a second 64-bit immediate (i.e.,
->> >>    constant) value after the basic instruction for a total of 128 bits.
->> >>
->> >> -The basic instruction encoding is as follows, where MSB and LSB mean the most significant
->> >> -bits and least significant bits, respectively:
->> >> +The basic instruction encoding looks as follows for a little-endian processor,
->> >> +where MSB and LSB mean the most significant bits and least significant bits,
->> >> +respectively:
->> >>
->> >>  =============  =======  =======  =======  ============
->> >>  32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
->> >> @@ -63,6 +64,17 @@ imm            offset   src_reg  dst_reg  opcode
->> >>  **opcode**
->> >>    operation to perform
->> >>
->> >> +and as follows for a big-endian processor:
->> >> +
->> >> +=============  =======  ====================  ===============  ============
->> >> +32 bits (MSB)  16 bits  4 bits                4 bits           8 bits (LSB)
->> >> +=============  =======  ====================  ===============  ============
->> >> +immediate      offset   destination register  source register  opcode
->> >> +=============  =======  ====================  ===============  ============
->> >
->> > I've changed it to:
->> > imm            offset   dst_reg  src_reg  opcode
->> >
->> > to match the little endian table,
->> > but now one of the tables feels wrong.
->> > The encoding is always done by applying C standard to the struct:
->> > struct bpf_insn {
->> >         __u8    code;           /* opcode */
->> >         __u8    dst_reg:4;      /* dest register */
->> >         __u8    src_reg:4;      /* source register */
->> >         __s16   off;            /* signed offset */
->> >         __s32   imm;            /* signed immediate constant */
->> > };
->> > I'm not sure how to express this clearly in the table.
->>
->> Perhaps it would be simpler to document how the instruction bytes are
->> stored (be it in an ELF file or as bytes in a memory buffer to be loaded
->> into the kernel or some other BPF consumer) as opposed to how the
->> instructions look like once loaded (as a 64-bit word) by a little-endian
->> or big-endian kernel?
->>
->> Stored little-endian BPF instructions:
->>
->>   code src_reg dst_reg off imm
->>
->>   foo-le.o:     file format elf64-bpfle
->>
->>   0000000000000000 <.text>:
->>      0:   07 01 00 00 ef be ad de         r1 += 0xdeadbeef
->>
->> Stored big-endian BPF instructions:
->>
->>   code dst_reg src_reg off imm
->>
->>   foo-be.o:     file format elf64-bpfbe
->>
->>   0000000000000000 <.text>:
->>      0:   07 10 00 00 de ad be ef         r1 += 0xdeadbeef
->>
->> i.e. in the stored bytes the code always comes first, then the
->> registers, then the offset, then the immediate, regardless of
->> endianness.
->>
->> This may be easier to understand by implementors looking to generate
->> and/or consume bytes conforming BPF instructions.
->
-> +1
-> I like this format more as well.
-> Maybe we can drop the table and use a diagram of a kind ?
->
-> opcode src dst offset imm          assembly
-> 07     0   1   00 00  ef be ad de  r1 += 0xdeadbeef // little
-> 07     1   0   00 00  de ad be ef  r1 += 0xdeadbeef // big
+Some background first; on x86 platforms there is a free running TSC 
+counter which can be used to generate extremely accurate profiling time 
+stamps. Currently this can be used by BPF programs via hooking into perf 
+subsystem and reading the value there; however this reduces the accuracy 
+due to latency + jitter involved with long execution chain, and also the 
+timebase gets converted into relative from the start of the execution of 
+the program, instead of getting an absolute system level value.
 
-Good idea.  What about something like this:
+Now, I do have a pretty trivial patch (under internal review atm. at 
+Intel) that adds an x86 platform specific bpf helper that can directly 
+read this timestamp counter without relying to perf subsystem hooks.
 
-opcode         offset imm          assembly
-       src dst
-07     0   1   00 00  44 33 22 11  r1 += 0x11223344 // little
-       dst src
-07     1   0   00 00  11 22 33 44  r1 += 0x11223344 // big
+Do people have any feedback / insights on this list about addition of 
+such platform specific BPF helper, basically thumbs up/down for adding 
+such a thing? Currently I don't think there are any platform specific 
+helpers in the kernel.
 
-I changed the immediate because 0xdeadbeef is negative and it may be
-confusing in the assembly part: strictly it would be r1 += -559038737.
+-Tero
+
