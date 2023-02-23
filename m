@@ -1,168 +1,133 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D606A014B
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 03:49:16 +0100 (CET)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8746A0168
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 04:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbjBWCtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 21:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35934 "EHLO
+        id S233954AbjBWDHr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 22:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233471AbjBWCtF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 21:49:05 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3103C3A841;
-        Wed, 22 Feb 2023 18:48:53 -0800 (PST)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8BxttgU1PZjkPMDAA--.7504S3;
-        Thu, 23 Feb 2023 10:48:52 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax97wQ1PZjL2E5AA--.38714S3;
-        Thu, 23 Feb 2023 10:48:48 +0800 (CST)
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Check
- __ARCH_WANT_SET_GET_RLIMIT before syscall(__NR_getrlimit)
-To:     Mykola Lysenko <mykolal@meta.com>
-References: <1677066908-15224-1-git-send-email-yangtiezhu@loongson.cn>
- <1677066908-15224-4-git-send-email-yangtiezhu@loongson.cn>
- <CAADnVQLLborN3ABxRPUhSL5jQ1XcWNM9DBfjaEbvnF9qdE_CJA@mail.gmail.com>
- <D90B1D7B-8B75-4790-8D09-1106240B2377@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <f8d8f114-2fa7-f6da-7c99-b72fcf8b106f@loongson.cn>
-Date:   Thu, 23 Feb 2023 10:48:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        with ESMTP id S233980AbjBWDHh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 22:07:37 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70202474E1;
+        Wed, 22 Feb 2023 19:07:22 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id c23so6451443pjo.4;
+        Wed, 22 Feb 2023 19:07:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U6wLMALzHzJ/ey42lUD1+2CstzLDwzhK2uzp7X/sAT0=;
+        b=NTZ+0euWEhou1Xfc7GELfDQjxjkHJH0JmfWQpUNcJtdti1txH7JpRPc0ILBI7vc9sC
+         7/ScTcbRe9B0DS2dYkej6/9ltm42qpnVW0ie+2j9BmGapMiAwcWT9bSE0X5ui7GUQsB3
+         GDMufj6Zw1+GGThIg3rWYykotqDxj0iUJ9NydZoGKBgO/Sn2jQF1KX9J/eP0eVNBJEtC
+         xqMSnqBYXRUImd7avM9AwP6d3pYjqUlVwOivE8CCMVml+Ey9mIN52nsfBNgr38jQq5n0
+         EkgASMYZtz7BXI6rFz+/t013C2QMuEeNd4X83uv+xFynFD2hF6CYPguJB8mAdJ/eVDJw
+         5nAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U6wLMALzHzJ/ey42lUD1+2CstzLDwzhK2uzp7X/sAT0=;
+        b=i5aejMR2FUnMR/DPM75U26j+FSMva2HwsImEKxge70OholDrTt5ug88npybYmZFKTD
+         Ovc98e1mL2q0BhaZcv3EmoeKVPyUf7JpuPwJlry5hspWreeEmx4Rba/0ChwA11pQ+zhC
+         wfDHirltr5/oPN32HKQTPBaKGCCb8doN2ziNNM+Wnufu5gByB2xYEETRCT38BYSt6cPY
+         s1uiXI3yCKEd4BPfjkwSwR2khA0FCTavIH6zSZKRX5WhPcgfy9TpxliiVIEfxhnTB60/
+         ettKzptBfTv/Y943i8SNOd9fK+Yd9EFs12eTww0+jlNw87FcMU2aZ1vgntlYVBSJVWhf
+         GQPA==
+X-Gm-Message-State: AO0yUKWqVF3Ezd56NZXG+PUzQb0H3d43ugcIsIw2tyJz+Vd7YSNBa4BI
+        /Z86AxU70afmyZthH3iEcdE=
+X-Google-Smtp-Source: AK7set9UUujFGmUMF9WbB85Onnb1d2G0sDSPxn7zlIBICOfzkesrCxHdYL+HrQdhbMJ4JRXut9YgIQ==
+X-Received: by 2002:a17:902:e80c:b0:19a:df6a:726f with SMTP id u12-20020a170902e80c00b0019adf6a726fmr12292797plg.61.1677121641737;
+        Wed, 22 Feb 2023 19:07:21 -0800 (PST)
+Received: from localhost.localdomain ([2620:10d:c090:400::5:9cb3])
+        by smtp.gmail.com with ESMTPSA id t18-20020a170902d21200b0019337bf957dsm6879912ply.296.2023.02.22.19.07.19
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 22 Feb 2023 19:07:21 -0800 (PST)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        void@manifault.com, davemarchevsky@meta.com, tj@kernel.org,
+        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v2 bpf-next 0/4] bpf: Introduce kptr_rcu.
+Date:   Wed, 22 Feb 2023 19:07:13 -0800
+Message-Id: <20230223030717.58668-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-In-Reply-To: <D90B1D7B-8B75-4790-8D09-1106240B2377@fb.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Ax97wQ1PZjL2E5AA--.38714S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjvJXoWxJF4rtr4xZr48Xw1DWFyrCrg_yoWrWryfpa
-        yfta42yF4SyF17tw17Kr4xZrySqrZrAF4FkF18Jr95Zw1UZ3saqF1IgF4Fgr9Igr95tr4S
-        v34UKasa9r4UA37anT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        bfAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
-        n4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
-        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E
-        87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0V
-        AS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km
-        07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUv
-        cSsGvfC2KfnxnUUI43ZEXa7IU8hiSPUUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Alexei Starovoitov <ast@kernel.org>
 
+v1->v2:
+Instead of agressively allow dereferenced kptr_rcu pointers into KF_TRUSTED_ARGS
+kfuncs only allow them into KF_RCU funcs.
+The KF_RCU flag is a weaker version of KF_TRUSTED_ARGS. The kfuncs marked with
+KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier guarantees
+that the objects are valid and there is no use-after-free, but the pointers
+maybe NULL and pointee object's reference count could have reached zero, hence
+kfuncs must do != NULL check and consider refcnt==0 case when accessing such
+arguments.
+No changes in patch 1.
+Patches 2,3,4 adjusted with above behavior.
 
-On 02/23/2023 04:03 AM, Mykola Lysenko wrote:
-> Hi Tiezhu,
->
-> You can run BPF CI tests on your patch before sending it out by following these instructions:
-> https://docs.kernel.org/bpf/bpf_devel_QA.html#q-how-do-i-run-bpf-ci-on-my-changes-before-sending-them-out-for-review
+v1:
+The __kptr_ref turned out to be too limited, since any "trusted" pointer access
+requires bpf_kptr_xchg() which is impractical when the same pointer needs
+to be dereferenced by multiple cpus.
+The __kptr "untrusted" only access isn't very useful in practice.
+Rename __kptr to __kptr_untrusted with eventual goal to deprecate it,
+and rename __kptr_ref to __kptr, since that looks to be more common use of kptrs.
+Introduce __kptr_rcu that can be directly dereferenced and used similar
+to native kernel C code.
+Once bpf_cpumask and task_struct kfuncs are converted to observe RCU GP
+when refcnt goes to zero, both __kptr and __kptr_untrusted can be deprecated
+and __kptr_rcu can become the only __kptr tag.
 
-OK, thank you.
+Alexei Starovoitov (4):
+  bpf: Rename __kptr_ref -> __kptr and __kptr -> __kptr_untrusted.
+  bpf: Introduce kptr_rcu.
+  selftests/bpf: Add a test case for kptr_rcu.
+  selftests/bpf: Tweak cgroup kfunc test.
 
-After commit 80d7da1cac62 ("asm-generic: Drop getrlimit and setrlimit
-syscalls from default list"), new architectures won't need to include
-getrlimit and setrlimit, they are superseded with prlimit64.
+ Documentation/bpf/bpf_design_QA.rst           |  4 +--
+ Documentation/bpf/cpumasks.rst                |  4 +--
+ Documentation/bpf/kfuncs.rst                  | 13 ++++----
+ include/linux/bpf.h                           | 15 ++++++---
+ include/linux/btf.h                           |  2 +-
+ kernel/bpf/btf.c                              | 26 +++++++++++++--
+ kernel/bpf/helpers.c                          |  7 ++--
+ kernel/bpf/syscall.c                          |  4 +++
+ kernel/bpf/verifier.c                         | 33 ++++++++++++-------
+ net/bpf/test_run.c                            |  3 +-
+ tools/lib/bpf/bpf_helpers.h                   |  3 +-
+ tools/testing/selftests/bpf/progs/cb_refs.c   |  2 +-
+ .../selftests/bpf/progs/cgrp_kfunc_common.h   |  2 +-
+ .../selftests/bpf/progs/cgrp_kfunc_failure.c  |  2 +-
+ .../selftests/bpf/progs/cgrp_kfunc_success.c  |  7 +++-
+ .../selftests/bpf/progs/cpumask_common.h      |  2 +-
+ .../selftests/bpf/progs/jit_probe_mem.c       |  2 +-
+ tools/testing/selftests/bpf/progs/lru_bug.c   |  2 +-
+ tools/testing/selftests/bpf/progs/map_kptr.c  | 18 ++++++++--
+ .../selftests/bpf/progs/map_kptr_fail.c       |  6 ++--
+ .../selftests/bpf/progs/task_kfunc_common.h   |  2 +-
+ tools/testing/selftests/bpf/test_verifier.c   | 22 ++++++-------
+ tools/testing/selftests/bpf/verifier/calls.c  |  2 +-
+ 23 files changed, 123 insertions(+), 60 deletions(-)
 
-In order to maintain compatibility for the new architectures, such as
-LoongArch which does not define __NR_getrlimit, it is better to use
-__NR_prlimit64 instead of __NR_getrlimit in user_ringbuf.c to fix the
-build error.
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c 
-b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-index 3a13e10..e51721d 100644
---- a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-@@ -590,7 +590,7 @@ static void *kick_kernel_cb(void *arg)
-         /* Kick the kernel, causing it to drain the ring buffer and 
-then wake
-          * up the test thread waiting on epoll.
-          */
--       syscall(__NR_getrlimit);
-+       syscall(__NR_prlimit64);
-
-         return NULL;
-  }
-
-I will test it and then send v2. If you have more suggestions,
-please let me know.
-
-Thanks,
-Tiezhu
-
->
-> Thanks,
-> Mykola
->
->> On Feb 22, 2023, at 10:06 AM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->>
->> !-------------------------------------------------------------------|
->>  This Message Is From an External Sender
->>
->> |-------------------------------------------------------------------!
->>
->> On Wed, Feb 22, 2023 at 3:55 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->>>
->>> __NR_getrlimit is defined only if __ARCH_WANT_SET_GET_RLIMIT is defined:
->>>
->>>  #ifdef __ARCH_WANT_SET_GET_RLIMIT
->>>  /* getrlimit and setrlimit are superseded with prlimit64 */
->>>  #define __NR_getrlimit 163
->>>  ...
->>>  #endif
->>>
->>> Some archs do not define __ARCH_WANT_SET_GET_RLIMIT, it should check
->>> __ARCH_WANT_SET_GET_RLIMIT before syscall(__NR_getrlimit) to fix the
->>> following build error:
->>>
->>>    TEST-OBJ [test_progs] user_ringbuf.test.o
->>>  tools/testing/selftests/bpf/prog_tests/user_ringbuf.c: In function 'kick_kernel_cb':
->>>  tools/testing/selftests/bpf/prog_tests/user_ringbuf.c:593:17: error: '__NR_getrlimit' undeclared (first use in this function)
->>>    593 |         syscall(__NR_getrlimit);
->>>        |                 ^~~~~~~~~~~~~~
->>>  tools/testing/selftests/bpf/prog_tests/user_ringbuf.c:593:17: note: each undeclared identifier is reported only once for each function it appears in
->>>  make: *** [Makefile:573: tools/testing/selftests/bpf/user_ringbuf.test.o] Error 1
->>>  make: Leaving directory 'tools/testing/selftests/bpf'
->>>
->>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->>> ---
->>> tools/testing/selftests/bpf/prog_tests/user_ringbuf.c | 2 ++
->>> 1 file changed, 2 insertions(+)
->>>
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
->>> index 3a13e10..0550307 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
->>> @@ -590,7 +590,9 @@ static void *kick_kernel_cb(void *arg)
->>>        /* Kick the kernel, causing it to drain the ring buffer and then wake
->>>         * up the test thread waiting on epoll.
->>>         */
->>> +#ifdef __ARCH_WANT_SET_GET_RLIMIT
->>>        syscall(__NR_getrlimit);
->>> +#endif
->>
->> This is clearly breaks user_ringbuf test on x86:
->> https://github.com/kernel-patches/bpf/actions/runs/4242660318/jobs/7374845859
->>
->> Please do not send patches that make selftest compile on your favorite arch.
->> Make sure the patches work correctly on other archs too.
+-- 
+2.30.2
 
