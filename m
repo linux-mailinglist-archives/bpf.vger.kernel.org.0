@@ -2,174 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B7D6A00F0
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 02:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEAA6A00F2
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 02:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbjBWB47 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 20:56:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
+        id S233104AbjBWB6Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 20:58:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbjBWB46 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 20:56:58 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56B01554A
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 17:56:56 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id cy6so32464945edb.5
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 17:56:56 -0800 (PST)
+        with ESMTP id S230048AbjBWB6X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 20:58:23 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D5F11E98;
+        Wed, 22 Feb 2023 17:58:22 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id y2so6930979pjg.3;
+        Wed, 22 Feb 2023 17:58:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z12wsZK5GhfTa4OhooSllN1ML732F8qYWNQXhciTebU=;
-        b=DIJzdbbNEPELbtrbDmW+TNKk9kHJsX9AgXp4hMaykPdsLNtBk6l4DJvoCwiFRgwnFW
-         18C7RwBmthWNycOvbUiKCYb6sYQfBPBLgzDxVXM3/hA4x4dkEuuPVKQ19WCrbMjphGqM
-         98TKwC5EEPoP612vgCCs7sDrs27j8C/yPa0XPtBf2FGi0jA/JAxnKwlhnsJ075JSt+zv
-         TnDowvBrXz5nk18Is1cW2WV4mYbWeZiRPbXzUbh7AL8Z1fzMWAwsNwtfc2Uo49NrhLYL
-         OHptbC3f3zemmhQUTajBJ/Ot+qO6aVcsT2jBkS4SAC5wDOPQpoT4l9WhI7MddedrdY5I
-         vAFw==
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ES+hJU7C0GAmrMheTS6LDouuORythb1ROogiIDv0iHY=;
+        b=Bta0XgBNUTPmBTeLzI37RtHFuVDWPBqubGxqVHR0P/z/3aJaQliF1pRwaEPTW11tX/
+         Iy4YWXtAitVf7DPGsngqf6UwNQW/g1rJQt1cJqOiwyQsD8KGkuJvLfeQBHSXTt71gFP8
+         xqHdazhzXhjnswl9R4+ueGtjKbSmqN0UHAGVKZWI6GqEKNH14SUVwd/jfxQd7z/UfJiC
+         Km/ngSiVXRSo8FPZA0iAA1L6lkCkhAjRyYR9no3s0TOruLBma5NEEDI5JubLxNbN0K+O
+         Hh1dCeaM0PK0QJNZnRUfDyZV/xfxzbnOYM1xS1GR/s7F47Lo0MStKKKJF8iOMvZuD8AB
+         zajw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z12wsZK5GhfTa4OhooSllN1ML732F8qYWNQXhciTebU=;
-        b=jOP409KrGJdgk8+2h21hQ5BUyM2Q7kGzA4WR0FZGyMOwbmaZdpbremMUBXeHZD8k1T
-         xUJJEObEJtQeHoKwZeTuUROYNT6CfGd7p0nbOWGNas8rlkTy0zoHXpYIgRBqfbFdFL3E
-         pbUcLOZbdVMCF8D3J+1rvizRm49loFH2AYZtOvrjFZkrhVAn4uaHN8GzQ2VQV2d70959
-         r2ec8hERnPAp/nkMAHmBXhI+BPVufkDSxMyNqFEZsW3EDR38ROWk8CC0SemAUmZrM3s7
-         /sVLfs/VKszlk/+mwKOxJJKAB3TlEBxZ2t5UiUVuNzJ1dyHprQti0zUncM0PrnRZhIkz
-         DWVA==
-X-Gm-Message-State: AO0yUKViG/RxHyI+o/GCstzLzkp03N51QxVWHL05cPU6VgPJHOHdh+gV
-        kGm6bnuAwChQpr4RB8KJW3kE6xIfU+cgvGneL/A=
-X-Google-Smtp-Source: AK7set/rHv44Uqw6FrRf8y/oJZStDeAoC+yRC4LybwkvQvugUiK0XLr6zlTenfockp3rcYOpuVif6ITRnE6yNvG6SLQ=
-X-Received: by 2002:a17:906:eb4d:b0:87b:dce7:c245 with SMTP id
- mc13-20020a170906eb4d00b0087bdce7c245mr8310707ejb.3.1677117415158; Wed, 22
- Feb 2023 17:56:55 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ES+hJU7C0GAmrMheTS6LDouuORythb1ROogiIDv0iHY=;
+        b=lfyLHtgRJIuFm4MLKMEExz0dI0RD9qpsdlLfTcdlLx9yShJEkir2WCNkAptsNhRhhR
+         Jh718kr5L1G3kBuWkFk6vY17ja8S7eRlI0oplIJRptCtH3WwwkcAsQ4Asu2fIUhZhVhf
+         2dwo9Ag+0p4HzbBUfgOOAdxAsxEEesxbR77VDNMYD7dkboxWD6OD1F5YluQWMuNkAxAI
+         sGBCXCgaORauUlNlz7yz5UsgE85U3Nf5srG220GTK/+pQDLZZ/vPZZ/M6ThM9FX+YdKU
+         6DWKr+TLK9lGcZd5LTIFzBlhYr109lgPIo3aowUhUZBRBC1TYsy8i3A+zD6YPTny1X3+
+         NGcg==
+X-Gm-Message-State: AO0yUKUATTj7hNnq52OMRn2sD8FThl+cIJ3ieneZ1avVrb14vbnirMnK
+        0yC2ezGqlzmHe8SmB+dDTp8=
+X-Google-Smtp-Source: AK7set9G2IHGP3W1zAnPNrzTgYpIF5dIaXK1+tXu+tukZzMfWwuRNK3FNXgEc0FbFdXQ7MHy0/e8aQ==
+X-Received: by 2002:a17:903:283:b0:19a:96f0:a8de with SMTP id j3-20020a170903028300b0019a96f0a8demr10224800plr.5.1677117502179;
+        Wed, 22 Feb 2023 17:58:22 -0800 (PST)
+Received: from [192.168.43.80] (subs02-180-214-232-6.three.co.id. [180.214.232.6])
+        by smtp.gmail.com with ESMTPSA id ix3-20020a170902f80300b0019934030f46sm1885946plb.132.2023.02.22.17.58.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Feb 2023 17:58:21 -0800 (PST)
+Message-ID: <176b9ce3-74bc-2c12-eb85-14b94e3b5338@gmail.com>
+Date:   Thu, 23 Feb 2023 08:58:14 +0700
 MIME-Version: 1.0
-References: <20230220223742.1347-1-dthaler1968@googlemail.com>
- <CAADnVQ++hR7Cj3OXGLWpV_=4MnFndq5qS8r5b-YYPC_OB=gjQg@mail.gmail.com> <87ttzdwagy.fsf@oracle.com>
-In-Reply-To: <87ttzdwagy.fsf@oracle.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Feb 2023 17:56:43 -0800
-Message-ID: <CAADnVQ+k5HrxJbpi17yeowsP9f92fSbnpSXfndMrZ8r=zhx1mg@mail.gmail.com>
-Subject: Re: [Bpf] [PATCH bpf-next v2] bpf, docs: Add explanation of endianness
-To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc:     Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>,
-        bpf <bpf@vger.kernel.org>, bpf@ietf.org,
-        Dave Thaler <dthaler@microsoft.com>,
-        David Vernet <void@manifault.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v2] Documentation: bpf: Fix link to BTF doc
+To:     Ross Zwisler <zwisler@google.com>
+Cc:     Linux BPF <bpf@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alan Maguire <alan.maguire@oracle.com>
+References: <20230222083530.26136-1-bagasdotme@gmail.com>
+ <Y/ZlDnioTn+hj03/@google.com>
+Content-Language: en-US
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <Y/ZlDnioTn+hj03/@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 22, 2023 at 3:23 PM Jose E. Marchesi
-<jose.marchesi@oracle.com> wrote:
->
->
-> > On Mon, Feb 20, 2023 at 2:37 PM Dave Thaler
-> > <dthaler1968=40googlemail.com@dmarc.ietf.org> wrote:
-> >>
-> >> From: Dave Thaler <dthaler@microsoft.com>
-> >>
-> >> Document the discussion from the email thread on the IETF bpf list,
-> >> where it was explained that the raw format varies by endianness
-> >> of the processor.
-> >>
-> >> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
-> >>
-> >> Acked-by: David Vernet <void@manifault.com>
-> >> ---
-> >>
-> >> V1 -> V2: rebased on top of latest master
-> >> ---
-> >>  Documentation/bpf/instruction-set.rst | 16 ++++++++++++++--
-> >>  1 file changed, 14 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-> >> index af515de5fc3..1d473f060fa 100644
-> >> --- a/Documentation/bpf/instruction-set.rst
-> >> +++ b/Documentation/bpf/instruction-set.rst
-> >> @@ -38,8 +38,9 @@ eBPF has two instruction encodings:
-> >>  * the wide instruction encoding, which appends a second 64-bit immediate (i.e.,
-> >>    constant) value after the basic instruction for a total of 128 bits.
-> >>
-> >> -The basic instruction encoding is as follows, where MSB and LSB mean the most significant
-> >> -bits and least significant bits, respectively:
-> >> +The basic instruction encoding looks as follows for a little-endian processor,
-> >> +where MSB and LSB mean the most significant bits and least significant bits,
-> >> +respectively:
-> >>
-> >>  =============  =======  =======  =======  ============
-> >>  32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> >> @@ -63,6 +64,17 @@ imm            offset   src_reg  dst_reg  opcode
-> >>  **opcode**
-> >>    operation to perform
-> >>
-> >> +and as follows for a big-endian processor:
-> >> +
-> >> +=============  =======  ====================  ===============  ============
-> >> +32 bits (MSB)  16 bits  4 bits                4 bits           8 bits (LSB)
-> >> +=============  =======  ====================  ===============  ============
-> >> +immediate      offset   destination register  source register  opcode
-> >> +=============  =======  ====================  ===============  ============
-> >
-> > I've changed it to:
-> > imm            offset   dst_reg  src_reg  opcode
-> >
-> > to match the little endian table,
-> > but now one of the tables feels wrong.
-> > The encoding is always done by applying C standard to the struct:
-> > struct bpf_insn {
-> >         __u8    code;           /* opcode */
-> >         __u8    dst_reg:4;      /* dest register */
-> >         __u8    src_reg:4;      /* source register */
-> >         __s16   off;            /* signed offset */
-> >         __s32   imm;            /* signed immediate constant */
-> > };
-> > I'm not sure how to express this clearly in the table.
->
-> Perhaps it would be simpler to document how the instruction bytes are
-> stored (be it in an ELF file or as bytes in a memory buffer to be loaded
-> into the kernel or some other BPF consumer) as opposed to how the
-> instructions look like once loaded (as a 64-bit word) by a little-endian
-> or big-endian kernel?
->
-> Stored little-endian BPF instructions:
->
->   code src_reg dst_reg off imm
->
->   foo-le.o:     file format elf64-bpfle
->
->   0000000000000000 <.text>:
->      0:   07 01 00 00 ef be ad de         r1 += 0xdeadbeef
->
-> Stored big-endian BPF instructions:
->
->   code dst_reg src_reg off imm
->
->   foo-be.o:     file format elf64-bpfbe
->
->   0000000000000000 <.text>:
->      0:   07 10 00 00 de ad be ef         r1 += 0xdeadbeef
->
-> i.e. in the stored bytes the code always comes first, then the
-> registers, then the offset, then the immediate, regardless of
-> endianness.
->
-> This may be easier to understand by implementors looking to generate
-> and/or consume bytes conforming BPF instructions.
+On 2/23/23 01:55, Ross Zwisler wrote:
+>> Ross, do you want to give a Reviewed-by or Acked-by?
+> 
+> Sure, thanks for the fix:
+> Acked-by: Ross Zwisler <zwisler@google.com>
 
-+1
-I like this format more as well.
-Maybe we can drop the table and use a diagram of a kind ?
+OK, thanks!
 
-opcode src dst offset imm          assembly
-07     0   1   00 00  ef be ad de  r1 += 0xdeadbeef // little
-07     1   0   00 00  de ad be ef  r1 += 0xdeadbeef // big
+-- 
+An old man doll... just what I always wanted! - Clara
+
