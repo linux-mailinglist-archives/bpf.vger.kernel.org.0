@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B72BD6A007A
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 02:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BAA6A0076
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 02:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbjBWBNC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Feb 2023 20:13:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
+        id S231820AbjBWBMx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Feb 2023 20:12:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232645AbjBWBNB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Feb 2023 20:13:01 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76199DB
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 17:13:00 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31MNCTXF005575
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 17:12:59 -0800
+        with ESMTP id S232785AbjBWBMw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Feb 2023 20:12:52 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20902D59
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 17:12:49 -0800 (PST)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 31MNBsPi019909
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 17:12:49 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=yrIycV+V2vWw4n9Nr+I18UnBoEkn0Vy76vFaqSEY3ck=;
- b=dmAmD8xWYo3nRZYCXqT1a9hdUla7FyDO/o0/vwe4afrQdrfL4ebRKN6b6f7sWZ5gJWX0
- kNtvjunve0tmtFt+MkQEYsbpvfqmgw3Bi+lCvHx+pHwdpjoEpuuJ0TRUki7SB1D2eGw+
- ORrAVPHRlapy/7GhJJfYqI7Ok+KEOa1RJoS2SE5iVlWgSAoHt4Nkdy15P497cTs2De0Y
- jOW4qE1sCFGCZxZF3x5AhSMsqXQijMMC+jb4iiMdHyCuS1F0RRxl2Vyzx6WHEGVOqLcU
- jg9ZrjZAdWdeYX/8EvR+DqfFu9s0yDb4RnnzFYYJhiqQwe2qYA8eKzi6Jne9XWmpdfIh nw== 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nw7um0h10-1
+ bh=voRTy+0tce4KtlN7cCQNP3rHX9Y4fzbG9XrBeQXs0ek=;
+ b=QwmNdkbtvY/DJV+e18eeJFaMp9Nc3KfM7Qh8uzKocAxPCmD0Ha/j+suxqa7tLJmIHuuv
+ RKkrcL7MA6Elt754ldN1zLBcVuW3QFonwzOHaQEKMuGdWkKyvBc9P+oLmQ51/1rA1e7s
+ Wte3yrzzaTz5EydpF5rPCpq5btHVeDBYACk/np2XApmAB3DgQmoIiUAMDOxt3bphZlAM
+ +0JqK8djOqg7vLIlr7Nlu+doKXOCqzDh5+xYq9L+N4i9d1Nc3yyLEw915Biac6Jadf5r
+ RHpT+55MMIlMoX7xyroaUbjRCpzjvD51W9hHIWJmo/1tj6bLMAnC2leb4Kiz771I7TkL 3A== 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3nw5n4sd5n-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 17:12:59 -0800
-Received: from twshared1992.22.frc3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 22 Feb 2023 17:12:48 -0800
+Received: from twshared52565.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 22 Feb 2023 17:12:58 -0800
+ 15.1.2507.17; Wed, 22 Feb 2023 17:12:48 -0800
 Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id A90995BD8CC0; Wed, 22 Feb 2023 17:12:40 -0800 (PST)
+        id 6A0275BD8CFA; Wed, 22 Feb 2023 17:12:41 -0800 (PST)
 From:   Kui-Feng Lee <kuifeng@meta.com>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <martin.lau@linux.dev>,
         <song@kernel.org>, <kernel-team@meta.com>, <andrii@kernel.org>,
         <sdf@google.com>
 CC:     Kui-Feng Lee <kuifeng@meta.com>
-Subject: [PATCH bpf-next v2 2/6] net: Update an existing TCP congestion control algorithm.
-Date:   Wed, 22 Feb 2023 17:12:34 -0800
-Message-ID: <20230223011238.12313-3-kuifeng@meta.com>
+Subject: [PATCH bpf-next v2 3/6] libbpf: Create a bpf_link in bpf_map__attach_struct_ops().
+Date:   Wed, 22 Feb 2023 17:12:35 -0800
+Message-ID: <20230223011238.12313-4-kuifeng@meta.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230223011238.12313-1-kuifeng@meta.com>
 References: <20230223011238.12313-1-kuifeng@meta.com>
@@ -51,8 +51,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: lOA6qxppvvVafnABPPMoh_2TDD4ItwrK
-X-Proofpoint-ORIG-GUID: lOA6qxppvvVafnABPPMoh_2TDD4ItwrK
+X-Proofpoint-ORIG-GUID: iaCQdnCJVSQMA4g37SCEh5b9h1nGM7XX
+X-Proofpoint-GUID: iaCQdnCJVSQMA4g37SCEh5b9h1nGM7XX
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
  definitions=2023-02-22_12,2023-02-22_02,2023-02-09_01
@@ -66,188 +66,185 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This feature lets you immediately transition to another congestion
-control algorithm or implementation with the same name.  Once a name
-is updated, new connections will apply this new algorithm.
+bpf_map__attach_struct_ops() was creating a dummy bpf_link as a
+placeholder, but now it is constructing an authentic one by calling
+bpf_link_create() if the map has the BPF_F_LINK flag.
+
+You can flag a struct_ops map with BPF_F_LINK by calling
+bpf_map__set_map_flags().
 
 Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
 ---
- include/linux/bpf.h            |  1 +
- include/net/tcp.h              |  2 ++
- net/bpf/bpf_dummy_struct_ops.c |  6 ++++
- net/ipv4/bpf_tcp_ca.c          |  8 +++--
- net/ipv4/tcp_cong.c            | 58 ++++++++++++++++++++++++++++++----
- 5 files changed, 66 insertions(+), 9 deletions(-)
+ tools/lib/bpf/bpf.c    |  2 +
+ tools/lib/bpf/libbpf.c | 84 ++++++++++++++++++++++++++++++++----------
+ 2 files changed, 66 insertions(+), 20 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 9d6fd874e5ee..7508ca89e814 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1451,6 +1451,7 @@ struct bpf_struct_ops {
- 			   void *kdata, const void *udata);
- 	int (*reg)(void *kdata);
- 	void (*unreg)(void *kdata);
-+	int (*update)(void *kdata, void *old_kdata);
- 	const struct btf_type *type;
- 	const struct btf_type *value_type;
- 	const char *name;
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index db9f828e9d1e..239cc0e2639c 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -1117,6 +1117,8 @@ struct tcp_congestion_ops {
-=20
- int tcp_register_congestion_control(struct tcp_congestion_ops *type);
- void tcp_unregister_congestion_control(struct tcp_congestion_ops *type);
-+int tcp_update_congestion_control(struct tcp_congestion_ops *type,
-+				  struct tcp_congestion_ops *old_type);
-=20
- void tcp_assign_congestion_control(struct sock *sk);
- void tcp_init_congestion_control(struct sock *sk);
-diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_op=
-s.c
-index ff4f89a2b02a..158f14e240d0 100644
---- a/net/bpf/bpf_dummy_struct_ops.c
-+++ b/net/bpf/bpf_dummy_struct_ops.c
-@@ -222,12 +222,18 @@ static void bpf_dummy_unreg(void *kdata)
- {
- }
-=20
-+static int bpf_dummy_update(void *kdata, void *old_kdata)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- struct bpf_struct_ops bpf_bpf_dummy_ops =3D {
- 	.verifier_ops =3D &bpf_dummy_verifier_ops,
- 	.init =3D bpf_dummy_init,
- 	.check_member =3D bpf_dummy_ops_check_member,
- 	.init_member =3D bpf_dummy_init_member,
- 	.reg =3D bpf_dummy_reg,
-+	.update =3D bpf_dummy_update,
- 	.unreg =3D bpf_dummy_unreg,
- 	.name =3D "bpf_dummy_ops",
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 9aff98f42a3d..6e270bb95ab7 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -731,6 +731,8 @@ int bpf_link_create(int prog_fd, int target_fd,
+ 		if (!OPTS_ZEROED(opts, tracing))
+ 			return libbpf_err(-EINVAL);
+ 		break;
++	case BPF_STRUCT_OPS:
++		break;
+ 	default:
+ 		if (!OPTS_ZEROED(opts, flags))
+ 			return libbpf_err(-EINVAL);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 35a698eb825d..40f239cd1150 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -115,6 +115,7 @@ static const char * const attach_type_name[] =3D {
+ 	[BPF_SK_REUSEPORT_SELECT_OR_MIGRATE]	=3D "sk_reuseport_select_or_migrat=
+e",
+ 	[BPF_PERF_EVENT]		=3D "perf_event",
+ 	[BPF_TRACE_KPROBE_MULTI]	=3D "trace_kprobe_multi",
++	[BPF_STRUCT_OPS]		=3D "struct_ops",
  };
-diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
-index 13fc0c185cd9..558b01d5250f 100644
---- a/net/ipv4/bpf_tcp_ca.c
-+++ b/net/ipv4/bpf_tcp_ca.c
-@@ -239,8 +239,6 @@ static int bpf_tcp_ca_init_member(const struct btf_ty=
-pe *t,
- 		if (bpf_obj_name_cpy(tcp_ca->name, utcp_ca->name,
- 				     sizeof(tcp_ca->name)) <=3D 0)
- 			return -EINVAL;
--		if (tcp_ca_find(utcp_ca->name))
--			return -EEXIST;
- 		return 1;
- 	}
 =20
-@@ -266,10 +264,16 @@ static void bpf_tcp_ca_unreg(void *kdata)
- 	tcp_unregister_congestion_control(kdata);
+ static const char * const link_type_name[] =3D {
+@@ -7677,6 +7678,26 @@ static int bpf_object__resolve_externs(struct bpf_=
+object *obj,
+ 	return 0;
  }
 =20
-+static int bpf_tcp_ca_update(void *kdata, void *old_kdata)
++static void bpf_map_prepare_vdata(const struct bpf_map *map)
 +{
-+	return tcp_update_congestion_control(kdata, old_kdata);
-+}
++	struct bpf_struct_ops *st_ops;
++	__u32 i;
 +
- struct bpf_struct_ops bpf_tcp_congestion_ops =3D {
- 	.verifier_ops =3D &bpf_tcp_ca_verifier_ops,
- 	.reg =3D bpf_tcp_ca_reg,
- 	.unreg =3D bpf_tcp_ca_unreg,
-+	.update =3D bpf_tcp_ca_update,
- 	.check_member =3D bpf_tcp_ca_check_member,
- 	.init_member =3D bpf_tcp_ca_init_member,
- 	.init =3D bpf_tcp_ca_init,
-diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
-index db8b4b488c31..98d33dad9062 100644
---- a/net/ipv4/tcp_cong.c
-+++ b/net/ipv4/tcp_cong.c
-@@ -75,14 +75,8 @@ struct tcp_congestion_ops *tcp_ca_find_key(u32 key)
- 	return NULL;
- }
-=20
--/*
-- * Attach new congestion control algorithm to the list
-- * of available options.
-- */
--int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
-+int tcp_ca_validate(struct tcp_congestion_ops *ca)
- {
--	int ret =3D 0;
--
- 	/* all algorithms must implement these */
- 	if (!ca->ssthresh || !ca->undo_cwnd ||
- 	    !(ca->cong_avoid || ca->cong_control)) {
-@@ -90,6 +84,20 @@ int tcp_register_congestion_control(struct tcp_congest=
-ion_ops *ca)
- 		return -EINVAL;
- 	}
-=20
-+	return 0;
-+}
++	st_ops =3D map->st_ops;
++	for (i =3D 0; i < btf_vlen(st_ops->type); i++) {
++		struct bpf_program *prog =3D st_ops->progs[i];
++		void *kern_data;
++		int prog_fd;
 +
-+/* Attach new congestion control algorithm to the list
-+ * of available options.
-+ */
-+int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
-+{
-+	int ret;
++		if (!prog)
++			continue;
 +
-+	ret =3D tcp_ca_validate(ca);
-+	if (ret)
-+		return ret;
-+
- 	ca->key =3D jhash(ca->name, sizeof(ca->name), strlen(ca->name));
-=20
- 	spin_lock(&tcp_cong_list_lock);
-@@ -130,6 +138,42 @@ void tcp_unregister_congestion_control(struct tcp_co=
-ngestion_ops *ca)
- }
- EXPORT_SYMBOL_GPL(tcp_unregister_congestion_control);
-=20
-+/* Replace a registered old ca with a new one.
-+ *
-+ * The new ca must have the same name as the old one, that has been
-+ * registered.
-+ */
-+int tcp_update_congestion_control(struct tcp_congestion_ops *ca, struct =
-tcp_congestion_ops *old_ca)
-+{
-+	struct tcp_congestion_ops *existing;
-+	int ret;
-+
-+	ret =3D tcp_ca_validate(ca);
-+	if (ret)
-+		return ret;
-+
-+	ca->key =3D jhash(ca->name, sizeof(ca->name), strlen(ca->name));
-+
-+	spin_lock(&tcp_cong_list_lock);
-+	existing =3D tcp_ca_find_key(ca->key);
-+	if (ca->key =3D=3D TCP_CA_UNSPEC || !existing || strcmp(existing->name,=
- ca->name)) {
-+		pr_notice("%s not registered or non-unique key\n",
-+			  ca->name);
-+		ret =3D -EINVAL;
-+	} else if (existing !=3D old_ca) {
-+		pr_notice("invalid old congestion control algorithm to replace\n");
-+		ret =3D -EINVAL;
-+	} else {
-+		list_del_rcu(&existing->list);
-+		list_add_tail_rcu(&ca->list, &tcp_cong_list);
-+		pr_debug("%s updated\n", ca->name);
++		prog_fd =3D bpf_program__fd(prog);
++		kern_data =3D st_ops->kern_vdata + st_ops->kern_func_off[i];
++		*(unsigned long *)kern_data =3D prog_fd;
 +	}
-+	spin_unlock(&tcp_cong_list_lock);
-+
-+	return ret;
 +}
-+EXPORT_SYMBOL_GPL(tcp_update_congestion_control);
 +
- u32 tcp_ca_get_key_by_name(struct net *net, const char *name, bool *ecn_=
-ca)
+ static int bpf_object_load(struct bpf_object *obj, int extra_log_level, =
+const char *target_btf_path)
  {
- 	const struct tcp_congestion_ops *ca;
+ 	int err, i;
+@@ -7728,6 +7749,10 @@ static int bpf_object_load(struct bpf_object *obj,=
+ int extra_log_level, const ch
+ 	btf__free(obj->btf_vmlinux);
+ 	obj->btf_vmlinux =3D NULL;
+=20
++	for (i =3D 0; i < obj->nr_maps; i++)
++		if (bpf_map__is_struct_ops(&obj->maps[i]))
++			bpf_map_prepare_vdata(&obj->maps[i]);
++
+ 	obj->loaded =3D true; /* doesn't matter if successfully or not */
+=20
+ 	if (err)
+@@ -11429,11 +11454,29 @@ struct bpf_link *bpf_program__attach(const stru=
+ct bpf_program *prog)
+ 	return link;
+ }
+=20
++struct bpf_link_struct_ops {
++	struct bpf_link link;
++	int map_fd;
++};
++
+ static int bpf_link__detach_struct_ops(struct bpf_link *link)
+ {
++	struct bpf_link_struct_ops *st_link;
+ 	__u32 zero =3D 0;
+=20
+-	if (bpf_map_delete_elem(link->fd, &zero))
++	st_link =3D container_of(link, struct bpf_link_struct_ops, link);
++
++	if (st_link->map_fd < 0) {
++		/* Fake bpf_link */
++		if (bpf_map_delete_elem(link->fd, &zero))
++			return -errno;
++		return 0;
++	}
++
++	if (bpf_map_delete_elem(st_link->map_fd, &zero))
++		return -errno;
++
++	if (close(link->fd))
+ 		return -errno;
+=20
+ 	return 0;
+@@ -11441,10 +11484,9 @@ static int bpf_link__detach_struct_ops(struct bp=
+f_link *link)
+=20
+ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+ {
+-	struct bpf_struct_ops *st_ops;
+-	struct bpf_link *link;
+-	__u32 i, zero =3D 0;
+-	int err;
++	struct bpf_link_struct_ops *link;
++	__u32 zero =3D 0;
++	int err, fd;
+=20
+ 	if (!bpf_map__is_struct_ops(map) || map->fd =3D=3D -1)
+ 		return libbpf_err_ptr(-EINVAL);
+@@ -11453,31 +11495,33 @@ struct bpf_link *bpf_map__attach_struct_ops(con=
+st struct bpf_map *map)
+ 	if (!link)
+ 		return libbpf_err_ptr(-EINVAL);
+=20
+-	st_ops =3D map->st_ops;
+-	for (i =3D 0; i < btf_vlen(st_ops->type); i++) {
+-		struct bpf_program *prog =3D st_ops->progs[i];
+-		void *kern_data;
+-		int prog_fd;
++	err =3D bpf_map_update_elem(map->fd, &zero, map->st_ops->kern_vdata, 0)=
+;
++	if (err) {
++		err =3D -errno;
++		free(link);
++		return libbpf_err_ptr(err);
++	}
+=20
+-		if (!prog)
+-			continue;
++	link->link.detach =3D bpf_link__detach_struct_ops;
+=20
+-		prog_fd =3D bpf_program__fd(prog);
+-		kern_data =3D st_ops->kern_vdata + st_ops->kern_func_off[i];
+-		*(unsigned long *)kern_data =3D prog_fd;
++	if (!(map->def.map_flags & BPF_F_LINK)) {
++		/* Fake bpf_link */
++		link->link.fd =3D map->fd;
++		link->map_fd =3D -1;
++		return &link->link;
+ 	}
+=20
+-	err =3D bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+-	if (err) {
++	fd =3D bpf_link_create(map->fd, -1, BPF_STRUCT_OPS, NULL);
++	if (fd < 0) {
+ 		err =3D -errno;
+ 		free(link);
+ 		return libbpf_err_ptr(err);
+ 	}
+=20
+-	link->detach =3D bpf_link__detach_struct_ops;
+-	link->fd =3D map->fd;
++	link->link.fd =3D fd;
++	link->map_fd =3D map->fd;
+=20
+-	return link;
++	return &link->link;
+ }
+=20
+ typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_ev=
+ent_header *hdr,
 --=20
 2.30.2
 
