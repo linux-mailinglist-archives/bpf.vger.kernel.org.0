@@ -2,66 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E585A6A0553
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 10:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8686A05AE
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 11:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233374AbjBWJyT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 04:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
+        id S233678AbjBWKKb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 05:10:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234223AbjBWJx6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 04:53:58 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6271515CB
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 01:53:49 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id j2so9997726wrh.9
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 01:53:49 -0800 (PST)
+        with ESMTP id S233478AbjBWKK3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 05:10:29 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D9F4ECEB
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 02:10:18 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id nw10-20020a17090b254a00b00233d7314c1cso12290841pjb.5
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 02:10:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W1jz6MKe+/waJNr4k08l2hwqjpwcrvEo/OB/jFRietg=;
-        b=P0+cTiSHKB6dP5ULbtkgaq7oTps4rtZrq5eU3zEYZpj54XeCukuFJwmu6IplHJW//A
-         OPYqvqNVj/4jxyIC7xJXV0GCaLZmHAOD5OVB9AY+diFgd2vYXo3bb304g/4UGGtPE498
-         dz2leErIGROXyK6I0mSp8YmJ1x/r8EqB4oVrgm+qm/FjwnimNJAJo0Wao2GXNGuLgcA1
-         ps/Y69agh3F4DSlnhlInYcmuZUp6GrJ4aaJYBWA1gzpKnuLINXQqvv2Kl1erhIE7wabP
-         xpb1l5nL3KXFSLPQHN6Chm3gtmQbyPZD3Eww9/IzLDok74hA3TKYopPIK8s/omEMvFWS
-         Xr5Q==
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q8pTyXMbqgjmHwENw9d+YaYdxp8SYMRKyJFLzvCwDT8=;
+        b=pr+OJuJc0aIQruCQBm/G/I0SmMi+9ve74/N02LFBP2SF9YF1UCP9B0lIgbsJQ7wdZz
+         RT9/2kaH0WUYA1nfmPjFddcx8OY7O5EndTfpmV0+lZsEVYSMrkP7VcYZtGWC8rbqSYsB
+         LhfUz5KB1QoRcvaHPPxKWlUww2/C5cj3ApuLobKu5JmhQkgoirvXRIT9MBnYSQZuJIti
+         vAmxndH/YLCvSjNSEgbodAt0gyY2dp6SYvfhmqAobI4nqmYYAOBqgvK4Hms6q/xsa7dZ
+         CSwKzq0ivytwyXfzyUhQPm8jehE/P18C+7osTa5kwBDthfy8UPebUW3q+gtExz2VVyzn
+         d2uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=W1jz6MKe+/waJNr4k08l2hwqjpwcrvEo/OB/jFRietg=;
-        b=e9Kpxy4cHnNqOwd12CdoRcWyXM0FWIhQV4Agv6Z6EGRiDIHBe5ZGQyVb+UR91mw1af
-         cQNv+47R7G3zuMmeEAQ/LYQlMS9RPG+k8Vloc/vWHjQTkI22fz2ixcigiL8NzJ5SnCPc
-         jR5xJn5HBAUL6bBB0/a73wsRgAFYh7n2p63fifdCKjCa803ke+x5SuK2sOT5xWgnoEO9
-         nV9mZp74xEWzbYVxroaO1zLPo/tufequ1ieL1Ike8BzKXo1v/946t6jaofcS1hB5PbjC
-         cJ8AR6spgdjN6E1KjlupHHv0WFJROOOx3aRzznOCmIKk3cNHhS5pIJG3d6S8LxJVSbzB
-         xzoQ==
-X-Gm-Message-State: AO0yUKXfQVefdofAhFGBc9E+QCpzlyY3s4kovlWnWslkCeD1hlJCLGBy
-        G6w4G6HRoVI0JxCbei7/D8s=
-X-Google-Smtp-Source: AK7set9DV1jyarYEmmYglWipUeL8g9TPJT+4I5pQcIIoJwTiqawn5zJna4xtirfrpttznLU8RhYX2g==
-X-Received: by 2002:a5d:6605:0:b0:2c7:156c:affd with SMTP id n5-20020a5d6605000000b002c7156caffdmr591992wru.9.1677146028140;
-        Thu, 23 Feb 2023 01:53:48 -0800 (PST)
-Received: from ip-172-31-34-25.eu-west-1.compute.internal (ec2-34-246-174-231.eu-west-1.compute.amazonaws.com. [34.246.174.231])
-        by smtp.gmail.com with ESMTPSA id c4-20020adffb04000000b002c54241b4fesm371507wrr.80.2023.02.23.01.53.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 Feb 2023 01:53:47 -0800 (PST)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     puranjaymohan@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, bpf@vger.kernel.org, iii@linux.ibm.com,
-        quentin@isovalent.com
-Cc:     Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH v2] libbpf: Fix arm syscall regs spec in bpf_tracing.h
-Date:   Thu, 23 Feb 2023 09:53:46 +0000
-Message-Id: <20230223095346.10129-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.39.1
+        bh=q8pTyXMbqgjmHwENw9d+YaYdxp8SYMRKyJFLzvCwDT8=;
+        b=pWrnBzYk6VDVQQNBmIiQilEx+twCOTtcOtOwdR0c7cdT5MxvPo8eTmt9AS6owc8X8I
+         utv7H0CFh9tfXGvO34SI4a2hAXIVgoWoT216r6Gcz0LTGIZdJNRSEv5fFnIK+o3SSqZk
+         s+BFgXeVM40kwUNbd2FoaS3ghjT34w0XAe9w6miwfv784NoIeBpqRLTC7ODjSWAWybaZ
+         RZuUiZBqv+x56dgy3ZFfmLDQ0xDIHbGjoY6p4tJKnoSLrQiGBWCkuyGgBYlaTA6tkqF+
+         IEr8ziC7Kk8OW2tXUL3WxZqi2YNKAHM6QEMTKh4E+8CQyjSyrSTYrdq6d5wbavrK+fEH
+         JnJA==
+X-Gm-Message-State: AO0yUKW72sZwk0tm9BNtrEhMilYvgE7d5IJFFTEr6dlLNOR5Xf7PwgqB
+        BNjjup3Sy/ib1ZwsZesSq2RYlLlmeW7k6m4s3xddFw==
+X-Google-Smtp-Source: AK7set/yNWJYaO4UBy+wk5SROh+wtuNxdnuOXVrvBeF3/ECsNSOG69Dgi0lLlVMfqwUfcoUOs63KHq0HprhgR9E35jc=
+X-Received: by 2002:a17:90b:384d:b0:237:50b6:983c with SMTP id
+ nl13-20020a17090b384d00b0023750b6983cmr1044697pjb.116.1677147018158; Thu, 23
+ Feb 2023 02:10:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230222161222.11879-1-jiaxun.yang@flygoat.com> <20230222161222.11879-2-jiaxun.yang@flygoat.com>
+In-Reply-To: <20230222161222.11879-2-jiaxun.yang@flygoat.com>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Thu, 23 Feb 2023 11:10:07 +0100
+Message-ID: <CAM1=_QQRmTaAnn0w6wteQ_FKgoF=vGX_okfbiUHdyUB0ZzNghQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] MIPS: ebpf jit: Implement DADDI workarounds
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tsbogend@alpha.franken.de, paulburton@kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,35 +68,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The syscall register definitions for ARM in bpf_tracing.h doesn't define
-the fifth parameter for the syscalls. Because of this some KPROBES based
-selftests fail to compile for ARM architecture.
+On Wed, Feb 22, 2023 at 5:12 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>
+> For DADDI errata we just workaround by disable immediate operation
+> for BPF_ADD / BPF_SUB to avoid generation of DADDIU.
 
-Define the fifth parameter that is passed in the R5 register (uregs[4]).
+Good, this is an elegant solution to trigger fallback to the
+register-only operation. Does the DADDI errata only affect the DADDIU,
+not DADDI?
 
-Fixes: 3a95c42d65d5 ("libbpf: Define arm syscall regs spec in bpf_tracing.h")
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
-Changes in V1[1]->V2:
-- Fix signed-off-by and send-from emails.
+>
+> All other use cases in JIT won't cause overflow thus they are all safe.
 
-[1] https://lore.kernel.org/bpf/20230223094717.9746-1-puranjay12@gmail.com/T/#u
----
- tools/lib/bpf/bpf_tracing.h | 1 +
- 1 file changed, 1 insertion(+)
+There are quite a few other places where DADDIU is emitted. How do you
+know those are safe? I am interested in your reasoning here, as I
+don't know what would be safe and not.
 
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index 6db88f41fa0d..2cd888733b1c 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -204,6 +204,7 @@ struct pt_regs___s390 {
- #define __PT_PARM2_SYSCALL_REG __PT_PARM2_REG
- #define __PT_PARM3_SYSCALL_REG __PT_PARM3_REG
- #define __PT_PARM4_SYSCALL_REG __PT_PARM4_REG
-+#define __PT_PARM5_SYSCALL_REG uregs[4]
- #define __PT_PARM6_SYSCALL_REG uregs[5]
- #define __PT_PARM7_SYSCALL_REG uregs[6]
- 
--- 
-2.39.1
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/Kconfig            | 1 -
+>  arch/mips/net/bpf_jit_comp.c | 8 ++++++++
+>  2 files changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 37072e15b263..df0910e3895c 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -64,7 +64,6 @@ config MIPS
+>         select HAVE_DMA_CONTIGUOUS
+>         select HAVE_DYNAMIC_FTRACE
+>         select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
+> -                               !CPU_DADDI_WORKAROUNDS && \
+>                                 !CPU_R4000_WORKAROUNDS && \
+>                                 !CPU_R4400_WORKAROUNDS
+>         select HAVE_EXIT_THREAD
+> diff --git a/arch/mips/net/bpf_jit_comp.c b/arch/mips/net/bpf_jit_comp.c
+> index b17130d510d4..7110a6687f7a 100644
+> --- a/arch/mips/net/bpf_jit_comp.c
+> +++ b/arch/mips/net/bpf_jit_comp.c
+> @@ -218,9 +218,17 @@ bool valid_alu_i(u8 op, s32 imm)
+>                 /* All legal eBPF values are valid */
+>                 return true;
+>         case BPF_ADD:
+> +#ifdef CONFIG_64BIT
 
+DADDI/DADDIU are only available on 64-bit CPUs, so the errata would
+only be applicable to that. No need for the CONFIG_64BIT conditional.
+
+> +               if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
+> +                       return false;
+> +#endif
+>                 /* imm must be 16 bits */
+>                 return imm >= -0x8000 && imm <= 0x7fff;
+>         case BPF_SUB:
+> +#ifdef CONFIG_64BIT
+> +               if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
+> +                       return false;
+> +#endif
+>                 /* -imm must be 16 bits */
+>                 return imm >= -0x7fff && imm <= 0x8000;
+>         case BPF_AND:
+> --
+> 2.37.1 (Apple Git-137.1)
+>
