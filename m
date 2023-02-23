@@ -2,67 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE0B6A0477
-	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 10:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B4F6A04CE
+	for <lists+bpf@lfdr.de>; Thu, 23 Feb 2023 10:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbjBWJHr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 04:07:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
+        id S233471AbjBWJbg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Feb 2023 04:31:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbjBWJHq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 04:07:46 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437FB4BE94;
-        Thu, 23 Feb 2023 01:07:45 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id l7-20020a05600c4f0700b003e79fa98ce1so5620000wmq.2;
-        Thu, 23 Feb 2023 01:07:45 -0800 (PST)
+        with ESMTP id S233446AbjBWJbf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Feb 2023 04:31:35 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96BA17159
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 01:31:33 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id j2so9936814wrh.9
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 01:31:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HnQXK2gjczB2ZF+Tg148J7R6douhmpCC9lTEcuUAcS8=;
-        b=MnFd0ndH9sx0lsllqrqddOkUXNXh6hC1qZtoQQVW/BCTJYvcvJybvmNQTWXoacZzW/
-         Eel0CMWNmX6hNJCqTjxvbK8Wuidm1GRpu2iKurAi49jvb4yfv8D4L1tUNclZDy9YJvZ7
-         rDuhsEXS9UFbB2IFX9JepEpC202Xa2P9AF9DHZpTIguttBce8Y6lp157jeq0nj78y3Gy
-         L8m25a2eFKK2mZEb5dpoxA5Su+ebYrt5CYnKJdy6hz99AXlKCQHqbpeGBsC7B4B7Y9gM
-         CX/WdYubw2pq+yebT9fXyhGqrwcfT3LM3RwWQ/NKZYPIFyRM+Nl4THY1KIp8vbae8lZs
-         bfSw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JPO/JMXazXQ8Kyo/A/3o1pvRNp7LsXYtBLZ94I6IFD8=;
+        b=B6Px3m43o3CGzzrvmZOxz9aw8Usyg6hYdVtnNpXMHl8YNNYZI6YWmDknfEOe3zZozc
+         +TabUYYYhnm4bdjVUfuQnIrn/oDwuPSlzqkyYD7kjXQpSipNpIt/qKOYckCXQUIz3vnt
+         vFmASVz7el7Ifq+ykYwJIsXXPBoWyp9oznmJCU/ZJlCYDJYXL8E/3mzGWw6jWbGLucI3
+         C572tDcRrnxtDOud73vPA2uoZ2kWXpryZY4DnRD4MIrdVxZ+p0foaL3Bs2hBNfXapIsl
+         Cv5WnMFK/2kQz7TKGZrkAbfsHpJKk0Oc5ErXuRFW3gAIELLTbSy7/YMYsx77D2PDiz15
+         Ff8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HnQXK2gjczB2ZF+Tg148J7R6douhmpCC9lTEcuUAcS8=;
-        b=EMODG43ZWdw52Z0VRzTij6uE7wEmLEiAD41LCC070waoAmkw4KeWK5UejzwkuAlMhB
-         furkW/VVdg0U6HybEpNjJ6G/t8vQ+FuEt6yWmSHDmOm2G6qM22C7DmX5ygUy+FWfb07A
-         kkq7UFOSr+BJ7FrdWvYsMFcPT9EjpBd39Jfv3L0ZGohGWghmtypx4ix9ykZ5AotFZCNW
-         25QOJVNlPRd4HxoIcBhOe5GVGMyj7ADYWlZ0iaxav6M9ZedMUFjoELOIZ/aYJ53pNQqB
-         Vd06k3VpNoCvJyAYq6tNgtvCMYqp3aND5v4yKgVugNLFfSw1cmHl4FYwPj7+83sQn8/7
-         /7fQ==
-X-Gm-Message-State: AO0yUKUAfALsVEnK7Y1P00mWj1rr1apN8/qJJU4o4te7epj1A0jCB/IF
-        kqUcmBQBL2T9J1ikoUOqFB3hfzKRI1RWOlpisr4=
-X-Google-Smtp-Source: AK7set8zo0tWDkLqcDs6tf/q37PjH+sBC1k9Rw51OnZNwCBWtuzaX2gfp5tygs/qSzmxRr0tjp5TT/ZxLDl3Ie65naM=
-X-Received: by 2002:a05:600c:19c6:b0:3de:e8c5:d827 with SMTP id
- u6-20020a05600c19c600b003dee8c5d827mr628705wmq.118.1677143263536; Thu, 23 Feb
- 2023 01:07:43 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JPO/JMXazXQ8Kyo/A/3o1pvRNp7LsXYtBLZ94I6IFD8=;
+        b=EbM9HUWs64Say04dtZnz8EL2ZyaJiMYfOPEqT9KccSsl7QXB6Hp8KhG2bmf73/Z34Z
+         RWhPnZoyyc+N5kw8yBRQvtvkNzAaJqGy5WXMrzoYXdj2A8ExdE9ZpU2jgK5a+Cni3kA7
+         1486SOLTiBmlegspa6hwxz/9YZ4eJ455k9G4n+AUgm+kpOeCdQyFrbwHhlTz80kZDq/N
+         5N+iMpLXjMqXYhJOCsNglaDe0z5vWk93X5ILgZvIidkwQnHiJSSnlyf2TBGn/bQbIn8t
+         bVa9C/KPB7uF66sgOuRv5HH21IWccSKef8O4j76z+1NUyiZVGsExkBDjZuL4wwGZO1TO
+         Qe/w==
+X-Gm-Message-State: AO0yUKUh7IL1N9mXaj61Q187p9ubybKrl8hALYMupl4c0oZ+0JqYKyBD
+        oK1ycxwOGzwODq+mMwxWb6SgsotGvA5uVA==
+X-Google-Smtp-Source: AK7set9EoUCU2u96D9k6cVjdwy+I92Dh4wFsbY8vCrKbyyw/xJlXECzFw+QD/rDyL0c92IARmHy+rA==
+X-Received: by 2002:a5d:66ce:0:b0:2c5:c71:4a84 with SMTP id k14-20020a5d66ce000000b002c50c714a84mr7973791wrw.68.1677144692200;
+        Thu, 23 Feb 2023 01:31:32 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id x13-20020a5d6b4d000000b002c6e8af1037sm12569816wrw.104.2023.02.23.01.31.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Feb 2023 01:31:31 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 23 Feb 2023 10:31:29 +0100
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH bpf-next v3 08/12] bpf: sparc64: Use
+ bpf_jit_get_func_addr()
+Message-ID: <Y/cycQibEW46BIUE@krava>
+References: <20230222223714.80671-1-iii@linux.ibm.com>
+ <20230222223714.80671-9-iii@linux.ibm.com>
 MIME-Version: 1.0
-References: <20230221110344.82818-1-kerneljasonxing@gmail.com>
- <48429c16fdaee59867df5ef487e73d4b1bf099af.camel@redhat.com>
- <CAL+tcoD8PzL4khHq44z27qSHHGkcC4YUa91E3h+ki7O0u3SshQ@mail.gmail.com>
- <aaf3d11ea5b247ab03d117dadae682fe2180d38a.camel@redhat.com>
- <CAL+tcoBZFFwOnUqzcDtSsNyfPgHENAOv0bPcvncxuMPwCn40+Q@mail.gmail.com>
- <CAL+tcoBGFkXea-GyzbO41Ve8_wUF3PT=YF43TxuzgM+adVa8gw@mail.gmail.com> <795aed3f0e433a89fb72a8af3fc736f58dea1bf1.camel@redhat.com>
-In-Reply-To: <795aed3f0e433a89fb72a8af3fc736f58dea1bf1.camel@redhat.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Thu, 23 Feb 2023 17:07:07 +0800
-Message-ID: <CAL+tcoAwFH3t=KL9cLFT5eo2eaF66hUw5rZr0+VKgrY89K-_xQ@mail.gmail.com>
-Subject: Re: [PATCH net] udp: fix memory schedule error
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     willemdebruijn.kernel@gmail.com, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230222223714.80671-9-iii@linux.ibm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,88 +79,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 23, 2023 at 4:39 PM Paolo Abeni <pabeni@redhat.com> wrote:
->
-> On Wed, 2023-02-22 at 11:47 +0800, Jason Xing wrote:
-> > On Tue, Feb 21, 2023 at 11:46 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
-> > >
-> > > On Tue, Feb 21, 2023 at 10:46 PM Paolo Abeni <pabeni@redhat.com> wrote:
-> > > >
-> > > > On Tue, 2023-02-21 at 21:39 +0800, Jason Xing wrote:
-> > > > > On Tue, Feb 21, 2023 at 8:27 PM Paolo Abeni <pabeni@redhat.com> wrote:
-> > > > > >
-> > > > > > On Tue, 2023-02-21 at 19:03 +0800, Jason Xing wrote:
-> > > > > > > From: Jason Xing <kernelxing@tencent.com>
-> > > > > > >
-> > > > > > > Quoting from the commit 7c80b038d23e ("net: fix sk_wmem_schedule()
-> > > > > > > and sk_rmem_schedule() errors"):
-> > > > > > >
-> > > > > > > "If sk->sk_forward_alloc is 150000, and we need to schedule 150001 bytes,
-> > > > > > > we want to allocate 1 byte more (rounded up to one page),
-> > > > > > > instead of 150001"
-> > > > > >
-> > > > > > I'm wondering if this would cause measurable (even small) performance
-> > > > > > regression? Specifically under high packet rate, with BH and user-space
-> > > > > > processing happening on different CPUs.
-> > > > > >
-> > > > > > Could you please provide the relevant performance figures?
-> > > > >
-> > > > > Sure, I've done some basic tests on my machine as below.
-> > > > >
-> > > > > Environment: 16 cpus, 60G memory
-> > > > > Server: run "iperf3 -s -p [port]" command and start 500 processes.
-> > > > > Client: run "iperf3 -u -c 127.0.0.1 -p [port]" command and start 500 processes.
-> > > >
-> > > > Just for the records, with the above command each process will send
-> > > > pkts at 1mbs - not very relevant performance wise.
-> > > >
-> > > > Instead you could do:
-> > > >
-> > >
-> > > > taskset 0x2 iperf -s &
-> > > > iperf -u -c 127.0.0.1 -b 0 -l 64
-> > > >
-> > >
-> > > Thanks for your guidance.
-> > >
-> > > Here're some numbers according to what you suggested, which I tested
-> > > several times.
-> > > ----------|IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s
-> > > Before: lo 411073.41 411073.41  36932.38  36932.38
-> > > After:   lo 410308.73 410308.73  36863.81  36863.81
-> > >
-> > > Above is one of many results which does not mean that the original
-> > > code absolutely outperforms.
-> > > The output is not that constant and stable, I think.
-> >
-> > Today, I ran the same test on other servers, it looks the same as
-> > above. Those results fluctuate within ~2%.
-> >
-> > Oh, one more thing I forgot to say is the output of iperf itself which
-> > doesn't show any difference.
-> > Before: Bitrate is 211 - 212 Mbits/sec
-> > After: Bitrate is 211 - 212 Mbits/sec
-> > So this result is relatively constant especially if we keep running
-> > the test over 2 minutes.
->
-> Thanks for the testing. My personal take on this one is that is more a
-> refactor than a bug fix - as the amount forward allocated memory should
-> always be negligible for UDP.
->
+On Wed, Feb 22, 2023 at 11:37:10PM +0100, Ilya Leoshkevich wrote:
+> Preparation for moving kfunc address from bpf_insn.imm.
+> 
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  arch/sparc/net/bpf_jit_comp_64.c | 20 ++++++++++++++------
+>  arch/x86/net/bpf_jit_comp32.c    |  7 +++++++
+>  2 files changed, 21 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
+> index 6c482685dc6c..b23083776718 100644
+> --- a/arch/sparc/net/bpf_jit_comp_64.c
+> +++ b/arch/sparc/net/bpf_jit_comp_64.c
+> @@ -893,7 +893,8 @@ static void emit_tail_call(struct jit_ctx *ctx)
+>  	emit_nop(ctx);
+>  }
+>  
 
-> Still it could make sense keep the accounting schema consistent across
-> different protocols. I suggest to repost for net-next, when it will re-
-> open, additionally introducing __sk_mem_schedule() usage to avoid code
-> duplication.
->
+SNIP
 
-Thanks for the review. I will replace this part with
-__sk_mem_schedule() and then repost it after Mar 6th.
+> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+> index 429a89c5468b..0abb4d6c9dec 100644
+> --- a/arch/x86/net/bpf_jit_comp32.c
+> +++ b/arch/x86/net/bpf_jit_comp32.c
+> @@ -2091,6 +2091,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>  			if (insn->src_reg == BPF_PSEUDO_CALL)
+>  				goto notyet;
+>  
+> +			err = bpf_jit_get_func_addr(bpf_prog, insn, extra_pass,
+> +						    &func_addr,
+> +						    &func_addr_fixed);
+> +			if (err)
+> +				return err;
+> +			func = (u8 *)(unsigned long)func_addr;
+> +
+>  			if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+>  				int err;
 
-Thanks,
-Jason
+looks like this hunk should be in:
+  bpf, x86_32: Use bpf_jit_get_func_addr
 
-> Thanks,
->
-> Paolo
->
+jirka
