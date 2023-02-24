@@ -2,87 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3627F6A1A34
-	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 11:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9292A6A1A68
+	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 11:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjBXK0b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Feb 2023 05:26:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
+        id S229577AbjBXKig (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Feb 2023 05:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjBXK00 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Feb 2023 05:26:26 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAC966944
-        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 02:25:47 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id c18so6437705wmr.3
-        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 02:25:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PlbsCfhS/O2ZL4AQnO4s+rOucl7r3i9JbuixkHygLoU=;
-        b=bSfis1nBFqvp+IkCMvM8TAl9YjY8cQ2xx6+rT2cBBT5ISyH6bL/zqte2s9DBpuqbAP
-         SyWtr1QTvWO7LtUUB2DaKZaIL8A8HQjUsaVVqf+pSBOkjzj4rkZSSSefspA5Bhs0H8k7
-         4CfWuXhboIp8k1seIfIkv60CNjIPDKl5YaPOnOsVlo2DyDxei0YA4DM9UoPRUMW2SiNV
-         Z7+vQwjXh3cPI0r+FJ7ie208Babita2b7w8ZjVSnXbmooA/mJh4JLZqWwv4HHmuFlsLV
-         8IGDxch4s7G4usrr7VmY+GINsBWJqrnggsozDHuNMTaGmaDWgdRuYeHI0TNr/OwtWi0+
-         hn1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PlbsCfhS/O2ZL4AQnO4s+rOucl7r3i9JbuixkHygLoU=;
-        b=vaQaj7dAN452xW0PuWn+uA3ZEissu4D04V18457tXjmN5ZLh4fL9LK/+r8YUqabVfY
-         y4Ei8i7qJePKgpAysnj0mOG+D/LrQuBvc1x1Gyu4Y5BhawVze9iaI7LTQyZwAiNp1r/D
-         1+YcL9+ubsag4W5vpwVVrgq/ze1ZHeg3hdRd/qpWVXqgtzqspRULqhRWKMIUYSr1AAk8
-         fR98jJmxoYZ6OanwSQWB0O0weM4e26z6zOViVK0cRUnH9qPmvpZzIrtAKXr83xMovW2n
-         wZVUZFP6SI9VDY00bHwZEmAcwAkeGi3liQqwKQNdI/f2E3SKJ5R7IJUB5nAMSt+jz10h
-         QN3Q==
-X-Gm-Message-State: AO0yUKU6mJsnLa/EDRGZE5lhPFGJ6C210Y3soiGr0Hb4OqyoQrQoP8eA
-        81ppt0qZObO8Re90eaOijUg=
-X-Google-Smtp-Source: AK7set9LDnJZ0zcNXwkYboEhKfnCXHKS5eMuh52EvafowtYpb5XY4dkNlTRt67Ye4HuME6k+BVDwEg==
-X-Received: by 2002:a05:600c:b85:b0:3ea:f0d6:5d37 with SMTP id fl5-20020a05600c0b8500b003eaf0d65d37mr2174822wmb.8.1677234325201;
-        Fri, 24 Feb 2023 02:25:25 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id h7-20020a5d6887000000b002c5501a5803sm10795071wru.65.2023.02.24.02.25.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Feb 2023 02:25:24 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 24 Feb 2023 11:25:17 +0100
-To:     lsf-pc@lists.linux-foundation.org
-Cc:     bpf <bpf@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        lorenz.bauer@isovalent.com, Daniel Borkmann <daniel@iogearbox.net>
-Subject: [LSF/MM/BPF TOPIC] multi uprobe link
-Message-ID: <Y/iQjSidojkAkNxj@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229637AbjBXKhz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Feb 2023 05:37:55 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A17BCA5EC;
+        Fri, 24 Feb 2023 02:36:57 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxII9Ik_hj_6YEAA--.3564S3;
+        Fri, 24 Feb 2023 18:36:56 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxQuVHk_hjToM6AA--.5828S2;
+        Fri, 24 Feb 2023 18:36:56 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/3] Fix some build errors for bpf selftest on LoongArch
+Date:   Fri, 24 Feb 2023 18:36:52 +0800
+Message-Id: <1677235015-21717-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8CxQuVHk_hjToM6AA--.5828S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
+        BjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
+        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxV
+        AFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
+        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
+        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E
+        87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
+        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
+        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
+        Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j0sjUUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We have a usecase to monitor potentially many uprobes and current way of
-attaching many uprobes through perf takes long time. It's because there's
-extra perf event install/schedule for each uprobe you want to attach.
+v2: Modify patch #3 to avoid breaking user_ringbuf test on x86
 
-It'd be great to have a another way to attach multiple uprobes probably by
-adding new uprobe_multi link, that would create system wide uprobes directly
-and attach bpf program to it.
+Tiezhu Yang (3):
+  libbpf: Use struct user_pt_regs to define __PT_REGS_CAST() for
+    LoongArch
+  selftests/bpf: Check __TARGET_ARCH_loongarch if target is bpf for
+    LoongArch
+  selftests/bpf: Use __NR_prlimit64 instead of __NR_getrlimit in
+    user_ringbuf test
 
-Although that would not solve all the performance issues with uprobes, it
-seems like a good start to solve attach/detach times.
+ tools/include/uapi/asm/bitsperlong.h                     | 2 +-
+ tools/lib/bpf/bpf_tracing.h                              | 2 ++
+ tools/testing/selftests/bpf/prog_tests/user_ringbuf.c    | 2 +-
+ tools/testing/selftests/bpf/progs/user_ringbuf_success.c | 2 +-
+ 4 files changed, 5 insertions(+), 3 deletions(-)
 
-I'd be interested in other people's experiences with uprobes and ideas on
-speeding it up. The uprobe_multi link prototype should be done by that time,
-hopefully ;-)
+-- 
+2.1.0
 
-thanks,
-jirka
