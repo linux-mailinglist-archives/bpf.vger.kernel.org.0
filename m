@@ -2,71 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3BE6A158A
-	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 04:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2BD6A1645
+	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 06:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbjBXDlU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Feb 2023 22:41:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
+        id S229550AbjBXFbn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Feb 2023 00:31:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjBXDlF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Feb 2023 22:41:05 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFEB60D60
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 19:40:48 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id m6-20020a17090a668600b002375cbab773so645507pjj.9
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 19:40:48 -0800 (PST)
+        with ESMTP id S229436AbjBXFbm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Feb 2023 00:31:42 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4B81E1C0
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 21:31:39 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id m7so16473788lfj.8
+        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 21:31:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=R3iBhiHTRJXOrBGrqzDxss6bg8LHug+SM3RBUwYxANE=;
-        b=J6+YN9IGP6MwLPZckWbo5E/Xk82MfTw13Lhg5Ll7egHVE9N1Gz17NrAEoEi5jefz8h
-         s5ZPFOX/8PJLvK8IZCoKa2hDIiAlP345R3P0/QmKYhzYHJiNlawUTL+V6gPo//gkOR/M
-         mOuBhSmC9tdwpYZQpoGvgsscg2IxTOllCkHlB3kujyatWQlAuhKf1miS4RZdd2850qO4
-         +qtC2AkdlCtVdHThYkZIvoiVdrWWzeUE+eYrgb8yTUigK6VC6a9NjY0qTRfItPHTBl0v
-         EtzRt4Z3mQqbuTjbxi5VNiZOEUoFEnKXp3uQgeDAlkBFgJmGLxIpVMkMBLKZI3M9gPxw
-         Ie5A==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lBr7scei8WMrWSmS+XDGH6gXTOmddoHl7DI082wdvHQ=;
+        b=apakqd3GKNe7gu2Cezk75l2tedLzAaeMHbYLCuXfzjzRE7UVRo5lyYKEk1jPEAbA1J
+         GNUShwIhtlmnnp71PKyjoLS3xk/3bH86oGSW9I9pEz9kl9hQfByAFu5eJEBE1wsQ4Ydf
+         b4M+sZYplMRt0zP18vShLCSNsySqS97bQySUoW1AsO65Kflbn/FHETyMw4HIaa3b+WaA
+         tF0sAwBlurEkpVj5c4FRELwzjA94ZpBLLtr/AiFxuAsLJbXqpj/3vkf/g2BlAnapsVQ4
+         aexTDpnCWQMWrIe3lUtYO+Pkng5UKvYD3F5WtShfaAaZIRRb2tvjsnsgsUfk8oBtRn+Z
+         Qf/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R3iBhiHTRJXOrBGrqzDxss6bg8LHug+SM3RBUwYxANE=;
-        b=JZ/XJVjJIDci8TETGSRBwDtGEC+78LkBbhEyb8C9/JcOu/kC6G/E4XJkzlXNzKnsgm
-         cetAUzeNX21u6I6dVf9L/n5kSuwvAb+S24Z53njgRTYqjPTW2xjDaX4ycFpI6dDp1C4F
-         /8xqKtzBGdiU97uHJBUOmzVMunEIuVt8t7yJy5rTg5+bqerwW+3or1BDFDXBcS+IJ2oy
-         /tKNX3v3eTQ0SGyAkjQ6Eauyw7hp6bJFlp2R/Gd3s7XBlbkP+U3YhV7bvjrN2Lr4KtHP
-         bAxG9gJajpv9qBabFQ51GdbRUfSnmv6fHSQdZKNEaJBm74gau35iysje3BGI4hZeP1eh
-         wp4w==
-X-Gm-Message-State: AO0yUKUpfbttiX1DoLaPBIBdkQ6aBmpnpBJXk6NEATY1fCeqWo2HX8e0
-        9OKXCav5Qpo4ExElFzo3iAYCaOtM8O4=
-X-Google-Smtp-Source: AK7set8E3MEPhXV1/45uWmz2lxMH5cm58fZ0faRvczxB9TFOAlLdrNUle4su/XjXkfOaSWJtLZDQpa/gB4k=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a17:90a:f82:b0:237:29b1:188f with SMTP id
- 2-20020a17090a0f8200b0023729b1188fmr1158374pjz.8.1677210048093; Thu, 23 Feb
- 2023 19:40:48 -0800 (PST)
-Date:   Fri, 24 Feb 2023 03:40:19 +0000
-In-Reply-To: <20230224034020.2080637-1-edliaw@google.com>
-Mime-Version: 1.0
-References: <20230224034020.2080637-1-edliaw@google.com>
-X-Mailer: git-send-email 2.39.2.637.g21b0678d19-goog
-Message-ID: <20230224034020.2080637-5-edliaw@google.com>
-Subject: [PATCH 4.14 v3 4/4] bpf: Fix truncation handling for mod32 dst reg
- wrt zero
-From:   Edward Liaw <edliaw@google.com>
-To:     stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     bpf@vger.kernel.org, kernel-team@android.com,
-        Edward Liaw <edliaw@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lBr7scei8WMrWSmS+XDGH6gXTOmddoHl7DI082wdvHQ=;
+        b=rXuCWsi2Ji1zL3mFy1wpD8EwFs2iViRRFH838Th9ccz5VoXmd6bTS5X4a5dvqxzMyx
+         zLTVdAT6IeYiGL83+taPjzMDgxtD979IDyARSQB3VcwwDZe9KfFW32jf/etmdxXoY4Q5
+         kJOqXIA+s2+8WtKSwzOBohacqO6iFZEeEBhd0Hz2F/bYZac89D9j0bBRFmSGkM5veZCu
+         hDNa5eGaOgonUAgWpgStsoK0C1zc11LPy1aVEE4gku4ecrixy3gKptku+kL3ZePzMkcl
+         yCJkyd/mPflWz3n71w7Zv2aMGSTH3ESwDoqgdUGN1by1apqiYzTeq99xSlaNX3NhDyOg
+         Be2g==
+X-Gm-Message-State: AO0yUKU99KOeZWsKylBmNTQFobpFlTVVohm32Eh8A6LiUSsuzNas0fWY
+        usJxghIJXnuDIm4I4ZdEZOprqA==
+X-Google-Smtp-Source: AK7set+p8G+KcC9dFbeAfnD5BwPy5sx85P7wywjhafarHZJBkuuCd6G1uWKEPs/IDWm6Z7NkP1E4kQ==
+X-Received: by 2002:ac2:5204:0:b0:4dd:a57e:9960 with SMTP id a4-20020ac25204000000b004dda57e9960mr1564398lfl.5.1677216697475;
+        Thu, 23 Feb 2023 21:31:37 -0800 (PST)
+Received: from google.com (38.165.88.34.bc.googleusercontent.com. [34.88.165.38])
+        by smtp.gmail.com with ESMTPSA id 12-20020ac2482c000000b004cc548b35fbsm660592lft.71.2023.02.23.21.31.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Feb 2023 21:31:36 -0800 (PST)
+Date:   Fri, 24 Feb 2023 05:31:30 +0000
+From:   Matt Bobrowski <mattbobrowski@google.com>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, acme@redhat.com
+Subject: Re: bpf: Question about odd BPF verifier behaviour
+Message-ID: <Y/hLsgSO3B+2g9iF@google.com>
+References: <Y/P1yxAuV6Wj3A0K@google.com>
+ <e9f7c86ff50b556e08362ebc0b6ce6729a2db7e7.camel@gmail.com>
+ <Y/czygarUnMnDF9m@google.com>
+ <17833347f8cec0e44d856aeafbb1bbe203526237.camel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17833347f8cec0e44d856aeafbb1bbe203526237.camel@gmail.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,130 +73,295 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+On Thu, Feb 23, 2023 at 02:42:40PM +0200, Eduard Zingerman wrote:
+> On Thu, 2023-02-23 at 09:37 +0000, Matt Bobrowski wrote:
+> [...]
+> > LMK whether you need any more information.
+> > 
+> > /M
+> 
+> Hi Matt,
+> 
+> Unfortunately I can't reproduce the issue.
+> Here are the versions of the tools/repos that I use:
+> 
+> - kernel (tried both):
+>   - https://github.com/torvalds/linux.git
+>     a5c95ca18a98 ("Merge tag 'drm-next-2023-02-23' of git://anongit.freedesktop.org/drm/drm")
+>   - https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+>     830b3c68c1fb ("Linux 6.1")
+> - config (tried both):
+>   - one obtained using your instructions
+>   - my small debug config for executing BPF tests ([1])
+> - LLVM:
+>   https://github.com/llvm/llvm-project.git
+>   bc85cf168743 ("[TextAPI] Add support for TBDv5 Files to nm & tapi-diff")
+> - pahole:
+>   git@github.com:acmel/dwarves.git
+>   ef68019 ("pahole: Update man page for options also")
+> - libbpf-bootstrap (just followed your instructions):
+>   https://github.com/libbpf/libbpf-bootstrap
+>   db4f7ad ("cmake: Fix btf header missing in legacy kernel env.")
+> - gcc (from my distro):
+>   gcc version 11.3.0 (Ubuntu 11.3.0-1ubuntu1~22.04)
+> - cat /etc/os-release 
+>   NAME="Linux Mint"
+>   VERSION="21.1 (Vera)"
+>   ID=linuxmint
+>   ID_LIKE="ubuntu debian"
+>   PRETTY_NAME="Linux Mint 21.1"
+>   VERSION_ID="21.1"
+>   VERSION_CODENAME=vera
+>   UBUNTU_CODENAME=jammy
+> 
+> Could you please copy-paste output of the `fentry` application, I'd
+> like to see the log output of the libbpf while it processes
+> relocations, e.g. here is what it prints for me:
+> 
+>     # /home/eddy/work/libbpf-bootstrap/examples/c/fentry
+>     libbpf: loading object 'fentry_bpf' from buffer
+>     libbpf: elf: section(3) lsm.s/bprm_committed_creds, size 136, link 0, flags 6, type=1
+>     libbpf: sec 'lsm.s/bprm_committed_creds': found program 'dbg' at insn offset 0 (0 bytes), code size 17 insns (136 bytes)
+>     libbpf: elf: section(4) license, size 13, link 0, flags 3, type=1
+>     libbpf: license of fentry_bpf is Dual BSD/GPL
+>     libbpf: elf: section(5) .BTF, size 5114, link 0, flags 0, type=1
+>     libbpf: elf: section(7) .BTF.ext, size 188, link 0, flags 0, type=1
+>     libbpf: elf: section(10) .symtab, size 96, link 1, flags 0, type=2
+>     libbpf: looking for externs among 4 symbols...
+>     libbpf: collected 0 externs total
+>     libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+>     libbpf: sec 'lsm.s/bprm_committed_creds': found 1 CO-RE relocations
+>     libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [7241] struct linux_binprm in [vmlinux]
+>     libbpf: prog 'dbg': relo #0: <byte_off> [6] struct linux_binprm.file (0:11 @ offset 64)
+>     libbpf: prog 'dbg': relo #0: matching candidate #0 <byte_off> [7241] struct linux_binprm.file (0:11 @ offset 64)
+>     libbpf: prog 'dbg': relo #0: patched insn #10 (LDX/ST/STX) off 64 -> 64
+>     Successfully started! Please run `sudo cat /sys/kernel/debug/tracing/trace_pipe` to see output of the BPF programs.
 
-Commit 9b00f1b78809309163dda2d044d9e94a3c0248a3 upstream.
+Sure, here it is:
 
-Recently noticed that when mod32 with a known src reg of 0 is performed,
-then the dst register is 32-bit truncated in verifier:
+# ./fentry
+libbpf: loading object 'fentry_bpf' from buffer
+libbpf: elf: section(3) lsm.s/bprm_committed_creds, size 136, link 0, flags 6, type=1
+libbpf: sec 'lsm.s/bprm_committed_creds': found program 'dbg' at insn offset 0 (0 bytes), code size 17 insns (136 bytes)
+libbpf: elf: section(4) license, size 13, link 0, flags 3, type=1
+libbpf: license of fentry_bpf is Dual BSD/GPL
+libbpf: elf: section(5) .BTF, size 5149, link 0, flags 0, type=1
+libbpf: elf: section(7) .BTF.ext, size 188, link 0, flags 0, type=1
+libbpf: elf: section(10) .symtab, size 96, link 1, flags 0, type=2
+libbpf: looking for externs among 4 symbols...
+libbpf: collected 0 externs total
+libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+libbpf: sec 'lsm.s/bprm_committed_creds': found 1 CO-RE relocations
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [3971] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [9214] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [36310] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [36973] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [122219] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [151720] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [163602] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [175117] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [176645] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [179130] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [189263] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [237046] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [240978] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [264207] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [268773] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [276058] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [295158] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [306160] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [347067] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [349932] struct linux_binprm in [vmlinux]
+libbpf: CO-RE relocating [6] struct linux_binprm: found target candidate [380629] struct linux_binprm in [vmlinux]
+libbpf: prog 'dbg': relo #0: <byte_off> [6] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #0 <byte_off> [3971] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #1 <byte_off> [9214] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #2 <byte_off> [36310] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #3 <byte_off> [36973] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #4 <byte_off> [122219] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #5 <byte_off> [151720] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #6 <byte_off> [163602] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #7 <byte_off> [175117] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #8 <byte_off> [176645] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #9 <byte_off> [179130] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #10 <byte_off> [189263] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #11 <byte_off> [237046] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #12 <byte_off> [240978] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #13 <byte_off> [264207] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #14 <byte_off> [268773] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #15 <byte_off> [276058] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #16 <byte_off> [295158] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #17 <byte_off> [306160] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #18 <byte_off> [347067] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #19 <byte_off> [349932] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: matching candidate #20 <byte_off> [380629] struct linux_binprm.file (0:11 @ offset 64)
+libbpf: prog 'dbg': relo #0: patched insn #10 (LDX/ST/STX) off 64 -> 64
+libbpf: prog 'dbg': BPF program load failed: Permission denied
+libbpf: prog 'dbg': -- BEGIN PROG LOAD LOG --
+reg type unsupported for arg#0 function dbg#5
+0: R1=ctx(off=0,imm=0) R10=fp0
+; int BPF_PROG(dbg, struct linux_binprm *bprm)
+0: (79) r1 = *(u64 *)(r1 +0)
+func 'bpf_lsm_bprm_committed_creds' arg0 has btf_id 176645 type STRUCT 'linux_binprm'
+1: R1_w=trusted_ptr_linux_binprm(off=0,imm=0)
+1: (b7) r2 = 0                        ; R2_w=0
+; char buf[64] = {0};
+2: (7b) *(u64 *)(r10 -8) = r2         ; R2_w=0 R10=fp0 fp-8_w=00000000
+3: (7b) *(u64 *)(r10 -16) = r2        ; R2_w=0 R10=fp0 fp-16_w=00000000
+4: (7b) *(u64 *)(r10 -24) = r2        ; R2_w=0 R10=fp0 fp-24_w=00000000
+5: (7b) *(u64 *)(r10 -32) = r2        ; R2_w=0 R10=fp0 fp-32_w=00000000
+6: (7b) *(u64 *)(r10 -40) = r2        ; R2_w=0 R10=fp0 fp-40_w=00000000
+7: (7b) *(u64 *)(r10 -48) = r2        ; R2_w=0 R10=fp0 fp-48_w=00000000
+8: (7b) *(u64 *)(r10 -56) = r2        ; R2_w=0 R10=fp0 fp-56_w=00000000
+9: (7b) *(u64 *)(r10 -64) = r2        ; R2_w=0 R10=fp0 fp-64_w=00000000
+; bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
+10: (79) r1 = *(u64 *)(r1 +64)        ; R1_w=ptr_file(off=0,imm=0)
+11: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+; 
+12: (07) r2 += -64                    ; R2_w=fp-64
+; bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
+13: (b7) r3 = 64                      ; R3_w=64
+14: (85) call bpf_ima_file_hash#193
+cannot access ptr member next with moff 0 in struct llist_node with off 0 size 1
+R1 is of type file but file is expected
+processed 15 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+-- END PROG LOAD LOG --
+libbpf: prog 'dbg': failed to load: -13
+libbpf: failed to load object 'fentry_bpf'
+libbpf: failed to load BPF skeleton 'fentry_bpf': -13
+Failed to open BPF skeleton
 
-  0: R1=ctx(id=0,off=0,imm=0) R10=fp0
-  0: (b7) r0 = 0
-  1: R0_w=inv0 R1=ctx(id=0,off=0,imm=0) R10=fp0
-  1: (b7) r1 = -1
-  2: R0_w=inv0 R1_w=inv-1 R10=fp0
-  2: (b4) w2 = -1
-  3: R0_w=inv0 R1_w=inv-1 R2_w=inv4294967295 R10=fp0
-  3: (9c) w1 %= w0
-  4: R0_w=inv0 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  4: (b7) r0 = 1
-  5: R0_w=inv1 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  5: (1d) if r1 == r2 goto pc+1
-   R0_w=inv1 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  6: R0_w=inv1 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  6: (b7) r0 = 2
-  7: R0_w=inv2 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  7: (95) exit
-  7: R0=inv1 R1=inv(id=0,umin_value=4294967295,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2=inv4294967295 R10=fp0
-  7: (95) exit
+It looks like there are a lot more relocations attempted by libbpf,
+but I suspect that's a result of their being multiple definitions of
+that same struct within the running kernel's BTF?
 
-However, as a runtime result, we get 2 instead of 1, meaning the dst
-register does not contain (u32)-1 in this case. The reason is fairly
-straight forward given the 0 test leaves the dst register as-is:
+> Also, could you please compile `veristat` tool as below:
+> 
+>     cd ${kernel}/tools/testing/selftests/bpf
+>     make -j16 veristat
+> 
+> And post the output of the following command (from within QEMU):
+> 
+>     ./veristat -l7 -v ${path-to-libbpf-bootstrap-within-vm}/examples/c/.output/fentry.bpf.o
+> 
+> It should produce the verification log as an output.
+> 
+> The reason I'm asking is that your verification log looks kinda strange:
+> 
+> >    ; bpf_ima_file_hash(bprm->file, buf, 64);
+> >    13: (b7) r3 = 64                      ; R3_w=64
+> >    14: (85) call bpf_ima_file_hash#193
+> >    cannot access ptr member next with moff 0 in struct llist_node with off 0 size 1
+> >    R1 is of type file but file is expected
+> >    processed 15 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+> 
+> I don't understand why it mentions `struct llist_node` here and don't
+> have such messages in my log ([2]).
 
-  # ./bpftool p d x i 23
-   0: (b7) r0 = 0
-   1: (b7) r1 = -1
-   2: (b4) w2 = -1
-   3: (16) if w0 == 0x0 goto pc+1
-   4: (9c) w1 %= w0
-   5: (b7) r0 = 1
-   6: (1d) if r1 == r2 goto pc+1
-   7: (b7) r0 = 2
-   8: (95) exit
+Yes, I also found this strange and couldn't find a valid explanation
+for it either. Looking at the BPF verifier code in the kernel, we hit
+this case when performing the struct member walk in btf_struct_walk().
 
-This was originally not an issue given the dst register was marked as
-completely unknown (aka 64 bit unknown). However, after 468f6eafa6c4
-("bpf: fix 32-bit ALU op verification") the verifier casts the register
-output to 32 bit, and hence it becomes 32 bit unknown. Note that for
-the case where the src register is unknown, the dst register is marked
-64 bit unknown. After the fix, the register is truncated by the runtime
-and the test passes:
+Here is the output from the veristat utility:
 
-  # ./bpftool p d x i 23
-   0: (b7) r0 = 0
-   1: (b7) r1 = -1
-   2: (b4) w2 = -1
-   3: (16) if w0 == 0x0 goto pc+2
-   4: (9c) w1 %= w0
-   5: (05) goto pc+1
-   6: (bc) w1 = w1
-   7: (b7) r0 = 1
-   8: (1d) if r1 == r2 goto pc+1
-   9: (b7) r0 = 2
-  10: (95) exit
+./veristat -l7 -v ./fentry.bpf.o 
+Processing 'fentry.bpf.o'...
+libbpf: prog 'dbg': BPF program load failed: Permission denied
+libbpf: prog 'dbg': failed to load: -13
+libbpf: failed to load object './fentry.bpf.o'
+PROCESSING ./fentry.bpf.o/dbg, DURATION US: 4903, VERDICT: failure, VERIFIER LOG:
+func#0 @0
+reg type unsupported for arg#0 function dbg#5
+0: R1=ctx(off=0,imm=0) R10=fp0
+; int BPF_PROG(dbg, struct linux_binprm *bprm)
+0: (79) r1 = *(u64 *)(r1 +0)
+func 'bpf_lsm_bprm_committed_creds' arg0 has btf_id 176645 type STRUCT 'linux_binprm'
+1: R1_w=trusted_ptr_linux_binprm(off=0,imm=0)
+1: (b7) r2 = 0                        ; R2_w=0
+; char buf[64] = {0};
+2: (7b) *(u64 *)(r10 -8) = r2
+last_idx 2 first_idx 0
+regs=4 stack=0 before 1: (b7) r2 = 0
+3: R2_w=0 R10=fp0 fp-8_w=00000000
+3: (7b) *(u64 *)(r10 -16) = r2
+last_idx 3 first_idx 0
+regs=4 stack=0 before 2: (7b) *(u64 *)(r10 -8) = r2
+regs=4 stack=0 before 1: (b7) r2 = 0
+4: R2_w=0 R10=fp0 fp-16_w=00000000
+4: (7b) *(u64 *)(r10 -24) = r2
+last_idx 4 first_idx 0
+regs=4 stack=0 before 3: (7b) *(u64 *)(r10 -16) = r2
+regs=4 stack=0 before 2: (7b) *(u64 *)(r10 -8) = r2
+regs=4 stack=0 before 1: (b7) r2 = 0
+5: R2_w=0 R10=fp0 fp-24_w=00000000
+5: (7b) *(u64 *)(r10 -32) = r2
+last_idx 5 first_idx 0
+regs=4 stack=0 before 4: (7b) *(u64 *)(r10 -24) = r2
+regs=4 stack=0 before 3: (7b) *(u64 *)(r10 -16) = r2
+regs=4 stack=0 before 2: (7b) *(u64 *)(r10 -8) = r2
+regs=4 stack=0 before 1: (b7) r2 = 0
+6: R2_w=0 R10=fp0 fp-32_w=00000000
+6: (7b) *(u64 *)(r10 -40) = r2
+last_idx 6 first_idx 0
+regs=4 stack=0 before 5: (7b) *(u64 *)(r10 -32) = r2
+regs=4 stack=0 before 4: (7b) *(u64 *)(r10 -24) = r2
+regs=4 stack=0 before 3: (7b) *(u64 *)(r10 -16) = r2
+regs=4 stack=0 before 2: (7b) *(u64 *)(r10 -8) = r2
+regs=4 stack=0 before 1: (b7) r2 = 0
+7: R2_w=0 R10=fp0 fp-40_w=00000000
+7: (7b) *(u64 *)(r10 -48) = r2
+last_idx 7 first_idx 0
+regs=4 stack=0 before 6: (7b) *(u64 *)(r10 -40) = r2
+regs=4 stack=0 before 5: (7b) *(u64 *)(r10 -32) = r2
+regs=4 stack=0 before 4: (7b) *(u64 *)(r10 -24) = r2
+regs=4 stack=0 before 3: (7b) *(u64 *)(r10 -16) = r2
+regs=4 stack=0 before 2: (7b) *(u64 *)(r10 -8) = r2
+regs=4 stack=0 before 1: (b7) r2 = 0
+8: R2_w=0 R10=fp0 fp-48_w=00000000
+8: (7b) *(u64 *)(r10 -56) = r2
+last_idx 8 first_idx 0
+regs=4 stack=0 before 7: (7b) *(u64 *)(r10 -48) = r2
+regs=4 stack=0 before 6: (7b) *(u64 *)(r10 -40) = r2
+regs=4 stack=0 before 5: (7b) *(u64 *)(r10 -32) = r2
+regs=4 stack=0 before 4: (7b) *(u64 *)(r10 -24) = r2
+regs=4 stack=0 before 3: (7b) *(u64 *)(r10 -16) = r2
+regs=4 stack=0 before 2: (7b) *(u64 *)(r10 -8) = r2
+regs=4 stack=0 before 1: (b7) r2 = 0
+9: R2_w=0 R10=fp0 fp-56_w=00000000
+9: (7b) *(u64 *)(r10 -64) = r2
+last_idx 9 first_idx 0
+regs=4 stack=0 before 8: (7b) *(u64 *)(r10 -56) = r2
+regs=4 stack=0 before 7: (7b) *(u64 *)(r10 -48) = r2
+regs=4 stack=0 before 6: (7b) *(u64 *)(r10 -40) = r2
+regs=4 stack=0 before 5: (7b) *(u64 *)(r10 -32) = r2
+regs=4 stack=0 before 4: (7b) *(u64 *)(r10 -24) = r2
+regs=4 stack=0 before 3: (7b) *(u64 *)(r10 -16) = r2
+regs=4 stack=0 before 2: (7b) *(u64 *)(r10 -8) = r2
+regs=4 stack=0 before 1: (b7) r2 = 0
+10: R2_w=0 R10=fp0 fp-64_w=00000000
+; bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
+10: (79) r1 = *(u64 *)(r1 +64)        ; R1_w=ptr_file(off=0,imm=0)
+11: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+; 
+12: (07) r2 += -64                    ; R2_w=fp-64
+; bpf_ima_file_hash(bprm->file, buf, sizeof(buf));
+13: (b7) r3 = 64                      ; R3_w=64
+14: (85) call bpf_ima_file_hash#193
+cannot access ptr member next with moff 0 in struct llist_node with off 0 size 1
+R1 is of type file but file is expected
+verification time 4903 usec
+stack depth 64
+processed 15 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
 
-Semantics also match with {R,W}x mod{64,32} 0 -> {R,W}x. Invalid div
-has always been {R,W}x div{64,32} 0 -> 0. Rewrites are as follows:
+File          Program  Verdict  Duration (us)  Insns  States  Peak states
+------------  -------  -------  -------------  -----  ------  -----------
+fentry.bpf.o  dbg      failure           4903     15       0            0
+------------  -------  -------  -------------  -----  ------  -----------
+Done. Processed 1 files, 0 programs. Skipped 1 files, 0 programs.
 
-  mod32:                            mod64:
+> [1] My config for BPF testing
+>     https://gist.github.com/eddyz87/aca79692d7bf57cfdd01b283b4304fd8
+> [2] Veristat verification log
+>     https://gist.github.com/eddyz87/49b211740bf99c426a37a3555b4542a3
 
-  (16) if w0 == 0x0 goto pc+2       (15) if r0 == 0x0 goto pc+1
-  (9c) w1 %= w0                     (9f) r1 %= r0
-  (05) goto pc+1
-  (bc) w1 = w1
-
-[Salvatore Bonaccorso: This is an earlier version based on work by
-Daniel and John which does not rely on availability of the BPF_JMP32
-instruction class. This means it is not even strictly a backport of the
-upstream commit mentioned but based on Daniel's and John's work to
-address the issue and was finalized by Thadeu Lima de Souza Cascardo.]
-
-Fixes: 468f6eafa6c4 ("bpf: fix 32-bit ALU op verification")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-Tested-by: Salvatore Bonaccorso <carnil@debian.org>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
- kernel/bpf/verifier.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9f04d413df92..a55e264cdb54 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4846,7 +4846,7 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
- 			bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
- 			struct bpf_insn mask_and_div[] = {
- 				BPF_MOV_REG(BPF_CLASS(insn->code), BPF_REG_AX, insn->src_reg),
--				/* Rx div 0 -> 0 */
-+				/* [R,W]x div 0 -> 0 */
- 				BPF_JMP_IMM(BPF_JEQ, BPF_REG_AX, 0, 2),
- 				BPF_RAW_REG(*insn, insn->dst_reg, BPF_REG_AX),
- 				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-@@ -4854,9 +4854,10 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
- 			};
- 			struct bpf_insn mask_and_mod[] = {
- 				BPF_MOV_REG(BPF_CLASS(insn->code), BPF_REG_AX, insn->src_reg),
--				/* Rx mod 0 -> Rx */
--				BPF_JMP_IMM(BPF_JEQ, BPF_REG_AX, 0, 1),
-+				BPF_JMP_IMM(BPF_JEQ, BPF_REG_AX, 0, 1 + (is64 ? 0 : 1)),
- 				BPF_RAW_REG(*insn, insn->dst_reg, BPF_REG_AX),
-+				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-+				BPF_MOV32_REG(insn->dst_reg, insn->dst_reg),
- 			};
- 			struct bpf_insn *patchlet;
- 
-@@ -4866,7 +4867,7 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
- 				cnt = ARRAY_SIZE(mask_and_div);
- 			} else {
- 				patchlet = mask_and_mod;
--				cnt = ARRAY_SIZE(mask_and_mod);
-+				cnt = ARRAY_SIZE(mask_and_mod) - (is64 ? 2 : 0);
- 			}
- 
- 			new_prog = bpf_patch_insn_data(env, i + delta, patchlet, cnt);
--- 
-2.39.2.637.g21b0678d19-goog
-
+/M
