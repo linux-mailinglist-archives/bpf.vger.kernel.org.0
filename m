@@ -2,117 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A936A233C
-	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 21:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EA16A2351
+	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 21:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbjBXUoP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Feb 2023 15:44:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
+        id S229653AbjBXU7r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Feb 2023 15:59:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjBXUoO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Feb 2023 15:44:14 -0500
-Received: from BN3PR00CU001-vft-obe.outbound.protection.outlook.com (mail-eastus2azon11020016.outbound.protection.outlook.com [52.101.56.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DA212F00
-        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 12:44:13 -0800 (PST)
+        with ESMTP id S229776AbjBXU7p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Feb 2023 15:59:45 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB746BF70
+        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 12:59:40 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31OHiJjX003531;
+        Fri, 24 Feb 2023 20:59:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=corp-2022-7-12;
+ bh=iZxIM/+jh+RNlnFW1em5B257ruPupUqOQ4nWWXz0dlk=;
+ b=QXhQ12Om2j9LopSytYXY7sU+vy/ZX/+NJprm2PpMLu4bajzhw//VTJtHlUX3ChBVZ54c
+ tYEht8y8Liqs0s3YMHZboy/KIkbMUUTumDL1E/Jm7+PClnR5LJ0tQM08EubniA+GKYYb
+ H4YwRtERw4DWhNMVvD0GsPzbgdaLEz3+AREP8kg+GYhn4HkB9wRPfKfuiwyNefmqTLTL
+ EQL5Naf2Gr64rXWTXukQdVlRCDpbYjMTdHxOd32PGT+ZInRnqBYP1+OUKa60cv7cCjR5
+ 6Ia2gK2gr2tySIz6pp6IgZkijd3gUGhKjIbOqPt4qYxmzRbrxY8lhjN2c9ErQlgFKhBE ng== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ntn90x4nq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Feb 2023 20:59:38 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 31OKFqke000635;
+        Fri, 24 Feb 2023 20:59:36 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2044.outbound.protection.outlook.com [104.47.74.44])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3nxsb4tqp0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Feb 2023 20:59:36 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fS6AJNHshYpKQIdh3TklQRsovF4YoieET0pszWGkYAi1uK6/+XrPIFiLNfJ+p2Z3FoWcmaYThg/OWs0UBSgV6duUuUW63NQtpLtet459xkkhz91+GKuyfX9dCfoacAGvNti17D6/S8WquRO96YA8v/Th4nseRJwUbcLEgbURFCVYugZi6IHA0uNmaund9mGjQ9fGXxgW3K+n1RKcgrvaL0bScbRIiQ206FK/vTKVY6t8bIsfiF0avkp/HWmY33u+kc4rV9zam1lMllbNmcxrD7RGe7MLao2Ust6o7PT2uDfPKTX5Q69IZ5ilWmPf9sTsWmqEiUdZQDMDAnEDVze6rA==
+ b=fm4AVadkqMjR7m4ktdkARbNV4H9/9PyJCJQbUugeKQsyHH2S3iKcDIlJy4lGBm8fhhv40k1sg38Jdv6CpZTHVm6PUCGQohcbZbHuEXK3NVeE0/qwqebWfn/oDS5pxBOu0POZ6g6w4cyUPxZWL2ERsTTmUsDkPC6k5dUoZ+P/J1uIw4MdauPt4V/lWgamLvr2lFzlYCCvURKOWp4bDAvP0oCuCtrRx+bXsCvtZr5MT7lh5ygkt8ji1ZSMZy8hlkg4cM62dZMBmkAIkVYC6b6AFbIW7bm8vhTPMuqvFeTsijaVGSog/LCoxxaA5TcroIiOMAAZycuTAy4Vu9xyMf9HXA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8xzS4C60TSrY8pleyyAuC4inHGaP3sKq9qEColN+Q3g=;
- b=OHLtx1mbCkXOjzupkGenopggibJBAYFcRbd6PKREJja76moFquQ9kyBb1zFqqEL20eHHzO66Ua3bjjNlbI+GUFdTJr87Xu7KsVcGT2a70XKF9SZpPmgDtCuRoKHieTE00M1FLVt5mcJF225aSLEHuurUr0/q6OEoZ/WoNfTlf0B+jF1TTspz6H1aoNOA5L/kQ/ddRrGhR7k9zYb9fqUbX9qrXkC+8c6FubYfLsROBZ0cDIV6cmZaUBg+Sm89GMsJZ+97rDvwzbZ0k659+y26opK7mY9xLdmRxzuGy2Kwb/UIi0vK8QkbTCY0nd6ZMB0H8vs3K1DBX3TQU09CcMm/mg==
+ bh=iZxIM/+jh+RNlnFW1em5B257ruPupUqOQ4nWWXz0dlk=;
+ b=hLPrMILPN5+WyjAGnzFoYHIts1nVZrshQgdaPbYlAmSrGgKJQVH/c3SnZJFmvZxG+rfuW4T9Jsmh7GFoqLqTRZAuDLJjCGN7Dm2/jSoZz38CoTWYcQwDOZhknoBziH1XJvywIK7tNZ7TIEy/6vG2fHO3DPfFO2L7O/HHX6a/33ycfWTZvb0kIu84F3IzIdiw3TUJNh/XQt3Z3QnOQsDpZ9bJhXpnvR9qkH9t6Z3qGywSpSiLu1Sxbrik/gyPdhVHlN1by7j3YPkq5vCoyBN0WZnjyUzbxjs4/LuaqMTORz3KXJbHoB7PeazUkCaqeEroUJKQMZlC+7lEuVfX0Quzqg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8xzS4C60TSrY8pleyyAuC4inHGaP3sKq9qEColN+Q3g=;
- b=WoQjrd9pKxeckVvHfMFSU3ZRtqoHvV+o5EPJUUy5BScPKQvGBIAz1JQ2VDgjKMhCqhMRNrKllAAcm25WC4J52UDt4e/TtCEyZ+zlItH8w8wAGVkhSniWCFjNECJG3nQOhUAyUqqZJyhfhsK38a0hOUZxIKSHzZFEmiUOLogRlNw=
-Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
- by PH0PR21MB2005.namprd21.prod.outlook.com (2603:10b6:510:48::19) with
+ bh=iZxIM/+jh+RNlnFW1em5B257ruPupUqOQ4nWWXz0dlk=;
+ b=lRcs6Y+1D2aF5s3doefkYbOMedcvmiwOYBdCl2vNzuxP7MZEUDK8dJzmgyA7qcKljHkVL0K8H5YHU72jLeP4xCW/14+GWt2YS5A8rxipXMInaTpbkI2ixOScGdNyxoBuWGgBlLI7ax75INnKyMa4AQoB9LuzCQDG3ga+XD7zoQM=
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
+ by SN4PR10MB5592.namprd10.prod.outlook.com (2603:10b6:806:207::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.5; Fri, 24 Feb
- 2023 20:44:10 +0000
-Received: from PH7PR21MB3878.namprd21.prod.outlook.com
- ([fe80::4538:223f:7805:9e75]) by PH7PR21MB3878.namprd21.prod.outlook.com
- ([fe80::4538:223f:7805:9e75%7]) with mapi id 15.20.6156.011; Fri, 24 Feb 2023
- 20:44:10 +0000
-From:   Dave Thaler <dthaler@microsoft.com>
-To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        bpf <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.17; Fri, 24 Feb
+ 2023 20:59:30 +0000
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::486a:626e:635a:3ce2]) by BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::486a:626e:635a:3ce2%3]) with mapi id 15.20.6156.010; Fri, 24 Feb 2023
+ 20:59:30 +0000
+From:   "Jose E. Marchesi" <jose.marchesi@oracle.com>
+To:     Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         "bpf@ietf.org" <bpf@ietf.org>
-Subject: RE: [Bpf] [PATCH] bpf, docs: Document BPF insn encoding in term of
+Subject: Re: [Bpf] [PATCH] bpf, docs: Document BPF insn encoding in term of
  stored bytes
-Thread-Topic: [Bpf] [PATCH] bpf, docs: Document BPF insn encoding in term of
- stored bytes
-Thread-Index: AQHZSIsyp6fOjZBYSEih3KBdHGKDtq7ejzMQ
-Date:   Fri, 24 Feb 2023 20:44:09 +0000
-Message-ID: <PH7PR21MB3878B8C1197ACE5318E332A8A3A89@PH7PR21MB3878.namprd21.prod.outlook.com>
+In-Reply-To: <PH7PR21MB3878B8C1197ACE5318E332A8A3A89@PH7PR21MB3878.namprd21.prod.outlook.com>
+        (Dave Thaler's message of "Fri, 24 Feb 2023 20:44:09 +0000")
 References: <87y1om25l4.fsf@oracle.com>
-In-Reply-To: <87y1om25l4.fsf@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=6c7bd9c9-ebe7-4ad8-9ec9-75cfe358f199;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-02-24T20:39:51Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|PH0PR21MB2005:EE_
-x-ms-office365-filtering-correlation-id: 71ea6242-52a9-4448-d4d3-08db16a7e15e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iYgsmKzs09nECMishKAl6Hoq1Fn9BJa6If5SDGQV8/ZlF2eSIHgAmkzfNA1psUvbAWwnDTu1lrnpFSmPTzmCrX7sVXDsaGLobYH6e7Fn75Sq8u8fFOHO1a8FUj+qlcgFJO4h9H8/uupN5/ZIWuhSj2vzqvT8aDYNy7E7X9POfs7R7v6Ae8noHiIw5n7A8r2bH1rduYp5bp8afclSTb+Fvmi0De+5sRHmbBCwBOhxGPCB9pyUwpQdOalhjND8ODpjGuXPT7f+R0JbQJ7uHjI1xGy7z6QtUmY8f0Zd3ztaSKAV1aDVCRsUylayryUr5YAqIIaSMDsqo2NV+k25GGNpipx5yLxUxNg6WDDScR/6ofOz5NO8EKGGnyOdTJKLX2FFvJxGtrAKIjPNyKtBFuibynZGhyEXZ0Jz9XiZFtgHtQJKH+jaCCeAxby557qn4pSMVhnSw6g5q3oTw8h4Y9dVPUcoi4nf+t0P4Q/AWsW9//N3GSckw3LXan8St8FDq3D0AkFpKDZPEz7gm+SDecHsIz70kWWAh2phUnRZkR3VghVORFf8EX6epkuu+taSmXcNf1QkqMgNRF7bl1Fem0gNu+ACo1wdBIc+B/kzSqnIIaJd3nkawzv9da4Hmctje9B64JwQcUw3ld56SwZ3vSAXo1aR1YJ/IepSndnoTsL4cTQyHVylIRyrDEyPQ/YFJuWPOc6FI/3cuJEsZ4BhpPeW4v2ZeVumGPOs+qM6uJFXtjAH3R8RYYq2xfrP/KlEju6T
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3878.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(366004)(376002)(396003)(136003)(346002)(451199018)(8676002)(8990500004)(26005)(66446008)(186003)(41300700001)(53546011)(4326008)(66476007)(54906003)(66946007)(76116006)(64756008)(10290500003)(66556008)(6506007)(9686003)(7696005)(316002)(478600001)(52536014)(5660300002)(122000001)(38100700002)(71200400001)(82960400001)(33656002)(82950400001)(110136005)(8936002)(38070700005)(2906002)(55016003)(86362001)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?LMXOyIVW/VWSrtNa6Hv9p+t958EJHFNYgPsyiKg8ezNbLCKOhVLMxHSLB6mv?=
- =?us-ascii?Q?IYojCQuKn1KCRW6n1TqTHHC2aEHi52EgHd4jROfd7jG9EtU2Nq6jKaAEL4Wx?=
- =?us-ascii?Q?1QkEKV3zKYoweX6o/BTG4lKGGifg9P6GtaeQHERF8S4SlwaHrvNzIZNGvlVR?=
- =?us-ascii?Q?A1mp1pYypk1cuL0bjBo6jsLHDGp04kWbUJpkM8SXUQuUI4LHzvilKd64axeY?=
- =?us-ascii?Q?IYwE5osNqRx93MZSZj3bHmz0qlO5rT4bKDb93HokLmSTX3IcDekKCoVadgdJ?=
- =?us-ascii?Q?JyVS8ZpVtiZAShigPbWj3CAFF/MSrDuMI5WReaZSUHhYSX2ctcTFYIYJQXpT?=
- =?us-ascii?Q?gduomnWQ7ChmQzMAdD2v7n5GEnyzKLvTM68a0fz6ZNuFb9y/VsjZ5oY9n2z9?=
- =?us-ascii?Q?vsc6MVsHDjq6xubYrgiSh1Lr9Cl9DNcS9/a050KzpPiBdR/5+CezOlcsd8JV?=
- =?us-ascii?Q?+j6vgW/8315wlvz1mCAoDYvk9xu3sIYMfbKZoqqwIiL1dmsiw82UViLgZ7V6?=
- =?us-ascii?Q?1RapQyFmNJadSG09aAyIhX0C+Od8Xq2WkjKIHLFlmugS/2zQjNLENkjy0sCg?=
- =?us-ascii?Q?i5SbhyFJpAXjBpssAreNY6aHHg8TxHFTaPXneRmPq1EGVv+z69Qv98FXX8dX?=
- =?us-ascii?Q?HA8mI/ZFOTg8kFm23LcObTL69fHQjZLRHONA3y3VUaNiCV9zB2CheWFk21QK?=
- =?us-ascii?Q?LJv0uRnVVGXivZQGKhE5dY8+Bdz8OA0iUaHY8ZbnkEjuKjqGGLrmC/poyScq?=
- =?us-ascii?Q?e85YhyyYtFS92hQYDk1LR2zW3Ejc7XXSDbihHYOeWPsCNXT/hEcx0p4mi4SX?=
- =?us-ascii?Q?N7MvDWnZViPwIthr49KszxVsP3KBPbf8DGqSp9PGAJ71UkM+ACnU8LBcRcYF?=
- =?us-ascii?Q?6qUUK/flN3/jSh/Ckg46uH2yN0KNWl+bWzVp027r6mBqyAlwkHaxI4J0i35a?=
- =?us-ascii?Q?5l3fxDgdJop0YuTw81r+wGXsCgT5jLANQQKGyOJF/+mR4kgtTp050ojmQunl?=
- =?us-ascii?Q?0AWwYhu7/19CyXLR5Dk6L+8gnZe6Gb6nnYgS80puc8FBX9tyaEPMb6E5XYih?=
- =?us-ascii?Q?6+uJtu3P+s/zcSKUljYzfDBe9xUM45Y8OjiPAFdzjV2bfCJem2OVYkKZosEi?=
- =?us-ascii?Q?m3CUAtNwJMqnU6OAvXrZA2h4hrbmwJ3Egm7/xUkxAvh6jjxBUgTu8IfsxgB3?=
- =?us-ascii?Q?GzrvkGBNKiUDoce+gRiOo56QnbcJ+uyAGxZmASyE/33Vp40qbnc3Wc+ZUBFu?=
- =?us-ascii?Q?PFKjFf+Xkyb5X3tysS5wvPfF4yKwG0ceEGuBsXSIduZRokhF+Z0NRyTE3FQ2?=
- =?us-ascii?Q?DZA3CVv7t38F5NY127jSbEZFEunl2pSjB4TLzZDLmGAnFjCnPFlBb81+zNhw?=
- =?us-ascii?Q?vklbsFOxsjN8EEvTKDSDixmCzN1hcCyaSYwjJ+ldrDRMKKzXCu+WlJB9VlO9?=
- =?us-ascii?Q?K0jzD71HnavELe1NceoAt2m17TQOm67GY9LXF2wfCXyYhNxB8hpVkAFD4a2o?=
- =?us-ascii?Q?V9GM0LGU0n2auLmTrx/TnSP3PcgKsTOtLc7Tw5NpkTMxQb4dqewt4C/J+vb9?=
- =?us-ascii?Q?/JtsLU3hSWukDfLTAMVRKn6Srxt8Q1CbCWbnHZ/FKmzDPnGQ4fdcO/Ut5d+1?=
- =?us-ascii?Q?MA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        <PH7PR21MB3878B8C1197ACE5318E332A8A3A89@PH7PR21MB3878.namprd21.prod.outlook.com>
+Date:   Fri, 24 Feb 2023 21:59:24 +0100
+Message-ID: <87h6va230z.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+Content-Type: text/plain
+X-ClientProxiedBy: LO2P265CA0299.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a5::23) To BYAPR10MB2888.namprd10.prod.outlook.com
+ (2603:10b6:a03:88::32)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2888:EE_|SN4PR10MB5592:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8dec8016-7e57-4b34-8856-08db16aa05b2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4RX7RC3zmD9NzTYFGqa7gyR4K//kqEfr0WYdeQZ4auX9zS64oTOw7JFt/DEJFMXVLhGTpuW02uXsRpwcuoJecZbqpne7p44wMUwr3fyF1XOB0Gr05kLaQ71Xx3//HW4Pi/PjsD5KcIcveuESbGJkN7jL3ne7o+iXF/cOGLT0rAzUjH49lB1xY/xZfqSe7EKgw6fFu9lhhEAnSEE7hWOLXh1TQkL/eSH6XGFmrCyXuGzIwW2ZSeMG6TjnuNKfll8+EaoT3XdNF/RSE9FiBmF5wegtC36rvIbHkUwweya17FFNAFMhPPIbT/BEZ0zLppjmZ11wjg6sAqzmbfggK3uxr8RnfeMPJCMrKFmibg9cdiuB1mK7bfJze/izdXeMV9OrYDplBBK8Ieofg6Lk0yskLxod2y8NvRbJDnoFI+CtMv5RaM0VyF8qUh2/SiydMyecNf3xJUTtIUWNFH3/GDovydP9+HkR//4vRMHc63Bev9mZK+SDAKasDsc/AOx2sgiOwT8eHyl/PPKIhxvxBtFNYTP8gZhhSSQ1qMGB1Pbzd2gp4HzHxbld0M3hmPtelA8Cj6lb9IlP3Di/UGaPwINQWOhp3iZIOBiwTsqWBRuysv6nlQacdT50z/TChM0MYFqCSobka3TIhBE45AJVUUemVw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2888.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(39860400002)(136003)(376002)(396003)(366004)(346002)(451199018)(2616005)(54906003)(86362001)(8676002)(66556008)(83380400001)(41300700001)(66476007)(38100700002)(5660300002)(66946007)(2906002)(8936002)(186003)(53546011)(478600001)(6666004)(6512007)(316002)(6486002)(4326008)(36756003)(6506007)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MbkXkPDE02LfDzx6gBJsJttU4dodBvKT/cOdEkAo9RjZTKkRFfZwYUjpQB0J?=
+ =?us-ascii?Q?rZSzZmSkqQFv/4pI3KVYX4grhCADgkc8kp1tF/988MhM2oivll3X++t9N+Rr?=
+ =?us-ascii?Q?6cmU4zevOyRcWeNznQxBULFLE1IzOmIvMYR5At1ua4IxTNUU/tFGOjznu/xW?=
+ =?us-ascii?Q?FtynD4/c79qxbITkrnq4FPGIlLwOaerJ9fAnt/M5hzoi7aVuDYLEWNNJo+D1?=
+ =?us-ascii?Q?bxQmCil7X9tUDlhC+xWZZDZwzwpNzcP8PGe7R/97FhDZ+8bldE+QHsp9SKJS?=
+ =?us-ascii?Q?q8XcMJiaqAxbB3G2/oBVr2Gg3jQwA2dXF6KLa7F6a+u1ZpPPxAMTwWhzF7WU?=
+ =?us-ascii?Q?LM/mSc+jkeTdaxzPFZmcKt3S5CLO31eE6MRB4+uuzkTvNlvituk4DSi8FkdF?=
+ =?us-ascii?Q?h34HDl9ba8oNHDTtzNwjPOCuz74ukR2Hxkr/UZsnZ5UE/dDBbRPDWUYHO1yb?=
+ =?us-ascii?Q?of/gZAQAnlMDuFLpQntAO9vKSOhFLbknlKduH+FmDYw65D+OsDlihO8ULJIn?=
+ =?us-ascii?Q?mHxyx46+kgsWaqZw6XBAq8XGX667PexC+SMJYdjPDKXnVYsZBir/8lWJPxV2?=
+ =?us-ascii?Q?mH7zAyScoltCtZfVUohhSTVGSueluGPNgYqbrUEQTEt3dt1X9g/nWK1WXWb7?=
+ =?us-ascii?Q?oiPWEChzP3BGt7maVZKlNKLF1PujIRH9DcK6iRO6ItSIp8V9aynjg7HVmXTg?=
+ =?us-ascii?Q?05q3KPkNg2IH4NNSBihvVFgHplPONgKPxPqxKkko0VOwWJlwIBGgpQzZ0twZ?=
+ =?us-ascii?Q?xBEfWMM/CaFgCSi9ZyUTP902pt+0L21RYpLhg4d4tE7NNiS55hMHHtgaynWd?=
+ =?us-ascii?Q?bu7vX6dZe/S/6756Fig8ExNesc7+LI/fvYKv/csj+lBZNlQccXzS8drw4EWr?=
+ =?us-ascii?Q?wS+wBZ9WmKruGWFYbBxZ3P9SXqjZQt6W657PcG7DhNazMKPsNG16WykTQXcd?=
+ =?us-ascii?Q?j67ZtdRzZVGcFbRGRsXsqcwjpDncJXRXfSIz0xgFnET/lnNczdVejlFRiEKs?=
+ =?us-ascii?Q?VROHJZf9gv1FgP1UYnkrWmErQ7bGq4Rno26H6pFNMG8x4Zjk0EkJRC580DwL?=
+ =?us-ascii?Q?/JdH3kmzYIhPx3bB5jr8hQmP4T54EKf21ZPlkjADhlbCiAbWrYGMNFFyQjNa?=
+ =?us-ascii?Q?CqVaZ0yiyn2ycX2Z6LHQvf82MO7pT/hgl6TWYEFT3JDvwOba5DsWrmycuHX1?=
+ =?us-ascii?Q?+m5oWCuAan83iAc0Wo/z5qaSqi/ScvZvSNIH5wsgTkpV9bm4iK2j60NC/lXr?=
+ =?us-ascii?Q?s1SQ0bhoL1gxG5iIiRyM2IqQ8VUidmhHJzqJFwBwkQiYa0X/ZmA5m4ddPcAo?=
+ =?us-ascii?Q?Pg0672SbF3MgQxTVKZF9+Y5GnIdFIxiIG9oA+C4QrVICQtwVxBQVI7TbIKKZ?=
+ =?us-ascii?Q?JGrUfZn0yQMKmTkQ1K24lWO5Ic+4ETH6JjRxD9C4py4Jm5bKjwEY0aOzTuwi?=
+ =?us-ascii?Q?dRwtlIv5beSs+B1YgQ7gnxTTatQik0A2Z6PkJbhi34GLzz03Gg+AKRnH1NGk?=
+ =?us-ascii?Q?FeVN02nLolwZQYFA4EGxYdj64czDeyb6V/0u6g5AT4PNThcmGdDzJO4DhQB8?=
+ =?us-ascii?Q?RUla1EEHajXdWwDkwqxAmxRcUNBMncqjz4b/soDoVgsfgDIltyH5ltPAlxC6?=
+ =?us-ascii?Q?fg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: vfhV0qwsnkMRyiXfvZU0wSg5BF1FzFAD3z3VKeW8yyXtwm/ucHBMj5Nlo9J8ROQnDgGaSiR4qR+4v9xiequseZCF0erpBf7wfVLXHwmPaESldhUGe9HKYKaBNDXwZr6ms+vNxcElVsaMluWSpC3AcDd/wcl8qKqtHilPyJrJZUI0w7t5g3lMJ4iq4UnQUNGoUJQTaUWR4ZA/1ypreNWIE1HR8Xx49i/6Qn1rRCY/SuFnoGVBMpunD1qKhbrDi0Ger5BwPgGWIJDh4j37urFGah12KMbf9lmA22xAKvcSvaNDH26MlFNvW5LObHX9eRfWJJzuE3t0mC0selNVseMesxKy2z2IRb1fsK/YHPcqKVx2JDdO5IwlgXW9fMFhOxNhGHVlGS7seBsfyaA8fIgUZ2/s33mMSC+LMPzeCAHCl72qmWdqZ1XthSimw0mf9nXgk2q+a+aF89il2fuLxAwNmgJziHfG5OZW4CASQtKJ51pds2SRH9fJvLj3Kzlzv0fUCqZ1tdsDD9acRH23uToNexIn9VeAG2yLRqBLpcJ3d5YdMph2J0yvRaKru7dsFI4bZPHx8z8oeRMekUJFTbK4NPKJhWrWqChUZr36WFJdwJIGoIHXPtZjscD2f1kPD1mqEBNQByTjjyPuWGDr09hfFQVHZbXJpbyeFOW445kTGgKT+3zGAaj3wlq2kfNghE4EAATEUbUxjJEX3imGjOjBJqxBm747xo7jJpX5Cl/HZ39/7vC9pBozNUT5Ekkv6VRBPa5DO5HCCHOaNKnJBk4EOp76IMZTHQSZQmGFa1fal/lm/geJqEwYXIh3hY5RQ3PuYwc1B9lMhWQ2X3obyzBDq+Q8VMIUd+xzGOD5a2jzK98=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8dec8016-7e57-4b34-8856-08db16aa05b2
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71ea6242-52a9-4448-d4d3-08db16a7e15e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2023 20:44:09.9026
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2023 20:59:30.0769
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4qfgbUUaMuHwvSwzVTkkbG/RUetYO4kMW77yNMQTahRAPzbzi4787gaDcKxqNuXn3ignPbavoL6mkljSiwKYetD3n+Nu3bXeAhtlT7eO+Wo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR21MB2005
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_NONE autolearn=no
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9xYSWjheO//WCC9Hz8oj5H6gMECCnQv8KE32F0mZ2FLE4gxOkxBYmrJYFFouABmUIHEecuswKFXlTTYf24njF4+ur+332YIdQn+byutghco=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR10MB5592
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-24_16,2023-02-24_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 adultscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2302240167
+X-Proofpoint-ORIG-GUID: CPGpZgKhihrkhn6mDnfMBevcxWbc0zwD
+X-Proofpoint-GUID: CPGpZgKhihrkhn6mDnfMBevcxWbc0zwD
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -120,103 +149,102 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> -----Original Message-----
-> From: Bpf <bpf-bounces@ietf.org> On Behalf Of Jose E. Marchesi
-> Sent: Friday, February 24, 2023 12:04 PM
-> To: bpf <bpf@vger.kernel.org>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>; bpf@ietf.org
-> Subject: [Bpf] [PATCH] bpf, docs: Document BPF insn encoding in term of
-> stored bytes
->=20
->=20
-> This patch modifies instruction-set.rst so it documents the encoding of B=
-PF
-> instructions in terms of how the bytes are stored (be it in an ELF file o=
-r as
-> bytes in a memory buffer to be loaded into the kernel or some other BPF
-> consumer) as opposed to how the instruction looks like once loaded.
->=20
-> This is hopefully easier to understand by implementors looking to generat=
-e
-> and/or consume bytes conforming BPF instructions.
->=20
-> The patch also clarifies that the unused bytes in a pseudo-instruction sh=
-all be
-> cleared with zeros.
->=20
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-> ---
->  Documentation/bpf/instruction-set.rst | 43 +++++++++++++--------------
->  1 file changed, 21 insertions(+), 22 deletions(-)
->=20
-> diff --git a/Documentation/bpf/instruction-set.rst
-> b/Documentation/bpf/instruction-set.rst
-> index 01802ed9b29b..9b28c0e15bb6 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -38,15 +38,13 @@ eBPF has two instruction encodings:
->  * the wide instruction encoding, which appends a second 64-bit immediate
-> (i.e.,
->    constant) value after the basic instruction for a total of 128 bits.
->=20
-> -The basic instruction encoding looks as follows for a little-endian proc=
-essor,
-> -where MSB and LSB mean the most significant bits and least significant b=
-its,
-> -respectively:
-> +The fields conforming an encoded basic instruction are stored in the
-> +following order:
->=20
-> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D  =3D=3D=
-=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D  =3D=3D=
-=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> -imm            offset   src_reg  dst_reg  opcode
-> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D  =3D=3D=
-=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> +  opcode:8 src:4 dst:4 offset:16 imm:32 // In little-endian BPF.
-> +  opcode:8 dst:4 src:4 offset:16 imm:32 // In big-endian BPF.
 
-Personally I find this notation harder to understand in general.
-For example, it encodes (without explanation) the C language
-assumption that "//" is a comment, ":" indicates a bit width,
-and the fields are in order from most significate byte to least
-significant byte.  The text before this change has no such
-unexplained assumptions.=20
+>> -----Original Message-----
+>> From: Bpf <bpf-bounces@ietf.org> On Behalf Of Jose E. Marchesi
+>> Sent: Friday, February 24, 2023 12:04 PM
+>> To: bpf <bpf@vger.kernel.org>
+>> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>; bpf@ietf.org
+>> Subject: [Bpf] [PATCH] bpf, docs: Document BPF insn encoding in term of
+>> stored bytes
+>> 
+>> 
+>> This patch modifies instruction-set.rst so it documents the encoding of BPF
+>> instructions in terms of how the bytes are stored (be it in an ELF file or as
+>> bytes in a memory buffer to be loaded into the kernel or some other BPF
+>> consumer) as opposed to how the instruction looks like once loaded.
+>> 
+>> This is hopefully easier to understand by implementors looking to generate
+>> and/or consume bytes conforming BPF instructions.
+>> 
+>> The patch also clarifies that the unused bytes in a pseudo-instruction shall be
+>> cleared with zeros.
+>> 
+>> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+>> ---
+>>  Documentation/bpf/instruction-set.rst | 43 +++++++++++++--------------
+>>  1 file changed, 21 insertions(+), 22 deletions(-)
+>> 
+>> diff --git a/Documentation/bpf/instruction-set.rst
+>> b/Documentation/bpf/instruction-set.rst
+>> index 01802ed9b29b..9b28c0e15bb6 100644
+>> --- a/Documentation/bpf/instruction-set.rst
+>> +++ b/Documentation/bpf/instruction-set.rst
+>> @@ -38,15 +38,13 @@ eBPF has two instruction encodings:
+>>  * the wide instruction encoding, which appends a second 64-bit immediate
+>> (i.e.,
+>>    constant) value after the basic instruction for a total of 128 bits.
+>> 
+>> -The basic instruction encoding looks as follows for a little-endian processor,
+>> -where MSB and LSB mean the most significant bits and least significant bits,
+>> -respectively:
+>> +The fields conforming an encoded basic instruction are stored in the
+>> +following order:
+>> 
+>> -=============  =======  =======  =======  ============
+>> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
+>> -=============  =======  =======  =======  ============
+>> -imm            offset   src_reg  dst_reg  opcode
+>> -=============  =======  =======  =======  ============
+>> +  opcode:8 src:4 dst:4 offset:16 imm:32 // In little-endian BPF.
+>> +  opcode:8 dst:4 src:4 offset:16 imm:32 // In big-endian BPF.
+>
+> Personally I find this notation harder to understand in general.
+> For example, it encodes (without explanation) the C language
+> assumption that "//" is a comment, ":" indicates a bit width,
+> and the fields are in order from most significate byte to least
+> significant byte.  The text before this change has no such
+> unexplained assumptions. 
 
-[...]
-> -Multi-byte fields ('imm' and 'offset') are similarly stored in -the byte=
- order of
-> the processor.
-> +  opcode         offset imm          assembly
-> +         src dst
-> +  07     0   1   00 00  44 33 22 11  r1 +=3D 0x11223344 // little
-> +         dst src
-> +  07     1   0   00 00  11 22 33 44  r1 +=3D 0x11223344 // big
+The fields are not ordered from "most significative byte" to "least
+significative byte".  The fields are ordered as they are stored.  Thats
+the whole point of the patch.
 
-Similar assumption without explanation of "//" meaning comment, and
-some implied tabular formatting without being an actual table?
+As for //, :N and | below, I think these signs are obvious enough to not
+require further explanation, but I wouldn't mind to use some other
+better notation, if you can suggest one. I am not a very graphical
+person myself.
 
-[...]
-> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> -64 bits (MSB)      64 bits (LSB)
-> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> -basic instruction  pseudo instruction
-> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +This is depicted in the following figure:
-> +
-> +  basic_instruction                 pseudo_instruction
-> +  code:8 regs:16 offset:16 imm:32 | unused:32 imm:32
+>
+> [...]
+>> -Multi-byte fields ('imm' and 'offset') are similarly stored in -the byte order of
+>> the processor.
+>> +  opcode         offset imm          assembly
+>> +         src dst
+>> +  07     0   1   00 00  44 33 22 11  r1 += 0x11223344 // little
+>> +         dst src
+>> +  07     1   0   00 00  11 22 33 44  r1 += 0x11223344 // big
+>
+> Similar assumption without explanation of "//" meaning comment, and
+> some implied tabular formatting without being an actual table?
 
-And here the use of "|" above I find confusing.
+It is intended to be a diagram, not a table.  I used indentation which
+AFAIK is the rst way to denote multi-line verbatim environments... is
+that wrong for ascii-art diagrams?
 
-What do others think?
-
-Dave
+> [...]
+>> -=================  ==================
+>> -64 bits (MSB)      64 bits (LSB)
+>> -=================  ==================
+>> -basic instruction  pseudo instruction
+>> -=================  ==================
+>> +This is depicted in the following figure:
+>> +
+>> +  basic_instruction                 pseudo_instruction
+>> +  code:8 regs:16 offset:16 imm:32 | unused:32 imm:32
+>
+> And here the use of "|" above I find confusing.
+>
+> What do others think?
+>
+> Dave
