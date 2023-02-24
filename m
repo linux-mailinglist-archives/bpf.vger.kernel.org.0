@@ -2,145 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F36966A1775
-	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 08:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32AFA6A18A5
+	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 10:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjBXHpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Feb 2023 02:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
+        id S229556AbjBXJYY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Feb 2023 04:24:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjBXHpJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Feb 2023 02:45:09 -0500
-Received: from out-16.mta0.migadu.com (out-16.mta0.migadu.com [IPv6:2001:41d0:1004:224b::10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3F717CEF
-        for <bpf@vger.kernel.org>; Thu, 23 Feb 2023 23:45:04 -0800 (PST)
-Message-ID: <4aaf2a34-b3ad-0970-614f-edfc8244e746@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1677224702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1i4WS33mquNkNcChcjoQGOfw106LH345J9OGkWHW60U=;
-        b=qtrfONqUMB5C2p1w282Z0iAG0HpqQSSCpNy64C13H1N5Q9gh/cZJQfBWitKxdVpz7MgYaW
-        IdEGSMuAh/gCxTUXbzfowDWNRf90cb1X9XnVk2xy9jCr24/WZD589JXYkyQQW8Q3S1GUsj
-        yoSzshX3WHkaDNxHHT69k2WVKJcf9Jc=
-Date:   Thu, 23 Feb 2023 23:44:55 -0800
+        with ESMTP id S229479AbjBXJYX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Feb 2023 04:24:23 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BB15DCD1
+        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 01:24:21 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id i34so27001428eda.7
+        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 01:24:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares.net; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sTweRjc8yOnKd0wjXCLkcU3l1xjeg/lfkkZ4yVcU0+I=;
+        b=lAW36uHb21iACHYo5y0767OorPNQyOVChBjbKQXEz7UbflVipMZmuNBkb5a++ifQMi
+         miKaR7O4KdoFbaBwsa0THkJIVpyxM7m9/8rzqqnqzqo2guyTh2O/MJ3pJ1jj6MhmizOQ
+         2UFVBs8BHG8p0thtikLhm1G3slZaxmq5Sw9QBbTZX+b2mELlokJyuWWH8OxwCvuvkmtb
+         UVP+u2s0B2d3z5D4IoxMWEXcnOHVDySOY1qnleR7rA4M/PdG55/bnYANIL3qpklSy3Ev
+         jinwMlrjvYXKXV+3WUADCFGBOCV3ZpbpF8RiW/pKiEEizExoTm2nfrNVQ+MvulCPaoLe
+         R/5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sTweRjc8yOnKd0wjXCLkcU3l1xjeg/lfkkZ4yVcU0+I=;
+        b=n4kbOQbwJlk89zWqAQA8Ety+5lnYUp11WBPa+ZSMai0Q2pbFMSpWjpHjN6v3hUh5Cn
+         3aWfux801ItjL+TveUZTF5YwehqUl5To7znjbI9vRqzi3H0pn1KmRT6Oo1zbTeF7rSkk
+         ANbs4N1SpZT87bcsDLjBBKlwXCE6FMhwhALCP0DJiD9TX9qsO3qHm0iGqs+aeEbuy//i
+         hDI6lyfIKTOUp92ei8ruRM8UMUjc6R25WMg3i7dstIWm7vAfRkOqgRDQRfGOEUm0bJNr
+         p7dDGYGEGwnl/bQvN3zWZ36+TzhjteZvZSI1vUjw14PeG7hqm3dEUlWq+F+TXvDS/QOj
+         VEcQ==
+X-Gm-Message-State: AO0yUKWyNqBI9r35LOA4q8C/Zx8yLp3H+aMgeORGJmAR0dflE7cISW0v
+        K+HGMRFqpLiUiOuU5KuhH8iTKw==
+X-Google-Smtp-Source: AK7set+LQUlpGYF4mH0Seww8ZBljv26E7b+3K+NxIP/8qiSepghYnSTxsefRs1ucyl9ESWWKX78+fA==
+X-Received: by 2002:a05:6402:756:b0:4af:6c25:f028 with SMTP id p22-20020a056402075600b004af6c25f028mr4629896edy.5.1677230660144;
+        Fri, 24 Feb 2023 01:24:20 -0800 (PST)
+Received: from [10.44.2.5] (84-199-106-91.ifiber.telenet-ops.be. [84.199.106.91])
+        by smtp.gmail.com with ESMTPSA id t17-20020a50d711000000b004af596a6bfcsm4003815edi.26.2023.02.24.01.24.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Feb 2023 01:24:19 -0800 (PST)
+Message-ID: <7dba2833-04ec-f59f-0b2f-64912f70bc7f@tessares.net>
+Date:   Fri, 24 Feb 2023 10:24:14 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next V3] xdp: bpf_xdp_metadata use EOPNOTSUPP for no
- driver support
-Content-Language: en-US
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, Stanislav Fomichev <sdf@google.com>
-References: <167673444093.2179692.14745621008776172374.stgit@firesoul>
- <CAKH8qBt-wgiFTjbNfuWXC+CNbnDbVPWuoJFO_H_=tc4e3BZGPA@mail.gmail.com>
- <d8c514c6-15bf-c2fd-11f9-23519cdc9177@linux.dev>
- <613bbdb0-e7b0-59df-f2ee-6c689b15fe41@redhat.com>
- <8bb53544-94f4-601b-24ad-96c6cc87cf50@linux.dev>
- <bff4d5eb-fe4d-786e-f41d-1c45f07a7282@redhat.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <bff4d5eb-fe4d-786e-f41d-1c45f07a7282@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCHv3 bpf-next 2/2] selftests/bpf: run mptcp in a dedicated
+ netns
+Content-Language: en-GB
+To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Felix Maurer <fmaurer@redhat.com>, mptcp@lists.linux.dev
+References: <20230224061343.506571-1-liuhangbin@gmail.com>
+ <20230224061343.506571-3-liuhangbin@gmail.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+In-Reply-To: <20230224061343.506571-3-liuhangbin@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/22/23 1:49 PM, Jesper Dangaard Brouer wrote:
-> 
-> On 21/02/2023 22.58, Martin KaFai Lau wrote:
->> On 2/21/23 12:39 PM, Jesper Dangaard Brouer wrote:
->>> For me this is more about the API we are giving the BPF-programmer.
->>>
->>> There can be natural cases why a driver doesn't provide any hardware
->>> info for a specific hint.  The RX-timestamp is a good practical example,
->>> as often only PTP packets will be timestamped by hardware.
->>>
->>> I can write a BPF-prog that create a stats-map for counting
->>> RX-timestamps, expecting to catch any PTP packets with timestamps.  The
->>> problem is my stats-map cannot record the difference of EOPNOTSUPP vs
->>> ENODATA.  Thus, the user of my RX-timestamps stats program can draw the
->>> wrong conclusion, that there are no packets with (PTP) timestamps, when
->>> this was actually a case of driver not implementing this.
->>>
->>> I hope this simple stats example make is clearer that the BPF-prog can
->>> make use of this info runtime.  It is simply a question of keeping these
->>> cases as separate return codes. Is that too much to ask for from an API?
->>
->> Instead of reserving an errno for this purpose, it can be decided at load time 
->> instead of keep calling a kfunc always returning the same dedicated errno. I 
->> still don't hear why xdp-features + bpf global const won't work.
->>
-> 
-> Sure, exposing this to xdp-features and combining this with a bpf global
-> const is a cool idea, slightly extensive work for the BPF-programmer,
-> but sure BPF is all about giving the BPF programmer flexibility.
-> 
-> I do feel it is orthogonal whether the API should return a consistent
-> errno when the driver doesn't implement the kfunc.
-> 
-> I'm actually hoping in the future that we can achieve dead code
-> elimination automatically without having to special case this.
-> When we do Stanislav's BPF unroll tricks we get a constant e.g.
-> EOPNOTSUPP when driver doesn't implement the kfunc.  This should allow
-> the verifier to do deadcode elimination right?
-> 
-> For my stats example, where I want to count both packets with and
-> without timestamps, but not miscount packets that actually had a
-> timestamp, but my driver just doesn't support querying this.
-> 
-> Consider program-A:
-> 
->   int err = bpf_xdp_metadata_rx_timestamp(ctx, &ts);
->   if (!err) {
->      ts_stats[HAVE_TS]++;
->   } else {
->      ts_stats[NO_TS_DATA]++;
->   }
-> 
-> Program-A clearly does the miscount issue. The const propagation and
-> deadcode code elimination would work, but is still miscounts.
-> Yes, program-A could be extended with the cool idea of xdp-feature
-> detection that updates a prog const, for solving the issue.
-> 
-> Consider program-B:
-> 
->   int err = bpf_xdp_metadata_rx_timestamp(ctx, &ts);
->   if (!err) {
->      ts_stats[HAVE_TS]++;
->   } else if (err == -ENODATA) {
->      ts_stats[NO_TS_DATA]++;
->   }
-> 
-> If I had a separate return, then I can avoid the miscount as demonstrate
-> in program-B.  In this program the const propagation and deadcode
-> elimination would *also* work and still avoid the miscounts.  It should
-> elimination any updates to ts_stats map.
-> 
-> I do get the cool idea of bpf global const, but we will hopefully get
-> this automatically when we can do BPF unroll.
+Hi Hangbin,
 
-I think the direction is to dual compile a kfunc to native code and bpf code and 
-to get away from the manual unroll or hand written bpf insn. Not sure if the 
-verifier can (and should) further check whether a compiled bpf subprog always 
-returns a const scalar to optimize this particular case.
+Thank you for this new version!
 
-I think enough words have been exchanged on this subject. A few ways (eg. at 
-load time) have been suggested to detect it without reserving an errno for an 
-empty function. Beside, it is hard to miss when the stats is all one sided if 
-the driver does not implement a xdp-hint. Quickly query the xdp-feature will 
-confirm it. I assume ethtool will be able to check that soon also. It is what 
-xdp-feature is for instead of reserving a run time value to detect if a driver 
-has implemented each individual xdp feature.
+On 24/02/2023 07:13, Hangbin Liu wrote:
+> The current mptcp test is run in init netns. If the user or default
+> system config disabled mptcp, the test will fail. Let's run the mptcp
+> test in a dedicated netns to avoid none kernel default mptcp setting.
 
-May be a tie break vote is needed.
+(...)
+
+> +	SYS_NOFAIL("ip netns del " NS_TEST " &> /dev/null");
+
+"Funny", I saw the ">&" in a previous versions and I was going to react
+before noticing this is in fact valid in Bash (and ZSH). But of course I
+should have checked with 'sh' instead...
+
+Anyway, Martin: thank you for having spotted that!
+
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
