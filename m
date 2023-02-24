@@ -2,61 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D28AA6A20F1
-	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 18:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDE16A21D9
+	for <lists+bpf@lfdr.de>; Fri, 24 Feb 2023 19:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjBXR52 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Feb 2023 12:57:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53294 "EHLO
+        id S229500AbjBXSzg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Feb 2023 13:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjBXR51 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Feb 2023 12:57:27 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A17B1ACC0
-        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 09:57:27 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id d30so539238eda.4
-        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 09:57:26 -0800 (PST)
+        with ESMTP id S229462AbjBXSzf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Feb 2023 13:55:35 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F72D6C8D7
+        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 10:55:27 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id ee7so1177691edb.2
+        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 10:55:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jpb3d5mk2MPENp6BXfHfp8dICD1UdZ4ajxkAbbiXz9Y=;
-        b=jZmKOAjvsxcCeZcRp54ZL+qN/G5yBVTptMC5N5LJ9HVbllFVOHrOMKM/tI2zOXjT53
-         ar7s+TzJ6xWmKx8UcEwKHHVO0jXXQTtQdR2Bj5DXGaun9s8ij6/tDfWgvZvQaaqGj0ql
-         2WaPGBG0GRHAEoOYVV/CAe/pMCfuep6WGGeQMkV+okQ8xIvUQrjck/cNd7HuQsUZ96eO
-         b32JU9iquHh97VJ68uf0ZsBCc7kmwDwk3k65bSu+j6IvhwuCy7gacTlm+KLYpC1dgNaM
-         WpIJzX6ZcC3mDeEYzp355IH5yXLnHKJ0Oa6US3O8rEEAte7FwVtknsv0A6SgF1M2gvAM
-         gKTQ==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3wWZOYTl/NhkiTbVX6lb4bqIBuKyGvJmEQvcp/SdXuQ=;
+        b=btQ4TomS/9Xgn97h0oNBvnq940iiXzenELq+dzZfPi158VJrFL3J8UfeKQ/gzhCVMe
+         HIhN3SvzJjJvL8SIsBJfdiJBNC3/8a8u1fopqCpmfO/tbCBWMWm8bKVhmCENvyFgmPet
+         HgBnoOl8XObMBrhevIhQkMT4J6pfdenIpyRV2A8ve9fqVTe8II2JChroC55tDIm8ICMe
+         gQ+Ep9mbaW+7bb1pgqG0nAz+Eg9XcC9ez4seLCy+UHif4XhNyj/fzIP/mJ2dyX8Uvooi
+         DzWz4asdP0FPBJFJPtba9DXuLQzerZj7UM0bys2sMvu97J6cVzswbgvOXUH/4VSA80Mo
+         4X9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jpb3d5mk2MPENp6BXfHfp8dICD1UdZ4ajxkAbbiXz9Y=;
-        b=l09KXa+IaEaJieOswkbK/BY626ngux71XV37ipScsrbcHvy06E5Wcuevu6sn4SRESp
-         +pIo/ccwgkhNP8Zc+oA00glVYiTFe/vpieqeLDUDQJ+CdCWxy+JhNh1XPJN7i0s2NUDB
-         sMCx1hRj862hb0u1U5nnwVU42mNa2ypXiHA1d9OorCOPght3ZTYykEWdJ8dNLCkAM4s4
-         bvqQAYouonB7iurEgJ9qVSBjoCfKAXzuC49STEYxD1693KHG+admBdVhxwpgtA06wmZ0
-         +2qRBYte21//J1VMWwBXzJvNW0/RxnGE75jTj2zGbWjxBup2Ta9fXPIHWJsvC2bF3Sxc
-         8cCg==
-X-Gm-Message-State: AO0yUKUcwovCUwX/Q+rJnYq0G0wfLdBi+57KOc8FvDGsWPwV8IY1jVBy
-        Bykv9/STnucnwXl6XrjVzAUAg7YWRwCTGWzaSlE=
-X-Google-Smtp-Source: AK7set/6PYbJ0GDD6L5dQh3251wGbCA8K4NwUNOe8e1RETu/n3lPv5BngVjeDgMsC8LlTAyxEZP2nTUmIdJkm8HUErI=
-X-Received: by 2002:a05:6402:2811:b0:4af:70a5:5674 with SMTP id
- h17-20020a056402281100b004af70a55674mr499518ede.0.1677261445419; Fri, 24 Feb
- 2023 09:57:25 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3wWZOYTl/NhkiTbVX6lb4bqIBuKyGvJmEQvcp/SdXuQ=;
+        b=6xBonxCYeSLOySM8420JqROp11SwrShsKsCkxvFyUWBhRaz63xleoKvf+T/CBP2sNH
+         dNsJVKmpanGgGi7vqs6iaElL16Uq5HIYqh/vl0ihE4t7sjZnupVODif6SKKX0QEihAy2
+         CR7gceYMB/T08LojFoVL8penT157n9BGPp7PFNx7FtvY7B9bjw0zTTItNoLQDFPVAvDd
+         sDetOpxG6iswAEA8J4DIWdaRkw4iYDmhnW69Ddc4KDt8lbeqjBZLbpThIS9ez50EXRms
+         Jh4hxVyD8Zlac5P8DMWmzoeYi+oQoSaYyzm+9KeZiSM08h1jrw7AamKSc/VraXtJKjjc
+         ljrQ==
+X-Gm-Message-State: AO0yUKWOiRYXTS2BKlZJI34SjfyDe+qhuaCojLEJc1nQLD6JkKsPPTyx
+        rWe+Hk8IC7UkCBRZfnkhUiRGL2FpH8V9/1tufxU=
+X-Google-Smtp-Source: AK7set+U3GsBnjSjw7CAEtnES1RLtCTu8qvp+M/u1QCp/dT9p3y25Tx1d+s2SaTLwjmBnG1xqR7fm3p/WOGV1kHgPkE=
+X-Received: by 2002:a17:907:2071:b0:8e5:411d:4d09 with SMTP id
+ qp17-20020a170907207100b008e5411d4d09mr5310425ejb.15.1677264925849; Fri, 24
+ Feb 2023 10:55:25 -0800 (PST)
 MIME-Version: 1.0
-References: <Y/iQjSidojkAkNxj@krava>
-In-Reply-To: <Y/iQjSidojkAkNxj@krava>
+References: <20230221234500.2653976-1-deso@posteo.net> <20230221234500.2653976-2-deso@posteo.net>
+In-Reply-To: <20230221234500.2653976-2-deso@posteo.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 24 Feb 2023 09:57:13 -0800
-Message-ID: <CAEf4BzZxFOkV6NEWBtQd40WjBTW0kOucea4gm-tLw7nnEX-X0g@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] multi uprobe link
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     lsf-pc@lists.linux-foundation.org, bpf <bpf@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        lorenz.bauer@isovalent.com, Daniel Borkmann <daniel@iogearbox.net>
+Date:   Fri, 24 Feb 2023 10:55:13 -0800
+Message-ID: <CAEf4BzZq3PUUaG_samYSAtFPnJKJP0QF9saUx4Wr+r84j4=O5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] libbpf: Implement basic zip archive
+ parsing support
+To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+        =?UTF-8?Q?Micha=C5=82_Gregorczyk?= <michalgr@meta.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -67,27 +70,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 24, 2023 at 2:39 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Tue, Feb 21, 2023 at 3:45 PM Daniel M=C3=BCller <deso@posteo.net> wrote:
 >
-> We have a usecase to monitor potentially many uprobes and current way of
-> attaching many uprobes through perf takes long time. It's because there's
-> extra perf event install/schedule for each uprobe you want to attach.
+> This change implements support for reading zip archives, including
+> opening an archive, finding an entry based on its path and name in it,
+> and closing it.
+> The code was copied from https://github.com/iovisor/bcc/pull/4440, which
+> implements similar functionality for bcc. The author confirmed that he
+> is fine with this usage and the corresponding relicensing. I adjusted it
+> to adhere to libbpf coding standards.
 >
-> It'd be great to have a another way to attach multiple uprobes probably by
-> adding new uprobe_multi link, that would create system wide uprobes directly
-> and attach bpf program to it.
+> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
+> Acked-by: Micha=C5=82 Gregorczyk <michalgr@meta.com>
+> ---
+>  tools/lib/bpf/Build |   2 +-
+>  tools/lib/bpf/zip.c | 326 ++++++++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/zip.h |  47 +++++++
+>  3 files changed, 374 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/lib/bpf/zip.c
+>  create mode 100644 tools/lib/bpf/zip.h
 >
-> Although that would not solve all the performance issues with uprobes, it
-> seems like a good start to solve attach/detach times.
->
-> I'd be interested in other people's experiences with uprobes and ideas on
-> speeding it up. The uprobe_multi link prototype should be done by that time,
-> hopefully ;-)
 
-Great! Looking forward to it! Certainly a very useful thing, also for
-USDTs which could be inlined in lots of places, so one USDT attachment
-is actually a multi-uprobe attachment, in general.
+[...]
 
->
-> thanks,
-> jirka
+> +
+> +static int find_cd(struct zip_archive *archive)
+> +{
+> +       __u32 offset;
+> +       int64_t limit;
+> +       int rc =3D -1;
+> +
+> +       if (archive->size <=3D sizeof(struct end_of_cd_record))
+> +               return -EINVAL;
+> +
+> +       /* Because the end of central directory ends with a variable leng=
+th array of
+> +        * up to 0xFFFF bytes we can't know exactly where it starts and n=
+eed to
+> +        * search for it at the end of the file, scanning the (limit, off=
+set] range.
+> +        */
+> +       offset =3D archive->size - sizeof(struct end_of_cd_record);
+> +       limit =3D (int64_t)offset - (1 << 16);
+> +
+> +       for (; offset >=3D 0 && offset > limit && rc =3D=3D -1; offset--)
+
+rc !=3D 0 here to handle -EINVAL? It will keep going for -ENOTSUP,
+though, which is probably not right, so maybe (rc !=3D 0 && rc !=3D
+-ENOTSUP)?
+
+but with the latter it feels better to just have explicit if with
+return inside the for loop
+
+> +               rc =3D try_parse_end_of_cd(archive, offset);
+> +
+> +       return rc;
+> +}
+> +
+
+[...]
