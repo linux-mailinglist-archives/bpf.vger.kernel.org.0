@@ -2,150 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5596A2780
-	for <lists+bpf@lfdr.de>; Sat, 25 Feb 2023 07:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4B26A28AD
+	for <lists+bpf@lfdr.de>; Sat, 25 Feb 2023 10:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbjBYGXr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Feb 2023 01:23:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
+        id S229445AbjBYJ6U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Feb 2023 04:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjBYGXp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Feb 2023 01:23:45 -0500
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D52624480
-        for <bpf@vger.kernel.org>; Fri, 24 Feb 2023 22:23:42 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PNxXj30Sbz4f3knY
-        for <bpf@vger.kernel.org>; Sat, 25 Feb 2023 14:23:33 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgBnF6thqflj1oAcEQ--.12260S2;
-        Sat, 25 Feb 2023 14:23:32 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-Subject: [LSF/MM/BPF TOPIC] Make bpf memory allocator more robust
-To:     lsf-pc@lists.linux-foundation.org
-Cc:     bpf <bpf@vger.kernel.org>, linux-mm@kvack.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        David Vernet <void@manifault.com>,
-        "houtao1@huawei.com" <houtao1@huawei.com>
-Message-ID: <2d29f66f-fcb1-ec76-c74f-d12495a9516f@huaweicloud.com>
-Date:   Sat, 25 Feb 2023 14:23:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229379AbjBYJ6T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Feb 2023 04:58:19 -0500
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E0B14234
+        for <bpf@vger.kernel.org>; Sat, 25 Feb 2023 01:58:18 -0800 (PST)
+Date:   Sat, 25 Feb 2023 09:58:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+        s=protonmail3; t=1677319096; x=1677578296;
+        bh=ZcUzfafIUD84Yt1bjjPxFmZMPZBsD1H1FkR3wRV+c7Q=;
+        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=PbwRZJ1TJ7IzTgFXJ6zj3v0u5bb2DdqeEYWuLC/XT3u2UkVHy58t+ceGUBJAR86xv
+         VSfp96gw9AnyBfkfRPaLKhVlEL50uYpetXIY4n1SpDQxb+lxU7ddAoPf5zneIXUO3j
+         j/h2kO4+3o3YNXClR+qmUh39QAuUkuyXm6SUp+kj81AcBXDB7L/ArFl1YrZ338qDmE
+         SQZr9owr+uF2KYTFT93uLEnbpLn0nNc9084aQbrJMVRC+37UxAkRwm8YJxCCrhhMFf
+         Z4a6mw3hzsEFnIhiyTFzk3aaU8vpWqcaejs/ilaqXIxIYnLYON9oeTcxEVR8f5I7SF
+         ylIst64AiCurQ==
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+From:   xxx xxx <grubeli@pm.me>
+Subject: LSM progam fails on Android - Kernel 3.15
+Message-ID: <jkYD6vHYSygb9epXKMJ27-wbgnyuMJifZh_dkRGFXbZETP71QextxA7BFkJuSFU4R8k9yRvtYWD31Bz225-QOGUFoO1HvpH4rrlFDu2FH0E=@pm.me>
+Feedback-ID: 21740350:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: gCh0CgBnF6thqflj1oAcEQ--.12260S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3GryUGw13Aryktw1xtFy7KFg_yoW7tF1UpF
-        WfK3y3Gr90qFn7C34vqw17Ga4YywsYqr15Gr1Fvw15u3y3Wry7ur4SvayYvFy5uFsrGa4U
-        trnFvF1DZ3ykXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha512; boundary="------89f594110a4a9cf0d0403b0b7dd6e4f3fe079a08627bbb6d755c147fc87e51bc"; charset=utf-8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf memory allocator was introduced in v6.1 by Alexei Starovoitov [0]. Its main
-purpose is to provide an any-context allocator for bpf program which can be
-attached to anywhere (e.g., __kmalloc()) and any context (e.g., the NMI context
-through perf_event_overflow()). Before that, only pre-allocated hash map is
-usable for these contexts but it incurs memory waste because typically hash
-table is sparse. In addition to the memory saving, it also increases the
-performance of dynamically allocated hash map significantly and makes the
-hash-map usable for sleep-able program. As more use cases of bpf memory
-allocator emerges, it seems that there are some problems that need to be
-discussed and fixed.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------89f594110a4a9cf0d0403b0b7dd6e4f3fe079a08627bbb6d755c147fc87e51bc
+Content-Type: multipart/mixed;boundary=---------------------f8ea5141bd8d3bf3dad69e15bf138ef7
 
-The first problem is the immediate reuse of elements in bpf memory allocator. 
-The reason for immediate reuse is to prevent OOM for typical usage scenario for
-bpf hash map, but it introduces use-after-free problem [1] for
-dynamically-allocated hash table although the problems existed for pre-allocated
-hash-table since it was introduced. For hash-table, the reuse problem may be
-acceptable for hash table, but the reuse makes introducing new use cases more
-difficult.
+-----------------------f8ea5141bd8d3bf3dad69e15bf138ef7
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
 
-For example, in bpf-qp-trie [2] the internal nodes of qp-trie are managed by bpf
-memory allocator, if internal node used during lookup is freed and reused, the
-lookup procedure may panic or return an incorrect result. Although I have
-already implemented a qp-trie demo in which two version numbers are added for
-each internal node to ensure its validity: one version is saved in its parent
-node and another in itself, but I am not sure about its correctness. bpf_cpumask
-was introduced recently [3] is another example, in bpf_cpumask_kptr_get() it
-checks the validity of bpf_cpumask by checking whether or not its usage is zero,
-but I don't know how does it handle the reuse of bpf_cpumask if the cpumask is
-freed and then reused by another bpf_cpumask_create() call.
+Hello all,
+I compiled an Android Kernel to enable ebpf and LSM features.
+Enabled features:
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-d CONFIG_LTO \=C2=A0 =C2=A0 =C2=A0 =C2=A0-d CO=
+NFIG_LTO_CLANG \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-d CONFIG_CFI_CLANG \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-d CFI_PERMISSIVE \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-d CFI_CLANG \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-d CONFIG_RANDOMIZE_BASE \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_FTRACE_SYSCALLS \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_DEBUG_FS \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_ROP_PROTECTION_NONE \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_DEBUG_INFO \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_DEBUG_INFO_BTF \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_BPF \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_BPF_SYSCALL \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_BPF_JIT \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_HAVE_BPF_JIT \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_HAVE_EBPF_JIT \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_BPF_EVENTS \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_IKHEADERS \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_CGROUP_BPF \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_FTRACE_SYSCALLS \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_BPF_LSM \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_TRACEPOINTS \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_HAVE_SYSCALL_TRACEPOINTS \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-d CONFIG_TRACEFS_DISABLE_AUTOMOUNT \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_DEBUG_PREEMPT \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_PREEMPTIRQ_EVENTS \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-d CONFIG_PROVE_LOCKING \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-d CONFIG_LOCKDEP \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_NET_CLS_BPF \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_NET_ACT_BPF \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_NET_SCH_SFQ \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_NET_ACT_POLICE \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_NET_ACT_GACT \
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-e CONFIG_DUMMY
+It may be more that what's necessary but I was experimenting by adding mor=
+e features I was finding on Internet about the topic.
 
-Alexei proposed using BPF_MA_REUSE_AFTER_GP [4] to solve the reuse problem. For
-bpf ma with BPF_MA_REUSE_AFTER_GP, the freed objects are reused only after one
-RCU grace period and are returned back to slab system after one-RCU-grace-period
-and one-RCU-tasks-trace grace period. So for bpf programs which care about reuse
-problem, these programs can use bpf_rcu_read_{lock,unlock}() to access these
-freed objects safely and for  those which doesn't care, there will be safely
-use-after-free because these objects have not been returned to slab subsystem. I
-was worried about the possibility of OOM for BPF_MA_REUSE_AFTER_GP, so I
-proposed using BPF_MA_FREE_AFTER_GP [5] to directly return these freed objects
-to slab system after one RCU grace period and enforce the accesses of these
-objects are protected by bpf_rcu_read_{lock,unlock}(). But if
-BPF_MA_FREE_AFTER_GP is used by local storage, it may break existing sleep-able
-program. Currently, I am working on BPF_MA_REUSE_AFTER_GP  with Martin. Hope to
-work out an RFC soon.
+System: Cuttlefish Android Device (crossvm) with kernel 5.15.78 (from http=
+s://android.googlesource.com/kernel/manifest -b common-android13-5.15).
 
-Another problem is the potential OOM problem. bpf memory allocator is more
-suitable for the following case: alloc, free, alloc, free on the same CPU. The
-above use case is also the typical use case for hash table, but for other use
-cases, bpf memory allocator doesn't handle the scenario well and may incur OOM.
-One such use case is batched allocation and batched freeing on same CPU.
-According to [6], for a small hash table, the peak memory for this use case can
-increase to 860MB or more. Another use case is allocation and free are done on
-different CPUs [6]. Memory usage exposure can easily occur for such case,
-because there is no reuse and these freed objects can only be returned to
-subsystem after one RCU tasks-trace grace period.
+Program to test:
 
-I think the potential OOM problem can be attacked by two ways. One is returning
-these freed objects to slab system timely. Although some work (e.g., skip
-unnecessary call_rcu for freeing [7]) has been done, but I think it is not
-enough. For example, for bpf_global_ma, because it will not be destroyed like
-bpf ma in hash-tab, so there may still be freed objects in per-cpu free_by_rcu
-list and will not be freed if there is no free operations on this CPU
-afterwards. Also there is no ways to limit the memory usage of bpf_global_ma
-because its usage is accounted under root memcg, so maybe a shrinker is also
-needed to free some memory back to slab system. Another example is CPU hot-plug.
-Because bpf memory allocator is a per-CPU allocator, so when one CPU is offline,
-all freed elements need be returned to slab system and when the CPU is online,
-we may need to do pre-fill for it. Another approach is to try to reuse freed
-object if possible. One fix [6] had already been done to fix the batched
-allocation and freed case, but for the case of allocation and freeing on
-different CPUs, it seems we may need to share freed object among multiple CPUs 
-and do it cheaply.
+SEC("lsm/file_open")
+int BPF_PROG(file_open_lsm, struct=C2=A0file *file, int=C2=A0ret)
+{
+	return=C2=A0ret;
+}
 
-Not sure whether or not the issues above are important enough for a session, but
-I think a discussion in mail-list will be helpful as well.
 
-0: https://lore.kernel.org/bpf/20220902211058.60789-1-alexei.starovoitov@gmail.com/
-1: https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
-2: https://lore.kernel.org/bpf/20220924133620.4147153-1-houtao@huaweicloud.com/
-3: https://lore.kernel.org/bpf/20230125143816.721952-1-void@manifault.com/
-4:
-https://lore.kernel.org/bpf/CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com/
-5: https://lore.kernel.org/bpf/2a58c4a8-781f-6d84-e72a-f8b7117762b4@huaweicloud.com/
-6: https://lore.kernel.org/bpf/20221209010947.3130477-1-houtao@huaweicloud.com/
-7: https://lore.kernel.org/bpf/20221014113946.965131-3-houtao@huaweicloud.com/
+cat /sys/kernel/security/lsm
+
+capability,selinux,bpf
+
+
+Output when running the lsm program:
+libbpf: prog 'lsm_file_open_function': failed to attach: Device or resourc=
+e busylibbpf: prog 'lsm_file_open_function': failed to auto-attach: -16
+Failed to attach BPF skeleton
+
+
+strace:
+...
+bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D16, info_len=3D88 =3D> 80, i=
+nfo=3D0x7fffe2761f70}}, 16) =3D 0mmap(NULL, 4096, PROT_READ|PROT_WRITE, MA=
+P_SHARED, 16, 0) =3D 0x7bc0d9511000
+mmap(NULL, 1052672, PROT_READ, MAP_SHARED, 16, 0x1000) =3D 0x7bbe4628d000
+epoll_ctl(30, EPOLL_CTL_ADD, 16, {EPOLLIN, {u32=3D10, u64=3D10}}) =3D 0
+bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D17, info_len=3D88 =3D> 80, i=
+nfo=3D0x7fffe2761f70}}, 16) =3D 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 17, 0) =3D 0x7bc0d95100=
+00
+mmap(NULL, 1052672, PROT_READ, MAP_SHARED, 17, 0x1000) =3D 0x7bbe45f5d000
+epoll_ctl(30, EPOLL_CTL_ADD, 17, {EPOLLIN, {u32=3D11, u64=3D11}}) =3D 0
+bpf(0x1c /* BPF_??? */, 0x7fffe2761df0, 48) =3D -1 EINVAL (Invalid argumen=
+t)
+bpf(BPF_RAW_TRACEPOINT_OPEN, {raw_tracepoint=3D{name=3DNULL, prog_fd=3D21}=
+}, 16) =3D -1 EBUSY (Device or resource busy)
+write(2, "libbpf: prog 'file_open_lsm"..., 81libbpf: prog 'file_open_lsm':=
+ failed to attach: Device or resource busy
+) =3D 81
+write(2, "libbpf: prog 'file_open_lsm"..., 66libbpf: prog 'file_open_lsm':=
+ failed to auto-attach: -16
+) =3D 66
+write(2, "Failed to attach BPF skeleton\n", 30Failed to attach BPF skeleto=
+n
+) =3D 30
+
+
+
+When I remove lsm hooks but keep kprobes and other ones, it works.
+Seems like only lsm programs have the issue.
+
+
+I'm using xmake to compile it for Android, according to samples from here:=
+ https://github.com/libbpf/libbpf-bootstrap
+
+libbpf version: 1.0
+bpftool version: v7.0.0
+
+
+Any help is appreciated
+
+Best regards,
+-----------------------f8ea5141bd8d3bf3dad69e15bf138ef7--
+
+--------89f594110a4a9cf0d0403b0b7dd6e4f3fe079a08627bbb6d755c147fc87e51bc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: ProtonMail
+
+wnUEARYKACcFAmP526AJEAsNJ9x0xAJnFiEEMHWNSWmkXAcN0CxSCw0n3HTE
+AmcAAKUqAP9wP1n8119z0TO2o4iqi1UH8qH/sGaxITKaD/WM9jGoWAEAvPJo
+pIkFZcR7rsLWppt3Krgg7mN/K6vlrVRtr9RF8Ak=
+=F6Bg
+-----END PGP SIGNATURE-----
+
+
+--------89f594110a4a9cf0d0403b0b7dd6e4f3fe079a08627bbb6d755c147fc87e51bc--
 
