@@ -2,71 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEA06A2A87
-	for <lists+bpf@lfdr.de>; Sat, 25 Feb 2023 16:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6134E6A2A88
+	for <lists+bpf@lfdr.de>; Sat, 25 Feb 2023 16:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbjBYPkU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Feb 2023 10:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
+        id S229562AbjBYPkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Feb 2023 10:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjBYPkT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Feb 2023 10:40:19 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79B013D60
-        for <bpf@vger.kernel.org>; Sat, 25 Feb 2023 07:40:17 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id ee7so8937548edb.2
-        for <bpf@vger.kernel.org>; Sat, 25 Feb 2023 07:40:17 -0800 (PST)
+        with ESMTP id S229540AbjBYPkW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Feb 2023 10:40:22 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930C013D76
+        for <bpf@vger.kernel.org>; Sat, 25 Feb 2023 07:40:19 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id o15so6362774edr.13
+        for <bpf@vger.kernel.org>; Sat, 25 Feb 2023 07:40:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=26YHYGhzhMtvy0wI74hWTknpqfsq9gjq9pZ+N8DJ2Ds=;
-        b=qUXlqj7ghgBg+s9E4FVdYsvMop3Z+SVqgbaKEXq4WWoepdpVWhqppEehKC+xXv97D7
-         OvLnOVQLttk0T+5PmXrUcwx+VSmu5Vp7+ThVb0Y4HkBk9vopiAI0pGS3hx+FXWz9wE5G
-         tWrM1j9ClBAXY5gvY37evf3zWLmV06vFBuAcD+9YZoGLMiuy2a1vEh8CRD9/s19ggDUG
-         RMz7ldWkcmzmO9wLti1pfIFoaOB1hewmLT5lYtaRt9ShdGAgYvEzRUZiN2x6d/vzQ3xu
-         JDYdn3we8O7bvPIrgpzsPxuqVZPnyIr8uLPGzhJVqIl8n/BddFZhjeVt5xUaDlUWTc96
-         zHww==
+        bh=zD/mc1LmfnxgHNmQmK7JRIeSTn2yxhkXy4Q0SoOGquM=;
+        b=MWbg7KF323niT8xTO6F4ACa1jtxtsB9Zqc1mF1qksivTKDd6AGD/5w8wKFyzyTqVGc
+         dj0knhJxNLN13ndmdGJt/S6XSKL9fTTxr8I+NRE0o6rZ9f4LxCg0NQX6YwiiJ6Xy0WEs
+         m3WzT+K1Et7WxP6BXiRoIQvUCrvdDqq9Hie/E5j+mp8w3a6DN1VotYKYXohd28VssgCU
+         7/PRPzSFeF8A2wjgCxFz4sXkahY5eSyVSw73CF6a0C2ZiHB8LnosPAYvbdIAvWmUcThf
+         gmuEpXnI9zolIGwOm8ACXBgI1Q5ety8/DtfC13Bbh6AIawF1roBc+wVc7Txi27Wpuq5e
+         kapg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=26YHYGhzhMtvy0wI74hWTknpqfsq9gjq9pZ+N8DJ2Ds=;
-        b=cREZXN9udq9DzJ+BZKKqAO5xN6RvbCwUrfJn74SGYIZ8EiHjRJ9KiH6E0HN3rKOAS/
-         88roQcEjPEnEhJ0X2UtwBDlouuObJRC7RZUqj/OpFIPpj+Xr8oicCsx/G4cYQKTAAiZc
-         00YXdauqn03hZG601mGFZJxSl18ELACt5uUUaXULBqiG7VHCtGVnWnzuaYjscnRQsJs3
-         mwjqErVqKmTop3nR+uKTrMlGdwiAYgO/Od7oW5GQGG7QQOZLa1laM1By+MIDmbnR2Q3B
-         7hVCN0DRj4VFhMJpEFKGF+x5uainrF5ZLPflGz4ouk6fw2mtVXJLXzdDc8UXkjIpO11g
-         n8GA==
-X-Gm-Message-State: AO0yUKX0FxuGO7emJ1dXysLjb5V13Q8tJ+0d+hPdR39toZe05964f8t6
-        Vl4CaC3adE93wRqrQ98cKNVqXE3ku/7VNA==
-X-Google-Smtp-Source: AK7set9qGorhHHREy9Q8H7O2MKbnf1N/CvAyqz92UTf0A0gqb7q79VVvd/RseuPv9gC+Wpq8yTqrVQ==
-X-Received: by 2002:a50:fb06:0:b0:4ac:be42:5c66 with SMTP id d6-20020a50fb06000000b004acbe425c66mr18859305edq.11.1677339615879;
-        Sat, 25 Feb 2023 07:40:15 -0800 (PST)
+        bh=zD/mc1LmfnxgHNmQmK7JRIeSTn2yxhkXy4Q0SoOGquM=;
+        b=YUiuD5s9rk9LTIOt4j1PYNzkex+vNOIrT/xNpWTsEIEYhxGEcustMjWYs5gSWJU7DB
+         xVK6b1vt/OH7iK1cZnLrL2tsm80fbVP6sGFM40McUWi8mk4SuFiCixDNxtREsR8Jk90T
+         JxzqP0+vT6M2dpAoaIZgTZr3YpMGHfqEjRv9Bd/rZuqu1lBGMVNhgCHHbNptHp9aqdOq
+         lA6+EQnZG3ccBUx78P17M9d0XBiO3oP88hZJTvwJr3WUR+aHr31gmL5zgMdB5HhvAwwb
+         uK/ApOldszl9EaO7pkPkZQ6w4OSvacsZ2nCjingKxcNAps1O55JZgMe0yxJtPNXJgnHW
+         uzSg==
+X-Gm-Message-State: AO0yUKVHjKw77enRxIfMlrejVZ81y/W2cp0QRt53u5LwoRhffIKF+Ru5
+        Vn2mSFWmvmhKp2d0jL8B7gOe7iphzOqsrw==
+X-Google-Smtp-Source: AK7set+sMnDcTyo8AO6QP2OtonsLy0PMZfLhXW62Fe00D+S1XhddVX0w4mKAU4B/iUmsy2nU/q+pWQ==
+X-Received: by 2002:a17:907:8c06:b0:8e3:86ef:505b with SMTP id ta6-20020a1709078c0600b008e386ef505bmr19514383ejc.21.1677339617339;
+        Sat, 25 Feb 2023 07:40:17 -0800 (PST)
 Received: from localhost ([2001:620:618:580:2:80b3:0:30])
-        by smtp.gmail.com with ESMTPSA id b27-20020a50ccdb000000b004aef48a8af7sm978157edj.50.2023.02.25.07.40.15
+        by smtp.gmail.com with ESMTPSA id m5-20020a170906234500b008d9c518a318sm951140eja.142.2023.02.25.07.40.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Feb 2023 07:40:15 -0800 (PST)
+        Sat, 25 Feb 2023 07:40:16 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
         Dave Marchevsky <davemarchevsky@meta.com>,
         David Vernet <void@manifault.com>
-Subject: [PATCH bpf-next v3 2/3] bpf: Support kptrs in local storage maps
-Date:   Sat, 25 Feb 2023 16:40:09 +0100
-Message-Id: <20230225154010.391965-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Add more tests for kptrs in maps
+Date:   Sat, 25 Feb 2023 16:40:10 +0100
+Message-Id: <20230225154010.391965-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230225154010.391965-1-memxor@gmail.com>
 References: <20230225154010.391965-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7787; i=memxor@gmail.com; h=from:subject; bh=6rZNexUWA0MowrydGJmFUaPGZ3AMN2NlSiMGW5GBv78=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBj+itKpBjzsEWVZYBmRHUQ97KSGShtIJY38quT1RMm tZwLmeSJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY/orSgAKCRBM4MiGSL8RymNjD/ 9J4FY7YaSLxzJfXeN++OQFb7PoCuI/Um967R0gUkXs0D51NhBOKPS9Kd3ZN8lV4umTRENQ27ZtUFrf /cdnFxlca87HpyoOdtuGmKtGBcE0NqMG27UY8fQyvlADtD5+uVSwZzuHDMc/c1LuQtB3slDFfCFVx6 kXin8R7e25SncD4Xvnz7XthU1UiUSWU+Gx3UcvTrZKZGMOxMwkiQyjqFCBAWHlZRjiofzdIzM5d6cF 47YJ1F7ZI5y54dBcYHoS2Ny0/9TTfpwfe+NqXetqUlQJtofbCmIlq3BUuEvGa969dWbW5XC3DlS778 SIbIN4ajvE8DaadkevhlRUI8hG36LOf98DQ/Y75cWjn7A/01xlo2W8/tpfBhkAalxI9Wtl3ibZq67H f+vqS4K5dWgP4D8UzD/TIQ3ShvoPxMISO+vHgWGVbTkyVnAQDMBGzOFoTpgwxug4Dfc6g2+hxKPLZS 6K1hz5ukwzCl4ixBFIba/eDf1fTSszGGZJp2ibuAF9gxHWZ7bC9gqE7m1gPpZcOCemAjrgeeMKeiNs OiiCjczSvizSoa8uBlfDYGQX2tO/0nvmwKAxR2EyZcGoObnqWe3xOlfN/C/CWK/d9HLCQQV04Wz/m5 h32DkUjpZwL3G29fzL6tbQh4yu8XDjpLOtHsPTdG7NDN+NbLAGUwpAgZuOlA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=20731; i=memxor@gmail.com; h=from:subject; bh=HD608qFKl594YjCl2Nzw1XXhkHBPzjs0Fw+3//cmScc=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBj+itK6rn4+b/yGFrIYO6IO1BjoCzaDHfjLeiKTWyG qvWsWv2JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY/orSgAKCRBM4MiGSL8Rytz+EA CnLCwkuCB16ekJ2LjwNkSZpgb5IS3AR3Aw5hb+NU6H2JJpeKfZSnI0l5Ca75I5CIocrJSCaC9Rnbwl yuuUOv3C/PYPmyGevnQ5BJoaJfi6OMX/pzdcoo/HNWglN36BLAwSQ+QXdhS2at41z9+TsojK0bCAi+ hGJNBdlT64eGwWWUDaemQuocl5TBKuC0vwWeJafA4Yqamk1MSTzINiVgeL/ZpQ4k46K/FEk/UN1Skx qlrARze+r3IvAMCqmvTOgxDYcUKqePZSifcDRHH++5kcnMlDwTVPVuT4pAfwBf9O37KmrMewuNc3H7 yh7oaQSjbCJX5v1oC2sB9PqCxwm1gpH7S7Gdp9mo+rZC0D40B/FeVLLRT8LCHXAmg/21aUUyFzLbjA 5v4s6ju4d5FCysDTs0uqxtIqHmRhG1X07OB8so/dKmABoUWbWWHq33xSbGFBg7SlnJ6xaj+mP9VzIb 4ZFADn+JH32lY/6SNlCCg54gnzAzx8MC/eZWzdu2bvOb53o8NP5LiYuhf+pbGSrG3q7oWQww9hsien 0amfI7u2EtQpyctpr/ciiJkXqJlKOuD3xsKdSdcol4ss6XveleMjS3I0YdCg9XAp+gVrsrfyFkoEM4 f21d6MGfr6jrdLNVSuxqRAsV7X1Tm55gUmmo1l7RTpxq8cPeA8JcOpk9iglA==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,188 +78,708 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Enable support for kptrs in local storage maps by wiring up the freeing
-of these kptrs from map value. Freeing of bpf_local_storage_map is only
-delayed in case there are special fields, therefore bpf_selem_free_*
-path can also only dereference smap safely in that case. This is
-recorded using a bool utilizing a hole in bpF_local_storage_elem. It
-could have been tagged in the pointer value smap using the lowest bit
-(since alignment > 1), but since there was already a hole I went with
-the simpler option. Only the map structure freeing is delayed using RCU
-barriers, as the buckets aren't used when selem is being freed, so they
-can be freed once all readers of the bucket lists can no longer access
-it.
+Firstly, ensure programs successfully load when using all of the
+supported maps. Then, extend existing tests to test more cases at
+runtime. We are currently testing both the synchronous freeing of items
+and asynchronous destruction when map is freed, but the code needs to be
+adjusted a bit to be able to also accomodate support for percpu maps.
 
-Cc: Martin KaFai Lau <martin.lau@kernel.org>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
+We now do a delete on the item (and update for array maps which has a
+similar effect for kptrs) to perform a synchronous free of the kptr, and
+test destruction both for the synchronous and asynchronous deletion.
+Next time the program runs, it should observe the refcount as 1 since
+all existing references should have been released by then. By running
+the program after both possible paths freeing kptrs, we establish that
+they correctly release resources. Next, we augment the existing test to
+also test the same code path shared by all local storage maps using a
+task local storage map.
+
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf_local_storage.h |  6 ++++
- kernel/bpf/bpf_local_storage.c    | 48 ++++++++++++++++++++++++++++---
- kernel/bpf/syscall.c              |  6 +++-
- kernel/bpf/verifier.c             | 12 +++++---
- 4 files changed, 63 insertions(+), 9 deletions(-)
+ .../selftests/bpf/prog_tests/map_kptr.c       | 136 +++++--
+ tools/testing/selftests/bpf/progs/map_kptr.c  | 344 +++++++++++++++---
+ .../selftests/bpf/progs/rcu_tasks_trace_gp.c  |  36 ++
+ 3 files changed, 451 insertions(+), 65 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/rcu_tasks_trace_gp.c
 
-diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-index 6d37a40cd90e..0fe92986412b 100644
---- a/include/linux/bpf_local_storage.h
-+++ b/include/linux/bpf_local_storage.h
-@@ -74,6 +74,12 @@ struct bpf_local_storage_elem {
- 	struct hlist_node snode;	/* Linked to bpf_local_storage */
- 	struct bpf_local_storage __rcu *local_storage;
- 	struct rcu_head rcu;
-+	bool can_use_smap; /* Is it safe to access smap in bpf_selem_free_* RCU
-+			    * callbacks? bpf_local_storage_map_free only
-+			    * executes rcu_barrier when there are special
-+			    * fields, this field remembers that to ensure we
-+			    * don't access already freed smap in sdata.
-+			    */
- 	/* 8 bytes hole */
- 	/* The data is stored in another cacheline to minimize
- 	 * the number of cachelines access during a cache hit.
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index 58da17ae5124..2bdd722fe293 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -85,6 +85,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
- 	if (selem) {
- 		if (value)
- 			copy_map_value(&smap->map, SDATA(selem)->data, value);
-+		/* No need to call check_and_init_map_value as memory is zero init */
- 		return selem;
- 	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
+index 3533a4ecad01..8743df599567 100644
+--- a/tools/testing/selftests/bpf/prog_tests/map_kptr.c
++++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
+@@ -4,70 +4,160 @@
  
-@@ -113,10 +114,25 @@ static void bpf_selem_free_rcu(struct rcu_head *rcu)
- 	struct bpf_local_storage_elem *selem;
+ #include "map_kptr.skel.h"
+ #include "map_kptr_fail.skel.h"
++#include "rcu_tasks_trace_gp.skel.h"
  
- 	selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
-+	/* The can_use_smap bool is set whenever we need to free additional
-+	 * fields in selem data before freeing selem. bpf_local_storage_map_free
-+	 * only executes rcu_barrier to wait for RCU callbacks when it has
-+	 * special fields, hence we can only conditionally dereference smap, as
-+	 * by this time the map might have already been freed without waiting
-+	 * for our call_rcu callback if it did not have any special fields.
-+	 */
-+	if (selem->can_use_smap)
-+		bpf_obj_free_fields(SDATA(selem)->smap->map.record, SDATA(selem)->data);
-+	kfree(selem);
+ static void test_map_kptr_success(bool test_run)
+ {
++	LIBBPF_OPTS(bpf_test_run_opts, lopts);
+ 	LIBBPF_OPTS(bpf_test_run_opts, opts,
+ 		.data_in = &pkt_v4,
+ 		.data_size_in = sizeof(pkt_v4),
+ 		.repeat = 1,
+ 	);
++	int key = 0, ret, cpu;
+ 	struct map_kptr *skel;
+-	int key = 0, ret;
+-	char buf[16];
++	char buf[16], *pbuf;
+ 
+ 	skel = map_kptr__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "map_kptr__open_and_load"))
+ 		return;
+ 
+-	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref), &opts);
+-	ASSERT_OK(ret, "test_map_kptr_ref refcount");
+-	ASSERT_OK(opts.retval, "test_map_kptr_ref retval");
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref1), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref1 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref1 retval");
+ 	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref2), &opts);
+ 	ASSERT_OK(ret, "test_map_kptr_ref2 refcount");
+ 	ASSERT_OK(opts.retval, "test_map_kptr_ref2 retval");
+ 
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_ls_map_kptr_ref1), &lopts);
++	ASSERT_OK(ret, "test_ls_map_kptr_ref1 refcount");
++	ASSERT_OK(lopts.retval, "test_ls_map_kptr_ref1 retval");
++
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_ls_map_kptr_ref2), &lopts);
++	ASSERT_OK(ret, "test_ls_map_kptr_ref2 refcount");
++	ASSERT_OK(lopts.retval, "test_ls_map_kptr_ref2 retval");
++
+ 	if (test_run)
+ 		goto exit;
+ 
++	cpu = libbpf_num_possible_cpus();
++	if (!ASSERT_GT(cpu, 0, "libbpf_num_possible_cpus"))
++		goto exit;
++
++	pbuf = calloc(cpu, sizeof(buf));
++	if (!ASSERT_OK_PTR(pbuf, "calloc(pbuf)"))
++		goto exit;
++
+ 	ret = bpf_map__update_elem(skel->maps.array_map,
+ 				   &key, sizeof(key), buf, sizeof(buf), 0);
+ 	ASSERT_OK(ret, "array_map update");
+-	ret = bpf_map__update_elem(skel->maps.array_map,
+-				   &key, sizeof(key), buf, sizeof(buf), 0);
+-	ASSERT_OK(ret, "array_map update2");
++	skel->data->ref--;
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref3), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref3 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref3 retval");
++
++	ret = bpf_map__update_elem(skel->maps.pcpu_array_map,
++				   &key, sizeof(key), pbuf, cpu * sizeof(buf), 0);
++	ASSERT_OK(ret, "pcpu_array_map update");
++	skel->data->ref--;
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref3), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref3 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref3 retval");
+ 
+-	ret = bpf_map__update_elem(skel->maps.hash_map,
+-				   &key, sizeof(key), buf, sizeof(buf), 0);
+-	ASSERT_OK(ret, "hash_map update");
+ 	ret = bpf_map__delete_elem(skel->maps.hash_map, &key, sizeof(key), 0);
+ 	ASSERT_OK(ret, "hash_map delete");
++	skel->data->ref--;
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref3), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref3 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref3 retval");
++
++	ret = bpf_map__delete_elem(skel->maps.pcpu_hash_map, &key, sizeof(key), 0);
++	ASSERT_OK(ret, "pcpu_hash_map delete");
++	skel->data->ref--;
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref3), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref3 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref3 retval");
+ 
+-	ret = bpf_map__update_elem(skel->maps.hash_malloc_map,
+-				   &key, sizeof(key), buf, sizeof(buf), 0);
+-	ASSERT_OK(ret, "hash_malloc_map update");
+ 	ret = bpf_map__delete_elem(skel->maps.hash_malloc_map, &key, sizeof(key), 0);
+ 	ASSERT_OK(ret, "hash_malloc_map delete");
++	skel->data->ref--;
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref3), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref3 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref3 retval");
++
++	ret = bpf_map__delete_elem(skel->maps.pcpu_hash_malloc_map, &key, sizeof(key), 0);
++	ASSERT_OK(ret, "pcpu_hash_malloc_map delete");
++	skel->data->ref--;
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref3), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref3 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref3 retval");
+ 
+-	ret = bpf_map__update_elem(skel->maps.lru_hash_map,
+-				   &key, sizeof(key), buf, sizeof(buf), 0);
+-	ASSERT_OK(ret, "lru_hash_map update");
+ 	ret = bpf_map__delete_elem(skel->maps.lru_hash_map, &key, sizeof(key), 0);
+ 	ASSERT_OK(ret, "lru_hash_map delete");
++	skel->data->ref--;
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref3), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref3 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref3 retval");
++
++	ret = bpf_map__delete_elem(skel->maps.lru_pcpu_hash_map, &key, sizeof(key), 0);
++	ASSERT_OK(ret, "lru_pcpu_hash_map delete");
++	skel->data->ref--;
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref3), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref3 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref3 retval");
+ 
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_ls_map_kptr_ref_del), &lopts);
++	ASSERT_OK(ret, "test_ls_map_kptr_ref_del delete");
++	skel->data->ref--;
++	ASSERT_OK(lopts.retval, "test_ls_map_kptr_ref_del retval");
++
++	free(pbuf);
+ exit:
+ 	map_kptr__destroy(skel);
+ }
+ 
+-void test_map_kptr(void)
++static int kern_sync_rcu_tasks_trace(struct rcu_tasks_trace_gp *rcu)
+ {
+-	if (test__start_subtest("success")) {
++	long gp_seq = READ_ONCE(rcu->bss->gp_seq);
++	LIBBPF_OPTS(bpf_test_run_opts, opts);
++
++	if (!ASSERT_OK(bpf_prog_test_run_opts(bpf_program__fd(rcu->progs.do_call_rcu_tasks_trace),
++					      &opts), "do_call_rcu_tasks_trace"))
++		return -EFAULT;
++	if (!ASSERT_OK(opts.retval, "opts.retval == 0"))
++		return -EFAULT;
++	while (gp_seq == READ_ONCE(rcu->bss->gp_seq))
++		sched_yield();
++	return 0;
 +}
 +
-+static void bpf_selem_free_tasks_trace_rcu(struct rcu_head *rcu)
++void serial_test_map_kptr(void)
 +{
-+	/* Free directly if Tasks Trace RCU GP also implies RCU GP */
- 	if (rcu_trace_implies_rcu_gp())
--		kfree(selem);
-+		bpf_selem_free_rcu(rcu);
- 	else
--		kfree_rcu(selem, rcu);
-+		call_rcu(rcu, bpf_selem_free_rcu);
- }
- 
- /* local_storage->lock must be held and selem->local_storage == local_storage.
-@@ -170,9 +186,9 @@ static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_stor
- 		RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
- 
- 	if (use_trace_rcu)
--		call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-+		call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_tasks_trace_rcu);
- 	else
--		kfree_rcu(selem, rcu);
-+		call_rcu(&selem->rcu, bpf_selem_free_rcu);
- 
- 	return free_local_storage;
- }
-@@ -240,6 +256,11 @@ void bpf_selem_link_map(struct bpf_local_storage_map *smap,
- 	RCU_INIT_POINTER(SDATA(selem)->smap, smap);
- 	hlist_add_head_rcu(&selem->map_node, &b->list);
- 	raw_spin_unlock_irqrestore(&b->lock, flags);
++	struct rcu_tasks_trace_gp *skel;
 +
-+	/* If our data will have special fields, smap will wait for us to use
-+	 * its record in bpf_selem_free_* RCU callbacks before freeing itself.
-+	 */
-+	selem->can_use_smap = !IS_ERR_OR_NULL(smap->map.record);
++	RUN_TESTS(map_kptr_fail);
++
++	skel = rcu_tasks_trace_gp__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "rcu_tasks_trace_gp__open_and_load"))
++		return;
++	if (!ASSERT_OK(rcu_tasks_trace_gp__attach(skel), "rcu_tasks_trace_gp__attach"))
++		goto end;
++
++	if (test__start_subtest("success-map")) {
++		test_map_kptr_success(true);
++
++		ASSERT_OK(kern_sync_rcu_tasks_trace(skel), "sync rcu_tasks_trace");
++		ASSERT_OK(kern_sync_rcu(), "sync rcu");
++		/* Observe refcount dropping to 1 on bpf_map_free_deferred */
+ 		test_map_kptr_success(false);
+-		/* Do test_run twice, so that we see refcount going back to 1
+-		 * after we leave it in map from first iteration.
+-		 */
++
++		ASSERT_OK(kern_sync_rcu_tasks_trace(skel), "sync rcu_tasks_trace");
++		ASSERT_OK(kern_sync_rcu(), "sync rcu");
++		/* Observe refcount dropping to 1 on synchronous delete elem */
+ 		test_map_kptr_success(true);
+ 	}
+ 
+-	RUN_TESTS(map_kptr_fail);
++end:
++	rcu_tasks_trace_gp__destroy(skel);
++	return;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/map_kptr.c b/tools/testing/selftests/bpf/progs/map_kptr.c
+index 228ec45365a8..a24d17bc17eb 100644
+--- a/tools/testing/selftests/bpf/progs/map_kptr.c
++++ b/tools/testing/selftests/bpf/progs/map_kptr.c
+@@ -15,6 +15,13 @@ struct array_map {
+ 	__uint(max_entries, 1);
+ } array_map SEC(".maps");
+ 
++struct pcpu_array_map {
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 1);
++} pcpu_array_map SEC(".maps");
++
+ struct hash_map {
+ 	__uint(type, BPF_MAP_TYPE_HASH);
+ 	__type(key, int);
+@@ -22,6 +29,13 @@ struct hash_map {
+ 	__uint(max_entries, 1);
+ } hash_map SEC(".maps");
+ 
++struct pcpu_hash_map {
++	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 1);
++} pcpu_hash_map SEC(".maps");
++
+ struct hash_malloc_map {
+ 	__uint(type, BPF_MAP_TYPE_HASH);
+ 	__type(key, int);
+@@ -30,6 +44,14 @@ struct hash_malloc_map {
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ } hash_malloc_map SEC(".maps");
+ 
++struct pcpu_hash_malloc_map {
++	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 1);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++} pcpu_hash_malloc_map SEC(".maps");
++
+ struct lru_hash_map {
+ 	__uint(type, BPF_MAP_TYPE_LRU_HASH);
+ 	__type(key, int);
+@@ -37,6 +59,41 @@ struct lru_hash_map {
+ 	__uint(max_entries, 1);
+ } lru_hash_map SEC(".maps");
+ 
++struct lru_pcpu_hash_map {
++	__uint(type, BPF_MAP_TYPE_LRU_PERCPU_HASH);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 1);
++} lru_pcpu_hash_map SEC(".maps");
++
++struct cgrp_ls_map {
++	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct map_value);
++} cgrp_ls_map SEC(".maps");
++
++struct task_ls_map {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct map_value);
++} task_ls_map SEC(".maps");
++
++struct inode_ls_map {
++	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct map_value);
++} inode_ls_map SEC(".maps");
++
++struct sk_ls_map {
++	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct map_value);
++} sk_ls_map SEC(".maps");
++
+ #define DEFINE_MAP_OF_MAP(map_type, inner_map_type, name)       \
+ 	struct {                                                \
+ 		__uint(type, map_type);                         \
+@@ -160,6 +217,58 @@ int test_map_kptr(struct __sk_buff *ctx)
+ 	return 0;
  }
  
- void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool use_trace_rcu)
-@@ -723,6 +744,25 @@ void bpf_local_storage_map_free(struct bpf_map *map,
- 	 */
- 	synchronize_rcu();
- 
-+	/* Only delay freeing of smap, buckets are not needed anymore */
- 	kvfree(smap->buckets);
++SEC("tp_btf/cgroup_mkdir")
++int BPF_PROG(test_cgrp_map_kptr, struct cgroup *cgrp, const char *path)
++{
++	struct map_value *v;
 +
-+	/* When local storage has special fields, callbacks for
-+	 * bpf_selem_free_rcu and bpf_selem_free_tasks_trace_rcu will keep using
-+	 * the map BTF record, we need to execute an RCU barrier to wait for
-+	 * them as the record will be freed right after our map_free callback.
-+	 */
-+	if (!IS_ERR_OR_NULL(smap->map.record)) {
-+		rcu_barrier_tasks_trace();
-+		/* We cannot skip rcu_barrier() when rcu_trace_implies_rcu_gp()
-+		 * is true, because while call_rcu invocation is skipped in that
-+		 * case in bpf_selem_free_tasks_trace_rcu (and all local storage
-+		 * maps pass use_trace_rcu = true), there can be call_rcu
-+		 * callbacks based on use_trace_rcu = false in the earlier while
-+		 * ((selem = ...)) loop or from bpf_local_storage_unlink_nolock
-+		 * called from owner's free path.
-+		 */
-+		rcu_barrier();
++	v = bpf_cgrp_storage_get(&cgrp_ls_map, cgrp, NULL, BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (v)
++		test_kptr(v);
++	return 0;
++}
++
++SEC("lsm/inode_unlink")
++int BPF_PROG(test_task_map_kptr, struct inode *inode, struct dentry *victim)
++{
++	struct task_struct *task;
++	struct map_value *v;
++
++	task = bpf_get_current_task_btf();
++	if (!task)
++		return 0;
++	v = bpf_task_storage_get(&task_ls_map, task, NULL, BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (v)
++		test_kptr(v);
++	return 0;
++}
++
++SEC("lsm/inode_unlink")
++int BPF_PROG(test_inode_map_kptr, struct inode *inode, struct dentry *victim)
++{
++	struct map_value *v;
++
++	v = bpf_inode_storage_get(&inode_ls_map, inode, NULL, BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (v)
++		test_kptr(v);
++	return 0;
++}
++
++SEC("tc")
++int test_sk_map_kptr(struct __sk_buff *ctx)
++{
++	struct map_value *v;
++	struct bpf_sock *sk;
++
++	sk = ctx->sk;
++	if (!sk)
++		return 0;
++	v = bpf_sk_storage_get(&sk_ls_map, sk, NULL, BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (v)
++		test_kptr(v);
++	return 0;
++}
++
+ SEC("tc")
+ int test_map_in_map_kptr(struct __sk_buff *ctx)
+ {
+@@ -189,106 +298,257 @@ int test_map_in_map_kptr(struct __sk_buff *ctx)
+ 	return 0;
+ }
+ 
+-SEC("tc")
+-int test_map_kptr_ref(struct __sk_buff *ctx)
++int ref = 1;
++
++static __always_inline
++int test_map_kptr_ref_pre(struct map_value *v)
+ {
+ 	struct prog_test_ref_kfunc *p, *p_st;
+ 	unsigned long arg = 0;
+-	struct map_value *v;
+-	int key = 0, ret;
++	int ret;
+ 
+ 	p = bpf_kfunc_call_test_acquire(&arg);
+ 	if (!p)
+ 		return 1;
++	ref++;
+ 
+ 	p_st = p->next;
+-	if (p_st->cnt.refs.counter != 2) {
++	if (p_st->cnt.refs.counter != ref) {
+ 		ret = 2;
+ 		goto end;
+ 	}
+ 
+-	v = bpf_map_lookup_elem(&array_map, &key);
+-	if (!v) {
+-		ret = 3;
+-		goto end;
+-	}
+-
+ 	p = bpf_kptr_xchg(&v->ref_ptr, p);
+ 	if (p) {
+-		ret = 4;
++		ret = 3;
+ 		goto end;
+ 	}
+-	if (p_st->cnt.refs.counter != 2)
+-		return 5;
++	if (p_st->cnt.refs.counter != ref)
++		return 4;
+ 
+ 	p = bpf_kfunc_call_test_kptr_get(&v->ref_ptr, 0, 0);
+ 	if (!p)
+-		return 6;
+-	if (p_st->cnt.refs.counter != 3) {
+-		ret = 7;
++		return 5;
++	ref++;
++	if (p_st->cnt.refs.counter != ref) {
++		ret = 6;
+ 		goto end;
+ 	}
+ 	bpf_kfunc_call_test_release(p);
+-	if (p_st->cnt.refs.counter != 2)
+-		return 8;
++	ref--;
++	if (p_st->cnt.refs.counter != ref)
++		return 7;
+ 
+ 	p = bpf_kptr_xchg(&v->ref_ptr, NULL);
+ 	if (!p)
+-		return 9;
++		return 8;
+ 	bpf_kfunc_call_test_release(p);
+-	if (p_st->cnt.refs.counter != 1)
+-		return 10;
++	ref--;
++	if (p_st->cnt.refs.counter != ref)
++		return 9;
+ 
+ 	p = bpf_kfunc_call_test_acquire(&arg);
+ 	if (!p)
+-		return 11;
++		return 10;
++	ref++;
+ 	p = bpf_kptr_xchg(&v->ref_ptr, p);
+ 	if (p) {
+-		ret = 12;
++		ret = 11;
+ 		goto end;
+ 	}
+-	if (p_st->cnt.refs.counter != 2)
+-		return 13;
++	if (p_st->cnt.refs.counter != ref)
++		return 12;
+ 	/* Leave in map */
+ 
+ 	return 0;
+ end:
++	ref--;
+ 	bpf_kfunc_call_test_release(p);
+ 	return ret;
+ }
+ 
+-SEC("tc")
+-int test_map_kptr_ref2(struct __sk_buff *ctx)
++static __always_inline
++int test_map_kptr_ref_post(struct map_value *v)
+ {
+ 	struct prog_test_ref_kfunc *p, *p_st;
+-	struct map_value *v;
+-	int key = 0;
+-
+-	v = bpf_map_lookup_elem(&array_map, &key);
+-	if (!v)
+-		return 1;
+ 
+ 	p_st = v->ref_ptr;
+-	if (!p_st || p_st->cnt.refs.counter != 2)
+-		return 2;
++	if (!p_st || p_st->cnt.refs.counter != ref)
++		return 1;
+ 
+ 	p = bpf_kptr_xchg(&v->ref_ptr, NULL);
+ 	if (!p)
+-		return 3;
+-	if (p_st->cnt.refs.counter != 2) {
++		return 2;
++	if (p_st->cnt.refs.counter != ref) {
+ 		bpf_kfunc_call_test_release(p);
+-		return 4;
++		return 3;
+ 	}
+ 
+ 	p = bpf_kptr_xchg(&v->ref_ptr, p);
+ 	if (p) {
+ 		bpf_kfunc_call_test_release(p);
+-		return 5;
++		return 4;
+ 	}
+-	if (p_st->cnt.refs.counter != 2)
+-		return 6;
++	if (p_st->cnt.refs.counter != ref)
++		return 5;
++
++	return 0;
++}
++
++#define TEST(map)                            \
++	v = bpf_map_lookup_elem(&map, &key); \
++	if (!v)                              \
++		return -1;                   \
++	ret = test_map_kptr_ref_pre(v);      \
++	if (ret)                             \
++		return ret;
++
++#define TEST_PCPU(map)                                 \
++	v = bpf_map_lookup_percpu_elem(&map, &key, 0); \
++	if (!v)                                        \
++		return -1;                             \
++	ret = test_map_kptr_ref_pre(v);                \
++	if (ret)                                       \
++		return ret;
++
++SEC("tc")
++int test_map_kptr_ref1(struct __sk_buff *ctx)
++{
++	struct map_value *v, val = {};
++	int key = 0, ret;
++
++	bpf_map_update_elem(&hash_map, &key, &val, 0);
++	bpf_map_update_elem(&hash_malloc_map, &key, &val, 0);
++	bpf_map_update_elem(&lru_hash_map, &key, &val, 0);
++
++	bpf_map_update_elem(&pcpu_hash_map, &key, &val, 0);
++	bpf_map_update_elem(&pcpu_hash_malloc_map, &key, &val, 0);
++	bpf_map_update_elem(&lru_pcpu_hash_map, &key, &val, 0);
++
++	TEST(array_map);
++	TEST(hash_map);
++	TEST(hash_malloc_map);
++	TEST(lru_hash_map);
++
++	TEST_PCPU(pcpu_array_map);
++	TEST_PCPU(pcpu_hash_map);
++	TEST_PCPU(pcpu_hash_malloc_map);
++	TEST_PCPU(lru_pcpu_hash_map);
++
++	return 0;
++}
++
++#undef TEST
++#undef TEST_PCPU
++
++#define TEST(map)                            \
++	v = bpf_map_lookup_elem(&map, &key); \
++	if (!v)                              \
++		return -1;                   \
++	ret = test_map_kptr_ref_post(v);     \
++	if (ret)                             \
++		return ret;
++
++#define TEST_PCPU(map)                                 \
++	v = bpf_map_lookup_percpu_elem(&map, &key, 0); \
++	if (!v)                                        \
++		return -1;                             \
++	ret = test_map_kptr_ref_post(v);               \
++	if (ret)                                       \
++		return ret;
++
++SEC("tc")
++int test_map_kptr_ref2(struct __sk_buff *ctx)
++{
++	struct map_value *v;
++	int key = 0, ret;
++
++	TEST(array_map);
++	TEST(hash_map);
++	TEST(hash_malloc_map);
++	TEST(lru_hash_map);
++
++	TEST_PCPU(pcpu_array_map);
++	TEST_PCPU(pcpu_hash_map);
++	TEST_PCPU(pcpu_hash_malloc_map);
++	TEST_PCPU(lru_pcpu_hash_map);
+ 
+ 	return 0;
+ }
+ 
++#undef TEST
++#undef TEST_PCPU
++
++SEC("tc")
++int test_map_kptr_ref3(struct __sk_buff *ctx)
++{
++	struct prog_test_ref_kfunc *p;
++	unsigned long sp = 0;
++
++	p = bpf_kfunc_call_test_acquire(&sp);
++	if (!p)
++		return 1;
++	ref++;
++	if (p->cnt.refs.counter != ref) {
++		bpf_kfunc_call_test_release(p);
++		return 2;
 +	}
- 	bpf_map_area_free(smap);
- }
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index da117a2a83b2..eb50025b03c1 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1063,7 +1063,11 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
- 				    map->map_type != BPF_MAP_TYPE_LRU_HASH &&
- 				    map->map_type != BPF_MAP_TYPE_LRU_PERCPU_HASH &&
- 				    map->map_type != BPF_MAP_TYPE_ARRAY &&
--				    map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) {
-+				    map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY &&
-+				    map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
-+				    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
-+				    map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
-+				    map->map_type != BPF_MAP_TYPE_CGRP_STORAGE) {
- 					ret = -EOPNOTSUPP;
- 					goto free_map_tab;
- 				}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5cb8b623f639..f5e2813e22de 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7151,22 +7151,26 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 		break;
- 	case BPF_MAP_TYPE_SK_STORAGE:
- 		if (func_id != BPF_FUNC_sk_storage_get &&
--		    func_id != BPF_FUNC_sk_storage_delete)
-+		    func_id != BPF_FUNC_sk_storage_delete &&
-+		    func_id != BPF_FUNC_kptr_xchg)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_INODE_STORAGE:
- 		if (func_id != BPF_FUNC_inode_storage_get &&
--		    func_id != BPF_FUNC_inode_storage_delete)
-+		    func_id != BPF_FUNC_inode_storage_delete &&
-+		    func_id != BPF_FUNC_kptr_xchg)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_TASK_STORAGE:
- 		if (func_id != BPF_FUNC_task_storage_get &&
--		    func_id != BPF_FUNC_task_storage_delete)
-+		    func_id != BPF_FUNC_task_storage_delete &&
-+		    func_id != BPF_FUNC_kptr_xchg)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_CGRP_STORAGE:
- 		if (func_id != BPF_FUNC_cgrp_storage_get &&
--		    func_id != BPF_FUNC_cgrp_storage_delete)
-+		    func_id != BPF_FUNC_cgrp_storage_delete &&
-+		    func_id != BPF_FUNC_kptr_xchg)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_BLOOM_FILTER:
++	bpf_kfunc_call_test_release(p);
++	ref--;
++	return 0;
++}
++
++SEC("syscall")
++int test_ls_map_kptr_ref1(void *ctx)
++{
++	struct task_struct *current;
++	struct map_value *v;
++	int ret;
++
++	current = bpf_get_current_task_btf();
++	if (!current)
++		return 100;
++	v = bpf_task_storage_get(&task_ls_map, current, NULL, 0);
++	if (v)
++		return 150;
++	v = bpf_task_storage_get(&task_ls_map, current, NULL, BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!v)
++		return 200;
++	return test_map_kptr_ref_pre(v);
++}
++
++SEC("syscall")
++int test_ls_map_kptr_ref2(void *ctx)
++{
++	struct task_struct *current;
++	struct map_value *v;
++	int ret;
++
++	current = bpf_get_current_task_btf();
++	if (!current)
++		return 100;
++	v = bpf_task_storage_get(&task_ls_map, current, NULL, 0);
++	if (!v)
++		return 200;
++	return test_map_kptr_ref_post(v);
++}
++
++SEC("syscall")
++int test_ls_map_kptr_ref_del(void *ctx)
++{
++	struct task_struct *current;
++	struct map_value *v;
++	int ret;
++
++	current = bpf_get_current_task_btf();
++	if (!current)
++		return 100;
++	v = bpf_task_storage_get(&task_ls_map, current, NULL, 0);
++	if (!v)
++		return 200;
++	if (!v->ref_ptr)
++		return 300;
++	return bpf_task_storage_delete(&task_ls_map, current);
++}
++
+ char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/rcu_tasks_trace_gp.c b/tools/testing/selftests/bpf/progs/rcu_tasks_trace_gp.c
+new file mode 100644
+index 000000000000..df4873558634
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/rcu_tasks_trace_gp.c
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++struct task_ls_map {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, int);
++} task_ls_map SEC(".maps");
++
++long gp_seq;
++
++SEC("syscall")
++int do_call_rcu_tasks_trace(void *ctx)
++{
++    struct task_struct *current;
++    int *v;
++
++    current = bpf_get_current_task_btf();
++    v = bpf_task_storage_get(&task_ls_map, current, NULL, BPF_LOCAL_STORAGE_GET_F_CREATE);
++    if (!v)
++        return 1;
++    /* Invoke call_rcu_tasks_trace */
++    return bpf_task_storage_delete(&task_ls_map, current);
++}
++
++SEC("kprobe/rcu_tasks_trace_postgp")
++int rcu_tasks_trace_postgp(void *ctx)
++{
++    __sync_add_and_fetch(&gp_seq, 1);
++    return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.39.2
 
