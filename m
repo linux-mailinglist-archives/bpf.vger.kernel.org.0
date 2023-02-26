@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E846A309E
-	for <lists+bpf@lfdr.de>; Sun, 26 Feb 2023 15:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450C86A3071
+	for <lists+bpf@lfdr.de>; Sun, 26 Feb 2023 15:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbjBZOvS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Feb 2023 09:51:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
+        id S229951AbjBZOtv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 26 Feb 2023 09:49:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjBZOuo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 Feb 2023 09:50:44 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6273913DF2;
-        Sun, 26 Feb 2023 06:48:40 -0800 (PST)
+        with ESMTP id S229953AbjBZOtN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 26 Feb 2023 09:49:13 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9195B1FEA;
+        Sun, 26 Feb 2023 06:47:53 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8EBC160C38;
-        Sun, 26 Feb 2023 14:46:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 742E1C4339E;
-        Sun, 26 Feb 2023 14:46:04 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 17CF3B80BE8;
+        Sun, 26 Feb 2023 14:47:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5B48C433A0;
+        Sun, 26 Feb 2023 14:47:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677422766;
-        bh=SsLC3DuoRr7IIjgp4V6ByD7OU4nl/phwXVPN1WE/Y/s=;
+        s=k20201202; t=1677422842;
+        bh=peWE7c6T0gkLD8MeXmVZAA+YvFj63HxBDgB6XDz+WgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DrX8P/PRPoWAvSGoF3qklTkvpRPK4bHdZ2u9A/hlCquD4EfqXic0f9pV36faN2vAx
-         aBZmWtvzECsqOSi329jTBAyaZCMW3fnu36YncTa4t7NUR8g0sN2swjsFwo7WGrxFtj
-         Ck8niKb/APSxvDAGO5D/ybmPnWmmvmticsWafRV0Em5YmpMMACkK4j1xwbfIBcyDNZ
-         H4Q4o3vYcY6Bb/8I5xzUN+2tL1j6LNbGqatTJNoM0bjV8t2XqYvz4LpfDyDLDKnz7r
-         bsqvbFOLxhgF5X+ZjdNZTuTeVr+m7MAjN0UborbrvmKIKM9j/wKJDW4e0VtYchulH9
-         773R9Grat1mow==
+        b=VAmIM5VLnJ+vPHd77YAV/xfd+LtXE5BjEMZ4mFI8llMgKet38aKKuCYWy0mhZz5GL
+         48qg5WkCPmvbnw9n1CAsugXpSilMNWrjhfTKbNvJ82wVpxd+CXAWrpvvXHGuVFnmDM
+         tBSZdvRXcb+7oP7mbsNYALtB659Et4kVlsHAsXmlBm2rG1vguQxAsrdk6HirgpseMP
+         2MGpWM3t7u5iw4nGVlCC0aFDRHFrOWvuNNZfwVscThvKW0B6xopfGZuqWDwKsZD7KN
+         CW+k5d9mA9+cPuENgB45ox4/sopevF1s/2i+bFQlWGDOKN52/Nd0gw6kIS7U95ez5d
+         7aFgVex6eeSKg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        syzbot+5aed6c3aaba661f5b917@syzkaller.appspotmail.com,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.2 32/53] can: isotp: check CAN address family in isotp_bind()
-Date:   Sun, 26 Feb 2023 09:44:24 -0500
-Message-Id: <20230226144446.824580-32-sashal@kernel.org>
+Cc:     =?UTF-8?q?Holger=20Hoffst=C3=A4tte?= 
+        <holger@applied-asynchrony.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        andrii@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.1 13/49] bpftool: Always disable stack protection for BPF objects
+Date:   Sun, 26 Feb 2023 09:46:13 -0500
+Message-Id: <20230226144650.826470-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226144446.824580-1-sashal@kernel.org>
-References: <20230226144446.824580-1-sashal@kernel.org>
+In-Reply-To: <20230226144650.826470-1-sashal@kernel.org>
+References: <20230226144650.826470-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -60,45 +60,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Holger Hoffstätte <holger@applied-asynchrony.com>
 
-[ Upstream commit c6adf659a8ba85913e16a571d5a9bcd17d3d1234 ]
+[ Upstream commit 878625e1c7a10dfbb1fdaaaae2c4d2a58fbce627 ]
 
-Add missing check to block non-AF_CAN binds.
+When the clang toolchain has stack protection enabled in order to be
+consistent with gcc - which just happens to be the case on Gentoo -
+the bpftool build fails:
 
-Syzbot created some code which matched the right sockaddr struct size
-but used AF_XDP (0x2C) instead of AF_CAN (0x1D) in the address family
-field:
+  [...]
+  clang \
+	-I. \
+	-I/tmp/portage/dev-util/bpftool-6.0.12/work/linux-6.0/tools/include/uapi/ \
+	-I/tmp/portage/dev-util/bpftool-6.0.12/work/linux-6.0/tools/bpf/bpftool/bootstrap/libbpf/include \
+	-g -O2 -Wall -target bpf -c skeleton/pid_iter.bpf.c -o pid_iter.bpf.o
+  clang \
+	-I. \
+	-I/tmp/portage/dev-util/bpftool-6.0.12/work/linux-6.0/tools/include/uapi/ \
+	-I/tmp/portage/dev-util/bpftool-6.0.12/work/linux-6.0/tools/bpf/bpftool/bootstrap/libbpf/include \
+	-g -O2 -Wall -target bpf -c skeleton/profiler.bpf.c -o profiler.bpf.o
+  skeleton/profiler.bpf.c:40:14: error: A call to built-in function '__stack_chk_fail' is not supported.
+  int BPF_PROG(fentry_XXX)
+                ^
+  skeleton/profiler.bpf.c:94:14: error: A call to built-in function '__stack_chk_fail' is not supported.
+  int BPF_PROG(fexit_XXX)
+                ^
+  2 errors generated.
+  [...]
 
-bind$xdp(r2, &(0x7f0000000540)={0x2c, 0x0, r4, 0x0, r2}, 0x10)
-                                ^^^^
-This has no funtional impact but the userspace should be notified about
-the wrong address family field content.
+Since stack-protector makes no sense for the BPF bits just unconditionally
+disable it.
 
-Link: https://syzkaller.appspot.com/text?tag=CrashLog&x=11ff9d8c480000
-Reported-by: syzbot+5aed6c3aaba661f5b917@syzkaller.appspotmail.com
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://lore.kernel.org/all/20230104201844.13168-1-socketcan@hartkopp.net
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Bug: https://bugs.gentoo.org/890638
+Signed-off-by: Holger Hoffstätte <holger@applied-asynchrony.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Quentin Monnet <quentin@isovalent.com>
+Link: https://lore.kernel.org/bpf/74cd9d2e-6052-312a-241e-2b514a75c92c@applied-asynchrony.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/isotp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/bpf/bpftool/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index fc81d77724a13..9bc344851704e 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1220,6 +1220,9 @@ static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 	if (len < ISOTP_MIN_NAMELEN)
- 		return -EINVAL;
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 4a95c017ad4ce..a3794b3416014 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -187,7 +187,8 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
+ 		-I$(or $(OUTPUT),.) \
+ 		-I$(srctree)/tools/include/uapi/ \
+ 		-I$(LIBBPF_BOOTSTRAP_INCLUDE) \
+-		-g -O2 -Wall -target bpf -c $< -o $@
++		-g -O2 -Wall -fno-stack-protector \
++		-target bpf -c $< -o $@
+ 	$(Q)$(LLVM_STRIP) -g $@
  
-+	if (addr->can_family != AF_CAN)
-+		return -EINVAL;
-+
- 	/* sanitize tx CAN identifier */
- 	if (tx_id & CAN_EFF_FLAG)
- 		tx_id &= (CAN_EFF_FLAG | CAN_EFF_MASK);
+ $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
 -- 
 2.39.0
 
