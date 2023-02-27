@@ -2,76 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2216A4F62
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 00:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C0A6A4F7F
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 00:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjB0XCN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 18:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
+        id S229613AbjB0XFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 18:05:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbjB0XCL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 18:02:11 -0500
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F7225953
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 15:02:09 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 1FE8632009B2;
-        Mon, 27 Feb 2023 18:02:09 -0500 (EST)
-Received: from imap42 ([10.202.2.92])
-  by compute1.internal (MEProxy); Mon, 27 Feb 2023 18:02:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1677538928; x=1677625328; bh=R96LQlv1vR70+5TPDcH/Kwf8wTOl/FYb7u1
-        LEZx6w+I=; b=coDW07OPK3s9BNY3s0xccSPdH+N5LzX3TtkFez2Ty4MwDTcgjs+
-        xDoNhZ1ktshgBCXwALNpTZn+hxzHqvHXyFFtqHjAwaHHVwE+RlDfCCx4nhN9e9hX
-        mnVzf8zul9cv0FzjkrWJrtDCS5ofJdUgy2FmtJgx0FAzDIEUBScMWWAMVvNS0+1E
-        vV7+A2Y24OnmLMpmQNVfirvlTZFMVW35zKLKx7edoHO3Yvxv1ryLVXnDK3Zy8Zx6
-        KI85rJ2H7sOLTZmv0KQ1IUbsXyR5YjKJjaxdTz/DU+Losa3nMCY/jjmjpKCfUVIF
-        0iYVlI1FUFR79z8R5+2XUqXBt9uwvKHXr8g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:message-id:mime-version
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677538928; x=
-        1677625328; bh=R96LQlv1vR70+5TPDcH/Kwf8wTOl/FYb7u1LEZx6w+I=; b=h
-        rL4jjNipfUtq/h4WSbMF/n1RwI+hJFDLwUrRz+TjbT0H/YEsL0g1xRzeI3DTzp11
-        qqZSnnjvsfu3aLd3K+RtrOtQ1lyK1Qdr6FfBm8gpA6E37QejWFjhRfMhZKY6DQj0
-        41BA/9qnhGLZNEbszwzzjYh1oEL4T6wQBDQk7RgOUMFCKYfK49EC2KYGJ4uok6Gg
-        NVvtN0naP0DMRoyn3VrpVIwCusjtyd+q/9oGb2mB95BFXK6Ki/T9w5ynhf4ASimP
-        8WbCNqMwFz82hsRkZlaTWEjdWDLcW+Zcz0RXe8r2aQTxkvmc+PyU+cW3O/9UqHCA
-        28SnKWoOapnImgJxJRH9Q==
-X-ME-Sender: <xms:cDb9Y-ij0GQjB7mtGjoYKG5qOVAsYDWOstDo11wDGx2tqTJUTzptHw>
-    <xme:cDb9Y_BV7vExWZKpgX5-M5WELHArL6fJTaIV5yK57H3Iw-iaFgXAvoN9kDmeLX4fZ
-    Q5A3fgZswtHp6j1bw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeluddgtdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefofg
-    ggkfffhffvvefutgesthdtredtreertdenucfhrhhomhepfdffrghnihgvlhcuighufdcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgteduheette
-    fhheeiffefffdtleduvefggefhgeehffekjeeuhedugfeiieenucffohhmrghinhepghhi
-    thhhuhgsrdgtohhmpdhruhhnqdhtvghsthhsrdhshhdprhhunhdrshhhpdhvmhhtvghsth
-    drshhhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    ugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:cDb9Y2GPUHRYbYh7LeqEOixTGfJR_KTs1LgLKWIPk0GDm9y1tz3Dyw>
-    <xmx:cDb9Y3SebXd6cj-vctjV8qrPwfhTlKWi5WvCo5OLCJc97GKOdGLCQQ>
-    <xmx:cDb9Y7xzPD2oJ7JTNyd0lY2jBPrK9ekuTPEEU3aoCzL0W4re8V79EA>
-    <xmx:cDb9Y8tWjSL7cO9WxH8v8xmazDfQwXjwJDEvdS1rIiMA2QqtOTwhXg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 525A9BC007C; Mon, 27 Feb 2023 18:02:08 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-183-gbf7d00f500-fm-20230220.001-gbf7d00f5
-Mime-Version: 1.0
-Message-Id: <f1ea109c-5f07-4734-83f5-12c4252fa5ae@app.fastmail.com>
-Date:   Mon, 27 Feb 2023 16:01:48 -0700
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     lsf-pc@lists.linux-foundation.org
+        with ESMTP id S229587AbjB0XFf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 18:05:35 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FCBA248
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 15:05:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=yRXDEaUq62AAPYXnTpBNNKaVh2XdCnOI1noKdg7Ykds=; b=lBlpkNl7eJhXj8MqjsojaWNuo4
+        gtvO+QR9v9aafeVXv0rs6nhKvjbZEAWglH/uD/LdmczJAF8EaEnnSe5GY5kpdx0vjdwFWACiygely
+        AspqjWOBAsjyv6EqL0alshy9W27cioCD7E/7FHhhpZbbJGAGyNmM4RFwN7ppNwQ1Bxct6FKG9JuaJ
+        UED2U66Vb53/DMCLXuTrZH6ifVmh8DE99c9tYfEIcbTsuqid8WwG3r2le97I6G/dURyp4IcEDfdHE
+        pHsBWMjfbkjf1okC7VAF5kffSi54ZvSB4KxuUzwcHQsQVqt8VSVCFsfhxAe6yJaJ9s2FHepcSGkAm
+        s8zK4ZAA==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pWm7W-0001uc-Vo; Mon, 27 Feb 2023 23:37:23 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pWm7W-000Mii-HN; Mon, 27 Feb 2023 23:37:22 +0100
+Subject: Re: [PATCH bpf-next v3 00/18] bpf: bpf memory usage
+To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
+        xiyou.wangcong@gmail.com
 Cc:     bpf@vger.kernel.org
-Subject: [LSF/MM/BPF TOPIC] vmtest: Reusable virtual machine testing infrastructure
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+References: <20230227152032.12359-1-laoar.shao@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <24b8a412-6be5-7590-acbd-4ff3990bf812@iogearbox.net>
+Date:   Mon, 27 Feb 2023 23:37:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20230227152032.12359-1-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26825/Mon Feb 27 09:24:38 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,57 +64,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-=== Introduction ===
+On 2/27/23 4:20 PM, Yafang Shao wrote:
+> Currently we can't get bpf memory usage reliably. bpftool now shows the
+> bpf memory footprint, which is difference with bpf memory usage. The
+> difference can be quite great in some cases, for example,
+> 
+> - non-preallocated bpf map
+>    The non-preallocated bpf map memory usage is dynamically changed. The
+>    allocated elements count can be from 0 to the max entries. But the
+>    memory footprint in bpftool only shows a fixed number.
+> 
+> - bpf metadata consumes more memory than bpf element
+>    In some corner cases, the bpf metadata can consumes a lot more memory
+>    than bpf element consumes. For example, it can happen when the element
+>    size is quite small.
+> 
+> - some maps don't have key, value or max_entries
+>    For example the key_size and value_size of ringbuf is 0, so its
+>    memlock is always 0.
+> 
+> We need a way to show the bpf memory usage especially there will be more
+> and more bpf programs running on the production environment and thus the
+> bpf memory usage is not trivial.
+> 
+> This patchset introduces a new map ops ->map_mem_usage to calculate the
+> memory usage. Note that we don't intend to make the memory usage 100%
+> accurate, while our goal is to make sure there is only a small difference
+> between what bpftool reports and the real memory. That small difference
+> can be ignored compared to the total usage.  That is enough to monitor
+> the bpf memory usage. For example, the user can rely on this value to
+> monitor the trend of bpf memory usage, compare the difference in bpf
+> memory usage between different bpf program versions, figure out which
+> maps consume large memory, and etc.
 
-Testing is paradoxically one of BPF's great strengths as well as one of it's
-current weaknesses. Fortunately, this weakness is not too far from being
-corrected.
-
-BPF_PROG_RUN is somewhat of a double edged sword. On the one hand, you can run
-reproducibly run progs in near-production context. On the other hand, since BPF
-is so deeply intertwined with the running kernel, you must make the kernel you
-run tests on as close to your production kernel as possible to get full testing
-benefits.
-
-This is going to be more of an issue going forward through the growth of kfuncs
-because kfuncs do not possess a stable ABI [5]. Proper testing should be
-encouraged at a community-wide level in order to avoid accidental surprises and
-potential loss of faith in BPF "stability".
-
-Most successful kernel-dependent projects deploy some form of
-virtual-machine-based testing [1][2][3][4] to solve the above issues. However,
-there are two problems with this:
-
-1. VM-based testing is not quite common knowledge yet and remains somewhat of
-   a dark art to successfully implement.
-
-2. Multiple implementations of what is essentially the same thing is somewhat
-   of a drain on resources.
-
-(These are not necessarily bad things -- it is useful and necessary to explore a
-problem space before settling on best practices)
-
-vmtest [0] aims to solve both problems.
-
-=== Goals ===
-
-I'd like to do a short presentation on the design and ideas behind vmtest. I'd
-also like to show a quick demo. It shouldn't take very long. I'll probably
-also share what I'd like to implement next. I don't know what that's going
-to be at time of writing b/c I'm probably going to get to it before LSFMMBPF.
-
-For the rest of the time I'd like to discuss what the community would like to
-see in vmtest. And to hear what it'd take to see adoption from other projects.
-Obviously no one can be required to adopt vmtest but I think it'll save everyone
-a good deal of effort if done correctly.
+Now that there is the cgroup.memory=nobpf, this is now rebuilding the memory
+accounting as a band aid that you would otherwise get for free via memcg.. :/
+Can't you instead move the selectable memcg forward? Tejun and others have
+brought up the resource domain concept, have you looked into it?
 
 Thanks,
 Daniel
-
-
-[0]: https://github.com/danobi/vmtest
-[1]: https://github.com/cilium/ebpf/blob/master/run-tests.sh
-[2]: https://github.com/osandov/drgn/tree/main/vmtest
-[3]: https://github.com/libbpf/ci/blob/master/run-qemu/run.sh
-[4]: https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/vmtest.sh
-[5]: https://github.com/torvalds/linux/commit/16c294a6aad86
