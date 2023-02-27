@@ -2,242 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4D36A4FC5
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 00:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5D76A4FC8
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 00:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjB0XmY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 18:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
+        id S229510AbjB0Xon (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 18:44:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjB0XmX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 18:42:23 -0500
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E271C7EF
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 15:42:22 -0800 (PST)
-Received: by mail-qt1-f172.google.com with SMTP id y10so4045263qtj.2
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 15:42:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m0twPlz7J0OZOmkl9SNfJMtrF4Bcsmf1g8uXEP2fb34=;
-        b=5ajjCHpbtp6X54+sIm2kDRdW0soxsQUDRVfBbVZclAFRo0Xh1ybYxlhjWFhOTP2bD+
-         KIiRILpell4LUJ+9mSGjx4x5FXYtkTOW6hDIGzgr2eRNnDRPNsqKWo1iZe74B7hHkZ2p
-         VLdPuDjvLJDTeR2Mq4cmh9DfDpeNeWhjA5KK2/OzoU8QNj7w6eAmZR7qtRv0dXVwuECO
-         lPu4SIrzTNFjgWK919sYnU5W38gwPI06FrLXLimXtPrq4kz5eUYm1H1bHEr0O4Iqxi9S
-         0Yx/4/hbWO3ShX3kDGEPpI2BCQNzo8GXybEaEJxtpPNzzvF+fSrXtR0kcvk60/rdqoXE
-         lmyg==
-X-Gm-Message-State: AO0yUKU2GMTs+tMN9W5hBKOrlc0PzOZvQTgrHlnl0Sotyv1f6EdG4wjX
-        FxyG+F7/kLnBYYR7fq/56U8=
-X-Google-Smtp-Source: AK7set8KkMGYGymFFVSUpIYSr6C7Zjv+J1FTFfjGuss7IpBc9uFPJy9qOV3HNqgWTxa+UNqQjIAO4g==
-X-Received: by 2002:ac8:5b8e:0:b0:3bf:d215:4162 with SMTP id a14-20020ac85b8e000000b003bfd2154162mr1995274qta.42.1677541341102;
-        Mon, 27 Feb 2023 15:42:21 -0800 (PST)
-Received: from maniforge ([2620:10d:c091:480::1:978f])
-        by smtp.gmail.com with ESMTPSA id c20-20020a05620a269400b0073b81e888bfsm5710649qkp.56.2023.02.27.15.42.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 15:42:20 -0800 (PST)
-Date:   Mon, 27 Feb 2023 17:42:18 -0600
-From:   David Vernet <void@manifault.com>
-To:     Dave Thaler <dthaler@microsoft.com>
-Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "bpf@ietf.org" <bpf@ietf.org>
-Subject: Re: [Bpf] [PATCH V3] bpf, docs: Document BPF insn encoding in term
- of stored bytes
-Message-ID: <Y/0/2pCw7d9b3Ji/@maniforge>
-References: <877cw295u8.fsf@oracle.com>
- <PH7PR21MB3878F2AF288BE7671D61E257A3AF9@PH7PR21MB3878.namprd21.prod.outlook.com>
+        with ESMTP id S229471AbjB0Xom (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 18:44:42 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C3621945
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 15:44:34 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31RLDLU0002014;
+        Mon, 27 Feb 2023 15:44:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=dR1JAZWtFBWrrual8eFdUGmhoyF+i1nDpyNg8NyeEwI=;
+ b=T7P5uAeQYOFnfRaTwAVoY0YLL5mUaRacZe0XzbBM1KvxurzzG6xWcKRQK2H0dBOEBCUW
+ hnc1SU0LkicniV8QvPfOY7zpomA7RfQQkULre7HttSq1mWBcO85siKmTD7Xgovn2ljbX
+ GoxrPAn3PbQpzFdr4jY3xOuTeKzrawGlmdLf+KkPjWHcXEomeTz8inpzZ5N/gNDwOb2F
+ oEKkOKCiGudnfIOppfzQnnf57Amihu7vtUrxMDvjW3jH7AaMud8NandUfIYVOGkX9QZ5
+ bnChiIHi2XlPMW9k6OhBd8r4DSmkSuJIgJNDBO3CWOClnCh3+4OufilqjwfSkR0fYXx1 Tg== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nyf8s54b6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Feb 2023 15:44:19 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WUIMUQa/7VFkVtXqrXvCLEM0F3ReI7s33ch832RYVKSO5A+zqKUXMXFBPa+7mNaTG5oKnhnAQXxwHyo3sMAJk7XYmOY2OcjUcrbwVj7T1rFFVOFUriMLNy6xwxkwifUdlWR6NfcPrIfGZpgvaYmatPkfW1Sz2u3QW5wPKJRhJVaAs7Wf78ArhjGJe8fmOqe7SjoXH7EoZ0s46yXo+EWWYSAJU/sbXYhujerPQ0GE8m55Smm1pQj5gN0Sxk9hFkg1iu8gLMXMexc0U/PU4JOhHHcvjOGHdhZKAzoHWDL2asDZ+72uUsoc/TvDMkbXcPDU1tgHWdYe8YSHJOHoC+6EdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dR1JAZWtFBWrrual8eFdUGmhoyF+i1nDpyNg8NyeEwI=;
+ b=kBfJgkS3TxXtqCpOgzF5RF9m/B8LIU9U6augag3bWdKZ903Sq3H2NyftMqj0ghGy7cqf4mRiStS7bpHXdpqIBbf+PbECtQDv6EV6t4Dmn7GFGZRLNSOB1HDDdMicKYglrZhfJMVVA8spwITts4/jRFofVFzd96qY0dBjHViyBt1slKu9kn0FQceZ8XIVmFGs2M0WLALVgQN2ciPSiJisZYhnfAElWCB19pDFA2+kgetfJ+RUL0Ul3k2ZtShhGppl9zM0C0A+rJTfxHBzZX/Zzvhr4taidMwLwB4++Os/Rj4E5G2MAaMJX/6rZPv4ZCeto6xeaa2pBkRhPnm8apK4zQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB3870.namprd15.prod.outlook.com (2603:10b6:806:8a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.30; Mon, 27 Feb
+ 2023 23:44:17 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::a595:5e4d:d501:dc18]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::a595:5e4d:d501:dc18%4]) with mapi id 15.20.6134.029; Mon, 27 Feb 2023
+ 23:44:17 +0000
+Message-ID: <d32044c9-e1f9-f33a-21fc-d595ac349cc5@meta.com>
+Date:   Mon, 27 Feb 2023 15:44:14 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.8.0
+Subject: Re: [PATCH bpf] libbpf: Fix bpf_xdp_query() in old kernels
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+References: <20230227224943.1153459-1-yhs@fb.com>
+ <CAEf4Bzaqqzxo7fMNxrYXf5VgLVqSR3cOGkM6KF=hTNqcc1DTBw@mail.gmail.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <CAEf4Bzaqqzxo7fMNxrYXf5VgLVqSR3cOGkM6KF=hTNqcc1DTBw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR05CA0065.namprd05.prod.outlook.com
+ (2603:10b6:a03:332::10) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH7PR21MB3878F2AF288BE7671D61E257A3AF9@PH7PR21MB3878.namprd21.prod.outlook.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SA0PR15MB3870:EE_
+X-MS-Office365-Filtering-Correlation-Id: 068afd9f-5ded-45af-5445-08db191c8a1f
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tssRM7tQzjr8nAPCxAmsNlAbvfNMKOhupN3PM/R4L9Z/6tEdobwPumq0l9RzP0oKwbooan3mKzQ0nmrbXXwL4zZByBZTWD+kq7XkOxQV5vWAbzmpmxEJUKlWhfPpokuC9l0RMpVx2byqg2mzGegiLI6C9t/3g9exQt5Le95Z7ya1kwvkdyqYS0Yb7uh2x8QGVhI6g1cuYRd3Ig/snp9WeMRk6m3e8e3+xeNTKbkd4fFHpahWO9QN6Cd36qTN3uqVIH9seT596Lxy6gXPCh3FaLosKvo6K6qkFmvieGTKHp4N3lhuj+CBk5PAEP/gm9sIGW94iff36QtEVx5K2XgawitEWePouSyozrgsEkuTAfnM/H1aOwdtaCNrJmTCb9HEd9t6L//nM5VYBDUTvPrwWKM32npG8Se2nmtk+4FLlLAMmxizhqQ348VTFVNhvmH8959MZRQNNJiSebamI2pUfLMI//K/tbhfLjADONAeIuY2ylCSNhsP+jezRy0I+hNdcUEcn+ynAnllGVSc3TBreq/ztEyD6FmetWzsreVrjqT+Rz7HBnwWlC7sO7E/w7LZsccfny9HvM7oJD3RsUuzIv/9cpuZ7isidUTGiP25+RfxZ+lwz2tJi/HnXIuMIOhwZ5lUlCwPIh3mqBEyVwKrkT/bzzRf+m49AFj7u5ujMvTtVY4zVBm4GchbIm/xNYdl7dOylPow/Ggv0m25oCkbYf70XAONIFjFN/2amiMwfD4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(366004)(396003)(39850400004)(136003)(376002)(346002)(451199018)(38100700002)(86362001)(31696002)(36756003)(2906002)(41300700001)(66946007)(66556008)(66476007)(8676002)(4326008)(5660300002)(8936002)(2616005)(53546011)(6512007)(6506007)(186003)(83380400001)(110136005)(54906003)(478600001)(316002)(6666004)(6486002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YXIvdWhBZ3RMbFhqUXcxVExIZkRRUUx5ZVlpMzBQcWJhNUdoYThmYkhDZHdy?=
+ =?utf-8?B?REM1bzZMamF1ZGNZL0hsMW5RRVk0YW9qUmlGeE1PN1IvZ091ZXh3b1BybHN1?=
+ =?utf-8?B?d3hsWnFtZEsrR0hWREdtRVllRFZwNTBZV3lWcFlGaWZySTc1b2o3bmxQMG83?=
+ =?utf-8?B?UlFjS1d1T01Ha1FPeWtRdzZ1bkQwOWFwcmY5SU5JMVJ2K21CRE0xRjAvSXpY?=
+ =?utf-8?B?L0JsZjBvUDByUlozZlNodGpzS1lFdWF0cEdkcmdaL1c3K3dtSmhGQ2pNS0Ex?=
+ =?utf-8?B?TThqNldEZjVxSmdCeXp1SkxtRXRES1hLaDRGaGZXcThsTitJTlRLd2JHQmxP?=
+ =?utf-8?B?NDB2ZVZXSytoQVhPZXVnb2dWM3YvZEhGL0p4cjFnTE9kQUVQbjBsTU13YW45?=
+ =?utf-8?B?TmJzWEcxUXp6cmhsa3daSlFqQm5WNlpXZWtsSmNKQWtoeU5pWVpVWXRRWHkw?=
+ =?utf-8?B?eFlHS0J4UWVCQ3ljeW54Rm9IQXRCbjlpY0R2N2RhSml0dSsyS01jQVpiSUpS?=
+ =?utf-8?B?TTBzT0IyMFp2cFZJM1R4MnY5cUZBdjFhc2tDWlB4SWtaYmJsVXFKSjByamNG?=
+ =?utf-8?B?SG5WcWphY1lhSndjT0lJRkVVNzdva05iSm8xaFp4TlppeityWW53M3pLaW5D?=
+ =?utf-8?B?SDFFUGxkWUFNNkNkRXU1eG9mbVZ4dm5TWTA4aHZrSVVOUnNwUlJJY0ZIdDg0?=
+ =?utf-8?B?QStOZFBmeUhEYTUzVVlwZzhFTGgxZ1l3RFV1c011K3l1U3hPdzFUWVorUW9a?=
+ =?utf-8?B?NEdMeW55K0hka2tYamlFTmExNUlnQWM4eG94SzhzazJMbGh1VzA1d2EvZUlT?=
+ =?utf-8?B?UmdtQWVIV21SeGVjd204S1hMblNBdC9jNjQ1YkVIamlncVVkN3FpVERmMzlj?=
+ =?utf-8?B?UUhVdVJTZDNYWjBuZGFVSTVGbCtTZE1VTVIvZ2lHTkgwbGxRc1I5M29wbmF2?=
+ =?utf-8?B?UjUyelJLOWN4c3VqSXRqaHlzM2JYYlJjL1ptb0ozRjl6OEZIUEUzL2NFdVFn?=
+ =?utf-8?B?RXY1N3RZQnlKTzd4K2N4dHVJWDlmcUkvcmtuejc3Ujh4QmFCcURRREtxU1pa?=
+ =?utf-8?B?WThFQWlSWHhJbk1CYUZ3bnk2RFo2K2REdFdNY2pSaDdrQjFlaU9TN3VycEJ4?=
+ =?utf-8?B?M1doVUVyUGh6MXFPOUJ0Rk85SlNJOHF6VTk2NDNPVys0bmN5RVhWS0JlTlB0?=
+ =?utf-8?B?dVQ4aGNFdFJSVWhWbmlTVXZlZ3dZNzVNaW9YaWk1QWY4MHJtRngzM0xaNjNx?=
+ =?utf-8?B?eFBuTG41cWhXd1JISFJiOUsrZGlJaW9WU2pjUjlKYXRsMXpvaUVDRWduenhY?=
+ =?utf-8?B?TE9pQ0FlSDM5TzVYcHEvUkVZbTNzWmNLZmhuUXNuYkRuc2pkSmVnZHNtbjBO?=
+ =?utf-8?B?UUE3Qnl3MkVyS0YrMEt4VUFDb0VHUzQ1UmlpaTliOXVMdXYzUzhCWVhhVklS?=
+ =?utf-8?B?UGttaThMOTUyWkdPbmdRN3VyVkRIcGpSaW9Kc1U3VmthQndzN0NqRWg5ZG0x?=
+ =?utf-8?B?b2RUZDF1eGJqOVhPVUxNWGRrSHl0RXRJeFdvRWJsM1ZaUmsrcFpZb0toWElv?=
+ =?utf-8?B?RWhBUTNWdE1MWWV2bDZtRWpNUXFvNkRXU2NHQTVoaDE3SW5xNkozOU9zNlZu?=
+ =?utf-8?B?UE1EVlBUQm5vL3pFdHpPLzd5WGNYMDMyTTdqdDF5UWFrSTRQcEF4SzJHaTRR?=
+ =?utf-8?B?cnFkdDhRbU0xOVJDQnNxTklGQTluamZ2V0poT0V6U2VwYXovVEdnREdramNk?=
+ =?utf-8?B?YlJCeWNlY0ZMaWxpWDNVQkNYd1p2RWpUMXB4biszQTZ0aTNhdGRYd05BME4y?=
+ =?utf-8?B?TklZNjFwRGZ2WWlZS2hDTkptVTlVNmJCZERDKzRDY2pIRXA2T1hUbDV2TkVq?=
+ =?utf-8?B?NFByWGZ4TnZianZ3RG0rOWphT1hySDFUdzF4TXZqR1hJbVdLOEpURWd6eXBj?=
+ =?utf-8?B?akVNVmNCVmp0VnQ2Nk9uV0Q2UkRjVStQTjhaLzZDRlRvM2RidWh2cFVSVWk4?=
+ =?utf-8?B?d0dyekgzRkhkVS9mbFBRbm5iNS9Da0MxMllDYWMrZXJxWSt4UUlCTVNxemxZ?=
+ =?utf-8?B?ZmJmVGcxalI1alNHZW1lbURWSGREVHNIVVRhd2NSZk1IZS96b3FMcXB5TEYz?=
+ =?utf-8?B?SUVzbUxLN2JPemo5c3YxUTcwVFp6cndzTEZValNaNHBTdlZCOWd1dk5OWG5U?=
+ =?utf-8?B?dXc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 068afd9f-5ded-45af-5445-08db191c8a1f
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2023 23:44:17.1550
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7ByAxfzZZI6BJ8Vu/xwC35calYLblJlW2J4zw1E+0MRv4AYK7SApF2QxrarjPOIM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3870
+X-Proofpoint-GUID: bccoYpUIEvhh9xXu7NY8VrNFfpS3pRfX
+X-Proofpoint-ORIG-GUID: bccoYpUIEvhh9xXu7NY8VrNFfpS3pRfX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-27_17,2023-02-27_01,2023-02-09_01
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 27, 2023 at 09:49:15PM +0000, Dave Thaler wrote:
-> > -----Original Message-----
-> > From: Bpf <bpf-bounces@ietf.org> On Behalf Of Jose E. Marchesi
-> > Sent: Monday, February 27, 2023 1:06 PM
-> > To: bpf <bpf@vger.kernel.org>
-> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>; bpf@ietf.org; David
-> > Vernet <void@manifault.com>
-> > Subject: [Bpf] [PATCH V3] bpf, docs: Document BPF insn encoding in term of
-> > stored bytes
-> > 
-> > 
-> > [Changes from V2:
-> > - Use src and dst consistently in the document.
-> 
-> Since my earlier patch, src and dst refer to the values whereas
-> src_reg and dst_reg refer to register numbers.
-> 
-> > - Use a more graphical depiction of the 128-bit instruction.
-> > - Remove `Where:' fragment.
-> > - Clarify that unused bits are reserved and shall be zeroed.]
-> > 
-> > This patch modifies instruction-set.rst so it documents the encoding of BPF
-> > instructions in terms of how the bytes are stored (be it in an ELF file or as
-> > bytes in a memory buffer to be loaded into the kernel or some other BPF
-> > consumer) as opposed to how the instruction looks like once loaded.
-> > 
-> > This is hopefully easier to understand by implementors looking to generate
-> > and/or consume bytes conforming BPF instructions.
-> > 
-> > The patch also clarifies that the unused bytes in a pseudo-instruction shall be
-> > cleared with zeros.
-> > 
-> > Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-> > ---
-> >  Documentation/bpf/instruction-set.rst | 63 ++++++++++++++-------------
-> >  1 file changed, 33 insertions(+), 30 deletions(-)
-> > 
-> > diff --git a/Documentation/bpf/instruction-set.rst
-> > b/Documentation/bpf/instruction-set.rst
-> > index 01802ed9b29b..fae2e48d6a0b 100644
-> > --- a/Documentation/bpf/instruction-set.rst
-> > +++ b/Documentation/bpf/instruction-set.rst
-> > @@ -38,15 +38,11 @@ eBPF has two instruction encodings:
-> >  * the wide instruction encoding, which appends a second 64-bit immediate
-> > (i.e.,
-> >    constant) value after the basic instruction for a total of 128 bits.
-> > 
-> > -The basic instruction encoding looks as follows for a little-endian processor,
-> > -where MSB and LSB mean the most significant bits and least significant bits,
-> > -respectively:
-> > +The fields conforming an encoded basic instruction are stored in the
-> > +following order::
-> > 
-> > -=============  =======  =======  =======  ============
-> > -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> > -=============  =======  =======  =======  ============
-> > -imm            offset   src_reg  dst_reg  opcode
-> > -=============  =======  =======  =======  ============
-> > +  opcode:8 src:4 dst:4 offset:16 imm:32 // In little-endian BPF.
-> > +  opcode:8 dst:4 src:4 offset:16 imm:32 // In big-endian BPF.
-> 
-> I think those should be src_reg and dst_reg (as the register numbers)
-> not src and dst (which are the values) or this will be a documentation
-> regression.
-> 
-> Right now I think this is a regression since if I understand right, with this
-> patch, "src" and "dst" now refer to both in different places which is
-> confusing.
 
-Fair enough -- this was my suggestion, and in hindsight I agree that it
-would probably be best to avoid ambiguity by using src_reg and dst_reg
-here. Apologies for the churn, Jose.
+
+On 2/27/23 3:35 PM, Andrii Nakryiko wrote:
+> On Mon, Feb 27, 2023 at 2:50 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>> Commit 04d58f1b26a4("libbpf: add API to get XDP/XSK supported features")
+>> added feature_flags to struct bpf_xdp_query_opts. If a user uses
+>> bpf_xdp_query_opts with feature_flags member, the bpf_xdp_query()
+>> will check whether 'netdev' family exists or not in the kernel.
+>> If it does not exist, the bpf_xdp_query() will return -ENOENT.
+>>
+>> But 'netdev' family does not exist in old kernels as it is
+>> introduced in the same patch set as Commit 04d58f1b26a4.
+>> So old kernel with newer libbpf won't work properly with
+>> bpf_xdp_query() api call.
+>>
+>> To fix this issue, if the return value of
+>> libbpf_netlink_resolve_genl_family_id() is -ENOENT, bpf_xdp_query()
+>> will just return 0, skipping the rest of xdp feature query.
+>> This preserves backward compatibility.
+>>
+>> Fixes: 04d58f1b26a4 ("libbpf: add API to get XDP/XSK supported features")
+>> Cc: Lorenzo Bianconi <lorenzo@kernel.org>
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+>>   tools/lib/bpf/netlink.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+>> index 1653e7a8b0a1..4c1b3502f88d 100644
+>> --- a/tools/lib/bpf/netlink.c
+>> +++ b/tools/lib/bpf/netlink.c
+>> @@ -468,8 +468,11 @@ int bpf_xdp_query(int ifindex, int xdp_flags, struct bpf_xdp_query_opts *opts)
+>>                  return 0;
+>>
+>>          err = libbpf_netlink_resolve_genl_family_id("netdev", sizeof("netdev"), &id);
+>> -       if (err < 0)
+>> +       if (err < 0) {
+>> +               if (err == -ENOENT)
+>> +                       return 0;
+>>                  return libbpf_err(err);
+>> +       }
+>>
+> 
+> As I mentioned in another thread, I'm a bit worried of this early
+> return, because query_opts might be extended and then we'll forget
+> about this early return. So I did these changes and pushed to
+> bpf-next:
+> 
+> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+> index 4c1b3502f88d..84dd5fa14905 100644
+> --- a/tools/lib/bpf/netlink.c
+> +++ b/tools/lib/bpf/netlink.c
+> @@ -469,8 +469,10 @@ int bpf_xdp_query(int ifindex, int xdp_flags,
+> struct bpf_xdp_query_opts *opts)
+> 
+>          err = libbpf_netlink_resolve_genl_family_id("netdev",
+> sizeof("netdev"), &id);
+>          if (err < 0) {
+> -               if (err == -ENOENT)
+> -                       return 0;
+> +               if (err == -ENOENT) {
+> +                       opts->feature_flags = 0;
+> +                       goto skip_feature_flags;
+> +               }
+>                  return libbpf_err(err);
+>          }
+> 
+> @@ -492,6 +494,7 @@ int bpf_xdp_query(int ifindex, int xdp_flags,
+> struct bpf_xdp_query_opts *opts)
+> 
+>          opts->feature_flags = md.flags;
+> 
+> +skip_feature_flags:
+>          return 0;
+>   }
+
+Sounds good to me. Thanks!
 
 > 
-> Dave
-> 
-> >  **imm**
-> >    signed integer immediate value
-> > @@ -54,48 +50,55 @@ imm            offset   src_reg  dst_reg  opcode
-> >  **offset**
-> >    signed integer offset used with pointer arithmetic
-> > 
-> > -**src_reg**
-> > +**src**
-> >    the source register number (0-10), except where otherwise specified
-> >    (`64-bit immediate instructions`_ reuse this field for other purposes)
-> > 
-> > -**dst_reg**
-> > +**dst**
-> >    destination register number (0-10)
-> > 
-> >  **opcode**
-> >    operation to perform
-> > 
-> > -and as follows for a big-endian processor:
-> > +Note that the contents of multi-byte fields ('imm' and 'offset') are
-> > +stored using big-endian byte ordering in big-endian BPF and
-> > +little-endian byte ordering in little-endian BPF.
-> > 
-> > -=============  =======  =======  =======  ============
-> > -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> > -=============  =======  =======  =======  ============
-> > -imm            offset   dst_reg  src_reg  opcode
-> > -=============  =======  =======  =======  ============
-> > +For example::
-> > 
-> > -Multi-byte fields ('imm' and 'offset') are similarly stored in -the byte order of
-> > the processor.
-> > +  opcode         offset imm          assembly
-> > +         src dst
-> > +  07     0   1   00 00  44 33 22 11  r1 += 0x11223344 // little
-> > +         dst src
-> > +  07     1   0   00 00  11 22 33 44  r1 += 0x11223344 // big
-> > 
-> >  Note that most instructions do not use all of the fields.
-> >  Unused fields shall be cleared to zero.
-> > 
-> > -As discussed below in `64-bit immediate instructions`_, a 64-bit immediate -
-> > instruction uses a 64-bit immediate value that is constructed as follows.
-> > -The 64 bits following the basic instruction contain a pseudo instruction -
-> > using the same format but with opcode, dst_reg, src_reg, and offset all set to
-> > zero, -and imm containing the high 32 bits of the immediate value.
-> > +As discussed below in `64-bit immediate instructions`_, a 64-bit
-> > +immediate instruction uses a 64-bit immediate value that is constructed
-> > +as follows.  The 64 bits following the basic instruction contain a
-> > +pseudo instruction using the same format but with opcode, dst, src, and
-> > +offset all set to zero, and imm containing the high 32 bits of the
-> > +immediate value.
-> > 
-> > -=================  ==================
-> > -64 bits (MSB)      64 bits (LSB)
-> > -=================  ==================
-> > -basic instruction  pseudo instruction
-> > -=================  ==================
-> > +This is depicted in the following figure::
-> > +
-> > +        basic_instruction
-> > +  .-----------------------------.
-> > +  |                             |
-> > +  code:8 regs:16 offset:16 imm:32 unused:32 imm:32
-> > +                                  |              |
-> > +                                  '--------------'
-> > +                                 pseudo instruction
-> > 
-> >  Thus the 64-bit immediate value is constructed as follows:
-> > 
-> >    imm64 = (next_imm << 32) | imm
-> > 
-> >  where 'next_imm' refers to the imm value of the pseudo instruction -
-> > following the basic instruction.
-> > +following the basic instruction.  The unused bytes in the pseudo
-> > +instruction are reserved and shall be cleared to zero.
-> > 
-> >  Instruction classes
-> >  -------------------
-> > @@ -137,7 +140,7 @@ code            source  instruction class
-> >    source  value  description
-> >    ======  =====  ==============================================
-> >    BPF_K   0x00   use 32-bit 'imm' value as source operand
-> > -  BPF_X   0x08   use 'src_reg' register value as source operand
-> > +  BPF_X   0x08   use 'src' register value as source operand
-> >    ======  =====  ==============================================
-> > 
-> >  **instruction class**
-> > --
-> > 2.30.2
-> > 
-> > --
-> > Bpf mailing list
-> > Bpf@ietf.org
-> > https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww
-> > .ietf.org%2Fmailman%2Flistinfo%2Fbpf&data=05%7C01%7Cdthaler%40micro
-> > soft.com%7C65d83bf2fe834f73f84908db19067400%7C72f988bf86f141af91ab
-> > 2d7cd011db47%7C1%7C0%7C638131287757978381%7CUnknown%7CTWFpb
-> > GZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6
-> > Mn0%3D%7C3000%7C%7C%7C&sdata=8il1%2B8I1T8GBqn3U%2B7YJehIKjS6s
-> > gvxTRWS2CTpg%2FZY%3D&reserved=0
+>>          memset(&req, 0, sizeof(req));
+>>          req.nh.nlmsg_len = NLMSG_LENGTH(GENL_HDRLEN);
+>> --
+>> 2.30.2
+>>
