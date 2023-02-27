@@ -2,37 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 622166A3BB5
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 08:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EBA6A3BB7
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 08:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjB0HbE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 02:31:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46448 "EHLO
+        id S229981AbjB0HbH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 02:31:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjB0HbD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 02:31:03 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5B81ABCA;
-        Sun, 26 Feb 2023 23:31:01 -0800 (PST)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PQBwt0KKhzrSJV;
-        Mon, 27 Feb 2023 15:30:22 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 27 Feb 2023 15:30:27 +0800
-Message-ID: <42e9b829-196b-25b2-7c10-c64748af25d9@huawei.com>
-Date:   Mon, 27 Feb 2023 15:30:26 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf v2] riscv, bpf: fix patch_text implicit declaration
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     kernel test robot <lkp@intel.com>,
+        with ESMTP id S229451AbjB0HbG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 02:31:06 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29751ABC7;
+        Sun, 26 Feb 2023 23:31:04 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 59F9860D57;
+        Mon, 27 Feb 2023 07:31:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43A22C433D2;
+        Mon, 27 Feb 2023 07:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677483063;
+        bh=BKhCyAlJfue3qCvD5gMnMzJg0H76KaUopSvrz0ZoyQg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=TmYqZkRB9HOHTkjyN7ucvV530Ru4DXBhtuoiDpIFeWrO3r2bKRVAwQKDNeDMIP7Dd
+         4aEL0nX1rwJLEjcHPAKMejx+PHjv1Yj6kG6SnnLmxPOPedgTMTs6036OrC9HUHFQjs
+         uiFtLbPkV8SE90m52pllzCmbaOTq4+EgyYAT/4eNPCFjUkJJFNZzbMaBNhj1Ommm/x
+         rnquABFHmNe0jHm2Z237hJoiAceY4lW+jm6FXDSQdiIl1qIvKnhr3+1L7vL3TVDQZ/
+         Ykl4AYR0En6yYRwdWOe5FtD1fArR1VoDgMRNjwhscOw54Y67Xkdd14SYEjlU6EPwXF
+         Kp73Qnt9Gmmug==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Pu Lehui <pulehui@huawei.com>,
         Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, <bpf@vger.kernel.org>,
+        Xi Wang <xi.wang@gmail.com>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
@@ -40,38 +45,38 @@ CC:     kernel test robot <lkp@intel.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        <linux-riscv@lists.infradead.org>
-References: <20230227072016.14618-1-rdunlap@infradead.org>
-From:   Pu Lehui <pulehui@huawei.com>
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH bpf v2] riscv, bpf: fix patch_text implicit declaration
 In-Reply-To: <20230227072016.14618-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230227072016.14618-1-rdunlap@infradead.org>
+Date:   Mon, 27 Feb 2023 08:31:01 +0100
+Message-ID: <87k003a7ka.fsf@all.your.base.are.belong.to.us>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-
-On 2023/2/27 15:20, Randy Dunlap wrote:
 > bpf_jit_comp64.c uses patch_text(), so add <asm/patch.h> to it
 > to prevent the build error:
-> 
+>
 > ../arch/riscv/net/bpf_jit_comp64.c: In function 'bpf_arch_text_poke':
-> ../arch/riscv/net/bpf_jit_comp64.c:691:23: error: implicit declaration of function 'patch_text'; did you mean 'path_get'? [-Werror=implicit-function-declaration]
->    691 |                 ret = patch_text(ip, new_insns, ninsns);
->        |                       ^~~~~~~~~~
-> 
-> Fixes: 596f2e6f9cf4 ("riscv, bpf: Add bpf_arch_text_poke support for RV64")
+> ../arch/riscv/net/bpf_jit_comp64.c:691:23: error: implicit declaration of=
+ function 'patch_text'; did you mean 'path_get'? [-Werror=3Dimplicit-functi=
+on-declaration]
+>   691 |                 ret =3D patch_text(ip, new_insns, ninsns);
+>       |                       ^~~~~~~~~~
+>
+> Fixes: 596f2e6f9cf4 ("riscv, bpf: Add bpf_arch_text_poke support for RV64=
+")
 > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 > Reported-by: kernel test robot <lkp@intel.com>
 > Link: https://lore.kernel.org/r/202302271000.Aj4nMXbZ-lkp@intel.com
@@ -86,25 +91,16 @@ On 2023/2/27 15:20, Randy Dunlap wrote:
 > Cc: Paul Walmsley <paul.walmsley@sifive.com>
 > Cc: Palmer Dabbelt <palmer@dabbelt.com>
 > Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: "Björn Töpel" <bjorn@kernel.org>
+> Cc: "Bj=C3=B6rn T=C3=B6pel" <bjorn@kernel.org>
 > Cc: linux-riscv@lists.infradead.org
 > ---
 > v2: add header file directly to bpf_jit_comp64.c (Pu Lehui)
->      change patch target to bpf (for fixes)
-> 
->   arch/riscv/net/bpf_jit_comp64.c |    1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff -- a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -10,6 +10,7 @@
->   #include <linux/filter.h>
->   #include <linux/memory.h>
->   #include <linux/stop_machine.h>
-> +#include <asm/patch.h>
->   #include "bpf_jit.h"
->   
->   #define RV_REG_TCC RV_REG_A6
+>     change patch target to bpf (for fixes)
 
-Acked-by: Pu Lehui <pulehui@huawei.com>
+Thanks, Randy!
+
+For the curious; The asm/patch.h file was picked via UPROBES (via
+PERF_EVENTS=3Dy). For PERF_EVENTS=3Dn, you get the build error.
+
+
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
