@@ -2,112 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E066A463B
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0636A4666
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbjB0Pkg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 10:40:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        id S229568AbjB0Prc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 10:47:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjB0Pkg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 10:40:36 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B69D1EBFC
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:40:35 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id m14-20020a7bce0e000000b003e00c739ce4so4088226wmc.5
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2RUcgyHnJ/etaK3uhEjf+YLIhFfUz/wtE9tXC/7i2y4=;
-        b=eYmxO3RVhN+9zhwM5ArERLU7dZoGWYvILsipaXZqKC0f5H/Hh7w+4huvsSS+9ze+Fo
-         xiFyVTgzrWE1g3UFhXBYsB8k704hHvxc9MIdTwz/ljBz1sDQ0j8PxBwsTn5FTXzH36NS
-         LTuS8FfrG39niY77a2/7Q52o7rtd56YJr8c1ulUA7ctwzgo4ojUOJL+vQoo0AGDlS9bb
-         e3pbiMSF4PZkOx+xlZGNqzwUGGqidSjSAFYEf5sFSEVTysoR1jKtBuitc8lLljHLx32y
-         gJfThtCZZ8LaRXLoI7F/wkWj8+PTEz/Qjitb5fVErUOF9vSpLJBNmf3+NL22PGua95HR
-         FpWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2RUcgyHnJ/etaK3uhEjf+YLIhFfUz/wtE9tXC/7i2y4=;
-        b=T2nZ7QslwSi2bGJ28N8B1Xt4eHNPkkr1zzDmdoG2aoiQeRyl5NzOKoea2iS0h4x054
-         5F0ChqyB96PuDrFV8vZqMAzhGgChvfgSr6GiuYLXIqD/oXBCswhqcp+KYNOZ1he6AqF0
-         Dkkif4NVttsM/NCvauESnH3Y6p0Rk+Zii0tMDKg8QPMqZFJONX+fltYHzcONRdgRRbNo
-         b6YwMRXTOi1MFldI8kWk6qJf3h2GWFJPPpYpAQu8f4s+1H62vUzJpyAw4ph2DOgQJ3uP
-         zElwOIdFGjDjqt98sqdXFytf9r+wJzUU8yqS+rPnYq3NvRcdjXdk3Vvx91YR5p2sllbw
-         cv4w==
-X-Gm-Message-State: AO0yUKXBcv3l/fHj2x8HPQcIfDpndxBCDlqJZwIAcTUo5awBww1AA771
-        1b3fXsFlQrCg0WK6IrVVQvy5Yw==
-X-Google-Smtp-Source: AK7set+xkQaw3K9W4KXceG2A4gYhxl/0iXrGAddB++6wpIhQb8MhDW08DsWxj+JIYLwYNs8q8mPYIQ==
-X-Received: by 2002:a05:600c:3d1b:b0:3dc:40a0:3853 with SMTP id bh27-20020a05600c3d1b00b003dc40a03853mr6964126wmb.11.1677512433593;
-        Mon, 27 Feb 2023 07:40:33 -0800 (PST)
-Received: from ?IPV6:2a02:8011:e80c:0:3c9c:c8a4:3574:9374? ([2a02:8011:e80c:0:3c9c:c8a4:3574:9374])
-        by smtp.gmail.com with ESMTPSA id ja18-20020a05600c557200b003eb0d6f48f3sm12429618wmb.27.2023.02.27.07.40.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Feb 2023 07:40:33 -0800 (PST)
-Message-ID: <ceadeae8-2478-0d96-b6be-1b330bbbc2a2@isovalent.com>
-Date:   Mon, 27 Feb 2023 15:40:32 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] tools: bpftool: remove invalid \' json escape
-Content-Language: en-GB
-To:     Luis Gerhorst <gerhorst@cs.fau.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230227150853.16863-1-gerhorst@cs.fau.de>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230227150853.16863-1-gerhorst@cs.fau.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229545AbjB0Prb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 10:47:31 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE49E078;
+        Mon, 27 Feb 2023 07:47:30 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id E0BB85C00D3;
+        Mon, 27 Feb 2023 10:47:27 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute2.internal (MEProxy); Mon, 27 Feb 2023 10:47:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1677512847; x=
+        1677599247; bh=JU1LAyxBo+olX19UudHZaal6iEsZpC8v/IZIn+tLd90=; b=u
+        0gFNR+SHetNdTLCeA2537k9ySTxVy2ep0IiOuOF+vxKGh9FT+gU5G8cIDqXkntbY
+        GGBfVTf2bkGJ/plbAI7dsvjVSrlxlRkemNKfyksPqvoYoaqYPcPxI/FUtYXrbE/8
+        W3wRDv2ALHsxX2fT032eGwMl3X6sP2ohRRiC6iJCvhCEyoaz3SbFnBkqzQplhSMg
+        CWi1O6YbLmna/fltMnVOE+5stLKx6b8T+kJRbBuGpS8MFHHMCYykUjpYPa4JcFZ/
+        b+TC+bYLroxpurpHr8Fg1qBkOKIjdvyBgIKBI7gVpf9x4I7MoBfbus2VMexFUk0k
+        ixgKIVMTOLeg32RzDmp3Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677512847; x=
+        1677599247; bh=JU1LAyxBo+olX19UudHZaal6iEsZpC8v/IZIn+tLd90=; b=K
+        wp1Do38lHB22Z5U2WXZmODC/G8LmM8vuCj2KPqBCI7wz7fr/UOQ0ZxieV1C5n+7q
+        rQRRO72Y4pO4hVG8M5HYArQVp5rAN9KGzIwUVLSDmJAB9HyuOueY61VY7WNikYAZ
+        xTp+x0PYtokRNwicVoAl5Jf4Zj5nk42KTAAC+HBcC6/itLMq0xrGGED9shbEI240
+        hZRf+9G82hfHSwZv0rBuLdMVDgbqdQGnQujPbZkWEruYj1UiLFhIRKa+jd11MUN1
+        biZBRRikdP+bD7qvcZJJKNHlCK4uZDZshvE1gLIVrbStSYZmgSpjY8GRGOJ2bRJd
+        wT7k/oBC+oOCm5D7xRATw==
+X-ME-Sender: <xms:j9D8Y5YsH6gG66oigmXwuQSmPEhtkjb4wW2Q0nnLl16xHkYmbqNSYw>
+    <xme:j9D8Ywbckg1q6jUR8DbiU-CnY5cUzNhcaBAtR9xaDgpTqPj9EznnthWIS7DLsinaQ
+    QmTjFFffvnLqdL_18c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeltddgjeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
+    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpedufeegfeetudeghefftdehfefgveffleefgfehhfej
+    ueegveethfduuddvieehgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:j9D8Y79qHbp9n8VTVIUyRn-xEy-9yVbcR_DJfBoVNkEAeKNIOr88bw>
+    <xmx:j9D8Y3p5Zfvol0XXonhxkiJuopSXkzIUeZvczC4qIpL4xLXp9ywBjA>
+    <xmx:j9D8Y0oZFDrGgBmaRnJa_TIZJYVJrc2m09fw8EWU2bbOQEPMb6bu2Q>
+    <xmx:j9D8Y8JzI306BIdJSyZEQC5b1ycDX41EYa0r1g5_HmqDkpYW63D2JQ>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0AAA936A0073; Mon, 27 Feb 2023 10:47:27 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-172-g9a2dae1853-fm-20230213.001-g9a2dae18
+Mime-Version: 1.0
+Message-Id: <c36effcb-5a5f-49b0-8bbe-cc46addf2959@app.fastmail.com>
+In-Reply-To: <alpine.DEB.2.21.2302271515100.63909@angie.orcam.me.uk>
+References: <20230222161222.11879-1-jiaxun.yang@flygoat.com>
+ <20230222161222.11879-3-jiaxun.yang@flygoat.com>
+ <CAM1=_QTDkYJANgxYwkgPZB+hUX6Rr_Pvnn7cFwSJFHQtLrpQMA@mail.gmail.com>
+ <70C80F6D-A727-48FD-A767-A2CA54AA7C1E@flygoat.com>
+ <CAM1=_QS_ewcFdrZ1ypV15wOkK_SKkb0UUe5_Ozi_CDBdxF5JmA@mail.gmail.com>
+ <alpine.DEB.2.21.2302271515100.63909@angie.orcam.me.uk>
+Date:   Mon, 27 Feb 2023 15:47:05 +0000
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        "Johan Almbladh" <johan.almbladh@anyfinetworks.com>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        bpf@vger.kernel.org, "Alexei Starovoitov" <ast@kernel.org>,
+        "Andrii Nakryiko" <andrii@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>
+Subject: Re: [PATCH 2/2] MIPS: ebpf jit: Implement R4000 workarounds
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2023-02-27 16:08 UTC+0100 ~ Luis Gerhorst <gerhorst@cs.fau.de>
-> RFC8259 ("The JavaScript Object Notation (JSON) Data Interchange
-> Format") only specifies \", \\, \/, \b, \f, \n, \r, and \r as valid
-> two-character escape sequences. This does not include \', which is not
-> required in JSON because it exclusively uses double quotes as string
-> separators.
-> 
-> Solidus (/) may be escaped, but does not have to. Only reverse
-> solidus (\), double quotes ("), and the control characters have to be
-> escaped. Therefore, with this fix, bpftool correctly supports all valid
-> two-character escape sequences (but still does not support characters
-> that require multi-character escape sequences).
-> 
-> Witout this fix, attempting to load a JSON file generated by bpftool
-> using Python 3.10.6's default json.load() may fail with the error
-> "Invalid \escape" if the file contains the invalid escaped single
-> quote (\').
-> 
-> Signed-off-by: Luis Gerhorst <gerhorst@cs.fau.de>
 
-Fixes: b66e907cfee2 ("tools: bpftool: copy JSON writer from iproute2
-repository")
 
-I see this escape was similarly removed from iproute2's version of the
-file [0]. Thanks!
+=E5=9C=A82023=E5=B9=B42=E6=9C=8827=E6=97=A5=E4=BA=8C=E6=9C=88 =E4=B8=8B=E5=
+=8D=883:18=EF=BC=8CMaciej W. Rozycki=E5=86=99=E9=81=93=EF=BC=9A
+> On Mon, 27 Feb 2023, Johan Almbladh wrote:
+>
+>> > > R4000 is a 64-bit CPU, so the 32-bit JIT implementation will not =
+be
+>> > > used. From the Makefile:
+>> > >
+>> > > ifeq ($(CONFIG_32BIT),y)
+>> > >        obj-$(CONFIG_BPF_JIT) +=3D bpf_jit_comp32.o
+>> > > else
+>> > >        obj-$(CONFIG_BPF_JIT) +=3D bpf_jit_comp64.o
+>> > > endif
+>> >
+>> > It=E2=80=99s common practice to run 32-bit kernel on R4000 based sy=
+stems to save some memory :-)
+>>=20
+>> Ok, I understand.
+>
+>  Likewise:
+>
+> 	select CPU_R4000_WORKAROUNDS if 64BIT
+> 	select CPU_R4400_WORKAROUNDS if 64BIT
+>
+> This only applies to 64-bit operations, which are not used in 32-bit c=
+ode=20
+> (one reason why these early silicon revisions were originally used wit=
+h=20
+> 32-bit software only).
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Thanks for the info.
+Will drop 32bit part from both patch.
 
-[0]
-https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit/lib/json_writer.c?id=49c63bc775d610c3dfd3db0d6501ac29c519967f
+>
+>   Maciej
+
+--=20
+- Jiaxun
