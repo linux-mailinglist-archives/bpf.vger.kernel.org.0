@@ -2,211 +2,267 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB34B6A4D06
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 22:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3B76A4D15
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 22:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbjB0VTD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 16:19:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
+        id S229973AbjB0VXb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 16:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbjB0VS7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 16:18:59 -0500
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2D722DF3
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 13:18:17 -0800 (PST)
-Received: by mail-qt1-f177.google.com with SMTP id d7so8255516qtr.12
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 13:18:17 -0800 (PST)
+        with ESMTP id S229965AbjB0VXa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 16:23:30 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEB2CA06
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 13:23:29 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id eg37so31304677edb.12
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 13:23:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0LFZ2Ef386rfLw4FYGGrBAaTreOZ8e26JfoUo9YP6io=;
+        b=pKlr57YMbK4EipzeM5yC+L/MsP0szBDqIIMt4WYEo7gAx/RuRylJo9Lf4afqYsUIU/
+         1mHor4SYGc5vhmuUKx71M/FFNwIid++X6Mk3aHqlMyT+SOC3nwFZCSAIuO60OwknC75W
+         kbKMLj4rIWSKwggI9XKqXLcM46uHsvBKc9l3zMjKo+hxUvNZhZXd4Vy+RnIALb6SW0sy
+         OBOvLWFbFJn9jn7x/gmme7mrsgj4JKjDMcwGEX0QGva7Iz0BKAwBHbsi1hd+oWmDNeiX
+         r+9B0pZ/QUggVBfmZYCuev/WGlQPSmR4dzZI5Nve15WeHWHfzQcv7jchgRA0VzJrzX3Q
+         cyVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2s5Q0LnbeKkyCMIqnM13rwWUtfHIlmhtxtsjdD+D3r0=;
-        b=zK0ihw2nump3C0KkhRfVKWTpsbdKILu3ryeW836uY8Hhax2W1CpaP8iE5g94hzMj/T
-         ktEG3Sa+9Kr9oNTD7XrOnkg85E+LVHGZEoUW732t6tAbGJnY/AgCe0uvrKdK2xd0QmQj
-         0lkLKaPAmXN7WkV1OPicW8hgZ0AgvE0mMBpZSMwt3dcnt2pT7zOS695bJ4k1DktMN/AJ
-         WrYMXL1pvP1beAz0T+ReELK5ub9PBY0G2OZO82FpxPBkEmR+4SpMjgficTnfOK9s6pAY
-         wMHaTmZfLr+FqiELw1Hn3pocruzOIYGNaDkopkR9ELcsrDljIUwKJ3IDtY7YRPSkKLmW
-         RVAw==
-X-Gm-Message-State: AO0yUKWqOG1P/a5jtwwWyLVrhT4Gb4he9KtNr7L+SuSpHBhad/MySalJ
-        EoDM3U5j3hEn/663AUYg5cY=
-X-Google-Smtp-Source: AK7set+51hVPuSg5wNby/PNWErpPsfe+gkMxoPtf80s1lJGFHKFWNlpy14dMfsWeswz4yZ1NNfYCXw==
-X-Received: by 2002:ac8:5aca:0:b0:3bf:dd4e:3426 with SMTP id d10-20020ac85aca000000b003bfdd4e3426mr1122873qtd.64.1677532691064;
-        Mon, 27 Feb 2023 13:18:11 -0800 (PST)
-Received: from maniforge ([2620:10d:c091:480::1:978f])
-        by smtp.gmail.com with ESMTPSA id d3-20020a05620a136300b0073ba2c4ee2esm5518518qkl.96.2023.02.27.13.18.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 13:18:10 -0800 (PST)
-Date:   Mon, 27 Feb 2023 15:18:08 -0600
-From:   David Vernet <void@manifault.com>
-To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@ietf.org
-Subject: Re: [PATCH V3] bpf, docs: Document BPF insn encoding in term of
- stored bytes
-Message-ID: <Y/0eEFTMu7YtMEN+@maniforge>
-References: <877cw295u8.fsf@oracle.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0LFZ2Ef386rfLw4FYGGrBAaTreOZ8e26JfoUo9YP6io=;
+        b=s5GQtzBS0zVuNBczydIIAslkhEILXCvarnV/t/YRdfEsIbA4xwx7q1HiKe8jWCEk2N
+         EG87ex7FouTZ2cq3rR/IcVMXPu9NfulUeRO3YJ+5GchP9zAWvcUapk4yU4yaqCL0K94v
+         0tgIg4Um5qWyLNVcMhBm1m817hGMiwOdXtdc2uimHN7EZERsnNCbIl1C42VZbe1/KulQ
+         RDZ0SrI478GAsmZiD2NTRKU5MiFDc4NqNNWPf03BPzzs+z2rY0ZNVLoMtBzFlgTvrJsf
+         JieHvMVSSowomrPeRuWp5WBWws1sLbu/U3yPXAVOLgHT3XGxvo/kBYOE6YPiouRNKOSr
+         rkcg==
+X-Gm-Message-State: AO0yUKWDGYLPrMrOm9quBryijGewa2gzDk32O53YEtmEk5KNwONhH60e
+        SEILpurLm7o5pFjfF9qv9JPLUonQmnTwRZ96M4TOGII+
+X-Google-Smtp-Source: AK7set95sOtDo1chb2lhqhxxMuzcoV1BLB/9EJZPXjdmFixEZGEmokCPu6JON94Ga1nGLwWRTURPsABk+QRnBIpaJ8k=
+X-Received: by 2002:a17:907:e94:b0:8d7:edbc:a7b6 with SMTP id
+ ho20-20020a1709070e9400b008d7edbca7b6mr746606ejc.2.1677533007436; Mon, 27 Feb
+ 2023 13:23:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877cw295u8.fsf@oracle.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230214231221.249277-1-iii@linux.ibm.com> <20230214231221.249277-8-iii@linux.ibm.com>
+ <CAEf4BzZcvuCZpjKwgT_-3WaKuM82CA1Uxg3X-4E63r2o6he+sA@mail.gmail.com> <b0ae5117d46948ca4d160157bc02e94c3b00fb19.camel@linux.ibm.com>
+In-Reply-To: <b0ae5117d46948ca4d160157bc02e94c3b00fb19.camel@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Feb 2023 13:23:15 -0800
+Message-ID: <CAEf4BzaOWk1tRpg+9tFhjjss-PYoiC4z_++vnrCwHfo7wNAapg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 7/8] libbpf: Add MSan annotations
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 27, 2023 at 10:05:51PM +0100, Jose E. Marchesi wrote:
-> 
-> [Changes from V2:
-> - Use src and dst consistently in the document.
-> - Use a more graphical depiction of the 128-bit instruction.
-> - Remove `Where:' fragment.
-> - Clarify that unused bits are reserved and shall be zeroed.]
-> 
-> This patch modifies instruction-set.rst so it documents the encoding
-> of BPF instructions in terms of how the bytes are stored (be it in an
-> ELF file or as bytes in a memory buffer to be loaded into the kernel
-> or some other BPF consumer) as opposed to how the instruction looks
-> like once loaded.
-> 
-> This is hopefully easier to understand by implementors looking to
-> generate and/or consume bytes conforming BPF instructions.
-> 
-> The patch also clarifies that the unused bytes in a pseudo-instruction
-> shall be cleared with zeros.
-> 
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+On Mon, Feb 20, 2023 at 4:46 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> On Thu, 2023-02-16 at 15:28 -0800, Andrii Nakryiko wrote:
+> > On Tue, Feb 14, 2023 at 3:12 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> > wrote:
+> > >
+> > > MSan runs into a few false positives in libbpf. They all come from
+> > > the
+> > > fact that MSan does not know anything about the bpf syscall,
+> > > particularly, what it writes to.
+> > >
+> > > Add __libbpf_mark_mem_written() function to mark memory modified by
+> > > the
+> > > bpf syscall, and a few convenience wrappers. Use the abstract name
+> > > (it
+> > > could be e.g. libbpf_msan_unpoison()), because it can be used for
+> > > Valgrind in the future as well.
+> > >
+> > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > > ---
+> > >  tools/lib/bpf/bpf.c             | 161
+> > > ++++++++++++++++++++++++++++++--
+> > >  tools/lib/bpf/btf.c             |   1 +
+> > >  tools/lib/bpf/libbpf.c          |   1 +
+> > >  tools/lib/bpf/libbpf_internal.h |  38 ++++++++
+> > >  4 files changed, 194 insertions(+), 7 deletions(-)
+> >
+>
+> [...]
+>
+> > > +/* Helper macros for telling memory checkers that an array pointed
+> > > to by
+> > > + * a struct bpf_{btf,link,map,prog}_info member is initialized.
+> > > Before doing
+> > > + * that, they make sure that kernel has provided the respective
+> > > member.
+> > > + */
+> > > +
+> > > +/* Handle arrays with a certain element size. */
+> > > +#define __MARK_INFO_ARRAY_WRITTEN(ptr, nr, elem_size) do
+> > > {                    \
+> > > +       if (info_len >= offsetofend(typeof(*info), ptr)
+> > > &&                     \
+> > > +           info_len >= offsetofend(typeof(*info), nr)
+> > > &&                      \
+> > > +           info-
+> > > >ptr)                                                         \
+> > > +               libbpf_mark_mem_written(u64_to_ptr(info-
+> > > >ptr),                 \
+> > > +                                       info->nr *
+> > > elem_size);                 \
+> > > +} while (0)
+> > > +
+> > > +/* Handle arrays with a certain element type. */
+> > > +#define MARK_INFO_ARRAY_WRITTEN(ptr, nr,
+> > > type)                                \
+> > > +       __MARK_INFO_ARRAY_WRITTEN(ptr, nr, sizeof(type))
+> > > +
+> > > +/* Handle arrays with element size defined by a struct member. */
+> > > +#define MARK_INFO_REC_ARRAY_WRITTEN(ptr, nr, rec_size) do
+> > > {                   \
+> > > +       if (info_len >= offsetofend(typeof(*info),
+> > > rec_size))                  \
+> > > +               __MARK_INFO_ARRAY_WRITTEN(ptr, nr, info-
+> > > >rec_size);            \
+> > > +} while (0)
+> > > +
+> > > +/* Handle null-terminated strings. */
+> > > +#define MARK_INFO_STR_WRITTEN(ptr, nr) do
+> > > {                                   \
+> > > +       if (info_len >= offsetofend(typeof(*info), ptr)
+> > > &&                     \
+> > > +           info_len >= offsetofend(typeof(*info), nr)
+> > > &&                      \
+> > > +           info-
+> > > >ptr)                                                         \
+> > > +               libbpf_mark_mem_written(u64_to_ptr(info-
+> > > >ptr),                 \
+> > > +                                       info->nr +
+> > > 1);                         \
+> > > +} while (0)
+> > > +
+> > > +/* Helper functions for telling memory checkers that arrays
+> > > pointed to by
+> > > + * bpf_{btf,link,map,prog}_info members are initialized.
+> > > + */
+> > > +
+> > > +static void mark_prog_info_written(struct bpf_prog_info *info,
+> > > __u32 info_len)
+> > > +{
+> > > +       MARK_INFO_ARRAY_WRITTEN(map_ids, nr_map_ids, __u32);
+> > > +       MARK_INFO_ARRAY_WRITTEN(jited_ksyms, nr_jited_ksyms,
+> > > __u64);
+> > > +       MARK_INFO_ARRAY_WRITTEN(jited_func_lens,
+> > > nr_jited_func_lens, __u32);
+> > > +       MARK_INFO_REC_ARRAY_WRITTEN(func_info, nr_func_info,
+> > > +                                   func_info_rec_size);
+> > > +       MARK_INFO_REC_ARRAY_WRITTEN(line_info, nr_line_info,
+> > > +                                   line_info_rec_size);
+> > > +       MARK_INFO_REC_ARRAY_WRITTEN(jited_line_info,
+> > > nr_jited_line_info,
+> > > +                                   jited_line_info_rec_size);
+> > > +       MARK_INFO_ARRAY_WRITTEN(prog_tags, nr_prog_tags,
+> > > __u8[BPF_TAG_SIZE]);
+> > > +}
+> > > +
+> > > +static void mark_btf_info_written(struct bpf_btf_info *info, __u32
+> > > info_len)
+> > > +{
+> > > +       MARK_INFO_ARRAY_WRITTEN(btf, btf_size, __u8);
+> > > +       MARK_INFO_STR_WRITTEN(name, name_len);
+> > > +}
+> > > +
+> > > +static void mark_link_info_written(struct bpf_link_info *info,
+> > > __u32 info_len)
+> > > +{
+> > > +       switch (info->type) {
+> > > +       case BPF_LINK_TYPE_RAW_TRACEPOINT:
+> > > +               MARK_INFO_STR_WRITTEN(raw_tracepoint.tp_name,
+> > > +                                     raw_tracepoint.tp_name_len);
+> > > +               break;
+> > > +       case BPF_LINK_TYPE_ITER:
+> > > +               MARK_INFO_STR_WRITTEN(iter.target_name,
+> > > iter.target_name_len);
+> > > +               break;
+> > > +       default:
+> > > +               break;
+> > > +       }
+> > > +}
+> > > +
+> > > +#undef MARK_INFO_STR_WRITTEN
+> > > +#undef MARK_INFO_REC_ARRAY_WRITTEN
+> > > +#undef MARK_INFO_ARRAY_WRITTEN
+> > > +#undef __MARK_INFO_ARRAY_WRITTEN
+> >
+> > Ugh... I wasn't a big fan of adding all these "mark_mem_written"
+> > across a bunch of APIs to begin with, but this part is really putting
+> > me off.
+> >
+> > I like the bpf_{map,btf,prog,btf}_info_by_fd() improvements you did,
+> > but maybe adding these MSan annotations is a bit too much?
+> > Applications that really care about this whole "do I read
+> > uninitialized memory" business could do their own simpler wrappers on
+> > top of libbpf APIs, right?
+> >
+> > Maybe we should start there first and see if there is more demand to
+> > have built-in libbpf support?
+>
+> I can try moving all this to selftests.
 
-Looks great, thanks. Just one more small nit below that I'm only adding
-because this doc is part of the standardization (perhaps Alexei or
-someone else could also just add it when applying).
+So I'm afraid this will introduce so much extra code just for marking
+some memory written by kernel for MSan. It might be "cleaner" to just
+zero-initialize all the memory we expect kernel to fill out, tbh.
 
-Acked-by: David Vernet <void@manifault.com>
 
-> ---
->  Documentation/bpf/instruction-set.rst | 63 ++++++++++++++-------------
->  1 file changed, 33 insertions(+), 30 deletions(-)
-> 
-> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-> index 01802ed9b29b..fae2e48d6a0b 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -38,15 +38,11 @@ eBPF has two instruction encodings:
->  * the wide instruction encoding, which appends a second 64-bit immediate (i.e.,
->    constant) value after the basic instruction for a total of 128 bits.
->  
-> -The basic instruction encoding looks as follows for a little-endian processor,
-> -where MSB and LSB mean the most significant bits and least significant bits,
-> -respectively:
-> +The fields conforming an encoded basic instruction are stored in the
-> +following order::
->  
-> -=============  =======  =======  =======  ============
-> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> -=============  =======  =======  =======  ============
-> -imm            offset   src_reg  dst_reg  opcode
-> -=============  =======  =======  =======  ============
-> +  opcode:8 src:4 dst:4 offset:16 imm:32 // In little-endian BPF.
-> +  opcode:8 dst:4 src:4 offset:16 imm:32 // In big-endian BPF.
->  
->  **imm**
->    signed integer immediate value
-> @@ -54,48 +50,55 @@ imm            offset   src_reg  dst_reg  opcode
->  **offset**
->    signed integer offset used with pointer arithmetic
->  
-> -**src_reg**
-> +**src**
->    the source register number (0-10), except where otherwise specified
->    (`64-bit immediate instructions`_ reuse this field for other purposes)
->  
-> -**dst_reg**
-> +**dst**
->    destination register number (0-10)
->  
->  **opcode**
->    operation to perform
->  
-> -and as follows for a big-endian processor:
-> +Note that the contents of multi-byte fields ('imm' and 'offset') are
-> +stored using big-endian byte ordering in big-endian BPF and
-> +little-endian byte ordering in little-endian BPF.
->  
-> -=============  =======  =======  =======  ============
-> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> -=============  =======  =======  =======  ============
-> -imm            offset   dst_reg  src_reg  opcode
-> -=============  =======  =======  =======  ============
-> +For example::
->  
-> -Multi-byte fields ('imm' and 'offset') are similarly stored in
-> -the byte order of the processor.
-> +  opcode         offset imm          assembly
-> +         src dst
-> +  07     0   1   00 00  44 33 22 11  r1 += 0x11223344 // little
-> +         dst src
-> +  07     1   0   00 00  11 22 33 44  r1 += 0x11223344 // big
->  
->  Note that most instructions do not use all of the fields.
->  Unused fields shall be cleared to zero.
+> Alternatively this could be made a part of LLVM sanitizers, but then
+> we come back to the question of resolving fd types.
+>
+> > BTW, is this all needed for ASan as well?
+>
+> Not strictly needed, but this would help detecting bad writes.
 
-We should probably also say "Unused fields are reserved and shall be
-cleared to zero" here.
+So truth be told, ASan and LeakSanitizer seem like more
+immediately-useful next steps, I bet we'll find a bunch of memory
+leaks and missing resource clean up sequences with this. If you are
+playing with sanitizers, maybe let's start with Leak and Address
+sanitizer first and make sure we run them continuously in BPF CI as
+well?
 
->  
-> -As discussed below in `64-bit immediate instructions`_, a 64-bit immediate
-> -instruction uses a 64-bit immediate value that is constructed as follows.
-> -The 64 bits following the basic instruction contain a pseudo instruction
-> -using the same format but with opcode, dst_reg, src_reg, and offset all set to zero,
-> -and imm containing the high 32 bits of the immediate value.
-> +As discussed below in `64-bit immediate instructions`_, a 64-bit
-> +immediate instruction uses a 64-bit immediate value that is
-> +constructed as follows.  The 64 bits following the basic instruction
-> +contain a pseudo instruction using the same format but with opcode,
-> +dst, src, and offset all set to zero, and imm containing the high 32
-> +bits of the immediate value.
->  
-> -=================  ==================
-> -64 bits (MSB)      64 bits (LSB)
-> -=================  ==================
-> -basic instruction  pseudo instruction
-> -=================  ==================
-> +This is depicted in the following figure::
-> +
-> +        basic_instruction
-> +  .-----------------------------.
-> +  |                             |
-> +  code:8 regs:16 offset:16 imm:32 unused:32 imm:32
-> +                                  |              |
-> +                                  '--------------'
-> +                                 pseudo instruction
->  
->  Thus the 64-bit immediate value is constructed as follows:
->  
->    imm64 = (next_imm << 32) | imm
->  
->  where 'next_imm' refers to the imm value of the pseudo instruction
-> -following the basic instruction.
-> +following the basic instruction.  The unused bytes in the pseudo
-> +instruction are reserved and shall be cleared to zero.
->  
->  Instruction classes
->  -------------------
-> @@ -137,7 +140,7 @@ code            source  instruction class
->    source  value  description
->    ======  =====  ==============================================
->    BPF_K   0x00   use 32-bit 'imm' value as source operand
-> -  BPF_X   0x08   use 'src_reg' register value as source operand
-> +  BPF_X   0x08   use 'src' register value as source operand
->    ======  =====  ==============================================
->  
->  **instruction class**
-> -- 
-> 2.30.2
-> 
+And then from there let's see whether/what things we'd need to
+annotate for sanitizers' sake?
+
+
+>
+> > One more worry I have is that given we don't exercise all these
+> > sanitizers regularly in BPF CI, we'll keep forgetting adding new
+> > annotations and all this machinery will start bit rotting.
+> >
+> > So I'd say that we should first make sure that we have sanitizer
+> > builds/runs in BPF CI, before signing up for maintaining these
+> > "annotations".
+>
+> I'll wait until LLVM folks review my patches, and then see if I can
+> add MSan to the CI. Configuring it locally wasn't too complicated,
+> the main difficulty is that one needs instrumented zlib and elfutils.
+> For the CI, they can be prebuilt and uploaded to S3, and then added
+> to the build environment and the image.
+
+Will we need special versions of zlib and elfutils to be able to
+enable ASan and LeakSan? I hope not. We might want to allow static
+linking against them, though. Not sure. But as I said, I'd start with
+ASan/LeakSan first.
+
+>
+> [...]
