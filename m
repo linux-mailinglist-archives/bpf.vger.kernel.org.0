@@ -2,198 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5FD6A4A79
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 20:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5529D6A4AC6
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 20:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbjB0TAa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 14:00:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
+        id S229829AbjB0TY2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 14:24:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjB0TAW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 14:00:22 -0500
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CD821959
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 11:00:18 -0800 (PST)
-Received: by mail-qt1-f176.google.com with SMTP id cf14so7819706qtb.10
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 11:00:18 -0800 (PST)
+        with ESMTP id S229470AbjB0TY1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 14:24:27 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30ABE1CF62
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 11:24:21 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id ee7so30339289edb.2
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 11:24:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1H2fbNoSblTqtonua3Ke9sw0jhRNgwlRSotZu7vrUiU=;
+        b=T3qD3ZNt8p2DYMdtJ66lMXM/br+YAmiErKcP7uo3xn/f2qKIDugkL9BcxlBs2u9WYK
+         5T1Ln4v3MsXjUI0hiXrCT63MTuk4CQk+Tm4rdhr4Ab79v8tjZKPtsotZfTjJrC5j4u7/
+         Z1R+8UlgicKqoHrEflHCFYBy1AxQFjOs9F3lWzeyo03bUm8QA21WYdMYLxKkkh5H0mK7
+         /u6tA/w/Obejl1VFaa1DVKtWoq9RGbTXyVXHyKEuensmUnsYPaGg28rTp8NV/SZofDql
+         sxlLhJc3QGDUc1TVMNpC/hfzv0wcLFb7skLgzmqWLMChDdG1cfVBLObAz/DUtIbkL/Ma
+         /B3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ik1CDlxg2SwWsOj0wpPR0KeMlaeoh3hfBdQusZyBrSc=;
-        b=QDt2xXRtbhH7k1nR9Q3/keF7OCXUXmaysG8PunsqL4pgNlHc+zBsf03UB/WG5S7mvo
-         IUio1HUvufFh6qEFV01rYfTXMDdWMPGoYK9STec3Z3I0VMsf68FnC03eBPRYAx7OLlaE
-         joFLGFH5wtX4b7hj+czN0eljxLOmbFYSssbwKMWvqccIEAuqL7CnyjkJpJy6MTizpjmE
-         yIc09SJLqq8hAYcdx3OFdX3LbyFlP91h7BqvVamjyodEw8PkxIRmOZNXBghUMcY149aO
-         8a/agS6IiLNtkxaBDP2Buv9RgpyPApH10gU22OGZU2R0s2twGxT0SfDxIASBdfgN7iHj
-         JQaA==
-X-Gm-Message-State: AO0yUKX1vjsFz7mo/uzPWD8767MhDO87fLk3pqQ0+NpdJTDU8SmH/IVp
-        g0+7lsY+JW21QzUP6x4vqGk=
-X-Google-Smtp-Source: AK7set/pLo8Jc/xxbWC1wNBQ3J8tWvf9uVJ1jHOJvpeDC/hssx5DkefFhyoqp3NNIFpjCaQrmPxBWg==
-X-Received: by 2002:a05:622a:1391:b0:3b6:8bc3:a09c with SMTP id o17-20020a05622a139100b003b68bc3a09cmr827997qtk.25.1677524416975;
-        Mon, 27 Feb 2023 11:00:16 -0800 (PST)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id z15-20020ac8454f000000b003b848759ed8sm5101971qtn.47.2023.02.27.11.00.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 11:00:16 -0800 (PST)
-Date:   Mon, 27 Feb 2023 13:00:14 -0600
-From:   David Vernet <void@manifault.com>
-To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@ietf.org
-Subject: Re: [PATCH V2] bpf, docs: Document BPF insn encoding in term of
- stored bytes
-Message-ID: <Y/z9vtWfevaiRqtP@maniforge>
-References: <87y1oj7yvu.fsf@oracle.com>
+        bh=1H2fbNoSblTqtonua3Ke9sw0jhRNgwlRSotZu7vrUiU=;
+        b=YUcVDYTCWd1IvVwiuMWfH1/X9ysStN/Bv/9S24mPjab16qdxnkl6Q8sdT5MdFmFF4R
+         g4h9gfqhZuXxYGdPzeQ2/yiCRWiu6jnvv8wzWnyP3JAPlqydym4qErMnoO8+T3ISQPHV
+         /rDMxFQNccIAzVp9uRI2N587g1UGeZfLE+KSLfNtGvb7nps0e5H/SJBM1vgUAjT5hdz0
+         rSbYWb2PGdqePOvFFADKeI4R4QJNPtKC4tebniPY9BqwlCBVaSulIoAdZO25yVCLC8Yb
+         fdWWOyU8e3Mzz/0Rxzx4ztZRiP6NP0pyP3uyh4ZP+1A1oE4l9h2wqQkcg6+gCQrM1Kqd
+         E6Ag==
+X-Gm-Message-State: AO0yUKWdo+j5AJT7GIiYxzdkJK2Dt66/LOitOe3gjaqCxqq8XDAShImQ
+        cMHxavBrPNpiQJqH4IuEoNAaA19OdeZz+WOPsw8=
+X-Google-Smtp-Source: AK7set9M5Yk22DTtIZ6RnnM5OFhiJFxSEqFcoTuMgoCpV8Eb+Z8SoP/UrrUt05JurfZB6gMqZWqQRKDGMajyAV6LuLY=
+X-Received: by 2002:a50:d0c2:0:b0:4ac:b626:378e with SMTP id
+ g2-20020a50d0c2000000b004acb626378emr364761edf.5.1677525859459; Mon, 27 Feb
+ 2023 11:24:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y1oj7yvu.fsf@oracle.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <Y/P1yxAuV6Wj3A0K@google.com> <e9f7c86ff50b556e08362ebc0b6ce6729a2db7e7.camel@gmail.com>
+ <Y/czygarUnMnDF9m@google.com> <17833347f8cec0e44d856aeafbb1bbe203526237.camel@gmail.com>
+ <Y/hLsgSO3B+2g9iF@google.com> <8f8f9d43d2f3f6d19c477c28d05527250cc6213d.camel@gmail.com>
+ <Y/p0ryf5PcKIs7uj@google.com> <c4cda35711804ec26ebaeedc07d10d5d51901495.camel@gmail.com>
+ <693dffd9571073a47820653fd2de863010491454.camel@gmail.com>
+ <CAEf4BzYaiD27y=Y85xhrj+VOvJY_5q1oVtg-4vYmFZFEpmW+nQ@mail.gmail.com> <CACYkzJ7tgbJqwUVxfGd4UKDUcOQjK8zsbEKUUjV79=xHQn1fFg@mail.gmail.com>
+In-Reply-To: <CACYkzJ7tgbJqwUVxfGd4UKDUcOQjK8zsbEKUUjV79=xHQn1fFg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Feb 2023 11:24:07 -0800
+Message-ID: <CAEf4BzZauF7V3pY1hgWgnJRN1F6eSkbTOTG3kM0c85uAX-vOfQ@mail.gmail.com>
+Subject: Re: bpf: Question about odd BPF verifier behaviour
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>,
+        Matt Bobrowski <mattbobrowski@google.com>, bpf@vger.kernel.org,
+        andrii@kernel.org, acme@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 27, 2023 at 07:21:25PM +0100, Jose E. Marchesi wrote:
-> 
-> [Differences from V1:
-> - Use rst literal blocks for figures.
-> - Avoid using | in the basic instruction/pseudo instruction figure.
-> - Rebased to today's bpf-next master branch.]
-> 
-> This patch modifies instruction-set.rst so it documents the encoding
-> of BPF instructions in terms of how the bytes are stored (be it in an
-> ELF file or as bytes in a memory buffer to be loaded into the kernel
-> or some other BPF consumer) as opposed to how the instruction looks
-> like once loaded.
-> 
-> This is hopefully easier to understand by implementors looking to
-> generate and/or consume bytes conforming BPF instructions.
-> 
-> The patch also clarifies that the unused bytes in a pseudo-instruction
-> shall be cleared with zeros.
-> 
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+On Mon, Feb 27, 2023 at 10:05 AM KP Singh <kpsingh@kernel.org> wrote:
+>
+> On Mon, Feb 27, 2023 at 6:32=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Feb 27, 2023 at 6:17 AM Eduard Zingerman <eddyz87@gmail.com> wr=
+ote:
+> > >
+> > > On Sun, 2023-02-26 at 03:03 +0200, Eduard Zingerman wrote:
+> > > > On Sat, 2023-02-25 at 20:50 +0000, Matt Bobrowski wrote:
+> > > > > Sorry Eduard, I replied late last night although the email bounce=
+d due
+> > > > > to exceeding the mail char limit. Let's try attaching a compresse=
+d
+> > > > > variant of the requested files, which includes the compiled kerne=
+l's
+> > > > > BTF and the kernel's config.
+> > > >
+> > > > Hi Matt,
+> > > >
+> > > > I tried using your config but still can't reproduce the issue.
+> > > > Will try to do it using debian 12 chroot tomorrow or on Monday.
+> > >
+> > > Hi Matt,
+> > >
+> > > Short update:
+> > > I've reproduced the issue with multiple STRUCT 'linux_binprm' BTF IDs
+> > > in Debian testing chroot, thank you for providing all details.
+> > > Attaching the instructions in the end of the email.
+> > > Need some time to analyze pahole behavior.
+> > >
+> >
+> > Try using [0] to pinpoint what actually is different between any two
+> > linux_binprm definitions. I've hacked up this "tool" last time I had
+> > to pinpoint where two BTF types diverge, maybe it will save you a bit
+> > of time as well. I'd like to put this functionality into btfdump
+> > ([1]), but I didn't get to it yet, unfortunately.
+> >
+>
+> It's not just linux_binprm but a bunch of other structs (quite a lot
+> of them that seem to diverge)
 
-Thanks Jose, this looks a lot better. Just left a couple more small
-suggestions + questions below before stamping.
+yes, task_struct is usually a thing that suffers from such
+duplications, as it forms a huge graph of types. Which is where that
+btfdiff "tool" comes handly, it recursively compares side-by-side two
+types that are supposed to be equal (but are not), by ignoring BTF
+type IDs and trying to pin point actual differences (like STRUCT vs
+FWD, or extra field, or whatever). It just needs two starting type
+IDs.
 
-> 
-> ---
->  Documentation/bpf/instruction-set.rst | 44 +++++++++++++--------------
->  1 file changed, 22 insertions(+), 22 deletions(-)
-> 
-> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-> index 01802ed9b29b..3341bfe20e4d 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -38,15 +38,13 @@ eBPF has two instruction encodings:
->  * the wide instruction encoding, which appends a second 64-bit immediate (i.e.,
->    constant) value after the basic instruction for a total of 128 bits.
->  
-> -The basic instruction encoding looks as follows for a little-endian processor,
-> -where MSB and LSB mean the most significant bits and least significant bits,
-> -respectively:
-> +The fields conforming an encoded basic instruction are stored in the
-> +following order::
->  
-> -=============  =======  =======  =======  ============
-> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> -=============  =======  =======  =======  ============
-> -imm            offset   src_reg  dst_reg  opcode
-> -=============  =======  =======  =======  ============
-> +  opcode:8 src:4 dst:4 offset:16 imm:32 // In little-endian BPF.
-> +  opcode:8 dst:4 src:4 offset:16 imm:32 // In big-endian BPF.
+>
+> [...]
+> WARN: multiple IDs found for 'sock_common': 4400, 53212 - using 4400
+> WARN: multiple IDs found for 'request_sock': 4458, 53257 - using 4458
+> WARN: multiple IDs found for 'task_struct': 265, 55830 - using 265
+> WARN: multiple IDs found for 'file': 474, 55854 - using 474
+> WARN: multiple IDs found for 'vm_area_struct': 480, 55857 - using 480
+> WARN: multiple IDs found for 'seq_file': 670, 55891 - using 670
 
-The terms below use src_reg and dst_reg. Can we either update these code
-blocks to match, or change the term definitions to "src" and "dst"? I'd
-vote for the latter, given that we explain that it's the source /
-destination register number where they're defined.
 
-> +
-> +Where,
+[...]
 
-IMO, we can probably remove this "Where,". I think it's pretty clear
-that the following terms are referring to the code block above. Wdyt?
+>
+> I was able to "fix" this with using clang 16.x and the following hacky pa=
+hole:
+>
+> 030e3b4 - core: Add DW_TAG_unspecified_type to tag__is_tag_type() set
+> (HEAD) (2023-02-26 Arnaldo Carvalho de Melo)
+> f20515b - dwarves: support DW_TAG_atomic_type (2023-02-26 David Lamparter=
+)
+> de24234 - pahole: Prep 1.24 (tag: v1.24) (2022-08-22 Arnaldo Carvalho de =
+Melo)
+> d6c9528 - dwarf_loader: Encode char type as signed (2022-08-10 Yonghong S=
+ong)
+>
+> and the the following patch on top:
+>
 
->  
->  **imm**
->    signed integer immediate value
-> @@ -64,16 +62,17 @@ imm            offset   src_reg  dst_reg  opcode
->  **opcode**
->    operation to perform
->  
-> -and as follows for a big-endian processor:
-> +Note that the contents of multi-byte fields ('imm' and 'offset') are
-> +stored using big-endian byte ordering in big-endian BPF and
-> +little-endian byte ordering in little-endian BPF.
->  
-> -=============  =======  =======  =======  ============
-> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> -=============  =======  =======  =======  ============
-> -imm            offset   dst_reg  src_reg  opcode
-> -=============  =======  =======  =======  ============
-> +For example::
->  
-> -Multi-byte fields ('imm' and 'offset') are similarly stored in
-> -the byte order of the processor.
-> +  opcode         offset imm          assembly
-> +         src dst
-> +  07     0   1   00 00  44 33 22 11  r1 += 0x11223344 // little
-> +         dst src
-> +  07     1   0   00 00  11 22 33 44  r1 += 0x11223344 // big
->  
->  Note that most instructions do not use all of the fields.
->  Unused fields shall be cleared to zero.
-> @@ -84,18 +83,19 @@ The 64 bits following the basic instruction contain a pseudo instruction
->  using the same format but with opcode, dst_reg, src_reg, and offset all set to zero,
->  and imm containing the high 32 bits of the immediate value.
->  
-> -=================  ==================
-> -64 bits (MSB)      64 bits (LSB)
-> -=================  ==================
-> -basic instruction  pseudo instruction
-> -=================  ==================
-> +This is depicted in the following figure::
-> +
-> +  basic_instruction               pseudo instruction
-> +  ------------------------------- ------------------
-> +  code:8 regs:16 offset:16 imm:32 unused:32 imm:32
+I'd start with understanding what BTF and DWARF differences are
+causing the issue before trying to come up with the fix. For that we
+don't even need config or repro steps, it should be enough to share
+vmlinux with BTF and DWARF, and start from there.
 
-Don't want to bikeshed too much, but this seems a bit hard to read.  It
-kind of all looks like one line, though perhaps that was the intention.
-Wdyt about this?
-
-This is depicted in the following figure::
-
-  code:8 regs:16 offset:16 imm:32  // MSB: basic instruction
-  reserved:32              imm:32  // LSB: pseudo instruction
-
->  
->  Thus the 64-bit immediate value is constructed as follows:
->  
->    imm64 = (next_imm << 32) | imm
->  
->  where 'next_imm' refers to the imm value of the pseudo instruction
-> -following the basic instruction.
-> +following the basic instruction.  The unused bytes in the pseudo
-> +instruction shall be cleared to zero.
-
-Also apologies if this is also a bikeshed and has already been
-discussed, but should we say, "The unused bits in the pseudo instruction
-are reserved" rather than saying they should be cleared to zero?
-Implemenations should interpret "reserved" to mean that the bits should
-be zeroed, no? Or at least that seems like the norm in technical
-manuals.  For example, reserved bits in control registers on x86 should
-be cleared to avoid unexpected side effects if and when those bits are
-eventually actually used for something in future releases.
-
-Thanks,
-David
+But I'm sure Eduard is on top of this already (especially that he can
+repro the issue now).
