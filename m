@@ -2,105 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C0A6A4F7F
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 00:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8059B6A4F73
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 00:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbjB0XFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 18:05:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        id S230022AbjB0XDw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 18:03:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjB0XFf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 18:05:35 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FCBA248
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 15:05:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=yRXDEaUq62AAPYXnTpBNNKaVh2XdCnOI1noKdg7Ykds=; b=lBlpkNl7eJhXj8MqjsojaWNuo4
-        gtvO+QR9v9aafeVXv0rs6nhKvjbZEAWglH/uD/LdmczJAF8EaEnnSe5GY5kpdx0vjdwFWACiygely
-        AspqjWOBAsjyv6EqL0alshy9W27cioCD7E/7FHhhpZbbJGAGyNmM4RFwN7ppNwQ1Bxct6FKG9JuaJ
-        UED2U66Vb53/DMCLXuTrZH6ifVmh8DE99c9tYfEIcbTsuqid8WwG3r2le97I6G/dURyp4IcEDfdHE
-        pHsBWMjfbkjf1okC7VAF5kffSi54ZvSB4KxuUzwcHQsQVqt8VSVCFsfhxAe6yJaJ9s2FHepcSGkAm
-        s8zK4ZAA==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pWm7W-0001uc-Vo; Mon, 27 Feb 2023 23:37:23 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pWm7W-000Mii-HN; Mon, 27 Feb 2023 23:37:22 +0100
-Subject: Re: [PATCH bpf-next v3 00/18] bpf: bpf memory usage
-To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
-        xiyou.wangcong@gmail.com
-Cc:     bpf@vger.kernel.org
-References: <20230227152032.12359-1-laoar.shao@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <24b8a412-6be5-7590-acbd-4ff3990bf812@iogearbox.net>
-Date:   Mon, 27 Feb 2023 23:37:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229823AbjB0XDv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 18:03:51 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428AB15177;
+        Mon, 27 Feb 2023 15:03:42 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id m3-20020a17090ade0300b00229eec90a7fso305408pjv.0;
+        Mon, 27 Feb 2023 15:03:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U5BrsfedqjmcNewid3MjJRJMLrBkItr7J+vimPIv1pY=;
+        b=V/LtQcsdtnwLA3l1X7Sdb/bUYGoRaqPEWOOnRpbxO8W0mqIJ3lp1UgHXkxS9fbVw5i
+         j7aVefIdFw/NOAFs8Xp3RwleoABcucy2UaxE2tV5lYAZ2t7336Xbpe4yGYKtbVgIr7dp
+         Dc2c5Ca7J0BJF5c6VwAJVG/PWen77oiV9IONT+qggSUwAon9zNKvApMJxlJDa1pkAV3q
+         8fOAnaqQGGq1Culmq7DkKUF0ziTmDxko7bhsXj0jXUzwGU98pSiR65easXpMeeF8iQwS
+         wAYY3E6Uox3dZ5fCPxzjrDT32kmSoCWqFb43niD0ith/h6C6bcFGXWglm2uMQerCAdIn
+         7zIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U5BrsfedqjmcNewid3MjJRJMLrBkItr7J+vimPIv1pY=;
+        b=HM7wVjNLvLLQjwirObHUbRfxGLORMRNRt6D8fWs4GLzC9VC1ARspj4xDaflcTQmkme
+         /BzvwJs72F7PkNfwVuJVsIEqKa51OMgzb6b4sZkbVIponUW+QDp2k62dd126LO8tXBqn
+         k/5ZBGkJ/C3YED0s/riiZdlylNwJh7CP/QRQ/YBrIrHKCHiUUX7m6vfrtagRakhtplHp
+         vFtTHShivqD5gbdn53k7QzaZUeGZDYddFAj3M14Ef4B2RREDQRvKYbkfCLxOyJiZSlnS
+         2gShFbreHKP/Akuwn3v6C+EsmsA4cLYWBA2KkmQq1APTQumBXGT39enakaQIFWhzwXNY
+         vptQ==
+X-Gm-Message-State: AO0yUKVAqHwqPUIYm9p8LFn8CoO2w9HJm7Vq6Dh4bwS0F7nYAZtuw7xE
+        70ENL+GLviePOzLGf9ZCa1dZ71qEZkI=
+X-Google-Smtp-Source: AK7set/YQVhyFkanAp+++PRcsHvqrcIDF3t+kktsniJCQQU91v5eweHfCGPjixWj04TDVueYehbweg==
+X-Received: by 2002:a17:902:e741:b0:19c:f1f7:681f with SMTP id p1-20020a170902e74100b0019cf1f7681fmr787393plf.9.1677539021449;
+        Mon, 27 Feb 2023 15:03:41 -0800 (PST)
+Received: from MacBook-Pro-6.local ([2620:10d:c090:400::5:6245])
+        by smtp.gmail.com with ESMTPSA id p12-20020a170902eacc00b0019896d29197sm5082714pld.46.2023.02.27.15.03.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Feb 2023 15:03:40 -0800 (PST)
+Date:   Mon, 27 Feb 2023 15:03:38 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 0/8] Support defragmenting IPv(4|6) packets
+ in BPF
+Message-ID: <20230227230338.awdzw57e4uzh4u7n@MacBook-Pro-6.local>
+References: <cover.1677526810.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-In-Reply-To: <20230227152032.12359-1-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26825/Mon Feb 27 09:24:38 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1677526810.git.dxu@dxuuu.xyz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/27/23 4:20 PM, Yafang Shao wrote:
-> Currently we can't get bpf memory usage reliably. bpftool now shows the
-> bpf memory footprint, which is difference with bpf memory usage. The
-> difference can be quite great in some cases, for example,
+On Mon, Feb 27, 2023 at 12:51:02PM -0700, Daniel Xu wrote:
+> === Context ===
 > 
-> - non-preallocated bpf map
->    The non-preallocated bpf map memory usage is dynamically changed. The
->    allocated elements count can be from 0 to the max entries. But the
->    memory footprint in bpftool only shows a fixed number.
+> In the context of a middlebox, fragmented packets are tricky to handle.
+> The full 5-tuple of a packet is often only available in the first
+> fragment which makes enforcing consistent policy difficult. There are
+> really only two stateless options, neither of which are very nice:
 > 
-> - bpf metadata consumes more memory than bpf element
->    In some corner cases, the bpf metadata can consumes a lot more memory
->    than bpf element consumes. For example, it can happen when the element
->    size is quite small.
+> 1. Enforce policy on first fragment and accept all subsequent fragments.
+>    This works but may let in certain attacks or allow data exfiltration.
 > 
-> - some maps don't have key, value or max_entries
->    For example the key_size and value_size of ringbuf is 0, so its
->    memlock is always 0.
+> 2. Enforce policy on first fragment and drop all subsequent fragments.
+>    This does not really work b/c some protocols may rely on
+>    fragmentation. For example, DNS may rely on oversized UDP packets for
+>    large responses.
 > 
-> We need a way to show the bpf memory usage especially there will be more
-> and more bpf programs running on the production environment and thus the
-> bpf memory usage is not trivial.
+> So stateful tracking is the only sane option. RFC 8900 [0] calls this
+> out as well in section 6.3:
 > 
-> This patchset introduces a new map ops ->map_mem_usage to calculate the
-> memory usage. Note that we don't intend to make the memory usage 100%
-> accurate, while our goal is to make sure there is only a small difference
-> between what bpftool reports and the real memory. That small difference
-> can be ignored compared to the total usage.  That is enough to monitor
-> the bpf memory usage. For example, the user can rely on this value to
-> monitor the trend of bpf memory usage, compare the difference in bpf
-> memory usage between different bpf program versions, figure out which
-> maps consume large memory, and etc.
+>     Middleboxes [...] should process IP fragments in a manner that is
+>     consistent with [RFC0791] and [RFC8200]. In many cases, middleboxes
+>     must maintain state in order to achieve this goal.
+> 
+> === BPF related bits ===
+> 
+> However, when policy is enforced through BPF, the prog is run before the
+> kernel reassembles fragmented packets. This leaves BPF developers in a
+> awkward place: implement reassembly (possibly poorly) or use a stateless
+> method as described above.
+> 
+> Fortunately, the kernel has robust support for fragmented IP packets.
+> This patchset wraps the existing defragmentation facilities in kfuncs so
+> that BPF progs running on middleboxes can reassemble fragmented packets
+> before applying policy.
+> 
+> === Patchset details ===
+> 
+> This patchset is (hopefully) relatively straightforward from BPF perspective.
+> One thing I'd like to call out is the skb_copy()ing of the prog skb. I
+> did this to maintain the invariant that the ctx remains valid after prog
+> has run. This is relevant b/c ip_defrag() and ip_check_defrag() may
+> consume the skb if the skb is a fragment.
 
-Now that there is the cgroup.memory=nobpf, this is now rebuilding the memory
-accounting as a band aid that you would otherwise get for free via memcg.. :/
-Can't you instead move the selectable memcg forward? Tejun and others have
-brought up the resource domain concept, have you looked into it?
-
-Thanks,
-Daniel
+Instead of doing all that with extra skb copy can you hook bpf prog after
+the networking stack already handled ip defrag?
+What kind of middle box are you doing? Why does it have to run at TC layer?
