@@ -2,71 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C536A419D
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 13:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7ED56A41CA
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 13:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbjB0MUR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 07:20:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
+        id S229550AbjB0MhL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 07:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbjB0MUF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 07:20:05 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4639219F31
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 04:20:01 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id n5so3371009pfv.11
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 04:20:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MLMXRXE6p7M2wI/v/8zIreJMb38Cw+t13v0pmAsHMHg=;
-        b=ISCrTbX0cGZo4rt8H1qM6YmqIFbVPz/ztodfosWEkfyna3o6tDcFIYSi216s73nw2n
-         JU6mgjeL9DQNvrLbkhBskOCANmhf5G41bewOClq+DVnbEafyDGY6eF9gr031wc/13NqF
-         EdF0fw9wir/BqotzQq+cGTXKsHIOkjx3DYHpwBp+S61bd9zdBvMlo/HInDe4IE1oubVY
-         RFyFVWtUs1k2yEPuiFFQHsxoBe2i3KdHnrPWAOWsTM/0xbfEdTpkrrtIJjYqGEJv9txl
-         WBWiqpJysadKTuFH8Y/T45FJTALW3evmXhH8oIXbz21P6qQxj/G3bi5fngXcE5cwrEE8
-         TaeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MLMXRXE6p7M2wI/v/8zIreJMb38Cw+t13v0pmAsHMHg=;
-        b=Ik64ubMeScXiIEZG5X+zNL7U8Kmag4gPLRkkOCCoG4yH/TNkjjmZcdn/y7ZtoDIHl6
-         s4KgR9GTiRD8LfGxzJGlDRGhBoGSB40W22CnF75VgWsTZZsPZ7UfGLignlILYPb2FjVj
-         +42hGPTRIsMVEXjZFGvBzTqeFCThpQM56Ep8fQdJK5WM0xl6+lWky+2CgC6W+DWEk4ZN
-         zAj/g5LYbQ7rXAO79V7tb9IuVMYf6khby5RRsrzsElyL3NoPsRlWYr6ba3eQWkWKYfSw
-         +VKle1aLyywI84o/hxPaQ0W2KVb5AXWNmKXW6y9o3mMNpaPO9ZinojCf1q3Vs1RNVlc/
-         Sz8w==
-X-Gm-Message-State: AO0yUKVmra8iPIIDayYDzAcTJQZ8f8mlYAGnwNOpELKqQG3lTfCjhxSX
-        JSFFM5+T2+Iijl+uCcjno6w3sfQ/UPeW+6Oj3KrOCQ==
-X-Google-Smtp-Source: AK7set+pRin2+DrQij1wsBd87m6EHrzz0VpUgURYwl63znWqJGO/4vKGVim0XwC9giSb9cx+snGEAxFrGhlofsJDJss=
-X-Received: by 2002:a05:6a00:302a:b0:5a8:a56f:1c3a with SMTP id
- ay42-20020a056a00302a00b005a8a56f1c3amr3972323pfb.0.1677500400659; Mon, 27
- Feb 2023 04:20:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20230222161222.11879-1-jiaxun.yang@flygoat.com>
- <20230222161222.11879-3-jiaxun.yang@flygoat.com> <CAM1=_QTDkYJANgxYwkgPZB+hUX6Rr_Pvnn7cFwSJFHQtLrpQMA@mail.gmail.com>
- <70C80F6D-A727-48FD-A767-A2CA54AA7C1E@flygoat.com>
-In-Reply-To: <70C80F6D-A727-48FD-A767-A2CA54AA7C1E@flygoat.com>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Mon, 27 Feb 2023 13:19:49 +0100
-Message-ID: <CAM1=_QS_ewcFdrZ1ypV15wOkK_SKkb0UUe5_Ozi_CDBdxF5JmA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] MIPS: ebpf jit: Implement R4000 workarounds
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "paulburton@kernel.org" <paulburton@kernel.org>,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        with ESMTP id S229379AbjB0MhL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 07:37:11 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408D81E2AB
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 04:37:08 -0800 (PST)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31RBF3xR027177;
+        Mon, 27 Feb 2023 12:36:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=70/r+iclVw5ZyNk2sGQRyHS9wOqPfT6VnuO7wMjR7PQ=;
+ b=kIgB6y3eHKaESqdY7cEMWin5TBibHk8z29e4X644tUj1XyIn2/i7wZy/MzeSAeYiLPm1
+ 1T/fML6gSlYofknrNns0gWiwdkbTQ68YJlGCcMot5/+IzSsrUabzuJ8eyMYaXFMMMaZp
+ 8OHF/5bw9tEmgGqQT69q6xuNqDX1SmFqS1z8p5L1zCw0xq0EWuVWoLIJeiSDfZUGjpvE
+ GwPi6iZVQ7VexXkEwIbYY9cLCOQvUB6GxFaJGrWD8tVBACmpC5yyK4R56IJFrQb3Wfn8
+ Ji363VWDiljTmji9VNSRm88aDvRcBjkUKPD8X/LDROdeKnJ8FQ1X3wS3G+jv5l+Eswgm LQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p0u1r2rkg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Feb 2023 12:36:54 +0000
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31RCHQ3b028845;
+        Mon, 27 Feb 2023 12:36:53 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p0u1r2rjx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Feb 2023 12:36:53 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31QLgsh9017631;
+        Mon, 27 Feb 2023 12:36:51 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3nybbysemy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Feb 2023 12:36:50 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31RCaloI197176
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Feb 2023 12:36:47 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 456DC20049;
+        Mon, 27 Feb 2023 12:36:47 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6A3620043;
+        Mon, 27 Feb 2023 12:36:46 +0000 (GMT)
+Received: from [9.171.32.164] (unknown [9.171.32.164])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Feb 2023 12:36:46 +0000 (GMT)
+Message-ID: <4badc596ef42b52b907d2bcaf79d7b248e27496b.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v3 00/12] bpf: Support 64-bit pointers to kfuncs
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Date:   Mon, 27 Feb 2023 13:36:46 +0100
+In-Reply-To: <CAADnVQJ9-wBrAw5+Y17Bxv4+CrLHmtkjuU143eD3fwhpQ1wvKA@mail.gmail.com>
+References: <20230222223714.80671-1-iii@linux.ibm.com>
+         <CAADnVQ+c_+sCXgb63_Kqp8Qb_0cMDcHXrDsbtoP60LiWerWpkQ@mail.gmail.com>
+         <8e53174c5d5bae318a38997a7e276d7cdbccfa00.camel@linux.ibm.com>
+         <CAADnVQJ9-wBrAw5+Y17Bxv4+CrLHmtkjuU143eD3fwhpQ1wvKA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: BE9z7abc8NkgXQu2_Qolg21kbS-Hg2aR
+X-Proofpoint-ORIG-GUID: eACe7r-Sf25xO7mxjq-JaD6BlLPgtFEc
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-27_08,2023-02-27_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 suspectscore=0 bulkscore=0 mlxlogscore=936 malwarescore=0
+ spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302270097
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,63 +100,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 23, 2023 at 11:32=E2=80=AFAM Jiaxun Yang <jiaxun.yang@flygoat.c=
-om> wrote:
-> >> --- a/arch/mips/Kconfig
-> >> +++ b/arch/mips/Kconfig
-> >> @@ -63,9 +63,7 @@ config MIPS
-> >>        select HAVE_DEBUG_STACKOVERFLOW
-> >>        select HAVE_DMA_CONTIGUOUS
-> >>        select HAVE_DYNAMIC_FTRACE
-> >> -       select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
-> >> -                               !CPU_R4000_WORKAROUNDS && \
-> >> -                               !CPU_R4400_WORKAROUNDS
-> >
-> > Is the R4400 errata also covered by this workaround?
->
-> Yes, R4400 errata is basically a reduced version of R4000 one.
-> They managed to fix some parts of the issue but not all.
+On Fri, 2023-02-24 at 16:02 -0800, Alexei Starovoitov wrote:
+> On Thu, Feb 23, 2023 at 12:43 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> wrote:
+> >=20
+> > On Thu, 2023-02-23 at 09:17 -0800, Alexei Starovoitov wrote:
+> > > On Wed, Feb 22, 2023 at 2:37 PM Ilya Leoshkevich
+> > > <iii@linux.ibm.com>
+> > > wrote:
+> > > >=20
+> > > > v2:
+> > > > https://lore.kernel.org/bpf/20230215235931.380197-1-iii@linux.ibm.c=
+om/
+> > > > v2 -> v3: Drop BPF_HELPER_CALL (Alexei).
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Drop the mer=
+ged check_subprogs() cleanup.
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Adjust arm, =
+sparc and i386 JITs.
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Fix a few po=
+rtability issues in test_verifier.
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Fix a few sp=
+arc64 issues.
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Trim s390x d=
+enylist.
+> > >=20
+> > > I don't think it's a good idea to change a bunch of JITs
+> > > that you cannot test just to address the s390 issue.
+> > > Please figure out an approach that none of the JITs need changes.
+> >=20
+> > What level of testing for these JITs would you find acceptable?
+>=20
+> Just find a way to avoid changing them.
 
-Ok.
-
-> >> --- a/arch/mips/net/bpf_jit_comp32.c
-> >> +++ b/arch/mips/net/bpf_jit_comp32.c
-> >> @@ -446,6 +446,9 @@ static void emit_mul_i64(struct jit_context *ctx, =
-const u8 dst[], s32 imm)
-> >>                } else {
-> >>                        emit(ctx, multu, hi(dst), src);
-> >>                        emit(ctx, mflo, hi(dst));
-> >> +                       /* Ensure multiplication is completed */
-> >> +                       if (IS_ENABLED(CONFIG_CPU_R4000_WORKAROUNDS))
-> >> +                               emit(ctx, mfhi, MIPS_R_ZERO);
-> >>                }
-> >>
-> >>                /* hi(dst) =3D hi(dst) - lo(dst) */
-> >> @@ -504,6 +507,7 @@ static void emit_mul_r64(struct jit_context *ctx,
-> >>        } else {
-> >>                emit(ctx, multu, lo(dst), lo(src));
-> >>                emit(ctx, mflo, lo(dst));
-> >> +               /* No need for workaround because we have this mfhi */
-
-For context, please specify which workaround this comment refers to:
-"workaround" -> "R4000 workaround".
-
-> > R4000 is a 64-bit CPU, so the 32-bit JIT implementation will not be
-> > used. From the Makefile:
-> >
-> > ifeq ($(CONFIG_32BIT),y)
-> >        obj-$(CONFIG_BPF_JIT) +=3D bpf_jit_comp32.o
-> > else
-> >        obj-$(CONFIG_BPF_JIT) +=3D bpf_jit_comp64.o
-> > endif
->
-> It=E2=80=99s common practice to run 32-bit kernel on R4000 based systems =
-to save some memory :-)
-
-Ok, I understand.
-
-Looks good! I have run the test_bpf.ko test suite on MIPS and MIPS64
-in QEMU with and without the workarounds enabled.
-
-With above comment fix:
-Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Ok. But please take a look at patches 1-6. They fix existing issues,
+which were found by running test_verifier on arm and sparc64.
