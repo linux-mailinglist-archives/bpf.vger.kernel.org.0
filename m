@@ -2,110 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED1B6A418E
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 13:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C536A419D
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 13:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbjB0MSH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 07:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
+        id S229512AbjB0MUR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 07:20:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjB0MSH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 07:18:07 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332C7B458
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 04:18:05 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id cp12so2634852pfb.5
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 04:18:05 -0800 (PST)
+        with ESMTP id S229896AbjB0MUF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 07:20:05 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4639219F31
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 04:20:01 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id n5so3371009pfv.11
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 04:20:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8O3Wbk4PyzeJv8vEVqhgTB6nRT41+PZyv3EpdVvZLss=;
-        b=kLBr+8AAjfUN+W39IHft0s19JEo3QXQvA4IJHevtsTRa6ZWK6ueOUV11+5pyKRXV0Z
-         87V1gl2zCTQjCKRVo6peImHHVA0SnxHk8FBWi4FMPsK0IlmBTUT6WARMogA3vTBxDV+y
-         e4gD477Z/23mreZ44MJtExd040W89lvvtvqn79KApu/reuqUz4cYnb+onBTUxdlDsesO
-         mCo2T4HnwBIVcsKdgZpfKqXP53Y5dUUDNb/HcnGRiMY85y7D3Y+HQQ9B+AwW8o7N/xmQ
-         3+OQwcI8Bkn8lvDN3/9VJyaooFFguSDsDIJj0a0Bp9PBJtuY7oHMo+RusdQv4VsRvCvl
-         MD/w==
+        bh=MLMXRXE6p7M2wI/v/8zIreJMb38Cw+t13v0pmAsHMHg=;
+        b=ISCrTbX0cGZo4rt8H1qM6YmqIFbVPz/ztodfosWEkfyna3o6tDcFIYSi216s73nw2n
+         JU6mgjeL9DQNvrLbkhBskOCANmhf5G41bewOClq+DVnbEafyDGY6eF9gr031wc/13NqF
+         EdF0fw9wir/BqotzQq+cGTXKsHIOkjx3DYHpwBp+S61bd9zdBvMlo/HInDe4IE1oubVY
+         RFyFVWtUs1k2yEPuiFFQHsxoBe2i3KdHnrPWAOWsTM/0xbfEdTpkrrtIJjYqGEJv9txl
+         WBWiqpJysadKTuFH8Y/T45FJTALW3evmXhH8oIXbz21P6qQxj/G3bi5fngXcE5cwrEE8
+         TaeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8O3Wbk4PyzeJv8vEVqhgTB6nRT41+PZyv3EpdVvZLss=;
-        b=PgNoPs8kCI03CEWOKc7oYjwrenAHXM5vmWJelLnH5CysTYjUsqBXJHEn6b+W/cTHEq
-         yUJUMVudA+wwakxSCejUIF26kwpXy/FGB+zMsGconjjqUq9pVehO0fO8LrU4toYCRls6
-         s5KElOye/5VNxwgjhddMUH9ffXQQ9t3bXYE1iDFGATo1bgce+y/DMsbf+LpLuDPygs/g
-         dLzVj4GMTIrE5sb1jV3xh6ce4v6tO+O6qSpT0q+AvPJVLrIuNvJrxVfoSgBbc1SrK+yZ
-         VRcVhOxSW+vw6uPm5WO8D2BRoo4uVW3mi8BcZvV/u4NU8/pbTQAvkk9CYpk8nr32X68W
-         yM+w==
-X-Gm-Message-State: AO0yUKVGY6TFEoSwFbaq0ZclV0LX2gxrGj0nk1vujgFR5K45UXTVAaxM
-        r0Rqkz/TQZhSNRKwzYzuD2HEJ1reICiO6wxfPOrfKA==
-X-Google-Smtp-Source: AK7set8wIvfOUTxpgUk1eqPvVSg2OskvjVdzsJ3NgROYebIQXNVp3jUycVc1FS2zPrMjnKbVJwVF3adhec31up6OZDw=
-X-Received: by 2002:a62:864d:0:b0:5e5:7376:ea4d with SMTP id
- x74-20020a62864d000000b005e57376ea4dmr3475333pfd.1.1677500284525; Mon, 27 Feb
- 2023 04:18:04 -0800 (PST)
+        bh=MLMXRXE6p7M2wI/v/8zIreJMb38Cw+t13v0pmAsHMHg=;
+        b=Ik64ubMeScXiIEZG5X+zNL7U8Kmag4gPLRkkOCCoG4yH/TNkjjmZcdn/y7ZtoDIHl6
+         s4KgR9GTiRD8LfGxzJGlDRGhBoGSB40W22CnF75VgWsTZZsPZ7UfGLignlILYPb2FjVj
+         +42hGPTRIsMVEXjZFGvBzTqeFCThpQM56Ep8fQdJK5WM0xl6+lWky+2CgC6W+DWEk4ZN
+         zAj/g5LYbQ7rXAO79V7tb9IuVMYf6khby5RRsrzsElyL3NoPsRlWYr6ba3eQWkWKYfSw
+         +VKle1aLyywI84o/hxPaQ0W2KVb5AXWNmKXW6y9o3mMNpaPO9ZinojCf1q3Vs1RNVlc/
+         Sz8w==
+X-Gm-Message-State: AO0yUKVmra8iPIIDayYDzAcTJQZ8f8mlYAGnwNOpELKqQG3lTfCjhxSX
+        JSFFM5+T2+Iijl+uCcjno6w3sfQ/UPeW+6Oj3KrOCQ==
+X-Google-Smtp-Source: AK7set+pRin2+DrQij1wsBd87m6EHrzz0VpUgURYwl63znWqJGO/4vKGVim0XwC9giSb9cx+snGEAxFrGhlofsJDJss=
+X-Received: by 2002:a05:6a00:302a:b0:5a8:a56f:1c3a with SMTP id
+ ay42-20020a056a00302a00b005a8a56f1c3amr3972323pfb.0.1677500400659; Mon, 27
+ Feb 2023 04:20:00 -0800 (PST)
 MIME-Version: 1.0
 References: <20230222161222.11879-1-jiaxun.yang@flygoat.com>
- <20230222161222.11879-2-jiaxun.yang@flygoat.com> <CAM1=_QQRmTaAnn0w6wteQ_FKgoF=vGX_okfbiUHdyUB0ZzNghQ@mail.gmail.com>
- <7CAF04EF-FC1D-4BE1-A639-92D677525C63@flygoat.com>
-In-Reply-To: <7CAF04EF-FC1D-4BE1-A639-92D677525C63@flygoat.com>
+ <20230222161222.11879-3-jiaxun.yang@flygoat.com> <CAM1=_QTDkYJANgxYwkgPZB+hUX6Rr_Pvnn7cFwSJFHQtLrpQMA@mail.gmail.com>
+ <70C80F6D-A727-48FD-A767-A2CA54AA7C1E@flygoat.com>
+In-Reply-To: <70C80F6D-A727-48FD-A767-A2CA54AA7C1E@flygoat.com>
 From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Mon, 27 Feb 2023 13:17:53 +0100
-Message-ID: <CAM1=_QRVEG0Fw9U99V3ohMe60h0DwMzyWvV_gYdJ=SrQ1D11Fg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] MIPS: ebpf jit: Implement DADDI workarounds
+Date:   Mon, 27 Feb 2023 13:19:49 +0100
+Message-ID: <CAM1=_QS_ewcFdrZ1ypV15wOkK_SKkb0UUe5_Ozi_CDBdxF5JmA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] MIPS: ebpf jit: Implement R4000 workarounds
 To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
         linux-kernel@vger.kernel.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         "paulburton@kernel.org" <paulburton@kernel.org>,
         bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 23, 2023 at 11:29=E2=80=AFAM Jiaxun Yang <jiaxun.yang@flygoat.c=
+On Thu, Feb 23, 2023 at 11:32=E2=80=AFAM Jiaxun Yang <jiaxun.yang@flygoat.c=
 om> wrote:
-> I didn=E2=80=99t see any place emitting DADDI.
-
-Right, the JIT only uses unsigned arithmetics :)
-
-> Yes I analysed all other place, most of them are just calculating memory
-> address offsets and they should never overflow. Other two is doing additi=
-on
-> to zero to load immediate, which should be still fine.
+> >> --- a/arch/mips/Kconfig
+> >> +++ b/arch/mips/Kconfig
+> >> @@ -63,9 +63,7 @@ config MIPS
+> >>        select HAVE_DEBUG_STACKOVERFLOW
+> >>        select HAVE_DMA_CONTIGUOUS
+> >>        select HAVE_DYNAMIC_FTRACE
+> >> -       select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
+> >> -                               !CPU_R4000_WORKAROUNDS && \
+> >> -                               !CPU_R4400_WORKAROUNDS
+> >
+> > Is the R4400 errata also covered by this workaround?
+>
+> Yes, R4400 errata is basically a reduced version of R4000 one.
+> They managed to fix some parts of the issue but not all.
 
 Ok.
 
-> >> --- a/arch/mips/net/bpf_jit_comp.c
-> >> +++ b/arch/mips/net/bpf_jit_comp.c
-> >> @@ -218,9 +218,17 @@ bool valid_alu_i(u8 op, s32 imm)
-> >>                /* All legal eBPF values are valid */
-> >>                return true;
-> >>        case BPF_ADD:
-> >> +#ifdef CONFIG_64BIT
-> >
-> > DADDI/DADDIU are only available on 64-bit CPUs, so the errata would
-> > only be applicable to that. No need for the CONFIG_64BIT conditional.
->
-> It=E2=80=99s possible to compile a 32bit kernel for R4000 with CONFIG_CPU=
-_DADDI_WORKAROUNDS
-> enabled.
+> >> --- a/arch/mips/net/bpf_jit_comp32.c
+> >> +++ b/arch/mips/net/bpf_jit_comp32.c
+> >> @@ -446,6 +446,9 @@ static void emit_mul_i64(struct jit_context *ctx, =
+const u8 dst[], s32 imm)
+> >>                } else {
+> >>                        emit(ctx, multu, hi(dst), src);
+> >>                        emit(ctx, mflo, hi(dst));
+> >> +                       /* Ensure multiplication is completed */
+> >> +                       if (IS_ENABLED(CONFIG_CPU_R4000_WORKAROUNDS))
+> >> +                               emit(ctx, mfhi, MIPS_R_ZERO);
+> >>                }
+> >>
+> >>                /* hi(dst) =3D hi(dst) - lo(dst) */
+> >> @@ -504,6 +507,7 @@ static void emit_mul_r64(struct jit_context *ctx,
+> >>        } else {
+> >>                emit(ctx, multu, lo(dst), lo(src));
+> >>                emit(ctx, mflo, lo(dst));
+> >> +               /* No need for workaround because we have this mfhi */
 
-Yes, but DADDI/DADDIU are 64-bit instructions so they would not be
-available when compiling the kernel in 32-bit mode for R4000, and
-hence the workaround would not be applicable, right? If this is
-correct, I would imagine CONFIG_CPU_DADDI_WORKAROUNDS itself to be
-conditional on CONFIG_64BIT. That way the this relationship is
-expressed once in the Kconfig file, instead of being spread out over
-multiple places in the code.
+For context, please specify which workaround this comment refers to:
+"workaround" -> "R4000 workaround".
+
+> > R4000 is a 64-bit CPU, so the 32-bit JIT implementation will not be
+> > used. From the Makefile:
+> >
+> > ifeq ($(CONFIG_32BIT),y)
+> >        obj-$(CONFIG_BPF_JIT) +=3D bpf_jit_comp32.o
+> > else
+> >        obj-$(CONFIG_BPF_JIT) +=3D bpf_jit_comp64.o
+> > endif
+>
+> It=E2=80=99s common practice to run 32-bit kernel on R4000 based systems =
+to save some memory :-)
+
+Ok, I understand.
+
+Looks good! I have run the test_bpf.ko test suite on MIPS and MIPS64
+in QEMU with and without the workarounds enabled.
+
+With above comment fix:
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
