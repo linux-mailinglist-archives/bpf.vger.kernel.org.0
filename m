@@ -2,89 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BE16A460D
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600C46A45C2
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjB0P2a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 10:28:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
+        id S230198AbjB0PRb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 10:17:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbjB0P22 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 10:28:28 -0500
-X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Feb 2023 07:28:24 PST
-Received: from faui40.informatik.uni-erlangen.de (faui40.informatik.uni-erlangen.de [131.188.34.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1D6D329;
-        Mon, 27 Feb 2023 07:28:24 -0800 (PST)
-Received: from luis-i4.pool.uni-erlangen.de (i4laptop35.informatik.uni-erlangen.de [10.188.34.202])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: gerhorst)
-        by faui40.informatik.uni-erlangen.de (Postfix) with ESMTPSA id 4PQP6Y4BzGznkcf;
-        Mon, 27 Feb 2023 16:09:25 +0100 (CET)
-From:   Luis Gerhorst <gerhorst@cs.fau.de>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229726AbjB0PRa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 10:17:30 -0500
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3F92B227A8;
+        Mon, 27 Feb 2023 07:17:29 -0800 (PST)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 3E8BB92009C; Mon, 27 Feb 2023 16:17:27 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 3BB0192009B;
+        Mon, 27 Feb 2023 15:17:27 +0000 (GMT)
+Date:   Mon, 27 Feb 2023 15:17:27 +0000 (GMT)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
+cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Luis Gerhorst <gerhorst@cs.fau.de>
-Subject: [PATCH] tools: bpftool: remove invalid \' json escape
-Date:   Mon, 27 Feb 2023 16:08:54 +0100
-Message-Id: <20230227150853.16863-1-gerhorst@cs.fau.de>
-X-Mailer: git-send-email 2.34.1
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH 1/2] MIPS: ebpf jit: Implement DADDI workarounds
+In-Reply-To: <CAM1=_QRVEG0Fw9U99V3ohMe60h0DwMzyWvV_gYdJ=SrQ1D11Fg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2302271513240.63909@angie.orcam.me.uk>
+References: <20230222161222.11879-1-jiaxun.yang@flygoat.com> <20230222161222.11879-2-jiaxun.yang@flygoat.com> <CAM1=_QQRmTaAnn0w6wteQ_FKgoF=vGX_okfbiUHdyUB0ZzNghQ@mail.gmail.com> <7CAF04EF-FC1D-4BE1-A639-92D677525C63@flygoat.com>
+ <CAM1=_QRVEG0Fw9U99V3ohMe60h0DwMzyWvV_gYdJ=SrQ1D11Fg@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RFC8259 ("The JavaScript Object Notation (JSON) Data Interchange
-Format") only specifies \", \\, \/, \b, \f, \n, \r, and \r as valid
-two-character escape sequences. This does not include \', which is not
-required in JSON because it exclusively uses double quotes as string
-separators.
+On Mon, 27 Feb 2023, Johan Almbladh wrote:
 
-Solidus (/) may be escaped, but does not have to. Only reverse
-solidus (\), double quotes ("), and the control characters have to be
-escaped. Therefore, with this fix, bpftool correctly supports all valid
-two-character escape sequences (but still does not support characters
-that require multi-character escape sequences).
+> > > DADDI/DADDIU are only available on 64-bit CPUs, so the errata would
+> > > only be applicable to that. No need for the CONFIG_64BIT conditional.
+> >
+> > It’s possible to compile a 32bit kernel for R4000 with CONFIG_CPU_DADDI_WORKAROUNDS
+> > enabled.
+> 
+> Yes, but DADDI/DADDIU are 64-bit instructions so they would not be
+> available when compiling the kernel in 32-bit mode for R4000, and
+> hence the workaround would not be applicable, right? If this is
+> correct, I would imagine CONFIG_CPU_DADDI_WORKAROUNDS itself to be
+> conditional on CONFIG_64BIT. That way the this relationship is
+> expressed once in the Kconfig file, instead of being spread out over
+> multiple places in the code.
 
-Witout this fix, attempting to load a JSON file generated by bpftool
-using Python 3.10.6's default json.load() may fail with the error
-"Invalid \escape" if the file contains the invalid escaped single
-quote (\').
+ It is:
 
-Signed-off-by: Luis Gerhorst <gerhorst@cs.fau.de>
----
- tools/bpf/bpftool/json_writer.c | 3 ---
- 1 file changed, 3 deletions(-)
+	select CPU_DADDI_WORKAROUNDS if 64BIT
 
-diff --git a/tools/bpf/bpftool/json_writer.c b/tools/bpf/bpftool/json_writer.c
-index 7fea83bedf48..bca5dd0a59e3 100644
---- a/tools/bpf/bpftool/json_writer.c
-+++ b/tools/bpf/bpftool/json_writer.c
-@@ -80,9 +80,6 @@ static void jsonw_puts(json_writer_t *self, const char *str)
- 		case '"':
- 			fputs("\\\"", self->out);
- 			break;
--		case '\'':
--			fputs("\\\'", self->out);
--			break;
- 		default:
- 			putc(*str, self->out);
- 		}
--- 
-2.34.1
+It only applies to 64-bit operations which are not used in 32-bit code.
 
+  Maciej
