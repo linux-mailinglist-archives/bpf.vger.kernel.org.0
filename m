@@ -2,157 +2,311 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D74866A4D6F
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 22:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6576A4D89
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 22:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbjB0Vla (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 16:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
+        id S229908AbjB0VsI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 16:48:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjB0Vl3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 16:41:29 -0500
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D0B1CAFA
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 13:41:18 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 03BC332007E8;
-        Mon, 27 Feb 2023 16:41:17 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 27 Feb 2023 16:41:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1677534077; x=
-        1677620477; bh=wbNTgF7HuDyTTfAmxYQhhsSTdpyQid543ozIzYNnCh4=; b=O
-        4ZUovR9CW6TOD+AdFe3nk9EhIcce8MZGBzSsQtlJVMsL64Nv2/HgD8TYLxjX6gTp
-        /MOHwo4jqlk1/LpMliYrFk0f/G9TswO4Diex3s1a7PP+5tx0JVod5hkq91H/xeZI
-        Zvm09YLetiPJB3vJ+CkxWHdgCYd6GJkUqYUpsNc0oXQ37ADRM+MnrYNrtGWyEwO4
-        3NcYyxjcAN7RucjCa+EMwdIh9bKk2p5trVInTIL7QeZ880AfLmRVb7ze+DPI1zpx
-        BYsqmiiDEign4/eepi8z2BhUCx86kJk3the1XvcC1Xr1ZxtomW7mZjkex1TPD+jX
-        RV89TFcSccx94ez8Im3TA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677534077; x=
-        1677620477; bh=wbNTgF7HuDyTTfAmxYQhhsSTdpyQid543ozIzYNnCh4=; b=e
-        CcGqOer4aPDWqB3iq/EEegPXuvz4gRKzBd4vPKHhmPhfTbZn+HlccEezAipFyaBL
-        L2ciZkZDRu93YxIfusmmeahq/45XScwc1Iqgpxr6/488nOmcSQxoHnMHPwqI+bpD
-        IgQNwimDve/yGGmkT/K0sq1Pm7O/aepcdyXb7EIIz2tT7WQ4xp4ea0keduelX9/N
-        hAOIj4aT1ferCK4kQyzjG1ImA+viGfiNGgrQJH7aI0r6RPXpBc66Ud4TDUK31zcw
-        OHG/uzfcA8E1NTHGdKQVh0uwmoWbyE5wH4Xab2Qkzs2qEFGWgES4CeqLz/MP3ih/
-        SYmKFvA1gUPYbo4Yb425Q==
-X-ME-Sender: <xms:fSP9Y_4qnpIP6zt4yb2-9-ABEP-_dGu2707TvJ2a3yV5wdffyjQIFA>
-    <xme:fSP9Y06eFrbVDi4QcUuvkQXyP6ncVW4JNGkcs8wrYb_4OlWriSX0bu8ElzaiA_0id
-    G6AqKq55Hz2IdHYPQ>
-X-ME-Received: <xmr:fSP9Y2fTI2UU0FUInYmFYRrlXd3_JGDTdSyS2-GI9FK2iVovH__LC8eeB5fiPuESKW1uTHYhuAX6H0XOdzwFZ1T2e55QWz0LCFw_lhs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeltddgudegkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhepff
-    fhvfevuffkfhggtggugfgjsehtkeertddttddunecuhfhrohhmpeffrghnihgvlhcuighu
-    uceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgedvjeevuedvie
-    fgjeejueefhfffteefkedutdduvdeutdeuffdvjeelheegteffnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:fSP9YwL5BrqVJJiTxANuI5gzihYOvoGN3g7zwwixZxT126CuP79Clg>
-    <xmx:fSP9YzKWy_7ZMXjDuef3BvMtbNKai3r4-siVCqUekSQptsn4xI0m_Q>
-    <xmx:fSP9Y5x7nrivIpCdijEywuXGAz9M6T8RlxrG3gVY29NpPlTe384dDQ>
-    <xmx:fSP9Y5hiL6bQKuU0b8JS1XhvDCoVgapinNnSxhHIPa1O_NP2hPLqKg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 27 Feb 2023 16:41:16 -0500 (EST)
-Date:   Mon, 27 Feb 2023 14:41:15 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-Cc:     lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] Batteries-included symbolization with blazesym
-Message-ID: <20230227214115.p5ohjcnkl2rz4mkt@kashmir.localdomain>
-References: <20230227193456.jbxt3mba6xfntieu@muellerd-fedora-PC2BDTX9>
- <20230227200748.xdkhnht2w4mtbj2u@kashmir.localdomain>
- <20230227213430.qxfrupne3g4lvsla@muellerd-fedora-PC2BDTX9>
+        with ESMTP id S229698AbjB0VsH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 16:48:07 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F73EA5F1;
+        Mon, 27 Feb 2023 13:48:06 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id cy6so31747774edb.5;
+        Mon, 27 Feb 2023 13:48:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5Cv/Lb4w9p6irhqIQaqxAsCMYZeCfxJpk48Sv40qvTo=;
+        b=lrEfonxkVCowaFYhGRjDO++QWCQzREZWmVj6eIXXLt4h79AWFvvOvAA33lCsR4Jvvi
+         +gxPKNkCl0Jkx1MLKtqDcItqij5c2no1iHZFb7E4LcA/csxXPxsj0R5Z92pc7RByjCxD
+         5d8G+uM9fI0/Zd7wgRl/Ok6gFjHeOSLyGUeHurNj3Wz2ZaW4gbUAoiSrTinC4f82TwnD
+         rlQed1MIqsWrBAizuhjo4ObgipOwk7Q09gvCWlxy2cjHtmOHcSHkWoFX0Ai+5WIt4gBD
+         WShgME2mYwnOinQPkJ0gSjlNpYbRTcI+7eQZ9W/K8paalw3LbFyioW77c1ihyqAbNbJ6
+         GyCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5Cv/Lb4w9p6irhqIQaqxAsCMYZeCfxJpk48Sv40qvTo=;
+        b=ry9irub1g85zyIkjdK9HKUEefZkLMdK3oawsLSlEB3s8nhjk/kNLWw/NqcdEtfxb+L
+         Mdujrc3M5Eofajg1nF/xgE6W9UD0mso9ZaNjHi+RidxGMhCDOu54yC/4qUSNZtjAsDck
+         t3mA9Swywk9ZvKepwncAjjk9FFNqog8l2aTih0fqhfHtYqSyAVOzCkhoODDk2UP3WU4b
+         RhabJjk8YvFrhNbBJuqQD4I715v5jbSsGSt9qzehRlEBKP7xvnda2DCjkDahkV3wM+RN
+         Ae3f8FeUG8H/pbPtyBPnQWaucp6jPOf8TtrVZEDOvkOe/1WBWfZgqxdsDsCKap+e4bg8
+         Z77g==
+X-Gm-Message-State: AO0yUKU1c0VDGad1LIA3HNoakXIa6jOS2iJT8GNA1tNqj9CwzJE46+7w
+        4/EFTBEnr95v+RUwJxjnc+H7FU5ofHAHwmkNlYE=
+X-Google-Smtp-Source: AK7set+7KdkKK8FpV3GLIOG/Y7MzwgKAY01tbG4w3lqpC4hs9Nbw1hJoRtGbMJ8eXlsGy8t83akWVP46fEyi4LH1epM=
+X-Received: by 2002:a17:906:720e:b0:8de:c6a6:5134 with SMTP id
+ m14-20020a170906720e00b008dec6a65134mr70864ejk.15.1677534484602; Mon, 27 Feb
+ 2023 13:48:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230227213430.qxfrupne3g4lvsla@muellerd-fedora-PC2BDTX9>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230221025347.389047-1-imagedong@tencent.com> <20230221025347.389047-2-imagedong@tencent.com>
+In-Reply-To: <20230221025347.389047-2-imagedong@tencent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Feb 2023 13:47:52 -0800
+Message-ID: <CAEf4BzY7piCAZ=QDunS-Nmdjojsk37T8Fp-XRfKoTtYcFmsyPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] libbpf: add support to set kprobe/uprobe
+ attach mode
+To:     menglong8.dong@gmail.com
+Cc:     alan.maguire@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        benbjiang@tencent.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Daniel,
+On Mon, Feb 20, 2023 at 6:54=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
+>
+> From: Menglong Dong <imagedong@tencent.com>
+>
+> By default, libbpf will attach the kprobe/uprobe eBPF program in the
+> latest mode that supported by kernel. In this patch, we add the support
+> to let users manually attach kprobe/uprobe in legacy or perf mode.
+>
+> There are 3 mode that supported by the kernel to attach kprobe/uprobe:
+>
+>   LEGACY: create perf event in legacy way and don't use bpf_link
+>   PERF: create perf event with perf_event_open() and don't use bpf_link
+>   LINK: create perf event with perf_event_open() and use bpf_link
+>
+> Users now can manually choose the mode with
+> bpf_program__attach_uprobe_opts()/bpf_program__attach_kprobe_opts().
+>
+> Link: https://lore.kernel.org/bpf/20230113093427.1666466-1-imagedong@tenc=
+ent.com/
+> Reviewed-by: Biao Jiang <benbjiang@tencent.com>
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+> v2:
+> - rename no_link to force_ioctl_attach
+> - rename probe_mode to probe_attach_mode
+> - add more doc for probe_attach_mode
+> - return -ENOTSUP when necessray in bpf_program__attach_uprobe_opts and
+>   bpf_program__attach_kprobe_opts
+> ---
+>  tools/lib/bpf/libbpf.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+>  tools/lib/bpf/libbpf.h | 31 ++++++++++++++++++++++++++++---
+>  2 files changed, 69 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 05c4db355f28..d07a0d7b9edd 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -9747,7 +9747,7 @@ struct bpf_link *bpf_program__attach_perf_event_opt=
+s(const struct bpf_program *p
+>         link->link.dealloc =3D &bpf_link_perf_dealloc;
+>         link->perf_event_fd =3D pfd;
+>
+> -       if (kernel_supports(prog->obj, FEAT_PERF_LINK)) {
+> +       if (kernel_supports(prog->obj, FEAT_PERF_LINK) && !opts->force_io=
+ctl_attach) {
 
-On Mon, Feb 27, 2023 at 09:34:30PM +0000, Daniel Müller wrote:
-> Hi Daniel,
-> 
-> On Mon, Feb 27, 2023 at 01:07:48PM -0700, Daniel Xu wrote:
-> > On Mon, Feb 27, 2023 at 07:34:56PM +0000, Daniel Müller wrote:
-> > > Symbolization of addresses is a commonly encountered problem, maybe most so in
-> > > the context of BPF and tracing with the capturing of stack traces. Perhaps
-> > > superficially straightforward-looking, there a variety of considerations and
-> > > intricacies, such as:
-> > > - different formats/standards (e.g., ELF symbol information, DWARF, GSYM) cater
-> > >   to different use cases and require vastly different steps to work with
-> > >   - on top of that, even if a library such as libelf or libdwarf is relied on,
-> > >     plenty of format specific details need to be known to symbolize addresses
-> > >     properly
-> > > - discovery of symbolization sources (e.g., DWARF debug files)
-> > > - symbolization trade-offs (performance, memory usage)
-> > > - system-specific details and corner cases
-> > > 
-> > > We are working on blazesym [0], a library that aims to provide users with a
-> > > batteries-included experience for symbolizing addresses (but also the reverse:
-> > > mapping symbols to addresses).
-> > > 
-> > > We would like to provide a brief overview of the library and its goals and then
-> > > open up for discussion. Some topics we are specifically interested in
-> > > understanding better:
-> > > - What are current issues with symbolization that would be great to support?
-> > > - Does the usage of Rust pose a problem in your context? (C bindings are
-> > >   available, but a Rust toolchain is required for building; are pre-built
-> > >   binaries and packages for common distributions sufficient for your use cases?)
-> > > 
-> > > In general, we'd be interested in hearing your use cases and in discussing
-> > > whether blazesym is a fit or could be made to work.
-> > 
-> > I didn't look super close at blazesym yet, but was wondering if it would
-> > support a use case I have in mind.
-> > 
-> > Context is it's tricky to determine why a packet was dropped by kernel.
-> > kfree_skb_reason() with caller address in `location` is a good start but
-> > we can do better I think.
-> > 
-> > The issue is the call stack alone is not enough detail. I want to see
-> > all the branches taken in the case a single call frame has multiple ways
-> > to drop.
-> > 
-> > Vague idea is to use the recent LBR work (also haven't looked hard yet,
-> > so this may not be possible) to take LBR stack at
-> > `tracepoint:skb:kfree_skb` tracepoint. Then map the branches to line
-> > numbers.
-> > 
-> > So my question is this: can/will blazesym be able to map kernel
-> > addresses to line numbers / file names?
-> 
-> Blazesym should be able to help with the symbolization aspect, yes. That is, it
-> can convert the addresses you captured into symbol name + source file + line
-> information as you asked for (you may need DWARF debug information for anything
-> beyond mere symbol names). In general, the library is able to handle both user
-> space and kernel addresses.
+can't access ->force_ioctl_attach directly, please use OPTS_GET()
+macro; it handles possibility of old user app passing smaller and
+older version of opts struct
 
-Awesome, sounds great. After looking slightly more carefully, how about
-split debug info support and debuginfod support? Extremely unlikely
-anybody ships production kernels with debug symbols. But debuginfod
-service is more likely.
+>                 DECLARE_LIBBPF_OPTS(bpf_link_create_opts, link_opts,
+>                         .perf_event.bpf_cookie =3D OPTS_GET(opts, bpf_coo=
+kie, 0));
+>
+> @@ -10106,6 +10106,7 @@ bpf_program__attach_kprobe_opts(const struct bpf_=
+program *prog,
+>                                 const struct bpf_kprobe_opts *opts)
+>  {
+>         DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
+> +       enum probe_attach_mode attach_mode;
+>         char errmsg[STRERR_BUFSIZE];
+>         char *legacy_probe =3D NULL;
+>         struct bpf_link *link;
+> @@ -10116,11 +10117,30 @@ bpf_program__attach_kprobe_opts(const struct bp=
+f_program *prog,
+>         if (!OPTS_VALID(opts, bpf_kprobe_opts))
+>                 return libbpf_err_ptr(-EINVAL);
+>
+> +       attach_mode =3D OPTS_GET(opts, attach_mode, PROBE_ATTACH_MODE_DEF=
+AULT);
+>         retprobe =3D OPTS_GET(opts, retprobe, false);
+>         offset =3D OPTS_GET(opts, offset, 0);
+>         pe_opts.bpf_cookie =3D OPTS_GET(opts, bpf_cookie, 0);
+>
+>         legacy =3D determine_kprobe_perf_type() < 0;
+> +       switch (attach_mode) {
+> +       case PROBE_ATTACH_MODE_LEGACY:
+> +               legacy =3D true;
+> +               pe_opts.force_ioctl_attach =3D true;
+> +               break;
+> +       case PROBE_ATTACH_MODE_PERF:
+> +               if (legacy)
+> +                       return libbpf_err_ptr(-ENOTSUP);
+> +               pe_opts.force_ioctl_attach =3D true;
+> +               break;
+> +       case PROBE_ATTACH_MODE_LINK:
+> +               if (!kernel_supports(prog->obj, FEAT_PERF_LINK))
 
-> It is not designed, however, to help you capture those addresses. So how you get
-> them (e.g., using LBR as you mentioned) is up to you.
+just to be on the safe side, let's also check that we are not in
+legacy mode here?
 
-Makes sense.
+> +                       return libbpf_err_ptr(-ENOTSUP);
+> +               break;
+> +       default:
 
-Thanks,
-Daniel
+let's add case PROBE_ATTACH_MODE_DEFAULT: break; explicitly, but for
+all other unknown values error out
+
+> +               break;
+> +       }
+> +
+>         if (!legacy) {
+>                 pfd =3D perf_event_open_probe(false /* uprobe */, retprob=
+e,
+>                                             func_name, offset,
+> @@ -10774,6 +10794,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_=
+program *prog, pid_t pid,
+>  {
+>         DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
+>         char errmsg[STRERR_BUFSIZE], *legacy_probe =3D NULL;
+> +       enum probe_attach_mode attach_mode;
+>         char full_binary_path[PATH_MAX];
+>         struct bpf_link *link;
+>         size_t ref_ctr_off;
+> @@ -10784,6 +10805,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_=
+program *prog, pid_t pid,
+>         if (!OPTS_VALID(opts, bpf_uprobe_opts))
+>                 return libbpf_err_ptr(-EINVAL);
+>
+> +       attach_mode =3D OPTS_GET(opts, attach_mode, PROBE_ATTACH_MODE_DEF=
+AULT);
+>         retprobe =3D OPTS_GET(opts, retprobe, false);
+>         ref_ctr_off =3D OPTS_GET(opts, ref_ctr_offset, 0);
+>         pe_opts.bpf_cookie =3D OPTS_GET(opts, bpf_cookie, 0);
+> @@ -10812,6 +10834,24 @@ bpf_program__attach_uprobe_opts(const struct bpf=
+_program *prog, pid_t pid,
+>         }
+>
+>         legacy =3D determine_uprobe_perf_type() < 0;
+> +       switch (attach_mode) {
+> +       case PROBE_ATTACH_MODE_LEGACY:
+> +               legacy =3D true;
+> +               pe_opts.force_ioctl_attach =3D true;
+> +               break;
+> +       case PROBE_ATTACH_MODE_PERF:
+> +               if (legacy)
+> +                       return libbpf_err_ptr(-ENOTSUP);
+> +               pe_opts.force_ioctl_attach =3D true;
+> +               break;
+> +       case PROBE_ATTACH_MODE_LINK:
+> +               if (!kernel_supports(prog->obj, FEAT_PERF_LINK))
+> +                       return libbpf_err_ptr(-ENOTSUP);
+> +               break;
+> +       default:
+> +               break;
+> +       }
+
+all the same points as above for kprobe_opts version
+
+> +
+>         if (!legacy) {
+>                 pfd =3D perf_event_open_probe(true /* uprobe */, retprobe=
+, binary_path,
+>                                             func_offset, pid, ref_ctr_off=
+);
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 2efd80f6f7b9..ef8f68da42f9 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -451,8 +451,11 @@ struct bpf_perf_event_opts {
+>         size_t sz;
+>         /* custom user-provided value fetchable through bpf_get_attach_co=
+okie() */
+>         __u64 bpf_cookie;
+> +       /* don't use bpf_link when attach eBPF program */
+> +       bool force_ioctl_attach;
+> +       size_t :0;
+>  };
+> -#define bpf_perf_event_opts__last_field bpf_cookie
+> +#define bpf_perf_event_opts__last_field force_ioctl_attach
+>
+>  LIBBPF_API struct bpf_link *
+>  bpf_program__attach_perf_event(const struct bpf_program *prog, int pfd);
+> @@ -461,6 +464,24 @@ LIBBPF_API struct bpf_link *
+>  bpf_program__attach_perf_event_opts(const struct bpf_program *prog, int =
+pfd,
+>                                     const struct bpf_perf_event_opts *opt=
+s);
+>
+> +
+> +/**
+> + * enum probe_attach_mode - the mode to attach kprobe/uprobe
+> + *
+> + * force libbpf to attach kprobe/uprobe in specific mode, -ENOTSUP will
+> + * be returned if it is not supported by the kernel.
+> + */
+> +enum probe_attach_mode {
+> +       /* attach probe in latest supported mode by kernel */
+> +       PROBE_ATTACH_MODE_DEFAULT =3D 0,
+> +       /* attach probe in legacy mode */
+
+"in legacy mode, using debugfs/tracefs" ?
+
+> +       PROBE_ATTACH_MODE_LEGACY,
+> +       /* create perf event with perf_event_open() syscall */
+> +       PROBE_ATTACH_MODE_PERF,
+> +       /* attach probe with bpf_link */
+
+nit: BPF link (it's a concept, not a struct name)
+
+> +       PROBE_ATTACH_MODE_LINK,
+> +};
+> +
+>  struct bpf_kprobe_opts {
+>         /* size of this struct, for forward/backward compatiblity */
+>         size_t sz;
+> @@ -470,9 +491,11 @@ struct bpf_kprobe_opts {
+>         size_t offset;
+>         /* kprobe is return probe */
+>         bool retprobe;
+> +       /* kprobe attach mode */
+> +       enum probe_attach_mode attach_mode;
+>         size_t :0;
+>  };
+> -#define bpf_kprobe_opts__last_field retprobe
+> +#define bpf_kprobe_opts__last_field attach_mode
+>
+>  LIBBPF_API struct bpf_link *
+>  bpf_program__attach_kprobe(const struct bpf_program *prog, bool retprobe=
+,
+> @@ -570,9 +593,11 @@ struct bpf_uprobe_opts {
+>          * binary_path.
+>          */
+>         const char *func_name;
+> +       /* uprobe attach mode */
+> +       enum probe_attach_mode attach_mode;
+>         size_t :0;
+>  };
+> -#define bpf_uprobe_opts__last_field func_name
+> +#define bpf_uprobe_opts__last_field attach_mode
+>
+>  /**
+>   * @brief **bpf_program__attach_uprobe()** attaches a BPF program
+> --
+> 2.39.0
+>
