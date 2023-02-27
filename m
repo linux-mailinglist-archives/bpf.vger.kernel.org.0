@@ -2,209 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 812766A474B
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 17:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E376A47D4
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 18:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbjB0QwK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 11:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
+        id S229524AbjB0RWc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 12:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjB0QwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 11:52:09 -0500
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27591EBFD
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 08:52:07 -0800 (PST)
-Received: by mail-qt1-f182.google.com with SMTP id l13so7402065qtv.3
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 08:52:07 -0800 (PST)
+        with ESMTP id S230356AbjB0RWQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 12:22:16 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8AD23D8F
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 09:22:09 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id ck15so29078299edb.0
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 09:22:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KIj/qYqwqM03qk3g6xOAvyJYrfd2GNCZLu/cMnLWjM8=;
+        b=Q5XxRrqzutIWc+3fRt2HF3NPsnOIqLm/PN1cLUrWPD381oJQRbTqTiv4ijTi5t83On
+         0R8u/CEz3LU72mIMHyAlBZ9cU7wg/X5ZNzfaJP8o3WqDQJ9wqHgfG1A+9sI/3xd7Yy1S
+         wSo2WoAEBctgBQwbAf+yO5LCpsgQ54bKsIcVYeGpcgRKhGy5/WgRS+fj9U2EgSSOouFG
+         59Zse3pkhysyUg4enfCqI7bx2ohLVOP1PAJBfM65HUbXvGukjH4KWqrjpMtAP0FFXggc
+         zqSLBCKm5n+DIVamZHN569uV01M1IEWp30BL45TSQK1vHd/Xh3KPs4BFM1hiS9FJqXqB
+         Fepg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nouG2YMsT+cKpwN7t93GzZv4UX3B/uNJ/++sDq/PgpE=;
-        b=l3x8pbFM19xU7Ub19GUKb7cE0dROfbAdGAfm3Z9qrWt8wgfKxc5T54BFFMelwuowvQ
-         yIjC0o2iHAIFpH/8GzVat/wBfWVNUIAiN+NU8LqVG59Vo7wYFyuQ3nXYUYWtZWSMvdt1
-         p0Ds9kIK6idPTiUPf7/k5SiK3pIZdvv9U87EszkSeWTJtVWGZz5Gnhd10EmYZGy13JIQ
-         X7sRfx6aTdZWb/HXHfey5pnAekbZmFrcDNIuzjcprEQbao2DV9qgbrPWQdm2ppt6zRLU
-         QDO3k2+Zj4yVKKB1iu7qXqraH3PomcTfcO/+RMMb3P/gNFpepmoQ39pxde8Zx9ErOvsl
-         Z4KA==
-X-Gm-Message-State: AO0yUKXji/eiIQxwMEdpxOm19g8S2ZxscG+seNhOSaXba8QbZ78wdTos
-        IxtDjs01DPztWU0tBI6te9+bGGYH5NI6TA==
-X-Google-Smtp-Source: AK7set/42sSChSbtJds0TAUh0dkfcfc9+MZYxJGciY9zx9pz3IdHKDYHlNKgdpiPOrq4iF+7syV7UA==
-X-Received: by 2002:ac8:5ac8:0:b0:3bf:e2db:4c80 with SMTP id d8-20020ac85ac8000000b003bfe2db4c80mr2443211qtd.53.1677516726547;
-        Mon, 27 Feb 2023 08:52:06 -0800 (PST)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id m27-20020a05620a13bb00b0073b587194d0sm5129988qki.104.2023.02.27.08.52.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 08:52:06 -0800 (PST)
-Date:   Mon, 27 Feb 2023 10:52:04 -0600
-From:   David Vernet <void@manifault.com>
-To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@ietf.org
-Subject: Re: [Bpf] [PATCH] bpf, docs: Document BPF insn encoding in term of
- stored bytes
-Message-ID: <Y/zftLx9nDF5tb9G@maniforge>
-References: <87y1om25l4.fsf@oracle.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KIj/qYqwqM03qk3g6xOAvyJYrfd2GNCZLu/cMnLWjM8=;
+        b=fMbonjS8xL6W5k9K5OIAFr2ulINVAMjf9g/NC0bSN4Fwf8iwC72QREe4a9dObUTyg9
+         P6wzR85k6zWNHcqBxjyOinmmJcNNZZLYKJuKspmAPPpZp4Nh74g5FfOe26eSCg+fwtao
+         XF1ZM9SNt09fUiyEd/PxCZcuGmIkNsbdV7dOnsm4oivWSH+GJFUQHJ3Ip+e0K4pvHHBW
+         ZLABWdJZ9icPNPlSemnAIHX/NbW7dkN2f2xiSxXMftrMfB84e4jZjnDjeyDvEsphLcZu
+         NxM/4CIiX1UuUlH/j8L0JLa/6bgssX20kmdrmO/VROpGb8tXdqXDvHDsFyT34qwpwLtX
+         ePEg==
+X-Gm-Message-State: AO0yUKX0vDVqw+gd1GH+2TTlIsgXwIwGCJHeUj2d/tuhx4o8h2RcLxX2
+        L4TDA0hek2g975lmyOrYXWJQOvLrEmLpz/IHyU6qZq2/vIM=
+X-Google-Smtp-Source: AK7set+qIQWaAGf+SMGsf/tw0PzMSy3X+wYBuhlSfjkD6ymyM88tbDmZCxSiNcF6DldJf05UHqotirQH4XUeOCy47qA=
+X-Received: by 2002:a17:907:1dda:b0:8b0:fbd5:2145 with SMTP id
+ og26-20020a1709071dda00b008b0fbd52145mr15338304ejc.15.1677518527846; Mon, 27
+ Feb 2023 09:22:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y1om25l4.fsf@oracle.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230227152032.12359-1-laoar.shao@gmail.com> <20230227152032.12359-8-laoar.shao@gmail.com>
+In-Reply-To: <20230227152032.12359-8-laoar.shao@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Feb 2023 09:21:55 -0800
+Message-ID: <CAEf4BzZqOUGqhDgN3NzFO5aeSSxGtsVx_xzBkgHhws=MF5xD9w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 07/18] bpf: ringbuf memory usage
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
+        xiyou.wangcong@gmail.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 24, 2023 at 09:04:07PM +0100, Jose E. Marchesi wrote:
-> 
-> This patch modifies instruction-set.rst so it documents the encoding
-> of BPF instructions in terms of how the bytes are stored (be it in an
-> ELF file or as bytes in a memory buffer to be loaded into the kernel
-> or some other BPF consumer) as opposed to how the instruction looks
-> like once loaded.
-> 
-> This is hopefully easier to understand by implementors looking to
-> generate and/or consume bytes conforming BPF instructions.
-> 
-> The patch also clarifies that the unused bytes in a pseudo-instruction
-> shall be cleared with zeros.
-> 
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-
-Hi Jose,
-
-Thanks for writing this up.
-
+On Mon, Feb 27, 2023 at 7:21 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> A new helper ringbuf_map_mem_usage() is introduced to calculate ringbuf
+> memory usage.
+>
+> The result as follows,
+> - before
+> 15: ringbuf  name count_map  flags 0x0
+>         key 0B  value 0B  max_entries 65536  memlock 0B
+>
+> - after
+> 15: ringbuf  name count_map  flags 0x0
+>         key 0B  value 0B  max_entries 65536  memlock 78424B
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > ---
->  Documentation/bpf/instruction-set.rst | 43 +++++++++++++--------------
->  1 file changed, 21 insertions(+), 22 deletions(-)
-> 
-> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-> index 01802ed9b29b..9b28c0e15bb6 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -38,15 +38,13 @@ eBPF has two instruction encodings:
->  * the wide instruction encoding, which appends a second 64-bit immediate (i.e.,
->    constant) value after the basic instruction for a total of 128 bits.
->  
-> -The basic instruction encoding looks as follows for a little-endian processor,
-> -where MSB and LSB mean the most significant bits and least significant bits,
-> -respectively:
-> +The fields conforming an encoded basic instruction are stored in the
-> +following order:
->  
-> -=============  =======  =======  =======  ============
-> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> -=============  =======  =======  =======  ============
-> -imm            offset   src_reg  dst_reg  opcode
-> -=============  =======  =======  =======  ============
-> +  opcode:8 src:4 dst:4 offset:16 imm:32 // In little-endian BPF.
-> +  opcode:8 dst:4 src:4 offset:16 imm:32 // In big-endian BPF.
-
-Unfortunately this won't render correctly. It'll look something like
-this:
-
-The fields conforming an encoded basic instruction are stored in the following order:
-
-opcode:8 src:4 dst:4 offset:16 imm:32 // In little-endian BPF. opcode:8 dst:4 src:4 offset:16 imm:32 // In big-endian BPF.
-
-You'll have to add some extra newlines. You can test out your changes
-with:
-
-make SPHINXDIRS=bpf htmldocs
-
-And then the output is put in Documentation/output/bpf
-
-In general, this is sort of the problem we have with rst. We want to
-strike a balance between readable in a text editor, and readable when
-rendered in a web browser. I think we can strike such a balance here,
-but it'll probably require a bit of rst-fu. As described below, I think
-we can fix this with a literal code block by just adding a : to order:
-
-> +The fields conforming an encoded basic instruction are stored in the
-> +following order::
-
-
+>  kernel/bpf/ringbuf.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>
+> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> index 80f4b4d..2bbf6e2 100644
+> --- a/kernel/bpf/ringbuf.c
+> +++ b/kernel/bpf/ringbuf.c
+> @@ -336,6 +336,23 @@ static __poll_t ringbuf_map_poll_user(struct bpf_map *map, struct file *filp,
+>         return 0;
+>  }
+>
+> +static u64 ringbuf_map_mem_usage(const struct bpf_map *map)
+> +{
+> +       struct bpf_ringbuf_map *rb_map;
+> +       struct bpf_ringbuf *rb;
+> +       int nr_data_pages;
+> +       int nr_meta_pages;
+> +       u64 usage = sizeof(struct bpf_ringbuf_map);
 > +
-> +Where,
->  
->  **imm**
->    signed integer immediate value
-> @@ -64,16 +62,17 @@ imm            offset   src_reg  dst_reg  opcode
->  **opcode**
->    operation to perform
->  
-> -and as follows for a big-endian processor:
-> +Note that the contents of multi-byte fields ('imm' and 'offset') are
-> +stored using big-endian byte ordering in big-endian BPF and
-> +little-endian byte ordering in little-endian BPF.
->  
-> -=============  =======  =======  =======  ============
-> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> -=============  =======  =======  =======  ============
-> -imm            offset   dst_reg  src_reg  opcode
-> -=============  =======  =======  =======  ============
-> +For example:
->  
-> -Multi-byte fields ('imm' and 'offset') are similarly stored in
-> -the byte order of the processor.
-> +  opcode         offset imm          assembly
-> +         src dst
-> +  07     0   1   00 00  44 33 22 11  r1 += 0x11223344 // little
-> +         dst src
-> +  07     1   0   00 00  11 22 33 44  r1 += 0x11223344 // big
+> +       rb_map = container_of(map, struct bpf_ringbuf_map, map);
+> +       rb = rb_map->rb;
 
-This also won't render. rst will think it's a "definition list" (see
-[0]), so it's interpreting the line with '// big' as a term that will be
-defined on the next line.
+nit: rb_map seems unnecessary, I'd just go straight to rb
 
-[0]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks
+rb = container_of(map, struct bpf_ringbuf_map, map)->rb;
 
-If you do "For example::" it should render correctly. This applies
-elsewhere to the patch. Let's just make all of these literal code
-blocks.
+> +       usage += (u64)rb->nr_pages << PAGE_SHIFT;
+> +       nr_meta_pages = RINGBUF_PGOFF + RINGBUF_POS_PAGES;
 
-Thanks,
-David
+it would be cleaner to extract this into a constant
+RINGBUF_NR_META_PAGES and use it in ringbuf_map_mem_usage and
+bpf_ringbuf_area_alloc to keep them in sync
 
->  
->  Note that most instructions do not use all of the fields.
->  Unused fields shall be cleared to zero.
-> @@ -84,18 +83,18 @@ The 64 bits following the basic instruction contain a pseudo instruction
->  using the same format but with opcode, dst_reg, src_reg, and offset all set to zero,
->  and imm containing the high 32 bits of the immediate value.
->  
-> -=================  ==================
-> -64 bits (MSB)      64 bits (LSB)
-> -=================  ==================
-> -basic instruction  pseudo instruction
-> -=================  ==================
-> +This is depicted in the following figure:
+But other than that, looks good:
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> +       nr_data_pages = map->max_entries >> PAGE_SHIFT;
+> +       usage += (nr_meta_pages + 2 * nr_data_pages) * sizeof(struct page *);
+> +       return usage;
+> +}
 > +
-> +  basic_instruction                 pseudo_instruction
-> +  code:8 regs:16 offset:16 imm:32 | unused:32 imm:32
->  
->  Thus the 64-bit immediate value is constructed as follows:
->  
->    imm64 = (next_imm << 32) | imm
->  
->  where 'next_imm' refers to the imm value of the pseudo instruction
-> -following the basic instruction.
-> +following the basic instruction.  The unused bytes in the pseudo
-> +instruction shall be cleared to zero.
->  
->  Instruction classes
->  -------------------
-> -- 
-> 2.30.2
-> 
-> -- 
-> Bpf mailing list
-> Bpf@ietf.org
-> https://www.ietf.org/mailman/listinfo/bpf
+>  BTF_ID_LIST_SINGLE(ringbuf_map_btf_ids, struct, bpf_ringbuf_map)
+>  const struct bpf_map_ops ringbuf_map_ops = {
+>         .map_meta_equal = bpf_map_meta_equal,
+> @@ -347,6 +364,7 @@ static __poll_t ringbuf_map_poll_user(struct bpf_map *map, struct file *filp,
+>         .map_update_elem = ringbuf_map_update_elem,
+>         .map_delete_elem = ringbuf_map_delete_elem,
+>         .map_get_next_key = ringbuf_map_get_next_key,
+> +       .map_mem_usage = ringbuf_map_mem_usage,
+>         .map_btf_id = &ringbuf_map_btf_ids[0],
+>  };
+>
+> @@ -361,6 +379,7 @@ static __poll_t ringbuf_map_poll_user(struct bpf_map *map, struct file *filp,
+>         .map_update_elem = ringbuf_map_update_elem,
+>         .map_delete_elem = ringbuf_map_delete_elem,
+>         .map_get_next_key = ringbuf_map_get_next_key,
+> +       .map_mem_usage = ringbuf_map_mem_usage,
+>         .map_btf_id = &user_ringbuf_map_btf_ids[0],
+>  };
+>
+> --
+> 1.8.3.1
+>
