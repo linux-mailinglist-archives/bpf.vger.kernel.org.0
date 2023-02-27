@@ -2,74 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B426A4B9C
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 20:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725536A4B9E
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 20:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjB0TwG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 14:52:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36296 "EHLO
+        id S230281AbjB0TwT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 14:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbjB0TwC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 14:52:02 -0500
+        with ESMTP id S229845AbjB0TwS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 14:52:18 -0500
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59142887D;
-        Mon, 27 Feb 2023 11:51:52 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 26EB032000CC;
-        Mon, 27 Feb 2023 14:51:51 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4F528D05;
+        Mon, 27 Feb 2023 11:52:00 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 9A9E03200949;
+        Mon, 27 Feb 2023 14:51:58 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 27 Feb 2023 14:51:52 -0500
+  by compute6.internal (MEProxy); Mon, 27 Feb 2023 14:51:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
         :cc:content-transfer-encoding:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1677527510; x=1677613910; bh=2w
-        S7QXee/ZD2u1qIg7tfCJKh+l0Hd7Y+MEF85vsyvdY=; b=ltEEr5nsui4odRXKET
-        yer0ZxMVXfaBCaaLcvWs7eNHjqd/FtdIOiRpVst+nvP1EBs59AKzuiCQ1OTMF9Ir
-        ovITRvtGrVcFajtCzBrCuccx/FhehzVotm4RuZg3gYLyZ3hqV15eWsgJ7ySbc+fD
-        ajKI4iv+kAJitaFso/fBTOzaN80WRQ/y5sJpmDFY5iJXYFU+FyyH6gMzxd7hqH85
-        lK2w3bJMGVpQhNtG8d7SZ+qyei8O96B7EEUq37P+QGjrTxnjr9K15KiPHA8FbYhj
-        15wcSh7o906GNpmwibc6TGji1Ke+CxxhxrzjPEHArKqpy2/JLrkolfA4zdV00tj8
-        +VOw==
+        :subject:subject:to:to; s=fm3; t=1677527518; x=1677613918; bh=4a
+        9g+C87bs/Akd4lBTjV68zWx7r6qrL4D2J7Om59rgI=; b=vsSHyw1cIo8PHT7ex6
+        GGlJP075ADctVIXghE0sCUsAtGOFFBO+VwFQxCZvyNZCyE5GadWe5HrnWzn0/gg+
+        D89EqQfUWbx11dKqxxSgTgzxRQQoUBoZNIT4em4wDtFZuyOKq2r+5bz1Eotc0sqQ
+        YzWNNwpNCQiALYBqbzJWzedBClJHSNuyYlEEfRsb2NxadwdacoGNVzakQhkbCAhl
+        l59+J7KBDWUgLYN6Oo9tJixAI6z73JnXutxP17RBNoGJi+VyglG4g8/EAad5xXnT
+        h9y/OVwi98Ld3fN62JtE1184sUgsL301AHDXMnVOLsYdcl+deZUuQvsVbLcB9W/f
+        cN6Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1677527510; x=1677613910; bh=2wS7QXee/ZD2u
-        1qIg7tfCJKh+l0Hd7Y+MEF85vsyvdY=; b=KVE1sgYfCYqBVJFZEoOkdxkLLhpcV
-        X9sTPVEl80dCszfxkvQphyXW9nyPHR9ouM+dj0EXr8GNNuK9amA9+lowwtb1y0vm
-        q2YtvL56n5T/jc7VWCpg2EnN/rb+gN8LbZIo8eir3VbtnrysNyUX8Uetmv+xIoH9
-        Bs1JTHSLLMLs2jjLqxTKzzb4r1k3dGkqrrI+CcUwh1/1yBbBhKGd8NvddAreAA/7
-        DX2WddKOzvDqFZsF0i81AYTs5JywQKptGsfUIhnOivQQvPISNxq1KVb5wQf7XOob
-        dP46H8uTMHUTavnolSp9PnfyIVQpw/3QIUPTuGsvvz0XdqnZq4RekSYHg==
-X-ME-Sender: <xms:1gn9Y02o6wE5ble9OOraIsCmR2SJpBW7mosR_D7GJonzR82_hhxN9Q>
-    <xme:1gn9Y_Hyfb9AC43oz9H6mfTWJINUTZZm0bxWgsKY5zPynwaWYbtZHeMZtjiCVoMqS
-    lNA_QmysR3NCHsayw>
-X-ME-Received: <xmr:1gn9Y85OcZx5C387z_muDRUsoH9hFit1nDoi166kPym-pxNbIoUTxaHL8_RNn6exaYb4zpw_8B3jh6mRf-3pr0Vmsl1SKMK0W6EO6yxDF536dw>
+        :x-sasl-enc; s=fm1; t=1677527518; x=1677613918; bh=4a9g+C87bs/Ak
+        d4lBTjV68zWx7r6qrL4D2J7Om59rgI=; b=GtsmOpkLjdwfN5spl9E5aRHSZ0xrt
+        Bg0TpCSc+wJAfEKuxff6UsoDX+Iv0gMYq9q7h1A4oIbzPr2YDQZgF6Gcfayej1rm
+        XWmo5Y7f1iwqSbsSxf04p8g7axBBVJltqpuN/xesdD9KUy9SwdMUlyohG+0S6O91
+        WG2F+QPTncOndkpKCYXV33daIZCj+jdtmg4gTnCG6m3O0X0iHpyBo+JgdY91vojs
+        HihX1yxYPp7iwYFXdGob9cJEMAEv3oowm1uuEt/Owz+eBDAUPXiY6Pd0cSGD2pah
+        eVXB7zw87tXCQldVF/e4vSq96DnBSeGaBVu0Bvz/TYp0V8AGSWVA2Q+Wg==
+X-ME-Sender: <xms:3gn9Yw_Y4ezUNvvinmOCoRVOCn19jvQ5YqdmwoT3ESvBPT7Q8XJNvQ>
+    <xme:3gn9Y4uUEDzaZZn7vkT5ZDWaZuFy9gFvw2VLuo_zbuuguh882e_na1U5ASgBs0Xrm
+    3RfQksqlKhtGNVGZA>
+X-ME-Received: <xmr:3gn9Y2B5COoraMSwZ6AbEciq514VEDqPu-1dtaT42gkMgI_pmF7-nMlQSw2b73B-4J3eDs5QGMv9qOg0fbP1VBuyRwTBbpczM_468NBfumxPlw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeltddguddviecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
     fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
     oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
     ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:1gn9Y90N1_eZAe31wj-gB0mllIylXHE7MOSLefQRgwZtPrd8lVSKDg>
-    <xmx:1gn9Y3E5BWcHmvpTOna-eML9CQ62cihjiXGW2lBXAJxzYmsfsTk_IQ>
-    <xmx:1gn9Y2-X5wHO1IuVG4eaNYSlK9YQ8-nDnREv-99tEh_SkdK--fL1GA>
-    <xmx:1gn9Y3Ezzz1YSM0JQQd8g-lqhgp9DEZey1B-rvD8Fzh5b0CLT6yGIw>
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:3gn9YwdaC6w7nxxF18yJJ5_uBGpc_EE8JE8VaqnVETjcs-nQkdrBfQ>
+    <xmx:3gn9Y1Njb8A745EVdT4RW5pXPgsh-MSdHBOjCiDlwJ90eYUI4uwTJw>
+    <xmx:3gn9Y6l4FA7agCfOGJKFGKhayD7sfa9ScpC4H29n8hRSaVn4NQ9hAg>
+    <xmx:3gn9YxBfQRvUSHJBWxCeaYCa5ux4KdJv6xMetNMlyQSeCZW6ahpF8w>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 27 Feb 2023 14:51:49 -0500 (EST)
+ 27 Feb 2023 14:51:57 -0500 (EST)
 From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     corbet@lwn.net, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, ast@kernel.org
-Cc:     song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/8] bpf: verifier: Support KF_CHANGES_PKT flag
-Date:   Mon, 27 Feb 2023 12:51:04 -0700
-Message-Id: <991bc64ee4013bc81d7d4ab908d541d8978595a8.1677526810.git.dxu@dxuuu.xyz>
+To:     kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
+        dsahern@kernel.org, pabeni@redhat.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2 3/8] bpf, net, frags: Add bpf_ip_check_defrag() kfunc
+Date:   Mon, 27 Feb 2023 12:51:05 -0700
+Message-Id: <7145c9891791db1c868a326476fef590f22b352b.1677526810.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <cover.1677526810.git.dxu@dxuuu.xyz>
 References: <cover.1677526810.git.dxu@dxuuu.xyz>
@@ -85,72 +83,188 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-KF_CHANGES_PKT indicates that the kfunc call may change packet data.
-This is analogous to bpf_helper_changes_pkt_data().
+This kfunc is used to defragment IPv4 packets. The idea is that if you
+see a fragmented packet, you call this kfunc. If the kfunc returns 0,
+then the skb has been updated to contain the entire reassembled packet.
+
+If the kfunc returns an error (most likely -EINPROGRESS), then it means
+the skb is part of a yet-incomplete original packet. A reasonable
+response to -EINPROGRESS is to drop the packet, as the ip defrag
+infrastructure is already hanging onto the frag for future reassembly.
+
+Care has been taken to ensure the prog skb remains valid no matter what
+the underlying ip_check_defrag() call does. This is in contrast to
+ip_defrag(), which may consume the skb if the skb is part of a
+yet-incomplete original packet.
+
+So far this kfunc is only callable from TC clsact progs.
 
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- Documentation/bpf/kfuncs.rst | 7 +++++++
- include/linux/btf.h          | 1 +
- kernel/bpf/verifier.c        | 8 ++++++++
- 3 files changed, 16 insertions(+)
+ include/net/ip.h           | 11 +++++
+ net/ipv4/Makefile          |  1 +
+ net/ipv4/ip_fragment.c     |  2 +
+ net/ipv4/ip_fragment_bpf.c | 98 ++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 112 insertions(+)
+ create mode 100644 net/ipv4/ip_fragment_bpf.c
 
-diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-index 226313747be5..16c387ee987f 100644
---- a/Documentation/bpf/kfuncs.rst
-+++ b/Documentation/bpf/kfuncs.rst
-@@ -260,6 +260,13 @@ encouraged to make their use-cases known as early as possible, and participate
- in upstream discussions regarding whether to keep, change, deprecate, or remove
- those kfuncs if and when such discussions occur.
+diff --git a/include/net/ip.h b/include/net/ip.h
+index c3fffaa92d6e..f3796b1b5cac 100644
+--- a/include/net/ip.h
++++ b/include/net/ip.h
+@@ -680,6 +680,7 @@ enum ip_defrag_users {
+ 	IP_DEFRAG_VS_FWD,
+ 	IP_DEFRAG_AF_PACKET,
+ 	IP_DEFRAG_MACVLAN,
++	IP_DEFRAG_BPF,
+ };
  
-+2.4.10 KF_CHANGES_PKT flag
-+-----------------
-+
-+The KF_CHANGES_PKT is used for kfuncs that may change packet data.
-+After calls to such kfuncs, existing packet pointers will be invalidated
-+and must be revalidated before the prog can access packet data.
-+
- 2.5 Registering the kfuncs
- --------------------------
- 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 49e0fe6d8274..ee3d6c3e6cc0 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -71,6 +71,7 @@
- #define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
- #define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
- #define KF_RCU          (1 << 7) /* kfunc only takes rcu pointer arguments */
-+#define KF_CHANGES_PKT  (1 << 8) /* kfunc may change packet data */
- 
- /*
-  * Tag marking a kernel function as a kfunc. This is meant to minimize the
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5cb8b623f639..e58065498a35 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8681,6 +8681,11 @@ static bool is_kfunc_rcu(struct bpf_kfunc_call_arg_meta *meta)
- 	return meta->kfunc_flags & KF_RCU;
+ /* Return true if the value of 'user' is between 'lower_bond'
+@@ -693,6 +694,16 @@ static inline bool ip_defrag_user_in_between(u32 user,
  }
  
-+static bool is_kfunc_changes_pkt(struct bpf_kfunc_call_arg_meta *meta)
+ int ip_defrag(struct net *net, struct sk_buff *skb, u32 user);
++
++#ifdef CONFIG_DEBUG_INFO_BTF
++int register_ip_frag_bpf(void);
++#else
++static inline int register_ip_frag_bpf(void)
 +{
-+	return meta->kfunc_flags & KF_CHANGES_PKT;
++	return 0;
++}
++#endif
++
+ #ifdef CONFIG_INET
+ struct sk_buff *ip_check_defrag(struct net *net, struct sk_buff *skb, u32 user);
+ #else
+diff --git a/net/ipv4/Makefile b/net/ipv4/Makefile
+index 880277c9fd07..950efb166d37 100644
+--- a/net/ipv4/Makefile
++++ b/net/ipv4/Makefile
+@@ -65,6 +65,7 @@ obj-$(CONFIG_TCP_CONG_ILLINOIS) += tcp_illinois.o
+ obj-$(CONFIG_NET_SOCK_MSG) += tcp_bpf.o
+ obj-$(CONFIG_BPF_SYSCALL) += udp_bpf.o
+ obj-$(CONFIG_NETLABEL) += cipso_ipv4.o
++obj-$(CONFIG_DEBUG_INFO_BTF) += ip_fragment_bpf.o
+ 
+ obj-$(CONFIG_XFRM) += xfrm4_policy.o xfrm4_state.o xfrm4_input.o \
+ 		      xfrm4_output.o xfrm4_protocol.o
+diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
+index 959d2c4260ea..e3fda5203f09 100644
+--- a/net/ipv4/ip_fragment.c
++++ b/net/ipv4/ip_fragment.c
+@@ -759,5 +759,7 @@ void __init ipfrag_init(void)
+ 	if (inet_frags_init(&ip4_frags))
+ 		panic("IP: failed to allocate ip4_frags cache\n");
+ 	ip4_frags_ctl_register();
++	if (register_ip_frag_bpf())
++		panic("IP: bpf: failed to register ip_frag_bpf\n");
+ 	register_pernet_subsys(&ip4_frags_ops);
+ }
+diff --git a/net/ipv4/ip_fragment_bpf.c b/net/ipv4/ip_fragment_bpf.c
+new file mode 100644
+index 000000000000..a9e5908ed216
+--- /dev/null
++++ b/net/ipv4/ip_fragment_bpf.c
+@@ -0,0 +1,98 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Unstable ipv4 fragmentation helpers for TC-BPF hook
++ *
++ * These are called from SCHED_CLS BPF programs. Note that it is allowed to
++ * break compatibility for these functions since the interface they are exposed
++ * through to BPF programs is explicitly unstable.
++ */
++
++#include <linux/bpf.h>
++#include <linux/btf_ids.h>
++#include <linux/ip.h>
++#include <linux/filter.h>
++#include <linux/netdevice.h>
++#include <net/ip.h>
++#include <net/sock.h>
++
++__diag_push();
++__diag_ignore_all("-Wmissing-prototypes",
++		  "Global functions as their definitions will be in ip_fragment BTF");
++
++/* bpf_ip_check_defrag - Defragment an ipv4 packet
++ *
++ * This helper takes an skb as input. If this skb successfully reassembles
++ * the original packet, the skb is updated to contain the original, reassembled
++ * packet.
++ *
++ * Otherwise (on error or incomplete reassembly), the input skb remains
++ * unmodified.
++ *
++ * Parameters:
++ * @ctx		- Pointer to program context (skb)
++ * @netns	- Child network namespace id. If value is a negative signed
++ *		  32-bit integer, the netns of the device in the skb is used.
++ *
++ * Return:
++ * 0 on successfully reassembly or non-fragmented packet. Negative value on
++ * error or incomplete reassembly.
++ */
++int bpf_ip_check_defrag(struct __sk_buff *ctx, u64 netns)
++{
++	struct sk_buff *skb = (struct sk_buff *)ctx;
++	struct sk_buff *skb_cpy, *skb_out;
++	struct net *caller_net;
++	struct net *net;
++	int mac_len;
++	void *mac;
++
++	if (unlikely(!((s32)netns < 0 || netns <= S32_MAX)))
++		return -EINVAL;
++
++	caller_net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
++	if ((s32)netns < 0) {
++		net = caller_net;
++	} else {
++		net = get_net_ns_by_id(caller_net, netns);
++		if (unlikely(!net))
++			return -EINVAL;
++	}
++
++	mac_len = skb->mac_len;
++	skb_cpy = skb_copy(skb, GFP_ATOMIC);
++	if (!skb_cpy)
++		return -ENOMEM;
++
++	skb_out = ip_check_defrag(net, skb_cpy, IP_DEFRAG_BPF);
++	if (IS_ERR(skb_out))
++		return PTR_ERR(skb_out);
++
++	skb_morph(skb, skb_out);
++	kfree_skb(skb_out);
++
++	/* ip_check_defrag() does not maintain mac header, so push empty header
++	 * in so prog sees the correct layout. The empty mac header will be
++	 * later pulled from cls_bpf.
++	 */
++	mac = skb_push(skb, mac_len);
++	memset(mac, 0, mac_len);
++	bpf_compute_data_pointers(skb);
++
++	return 0;
 +}
 +
- static bool is_kfunc_arg_kptr_get(struct bpf_kfunc_call_arg_meta *meta, int arg)
- {
- 	return arg == 0 && (meta->kfunc_flags & KF_KPTR_GET);
-@@ -10083,6 +10088,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 			mark_btf_func_reg_size(env, regno, t->size);
- 	}
- 
-+	if (is_kfunc_changes_pkt(&meta))
-+		clear_all_pkt_pointers(env);
++__diag_pop()
 +
- 	return 0;
- }
- 
++BTF_SET8_START(ip_frag_kfunc_set)
++BTF_ID_FLAGS(func, bpf_ip_check_defrag, KF_CHANGES_PKT)
++BTF_SET8_END(ip_frag_kfunc_set)
++
++static const struct btf_kfunc_id_set ip_frag_bpf_kfunc_set = {
++	.owner = THIS_MODULE,
++	.set   = &ip_frag_kfunc_set,
++};
++
++int register_ip_frag_bpf(void)
++{
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
++					 &ip_frag_bpf_kfunc_set);
++}
 -- 
 2.39.1
 
