@@ -2,116 +2,320 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 007C46A45F6
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F116A461F
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbjB0PVt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 10:21:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
+        id S229606AbjB0Pc1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 10:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjB0PVt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 10:21:49 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D0621949
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:48 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id z10so3753453pgr.8
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:48 -0800 (PST)
+        with ESMTP id S229598AbjB0Pc1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 10:32:27 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C3FDBFC
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:32:25 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id gi3-20020a17090b110300b0023762f642dcso6495255pjb.4
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:32:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=isovalent.com; s=google;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C2WET1805ss0lLQGWaW2KlvdzMS5ESAXwecQVAlAkQw=;
-        b=ZtTkQdamdKAtOOEYrLn8LYY6/2UIZqrLPtp9xLbiFGGJTDG1WpdmeDKA4AcGsOhULa
-         suJcOz8MKjkz5WTSzuNUwwleDEmt304Avr+bAxX1AvSspONOJAQE/0k8B2u/E5F7TfXP
-         lftkq+Hun7ZfhkyhhdWqYjctV+KhgEutRwGIuvVLddtM2T3Beb092+XvZ8HjqJ65Pbx2
-         LIU2LYynwDY+2fTdSFMqN3LLYFFF+5TQKIG+wGuSeC5HtbseoqHvGp1ieQ1xgX19FBY+
-         TzFL6KvA/B3Vlh1JUUHZ91NAmvElxY99SBen37yJ5rYbi1TLgDSmXJnXfzS/c2Aw26su
-         tN2g==
+        bh=tUnY6Vo9nhqAOtvU1m53e3jXoFufYPKOV4jAaAR5wSU=;
+        b=MJ4it3mdNsYJhUR+QFa7FEI2TOo6MZkMhbvc/IYgfIeaklHfSavy6A4ABtj1c4g/5q
+         p7ndtOAEH+3/cdOyeGUHkSg6HO49TDvNYQOyxVm+OSOd+XqkRRKMg+L7okP68gVK6UjG
+         WU1ND2+2D0ZXdVVVwh+NomE7VVICwxUs1t97scaN01wEv4qAYo4Qe3JUMI95MkE+sFs6
+         0E/MdYOBUQlDJb3lSyX9v6fzOh8OXc/en5ugVm/E8hxcVrWkU5hqXXBcRPtzg+YdKIT4
+         83F3nF+PbpglsATXZ9s+G+esG7MLgxKnXbTueV9DJo4NK4O5WdZkTtXrtTFIlaLQWK1a
+         H/lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=C2WET1805ss0lLQGWaW2KlvdzMS5ESAXwecQVAlAkQw=;
-        b=rCEwrPb7FQB6nEMs0L/rgLCaxf+jV8rDL4rQoHmjBVE9j+MLM8q2uGmvVojJMj589E
-         s09jV1xo0eu5XkyJOs4gFlWA53KCuyT+Z1EAy0Q7++4qA+gtXiH4JHsJR1XU4IE500GI
-         Hbmxy58TIXakT2A2eg/UsWiM/VP7/t/XVOHE7yvimH2VdUZbdPNACbkVgMFpz95rxWMg
-         xXzxeQ7d9OPPFqEBHXoNSQehx5z9LRHiDDJHco2suiLsiPCIwsVErrzy23bod2bG1vrm
-         KmFZVuAFILX2SSRDpbOeh9eWZH4qrgI+MNAMeU9VUTPUsR4FvTJA6Kf2Xc6WYBSt11Iq
-         ZcmQ==
-X-Gm-Message-State: AO0yUKVB9gu3rcpo4oQdjjzUhm9jfz2k2fdPNIErjqM7uzO/xXfHDkuQ
-        cejd/pz7cjV50aK2vKvQTaQ=
-X-Google-Smtp-Source: AK7set/vm/m8K9DddpbtBNwc8UvE5zlH1JQpWsoJ7w4jCTTK9uzPAKCwv+Y4z6mXk5FqGXEej6U/oA==
-X-Received: by 2002:aa7:98de:0:b0:598:b178:a3a9 with SMTP id e30-20020aa798de000000b00598b178a3a9mr22878616pfm.6.1677511307669;
-        Mon, 27 Feb 2023 07:21:47 -0800 (PST)
-Received: from vultr.guest ([2401:c080:1000:4a6a:5400:4ff:fe53:1982])
-        by smtp.gmail.com with ESMTPSA id n2-20020a62e502000000b00589a7824703sm4326825pff.194.2023.02.27.07.21.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 07:21:47 -0800 (PST)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
-        xiyou.wangcong@gmail.com
-Cc:     bpf@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v3 18/18] bpf: enforce all maps having memory usage callback
-Date:   Mon, 27 Feb 2023 15:20:32 +0000
-Message-Id: <20230227152032.12359-19-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230227152032.12359-1-laoar.shao@gmail.com>
-References: <20230227152032.12359-1-laoar.shao@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        bh=tUnY6Vo9nhqAOtvU1m53e3jXoFufYPKOV4jAaAR5wSU=;
+        b=b64easLjZB3WnVPyAqh0YwoksJaogWtrU2N+VRdovs/7nlkmfL0gL4URDNDMnhMKEi
+         OfgHvACWMSRWRuuH5CtzoXnjgI0DTMRs3ozsMzLrVoxhzye4GDS6ck7Xy8spdEdriXBh
+         JS8RkcLjoCgdTKj9fI6mvLU+ulM0dZ9bsGcOExzgOaRkaofdKqtSF/y2st8cqp00HTSG
+         B9OjmqciMQc1mdj3VzemHRfl+qXVG8MvZryerXsdfWUvlH+re2WFEi6ruIr3XWzyesUY
+         3lJ/3HTmVhmC3oICl7osTZ8klOiv06Qwynft5Fdp+YMSmBKlfCP57RJyL2LtG31ZOaDU
+         dWJg==
+X-Gm-Message-State: AO0yUKWYe5xxaCSGkXjcgDD3s6CZc5jXvrL/havOFygRbkdiUIE90HpB
+        +VBhXVuQZM1lAG8G8ZY88lSm4y/GYlRzGDa/
+X-Google-Smtp-Source: AK7set+ZDJ+VcEFqZVcvJtFq2zECWj9oZbtg0n/7KccZFVAmXA6i1e0jYvXOtvOuf6FKeN6g4bsg1A==
+X-Received: by 2002:a05:6a21:99a7:b0:bf:1662:b2f4 with SMTP id ve39-20020a056a2199a700b000bf1662b2f4mr22637416pzb.49.1677511944798;
+        Mon, 27 Feb 2023 07:32:24 -0800 (PST)
+Received: from ?IPv6:2601:647:4900:b6:d4f9:ae90:bdaf:7478? ([2601:647:4900:b6:d4f9:ae90:bdaf:7478])
+        by smtp.gmail.com with ESMTPSA id m21-20020aa78a15000000b005a8dcd32851sm4563964pfa.11.2023.02.27.07.32.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Feb 2023 07:32:24 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
+Subject: Re: [PATCH v2 bpf-next 2/3] bpf: Add bpf_sock_destroy kfunc
+From:   Aditi Ghag <aditi.ghag@isovalent.com>
+In-Reply-To: <139B8C1E-A1B9-4DB4-BA0E-60EA4AAE6503@isovalent.com>
+Date:   Mon, 27 Feb 2023 07:32:23 -0800
+Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3E68DC93-5846-413B-A164-83A70C266F67@isovalent.com>
+References: <20230223215311.926899-1-aditi.ghag@isovalent.com>
+ <20230223215311.926899-3-aditi.ghag@isovalent.com>
+ <Y/k7yYCsHJqaqOjU@google.com>
+ <139B8C1E-A1B9-4DB4-BA0E-60EA4AAE6503@isovalent.com>
+To:     Stanislav Fomichev <sdf@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.7)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We have implemented memory usage callback for all maps, and we enforce
-any newly added map having a callback as well. We will check the
-callback at map creation time. If a map doesn't have the callback, it
-will return EINVAL.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- kernel/bpf/syscall.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index e12b03e..cbe7ff3 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -129,6 +129,8 @@ static struct bpf_map *find_and_alloc_map(union bpf_attr *attr)
- 	}
- 	if (attr->map_ifindex)
- 		ops = &bpf_map_offload_ops;
-+	if (!ops->map_mem_usage)
-+		return ERR_PTR(-EINVAL);
- 	map = ops->map_alloc(attr);
- 	if (IS_ERR(map))
- 		return map;
-@@ -775,13 +777,7 @@ static fmode_t map_get_sys_perms(struct bpf_map *map, struct fd f)
- /* Show the memory usage of a bpf map */
- static u64 bpf_map_memory_usage(const struct bpf_map *map)
- {
--	unsigned long size;
--
--	if (map->ops->map_mem_usage)
--		return map->ops->map_mem_usage(map);
--
--	size = round_up(map->key_size + bpf_map_value_size(map), 8);
--	return round_up(map->max_entries * size, PAGE_SIZE);
-+	return map->ops->map_mem_usage(map);
- }
- 
- static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
--- 
-1.8.3.1
+> On Feb 27, 2023, at 6:56 AM, Aditi Ghag <aditi.ghag@isovalent.com> =
+wrote:
+>=20
+>=20
+>=20
+>> On Feb 24, 2023, at 2:35 PM, Stanislav Fomichev <sdf@google.com> =
+wrote:
+>>=20
+>> On 02/23, Aditi Ghag wrote:
+>>> The socket destroy kfunc is used to forcefully terminate sockets =
+from
+>>> certain BPF contexts. We plan to use the capability in Cilium to =
+force
+>>> client sockets to reconnect when their remote load-balancing =
+backends are
+>>> deleted. The other use case is on-the-fly policy enforcement where =
+existing
+>>> socket connections prevented by policies need to be forcefully =
+terminated.
+>>> The helper allows terminating sockets that may or may not be =
+actively
+>>> sending traffic.
+>>=20
+>>> The helper is currently exposed to certain BPF iterators where users =
+can
+>>> filter, and terminate selected sockets.  Additionally, the helper =
+can only
+>>> be called from these BPF contexts that ensure socket locking in =
+order to
+>>> allow synchronous execution of destroy helpers that also acquire =
+socket
+>>> locks. The previous commit that batches UDP sockets during iteration
+>>> facilitated a synchronous invocation of the destroy helper from BPF =
+context
+>>> by skipping taking socket locks in the destroy handler. TCP =
+iterators
+>>> already supported batching.
+>>=20
+>>> The helper takes `sock_common` type argument, even though it =
+expects, and
+>>> casts them to a `sock` pointer. This enables the verifier to allow =
+the
+>>> sock_destroy kfunc to be called for TCP with `sock_common` and UDP =
+with
+>>> `sock` structs. As a comparison, BPF helpers enable this behavior =
+with the
+>>> `ARG_PTR_TO_BTF_ID_SOCK_COMMON` argument type. However, there is no =
+such
+>>> option available with the verifier logic that handles kfuncs where =
+BTF
+>>> types are inferred. Furthermore, as `sock_common` only has a subset =
+of
+>>> certain fields of `sock`, casting pointer to the latter type might =
+not
+>>> always be safe. Hence, the BPF kfunc converts the argument to a full =
+sock
+>>> before casting.
+>>=20
+>>> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+>>> ---
+>>> net/core/filter.c | 55 =
++++++++++++++++++++++++++++++++++++++++++++++++
+>>> net/ipv4/tcp.c    | 17 ++++++++++-----
+>>> net/ipv4/udp.c    |  7 ++++--
+>>> 3 files changed, 72 insertions(+), 7 deletions(-)
+>>=20
+>>> diff --git a/net/core/filter.c b/net/core/filter.c
+>>> index 1d6f165923bf..79cd91ba13d0 100644
+>>> --- a/net/core/filter.c
+>>> +++ b/net/core/filter.c
+>>> @@ -11621,3 +11621,58 @@ bpf_sk_base_func_proto(enum bpf_func_id =
+func_id)
+>>=20
+>>> 	return func;
+>>> }
+>>> +
+>>> +/* Disables missing prototype warnings */
+>>> +__diag_push();
+>>> +__diag_ignore_all("-Wmissing-prototypes",
+>>> +		  "Global functions as their definitions will be in =
+vmlinux BTF");
+>>> +
+>>> +/* bpf_sock_destroy: Destroy the given socket with ECONNABORTED =
+error code.
+>>> + *
+>>> + * The helper expects a non-NULL pointer to a full socket. It =
+invokes
+>>> + * the protocol specific socket destroy handlers.
+>>> + *
+>>> + * The helper can only be called from BPF contexts that have =
+acquired the socket
+>>> + * locks.
+>>> + *
+>>> + * Parameters:
+>>> + * @sock: Pointer to socket to be destroyed
+>>> + *
+>>> + * Return:
+>>> + * On error, may return EPROTONOSUPPORT, EINVAL.
+>>> + * EPROTONOSUPPORT if protocol specific destroy handler is not =
+implemented.
+>>> + * 0 otherwise
+>>> + */
+>>> +int bpf_sock_destroy(struct sock_common *sock)
+>>=20
+>> Prefix with __bpf_kfunc (see other kfuncs).
+>=20
+> Will do!
+>=20
+>>=20
+>>> +{
+>>> +	/* Validates the socket can be type casted to a full socket. */
+>>> +	struct sock *sk =3D sk_to_full_sk((struct sock *)sock);
+>>> +
+>>> +	if (!sk)
+>>> +		return -EINVAL;
+>>> +
+>>> +	/* The locking semantics that allow for synchronous execution of =
+the
+>>> +	 * destroy handlers are only supported for TCP and UDP.
+>>> +	 */
+>>> +	if (!sk->sk_prot->diag_destroy || sk->sk_protocol =3D=3D =
+IPPROTO_RAW)
+>>> +		return -EOPNOTSUPP;
+>>> +
+>>> +	return sk->sk_prot->diag_destroy(sk, ECONNABORTED);
+>>> +}
+>>> +
+>>> +__diag_pop()
+>>> +
+>>> +BTF_SET8_START(sock_destroy_kfunc_set)
+>>> +BTF_ID_FLAGS(func, bpf_sock_destroy)
+>>> +BTF_SET8_END(sock_destroy_kfunc_set)
+>>> +
+>>> +static const struct btf_kfunc_id_set bpf_sock_destroy_kfunc_set =3D =
+{
+>>> +	.owner =3D THIS_MODULE,
+>>> +	.set   =3D &sock_destroy_kfunc_set,
+>>> +};
+>>> +
+>>> +static int init_subsystem(void)
+>>> +{
+>>> +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, =
+&bpf_sock_destroy_kfunc_set);
+>>=20
+>> Is it safe? Does it mean I can call bpf_sock_destroy from any tracing
+>> program from anywhere? What if the socket is not locked?
+>> IOW, do we have to constrain it to the iterator programs (at least =
+for
+>> now)?
+>=20
+> Given kprobes are not considered as part of BPF_PROG_TYPE_TRACING, I'm =
+not sure if there are other tracing programs with sock/sock_common =
+arguments. Regardless, this is a valid point. I had brought up a similar =
+topic earlier during the v1 discussion - =
+https://lore.kernel.org/bpf/78E434B0-06A9-466F-A061-B9A05DC6DE6D@isovalent=
+.com/. I suppose you would have a similar problem in the case of =
+setsockopt* helpers.=20
+> Is the general topic of limiting access for kfunc to a subset of =
+BPF_PROG_* programs being discussed?
+
+I've submitted this as a potential topic for the lsm/mm/bpf agenda. =
+Also, related to this discussion: could we have something similar to =
+lockdep_sock_is_held with less overhead?=20
+
+>=20
+>>=20
+>>> +}
+>>> +late_initcall(init_subsystem);
+>>> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+>>> index 33f559f491c8..8123c264d8ea 100644
+>>> --- a/net/ipv4/tcp.c
+>>> +++ b/net/ipv4/tcp.c
+>>> @@ -4678,8 +4678,10 @@ int tcp_abort(struct sock *sk, int err)
+>>> 		return 0;
+>>> 	}
+>>=20
+>>> -	/* Don't race with userspace socket closes such as tcp_close. */
+>>> -	lock_sock(sk);
+>>> +	/* BPF context ensures sock locking. */
+>>> +	if (!has_current_bpf_ctx())
+>>> +		/* Don't race with userspace socket closes such as =
+tcp_close. */
+>>> +		lock_sock(sk);
+>>=20
+>>> 	if (sk->sk_state =3D=3D TCP_LISTEN) {
+>>> 		tcp_set_state(sk, TCP_CLOSE);
+>>> @@ -4688,7 +4690,9 @@ int tcp_abort(struct sock *sk, int err)
+>>=20
+>>> 	/* Don't race with BH socket closes such as =
+inet_csk_listen_stop. */
+>>> 	local_bh_disable();
+>>> -	bh_lock_sock(sk);
+>>> +	if (!has_current_bpf_ctx())
+>>> +		bh_lock_sock(sk);
+>>> +
+>>=20
+>>> 	if (!sock_flag(sk, SOCK_DEAD)) {
+>>> 		sk->sk_err =3D err;
+>>> @@ -4700,10 +4704,13 @@ int tcp_abort(struct sock *sk, int err)
+>>> 		tcp_done(sk);
+>>> 	}
+>>=20
+>>> -	bh_unlock_sock(sk);
+>>> +	if (!has_current_bpf_ctx())
+>>> +		bh_unlock_sock(sk);
+>>> +
+>>> 	local_bh_enable();
+>>> 	tcp_write_queue_purge(sk);
+>>> -	release_sock(sk);
+>>> +	if (!has_current_bpf_ctx())
+>>> +		release_sock(sk);
+>>> 	return 0;
+>>> }
+>>> EXPORT_SYMBOL_GPL(tcp_abort);
+>>> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+>>> index 2f3978de45f2..1bc9ad92c3d4 100644
+>>> --- a/net/ipv4/udp.c
+>>> +++ b/net/ipv4/udp.c
+>>> @@ -2925,7 +2925,9 @@ EXPORT_SYMBOL(udp_poll);
+>>=20
+>>> int udp_abort(struct sock *sk, int err)
+>>> {
+>>> -	lock_sock(sk);
+>>> +	/* BPF context ensures sock locking. */
+>>> +	if (!has_current_bpf_ctx())
+>>> +		lock_sock(sk);
+>>=20
+>>> 	/* udp{v6}_destroy_sock() sets it under the sk lock, avoid =
+racing
+>>> 	 * with close()
+>>> @@ -2938,7 +2940,8 @@ int udp_abort(struct sock *sk, int err)
+>>> 	__udp_disconnect(sk, 0);
+>>=20
+>>> out:
+>>> -	release_sock(sk);
+>>> +	if (!has_current_bpf_ctx())
+>>> +		release_sock(sk);
+>>=20
+>>> 	return 0;
+>>> }
+>>> --
+>>> 2.34.1
 
