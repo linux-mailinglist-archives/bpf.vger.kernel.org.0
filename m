@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E6F6A45EC
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBCA6A45ED
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbjB0PVV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 10:21:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
+        id S230226AbjB0PV3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 10:21:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbjB0PVR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 10:21:17 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4EF2278B
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:12 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id a7so3722884pfx.10
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:12 -0800 (PST)
+        with ESMTP id S230191AbjB0PVU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 10:21:20 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355C722A2A
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:16 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id 6-20020a17090a190600b00237c5b6ecd7so5942097pjg.4
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BoFsRKqLdKP02I7g694Qbh39KZF7kQZ2F0Pz2UqBWn0=;
-        b=SzHZN6J2pneLONd0RoNUm+5p31mxowMaJKrZLOvnzgIHpZFxntY48EP4LBvuE6PusF
-         p2AvIL32Qg6wgSvE3xbWlxvIW25q3Dre7MCUETTzGlS5cFRxymusIJFtbOpyw5AhhoQi
-         bfQY2/dtTKjZ2BLO4MQbDXyAjlPFOGYM422loXfqmImFLihtcDRcW6xTH/SQnD2Ce74T
-         x2etirvWQYBT7IngqsRtDzLwsT+irCqN2CIAOaaj+PrxtiG2xEE7ShotAgzP6R5EQ9Gt
-         bk7iQhyftqwOqKkhrfd7sKMJbU7fMAWe6nDKtuvhEZ2+GgRhVBj/ahg6HCVSjMO4y9DR
-         0qow==
+        bh=eiBhjvmvPZBvwRpF2x1Rob9RQFfAqLPRi1VOzXV3z/U=;
+        b=V1VhTdVq/yi8VaxqYBcAmaGIldLBlYmDNHTbQfJ51ZjUuYni7H5iB5VEDkU3qAOAv5
+         72qxS+yqTeO5aYyuIG5FFvakkBDDkMPTDE+0QKiJfkWSK//czstDqjcV3sA0PZA74jsD
+         V1IpDyayPwLmf0dnmITQ3YsIn6y+VlMVwDfsx/qL2xNXLfBmx2sFnfxIis+1Zv7GxCnK
+         cs4aPFJhcRYEL2ISO39JSTKQDC+b2cw5iJ0cwdMA2Ge8yv1cYmpu0DPs+ZMzgXUpX6vg
+         iv9O1jRvGSQZJGA3GX2+VTWy+mbwEOTdD6Q2KONfchxh0EIexDJzzpano2D3WkM4XfJr
+         YRYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BoFsRKqLdKP02I7g694Qbh39KZF7kQZ2F0Pz2UqBWn0=;
-        b=HzMPJqXL+pxXfvtcjjU4peX1up5V5BGNw7P8zMREYgA7PRqRAWX4seyc0mSXINmZCc
-         fBq8zqKQql2CQV6sBDTv0gib/jVtuirRaBLZrEacYWVk6IKs1KcAP1CDYM4SXGUoOZNV
-         0aIS1kv10fZLGgUcx3opu6bQiKUl711Xg5HE1fJInXVq3g+70EMibYmBwRYkCtIVAqNX
-         zz+hjFBgUtf33gV72Th2i/BvWIut1IzZ+GkTNo+aBsIny26vA/rjNRFqxbDp5QiK5PYY
-         28OXcGBBdjHTr7wkjbC2rZozoShs4X6ccAqj0pzOLw9PLQs27kr7acb1Xzfc9xglNV2P
-         0lXw==
-X-Gm-Message-State: AO0yUKVBVgwHy3URGvjNsFnJBfAQICLDcmFm+AImjJfgoJHXV6w8Nl5M
-        ubwL1AHkBwSiU+7ppoUoAK8=
-X-Google-Smtp-Source: AK7set/aO0xiePMsxOjDpq6FFYshpINkQPItrjluzOvhm9pOAX8NXQOLAZYRLfWR5sFOGnLltiJWRA==
-X-Received: by 2002:aa7:978e:0:b0:5de:7ef1:d03a with SMTP id o14-20020aa7978e000000b005de7ef1d03amr13440938pfp.19.1677511272361;
-        Mon, 27 Feb 2023 07:21:12 -0800 (PST)
+        bh=eiBhjvmvPZBvwRpF2x1Rob9RQFfAqLPRi1VOzXV3z/U=;
+        b=49JRT/jE8pIxyXo0S8INlKYERlyM3LkQ/ay05UFG6mtrI47yXKaB5h4OSunTW6Lmly
+         iu5agt9n1OMSX+4+RXO5TZmLVNGUES5/5C3rpY087AAJcMse5jiThnE4yz0aRBZ17V4M
+         Rr2cFPz7oFO6YtoByX4r2vDsyW169EAgEx9qhWPEuyFUU3ZsZZ5M6nB8LCPAX5i7otXq
+         04hsjzGJZxGFahWY0jzL2etd4aNGUS4dN4jsvJP/a2Ibuzv8Q1NGlllz8zNYY44UFwWS
+         NeLLK4zlHb58tjiAarCjNFPpv5WOvbKrtBNOd6d0frEbPS0POM9M5Lr6HJVYsURVTuwx
+         svlA==
+X-Gm-Message-State: AO0yUKWzRyyA0bTSMw8l/8HkwREnsYUfamnggfas2et6MaVkC+vjc574
+        xvn3ENyhd1uuiH0STp1Tuew=
+X-Google-Smtp-Source: AK7set+DXiEwTIrO0ppF6lO5LzdmT7W94D4OTf/iKjo55kbMeBIQ+HzZCrsbZSJIibynCFgBaAqntw==
+X-Received: by 2002:a05:6a20:b562:b0:cd:9673:9c07 with SMTP id ev34-20020a056a20b56200b000cd96739c07mr1182850pzb.7.1677511275752;
+        Mon, 27 Feb 2023 07:21:15 -0800 (PST)
 Received: from vultr.guest ([2401:c080:1000:4a6a:5400:4ff:fe53:1982])
-        by smtp.gmail.com with ESMTPSA id n2-20020a62e502000000b00589a7824703sm4326825pff.194.2023.02.27.07.21.09
+        by smtp.gmail.com with ESMTPSA id n2-20020a62e502000000b00589a7824703sm4326825pff.194.2023.02.27.07.21.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 07:21:11 -0800 (PST)
+        Mon, 27 Feb 2023 07:21:15 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -56,9 +56,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
         xiyou.wangcong@gmail.com
 Cc:     bpf@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v3 08/18] bpf: bloom_filter memory usage
-Date:   Mon, 27 Feb 2023 15:20:22 +0000
-Message-Id: <20230227152032.12359-9-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v3 09/18] bpf: cpumap memory usage
+Date:   Mon, 27 Feb 2023 15:20:23 +0000
+Message-Id: <20230227152032.12359-10-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230227152032.12359-1-laoar.shao@gmail.com>
 References: <20230227152032.12359-1-laoar.shao@gmail.com>
@@ -74,50 +74,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce a new helper to calculate the bloom_filter memory usage.
+A new helper is introduced to calculate cpumap memory usage. The size of
+cpu_entries can be dynamically changed when we update or delete a cpumap
+element, but this patch doesn't include the memory size of cpu_entry
+yet. We can dynamically calculate the memory usage when we alloc or free
+a cpu_entry, but it will take extra runtime overhead, so let just put it
+aside currently. Note that the size of different cpu_entry may be
+different as well.
 
 The result as follows,
 - before
-16: bloom_filter  flags 0x0
-        key 0B  value 8B  max_entries 65536  memlock 524288B
+48: cpumap  name count_map  flags 0x4
+        key 4B  value 4B  max_entries 64  memlock 4096B
 
 - after
-16: bloom_filter  flags 0x0
-        key 0B  value 8B  max_entries 65536  memlock 65856B
+48: cpumap  name count_map  flags 0x4
+        key 4B  value 4B  max_entries 64  memlock 832B
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/bloom_filter.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ kernel/bpf/cpumap.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/kernel/bpf/bloom_filter.c b/kernel/bpf/bloom_filter.c
-index 48ee750..6350c5d 100644
---- a/kernel/bpf/bloom_filter.c
-+++ b/kernel/bpf/bloom_filter.c
-@@ -193,6 +193,17 @@ static int bloom_map_check_btf(const struct bpf_map *map,
- 	return btf_type_is_void(key_type) ? 0 : -EINVAL;
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index d2110c1..871809e 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -673,6 +673,15 @@ static int cpu_map_redirect(struct bpf_map *map, u64 index, u64 flags)
+ 				      __cpu_map_lookup_elem);
  }
  
-+static u64 bloom_map_mem_usage(const struct bpf_map *map)
++static u64 cpu_map_mem_usage(const struct bpf_map *map)
 +{
-+	struct bpf_bloom_filter *bloom;
-+	u64 bitset_bytes;
++	u64 usage = sizeof(struct bpf_cpu_map);
 +
-+	bloom = container_of(map, struct bpf_bloom_filter, map);
-+	bitset_bytes = BITS_TO_BYTES((u64)bloom->bitset_mask + 1);
-+	bitset_bytes = roundup(bitset_bytes, sizeof(unsigned long));
-+	return sizeof(*bloom) + bitset_bytes;
++	/* Currently the dynamically allocated elements are not counted */
++	usage += (u64)map->max_entries * sizeof(struct bpf_cpu_map_entry *);
++	return usage;
 +}
 +
- BTF_ID_LIST_SINGLE(bpf_bloom_map_btf_ids, struct, bpf_bloom_filter)
- const struct bpf_map_ops bloom_filter_map_ops = {
- 	.map_meta_equal = bpf_map_meta_equal,
-@@ -206,5 +217,6 @@ static int bloom_map_check_btf(const struct bpf_map *map,
- 	.map_update_elem = bloom_map_update_elem,
- 	.map_delete_elem = bloom_map_delete_elem,
- 	.map_check_btf = bloom_map_check_btf,
-+	.map_mem_usage = bloom_map_mem_usage,
- 	.map_btf_id = &bpf_bloom_map_btf_ids[0],
+ BTF_ID_LIST_SINGLE(cpu_map_btf_ids, struct, bpf_cpu_map)
+ const struct bpf_map_ops cpu_map_ops = {
+ 	.map_meta_equal		= bpf_map_meta_equal,
+@@ -683,6 +692,7 @@ static int cpu_map_redirect(struct bpf_map *map, u64 index, u64 flags)
+ 	.map_lookup_elem	= cpu_map_lookup_elem,
+ 	.map_get_next_key	= cpu_map_get_next_key,
+ 	.map_check_btf		= map_check_no_btf,
++	.map_mem_usage		= cpu_map_mem_usage,
+ 	.map_btf_id		= &cpu_map_btf_ids[0],
+ 	.map_redirect		= cpu_map_redirect,
  };
 -- 
 1.8.3.1
