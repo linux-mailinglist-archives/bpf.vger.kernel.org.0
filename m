@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D47D6A45EA
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFD26A45EB
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbjB0PVN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 10:21:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        id S229950AbjB0PVP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 10:21:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbjB0PVL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 10:21:11 -0500
+        with ESMTP id S230127AbjB0PVN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 10:21:13 -0500
 Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7DA22A1F
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:05 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id p6so3790829pga.0
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44ABD22A2D
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:09 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 130so3767285pgg.3
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uQuLzFY+KbTi70OVyTdLGmPLsVqTEok0qqP2ZiCsjVY=;
-        b=kPV1P61Kd0VE4A/sLs+rCgugutJbre1p41Jp9AewL8nwfkSQmj85/GyTCWADug9ewR
-         p/5HqctY4ymjNfXE05aBzhq1gjUD+CE08kHyUXNas9jYtVnM1KnjuG6Apdf1HAqu0YK9
-         0vO95QdYSksS+4Icu5HEmCeXql2TQ8rMrv+xN0BC9mg3ktlTMEcdkyUUa5UBBQNCdGev
-         0pspuVc5MaXtjryhse+sRWUGv1ehoEJqp5M406FF7OIRNLSEvzEPuekwG49o1WTpXucE
-         YOPpivQFUItrDGyudyfXL2BzRTGqqu5HyEzH2r00J00vMy8ozVlM78QvDoegnV22U/CN
-         ettA==
+        bh=pEfQ8gbb6YM9AUGhgYD61SWx4aCRStdaB4FDTThUGWI=;
+        b=GmOHWNfUOrQ2t1qOEgUxHOS/Y+sD2zO9zkiEtOKPLlXUd4t/fUfkQgCc7JLziQs6/U
+         knmK7ZJXZZBSY0JG7v9ZmP/uJX/ZqRHMOc3dwaXO+n1FwTE00ND7fUayERYiADKCHOiQ
+         JmtMK932vw2fr5uJvd0qKyvzdSyBSYV39JDabnJ1f5NuZPPOFsphjXkiqRJZ+KcXoWH0
+         9QXcsfZicgPLeg0ScVdvLTImGIxtvgJ//+D9awCOrvf4S2Q/WjXm06rayLYOsqYkOicC
+         Ospl0wvV21MLRU0giz0oF4Tk5jvGpa7+MeKZ/OP58pn/SIXU+AvOnT73w84Ga5eAHg6m
+         iVFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uQuLzFY+KbTi70OVyTdLGmPLsVqTEok0qqP2ZiCsjVY=;
-        b=lew/JPukHKYSGyBjz6g1W/aWjfO0komwzXxBpqhg72FqWp3uR75lbuJu19wzkvu+g0
-         nWWbJ/gpy6juRic1e2Pg7c+2jrSBjujWX9s3EZy6lavrG73ZCBHw36U5lY1ynmAIPgfS
-         t7mI04K8Hhfvk8kG07/itVaiMddkPLM+s87yha+OCPcuR6F/w5Q1cgEADyEJLkbu5aBz
-         Ac0y/95kmYOQS6DM7cfkn6Y5zgLlrtbvKIA1ravNNXUjQh/Q+cioFmzhyA7D0lgMRG01
-         tfeFebhaNzm1jLvJIO601OytD0fwUjE6JphdoCRyhufk0VUZ5DMimSvoqCJW7ATsfFew
-         gyYQ==
-X-Gm-Message-State: AO0yUKWyHYpgSFAG+JireHCtNv2CuGD4huJ9+1pHgsa5SZd2tBXVhbt2
-        9wDHrL7wmUlLcf4MV2mo0xE=
-X-Google-Smtp-Source: AK7set90cqPKHF+c9azvhxFYskYHfqBJBWIgjcvjhGerZlvJH5CMd+VY9e8lDOaCIXonspx1OL1oRQ==
-X-Received: by 2002:aa7:9798:0:b0:593:da8:6f34 with SMTP id o24-20020aa79798000000b005930da86f34mr22639253pfp.5.1677511265390;
-        Mon, 27 Feb 2023 07:21:05 -0800 (PST)
+        bh=pEfQ8gbb6YM9AUGhgYD61SWx4aCRStdaB4FDTThUGWI=;
+        b=eRx5sm0Eg5/gfRiyJLiowD4pHpX7a4fsH8f5QFJVtiStiZNm6dSMkRoqXecVt/RKyF
+         fCyerMC7CXYGkUKBOsE65cogZUu5qJqlJs3R5GuzYrsLrBVwoqhgb7NEp/EPwGsBRMnZ
+         nBmXDO6MbFWlZQExosIxuCgzd36CLkrnJMT/Fs0O17fWc7u9cYnI7yd0oEtWb3uTryWM
+         EcksU8Adqbsb5TL126qcjDGTi2m5xJysl5VaGCYch3O+ZUdTQ+CemMvLd/j6017hD9Fa
+         4DqpmHCxMAdXTpg8lagao7v8qWVae3+8UIc9mwF7iUog6UnRj14lLzduidzBc9Mbw4gD
+         xk/w==
+X-Gm-Message-State: AO0yUKXU8FRb4TFmSR2Vq6VvX7bBho3Nby2lKKzjDxE3qkY0fdC2n5ei
+        dlo9jrkcwyvpsxALeuXeo8WO2jvuwjcUBOKCvIA=
+X-Google-Smtp-Source: AK7set+cd8HA7AkH+09OCnifAFyYuuoM9iTcyNGmr3u/JXN2szP6b11Op6IJWrufhMAYiuv1Bf4Hpw==
+X-Received: by 2002:a05:6a00:17a3:b0:5a8:4ae7:25d5 with SMTP id s35-20020a056a0017a300b005a84ae725d5mr11239192pfg.8.1677511268822;
+        Mon, 27 Feb 2023 07:21:08 -0800 (PST)
 Received: from vultr.guest ([2401:c080:1000:4a6a:5400:4ff:fe53:1982])
-        by smtp.gmail.com with ESMTPSA id n2-20020a62e502000000b00589a7824703sm4326825pff.194.2023.02.27.07.21.02
+        by smtp.gmail.com with ESMTPSA id n2-20020a62e502000000b00589a7824703sm4326825pff.194.2023.02.27.07.21.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 07:21:04 -0800 (PST)
+        Mon, 27 Feb 2023 07:21:08 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -56,9 +56,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
         xiyou.wangcong@gmail.com
 Cc:     bpf@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v3 06/18] bpf: reuseport_array memory usage
-Date:   Mon, 27 Feb 2023 15:20:20 +0000
-Message-Id: <20230227152032.12359-7-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v3 07/18] bpf: ringbuf memory usage
+Date:   Mon, 27 Feb 2023 15:20:21 +0000
+Message-Id: <20230227152032.12359-8-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230227152032.12359-1-laoar.shao@gmail.com>
 References: <20230227152032.12359-1-laoar.shao@gmail.com>
@@ -74,47 +74,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A new helper is introduced to calculate reuseport_array memory usage.
+A new helper ringbuf_map_mem_usage() is introduced to calculate ringbuf
+memory usage.
 
 The result as follows,
 - before
-14: reuseport_sockarray  name count_map  flags 0x0
-        key 4B  value 8B  max_entries 65536  memlock 1048576B
+15: ringbuf  name count_map  flags 0x0
+        key 0B  value 0B  max_entries 65536  memlock 0B
 
 - after
-14: reuseport_sockarray  name count_map  flags 0x0
-        key 4B  value 8B  max_entries 65536  memlock 524544B
+15: ringbuf  name count_map  flags 0x0
+        key 0B  value 0B  max_entries 65536  memlock 78424B
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/reuseport_array.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ kernel/bpf/ringbuf.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/kernel/bpf/reuseport_array.c b/kernel/bpf/reuseport_array.c
-index 82c6161..71cb72f 100644
---- a/kernel/bpf/reuseport_array.c
-+++ b/kernel/bpf/reuseport_array.c
-@@ -335,6 +335,13 @@ static int reuseport_array_get_next_key(struct bpf_map *map, void *key,
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index 80f4b4d..2bbf6e2 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -336,6 +336,23 @@ static __poll_t ringbuf_map_poll_user(struct bpf_map *map, struct file *filp,
  	return 0;
  }
  
-+static u64 reuseport_array_mem_usage(const struct bpf_map *map)
++static u64 ringbuf_map_mem_usage(const struct bpf_map *map)
 +{
-+	struct reuseport_array *array;
++	struct bpf_ringbuf_map *rb_map;
++	struct bpf_ringbuf *rb;
++	int nr_data_pages;
++	int nr_meta_pages;
++	u64 usage = sizeof(struct bpf_ringbuf_map);
 +
-+	return struct_size(array, ptrs, map->max_entries);
++	rb_map = container_of(map, struct bpf_ringbuf_map, map);
++	rb = rb_map->rb;
++	usage += (u64)rb->nr_pages << PAGE_SHIFT;
++	nr_meta_pages = RINGBUF_PGOFF + RINGBUF_POS_PAGES;
++	nr_data_pages = map->max_entries >> PAGE_SHIFT;
++	usage += (nr_meta_pages + 2 * nr_data_pages) * sizeof(struct page *);
++	return usage;
 +}
 +
- BTF_ID_LIST_SINGLE(reuseport_array_map_btf_ids, struct, reuseport_array)
- const struct bpf_map_ops reuseport_array_ops = {
+ BTF_ID_LIST_SINGLE(ringbuf_map_btf_ids, struct, bpf_ringbuf_map)
+ const struct bpf_map_ops ringbuf_map_ops = {
  	.map_meta_equal = bpf_map_meta_equal,
-@@ -344,5 +351,6 @@ static int reuseport_array_get_next_key(struct bpf_map *map, void *key,
- 	.map_lookup_elem = reuseport_array_lookup_elem,
- 	.map_get_next_key = reuseport_array_get_next_key,
- 	.map_delete_elem = reuseport_array_delete_elem,
-+	.map_mem_usage = reuseport_array_mem_usage,
- 	.map_btf_id = &reuseport_array_map_btf_ids[0],
+@@ -347,6 +364,7 @@ static __poll_t ringbuf_map_poll_user(struct bpf_map *map, struct file *filp,
+ 	.map_update_elem = ringbuf_map_update_elem,
+ 	.map_delete_elem = ringbuf_map_delete_elem,
+ 	.map_get_next_key = ringbuf_map_get_next_key,
++	.map_mem_usage = ringbuf_map_mem_usage,
+ 	.map_btf_id = &ringbuf_map_btf_ids[0],
  };
+ 
+@@ -361,6 +379,7 @@ static __poll_t ringbuf_map_poll_user(struct bpf_map *map, struct file *filp,
+ 	.map_update_elem = ringbuf_map_update_elem,
+ 	.map_delete_elem = ringbuf_map_delete_elem,
+ 	.map_get_next_key = ringbuf_map_get_next_key,
++	.map_mem_usage = ringbuf_map_mem_usage,
+ 	.map_btf_id = &user_ringbuf_map_btf_ids[0],
+ };
+ 
 -- 
 1.8.3.1
 
