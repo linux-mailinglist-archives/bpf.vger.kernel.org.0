@@ -2,132 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 332CE6A4CD3
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 22:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 806FA6A4CE3
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 22:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbjB0VMR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 16:12:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
+        id S229620AbjB0VNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 16:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjB0VMR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 16:12:17 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70D01E2A6;
-        Mon, 27 Feb 2023 13:12:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=9EFMV8RI95u1IbGQbaI0Q+qMCLpo5vI0UEma9i4EWq8=; b=lmkICcWa037dIV/snWUFxFxXfY
-        gi8oPk9SeHoZFLaBxf10MFECZ6iOxxPIS0a2i9694r8ITlmVEOyXX1wuPkdHbO9PzMa3Fp2f1XZup
-        NGCVhQy3fSWICfKuWD5D7OmY7JDrd3/WcklHeFJNFxOOFD+uNo4IgofcWZg+W+B2jUvDP20LqbBSv
-        C0PTSx1WP8SNJ/WIhr6FAJ6xZ6+BoVFjTwEqIFOSSpuTVYHThrQLgSrKP+D3sYWeBq2YqWDJnYxs0
-        PoC+uxjxXyJQ8g8Id3/GqsazrvJrYjLTPPCGy5OsilTZNLqevEUvbuPI4L1sJIwAW9ypn8ZXHpF5c
-        IYm4gRIw==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pWkn5-0001YJ-N8; Mon, 27 Feb 2023 22:12:11 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pWkn3-000Wp1-Va; Mon, 27 Feb 2023 22:12:11 +0100
-Subject: Re: [PATCH v2] Documentation: bpf: Fix link to BTF doc
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux BPF <bpf@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Ross Zwisler <zwisler@google.com>
-References: <20230222083530.26136-1-bagasdotme@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7cd545a2-4a5c-1961-1cf7-cd0f24e41df8@iogearbox.net>
-Date:   Mon, 27 Feb 2023 22:11:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229800AbjB0VNR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 16:13:17 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E0EA5FD
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 13:13:15 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id i34so31352423eda.7
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 13:13:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dsxw+PmfHJ7zwtKCpoX340gGigAxUZQeLRgQ5Ms5qQI=;
+        b=LzxnlvV4dfLkPfqLQHpXNrEDVivqzZRMIvzSvKEMP+qX8ol8OWiEUnsUzpnWJGzuuX
+         8p4kD4NsLOjpU0C+Cjdu5J90KLySiwTy87o0T+pyfy6yNBoyYfT5Xkqq71o7cmNeB+Ev
+         OfSh4N4sybEMNlUkdx+4gnYQ1vagKyhEQBelzqujXudDAC4RgJTfKkS00lecJhn1vfgI
+         r16nvvROXEgkgtj8Ui23D1hB+F64heOPFeD4CqtmtSfx7kUsN2jLfUNCQK5tVha4p4De
+         hbEPDMI9ymGiCddk6G7imfJZV6NjrXbXpmk1bntLu9dm9rkPD1pToiSXqNy4IOiFVl7j
+         AXGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Dsxw+PmfHJ7zwtKCpoX340gGigAxUZQeLRgQ5Ms5qQI=;
+        b=PrNAxq7qvLRjvSXjdzdXPD/vX0qsUYvFyHYFPphHGVbmNsQJcFJeGPDZygeiyHY9+G
+         fjcCZ2WuPjuNUgTJQ4YfmMPOaK1khWq8o/M83h88GqszlEqQLIScl66JhMzn3Mugackb
+         taLcEotNqwA1dfmKXlbPiJnyzohjv+iwnICOlmiGO6fQhELzqdkiywNSRzlo+LFXLu6B
+         hgdSXkhdVvF8agv/wCiwA8GmOD8pRT8HNuvoMHXawQiOqr9ObT9g0fqjMwZglj6Pkt8m
+         Qd+ltRXTl00d/0gjeIDKUBgaHi7CGw6t4ifLpHt3dbtTK/Go9eBfof0fgqSPorlElnz1
+         vvcg==
+X-Gm-Message-State: AO0yUKXLk9knEA3Hu5JIlKe3iig0aMFz0oEfwAPjGWxgjyfwBK7U0i1f
+        c05eSlB7HBCbvPTGw0snw+3lQZLZzCZzOptLRV5mpUll
+X-Google-Smtp-Source: AK7set9k862BE4Xw91xSqybI8806jnx9fdUXwUT8AVS10pjJsX2FiFAgCCo76qu2VL/W4HrM7LBn41xwGYVb1xserPc=
+X-Received: by 2002:a17:906:5f97:b0:8b0:7e1d:f6fa with SMTP id
+ a23-20020a1709065f9700b008b07e1df6famr26317eju.15.1677532393862; Mon, 27 Feb
+ 2023 13:13:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20230222083530.26136-1-bagasdotme@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26825/Mon Feb 27 09:24:38 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <87r0w9jjoq.fsf@oracle.com> <877cy0j0kt.fsf@oracle.com>
+ <e783fb7cdfb7bfd40e723c67daab7c5f81d12fbf.camel@gmail.com>
+ <1fe666d0-aab1-5b6f-8264-57ff282b5e52@oracle.com> <1b84d1477c3648e6d20bacaf1447724fb78e282f.camel@gmail.com>
+ <a71cd1ae-d4a0-7463-0afd-32d2e15a8882@oracle.com> <CAADnVQ+QNAEaqgOM9PwDs+0dkiL3wmPafJN=XY5ckcgTzmsiEg@mail.gmail.com>
+ <d6f9fe3faa4aef62227420fc41f2e896f4d7eb2a.camel@gmail.com>
+In-Reply-To: <d6f9fe3faa4aef62227420fc41f2e896f4d7eb2a.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Feb 2023 13:13:01 -0800
+Message-ID: <CAEf4BzZUySu10OnsdoyTVXYS_2Ggn2i5KA177RA=v75oquq9TQ@mail.gmail.com>
+Subject: Re: BTF tag support in DWARF (notes for today's BPF Office Hours)
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Faust <david.faust@oracle.com>,
+        "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+        bpf <bpf@vger.kernel.org>,
+        James Hilliard <james.hilliard1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        David Malcolm <dmalcolm@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>, elena.zannoni@oracle.com,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Yonghong Song <yhs@fb.com>, Mykola Lysenko <mykolal@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/22/23 9:35 AM, Bagas Sanjaya wrote:
-> Ross reported broken link to BTF documentation
-> (Documentation/bpf/btf.rst) in Documentation/bpf/bpf_devel_QA.rst. The
-> link in question is written using external link syntax, with the target
-> refers to BTF doc in reST source (btf.rst), which doesn't exist in
-> resulting HTML output.
-> 
-> Fix the link by replacing external link syntax with simply writing out
-> the target doc, which the link will be generated to the correct HTML doc
-> target.
-> 
-> Link: https://lore.kernel.org/linux-doc/Y++09LKx25dtR4Ow@google.com/
-> Fixes: 6736aa793c2b5f ("selftests/bpf: Add general instructions for test execution")
-> Reported-by: Ross Zwisler <zwisler@google.com>
-> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> ---
-> Changes since v1 [1]:
-> 
->    * Reword patch description (I don't see external link semantics on
->      Sphinx documentation [2] when I submit v1).
->    * Drop the corresponding orphan target definition.
->    * Rebase on top of current bpf tree.
-> 
-> Ross, do you want to give a Reviewed-by or Acked-by?
-> 
-> [1]: https://lore.kernel.org/linux-doc/20230219030956.22662-1-bagasdotme@gmail.com/
-> [2]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#external-links
-> 
->   Documentation/bpf/bpf_devel_QA.rst | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-> index 03d4993eda6f05..715f7321020f27 100644
-> --- a/Documentation/bpf/bpf_devel_QA.rst
-> +++ b/Documentation/bpf/bpf_devel_QA.rst
-> @@ -469,7 +469,7 @@ under test should match the config file fragment in
->   tools/testing/selftests/bpf as closely as possible.
->   
->   Finally to ensure support for latest BPF Type Format features -
-> -discussed in `Documentation/bpf/btf.rst`_ - pahole version 1.16
-> +discussed in Documentation/bpf/btf.rst - pahole version 1.16
->   is required for kernels built with CONFIG_DEBUG_INFO_BTF=y.
->   pahole is delivered in the dwarves package or can be built
->   from source at
-> @@ -690,6 +690,5 @@ when:
->      https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/
->   .. _Documentation/dev-tools/kselftest.rst:
->      https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
-> -.. _Documentation/bpf/btf.rst: btf.rst
+On Wed, Feb 22, 2023 at 11:51 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> On Wed, 2023-02-22 at 10:11 -0800, Alexei Starovoitov wrote:
+> [...]
+> > > > > What do you think about something like "debug_type_tag" or
+> > > > > "debug_type_annotation" (and a similar update for the decl tags)?
+> > > > > The translation into BTF records would be the same, but the DWARF info
+> > > > > would stand on its own without being tied to BTF.
+> > > > >
+> > > > > (Naming is a bit tricky since terms like 'tag' are already in use by
+> > > > > DWARF, e.g. "type tag" in the context of DWARF DIEs makes me think of
+> > > > > DW_TAG_xxxx_type...)
+> > > > >
+> > > > > As far as I understand, early proposals for the tags were more generic
+> > > > > but the LLVM reviewers wished for something more specific due to the
+> > > > > relatively limited use of the tags at the time. Now that the tags and
+> > > > > their DWARF format have matured I think a good case can be made to
+> > > > > make these generic. We'd be happy to help push for such change.
+> > > >
+> > > > On the other hand, BTF is a thing we are using this annotation for.
+> > > > Any other tool can reuse DW_TAG_LLVM_annotation, but it will need a
+> > > > way to distinguish it's annotations from BTF annotations. And this can
+> > > > be done by using a different DW_AT_name. So, it seems logical to
+> > > > retain "btf" in the DW_AT_name. What do you think?
+> > >
+> > > OK I can understand keeping it BTF specific.
+> > >
+> > > Other than that, I don't come up with any significantly different idea
+> > > than to use the ":v2" suffix, so let's go with "btf_type_tag:v2"?
+> >
+> > I don't like v2 suffix either.
+> > Please come up with something else.
+>
+> Nothing particularly good comes to mind:
+> - btf_type_tag:wrapper
+> - btf_type_tag:outer
+> - btf_type_tag:own
+> - exterior_btf_type_tag
+> - outer_btf_tag
+> - btf_type_prefix
+> - btf_type_qualifier (as in const/volatile)
+>
+> Or might as well use btf_type_tag:gcc, as you suggested earlier,
+> but it is as confusing as the others.
 
-Applied, thanks! Looks like kselftest.rst has a similar issue, could you
-send a fix for this too?
-
->   Happy BPF hacking!
-> 
-> base-commit: 345d24a91c79f408e355c8b7e873ccde0f097eea
-> 
-
+btf.type_tag or btf:type_tag or btf/type_tag (you get the idea, it's
+"BTF scoped")?
