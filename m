@@ -2,109 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2C06A4EE9
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 23:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FF96A4F0B
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 23:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjB0WuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 17:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
+        id S229756AbjB0W6w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 17:58:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbjB0WuT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 17:50:19 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9BA7D90
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 14:49:59 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31RHYhKS011973
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 14:49:58 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=fEMqpTLEvEjiWJNW+6B5Wje5pRph/dljxs+tgoVt8Xg=;
- b=j33EZ6JKlJiSp6IdCv78QQPgMFnQeBqRELhznXcXFf77g3V7XziCYYRJ4lWtf3dShZhC
- qRw01oVGr/lCFL+bFaCixdTXfF4dxSEjgPyPYHxVSNyrRQ0hwvUFeZkDMb12d1Z/mieN
- nIg7kE3US+vY+33IM9BH1rxn2duvVUuHRfE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p109djssm-11
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 14:49:58 -0800
-Received: from twshared1938.08.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 27 Feb 2023 14:49:57 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 2F64218FC69CF; Mon, 27 Feb 2023 14:49:43 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Subject: [PATCH bpf] libbpf: Fix bpf_xdp_query() in old kernels
-Date:   Mon, 27 Feb 2023 14:49:43 -0800
-Message-ID: <20230227224943.1153459-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229486AbjB0W6w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 17:58:52 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD7765B4;
+        Mon, 27 Feb 2023 14:58:50 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id j19-20020a05600c1c1300b003e9b564fae9so8315091wms.2;
+        Mon, 27 Feb 2023 14:58:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H6xWs38kFFRDAh0TFymIbiQKfi/uzaXf1tagUWDeIW0=;
+        b=Dq6vHEXxVniMMEpmWwFKAkW+Zc2x83TVWydAdMc3glHrI0mwLUgp5yzfANsu0QEKnG
+         0ZJJB7b3+19u/s77805CpMG5TsShphc7wFKJT/uLFtdr+rLRcn5vPShcCUMl8BtQa6h0
+         wh3KHNSIR3xfINBdaKRCRkFdAl3FwskI63Ce4H5ctJ2IN9CHLiW6zcDo+Nsl8yxlvbIX
+         rfmGaWz118gk//ZxJH61pp3BJavGZqsOaIIsP3ULVvPl6vKXrrrXzp4CuzUp75AlP8Qp
+         FD8xHmsXNDy5M2Vv1It+2zuUFcry8wOmxxXcKeneRJmMIEatx+qeDSJO92on4CEDbNPT
+         dpTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H6xWs38kFFRDAh0TFymIbiQKfi/uzaXf1tagUWDeIW0=;
+        b=CLet/afrIdZN5qn3YzDUNjk1kqhq8Ak6kDNQWTrcc2qg7L6xCuVl6SpQJ1pZyl6fcB
+         Xr8FCKrVGNKq1h8b4EzGWNJxGKbTO0vL+/cXl9APRwGoUJLPZ5iyBnQKilKUoDXBkQY0
+         RvGul4cDVj5QwxyKkp72UHtFQlVmMZ9MKdLTSACW6DJYRNGHuSeRw/v2FgqM9ngdc0on
+         zH+nLMoAZ/AEZQ+6zqdbZSJgWyMeAg16gZUN60vtV90A+qtkAyNL2MhWPAfY2orGKYbw
+         mAvTScJbKQRvnmhLAgqpnj+Yd5WIxSu0pywzNpzicMpO7rCMHHNSPq0ra45gLv8IPgTk
+         h1Og==
+X-Gm-Message-State: AO0yUKVfimPOzmZf5RVNVIrxezY+0xkUxEfcQu7kZJwdDLK3R0/WLokf
+        g/lTVtPR7uNScw8A+b9aEEhhVopwmq4=
+X-Google-Smtp-Source: AK7set8xecthH7WDnyqAS2Sx3sy62KG6JBF5aaG2pGLKBeVULhlH0EvAwOxFgOkVbSAZcaYZav/yQQ==
+X-Received: by 2002:a05:600c:3b28:b0:3eb:3104:efe7 with SMTP id m40-20020a05600c3b2800b003eb3104efe7mr606906wms.23.1677538728724;
+        Mon, 27 Feb 2023 14:58:48 -0800 (PST)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id u17-20020adff891000000b002c553e061fdsm8115016wrp.112.2023.02.27.14.58.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Feb 2023 14:58:48 -0800 (PST)
+Subject: Re: [PATCH bpf-next v2 0/8] Support defragmenting IPv(4|6) packets in
+ BPF
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1677526810.git.dxu@dxuuu.xyz>
+ <cf49a091-9b14-05b8-6a79-00e56f3019e1@gmail.com>
+ <20230227220406.4x45jcigpnjjpdfy@kashmir.localdomain>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <cc4712f7-c723-89fc-dc9c-c8db3ff8c760@gmail.com>
+Date:   Mon, 27 Feb 2023 22:58:47 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: fISYOxlBzvI_RJCsweB3oG33z7cyClGp
-X-Proofpoint-ORIG-GUID: fISYOxlBzvI_RJCsweB3oG33z7cyClGp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-27_17,2023-02-27_01,2023-02-09_01
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230227220406.4x45jcigpnjjpdfy@kashmir.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 04d58f1b26a4("libbpf: add API to get XDP/XSK supported features")
-added feature_flags to struct bpf_xdp_query_opts. If a user uses
-bpf_xdp_query_opts with feature_flags member, the bpf_xdp_query()
-will check whether 'netdev' family exists or not in the kernel.
-If it does not exist, the bpf_xdp_query() will return -ENOENT.
+On 27/02/2023 22:04, Daniel Xu wrote:
+> I don't believe full L4 headers are required in the first fragment.
+> Sufficiently sneaky attackers can, I think, send a byte at a time to
+> subvert your proposed algorithm. Storing skb data seems inevitable here.
+> Someone can correct me if I'm wrong here.
 
-But 'netdev' family does not exist in old kernels as it is
-introduced in the same patch set as Commit 04d58f1b26a4.
-So old kernel with newer libbpf won't work properly with
-bpf_xdp_query() api call.
+My thinking was that legitimate traffic would never do this and thus if
+ your first fragment doesn't have enough data to make a determination
+ then you just DROP the packet.
 
-To fix this issue, if the return value of
-libbpf_netlink_resolve_genl_family_id() is -ENOENT, bpf_xdp_query()
-will just return 0, skipping the rest of xdp feature query.
-This preserves backward compatibility.
+> What I find valuable about this patch series is that we can
+> leverage the well understood and battle hardened kernel facilities. So
+> avoid all the correctness and security issues that the kernel has spent
+> 20+ years fixing.
 
-Fixes: 04d58f1b26a4 ("libbpf: add API to get XDP/XSK supported features")
-Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/lib/bpf/netlink.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I can certainly see the argument here.  I guess it's a question of are
+ you more worried about the DoS from tricking the validator into thinking
+ good fragments are bad (the reverse is irrelevant because if you can
+ trick a validator into thinking your bad fragment belongs to a previously
+ seen good packet, then you can equally trick a reassembler into stitching
+ your bad fragment into that packet), or are you more worried about the
+ DoS from tying lots of memory down in the reassembly cache.
+Even with reordering handling, a data structure to record which ranges of
+ a packet have been seen takes much less memory than storing the complete
+ fragment bodies.  (Just a simple bitmap of 8-byte blocks — the resolution
+ of iph->frag_off — reduces size by a factor of 64, not counting all the
+ overhead of a struct sk_buff for each fragment in the queue.  Or you
+ could re-use the rbtree-based code from the reassembler, just with a
+ freshly allocated node containing only offset & length, instead of the
+ whole SKB.)
+And having a BPF helper effectively consume the skb is awkward, as you
+ noted; someone is likely to decide that skb_copy() is too slow, try to
+ add ctx invalidation, and thereby create a whole new swathe of potential
+ correctness and security issues.
+Plus, imagine trying to support this in a hardware-offload XDP device.
+ They'd have to reimplement the entire frag cache, which is a much bigger
+ attack surface than just a frag validator, and they couldn't leverage
+ the battle-hardened kernel implementation.
 
-diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-index 1653e7a8b0a1..4c1b3502f88d 100644
---- a/tools/lib/bpf/netlink.c
-+++ b/tools/lib/bpf/netlink.c
-@@ -468,8 +468,11 @@ int bpf_xdp_query(int ifindex, int xdp_flags, struct=
- bpf_xdp_query_opts *opts)
- 		return 0;
-=20
- 	err =3D libbpf_netlink_resolve_genl_family_id("netdev", sizeof("netdev"=
-), &id);
--	if (err < 0)
-+	if (err < 0) {
-+		if (err =3D=3D -ENOENT)
-+			return 0;
- 		return libbpf_err(err);
-+	}
-=20
- 	memset(&req, 0, sizeof(req));
- 	req.nh.nlmsg_len =3D NLMSG_LENGTH(GENL_HDRLEN);
---=20
-2.30.2
+> And make it trivial for the next person that comes
+> along to do the right thing.
 
+Fwiw the validator approach could *also* be a helper, it doesn't have to
+ be something the BPF developer writes for themselves.
+
+But if after thinking about the possibility you still prefer your way, I
+ won't try to stop you — I just wanted to ensure it had been considered.
+
+-ed
