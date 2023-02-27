@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F076A45F3
-	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7258F6A45F4
+	for <lists+bpf@lfdr.de>; Mon, 27 Feb 2023 16:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjB0PVl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Feb 2023 10:21:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
+        id S230116AbjB0PVp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Feb 2023 10:21:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbjB0PVi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Feb 2023 10:21:38 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91FD1C313
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:37 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id v11so3535286plz.8
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:37 -0800 (PST)
+        with ESMTP id S229900AbjB0PVo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Feb 2023 10:21:44 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD011E1E3
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:41 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id k21-20020a17090aaa1500b002376652e160so6544709pjq.0
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 07:21:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q9yAL066kb5/fOCVw5E7uXU6m1iQadFMqnUoLomFIFc=;
-        b=JJnyhmL0ArCl0KtUokgLLK1cP4VbM887cXlQeeFqAevk2RUSevj+N+2Dr/ZTNBtqAo
-         B8/UD+QBy+aejiVZ4MPr9/b1EX4nw/wBf/yCJJIugPW4i/hIDZMrwvTc8KfaPSOFWxkl
-         lVRhtEhNLubNqCUjjQg1kzCA4aQVjt3NUNR8rItJmY1dm8uJCM7lvKdzD86YM8zoul7M
-         +3lk1LLu0OZjdDDfRI45pK9qXM7E3pM/wgknyjYRuHOUToRgXaTfYrh1JmuQmjG5lxxn
-         yJ3h32Vc+95Zx4XqxHv4GeyeflBducCkWV2ORXfdNBSKk64JDC5DJP2Y+Y0P9mtyPXyq
-         Qo/A==
+        bh=yEqHGSzh4ebrLjbpD441xY6idCWwz84uueSdrYMosCU=;
+        b=WTVuUqHA9nDmp5UBiufbO5/RpcybHmWsCD5kgmWw+48sIluAS2EuXQy5qlZq7XvAL2
+         29zpK5/HZAVN4o38za1ifi7glqjwiiNQML6VMk3zaCr8EOPk//VRscEoEsG4HY80T/+q
+         1o6UgbHbf2AWpMZgLMaZ8u1EA3DEmsKXOgYyExoKBTuNC9c/1CgOdjZSHXCFqpdoSka3
+         nDfflWrUBOGqDYpgw8BS5iI9HxvuFR6MA5QkCie9A6sRMcTbHMtcfrpFBkf4oEV8vRJG
+         qPYo+oTwmo9/4jPIH5RHrXITSDdn5o9kbND2cA5C0LwmyMgT6sSah/vsoftQ/vNsb/g+
+         Z4Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Q9yAL066kb5/fOCVw5E7uXU6m1iQadFMqnUoLomFIFc=;
-        b=TPHjpbOAf2km/ioBYSWCa0JwbJQoWMpKXaxxf1nChlevlYwubHSOVKgkESeSt0PUsN
-         EfH+hG9BeCCBpl2dkb6f756U3Uud+qnlMmpL2azP8xlBsYNfG+tzPtC62Uv8hpZDNCfI
-         m15ilyMDZqrj4LVj3m+DvwOqJ/h0GEx9GbkDjXudvV9ZVaOyYqQrQcfLBr6U1shVjdmp
-         2jdIL5SzlD5+XU3liN9WIERZ9EFRAVJ3WAkmTFqqzEwKzeNcNV+U4Nllrc/UNzPjFIqP
-         vRtaZpK77KdqGjOTbopABN3k6hNKeXc9z2kWbEBqqOHH1wP7py2BvcY1kKxMYOIwa1LG
-         P3tw==
-X-Gm-Message-State: AO0yUKWh4GTaRNGQnFSdO6SwCYIL6j3yMgCGRENm0zD26fK9aRNkCJQL
-        aXnOl9KZTeek74JdTjPONZo=
-X-Google-Smtp-Source: AK7set/8SHrzBsvj0xRZOw6FRftIOZqSKkp/EflQbKsQ8UzGe6NeKu2w1XEVbt4GMWjV9Y+nib5zSg==
-X-Received: by 2002:a05:6a20:440a:b0:cd:7d01:7671 with SMTP id ce10-20020a056a20440a00b000cd7d017671mr2728956pzb.22.1677511297301;
-        Mon, 27 Feb 2023 07:21:37 -0800 (PST)
+        bh=yEqHGSzh4ebrLjbpD441xY6idCWwz84uueSdrYMosCU=;
+        b=BgpX4flmOA2hHCVDNk2RsO/IgdLrHSxsOFOvJ6OcjRnmfpfK2Z1ZrgEt6HGskic7/C
+         XA5etQWdWNCwXxt7knZXGnahF1d/dvO/JoyRNWn6oiPFR6/o+6QRfWh83H+nInPtd4x2
+         mMDUeYFRKJgI+mW1GrMFakT6c23kq9Bzi7pksrf3u65Cqj+YRK4Pkx5nZmeO9dFkSYUl
+         ucqYRQVOA84B19HVfq27II+XUxxTAsM6K6ZIxQJvyIB6dGndzoER+QVGyXv7ZbZUVp1S
+         VOPPONjC6pSLTzsMGiPZYxFpodiT96oM53FE07VylvxhXcjdCmtNROA+pKsaVLkyT3t3
+         J23Q==
+X-Gm-Message-State: AO0yUKWQfPTbijQGLXopGtjh0DALjv9UROiZdzd/IzQHhd2oLReV3ROQ
+        IHYIpsnYaPnycI3UxVEogyc=
+X-Google-Smtp-Source: AK7set+t5Mn3pHM+HlZ5y8OvC3sMphhSd8L8VWbG/voPAK4hfYGmtLyoSOFFhAiG+4Ra1kB94AnQGw==
+X-Received: by 2002:a05:6a20:12c4:b0:be:d4be:50a2 with SMTP id v4-20020a056a2012c400b000bed4be50a2mr32218535pzg.32.1677511300908;
+        Mon, 27 Feb 2023 07:21:40 -0800 (PST)
 Received: from vultr.guest ([2401:c080:1000:4a6a:5400:4ff:fe53:1982])
-        by smtp.gmail.com with ESMTPSA id n2-20020a62e502000000b00589a7824703sm4326825pff.194.2023.02.27.07.21.34
+        by smtp.gmail.com with ESMTPSA id n2-20020a62e502000000b00589a7824703sm4326825pff.194.2023.02.27.07.21.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 07:21:36 -0800 (PST)
+        Mon, 27 Feb 2023 07:21:40 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -56,9 +56,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
         xiyou.wangcong@gmail.com
 Cc:     bpf@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v3 15/18] bpf, net: sock_map memory usage
-Date:   Mon, 27 Feb 2023 15:20:29 +0000
-Message-Id: <20230227152032.12359-16-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v3 16/18] bpf, net: xskmap memory usage
+Date:   Mon, 27 Feb 2023 15:20:30 +0000
+Message-Id: <20230227152032.12359-17-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230227152032.12359-1-laoar.shao@gmail.com>
 References: <20230227152032.12359-1-laoar.shao@gmail.com>
@@ -74,79 +74,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-sockmap and sockhash don't have something in common in allocation, so let's
-introduce different helpers to calculate their memory usage.
+A new helper is introduced to calculate xskmap memory usage.
 
-The reuslt as follows,
+The xfsmap memory usage can be dynamically changed when we add or remove
+a xsk_map_node. Hence we need to track the count of xsk_map_node to get
+its memory usage.
 
+The result as follows,
 - before
-28: sockmap  name count_map  flags 0x0
-        key 4B  value 4B  max_entries 65536  memlock 524288B
-29: sockhash  name count_map  flags 0x0
+10: xskmap  name count_map  flags 0x0
         key 4B  value 4B  max_entries 65536  memlock 524288B
 
 - after
-28: sockmap  name count_map  flags 0x0
+10: xskmap  name count_map  flags 0x0 <<< no elements case
         key 4B  value 4B  max_entries 65536  memlock 524608B
-29: sockhash  name count_map  flags 0x0  <<<< no updated elements
-        key 4B  value 4B  max_entries 65536  memlock 1048896B
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- net/core/sock_map.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ include/net/xdp_sock.h |  1 +
+ net/xdp/xskmap.c       | 13 +++++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index a68a729..9b854e2 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -797,6 +797,14 @@ static void sock_map_fini_seq_private(void *priv_data)
- 	bpf_map_put_with_uref(info->map);
- }
- 
-+static u64 sock_map_mem_usage(const struct bpf_map *map)
-+{
-+	u64 usage = sizeof(struct bpf_stab);
-+
-+	usage += (u64)map->max_entries * sizeof(struct sock *);
-+	return usage;
-+}
-+
- static const struct bpf_iter_seq_info sock_map_iter_seq_info = {
- 	.seq_ops		= &sock_map_seq_ops,
- 	.init_seq_private	= sock_map_init_seq_private,
-@@ -816,6 +824,7 @@ static void sock_map_fini_seq_private(void *priv_data)
- 	.map_lookup_elem	= sock_map_lookup,
- 	.map_release_uref	= sock_map_release_progs,
- 	.map_check_btf		= map_check_no_btf,
-+	.map_mem_usage		= sock_map_mem_usage,
- 	.map_btf_id		= &sock_map_btf_ids[0],
- 	.iter_seq_info		= &sock_map_iter_seq_info,
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index 3057e1a..e96a115 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -38,6 +38,7 @@ struct xdp_umem {
+ struct xsk_map {
+ 	struct bpf_map map;
+ 	spinlock_t lock; /* Synchronize map updates */
++	atomic_t count;
+ 	struct xdp_sock __rcu *xsk_map[];
  };
-@@ -1397,6 +1406,16 @@ static void sock_hash_fini_seq_private(void *priv_data)
- 	bpf_map_put_with_uref(info->map);
+ 
+diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
+index 771d0fa..0c38d71 100644
+--- a/net/xdp/xskmap.c
++++ b/net/xdp/xskmap.c
+@@ -24,6 +24,7 @@ static struct xsk_map_node *xsk_map_node_alloc(struct xsk_map *map,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	bpf_map_inc(&map->map);
++	atomic_inc(&map->count);
+ 
+ 	node->map = map;
+ 	node->map_entry = map_entry;
+@@ -32,8 +33,11 @@ static struct xsk_map_node *xsk_map_node_alloc(struct xsk_map *map,
+ 
+ static void xsk_map_node_free(struct xsk_map_node *node)
+ {
++	struct xsk_map *map = node->map;
++
+ 	bpf_map_put(&node->map->map);
+ 	kfree(node);
++	atomic_dec(&map->count);
  }
  
-+static u64 sock_hash_mem_usage(const struct bpf_map *map)
+ static void xsk_map_sock_add(struct xdp_sock *xs, struct xsk_map_node *node)
+@@ -85,6 +89,14 @@ static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
+ 	return &m->map;
+ }
+ 
++static u64 xsk_map_mem_usage(const struct bpf_map *map)
 +{
-+	struct bpf_shtab *htab = container_of(map, struct bpf_shtab, map);
-+	u64 usage = sizeof(*htab);
++	struct xsk_map *m = container_of(map, struct xsk_map, map);
 +
-+	usage += htab->buckets_num * sizeof(struct bpf_shtab_bucket);
-+	usage += atomic_read(&htab->count) * (u64)htab->elem_size;
-+	return usage;
++	return struct_size(m, xsk_map, map->max_entries) +
++		   (u64)atomic_read(&m->count) * sizeof(struct xsk_map_node);
 +}
 +
- static const struct bpf_iter_seq_info sock_hash_iter_seq_info = {
- 	.seq_ops		= &sock_hash_seq_ops,
- 	.init_seq_private	= sock_hash_init_seq_private,
-@@ -1416,6 +1435,7 @@ static void sock_hash_fini_seq_private(void *priv_data)
- 	.map_lookup_elem_sys_only = sock_hash_lookup_sys,
- 	.map_release_uref	= sock_hash_release_progs,
- 	.map_check_btf		= map_check_no_btf,
-+	.map_mem_usage		= sock_hash_mem_usage,
- 	.map_btf_id		= &sock_hash_map_btf_ids[0],
- 	.iter_seq_info		= &sock_hash_iter_seq_info,
+ static void xsk_map_free(struct bpf_map *map)
+ {
+ 	struct xsk_map *m = container_of(map, struct xsk_map, map);
+@@ -267,6 +279,7 @@ static bool xsk_map_meta_equal(const struct bpf_map *meta0,
+ 	.map_update_elem = xsk_map_update_elem,
+ 	.map_delete_elem = xsk_map_delete_elem,
+ 	.map_check_btf = map_check_no_btf,
++	.map_mem_usage = xsk_map_mem_usage,
+ 	.map_btf_id = &xsk_map_btf_ids[0],
+ 	.map_redirect = xsk_map_redirect,
  };
 -- 
 1.8.3.1
