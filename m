@@ -2,93 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EE66A58C4
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 13:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7876A58C8
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 13:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbjB1MC2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 07:02:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
+        id S231249AbjB1MDH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 07:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbjB1MC1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 07:02:27 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1F72CC5F
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 04:02:25 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id fm20-20020a05600c0c1400b003ead37e6588so9311716wmb.5
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 04:02:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WOil+rmUBFJnsQrtO4mSmdPRv6I6Z8F/QkUyhuD4Ppo=;
-        b=Lg8uh+4cTsDN+Kf4VvOc7btsCDJvtNMmrwLkQ8tCBKnJZ7oi/a+fMX6SdOwpn6l2p5
-         SH5vEoCsC3WE+c42LJ9SejOh4W2S06JGi2+qdeX5gdhIm6+KgaMPJzO0skzPwNEQfwMN
-         DDp0VsxYWVi8OPFQxe15KAj/fUBPgDxtwESkIx0aHzTNGo/0JEGMCoAzO7nnYgvF22ua
-         A6qTOhMxzkWP1HNa+oFu+LiqUqmvOuIRw400N+B2A2DLhHKJ6MO95KhUEi1cEnplx0nl
-         471q1cQ+gqdNs4JylSAm80nyFzQqZ13+wWSFJGt/j8vK7ieT1hOCzH4G2Ds+mjRjUDE2
-         JtAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WOil+rmUBFJnsQrtO4mSmdPRv6I6Z8F/QkUyhuD4Ppo=;
-        b=pT67C4IhqmSluz3ms2jULaEF7KPyjVjmBc7MkmWvJhnStpdYiOEbkDvDXzBYibJhi1
-         7tMRRZ9hii8jrTS2ZGIpjMpYntKZTReoIZX6sVvI6ZMB25mYwx4xRmQTrGedVFMcuPOp
-         TKMSmmW4zj4kpvh2KloQ4Qtli1VixevlWg2gpwrngBXp2R5pkZLxlZ0h2I43dK6nVXxK
-         d5nbFzZHGiMzsqEDtYoNJkCSkEJykTHx4hWK536qXCz5zaWuRiyQ1Pm9A+g0vMoWBu+Q
-         9nQY6nj8MKdPLyWwrvKZjIGynzaQIkdSzVuT1cCwglG4FQZKnyItVGH99uqg8NH6kYLA
-         ucDQ==
-X-Gm-Message-State: AO0yUKVN8Slzh41YdOun7fiNoqHKSAZj//EZPuipg8IK92455V6QeqsY
-        ZhgiGH9EKUkWf502yQrIO4tRHg==
-X-Google-Smtp-Source: AK7set8naYHPskgq2n+dpMigAxIXBgugkmme9zsENGOr36KsES9+Ir0HbUQfWSuX1p/zAanX0YizeA==
-X-Received: by 2002:a05:600c:1992:b0:3ea:f0d6:5d36 with SMTP id t18-20020a05600c199200b003eaf0d65d36mr1952197wmq.29.1677585744390;
-        Tue, 28 Feb 2023 04:02:24 -0800 (PST)
-Received: from [192.168.30.216] ([81.0.6.76])
-        by smtp.gmail.com with ESMTPSA id k22-20020a7bc416000000b003dc521f336esm11966128wmi.14.2023.02.28.04.02.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Feb 2023 04:02:23 -0800 (PST)
-Message-ID: <6198f1c8-29b7-dba4-2469-2a99eb03c83e@linaro.org>
-Date:   Tue, 28 Feb 2023 13:02:22 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH v2 1/2] MIPS: ebpf jit: Implement DADDI workarounds
-Content-Language: en-US
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
-        johan.almbladh@anyfinetworks.com, paulburton@kernel.org,
-        bpf@vger.kernel.org
-References: <20230228113305.83751-1-jiaxun.yang@flygoat.com>
- <20230228113305.83751-2-jiaxun.yang@flygoat.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230228113305.83751-2-jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        with ESMTP id S231197AbjB1MDG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 07:03:06 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0B290B44A;
+        Tue, 28 Feb 2023 04:03:03 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxYeV27f1jVXUGAA--.6664S3;
+        Tue, 28 Feb 2023 20:03:02 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxnb517f1jiuVAAA--.55379S2;
+        Tue, 28 Feb 2023 20:03:02 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3] selftests/bpf: Set __BITS_PER_LONG if target is bpf for LoongArch
+Date:   Tue, 28 Feb 2023 20:03:01 +0800
+Message-Id: <1677585781-21628-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8Cxnb517f1jiuVAAA--.55379S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvJXoW7Aw1UGr13KF48ArWrJF47urg_yoW8uFWDpF
+        yrC342kFW0gFW3Kwn7Ar4j9F1ftwn5Kr4UAFsIg34vqFs8J34xJws7GFykXFnIgrWSkFn8
+        Z3W3Kay3ua18CwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        b78YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
+        1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4
+        x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I2
+        62IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4
+        CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvj
+        eVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxV
+        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
+        6r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
+        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG
+        6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_Gr
+        UvcSsGvfC2KfnxnUUI43ZEXa7IU1EksDUUUUU==
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_SBL_CSS,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 28/2/23 12:33, Jiaxun Yang wrote:
-> For DADDI errata we just workaround by disable immediate operation
-> for BPF_ADD / BPF_SUB to avoid generation of DADDIU.
-> 
-> All other use cases in JIT won't cause overflow thus they are all safe.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
-> v2: Drop 64BIT ifdef
-> ---
->   arch/mips/Kconfig            | 1 -
->   arch/mips/net/bpf_jit_comp.c | 4 ++++
->   2 files changed, 4 insertions(+), 1 deletion(-)
+If target is bpf, there is no __loongarch__ definition, __BITS_PER_LONG
+defaults to 32, __NR_nanosleep is not defined:
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+  #if defined(__ARCH_WANT_TIME32_SYSCALLS) || __BITS_PER_LONG != 32
+  #define __NR_nanosleep 101
+  __SC_3264(__NR_nanosleep, sys_nanosleep_time32, sys_nanosleep)
+  #endif
+
+Work around this problem, by explicitly setting __BITS_PER_LONG to
+__loongarch_grlen which is defined by compiler as 64 for LA64, then
+__NR_nanosleep can also be defined to fix the following build errors:
+
+  clang  -g -Werror ... -target bpf -c progs/test_vmlinux.c ...
+  progs/test_vmlinux.c:24:18: error: use of undeclared identifier '__NR_nanosleep'
+          if (args->id != __NR_nanosleep)
+                          ^
+  progs/test_vmlinux.c:42:12: error: use of undeclared identifier '__NR_nanosleep'
+          if (id != __NR_nanosleep)
+                    ^
+  progs/test_vmlinux.c:60:12: error: use of undeclared identifier '__NR_nanosleep'
+          if (id != __NR_nanosleep)
+                    ^
+  3 errors generated.
+
+This is similar with commit 36e70b9b06bf ("selftests, bpf: Fix broken
+riscv build").
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/testing/selftests/bpf/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index b677dcd..f40606a 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -338,7 +338,8 @@ $(RESOLVE_BTFIDS): $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)/resolve_btfids	\
+ define get_sys_includes
+ $(shell $(1) $(2) -v -E - </dev/null 2>&1 \
+ 	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
+-$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
++$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}') \
++$(shell $(1) $(2) -dM -E - </dev/null | grep '__loongarch_grlen ' | awk '{printf("-D__BITS_PER_LONG=%d", $$3)}')
+ endef
+ 
+ # Determine target endianness.
+-- 
+2.1.0
 
