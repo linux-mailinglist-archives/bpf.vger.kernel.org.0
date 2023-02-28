@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABC56A5901
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 13:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4346A5925
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 13:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbjB1M2Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 07:28:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
+        id S229764AbjB1Mfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 07:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjB1M2Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 07:28:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CE42CFE5
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 04:27:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677587264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xrt2lzeyH43WzQREJXk6sDR/6AJhIDCk1Pq87tSSc2M=;
-        b=cvBsfNPoyfCxgO1Y6dpDoSd1cEjFKFN12Gq9w6/MnwHKW7HyzMM6xjZvLCv4B92ngMN1kr
-        xgPsiQfLArsiaaj3CNgbCc3SeSJxxug96B147H4KGTatFlBZBxSHLJEzr0Fx69ImTXZzPY
-        gqTuaqdfFQUXNPdz9e1yZGY5Yw2FsfA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-52-HDex2ul1PWyzjFmlxaCc0w-1; Tue, 28 Feb 2023 07:27:39 -0500
-X-MC-Unique: HDex2ul1PWyzjFmlxaCc0w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CF53E857F40;
-        Tue, 28 Feb 2023 12:27:38 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.45.224.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1A3B12166B26;
-        Tue, 28 Feb 2023 12:27:35 +0000 (UTC)
-From:   Viktor Malik <vmalik@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v9 2/2] bpf/selftests: Test fentry attachment to shadowed functions
-Date:   Tue, 28 Feb 2023 13:27:25 +0100
-Message-Id: <d86cc73821fb0b80dea86c4def2a4e42843977cd.1677583941.git.vmalik@redhat.com>
-In-Reply-To: <cover.1677583941.git.vmalik@redhat.com>
-References: <cover.1677583941.git.vmalik@redhat.com>
+        with ESMTP id S229471AbjB1Mfq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 07:35:46 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6DD2ED58
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 04:35:44 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 16so5511397pge.11
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 04:35:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KhWe8sLMccBLRrPsWcYHRaaybNDxZ0zi1CaL4lrAFvc=;
+        b=iJtweGpDdSTqN2kXZgyLyRHBqBC9GUkRRoy6rynxSdBwc/xi7Vbq/3f2N94C5mLujq
+         w9EG2wiCllviId6GNDlLkbXFwd3mXYXseKL95wKTB6KmEQRjBHJCGbOqKmbCti3DI+ge
+         /jjBYZdSq+2BssKiI8DTPI5TE4zup3ctckwnYAZoqcHmwlnU/lF34WLBlpPh5DbmZW1x
+         OnYjrkr1l05OXbW3P7CY1B6CopBD27raod6Z7rbWXHCofjgDskhx3QBlMTRKsjTh8d0+
+         GZZSBSrne7Q72pybnSMNmSC0ZLCujlURHmZoqWO/H6Tviay4BkJWod6ZfRaG33ptLhER
+         A9Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KhWe8sLMccBLRrPsWcYHRaaybNDxZ0zi1CaL4lrAFvc=;
+        b=0xHoqpW6qn+gGCoKt6rBCo/M7oODiY28+ee8wY6dZ0U3nPhLXLQccgVR9DF+K4eBn6
+         tJwrsz3GpYFg7k5Zuo+sGDd01iEDdpZBQegoSZDa8P1VLl8o141cjgjRvjK0XTAWhTz8
+         V0B5viPkaV4q80BerzP+oi1kakpEC6QgSuPzzc1xxmLh3N6A8Sk8iIn/Aau4Oj9FaeVE
+         Efiq1BM1il/6v9zxHYzN7blHQxD51tEXmqURFlkTXDJ64AUQZ10jB7navhsmU8b5VLH+
+         r4wL7oQlyAyWrWpu3ly+gBJsgYzw7emx15tUZeiuMJwC9sFdIK+hobGB5GbcAIjFUgOG
+         MVaA==
+X-Gm-Message-State: AO0yUKVAe7F/JFdwD16FOSMnT63wBzTF8iALct1FnCTrGxtXTIZlLcwy
+        k+afLgA+qG6husRSEqAYHMpmMhC/kBME9psGYhPrAw==
+X-Google-Smtp-Source: AK7set982toa957BfsESaT9p96TlyfxqaTB6xdGDJ93u6JOrGrfrsLteEwl7OmrMxFUw0AK+STVOgMbUnjwZ3PQRWHE=
+X-Received: by 2002:a63:7807:0:b0:502:f4c6:b96 with SMTP id
+ t7-20020a637807000000b00502f4c60b96mr701622pgc.5.1677587743821; Tue, 28 Feb
+ 2023 04:35:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230228113305.83751-1-jiaxun.yang@flygoat.com> <20230228113305.83751-2-jiaxun.yang@flygoat.com>
+In-Reply-To: <20230228113305.83751-2-jiaxun.yang@flygoat.com>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Tue, 28 Feb 2023 13:35:32 +0100
+Message-ID: <CAM1=_QTwYqAH+21fNnG3aBW-cV8vxtgM7h=enqZYaj2wbRnV8Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] MIPS: ebpf jit: Implement DADDI workarounds
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tsbogend@alpha.franken.de, paulburton@kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,194 +68,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adds a new test that tries to attach a program to fentry of two
-functions of the same name, one located in vmlinux and the other in
-bpf_testmod.
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-To avoid conflicts with existing tests, a new function
-"bpf_fentry_shadow_test" was created both in vmlinux and in bpf_testmod.
-
-The previous commit fixed a bug which caused this test to fail. The
-verifier would always use the vmlinux function's address as the target
-trampoline address, hence trying to create two trampolines for a single
-address, which is forbidden.
-
-Signed-off-by: Viktor Malik <vmalik@redhat.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
----
- net/bpf/test_run.c                            |   5 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   6 +
- .../bpf/prog_tests/module_attach_shadow.c     | 128 ++++++++++++++++++
- 3 files changed, 139 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 6f3d654b3339..aa3a4e6ba701 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -560,6 +560,11 @@ long noinline bpf_kfunc_call_test4(signed char a, short b, int c, long d)
- 	return (long)a + (long)b + (long)c + d;
- }
- 
-+int noinline bpf_fentry_shadow_test(int a)
-+{
-+	return a + 1;
-+}
-+
- struct prog_test_member1 {
- 	int a;
- };
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 46500636d8cd..c478b14fdea1 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -229,6 +229,12 @@ static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
- 	.set   = &bpf_testmod_check_kfunc_ids,
- };
- 
-+noinline int bpf_fentry_shadow_test(int a)
-+{
-+	return a + 2;
-+}
-+EXPORT_SYMBOL_GPL(bpf_fentry_shadow_test);
-+
- extern int bpf_fentry_test1(int a);
- 
- static int bpf_testmod_init(void)
-diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
-new file mode 100644
-index 000000000000..c7636e18b1eb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Red Hat */
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+#include "bpf/libbpf_internal.h"
-+#include "cgroup_helpers.h"
-+
-+static const char *module_name = "bpf_testmod";
-+static const char *symbol_name = "bpf_fentry_shadow_test";
-+
-+static int get_bpf_testmod_btf_fd(void)
-+{
-+	struct bpf_btf_info info;
-+	char name[64];
-+	__u32 id = 0, len;
-+	int err, fd;
-+
-+	while (true) {
-+		err = bpf_btf_get_next_id(id, &id);
-+		if (err) {
-+			log_err("failed to iterate BTF objects");
-+			return err;
-+		}
-+
-+		fd = bpf_btf_get_fd_by_id(id);
-+		if (fd < 0) {
-+			if (errno == ENOENT)
-+				continue; /* expected race: BTF was unloaded */
-+			err = -errno;
-+			log_err("failed to get FD for BTF object #%d", id);
-+			return err;
-+		}
-+
-+		len = sizeof(info);
-+		memset(&info, 0, sizeof(info));
-+		info.name = ptr_to_u64(name);
-+		info.name_len = sizeof(name);
-+
-+		err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+		if (err) {
-+			err = -errno;
-+			log_err("failed to get info for BTF object #%d", id);
-+			close(fd);
-+			return err;
-+		}
-+
-+		if (strcmp(name, module_name) == 0)
-+			return fd;
-+
-+		close(fd);
-+	}
-+	return -ENOENT;
-+}
-+
-+void test_module_fentry_shadow(void)
-+{
-+	struct btf *vmlinux_btf = NULL, *mod_btf = NULL;
-+	int err, i;
-+	int btf_fd[2] = {};
-+	int prog_fd[2] = {};
-+	int link_fd[2] = {};
-+	__s32 btf_id[2] = {};
-+
-+	LIBBPF_OPTS(bpf_prog_load_opts, load_opts,
-+		.expected_attach_type = BPF_TRACE_FENTRY,
-+	);
-+
-+	const struct bpf_insn trace_program[] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+
-+	vmlinux_btf = btf__load_vmlinux_btf();
-+	if (!ASSERT_OK_PTR(vmlinux_btf, "load_vmlinux_btf"))
-+		return;
-+
-+	btf_fd[1] = get_bpf_testmod_btf_fd();
-+	if (!ASSERT_GE(btf_fd[1], 0, "get_bpf_testmod_btf_fd"))
-+		goto out;
-+
-+	mod_btf = btf_get_from_fd(btf_fd[1], vmlinux_btf);
-+	if (!ASSERT_OK_PTR(mod_btf, "btf_get_from_fd"))
-+		goto out;
-+
-+	btf_id[0] = btf__find_by_name_kind(vmlinux_btf, symbol_name, BTF_KIND_FUNC);
-+	if (!ASSERT_GT(btf_id[0], 0, "btf_find_by_name"))
-+		goto out;
-+
-+	btf_id[1] = btf__find_by_name_kind(mod_btf, symbol_name, BTF_KIND_FUNC);
-+	if (!ASSERT_GT(btf_id[1], 0, "btf_find_by_name"))
-+		goto out;
-+
-+	for (i = 0; i < 2; i++) {
-+		load_opts.attach_btf_id = btf_id[i];
-+		load_opts.attach_btf_obj_fd = btf_fd[i];
-+		prog_fd[i] = bpf_prog_load(BPF_PROG_TYPE_TRACING, NULL, "GPL",
-+					   trace_program,
-+					   sizeof(trace_program) / sizeof(struct bpf_insn),
-+					   &load_opts);
-+		if (!ASSERT_GE(prog_fd[i], 0, "bpf_prog_load"))
-+			goto out;
-+
-+		/* If the verifier incorrectly resolves addresses of the
-+		 * shadowed functions and uses the same address for both the
-+		 * vmlinux and the bpf_testmod functions, this will fail on
-+		 * attempting to create two trampolines for the same address,
-+		 * which is forbidden.
-+		 */
-+		link_fd[i] = bpf_link_create(prog_fd[i], 0, BPF_TRACE_FENTRY, NULL);
-+		if (!ASSERT_GE(link_fd[i], 0, "bpf_link_create"))
-+			goto out;
-+	}
-+
-+	err = bpf_prog_test_run_opts(prog_fd[0], NULL);
-+	ASSERT_OK(err, "running test");
-+
-+out:
-+	btf__free(vmlinux_btf);
-+	btf__free(mod_btf);
-+	for (i = 0; i < 2; i++) {
-+		if (btf_fd[i])
-+			close(btf_fd[i]);
-+		if (prog_fd[i] > 0)
-+			close(prog_fd[i]);
-+		if (link_fd[i] > 0)
-+			close(link_fd[i]);
-+	}
-+}
--- 
-2.39.1
-
+On Tue, Feb 28, 2023 at 12:33=E2=80=AFPM Jiaxun Yang <jiaxun.yang@flygoat.c=
+om> wrote:
+>
+> For DADDI errata we just workaround by disable immediate operation
+> for BPF_ADD / BPF_SUB to avoid generation of DADDIU.
+>
+> All other use cases in JIT won't cause overflow thus they are all safe.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+> v2: Drop 64BIT ifdef
+> ---
+>  arch/mips/Kconfig            | 1 -
+>  arch/mips/net/bpf_jit_comp.c | 4 ++++
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 37072e15b263..df0910e3895c 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -64,7 +64,6 @@ config MIPS
+>         select HAVE_DMA_CONTIGUOUS
+>         select HAVE_DYNAMIC_FTRACE
+>         select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
+> -                               !CPU_DADDI_WORKAROUNDS && \
+>                                 !CPU_R4000_WORKAROUNDS && \
+>                                 !CPU_R4400_WORKAROUNDS
+>         select HAVE_EXIT_THREAD
+> diff --git a/arch/mips/net/bpf_jit_comp.c b/arch/mips/net/bpf_jit_comp.c
+> index b17130d510d4..a40d926b6513 100644
+> --- a/arch/mips/net/bpf_jit_comp.c
+> +++ b/arch/mips/net/bpf_jit_comp.c
+> @@ -218,9 +218,13 @@ bool valid_alu_i(u8 op, s32 imm)
+>                 /* All legal eBPF values are valid */
+>                 return true;
+>         case BPF_ADD:
+> +               if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
+> +                       return false;
+>                 /* imm must be 16 bits */
+>                 return imm >=3D -0x8000 && imm <=3D 0x7fff;
+>         case BPF_SUB:
+> +               if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
+> +                       return false;
+>                 /* -imm must be 16 bits */
+>                 return imm >=3D -0x7fff && imm <=3D 0x8000;
+>         case BPF_AND:
+> --
+> 2.37.1 (Apple Git-137.1)
+>
