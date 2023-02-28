@@ -2,62 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD226A5C1F
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 16:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2C36A5C70
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 16:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjB1Pis (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 10:38:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33720 "EHLO
+        id S230205AbjB1PyU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 10:54:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjB1Pir (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 10:38:47 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5EA30F3
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 07:38:30 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id c4so3120927pfl.0
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 07:38:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=khE6y9fxg25nULP98zI7omx6tfLEkOS6sqwmlMrEObk=;
-        b=nSYgfnt2nxKfwaozy0+DiAhC5Yw0250IBe6cVuDka6WpAe0bHfHREB2zemvZTmBUHT
-         TOY2t/1ctycfGajKsAt/ELcyQctktwWCn6qjh0hF56JaOxSlD3DsnlZABImhpsYZPpjc
-         pmUTFhVwrvdrVTjhrIBHl2xouLUC08+r+RWfb3ehmUHocIPXX7aRw4HIgxK4gAH2cdym
-         MXA8mBVDq8kb0ABj6pVs+WfT4uvY10HtZj6/iie2gGHDeqWKDxNtVltifeDzMiY97/gC
-         wILmatXcW2UsbI9KfE/1rgoJxVIhRHca0VeyTxXgIwED8ZPc9lWWBBxqwEBUdepUgf2B
-         ZjmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=khE6y9fxg25nULP98zI7omx6tfLEkOS6sqwmlMrEObk=;
-        b=H3CD2I9f9kRuBhKz68zuvXeErdCLpL5qIqITYhBhmQsglrwjFTKnXHNIjYzOIvN1I4
-         bj2oDJi41x7z0vwXdbvTRWmcALCDIG39cy72q5UVSd9Be0kgMm3yqF7xc/oCZvBnmDRV
-         DKBbjj+jfXGoTQgXnpH2S+zKTEE05665lsJOjxVa1WyO0jdsv3iokFgqtNvc7+ovJP7a
-         YopdvXoxoc74Zrey3uU+mB2ldtu9hzT0QTPb7Sfy2dzaeFlyuYmxfs2tyzvIqXBlvhA2
-         PZtRgT2Ha+6M9qY3+oLgf2PrvuQxDdfP4EQ2X7dmqO2prJgEKTkzgrKaKmuFaBn3rNTH
-         /C+A==
-X-Gm-Message-State: AO0yUKX9QC67VW7/2Xn95DK8MSSGqkaZOA9Q5mseGP+XGMtyHnOW92Ll
-        g8v+H+cx1OWTKnUD5qlBNFYwgOALlkPNX9NRQYPJIL/Qf3jiT4RWNx4=
-X-Google-Smtp-Source: AK7set9LPn2TWZqtoRC3Yy08cY0JtzvAj0lgUUc58vUFTf6Gv5SqoEO6c8kysfW26N8yW0N3Y0BekXZdXdepXctebcM=
-X-Received: by 2002:a63:3e02:0:b0:4fb:933a:91a with SMTP id
- l2-20020a633e02000000b004fb933a091amr950859pga.5.1677598709653; Tue, 28 Feb
- 2023 07:38:29 -0800 (PST)
+        with ESMTP id S230207AbjB1PyR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 10:54:17 -0500
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7F81A652;
+        Tue, 28 Feb 2023 07:54:13 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VcjvWG2_1677599645;
+Received: from 30.0.161.21(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VcjvWG2_1677599645)
+          by smtp.aliyun-inc.com;
+          Tue, 28 Feb 2023 23:54:06 +0800
+Message-ID: <e54522dd-5e20-3c98-a148-867cb692a53c@linux.alibaba.com>
+Date:   Tue, 28 Feb 2023 23:54:05 +0800
 MIME-Version: 1.0
-References: <f1ea109c-5f07-4734-83f5-12c4252fa5ae@app.fastmail.com>
-In-Reply-To: <f1ea109c-5f07-4734-83f5-12c4252fa5ae@app.fastmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Tue, 28 Feb 2023 10:38:18 -0500
-Message-ID: <CAEzrpqcC4Z_wpcnfVp8oL5-k8s9RL=W=9rz5Z6P5emd3w1tndw@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] vmtest: Reusable virtual machine
- testing infrastructure
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.7.2
+Subject: Re: [PATCH bpf-next v3 3/4] net/smc: add BPF injection on smc
+ negotiation
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <1677576294-33411-4-git-send-email-alibuda@linux.alibaba.com>
+ <202302282100.x7qq7PGX-lkp@intel.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <202302282100.x7qq7PGX-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,77 +49,259 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 27, 2023 at 6:02 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> === Introduction ===
->
-> Testing is paradoxically one of BPF's great strengths as well as one of it's
-> current weaknesses. Fortunately, this weakness is not too far from being
-> corrected.
->
-> BPF_PROG_RUN is somewhat of a double edged sword. On the one hand, you can run
-> reproducibly run progs in near-production context. On the other hand, since BPF
-> is so deeply intertwined with the running kernel, you must make the kernel you
-> run tests on as close to your production kernel as possible to get full testing
-> benefits.
->
-> This is going to be more of an issue going forward through the growth of kfuncs
-> because kfuncs do not possess a stable ABI [5]. Proper testing should be
-> encouraged at a community-wide level in order to avoid accidental surprises and
-> potential loss of faith in BPF "stability".
->
-> Most successful kernel-dependent projects deploy some form of
-> virtual-machine-based testing [1][2][3][4] to solve the above issues. However,
-> there are two problems with this:
->
-> 1. VM-based testing is not quite common knowledge yet and remains somewhat of
->    a dark art to successfully implement.
->
-> 2. Multiple implementations of what is essentially the same thing is somewhat
->    of a drain on resources.
->
-> (These are not necessarily bad things -- it is useful and necessary to explore a
-> problem space before settling on best practices)
->
-> vmtest [0] aims to solve both problems.
->
-> === Goals ===
->
-> I'd like to do a short presentation on the design and ideas behind vmtest. I'd
-> also like to show a quick demo. It shouldn't take very long. I'll probably
-> also share what I'd like to implement next. I don't know what that's going
-> to be at time of writing b/c I'm probably going to get to it before LSFMMBPF.
->
-> For the rest of the time I'd like to discuss what the community would like to
-> see in vmtest. And to hear what it'd take to see adoption from other projects.
-> Obviously no one can be required to adopt vmtest but I think it'll save everyone
-> a good deal of effort if done correctly.
->
 
-FYI a lot of us have been working on kdevops
-(https://github.com/linux-kdevops/kdevops), which has similar goals,
-tho yours feels more in line with virt-me which I've used a bunch as
-well.
+Hi robot,
 
-I would very much love it if we could all get behind one project.  The
-benefit of kdevops is it's very extensible, and being able to select
-some config options and have an entire testing suite up and running is
-very handy for new developers.
+It's seems impossible. I have compiled and tested this patch locally for many times.
+Maybe you compiled this patch separately. However, this patch depends on the previous one.
 
-That being said I can definitely get behind have two sort of options,
-the bigger swiss army knife that is kdevops, and something smaller
-that's easier to do one-off runs.
+Thanks
+D. Wythe
 
-kdevops using vagrant makes a lot of the pain of setting up the full
-VM environments that existed before go away.  I can easily tear down
-my 8 CI vm's and rebuild them all and having them testing again in 4
-commands.  Nowadays I probably wouldn't use virt-me/anything lighter
-because this is actually pretty easy to get up and running.
-
-Again no trying to be discouraging, but you're absolutely right that
-there's been a lot of fragmentation here, which is why I've spent
-probably a lot more time than I should have making kdevops work for
-me, as well have a lot of other kernel developers, and it's getting
-pretty solid.  Thanks,
-
-Josef
+On 2/28/23 10:08 PM, kernel test robot wrote:
+> Hi Wythe,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on bpf-next/master]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230228-173007
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> patch link:    https://lore.kernel.org/r/1677576294-33411-4-git-send-email-alibuda%40linux.alibaba.com
+> patch subject: [PATCH bpf-next v3 3/4] net/smc: add BPF injection on smc negotiation
+> config: x86_64-randconfig-a015-20230227 (https://download.01.org/0day-ci/archive/20230228/202302282100.x7qq7PGX-lkp@intel.com/config)
+> compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+> reproduce (this is a W=1 build):
+>          # https://github.com/intel-lab-lkp/linux/commit/aa482ab82f4bf9b99d490f8ba5d88e1491156ccf
+>          git remote add linux-review https://github.com/intel-lab-lkp/linux
+>          git fetch --no-tags linux-review D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230228-173007
+>          git checkout aa482ab82f4bf9b99d490f8ba5d88e1491156ccf
+>          # save the config file
+>          mkdir build_dir && cp config build_dir/.config
+>          make W=1 O=build_dir ARCH=x86_64 olddefconfig
+>          make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag where applicable
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Link: https://lore.kernel.org/oe-kbuild-all/202302282100.x7qq7PGX-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>     ld: net/smc/af_smc.o: in function `smc_hs_congested':
+>>> net/smc/af_smc.c:169: undefined reference to `smc_sock_should_select_smc'
+>     ld: net/smc/af_smc.o: in function `smc_release':
+>>> net/smc/af_smc.c:327: undefined reference to `smc_sock_perform_collecting_info'
+>     ld: net/smc/af_smc.o: in function `smc_connect':
+>     net/smc/af_smc.c:1637: undefined reference to `smc_sock_should_select_smc'
+> 
+> 
+> vim +169 net/smc/af_smc.c
+> 
+>     156	
+>     157	static bool smc_hs_congested(const struct sock *sk)
+>     158	{
+>     159		const struct smc_sock *smc;
+>     160	
+>     161		smc = smc_clcsock_user_data(sk);
+>     162	
+>     163		if (!smc)
+>     164			return true;
+>     165	
+>     166		if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>     167			return true;
+>     168	
+>   > 169		if (!smc_sock_should_select_smc(smc))
+>     170			return true;
+>     171	
+>     172		return false;
+>     173	}
+>     174	
+>     175	static struct smc_hashinfo smc_v4_hashinfo = {
+>     176		.lock = __RW_LOCK_UNLOCKED(smc_v4_hashinfo.lock),
+>     177	};
+>     178	
+>     179	static struct smc_hashinfo smc_v6_hashinfo = {
+>     180		.lock = __RW_LOCK_UNLOCKED(smc_v6_hashinfo.lock),
+>     181	};
+>     182	
+>     183	int smc_hash_sk(struct sock *sk)
+>     184	{
+>     185		struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
+>     186		struct hlist_head *head;
+>     187	
+>     188		head = &h->ht;
+>     189	
+>     190		write_lock_bh(&h->lock);
+>     191		sk_add_node(sk, head);
+>     192		write_unlock_bh(&h->lock);
+>     193		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
+>     194	
+>     195		return 0;
+>     196	}
+>     197	EXPORT_SYMBOL_GPL(smc_hash_sk);
+>     198	
+>     199	void smc_unhash_sk(struct sock *sk)
+>     200	{
+>     201		struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
+>     202	
+>     203		write_lock_bh(&h->lock);
+>     204		if (sk_del_node_init(sk))
+>     205			sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
+>     206		write_unlock_bh(&h->lock);
+>     207	}
+>     208	EXPORT_SYMBOL_GPL(smc_unhash_sk);
+>     209	
+>     210	/* This will be called before user really release sock_lock. So do the
+>     211	 * work which we didn't do because of user hold the sock_lock in the
+>     212	 * BH context
+>     213	 */
+>     214	static void smc_release_cb(struct sock *sk)
+>     215	{
+>     216		struct smc_sock *smc = smc_sk(sk);
+>     217	
+>     218		if (smc->conn.tx_in_release_sock) {
+>     219			smc_tx_pending(&smc->conn);
+>     220			smc->conn.tx_in_release_sock = false;
+>     221		}
+>     222	}
+>     223	
+>     224	struct proto smc_proto = {
+>     225		.name		= "SMC",
+>     226		.owner		= THIS_MODULE,
+>     227		.keepalive	= smc_set_keepalive,
+>     228		.hash		= smc_hash_sk,
+>     229		.unhash		= smc_unhash_sk,
+>     230		.release_cb	= smc_release_cb,
+>     231		.obj_size	= sizeof(struct smc_sock),
+>     232		.h.smc_hash	= &smc_v4_hashinfo,
+>     233		.slab_flags	= SLAB_TYPESAFE_BY_RCU,
+>     234	};
+>     235	EXPORT_SYMBOL_GPL(smc_proto);
+>     236	
+>     237	struct proto smc_proto6 = {
+>     238		.name		= "SMC6",
+>     239		.owner		= THIS_MODULE,
+>     240		.keepalive	= smc_set_keepalive,
+>     241		.hash		= smc_hash_sk,
+>     242		.unhash		= smc_unhash_sk,
+>     243		.release_cb	= smc_release_cb,
+>     244		.obj_size	= sizeof(struct smc_sock),
+>     245		.h.smc_hash	= &smc_v6_hashinfo,
+>     246		.slab_flags	= SLAB_TYPESAFE_BY_RCU,
+>     247	};
+>     248	EXPORT_SYMBOL_GPL(smc_proto6);
+>     249	
+>     250	static void smc_fback_restore_callbacks(struct smc_sock *smc)
+>     251	{
+>     252		struct sock *clcsk = smc->clcsock->sk;
+>     253	
+>     254		write_lock_bh(&clcsk->sk_callback_lock);
+>     255		clcsk->sk_user_data = NULL;
+>     256	
+>     257		smc_clcsock_restore_cb(&clcsk->sk_state_change, &smc->clcsk_state_change);
+>     258		smc_clcsock_restore_cb(&clcsk->sk_data_ready, &smc->clcsk_data_ready);
+>     259		smc_clcsock_restore_cb(&clcsk->sk_write_space, &smc->clcsk_write_space);
+>     260		smc_clcsock_restore_cb(&clcsk->sk_error_report, &smc->clcsk_error_report);
+>     261	
+>     262		write_unlock_bh(&clcsk->sk_callback_lock);
+>     263	}
+>     264	
+>     265	static void smc_restore_fallback_changes(struct smc_sock *smc)
+>     266	{
+>     267		if (smc->clcsock->file) { /* non-accepted sockets have no file yet */
+>     268			smc->clcsock->file->private_data = smc->sk.sk_socket;
+>     269			smc->clcsock->file = NULL;
+>     270			smc_fback_restore_callbacks(smc);
+>     271		}
+>     272	}
+>     273	
+>     274	static int __smc_release(struct smc_sock *smc)
+>     275	{
+>     276		struct sock *sk = &smc->sk;
+>     277		int rc = 0;
+>     278	
+>     279		if (!smc->use_fallback) {
+>     280			rc = smc_close_active(smc);
+>     281			sock_set_flag(sk, SOCK_DEAD);
+>     282			sk->sk_shutdown |= SHUTDOWN_MASK;
+>     283		} else {
+>     284			if (sk->sk_state != SMC_CLOSED) {
+>     285				if (sk->sk_state != SMC_LISTEN &&
+>     286				    sk->sk_state != SMC_INIT)
+>     287					sock_put(sk); /* passive closing */
+>     288				if (sk->sk_state == SMC_LISTEN) {
+>     289					/* wake up clcsock accept */
+>     290					rc = kernel_sock_shutdown(smc->clcsock,
+>     291								  SHUT_RDWR);
+>     292				}
+>     293				sk->sk_state = SMC_CLOSED;
+>     294				sk->sk_state_change(sk);
+>     295			}
+>     296			smc_restore_fallback_changes(smc);
+>     297		}
+>     298	
+>     299		sk->sk_prot->unhash(sk);
+>     300	
+>     301		if (sk->sk_state == SMC_CLOSED) {
+>     302			if (smc->clcsock) {
+>     303				release_sock(sk);
+>     304				smc_clcsock_release(smc);
+>     305				lock_sock(sk);
+>     306			}
+>     307			if (!smc->use_fallback)
+>     308				smc_conn_free(&smc->conn);
+>     309		}
+>     310	
+>     311		return rc;
+>     312	}
+>     313	
+>     314	static int smc_release(struct socket *sock)
+>     315	{
+>     316		struct sock *sk = sock->sk;
+>     317		struct smc_sock *smc;
+>     318		int old_state, rc = 0;
+>     319	
+>     320		if (!sk)
+>     321			goto out;
+>     322	
+>     323		sock_hold(sk); /* sock_put below */
+>     324		smc = smc_sk(sk);
+>     325	
+>     326		/* trigger info gathering if needed.*/
+>   > 327		smc_sock_perform_collecting_info(sk, SMC_SOCK_CLOSED_TIMING);
+>     328	
+>     329		old_state = sk->sk_state;
+>     330	
+>     331		/* cleanup for a dangling non-blocking connect */
+>     332		if (smc->connect_nonblock && old_state == SMC_INIT)
+>     333			tcp_abort(smc->clcsock->sk, ECONNABORTED);
+>     334	
+>     335		if (cancel_work_sync(&smc->connect_work))
+>     336			sock_put(&smc->sk); /* sock_hold in smc_connect for passive closing */
+>     337	
+>     338		if (sk->sk_state == SMC_LISTEN)
+>     339			/* smc_close_non_accepted() is called and acquires
+>     340			 * sock lock for child sockets again
+>     341			 */
+>     342			lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
+>     343		else
+>     344			lock_sock(sk);
+>     345	
+>     346		if (old_state == SMC_INIT && sk->sk_state == SMC_ACTIVE &&
+>     347		    !smc->use_fallback)
+>     348			smc_close_active_abort(smc);
+>     349	
+>     350		rc = __smc_release(smc);
+>     351	
+>     352		/* detach socket */
+>     353		sock_orphan(sk);
+>     354		sock->sk = NULL;
+>     355		release_sock(sk);
+>     356	
+>     357		sock_put(sk); /* sock_hold above */
+>     358		sock_put(sk); /* final sock_put */
+>     359	out:
+>     360		return rc;
+>     361	}
+>     362	
+> 
