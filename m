@@ -2,54 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 055C36A625E
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 23:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 360F36A6268
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 23:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229470AbjB1WXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 17:23:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        id S229708AbjB1WaY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 17:30:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjB1WXk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 17:23:40 -0500
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308108A60
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 14:23:39 -0800 (PST)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id A06F924071C
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 23:23:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1677623017; bh=7kJHf3luHjX9QtaRBl1/zwUKu4fNJMQaoPSwdistYUQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AWYfX0jI+betH4Tm3+hAiUxkIdCBvPPwMyGLQBW/I7Dc8PwHq/8JcbbXVAwslGfqy
-         65qdnOT1HUphIAAEyN7tZgrdCmjebAFqrFnzr78Qde4ZEB5hiNHH1BBxhGisKSouax
-         xx4HUPiKxNLbKHeXx9siq0xM9MXIA8EdyYwverbwFM1+x9+nFv2wIDu2L9CfT1D2LE
-         DCUlfedJZQlfR3zWaVFNxDWtMyHWMNpN5Nxo2pRHB8FDxN2LlF/Rh2P9j01D/QS1g1
-         gMFi5FUJcLYReMqF/2fGwZzruPtlMt8EvjDQqmAs1O+7+ZyUoyVj3RZ2ssk6eztrfB
-         zkF7s6H5+LGug==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4PRBj26kMzz9rxQ;
-        Tue, 28 Feb 2023 23:23:34 +0100 (CET)
-Date:   Tue, 28 Feb 2023 22:23:31 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+        with ESMTP id S229574AbjB1WaY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 17:30:24 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FC02ED41
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 14:30:23 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id cq23so46515618edb.1
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 14:30:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1677623421;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YOeIWJY+ughPJT+Ebx4sFI1EXmtyMRK/yLYV469Zah4=;
+        b=i9/70pTcHbCULrgk1i1pMT4he5eLS9educ5wqah1IpJLDVWuOlF/A7SQhzFTZEkrw3
+         yJVvOmOXzPshVYrcRAfLB50e63yOHtaGKDvxd/BdKMXXnX2xpX/tE652eqcgvgOyQxRp
+         NDGEGAngTCKPY651z8XqVpaR+LRL7qQYIODkhjpH3p/GJ7cmh5bsxMtA4kQjZThVEvCf
+         KYBU+R9RRAorDJ6zHVGNoeQ7+60cFuzI2QBJZQoo9gMqUTdbneVVMyLd+V5sRsI2YmPd
+         A2eCwzhCMl2N0d051329gXddSD1/jPe15UCVYN5udWQbQXzh3EEpuy30N0a6ixe6A7YJ
+         CGVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677623421;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YOeIWJY+ughPJT+Ebx4sFI1EXmtyMRK/yLYV469Zah4=;
+        b=SQXS0CleGaANqM7uDveqyLzaowfWuxtJBjyMeTS12vy2hZVzndFsofcGfPQzwE0wqK
+         u9kAzl6v94DNG0poHCXWw+2UGz9lxTr/dRSALVxix4lTPKrKmLT57KQcFqMyeghQOaDp
+         y7+wDlcwJ9RRjHIxXOa9pa1YC7m6nCuDaxvfaTVwgFmPwCF0bdkxzP8Y5gXTexyrmSq6
+         UTPrFgpag4Hyoj2HHxjmUoB5qlvn5zH5x+TrjaB9ddmaDgTIvv3hZEI04n6w1KttaNcl
+         Yz0ikI6UoU1SIHCFFKJVNynczN2PVZ4swOQoE5rnTPUK3+3i/pySlmZHZ/BxIUUlRmHg
+         W0fg==
+X-Gm-Message-State: AO0yUKVRpKL6P3gSH8uTYO+dYRnME9AhSWvqf7tbn5hbvtsquP0ohnJz
+        QCa4v2Gj8AtZhhUBYBfG/yU=
+X-Google-Smtp-Source: AK7set/IeatAbVvZs4f/m3srM0bI82US21whIL6TrzWOE/UAbRlNCKfiuBEBqjFu9p35PP6xmc/omg==
+X-Received: by 2002:a17:907:988c:b0:8f8:1501:be60 with SMTP id ja12-20020a170907988c00b008f81501be60mr3916666ejc.7.1677623421511;
+        Tue, 28 Feb 2023 14:30:21 -0800 (PST)
+Received: from [192.168.1.94] (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id v24-20020a170906339800b008cce6c5da29sm5004812eja.70.2023.02.28.14.30.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Feb 2023 14:30:21 -0800 (PST)
+Message-ID: <06e29b322d777c30fe9b163f9d13f11503a303d9.camel@gmail.com>
+Subject: Re: [RFC bpf-next 1/5] selftests/bpf: support custom per-test flags
+ and multiple expected messages
+From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 3/3] libbpf: Add support for attaching uprobes
- to shared objects in APKs
-Message-ID: <20230228222331.vjmidio5f3l7afue@muellerd-fedora-PC2BDTX9>
-References: <20230217191908.1000004-1-deso@posteo.net>
- <20230217191908.1000004-4-deso@posteo.net>
- <CAEf4BzasONdYA6JPvF=pAjBW9hotVw34itVG3AoGRJV5pjERBA@mail.gmail.com>
- <20230221213655.zu7zl77damfzxeat@muellerd-fedora-PC2BDTX9>
- <CAEf4BzbwoAtQO6BWm1tBe51VE_BvS+mfVdcjC+uzi5s4A=L4-Q@mail.gmail.com>
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+Date:   Wed, 01 Mar 2023 00:30:19 +0200
+In-Reply-To: <CAEf4BzZ-9iHzotYj2K3a+USFsxmqLEA+pHm4Ot6Nr2WtZ-AHeA@mail.gmail.com>
+References: <20230123145148.2791939-1-eddyz87@gmail.com>
+         <20230123145148.2791939-2-eddyz87@gmail.com>
+         <CAEf4BzZ-9iHzotYj2K3a+USFsxmqLEA+pHm4Ot6Nr2WtZ-AHeA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbwoAtQO6BWm1tBe51VE_BvS+mfVdcjC+uzi5s4A=L4-Q@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,51 +75,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 23, 2023 at 04:18:28PM -0800, Andrii Nakryiko wrote:
-> On Tue, Feb 21, 2023 at 1:37 PM Daniel Müller <deso@posteo.net> wrote:
-> >
-> > On Fri, Feb 17, 2023 at 04:32:05PM -0800, Andrii Nakryiko wrote:
-> > > On Fri, Feb 17, 2023 at 11:19 AM Daniel Müller <deso@posteo.net> wrote:
-> > > >
-> > > > This change adds support for attaching uprobes to shared objects located
-> > > > in APKs, which is relevant for Android systems where various libraries
-> > >
-> > > Is there a good link with description of APK that we can record
-> > > somewhere in the comments for future us?
-> >
-> > Perhaps
-> > https://en.wikipedia.org/w/index.php?title=Apk_(file_format)&oldid=1139099120#Package_contents.
-> >
-> > Will add it.
-> >
-> > > Also, does .apk contains only shared libraries, or it could be also
-> > > just a binary?
-> >
-> > It probably could also be for a binary, judging from applications being
-> > available for download in the form of APKs.
-> >
-> > > > may reside in APKs. To make that happen, we extend the syntax for the
-> > > > "binary path" argument to attach to with that supported by various
-> > > > Android tools:
-> > > >   <archive>!/<binary-in-archive>
-> > > >
-> > > > For example:
-> > > >   /system/app/test-app/test-app.apk!/lib/arm64-v8a/libc++_shared.so
-> > > >
-> > > > APKs need to be specified via full path, i.e., we do not attempt to
-> > > > resolve mere file names by searching system directories.
-> > >
-> > > mere?
-> >
-> > Yes?
-> 
-> I'm just confused what "resolve mere file names" means in this
-> context. Like, which file names are not "mere"?
+On Tue, 2023-02-28 at 10:53 -0800, Andrii Nakryiko wrote:
+> On Mon, Jan 23, 2023 at 6:52=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >=20
+> > From: Andrii Nakryiko <andrii@kernel.org>
+> >=20
+> > Extend __flag attribute by allowing to specify one of the following:
+> >  * BPF_F_STRICT_ALIGNMENT
+> >  * BPF_F_ANY_ALIGNMENT
+> >  * BPF_F_TEST_RND_HI32
+> >  * BPF_F_TEST_STATE_FREQ
+> >  * BPF_F_SLEEPABLE
+> >  * BPF_F_XDP_HAS_FRAGS
+> >  * Some numeric value
+> >=20
+> > Extend __msg attribute by allowing to specify multiple exepcted message=
+s.
+> > All messages are expected to be present in the verifier log in the
+> > order of application.
+> >=20
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > [ Eduard: added commit message, formatting ]
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > ---
+>=20
+> hey Eduard,
+>=20
+> When you get a chance, can you please send this patch separately from
+> the rest of the test_verifier rework patch set (it probably makes
+> sense to also add #define __flags in this patch as well, given you are
+> parsing its definition in this patch).
+>=20
+> This would great help me with my work that uses all this
+> assembly-level test facilities. Thanks!
 
-It's meant to convey the fact that a "mere file name" is not everything we could
-be dealing with. It could also be a full path.
+Hi Andrii,
 
-[...]
+Rebase didn't change anything in the patch, I added __flags macro,
+some some comments, and started the CI job: [1].
+
+Feels weird to post it, tbh, because it's 100% your code w/o added
+value from my side.
 
 Thanks,
-Daniel
+Eduard
+
+[1] https://github.com/kernel-patches/bpf/pull/4688
+>=20
+>=20
+>=20
+> >  tools/testing/selftests/bpf/test_loader.c | 69 ++++++++++++++++++++---
+> >  tools/testing/selftests/bpf/test_progs.h  |  1 +
+> >  2 files changed, 61 insertions(+), 9 deletions(-)
+> >=20
+> > diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/=
+selftests/bpf/test_loader.c
+> > index 679efb3aa785..bf41390157bf 100644
+> > --- a/tools/testing/selftests/bpf/test_loader.c
+> > +++ b/tools/testing/selftests/bpf/test_loader.c
+> > @@ -13,12 +13,15 @@
+> >  #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
+> >  #define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg=3D"
+> >  #define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level=3D"
+> > +#define TEST_TAG_PROG_FLAGS_PFX "comment:test_prog_flags=3D"
+> >=20
+>=20
+> [...]
+
