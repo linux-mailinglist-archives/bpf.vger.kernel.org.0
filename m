@@ -2,141 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BBA6A5353
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 08:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B876A53A5
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 08:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjB1HAn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 02:00:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
+        id S229627AbjB1HZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 02:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjB1HAm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 02:00:42 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB114C33
-        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 23:00:40 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31S4ZiCk012494;
-        Mon, 27 Feb 2023 23:00:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=5Xg7TAoA5awOfezQWczJnfb5SE3EjNT05v2Hy3zUtBw=;
- b=Y22lh+i1Wz1Zh745Ggy7tbHaqYGlbYUlXAONcSrl/Q7GB6TjdYT7hMKPtw0Y8GYmw9iv
- Ra565x9dBKQdFXr8FRVAXRBP/SU6gm7fFVmgYVUWGXF4L5E9O9d0yMMPwn6OM5NSIUXi
- fdNyDpnTdOy2vFvVo/GYFf6o5D7ZtFWLxvZYKz5r6uJwOWF3Gb6DNXmM6J7q/wzngszZ
- 1kz0b2zvA6BKMqRQQGFH7/9CP++xl5t6uDQpRmV3VKpDpgUBQVI2eFjFgwFqv5IbqeE1
- DWtnuaStDGWQxQeRdHK0Cw8XGoj+k+hK53EWT5pfv3Q35PEjxXZUdWZQrQ2YN2jFY/iM CA== 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p14eptvux-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Feb 2023 23:00:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dAXj6sHOemLHy/E171yh0caxbT1Isx9FQy5Xcoka/j/0QW0uCSAB0eeQqngILMGh2bCaVItAFbzJZiEnhEUzj+bj05Z3s/MMy4yCPTdpzAWyRtbwyth34RNztprZZGeMqmR9tfQWgb8+aLzKV+3dPc5Zc4B7Opnf9YPw6pirevCzPyMT9jnYfd2KaQwf3E+aCFvFj1P0mj5iqCtNNWFrzwV6hmUQjsRIzoGpaVgLLsRmpzu4ARh1/wtal9MiploDMbeU2zYAUKPaLExvlyhARh1LXS9+LtMbCQ3mLXIkkC87ibkjCmmcx+gBQBOaRLnZf1Lt/NBSMzq3VbpecOPKyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5Xg7TAoA5awOfezQWczJnfb5SE3EjNT05v2Hy3zUtBw=;
- b=UGpv/+eExsKoxbKIi6731fIFPNW6/bUpiQI3M+4GBuPgfYYvxlvjMVlMJ7LDqmX8j3Z7MjRilIFrYU0UgyTVDMeyQ1W9/mqu+UpraAIQeQDhNAEhjHf+aR6DMIqLYB/67f7pnSc1KdpL6cvCW63AY8/ybujotCPY1Aun7Tt4rIz3M5CU7J0hg/TAbhpYPipgr6krbbKcolK0fRltAgxcfCq1N+O3IO4EeHy0WvAz/h7NLBOh3d04S0FjdpVqP8q0iX0mpT74sZwBBzpalqmUstglyXgnrMBCE1R1ZnaypMrWXnhzuNsFUgGKFoJpADWO+iuiWwSLJF2+wtcQI55IdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by IA1PR15MB5418.namprd15.prod.outlook.com (2603:10b6:208:3a2::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.24; Tue, 28 Feb
- 2023 07:00:27 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::a595:5e4d:d501:dc18]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::a595:5e4d:d501:dc18%4]) with mapi id 15.20.6134.029; Tue, 28 Feb 2023
- 07:00:27 +0000
-Message-ID: <d3dab9c1-5bb8-a23f-5ef5-2973ac05a554@meta.com>
-Date:   Mon, 27 Feb 2023 23:00:24 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH V4] bpf, docs: Document BPF insn encoding in term of
- stored bytes
-Content-Language: en-US
-To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        bpf <bpf@vger.kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@ietf.org,
-        Dave Thaler <dthaler@microsoft.com>,
-        David Vernet <void@manifault.com>
-References: <87r0ua7fu8.fsf@oracle.com>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <87r0ua7fu8.fsf@oracle.com>
+        with ESMTP id S229773AbjB1HZi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 02:25:38 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A539A233D8
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 23:25:32 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id p20so8245425plw.13
+        for <bpf@vger.kernel.org>; Mon, 27 Feb 2023 23:25:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gULoFBkUC1MU0HDPrZFPYqjefQvfTxkDnptySpDvBEs=;
+        b=WY3hhWVXEXXXOmi7QSY28v1ZGwBrP8zvZUTV1+ODIHwRserFXsPBj9gwFbvCy6jYkC
+         iJtLlXf9rilujfubgreykH7e2jkIOC4s1TEE0PJ51km5mul35LoVHpseV9PsWXoWFxOW
+         zS0A+eo1SSvumNwxnAIqUahHCUz9ht/XmWfdBGZtKt0FfSjxUYI3RAWleY0Q06XNLSLU
+         jOuEbnmt9DchYbDxEoNyS7CqxFe6Fwlj6xTuEhr7LsnP5UOvRWjn8GBxbsuIT95OaUfL
+         tJgsI67Lxjf/8avEhb+Htgxw3Gu3BjN2MBBv6/op+j7meV0XYVIiGdLEEaofs45HQluD
+         fTQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gULoFBkUC1MU0HDPrZFPYqjefQvfTxkDnptySpDvBEs=;
+        b=3LoQvwmKJUSe5LKviDZJ3coFjCugMOVz+gXYaHGGja6qHUryIPp7J69Mw7GJHpqzMp
+         ipYJ+UxU8Aj8IBDbL9z+MEvf28VCyt2pW4HqVFyps1teDgt+CQvXGQCg7FqpTRkgVlFZ
+         AO9UDX9TSHVmFK02WOep/T49iTRt8JOBJNpvRI3t39GbCNH89v1JpN7uDYkyYbozyq8b
+         b8X/KHZFpEetrzYi7lPV7jc0XsV3Anw8a8ZsOpMmvHiu8j/g2D3uh628FGmo3u0IqQKa
+         GBRLRc8fNzH/KzcX5Jyb9n3aIAKhVth5Sj7aQBYgQgZT3FRbZu/R9xZGEUFR2xWS5JUs
+         VnTg==
+X-Gm-Message-State: AO0yUKUsp3KsxtAetprDrylbr+L1eWl0sZaXIelayvKrNWPYnASt0PQv
+        oZRB26WArAqaqmySBEPDPsEpd19z0U8=
+X-Google-Smtp-Source: AK7set+G38/mx2Tbg4bcUB2oxKSjux36If5oAmoynPWIKvkCyVB8R5G/l0UQaA7Z8hATC6QYwL8TcQ==
+X-Received: by 2002:a17:90b:1e50:b0:237:1610:be01 with SMTP id pi16-20020a17090b1e5000b002371610be01mr2375888pjb.13.1677569131852;
+        Mon, 27 Feb 2023 23:25:31 -0800 (PST)
+Received: from ?IPV6:2620:10d:c085:21e1::14e8? ([2620:10d:c090:400::5:5d5e])
+        by smtp.gmail.com with ESMTPSA id bv19-20020a17090af19300b00231224439c1sm7262409pjb.27.2023.02.27.23.25.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Feb 2023 23:25:31 -0800 (PST)
+Message-ID: <e93fe1e5-d3ca-1d16-65ed-bc093bcc6883@gmail.com>
+Date:   Mon, 27 Feb 2023 23:25:28 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next v2 1/6] bpf: Create links for BPF struct_ops
+ maps.
+Content-Language: en-US, en-ZW
+To:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
+        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
+References: <20230223011238.12313-1-kuifeng@meta.com>
+ <20230223011238.12313-2-kuifeng@meta.com>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20230223011238.12313-2-kuifeng@meta.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR07CA0043.namprd07.prod.outlook.com
- (2603:10b6:a03:60::20) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|IA1PR15MB5418:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5f251ebe-4751-49fc-ab29-08db195978d4
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XgcTpNdqp0hCL+ydcxyyk93JlJvvDBU3RR5Mh5CUGKrfzaqmri86cd40I3XmAPoI8rE+adFg0KjQtWC8YLFy6JRuxhBkS+XprvH2pAz6FbunuyN4HhqA0rlapZ46va9e20qFutcaP+kUdMTEDKEptQtlQi6PvaEGD3D/lX+ORj1GmBPYdxQUi3RmvCjZmPrDBx7spwyGdcm9mK3SRQYosjp4GxpwpIbHPUB/aupvJ5ecHeshRz8s/uDymmw4uCYGiv2/gFMnC5n+b8gOBTl2P4+LD1Yd3wdxNNapENfHmdTvqHJp6uBnr4SS68kn3Wc7W+7hS/6jwqyiS81GH7KBHb7JXsm9p465WWuGvM/guTM3luCVZFyq1ZZZoCnWOeaK3t764qMSJJ7Zw95i0K5oMkrQryiTaiiw0T71mM9uZ0b0tm0/KuASoTIPiwmSuCPnHb1Cle3RuHE8NG8t0qVCAndVnTM8pBwi1qgN1kbsoo8OI8GLp1kh2YZlj6mGDmoAdTfca3BmAU9awM05CGpmEZd4V/HBWF4gTKEWxUVkVCBACo4M9wAUuFA7sSJwhP69lwXYUMWhG6X8Lk3TZE89c6yq4zvtNNHiAQj+QD+U+O1SQvEKvX6Z0N2vT4xbLrqlpRAc5Qstfe9bsIRDUoWtZOQggNc7Iom1YsgRsnAk/nlfrkVP2rZoKI9aCA5h8h6oJhqVW40TyVrpETa07a3AnfU0HQFVOySuuBLKAObzOgE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(366004)(396003)(136003)(39860400002)(346002)(451199018)(6486002)(6666004)(2616005)(83380400001)(31696002)(38100700002)(86362001)(6512007)(53546011)(6506007)(186003)(5660300002)(54906003)(110136005)(478600001)(36756003)(8936002)(31686004)(316002)(66946007)(66476007)(8676002)(66556008)(2906002)(41300700001)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VUxCQmlpUU5ZbHFOV0phTXJIOHpKM2lNdnhsMFJXVGtkYWFaSTl6MVlWYmRM?=
- =?utf-8?B?NGUyalRpNUJBcHhKd3JmUjA4REdOd3VtNi8xdkZobnB4VzJnMzlYZ1VZYyt6?=
- =?utf-8?B?bXdZZGRtQVdFT0pFZU92YUMrN3Ribk83Nzd1SUo5SmJYT1pnTWdhMjk1ME0w?=
- =?utf-8?B?SGNsS0hHY2grSGp6SlhsbTVOYlVsOTNMNURpT0FCZ0ZJeVN1azFmM2U0dGRV?=
- =?utf-8?B?bjdvQVdiOVF0Mk15a3FMSkw5aXFQK0RMc0tIWUU0WWNYazBvQUJWdlpZa28y?=
- =?utf-8?B?dFVqdWcwMW0wNWpKbFVycldpWjVYcEdTL3VVY0I3K1luSzUxeit6S0dxS2Ir?=
- =?utf-8?B?cDlJL0ZuOGNmS1BlcTdxOFdqTkkrOEU1WDYyMjdxeWpzQmdidXNMVXNYc0E2?=
- =?utf-8?B?NlZRVm53bEVId3RUL0ZZb0UzRS9zR1RNQW9DR0poeFRidUxHZHFWY3NPWFNJ?=
- =?utf-8?B?eDhoTExPd0FwYnRJVjRDdHFuemZNQ1hrOUJZQ2JyTmk4c1VZakljblpJQTFU?=
- =?utf-8?B?YnhJZUJTdXd0Y3M2d3FPbFJZdU1aNmJoZ0VCL2UzQ3ppTlRaaGpTMjE3WWNQ?=
- =?utf-8?B?a0xZQTlianZhUWE4T2M2amcvdkRoS0VqUCtHbHp3dXA1d1BaaExVM1dkS0Rv?=
- =?utf-8?B?ZkNCNWwxTGtaRmJDdDFzQmZxenBtaUxiTTBwWUp6M1RBeWNBeWhBVXJpejNZ?=
- =?utf-8?B?Z2tUTDIrZWJESlNTOThWRkZTSU1tTnVadzd6NFE5blRic0NjRHRPaGlqM3Bv?=
- =?utf-8?B?aEpTL0hIRXNDaEtOWURrcDEwVWc2dFhzMGpyaE5CM01OdDBjOTRpQy9mMFBk?=
- =?utf-8?B?NXZpVTBjR01sRzlpT25Ib0RUdk16K3hWSGdlMDBmcEhrZ2dZK3dKM0NmWXdw?=
- =?utf-8?B?UVg0TzBXeHJmRDBGQ2huS3FtNVRoQ2N3djBVM0xCcFg1NmV6VC9QanBUVVdD?=
- =?utf-8?B?dlJURjhMcXpPK1RYNHRhcWVuMUdKV3I0aW04WW9naDlaY3ZENUQvb2lCZEJa?=
- =?utf-8?B?NjE2WXhWSnF0MGRaQVBXai9oMzhqQy9Lb0JVUVVNL1V1Y2I1Qm5ONFl4MDV1?=
- =?utf-8?B?aVJqTytSUUhJUlBwNEIwZXM4eGl4c2NIQXMva3puVmg4a2ZlQUN4bTd5UjQr?=
- =?utf-8?B?YmJMMDR0Sm1Ld3NrNGFwei81NjYzUzVMZGJVZ2VsU3ZoZ1VSQ0QzYm1DczlY?=
- =?utf-8?B?MTRuUWgydTVCMXZKdkQxNlNlekJ2OWw5bUF6UndOME5hVzRsbmcxdVhzVVow?=
- =?utf-8?B?bDg2dzFNNUVLNzZJWFVlYVhkTW8rSkR1YVhlbE9UbzVLTk9xU1Y3SG96UEQ1?=
- =?utf-8?B?RHJKSFM1cVdSUmk5Y0hOMUF4WnFUTEJGRTBCY0JhZ1ZjZzdEYm40cHYxelFl?=
- =?utf-8?B?R0NSMnFtYTRnVVJzTGJzVGR6V0hrRUxISmY5VW1FdFRTTnN3Q0g0VkNhK1ln?=
- =?utf-8?B?UTYybzRQS3JEYWUrT213N3JlWFY1Q1YwaWdEZHBIa1dHYlJ4WU1jSFFvYTZW?=
- =?utf-8?B?Zk90MlJvYUllSldhdmtWekZzaHVZTDZpK1NHem5NUHpsNk1nMzZSWHlWUHJu?=
- =?utf-8?B?aVRBN3NKZHowenFjc2Ftd2JTcDN3WWRhMGpjYXU1QmZYWTZaY0VuWmZGQ1Uw?=
- =?utf-8?B?VDM4TEUwMG5zaHpIMlJxbVRYWUEwNXRIVzZ4d0FCNkFTM0NkZTI2SU1YQUJP?=
- =?utf-8?B?YURtcThsbVZIUk1ERUR6emt3OXlia1dzYlZPWHlaaUZmNWQrRFhsU1ZyUWxU?=
- =?utf-8?B?SEE1TzNuOTJiTmZnVks1UDNuc1dNelRZRXJCa3B1UlBIR0FYdzBKanJDdjZl?=
- =?utf-8?B?SHhyOFQzL2Q3RlpKRG5UVzNING4zWjVlVHBrWXFGaW1zZ212N2RzUEViMThk?=
- =?utf-8?B?UUVrWVFFZVlZanZIZXExaUdRZWZ0bUl3REF4bnRqUEl2cnNwVm5CSFZqV2Ns?=
- =?utf-8?B?c013T3d0SVlnNDRDTXo3WmxBMzJ2cVVtUnRFSWtBVkJ2NzFTYmF5d1NVbnN2?=
- =?utf-8?B?bis1M093UjdwZEVPSUJ1ZDAycUwxc3RGOWltbWdFQkptS3ZuZUVTbjl4MGVp?=
- =?utf-8?B?QkJLWExoMzVtczhzcHBwaFFVRkZaQVVWUGlDMGR6Y09OMG5xemRwSUpLd1J2?=
- =?utf-8?B?anNpdkV5TlJ1bWIycHpFS2JBVVFaeWtxdTlHQTZqSENpMGlkU3ExeGs4VVI4?=
- =?utf-8?B?ZEE9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f251ebe-4751-49fc-ab29-08db195978d4
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2023 07:00:27.4762
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 42ZRMv1P+aZXG8hq4PrNMHZdiSL1M8LxI85AWvSkajtAZhLNcA0cWI2DeyypgbuF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR15MB5418
-X-Proofpoint-ORIG-GUID: BZL0LFPKIzgEJbTEtgeP6PllUccBud6g
-X-Proofpoint-GUID: BZL0LFPKIzgEJbTEtgeP6PllUccBud6g
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-28_04,2023-02-27_01,2023-02-09_01
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -145,120 +78,724 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 2/27/23 5:12 PM, Jose E. Marchesi wrote:
+On 2/22/23 17:12, Kui-Feng Lee wrote:
+> BPF struct_ops maps are employed directly to register TCP Congestion
+> Control algorithms. Unlike other BPF programs that terminate when
+> their links gone, the struct_ops program reduces its refcount solely
+> upon death of its FD. The link of a BPF struct_ops map provides a
+> uniform experience akin to other types of BPF programs.
 > 
-> [Changes from V3:
-> - Back to src_reg and dst_reg, since they denote register numbers
->    as opposed to the values stored in these registers.]
+> bpf_links are responsible for registering their associated
+> struct_ops. You can only use a struct_ops that has the BPF_F_LINK flag
+> set to create a bpf_link, while a structs without this flag behaves in
+> the same manner as before and is registered upon updating its value.
 > 
-> [Changes from V2:
-> - Use src and dst consistently in the document.
-> - Use a more graphical depiction of the 128-bit instruction.
-> - Remove `Where:' fragment.
-> - Clarify that unused bits are reserved and shall be zeroed.]
-> 
-> [Changes from V1:
-> - Use rst literal blocks for figures.
-> - Avoid using | in the basic instruction/pseudo instruction figure.
-> - Rebased to today's bpf-next master branch.]
-> 
-> This patch modifies instruction-set.rst so it documents the encoding
-> of BPF instructions in terms of how the bytes are stored (be it in an
-> ELF file or as bytes in a memory buffer to be loaded into the kernel
-> or some other BPF consumer) as opposed to how the instruction looks
-> like once loaded.
-> 
-> This is hopefully easier to understand by implementors looking to
-> generate and/or consume bytes conforming BPF instructions.
-> 
-> The patch also clarifies that the unused bytes in a pseudo-instruction
-> shall be cleared with zeros.
-> 
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
 > ---
->   Documentation/bpf/instruction-set.rst | 46 ++++++++++++++-------------
->   1 file changed, 24 insertions(+), 22 deletions(-)
+>   include/linux/bpf.h            |  11 +
+>   include/uapi/linux/bpf.h       |  12 +-
+>   kernel/bpf/bpf_struct_ops.c    | 376 ++++++++++++++++++++++++++++++---
+>   kernel/bpf/syscall.c           |  26 ++-
+>   tools/include/uapi/linux/bpf.h |  12 +-
+>   5 files changed, 402 insertions(+), 35 deletions(-)
 > 
-> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-> index 01802ed9b29b..f67a6677ae09 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -38,15 +38,11 @@ eBPF has two instruction encodings:
->   * the wide instruction encoding, which appends a second 64-bit immediate (i.e.,
->     constant) value after the basic instruction for a total of 128 bits.
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 8b5d0b4c4ada..9d6fd874e5ee 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1395,6 +1395,11 @@ struct bpf_link {
+>   	struct work_struct work;
+>   };
 >   
-> -The basic instruction encoding looks as follows for a little-endian processor,
-> -where MSB and LSB mean the most significant bits and least significant bits,
-> -respectively:
-> +The fields conforming an encoded basic instruction are stored in the
-> +following order::
->   
-> -=============  =======  =======  =======  ============
-> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> -=============  =======  =======  =======  ============
-> -imm            offset   src_reg  dst_reg  opcode
-> -=============  =======  =======  =======  ============
-> +  opcode:8 src_reg:4 dst_reg:4 offset:16 imm:32 // In little-endian BPF.
-> +  opcode:8 dst_reg:4 src_reg:4 offset:16 imm:32 // In big-endian BPF.
->   
->   **imm**
->     signed integer immediate value
-> @@ -64,16 +60,17 @@ imm            offset   src_reg  dst_reg  opcode
->   **opcode**
->     operation to perform
->   
-> -and as follows for a big-endian processor:
-> +Note that the contents of multi-byte fields ('imm' and 'offset') are
-> +stored using big-endian byte ordering in big-endian BPF and
-> +little-endian byte ordering in little-endian BPF.
->   
-> -=============  =======  =======  =======  ============
-> -32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-> -=============  =======  =======  =======  ============
-> -imm            offset   dst_reg  src_reg  opcode
-> -=============  =======  =======  =======  ============
-> +For example::
->   
-> -Multi-byte fields ('imm' and 'offset') are similarly stored in
-> -the byte order of the processor.
-> +  opcode                  offset imm          assembly
-> +         src_reg dst_reg
-> +  07     0       1        00 00  44 33 22 11  r1 += 0x11223344 // little
-> +         dst_reg src_reg
-> +  07     1       0        00 00  11 22 33 44  r1 += 0x11223344 // big
->   
->   Note that most instructions do not use all of the fields.
->   Unused fields shall be cleared to zero.
-> @@ -84,18 +81,23 @@ The 64 bits following the basic instruction contain a pseudo instruction
->   using the same format but with opcode, dst_reg, src_reg, and offset all set to zero,
->   and imm containing the high 32 bits of the immediate value.
->   
-> -=================  ==================
-> -64 bits (MSB)      64 bits (LSB)
-> -=================  ==================
-> -basic instruction  pseudo instruction
-> -=================  ==================
-> +This is depicted in the following figure::
+> +struct bpf_struct_ops_link {
+> +	struct bpf_link link;
+> +	struct bpf_map __rcu *map;
+> +};
 > +
-> +        basic_instruction
-> +  .-----------------------------.
-> +  |                             |
-> +  code:8 regs:16 offset:16 imm:32 unused:32 imm:32
+>   struct bpf_link_ops {
+>   	void (*release)(struct bpf_link *link);
+>   	void (*dealloc)(struct bpf_link *link);
+> @@ -1961,6 +1966,7 @@ int bpf_link_new_fd(struct bpf_link *link);
+>   struct file *bpf_link_new_file(struct bpf_link *link, int *reserved_fd);
+>   struct bpf_link *bpf_link_get_from_fd(u32 ufd);
+>   struct bpf_link *bpf_link_get_curr_or_next(u32 *id);
+> +int bpf_struct_ops_link_create(union bpf_attr *attr);
+>   
+>   int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
+>   int bpf_obj_get_user(const char __user *pathname, int flags);
+> @@ -2305,6 +2311,11 @@ static inline void bpf_link_put(struct bpf_link *link)
+>   {
+>   }
+>   
+> +static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>   static inline int bpf_obj_get_user(const char __user *pathname, int flags)
+>   {
+>   	return -EOPNOTSUPP;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 17afd2b35ee5..cd0ff39981e8 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1033,6 +1033,7 @@ enum bpf_attach_type {
+>   	BPF_PERF_EVENT,
+>   	BPF_TRACE_KPROBE_MULTI,
+>   	BPF_LSM_CGROUP,
+> +	BPF_STRUCT_OPS,
+>   	__MAX_BPF_ATTACH_TYPE
+>   };
+>   
+> @@ -1266,6 +1267,9 @@ enum {
+>   
+>   /* Create a map that is suitable to be an inner map with dynamic max entries */
+>   	BPF_F_INNER_MAP		= (1U << 12),
+> +
+> +/* Create a map that will be registered/unregesitered by the backed bpf_link */
+> +	BPF_F_LINK		= (1U << 13),
+>   };
+>   
+>   /* Flags for BPF_PROG_QUERY. */
+> @@ -1507,7 +1511,10 @@ union bpf_attr {
+>   	} task_fd_query;
+>   
+>   	struct { /* struct used by BPF_LINK_CREATE command */
+> -		__u32		prog_fd;	/* eBPF program to attach */
+> +		union {
+> +			__u32		prog_fd;	/* eBPF program to attach */
+> +			__u32		map_fd;		/* eBPF struct_ops to attach */
+> +		};
+>   		union {
+>   			__u32		target_fd;	/* object to attach to */
+>   			__u32		target_ifindex; /* target ifindex */
+> @@ -6354,6 +6361,9 @@ struct bpf_link_info {
+>   		struct {
+>   			__u32 ifindex;
+>   		} xdp;
+> +		struct {
+> +			__u32 map_id;
+> +		} struct_ops;
+>   	};
+>   } __attribute__((aligned(8)));
+>   
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index ece9870cab68..cfc69033c1b8 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -14,8 +14,10 @@
+>   
+>   enum bpf_struct_ops_state {
+>   	BPF_STRUCT_OPS_STATE_INIT,
+> +	BPF_STRUCT_OPS_STATE_UNREG,
+>   	BPF_STRUCT_OPS_STATE_INUSE,
+>   	BPF_STRUCT_OPS_STATE_TOBEFREE,
+> +	BPF_STRUCT_OPS_STATE_TOBEUNREG,
+>   };
+>   
+>   #define BPF_STRUCT_OPS_COMMON_VALUE			\
+> @@ -58,6 +60,8 @@ struct bpf_struct_ops_map {
+>   	struct bpf_struct_ops_value kvalue;
+>   };
+>   
+> +static DEFINE_MUTEX(update_mutex);
+> +
+>   #define VALUE_PREFIX "bpf_struct_ops_"
+>   #define VALUE_PREFIX_LEN (sizeof(VALUE_PREFIX) - 1)
+>   
+> @@ -253,22 +257,23 @@ int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map, void *key,
+>   	if (unlikely(*(u32 *)key != 0))
+>   		return -ENOENT;
+>   
+> +	mutex_lock(&st_map->lock);
+> +
+>   	kvalue = &st_map->kvalue;
+> -	/* Pair with smp_store_release() during map_update */
+>   	state = smp_load_acquire(&kvalue->state);
+>   	if (state == BPF_STRUCT_OPS_STATE_INIT) {
+>   		memset(value, 0, map->value_size);
+> +		mutex_unlock(&st_map->lock);
+>   		return 0;
+>   	}
+>   
+> -	/* No lock is needed.  state and refcnt do not need
+> -	 * to be updated together under atomic context.
+> -	 */
+>   	uvalue = value;
+>   	memcpy(uvalue, st_map->uvalue, map->value_size);
+>   	uvalue->state = state;
+>   	refcount_set(&uvalue->refcnt, refcount_read(&kvalue->refcnt));
+>   
+> +	mutex_unlock(&st_map->lock);
+> +
+>   	return 0;
+>   }
+>   
+> @@ -349,6 +354,150 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
+>   					   model, flags, tlinks, NULL);
+>   }
+>   
+> +/*
+> + * Maintain the state of kvalue.
+> + *
+> + * For a struct_ops that has no link, its state diagram is
+> + *
+> + *   INIT ----> INUSE --> TOBEFREE
+> + *     ^                     |
+> + *     |     (refcnt == 0)   |
+> + *     +---------------------+
+> + *
+> + * For a struct_ops that has a link (BPF_F_LINK), its state diagram is
+> + *
+> + *                   (refcnt == 0)
+> + *              +-----------------------+
+> + *              |                       |
+> + *              V                       |
+> + *   INIT ---> UNREG -+--> INUSE --> TOBEUNREG
+> + *     ^              |
+> + *     |              V
+> + *     +---------- TOBEFREE
+> + *     (refcnt == 0)
 
-regs:16 -> regs:8
+According to the discussion with Martin offline, features and these 
+states will be simplified.
 
-> +                                  |              |
-> +                                  '--------------'
-> +                                 pseudo instruction
+TEBUNREG and UNREG weil eliminated. The INIT state is redefined to 
+indicate that the value of a struct_ops has been initialized, or 
+updated. Once it is updated, there's no reversing it; its value is 
+permanent from then on out.
+
+The state diagram will look like the following for the new behavior.
+
+  UNINT ---> INIT
+
+Although multiple links may register the same struct_ops, certain 
+sub-systems forbid this. For instance, tcp-cc mandates that algorithms 
+must have distinct names, and thus one struct_ops cannot be registered 
+twice or more times. However, other subsystems might permit a struct_ops 
+to be repeatedly registered. Moreover, a link can only be created from 
+the struct_ops in the INIT state.  The state of the struct_ops will not 
+move to the INUSE state anymore.
+
+TOBEFREE deson't transit back to the INIT state anymore. That means a 
+map can not be reused.  So, the state diagram of map without BPF_F_LINK 
+will looks like following.
+
+  INIT ---> INUSE ---> TOBEFREE
+
+
+
+> + *
+> + * After transiting to the INUSE state of a struct_ops, the refcnt of
+> + * its kvalue is set to 1.
+> + *
+> + * After transiting from the INUSE state of a struct_ops, the caller
+> + * should decrease the refcnt of its kvalue by 1 by calling
+> + * bpf_struct_ops_put().
+> + *
+> + * TOBEFREE and TOBEUNREG are in a grace period, waiting for other
+> + * tasks holding references of the struct_ops.  When the refcnt drops
+> + * from 1 to 0, TOBEFREE and TOBEUNREG are transited to INIT and UNREG
+> + * respectively.
+> + *
+> + * It is safe to assume that there will be no registration race
+> + * conditions after a task transits the same struct_ops to INUSE,
+> + * TOBEFREE and TOBEUNREG states.  The task is able to register or
+> + * unregister the struct_ops without the need for any additional
+> + * synchronization.
+> + */
+> +static int bpf_struct_ops_transit_state(struct bpf_struct_ops_map *st_map,
+> +					enum bpf_struct_ops_state src,
+> +					enum bpf_struct_ops_state dst)
+> +{
+> +	int old_state;
+> +
+> +	switch (src) {
+> +	case BPF_STRUCT_OPS_STATE_INIT:
+> +		if (dst != BPF_STRUCT_OPS_STATE_INUSE &&
+> +		    dst != BPF_STRUCT_OPS_STATE_UNREG)
+> +			return -EINVAL;
+> +
+> +		old_state = cmpxchg(&st_map->kvalue.state, src, dst);
+> +		if (old_state != src)
+> +			break;
+> +
+> +		if (dst == BPF_STRUCT_OPS_STATE_INUSE)
+> +			refcount_set(&st_map->kvalue.refcnt, 1);
+> +		break;
+> +
+> +	case BPF_STRUCT_OPS_STATE_UNREG:
+> +		if (dst != BPF_STRUCT_OPS_STATE_INUSE &&
+> +		    dst != BPF_STRUCT_OPS_STATE_TOBEFREE)
+> +			return -EINVAL;
+> +
+> +		old_state = cmpxchg(&st_map->kvalue.state, src, dst);
+> +		if (old_state != src)
+> +			break;
+> +
+> +		if (dst == BPF_STRUCT_OPS_STATE_INUSE)
+> +			refcount_set(&st_map->kvalue.refcnt, 1);
+> +		else if (dst == BPF_STRUCT_OPS_STATE_TOBEFREE)
+> +			cmpxchg(&st_map->kvalue.state, dst, BPF_STRUCT_OPS_STATE_INIT);
+> +		break;
+> +
+> +	case BPF_STRUCT_OPS_STATE_INUSE:
+> +		if (dst != BPF_STRUCT_OPS_STATE_TOBEFREE &&
+> +		    dst != BPF_STRUCT_OPS_STATE_TOBEUNREG)
+> +			return -EINVAL;
+> +
+> +		old_state = cmpxchg(&st_map->kvalue.state, src, dst);
+> +		break;
+> +
+> +	case BPF_STRUCT_OPS_STATE_TOBEFREE:
+> +		/*
+> +		 * This transition should only be performed when the
+> +		 * refcnt drops to 0 from 1.
+> +		 */
+> +		if (dst != BPF_STRUCT_OPS_STATE_INIT)
+> +			return -EINVAL;
+> +		old_state = cmpxchg(&st_map->kvalue.state, src, dst);
+> +		if (old_state != src)
+> +			break;
+> +		break;
+> +
+> +	case BPF_STRUCT_OPS_STATE_TOBEUNREG:
+> +		/*
+> +		 * This transition should only be performed when the
+> +		 * refcnt drops to 0 from 1.
+> +		 */
+> +		if (dst != BPF_STRUCT_OPS_STATE_UNREG)
+> +			return -EINVAL;
+> +		old_state = cmpxchg(&st_map->kvalue.state, src, dst);
+> +		if (old_state != src)
+> +			return old_state;
+> +		break;
+> +
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	return old_state;
+> +}
+> +
+> +static int bpf_struct_ops_transit_state_check(struct bpf_struct_ops_map *st_map,
+> +					      enum bpf_struct_ops_state src,
+> +					      enum bpf_struct_ops_state dst)
+> +{
+> +	int err;
+> +
+> +	err = bpf_struct_ops_transit_state(st_map, src, dst);
+> +	if (err < 0)
+> +		return err;
+> +	if (err != src)
+> +		return -EINVAL;
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Restore the state of a struct_ops to UNREG from INUSE.
+> + *
+> + * It handles the case which a struct_ops transited to INUSE from
+> + * UNREG successfully; somehow, need to rollback the struct_ops state.
+> + */
+> +static void bpf_struct_ops_restore_unreg(struct bpf_struct_ops_map *st_map)
+> +{
+> +	struct bpf_struct_ops_value *kvalue;
+> +
+> +	kvalue = &st_map->kvalue;
+> +	refcount_set(&kvalue->refcnt, 0);
+> +	/* Make sure the above change is seen before the state change. */
+> +	smp_store_release(&kvalue->state, BPF_STRUCT_OPS_STATE_UNREG);
+> +}
+> +
+>   static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   					  void *value, u64 flags)
+>   {
+> @@ -390,7 +539,11 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
 >   
->   Thus the 64-bit immediate value is constructed as follows:
+>   	mutex_lock(&st_map->lock);
 >   
->     imm64 = (next_imm << 32) | imm
+> -	if (kvalue->state != BPF_STRUCT_OPS_STATE_INIT) {
+> +	/* Make sure that all following changes are seen after the
+> +	 * state value here.
+> +	 */
+> +	if (smp_load_acquire(&kvalue->state) >= BPF_STRUCT_OPS_STATE_INUSE ||
+> +	    refcount_read(&kvalue->refcnt)) {
+>   		err = -EBUSY;
+>   		goto unlock;
+>   	}
+> @@ -491,17 +644,21 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   		*(unsigned long *)(udata + moff) = prog->aux->id;
+>   	}
 >   
->   where 'next_imm' refers to the imm value of the pseudo instruction
-> -following the basic instruction.
-> +following the basic instruction.  The unused bytes in the pseudo
-> +instruction are reserved and shall be cleared to zero.
+> -	refcount_set(&kvalue->refcnt, 1);
+> +	if (st_map->map.map_flags & BPF_F_LINK) {
+> +		/* Let bpf_link handle registration & unregistration. */
+> +		err = bpf_struct_ops_transit_state_check(st_map, BPF_STRUCT_OPS_STATE_INIT,
+> +							 BPF_STRUCT_OPS_STATE_UNREG);
+> +		goto unlock;
+> +	}
+> +
+>   	bpf_map_inc(map);
 >   
->   Instruction classes
->   -------------------
+>   	set_memory_rox((long)st_map->image, 1);
+>   	err = st_ops->reg(kdata);
+>   	if (likely(!err)) {
+> -		/* Pair with smp_load_acquire() during lookup_elem().
+> -		 * It ensures the above udata updates (e.g. prog->aux->id)
+> -		 * can be seen once BPF_STRUCT_OPS_STATE_INUSE is set.
+> -		 */
+> -		smp_store_release(&kvalue->state, BPF_STRUCT_OPS_STATE_INUSE);
+> +		/* Infallible */
+> +		bpf_struct_ops_transit_state(st_map, BPF_STRUCT_OPS_STATE_INIT,
+> +					     BPF_STRUCT_OPS_STATE_INUSE);
+>   		goto unlock;
+>   	}
+>   
+> @@ -526,28 +683,49 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   
+>   static int bpf_struct_ops_map_delete_elem(struct bpf_map *map, void *key)
+>   {
+> -	enum bpf_struct_ops_state prev_state;
+>   	struct bpf_struct_ops_map *st_map;
+> +	int old_state;
+> +	int err = 0;
+>   
+>   	st_map = (struct bpf_struct_ops_map *)map;
+> -	prev_state = cmpxchg(&st_map->kvalue.state,
+> -			     BPF_STRUCT_OPS_STATE_INUSE,
+> -			     BPF_STRUCT_OPS_STATE_TOBEFREE);
+> -	switch (prev_state) {
+> +
+> +	old_state = bpf_struct_ops_transit_state(st_map,
+> +						 (st_map->map.map_flags & BPF_F_LINK ?
+> +						  BPF_STRUCT_OPS_STATE_UNREG :
+> +						  BPF_STRUCT_OPS_STATE_INUSE),
+> +						 BPF_STRUCT_OPS_STATE_TOBEFREE);
+> +
+> +	if (old_state < 0)
+> +		return old_state;
+> +
+> +	switch (old_state) {
+> +	case BPF_STRUCT_OPS_STATE_UNREG:
+> +		break;
+>   	case BPF_STRUCT_OPS_STATE_INUSE:
+> -		st_map->st_ops->unreg(&st_map->kvalue.data);
+> -		if (refcount_dec_and_test(&st_map->kvalue.refcnt))
+> -			bpf_map_put(map);
+> -		return 0;
+> +		if (st_map->map.map_flags & BPF_F_LINK)
+> +			err = -EBUSY;
+> +		else {
+> +			st_map->st_ops->unreg(&st_map->kvalue.data);
+> +			bpf_struct_ops_put(&st_map->kvalue.data);
+> +		}
+> +		break;
+>   	case BPF_STRUCT_OPS_STATE_TOBEFREE:
+> -		return -EINPROGRESS;
+> +		err = -EINPROGRESS;
+> +		break;
+> +	case BPF_STRUCT_OPS_STATE_TOBEUNREG:
+> +		err = -EBUSY;
+> +		break;
+>   	case BPF_STRUCT_OPS_STATE_INIT:
+> -		return -ENOENT;
+> +		err = -ENOENT;
+> +		break;
+>   	default:
+>   		WARN_ON_ONCE(1);
+>   		/* Should never happen.  Treat it as not found. */
+> -		return -ENOENT;
+> +		err = -ENOENT;
+> +		break;
+>   	}
+> +
+> +	return err;
+>   }
+>   
+>   static void bpf_struct_ops_map_seq_show_elem(struct bpf_map *map, void *key,
+> @@ -585,7 +763,7 @@ static void bpf_struct_ops_map_free(struct bpf_map *map)
+>   static int bpf_struct_ops_map_alloc_check(union bpf_attr *attr)
+>   {
+>   	if (attr->key_size != sizeof(unsigned int) || attr->max_entries != 1 ||
+> -	    attr->map_flags || !attr->btf_vmlinux_value_type_id)
+> +	    (attr->map_flags & ~BPF_F_LINK) || !attr->btf_vmlinux_value_type_id)
+>   		return -EINVAL;
+>   	return 0;
+>   }
+> @@ -671,6 +849,15 @@ static void bpf_struct_ops_put_rcu(struct rcu_head *head)
+>   	struct bpf_struct_ops_map *st_map;
+>   
+>   	st_map = container_of(head, struct bpf_struct_ops_map, rcu);
+> +
+> +	/* The struct_ops can be reused after a rcu grace period. */
+> +	if (st_map->kvalue.state == BPF_STRUCT_OPS_STATE_TOBEFREE)
+> +		bpf_struct_ops_transit_state(st_map, BPF_STRUCT_OPS_STATE_TOBEFREE,
+> +					     BPF_STRUCT_OPS_STATE_INIT);
+> +	else if (st_map->kvalue.state == BPF_STRUCT_OPS_STATE_TOBEUNREG)
+> +		bpf_struct_ops_transit_state(st_map, BPF_STRUCT_OPS_STATE_TOBEUNREG,
+> +					     BPF_STRUCT_OPS_STATE_UNREG);
+> +
+>   	bpf_map_put(&st_map->map);
+>   }
+>   
+> @@ -684,6 +871,7 @@ void bpf_struct_ops_put(const void *kdata)
+>   
+>   		st_map = container_of(kvalue, struct bpf_struct_ops_map,
+>   				      kvalue);
+> +
+>   		/* The struct_ops's function may switch to another struct_ops.
+>   		 *
+>   		 * For example, bpf_tcp_cc_x->init() may switch to
+> @@ -698,3 +886,143 @@ void bpf_struct_ops_put(const void *kdata)
+>   		call_rcu(&st_map->rcu, bpf_struct_ops_put_rcu);
+>   	}
+>   }
+> +
+> +static void bpf_struct_ops_map_link_dealloc(struct bpf_link *link)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_struct_ops_map *st_map;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	if (st_link->map) {
+> +		st_map = (struct bpf_struct_ops_map *)st_link->map;
+> +		bpf_struct_ops_transit_state(st_map, BPF_STRUCT_OPS_STATE_INUSE,
+> +					     (st_map->map.map_flags & BPF_F_LINK ?
+> +					      BPF_STRUCT_OPS_STATE_TOBEUNREG :
+> +					      BPF_STRUCT_OPS_STATE_TOBEFREE));
+> +		st_map->st_ops->unreg(&st_map->kvalue.data);
+> +		bpf_struct_ops_put(&st_map->kvalue.data);
+> +	}
+> +	kfree(st_link);
+> +}
+> +
+> +static int bpf_struct_ops_map_link_detach(struct bpf_link *link)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_struct_ops_map *st_map;
+> +
+> +	mutex_lock(&update_mutex);
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	st_map = container_of(st_link->map, struct bpf_struct_ops_map, map);
+> +	if (st_map) {
+> +		/*
+> +		 * All chaning on st_link->map are protected by
+> +		 * update_mutex.  This ensures that the struct_ops is
+> +		 * INUSE, and the state transition always success.
+> +		 */
+> +		rcu_assign_pointer(st_link->map, NULL);
+> +		bpf_struct_ops_transit_state(st_map, BPF_STRUCT_OPS_STATE_INUSE,
+> +					     (st_map->map.map_flags & BPF_F_LINK ?
+> +					      BPF_STRUCT_OPS_STATE_TOBEUNREG :
+> +					      BPF_STRUCT_OPS_STATE_TOBEFREE));
+> +		st_map->st_ops->unreg(&st_map->kvalue.data);
+> +		bpf_struct_ops_put(&st_map->kvalue.data);
+> +	}
+> +	mutex_unlock(&update_mutex);
+> +
+> +	return 0;
+> +}
+> +
+> +static void bpf_struct_ops_map_link_show_fdinfo(const struct bpf_link *link,
+> +					    struct seq_file *seq)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_map *map;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	rcu_read_lock_trace();
+> +	map = rcu_dereference(st_link->map);
+> +	if (map)
+> +		seq_printf(seq, "map_id:\t%d\n", map->id);
+> +	rcu_read_unlock_trace();
+> +}
+> +
+> +static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
+> +					       struct bpf_link_info *info)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_map *map;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	rcu_read_lock_trace();
+> +	map = rcu_dereference(st_link->map);
+> +	if (map)
+> +		info->struct_ops.map_id = map->id;
+> +	rcu_read_unlock_trace();
+> +	return 0;
+> +}
+> +
+> +static const struct bpf_link_ops bpf_struct_ops_map_lops = {
+> +	.dealloc = bpf_struct_ops_map_link_dealloc,
+> +	.detach = bpf_struct_ops_map_link_detach,
+> +	.show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
+> +	.fill_link_info = bpf_struct_ops_map_link_fill_link_info,
+> +};
+> +
+> +int bpf_struct_ops_link_create(union bpf_attr *attr)
+> +{
+> +	struct bpf_struct_ops_link *link = NULL;
+> +	struct bpf_link_primer link_primer;
+> +	struct bpf_struct_ops_map *st_map;
+> +	struct bpf_map *map;
+> +	int err;
+> +
+> +	map = bpf_map_get(attr->link_create.map_fd);
+> +	if (!map)
+> +		return -EINVAL;
+> +
+> +	if (map->map_type != BPF_MAP_TYPE_STRUCT_OPS || !(map->map_flags & BPF_F_LINK)) {
+> +		err = -EINVAL;
+> +		goto err_out;
+> +	}
+> +
+> +	link = kzalloc(sizeof(*link), GFP_USER);
+> +	if (!link) {
+> +		err = -ENOMEM;
+> +		goto err_out;
+> +	}
+> +	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL);
+> +	link->map = map;
+> +
+> +	st_map = (struct bpf_struct_ops_map *)map;
+> +
+> +	err = bpf_struct_ops_transit_state_check(st_map, BPF_STRUCT_OPS_STATE_UNREG,
+> +						 BPF_STRUCT_OPS_STATE_INUSE);
+> +	if (err)
+> +		goto err_out;
+> +
+> +	err = bpf_link_prime(&link->link, &link_primer);
+> +	if (err) {
+> +		bpf_struct_ops_restore_unreg(st_map);
+> +		goto err_out;
+> +	}
+> +
+> +	set_memory_rox((long)st_map->image, 1);
+> +	err = st_map->st_ops->reg(st_map->kvalue.data);
+> +	if (err) {
+> +		bpf_struct_ops_restore_unreg(st_map);
+> +		bpf_link_cleanup(&link_primer);
+> +
+> +		set_memory_nx((long)st_map->image, 1);
+> +		set_memory_rw((long)st_map->image, 1);
+> +		goto err_out;
+> +	}
+> +
+> +
+> +	return bpf_link_settle(&link_primer);
+> +
+> +err_out:
+> +	bpf_map_put(map);
+> +	kfree(link);
+> +	return err;
+> +}
+> +
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index cda8d00f3762..2670de8dd0d4 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2735,10 +2735,11 @@ void bpf_link_inc(struct bpf_link *link)
+>   static void bpf_link_free(struct bpf_link *link)
+>   {
+>   	bpf_link_free_id(link->id);
+> +	/* detach BPF program, clean up used resources */
+>   	if (link->prog) {
+> -		/* detach BPF program, clean up used resources */
+>   		link->ops->release(link);
+>   		bpf_prog_put(link->prog);
+> +		/* The struct_ops links clean up map by them-selves. */
+>   	}
+>   	/* free bpf_link and its containing memory */
+>   	link->ops->dealloc(link);
+> @@ -2794,16 +2795,19 @@ static void bpf_link_show_fdinfo(struct seq_file *m, struct file *filp)
+>   	const struct bpf_prog *prog = link->prog;
+>   	char prog_tag[sizeof(prog->tag) * 2 + 1] = { };
+>   
+> -	bin2hex(prog_tag, prog->tag, sizeof(prog->tag));
+>   	seq_printf(m,
+>   		   "link_type:\t%s\n"
+> -		   "link_id:\t%u\n"
+> -		   "prog_tag:\t%s\n"
+> -		   "prog_id:\t%u\n",
+> +		   "link_id:\t%u\n",
+>   		   bpf_link_type_strs[link->type],
+> -		   link->id,
+> -		   prog_tag,
+> -		   prog->aux->id);
+> +		   link->id);
+> +	if (prog) {
+> +		bin2hex(prog_tag, prog->tag, sizeof(prog->tag));
+> +		seq_printf(m,
+> +			   "prog_tag:\t%s\n"
+> +			   "prog_id:\t%u\n",
+> +			   prog_tag,
+> +			   prog->aux->id);
+> +	}
+>   	if (link->ops->show_fdinfo)
+>   		link->ops->show_fdinfo(link, m);
+>   }
+> @@ -4278,7 +4282,8 @@ static int bpf_link_get_info_by_fd(struct file *file,
+>   
+>   	info.type = link->type;
+>   	info.id = link->id;
+> -	info.prog_id = link->prog->aux->id;
+> +	if (link->prog)
+> +		info.prog_id = link->prog->aux->id;
+>   
+>   	if (link->ops->fill_link_info) {
+>   		err = link->ops->fill_link_info(link, &info);
+> @@ -4541,6 +4546,9 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+>   	if (CHECK_ATTR(BPF_LINK_CREATE))
+>   		return -EINVAL;
+>   
+> +	if (attr->link_create.attach_type == BPF_STRUCT_OPS)
+> +		return bpf_struct_ops_link_create(attr);
+> +
+>   	prog = bpf_prog_get(attr->link_create.prog_fd);
+>   	if (IS_ERR(prog))
+>   		return PTR_ERR(prog);
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 17afd2b35ee5..cd0ff39981e8 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1033,6 +1033,7 @@ enum bpf_attach_type {
+>   	BPF_PERF_EVENT,
+>   	BPF_TRACE_KPROBE_MULTI,
+>   	BPF_LSM_CGROUP,
+> +	BPF_STRUCT_OPS,
+>   	__MAX_BPF_ATTACH_TYPE
+>   };
+>   
+> @@ -1266,6 +1267,9 @@ enum {
+>   
+>   /* Create a map that is suitable to be an inner map with dynamic max entries */
+>   	BPF_F_INNER_MAP		= (1U << 12),
+> +
+> +/* Create a map that will be registered/unregesitered by the backed bpf_link */
+> +	BPF_F_LINK		= (1U << 13),
+>   };
+>   
+>   /* Flags for BPF_PROG_QUERY. */
+> @@ -1507,7 +1511,10 @@ union bpf_attr {
+>   	} task_fd_query;
+>   
+>   	struct { /* struct used by BPF_LINK_CREATE command */
+> -		__u32		prog_fd;	/* eBPF program to attach */
+> +		union {
+> +			__u32		prog_fd;	/* eBPF program to attach */
+> +			__u32		map_fd;		/* eBPF struct_ops to attach */
+> +		};
+>   		union {
+>   			__u32		target_fd;	/* object to attach to */
+>   			__u32		target_ifindex; /* target ifindex */
+> @@ -6354,6 +6361,9 @@ struct bpf_link_info {
+>   		struct {
+>   			__u32 ifindex;
+>   		} xdp;
+> +		struct {
+> +			__u32 map_id;
+> +		} struct_ops;
+>   	};
+>   } __attribute__((aligned(8)));
+>   
