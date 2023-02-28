@@ -2,120 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA8A6A53E4
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 08:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A016A543C
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 09:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbjB1HtB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 02:49:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
+        id S229591AbjB1IQq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 03:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjB1HtA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 02:49:00 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F8021944;
-        Mon, 27 Feb 2023 23:48:59 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id i10so9497787plr.9;
-        Mon, 27 Feb 2023 23:48:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677570539;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IZ/cMOGvS9DzjygK7cuVRUjCO9JEh86G/ox5bXVC1DM=;
-        b=Ij0jwP9fnA69PUrdtWGb8EbhWqgJqexb3xA7TQc08Xu9EHMKIfbkBjj6k5SAkaP40s
-         eS31l/nj5qUoJw7wFfyl3+aj2F0r/UuyC7wLJ2jPzFcoNTD12Zcoy05swq2e71FdpcA1
-         rZI1mo7OlOr6fU5k648vHXFluETYrJtOiL/p7LGD1qtKkwRCUSEy8numijqUImZ4Zq3r
-         xaqqXW2PEc6nc5l/4Ig7aGxNpLCS0VGeO2zdxjQrReirAVcEjr6luYYrfl7Lv1CUoXqq
-         t92npfkOzY9LvMNUm+o7RaSEtTg1s6bK9uxsGWE8B7OTWp7+eH+goeJ+qk8X6PeXsL5d
-         v4ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677570539;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IZ/cMOGvS9DzjygK7cuVRUjCO9JEh86G/ox5bXVC1DM=;
-        b=GnZ1bl78bR87Vhpoq21YYFZmhaGEhl/BX2HMz9tytJ50PdpnF6GdpnPvLeirHdeCD9
-         IEm+zgc5c2czYXNQlwT3OP/5qGoHGziMqN9pjTw4EkHi6eNlyUuJjiB/GLvakQsQdVHa
-         6sk7b76uLSwSTcMLZpZDRm/NfTUT4r6oW/mrekFaGkXsXCC9mugO9jVRJFQ+9vLRILqq
-         Q4WwOSgABPjHkxVRyqxT6/ZmkjHfjYBtS+ALXCQQ+eZtYswjR7qUroh6FSCPwUZN6+md
-         27fPb5bxyboOmyIfBkIQL993eu/Q/ykmdq+Ju25x0rQFh0cWPcsMWoS9qkIYN9QvdwbU
-         dptA==
-X-Gm-Message-State: AO0yUKWeoUrRxNETuPN1GDvS6Ec2SayB5QnPMVqHC50OXkxCVQbitv5O
-        Lxj3s5HuVCRHq608DKSQlZA=
-X-Google-Smtp-Source: AK7set8eLvHNV7YHP1gioNaAbF6VlT10U9X1GZRH6Ak9TXlvMxUhS0gr+7q/4hJWQXEKtTgX1vK5EQ==
-X-Received: by 2002:a17:902:8542:b0:19c:eb42:883 with SMTP id d2-20020a170902854200b0019ceb420883mr1546287plo.49.1677570539275;
-        Mon, 27 Feb 2023 23:48:59 -0800 (PST)
-Received: from debian.me (subs02-180-214-232-86.three.co.id. [180.214.232.86])
-        by smtp.gmail.com with ESMTPSA id v1-20020a1709028d8100b00194d2f14ef0sm5840192plo.23.2023.02.27.23.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 23:48:58 -0800 (PST)
-Received: by debian.me (Postfix, from userid 1000)
-        id 3407310105C; Tue, 28 Feb 2023 14:48:56 +0700 (WIB)
-Date:   Tue, 28 Feb 2023 14:48:56 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Linux BPF <bpf@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Ross Zwisler <zwisler@google.com>
-Subject: Re: [PATCH v2] Documentation: bpf: Fix link to BTF doc
-Message-ID: <Y/2x6KLsGecrIIok@debian.me>
-References: <20230222083530.26136-1-bagasdotme@gmail.com>
- <7cd545a2-4a5c-1961-1cf7-cd0f24e41df8@iogearbox.net>
+        with ESMTP id S229543AbjB1IQp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 03:16:45 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554F2265BD;
+        Tue, 28 Feb 2023 00:16:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677572205; x=1709108205;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jvlbirBCen0JoozO0DRtMtM9lsFMy3zjq3zERzZPv4o=;
+  b=JkWo2QjrMqaPRM7zvDWAbJDEzF9vieUXT7Kc04wLzHD23KVNxrhZI+P5
+   5yb0pGiQ+TRsQArirJVopjuFlYKIVMnDQNWUhLqhaKO/BCJTqUyT2EV1h
+   J2JKG/TAhIgGQEWUUo5+wkIYT7X4R+b9p4nKUVXs+I0IjV2RlQBGTvo4y
+   qcBHK1U8xuAydotAohFAxpKS22FVBcW6SwJOBTaDPoEFq4sijN1ODD7kh
+   Cbql8gEkIHXsGDhXr0zdtT/PaU1/WF2x/p1UZE1DhniBZA2bDVhRfZEHV
+   GatHeRjir0gAwHkzT33WRNjKbRuZmg2uiJbqjRa75EXX/xTOCX2sml/mc
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10634"; a="334122092"
+X-IronPort-AV: E=Sophos;i="5.98,221,1673942400"; 
+   d="scan'208";a="334122092"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2023 00:16:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10634"; a="667359132"
+X-IronPort-AV: E=Sophos;i="5.98,221,1673942400"; 
+   d="scan'208";a="667359132"
+Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 28 Feb 2023 00:16:23 -0800
+Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pWv9q-0005Dl-2y;
+        Tue, 28 Feb 2023 08:16:22 +0000
+Date:   Tue, 28 Feb 2023 16:15:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>, kuba@kernel.org, edumazet@google.com,
+        davem@davemloft.net, dsahern@kernel.org, pabeni@redhat.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 5/8] bpf: net: ipv6: Add bpf_ipv6_frag_rcv()
+ kfunc
+Message-ID: <202302281646.GYE1qnGb-lkp@intel.com>
+References: <bce083a4293eefb048a700b5a6086e8d8c957700.1677526810.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NknHNgPSc3zXNhzD"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7cd545a2-4a5c-1961-1cf7-cd0f24e41df8@iogearbox.net>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <bce083a4293eefb048a700b5a6086e8d8c957700.1677526810.git.dxu@dxuuu.xyz>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Daniel,
 
---NknHNgPSc3zXNhzD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you for the patch! Yet something to improve:
 
-On Mon, Feb 27, 2023 at 10:11:52PM +0100, Daniel Borkmann wrote:
-> Applied, thanks! Looks like kselftest.rst has a similar issue, could you
-> send a fix for this too?
->=20
+[auto build test ERROR on bpf-next/master]
 
-The fixup is in the recently sent miniseries at [1].
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Xu/ip-frags-Return-actual-error-codes-from-ip_check_defrag/20230228-035449
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/bce083a4293eefb048a700b5a6086e8d8c957700.1677526810.git.dxu%40dxuuu.xyz
+patch subject: [PATCH bpf-next v2 5/8] bpf: net: ipv6: Add bpf_ipv6_frag_rcv() kfunc
+config: i386-defconfig (https://download.01.org/0day-ci/archive/20230228/202302281646.GYE1qnGb-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/be4610312351d4a658435bd4649a3a830322396d
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Daniel-Xu/ip-frags-Return-actual-error-codes-from-ip_check_defrag/20230228-035449
+        git checkout be4610312351d4a658435bd4649a3a830322396d
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 olddefconfig
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
 
-[1]: https://lore.kernel.org/linux-doc/20230228074523.11493-1-bagasdotme@gm=
-ail.com/
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202302281646.GYE1qnGb-lkp@intel.com/
 
-Thanks!
+All errors (new ones prefixed by >>):
 
---=20
-An old man doll... just what I always wanted! - Clara
+   ld: net/ipv6/af_inet6.o: in function `inet6_init':
+>> af_inet6.c:(.init.text+0x22a): undefined reference to `register_ipv6_reassembly_bpf'
 
---NknHNgPSc3zXNhzD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY/2x5wAKCRD2uYlJVVFO
-ozomAP9wHAiFW7w91ha2sqjjxGSuQd1FWDB+nPzOJ62PKMVVaQEA1XFaqfEd4wkg
-5yiZyLLrL5Rxbr05XArUniNHcW0S3gM=
-=xS9a
------END PGP SIGNATURE-----
-
---NknHNgPSc3zXNhzD--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
