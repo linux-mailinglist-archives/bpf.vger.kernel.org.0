@@ -2,68 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEB36A6246
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 23:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 055C36A625E
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 23:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjB1WSo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 17:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39008 "EHLO
+        id S229470AbjB1WXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 17:23:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjB1WSo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 17:18:44 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D9C7A8E
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 14:18:42 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id kb15so11378773pjb.1
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 14:18:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1677622722;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9NdpVFn+rPdnCMfrq/yARBw+QEhzBJVOkM4cUGACPcA=;
-        b=EUXFN//U6aBS4KqZG6q3tpmdUwl6MR1N/HK0/s5ww/PFHBAGrLFej74lgsG9nKV3bh
-         vzwHtcyj20tchdSYKvFG7i7p2aHp+Z+R5DySOJXVKGF0RuDZkJZXGjqduwWv64Iqlysu
-         Kxeu7x7OPZiVf9whnaRHiBYJz/Ki86E7qSLbWBrX+R+B7GUzlItpwcW1rLu9EYBnKOuL
-         g+SB62/NWFTwG0fxJuJSQGnW4vfZ501Z+v/Ti1fFyPG+EFHf6/R+GMcVXya4gEV3tbZj
-         OVxYBCPfQXPX0wT05l2d95EMrsn3KKUFUDTWfSbjD4V4GrxWNMj+gCY2c1jPVYE/SzHv
-         Fgdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677622722;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9NdpVFn+rPdnCMfrq/yARBw+QEhzBJVOkM4cUGACPcA=;
-        b=eJzLhKcoHpaQs7LOBdYlOJVYDAcQ7ds+sdNIc3XHHrEw3j9efQNSO4q6fZStKYNxiZ
-         la7o7WbfqGdFevNJxvmAQMfXDl/BkwagGQJeQqg5qvI2VhgDx6CYCmYAlBc+zuL5bk1X
-         kLkbRb2Au++R9YymncOrN+X74IkmNmJDUR7kOcs8hZNfgk7w1Wz3y9gaQnAyicV8zNG1
-         GeneUt0zPmaQjzEuSW2cRb7P1WQKx/6q86CYMfCPKt84V7rOpMD48TWHEFmBdx5ZTSLh
-         P3l+j5T73kufgR1bdIKc9LLAlOc3bBLSIx58tUrzvHvVEO80N0IOpIrzFlowtNGM2oBs
-         IhkA==
-X-Gm-Message-State: AO0yUKVLXbN8esARcoy+GMZQIJvhLgK7R1RCQquROz+oha7kSrpgCx/u
-        Ysh736C7Wb64Py2UwqaxCfUHp8A17hY6ueOlldeH0A==
-X-Google-Smtp-Source: AK7set/ji2FVJAPJ3Y44hofTDY63L+cgXkm+aivp5VSm2X91P9Wdg+vrLtrpNjdRITNCT/QTKosFDLOipWuSLVFRirU=
-X-Received: by 2002:a17:903:2489:b0:19b:c212:b2eb with SMTP id
- p9-20020a170903248900b0019bc212b2ebmr1550724plw.10.1677622721875; Tue, 28 Feb
- 2023 14:18:41 -0800 (PST)
+        with ESMTP id S229560AbjB1WXk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 17:23:40 -0500
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308108A60
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 14:23:39 -0800 (PST)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id A06F924071C
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 23:23:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1677623017; bh=7kJHf3luHjX9QtaRBl1/zwUKu4fNJMQaoPSwdistYUQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=AWYfX0jI+betH4Tm3+hAiUxkIdCBvPPwMyGLQBW/I7Dc8PwHq/8JcbbXVAwslGfqy
+         65qdnOT1HUphIAAEyN7tZgrdCmjebAFqrFnzr78Qde4ZEB5hiNHH1BBxhGisKSouax
+         xx4HUPiKxNLbKHeXx9siq0xM9MXIA8EdyYwverbwFM1+x9+nFv2wIDu2L9CfT1D2LE
+         DCUlfedJZQlfR3zWaVFNxDWtMyHWMNpN5Nxo2pRHB8FDxN2LlF/Rh2P9j01D/QS1g1
+         gMFi5FUJcLYReMqF/2fGwZzruPtlMt8EvjDQqmAs1O+7+ZyUoyVj3RZ2ssk6eztrfB
+         zkF7s6H5+LGug==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4PRBj26kMzz9rxQ;
+        Tue, 28 Feb 2023 23:23:34 +0100 (CET)
+Date:   Tue, 28 Feb 2023 22:23:31 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 3/3] libbpf: Add support for attaching uprobes
+ to shared objects in APKs
+Message-ID: <20230228222331.vjmidio5f3l7afue@muellerd-fedora-PC2BDTX9>
+References: <20230217191908.1000004-1-deso@posteo.net>
+ <20230217191908.1000004-4-deso@posteo.net>
+ <CAEf4BzasONdYA6JPvF=pAjBW9hotVw34itVG3AoGRJV5pjERBA@mail.gmail.com>
+ <20230221213655.zu7zl77damfzxeat@muellerd-fedora-PC2BDTX9>
+ <CAEf4BzbwoAtQO6BWm1tBe51VE_BvS+mfVdcjC+uzi5s4A=L4-Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1677526810.git.dxu@dxuuu.xyz> <7145c9891791db1c868a326476fef590f22b352b.1677526810.git.dxu@dxuuu.xyz>
- <Y/5X7BF9CDYZMuMl@google.com> <20230228220007.7qrcazeepnyjoqns@kashmir.localdomain>
-In-Reply-To: <20230228220007.7qrcazeepnyjoqns@kashmir.localdomain>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 28 Feb 2023 14:18:30 -0800
-Message-ID: <CAKH8qBsFoyhMj6G_Ldp2ZXV980NTQ4VcJb3Y+Uphn0j1L1xe+g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/8] bpf, net, frags: Add bpf_ip_check_defrag()
- kfunc
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
-        dsahern@kernel.org, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbwoAtQO6BWm1tBe51VE_BvS+mfVdcjC+uzi5s4A=L4-Q@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,194 +57,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 2:00 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Hi Stanislav,
->
-> On Tue, Feb 28, 2023 at 11:37:16AM -0800, Stanislav Fomichev wrote:
-> > On 02/27, Daniel Xu wrote:
-> > > This kfunc is used to defragment IPv4 packets. The idea is that if you
-> > > see a fragmented packet, you call this kfunc. If the kfunc returns 0,
-> > > then the skb has been updated to contain the entire reassembled packet.
+On Thu, Feb 23, 2023 at 04:18:28PM -0800, Andrii Nakryiko wrote:
+> On Tue, Feb 21, 2023 at 1:37 PM Daniel Müller <deso@posteo.net> wrote:
 > >
-> > > If the kfunc returns an error (most likely -EINPROGRESS), then it means
-> > > the skb is part of a yet-incomplete original packet. A reasonable
-> > > response to -EINPROGRESS is to drop the packet, as the ip defrag
-> > > infrastructure is already hanging onto the frag for future reassembly.
+> > On Fri, Feb 17, 2023 at 04:32:05PM -0800, Andrii Nakryiko wrote:
+> > > On Fri, Feb 17, 2023 at 11:19 AM Daniel Müller <deso@posteo.net> wrote:
+> > > >
+> > > > This change adds support for attaching uprobes to shared objects located
+> > > > in APKs, which is relevant for Android systems where various libraries
+> > >
+> > > Is there a good link with description of APK that we can record
+> > > somewhere in the comments for future us?
 > >
-> > > Care has been taken to ensure the prog skb remains valid no matter what
-> > > the underlying ip_check_defrag() call does. This is in contrast to
-> > > ip_defrag(), which may consume the skb if the skb is part of a
-> > > yet-incomplete original packet.
+> > Perhaps
+> > https://en.wikipedia.org/w/index.php?title=Apk_(file_format)&oldid=1139099120#Package_contents.
 > >
-> > > So far this kfunc is only callable from TC clsact progs.
+> > Will add it.
 > >
-> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > ---
-> > >   include/net/ip.h           | 11 +++++
-> > >   net/ipv4/Makefile          |  1 +
-> > >   net/ipv4/ip_fragment.c     |  2 +
-> > >   net/ipv4/ip_fragment_bpf.c | 98 ++++++++++++++++++++++++++++++++++++++
-> > >   4 files changed, 112 insertions(+)
-> > >   create mode 100644 net/ipv4/ip_fragment_bpf.c
+> > > Also, does .apk contains only shared libraries, or it could be also
+> > > just a binary?
 > >
-> > > diff --git a/include/net/ip.h b/include/net/ip.h
-> > > index c3fffaa92d6e..f3796b1b5cac 100644
-> > > --- a/include/net/ip.h
-> > > +++ b/include/net/ip.h
-> > > @@ -680,6 +680,7 @@ enum ip_defrag_users {
-> > >     IP_DEFRAG_VS_FWD,
-> > >     IP_DEFRAG_AF_PACKET,
-> > >     IP_DEFRAG_MACVLAN,
-> > > +   IP_DEFRAG_BPF,
-> > >   };
+> > It probably could also be for a binary, judging from applications being
+> > available for download in the form of APKs.
 > >
-> > >   /* Return true if the value of 'user' is between 'lower_bond'
-> > > @@ -693,6 +694,16 @@ static inline bool ip_defrag_user_in_between(u32
-> > > user,
-> > >   }
+> > > > may reside in APKs. To make that happen, we extend the syntax for the
+> > > > "binary path" argument to attach to with that supported by various
+> > > > Android tools:
+> > > >   <archive>!/<binary-in-archive>
+> > > >
+> > > > For example:
+> > > >   /system/app/test-app/test-app.apk!/lib/arm64-v8a/libc++_shared.so
+> > > >
+> > > > APKs need to be specified via full path, i.e., we do not attempt to
+> > > > resolve mere file names by searching system directories.
+> > >
+> > > mere?
 > >
-> > >   int ip_defrag(struct net *net, struct sk_buff *skb, u32 user);
-> > > +
-> > > +#ifdef CONFIG_DEBUG_INFO_BTF
-> > > +int register_ip_frag_bpf(void);
-> > > +#else
-> > > +static inline int register_ip_frag_bpf(void)
-> > > +{
-> > > +   return 0;
-> > > +}
-> > > +#endif
-> > > +
-> > >   #ifdef CONFIG_INET
-> > >   struct sk_buff *ip_check_defrag(struct net *net, struct sk_buff *skb,
-> > > u32 user);
-> > >   #else
-> > > diff --git a/net/ipv4/Makefile b/net/ipv4/Makefile
-> > > index 880277c9fd07..950efb166d37 100644
-> > > --- a/net/ipv4/Makefile
-> > > +++ b/net/ipv4/Makefile
-> > > @@ -65,6 +65,7 @@ obj-$(CONFIG_TCP_CONG_ILLINOIS) += tcp_illinois.o
-> > >   obj-$(CONFIG_NET_SOCK_MSG) += tcp_bpf.o
-> > >   obj-$(CONFIG_BPF_SYSCALL) += udp_bpf.o
-> > >   obj-$(CONFIG_NETLABEL) += cipso_ipv4.o
-> > > +obj-$(CONFIG_DEBUG_INFO_BTF) += ip_fragment_bpf.o
-> >
-> > >   obj-$(CONFIG_XFRM) += xfrm4_policy.o xfrm4_state.o xfrm4_input.o \
-> > >                   xfrm4_output.o xfrm4_protocol.o
-> > > diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
-> > > index 959d2c4260ea..e3fda5203f09 100644
-> > > --- a/net/ipv4/ip_fragment.c
-> > > +++ b/net/ipv4/ip_fragment.c
-> > > @@ -759,5 +759,7 @@ void __init ipfrag_init(void)
-> > >     if (inet_frags_init(&ip4_frags))
-> > >             panic("IP: failed to allocate ip4_frags cache\n");
-> > >     ip4_frags_ctl_register();
-> > > +   if (register_ip_frag_bpf())
-> > > +           panic("IP: bpf: failed to register ip_frag_bpf\n");
-> > >     register_pernet_subsys(&ip4_frags_ops);
-> > >   }
-> > > diff --git a/net/ipv4/ip_fragment_bpf.c b/net/ipv4/ip_fragment_bpf.c
-> > > new file mode 100644
-> > > index 000000000000..a9e5908ed216
-> > > --- /dev/null
-> > > +++ b/net/ipv4/ip_fragment_bpf.c
-> > > @@ -0,0 +1,98 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +/* Unstable ipv4 fragmentation helpers for TC-BPF hook
-> > > + *
-> > > + * These are called from SCHED_CLS BPF programs. Note that it is
-> > > allowed to
-> > > + * break compatibility for these functions since the interface they are
-> > > exposed
-> > > + * through to BPF programs is explicitly unstable.
-> > > + */
-> > > +
-> > > +#include <linux/bpf.h>
-> > > +#include <linux/btf_ids.h>
-> > > +#include <linux/ip.h>
-> > > +#include <linux/filter.h>
-> > > +#include <linux/netdevice.h>
-> > > +#include <net/ip.h>
-> > > +#include <net/sock.h>
-> > > +
-> > > +__diag_push();
-> > > +__diag_ignore_all("-Wmissing-prototypes",
-> > > +             "Global functions as their definitions will be in ip_fragment BTF");
-> > > +
-> > > +/* bpf_ip_check_defrag - Defragment an ipv4 packet
-> > > + *
-> > > + * This helper takes an skb as input. If this skb successfully
-> > > reassembles
-> > > + * the original packet, the skb is updated to contain the original,
-> > > reassembled
-> > > + * packet.
-> > > + *
-> > > + * Otherwise (on error or incomplete reassembly), the input skb remains
-> > > + * unmodified.
-> > > + *
-> > > + * Parameters:
-> > > + * @ctx            - Pointer to program context (skb)
-> > > + * @netns  - Child network namespace id. If value is a negative signed
-> > > + *           32-bit integer, the netns of the device in the skb is used.
-> > > + *
-> > > + * Return:
-> > > + * 0 on successfully reassembly or non-fragmented packet. Negative
-> > > value on
-> > > + * error or incomplete reassembly.
-> > > + */
-> > > +int bpf_ip_check_defrag(struct __sk_buff *ctx, u64 netns)
-> >
-> > Needs a __bpf_kfunc tag as well?
->
-> Ack.
->
-> > > +{
-> > > +   struct sk_buff *skb = (struct sk_buff *)ctx;
-> > > +   struct sk_buff *skb_cpy, *skb_out;
-> > > +   struct net *caller_net;
-> > > +   struct net *net;
-> > > +   int mac_len;
-> > > +   void *mac;
-> > > +
-> >
-> > [..]
-> >
-> > > +   if (unlikely(!((s32)netns < 0 || netns <= S32_MAX)))
-> > > +           return -EINVAL;
-> >
-> > Can you explain what it does? Is it checking for -1 explicitly? Not sure
-> > it works :-/
-> >
-> > Maybe we can spell out the cases explicitly?
-> > if (unlikely(
-> >            ((s32)netns < 0 && netns != S32_MAX) || /* -1 */
-> >            netns > U32_MAX /* higher 4 bytes */
-> >           )
-> >       return -EINVAL;
-> >
->
-> I copied this from net/core/filter.c:__bpf_skc_lookup:
->
->         if (unlikely(flags || !((s32)netns_id < 0 || netns_id <= S32_MAX)))
->                 goto out;
->
-> The semantics are a bit odd, but I thought it'd be good to maintain
-> consistency. I believe the code correctly checks what the docs describe:
->
->         @netns  - Child network namespace id. If value is a negative signed
->                   32-bit integer, the netns of the device in the skb is used.
->
-> I can pull out the logic into a helper for v3.
->
-> [...]
+> > Yes?
+> 
+> I'm just confused what "resolve mere file names" means in this
+> context. Like, which file names are not "mere"?
 
-Ah, so this comes from commit f71c6143c203 ("bpf: Support sk lookup in
-netns with id 0") which explicitly treats everything <0 as
-current_netns, makes sense.
-In this case agreed, let's keep for consistency. Up to you on whether
-to pull it out in the helper or keep as is.
+It's meant to convey the fact that a "mere file name" is not everything we could
+be dealing with. It could also be a full path.
 
->
->
-> Thanks,
-> Daniel
+[...]
+
+Thanks,
+Daniel
