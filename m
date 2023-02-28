@@ -2,207 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9661E6A6009
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 20:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B8A6A6010
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 20:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjB1T65 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 14:58:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
+        id S230044AbjB1T7W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 14:59:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbjB1T64 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 14:58:56 -0500
-Received: from out-10.mta0.migadu.com (out-10.mta0.migadu.com [IPv6:2001:41d0:1004:224b::a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE62A21950
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 11:58:51 -0800 (PST)
-Message-ID: <22705f9d-9b94-a4ec-3202-270fef1ed657@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1677614330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dwqlDZm1FFyvhq2qKAm9Hyvy8dUaUZ1MsnNj2aCGRJg=;
-        b=CeI+j4QX0rkubqTicN8PmgoWnM3GtT5C0TcLUdQqEEXjb6qtV2X6YLL/BXmwWyt0cNw/NK
-        JRbgy4mRsVxhD16itS/Sh1/R5vxuftsfzXuDO7lL9VS6LZeKyNFHh+5OyMoOI+CwtCqaTq
-        aigZAGWnlYtdd+d5Na/++Mi6B2lX5Gc=
-Date:   Tue, 28 Feb 2023 11:58:46 -0800
-MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Implement batching in UDP iterator
-Content-Language: en-US
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
-        Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
-References: <20230223215311.926899-1-aditi.ghag@isovalent.com>
- <20230223215311.926899-2-aditi.ghag@isovalent.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230223215311.926899-2-aditi.ghag@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229728AbjB1T7U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 14:59:20 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9FF27D77
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 11:59:19 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id l13so11970051qtv.3
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 11:59:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dubeyko-com.20210112.gappssmtp.com; s=20210112;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VuSVlKpPF8gU3w0v8rtlpMjWgWDk2kvzccZhwHpR+eM=;
+        b=YPZwN5+k6vm0UbGG6I9sOJ47jfD/Bl1ThzNCn3eEdbwoyq8mfB6d9njrHVa3GKfyFF
+         V2rsTW281KaDPWUlw6xajiDF5Jjd+WI1pBnXlLqCoJgPSMs5iFrQtGYeS7Q0yC0DjGKg
+         rQh26yA3WRyKqoOiYHZrfjuC3pSi4kkYRmeYMRJQqxp+YXgl1Us0mcJhXd8Ku93h5teB
+         VpscW1HQNs/hsstk5vsGOqD2O3JqZXYtGT6Kdusz+9Cc7NBOlRDn36A3/TznPvJkKIWw
+         7+VnskgZ2WiK+D2TxoAOn8qX1PcV1jv1JDB/5WWyRG8lcYrQ7fBe08VlrQyHvHT92G9n
+         rv/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VuSVlKpPF8gU3w0v8rtlpMjWgWDk2kvzccZhwHpR+eM=;
+        b=mY9Gu9K7higSezRKSMX/JM0lW4R/7Ijq7dyKNFtzam5cWSmDKZEsqp3OZQTIFc39uT
+         dJ/mXP1XhoRayrGceD5F/YD2STpuc1Z924WuzyO+6ZoL3ninyJqV9tTrgm2LOMifjD+s
+         lBUD8JZRhnObXvOJDabv+t04jkWhs8vm1xNjb71tkx4/ybLDrPoUm1GbZr/Guzp/eXjm
+         iQDH04MLdhnCX8KSGFVeMSVWxz1zEbihEXfwWv4dcKmAetrSdcSk1Xil6kuOYts23yb7
+         qeduF2Lb/v60YAa632wx5jl4+W54FThwDahvdftYw7qtpn17RPM6KPDdZfI2/13cfRn5
+         3ycw==
+X-Gm-Message-State: AO0yUKUZjoMHSFgHLjMG9DuKPLwXezPq+WEb1229GxEnjTb67x6HDaDj
+        GwJkx4U6L+04SpHeYn8kIuNvdg==
+X-Google-Smtp-Source: AK7set/npV9n3dF9Lu0temv+NFVqOnKpsEEb6ImmgJmBogTFZipMN0MDl8NCZOsGqazJQab4LmJvrw==
+X-Received: by 2002:ac8:5b85:0:b0:3bf:b4c7:37d8 with SMTP id a5-20020ac85b85000000b003bfb4c737d8mr7262467qta.7.1677614358230;
+        Tue, 28 Feb 2023 11:59:18 -0800 (PST)
+Received: from smtpclient.apple (172-125-78-211.lightspeed.sntcca.sbcglobal.net. [172.125.78.211])
+        by smtp.gmail.com with ESMTPSA id f67-20020a37d246000000b006f9ddaaf01esm670683qkj.102.2023.02.28.11.59.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Feb 2023 11:59:17 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.2\))
+Subject: Re: [LSF/MM/BPF TOPIC] bpf iterator for file-system
+From:   Viacheslav Dubeyko <slava@dubeyko.com>
+In-Reply-To: <0a6f0513-b4b3-9349-cee5-b0ad38c81d2e@huaweicloud.com>
+Date:   Tue, 28 Feb 2023 11:59:14 -0800
+Cc:     lsf-pc@lists.linux-foundation.org, bpf <bpf@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C33452AE-4697-476F-ADDB-DDC91FDBB237@dubeyko.com>
+References: <0a6f0513-b4b3-9349-cee5-b0ad38c81d2e@huaweicloud.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+X-Mailer: Apple Mail (2.3696.120.41.1.2)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/23/23 1:53 PM, Aditi Ghag wrote:
-> +struct bpf_udp_iter_state {
-> +	struct udp_iter_state state;
-> +	unsigned int cur_sk;
-> +	unsigned int end_sk;
-> +	unsigned int max_sk;
-> +	struct sock **batch;
-> +	bool st_bucket_done;
-> +};
-> +
-> +static unsigned short seq_file_family(const struct seq_file *seq);
-> +static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
-> +				      unsigned int new_batch_sz);
-> +
-> +static inline bool seq_sk_match(struct seq_file *seq, const struct sock *sk)
-> +{
-> +	unsigned short family = seq_file_family(seq);
-> +
-> +	/* AF_UNSPEC is used as a match all */
-> +	return ((family == AF_UNSPEC || family == sk->sk_family) &&
-> +		net_eq(sock_net(sk), seq_file_net(seq)));
-> +}
-> +
-> +static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
-> +{
-> +	struct bpf_udp_iter_state *iter = seq->private;
-> +	struct udp_iter_state *state = &iter->state;
-> +	struct net *net = seq_file_net(seq);
-> +	struct udp_seq_afinfo *afinfo = state->bpf_seq_afinfo;
-> +	struct udp_table *udptable;
-> +	struct sock *first_sk = NULL;
-> +	struct sock *sk;
-> +	unsigned int bucket_sks = 0;
-> +	bool first;
-> +	bool resized = false;
-> +
-> +	/* The current batch is done, so advance the bucket. */
-> +	if (iter->st_bucket_done)
-> +		state->bucket++;
-> +
-> +	udptable = udp_get_table_afinfo(afinfo, net);
-> +
-> +again:
-> +	/* New batch for the next bucket.
-> +	 * Iterate over the hash table to find a bucket with sockets matching
-> +	 * the iterator attributes, and return the first matching socket from
-> +	 * the bucket. The remaining matched sockets from the bucket are batched
-> +	 * before releasing the bucket lock. This allows BPF programs that are
-> +	 * called in seq_show to acquire the bucket lock if needed.
-> +	 */
-> +	iter->cur_sk = 0;
-> +	iter->end_sk = 0;
-> +	iter->st_bucket_done = false;
-> +	first = true;
-> +
-> +	for (; state->bucket <= udptable->mask; state->bucket++) {
-> +		struct udp_hslot *hslot = &udptable->hash[state->bucket];
 
-Since it is mostly separated from the proc's udp-seq-file now, may as well 
-iterate the udptable->hash"2" which is hashed by both addr and port such that 
-each batch should be smaller.
 
-> +
-> +		if (hlist_empty(&hslot->head))
-> +			continue;
-> +
-> +		spin_lock_bh(&hslot->lock);
-> +		sk_for_each(sk, &hslot->head) {
-> +			if (seq_sk_match(seq, sk)) {
-> +				if (first) {
-> +					first_sk = sk;
-> +					first = false;
-> +				}
-> +				if (iter->end_sk < iter->max_sk) {
-> +					sock_hold(sk);
-> +					iter->batch[iter->end_sk++] = sk;
-> +				}
-> +				bucket_sks++;
-> +			}
-> +		}
-> +		spin_unlock_bh(&hslot->lock);
-> +		if (first_sk)
-> +			break;
-> +	}
-> +
-> +	/* All done: no batch made. */
-> +	if (!first_sk)
-> +		return NULL;
+> On Feb 27, 2023, at 7:30 PM, Hou Tao <houtao@huaweicloud.com> wrote:
+>=20
+> =46rom time to time, new syscalls have been proposed to gain more =
+observability
+> for file-system:
+>=20
+> (1) getvalues() [0]. It uses a hierarchical namespace API to gather =
+and return
+> multiple values in single syscall.
+> (2) cachestat() [1].  It returns the cache status (e.g., number of =
+dirty pages)
+> of a given file in a scalable way.
+>=20
+> All these proposals requires adding a new syscall. Here I would like =
+to propose
+> another solution for file system observability: bpf iterator for file =
+system
+> object. The initial idea came when I was trying to implement a =
+filefrag-like
+> page cache tool with support for multi-order folio, so that we can =
+know the
+> number of multi-order folios and the orders of those folios in page =
+cache. After
+> developing a demo for it, I realized that we could use it to provide =
+more
+> observability for file system objects. e.g., dumping the per-cpu =
+iostat for a
+> super block [2],  iterating all inodes in a super-block to dump info =
+for
+> specific inodes (e.g., unlinked but pinned inode), or displaying the =
+flags of a
+> specific mount.
+>=20
 
-I think first_sk and bucket_sks need to be reset on the "again" case also?
+Sounds like interesting suggestion to me. :) Potentially, it could have =
+more
+applications.
 
-If bpf_iter_udp_seq_stop() is called before a batch has been fully processed by 
-the bpf prog in ".show", how does the next bpf_iter_udp_seq_start() continue 
-from where it left off? The bpf_tcp_iter remembers the bucket and the 
-offset-in-this-bucket. I think bpf_udp_iter can do something similar.
+> The BPF iterator was introduced in v5.8 [3] to support flexible =
+content dumping
+> for kernel objects. It works by creating bpf iterator file [4], which =
+is a
+> seq-like read-only file, and the content of the bpf iterator file is =
+determined
+> by a previously loaded bpf program, so userspace can read the bpf =
+iterator file
+> to get the information it needs. However there are some unresolved =
+issues:
+> (1) The privilege.
+> Loading the bpf program requires CAP_ADMIN or CAP_BPF. This means that =
+the
+> observability will be available to the privileged process. Maybe we =
+can load the
+> bpf program through a privileged process and make the bpf iterator =
+file being
+> readable for normal users.
+> (2) Prevent pinning the super-block
+> In the current naive implementation, the bpf iterator simply pins the
+> super-block of the passed fd and prevents the super-block from being =
+destroyed.
+> Perhaps fs-pin is a better choice, so the bpf iterator can be =
+deactivated after
+> the filesystem is umounted.
+>=20
+> I hope to send out an RFC soon before LSF/MM/BPF for further =
+discussion.
+>=20
 
-> +
-> +	if (iter->end_sk == bucket_sks) {
-> +		/* Batching is done for the current bucket; return the first
-> +		 * socket to be iterated from the batch.
-> +		 */
-> +		iter->st_bucket_done = true;
-> +		return first_sk;
-> +	}
-> +	if (!resized && !bpf_iter_udp_realloc_batch(iter, bucket_sks * 3 / 2)) {
-> +		resized = true;
-> +		/* Go back to the previous bucket to resize its batch. */
-> +		state->bucket--;
-> +		goto again;
-> +	}
-> +	return first_sk;
-> +}
-> +
+It will be good to see the patchset. :)
 
-[ ... ]
+Thanks,
+Slava.
 
->   static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
->   {
-> -	struct udp_iter_state *st = priv_data;
-> +	struct bpf_udp_iter_state *iter = priv_data;
-> +	struct udp_iter_state *st = &iter->state;
->   	struct udp_seq_afinfo *afinfo;
->   	int ret;
->   
-> @@ -3427,24 +3623,34 @@ static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
->   	afinfo->udp_table = NULL;
->   	st->bpf_seq_afinfo = afinfo;
-
-Is bpf_seq_afinfo still needed in 'struct udp_iter_state'? Can it be removed?
-
->   	ret = bpf_iter_init_seq_net(priv_data, aux);
-> -	if (ret)
-> +	if (ret) {
->   		kfree(afinfo);
-> +		return ret;
-> +	}
-> +	ret = bpf_iter_udp_realloc_batch(iter, INIT_BATCH_SZ);
-> +	if (ret) {
-> +		bpf_iter_fini_seq_net(priv_data);
-> +		return ret;
-> +	}
-> +	iter->cur_sk = 0;
-> +	iter->end_sk = 0;
-> +
->   	return ret;
->   }
->   
->   static void bpf_iter_fini_udp(void *priv_data)
->   {
-> -	struct udp_iter_state *st = priv_data;
-> +	struct bpf_udp_iter_state *iter = priv_data;
->   
-> -	kfree(st->bpf_seq_afinfo);
->   	bpf_iter_fini_seq_net(priv_data);
-> +	kfree(iter->batch);
-kvfree
+> [0]:
+> =
+https://lore.kernel.org/linux-fsdevel/YnEeuw6fd1A8usjj@miu.piliscsaba.redh=
+at.com/
+> [1]: =
+https://lore.kernel.org/linux-mm/20230219073318.366189-1-nphamcs@gmail.com=
+/
+> [2]:
+> =
+https://lore.kernel.org/linux-fsdevel/CAJfpegsCKEx41KA1S2QJ9gX9BEBG4_d8igA=
+0DT66GFH2ZanspA@mail.gmail.com/
+> [3]: https://lore.kernel.org/bpf/20200509175859.2474608-1-yhs@fb.com/
+> [4]: https://docs.kernel.org/bpf/bpf_iterators.html
+>=20
 
