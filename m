@@ -2,166 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF566A5522
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 10:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1386A55A1
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 10:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbjB1JGL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 04:06:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47836 "EHLO
+        id S229659AbjB1JZH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 04:25:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbjB1JGJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 04:06:09 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E47B1BAFE
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 01:06:04 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C7E4161033
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 09:06:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF514C433EF;
-        Tue, 28 Feb 2023 09:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677575163;
-        bh=0eWMlMGI2RcrCwduamP7bwmNMOKFU4gjsMoHTxoSinY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o7tVgobE8tFvDiJtDcO93v1XVLiICxITvZRQq8AFze6obLmLJBJV9PoaKV0InKs7J
-         +s6Rmcws9ERMYH6/BfqX4w4NIOCU61W6XaFqnvGxb1hr8vaQKajDX3OeIlBJU1qhEf
-         Wh78uPM174HjlyPZMWW/NvDIdC2mL0CbN2n88C4ptNv/z7xwLSRCGWp4Hsc6/i8zHF
-         WYbAIRybvimrH+ZgW2CSZ2u7soxBs0aESlgLA54Jf3S+9TGNae3F3yBf5oQbjhYGnl
-         FziW56q9KulVsvZsBScbOxILFB2g9kPI0rQ+gDKrPvT8/JEG4Ex1mwr+T8dLfm3y3t
-         XWLcery/TBpvQ==
-Date:   Tue, 28 Feb 2023 10:05:59 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH bpf] libbpf: Fix bpf_xdp_query() in old kernels
-Message-ID: <Y/3D9+E6bR23jKqy@lore-desk>
-References: <20230227224943.1153459-1-yhs@fb.com>
- <CAEf4Bzaqqzxo7fMNxrYXf5VgLVqSR3cOGkM6KF=hTNqcc1DTBw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="j2vvOQZ+jkYtWwBw"
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzaqqzxo7fMNxrYXf5VgLVqSR3cOGkM6KF=hTNqcc1DTBw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229565AbjB1JZG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 04:25:06 -0500
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BFF55A7;
+        Tue, 28 Feb 2023 01:25:03 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vcix4w._1677576294;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vcix4w._1677576294)
+          by smtp.aliyun-inc.com;
+          Tue, 28 Feb 2023 17:25:00 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/4] net/smc: Introduce BPF injection capability
+Date:   Tue, 28 Feb 2023 17:24:50 +0800
+Message-Id: <1677576294-33411-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
---j2vvOQZ+jkYtWwBw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patches attempt to introduce BPF injection capability for SMC,
+and add selftest to ensure code stability.
 
-> On Mon, Feb 27, 2023 at 2:50=E2=80=AFPM Yonghong Song <yhs@fb.com> wrote:
-> >
-> > Commit 04d58f1b26a4("libbpf: add API to get XDP/XSK supported features")
-> > added feature_flags to struct bpf_xdp_query_opts. If a user uses
-> > bpf_xdp_query_opts with feature_flags member, the bpf_xdp_query()
-> > will check whether 'netdev' family exists or not in the kernel.
-> > If it does not exist, the bpf_xdp_query() will return -ENOENT.
-> >
-> > But 'netdev' family does not exist in old kernels as it is
-> > introduced in the same patch set as Commit 04d58f1b26a4.
-> > So old kernel with newer libbpf won't work properly with
-> > bpf_xdp_query() api call.
-> >
-> > To fix this issue, if the return value of
-> > libbpf_netlink_resolve_genl_family_id() is -ENOENT, bpf_xdp_query()
-> > will just return 0, skipping the rest of xdp feature query.
-> > This preserves backward compatibility.
-> >
-> > Fixes: 04d58f1b26a4 ("libbpf: add API to get XDP/XSK supported features=
-")
-> > Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
-> >  tools/lib/bpf/netlink.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-> > index 1653e7a8b0a1..4c1b3502f88d 100644
-> > --- a/tools/lib/bpf/netlink.c
-> > +++ b/tools/lib/bpf/netlink.c
-> > @@ -468,8 +468,11 @@ int bpf_xdp_query(int ifindex, int xdp_flags, stru=
-ct bpf_xdp_query_opts *opts)
-> >                 return 0;
-> >
-> >         err =3D libbpf_netlink_resolve_genl_family_id("netdev", sizeof(=
-"netdev"), &id);
-> > -       if (err < 0)
-> > +       if (err < 0) {
-> > +               if (err =3D=3D -ENOENT)
-> > +                       return 0;
-> >                 return libbpf_err(err);
-> > +       }
-> >
->=20
-> As I mentioned in another thread, I'm a bit worried of this early
-> return, because query_opts might be extended and then we'll forget
-> about this early return. So I did these changes and pushed to
-> bpf-next:
->=20
-> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-> index 4c1b3502f88d..84dd5fa14905 100644
-> --- a/tools/lib/bpf/netlink.c
-> +++ b/tools/lib/bpf/netlink.c
-> @@ -469,8 +469,10 @@ int bpf_xdp_query(int ifindex, int xdp_flags,
-> struct bpf_xdp_query_opts *opts)
->=20
->         err =3D libbpf_netlink_resolve_genl_family_id("netdev",
-> sizeof("netdev"), &id);
->         if (err < 0) {
-> -               if (err =3D=3D -ENOENT)
-> -                       return 0;
-> +               if (err =3D=3D -ENOENT) {
-> +                       opts->feature_flags =3D 0;
-> +                       goto skip_feature_flags;
-> +               }
->                 return libbpf_err(err);
->         }
->=20
-> @@ -492,6 +494,7 @@ int bpf_xdp_query(int ifindex, int xdp_flags,
-> struct bpf_xdp_query_opts *opts)
->=20
->         opts->feature_flags =3D md.flags;
->=20
-> +skip_feature_flags:
->         return 0;
+As we all know that the SMC protocol is not suitable for all scenarios,
+especially for short-lived. However, for most applications, they cannot
+guarantee that there are no such scenarios at all. Therefore, apps
+may need some specific strategies to decide shall we need to use SMC
+or not, for example, apps can limit the scope of the SMC to a specific
+IP address or port.
 
-thx for fixing this:
-Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Based on the consideration of transparent replacement, we hope that apps
+can remain transparent even if they need to formulate some specific
+strategies for SMC using. That is, do not need to recompile their code.
 
-Regards,
-Lorenzo
+On the other hand, we need to ensure the scalability of strategies
+implementation. Although it is simple to use socket options or sysctl,
+it will bring more complexity to subsequent expansion.
 
->  }
->=20
-> >         memset(&req, 0, sizeof(req));
-> >         req.nh.nlmsg_len =3D NLMSG_LENGTH(GENL_HDRLEN);
-> > --
-> > 2.30.2
-> >
+Fortunately, BPF can solve these concerns very well, users can write
+thire own strategies in eBPF to choose whether to use SMC or not.
+And it's quite easy for them to modify their strategies in the future.
 
---j2vvOQZ+jkYtWwBw
-Content-Type: application/pgp-signature; name="signature.asc"
+This patches implement injection capability for SMC via struct_ops.
+In that way, we can add new injection scenarios in the future.
 
------BEGIN PGP SIGNATURE-----
+v3 -> v2: 
+    1. fix checkpatch error and warning.
+    2. split patch for better review.
+    3. enhance selftest to cover more scenarios.
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY/3D9wAKCRA6cBh0uS2t
-rGfrAQDF5u64eYhOWQrvMjNS/LSFmCDhRgXyKd+IYamX4vEV0AEA9r+sK4xWW68R
-n0onEVZ1t/Dno4cottA08l3AR1sNwwA=
-=yE8a
------END PGP SIGNATURE-----
+v2 -> v1:
+    1. fix compile error and warning.
 
---j2vvOQZ+jkYtWwBw--
+D. Wythe (4):
+  net/smc: move smc_sock related structure definition
+  bpf: add SMC support in BPF struct_ops
+  net/smc: add BPF injection on smc negotiation
+  bpf/selftests: add selftest for SMC bpf capability
+
+ include/linux/btf_ids.h                          |  12 +
+ include/net/smc.h                                | 248 ++++++++++++++++++
+ kernel/bpf/bpf_struct_ops_types.h                |   4 +
+ net/Makefile                                     |   5 +
+ net/smc/af_smc.c                                 |  15 +-
+ net/smc/bpf_smc_struct_ops.c                     | 148 +++++++++++
+ net/smc/smc.h                                    | 224 ----------------
+ tools/testing/selftests/bpf/prog_tests/bpf_smc.c |  37 +++
+ tools/testing/selftests/bpf/progs/bpf_smc.c      | 320 +++++++++++++++++++++++
+ 9 files changed, 788 insertions(+), 225 deletions(-)
+ create mode 100644 net/smc/bpf_smc_struct_ops.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
+-- 
+1.8.3.1
+
