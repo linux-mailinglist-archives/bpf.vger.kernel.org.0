@@ -2,113 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDEF6A57FA
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 12:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BB46A5824
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 12:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjB1LZA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 06:25:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
+        id S229841AbjB1Ld3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 06:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231641AbjB1LYY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 06:24:24 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C742F7B7
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 03:24:01 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id y140so3874884iof.6
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 03:24:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0u2iKp9ldtcgMOD+hKR8kz3k0BOCjo1o/U4cCu8boAs=;
-        b=L0u+m/Xvcmz+gegyTZ64Bq2mJd6k/r1EXydm4FVgaQ6f4cz0HqDzFGrIqcKOKeSX4m
-         TQ2suA/qG7DQtPqbClxjbKGwj2GKtt6FFwCQFWrQVesEBm4qkMyt9e09ErWg4q4S1J75
-         n+o213OvKaZoFEpQM7Hk9gKLAaUlTk305d2L3HUZs/pPqw2e0UIx9zx6fMq0R9+gEEPT
-         O34ufDaxKGHtli6AC8vWpEO2KOSke0lMJ2Bnc+ZgrGF33uzfXf/47/wc4NKgmC4rPYU8
-         laCKAqxJH/CfzZv3sST8ObLCavdA+kzooEOzZrzU4a8Qxy08Ynv85vjvXyX/9L8+EqaA
-         tt5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0u2iKp9ldtcgMOD+hKR8kz3k0BOCjo1o/U4cCu8boAs=;
-        b=5fKRlihE/s+qh/d0V5wJvIrk85ufMfj8H4taWA29NaInpJP2GW7Tty/FjvgFyzd4n2
-         S7Jo5Ofa6PKCZ+m8tC0nlacMvhDVp67KH9W5fosW0udcCEIuFGmznZ96x1/ZTziuitiz
-         Yw5V/tf3I8499pK5YV+78HYe4JtEGBt8lG5CF34HLp7TiIto8oN3k4BXD83bGxsFO0VM
-         Olur3hArH1Y+xCXdOFD/4x9ZvavtMuYOdUvb5G2wt9ydFIUFvM3YJnC6oQVW0xwno2Lw
-         ioExNmDwCXbCkgAHUfmGAbqa39rkPjUo+/Pxj9BEF6SkPdL+ajLrgn7cbgOc3v5cNwDi
-         rPZw==
-X-Gm-Message-State: AO0yUKWSOuRIjvGKARlxMRNlwfFkFuqCuBreK0+ejCDkYmHlT42w9SZS
-        /Sa+UeMhejdUTAO+ayM4YJLy0XD1/Ki07beoA7MhVA==
-X-Google-Smtp-Source: AK7set/XxfKvKpioQb1Ae1RPArAsVZtkPOSIDArcUmsbNHh+ZP+BrV/3l+awhLoUPWogWiBdbkJZzvBuO+cK4uoi2os=
-X-Received: by 2002:a05:6602:214b:b0:74c:bb62:6763 with SMTP id
- y11-20020a056602214b00b0074cbb626763mr1138820ioy.1.1677583438043; Tue, 28 Feb
- 2023 03:23:58 -0800 (PST)
+        with ESMTP id S231487AbjB1Ld1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 06:33:27 -0500
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC0418B;
+        Tue, 28 Feb 2023 03:33:26 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8C3545C00D1;
+        Tue, 28 Feb 2023 06:33:25 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 28 Feb 2023 06:33:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1677584005; x=1677670405; bh=OUst0onvS1
+        az3p2Wru+5zWDfOfS0/TABrIMuRCVdU1U=; b=sXXMnOxyGyBNSJbkza2riaDzmk
+        IeGFSIsNDwaB2nmMXFvjFmfXFq2/vMvWTH4eOx7aq7ABaJ5h+F942Q45JDQkwKHy
+        BkyJ5Xq88M/KvigWecm7PreXYK89N/eeHiEkJlQJja/jz5hwThIPmB/iHzt5HBa9
+        2uHRt8Pyf/KYreUt7cfosELB+oEwHUHnolAZeoia4ymSxkN1PvjQDGq0BgQViBBA
+        Ch2bIaDyUCK71C24hbHZUxiV03CVmJfXvLnJ4gzEOkGMfLVDAuLHp7umtdiXqUkQ
+        PXSzQdBur5z1QRVugWkQiUL5kL6M/hj1Lb6Jme7mVh2cos8g8UG04B2hxCbA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1677584005; x=1677670405; bh=OUst0onvS1az3
+        p2Wru+5zWDfOfS0/TABrIMuRCVdU1U=; b=s15Ujjrid1NPlWZUk6NcTTNQcTiZr
+        rs7UuceCL6kFioVi3VO51dKWnBlaNJ1mgSfjw82hrdcJpllVOZ2R1iIgYPCOwEYu
+        eZBTROlskD64DfL6Lw74W7NG4iDzzUo90U91SPIe4FoT9LB+wlka+zEt4zyIE1jv
+        j8LwvbBaX3/OgpQnkiqi6LiI1n0I4Wm9WMJaU21+QS2J0Y7gCX18wLYNixdJAzJi
+        yY8XF7Sk/wZrYCjKoIUMgzwOGH3TGwBCKwOZlfbMGzMXcTH2K3iFSBgaomYium+V
+        P9bRdfFZH2gI02QCmx89ZvMhemCA0q42Ikv/einLbkgInPG52SqSdfeNA==
+X-ME-Sender: <xms:heb9Y88-ZO3OdfosvjyUU8-G1Kp-NWoDhemGtLhdOXVjJ4AyVr1rmA>
+    <xme:heb9Y0vU5tQMOK3UpsMg2Dabg766cDLsHzlxV6W_D6e5wko4e2Ge-8dKbtQZoihuD
+    ow0lruydsmiCZJ779E>
+X-ME-Received: <xmr:heb9YyAeiL_mKLPfdyxQUJ0_jCGIw2s9LdxPw9t_uCPpO3ikbk_Q69Di5xO7kVJ-9HoEFTaq9uZ0kighwNwh2oj4cxPTBv4akPPRRlw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudelvddgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffogggtgfesthekre
+    dtredtjeenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
+    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpedtgfduvedvtdfgkeektd
+    ffveeiueeludegheehtdegheduueeuueegtdehjeehheenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihgh
+    horghtrdgtohhm
+X-ME-Proxy: <xmx:heb9Y8f_aKKPsoxqM4QH8yDE4oAGpQXGe_NBpilvFE0oredtSJ3STg>
+    <xmx:heb9YxN2ORa_cjsOni2Wc2qeIO-tBrqZY4f-Z83mpJDudOK6VVc1dg>
+    <xmx:heb9Y2n09urrHgz_0qjV4yV5iufc-k1FsmRfXcSobn4QR1enFLV8aA>
+    <xmx:heb9Y00WCtuIb0XbbF6fgEcvYQnn_KlLMcdbIeHV57hEtEX1tFvvWQ>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 28 Feb 2023 06:33:24 -0500 (EST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
+        johan.almbladh@anyfinetworks.com, paulburton@kernel.org,
+        bpf@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 0/2] MIPS: Implement two workarounds for BPF JIT
+Date:   Tue, 28 Feb 2023 11:33:03 +0000
+Message-Id: <20230228113305.83751-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-References: <000000000000e412e905f5b46201@google.com> <CANn89iJ_kLaF0tVVUfzKQwVkQ0VtCca1dL8eF+RrXCVDTK6h2Q@mail.gmail.com>
- <20230227155352.3399bb10@kernel.org>
-In-Reply-To: <20230227155352.3399bb10@kernel.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 28 Feb 2023 12:23:46 +0100
-Message-ID: <CANn89i+ooMT_G9aL8keZ-WOcAKqpC44OLQNGvfUtjA6PW-yxcA@mail.gmail.com>
-Subject: Re: [syzbot] [net?] INFO: task hung in tls_sw_sendpage (3)
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     syzbot <syzbot+9c0268252b8ef967c62e@syzkaller.appspotmail.com>,
-        borisp@nvidia.com, bpf@vger.kernel.org, davem@davemloft.net,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 12:53=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
-rote:
->
-> On Mon, 27 Feb 2023 21:35:41 +0100 Eric Dumazet wrote:
-> > This looks suspicious to me
-> >
-> > commit 79ffe6087e9145d2377385cac48d0d6a6b4225a5
-> > Author: Jakub Kicinski <kuba@kernel.org>
-> > Date:   Tue Nov 5 14:24:35 2019 -0800
-> >
-> >     net/tls: add a TX lock
-> >
-> >
-> > If tls_sw_sendpage() has to call sk_stream_wait_memory(),
-> > sk_stream_wait_memory() is properly releasing the socket lock,
-> > but knows nothing about mutex_{un}lock(&tls_ctx->tx_lock);
->
-> That's supposed to be the point of the lock, prevent new writers from
-> messing with the partially pushed records when the original writer
-> is waiting for write space.
->
-> Obvious hack but the async crypto support makes TLS a bit of a mess :|
->
-> sendpage_lock not taking tx_lock may lead to obvious problems, I'm not
-> seeing where the deadlock is, tho..
->
+Hi all,
 
-This report mentions sendpage, but sendmsg() would have the same issue.
+Just noticed eBPF JIT is not working on R4000 when messing around with QEMU.
 
-A thread might be blocked in sk_stream_wait_memory() with the mutex
-held, for an arbitrary amount of time,
-say if the remote peer stays in RWIN 0 for hours.
+This patchset implements two workarounds that is blocking us from enabling eBPF
+JIT on R4000.
 
-This prevents tx_work from making progress, and
-tls_sw_cancel_work_tx() would be stuck forever.
+Thanks.
+- Jiaxun
 
-The consensus is that the kernel shouts a warning if a thread has been
-waiting on a mutex
-more than 120 seconds (check_hung_uninterruptible_tasks())
+Jiaxun Yang (2):
+  MIPS: ebpf jit: Implement DADDI workarounds
+  MIPS: ebpf jit: Implement R4000 workarounds
+
+ arch/mips/Kconfig              | 5 +----
+ arch/mips/net/bpf_jit_comp.c   | 4 ++++
+ arch/mips/net/bpf_jit_comp64.c | 3 +++
+ 3 files changed, 8 insertions(+), 4 deletions(-)
+
+-- 
+2.37.1 (Apple Git-137.1)
+
