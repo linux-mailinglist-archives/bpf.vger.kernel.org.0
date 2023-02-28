@@ -2,106 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE3F6A5F64
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 20:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F87A6A5FB4
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 20:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbjB1TNO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 14:13:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
+        id S229713AbjB1Tcr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 14:32:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjB1TNO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 14:13:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E191D90C;
-        Tue, 28 Feb 2023 11:13:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F139661181;
-        Tue, 28 Feb 2023 19:13:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFD2EC433EF;
-        Tue, 28 Feb 2023 19:13:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1677611591;
-        bh=NomRgZhAnCadauaNPou4fifv4G+IJxYhxbkOJyVdeaY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gC9tn+qCRdX2PPavqpJdx8Gqi2XJrpEt/lxYjeSZMFH1MkwOPTnWeGZSSFyrivHHz
-         y+G2Ujnzj5zWphHDQNoj18ubFP9kBGdM1QlEVrI/nK1xvmeQH5ySs/ol0TpkotjjJb
-         /sP1lQwiBZp3nUCCxtQ1UZ3IMNi7g58hng+JOqyw=
-Date:   Tue, 28 Feb 2023 11:13:10 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>, bpf@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Namhyung Kim <namhyung@gmail.com>
-Subject: Re: [PATCH RFC v2 bpf-next 1/9] mm: Store build id in inode object
-Message-Id: <20230228111310.05f339a0a1a00e919859ffad@linux-foundation.org>
-In-Reply-To: <20230228093206.821563-2-jolsa@kernel.org>
-References: <20230228093206.821563-1-jolsa@kernel.org>
-        <20230228093206.821563-2-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229884AbjB1Tcp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 14:32:45 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B735733474;
+        Tue, 28 Feb 2023 11:32:41 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id u20so6493321pfm.7;
+        Tue, 28 Feb 2023 11:32:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O2L0ttHm+/TkRLQEPj0BgPCqHHA0WUnIL4IMzbCPwzE=;
+        b=Iy8qB9Z1kMtM1MTX1VPnLNaFlrUc6GdkaN7+FaqLbVBAshZeC5lMkinzk9jp/i+4xV
+         /0HIJghk4Z6ToOZa/my9BRFaxtaxBNWqpq9EPOsnwjI5D2XErj8gPuQzIBaByeJk/pZc
+         HIh+8jJFGSGKcoMqon8vyVGX+n+0i5pLmoXktRoPm4Lx8tDBfPCV8W7mCuDsbwuT0nH1
+         I2ZFICe3Axgto7u6Pk9uGMA4uUkTTN+Bh0l92pTX9MyESZR08kwH+XRwPs5DqlzAUy5Z
+         ve3P2nIin6zzUcTVv9FaERrJbone9EzXD/im6+a5B1v2rx0PrdQ+RIu7ZJzqck45UvAX
+         ZQLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O2L0ttHm+/TkRLQEPj0BgPCqHHA0WUnIL4IMzbCPwzE=;
+        b=wKL2wLdFP68fOKSylVVrISDvzXP2xq85Ylfl6VANg4VgP/ze/Ug3EtP35oO70n7ATc
+         lpe0HpcyR6ele2M0RONp49u2ulwov7jLTBC8nGfRu1KUxOmsum3koIu+7bFm5IDH2yu2
+         n3NIUR/OLO4fk2wtKLYihL1U46y2Z4psKKK+NpiV/gMYh1tOfI2UJCsTGCMzSKrziWsM
+         SjALZ7o4ULPhjAm+8mEnaR9MPqtq5cJBF0oNiU6iGb2hagzsGobfBDcP0yIa0az6PM8Z
+         YujpB9/w8vPSOmB5/8x6ARwLS5AYJKXXRyp8k1rSb9dpgH4M9LpLO5zwUO17dublSpFA
+         XuOQ==
+X-Gm-Message-State: AO0yUKUM8xrUMrPXdJjaDQ3w+3vOyQfzD71gBhgSOTShRknsdgL70R3G
+        GBkqvu7zmendSMw5GhGwcaI=
+X-Google-Smtp-Source: AK7set/NsBZzMwC2RvLZxEARHzT6MyElSzKxy1pIoxxyboLy/+ZTqbG9OrK5Zqf1B7ZEGWlp4iYhsg==
+X-Received: by 2002:a62:79c5:0:b0:593:befd:848c with SMTP id u188-20020a6279c5000000b00593befd848cmr4419327pfc.16.1677612760805;
+        Tue, 28 Feb 2023 11:32:40 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id c9-20020a637249000000b00502f20aa4desm6076987pgn.70.2023.02.28.11.32.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Feb 2023 11:32:39 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 28 Feb 2023 09:32:38 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, void@manifault.com, davemarchevsky@meta.com,
+        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf-next 2/5] bpf: Mark cgroups and dfl_cgrp fields as
+ trusted.
+Message-ID: <Y/5W1ju2DfmaxCIB@slm.duckdns.org>
+References: <20230228040121.94253-1-alexei.starovoitov@gmail.com>
+ <20230228040121.94253-3-alexei.starovoitov@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230228040121.94253-3-alexei.starovoitov@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 28 Feb 2023 10:31:58 +0100 Jiri Olsa <jolsa@kernel.org> wrote:
-
-> Storing build id in file's inode object for elf executable with build
-> id defined. The build id is stored when file is mmaped.
+On Mon, Feb 27, 2023 at 08:01:18PM -0800, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> This is enabled with new config option CONFIG_INODE_BUILD_ID.
+> bpf programs sometimes do:
+> bpf_cgrp_storage_get(&map, task->cgroups->dfl_cgrp, ...);
+> It is safe to do, because cgroups->dfl_cgrp pointer is set diring init and
+                                                              ^
+							      u
+
+> never changes. The task->cgroups is also never NULL. It is also set during init
+> and will change when task switches cgroups. For any trusted task pointer
+> dereference of cgroups and dfl_cgrp should yield trusted pointers. The verifier
+> wasn't aware of this. Hence in gcc compiled kernels task->cgroups dereference
+> was producing PTR_TO_BTF_ID without modifiers while in clang compiled kernels
+> the verifier recognizes __rcu tag in cgroups field and produces
+> PTR_TO_BTF_ID | MEM_RCU | MAYBE_NULL.
+> Tag cgroups and dfl_cgrp as trusted to equalize clang and gcc behavior.
+> When GCC supports btf_type_tag such tagging will done directly in the type.
 > 
-> The build id is valid only when the file with given inode is mmap-ed.
-> 
-> We store either the build id itself or the error we hit during
-> the retrieval.
-> 
-> ...
->
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -699,6 +700,12 @@ struct inode {
->  	struct fsverity_info	*i_verity_info;
->  #endif
->  
-> +#ifdef CONFIG_INODE_BUILD_ID
-> +	/* Initialized and valid for executable elf files when mmap-ed. */
-> +	struct build_id		*i_build_id;
-> +	spinlock_t		i_build_id_lock;
-> +#endif
-> +
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-Remember we can have squillions of inodes in memory.  So that's one
-costly spinlock!
+Acked-by: Tejun Heo <tj@kernel.org>
 
-AFAICT this lock could be removed if mmap_region() were to use an
-atomic exchange on inode->i_build_id?
+Thanks.
 
-If not, can we use an existing lock?  i_lock would be appropriate
-(don't forget to update its comment).
-
-Also, the code in mmap_region() runs build_id_free() inside the locked
-region, which seems unnecessary.
-
+-- 
+tejun
