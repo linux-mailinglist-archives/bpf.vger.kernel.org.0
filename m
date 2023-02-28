@@ -2,153 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F39E6A5A18
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 14:43:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966106A5A78
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 15:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjB1Nnb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 08:43:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
+        id S229616AbjB1OAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 09:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjB1Nnb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 08:43:31 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841D325B9F;
-        Tue, 28 Feb 2023 05:43:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=2YufEiSw26yUxGvxbvEcxh/qT0bL7Zfm+eeVmdJnJkM=; b=T/sgNzMZ8+UIner/PUcMgOg0r1
-        zQFvgCVN9l9b9eWUqLPajIEg7GxjjPqq3otpSJRj9gin0diwflv6ia8ZCPL04YQABg2bdTernyi89
-        ooFAaYDR6yXfIrMHL8UHBE18j8nG2rjqjGPvVxg0HTse1XpYp33aRiCrXUeN7LsRsnC8aF8IqhmOf
-        Eh2TxqwlxGimqD8PkcJjOoKbHU9BUQtsMHE3NZ4XZD2QFMaU3McaXEIW8qApfUB5PnksxSSvwoZTs
-        We2Y4z1gmxzeic23kKSYEQq1sgcrobW3UHb9fMAOmr4IwMr8NWA1U/LdljFfr92RsUSKXudXvL9nN
-        IbGKeqSA==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pX0GN-000Dyo-8m; Tue, 28 Feb 2023 14:43:27 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pX0GN-000H1f-0N; Tue, 28 Feb 2023 14:43:27 +0100
-Subject: Re: [PATCH bpf-next v2 0/8] Support defragmenting IPv(4|6) packets in
- BPF
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, quentin@isovalent.com
-References: <cover.1677526810.git.dxu@dxuuu.xyz>
- <20230227230338.awdzw57e4uzh4u7n@MacBook-Pro-6.local>
- <20230228015712.clq6kyrsd7rrklbz@kashmir.localdomain>
- <CAADnVQ+a633QyZgkbXfRiT_WRbPgr5n8RN0w=ntEkBHUeqRcbw@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <fbf869c6-29ac-4dbe-dd1c-85c6c3c10670@iogearbox.net>
-Date:   Tue, 28 Feb 2023 14:43:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229493AbjB1OAU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 09:00:20 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4873712BEB;
+        Tue, 28 Feb 2023 06:00:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D02666109E;
+        Tue, 28 Feb 2023 14:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 29C17C4339C;
+        Tue, 28 Feb 2023 14:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677592818;
+        bh=usFwqgpY+ATKAODdZvuI3VzP03kV2w6Ray28rxMK7L4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=iisplRTC0n2sBh6buJNCyaB14vxoQ411G4kohll5JyPKNtY9HZWqCYfbgj3effsrx
+         NyqqL3LcsGGAmbgj3bTtIEqIwF1uR4y+zgwnKKlQ4hdyE8WavYxHH3CLwKtb0vrYAN
+         ao/JpLewRDUj99YhMIkN7DcF61/K1lVjDIYXbgElM4Vv/OPvqs+7aPkFFW2B7MN+wX
+         lruHIZ8q3PCULVlZMOF5HsYbS4n1jHAlnKX1qSIdC/BDodTVOL0fXfqmzj1YZYkyti
+         XXZmDnxN7afBktqvjtPbyTbpaJdzoYyWw/BXb9zNMg/MWC+MEyJYc2nSsAYHZBQYiO
+         x+s45utHsrNHA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0D9A0C691DE;
+        Tue, 28 Feb 2023 14:00:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+a633QyZgkbXfRiT_WRbPgr5n8RN0w=ntEkBHUeqRcbw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26826/Tue Feb 28 09:32:16 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 0/2] MIPS: Implement two workarounds for BPF JIT
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167759281805.14618.4922384489244430083.git-patchwork-notify@kernel.org>
+Date:   Tue, 28 Feb 2023 14:00:18 +0000
+References: <20230228113305.83751-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20230228113305.83751-1-jiaxun.yang@flygoat.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tsbogend@alpha.franken.de, johan.almbladh@anyfinetworks.com,
+        paulburton@kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/28/23 5:56 AM, Alexei Starovoitov wrote:
-> On Mon, Feb 27, 2023 at 5:57 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->> On Mon, Feb 27, 2023 at 03:03:38PM -0800, Alexei Starovoitov wrote:
->>> On Mon, Feb 27, 2023 at 12:51:02PM -0700, Daniel Xu wrote:
->>>> === Context ===
->>>>
->>>> In the context of a middlebox, fragmented packets are tricky to handle.
->>>> The full 5-tuple of a packet is often only available in the first
->>>> fragment which makes enforcing consistent policy difficult. There are
->>>> really only two stateless options, neither of which are very nice:
->>>>
->>>> 1. Enforce policy on first fragment and accept all subsequent fragments.
->>>>     This works but may let in certain attacks or allow data exfiltration.
->>>>
->>>> 2. Enforce policy on first fragment and drop all subsequent fragments.
->>>>     This does not really work b/c some protocols may rely on
->>>>     fragmentation. For example, DNS may rely on oversized UDP packets for
->>>>     large responses.
->>>>
->>>> So stateful tracking is the only sane option. RFC 8900 [0] calls this
->>>> out as well in section 6.3:
->>>>
->>>>      Middleboxes [...] should process IP fragments in a manner that is
->>>>      consistent with [RFC0791] and [RFC8200]. In many cases, middleboxes
->>>>      must maintain state in order to achieve this goal.
->>>>
->>>> === BPF related bits ===
->>>>
->>>> However, when policy is enforced through BPF, the prog is run before the
->>>> kernel reassembles fragmented packets. This leaves BPF developers in a
->>>> awkward place: implement reassembly (possibly poorly) or use a stateless
->>>> method as described above.
->>>>
->>>> Fortunately, the kernel has robust support for fragmented IP packets.
->>>> This patchset wraps the existing defragmentation facilities in kfuncs so
->>>> that BPF progs running on middleboxes can reassemble fragmented packets
->>>> before applying policy.
->>>>
->>>> === Patchset details ===
->>>>
->>>> This patchset is (hopefully) relatively straightforward from BPF perspective.
->>>> One thing I'd like to call out is the skb_copy()ing of the prog skb. I
->>>> did this to maintain the invariant that the ctx remains valid after prog
->>>> has run. This is relevant b/c ip_defrag() and ip_check_defrag() may
->>>> consume the skb if the skb is a fragment.
->>>
->>> Instead of doing all that with extra skb copy can you hook bpf prog after
->>> the networking stack already handled ip defrag?
->>> What kind of middle box are you doing? Why does it have to run at TC layer?
->>
->> Unless I'm missing something, the only other relevant hooks would be
->> socket hooks, right?
->>
->> Unfortunately I don't think my use case can do that. We are running the
->> kernel as a router, so no sockets are involved.
-> 
-> Are you using bpf_fib_lookup and populating kernel routing
-> table and doing everything on your own including neigh ?
-> 
-> Have you considered to skb redirect to another netdev that does ip defrag?
-> Like macvlan does it under some conditions. This can be generalized.
-> 
-> Recently Florian proposed to allow calling bpf progs from all existing
-> netfilter hooks.
-> You can pretend to local deliver and hook in NF_INET_LOCAL_IN ?
-> I feel it would be so much cleaner if stack does ip_defrag normally.
-> The general issue of skb ownership between bpf prog and defrag logic
-> isn't really solved with skb_copy. It's still an issue.
+Hello:
 
-I do like this series and we would also use it for Cilium case, so +1 on the
-tc BPF integration. Today we have in Cilium what Ed [0] hinted in his earlier
-mail where we extract information from first fragment and store the meta data
-in a BPF map for subsequent packets based on ipid [1], but limitations apply
-e.g. service load-balancing won't work. Redirecting to a different device
-or moving higher up the stack is cumbersome since we then need to go and
-recirculate back into tc BPF layer where all the business logic is located and
-handling the regular (non-fragmented) path, too. Wrt skb ownership, can you
-elaborate what is a concrete issue exactly? Anything that comes to mind with
-this approach that could crash the kernel?
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-   [0] https://lore.kernel.org/bpf/cf49a091-9b14-05b8-6a79-00e56f3019e1@gmail.com/
-   [1] https://github.com/cilium/cilium/pull/10264
+On Tue, 28 Feb 2023 11:33:03 +0000 you wrote:
+> Hi all,
+> 
+> Just noticed eBPF JIT is not working on R4000 when messing around with QEMU.
+> 
+> This patchset implements two workarounds that is blocking us from enabling eBPF
+> JIT on R4000.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,1/2] MIPS: ebpf jit: Implement DADDI workarounds
+    https://git.kernel.org/bpf/bpf-next/c/bbefef2f0708
+  - [v2,2/2] MIPS: ebpf jit: Implement R4000 workarounds
+    https://git.kernel.org/bpf/bpf-next/c/7364d60c2661
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
