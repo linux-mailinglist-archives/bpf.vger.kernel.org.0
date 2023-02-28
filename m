@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A28D6A53D5
-	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 08:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDEA6A53D4
+	for <lists+bpf@lfdr.de>; Tue, 28 Feb 2023 08:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbjB1Hpe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S229944AbjB1Hpe (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 28 Feb 2023 02:45:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbjB1Hpd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S229471AbjB1Hpd (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 28 Feb 2023 02:45:33 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27FE20056;
-        Mon, 27 Feb 2023 23:45:31 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id p20so8289085plw.13;
-        Mon, 27 Feb 2023 23:45:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677570331;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=B3IIbCz5VoootLT5YWGDuEjPpnKLu/63h0xoAFiVcZk=;
-        b=V8+YN3Jv29gr7RpoaOjzqtnM5GPq+Mx2cPWj6NKepht54VPpr0K/0LFOSLv6Oay9Bh
-         leyqNrY2lmQ3MVRdTD0xu2gEGICqXwNSbmaoJLiPFxEZoPQzDO1KS4ADF6qJ1dEVE18Q
-         K0bNPYWQIW3L3tYz9QsORMuu9RcYOzxJ0Be3U3LYSDqwQnIJ+FK4BUMeWXw4Am1P9i2s
-         94PexP+QZHWL8qaGk5jP2+YJw2DDxKVW6miOXXSaW0IAkthrta/+ajTfQfgTlvMrH422
-         rKi/AtUtF2R56vW7mkQYB34zcWBt/VOXelMW5BHbzfke5OnHdEAGeCKOBBQkWtyMxeUF
-         cLyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677570331;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B3IIbCz5VoootLT5YWGDuEjPpnKLu/63h0xoAFiVcZk=;
-        b=viGHcR5JJ+RnT1dElqOrIi7icgeACi1sNl7ujXki5zMKxDBppDH6/od5ZiUkNvXDZg
-         FBg2Ju3Us7bzs/ZXpu0nMQ0uQD2d3k6SV6ZJs6nKaOoL4kDnIf3vyiHWysvTT6WEdS2f
-         jpN5yQ8N1XTh/YEfbogXguXjqxgufePRzMFAmIB4QCg0BnEC6mGWBWB4NXQnHREGbyst
-         ejw5DUSZJezG7Bd80FnTEi2f8snXgh2Prj2EyP5xY2tk64jRMMKbjjcGPoM93Ww83N5U
-         8gcrAZNf1rGmPQBC6Vz/L38kbCpOVn+o8wynD9vTcmGlBZJwKqvY+zgSQVlPNf5DRo7o
-         4RQA==
-X-Gm-Message-State: AO0yUKW79iSxe490eg/km37IkyTU3yC/VkI50l1HfKomRvMw0LGex4Gx
-        CvgPZbxeo8+BmBfBxEa3VEs=
-X-Google-Smtp-Source: AK7set9Eh7VgsYyp2ljJmYCIFQfKilCRuaHIthXT3jOHBTGuVlc0afsxJQLt52+1Lde4Az2sBKlsAA==
-X-Received: by 2002:a17:902:d507:b0:19a:96ea:3850 with SMTP id b7-20020a170902d50700b0019a96ea3850mr2547931plg.17.1677570331254;
-        Mon, 27 Feb 2023 23:45:31 -0800 (PST)
-Received: from debian.me (subs02-180-214-232-86.three.co.id. [180.214.232.86])
-        by smtp.gmail.com with ESMTPSA id w13-20020a170902d70d00b0019aeddce6casm5773361ply.205.2023.02.27.23.45.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DD51EBFD;
         Mon, 27 Feb 2023 23:45:30 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id ky4so9531486plb.3;
+        Mon, 27 Feb 2023 23:45:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1677570330;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GHy6ab7agGyazZ8+IkAKFCiyzz2TR79Tj1aCMW8RwZ4=;
+        b=fkzvyPvOHz0gnamBcxDCmV+b18IalVtgGEInyXc4m4qVedBXqvGEPoERYo0QPEOW8o
+         dV5If1SuoXkPThIxxZjLp9c0Sc72lH3wakUn7gAey9rnEmjbxv4ErIRYX8cjujyXbz6M
+         DIPmgUWP4aPa0Co+XGi9ZO2E7inAW2y88lWb82nwY0SldwGdKBZTX2CQgQj93BcRvG8R
+         wY2Tdj4fQ13aGowWvrJ6ptSIbX37gPUO3Z8to/n0mf7Mmmh1HJi3Qiyxoms7ZeCz5t7K
+         YIcMxSJfKntbPCfBRKCzA1RwChBlsBxiMClKZ7Wf+jWx/8SjZwXEeQ6gdiykW3dwUp+n
+         eYEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677570330;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GHy6ab7agGyazZ8+IkAKFCiyzz2TR79Tj1aCMW8RwZ4=;
+        b=IJjLgmgz41ZVNxW1WDeciM/IpRk6MaKAcv2PoodatoeakeY5FwI1usEiBXaKocK59W
+         FBGF1Ogi7y2Pgu2Sd7NndP/UNd6JUdCgnI4/GXKxdHpaecUga4CzXx/N4HNK4fOxIz2y
+         migsz2NBsDuIAv3JCm44VIoz1ruMFiP+w27bnrbWAK8ul4ZeIHHhbUosZsM5CkseS4Jq
+         j3RVM344XY+RVJ1YBc30X2wNoTnW8JQYvnpSNVWDb+H+JFM5LnY07Sf+ek5i+azm7Wfp
+         won3X6qy1Gjmio7mqsWuMUyBkYFP8zduxpJ0uEU4vd4eq1nndh2GZ4KyZbHa0n5rwhto
+         HijQ==
+X-Gm-Message-State: AO0yUKVlCXSDwlZ3hec6JmgV/c1qYCyU8gCH/xrezalGfoLyEFX9bznS
+        amJJF3IObaLf8/uHTvtKgN8=
+X-Google-Smtp-Source: AK7set8vVDbK/53GDNTnafGGAjtyPe5GuRyKPuh0gmf4Rr7HNx+GUlD0cjgQCT+szwQwTpNBRVgFFQ==
+X-Received: by 2002:a17:902:ce8f:b0:19a:9434:af30 with SMTP id f15-20020a170902ce8f00b0019a9434af30mr2363001plg.18.1677570330349;
+        Mon, 27 Feb 2023 23:45:30 -0800 (PST)
+Received: from debian.me (subs02-180-214-232-86.three.co.id. [180.214.232.86])
+        by smtp.gmail.com with ESMTPSA id jn9-20020a170903050900b0019cc3d0e1basm5873829plb.112.2023.02.27.23.45.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Feb 2023 23:45:29 -0800 (PST)
 Received: by debian.me (Postfix, from userid 1000)
-        id ED4FE106642; Tue, 28 Feb 2023 14:45:25 +0700 (WIB)
+        id 5AD5A106575; Tue, 28 Feb 2023 14:45:25 +0700 (WIB)
 From:   Bagas Sanjaya <bagasdotme@gmail.com>
 To:     Linux BPF <bpf@vger.kernel.org>,
         Linux Documentation <linux-doc@vger.kernel.org>,
@@ -66,12 +67,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH 0/2] Hyperlink fixes for BPF QA documentation
-Date:   Tue, 28 Feb 2023 14:45:21 +0700
-Message-Id: <20230228074523.11493-1-bagasdotme@gmail.com>
+Subject: [PATCH 1/2] Documentation: bpf: Do not link to docs.kernel.org for kselftest link
+Date:   Tue, 28 Feb 2023 14:45:22 +0700
+Message-Id: <20230228074523.11493-2-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230228074523.11493-1-bagasdotme@gmail.com>
+References: <20230228074523.11493-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=753; i=bagasdotme@gmail.com; h=from:subject; bh=us+PmiUeFdZVNAJDwt3UjWoGL9oA6EGBTOm77WeDDAM=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDMl/N3ILKSw4Hdc+Z/uUIyI+lTOyZeNUeHfHzHAQCp1suvzp 2//nOkpZGMS4GGTFFFkmJfI1nd5lJHKhfa0jzBxWJpAhDFycAjCRP2aMDL06x6pNNwlO8Z1vFm/P5G 4u0FmxSS5iflyjtoisa5hbEyPDqxRl/63OzY80TtZeqHI8voVfeL/NnuK9YR2Hel4HX+LhAwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1604; i=bagasdotme@gmail.com; h=from:subject; bh=yWxliHf0f0vpYKAwhnAwEeu8mJhvpwvbMoeq0P63UQA=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDMl/Nwotn5u7fZEe85mOhrz94TrGiikmzywvPG8887yivnme et39jlIWBjEuBlkxRZZJiXxNp3cZiVxoX+sIM4eVCWQIAxenAEykJ5GR4SafXavTKbPlt9fY5qjM3v yw832v+t15t10reb9kHw/n9Wf4X5r2w/2mxLd8H8WCN8WreqZ/rfu+6bHastkdmX0nOau+cAAA
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,24 +87,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the broken link fix for Documentation/bpf/bpf_devel_QA.rst was
-applied, Daniel Borkmann asked me to also fix some other links in the
-documentation [1]. So here is the series.
+The question on how to run BPF selftests have a reference link to kernel
+selftest documentation (Documentation/dev-tools/kselftest.rst). However,
+it uses external link to the documentation at kernel.org/docs (aka
+docs.kernel.org) instead, which requires Internet access.
 
-The fixes in the shortlog below should be self-explanatory.
+Replace the link with internal linking, by using :doc: directive
+while keeping the anchor text.
 
-[1]: https://lore.kernel.org/linux-doc/7cd545a2-4a5c-1961-1cf7-cd0f24e41df8@iogearbox.net/
+Fixes: b7a27c3aafa252 ("bpf, doc: howto use/run the BPF selftests")
+Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+---
+ Documentation/bpf/bpf_devel_QA.rst | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Bagas Sanjaya (2):
-  Documentation: bpf: Do not link to docs.kernel.org for kselftest link
-  Documentation: bpf: Link to submitting-patches.rst for general patch
-    submission info
-
- Documentation/bpf/bpf_devel_QA.rst | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
-
-
-base-commit: 2d311f480b52eeb2e1fd432d64b78d82952c3808
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+index 715f7321020f27..eb087c599ffa44 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -461,8 +461,8 @@ needed::
+ 
+   $ sudo make run_tests
+ 
+-See the kernels selftest `Documentation/dev-tools/kselftest.rst`_
+-document for further documentation.
++See :doc:`kernel selftest documentation </dev-tools/kselftest>`
++for details.
+ 
+ To maximize the number of tests passing, the .config of the kernel
+ under test should match the config file fragment in
+@@ -688,7 +688,5 @@ when:
+ .. _netdev-FAQ: Documentation/process/maintainer-netdev.rst
+ .. _selftests:
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/
+-.. _Documentation/dev-tools/kselftest.rst:
+-   https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+ 
+ Happy BPF hacking!
 -- 
 An old man doll... just what I always wanted! - Clara
 
