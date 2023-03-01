@@ -2,137 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A106A7404
-	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 20:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B9D6A740D
+	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 20:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjCATHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Mar 2023 14:07:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
+        id S229537AbjCATJT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 14:09:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjCATHU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Mar 2023 14:07:20 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCD54C6C2;
-        Wed,  1 Mar 2023 11:07:18 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id o15so55597787edr.13;
-        Wed, 01 Mar 2023 11:07:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677697637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s0SrDaMx47dZSDAQhcmlHOV2N9fQVTDg09mPQlLxC9M=;
-        b=CDpRsh199rWY38RyCCGharyYY1hkwYA8Ws9uj5V2vaWsY2G3QxTsVJGjaz2EVqEA9+
-         8hqIzTazTS3T8bQuDm7aeR7pprJL3QihwiNXUa5W3iGs46jxNkxOdQivQF7Zzb1T3mQo
-         5TthgQrNgwZ6GEPylDOEWWnvZjXbS1nt5C0vuuQHQ9F97t4qWKy+1bQG3gR6TpHZbWwY
-         uijByKpFzIyQBQ1xxNdYB6GyM8iUEUrQ6AS3KKu96xjSDcoakn3uzcne/Dn+10cZGNgt
-         CRdqOSayQWN7eeHOlgxeoyUr9NRuVVBFzcCC+DlTSLjafAkzMaa7sb7kn+7uzzdk3yON
-         P1wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677697637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s0SrDaMx47dZSDAQhcmlHOV2N9fQVTDg09mPQlLxC9M=;
-        b=gvhd9363lPa2Z3WLqR0z4TNo77ApeAi8fj4EUz/wjk0lui2ugAv1UVad3SMkgBB+yU
-         B+MjWNFc76FCK4YQXuey1VpLAxHWNDvU1wPTXbg7TepL6ZyVrvyYdr5YfCSk+h2LvpsZ
-         LXsBzhlLKFCAjKIbf0MyX82vAIulyUxQgY0KR7NTeON7ZH4koHqvMwSECSo1yIr0gzVv
-         lduG42ekgSgcQsvEfYhFjzuTOW16rxbdgYSfMzE4vAHxKxHgdlZj5nTf4TGYfGQQJLO7
-         O8IIrw48I3OJGRcD5mtJsql+PoLxPprc+gtKXPnlp5pSHX/WlCsF62Rvm51Nc/0hzk/2
-         O5WQ==
-X-Gm-Message-State: AO0yUKX7N7s49lMdtWIIKaB+urlCnNie4rQS3GwPERbmcyPFFIugD6m7
-        12XWZmq0PcOFBQvkvfk6TiBbmCgY8clYskKwi83VdBHy32E=
-X-Google-Smtp-Source: AK7set+M+69w2igi8dfZYPhsZRTpH2ly6t8MSR4QfiEaQRo/nk897/ARs1e+HbzcbbSOkrhHiJYMdWktV6uvyOnBuPU=
-X-Received: by 2002:a50:cdd5:0:b0:4bc:13f5:68a5 with SMTP id
- h21-20020a50cdd5000000b004bc13f568a5mr1835748edj.5.1677697637021; Wed, 01 Mar
- 2023 11:07:17 -0800 (PST)
-MIME-Version: 1.0
-References: <1677585781-21628-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1677585781-21628-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 1 Mar 2023 11:07:05 -0800
-Message-ID: <CAEf4BzbZogSTyvF4bPB8w_1KNrBOLOPKBWbo9na3_9JZSJnuAg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] selftests/bpf: Set __BITS_PER_LONG if target
- is bpf for LoongArch
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229492AbjCATJS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 14:09:18 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FCC30FF;
+        Wed,  1 Mar 2023 11:09:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677697757; x=1709233757;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bJzj9S3Ol5uf9Y3a+Q3tlxd3ZEIxI0dIWJCTPDgaX3w=;
+  b=Y/heiCKV65lDNVIkVhaa8II1pI2RTg4y04E2Xf7h0YlvuRuLnIImINII
+   MdJ+1Bq0sh3JVK5WL8JohUQkU/QDyXC9WVOJ4mi+7NfxAoMlazguU/Vq6
+   msbC1CHVZPuc6sETipvPtf+hEkhZuuEZt6l0jdhOsHzIk4L7iLvNr3qOC
+   hO9pTCrEj4Ln7+fVqSykEBZRt3oIr7Da312V0UPwBDJPcMCpAeLPUs5aX
+   jDtyRdAbd2088mhQ1YgF27IDy0xQRs5DNjrQr68uwI/HlV0aTEZ40KsMD
+   AuMN1JUuzN4aO4KzCY4BKgTXKlEMvk1ez7HZLGWwiK1C+MrhHPJ9Ay/Oi
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="318298923"
+X-IronPort-AV: E=Sophos;i="5.98,225,1673942400"; 
+   d="scan'208";a="318298923"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2023 11:08:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="920353573"
+X-IronPort-AV: E=Sophos;i="5.98,225,1673942400"; 
+   d="scan'208";a="920353573"
+Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Mar 2023 11:08:31 -0800
+Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pXRoU-0006M3-2q;
+        Wed, 01 Mar 2023 19:08:30 +0000
+Date:   Thu, 2 Mar 2023 03:08:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Song Liu <song@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 1/2] xdp: recycle Page Pool backed skbs built
+ from XDP frames
+Message-ID: <202303020331.PSFMFbXw-lkp@intel.com>
+References: <20230301160315.1022488-2-aleksander.lobakin@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230301160315.1022488-2-aleksander.lobakin@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 4:03=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
-> If target is bpf, there is no __loongarch__ definition, __BITS_PER_LONG
-> defaults to 32, __NR_nanosleep is not defined:
->
->   #if defined(__ARCH_WANT_TIME32_SYSCALLS) || __BITS_PER_LONG !=3D 32
->   #define __NR_nanosleep 101
->   __SC_3264(__NR_nanosleep, sys_nanosleep_time32, sys_nanosleep)
->   #endif
->
-> Work around this problem, by explicitly setting __BITS_PER_LONG to
-> __loongarch_grlen which is defined by compiler as 64 for LA64, then
-> __NR_nanosleep can also be defined to fix the following build errors:
->
->   clang  -g -Werror ... -target bpf -c progs/test_vmlinux.c ...
->   progs/test_vmlinux.c:24:18: error: use of undeclared identifier '__NR_n=
-anosleep'
->           if (args->id !=3D __NR_nanosleep)
->                           ^
->   progs/test_vmlinux.c:42:12: error: use of undeclared identifier '__NR_n=
-anosleep'
->           if (id !=3D __NR_nanosleep)
->                     ^
->   progs/test_vmlinux.c:60:12: error: use of undeclared identifier '__NR_n=
-anosleep'
->           if (id !=3D __NR_nanosleep)
->                     ^
->   3 errors generated.
+Hi Alexander,
 
-Not clear what __NR_nanosleep part has to do with this commit. I
-dropped this part from the commit message. Applied to bpf-next.
+Thank you for the patch! Yet something to improve:
 
->
-> This is similar with commit 36e70b9b06bf ("selftests, bpf: Fix broken
-> riscv build").
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  tools/testing/selftests/bpf/Makefile | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index b677dcd..f40606a 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -338,7 +338,8 @@ $(RESOLVE_BTFIDS): $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)=
-/resolve_btfids        \
->  define get_sys_includes
->  $(shell $(1) $(2) -v -E - </dev/null 2>&1 \
->         | sed -n '/<...> search starts here:/,/End of search list./{ s| \=
-(/.*\)|-idirafter \1|p }') \
-> -$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{pri=
-ntf("-D__riscv_xlen=3D%d -D__BITS_PER_LONG=3D%d", $$3, $$3)}')
-> +$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{pri=
-ntf("-D__riscv_xlen=3D%d -D__BITS_PER_LONG=3D%d", $$3, $$3)}') \
-> +$(shell $(1) $(2) -dM -E - </dev/null | grep '__loongarch_grlen ' | awk =
-'{printf("-D__BITS_PER_LONG=3D%d", $$3)}')
->  endef
->
->  # Determine target endianness.
-> --
-> 2.1.0
->
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Alexander-Lobakin/xdp-recycle-Page-Pool-backed-skbs-built-from-XDP-frames/20230302-000635
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230301160315.1022488-2-aleksander.lobakin%40intel.com
+patch subject: [PATCH bpf-next v1 1/2] xdp: recycle Page Pool backed skbs built from XDP frames
+config: i386-randconfig-a001 (https://download.01.org/0day-ci/archive/20230302/202303020331.PSFMFbXw-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/a5ca5578e9bd35220be091fd02df96d492120ee3
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Alexander-Lobakin/xdp-recycle-Page-Pool-backed-skbs-built-from-XDP-frames/20230302-000635
+        git checkout a5ca5578e9bd35220be091fd02df96d492120ee3
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 olddefconfig
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303020331.PSFMFbXw-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   net/core/xdp.c: In function '__xdp_build_skb_from_frame':
+>> net/core/xdp.c:662:17: error: implicit declaration of function 'skb_mark_for_recycle' [-Werror=implicit-function-declaration]
+     662 |                 skb_mark_for_recycle(skb);
+         |                 ^~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/skb_mark_for_recycle +662 net/core/xdp.c
+
+   614	
+   615	struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+   616						   struct sk_buff *skb,
+   617						   struct net_device *dev)
+   618	{
+   619		struct skb_shared_info *sinfo = xdp_get_shared_info_from_frame(xdpf);
+   620		unsigned int headroom, frame_size;
+   621		void *hard_start;
+   622		u8 nr_frags;
+   623	
+   624		/* xdp frags frame */
+   625		if (unlikely(xdp_frame_has_frags(xdpf)))
+   626			nr_frags = sinfo->nr_frags;
+   627	
+   628		/* Part of headroom was reserved to xdpf */
+   629		headroom = sizeof(*xdpf) + xdpf->headroom;
+   630	
+   631		/* Memory size backing xdp_frame data already have reserved
+   632		 * room for build_skb to place skb_shared_info in tailroom.
+   633		 */
+   634		frame_size = xdpf->frame_sz;
+   635	
+   636		hard_start = xdpf->data - headroom;
+   637		skb = build_skb_around(skb, hard_start, frame_size);
+   638		if (unlikely(!skb))
+   639			return NULL;
+   640	
+   641		skb_reserve(skb, headroom);
+   642		__skb_put(skb, xdpf->len);
+   643		if (xdpf->metasize)
+   644			skb_metadata_set(skb, xdpf->metasize);
+   645	
+   646		if (unlikely(xdp_frame_has_frags(xdpf)))
+   647			xdp_update_skb_shared_info(skb, nr_frags,
+   648						   sinfo->xdp_frags_size,
+   649						   nr_frags * xdpf->frame_sz,
+   650						   xdp_frame_is_frag_pfmemalloc(xdpf));
+   651	
+   652		/* Essential SKB info: protocol and skb->dev */
+   653		skb->protocol = eth_type_trans(skb, dev);
+   654	
+   655		/* Optional SKB info, currently missing:
+   656		 * - HW checksum info		(skb->ip_summed)
+   657		 * - HW RX hash			(skb_set_hash)
+   658		 * - RX ring dev queue index	(skb_record_rx_queue)
+   659		 */
+   660	
+   661		if (xdpf->mem.type == MEM_TYPE_PAGE_POOL)
+ > 662			skb_mark_for_recycle(skb);
+   663	
+   664		/* Allow SKB to reuse area used by xdp_frame */
+   665		xdp_scrub_frame(xdpf);
+   666	
+   667		return skb;
+   668	}
+   669	EXPORT_SYMBOL_GPL(__xdp_build_skb_from_frame);
+   670	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
