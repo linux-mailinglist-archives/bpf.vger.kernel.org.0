@@ -2,122 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB066A6936
-	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 09:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 050C16A6970
+	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 10:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjCAIzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Mar 2023 03:55:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
+        id S229809AbjCAJE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 04:04:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjCAIzN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Mar 2023 03:55:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5449E32CE7
-        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 00:54:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677660866;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Knrux4ZtBA0k+RI+TuuKKyAib/njULm/87MPp1L0bs=;
-        b=FQCISxb3P+4DuvirHIV3Qn05neVqG6SqYZlKWI84BWbHlPbJ4IBbO5ovFnbCnYh5WjFi8c
-        UJ/Nrjs4rpvKvAQaqNPXHKHlDaCruQKupQjjVLo2pnE3icL2w3MGyWbPlu5+DP/MvzSgFW
-        /So1dosYHNRzWzP7QwvujAF3a2EQTvc=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-589-6hBBMfa-Nsm2K32e-EJLxQ-1; Wed, 01 Mar 2023 03:54:20 -0500
-X-MC-Unique: 6hBBMfa-Nsm2K32e-EJLxQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229700AbjCAJEy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 04:04:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F6839CFA;
+        Wed,  1 Mar 2023 01:04:53 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A5E092807D62;
-        Wed,  1 Mar 2023 08:54:19 +0000 (UTC)
-Received: from dhcph048.fit.vutbr.cz (unknown [10.45.224.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5F8912026D4B;
-        Wed,  1 Mar 2023 08:54:17 +0000 (UTC)
-From:   Viktor Malik <vmalik@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next 3/3] libbpf: cleanup linker_append_elf_relos
-Date:   Wed,  1 Mar 2023 09:53:55 +0100
-Message-Id: <c5c8fe9f411b69afada8399d23bb048ef2a70535.1677658777.git.vmalik@redhat.com>
-In-Reply-To: <cover.1677658777.git.vmalik@redhat.com>
-References: <cover.1677658777.git.vmalik@redhat.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 868626126D;
+        Wed,  1 Mar 2023 09:04:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CC2FC433EF;
+        Wed,  1 Mar 2023 09:04:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677661492;
+        bh=z21i2bbgNle1vRUEVDDjhe6+QJGLMIv8uol1hWtOW1o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rafZEzwch6hhuYeCBElLaflPtGxRFYkogh1e7gU7FsVSDet+Tf8owF0/NhlAUFOIF
+         JbFaw/YvY0PtzTOnxmXDE9ClYlSZqbLX2okqUVTgDDaNz8LLB+JU5ylpJUxW2YGWwB
+         T4XJ6BYjhshCe4BCkpyueHPgWof0AHm3bwIPAunMvIgMayz5Ya2TfoJBoLMwRPZwvf
+         40tfSGL5D0igO0r9B1X+1YCPfbje6Yh9jrgoNoIeW0akX4yEnvHwI/CozPSvs7kFTU
+         W5QCJD8nKqGM6KTy/ex2tyIJ1LZFL7B1VVeNb9e7fpJIp15DykPUPsOw+FEsBsudQ3
+         ZW6jzh60b/PoA==
+Date:   Wed, 1 Mar 2023 10:04:48 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        saeedm@nvidia.com, tariqt@nvidia.com, leon@kernel.org,
+        shayagr@amazon.com, akiyano@amazon.com, darinzon@amazon.com,
+        sgoutham@marvell.com, lorenzo.bianconi@redhat.com, toke@redhat.com
+Subject: Re: [RFC net-next 1/6] tools: ynl: fix render-max for flags
+ definition
+Message-ID: <Y/8VMKdFt8Y5cQpg@lore-desk>
+References: <cover.1677153730.git.lorenzo@kernel.org>
+ <0252b7d3f7af70ce5d9da688bae4f883b8dfa9c7.1677153730.git.lorenzo@kernel.org>
+ <20230223090937.53103f89@kernel.org>
+ <Y/6LQH4hU/gYROKO@lore-desk>
+ <20230228152820.566b6052@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="khxZ9ndY9zi3kzKY"
+Content-Disposition: inline
+In-Reply-To: <20230228152820.566b6052@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Clang Static Analyser (scan-build) reports some unused symbols and dead
-assignments in the linker_append_elf_relos function. Clean these up.
 
-Signed-off-by: Viktor Malik <vmalik@redhat.com>
----
- tools/lib/bpf/linker.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+--khxZ9ndY9zi3kzKY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 4ac02c28e152..d7069780984a 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -1997,7 +1997,6 @@ static int linker_append_elf_sym(struct bpf_linker *linker, struct src_obj *obj,
- static int linker_append_elf_relos(struct bpf_linker *linker, struct src_obj *obj)
- {
- 	struct src_sec *src_symtab = &obj->secs[obj->symtab_sec_idx];
--	struct dst_sec *dst_symtab;
- 	int i, err;
- 
- 	for (i = 1; i < obj->sec_cnt; i++) {
-@@ -2030,9 +2029,6 @@ static int linker_append_elf_relos(struct bpf_linker *linker, struct src_obj *ob
- 			return -1;
- 		}
- 
--		/* add_dst_sec() above could have invalidated linker->secs */
--		dst_symtab = &linker->secs[linker->symtab_sec_idx];
--
- 		/* shdr->sh_link points to SYMTAB */
- 		dst_sec->shdr->sh_link = linker->symtab_sec_idx;
- 
-@@ -2049,16 +2045,13 @@ static int linker_append_elf_relos(struct bpf_linker *linker, struct src_obj *ob
- 		dst_rel = dst_sec->raw_data + src_sec->dst_off;
- 		n = src_sec->shdr->sh_size / src_sec->shdr->sh_entsize;
- 		for (j = 0; j < n; j++, src_rel++, dst_rel++) {
--			size_t src_sym_idx = ELF64_R_SYM(src_rel->r_info);
--			size_t sym_type = ELF64_R_TYPE(src_rel->r_info);
--			Elf64_Sym *src_sym, *dst_sym;
--			size_t dst_sym_idx;
-+			size_t src_sym_idx, dst_sym_idx, sym_type;
-+			Elf64_Sym *src_sym;
- 
- 			src_sym_idx = ELF64_R_SYM(src_rel->r_info);
- 			src_sym = src_symtab->data->d_buf + sizeof(*src_sym) * src_sym_idx;
- 
- 			dst_sym_idx = obj->sym_map[src_sym_idx];
--			dst_sym = dst_symtab->raw_data + sizeof(*dst_sym) * dst_sym_idx;
- 			dst_rel->r_offset += src_linked_sec->dst_off;
- 			sym_type = ELF64_R_TYPE(src_rel->r_info);
- 			dst_rel->r_info = ELF64_R_INFO(dst_sym_idx, sym_type);
--- 
-2.39.1
+> On Wed, 1 Mar 2023 00:16:16 +0100 Lorenzo Bianconi wrote:
+> > > I think it also needs to be fixed to actually walk the elements=20
+> > > and combine the user_value()s rather than count them and assume
+> > > there are no gaps. =20
+> >=20
+> > Do you mean get_mask()?
+>=20
+> Yup, get_mask() predates the ability to control the values of enum
+> entries individually so while at it we should fix it.
 
+ack, I will add a separated patch to the series.
+
+Regards,
+Lorenzo
+
+--khxZ9ndY9zi3kzKY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY/8VMAAKCRA6cBh0uS2t
+rBIXAP4uvFJ0g0DEdF+4uvxHNdfpisPKoKBB9VT/9LBQnbPgYwD9EBis27NK54py
+f7T5YByEHGXaVLGKfPSkrUdinxB2+go=
+=RzvK
+-----END PGP SIGNATURE-----
+
+--khxZ9ndY9zi3kzKY--
