@@ -2,155 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D635C6A7079
-	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 17:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033CD6A70D2
+	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 17:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjCAQEV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Mar 2023 11:04:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
+        id S229463AbjCAQYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 11:24:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbjCAQET (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Mar 2023 11:04:19 -0500
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0704738029;
-        Wed,  1 Mar 2023 08:04:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677686659; x=1709222659;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=h7oaQxLcaEUZNhhmO/EwniWo3ZoJc2fUHo/bmddoeLQ=;
-  b=MDkw6bfhUTFwkZjicAgMbdD2hLJE9u/a98k85w8ZS272VSkqF/a/1WRF
-   mLvP4yVj2LC88qbZCWY0w6dyV9Kkxmox25SU+UQp/ZGIWwP+tRhiYiyV0
-   WunZuBY6Vhxr8qErtxppZR+PcygagMXzQU9YPBufaZOXDoGKJ5Xl87/Xz
-   ItCmBLifqlKxcY1m4OYwhJwvDF6ogQ7f2EuB1lD6FuL8UChznIIai5G/w
-   lbzACjS445/7la6Caa8jYiJY/L9qrDyY01Q1SrZCfJ3b7su6q0QDQbAoz
-   4UZi/M+38sqwMzcxnVj5DJD8XKVDuhwDbiDI2bV5iQ2EZw07G6BYKMjSL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="322709904"
-X-IronPort-AV: E=Sophos;i="5.98,225,1673942400"; 
-   d="scan'208";a="322709904"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2023 08:04:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="848686068"
-X-IronPort-AV: E=Sophos;i="5.98,225,1673942400"; 
-   d="scan'208";a="848686068"
-Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga005.jf.intel.com with ESMTP; 01 Mar 2023 08:04:13 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail002.ir.intel.com (Postfix) with ESMTP id CD69F36C09;
-        Wed,  1 Mar 2023 16:04:12 +0000 (GMT)
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Song Liu <song@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v1 2/2] xdp: remove unused {__,}xdp_release_frame()
-Date:   Wed,  1 Mar 2023 17:03:15 +0100
-Message-Id: <20230301160315.1022488-3-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230301160315.1022488-1-aleksander.lobakin@intel.com>
-References: <20230301160315.1022488-1-aleksander.lobakin@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229445AbjCAQYv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 11:24:51 -0500
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF0A3B0CC;
+        Wed,  1 Mar 2023 08:24:49 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 9FEDB3200406;
+        Wed,  1 Mar 2023 11:24:48 -0500 (EST)
+Received: from imap42 ([10.202.2.92])
+  by compute1.internal (MEProxy); Wed, 01 Mar 2023 11:24:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1677687887; x=
+        1677774287; bh=226yzvA64Kc8Q6zDrmuOtbs/tNXb1G/+qqLqVU0wHB4=; b=Q
+        gm5jFnpNqKyvfla6eRJrva3qhtbnUJ1RIrAD3Fl4JiCtqYtj9exaFLwkLlw/J9IW
+        CH4QA6HIR/xoP4kmwHX+Quq45QY2+BG57owtJDssVVSg9J6ywZsMsvyQgoFKrEgS
+        SdeJPePl7J5JnSy6cxPWai/Z5x97djayaPmn3chDhTlCSQP2dyGPXJ8Fr9uiXmPc
+        AeQEmvbKrXHwO0c3uf+qX19ctRMvJjK3HTZaJilwAgX3FuZkX/+feVMIWvvSTsCS
+        ZlDBn1IV98QliXyCLHUzr4OTb0u51LCeEVSOCSUnHnZRxiTGY1H4ajAWqpOO0SRb
+        FekUkcuHmCfk7w2AkxyPQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677687887; x=
+        1677774287; bh=226yzvA64Kc8Q6zDrmuOtbs/tNXb1G/+qqLqVU0wHB4=; b=g
+        KUVlxshVdl0QmWZQ7o9s16OU/obw9EVg7TJH6NIcFJIOGon+kHQO3np8mwQh8L+C
+        oNtQSx9D1k7N4rzCkibBLQPez5jvubUR/795i1+KUFAz0GR5csS1rqXeem+1GBmc
+        UHjtCrjaX1o+1fr11Wmn64MbuyzMQY6NJ2XHsqDUOddD6OoFrgi80RKmUUMJHFPi
+        beYMpP0+JarS8tMdn2GvbBSCowbJMZnh2l7itK3kdcaEm1eQzWp4x6vS7kdH6Z58
+        YnJzaUto0FwpXgfpWFlOXEtYozK71YSNQIq9mb/6pDyX7MuzmmJ97FgADtJiXEtW
+        Pm79a7A+OrS8PPo+sCO/g==
+X-ME-Sender: <xms:T3z_Y0EdtiTqMRRrm0nISQVg-go1QHXe5OyKBmVt0Tqp9YuBwvXyVA>
+    <xme:T3z_Y9X2tN0pkEE8IfJC0y_rQn-ap8ClQ85giFB3DCMSNfn9cn2x0D8IakdH7yk0p
+    FuYDa-rqNwfMVAbiA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudelhedgkedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefofg
+    ggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedfffgrnhhivghlucgi
+    uhdfuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepueefheduve
+    eiheeitdeufeekudfhuddukefghfeiieegveeufffhteejgeejgefgnecuffhomhgrihhn
+    pehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:T3z_Y-LOjDX5NAcX_e2_yOXzIl5-T-mMwH2h64PFb_kryXbrngQzVw>
+    <xmx:T3z_Y2GODkhDhWBRMvngm3F6bX4QqDp0lhWsYMVkZeTYP0ZaoefO5g>
+    <xmx:T3z_Y6WJzV186uOyIEsll2Qr3HcGPEUqb6SJLTPCjs7MNdkaE_fS5Q>
+    <xmx:T3z_Y5TaLAWcccpos6M2HlQWZG-ij7LEon31LhKw1CHcHERCe46vAw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C1FC7BC0078; Wed,  1 Mar 2023 11:24:47 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-183-gbf7d00f500-fm-20230220.001-gbf7d00f5
+Mime-Version: 1.0
+Message-Id: <e882b638-ab7e-4dde-b95b-c01c8e78e02a@app.fastmail.com>
+In-Reply-To: <cc4712f7-c723-89fc-dc9c-c8db3ff8c760@gmail.com>
+References: <cover.1677526810.git.dxu@dxuuu.xyz>
+ <cf49a091-9b14-05b8-6a79-00e56f3019e1@gmail.com>
+ <20230227220406.4x45jcigpnjjpdfy@kashmir.localdomain>
+ <cc4712f7-c723-89fc-dc9c-c8db3ff8c760@gmail.com>
+Date:   Wed, 01 Mar 2023 09:24:25 -0700
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Edward Cree" <ecree.xilinx@gmail.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 0/8] Support defragmenting IPv(4|6) packets in BPF
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-__xdp_build_skb_from_frame() was the last user of
-{__,}xdp_release_frame(), which detaches pages from the Page Pool.
-All the consumers now recycle Page Pool skbs and page, except mlx5,
-stmmac and tsnep drivers, which use page_pool_release_page() directly
-(might change one day). It's safe to assume this functionality is not
-needed anymore and can be removed (in favor of recycling).
+Hi Ed,
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- include/net/xdp.h | 29 -----------------------------
- net/core/xdp.c    | 15 ---------------
- 2 files changed, 44 deletions(-)
+Had some trouble with email yesterday (forgot to renew domain
+registration) and this reply might not have made it out. Apologies
+if it's a repost.
 
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index d517bfac937b..5393b3ebe56e 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -317,35 +317,6 @@ void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
- void xdp_return_frame_bulk(struct xdp_frame *xdpf,
- 			   struct xdp_frame_bulk *bq);
- 
--/* When sending xdp_frame into the network stack, then there is no
-- * return point callback, which is needed to release e.g. DMA-mapping
-- * resources with page_pool.  Thus, have explicit function to release
-- * frame resources.
-- */
--void __xdp_release_frame(void *data, struct xdp_mem_info *mem);
--static inline void xdp_release_frame(struct xdp_frame *xdpf)
--{
--	struct xdp_mem_info *mem = &xdpf->mem;
--	struct skb_shared_info *sinfo;
--	int i;
--
--	/* Curr only page_pool needs this */
--	if (mem->type != MEM_TYPE_PAGE_POOL)
--		return;
--
--	if (likely(!xdp_frame_has_frags(xdpf)))
--		goto out;
--
--	sinfo = xdp_get_shared_info_from_frame(xdpf);
--	for (i = 0; i < sinfo->nr_frags; i++) {
--		struct page *page = skb_frag_page(&sinfo->frags[i]);
--
--		__xdp_release_frame(page_address(page), mem);
--	}
--out:
--	__xdp_release_frame(xdpf->data, mem);
--}
--
- static __always_inline unsigned int xdp_get_frame_len(struct xdp_frame *xdpf)
- {
- 	struct skb_shared_info *sinfo;
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index a2237cfca8e9..8d3ad315f18d 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -531,21 +531,6 @@ void xdp_return_buff(struct xdp_buff *xdp)
- }
- EXPORT_SYMBOL_GPL(xdp_return_buff);
- 
--/* Only called for MEM_TYPE_PAGE_POOL see xdp.h */
--void __xdp_release_frame(void *data, struct xdp_mem_info *mem)
--{
--	struct xdp_mem_allocator *xa;
--	struct page *page;
--
--	rcu_read_lock();
--	xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
--	page = virt_to_head_page(data);
--	if (xa)
--		page_pool_release_page(xa->page_pool, page);
--	rcu_read_unlock();
--}
--EXPORT_SYMBOL_GPL(__xdp_release_frame);
--
- void xdp_attachment_setup(struct xdp_attachment_info *info,
- 			  struct netdev_bpf *bpf)
- {
--- 
-2.39.2
+On Mon, Feb 27, 2023 at 10:58:47PM +0000, Edward Cree wrote:
+> On 27/02/2023 22:04, Daniel Xu wrote:
+> > I don't believe full L4 headers are required in the first fragment.
+> > Sufficiently sneaky attackers can, I think, send a byte at a time to
+> > subvert your proposed algorithm. Storing skb data seems inevitable h=
+ere.
+> > Someone can correct me if I'm wrong here.
+>=20
+> My thinking was that legitimate traffic would never do this and thus if
+>  your first fragment doesn't have enough data to make a determination
+>  then you just DROP the packet.
 
+Right, that would be practical. I had some discussion with coworkers and
+the other option on the table is to drop all fragments. At least for us
+in the cloud, fragments are heavily frowned upon (where are they not..)
+anyways.
+
+> > What I find valuable about this patch series is that we can
+> > leverage the well understood and battle hardened kernel facilities. =
+So
+> > avoid all the correctness and security issues that the kernel has sp=
+ent
+> > 20+ years fixing.
+>=20
+> I can certainly see the argument here.  I guess it's a question of are
+>  you more worried about the DoS from tricking the validator into think=
+ing
+>  good fragments are bad (the reverse is irrelevant because if you can
+>  trick a validator into thinking your bad fragment belongs to a previo=
+usly
+>  seen good packet, then you can equally trick a reassembler into stitc=
+hing
+>  your bad fragment into that packet), or are you more worried about the
+>  DoS from tying lots of memory down in the reassembly cache.
+
+Equal balance of concerns on my side. Ideally there are no dropping of
+valid packets and DoS is very hard to achieve.
+
+> Even with reordering handling, a data structure to record which ranges=
+ of
+>  a packet have been seen takes much less memory than storing the compl=
+ete
+>  fragment bodies.  (Just a simple bitmap of 8-byte blocks =E2=80=94 th=
+e resolution
+>  of iph->frag_off =E2=80=94 reduces size by a factor of 64, not counti=
+ng all the
+>  overhead of a struct sk_buff for each fragment in the queue.  Or you
+>  could re-use the rbtree-based code from the reassembler, just with a
+>  freshly allocated node containing only offset & length, instead of the
+>  whole SKB.)
+
+Yeah, now that you say that, it doesn't sound too bad on space side. But
+I do wonder -- how much code and complexity is that going to be? For
+example I think ipv6 frags have a 60s reassembly timeout which adds more
+stuff to consider. And probably even more I've already forgotten.
+
+B/c at least on the kernel side, this series is 80% code for tests. And
+the kfunc wrappers are not very invasive at all.  Plus it's wrapping
+infra that hasn't changed much for decades.
+
+
+> And having a BPF helper effectively consume the skb is awkward, as you
+>  noted; someone is likely to decide that skb_copy() is too slow, try to
+>  add ctx invalidation, and thereby create a whole new swathe of potent=
+ial
+>  correctness and security issues.
+
+Yep. I did try that. While the verifier bits weren't too tricky, there
+are a lot of infra concerns to solve:
+
+* https://github.com/danobi/linux/commit/35a66af8d54cca647b0adfc7c1da710=
+5d2603dde
+* https://github.com/danobi/linux/commit/e8c86ea75e2ca8f0631632d54ef7633=
+81308711e
+* https://github.com/danobi/linux/commit/972bcf769f41fbfa7f84ce00faf06b5=
+b57bc6f7a
+
+But FWIW, fragmented packets are kinda a corner case anyways. I don't
+think it would be resonable to expect high perf when packets are in
+play.
+
+> Plus, imagine trying to support this in a hardware-offload XDP device.
+>  They'd have to reimplement the entire frag cache, which is a much big=
+ger
+>  attack surface than just a frag validator, and they couldn't leverage
+>  the battle-hardened kernel implementation.
+
+Hmm, well this helper is restricted to TC progs for now. I don't quite
+see a path to enabling for XDP as there would have to be at a minimum
+quite a few allocations to handle frags. So not sure XDP is a factor at
+the moment.
+
+>=20
+> > And make it trivial for the next person that comes
+> > along to do the right thing.
+>=20
+> Fwiw the validator approach could *also* be a helper, it doesn't have =
+to
+>  be something the BPF developer writes for themselves.
+>=20
+> But if after thinking about the possibility you still prefer your way,=
+ I
+>  won't try to stop you =E2=80=94 I just wanted to ensure it had been c=
+onsidered.
+
+Thank you for the discussion. The thought had come to mind originally,
+but I shied away after seeing some of the reassembly details. Would be
+interested in hearing more from other folks.
+
+
+Thanks,
+Daniel
