@@ -2,73 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F31106A6675
-	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 04:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3F66A6782
+	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 07:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjCADYc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 22:24:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
+        id S229722AbjCAGEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 01:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjCADYb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 22:24:31 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E316F158AF;
-        Tue, 28 Feb 2023 19:24:30 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 78CF96122E;
-        Wed,  1 Mar 2023 03:24:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FCD9C4339C;
-        Wed,  1 Mar 2023 03:24:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677641069;
-        bh=VNUiYHTK1WmTQNHzsmJaVBzgcpH8B55pyube1Ia3Fvs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c9SR42IIbZ4yZSGobj6hJEq88zt7jTRltAJsX5QxL30SKT40Vprrr0m/0su9lCUp8
-         ZjHu2Hku+8PsKurVCpeh/KZjviLtvBwxAmuwR2OcPukWnlVdoNvvRLg3GDw0Kt7Pdn
-         V9qi4E/JkdvFN9/7hJd9xHlU+EZOuub2Bop8JALCvHrhekBEpyBxYYUJcTbZ5mIPFn
-         uKZvjLcamSXebshdu/1anQ3F46VF/qGvHOwQSClFEXUIFQBybfrYLdQ+TuMlSpWWjs
-         zvwm//OCbY1qSvDKBTJ990thy8U8QYxyqJVlm2Ub8QGtHU4ZdbJqCvAcyDzd/M20J2
-         frQTU/NKdFaRg==
-Date:   Tue, 28 Feb 2023 19:24:28 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 0/4] net/smc: Introduce BPF injection
- capability
-Message-ID: <20230228192428.447ceddc@kernel.org>
-In-Reply-To: <Y/67dZ8X+VoOi10b@TONYMAC-ALIBABA.local>
-References: <1677576294-33411-1-git-send-email-alibuda@linux.alibaba.com>
-        <20230228150051.4eeaa121@kernel.org>
-        <Y/67dZ8X+VoOi10b@TONYMAC-ALIBABA.local>
+        with ESMTP id S229482AbjCAGEo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 01:04:44 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E8337F00
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 22:04:43 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id cq23so49556750edb.1
+        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 22:04:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pk4/og4wLlHaOAC2KiY1954i3PNRitxXkE8E9mQ1I/E=;
+        b=UGaYkuYwoi0pElUzuDSeQ0Oj6lJCbIlgGBBP0mzdICEuLSOsxXzcClmuEwPHaK8m16
+         0seKZgBTrgBsw5d6RaG19ui2sMjuucaxtZmexglyTLDAT42eGd658sA8ALrljB8z9MQR
+         fip4XadVkiSqgDa6IWeX9DdHwuZQcVw3u5l1ysBsa0K6ecr1tG8ynoRSdkUFXs6hQTlU
+         4J1fOLrU/gV8FTglqYmuoG7uh47bTQF/yQwXSDOGLWw/eSOxZsh2WyJYBigPt4ge+WtE
+         GsHqNMkFCddGVK0gBz6Rfw0t/s7+NWkXQUp1SixZzDTCKJlNtmt/wAV3/MGObjkhLjlQ
+         1xJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pk4/og4wLlHaOAC2KiY1954i3PNRitxXkE8E9mQ1I/E=;
+        b=nNVluZ4S7dqhVypk6b6i3EUNKIj50nYjIpmppl67pmyW/kXEIZ9/hx8LcyknnVZlgN
+         Dz6ZIavhxTVC0p/dherwtFYZcaRWWGPMz/o+yCg/l+RVtmmvNFracCcywrHZci9355aZ
+         63JyNAdXzbM20akCiUODx68gbr3kqEofnLSb9kjTasUQ7afFYheC0HUQvwI6Q2yTf1aY
+         Wey/qys+GkzZ6dKP3FYYXvJttgiGSwSkkuRzqb7k5TvZisIaNHQ06vyTuyZI0Sz2s14B
+         OgaBCf8YrJRkzJIEiwbpO6DhWkJ7i7FfWjoPX+u7+R8pALGyNBoOMRLdzxiPv43tJ2LB
+         MErw==
+X-Gm-Message-State: AO0yUKUe7qihGWELwJh83w3XNc5XG25NRFCNZWFFnNdGe4GMHdJ2nxV/
+        3YCi62yges5icAtk06Jgyo53uyzz/MUX7sTgdgO8zW22
+X-Google-Smtp-Source: AK7set+TSQ5hEO7xBiyDHisJMaZrOhMtXsO0vctOIZDPxlSKxSaXduej8jvJAABxGvUSbZgcw3B++1CbwDBNxx2L38E=
+X-Received: by 2002:a17:906:d789:b0:8ae:9f1e:a1c5 with SMTP id
+ pj9-20020a170906d78900b008ae9f1ea1c5mr2513329ejb.3.1677650682137; Tue, 28 Feb
+ 2023 22:04:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <0838bc96-c8a8-c326-a8f0-80240cf6b31a@linux.intel.com>
+ <CAADnVQJ4fHzqeuhbCF5SDR5V1Ktku=U2RRRPLc17ia0aFgNG=w@mail.gmail.com>
+ <f171f10b-f7e5-e63d-b446-b37a2856909a@linux.intel.com> <CAADnVQKQ+eEyNt_3EsNkCbxgu93tNEOFq+EGs-6JJhMt-A50cA@mail.gmail.com>
+ <73557717-e0b2-3969-4f08-c0951361af45@linux.intel.com>
+In-Reply-To: <73557717-e0b2-3969-4f08-c0951361af45@linux.intel.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 28 Feb 2023 22:04:30 -0800
+Message-ID: <CAADnVQ+sB+9Q7axoktd5BqW-82X18Sg2E-obEPDtmk0qphymKA@mail.gmail.com>
+Subject: Re: bpf: RFC for platform specific BPF helper addition
+To:     Tero Kristo <tero.kristo@linux.intel.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 1 Mar 2023 10:41:57 +0800 Tony Lu wrote:
-> Actually, this patch set is going to replace the patch of TCP ULP for
-> SMC. If this patch set is accepted, I am going to revert that patch.
-> 
-> For the reasons, the TCP ULP for SMC doesn't use wildly. It's not
-> possible to know which applications are suitable to be replaced with
-> SMC. But it's easier to detect the behavior of applications and
-> determine whether to replace applications with SMC. And this patch set
-> is going to fallback to TCP by behavior with eBPF.
-> 
-> So this is the _fix_ for that patch.
+On Tue, Feb 28, 2023 at 1:45=E2=80=AFAM Tero Kristo <tero.kristo@linux.inte=
+l.com> wrote:
+> >>> Make sure to add selftests when you submit a patch.
+> Regarding this I got a follow up question, where would you recommend to
+> put selftests for such functionality? Any of the BPF selftests appear to
+> be generic currently.
 
-Good to hear, I was worried you'd still want to install the ULP at some
-point whether the decision is via BPF or user space.
+There are arch specific selftests.
+They can be skipped on other archs either via DENYLIST or at runtime.
