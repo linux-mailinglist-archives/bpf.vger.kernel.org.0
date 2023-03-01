@@ -2,86 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 033CD6A70D2
-	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 17:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE446A71DE
+	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 18:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbjCAQYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Mar 2023 11:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S229758AbjCARMV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 12:12:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjCAQYv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Mar 2023 11:24:51 -0500
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF0A3B0CC;
-        Wed,  1 Mar 2023 08:24:49 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 9FEDB3200406;
-        Wed,  1 Mar 2023 11:24:48 -0500 (EST)
-Received: from imap42 ([10.202.2.92])
-  by compute1.internal (MEProxy); Wed, 01 Mar 2023 11:24:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1677687887; x=
-        1677774287; bh=226yzvA64Kc8Q6zDrmuOtbs/tNXb1G/+qqLqVU0wHB4=; b=Q
-        gm5jFnpNqKyvfla6eRJrva3qhtbnUJ1RIrAD3Fl4JiCtqYtj9exaFLwkLlw/J9IW
-        CH4QA6HIR/xoP4kmwHX+Quq45QY2+BG57owtJDssVVSg9J6ywZsMsvyQgoFKrEgS
-        SdeJPePl7J5JnSy6cxPWai/Z5x97djayaPmn3chDhTlCSQP2dyGPXJ8Fr9uiXmPc
-        AeQEmvbKrXHwO0c3uf+qX19ctRMvJjK3HTZaJilwAgX3FuZkX/+feVMIWvvSTsCS
-        ZlDBn1IV98QliXyCLHUzr4OTb0u51LCeEVSOCSUnHnZRxiTGY1H4ajAWqpOO0SRb
-        FekUkcuHmCfk7w2AkxyPQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677687887; x=
-        1677774287; bh=226yzvA64Kc8Q6zDrmuOtbs/tNXb1G/+qqLqVU0wHB4=; b=g
-        KUVlxshVdl0QmWZQ7o9s16OU/obw9EVg7TJH6NIcFJIOGon+kHQO3np8mwQh8L+C
-        oNtQSx9D1k7N4rzCkibBLQPez5jvubUR/795i1+KUFAz0GR5csS1rqXeem+1GBmc
-        UHjtCrjaX1o+1fr11Wmn64MbuyzMQY6NJ2XHsqDUOddD6OoFrgi80RKmUUMJHFPi
-        beYMpP0+JarS8tMdn2GvbBSCowbJMZnh2l7itK3kdcaEm1eQzWp4x6vS7kdH6Z58
-        YnJzaUto0FwpXgfpWFlOXEtYozK71YSNQIq9mb/6pDyX7MuzmmJ97FgADtJiXEtW
-        Pm79a7A+OrS8PPo+sCO/g==
-X-ME-Sender: <xms:T3z_Y0EdtiTqMRRrm0nISQVg-go1QHXe5OyKBmVt0Tqp9YuBwvXyVA>
-    <xme:T3z_Y9X2tN0pkEE8IfJC0y_rQn-ap8ClQ85giFB3DCMSNfn9cn2x0D8IakdH7yk0p
-    FuYDa-rqNwfMVAbiA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudelhedgkedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefofg
-    ggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedfffgrnhhivghlucgi
-    uhdfuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepueefheduve
-    eiheeitdeufeekudfhuddukefghfeiieegveeufffhteejgeejgefgnecuffhomhgrihhn
-    pehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:T3z_Y-LOjDX5NAcX_e2_yOXzIl5-T-mMwH2h64PFb_kryXbrngQzVw>
-    <xmx:T3z_Y2GODkhDhWBRMvngm3F6bX4QqDp0lhWsYMVkZeTYP0ZaoefO5g>
-    <xmx:T3z_Y6WJzV186uOyIEsll2Qr3HcGPEUqb6SJLTPCjs7MNdkaE_fS5Q>
-    <xmx:T3z_Y5TaLAWcccpos6M2HlQWZG-ij7LEon31LhKw1CHcHERCe46vAw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id C1FC7BC0078; Wed,  1 Mar 2023 11:24:47 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-183-gbf7d00f500-fm-20230220.001-gbf7d00f5
-Mime-Version: 1.0
-Message-Id: <e882b638-ab7e-4dde-b95b-c01c8e78e02a@app.fastmail.com>
-In-Reply-To: <cc4712f7-c723-89fc-dc9c-c8db3ff8c760@gmail.com>
-References: <cover.1677526810.git.dxu@dxuuu.xyz>
- <cf49a091-9b14-05b8-6a79-00e56f3019e1@gmail.com>
- <20230227220406.4x45jcigpnjjpdfy@kashmir.localdomain>
- <cc4712f7-c723-89fc-dc9c-c8db3ff8c760@gmail.com>
-Date:   Wed, 01 Mar 2023 09:24:25 -0700
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Edward Cree" <ecree.xilinx@gmail.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 0/8] Support defragmenting IPv(4|6) packets in BPF
-Content-Type: text/plain;charset=utf-8
+        with ESMTP id S229684AbjCARMU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 12:12:20 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DA639CE5
+        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 09:12:18 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id cw28so7591617edb.5
+        for <bpf@vger.kernel.org>; Wed, 01 Mar 2023 09:12:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1677690737;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eR3bY1/0f1pgiBB7MSj7GTnyQ5BlMMVnFcmGK87QazQ=;
+        b=Qr9RF0TuQ1xptFjnh7xKj847FfFPTeHw/cE34rJkC3useLFUpDdlA9+KIhpm6LU0TY
+         ePTUXvJBkhMParzieUJ5Ttvh+IXfqIIdKrk1pFgooUoXTC4yEgj7QFPl7wM+pd0Yc6Na
+         dQKvMGBrqjDItzHIU++BvBJAPOZmjyfq4FXIH6YRbnSG0rV2iL+2qC1hfV+MpbhKlL2h
+         Csv8oR8MBMMhcaPESreOpi9XCKffJqIVH8MbGMYFCZWSokd71FT/fjT59rddhtDRaoOv
+         DqjxpyHmeAoJ214Z2ecB8rN7HbqrhH6yrvBXNOHBnM36Fw/6BzMejIV4a8VNlOZ1Yjzw
+         fRVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677690737;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eR3bY1/0f1pgiBB7MSj7GTnyQ5BlMMVnFcmGK87QazQ=;
+        b=DtvPjStxTRLaVPcghW11pwnxeDQ2NKOm0CVDCK/uJQ2bfmAw2haA3qb3RBWMQ9WNTh
+         oMpIrhgyFhcivyz30J0vz+eaU6VB58JvCjPg5pNziU/0/Oc8R0wktgb6SWv3yj1yQgI3
+         t1FMwFR2LDkdSc5D7pm913Jpex9TNGdLao56RFwXWlO81mDb7Bts4DCOVUU0a5krh8P/
+         GGJr2RZwXSQqlBMABtXrJgrM0rHJfGnQ+hpg3tsz/r1RssSAvo1V9mzuI22CNhdlBVXP
+         bYqLfklMv6eZmX8GE3arMQXTIScxUwmFvF5xKizYYqB2ifKkUmn7+EOxGdTEGAR9WRU6
+         0XZw==
+X-Gm-Message-State: AO0yUKW1vObSNFMJqhkN2yJItpw0IOVZUUcWq96cpqYxYoQ6wzo2BoUH
+        gAu53/fmUV894KqcwBcfk6FUZ1IQG3bDLReU5po=
+X-Google-Smtp-Source: AK7set/rJ6ekRZmPFnDwdjD33fPUAO/XdBM3iPrr069pcqhWGahCKUsKshFHLgfl3tx97dUFs+Md9EYMC8S/kQXOmYc=
+X-Received: by 2002:a50:d0c2:0:b0:4ac:b626:378e with SMTP id
+ g2-20020a50d0c2000000b004acb626378emr4305199edf.5.1677690737176; Wed, 01 Mar
+ 2023 09:12:17 -0800 (PST)
+MIME-Version: 1.0
+References: <20230123145148.2791939-1-eddyz87@gmail.com> <20230123145148.2791939-2-eddyz87@gmail.com>
+ <CAEf4BzZ-9iHzotYj2K3a+USFsxmqLEA+pHm4Ot6Nr2WtZ-AHeA@mail.gmail.com> <06e29b322d777c30fe9b163f9d13f11503a303d9.camel@gmail.com>
+In-Reply-To: <06e29b322d777c30fe9b163f9d13f11503a303d9.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 1 Mar 2023 09:12:04 -0800
+Message-ID: <CAEf4BzbiA48Q5ODREyHXKKKO7oms_LnE6q77=T9sroZkCefVgQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/5] selftests/bpf: support custom per-test flags
+ and multiple expected messages
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,121 +70,83 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Ed,
+On Tue, Feb 28, 2023 at 2:30=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Tue, 2023-02-28 at 10:53 -0800, Andrii Nakryiko wrote:
+> > On Mon, Jan 23, 2023 at 6:52=E2=80=AFAM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
+> > >
+> > > From: Andrii Nakryiko <andrii@kernel.org>
+> > >
+> > > Extend __flag attribute by allowing to specify one of the following:
+> > >  * BPF_F_STRICT_ALIGNMENT
+> > >  * BPF_F_ANY_ALIGNMENT
+> > >  * BPF_F_TEST_RND_HI32
+> > >  * BPF_F_TEST_STATE_FREQ
+> > >  * BPF_F_SLEEPABLE
+> > >  * BPF_F_XDP_HAS_FRAGS
+> > >  * Some numeric value
+> > >
+> > > Extend __msg attribute by allowing to specify multiple exepcted messa=
+ges.
+> > > All messages are expected to be present in the verifier log in the
+> > > order of application.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > [ Eduard: added commit message, formatting ]
+> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > > ---
+> >
+> > hey Eduard,
+> >
+> > When you get a chance, can you please send this patch separately from
+> > the rest of the test_verifier rework patch set (it probably makes
+> > sense to also add #define __flags in this patch as well, given you are
+> > parsing its definition in this patch).
+> >
+> > This would great help me with my work that uses all this
+> > assembly-level test facilities. Thanks!
+>
+> Hi Andrii,
+>
+> Rebase didn't change anything in the patch, I added __flags macro,
+> some some comments, and started the CI job: [1].
+>
+> Feels weird to post it, tbh, because it's 100% your code w/o added
+> value from my side.
 
-Had some trouble with email yesterday (forgot to renew domain
-registration) and this reply might not have made it out. Apologies
-if it's a repost.
-
-On Mon, Feb 27, 2023 at 10:58:47PM +0000, Edward Cree wrote:
-> On 27/02/2023 22:04, Daniel Xu wrote:
-> > I don't believe full L4 headers are required in the first fragment.
-> > Sufficiently sneaky attackers can, I think, send a byte at a time to
-> > subvert your proposed algorithm. Storing skb data seems inevitable h=
-ere.
-> > Someone can correct me if I'm wrong here.
->=20
-> My thinking was that legitimate traffic would never do this and thus if
->  your first fragment doesn't have enough data to make a determination
->  then you just DROP the packet.
-
-Right, that would be practical. I had some discussion with coworkers and
-the other option on the table is to drop all fragments. At least for us
-in the cloud, fragments are heavily frowned upon (where are they not..)
-anyways.
-
-> > What I find valuable about this patch series is that we can
-> > leverage the well understood and battle hardened kernel facilities. =
-So
-> > avoid all the correctness and security issues that the kernel has sp=
-ent
-> > 20+ years fixing.
->=20
-> I can certainly see the argument here.  I guess it's a question of are
->  you more worried about the DoS from tricking the validator into think=
-ing
->  good fragments are bad (the reverse is irrelevant because if you can
->  trick a validator into thinking your bad fragment belongs to a previo=
-usly
->  seen good packet, then you can equally trick a reassembler into stitc=
-hing
->  your bad fragment into that packet), or are you more worried about the
->  DoS from tying lots of memory down in the reassembly cache.
-
-Equal balance of concerns on my side. Ideally there are no dropping of
-valid packets and DoS is very hard to achieve.
-
-> Even with reordering handling, a data structure to record which ranges=
- of
->  a packet have been seen takes much less memory than storing the compl=
-ete
->  fragment bodies.  (Just a simple bitmap of 8-byte blocks =E2=80=94 th=
-e resolution
->  of iph->frag_off =E2=80=94 reduces size by a factor of 64, not counti=
-ng all the
->  overhead of a struct sk_buff for each fragment in the queue.  Or you
->  could re-use the rbtree-based code from the reassembler, just with a
->  freshly allocated node containing only offset & length, instead of the
->  whole SKB.)
-
-Yeah, now that you say that, it doesn't sound too bad on space side. But
-I do wonder -- how much code and complexity is that going to be? For
-example I think ipv6 frags have a 60s reassembly timeout which adds more
-stuff to consider. And probably even more I've already forgotten.
-
-B/c at least on the kernel side, this series is 80% code for tests. And
-the kfunc wrappers are not very invasive at all.  Plus it's wrapping
-infra that hasn't changed much for decades.
+you took the effort to prepare it for submission, testing, and
+integrating into your work, so feels well deserved
 
 
-> And having a BPF helper effectively consume the skb is awkward, as you
->  noted; someone is likely to decide that skb_copy() is too slow, try to
->  add ctx invalidation, and thereby create a whole new swathe of potent=
-ial
->  correctness and security issues.
+>
+> Thanks,
+> Eduard
+>
+> [1] https://github.com/kernel-patches/bpf/pull/4688
 
-Yep. I did try that. While the verifier bits weren't too tricky, there
-are a lot of infra concerns to solve:
+apart from test flakiness, looks good, please send a patch "officially"
 
-* https://github.com/danobi/linux/commit/35a66af8d54cca647b0adfc7c1da710=
-5d2603dde
-* https://github.com/danobi/linux/commit/e8c86ea75e2ca8f0631632d54ef7633=
-81308711e
-* https://github.com/danobi/linux/commit/972bcf769f41fbfa7f84ce00faf06b5=
-b57bc6f7a
-
-But FWIW, fragmented packets are kinda a corner case anyways. I don't
-think it would be resonable to expect high perf when packets are in
-play.
-
-> Plus, imagine trying to support this in a hardware-offload XDP device.
->  They'd have to reimplement the entire frag cache, which is a much big=
-ger
->  attack surface than just a frag validator, and they couldn't leverage
->  the battle-hardened kernel implementation.
-
-Hmm, well this helper is restricted to TC progs for now. I don't quite
-see a path to enabling for XDP as there would have to be at a minimum
-quite a few allocations to handle frags. So not sure XDP is a factor at
-the moment.
-
->=20
-> > And make it trivial for the next person that comes
-> > along to do the right thing.
->=20
-> Fwiw the validator approach could *also* be a helper, it doesn't have =
-to
->  be something the BPF developer writes for themselves.
->=20
-> But if after thinking about the possibility you still prefer your way,=
- I
->  won't try to stop you =E2=80=94 I just wanted to ensure it had been c=
-onsidered.
-
-Thank you for the discussion. The thought had come to mind originally,
-but I shied away after seeing some of the reassembly details. Would be
-interested in hearing more from other folks.
-
-
-Thanks,
-Daniel
+> >
+> >
+> >
+> > >  tools/testing/selftests/bpf/test_loader.c | 69 ++++++++++++++++++++-=
+--
+> > >  tools/testing/selftests/bpf/test_progs.h  |  1 +
+> > >  2 files changed, 61 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testin=
+g/selftests/bpf/test_loader.c
+> > > index 679efb3aa785..bf41390157bf 100644
+> > > --- a/tools/testing/selftests/bpf/test_loader.c
+> > > +++ b/tools/testing/selftests/bpf/test_loader.c
+> > > @@ -13,12 +13,15 @@
+> > >  #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
+> > >  #define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg=3D"
+> > >  #define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level=3D"
+> > > +#define TEST_TAG_PROG_FLAGS_PFX "comment:test_prog_flags=3D"
+> > >
+> >
+> > [...]
+>
