@@ -2,101 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A10176A6798
-	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 07:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E346A68AE
+	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 09:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjCAGXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Mar 2023 01:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
+        id S229847AbjCAIRM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 03:17:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjCAGXl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Mar 2023 01:23:41 -0500
-Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2150.outbound.protection.outlook.com [40.92.63.150])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80044EB7B;
-        Tue, 28 Feb 2023 22:23:39 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CN8NtEZSp0JKqxR7ZfucynchWuqL0oRmQKRIA0eHalIsPgGw1cCIq+1noP8FqPZRvWEpd5NK2IgoWrnLsiNN8nd2IwC5Qkypr6i4BQYhyT0fdTxMpYkgnbPsc1OeHExa+gSP6c4HPKt0CqwEZSLOLAfEMi/lQoRAKAFtPk071ZiLpBaQbkMmFZ3e5edmVEgqcyzCwfKLV4hz0AVJo6KI/rl8kENTqZnHsZZDuV+KR11kf1U8gWrise1dioqtXVG/UapWGzUV/4VFFZi9Rs6VhwqW1mptooIzSu2SM6tHb1qMs5MZCMxWqXN0v4PB1tMPmHxXIHQLUn1o6hYOc4HzFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iC3tAVvI/Z+WmYJP+we926ax8u1Ty2KNZwp4XoYmORU=;
- b=dGClSGGX04aSMM4OcYJk8kPXKO4qwXYle0VS1XVMm8oVrviRSNdRV7Zr4rUfOhgJ+5j3TDCbQdwwi6yPZMqKzG8CeHdqKOrIU0cUbnSO9jM0HjegTSqlxn7pH/Bp4IyCcv+xsGVNiaHsxBWSTvg5R0tL1xjeDx3UVFbKL9sSBBFq4FYduSWC6uXOrVfKTIrbGtNCCKl/5afTAk7leJJjXH0RDLIjJhxngYD54Imhp5dACgcwV662DgrSHE0GFaPCbY8BR0POu/FoYrCfdw+S9HwD5JTYwBXYAgcu/GbzTe+pgyF5xRoSCIkl8uosTQsxo4hCKg+IL9M6YT2zfYbBrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iC3tAVvI/Z+WmYJP+we926ax8u1Ty2KNZwp4XoYmORU=;
- b=TbgFQRIVq91fCiKaWtvUSndtk5dQhCaHB4GSkjpcaASc4MBbyWFHWjpqL87rcc5t65TxUS7U6HHGp4g6mAm+lxzCVyPB3xoF7NfdLJJ0t4n08t/umKJE/nHt0gTYnNJy8pq3KQYzjqRMqZ0Fm0Gyufq1vQnllv3S7Clf/H3E7LgRdcE5hTcIpfAZzy3JNJXDYNFcqhhZtsImyCgtpLc7sSLaFv9ylu5wHvyHzS9sx547ZzaMEYMSzNg9556OqBfD2PeTSegO0IrTQsYxSICJRBWxrE+O5pebsPa0LikpobuEdQMNKkJ8rxBhgof4o2sEMov2rC5EmIYJAMeCiOOKCA==
-Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:ac::13) by
- SYBP282MB2253.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:99::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6134.30; Wed, 1 Mar 2023 06:23:35 +0000
-Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
- ([fe80::637e:ae7f:4307:e5ab]) by SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
- ([fe80::637e:ae7f:4307:e5ab%9]) with mapi id 15.20.6156.017; Wed, 1 Mar 2023
- 06:23:35 +0000
-From:   Tianyi Liu <i.pear@outlook.com>
-To:     arnd@arndb.de
-Cc:     hjl.tools@gmail.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Tianyi Liu <i.pear@outlook.com>
-Subject: [PATCH] Discard .note.gnu.property in vmlinux
-Date:   Wed,  1 Mar 2023 14:22:32 +0800
-Message-ID: <SY4P282MB108446E9ED9FB180AE717D5F9DAD9@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [9WsfBkK33D7GDnVh1VWQAspsnhWr/um8ZmmcqDRnlIE3zu6sTDEp/A==]
-X-ClientProxiedBy: SG2PR01CA0171.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::27) To SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:ac::13)
-X-Microsoft-Original-Message-ID: <20230301062232.2708155-1-i.pear@outlook.com>
+        with ESMTP id S229862AbjCAIRL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 03:17:11 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E201439CD2;
+        Wed,  1 Mar 2023 00:16:50 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id da10so50561854edb.3;
+        Wed, 01 Mar 2023 00:16:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TSqaYlQUZddNvmjmRwWT7Q43mvIxxx7/x0n679k+Rr4=;
+        b=Ncv5Q6I+853ziEJ9cFR2KIze1sEPOYFcl2bIAQzHg0HwDZOr++UC6svB8xjQwjP6KD
+         ZDzuuASX1qYHLpto1FnMJO1X9UB/QXfEVb42wZWfmjfKGt1shD/+d+tYkZmJGm9LLThi
+         9yeZwNTySbYwQOvXxFygGSc6LTPepJ0VNgjeEGr4G4j2U1UY4uuSwmVhH++ahsxuEeD9
+         B0FjuskEUT2RE7VVrSlA+4J4+886/9AbOur2Th4zo3fPx0ZEMNqjYRtbhXV6jVYuwGq0
+         Fn7sMh8/3PN0oiwrI8wTtaq5VRdoTjPRiZTmGn7L8bu8OS6lueukVupNM9QpQ89W3yYx
+         Cptg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TSqaYlQUZddNvmjmRwWT7Q43mvIxxx7/x0n679k+Rr4=;
+        b=vzwveZTFE4EQILtLvP5UdAyjJuF8vfASr8b6MkOaDL7PA4GHhIUsWVdN2d1xvc+EH8
+         Zmhxp1TWVs9/RMSaT3SBvbtalz6Ja9fa64iphyEIev18WLxE1+v9lpiiWxws8lzr8mDK
+         tZZjuG7OUPqCF3c2SPeUR1XezlvwocOuh0+o9Y0AQr9vtQNC7pjj2vVEIcy7eEzSygg+
+         t1N/wlAlZ/goNHzikww+QMOfliUnifXijdg2aOOEEnElFdyVKWWXerfZeuZhSfJ73WWU
+         6izuWtL2/J9hk1VopifXGbLC6HlLVkOOJVPViTFVnP6Lw8cptgS6uBRUmz6Jj/1LR1OY
+         fCUw==
+X-Gm-Message-State: AO0yUKXgQPwNYIq3H3rVsKtYTn2hOVC/epRyxLQmzc7yZoZMmoMEbKkY
+        1CcxKKLv5kJdU+5bseJSy1U=
+X-Google-Smtp-Source: AK7set95o6sHbzdX6KfRuUyx6EBQOue22QgQbKFPOQh/jgQcGhdkQTxLsOIsP3/Ms8wfhJY9TGhQew==
+X-Received: by 2002:a17:907:2057:b0:8b1:319c:c29e with SMTP id pg23-20020a170907205700b008b1319cc29emr6438580ejb.74.1677658608959;
+        Wed, 01 Mar 2023 00:16:48 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id v13-20020a1709064e8d00b008e3bf17fb2asm5578521eju.19.2023.03.01.00.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Mar 2023 00:16:48 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 1 Mar 2023 09:16:46 +0100
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Namhyung Kim <namhyung@gmail.com>
+Subject: Re: [PATCH RFC v2 bpf-next 1/9] mm: Store build id in inode object
+Message-ID: <Y/8J7pkJ8g1uEQcq@krava>
+References: <20230228093206.821563-1-jolsa@kernel.org>
+ <20230228093206.821563-2-jolsa@kernel.org>
+ <20230228111310.05f339a0a1a00e919859ffad@linux-foundation.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SY4P282MB1084:EE_|SYBP282MB2253:EE_
-X-MS-Office365-Filtering-Correlation-Id: 46010a48-f4e7-413c-5275-08db1a1d7c9c
-X-MS-Exchange-SLBlob-MailProps: dx7TrgQSB6dAG8fEwqdvu3P4kJ8WfkSHJ/VyhTx8G9lQ63vz0cpjlF0PTPFU90JWrhUDsZh2UrTbxav7ZEEqVMwz6tVouVW6S0jVrctywqGkGCm394seECzmhJOGIKyC0t9p7P+HNshvJZCo5L0egl8WVf1UOiAfNwAmqPysfxrzs8RgBOnpDFtxKMmsSP4RlHJcCazNeW9x48el0TfxU4WWyHt+oDWEnlL+4X4e8PGF+a3i62aVZzUK9jEafJMNTir4NPAdBha5bNTXxVDETkpblzopb4c5UcA8JfYQ8Hv5nKKlH/ZoUJz3L8MN+Z8/KqLyY718xminA2ewHeMurD1mtZrKXRtH3GXKXbZZ0uHXt9LvEHULqJmK2KM2ScI69f+ZPdQQ/Esqkq3sbrNypMd9i6pfXkT6Ao4lCLy/PMJpsCY4JtC7vBbF9j0vb0iqChvglhlDjY5TGd8WnADfqEtZXdHhqWCihA/g1uE4HPqc6aYdiUcCK8jKW4z9nc/UzvFBSVlq6xckSdbdjexmwefRsiUvNS13RI8i6tpsgaX6NkMnFQvkUkmAszF8pSj7Ll5BAVfYt9eyggmuDGoYNndqayAGpIc+B2XJsAnuSXS7SEx6GYomMPvbZUrL36WJlpyLJw28ehev0VgrhXktyRBnZvypKhIJzbuN5WPwD4htY3Yb6I4BkrkfJ0rfDfvEm9cFYNPOslyfBupw2LvapTlNPdJdx8zzyMFVs/Nv/kCIuJG6CE9OQLxgVLvWRDT3vtQ8adSEYAA=
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ERm/MND+5l46Mg9aenW+YCkEL+FTZdSY1pKwsJqLoUor0rj3Lx18SJTKaQJ3A7hxG/VuOjXiiVFfETf1brk0hp6U3cg4xb9uDpp5BaWz/tOaLjOsXo9o23NXS5H7bqB2rbQkXzI4c+uL0vI/YUwb6P6Ddt/K82YpZeI61701eBDxG0/3S264NuerRA5ERzXp6ZGYFI10Y2OkV5tj6m5mk7sQnHpSBMn0E8EyMaylWSCbC0u8YxXws6p81OWqCneMx1A2+p4LRHI0DzfoQPSpQOAsrZ9JFDgYZ4BCfFWZm/CHJ9que2BIiN2gteEYlUIr9X02JJpLltcDPyq4kZDUSRtuKQ5QXVaylM0dllAARN6fgAO8jMyqG4qxUCyl1eQub0bqb5656Ks++e+WonNcV19fY4Rmf8evBFuh2p8xwyB3fMtuVCKKIhpzXIXGcjZQrRIueII11MEZww/cs/6dwFm7ibPwYmJpF1IOp0bOPrNyR0gD+Zq7MFz8Xd3iiftlJ+kQKxstM30tZxik2MQDceFNijLl1p+LpFhHReKYFNMwtt+OcdKdpBG+RKmdTabMj0+DZKLe8sEZWPsHy/e+DxA5RO2stSMdc5Pm10W/9Eha/6rtJGESTuva7HzpJxosdClPF9ljUYRBERgcVmXYcQM4MHlSrUXVJmJLD/MGJB+USE7+/x82HzBO9lgANLEh
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?U00cSVtQtoK1N2vZAExvgRYj/caskImZMiYAKc1qxb7sAEpxj7AxGlnzedyi?=
- =?us-ascii?Q?pcj9dAPAjuJdkmIuFK2d2XaErW2z3OR7SXk450d9dwNsALrIGyn4zsY1t0Uu?=
- =?us-ascii?Q?xgmyJs+cQkYfFWiUQTWsQ4xt4IAZj8+Lgcc2DPFnB23K2EsVllf+By8BJ7gk?=
- =?us-ascii?Q?IBBkmF4eFJfgoaEn7qr7fA+1rPIJEgjU98PbR2PvgiK/YZ0QqZfeo1PtS5q2?=
- =?us-ascii?Q?xEWTqMCq/zJxPF2hhEI8xoU3ATMwRxPd+8FeE9ryG75gVUTJZkD2me+a7z7u?=
- =?us-ascii?Q?RMCM9tjViMEHjvZ9MdeluOD/5+wf/UXBsb8SFcHvS479ezKaIjkvsZ7q252s?=
- =?us-ascii?Q?mXeb9LE1R3iPT6QjlxxKDym7Rd28qfasNWpK8FjczY5LOzueigyi8fUwUWRt?=
- =?us-ascii?Q?j7orfR4SXFNLAQVVGS/HoynhmeQUk2IBiXBFwfIbV1PkLMD7fRqw94S3yxcA?=
- =?us-ascii?Q?HEqRncHS/DXuGdiBVexN6hv/f918M3zbYBQ6U9YFzAPQHbX7YKQcClI+WkIq?=
- =?us-ascii?Q?cUCzIFWHXxLyUsobUnwYgKPQLLjwzZgnPcs56B8hu3+wHkPlR3GxPGYFWYeW?=
- =?us-ascii?Q?1BQrUOiLXDsY2rc2MSwEfalM3GgF4wVvIlc9vigpLlVHQ9lYTVYwHz9yo5ra?=
- =?us-ascii?Q?2+gyxYYgltxFC61csOOqrrTMAYaLmOQ+akSOKOY+npPq16caVC6deWew9HDM?=
- =?us-ascii?Q?icbyk7fbDGA1VnC3weSO6wLxJP4oaIcTw0BALnRRKQaCt71DJomdIU+kHb1r?=
- =?us-ascii?Q?/3rr57KSA04Bf2Mx07LuywPH9biUCDqGZ96Gb3tCmm8EXES76pggOOq48SMs?=
- =?us-ascii?Q?vY2SLP7rJrAZmKwGU0N4lWNTyp475CDYAdST0WTU/IFggHom0lLg3/1KXqMg?=
- =?us-ascii?Q?gxveG6/Qs528kblzsW/mI8Ahe8WSac1BxvGNRJRpCP4LhGwrxvnVibHrZ0vp?=
- =?us-ascii?Q?fepqYpnkO1g/EIO6NKzdmMssIaAjfRbYFqXyL1WpLYU+89mKnu03QgslzK3f?=
- =?us-ascii?Q?Zf8pHixHjzToxQNoWjwjljrFZzVOlrUVFhnwVUjkMIDQuiTvDz5mRxVwEX2L?=
- =?us-ascii?Q?t5LxTIjyqeHkYeGrYlA4BEkEvqMchOR3PFlP2MgBPb/qOLmhQljzRTXTYZkR?=
- =?us-ascii?Q?1MgUNVuwrrtJnpY1llPFFEpRkYCIOW72lQdr/5049EpJ6MvG9qlzvv8adls1?=
- =?us-ascii?Q?byqiL0JsJEL0bAJ34L4FkfIB4ejWasF2OEI1TnmT8FKmvRWqdN9Br08W8yNR?=
- =?us-ascii?Q?Fa2rAY2ssXryVDOLBEz954UQqDAW+6VPEwfg89m+kasypEKYKICJTRQD5GQW?=
- =?us-ascii?Q?cis=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46010a48-f4e7-413c-5275-08db1a1d7c9c
-X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2023 06:23:35.1455
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBP282MB2253
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230228111310.05f339a0a1a00e919859ffad@linux-foundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,49 +88,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the kernel image is finally linked, all the notes are packed into a
-single .notes section, but these notes may have different alignments.
+On Tue, Feb 28, 2023 at 11:13:10AM -0800, Andrew Morton wrote:
+> On Tue, 28 Feb 2023 10:31:58 +0100 Jiri Olsa <jolsa@kernel.org> wrote:
+> 
+> > Storing build id in file's inode object for elf executable with build
+> > id defined. The build id is stored when file is mmaped.
+> > 
+> > This is enabled with new config option CONFIG_INODE_BUILD_ID.
+> > 
+> > The build id is valid only when the file with given inode is mmap-ed.
+> > 
+> > We store either the build id itself or the error we hit during
+> > the retrieval.
+> > 
+> > ...
+> >
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -699,6 +700,12 @@ struct inode {
+> >  	struct fsverity_info	*i_verity_info;
+> >  #endif
+> >  
+> > +#ifdef CONFIG_INODE_BUILD_ID
+> > +	/* Initialized and valid for executable elf files when mmap-ed. */
+> > +	struct build_id		*i_build_id;
+> > +	spinlock_t		i_build_id_lock;
+> > +#endif
+> > +
+> 
+> Remember we can have squillions of inodes in memory.  So that's one
+> costly spinlock!
+> 
+> AFAICT this lock could be removed if mmap_region() were to use an
+> atomic exchange on inode->i_build_id?
 
-binutils above 2.32 adds a ".note.gnu.property" section to the compiled
-output, which is 4-byte aligned on 32-bit, but 8-byte aligned on 64-bit.
-At present, the notes generated by both the ELFNOTE macro and the VDSO
-linker script are 4-byte aligned. So in a 64-bit kernel, packing segments
-with different alignments will cause LibElf and tools like readelf to
-crush or to read wrong values [1][2].
+right, that should work I'll check 
 
-This patch discards ".note.gnu.property" from vmlinux.
+> 
+> If not, can we use an existing lock?  i_lock would be appropriate
+> (don't forget to update its comment).
 
-Note that H.J. Lu has submitted a similar patch in the past[3],
-but it was not merged.
+ok
 
-[1] https://lore.kernel.org/bpf/57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com/
-[2] https://lore.kernel.org/linux-arm-kernel/20210428172847.GC4022@arm.com/
-[3] https://lore.kernel.org/lkml/20180924201459.35923-1-hjl.tools@gmail.com/
+> 
+> Also, the code in mmap_region() runs build_id_free() inside the locked
+> region, which seems unnecessary.
+> 
 
-Signed-off-by: Tianyi Liu <i.pear@outlook.com>
----
- include/asm-generic/vmlinux.lds.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ok, if the atomic exchange is doable, it'll take care of this
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index d1f57e4868ed..6db0f664c7d6 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -891,9 +891,13 @@
- /*
-  * Discard .note.GNU-stack, which is emitted as PROGBITS by the compiler.
-  * Otherwise, the type of .notes section would become PROGBITS instead of NOTES.
-+ *
-+ * Discard .note.gnu.property, which is 8-byte aligned and emitted by the
-+ * compiler. Otherwise, the .notes section will be 8-byte aligned and other
-+ * notes cannot be read.
-  */
- #define NOTES								\
--	/DISCARD/ : { *(.note.GNU-stack) }				\
-+	/DISCARD/ : { *(.note.GNU-stack) *(.note.gnu.property) }				\
- 	.notes : AT(ADDR(.notes) - LOAD_OFFSET) {			\
- 		BOUNDED_SECTION_BY(.note.*, _notes)			\
- 	} NOTES_HEADERS							\
--- 
-2.39.2
-
+thanks,
+jirka
