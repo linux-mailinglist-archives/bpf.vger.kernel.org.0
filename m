@@ -2,118 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 479426A6586
-	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 03:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31106A6675
+	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 04:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjCACbj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Feb 2023 21:31:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        id S229874AbjCADYc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Feb 2023 22:24:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjCACbj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Feb 2023 21:31:39 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49A129E33
-        for <bpf@vger.kernel.org>; Tue, 28 Feb 2023 18:31:32 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PRJC34vzRz4f3kp7
-        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 10:31:27 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAHvbAAuf5j3v8OEg--.10060S4;
-        Wed, 01 Mar 2023 10:31:29 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     laoar.shao@gmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, horenc@vt.edu,
-        john.fastabend@gmail.com, jolsa@kernel.org, kafai@fb.com,
-        kpsingh@kernel.org, sdf@google.com, songliubraving@fb.com,
-        xiyou.wangcong@gmail.com, yhs@fb.com
-Subject: Re: [PATCH bpf-next v3 03/18] bpf: hashtab memory usage
-Date:   Wed,  1 Mar 2023 10:59:49 +0800
-Message-Id: <20230301025949.238485-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20230227152032.12359-4-laoar.shao@gmail.com>
-References: <20230227152032.12359-4-laoar.shao@gmail.com>
+        with ESMTP id S229625AbjCADYb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Feb 2023 22:24:31 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E316F158AF;
+        Tue, 28 Feb 2023 19:24:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 78CF96122E;
+        Wed,  1 Mar 2023 03:24:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FCD9C4339C;
+        Wed,  1 Mar 2023 03:24:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677641069;
+        bh=VNUiYHTK1WmTQNHzsmJaVBzgcpH8B55pyube1Ia3Fvs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c9SR42IIbZ4yZSGobj6hJEq88zt7jTRltAJsX5QxL30SKT40Vprrr0m/0su9lCUp8
+         ZjHu2Hku+8PsKurVCpeh/KZjviLtvBwxAmuwR2OcPukWnlVdoNvvRLg3GDw0Kt7Pdn
+         V9qi4E/JkdvFN9/7hJd9xHlU+EZOuub2Bop8JALCvHrhekBEpyBxYYUJcTbZ5mIPFn
+         uKZvjLcamSXebshdu/1anQ3F46VF/qGvHOwQSClFEXUIFQBybfrYLdQ+TuMlSpWWjs
+         zvwm//OCbY1qSvDKBTJ990thy8U8QYxyqJVlm2Ub8QGtHU4ZdbJqCvAcyDzd/M20J2
+         frQTU/NKdFaRg==
+Date:   Tue, 28 Feb 2023 19:24:28 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Tony Lu <tonylu@linux.alibaba.com>
+Cc:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 0/4] net/smc: Introduce BPF injection
+ capability
+Message-ID: <20230228192428.447ceddc@kernel.org>
+In-Reply-To: <Y/67dZ8X+VoOi10b@TONYMAC-ALIBABA.local>
+References: <1677576294-33411-1-git-send-email-alibuda@linux.alibaba.com>
+        <20230228150051.4eeaa121@kernel.org>
+        <Y/67dZ8X+VoOi10b@TONYMAC-ALIBABA.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHvbAAuf5j3v8OEg--.10060S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7CryDKF47Aw4UGw43Xw15twb_yoW8uw1Upa
-        13AF15JFyvgry3uayvyw1jq3yDWa18u3W3Ja4Yqr1YkrWxWr1xtFZ7tF1I9FWj9ry3X3ZY
-        qFWI9wn3ArWUAF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbG2NtUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+On Wed, 1 Mar 2023 10:41:57 +0800 Tony Lu wrote:
+> Actually, this patch set is going to replace the patch of TCP ULP for
+> SMC. If this patch set is accepted, I am going to revert that patch.
+> 
+> For the reasons, the TCP ULP for SMC doesn't use wildly. It's not
+> possible to know which applications are suitable to be replaced with
+> SMC. But it's easier to detect the behavior of applications and
+> determine whether to replace applications with SMC. And this patch set
+> is going to fallback to TCP by behavior with eBPF.
+> 
+> So this is the _fix_ for that patch.
 
-> htab_map_mem_usage() is introduced to calculate hashmap memory usage. In
-> this helper, some small memory allocations are ignore, as their size is
-> quite small compared with the total size. The inner_map_meta in
-> hash_of_map is also ignored.
-> 
-> The result for hashtab as follows,
-> 
-> - before this change
-> 1: hash  name count_map  flags 0x1  <<<< no prealloc, fully set
->         key 16B  value 24B  max_entries 1048576  memlock 41943040B
-> 2: hash  name count_map  flags 0x1  <<<< no prealloc, none set
->         key 16B  value 24B  max_entries 1048576  memlock 41943040B
-> 3: hash  name count_map  flags 0x0  <<<< prealloc
->         key 16B  value 24B  max_entries 1048576  memlock 41943040B
-> 
-> The memlock is always a fixed size whatever it is preallocated or
-> not, and whatever the count of allocated elements is.
-> 
-> - after this change
-> 1: hash  name count_map  flags 0x1    <<<< non prealloc, fully set
->         key 16B  value 24B  max_entries 1048576  memlock 117441536B
-> 2: hash  name count_map  flags 0x1    <<<< non prealloc, non set
->         key 16B  value 24B  max_entries 1048576  memlock 16778240B
-> 3: hash  name count_map  flags 0x0    <<<< prealloc
->         key 16B  value 24B  max_entries 1048576  memlock 109056000B
-> 
-> The memlock now is hashtab actually allocated.
-> 
-> The result for percpu hash map as follows,
-> - before this change
-> 4: percpu_hash  name count_map  flags 0x0       <<<< prealloc
->         key 16B  value 24B  max_entries 1048576  memlock 822083584B
-> 5: percpu_hash  name count_map  flags 0x1       <<<< no prealloc
->         key 16B  value 24B  max_entries 1048576  memlock 822083584B
-> 
-> - after this change
-> 4: percpu_hash  name count_map  flags 0x0
->         key 16B  value 24B  max_entries 1048576  memlock 897582080B
-> 5: percpu_hash  name count_map  flags 0x1
->         key 16B  value 24B  max_entries 1048576  memlock 922748736B
-> 
-> At worst, the difference can be 10x, for example,
-> - before this change
-> 6: hash  name count_map  flags 0x0
->         key 4B  value 4B  max_entries 1048576  memlock 8388608B
-> 
-> - after this change
-> 6: hash  name count_map  flags 0x0
->         key 4B  value 4B  max_entries 1048576  memlock 83889408B
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> 
-Acked-by: Hou Tao <houtao1@huawei.com>
-
+Good to hear, I was worried you'd still want to install the ULP at some
+point whether the decision is via BPF or user space.
