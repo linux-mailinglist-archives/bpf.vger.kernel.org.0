@@ -2,52 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F176A761E
-	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 22:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4262E6A76D0
+	for <lists+bpf@lfdr.de>; Wed,  1 Mar 2023 23:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjCAVYj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Mar 2023 16:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        id S229653AbjCAWgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 17:36:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjCAVYj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Mar 2023 16:24:39 -0500
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE58342BD0
-        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 13:24:37 -0800 (PST)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 2ABBE2405D2
-        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 22:24:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1677705876; bh=XfrU7/42V9sfsqa+TwtsfaXz+boVPMG659c05Tsk/OQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=l1XmrQUhSdDHKA6HYwBzKLQH1cpQ3T2rJDBRraXU5qOMA1qPytgGq9C8T+xvB2IfC
-         y8xAZ+/DU4kZqnxnLCxXoX/2UGjmqs0sZjfb/tMXLVaaZH2MflMKSNo0BSOZlCXwTr
-         AwrR0udreeZjyV6CQdQk3HWMVP8j9NSXIQYpIZ7pKF5ZisN4ENPtHy4VvAi9ReH0SC
-         iRpdMA2rbrCUZIgxpzhsi+QFGhyRTWBS3q23WE/lbd4RgLud2k20jDp+VnHf+4UZTG
-         7DTrDZzlP0oeLICHB2Mudptp91pLni2W4coKFN24CSW4s4qGrXmahgVQv3VRzS9APD
-         fdCgop3Hk3EZA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4PRnLT3hqQz9rxH;
-        Wed,  1 Mar 2023 22:24:33 +0100 (CET)
-Date:   Wed,  1 Mar 2023 21:24:29 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v3 3/3] libbpf: Add support for attaching
- uprobes to shared objects in APKs
-Message-ID: <20230301212429.ecwivofzfvq6zjbl@muellerd-fedora-PC2BDTX9>
-References: <20230301184026.800691-1-deso@posteo.net>
- <20230301184026.800691-4-deso@posteo.net>
- <CAEf4BzYcRjvXhBnsJEWP0YDoDpaVyeBUeyz+LbNWmi-5VL7hoA@mail.gmail.com>
+        with ESMTP id S229560AbjCAWgB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 17:36:01 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1FD521FE;
+        Wed,  1 Mar 2023 14:36:00 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id me6-20020a17090b17c600b0023816b0c7ceso874261pjb.2;
+        Wed, 01 Mar 2023 14:36:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x5nSvN/7pKUlC9+9bAdQKKovuUcJ/9iDGyKpLdAWf7g=;
+        b=ap76Gq0awCsdkonDjQmG37KM3mjurJKiPx3NHC54QRZe66zPKfU+MSEv60px0EdEz4
+         YCzzGPf13xgdDNjWs7Khf8U9MouP5wuSs4F8D3vkEPOwYE9zQHPKjPWZ+5T2ChImhFSI
+         XZ3WWrI/z71nOYLn34gliisapQPxVs9VQRatkOziu65eNdr7FpQTB29m3/6etNmjB4w+
+         aLT2dsQEkQ7nbAjYbFUzNgYJ2aPfWhyrxladRcfqtmulb5k/0RQittA3IIGEoupkAcHy
+         0D5FEYDYthhg7GpDUmRUbpxlvIwK+x/clUseaXfQX0PvCVeoqFFN4BVYgGLz8fFLilUh
+         +tbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x5nSvN/7pKUlC9+9bAdQKKovuUcJ/9iDGyKpLdAWf7g=;
+        b=2TWpwhTmevFC4/p3SArgCK/EQmhP7qj+IMGwwbsoP/pQOvgPxRR5tpHPPWSGO0cQbM
+         WgKZM7bqE68s6XVlVrPfOmpoM6U/2JJB/SuKbIvQ2OwLubk0PwEOyaYbrpbpkdl7d4TR
+         9r5LhYyZqJiRMuYP9+sAXxEI2u35AJtgUQTGAyYosZzrRalpZxcyV6jrb2urgmXX/LOq
+         BDThgSF5WMUjgyL2iKsUKS2TzFuJFnQgYMasJm5DwC2pcOKgOVtjHgxBSdfPtBpZ9TGP
+         PXVb9n8Y3HR69B9tvDiRxjRJr8oRcoGgjpzumEFY/46nQi6GFEQtmorzaYz/emWSWqVh
+         pBQQ==
+X-Gm-Message-State: AO0yUKWHexjY7N+rsayQPUQUPUjFwhnrU6EFz4NH1duHqNxvgD24hxII
+        KeVXdrvuuHsZU7y9Xqlx3RI=
+X-Google-Smtp-Source: AK7set/A9//kRm+ec0RYtRx3qPyvD+SC6RTb+BQmoVTxVMETKocP8BLZPopJFEZ1u71UlUHY6jE2QA==
+X-Received: by 2002:a17:902:f70f:b0:19c:f8c9:4dff with SMTP id h15-20020a170902f70f00b0019cf8c94dffmr7438356plo.38.1677710159254;
+        Wed, 01 Mar 2023 14:35:59 -0800 (PST)
+Received: from localhost.localdomain ([2620:10d:c090:400::5:2f7d])
+        by smtp.gmail.com with ESMTPSA id i19-20020a170902eb5300b0019ab151eb90sm8916192pli.139.2023.03.01.14.35.57
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 01 Mar 2023 14:35:58 -0800 (PST)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        void@manifault.com, davemarchevsky@meta.com, tj@kernel.org,
+        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v4 bpf-next 0/6] bpf: Introduce kptr RCU.
+Date:   Wed,  1 Mar 2023 14:35:49 -0800
+Message-Id: <20230301223555.84824-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYcRjvXhBnsJEWP0YDoDpaVyeBUeyz+LbNWmi-5VL7hoA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,94 +70,113 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 01, 2023 at 11:31:09AM -0800, Andrii Nakryiko wrote:
-> On Wed, Mar 1, 2023 at 10:40 AM Daniel Müller <deso@posteo.net> wrote:
-> >
-> > This change adds support for attaching uprobes to shared objects located
-> > in APKs, which is relevant for Android systems where various libraries
-> > may reside in APKs. To make that happen, we extend the syntax for the
-> > "binary path" argument to attach to with that supported by various
-> > Android tools:
-> >   <archive>!/<binary-in-archive>
-> >
-> > For example:
-> >   /system/app/test-app/test-app.apk!/lib/arm64-v8a/libc++_shared.so
-> >
-> > APKs need to be specified via full path, i.e., we do not attempt to
-> > resolve mere file names by searching system directories.
-> >
-> > We cannot currently test this functionality end-to-end in an automated
-> > fashion, because it relies on an Android system being present, but there
-> > is no support for that in CI. I have tested the functionality manually,
-> > by creating a libbpf program containing a uretprobe, attaching it to a
-> > function inside a shared object inside an APK, and verifying the sanity
-> > of the returned values.
-> >
-> > Signed-off-by: Daniel Müller <deso@posteo.net>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 92 ++++++++++++++++++++++++++++++++++++++----
-> >  1 file changed, 85 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 4543e9..e6b99a 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -53,6 +53,7 @@
-> >  #include "libbpf_internal.h"
-> >  #include "hashmap.h"
-> >  #include "bpf_gen_internal.h"
-> > +#include "zip.h"
-> >
-> >  #ifndef BPF_FS_MAGIC
-> >  #define BPF_FS_MAGIC           0xcafe4a11
-> > @@ -10702,6 +10703,69 @@ static long elf_find_func_offset_from_file(const char *binary_path, const char *
-> >         return ret;
-> >  }
-> >
-> > +/* Find offset of function name in archive specified by path. Currently
-> > + * supported are .zip files that do not compress their contents, as used on
-> > + * Android in the form of APKs, for example. "file_name" is the name of the ELF
-> > + * file inside the archive. "func_name" matches symbol name or name@@LIB for
-> > + * library functions.
-> > + *
-> > + * An overview of the APK format specifically provided here:
-> > + * https://en.wikipedia.org/w/index.php?title=Apk_(file_format)&oldid=1139099120#Package_contents
-> > + */
-> > +static long elf_find_func_offset_from_archive(const char *archive_path, const char *file_name,
-> > +                                             const char *func_name)
-> > +{
-> > +       struct zip_archive *archive;
-> > +       struct zip_entry entry;
-> > +       long ret = -ENOENT;
-> > +       int err;
-> > +       Elf *elf;
-> > +
-> > +       archive = zip_archive_open(archive_path);
-> > +       if (IS_ERR(archive)) {
-> 
-> Unfortunately, this won't work with the libbpf_err_ptr() approach that
-> you used inside zip_archive_open(). Since libbpf v1.0 libbpf_err_ptr()
-> will return NULL on error (and so this IS_ERR() check will always be
-> false, and subsequent PTR_ERR() would be returning 0) and only set
-> errno to actual error. This was meant to be used mostly for
-> user-facing APIs.
+From: Alexei Starovoitov <ast@kernel.org>
 
-Thanks for pointing that out.
+v3->v4:
+- patch 3 got much cleaner after BPF_KPTR_RCU was removed as suggested by David. 
 
-> Given zip_archive_open() is internal, explicit PTR_ERR() use as you do
-> below makes most sense. Please update and respin.
+- make KF_RCU stronger and require that bpf program checks for NULL
+before passing such pointers into kfunc. The prog has to do that anyway
+to access fields and it aligns with BTF_TYPE_SAFE_RCU allowlist.
 
-Sure.
+- New patch 6: refactor RCU enforcement in the verifier.
+The patches 2,3,6 are part of one feature.
+The 2 and 3 alone are incomplete, since RCU pointers are barely useful
+without bpf_rcu_read_lock/unlock in GCC compiled kernel.
+Even if GCC lands support for btf_type_tag today it will take time
+to mandate that version for kernel builds. Hence go with allow list
+approach. See patch 6 for details.
+This allows to start strict enforcement of TRUSTED | UNTRUSTED
+in one part of PTR_TO_BTF_ID accesses.
+One step closer to KF_TRUSTED_ARGS by default.
 
-> > +               pr_warn("zip: failed to open %s: %ld\n", archive_path, PTR_ERR(archive));
-> > +               return PTR_ERR(archive);
-> 
-> err = PTR_ERR(archive); and use err in pr_warn() and return?
-> 
-> and it's not clear why you need both ret and err, it should be fine to
-> just use ret (long vs int doesn't hurt error propagation)
+v2->v3:
+- Instead of requiring bpf progs to tag fields with __kptr_rcu
+teach the verifier to infer RCU properties based on the type.
+BPF_KPTR_RCU becomes kernel internal type of struct btf_field.
+- Add patch 2 to tag cgroups and dfl_cgrp as trusted.
+That bug was spotted by BPF CI on clang compiler kernels,
+since patch 3 is doing:
+static bool in_rcu_cs(struct bpf_verifier_env *env)
+{
+        return env->cur_state->active_rcu_lock || !env->prog->aux->sleepable;
+}
+which makes all non-sleepable programs behave like they have implicit
+rcu_read_lock around them. Which is the case in practice.
+It was fine on gcc compiled kernels where task->cgroup deference was producing
+PTR_TO_BTF_ID, but on clang compiled kernels task->cgroup deference was
+producing PTR_TO_BTF_ID | MEM_RCU | MAYBE_NULL, which is more correct,
+but selftests were failing. Patch 2 fixes this discrepancy.
+With few more patches like patch 2 we can make KF_TRUSTED_ARGS default
+for kfuncs and helpers.
+- Add comment in selftest patch 5 that it's verifier only check.
 
-Changed.
+v1->v2:
+Instead of agressively allow dereferenced kptr_rcu pointers into KF_TRUSTED_ARGS
+kfuncs only allow them into KF_RCU funcs.
+The KF_RCU flag is a weaker version of KF_TRUSTED_ARGS. The kfuncs marked with
+KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier guarantees
+that the objects are valid and there is no use-after-free, but the pointers
+maybe NULL and pointee object's reference count could have reached zero, hence
+kfuncs must do != NULL check and consider refcnt==0 case when accessing such
+arguments.
+No changes in patch 1.
+Patches 2,3,4 adjusted with above behavior.
 
-Thanks,
-Daniel
+v1:
+The __kptr_ref turned out to be too limited, since any "trusted" pointer access
+requires bpf_kptr_xchg() which is impractical when the same pointer needs
+to be dereferenced by multiple cpus.
+The __kptr "untrusted" only access isn't very useful in practice.
+Rename __kptr to __kptr_untrusted with eventual goal to deprecate it,
+and rename __kptr_ref to __kptr, since that looks to be more common use of kptrs.
+Introduce __kptr_rcu that can be directly dereferenced and used similar
+to native kernel C code.
+Once bpf_cpumask and task_struct kfuncs are converted to observe RCU GP
+when refcnt goes to zero, both __kptr and __kptr_untrusted can be deprecated
+and __kptr_rcu can become the only __kptr tag.
+
+Alexei Starovoitov (6):
+  bpf: Rename __kptr_ref -> __kptr and __kptr -> __kptr_untrusted.
+  bpf: Mark cgroups and dfl_cgrp fields as trusted.
+  bpf: Introduce kptr_rcu.
+  selftests/bpf: Add a test case for kptr_rcu.
+  selftests/bpf: Tweak cgroup kfunc test.
+  bpf: Refactor RCU enforcement in the verifier.
+
+ Documentation/bpf/bpf_design_QA.rst           |   4 +-
+ Documentation/bpf/cpumasks.rst                |   4 +-
+ Documentation/bpf/kfuncs.rst                  |  14 +-
+ include/linux/bpf.h                           |   2 +-
+ include/linux/bpf_verifier.h                  |   1 -
+ include/linux/btf.h                           |   2 +-
+ kernel/bpf/btf.c                              |  19 +-
+ kernel/bpf/cpumask.c                          |  40 ++--
+ kernel/bpf/helpers.c                          |   6 +-
+ kernel/bpf/verifier.c                         | 213 +++++++++++++-----
+ net/bpf/test_run.c                            |   3 +-
+ tools/lib/bpf/bpf_helpers.h                   |   2 +-
+ .../bpf/prog_tests/cgrp_local_storage.c       |  14 +-
+ .../selftests/bpf/prog_tests/rcu_read_lock.c  |  16 +-
+ tools/testing/selftests/bpf/progs/cb_refs.c   |   2 +-
+ .../selftests/bpf/progs/cgrp_kfunc_common.h   |   2 +-
+ .../selftests/bpf/progs/cgrp_kfunc_failure.c  |   2 +-
+ .../selftests/bpf/progs/cgrp_kfunc_success.c  |  12 +-
+ .../selftests/bpf/progs/cgrp_ls_sleepable.c   |   4 +-
+ .../selftests/bpf/progs/cpumask_common.h      |   2 +-
+ .../selftests/bpf/progs/cpumask_failure.c     |   2 +-
+ .../selftests/bpf/progs/jit_probe_mem.c       |   2 +-
+ tools/testing/selftests/bpf/progs/lru_bug.c   |   2 +-
+ tools/testing/selftests/bpf/progs/map_kptr.c  |  16 +-
+ .../selftests/bpf/progs/map_kptr_fail.c       |  10 +-
+ .../bpf/progs/nested_trust_failure.c          |   2 +-
+ .../selftests/bpf/progs/rcu_read_lock.c       |   6 +-
+ .../selftests/bpf/progs/task_kfunc_common.h   |   2 +-
+ tools/testing/selftests/bpf/test_verifier.c   |  22 +-
+ tools/testing/selftests/bpf/verifier/calls.c  |   4 +-
+ .../testing/selftests/bpf/verifier/map_kptr.c |   2 +-
+ 31 files changed, 283 insertions(+), 151 deletions(-)
+
+-- 
+2.39.2
+
