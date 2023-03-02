@@ -2,118 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384866A8830
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 19:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A906A889A
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 19:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjCBSAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 13:00:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
+        id S229453AbjCBSjX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 13:39:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjCBSAR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 13:00:17 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9026B34F52;
-        Thu,  2 Mar 2023 10:00:16 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27AD361625;
-        Thu,  2 Mar 2023 18:00:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ED63C433D2;
-        Thu,  2 Mar 2023 18:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677780015;
-        bh=KJV8ir8Jjr+hwTXupgZ9WqL8uKtDPclFlqYOsqUJE+I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qkWQyJJyzq6wgiw/Jtcpj/GeY1nSPVcdo5FCWv+flc7+woilQkagKjQc9EOUrMWVA
-         aI3lDcNROaIBiO9G9I8MhGdvu9921A7TUXxA2B7mrV11ElgmM4MgIvrKUj6e+MVu5z
-         yqlt8G97heCymDtLAxwZSwwoKEICM3REpiLC2mFOIvHUHoVjTpFDvWlh4epKfHGQ/g
-         nz5WPT384er7SLGL2PL7s36Rd25jwEQZ2xA3j3WwrB/OD73fW8UPcJiX835KiAe0+9
-         A24xvChdokb6fWKT23siYaPp85sjkGH1j/Q21CefzmYnNNJscfx+M4p2B7yKkS2WBO
-         HrSmr//p23NdQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 88AFF4049F; Thu,  2 Mar 2023 15:00:12 -0300 (-03)
-Date:   Thu, 2 Mar 2023 15:00:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Eduard Zingerman <eddyz87@gmail.com>, dwarves@vger.kernel.org,
-        arnaldo.melo@gmail.com, bpf@vger.kernel.org, kernel-team@fb.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, KP Singh <kpsingh@kernel.org>,
-        Matt Bobrowski <mattbobrowski@google.com>
-Subject: Re: [PATCH dwarves] dwarf_loader: Fix for BTF id drift caused by
- adding unspecified types
-Message-ID: <ZADkLFc+uPLXjokq@kernel.org>
-References: <20230228202357.2766051-1-eddyz87@gmail.com>
- <Y//BfO3pAixXLLyA@krava>
+        with ESMTP id S229455AbjCBSjW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 13:39:22 -0500
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871D410263;
+        Thu,  2 Mar 2023 10:39:21 -0800 (PST)
+Received: by mail-qv1-f46.google.com with SMTP id o3so172652qvr.1;
+        Thu, 02 Mar 2023 10:39:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677782360;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xh37jVV18tU4XLWiHUq7/XGNNCrD2HtDOL15WPjQ7Os=;
+        b=UsnBUeY4APLvnG5/lRzdQ/TXh9PiHQak3KDRUUCmWER4CPcHySsjncprXkd7S4jdmA
+         2YeWSlMRTsYlMfUD66uyMKjX2vX5T8MH3dTJi4xd6//DR4R9xeJ2PxPUfY5nx1afQ536
+         lpmk/AJHwTc3xZA3jrEzMQvAvm1tWoJkCSlFKfpJLs4qksgeWxuhi484scGo98gQQl6w
+         mTqdLpVz4unLadv3BSlnk99H7wc58UxkXZKWQtHxD9fIHOVg9lk3lmAfK6X4ZmPpPol4
+         rsa/7qZQZou9XrPkqXz+w+JsAU6RYqOtr/YDqfhwZ9XMfdHoMkKmTjdNypUizexGCHjv
+         7NVg==
+X-Gm-Message-State: AO0yUKUsA4xGZLKxdUHpIdDH5yaAt6O8+P6YGitcKqt98zwWP3ZOSdWc
+        WBPkLFWeE5mkzGtEAV86zH+504YHga35g+qB
+X-Google-Smtp-Source: AK7set+a+m30hD1vItmKf8TpDPISS8DbpLHPihQyCZGszCawPXeoyfqm3JnZaq4siDBbK13eXYDWMQ==
+X-Received: by 2002:a05:6214:248c:b0:56e:b1d2:9c2a with SMTP id gi12-20020a056214248c00b0056eb1d29c2amr22091937qvb.28.1677782360212;
+        Thu, 02 Mar 2023 10:39:20 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:5434])
+        by smtp.gmail.com with ESMTPSA id l19-20020a05620a211300b007423c122457sm150050qkl.63.2023.03.02.10.39.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Mar 2023 10:39:19 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: [PATCH bpf-next 1/2] bpf, docs: Fix link to netdev-FAQ target
+Date:   Thu,  2 Mar 2023 12:39:17 -0600
+Message-Id: <20230302183918.54190-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y//BfO3pAixXLLyA@krava>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Mar 01, 2023 at 10:19:56PM +0100, Jiri Olsa escreveu:
-> On Tue, Feb 28, 2023 at 10:23:57PM +0200, Eduard Zingerman wrote:
-> > Recent changes to handle unspecified types (see [1]) cause BTF ID drift.
-> > 
-> > Specifically, the intent of commits [2], [3] and [4] is to render
-> > references to unspecified types as void type.
-> > However, as a consequence:
-> > - in `die__process_unit()` call to `cu__add_tag()` allocates `small_id`
-> >   for unspecified type tags and adds these tags to `cu->types_table`;
-> > - `btf_encoder__encode_tag()` skips generation of BTF entries for
-> >   `DW_TAG_unspecified_type` tags.
-> > 
-> > Such logic causes ID drift if unspecified type is not the last type
-> > processed for compilation unit. `small_id` of each type following
-> > unspecified type in the `cu->types_table` would have its BTF id off by -1.
-> > Thus, rendering references established on recode phase invalid.
-> > 
-> > This commit reverts `unspecified_type` id/tag tracking.
-> > Instead, the following is done:
-> > - `small_id` for unspecified type tags is set to 0, thus reference to
-> >   unspecified type tag would render BTF id of a `void` on recode phase;
-> > - unspecified type tags are not added to `cu->types_table`.
-> > 
-> > This change also happens to fix issue reported in [5], the gist of
-> > that issue is that the field `encoder->unspecified_type` is set but
-> > not reset by function `btf_encoder__encode_cu()`. Thus, the following
-> > sequence of events might occur when BTF encoding is requested:
-> > - CU with unspecified type is processed:
-> >   - unspecified type id is 42
-> >   - encoder->unspecified_type is set to 42
-> > - CU without unspecified type is processed next using the same
-> >   `encoder` object:
-> >   - some `struct foo` has id 42 in this CU
-> >   - the references to `struct foo` are set 0 by function
-> >     `btf_encoder__tag_type()`.
-> > 
-> > [1] https://lore.kernel.org/all/Y0R7uu3s%2FimnvPzM@kernel.org/
-> > [2] bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
-> > [3] cffe5e1f75e1 ("core: Record if a CU has a DW_TAG_unspecified_type")
-> > [4] 75e0fe28bb02 ("core: Add DW_TAG_unspecified_type to tag__is_tag_type() set")
-> > [5] https://lore.kernel.org/bpf/Y%2FP1yxAuV6Wj3A0K@google.com/
-> > 
-> > Fixes: bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
-> > Fixes: 52b25808e44a ("btf_encoder: Store type_id_off, unspecified type in encoder")
-> > Tested-by: KP Singh <kpsingh@kernel.org>
-> > Reported-by: Matt Bobrowski <mattbobrowski@google.com>
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> lgtm, tested on top of the pahole next branch with bpf selftests
-> 
-> Tested-by: Jiri Olsa <jolsa@kernel.org>
+The BPF devel Q&A documentation page makes frequent reference to the
+netdev-QA page via the netdev-FAQ rst link. This link is currently
+broken, as is evidenced by the build output when making BPF docs:
 
-Looks good to me as well, and way more elegant, thanks!
+./Documentation/bpf/bpf_devel_QA.rst:150: WARNING: undefined label: 'netdev-faq'
+./Documentation/bpf/bpf_devel_QA.rst:206: WARNING: undefined label: 'netdev-faq'
+./Documentation/bpf/bpf_devel_QA.rst:231: WARNING: undefined label: 'netdev-faq'
+./Documentation/bpf/bpf_devel_QA.rst:396: WARNING: undefined label: 'netdev-faq'
+./Documentation/bpf/bpf_devel_QA.rst:412: WARNING: undefined label: 'netdev-faq'
 
-Applied.
+Fix the links to point to the actual netdev-faq page.
 
-- Arnaldo
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ Documentation/bpf/bpf_devel_QA.rst | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+index 03d4993eda6f..5f5f9ccc3862 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -128,7 +128,7 @@ into the bpf-next tree will make their way into net-next tree. net and
+ net-next are both run by David S. Miller. From there, they will go
+ into the kernel mainline tree run by Linus Torvalds. To read up on the
+ process of net and net-next being merged into the mainline tree, see
+-the :ref:`netdev-FAQ`
++the `netdev-FAQ`_.
+ 
+ 
+ 
+@@ -147,7 +147,7 @@ request)::
+ Q: How do I indicate which tree (bpf vs. bpf-next) my patch should be applied to?
+ ---------------------------------------------------------------------------------
+ 
+-A: The process is the very same as described in the :ref:`netdev-FAQ`,
++A: The process is the very same as described in the `netdev-FAQ`_,
+ so please read up on it. The subject line must indicate whether the
+ patch is a fix or rather "next-like" content in order to let the
+ maintainers know whether it is targeted at bpf or bpf-next.
+@@ -206,7 +206,7 @@ ii) run extensive BPF test suite and
+ Once the BPF pull request was accepted by David S. Miller, then
+ the patches end up in net or net-next tree, respectively, and
+ make their way from there further into mainline. Again, see the
+-:ref:`netdev-FAQ` for additional information e.g. on how often they are
++`netdev-FAQ`_ for additional information e.g. on how often they are
+ merged to mainline.
+ 
+ Q: How long do I need to wait for feedback on my BPF patches?
+@@ -230,7 +230,7 @@ Q: Are patches applied to bpf-next when the merge window is open?
+ -----------------------------------------------------------------
+ A: For the time when the merge window is open, bpf-next will not be
+ processed. This is roughly analogous to net-next patch processing,
+-so feel free to read up on the :ref:`netdev-FAQ` about further details.
++so feel free to read up on the `netdev-FAQ`_ about further details.
+ 
+ During those two weeks of merge window, we might ask you to resend
+ your patch series once bpf-next is open again. Once Linus released
+@@ -394,7 +394,7 @@ netdev kernel mailing list in Cc and ask for the fix to be queued up:
+   netdev@vger.kernel.org
+ 
+ The process in general is the same as on netdev itself, see also the
+-:ref:`netdev-FAQ`.
++`netdev-FAQ`_.
+ 
+ Q: Do you also backport to kernels not currently maintained as stable?
+ ----------------------------------------------------------------------
+@@ -410,7 +410,7 @@ Q: The BPF patch I am about to submit needs to go to stable as well
+ What should I do?
+ 
+ A: The same rules apply as with netdev patch submissions in general, see
+-the :ref:`netdev-FAQ`.
++the `netdev-FAQ`_.
+ 
+ Never add "``Cc: stable@vger.kernel.org``" to the patch description, but
+ ask the BPF maintainers to queue the patches instead. This can be done
+@@ -685,7 +685,7 @@ when:
+ 
+ .. Links
+ .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
+-.. _netdev-FAQ: Documentation/process/maintainer-netdev.rst
++.. _netdev-FAQ: https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html
+ .. _selftests:
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/
+ .. _Documentation/dev-tools/kselftest.rst:
+-- 
+2.39.0
+
