@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AE96A7ACE
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 06:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E80766A7ACC
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 06:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbjCBFcj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Mar 2023 00:32:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        id S229455AbjCBFcm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Mar 2023 00:32:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjCBFci (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 00:32:38 -0500
+        with ESMTP id S229653AbjCBFcl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 00:32:41 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA5A4AFE7
-        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 21:32:35 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32234QiF021302
-        for <bpf@vger.kernel.org>; Wed, 1 Mar 2023 21:32:34 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p1junw6re-1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232EF4BE89
+        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 21:32:40 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32235MhV027503
+        for <bpf@vger.kernel.org>; Wed, 1 Mar 2023 21:32:40 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p2hrvh92d-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 01 Mar 2023 21:32:34 -0800
-Received: from twshared37576.17.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 01 Mar 2023 21:32:39 -0800
+Received: from twshared33736.38.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 1 Mar 2023 21:32:33 -0800
+ 15.1.2507.17; Wed, 1 Mar 2023 21:32:30 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id C870C290D0EA7; Wed,  1 Mar 2023 21:32:23 -0800 (PST)
+        id D2BCE290D0EF6; Wed,  1 Mar 2023 21:32:25 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/8] bpf: improve regsafe() checks for PTR_TO_{MEM,BUF,TP_BUFFER}
-Date:   Wed, 1 Mar 2023 21:32:10 -0800
-Message-ID: <20230302053216.1426015-3-andrii@kernel.org>
+Subject: [PATCH bpf-next 3/8] selftests/bpf: enhance align selftest's expected log matching
+Date:   Wed, 1 Mar 2023 21:32:11 -0800
+Message-ID: <20230302053216.1426015-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230302053216.1426015-1-andrii@kernel.org>
 References: <20230302053216.1426015-1-andrii@kernel.org>
@@ -40,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: tk6m_zEGv_CVj-JLR1Odn0RhyLqkZPd6
-X-Proofpoint-ORIG-GUID: tk6m_zEGv_CVj-JLR1Odn0RhyLqkZPd6
+X-Proofpoint-ORIG-GUID: 0fYr2-eBCfjdh5AMf_2ExALG3pZAW_ej
+X-Proofpoint-GUID: 0fYr2-eBCfjdh5AMf_2ExALG3pZAW_ej
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-02_02,2023-03-01_03,2023-02-09_01
@@ -55,42 +55,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Teach regsafe() logic to handle PTR_TO_MEM, PTR_TO_BUF, and
-PTR_TO_TP_BUFFER similarly to PTR_TO_MAP_{KEY,VALUE}. That is, instead of
-exact match for var_off and range, use tnum_in() and range_within()
-checks, allowing more general verified state to subsume more specific
-current state. This allows to match wider range of valid and safe
-states, speeding up verification and detecting wider range of equivalent
-states for upcoming open-coded iteration looping logic.
+Allow to search for expected register state in all the verifier log
+output that's related to specified instruction number.
+
+See added comment for an example of possible situation that is happening
+due to a simple enhancement done in the next patch, which fixes handling
+of env->test_state_freq flag in state checkpointing logic.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/prog_tests/align.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 60cc8473faa8..97f03f9fc711 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14114,13 +14114,17 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		       tnum_in(rold->var_off, rcur->var_off);
- 	case PTR_TO_MAP_KEY:
- 	case PTR_TO_MAP_VALUE:
-+	case PTR_TO_MEM:
-+	case PTR_TO_BUF:
-+	case PTR_TO_TP_BUFFER:
- 		/* If the new min/max/var_off satisfy the old ones and
- 		 * everything else matches, we are OK.
- 		 */
- 		return memcmp(rold, rcur, offsetof(struct bpf_reg_state, var_off)) == 0 &&
- 		       range_within(rold, rcur) &&
- 		       tnum_in(rold->var_off, rcur->var_off) &&
--		       check_ids(rold->id, rcur->id, idmap);
-+		       check_ids(rold->id, rcur->id, idmap) &&
-+		       check_ids(rold->ref_obj_id, rcur->ref_obj_id, idmap);
- 	case PTR_TO_PACKET_META:
- 	case PTR_TO_PACKET:
- 		/* We must have at least as much range as the old ptr
+diff --git a/tools/testing/selftests/bpf/prog_tests/align.c b/tools/testing/selftests/bpf/prog_tests/align.c
+index 4666f88f2bb4..c94fa8d6c4f6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/align.c
++++ b/tools/testing/selftests/bpf/prog_tests/align.c
+@@ -660,16 +660,22 @@ static int do_test_single(struct bpf_align_test *test)
+ 			 * func#0 @0
+ 			 * 0: R1=ctx(off=0,imm=0) R10=fp0
+ 			 * 0: (b7) r3 = 2                 ; R3_w=2
++			 *
++			 * Sometimes it's actually two lines below, e.g. when
++			 * searching for "6: R3_w=scalar(umax=255,var_off=(0x0; 0xff))":
++			 *   from 4 to 6: R0_w=pkt(off=8,r=8,imm=0) R1=ctx(off=0,imm=0) R2_w=pkt(off=0,r=8,imm=0) R3_w=pkt_end(off=0,imm=0) R10=fp0
++			 *   6: R0_w=pkt(off=8,r=8,imm=0) R1=ctx(off=0,imm=0) R2_w=pkt(off=0,r=8,imm=0) R3_w=pkt_end(off=0,imm=0) R10=fp0
++			 *   6: (71) r3 = *(u8 *)(r2 +0)           ; R2_w=pkt(off=0,r=8,imm=0) R3_w=scalar(umax=255,var_off=(0x0; 0xff))
+ 			 */
+-			if (!strstr(line_ptr, m.match)) {
++			while (!strstr(line_ptr, m.match)) {
+ 				cur_line = -1;
+ 				line_ptr = strtok(NULL, "\n");
+-				sscanf(line_ptr, "%u: ", &cur_line);
++				sscanf(line_ptr ?: "", "%u: ", &cur_line);
++				if (!line_ptr || cur_line != m.line)
++					break;
+ 			}
+-			if (cur_line != m.line || !line_ptr ||
+-			    !strstr(line_ptr, m.match)) {
+-				printf("Failed to find match %u: %s\n",
+-				       m.line, m.match);
++			if (cur_line != m.line || !line_ptr || !strstr(line_ptr, m.match)) {
++				printf("Failed to find match %u: %s\n", m.line, m.match);
+ 				ret = 1;
+ 				printf("%s", bpf_vlog);
+ 				break;
 -- 
 2.30.2
 
