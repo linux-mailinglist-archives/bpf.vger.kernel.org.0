@@ -2,1075 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C76656A8C46
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 23:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 134A46A8CAF
+	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 00:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbjCBWzi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 17:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41304 "EHLO
+        id S229607AbjCBXDO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 18:03:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbjCBWzi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 17:55:38 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33CE2202D
-        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 14:55:34 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id t11so1339309lfr.1
-        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 14:55:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677797733;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pjVmxzqlQjtYXcQAp25DmoXarpr3vdNLq45qEyDHfW4=;
-        b=jFFLIDlR+Z8KouWlzuGVJ/O8/2t+eKC9JKIdiMbylmkefIW32Iy4yTiq/wBDkoTC3a
-         qgXSNpRDneAzDtt67L5j1eAYDYcx/KnRCGV+bqbn/XcsVOIop+Ncvc6IUZ0s9ZSAbGQu
-         5cGA87/K2rZdvLxSPpLgkmuCoeuCZgRM13hy7O9K+B1ClW6ZCEpQhkaNHOIOQOxM12pL
-         HVLjgRnK9c6YxPdkD9NICn+/WQfbx964ZYa/lYTgwTICeJhwSUb1Bm83JqaD/agkgZGt
-         wDJSiHQJYuJ9+Q/Z8oyvALwPFYa/J0IfX2MWwQueeLiNDayhs2N05CecXGGyXWDOCK4d
-         bGFQ==
+        with ESMTP id S229453AbjCBXDN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 18:03:13 -0500
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC400BDCC;
+        Thu,  2 Mar 2023 15:03:12 -0800 (PST)
+Received: by mail-qt1-f172.google.com with SMTP id l18so1113284qtp.1;
+        Thu, 02 Mar 2023 15:03:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677797733;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1677798192;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pjVmxzqlQjtYXcQAp25DmoXarpr3vdNLq45qEyDHfW4=;
-        b=zZPBxN88yDzxVR+QoPVMD3czkwLCQ5E23Sm+aZca8fjrsf/Mn8lvlKXYF3EVXos9Cv
-         B3aXvpwp4Xkh1lgefBYHCeNriipKb96WqccbVbuEdNhuQxOtDa7450ATjPHbIzbficcM
-         /r/6NOjdEZzUm3KYhdvFWc0R9bfZHWLdNMeuoyiR73UhpcQ1WIxfrD/S1APZedtCBN//
-         nK1lZpXGrUc7b+orITZm/FPtmd1lGW0yZLij0ZyZA1RCZL0LCnMwJLVUrC1MmYYth94X
-         o4nNCs0g+OpaW+1hh4Y9/f39JaqVeAa/0llz7uM8p+fCxXMNYDvnBZKMeoJJ+JwZRAqo
-         vBkg==
-X-Gm-Message-State: AO0yUKVAMMwkjzrz8zbO9nV1swr/qltl471WaSclZxPZ4FcEykyl8Pdt
-        lLX0ToAJWBno2acpIQXm76hzapfmgRrtjg==
-X-Google-Smtp-Source: AK7set+ViRKxHR+zZiF5k/KmDbx6M8wRYCZjqdcJtNJqOzHukqBP6tAna3H2ZG2tRcAzfN+QOWSG4w==
-X-Received: by 2002:ac2:4433:0:b0:4b5:2bbc:e119 with SMTP id w19-20020ac24433000000b004b52bbce119mr3548645lfl.65.1677797732424;
-        Thu, 02 Mar 2023 14:55:32 -0800 (PST)
-Received: from bigfoot.. (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id u27-20020a056512041b00b004db266f3978sm113840lfk.174.2023.03.02.14.55.31
+        bh=v+pVHKA/oTFVdBwiAlXC7uOD6TN6kupcVJhF4A4T5lM=;
+        b=mYom0QD4nMBb/2NvP7+KRZ2ZFoupXyYNpDIXtPmNcgTrdVKld2Em4B3sT5w9qtdoLZ
+         VV7MZ2KWIxEJu7Htl17EudNU5rBYozE7Sx91MLvYpAR6hUmRnOvbUBlK7G8+BFka1ggl
+         z1whSRGJTSfk5VWRULRQ8aIjaokugRipK8UpeBzLKDDorxdoEbMccnlLqqcSobRt8cyI
+         1H1b5ZoM0wcAD6BOyCpIKukvh7s/7hUJtBqpbBvEylODL8+Ir8GCyLwccJ86pYcEdsqz
+         7IUFjom/eUcVXIJVgmNy1DlofWcFZCiFZvjI1RRE0LMfXo/geZwq0QHzEZhXvgSiY+ke
+         tEAg==
+X-Gm-Message-State: AO0yUKUcb7Me9hgDCpjTdPbWyAREm+59eiVM0IRq/MlucSMxOf83oSZt
+        yES105UJ0XSmbeYcon5cy9o=
+X-Google-Smtp-Source: AK7set9v00NNuQX5RgIn2+RP5BALUK4ddYs7ehAcF83tuLN+QTwayet8xOy1n2xvcYlfxpG2ANzT6g==
+X-Received: by 2002:ac8:7f16:0:b0:3bf:bac6:9961 with SMTP id f22-20020ac87f16000000b003bfbac69961mr23470323qtk.55.1677798191600;
+        Thu, 02 Mar 2023 15:03:11 -0800 (PST)
+Received: from maniforge ([2620:10d:c091:480::1:5ba])
+        by smtp.gmail.com with ESMTPSA id p23-20020a05620a057700b0071f0d0aaef7sm529875qkp.80.2023.03.02.15.03.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 14:55:32 -0800 (PST)
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     bpf@vger.kernel.org, ast@kernel.org
-Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-        kernel-team@fb.com, yhs@fb.com, jose.marchesi@oracle.com,
-        Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Disassembler tests for verifier.c:convert_ctx_access()
-Date:   Fri,  3 Mar 2023 00:55:07 +0200
-Message-Id: <20230302225507.3413720-4-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230302225507.3413720-1-eddyz87@gmail.com>
-References: <20230302225507.3413720-1-eddyz87@gmail.com>
+        Thu, 02 Mar 2023 15:03:11 -0800 (PST)
+Date:   Thu, 2 Mar 2023 17:03:08 -0600
+From:   David Vernet <void@manifault.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, davemarchevsky@meta.com, tj@kernel.org,
+        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v4 bpf-next 6/6] bpf: Refactor RCU enforcement in the
+ verifier.
+Message-ID: <ZAErLAKYKZKqmhSi@maniforge>
+References: <20230301223555.84824-1-alexei.starovoitov@gmail.com>
+ <20230301223555.84824-7-alexei.starovoitov@gmail.com>
+ <ZAAgfwgo5GU8V28f@maniforge>
+ <20230302212344.snafoop5hytngskk@MacBook-Pro-6.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230302212344.snafoop5hytngskk@MacBook-Pro-6.local>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Function verifier.c:convert_ctx_access() applies some rewrites to BPF
-instructions that read or write BPF program context. This commit adds
-machinery to allow test cases that inspect BPF program after these
-rewrites are applied.
+On Thu, Mar 02, 2023 at 01:23:44PM -0800, Alexei Starovoitov wrote:
 
-An example of a test case:
+[...]
 
-  {
-        // Shorthand for field offset and size specification
-	N(CGROUP_SOCKOPT, struct bpf_sockopt, retval),
+> > > +		if (type_is_trusted(env, reg, off)) {
+> > > +			flag |= PTR_TRUSTED;
+> > > +		} else if (in_rcu_cs(env) && !type_may_be_null(reg->type)) {
+> > > +			if (type_is_rcu(env, reg, off)) {
+> > > +				/* ignore __rcu tag and mark it MEM_RCU */
+> > > +				flag |= MEM_RCU;
+> > > +			} else if (flag & MEM_RCU) {
+> > > +				/* __rcu tagged pointers can be NULL */
+> > > +				flag |= PTR_MAYBE_NULL;
+> > 
+> > I'm not quite understanding the distinction between manually-specified
+> > RCU-safe types being non-nullable, vs. __rcu pointers being nullable.
+> > Aren't they functionally the exact same thing, with the exception being
+> > that gcc doesn't support __rcu, so we've decided to instead manually
+> > specify them for some types that we know we need until __rcu is the
+> > default mechanism?  If the plan is to remove these macros once gcc
+> > supports __rcu, this could break some programs that are expecting the
+> > fields to be non-NULL, no?
+> 
+> BTF_TYPE_SAFE_RCU is a workaround for now.
+> We can make it exactly like __rcu, but it would split
+> the natural dereference of task->cgroups->dfl_cgrp into
+> two derefs with extra !=NULL check in-between which is ugly and unnecessary.
+> 
+> > I see why we're doing this in the interim -- task->cgroups,
+> > css->dfl_cgrp, task->cpus_ptr, etc can never be NULL. The problem is
+> > that I think those are implementation details that are separate from the
+> > pointers being RCU safe. This seems rather like we need a separate
+> > non-nullable tag, or something to that effect.
+> 
+> Right. It is certainly an implementation detail.
+> We'd need a new __not_null_mostly tag or __not_null_after_init.
+> (similar to __read_mostly and __ro_after_init).
+> Where non-null property is true when bpf get to see these structures.
+> 
+> The current allowlist is incomplete and far from perfect.
+> I suspect we'd need to add a bunch more during this release cycle.
+> This patch is aggressive in deprecation of old ptr_to_btf_id.
+> Some breakage is expected. Hence the timing to do it right now
+> at the beginning of the cycle.
 
-        // Pattern generated for field read
-	.read  = "$dst = *(u64 *)($ctx + bpf_sockopt_kern::current_task);"
-		 "$dst = *(u64 *)($dst + task_struct::bpf_ctx);"
-		 "$dst = *(u32 *)($dst + bpf_cg_run_ctx::retval);",
+Thanks for explaining. This all sounds good -- I'm certainly in favor of
+being aggressive in deprecating the old ptr_to_btf_id approach. I was
+really just worried that we'd break progs when we got rid of
+BTF_TYPE_SAFE_RCU and started to use __rcu once gcc supported it, but as
+you said we can just add another type tag at that time. And if we need
+to add another RCU-safe pointer that is NULL-able before we have the gcc
+support we need, we can always just add something like a
+BTF_TYPE_SAFE_NULLABLE_RCU in the interim. Clearly a temporary solution,
+but really not a bad one at all.
 
-        // Pattern generated for field write
-	.write = "*(u64 *)($ctx + bpf_sockopt_kern::tmp_reg) = r9;"
-		 "r9 = *(u64 *)($ctx + bpf_sockopt_kern::current_task);"
-		 "r9 = *(u64 *)(r9 + task_struct::bpf_ctx);"
-		 "*(u32 *)(r9 + bpf_cg_run_ctx::retval) = $src;"
-		 "r9 = *(u64 *)($ctx + bpf_sockopt_kern::tmp_reg);" ,
-  },
+> 
+> > >  		flag &= ~PTR_TRUSTED;
+> > 
+> > Do you know what else is left for us to fix to be able to just set
+> > PTR_UNTRUSTED here?
+> 
+> All "ctx->" derefs. check_ctx_access() returns old school PTR_TO_BTF_ID.
+> We can probably mark all of them as trusted, but need to audit a lot of code.
+> I've also played with forcing helpers with ARG_PTR_TO_BTF_ID to be trusted,
+> but still too much selftest breakage to even look at.
+> 
+> The patch also has:
+> +                       if (BTF_INFO_KIND(mtype->info) == BTF_KIND_UNION &&
+> +                           btf_type_vlen(mtype) != 1)
+> +                               /*
+> +                                * walking unions yields untrusted pointers
+> +                                * with exception of __bpf_md_ptr and other
+> +                                * unions with a single member
+> +                                */
+> +                               *flag |= PTR_UNTRUSTED;
+> this is in particular to make skb->dev deref to return untrusted.
+> In this past we allowed skb->dev->ifindex to go via PTR_TO_BTF_ID and PROBE_MEM.
+> It's safe, but not clean. And we have no safe way to get trusted 'dev' to pass into helpers.
+> It's time to clean this all up as well, but it will require rearranging fields in sk_buff.
+> Lots of work ahead.
 
-For each test case, up to three programs are created:
-- One that uses BPF_LDX_MEM to read the context field.
-- One that uses BPF_STX_MEM to write to the context field.
-- One that uses BPF_ST_MEM to write to the context field.
-
-The disassembly of each program is compared with the pattern specified
-in the test case.
-
-Kernel code for disassembly is reused (as is in the bpftool).
-To keep Makefile changes to the minimum, symbolic links to
-`kernel/bpf/disasm.c` and `kernel/bpf/disasm.h ` are added.
-
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- tools/testing/selftests/bpf/Makefile          |   2 +-
- tools/testing/selftests/bpf/disasm.c          |   1 +
- tools/testing/selftests/bpf/disasm.h          |   1 +
- .../selftests/bpf/prog_tests/ctx_rewrite.c    | 917 ++++++++++++++++++
- 4 files changed, 920 insertions(+), 1 deletion(-)
- create mode 120000 tools/testing/selftests/bpf/disasm.c
- create mode 120000 tools/testing/selftests/bpf/disasm.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index b677dcd0b77a..5d79d1445fc1 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -558,7 +558,7 @@ TRUNNER_BPF_PROGS_DIR := progs
- TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
- 			 network_helpers.c testing_helpers.c		\
- 			 btf_helpers.c flow_dissector_load.h		\
--			 cap_helpers.c test_loader.c xsk.c
-+			 cap_helpers.c test_loader.c xsk.c disasm.c
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
- 		       $(OUTPUT)/liburandom_read.so			\
- 		       $(OUTPUT)/xdp_synproxy				\
-diff --git a/tools/testing/selftests/bpf/disasm.c b/tools/testing/selftests/bpf/disasm.c
-new file mode 120000
-index 000000000000..b1571927bd54
---- /dev/null
-+++ b/tools/testing/selftests/bpf/disasm.c
-@@ -0,0 +1 @@
-+../../../../kernel/bpf/disasm.c
-\ No newline at end of file
-diff --git a/tools/testing/selftests/bpf/disasm.h b/tools/testing/selftests/bpf/disasm.h
-new file mode 120000
-index 000000000000..8054fd497340
---- /dev/null
-+++ b/tools/testing/selftests/bpf/disasm.h
-@@ -0,0 +1 @@
-+../../../../kernel/bpf/disasm.h
-\ No newline at end of file
-diff --git a/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c b/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
-new file mode 100644
-index 000000000000..d5fe3d4b936c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
-@@ -0,0 +1,917 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <limits.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <ctype.h>
-+#include <regex.h>
-+#include <test_progs.h>
-+
-+#include "bpf/btf.h"
-+#include "bpf_util.h"
-+#include "linux/filter.h"
-+#include "disasm.h"
-+
-+#define MAX_PROG_TEXT_SZ (32 * 1024)
-+
-+/* The code in this file serves the sole purpose of executing test cases
-+ * specified in the test_cases array. Each test case specifies a program
-+ * type, context field offset, and disassembly patterns that correspond
-+ * to read and write instructions generated by
-+ * verifier.c:convert_ctx_access() for accessing that field.
-+ *
-+ * For each test case, up to three programs are created:
-+ * - One that uses BPF_LDX_MEM to read the context field.
-+ * - One that uses BPF_STX_MEM to write to the context field.
-+ * - One that uses BPF_ST_MEM to write to the context field.
-+ *
-+ * The disassembly of each program is then compared with the pattern
-+ * specified in the test case.
-+ */
-+struct test_case {
-+	char *name;
-+	enum bpf_prog_type prog_type;
-+	enum bpf_attach_type expected_attach_type;
-+	int field_offset;
-+	int field_sz;
-+	/* Program generated for BPF_ST_MEM uses value 42 by default,
-+	 * this field allows to specify custom value.
-+	 */
-+	struct {
-+		bool use;
-+		int value;
-+	} st_value;
-+	/* Pattern for BPF_LDX_MEM(field_sz, dst, ctx, field_offset) */
-+	char *read;
-+	/* Pattern for BPF_STX_MEM(field_sz, ctx, src, field_offset) and
-+	 *             BPF_ST_MEM (field_sz, ctx, src, field_offset)
-+	 */
-+	char *write;
-+	/* Pattern for BPF_ST_MEM(field_sz, ctx, src, field_offset),
-+	 * takes priority over `write`.
-+	 */
-+	char *write_st;
-+	/* Pattern for BPF_STX_MEM (field_sz, ctx, src, field_offset),
-+	 * takes priority over `write`.
-+	 */
-+	char *write_stx;
-+};
-+
-+#define N(_prog_type, type, field, name_extra...)	\
-+	.name = #_prog_type "." #field name_extra,	\
-+	.prog_type = BPF_PROG_TYPE_##_prog_type,	\
-+	.field_offset = offsetof(type, field),		\
-+	.field_sz = sizeof(typeof(((type *)NULL)->field))
-+
-+static struct test_case test_cases[] = {
-+/* Sign extension on s390 changes the pattern */
-+#if defined(__x86_64__) || defined(__aarch64__)
-+	{
-+		N(SCHED_CLS, struct __sk_buff, tstamp),
-+		.read  = "r11 = *(u8 *)($ctx + sk_buff::__pkt_vlan_present_offset);"
-+			 "w11 &= 160;"
-+			 "if w11 != 0xa0 goto pc+2;"
-+			 "$dst = 0;"
-+			 "goto pc+1;"
-+			 "$dst = *(u64 *)($ctx + sk_buff::tstamp);",
-+		.write = "r11 = *(u8 *)($ctx + sk_buff::__pkt_vlan_present_offset);"
-+			 "if w11 & 0x80 goto pc+1;"
-+			 "goto pc+2;"
-+			 "w11 &= -33;"
-+			 "*(u8 *)($ctx + sk_buff::__pkt_vlan_present_offset) = r11;"
-+			 "*(u64 *)($ctx + sk_buff::tstamp) = $src;",
-+	},
-+#endif
-+	{
-+		N(SCHED_CLS, struct __sk_buff, priority),
-+		.read  = "$dst = *(u32 *)($ctx + sk_buff::priority);",
-+		.write = "*(u32 *)($ctx + sk_buff::priority) = $src;",
-+	},
-+	{
-+		N(SCHED_CLS, struct __sk_buff, mark),
-+		.read  = "$dst = *(u32 *)($ctx + sk_buff::mark);",
-+		.write = "*(u32 *)($ctx + sk_buff::mark) = $src;",
-+	},
-+	{
-+		N(SCHED_CLS, struct __sk_buff, cb[0]),
-+		.read  = "$dst = *(u32 *)($ctx + $(sk_buff::cb + qdisc_skb_cb::data));",
-+		.write = "*(u32 *)($ctx + $(sk_buff::cb + qdisc_skb_cb::data)) = $src;",
-+	},
-+	{
-+		N(SCHED_CLS, struct __sk_buff, tc_classid),
-+		.read  = "$dst = *(u16 *)($ctx + $(sk_buff::cb + qdisc_skb_cb::tc_classid));",
-+		.write = "*(u16 *)($ctx + $(sk_buff::cb + qdisc_skb_cb::tc_classid)) = $src;",
-+	},
-+	{
-+		N(SCHED_CLS, struct __sk_buff, tc_index),
-+		.read  = "$dst = *(u16 *)($ctx + sk_buff::tc_index);",
-+		.write = "*(u16 *)($ctx + sk_buff::tc_index) = $src;",
-+	},
-+	{
-+		N(SCHED_CLS, struct __sk_buff, queue_mapping),
-+		.read      = "$dst = *(u16 *)($ctx + sk_buff::queue_mapping);",
-+		.write_stx = "if $src >= 0xffff goto pc+1;"
-+			     "*(u16 *)($ctx + sk_buff::queue_mapping) = $src;",
-+		.write_st  = "*(u16 *)($ctx + sk_buff::queue_mapping) = $src;",
-+	},
-+	{
-+		/* This is a corner case in filter.c:bpf_convert_ctx_access() */
-+		N(SCHED_CLS, struct __sk_buff, queue_mapping, ".ushrt_max"),
-+		.st_value = { true, USHRT_MAX },
-+		.write_st = "goto pc+0;",
-+	},
-+	{
-+		N(CGROUP_SOCK, struct bpf_sock, bound_dev_if),
-+		.read  = "$dst = *(u32 *)($ctx + sock_common::skc_bound_dev_if);",
-+		.write = "*(u32 *)($ctx + sock_common::skc_bound_dev_if) = $src;",
-+	},
-+	{
-+		N(CGROUP_SOCK, struct bpf_sock, mark),
-+		.read  = "$dst = *(u32 *)($ctx + sock::sk_mark);",
-+		.write = "*(u32 *)($ctx + sock::sk_mark) = $src;",
-+	},
-+	{
-+		N(CGROUP_SOCK, struct bpf_sock, priority),
-+		.read  = "$dst = *(u32 *)($ctx + sock::sk_priority);",
-+		.write = "*(u32 *)($ctx + sock::sk_priority) = $src;",
-+	},
-+	{
-+		N(SOCK_OPS, struct bpf_sock_ops, replylong[0]),
-+		.read  = "$dst = *(u32 *)($ctx + bpf_sock_ops_kern::replylong);",
-+		.write = "*(u32 *)($ctx + bpf_sock_ops_kern::replylong) = $src;",
-+	},
-+	{
-+		N(CGROUP_SYSCTL, struct bpf_sysctl, file_pos),
-+#if __BYTE_ORDER == __LITTLE_ENDIAN
-+		.read  = "$dst = *(u64 *)($ctx + bpf_sysctl_kern::ppos);"
-+			 "$dst = *(u32 *)($dst +0);",
-+		.write = "*(u64 *)($ctx + bpf_sysctl_kern::tmp_reg) = r9;"
-+			 "r9 = *(u64 *)($ctx + bpf_sysctl_kern::ppos);"
-+			 "*(u32 *)(r9 +0) = $src;"
-+			 "r9 = *(u64 *)($ctx + bpf_sysctl_kern::tmp_reg);",
-+#else
-+		.read  = "$dst = *(u64 *)($ctx + bpf_sysctl_kern::ppos);"
-+			 "$dst = *(u32 *)($dst +4);",
-+		.write = "*(u64 *)($ctx + bpf_sysctl_kern::tmp_reg) = r9;"
-+			 "r9 = *(u64 *)($ctx + bpf_sysctl_kern::ppos);"
-+			 "*(u32 *)(r9 +4) = $src;"
-+			 "r9 = *(u64 *)($ctx + bpf_sysctl_kern::tmp_reg);",
-+#endif
-+	},
-+	{
-+		N(CGROUP_SOCKOPT, struct bpf_sockopt, sk),
-+		.read  = "$dst = *(u64 *)($ctx + bpf_sockopt_kern::sk);",
-+		.expected_attach_type = BPF_CGROUP_GETSOCKOPT,
-+	},
-+	{
-+		N(CGROUP_SOCKOPT, struct bpf_sockopt, level),
-+		.read  = "$dst = *(u32 *)($ctx + bpf_sockopt_kern::level);",
-+		.write = "*(u32 *)($ctx + bpf_sockopt_kern::level) = $src;",
-+		.expected_attach_type = BPF_CGROUP_SETSOCKOPT,
-+	},
-+	{
-+		N(CGROUP_SOCKOPT, struct bpf_sockopt, optname),
-+		.read  = "$dst = *(u32 *)($ctx + bpf_sockopt_kern::optname);",
-+		.write = "*(u32 *)($ctx + bpf_sockopt_kern::optname) = $src;",
-+		.expected_attach_type = BPF_CGROUP_SETSOCKOPT,
-+	},
-+	{
-+		N(CGROUP_SOCKOPT, struct bpf_sockopt, optlen),
-+		.read  = "$dst = *(u32 *)($ctx + bpf_sockopt_kern::optlen);",
-+		.write = "*(u32 *)($ctx + bpf_sockopt_kern::optlen) = $src;",
-+		.expected_attach_type = BPF_CGROUP_SETSOCKOPT,
-+	},
-+	{
-+		N(CGROUP_SOCKOPT, struct bpf_sockopt, retval),
-+		.read  = "$dst = *(u64 *)($ctx + bpf_sockopt_kern::current_task);"
-+			 "$dst = *(u64 *)($dst + task_struct::bpf_ctx);"
-+			 "$dst = *(u32 *)($dst + bpf_cg_run_ctx::retval);",
-+		.write = "*(u64 *)($ctx + bpf_sockopt_kern::tmp_reg) = r9;"
-+			 "r9 = *(u64 *)($ctx + bpf_sockopt_kern::current_task);"
-+			 "r9 = *(u64 *)(r9 + task_struct::bpf_ctx);"
-+			 "*(u32 *)(r9 + bpf_cg_run_ctx::retval) = $src;"
-+			 "r9 = *(u64 *)($ctx + bpf_sockopt_kern::tmp_reg);",
-+		.expected_attach_type = BPF_CGROUP_GETSOCKOPT,
-+	},
-+	{
-+		N(CGROUP_SOCKOPT, struct bpf_sockopt, optval),
-+		.read  = "$dst = *(u64 *)($ctx + bpf_sockopt_kern::optval);",
-+		.expected_attach_type = BPF_CGROUP_GETSOCKOPT,
-+	},
-+	{
-+		N(CGROUP_SOCKOPT, struct bpf_sockopt, optval_end),
-+		.read  = "$dst = *(u64 *)($ctx + bpf_sockopt_kern::optval_end);",
-+		.expected_attach_type = BPF_CGROUP_GETSOCKOPT,
-+	},
-+};
-+
-+#undef N
-+
-+static regex_t *ident_regex;
-+static regex_t *field_regex;
-+
-+static char *skip_space(char *str)
-+{
-+	while (*str && isspace(*str))
-+		++str;
-+	return str;
-+}
-+
-+static char *skip_space_and_semi(char *str)
-+{
-+	while (*str && (isspace(*str) || *str == ';'))
-+		++str;
-+	return str;
-+}
-+
-+static char *match_str(char *str, char *prefix)
-+{
-+	while (*str && *prefix && *str == *prefix) {
-+		++str;
-+		++prefix;
-+	}
-+	if (*prefix)
-+		return NULL;
-+	return str;
-+}
-+
-+static char *match_number(char *str, int num)
-+{
-+	char *next;
-+	int snum = strtol(str, &next, 10);
-+
-+	if (next - str == 0 || num != snum)
-+		return NULL;
-+
-+	return next;
-+}
-+
-+static int find_field_offset_aux(struct btf *btf, int btf_id, char *field_name, int off)
-+{
-+	const struct btf_type *type = btf__type_by_id(btf, btf_id);
-+	const struct btf_member *m;
-+	__u16 mnum;
-+	int i;
-+
-+	if (!type) {
-+		PRINT_FAIL("Can't find btf_type for id %d\n", btf_id);
-+		return -1;
-+	}
-+
-+	if (!btf_is_struct(type) && !btf_is_union(type)) {
-+		PRINT_FAIL("BTF id %d is not struct or union\n", btf_id);
-+		return -1;
-+	}
-+
-+	m = btf_members(type);
-+	mnum = btf_vlen(type);
-+
-+	for (i = 0; i < mnum; ++i, ++m) {
-+		const char *mname = btf__name_by_offset(btf, m->name_off);
-+
-+		if (strcmp(mname, "") == 0) {
-+			int msize = find_field_offset_aux(btf, m->type, field_name,
-+							  off + m->offset);
-+			if (msize >= 0)
-+				return msize;
-+		}
-+
-+		if (strcmp(mname, field_name))
-+			continue;
-+
-+		return (off + m->offset) / 8;
-+	}
-+
-+	return -1;
-+}
-+
-+static int find_field_offset(struct btf *btf, char *pattern, regmatch_t *matches)
-+{
-+	int type_sz  = matches[1].rm_eo - matches[1].rm_so;
-+	int field_sz = matches[2].rm_eo - matches[2].rm_so;
-+	char *type   = pattern + matches[1].rm_so;
-+	char *field  = pattern + matches[2].rm_so;
-+	char field_str[128] = {};
-+	char type_str[128] = {};
-+	int btf_id, field_offset;
-+
-+	if (type_sz >= sizeof(type_str)) {
-+		PRINT_FAIL("Malformed pattern: type ident is too long: %d\n", type_sz);
-+		return -1;
-+	}
-+
-+	if (field_sz >= sizeof(field_str)) {
-+		PRINT_FAIL("Malformed pattern: field ident is too long: %d\n", field_sz);
-+		return -1;
-+	}
-+
-+	strncpy(type_str, type, type_sz);
-+	strncpy(field_str, field, field_sz);
-+	btf_id = btf__find_by_name(btf, type_str);
-+	if (btf_id < 0) {
-+		PRINT_FAIL("No BTF info for type %s\n", type_str);
-+		return -1;
-+	}
-+
-+	field_offset = find_field_offset_aux(btf, btf_id, field_str, 0);
-+	if (field_offset < 0) {
-+		PRINT_FAIL("No BTF info for field %s::%s\n", type_str, field_str);
-+		return -1;
-+	}
-+
-+	return field_offset;
-+}
-+
-+static regex_t *compile_regex(char *pat)
-+{
-+	regex_t *re;
-+	int err;
-+
-+	re = malloc(sizeof(regex_t));
-+	if (!re) {
-+		PRINT_FAIL("Can't alloc regex\n");
-+		return NULL;
-+	}
-+
-+	err = regcomp(re, pat, REG_EXTENDED);
-+	if (err) {
-+		char errbuf[512];
-+
-+		regerror(err, re, errbuf, sizeof(errbuf));
-+		PRINT_FAIL("Can't compile regex: %s\n", errbuf);
-+		free(re);
-+		return NULL;
-+	}
-+
-+	return re;
-+}
-+
-+static void free_regex(regex_t *re)
-+{
-+	if (!re)
-+		return;
-+
-+	regfree(re);
-+	free(re);
-+}
-+
-+static u32 max_line_len(char *str)
-+{
-+	u32 max_line = 0;
-+	char *next = str;
-+
-+	while (next) {
-+		next = strchr(str, '\n');
-+		if (next) {
-+			max_line = max_t(u32, max_line, (next - str));
-+			str = next + 1;
-+		} else {
-+			max_line = max_t(u32, max_line, strlen(str));
-+		}
-+	}
-+
-+	return min(max_line, 60u);
-+}
-+
-+/* Print strings `pattern_origin` and `text_origin` side by side,
-+ * assume `pattern_pos` and `text_pos` designate location within
-+ * corresponding origin string where match diverges.
-+ * The output should look like:
-+ *
-+ *   Can't match disassembly(left) with pattern(right):
-+ *   r2 = *(u64 *)(r1 +0)  ;  $dst = *(u64 *)($ctx + bpf_sockopt_kern::sk1)
-+ *                     ^                             ^
-+ *   r0 = 0                ;
-+ *   exit                  ;
-+ */
-+static void print_match_error(FILE *out,
-+			      char *pattern_origin, char *text_origin,
-+			      char *pattern_pos, char *text_pos)
-+{
-+	char *pattern = pattern_origin;
-+	char *text = text_origin;
-+	int middle = max_line_len(text) + 2;
-+
-+	fprintf(out, "Can't match disassembly(left) with pattern(right):\n");
-+	while (*pattern || *text) {
-+		int column = 0;
-+		int mark1 = -1;
-+		int mark2 = -1;
-+
-+		/* Print one line from text */
-+		while (*text && *text != '\n') {
-+			if (text == text_pos)
-+				mark1 = column;
-+			fputc(*text, out);
-+			++text;
-+			++column;
-+		}
-+		if (text == text_pos)
-+			mark1 = column;
-+
-+		/* Pad to the middle */
-+		while (column < middle) {
-+			fputc(' ', out);
-+			++column;
-+		}
-+		fputs(";  ", out);
-+		column += 3;
-+
-+		/* Print one line from pattern, pattern lines are terminated by ';' */
-+		while (*pattern && *pattern != ';') {
-+			if (pattern == pattern_pos)
-+				mark2 = column;
-+			fputc(*pattern, out);
-+			++pattern;
-+			++column;
-+		}
-+		if (pattern == pattern_pos)
-+			mark2 = column;
-+
-+		fputc('\n', out);
-+		if (*pattern)
-+			++pattern;
-+		if (*text)
-+			++text;
-+
-+		/* If pattern and text diverge at this line, print an
-+		 * additional line with '^' marks, highlighting
-+		 * positions where match fails.
-+		 */
-+		if (mark1 > 0 || mark2 > 0) {
-+			for (column = 0; column <= max(mark1, mark2); ++column) {
-+				if (column == mark1 || column == mark2)
-+					fputc('^', out);
-+				else
-+					fputc(' ', out);
-+			}
-+			fputc('\n', out);
-+		}
-+	}
-+}
-+
-+/* Test if `text` matches `pattern`. Pattern consists of the following elements:
-+ *
-+ * - Field offset references:
-+ *
-+ *     <type>::<field>
-+ *
-+ *   When such reference is encountered BTF is used to compute numerical
-+ *   value for the offset of <field> in <type>. The `text` is expected to
-+ *   contain matching numerical value.
-+ *
-+ * - Field groups:
-+ *
-+ *     $(<type>::<field> [+ <type>::<field>]*)
-+ *
-+ *   Allows to specify an offset that is a sum of multiple field offsets.
-+ *   The `text` is expected to contain matching numerical value.
-+ *
-+ * - Variable references, e.g. `$src`, `$dst`, `$ctx`.
-+ *   These are substitutions specified in `reg_map` array.
-+ *   If a substring of pattern is equal to `reg_map[i][0]` the `text` is
-+ *   expected to contain `reg_map[i][1]` in the matching position.
-+ *
-+ * - Whitespace is ignored, ';' counts as whitespace for `pattern`.
-+ *
-+ * - Any other characters, `pattern` and `text` should match one-to-one.
-+ *
-+ * Example of a pattern:
-+ *
-+ *                    __________ fields group ________________
-+ *                   '                                        '
-+ *   *(u16 *)($ctx + $(sk_buff::cb + qdisc_skb_cb::tc_classid)) = $src;
-+ *            ^^^^                   '______________________'
-+ *     variable reference             field offset reference
-+ */
-+static bool match_pattern(struct btf *btf, char *pattern, char *text, char *reg_map[][2])
-+{
-+	char *pattern_origin = pattern;
-+	char *text_origin = text;
-+	regmatch_t matches[3];
-+
-+_continue:
-+	while (*pattern) {
-+		if (!*text)
-+			goto err;
-+
-+		/* Skip whitespace */
-+		if (isspace(*pattern) || *pattern == ';') {
-+			if (!isspace(*text) && text != text_origin && isalnum(text[-1]))
-+				goto err;
-+			pattern = skip_space_and_semi(pattern);
-+			text = skip_space(text);
-+			continue;
-+		}
-+
-+		/* Check for variable references */
-+		for (int i = 0; reg_map[i][0]; ++i) {
-+			char *pattern_next, *text_next;
-+
-+			pattern_next = match_str(pattern, reg_map[i][0]);
-+			if (!pattern_next)
-+				continue;
-+
-+			text_next = match_str(text, reg_map[i][1]);
-+			if (!text_next)
-+				goto err;
-+
-+			pattern = pattern_next;
-+			text = text_next;
-+			goto _continue;
-+		}
-+
-+		/* Match field group:
-+		 *   $(sk_buff::cb + qdisc_skb_cb::tc_classid)
-+		 */
-+		if (strncmp(pattern, "$(", 2) == 0) {
-+			char *group_start = pattern, *text_next;
-+			int acc_offset = 0;
-+
-+			pattern += 2;
-+
-+			for (;;) {
-+				int field_offset;
-+
-+				pattern = skip_space(pattern);
-+				if (!*pattern) {
-+					PRINT_FAIL("Unexpected end of pattern\n");
-+					goto err;
-+				}
-+
-+				if (*pattern == ')') {
-+					++pattern;
-+					break;
-+				}
-+
-+				if (*pattern == '+') {
-+					++pattern;
-+					continue;
-+				}
-+
-+				printf("pattern: %s\n", pattern);
-+				if (regexec(field_regex, pattern, 3, matches, 0) != 0) {
-+					PRINT_FAIL("Field reference expected\n");
-+					goto err;
-+				}
-+
-+				field_offset = find_field_offset(btf, pattern, matches);
-+				if (field_offset < 0)
-+					goto err;
-+
-+				pattern += matches[0].rm_eo;
-+				acc_offset += field_offset;
-+			}
-+
-+			text_next = match_number(text, acc_offset);
-+			if (!text_next) {
-+				PRINT_FAIL("No match for group offset %.*s (%d)\n",
-+					   (int)(pattern - group_start),
-+					   group_start,
-+					   acc_offset);
-+				goto err;
-+			}
-+			text = text_next;
-+		}
-+
-+		/* Match field reference:
-+		 *   sk_buff::cb
-+		 */
-+		if (regexec(field_regex, pattern, 3, matches, 0) == 0) {
-+			int field_offset;
-+			char *text_next;
-+
-+			field_offset = find_field_offset(btf, pattern, matches);
-+			if (field_offset < 0)
-+				goto err;
-+
-+			text_next = match_number(text, field_offset);
-+			if (!text_next) {
-+				PRINT_FAIL("No match for field offset %.*s (%d)\n",
-+					   (int)matches[0].rm_eo, pattern, field_offset);
-+				goto err;
-+			}
-+
-+			pattern += matches[0].rm_eo;
-+			text = text_next;
-+			continue;
-+		}
-+
-+		/* If pattern points to identifier not followed by '::'
-+		 * skip the identifier to avoid n^2 application of the
-+		 * field reference rule.
-+		 */
-+		if (regexec(ident_regex, pattern, 1, matches, 0) == 0) {
-+			if (strncmp(pattern, text, matches[0].rm_eo) != 0)
-+				goto err;
-+
-+			pattern += matches[0].rm_eo;
-+			text += matches[0].rm_eo;
-+			continue;
-+		}
-+
-+		/* Match literally */
-+		if (*pattern != *text)
-+			goto err;
-+
-+		++pattern;
-+		++text;
-+	}
-+
-+	return true;
-+
-+err:
-+	test__fail();
-+	print_match_error(stdout, pattern_origin, text_origin, pattern, text);
-+	return false;
-+}
-+
-+/* Request BPF program instructions after all rewrites are applied,
-+ * e.g. verifier.c:convert_ctx_access() is done.
-+ */
-+static int get_xlated_program(int fd_prog, struct bpf_insn **buf, __u32 *cnt)
-+{
-+	struct bpf_prog_info info = {};
-+	__u32 info_len = sizeof(info);
-+	__u32 xlated_prog_len;
-+	__u32 buf_element_size = sizeof(struct bpf_insn);
-+
-+	if (bpf_prog_get_info_by_fd(fd_prog, &info, &info_len)) {
-+		perror("bpf_prog_get_info_by_fd failed");
-+		return -1;
-+	}
-+
-+	xlated_prog_len = info.xlated_prog_len;
-+	if (xlated_prog_len % buf_element_size) {
-+		printf("Program length %d is not multiple of %d\n",
-+		       xlated_prog_len, buf_element_size);
-+		return -1;
-+	}
-+
-+	*cnt = xlated_prog_len / buf_element_size;
-+	*buf = calloc(*cnt, buf_element_size);
-+	if (!buf) {
-+		perror("can't allocate xlated program buffer");
-+		return -ENOMEM;
-+	}
-+
-+	bzero(&info, sizeof(info));
-+	info.xlated_prog_len = xlated_prog_len;
-+	info.xlated_prog_insns = (__u64)(unsigned long)*buf;
-+	if (bpf_prog_get_info_by_fd(fd_prog, &info, &info_len)) {
-+		perror("second bpf_prog_get_info_by_fd failed");
-+		goto out_free_buf;
-+	}
-+
-+	return 0;
-+
-+out_free_buf:
-+	free(*buf);
-+	return -1;
-+}
-+
-+static void print_insn(void *private_data, const char *fmt, ...)
-+{
-+	va_list args;
-+
-+	va_start(args, fmt);
-+	vfprintf((FILE *)private_data, fmt, args);
-+	va_end(args);
-+}
-+
-+/* Disassemble instructions to a stream */
-+static void print_xlated(FILE *out, struct bpf_insn *insn, __u32 len)
-+{
-+	const struct bpf_insn_cbs cbs = {
-+		.cb_print	= print_insn,
-+		.cb_call	= NULL,
-+		.cb_imm		= NULL,
-+		.private_data	= out,
-+	};
-+	bool double_insn = false;
-+	int i;
-+
-+	for (i = 0; i < len; i++) {
-+		if (double_insn) {
-+			double_insn = false;
-+			continue;
-+		}
-+
-+		double_insn = insn[i].code == (BPF_LD | BPF_IMM | BPF_DW);
-+		print_bpf_insn(&cbs, insn + i, true);
-+	}
-+}
-+
-+/* We share code with kernel BPF disassembler, it adds '(FF) ' prefix
-+ * for each instruction (FF stands for instruction `code` byte).
-+ * This function removes the prefix inplace for each line in `str`.
-+ */
-+static void remove_insn_prefix(char *str, int size)
-+{
-+	const int prefix_size = 5;
-+
-+	int write_pos = 0, read_pos = prefix_size;
-+	int len = strlen(str);
-+	char c;
-+
-+	size = min(size, len);
-+
-+	while (read_pos < size) {
-+		c = str[read_pos++];
-+		if (c == 0)
-+			break;
-+		str[write_pos++] = c;
-+		if (c == '\n')
-+			read_pos += prefix_size;
-+	}
-+	str[write_pos] = 0;
-+}
-+
-+struct prog_info {
-+	char *prog_kind;
-+	enum bpf_prog_type prog_type;
-+	enum bpf_attach_type expected_attach_type;
-+	struct bpf_insn *prog;
-+	u32 prog_len;
-+};
-+
-+static void match_program(struct btf *btf,
-+			  struct prog_info *pinfo,
-+			  char *pattern,
-+			  char *reg_map[][2],
-+			  bool skip_first_insn)
-+{
-+	struct bpf_insn *buf = NULL;
-+	int err = 0, prog_fd = 0;
-+	FILE *prog_out = NULL;
-+	char *text = NULL;
-+	__u32 cnt = 0;
-+
-+	text = calloc(MAX_PROG_TEXT_SZ, 1);
-+	if (!text) {
-+		PRINT_FAIL("Can't allocate %d bytes\n", MAX_PROG_TEXT_SZ);
-+		goto out;
-+	}
-+
-+	// TODO: log level
-+	LIBBPF_OPTS(bpf_prog_load_opts, opts);
-+	opts.log_buf = text;
-+	opts.log_size = MAX_PROG_TEXT_SZ;
-+	opts.log_level = 1 | 2 | 4;
-+	opts.expected_attach_type = pinfo->expected_attach_type;
-+
-+	prog_fd = bpf_prog_load(pinfo->prog_type, NULL, "GPL",
-+				pinfo->prog, pinfo->prog_len, &opts);
-+	if (prog_fd < 0) {
-+		PRINT_FAIL("Can't load program, errno %d (%s), verifier log:\n%s\n",
-+			   errno, strerror(errno), text);
-+		goto out;
-+	}
-+
-+	memset(text, 0, MAX_PROG_TEXT_SZ);
-+
-+	err = get_xlated_program(prog_fd, &buf, &cnt);
-+	if (err) {
-+		PRINT_FAIL("Can't load back BPF program\n");
-+		goto out;
-+	}
-+
-+	prog_out = fmemopen(text, MAX_PROG_TEXT_SZ - 1, "w");
-+	if (!prog_out) {
-+		PRINT_FAIL("Can't open memory stream\n");
-+		goto out;
-+	}
-+	if (skip_first_insn)
-+		print_xlated(prog_out, buf + 1, cnt - 1);
-+	else
-+		print_xlated(prog_out, buf, cnt);
-+	fclose(prog_out);
-+	remove_insn_prefix(text, MAX_PROG_TEXT_SZ);
-+
-+	ASSERT_TRUE(match_pattern(btf, pattern, text, reg_map),
-+		    pinfo->prog_kind);
-+
-+out:
-+	if (prog_fd)
-+		close(prog_fd);
-+	free(buf);
-+	free(text);
-+}
-+
-+static void run_one_testcase(struct btf *btf, struct test_case *test)
-+{
-+	struct prog_info pinfo = {};
-+	int bpf_sz;
-+
-+	if (!test__start_subtest(test->name))
-+		return;
-+
-+	switch (test->field_sz) {
-+	case 8:
-+		bpf_sz = BPF_DW;
-+		break;
-+	case 4:
-+		bpf_sz = BPF_W;
-+		break;
-+	case 2:
-+		bpf_sz = BPF_H;
-+		break;
-+	case 1:
-+		bpf_sz = BPF_B;
-+		break;
-+	default:
-+		PRINT_FAIL("Unexpected field size: %d, want 8,4,2 or 1\n", test->field_sz);
-+		return;
-+	}
-+
-+	pinfo.prog_type = test->prog_type;
-+	pinfo.expected_attach_type = test->expected_attach_type;
-+
-+	if (test->read) {
-+		struct bpf_insn ldx_prog[] = {
-+			BPF_LDX_MEM(bpf_sz, BPF_REG_2, BPF_REG_1, test->field_offset),
-+			BPF_MOV64_IMM(BPF_REG_0, 0),
-+			BPF_EXIT_INSN(),
-+		};
-+		char *reg_map[][2] = {
-+			{ "$ctx", "r1" },
-+			{ "$dst", "r2" },
-+			{}
-+		};
-+
-+		pinfo.prog_kind = "LDX";
-+		pinfo.prog = ldx_prog;
-+		pinfo.prog_len = ARRAY_SIZE(ldx_prog);
-+		match_program(btf, &pinfo, test->read, reg_map, false);
-+	}
-+
-+	if (test->write || test->write_st || test->write_stx) {
-+		struct bpf_insn stx_prog[] = {
-+			BPF_MOV64_IMM(BPF_REG_2, 0),
-+			BPF_STX_MEM(bpf_sz, BPF_REG_1, BPF_REG_2, test->field_offset),
-+			BPF_MOV64_IMM(BPF_REG_0, 0),
-+			BPF_EXIT_INSN(),
-+		};
-+		char *stx_reg_map[][2] = {
-+			{ "$ctx", "r1" },
-+			{ "$src", "r2" },
-+			{}
-+		};
-+		struct bpf_insn st_prog[] = {
-+			BPF_ST_MEM(bpf_sz, BPF_REG_1, test->field_offset,
-+				   test->st_value.use ? test->st_value.value : 42),
-+			BPF_MOV64_IMM(BPF_REG_0, 0),
-+			BPF_EXIT_INSN(),
-+		};
-+		char *st_reg_map[][2] = {
-+			{ "$ctx", "r1" },
-+			{ "$src", "42" },
-+			{}
-+		};
-+
-+		if (test->write || test->write_stx) {
-+			char *pattern = test->write_stx ? test->write_stx : test->write;
-+
-+			pinfo.prog_kind = "STX";
-+			pinfo.prog = stx_prog;
-+			pinfo.prog_len = ARRAY_SIZE(stx_prog);
-+			match_program(btf, &pinfo, pattern, stx_reg_map, true);
-+		}
-+
-+		if (test->write || test->write_st) {
-+			char *pattern = test->write_st ? test->write_st : test->write;
-+
-+			pinfo.prog_kind = "ST";
-+			pinfo.prog = st_prog;
-+			pinfo.prog_len = ARRAY_SIZE(st_prog);
-+			match_program(btf, &pinfo, pattern, st_reg_map, false);
-+		}
-+	}
-+
-+	test__end_subtest();
-+}
-+
-+void test_ctx_rewrite(void)
-+{
-+	struct btf *btf;
-+	int i;
-+
-+	field_regex = compile_regex("^([[:alpha:]_][[:alnum:]_]+)::([[:alpha:]_][[:alnum:]_]+)");
-+	ident_regex = compile_regex("^[[:alpha:]_][[:alnum:]_]+");
-+	if (!field_regex || !ident_regex)
-+		return;
-+
-+	btf = btf__load_vmlinux_btf();
-+	if (!btf) {
-+		PRINT_FAIL("Can't load vmlinux BTF, errno %d (%s)\n", errno, strerror(errno));
-+		goto out;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(test_cases); ++i)
-+		run_one_testcase(btf, &test_cases[i]);
-+
-+out:
-+	btf__free(btf);
-+	free_regex(field_regex);
-+	free_regex(ident_regex);
-+}
--- 
-2.39.1
-
+SGTM, thanks
