@@ -2,95 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EAB6A89F2
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 21:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C7A6A89F5
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 21:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjCBUA3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 15:00:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
+        id S229453AbjCBUBt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 15:01:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjCBUAN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 15:00:13 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A1F4FAB1
-        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 11:59:06 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id f1so290032qvx.13
-        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 11:59:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1677787143;
-        h=content-transfer-encoding:subject:to:from:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eOmepKjJm4UDTYOeJgqWRGcYVvrwIseA5Oi+dzRvTJU=;
-        b=HvuATuLQsyiPsCXXIr8jxpQuxhv+4iUCRvNd+KAGVXdJ5ZOAEo4XClJT5C8mhVMzBI
-         ubbRSRQNa/Oc24pJ/frQWVdwb8Ej5V1ppYpjEq6sTHKpwJGJuDqoevM2TENSLrGEcMMh
-         mkrmDnjHXr3uOLdhVgl441+sMd+ASFAh718k5HpRqOsOG8Uh2C1Mi5LQ50YmqG3W+UMv
-         TOom2bk58opkiuyBJPN9CdrMC5KdD0bjmkV/idNxtDylGBj+EFfaUvNla/tG9mdz4Mx3
-         QOvyQlCnDWn/VynaWZyzE+1Tb/1H2mnYuaW6G5TbXKF+3XUrcmKzkZ6bUJ+fixKlMZW+
-         uFoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677787143;
-        h=content-transfer-encoding:subject:to:from:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eOmepKjJm4UDTYOeJgqWRGcYVvrwIseA5Oi+dzRvTJU=;
-        b=kyPITFpN4YMqlY4mHGnZ0NUPyXoIioruIuqQt+spoLUaJcoRApL9xbhQ+fTir9wxvQ
-         NYlJm8jRaAlJLufRm8+qunZyFT+cLzY0XXqRhh4JXFwQsYe+oZGj+qJS0jOmihQXGYum
-         nAop5TwY6YjcXQYhvc5pkbOdZtrqdE91BCWXMYZKYf5v51DKc4EgiKs+rEP/J3PCzrcn
-         s22MQb6J3DSa3SZFmnxTPjukJ8R25qbCKt/dsoWpCfST5eTqHUWGGxVHjPrlT9I5rzq5
-         jLNb2vqmxMiJAjwGWkbVMxvz+DOUvq4J9jwzLiqL/90VBFS+ChHpBpTl4J3xOFHqnABR
-         piRQ==
-X-Gm-Message-State: AO0yUKV9cLVjdp7/qxWKErTcgKtSIIEer3i6ILUjH9KpmyrSTynTmH0l
-        pW4UKeUwyMKmPCuV7jmTCPWSgm3tQhnxIEllCnQ=
-X-Google-Smtp-Source: AK7set/gmLYfloYu2DPPX+3RLyd/x3vfiz+QVG6KisgpT2L2sdYmjv2M58tHJbeVsV40XC7T5o4Yqw==
-X-Received: by 2002:ad4:5e8c:0:b0:572:80ea:5fc7 with SMTP id jl12-20020ad45e8c000000b0057280ea5fc7mr21946476qvb.41.1677787143129;
-        Thu, 02 Mar 2023 11:59:03 -0800 (PST)
-Received: from [192.168.1.9] (c-73-238-17-243.hsd1.ma.comcast.net. [73.238.17.243])
-        by smtp.gmail.com with ESMTPSA id n67-20020a37bd46000000b0073ba2c4ee2esm268796qkf.96.2023.03.02.11.59.02
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Mar 2023 11:59:02 -0800 (PST)
-Message-ID: <a5f37b39-64ad-57ca-cafc-124a318f44cf@google.com>
-Date:   Thu, 2 Mar 2023 14:59:01 -0500
+        with ESMTP id S229541AbjCBUBr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 15:01:47 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3CF4AFC1;
+        Thu,  2 Mar 2023 12:01:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D1AE615FE;
+        Thu,  2 Mar 2023 19:59:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE9CBC433EF;
+        Thu,  2 Mar 2023 19:59:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677787171;
+        bh=NXLN0yCp+u/4afS6d7RtO524UIGXkLZf8f9v/XiFsrM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=SKM64j5BTkAjauEKaSAmg7GpOBiwfx79sqdmL7fmI9glR2mYB730MiL9V8+A0TmpY
+         ONZ7lX5PkBA+7zoGblzfoxTKkx1W6lPoHArrZw6qP440MPqCb/VY773u1qLSD+kNqq
+         iIrcwVRYYPUO9DrmCzt7ohQL4rnuHYA7a3rRYUnPqa/NG0P5yFuCdpP6ztNY6v8FO4
+         OkyXPY0dlhfz9a4EM6RLMd3LlJfRN+PbmqQ7c2GgPhb5HBMubBlJ5s9OhGy7zNv6TR
+         UwUgwJBMvyEwbJu7zvLG0vtfokgW8tsXP/tKP6/L5er5zJdeGyfboa8eurL1oiCygP
+         xk3YV2sRDfm6g==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 89C91976265; Thu,  2 Mar 2023 20:59:28 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org
+Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+Subject: Re: [PATCH RFC v2 bpf-next 3/3] bpf: minimal support for programs
+ hooked into netfilter framework
+In-Reply-To: <20230302172757.9548-4-fw@strlen.de>
+References: <20230302172757.9548-1-fw@strlen.de>
+ <20230302172757.9548-4-fw@strlen.de>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 02 Mar 2023 20:59:28 +0100
+Message-ID: <87sfemexgf.fsf@toke.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.7.1
-Content-Language: en-US
-From:   Barret Rhoden <brho@google.com>
-To:     bpf@vger.kernel.org
-Subject: BPF_PSEUDO_CALL function calls are not allowed while holding a lock
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi -
+Florian Westphal <fw@strlen.de> writes:
 
-I'd like to be able to hold a BPF spinlock and call a static function 
-elsewhere in my BPF program.
+> This adds minimal support for BPF_PROG_TYPE_NETFILTER bpf programs
+> that will be invoked via the NF_HOOK() points in the ip stack.
+>
+> Invocation incurs an indirect call.  This is not a necessity: Its
+> possible to add 'DEFINE_BPF_DISPATCHER(nf_progs)' and handle the
+> program invocation with the same method already done for xdp progs.
+>
+> This isn't done here to keep the size of this chunk down.
+>
+> Verifier restricts verdicts to either DROP or ACCEPT.
+>
+> Signed-off-by: Florian Westphal <fw@strlen.de>
+> ---
+>  include/linux/bpf_types.h           |  4 ++
+>  include/net/netfilter/nf_hook_bpf.h |  6 +++
+>  kernel/bpf/btf.c                    |  5 ++
+>  kernel/bpf/verifier.c               |  3 ++
+>  net/netfilter/nf_bpf_link.c         | 78 ++++++++++++++++++++++++++++-
+>  5 files changed, 95 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> index d4ee3ccd3753..39a999abb0ce 100644
+> --- a/include/linux/bpf_types.h
+> +++ b/include/linux/bpf_types.h
+> @@ -79,6 +79,10 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_LSM, lsm,
+>  #endif
+>  BPF_PROG_TYPE(BPF_PROG_TYPE_SYSCALL, bpf_syscall,
+>  	      void *, void *)
+> +#ifdef CONFIG_NETFILTER
+> +BPF_PROG_TYPE(BPF_PROG_TYPE_NETFILTER, netfilter,
+> +	      struct bpf_nf_ctx, struct bpf_nf_ctx)
+> +#endif
+>  
+>  BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY, array_map_ops)
+>  BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_ARRAY, percpu_array_map_ops)
+> diff --git a/include/net/netfilter/nf_hook_bpf.h b/include/net/netfilter/nf_hook_bpf.h
+> index 9d1b338e89d7..863cbbcc66f9 100644
+> --- a/include/net/netfilter/nf_hook_bpf.h
+> +++ b/include/net/netfilter/nf_hook_bpf.h
+> @@ -1,2 +1,8 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +struct bpf_nf_ctx {
+> +	const struct nf_hook_state *state;
+> +	struct sk_buff *skb;
+> +};
+> +
+>  int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index ef2d8969ed1f..ec6eb78b9aec 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -25,6 +25,9 @@
+>  #include <linux/bsearch.h>
+>  #include <linux/kobject.h>
+>  #include <linux/sysfs.h>
+> +
+> +#include <net/netfilter/nf_hook_bpf.h>
+> +
+>  #include <net/sock.h>
+>  #include "../tools/lib/bpf/relo_core.h"
+>  
+> @@ -7726,6 +7729,8 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
+>  	case BPF_PROG_TYPE_LWT_XMIT:
+>  	case BPF_PROG_TYPE_LWT_SEG6LOCAL:
+>  		return BTF_KFUNC_HOOK_LWT;
+> +	case BPF_PROG_TYPE_NETFILTER:
+> +		return BTF_KFUNC_HOOK_SOCKET_FILTER;
 
-Depending on whether the compiler chooses to inline a function or not, 
-I'll get a verifier error like:
+The dynptr patch reuses the actual set between the different IDs, so
+this should probably define a new BTF_KFUNC_HOOK_NETFILTER, with an
+associated register_btf_kfunc_id_set() call?
 
-	573: (85) call pc+126
-	function calls are not allowed while holding a lock
-
-I think that's considered a BPF_PSEUDO_CALL.
-
-I can get around it by sprinkling  __attribute__((always_inline)) all 
-over the place, subject to the compiler actually inlining my functions.
-
-Would it be possible for the verifier to maintain the 
-env->cur_state->active_lock.ptr state or something across those calls?
-
-Thanks,
-Barret
-
+-Toke
