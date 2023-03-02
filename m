@@ -2,66 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F1D6A7AC9
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 06:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7793A6A7ACA
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 06:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbjCBFcX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 00:32:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33818 "EHLO
+        id S229501AbjCBFcg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Mar 2023 00:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjCBFcX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 00:32:23 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8584AFE4
-        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 21:32:22 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id cp12so8646387pfb.5
-        for <bpf@vger.kernel.org>; Wed, 01 Mar 2023 21:32:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677735141;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BV6p+c0ND44fD4nkRCAK8d/DVpgj2+urj5MTwT+JjOM=;
-        b=T+nzTVjyo09aNiyNbJctYvolBZU32eeT9grBFK6bpsCC468q0le+hrzvjpDARMJbvn
-         k4Fwt0DJrB7543gE1bgOqiaGTthGi35gnr9iwscmChvYMiqx5VyC4MtC/RUIWSK/vi9H
-         /AVDWGBFEhIyVtF4frFvtpKLN3CG3Sd0SZJ5s/kHUrzsdFbvMWIpGMEp/BPltLgFiES5
-         +pabvWuDeJH/a2+w25Xdql57rbRQDPl81DQzl8fHdtmcecf0vAToudzMbqESnBv6tlFR
-         tEpysnCGFGowC8O/yqnxHLfBsGvZFhCSqWfmANzer5CdxAWAit5hAf/z6tISU3LSsYQa
-         KGgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677735141;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BV6p+c0ND44fD4nkRCAK8d/DVpgj2+urj5MTwT+JjOM=;
-        b=wbLQUoJjxiha0W6Rd8PZWU76pjWa4BIzgejA04hKsIP7uIi/aUQ1sdL4ngQ2VB1t2q
-         dFUgXk/qnGZDdypdquyoeHOU3mBCUUdGWzi8F7j45LPpGuf362Agyz/4MTB1kb5Otk8o
-         2mzI3ctC8GLGnBWuxy4Jq3W++d4RpdZpqICSIsc6D9M0lIMn3mUqL0A+D96/EA+n5fLW
-         aBqNej2IJdjUV3BHsM4xmjVg5Vn87My/ijjR48RCu18E8hxJ3P7BtZkgnShHPTT80shz
-         uLzLUOjvMfMYe0TLm5L2mV++5H7sgBMPO8GURQs5OvsKhhw2WEm8YTW09jNssqIszE9D
-         AYYQ==
-X-Gm-Message-State: AO0yUKX8LBoMCvbX8sqWWa6GSWhJztPFnR8manxqTlvvQRC1QgM0y2WL
-        OU99dWXnI/cc7TGTLnWftzk2Go4tIxM=
-X-Google-Smtp-Source: AK7set8pCGXQBtzkwNynvfJSkfq13SxyWPeo856tIGwafxscSpUWwOcVnj47W9WZ+asfYFg4yvyt3g==
-X-Received: by 2002:aa7:96f9:0:b0:5a8:a56c:6144 with SMTP id i25-20020aa796f9000000b005a8a56c6144mr7563433pfq.19.1677735141253;
-        Wed, 01 Mar 2023 21:32:21 -0800 (PST)
-Received: from gatsby.corp.tfbnw.net (75-172-126-232.tukw.qwest.net. [75.172.126.232])
-        by smtp.gmail.com with ESMTPSA id i20-20020aa78d94000000b0058bc60dd98dsm8792535pfr.23.2023.03.01.21.32.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Mar 2023 21:32:20 -0800 (PST)
-From:   Joanne Koong <joannelkoong@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     martin.lau@kernel.org, andrii@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, Joanne Koong <joannelkoong@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v1 bpf-next] bpf: Fix bpf_dynptr_slice{_rdwr} to return NULL instead of 0
-Date:   Wed,  1 Mar 2023 21:30:14 -0800
-Message-Id: <20230302053014.1726219-1-joannelkoong@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229445AbjCBFcf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 00:32:35 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9CD34AFF1
+        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 21:32:29 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3220ofM4005035
+        for <bpf@vger.kernel.org>; Wed, 1 Mar 2023 21:32:29 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p1junw6q1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 01 Mar 2023 21:32:29 -0800
+Received: from twshared13785.14.prn3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Wed, 1 Mar 2023 21:32:28 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id A0F4A290D0E81; Wed,  1 Mar 2023 21:32:19 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/8] Misc fixes and preliminaries for iterators
+Date:   Wed, 1 Mar 2023 21:32:08 -0800
+Message-ID: <20230302053216.1426015-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: EqgY7YoWlNXNcdFv0YSxFUWBmXCzfvTz
+X-Proofpoint-ORIG-GUID: EqgY7YoWlNXNcdFv0YSxFUWBmXCzfvTz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-02_02,2023-03-01_03,2023-02-09_01
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,52 +53,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Change bpf_dynptr_slice and bpf_dynptr_slice_rdwr to return NULL instead
-of 0, in accordance with the codebase guidelines.
+A bunch of small fixes and improvements done as preliminaries for upcoming
+open-coded iterators. Sending them out a bit earlier to avoid dragging along
+and rebasing a bunch of smallish changes.
 
-Fixes: 66e3a13e7c2c ("bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
----
- kernel/bpf/helpers.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Andrii Nakryiko (8):
+  bpf: improve stack slot state printing
+  bpf: improve regsafe() checks for PTR_TO_{MEM,BUF,TP_BUFFER}
+  selftests/bpf: enhance align selftest's expected log matching
+  bpf: honor env->test_state_freq flag in is_state_visited()
+  selftests/bpf: adjust log_fixup's buffer size for proper truncation
+  bpf: clean up visit_insn()'s instruction processing
+  bpf: fix visit_insn()'s detection of BPF_FUNC_timer_set_callback
+    helper
+  bpf: ensure that r0 is marked scratched after any function call
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 58431a92bb65..de9ef8476e29 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2227,11 +2227,11 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset
- 	int err;
- 
- 	if (!ptr->data)
--		return 0;
-+		return NULL;
- 
- 	err = bpf_dynptr_check_off_len(ptr, offset, len);
- 	if (err)
--		return 0;
-+		return NULL;
- 
- 	type = bpf_dynptr_get_type(ptr);
- 
-@@ -2252,7 +2252,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset
- 	}
- 	default:
- 		WARN_ONCE(true, "unknown dynptr type %d\n", type);
--		return 0;
-+		return NULL;
- 	}
- }
- 
-@@ -2300,7 +2300,7 @@ __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 o
- 					void *buffer, u32 buffer__szk)
- {
- 	if (!ptr->data || bpf_dynptr_is_rdonly(ptr))
--		return 0;
-+		return NULL;
- 
- 	/* bpf_dynptr_slice_rdwr is the same logic as bpf_dynptr_slice.
- 	 *
+ kernel/bpf/verifier.c                         | 111 +++++++++++-------
+ .../testing/selftests/bpf/prog_tests/align.c  |  18 ++-
+ .../selftests/bpf/prog_tests/log_fixup.c      |   2 +-
+ 3 files changed, 83 insertions(+), 48 deletions(-)
+
 -- 
-2.34.1
+2.30.2
 
