@@ -2,73 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D636A786C
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 01:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876956A797C
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 03:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbjCBAcw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Mar 2023 19:32:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        id S229870AbjCBCaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 21:30:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjCBAcv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Mar 2023 19:32:51 -0500
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8734AFFA;
-        Wed,  1 Mar 2023 16:32:50 -0800 (PST)
-Received: by mail-qt1-f169.google.com with SMTP id l18so15366363qtp.1;
-        Wed, 01 Mar 2023 16:32:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677717169;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2FLZWAsR5f0jPIqwITafOGGJhUS6StGpjBhKGtgZEfI=;
-        b=I+qBq6cD8bP6BlesrGEA73lzQb/CsVNJDuPLg7CTXc2zSDCtd3AirOBr6BcdT0qk5f
-         hiTXDgb7oPar/gZvAczsH9jVmo65qhMbo/zMWuUwbtVm3dei9jRFku5mKW3yvGsC6Ibp
-         3Q884vz+qE1ZQ5tGdMRYH2ybyVKw/oxbvIg2Xd7R5GAkErf0P9WVrcHmuutVt0RjvZS1
-         e3MseVq8hkfSsvJj+Orn9a7Rso6EzUcQY87PWRtFtwnEqLTZtWGjcXGw49FOr9bkBq0J
-         GMOKUbxWsvEs7AxLs1saw638IO/4bvn1iBsWFIxhk1au15WN7va1HKkQbnxXyZ6nDHO1
-         DvHA==
-X-Gm-Message-State: AO0yUKV7/Smi5I/Y/YI3/FkCzu/GYbJ2z2N64oNVFA0/dtajrAeHGc9o
-        pCcIsc1UmrRXfKYb4tSx+JQ=
-X-Google-Smtp-Source: AK7set9e1Bj9kmCVP+IN/GFm4/PxQAtMaPxshtWWMzhTeuWjtbyokr/moq42WawEBXIvSNo8L7UJMg==
-X-Received: by 2002:ac8:59c8:0:b0:3bf:d161:799e with SMTP id f8-20020ac859c8000000b003bfd161799emr14289929qtf.65.1677717169332;
-        Wed, 01 Mar 2023 16:32:49 -0800 (PST)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id p1-20020ac84601000000b003bd01b232dbsm9279016qtn.43.2023.03.01.16.32.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Mar 2023 16:32:48 -0800 (PST)
-Date:   Wed, 1 Mar 2023 18:32:46 -0600
-From:   David Vernet <void@manifault.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, davemarchevsky@meta.com, tj@kernel.org,
-        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v4 bpf-next 5/6] selftests/bpf: Tweak cgroup kfunc test.
-Message-ID: <Y//urthbcf16kHBI@maniforge>
-References: <20230301223555.84824-1-alexei.starovoitov@gmail.com>
- <20230301223555.84824-6-alexei.starovoitov@gmail.com>
+        with ESMTP id S229786AbjCBCaS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 21:30:18 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4B038E9D;
+        Wed,  1 Mar 2023 18:30:16 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PRw463bBWz16NkW;
+        Thu,  2 Mar 2023 10:27:34 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 2 Mar
+ 2023 10:30:14 +0800
+Subject: Re: [PATCH bpf-next v1 1/2] xdp: recycle Page Pool backed skbs built
+ from XDP frames
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+CC:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Song Liu <song@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230301160315.1022488-1-aleksander.lobakin@intel.com>
+ <20230301160315.1022488-2-aleksander.lobakin@intel.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <36d42e20-b33f-5442-0db7-e9f5ef9d0941@huawei.com>
+Date:   Thu, 2 Mar 2023 10:30:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230301223555.84824-6-alexei.starovoitov@gmail.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230301160315.1022488-2-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 01, 2023 at 02:35:54PM -0800, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On 2023/3/2 0:03, Alexander Lobakin wrote:
+> __xdp_build_skb_from_frame() state(d):
 > 
-> Adjust cgroup kfunc test to dereference RCU protected cgroup pointer
-> as PTR_TRUSTED and pass into KF_TRUSTED_ARGS kfunc.
+> /* Until page_pool get SKB return path, release DMA here */
 > 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Page Pool got skb pages recycling in April 2021, but missed this
+> function.
+> 
+> xdp_release_frame() is relevant only for Page Pool backed frames and it
+> detaches the page from the corresponding Pool in order to make it
+> freeable via page_frag_free(). It can instead just mark the output skb
+> as eligible for recycling if the frame is backed by a PP. No change for
+> other memory model types (the same condition check as before).
+> cpumap redirect and veth on Page Pool drivers now become zero-alloc (or
+> almost).
+> 
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+>  net/core/xdp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 8c92fc553317..a2237cfca8e9 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -658,8 +658,8 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+>  	 * - RX ring dev queue index	(skb_record_rx_queue)
+>  	 */
+>  
+> -	/* Until page_pool get SKB return path, release DMA here */
+> -	xdp_release_frame(xdpf);
+> +	if (xdpf->mem.type == MEM_TYPE_PAGE_POOL)
+> +		skb_mark_for_recycle(skb);
 
-Acked-by: David Vernet <void@manifault.com>
+
+We both rely on both skb->pp_recycle and page->pp_magic to decide
+the page is really from page pool. So there was a few corner case
+problem when we are sharing a page for different skb in the driver
+level or calling skb_clone() or skb_try_coalesce().
+see:
+https://github.com/torvalds/linux/commit/2cc3aeb5ecccec0d266813172fcd82b4b5fa5803
+https://lore.kernel.org/netdev/MW5PR15MB51214C0513DB08A3607FBC1FBDE19@MW5PR15MB5121.namprd15.prod.outlook.com/t/
+https://lore.kernel.org/netdev/167475990764.1934330.11960904198087757911.stgit@localhost.localdomain/
+
+As the 'struct xdp_frame' also use 'struct skb_shared_info' which is
+sharable, see xdp_get_shared_info_from_frame().
+
+For now xdpf_clone() does not seems to handling frag page yet,
+so it should be fine for now.
+
+IMHO we should find a way to use per-page marker, instead of both
+per-skb and per-page markers, in order to avoid the above problem
+for xdp if xdp has a similar processing as skb, as suggested by Eric.
+
+https://lore.kernel.org/netdev/CANn89iKgZU4Q+THXupzZi4hETuKuCOvOB=iHpp5JzQTNv_Fg_A@mail.gmail.com/
+
+>  
+>  	/* Allow SKB to reuse area used by xdp_frame */
+>  	xdp_scrub_frame(xdpf);
+> 
