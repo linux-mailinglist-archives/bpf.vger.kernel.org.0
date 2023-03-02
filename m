@@ -2,390 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C546A8A39
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 21:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A71536A8ADB
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 21:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbjCBU2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 15:28:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
+        id S229541AbjCBUw3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 15:52:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjCBU2N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 15:28:13 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C487F1BE6
-        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 12:28:08 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id iw4-20020a170903044400b0019ccafc1fbeso226228plb.3
-        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 12:28:08 -0800 (PST)
+        with ESMTP id S229456AbjCBUw2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 15:52:28 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706C8423B
+        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 12:52:27 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id p6so287969pga.0
+        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 12:52:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1677788888;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xLAIwkliyAqDKA1qWJLQtqycjdxuTylOGMu94mTp7wc=;
-        b=AuIvNU+FjsqzNT6/MTzw60zQ1t95JcRPseUBFIs32Y3xj6fa3Drblrj9Ly+i2T9Nw5
-         FXkHOdUWBnkbMFip7DkKfLYzTQU21NfB8OStowEldR4LQVLngo7WrSNTuIIIV+LRPFfj
-         uceWEJgg04TkWMNv3EWOvrqeXRy8GHZTKuHbS9dULIU/Q1mSW3OWzZYxBSmaEB4CtJ8R
-         tqopaIkKRTy80+frUU6/TJt5DyE3zARKB7vfvnYcANWmB9b/TfXa8Bl9Q9ZqLQLBgKUI
-         uClXGTcJbK1sEGE5ocUPwqMCq67AIbSy7SSWLlOlg8NSeIvSpnPg066KSlJJNEITcxgv
-         lAyQ==
+        d=isovalent.com; s=google; t=1677790347;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WmhG+Vu/qwZ4ys3Y/VoUN1gZs9SPvHL28eMsff5jQ9Q=;
+        b=FWUkJB++LPvBLTOFdmgmxi6XZKH4jEmykscgXHOErQxcTDMjyhCEDAGjAK3/dA62wN
+         2sf29X6b712tiPnMbvh+TL2vIyi2wUoOcLXeU8oNdW+ahrEiXyISXP+2sDQ5LCw7Clyn
+         vIu6go2Oqxn7Wej+YCObqDbIWgM+rccviabPeu8lap+jarL8q2bym6fi8lyFrLIlg59r
+         X9nRgZzJdhhSJPpHCysZ596D6d5sbA+DCtayrpmTHsBE/+hfGKO6jVfssA6C2VmytAqw
+         woxIFNWPmY6qlmP2wJE0lWBqM0VghCKcp1S73VPnoYUhQMHuLIbHVKakwl7XkWALklgh
+         iMZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677788888;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xLAIwkliyAqDKA1qWJLQtqycjdxuTylOGMu94mTp7wc=;
-        b=wu6DHtkeTQfpZcGvDiTPl7htuWiWF8hVP+o5r5pnzNFcD1tz2q6kM8+zRK/2TR1Uoe
-         SGkevazFBrGNkrG0CUPugNCVR7VwQerSpuA/f5okYHtdFFO8w4Net4pMnpYUBBQ9epsa
-         0Neejk/Tr7CUD6fPzYWQI/uKLsCq7Hlk2JXcQe8JHSBQF9+L5z066XEi7FM9HOUts1ih
-         7to6dyqXV1tQpOQV/w+WFc0hbO0Z+gHtv2Y1GiCwsTK0tjnbqp3iNZXaK8Lfp2OOai4z
-         p/4guyEYuInrQWOVxGjSsBQ8aYwH1VRGo9wT/ULeKzAjewcyAeRnIUgQ7tKG5fzZf16G
-         iwGA==
-X-Gm-Message-State: AO0yUKWabkZq9SkTMDGMOnvPIZPHYAVS9V6301R/EMQXEyETZI36nIvv
-        /EvzaKBIO71Z23shWA0XNJ74bUE=
-X-Google-Smtp-Source: AK7set9wGYet8F5EDsOHiotDHor49od7CUGfbiaEeEjIlEYEq0YY7KIeJ/8DhECGZ36DMAyoIh9Y9O8=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:5ac4:b0:237:3d0c:8d2e with SMTP id
- n62-20020a17090a5ac400b002373d0c8d2emr4525606pji.2.1677788888255; Thu, 02 Mar
- 2023 12:28:08 -0800 (PST)
-Date:   Thu, 2 Mar 2023 12:28:06 -0800
-In-Reply-To: <20230302172757.9548-2-fw@strlen.de>
-Mime-Version: 1.0
-References: <20230302172757.9548-1-fw@strlen.de> <20230302172757.9548-2-fw@strlen.de>
-Message-ID: <ZAEG1gtoXl125GlW@google.com>
-Subject: Re: [PATCH RFC v2 bpf-next 1/3] bpf: add bpf_link support for
- BPF_NETFILTER programs
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     bpf@vger.kernel.org, netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20210112; t=1677790347;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WmhG+Vu/qwZ4ys3Y/VoUN1gZs9SPvHL28eMsff5jQ9Q=;
+        b=kEVuaBFJJCyqh+0/3Vj8B/lVVzxAZU1IDzz7aap2jeKEoW+aRgQFdWHj4aF0PkbDMS
+         0hiuxKrXcwB9MtF14Q82lNyfGO24dhrFzE58twHc3ZrI4B1/C1955bLEy46QSs+Cp5d+
+         UfE7ZR/yxWgh53V9T/tnKJCfP7k8lWvCQj6y8tGaLP3noACOhg0v19xqnvkdPBy10qIL
+         9vOqdN1cNDg9Qz3TVIfRntV4ND7WiIhqcRv4pownRL2wslSM6R1W4H8756seKTflKaOm
+         n3tbahzf9ad2hM1bYvNpRcUpTolXmiuHOQjJBBDYRexaP70WwCV191j1HOMJ0a8DfLs0
+         A2TA==
+X-Gm-Message-State: AO0yUKW1nluS0wgbi9/xyBjnzNnwkLA/DF8kzYAroH2j0vv5c4Ks2CPy
+        gL6Jq951OhfvkWH4xi0Fsavpmg==
+X-Google-Smtp-Source: AK7set/xdMcvCwtJze2phUqRnlRGqo50xf0q/z6/QJD0tROs5wtNNsBNaeA87rxaH39wIxep+icdkg==
+X-Received: by 2002:a62:5bc6:0:b0:5a9:d4fa:d3c7 with SMTP id p189-20020a625bc6000000b005a9d4fad3c7mr10629928pfb.7.1677790346792;
+        Thu, 02 Mar 2023 12:52:26 -0800 (PST)
+Received: from [192.168.86.240] (c-67-160-222-115.hsd1.ca.comcast.net. [67.160.222.115])
+        by smtp.gmail.com with ESMTPSA id x4-20020a63cc04000000b00502fd762a39sm118818pgf.3.2023.03.02.12.52.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 02 Mar 2023 12:52:26 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
+Subject: Re: [PATCH v2 bpf-next 3/3] selftests/bpf: Add tests for
+ bpf_sock_destroy
+From:   Aditi Ghag <aditi.ghag@isovalent.com>
+In-Reply-To: <1b5db179-7411-2f38-9ecf-344cde0848a7@linux.dev>
+Date:   Thu, 2 Mar 2023 12:52:23 -0800
+Cc:     kafai@fb.com, Stanislav Fomichev <sdf@google.com>,
+        edumazet@google.com, bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F3B34E9C-9DBC-4F76-8727-4907F99ECF74@isovalent.com>
+References: <20230223215311.926899-1-aditi.ghag@isovalent.com>
+ <20230223215311.926899-4-aditi.ghag@isovalent.com>
+ <2552f727-57f3-0d76-c0da-f6543a93a45f@linux.dev>
+ <F6E6FEAD-5003-44BE-AA76-6CDAE40A0A71@isovalent.com>
+ <1b5db179-7411-2f38-9ecf-344cde0848a7@linux.dev>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+X-Mailer: Apple Mail (2.3608.120.23.2.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/02, Florian Westphal wrote:
-> Add bpf_link support skeleton.  To keep this reviewable, no bpf program
-> can be invoked here, if a program would be attached only a c-stub is  
-> called.
 
-> This defaults to 'y' if both netfilter and bpf syscall are enabled in
-> kconfig.
+> On Mar 1, 2023, at 11:06 PM, Martin KaFai Lau <martin.lau@linux.dev> =
+wrote:
+>=20
+> On 2/28/23 6:17 PM, Aditi Ghag wrote:
+>>> On Feb 28, 2023, at 3:08 PM, Martin KaFai Lau <martin.lau@linux.dev> =
+wrote:
+>>>=20
+>>> On 2/23/23 1:53 PM, Aditi Ghag wrote:
+>>>> The test cases for TCP and UDP iterators mirror the intended usages =
+of the
+>>>> helper.
+>>>> The destroy helpers set `ECONNABORTED` error code that we can =
+validate in the
+>>>> test code with client sockets. But UDP sockets have an overriding =
+error code
+>>>> from the disconnect called during abort, so the error code the =
+validation is
+>>>> only done for TCP sockets.
+>>>> The `struct sock` is redefined as vmlinux.h forward declares the =
+struct, and the
+>>>> loader fails to load the program as it finds the BTF FWD type for =
+the struct
+>>>> incompatible with the BTF STRUCT type.
+>>>> Here are the snippets of the verifier error, and corresponding BTF =
+output:
+>>>> ```
+>>>> verifier error: extern (func ksym) ...: func_proto ... incompatible =
+with kernel
+>>>> BTF for selftest prog binary:
+>>>> [104] FWD 'sock' fwd_kind=3Dstruct
+>>>> [70] PTR '(anon)' type_id=3D104
+>>>> [84] FUNC_PROTO '(anon)' ret_type_id=3D2 vlen=3D1
+>>>> 	'(anon)' type_id=3D70
+>>>> [85] FUNC 'bpf_sock_destroy' type_id=3D84 linkage=3Dextern
+>>>> --
+>>>> [96] DATASEC '.ksyms' size=3D0 vlen=3D1
+>>>> 	type_id=3D85 offset=3D0 size=3D0 (FUNC 'bpf_sock_destroy')
+>>>> BTF for selftest vmlinux:
+>>>> [74923] FUNC 'bpf_sock_destroy' type_id=3D48965 linkage=3Dstatic
+>>>> [48965] FUNC_PROTO '(anon)' ret_type_id=3D9 vlen=3D1
+>>>> 	'sk' type_id=3D1340
+>>>> [1340] PTR '(anon)' type_id=3D2363
+>>>> [2363] STRUCT 'sock' size=3D1280 vlen=3D93
+>>>> ```
+>>>=20
+>>>> +int bpf_sock_destroy(struct sock_common *sk) __ksym;
+>>>=20
+>>> This does not match the bpf prog's BTF dump above which has pointer =
+[70] pointing to FWD 'sock' [104] as the argument. It should be at least =
+FWD 'sock_common' if not STRUCT 'sock_common'. I tried to change the =
+func signature to 'struct sock *sk' but cannot reproduce the issue in my =
+environment also.
+>>>=20
+>>> Could you confirm the BTF paste and 'incompatible with kernel" error =
+in the commit message do match the bpf_sock_destroy declaration? If not, =
+can you re-paste the BTF output and libbpf error message that matches =
+the bpf_sock_destroy signature.
+>> I don't think you'll be able to reproduce the issue with =
+`sock_common`, as `struct sock_common` isn't forward declared in =
+vmlinux.h. But I find it odd that you weren't able to reproduce it with =
+`struct sock`. Just to confirm, did you remove the minimal `struct sock` =
+definition from the program? Per the commit description, I added that =
+because libbpf was throwing this error -
+>> `libbpf: extern (func ksym) 'bpf_sock_destroy': func_proto [83] =
+incompatible with kernel [75285]`
+>=20
+> Yep, I changed the kfunc to 'struct sock *' and removed the =
+define/undef dance.
+>=20
+>> Sending the BTF snippet again (full BTF - =
+https://pastebin.com/etkFyuJk)
+>> ```
+>> 85] FUNC 'bpf_sock_destroy' type_id=3D84 linkage=3Dextern
+>> 	type_id=3D85 offset=3D0 size=3D0 (FUNC 'bpf_sock_destroy')
+>> [84] FUNC_PROTO '(anon)' ret_type_id=3D2 vlen=3D1
+>> 	'(anon)' type_id=3D70
+>> [70] PTR '(anon)' type_id=3D104
+>> [104] FWD 'sock' fwd_kind=3Dstruct
+>> ```
+>> Compare this to the BTF snippet once I undef and define the struct in =
+the test prog:
+>> ```
+>> [87] FUNC 'bpf_sock_destroy' type_id=3D84 linkage=3Dextern
+>> 	type_id=3D87 offset=3D0 size=3D0 (FUNC 'bpf_sock_destroy')
+>> [84] FUNC_PROTO '(anon)' ret_type_id=3D2 vlen=3D1
+>> 	'(anon)' type_id=3D85
+>> [85] PTR '(anon)' type_id=3D86
+>> [86] STRUCT 'sock' size=3D136 vlen=3D1
+>> 	'__sk_common' type_id=3D34 bits_offset=3D0
+>> ```
+>> (Anyway looks like I needed to define the struct in the test prog =
+only when bpf_sock_destory had `struct sock` as the argument.)
+>=20
+> Right, I also think it is orthogonal to your set if the kfunc is =
+taking 'struct sock_common *' anyway. [although I do feel a kernel =
+function taking a 'struct sock_common *' is rather odd]
 
-> Uapi example usage:
-> 	union bpf_attr attr = { };
+Yes, this wasn't a problem with the helper taking `struct sock` as the =
+argument in v1 patch. I'm all ears if we can have a similar signature =
+for the kfunc.
 
-> 	attr.link_create.prog_fd = progfd;
-> 	attr.link_create.attach_type = BPF_NETFILTER;
-> 	attr.link_create.netfilter.pf = PF_INET;
-> 	attr.link_create.netfilter.hooknum = NF_INET_LOCAL_IN;
-> 	attr.link_create.netfilter.priority = -128;
+>=20
+> I was only asking and also trying myself because it looks pretty wrong =
+if it can be reproduced and it is something that should be fixed =
+regardless. It is pretty normal to have forward declaration within a bpf =
+prog itself (not from vmlinux.h). =46rom the paste, it feels like the =
+kfunc bpf_sock_destroy btf is generated earlier than the 'struct sock'. =
+Which llvm version are you using?
 
-> 	err = bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
-
-> ... this would attach progfd to ipv4:input hook.
-
-> Such hook gets removed automatically if the calling program exits.
-
-> BPF_NETFILTER program invocation is added in followup change.
-
-> NF_HOOK_OP_BPF enum will eventually be read from nfnetlink_hook, it
-> allows to tell userspace which program is attached at the given hook
-> when user runs 'nft hook list' command rather than just the priority
-> and not-very-helpful 'this hook runs a bpf prog but I can't tell which
-> one'.
-
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->   include/linux/netfilter.h           |   1 +
->   include/net/netfilter/nf_hook_bpf.h |   2 +
->   include/uapi/linux/bpf.h            |  12 +++
->   kernel/bpf/syscall.c                |   6 ++
->   net/netfilter/Kconfig               |   3 +
->   net/netfilter/Makefile              |   1 +
->   net/netfilter/nf_bpf_link.c         | 116 ++++++++++++++++++++++++++++
->   7 files changed, 141 insertions(+)
->   create mode 100644 include/net/netfilter/nf_hook_bpf.h
->   create mode 100644 net/netfilter/nf_bpf_link.c
-
-> diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
-> index 6863e271a9de..beec40ccbd79 100644
-> --- a/include/linux/netfilter.h
-> +++ b/include/linux/netfilter.h
-> @@ -80,6 +80,7 @@ typedef unsigned int nf_hookfn(void *priv,
->   enum nf_hook_ops_type {
->   	NF_HOOK_OP_UNDEFINED,
->   	NF_HOOK_OP_NF_TABLES,
-> +	NF_HOOK_OP_BPF,
->   };
-
->   struct nf_hook_ops {
-> diff --git a/include/net/netfilter/nf_hook_bpf.h  
-> b/include/net/netfilter/nf_hook_bpf.h
-> new file mode 100644
-> index 000000000000..9d1b338e89d7
-> --- /dev/null
-> +++ b/include/net/netfilter/nf_hook_bpf.h
-> @@ -0,0 +1,2 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog  
-> *prog);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index c9699304aed2..b063c6985769 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -986,6 +986,7 @@ enum bpf_prog_type {
->   	BPF_PROG_TYPE_LSM,
->   	BPF_PROG_TYPE_SK_LOOKUP,
->   	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
-> +	BPF_PROG_TYPE_NETFILTER,
->   };
-
->   enum bpf_attach_type {
-> @@ -1049,6 +1050,7 @@ enum bpf_link_type {
->   	BPF_LINK_TYPE_PERF_EVENT = 7,
->   	BPF_LINK_TYPE_KPROBE_MULTI = 8,
->   	BPF_LINK_TYPE_STRUCT_OPS = 9,
-> +	BPF_LINK_TYPE_NETFILTER = 10,
-
->   	MAX_BPF_LINK_TYPE,
->   };
-> @@ -1543,6 +1545,11 @@ union bpf_attr {
->   				 */
->   				__u64		cookie;
->   			} tracing;
-> +			struct {
-> +				__u32		pf;
-> +				__u32		hooknum;
-> +				__s32		prio;
-> +			} netfilter;
-
-For recent tc BPF program extensions, we've discussed that it might be  
-better
-to have an option to attach program before/after another one in the chain.
-So the API essentially would receive a before/after flag + fd/id of the
-program where we want to be.
-
-Should we do something similar here? See [0] for the original
-discussion.
-
-0: https://lore.kernel.org/bpf/YzzWDqAmN5DRTupQ@google.com/
-
->   		};
->   	} link_create;
-
-> @@ -6373,6 +6380,11 @@ struct bpf_link_info {
->   		struct {
->   			__u32 ifindex;
->   		} xdp;
-> +		struct {
-> +			__u32 pf;
-> +			__u32 hooknum;
-> +			__s32 priority;
-> +		} netfilter;
->   	};
->   } __attribute__((aligned(8)));
-
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index e3fcdc9836a6..8f5cd1fb83ee 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -35,6 +35,7 @@
->   #include <linux/rcupdate_trace.h>
->   #include <linux/memcontrol.h>
->   #include <linux/trace_events.h>
-> +#include <net/netfilter/nf_hook_bpf.h>
-
->   #define IS_FD_ARRAY(map) ((map)->map_type ==  
-> BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
->   			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
-> @@ -2448,6 +2449,7 @@ static bool is_net_admin_prog_type(enum  
-> bpf_prog_type prog_type)
->   	case BPF_PROG_TYPE_CGROUP_SYSCTL:
->   	case BPF_PROG_TYPE_SOCK_OPS:
->   	case BPF_PROG_TYPE_EXT: /* extends any prog */
-> +	case BPF_PROG_TYPE_NETFILTER:
->   		return true;
->   	case BPF_PROG_TYPE_CGROUP_SKB:
->   		/* always unpriv */
-> @@ -4562,6 +4564,7 @@ static int link_create(union bpf_attr *attr,  
-> bpfptr_t uattr)
-
->   	switch (prog->type) {
->   	case BPF_PROG_TYPE_EXT:
-> +	case BPF_PROG_TYPE_NETFILTER:
->   		break;
->   	case BPF_PROG_TYPE_PERF_EVENT:
->   	case BPF_PROG_TYPE_TRACEPOINT:
-> @@ -4628,6 +4631,9 @@ static int link_create(union bpf_attr *attr,  
-> bpfptr_t uattr)
->   	case BPF_PROG_TYPE_XDP:
->   		ret = bpf_xdp_link_attach(attr, prog);
->   		break;
-> +	case BPF_PROG_TYPE_NETFILTER:
-> +		ret = bpf_nf_link_attach(attr, prog);
-> +		break;
->   #endif
->   	case BPF_PROG_TYPE_PERF_EVENT:
->   	case BPF_PROG_TYPE_TRACEPOINT:
-> diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
-> index 4d6737160857..bea06f62a30e 100644
-> --- a/net/netfilter/Kconfig
-> +++ b/net/netfilter/Kconfig
-> @@ -30,6 +30,9 @@ config NETFILTER_FAMILY_BRIDGE
->   config NETFILTER_FAMILY_ARP
->   	bool
-
-> +config NETFILTER_BPF_LINK
-> +	def_bool BPF_SYSCALL
-> +
->   config NETFILTER_NETLINK_HOOK
->   	tristate "Netfilter base hook dump support"
->   	depends on NETFILTER_ADVANCED
-> diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
-> index 5ffef1cd6143..d4958e7e7631 100644
-> --- a/net/netfilter/Makefile
-> +++ b/net/netfilter/Makefile
-> @@ -22,6 +22,7 @@ nf_conntrack-$(CONFIG_DEBUG_INFO_BTF) +=  
-> nf_conntrack_bpf.o
->   endif
-
->   obj-$(CONFIG_NETFILTER) = netfilter.o
-> +obj-$(CONFIG_NETFILTER_BPF_LINK) += nf_bpf_link.o
-
->   obj-$(CONFIG_NETFILTER_NETLINK) += nfnetlink.o
->   obj-$(CONFIG_NETFILTER_NETLINK_ACCT) += nfnetlink_acct.o
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> new file mode 100644
-> index 000000000000..fa4fae5cc669
-> --- /dev/null
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -0,0 +1,116 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <linux/netfilter.h>
-> +
-> +#include <net/netfilter/nf_hook_bpf.h>
-> +
-> +static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,  
-> const struct nf_hook_state *s)
-> +{
-> +	return NF_ACCEPT;
-> +}
-> +
-> +struct bpf_nf_link {
-> +	struct bpf_link link;
-> +	struct nf_hook_ops hook_ops;
-> +	struct net *net;
-> +};
-> +
-> +static void bpf_nf_link_release(struct bpf_link *link)
-> +{
-> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link,  
-> link);
-> +
-> +	nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
-> +}
-> +
-> +static void bpf_nf_link_dealloc(struct bpf_link *link)
-> +{
-> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link,  
-> link);
-> +
-> +	kfree(nf_link);
-> +}
-> +
-> +static int bpf_nf_link_detach(struct bpf_link *link)
-> +{
-> +	bpf_nf_link_release(link);
-> +	return 0;
-> +}
-> +
-> +static void bpf_nf_link_show_info(const struct bpf_link *link,
-> +				  struct seq_file *seq)
-> +{
-> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link,  
-> link);
-> +
-> +	seq_printf(seq, "pf:\t%u\thooknum:\t%u\tprio:\t%d\n",
-> +		  nf_link->hook_ops.pf, nf_link->hook_ops.hooknum,
-> +		  nf_link->hook_ops.priority);
-> +}
-> +
-> +static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
-> +				      struct bpf_link_info *info)
-> +{
-> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link,  
-> link);
-> +
-> +	info->netfilter.pf = nf_link->hook_ops.pf;
-> +	info->netfilter.hooknum = nf_link->hook_ops.hooknum;
-> +	info->netfilter.priority = nf_link->hook_ops.priority;
-> +
-> +	return 0;
-> +}
-> +
-> +static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog  
-> *new_prog,
-> +			      struct bpf_prog *old_prog)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static const struct bpf_link_ops bpf_nf_link_lops = {
-> +	.release = bpf_nf_link_release,
-> +	.dealloc = bpf_nf_link_dealloc,
-> +	.detach = bpf_nf_link_detach,
-> +	.show_fdinfo = bpf_nf_link_show_info,
-> +	.fill_link_info = bpf_nf_link_fill_link_info,
-> +	.update_prog = bpf_nf_link_update,
-> +};
-> +
-> +int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> +{
-> +	struct net *net = current->nsproxy->net_ns;
-> +	struct bpf_link_primer link_primer;
-> +	struct bpf_nf_link *link;
-> +	int err;
-> +
-> +	if (attr->link_create.flags)
-> +		return -EINVAL;
-> +
-> +	link = kzalloc(sizeof(*link), GFP_USER);
-> +	if (!link)
-> +		return -ENOMEM;
-> +
-> +	bpf_link_init(&link->link, BPF_LINK_TYPE_NETFILTER, &bpf_nf_link_lops,  
-> prog);
-> +
-> +	link->hook_ops.hook = nf_hook_run_bpf;
-> +	link->hook_ops.hook_ops_type = NF_HOOK_OP_BPF;
-> +	link->hook_ops.priv = prog;
-> +
-> +	link->hook_ops.pf = attr->link_create.netfilter.pf;
-> +	link->hook_ops.priority = attr->link_create.netfilter.prio;
-> +	link->hook_ops.hooknum = attr->link_create.netfilter.hooknum;
-> +
-> +	link->net = net;
-> +
-> +	err = bpf_link_prime(&link->link, &link_primer);
-> +	if (err)
-> +		goto out_free;
-> +
-> +	err = nf_register_net_hook(net, &link->hook_ops);
-> +	if (err) {
-> +		bpf_link_cleanup(&link_primer);
-> +		goto out_free;
-> +	}
-> +
-> +	return bpf_link_settle(&link_primer);
-> +
-> +out_free:
-> +	kfree(link);
-> +	return err;
-> +}
-> --
-> 2.39.2
+$ llvm-config --version
+14.0.0=20
 
