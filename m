@@ -2,176 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 916286A7A0D
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 04:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCE86A7A2E
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 04:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjCBDaD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Mar 2023 22:30:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
+        id S229745AbjCBDvJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 22:51:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjCBDaC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Mar 2023 22:30:02 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B9F1630D;
-        Wed,  1 Mar 2023 19:30:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677727801; x=1709263801;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NwJ07CM/Mu9/J7cKY3zH1nzADgAXPFICFXfxAgaZASM=;
-  b=XEr157G0SOO8hCrzT4NtvMBeJMoLiomKwBBIYIHXfbXm3FuBzxem8hEV
-   7cfhZeoR0iIibnMY1l0x3dMGcD/T7ehLEl/v6abXxBWKurxkSM4IVtRAu
-   PANQKlCf2NnavO/ivLRTvw2B35rpg4wvfualBFDaOEzfmdTVexlSn2SzE
-   LJX8nlcvIWyChajl1dcEmFE63a9DghK3UyNcC4hcA7bT0QR34uU4Gw5uY
-   pCVvE4Gb3Z0X29XsyzzMpkde62k3o1gQje4zNDO+S/vddGBzFUHum6epg
-   alOU2WlDTFddinFFOO6VR1xH9a0Oim/pMBmFNEd05wqNtDx/Q90DSAcVl
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="332085176"
-X-IronPort-AV: E=Sophos;i="5.98,226,1673942400"; 
-   d="scan'208";a="332085176"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2023 19:30:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="743674639"
-X-IronPort-AV: E=Sophos;i="5.98,226,1673942400"; 
-   d="scan'208";a="743674639"
-Received: from lkp-server01.sh.intel.com (HELO 776573491cc5) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Mar 2023 19:29:58 -0800
-Received: from kbuild by 776573491cc5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pXZdm-00009M-0B;
-        Thu, 02 Mar 2023 03:29:58 +0000
-Date:   Thu, 2 Mar 2023 11:29:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, martin.lau@kernel.org,
-        andrii@kernel.org, ast@kernel.org, memxor@gmail.com,
-        daniel@iogearbox.net, netdev@vger.kernel.org, toke@kernel.org,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH v13 bpf-next 09/10] bpf: Add bpf_dynptr_slice and
- bpf_dynptr_slice_rdwr
-Message-ID: <202303021152.sPWiwGYn-lkp@intel.com>
-References: <20230301154953.641654-10-joannelkoong@gmail.com>
+        with ESMTP id S229731AbjCBDvI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 22:51:08 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0287A39B9A
+        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 19:51:02 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id jo29so10904924qvb.0
+        for <bpf@vger.kernel.org>; Wed, 01 Mar 2023 19:51:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fzTjgY6pmauoRhbcUsPGjrkNqmIUEBSmPmq+35HbjTg=;
+        b=Rkuxl05ESC6Da+YLV7H66DkVfB1H8MyYtOQTFidtgWYvhbtoHJdCqcJomw/klp4f4p
+         XqBDwFnJdEAl0ucWx7CcTrs33pFqclCljuCmVnqweMj8LBzRRcsivrU/C4lkocoI9+yC
+         C2mwzEPg/paf33J2Ji903B8EXrlrjNb+QaRv++UOOM2kcOMT0AMqQT7WBx3o8xEdIIht
+         Nvihj11tox4hI7iUb3GIKpWeU1TLzUpq0QTI5SuYWe6pIduvYtTpTr3k6O5ufrXdsG9Y
+         ok6hT9dX2S36ws37fXeesUMc/TS/FsilHh/kLZ8I7qRn6IZeYRPSJfWQ1VmEwgvv8ykT
+         DsSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fzTjgY6pmauoRhbcUsPGjrkNqmIUEBSmPmq+35HbjTg=;
+        b=AOdeOLaomjPxdvNztp3XsbfdlRP2jSXIigGrjDo367GB1P5ufQKPEJeHzZhPvqOYnA
+         +4f3hbtQ1UTgIQhAxF5CHNpW+pKgWe5qNHU00z/0MElW38aqC4HiU17aeT68GG6hZabq
+         sZWCXmeDlQGJV9hAF6K9Pf46XR66Y0HJZU413MUVbVWKqCNOv0rCfCw81VTHNzoy6CuK
+         yKlgm/M4CwiLoXhh0bl0atB6UYBTlOhcdtIPpA8BKr0tk8dVj53Nw5TzfzoMWLfcENBc
+         XdwCnWAoKs9Q1njC3T71EExwOpUs803/P7tAoiHKyURDv0WhheMXI0tpTyrcMPjajM67
+         tCHA==
+X-Gm-Message-State: AO0yUKUJ0ijy2dN1W2vEHERl62s23lAPp6a3m34B2lVrH3+H/GqecPkY
+        rh9h6jM49aUlHyCLhLAbLYwR3SShn2TimJmmTbSxlA==
+X-Google-Smtp-Source: AK7set8ZL6X672cfoaD5RsaDZWMHx5fDeqg32Dh9XQt6wt53fQihsEF2Gfjbea6c1Hmrrha2XrzWXFkxe3TZdU+vdG4=
+X-Received: by 2002:a05:6214:4a43:b0:56e:9089:a447 with SMTP id
+ ph3-20020a0562144a4300b0056e9089a447mr2200388qvb.0.1677729061071; Wed, 01 Mar
+ 2023 19:51:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230301154953.641654-10-joannelkoong@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <Y9KtCc+4n5uANB2f@casper.infradead.org> <8448beac-a119-330d-a2af-fc3531bdb930@linux.alibaba.com>
+ <Y/UiY/08MuA/tBku@casper.infradead.org>
+In-Reply-To: <Y/UiY/08MuA/tBku@casper.infradead.org>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 1 Mar 2023 22:50:24 -0500
+Message-ID: <CA+CK2bBYX-N8T_ZdzsHC7oJnHsmqHufdTUJj5OrdFk17uQ=fzw@mail.gmail.com>
+Subject: Re: [LSF/MM/BPF TOPIC] State Of The Page
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-block@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Joanne,
+On Tue, Feb 21, 2023 at 2:58=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Wed, Feb 22, 2023 at 02:08:28AM +0800, Gao Xiang wrote:
+> > On 2023/1/27 00:40, Matthew Wilcox wrote:
+> > > I'd like to do another session on how the struct page dismemberment
+> > > is going and what remains to be done.  Given how widely struct page i=
+s
+> > > used, I think there will be interest from more than just MM, so I'd
+> > > suggest a plenary session.
+> >
+> > I'm interested in this topic too, also I'd like to get some idea of the
+> > future of the page dismemberment timeline so that I can have time to ke=
+ep
+> > the pace with it since some embedded use cases like Android are
+> > memory-sensitive all the time.
+>
+> As you all know, I'm absolutely amazing at project management & planning
+> and can tell you to the day when a feature will be ready ;-)
+>
+> My goal for 2023 is to get to a point where we (a) have struct page
+> reduced to:
+>
+> struct page {
+>         unsigned long flags;
+>         struct list_head lru;
+>         struct address_space *mapping;
+>         pgoff_t index;
+>         unsigned long private;
+>         atomic_t _mapcount;
+>         atomic_t _refcount;
+>         unsigned long memcg_data;
+> #ifdef LAST_CPUPID_NOT_IN_PAGE_FLAGS
+>         int _last_cpupid;
+> #endif
+> };
 
-Thank you for the patch! Perhaps something to improve:
+This looks clean, but it is still 64-bytes. I wonder if we could
+potentially reduce it down to 56 bytes by removing memcg_data.
+Something like this might work:
 
-[auto build test WARNING on bpf-next/master]
+1. On a 64-bit system flags field contains 19 unused bits, we could
+potentially use the free bits in this field.
+2. There are up-to 64K memcg ids. So in case this field contains memcg
+pointer 16-bit id would be enough to convert to memcg pointer
+3. In case memcg_data contains a pointer to a list of memcgs, there
+could be a separate hash table data structure that contains pointers
+to memcgs for slabs, or other users.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Joanne-Koong/bpf-Support-sk_buff-and-xdp_buff-as-valid-kfunc-arg-types/20230301-235341
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230301154953.641654-10-joannelkoong%40gmail.com
-patch subject: [PATCH v13 bpf-next 09/10] bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr
-config: microblaze-randconfig-s043-20230302 (https://download.01.org/0day-ci/archive/20230302/202303021152.sPWiwGYn-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 12.1.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-39-gce1a6720-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/ab021cad431168baaba04ed320003be30f4deb34
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Joanne-Koong/bpf-Support-sk_buff-and-xdp_buff-as-valid-kfunc-arg-types/20230301-235341
-        git checkout ab021cad431168baaba04ed320003be30f4deb34
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=microblaze olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=microblaze SHELL=/bin/bash kernel/bpf/
+However, I am not sure how that would affect the performance, but it
+would be very nice to reduce "struct page" by  8-bytes.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303021152.sPWiwGYn-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> kernel/bpf/helpers.c:2231:24: sparse: sparse: Using plain integer as NULL pointer
-   kernel/bpf/helpers.c:2235:24: sparse: sparse: Using plain integer as NULL pointer
-   kernel/bpf/helpers.c:2256:24: sparse: sparse: Using plain integer as NULL pointer
-   kernel/bpf/helpers.c:2305:24: sparse: sparse: Using plain integer as NULL pointer
-   kernel/bpf/helpers.c:2342:18: sparse: sparse: context imbalance in 'bpf_rcu_read_lock' - wrong count at exit
-   kernel/bpf/helpers.c:2347:18: sparse: sparse: context imbalance in 'bpf_rcu_read_unlock' - unexpected unlock
-
-vim +2231 kernel/bpf/helpers.c
-
-  2195	
-  2196	/**
-  2197	 * bpf_dynptr_slice - Obtain a read-only pointer to the dynptr data.
-  2198	 *
-  2199	 * For non-skb and non-xdp type dynptrs, there is no difference between
-  2200	 * bpf_dynptr_slice and bpf_dynptr_data.
-  2201	 *
-  2202	 * If the intention is to write to the data slice, please use
-  2203	 * bpf_dynptr_slice_rdwr.
-  2204	 *
-  2205	 * The user must check that the returned pointer is not null before using it.
-  2206	 *
-  2207	 * Please note that in the case of skb and xdp dynptrs, bpf_dynptr_slice
-  2208	 * does not change the underlying packet data pointers, so a call to
-  2209	 * bpf_dynptr_slice will not invalidate any ctx->data/data_end pointers in
-  2210	 * the bpf program.
-  2211	 *
-  2212	 * @ptr: The dynptr whose data slice to retrieve
-  2213	 * @offset: Offset into the dynptr
-  2214	 * @buffer: User-provided buffer to copy contents into
-  2215	 * @buffer__szk: Size (in bytes) of the buffer. This is the length of the
-  2216	 * requested slice. This must be a constant.
-  2217	 *
-  2218	 * @returns: NULL if the call failed (eg invalid dynptr), pointer to a read-only
-  2219	 * data slice (can be either direct pointer to the data or a pointer to the user
-  2220	 * provided buffer, with its contents containing the data, if unable to obtain
-  2221	 * direct pointer)
-  2222	 */
-  2223	__bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
-  2224					   void *buffer, u32 buffer__szk)
-  2225	{
-  2226		enum bpf_dynptr_type type;
-  2227		u32 len = buffer__szk;
-  2228		int err;
-  2229	
-  2230		if (!ptr->data)
-> 2231			return 0;
-  2232	
-  2233		err = bpf_dynptr_check_off_len(ptr, offset, len);
-  2234		if (err)
-  2235			return 0;
-  2236	
-  2237		type = bpf_dynptr_get_type(ptr);
-  2238	
-  2239		switch (type) {
-  2240		case BPF_DYNPTR_TYPE_LOCAL:
-  2241		case BPF_DYNPTR_TYPE_RINGBUF:
-  2242			return ptr->data + ptr->offset + offset;
-  2243		case BPF_DYNPTR_TYPE_SKB:
-  2244			return skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer);
-  2245		case BPF_DYNPTR_TYPE_XDP:
-  2246		{
-  2247			void *xdp_ptr = bpf_xdp_pointer(ptr->data, ptr->offset + offset, len);
-  2248			if (xdp_ptr)
-  2249				return xdp_ptr;
-  2250	
-  2251			bpf_xdp_copy_buf(ptr->data, ptr->offset + offset, buffer, len, false);
-  2252			return buffer;
-  2253		}
-  2254		default:
-  2255			WARN_ONCE(true, "unknown dynptr type %d\n", type);
-  2256			return 0;
-  2257		}
-  2258	}
-  2259	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Pasha
