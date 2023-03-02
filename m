@@ -2,224 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 130876A87E8
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 18:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A69986A87EF
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 18:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbjCBR21 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 12:28:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        id S230007AbjCBRcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 12:32:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbjCBR2Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 12:28:25 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A602D179;
-        Thu,  2 Mar 2023 09:28:23 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1pXmj8-0002cI-6Z; Thu, 02 Mar 2023 18:28:22 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     bpf@vger.kernel.org
-Cc:     <netfilter-devel@vger.kernel.org>, Florian Westphal <fw@strlen.de>
-Subject: [PATCH RFC v2 bpf-next 3/3] bpf: minimal support for programs hooked into netfilter framework
-Date:   Thu,  2 Mar 2023 18:27:57 +0100
-Message-Id: <20230302172757.9548-4-fw@strlen.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230302172757.9548-1-fw@strlen.de>
-References: <20230302172757.9548-1-fw@strlen.de>
+        with ESMTP id S230006AbjCBRcQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 12:32:16 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4124125A6
+        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 09:32:15 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id z2so18310455plf.12
+        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 09:32:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1677778335;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IMK/pDXz+E7PRGYljWORBZUeAjAOpLANtXUVqZkzxkw=;
+        b=GWYiLLPK3vcPIC4KGhgUqhwQcijMiygaldlw2hYrwp012ZztmmGuCGB1500bKtz7KF
+         mcXuXv0J9iiKS8nNiPjWaV9eCcGKsxf4r8wF6bVRb4CixQV59Oi/gE4D3M2+fJM0Fk6P
+         GPyDS4PU0kfSmgUWl2679ukg7PajwsF6XMlGJ/o7QxenyksfVoHuS8lw8ReWdvG7IpLu
+         JA0I6c7iamD0aCZrun7RpB/tnSsUjvqIYTJJJw+5PQ14O9NWBQra08PDlynWRznOZUzq
+         4Thu+pHmanVG1tRsJx6UcLiXblW9kLwDR2wp8hwx3cFF8GYzpfc10wdEcZt/pPtmtz26
+         NLxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677778335;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IMK/pDXz+E7PRGYljWORBZUeAjAOpLANtXUVqZkzxkw=;
+        b=Ch6nf1EGHMjoMLMQM0nRmYOV1tOwr6PydN4+2avXPeowB8ZITLQUG9F307+NWDaAvH
+         HSimRpOhA+go1kAU6n3PLh7J4l/6tv4ECnBXc3PV10oTrDqjDsy/iFM41rhLeX9h0pyt
+         Rl/Vt0gV12HIpBIVfzgaWNVH772yDIPQEzJaub+ButPz5XXtq+PlQwBItFAKYHVIQ9kI
+         TcFbveuO5PkCzorqGnUUXaLTkSF8mGobrLcM3wn/ndo1ROak3gDCDeBPUCSUSK/I0F/t
+         6hc3tEVIHg6q67GzNEXbV36XylO97XEUkGC6E4LRHNFavRaBxos2FwE6rZ/zGuf/2vro
+         omyA==
+X-Gm-Message-State: AO0yUKUWkrbjh/WxBchd4ykOXFdgcu0YJ9tYHgQrdOjjnkUTLFUQin5H
+        YrT9/N1ZRfJrNJ3CcA9hNZ05D356ib0=
+X-Google-Smtp-Source: AK7set/1W6F4YZzWhPakKXbohXJBh6+uo7f/QyxZfteef7tVAYsvuqTYZw8kUpJwIwLudgp3z4FxCg==
+X-Received: by 2002:a17:902:a511:b0:19c:eb50:88b9 with SMTP id s17-20020a170902a51100b0019ceb5088b9mr9798447plq.29.1677778334908;
+        Thu, 02 Mar 2023 09:32:14 -0800 (PST)
+Received: from worktop ([2620:10d:c090:500::5:c1fd])
+        by smtp.gmail.com with ESMTPSA id p19-20020a1709028a9300b0019cec7d88c3sm10697258plo.236.2023.03.02.09.32.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Mar 2023 09:32:14 -0800 (PST)
+Date:   Thu, 2 Mar 2023 09:32:00 -0800
+From:   Manu Bretelle <chantr4@gmail.com>
+To:     lsf-pc@lists.linux-foundation.org
+Cc:     bpf@vger.kernel.org
+Subject: [LSF/MM/BPF TOPIC] BPF CI: A year later
+Message-ID: <ZADdkKaGcEmjC0tF@worktop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds minimal support for BPF_PROG_TYPE_NETFILTER bpf programs
-that will be invoked via the NF_HOOK() points in the ip stack.
+Last year, Mykola Lysenko presented how BPF CI [0] works ([1][2]). This year we
+would like to go over what has happened behind the BPF CI system curtains, what
+improvements were made, what issues were encountered, and which pain points we
+are still battling with.
 
-Invocation incurs an indirect call.  This is not a necessity: Its
-possible to add 'DEFINE_BPF_DISPATCHER(nf_progs)' and handle the
-program invocation with the same method already done for xdp progs.
+We would also like to take the opportunity to close the talk with an interactive
+demo for the audience to run a change that goes through the BPF CI [3] so people
+can benefit from a multi-arch environment to validate their changes before
+submitting it to the mailing list.
 
-This isn't done here to keep the size of this chunk down.
+Finally, we would like to hear feedback from the audience to better understand
+what are contributors challenges with regards to testing, as well as probably
+find overlapping areas (vmtest [4] anyone?) where we could benefit from better
+cooperation.
 
-Verifier restricts verdicts to either DROP or ACCEPT.
+Thanks,
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- include/linux/bpf_types.h           |  4 ++
- include/net/netfilter/nf_hook_bpf.h |  6 +++
- kernel/bpf/btf.c                    |  5 ++
- kernel/bpf/verifier.c               |  3 ++
- net/netfilter/nf_bpf_link.c         | 78 ++++++++++++++++++++++++++++-
- 5 files changed, 95 insertions(+), 1 deletion(-)
+Manu
 
-diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-index d4ee3ccd3753..39a999abb0ce 100644
---- a/include/linux/bpf_types.h
-+++ b/include/linux/bpf_types.h
-@@ -79,6 +79,10 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_LSM, lsm,
- #endif
- BPF_PROG_TYPE(BPF_PROG_TYPE_SYSCALL, bpf_syscall,
- 	      void *, void *)
-+#ifdef CONFIG_NETFILTER
-+BPF_PROG_TYPE(BPF_PROG_TYPE_NETFILTER, netfilter,
-+	      struct bpf_nf_ctx, struct bpf_nf_ctx)
-+#endif
- 
- BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY, array_map_ops)
- BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_ARRAY, percpu_array_map_ops)
-diff --git a/include/net/netfilter/nf_hook_bpf.h b/include/net/netfilter/nf_hook_bpf.h
-index 9d1b338e89d7..863cbbcc66f9 100644
---- a/include/net/netfilter/nf_hook_bpf.h
-+++ b/include/net/netfilter/nf_hook_bpf.h
-@@ -1,2 +1,8 @@
- /* SPDX-License-Identifier: GPL-2.0 */
-+
-+struct bpf_nf_ctx {
-+	const struct nf_hook_state *state;
-+	struct sk_buff *skb;
-+};
-+
- int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index ef2d8969ed1f..ec6eb78b9aec 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -25,6 +25,9 @@
- #include <linux/bsearch.h>
- #include <linux/kobject.h>
- #include <linux/sysfs.h>
-+
-+#include <net/netfilter/nf_hook_bpf.h>
-+
- #include <net/sock.h>
- #include "../tools/lib/bpf/relo_core.h"
- 
-@@ -7726,6 +7729,8 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
- 	case BPF_PROG_TYPE_LWT_XMIT:
- 	case BPF_PROG_TYPE_LWT_SEG6LOCAL:
- 		return BTF_KFUNC_HOOK_LWT;
-+	case BPF_PROG_TYPE_NETFILTER:
-+		return BTF_KFUNC_HOOK_SOCKET_FILTER;
- 	default:
- 		return BTF_KFUNC_HOOK_MAX;
- 	}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 8dcddcc00bd0..733af5a28421 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -13142,6 +13142,9 @@ static int check_return_code(struct bpf_verifier_env *env)
- 		}
- 		break;
- 
-+	case BPF_PROG_TYPE_NETFILTER:
-+		range = tnum_range(NF_DROP, NF_ACCEPT);
-+		break;
- 	case BPF_PROG_TYPE_EXT:
- 		/* freplace program can return anything as its return value
- 		 * depends on the to-be-replaced kernel func or bpf program.
-diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-index fa4fae5cc669..b28b7bbdc3a9 100644
---- a/net/netfilter/nf_bpf_link.c
-+++ b/net/netfilter/nf_bpf_link.c
-@@ -1,12 +1,19 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/bpf.h>
-+#include <linux/filter.h>
- #include <linux/netfilter.h>
- 
- #include <net/netfilter/nf_hook_bpf.h>
- 
- static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb, const struct nf_hook_state *s)
- {
--	return NF_ACCEPT;
-+	const struct bpf_prog *prog = bpf_prog;
-+	struct bpf_nf_ctx ctx = {
-+		.state = s,
-+		.skb = skb,
-+	};
-+
-+	return bpf_prog_run(prog, &ctx);
- }
- 
- struct bpf_nf_link {
-@@ -114,3 +121,72 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- 	kfree(link);
- 	return err;
- }
-+
-+static int bpf_prog_test_run_nf(struct bpf_prog *prog,
-+				const union bpf_attr *kattr,
-+				union bpf_attr __user *uattr)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+const struct bpf_prog_ops netfilter_prog_ops = {
-+	.test_run		= bpf_prog_test_run_nf,
-+};
-+
-+static bool nf_ptr_to_btf_id(struct bpf_insn_access_aux *info, const char *name)
-+{
-+	struct btf *btf;
-+	s32 type_id;
-+
-+	btf = bpf_get_btf_vmlinux();
-+	if (IS_ERR_OR_NULL(btf))
-+		return false;
-+
-+	type_id = btf_find_by_name_kind(btf, name, BTF_KIND_STRUCT);
-+	if (WARN_ON_ONCE(type_id < 0))
-+		return false;
-+
-+	info->btf = btf;
-+	info->btf_id = type_id;
-+	info->reg_type = PTR_TO_BTF_ID | PTR_TRUSTED;
-+	return true;
-+}
-+
-+static bool nf_is_valid_access(int off, int size, enum bpf_access_type type,
-+			       const struct bpf_prog *prog,
-+			       struct bpf_insn_access_aux *info)
-+{
-+	if (off < 0 || off >= sizeof(struct bpf_nf_ctx))
-+		return false;
-+
-+	if (type == BPF_WRITE)
-+		return false;
-+
-+	switch (off) {
-+	case bpf_ctx_range(struct bpf_nf_ctx, skb):
-+		if (size != sizeof_field(struct bpf_nf_ctx, skb))
-+			return false;
-+
-+		return nf_ptr_to_btf_id(info, "sk_buff");
-+	case bpf_ctx_range(struct bpf_nf_ctx, state):
-+		if (size != sizeof_field(struct bpf_nf_ctx, state))
-+			return false;
-+
-+		return nf_ptr_to_btf_id(info, "nf_hook_state");
-+	default:
-+		return false;
-+	}
-+
-+	return false;
-+}
-+
-+static const struct bpf_func_proto *
-+bpf_nf_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-+{
-+	return bpf_base_func_proto(func_id);
-+}
-+
-+const struct bpf_verifier_ops netfilter_verifier_ops = {
-+	.is_valid_access	= nf_is_valid_access,
-+	.get_func_proto		= bpf_nf_func_proto,
-+};
--- 
-2.39.2
-
+[0] https://github.com/kernel-patches/bpf
+[1] https://youtu.be/CkM_HZ--vkI
+[2] https://docs.google.com/presentation/d/1RQZjLkbXmSFOr_4Sj5BdQsXbUh_vMshXi7w09pUpWsY/edit#slide=id.p
+[3] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html#q-how-do-i-run-bpf-ci-on-my-changes-before-sending-them-out-for-review
+[4] https://lore.kernel.org/bpf/f1ea109c-5f07-4734-83f5-12c4252fa5ae@app.fastmail.com/T/#t
