@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA7C6A8D41
-	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 00:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB026A8D44
+	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 00:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjCBXuh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Mar 2023 18:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
+        id S229825AbjCBXuj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Mar 2023 18:50:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbjCBXuf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 18:50:35 -0500
+        with ESMTP id S230090AbjCBXug (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 18:50:36 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714CF3B660
-        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 15:50:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976B534C2A
+        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 15:50:35 -0800 (PST)
 Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 322KVWEF000606
-        for <bpf@vger.kernel.org>; Thu, 2 Mar 2023 15:50:29 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p2qj7nyqq-1
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 322KVT63000387
+        for <bpf@vger.kernel.org>; Thu, 2 Mar 2023 15:50:35 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p2qj7nyqx-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 15:50:29 -0800
-Received: from twshared29091.48.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 15:50:35 -0800
+Received: from twshared18553.27.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 2 Mar 2023 15:50:28 -0800
+ 15.1.2507.17; Thu, 2 Mar 2023 15:50:33 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 6D62A291B7E95; Thu,  2 Mar 2023 15:50:20 -0800 (PST)
+        id 77A94291B7E9E; Thu,  2 Mar 2023 15:50:22 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next 01/17] bpf: improve stack slot state printing
-Date:   Thu, 2 Mar 2023 15:49:59 -0800
-Message-ID: <20230302235015.2044271-2-andrii@kernel.org>
+Subject: [PATCH bpf-next 02/17] bpf: improve regsafe() checks for PTR_TO_{MEM,BUF,TP_BUFFER}
+Date:   Thu, 2 Mar 2023 15:50:00 -0800
+Message-ID: <20230302235015.2044271-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230302235015.2044271-1-andrii@kernel.org>
 References: <20230302235015.2044271-1-andrii@kernel.org>
@@ -41,8 +41,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: KN7NY6AnmO8LmJ52WS4zq_0xdYXx62Z9
-X-Proofpoint-GUID: KN7NY6AnmO8LmJ52WS4zq_0xdYXx62Z9
+X-Proofpoint-ORIG-GUID: lJvH2HgNebJuBCq3whuub0mVRRgYzRdl
+X-Proofpoint-GUID: lJvH2HgNebJuBCq3whuub0mVRRgYzRdl
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-02_15,2023-03-02_02,2023-02-09_01
@@ -56,148 +56,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Improve stack slot state printing to provide more useful and relevant
-information, especially for dynptrs. While previously we'd see something
-like:
-
-  8: (85) call bpf_ringbuf_reserve_dynptr#198   ; R0_w=scalar() fp-8_w=dddddddd fp-16_w=dddddddd refs=2
-
-Now we'll see way more useful:
-
-  8: (85) call bpf_ringbuf_reserve_dynptr#198   ; R0_w=scalar() fp-16_w=dynptr_ringbuf(ref_id=2) refs=2
-
-I experimented with printing the range of slots taken by dynptr,
-something like:
-
-  fp-16..8_w=dynptr_ringbuf(ref_id=2)
-
-But it felt very awkward and pretty useless. So we print the lowest
-address (most negative offset) only.
-
-The general structure of this code is now also set up for easier
-extension and will accommodate ITER slots naturally.
+Teach regsafe() logic to handle PTR_TO_MEM, PTR_TO_BUF, and
+PTR_TO_TP_BUFFER similarly to PTR_TO_MAP_{KEY,VALUE}. That is, instead of
+exact match for var_off and range, use tnum_in() and range_within()
+checks, allowing more general verified state to subsume more specific
+current state. This allows to match wider range of valid and safe
+states, speeding up verification and detecting wider range of equivalent
+states for upcoming open-coded iteration looping logic.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c | 75 ++++++++++++++++++++++++++++---------------
- 1 file changed, 49 insertions(+), 26 deletions(-)
+ kernel/bpf/verifier.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index bf580f246a01..60cc8473faa8 100644
+index 60cc8473faa8..97f03f9fc711 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -705,6 +705,25 @@ static const char *kernel_type_name(const struct btf* btf, u32 id)
- 	return btf_name_by_offset(btf, btf_type_by_id(btf, id)->name_off);
- }
- 
-+static const char *dynptr_type_str(enum bpf_dynptr_type type)
-+{
-+	switch (type) {
-+	case BPF_DYNPTR_TYPE_LOCAL:
-+		return "local";
-+	case BPF_DYNPTR_TYPE_RINGBUF:
-+		return "ringbuf";
-+	case BPF_DYNPTR_TYPE_SKB:
-+		return "skb";
-+	case BPF_DYNPTR_TYPE_XDP:
-+		return "xdp";
-+	case BPF_DYNPTR_TYPE_INVALID:
-+		return "<invalid>";
-+	default:
-+		WARN_ONCE(1, "unknown dynptr type %d\n", type);
-+		return "<unknown>";
-+	}
-+}
-+
- static void mark_reg_scratched(struct bpf_verifier_env *env, u32 regno)
- {
- 	env->scratched_regs |= 1U << regno;
-@@ -1176,26 +1195,49 @@ static void print_verifier_state(struct bpf_verifier_env *env,
- 		for (j = 0; j < BPF_REG_SIZE; j++) {
- 			if (state->stack[i].slot_type[j] != STACK_INVALID)
- 				valid = true;
--			types_buf[j] = slot_type_char[
--					state->stack[i].slot_type[j]];
-+			types_buf[j] = slot_type_char[state->stack[i].slot_type[j]];
- 		}
- 		types_buf[BPF_REG_SIZE] = 0;
- 		if (!valid)
- 			continue;
- 		if (!print_all && !stack_slot_scratched(env, i))
- 			continue;
--		verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
--		print_liveness(env, state->stack[i].spilled_ptr.live);
--		if (is_spilled_reg(&state->stack[i])) {
-+		switch (state->stack[i].slot_type[BPF_REG_SIZE - 1]) {
-+		case STACK_SPILL:
- 			reg = &state->stack[i].spilled_ptr;
- 			t = reg->type;
-+
-+			verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
-+			print_liveness(env, reg->live);
- 			verbose(env, "=%s", t == SCALAR_VALUE ? "" : reg_type_str(env, t));
- 			if (t == SCALAR_VALUE && reg->precise)
- 				verbose(env, "P");
- 			if (t == SCALAR_VALUE && tnum_is_const(reg->var_off))
- 				verbose(env, "%lld", reg->var_off.value + reg->off);
--		} else {
-+			break;
-+		case STACK_DYNPTR:
-+			i += BPF_DYNPTR_NR_SLOTS - 1;
-+			reg = &state->stack[i].spilled_ptr;
-+
-+			verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
-+			print_liveness(env, reg->live);
-+			verbose(env, "=dynptr_%s", dynptr_type_str(reg->dynptr.type));
-+			if (reg->ref_obj_id)
-+				verbose(env, "(ref_id=%d)", reg->ref_obj_id);
-+			break;
-+		case STACK_MISC:
-+		case STACK_ZERO:
-+		default:
-+			reg = &state->stack[i].spilled_ptr;
-+
-+			for (j = 0; j < BPF_REG_SIZE; j++)
-+				types_buf[j] = slot_type_char[state->stack[i].slot_type[j]];
-+			types_buf[BPF_REG_SIZE] = 0;
-+
-+			verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
-+			print_liveness(env, reg->live);
- 			verbose(env, "=%s", types_buf);
-+			break;
- 		}
- 	}
- 	if (state->acquired_refs && state->refs[0].id) {
-@@ -6312,28 +6354,9 @@ static int process_dynptr_func(struct bpf_verifier_env *env, int regno, int insn
- 
- 		/* Fold modifiers (in this case, MEM_RDONLY) when checking expected type */
- 		if (!is_dynptr_type_expected(env, reg, arg_type & ~MEM_RDONLY)) {
--			const char *err_extra = "";
--
--			switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
--			case DYNPTR_TYPE_LOCAL:
--				err_extra = "local";
--				break;
--			case DYNPTR_TYPE_RINGBUF:
--				err_extra = "ringbuf";
--				break;
--			case DYNPTR_TYPE_SKB:
--				err_extra = "skb ";
--				break;
--			case DYNPTR_TYPE_XDP:
--				err_extra = "xdp ";
--				break;
--			default:
--				err_extra = "<unknown>";
--				break;
--			}
- 			verbose(env,
- 				"Expected a dynptr of type %s as arg #%d\n",
--				err_extra, regno);
-+				dynptr_type_str(arg_to_dynptr_type(arg_type)), regno);
- 			return -EINVAL;
- 		}
- 
+@@ -14114,13 +14114,17 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+ 		       tnum_in(rold->var_off, rcur->var_off);
+ 	case PTR_TO_MAP_KEY:
+ 	case PTR_TO_MAP_VALUE:
++	case PTR_TO_MEM:
++	case PTR_TO_BUF:
++	case PTR_TO_TP_BUFFER:
+ 		/* If the new min/max/var_off satisfy the old ones and
+ 		 * everything else matches, we are OK.
+ 		 */
+ 		return memcmp(rold, rcur, offsetof(struct bpf_reg_state, var_off)) == 0 &&
+ 		       range_within(rold, rcur) &&
+ 		       tnum_in(rold->var_off, rcur->var_off) &&
+-		       check_ids(rold->id, rcur->id, idmap);
++		       check_ids(rold->id, rcur->id, idmap) &&
++		       check_ids(rold->ref_obj_id, rcur->ref_obj_id, idmap);
+ 	case PTR_TO_PACKET_META:
+ 	case PTR_TO_PACKET:
+ 		/* We must have at least as much range as the old ptr
 -- 
 2.30.2
 
