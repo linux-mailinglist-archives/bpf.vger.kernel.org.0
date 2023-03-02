@@ -2,163 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C23256A824B
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 13:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 104266A83BE
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 14:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjCBMey (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 07:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
+        id S229566AbjCBNq1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 08:46:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjCBMex (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 07:34:53 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AF515C81
-        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 04:34:52 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id t25-20020a1c7719000000b003eb052cc5ccso1598794wmi.4
-        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 04:34:52 -0800 (PST)
+        with ESMTP id S229537AbjCBNq1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 08:46:27 -0500
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B6330B24;
+        Thu,  2 Mar 2023 05:46:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HrezzsKX3CNQQh1aE1R/Oh3up/yQLahHBMvgdcVIB/M=;
-        b=AALLbwxufAgi1qtXiuvonhy/sYJA3HoGvt25pwS8TrTVps+hst1+ocicdb+t5OvuPy
-         wT2x0Pnl3uybxDiJF5n01gNFTyFV5Ddp2hSznvcjlhTA/1NTkKPlTBBryGoBToDhJ1Zx
-         Ez9a+0ZTSFWCXu2jOfy31PeYy/VNtsgSdPyHpdgqrZt8hjuGLoXn+LHY/6x+JWoJia/j
-         WBHShey5zPQYf4vDh2/6jPWGHQxvlapzyWZo+uezkgovkzuEoWXR0fa+m1ZRRA8/QwTj
-         h88E2yulX5lLocRAhUerUeiKtk207gN81IsDzcnh6/P8fA0JR03DWil1DaNqGS2FvZ5u
-         HzgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HrezzsKX3CNQQh1aE1R/Oh3up/yQLahHBMvgdcVIB/M=;
-        b=M7O6S2zb72M8nIFcZQOr1eZlI04yzip7RlQXZ/S8p7Q8V3g2U5LAwrTWlIoWnQYEu0
-         isOa1aq6B8s8mfCG2dTOlsDZ5Mc+3I//cJ7qukwOwPMSZVAUuF4Dvd2TnYqJZlHZot7x
-         3npGb1glyzdPD3smwx60BysSX7+uVPMPO6+BaS7eUEKg0HLvgp4gqhVewphACY1uQR3F
-         sC+ZXMu1br3AO4D1WV+V34AMwYzgfLuWIPcOD7UlM+mJt3blpE0nqHF7WyfdYTRABadq
-         zFwr28LPUFCwLh+jEAnbCzkpm92UTr9DDAOfl0cV1V4VhV3SzL75IV7ufosT9KXICzL0
-         q7mA==
-X-Gm-Message-State: AO0yUKXH6wjdSmDCBi8y2ww67ZJQcmHym3tPVNP0UkHmVVECFjG1CMdR
-        tgWAGD/p4kqmveKpWBzbMkiYTw==
-X-Google-Smtp-Source: AK7set9911P/JcoyltopCJ0H3lCKo+BZQ5jwLQSudjBZx3m7H3U1K/WJCuJ88IPxd32N7KNrD1AJVg==
-X-Received: by 2002:a05:600c:5252:b0:3ea:8ed9:8f03 with SMTP id fc18-20020a05600c525200b003ea8ed98f03mr7520533wmb.24.1677760490953;
-        Thu, 02 Mar 2023 04:34:50 -0800 (PST)
-Received: from tpx1.lan (f.c.7.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff::7cf])
-        by smtp.gmail.com with ESMTPSA id s2-20020adff802000000b002c706c754fesm15232575wrp.32.2023.03.02.04.34.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 04:34:50 -0800 (PST)
-From:   Lorenz Bauer <lorenz.bauer@isovalent.com>
-X-Google-Original-From: Lorenz Bauer <lmb@isovalent.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     Lorenz Bauer <lmb@isovalent.com>, Martin KaFai Lau <kafai@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btf: fix resolving BTF_KIND_VAR after ARRAY, STRUCT, UNION, PTR
-Date:   Thu,  2 Mar 2023 12:34:40 +0000
-Message-Id: <20230302123440.1193507-1-lmb@isovalent.com>
-X-Mailer: git-send-email 2.39.2
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1677764787; x=1709300787;
+  h=references:from:to:cc:date:in-reply-to:message-id:
+   mime-version:subject;
+  bh=Gc7jiqMATF/WgV3NyGXXqkcSKEdhQ2vY+HxNsRmp5Uc=;
+  b=T5RBNOtQIeHccGPbig/vu+s1bAzT2+TgJxZ17sD5boscSE9tLd9Z49tO
+   xI3+G814/h/oxOfB7rwQ3qHLqHg+I/iDIwNR50kcQkwkcCdhaVDbSSboT
+   dIgHQUDTJHw/9tQX4OC5Yp7eHIIBsCrxSqiiFT3xfEb+LkKRI6rSIe1vR
+   4=;
+X-IronPort-AV: E=Sophos;i="5.98,227,1673913600"; 
+   d="scan'208";a="298774921"
+Subject: Re: [PATCH v4 bpf-next 2/8] drivers: net: turn on XDP features
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-617e30c2.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2023 13:46:22 +0000
+Received: from EX19D009EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1a-m6i4x-617e30c2.us-east-1.amazon.com (Postfix) with ESMTPS id BAD75647B0;
+        Thu,  2 Mar 2023 13:46:13 +0000 (UTC)
+Received: from EX19D028EUB003.ant.amazon.com (10.252.61.31) by
+ EX19D009EUA001.ant.amazon.com (10.252.50.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.24; Thu, 2 Mar 2023 13:46:11 +0000
+Received: from u570694869fb251.ant.amazon.com.amazon.com (10.85.143.175) by
+ EX19D028EUB003.ant.amazon.com (10.252.61.31) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.24; Thu, 2 Mar 2023 13:45:59 +0000
+References: <cover.1674913191.git.lorenzo@kernel.org>
+ <948292cc7d72f2bc04b5973008ecf384f9296677.1674913191.git.lorenzo@kernel.org>
+ <pj41zlcz5v1kkg.fsf@u570694869fb251.ant.amazon.com>
+ <Y/58Kzah/ERCYMGD@lore-desk>
+User-agent: mu4e 1.6.10; emacs 28.0.91
+From:   Shay Agroskin <shayagr@amazon.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <edumazet@google.com>,
+        <hawk@kernel.org>, <toke@redhat.com>, <memxor@gmail.com>,
+        <alardam@gmail.com>, <saeedm@nvidia.com>,
+        <anthony.l.nguyen@intel.com>, <gospo@broadcom.com>,
+        <vladimir.oltean@nxp.com>, <nbd@nbd.name>, <john@phrozen.org>,
+        <leon@kernel.org>, <simon.horman@corigine.com>,
+        <aelior@marvell.com>, <christophe.jaillet@wanadoo.fr>,
+        <ecree.xilinx@gmail.com>, <mst@redhat.com>, <bjorn@kernel.org>,
+        <magnus.karlsson@intel.com>, <maciej.fijalkowski@intel.com>,
+        <intel-wired-lan@lists.osuosl.org>, <lorenzo.bianconi@redhat.com>,
+        <martin.lau@linux.dev>, <sdf@google.com>
+Date:   Thu, 2 Mar 2023 15:44:18 +0200
+In-Reply-To: <Y/58Kzah/ERCYMGD@lore-desk>
+Message-ID: <pj41zllekf467h.fsf@u570694869fb251.ant.amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; format=flowed
+X-Originating-IP: [10.85.143.175]
+X-ClientProxiedBy: EX19D032UWB001.ant.amazon.com (10.13.139.152) To
+ EX19D028EUB003.ant.amazon.com (10.252.61.31)
+X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-btf_datasec_resolve contains a bug that causes the following BTF
-to fail loading:
 
-    [1] DATASEC a size=2 vlen=2
-        type_id=4 offset=0 size=1
-        type_id=7 offset=1 size=1
-    [2] INT (anon) size=1 bits_offset=0 nr_bits=8 encoding=(none)
-    [3] PTR (anon) type_id=2
-    [4] VAR a type_id=3 linkage=0
-    [5] INT (anon) size=1 bits_offset=0 nr_bits=8 encoding=(none)
-    [6] TYPEDEF td type_id=5
-    [7] VAR b type_id=6 linkage=0
+Lorenzo Bianconi <lorenzo@kernel.org> writes:
 
-This error message is printed during btf_check_all_types:
+> [[PGP Signed Part:Undecided]]
+>> 
+>> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+>> 
+>> > From: Marek Majtyka <alardam@gmail.com>
+>> > 
+>> > ...
+>> > 
+>> > diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+>> > b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+>> > index e8ad5ea31aff..d3999db7c6a2 100644
+>> > --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+>> > +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+>> > @@ -597,7 +597,9 @@ static int ena_xdp_set(struct net_device 
+>> > *netdev,
+>> > struct netdev_bpf *bpf)
+>> >  				if (rc)
+>> >  					return rc;
+>> >  			}
+>> > +			xdp_features_set_redirect_target(netdev, 
+>> > false);
+>> >  		} else if (old_bpf_prog) {
+>> > + xdp_features_clear_redirect_target(netdev);
+>> >  			rc = 
+>> >  ena_destroy_and_free_all_xdp_queues(adapter);
+>> >  			if (rc)
+>> >  				return rc;
+>> > @@ -4103,6 +4105,8 @@ static void 
+>> > ena_set_conf_feat_params(struct
+>> > ena_adapter *adapter,
+>> >  	/* Set offload features */
+>> >  	ena_set_dev_offloads(feat, netdev);
+>> >   +	netdev->xdp_features = NETDEV_XDP_ACT_BASIC |
+>> > NETDEV_XDP_ACT_REDIRECT;
+>> > +
+>> >  	adapter->max_mtu = feat->dev_attr.max_mtu;
+>> >  	netdev->max_mtu = adapter->max_mtu;
+>> >  	netdev->min_mtu = ENA_MIN_MTU;
+>> > 
+>> 
+>> Hi, thanks for the time you put in adjusting the ENA driver as 
+>> well.
+>
+> Hi Shay,
+>
+>> 
+>> Why did you set NETDEV_XDP_ACT_NDO_XMIT dynamically for some 
+>> drivers (like
+>> ENA and mlx5) and statically for others (like atlantic driver 
+>> which also
+>> redirects packets only when XDP program is loaded) ?
+>> Is it only for the sake of notifying the user that an XDP 
+>> program has been
+>> loaded ?
+>
+> there are some drivers (e.g. mvneta) where 
+> NETDEV_XDP_ACT_NDO_XMIT is always
+> supported while there are other drivers (e.g. intel drivers) 
+> where it
+> depends on other configurations (e.g. if the driver needs to 
+> reserve
+> some queues for xdp).
+>
+> Regards,
+> Lorenzo
+>
 
-    [1] DATASEC a size=2 vlen=2
-        type_id=7 offset=1 size=1 Invalid type
+Well given that ENA's ability to redirect packets goes hand in 
+hand with its ability to process any XDP traffic I'd say it always 
+supports ndo_xmit.
+Doesn't seem like a big issue though.
 
-By tracing btf_*_resolve we can pinpoint the problem:
+Thanks for the explanation,
+Shay
 
-    btf_datasec_resolve(depth: 1, type_id: 1, mode: RESOLVE_TBD) = 0
-        btf_var_resolve(depth: 2, type_id: 4, mode: RESOLVE_TBD) = 0
-            btf_ptr_resolve(depth: 3, type_id: 3, mode: RESOLVE_PTR) = 0
-        btf_var_resolve(depth: 2, type_id: 4, mode: RESOLVE_PTR) = 0
-    btf_datasec_resolve(depth: 1, type_id: 1, mode: RESOLVE_PTR) = -22
-
-The last invocation of btf_datasec_resolve should invoke btf_var_resolve
-by means of env_stack_push, instead it returns EINVAL. The reason is that
-env_stack_push is never executed for the second VAR.
-
-    if (!env_type_is_resolve_sink(env, var_type) &&
-        !env_type_is_resolved(env, var_type_id)) {
-        env_stack_set_next_member(env, i + 1);
-        return env_stack_push(env, var_type, var_type_id);
-    }
-
-env_type_is_resolve_sink() changes its behaviour based on resolve_mode.
-For RESOLVE_PTR, we can simplify the if condition to the following:
-
-    (btf_type_is_modifier() || btf_type_is_ptr) && !env_type_is_resolved()
-
-Since we're dealing with a VAR the clause evaluates to false. This is
-not sufficient to trigger the bug however. The log output and EINVAL
-are only generated if btf_type_id_size() fails.
-
-    if (!btf_type_id_size(btf, &type_id, &type_size)) {
-        btf_verifier_log_vsi(env, v->t, vsi, "Invalid type");
-        return -EINVAL;
-    }
-
-Most types are sized, so for example a VAR referring to an INT is not a
-problem. The bug is only triggered if a VAR points at a modifier. Since
-we skipped btf_var_resolve that modifier was also never resolved, which
-means that btf_resolved_type_id returns 0 aka VOID for the modifier.
-This in turn causes btf_type_id_size to return NULL, triggering EINVAL.
-
-To summarise, the following conditions are necessary:
-
-- VAR pointing at PTR, STRUCT, UNION or ARRAY
-- Followed by a VAR pointing at TYPEDEF, VOLATILE, CONST, RESTRICT or
-  TYPE_TAG
-
-The fix is to reset resolve_mode to RESOLVE_TBD before attempting to
-resolve a VAR from a DATASEC.
-
-Fixes: 1dc92851849c ("bpf: kernel side support for BTF Var and DataSec")
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
----
- kernel/bpf/btf.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index fa22ec79ac0e..91145298c238 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4579,6 +4579,7 @@ static int btf_datasec_resolve(struct btf_verifier_env *env,
- 			return -EINVAL;
- 		}
- 
-+		env->resolve_mode = RESOLVE_TBD;
- 		if (!env_type_is_resolve_sink(env, var_type) &&
- 		    !env_type_is_resolved(env, var_type_id)) {
- 			env_stack_set_next_member(env, i + 1);
--- 
-2.39.2
+>
+> [[End of PGP Signed Part]]
 
