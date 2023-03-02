@@ -2,160 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 104266A83BE
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 14:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C96596A87E1
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 18:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjCBNq1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 08:46:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
+        id S230030AbjCBR2Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 12:28:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjCBNq1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 08:46:27 -0500
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B6330B24;
-        Thu,  2 Mar 2023 05:46:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1677764787; x=1709300787;
-  h=references:from:to:cc:date:in-reply-to:message-id:
-   mime-version:subject;
-  bh=Gc7jiqMATF/WgV3NyGXXqkcSKEdhQ2vY+HxNsRmp5Uc=;
-  b=T5RBNOtQIeHccGPbig/vu+s1bAzT2+TgJxZ17sD5boscSE9tLd9Z49tO
-   xI3+G814/h/oxOfB7rwQ3qHLqHg+I/iDIwNR50kcQkwkcCdhaVDbSSboT
-   dIgHQUDTJHw/9tQX4OC5Yp7eHIIBsCrxSqiiFT3xfEb+LkKRI6rSIe1vR
-   4=;
-X-IronPort-AV: E=Sophos;i="5.98,227,1673913600"; 
-   d="scan'208";a="298774921"
-Subject: Re: [PATCH v4 bpf-next 2/8] drivers: net: turn on XDP features
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-617e30c2.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2023 13:46:22 +0000
-Received: from EX19D009EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-m6i4x-617e30c2.us-east-1.amazon.com (Postfix) with ESMTPS id BAD75647B0;
-        Thu,  2 Mar 2023 13:46:13 +0000 (UTC)
-Received: from EX19D028EUB003.ant.amazon.com (10.252.61.31) by
- EX19D009EUA001.ant.amazon.com (10.252.50.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.24; Thu, 2 Mar 2023 13:46:11 +0000
-Received: from u570694869fb251.ant.amazon.com.amazon.com (10.85.143.175) by
- EX19D028EUB003.ant.amazon.com (10.252.61.31) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.24; Thu, 2 Mar 2023 13:45:59 +0000
-References: <cover.1674913191.git.lorenzo@kernel.org>
- <948292cc7d72f2bc04b5973008ecf384f9296677.1674913191.git.lorenzo@kernel.org>
- <pj41zlcz5v1kkg.fsf@u570694869fb251.ant.amazon.com>
- <Y/58Kzah/ERCYMGD@lore-desk>
-User-agent: mu4e 1.6.10; emacs 28.0.91
-From:   Shay Agroskin <shayagr@amazon.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <edumazet@google.com>,
-        <hawk@kernel.org>, <toke@redhat.com>, <memxor@gmail.com>,
-        <alardam@gmail.com>, <saeedm@nvidia.com>,
-        <anthony.l.nguyen@intel.com>, <gospo@broadcom.com>,
-        <vladimir.oltean@nxp.com>, <nbd@nbd.name>, <john@phrozen.org>,
-        <leon@kernel.org>, <simon.horman@corigine.com>,
-        <aelior@marvell.com>, <christophe.jaillet@wanadoo.fr>,
-        <ecree.xilinx@gmail.com>, <mst@redhat.com>, <bjorn@kernel.org>,
-        <magnus.karlsson@intel.com>, <maciej.fijalkowski@intel.com>,
-        <intel-wired-lan@lists.osuosl.org>, <lorenzo.bianconi@redhat.com>,
-        <martin.lau@linux.dev>, <sdf@google.com>
-Date:   Thu, 2 Mar 2023 15:44:18 +0200
-In-Reply-To: <Y/58Kzah/ERCYMGD@lore-desk>
-Message-ID: <pj41zllekf467h.fsf@u570694869fb251.ant.amazon.com>
+        with ESMTP id S230047AbjCBR2O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 12:28:14 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD25231F6;
+        Thu,  2 Mar 2023 09:28:11 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1pXmiv-0002bd-PC; Thu, 02 Mar 2023 18:28:09 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     bpf@vger.kernel.org
+Cc:     <netfilter-devel@vger.kernel.org>, Florian Westphal <fw@strlen.de>
+Subject: [PATCH RFC v2 bpf-next 0/3] bpf: add netfilter program type
+Date:   Thu,  2 Mar 2023 18:27:54 +0100
+Message-Id: <20230302172757.9548-1-fw@strlen.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Originating-IP: [10.85.143.175]
-X-ClientProxiedBy: EX19D032UWB001.ant.amazon.com (10.13.139.152) To
- EX19D028EUB003.ant.amazon.com (10.252.61.31)
-X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Add minimal support to hook bpf programs to netfilter hooks,
+e.g. PREROUTING or FORWARD.
 
-Lorenzo Bianconi <lorenzo@kernel.org> writes:
+For this the most relevant parts for registering a netfilter
+hook via the in-kernel api are exposed to userspace via bpf_link.
 
-> [[PGP Signed Part:Undecided]]
->> 
->> Lorenzo Bianconi <lorenzo@kernel.org> writes:
->> 
->> > From: Marek Majtyka <alardam@gmail.com>
->> > 
->> > ...
->> > 
->> > diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c
->> > b/drivers/net/ethernet/amazon/ena/ena_netdev.c
->> > index e8ad5ea31aff..d3999db7c6a2 100644
->> > --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
->> > +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
->> > @@ -597,7 +597,9 @@ static int ena_xdp_set(struct net_device 
->> > *netdev,
->> > struct netdev_bpf *bpf)
->> >  				if (rc)
->> >  					return rc;
->> >  			}
->> > +			xdp_features_set_redirect_target(netdev, 
->> > false);
->> >  		} else if (old_bpf_prog) {
->> > + xdp_features_clear_redirect_target(netdev);
->> >  			rc = 
->> >  ena_destroy_and_free_all_xdp_queues(adapter);
->> >  			if (rc)
->> >  				return rc;
->> > @@ -4103,6 +4105,8 @@ static void 
->> > ena_set_conf_feat_params(struct
->> > ena_adapter *adapter,
->> >  	/* Set offload features */
->> >  	ena_set_dev_offloads(feat, netdev);
->> >   +	netdev->xdp_features = NETDEV_XDP_ACT_BASIC |
->> > NETDEV_XDP_ACT_REDIRECT;
->> > +
->> >  	adapter->max_mtu = feat->dev_attr.max_mtu;
->> >  	netdev->max_mtu = adapter->max_mtu;
->> >  	netdev->min_mtu = ENA_MIN_MTU;
->> > 
->> 
->> Hi, thanks for the time you put in adjusting the ENA driver as 
->> well.
->
-> Hi Shay,
->
->> 
->> Why did you set NETDEV_XDP_ACT_NDO_XMIT dynamically for some 
->> drivers (like
->> ENA and mlx5) and statically for others (like atlantic driver 
->> which also
->> redirects packets only when XDP program is loaded) ?
->> Is it only for the sake of notifying the user that an XDP 
->> program has been
->> loaded ?
->
-> there are some drivers (e.g. mvneta) where 
-> NETDEV_XDP_ACT_NDO_XMIT is always
-> supported while there are other drivers (e.g. intel drivers) 
-> where it
-> depends on other configurations (e.g. if the driver needs to 
-> reserve
-> some queues for xdp).
->
-> Regards,
-> Lorenzo
->
+The new program type is 'tracing style' and assumes skb dynptrs are used
+rather than 'direct packet access'.
 
-Well given that ENA's ability to redirect packets goes hand in 
-hand with its ability to process any XDP traffic I'd say it always 
-supports ndo_xmit.
-Doesn't seem like a big issue though.
+With this its possible to build a small test program such as:
 
-Thanks for the explanation,
-Shay
+#include "vmlinux.h"
 
->
-> [[End of PGP Signed Part]]
+extern int bpf_dynptr_from_skb(struct __sk_buff *skb, __u64 flags,
+                               struct bpf_dynptr *ptr__uninit) __ksym;
+extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, uint32_t offset,
+                                   void *buffer, uint32_t buffer__sz) __ksym;
+
+SEC("netfilter")
+int nf_test(struct bpf_nf_ctx *ctx)
+{
+	struct nf_hook_state *state = ctx->state;
+	struct sk_buff *skb = ctx->skb;
+	const struct iphdr *iph, _iph;
+	const struct tcphdr *th, _th;
+	struct bpf_dynptr ptr;
+
+	if (bpf_dynptr_from_skb(skb, 0, &ptr))
+		return NF_DROP;
+
+	iph = bpf_dynptr_slice(&ptr, 0, &_iph, sizeof(_iph));
+	if (!iph)
+		return NF_DROP;
+
+	th = bpf_dynptr_slice(&ptr, iph->ihl << 2, &_th, sizeof(_th));
+	if (!th)
+		return NF_DROP;
+
+	bpf_printk("accept %x:%d->%x:%d, hook %d ifin %d\n", iph->saddr, bpf_ntohs(th->source), iph->daddr, bpf_ntohs(th->dest), state->hook, state->in->ifindex);
+        return NF_ACCEPT;
+}
+
+(output can be observed via /sys/kernel/tracing/trace_pipe).
+
+At this point I think its fairly complete.  Known problems are:
+- no test cases, I will look into this.  Might take some time
+  though because I might have to extend libbpf first.
+- nfnetlink_hook needs minor work so that it can dump the bpf
+  program id. As-is, userspace could see that a bpf program
+  is attached to e.g. forward and output, but it cannot tell
+  which program.  This is fairly simple and doesn't need changes
+  on bpf side.
+
+I will work on these address those two next unless anyone spots
+a fundamental issue with this rfc set.
+
+Florian Westphal (3):
+  bpf: add bpf_link support for BPF_NETFILTER programs
+  libbpf: sync header file, add nf prog section name
+  bpf: minimal support for programs hooked into netfilter framework
+
+ include/linux/bpf_types.h           |   4 +
+ include/linux/netfilter.h           |   1 +
+ include/net/netfilter/nf_hook_bpf.h |   8 ++
+ include/uapi/linux/bpf.h            |  12 ++
+ kernel/bpf/btf.c                    |   5 +
+ kernel/bpf/syscall.c                |   6 +
+ kernel/bpf/verifier.c               |   3 +
+ net/netfilter/Kconfig               |   3 +
+ net/netfilter/Makefile              |   1 +
+ net/netfilter/nf_bpf_link.c         | 192 ++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h      |  12 ++
+ tools/lib/bpf/libbpf.c              |   1 +
+ 12 files changed, 248 insertions(+)
+ create mode 100644 include/net/netfilter/nf_hook_bpf.h
+ create mode 100644 net/netfilter/nf_bpf_link.c
+-- 
+2.39.2
 
