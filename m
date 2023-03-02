@@ -2,497 +2,390 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E9A6A8A37
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 21:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C546A8A39
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 21:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjCBU1s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 15:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        id S229756AbjCBU2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 15:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbjCBU1m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 15:27:42 -0500
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498B92F7B5;
-        Thu,  2 Mar 2023 12:27:40 -0800 (PST)
-Received: by mail-qt1-f174.google.com with SMTP id d7so593380qtr.12;
-        Thu, 02 Mar 2023 12:27:40 -0800 (PST)
+        with ESMTP id S229713AbjCBU2N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 15:28:13 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C487F1BE6
+        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 12:28:08 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id iw4-20020a170903044400b0019ccafc1fbeso226228plb.3
+        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 12:28:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1677788888;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLAIwkliyAqDKA1qWJLQtqycjdxuTylOGMu94mTp7wc=;
+        b=AuIvNU+FjsqzNT6/MTzw60zQ1t95JcRPseUBFIs32Y3xj6fa3Drblrj9Ly+i2T9Nw5
+         FXkHOdUWBnkbMFip7DkKfLYzTQU21NfB8OStowEldR4LQVLngo7WrSNTuIIIV+LRPFfj
+         uceWEJgg04TkWMNv3EWOvrqeXRy8GHZTKuHbS9dULIU/Q1mSW3OWzZYxBSmaEB4CtJ8R
+         tqopaIkKRTy80+frUU6/TJt5DyE3zARKB7vfvnYcANWmB9b/TfXa8Bl9Q9ZqLQLBgKUI
+         uClXGTcJbK1sEGE5ocUPwqMCq67AIbSy7SSWLlOlg8NSeIvSpnPg066KSlJJNEITcxgv
+         lAyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677788859;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cfp5lL1fP4eJjaLwSUHLj5KVea8nKrGdnw1nIo7cwGU=;
-        b=y3W0oaNyZymYCz4GJf15X/qx9uR0V/PLdb21FrIVIZ1Ra/wmhwB3z1Eul9XqhdTmIC
-         f1gfoRURdCZxboRejjjeSToS+dAiRoAnyiHKiEcFlC1yGO1HjGXr9IzpvFpCAzAsqKMZ
-         6w3+8uDR2Op9mpz6+CsEgna9BDPjt3vN95KXbemUhK+Bz6XPpd5nv0yi16o/5K8EWnTU
-         I3aI6G4yK+BE+1aE0AKMg7x9xN2TpSFra4s7cW+ODR610AHQYLHLI9MpgHEwmqOY8hZS
-         Ea0Jjv5QXAV0epmtTMNRoM1BPSSL4GDVzfF5QBuDO+wdevnLSm88HKpHBRWhKp044wKv
-         fzLA==
-X-Gm-Message-State: AO0yUKW1hn6HtZumbsD6zoCk/Gwld0ZnT6IV72n/Z12F99uAAZFPZ4hm
-        ibM9E3ok0cdtyGw+ib3fAZLU5UVUEB0BpGvw
-X-Google-Smtp-Source: AK7set+Jcry/2yhKcFKUIWSgwn3bAeVo7lvLRVCku5dxx3OpiRouPyrjvkkcud+6kqsNfpSVOHtVTw==
-X-Received: by 2002:a05:622a:1baa:b0:3a8:e9e:e194 with SMTP id bp42-20020a05622a1baa00b003a80e9ee194mr20327952qtb.40.1677788859096;
-        Thu, 02 Mar 2023 12:27:39 -0800 (PST)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id f18-20020ac80152000000b003bd21323c80sm381358qtg.11.2023.03.02.12.27.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 12:27:38 -0800 (PST)
-Date:   Thu, 2 Mar 2023 14:27:36 -0600
-From:   David Vernet <void@manifault.com>
-To:     Sreevani Sreejith <ssreevani@meta.com>
-Cc:     bpf@vger.kernel.org, Linux-kernel@vger.kernel.org,
-        andrii@kernel.org, mykolal@meta.com, psreep@gmail.com
-Subject: Re: [PATCH bpf-next] BPF, docs: libbpf Overview Document
-Message-ID: <ZAEGuLO/j9HEUsS0@maniforge>
-References: <20230301190702.3222292-1-ssreevani@meta.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230301190702.3222292-1-ssreevani@meta.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20210112; t=1677788888;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLAIwkliyAqDKA1qWJLQtqycjdxuTylOGMu94mTp7wc=;
+        b=wu6DHtkeTQfpZcGvDiTPl7htuWiWF8hVP+o5r5pnzNFcD1tz2q6kM8+zRK/2TR1Uoe
+         SGkevazFBrGNkrG0CUPugNCVR7VwQerSpuA/f5okYHtdFFO8w4Net4pMnpYUBBQ9epsa
+         0Neejk/Tr7CUD6fPzYWQI/uKLsCq7Hlk2JXcQe8JHSBQF9+L5z066XEi7FM9HOUts1ih
+         7to6dyqXV1tQpOQV/w+WFc0hbO0Z+gHtv2Y1GiCwsTK0tjnbqp3iNZXaK8Lfp2OOai4z
+         p/4guyEYuInrQWOVxGjSsBQ8aYwH1VRGo9wT/ULeKzAjewcyAeRnIUgQ7tKG5fzZf16G
+         iwGA==
+X-Gm-Message-State: AO0yUKWabkZq9SkTMDGMOnvPIZPHYAVS9V6301R/EMQXEyETZI36nIvv
+        /EvzaKBIO71Z23shWA0XNJ74bUE=
+X-Google-Smtp-Source: AK7set9wGYet8F5EDsOHiotDHor49od7CUGfbiaEeEjIlEYEq0YY7KIeJ/8DhECGZ36DMAyoIh9Y9O8=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:5ac4:b0:237:3d0c:8d2e with SMTP id
+ n62-20020a17090a5ac400b002373d0c8d2emr4525606pji.2.1677788888255; Thu, 02 Mar
+ 2023 12:28:08 -0800 (PST)
+Date:   Thu, 2 Mar 2023 12:28:06 -0800
+In-Reply-To: <20230302172757.9548-2-fw@strlen.de>
+Mime-Version: 1.0
+References: <20230302172757.9548-1-fw@strlen.de> <20230302172757.9548-2-fw@strlen.de>
+Message-ID: <ZAEG1gtoXl125GlW@google.com>
+Subject: Re: [PATCH RFC v2 bpf-next 1/3] bpf: add bpf_link support for
+ BPF_NETFILTER programs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     bpf@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 01, 2023 at 11:07:02AM -0800, Sreevani Sreejith wrote:
-> From: Sreevani <ssreevani@meta.com>
+On 03/02, Florian Westphal wrote:
+> Add bpf_link support skeleton.  To keep this reviewable, no bpf program
+> can be invoked here, if a program would be attached only a c-stub is  
+> called.
 
-Hi Sreevani,
+> This defaults to 'y' if both netfilter and bpf syscall are enabled in
+> kconfig.
 
-This is looking great, and is a very good start. Left some comments
-below.
+> Uapi example usage:
+> 	union bpf_attr attr = { };
 
-> 
-> Summary: Document that provides an overview of libbpf features for BPF
-> application development.
-> 
-> Reviewers:
-> 
-> Subscribers:
-> 
-> Tags: BPF, libbpf
+> 	attr.link_create.prog_fd = progfd;
+> 	attr.link_create.attach_type = BPF_NETFILTER;
+> 	attr.link_create.netfilter.pf = PF_INET;
+> 	attr.link_create.netfilter.hooknum = NF_INET_LOCAL_IN;
+> 	attr.link_create.netfilter.priority = -128;
 
-Please do not include such extraneous tags in your patches.
+> 	err = bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
 
-> Signed-off-by: Sreevani <ssreevani@meta.com>
+> ... this would attach progfd to ipv4:input hook.
+
+> Such hook gets removed automatically if the calling program exits.
+
+> BPF_NETFILTER program invocation is added in followup change.
+
+> NF_HOOK_OP_BPF enum will eventually be read from nfnetlink_hook, it
+> allows to tell userspace which program is attached at the given hook
+> when user runs 'nft hook list' command rather than just the priority
+> and not-very-helpful 'this hook runs a bpf prog but I can't tell which
+> one'.
+
+> Signed-off-by: Florian Westphal <fw@strlen.de>
 > ---
->  Documentation/bpf/libbpf/index.rst           |  24 ++-
->  Documentation/bpf/libbpf/libbpf_overview.rst | 212 +++++++++++++++++++
->  2 files changed, 228 insertions(+), 8 deletions(-)
->  create mode 100644 Documentation/bpf/libbpf/libbpf_overview.rst
-> 
-> diff --git a/Documentation/bpf/libbpf/index.rst b/Documentation/bpf/libbpf/index.rst
-> index f9b3b252e28f..f5da02972686 100644
-> --- a/Documentation/bpf/libbpf/index.rst
-> +++ b/Documentation/bpf/libbpf/index.rst
-> @@ -2,23 +2,31 @@
-> 
->  .. _libbpf:
-> 
-> +======
->  libbpf
->  ======
-> 
-> +If you are looking to develop BPF applications using the libbpf library, this
-> +directory contains important documentation that you should read.
-> +
-> +To get started, it is recommended to begin with the "libbpf Overview" document,
+>   include/linux/netfilter.h           |   1 +
+>   include/net/netfilter/nf_hook_bpf.h |   2 +
+>   include/uapi/linux/bpf.h            |  12 +++
+>   kernel/bpf/syscall.c                |   6 ++
+>   net/netfilter/Kconfig               |   3 +
+>   net/netfilter/Makefile              |   1 +
+>   net/netfilter/nf_bpf_link.c         | 116 ++++++++++++++++++++++++++++
+>   7 files changed, 141 insertions(+)
+>   create mode 100644 include/net/netfilter/nf_hook_bpf.h
+>   create mode 100644 net/netfilter/nf_bpf_link.c
 
-Can we link directly to the libbpf overview page, rather than just
-quoting it? To do that, you can create a label at the top of
-libbpf_overview.rst with
+> diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+> index 6863e271a9de..beec40ccbd79 100644
+> --- a/include/linux/netfilter.h
+> +++ b/include/linux/netfilter.h
+> @@ -80,6 +80,7 @@ typedef unsigned int nf_hookfn(void *priv,
+>   enum nf_hook_ops_type {
+>   	NF_HOOK_OP_UNDEFINED,
+>   	NF_HOOK_OP_NF_TABLES,
+> +	NF_HOOK_OP_BPF,
+>   };
 
-.. _libbpf-overview-label:
-
-and then link it from here with :ref`libbpf-overview-label`.
-
-> +which provides a high-level understanding of the libbpf APIs and their usage.
-> +This will give you a solid foundation to start exploring and utilizing the
-> +various features of libbpf to develop your BPF applications.
-> +
->  .. toctree::
->     :maxdepth: 1
-> 
-> +   libbpf_overview
->     API Documentation <https://libbpf.readthedocs.io/en/latest/api.html>
->     program_types
->     libbpf_naming_convention
->     libbpf_build
-> 
-> -This is documentation for libbpf, a userspace library for loading and
-> -interacting with bpf programs.
-> 
-> -All general BPF questions, including kernel functionality, libbpf APIs and
-> -their application, should be sent to bpf@vger.kernel.org mailing list.
-> -You can `subscribe <http://vger.kernel.org/vger-lists.html#bpf>`_ to the
-> -mailing list search its `archive <https://lore.kernel.org/bpf/>`_.
-> -Please search the archive before asking new questions. It very well might
-> -be that this was already addressed or answered before.
-> +All general BPF questions, including kernel functionality, libbpf APIs and their
-> +application, should be sent to bpf@vger.kernel.org mailing list.  You can
-> +`subscribe <http://vger.kernel.org/vger-lists.html#bpf>`_ to the mailing list
-> +search its `archive <https://lore.kernel.org/bpf/>`_.  Please search the archive
-> +before asking new questions. It may be that this was already addressed or
-> +answered before.
-> diff --git a/Documentation/bpf/libbpf/libbpf_overview.rst b/Documentation/bpf/libbpf/libbpf_overview.rst
+>   struct nf_hook_ops {
+> diff --git a/include/net/netfilter/nf_hook_bpf.h  
+> b/include/net/netfilter/nf_hook_bpf.h
 > new file mode 100644
-> index 000000000000..15b4f1e28f48
+> index 000000000000..9d1b338e89d7
 > --- /dev/null
-> +++ b/Documentation/bpf/libbpf/libbpf_overview.rst
-> @@ -0,0 +1,212 @@
+> +++ b/include/net/netfilter/nf_hook_bpf.h
+> @@ -0,0 +1,2 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog  
+> *prog);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index c9699304aed2..b063c6985769 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -986,6 +986,7 @@ enum bpf_prog_type {
+>   	BPF_PROG_TYPE_LSM,
+>   	BPF_PROG_TYPE_SK_LOOKUP,
+>   	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+> +	BPF_PROG_TYPE_NETFILTER,
+>   };
 
-The top of this file needs an SPDX license identifier:
+>   enum bpf_attach_type {
+> @@ -1049,6 +1050,7 @@ enum bpf_link_type {
+>   	BPF_LINK_TYPE_PERF_EVENT = 7,
+>   	BPF_LINK_TYPE_KPROBE_MULTI = 8,
+>   	BPF_LINK_TYPE_STRUCT_OPS = 9,
+> +	BPF_LINK_TYPE_NETFILTER = 10,
 
-.. SPDX-License-Identifier: GPL-2.0
+>   	MAX_BPF_LINK_TYPE,
+>   };
+> @@ -1543,6 +1545,11 @@ union bpf_attr {
+>   				 */
+>   				__u64		cookie;
+>   			} tracing;
+> +			struct {
+> +				__u32		pf;
+> +				__u32		hooknum;
+> +				__s32		prio;
+> +			} netfilter;
 
-FYI for future reference, checkpatch.pl would have caught that for you:
+For recent tc BPF program extensions, we've discussed that it might be  
+better
+to have an option to attach program before/after another one in the chain.
+So the API essentially would receive a before/after flag + fd/id of the
+program where we want to be.
 
-[void@maniforge bpf-next]$ ./scripts/checkpatch.pl
-~/patches/0001-BPF-docs-libbpf-Overview-Document.patch
-WARNING: added, moved or deleted file(s), does MAINTAINERS need
-updating?
-#66:
-new file mode 100644
+Should we do something similar here? See [0] for the original
+discussion.
 
-WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-#71: FILE: Documentation/bpf/libbpf/libbpf_overview.rst:1:
-+================
+0: https://lore.kernel.org/bpf/YzzWDqAmN5DRTupQ@google.com/
 
-> +================
-> + libbpf Overview
+>   		};
+>   	} link_create;
 
-Extra empty space at beginning of line
+> @@ -6373,6 +6380,11 @@ struct bpf_link_info {
+>   		struct {
+>   			__u32 ifindex;
+>   		} xdp;
+> +		struct {
+> +			__u32 pf;
+> +			__u32 hooknum;
+> +			__s32 priority;
+> +		} netfilter;
+>   	};
+>   } __attribute__((aligned(8)));
 
-> +================
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index e3fcdc9836a6..8f5cd1fb83ee 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -35,6 +35,7 @@
+>   #include <linux/rcupdate_trace.h>
+>   #include <linux/memcontrol.h>
+>   #include <linux/trace_events.h>
+> +#include <net/netfilter/nf_hook_bpf.h>
+
+>   #define IS_FD_ARRAY(map) ((map)->map_type ==  
+> BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+>   			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
+> @@ -2448,6 +2449,7 @@ static bool is_net_admin_prog_type(enum  
+> bpf_prog_type prog_type)
+>   	case BPF_PROG_TYPE_CGROUP_SYSCTL:
+>   	case BPF_PROG_TYPE_SOCK_OPS:
+>   	case BPF_PROG_TYPE_EXT: /* extends any prog */
+> +	case BPF_PROG_TYPE_NETFILTER:
+>   		return true;
+>   	case BPF_PROG_TYPE_CGROUP_SKB:
+>   		/* always unpriv */
+> @@ -4562,6 +4564,7 @@ static int link_create(union bpf_attr *attr,  
+> bpfptr_t uattr)
+
+>   	switch (prog->type) {
+>   	case BPF_PROG_TYPE_EXT:
+> +	case BPF_PROG_TYPE_NETFILTER:
+>   		break;
+>   	case BPF_PROG_TYPE_PERF_EVENT:
+>   	case BPF_PROG_TYPE_TRACEPOINT:
+> @@ -4628,6 +4631,9 @@ static int link_create(union bpf_attr *attr,  
+> bpfptr_t uattr)
+>   	case BPF_PROG_TYPE_XDP:
+>   		ret = bpf_xdp_link_attach(attr, prog);
+>   		break;
+> +	case BPF_PROG_TYPE_NETFILTER:
+> +		ret = bpf_nf_link_attach(attr, prog);
+> +		break;
+>   #endif
+>   	case BPF_PROG_TYPE_PERF_EVENT:
+>   	case BPF_PROG_TYPE_TRACEPOINT:
+> diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
+> index 4d6737160857..bea06f62a30e 100644
+> --- a/net/netfilter/Kconfig
+> +++ b/net/netfilter/Kconfig
+> @@ -30,6 +30,9 @@ config NETFILTER_FAMILY_BRIDGE
+>   config NETFILTER_FAMILY_ARP
+>   	bool
+
+> +config NETFILTER_BPF_LINK
+> +	def_bool BPF_SYSCALL
 > +
-> +libbpf is a C-based library containing a BPF loader that takes compiled BPF
-> +object files and prepares and loads them into the Linux kernel. libbpf takes the
-> +heavy lifting of loading, verifying, and attaching BPF programs to various
-> +kernel hooks, allowing BPF application developers to focus only on BPF program
-> +correctness and performance.
+>   config NETFILTER_NETLINK_HOOK
+>   	tristate "Netfilter base hook dump support"
+>   	depends on NETFILTER_ADVANCED
+> diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
+> index 5ffef1cd6143..d4958e7e7631 100644
+> --- a/net/netfilter/Makefile
+> +++ b/net/netfilter/Makefile
+> @@ -22,6 +22,7 @@ nf_conntrack-$(CONFIG_DEBUG_INFO_BTF) +=  
+> nf_conntrack_bpf.o
+>   endif
+
+>   obj-$(CONFIG_NETFILTER) = netfilter.o
+> +obj-$(CONFIG_NETFILTER_BPF_LINK) += nf_bpf_link.o
+
+>   obj-$(CONFIG_NETFILTER_NETLINK) += nfnetlink.o
+>   obj-$(CONFIG_NETFILTER_NETLINK_ACCT) += nfnetlink_acct.o
+> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+> new file mode 100644
+> index 000000000000..fa4fae5cc669
+> --- /dev/null
+> +++ b/net/netfilter/nf_bpf_link.c
+> @@ -0,0 +1,116 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/bpf.h>
+> +#include <linux/netfilter.h>
 > +
-> +The following are the high-level features supported by libbpf:
+> +#include <net/netfilter/nf_hook_bpf.h>
 > +
-> +* Provides high-level and low-level APIs for user space programs to interact
-> +  with BPF programs. The low-level APIs wrap all the bpf system call
-> +  functionality, which is useful when users need more fine-grained control
-> +  over the interactions between user space and BPF programs.
-> +* Provides overall support for the BPF object skeleton generated by the bpftool.
-
-s/the bpftool/bpftool
-
-> +  The skeleton file simplifies the process for the user space programs to access
-> +  global variables and work with BPF programs.
-> +* Provides BPF-side APIS, including BPF helper definitions, BPF maps support
-> +  and, tracing helpers, allowing developers to simplify BPF code writing.
-
-s/support and,/support, and (move comma to previous word)
-
-> +* Supports BPF CO-RE mechanism, enabling BPF developers to write portable
-> +  BPF programs that can be compiled once and run across different kernel
-> +  versions.
+> +static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,  
+> const struct nf_hook_state *s)
+> +{
+> +	return NF_ACCEPT;
+> +}
 > +
-> +This document will delve into the above concepts in detail, providing a deeper
-> +understanding of the capabilities and advantages of libbpf and how it can help
-> +you develop BPF applications efficiently.
+> +struct bpf_nf_link {
+> +	struct bpf_link link;
+> +	struct nf_hook_ops hook_ops;
+> +	struct net *net;
+> +};
 > +
-> +#################################
-> +BPF App Lifecycle and libbpf APIs
-> +#################################
+> +static void bpf_nf_link_release(struct bpf_link *link)
+> +{
+> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link,  
+> link);
 > +
-> +BPF application consists of a set of BPF programs, either cooperating or
-> +completely independent, and BPF maps and global variables, shared between all
-
-IMO this sentence reads kind of awkwardly because of the grammar and
-punctuation. Wdyt about this:
-
-A BPF application consists of one or more BPF programs (either
-cooperating or completely independent), BPF maps, and global variables.
-The global variables are shared between all BPF programs, which allows
-them to cooperate on a common set of data.
-
-> +BPF programs (allowing them to cooperate on a common set of data). llibbpf
-
-s/llibbpf/libbpf
-
-> +provides APIs that user space programs can use to manipulate the BPF programs by
-> +triggering different phases of a BPF application lifecycle. The APIs abstract
-> +away the complexity of BPF programs and provide a more intuitive way to manage
-> +the lifecycle of BPF applications. The differents phases and corresponding
-
-There are quite a few sentences throughout that sound a bit like libbpf
-marketing. IMO they just add noise to what's trying to be conveyed. I
-think you can remove the whole "The APIs abstract away..." sentence. If
-we want to go into details about what specific complexities are being
-abstracted in a phase, we can do that when we explain the phase below.
-
-> +libbpf APIs to trigger are listed below:
-
-I don't think the libbpf APIs (e.g. bpf_object__ope()) really belong
-here. This section (which is super useful) is describing the lifecycle
-of a BPF program. This lifecycle applies regardless of whether you're
-using bpf_object__open() or some other skeleton APIs.
-
-Most users will also probably never use "core" APIs like
-bpf_object__open() directly, so IMO if we're going to go over them, we
-should just mention them briefly when we talk about skeletons to give a
-bit more background on how things are implemented at a lower level.
-
+> +	nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
+> +}
 > +
-> +* **Open phase** (``bpf_object__open()``). In this phase, libbpf parses the BPF
-> +  object file and discovers BPF maps, BPF programs, and global variables. After
-> +  a BPF app is opened, user space apps can make additional adjustments
-> +  (setting BPF program types, if necessary; pre-setting initial values for
-> +  global variables, etc.) before all the entities are created and loaded.
+> +static void bpf_nf_link_dealloc(struct bpf_link *link)
+> +{
+> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link,  
+> link);
 > +
-> +* **Load phase** (``bpf_object__load()``). In the load phase, libbpf creates BPF
-> +  maps, resolves various relocations, and verifies and loads BPF programs into
-> +  the kernel. At this point, libbpf validates all the parts of a BPF application
-> +  and loads the BPF program into the kernel, but no BPF program has yet been
-> +  executed. After the load phase, it’s possible to set up the initial BPF map
-> +  state without racing with the BPF program code execution.
+> +	kfree(nf_link);
+> +}
 > +
-> +* **Attachment phase** (``bpf_program__attach()``). In this phase, libbpf
-> +  attaches BPF programs to various BPF hook points (e.g., tracepoints, kprobes,
-> +  cgroup hooks, network packet processing pipeline, etc.). This is also the
-> +  phase at which BPF starts performing useful work and read/update BPF maps and
-> +  global variables.
-
-Wdyt about rephrasing this last sentence as:
-
-This is the phase during which BPF programs are performing useful work,
-such as processing packets, or updating BPF maps and global variables
-which can be read from user space.
-
+> +static int bpf_nf_link_detach(struct bpf_link *link)
+> +{
+> +	bpf_nf_link_release(link);
+> +	return 0;
+> +}
 > +
-> +* **Tear down phase** (``bpf_program__destroy()``). In the tear down phase,
-> +  libbpf detaches BPF programs and unloads from the kernel. BPF maps are
-
-s/and unloads from/and unloads them from
-
-> +  destroyed, and all the resources used by the BPF app are freed.
+> +static void bpf_nf_link_show_info(const struct bpf_link *link,
+> +				  struct seq_file *seq)
+> +{
+> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link,  
+> link);
 > +
-> +By leveraging the libbpf APIs, developers write code that can easily interact
-> +with BPF programs and ensure that they are working effectively and efficiently.
-
-I would suggest removing this sentence as well. It doesn't provide any
-new information.
-
+> +	seq_printf(seq, "pf:\t%u\thooknum:\t%u\tprio:\t%d\n",
+> +		  nf_link->hook_ops.pf, nf_link->hook_ops.hooknum,
+> +		  nf_link->hook_ops.priority);
+> +}
 > +
-> +########################
-> +BPF Object Skeleton File
-> +########################
+> +static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
+> +				      struct bpf_link_info *info)
+> +{
+> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link,  
+> link);
 > +
-> +BPF skeleton is an alternative and complementary interface to libbpf APIs for
-> +working with BPF objects. You can generate the skeleton header file
-> +``(.skel.h)`` for a specific object file by passing the BPF object to the
-> +bpftool. The generated ``.skel.h`` file simplifies the code to load and work
-> +with the BPF objects, maps, programs, and global data from the user space. For
-> +example, the generated BPF skeleton has corresponding functions to trigger each
-> +phase in the BPF life cycle:
-
-I think this paragraph can be improved. Describing how skeletons are
-generated here is a bit premature. I think we need to first describe
-what they are and why they're useful. I'd also argue that it's fair to
-say that skeleton are the common / recommended APIs for manipulating BPF
-applications from user space. If you agree that's the case, I'd suggest
-mentioning that here as well, as the way it's worded now seems to imply
-that bpf_object__open() and friends are the default / commonly used
-APIs.
-
+> +	info->netfilter.pf = nf_link->hook_ops.pf;
+> +	info->netfilter.hooknum = nf_link->hook_ops.hooknum;
+> +	info->netfilter.priority = nf_link->hook_ops.priority;
 > +
-> +* ``<name>__open()`` – creates and opens BPF application (``<name>`` stands for
-> +  the corresponding bpf object name)
-> +* ``<name>__load()`` – instantiates, loads,and verifies BPF application parts
-> +* ``<name>__attach()`` – attaches all auto-attachable BPF programs (it’s
-> +  optional, you can have more control by using libbpf APIs directly)
-> +* ``<name>__destroy()`` – detaches all BPF programs and
-> +  frees up all used resources
+> +	return 0;
+> +}
 > +
-> +Keep in mind, BPF skeleton provides access to the underlying BPF object, so
-> +whatever was possible to do with generic libbpf APIs is still possible even when
-> +the BPF skeleton is used. It's an additive convenience feature, no syscalls, and
-> +no cumbersome code.
+> +static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog  
+> *new_prog,
+> +			      struct bpf_prog *old_prog)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
 > +
+> +static const struct bpf_link_ops bpf_nf_link_lops = {
+> +	.release = bpf_nf_link_release,
+> +	.dealloc = bpf_nf_link_dealloc,
+> +	.detach = bpf_nf_link_detach,
+> +	.show_fdinfo = bpf_nf_link_show_info,
+> +	.fill_link_info = bpf_nf_link_fill_link_info,
+> +	.update_prog = bpf_nf_link_update,
+> +};
 > +
-> +Other Advantages of Using SkeletonFile:
-> +########################################
-
-Misaligned title underscore (extra =). Also, can you add a #### above
-the title as well to keep things consistent with the rest of the doc.
-Lastly, there's a space missing between Skeleton and File.
-
+> +int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> +{
+> +	struct net *net = current->nsproxy->net_ns;
+> +	struct bpf_link_primer link_primer;
+> +	struct bpf_nf_link *link;
+> +	int err;
 > +
-> +* BPF skeleton provides a convenient interface to work with BPF global
-> +  variables from the user space by memory mapping BPF global variables into the
-
-s/the user space/user space
-
-> +  user space as a struct. The struct interface allows user space programs to
-> +  easily set up initial values of variables before the BPF load phase and fetch
-
-"easily set up initial values of variables" is IMO kind of odd wording,
-and is arguably a bit incomplete in terms of the scope it implies. What
-about just "initialize BPF programs" (also removing the word 'easily').
-
-> +  and update data from user space afterward.
+> +	if (attr->link_create.flags)
+> +		return -EINVAL;
 > +
-> +* The ``skel.h`` file reflects the object file structure by listing out the
-> +  available maps, programs, etc. BPF skeleton provides direct access to all the
-> +  BPF maps and BPF programs as struct fields. This eliminates the need for
-> +  string-based lookups with ``bpf_object_find_map_by_name()`` and
-> +  ``bpf_object_find_program_by_name()`` APIs, reducing errors due to BPF source
-> +  code and user-space code getting out of sync.
+> +	link = kzalloc(sizeof(*link), GFP_USER);
+> +	if (!link)
+> +		return -ENOMEM;
 > +
-> +* The generated skeleton file is embedded with a bytecode representation of the
-> +  object file, ensuring that the skeleton and the BPF object file are always in
-> +  sync.
+> +	bpf_link_init(&link->link, BPF_LINK_TYPE_NETFILTER, &bpf_nf_link_lops,  
+> prog);
 > +
-> +###########
-> +BPF Helpers
-> +###########
+> +	link->hook_ops.hook = nf_hook_run_bpf;
+> +	link->hook_ops.hook_ops_type = NF_HOOK_OP_BPF;
+> +	link->hook_ops.priv = prog;
 > +
-> +libbpf provides BPF-side APIs that BPF programs can use to interact with the
-> +system. libbpf conveniently provides definitions of BPF helpers, allowing you to
-> +use them in BPF code as any other plain C function. For example, there are
-
-"conveniently provides" -- Similar to my suggestions above, I recommend
-removing such qualifiers. I'd remove this whole sentence, as I think
-"BPF-side APIs that BPF programs can use" implies that there are
-functions they can call.
-
-> +helper functions to print debugging messages, get the time since the system was
-> +booted, interact with BPF maps, manipulate network packets, etc.
+> +	link->hook_ops.pf = attr->link_create.netfilter.pf;
+> +	link->hook_ops.priority = attr->link_create.netfilter.prio;
+> +	link->hook_ops.hooknum = attr->link_create.netfilter.hooknum;
 > +
-> +For a complete description of what the helpers do, the arguments they take, and
-> +the return value, see the `bpf-helpers
-> +<https://man7.org/linux/man-pages/man7/bpf-helpers.7.html>`_ man page.
+> +	link->net = net;
 > +
-> +#########################################
-> +BPF CO-RE (Compile Once – Run Everywhere)
-> +#########################################
+> +	err = bpf_link_prime(&link->link, &link_primer);
+> +	if (err)
+> +		goto out_free;
 > +
-> +libbpf works with the compiler to support BPF CO-RE mechanism to produce a
-> +single executable binary that you can run on multiple kernel versions and
-> +configurations. This approach allows developers to write portable BPF
-> +applications and run them in any Linux system without modifications and runtime
-> +source code compilation on the target machine.
+> +	err = nf_register_net_hook(net, &link->hook_ops);
+> +	if (err) {
+> +		bpf_link_cleanup(&link_primer);
+> +		goto out_free;
+> +	}
 > +
-> +To support CO-RE programs, libbpf relies on the header file, ``vmlinux.h``, to
-> +tailor the BPF program code to a particular running kernel on the host.
-> +``vmlinux.h`` file includes all kernel types (BTF type) that the running kernel
-
-s/BTF type/BTF types
-
-I'd also recommend linking to the BTF docs page here
-(Documentation/bpf/btf.rst).
-
-> +uses. Including this header file in your BPF program can eliminate dependency on
-> +system-wide kernel headers. You can generate ``vmlinux.h`` using the following
-> +bpftool command:
+> +	return bpf_link_settle(&link_primer);
 > +
-> +::
-> +
-> +$ bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
-> +
-> +
-> +libbpf looks at the BPF program’s recorded BTF type and relocation information
-> +and matches them to BTF information provided by the running kernel. libbpf
-> +resolves and matches all the types and fields, and updates necessary offsets and
-> +other relocatable data to ensure that BPF program’s logic is correctly
-> +functioning for a specific kernel on the host.
-
-Can we add an example of CO-RE in action here? I think showing a small
-BPF program that accesses a kernel struct field which changes between
-kernel versions would really drive the point home.
-
-> +
-> +##############
-> +libbpf Vs. BCC
-> +##############
-> +
-> +Historically, `BCC <https://github.com/iovisor/bcc/>`_ was a framework of choice
-> +for developing BPF applications that required efficient kernel tracing for
-> +analyzing kernel components. BCC compiles BPF programs on the host machine,
-> +ensuring that the memory layout your BPF program expects is precisely the same
-> +as that of the target host. However, BCC relies on runtime compilation and
-> +brings the entire huge LLVM/Clang library in and embeds it inside itself. This
-> +results in many consequences, such as heavy resource utilization, kernel headers
-> +dependency, and detecting even trivial compilation errors only during run time,
-> +all of which are less than ideal.
-> +
-> +libbpf aims at eliminating overheads associated with BPF app development by
-> +reducing heavy dependency on system-wide headers. libbpf enables you to generate
-> +small binaries that can be compiled once and run anywhere, which is better at
-> +resource usage and keeps runtime overhead to a minimum. libbpf offers several
-> +benefits by playing the role of a BPF program loader, performing mundane setup
-> +work (relocations, loading and verifying BPF programs, creating BPF maps,
-> +attaching to BPF hooks, etc.), and letting developers worry only about BPF
-> +program correctness and performance. With these features, libbpf makes the
-> +overall developer experience much more pleasant.
-
-This reads like more marketing to me. I think most, if not all, of this
-entire paragraph can arguably be removed.
-
-> +
-> +###########################
-> +Getting Started with libbpf
-> +###########################
-> +
-> +Check out the `libbpf-bootstrap <https://github.com/libbpf/libbpf-bootstrap>`_
-> +repository with simple examples of using libbpf to build various BPF
-> +applications.
-> +
-> +Also, find the libbpf API documentation `here
-> +<https://libbpf.readthedocs.io/en/latest/api.html>`_
-> +
-> +###############
-> +libbpf and Rust
-> +###############
-> +
-> +If you are building BPF applications in Rust, it is recommended to use
-> +`Libbpf-rs <https://github.com/libbpf/libbpf-rs>`_  ibrary instead of bindgen
-
-Can you add a "the" after "recommended to use"?
-
-s/ibrary/library
-
-
-> +bindings directly to libbpf. Libbpf-rs wraps libbpf functionality in
-> +Rust-idiomatic interfaces and provides libbpf-cargo plugin to handle BPF code
-> +compilation and skeleton generation. Using Libbpf-rs will make building user
-> +space part of the BPF application easier. However, you are still expected to
-
-I would rephrase "you are still expected to". Saying that users are
-"expected to" do something a certain way implies that there are other
-ways they _could_ do it, which is not the case. Perhaps something like
-this is clearer: "Note, however, that the BPF the program themselves
-must still be written in C."
-
-> +write BPF program code in plain C, utilizing all the BPF-side APIs of libbpf
-> +directly.
-
-I think the part about "utilizing all the BPF-side APIs" can be removed.
-It's implied that the developer will have to use those C APIs if they're
-writing their BPF programs in C.
-
-> +
-> +########################
-> +Additional Documentation
-> +########################
-> +
-> +* `Program types and ELF Sections <https://libbpf.readthedocs.io/en/latest/program_types.html>`_
-> +* `API naming convention <https://libbpf.readthedocs.io/en/latest/libbpf_naming_convention.html>`_
-> +* `Building libbpf <https://libbpf.readthedocs.io/en/latest/libbpf_build.html>`_
-> +* `API documentation Convention <https://libbpf.readthedocs.io/en/latest/libbpf_naming_convention.html#api-documentation-convention>`_
+> +out_free:
+> +	kfree(link);
+> +	return err;
+> +}
 > --
-> 2.30.2
-> 
+> 2.39.2
+
