@@ -2,86 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B3F6A7CF9
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 09:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B026A7D8B
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 10:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbjCBIla (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 03:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50668 "EHLO
+        id S229928AbjCBJVz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 04:21:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjCBIl3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 03:41:29 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB5924CAD;
-        Thu,  2 Mar 2023 00:41:28 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id eg37so64354569edb.12;
-        Thu, 02 Mar 2023 00:41:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K1YXVoCyOwxQNnderTrmDeMC40tQAhZcHa0ukb6R9Ws=;
-        b=Rszkk4uwKQuXpOD256yevOsKDiLr4NPBQeo7kAGO8nrR5c7v+uWhDLhg1c7DXe9CCg
-         6sFJnQQ4ys8Xt1HBqHwDBQrCCPYrMZ6BlscFKL4kizHDhu5qs0Eh1RxAjc23brCl9Qui
-         hLLRgbOMAGA591ODRdSldDjRHtZ2mZSN8n5Vl9ar1h5eHetOevpSNJNTs26ycj6OaG0L
-         4L1Pd9hLwD1fUZaSEIK2u125UT6now9zJlMBhpMWKs1c/5nVFU6lq/vXdOsheBdpLFsr
-         B8E2UMZSfprRlDOChYnYKKNzt5pl2CyVD9OZJZjYlsvamVh3NNY2DITQQ/F7gUn2Qwtb
-         +sFw==
+        with ESMTP id S229947AbjCBJVo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 04:21:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9F3311DD
+        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 01:20:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1677748821;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mNAh7WwsaV0kOk2ITHv/T/MFdHkpYUKS8lAASyQo12s=;
+        b=A6KKE0ouwjk69KuBjPw5i40RPNdPByOTpWBP+jjpUy8DLRsS//aofIsCrB53lV2xtlfGy7
+        T651TYl+IffarudzppIaY3LCKu5Ub5ULaNO9fg++syxFyBTj6OR8Yutsbmmz/bhXl6fhbe
+        OjqsM8IV31jGqyU79VoiJFe/1DSCX8o=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-70-TDuJDMZRPp6Qoq9h53Oy2w-1; Thu, 02 Mar 2023 04:20:19 -0500
+X-MC-Unique: TDuJDMZRPp6Qoq9h53Oy2w-1
+Received: by mail-wr1-f70.google.com with SMTP id c30-20020adfa31e000000b002c59b266371so3039075wrb.6
+        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 01:20:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
+        d=1e100.net; s=20210112; t=1677748818;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K1YXVoCyOwxQNnderTrmDeMC40tQAhZcHa0ukb6R9Ws=;
-        b=XDITuMq8D89kWJpMsNCIgRa1eWq9V+RBSRJc85TH9jh6vSuKTr9gJhKJ8CC6DSOkqF
-         aYcXbZ58sM1QNzAcVLV6tWbJp+t9gxUEKEWAeMawDjr7jjEuCnW/sSfKVbzsKGQUZW5o
-         fMIgMWsJYWeKg+8grFoJyaebDsIccJxwDx93p+OQFp0/d0tvjg2HkSfCRjWKdRjKH1m7
-         Dqcmt/cD+NMC9iYuaB2ucDZHwCaeq1RmuNwz4bPgPE7fGtjv8inHAHlZMwKeMgONWxI+
-         mSc5tcoJhxhpDtigScMWxqR4pggoQcDJhKJpa0gW/qdB+Fz00rWi/l5PZO9s6aifxH0r
-         WP9w==
-X-Gm-Message-State: AO0yUKU4PsNvrcoLsbsfhdDat01zJFhtEtHMkmLfpD/Ie6uiYuGsXYTr
-        rH3hO85snQwZz1dCw5RKpDUNE99iVFOgQg==
-X-Google-Smtp-Source: AK7set+Wnc63PgyHHQ3ShMaX4eflGRmShodrFGCyynYYDAJoy+XWo1MzU/OGJ7YL2Ydiea70Fhp+9w==
-X-Received: by 2002:a05:6402:1250:b0:4bb:f229:9431 with SMTP id l16-20020a056402125000b004bbf2299431mr1280219edw.19.1677746486483;
-        Thu, 02 Mar 2023 00:41:26 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a98-20020a509eeb000000b004ad601533a3sm6665583edf.55.2023.03.02.00.41.25
+        bh=mNAh7WwsaV0kOk2ITHv/T/MFdHkpYUKS8lAASyQo12s=;
+        b=oADA8nnAeF/7PX6XW+ePahYrzTLDZKTmMAu8unhQ2SNE31vrYliO5Fb2k3+CPmPpM3
+         lXw1840Shn387uikDOBaE/f6wPtEu34Em3Gv01s6tEikMhHuCCB9OpZXIMdko8EeyV+u
+         AUkoCj2dodmCtpG0Pgt+gLlOcbl/DZw+OZtCEF73MQv57IgCl671TJCjm7YSknJoltFy
+         7J8rS8CY8W22g8jEOlQvAm8smxpYbi+GKGoHCii53JZMgNjrQe7GdZ1HWACTl1qD5NID
+         QikBMkOpN64C2usx81qUoqk6fb2iQhzJTnh64K1L00G2WaCCBPpwmJnrJxa3uKk/hDYx
+         KJww==
+X-Gm-Message-State: AO0yUKWHTGNmR+SDS9kwczt8przq/BtnTwZ0vCK7d4J1C8DhE1M3HSS+
+        JWH+o/PUtlRDS5HNhtrsV/oYAbQ3O33LyFxw+rJiblJnhYl4GvYSiHfRKZcq+a8lGzM4Ps8JcLQ
+        EAOU4PrFFNXIV
+X-Received: by 2002:adf:ce09:0:b0:2c5:52c3:3f05 with SMTP id p9-20020adfce09000000b002c552c33f05mr6913066wrn.37.1677748818283;
+        Thu, 02 Mar 2023 01:20:18 -0800 (PST)
+X-Google-Smtp-Source: AK7set9PN/kdkIqrGoMb6UfHqEwEV9RSL6zdzJVeFnieVx1t6UmihOxwNslkLjNRDZls5mCSN7BIMA==
+X-Received: by 2002:adf:ce09:0:b0:2c5:52c3:3f05 with SMTP id p9-20020adfce09000000b002c552c33f05mr6913041wrn.37.1677748818002;
+        Thu, 02 Mar 2023 01:20:18 -0800 (PST)
+Received: from sgarzare-redhat (c-115-213.cust-q.wadsl.it. [212.43.115.213])
+        by smtp.gmail.com with ESMTPSA id x16-20020a5d54d0000000b002c71703876bsm14635935wrv.14.2023.03.02.01.20.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 00:41:26 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 2 Mar 2023 09:41:23 +0100
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
+        Thu, 02 Mar 2023 01:20:17 -0800 (PST)
+Date:   Thu, 2 Mar 2023 10:20:09 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Bobby Eshleman <bobbyeshleman@gmail.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>, kvm@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, bpf@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        virtualization@lists.linux-foundation.org,
+        Song Liu <song@kernel.org>, Eric Dumazet <edumazet@google.com>,
         Stanislav Fomichev <sdf@google.com>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Namhyung Kim <namhyung@gmail.com>
-Subject: Re: [RFC v2 bpf-next 0/9] mm/bpf/perf: Store build id in inode object
-Message-ID: <ZABhM913DI+DYSjL@krava>
-References: <20230228093206.821563-1-jolsa@kernel.org>
- <20230228220714.GJ2825702@dread.disaster.area>
- <Y/9yIJ9kOHcZqIzo@kernel.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Paolo Abeni <pabeni@redhat.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Hao Luo <haoluo@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next v3 1/3] vsock: support sockmap
+Message-ID: <20230302092009.xohos3cvowrrykck@sgarzare-redhat>
+References: <20230227-vsock-sockmap-upstream-v3-0-7e7f4ce623ee@bytedance.com>
+ <20230227-vsock-sockmap-upstream-v3-1-7e7f4ce623ee@bytedance.com>
+ <20230228163518-mutt-send-email-mst@kernel.org>
+ <Y/B9ddkfQw6Ae/lY@bullseye>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <Y/9yIJ9kOHcZqIzo@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <Y/B9ddkfQw6Ae/lY@bullseye>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,72 +97,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 01, 2023 at 12:41:20PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Mar 01, 2023 at 09:07:14AM +1100, Dave Chinner escreveu:
-> > On Tue, Feb 28, 2023 at 10:31:57AM +0100, Jiri Olsa wrote:
-> > > this is RFC patchset for adding build id under inode's object.
-> 
-> > > The main change to previous post [1] is to use inode object instead of file
-> > > object for build id data.
-> > 
-> > Please explain what a "build id" is, the use case for it, why we
-> > need to store it in VFS objects, what threat model it is protecting
-> > the system against, etc.
-> 
-> [root@quaco ~]# file /bin/bash
-> /bin/bash: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=160df51238a38ca27d03290f3ad5f7df75560ae0, for GNU/Linux 3.2.0, stripped
-> [root@quaco ~]# file /lib64/libc.so.6
-> /lib64/libc.so.6: ELF 64-bit LSB shared object, x86-64, version 1 (GNU/Linux), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=8257ee907646e9b057197533d1e4ac8ede7a9c5c, for GNU/Linux 3.2.0, not stripped
-> [root@quaco ~]#
-> 
-> Those BuildID[sha1]= bits, that is present in all binaries I think in
-> all distros for quite a while.
-> 
-> This page, from when this was initially designed, has a discussion about
-> it, why it is needed, etc:
-> 
->   https://fedoraproject.org/wiki/RolandMcGrath/BuildID
-> 
-> 'perf record' will receive MMAP records, initially without build-ids,
-> now we have one that has, but collecting it when the mmap is executed
-> (and thus a PERF_RECORD_MMAP* record is emitted) may not work, thus this
-> work from Jiri.
+On Sat, Feb 18, 2023 at 07:25:41AM +0000, Bobby Eshleman wrote:
+>On Tue, Feb 28, 2023 at 04:36:22PM -0500, Michael S. Tsirkin wrote:
+>> On Tue, Feb 28, 2023 at 07:04:34PM +0000, Bobby Eshleman wrote:
+>> > @@ -1241,19 +1252,34 @@ static int vsock_dgram_connect(struct socket *sock,
+>> >
+>> >  	memcpy(&vsk->remote_addr, remote_addr, sizeof(vsk->remote_addr));
+>> >  	sock->state = SS_CONNECTED;
+>> > +	sk->sk_state = TCP_ESTABLISHED;
+>> >
+>> >  out:
+>> >  	release_sock(sk);
+>> >  	return err;
+>> >  }
+>>
+>>
+>> How is this related? Maybe add a comment to explain? Does
+>> TCP_ESTABLISHED make sense for all types of sockets?
+>>
+>
+>Hey Michael, definitely, I can leave a comment.
 
-thanks for the pointers
+I agree, since I had the same doubt in previous versions, I think it's 
+worth putting a comment in the code to explain why.
 
-build id is unique id for binary that's been used to identify
-correct binary version for related stuff.. like binary's debuginfo
-in perf or match binary with stack trace entries in bpf stackmap
+Since there may be a v4, I'll leave some small comments in a separate 
+email.
 
-jirka
+Thanks,
+Stefano
 
-> 
-> - Arnaldo
->  
-> > > 
-> > > However.. ;-) while using inode as build id storage place saves some memory
-> > > by keeping just one copy of the build id for all file instances, there seems
-> > > to be another problem.
->  
-> > Yes, the problem being that we can cache hundreds of millions of
-> > inodes in memory, and only a very small subset of them are going to
-> > have open files associated with them. And an even smaller subset are
-> > going to be mmapped.
->  
-> > So, in reality, this proposal won't save any memory at all - it
-> > costs memory for every inode that is not currently being used as
-> > a mmapped elf executable, right?
-> > 
-> > > The problem is that we read the build id when the file is mmap-ed.
-> > 
-> > Why? I'm completely clueless as to what this thing does or how it's
-> > used....
-> > 
-> > > Which is fine for our use case,
-> > 
-> > Which is?
-> > 
-> > -Dave.
-> > -- 
-> > Dave Chinner
-> > david@fromorbit.com
+>
+>The real reason is due to this piece of logic in sockmap:
+>https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/core/sock_map.c?h=v6.2#n531
+>
+>And because of it, you see the same thing in (for example)
+>unix_dgram_connect():
+>https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/unix/af_unix.c?h=v6.2#n1394
+>
+>I believe it makes sense for these other socket types.
+>
+
