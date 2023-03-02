@@ -2,191 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71536A8ADB
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 21:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD52A6A8B5C
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 23:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjCBUw3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 15:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
+        id S229615AbjCBV5g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 16:57:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjCBUw2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 15:52:28 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706C8423B
-        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 12:52:27 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id p6so287969pga.0
-        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 12:52:27 -0800 (PST)
+        with ESMTP id S229819AbjCBV5D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 16:57:03 -0500
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0D05D456;
+        Thu,  2 Mar 2023 13:57:00 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-53cb9ac9470so7449077b3.10;
+        Thu, 02 Mar 2023 13:57:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1677790347;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WmhG+Vu/qwZ4ys3Y/VoUN1gZs9SPvHL28eMsff5jQ9Q=;
-        b=FWUkJB++LPvBLTOFdmgmxi6XZKH4jEmykscgXHOErQxcTDMjyhCEDAGjAK3/dA62wN
-         2sf29X6b712tiPnMbvh+TL2vIyi2wUoOcLXeU8oNdW+ahrEiXyISXP+2sDQ5LCw7Clyn
-         vIu6go2Oqxn7Wej+YCObqDbIWgM+rccviabPeu8lap+jarL8q2bym6fi8lyFrLIlg59r
-         X9nRgZzJdhhSJPpHCysZ596D6d5sbA+DCtayrpmTHsBE/+hfGKO6jVfssA6C2VmytAqw
-         woxIFNWPmY6qlmP2wJE0lWBqM0VghCKcp1S73VPnoYUhQMHuLIbHVKakwl7XkWALklgh
-         iMZg==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wtgiWMKGxnYS992aa36LHk2PMydjyTMSKzxMUnwYC9A=;
+        b=n3hpj49uvxVbkMybt55rXLvDVwGs/T8QHSzQY4QHx6G6qD+Tmeq13sEPzms/gMlilU
+         c1OHfofffJ3au0OA7QeD0DwYigJApRE+ZF90mI2SjeuCRpaanzQ3T/dDayniH2CpFDTT
+         75Wbi4BOW3jA5X6fJjgl/Rm0Wezh8zVlcrvOI1iXnIDCbQrU90XGz8buxY4vL2ouTiUR
+         0dlqPEDGqoeZ5L60BW9APUBJdMGpJeKNr2fUTukZ7GNKZjfLMCwVbljRZ6vPD2UEYW6U
+         FPqFy7na7iOxAEhRHLgtCzKuWLbS8Co8cTTHjDaFX47UpkIj/L3eXakVJSq42NScQ0D1
+         rswg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677790347;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WmhG+Vu/qwZ4ys3Y/VoUN1gZs9SPvHL28eMsff5jQ9Q=;
-        b=kEVuaBFJJCyqh+0/3Vj8B/lVVzxAZU1IDzz7aap2jeKEoW+aRgQFdWHj4aF0PkbDMS
-         0hiuxKrXcwB9MtF14Q82lNyfGO24dhrFzE58twHc3ZrI4B1/C1955bLEy46QSs+Cp5d+
-         UfE7ZR/yxWgh53V9T/tnKJCfP7k8lWvCQj6y8tGaLP3noACOhg0v19xqnvkdPBy10qIL
-         9vOqdN1cNDg9Qz3TVIfRntV4ND7WiIhqcRv4pownRL2wslSM6R1W4H8756seKTflKaOm
-         n3tbahzf9ad2hM1bYvNpRcUpTolXmiuHOQjJBBDYRexaP70WwCV191j1HOMJ0a8DfLs0
-         A2TA==
-X-Gm-Message-State: AO0yUKW1nluS0wgbi9/xyBjnzNnwkLA/DF8kzYAroH2j0vv5c4Ks2CPy
-        gL6Jq951OhfvkWH4xi0Fsavpmg==
-X-Google-Smtp-Source: AK7set/xdMcvCwtJze2phUqRnlRGqo50xf0q/z6/QJD0tROs5wtNNsBNaeA87rxaH39wIxep+icdkg==
-X-Received: by 2002:a62:5bc6:0:b0:5a9:d4fa:d3c7 with SMTP id p189-20020a625bc6000000b005a9d4fad3c7mr10629928pfb.7.1677790346792;
-        Thu, 02 Mar 2023 12:52:26 -0800 (PST)
-Received: from [192.168.86.240] (c-67-160-222-115.hsd1.ca.comcast.net. [67.160.222.115])
-        by smtp.gmail.com with ESMTPSA id x4-20020a63cc04000000b00502fd762a39sm118818pgf.3.2023.03.02.12.52.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Mar 2023 12:52:26 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v2 bpf-next 3/3] selftests/bpf: Add tests for
- bpf_sock_destroy
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <1b5db179-7411-2f38-9ecf-344cde0848a7@linux.dev>
-Date:   Thu, 2 Mar 2023 12:52:23 -0800
-Cc:     kafai@fb.com, Stanislav Fomichev <sdf@google.com>,
-        edumazet@google.com, bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F3B34E9C-9DBC-4F76-8727-4907F99ECF74@isovalent.com>
-References: <20230223215311.926899-1-aditi.ghag@isovalent.com>
- <20230223215311.926899-4-aditi.ghag@isovalent.com>
- <2552f727-57f3-0d76-c0da-f6543a93a45f@linux.dev>
- <F6E6FEAD-5003-44BE-AA76-6CDAE40A0A71@isovalent.com>
- <1b5db179-7411-2f38-9ecf-344cde0848a7@linux.dev>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wtgiWMKGxnYS992aa36LHk2PMydjyTMSKzxMUnwYC9A=;
+        b=y8B84u/j1OAPOH622obwJBUfcRpQ4rExpP8E5/cZKnum0/sOBsql1h1Qt8ocxZM7sP
+         emvmKqMIaxJevHHHbB491TbCJmMC4H+tvJdekRWsdEB5Jjp2U44oU6GZsnsZxLuvK3R3
+         WPr0BOySrBFVlmyMBRq2DFL1WjYd14l34gyNl0kXVKdcvBO9QbmwBARvvtASuo75zbBb
+         1RJlTZFj2AcUQCDC42r6RXUdw57lndMcrp64v7kOB6OKIOcItspeE9bzv7jsQYF1deOM
+         Ckw2WqL6Jdmh+U7lD5Ws7g94h+7rPXKGnkXyAwRHPiDExuBz8jeSnR4z7Xa/KicmXRZd
+         ADgg==
+X-Gm-Message-State: AO0yUKVBm2baeMdq7Gc5iUYK3Xan+xjN5wZE/n33KZ0gl9ETn+Gbh17i
+        jwOdnBNz5qbhwFPkHXIGy/zr5MTInrY=
+X-Google-Smtp-Source: AK7set9UqAxBvr5kIPdYoSJkv6cql6PZFbTEpyzaV8B/QzDmogIgt0Y/X9bt3rNdke2VlkQfyreUug==
+X-Received: by 2002:a62:79d7:0:b0:5a9:b3a3:c8d8 with SMTP id u206-20020a6279d7000000b005a9b3a3c8d8mr12131302pfc.0.1677792230040;
+        Thu, 02 Mar 2023 13:23:50 -0800 (PST)
+Received: from MacBook-Pro-6.local ([2620:10d:c090:500::4:2c84])
+        by smtp.gmail.com with ESMTPSA id 21-20020a631955000000b00502f017657dsm111782pgz.83.2023.03.02.13.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Mar 2023 13:23:49 -0800 (PST)
+Date:   Thu, 2 Mar 2023 13:23:44 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     David Vernet <void@manifault.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, davemarchevsky@meta.com, tj@kernel.org,
+        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v4 bpf-next 6/6] bpf: Refactor RCU enforcement in the
+ verifier.
+Message-ID: <20230302212344.snafoop5hytngskk@MacBook-Pro-6.local>
+References: <20230301223555.84824-1-alexei.starovoitov@gmail.com>
+ <20230301223555.84824-7-alexei.starovoitov@gmail.com>
+ <ZAAgfwgo5GU8V28f@maniforge>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZAAgfwgo5GU8V28f@maniforge>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Mar 01, 2023 at 10:05:19PM -0600, David Vernet wrote:
+> >  
+> > @@ -6373,7 +6382,7 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
+> >  			stype = btf_type_skip_modifiers(btf, mtype->type, &id);
+> >  			if (btf_type_is_struct(stype)) {
+> >  				*next_btf_id = id;
+> > -				*flag = tmp_flag;
+> > +				*flag |= tmp_flag;
+> 
+> Now that this function doesn't do a full write of the variable, the
+> semantics have changed such that the caller has to initialize the
+> variable on behalf of bpf_struct_walk(). This makes callers such as
+> btf_struct_ids_match() (line 6503) have random crud in the pointer.
+> Doesn't really matter for that case because the variable isn't used
+> anyways, but it seems slightly less brittle to initialize *flag to 0 at
+> the beginning of the function to avoid requiring the caller to
+> initialize it. Wdyt?
 
-> On Mar 1, 2023, at 11:06 PM, Martin KaFai Lau <martin.lau@linux.dev> =
-wrote:
->=20
-> On 2/28/23 6:17 PM, Aditi Ghag wrote:
->>> On Feb 28, 2023, at 3:08 PM, Martin KaFai Lau <martin.lau@linux.dev> =
-wrote:
->>>=20
->>> On 2/23/23 1:53 PM, Aditi Ghag wrote:
->>>> The test cases for TCP and UDP iterators mirror the intended usages =
-of the
->>>> helper.
->>>> The destroy helpers set `ECONNABORTED` error code that we can =
-validate in the
->>>> test code with client sockets. But UDP sockets have an overriding =
-error code
->>>> from the disconnect called during abort, so the error code the =
-validation is
->>>> only done for TCP sockets.
->>>> The `struct sock` is redefined as vmlinux.h forward declares the =
-struct, and the
->>>> loader fails to load the program as it finds the BTF FWD type for =
-the struct
->>>> incompatible with the BTF STRUCT type.
->>>> Here are the snippets of the verifier error, and corresponding BTF =
-output:
->>>> ```
->>>> verifier error: extern (func ksym) ...: func_proto ... incompatible =
-with kernel
->>>> BTF for selftest prog binary:
->>>> [104] FWD 'sock' fwd_kind=3Dstruct
->>>> [70] PTR '(anon)' type_id=3D104
->>>> [84] FUNC_PROTO '(anon)' ret_type_id=3D2 vlen=3D1
->>>> 	'(anon)' type_id=3D70
->>>> [85] FUNC 'bpf_sock_destroy' type_id=3D84 linkage=3Dextern
->>>> --
->>>> [96] DATASEC '.ksyms' size=3D0 vlen=3D1
->>>> 	type_id=3D85 offset=3D0 size=3D0 (FUNC 'bpf_sock_destroy')
->>>> BTF for selftest vmlinux:
->>>> [74923] FUNC 'bpf_sock_destroy' type_id=3D48965 linkage=3Dstatic
->>>> [48965] FUNC_PROTO '(anon)' ret_type_id=3D9 vlen=3D1
->>>> 	'sk' type_id=3D1340
->>>> [1340] PTR '(anon)' type_id=3D2363
->>>> [2363] STRUCT 'sock' size=3D1280 vlen=3D93
->>>> ```
->>>=20
->>>> +int bpf_sock_destroy(struct sock_common *sk) __ksym;
->>>=20
->>> This does not match the bpf prog's BTF dump above which has pointer =
-[70] pointing to FWD 'sock' [104] as the argument. It should be at least =
-FWD 'sock_common' if not STRUCT 'sock_common'. I tried to change the =
-func signature to 'struct sock *sk' but cannot reproduce the issue in my =
-environment also.
->>>=20
->>> Could you confirm the BTF paste and 'incompatible with kernel" error =
-in the commit message do match the bpf_sock_destroy declaration? If not, =
-can you re-paste the BTF output and libbpf error message that matches =
-the bpf_sock_destroy signature.
->> I don't think you'll be able to reproduce the issue with =
-`sock_common`, as `struct sock_common` isn't forward declared in =
-vmlinux.h. But I find it odd that you weren't able to reproduce it with =
-`struct sock`. Just to confirm, did you remove the minimal `struct sock` =
-definition from the program? Per the commit description, I added that =
-because libbpf was throwing this error -
->> `libbpf: extern (func ksym) 'bpf_sock_destroy': func_proto [83] =
-incompatible with kernel [75285]`
->=20
-> Yep, I changed the kfunc to 'struct sock *' and removed the =
-define/undef dance.
->=20
->> Sending the BTF snippet again (full BTF - =
-https://pastebin.com/etkFyuJk)
->> ```
->> 85] FUNC 'bpf_sock_destroy' type_id=3D84 linkage=3Dextern
->> 	type_id=3D85 offset=3D0 size=3D0 (FUNC 'bpf_sock_destroy')
->> [84] FUNC_PROTO '(anon)' ret_type_id=3D2 vlen=3D1
->> 	'(anon)' type_id=3D70
->> [70] PTR '(anon)' type_id=3D104
->> [104] FWD 'sock' fwd_kind=3Dstruct
->> ```
->> Compare this to the BTF snippet once I undef and define the struct in =
-the test prog:
->> ```
->> [87] FUNC 'bpf_sock_destroy' type_id=3D84 linkage=3Dextern
->> 	type_id=3D87 offset=3D0 size=3D0 (FUNC 'bpf_sock_destroy')
->> [84] FUNC_PROTO '(anon)' ret_type_id=3D2 vlen=3D1
->> 	'(anon)' type_id=3D85
->> [85] PTR '(anon)' type_id=3D86
->> [86] STRUCT 'sock' size=3D136 vlen=3D1
->> 	'__sk_common' type_id=3D34 bits_offset=3D0
->> ```
->> (Anyway looks like I needed to define the struct in the test prog =
-only when bpf_sock_destory had `struct sock` as the argument.)
->=20
-> Right, I also think it is orthogonal to your set if the kfunc is =
-taking 'struct sock_common *' anyway. [although I do feel a kernel =
-function taking a 'struct sock_common *' is rather odd]
+Good idea. Fixed.
 
-Yes, this wasn't a problem with the helper taking `struct sock` as the =
-argument in v1 patch. I'm all ears if we can have a similar signature =
-for the kfunc.
+> > +BTF_ID_FLAGS(func, bpf_cpumask_copy, KF_TRUSTED_ARGS | KF_RCU)
+> > +BTF_ID_FLAGS(func, bpf_cpumask_any, KF_TRUSTED_ARGS | KF_RCU)
+> > +BTF_ID_FLAGS(func, bpf_cpumask_any_and, KF_TRUSTED_ARGS | KF_RCU)
+> 
+> It's functionally the same, but could you please remove KF_TRUSTED_ARGS
+> given that it's accepted for KF_RCU? We should ideally be removing
+> KF_TRUSTED_ARGS altogether soon(ish) anyways, so might as well do it
+> here.
 
->=20
-> I was only asking and also trying myself because it looks pretty wrong =
-if it can be reproduced and it is something that should be fixed =
-regardless. It is pretty normal to have forward declaration within a bpf =
-prog itself (not from vmlinux.h). =46rom the paste, it feels like the =
-kfunc bpf_sock_destroy btf is generated earlier than the 'struct sock'. =
-Which llvm version are you using?
+done.
 
-$ llvm-config --version
-14.0.0=20
+> > +		if (type_is_trusted(env, reg, off)) {
+> > +			flag |= PTR_TRUSTED;
+> > +		} else if (in_rcu_cs(env) && !type_may_be_null(reg->type)) {
+> > +			if (type_is_rcu(env, reg, off)) {
+> > +				/* ignore __rcu tag and mark it MEM_RCU */
+> > +				flag |= MEM_RCU;
+> > +			} else if (flag & MEM_RCU) {
+> > +				/* __rcu tagged pointers can be NULL */
+> > +				flag |= PTR_MAYBE_NULL;
+> 
+> I'm not quite understanding the distinction between manually-specified
+> RCU-safe types being non-nullable, vs. __rcu pointers being nullable.
+> Aren't they functionally the exact same thing, with the exception being
+> that gcc doesn't support __rcu, so we've decided to instead manually
+> specify them for some types that we know we need until __rcu is the
+> default mechanism?  If the plan is to remove these macros once gcc
+> supports __rcu, this could break some programs that are expecting the
+> fields to be non-NULL, no?
 
+BTF_TYPE_SAFE_RCU is a workaround for now.
+We can make it exactly like __rcu, but it would split
+the natural dereference of task->cgroups->dfl_cgrp into
+two derefs with extra !=NULL check in-between which is ugly and unnecessary.
+
+> I see why we're doing this in the interim -- task->cgroups,
+> css->dfl_cgrp, task->cpus_ptr, etc can never be NULL. The problem is
+> that I think those are implementation details that are separate from the
+> pointers being RCU safe. This seems rather like we need a separate
+> non-nullable tag, or something to that effect.
+
+Right. It is certainly an implementation detail.
+We'd need a new __not_null_mostly tag or __not_null_after_init.
+(similar to __read_mostly and __ro_after_init).
+Where non-null property is true when bpf get to see these structures.
+
+The current allowlist is incomplete and far from perfect.
+I suspect we'd need to add a bunch more during this release cycle.
+This patch is aggressive in deprecation of old ptr_to_btf_id.
+Some breakage is expected. Hence the timing to do it right now
+at the beginning of the cycle.
+
+> >  		flag &= ~PTR_TRUSTED;
+> 
+> Do you know what else is left for us to fix to be able to just set
+> PTR_UNTRUSTED here?
+
+All "ctx->" derefs. check_ctx_access() returns old school PTR_TO_BTF_ID.
+We can probably mark all of them as trusted, but need to audit a lot of code.
+I've also played with forcing helpers with ARG_PTR_TO_BTF_ID to be trusted,
+but still too much selftest breakage to even look at.
+
+The patch also has:
++                       if (BTF_INFO_KIND(mtype->info) == BTF_KIND_UNION &&
++                           btf_type_vlen(mtype) != 1)
++                               /*
++                                * walking unions yields untrusted pointers
++                                * with exception of __bpf_md_ptr and other
++                                * unions with a single member
++                                */
++                               *flag |= PTR_UNTRUSTED;
+this is in particular to make skb->dev deref to return untrusted.
+In this past we allowed skb->dev->ifindex to go via PTR_TO_BTF_ID and PROBE_MEM.
+It's safe, but not clean. And we have no safe way to get trusted 'dev' to pass into helpers.
+It's time to clean this all up as well, but it will require rearranging fields in sk_buff.
+Lots of work ahead.
