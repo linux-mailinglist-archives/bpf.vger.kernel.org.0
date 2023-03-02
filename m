@@ -2,134 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BE06A7B9E
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 08:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F3E6A7CD0
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 09:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbjCBHGf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 02:06:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
+        id S229615AbjCBIg3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 03:36:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbjCBHGf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 02:06:35 -0500
-Received: from out-32.mta0.migadu.com (out-32.mta0.migadu.com [IPv6:2001:41d0:1004:224b::20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AB238E99
-        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 23:06:33 -0800 (PST)
-Message-ID: <1b5db179-7411-2f38-9ecf-344cde0848a7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1677740792;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uteejWgZYleZ1XMtA6PRoegkXPoob6xe2BF01mtutaU=;
-        b=swTPNnUkFUgl6keyyJDMfXQiwpmZ4eNtNO66qP3I2xQKEDBse8/sSH68ZjC9Qv+m7qd7+U
-        NXq6kICvYW4VOm5EpxvcYdR673H97KIcYzfEMDq+ClTu8O3heMYGESHQOvqG4U/xxwrXDY
-        HXNdTVNRSUXyrChz0Eg2oD0yN7qb0Pg=
-Date:   Wed, 1 Mar 2023 23:06:27 -0800
+        with ESMTP id S229451AbjCBIg2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 03:36:28 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9687B14221;
+        Thu,  2 Mar 2023 00:36:26 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id da10so64540813edb.3;
+        Thu, 02 Mar 2023 00:36:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jeu2rejC7ALr4xJCaVvexwWFSyD3FJ1WGHKuY7P9Vfk=;
+        b=gy6WYAUhPjCzDjYcBcwVYMJZNJqEGdfEtgTsJQdzZFbChfJc6OELVYJw1PDc1gtL78
+         TYKCZoV7D06fuqQnTdyGeOg3mMHVjTpRu0DibqIvgbzD9UWbFsSJ5Gs13gTkb8D5zb0Z
+         JBMYmdbYtIe7FNDGaMgb18mgrDT50bCu1C1rGjhYpNdxQa1z1VS11aitl/rz3ju9Z7Ts
+         PQhyr0umfdiOkVbj1WfyMmA5biXNmw1qaKOZs1NYVZk/eUiYgU3tWbEU+GJzP66UFbEA
+         zfAIpRA9NVmz55s9SKfRwvnFDgxI7hMVuD/8kT/W/26xmYm/hoULhs3i5FLn9XhsYkdU
+         KJRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jeu2rejC7ALr4xJCaVvexwWFSyD3FJ1WGHKuY7P9Vfk=;
+        b=nPxRnj7Zumjx1c+6igelVE+fN1wWiwoKpTdrfpCGh40/CbURH2+m1U8KIVxoSB3Tw4
+         O1PHTCK7wJ/wXqygVPRxdgveXp4vKLMu8xv2rx6Puj+3iejb6U8Q5zzEgwXflwiYO+KO
+         97UwC/7fXvIm0WUtdz6mqwVvnDhUWGljlov4wsvvLeGM4fiwmKFzny0l85/qOs7YmcPU
+         gO0A3hXv8C0EcscsZpgPPDpHWMedMAKEIa1Tovlvs40RQd6i80IkYS16Ab5RwATzPu1P
+         aKzzRx1ayT5js9gDqZXXppT0ExwKjjoJrsV4w7NlXaep5DAxL5jRe7LZI9SlZ5KVRXFe
+         DLAw==
+X-Gm-Message-State: AO0yUKV7IGJGRsluNlX3VgqjfYDUBQBp6B/OFE6RLCVk0metqlolPsvU
+        x3cX4HV+pgacnoaSxYFYLVs=
+X-Google-Smtp-Source: AK7set9fLLZJOXn1J6rQFaJEofA0z/w+K8ekwQdW33ZgC+u1ri5CMmPoim+VtKyA56aaChTmNA0unA==
+X-Received: by 2002:a17:906:190b:b0:8f2:da10:c69e with SMTP id a11-20020a170906190b00b008f2da10c69emr11039594eje.52.1677746184870;
+        Thu, 02 Mar 2023 00:36:24 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id g19-20020a50d0d3000000b004c09527d62dsm292113edf.30.2023.03.02.00.36.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Mar 2023 00:36:24 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 2 Mar 2023 09:35:39 +0100
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Namhyung Kim <namhyung@gmail.com>
+Subject: Re: [RFC v2 bpf-next 0/9] mm/bpf/perf: Store build id in inode object
+Message-ID: <ZABf26mV0D0LS7r/@krava>
+References: <20230228093206.821563-1-jolsa@kernel.org>
+ <20230228220714.GJ2825702@dread.disaster.area>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next 3/3] selftests/bpf: Add tests for
- bpf_sock_destroy
-Content-Language: en-US
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     kafai@fb.com, Stanislav Fomichev <sdf@google.com>,
-        edumazet@google.com, bpf@vger.kernel.org
-References: <20230223215311.926899-1-aditi.ghag@isovalent.com>
- <20230223215311.926899-4-aditi.ghag@isovalent.com>
- <2552f727-57f3-0d76-c0da-f6543a93a45f@linux.dev>
- <F6E6FEAD-5003-44BE-AA76-6CDAE40A0A71@isovalent.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <F6E6FEAD-5003-44BE-AA76-6CDAE40A0A71@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230228220714.GJ2825702@dread.disaster.area>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/28/23 6:17 PM, Aditi Ghag wrote:
+On Wed, Mar 01, 2023 at 09:07:14AM +1100, Dave Chinner wrote:
+> On Tue, Feb 28, 2023 at 10:31:57AM +0100, Jiri Olsa wrote:
+> > hi,
+> > this is RFC patchset for adding build id under inode's object.
+> > 
+> > The main change to previous post [1] is to use inode object instead of file
+> > object for build id data.
 > 
-> 
->> On Feb 28, 2023, at 3:08 PM, Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 2/23/23 1:53 PM, Aditi Ghag wrote:
->>> The test cases for TCP and UDP iterators mirror the intended usages of the
->>> helper.
->>> The destroy helpers set `ECONNABORTED` error code that we can validate in the
->>> test code with client sockets. But UDP sockets have an overriding error code
->>> from the disconnect called during abort, so the error code the validation is
->>> only done for TCP sockets.
->>> The `struct sock` is redefined as vmlinux.h forward declares the struct, and the
->>> loader fails to load the program as it finds the BTF FWD type for the struct
->>> incompatible with the BTF STRUCT type.
->>> Here are the snippets of the verifier error, and corresponding BTF output:
->>> ```
->>> verifier error: extern (func ksym) ...: func_proto ... incompatible with kernel
->>> BTF for selftest prog binary:
->>> [104] FWD 'sock' fwd_kind=struct
->>> [70] PTR '(anon)' type_id=104
->>> [84] FUNC_PROTO '(anon)' ret_type_id=2 vlen=1
->>> 	'(anon)' type_id=70
->>> [85] FUNC 'bpf_sock_destroy' type_id=84 linkage=extern
->>> --
->>> [96] DATASEC '.ksyms' size=0 vlen=1
->>> 	type_id=85 offset=0 size=0 (FUNC 'bpf_sock_destroy')
->>> BTF for selftest vmlinux:
->>> [74923] FUNC 'bpf_sock_destroy' type_id=48965 linkage=static
->>> [48965] FUNC_PROTO '(anon)' ret_type_id=9 vlen=1
->>> 	'sk' type_id=1340
->>> [1340] PTR '(anon)' type_id=2363
->>> [2363] STRUCT 'sock' size=1280 vlen=93
->>> ```
->>
->>> +int bpf_sock_destroy(struct sock_common *sk) __ksym;
->>
->> This does not match the bpf prog's BTF dump above which has pointer [70] pointing to FWD 'sock' [104] as the argument. It should be at least FWD 'sock_common' if not STRUCT 'sock_common'. I tried to change the func signature to 'struct sock *sk' but cannot reproduce the issue in my environment also.
->>
->> Could you confirm the BTF paste and 'incompatible with kernel" error in the commit message do match the bpf_sock_destroy declaration? If not, can you re-paste the BTF output and libbpf error message that matches the bpf_sock_destroy signature.
-> 
-> I don't think you'll be able to reproduce the issue with `sock_common`, as `struct sock_common` isn't forward declared in vmlinux.h. But I find it odd that you weren't able to reproduce it with `struct sock`. Just to confirm, did you remove the minimal `struct sock` definition from the program? Per the commit description, I added that because libbpf was throwing this error -
-> `libbpf: extern (func ksym) 'bpf_sock_destroy': func_proto [83] incompatible with kernel [75285]`
+> Please explain what a "build id" is, the use case for it, why we
+> need to store it in VFS objects, what threat model it is protecting
+> the system against, etc.
 
-Yep, I changed the kfunc to 'struct sock *' and removed the define/undef dance.
+hum I still did not get your email from mailing list, just saw it
+from Arnaldo's reply and downloaded it from lore
+
+our use case is for hubble/tetragon [1] and we are asked to report
+buildid of executed binary.. but the monitoring process is running
+in its own pod and can't access the the binaries outside of it, so
+we need to be able to read it in kernel
+
+we want to read build id from BPF program attached to sched_exec
+tracepoint, and from BPF iterator
+
+we considered adding BPF helper and then kfunc for that, but it turned
+out it'd be usefull for other use cases (like retrieving build id from
+atomic context [2]) to have the build id stored in file (or inode) object
+
+[1] https://github.com/cilium/tetragon/
+[2] https://lore.kernel.org/bpf/CA+khW7juLEcrTOd7iKG3C_WY8L265XKNo0iLzV1fE=o-cyeHcQ@mail.gmail.com/
 
 > 
-> Sending the BTF snippet again (full BTF - https://pastebin.com/etkFyuJk)
+> > 
+> > However.. ;-) while using inode as build id storage place saves some memory
+> > by keeping just one copy of the build id for all file instances, there seems
+> > to be another problem.
 > 
-> ```
-> 85] FUNC 'bpf_sock_destroy' type_id=84 linkage=extern
-> 	type_id=85 offset=0 size=0 (FUNC 'bpf_sock_destroy')
-> [84] FUNC_PROTO '(anon)' ret_type_id=2 vlen=1
-> 	'(anon)' type_id=70
-> [70] PTR '(anon)' type_id=104
-> [104] FWD 'sock' fwd_kind=struct
-> ```
-> 
-> Compare this to the BTF snippet once I undef and define the struct in the test prog:
-> 
-> ```
-> [87] FUNC 'bpf_sock_destroy' type_id=84 linkage=extern
-> 	type_id=87 offset=0 size=0 (FUNC 'bpf_sock_destroy')
-> [84] FUNC_PROTO '(anon)' ret_type_id=2 vlen=1
-> 	'(anon)' type_id=85
-> [85] PTR '(anon)' type_id=86
-> [86] STRUCT 'sock' size=136 vlen=1
-> 	'__sk_common' type_id=34 bits_offset=0
-> ```
-> 
-> (Anyway looks like I needed to define the struct in the test prog only when bpf_sock_destory had `struct sock` as the argument.)
+> Yes, the problem being that we can cache hundreds of millions of
+> inodes in memory, and only a very small subset of them are going to
+> have open files associated with them. And an even smaller subset are
+> going to be mmapped.
 
-Right, I also think it is orthogonal to your set if the kfunc is taking 'struct 
-sock_common *' anyway. [although I do feel a kernel function taking a 'struct 
-sock_common *' is rather odd]
+ok, file seems like better option now
 
-I was only asking and also trying myself because it looks pretty wrong if it can 
-be reproduced and it is something that should be fixed regardless. It is pretty 
-normal to have forward declaration within a bpf prog itself (not from 
-vmlinux.h). From the paste, it feels like the kfunc bpf_sock_destroy btf is 
-generated earlier than the 'struct sock'. Which llvm version are you using?
+> 
+> So, in reality, this proposal won't save any memory at all - it
+> costs memory for every inode that is not currently being used as
+> a mmapped elf executable, right?
+
+right
+
+> 
+> > The problem is that we read the build id when the file is mmap-ed.
+> 
+> Why? I'm completely clueless as to what this thing does or how it's
+> used....
+
+we need the build id only when the file is mmap-ed, so it seemed like
+the best way to read it when the file is mmaped
+
+> 
+> > Which is fine for our use case,
+> 
+> Which is?
+
+please see above
+
+thanks,
+jirka
