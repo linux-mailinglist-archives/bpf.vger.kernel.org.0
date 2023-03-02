@@ -2,91 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A69986A87EF
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 18:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384866A8830
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 19:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbjCBRcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 12:32:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        id S229746AbjCBSAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 13:00:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbjCBRcQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 12:32:16 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4124125A6
-        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 09:32:15 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id z2so18310455plf.12
-        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 09:32:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677778335;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IMK/pDXz+E7PRGYljWORBZUeAjAOpLANtXUVqZkzxkw=;
-        b=GWYiLLPK3vcPIC4KGhgUqhwQcijMiygaldlw2hYrwp012ZztmmGuCGB1500bKtz7KF
-         mcXuXv0J9iiKS8nNiPjWaV9eCcGKsxf4r8wF6bVRb4CixQV59Oi/gE4D3M2+fJM0Fk6P
-         GPyDS4PU0kfSmgUWl2679ukg7PajwsF6XMlGJ/o7QxenyksfVoHuS8lw8ReWdvG7IpLu
-         JA0I6c7iamD0aCZrun7RpB/tnSsUjvqIYTJJJw+5PQ14O9NWBQra08PDlynWRznOZUzq
-         4Thu+pHmanVG1tRsJx6UcLiXblW9kLwDR2wp8hwx3cFF8GYzpfc10wdEcZt/pPtmtz26
-         NLxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677778335;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IMK/pDXz+E7PRGYljWORBZUeAjAOpLANtXUVqZkzxkw=;
-        b=Ch6nf1EGHMjoMLMQM0nRmYOV1tOwr6PydN4+2avXPeowB8ZITLQUG9F307+NWDaAvH
-         HSimRpOhA+go1kAU6n3PLh7J4l/6tv4ECnBXc3PV10oTrDqjDsy/iFM41rhLeX9h0pyt
-         Rl/Vt0gV12HIpBIVfzgaWNVH772yDIPQEzJaub+ButPz5XXtq+PlQwBItFAKYHVIQ9kI
-         TcFbveuO5PkCzorqGnUUXaLTkSF8mGobrLcM3wn/ndo1ROak3gDCDeBPUCSUSK/I0F/t
-         6hc3tEVIHg6q67GzNEXbV36XylO97XEUkGC6E4LRHNFavRaBxos2FwE6rZ/zGuf/2vro
-         omyA==
-X-Gm-Message-State: AO0yUKUWkrbjh/WxBchd4ykOXFdgcu0YJ9tYHgQrdOjjnkUTLFUQin5H
-        YrT9/N1ZRfJrNJ3CcA9hNZ05D356ib0=
-X-Google-Smtp-Source: AK7set/1W6F4YZzWhPakKXbohXJBh6+uo7f/QyxZfteef7tVAYsvuqTYZw8kUpJwIwLudgp3z4FxCg==
-X-Received: by 2002:a17:902:a511:b0:19c:eb50:88b9 with SMTP id s17-20020a170902a51100b0019ceb5088b9mr9798447plq.29.1677778334908;
-        Thu, 02 Mar 2023 09:32:14 -0800 (PST)
-Received: from worktop ([2620:10d:c090:500::5:c1fd])
-        by smtp.gmail.com with ESMTPSA id p19-20020a1709028a9300b0019cec7d88c3sm10697258plo.236.2023.03.02.09.32.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 09:32:14 -0800 (PST)
-Date:   Thu, 2 Mar 2023 09:32:00 -0800
-From:   Manu Bretelle <chantr4@gmail.com>
-To:     lsf-pc@lists.linux-foundation.org
-Cc:     bpf@vger.kernel.org
-Subject: [LSF/MM/BPF TOPIC] BPF CI: A year later
-Message-ID: <ZADdkKaGcEmjC0tF@worktop>
+        with ESMTP id S229602AbjCBSAR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 13:00:17 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9026B34F52;
+        Thu,  2 Mar 2023 10:00:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27AD361625;
+        Thu,  2 Mar 2023 18:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ED63C433D2;
+        Thu,  2 Mar 2023 18:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677780015;
+        bh=KJV8ir8Jjr+hwTXupgZ9WqL8uKtDPclFlqYOsqUJE+I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qkWQyJJyzq6wgiw/Jtcpj/GeY1nSPVcdo5FCWv+flc7+woilQkagKjQc9EOUrMWVA
+         aI3lDcNROaIBiO9G9I8MhGdvu9921A7TUXxA2B7mrV11ElgmM4MgIvrKUj6e+MVu5z
+         yqlt8G97heCymDtLAxwZSwwoKEICM3REpiLC2mFOIvHUHoVjTpFDvWlh4epKfHGQ/g
+         nz5WPT384er7SLGL2PL7s36Rd25jwEQZ2xA3j3WwrB/OD73fW8UPcJiX835KiAe0+9
+         A24xvChdokb6fWKT23siYaPp85sjkGH1j/Q21CefzmYnNNJscfx+M4p2B7yKkS2WBO
+         HrSmr//p23NdQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 88AFF4049F; Thu,  2 Mar 2023 15:00:12 -0300 (-03)
+Date:   Thu, 2 Mar 2023 15:00:12 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>, dwarves@vger.kernel.org,
+        arnaldo.melo@gmail.com, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, KP Singh <kpsingh@kernel.org>,
+        Matt Bobrowski <mattbobrowski@google.com>
+Subject: Re: [PATCH dwarves] dwarf_loader: Fix for BTF id drift caused by
+ adding unspecified types
+Message-ID: <ZADkLFc+uPLXjokq@kernel.org>
+References: <20230228202357.2766051-1-eddyz87@gmail.com>
+ <Y//BfO3pAixXLLyA@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Y//BfO3pAixXLLyA@krava>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Last year, Mykola Lysenko presented how BPF CI [0] works ([1][2]). This year we
-would like to go over what has happened behind the BPF CI system curtains, what
-improvements were made, what issues were encountered, and which pain points we
-are still battling with.
+Em Wed, Mar 01, 2023 at 10:19:56PM +0100, Jiri Olsa escreveu:
+> On Tue, Feb 28, 2023 at 10:23:57PM +0200, Eduard Zingerman wrote:
+> > Recent changes to handle unspecified types (see [1]) cause BTF ID drift.
+> > 
+> > Specifically, the intent of commits [2], [3] and [4] is to render
+> > references to unspecified types as void type.
+> > However, as a consequence:
+> > - in `die__process_unit()` call to `cu__add_tag()` allocates `small_id`
+> >   for unspecified type tags and adds these tags to `cu->types_table`;
+> > - `btf_encoder__encode_tag()` skips generation of BTF entries for
+> >   `DW_TAG_unspecified_type` tags.
+> > 
+> > Such logic causes ID drift if unspecified type is not the last type
+> > processed for compilation unit. `small_id` of each type following
+> > unspecified type in the `cu->types_table` would have its BTF id off by -1.
+> > Thus, rendering references established on recode phase invalid.
+> > 
+> > This commit reverts `unspecified_type` id/tag tracking.
+> > Instead, the following is done:
+> > - `small_id` for unspecified type tags is set to 0, thus reference to
+> >   unspecified type tag would render BTF id of a `void` on recode phase;
+> > - unspecified type tags are not added to `cu->types_table`.
+> > 
+> > This change also happens to fix issue reported in [5], the gist of
+> > that issue is that the field `encoder->unspecified_type` is set but
+> > not reset by function `btf_encoder__encode_cu()`. Thus, the following
+> > sequence of events might occur when BTF encoding is requested:
+> > - CU with unspecified type is processed:
+> >   - unspecified type id is 42
+> >   - encoder->unspecified_type is set to 42
+> > - CU without unspecified type is processed next using the same
+> >   `encoder` object:
+> >   - some `struct foo` has id 42 in this CU
+> >   - the references to `struct foo` are set 0 by function
+> >     `btf_encoder__tag_type()`.
+> > 
+> > [1] https://lore.kernel.org/all/Y0R7uu3s%2FimnvPzM@kernel.org/
+> > [2] bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
+> > [3] cffe5e1f75e1 ("core: Record if a CU has a DW_TAG_unspecified_type")
+> > [4] 75e0fe28bb02 ("core: Add DW_TAG_unspecified_type to tag__is_tag_type() set")
+> > [5] https://lore.kernel.org/bpf/Y%2FP1yxAuV6Wj3A0K@google.com/
+> > 
+> > Fixes: bcc648a10cbc ("btf_encoder: Encode DW_TAG_unspecified_type returning routines as void")
+> > Fixes: 52b25808e44a ("btf_encoder: Store type_id_off, unspecified type in encoder")
+> > Tested-by: KP Singh <kpsingh@kernel.org>
+> > Reported-by: Matt Bobrowski <mattbobrowski@google.com>
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> 
+> lgtm, tested on top of the pahole next branch with bpf selftests
+> 
+> Tested-by: Jiri Olsa <jolsa@kernel.org>
 
-We would also like to take the opportunity to close the talk with an interactive
-demo for the audience to run a change that goes through the BPF CI [3] so people
-can benefit from a multi-arch environment to validate their changes before
-submitting it to the mailing list.
+Looks good to me as well, and way more elegant, thanks!
 
-Finally, we would like to hear feedback from the audience to better understand
-what are contributors challenges with regards to testing, as well as probably
-find overlapping areas (vmtest [4] anyone?) where we could benefit from better
-cooperation.
+Applied.
 
-Thanks,
-
-Manu
-
-[0] https://github.com/kernel-patches/bpf
-[1] https://youtu.be/CkM_HZ--vkI
-[2] https://docs.google.com/presentation/d/1RQZjLkbXmSFOr_4Sj5BdQsXbUh_vMshXi7w09pUpWsY/edit#slide=id.p
-[3] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html#q-how-do-i-run-bpf-ci-on-my-changes-before-sending-them-out-for-review
-[4] https://lore.kernel.org/bpf/f1ea109c-5f07-4734-83f5-12c4252fa5ae@app.fastmail.com/T/#t
+- Arnaldo
