@@ -2,121 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 876956A797C
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 03:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB386A79D9
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 04:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjCBCaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Mar 2023 21:30:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56102 "EHLO
+        id S229600AbjCBDRR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Mar 2023 22:17:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjCBCaS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Mar 2023 21:30:18 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4B038E9D;
-        Wed,  1 Mar 2023 18:30:16 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PRw463bBWz16NkW;
-        Thu,  2 Mar 2023 10:27:34 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 2 Mar
- 2023 10:30:14 +0800
-Subject: Re: [PATCH bpf-next v1 1/2] xdp: recycle Page Pool backed skbs built
- from XDP frames
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-CC:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Song Liu <song@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230301160315.1022488-1-aleksander.lobakin@intel.com>
- <20230301160315.1022488-2-aleksander.lobakin@intel.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <36d42e20-b33f-5442-0db7-e9f5ef9d0941@huawei.com>
-Date:   Thu, 2 Mar 2023 10:30:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        with ESMTP id S229496AbjCBDRQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Mar 2023 22:17:16 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C394FA8F
+        for <bpf@vger.kernel.org>; Wed,  1 Mar 2023 19:17:15 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id oj5so11520158pjb.5
+        for <bpf@vger.kernel.org>; Wed, 01 Mar 2023 19:17:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2UuwNiIULVdlTjH/QXIKxAjBwjiTn6gs7reREGjC+uY=;
+        b=gYWIOdvWKDLkaxODmaIE7dIr1QixXJmeMC7rNoGekgeKf9iS4u1Q7Xx4YfhGTrkbZw
+         NOVMfgd1VA0FAaH2xEZDAZVJpZJVlYu2KRh7wSP0KUSQJnnznFPdFFMHdMBl2ulskuuh
+         02+csEGd5VyrKuqSvMKsEHdM08xNw74SOYGclj2edU/lyumUyrPCImen7zuK9phRU/aL
+         sMObElyT6YQRgQGCLQcQ9jyCiQBwxlp4yX2GTsGamaCUjHFEzDuk4FPMEZuUBsa8ORKQ
+         Xl1Czo++gA1lrGq8td2Xgu0tfNs9IsKQI09xGNL1qiKeGID0pnSCZvvpXnkWccCxY2Nj
+         8b3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2UuwNiIULVdlTjH/QXIKxAjBwjiTn6gs7reREGjC+uY=;
+        b=J+Da7HK4+qJVYk2soMrfEqVi8w+wf2OtNJwZSTmkfO7o2IKdXHQ5AqRTyXjbDMsjsI
+         HmFszSgDbjt2wW7Xf1W8gIC40qemaLUp4LGaKiQPcR5AgiHUA4CtpY9NweBdsVtBnrLC
+         tP/IeKMwjh9+jsTQbtPpwdRfqD27xzE59MJ5vH2xgWt1xJXOvYIWdJ0kY4+4zi4g3ju8
+         AabnrLqaSKRImXstZMspTeY4Y5P+4kVkFNx39Sb1VGJQHFQ8uKsAs/wCDZ3C7Z6hdJZy
+         9zIZ0MhwjiNzcpCZHT6TLcRa1AGbVf79S6M2HF8KfWdND6MYAXeTAD+gghbc6SspDCmY
+         Ee4A==
+X-Gm-Message-State: AO0yUKXi8EAccS1WeVQGw8Ghll4muYT34ebYf1l/FjHiRxIR7dyiDw6Y
+        uKZfioQDmmXjChtSyeNHmD8rtA==
+X-Google-Smtp-Source: AK7set9D7ipY/0SmxAsTtsROL+QxBusuFZ0I9xJ1TBi2lMvOgTicOaOQ94eDPBK/WLMENx8ZozpeGg==
+X-Received: by 2002:a17:903:42c6:b0:19a:6cd2:a658 with SMTP id jy6-20020a17090342c600b0019a6cd2a658mr16658plb.7.1677727034772;
+        Wed, 01 Mar 2023 19:17:14 -0800 (PST)
+Received: from [2620:15c:29:203:5530:853:8d92:ba58] ([2620:15c:29:203:5530:853:8d92:ba58])
+        by smtp.gmail.com with ESMTPSA id v10-20020a62ac0a000000b005810a54fdefsm8584795pfe.114.2023.03.01.19.17.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Mar 2023 19:17:13 -0800 (PST)
+Date:   Wed, 1 Mar 2023 19:17:13 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <tatashin@google.com>
+cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-block@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] State Of The Page
+In-Reply-To: <Y/UiY/08MuA/tBku@casper.infradead.org>
+Message-ID: <a94384e5-cad2-fbdb-9187-7b626557e93a@google.com>
+References: <Y9KtCc+4n5uANB2f@casper.infradead.org> <8448beac-a119-330d-a2af-fc3531bdb930@linux.alibaba.com> <Y/UiY/08MuA/tBku@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20230301160315.1022488-2-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2023/3/2 0:03, Alexander Lobakin wrote:
-> __xdp_build_skb_from_frame() state(d):
+On Tue, 21 Feb 2023, Matthew Wilcox wrote:
+
+> On Wed, Feb 22, 2023 at 02:08:28AM +0800, Gao Xiang wrote:
+> > On 2023/1/27 00:40, Matthew Wilcox wrote:
+> > > I'd like to do another session on how the struct page dismemberment
+> > > is going and what remains to be done.  Given how widely struct page is
+> > > used, I think there will be interest from more than just MM, so I'd
+> > > suggest a plenary session.
+> > 
+> > I'm interested in this topic too, also I'd like to get some idea of the
+> > future of the page dismemberment timeline so that I can have time to keep
+> > the pace with it since some embedded use cases like Android are
+> > memory-sensitive all the time.
 > 
-> /* Until page_pool get SKB return path, release DMA here */
+> As you all know, I'm absolutely amazing at project management & planning
+> and can tell you to the day when a feature will be ready ;-)
 > 
-> Page Pool got skb pages recycling in April 2021, but missed this
-> function.
+> My goal for 2023 is to get to a point where we (a) have struct page
+> reduced to:
 > 
-> xdp_release_frame() is relevant only for Page Pool backed frames and it
-> detaches the page from the corresponding Pool in order to make it
-> freeable via page_frag_free(). It can instead just mark the output skb
-> as eligible for recycling if the frame is backed by a PP. No change for
-> other memory model types (the same condition check as before).
-> cpumap redirect and veth on Page Pool drivers now become zero-alloc (or
-> almost).
+> struct page {
+> 	unsigned long flags;
+> 	struct list_head lru;
+> 	struct address_space *mapping;
+> 	pgoff_t index;
+> 	unsigned long private;
+> 	atomic_t _mapcount;
+> 	atomic_t _refcount;
+> 	unsigned long memcg_data;
+> #ifdef LAST_CPUPID_NOT_IN_PAGE_FLAGS
+> 	int _last_cpupid;
+> #endif
+> };
 > 
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->  net/core/xdp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> and (b) can build an allnoconfig kernel with:
 > 
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 8c92fc553317..a2237cfca8e9 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -658,8 +658,8 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
->  	 * - RX ring dev queue index	(skb_record_rx_queue)
->  	 */
->  
-> -	/* Until page_pool get SKB return path, release DMA here */
-> -	xdp_release_frame(xdpf);
-> +	if (xdpf->mem.type == MEM_TYPE_PAGE_POOL)
-> +		skb_mark_for_recycle(skb);
-
-
-We both rely on both skb->pp_recycle and page->pp_magic to decide
-the page is really from page pool. So there was a few corner case
-problem when we are sharing a page for different skb in the driver
-level or calling skb_clone() or skb_try_coalesce().
-see:
-https://github.com/torvalds/linux/commit/2cc3aeb5ecccec0d266813172fcd82b4b5fa5803
-https://lore.kernel.org/netdev/MW5PR15MB51214C0513DB08A3607FBC1FBDE19@MW5PR15MB5121.namprd15.prod.outlook.com/t/
-https://lore.kernel.org/netdev/167475990764.1934330.11960904198087757911.stgit@localhost.localdomain/
-
-As the 'struct xdp_frame' also use 'struct skb_shared_info' which is
-sharable, see xdp_get_shared_info_from_frame().
-
-For now xdpf_clone() does not seems to handling frag page yet,
-so it should be fine for now.
-
-IMHO we should find a way to use per-page marker, instead of both
-per-skb and per-page markers, in order to avoid the above problem
-for xdp if xdp has a similar processing as skb, as suggested by Eric.
-
-https://lore.kernel.org/netdev/CANn89iKgZU4Q+THXupzZi4hETuKuCOvOB=iHpp5JzQTNv_Fg_A@mail.gmail.com/
-
->  
->  	/* Allow SKB to reuse area used by xdp_frame */
->  	xdp_scrub_frame(xdpf);
+> struct page {
+> 	unsigned long flags;
+> 	unsigned long padding[5];
+> 	atomic_t _mapcount;
+> 	atomic_t _refcount;
+> 	unsigned long padding2;
+> #ifdef LAST_CPUPID_NOT_IN_PAGE_FLAGS
+> 	int _last_cpupid;
+> #endif
+> };
 > 
+
+This is exciting to see and I'd definitely like to participate in the 
+discussion.  Reducing struct page overhead is an important investment area 
+for large hyperscalers from an efficiency standpoint, we strand a massive 
+amount of memory due to struct page today.  I'd be particularly interested 
+in a division-of-work discussion so that we can help to bridge any gaps 
+that exist in realizing Matthew's vision, both short term and long term.
