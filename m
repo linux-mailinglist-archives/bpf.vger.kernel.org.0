@@ -2,46 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D25E26A8D40
-	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 00:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA7C6A8D41
+	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 00:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbjCBXug convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Mar 2023 18:50:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
+        id S229802AbjCBXuh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Mar 2023 18:50:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbjCBXud (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 18:50:33 -0500
+        with ESMTP id S229947AbjCBXuf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 18:50:35 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87063403D
-        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 15:50:23 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 322KVNe6021139
-        for <bpf@vger.kernel.org>; Thu, 2 Mar 2023 15:50:23 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714CF3B660
+        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 15:50:29 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 322KVWEF000606
+        for <bpf@vger.kernel.org>; Thu, 2 Mar 2023 15:50:29 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p2xg6knak-2
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p2qj7nyqq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 15:50:23 -0800
-Received: from twshared16996.15.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 15:50:29 -0800
+Received: from twshared29091.48.prn1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 2 Mar 2023 15:50:22 -0800
+ 15.1.2507.17; Thu, 2 Mar 2023 15:50:28 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 62A43291B7E8F; Thu,  2 Mar 2023 15:50:18 -0800 (PST)
+        id 6D62A291B7E95; Thu,  2 Mar 2023 15:50:20 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next 00/17] BPF open-coded iterators
-Date:   Thu, 2 Mar 2023 15:49:58 -0800
-Message-ID: <20230302235015.2044271-1-andrii@kernel.org>
+Subject: [PATCH bpf-next 01/17] bpf: improve stack slot state printing
+Date:   Thu, 2 Mar 2023 15:49:59 -0800
+Message-ID: <20230302235015.2044271-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230302235015.2044271-1-andrii@kernel.org>
+References: <20230302235015.2044271-1-andrii@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: fjmBvnQYhGxX2Y-gSesrHOOyxpMV5VQC
-X-Proofpoint-ORIG-GUID: fjmBvnQYhGxX2Y-gSesrHOOyxpMV5VQC
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: KN7NY6AnmO8LmJ52WS4zq_0xdYXx62Z9
+X-Proofpoint-GUID: KN7NY6AnmO8LmJ52WS4zq_0xdYXx62Z9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-02_15,2023-03-02_02,2023-02-09_01
@@ -55,88 +56,148 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add support for open-coded (aka inline) iterators in BPF world. This is a next
-evolution of gradually allowing more powerful and less restrictive looping and
-iteration capabilities to BPF programs.
+Improve stack slot state printing to provide more useful and relevant
+information, especially for dynptrs. While previously we'd see something
+like:
 
-We set up a framework for implementing all kinds of iterators (e.g., cgroup,
-task, file, etc, iterators), but this patch set only implements numbers
-iterator, which is used to implement ergonomic bpf_for() for-like construct
-(see patch #15). We also add bpf_for_each(), which is a generic foreach-like
-construct that will work with any kind of open-coded iterator implementation,
-as long as we stick with bpf_iter_<type>_{new,next,destroy}() naming pattern.
+  8: (85) call bpf_ringbuf_reserve_dynptr#198   ; R0_w=scalar() fp-8_w=dddddddd fp-16_w=dddddddd refs=2
 
-Patches #1 through #12 are various preparatory patches, first eitht of them
-are from preliminaries patch set ([0]) which haven't landed yet, so I just
-merged them together to let CI do end-to-end testing of everything properly.
-Few new patches further adds some necessary functionality in verifier (like
-fixed-size read-only memory access for `int *`-returning kfuncs).
+Now we'll see way more useful:
 
-The meat of verifier-side logic is in lucky patch #13. Patch #14 implements
-numbers iterator. I kept them separate to have clean reference for how to
-integrate new iterator types. And it makes verifier core logic changes
-abstracted from any particularities of numbers iterator. Patch #15 adds
-bpf_for(), bpf_for_each(), and bpf_repeat() macros to bpf_misc.h, and also
-adds yet another pyperf test variant, now with bpf_for() loop. Patch #16 is
-verification tests, based on numbers iterator (as the only available right
-now). Patch #17 actually tests runtime behavior of numbers iterator.
+  8: (85) call bpf_ringbuf_reserve_dynptr#198   ; R0_w=scalar() fp-16_w=dynptr_ringbuf(ref_id=2) refs=2
 
-Most of the relevant details are in corresponding commit messages or code
-comments.
+I experimented with printing the range of slots taken by dynptr,
+something like:
 
-  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=725996&state=*
+  fp-16..8_w=dynptr_ringbuf(ref_id=2)
 
-Cc: Tejun Heo <tj@kernel.org>
+But it felt very awkward and pretty useless. So we print the lowest
+address (most negative offset) only.
 
-Andrii Nakryiko (17):
-  bpf: improve stack slot state printing
-  bpf: improve regsafe() checks for PTR_TO_{MEM,BUF,TP_BUFFER}
-  selftests/bpf: enhance align selftest's expected log matching
-  bpf: honor env->test_state_freq flag in is_state_visited()
-  selftests/bpf: adjust log_fixup's buffer size for proper truncation
-  bpf: clean up visit_insn()'s instruction processing
-  bpf: fix visit_insn()'s detection of BPF_FUNC_timer_set_callback
-    helper
-  bpf: ensure that r0 is marked scratched after any function call
-  bpf: move kfunc_call_arg_meta higher in the file
-  bpf: mark PTR_TO_MEM as non-null register type
-  bpf: generalize dynptr_get_spi to be usable for iters
-  bpf: add support for fixed-size memory pointer returns for kfuncs
-  bpf: add support for open-coded iterator loops
-  bpf: implement number iterator
-  selftests/bpf: add bpf_for_each(), bpf_for(), and bpf_repeat() macros
-  selftests/bpf: add iterators tests
-  selftests/bpf: add number iterator tests
+The general structure of this code is now also set up for easier
+extension and will accommodate ITER slots naturally.
 
- include/linux/bpf.h                           |  19 +-
- include/linux/bpf_verifier.h                  |  22 +-
- include/uapi/linux/bpf.h                      |   6 +
- kernel/bpf/bpf_iter.c                         |  71 ++
- kernel/bpf/helpers.c                          |   3 +
- kernel/bpf/verifier.c                         | 851 ++++++++++++++++--
- tools/include/uapi/linux/bpf.h                |   6 +
- .../testing/selftests/bpf/prog_tests/align.c  |  18 +-
- .../bpf/prog_tests/bpf_verif_scale.c          |   6 +
- .../testing/selftests/bpf/prog_tests/iters.c  |  62 ++
- .../selftests/bpf/prog_tests/log_fixup.c      |   2 +-
- .../bpf/prog_tests/uprobe_autoattach.c        |   1 -
- tools/testing/selftests/bpf/progs/bpf_misc.h  |  77 ++
- tools/testing/selftests/bpf/progs/iters.c     | 720 +++++++++++++++
- .../selftests/bpf/progs/iters_looping.c       | 163 ++++
- tools/testing/selftests/bpf/progs/iters_num.c | 242 +++++
- .../selftests/bpf/progs/iters_state_safety.c  | 455 ++++++++++
- tools/testing/selftests/bpf/progs/lsm.c       |   4 +-
- tools/testing/selftests/bpf/progs/pyperf.h    |  14 +-
- .../selftests/bpf/progs/pyperf600_iter.c      |   7 +
- .../selftests/bpf/progs/pyperf600_nounroll.c  |   3 -
- 21 files changed, 2641 insertions(+), 111 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/iters.c
- create mode 100644 tools/testing/selftests/bpf/progs/iters.c
- create mode 100644 tools/testing/selftests/bpf/progs/iters_looping.c
- create mode 100644 tools/testing/selftests/bpf/progs/iters_num.c
- create mode 100644 tools/testing/selftests/bpf/progs/iters_state_safety.c
- create mode 100644 tools/testing/selftests/bpf/progs/pyperf600_iter.c
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ kernel/bpf/verifier.c | 75 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 49 insertions(+), 26 deletions(-)
 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index bf580f246a01..60cc8473faa8 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -705,6 +705,25 @@ static const char *kernel_type_name(const struct btf* btf, u32 id)
+ 	return btf_name_by_offset(btf, btf_type_by_id(btf, id)->name_off);
+ }
+ 
++static const char *dynptr_type_str(enum bpf_dynptr_type type)
++{
++	switch (type) {
++	case BPF_DYNPTR_TYPE_LOCAL:
++		return "local";
++	case BPF_DYNPTR_TYPE_RINGBUF:
++		return "ringbuf";
++	case BPF_DYNPTR_TYPE_SKB:
++		return "skb";
++	case BPF_DYNPTR_TYPE_XDP:
++		return "xdp";
++	case BPF_DYNPTR_TYPE_INVALID:
++		return "<invalid>";
++	default:
++		WARN_ONCE(1, "unknown dynptr type %d\n", type);
++		return "<unknown>";
++	}
++}
++
+ static void mark_reg_scratched(struct bpf_verifier_env *env, u32 regno)
+ {
+ 	env->scratched_regs |= 1U << regno;
+@@ -1176,26 +1195,49 @@ static void print_verifier_state(struct bpf_verifier_env *env,
+ 		for (j = 0; j < BPF_REG_SIZE; j++) {
+ 			if (state->stack[i].slot_type[j] != STACK_INVALID)
+ 				valid = true;
+-			types_buf[j] = slot_type_char[
+-					state->stack[i].slot_type[j]];
++			types_buf[j] = slot_type_char[state->stack[i].slot_type[j]];
+ 		}
+ 		types_buf[BPF_REG_SIZE] = 0;
+ 		if (!valid)
+ 			continue;
+ 		if (!print_all && !stack_slot_scratched(env, i))
+ 			continue;
+-		verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
+-		print_liveness(env, state->stack[i].spilled_ptr.live);
+-		if (is_spilled_reg(&state->stack[i])) {
++		switch (state->stack[i].slot_type[BPF_REG_SIZE - 1]) {
++		case STACK_SPILL:
+ 			reg = &state->stack[i].spilled_ptr;
+ 			t = reg->type;
++
++			verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
++			print_liveness(env, reg->live);
+ 			verbose(env, "=%s", t == SCALAR_VALUE ? "" : reg_type_str(env, t));
+ 			if (t == SCALAR_VALUE && reg->precise)
+ 				verbose(env, "P");
+ 			if (t == SCALAR_VALUE && tnum_is_const(reg->var_off))
+ 				verbose(env, "%lld", reg->var_off.value + reg->off);
+-		} else {
++			break;
++		case STACK_DYNPTR:
++			i += BPF_DYNPTR_NR_SLOTS - 1;
++			reg = &state->stack[i].spilled_ptr;
++
++			verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
++			print_liveness(env, reg->live);
++			verbose(env, "=dynptr_%s", dynptr_type_str(reg->dynptr.type));
++			if (reg->ref_obj_id)
++				verbose(env, "(ref_id=%d)", reg->ref_obj_id);
++			break;
++		case STACK_MISC:
++		case STACK_ZERO:
++		default:
++			reg = &state->stack[i].spilled_ptr;
++
++			for (j = 0; j < BPF_REG_SIZE; j++)
++				types_buf[j] = slot_type_char[state->stack[i].slot_type[j]];
++			types_buf[BPF_REG_SIZE] = 0;
++
++			verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
++			print_liveness(env, reg->live);
+ 			verbose(env, "=%s", types_buf);
++			break;
+ 		}
+ 	}
+ 	if (state->acquired_refs && state->refs[0].id) {
+@@ -6312,28 +6354,9 @@ static int process_dynptr_func(struct bpf_verifier_env *env, int regno, int insn
+ 
+ 		/* Fold modifiers (in this case, MEM_RDONLY) when checking expected type */
+ 		if (!is_dynptr_type_expected(env, reg, arg_type & ~MEM_RDONLY)) {
+-			const char *err_extra = "";
+-
+-			switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
+-			case DYNPTR_TYPE_LOCAL:
+-				err_extra = "local";
+-				break;
+-			case DYNPTR_TYPE_RINGBUF:
+-				err_extra = "ringbuf";
+-				break;
+-			case DYNPTR_TYPE_SKB:
+-				err_extra = "skb ";
+-				break;
+-			case DYNPTR_TYPE_XDP:
+-				err_extra = "xdp ";
+-				break;
+-			default:
+-				err_extra = "<unknown>";
+-				break;
+-			}
+ 			verbose(env,
+ 				"Expected a dynptr of type %s as arg #%d\n",
+-				err_extra, regno);
++				dynptr_type_str(arg_to_dynptr_type(arg_type)), regno);
+ 			return -EINVAL;
+ 		}
+ 
 -- 
 2.30.2
 
