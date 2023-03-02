@@ -2,50 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0E16A8179
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 12:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7B46A817B
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 12:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbjCBLqd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 06:46:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
+        id S229919AbjCBLqg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 06:46:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjCBLqc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 06:46:32 -0500
+        with ESMTP id S229879AbjCBLqe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 06:46:34 -0500
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6220231D8;
-        Thu,  2 Mar 2023 03:46:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5842A98C;
+        Thu,  2 Mar 2023 03:46:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677757591; x=1709293591;
+  t=1677757594; x=1709293594;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=/uRUelVZU3Q6oGhZ0g8qpAC23v6y/WT8NF4OlN7AJZ4=;
-  b=SKAqhzQIj2ZQupsdsptP8OySuBGuV3YQIy/QanlwBwEuprTR/Fq5k1MQ
-   jYCatUZZpGoSkne6pob3y2+62UYciCxv9rTY2BMhQjwXU+3AYhTO/efbP
-   BDt+cnopcm/Axj4B8u1bCwafVKvRc/I0hfURt4WXUUvoA/ehdYjzjVIuO
-   RH8MxvOWYAmE7W57+p6kWWLWv7BanwX6NsNgYO4gaj+ckrB1ixX5PcIWj
-   lusqcg5GiS9SGFueOYOJJbEHTMLClEUduovEv8nUp+mQvMracDz27Tw25
-   NUdeuaWaDRB454xBH9516MNRi6jV/NXX/xXeBqhsu51iB8jLSYwfSdGqT
+  bh=MLx0q3kH81DEhARp7hQmNWOMxwl1xSU4b2mgfSyDf38=;
+  b=Ue9s7B2efhoAFRCjrsBhVqPu/yond9O3mwzcIxSveLRiaHIObPdxKNnk
+   IHC7E1AKMrOaB7qz3KcazJHk3ojvdxqwwQWb1Ibt1vIKqvVMx5QXBBH/4
+   AsrQim6B4/0zvxr1LwlT++Ny32DthYG/OnXR9F29SH6uNmn1Z5ZbLhdCD
+   M/up4BTIACl1EyENdV3/02My+PqyxnnSgnthE7MJdH5pLFJHt/32HHXA4
+   9i6EmdxRWkQfTUSnw/FeiyyzpaCtspfOA5MLu0o2JNipydpkLdojUErRE
+   ixGec6opCKjz9qeyWMojsaawnCKRThpHWpYjaZxI1sWb54yyASQ299yLK
    Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="332180134"
+X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="332180140"
 X-IronPort-AV: E=Sophos;i="5.98,227,1673942400"; 
-   d="scan'208";a="332180134"
+   d="scan'208";a="332180140"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2023 03:46:31 -0800
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2023 03:46:33 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="705229331"
+X-IronPort-AV: E=McAfee;i="6500,9779,10636"; a="705229333"
 X-IronPort-AV: E=Sophos;i="5.98,227,1673942400"; 
-   d="scan'208";a="705229331"
+   d="scan'208";a="705229333"
 Received: from pplank-mobl1.ger.corp.intel.com (HELO tkristo-desk.bb.dnainternet.fi) ([10.251.217.71])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2023 03:46:29 -0800
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2023 03:46:31 -0800
 From:   Tero Kristo <tero.kristo@linux.intel.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: [PATCHv2 1/2] bpf: Add support for absolute value BPF timers
-Date:   Thu,  2 Mar 2023 13:46:13 +0200
-Message-Id: <20230302114614.2985072-2-tero.kristo@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCHv2 2/2] selftests/bpf: Add absolute timer test
+Date:   Thu,  2 Mar 2023 13:46:14 +0200
+Message-Id: <20230302114614.2985072-3-tero.kristo@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230302114614.2985072-1-tero.kristo@linux.intel.com>
 References: <20230302114614.2985072-1-tero.kristo@linux.intel.com>
@@ -60,117 +59,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a new flag BPF_F_TIMER_ABS that can be passed to bpf_timer_start()
-to start an absolute value timer instead of the default relative value.
-This makes the timer expire at an exact point in time, instead of a time
-with latencies induced by both the BPF and timer subsystems.
+Add test for the absolute BPF timer under the existing timer tests. This
+will run the timer two times with 1us expiration time, and then re-arm
+the timer at ~35s in the future. At the end, it is verified that the
+absolute timer expired exactly two times.
 
-Suggested-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
 ---
-v2:
- - added suggested by from Artem
- - copied the change from include/uapi/linux/bpf.h to tools/include also
-   
- include/uapi/linux/bpf.h       | 15 +++++++++++++++
- kernel/bpf/helpers.c           | 11 +++++++++--
- tools/include/uapi/linux/bpf.h | 15 +++++++++++++++
- 3 files changed, 39 insertions(+), 2 deletions(-)
+v2: new patch added
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 464ca3f01fe7..7f5b71847984 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4951,6 +4951,12 @@ union bpf_attr {
-  *		different maps if key/value layout matches across maps.
-  *		Every bpf_timer_set_callback() can have different callback_fn.
-  *
-+ *		*flags* can be one of:
-+ *
-+ *		**BPF_F_TIMER_ABS**
-+ *			Start the timer in absolute expire value instead of the
-+ *			default relative one.
-+ *
-  *	Return
-  *		0 on success.
-  *		**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier
-@@ -7050,4 +7056,13 @@ struct bpf_core_relo {
- 	enum bpf_core_relo_kind kind;
- };
+ .../testing/selftests/bpf/prog_tests/timer.c  |  3 ++
+ tools/testing/selftests/bpf/progs/timer.c     | 45 +++++++++++++++++++
+ 2 files changed, 48 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
+index 7eb049214859..290c21dbe65a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/timer.c
++++ b/tools/testing/selftests/bpf/prog_tests/timer.c
+@@ -29,6 +29,9 @@ static int timer(struct timer *timer_skel)
+ 	/* check that timer_cb2() was executed twice */
+ 	ASSERT_EQ(timer_skel->bss->bss_data, 10, "bss_data");
  
-+/*
-+ * Flags to control bpf_timer_start() behaviour.
-+ *     - BPF_F_TIMER_ABS: Timeout passed is absolute time, by default it is
-+ *       relative to current time.
-+ */
-+enum {
-+	BPF_F_TIMER_ABS = (1ULL << 0),
-+};
++	/* check that timer_cb3() was executed twice */
++	ASSERT_EQ(timer_skel->bss->abs_data, 12, "abs_data");
 +
- #endif /* _UAPI__LINUX_BPF_H__ */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index af30c6cbd65d..924849d89828 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1253,10 +1253,11 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, fla
- {
- 	struct bpf_hrtimer *t;
- 	int ret = 0;
-+	enum hrtimer_mode mode;
+ 	/* check that there were no errors in timer execution */
+ 	ASSERT_EQ(timer_skel->bss->err, 0, "err");
  
- 	if (in_nmi())
- 		return -EOPNOTSUPP;
--	if (flags)
-+	if (flags > BPF_F_TIMER_ABS)
- 		return -EINVAL;
- 	__bpf_spin_lock_irqsave(&timer->lock);
- 	t = timer->timer;
-@@ -1264,7 +1265,13 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, fla
- 		ret = -EINVAL;
- 		goto out;
- 	}
--	hrtimer_start(&t->timer, ns_to_ktime(nsecs), HRTIMER_MODE_REL_SOFT);
-+
-+	if (flags & BPF_F_TIMER_ABS)
-+		mode = HRTIMER_MODE_ABS_SOFT;
-+	else
-+		mode = HRTIMER_MODE_REL_SOFT;
-+
-+	hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
- out:
- 	__bpf_spin_unlock_irqrestore(&timer->lock);
- 	return ret;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 464ca3f01fe7..7f5b71847984 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -4951,6 +4951,12 @@ union bpf_attr {
-  *		different maps if key/value layout matches across maps.
-  *		Every bpf_timer_set_callback() can have different callback_fn.
-  *
-+ *		*flags* can be one of:
-+ *
-+ *		**BPF_F_TIMER_ABS**
-+ *			Start the timer in absolute expire value instead of the
-+ *			default relative one.
-+ *
-  *	Return
-  *		0 on success.
-  *		**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier
-@@ -7050,4 +7056,13 @@ struct bpf_core_relo {
- 	enum bpf_core_relo_kind kind;
- };
+diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
+index acda5c9cea93..9a16d95213e1 100644
+--- a/tools/testing/selftests/bpf/progs/timer.c
++++ b/tools/testing/selftests/bpf/progs/timer.c
+@@ -46,7 +46,15 @@ struct {
+ 	__type(value, struct elem);
+ } lru SEC(".maps");
  
-+/*
-+ * Flags to control bpf_timer_start() behaviour.
-+ *     - BPF_F_TIMER_ABS: Timeout passed is absolute time, by default it is
-+ *       relative to current time.
-+ */
-+enum {
-+	BPF_F_TIMER_ABS = (1ULL << 0),
-+};
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} abs_timer SEC(".maps");
 +
- #endif /* _UAPI__LINUX_BPF_H__ */
+ __u64 bss_data;
++__u64 abs_data;
+ __u64 err;
+ __u64 ok;
+ __u64 callback_check = 52;
+@@ -284,3 +292,40 @@ int BPF_PROG2(test2, int, a, int, b)
+ 
+ 	return bpf_timer_test();
+ }
++
++/* callback for absolute timer */
++static int timer_cb3(void *map, int *key, struct bpf_timer *timer)
++{
++	abs_data += 6;
++
++	if (abs_data < 12) {
++		bpf_timer_start(timer, bpf_ktime_get_boot_ns() + 1000,
++				BPF_F_TIMER_ABS);
++	} else {
++		/* Re-arm timer ~35 seconds in future */
++		bpf_timer_start(timer, bpf_ktime_get_boot_ns() + (1ull << 35),
++				BPF_F_TIMER_ABS);
++	}
++
++	return 0;
++}
++
++SEC("fentry/bpf_fentry_test3")
++int BPF_PROG2(test3, int, a)
++{
++	int key = 0;
++	struct bpf_timer *timer;
++
++	bpf_printk("test3");
++
++	timer = bpf_map_lookup_elem(&abs_timer, &key);
++	if (timer) {
++		if (bpf_timer_init(timer, &abs_timer, CLOCK_BOOTTIME) != 0)
++			err |= 2048;
++		bpf_timer_set_callback(timer, timer_cb3);
++		bpf_timer_start(timer, bpf_ktime_get_boot_ns() + 1000,
++				BPF_F_TIMER_ABS);
++	}
++
++	return 0;
++}
 -- 
 2.25.1
 
