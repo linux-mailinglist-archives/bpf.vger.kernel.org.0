@@ -2,163 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB2E6A88C4
-	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 19:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C58F66A88F6
+	for <lists+bpf@lfdr.de>; Thu,  2 Mar 2023 20:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbjCBS6d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 13:58:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
+        id S229679AbjCBTFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 14:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjCBS6c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 13:58:32 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892FD13DF7;
-        Thu,  2 Mar 2023 10:58:31 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id h17-20020a17090aea9100b0023739b10792so372pjz.1;
-        Thu, 02 Mar 2023 10:58:31 -0800 (PST)
+        with ESMTP id S229752AbjCBTFe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 14:05:34 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9C67EE9
+        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 11:05:13 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id r4so307330ila.2
+        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 11:05:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=VrTnLYcBM5sdj/5jPc/8vHx06BJ4wuh8IZTgTZbTpM4=;
-        b=f4oD1kCTLGwpj+45qsJH2wR5kcuUwNCgFI83sgqApq+KcuxSkpEFTZMvw4L9N7nrEY
-         V1a66afSo/Ed1CIXbt5D3SKFpHgaQfmKSwVlGazXMBxumYAzMspN+frw8ABUyvj36dr+
-         aI9eUd0klLaSKKz0G+W8JMhkEBUtF0DWiGDskrk/cICKUbCr3KsJG47GVmCEgan8q5js
-         ZvZ3hDMI07g8GZjl+3bfsQaGRN8ARa795eOI0dLdfHyK/JrcOrW4dCpRdw2g9nKHnL/q
-         +mDFdI1fw1T67ghJbdShjcRw5WC1YHybndr71JS06XQyQNPDs7k7XI2g4Ty2ypxiqsQj
-         Uk1w==
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4geKM5E6GOWwgyfUhOHMscrwDUdCmpED2dRL0jhQ8sE=;
+        b=M1V5tYRq5yzUTv7DK/JKcy2Gvf4ELWo8NmprFu/X6B1Xf5FROn7IOme9HNOYJHLhKS
+         cKX8OBZ6a9g7cRkfsISVpauySkehutfACUEUo2QLxbFlyAsCj6+hGtHvdb724byj35Xn
+         i2+qUD5Zi1ysBJCsftM6COBIXfOp+OjJq5K26hiAJwSAfgVpZKexxgH6e/ioxA8S/ZrQ
+         hTK2RGvlB+MgWEAiuATCmVfSRIAe2v8wopEqJX2AflFyorzOvb2uOTLEoe5U+TC6vvPn
+         iLWjU75tYmFA4f9UAShtfZIZmQQV+hQUsQ+8LOAjl8a0fiXHqGcer/6YtyC/JqJfk8a3
+         lA8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VrTnLYcBM5sdj/5jPc/8vHx06BJ4wuh8IZTgTZbTpM4=;
-        b=v3SSE0VTIyLNmhjPn0NmqtvX18Gv2+RSkT8tUliCKL6wpQ9TAaRoR4Ssf0AGvj2VSh
-         BnXPX0RQPAyn5FJvAZDHngkYvQ+3T+JMYsrseAkA0x2DgvHkeaTAMjDFI10Et7+sMr5G
-         IfTmUsWzT5HO6rf8b+3i4gvFsmcStBokOgJLenNtr6xTg2rUg4Hgjd8rN/3aViNUj4Cl
-         4o0rno+7NQnzttstaK1mLzz1qLfjqnziE++H/1j8K0t5BSsOxesNRnDkTyaTcd9nkDfL
-         Bve/co+ZsIw/WMPwljjBPH/+i1nEfcNdzsi1sDTjjJo1UkUApzMcLP+juzJ+uy322FFM
-         0DZg==
-X-Gm-Message-State: AO0yUKUOXU2fei2MOrntg81+d3+lCj+rWu2CWYClMZSGYVprWl6ZX6Qy
-        Zr5ooXBdsI3iPqZAdBlvyLc=
-X-Google-Smtp-Source: AK7set+BPAfEO94Eo0SfyhLJQVlqmnpLTONljPq0+jMirkpZVrDEjvhEr5rnm92FbaTbdkU1+M+4+A==
-X-Received: by 2002:a17:902:d2c5:b0:19a:a9d8:e48a with SMTP id n5-20020a170902d2c500b0019aa9d8e48amr13650135plc.22.1677783510785;
-        Thu, 02 Mar 2023 10:58:30 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::5:7baa])
-        by smtp.gmail.com with ESMTPSA id kn14-20020a170903078e00b0019460ac7c6asm24980plb.283.2023.03.02.10.58.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 10:58:29 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 2 Mar 2023 08:58:28 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, Dave Marchevsky <davemarchevsky@meta.com>,
-        David Vernet <void@manifault.com>,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: [PATCH bpf-next] bpf: Make bpf_get_current_[ancestor_]cgroup_id()
- available for all program types
-Message-ID: <ZADx1NQBOGeImnrC@slm.duckdns.org>
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4geKM5E6GOWwgyfUhOHMscrwDUdCmpED2dRL0jhQ8sE=;
+        b=uEkoYGgMkSQyFIV5vGCk1/TF6hLs1+YSIIJ5AsEr/2Qmg2Ux1C26feJ+/ytE8goWpe
+         D9tISjnCmh/TfM+25CiWx6bf9lLzwVxFOvjejCYKGB4u8+RCbi2OwE6hhTePGEdrbpxK
+         RX3wQmhSs5XME0kRO3fOGYp0mYWiQ6V0DVMiHiOvlnsAZpSRXfgbMUNtOh4B4s1h9yjC
+         0mRnsCq+eCoeptJzFqFMIkt9RcSMihW4FSUup05f/482RZDI0GXINH6Ot1aP7m0gXuVe
+         RkEicvn9vxwasuWOi/QIuRd5bDfWWbn2byR5Jz0kCWZ3BRhwlbJPvnZH7b0WnCPEhyDG
+         h1vg==
+X-Gm-Message-State: AO0yUKWjFJsGFEFzR9YewVKPyovE1neYwWcCCrazI4J+B+izBI57heDG
+        Q0U/QNEvwRqxAfe5qL8I1jyFbpsziAk87nTmWxKrnnDX36bs+g==
+X-Google-Smtp-Source: AK7set+8e8PXIyCcOZi0zV6Hw01zYfq8W6lg5Mrjy08Oc54R2CuOii96b40iLofou2Q1E34I9vuVquDxPDZ9bsiquO8=
+X-Received: by 2002:a92:bd14:0:b0:316:ed77:e325 with SMTP id
+ c20-20020a92bd14000000b00316ed77e325mr4811941ile.1.1677783913028; Thu, 02 Mar
+ 2023 11:05:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Thu, 2 Mar 2023 14:05:02 -0500
+Message-ID: <CAO658oXX+_7FnAsv02x27FQRbm_Dw7d=tOmQ_Gfe=fB5Hv+C+g@mail.gmail.com>
+Subject: [Question] How can I get floating point registers on arm64
+To:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-These helpers are safe to call from any context and there's no reason to
-restrict access to them. Remove them from bpf_trace and filter lists and add
-to bpf_base_func_proto() under perfmon_capable().
+Hi everyone,
 
-Please note that while test_verifier results remain the same, I'm unsure
-whether subjecting their availability to perfmon_capable() is the right
-decision.
+I'm writing a uprobe program that I'm attaching to a function in a go
+program on arm64. The function takes a float and as such loads the
+parameters via 64-bit floating point registers i.e. `D0`.
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- kernel/bpf/cgroup.c      | 4 ----
- kernel/bpf/helpers.c     | 6 ++++++
- kernel/trace/bpf_trace.c | 4 ----
- net/core/filter.c        | 6 ------
- 4 files changed, 6 insertions(+), 14 deletions(-)
+However, the struct pt_regs context that uprobe programs have access
+to only has a single set of 31 64-bit registers. These appear to be
+the regular general purpose integer registers. My question is - how do
+I access the second set of registers? If this question doesn't make
+sense, am I misunderstanding how arm64 works?
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index bf2fdb33fb31..a4ae422b8f12 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -2529,10 +2529,6 @@ cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_current_pid_tgid_proto;
- 	case BPF_FUNC_get_current_comm:
- 		return &bpf_get_current_comm_proto;
--	case BPF_FUNC_get_current_cgroup_id:
--		return &bpf_get_current_cgroup_id_proto;
--	case BPF_FUNC_get_current_ancestor_cgroup_id:
--		return &bpf_get_current_ancestor_cgroup_id_proto;
- #ifdef CONFIG_CGROUP_NET_CLASSID
- 	case BPF_FUNC_get_cgroup_classid:
- 		return &bpf_get_cgroup_classid_curr_proto;
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 49a2ab8eb0bb..6f8545738a19 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1726,6 +1726,12 @@ bpf_base_func_proto(enum bpf_func_id func_id)
- 		return &bpf_task_pt_regs_proto;
- 	case BPF_FUNC_trace_vprintk:
- 		return bpf_get_trace_vprintk_proto();
-+#ifdef CONFIG_CGROUPS
-+	case BPF_FUNC_get_current_cgroup_id:
-+		return &bpf_get_current_cgroup_id_proto;
-+	case BPF_FUNC_get_current_ancestor_cgroup_id:
-+		return &bpf_get_current_ancestor_cgroup_id_proto;
-+#endif
- 	default:
- 		return NULL;
- 	}
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index c58baf9983cc..489942354a90 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1455,10 +1455,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		       NULL : &bpf_probe_read_compat_str_proto;
- #endif
- #ifdef CONFIG_CGROUPS
--	case BPF_FUNC_get_current_cgroup_id:
--		return &bpf_get_current_cgroup_id_proto;
--	case BPF_FUNC_get_current_ancestor_cgroup_id:
--		return &bpf_get_current_ancestor_cgroup_id_proto;
- 	case BPF_FUNC_cgrp_storage_get:
- 		return &bpf_cgrp_storage_get_proto;
- 	case BPF_FUNC_cgrp_storage_delete:
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 1d6f165923bf..0f2589ea70f3 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8144,12 +8144,6 @@ sk_msg_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_sk_storage_delete_proto;
- 	case BPF_FUNC_get_netns_cookie:
- 		return &bpf_get_netns_cookie_sk_msg_proto;
--#ifdef CONFIG_CGROUPS
--	case BPF_FUNC_get_current_cgroup_id:
--		return &bpf_get_current_cgroup_id_proto;
--	case BPF_FUNC_get_current_ancestor_cgroup_id:
--		return &bpf_get_current_ancestor_cgroup_id_proto;
--#endif
- #ifdef CONFIG_CGROUP_NET_CLASSID
- 	case BPF_FUNC_get_cgroup_classid:
- 		return &bpf_get_cgroup_classid_curr_proto;
--- 
-2.39.2
-
+Thanks so much,
+Grant
