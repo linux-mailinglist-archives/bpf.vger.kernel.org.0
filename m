@@ -2,71 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EEC6AA20D
-	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 22:45:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 754776AA4ED
+	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 23:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbjCCVo7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Mar 2023 16:44:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        id S231769AbjCCW5k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Mar 2023 17:57:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbjCCVoS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Mar 2023 16:44:18 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD2D64211
-        for <bpf@vger.kernel.org>; Fri,  3 Mar 2023 13:43:30 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id m6so5357442lfq.5
-        for <bpf@vger.kernel.org>; Fri, 03 Mar 2023 13:43:30 -0800 (PST)
+        with ESMTP id S231508AbjCCW5i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Mar 2023 17:57:38 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3766A56508
+        for <bpf@vger.kernel.org>; Fri,  3 Mar 2023 14:57:18 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id s20so5492413lfb.11
+        for <bpf@vger.kernel.org>; Fri, 03 Mar 2023 14:57:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677879761;
+        d=gmail.com; s=20210112; t=1677884192;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=vYQgWOfYyG1Uv3g0NPIjxURYknFwzXv5N817+zPdmY4=;
-        b=avgYsU3Hf9G2HVhHC1HFteCFhNh1BeL59SzCDAtbALI5Iv8qYo15lqEFifjkxkZ/m8
-         bX9lPK8HJG7Mv9BMzu6ukrfZrsHQDRznDHkmedMDxRsDOgtBCbyf84A+l4ccULc4v9W5
-         HfkG9EVSxynOdiQclOxj6a/2B8fTVKQgvtj2bm2W9qzUEc/FW0VWEwsThWjZaOqzqur5
-         xU3X5nDxYMVMhx73vWguQcPH/T56rB+y95NJ8FAY04BksUnwOxaCY83TvTgzoWNIbawg
-         oLT8WMso5PrVYsrt4CnKNzXHvsreWXVxUJMZguIssXCmv5lO68QflQAQwPjnyDVFetkn
-         fLwQ==
+        bh=dzSXuRXJ7p/rOHJ/sEdI0ptLn68bY6sp0v8gySPgte8=;
+        b=q42eZ4ORv3m5M1Q0hW3kmb5tO6yrIgTsaVDtJC37Mnk4UGm6OLNQ9jChyCbFstpAnN
+         Am9FV69JWJmHEWqqSnM+up/O5B1EbuVyygL4mtijZw2XdoSQWtPN/aUunAY1vx+iqkne
+         7FLEnXQ8+L+MvlswcOwbuTv1bTo83cchzhu/1ylyfZU6WrD7UVXrRcbePujjiYUBFWEd
+         QExe8pArzo5zeL1G5vCm1ukmxVo5BvUIeSkWYedwwv65jjgYDAE9Arqbo50EfvLYtYLw
+         n9a9fPxhvlYVd248J3NLn1IqZZI6NzzcLQvNgIn665Ofgy6kqH88hPK4ciGl8WGzI+BD
+         HGzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677879761;
+        d=1e100.net; s=20210112; t=1677884192;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vYQgWOfYyG1Uv3g0NPIjxURYknFwzXv5N817+zPdmY4=;
-        b=ckc+KVm+y/KXzjqLNrGsE604RN+5zPz6ZyxQKHHh5dvYGoGJon/xSBL1LdTrOzGL1D
-         r3CVy6zQbsRGsRb90lfwhNJRa9V1F5zIDzlWg5gEnt5XDqBx+Nsb3P8/dJ/fb1xCshVk
-         RCJVxp5wVeaG8vqucX+63v+vGes1RVul+nB1fyEJoG7tM//TPkVYX/CyNMTQfp/Oh3Eq
-         Z6Ot6h2LZyCbDtCZ9To8EYwI2uaSmWqUgOC+qfxxt9gvp4a3PP3AO8W0npJM+77cgLPq
-         5DSanFj07YpMJ/WIr9qEd+S4nIJqB8f5UkieYsvaQc2ia/p9K66dMK5wXgsR95r2PU5M
-         tiZg==
-X-Gm-Message-State: AO0yUKWY0cGsKhtwR0Po1NZJZGXGco7mWC3bqBI8I71DgFU71oawOawl
-        6bBerPNyjL+tL6FY3PDQD1w=
-X-Google-Smtp-Source: AK7set81aJme9Rpe7B84O2utg0kns+sftuA6iKcUoeoT36G3c0uAW+5Czx22s2lG/MoVvTQ/u2uuHw==
-X-Received: by 2002:ac2:539c:0:b0:4dd:dd28:31c7 with SMTP id g28-20020ac2539c000000b004dddd2831c7mr1028492lfh.38.1677879761126;
-        Fri, 03 Mar 2023 13:42:41 -0800 (PST)
+        bh=dzSXuRXJ7p/rOHJ/sEdI0ptLn68bY6sp0v8gySPgte8=;
+        b=TWiyGv1qf8GitSMvLgRvibYpNt3iQQBvioTfaGicL30zpm1LVFQOLV5GDUUaQtPMtg
+         rx5dOWl/PWLBj9kz/FeBkOgPUzIryqCOuqQe5gENsHu/SnCbCSy/CA46qnmXl8c6TiVI
+         zSIrX+18go7EamXHXPybFB7HgMuFmYyAhV7Gz94KMdY0QhOPCUq0KuE6yT9uF/jI0oAM
+         cB6wXdWFWmsqqxpIL5/Zbyz3fOSsIHb63DZrX/0Sxqx36QRu2+TP1GU/GwErP0NUenLL
+         NGneqydq2w9LwD3nSZPiklZ4GrqtyB5tW9lwcbt//Rq/sk1cOCLs6s7C7MP2m1WAaad/
+         3mfQ==
+X-Gm-Message-State: AO0yUKXHXVfXz0R45GbTLOzfVhDSmItUgE4/dKW9X6Bkbk8lxOxl22Jc
+        O3hlw9AutidpIAcHRyjxREk=
+X-Google-Smtp-Source: AK7set914vp6Wfkf78Wbh8Ni7WEfeB5JLz5V/dnF/HvRyRdzDauH08H2bkjslbxJKXW5Q9LHxEcyLQ==
+X-Received: by 2002:a19:ac04:0:b0:4db:18da:1bc9 with SMTP id g4-20020a19ac04000000b004db18da1bc9mr957898lfc.60.1677884192499;
+        Fri, 03 Mar 2023 14:56:32 -0800 (PST)
 Received: from [192.168.1.94] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id d3-20020ac24c83000000b004dded2d1965sm541687lfl.267.2023.03.03.13.42.39
+        by smtp.gmail.com with ESMTPSA id w26-20020a19c51a000000b004cb430b5b38sm567059lfe.185.2023.03.03.14.56.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Mar 2023 13:42:40 -0800 (PST)
-Message-ID: <d9e1b0397daed0bad7b82e4696e1dcd530a678a3.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Disassembler tests for
- verifier.c:convert_ctx_access()
+        Fri, 03 Mar 2023 14:56:31 -0800 (PST)
+Message-ID: <de93e249059f45d7ca36846ae177c2259cab3919.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: allow ctx writes using BPF_ST_MEM
+ instruction
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Date:   Fri, 03 Mar 2023 23:42:38 +0200
-In-Reply-To: <CAADnVQ+abjckxC=KY9M_21scmHbqzA_5NvxYu1FTHrTPDz5=TA@mail.gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+        yhs@fb.com, jose.marchesi@oracle.com
+Date:   Sat, 04 Mar 2023 00:56:30 +0200
+In-Reply-To: <20230303202104.zoldj5z3m35ikkv2@MacBook-Pro-6.local>
 References: <20230302225507.3413720-1-eddyz87@gmail.com>
-         <20230302225507.3413720-4-eddyz87@gmail.com>
-         <20230303202825.7y2icy3hto6xoveb@MacBook-Pro-6.local>
-         <17d521cdc6b0b635b57dff540f3a5a48f5901e61.camel@gmail.com>
-         <CAADnVQ+abjckxC=KY9M_21scmHbqzA_5NvxYu1FTHrTPDz5=TA@mail.gmail.com>
+         <20230302225507.3413720-2-eddyz87@gmail.com>
+         <20230303202104.zoldj5z3m35ikkv2@MacBook-Pro-6.local>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4-0ubuntu1 
@@ -81,92 +76,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2023-03-03 at 13:35 -0800, Alexei Starovoitov wrote:
-> On Fri, Mar 3, 2023 at 1:24=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >=20
-> > On Fri, 2023-03-03 at 12:28 -0800, Alexei Starovoitov wrote:
-> > > On Fri, Mar 03, 2023 at 12:55:07AM +0200, Eduard Zingerman wrote:
-> > > > Function verifier.c:convert_ctx_access() applies some rewrites to B=
-PF
-> > > > instructions that read or write BPF program context. This commit ad=
-ds
-> > > > machinery to allow test cases that inspect BPF program after these
-> > > > rewrites are applied.
-> > > >=20
-> > > > An example of a test case:
-> > > >=20
-> > > >   {
-> > > >         // Shorthand for field offset and size specification
-> > > >     N(CGROUP_SOCKOPT, struct bpf_sockopt, retval),
-> > > >=20
-> > > >         // Pattern generated for field read
-> > > >     .read  =3D "$dst =3D *(u64 *)($ctx + bpf_sockopt_kern::current_=
-task);"
-> > > >              "$dst =3D *(u64 *)($dst + task_struct::bpf_ctx);"
-> > > >              "$dst =3D *(u32 *)($dst + bpf_cg_run_ctx::retval);",
-> > > >=20
-> > > >         // Pattern generated for field write
-> > > >     .write =3D "*(u64 *)($ctx + bpf_sockopt_kern::tmp_reg) =3D r9;"
-> > > >              "r9 =3D *(u64 *)($ctx + bpf_sockopt_kern::current_task=
-);"
-> > > >              "r9 =3D *(u64 *)(r9 + task_struct::bpf_ctx);"
-> > > >              "*(u32 *)(r9 + bpf_cg_run_ctx::retval) =3D $src;"
-> > > >              "r9 =3D *(u64 *)($ctx + bpf_sockopt_kern::tmp_reg);" ,
-> > > >   },
-> > > >=20
-> > > > For each test case, up to three programs are created:
-> > > > - One that uses BPF_LDX_MEM to read the context field.
-> > > > - One that uses BPF_STX_MEM to write to the context field.
-> > > > - One that uses BPF_ST_MEM to write to the context field.
-> > > >=20
-> > > > The disassembly of each program is compared with the pattern specif=
-ied
-> > > > in the test case.
-> > > >=20
-> > > > Kernel code for disassembly is reused (as is in the bpftool).
-> > > > To keep Makefile changes to the minimum, symbolic links to
-> > > > `kernel/bpf/disasm.c` and `kernel/bpf/disasm.h ` are added.
-> > > ...
-> > > > +static regex_t *compile_regex(char *pat)
-> > > > +{
-> > > > +   regex_t *re;
-> > > > +   int err;
-> > > > +
-> > > > +   re =3D malloc(sizeof(regex_t));
-> > > > +   if (!re) {
-> > > > +           PRINT_FAIL("Can't alloc regex\n");
-> > > > +           return NULL;
-> > > > +   }
-> > > > +
-> > > > +   err =3D regcomp(re, pat, REG_EXTENDED);
-> > >=20
-> > > Fancy.
-> >=20
-> > In a good or in a bad way?
-> > It is the shortest form I came up with...
-> >=20
-> > > What is the cost of running this in test_progs?
-> > > How many seconds does it add to run time?
-> >=20
-> > About 0.13sec (including modprobe and process initialization):
-> >=20
-> >   # time ./test_progs -a "ctx_rewrite/*"
-> >   #58/1    ctx_rewrite/SCHED_CLS.tstamp:OK
-> >   ...
-> >   #58/20   ctx_rewrite/CGROUP_SOCKOPT.optval_end:OK
-> >   #58      ctx_rewrite:OK
-> >   Summary: 1/20 PASSED, 0 SKIPPED, 0 FAILED
-> >=20
-> >   real  0m0.131s
-> >   user  0m0.027s
-> >   sys   0m0.046s
-> >=20
-> > It loads 52 programs.
+On Fri, 2023-03-03 at 12:21 -0800, Alexei Starovoitov wrote:
+> On Fri, Mar 03, 2023 at 12:55:05AM +0200, Eduard Zingerman wrote:
+> > -			prev_src_type =3D &env->insn_aux_data[env->insn_idx].ptr_type;
+> > -
+> > -			if (*prev_src_type =3D=3D NOT_INIT) {
+> > -				/* saw a valid insn
+> > -				 * dst_reg =3D *(u32 *)(src_reg + off)
+> > -				 * save type to validate intersecting paths
+> > -				 */
+> > -				*prev_src_type =3D src_reg_type;
+> > -
+> > -			} else if (reg_type_mismatch(src_reg_type, *prev_src_type)) {
+> > -				/* ABuser program is trying to use the same insn
+> > -				 * dst_reg =3D *(u32*) (src_reg + off)
+> > -				 * with different pointer types:
+> > -				 * src_reg =3D=3D ctx in one branch and
+> > -				 * src_reg =3D=3D stack|map in some other branch.
+> > -				 * Reject it.
+> > -				 */
+> > -				verbose(env, "same insn cannot be used with different pointers\n")=
+;
+> > -				return -EINVAL;
 >=20
-> That's fine then. I was worried that compiling regex in a loop
-> might be slow.
+> There is a merge conflict with this part.
+> LDX is now handled slightly differently comparing to STX.
 
-Oh... Regexes are compiled only once at test entry (in test_ctx_rewrite()),
-sub-tests do not re-compile.
+I changed save_aux_ptr_type() as below:
 
+  static int save_aux_ptr_type(struct bpf_verifier_env *env, enum bpf_reg_t=
+ype type,
+  			     bool allow_trust_missmatch)
+  {
+  	enum bpf_reg_type *prev_type =3D &env->insn_aux_data[env->insn_idx].ptr_=
+type;
+    ...
+  	if (*prev_type =3D=3D NOT_INIT) {
+        ...
+  	} else if (reg_type_mismatch(type, *prev_type)) {
+  		/* Abuser program is trying to use the same insn
+         * ...
+  		 */
+  		if (allow_trust_missmatch &&
+  		    base_type(type) =3D=3D PTR_TO_BTF_ID &&
+  		    base_type(*prev_type) =3D=3D PTR_TO_BTF_ID) {
+  			/*
+  			 * Have to support a use case when one path through
+  			 * the program yields TRUSTED pointer while another
+  			 * is UNTRUSTED. Fallback to UNTRUSTED to generate
+  			 * BPF_PROBE_MEM.
+  			 */
+  			*prev_type =3D PTR_TO_BTF_ID | PTR_UNTRUSTED;
+  		} else {
+  			verbose(env, "same insn cannot be used with different pointers\n");
+  			return -EINVAL;
+  		}
+  	}
+ =20
+  	return 0;
+  }
+ =20
+But I don't understand why is it allowed to dereference untrusted
+pointers for LDX but not for ST/STX.
+ =20
+[...]
