@@ -2,76 +2,273 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E94F6A8DD7
-	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 01:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F8B6A8E65
+	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 01:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbjCCA14 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Mar 2023 19:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
+        id S229799AbjCCAzL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Mar 2023 19:55:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjCCA1z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Mar 2023 19:27:55 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6158635BC;
-        Thu,  2 Mar 2023 16:27:54 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1pXtH6-0005M3-Sg; Fri, 03 Mar 2023 01:27:52 +0100
-Date:   Fri, 3 Mar 2023 01:27:52 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 bpf-next 1/3] bpf: add bpf_link support for
- BPF_NETFILTER programs
-Message-ID: <20230303002752.GA4300@breakpoint.cc>
-References: <20230302172757.9548-1-fw@strlen.de>
- <20230302172757.9548-2-fw@strlen.de>
- <ZAEG1gtoXl125GlW@google.com>
+        with ESMTP id S229592AbjCCAzL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Mar 2023 19:55:11 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA72497E6
+        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 16:55:08 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 322N70U4011473
+        for <bpf@vger.kernel.org>; Thu, 2 Mar 2023 16:55:08 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=E2/UShjTMig235F+o9lE6guOaShB9ByTKDoWokNaa1w=;
+ b=kKRVwJd9CWSBUoUXA49L3DivMMuk+BHYf/oEtnRVnouERRB1j9wE+0ZH9/w5y/7Hrra0
+ 8SO4DMYccySJhNYbxS1W1a5SmnlTNM95OqbvN0kLpwPjrGQ5lZHwCzrqtSwkjt4Q2JJS
+ x84C/6W6F2xzk0Fs3x4fALtAbEpTr7L4t3o= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p2hrvr4u9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 16:55:08 -0800
+Received: from twshared6493.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 2 Mar 2023 16:55:07 -0800
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id 16AE21859850F; Thu,  2 Mar 2023 16:55:01 -0800 (PST)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>
+Subject: [PATCH v3 bpf-next] selftests/bpf: Add -Wuninitialized flag to bpf prog flags
+Date:   Thu, 2 Mar 2023 16:55:00 -0800
+Message-ID: <20230303005500.1614874-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: rtzBUC7MrcumN0qJND95qTxLTSO0bTf5
+X-Proofpoint-GUID: rtzBUC7MrcumN0qJND95qTxLTSO0bTf5
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZAEG1gtoXl125GlW@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-02_16,2023-03-02_02,2023-02-09_01
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev <sdf@google.com> wrote:
-> On 03/02, Florian Westphal wrote:
-> > +			struct {
-> > +				__u32		pf;
-> > +				__u32		hooknum;
-> > +				__s32		prio;
-> > +			} netfilter;
-> 
-> For recent tc BPF program extensions, we've discussed that it might be
-> better
-> to have an option to attach program before/after another one in the chain.
-> So the API essentially would receive a before/after flag + fd/id of the
->
-> Should we do something similar here? See [0] for the original
-> discussion.
-> 
-> 0: https://lore.kernel.org/bpf/YzzWDqAmN5DRTupQ@google.com/
+Per C99 standard [0], Section 6.7.8, Paragraph 10:
 
-Thanks for the pointer, I will have a look.
+  If an object that has automatic storage duration is not initialized
+  explicitly, its value is indeterminate.
 
-The above exposes the "prio" of netfilter hooks, so someone
-that needs their hook to run early on, say, before netfilters
-nat engine, could just use INT_MIN.
+And in the same document, in appendix "J.2 Undefined behavior":
 
-We could -- for nf bpf -- make the bpf_link fail if a hook
-with the same priority already exists to avoid the "undefined
-behaviour" here (same prio means register order decides what
-hook function runs first ...).
+  The behavior is undefined in the following circumstances:
+  [...]
+  The value of an object with automatic storage duration is used while
+  it is indeterminate (6.2.4, 6.7.8, 6.8).
 
-This could be relevant if you have e.g. one bpf program collecting
-statistics vs. one doing drops.
+This means that use of an uninitialized stack variable is undefined
+behavior, and therefore that clang can choose to do a variety of scary
+things, such as not generating bytecode for "bunch of useful code" in
+the below example:
 
-I'll dig though the thread and would try to mimic the tc link
-mechanism as close as possible.
+  void some_func()
+  {
+    int i;
+    if (!i)
+      return;
+    // bunch of useful code
+  }
+
+To add insult to injury, if some_func above is a helper function for
+some BPF program, clang can choose to not generate an "exit" insn,
+causing verifier to fail with "last insn is not an exit or jmp". Going
+from that verification failure to the root cause of uninitialized use
+is certain to be frustrating.
+
+This patch adds -Wuninitialized to the cflags for selftest BPF progs and
+fixes up existing instances of uninitialized use.
+
+  [0]: https://www.open-std.org/jtc1/sc22/WG14/www/docs/n1256.pdf
+
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+Cc: David Vernet <void@manifault.com>
+Cc: Tejun Heo <tj@kernel.org>
+Acked-by: David Vernet <void@manifault.com>
+---
+Changelog:
+
+v2 -> v3: https://lore.kernel.org/bpf/20230302233528.532299-1-davemarchevsk=
+y@fb.com/
+  * bpf_spin_unlock before returning (Alexei)
+
+v1 -> v2: https://lore.kernel.org/bpf/20230302231924.344383-1-davemarchevsk=
+y@fb.com/
+  * Return 1 instead of -1 from tc prog (Alexei)
+  * Add David Vernet ack
+
+ tools/testing/selftests/bpf/Makefile                   |  2 +-
+ tools/testing/selftests/bpf/progs/rbtree.c             |  2 +-
+ tools/testing/selftests/bpf/progs/rbtree_fail.c        |  7 +++++--
+ .../selftests/bpf/progs/test_kfunc_dynptr_param.c      |  2 +-
+ .../testing/selftests/bpf/progs/test_sk_lookup_kern.c  |  2 +-
+ tools/testing/selftests/bpf/progs/test_tunnel_kern.c   | 10 +++++-----
+ 6 files changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index f40606a85a0f..eab3cf5399f5 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -357,7 +357,7 @@ BPF_CFLAGS =3D -g -Werror -D__TARGET_ARCH_$(SRCARCH) $(=
+MENDIAN) 		\
+ 	     -I$(abspath $(OUTPUT)/../usr/include)
+=20
+ CLANG_CFLAGS =3D $(CLANG_SYS_INCLUDES) \
+-	       -Wno-compare-distinct-pointer-types
++	       -Wno-compare-distinct-pointer-types -Wuninitialized
+=20
+ $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS +=3D -fno-inline
+ $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS +=3D -fno-inline
+diff --git a/tools/testing/selftests/bpf/progs/rbtree.c b/tools/testing/sel=
+ftests/bpf/progs/rbtree.c
+index e5db1a4287e5..4c90aa6abddd 100644
+--- a/tools/testing/selftests/bpf/progs/rbtree.c
++++ b/tools/testing/selftests/bpf/progs/rbtree.c
+@@ -75,7 +75,7 @@ SEC("tc")
+ long rbtree_add_and_remove(void *ctx)
+ {
+ 	struct bpf_rb_node *res =3D NULL;
+-	struct node_data *n, *m;
++	struct node_data *n, *m =3D NULL;
+=20
+ 	n =3D bpf_obj_new(typeof(*n));
+ 	if (!n)
+diff --git a/tools/testing/selftests/bpf/progs/rbtree_fail.c b/tools/testin=
+g/selftests/bpf/progs/rbtree_fail.c
+index bf3cba115897..1ced900f3fce 100644
+--- a/tools/testing/selftests/bpf/progs/rbtree_fail.c
++++ b/tools/testing/selftests/bpf/progs/rbtree_fail.c
+@@ -232,8 +232,11 @@ long rbtree_api_first_release_unlock_escape(void *ctx)
+=20
+ 	bpf_spin_lock(&glock);
+ 	res =3D bpf_rbtree_first(&groot);
+-	if (res)
+-		n =3D container_of(res, struct node_data, node);
++	if (!res) {
++		bpf_spin_unlock(&glock);
++		return 1;
++	}
++	n =3D container_of(res, struct node_data, node);
+ 	bpf_spin_unlock(&glock);
+=20
+ 	bpf_spin_lock(&glock);
+diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c b/=
+tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
+index 2fbef3cc7ad8..2dde8e3fe4c9 100644
+--- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
++++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
+@@ -48,7 +48,7 @@ SEC("?lsm.s/bpf")
+ __failure __msg("arg#0 expected pointer to stack or dynptr_ptr")
+ int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int=
+ size)
+ {
+-	unsigned long val;
++	unsigned long val =3D 0;
+=20
+ 	return bpf_verify_pkcs7_signature((struct bpf_dynptr *)val,
+ 					  (struct bpf_dynptr *)val, NULL);
+diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup_kern.c b/tool=
+s/testing/selftests/bpf/progs/test_sk_lookup_kern.c
+index b502e5c92e33..6ccf6d546074 100644
+--- a/tools/testing/selftests/bpf/progs/test_sk_lookup_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_sk_lookup_kern.c
+@@ -23,8 +23,8 @@ static struct bpf_sock_tuple *get_tuple(void *data, __u64=
+ nh_off,
+ 					bool *ipv4)
+ {
+ 	struct bpf_sock_tuple *result;
++	__u64 ihl_len =3D 0;
+ 	__u8 proto =3D 0;
+-	__u64 ihl_len;
+=20
+ 	if (eth_proto =3D=3D bpf_htons(ETH_P_IP)) {
+ 		struct iphdr *iph =3D (struct iphdr *)(data + nh_off);
+diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/t=
+esting/selftests/bpf/progs/test_tunnel_kern.c
+index 508da4a23c4f..95b4aa0928ba 100644
+--- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+@@ -324,11 +324,11 @@ int ip4ip6erspan_get_tunnel(struct __sk_buff *skb)
+ SEC("tc")
+ int vxlan_set_tunnel_dst(struct __sk_buff *skb)
+ {
+-	int ret;
+ 	struct bpf_tunnel_key key;
+ 	struct vxlan_metadata md;
+ 	__u32 index =3D 0;
+ 	__u32 *local_ip =3D NULL;
++	int ret =3D 0;
+=20
+ 	local_ip =3D bpf_map_lookup_elem(&local_ip_map, &index);
+ 	if (!local_ip) {
+@@ -363,11 +363,11 @@ int vxlan_set_tunnel_dst(struct __sk_buff *skb)
+ SEC("tc")
+ int vxlan_set_tunnel_src(struct __sk_buff *skb)
+ {
+-	int ret;
+ 	struct bpf_tunnel_key key;
+ 	struct vxlan_metadata md;
+ 	__u32 index =3D 0;
+ 	__u32 *local_ip =3D NULL;
++	int ret =3D 0;
+=20
+ 	local_ip =3D bpf_map_lookup_elem(&local_ip_map, &index);
+ 	if (!local_ip) {
+@@ -494,9 +494,9 @@ SEC("tc")
+ int ip6vxlan_set_tunnel_dst(struct __sk_buff *skb)
+ {
+ 	struct bpf_tunnel_key key;
+-	int ret;
+ 	__u32 index =3D 0;
+ 	__u32 *local_ip;
++	int ret =3D 0;
+=20
+ 	local_ip =3D bpf_map_lookup_elem(&local_ip_map, &index);
+ 	if (!local_ip) {
+@@ -525,9 +525,9 @@ SEC("tc")
+ int ip6vxlan_set_tunnel_src(struct __sk_buff *skb)
+ {
+ 	struct bpf_tunnel_key key;
+-	int ret;
+ 	__u32 index =3D 0;
+ 	__u32 *local_ip;
++	int ret =3D 0;
+=20
+ 	local_ip =3D bpf_map_lookup_elem(&local_ip_map, &index);
+ 	if (!local_ip) {
+@@ -556,9 +556,9 @@ SEC("tc")
+ int ip6vxlan_get_tunnel_src(struct __sk_buff *skb)
+ {
+ 	struct bpf_tunnel_key key;
+-	int ret;
+ 	__u32 index =3D 0;
+ 	__u32 *local_ip;
++	int ret =3D 0;
+=20
+ 	local_ip =3D bpf_map_lookup_elem(&local_ip_map, &index);
+ 	if (!local_ip) {
+--=20
+2.30.2
+
