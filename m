@@ -2,67 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8296A91D0
-	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 08:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FD86A91F2
+	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 08:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjCCHmc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Mar 2023 02:42:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        id S229861AbjCCHt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Mar 2023 02:49:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjCCHmb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Mar 2023 02:42:31 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F0114980
-        for <bpf@vger.kernel.org>; Thu,  2 Mar 2023 23:42:29 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id ay14so3128936edb.11
-        for <bpf@vger.kernel.org>; Thu, 02 Mar 2023 23:42:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677829348;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=goQWZE/CEb59N83lFtzr4ON2tD9HDOER8sTUF6cIyEg=;
-        b=o2oM028JnZphQSIP9FpgGoWe3lxO0MUkpcfDGnEkeWw82SMBs6lf9FQ6j8BvQGBW8I
-         Dp3uL2+iAEsYQyTXgrR64ISvUQitWzySBHgB3Er2M+2OvSYJ172GRJLes+3OvcfJVBY4
-         S2Ilgo57f+13w4zaYYR8Jj8ao5Fd44C4gqexVZIQoUKs1iqccpt0Yq1eBQ4TRx+HDpjv
-         IwX3Un94A9Fcu1ElHBtNEm4AYuZaC6iwnwmi4hBv6YZUMiUtY4pQqIDmHHvevPR5wKge
-         O1iNDdDcGEDonm7Kj8YFO7upew79s2KLIOCdJPyJYQAJa2p60TjedGl7BALaFhDmO0wK
-         IbDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677829348;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=goQWZE/CEb59N83lFtzr4ON2tD9HDOER8sTUF6cIyEg=;
-        b=p+/Gv2RhmRig40qmZrXWNr2ILPgDdlXBGYc0pVNYm6xpP+uvzjYwRO2hJ0KqOv7FPB
-         suuXvL/4kS+JyFJxGKi7DkVSjbeCPdtumw+W2mxMHWq5pXbqoztcqDb1Vd3XJddw9eba
-         nRiB9b+UDP9DtAxgugOGKKqHJThQRiLsxUXluLsWHL0HlNmZ4HGfAv5bptV573G+zjWI
-         T5iLM7mhNaIJj8wLgBIx+YAm71W1aXHtsWoTc0jcemlC2ByGXhrO7BTXVvmVicM8WgPx
-         5D3ffYjMpZszTMpyrE1/QvOZX+hj0pXV0+x5ljOAcnLy8gfWz3D5eVTw4fYXWko8tB3N
-         G7pw==
-X-Gm-Message-State: AO0yUKXKaA/fxU1bGs2JBYMROQglZciBmkfuNS6Bf4wlwizMq2qjeMMn
-        GxLwSF/mJNUkwn+iSu7Yo/0OxQh7KO0YuTTuWa4=
-X-Google-Smtp-Source: AK7set8RWIpdGjqV+hXDT3ogQkAtW5EMuOwImN9dgRy//CPuim21aO+ZNhMWkqnAfYDMBliCkQebLAu/KnSRKfzCf0o=
-X-Received: by 2002:a17:906:f82:b0:8f5:2e0e:6def with SMTP id
- q2-20020a1709060f8200b008f52e0e6defmr3107897ejj.0.1677829348072; Thu, 02 Mar
- 2023 23:42:28 -0800 (PST)
+        with ESMTP id S229534AbjCCHt6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Mar 2023 02:49:58 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973151B2DB;
+        Thu,  2 Mar 2023 23:49:56 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PSg6T1GlCz16P0r;
+        Fri,  3 Mar 2023 15:47:13 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (7.192.105.118) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 3 Mar 2023 15:49:54 +0800
+Received: from canpemm500010.china.huawei.com ([7.192.105.118]) by
+ canpemm500010.china.huawei.com ([7.192.105.118]) with mapi id 15.01.2507.021;
+ Fri, 3 Mar 2023 15:49:54 +0800
+From:   "liujian (CE)" <liujian56@huawei.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+CC:     Eric Dumazet <edumazet@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: RE: [PATCH bpf] bpf, sockmap: fix an infinite loop error when len is
+ 0 in tcp_bpf_recvmsg_parser()
+Thread-Topic: [PATCH bpf] bpf, sockmap: fix an infinite loop error when len is
+ 0 in tcp_bpf_recvmsg_parser()
+Thread-Index: AQHZR315G6w0F5D1P0O7gAu4Ybh6167jimKAgASdD4CAAImacA==
+Date:   Fri, 3 Mar 2023 07:49:54 +0000
+Message-ID: <7073a9a93be94a0cb694b58acbe36fa7@huawei.com>
+References: <20230223120212.1604148-1-liujian56@huawei.com>
+ <63fdbd07b3593_5f4ac208eb@john.notmuch>
+ <CAADnVQLs=Cc06Pvu+zcXxSsB4zxsJm2DT-6me6NLm1hEjfDkTw@mail.gmail.com>
+In-Reply-To: <CAADnVQLs=Cc06Pvu+zcXxSsB4zxsJm2DT-6me6NLm1hEjfDkTw@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.93]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <Y/fnZkXQdc8lkP7q@google.com> <874jrcklvf.fsf@toke.dk>
- <CAKH8qBsoTiVja8=EXTcfJNYpF7JjgPoD=Wi4JBX5PGbggn=S4g@mail.gmail.com>
- <878rgjjipq.fsf@toke.dk> <CAKH8qBstQb0CS1Q-dcx_jeZM2sKSMH3PHFww6=6Hy+3wJ-NL+Q@mail.gmail.com>
-In-Reply-To: <CAKH8qBstQb0CS1Q-dcx_jeZM2sKSMH3PHFww6=6Hy+3wJ-NL+Q@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 3 Mar 2023 08:42:16 +0100
-Message-ID: <CAJ8uoz0jnavFxMJ8tgb4+-+OsCPqVJQez8ULOTM2a60D4RmJ7A@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] XDP metadata for TX
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
-        lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,163 +67,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 27 Feb 2023 at 21:16, Stanislav Fomichev <sdf@google.com> wrote:
->
-> On Mon, Feb 27, 2023 at 6:17 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@ke=
-rnel.org> wrote:
-> >
-> > Stanislav Fomichev <sdf@google.com> writes:
-> >
-> > > On Thu, Feb 23, 2023 at 3:22 PM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
-e@kernel.org> wrote:
-> > >>
-> > >> Stanislav Fomichev <sdf@google.com> writes:
-> > >>
-> > >> > I'd like to discuss a potential follow up for the previous "XDP RX
-> > >> > metadata" series [0].
-> > >> >
-> > >> > Now that we can access (a subset of) packet metadata at RX, I'd li=
-ke to
-> > >> > explore the options where we can export some of that metadata on T=
-X. And
-> > >> > also whether it might be possible to access some of the TX complet=
-ion
-> > >> > metadata (things like TX timestamp).
-> > >> >
-> > >> > I'm currently trying to understand whether the same approach I've =
-used
-> > >> > on RX could work at TX. By May I plan to have a bunch of options l=
-aid
-> > >> > out (currently considering XSK tx/compl programs and XDP tx/compl
-> > >> > programs) so we have something to discuss.
-> > >>
-> > >> I've been looking at ways of getting a TX-completion hook for the XD=
-P
-> > >> queueing stuff as well. For that, I think it could work to just hook
-> > >> into xdp_return_frame(), but if you want to access hardware metadata
-> > >> it'll obviously have to be in the driver. A hook in the driver could
-> > >> certainly be used for the queueing return as well, though, which may
-> > >> help making it worth the trouble :)
-> > >
-> > > Yeah, I'd like to get to completion descriptors ideally; so nothing
-> > > better than a driver hook comes to mind so far :-(
-> > > (I'm eye-balling mlx5's mlx5e_free_xdpsq_desc AF_XDP path mostly so f=
-ar).
-> >
-> > Is there any other use case for this than getting the TX timestamp? Not
-> > really sure what else those descriptors contain...
->
-> I don't think so; at least looking at mlx5 and bnxt (the latter
-> doesn't have a timestamp in the completion ring).
-> So yeah, not sure, maybe that should be on the side and be AF_XDP specifi=
-c.
-> And not even involve bpf, just put the tx tstamp somewhere in umem:
-> setsockopt(xsk_fd, SOL_XDP, XSK_STAMP_TX_COMPLETION,
-> &data_relative_offset, ..);
-> OTOH, if it is only a timestamp now, it doesn't mean that's all we'd
-> have for eternity? (plus, this needs a driver "hook" for af_xdp
-> anyway, so why not make it generic?)
->
-> > >> > I'd like to some more input on whether applying the same idea on T=
-X
-> > >> > makes sense or not and whether there are any sensible alternatives=
-.
-> > >> > (IIRC, there was an attempt to do XDP on egress that went nowhere)=
-.
-> > >>
-> > >> I believe that stranded because it was deemed not feasible to cover =
-the
-> > >> SKB TX path as well, which means it can't be symmetrical to the RX h=
-ook.
-> > >> So we ended up with the in-devmap hook instead. I'm not sure if that=
-'s
-> > >> made easier by multi-buf XDP, so that may be worth revisiting.
-> > >>
-> > >> For the TX metadata you don't really have to care about the skb path=
-, I
-> > >> suppose, so that may not matter too much either. However, at least f=
-or
-> > >> the in-kernel xdp_frame the TX path is pushed from the stack anyway,=
- so
-> > >> I'm not sure if it's worth having a separate hook in the driver (wit=
-h
-> > >> all the added complexity and overhead that entails) just to set
-> > >> metadata? That could just as well be done on push from higher up the
-> > >> stack; per-driver kfuncs could still be useful for this, though.
-> > >>
-> > >> And of course something would be needed so that that BPF programs ca=
-n
-> > >> process AF_XDP frames in the kernel before they hit the driver, but
-> > >> again I'm not sure that needs to be a hook in the driver.
-> > >
-> > > Care to elaborate more on "push from higher up the stack"?
-> >
-> > I'm referring to the XDP_REDIRECT path here: xdp_frames are transmitted
-> > by the stack calling ndo_xdp_xmit() in the driver with an array of
-> > frames that are immediately put on the wire (see bq_xmit_all() in
-> > devmap.c). So any metadata writing could be done at that point, since
-> > the target driver is already known; there's even already a program hook
-> > in there (used for in-devmap programs).
-> >
-> > > I've been thinking about mostly two cases:
-> > > - XDP_TX - I think this one technically doesn't need an extra hook;
-> > > all metadata manipulations can be done at xdp_rx? (however, not sure
-> > > how real that is, since the descriptors are probably not exposed over
-> > > there?)
-> >
-> > Well, to me XDP_REDIRECT is the most interesting one (see above). I
-> > think we could even drop the XDP_TX case and only do this for
-> > XDP_REDIRECT, since XDP_TX is basically a special-case optimisation.
-> > I.e., it's possible to XDP_REDIRECT back to the same device, the frames
-> > will just take a slight detour up through the stack; but that could als=
-o
-> > be a good thing if it means we'll have to do less surgery to the driver=
-s
-> > to implement this for two paths.
-> >
-> > It does have the same challenge as you outlined above, though: At that
-> > point the TX descriptor probably doesn't exist, so the driver NDO will
-> > have to do something else with the data; but maybe we can solve that
-> > without moving the hook into the driver itself somehow?
->
-> Ah, ok, yeah, I was putting XDP_TX / XDP_REDIRECT under the same
-> "transmit something out of xdp_rx hook" umbrella. We can maybe come up
-> with a skb-like-private metadata layout (as we've discussed previously
-> for skb) here as well? But not sure it would solve all the problems?
-> I'm thinking of an af_xdp case where it wants to program something
-> similar to tso/encap/tunneling offload (assuming af_xdp will get 4k+
-> support)
-
-We have a patch set of this in the works. Need to finish the last
-couple of tests then optimize performance and it is good to go. We
-should be able to post it during the next cycle that starts next week.
-
-Having tso/encap/tunneling and checksum offload accessible in the
-AF_XDP Tx path would indeed be very useful.
-
-> or a checksum offload. Exposing access to the driver tx hooks
-> seems like the easiest way to get there?
->
-> > > - AF_XDP TX - this one needs something deep in the driver (due to tx
-> > > zc) to populate the descriptors?
-> >
-> > Yeah, this one is a bit more challenging, but having a way to process
-> > AF_XDP frames in the kernel before they're sent out would be good in an=
-y
-> > case (for things like policing what packets an AF_XDP application can
-> > send in a cloud deployment, for instance). Would be best if we could
-> > consolidate the XDP_REDIRECT and AF_XDP paths, I suppose...
-> >
-> > > - anything else?
-> >
-> > Well, see above ;)
-> >
-> > >> In any case, the above is just my immediate brain dump (I've been
-> > >> mulling these things over for a while in relation to the queueing
-> > >> stuff), and I'd certainly welcome more discussion on the subject! :)
-> > >
-> > > Awesome, thanks for the dump! Will try to keep you in the loop!
-> >
-> > Great, thanks!
-> >
-> > -Toke
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQWxleGVpIFN0YXJvdm9p
+dG92IFttYWlsdG86YWxleGVpLnN0YXJvdm9pdG92QGdtYWlsLmNvbV0NCj4gU2VudDogRnJpZGF5
+LCBNYXJjaCAzLCAyMDIzIDM6MDQgUE0NCj4gVG86IEpvaG4gRmFzdGFiZW5kIDxqb2huLmZhc3Rh
+YmVuZEBnbWFpbC5jb20+DQo+IENjOiBsaXVqaWFuIChDRSkgPGxpdWppYW41NkBodWF3ZWkuY29t
+PjsgRXJpYyBEdW1hemV0DQo+IDxlZHVtYXpldEBnb29nbGUuY29tPjsgSmFrdWIgU2l0bmlja2kg
+PGpha3ViQGNsb3VkZmxhcmUuY29tPjsgRGF2aWQgUy4NCj4gTWlsbGVyIDxkYXZlbUBkYXZlbWxv
+ZnQubmV0PjsgRGF2aWQgQWhlcm4gPGRzYWhlcm5Aa2VybmVsLm9yZz47IEpha3ViDQo+IEtpY2lu
+c2tpIDxrdWJhQGtlcm5lbC5vcmc+OyBQYW9sbyBBYmVuaSA8cGFiZW5pQHJlZGhhdC5jb20+OyBB
+bGV4ZWkNCj4gU3Rhcm92b2l0b3YgPGFzdEBrZXJuZWwub3JnPjsgQ29uZyBXYW5nIDxjb25nLndh
+bmdAYnl0ZWRhbmNlLmNvbT47DQo+IERhbmllbCBCb3JrbWFubiA8ZGFuaWVsQGlvZ2VhcmJveC5u
+ZXQ+OyBOZXR3b3JrIERldmVsb3BtZW50DQo+IDxuZXRkZXZAdmdlci5rZXJuZWwub3JnPjsgYnBm
+IDxicGZAdmdlci5rZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIGJwZl0gYnBmLCBz
+b2NrbWFwOiBmaXggYW4gaW5maW5pdGUgbG9vcCBlcnJvciB3aGVuIGxlbiBpcyAwDQo+IGluIHRj
+cF9icGZfcmVjdm1zZ19wYXJzZXIoKQ0KPiANCj4gT24gVHVlLCBGZWIgMjgsIDIwMjMgYXQgMTI6
+MzbigK9BTSBKb2huIEZhc3RhYmVuZA0KPiA8am9obi5mYXN0YWJlbmRAZ21haWwuY29tPiB3cm90
+ZToNCj4gPg0KPiA+IExpdSBKaWFuIHdyb3RlOg0KPiA+ID4gV2hlbiB0aGUgYnVmZmVyIGxlbmd0
+aCBvZiB0aGUgcmVjdm1zZyBzeXN0ZW0gY2FsbCBpcyAwLCB3ZSBnb3QgdGhlDQo+ID4gPiBmbG9s
+bG93aW5nIHNvZnQgbG9ja3VwIHByb2JsZW06DQo+ID4gPg0KPiA+ID4gd2F0Y2hkb2c6IEJVRzog
+c29mdCBsb2NrdXAgLSBDUFUjMyBzdHVjayBmb3IgMjdzISBbYS5vdXQ6NjE0OV0NCj4gPiA+IENQ
+VTogMyBQSUQ6IDYxNDkgQ29tbTogYS5vdXQgS2R1bXA6IGxvYWRlZCBOb3QgdGFpbnRlZCA2LjIu
+MCsgIzMwDQo+ID4gPiBIYXJkd2FyZSBuYW1lOiBRRU1VIFN0YW5kYXJkIFBDIChRMzUgKyBJQ0g5
+LCAyMDA5KSwgQklPUyAxLjE1LjAtMQ0KPiA+ID4gMDQvMDEvMjAxNA0KPiA+ID4gUklQOiAwMDEw
+OnJlbW92ZV93YWl0X3F1ZXVlKzB4Yi8weGMwDQo+ID4gPiBDb2RlOiA1ZSA0MSA1ZiBjMyBjYyBj
+YyBjYyBjYyAwZiAxZiA4MCAwMCAwMCAwMCAwMCA5MCA5MCA5MCA5MCA5MCA5MA0KPiA+ID4gOTAg
+OTAgOTAgOTAgOTAgOTAgOTAgOTAgOTAgOTAgZjMgMGYgMWUgZmEgMGYgMWYgNDQgMDAgMDAgNDEg
+NTcgPDQxPg0KPiA+ID4gNTYgNDEgNTUgNDEgNTQgNTUgNDggODkgZmQgNTMgNDggODkgZjMgNGMg
+OGQgNmIgMTggNGMgOGQgNzMgMjANCj4gPiA+IFJTUDogMDAxODpmZmZmODg4MTFiNTk3OGI4IEVG
+TEFHUzogMDAwMDAyNDYNCj4gPiA+IFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IGZmZmY4ODgx
+MWE3ZDM3ODAgUkNYOiBmZmZmZmZmZmI3YTRkNzY4DQo+ID4gPiBSRFg6IGRmZmZmYzAwMDAwMDAw
+MDAgUlNJOiBmZmZmODg4MTFiNTk3OTA4IFJESTogZmZmZjg4ODExNTQwODA0MA0KPiA+ID4gUkJQ
+OiAxZmZmZjExMDIzNmIyZjFiIFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6IGZmZmY4ODgxMWE3
+ZDM3ZTcNCj4gPiA+IFIxMDogZmZmZmVkMTAyMzRmYTZmYyBSMTE6IDAwMDAwMDAwMDAwMDAwMDEg
+UjEyOiBmZmZmODg4MTExNzliODAwDQo+ID4gPiBSMTM6IDAwMDAwMDAwMDAwMDAwMDEgUjE0OiBm
+ZmZmODg4MTFhN2QzOGE4IFIxNTogZmZmZjg4ODExYTdkMzdlMA0KPiA+ID4gRlM6ICAwMDAwN2Y2
+ZmI1Mzk4NzQwKDAwMDApIEdTOmZmZmY4ODgyMzcxODAwMDAoMDAwMCkNCj4gPiA+IGtubEdTOjAw
+MDAwMDAwMDAwMDAwMDANCj4gPiA+IENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAw
+MDAwMDAwODAwNTAwMzMNCj4gPiA+IENSMjogMDAwMDAwMDAyMDAwMDAwMCBDUjM6IDAwMDAwMDAx
+MGI2YmEwMDIgQ1I0OiAwMDAwMDAwMDAwMzcwZWUwDQo+ID4gPiBEUjA6IDAwMDAwMDAwMDAwMDAw
+MDAgRFIxOiAwMDAwMDAwMDAwMDAwMDAwIERSMjogMDAwMDAwMDAwMDAwMDAwMA0KPiA+ID4gRFIz
+OiAwMDAwMDAwMDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZmMCBEUjc6IDAwMDAwMDAwMDAw
+MDA0MDANCj4gPiA+IENhbGwgVHJhY2U6DQo+ID4gPiAgPFRBU0s+DQo+ID4gPiAgdGNwX21zZ193
+YWl0X2RhdGErMHgyNzkvMHgyZjANCj4gPiA+ICB0Y3BfYnBmX3JlY3Ztc2dfcGFyc2VyKzB4M2M2
+LzB4NDkwDQo+ID4gPiAgaW5ldF9yZWN2bXNnKzB4MjgwLzB4MjkwDQo+ID4gPiAgc29ja19yZWN2
+bXNnKzB4ZmMvMHgxMjANCj4gPiA+ICBfX19fc3lzX3JlY3Ztc2crMHgxNjAvMHgzZDANCj4gPiA+
+ICBfX19zeXNfcmVjdm1zZysweGYwLzB4MTgwDQo+ID4gPiAgX19zeXNfcmVjdm1zZysweGVhLzB4
+MWEwDQo+ID4gPiAgZG9fc3lzY2FsbF82NCsweDNmLzB4OTANCj4gPiA+ICBlbnRyeV9TWVNDQUxM
+XzY0X2FmdGVyX2h3ZnJhbWUrMHg3Mi8weGRjDQo+ID4gPg0KPiA+ID4gVGhlIGxvZ2ljIGluIHRj
+cF9icGZfcmVjdm1zZ19wYXJzZXIgaXMgYXMgZm9sbG93czoNCj4gPiA+DQo+ID4gPiBtc2dfYnl0
+ZXNfcmVhZHk6DQo+ID4gPiAgICAgICBjb3BpZWQgPSBza19tc2dfcmVjdm1zZyhzaywgcHNvY2ss
+IG1zZywgbGVuLCBmbGFncyk7DQo+ID4gPiAgICAgICBpZiAoIWNvcGllZCkgew0KPiA+ID4gICAg
+ICAgICAgICAgICB3YWl0IGRhdGE7DQo+ID4gPiAgICAgICAgICAgICAgIGdvdG8gbXNnX2J5dGVz
+X3JlYWR5Ow0KPiA+ID4gICAgICAgfQ0KPiA+ID4NCj4gPiA+IEluIHRoaXMgY2FzZSwgImNvcGll
+ZCIgYWx3YXkgaXMgMCwgdGhlIGluZmluaXRlIGxvb3Agb2NjdXJzLg0KPiA+ID4NCj4gPiA+IEFj
+Y29yZGluZyB0byB0aGUgTGludXggc3lzdGVtIGNhbGwgbWFuIHBhZ2UsIDAgc2hvdWxkIGJlIHJl
+dHVybmVkIGluDQo+ID4gPiB0aGlzIGNhc2UuIFRoZXJlZm9yZSwgaW4gdGNwX2JwZl9yZWN2bXNn
+X3BhcnNlcigpLCBpZiB0aGUgbGVuZ3RoIGlzDQo+ID4gPiAwLCBkaXJlY3RseSByZXR1cm4uDQo+
+ID4gPg0KPiA+ID4gQWxzbyBtb2RpZnkgc2V2ZXJhbCBvdGhlciBmdW5jdGlvbnMgd2l0aCB0aGUg
+c2FtZSBwcm9ibGVtLg0KPiA+ID4NCj4gPiA+IEZpeGVzOiAxZjViZTZiM2IwNjMgKCJ1ZHA6IElt
+cGxlbWVudCB1ZHBfYnBmX3JlY3Ztc2coKSBmb3Igc29ja21hcCIpDQo+ID4gPiBGaXhlczogOTgy
+NWQ4NjZjZTBkICgiYWZfdW5peDogSW1wbGVtZW50IHVuaXhfZGdyYW1fYnBmX3JlY3Ztc2coKSIp
+DQo+ID4gPiBGaXhlczogYzVkMjE3N2E3MmExICgiYnBmLCBzb2NrbWFwOiBGaXggcmFjZSBpbiBp
+bmdyZXNzIHJlY2VpdmUNCj4gPiA+IHZlcmRpY3Qgd2l0aCByZWRpcmVjdCB0byBzZWxmIikNCj4g
+PiA+IEZpeGVzOiA2MDQzMjZiNDFhNmYgKCJicGYsIHNvY2ttYXA6IGNvbnZlcnQgdG8gZ2VuZXJp
+YyBza19tc2cNCj4gPiA+IGludGVyZmFjZSIpDQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBMaXUgSmlh
+biA8bGl1amlhbjU2QGh1YXdlaS5jb20+DQo+ID4gPiAtLS0NCj4gPg0KPiA+IFRoYW5rcy4NCj4g
+Pg0KPiA+IEFja2VkLWJ5OiBKb2huIEZhc3RhYmVuZCA8am9obi5mYXN0YWJlbmRAZ21haWwuY29t
+Pg0KPiANCj4gVGhhbmtzIEpvaG4uDQo+IA0KPiBMaXUsDQo+IA0KPiBjb3VsZCB5b3UgcGxlYXNl
+IGNoYW5nZSBpZiAobGVuID09IDApIHRvIGlmICghbGVuKSBhbmQgcmVzcGluIHdpdGggSm9obidz
+IGFjay4NCj4gVGhhbmtzDQpPa2F5LCBJIHdpbGwgc2VuZCB2Mi4gDQpUaGFua3MuDQo=
