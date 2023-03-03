@@ -2,164 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5424F6A9216
-	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 09:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A93A6A92B4
+	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 09:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjCCIBb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Mar 2023 03:01:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
+        id S229701AbjCCIhy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Mar 2023 03:37:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjCCIBa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Mar 2023 03:01:30 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FF1457E1;
-        Fri,  3 Mar 2023 00:01:28 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PSgQr1mZKznVbL;
-        Fri,  3 Mar 2023 16:01:24 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 3 Mar
- 2023 16:01:25 +0800
-From:   Liu Jian <liujian56@huawei.com>
-To:     <john.fastabend@gmail.com>, <jakub@cloudflare.com>,
-        <edumazet@google.com>, <davem@davemloft.net>, <dsahern@kernel.org>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <socketcan@hartkopp.net>,
-        <ast@kernel.org>, <cong.wang@bytedance.com>, <daniel@iogearbox.net>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <liujian56@huawei.com>
-Subject: [PATCH bpf v2] bpf, sockmap: fix an infinite loop error when len is 0 in tcp_bpf_recvmsg_parser()
-Date:   Fri, 3 Mar 2023 16:09:46 +0800
-Message-ID: <20230303080946.1146638-1-liujian56@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229850AbjCCIhy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Mar 2023 03:37:54 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01ABC5A6CA
+        for <bpf@vger.kernel.org>; Fri,  3 Mar 2023 00:37:28 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id m25-20020a7bcb99000000b003e7842b75f2so777636wmi.3
+        for <bpf@vger.kernel.org>; Fri, 03 Mar 2023 00:37:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1677832644;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/7aKUJBN+ko3CMZWvvKttzwhegztVQpvIgzv6IgwzUI=;
+        b=AbNE8NGjxM0etd4SOV/o38/mMvefwynFJBwVZDF2SywSwA+LarE78ivLiJcc8o3hNO
+         iuNbT9B4wsxMBP5Dfbg2CFn+0H7Efafono5K2khSyjUDTqLr/EV25HBAeyJg0nLHJCKs
+         7R1OyyUGxukJbE/kzj1hvakFx/ZC+WNhtSn0aSFIob0RPHu8jYs4j5ayMzkkzQoGF+15
+         8/3v1KZke5fLjzwP8qND90Sw8NR7F7ImgovSIPio7ry+1rGDJYtVReKtKHRZNnozRzdY
+         u8Yspi+GYEs++WRtFzOX7fgOC3NQg2z98Xip7YQWUy9+9nfPz7s3jXfET3hzrIj2TD03
+         b1LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677832644;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/7aKUJBN+ko3CMZWvvKttzwhegztVQpvIgzv6IgwzUI=;
+        b=1gRPszc2KZcVyb1vL6DRI0bRaPjAxhjGwfsjCfNsFj8w4/s7G8j/AM0srLiGlWd8Mv
+         kMv34P1WEx/beMqkqe7ihpYZ7fxAB/DIGoJgD6pQ81J/l1D+y+jIrFWy0CCdrbeOwvAd
+         39zICnB15OX2ZeQN4a/W0glRwysjf8O9VAuRnD2yOjJVnPiglahO9g+Tm3MT07vHW+uv
+         xY0nXF9BfOhEp5N89hlzDP4jhRo1Ub/3X4YnKRL5kPnso37JumlbCchJA/kWwZYuhC0h
+         uF3DNXgVDNzn8KwqAkl65dCtKrIEBR4DAs2tQT17pMRBaDnscQF5CpgerwJaSJkZhwnW
+         uMeg==
+X-Gm-Message-State: AO0yUKX8zvHz1vs2EwEoGBvGzMgmXdq3eDuM2h2UJiUeNcWN9zs4qyKV
+        vwLOKS+SMO8Hat48BrXKadk=
+X-Google-Smtp-Source: AK7set/KT50hf0Eje72owxqVYm5mAJuZFZ/yZTyGJBKeMrIXqzXcN3OufZItBnH4Z7bm9azfAsWBBg==
+X-Received: by 2002:a05:600c:1e10:b0:3eb:39e0:3530 with SMTP id ay16-20020a05600c1e1000b003eb39e03530mr738346wmb.41.1677832644066;
+        Fri, 03 Mar 2023 00:37:24 -0800 (PST)
+Received: from ip-172-31-2-215.eu-west-1.compute.internal (ec2-34-255-118-91.eu-west-1.compute.amazonaws.com. [34.255.118.91])
+        by smtp.gmail.com with ESMTPSA id v18-20020a05600c15d200b003e20a6fd604sm1750577wmf.4.2023.03.03.00.37.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 03 Mar 2023 00:37:23 -0800 (PST)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        bpf@vger.kernel.org, memxor@gmail.com
+Cc:     Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH v2 bpf-next] libbpf: usdt arm arg parsing support
+Date:   Fri,  3 Mar 2023 08:37:06 +0000
+Message-Id: <20230303083706.3597-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the buffer length of the recvmsg system call is 0, we got the
-flollowing soft lockup problem:
+Parsing of USDT arguments is architecture-specific; on arm it is
+relatively easy since registers used are r[0-10], fp, ip, sp, lr,
+pc. Format is slightly different compared to aarch64; forms are
 
-watchdog: BUG: soft lockup - CPU#3 stuck for 27s! [a.out:6149]
-CPU: 3 PID: 6149 Comm: a.out Kdump: loaded Not tainted 6.2.0+ #30
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
-RIP: 0010:remove_wait_queue+0xb/0xc0
-Code: 5e 41 5f c3 cc cc cc cc 0f 1f 80 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 41 57 <41> 56 41 55 41 54 55 48 89 fd 53 48 89 f3 4c 8d 6b 18 4c 8d 73 20
-RSP: 0018:ffff88811b5978b8 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: ffff88811a7d3780 RCX: ffffffffb7a4d768
-RDX: dffffc0000000000 RSI: ffff88811b597908 RDI: ffff888115408040
-RBP: 1ffff110236b2f1b R08: 0000000000000000 R09: ffff88811a7d37e7
-R10: ffffed10234fa6fc R11: 0000000000000001 R12: ffff88811179b800
-R13: 0000000000000001 R14: ffff88811a7d38a8 R15: ffff88811a7d37e0
-FS:  00007f6fb5398740(0000) GS:ffff888237180000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000000 CR3: 000000010b6ba002 CR4: 0000000000370ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- tcp_msg_wait_data+0x279/0x2f0
- tcp_bpf_recvmsg_parser+0x3c6/0x490
- inet_recvmsg+0x280/0x290
- sock_recvmsg+0xfc/0x120
- ____sys_recvmsg+0x160/0x3d0
- ___sys_recvmsg+0xf0/0x180
- __sys_recvmsg+0xea/0x1a0
- do_syscall_64+0x3f/0x90
- entry_SYSCALL_64_after_hwframe+0x72/0xdc
+- "size @ [ reg, #offset ]" for dereferences, for example
+  "-8 @ [ sp, #76 ]" ; " -4 @ [ sp ]"
+- "size @ reg" for register values; for example
+  "-4@r0"
+- "size @ #value" for raw values; for example
+  "-8@#1"
 
-The logic in tcp_bpf_recvmsg_parser is as follows:
+Add support for parsing USDT arguments for ARM architecture.
 
-msg_bytes_ready:
-	copied = sk_msg_recvmsg(sk, psock, msg, len, flags);
-	if (!copied) {
-		wait data;
-		goto msg_bytes_ready;
-	}
-
-In this case, "copied" alway is 0, the infinite loop occurs.
-
-According to the Linux system call man page, 0 should be returned in this
-case. Therefore, in tcp_bpf_recvmsg_parser(), if the length is 0, directly
-return.
-
-Also modify several other functions with the same problem.
-
-Fixes: 1f5be6b3b063 ("udp: Implement udp_bpf_recvmsg() for sockmap")
-Fixes: 9825d866ce0d ("af_unix: Implement unix_dgram_bpf_recvmsg()")
-Fixes: c5d2177a72a1 ("bpf, sockmap: Fix race in ingress receive verdict with redirect to self")
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Liu Jian <liujian56@huawei.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 ---
-v1->v2: change "if (len == 0)" to "if (!len)"
- net/ipv4/tcp_bpf.c  | 6 ++++++
- net/ipv4/udp_bpf.c  | 3 +++
- net/unix/unix_bpf.c | 3 +++
- 3 files changed, 12 insertions(+)
+Changes in V1[1] to V2
+- Resending as V1 shows up as Superseded in patchwork.
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index cf26d65ca389..ebf917511937 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -186,6 +186,9 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
- 	if (unlikely(flags & MSG_ERRQUEUE))
- 		return inet_recv_error(sk, msg, len, addr_len);
+[1] https://patchwork.kernel.org/project/netdevbpf/patch/20230220212741.13515-1-puranjay12@gmail.com/
+---
+ tools/lib/bpf/usdt.c | 82 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+
+diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+index 75b411fc2c77..ef097b882a4d 100644
+--- a/tools/lib/bpf/usdt.c
++++ b/tools/lib/bpf/usdt.c
+@@ -1505,6 +1505,88 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
+ 	return len;
+ }
  
-+	if (!len)
-+		return 0;
++#elif defined(__arm__)
 +
- 	psock = sk_psock_get(sk);
- 	if (unlikely(!psock))
- 		return tcp_recvmsg(sk, msg, len, flags, addr_len);
-@@ -244,6 +247,9 @@ static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 	if (unlikely(flags & MSG_ERRQUEUE))
- 		return inet_recv_error(sk, msg, len, addr_len);
++static int calc_pt_regs_off(const char *reg_name)
++{
++	int reg_num;
++
++	if (sscanf(reg_name, "r%d", &reg_num) == 1) {
++		if (reg_num >= 0 && reg_num <= 10)
++			return offsetof(struct pt_regs, uregs[reg_num]);
++	} else if (strcmp(reg_name, "fp") == 0) {
++		return offsetof(struct pt_regs, ARM_fp);
++	} else if (strcmp(reg_name, "ip") == 0) {
++		return offsetof(struct pt_regs, ARM_ip);
++	} else if (strcmp(reg_name, "sp") == 0) {
++		return offsetof(struct pt_regs, ARM_sp);
++	} else if (strcmp(reg_name, "lr") == 0) {
++		return offsetof(struct pt_regs, ARM_lr);
++	} else if (strcmp(reg_name, "pc") == 0) {
++		return offsetof(struct pt_regs, ARM_pc);
++	}
++	pr_warn("usdt: unrecognized register '%s'\n", reg_name);
++	return -ENOENT;
++}
++
++static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
++{
++	char reg_name[16];
++	int arg_sz, len, reg_off;
++	long off;
++
++	if (sscanf(arg_str, " %d @ \[ %15[a-z0-9], #%ld ] %n", &arg_sz, reg_name,
++								&off, &len) == 3) {
++		/* Memory dereference case, e.g., -4@[fp, #96] */
++		arg->arg_type = USDT_ARG_REG_DEREF;
++		arg->val_off = off;
++		reg_off = calc_pt_regs_off(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off = reg_off;
++	} else if (sscanf(arg_str, " %d @ \[ %15[a-z0-9] ] %n", &arg_sz, reg_name, &len) == 2) {
++		/* Memory dereference case, e.g., -4@[sp] */
++		arg->arg_type = USDT_ARG_REG_DEREF;
++		arg->val_off = 0;
++		reg_off = calc_pt_regs_off(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off = reg_off;
++	} else if (sscanf(arg_str, " %d @ #%ld %n", &arg_sz, &off, &len) == 2) {
++		/* Constant value case, e.g., 4@#5 */
++		arg->arg_type = USDT_ARG_CONST;
++		arg->val_off = off;
++		arg->reg_off = 0;
++	} else if (sscanf(arg_str, " %d @ %15[a-z0-9] %n", &arg_sz, reg_name, &len) == 2) {
++		/* Register read case, e.g., -8@r4 */
++		arg->arg_type = USDT_ARG_REG;
++		arg->val_off = 0;
++		reg_off = calc_pt_regs_off(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off = reg_off;
++	} else {
++		pr_warn("usdt: unrecognized arg #%d spec '%s'\n", arg_num, arg_str);
++		return -EINVAL;
++	}
++
++	arg->arg_signed = arg_sz < 0;
++	if (arg_sz < 0)
++		arg_sz = -arg_sz;
++
++	switch (arg_sz) {
++	case 1: case 2: case 4: case 8:
++		arg->arg_bitshift = 64 - arg_sz * 8;
++		break;
++	default:
++		pr_warn("usdt: unsupported arg #%d (spec '%s') size: %d\n",
++			arg_num, arg_str, arg_sz);
++		return -EINVAL;
++	}
++
++	return len;
++}
++
+ #else
  
-+	if (!len)
-+		return 0;
-+
- 	psock = sk_psock_get(sk);
- 	if (unlikely(!psock))
- 		return tcp_recvmsg(sk, msg, len, flags, addr_len);
-diff --git a/net/ipv4/udp_bpf.c b/net/ipv4/udp_bpf.c
-index e5dc91d0e079..0735d820e413 100644
---- a/net/ipv4/udp_bpf.c
-+++ b/net/ipv4/udp_bpf.c
-@@ -68,6 +68,9 @@ static int udp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 	if (unlikely(flags & MSG_ERRQUEUE))
- 		return inet_recv_error(sk, msg, len, addr_len);
- 
-+	if (!len)
-+		return 0;
-+
- 	psock = sk_psock_get(sk);
- 	if (unlikely(!psock))
- 		return sk_udp_recvmsg(sk, msg, len, flags, addr_len);
-diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
-index e9bf15513961..2f9d8271c6ec 100644
---- a/net/unix/unix_bpf.c
-+++ b/net/unix/unix_bpf.c
-@@ -54,6 +54,9 @@ static int unix_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
- 	struct sk_psock *psock;
- 	int copied;
- 
-+	if (!len)
-+		return 0;
-+
- 	psock = sk_psock_get(sk);
- 	if (unlikely(!psock))
- 		return __unix_recvmsg(sk, msg, len, flags);
+ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
 -- 
-2.34.1
+2.39.1
 
