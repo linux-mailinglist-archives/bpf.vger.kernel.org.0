@@ -2,234 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CF36A9CF9
-	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 18:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E398B6A9CFD
+	for <lists+bpf@lfdr.de>; Fri,  3 Mar 2023 18:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbjCCRQo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Mar 2023 12:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36046 "EHLO
+        id S231415AbjCCRRt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Mar 2023 12:17:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbjCCRQl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Mar 2023 12:16:41 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667901D930
-        for <bpf@vger.kernel.org>; Fri,  3 Mar 2023 09:16:35 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id fa28so1993903pfb.12
-        for <bpf@vger.kernel.org>; Fri, 03 Mar 2023 09:16:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1677863795;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oI8n81cTtGVYsEs6w12jfZnLukwvNkVohmJ/Zs2BJE0=;
-        b=SvL+D4BZSFPc7CNmnZ6eyP0Uq/Dvc/JSJ+b+A0zgMvyJ5drrqN2PcJAoXYL0NozdxN
-         BEQ6LlX+2wgJ3620jeJ5k0WMklYBD28RiAckwDGnFXCDX/qthwPnjBap3Pu4wHXkSvVm
-         GzX6jPR6xl5TPDxdEmgbreoq6R+v/DOwom59ykP3rAH+WKJUiVz+TcOHNi8LzKSNTyfm
-         GHSfsleKeGOXiUax4Q0kK7i+cDP31o2gkMYnJyFn0W0ux3asz+5vppbrCSxJvnb6mG36
-         VNfx7hQ9VYh8NDvfeuNiNkcGJQPN8z/Y7qHY/sjJ8Nmq3HstqgYok9M80r0kFaGo7XeP
-         y4gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677863795;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oI8n81cTtGVYsEs6w12jfZnLukwvNkVohmJ/Zs2BJE0=;
-        b=crrQJZ/TB9Dv52sZtqJv0zbYOX8/QqtXCHNG5K5LSa7jdF9VFiwHLmrMtSgWf5RhkS
-         bI0iUnTkbz7qpXMDl/YpznQ201Za/X/xGzrul9AobqyBcReWUWkyfQz4nMVG2bXTOaph
-         BpARNMoQ8x9hlvJNyt6L3HXq94dHvfEmrGMvDIWZHYZzDgm0fN+kw5EtB4xfvHmD06tc
-         FXz9ahLqNGTiCTJLgmnY6t0AhxtmoMMp8xFPL8bFs1cwoe5JYC8RhSgf4Ih4un3xOw7Q
-         lsjmVaP1DL1TtYxoxolZHK4kjMI0PupR4JRmR7ZnnUntesL2KbhHvH8GTQYqI9e2u4G/
-         LGBw==
-X-Gm-Message-State: AO0yUKUU8ovdT/SQPxU2SsR8UZBCt3HCaVWWvBIl3S7D/3WHxfLgJT/U
-        cRHFSH95ZNGVOPgDYFusOuKLZ9hdgXyOkmdlwgjmRg+uqX3Rji6/
-X-Google-Smtp-Source: AK7set+HPykDyKI4XAl/4qv/O6kGlLCzsph/z64P9LrtjNVjpyBWPyAj8fKU2ebBZBlsWMLNimtiYfujl6BrQiDTkrE=
-X-Received: by 2002:a62:8645:0:b0:5a8:9872:2b9b with SMTP id
- x66-20020a628645000000b005a898722b9bmr1200191pfd.1.1677863794526; Fri, 03 Mar
- 2023 09:16:34 -0800 (PST)
-MIME-Version: 1.0
-References: <Y/fnZkXQdc8lkP7q@google.com> <874jrcklvf.fsf@toke.dk>
- <CAKH8qBsoTiVja8=EXTcfJNYpF7JjgPoD=Wi4JBX5PGbggn=S4g@mail.gmail.com>
- <878rgjjipq.fsf@toke.dk> <CAKH8qBstQb0CS1Q-dcx_jeZM2sKSMH3PHFww6=6Hy+3wJ-NL+Q@mail.gmail.com>
- <CAJ8uoz0jnavFxMJ8tgb4+-+OsCPqVJQez8ULOTM2a60D4RmJ7A@mail.gmail.com> <87zg8uc8ow.fsf@toke.dk>
-In-Reply-To: <87zg8uc8ow.fsf@toke.dk>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 3 Mar 2023 09:16:22 -0800
-Message-ID: <CAKH8qBv+aRx=jCRuVoeSm_TsvFuz4DBCd547YaTgpfCcZQTEPQ@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] XDP metadata for TX
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S231559AbjCCRRs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Mar 2023 12:17:48 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E7D193F7;
+        Fri,  3 Mar 2023 09:17:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677863867; x=1709399867;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=dRSi0iivJHSGmJbwVNzdyl/XAYa+RL5c3bSm5WqBGwQ=;
+  b=lRRzAaeQSyFkbOYVTSjqZEYSCVIflZwHihhWsCoJjykTm+czbk+ngLrR
+   tEFynGxNjEGoShrgX+R8rWEmI/HSFm2GWLbCSKgLnGfGDYaOBzLGwNOUI
+   /fpxtLhA/X49Ocev8+2OyzOm9143Imp4KjPx0FqK5TXrG31a6yBFdlauP
+   arjeuBs28vZ2GmaRsTlyRxnee8uXYcuJoNkKh6nGu6kK0GQW3TyX/Xirx
+   Cw9l50Dz6cPw+f2JaH2GkrROjQTV6uG3ocVjxMRTYxSadlFgZHBhneUnh
+   tJX+V73dKvC6x0Hiqqminfaey7GUDUL0cjO4rFG2BwOfSiiElRlLz/409
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10638"; a="318922211"
+X-IronPort-AV: E=Sophos;i="5.98,231,1673942400"; 
+   d="scan'208";a="318922211"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2023 09:17:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10638"; a="785327662"
+X-IronPort-AV: E=Sophos;i="5.98,231,1673942400"; 
+   d="scan'208";a="785327662"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP; 03 Mar 2023 09:17:46 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 3 Mar 2023 09:17:45 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 3 Mar 2023 09:17:44 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Fri, 3 Mar 2023 09:17:44 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.21; Fri, 3 Mar 2023 09:17:44 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GnWb3C9nTNj/b+bBEdbjn9GZE04ek8TOoYwrj/xRpsgGCpAyZIJno3M0L8b8M19smuGQWnR/DKQIYkDEePVoBG9lwSoKH2Sr7c1CAiZRRbDT0i+GamTrlmm49v6AT9VbW1eyLgpyvuLz3PoRJQsPH/y0RTWUtDkYVDHJOwz/HH0g8eliYqUMUtPZhGpCsyPtR0Xnee0XMn1uWnBhWPoPmF4aMQGRdYn++JcFgruXP+lfPZQpjWIEikxbN+E3gQjch3eZ/CB/XdVzrNpeiAesWmHrHlSDv13PK1c6u9jwysQ5UaapPqhJFo8pTq/yv3zM+qB3DIhc4aU+/z/tB5i+Xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dRSi0iivJHSGmJbwVNzdyl/XAYa+RL5c3bSm5WqBGwQ=;
+ b=kAUD0A3qgzO0gCw3e8BDCiCVBEacy58RI3Rg3r2DBTuEnJMYK73PskEPYSrxUoLGkw72pV28afYrxfgjxhBhzk5shUG9aVjjQEqZtzog7MdzC1/KvDB2gk4FXf/eFzVTtwnMr7dm2Rto+1xRAZgFY/izC0QQv/LhMSiLgvba7qmjv1B0UmZFG0z5il0rZ+Z9/vXA9g/W4U/NfH5IyW1gcvSpkl2/SDWh9Z0JNP2ScEC73oqvfeEeiTmnlAK8Ib2nrXQdeodoCaP6E6LYcPkxAlkCXDBgcsxBhdMJ1wubTW1a9hPyavCkmqa0ACfjByIaYIYNeUOv4PKBVM8DR63M4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN2PR11MB4045.namprd11.prod.outlook.com (2603:10b6:208:135::27)
+ by IA0PR11MB7883.namprd11.prod.outlook.com (2603:10b6:208:3de::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.22; Fri, 3 Mar
+ 2023 17:17:43 +0000
+Received: from MN2PR11MB4045.namprd11.prod.outlook.com
+ ([fe80::6b67:1c73:161e:9444]) by MN2PR11MB4045.namprd11.prod.outlook.com
+ ([fe80::6b67:1c73:161e:9444%7]) with mapi id 15.20.6156.018; Fri, 3 Mar 2023
+ 17:17:42 +0000
+From:   "Rout, ChandanX" <chandanx.rout@intel.com>
+To:     "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Kuruvinakunnel, George" <george.kuruvinakunnel@intel.com>,
+        "Nagaraju, Shwetha" <shwetha.nagaraju@intel.com>,
+        "Nagraj, Shravan" <shravan.nagraj@intel.com>
+Subject: RE: [Intel-wired-lan] [PATCH intel-next v6 5/8] i40e: use frame_sz
+ instead of recalculating truesize for building skb
+Thread-Topic: [Intel-wired-lan] [PATCH intel-next v6 5/8] i40e: use frame_sz
+ instead of recalculating truesize for building skb
+Thread-Index: AQHZQwnulhaxSmcJfUGtl5tBvFMe767pYcmw
+Date:   Fri, 3 Mar 2023 17:17:42 +0000
+Message-ID: <MN2PR11MB404501CDB64CBA3A7F1BFCB7EAB39@MN2PR11MB4045.namprd11.prod.outlook.com>
+References: <20230217191515.166819-1-tirthendu.sarkar@intel.com>
+ <20230217191515.166819-6-tirthendu.sarkar@intel.com>
+In-Reply-To: <20230217191515.166819-6-tirthendu.sarkar@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN2PR11MB4045:EE_|IA0PR11MB7883:EE_
+x-ms-office365-filtering-correlation-id: f8fab60a-4d21-4ddd-2b00-08db1c0b32ea
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZNxz+hqdXE1wsUEdkrtfBTUVgceAMNDCVi8wXjqJklx+6vjhYPCfFakkkkfU4p3V5WI0LRI2E2uTI4MuRrGXXZgIgdl6zyP6GSdG+xnD5trnJAcKugtkGArQs7PJ3hBs/F3WraHKok+6V6FuFnCkOfiCq7PhL1WdamwJBmx4Te5SFNciyqMXNtktOQuY5Hy9MKQYnlbNMKhTBbsH1qT0Cbkzc6FIgUGxVnT+JJJIiL2ce8p/nJqf/jlJyvl2MjGbVVOb4BqDwC4sk7HYkyr+sTOIsl7lOKxLhiiCJUQJj9+6s6JJz/wPDrIFcmkJvhEtAuk7z3IIINSW+C7qW6gWRZB1hxQZfabBSDXKFknph4b5OtW1IETFKHxHRsoX9YNQiiOFJLtp9LTUgY4IIbcMFsgHMc/u5J8/Hz1qXoMCvIkpase6LjSbrvXp+p3/w523Blzsr36fHj8/ynFzWMfdZDiKs3T+LZzFFsMD5srGJ4lb1afKA0B/gOcTbYsMRy/LdHdJ2LYARSMTyScLkQWb8h7o0idPdaxXBmGbNMDm3+IKT60+3r4xW8hHYEXNzY/nuSj6qM+NsMUUtwJlsZoTjDxLNeAyGclek+YcQh555h7tRET6YCJQdOF/IVHluNlFqwstaLR8uKagPASd0/AR+rP82Ox2GNh7LDhRmHOYV2Pd4ddsq8spBqk3ENAC/Kr5CYnlpQUPMUm9Xgc9QuwiVw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR11MB4045.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(39860400002)(396003)(376002)(366004)(136003)(346002)(451199018)(7696005)(186003)(26005)(71200400001)(9686003)(478600001)(8676002)(4326008)(64756008)(54906003)(66946007)(76116006)(66476007)(66556008)(66446008)(55236004)(107886003)(110136005)(6506007)(83380400001)(316002)(41300700001)(52536014)(8936002)(5660300002)(4744005)(122000001)(82960400001)(38100700002)(2906002)(55016003)(86362001)(38070700005)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?KqfXEm14MR2w8UnejQIbXHDOPU+1XxT9twdh+/xvwcyPHdqE6C9013jeTI6m?=
+ =?us-ascii?Q?KYZG5MjV/9Pd9G/XGujIolOG/KBgc3h9s+C9cOQJkTDh8NUCmDikVKDVrRu4?=
+ =?us-ascii?Q?G76CqJMldLDQomi5P4xAWuJ8eg0o6f81j9/tM3LlQi+068ySTmGBToHN74jx?=
+ =?us-ascii?Q?HlZHuoWlrk4iZIVHQqx2IzOtEWu9l7NxoERPIUNP94syBiTcD/BnzKpgPfao?=
+ =?us-ascii?Q?cs1Vm4PZJrHOt5qbrzak723Gcqki6FsAesgpnQhuqiE1jCMmQCtx+0LHhLgB?=
+ =?us-ascii?Q?7CdPFgtDTshiX2Yhz6ObLeTW2LpBCFMQbsw/m5AzbPrZPMxu1chgvu2QiJzR?=
+ =?us-ascii?Q?ZbfrxftMurUO7IfQgbmJxStqRsFWYFZGCHGp4D9GMTMygBenudNp4SdpKpUN?=
+ =?us-ascii?Q?YDrtqFPSY3D3QvAv4mJ7ipd2yY5WqEFFBIue2hBtW3G/X3z82nO9zJ4Uazjg?=
+ =?us-ascii?Q?MrlF86zilC4wcQ2nwjnYNzAi8Coi7jy7Gy/eFjYJsavoxiu5kg+e2oUhPcq9?=
+ =?us-ascii?Q?C990pQcGrJh94VfyVSCrWfEUknUHx+mkcSo5gfK70UAyvX6uTIsfiime4ujh?=
+ =?us-ascii?Q?GiWe6I7xWUMT6yMz8wBBA9j4G4Bb+7YgIpVlMA5qM8lQvoblyOJM0ReX6wB8?=
+ =?us-ascii?Q?6FoWBb7rRh8gyOzpvONDQivjO6jdpdqJTLYv9unzAYZ2nTsaG0eN3PydhxJr?=
+ =?us-ascii?Q?klvylWsDsssCanu7eJt+xPXG6nam4IunfLR/W+Wl6zsm77AGjGMq8nd/KQri?=
+ =?us-ascii?Q?lFi1eOo0BXsKzyohAwOcarVAue94j5w5UToeK4yK2Mq00insWhBcz/4mujx9?=
+ =?us-ascii?Q?dmMyVur4jLaJ7R88uwMU8xjD63wuqpcqBNKpAegauf9OmNQQ6ohrWmNCWtgg?=
+ =?us-ascii?Q?2YBIgq6+MdEo+2Bdv9GyY+PQwsjpWMg9oUhUQwDC+Z62PE58O/CT0iTP+Mi3?=
+ =?us-ascii?Q?CsXbLqNAncBNWWwDfcIbk+zis44BDTUn7OQIxBz53aV5qtDKKfJutNVjTxAi?=
+ =?us-ascii?Q?aCLzRmDzUNzEwb1F6OwtTkt+y96i3yqx+hS8eZ1U+FhW6D9asaLcbTo7tKIh?=
+ =?us-ascii?Q?1Zybw18N+O/EIh6m6dcIwtuWVbhK60vEOTeXi7HF53a/Qt3cF0S3maYGx0Tg?=
+ =?us-ascii?Q?0A3nu9wPCa9BlxXsBy2R768T6ORIZBZgVTwyG34EGfnovEIwEb50/7umKXVz?=
+ =?us-ascii?Q?EtJST6G9cOkhr87qVdJQRT2uBWeIGLqkjV/aS6DEQqg8YFOmskJBiF8VUz1P?=
+ =?us-ascii?Q?WeiBe2/fyxr65X5CjhC7+ipkOqOk30oTYgr6Q0nMyj8FB8NgjnE3mTfc8eWl?=
+ =?us-ascii?Q?MaDNh+/4PYn2nPyZ1gtQLcU5o0drzdISfMd1VGH4iZ730KKJkK0ZPXVMaKdO?=
+ =?us-ascii?Q?x2tk7vnniym9U8/8cdTZ/Vdj+W9RkO432Lg6Kujswx7OFPnw9eIDL8PAGtSr?=
+ =?us-ascii?Q?XVH3YLq8PhLoMFErSIpj5FFWljzB1qLGpqrM9JMEhYfyqc0UEB0Ap+bDetWf?=
+ =?us-ascii?Q?g19K52N49sGFauj5UnIY+2snhAEGDmVYYU5J9gNhjh134GaOwcOUuWyRHyu7?=
+ =?us-ascii?Q?SEc5LFJ9iVEH+d3N3EQAgKwIsBS2B/N4xbtUZDYs?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR11MB4045.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8fab60a-4d21-4ddd-2b00-08db1c0b32ea
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Mar 2023 17:17:42.7013
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: knjnn5f0i/IYjnkEXrgY9DoxOPCQyIXIJiA12krE0LINhjiCm5hepXrsn10dvk//R6cYtPAoI2SMcfkkY0X+Pg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7883
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 3, 2023 at 4:37 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@kerne=
-l.org> wrote:
->
-> Magnus Karlsson <magnus.karlsson@gmail.com> writes:
->
-> > On Mon, 27 Feb 2023 at 21:16, Stanislav Fomichev <sdf@google.com> wrote=
-:
-> >>
-> >> On Mon, Feb 27, 2023 at 6:17 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@kernel.org> wrote:
-> >> >
-> >> > Stanislav Fomichev <sdf@google.com> writes:
-> >> >
-> >> > > On Thu, Feb 23, 2023 at 3:22 PM Toke H=C3=B8iland-J=C3=B8rgensen <=
-toke@kernel.org> wrote:
-> >> > >>
-> >> > >> Stanislav Fomichev <sdf@google.com> writes:
-> >> > >>
-> >> > >> > I'd like to discuss a potential follow up for the previous "XDP=
- RX
-> >> > >> > metadata" series [0].
-> >> > >> >
-> >> > >> > Now that we can access (a subset of) packet metadata at RX, I'd=
- like to
-> >> > >> > explore the options where we can export some of that metadata o=
-n TX. And
-> >> > >> > also whether it might be possible to access some of the TX comp=
-letion
-> >> > >> > metadata (things like TX timestamp).
-> >> > >> >
-> >> > >> > I'm currently trying to understand whether the same approach I'=
-ve used
-> >> > >> > on RX could work at TX. By May I plan to have a bunch of option=
-s laid
-> >> > >> > out (currently considering XSK tx/compl programs and XDP tx/com=
-pl
-> >> > >> > programs) so we have something to discuss.
-> >> > >>
-> >> > >> I've been looking at ways of getting a TX-completion hook for the=
- XDP
-> >> > >> queueing stuff as well. For that, I think it could work to just h=
-ook
-> >> > >> into xdp_return_frame(), but if you want to access hardware metad=
-ata
-> >> > >> it'll obviously have to be in the driver. A hook in the driver co=
-uld
-> >> > >> certainly be used for the queueing return as well, though, which =
-may
-> >> > >> help making it worth the trouble :)
-> >> > >
-> >> > > Yeah, I'd like to get to completion descriptors ideally; so nothin=
-g
-> >> > > better than a driver hook comes to mind so far :-(
-> >> > > (I'm eye-balling mlx5's mlx5e_free_xdpsq_desc AF_XDP path mostly s=
-o far).
-> >> >
-> >> > Is there any other use case for this than getting the TX timestamp? =
-Not
-> >> > really sure what else those descriptors contain...
-> >>
-> >> I don't think so; at least looking at mlx5 and bnxt (the latter
-> >> doesn't have a timestamp in the completion ring).
-> >> So yeah, not sure, maybe that should be on the side and be AF_XDP spec=
-ific.
-> >> And not even involve bpf, just put the tx tstamp somewhere in umem:
-> >> setsockopt(xsk_fd, SOL_XDP, XSK_STAMP_TX_COMPLETION,
-> >> &data_relative_offset, ..);
-> >> OTOH, if it is only a timestamp now, it doesn't mean that's all we'd
-> >> have for eternity? (plus, this needs a driver "hook" for af_xdp
-> >> anyway, so why not make it generic?)
-> >>
-> >> > >> > I'd like to some more input on whether applying the same idea o=
-n TX
-> >> > >> > makes sense or not and whether there are any sensible alternati=
-ves.
-> >> > >> > (IIRC, there was an attempt to do XDP on egress that went nowhe=
-re).
-> >> > >>
-> >> > >> I believe that stranded because it was deemed not feasible to cov=
-er the
-> >> > >> SKB TX path as well, which means it can't be symmetrical to the R=
-X hook.
-> >> > >> So we ended up with the in-devmap hook instead. I'm not sure if t=
-hat's
-> >> > >> made easier by multi-buf XDP, so that may be worth revisiting.
-> >> > >>
-> >> > >> For the TX metadata you don't really have to care about the skb p=
-ath, I
-> >> > >> suppose, so that may not matter too much either. However, at leas=
-t for
-> >> > >> the in-kernel xdp_frame the TX path is pushed from the stack anyw=
-ay, so
-> >> > >> I'm not sure if it's worth having a separate hook in the driver (=
-with
-> >> > >> all the added complexity and overhead that entails) just to set
-> >> > >> metadata? That could just as well be done on push from higher up =
-the
-> >> > >> stack; per-driver kfuncs could still be useful for this, though.
-> >> > >>
-> >> > >> And of course something would be needed so that that BPF programs=
- can
-> >> > >> process AF_XDP frames in the kernel before they hit the driver, b=
-ut
-> >> > >> again I'm not sure that needs to be a hook in the driver.
-> >> > >
-> >> > > Care to elaborate more on "push from higher up the stack"?
-> >> >
-> >> > I'm referring to the XDP_REDIRECT path here: xdp_frames are transmit=
-ted
-> >> > by the stack calling ndo_xdp_xmit() in the driver with an array of
-> >> > frames that are immediately put on the wire (see bq_xmit_all() in
-> >> > devmap.c). So any metadata writing could be done at that point, sinc=
-e
-> >> > the target driver is already known; there's even already a program h=
-ook
-> >> > in there (used for in-devmap programs).
-> >> >
-> >> > > I've been thinking about mostly two cases:
-> >> > > - XDP_TX - I think this one technically doesn't need an extra hook=
+
+
+>-----Original Message-----
+>From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+>Sarkar, Tirthendu
+>Sent: 18 February 2023 00:45
+>To: intel-wired-lan@lists.osuosl.org
+>Cc: Sarkar, Tirthendu <tirthendu.sarkar@intel.com>; netdev@vger.kernel.org=
 ;
-> >> > > all metadata manipulations can be done at xdp_rx? (however, not su=
-re
-> >> > > how real that is, since the descriptors are probably not exposed o=
-ver
-> >> > > there?)
-> >> >
-> >> > Well, to me XDP_REDIRECT is the most interesting one (see above). I
-> >> > think we could even drop the XDP_TX case and only do this for
-> >> > XDP_REDIRECT, since XDP_TX is basically a special-case optimisation.
-> >> > I.e., it's possible to XDP_REDIRECT back to the same device, the fra=
-mes
-> >> > will just take a slight detour up through the stack; but that could =
-also
-> >> > be a good thing if it means we'll have to do less surgery to the dri=
-vers
-> >> > to implement this for two paths.
-> >> >
-> >> > It does have the same challenge as you outlined above, though: At th=
-at
-> >> > point the TX descriptor probably doesn't exist, so the driver NDO wi=
-ll
-> >> > have to do something else with the data; but maybe we can solve that
-> >> > without moving the hook into the driver itself somehow?
-> >>
-> >> Ah, ok, yeah, I was putting XDP_TX / XDP_REDIRECT under the same
-> >> "transmit something out of xdp_rx hook" umbrella. We can maybe come up
-> >> with a skb-like-private metadata layout (as we've discussed previously
-> >> for skb) here as well? But not sure it would solve all the problems?
-> >> I'm thinking of an af_xdp case where it wants to program something
-> >> similar to tso/encap/tunneling offload (assuming af_xdp will get 4k+
-> >> support)
-> >
-> > We have a patch set of this in the works. Need to finish the last
-> > couple of tests then optimize performance and it is good to go. We
-> > should be able to post it during the next cycle that starts next week.
+>Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L
+><anthony.l.nguyen@intel.com>; bpf@vger.kernel.org; Karlsson, Magnus
+><magnus.karlsson@intel.com>
+>Subject: [Intel-wired-lan] [PATCH intel-next v6 5/8] i40e: use frame_sz in=
+stead
+>of recalculating truesize for building skb
 >
-> Uh, exciting, will look forward to seeing that! :)
+>In skb path truesize is calculated while building skb. This is now avoided=
+ and
+>xdp->frame_is used instead for both i40e_build_skb() and
+>i40e_construct_skb().
+>
+>Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+>---
+> drivers/net/ethernet/intel/i40e/i40e_txrx.c | 20 ++++----------------
+> 1 file changed, 4 insertions(+), 16 deletions(-)
+>
 
-+1, looking forward!
-
-> -Toke
+Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com> (A Contingent Worke=
+r at Intel)
