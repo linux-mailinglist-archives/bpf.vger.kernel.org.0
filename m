@@ -2,216 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7216AB1A2
-	for <lists+bpf@lfdr.de>; Sun,  5 Mar 2023 19:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA356AB390
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 00:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229543AbjCESAo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Mar 2023 13:00:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
+        id S229478AbjCEXqM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Mar 2023 18:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjCESAn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Mar 2023 13:00:43 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC94CD518;
-        Sun,  5 Mar 2023 10:00:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678039241; x=1709575241;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QE6+X0t0qr1Xce3NWsaYovK34zD80dqy8fScs/jetB4=;
-  b=dPb6NbPlfRb/dGXA2IfYKZT0EDO2Gq9/89/TI5oki8pdnXLtGA0hG+aJ
-   y3d3qPtJG0Vl4nDyZuqZwISp402KoO7HzdKTO65RhoDDzgc6nv9k97Lof
-   h09ZwfGbuTcXKB9cc9CosJPmtu4wWCSNdi8QIvaQv5dTH8F8HbbrhYRsw
-   FIMCafMKIdtZJ1TbTrWLOnx2Lycx+sK8WvAS9cOZOFysSp/PBvUaUFhXN
-   cTsTASgxGYBI2z/DfhXa35HW+Y/9apFIcWlRGgx9nnL6Of3ipskd/baTg
-   t5VKVADNpZlWZMt+gq4mamlABLerrSZln6yT9bq+rwDXfjryixMpgIuJy
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10640"; a="421681526"
-X-IronPort-AV: E=Sophos;i="5.98,236,1673942400"; 
-   d="scan'208";a="421681526"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2023 10:00:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10640"; a="675928398"
-X-IronPort-AV: E=Sophos;i="5.98,236,1673942400"; 
-   d="scan'208";a="675928398"
-Received: from lkp-server01.sh.intel.com (HELO 776573491cc5) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 05 Mar 2023 10:00:36 -0800
-Received: from kbuild by 776573491cc5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pYsey-0002x0-0Q;
-        Sun, 05 Mar 2023 18:00:36 +0000
-Date:   Mon, 6 Mar 2023 02:00:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: add bound tracking for BPF_MOD
-Message-ID: <202303060155.cNDEo1Br-lkp@intel.com>
-References: <20230306033119.2634976-2-xukuohai@huaweicloud.com>
+        with ESMTP id S229457AbjCEXqL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Mar 2023 18:46:11 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E816612BC9
+        for <bpf@vger.kernel.org>; Sun,  5 Mar 2023 15:46:09 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id q31-20020a17090a17a200b0023750b69614so7291911pja.5
+        for <bpf@vger.kernel.org>; Sun, 05 Mar 2023 15:46:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oNWf9WoGPKSK/vUdfFFGZ3rAwk+isVn3ybDAKRIyUbs=;
+        b=maK8o0/dOifKTjiITRfVI+AU8AqDKqPAANC6HgO8idatlEzbUHfi9sLil0HqFQrEvi
+         fjWUa3+N+Ra+i2V7eMr0h9T/c9exmTUxssQo9vAus+wnIUUiKmWVIeecZItA+xCk5CKY
+         zDdR/cXQdvYmSLY0aR8ORVBZKzRSayRmp+peyzUbjOLf+ELRwlDTSRPC/RZd20bKrlSw
+         7mQJ3ArLbe0mtTNAhK8INS4EG/dcC4FZ3yIxpBq41wPOD324F4GDz1nw/eUNIcTKYMD/
+         aTnE1ltbru8hs/zglf8WZNreO4bIi5emw/oBGUzMW/AcEXz2SB7qDH1b/2ts0gKK1cmD
+         0SoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oNWf9WoGPKSK/vUdfFFGZ3rAwk+isVn3ybDAKRIyUbs=;
+        b=EVOFbO03baq13Q9KSLmOTrsU73Fht14IbvBrzigJQtvlDwbZoK/eB5dIC6kSYxBccf
+         NJrAlSMeiw1my/BHDrkTvYW98zV+xcNNQ2Ofxnt27QxIx0DNsvR05DBBSIjC244xnNOP
+         OIoNA5mAv6FpCAFUjO3oTimg13j1PBHsbAHkdv0e8KyiRxdaeAUEunQGaGT4aBZfVx1M
+         Nu4ka8GL/jjtuNsfk13e2kENmzko/fXaKJ+s6vHYYpOLDv+x78pCFvGrTvcBWLtrGdVH
+         3rHL64aZ4ojPQnbK4uJZEbWDbMcqg718kiNEjEYNof4EHq4TpiyqEIg9PaScSs+HMOIg
+         EJfQ==
+X-Gm-Message-State: AO0yUKXp2JiJcgO2Dbndh211ahqXfKnSh4zRQdUYUi3CRakOJIqrvOxm
+        M/zb9D/kZxgyiU/yNublh+U=
+X-Google-Smtp-Source: AK7set+sXpAe8XQdXn/88xlgkAAdl3O8Dcm0nyEaZ3u9EU1d+WNwwxFi9Vvli1Xhi8RsVElkX3dnPA==
+X-Received: by 2002:a17:903:11c8:b0:199:2a89:f912 with SMTP id q8-20020a17090311c800b001992a89f912mr10664562plh.20.1678059969002;
+        Sun, 05 Mar 2023 15:46:09 -0800 (PST)
+Received: from MacBook-Pro-6.local ([2620:10d:c090:400::5:59fc])
+        by smtp.gmail.com with ESMTPSA id ke13-20020a170903340d00b0019ea9e5815bsm3254763plb.45.2023.03.05.15.46.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Mar 2023 15:46:08 -0800 (PST)
+Date:   Sun, 5 Mar 2023 15:46:05 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH bpf-next 13/17] bpf: add support for open-coded iterator
+ loops
+Message-ID: <20230305234605.q2aszlad5ow3ylkl@MacBook-Pro-6.local>
+References: <20230302235015.2044271-1-andrii@kernel.org>
+ <20230302235015.2044271-14-andrii@kernel.org>
+ <20230304200232.ueac44amyhpptpay@MacBook-Pro-6.local>
+ <CAEf4BzY70w2g5giMu+qWOE0YSGWKvy1hq-pKCvHHKLcez+R2Tg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230306033119.2634976-2-xukuohai@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4BzY70w2g5giMu+qWOE0YSGWKvy1hq-pKCvHHKLcez+R2Tg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Xu,
+On Sat, Mar 04, 2023 at 03:27:46PM -0800, Andrii Nakryiko wrote:
+> particular type. This will automatically work better for kfuncs as
+> new/next/destroy trios will have the same `struct bpf_iter_<type> *`
+> and it won't be possible to accidentally pass wrong bpf_iter_<type> to
+> wrong new/next/destroy method.
 
-Thank you for the patch! Yet something to improve:
+Exactly.
 
-[auto build test ERROR on bpf-next/master]
+> >
+> > > +
+> > > +static int mark_stack_slots_iter(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> > > +                              enum bpf_arg_type arg_type, int insn_idx)
+> > > +{
+> > > +     struct bpf_func_state *state = func(env, reg);
+> > > +     enum bpf_iter_type type;
+> > > +     int spi, i, j, id;
+> > > +
+> > > +     spi = iter_get_spi(env, reg);
+> > > +     if (spi < 0)
+> > > +             return spi;
+> > > +
+> > > +     type = arg_to_iter_type(arg_type);
+> > > +     if (type == BPF_ITER_TYPE_INVALID)
+> > > +             return -EINVAL;
+> >
+> > Do we need destroy_if_dynptr_stack_slot() equivalent here?
+> 
+> no, because bpf_iter is always ref-counted, so we'll always have
+> explicit unmark_stack_slots_iter() call, which will reset slot types
+> 
+> destroy_if_dynptr_stack_slot() was added because LOCAL dynptr doesn't
+> require explicit destruction. I mentioned this difference
+> (simplification for bpf_iter case) somewhere in the commit message.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Xu-Kuohai/bpf-add-bound-tracking-for-BPF_MOD/20230305-223257
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230306033119.2634976-2-xukuohai%40huaweicloud.com
-patch subject: [PATCH bpf-next 1/2] bpf: add bound tracking for BPF_MOD
-config: arm-randconfig-r025-20230305 (https://download.01.org/0day-ci/archive/20230306/202303060155.cNDEo1Br-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project 67409911353323ca5edf2049ef0df54132fa1ca7)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm cross compiling tool for clang build
-        # apt-get install binutils-arm-linux-gnueabi
-        # https://github.com/intel-lab-lkp/linux/commit/e66c7bbd32e375af92c776a2b9f51be4c515ad71
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Xu-Kuohai/bpf-add-bound-tracking-for-BPF_MOD/20230305-223257
-        git checkout e66c7bbd32e375af92c776a2b9f51be4c515ad71
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash kernel/
+I see. Makes sense.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303060155.cNDEo1Br-lkp@intel.com/
+> > >
+> > >               /* regular write of data into stack destroys any spilled ptr */
+> > >               state->stack[spi].spilled_ptr.type = NOT_INIT;
+> > > -             /* Mark slots as STACK_MISC if they belonged to spilled ptr. */
+> > > -             if (is_spilled_reg(&state->stack[spi]))
+> > > +             /* Mark slots as STACK_MISC if they belonged to spilled ptr/dynptr/iter. */
+> > > +             if (is_stack_slot_special(&state->stack[spi]))
+> > >                       for (i = 0; i < BPF_REG_SIZE; i++)
+> > >                               scrub_spilled_slot(&state->stack[spi].slot_type[i]);
+> >
+> > It fixes something for dynptr, right?
+> 
+> It's convoluted, I think it might not have a visible effect. This is
+> the situation of partial (e.g., single byte) overwrite of
+> STACK_DYNPTR/STACK_ITER, and without this change we'll leave some
+> slot_types as STACK_MISC, while others as STACK_DYNPTP/STACK_ITER.
+> This is unexpected state, but I think existing code always checks that
+> for STACK_DYNPTR's all 8 slots are STACK_DYNPTR.
+> 
+> So I think it's a good clean up, but no consequences for dynptr
+> correctness. And for STACK_ITER I don't have to worry about such mix,
+> if any of the slot_type[i] is STACK_ITER, then it's a correct
+> iterator.
 
-All errors (new ones prefixed by >>):
+agree. I was just curious.
 
-   kernel/bpf/verifier.c:10298:24: warning: array index 16 is past the end of the array (that has type 'u32[16]' (aka 'unsigned int[16]')) [-Warray-bounds]
-                                      meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice_rdwr]) {
-                                                      ^                  ~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/verifier.c:9150:1: note: array 'special_kfunc_list' declared here
-   BTF_ID_LIST(special_kfunc_list)
-   ^
-   include/linux/btf_ids.h:207:27: note: expanded from macro 'BTF_ID_LIST'
-   #define BTF_ID_LIST(name) static u32 __maybe_unused name[16];
-                             ^
-   kernel/bpf/verifier.c:11622:13: warning: comparison of distinct pointer types ('typeof ((umax)) *' (aka 'unsigned int *') and 'uint64_t *' (aka 'unsigned long long *')) [-Wcompare-distinct-pointer-types]
-           umax_rem = do_div(umax, val);
-                      ^~~~~~~~~~~~~~~~~
-   include/asm-generic/div64.h:222:28: note: expanded from macro 'do_div'
-           (void)(((typeof((n)) *)0) == ((uint64_t *)0));  \
-                  ~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~
->> kernel/bpf/verifier.c:11622:13: error: incompatible pointer types passing 'u32 *' (aka 'unsigned int *') to parameter of type 'uint64_t *' (aka 'unsigned long long *') [-Werror,-Wincompatible-pointer-types]
-           umax_rem = do_div(umax, val);
-                      ^~~~~~~~~~~~~~~~~
-   include/asm-generic/div64.h:238:22: note: expanded from macro 'do_div'
-                   __rem = __div64_32(&(n), __base);       \
-                                      ^~~~
-   arch/arm/include/asm/div64.h:24:45: note: passing argument to parameter 'n' here
-   static inline uint32_t __div64_32(uint64_t *n, uint32_t base)
-                                               ^
-   kernel/bpf/verifier.c:11623:13: warning: comparison of distinct pointer types ('typeof ((umin)) *' (aka 'unsigned int *') and 'uint64_t *' (aka 'unsigned long long *')) [-Wcompare-distinct-pointer-types]
-           umin_rem = do_div(umin, val);
-                      ^~~~~~~~~~~~~~~~~
-   include/asm-generic/div64.h:222:28: note: expanded from macro 'do_div'
-           (void)(((typeof((n)) *)0) == ((uint64_t *)0));  \
-                  ~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~
-   kernel/bpf/verifier.c:11623:13: error: incompatible pointer types passing 'u32 *' (aka 'unsigned int *') to parameter of type 'uint64_t *' (aka 'unsigned long long *') [-Werror,-Wincompatible-pointer-types]
-           umin_rem = do_div(umin, val);
-                      ^~~~~~~~~~~~~~~~~
-   include/asm-generic/div64.h:238:22: note: expanded from macro 'do_div'
-                   __rem = __div64_32(&(n), __base);       \
-                                      ^~~~
-   arch/arm/include/asm/div64.h:24:45: note: passing argument to parameter 'n' here
-   static inline uint32_t __div64_32(uint64_t *n, uint32_t base)
-                                               ^
-   kernel/bpf/verifier.c:11622:13: warning: shift count >= width of type [-Wshift-count-overflow]
-           umax_rem = do_div(umax, val);
-                      ^~~~~~~~~~~~~~~~~
-   include/asm-generic/div64.h:234:25: note: expanded from macro 'do_div'
-           } else if (likely(((n) >> 32) == 0)) {          \
-                                  ^  ~~
-   include/linux/compiler.h:77:40: note: expanded from macro 'likely'
-   # define likely(x)      __builtin_expect(!!(x), 1)
-                                               ^
-   kernel/bpf/verifier.c:11623:13: warning: shift count >= width of type [-Wshift-count-overflow]
-           umin_rem = do_div(umin, val);
-                      ^~~~~~~~~~~~~~~~~
-   include/asm-generic/div64.h:234:25: note: expanded from macro 'do_div'
-           } else if (likely(((n) >> 32) == 0)) {          \
-                                  ^  ~~
-   include/linux/compiler.h:77:40: note: expanded from macro 'likely'
-   # define likely(x)      __builtin_expect(!!(x), 1)
-                                               ^
-   5 warnings and 2 errors generated.
+> > > +static bool is_iter_next_insn(struct bpf_verifier_env *env, int insn_idx, int *reg_idx)
+> > > +{
+> > > +     struct bpf_insn *insn = &env->prog->insnsi[insn_idx];
+> > > +     const struct btf_param *args;
+> > > +     const struct btf_type *t;
+> > > +     const struct btf *btf;
+> > > +     int nargs, i;
+> > > +
+> > > +     if (!bpf_pseudo_kfunc_call(insn))
+> > > +             return false;
+> > > +     if (!is_iter_next_kfunc(insn->imm))
+> > > +             return false;
+> > > +
+> > > +     btf = find_kfunc_desc_btf(env, insn->off);
+> > > +     if (IS_ERR(btf))
+> > > +             return false;
+> > > +
+> > > +     t = btf_type_by_id(btf, insn->imm);     /* FUNC */
+> > > +     t = btf_type_by_id(btf, t->type);       /* FUNC_PROTO */
+> > > +
+> > > +     args = btf_params(t);
+> > > +     nargs = btf_vlen(t);
+> > > +     for (i = 0; i < nargs; i++) {
+> > > +             if (is_kfunc_arg_iter(btf, &args[i])) {
+> > > +                     *reg_idx = BPF_REG_1 + i;
+> > > +                     return true;
+> > > +             }
+> > > +     }
+> >
+> > This is some future-proofing ?
+> > The commit log says that all iterators has to in the form:
+> > bpf_iter_<kind>_next(struct bpf_iter* it)
+> > Should we check for one and only arg here instead?
+> 
+> Yeah, a bit of generality. For a long time I had an assumption
+> hardcoded about first argument being struct bpf_iter *, but that felt
+> unclean, so I generalized that before submission.
+> 
+> But I can't think why we wouldn't just dictate (and enforce) that
+> `struct bpf_iter *` is first. It makes sense, it's clean, and we lose
+> nothing. This is another thing that differs between dynptr and iter,
+> for dynptr such restriction wouldn't make sense.
+> 
+> Where would be a good place to enforce this for iter kfuncs?
 
+I would probably just remove is_iter_next_insn() completely, hard code BPF_REG_1
+and add a big comment for now.
 
-vim +11622 kernel/bpf/verifier.c
+In the follow up we can figure out how to:
+BUILD_BUG_ON(!__same_type(bpf_iter_num_next, some canonical proto for iter_next));
 
- 11606	
- 11607	static void scalar32_min_max_mod(struct bpf_reg_state *dst_reg,
- 11608					 struct bpf_reg_state *src_reg)
- 11609	{
- 11610		u32 val = (u32)src_reg->var_off.value; /* src_reg is const */
- 11611		u32 umax = dst_reg->u32_max_value;
- 11612		u32 umin = dst_reg->u32_min_value;
- 11613		u32 umax_rem, umin_rem;
- 11614	
- 11615		/* dst_reg is 32-bit truncated when mod32 zero, since
- 11616		 * adjust_scalar_min_max_vals calls zext_32_to_64 to do truncation for
- 11617		 * all alu32 ops, here we do nothing and just return.
- 11618		 */
- 11619		if (!val)
- 11620			return;
- 11621	
- 11622		umax_rem = do_div(umax, val);
- 11623		umin_rem = do_div(umin, val);
- 11624	
- 11625		/* no winding */
- 11626		if (umax - umin < val && umin_rem <= umax_rem) {
- 11627			dst_reg->var_off = tnum_range(umin_rem, umax_rem);
- 11628			dst_reg->u32_min_value = umin_rem;
- 11629			dst_reg->u32_max_value = umax_rem;
- 11630		} else {
- 11631			dst_reg->var_off = tnum_range(0, val - 1);
- 11632			dst_reg->u32_min_value = 0;
- 11633			dst_reg->u32_max_value = val - 1;
- 11634		}
- 11635	
- 11636		/* cross the sign boundary */
- 11637		if ((s32)dst_reg->u32_min_value > (s32)dst_reg->u32_max_value) {
- 11638			dst_reg->s32_min_value = S32_MIN;
- 11639			dst_reg->s32_max_value = S32_MAX;
- 11640		} else {
- 11641			dst_reg->s32_min_value = (s32)dst_reg->u32_min_value;
- 11642			dst_reg->s32_max_value = (s32)dst_reg->u32_max_value;
- 11643		}
- 11644	
- 11645		/* mark reg64 unbounded to deduce 64-bit bounds from var_off */
- 11646		__mark_reg64_unbounded(dst_reg);
- 11647	}
- 11648	
+Like we do:
+  BUILD_BUG_ON(!__same_type(ops->map_lookup_elem,
+               (void *(*)(struct bpf_map *map, void *key))NULL));
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+> >
+> > 'depth' part of bpf_reg_state will be checked for equality in regsafe(), right?
+> 
+> no, it is explicitly skipped (and it's actually stacksafe(), not
+> regsafe()). I can add explicit comment that we *ignore* depth
+
+Ahh. That's stacksafe() indeed.
+Would be great to add a comment to:
++                       if (old_reg->iter.type != cur_reg->iter.type ||
++                           old_reg->iter.state != cur_reg->iter.state ||
++                           !check_ids(old_reg->ref_obj_id, cur_reg->ref_obj_id, idmap))
++                               return false;
+
+that depth is explicitly not compared.
+
+> I was considering adding a flag to states_equal() whether to check
+> depth or not (that would make iter_active_depths_differ unnecessary),
+> but it doesn't feel right. Any preferences one way or the other?
+
+probably overkill. just comment should be enough.
+
+> > Everytime we branch out in process_iter_next_call() there is depth++
+> > So how come we're able to converge with:
+> >  +                     if (is_iter_next_insn(env, insn_idx, &iter_arg_reg_idx)) {
+> >  +                             if (states_equal(env, &sl->state, cur)) {
+> > That's because states_equal() is done right before doing process_iter_next_call(), right?
+> 
+> Yes, we check convergence before we process_iter_next_call. We do
+> converge because we ignore depth, as I mentioned above.
+> 
+> >
+> > So depth counts the number of times bpf_iter*_next() was processed.
+> > In other words it's a number of ways the body of the loop can be walked?
+> 
+> More or less, yes. It's a number of sequential unrolls of loop body,
+> each time with a different starting state. But all that only in the
+> current code path. So it's not like "how many different loop states we
+> could have" in total. It's number of loop unrols with the condition
+> "assuming current code path that led to start of iterator loop". Some
+> other code path could lead to the state (before iterator loop starts)
+> that converges faster or slower, which is why I'm pointing out the
+> distinction.
+
+got it. I know the comments are big and extensive already, but little bit more
+won't hurt.
+
+> >
+> > > +                     }
+> > > +                     /* attempt to detect infinite loop to avoid unnecessary doomed work */
+> > > +                     if (states_maybe_looping(&sl->state, cur) &&
+> >
+> > Maybe cleaner is to remove above 'goto' and do '} else if (states_maybe_looping' here ?
+> 
+> I can undo this, it felt cleaner with explicit "skip infinite loop
+> check" both for new code and for that async_entry_cnt check above. But
+> I can revert to if/else if/else if pattern, though I find it harder to
+> follow, given all this code (plus comments) is pretty long, so it's
+> easy to lose track when reading
+
+I'm fine whichever way. I just remembered that you typically try to avoid goto-s
+and seeing goto here that could have easily been 'else' raised my internal alarm
+that I could be missing something subtle in the code here.
+
+> 
+> >
+> > > +                         states_equal(env, &sl->state, cur) &&
+> > > +                         !iter_active_depths_differ(&sl->state, cur)) {
+> > >                               verbose_linfo(env, insn_idx, "; ");
+> > >                               verbose(env, "infinite loop detected at insn %d\n", insn_idx);
+> > >                               return -EINVAL;
