@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F3C6AB026
-	for <lists+bpf@lfdr.de>; Sun,  5 Mar 2023 14:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C472A6AB048
+	for <lists+bpf@lfdr.de>; Sun,  5 Mar 2023 14:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbjCENxZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Mar 2023 08:53:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
+        id S229961AbjCENyW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Mar 2023 08:54:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjCENxW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Mar 2023 08:53:22 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48EEA12840;
-        Sun,  5 Mar 2023 05:52:42 -0800 (PST)
+        with ESMTP id S229615AbjCENyH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Mar 2023 08:54:07 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E0618A9B;
+        Sun,  5 Mar 2023 05:53:35 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BA0A4B80A89;
-        Sun,  5 Mar 2023 13:52:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F711C4339C;
-        Sun,  5 Mar 2023 13:52:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 429AA60B02;
+        Sun,  5 Mar 2023 13:53:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3710C433EF;
+        Sun,  5 Mar 2023 13:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678024359;
+        s=k20201202; t=1678024412;
         bh=W1QfcQHVZVFp9rQvEhfqJH+RvdNqkFLq8fN0NrQTBe0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=du78zdlOJlwmS+Emdol2gc0Ic4r0crnRlJMGqz820Kahu+sketnblVZAAjKyoMeAr
-         xhYby++uLshWWDG7Gqyn0/OYqKotZxw4DUmg9UjRaOJIW8KgRtFC/UXTySt0BkH35s
-         UssQ+YTAbuMjDUrEW9POlI0MRMFid+80iDE9ci2Nr6B/Yh2uBGXsUo+/PdJHIVGcgn
-         hcIrV5VjNcjs7LB8iAGTX21OLLyOL42aEYWZa/HLG0zGOja8fL6Y1HdTgSUnoHqGUU
-         QF5fh8680ugRSn1JlOKaKMc5p+p4h62bGM4p29LKBKkQnrzt+nad6CxEQWFY/gfshS
-         yXk5EUUsVBFiw==
+        b=AkflD1xsCM/jRo7VJgr+3LGaKpmnPiwBUKmH0AqkthHvXLm4EVE6q1OKXP/WPvMeL
+         f0W0uq+5it/Px5mx/YIAOIsZDeyobw0ulGoXvu349u+qU5TyYdEZBjBSmuT1gr42E2
+         cMYNxzv8twS4LswUDpchQ1rTXkWcr+tD/V8e6UBaay/se+pnW94OhJfnAwwZqhaNV1
+         kjtiKcOmiGN+y7sx3/q0FPAj5VKy5JpwYo807Nf/yJGwt0n0sUlUVPS8Fp90/OlsMr
+         5uoL3hotyU2TeIeXoZ6QghuSYBngV7hUdrfhxirRIDC0aeHUWXoQU/KjO8BeixcveK
+         4EhJ5G7PLpdPg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
@@ -39,18 +39,18 @@ Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         daniel@iogearbox.net, andrii@kernel.org,
         naveen.n.rao@linux.ibm.com, bpf@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 6.2 09/16] powerpc/bpf/32: Only set a stack frame when necessary
-Date:   Sun,  5 Mar 2023 08:52:00 -0500
-Message-Id: <20230305135207.1793266-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 08/15] powerpc/bpf/32: Only set a stack frame when necessary
+Date:   Sun,  5 Mar 2023 08:52:59 -0500
+Message-Id: <20230305135306.1793564-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230305135207.1793266-1-sashal@kernel.org>
-References: <20230305135207.1793266-1-sashal@kernel.org>
+In-Reply-To: <20230305135306.1793564-1-sashal@kernel.org>
+References: <20230305135306.1793564-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
