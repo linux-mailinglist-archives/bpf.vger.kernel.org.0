@@ -2,74 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BD26AD0C3
-	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 22:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2566AD0C4
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 22:46:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjCFVpe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 16:45:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
+        id S229892AbjCFVqn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 16:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjCFVpd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 16:45:33 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23ACB497FB
-        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 13:45:32 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id cp7-20020a17090afb8700b0023756229427so14585610pjb.1
-        for <bpf@vger.kernel.org>; Mon, 06 Mar 2023 13:45:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678139131;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3eGEcFWYIwpyGAL28jJ0lCoqT4uOscdCUID+Y2/OM7g=;
-        b=IAYXHxdjDy7bqTfdQYPZDgusaYEnxTykpHqLZPYoejQ3Uic3voZbRUs/w2BAiSv0QJ
-         8TRGyqsd8+FBhYL9ts1Dg9INFGjw6Qw/diIscGUW1MQzLVrJ4hrA/L6aR5ygy1Uy+3ee
-         EvBCdCtRGqmOXsWz026PU84dOx9ejOON1cH4+L8vSPC7MVtVTOHnF25z8aDHCsNsyXFa
-         zyEbvGgdMhzMSNQWBVMGe8bYRQydk1qg4StlFXf0roQZ4nM1pVGss/K0nqixT+wk1wPf
-         IV9DVl3htVim0VnsyLUwlQavfduy/PDiEMz++Ueq977mQDUv5tAuBzyy2tf/FLbyxjFq
-         k0gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678139131;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3eGEcFWYIwpyGAL28jJ0lCoqT4uOscdCUID+Y2/OM7g=;
-        b=jraRzZbq73QDWESCmLZyK7p0VjEdx9adA8rIu2Q3Mtbbi6/OTdynyV9SNE72LTmMUm
-         4757fNz4JGytvfsMSuZxbrcABydmssHYqFef+i/jMK+c8KvPY71zt+VhzvOukaqqQK5v
-         e+iPrqXE1FqGg7RE79TVHdNS4okCImlwaLU56peLaI9IN5V1S/qNvn9Af5eTcByInnKT
-         Dn4sSjcQ1C3AW/flj6Yd8qr++3wSdvGdoaG9E/56B+ypC2Kv1TxntnqRrgsptpeYeINU
-         kcvsXej9OhPQcAHrwmSdPGSPNSvxXevEj7EVJkwhrcgCti7QXoSuFfnL2gpyACq7k67R
-         WgFA==
-X-Gm-Message-State: AO0yUKXbBe3pQ7pdeE0kqxRMbIGemUNRriv9DZRDfFjvMI2XQPfabeW2
-        ACFgQrikDAFaXOyFdZHl1Pqn8fFj7xw=
-X-Google-Smtp-Source: AK7set+IS87UR0YEd6sOCd3lAa90BVJEIoXp1tdQda7oTmjDz3vM7W/sfRxVcSJ79Uugp1RTNF5bMA==
-X-Received: by 2002:a05:6a20:7faa:b0:c7:7afa:5016 with SMTP id d42-20020a056a207faa00b000c77afa5016mr16073236pzj.9.1678139131503;
-        Mon, 06 Mar 2023 13:45:31 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21e1::130d? ([2620:10d:c090:400::5:17e4])
-        by smtp.gmail.com with ESMTPSA id n9-20020a654cc9000000b004fab4455748sm6758437pgt.75.2023.03.06.13.45.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Mar 2023 13:45:31 -0800 (PST)
-Message-ID: <6b1dbf32-67ff-027e-0d57-c3273339dc97@gmail.com>
-Date:   Mon, 6 Mar 2023 13:45:25 -0800
+        with ESMTP id S229729AbjCFVqm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 16:46:42 -0500
+Received: from BN6PR00CU002-vft-obe.outbound.protection.outlook.com (mail-eastus2azon11021015.outbound.protection.outlook.com [52.101.57.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C39959E7E
+        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 13:46:41 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ULG8JJX+jkHkkeMHpN6+FqRlLhdE5voMKBT7GLrAdgt8nRrp4gV36vGxTfsnyxPVO1w9VFwfnmv1bErXu/Lj01netg8SS0/OnJmEBEAxaoxzRX2SJgyzadNXdkgF3zonYS2pgRSILLC1i2nSwlzJQIoNS48pYWCg5KYmLuhR2IzmgFE2vYOtkdN22FSE8GYN6oN5+GZeX/o8wRtcpJBoGghkIs+KdkSXrahKdoKQ5bVhQK2BqTijyZN0D2wZ3wHHmU8StHSbi7uwuBsp/+JfKnjV2QxbxnrQAFnWzCaHWkzPQcPC+Biochdc/0XsPs6Mz/KpLmY01+RoXqyxsVC84Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F71PG8uIHuL1frK8a1ITkeOGGlZVBKzuxfTjECWY86s=;
+ b=KyEixtKbN1TA00Ae7yswg0GbwvKQZ3H1ionniUVp25P3Rtv/C7GMgeUJ7wr1/ilKWoQz646TcmiX3AiOnzd/cac/CoQYDCO95QwEDCv4nxhsBBt2ulTmtggyd7H0CzztCeRtnU3FqrDGnN+Pn0Cyc8phVGNnYxshN0yYPXzt3ppq/n2VXZyKj8etV6MajO6tQlyWbcVe9spu+e5xkC5ac2OoA8WJxJqD/lxiNlp57d0IuK3LrkGcQpuFAr1oq3nImtkh6HKA3Yt0J/cvvvEeAtIMTZPad9h+n72mwPF5otbzPqEIFY6wSi+RpJVfmU+7pvqXihyzh+2NQTEmBnyb9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F71PG8uIHuL1frK8a1ITkeOGGlZVBKzuxfTjECWY86s=;
+ b=ByDojlg0ybeLXZevnNhBIu6t2LnpW3zed57WUMhGO4QJ6n4XBjKYYVPJLcGjnAmGPh5N2g5fqYvmCwZzTxnr/gICkYUQD8TtRDQ+Syqoe5HucsmGWJVB+19Vv2TdGyz56dtpD9ki7e4l0UJdWCzRgLRRCqBDKQPNN9IArkbBRTA=
+Received: from SJ0PR00MB1005.namprd00.prod.outlook.com (2603:10b6:a03:2d3::18)
+ by SA1PR00MB1172.namprd00.prod.outlook.com (2603:10b6:806:190::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6209.0; Mon, 6 Mar
+ 2023 21:46:38 +0000
+Received: from SJ0PR00MB1005.namprd00.prod.outlook.com
+ ([fe80::2a24:661d:db87:3976]) by SJ0PR00MB1005.namprd00.prod.outlook.com
+ ([fe80::2a24:661d:db87:3976%3]) with mapi id 15.20.6213.000; Mon, 6 Mar 2023
+ 21:46:37 +0000
+From:   Rae Marks <Raeanne.Marks@microsoft.com>
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     Leonid Liansky <lliansky@microsoft.com>
+Subject: Suggested patch for bpftool
+Thread-Topic: Suggested patch for bpftool
+Thread-Index: AQHZUHOBrQIAckd6vU2Kp/uenfwQnw==
+Date:   Mon, 6 Mar 2023 21:46:37 +0000
+Message-ID: <SJ0PR00MB10058537EA379C1260C3C8A9FBB69@SJ0PR00MB1005.namprd00.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-03-06T21:46:37.637Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR00MB1005:EE_|SA1PR00MB1172:EE_
+x-ms-office365-filtering-correlation-id: 510ed17e-f2af-4eef-e5b0-08db1e8c4375
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ShnOJTwAjvQs/elxI7Zaf4szV725bpcM66DGTSbJ6YcXo0aRsEeStkh8j1MhFh83ULBmgTqm+Am+wThPfD5wl8QG03lUFpWqE1R833f9SnvgHkkDQRVIj3Pd+IaAnG4d5IvpA5Hg1qrh0BycBHtXoCW3l3InRchuP4VY7yKYQ2/R0i6bDsSv+WhImrDcwDs8yLLTvRSvQxFHcBt/J60nWhXJp8HgTJYdoTk0jarOBFlOglMoOy2Ep5pg37C06U3XJdVkv/V64u8yvBgIh4ozZu3WAt0/EIZDPxl09zjpFREmAMeDi288zgzq4Ar/NTGip4+hgsFmLmGbNSJd8c3CgJ7NFpd4RRfiaOchgQ2/VJBkTXhW15MXlyE66iuFy8TiZ8rZQArqf/QfUTsRheCdABAXQcd/nGBsnT9iG+Mvuw76qhMJFjzancpYBmdADh0KbSvdfLV5cTDfB3ya89L0HUN5JyGuTaZ4C9RPpOsRZSp1UHl+6GJ6Venj22iloc5q87ifHbyxshTsHQziWRVsjtxPdpD2+AwFQVEPM9u52DxgwM/HqWG3AoSbH63Nhjmns1ZEmYQM9dHr9CqZCgi7lguWGW9mezw9EWaa+/YlO3iVoQbR60AW8oqfREBLFZU2KrCrAne0k2E59i4sntycyrzC/NoqE5Vfbrq8Z+zRkvct1koiy48EekI4xPXyMYnsrducg/Nd0GtnzZfyIZN+JjE6pj2ys1MQtzmoSDFvLXo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR00MB1005.namprd00.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(136003)(366004)(376002)(346002)(396003)(451199018)(52536014)(4744005)(107886003)(41300700001)(6506007)(8936002)(5660300002)(2906002)(478600001)(10290500003)(71200400001)(7696005)(64756008)(66556008)(66446008)(26005)(4326008)(186003)(316002)(66476007)(66946007)(9686003)(82950400001)(76116006)(8676002)(6916009)(33656002)(55016003)(86362001)(38070700005)(38100700002)(82960400001)(8990500004)(3480700007)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?JphT8KmkKfQrnjBU5gdE9dQaxexrmU+W601coGNobU6VAY6pRqhx7PIE?=
+ =?Windows-1252?Q?KqWz+2QULTzkCBh364EXBcvb7ASbXcUYNWmi25u8pz9dQIJ9gSXXV9GB?=
+ =?Windows-1252?Q?xpBsFfpozorS9x7+SHrvrc7SvmAVMXH4Zfx0gxYswh/UVfGOsaIcdO9M?=
+ =?Windows-1252?Q?k+lCsk1N0J2qmYeaIJiqkhsfhhh9EIm1wSiQvPE/223L94huRHYNMaBT?=
+ =?Windows-1252?Q?qIbnG8uxgJOkgSTpL+UqrOMDmNxUq66UnTrVHaps7ncyQlJDTJ2oK8bz?=
+ =?Windows-1252?Q?svfNpBJUlzIekSa8lL5W/NVx2XcaVw4y/xrlAeCaN69p6TwuvMLpCcuV?=
+ =?Windows-1252?Q?fNM5I3M7GkTXEJjWkcuFGBoeh1ySeOUHMciyjp0/ul4Fl7VExJ7lLSSk?=
+ =?Windows-1252?Q?ebWwxeTfPZShnxL4JcccGvDhevj+HJV2Uyh/b+Akiqzr5uz2/ckXuSG1?=
+ =?Windows-1252?Q?pCagWJkKezWKnSWEYRgQMiFjXLUBKeyqJ8GxoJ8NPz0v34DR1hIoEK90?=
+ =?Windows-1252?Q?reI4aUXgkwYfyn1fD4GyDDzwk3GpTyflG1OouEWswhOHXCYlrdthOsdm?=
+ =?Windows-1252?Q?jSEWIWw195R+EEwpaVc+NHREva4CKwb3k2yVgf/ECq+N4x7pN8WefIDu?=
+ =?Windows-1252?Q?Tw3kzl5mptI5JpNLDKWeK17SUwF6AjqDg4hoIvLU+9t+P6YIXBWBemvK?=
+ =?Windows-1252?Q?Ync7zFHITez07hzZzBQ31VgTBHZEpPrdU8LvWbr5jJOLCHa+JUczpBXY?=
+ =?Windows-1252?Q?NI0v5XRq4XXKIugCB7q7+ZHSZEGtAh2pNLgw8eA4lG7BK8BVDRWz2AE5?=
+ =?Windows-1252?Q?vEytH62NpoHpR1y6hoEv4EeMHVRlHeR9zMUCfkaj9wRvtRG/FodP2yI6?=
+ =?Windows-1252?Q?67FVeqniurEUbDNReydBOsgowgR3TtutytTkruQ1zPsRCPPKA/pKsulK?=
+ =?Windows-1252?Q?ivqrcyuumMn9xqoQ0bZeqr5G3Ld40SHnsIUjwcqnI3avTcELO76Bup7D?=
+ =?Windows-1252?Q?2zOPzLT1CHD3ndkZMTjjP2FeBlqwzAOiIRTX53Jte1ozSLC8xEeUv3u0?=
+ =?Windows-1252?Q?oZnjdFxp+4Qql6/vgMznyGD0q3iP7smcijWRiyOnJP2+xakzaM2oNKi4?=
+ =?Windows-1252?Q?0HynrqLD2Cl7S3EV6aAMmSw+RUYBr3XyhyeyGomFfP24LniWvM4VIOZw?=
+ =?Windows-1252?Q?EZsUNuZxqy/hx6E6aP+kIz1AfCyxHIpcqnsfjxvOor8f67h66jr4UJKg?=
+ =?Windows-1252?Q?8oxElvJcZmXEmKSO+vcjdK2brnOGgeB7JuNmIY25wINIIys5KkYqnph9?=
+ =?Windows-1252?Q?hcDzFqx6biKsB14AhkE1wZWPUvLpAjohRubuosUvumEkWznsSWGugLZ3?=
+ =?Windows-1252?Q?JsZ4u2ZZf5CY6sVP1ih35NYIGHTE6WKO6lfYvim7uGMyULmahALpQmPg?=
+ =?Windows-1252?Q?tuunv2+uQ84UMzrij9xO4NAXB9ujFNnapsazjp+pkBb0dEWT6+5OzofM?=
+ =?Windows-1252?Q?znJMgbpRsQEFmZX9RHzifSdaGpznph4PZCgC6zgRhuUemm4b5QhS/Cs7?=
+ =?Windows-1252?Q?lhTZYcc0weOfuCqS7AOpuHQvJ8WZNkYi4lpB8KhbuXyp0JUjpm+L12IS?=
+ =?Windows-1252?Q?Z6JDaEewu3Bz6gvYRLjLMM/oC3uaDiYOlS3QBgit+Jg4K7W1DPRD9roS?=
+ =?Windows-1252?Q?Kzaoi37hU2U2luuarGqcCuGyeuXhv0z8?=
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v3 1/8] bpf: Maintain the refcount of struct_ops
- maps directly.
-Content-Language: en-US, en-ZW
-To:     Stanislav Fomichev <sdf@google.com>,
-        Kui-Feng Lee <kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, kernel-team@meta.com, andrii@kernel.org
-References: <20230303012122.852654-1-kuifeng@meta.com>
- <20230303012122.852654-2-kuifeng@meta.com> <ZAZIn9DrvvYh5/QL@google.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <ZAZIn9DrvvYh5/QL@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR00MB1005.namprd00.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 510ed17e-f2af-4eef-e5b0-08db1e8c4375
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2023 21:46:37.8798
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: s8pFIPjpYIggo77w4fmBCFuq/XoP12vad+1KL5AYmk+jU9+Ph4PtyScGO1qmX20PNb6iNmDPxjsI+SMyfjvt/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR00MB1172
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,291 +115,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 3/6/23 12:10, Stanislav Fomichev wrote:
-> On 03/02, Kui-Feng Lee wrote:
->> The refcount of the kvalue for struct_ops was quite intricate to keep
->> track of. By no longer utilizing it and replacing it with the refcount
->> from the struct_ops map, this process became more transparent and
->> uncomplicated.
-> 
->> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
->> ---
->>   include/linux/bpf.h         |  3 ++
->>   kernel/bpf/bpf_struct_ops.c | 84 ++++++++++++++++++++++---------------
->>   kernel/bpf/syscall.c        | 22 ++++++----
->>   3 files changed, 68 insertions(+), 41 deletions(-)
-> 
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 8b5d0b4c4ada..cb837f42b99d 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -78,6 +78,7 @@ struct bpf_map_ops {
->>       struct bpf_map *(*map_alloc)(union bpf_attr *attr);
->>       void (*map_release)(struct bpf_map *map, struct file *map_file);
->>       void (*map_free)(struct bpf_map *map);
->> +    void (*map_free_rcu)(struct bpf_map *map);
->>       int (*map_get_next_key)(struct bpf_map *map, void *key, void 
->> *next_key);
->>       void (*map_release_uref)(struct bpf_map *map);
->>       void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void *key);
->> @@ -1869,8 +1870,10 @@ struct bpf_map *bpf_map_get_with_uref(u32 ufd);
->>   struct bpf_map *__bpf_map_get(struct fd f);
->>   void bpf_map_inc(struct bpf_map *map);
->>   void bpf_map_inc_with_uref(struct bpf_map *map);
->> +struct bpf_map *__bpf_map_inc_not_zero(struct bpf_map *map, bool uref);
->>   struct bpf_map * __must_check bpf_map_inc_not_zero(struct bpf_map 
->> *map);
->>   void bpf_map_put_with_uref(struct bpf_map *map);
->> +void bpf_map_free_deferred(struct work_struct *work);
->>   void bpf_map_put(struct bpf_map *map);
->>   void *bpf_map_area_alloc(u64 size, int numa_node);
->>   void *bpf_map_area_mmapable_alloc(u64 size, int numa_node);
->> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->> index ece9870cab68..bba03b6b010b 100644
->> --- a/kernel/bpf/bpf_struct_ops.c
->> +++ b/kernel/bpf/bpf_struct_ops.c
->> @@ -58,6 +58,8 @@ struct bpf_struct_ops_map {
->>       struct bpf_struct_ops_value kvalue;
->>   };
-> 
->> +static DEFINE_MUTEX(update_mutex);
-> 
-> Defined but unused?
-> 
->> +
->>   #define VALUE_PREFIX "bpf_struct_ops_"
->>   #define VALUE_PREFIX_LEN (sizeof(VALUE_PREFIX) - 1)
-> 
->> @@ -249,6 +251,7 @@ int bpf_struct_ops_map_sys_lookup_elem(struct 
->> bpf_map *map, void *key,
->>       struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map 
->> *)map;
->>       struct bpf_struct_ops_value *uvalue, *kvalue;
->>       enum bpf_struct_ops_state state;
->> +    s64 refcnt;
-> 
->>       if (unlikely(*(u32 *)key != 0))
->>           return -ENOENT;
->> @@ -261,13 +264,13 @@ int bpf_struct_ops_map_sys_lookup_elem(struct 
->> bpf_map *map, void *key,
->>           return 0;
->>       }
-> 
->> -    /* No lock is needed.  state and refcnt do not need
->> -     * to be updated together under atomic context.
->> -     */
->>       uvalue = value;
->>       memcpy(uvalue, st_map->uvalue, map->value_size);
->>       uvalue->state = state;
->> -    refcount_set(&uvalue->refcnt, refcount_read(&kvalue->refcnt));
->> +
->> +    refcnt = atomic64_read(&map->refcnt) - atomic64_read(&map->usercnt);
->> +    refcount_set(&uvalue->refcnt,
->> +             refcnt > 0 ? refcnt : 0);
-> 
->>       return 0;
->>   }
->> @@ -491,7 +494,6 @@ static int bpf_struct_ops_map_update_elem(struct 
->> bpf_map *map, void *key,
->>           *(unsigned long *)(udata + moff) = prog->aux->id;
->>       }
-> 
->> -    refcount_set(&kvalue->refcnt, 1);
->>       bpf_map_inc(map);
-> 
->>       set_memory_rox((long)st_map->image, 1);
->> @@ -536,8 +538,7 @@ static int bpf_struct_ops_map_delete_elem(struct 
->> bpf_map *map, void *key)
->>       switch (prev_state) {
->>       case BPF_STRUCT_OPS_STATE_INUSE:
->>           st_map->st_ops->unreg(&st_map->kvalue.data);
->> -        if (refcount_dec_and_test(&st_map->kvalue.refcnt))
->> -            bpf_map_put(map);
->> +        bpf_map_put(map);
->>           return 0;
->>       case BPF_STRUCT_OPS_STATE_TOBEFREE:
->>           return -EINPROGRESS;
->> @@ -582,6 +583,38 @@ static void bpf_struct_ops_map_free(struct 
->> bpf_map *map)
->>       bpf_map_area_free(st_map);
->>   }
-> 
->> +static void bpf_struct_ops_map_free_wq(struct rcu_head *head)
->> +{
->> +    struct bpf_struct_ops_map *st_map;
->> +
->> +    st_map = container_of(head, struct bpf_struct_ops_map, rcu);
->> +
->> +    /* bpf_map_free_deferred should not be called in a RCU callback. */
->> +    INIT_WORK(&st_map->map.work, bpf_map_free_deferred);
->> +    queue_work(system_unbound_wq, &st_map->map.work);
->> +}
->> +
->> +static void bpf_struct_ops_map_free_rcu(struct bpf_map *map)
->> +{
->> +    struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map 
->> *)map;
->> +
->> +    /* Wait for a grace period of RCU. Then, post the map_free
->> +     * work to the system_unbound_wq workqueue to free resources.
->> +     *
->> +     * The struct_ops's function may switch to another struct_ops.
->> +     *
->> +     * For example, bpf_tcp_cc_x->init() may switch to
->> +     * another tcp_cc_y by calling
->> +     * setsockopt(TCP_CONGESTION, "tcp_cc_y").
->> +     * During the switch,  bpf_struct_ops_put(tcp_cc_x) is called
->> +     * and its refcount may reach 0 which then free its
->> +     * trampoline image while tcp_cc_x is still running.
-> 
-> "is still running" where? Why existing deferred work doesn't protect
-> against this condition?
-
-bpf_module_put() is protected by rcu_read_lock() alone. As the comment 
-mentions, setsockopt() can lead to a switch to another algorithm. It is 
-exposed to the BPF world as bpf_setscokopt(), so it could potentially 
-call bpf_struct_ops_put() while a BPF program is running. In order to 
-guarantee we don't free the trampoline while it is still running, we 
-have to wait for a grace period.
-
-> 
->> +     *
->> +     * Thus, a rcu grace period is needed here.
->> +     */
->> +    call_rcu(&st_map->rcu, bpf_struct_ops_map_free_wq);
->> +}
->> +
->>   static int bpf_struct_ops_map_alloc_check(union bpf_attr *attr)
->>   {
->>       if (attr->key_size != sizeof(unsigned int) || attr->max_entries 
->> != 1 ||
->> @@ -646,6 +679,7 @@ const struct bpf_map_ops bpf_struct_ops_map_ops = {
->>       .map_alloc_check = bpf_struct_ops_map_alloc_check,
->>       .map_alloc = bpf_struct_ops_map_alloc,
-> 
-> [..]
-> 
->>       .map_free = bpf_struct_ops_map_free,
-> 
-> Since we have map_free_rcu check in bpf_map_put, does it mean the above
-> is not needed?
-
-It will be called by bpf_map_free_deferred().
-
-> 
->> +    .map_free_rcu = bpf_struct_ops_map_free_rcu,
->>       .map_get_next_key = bpf_struct_ops_map_get_next_key,
->>       .map_lookup_elem = bpf_struct_ops_map_lookup_elem,
->>       .map_delete_elem = bpf_struct_ops_map_delete_elem,
->> @@ -660,41 +694,23 @@ const struct bpf_map_ops bpf_struct_ops_map_ops = {
->>   bool bpf_struct_ops_get(const void *kdata)
->>   {
->>       struct bpf_struct_ops_value *kvalue;
->> +    struct bpf_struct_ops_map *st_map;
->> +    struct bpf_map *map;
-> 
->>       kvalue = container_of(kdata, struct bpf_struct_ops_value, data);
->> +    st_map = container_of(kvalue, struct bpf_struct_ops_map, kvalue);
-> 
->> -    return refcount_inc_not_zero(&kvalue->refcnt);
->> -}
->> -
->> -static void bpf_struct_ops_put_rcu(struct rcu_head *head)
->> -{
->> -    struct bpf_struct_ops_map *st_map;
->> -
->> -    st_map = container_of(head, struct bpf_struct_ops_map, rcu);
->> -    bpf_map_put(&st_map->map);
->> +    map = __bpf_map_inc_not_zero(&st_map->map, false);
->> +    return !IS_ERR(map);
->>   }
-> 
->>   void bpf_struct_ops_put(const void *kdata)
->>   {
->>       struct bpf_struct_ops_value *kvalue;
->> +    struct bpf_struct_ops_map *st_map;
-> 
->>       kvalue = container_of(kdata, struct bpf_struct_ops_value, data);
->> -    if (refcount_dec_and_test(&kvalue->refcnt)) {
->> -        struct bpf_struct_ops_map *st_map;
->> -
->> -        st_map = container_of(kvalue, struct bpf_struct_ops_map,
->> -                      kvalue);
->> -        /* The struct_ops's function may switch to another struct_ops.
->> -         *
->> -         * For example, bpf_tcp_cc_x->init() may switch to
->> -         * another tcp_cc_y by calling
->> -         * setsockopt(TCP_CONGESTION, "tcp_cc_y").
->> -         * During the switch,  bpf_struct_ops_put(tcp_cc_x) is called
->> -         * and its map->refcnt may reach 0 which then free its
->> -         * trampoline image while tcp_cc_x is still running.
->> -         *
->> -         * Thus, a rcu grace period is needed here.
->> -         */
->> -        call_rcu(&st_map->rcu, bpf_struct_ops_put_rcu);
->> -    }
->> +    st_map = container_of(kvalue, struct bpf_struct_ops_map, kvalue);
->> +
->> +    bpf_map_put(&st_map->map);
->>   }
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index cda8d00f3762..358a0e40555e 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -684,7 +684,7 @@ void bpf_obj_free_fields(const struct btf_record 
->> *rec, void *obj)
->>   }
-> 
->>   /* called from workqueue */
->> -static void bpf_map_free_deferred(struct work_struct *work)
->> +void bpf_map_free_deferred(struct work_struct *work)
->>   {
->>       struct bpf_map *map = container_of(work, struct bpf_map, work);
->>       struct btf_field_offs *foffs = map->field_offs;
->> @@ -715,6 +715,15 @@ static void bpf_map_put_uref(struct bpf_map *map)
->>       }
->>   }
-> 
->> +static void bpf_map_put_wq(struct bpf_map *map)
->> +{
->> +    INIT_WORK(&map->work, bpf_map_free_deferred);
->> +    /* Avoid spawning kworkers, since they all might contend
->> +     * for the same mutex like slab_mutex.
->> +     */
->> +    queue_work(system_unbound_wq, &map->work);
->> +}
->> +
->>   /* decrement map refcnt and schedule it for freeing via workqueue
->>    * (underlying map implementation ops->map_free() might sleep)
->>    */
->> @@ -724,11 +733,10 @@ void bpf_map_put(struct bpf_map *map)
->>           /* bpf_map_free_id() must be called first */
->>           bpf_map_free_id(map);
->>           btf_put(map->btf);
->> -        INIT_WORK(&map->work, bpf_map_free_deferred);
->> -        /* Avoid spawning kworkers, since they all might contend
->> -         * for the same mutex like slab_mutex.
->> -         */
->> -        queue_work(system_unbound_wq, &map->work);
->> +        if (map->ops->map_free_rcu)
->> +            map->ops->map_free_rcu(map);
->> +        else
->> +            bpf_map_put_wq(map);
->>       }
->>   }
->>   EXPORT_SYMBOL_GPL(bpf_map_put);
->> @@ -1276,7 +1284,7 @@ struct bpf_map *bpf_map_get_with_uref(u32 ufd)
->>   }
-> 
->>   /* map_idr_lock should have been held */
->> -static struct bpf_map *__bpf_map_inc_not_zero(struct bpf_map *map, 
->> bool uref)
->> +struct bpf_map *__bpf_map_inc_not_zero(struct bpf_map *map, bool uref)
->>   {
->>       int refold;
-> 
->> -- 
->> 2.30.2
-> 
+Hello,=0A=
+=A0=0A=
+Thank you for your work on bpftool, a great resource.=0A=
+=A0=0A=
+I have a legitimate reason why bpftool might fail to open an individual map=
+ to dump its information. I would like to submit a patch so that it does no=
+t bail from the loop iterating over all maps on the first map error. With t=
+his change, one map failing to open would not affect showing information ab=
+out other maps. Specifically, I=92d like to change this line (https://githu=
+b.com/libbpf/bpftool/blob/master/src/map.c#L699) to be a continue rather th=
+an a break.=0A=
+=0A=
+How can I submit a patch if you approve of this suggestion? I see that the =
+GitHub mirror of libbpf/bpftool is not the appropriate place, according to =
+the README.=0A=
+=A0=0A=
+Thank you!=0A=
+=A0=0A=
+Rae Marks=0A=
+Senior Software Engineer | Microsoft=0A=
+=A0=
