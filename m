@@ -2,37 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FF36AB89D
-	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 09:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784556AB89E
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 09:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjCFImw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 03:42:52 -0500
+        id S230054AbjCFInA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 03:43:00 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjCFIms (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 03:42:48 -0500
-Received: from out-1.mta1.migadu.com (out-1.mta1.migadu.com [95.215.58.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8409921A17
-        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 00:42:46 -0800 (PST)
+        with ESMTP id S230035AbjCFImw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 03:42:52 -0500
+Received: from out-43.mta1.migadu.com (out-43.mta1.migadu.com [IPv6:2001:41d0:203:375::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D6B21299
+        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 00:42:49 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1678092164;
+        t=1678092167;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CFxWT/d3uzE2XclnK+RN5CnC8LZOj6sVv90pIYHedaA=;
-        b=VtaGYcg5W94Z9OqcgxIKN8oy5vLq3WYlFXpJmrjjLC20PDbMlFhj4qAK9Lbp/Yykd3oXLQ
-        a7i+976rUlf8djEr4ZR3HbOTE8drrc8FMI4cyupgEsIxrQ4XWO8lOtSV9yEbBft/+9XxgT
-        320KJ2b5SKZq0bp26MzmsAf3HvPPUDA=
+        bh=YzC9X7UObwxzsDWt9u4tl8YDgLVbGfjVgq78KmLQ4eI=;
+        b=kTl3gYMPAWiNMDsCkE1CDMfIOe/iTHKiUcubgescKVaaW/fYWDR+PnHA7pjP5RXkCOMwi/
+        Fl2tPFjK+oIrlQi16DUsjmKJrB8zYNhfgVT6LVvaPXNSU87pAkpOqpOg9PlWsFNEI56Yd1
+        It0BJtF5rd7OHzB68FihBCYgjlNREuA=
 From:   Martin KaFai Lau <martin.lau@linux.dev>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
-Subject: [PATCH bpf-next 06/16] bpf: Repurpose use_trace_rcu to reuse_now in bpf_local_storage
-Date:   Mon,  6 Mar 2023 00:42:06 -0800
-Message-Id: <20230306084216.3186830-7-martin.lau@linux.dev>
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: [PATCH bpf-next 07/16] bpf: Remove bpf_selem_free_fields*_rcu
+Date:   Mon,  6 Mar 2023 00:42:07 -0800
+Message-Id: <20230306084216.3186830-8-martin.lau@linux.dev>
 In-Reply-To: <20230306084216.3186830-1-martin.lau@linux.dev>
 References: <20230306084216.3186830-1-martin.lau@linux.dev>
 MIME-Version: 1.0
@@ -49,213 +50,118 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-This patch re-purpose the use_trace_rcu to mean
-if the freed memory can be reused immediately or not.
-The use_trace_rcu is renamed to reuse_now. Other than
-the boolean test is reversed, it should be a no-op.
+This patch removes the bpf_selem_free_fields*_rcu. The
+bpf_obj_free_fields() can be done before the call_rcu_trasks_trace()
+and kfree_rcu(). It is needed when a later patch uses
+bpf_mem_cache_alloc/free. In bpf hashtab, bpf_obj_free_fields()
+is also called before calling bpf_mem_cache_free. The discussion
+can be found in
+https://lore.kernel.org/bpf/f67021ee-21d9-bfae-6134-4ca542fab843@linux.dev/
 
-The following explains the reason for the rename and how it will
-be used in a later patch.
-
-In a later patch, bpf_mem_cache_alloc/free will be used
-in the bpf_local_storage. The bpf mem allocator will reuse
-the freed memory immediately. Some of the free paths in
-bpf_local_storage does not support memory to be reused immediately.
-These paths are the "delete" elem cases from the bpf_*_storage_delete()
-helper and the map_delete_elem() syscall. Note that "delete" elem
-before the owner's (sk/task/cgrp/inode) lifetime ended is not
-the common usage for the local storage.
-
-The common free path, bpf_local_storage_destroy(), can reuse the
-memory immediately. This common path means the storage stays with
-its owner until the owner is destroyed.
-
-The above mentioned "delete" elem paths that cannot
-reuse immediately always has the 'use_trace_rcu ==  true'.
-The cases that is safe for immediate reuse always have
-'use_trace_rcu == false'. Instead of adding another arg
-in a later patch, this patch re-purpose this arg
-to reuse_now and have the test logic reversed.
-
-In a later patch, 'reuse_now == true' will free to the
-bpf_mem_cache_free() where the memory can be reused
-immediately. 'reuse_now == false' will go through the
-call_rcu_tasks_trace().
-
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- include/linux/bpf_local_storage.h |  2 +-
- kernel/bpf/bpf_cgrp_storage.c     |  2 +-
- kernel/bpf/bpf_inode_storage.c    |  2 +-
- kernel/bpf/bpf_local_storage.c    | 24 ++++++++++++------------
- kernel/bpf/bpf_task_storage.c     |  2 +-
- net/core/bpf_sk_storage.c         |  2 +-
- 6 files changed, 17 insertions(+), 17 deletions(-)
+ kernel/bpf/bpf_local_storage.c | 67 +++-------------------------------
+ 1 file changed, 5 insertions(+), 62 deletions(-)
 
-diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-index 31ee681b4c65..fad09f42a2f4 100644
---- a/include/linux/bpf_local_storage.h
-+++ b/include/linux/bpf_local_storage.h
-@@ -143,7 +143,7 @@ int bpf_local_storage_map_check_btf(const struct bpf_map *map,
- void bpf_selem_link_storage_nolock(struct bpf_local_storage *local_storage,
- 				   struct bpf_local_storage_elem *selem);
- 
--void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool use_trace_rcu);
-+void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool reuse_now);
- 
- void bpf_selem_link_map(struct bpf_local_storage_map *smap,
- 			struct bpf_local_storage_elem *selem);
-diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
-index 1d00f1d9bdb7..617e6111a51f 100644
---- a/kernel/bpf/bpf_cgrp_storage.c
-+++ b/kernel/bpf/bpf_cgrp_storage.c
-@@ -121,7 +121,7 @@ static int cgroup_storage_delete(struct cgroup *cgroup, struct bpf_map *map)
- 	if (!sdata)
- 		return -ENOENT;
- 
--	bpf_selem_unlink(SELEM(sdata), true);
-+	bpf_selem_unlink(SELEM(sdata), false);
- 	return 0;
- }
- 
-diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
-index b4a9904df54e..e37d9d2e28f4 100644
---- a/kernel/bpf/bpf_inode_storage.c
-+++ b/kernel/bpf/bpf_inode_storage.c
-@@ -122,7 +122,7 @@ static int inode_storage_delete(struct inode *inode, struct bpf_map *map)
- 	if (!sdata)
- 		return -ENOENT;
- 
--	bpf_selem_unlink(SELEM(sdata), true);
-+	bpf_selem_unlink(SELEM(sdata), false);
- 
- 	return 0;
- }
 diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index c8ca1886374e..8c1401a24c7d 100644
+index 8c1401a24c7d..9a1febcc9565 100644
 --- a/kernel/bpf/bpf_local_storage.c
 +++ b/kernel/bpf/bpf_local_storage.c
-@@ -147,7 +147,7 @@ static void bpf_selem_free_trace_rcu(struct rcu_head *rcu)
-  */
- static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
- 					    struct bpf_local_storage_elem *selem,
--					    bool uncharge_mem, bool use_trace_rcu)
-+					    bool uncharge_mem, bool reuse_now)
+@@ -109,27 +109,6 @@ static void bpf_local_storage_free_rcu(struct rcu_head *rcu)
+ 		kfree_rcu(local_storage, rcu);
+ }
+ 
+-static void bpf_selem_free_fields_rcu(struct rcu_head *rcu)
+-{
+-	struct bpf_local_storage_elem *selem;
+-	struct bpf_local_storage_map *smap;
+-
+-	selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
+-	/* protected by the rcu_barrier*() */
+-	smap = rcu_dereference_protected(SDATA(selem)->smap, true);
+-	bpf_obj_free_fields(smap->map.record, SDATA(selem)->data);
+-	kfree(selem);
+-}
+-
+-static void bpf_selem_free_fields_trace_rcu(struct rcu_head *rcu)
+-{
+-	/* Free directly if Tasks Trace RCU GP also implies RCU GP */
+-	if (rcu_trace_implies_rcu_gp())
+-		bpf_selem_free_fields_rcu(rcu);
+-	else
+-		call_rcu(rcu, bpf_selem_free_fields_rcu);
+-}
+-
+ static void bpf_selem_free_trace_rcu(struct rcu_head *rcu)
+ {
+ 	struct bpf_local_storage_elem *selem;
+@@ -151,7 +130,6 @@ static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_stor
  {
  	struct bpf_local_storage_map *smap;
  	bool free_local_storage;
-@@ -201,7 +201,7 @@ static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_stor
- 	 * any special fields.
+-	struct btf_record *rec;
+ 	void *owner;
+ 
+ 	smap = rcu_dereference_check(SDATA(selem)->smap, bpf_rcu_lock_held());
+@@ -192,26 +170,11 @@ static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_stor
+ 	    SDATA(selem))
+ 		RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
+ 
+-	/* A different RCU callback is chosen whenever we need to free
+-	 * additional fields in selem data before freeing selem.
+-	 * bpf_local_storage_map_free only executes rcu_barrier to wait for RCU
+-	 * callbacks when it has special fields, hence we can only conditionally
+-	 * dereference smap, as by this time the map might have already been
+-	 * freed without waiting for our call_rcu callback if it did not have
+-	 * any special fields.
+-	 */
+-	rec = smap->map.record;
+-	if (!reuse_now) {
+-		if (!IS_ERR_OR_NULL(rec))
+-			call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_fields_trace_rcu);
+-		else
+-			call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_trace_rcu);
+-	} else {
+-		if (!IS_ERR_OR_NULL(rec))
+-			call_rcu(&selem->rcu, bpf_selem_free_fields_rcu);
+-		else
+-			kfree_rcu(selem, rcu);
+-	}
++	bpf_obj_free_fields(smap->map.record, SDATA(selem)->data);
++	if (!reuse_now)
++		call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_trace_rcu);
++	else
++		kfree_rcu(selem, rcu);
+ 
+ 	if (rcu_access_pointer(local_storage->smap) == smap)
+ 		RCU_INIT_POINTER(local_storage->smap, NULL);
+@@ -759,26 +722,6 @@ void bpf_local_storage_map_free(struct bpf_map *map,
  	 */
- 	rec = smap->map.record;
--	if (use_trace_rcu) {
-+	if (!reuse_now) {
- 		if (!IS_ERR_OR_NULL(rec))
- 			call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_fields_trace_rcu);
- 		else
-@@ -220,7 +220,7 @@ static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_stor
- }
+ 	synchronize_rcu();
  
- static void bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
--				     bool use_trace_rcu)
-+				     bool reuse_now)
- {
- 	struct bpf_local_storage *local_storage;
- 	bool free_local_storage = false;
-@@ -235,11 +235,11 @@ static void bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
- 	raw_spin_lock_irqsave(&local_storage->lock, flags);
- 	if (likely(selem_linked_to_storage(selem)))
- 		free_local_storage = bpf_selem_unlink_storage_nolock(
--			local_storage, selem, true, use_trace_rcu);
-+			local_storage, selem, true, reuse_now);
- 	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
- 
- 	if (free_local_storage) {
--		if (use_trace_rcu)
-+		if (!reuse_now)
- 			call_rcu_tasks_trace(&local_storage->rcu,
- 				     bpf_local_storage_free_rcu);
- 		else
-@@ -284,14 +284,14 @@ void bpf_selem_link_map(struct bpf_local_storage_map *smap,
- 	raw_spin_unlock_irqrestore(&b->lock, flags);
- }
- 
--void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool use_trace_rcu)
-+void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool reuse_now)
- {
- 	/* Always unlink from map before unlinking from local_storage
- 	 * because selem will be freed after successfully unlinked from
- 	 * the local_storage.
- 	 */
- 	bpf_selem_unlink_map(selem);
--	bpf_selem_unlink_storage(selem, use_trace_rcu);
-+	bpf_selem_unlink_storage(selem, reuse_now);
- }
- 
- /* If cacheit_lockit is false, this lookup function is lockless */
-@@ -538,7 +538,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
- 	if (old_sdata) {
- 		bpf_selem_unlink_map(SELEM(old_sdata));
- 		bpf_selem_unlink_storage_nolock(local_storage, SELEM(old_sdata),
--						false, true);
-+						false, false);
- 	}
- 
- unlock:
-@@ -651,7 +651,7 @@ void bpf_local_storage_destroy(struct bpf_local_storage *local_storage)
- 		 * of the loop will set the free_cgroup_storage to true.
- 		 */
- 		free_storage = bpf_selem_unlink_storage_nolock(
--			local_storage, selem, false, false);
-+			local_storage, selem, false, true);
- 	}
- 	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
- 
-@@ -735,7 +735,7 @@ void bpf_local_storage_map_free(struct bpf_map *map,
- 				migrate_disable();
- 				this_cpu_inc(*busy_counter);
- 			}
--			bpf_selem_unlink(selem, false);
-+			bpf_selem_unlink(selem, true);
- 			if (busy_counter) {
- 				this_cpu_dec(*busy_counter);
- 				migrate_enable();
-@@ -773,8 +773,8 @@ void bpf_local_storage_map_free(struct bpf_map *map,
- 		/* We cannot skip rcu_barrier() when rcu_trace_implies_rcu_gp()
- 		 * is true, because while call_rcu invocation is skipped in that
- 		 * case in bpf_selem_free_fields_trace_rcu (and all local
--		 * storage maps pass use_trace_rcu = true), there can be
--		 * call_rcu callbacks based on use_trace_rcu = false in the
-+		 * storage maps pass reuse_now = false), there can be
-+		 * call_rcu callbacks based on reuse_now = true in the
- 		 * while ((selem = ...)) loop above or when owner's free path
- 		 * calls bpf_local_storage_unlink_nolock.
- 		 */
-diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
-index b5f404fe146c..65aeb042c263 100644
---- a/kernel/bpf/bpf_task_storage.c
-+++ b/kernel/bpf/bpf_task_storage.c
-@@ -168,7 +168,7 @@ static int task_storage_delete(struct task_struct *task, struct bpf_map *map,
- 	if (!nobusy)
- 		return -EBUSY;
- 
--	bpf_selem_unlink(SELEM(sdata), true);
-+	bpf_selem_unlink(SELEM(sdata), false);
- 
- 	return 0;
- }
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index 42569d0904a5..8b0c9e4341eb 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -40,7 +40,7 @@ static int bpf_sk_storage_del(struct sock *sk, struct bpf_map *map)
- 	if (!sdata)
- 		return -ENOENT;
- 
--	bpf_selem_unlink(SELEM(sdata), true);
-+	bpf_selem_unlink(SELEM(sdata), false);
- 
- 	return 0;
+-	/* Only delay freeing of smap, buckets are not needed anymore */
+ 	kvfree(smap->buckets);
+-
+-	/* When local storage has special fields, callbacks for
+-	 * bpf_selem_free_fields_rcu and bpf_selem_free_fields_trace_rcu will
+-	 * keep using the map BTF record, we need to execute an RCU barrier to
+-	 * wait for them as the record will be freed right after our map_free
+-	 * callback.
+-	 */
+-	if (!IS_ERR_OR_NULL(smap->map.record)) {
+-		rcu_barrier_tasks_trace();
+-		/* We cannot skip rcu_barrier() when rcu_trace_implies_rcu_gp()
+-		 * is true, because while call_rcu invocation is skipped in that
+-		 * case in bpf_selem_free_fields_trace_rcu (and all local
+-		 * storage maps pass reuse_now = false), there can be
+-		 * call_rcu callbacks based on reuse_now = true in the
+-		 * while ((selem = ...)) loop above or when owner's free path
+-		 * calls bpf_local_storage_unlink_nolock.
+-		 */
+-		rcu_barrier();
+-	}
+ 	bpf_map_area_free(smap);
  }
 -- 
 2.30.2
