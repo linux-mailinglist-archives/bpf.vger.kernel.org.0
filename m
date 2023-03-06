@@ -2,53 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDADC6AC500
-	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 16:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 995F36AC6F8
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 17:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbjCFPaw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 10:30:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
+        id S230366AbjCFQCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 11:02:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjCFPar (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 10:30:47 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A5C34C18;
-        Mon,  6 Mar 2023 07:30:21 -0800 (PST)
+        with ESMTP id S229876AbjCFQCU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 11:02:20 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F23A38679;
+        Mon,  6 Mar 2023 08:01:15 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B0436B80EB7;
-        Mon,  6 Mar 2023 15:30:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 699C2C4339B;
-        Mon,  6 Mar 2023 15:30:18 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E6E36102C;
+        Mon,  6 Mar 2023 16:01:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BD13C4339C;
+        Mon,  6 Mar 2023 16:01:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678116618;
-        bh=HOpsDZsOcso8IDxE/fbpZ4usqtnB4a5y0458fKs59ck=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XVk76NkPuKDiBZK5DNN7hYQrU4ImKWmxzfugI1mLfxzeQL5fLeu6d3+j3QTzw4R8c
-         xjC8scZ9d3FuVMNHBXhHh1SHR1VyxcO7icn+2gqDI2HU+Od05dC49+XfsMyyD6LEnX
-         m9sQNKq2V7wO7lg3xaEVYpTXsvZJTedbEzPjNOZT+5c/v8CTNPQuOwXcIGA112Lzjp
-         gSjHPOeTVkxRewdiMZ4PPku9PjAvr6i3TNzBurw9L9nHsb9LMCkbRCk8i7ku5Go8xJ
-         sk3F6F4CWPoPPjlzS6vMQmL1awns+6badmK1897iycElBKMSRos/dgivUyJiiC6wCI
-         QDsg5OAy+70/A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 36DC6E4D009;
-        Mon,  6 Mar 2023 15:30:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1678118474;
+        bh=6/kPY6G6Svg0te3uLDPOCCrp1vKJWU98W01va9m9RUI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N4210lP8/snfv9NbE3rzkqhrurDYhltsPmrhpiheJIMgs4l+xopd+EgARpaNVtr0W
+         VBI/lHFigPwFt8oUpfG0SNQHwy7UQeTrgLCkPx/oOHNn2/ZqlTItn70StJ+0e4/Jmw
+         99SofbWyC8LiZmrVbwbDxlgWFjT/mpYttWZec1ODRvqi1NDpjNtg4S4XuXGH7S0Hy7
+         9i4T0HmN3eHOb5UmnHAJrzHzqb8AtMgRDmNVXgSd/a5bKOpX3jMUnnwg4X8AXB2Cnt
+         tji5vN3Sc9eXnLvPtyf2+1TrYILt/rVEdHYQx/6fI+Gtg6/qrP8MlthRyWOf7Mhk4W
+         WIV/aHM60KtSw==
+Date:   Mon, 6 Mar 2023 17:01:10 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org, lorenzo.bianconi@redhat.com
+Subject: Re: [PATCH bpf-next] selftests/bpf: use ifname instead of ifindex in
+ XDP compliance test tool
+Message-ID: <ZAYORsGRSdCsV8fL@lore-desk>
+References: <5d11c9163490126fdc391dacb122480e4c059e62.1677863821.git.lorenzo@kernel.org>
+ <19947245-b305-f9c5-f79d-f79a152aaaaa@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Add /libsubcmd to .gitignore
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167811661821.1914.15417377597561138524.git-patchwork-notify@kernel.org>
-Date:   Mon, 06 Mar 2023 15:30:18 +0000
-References: <tencent_F13D670D5D7AA9C4BD868D3220921AAC090A@qq.com>
-In-Reply-To: <tencent_F13D670D5D7AA9C4BD868D3220921AAC090A@qq.com>
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     rongtao@cestc.cn, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="CzwNbl2V2nYwT7nc"
+Content-Disposition: inline
+In-Reply-To: <19947245-b305-f9c5-f79d-f79a152aaaaa@iogearbox.net>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,28 +55,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+--CzwNbl2V2nYwT7nc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat,  4 Mar 2023 23:17:04 +0800 you wrote:
-> From: Rong Tao <rongtao@cestc.cn>
-> 
-> After compiling the kernel:
-> 
->     # bpf-next...bpf-next/master
->     ?? tools/bpf/resolve_btfids/libsubcmd/
-> 
-> [...]
+> On 3/3/23 6:21 PM, Lorenzo Bianconi wrote:
+> > Rely on interface name instead of interface index in error messages or =
+logs
+> > from XDP compliance test tool.
+> > Improve XDP compliance test tool error messages.
+> >=20
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >   tools/testing/selftests/bpf/xdp_features.c | 92 ++++++++++++++--------
+> >   1 file changed, 57 insertions(+), 35 deletions(-)
+> >=20
+> > diff --git a/tools/testing/selftests/bpf/xdp_features.c b/tools/testing=
+/selftests/bpf/xdp_features.c
+> > index fce12165213b..7414801cd7ec 100644
+> > --- a/tools/testing/selftests/bpf/xdp_features.c
+> > +++ b/tools/testing/selftests/bpf/xdp_features.c
+> > @@ -25,6 +25,7 @@
+> >   static struct env {
+> >   	bool verbosity;
+> > +	char ifname[IF_NAMESIZE];
+> >   	int ifindex;
+> >   	bool is_tester;
+> >   	struct {
+> > @@ -109,25 +110,25 @@ static int get_xdp_feature(const char *arg)
+> >   	return 0;
+> >   }
+> > -static char *get_xdp_feature_str(void)
+> > +static char *get_xdp_feature_str(bool color)
+> >   {
+> >   	switch (env.feature.action) {
+> >   	case XDP_PASS:
+> > -		return YELLOW("XDP_PASS");
+> > +		return color ? YELLOW("XDP_PASS") : "XDP_PASS";
+> >   	case XDP_DROP:
+> > -		return YELLOW("XDP_DROP");
+> > +		return color ? YELLOW("XDP_DROP") : "XDP_DROP";
+> >   	case XDP_ABORTED:
+> > -		return YELLOW("XDP_ABORTED");
+> > +		return color ? YELLOW("XDP_ABORTED") : "XDP_ABORTED";
+> >   	case XDP_TX:
+> > -		return YELLOW("XDP_TX");
+> > +		return color ? YELLOW("XDP_TX") : "XDP_TX";
+> >   	case XDP_REDIRECT:
+> > -		return YELLOW("XDP_REDIRECT");
+> > +		return color ? YELLOW("XDP_REDIRECT") : "XDP_REDIRECT";
+> >   	default:
+> >   		break;
+> >   	}
+> >   	if (env.feature.drv_feature =3D=3D NETDEV_XDP_ACT_NDO_XMIT)
+> > -		return YELLOW("XDP_NDO_XMIT");
+> > +		return color ? YELLOW("XDP_NDO_XMIT") : "XDP_NDO_XMIT";
+> >   	return "";
+> >   }
+>=20
+> Please split this into multiple patches, logically separated. This one is=
+ changing
+> multiple things at once and above has not much relation to relying on int=
+erface names.
 
-Here is the summary with links:
-  - [bpf-next] tools/resolve_btfids: Add /libsubcmd to .gitignore
-    https://git.kernel.org/bpf/bpf-next/c/fd4cb29f2a3d
+ack, I will do.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Regards,
+Lorenzo
 
+>=20
+> Thanks,
+> Daniel
 
+--CzwNbl2V2nYwT7nc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZAYORgAKCRA6cBh0uS2t
+rMVXAQCzzZntylSPJkLD+vXsYiIDrSSygM/F0fHvQkSbcTOcOwEAwMOH8HEWvyGu
+cyVfEW7iScK/cHdOUtWNiPxSz47VZgM=
+=/dnG
+-----END PGP SIGNATURE-----
+
+--CzwNbl2V2nYwT7nc--
