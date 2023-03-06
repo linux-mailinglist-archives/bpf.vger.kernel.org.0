@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 706FB6AB519
-	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 04:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E408E6AB523
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 04:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbjCFDk5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Mar 2023 22:40:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
+        id S229715AbjCFDuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Mar 2023 22:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjCFDkx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Mar 2023 22:40:53 -0500
-Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492D81969D;
-        Sun,  5 Mar 2023 19:40:52 -0800 (PST)
-Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-53852143afcso160699937b3.3;
-        Sun, 05 Mar 2023 19:40:52 -0800 (PST)
+        with ESMTP id S229457AbjCFDuW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Mar 2023 22:50:22 -0500
+Received: from mail-yw1-x1141.google.com (mail-yw1-x1141.google.com [IPv6:2607:f8b0:4864:20::1141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A05C179;
+        Sun,  5 Mar 2023 19:50:21 -0800 (PST)
+Received: by mail-yw1-x1141.google.com with SMTP id 00721157ae682-53cb9ac9470so160330527b3.10;
+        Sun, 05 Mar 2023 19:50:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678074051;
+        d=gmail.com; s=20210112; t=1678074620;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HEsb2PcrVmsOtwKmZLcSjj7+FCn46/zcXnRbCf5Zqhg=;
-        b=o6oQiZDbG2e/pfwvOXYaOvzOpROTPyD6zXmDZGGtaoPTzD22A+leMk8If15iqTUva6
-         7hJtapelmD0wqj79UM7e9icEBf/Z4PqaJiz5eLX1HQGalgLnhGoZoSZAksFlJieSb80g
-         m/TtQyP6SaBbusT1tvODYPMJnAZVLsX0kVXB7t0wBbCXU8whKjP5SHB+Sf3bblGmopgA
-         BeYowCyfv32M6dz7+HSsU6PwTrrHGIoUkocRv18obx/Vq8aDvXCkLU5n/TY/LzAnlDLN
-         iQqEkTjjggHEwMZsYz3i9yq44UDNHL7j3QXG03iEQKO+qvbbywmAkcHzCKXkLbl2DB9+
-         APlw==
+        bh=Ay4ex10vTu61kOz08JE0Hs5aH8GGI7PZ9K+bj2AVgqg=;
+        b=Rbmyj5Rm/SQwLMnK445UsrjO2YG7l4PrhjYGwlvxVn5gv+iQw10Z8ynkVxOiY6x8kQ
+         s4U6IgLDyfACIydNYY1m9p+UDu2VIhxlMMQD/tVF4D7Z7qRFEbeCfQmgg1dFXvnuHV7x
+         dvoauG3cIOigzA40uriWPZx3EMnwxOActsDsbvHi+dg1YwxoH+A/vsdBBqTcz83E6zsX
+         aRWfUiyq7d7iYE+smjSdHaceE3lEhk5vV/hBlUrkOJ9TR9pOu4ivpNkV2moIQQYWZ8Ts
+         OMK+EMWpTPx69IcD6QmVElhab3OfAWBCjmoFNLEdl3gaWsvei2zh7uIz5AN+tZIf90n1
+         5qyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678074051;
+        d=1e100.net; s=20210112; t=1678074620;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HEsb2PcrVmsOtwKmZLcSjj7+FCn46/zcXnRbCf5Zqhg=;
-        b=Mu+Wm7NSe0hwSYKUFoAqY4NIa9i365WJVQlqf7neexk5KyZwvbpvac5n1fteViSDo2
-         a4XGzOyslxQmVPE4lncELCWU+nI5bzgwxmW8S9jrXHRlUswX2jDunkqXH9wgWdm727Fu
-         RpSa8J2B9ZUykxEs/Q+VhDLoqeJIJ7tTlWWUcaO+A2KCTmTLcqyNYvwhwvs+Bx7kI1qM
-         qJQH2PGNTu+Uzi4WbkfumixNtrb57slSoUWqNXvYChZIi70FtIBjsrt/ALaFTHRBEv7j
-         NIsw2OsJVAkFDnBacHgn1aLQ2Nw07s+1CQKpEvjraW8/xbvFnvhW8G4/U9PSBrc1jq0J
-         Fu9w==
-X-Gm-Message-State: AO0yUKWNRuT/XpX1Rzyn+sRcmqFcR69bODyoCSdd8H/yGF7BaljhCann
-        zYVym1Ru1s0BjLbL80cxUoqbrccVHZdlSc+nqL0=
-X-Google-Smtp-Source: AK7set/sUfIr8Lt7rth08kincWVh2LgfUsLYn/YERYQr32Bad1rLhhAfvE15h+UwdQEM0U+CGcBpXBKP38OBpuprq4A=
-X-Received: by 2002:a81:ae4e:0:b0:52e:ac97:115f with SMTP id
- g14-20020a81ae4e000000b0052eac97115fmr5979134ywk.5.1678074051094; Sun, 05 Mar
- 2023 19:40:51 -0800 (PST)
+        bh=Ay4ex10vTu61kOz08JE0Hs5aH8GGI7PZ9K+bj2AVgqg=;
+        b=Kx7zfOUJU3rSX5RkqzUzUOKJVCQoBY4NzA0DBDE0kjS2TlQWqOWQ7hhvH3yXrREO+o
+         vjM/xomON7oDM5ttTUTc9C/u838r0ggO1ttApghmlhEk9mvByV6tz+46lCdrKDwgxgsN
+         aPNxOU3q/ABrDUr+DMPW0K7pkqUhRb2BWOwfJppv+dFVO09lyt3rIfncGzVaPQAbqbbh
+         pfBix2vRO46cQs7+cFB2AbEVUabuPAmIzDIxKxsgaYqBW6Ma9SkbFUb0cTtcSk0Blrzz
+         mkX/kF3ceItfL7Qegh/Vbb+YxypWHkQ2oLFycoCMu8b6EGA4BiqhsiZurB/phespKN0b
+         PpLA==
+X-Gm-Message-State: AO0yUKUbcVTYTh/g+q17xjSNrBp66SRmxPCML/x0lnqrUdMc5IQhX5sp
+        HIk54HuKAeKAtDuFqT0eqvVJeBV8SAbv/Mmj6uI=
+X-Google-Smtp-Source: AK7set9Qai/m6cEMA8MPJWAnUEaemZDLqQbdJFAr+Uubn3rdZ/KjyPtdgvDvhL9qyX2IFi0khzbvVHRLtDQeWomuP94=
+X-Received: by 2002:a81:b289:0:b0:53c:7095:595a with SMTP id
+ q131-20020a81b289000000b0053c7095595amr5914591ywh.7.1678074620075; Sun, 05
+ Mar 2023 19:50:20 -0800 (PST)
 MIME-Version: 1.0
 References: <20230221025347.389047-1-imagedong@tencent.com>
- <20230221025347.389047-3-imagedong@tencent.com> <CAEf4Bzac+SmdosLf=nnieuEBx6azVTg1_fVNWScsWb9-Hap6pw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzac+SmdosLf=nnieuEBx6azVTg1_fVNWScsWb9-Hap6pw@mail.gmail.com>
+ <20230221025347.389047-4-imagedong@tencent.com> <CAEf4BzbJoXsXRa_Rk+jOr+z6Q02FS2Jyp3wiJHGETrSGGE5DLg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbJoXsXRa_Rk+jOr+z6Q02FS2Jyp3wiJHGETrSGGE5DLg@mail.gmail.com>
 From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Mon, 6 Mar 2023 11:40:39 +0800
-Message-ID: <CADxym3YT1JGQ+ZiwLrfrBz_J=4XPNv-7ic+9mMyaCHwDyQARdw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: split test_attach_probe
- into multi subtests
+Date:   Mon, 6 Mar 2023 11:50:08 +0800
+Message-ID: <CADxym3YanOVYB9XMJAzeky0kUOUmuLDVtnYROstTzRBqk0pTmA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: add test for legacy/perf
+ kprobe/uprobe attach mode
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     alan.maguire@oracle.com, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -74,55 +74,147 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 5:53=E2=80=AFAM Andrii Nakryiko
+On Tue, Feb 28, 2023 at 5:56=E2=80=AFAM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
 > On Mon, Feb 20, 2023 at 6:54=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
 > >
 > > From: Menglong Dong <imagedong@tencent.com>
 > >
-> > In order to adapt to the older kernel, now we split the "attach_probe"
-> > testing into multi subtests:
+> > Add the testing for kprobe/uprobe attaching in default, legacy, perf an=
+d
+> > link mode. And the testing passed:
 > >
-> >   manual // manual attach tests for kprobe/uprobe
-> >   auto // auto-attach tests for kprobe and uprobe
-> >   kprobe-sleepable // kprobe sleepable test
-> >   uprobe-lib // uprobe tests for library function by name
-> >   uprobe-sleepable // uprobe sleepable test
-> >   uprobe-ref_ctr // uprobe ref_ctr test
-> >
-> > As sleepable kprobe needs to set BPF_F_SLEEPABLE flag before loading,
-> > we need to move it to a stand alone skel file, in case of it is not
-> > supported by kernel and make the whole loading fail.
-> >
-> > Therefore, we can only enable part of the subtests for older kernel.
+> > ./test_progs -t attach_probe
+> > $5/1     attach_probe/manual-default:OK
+> > $5/2     attach_probe/manual-legacy:OK
+> > $5/3     attach_probe/manual-perf:OK
+> > $5/4     attach_probe/manual-link:OK
+> > $5/5     attach_probe/auto:OK
+> > $5/6     attach_probe/kprobe-sleepable:OK
+> > $5/7     attach_probe/uprobe-lib:OK
+> > $5/8     attach_probe/uprobe-sleepable:OK
+> > $5/9     attach_probe/uprobe-ref_ctr:OK
+> > $5       attach_probe:OK
+> > Summary: 1/9 PASSED, 0 SKIPPED, 0 FAILED
 > >
 > > Reviewed-by: Biao Jiang <benbjiang@tencent.com>
 > > Signed-off-by: Menglong Dong <imagedong@tencent.com>
 > > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 > > ---
-> > v3:
-> > - rename test_uporbe_ref_ctr() to test_uprobe_ref_ctr() to fix the
-> >   typo
-> > ---
->
->
-> One of the patches in this patch set broke BPF CI ([0]), please take a lo=
-ok
->
->   [0] https://github.com/kernel-patches/bpf/actions/runs/4267719970/jobs/=
-7429701318
->
-
-It is caused by the fact that I didn't use OPTS_GET(), as you mentioned
-before.
-
-> >  .../selftests/bpf/prog_tests/attach_probe.c   | 268 +++++++++++-------
-> >  .../bpf/progs/test_attach_kprobe_sleepable.c  |  23 ++
-> >  .../selftests/bpf/progs/test_attach_probe.c   |  23 +-
-> >  3 files changed, 208 insertions(+), 106 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_attach_kprob=
-e_sleepable.c
+> >  .../selftests/bpf/prog_tests/attach_probe.c   | 54 ++++++++++++++-----
+> >  .../selftests/bpf/progs/test_attach_probe.c   | 32 -----------
+> >  .../bpf/progs/test_attach_probe_manual.c      | 53 ++++++++++++++++++
+> >  3 files changed, 93 insertions(+), 46 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_attach_probe=
+_manual.c
 > >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/to=
+ols/testing/selftests/bpf/prog_tests/attach_probe.c
+> > index 8afd3e6066b8..e71cb44bf2e7 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> > @@ -1,6 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  #include <test_progs.h>
+> >  #include "test_attach_kprobe_sleepable.skel.h"
+> > +#include "test_attach_probe_manual.skel.h"
+> >  #include "test_attach_probe.skel.h"
+> >
+> >  /* this is how USDT semaphore is actually defined, except volatile mod=
+ifier */
+> > @@ -33,33 +34,48 @@ static noinline void trigger_func4(void)
+> >  static char test_data[] =3D "test_data";
+> >
+> >  /* manual attach kprobe/kretprobe/uprobe/uretprobe testings */
+> > -static void test_attach_probe_manual(struct test_attach_probe *skel)
+> > +static void test_attach_probe_manual(enum probe_attach_mode attach_mod=
+e)
+> >  {
+> >         DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
+> > +       DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, kprobe_opts);
+> >         struct bpf_link *kprobe_link, *kretprobe_link;
+> >         struct bpf_link *uprobe_link, *uretprobe_link;
+> > +       struct test_attach_probe_manual *skel;
+> >         ssize_t uprobe_offset;
+> >
+> > +       skel =3D test_attach_probe_manual__open();
+> > +       if (!ASSERT_OK_PTR(skel, "skel_kprobe_manual_open"))
+> > +               return;
+> > +
+> > +       if (!ASSERT_OK(test_attach_probe_manual__load(skel), "skel_manu=
+al_load"))
+> > +               goto cleanup;
+>
+> use test_attach_probe_manual__open_and_load() ?
+>
+
+Yeah, sounds nice!
+
+> > +       if (!ASSERT_OK_PTR(skel->bss, "manual_check_bss"))
+> > +               goto cleanup;
+> > +
+>
+> no need to test this, lots of other tests validate this already, BPF
+> skeleton has been validated many times over, no need to add this in
+> new tests
+>
+> >         uprobe_offset =3D get_uprobe_offset(&trigger_func);
+> >         if (!ASSERT_GE(uprobe_offset, 0, "uprobe_offset"))
+> > -               return;
+> > +               goto cleanup;
+>
+> didn't you update all the `goto cleanup;` into `return;` in previous
+> patch, and now updating it back to `goto cleanup;`? Maybe just keep an
+> empty `cleanup:` label at the end to reduce churn?
+>
+
+OK!
+
+Thanks!
+Menglong Dong
+
+> >
+> >         /* manual-attach kprobe/kretprobe */
+> > -       kprobe_link =3D bpf_program__attach_kprobe(skel->progs.handle_k=
+probe,
+> > -                                                false /* retprobe */,
+> > -                                                SYS_NANOSLEEP_KPROBE_N=
+AME);
+> > +       kprobe_opts.attach_mode =3D attach_mode;
+> > +       kprobe_opts.retprobe =3D false;
+> > +       kprobe_link =3D bpf_program__attach_kprobe_opts(skel->progs.han=
+dle_kprobe,
+> > +                                                     SYS_NANOSLEEP_KPR=
+OBE_NAME,
+> > +                                                     &kprobe_opts);
+> >         if (!ASSERT_OK_PTR(kprobe_link, "attach_kprobe"))
+> > -               return;
+> > +               goto cleanup;
+> >         skel->links.handle_kprobe =3D kprobe_link;
+> >
+> > -       kretprobe_link =3D bpf_program__attach_kprobe(skel->progs.handl=
+e_kretprobe,
+> > -                                                   true /* retprobe */=
+,
+> > -                                                   SYS_NANOSLEEP_KPROB=
+E_NAME);
+> > +       kprobe_opts.retprobe =3D true;
+> > +       kretprobe_link =3D bpf_program__attach_kprobe_opts(skel->progs.=
+handle_kretprobe,
+> > +                                                        SYS_NANOSLEEP_=
+KPROBE_NAME,
+> > +                                                        &kprobe_opts);
+> >         if (!ASSERT_OK_PTR(kretprobe_link, "attach_kretprobe"))
+> > -               return;
+> > +               goto cleanup;
+> >         skel->links.handle_kretprobe =3D kretprobe_link;
+> >
+> >         /* manual-attach uprobe/uretprobe */
+> > +       uprobe_opts.attach_mode =3D attach_mode;
+> >         uprobe_opts.ref_ctr_offset =3D 0;
+> >         uprobe_opts.retprobe =3D false;
+> >         uprobe_link =3D bpf_program__attach_uprobe_opts(skel->progs.han=
+dle_uprobe,
 >
 > [...]
