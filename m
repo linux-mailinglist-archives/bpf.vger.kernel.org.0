@@ -2,52 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 995F36AC6F8
-	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 17:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9FC6AC83D
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 17:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbjCFQCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 11:02:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44396 "EHLO
+        id S229952AbjCFQhL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 11:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbjCFQCU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 11:02:20 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F23A38679;
-        Mon,  6 Mar 2023 08:01:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E6E36102C;
-        Mon,  6 Mar 2023 16:01:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BD13C4339C;
-        Mon,  6 Mar 2023 16:01:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678118474;
-        bh=6/kPY6G6Svg0te3uLDPOCCrp1vKJWU98W01va9m9RUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N4210lP8/snfv9NbE3rzkqhrurDYhltsPmrhpiheJIMgs4l+xopd+EgARpaNVtr0W
-         VBI/lHFigPwFt8oUpfG0SNQHwy7UQeTrgLCkPx/oOHNn2/ZqlTItn70StJ+0e4/Jmw
-         99SofbWyC8LiZmrVbwbDxlgWFjT/mpYttWZec1ODRvqi1NDpjNtg4S4XuXGH7S0Hy7
-         9i4T0HmN3eHOb5UmnHAJrzHzqb8AtMgRDmNVXgSd/a5bKOpX3jMUnnwg4X8AXB2Cnt
-         tji5vN3Sc9eXnLvPtyf2+1TrYILt/rVEdHYQx/6fI+Gtg6/qrP8MlthRyWOf7Mhk4W
-         WIV/aHM60KtSw==
-Date:   Mon, 6 Mar 2023 17:01:10 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org, lorenzo.bianconi@redhat.com
-Subject: Re: [PATCH bpf-next] selftests/bpf: use ifname instead of ifindex in
- XDP compliance test tool
-Message-ID: <ZAYORsGRSdCsV8fL@lore-desk>
-References: <5d11c9163490126fdc391dacb122480e4c059e62.1677863821.git.lorenzo@kernel.org>
- <19947245-b305-f9c5-f79d-f79a152aaaaa@iogearbox.net>
+        with ESMTP id S230300AbjCFQgs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 11:36:48 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BE63A869
+        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 08:36:23 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id k10so17248946edk.13
+        for <bpf@vger.kernel.org>; Mon, 06 Mar 2023 08:36:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1678120551;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dpc2SHQAYlQo2ljDuUpky4ZewVhG7u3iQyiQSr0hcxM=;
+        b=Wed/09Ae0y9Pr4rlRBnKC7u6gCONaipgjDkVCzgOM+rq7o4yHzZl5jxISqfm7bqFpO
+         CfBDmfYf7nAI9R8K0W1PREPu3ZIuKCNVNU3f9Ld/wnExUevHnbGR5NHD+HJAvsv8nE5t
+         TOiNlGohpOTK5f1KZXboTYCIjs8J0QsVciaH3MaQJkTInPs3BbzZXrBQJ+GGlpXzy5jf
+         Rthw4bCIcOVoctuXqEbLjk6ewvSblscrttf42l4QxZSZPyIy472CGRCsySjr7dIBuN19
+         Scird8jFNkxMiRvxyWgGkcxsN/OeDQhmpw7Bv5VeFtz0NQA65kbmsukU7u7akTAw4DkH
+         Pk+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678120551;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dpc2SHQAYlQo2ljDuUpky4ZewVhG7u3iQyiQSr0hcxM=;
+        b=g1/obAcrelodvwqxepQNy1IhefFXOOAufABO7dH9QKcuKKryPLloyIzWVDYMYfDVr6
+         tBY9+iL3QsOT3fn+XObzybYR4E2e9nHjnb+JY39OSJHYNTxXWZyrUOwWj7SBNApy2LI/
+         IjJkLfz9AWpKHk6mfM9gn5JWJcX3G9RIVdNkPFgwoq8xyCDwDsGwzJn6oGciVSv5xn3g
+         UNpYSycu6zy6F4esNHC+viX5Hvy3RTrXk8mg7Vb5cMCTvut6IPjMHOx3Q3tZgaiq1xDH
+         /O0ZJPntx6da79y3j1gFJ7GZV4ZGgE8ZqzZZf1PSNex2E6bYsJPCrRct9m2/BcafnntZ
+         Q2kA==
+X-Gm-Message-State: AO0yUKVH5djacY02byTLwj6z9fyJR1sYmIW1RRZSz40aw9CTos1qsy+t
+        661LIcL/0M9YUS0vp7Z6y40TUG6e6EkDjftf2KSHEl35uVM=
+X-Google-Smtp-Source: AK7set/dvbHv5menUXrHMKguoR0p0WE5Zpel8rQxkTfyER1vD8MiTocFkc6kRVYTq76W2W0A5UYqgg==
+X-Received: by 2002:a05:600c:524c:b0:3e2:24a0:ba26 with SMTP id fc12-20020a05600c524c00b003e224a0ba26mr10149035wmb.16.1678119470653;
+        Mon, 06 Mar 2023 08:17:50 -0800 (PST)
+Received: from ?IPV6:2a02:8011:e80c:0:7881:f816:30a0:10b3? ([2a02:8011:e80c:0:7881:f816:30a0:10b3])
+        by smtp.gmail.com with ESMTPSA id p14-20020a05600c468e00b003eb369abd92sm15965190wmo.2.2023.03.06.08.17.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Mar 2023 08:17:50 -0800 (PST)
+Message-ID: <4e6fb50c-dead-9635-239f-2b4b0ca411ff@isovalent.com>
+Date:   Mon, 6 Mar 2023 16:17:49 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CzwNbl2V2nYwT7nc"
-Content-Disposition: inline
-In-Reply-To: <19947245-b305-f9c5-f79d-f79a152aaaaa@iogearbox.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next] libbpf: Use text error for btf_custom_path
+ failures
+Content-Language: en-GB
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Dmitry Dolgov <9erthalion6@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+References: <20230228142531.439324-1-9erthalion6@gmail.com>
+ <CAEf4BzYz5dmJBzTuEvihDqjYyWqUcQE6YLUH1WdC_RDifu7FpA@mail.gmail.com>
+ <20230301210726.vqdea7dksathapej@erthalion.local>
+ <CAEf4BzaFu_qFvwtE-=WLWM2YUirq5fKbbTGXVeNiqrARdLj+Vg@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <CAEf4BzaFu_qFvwtE-=WLWM2YUirq5fKbbTGXVeNiqrARdLj+Vg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,89 +78,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+2023-03-04 15:39 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Wed, Mar 1, 2023 at 1:09 PM Dmitry Dolgov <9erthalion6@gmail.com> wrote:
+>>
+>>> On Wed, Mar 01, 2023 at 11:02:25AM -0800, Andrii Nakryiko wrote:
+>>>
+>>>> Use libbpf_strerror_r to expand the error when failed to parse the btf
+>>>> file at btf_custom_path. It does not change a lot locally, but since the
+>>>> error will bubble up through a few layers, it may become quite
+>>>> confusing otherwise. As an example here is what happens when the file
+>>>> indicated via btf_custom_path does not exist and the caller uses
+>>>> strerror as well:
+>>>>
+>>>>     libbpf: failed to parse target BTF: -2
+>>>>     libbpf: failed to perform CO-RE relocations: -2
+>>>>     libbpf: failed to load object 'bpf_probe'
+>>>>     libbpf: failed to load BPF skeleton 'bpf_probe': -2
+>>>>     [caller]: failed to load BPF object (errno: 2 | message: No such file or directory)
+>>>>
+>>>> In this context "No such file or directory" could be easily
+>>>> misinterpreted as belonging to some other part of loading process, e.g.
+>>>> the BPF object itself. With this change it would look a bit better:
+>>>>
+>>>>     libbpf: failed to parse target BTF: No such file or directory
+>>>>     libbpf: failed to perform CO-RE relocations: -2
+>>>>     libbpf: failed to load object 'bpf_probe'
+>>>>     libbpf: failed to load BPF skeleton 'bpf_probe': -2
+>>>>     [caller]: failed to load BPF object (errno: 2 | message: No such file or directory)
+>>>
+>>> I find these text-only error messages more harmful, actually. Very
+>>> often their literal meaning is confusing, and instead the process is
+>>> to guess what's -Exxx error they represent, and go from there.
+>>>
+>>> Recently me and Quentin discussed moving towards an approach where
+>>> we'd log both symbolic error value (-EPERM instead of -1) and also
+>>> human-readable text message. So I'd prefer us figuring out how to do
+>>> this ergonomically in libbpf and bpftool code base, and start moving
+>>> in that direction.
+>>
+>> Fair enough, thanks. I would love to try out any suggestions in this
+>> area -- we were recently looking into error handling, and certain parts
+>> were suboptimal.
+>>
+>> Talking about confusing text error messages, I'm curious about -ESRCH
+>> usage. It's being used in libbpf and various subsystem as well to
+>> indicate that something wasn't found, so I guess it's an established
+>> practice. But then in case btf__load_vmlinux_btf can't find a proper
+>> file and reports an error, the caller gets surprising "No such process"
+>> out of strerror. Am I missing something, is it implemented like this on
+>> purpose?
+> 
+> It's probably not 100% consistent throughout libbpf, but -ESRCH is
+> used to denote "a process to determine/find something failed". -ENOENT
+> is used when we are requested to find a specific entry, and it's not
+> there (but otherwise there were no errors encountered). That's the
+> distinction.
+> 
+> The problem with those text explanations of errors is that they are
+> coming from Linux's usage of them in the context of process or file
+> manipulations, and I don't see a way around that. I'd like to minimize
+> the use of custom error codes.
+> 
+> But this is the reason I'd like to output `-ESRCH` instead of either
+> -3 or "No such process". Something like "-ESRCH (No such process)" is
+> a compromise, but better than nothing.
+> 
+> Or we could stick to just -ESRCH. That might be better than test
+> descriptions, as we at least don't confuse them with irrelevant
+> descriptions.
+> 
+> But Quentin might find it not very user-friendly for his bpftool use
+> cases, probably.
 
---CzwNbl2V2nYwT7nc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, even though the messages are sometimes confusing I find that there
+are also occasions where they're actually useful to users not familiar
+with the error names (not easy to figure out what "ESRCH" means if
+you've never seen it before), so I'd avoid removing them entirely from
+bpftool. Just as Andrii writes, we talked [0] on displaying both the
+error name and the description through libbpf_strerror_r():
 
-> On 3/3/23 6:21 PM, Lorenzo Bianconi wrote:
-> > Rely on interface name instead of interface index in error messages or =
-logs
-> > from XDP compliance test tool.
-> > Improve XDP compliance test tool error messages.
-> >=20
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >   tools/testing/selftests/bpf/xdp_features.c | 92 ++++++++++++++--------
-> >   1 file changed, 57 insertions(+), 35 deletions(-)
-> >=20
-> > diff --git a/tools/testing/selftests/bpf/xdp_features.c b/tools/testing=
-/selftests/bpf/xdp_features.c
-> > index fce12165213b..7414801cd7ec 100644
-> > --- a/tools/testing/selftests/bpf/xdp_features.c
-> > +++ b/tools/testing/selftests/bpf/xdp_features.c
-> > @@ -25,6 +25,7 @@
-> >   static struct env {
-> >   	bool verbosity;
-> > +	char ifname[IF_NAMESIZE];
-> >   	int ifindex;
-> >   	bool is_tester;
-> >   	struct {
-> > @@ -109,25 +110,25 @@ static int get_xdp_feature(const char *arg)
-> >   	return 0;
-> >   }
-> > -static char *get_xdp_feature_str(void)
-> > +static char *get_xdp_feature_str(bool color)
-> >   {
-> >   	switch (env.feature.action) {
-> >   	case XDP_PASS:
-> > -		return YELLOW("XDP_PASS");
-> > +		return color ? YELLOW("XDP_PASS") : "XDP_PASS";
-> >   	case XDP_DROP:
-> > -		return YELLOW("XDP_DROP");
-> > +		return color ? YELLOW("XDP_DROP") : "XDP_DROP";
-> >   	case XDP_ABORTED:
-> > -		return YELLOW("XDP_ABORTED");
-> > +		return color ? YELLOW("XDP_ABORTED") : "XDP_ABORTED";
-> >   	case XDP_TX:
-> > -		return YELLOW("XDP_TX");
-> > +		return color ? YELLOW("XDP_TX") : "XDP_TX";
-> >   	case XDP_REDIRECT:
-> > -		return YELLOW("XDP_REDIRECT");
-> > +		return color ? YELLOW("XDP_REDIRECT") : "XDP_REDIRECT";
-> >   	default:
-> >   		break;
-> >   	}
-> >   	if (env.feature.drv_feature =3D=3D NETDEV_XDP_ACT_NDO_XMIT)
-> > -		return YELLOW("XDP_NDO_XMIT");
-> > +		return color ? YELLOW("XDP_NDO_XMIT") : "XDP_NDO_XMIT";
-> >   	return "";
-> >   }
->=20
-> Please split this into multiple patches, logically separated. This one is=
- changing
-> multiple things at once and above has not much relation to relying on int=
-erface names.
+	Error: can't get next program: [-EPERM] Operation not permitted
 
-ack, I will do.
+So that users with more knowledge can skip the description and just look
+at the error name.
 
-Regards,
-Lorenzo
+I haven't started to work on this, though.
 
->=20
-> Thanks,
-> Daniel
-
---CzwNbl2V2nYwT7nc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZAYORgAKCRA6cBh0uS2t
-rMVXAQCzzZntylSPJkLD+vXsYiIDrSSygM/F0fHvQkSbcTOcOwEAwMOH8HEWvyGu
-cyVfEW7iScK/cHdOUtWNiPxSz47VZgM=
-=/dnG
------END PGP SIGNATURE-----
-
---CzwNbl2V2nYwT7nc--
+[0]
+https://lore.kernel.org/all/CAEf4BzZMJGrRhNeQeWB0fRsuRYUv01aZGhvDeFV2o5zdpRbR-w@mail.gmail.com/
