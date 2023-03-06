@@ -2,166 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A59446ACB1E
-	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 18:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C6D6ACBCF
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 19:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbjCFRqq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 12:46:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
+        id S230035AbjCFSAz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 13:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbjCFRqc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 12:46:32 -0500
-Received: from mail-il1-x147.google.com (mail-il1-x147.google.com [IPv6:2607:f8b0:4864:20::147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBB96BC22
-        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 09:45:56 -0800 (PST)
-Received: by mail-il1-x147.google.com with SMTP id i7-20020a056e021b0700b0031dc4cdc47cso3263823ilv.23
-        for <bpf@vger.kernel.org>; Mon, 06 Mar 2023 09:45:56 -0800 (PST)
+        with ESMTP id S230227AbjCFSAv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 13:00:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49053D93D
+        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 09:59:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678125463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I738/18sbvHmC2+417kvwhaipDQYnMqOKuRA/kftVmQ=;
+        b=eZedemGiOo93yExjWAsgTGoPeo9GxDZmPVtB/6vbWUCMo1Yzrocw9xT4ZXArFD6Qnhx54m
+        MqktMZe/RkxJdKpUpOhCnVAzgeb1SMtwVykZlCL/GFhXRxLeYuKXBbh58yj+2++v+zCZUD
+        bbgjdiwrxvRYXSjouAJfwO6VY1GtCXE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-124-xQeWKPgcOVOVZlwxMrk0nA-1; Mon, 06 Mar 2023 12:57:40 -0500
+X-MC-Unique: xQeWKPgcOVOVZlwxMrk0nA-1
+Received: by mail-wm1-f70.google.com with SMTP id c7-20020a7bc847000000b003e00be23a70so7073915wml.2
+        for <bpf@vger.kernel.org>; Mon, 06 Mar 2023 09:57:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678124677;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GcOCBhima2UyyDq7VB/1E9koaBdwududHylkHfonubs=;
-        b=MPO40zPXL41qJoK9OSpv8KdGuPII+gxXtZh9wD4NJ00d9n8nzeiu5j4DcUbkd7jb7L
-         YrmZQtR12m1Fm8ZlN1Zh7jr/9rX51za1FcFZ3NKQMTOo+253GZ30NQKOCwDhClUviCA2
-         MaGDMABxwTQh5GJ1P517ZsX48zSEJrBSCs266Ccf/yaZPdbTzrTvVIiOLP/vQhSxpPCl
-         ZooYi1E/KhSR51EssBjxSPxQuXODZpUiGGGtKtT8ML8XTusQKviOn321PZMqCrYimsJq
-         uD4lqkU7/SHOSn7TnXY9MgRiGRBvC/H7ujQDKEF46KVBeVbDKbNxUMUlxKf6aCBAm2Vy
-         Q5DA==
-X-Gm-Message-State: AO0yUKWBW1iJ1Kma07lochZzKvdqNZb35cFWea/lTYB4Y+LvwKb/1Cec
-        /Z+jIKiZmedNYRJGbQ5ICBpO58dMJ9mpj/pT5Zd170ax9IPG
-X-Google-Smtp-Source: AK7set88Bw0d2XTFKUme34XJrkWaccDVs1augIVNYRXEzj+MP9c2PxF+jZE8nNJpCZSojpb7/bgKCrAGpjgg40YIwZT8CPf9Sczt
+        d=1e100.net; s=20210112; t=1678125459;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I738/18sbvHmC2+417kvwhaipDQYnMqOKuRA/kftVmQ=;
+        b=fZ0C4ZpToV5D3Q5Hjcy2AT4MNloWGunc2+1SofeNLKGl9NezqmwyBmTLmc2v8GEAnX
+         DDwONE+9wIxyS52IlCivXaVxrymm3up4+dNCahqeeRYU4dN6qA7ADgM87BT+8adumBip
+         ox25Grn+QOIISu+bzqFDbEO0P7TQxXJlWi57AwcU9DX3dOP+F0QuN0uovg1e8DS6BcKb
+         ohdMLSUC2GnlBohcOxwHth5LqXllU9IeyRkWv9vA2++kPTmhkPvXscQfKndfcdDGfq+R
+         VPdp/2IunAXsrJQOs7bi/MR4ZKVix37CtfMLbgSOrlHOs+ohsVxrChPkqrSsKHYaLAVl
+         2zSw==
+X-Gm-Message-State: AO0yUKU6YWz9GS4DVfIzU0qYqbSREQU5I30QY5Cjv6nKbNjR8lw10acI
+        RMsYG9mbfWKi3bGUTf9pb7PJpGGkn3fTTSDQV6Y2eW6YZ5KDkFATX46/apKPMc4pZUaCTkcxn8n
+        zd+F+E4UNpn4Z
+X-Received: by 2002:a05:600c:4f53:b0:3ea:dbdd:b59c with SMTP id m19-20020a05600c4f5300b003eadbddb59cmr10192595wmq.15.1678125458889;
+        Mon, 06 Mar 2023 09:57:38 -0800 (PST)
+X-Google-Smtp-Source: AK7set/7vZlQ5uxUx+GGtLM0+if0KbUiPqDYTkq6I2qARMVnh5tT0y/ZRu7nd7JUJRS0jmoNHNwt9Q==
+X-Received: by 2002:a05:600c:4f53:b0:3ea:dbdd:b59c with SMTP id m19-20020a05600c4f5300b003eadbddb59cmr10192578wmq.15.1678125458554;
+        Mon, 06 Mar 2023 09:57:38 -0800 (PST)
+Received: from redhat.com ([2.52.23.160])
+        by smtp.gmail.com with ESMTPSA id l5-20020a05600c16c500b003e20fa01a86sm10602188wmn.13.2023.03.06.09.57.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Mar 2023 09:57:38 -0800 (PST)
+Date:   Mon, 6 Mar 2023 12:57:34 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        Yichun Zhang <yichun@openresty.com>
+Subject: Re: [PATCH net 2/2] virtio_net: add checking sq is full inside xdp
+ xmit
+Message-ID: <20230306125344-mutt-send-email-mst@kernel.org>
+References: <20230306041535.73319-1-xuanzhuo@linux.alibaba.com>
+ <20230306041535.73319-3-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:23cc:0:b0:3be:81d3:5af3 with SMTP id
- u195-20020a0223cc000000b003be81d35af3mr5918807jau.3.1678124677684; Mon, 06
- Mar 2023 09:44:37 -0800 (PST)
-Date:   Mon, 06 Mar 2023 09:44:37 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004d661705f63ed958@google.com>
-Subject: [syzbot] [hfs?] kernel BUG in __block_write_full_page
-From:   syzbot <syzbot+3aa7a6b7eb0d5536abaf@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, martin.petersen@oracle.com, mcgrof@kernel.org,
-        mhocko@kernel.org, njavali@marvell.com, roman.gushchin@linux.dev,
-        shakeelb@google.com, songmuchun@bytedance.com,
-        syzkaller-bugs@googlegroups.com, yzaikin@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230306041535.73319-3-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Mon, Mar 06, 2023 at 12:15:35PM +0800, Xuan Zhuo wrote:
+> If the queue of xdp xmit is not an independent queue, then when the xdp
+> xmit used all the desc, the xmit from the __dev_queue_xmit() may encounter
+> the following error.
+> 
+> net ens4: Unexpected TXQ (0) queue failure: -28
+> 
+> This patch adds a check whether sq is full in XDP Xmit.
+> 
+> Reported-by: Yichun Zhang <yichun@openresty.com>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c | 25 +++++++++++++++----------
+>  1 file changed, 15 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 777de0ec0b1b..3001b9a548e5 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -302,6 +302,8 @@ struct padded_vnet_hdr {
+>  
+>  static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
+>  static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
+> +static void check_sq_full(struct virtnet_info *vi, struct net_device *dev,
+> +			  struct send_queue *sq);
+>  
+>  static bool is_xdp_frame(void *ptr)
+>  {
+> @@ -341,6 +343,16 @@ static int rxq2vq(int rxq)
+>  	return rxq * 2;
+>  }
+>  
 
-syzbot found the following issue on:
+I'd really rather we ordered functions reasonably so declarations
+are not needed.
 
-HEAD commit:    b01fe98d34f3 Merge tag 'i2c-for-6.3-rc1-part2' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d58468c80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dc0f7cfe5b32efe2
-dashboard link: https://syzkaller.appspot.com/bug?extid=3aa7a6b7eb0d5536abaf
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a80092c80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c4f138c80000
+> +static bool is_xdp_raw_buffer_queue(struct virtnet_info *vi, int q)
+> +{
+> +	if (q < (vi->curr_queue_pairs - vi->xdp_queue_pairs))
+> +		return false;
+> +	else if (q < vi->curr_queue_pairs)
+> +		return true;
+> +	else
+> +		return false;
+> +}
+> +
+>  static inline struct virtio_net_hdr_mrg_rxbuf *skb_vnet_hdr(struct sk_buff *skb)
+>  {
+>  	return (struct virtio_net_hdr_mrg_rxbuf *)skb->cb;
+> @@ -686,6 +698,9 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+>  	}
+>  	ret = nxmit;
+>  
+> +	if (!is_xdp_raw_buffer_queue(vi, sq - vi->sq))
+> +		check_sq_full(vi, dev, sq);
+> +
+>  	if (flags & XDP_XMIT_FLUSH) {
+>  		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq))
+>  			kicks = 1;
+> @@ -1784,16 +1799,6 @@ static void check_sq_full(struct virtnet_info *vi, struct net_device *dev,
+>  	}
+>  }
+>  
+> -static bool is_xdp_raw_buffer_queue(struct virtnet_info *vi, int q)
+> -{
+> -	if (q < (vi->curr_queue_pairs - vi->xdp_queue_pairs))
+> -		return false;
+> -	else if (q < vi->curr_queue_pairs)
+> -		return true;
+> -	else
+> -		return false;
+> -}
+> -
+>  static void virtnet_poll_cleantx(struct receive_queue *rq)
+>  {
+>  	struct virtnet_info *vi = rq->vq->vdev->priv;
+> -- 
+> 2.32.0.3.g01195cf9f
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a1d37240ef5e/disk-b01fe98d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3727e84b1762/vmlinux-b01fe98d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0d45494f57a4/bzImage-b01fe98d.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/ff4c7574ee40/mount_0.gz
-
-The issue was bisected to:
-
-commit 4dc48a107a146cade61097958ff2366c13da1f60
-Author: Nilesh Javali <njavali@marvell.com>
-Date:   Tue Jun 7 04:46:27 2022 +0000
-
-    scsi: qla2xxx: Update version to 10.02.07.500-k
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13eb900ac80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=101b900ac80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17eb900ac80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3aa7a6b7eb0d5536abaf@syzkaller.appspotmail.com
-Fixes: 4dc48a107a14 ("scsi: qla2xxx: Update version to 10.02.07.500-k")
-
-------------[ cut here ]------------
-kernel BUG at fs/buffer.c:1829!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 9252 Comm: syz-executor382 Not tainted 6.2.0-syzkaller-13534-gb01fe98d34f3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
-RIP: 0010:__block_write_full_page+0xfb2/0x16a0 fs/buffer.c:1829
-Code: 02 e9 16 f2 ff ff e8 6d 60 89 ff 48 8b 3c 24 e8 b4 32 00 00 48 89 c7 48 c7 c6 20 96 17 8b e8 05 6a c8 ff 0f 0b e8 4e 60 89 ff <0f> 0b f3 0f 1e fa 48 8b 2c 24 48 89 ee 48 81 e6 ff 0f 00 00 31 ff
-RSP: 0018:ffffc9000bde6ff0 EFLAGS: 00010293
-RAX: ffffffff82035c92 RBX: 00fff0000000a02f RCX: ffff888026c03a80
-RDX: 0000000000000000 RSI: 0000000000008000 RDI: 0000000000000000
-RBP: 0000000000008000 R08: ffffffff820354d8 R09: fffff9400007d819
-R10: 0000000000000000 R11: dffffc0000000001 R12: 0000000000000000
-R13: 1ffff11002d73d01 R14: dffffc0000000000 R15: ffffea00003ec0c0
-FS:  00007fe61c1db700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000002af1e000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- writeout mm/migrate.c:907 [inline]
- fallback_migrate_folio mm/migrate.c:931 [inline]
- move_to_new_folio+0x7a1/0x14d0 mm/migrate.c:981
- migrate_folio_move mm/migrate.c:1295 [inline]
- migrate_pages_batch mm/migrate.c:1827 [inline]
- migrate_pages+0x4c0b/0x6670 mm/migrate.c:1979
- compact_zone+0x2bc9/0x45a0 mm/compaction.c:2420
- compact_node+0x216/0x420 mm/compaction.c:2717
- compact_nodes mm/compaction.c:2730 [inline]
- sysctl_compaction_handler+0xab/0x150 mm/compaction.c:2774
- proc_sys_call_handler+0x545/0x8a0 fs/proc/proc_sysctl.c:604
- do_iter_write+0x6ea/0xc50 fs/read_write.c:861
- vfs_writev fs/read_write.c:934 [inline]
- do_writev+0x27f/0x470 fs/read_write.c:977
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fe61c22f659
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 71 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fe61c1db2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
-RAX: ffffffffffffffda RBX: 00007fe61c2b47a0 RCX: 00007fe61c22f659
-RDX: 0000000000000001 RSI: 0000000020000240 RDI: 0000000000000004
-RBP: 00007fe61c281700 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fe61c2810e0
-R13: 0073756c70736668 R14: 6d656d5f74636170 R15: 00007fe61c2b47a8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__block_write_full_page+0xfb2/0x16a0 fs/buffer.c:1829
-Code: 02 e9 16 f2 ff ff e8 6d 60 89 ff 48 8b 3c 24 e8 b4 32 00 00 48 89 c7 48 c7 c6 20 96 17 8b e8 05 6a c8 ff 0f 0b e8 4e 60 89 ff <0f> 0b f3 0f 1e fa 48 8b 2c 24 48 89 ee 48 81 e6 ff 0f 00 00 31 ff
-RSP: 0018:ffffc9000bde6ff0 EFLAGS: 00010293
-RAX: ffffffff82035c92 RBX: 00fff0000000a02f RCX: ffff888026c03a80
-RDX: 0000000000000000 RSI: 0000000000008000 RDI: 0000000000000000
-RBP: 0000000000008000 R08: ffffffff820354d8 R09: fffff9400007d819
-R10: 0000000000000000 R11: dffffc0000000001 R12: 0000000000000000
-R13: 1ffff11002d73d01 R14: dffffc0000000000 R15: ffffea00003ec0c0
-FS:  00007fe61c1db700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd2061aeb8 CR3: 000000002af1e000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
