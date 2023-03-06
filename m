@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FF96AB899
-	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 09:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0692D6AB89B
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 09:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbjCFImo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 03:42:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
+        id S229614AbjCFImq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 03:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjCFImm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 03:42:42 -0500
-Received: from out-63.mta1.migadu.com (out-63.mta1.migadu.com [95.215.58.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BED32197A
-        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 00:42:40 -0800 (PST)
+        with ESMTP id S230041AbjCFImn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 03:42:43 -0500
+Received: from out-51.mta1.migadu.com (out-51.mta1.migadu.com [IPv6:2001:41d0:203:375::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5756721A33
+        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 00:42:42 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1678092158;
+        t=1678092160;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Jtss5LJMscJIu0BKahkxUY02PtUx65WAWlv0onfntHg=;
-        b=OZGTUlsrIP17meJbt1OowJxt1Xj3koVBs7ZRQRLg+0xukVnH/YHYAcp40PkjHc8fGmRjeO
-        1Qkep/hYwloLVrVnnr1P/vWnjykOyDYe2zSxLK4sUNoo04sxNQxSQ1sUOj4NRb/X4O31iT
-        nh3VWkGhjhDmPLHguJJ58HmQGvmB0go=
+        bh=PTbD2LPZRHqxmOd8BnEu6VE/5DfRs2CtNQSD1vDQnV0=;
+        b=JzMiSQy8Nnm8lUWdJfy1bCeEotAnMzbyVJOblJk5dg/52Ou0JOtO4RDDjIl/eVSF5dPttF
+        B+Nw3VWiMUcVl1bzc5Jf0L+wk3l9lEju2Pm8EuNzonQ9zo5ZkX6Zoht4Hk+KIPPfj71S6A
+        2Yod6EccVotnibXeoGFgr++BSeuKAKI=
 From:   Martin KaFai Lau <martin.lau@linux.dev>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
-Subject: [PATCH bpf-next 03/16] bpf: Remove __bpf_local_storage_map_alloc
-Date:   Mon,  6 Mar 2023 00:42:03 -0800
-Message-Id: <20230306084216.3186830-4-martin.lau@linux.dev>
+Subject: [PATCH bpf-next 04/16] bpf: Remove the preceding __ from __bpf_selem_unlink_storage
+Date:   Mon,  6 Mar 2023 00:42:04 -0800
+Message-Id: <20230306084216.3186830-5-martin.lau@linux.dev>
 In-Reply-To: <20230306084216.3186830-1-martin.lau@linux.dev>
 References: <20230306084216.3186830-1-martin.lau@linux.dev>
 MIME-Version: 1.0
@@ -49,100 +49,39 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-bpf_local_storage_map_alloc() is the only caller of
-__bpf_local_storage_map_alloc().  The remaining logic in
-bpf_local_storage_map_alloc() is only a one liner setting
-the smap->cache_idx.
-
-Remove __bpf_local_storage_map_alloc() to simplify code.
+__bpf_selem_unlink_storage is taking the spin lock and there is
+no name collision also. Having the preceding '__' is confusing
+when reviewing the later patch.
 
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- kernel/bpf/bpf_local_storage.c | 63 ++++++++++++++--------------------
- 1 file changed, 26 insertions(+), 37 deletions(-)
+ kernel/bpf/bpf_local_storage.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index 4d2bc7c97f7d..acedf6b07c54 100644
+index acedf6b07c54..fef75beaf66d 100644
 --- a/kernel/bpf/bpf_local_storage.c
 +++ b/kernel/bpf/bpf_local_storage.c
-@@ -601,40 +601,6 @@ int bpf_local_storage_map_alloc_check(union bpf_attr *attr)
- 	return 0;
+@@ -216,8 +216,8 @@ static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_stor
+ 	return free_local_storage;
  }
  
--static struct bpf_local_storage_map *__bpf_local_storage_map_alloc(union bpf_attr *attr)
--{
--	struct bpf_local_storage_map *smap;
--	unsigned int i;
--	u32 nbuckets;
--
--	smap = bpf_map_area_alloc(sizeof(*smap), NUMA_NO_NODE);
--	if (!smap)
--		return ERR_PTR(-ENOMEM);
--	bpf_map_init_from_attr(&smap->map, attr);
--
--	nbuckets = roundup_pow_of_two(num_possible_cpus());
--	/* Use at least 2 buckets, select_bucket() is undefined behavior with 1 bucket */
--	nbuckets = max_t(u32, 2, nbuckets);
--	smap->bucket_log = ilog2(nbuckets);
--
--	smap->buckets = bpf_map_kvcalloc(&smap->map, sizeof(*smap->buckets),
--					 nbuckets, GFP_USER | __GFP_NOWARN);
--	if (!smap->buckets) {
--		bpf_map_area_free(smap);
--		return ERR_PTR(-ENOMEM);
--	}
--
--	for (i = 0; i < nbuckets; i++) {
--		INIT_HLIST_HEAD(&smap->buckets[i].list);
--		raw_spin_lock_init(&smap->buckets[i].lock);
--	}
--
--	smap->elem_size = offsetof(struct bpf_local_storage_elem,
--				   sdata.data[attr->value_size]);
--
--	return smap;
--}
--
- int bpf_local_storage_map_check_btf(const struct bpf_map *map,
- 				    const struct btf *btf,
- 				    const struct btf_type *key_type,
-@@ -694,10 +660,33 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
- 			    struct bpf_local_storage_cache *cache)
+-static void __bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
+-				       bool use_trace_rcu)
++static void bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
++				     bool use_trace_rcu)
  {
- 	struct bpf_local_storage_map *smap;
-+	unsigned int i;
-+	u32 nbuckets;
-+
-+	smap = bpf_map_area_alloc(sizeof(*smap), NUMA_NO_NODE);
-+	if (!smap)
-+		return ERR_PTR(-ENOMEM);
-+	bpf_map_init_from_attr(&smap->map, attr);
-+
-+	nbuckets = roundup_pow_of_two(num_possible_cpus());
-+	/* Use at least 2 buckets, select_bucket() is undefined behavior with 1 bucket */
-+	nbuckets = max_t(u32, 2, nbuckets);
-+	smap->bucket_log = ilog2(nbuckets);
+ 	struct bpf_local_storage *local_storage;
+ 	bool free_local_storage = false;
+@@ -288,7 +288,7 @@ void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool use_trace_rcu)
+ 	 * the local_storage.
+ 	 */
+ 	bpf_selem_unlink_map(selem);
+-	__bpf_selem_unlink_storage(selem, use_trace_rcu);
++	bpf_selem_unlink_storage(selem, use_trace_rcu);
+ }
  
--	smap = __bpf_local_storage_map_alloc(attr);
--	if (IS_ERR(smap))
--		return ERR_CAST(smap);
-+	smap->buckets = bpf_map_kvcalloc(&smap->map, sizeof(*smap->buckets),
-+					 nbuckets, GFP_USER | __GFP_NOWARN);
-+	if (!smap->buckets) {
-+		bpf_map_area_free(smap);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	for (i = 0; i < nbuckets; i++) {
-+		INIT_HLIST_HEAD(&smap->buckets[i].list);
-+		raw_spin_lock_init(&smap->buckets[i].lock);
-+	}
-+
-+	smap->elem_size = offsetof(struct bpf_local_storage_elem,
-+				   sdata.data[attr->value_size]);
- 
- 	smap->cache_idx = bpf_local_storage_cache_idx_get(cache);
- 	return &smap->map;
+ /* If cacheit_lockit is false, this lookup function is lockless */
 -- 
 2.30.2
 
