@@ -2,133 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3756F6ABE0D
-	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 12:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF1A6ABEE1
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 12:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjCFLVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 06:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38726 "EHLO
+        id S229636AbjCFL6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 06:58:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbjCFLVt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 06:21:49 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D2C241FF
-        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 03:21:47 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id t15so8404225wrz.7
-        for <bpf@vger.kernel.org>; Mon, 06 Mar 2023 03:21:47 -0800 (PST)
+        with ESMTP id S229914AbjCFL6D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 06:58:03 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0739C4C13;
+        Mon,  6 Mar 2023 03:58:02 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id p20so9948386plw.13;
+        Mon, 06 Mar 2023 03:58:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1678101706;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mFoPMccumpB7Jg6MG/+Y9XEhQvfr9CtFnuJx3l1V4DE=;
-        b=d8mXmXI3nA2pSmxPOcpNa0FlSQv089G1qG8NhyBEUzH7S6WGN7qoymBEwZFuPSe6b+
-         2x2/EwY+qEWka9m1n7nfmP/FNT3edecUvZnVWcEcHXCyJa3r6RX/lybe6q3lZC0eWLyY
-         awsfaHqKxSUwmGhYEM840o56zqy6r11AmjU1759Ax849jgoCSXJn+9FNzQaCGDp5P6SZ
-         sZytn+bo3cwrKmLZDo1CAYSuzhuoZQBPbDydT7zLK1KA4zapzlKfoFu6PCwd9/HZZlIW
-         QVl+vfpLVJ0z+aWko6MBsTeluzPvma1unkilApssCEN+jWPhoVzQalLL40z1dVusXSgd
-         aD8w==
+        d=gmail.com; s=20210112; t=1678103881;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hft+w/AWTpA/oHx8mE1wI0oZbuc9lfki3TKKzp/NdNA=;
+        b=N7/Sujkh6ufAR+6H+b161RlDaaLu9dDxRmwjQEJX1my8jcJLYEIr4xPSpSBEhpMovw
+         FdsO0MXBpWWIBj+5AUOo41QTeh/Wi860oHBnqIJvBkYHc6uaqVPpKiSl07yJZkFDYHcQ
+         n1QIDC/SMxXE4/b1ee4zPgdoby+dBU/9/uVKSH81RGRLRx1/0Yn7F2GR8lzQwx2TJGxZ
+         6UapA8IaXxQvtSUxtmCbxNv6BmWVjxrdUP8G9Wx2sPskf78cHbcozxQAdlSHPGMSZmib
+         MRxs9gF+e4g2ZZz/vA8byA425ih75kwgoGp8jdb0mgXlkU+1kUbV4xPsP0lEgEFvPUhQ
+         TUKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678101706;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mFoPMccumpB7Jg6MG/+Y9XEhQvfr9CtFnuJx3l1V4DE=;
-        b=xuVmN2746roigpxMWI/uQGlmcrRsWfo4sF9hXz+8GsuDht6GiXiEFZtax049MFLZ2H
-         yTR5nKPAbetma5kl3eOTxlkXNxkROkBtKCB+OcG79ZWYpkWdreWw7s2aswXN4N9H8XYq
-         UOZNEdJ+S21pV1hqsu0V4KJErDS+3Ge16cS7358lkRr+PoDXTlnN5n2uEllmj7p9tVg9
-         EDskG9+7wUIyK99tluH9lpASPrAeQ9JrIll78ThXEhHOE9Z9fGi0aTyGeyrGy1zwazZW
-         nwlQwZ/t4nCLCP0oDlXP4Ddt1fHku2ZXu4Mss/aytFBtQKSVQ0mdojUuhAdgggL8Y/Ve
-         D9vQ==
-X-Gm-Message-State: AO0yUKVDbGV3yNX8c581NkxOaR9R0vwhtpKfkHjpe8K4E7Sv0BwXm+x3
-        33VEr+WqedRw9lSyjXIjQkNI8Q==
-X-Google-Smtp-Source: AK7set+Zu3b69i/KACJqyI3EmGDipLz+Du2Ldc2ipOzZBaSMCZeO6VIhMXQkvi9mRGC2wHk5+jm3nQ==
-X-Received: by 2002:a05:6000:1109:b0:2c9:9147:a710 with SMTP id z9-20020a056000110900b002c99147a710mr6968458wrw.43.1678101706049;
-        Mon, 06 Mar 2023 03:21:46 -0800 (PST)
-Received: from tpx1.lan (f.c.7.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff::7cf])
-        by smtp.gmail.com with ESMTPSA id j4-20020adfff84000000b002cda9aa1dc1sm9604854wrr.111.2023.03.06.03.21.45
+        d=1e100.net; s=20210112; t=1678103881;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hft+w/AWTpA/oHx8mE1wI0oZbuc9lfki3TKKzp/NdNA=;
+        b=CGlEUbkovdgt/IisV0YHHlhCPh0Smlv1NjVuD7ogzMtM3nMGI+86+vF/dXcf0ZDu4h
+         vp9lke8mzgKgKy5hELR22nWDC7yF4HGrCiNJg6iUXdIPNgmnkFBoADkoiU/j2qo2h1oN
+         zRRAy+J0FH2e4xo65xXXpFSF0rH/Yg6y+Dl2iFxreBQX6YEEyL7ufwSciNEcaSt/l3/U
+         E88FlF/d1g/vU0lTr2b+TOdwkElCfVsP69SWlkWknZw7F3YmUVEm77cSVMY0We24qbeE
+         7IpMUCaGspew2t+modaH3+8zQV8iXhNLhX7GZyK2W2893QnlcqaV6kU8dlBP7idxrmco
+         ALUQ==
+X-Gm-Message-State: AO0yUKU8Ycn5sq97RSNSG6TLUS+SmUuOID1dKVyDHp8JqduBygb3gwRD
+        CAtFQesHWudcD7qnpWonX/M=
+X-Google-Smtp-Source: AK7set/AFZkOnRb5aCA1x9R88r1/NeFmclcksVUWCpHqot6Nff6CildQ66ij5zK3slqZaSGojYn9+A==
+X-Received: by 2002:a17:90b:1b05:b0:237:aa9f:968c with SMTP id nu5-20020a17090b1b0500b00237aa9f968cmr10973012pjb.34.1678103881440;
+        Mon, 06 Mar 2023 03:58:01 -0800 (PST)
+Received: from KERNELXING-MB0.tencent.com ([103.7.29.31])
+        by smtp.gmail.com with ESMTPSA id l3-20020a17090add8300b0022335f1dae2sm5887361pjv.22.2023.03.06.03.57.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Mar 2023 03:21:45 -0800 (PST)
-From:   Lorenz Bauer <lorenz.bauer@isovalent.com>
-X-Google-Original-From: Lorenz Bauer <lmb@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc:     Lorenz Bauer <lmb@isovalent.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf v2 2/2] selftests/bpf: check that modifier resolves after pointer
-Date:   Mon,  6 Mar 2023 11:21:38 +0000
-Message-Id: <20230306112138.155352-3-lmb@isovalent.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230306112138.155352-1-lmb@isovalent.com>
-References: <20230306112138.155352-1-lmb@isovalent.com>
+        Mon, 06 Mar 2023 03:58:01 -0800 (PST)
+From:   Jason Xing <kerneljasonxing@gmail.com>
+To:     willemdebruijn.kernel@gmail.com, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kerneljasonxing@gmail.com,
+        Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH v2 net-next] udp: introduce __sk_mem_schedule() usage
+Date:   Mon,  6 Mar 2023 19:57:45 +0800
+Message-Id: <20230306115745.87401-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a regression test that ensures that a VAR pointing at a
-modifier which follows a PTR (or STRUCT or ARRAY) is resolved
-correctly by the datasec validator.
+From: Jason Xing <kernelxing@tencent.com>
 
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+Keep the accounting schema consistent across different protocols
+with __sk_mem_schedule(). Besides, it adjusts a little bit on how
+to calculate forward allocated memory compared to before. After
+applied this patch, we could avoid receive path scheduling extra
+amount of memory.
+
+Link: https://lore.kernel.org/lkml/20230221110344.82818-1-kerneljasonxing@gmail.com/
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
- tools/testing/selftests/bpf/prog_tests/btf.c | 28 ++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+V2:
+1) change the title and body message
+2) use __sk_mem_schedule() instead suggested by Paolo Abeni
+---
+ net/ipv4/udp.c | 31 ++++++++++++++++++-------------
+ 1 file changed, 18 insertions(+), 13 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-index cbb600be943d..210d643fda6c 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-@@ -879,6 +879,34 @@ static struct btf_raw_test raw_tests[] = {
- 	.btf_load_err = true,
- 	.err_str = "Invalid elem",
- },
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index 9592fe3e444a..21c99087110d 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -1531,10 +1531,23 @@ static void busylock_release(spinlock_t *busy)
+ 		spin_unlock(busy);
+ }
+ 
++static inline int udp_rmem_schedule(struct sock *sk, int size)
 +{
-+	.descr = "var after datasec, ptr followed by modifier",
-+	.raw_types = {
-+		/* .bss section */				/* [1] */
-+		BTF_TYPE_ENC(NAME_TBD, BTF_INFO_ENC(BTF_KIND_DATASEC, 0, 2),
-+			sizeof(void*)+4),
-+		BTF_VAR_SECINFO_ENC(4, 0, sizeof(void*)),
-+		BTF_VAR_SECINFO_ENC(6, sizeof(void*), 4),
-+		/* int */					/* [2] */
-+		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),
-+		/* int* */					/* [3] */
-+		BTF_TYPE_ENC(0, BTF_INFO_ENC(BTF_KIND_PTR, 0, 0), 2),
-+		BTF_VAR_ENC(NAME_TBD, 3, 0),			/* [4] */
-+		/* const int */					/* [5] */
-+		BTF_TYPE_ENC(0, BTF_INFO_ENC(BTF_KIND_CONST, 0, 0), 2),
-+		BTF_VAR_ENC(NAME_TBD, 5, 0),			/* [6] */
-+		BTF_END_RAW,
-+	},
-+	.str_sec = "\0a\0b\0c\0",
-+	.str_sec_size = sizeof("\0a\0b\0c\0"),
-+	.map_type = BPF_MAP_TYPE_ARRAY,
-+	.map_name = ".bss",
-+	.key_size = sizeof(int),
-+	.value_size = sizeof(void*)+4,
-+	.key_type_id = 0,
-+	.value_type_id = 1,
-+	.max_entries = 1,
-+},
- /* Test member exceeds the size of struct.
-  *
-  * struct A {
++	int delta;
++
++	delta = size - sk->sk_forward_alloc;
++	if (delta > 0 && !__sk_mem_schedule(sk, delta, SK_MEM_RECV))
++		return -ENOBUFS;
++
++	sk->sk_forward_alloc -= size;
++
++	return 0;
++}
++
+ int __udp_enqueue_schedule_skb(struct sock *sk, struct sk_buff *skb)
+ {
+ 	struct sk_buff_head *list = &sk->sk_receive_queue;
+-	int rmem, delta, amt, err = -ENOMEM;
++	int rmem, err = -ENOMEM;
+ 	spinlock_t *busy = NULL;
+ 	int size;
+ 
+@@ -1567,20 +1580,12 @@ int __udp_enqueue_schedule_skb(struct sock *sk, struct sk_buff *skb)
+ 		goto uncharge_drop;
+ 
+ 	spin_lock(&list->lock);
+-	if (size >= sk->sk_forward_alloc) {
+-		amt = sk_mem_pages(size);
+-		delta = amt << PAGE_SHIFT;
+-		if (!__sk_mem_raise_allocated(sk, delta, amt, SK_MEM_RECV)) {
+-			err = -ENOBUFS;
+-			spin_unlock(&list->lock);
+-			goto uncharge_drop;
+-		}
+-
+-		sk->sk_forward_alloc += delta;
++	err = udp_rmem_schedule(sk, size);
++	if (err) {
++		spin_unlock(&list->lock);
++		goto uncharge_drop;
+ 	}
+ 
+-	sk->sk_forward_alloc -= size;
+-
+ 	/* no need to setup a destructor, we will explicitly release the
+ 	 * forward allocated memory on dequeue
+ 	 */
 -- 
-2.39.2
+2.37.3
 
