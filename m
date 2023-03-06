@@ -2,73 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 795386AB3A3
-	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 01:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 568FD6AB430
+	for <lists+bpf@lfdr.de>; Mon,  6 Mar 2023 02:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjCFAOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Mar 2023 19:14:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
+        id S229628AbjCFBJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Mar 2023 20:09:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjCFAOL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Mar 2023 19:14:11 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D98FF24
-        for <bpf@vger.kernel.org>; Sun,  5 Mar 2023 16:14:10 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id y19so4523436pgk.5
-        for <bpf@vger.kernel.org>; Sun, 05 Mar 2023 16:14:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/iNSjGt4LvBwBTzqEDDmcGmSc5TGNN1AZh+JJ+IE0Ic=;
-        b=DNQ9qaIIWgAxe4guOyPunuX8j7iHLWSJWLBVRay4ORsmbeaDp6KtelaAdL2iPt4QyN
-         fhjeLw/s8RWSt0+ENdXHY904TzVP1VES5Zp/Lltdpu0PTbuRs8ZXDif/SXU38wZxCml7
-         sn5i0wwFpH/6od7fpL9G8IGkDBUofIEDrIQH2kMcSSqkeSh4bzWm7dmGsnv9ohpdPW0O
-         MjJT8M+cMt7sKp2OY/hiN30yOwZWW7r9uR/FqmPDw0IBlHMPPLUdQP6hl3TbWbmvzmKV
-         rzl4ZLl3Ot5x+R/+vCb8Wo5frBJH98HF3lfvqNtVRhcLNX1al/WELVRgRUIVqSOagvYf
-         4eLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/iNSjGt4LvBwBTzqEDDmcGmSc5TGNN1AZh+JJ+IE0Ic=;
-        b=aIlgZjEfILi+IZMEr38m2pMy5kqCsXd8hdSXtPEoD0UL1DjSDvO0bh9scJgD2VAdXn
-         6XbTZUU5bIsx5tebzIUE4N/Bpaoh4/RSQPPEGPve/S9A6n3oCNXvbRC5rRSfK488Cd8g
-         elEEco/sO0Z3MxGtlSM/upD1na3UYdw3qJM3+Ujwljg7fGdBKEM4dz5mvGEBRQtV5u57
-         U1YJjwe0wE7YaE1w+OVaiiP5NMVXclEtAtzrbPB9CR2S0Dm2U8PiRXU7qmhe8Kw/ijwr
-         ko9qYVcAj01ooIDzOIxZMLKD5ZZx1IlH2JcVCFVVeHbA4fbHvWA6oaceqnMBw2LiUkoz
-         PFjQ==
-X-Gm-Message-State: AO0yUKWX+k9NTG/5dOn32rpgQZlgsZD6vgaX/lYxJdF24qeA6w4egKm6
-        1tkX+MiQAjc27gkpcHDNnWQ=
-X-Google-Smtp-Source: AK7set//18Jav4ADAqzsXejvpUmcuz8bPcOUpWMUQRVAahhVQVia58f/5gH9yeaO0goOjhiKvZHBQA==
-X-Received: by 2002:a62:1c58:0:b0:5e3:16fc:b58e with SMTP id c85-20020a621c58000000b005e316fcb58emr8117962pfc.21.1678061649569;
-        Sun, 05 Mar 2023 16:14:09 -0800 (PST)
-Received: from MacBook-Pro-6.local ([2620:10d:c090:400::5:59fc])
-        by smtp.gmail.com with ESMTPSA id n4-20020a62e504000000b005a8c92f7c27sm4997375pff.212.2023.03.05.16.14.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Mar 2023 16:14:09 -0800 (PST)
-Date:   Sun, 5 Mar 2023 16:14:07 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH bpf-next 16/17] selftests/bpf: add iterators tests
-Message-ID: <20230306001407.lreqhdvdwitdb63v@MacBook-Pro-6.local>
-References: <20230302235015.2044271-1-andrii@kernel.org>
- <20230302235015.2044271-17-andrii@kernel.org>
- <20230304203900.2eowyut62ptvgcsq@MacBook-Pro-6.local>
- <CAEf4BzbrPGPKZSxen4AKc9WDXM0+mutOSR7xeHOtENsFT7JM4g@mail.gmail.com>
+        with ESMTP id S229545AbjCFBJg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Mar 2023 20:09:36 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6728B777;
+        Sun,  5 Mar 2023 17:09:34 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PVL5s0Xsdz9tC8;
+        Mon,  6 Mar 2023 09:07:29 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Mon, 6 Mar
+ 2023 09:09:32 +0800
+Subject: Re: [PATCH bpf-next v1 1/2] xdp: recycle Page Pool backed skbs built
+ from XDP frames
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Song Liu <song@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230301160315.1022488-1-aleksander.lobakin@intel.com>
+ <20230301160315.1022488-2-aleksander.lobakin@intel.com>
+ <36d42e20-b33f-5442-0db7-e9f5ef9d0941@huawei.com>
+ <dd811304-44ed-0372-8fe7-00c425a453dd@intel.com>
+ <7ffbcac4-f4f2-5579-fd55-35813fbd792c@huawei.com>
+ <9b5b88da-0d2d-d3f3-6ee1-7e4afc2e329a@intel.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <98aa093a-e772-8882-b0e3-5895fd747e59@huawei.com>
+Date:   Mon, 6 Mar 2023 09:09:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbrPGPKZSxen4AKc9WDXM0+mutOSR7xeHOtENsFT7JM4g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <9b5b88da-0d2d-d3f3-6ee1-7e4afc2e329a@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,54 +64,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 04, 2023 at 03:29:23PM -0800, Andrii Nakryiko wrote:
-> On Sat, Mar 4, 2023 at 12:39 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Mar 02, 2023 at 03:50:14PM -0800, Andrii Nakryiko wrote:
-> > > +
-> > > +#ifdef REAL_TEST
-> >
-> > Looks like REAL_TEST is never set.
-> >
-> > and all bpf_printk-s in tests are never executed, because the test are 'load-only'
-> > to check the verifier?
-> >
-> > It looks like all of them can be run (once printks are removed and converted to if-s).
-> > That would nicely complement patch 17 runners.
-> >
+On 2023/3/3 21:26, Alexander Lobakin wrote:
+> From: Yunsheng Lin <linyunsheng@huawei.com>
+> Date: Fri, 3 Mar 2023 20:44:24 +0800
 > 
-> Yes, it's a bit sloppy. I used these also as manual tests during
-> development. I did have an ad-hoc test that attaches and triggers
-> these programs. And I just manually looked at printk output in
-> trace_pipe to confirm it does actually work as expected.
+>> On 2023/3/3 19:22, Alexander Lobakin wrote:
+>>> From: Yunsheng Lin <linyunsheng@huawei.com>
+>>> Date: Thu, 2 Mar 2023 10:30:13 +0800
 > 
-> And I felt sorry to drop all that, so just added that REAL_TEST hack
-> to make program code simpler (no extra states for those pid
-> conditions), it was simpler to debug verification failures, less
-> states to consider.
+> [...]
 > 
-> I did try to quickly extend RUN_TESTS with the ability to specify a
-> callback that will be called on success, but it's not trivial if we
-> want to preserve skeletons, so I abandoned that effort, trying to save
-> a bit of time. I still want to have RUN_TESTS with ability to specify
-> callback in the form of:
+>>> And they are fixed :D
+>>> No drivers currently which use Page Pool mix PP pages with non-PP. And
+>>
+>> The wireless adapter which use Page Pool *does* mix PP pages with
+>> non-PP, see below discussion:
+>>
+>> https://lore.kernel.org/netdev/156f3e120bd0757133cb6bc11b76889637b5e0a6.camel@gmail.com/
 > 
-> static void on_success(struct <my_skeleton_type> *skel, struct
-> bpf_program *prog) {
->     ...
-> }
+> Ah right, I remember that (also was fixed).
+> Not that I think it is correct to mix them -- for my PoV, a driver
+> shoule either give *all* its Rx buffers as PP-backed or not use PP at all.
 > 
-> but it needs more thought and macro magic (or something else), so I
-> postponed it and wrote simple number iterator tests in patch #17.
+> [...]
+> 
+>>> As Jesper already pointed out, not having a quick way to check whether
+>>> we have to check ::pp_magic at all can decrease performance. So it's
+>>> rather a shortcut.
+>>
+>> When we are freeing a page by updating the _refcount, I think
+>> we are already touching the cache of ::pp_magic.
+> 
+> But no page freeing happens before checking for skb->pp_recycle, neither
+> in skb_pp_recycle() (skb_free_head() etc.)[0] nor in skb_frag_unref()[1].
 
-Sounds good to me. Follow up is fine.
+If we move to per page marker, we probably do not need checking
+skb->pp_recycle.
 
-> > It can be a follow up, of course.
+Note both page_pool_return_skb_page() and skb_free_frag() can
+reuse the cache line triggered by per page marker checking if
+the per page marker is in the 'struct page'.
+
 > 
-> yep, let's keep bpf_printks, as they currently serve as consumers of
-> variables, preventing the compiler from optimizing loops too much.
-> This shouldn't be a problem for verification-only kind of tests. And
-> then with RUN_TESTS() additions, we can actually start executing this.
-
-+1
+>>
+>> Anyway, I am not sure checking ::pp_magic is correct when a
+>> page will be passing between different subsystem and back to
+>> the network stack eventually, checking ::pp_magic may not be
+>> correct if this happens.
+>>
+>> Another way is to use the bottom two bits in bv_page, see:
+>> https://www.spinics.net/lists/netdev/msg874099.html
+>>
+>>>
+>>>>
+>>>>>  
+>>>>>  	/* Allow SKB to reuse area used by xdp_frame */
+>>>>>  	xdp_scrub_frame(xdpf);
+>>>>>
+>>>
+>>> Thanks,
+>>> Olek
+>>> .
+>>>
+> 
+> [0] https://elixir.bootlin.com/linux/latest/source/net/core/skbuff.c#L808
+> [1]
+> https://elixir.bootlin.com/linux/latest/source/include/linux/skbuff.h#L3385
+> 
+> Thanks,
+> Olek
+> .
+> 
