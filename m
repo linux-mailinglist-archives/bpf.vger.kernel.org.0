@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D64226ADE47
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 13:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1DE6ADE48
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 13:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjCGME5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 07:04:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
+        id S231163AbjCGME6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 07:04:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbjCGMEw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 07:04:52 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434A432522
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 04:04:50 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id l7-20020a05600c1d0700b003eb5e6d906bso7027866wms.5
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 04:04:50 -0800 (PST)
+        with ESMTP id S231300AbjCGMEx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 07:04:53 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B49932510
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 04:04:51 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id p26so7583999wmc.4
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 04:04:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112; t=1678190689;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ga2t4XKW6O5tB3acM5X/flUuKVu7knbwnYIgerkVpnY=;
-        b=JtVWwAv2kOfJLB8ERk0GmxLVQIKc8DcyI4Sc+t7xwe00ilQeLa4lxKz+e/Dd04Q0Xb
-         Tc5qGeBcYmXfhrPjdQGy7J8k6lD0twWAfezf4yiugLYam/fp8sq2Wxh5yjgrR3lWxd1h
-         3XKZhc68w7CxTkstL9KSttZyIHkCj/PJ4axwNzoyYQcfAA819kadUVvzJCiQmUSmIEZP
-         hXLVDzjBvJAnTzKh6gMa3+H7KEggeKl74gcAQn8italnQa1SD0AV12fNchrV/QCPZWPH
-         DjnibF7igPAZ/hd/1/jnu4ZsFDsppPR/uqWW4LUB7DZ4VOYMh2pGjKUSqHClcTenWTsO
-         VcRQ==
+        bh=bzLH3arc+4jLnRYm+fw9unlpZnfpEKzyvHG2hKujgoM=;
+        b=T9e8X6AHIx34E8J5gRhqYgRyKoxROqoO9WODsUITsPp0jM77cHE2aG0yWqhftN4jPS
+         lO/+v+NQ+Tt7ewCDEY7cZDrkUVGwmyS+S8rbk3zUtj2aviRGeCI27ffJXDm72zwuQ0zS
+         38bI991WHYrLPDdurWM5dOUHYQePm8kMBcrrXbXXthHtkQCObCZqQSsP4RyypFRg9Skt
+         Qcb2T2uaJBzFybajIp1QMpPxL3X2zlJAK6XWEqW/PcxaM/vbz6rdnM2DiBSGjabirIRy
+         1s1vM0dpx4CSXK5cwjC4k2hNFAmpnQ4YPSpd+Ie5lzz2XPxr1V3evycYHKgfmESQo6xP
+         cw6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112; t=1678190689;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ga2t4XKW6O5tB3acM5X/flUuKVu7knbwnYIgerkVpnY=;
-        b=34kqzN3CRODi/nTIBXv7b/XmgEILS0kpOixFysM+C5c8s2EwFoIyPPg5QPiEJqZgAf
-         L252qOufFvK6xhNX7OxFC958O0kmyIgrMN+kX9rF5Cdkrzeq4kjtRkheX0khfp3jnm20
-         DMDHGdKCYW187gS718Frgqfh268xGFG2QtO1kHey0P6DoB7r2RE0EtkIJOYJDBWnvhfF
-         k5ry8IqegVmErd2UD0oHkLHAX7OY1pXUjaf7/5m3jVUnQDB1Mo1nSuo55i40IvTNT6Ty
-         wHd0KA0VkHJeMPG8IpJH/y0g1ku2ixjO1pOtJnrClsity57cPr49v8HhKV4HUYziSC5w
-         LnMg==
-X-Gm-Message-State: AO0yUKWhf7cE0nvatvtxTFuiojelW5g6LMWmJz8aG2pDTOAxfokXZ16Z
-        eFmPRMb2sCV10TJp9CUaRF0=
-X-Google-Smtp-Source: AK7set8lfRm+gdmdl9TZy6Ksf5bhTeeGhHSPpDJyjWesy49zUUt/KldyRGk8lb8/3j7UXxG0RYdOXw==
-X-Received: by 2002:a05:600c:354e:b0:3eb:38e6:f652 with SMTP id i14-20020a05600c354e00b003eb38e6f652mr12188630wmq.13.1678190688512;
-        Tue, 07 Mar 2023 04:04:48 -0800 (PST)
+        bh=bzLH3arc+4jLnRYm+fw9unlpZnfpEKzyvHG2hKujgoM=;
+        b=jHY0r1feUlg0rGENqatM4nYsN0TSXYufmCr50p4bSL4PWvR6BZWdHYQFZa3++Rt3y9
+         E+ybLdAnbU3WPosXE4r7DkNME7GdDR2Lx/59s7nibLgT+M/7U551hmik5hYBajOYPn9K
+         XM7q8p2QpqchR+wtS51xLqNSbsPLRcXKYhfWlVBdOdvjuGe1sEzr9Yph1n2+ls22R0rn
+         Kam1QDi21+FagJWvmIxyXvztkzkxXy6x6UFwPxSLeuHtmctPPRhL6+ZPWS2fDTuDYC5G
+         1YCLRtDJ30onwYpvY9J+Ud78+xoi8//Dl9jrKWqv+MR786EUXN9qW5IkMxZi5ZysmrSd
+         Tkbg==
+X-Gm-Message-State: AO0yUKUMiNoYLHhAfInwHIYmh9lzXFy/52vvoTBR1PrW2nd1DY+ee0hN
+        sRMdxfg5oONwamG9+A0i+lQ=
+X-Google-Smtp-Source: AK7set/R87wehPEuDdL6OSlPUYerPVY3iOjI5nCh0Pcfb2NOpJpv5HOWFn2pdmFjIHuyf6ouV20UCw==
+X-Received: by 2002:a05:600c:4e41:b0:3ea:e7e7:a2f9 with SMTP id e1-20020a05600c4e4100b003eae7e7a2f9mr12598231wmq.13.1678190689631;
+        Tue, 07 Mar 2023 04:04:49 -0800 (PST)
 Received: from ip-172-31-2-215.eu-west-1.compute.internal (ec2-34-255-118-91.eu-west-1.compute.amazonaws.com. [34.255.118.91])
-        by smtp.gmail.com with ESMTPSA id p16-20020a05600c359000b003e209b45f6bsm18522081wmq.29.2023.03.07.04.04.47
+        by smtp.gmail.com with ESMTPSA id p16-20020a05600c359000b003e209b45f6bsm18522081wmq.29.2023.03.07.04.04.48
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
         Tue, 07 Mar 2023 04:04:48 -0800 (PST)
 From:   Puranjay Mohan <puranjay12@gmail.com>
@@ -54,9 +54,9 @@ To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
         bpf@vger.kernel.org, memxor@gmail.com
 Cc:     Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH bpf-next v3 1/2] libbpf: refactor parse_usdt_arg() to re-use code
-Date:   Tue,  7 Mar 2023 12:04:39 +0000
-Message-Id: <20230307120440.25941-2-puranjay12@gmail.com>
+Subject: [PATCH bpf-next v3 2/2] libbpf: usdt arm arg parsing support
+Date:   Tue,  7 Mar 2023 12:04:40 +0000
+Message-Id: <20230307120440.25941-3-puranjay12@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230307120440.25941-1-puranjay12@gmail.com>
 References: <20230307120440.25941-1-puranjay12@gmail.com>
@@ -64,315 +64,131 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The parse_usdt_arg() function is defined differently for each
-architecture but the last part of the function is repeated
-verbatim for each architecture.
+Parsing of USDT arguments is architecture-specific; on arm it is
+relatively easy since registers used are r[0-10], fp, ip, sp, lr,
+pc. Format is slightly different compared to aarch64; forms are
 
-Refactor parse_usdt_arg() to fill the arg_sz and then do the repeated
-post-processing in parse_usdt_spec().
+- "size @ [ reg, #offset ]" for dereferences, for example
+  "-8 @ [ sp, #76 ]" ; " -4 @ [ sp ]"
+- "size @ reg" for register values; for example
+  "-4@r0"
+- "size @ #value" for raw values; for example
+  "-8@#1"
+
+Add support for parsing USDT arguments for ARM architecture.
+
+To test the above changes QEMU's virt[1] board with cortex-a15
+CPU was used. libbpf-bootstrap's usdt example[2] was modified to attach
+to a test program with DTRACE_PROBE1/2/3/4... probes to test different
+combinations.
+
+[1] https://www.qemu.org/docs/master/system/arm/virt.html
+[2] https://github.com/libbpf/libbpf-bootstrap/blob/master/examples/c/usdt.bpf.c
 
 Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 ---
- tools/lib/bpf/usdt.c | 123 +++++++++++++++----------------------------
- 1 file changed, 42 insertions(+), 81 deletions(-)
+ tools/lib/bpf/usdt.c | 80 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
 
 diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index 75b411fc2c77..293b7a37f8a1 100644
+index 293b7a37f8a1..27a4589eda1c 100644
 --- a/tools/lib/bpf/usdt.c
 +++ b/tools/lib/bpf/usdt.c
-@@ -1141,11 +1141,13 @@ static int parse_usdt_note(Elf *elf, const char *path, GElf_Nhdr *nhdr,
- 	return 0;
- }
- 
--static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg);
-+static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg, int *arg_sz);
- 
- static int parse_usdt_spec(struct usdt_spec *spec, const struct usdt_note *note, __u64 usdt_cookie)
- {
-+	struct usdt_arg_spec *arg;
- 	const char *s;
-+	int arg_sz;
- 	int len;
- 
- 	spec->usdt_cookie = usdt_cookie;
-@@ -1159,10 +1161,25 @@ static int parse_usdt_spec(struct usdt_spec *spec, const struct usdt_note *note,
- 			return -E2BIG;
- 		}
- 
--		len = parse_usdt_arg(s, spec->arg_cnt, &spec->args[spec->arg_cnt]);
-+		arg = &spec->args[spec->arg_cnt];
-+		len = parse_usdt_arg(s, spec->arg_cnt, arg, &arg_sz);
- 		if (len < 0)
- 			return len;
- 
-+		arg->arg_signed = arg_sz < 0;
-+		if (arg_sz < 0)
-+			arg_sz = -arg_sz;
-+
-+		switch (arg_sz) {
-+		case 1: case 2: case 4: case 8:
-+			arg->arg_bitshift = 64 - arg_sz * 8;
-+			break;
-+		default:
-+			pr_warn("usdt: unsupported arg #%d (spec '%s') size: %d\n",
-+				spec->arg_cnt, s, arg_sz);
-+			return -EINVAL;
-+		}
-+
- 		s += len;
- 		spec->arg_cnt++;
- 	}
-@@ -1219,13 +1236,13 @@ static int calc_pt_regs_off(const char *reg_name)
- 	return -ENOENT;
- }
- 
--static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
-+static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg, int *arg_sz)
- {
- 	char reg_name[16];
--	int arg_sz, len, reg_off;
-+	int len, reg_off;
- 	long off;
- 
--	if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n", &arg_sz, &off, reg_name, &len) == 3) {
-+	if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n", arg_sz, &off, reg_name, &len) == 3) {
- 		/* Memory dereference case, e.g., -4@-20(%rbp) */
- 		arg->arg_type = USDT_ARG_REG_DEREF;
- 		arg->val_off = off;
-@@ -1233,7 +1250,7 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		if (reg_off < 0)
- 			return reg_off;
- 		arg->reg_off = reg_off;
--	} else if (sscanf(arg_str, " %d @ ( %%%15[^)] ) %n", &arg_sz, reg_name, &len) == 2) {
-+	} else if (sscanf(arg_str, " %d @ ( %%%15[^)] ) %n", arg_sz, reg_name, &len) == 2) {
- 		/* Memory dereference case without offset, e.g., 8@(%rsp) */
- 		arg->arg_type = USDT_ARG_REG_DEREF;
- 		arg->val_off = 0;
-@@ -1241,7 +1258,7 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		if (reg_off < 0)
- 			return reg_off;
- 		arg->reg_off = reg_off;
--	} else if (sscanf(arg_str, " %d @ %%%15s %n", &arg_sz, reg_name, &len) == 2) {
-+	} else if (sscanf(arg_str, " %d @ %%%15s %n", arg_sz, reg_name, &len) == 2) {
- 		/* Register read case, e.g., -4@%eax */
- 		arg->arg_type = USDT_ARG_REG;
- 		arg->val_off = 0;
-@@ -1250,7 +1267,7 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		if (reg_off < 0)
- 			return reg_off;
- 		arg->reg_off = reg_off;
--	} else if (sscanf(arg_str, " %d @ $%ld %n", &arg_sz, &off, &len) == 2) {
-+	} else if (sscanf(arg_str, " %d @ $%ld %n", arg_sz, &off, &len) == 2) {
- 		/* Constant value case, e.g., 4@$71 */
- 		arg->arg_type = USDT_ARG_CONST;
- 		arg->val_off = off;
-@@ -1260,20 +1277,6 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		return -EINVAL;
- 	}
- 
--	arg->arg_signed = arg_sz < 0;
--	if (arg_sz < 0)
--		arg_sz = -arg_sz;
--
--	switch (arg_sz) {
--	case 1: case 2: case 4: case 8:
--		arg->arg_bitshift = 64 - arg_sz * 8;
--		break;
--	default:
--		pr_warn("usdt: unsupported arg #%d (spec '%s') size: %d\n",
--			arg_num, arg_str, arg_sz);
--		return -EINVAL;
--	}
--
+@@ -1466,6 +1466,86 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
  	return len;
  }
  
-@@ -1281,13 +1284,13 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 
- /* Do not support __s390__ for now, since user_pt_regs is broken with -m31. */
- 
--static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
++#elif defined(__arm__)
++
++static int calc_pt_regs_off(const char *reg_name)
++{
++	static struct {
++		const char *name;
++		size_t pt_regs_off;
++	} reg_map[] = {
++		{ "r0", offsetof(struct pt_regs, uregs[0]) },
++		{ "r1", offsetof(struct pt_regs, uregs[1]) },
++		{ "r2", offsetof(struct pt_regs, uregs[2]) },
++		{ "r3", offsetof(struct pt_regs, uregs[3]) },
++		{ "r4", offsetof(struct pt_regs, uregs[4]) },
++		{ "r5", offsetof(struct pt_regs, uregs[5]) },
++		{ "r6", offsetof(struct pt_regs, uregs[6]) },
++		{ "r7", offsetof(struct pt_regs, uregs[7]) },
++		{ "r8", offsetof(struct pt_regs, uregs[8]) },
++		{ "r9", offsetof(struct pt_regs, uregs[9]) },
++		{ "r10", offsetof(struct pt_regs, uregs[10]) },
++		{ "fp", offsetof(struct pt_regs, uregs[11]) },
++		{ "ip", offsetof(struct pt_regs, uregs[12]) },
++		{ "sp", offsetof(struct pt_regs, uregs[13]) },
++		{ "lr", offsetof(struct pt_regs, uregs[14]) },
++		{ "pc", offsetof(struct pt_regs, uregs[15]) },
++	};
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(reg_map); i++) {
++		if (strcmp(reg_name, reg_map[i].name) == 0)
++			return reg_map[i].pt_regs_off;
++	}
++
++	pr_warn("usdt: unrecognized register '%s'\n", reg_name);
++	return -ENOENT;
++}
++
 +static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg, int *arg_sz)
- {
- 	unsigned int reg;
--	int arg_sz, len;
-+	int len;
- 	long off;
- 
--	if (sscanf(arg_str, " %d @ %ld ( %%r%u ) %n", &arg_sz, &off, &reg, &len) == 3) {
-+	if (sscanf(arg_str, " %d @ %ld ( %%r%u ) %n", arg_sz, &off, &reg, &len) == 3) {
- 		/* Memory dereference case, e.g., -2@-28(%r15) */
- 		arg->arg_type = USDT_ARG_REG_DEREF;
- 		arg->val_off = off;
-@@ -1296,7 +1299,7 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 			return -EINVAL;
- 		}
- 		arg->reg_off = offsetof(user_pt_regs, gprs[reg]);
--	} else if (sscanf(arg_str, " %d @ %%r%u %n", &arg_sz, &reg, &len) == 2) {
-+	} else if (sscanf(arg_str, " %d @ %%r%u %n", arg_sz, &reg, &len) == 2) {
- 		/* Register read case, e.g., -8@%r0 */
- 		arg->arg_type = USDT_ARG_REG;
- 		arg->val_off = 0;
-@@ -1305,7 +1308,7 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 			return -EINVAL;
- 		}
- 		arg->reg_off = offsetof(user_pt_regs, gprs[reg]);
--	} else if (sscanf(arg_str, " %d @ %ld %n", &arg_sz, &off, &len) == 2) {
-+	} else if (sscanf(arg_str, " %d @ %ld %n", arg_sz, &off, &len) == 2) {
- 		/* Constant value case, e.g., 4@71 */
- 		arg->arg_type = USDT_ARG_CONST;
- 		arg->val_off = off;
-@@ -1315,20 +1318,6 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		return -EINVAL;
- 	}
- 
--	arg->arg_signed = arg_sz < 0;
--	if (arg_sz < 0)
--		arg_sz = -arg_sz;
--
--	switch (arg_sz) {
--	case 1: case 2: case 4: case 8:
--		arg->arg_bitshift = 64 - arg_sz * 8;
--		break;
--	default:
--		pr_warn("usdt: unsupported arg #%d (spec '%s') size: %d\n",
--			arg_num, arg_str, arg_sz);
--		return -EINVAL;
--	}
--
- 	return len;
- }
- 
-@@ -1348,13 +1337,13 @@ static int calc_pt_regs_off(const char *reg_name)
- 	return -ENOENT;
- }
- 
--static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
-+static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg, int *arg_sz)
- {
- 	char reg_name[16];
--	int arg_sz, len, reg_off;
++{
++	char reg_name[16];
 +	int len, reg_off;
- 	long off;
- 
--	if (sscanf(arg_str, " %d @ \[ %15[a-z0-9], %ld ] %n", &arg_sz, reg_name, &off, &len) == 3) {
-+	if (sscanf(arg_str, " %d @ \[ %15[a-z0-9], %ld ] %n", arg_sz, reg_name, &off, &len) == 3) {
- 		/* Memory dereference case, e.g., -4@[sp, 96] */
- 		arg->arg_type = USDT_ARG_REG_DEREF;
- 		arg->val_off = off;
-@@ -1362,7 +1351,7 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		if (reg_off < 0)
- 			return reg_off;
- 		arg->reg_off = reg_off;
--	} else if (sscanf(arg_str, " %d @ \[ %15[a-z0-9] ] %n", &arg_sz, reg_name, &len) == 2) {
++	long off;
++
++	if (sscanf(arg_str, " %d @ \[ %15[a-z0-9], #%ld ] %n",
++		   arg_sz, reg_name, &off, &len) == 3) {
++		/* Memory dereference case, e.g., -4@[fp, #96] */
++		arg->arg_type = USDT_ARG_REG_DEREF;
++		arg->val_off = off;
++		reg_off = calc_pt_regs_off(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off = reg_off;
 +	} else if (sscanf(arg_str, " %d @ \[ %15[a-z0-9] ] %n", arg_sz, reg_name, &len) == 2) {
- 		/* Memory dereference case, e.g., -4@[sp] */
- 		arg->arg_type = USDT_ARG_REG_DEREF;
- 		arg->val_off = 0;
-@@ -1370,12 +1359,12 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		if (reg_off < 0)
- 			return reg_off;
- 		arg->reg_off = reg_off;
--	} else if (sscanf(arg_str, " %d @ %ld %n", &arg_sz, &off, &len) == 2) {
-+	} else if (sscanf(arg_str, " %d @ %ld %n", arg_sz, &off, &len) == 2) {
- 		/* Constant value case, e.g., 4@5 */
- 		arg->arg_type = USDT_ARG_CONST;
- 		arg->val_off = off;
- 		arg->reg_off = 0;
--	} else if (sscanf(arg_str, " %d @ %15[a-z0-9] %n", &arg_sz, reg_name, &len) == 2) {
++		/* Memory dereference case, e.g., -4@[sp] */
++		arg->arg_type = USDT_ARG_REG_DEREF;
++		arg->val_off = 0;
++		reg_off = calc_pt_regs_off(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off = reg_off;
++	} else if (sscanf(arg_str, " %d @ #%ld %n", arg_sz, &off, &len) == 2) {
++		/* Constant value case, e.g., 4@#5 */
++		arg->arg_type = USDT_ARG_CONST;
++		arg->val_off = off;
++		arg->reg_off = 0;
 +	} else if (sscanf(arg_str, " %d @ %15[a-z0-9] %n", arg_sz, reg_name, &len) == 2) {
- 		/* Register read case, e.g., -8@x4 */
- 		arg->arg_type = USDT_ARG_REG;
- 		arg->val_off = 0;
-@@ -1388,20 +1377,6 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		return -EINVAL;
- 	}
- 
--	arg->arg_signed = arg_sz < 0;
--	if (arg_sz < 0)
--		arg_sz = -arg_sz;
--
--	switch (arg_sz) {
--	case 1: case 2: case 4: case 8:
--		arg->arg_bitshift = 64 - arg_sz * 8;
--		break;
--	default:
--		pr_warn("usdt: unsupported arg #%d (spec '%s') size: %d\n",
--			arg_num, arg_str, arg_sz);
--		return -EINVAL;
--	}
--
- 	return len;
- }
- 
-@@ -1456,13 +1431,13 @@ static int calc_pt_regs_off(const char *reg_name)
- 	return -ENOENT;
- }
- 
--static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
-+static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg, int *arg_sz)
- {
- 	char reg_name[16];
--	int arg_sz, len, reg_off;
-+	int len, reg_off;
- 	long off;
- 
--	if (sscanf(arg_str, " %d @ %ld ( %15[a-z0-9] ) %n", &arg_sz, &off, reg_name, &len) == 3) {
-+	if (sscanf(arg_str, " %d @ %ld ( %15[a-z0-9] ) %n", arg_sz, &off, reg_name, &len) == 3) {
- 		/* Memory dereference case, e.g., -8@-88(s0) */
- 		arg->arg_type = USDT_ARG_REG_DEREF;
- 		arg->val_off = off;
-@@ -1470,12 +1445,12 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		if (reg_off < 0)
- 			return reg_off;
- 		arg->reg_off = reg_off;
--	} else if (sscanf(arg_str, " %d @ %ld %n", &arg_sz, &off, &len) == 2) {
-+	} else if (sscanf(arg_str, " %d @ %ld %n", arg_sz, &off, &len) == 2) {
- 		/* Constant value case, e.g., 4@5 */
- 		arg->arg_type = USDT_ARG_CONST;
- 		arg->val_off = off;
- 		arg->reg_off = 0;
--	} else if (sscanf(arg_str, " %d @ %15[a-z0-9] %n", &arg_sz, reg_name, &len) == 2) {
-+	} else if (sscanf(arg_str, " %d @ %15[a-z0-9] %n", arg_sz, reg_name, &len) == 2) {
- 		/* Register read case, e.g., -8@a1 */
- 		arg->arg_type = USDT_ARG_REG;
- 		arg->val_off = 0;
-@@ -1488,26 +1463,12 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 		return -EINVAL;
- 	}
- 
--	arg->arg_signed = arg_sz < 0;
--	if (arg_sz < 0)
--		arg_sz = -arg_sz;
--
--	switch (arg_sz) {
--	case 1: case 2: case 4: case 8:
--		arg->arg_bitshift = 64 - arg_sz * 8;
--		break;
--	default:
--		pr_warn("usdt: unsupported arg #%d (spec '%s') size: %d\n",
--			arg_num, arg_str, arg_sz);
--		return -EINVAL;
--	}
--
- 	return len;
- }
- 
++		/* Register read case, e.g., -8@r4 */
++		arg->arg_type = USDT_ARG_REG;
++		arg->val_off = 0;
++		reg_off = calc_pt_regs_off(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off = reg_off;
++	} else {
++		pr_warn("usdt: unrecognized arg #%d spec '%s'\n", arg_num, arg_str);
++		return -EINVAL;
++	}
++
++	return len;
++}
++
  #else
  
--static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
-+static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg, int *arg_sz)
- {
- 	pr_warn("usdt: libbpf doesn't support USDTs on current architecture\n");
- 	return -ENOTSUP;
+ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg, int *arg_sz)
 -- 
 2.39.1
 
