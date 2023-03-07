@@ -2,152 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BAF6AF434
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 20:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 221166AF3D2
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 20:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbjCGTOw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 14:14:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
+        id S233558AbjCGTKO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 14:10:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233830AbjCGTOa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 14:14:30 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB884DBDF;
-        Tue,  7 Mar 2023 10:58:06 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9B51BB819D5;
-        Tue,  7 Mar 2023 18:58:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC910C433D2;
-        Tue,  7 Mar 2023 18:58:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1678215484;
-        bh=JN+PH1NmuC42Ae/UZeVPJKaF8s2n1S6+4ls8J7Zf/iY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KC4FzVnwY3avFldOLdHjvL3pZL/CtHxnL+nFiGBRW3DrhxtiF0lWNO6o8fbblLj/I
-         3jPFTDvrC73hYg4sQTB+0tCW8Ne35ZKHs1wP+Oc07/x1+6F2HEQBs2nF0ZSr6WxoHY
-         iVUwR3BWel/v7h6deNvpsphaEKcn1a4sn0qkVnX8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        llvm@lists.linux.dev, Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tom Rix <trix@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 259/567] perf llvm: Fix inadvertent file creation
-Date:   Tue,  7 Mar 2023 17:59:55 +0100
-Message-Id: <20230307165917.149823095@linuxfoundation.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230307165905.838066027@linuxfoundation.org>
-References: <20230307165905.838066027@linuxfoundation.org>
-User-Agent: quilt/0.67
+        with ESMTP id S233697AbjCGTJl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 14:09:41 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A78BBB03
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 10:54:35 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id u9so56533517edd.2
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 10:54:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dectris.com; s=google; t=1678215266;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/VPBd1/cIEQ8mvitb5S4xC+5LiGWv+b4kdw/T6kpKD0=;
+        b=Us2QhbUw+z3a2uMeUo1LJSWaebmcvd+wDCt5aYNo2hpwlTJSznm8XCZbQ/Hii9DzQK
+         0iODEn5ABEY6J5Hq5ltbknnHfB9rnPSWiFoI9H1QE2wFDEmc6nFqGD41YQWfyPXLvDZf
+         5wrFua3K05oDlr5QlF+zW6aXgF2AnFskagR24=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678215266;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/VPBd1/cIEQ8mvitb5S4xC+5LiGWv+b4kdw/T6kpKD0=;
+        b=0g4nzQlvX4/9HgK3N9qfA4hl5jFlGde6r6Co2S7MdM1lghgx72NJh5iRbYHyz3CXrG
+         eFr9lPCSZD+nnMf1TnqTdLVTEhXLN1/2iQs7U7WyXMYBSMiB29YQeXpJ40S2AwGjRheq
+         K3XYgNKn1xJD5jLGtizLRRcrZIIH9akpO7bZxaMnoED6+51w9TORdlVfns4DOytVa0NI
+         RArpRFSfs87xj+y+PJhGlnmOFf/2qCakxM4JRs2KncyTfV3Vlqpss+IArj5bGm+LzoRv
+         GVmVBqGCMabMXaZCCqMiMoPgs/mPoGQEnP8ffIMJsxOfwanWArbUOPrEI16uvMcH3t4R
+         mZXA==
+X-Gm-Message-State: AO0yUKWiZWNK/xTOrxmP+aLOsKDMSTNSk+ieDLOuy6IcHjqiLd/2dpvq
+        dAWHOcffxvIsyOB4wRfhxeOQbPBwbHVxfcRRxBFF3w==
+X-Google-Smtp-Source: AK7set85kBrN1ckdrgzPkzy2USMui/e5AnEbftp45IcxQYYItIX0J6t9Ki/qiu+re1+A5Mqm8btG1ezrj/FIr7l48Xo=
+X-Received: by 2002:a50:9fcd:0:b0:4ad:7389:d298 with SMTP id
+ c71-20020a509fcd000000b004ad7389d298mr8543872edf.4.1678215266512; Tue, 07 Mar
+ 2023 10:54:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230307172306.786657-1-kal.conley@dectris.com> <ee0aa756-4a9c-1d7a-4179-78024e41d37e@intel.com>
+In-Reply-To: <ee0aa756-4a9c-1d7a-4179-78024e41d37e@intel.com>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Tue, 7 Mar 2023 19:58:51 +0100
+Message-ID: <CAHApi-kcvc2qB0D6dV7OG99FsnzAEa-rchOMfySkZ-E=EOh_4w@mail.gmail.com>
+Subject: Re: [PATCH] xsk: Add missing overflow check in xdp_umem_reg
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+> The RCT declaration style is messed up in the whole block. Please move
+> lines around, there's nothing wrong in that.
 
-[ Upstream commit 9f19aab47ced012eddef1e2bc96007efc7713b61 ]
+I think I figured out what this is. Is this preference documented
+somewhere? I will fix it.
 
-The LLVM template is first echo-ed into command_out and then
-command_out executed. The echo surrounds the template with double
-quotes, however, the template itself may contain quotes. This is
-generally innocuous but in tools/perf/tests/bpf-script-test-prologue.c
-we see:
-...
-SEC("func=null_lseek file->f_mode offset orig")
-...
-where the first double quote ends the double quote of the echo, then
-the > redirects output into a file called f_mode.
+>
+> >       int err;
+> >
+> >       if (chunk_size < XDP_UMEM_MIN_CHUNK_SIZE || chunk_size > PAGE_SIZE) {
+> > @@ -188,8 +189,8 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+> >       if (npgs > U32_MAX)
+> >               return -EINVAL;
+> >
+> > -     chunks = (unsigned int)div_u64_rem(size, chunk_size, &chunks_rem);
+> > -     if (chunks == 0)
+> > +     chunks = div_u64_rem(size, chunk_size, &chunks_rem);
+> > +     if (chunks == 0 || chunks > U32_MAX)
+>
+> You can change the first cond to `!chunks` while at it, it's more
+> preferred than `== 0`.
 
-To avoid this inadvertent behavior substitute redirects and similar
-characters to be ASCII control codes, then substitute the output in
-the echo back again.
+If you want, I can change it. I generally like to keep unrelated
+changes to a minimum.
 
-Fixes: 5eab5a7ee032acaa ("perf llvm: Display eBPF compiling command in debug output")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: llvm@lists.linux.dev
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Tom Rix <trix@redhat.com>
-Link: https://lore.kernel.org/r/20230105082609.344538-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/perf/util/llvm-utils.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+>
+> >               return -EINVAL;
+>
+> Do you have any particular bugs that the current code leads to? Or it's
+> just something that might hypothetically happen?
 
-diff --git a/tools/perf/util/llvm-utils.c b/tools/perf/util/llvm-utils.c
-index 96c8ef60f4f84..8ee3a947b1599 100644
---- a/tools/perf/util/llvm-utils.c
-+++ b/tools/perf/util/llvm-utils.c
-@@ -531,14 +531,37 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
- 
- 	pr_debug("llvm compiling command template: %s\n", template);
- 
-+	/*
-+	 * Below, substitute control characters for values that can cause the
-+	 * echo to misbehave, then substitute the values back.
-+	 */
- 	err = -ENOMEM;
--	if (asprintf(&command_echo, "echo -n \"%s\"", template) < 0)
-+	if (asprintf(&command_echo, "echo -n \a%s\a", template) < 0)
- 		goto errout;
- 
-+#define SWAP_CHAR(a, b) do { if (*p == a) *p = b; } while (0)
-+	for (char *p = command_echo; *p; p++) {
-+		SWAP_CHAR('<', '\001');
-+		SWAP_CHAR('>', '\002');
-+		SWAP_CHAR('"', '\003');
-+		SWAP_CHAR('\'', '\004');
-+		SWAP_CHAR('|', '\005');
-+		SWAP_CHAR('&', '\006');
-+		SWAP_CHAR('\a', '"');
-+	}
- 	err = read_from_pipe(command_echo, (void **) &command_out, NULL);
- 	if (err)
- 		goto errout;
- 
-+	for (char *p = command_out; *p; p++) {
-+		SWAP_CHAR('\001', '<');
-+		SWAP_CHAR('\002', '>');
-+		SWAP_CHAR('\003', '"');
-+		SWAP_CHAR('\004', '\'');
-+		SWAP_CHAR('\005', '|');
-+		SWAP_CHAR('\006', '&');
-+	}
-+#undef SWAP_CHAR
- 	pr_debug("llvm compiling command : %s\n", command_out);
- 
- 	err = read_from_pipe(template, &obj_buf, &obj_buf_sz);
--- 
-2.39.2
+If the UMEM is large enough, the code is broke. Maybe it can be
+exploited somehow? It should be checked for exactly the same reasons
+as `npgs` right above it.
 
+>
+> >
+> >       if (!unaligned_chunks && chunks_rem)
+> > @@ -201,7 +202,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+> >       umem->size = size;
+> >       umem->headroom = headroom;
+> >       umem->chunk_size = chunk_size;
+> > -     umem->chunks = chunks;
+> > +     umem->chunks = (u32)chunks;
+>
+> You already checked @chunks fits into 32 bits, so the cast can be
+> omitted here, it's redundant.
 
+I made it consistent with the line right below it. It seems like the
+cast may improve readability since it makes it known the truncation is
+on purpose. I don't see how that is redundant with the safety check.
+Should I change both lines?
 
+>
+> >       umem->npgs = (u32)npgs;
+> >       umem->pgs = NULL;
+> >       umem->user = NULL;
+>
+> Thanks,
+> Olek
+
+Kal
