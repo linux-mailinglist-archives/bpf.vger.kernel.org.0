@@ -2,104 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B526AE76C
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 17:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E24B26AEAA4
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 18:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbjCGQ5M convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 7 Mar 2023 11:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
+        id S231698AbjCGRff (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 12:35:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjCGQ45 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 11:56:57 -0500
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F795615B;
-        Tue,  7 Mar 2023 08:53:09 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id v101so12069489ybi.2;
-        Tue, 07 Mar 2023 08:53:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678207988;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7/gBRXb85me+1FkZga1hHDiW80ClQBScKHoPc4rOx7U=;
-        b=QFW4hRUoZL8060muDNaB9ki4SvmVpZe77FKBLsjxJp2lZJVko8Y6pQu2h91eRPaQJg
-         kbjOaomx15eHuYpghlokmPbrhaONQvbjvjuHIA8AYoUJOt1oQ5XC67qb8KLCu/7kHGuV
-         D2S/a4ECdOhzwPkllKvNfVojozs982xNKFi1X6RlsSSlt6nHmo6M+BA9vsAWaa/yaUcC
-         tcVP/tMAM59X9zRMu43b2/FRmt/AIqajiH1UdP9VyKX+9b3CxKeJ9KQWlZA5RUR4cyjz
-         fcNiWxodUNHXF6iCmQYrEC+FoGMHVbA3oP+YDLu8zSQ4UAo4QuOffQdpmVCymrB+SNRF
-         cJ0g==
-X-Gm-Message-State: AO0yUKVuBaZ5gVxykzg7zAhKAIkNgMgNO5JtX/kM9qdMl1mlOmM4B9/2
-        cV4wfJeVTld2lDiNfzREPf6b/cfgBfx4teeSOQM=
-X-Google-Smtp-Source: AK7set8tfjwpzQZQScNYBcN4iSNxac+Y9AyRsU8j+6uBk2WxKvaFCooRfM+pMbzRDq0D2AUizmGWvySr43aDph3iyXM=
-X-Received: by 2002:a5b:384:0:b0:a65:8cd3:fc4 with SMTP id k4-20020a5b0384000000b00a658cd30fc4mr8914549ybp.5.1678207988110;
- Tue, 07 Mar 2023 08:53:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20230307032117.3461008-1-irogers@google.com> <CAM9d7ci6FWx2oYAbqhVW2-tjB4p8ji3w87n-ndwxidMov+kVZw@mail.gmail.com>
- <CAP-5=fUQNimNSKjwZaCASyikjXJXBZdw7Z=APYEB4RyX-dXMfQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fUQNimNSKjwZaCASyikjXJXBZdw7Z=APYEB4RyX-dXMfQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 7 Mar 2023 08:52:57 -0800
-Message-ID: <CAM9d7ciO8EYQ_5GoNzRiR=-HWK6K0ihceL+pA4En1N0bhL3TVA@mail.gmail.com>
-Subject: Re: [PATCH] perf lock contention: Fix builtin detection
-To:     Ian Rogers <irogers@google.com>
-Cc:     bpf@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        with ESMTP id S231702AbjCGRfN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 12:35:13 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3A4A6757;
+        Tue,  7 Mar 2023 09:31:20 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D57DC61514;
+        Tue,  7 Mar 2023 17:31:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCC21C4339B;
+        Tue,  7 Mar 2023 17:31:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1678210279;
+        bh=seGOF3Ey4jyxVPGFZ7ajxxS3qtAbvi5Bg4U9MGA+pLc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Z+zRHx8QXzP9Q43K2BIE6RCja1ShsawgWmO4Hcju4yZocYajKihZfiADwwbBsp8mX
+         QKgfBwLsRvLA4IRp1yb+EZ1XYWBuFDIQGGKgpe6Pjx4d5Po6BNu4SsaXUaD/zY6bBb
+         Dhb2s7VreSl6euyUsRet60rKStpYa7YmEVT2Rj7E=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, Ian Rogers <irogers@google.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        llvm@lists.linux.dev, Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Rix <trix@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.2 0461/1001] perf llvm: Fix inadvertent file creation
+Date:   Tue,  7 Mar 2023 17:53:53 +0100
+Message-Id: <20230307170041.392707183@linuxfoundation.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230307170022.094103862@linuxfoundation.org>
+References: <20230307170022.094103862@linuxfoundation.org>
+User-Agent: quilt/0.67
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 6, 2023 at 9:56 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Mon, Mar 6, 2023 at 8:43 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hi Ian,
-> >
-> > On Mon, Mar 6, 2023 at 7:21 PM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > __has_builtin was passed the macro rather than the actual builtin
-> > > feature.
-> >
-> > Oh, I missed it's a macro define in tools/lib/bpf/bpf_core_read.h file.
-> >
-> > Looking at some BPF test codes, it seems you also need to check the
-> > clang compiler version.  Please take a look at the file below:
-> >
-> >   tools/testing/selftests/bpf/progs/test_core_reloc_type_base.c
-> >
-> > Thanks,
-> > Namhyung
->
-> Hmm..
->
-> tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c:
-> ...
->        /* Support for the BPF_TYPE_MATCHES argument to the
->         * __builtin_preserve_type_info builtin was added at some point during
->         * development of clang 15 and it's what we require for this test.
->         */
-> #if __has_builtin(__builtin_preserve_type_info) && __clang_major__ >= 15
-> ...
->
-> I'm not sure we need to worry about development clang builds and just
-> the __has_builtin is cleaner. Perhaps the BPF folks can chime in.
+From: Ian Rogers <irogers@google.com>
 
-My understanding is that __builtin_preserve_type_info is supported
-before.  But clang 15 added BPF_TYPE_MATCHES which is used for
-bpf_core_type_matches().  So just checking the builtin would not work.
+[ Upstream commit 9f19aab47ced012eddef1e2bc96007efc7713b61 ]
 
-Thanks,
-Namhyung
+The LLVM template is first echo-ed into command_out and then
+command_out executed. The echo surrounds the template with double
+quotes, however, the template itself may contain quotes. This is
+generally innocuous but in tools/perf/tests/bpf-script-test-prologue.c
+we see:
+...
+SEC("func=null_lseek file->f_mode offset orig")
+...
+where the first double quote ends the double quote of the echo, then
+the > redirects output into a file called f_mode.
+
+To avoid this inadvertent behavior substitute redirects and similar
+characters to be ASCII control codes, then substitute the output in
+the echo back again.
+
+Fixes: 5eab5a7ee032acaa ("perf llvm: Display eBPF compiling command in debug output")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: llvm@lists.linux.dev
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Tom Rix <trix@redhat.com>
+Link: https://lore.kernel.org/r/20230105082609.344538-1-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/perf/util/llvm-utils.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/llvm-utils.c b/tools/perf/util/llvm-utils.c
+index 650ffe336f3aa..4e8e243a6e4bd 100644
+--- a/tools/perf/util/llvm-utils.c
++++ b/tools/perf/util/llvm-utils.c
+@@ -531,14 +531,37 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
+ 
+ 	pr_debug("llvm compiling command template: %s\n", template);
+ 
++	/*
++	 * Below, substitute control characters for values that can cause the
++	 * echo to misbehave, then substitute the values back.
++	 */
+ 	err = -ENOMEM;
+-	if (asprintf(&command_echo, "echo -n \"%s\"", template) < 0)
++	if (asprintf(&command_echo, "echo -n \a%s\a", template) < 0)
+ 		goto errout;
+ 
++#define SWAP_CHAR(a, b) do { if (*p == a) *p = b; } while (0)
++	for (char *p = command_echo; *p; p++) {
++		SWAP_CHAR('<', '\001');
++		SWAP_CHAR('>', '\002');
++		SWAP_CHAR('"', '\003');
++		SWAP_CHAR('\'', '\004');
++		SWAP_CHAR('|', '\005');
++		SWAP_CHAR('&', '\006');
++		SWAP_CHAR('\a', '"');
++	}
+ 	err = read_from_pipe(command_echo, (void **) &command_out, NULL);
+ 	if (err)
+ 		goto errout;
+ 
++	for (char *p = command_out; *p; p++) {
++		SWAP_CHAR('\001', '<');
++		SWAP_CHAR('\002', '>');
++		SWAP_CHAR('\003', '"');
++		SWAP_CHAR('\004', '\'');
++		SWAP_CHAR('\005', '|');
++		SWAP_CHAR('\006', '&');
++	}
++#undef SWAP_CHAR
+ 	pr_debug("llvm compiling command : %s\n", command_out);
+ 
+ 	err = read_from_pipe(template, &obj_buf, &obj_buf_sz);
+-- 
+2.39.2
+
+
+
