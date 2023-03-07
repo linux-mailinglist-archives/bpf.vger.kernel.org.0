@@ -2,470 +2,300 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 284816AFA79
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443216AFA6B
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjCGXdn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 18:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
+        id S229886AbjCGXdR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 18:33:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbjCGXdZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 18:33:25 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7307F03D
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 15:33:22 -0800 (PST)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 327M8uVK021671
-        for <bpf@vger.kernel.org>; Tue, 7 Mar 2023 15:33:22 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=cHJQZnWk1Gp3IYNHNtTKThrokRK8XA4GHIAvPEQpFmk=;
- b=mPERZRl+vzJPL2OP7c7PstO2dhtePo5oBDhZ/IcwPlNwzwiCz1sDygjEhZQaa5JrBKKO
- lAJ4Ry52m7khZVcSfpuA9Tt5v5b5TmF4F5CI3hOk+z3Dte3La+YS62+Yv2RwNgoSUncF
- OCHsH2id5fkPbGNxc8QO6x67xxVCwFKe8rNbbfkvCohngb0OHHt4lvJREkvIb0AoPTaB
- 5PUwTanRKveQxBg8h2gq3fxfdCHLmLF+er0dfn6K/l+femzYe/4UzXX9NTvD3wXT2YpP
- Q5aqSp7s3TweXL6MAlG+apVMi3IOeviG13G6ATVFniyTNhkhGfV1Dxpx0KcdY/X/pn1P tw== 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3p6bu8sckh-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 15:33:21 -0800
-Received: from twshared19568.39.frc1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 7 Mar 2023 15:33:20 -0800
-Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 28A126C7C9B7; Tue,  7 Mar 2023 15:33:13 -0800 (PST)
-From:   Kui-Feng Lee <kuifeng@meta.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <martin.lau@linux.dev>,
-        <song@kernel.org>, <kernel-team@meta.com>, <andrii@kernel.org>,
-        <sdf@google.com>
-CC:     Kui-Feng Lee <kuifeng@meta.com>
-Subject: [PATCH bpf-next v4 2/9] bpf: Create links for BPF struct_ops maps.
-Date:   Tue, 7 Mar 2023 15:33:00 -0800
-Message-ID: <20230307233307.3626875-3-kuifeng@meta.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230307233307.3626875-1-kuifeng@meta.com>
-References: <20230307233307.3626875-1-kuifeng@meta.com>
+        with ESMTP id S229709AbjCGXdQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 18:33:16 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CFE4ECCA;
+        Tue,  7 Mar 2023 15:33:13 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id c10so9139685pfv.13;
+        Tue, 07 Mar 2023 15:33:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678231993;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=HyqL6Ihg7HH/DVmCVxC1Wu1zsEs+mBbaC93IlUM7POg=;
+        b=ZenyeXj0iXc/kRFrTQS0hhNwbVHaOdJoUwlyHX7/FMyQAHpVCUxbAw05TTg78A9klS
+         O/V54VBsaPgtc7N/zhsmMjB8FxryCKXQ7sdkptP1yAPzfjouU8R3HDnTkdOaU4l8qtZ1
+         H9DaQF1E6bSCPSft3Ab2Ne5ptGti4o/OsNrMGRz4UxgBTaDkTIwCU7bLwHJx8a/4LG8Y
+         mUvkw/gcx3mp38IVlxwI0Yz5ODlNCHDkBN7Nz0ycLijuOvA7RFD3FAGGNCmjRmzoHwVj
+         Pf+EHyctOFdZqsQRRtLMkC5MjF7ncYuASemZMpshtv9ElEIUcG7T/ufEllamCEtVwqwi
+         Zcng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678231993;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HyqL6Ihg7HH/DVmCVxC1Wu1zsEs+mBbaC93IlUM7POg=;
+        b=o1ow0Weqekd8y5okZRg+qYWto3Yj/opSGmwVeqpD8Yxf9G2PvcVbpQ2sNuUHEA5Vyh
+         EMNDROqqecX6NMg0u6xBxZmW2bm7+6UeMiQGYae4fEB3cMcT/Rb1qcfmqhbA4NjFER19
+         EX0hCeaXWk3D5AYV+OnJUZgV+tFrzg4INmnQtHbkXGc/1IuQvUrlgJmlfKQi5BFne5NI
+         3GCuuisCK7BGCRDwkBBcWgip5bGm1nG9Yxnb72db+/Zr9xGROiYoZIW131+/cBwEscKo
+         QRPMZ0jgKwMA6doU6TiUIia1cPhL0SHlWlhAVJXRNYl8FdrDiHtyaJXrDWWYoGvNHC4x
+         pKpw==
+X-Gm-Message-State: AO0yUKVWINlrK1qy8D1be8MhDl2tRX0+AKOVa8DAxVa7QxyW5ZO29bQw
+        S8cbLxUlujK9X3CHc4sqgFawFGLhTs4=
+X-Google-Smtp-Source: AK7set9PjtFdPgGWK/IsTqSlaEG8cx+eKtnTWId62AKRyBDIDP8SyqjlQmHEgMabpOYxFQN5EhP32w==
+X-Received: by 2002:aa7:9981:0:b0:5a8:c6c1:c9ae with SMTP id k1-20020aa79981000000b005a8c6c1c9aemr12363498pfh.30.1678231993116;
+        Tue, 07 Mar 2023 15:33:13 -0800 (PST)
+Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:15e8:b801:cd55:a496])
+        by smtp.gmail.com with ESMTPSA id l11-20020a62be0b000000b005da23d8cbffsm8342217pff.158.2023.03.07.15.33.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Mar 2023 15:33:12 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: [RFC/PATCHSET 0/9] perf record: Implement BPF sample filter (v4)
+Date:   Tue,  7 Mar 2023 15:33:00 -0800
+Message-Id: <20230307233309.3546160-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: PgwT6xB0rzDpi2tTgzUeFkHg6zsoJOQD
-X-Proofpoint-ORIG-GUID: PgwT6xB0rzDpi2tTgzUeFkHg6zsoJOQD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-07_16,2023-03-07_01,2023-02-09_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF struct_ops maps are employed directly to register TCP Congestion
-Control algorithms. Unlike other BPF programs that terminate when
-their links gone. The link of a BPF struct_ops map provides a uniform
-experience akin to other types of BPF programs.
+Hello,
 
-bpf_links are responsible for registering their associated
-struct_ops. You can only use a struct_ops that has the BPF_F_LINK flag
-set to create a bpf_link, while a structs without this flag behaves in
-the same manner as before and is registered upon updating its value.
+There have been requests for more sophisticated perf event sample
+filtering based on the sample data.  Recently the kernel added BPF
+programs can access perf sample data and this is the userspace part
+to enable such a filtering.
 
-The BPF_LINK_TYPE_STRUCT_OPS serves a dual purpose. Not only is it
-used to craft the links for BPF struct_ops programs, but also to
-create links for BPF struct_ops them-self.  Since the links of BPF
-struct_ops programs are only used to create trampolines internally,
-they are never seen in other contexts. Thus, they can be reused for
-struct_ops themself.
+This still has some rough edges and needs more improvements.  But
+I'd like to share the current work and get some feedback for the
+directions and idea for further improvements.
 
-To maintain a reference to the map supporting this link, we add
-bpf_struct_ops_link as an additional type. The pointer of the map is
-RCU and won't be necessary until later in the patchset.
+v4 changes)
+ * add __maybe_unused for !BUILD_BPF_SKEL  (Adrian)
+ * warn user if it misses sample flags  (Adrian)
+ * improve error message for invalid input
+ * add Acked-by from Jiri
 
-Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
----
- include/linux/bpf.h            |  11 +++
- include/uapi/linux/bpf.h       |  12 +++-
- kernel/bpf/bpf_struct_ops.c    | 119 +++++++++++++++++++++++++++++++--
- kernel/bpf/syscall.c           |  23 ++++---
- tools/include/uapi/linux/bpf.h |  12 +++-
- 5 files changed, 163 insertions(+), 14 deletions(-)
+v3 changes)
+ * fix build error on old kernels/vmlinux  (Arnaldo)
+ * move the logic to evlist__apply_filters  (Jiri)
+ * improve error message for bad input
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index fc47c756455e..855b27f847eb 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1481,6 +1481,7 @@ static inline void bpf_module_put(const void *data,=
- struct module *owner)
- 	else
- 		module_put(owner);
- }
-+int bpf_struct_ops_link_create(union bpf_attr *attr);
-=20
- #ifdef CONFIG_NET
- /* Define it here to avoid the use of forward declaration */
-@@ -1521,6 +1522,11 @@ static inline int bpf_struct_ops_map_sys_lookup_el=
-em(struct bpf_map *map,
- {
- 	return -EINVAL;
- }
-+static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- #endif
-=20
- #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
-@@ -2307,6 +2313,11 @@ static inline void bpf_link_put(struct bpf_link *l=
-ink)
- {
- }
-=20
-+static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline int bpf_obj_get_user(const char __user *pathname, int flag=
-s)
- {
- 	return -EOPNOTSUPP;
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 17afd2b35ee5..eb3e435c5303 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1033,6 +1033,7 @@ enum bpf_attach_type {
- 	BPF_PERF_EVENT,
- 	BPF_TRACE_KPROBE_MULTI,
- 	BPF_LSM_CGROUP,
-+	BPF_STRUCT_OPS,
- 	__MAX_BPF_ATTACH_TYPE
- };
-=20
-@@ -1266,6 +1267,9 @@ enum {
-=20
- /* Create a map that is suitable to be an inner map with dynamic max ent=
-ries */
- 	BPF_F_INNER_MAP		=3D (1U << 12),
-+
-+/* Create a map that will be registered/unregesitered by the backed bpf_=
-link */
-+	BPF_F_LINK		=3D (1U << 13),
- };
-=20
- /* Flags for BPF_PROG_QUERY. */
-@@ -1507,7 +1511,10 @@ union bpf_attr {
- 	} task_fd_query;
-=20
- 	struct { /* struct used by BPF_LINK_CREATE command */
--		__u32		prog_fd;	/* eBPF program to attach */
-+		union {
-+			__u32		prog_fd;	/* eBPF program to attach */
-+			__u32		map_fd;		/* struct_ops to attach */
-+		};
- 		union {
- 			__u32		target_fd;	/* object to attach to */
- 			__u32		target_ifindex; /* target ifindex */
-@@ -6354,6 +6361,9 @@ struct bpf_link_info {
- 		struct {
- 			__u32 ifindex;
- 		} xdp;
-+		struct {
-+			__u32 map_id;
-+		} struct_ops;
- 	};
- } __attribute__((aligned(8)));
-=20
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 815b5e1cf325..dcb7a408d4e9 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -16,6 +16,7 @@ enum bpf_struct_ops_state {
- 	BPF_STRUCT_OPS_STATE_INIT,
- 	BPF_STRUCT_OPS_STATE_INUSE,
- 	BPF_STRUCT_OPS_STATE_TOBEFREE,
-+	BPF_STRUCT_OPS_STATE_READY,
- };
-=20
- #define BPF_STRUCT_OPS_COMMON_VALUE			\
-@@ -58,6 +59,11 @@ struct bpf_struct_ops_map {
- 	struct bpf_struct_ops_value kvalue;
- };
-=20
-+struct bpf_struct_ops_link {
-+	struct bpf_link link;
-+	struct bpf_map __rcu *map;
-+};
-+
- static DEFINE_MUTEX(update_mutex);
-=20
- #define VALUE_PREFIX "bpf_struct_ops_"
-@@ -496,11 +502,19 @@ static int bpf_struct_ops_map_update_elem(struct bp=
-f_map *map, void *key,
- 		*(unsigned long *)(udata + moff) =3D prog->aux->id;
- 	}
-=20
--	bpf_map_inc(map);
--
- 	set_memory_rox((long)st_map->image, 1);
-+	if (st_map->map.map_flags & BPF_F_LINK) {
-+		/* Let bpf_link handle registration & unregistration.
-+		 *
-+		 * Pair with smp_load_acquire() during lookup_elem().
-+		 */
-+		smp_store_release(&kvalue->state, BPF_STRUCT_OPS_STATE_READY);
-+		goto unlock;
-+	}
-+
- 	err =3D st_ops->reg(kdata);
- 	if (likely(!err)) {
-+		bpf_map_inc(map);
- 		/* Pair with smp_load_acquire() during lookup_elem().
- 		 * It ensures the above udata updates (e.g. prog->aux->id)
- 		 * can be seen once BPF_STRUCT_OPS_STATE_INUSE is set.
-@@ -516,7 +530,6 @@ static int bpf_struct_ops_map_update_elem(struct bpf_=
-map *map, void *key,
- 	 */
- 	set_memory_nx((long)st_map->image, 1);
- 	set_memory_rw((long)st_map->image, 1);
--	bpf_map_put(map);
-=20
- reset_unlock:
- 	bpf_struct_ops_map_put_progs(st_map);
-@@ -534,6 +547,9 @@ static int bpf_struct_ops_map_delete_elem(struct bpf_=
-map *map, void *key)
- 	struct bpf_struct_ops_map *st_map;
-=20
- 	st_map =3D (struct bpf_struct_ops_map *)map;
-+	if (st_map->map.map_flags & BPF_F_LINK)
-+		return -EOPNOTSUPP;
-+
- 	prev_state =3D cmpxchg(&st_map->kvalue.state,
- 			     BPF_STRUCT_OPS_STATE_INUSE,
- 			     BPF_STRUCT_OPS_STATE_TOBEFREE);
-@@ -601,7 +617,7 @@ static void bpf_struct_ops_map_free(struct bpf_map *m=
-ap)
- static int bpf_struct_ops_map_alloc_check(union bpf_attr *attr)
- {
- 	if (attr->key_size !=3D sizeof(unsigned int) || attr->max_entries !=3D =
-1 ||
--	    attr->map_flags || !attr->btf_vmlinux_value_type_id)
-+	    (attr->map_flags & ~BPF_F_LINK) || !attr->btf_vmlinux_value_type_id=
-)
- 		return -EINVAL;
- 	return 0;
- }
-@@ -696,3 +712,98 @@ void bpf_struct_ops_put(const void *kdata)
-=20
- 	bpf_map_put(&st_map->map);
- }
-+
-+static void bpf_struct_ops_map_link_dealloc(struct bpf_link *link)
-+{
-+	struct bpf_struct_ops_link *st_link;
-+	struct bpf_struct_ops_map *st_map;
-+
-+	st_link =3D container_of(link, struct bpf_struct_ops_link, link);
-+	st_map =3D (struct bpf_struct_ops_map *)st_link->map;
-+	st_map->st_ops->unreg(&st_map->kvalue.data);
-+	bpf_map_put(st_link->map);
-+	kfree(st_link);
-+}
-+
-+static void bpf_struct_ops_map_link_show_fdinfo(const struct bpf_link *l=
-ink,
-+					    struct seq_file *seq)
-+{
-+	struct bpf_struct_ops_link *st_link;
-+	struct bpf_map *map;
-+
-+	st_link =3D container_of(link, struct bpf_struct_ops_link, link);
-+	rcu_read_lock();
-+	map =3D rcu_dereference(st_link->map);
-+	if (map)
-+		seq_printf(seq, "map_id:\t%d\n", map->id);
-+	rcu_read_unlock();
-+}
-+
-+static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link =
-*link,
-+					       struct bpf_link_info *info)
-+{
-+	struct bpf_struct_ops_link *st_link;
-+	struct bpf_map *map;
-+
-+	st_link =3D container_of(link, struct bpf_struct_ops_link, link);
-+	rcu_read_lock();
-+	map =3D rcu_dereference(st_link->map);
-+	if (map)
-+		info->struct_ops.map_id =3D map->id;
-+	rcu_read_unlock();
-+	return 0;
-+}
-+
-+static const struct bpf_link_ops bpf_struct_ops_map_lops =3D {
-+	.dealloc =3D bpf_struct_ops_map_link_dealloc,
-+	.show_fdinfo =3D bpf_struct_ops_map_link_show_fdinfo,
-+	.fill_link_info =3D bpf_struct_ops_map_link_fill_link_info,
-+};
-+
-+int bpf_struct_ops_link_create(union bpf_attr *attr)
-+{
-+	struct bpf_struct_ops_link *link =3D NULL;
-+	struct bpf_link_primer link_primer;
-+	struct bpf_struct_ops_map *st_map;
-+	struct bpf_map *map;
-+	int err;
-+
-+	map =3D bpf_map_get(attr->link_create.map_fd);
-+	if (!map)
-+		return -EINVAL;
-+
-+	st_map =3D (struct bpf_struct_ops_map *)map;
-+
-+	if (map->map_type !=3D BPF_MAP_TYPE_STRUCT_OPS || !(map->map_flags & BP=
-F_F_LINK) ||
-+	    /* Pair with smp_store_release() during map_update */
-+	    smp_load_acquire(&st_map->kvalue.state) !=3D BPF_STRUCT_OPS_STATE_R=
-EADY) {
-+		err =3D -EINVAL;
-+		goto err_out;
-+	}
-+
-+	link =3D kzalloc(sizeof(*link), GFP_USER);
-+	if (!link) {
-+		err =3D -ENOMEM;
-+		goto err_out;
-+	}
-+	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_ma=
-p_lops, NULL);
-+	RCU_INIT_POINTER(link->map, map);
-+
-+	err =3D bpf_link_prime(&link->link, &link_primer);
-+	if (err)
-+		goto err_out;
-+
-+	err =3D st_map->st_ops->reg(st_map->kvalue.data);
-+	if (err) {
-+		bpf_link_cleanup(&link_primer);
-+		goto err_out;
-+	}
-+
-+	return bpf_link_settle(&link_primer);
-+
-+err_out:
-+	bpf_map_put(map);
-+	kfree(link);
-+	return err;
-+}
-+
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 6351d50e3d8b..25b044fdd82b 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2794,16 +2794,19 @@ static void bpf_link_show_fdinfo(struct seq_file =
-*m, struct file *filp)
- 	const struct bpf_prog *prog =3D link->prog;
- 	char prog_tag[sizeof(prog->tag) * 2 + 1] =3D { };
-=20
--	bin2hex(prog_tag, prog->tag, sizeof(prog->tag));
- 	seq_printf(m,
- 		   "link_type:\t%s\n"
--		   "link_id:\t%u\n"
--		   "prog_tag:\t%s\n"
--		   "prog_id:\t%u\n",
-+		   "link_id:\t%u\n",
- 		   bpf_link_type_strs[link->type],
--		   link->id,
--		   prog_tag,
--		   prog->aux->id);
-+		   link->id);
-+	if (prog) {
-+		bin2hex(prog_tag, prog->tag, sizeof(prog->tag));
-+		seq_printf(m,
-+			   "prog_tag:\t%s\n"
-+			   "prog_id:\t%u\n",
-+			   prog_tag,
-+			   prog->aux->id);
-+	}
- 	if (link->ops->show_fdinfo)
- 		link->ops->show_fdinfo(link, m);
- }
-@@ -4278,7 +4281,8 @@ static int bpf_link_get_info_by_fd(struct file *fil=
-e,
-=20
- 	info.type =3D link->type;
- 	info.id =3D link->id;
--	info.prog_id =3D link->prog->aux->id;
-+	if (link->prog)
-+		info.prog_id =3D link->prog->aux->id;
-=20
- 	if (link->ops->fill_link_info) {
- 		err =3D link->ops->fill_link_info(link, &info);
-@@ -4541,6 +4545,9 @@ static int link_create(union bpf_attr *attr, bpfptr=
-_t uattr)
- 	if (CHECK_ATTR(BPF_LINK_CREATE))
- 		return -EINVAL;
-=20
-+	if (attr->link_create.attach_type =3D=3D BPF_STRUCT_OPS)
-+		return bpf_struct_ops_link_create(attr);
-+
- 	prog =3D bpf_prog_get(attr->link_create.prog_fd);
- 	if (IS_ERR(prog))
- 		return PTR_ERR(prog);
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-index 17afd2b35ee5..cd0ff39981e8 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1033,6 +1033,7 @@ enum bpf_attach_type {
- 	BPF_PERF_EVENT,
- 	BPF_TRACE_KPROBE_MULTI,
- 	BPF_LSM_CGROUP,
-+	BPF_STRUCT_OPS,
- 	__MAX_BPF_ATTACH_TYPE
- };
-=20
-@@ -1266,6 +1267,9 @@ enum {
-=20
- /* Create a map that is suitable to be an inner map with dynamic max ent=
-ries */
- 	BPF_F_INNER_MAP		=3D (1U << 12),
-+
-+/* Create a map that will be registered/unregesitered by the backed bpf_=
-link */
-+	BPF_F_LINK		=3D (1U << 13),
- };
-=20
- /* Flags for BPF_PROG_QUERY. */
-@@ -1507,7 +1511,10 @@ union bpf_attr {
- 	} task_fd_query;
-=20
- 	struct { /* struct used by BPF_LINK_CREATE command */
--		__u32		prog_fd;	/* eBPF program to attach */
-+		union {
-+			__u32		prog_fd;	/* eBPF program to attach */
-+			__u32		map_fd;		/* eBPF struct_ops to attach */
-+		};
- 		union {
- 			__u32		target_fd;	/* object to attach to */
- 			__u32		target_ifindex; /* target ifindex */
-@@ -6354,6 +6361,9 @@ struct bpf_link_info {
- 		struct {
- 			__u32 ifindex;
- 		} xdp;
-+		struct {
-+			__u32 map_id;
-+		} struct_ops;
- 	};
- } __attribute__((aligned(8)));
-=20
---=20
-2.34.1
+v2 changes)
+ * fix build error with the misc field  (Jiri)
+ * add a destructor for filter expr  (Ian)
+ * remove 'bpf:' prefix  (Arnaldo)
+ * add '||' operator
+
+The required kernel changes are now in the mainline tree (for v6.3).
+perf record has --filter option to set filters on the last specified
+event in the command line.  It worked only for tracepoints and Intel
+PT events so far.  This patchset extends it to use BPF in order to
+enable the general sample filters for any events.
+
+A new filter expression parser was added (using flex/bison) to process
+the filter string.  Right now, it only accepts very simple expressions
+separated by comma.  I'd like to keep the filter expression as simple
+as possible.
+
+It requires samples satisfy all the filter expressions otherwise it'd
+drop the sample.  IOW filter expressions are connected with logical AND
+operations unless they used "||" explicitly.  So if user has something
+like 'A, B || C, D', then BOTH A and D should be true AND either B or C
+also needs to be true.
+
+Essentially the BPF filter expression is:
+
+  <term> <operator> <value> (("," | "||") <term> <operator> <value>)*
+
+The <term> can be one of:
+  ip, id, tid, pid, cpu, time, addr, period, txn, weight, phys_addr,
+  code_pgsz, data_pgsz, weight1, weight2, weight3, ins_lat, retire_lat,
+  p_stage_cyc, mem_op, mem_lvl, mem_snoop, mem_remote, mem_lock,
+  mem_dtlb, mem_blk, mem_hops
+
+The <operator> can be one of:
+  ==, !=, >, >=, <, <=, &
+
+The <value> can be one of:
+  <number> (for any term)
+  na, load, store, pfetch, exec (for mem_op)
+  l1, l2, l3, l4, cxl, io, any_cache, lfb, ram, pmem (for mem_lvl)
+  na, none, hit, miss, hitm, fwd, peer (for mem_snoop)
+  remote (for mem_remote)
+  na, locked (for mem_locked)
+  na, l1_hit, l1_miss, l2_hit, l2_miss, any_hit, any_miss, walk, fault (for mem_dtlb)
+  na, by_data, by_addr (for mem_blk)
+  hops0, hops1, hops2, hops3 (for mem_hops)
+
+I plan to improve it with range expressions like for ip or addr and it
+should support symbols like the existing addr-filters.  Also cgroup
+should understand and convert cgroup names to IDs.
+
+Let's take a look at some examples.  The following is to profile a user
+program on the command line.  When the frequency mode is used, it starts
+with a very small period (i.e. 1) and adjust it on every interrupt (NMI)
+to catch up the given frequency.
+
+  $ ./perf record -- ./perf test -w noploop
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.263 MB perf.data (4006 samples) ]
+
+  $ ./perf script -F pid,period,event,ip,sym | head
+  36695          1 cycles:  ffffffffbab12ddd perf_event_exec
+  36695          1 cycles:  ffffffffbab12ddd perf_event_exec
+  36695          5 cycles:  ffffffffbab12ddd perf_event_exec
+  36695         46 cycles:  ffffffffbab12de5 perf_event_exec
+  36695       1163 cycles:  ffffffffba80a0eb x86_pmu_disable_all
+  36695       1304 cycles:  ffffffffbaa19507 __hrtimer_get_next_event
+  36695       8143 cycles:  ffffffffbaa186f9 __run_timers
+  36695      69040 cycles:  ffffffffbaa0c393 rcu_segcblist_ready_cbs
+  36695     355117 cycles:            4b0da4 noploop
+  36695     321861 cycles:            4b0da4 noploop
+
+If you want to skip the first few samples that have small periods, you
+can do like this (note it requires root due to BPF).
+
+  $ sudo ./perf record -e cycles --filter 'period > 10000' -- ./perf test -w noploop
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.262 MB perf.data (3990 samples) ]
+
+  $ sudo ./perf script -F pid,period,event,ip,sym | head
+  39524      58253 cycles:  ffffffffba97dac0 update_rq_clock
+  39524     232657 cycles:            4b0da2 noploop
+  39524     210981 cycles:            4b0da2 noploop
+  39524     282882 cycles:            4b0da4 noploop
+  39524     392180 cycles:            4b0da4 noploop
+  39524     456058 cycles:            4b0da4 noploop
+  39524     415196 cycles:            4b0da2 noploop
+  39524     462721 cycles:            4b0da4 noploop
+  39524     526272 cycles:            4b0da2 noploop
+  39524     565569 cycles:            4b0da4 noploop
+
+Maybe more useful example is when it deals with precise memory events.
+On AMD processors with IBS, you can filter only memory load with L1
+dTLB is missed like below.
+
+  $ sudo ./perf record -ad -e ibs_op//p \
+  > --filter 'mem_op == load, mem_dtlb > l1_hit' sleep 1
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 1.338 MB perf.data (15 samples) ]
+
+  $ sudo ./perf script -F data_src | head
+          51080242 |OP LOAD|LVL LFB/MAB hit|SNP N/A|TLB L2 miss|LCK N/A|BLK  N/A
+          49080142 |OP LOAD|LVL L1 hit|SNP N/A|TLB L2 hit|LCK N/A|BLK  N/A
+          51080242 |OP LOAD|LVL LFB/MAB hit|SNP N/A|TLB L2 miss|LCK N/A|BLK  N/A
+          51080242 |OP LOAD|LVL LFB/MAB hit|SNP N/A|TLB L2 miss|LCK N/A|BLK  N/A
+          51088842 |OP LOAD|LVL L3 or Remote Cache (1 hop) hit|SNP N/A|TLB L2 miss|LCK N/A|BLK  N/A
+          51080242 |OP LOAD|LVL LFB/MAB hit|SNP N/A|TLB L2 miss|LCK N/A|BLK  N/A
+          51080242 |OP LOAD|LVL LFB/MAB hit|SNP N/A|TLB L2 miss|LCK N/A|BLK  N/A
+          51080242 |OP LOAD|LVL LFB/MAB hit|SNP N/A|TLB L2 miss|LCK N/A|BLK  N/A
+          49080442 |OP LOAD|LVL L2 hit|SNP N/A|TLB L2 hit|LCK N/A|BLK  N/A
+          51080242 |OP LOAD|LVL LFB/MAB hit|SNP N/A|TLB L2 miss|LCK N/A|BLK  N/A
+
+You can also check the number of dropped samples in LOST_SAMPLES events
+using perf report --stat command.
+
+  $ sudo ./perf report --stat
+
+  Aggregated stats:
+             TOTAL events:      16066
+              MMAP events:         22  ( 0.1%)
+              COMM events:       4166  (25.9%)
+              EXIT events:          1  ( 0.0%)
+          THROTTLE events:        816  ( 5.1%)
+        UNTHROTTLE events:        613  ( 3.8%)
+              FORK events:       4165  (25.9%)
+            SAMPLE events:         15  ( 0.1%)
+             MMAP2 events:       6133  (38.2%)
+      LOST_SAMPLES events:          1  ( 0.0%)
+           KSYMBOL events:         69  ( 0.4%)
+         BPF_EVENT events:         57  ( 0.4%)
+    FINISHED_ROUND events:          3  ( 0.0%)
+          ID_INDEX events:          1  ( 0.0%)
+        THREAD_MAP events:          1  ( 0.0%)
+           CPU_MAP events:          1  ( 0.0%)
+         TIME_CONV events:          1  ( 0.0%)
+     FINISHED_INIT events:          1  ( 0.0%)
+  ibs_op//p stats:
+            SAMPLE events:         15
+      LOST_SAMPLES events:       3991
+
+Note that the total aggregated stats show 1 LOST_SAMPLES event but
+per event stats show 3991 events because it's the actual number of
+dropped samples while the aggregated stats has the number of record.
+Maybe we need to change the per-event stats to 'LOST_SAMPLES count'
+to avoid the confusion.
+
+The code is available at 'perf/bpf-filter-v4' branch in my tree.
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Any feedback is welcome.
+
+Thanks,
+Namhyung
+
+Namhyung Kim (9):
+  perf bpf filter: Introduce basic BPF filter expression
+  perf bpf filter: Implement event sample filtering
+  perf record: Add BPF event filter support
+  perf record: Record dropped sample count
+  perf bpf filter: Add 'pid' sample data support
+  perf bpf filter: Add more weight sample data support
+  perf bpf filter: Add data_src sample data support
+  perf bpf filter: Add logical OR operator
+  perf bpf filter: Show warning for missing sample flags
+
+ tools/lib/perf/include/perf/event.h          |   2 +
+ tools/perf/Documentation/perf-record.txt     |  15 +-
+ tools/perf/Makefile.perf                     |   2 +-
+ tools/perf/builtin-record.c                  |  40 ++--
+ tools/perf/util/Build                        |  16 ++
+ tools/perf/util/bpf-filter.c                 | 197 +++++++++++++++++++
+ tools/perf/util/bpf-filter.h                 |  49 +++++
+ tools/perf/util/bpf-filter.l                 | 159 +++++++++++++++
+ tools/perf/util/bpf-filter.y                 |  78 ++++++++
+ tools/perf/util/bpf_counter.c                |   3 +-
+ tools/perf/util/bpf_skel/sample-filter.h     |  27 +++
+ tools/perf/util/bpf_skel/sample_filter.bpf.c | 172 ++++++++++++++++
+ tools/perf/util/evlist.c                     |  25 ++-
+ tools/perf/util/evsel.c                      |   2 +
+ tools/perf/util/evsel.h                      |   7 +-
+ tools/perf/util/parse-events.c               |   8 +-
+ tools/perf/util/session.c                    |   3 +-
+ 17 files changed, 769 insertions(+), 36 deletions(-)
+ create mode 100644 tools/perf/util/bpf-filter.c
+ create mode 100644 tools/perf/util/bpf-filter.h
+ create mode 100644 tools/perf/util/bpf-filter.l
+ create mode 100644 tools/perf/util/bpf-filter.y
+ create mode 100644 tools/perf/util/bpf_skel/sample-filter.h
+ create mode 100644 tools/perf/util/bpf_skel/sample_filter.bpf.c
+
+
+base-commit: 0ec73817ca21f6ed4f2cca44b63e81a688c0ba0b
+-- 
+2.40.0.rc1.284.g88254d51c5-goog
 
