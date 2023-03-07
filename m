@@ -2,58 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3BE6ADAFC
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 10:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC75F6ADB1E
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 10:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbjCGJws (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 04:52:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50892 "EHLO
+        id S230200AbjCGJzI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 04:55:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjCGJwq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 04:52:46 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE65F61A6
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 01:52:45 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id y15-20020a17090aa40f00b00237ad8ee3a0so11371256pjp.2
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 01:52:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678182765;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DKVBc7cLT17uNrNeY+fVgvT0rrII222leitHj/RWk5c=;
-        b=fkUOCOjLAcXq6DuRk4c1iWHWUkJ8t75iFyrIyPN/VOSnZZT8d3R9CZbYIfysnVD5L/
-         nkn7Pty7Ob0hdxP34J4KHO9zNF6Jhjzi7ASxqoxgX3cl8T2dksNyRzAxHWOIeIwu4G3T
-         1XFfGUgBiaqoFn+jxx7jTK2eiVd0mq/fJ8LySSG7jQCo3Ow1+wQUQPTkrvfkL9ZZvrco
-         tr3FxpX1lHq84hN5OXeDYm9Ze6U8CJgkupyd9glARVtZH3akUVAWWYslfe9yu+2PZ0C4
-         B+l7SQkVjpFaLq9MD8RM6D8z8EmpWFDRL9RRMxYkAh5e1fd93mXbgoq5IsG2wjHBHux6
-         1TKQ==
+        with ESMTP id S230497AbjCGJyi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 04:54:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813A33D904
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 01:53:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678182828;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ggd3+ao+WeqD8liBzoZLjCqGeA5JT3k3Ek928KuXPYA=;
+        b=RzP6qKsPUHGTAI4LHFDZ9vq85WStAi6SFTqna5PqZDqVtBHNuZQtiZGIqZePJWlqwMGm+h
+        WeEoZdS41lfdfbKn+EOhkRs9IgN4/brqkFZi8E7Y1SbQ4w8hRV4bs8YJW4oGaLE2JNB8rh
+        MxhCB0RFu5wtnPoDDtUEAWXyX8sz//U=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-578-uR9g50zrOUWZhdM6AZkO1Q-1; Tue, 07 Mar 2023 04:53:47 -0500
+X-MC-Unique: uR9g50zrOUWZhdM6AZkO1Q-1
+Received: by mail-qt1-f198.google.com with SMTP id i24-20020ac84f58000000b003bfe3358691so6767040qtw.21
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 01:53:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678182765;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=1e100.net; s=20210112; t=1678182827;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=DKVBc7cLT17uNrNeY+fVgvT0rrII222leitHj/RWk5c=;
-        b=nbDcWa78ouyGhbnucBrTBMPbtUUqikGj7ZP0lO4k+6icKQHAfkHNfa3DWXFJjiztU5
-         qbbBcnXBMTO6EUFBzcJ7MiYZGQYnZpWR1mtD/sqthQAz6PAMr3pbALofKNagXK6ZRbSE
-         xBBTGriV5m1H9kIVxJY0r5GpHmJZ+cUiym56XuA/7Nme2Th3Hblwp7q06IciNPiDxcEa
-         FmpWOtjOW3PsCPu/2tuC+UkkfzegomS4qb2FvsaMOi5SilL9RGCL2LVlDdc65mLHz4Kq
-         a4DqvcYMiDJ75Qg9WMEtly+XBjgkhQmL/nSO6Swq4zVJBvsl1RGyM8EvrH3rSOjjPUPt
-         5qiw==
-X-Gm-Message-State: AO0yUKW2lwkYag2vGbnfS2LkPcpvWjclWmceTjOYlm9RuslqkdjR8bIZ
-        nqRZlSNOVWZ6hLf/1XOsYGXhEPfJcn+i3O4TTpc3CiwzOGPZiYj4
-X-Google-Smtp-Source: AK7set8Rgli52JRSPf65q96wT4dFYI+/StDGQhApDGK2Yhag+SXSxgKGOwP+JRwMzWuwVAuT3dEA3TC1g/vs0IU6Iy0=
-X-Received: by 2002:a17:902:f782:b0:19d:13d2:550c with SMTP id
- q2-20020a170902f78200b0019d13d2550cmr5398571pln.10.1678182765200; Tue, 07 Mar
- 2023 01:52:45 -0800 (PST)
-MIME-Version: 1.0
-From:   Dominic <d.dropify@gmail.com>
-Date:   Tue, 7 Mar 2023 15:22:34 +0530
-Message-ID: <CAJxriS2W9S7xQC-gVPSAAkfim5EBfQhKBSLzYaq6EyOAWG-sCQ@mail.gmail.com>
-Subject: Selectively delay loading of eBPF program.
-To:     bpf@vger.kernel.org
+        bh=ggd3+ao+WeqD8liBzoZLjCqGeA5JT3k3Ek928KuXPYA=;
+        b=HLxzXnTPJeFCqioaZ3pKfwLjCbnG+xwXIveEEDjj9Ool+8w1yYFOCjRtbnskNiYSr3
+         NaszppyCokwhDKL9oHDiMom2hTmZb5e+6wcbbYjVmVrHIotSB/NpgbwKUnbe2WPit4yk
+         I23gLzxsFOVnZOHdctnmgMvubJ04TZjabkE35yM8a4zCoxM/9lWBMOAeDbL724XfupUw
+         +MjRZeIWROTF1+0Gp2+MdXHbtTnk/+AOQUOCBjuZDxrRbEnzDzxk4kghKQJcW26N0aH1
+         8QzDsx/G8TmEt2XGznf/SKdx7SiCiFzU2TcSoSZj0Z63BOAO1/qcah8wkjHEDJEVodKO
+         q4+A==
+X-Gm-Message-State: AO0yUKWAT2lJQJEKvD01/FzBZtFgSQ6jkid0QI6egl+doUNwcP3eCzNm
+        6QbxFEDN8fO78XstJmRCprVLbm8U/i0u15UeVOYFB0Q7R80TYoMIsi7UWKfe2wikyRd5eBayTpt
+        8YKjE6tN1CENE
+X-Received: by 2002:a05:622a:1443:b0:3bf:cf77:a861 with SMTP id v3-20020a05622a144300b003bfcf77a861mr26042698qtx.4.1678182826888;
+        Tue, 07 Mar 2023 01:53:46 -0800 (PST)
+X-Google-Smtp-Source: AK7set/Ht7SnNixqcSsXD0GLyGOfUcXl++SZRRVs2S7WoQNC08oY0HQ25bhDHtpsc4xRCT0+4cdvAg==
+X-Received: by 2002:a05:622a:1443:b0:3bf:cf77:a861 with SMTP id v3-20020a05622a144300b003bfcf77a861mr26042676qtx.4.1678182826522;
+        Tue, 07 Mar 2023 01:53:46 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-121-28.dyn.eolo.it. [146.241.121.28])
+        by smtp.gmail.com with ESMTPSA id 127-20020a370b85000000b007425ef4cbc2sm9256355qkl.100.2023.03.07.01.53.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Mar 2023 01:53:46 -0800 (PST)
+Message-ID: <27a06a7d79fef3446ae1167612808a2af09922be.camel@redhat.com>
+Subject: Re: [PATCH net 0/2] add checking sq is full inside xdp xmit
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Date:   Tue, 07 Mar 2023 10:53:41 +0100
+In-Reply-To: <1678153770.8281553-2-xuanzhuo@linux.alibaba.com>
+References: <20230306041535.73319-1-xuanzhuo@linux.alibaba.com>
+         <20230306125742-mutt-send-email-mst@kernel.org>
+         <1678153770.8281553-2-xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,15 +88,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, I have multiple eBPF programs compiled into a single skeleton file
-and I need a way to delay loading of one of the programs.
+Hi,
+On Tue, 2023-03-07 at 09:49 +0800, Xuan Zhuo wrote:
+> On Mon, 6 Mar 2023 12:58:22 -0500, "Michael S. Tsirkin" <mst@redhat.com> =
+wrote:
+> > On Mon, Mar 06, 2023 at 12:15:33PM +0800, Xuan Zhuo wrote:
+> > > If the queue of xdp xmit is not an independent queue, then when the x=
+dp
+> > > xmit used all the desc, the xmit from the __dev_queue_xmit() may enco=
+unter
+> > > the following error.
+> > >=20
+> > > net ens4: Unexpected TXQ (0) queue failure: -28
+> > >=20
+> > > This patch adds a check whether sq is full in XDP Xmit.
+> > >=20
+> > > Thanks.
+> >=20
+> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> >=20
+> > needed for stable?
+>=20
+> Yes i think.
 
-I am aware of `bpf_program__set_autoload()` API but once an object is
-loaded using `bpf_object__load()`, there are no APIs to selectively
-load a program (bpf_prog_load() has been deprecated). Calling
-bpf_object__load() again fails.
+Could you please re-post including a suitable 'Fixes' tag? That would
+address stable, too. Additionally you could rename check_sq_full() in
+patch 1, perhaps 'check_disable_sq_full()' would do.
 
-Wondering if there are any options to achieve the above mentioned behavior.
+You can retain the already collected tags.
 
-Thanks & Regards,
-Dominic
+Thanks!
+
+Paolo
+
