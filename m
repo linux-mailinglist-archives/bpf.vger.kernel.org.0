@@ -2,71 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 975146AD497
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 03:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6666AD504
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 03:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjCGCXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 21:23:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
+        id S229886AbjCGCuk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 21:50:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjCGCXk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 21:23:40 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E20619B;
-        Mon,  6 Mar 2023 18:23:38 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id i34so46755148eda.7;
-        Mon, 06 Mar 2023 18:23:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678155817;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xXH5bqhBGFual7LWqjNOqjuqz53XSx2QJ9I0G731fE4=;
-        b=R78gyucmMZ+pWv4ygmxSpGFyXh4yZchxUvibXw7E8smZSeDlaHWbMJazxPL2+gzYE7
-         o070ASq5TUyZj/kzij/EVs+bIasb7Ja6m/zp9f5jFNqx78yAvQu2vjRPQ1fKmrRxmf1+
-         /fO4Ra93Ngaqe/MnDis9URaJps47i0Fjo9hMMuMWiUPiL4gjFv2xPIq3vCFedvwxJzUV
-         UyJv6gUbhVBvqAeFmx44hbpAt9M16bX8CZ/B3JyWluKjY79BonUW/PsCni+njTLn1Ox9
-         0R8POKGBguqYLG80PRqXMyT3UzVCvUewAs1J6RAVpnGAvk0ZQ5O8zUQZwTBIJRGfm2ry
-         a+fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678155817;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xXH5bqhBGFual7LWqjNOqjuqz53XSx2QJ9I0G731fE4=;
-        b=Qve17u/DykIJPMxFWlCgfUeVzVyhSAXAoFyLkKp22fK1GhFg/Xz/deiF1E5rwxLACn
-         pDwpf10VdeeBFB+1VfO3h8rRtUhWlYKdeLJi9oid+qrcnS1LFaRWEz5LbSePOOb5/KB+
-         ZnkQpl2N569Hjy3jkxdxukAb1sq7dyb65w/I93e4RJWBpZJqu1UP3eRF2A/gkgVU8/jl
-         TPYFvfoqk61LqhkUtyb1jF6k3LdbqFJYxIXC+OQMDk0KlTT9vA4ySWI5VfBC0m1EgXno
-         l9H9GARmFhfbccjCiNdfx8JJzwhK746OZUjHKpSDAdklCRMIPalkXRUXIGYGy9ROfj24
-         syow==
-X-Gm-Message-State: AO0yUKU86DjGv5ZR9LHq/FyR66tYzG7FB1QDRD1mpprC49+n/l3FO1Zc
-        U9+2CXFApjePmA4KrASDNZ/YXaJCLj6fLr8ec3ub/bE7C7Y=
-X-Google-Smtp-Source: AK7set9XnPIU5VOQcX3Jw9B5TwY3gEvbucpFjuSffZEJ6Vl1TicvNgZPJQJExMOm2T7AoimhW8yQl6P9F2CPZkIy0hA=
-X-Received: by 2002:a17:906:747:b0:87b:dce7:c245 with SMTP id
- z7-20020a170906074700b0087bdce7c245mr5672200ejb.3.1678155816983; Mon, 06 Mar
- 2023 18:23:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20230301154953.641654-1-joannelkoong@gmail.com>
- <20230301154953.641654-10-joannelkoong@gmail.com> <20230306071006.73t5vtmxrsykw4zu@apollo>
-In-Reply-To: <20230306071006.73t5vtmxrsykw4zu@apollo>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 6 Mar 2023 18:23:25 -0800
-Message-ID: <CAADnVQJ=wzztviB73jBy3+OYxUKhAX_jTGpS8Xv45vUVTDY-ZA@mail.gmail.com>
-Subject: Re: [PATCH v13 bpf-next 09/10] bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229624AbjCGCuj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 21:50:39 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6765951FBA;
+        Mon,  6 Mar 2023 18:50:37 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PW0H838ZVznWPj;
+        Tue,  7 Mar 2023 10:47:48 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 7 Mar
+ 2023 10:50:35 +0800
+Subject: Re: [PATCH bpf-next v1 1/2] xdp: recycle Page Pool backed skbs built
+ from XDP frames
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Song Liu <song@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230301160315.1022488-1-aleksander.lobakin@intel.com>
+ <20230301160315.1022488-2-aleksander.lobakin@intel.com>
+ <36d42e20-b33f-5442-0db7-e9f5ef9d0941@huawei.com>
+ <dd811304-44ed-0372-8fe7-00c425a453dd@intel.com>
+ <7ffbcac4-f4f2-5579-fd55-35813fbd792c@huawei.com>
+ <9b5b88da-0d2d-d3f3-6ee1-7e4afc2e329a@intel.com>
+ <98aa093a-e772-8882-b0e3-5895fd747e59@huawei.com>
+ <0bc28bea-78f5-bcce-2d45-e6f6d1a7ed40@intel.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <605cad27-2bf3-7913-877e-d2870892ecd5@huawei.com>
+Date:   Tue, 7 Mar 2023 10:50:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
+MIME-Version: 1.0
+In-Reply-To: <0bc28bea-78f5-bcce-2d45-e6f6d1a7ed40@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,123 +66,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 5, 2023 at 11:10=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Wed, Mar 01, 2023 at 04:49:52PM CET, Joanne Koong wrote:
-> > Two new kfuncs are added, bpf_dynptr_slice and bpf_dynptr_slice_rdwr.
-> > The user must pass in a buffer to store the contents of the data slice
-> > if a direct pointer to the data cannot be obtained.
-> >
-> > For skb and xdp type dynptrs, these two APIs are the only way to obtain
-> > a data slice. However, for other types of dynptrs, there is no
-> > difference between bpf_dynptr_slice(_rdwr) and bpf_dynptr_data.
-> >
-> > For skb type dynptrs, the data is copied into the user provided buffer
-> > if any of the data is not in the linear portion of the skb. For xdp typ=
-e
-> > dynptrs, the data is copied into the user provided buffer if the data i=
-s
-> > between xdp frags.
-> >
-> > If the skb is cloned and a call to bpf_dynptr_data_rdwr is made, then
-> > the skb will be uncloned (see bpf_unclone_prologue()).
-> >
-> > Please note that any bpf_dynptr_write() automatically invalidates any p=
-rior
-> > data slices of the skb dynptr. This is because the skb may be cloned or
-> > may need to pull its paged buffer into the head. As such, any
-> > bpf_dynptr_write() will automatically have its prior data slices
-> > invalidated, even if the write is to data in the skb head of an unclone=
-d
-> > skb. Please note as well that any other helper calls that change the
-> > underlying packet buffer (eg bpf_skb_pull_data()) invalidates any data
-> > slices of the skb dynptr as well, for the same reasons.
-> >
-> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > ---
->
-> Sorry for chiming in late.
->
-> I see one potential hole in bpf_dynptr_slice_rdwr. If the returned pointe=
-r is
-> actually pointing to the stack (but verified as a PTR_TO_MEM in verifier =
-state),
-> we won't reflect changes to the stack state in the verifier for writes ha=
-ppening
-> through it.
->
-> For the worst case scenario, this will basically allow overwriting values=
- of
-> spilled pointers and doing arbitrary kernel memory reads/writes. This is =
-only an
-> issue when bpf_dynptr_slice_rdwr at runtime returns a pointer to the supp=
-lied
-> buffer residing on program stack. To verify, by forcing the memcpy to buf=
-fer for
-> skb_header_pointer I was able to make it dereference a garbage value for
-> l4lb_all selftest.
->
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2253,7 +2253,13 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bp=
-f_dynptr_kern *ptr, u32 offset
->         case BPF_DYNPTR_TYPE_RINGBUF:
->                 return ptr->data + ptr->offset + offset;
->         case BPF_DYNPTR_TYPE_SKB:
-> -               return skb_header_pointer(ptr->data, ptr->offset + offset=
-, len, buffer);
-> +       {
-> +               void *p =3D skb_header_pointer(ptr->data, ptr->offset + o=
-ffset, len, buffer);
-> +               if (p =3D=3D buffer)
-> +                       return p;
-> +               memcpy(buffer, p, len);
-> +               return buffer;
-> +       }
->
-> --- a/tools/testing/selftests/bpf/progs/test_l4lb_noinline_dynptr.c
-> +++ b/tools/testing/selftests/bpf/progs/test_l4lb_noinline_dynptr.c
-> @@ -470,7 +470,10 @@ int balancer_ingress(struct __sk_buff *ctx)
->         eth =3D bpf_dynptr_slice_rdwr(&ptr, 0, buffer, sizeof(buffer));
->         if (!eth)
->                 return TC_ACT_SHOT;
-> -       eth_proto =3D eth->eth_proto;
-> +       *(void **)buffer =3D ctx;
+On 2023/3/6 19:58, Alexander Lobakin wrote:
+> From: Yunsheng Lin <linyunsheng@huawei.com>
+> Date: Mon, 6 Mar 2023 09:09:31 +0800
+> 
+>> On 2023/3/3 21:26, Alexander Lobakin wrote:
+>>> From: Yunsheng Lin <linyunsheng@huawei.com>
+>>> Date: Fri, 3 Mar 2023 20:44:24 +0800
+>>>
+>>>> On 2023/3/3 19:22, Alexander Lobakin wrote:
+>>>>> From: Yunsheng Lin <linyunsheng@huawei.com>
+>>>>> Date: Thu, 2 Mar 2023 10:30:13 +0800
+>>>
+>>> [...]
+>>>
+>>>>> And they are fixed :D
+>>>>> No drivers currently which use Page Pool mix PP pages with non-PP. And
+>>>>
+>>>> The wireless adapter which use Page Pool *does* mix PP pages with
+>>>> non-PP, see below discussion:
+>>>>
+>>>> https://lore.kernel.org/netdev/156f3e120bd0757133cb6bc11b76889637b5e0a6.camel@gmail.com/
+>>>
+>>> Ah right, I remember that (also was fixed).
+>>> Not that I think it is correct to mix them -- for my PoV, a driver
+>>> shoule either give *all* its Rx buffers as PP-backed or not use PP at all.
+>>>
+>>> [...]
+>>>
+>>>>> As Jesper already pointed out, not having a quick way to check whether
+>>>>> we have to check ::pp_magic at all can decrease performance. So it's
+>>>>> rather a shortcut.
+>>>>
+>>>> When we are freeing a page by updating the _refcount, I think
+>>>> we are already touching the cache of ::pp_magic.
+>>>
+>>> But no page freeing happens before checking for skb->pp_recycle, neither
+>>> in skb_pp_recycle() (skb_free_head() etc.)[0] nor in skb_frag_unref()[1].
+>>
+>> If we move to per page marker, we probably do not need checking
+>> skb->pp_recycle.
+>>
+>> Note both page_pool_return_skb_page() and skb_free_frag() can
+>> reuse the cache line triggered by per page marker checking if
+>> the per page marker is in the 'struct page'.
+> 
+> Ah, from that perspective. Yes, you're probably right, but would need to
+> be tested anyway. I don't see any open problems with the PP recycling
+> right now on the lists, but someone may try to change it one day.
+> Anyway, this flag is only to do a quick test. We do have
+> sk_buff::pfmemalloc, but this flag doesn't mean every page from this skb
+> was pfmemalloced.
 
-Great catch.
-To fix the issue I think we should simply disallow such
-stack abuse. The compiler won't be spilling registers
-into C array on the stack.
-This manual spill/fill is exploiting verifier logic.
-After bpf_dynptr_slice_rdwr() we can mark all slots of the
-buffer as STACK_POISON or some better name and
-reject spill into such slots.
+The point seems to be that sk_buff::pfmemalloc allow false positive, which
+means skb->pfmemalloc can be set to true while every page from this skb is
+not pfmemalloced as you mentioned.
 
-> +       *(void **)eth =3D (void *)0xdeadbeef;
-> +       ctx =3D *(void **)buffer;
-> +       eth_proto =3D eth->eth_proto + ctx->len;
->         if (eth_proto =3D=3D bpf_htons(ETH_P_IP))
->                 err =3D process_packet(&ptr, eth, nh_off, false, ctx);
->
-> I think the proper fix is to treat it as a separate return type distinct =
-from
-> PTR_TO_MEM like PTR_TO_MEM_OR_PKT (or handle PTR_TO_MEM | DYNPTR_* specia=
-lly),
-> fork verifier state whenever there is a write, so that one path verifies =
-it as
-> PTR_TO_PACKET, while another as PTR_TO_STACK (if buffer was a stack ptr).=
- I
-> think for the rest it's not a problem, but there are allow_ptr_leak check=
-s
-> applied to PTR_TO_STACK and PTR_TO_MAP_VALUE, so that needs to be recheck=
-ed.
-> Then we ensure that program is safe in either path.
->
-> Also we need to fix regsafe to not consider other PTR_TO_MEMs equivalent =
-to such
-> a pointer. We could also fork verifier states on return, to verify either=
- path
-> separately right from the point following the call instruction.
+While skb->pp_recycle can't allow false positive, if that happens, reference
+counting of the page will not be handled properly if pp and non-pp skb shares
+the page as the wireless adapter does.
 
-This is too complex imo.
+> 
+>>
+>>>
+>>>>
+>>>> Anyway, I am not sure checking ::pp_magic is correct when a
+>>>> page will be passing between different subsystem and back to
+>>>> the network stack eventually, checking ::pp_magic may not be
+>>>> correct if this happens.
+>>>>
+>>>> Another way is to use the bottom two bits in bv_page, see:
+>>>> https://www.spinics.net/lists/netdev/msg874099.html
+>>>>
+>>>>>
+>>>>>>
+>>>>>>>  
+>>>>>>>  	/* Allow SKB to reuse area used by xdp_frame */
+>>>>>>>  	xdp_scrub_frame(xdpf);
+>>>>>>>
+>>>>>
+>>>>> Thanks,
+>>>>> Olek
+>>>>> .
+>>>>>
+>>>
+>>> [0] https://elixir.bootlin.com/linux/latest/source/net/core/skbuff.c#L808
+>>> [1]
+>>> https://elixir.bootlin.com/linux/latest/source/include/linux/skbuff.h#L3385
+>>>
+>>> Thanks,
+>>> Olek
+>>> .
+>>>
+> 
+> Thanks,
+> Olek
+> 
+> .
+> 
