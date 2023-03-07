@@ -2,86 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5976ADCF1
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 12:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9706ADE46
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 13:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbjCGLLu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 06:11:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
+        id S231342AbjCGME4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 07:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjCGLKu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 06:10:50 -0500
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39601ABC7;
-        Tue,  7 Mar 2023 03:08:32 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VdLD6tx_1678187309;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VdLD6tx_1678187309)
-          by smtp.aliyun-inc.com;
-          Tue, 07 Mar 2023 19:08:30 +0800
-Message-ID: <1678187301.913421-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net 0/2] add checking sq is full inside xdp xmit
-Date:   Tue, 7 Mar 2023 19:08:21 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20230306041535.73319-1-xuanzhuo@linux.alibaba.com>
- <20230306125742-mutt-send-email-mst@kernel.org>
- <1678153770.8281553-2-xuanzhuo@linux.alibaba.com>
- <27a06a7d79fef3446ae1167612808a2af09922be.camel@redhat.com>
-In-Reply-To: <27a06a7d79fef3446ae1167612808a2af09922be.camel@redhat.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230128AbjCGMEu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 07:04:50 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE7232510
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 04:04:49 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id j19-20020a05600c1c1300b003e9b564fae9so10246233wms.2
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 04:04:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678190688;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CCNs2VyZQC/M/WIt8ft/4vfITmxvA5DpqIO7OzUg/pw=;
+        b=bvtOrFddLQuwG6hjmc2hf0dZNnNip0UWrfqqDEpcb1yUw+bS7hwUR1eZd8Wmt0xUib
+         sf4wFdvjgQN2/iD2SZhh4ZZHz33H9DkZ2qBpp2jTPztztVwo0jishTeHDqST5zytv/bA
+         CiZA5UuSGf0hcYXEGcMFewQE8SqMe4W0dvI3JO5Li7mcJu40NXYhMrXV4ylzgLN8j17u
+         LN9RzrzNEOTmXY7uXU0/Ds70NVLf2zr1NSkx7IAgYLtzsyH53zSJGkjsc6wkDZVqynka
+         wBhDooiCiq+8EXvD5hlCS3+9G+oqyXVrpLZGPxVvj3+RVY9OIJ+SrQA4NvyZb6SGcs6E
+         66yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678190688;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CCNs2VyZQC/M/WIt8ft/4vfITmxvA5DpqIO7OzUg/pw=;
+        b=ez608sKvS3/R5vmH9Fm5O+Q6JNfPjzVtCKy4YLbI6/wsN0G4u+BnuZCjRSF3/dr6d6
+         nnlAUukzoJGKdQuj8gQRe8gbL5NG1Qq2/jZsvp8PnmwEistJdXq+/ieHC5L8hT3tFgj4
+         R9W1KB+34wr328eJBihAHde3jEDunVuQyCXnT5PY46uuKIENVhKRlaPMopxnCh4A6DDo
+         Qv+Nqe2NWsk/noQjgKFh5RHhhDCvjYyxmhxKMeqMGYgkqDHZD7fQcu4QPXLB9n4CW67u
+         O8PNDtzpRX8I0Jjhfj87ufoxY7sKPxJSA7NQKr/BWYHBEyu74+RwttZN/+dcI3qtsX+4
+         bC4w==
+X-Gm-Message-State: AO0yUKUQ8/ZUZs0Z7lLEA2CDeF0gk8DXuIwnCtUoh/i5rOF7CGc8Zqtt
+        ZsjfsnGof+5z1upL6PibBoU=
+X-Google-Smtp-Source: AK7set+WlcFmdrjNXlPw24ts5aZ5EeWBcgGNRYfKL7SgZmFFarh91Y1ze2dZMsnpfmD+461oWVuSgg==
+X-Received: by 2002:a05:600c:4e8f:b0:3eb:2da4:f32d with SMTP id f15-20020a05600c4e8f00b003eb2da4f32dmr12871778wmq.26.1678190687762;
+        Tue, 07 Mar 2023 04:04:47 -0800 (PST)
+Received: from ip-172-31-2-215.eu-west-1.compute.internal (ec2-34-255-118-91.eu-west-1.compute.amazonaws.com. [34.255.118.91])
+        by smtp.gmail.com with ESMTPSA id p16-20020a05600c359000b003e209b45f6bsm18522081wmq.29.2023.03.07.04.04.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 07 Mar 2023 04:04:47 -0800 (PST)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        bpf@vger.kernel.org, memxor@gmail.com
+Cc:     Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH bpf-next v3 0/2] libbpf: usdt arm arg parsing support
+Date:   Tue,  7 Mar 2023 12:04:38 +0000
+Message-Id: <20230307120440.25941-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.39.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 07 Mar 2023 10:53:41 +0100, Paolo Abeni <pabeni@redhat.com> wrote:
-> Hi,
-> On Tue, 2023-03-07 at 09:49 +0800, Xuan Zhuo wrote:
-> > On Mon, 6 Mar 2023 12:58:22 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > On Mon, Mar 06, 2023 at 12:15:33PM +0800, Xuan Zhuo wrote:
-> > > > If the queue of xdp xmit is not an independent queue, then when the xdp
-> > > > xmit used all the desc, the xmit from the __dev_queue_xmit() may encounter
-> > > > the following error.
-> > > >
-> > > > net ens4: Unexpected TXQ (0) queue failure: -28
-> > > >
-> > > > This patch adds a check whether sq is full in XDP Xmit.
-> > > >
-> > > > Thanks.
-> > >
-> > > Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> > >
-> > > needed for stable?
-> >
-> > Yes i think.
->
-> Could you please re-post including a suitable 'Fixes' tag? That would
-> address stable, too. Additionally you could rename check_sq_full() in
-> patch 1, perhaps 'check_disable_sq_full()' would do.
->
-> You can retain the already collected tags.
+This series add the support of the ARM architecture to libbpf USDT. This
+involves implementing the parse_usdt_arg() function for ARM.
 
-OK
+It was seen that the last part of parse_usdt_arg() is repeated for all architectures,
+so, the first patch in this series refactors these functions and moved the post
+processing to parse_usdt_spec()
 
-Thanks.
+Changes in V2[1] to V3:
 
+- Use a tabular approach to find register offsets.
+- Add the patch for refactoring parse_usdt_arg()
 
->
-> Thanks!
->
-> Paolo
->
+Puranjay Mohan (2):
+  libbpf: refactor parse_usdt_arg() to re-use code
+  libbpf: usdt arm arg parsing support
+
+ tools/lib/bpf/usdt.c | 195 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 118 insertions(+), 77 deletions(-)
+
+-- 
+2.39.1
+
