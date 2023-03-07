@@ -2,150 +2,362 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 186986AD450
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 02:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F486AD473
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 03:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjCGB4k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 20:56:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        id S229876AbjCGCMH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 21:12:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjCGB4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 20:56:39 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D04B4392E;
-        Mon,  6 Mar 2023 17:56:38 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id cp7-20020a17090afb8700b0023756229427so15111908pjb.1;
-        Mon, 06 Mar 2023 17:56:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678154198;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nzo/UKrDg68SSlPoKhUPm6gAiurUzxTEKzLrV5f+/WI=;
-        b=KyRVWbYNUG479AwJ9Yeb60Hbl5tQ4IwkvYqmongkJx9o83QWlzimUq27qLojsX9wgC
-         w3JO55BhwYDocYgGlgIUjthKbhJ8hptnTv/S3T7Oo/vHctmwO9+K3ZmlGIpQUrJoUOl6
-         SNvYeFyaEttzMGEbfWa3RX/LVZ4qPqThnXfx/7L6oNeUXHeu/X46KX/xVj5xFjO0aXiQ
-         s5dufWgrF5Z7FZsg+ZqOBvtQQw6sknYFzAeBtM2ZiEePNNegdkH1QL6ebfmuKzgLv1eQ
-         Haa4O6sLBhELTBvhlnKvNCSLh3VspGcE316vrx2826PZ8enq0t7C8Ja7b3CUxYFG7mOE
-         rTSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678154198;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nzo/UKrDg68SSlPoKhUPm6gAiurUzxTEKzLrV5f+/WI=;
-        b=vwXOsHr96yRuWgsDzd4ApmAb6w5vqA50iH2namrxBSGRgmrV4xBpZD+OYMN7iEKcWT
-         16p8pWjW09vkYWET7QOoP97JRLOqlbUr0NKD2xCd5eohzDrnTD807vEltDJDF3qVMrku
-         JIYzRZHxGa7CBQtB/zUCgRG1wY4kX6mJMFZBugoq28ILai64yslBxnc9IMUCS+XvaCYu
-         9+1q+n4/Y0ETKTSMhJmgu4XA3DaMSboecEOQpUxCyRXNjeVI1QheEYG5my7ZqVURa0uS
-         BIUri/CVqrO50HqBnAJ+hATm9rqxyuLYEPa+suT2NduQn5lSwg3qC3GHFLDnqXAiCm1i
-         XtTg==
-X-Gm-Message-State: AO0yUKUKW4walyJbRRJFfDzoMFRzZBLIoXM7W/ChpArw0K3fMi+5te0n
-        NzKMsqejOTnEBFgmm12Oiu0=
-X-Google-Smtp-Source: AK7set9o4+61KviBTKqqtQOIP6plj3L7fBGPXGNOQrTDrgRMVIcRXHEzLp6ip403Ej0sbR/l6mip6A==
-X-Received: by 2002:a17:90b:3812:b0:23a:4875:6e1a with SMTP id mq18-20020a17090b381200b0023a48756e1amr14105428pjb.25.1678154197717;
-        Mon, 06 Mar 2023 17:56:37 -0800 (PST)
-Received: from KERNELXING-MB0.tencent.com ([103.7.29.31])
-        by smtp.gmail.com with ESMTPSA id c4-20020a170902d90400b0019a593e45f1sm7240315plz.261.2023.03.06.17.56.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Mar 2023 17:56:37 -0800 (PST)
-From:   Jason Xing <kerneljasonxing@gmail.com>
-To:     simon.horman@corigine.com, willemdebruijn.kernel@gmail.com,
-        davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kerneljasonxing@gmail.com,
-        Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH v3 net-next] udp: introduce __sk_mem_schedule() usage
-Date:   Tue,  7 Mar 2023 09:56:20 +0800
-Message-Id: <20230307015620.18301-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        with ESMTP id S229871AbjCGCMF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 21:12:05 -0500
+Received: from out-11.mta1.migadu.com (out-11.mta1.migadu.com [IPv6:2001:41d0:203:375::b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACF44E5DE
+        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 18:11:52 -0800 (PST)
+Message-ID: <1e7a3b7b-7693-14d9-9eb4-7a516badba95@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1678155109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=93/CKRk8qbmXmw43z1XdfeyMk31Adgtv0GGKUJmSST4=;
+        b=BGQZErJM7J3nEgNtMpuGTEwo8/UzH5uiLjD8GQiiWEqGgjmZ0p9nEGFBNc6Q3LsPgmRCMb
+        IFS2buP0ONqorchVkaUnDNt1wDDk73ng0H7QbCHRQhi1dU7MXxxPVPVLkTTKcWwQcqPU8/
+        Pg9WPAOge+pJKyCuZif1Fqg11Z6IdCU=
+Date:   Mon, 6 Mar 2023 18:11:46 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 2/8] bpf: Create links for BPF struct_ops
+ maps.
+Content-Language: en-US
+To:     Kui-Feng Lee <kuifeng@meta.com>
+References: <20230303012122.852654-1-kuifeng@meta.com>
+ <20230303012122.852654-3-kuifeng@meta.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
+In-Reply-To: <20230303012122.852654-3-kuifeng@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jason Xing <kernelxing@tencent.com>
+On 3/2/23 5:21 PM, Kui-Feng Lee wrote:
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index cb837f42b99d..b845be719422 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1396,6 +1396,11 @@ struct bpf_link {
+>   	struct work_struct work;
+>   };
+>   
+> +struct bpf_struct_ops_link {
+> +	struct bpf_link link;
+> +	struct bpf_map __rcu *map;
 
-Keep the accounting schema consistent across different protocols
-with __sk_mem_schedule(). Besides, it adjusts a little bit on how
-to calculate forward allocated memory compared to before. After
-applied this patch, we could avoid receive path scheduling extra
-amount of memory.
+__rcu is only needed after the link_update change in patch 5?
+It is fine to keep it in this patch but please leave a comment in the commit 
+message.
 
-Link: https://lore.kernel.org/lkml/20230221110344.82818-1-kerneljasonxing@gmail.com/
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
----
-v3:
-1) get rid of inline suggested by Simon Horman
+Does 'struct bpf_struct_ops_link' have to be in bpf.h?
 
-v2:
-1) change the title and body message
-2) use __sk_mem_schedule() instead suggested by Paolo Abeni
----
- net/ipv4/udp.c | 31 ++++++++++++++++++-------------
- 1 file changed, 18 insertions(+), 13 deletions(-)
+> +};
+> +
+>   struct bpf_link_ops {
+>   	void (*release)(struct bpf_link *link);
+>   	void (*dealloc)(struct bpf_link *link);
+> @@ -1964,6 +1969,7 @@ int bpf_link_new_fd(struct bpf_link *link);
+>   struct file *bpf_link_new_file(struct bpf_link *link, int *reserved_fd);
+>   struct bpf_link *bpf_link_get_from_fd(u32 ufd);
+>   struct bpf_link *bpf_link_get_curr_or_next(u32 *id);
+> +int bpf_struct_ops_link_create(union bpf_attr *attr);
+>   
+>   int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
+>   int bpf_obj_get_user(const char __user *pathname, int flags);
+> @@ -2308,6 +2314,11 @@ static inline void bpf_link_put(struct bpf_link *link)
+>   {
+>   }
+>   
+> +static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index c605d171eb2d..60473781933c 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -1531,10 +1531,23 @@ static void busylock_release(spinlock_t *busy)
- 		spin_unlock(busy);
- }
- 
-+static int udp_rmem_schedule(struct sock *sk, int size)
-+{
-+	int delta;
-+
-+	delta = size - sk->sk_forward_alloc;
-+	if (delta > 0 && !__sk_mem_schedule(sk, delta, SK_MEM_RECV))
-+		return -ENOBUFS;
-+
-+	sk->sk_forward_alloc -= size;
-+
-+	return 0;
-+}
-+
- int __udp_enqueue_schedule_skb(struct sock *sk, struct sk_buff *skb)
- {
- 	struct sk_buff_head *list = &sk->sk_receive_queue;
--	int rmem, delta, amt, err = -ENOMEM;
-+	int rmem, err = -ENOMEM;
- 	spinlock_t *busy = NULL;
- 	int size;
- 
-@@ -1567,20 +1580,12 @@ int __udp_enqueue_schedule_skb(struct sock *sk, struct sk_buff *skb)
- 		goto uncharge_drop;
- 
- 	spin_lock(&list->lock);
--	if (size >= sk->sk_forward_alloc) {
--		amt = sk_mem_pages(size);
--		delta = amt << PAGE_SHIFT;
--		if (!__sk_mem_raise_allocated(sk, delta, amt, SK_MEM_RECV)) {
--			err = -ENOBUFS;
--			spin_unlock(&list->lock);
--			goto uncharge_drop;
--		}
--
--		sk->sk_forward_alloc += delta;
-+	err = udp_rmem_schedule(sk, size);
-+	if (err) {
-+		spin_unlock(&list->lock);
-+		goto uncharge_drop;
- 	}
- 
--	sk->sk_forward_alloc -= size;
--
- 	/* no need to setup a destructor, we will explicitly release the
- 	 * forward allocated memory on dequeue
- 	 */
--- 
-2.37.3
+Is this currently under '#ifdef CONFIG_BPF_SYSCALL' alone?
+
+Not sure if it is correct. Please double check.
+
+ifeq ($(CONFIG_BPF_JIT),y)
+obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
+obj-$(CONFIG_BPF_SYSCALL) += cpumask.o
+obj-${CONFIG_BPF_LSM} += bpf_lsm.o
+endif
+
+obj-$(CONFIG_BPF_SYSCALL) += syscall.o ...
+
+> +
+>   static inline int bpf_obj_get_user(const char __user *pathname, int flags)
+>   {
+>   	return -EOPNOTSUPP;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 17afd2b35ee5..cd0ff39981e8 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1033,6 +1033,7 @@ enum bpf_attach_type {
+>   	BPF_PERF_EVENT,
+>   	BPF_TRACE_KPROBE_MULTI,
+>   	BPF_LSM_CGROUP,
+> +	BPF_STRUCT_OPS,
+>   	__MAX_BPF_ATTACH_TYPE
+>   };
+>   
+> @@ -1266,6 +1267,9 @@ enum {
+>   
+>   /* Create a map that is suitable to be an inner map with dynamic max entries */
+>   	BPF_F_INNER_MAP		= (1U << 12),
+> +
+> +/* Create a map that will be registered/unregesitered by the backed bpf_link */
+> +	BPF_F_LINK		= (1U << 13),
+>   };
+>   
+>   /* Flags for BPF_PROG_QUERY. */
+> @@ -1507,7 +1511,10 @@ union bpf_attr {
+>   	} task_fd_query;
+>   
+>   	struct { /* struct used by BPF_LINK_CREATE command */
+> -		__u32		prog_fd;	/* eBPF program to attach */
+> +		union {
+> +			__u32		prog_fd;	/* eBPF program to attach */
+> +			__u32		map_fd;		/* eBPF struct_ops to attach */
+
+nit. Remove eBPF. "struct_ops to attach"
+
+> +		};
+>   		union {
+>   			__u32		target_fd;	/* object to attach to */
+>   			__u32		target_ifindex; /* target ifindex */
+> @@ -6354,6 +6361,9 @@ struct bpf_link_info {
+>   		struct {
+>   			__u32 ifindex;
+>   		} xdp;
+> +		struct {
+> +			__u32 map_id;
+> +		} struct_ops;
+>   	};
+>   } __attribute__((aligned(8)));
+>   
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index bba03b6b010b..9ec675576d97 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -14,6 +14,7 @@
+>   
+>   enum bpf_struct_ops_state {
+>   	BPF_STRUCT_OPS_STATE_INIT,
+> +	BPF_STRUCT_OPS_STATE_READY,
+
+Please add it to the end. Although it is not in uapi, try not to disrupt the 
+userspace introspection tool if it does not have to.
+
+>   	BPF_STRUCT_OPS_STATE_INUSE,
+>   	BPF_STRUCT_OPS_STATE_TOBEFREE,
+>   };
+> @@ -494,11 +495,19 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   		*(unsigned long *)(udata + moff) = prog->aux->id;
+>   	}
+>   
+> -	bpf_map_inc(map);
+> -
+>   	set_memory_rox((long)st_map->image, 1);
+> +	if (st_map->map.map_flags & BPF_F_LINK) {
+> +		/* Let bpf_link handle registration & unregistration.
+> +		 *
+> +		 * Pair with smp_load_acquire() during lookup_elem().
+> +		 */
+> +		smp_store_release(&kvalue->state, BPF_STRUCT_OPS_STATE_READY);
+> +		goto unlock;
+> +	}
+> +
+>   	err = st_ops->reg(kdata);
+>   	if (likely(!err)) {
+> +		bpf_map_inc(map);
+>   		/* Pair with smp_load_acquire() during lookup_elem().
+>   		 * It ensures the above udata updates (e.g. prog->aux->id)
+>   		 * can be seen once BPF_STRUCT_OPS_STATE_INUSE is set.
+> @@ -514,7 +523,6 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   	 */
+>   	set_memory_nx((long)st_map->image, 1);
+>   	set_memory_rw((long)st_map->image, 1);
+> -	bpf_map_put(map);
+>   
+>   reset_unlock:
+>   	bpf_struct_ops_map_put_progs(st_map);
+> @@ -532,10 +540,15 @@ static int bpf_struct_ops_map_delete_elem(struct bpf_map *map, void *key)
+>   	struct bpf_struct_ops_map *st_map;
+>   
+>   	st_map = (struct bpf_struct_ops_map *)map;
+> +	if (st_map->map.map_flags & BPF_F_LINK)
+> +		return -EOPNOTSUPP;
+> +
+>   	prev_state = cmpxchg(&st_map->kvalue.state,
+>   			     BPF_STRUCT_OPS_STATE_INUSE,
+>   			     BPF_STRUCT_OPS_STATE_TOBEFREE);
+>   	switch (prev_state) {
+> +	case BPF_STRUCT_OPS_STATE_READY:
+> +		return -EOPNOTSUPP;
+
+If this case never happens, this case should be removed. The WARN in the default 
+case at the end is a better handling.
+
+>   	case BPF_STRUCT_OPS_STATE_INUSE:
+>   		st_map->st_ops->unreg(&st_map->kvalue.data);
+>   		bpf_map_put(map);
+> @@ -618,7 +631,7 @@ static void bpf_struct_ops_map_free_rcu(struct bpf_map *map)
+>   static int bpf_struct_ops_map_alloc_check(union bpf_attr *attr)
+>   {
+>   	if (attr->key_size != sizeof(unsigned int) || attr->max_entries != 1 ||
+> -	    attr->map_flags || !attr->btf_vmlinux_value_type_id)
+> +	    (attr->map_flags & ~BPF_F_LINK) || !attr->btf_vmlinux_value_type_id)
+>   		return -EINVAL;
+>   	return 0;
+>   }
+> @@ -714,3 +727,100 @@ void bpf_struct_ops_put(const void *kdata)
+>   
+>   	bpf_map_put(&st_map->map);
+>   }
+> +
+> +static void bpf_struct_ops_map_link_dealloc(struct bpf_link *link)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_struct_ops_map *st_map;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	if (st_link->map) {
+
+Will map ever be NULL
+
+> +		st_map = (struct bpf_struct_ops_map *)st_link->map;
+> +		st_map->st_ops->unreg(&st_map->kvalue.data);
+> +		bpf_map_put(st_link->map);
+> +	}
+> +	kfree(st_link);
+> +}
+> +
+> +static void bpf_struct_ops_map_link_show_fdinfo(const struct bpf_link *link,
+> +					    struct seq_file *seq)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_map *map;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	rcu_read_lock_trace();
+
+Should it be rcu_read_lock()?
+
+> +	map = rcu_dereference(st_link->map);
+> +	if (map)
+> +		seq_printf(seq, "map_id:\t%d\n", map->id);
+> +	rcu_read_unlock_trace();
+> +}
+> +
+> +static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
+> +					       struct bpf_link_info *info)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_map *map;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	rcu_read_lock_trace();
+> +	map = rcu_dereference(st_link->map);
+> +	if (map)
+> +		info->struct_ops.map_id = map->id;
+> +	rcu_read_unlock_trace();
+> +	return 0;
+> +}
+> +
+> +static const struct bpf_link_ops bpf_struct_ops_map_lops = {
+> +	.dealloc = bpf_struct_ops_map_link_dealloc,
+> +	.show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
+> +	.fill_link_info = bpf_struct_ops_map_link_fill_link_info,
+> +};
+> +
+> +int bpf_struct_ops_link_create(union bpf_attr *attr)
+> +{
+> +	struct bpf_struct_ops_link *link = NULL;
+> +	struct bpf_link_primer link_primer;
+> +	struct bpf_struct_ops_map *st_map;
+> +	struct bpf_map *map;
+> +	int err;
+> +
+> +	map = bpf_map_get(attr->link_create.map_fd);
+> +	if (!map)
+> +		return -EINVAL;
+> +
+> +	st_map = (struct bpf_struct_ops_map *)map;
+> +
+> +	if (map->map_type != BPF_MAP_TYPE_STRUCT_OPS || !(map->map_flags & BPF_F_LINK) ||
+> +	    /* Pair with smp_store_release() during map_update */
+> +	    smp_load_acquire(&st_map->kvalue.state) != BPF_STRUCT_OPS_STATE_READY) {
+> +		err = -EINVAL;
+> +		goto err_out;
+> +	}
+> +
+> +	link = kzalloc(sizeof(*link), GFP_USER);
+> +	if (!link) {
+> +		err = -ENOMEM;
+> +		goto err_out;
+> +	}
+> +	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL);
+> +	link->map = map;
+
+RCU_INIT_POINTER().
+
+> +
+> +	err = bpf_link_prime(&link->link, &link_primer);
+> +	if (err)
+> +		goto err_out;
+> +
+> +	err = st_map->st_ops->reg(st_map->kvalue.data);
+> +	if (err) {
+> +		bpf_link_cleanup(&link_primer);
+> +		goto err_out;
+> +	}
+> +
+> +	return bpf_link_settle(&link_primer);
+> +
+> +err_out:
+> +	bpf_map_put(map);
+> +	kfree(link);
+> +	return err;
+> +}
+> +
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 358a0e40555e..3db4938212d6 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2743,10 +2743,11 @@ void bpf_link_inc(struct bpf_link *link)
+>   static void bpf_link_free(struct bpf_link *link)
+>   {
+>   	bpf_link_free_id(link->id);
+> +	/* detach BPF program, clean up used resources */
+>   	if (link->prog) {
+> -		/* detach BPF program, clean up used resources */
+
+This comment move seems unnecessary.
+
+>   		link->ops->release(link);
+>   		bpf_prog_put(link->prog);
+> +		/* The struct_ops links clean up map by them-selves. */
+
+This also seems unnecessary to only spell out for struct_ops link. Each specific 
+link type does its cleanup in ->dealloc.
+
 
