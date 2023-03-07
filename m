@@ -2,398 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931516AFA6C
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A87306AFA82
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjCGXdT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 18:33:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
+        id S230219AbjCGXe1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 18:34:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjCGXdR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 18:33:17 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 394314E5EE;
-        Tue,  7 Mar 2023 15:33:15 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id b20so9164255pfo.6;
-        Tue, 07 Mar 2023 15:33:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678231994;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lC+wocJs40E6XIA7vWZUphTNK2raAPi9HIYmbOkjK4k=;
-        b=R+KyO2PJigqcm5w7QTb5A5c8+WJiekkU4DmwBvywIzcUxw9+WDv13aGwDBwwTqmZdq
-         ZDbbwlqCX4Wy44qDuk3KLT4nUV7Kf64lNozZ0ZXrjgNGY42vaMVqFlnP3ZSGAuTnCCSZ
-         SVbtnv4yGfdR/4CWoRhvKPPo9YIg/YuQnWeiWyVSNwM3m1v3+h60GUO31nKTL2aDgvZ5
-         hbuWW+90atfM8wwXsbX1bUwfjJsAe1x6xNpqSgZqG7V9LUjMTx2DQQ5wsGc71c2LaHEn
-         AcOzseZtDGIXYI/MJg38vM8kjAR5c52N11Rkc6oxd6Y27SINniMODxb/8CdvchfpmhvO
-         XGKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678231994;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=lC+wocJs40E6XIA7vWZUphTNK2raAPi9HIYmbOkjK4k=;
-        b=RS8vHS2TLP5f4uyTYUnMqTNxYQcDhXBg7DWOqZFJs51Y4CMEGO1jkb/l5qoRrCz2fG
-         FRrnz7INYoZZPHk/PuT9VVzpFackn4w1TOpQjRawA33CSXJDOQ8cO290nBRNp90QcbqZ
-         1lPRYBxE8BtjD39jFMqBQ6U3VXYd14bjhgXlQrcqhdofrmX0WbgYZnP2zg7NJPxbpVIv
-         7cz8XYctVjXzym8IQ0AkBT0cAWjHgUBgafNQzNcwCGQnJdFfMi4tmYgTeA8UvwmkiQdY
-         EDuy/th45qKifwW6Ikor9XN78byaGSYpU6rRHzf/mn+Ca7kczD0oZ+LYoud1N1XFroa4
-         2y0Q==
-X-Gm-Message-State: AO0yUKWhEc4X5ghiYjUX69+ZQhdj5CDd7f6Hm9P4fTtJEo++mN+DUljQ
-        ZN7Un362c1hlQhIvRGbeD0mdmfHLjnE=
-X-Google-Smtp-Source: AK7set+XPdFvftPziC6pCgxOEdNhRl3FdASXTGbqsYIvV0I5cc/zuKtOQC4UldjEukzNcfVSmE5FOQ==
-X-Received: by 2002:a62:5e43:0:b0:5de:3c49:b06 with SMTP id s64-20020a625e43000000b005de3c490b06mr11608493pfb.3.1678231994556;
-        Tue, 07 Mar 2023 15:33:14 -0800 (PST)
-Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:15e8:b801:cd55:a496])
-        by smtp.gmail.com with ESMTPSA id l11-20020a62be0b000000b005da23d8cbffsm8342217pff.158.2023.03.07.15.33.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Mar 2023 15:33:14 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 1/9] perf bpf filter: Introduce basic BPF filter expression
-Date:   Tue,  7 Mar 2023 15:33:01 -0800
-Message-Id: <20230307233309.3546160-2-namhyung@kernel.org>
-X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
-In-Reply-To: <20230307233309.3546160-1-namhyung@kernel.org>
-References: <20230307233309.3546160-1-namhyung@kernel.org>
+        with ESMTP id S230105AbjCGXd6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 18:33:58 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9864287348
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 15:33:28 -0800 (PST)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 327M6ssQ025984
+        for <bpf@vger.kernel.org>; Tue, 7 Mar 2023 15:33:28 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=s2048-2021-q4;
+ bh=0R/KLU7YDhSms14wWqw7E5qE/bEIiAE9gNt/pDEDVvU=;
+ b=WUFo0EHYzxIhVMrMD5uVq+eSXTa2+M3FKc2CO9DlZMmmruaq2EC9rp/1QBv62vp2GB4h
+ 2ZTtLBEPkXTuF0jLjIUOjCkC63k3yKVz3jZSkGT1CW3YlI8lDYYvPAFCsK0GO8J/H1Wx
+ xcPMX2au9Z0SN7PoGGC7RV5CvTJ1U9/UvPzrJ/Bt6qPFUYhRfGBDCiVj1dHrP7dEbo7g
+ b1w6E0QsMTbEK1q/o/90xp2/wOyMYoK0L8amZhVrHdoVSIiqDjj7LQTpHq6vCo2WXyEo
+ ErIYdMhN1kIt8eP1UXslHQ83Khb/btzi0wputL/u3vjGIa+d3/ufUz7zdQEcrQP4iG7O jQ== 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3p4px6tnhx-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 15:33:28 -0800
+Received: from twshared21709.17.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Tue, 7 Mar 2023 15:33:25 -0800
+Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
+        id 32D066C7C9B9; Tue,  7 Mar 2023 15:33:13 -0800 (PST)
+From:   Kui-Feng Lee <kuifeng@meta.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <martin.lau@linux.dev>,
+        <song@kernel.org>, <kernel-team@meta.com>, <andrii@kernel.org>,
+        <sdf@google.com>
+CC:     Kui-Feng Lee <kuifeng@meta.com>
+Subject: [PATCH bpf-next v4 3/9] net: Update an existing TCP congestion control algorithm.
+Date:   Tue, 7 Mar 2023 15:33:01 -0800
+Message-ID: <20230307233307.3626875-4-kuifeng@meta.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230307233307.3626875-1-kuifeng@meta.com>
+References: <20230307233307.3626875-1-kuifeng@meta.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: _KrfoLA6iw4GiJW0kX2pruG_HV8s91Dg
+X-Proofpoint-GUID: _KrfoLA6iw4GiJW0kX2pruG_HV8s91Dg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-07_16,2023-03-07_01,2023-02-09_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This implements a tiny parser for the filter expressions used for BPF.
-Each expression will be converted to struct perf_bpf_filter_expr and
-be passed to a BPF map.
+This feature lets you immediately transition to another congestion
+control algorithm or implementation with the same name.  Once a name
+is updated, new connections will apply this new algorithm.
 
-For now, I'd like to start with the very basic comparisons like EQ or
-GT.  The LHS should be a term for sample data and the RHS is a number.
-The expressions are connected by a comma.  For example,
+The 'validate' function pointer has been added to bpf_struct_ops as
+well, allowing us to validate a struct_ops without having to go
+through the registration process.
 
-    period > 10000
-    ip < 0x1000000000000, cpu == 3
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
 ---
- tools/perf/util/Build        | 16 +++++++
- tools/perf/util/bpf-filter.c | 37 ++++++++++++++++
- tools/perf/util/bpf-filter.h | 36 ++++++++++++++++
- tools/perf/util/bpf-filter.l | 82 ++++++++++++++++++++++++++++++++++++
- tools/perf/util/bpf-filter.y | 54 ++++++++++++++++++++++++
- 5 files changed, 225 insertions(+)
- create mode 100644 tools/perf/util/bpf-filter.c
- create mode 100644 tools/perf/util/bpf-filter.h
- create mode 100644 tools/perf/util/bpf-filter.l
- create mode 100644 tools/perf/util/bpf-filter.y
+ include/linux/bpf.h            |  2 ++
+ include/net/tcp.h              |  3 ++
+ net/bpf/bpf_dummy_struct_ops.c |  6 ++++
+ net/ipv4/bpf_tcp_ca.c          | 14 +++++++--
+ net/ipv4/tcp_cong.c            | 57 +++++++++++++++++++++++++++++-----
+ 5 files changed, 73 insertions(+), 9 deletions(-)
 
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 918b501f9bd8..6af73fb5c797 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -154,6 +154,9 @@ perf-$(CONFIG_PERF_BPF_SKEL) += bpf_counter.o
- perf-$(CONFIG_PERF_BPF_SKEL) += bpf_counter_cgroup.o
- perf-$(CONFIG_PERF_BPF_SKEL) += bpf_ftrace.o
- perf-$(CONFIG_PERF_BPF_SKEL) += bpf_off_cpu.o
-+perf-$(CONFIG_PERF_BPF_SKEL) += bpf-filter.o
-+perf-$(CONFIG_PERF_BPF_SKEL) += bpf-filter-flex.o
-+perf-$(CONFIG_PERF_BPF_SKEL) += bpf-filter-bison.o
- 
- ifeq ($(CONFIG_LIBTRACEEVENT),y)
-   perf-$(CONFIG_PERF_BPF_SKEL) += bpf_lock_contention.o
-@@ -266,6 +269,16 @@ $(OUTPUT)util/pmu-bison.c $(OUTPUT)util/pmu-bison.h: util/pmu.y
- 	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
- 		-o $(OUTPUT)util/pmu-bison.c -p perf_pmu_
- 
-+$(OUTPUT)util/bpf-filter-flex.c $(OUTPUT)util/bpf-filter-flex.h: util/bpf-filter.l $(OUTPUT)util/bpf-filter-bison.c
-+	$(call rule_mkdir)
-+	$(Q)$(call echo-cmd,flex)$(FLEX) -o $(OUTPUT)util/bpf-filter-flex.c \
-+		--header-file=$(OUTPUT)util/bpf-filter-flex.h $(PARSER_DEBUG_FLEX) $<
-+
-+$(OUTPUT)util/bpf-filter-bison.c $(OUTPUT)util/bpf-filter-bison.h: util/bpf-filter.y
-+	$(call rule_mkdir)
-+	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
-+		-o $(OUTPUT)util/bpf-filter-bison.c -p perf_bpf_filter_
-+
- FLEX_GE_26 := $(shell expr $(shell $(FLEX) --version | sed -e  's/flex \([0-9]\+\).\([0-9]\+\)/\1\2/g') \>\= 26)
- ifeq ($(FLEX_GE_26),1)
-   flex_flags := -Wno-switch-enum -Wno-switch-default -Wno-unused-function -Wno-redundant-decls -Wno-sign-compare -Wno-unused-parameter -Wno-missing-prototypes -Wno-missing-declarations
-@@ -279,6 +292,7 @@ endif
- CFLAGS_parse-events-flex.o  += $(flex_flags)
- CFLAGS_pmu-flex.o           += $(flex_flags)
- CFLAGS_expr-flex.o          += $(flex_flags)
-+CFLAGS_bpf-filter-flex.o    += $(flex_flags)
- 
- bison_flags := -DYYENABLE_NLS=0
- BISON_GE_35 := $(shell expr $(shell $(BISON) --version | grep bison | sed -e 's/.\+ \([0-9]\+\).\([0-9]\+\)/\1\2/g') \>\= 35)
-@@ -290,10 +304,12 @@ endif
- CFLAGS_parse-events-bison.o += $(bison_flags)
- CFLAGS_pmu-bison.o          += -DYYLTYPE_IS_TRIVIAL=0 $(bison_flags)
- CFLAGS_expr-bison.o         += -DYYLTYPE_IS_TRIVIAL=0 $(bison_flags)
-+CFLAGS_bpf-filter-bison.o   += -DYYLTYPE_IS_TRIVIAL=0 $(bison_flags)
- 
- $(OUTPUT)util/parse-events.o: $(OUTPUT)util/parse-events-flex.c $(OUTPUT)util/parse-events-bison.c
- $(OUTPUT)util/pmu.o: $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-bison.c
- $(OUTPUT)util/expr.o: $(OUTPUT)util/expr-flex.c $(OUTPUT)util/expr-bison.c
-+$(OUTPUT)util/bpf-filter.o: $(OUTPUT)util/bpf-filter-flex.c $(OUTPUT)util/bpf-filter-bison.c
- 
- CFLAGS_bitmap.o        += -Wno-unused-parameter -DETC_PERFCONFIG="BUILD_STR($(ETC_PERFCONFIG_SQ))"
- CFLAGS_find_bit.o      += -Wno-unused-parameter -DETC_PERFCONFIG="BUILD_STR($(ETC_PERFCONFIG_SQ))"
-diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-new file mode 100644
-index 000000000000..c72e35d51240
---- /dev/null
-+++ b/tools/perf/util/bpf-filter.c
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <stdlib.h>
-+
-+#include "util/bpf-filter.h"
-+#include "util/bpf-filter-flex.h"
-+#include "util/bpf-filter-bison.h"
-+
-+struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flags,
-+						       enum perf_bpf_filter_op op,
-+						       unsigned long val)
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 855b27f847eb..047d2c6aba88 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1447,6 +1447,8 @@ struct bpf_struct_ops {
+ 			   void *kdata, const void *udata);
+ 	int (*reg)(void *kdata);
+ 	void (*unreg)(void *kdata);
++	int (*update)(void *kdata, void *old_kdata);
++	int (*validate)(void *kdata);
+ 	const struct btf_type *type;
+ 	const struct btf_type *value_type;
+ 	const char *name;
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index db9f828e9d1e..2abb755e6a3a 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -1117,6 +1117,9 @@ struct tcp_congestion_ops {
+=20
+ int tcp_register_congestion_control(struct tcp_congestion_ops *type);
+ void tcp_unregister_congestion_control(struct tcp_congestion_ops *type);
++int tcp_update_congestion_control(struct tcp_congestion_ops *type,
++				  struct tcp_congestion_ops *old_type);
++int tcp_validate_congestion_control(struct tcp_congestion_ops *ca);
+=20
+ void tcp_assign_congestion_control(struct sock *sk);
+ void tcp_init_congestion_control(struct sock *sk);
+diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_op=
+s.c
+index ff4f89a2b02a..158f14e240d0 100644
+--- a/net/bpf/bpf_dummy_struct_ops.c
++++ b/net/bpf/bpf_dummy_struct_ops.c
+@@ -222,12 +222,18 @@ static void bpf_dummy_unreg(void *kdata)
+ {
+ }
+=20
++static int bpf_dummy_update(void *kdata, void *old_kdata)
 +{
-+	struct perf_bpf_filter_expr *expr;
-+
-+	expr = malloc(sizeof(*expr));
-+	if (expr != NULL) {
-+		expr->sample_flags = sample_flags;
-+		expr->op = op;
-+		expr->val = val;
-+	}
-+	return expr;
++	return -EOPNOTSUPP;
 +}
 +
-+int perf_bpf_filter__parse(struct list_head *expr_head, const char *str)
+ struct bpf_struct_ops bpf_bpf_dummy_ops =3D {
+ 	.verifier_ops =3D &bpf_dummy_verifier_ops,
+ 	.init =3D bpf_dummy_init,
+ 	.check_member =3D bpf_dummy_ops_check_member,
+ 	.init_member =3D bpf_dummy_init_member,
+ 	.reg =3D bpf_dummy_reg,
++	.update =3D bpf_dummy_update,
+ 	.unreg =3D bpf_dummy_unreg,
+ 	.name =3D "bpf_dummy_ops",
+ };
+diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+index 13fc0c185cd9..e8b27826283e 100644
+--- a/net/ipv4/bpf_tcp_ca.c
++++ b/net/ipv4/bpf_tcp_ca.c
+@@ -239,8 +239,6 @@ static int bpf_tcp_ca_init_member(const struct btf_ty=
+pe *t,
+ 		if (bpf_obj_name_cpy(tcp_ca->name, utcp_ca->name,
+ 				     sizeof(tcp_ca->name)) <=3D 0)
+ 			return -EINVAL;
+-		if (tcp_ca_find(utcp_ca->name))
+-			return -EEXIST;
+ 		return 1;
+ 	}
+=20
+@@ -266,13 +264,25 @@ static void bpf_tcp_ca_unreg(void *kdata)
+ 	tcp_unregister_congestion_control(kdata);
+ }
+=20
++static int bpf_tcp_ca_update(void *kdata, void *old_kdata)
 +{
-+	YY_BUFFER_STATE buffer;
++	return tcp_update_congestion_control(kdata, old_kdata);
++}
++
++static int bpf_tcp_ca_validate(void *kdata)
++{
++	return tcp_validate_congestion_control(kdata);
++}
++
+ struct bpf_struct_ops bpf_tcp_congestion_ops =3D {
+ 	.verifier_ops =3D &bpf_tcp_ca_verifier_ops,
+ 	.reg =3D bpf_tcp_ca_reg,
+ 	.unreg =3D bpf_tcp_ca_unreg,
++	.update =3D bpf_tcp_ca_update,
+ 	.check_member =3D bpf_tcp_ca_check_member,
+ 	.init_member =3D bpf_tcp_ca_init_member,
+ 	.init =3D bpf_tcp_ca_init,
++	.validate =3D bpf_tcp_ca_validate,
+ 	.name =3D "tcp_congestion_ops",
+ };
+=20
+diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
+index db8b4b488c31..24829390e495 100644
+--- a/net/ipv4/tcp_cong.c
++++ b/net/ipv4/tcp_cong.c
+@@ -75,14 +75,8 @@ struct tcp_congestion_ops *tcp_ca_find_key(u32 key)
+ 	return NULL;
+ }
+=20
+-/*
+- * Attach new congestion control algorithm to the list
+- * of available options.
+- */
+-int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
++int tcp_validate_congestion_control(struct tcp_congestion_ops *ca)
+ {
+-	int ret =3D 0;
+-
+ 	/* all algorithms must implement these */
+ 	if (!ca->ssthresh || !ca->undo_cwnd ||
+ 	    !(ca->cong_avoid || ca->cong_control)) {
+@@ -90,6 +84,20 @@ int tcp_register_congestion_control(struct tcp_congest=
+ion_ops *ca)
+ 		return -EINVAL;
+ 	}
+=20
++	return 0;
++}
++
++/* Attach new congestion control algorithm to the list
++ * of available options.
++ */
++int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
++{
 +	int ret;
 +
-+	buffer = perf_bpf_filter__scan_string(str);
++	ret =3D tcp_validate_congestion_control(ca);
++	if (ret)
++		return ret;
 +
-+	ret = perf_bpf_filter_parse(expr_head);
+ 	ca->key =3D jhash(ca->name, sizeof(ca->name), strlen(ca->name));
+=20
+ 	spin_lock(&tcp_cong_list_lock);
+@@ -130,6 +138,41 @@ void tcp_unregister_congestion_control(struct tcp_co=
+ngestion_ops *ca)
+ }
+ EXPORT_SYMBOL_GPL(tcp_unregister_congestion_control);
+=20
++/* Replace a registered old ca with a new one.
++ *
++ * The new ca must have the same name as the old one, that has been
++ * registered.
++ */
++int tcp_update_congestion_control(struct tcp_congestion_ops *ca, struct =
+tcp_congestion_ops *old_ca)
++{
++	struct tcp_congestion_ops *existing;
++	int ret;
 +
-+	perf_bpf_filter__flush_buffer(buffer);
-+	perf_bpf_filter__delete_buffer(buffer);
-+	perf_bpf_filter_lex_destroy();
++	ret =3D tcp_validate_congestion_control(ca);
++	if (ret)
++		return ret;
++
++	ca->key =3D jhash(ca->name, sizeof(ca->name), strlen(ca->name));
++
++	spin_lock(&tcp_cong_list_lock);
++	existing =3D tcp_ca_find_key(old_ca->key);
++	if (ca->key =3D=3D TCP_CA_UNSPEC || !existing || strcmp(existing->name,=
+ ca->name)) {
++		pr_notice("%s not registered or non-unique key\n",
++			  ca->name);
++		ret =3D -EINVAL;
++	} else if (existing !=3D old_ca) {
++		pr_notice("invalid old congestion control algorithm to replace\n");
++		ret =3D -EINVAL;
++	} else {
++		list_add_tail_rcu(&ca->list, &tcp_cong_list);
++		list_del_rcu(&existing->list);
++		pr_debug("%s updated\n", ca->name);
++	}
++	spin_unlock(&tcp_cong_list_lock);
 +
 +	return ret;
 +}
-diff --git a/tools/perf/util/bpf-filter.h b/tools/perf/util/bpf-filter.h
-new file mode 100644
-index 000000000000..93a0d3de038c
---- /dev/null
-+++ b/tools/perf/util/bpf-filter.h
-@@ -0,0 +1,36 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef PERF_UTIL_BPF_FILTER_H
-+#define PERF_UTIL_BPF_FILTER_H
 +
-+#include <linux/list.h>
-+
-+enum perf_bpf_filter_op {
-+	PBF_OP_EQ,
-+	PBF_OP_NEQ,
-+	PBF_OP_GT,
-+	PBF_OP_GE,
-+	PBF_OP_LT,
-+	PBF_OP_LE,
-+	PBF_OP_AND,
-+};
-+
-+struct perf_bpf_filter_expr {
-+	struct list_head list;
-+	enum perf_bpf_filter_op op;
-+	unsigned long sample_flags;
-+	unsigned long val;
-+};
-+
-+#ifdef HAVE_BPF_SKEL
-+struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flags,
-+						       enum perf_bpf_filter_op op,
-+						       unsigned long val);
-+int perf_bpf_filter__parse(struct list_head *expr_head, const char *str);
-+#else /* !HAVE_BPF_SKEL */
-+static inline int perf_bpf_filter__parse(struct list_head *expr_head __maybe_unused,
-+					 const char *str __maybe_unused)
-+{
-+	return -ENOSYS;
-+}
-+#endif /* HAVE_BPF_SKEL*/
-+#endif /* PERF_UTIL_BPF_FILTER_H */
-diff --git a/tools/perf/util/bpf-filter.l b/tools/perf/util/bpf-filter.l
-new file mode 100644
-index 000000000000..f6c0b74ea285
---- /dev/null
-+++ b/tools/perf/util/bpf-filter.l
-@@ -0,0 +1,82 @@
-+%option prefix="perf_bpf_filter_"
-+%option noyywrap
-+
-+%{
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <linux/perf_event.h>
-+
-+#include "bpf-filter.h"
-+#include "bpf-filter-bison.h"
-+
-+static int sample(unsigned long sample_flag)
-+{
-+	perf_bpf_filter_lval.sample = sample_flag;
-+	return BFT_SAMPLE;
-+}
-+
-+static int operator(enum perf_bpf_filter_op op)
-+{
-+	perf_bpf_filter_lval.op = op;
-+	return BFT_OP;
-+}
-+
-+static int value(int base)
-+{
-+	long num;
-+
-+	errno = 0;
-+	num = strtoul(perf_bpf_filter_text, NULL, base);
-+	if (errno)
-+		return BFT_ERROR;
-+
-+	perf_bpf_filter_lval.num = num;
-+	return BFT_NUM;
-+}
-+
-+static int error(const char *str)
-+{
-+	printf("perf_bpf_filter: Unexpected filter %s: %s\n", str, perf_bpf_filter_text);
-+	return BFT_ERROR;
-+}
-+
-+%}
-+
-+num_dec		[0-9]+
-+num_hex		0[Xx][0-9a-fA-F]+
-+space		[ \t]+
-+ident		[_a-zA-Z][_a-zA-Z0-9]+
-+
-+%%
-+
-+{num_dec}	{ return value(10); }
-+{num_hex}	{ return value(16); }
-+{space}		{ }
-+
-+ip		{ return sample(PERF_SAMPLE_IP); }
-+id		{ return sample(PERF_SAMPLE_ID); }
-+tid		{ return sample(PERF_SAMPLE_TID); }
-+cpu		{ return sample(PERF_SAMPLE_CPU); }
-+time		{ return sample(PERF_SAMPLE_TIME); }
-+addr		{ return sample(PERF_SAMPLE_ADDR); }
-+period		{ return sample(PERF_SAMPLE_PERIOD); }
-+txn		{ return sample(PERF_SAMPLE_TRANSACTION); }
-+weight		{ return sample(PERF_SAMPLE_WEIGHT); }
-+phys_addr	{ return sample(PERF_SAMPLE_PHYS_ADDR); }
-+code_pgsz	{ return sample(PERF_SAMPLE_CODE_PAGE_SIZE); }
-+data_pgsz	{ return sample(PERF_SAMPLE_DATA_PAGE_SIZE); }
-+
-+"=="		{ return operator(PBF_OP_EQ); }
-+"!="		{ return operator(PBF_OP_NEQ); }
-+">"		{ return operator(PBF_OP_GT); }
-+"<"		{ return operator(PBF_OP_LT); }
-+">="		{ return operator(PBF_OP_GE); }
-+"<="		{ return operator(PBF_OP_LE); }
-+"&"		{ return operator(PBF_OP_AND); }
-+
-+","		{ return ','; }
-+
-+{ident}		{ return error("ident"); }
-+.		{ return error("input"); }
-+
-+%%
-diff --git a/tools/perf/util/bpf-filter.y b/tools/perf/util/bpf-filter.y
-new file mode 100644
-index 000000000000..13eca612ecca
---- /dev/null
-+++ b/tools/perf/util/bpf-filter.y
-@@ -0,0 +1,54 @@
-+%parse-param {struct list_head *expr_head}
-+%define parse.error verbose
-+
-+%{
-+
-+#include <stdio.h>
-+#include <string.h>
-+#include <linux/compiler.h>
-+#include <linux/list.h>
-+#include "bpf-filter.h"
-+
-+static void perf_bpf_filter_error(struct list_head *expr __maybe_unused,
-+				  char const *msg)
-+{
-+	printf("perf_bpf_filter: %s\n", msg);
-+}
-+
-+%}
-+
-+%union
-+{
-+	unsigned long num;
-+	unsigned long sample;
-+	enum perf_bpf_filter_op op;
-+	struct perf_bpf_filter_expr *expr;
-+}
-+
-+%token BFT_SAMPLE BFT_OP BFT_ERROR BFT_NUM
-+%type <expr> filter_term
-+%destructor { free ($$); } <expr>
-+%type <sample> BFT_SAMPLE
-+%type <op> BFT_OP
-+%type <num> BFT_NUM
-+
-+%%
-+
-+filter:
-+filter ',' filter_term
-+{
-+	list_add_tail(&$3->list, expr_head);
-+}
-+|
-+filter_term
-+{
-+	list_add_tail(&$1->list, expr_head);
-+}
-+
-+filter_term:
-+BFT_SAMPLE BFT_OP BFT_NUM
-+{
-+	$$ = perf_bpf_filter_expr__new($1, $2, $3);
-+}
-+
-+%%
--- 
-2.40.0.rc1.284.g88254d51c5-goog
+ u32 tcp_ca_get_key_by_name(struct net *net, const char *name, bool *ecn_=
+ca)
+ {
+ 	const struct tcp_congestion_ops *ca;
+--=20
+2.34.1
 
