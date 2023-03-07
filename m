@@ -2,99 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F986AD58F
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 04:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8690B6AD59C
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 04:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjCGDNq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 22:13:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
+        id S229669AbjCGDVb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 22:21:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbjCGDNb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 22:13:31 -0500
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DC855A8;
-        Mon,  6 Mar 2023 19:12:55 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VdJP.vl_1678158346;
-Received: from 30.221.149.199(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VdJP.vl_1678158346)
-          by smtp.aliyun-inc.com;
-          Tue, 07 Mar 2023 11:05:47 +0800
-Message-ID: <25cee0eb-a1f9-9f0b-9987-ca6e79e6b752@linux.alibaba.com>
-Date:   Tue, 7 Mar 2023 11:05:46 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v4 0/4] net/smc: Introduce BPF injection
- capability
-Content-Language: en-US
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        with ESMTP id S229576AbjCGDVa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 22:21:30 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B9493DB
+        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 19:21:29 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id m202-20020a2526d3000000b00ae90d688ab4so12609833ybm.5
+        for <bpf@vger.kernel.org>; Mon, 06 Mar 2023 19:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1678159289;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4V7qYWhF33WfuebsbvBQGuVFdWrj0NpdHzfUvHWbnC8=;
+        b=T6aJICY3NlE5u1vNf9OmUu/eQQfbV1GOJRNrimXa/y/VrCdgNdOV7kGTIj3rJyf4wa
+         aqwHTM01jEscUPE0aEfwaQeY7t7uOeWnYctZUoykgy3b/+ezfZnYP/dibefqCpC8upTn
+         ojKMH5WPYxFHPy+ps/fY/KIMAmJueL/XJO2AVHpeeRyo+9BLATfCDjkoxAhaH38hFolS
+         KB15K1yev8xl8ggZq9RJzJp7l431FszYjyPjR4iCTFLUWp06RhKgWW2QF6ViLTB6UYti
+         25dfkSOrJjRW17VdryAboCaHdNloYycIqLVfz7XIBhCBHvHHroIen3Y0R0JTpZwvBdJG
+         1b4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678159289;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4V7qYWhF33WfuebsbvBQGuVFdWrj0NpdHzfUvHWbnC8=;
+        b=5tVPhp+2Snkyuxh5r4RgLL3xAQP2AnLdydF5aO+u95ifrjemPG+RK8ilfjgTtuvLbb
+         zyMHP/kwd5Kpg6Qhwkc9y29eUKo4LnholnJlo/F4+9CTbHNyFGN5c94OmgOnwkLjST/z
+         01evKKeeIRmN+UPca3syhAZ1HAsP0rpc8H6BsAc+a+pQDHKoWh4F8jEv+FKuQ/uPfpHU
+         IHn3qEJn8REIsfjYelqoSHwZ3pU6pVG6vI4xQOWdkIOX0iRC7BP1L79GmJ6XNVhoKh/4
+         +LZktvL6Jp/N4Fb1X//rxaLhXbFTxuEOzdc47m2p67Zxk30qwivwbXVJwRFsBhb4By92
+         Z+nA==
+X-Gm-Message-State: AO0yUKUCoIoJ1tevVL1FB90c6TDBBs5dw5sI8FNJ9KMfGeSWVM2xx76I
+        6lXSImwoWVMPAmsDRVnmlUhe6ku9Z/5s
+X-Google-Smtp-Source: AK7set/GvSG52lshrWljOTP0+TlFYk0pdSie2CoXb1dha9MKGJX2b0KrwFUW5yKqo7j0oALBm3rVqp9b7WJc
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:1c60:6b8e:dccc:a3b1])
+ (user=irogers job=sendgmr) by 2002:a81:4005:0:b0:532:e887:2c23 with SMTP id
+ l5-20020a814005000000b00532e8872c23mr8552310ywn.9.1678159288922; Mon, 06 Mar
+ 2023 19:21:28 -0800 (PST)
+Date:   Mon,  6 Mar 2023 19:21:17 -0800
+Message-Id: <20230307032117.3461008-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.rc0.216.gc4246ad0f0-goog
+Subject: [PATCH] perf lock contention: Fix builtin detection
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org
-References: <1677602291-1666-1-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1677602291-1666-1-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+__has_builtin was passed the macro rather than the actual builtin
+feature.
 
+Fixes: 1bece1351c65 ("perf lock contention: Support old rw_semaphore type")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 3/1/23 12:38 AM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
->
-> This patches attempt to introduce BPF injection capability for SMC,
-> and add selftest to ensure code stability.
->
-> As we all know that the SMC protocol is not suitable for all scenarios,
-> especially for short-lived. However, for most applications, they cannot
-> guarantee that there are no such scenarios at all. Therefore, apps
-> may need some specific strategies to decide shall we need to use SMC
-> or not, for example, apps can limit the scope of the SMC to a specific
-> IP address or port.
->
-> Based on the consideration of transparent replacement, we hope that apps
-> can remain transparent even if they need to formulate some specific
-> strategies for SMC using. That is, do not need to recompile their code.
->
-> On the other hand, we need to ensure the scalability of strategies
-> implementation. Although it is simple to use socket options or sysctl,
-> it will bring more complexity to subsequent expansion.
->
-> Fortunately, BPF can solve these concerns very well, users can write
-> thire own strategies in eBPF to choose whether to use SMC or not.
-> And it's quite easy for them to modify their strategies in the future.
->
-> This patches implement injection capability for SMC via struct_ops.
-> In that way, we can add new injection scenarios in the future.
->
-> v4 -> v3:
->      1. fix compile error and warning
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/oe-kbuild-all/202302282100.x7qq7PGX-lkp@intel.com/
-
-Hi Wenjia and all,
-
-I wondering if there are any more questions about this PATCH, This patch 
-seems to have been hanging for some time.
-
-If you have any questions, please let me know.
-
-
-Thanks,
-
-D. Wythe
-
-
-Do you have any questions about this PATCH?  If you have any other 
-questions, please let me know.
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index e6007eaeda1a..e422eee0f942 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -182,7 +182,7 @@ static inline struct task_struct *get_lock_owner(__u64 lock, __u32 flags)
+ 		struct mutex *mutex = (void *)lock;
+ 		owner = BPF_CORE_READ(mutex, owner.counter);
+ 	} else if (flags == LCB_F_READ || flags == LCB_F_WRITE) {
+-#if __has_builtin(bpf_core_type_matches)
++#if __has_builtin(__builtin_preserve_type_info)
+ 		if (bpf_core_type_matches(struct rw_semaphore___old)) {
+ 			struct rw_semaphore___old *rwsem = (void *)lock;
+ 			owner = (unsigned long)BPF_CORE_READ(rwsem, owner);
+-- 
+2.40.0.rc0.216.gc4246ad0f0-goog
 
