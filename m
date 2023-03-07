@@ -2,272 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DE56AFA70
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1F06AFA81
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjCGXdX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 18:33:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
+        id S230195AbjCGXeZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 18:34:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbjCGXdU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 18:33:20 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C07E4E5EE;
-        Tue,  7 Mar 2023 15:33:18 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id bn17so8610566pgb.10;
-        Tue, 07 Mar 2023 15:33:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678231998;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZWY3pu1sUBwgULLA58qBvOo9hTklUr6qi9NkTdBlOtc=;
-        b=bJSqVD/jl+PkfJRGjXymRodsOUSYj3io692pFqwOEEBmN/yAOhuW/eykm05mRRzpez
-         7eRAFQNs7W/XWARmnqUowH9nFWuoprQFX9UC3C5wBhyq3440yUjBbKQl57rfeSLejIkv
-         uS+7O6K3qmlh4TJs9uryAEH8yxr9S84AqfKpFZYkJFsAa0SerpNdbBCKUqZ+mWMrDEa3
-         ezOuFCIa/pxWARVOE+OHRuX9oJimyVWeLGPZKs89WaVuz6xxUzG9UOePdx5ShN9BcTLE
-         KPOiOSvwgATBZVpx5nVqw0FBHYQqAR6Ld0zpgnQT5w0JvT+1G0015p2wfQukuimaXQY9
-         ifCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678231998;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZWY3pu1sUBwgULLA58qBvOo9hTklUr6qi9NkTdBlOtc=;
-        b=yEEb2jPYQyqE+4tqyv2mMZ2LzgThHa2Ibo1Wlz1+uYCrfXaNOWKK3RAykXLtAvEC9r
-         BIjbrB1iBlCrzDrsLB+DTxC5eAl9ENGQmcUhMLBOGfDAp+06K6E6EhcSw3VPRuErKNFC
-         2BYVdjrVudqYcbkHBkSy81NlVz0qw4xoDl2LLBhd6CeY51Mm/hSnw+hlrx30Dz9eRW/t
-         t8HAkfEkuDVMViaIrzvKCJReHEvEUij9XmPRbWojpp4K14vPEmbFxvxdUk7eFBG4j1Kc
-         fLKAPwVEn8fLpVdtGBx29GDonPTme8Wo3WqwchR2ai0uy+2tPY0uxoN0wFEcxW9x5vEu
-         Cqgw==
-X-Gm-Message-State: AO0yUKXkYnITP18Djh/R5kBK7nr0eDJCIfduQJ/ADv9f2kfm/NvcqQsF
-        5dp4gQjBjS86IFBcDaUHa4w=
-X-Google-Smtp-Source: AK7set9rLaCbqxNnlXw1sJRbLyeuvpCGZBY4hj1WshFCtlfJczEMbKp6EoyMzR5lHx1hMTV0rdAiiA==
-X-Received: by 2002:aa7:940b:0:b0:5a8:b705:4dd3 with SMTP id x11-20020aa7940b000000b005a8b7054dd3mr14090118pfo.13.1678231997817;
-        Tue, 07 Mar 2023 15:33:17 -0800 (PST)
-Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:15e8:b801:cd55:a496])
-        by smtp.gmail.com with ESMTPSA id l11-20020a62be0b000000b005da23d8cbffsm8342217pff.158.2023.03.07.15.33.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Mar 2023 15:33:17 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 3/9] perf record: Add BPF event filter support
-Date:   Tue,  7 Mar 2023 15:33:03 -0800
-Message-Id: <20230307233309.3546160-4-namhyung@kernel.org>
-X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
-In-Reply-To: <20230307233309.3546160-1-namhyung@kernel.org>
-References: <20230307233309.3546160-1-namhyung@kernel.org>
+        with ESMTP id S229995AbjCGXdz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 18:33:55 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861C29927D
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 15:33:28 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 327M8Tgc025664
+        for <bpf@vger.kernel.org>; Tue, 7 Mar 2023 15:33:27 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=s2048-2021-q4;
+ bh=gcXRECaNSgbweyGX4I0Sf0s4Z9QAlWS1aBfJ44Wrmls=;
+ b=TMwg1LDg/i1F/CWGnKW/gxGcwhSGplyKF5OEouqgyt4LBPvoqPDEoxNHzhWdUVPHCoGx
+ 7AdP0p03uyYihFyeFiuEJgcp4nfSstBgKPDARGo//4uOlStEyfyxQ88lxCaNuovaHfhq
+ PBD/LpCxOjw+g8OSlPSEMlD/S+c/voiFj5q8clq3Z3kaPmWtQTH0RqXPRQqrCKrvToWa
+ G/DAGkL/49UUHXlswdqbbKSplF5e/5kQhcvf0aq8Z+rzcUDxBD0qB2Tk0G/BLo964SEV
+ 0G9fd9Er6LdqkTsT7Qnb5Jh3HJtcw/plALZe7aNbk4e2k8V3s6yVJx3tBr9lZUOGAPTh eg== 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p63bvdb6u-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 15:33:27 -0800
+Received: from twshared33736.38.frc1.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Tue, 7 Mar 2023 15:33:26 -0800
+Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
+        id 472936C7C9BD; Tue,  7 Mar 2023 15:33:13 -0800 (PST)
+From:   Kui-Feng Lee <kuifeng@meta.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <martin.lau@linux.dev>,
+        <song@kernel.org>, <kernel-team@meta.com>, <andrii@kernel.org>,
+        <sdf@google.com>
+CC:     Kui-Feng Lee <kuifeng@meta.com>
+Subject: [PATCH bpf-next v4 5/9] libbpf: Create a bpf_link in bpf_map__attach_struct_ops().
+Date:   Tue, 7 Mar 2023 15:33:03 -0800
+Message-ID: <20230307233307.3626875-6-kuifeng@meta.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230307233307.3626875-1-kuifeng@meta.com>
+References: <20230307233307.3626875-1-kuifeng@meta.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: K-tkPzIPvDMOYNuc7NLsbSS377jnAsxs
+X-Proofpoint-ORIG-GUID: K-tkPzIPvDMOYNuc7NLsbSS377jnAsxs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-07_16,2023-03-07_01,2023-02-09_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use --filter option to set BPF filter for generic events other than the
-tracepoints or Intel PT.  The BPF program will check the sample data and
-filter according to the expression.
+bpf_map__attach_struct_ops() was creating a dummy bpf_link as a
+placeholder, but now it is constructing an authentic one by calling
+bpf_link_create() if the map has the BPF_F_LINK flag.
 
-For example, the below is the typical perf record for frequency mode.
-The sample period started from 1 and increased gradually.
+You can flag a struct_ops map with BPF_F_LINK by calling
+bpf_map__set_map_flags().
 
-$ sudo ./perf record -e cycles true
-$ sudo ./perf script
-       perf-exec 2272336 546683.916875:          1 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
-       perf-exec 2272336 546683.916892:          1 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
-       perf-exec 2272336 546683.916899:          3 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
-       perf-exec 2272336 546683.916905:         17 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
-       perf-exec 2272336 546683.916911:        100 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
-       perf-exec 2272336 546683.916917:        589 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
-       perf-exec 2272336 546683.916924:       3470 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
-       perf-exec 2272336 546683.916930:      20465 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
-            true 2272336 546683.916940:     119873 cycles:  ffffffff8283afdd perf_iterate_ctx+0x2d ([kernel.kallsyms])
-            true 2272336 546683.917003:     461349 cycles:  ffffffff82892517 vma_interval_tree_insert+0x37 ([kernel.kallsyms])
-            true 2272336 546683.917237:     635778 cycles:  ffffffff82a11400 security_mmap_file+0x20 ([kernel.kallsyms])
-
-When you add a BPF filter to get samples having periods greater than 1000,
-the output would look like below:
-
-$ sudo ./perf record -e cycles --filter 'period > 1000' true
-$ sudo ./perf script
-       perf-exec 2273949 546850.708501:       5029 cycles:  ffffffff826f9e25 finish_wait+0x5 ([kernel.kallsyms])
-       perf-exec 2273949 546850.708508:      32409 cycles:  ffffffff826f9e25 finish_wait+0x5 ([kernel.kallsyms])
-       perf-exec 2273949 546850.708526:     143369 cycles:  ffffffff82b4cdbf xas_start+0x5f ([kernel.kallsyms])
-       perf-exec 2273949 546850.708600:     372650 cycles:  ffffffff8286b8f7 __pagevec_lru_add+0x117 ([kernel.kallsyms])
-       perf-exec 2273949 546850.708791:     482953 cycles:  ffffffff829190de __mod_memcg_lruvec_state+0x4e ([kernel.kallsyms])
-            true 2273949 546850.709036:     501985 cycles:  ffffffff828add7c tlb_gather_mmu+0x4c ([kernel.kallsyms])
-            true 2273949 546850.709292:     503065 cycles:      7f2446d97c03 _dl_map_object_deps+0x973 (/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
 ---
- tools/perf/Documentation/perf-record.txt | 15 +++++++++++---
- tools/perf/util/bpf_counter.c            |  3 +--
- tools/perf/util/evlist.c                 | 25 +++++++++++++++++-------
- tools/perf/util/evsel.c                  |  2 ++
- tools/perf/util/parse-events.c           |  8 +++-----
- 5 files changed, 36 insertions(+), 17 deletions(-)
+ tools/lib/bpf/libbpf.c | 84 +++++++++++++++++++++++++++++++-----------
+ 1 file changed, 62 insertions(+), 22 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index ff815c2f67e8..9f7b43a3086d 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -119,9 +119,12 @@ OPTIONS
- 	  "perf report" to view group events together.
- 
- --filter=<filter>::
--        Event filter. This option should follow an event selector (-e) which
--	selects either tracepoint event(s) or a hardware trace PMU
--	(e.g. Intel PT or CoreSight).
-+	Event filter.  This option should follow an event selector (-e).
-+	If the event is a tracepoint, the filter string will be parsed by
-+	the kernel.  If the event is a hardware trace PMU (e.g. Intel PT
-+	or CoreSight), it'll be processed as an address filter.  Otherwise
-+	it means a general filter using BPF which can be applied for any
-+	kind of event.
- 
- 	- tracepoint filters
- 
-@@ -174,6 +177,12 @@ OPTIONS
- 	within a single mapping.  MMAP events (or /proc/<pid>/maps) can be
- 	examined to determine if that is a possibility.
- 
-+	- bpf filters
-+
-+	A BPF filter can access the sample data and make a decision based on the
-+	data.  Users need to set an appropriate sample type to use the BPF
-+	filter.
-+
- 	Multiple filters can be separated with space or comma.
- 
- --exclude-perf::
-diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index eeee899fcf34..0414385794ee 100644
---- a/tools/perf/util/bpf_counter.c
-+++ b/tools/perf/util/bpf_counter.c
-@@ -781,8 +781,7 @@ extern struct bpf_counter_ops bperf_cgrp_ops;
- 
- static inline bool bpf_counter_skip(struct evsel *evsel)
- {
--	return list_empty(&evsel->bpf_counter_list) &&
--		evsel->follower_skel == NULL;
-+	return evsel->bpf_counter_ops == NULL;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 35a698eb825d..a67efc3b3763 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -115,6 +115,7 @@ static const char * const attach_type_name[] =3D {
+ 	[BPF_SK_REUSEPORT_SELECT_OR_MIGRATE]	=3D "sk_reuseport_select_or_migrat=
+e",
+ 	[BPF_PERF_EVENT]		=3D "perf_event",
+ 	[BPF_TRACE_KPROBE_MULTI]	=3D "trace_kprobe_multi",
++	[BPF_STRUCT_OPS]		=3D "struct_ops",
+ };
+=20
+ static const char * const link_type_name[] =3D {
+@@ -7677,6 +7678,26 @@ static int bpf_object__resolve_externs(struct bpf_=
+object *obj,
+ 	return 0;
  }
- 
- int bpf_counter__install_pe(struct evsel *evsel, int cpu_map_idx, int fd)
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 817df2504a1e..648bddfb8441 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -31,6 +31,7 @@
- #include "util/evlist-hybrid.h"
- #include "util/pmu.h"
- #include "util/sample.h"
-+#include "util/bpf-filter.h"
- #include <signal.h>
- #include <unistd.h>
- #include <sched.h>
-@@ -1086,17 +1087,27 @@ int evlist__apply_filters(struct evlist *evlist, struct evsel **err_evsel)
- 	int err = 0;
- 
- 	evlist__for_each_entry(evlist, evsel) {
--		if (evsel->filter == NULL)
--			continue;
--
- 		/*
- 		 * filters only work for tracepoint event, which doesn't have cpu limit.
- 		 * So evlist and evsel should always be same.
- 		 */
--		err = perf_evsel__apply_filter(&evsel->core, evsel->filter);
--		if (err) {
--			*err_evsel = evsel;
--			break;
-+		if (evsel->filter) {
-+			err = perf_evsel__apply_filter(&evsel->core, evsel->filter);
-+			if (err) {
-+				*err_evsel = evsel;
-+				break;
-+			}
-+		}
+=20
++static void bpf_map_prepare_vdata(const struct bpf_map *map)
++{
++	struct bpf_struct_ops *st_ops;
++	__u32 i;
 +
-+		/*
-+		 * non-tracepoint events can have BPF filters.
-+		 */
-+		if (!list_empty(&evsel->bpf_filters)) {
-+			err = perf_bpf_filter__prepare(evsel);
-+			if (err) {
-+				*err_evsel = evsel;
-+				break;
-+			}
- 		}
++	st_ops =3D map->st_ops;
++	for (i =3D 0; i < btf_vlen(st_ops->type); i++) {
++		struct bpf_program *prog =3D st_ops->progs[i];
++		void *kern_data;
++		int prog_fd;
++
++		if (!prog)
++			continue;
++
++		prog_fd =3D bpf_program__fd(prog);
++		kern_data =3D st_ops->kern_vdata + st_ops->kern_func_off[i];
++		*(unsigned long *)kern_data =3D prog_fd;
++	}
++}
++
+ static int bpf_object_load(struct bpf_object *obj, int extra_log_level, =
+const char *target_btf_path)
+ {
+ 	int err, i;
+@@ -7728,6 +7749,10 @@ static int bpf_object_load(struct bpf_object *obj,=
+ int extra_log_level, const ch
+ 	btf__free(obj->btf_vmlinux);
+ 	obj->btf_vmlinux =3D NULL;
+=20
++	for (i =3D 0; i < obj->nr_maps; i++)
++		if (bpf_map__is_struct_ops(&obj->maps[i]))
++			bpf_map_prepare_vdata(&obj->maps[i]);
++
+ 	obj->loaded =3D true; /* doesn't matter if successfully or not */
+=20
+ 	if (err)
+@@ -11429,22 +11454,34 @@ struct bpf_link *bpf_program__attach(const stru=
+ct bpf_program *prog)
+ 	return link;
+ }
+=20
++struct bpf_link_struct_ops {
++	struct bpf_link link;
++	int map_fd;
++};
++
+ static int bpf_link__detach_struct_ops(struct bpf_link *link)
+ {
++	struct bpf_link_struct_ops *st_link;
+ 	__u32 zero =3D 0;
+=20
+-	if (bpf_map_delete_elem(link->fd, &zero))
+-		return -errno;
++	st_link =3D container_of(link, struct bpf_link_struct_ops, link);
+=20
+-	return 0;
++	if (st_link->map_fd < 0) {
++		/* Fake bpf_link */
++		if (bpf_map_delete_elem(link->fd, &zero))
++			return -errno;
++		return 0;
++	}
++
++	/* Doesn't support detaching. */
++	return -EOPNOTSUPP;
+ }
+=20
+ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+ {
+-	struct bpf_struct_ops *st_ops;
+-	struct bpf_link *link;
+-	__u32 i, zero =3D 0;
+-	int err;
++	struct bpf_link_struct_ops *link;
++	__u32 zero =3D 0;
++	int err, fd;
+=20
+ 	if (!bpf_map__is_struct_ops(map) || map->fd =3D=3D -1)
+ 		return libbpf_err_ptr(-EINVAL);
+@@ -11453,31 +11490,34 @@ struct bpf_link *bpf_map__attach_struct_ops(con=
+st struct bpf_map *map)
+ 	if (!link)
+ 		return libbpf_err_ptr(-EINVAL);
+=20
+-	st_ops =3D map->st_ops;
+-	for (i =3D 0; i < btf_vlen(st_ops->type); i++) {
+-		struct bpf_program *prog =3D st_ops->progs[i];
+-		void *kern_data;
+-		int prog_fd;
++	/* kern_vdata should be prepared during the loading phase. */
++	err =3D bpf_map_update_elem(map->fd, &zero, map->st_ops->kern_vdata, 0)=
+;
++	if (err) {
++		err =3D -errno;
++		free(link);
++		return libbpf_err_ptr(err);
++	}
+=20
+-		if (!prog)
+-			continue;
+=20
+-		prog_fd =3D bpf_program__fd(prog);
+-		kern_data =3D st_ops->kern_vdata + st_ops->kern_func_off[i];
+-		*(unsigned long *)kern_data =3D prog_fd;
++	if (!(map->def.map_flags & BPF_F_LINK)) {
++		/* Fake bpf_link */
++		link->link.fd =3D map->fd;
++		link->map_fd =3D -1;
++		link->link.detach =3D bpf_link__detach_struct_ops;
++		return &link->link;
  	}
- 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 51e8ce6edddc..cae624fde026 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -50,6 +50,7 @@
- #include "off_cpu.h"
- #include "../perf-sys.h"
- #include "util/parse-branch-options.h"
-+#include "util/bpf-filter.h"
- #include <internal/xyarray.h>
- #include <internal/lib.h>
- #include <internal/threadmap.h>
-@@ -1494,6 +1495,7 @@ void evsel__exit(struct evsel *evsel)
- 	assert(list_empty(&evsel->core.node));
- 	assert(evsel->evlist == NULL);
- 	bpf_counter__destroy(evsel);
-+	perf_bpf_filter__destroy(evsel);
- 	evsel__free_counts(evsel);
- 	perf_evsel__free_fd(&evsel->core);
- 	perf_evsel__free_id(&evsel->core);
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 0336ff27c15f..4371a2bb2564 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -27,6 +27,7 @@
- #include "perf.h"
- #include "util/parse-events-hybrid.h"
- #include "util/pmu-hybrid.h"
-+#include "util/bpf-filter.h"
- #include "tracepoint.h"
- #include "thread_map.h"
- 
-@@ -2537,11 +2538,8 @@ static int set_filter(struct evsel *evsel, const void *arg)
- 		perf_pmu__scan_file(pmu, "nr_addr_filters",
- 				    "%d", &nr_addr_filters);
- 
--	if (!nr_addr_filters) {
--		fprintf(stderr,
--			"This CPU does not support address filtering\n");
--		return -1;
--	}
-+	if (!nr_addr_filters)
-+		return perf_bpf_filter__parse(&evsel->bpf_filters, str);
- 
- 	if (evsel__append_addr_filter(evsel, str) < 0) {
- 		fprintf(stderr,
--- 
-2.40.0.rc1.284.g88254d51c5-goog
+=20
+-	err =3D bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+-	if (err) {
++	fd =3D bpf_link_create(map->fd, -1, BPF_STRUCT_OPS, NULL);
++	if (fd < 0) {
+ 		err =3D -errno;
+ 		free(link);
+ 		return libbpf_err_ptr(err);
+ 	}
+=20
+-	link->detach =3D bpf_link__detach_struct_ops;
+-	link->fd =3D map->fd;
++	link->link.fd =3D fd;
++	link->map_fd =3D map->fd;
+=20
+-	return link;
++	return &link->link;
+ }
+=20
+ typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_ev=
+ent_header *hdr,
+--=20
+2.34.1
 
