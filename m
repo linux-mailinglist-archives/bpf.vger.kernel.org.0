@@ -2,233 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C478A6AE9CF
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 18:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA136AE9E0
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 18:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbjCGR1x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 12:27:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
+        id S230098AbjCGR2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 12:28:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbjCGR1X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 12:27:23 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEE598E9B;
-        Tue,  7 Mar 2023 09:22:41 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id i34so55323266eda.7;
-        Tue, 07 Mar 2023 09:22:41 -0800 (PST)
+        with ESMTP id S231616AbjCGR2W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 12:28:22 -0500
+Received: from mail-ed1-x562.google.com (mail-ed1-x562.google.com [IPv6:2a00:1450:4864:20::562])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70AF8F719
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 09:23:25 -0800 (PST)
+Received: by mail-ed1-x562.google.com with SMTP id j11so35815420edq.4
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 09:23:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678209760;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QX9d0kgXQURozDFuIvakR/LVRy3evUuOWuMgoK4cT+g=;
-        b=KYbuBGMTm/O97tpiJqbC3UA2u2PmSRLd3BXaSJSzbOKrcpnC1hbia9Ulnm//kf17Ft
-         s2KgO/waG1KDDBCkfLL/wrk8Uh0HdZFjBRXin7uAB/V4FIyBmtsray2lwwUC17Ky8ROC
-         Ep8xBqg6KMq3//jUGyV2An9/LR3ZnM/cQCZR/nNQVIE/SfJ1nQfiG5Srbg/oxKZu1JjS
-         km655NJCbEEkyuwRIxRu7TohWZlQld2XN9Y42LRyFIBhgGKxlQf/5LEs1OpgjiZbruJI
-         kVQkLrQqZpo8j138Gde8dioPweszb88XCgR1gVeGr9bTd815i8FqfOeNubW4VJkLXn2D
-         BBQQ==
+        d=dectris.com; s=google; t=1678209804;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v0WrihSvBZy5nZ9MfM7JnuWMa4vHo4ZuK5g7GbSWl8w=;
+        b=QyFVmVNWgQEDjQOwJ5z2t57JuZSPwGXQwbbHhXq+E7dtKGjZB1wcmBE0w2p+E5eWLZ
+         uVEpNcY22q6qjkxnzFM+T8TSlS2JRJyhLZvsJ/Y2PcHLBoinWWWhi16WXg386q2vCxlM
+         Z2RDB3wdh3XY7m5yCehb6D5kPsH+9fQbFoyrs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678209760;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QX9d0kgXQURozDFuIvakR/LVRy3evUuOWuMgoK4cT+g=;
-        b=DHGEi6hgY2yKeOGa49RFxkJewvsr5rmgLxj3SxkGYOdQovtxQ/aLHGkVB8Y8PLjTlD
-         mK6rFALQL0MG5DB9So0VJ7Yx9/tKUbh5PRPy9+H+oHaaO4kR93/HvhoKcTRzHt/HFURc
-         GIvST1g+3Knl3SD1cnJHfn3Z0ciWwx290ORI7xswgX4tYfYdtxbY2hQSRitC/vHW1l2d
-         IuIZFgY94prPFqvBPSi7+dhRqIJCG/TMuQyNnOwH8cqZJZXnvsu0u8kURE2KP5WSqfXM
-         a0PtOaW4zM5vuRXPagJQOU2aFhoMe6pI3mChoPbWv7lANUoNdDy1Md7BpIbPPe3mWeax
-         Semw==
-X-Gm-Message-State: AO0yUKX35BhOBb/MJkty4NCutm4GtatLAv/N4ORxIwgshK94ZmNiNAex
-        Qi3JtuB7UX8IS53SatP9j+ECZDLvvtyu6LPIOQk=
-X-Google-Smtp-Source: AK7set9LgTZn0HgFblAoXaH39W4h78GaBj+CHvntuYnzSuYHhLZ8me8dMoTLncFVsvKsy8oNT+TV7qReuhARn94FJOE=
-X-Received: by 2002:a17:906:747:b0:87b:dce7:c245 with SMTP id
- z7-20020a170906074700b0087bdce7c245mr6851404ejb.3.1678209760095; Tue, 07 Mar
- 2023 09:22:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20230307220449.2933650-1-xukuohai@huaweicloud.com> <20230307220449.2933650-2-xukuohai@huaweicloud.com>
-In-Reply-To: <20230307220449.2933650-2-xukuohai@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 7 Mar 2023 09:22:08 -0800
-Message-ID: <CAADnVQLDmP0A7Pr7628nH8YSo3-xTjzAr5-x-0YCZvuS8xu09A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: update 32-bit bounds when the lower
- 32-bit value is not wrapping
-To:     Xu Kuohai <xukuohai@huaweicloud.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        d=1e100.net; s=20210112; t=1678209804;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v0WrihSvBZy5nZ9MfM7JnuWMa4vHo4ZuK5g7GbSWl8w=;
+        b=3afBOZv7T4FAVcyRXVPr7NgSMrNOJlQSiu09Hhe/hpOU8uE47uQhlefBYeswFYBpH/
+         x1aF8vfO1w/31xzCMBW4OUbIjTQP8AOkbneA63ftH1vdkX7wu1ZBgJdilMa1MoHUOMpg
+         vqI/qdvDLOxGtuJ9/icyfPbnJRewnBUDTTuKqpEV7BIIoZvaIZtbqIFcIPxv/i2QydAY
+         B2tXDkr/4I87vr7qEq0XFdiqPr9AaFwTMj4UYnuL4H3Tc73E0ceAjzyCr1P+T7F8FIX0
+         Frr6Z+uRPRuOJTX4xXLetAwgzmNRg21XYi1DlAxsDgx7CXBkgLDZf+l0u8anOp2VEIFw
+         2/eQ==
+X-Gm-Message-State: AO0yUKX0n1f+X5+0PvIqeGd0SpmSRQjYKjAmuqzSgEgjpAB9GMYHviV3
+        +Q6ecyOqU9+Lp8JLnNLx/7wmKMflSVcP10UIZkmgMiwXbisU
+X-Google-Smtp-Source: AK7set9dCAkVNVTJDe9iqtEHgWr837pBL4Nir8S+55ZCqRaNxELi0AqPVIEshb54d5MzztjqM16qns0BAAm5
+X-Received: by 2002:a17:906:af18:b0:8aa:c155:9233 with SMTP id lx24-20020a170906af1800b008aac1559233mr14825247ejb.26.1678209804282;
+        Tue, 07 Mar 2023 09:23:24 -0800 (PST)
+Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
+        by smtp-relay.gmail.com with ESMTPS id ho36-20020a1709070ea400b008e061d46f76sm3197935ejc.134.2023.03.07.09.23.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Mar 2023 09:23:24 -0800 (PST)
+X-Relaying-Domain: dectris.com
+From:   Kal Conley <kal.conley@dectris.com>
+To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] xsk: Add missing overflow check in xdp_umem_reg
+Date:   Tue,  7 Mar 2023 18:23:06 +0100
+Message-Id: <20230307172306.786657-1-kal.conley@dectris.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 7, 2023 at 1:05=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com>=
- wrote:
->
-> The following XDP prog is accepted by verifier.
->
-> 0: (61) r2 =3D *(u32 *)(r1 +0)          ; R2_w=3Dpkt(off=3D0,r=3D0,imm=3D=
-0)
-> 1: (61) r3 =3D *(u32 *)(r1 +4)          ; R3_w=3Dpkt_end(off=3D0,imm=3D0)
-> 2: (bf) r1 =3D r2
-> 3: (07) r1 +=3D 1
-> 4: (2d) if r1 > r3 goto pc+6
-> 5: (71) r1 =3D *(u8 *)(r2 +0)           ; R1_w=3Dscalar(umax=3D255,var_of=
-f=3D(0x0; 0xff))
-> 6: (b4) w0 =3D 0x7fffff10
-> 7: (0c) w1 +=3D w0                      ; R1_w=3Dscalar(umin=3D0x7fffff10=
-,umax=3D0x8000000f,var_off=3D(0x0; 0xffffffff))
-> 8: (b4) w0 =3D 0x80000000
-> 9: (04) w0 +=3D 1
-> 10: (ae) if w0 < w1 goto pc-2
-> 11: (b7) r0 =3D 0
-> 12: (95) exit
->
-> while the following 64-bit version is rejected.
->
-> 0: (61) r2 =3D *(u32 *)(r1 +0)          ; R2_w=3Dpkt(off=3D0,r=3D0,imm=3D=
-0)
-> 1: (61) r3 =3D *(u32 *)(r1 +4)          ; R3_w=3Dpkt_end(off=3D0,imm=3D0)
-> 2: (bf) r1 =3D r2
-> 3: (07) r1 +=3D 1
-> 4: (2d) if r1 > r3 goto pc+8
-> 5: (71) r1 =3D *(u8 *)(r2 +0)           ; R1_w=3Dscalar(umax=3D255,var_of=
-f=3D(0x0; 0xff))
-> 6: (18) r0 =3D 0x7fffffffffffff10
-> 8: (0f) r1 +=3D r0                      ; R1_w=3Dscalar(umin=3D0x7fffffff=
-ffffff10,umax=3D0x800000000000000f)
-> 9: (18) r0 =3D 0x8000000000000000
-> 11: (07) r0 +=3D 1
-> 12: (ad) if r0 < r1 goto pc-2
-> 13: (b7) r0 =3D 0
-> 14: (95) exit
+The number of chunks can overflow u32. Make sure to return -EINVAL on
+overflow.
 
-These two programs are not equivalent.
-Not clear how apples to oranges comparison explains anything.
+Fixes: bbff2f321a86 ("xsk: new descriptor addressing scheme")
+Signed-off-by: Kal Conley <kal.conley@dectris.com>
+---
+ net/xdp/xdp_umem.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-> The verifier log says:
->
-> [...]
->
-> from 12 to 11: R0_w=3D-9223372036854775794 R1=3Dscalar(umin=3D92233720368=
-54775823,umax=3D9223372036854775823,var_off=3D(0x8000000000000000; 0xffffff=
-ff))
-> 11: (07) r0 +=3D 1                      ; R0_w=3D-9223372036854775793
-> 12: (ad) if r0 < r1 goto pc-2         ; R0_w=3D-9223372036854775793 R1=3D=
-scalar(umin=3D9223372036854775823,umax=3D9223372036854775823,var_off=3D(0x8=
-000000000000000; 0xffffffff))
-> 13: safe
->
-> from 12 to 11: R0_w=3D-9223372036854775793 R1=3Dscalar(umin=3D92233720368=
-54775824,umax=3D9223372036854775823,var_off=3D(0x8000000000000000; 0xffffff=
-ff))
+diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+index 4681e8e8ad94..f1aa79018ce8 100644
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@ -150,10 +150,11 @@ static int xdp_umem_account_pages(struct xdp_umem *umem)
+ 
+ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+ {
+-	u32 npgs_rem, chunk_size = mr->chunk_size, headroom = mr->headroom;
++	u32 chunk_size = mr->chunk_size, headroom = mr->headroom;
+ 	bool unaligned_chunks = mr->flags & XDP_UMEM_UNALIGNED_CHUNK_FLAG;
+-	u64 npgs, addr = mr->addr, size = mr->len;
+-	unsigned int chunks, chunks_rem;
++	u64 addr = mr->addr, size = mr->len;
++	u64 chunks, npgs;
++	u32 chunks_rem, npgs_rem;
+ 	int err;
+ 
+ 	if (chunk_size < XDP_UMEM_MIN_CHUNK_SIZE || chunk_size > PAGE_SIZE) {
+@@ -188,8 +189,8 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+ 	if (npgs > U32_MAX)
+ 		return -EINVAL;
+ 
+-	chunks = (unsigned int)div_u64_rem(size, chunk_size, &chunks_rem);
+-	if (chunks == 0)
++	chunks = div_u64_rem(size, chunk_size, &chunks_rem);
++	if (chunks == 0 || chunks > U32_MAX)
+ 		return -EINVAL;
+ 
+ 	if (!unaligned_chunks && chunks_rem)
+@@ -201,7 +202,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+ 	umem->size = size;
+ 	umem->headroom = headroom;
+ 	umem->chunk_size = chunk_size;
+-	umem->chunks = chunks;
++	umem->chunks = (u32)chunks;
+ 	umem->npgs = (u32)npgs;
+ 	umem->pgs = NULL;
+ 	umem->user = NULL;
+-- 
+2.39.2
 
-First thing to debug is why umin is higher than umax.
-
-> 11: (07) r0 +=3D 1                      ; R0_w=3D-9223372036854775792
-> 12: (ad) if r0 < r1 goto pc-2         ; R0_w=3D-9223372036854775792 R1=3D=
-scalar(umin=3D9223372036854775824,umax=3D9223372036854775823,var_off=3D(0x8=
-000000000000000; 0xffffffff))
-> 13: safe
->
-> [...]
->
-> The loop crosses termination condition r0 =3D=3D r1.umax, and does not st=
-op.
->
-> The reason is that when the verifier enumerates to r1.umin =3D=3D r1.umax=
-, the value
-> 0x800000000000000f of r1.umin is greater than U32_MAX, so __reg_combine_6=
-4_into_32
-> sets the u32 range of r1 to [0, U32_MAX] instead of marking r1 as a const=
-ant,
-> making is_branch_taken() in check_cond_jmp_op() be skipped.
-
-And it's fine. The verifier is conservative.
-
->
-> To fix it, update 32-bit bounds when the lower 32-bit value is not wrappi=
-ng,
-> even if the 64-bit value is beyond the range of [0, U32_MAX] or [S32_MIN,=
- S32_MAX].
-
-That's not safe in general.
-
->
-> Signed-off-by: Xu Kuohai <xukuohai@huaweicloud.com>
-> ---
->  kernel/bpf/verifier.c | 27 +++++++++++----------------
->  1 file changed, 11 insertions(+), 16 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b2116ca78d9a..64c9ee3857ec 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -2013,26 +2013,21 @@ static void __reg_combine_32_into_64(struct bpf_r=
-eg_state *reg)
->         reg_bounds_sync(reg);
->  }
->
-> -static bool __reg64_bound_s32(s64 a)
-> -{
-> -       return a >=3D S32_MIN && a <=3D S32_MAX;
-> -}
-> -
-> -static bool __reg64_bound_u32(u64 a)
-> -{
-> -       return a >=3D U32_MIN && a <=3D U32_MAX;
-> -}
-> -
->  static void __reg_combine_64_into_32(struct bpf_reg_state *reg)
->  {
-> +       s64 smin =3D reg->smin_value;
-> +       s64 smax =3D reg->smax_value;
-> +       u64 umin =3D reg->umin_value;
-> +       u64 umax =3D reg->umax_value;
-> +
->         __mark_reg32_unbounded(reg);
-> -       if (__reg64_bound_s32(reg->smin_value) && __reg64_bound_s32(reg->=
-smax_value)) {
-> -               reg->s32_min_value =3D (s32)reg->smin_value;
-> -               reg->s32_max_value =3D (s32)reg->smax_value;
-> +       if ((u64)(smax - smin) <=3D (u64)U32_MAX && (s32)smin <=3D (s32)s=
-max) {
-> +               reg->s32_min_value =3D (s32)smin;
-> +               reg->s32_max_value =3D (s32)smax;
->         }
-> -       if (__reg64_bound_u32(reg->umin_value) && __reg64_bound_u32(reg->=
-umax_value)) {
-> -               reg->u32_min_value =3D (u32)reg->umin_value;
-> -               reg->u32_max_value =3D (u32)reg->umax_value;
-> +       if (umax - umin <=3D U32_MAX && (u32)umin <=3D (u32)umax) {
-> +               reg->u32_min_value =3D (u32)umin;
-> +               reg->u32_max_value =3D (u32)umax;
-
-This looks like a workaround for umin > umax issue.
-Please debug that instead.
-
->         }
->         reg_bounds_sync(reg);
->  }
-> --
-> 2.30.2
->
