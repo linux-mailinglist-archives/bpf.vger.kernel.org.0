@@ -2,76 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EF56AF763
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 22:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9B46AF80C
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 22:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbjCGVSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 16:18:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
+        id S231592AbjCGVxx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 7 Mar 2023 16:53:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbjCGVSi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 16:18:38 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F23099D65;
-        Tue,  7 Mar 2023 13:18:37 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id ec29so27021601edb.6;
-        Tue, 07 Mar 2023 13:18:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678223915;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bT9FiASK1DB4QbD0wXIRsqFb1t5m7/WMXyE4zipQBgs=;
-        b=XZRUHZNlOVWWar8OmQxc4l18Ns4Ay3zk1r5/iP0nGgvrTarrD1WtX4t7ZDUeAU+Kmn
-         y3gux0xqokeG1SF1sfRK8kH6Fs4eK/RB3DJDFJateRr3aPzJO/rdAB33D1DxBCmMvug1
-         2+t/rOZmMi9aCK9I8RXUjUslBeJtPNIejQlHCpUdxA/6eyfbUFM9w37VUA1uKho+LTWc
-         CC6uwViT8Xbi5YfZ5sxgklTr+38MZrlyneYHCqEEFrcAi/gzGISimm7UQJKVDiZYkpcn
-         8L4DjJ3sPxFDMWliMIZaLeEF/uitLcKCkMjVzBypmiqjyFBvfKhUi2jAGDUpLX9HbWYf
-         1h1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678223915;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bT9FiASK1DB4QbD0wXIRsqFb1t5m7/WMXyE4zipQBgs=;
-        b=F+lbrUxRtBxt4NZRLnH5iJsbhQQBfN120YX2ExOnMQXLymfoPa7sOm+LT2CmedHG+l
-         2PfaUHUrLPiGnuTB9ThcFu0I3miBbQGE1bNVF4rHCoLetN+l7XAU2ALTF/M97CGmaWJ5
-         ODN3XT9sD+5KIQEvdcAN2PB+iMeUxPsTshxQcQCFPADOIfjljIjRZ94AmXIwPAUcVWo3
-         yBgLJTpqxJk8m1/Zp7I23tDtWKjqxBYcbu7b4YQbngqY6JpZi019ORtphKV6dZM4BoZq
-         VeJSMpNfOWq785+ONJNGp/tk3sRyYJ2oVfDQoeOJr1cqaJA0qlFkZTfwnmFsajPdhTdJ
-         hFSg==
-X-Gm-Message-State: AO0yUKUj72GNPDC19RdZn+Cx8brRvDRrelUQpdn4jn/hZEBuAADeH/V8
-        FGYZ86zONEsMpSxhf30FhSm7zOgkVHudPLvKshqeQ1r2HzY=
-X-Google-Smtp-Source: AK7set+Se0iunflJpZCYnoGyjZ2gQplgrdTsGwS0vBTFJC6JhbRPQsBREQBt88sd9cj+dWd/Nc5Ban1xnd1TF7pS/ps=
-X-Received: by 2002:a17:906:948:b0:8b1:2898:2138 with SMTP id
- j8-20020a170906094800b008b128982138mr7898708ejd.3.1678223915375; Tue, 07 Mar
- 2023 13:18:35 -0800 (PST)
+        with ESMTP id S231589AbjCGVxq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 16:53:46 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D765899279
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 13:53:44 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 327KgVam014974
+        for <bpf@vger.kernel.org>; Tue, 7 Mar 2023 13:53:44 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p5t4f81ax-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 13:53:44 -0800
+Received: from twshared33736.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Tue, 7 Mar 2023 13:53:42 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 0DBB2298352FE; Tue,  7 Mar 2023 13:53:31 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: [PATCH v2 bpf-next 0/8] BPF open-coded iterators
+Date:   Tue, 7 Mar 2023 13:53:21 -0800
+Message-ID: <20230307215329.3895377-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <cover.1677526810.git.dxu@dxuuu.xyz> <20230227230338.awdzw57e4uzh4u7n@MacBook-Pro-6.local>
- <20230228015712.clq6kyrsd7rrklbz@kashmir.localdomain> <CAADnVQ+a633QyZgkbXfRiT_WRbPgr5n8RN0w=ntEkBHUeqRcbw@mail.gmail.com>
- <20230228231716.a5uwc4tdo3kjlkg7@aviatrix-fedora.tail1b9c7.ts.net>
- <CAADnVQKK+a_0effQW5qBSq1AXoQOJg5-79q3d1NWJ2Vv8SHvOw@mail.gmail.com>
- <20230307194801.mopwvidrkrybm7h5@kashmir.localdomain> <20230307201156.GF13059@breakpoint.cc>
-In-Reply-To: <20230307201156.GF13059@breakpoint.cc>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 7 Mar 2023 13:18:23 -0800
-Message-ID: <CAADnVQJXpkzic+v-TTn2o8hAu94S2ARq86DUamKiMEqmJ1zy+g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/8] Support defragmenting IPv(4|6) packets in BPF
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: IzRULT9U3vmWzlsVFteTLbzaD8vWDij0
+X-Proofpoint-ORIG-GUID: IzRULT9U3vmWzlsVFteTLbzaD8vWDij0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-07_16,2023-03-07_01,2023-02-09_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,39 +54,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 7, 2023 at 12:11=E2=80=AFPM Florian Westphal <fw@strlen.de> wro=
-te:
->
-> Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > From my reading (I'll run some tests later) it looks like netfilter
-> > will defrag all ipv4/ipv6 packets in any netns with conntrack enabled.
-> > It appears to do so in NF_INET_PRE_ROUTING.
->
-> Yes, and output.
->
-> > One thing we would need though are (probably kfunc) wrappers around
-> > nf_defrag_ipv4_enable() and nf_defrag_ipv6_enable() to ensure BPF progs
-> > are not transitively depending on defrag support from other netfilter
-> > modules.
-> >
-> > The exact mechanism would probably need some thinking, as the above
-> > functions kinda rely on module_init() and module_exit() semantics. We
-> > cannot make the prog bump the refcnt every time it runs -- it would
-> > overflow.  And it would be nice to automatically free the refcnt when
-> > prog is unloaded.
->
-> Probably add a flag attribute that is evaluated at BPF_LINK time, so
-> progs can say they need defrag enabled.  Same could be used to request
-> conntrack enablement.
->
-> Will need some glue on netfilter side to handle DEFRAG=3Dm, but we alread=
-y
-> have plenty of those.
+Add support for open-coded (aka inline) iterators in BPF world. This is a next
+evolution of gradually allowing more powerful and less restrictive looping and
+iteration capabilities to BPF programs.
 
-All makes perfect sense to me.
-It's cleaner than a special netdevice.
-ipv4_conntrack_defrag() is pretty neat. I didn't know about it.
-If we can reuse it as-is that would be ideal.
-Conceptually it fits perfectly.
-If we cannot reuse it (for whatever unlikely reason) I would
-argue that TC hook should gain similar functionality.
+We set up a framework for implementing all kinds of iterators (e.g., cgroup,
+task, file, etc, iterators), but this patch set only implements numbers
+iterator, which is used to implement ergonomic bpf_for() for-like construct
+(see patches #4-#5). We also add bpf_for_each(), which is a generic
+foreach-like construct that will work with any kind of open-coded iterator
+implementation, as long as we stick with bpf_iter_<type>_{new,next,destroy}()
+naming pattern (which we now enforce on the kernel side).
+
+Patch #1 is preparatory refactoring for easier way to check for special kfunc
+calls. Patch #2 is adding iterator kfunc registration and validation logic,
+which is mostly independent from the rest of open-coded iterator logic, so is
+separated out for easier reviewing.
+
+The meat of verifier-side logic is in patch #3. Patch #4 implements numbers
+iterator. I kept them separate to have clean reference for how to integrate
+new iterator types (now even simpler to do than in v1 of this patch set).
+Patch #5 adds bpf_for(), bpf_for_each(), and bpf_repeat() macros to
+bpf_misc.h, and also adds yet another pyperf test variant, now with bpf_for()
+loop. Patch #6 is verification tests, based on numbers iterator (as the only
+available right now). Patch #7 actually tests runtime behavior of numbers
+iterator.
+
+Finally, with changes in v2, it's possible and trivial to implement custom
+iterators completely in kernel modules, which we showcase and test by adding
+a simple iterator returning same number a given number of times to
+bpf_testmod. Patch #8 is where all this happens and is tested.
+
+Most of the relevant details are in corresponding commit messages or code
+comments.
+
+v1->v2:
+  - rebased on latest, dropping previously landed preparatory patches;
+  - each iterator type now have its own `struct bpf_iter_<type>` which allows
+    each iterator implementation to use exactly as much stack space as
+    necessary, allowing to avoid runtime allocations (Alexei);
+  - reworked how iterator kfuncs are defined, no verifier changes are required
+    when adding new iterator type;
+  - added bpf_testmod-based iterator implementation;
+  - address the rest of feedback, comments, commit message adjustment, etc.
+
+Cc: Tejun Heo <tj@kernel.org>
+
+Andrii Nakryiko (8):
+  bpf: factor out fetching basic kfunc metadata
+  bpf: add iterator kfuncs registration and validation logic
+  bpf: add support for open-coded iterator loops
+  bpf: implement number iterator
+  selftests/bpf: add bpf_for_each(), bpf_for(), and bpf_repeat() macros
+  selftests/bpf: add iterators tests
+  selftests/bpf: add number iterator tests
+  selftests/bpf: implement and test custom testmod_seq iterator
+
+ include/linux/bpf.h                           |   8 +-
+ include/linux/bpf_verifier.h                  |  27 +-
+ include/linux/btf.h                           |   4 +
+ include/uapi/linux/bpf.h                      |   8 +
+ kernel/bpf/bpf_iter.c                         |  70 ++
+ kernel/bpf/btf.c                              | 112 ++-
+ kernel/bpf/helpers.c                          |   3 +
+ kernel/bpf/verifier.c                         | 693 ++++++++++++++++-
+ tools/include/uapi/linux/bpf.h                |   8 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  42 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   6 +
+ .../bpf/prog_tests/bpf_verif_scale.c          |   6 +
+ .../testing/selftests/bpf/prog_tests/iters.c  | 106 +++
+ .../bpf/prog_tests/uprobe_autoattach.c        |   1 -
+ tools/testing/selftests/bpf/progs/bpf_misc.h  | 100 +++
+ tools/testing/selftests/bpf/progs/iters.c     | 720 ++++++++++++++++++
+ .../selftests/bpf/progs/iters_looping.c       | 163 ++++
+ tools/testing/selftests/bpf/progs/iters_num.c | 242 ++++++
+ .../selftests/bpf/progs/iters_state_safety.c  | 426 +++++++++++
+ .../selftests/bpf/progs/iters_testmod_seq.c   |  79 ++
+ tools/testing/selftests/bpf/progs/lsm.c       |   4 +-
+ tools/testing/selftests/bpf/progs/pyperf.h    |  14 +-
+ .../selftests/bpf/progs/pyperf600_iter.c      |   7 +
+ .../selftests/bpf/progs/pyperf600_nounroll.c  |   3 -
+ 24 files changed, 2796 insertions(+), 56 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/iters.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_looping.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_num.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_state_safety.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_testmod_seq.c
+ create mode 100644 tools/testing/selftests/bpf/progs/pyperf600_iter.c
+
+-- 
+2.34.1
+
