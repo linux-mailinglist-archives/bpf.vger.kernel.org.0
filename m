@@ -2,112 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB29A6AD352
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 01:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8786AD363
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 01:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjCGA0N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Mar 2023 19:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
+        id S229679AbjCGAgN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Mar 2023 19:36:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjCGA0M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Mar 2023 19:26:12 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5745C6487A;
-        Mon,  6 Mar 2023 16:25:48 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id cw28so46031739edb.5;
-        Mon, 06 Mar 2023 16:25:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678148747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+UR9FFBEa9VeA+oww67B6rFyUQmEe/PPppV1t7khWOE=;
-        b=YtCf/G8y5zoYuVqIEvqRe4vOcs9im83Qf4S3UIgvr0MXCvIpCCYbAOxj+sAVTGFnxC
-         Dmy1uYOKzKzzp0RcTA5Ca0HkzuJ+l2HRS9wTRbYYWCDRY92YGL8q1xWDhdzNO6eEhjqL
-         Qu5fdBDMNrPtKV7tnzGiBWFE2aP/AGd6GItdER1NdZUtD2RYGgxz2whfKm8w2X7/EHqZ
-         v5bjmCgGpQ8SABd7TqOWUTVld2b4nXnY/q1K+vPtCHHsIef/4jX/5gjJbPMT0cGYicAi
-         oc56BdeZN6ftDEPOk4QQaOH59ixEdSzoRsxAuDZuOMOz4CubTWIF+1ou4dXfikLr1dGa
-         FqqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678148747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+UR9FFBEa9VeA+oww67B6rFyUQmEe/PPppV1t7khWOE=;
-        b=IkuvzIcjBtDDQHrZQntnZuRB3L6mViEvhfzBz7iODyRkUxIO9vvf6/Qi9+38uENwq2
-         scPapW1OBooRdlO9kyPwvmWogNXFyaLilOpDGp9PNdYSTC5tVHtcIhqRtedmYqDLsr1/
-         KMTEV/xxULgiogJiqyGEqkxZ1gpPNsg/eKCNj3bVcheommQI/RJ9JbT6cIvlyquhJpQ/
-         gFkfg8eZjSe/htmOAKAX+t8OFTxAkSwZrt8L8aADA0W2avmG4dwYfX4jN3QYpuHyVSeT
-         CjlfpJwysuunzHVDQyNjFru5XgpoVV72le+72a60bZ9D74n6jRIEwrqP+sGXFfyR4FyN
-         bRhw==
-X-Gm-Message-State: AO0yUKVUn85h5A75lmnwKgjQpJj0GSSAHdsBwdd0AeC/ck9ZfgoD3e77
-        aUVcNJ7nSA98+QjRKaBgJOdvYMANbPGcT6cDyec=
-X-Google-Smtp-Source: AK7set9PO9Kg/5pL+9arPCWrc2LMan5SygAUNqKvXUnWpE2y0K1fIhjZpNIIy59E8TtdA7J7USobuxaQcjT3YXuB114=
-X-Received: by 2002:a17:907:20b8:b0:914:5659:593 with SMTP id
- pw24-20020a17090720b800b0091456590593mr1306665ejb.3.1678148746754; Mon, 06
- Mar 2023 16:25:46 -0800 (PST)
+        with ESMTP id S229638AbjCGAgM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Mar 2023 19:36:12 -0500
+Received: from out-57.mta1.migadu.com (out-57.mta1.migadu.com [95.215.58.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDBC5650A
+        for <bpf@vger.kernel.org>; Mon,  6 Mar 2023 16:36:10 -0800 (PST)
+Message-ID: <f2d21101-0522-0b9e-d9d4-9be31f80ad03@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1678149368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mSg0NaW9o0jS5J/j1qOSbCIZ/Leud97dR/rXFtllfXg=;
+        b=GR/bkCbElILxtjY/0b1YCo9K/nujNIVoBTRgS4ysz1k3nSzQruIf+PXASaJMDYRgzywNeo
+        Mj8fk1fcwWo2qUj+mSeLBQ6PtvWHNe1lu1WNJz545zIUgK2nKpdVWkPOoBx8KUDGMJKiUD
+        wx78x7NTkwSOTktDEpk+FUKEYT2Ct7o=
+Date:   Mon, 6 Mar 2023 16:36:04 -0800
 MIME-Version: 1.0
-References: <20230306115745.87401-1-kerneljasonxing@gmail.com> <ZAX98D91HvKrJBCO@corigine.com>
-In-Reply-To: <ZAX98D91HvKrJBCO@corigine.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Tue, 7 Mar 2023 08:25:10 +0800
-Message-ID: <CAL+tcoDAeTznH_EDdaM5dA4N5U-KhhnnvrxOCCAceMOdvGa+MA@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next] udp: introduce __sk_mem_schedule() usage
-To:     Simon Horman <simon.horman@corigine.com>
-Cc:     willemdebruijn.kernel@gmail.com, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 1/8] bpf: Maintain the refcount of struct_ops
+ maps directly.
+Content-Language: en-US
+To:     Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
+References: <20230303012122.852654-1-kuifeng@meta.com>
+ <20230303012122.852654-2-kuifeng@meta.com>
+ <39ab0ec2-2e8a-2de9-9603-5c5468ee9a1a@linux.dev>
+ <d0001e7c-1f51-4c92-0b6d-bd92615375b8@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <d0001e7c-1f51-4c92-0b6d-bd92615375b8@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 6, 2023 at 10:51=E2=80=AFPM Simon Horman <simon.horman@corigine=
-.com> wrote:
->
-> On Mon, Mar 06, 2023 at 07:57:45PM +0800, Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
-> >
-> > Keep the accounting schema consistent across different protocols
-> > with __sk_mem_schedule(). Besides, it adjusts a little bit on how
-> > to calculate forward allocated memory compared to before. After
-> > applied this patch, we could avoid receive path scheduling extra
-> > amount of memory.
-> >
-> > Link: https://lore.kernel.org/lkml/20230221110344.82818-1-kerneljasonxi=
-ng@gmail.com/
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> > V2:
-> > 1) change the title and body message
-> > 2) use __sk_mem_schedule() instead suggested by Paolo Abeni
-> > ---
-> >  net/ipv4/udp.c | 31 ++++++++++++++++++-------------
-> >  1 file changed, 18 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> > index 9592fe3e444a..21c99087110d 100644
-> > --- a/net/ipv4/udp.c
-> > +++ b/net/ipv4/udp.c
-> > @@ -1531,10 +1531,23 @@ static void busylock_release(spinlock_t *busy)
-> >               spin_unlock(busy);
-> >  }
-> >
-> > +static inline int udp_rmem_schedule(struct sock *sk, int size)
->
+On 3/6/23 3:54 PM, Kui-Feng Lee wrote:
+>>> @@ -646,6 +679,7 @@ const struct bpf_map_ops bpf_struct_ops_map_ops = {
+>>>       .map_alloc_check = bpf_struct_ops_map_alloc_check,
+>>>       .map_alloc = bpf_struct_ops_map_alloc,
+>>>       .map_free = bpf_struct_ops_map_free,
+>>> +    .map_free_rcu = bpf_struct_ops_map_free_rcu,
+>>
+>> just came to my mind. Instead of having a rcu callback, synchronize_rcu() can 
+>> be called in bpf_struct_ops_map_free(). Then the '.map_free_rcu' addition and 
+>> its related change is not needed.
+>>
+> 
+> synchronize_rcu() probably blocks other subsystem, right?
 
-> nit: I think it's best to drop the inline keyword and
->      let the compiler figure that out.
+.map_free is called from system_unbound_wq, so it can block.
 
-Thanks for the review. I'll do that in the v3 patch.
-
-Jason
