@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7E76AFA6E
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB9A6AFA7C
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjCGXdV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 18:33:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        id S230091AbjCGXdq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 18:33:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjCGXdS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 18:33:18 -0500
+        with ESMTP id S230000AbjCGXd1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 18:33:27 -0500
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430044ECCA
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 15:33:17 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 327KgDoX031247
-        for <bpf@vger.kernel.org>; Tue, 7 Mar 2023 15:33:16 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB0259408
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 15:33:24 -0800 (PST)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 327KgQQS009449
+        for <bpf@vger.kernel.org>; Tue, 7 Mar 2023 15:33:23 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=s2048-2021-q4;
- bh=JuUsaGjz0FOzsIY+YADBE00fZV81KJ1CbSmQq3049vc=;
- b=fDInSrXAg3loyphXJ26q5CoSYEpYs01ZzK7mVUB51QmO9s4/m3Loh+rAkJwXDcEiawQv
- fi2KbWNuDiCVv5UjW0XbrLXAZio8mP6YFL5oCDZTaFac4WCZ3TlwTP5QKvY0A9Rwgaa6
- 4vajzZyEuIsodK6HcqDPT2oNA4YhSMrWvzaaBmT2dYp0pNPLz4Y4bV7wyh3FOewAaZXW
- Ax++N8h9SZ1PYFbKA22+rPxw+yYjljQ6vts+sgJaBNwh5RQxJJigM/94eqOPI9QU8L4z
- iwcAHLkkTB7z3zHbCIyllJGZTmjOefd32eRQeGRRO6r6rwZdBy4daS1ky+MuUzJq4kjU MQ== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=s2048-2021-q4;
+ bh=omxQ7LnVOy8lsagfDf9t3UorjGLx1/CluUBe3tZ56ZA=;
+ b=I38h/zpbKKcWWM2nznB1tPg+kvRaNJglUPRBofOvCU9rEMqmRV6MPxMUAz+p4LeMiUyk
+ h20zFuhCeR3C/AufGS/beW8ioJIdamEw45hs6Vji8gXXuK0oZh9i88w1dNMcaUc/RuWa
+ 7Yzqo18cA+r26kIuFUunGdljOrWzY/567FdgQ3ZcHFFq5DXe75Eust8K1Pa+OVmTWtQP
+ jYGjkykwTCiasB5VvthwpCr+ZXZxKba1heQwCfKMQEjDm11erDNM9B2hqkctSqQ4LQ9R
+ iozOQ+1WBssTUg0JTwTHub27tJYvVUXzTApi+Te/lhVCT0r1j2uuF1TuweLoA3dpNSRE 0g== 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p63bvdb47-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p5vdpqhh6-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 15:33:16 -0800
-Received: from twshared21760.39.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 15:33:23 -0800
+Received: from twshared21760.39.frc1.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 7 Mar 2023 15:33:15 -0800
+ 15.1.2507.17; Tue, 7 Mar 2023 15:33:20 -0800
 Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 128B86C7C9B3; Tue,  7 Mar 2023 15:33:12 -0800 (PST)
+        id 1A7A36C7C9B5; Tue,  7 Mar 2023 15:33:13 -0800 (PST)
 From:   Kui-Feng Lee <kuifeng@meta.com>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <martin.lau@linux.dev>,
         <song@kernel.org>, <kernel-team@meta.com>, <andrii@kernel.org>,
         <sdf@google.com>
 CC:     Kui-Feng Lee <kuifeng@meta.com>
-Subject: [PATCH bpf-next v4 0/9] Transit between BPF TCP congestion controls.
-Date:   Tue, 7 Mar 2023 15:32:58 -0800
-Message-ID: <20230307233307.3626875-1-kuifeng@meta.com>
+Subject: [PATCH bpf-next v4 1/9] bpf: Retire the struct_ops map kvalue->refcnt.
+Date:   Tue, 7 Mar 2023 15:32:59 -0800
+Message-ID: <20230307233307.3626875-2-kuifeng@meta.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230307233307.3626875-1-kuifeng@meta.com>
+References: <20230307233307.3626875-1-kuifeng@meta.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: LNFs4XxkTcqF_nTrc4tjQKU_LXzYUsl-
-X-Proofpoint-ORIG-GUID: LNFs4XxkTcqF_nTrc4tjQKU_LXzYUsl-
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-GUID: L44etay9ylZZkA1T36Wg_IuzADfk2j1x
+X-Proofpoint-ORIG-GUID: L44etay9ylZZkA1T36Wg_IuzADfk2j1x
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-07_16,2023-03-07_01,2023-02-09_01
@@ -65,109 +66,199 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Major changes:
+We have replaced kvalue-refcnt with synchronize_rcu() to wait for an
+RCU grace period.
 
- - Create bpf_links in the kernel for BPF struct_ops to register and
-   unregister it.
+Maintenance of kvalue->refcnt was a complicated task, as we had to
+simultaneously keep track of two reference counts: one for the
+reference count of bpf_map. When the kvalue->refcnt reaches zero, we
+also have to reduce the reference count on bpf_map - yet these steps
+are not performed in an atomic manner and require us to be vigilant
+when managing them. By eliminating kvalue->refcnt, we can make our
+maintenance more straightforward as the refcount of bpf_map is now
+solely managed!
 
- - Enables switching between implementations of bpf-tcp-cc under a
-   name instantly by replacing the backing struct_ops map of a
-   bpf_link.
+To prevent the trampoline image of a struct_ops from being released
+while it is still in use, we wait for an RCU grace period. The
+setsockopt(TCP_CONGESTION, "...") command allows you to change your
+socket's congestion control algorithm and can result in releasing the
+old struct_ops implementation. Moreover, since this function is
+exposed through bpf_setsockopt(), it may be accessed by BPF programs
+as well. To ensure that the trampoline image belonging to struct_op
+can be safely called while its method is in use, struct_ops is
+safeguarded with rcu_read_lock(). Doing so prevents any destruction of
+the associated images before returning from a trampoline and requires
+us to wait for an RCU grace period.
 
-Previously, BPF struct_ops didn't go off, as even when the user
-program creating it was terminated, none of these ever were pinned.
-For instance, the TCP congestion control subsystem indirectly
-maintains a reference count on the struct_ops of any registered BPF
-implemented algorithm. Thus, the algorithm won't be deactivated until
-someone deliberately unregisters it.  For compatibility with other BPF
-programs, bpf_links have been created to work in coordination with
-struct_ops maps. This ensures that the registration and unregistration
-of these respective maps is carried out at the start and end of the
-bpf_link.
+Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+---
+ include/linux/bpf.h         |  2 ++
+ kernel/bpf/bpf_struct_ops.c | 60 ++++++++++++++++++-------------------
+ kernel/bpf/syscall.c        |  2 +-
+ 3 files changed, 32 insertions(+), 32 deletions(-)
 
-We also faced complications when attempting to replace an existing TCP
-congestion control algorithm with a new implementation on the fly. A
-struct_ops map was used to register a TCP congestion control algorithm
-with a unique name.  We had to either register the alternative
-implementation with a new name and move over or unregister the current
-one before being able to reregistration with the same name.  To fix
-this problem, we can an option to migrate the registration of the
-algorithm from struct_ops maps to bpf_links. By modifying the backing
-map of a bpf_link, it suddenly becomes possible to replace an existing
-TCP congestion control algorithm with ease.
-
-The major differences from v3:
-
- - Remove bpf_struct_ops_map_free_rcu(), and use synchronize_rcu().
-
- - Improve the commit log of the part 1.
-
- - Before transitioning to the READY state, we conduct a value check
-   to ensure that struct_ops can be successfully utilized and links
-   created later.
-
-The major differences from v2:
-
- - Simplify states
-
-   - Remove TOBEUNREG.
-
-   - Rename UNREG to READY.
-
- - Stop using the refcnt of the kvalue of a struct_ops. Explicitly
-   increase and decrease the refcount of struct_ops.
-
- - Prepare kernel vdata during the load phase of libbpf.
-
-The major differences from v1:
-
- - Added bpf_struct_ops_link to replace the previous union-based
-   approach.
-
- - Added UNREG and TOBEUNREG to the state of bpf_struct_ops_map.
-
-   - bpf_struct_ops_transit_state() maintains state transitions.
-
- - Fixed synchronization issue.
-
- - Prepare kernel vdata of struct_ops during the loading phase of
-   bpf_object.
-
- - Merged previous patch 3 to patch 1.
-
-v3: https://lore.kernel.org/all/20230303012122.852654-1-kuifeng@meta.com/
-v2: https://lore.kernel.org/bpf/20230223011238.12313-1-kuifeng@meta.com/
-v1: https://lore.kernel.org/bpf/20230214221718.503964-1-kuifeng@meta.com/
-
-Kui-Feng Lee (9):
-  bpf: Retire the struct_ops map kvalue->refcnt.
-  bpf: Create links for BPF struct_ops maps.
-  net: Update an existing TCP congestion control algorithm.
-  bpf: Validate kdata of a struct_ops before transiting to READY.
-  libbpf: Create a bpf_link in bpf_map__attach_struct_ops().
-  bpf: Update the struct_ops of a bpf_link.
-  libbpf: Update a bpf_link with another struct_ops.
-  libbpf: Use .struct_ops.link section to indicate a struct_ops with a
-    link.
-  selftests/bpf: Test switching TCP Congestion Control algorithms.
-
- include/linux/bpf.h                           |  16 ++
- include/net/tcp.h                             |   3 +
- include/uapi/linux/bpf.h                      |  20 +-
- kernel/bpf/bpf_struct_ops.c                   | 218 +++++++++++++++---
- kernel/bpf/syscall.c                          |  68 ++++--
- net/bpf/bpf_dummy_struct_ops.c                |   6 +
- net/ipv4/bpf_tcp_ca.c                         |  14 +-
- net/ipv4/tcp_cong.c                           |  57 ++++-
- tools/include/uapi/linux/bpf.h                |  19 +-
- tools/lib/bpf/libbpf.c                        | 184 ++++++++++++---
- tools/lib/bpf/libbpf.h                        |   1 +
- tools/lib/bpf/libbpf.map                      |   2 +
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  38 +++
- .../selftests/bpf/progs/tcp_ca_update.c       |  62 +++++
- 14 files changed, 616 insertions(+), 92 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/tcp_ca_update.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 8b5d0b4c4ada..fc47c756455e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -78,6 +78,7 @@ struct bpf_map_ops {
+ 	struct bpf_map *(*map_alloc)(union bpf_attr *attr);
+ 	void (*map_release)(struct bpf_map *map, struct file *map_file);
+ 	void (*map_free)(struct bpf_map *map);
++	void (*map_free_rcu)(struct bpf_map *map);
+ 	int (*map_get_next_key)(struct bpf_map *map, void *key, void *next_key)=
+;
+ 	void (*map_release_uref)(struct bpf_map *map);
+ 	void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void *key);
+@@ -1869,6 +1870,7 @@ struct bpf_map *bpf_map_get_with_uref(u32 ufd);
+ struct bpf_map *__bpf_map_get(struct fd f);
+ void bpf_map_inc(struct bpf_map *map);
+ void bpf_map_inc_with_uref(struct bpf_map *map);
++struct bpf_map *__bpf_map_inc_not_zero(struct bpf_map *map, bool uref);
+ struct bpf_map * __must_check bpf_map_inc_not_zero(struct bpf_map *map);
+ void bpf_map_put_with_uref(struct bpf_map *map);
+ void bpf_map_put(struct bpf_map *map);
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index ece9870cab68..815b5e1cf325 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -58,6 +58,8 @@ struct bpf_struct_ops_map {
+ 	struct bpf_struct_ops_value kvalue;
+ };
+=20
++static DEFINE_MUTEX(update_mutex);
++
+ #define VALUE_PREFIX "bpf_struct_ops_"
+ #define VALUE_PREFIX_LEN (sizeof(VALUE_PREFIX) - 1)
+=20
+@@ -249,6 +251,7 @@ int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map=
+ *map, void *key,
+ 	struct bpf_struct_ops_map *st_map =3D (struct bpf_struct_ops_map *)map;
+ 	struct bpf_struct_ops_value *uvalue, *kvalue;
+ 	enum bpf_struct_ops_state state;
++	s64 refcnt;
+=20
+ 	if (unlikely(*(u32 *)key !=3D 0))
+ 		return -ENOENT;
+@@ -267,7 +270,9 @@ int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map=
+ *map, void *key,
+ 	uvalue =3D value;
+ 	memcpy(uvalue, st_map->uvalue, map->value_size);
+ 	uvalue->state =3D state;
+-	refcount_set(&uvalue->refcnt, refcount_read(&kvalue->refcnt));
++
++	refcnt =3D atomic64_read(&map->refcnt) - atomic64_read(&map->usercnt);
++	refcount_set(&uvalue->refcnt, max_t(s64, refcnt, 0));
+=20
+ 	return 0;
+ }
+@@ -491,7 +496,6 @@ static int bpf_struct_ops_map_update_elem(struct bpf_=
+map *map, void *key,
+ 		*(unsigned long *)(udata + moff) =3D prog->aux->id;
+ 	}
+=20
+-	refcount_set(&kvalue->refcnt, 1);
+ 	bpf_map_inc(map);
+=20
+ 	set_memory_rox((long)st_map->image, 1);
+@@ -536,8 +540,7 @@ static int bpf_struct_ops_map_delete_elem(struct bpf_=
+map *map, void *key)
+ 	switch (prev_state) {
+ 	case BPF_STRUCT_OPS_STATE_INUSE:
+ 		st_map->st_ops->unreg(&st_map->kvalue.data);
+-		if (refcount_dec_and_test(&st_map->kvalue.refcnt))
+-			bpf_map_put(map);
++		bpf_map_put(map);
+ 		return 0;
+ 	case BPF_STRUCT_OPS_STATE_TOBEFREE:
+ 		return -EINPROGRESS;
+@@ -574,6 +577,19 @@ static void bpf_struct_ops_map_free(struct bpf_map *=
+map)
+ {
+ 	struct bpf_struct_ops_map *st_map =3D (struct bpf_struct_ops_map *)map;
+=20
++	/* The struct_ops's function may switch to another struct_ops.
++	 *
++	 * For example, bpf_tcp_cc_x->init() may switch to
++	 * another tcp_cc_y by calling
++	 * setsockopt(TCP_CONGESTION, "tcp_cc_y").
++	 * During the switch,  bpf_struct_ops_put(tcp_cc_x) is called
++	 * and its refcount may reach 0 which then free its
++	 * trampoline image while tcp_cc_x is still running.
++	 *
++	 * Thus, a rcu grace period is needed here.
++	 */
++	synchronize_rcu();
++
+ 	if (st_map->links)
+ 		bpf_struct_ops_map_put_progs(st_map);
+ 	bpf_map_area_free(st_map->links);
+@@ -660,41 +676,23 @@ const struct bpf_map_ops bpf_struct_ops_map_ops =3D=
+ {
+ bool bpf_struct_ops_get(const void *kdata)
+ {
+ 	struct bpf_struct_ops_value *kvalue;
++	struct bpf_struct_ops_map *st_map;
++	struct bpf_map *map;
+=20
+ 	kvalue =3D container_of(kdata, struct bpf_struct_ops_value, data);
++	st_map =3D container_of(kvalue, struct bpf_struct_ops_map, kvalue);
+=20
+-	return refcount_inc_not_zero(&kvalue->refcnt);
+-}
+-
+-static void bpf_struct_ops_put_rcu(struct rcu_head *head)
+-{
+-	struct bpf_struct_ops_map *st_map;
+-
+-	st_map =3D container_of(head, struct bpf_struct_ops_map, rcu);
+-	bpf_map_put(&st_map->map);
++	map =3D __bpf_map_inc_not_zero(&st_map->map, false);
++	return !IS_ERR(map);
+ }
+=20
+ void bpf_struct_ops_put(const void *kdata)
+ {
+ 	struct bpf_struct_ops_value *kvalue;
++	struct bpf_struct_ops_map *st_map;
+=20
+ 	kvalue =3D container_of(kdata, struct bpf_struct_ops_value, data);
+-	if (refcount_dec_and_test(&kvalue->refcnt)) {
+-		struct bpf_struct_ops_map *st_map;
+-
+-		st_map =3D container_of(kvalue, struct bpf_struct_ops_map,
+-				      kvalue);
+-		/* The struct_ops's function may switch to another struct_ops.
+-		 *
+-		 * For example, bpf_tcp_cc_x->init() may switch to
+-		 * another tcp_cc_y by calling
+-		 * setsockopt(TCP_CONGESTION, "tcp_cc_y").
+-		 * During the switch,  bpf_struct_ops_put(tcp_cc_x) is called
+-		 * and its map->refcnt may reach 0 which then free its
+-		 * trampoline image while tcp_cc_x is still running.
+-		 *
+-		 * Thus, a rcu grace period is needed here.
+-		 */
+-		call_rcu(&st_map->rcu, bpf_struct_ops_put_rcu);
+-	}
++	st_map =3D container_of(kvalue, struct bpf_struct_ops_map, kvalue);
++
++	bpf_map_put(&st_map->map);
+ }
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index cda8d00f3762..6351d50e3d8b 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1276,7 +1276,7 @@ struct bpf_map *bpf_map_get_with_uref(u32 ufd)
+ }
+=20
+ /* map_idr_lock should have been held */
+-static struct bpf_map *__bpf_map_inc_not_zero(struct bpf_map *map, bool =
+uref)
++struct bpf_map *__bpf_map_inc_not_zero(struct bpf_map *map, bool uref)
+ {
+ 	int refold;
+=20
 --=20
 2.34.1
 
