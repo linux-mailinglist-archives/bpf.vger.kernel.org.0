@@ -2,152 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8F36ADB94
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 11:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 003806ADBB8
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 11:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbjCGKQp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 05:16:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        id S230107AbjCGKWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 05:22:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjCGKQo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 05:16:44 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E2E136D0
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 02:16:42 -0800 (PST)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32783sem023573;
-        Tue, 7 Mar 2023 10:16:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=yPKMrAlmyiukTYcbEeu9wFX+hkPOzCju8mwd0sOvVdU=;
- b=Lcq64/LymL9ilADEk2SbA7i2eIXiUg7M4kgI4LLXOYwKdPq7jkwVoWqrzQdz6VryQ5OJ
- abDGTdOBd4Q8BogPVyHXRTxQCh29mjG7OxoefHNb+sO2XGMkPLYwlKwViny73akaAIKa
- 8ekVpgEq+ZfpI3HRjfxCN5zWenBNloJpYUBP2LDXR14K7gP8dO/+hd536TuFi25+h28A
- iXbDUowcLm48pBs5ioPa28yLEJ1Ae4abLuFpA5tRS/jP9Za3JIHwnHEy3UoDlt9eXlTY
- XJBYxldURM5LPzn1ZCHsA8kJFNAgkWd+mCjFE4UtHyPEg5rhWGc38RzFsdVjdxjBJ/wW 0g== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3p416wn5b9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Mar 2023 10:16:41 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 32787ExA025077;
-        Tue, 7 Mar 2023 10:16:40 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3p4ttjshv6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Mar 2023 10:16:40 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hNBCUGXkH/I4ZYMJZxq0IE5sELiyK6GSsS/JUkKmxV7zUOKoeYoAE18euj/M+PPMgL4Ntvl22zzZTxEYFjzEGnWtnZlUFwUH4yk1Gs6qDeGGy+DU5x6EqX45/cmytDjDVfD5yeHnrq1Z9y376v5nt9jThtbQxZHuVngnRymsjhcaTqIIIgUYxNbfUJ91iUMzOaSBrFcgwwHA551UNU9MwIOCxUzJADDR4zcl6wMNLzP9pQPntGBVRz5UuDMjgkGRp7QeYE5gqmEJXrFAudTK645mFC14jOCUnT52scf/40iME7apYKArtbQ5VUgYFRvLDwYMgA5IsuAXCGMy8R+ztA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yPKMrAlmyiukTYcbEeu9wFX+hkPOzCju8mwd0sOvVdU=;
- b=nOb7we0cS/xcPvZofn7CdpIdv7IhABdkUpVLKkrpasFwTz5bSif6qfLjbiprjlHRAo7lKNt0jdFHX1SyVfG9b2CNBWfR+K8mIkpdQxMQVnK/zR98YM9xZOQApHHVj2xV+Z7ucT/hzrMqM66Z+zSp8xLannUkVPN8wahgoM7JtUIRYml803AW3FI7cu67ZTLkl6qN1AoNzLOE3m6Dzf5Cot/AoJeSkaCgWyN5rCud1RWJktSxU3u2QObvNx0YvkpmTBlQm6oksAeBJ5z2L00UpEkAtCCLGgDZMXBGUVQmf1zKsWZuIO/VvXfFJLWicaTtrvy9+WKVFyHexnblVQJ0oQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S230157AbjCGKWj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 05:22:39 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2869B6A437;
+        Tue,  7 Mar 2023 02:22:36 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id j11so30673474edq.4;
+        Tue, 07 Mar 2023 02:22:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yPKMrAlmyiukTYcbEeu9wFX+hkPOzCju8mwd0sOvVdU=;
- b=EiVw34IPyNXiEOE8OkdBFVWV0NBb8tuwe/oYWtqDcwK9aaknUfkzabeH/qaIJgR48UipVznCtTmXIwJBuk5/h3VC2yCwIQWRbTH43EbR2FEKYqsv8GDN4nBhhoIpAVchcVgxueC5knYRkPmC1WIPusl/f+9pMren7E3ebufyzDY=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by MW4PR10MB6631.namprd10.prod.outlook.com (2603:10b6:303:22c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.28; Tue, 7 Mar
- 2023 10:16:38 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::b7a:f60c:7239:80a2]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::b7a:f60c:7239:80a2%7]) with mapi id 15.20.6156.029; Tue, 7 Mar 2023
- 10:16:38 +0000
-Subject: Re: Selectively delay loading of eBPF program.
-To:     Dominic <d.dropify@gmail.com>, bpf@vger.kernel.org
-References: <CAJxriS2W9S7xQC-gVPSAAkfim5EBfQhKBSLzYaq6EyOAWG-sCQ@mail.gmail.com>
-From:   Alan Maguire <alan.maguire@oracle.com>
-Message-ID: <d62f77e9-bd0d-9461-63e5-f9dfb6d19a5d@oracle.com>
-Date:   Tue, 7 Mar 2023 10:16:34 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-In-Reply-To: <CAJxriS2W9S7xQC-gVPSAAkfim5EBfQhKBSLzYaq6EyOAWG-sCQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO3P123CA0020.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:388::17) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+        d=gmail.com; s=20210112; t=1678184555;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=W7I8VYoRHwVvwNfsff/RYaOA483668vWgpIglz/Ab4k=;
+        b=TfmOXaPll0mE4BY6gbG2M32Su6Q+9Em7OgkOEvFezViwrKjuK3Mfkjs9fh3gBbyVtN
+         j55PR4jkiy9jtZWN7XMZjR3wVy6rAE4LbG3QY+DSNeNqD3UCDHYftUd6gWjrp/T9FSdf
+         yg3tg5RuLSVOkiIHm0/QUb6DecGOQtlETkq/nNxlKDaGJpZQ1KA1zORbenhdYfZYJAo5
+         QGpZc06ARD5LeHq1WNLPtBjGa0AFnKMIVL/EtCKwM5udQzcGm3se9CyBZmFiwXWxUbHd
+         6Y3NGW7M6S5uC61q6RGluWCSPvmGSk6b/mpTmZcDwvIlsuwMldT/J6J0jNuSjboHQp1O
+         DHmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678184555;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W7I8VYoRHwVvwNfsff/RYaOA483668vWgpIglz/Ab4k=;
+        b=VgkOu1cmyVvesknuEDzldSJjklIJSyPmSX7Fhc5zlDKBLpjbeo8tJU0keuqEydD47m
+         Vg4EPrOltGHtE2Cgewdaedup6787S2pE/tXzbhYf1uqmD5B594/BqBUaLl5XoujRA0Y3
+         aXXF9MdounmX9WT7z6X/HK+q95Wn3IaerlK9W63iiYZyTFpO5JfdY5W8T6iJG+nJBQfX
+         P9pZXyftUSYS8CJIKYUAoYBzUiRe0ocBkNPF0NLiUYWuB7rYF8bzGJV6a6aEEvmY4ts3
+         09DxljsBTfGTWSxOPB0RBqoc9WLAJK0vb0uL3feocKzG0eZtJKjSzB+y2VJasItGjwLg
+         JaPg==
+X-Gm-Message-State: AO0yUKU0Riixc8XVzhgqfpBWMVlf1NObmnQPJR5MRaJcm98bFdC2vVkI
+        OMbFK/XJzif70rbi/R/S0yc=
+X-Google-Smtp-Source: AK7set/p1TAfnwSaiXp+HnQFFWGQB0OhgFX7Kj3C0KHqxeuj6MEvmR1D4l/+N904HtYDpVfyEElhlg==
+X-Received: by 2002:aa7:d84f:0:b0:4ae:eb0f:4273 with SMTP id f15-20020aa7d84f000000b004aeeb0f4273mr13720545eds.15.1678184555112;
+        Tue, 07 Mar 2023 02:22:35 -0800 (PST)
+Received: from localhost ([2001:620:618:580:2:80b3:0:830])
+        by smtp.gmail.com with ESMTPSA id y26-20020a170906519a00b008e53874f8d8sm5864061ejk.180.2023.03.07.02.22.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Mar 2023 02:22:34 -0800 (PST)
+Date:   Tue, 7 Mar 2023 11:22:33 +0100
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+Subject: Re: [PATCH v13 bpf-next 09/10] bpf: Add bpf_dynptr_slice and
+ bpf_dynptr_slice_rdwr
+Message-ID: <20230307102233.bemr47x625ity26z@apollo>
+References: <20230301154953.641654-1-joannelkoong@gmail.com>
+ <20230301154953.641654-10-joannelkoong@gmail.com>
+ <20230306071006.73t5vtmxrsykw4zu@apollo>
+ <CAADnVQJ=wzztviB73jBy3+OYxUKhAX_jTGpS8Xv45vUVTDY-ZA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|MW4PR10MB6631:EE_
-X-MS-Office365-Filtering-Correlation-Id: 17e3cb25-3bf7-47f6-f657-08db1ef509ac
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ee50slxSRyFrafiAkHVyCYgYs1o/9iaTnLRap1x1T2PpJGZOgrAITXIIcr3tXhg3DWSgBqfFFVNpmfuJsvNI/58u9+Ew0CeLHA/EN6flmu2FWp1LVShrVQpFobabXICzolgoEifRwlY6dV7lNrMdPoGjH4V54/aZ8+5hY25TbmBgn4l7j/hG/MG0qVJaF4M4H860SprZZQt7jAE92FANt8hMAzQ0qO42Y7968wp+y67HELSZdWmhI0/YWFq5xCiKbx9mu4zWtgf3MsB9NPhCnlfMnGfR73BWfPI5nMlCC7KzQYsAjYwi92CfF2D7VEEYM3Pao5UY0RiusMapvMJS3SsWqSr3lLgKwLIQS0T5TYG8WHigcgqHyfW95zrnmPYet80lBV38lQ92ZSnIqlK2tcXBqPwz9xXjbHljcaDVHxToPL7NYsxkVIEqiE5CIzqLY/gqxHeq9x90DIHON1uF2Y9CtMLxJC3w0xa1ybml99vxN2JFFh4EwXxT2y9uIp+weHetfCFIz9TrueeOS9IRNN8OAhXOnzM+JDBF/xNP+MadJnCfit+pN64DmUluIxUTr/mV1ZkYwMwmMGt4ptLAzhtwursmv5KKtB812K/XjGdEXph1BMgoinSw4WM3bvLzYiO9GYESq7kbbf6Ag3BgXDRTqnUkrHXnSi7BHZlvzQazIEqcwWpZjG7d6EIo1IlvdCxx/TsM0Oi1m/bpC+G1reucA3/GjM6i1seoG6/5dvI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(366004)(39860400002)(396003)(346002)(376002)(136003)(451199018)(86362001)(31696002)(38100700002)(36756003)(44832011)(2906002)(5660300002)(66556008)(8936002)(66946007)(66476007)(8676002)(41300700001)(53546011)(2616005)(186003)(6512007)(83380400001)(316002)(478600001)(6506007)(6486002)(6666004)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0tkNTh2ZzBOd3plcmdyVG9oNS80N0pLSXlCb1dwK2s2RGpwL2dIOWdWcWJG?=
- =?utf-8?B?US9YS2RBZjNzUFhCL3ZIZ2t6REw0TXpHY1paNTlYZFhYRUp2b3FPREpFUUVt?=
- =?utf-8?B?Ly82TC90ZXBuaXNWNmpnN2tmWlVNWnQvanJOZ2liQWd6ZWs1NlVkMmt5a3Mr?=
- =?utf-8?B?cWUwZDVheTg2MC9MaXhrTGZvYUVvNEZFQUpDWTVneUpLdzljZ05LYnZPamph?=
- =?utf-8?B?ZFdraWViYkZvdEVjSFJhUGIxeDhHdDBiQ3ovTmVoV2s3aFVnUzBVS29JQm80?=
- =?utf-8?B?QW1SaTc5ckVSaHNWTUV5VHZTdDhCclBBeS9GRWYvQkVLWllLYkl1cnFzTjNC?=
- =?utf-8?B?dGtwY3JuNXg5Mk92b01MZFRFRlpob09GZVBMcW5DeTdudEZ3NENaKzZlY3JU?=
- =?utf-8?B?T0ZEUEdxWVM0YlNQVjkxdWxxdVo0YUFxM3Jab2YzVndLZlhEZDBGYmE3T29y?=
- =?utf-8?B?ckFzam9ScnIvOVZMS0ZyRk5WYks2WXpNNEVlMFBVaTcyWWRWcHZKaEdYY3N4?=
- =?utf-8?B?aEwzUThtQTlYL3RyVy9mR2paTzAzQ04rWW42QjJBR2tpV1B0bHpMcHc4Mlpw?=
- =?utf-8?B?ZmxpWjVYMUZSbzdvdFFWNnpPUGRtVmRNUDF2TGJhaTBDRjVKcHBhZkQ0NllQ?=
- =?utf-8?B?aStPRGFFbkJ5RXFMODNvU0lUN3ZNN2JjK2FheExyMWJrNDlsYVArQ0FxR3RC?=
- =?utf-8?B?UVhJQW42d0dsRDRjaDFNT2dXWnJSVlFORlBZdE9QV2JGajFZSEtNd1kzZk9k?=
- =?utf-8?B?ekFTMzVNYkJJaXNLS2c2a2hTRElSTFhFdEMvcEM2M0xLbld2UUpPWU9OdGtu?=
- =?utf-8?B?eDF4V1VvRXFhSlpKb0FXSThOSHc2dncwQTZ1ZWdTbjlXTHZQNHdSUFlVYmhq?=
- =?utf-8?B?d2VoZlQ4dG9jT3IwdWg2SWNvOWtSYXJCUHJQMzB6VWV1bmZRWEJQb0RBSGE2?=
- =?utf-8?B?YjNTMmhRTmtsYmlFSEIzcWxwNWNFSWo1OFRtVDhSY2VCalBGaTNoMUxCRmpT?=
- =?utf-8?B?SDg2TFgwVXI1R3QwRFFzVWpQNjV6R0pnbVBNYlJwSWQ4UnVtVTl0dmtFUVQv?=
- =?utf-8?B?VS9FdzEramRLYWNlVVN0eFFIcldqanJqNDZ6UWNQTzJTRmxNN3FmSGo2b1dy?=
- =?utf-8?B?QmJSR1dPVFhMWW0yUjdnb2RhNG03Y2NYY1NjcTNmaVZhZFVQdVd5MlA3RENl?=
- =?utf-8?B?bm1Jc2RKZzFaeUs4ZHhITUMxQm9zamVjcHVQT0U3KzNONVptcXc5UWhXZXdE?=
- =?utf-8?B?VTl2b1ZOWUdydHYydndtQzF4czFONGVEK2hvQURQV2gwQjBpZXg4OUJ2a0JV?=
- =?utf-8?B?RjlMcnpMbjBYT0tCUlpkanU1M25FY3hJcEEyUjlnR1N3Z3ZjTWZSYThPa3V1?=
- =?utf-8?B?SHZTRmxzRkdNcTN1YndTRkRqUVF4Y2dTQisyWVd0Y0x6OG1CdVpLbU5NbUU4?=
- =?utf-8?B?MEgzSEZhWWUyaEtFZ3hPc1JuZkpaN2hCaHdrYmZ3TER3Q0VaL3RlMFZYYVJ3?=
- =?utf-8?B?WnB0TWhyUWdkaUU0dWdqOUxoOGowMkVIQWE0NTZDZVRRWEkzQmM0TDFkelhD?=
- =?utf-8?B?RFl1MHh0UlVjYVVJQlpZc1IvZG9ScXo2WHY3a3dSeG8rU1A5dGh1NHBLem9V?=
- =?utf-8?B?Zi9RcVIrUEJxdXlKWnVNc2ROMVNaSHNjdE13S0s3NEpQa01rZ2gxR25MNWJW?=
- =?utf-8?B?Ykp1cXhaZXA1Ykh1c1pDb0dCWkEyV2RJYWhocmhhckZzY3ptMmg5VHJwQ2JS?=
- =?utf-8?B?U1RrUlFJTnpoK0RQM1F0YUFDamhaVlRDcE5oWTl2SEk2QlFYY2pWd2NVQTNS?=
- =?utf-8?B?WkZqK1ljWFJBK0NmNmtvN0RBNXZmZDVrVGJCaExUSXQ5UFk2RWdEZXZWY3R2?=
- =?utf-8?B?Nk5IWjlvVFFUcUxyTWFYd0VlYkk4R0xPdjBoRkxvdmZ5MXNEZ2xvNlBrSllE?=
- =?utf-8?B?VVVVS1RWUjU0RVlFZlVhV2VVdmJGRTBFRkdlSXNqYk5KOEVmaEJ3UGxvNXhB?=
- =?utf-8?B?V1MyekxRWThQWkQ3aVRiYVVUc1NOZ1FZUksxbHdsTlhLaWdTei9HbDlTN1lq?=
- =?utf-8?B?b29wWDE2RTdjUUh2YUh0Y2NsVkVFZ0w5RUZMb3cyaXdUMjkramJ2NjJIazN0?=
- =?utf-8?B?ZzZNaVdQVi9pYkFrTnBJaU1WYkRjVWJlN0JYcHY3ajMrM1BlUnFqaEZhVlNu?=
- =?utf-8?Q?ySCyUtIch4X/ykyRQ5pC96Y=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: jvBaMRd9/db2ud8Iv/DxpAT3hA4mnmxeShPIzHlg/fgttdaapKkJ9PQvkJXjeS7284TOTlCUyldQj4YVlm5N5bphJnQef5ns4O7x3mt8lfex19nhNvDViyo0iZcPEdnIKmhmd1kfoavlKjcmqX1NJScqH6HYj6yEMfhQCrBIWomE72t4lpHHmqFeqmdpbg/yuus2f8rYYiwmFy8p5YHGFdUtQpNs78Lp4XF8d+3ZJYRRCQ0Th50fTHI6BRNacXoKd5cTt6jE7EqVTqA3vg/0+Pv/eKfv4YDHSOE3uHpmQih6vpbgJitedXpzLZD7Kq8XUaVmB3zRcNB2RAB4sUQ+9KI1i+/CnxErib4qyAz4nbrsRH5R+erwvNMcYLRp9dGTj5Qv06DCMhMQSIL68fvd5/R+kuLqAdIwp9alPqS/FYGDS/Eedfi+nnZeha/JB3hVdI7r8gtL1mmxdVQFDkGgzwoTnEc7x9gSdkYQjvmI6EYlV+5Gq7euorKf+gK9mPg57+MU2vkt4diAtf0v7hXl2Ew2CqCeUkWetQc41tm8IUgrciD2u6RRxIH6dVy91a0tu66AvP/1xYDPgyyOHnx41hJ9ClgxsxAuC+zRa/JEVQUe7jikOAQZWVJCU8gNNnFfz2gtOPGn0clb6zBRe5pKsGWDKHvLuRNL5HTZtIY9Z80UdpUieHgEOZRLXj81DF0eHRAFEUMXDoB6uKDzS80HS8ZTLbRlBhihxlsGbAarJDORqn2UAmHwk/tXK2ipWErbrZO/cfsj7hUI3YWCWpF5oV6TChTT38si92INPWsvilo=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17e3cb25-3bf7-47f6-f657-08db1ef509ac
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2023 10:16:38.3395
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LvqoHLGZztzHrfC4niKj3sLesFSWSEi+FDrgfS4z1eeN0uV9ff7fpoY/7zrxGkETp2TBTX4mUZgEQ0adWsc3FA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6631
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-07_04,2023-03-07_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2303070093
-X-Proofpoint-GUID: TiNNaPJWRdh-H1FDpt7_0n7b8e58aHVH
-X-Proofpoint-ORIG-GUID: TiNNaPJWRdh-H1FDpt7_0n7b8e58aHVH
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJ=wzztviB73jBy3+OYxUKhAX_jTGpS8Xv45vUVTDY-ZA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -155,38 +81,126 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/03/2023 09:52, Dominic wrote:
-> Hi, I have multiple eBPF programs compiled into a single skeleton file
-> and I need a way to delay loading of one of the programs.
-> 
-> I am aware of `bpf_program__set_autoload()` API but once an object is
-> loaded using `bpf_object__load()`, there are no APIs to selectively
-> load a program (bpf_prog_load() has been deprecated). Calling
-> bpf_object__load() again fails.
-> 
-> Wondering if there are any options to achieve the above mentioned behavior.
+On Tue, Mar 07, 2023 at 03:23:25AM CET, Alexei Starovoitov wrote:
+> On Sun, Mar 5, 2023 at 11:10 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > On Wed, Mar 01, 2023 at 04:49:52PM CET, Joanne Koong wrote:
+> > > Two new kfuncs are added, bpf_dynptr_slice and bpf_dynptr_slice_rdwr.
+> > > The user must pass in a buffer to store the contents of the data slice
+> > > if a direct pointer to the data cannot be obtained.
+> > >
+> > > For skb and xdp type dynptrs, these two APIs are the only way to obtain
+> > > a data slice. However, for other types of dynptrs, there is no
+> > > difference between bpf_dynptr_slice(_rdwr) and bpf_dynptr_data.
+> > >
+> > > For skb type dynptrs, the data is copied into the user provided buffer
+> > > if any of the data is not in the linear portion of the skb. For xdp type
+> > > dynptrs, the data is copied into the user provided buffer if the data is
+> > > between xdp frags.
+> > >
+> > > If the skb is cloned and a call to bpf_dynptr_data_rdwr is made, then
+> > > the skb will be uncloned (see bpf_unclone_prologue()).
+> > >
+> > > Please note that any bpf_dynptr_write() automatically invalidates any prior
+> > > data slices of the skb dynptr. This is because the skb may be cloned or
+> > > may need to pull its paged buffer into the head. As such, any
+> > > bpf_dynptr_write() will automatically have its prior data slices
+> > > invalidated, even if the write is to data in the skb head of an uncloned
+> > > skb. Please note as well that any other helper calls that change the
+> > > underlying packet buffer (eg bpf_skb_pull_data()) invalidates any data
+> > > slices of the skb dynptr as well, for the same reasons.
+> > >
+> > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > > ---
+> >
+> > Sorry for chiming in late.
+> >
+> > I see one potential hole in bpf_dynptr_slice_rdwr. If the returned pointer is
+> > actually pointing to the stack (but verified as a PTR_TO_MEM in verifier state),
+> > we won't reflect changes to the stack state in the verifier for writes happening
+> > through it.
+> >
+> > For the worst case scenario, this will basically allow overwriting values of
+> > spilled pointers and doing arbitrary kernel memory reads/writes. This is only an
+> > issue when bpf_dynptr_slice_rdwr at runtime returns a pointer to the supplied
+> > buffer residing on program stack. To verify, by forcing the memcpy to buffer for
+> > skb_header_pointer I was able to make it dereference a garbage value for
+> > l4lb_all selftest.
+> >
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -2253,7 +2253,13 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset
+> >         case BPF_DYNPTR_TYPE_RINGBUF:
+> >                 return ptr->data + ptr->offset + offset;
+> >         case BPF_DYNPTR_TYPE_SKB:
+> > -               return skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer);
+> > +       {
+> > +               void *p = skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer);
+> > +               if (p == buffer)
+> > +                       return p;
+> > +               memcpy(buffer, p, len);
+> > +               return buffer;
+> > +       }
+> >
+> > --- a/tools/testing/selftests/bpf/progs/test_l4lb_noinline_dynptr.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_l4lb_noinline_dynptr.c
+> > @@ -470,7 +470,10 @@ int balancer_ingress(struct __sk_buff *ctx)
+> >         eth = bpf_dynptr_slice_rdwr(&ptr, 0, buffer, sizeof(buffer));
+> >         if (!eth)
+> >                 return TC_ACT_SHOT;
+> > -       eth_proto = eth->eth_proto;
+> > +       *(void **)buffer = ctx;
+>
+> Great catch.
+> To fix the issue I think we should simply disallow such
+> stack abuse. The compiler won't be spilling registers
+> into C array on the stack.
+> This manual spill/fill is exploiting verifier logic.
+> After bpf_dynptr_slice_rdwr() we can mark all slots of the
+> buffer as STACK_POISON or some better name and
+> reject spill into such slots.
 >
 
-I ran into a similar problem recently; in my case, the problem
-was that one of the functions that one of my BPF programs attached
-to could be inlined on some kernel versions.  As a result the
-whole skeleton would fail on auto-attach. If that is the
-problem you are facing, you can try a full load/attach and
-if that fails, start again - you'll need to destroy the
-skeleton and go back to the open if I remember correctly -
-and mark the problematic program using bpf_program__set_autoload()
-to false the second time round.
+I agree this is simpler, but I'm not sure it will work properly. Verifier won't
+know when the lifetime of the buffer ends, so if we disallow spills until its
+written over it's going to be a pain for users.
 
-Failing that, is separating into two skeletons and using
-bpf_map__reuse_fd() to share fds across both skeletons 
-feasible?
+Something like:
 
-If not, can you provide more details on why the delayed load
-is required - that might help us figure out a solution. One
-thing to figure out - is it definitely delayed load you need,
-or just delayed attach? Thanks!
+for (...) {
+	char buf[64];
+	bpf_dynptr_slice_rdwr(..., buf, 64);
+	...
+}
 
-Alan
- 
-> Thanks & Regards,
-> Dominic
+.. and then compiler decides to spill something where buf was located on stack
+outside the for loop. The verifier can't know when buf goes out of scope to
+unpoison the slots.
+
+> > +       *(void **)eth = (void *)0xdeadbeef;
+> > +       ctx = *(void **)buffer;
+> > +       eth_proto = eth->eth_proto + ctx->len;
+> >         if (eth_proto == bpf_htons(ETH_P_IP))
+> >                 err = process_packet(&ptr, eth, nh_off, false, ctx);
+> >
+> > I think the proper fix is to treat it as a separate return type distinct from
+> > PTR_TO_MEM like PTR_TO_MEM_OR_PKT (or handle PTR_TO_MEM | DYNPTR_* specially),
+> > fork verifier state whenever there is a write, so that one path verifies it as
+> > PTR_TO_PACKET, while another as PTR_TO_STACK (if buffer was a stack ptr). I
+> > think for the rest it's not a problem, but there are allow_ptr_leak checks
+> > applied to PTR_TO_STACK and PTR_TO_MAP_VALUE, so that needs to be rechecked.
+> > Then we ensure that program is safe in either path.
+> >
+> > Also we need to fix regsafe to not consider other PTR_TO_MEMs equivalent to such
+> > a pointer. We could also fork verifier states on return, to verify either path
+> > separately right from the point following the call instruction.
+>
+> This is too complex imo.
+
+A better way to phrase this is to verify with R0 = PTR_TO_PACKET in one path,
+and push_stack with R0 = buffer's reg->type + size set to len in the other path
+for exploration later. In terms of verifier infra everything is there already,
+it just needs to analyze both cases which fall into the regular code handling
+the reg->type's. Probably then no adjustments to regsafe are needed either. It's
+like exploring branch instructions.
