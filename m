@@ -2,42 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9A46AFA53
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 843876AFA56
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbjCGX33 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 7 Mar 2023 18:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        id S229808AbjCGX3d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 7 Mar 2023 18:29:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjCGX32 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 18:29:28 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F73A8385
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 15:29:26 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 327M9TDa014880
-        for <bpf@vger.kernel.org>; Tue, 7 Mar 2023 15:29:25 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p6cp38wrv-1
+        with ESMTP id S229785AbjCGX3d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 18:29:33 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB292580FF
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 15:29:30 -0800 (PST)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 327M6LUM017306
+        for <bpf@vger.kernel.org>; Tue, 7 Mar 2023 15:29:30 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3p6bu8sb85-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 15:29:25 -0800
-Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
- ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 15:29:30 -0800
+Received: from twshared30317.05.prn5.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 7 Mar 2023 15:29:25 -0800
-Received: from twshared29091.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 7 Mar 2023 15:29:24 -0800
+ 15.1.2507.17; Tue, 7 Mar 2023 15:29:28 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 469E229852FC3; Tue,  7 Mar 2023 15:29:16 -0800 (PST)
+        id 550EB2985300B; Tue,  7 Mar 2023 15:29:18 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@meta.com>,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH v3 bpf-next 1/8] bpf: factor out fetching basic kfunc metadata
-Date:   Tue, 7 Mar 2023 15:29:06 -0800
-Message-ID: <20230307232913.576893-2-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 2/8] bpf: add iterator kfuncs registration and validation logic
+Date:   Tue, 7 Mar 2023 15:29:07 -0800
+Message-ID: <20230307232913.576893-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230307232913.576893-1-andrii@kernel.org>
 References: <20230307232913.576893-1-andrii@kernel.org>
@@ -45,8 +41,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: mVSrVVGTDiaPl1oZDJzy9LiHDNat0GBk
-X-Proofpoint-GUID: mVSrVVGTDiaPl1oZDJzy9LiHDNat0GBk
+X-Proofpoint-GUID: NRRsbA_9YNICA1YJg2yqnzIY68yNEDgE
+X-Proofpoint-ORIG-GUID: NRRsbA_9YNICA1YJg2yqnzIY68yNEDgE
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-07_16,2023-03-07_01,2023-02-09_01
@@ -60,191 +56,217 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Factor out logic to fetch basic kfunc metadata based on struct bpf_insn.
-This is not exactly short or trivial code to just copy/paste, and this
-information is sometimes necessary in other parts of verifier logic.
-Subsequent patches will rely on this to determine if an instruction is
-a kfunc call to iterator next method.
+Add ability to register kfuncs that implement BPF open-coded iterator
+contract and enforce naming and function proto convention. Enforcement
+is happing at the time of kfunc registration and is significantly
+simplifies the rest of iterators logic in verifier.
 
-No functional changes intended, including that verbose() warning
-behavior when kfunc is not allowed for a particular program type.
+More details follow in subsequent patches, but we recognize and enforce
+the following conditions.
+
+All kfuncs (constructor, next, destructor) have to be named consistenly
+as bpf_iter_<type>_{new,next,destroy(), respectively. <type> represents
+iterator type, and iterator's state should be represented as matching
+`struct bpf_iter_<type>` state type. Also, all iter kfuncs should have
+a pointer to this `struct bpf_iter_<type>` as a very first argument.
+
+Additionally:
+  - Constructor, i.e., bpf_iter_<type>_new(), can have arbitrary extra
+  number of arguments. Return type not enforced either.
+  - Next method, i.e., bpf_iter_<type>_next(), has to return a pointer
+  type and should have exactly one argument: `struct bpf_iter_<type> *`
+  (const/volatile/restrict and typedefs are ignored).
+  - Destructor, i.e., bpf_iter_<type>_destroy(), should return void and
+  should have exactly one argument, similar to next method.
+  - struct bpf_iter_<type> size is enforced to be positive and
+  a multiple of 8 bytes (to fit stack slots correctly).
+
+Such strictness and consistency allows to build generic helpers
+abstracting important, but boilerplate, details to be able to use
+open-coded iterators effectively and ergonomically. It also simplifies
+verifier logic in some places.  At the same time, this doesn't hurt
+generality of possible iterator implementations. Win-win.
+
+Constructor kfunc is marked with a new KF_ITER_NEW flags, next method is marked
+with KF_ITER_NEXT (and should also have KF_RET_NULL, of course), while
+destructor kfunc is marked as KF_ITER_DESTROY.
+
+Additionally, we add a trivial kfunc name validation, it should be
+a valid non-NULL and non-empty string.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c | 92 +++++++++++++++++++++++++++----------------
- 1 file changed, 59 insertions(+), 33 deletions(-)
+ include/linux/bpf_verifier.h |   2 +
+ include/linux/btf.h          |   4 ++
+ kernel/bpf/btf.c             | 112 ++++++++++++++++++++++++++++++++++-
+ 3 files changed, 117 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b2116ca78d9a..8d40fba6a1c0 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10079,24 +10079,21 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 	return 0;
- }
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 18538bad2b8c..e2dc7f064449 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -59,6 +59,8 @@ struct bpf_active_lock {
+ 	u32 id;
+ };
  
--static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
--			    int *insn_idx_p)
-+static int fetch_kfunc_meta(struct bpf_verifier_env *env,
-+			    struct bpf_insn *insn,
-+			    struct bpf_kfunc_call_arg_meta *meta,
-+			    const char **kfunc_name)
- {
--	const struct btf_type *t, *func, *func_proto, *ptr_type;
--	u32 i, nargs, func_id, ptr_type_id, release_ref_obj_id;
--	struct bpf_reg_state *regs = cur_regs(env);
--	const char *func_name, *ptr_type_name;
--	bool sleepable, rcu_lock, rcu_unlock;
--	struct bpf_kfunc_call_arg_meta meta;
--	int err, insn_idx = *insn_idx_p;
--	const struct btf_param *args;
--	const struct btf_type *ret_t;
-+	const struct btf_type *func, *func_proto;
-+	u32 func_id, *kfunc_flags;
-+	const char *func_name;
- 	struct btf *desc_btf;
--	u32 *kfunc_flags;
- 
--	/* skip for now, but return error when we find this in fixup_kfunc_call */
-+	if (kfunc_name)
-+		*kfunc_name = NULL;
++#define ITER_PREFIX "bpf_iter_"
 +
- 	if (!insn->imm)
--		return 0;
+ struct bpf_reg_state {
+ 	/* Ordering of fields matters.  See states_equal() */
+ 	enum bpf_reg_type type;
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 556b3e2e7471..1bba0827e8c4 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -71,6 +71,10 @@
+ #define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
+ #define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
+ #define KF_RCU          (1 << 7) /* kfunc takes either rcu or trusted pointer arguments */
++/* only one of KF_ITER_{NEW,NEXT,DESTROY} could be specified per kfunc */
++#define KF_ITER_NEW     (1 << 8) /* kfunc implements BPF iter constructor */
++#define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next method */
++#define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructor */
+ 
+ /*
+  * Tag marking a kernel function as a kfunc. This is meant to minimize the
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index a8cb09e5973b..71758cd15b07 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -7596,6 +7596,108 @@ BTF_ID_LIST_GLOBAL(btf_tracing_ids, MAX_BTF_TRACING_TYPE)
+ BTF_TRACING_TYPE_xxx
+ #undef BTF_TRACING_TYPE
+ 
++static int btf_check_iter_kfuncs(struct btf *btf, const char *func_name,
++				 const struct btf_type *func, u32 func_flags)
++{
++	u32 flags = func_flags & (KF_ITER_NEW | KF_ITER_NEXT | KF_ITER_DESTROY);
++	const char *name, *sfx, *iter_name;
++	const struct btf_param *arg;
++	const struct btf_type *t;
++	char exp_name[128];
++	u32 nr_args;
++
++	/* exactly one of KF_ITER_{NEW,NEXT,DESTROY} can be set */
++	if (!flags || (flags & (flags - 1)))
 +		return -EINVAL;
- 
- 	desc_btf = find_kfunc_desc_btf(env, insn->off);
- 	if (IS_ERR(desc_btf))
-@@ -10105,22 +10102,51 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 	func_id = insn->imm;
- 	func = btf_type_by_id(desc_btf, func_id);
- 	func_name = btf_name_by_offset(desc_btf, func->name_off);
-+	if (kfunc_name)
-+		*kfunc_name = func_name;
- 	func_proto = btf_type_by_id(desc_btf, func->type);
- 
- 	kfunc_flags = btf_kfunc_id_set_contains(desc_btf, resolve_prog_type(env->prog), func_id);
- 	if (!kfunc_flags) {
--		verbose(env, "calling kernel function %s is not allowed\n",
--			func_name);
- 		return -EACCES;
- 	}
- 
--	/* Prepare kfunc call metadata */
--	memset(&meta, 0, sizeof(meta));
--	meta.btf = desc_btf;
--	meta.func_id = func_id;
--	meta.kfunc_flags = *kfunc_flags;
--	meta.func_proto = func_proto;
--	meta.func_name = func_name;
-+	memset(meta, 0, sizeof(*meta));
-+	meta->btf = desc_btf;
-+	meta->func_id = func_id;
-+	meta->kfunc_flags = *kfunc_flags;
-+	meta->func_proto = func_proto;
-+	meta->func_name = func_name;
++
++	/* any BPF iter kfunc should have `struct bpf_iter_<type> *` first arg */
++	nr_args = btf_type_vlen(func);
++	if (nr_args < 1)
++		return -EINVAL;
++
++	arg = &btf_params(func)[0];
++	t = btf_type_skip_modifiers(btf, arg->type, NULL);
++	if (!t || !btf_type_is_ptr(t))
++		return -EINVAL;
++	t = btf_type_skip_modifiers(btf, t->type, NULL);
++	if (!t || !__btf_type_is_struct(t))
++		return -EINVAL;
++
++	name = btf_name_by_offset(btf, t->name_off);
++	if (!name || strncmp(name, ITER_PREFIX, sizeof(ITER_PREFIX) - 1))
++		return -EINVAL;
++
++	/* sizeof(struct bpf_iter_<type>) should be a multiple of 8 to
++	 * fit nicely in stack slots
++	 */
++	if (t->size == 0 || (t->size % 8))
++		return -EINVAL;
++
++	/* validate bpf_iter_<type>_{new,next,destroy}(struct bpf_iter_<type> *)
++	 * naming pattern
++	 */
++	iter_name = name + sizeof(ITER_PREFIX) - 1;
++	if (flags & KF_ITER_NEW)
++		sfx = "new";
++	else if (flags & KF_ITER_NEXT)
++		sfx = "next";
++	else /* (flags & KF_ITER_DESTROY) */
++		sfx = "destroy";
++
++	snprintf(exp_name, sizeof(exp_name), "bpf_iter_%s_%s", iter_name, sfx);
++	if (strcmp(func_name, exp_name))
++		return -EINVAL;
++
++	/* only iter constructor should have extra arguments */
++	if (!(flags & KF_ITER_NEW) && nr_args != 1)
++		return -EINVAL;
++
++	if (flags & KF_ITER_NEXT) {
++		/* bpf_iter_<type>_next() should return pointer */
++		t = btf_type_skip_modifiers(btf, func->type, NULL);
++		if (!t || !btf_type_is_ptr(t))
++			return -EINVAL;
++	}
++
++	if (flags & KF_ITER_DESTROY) {
++		/* bpf_iter_<type>_destroy() should return void */
++		t = btf_type_by_id(btf, func->type);
++		if (!t || !btf_type_is_void(t))
++			return -EINVAL;
++	}
 +
 +	return 0;
 +}
 +
-+static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-+			    int *insn_idx_p)
++static int btf_check_kfunc_protos(struct btf *btf, u32 func_id, u32 func_flags)
 +{
-+	const struct btf_type *t, *ptr_type;
-+	u32 i, nargs, ptr_type_id, release_ref_obj_id;
-+	struct bpf_reg_state *regs = cur_regs(env);
-+	const char *func_name, *ptr_type_name;
-+	bool sleepable, rcu_lock, rcu_unlock;
-+	struct bpf_kfunc_call_arg_meta meta;
-+	struct bpf_insn_aux_data *insn_aux;
-+	int err, insn_idx = *insn_idx_p;
-+	const struct btf_param *args;
-+	const struct btf_type *ret_t;
-+	struct btf *desc_btf;
++	const struct btf_type *func;
++	const char *func_name;
++	int err;
 +
-+	/* skip for now, but return error when we find this in fixup_kfunc_call */
-+	if (!insn->imm)
-+		return 0;
++	/* any kfunc should be FUNC -> FUNC_PROTO */
++	func = btf_type_by_id(btf, func_id);
++	if (!func || !btf_type_is_func(func))
++		return -EINVAL;
 +
-+	err = fetch_kfunc_meta(env, insn, &meta, &func_name);
-+	if (err == -EACCES && func_name)
-+		verbose(env, "calling kernel function %s is not allowed\n", func_name);
-+	if (err)
-+		return err;
-+	desc_btf = meta.btf;
-+	insn_aux = &env->insn_aux_data[insn_idx];
++	/* sanity check kfunc name */
++	func_name = btf_name_by_offset(btf, func->name_off);
++	if (!func_name || !func_name[0])
++		return -EINVAL;
++
++	func = btf_type_by_id(btf, func->type);
++	if (!func || !btf_type_is_func_proto(func))
++		return -EINVAL;
++
++	if (func_flags & (KF_ITER_NEW | KF_ITER_NEXT | KF_ITER_DESTROY)) {
++		err = btf_check_iter_kfuncs(btf, func_name, func, func_flags);
++		if (err)
++			return err;
++	}
++
++	return 0;
++}
++
+ /* Kernel Function (kfunc) BTF ID set registration API */
  
- 	if (is_kfunc_destructive(&meta) && !capable(CAP_SYS_BOOT)) {
- 		verbose(env, "destructive kfunc calls require CAP_SYS_BOOT capability\n");
-@@ -10173,7 +10199,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		err = release_reference(env, regs[meta.release_regno].ref_obj_id);
- 		if (err) {
- 			verbose(env, "kfunc %s#%d reference has not been acquired before\n",
--				func_name, func_id);
-+				func_name, meta.func_id);
- 			return err;
- 		}
- 	}
-@@ -10185,14 +10211,14 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		err = ref_convert_owning_non_owning(env, release_ref_obj_id);
- 		if (err) {
- 			verbose(env, "kfunc %s#%d conversion of owning ref to non-owning failed\n",
--				func_name, func_id);
-+				func_name, meta.func_id);
- 			return err;
- 		}
+ static int btf_populate_kfunc_set(struct btf *btf, enum btf_kfunc_hook hook,
+@@ -7772,7 +7874,7 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+ 				       const struct btf_kfunc_id_set *kset)
+ {
+ 	struct btf *btf;
+-	int ret;
++	int ret, i;
  
- 		err = release_reference(env, release_ref_obj_id);
- 		if (err) {
- 			verbose(env, "kfunc %s#%d reference has not been acquired before\n",
--				func_name, func_id);
-+				func_name, meta.func_id);
- 			return err;
- 		}
- 	}
-@@ -10202,7 +10228,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 					set_rbtree_add_callback_state);
- 		if (err) {
- 			verbose(env, "kfunc %s#%d failed callback verification\n",
--				func_name, func_id);
-+				func_name, meta.func_id);
- 			return err;
- 		}
- 	}
-@@ -10211,7 +10237,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		mark_reg_not_init(env, regs, caller_saved[i]);
+ 	btf = btf_get_module_btf(kset->owner);
+ 	if (!btf) {
+@@ -7789,7 +7891,15 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+ 	if (IS_ERR(btf))
+ 		return PTR_ERR(btf);
  
- 	/* Check return type */
--	t = btf_type_skip_modifiers(desc_btf, func_proto->type, NULL);
-+	t = btf_type_skip_modifiers(desc_btf, meta.func_proto->type, NULL);
- 
- 	if (is_kfunc_acquire(&meta) && !btf_type_is_struct_ptr(meta.btf, t)) {
- 		/* Only exception is bpf_obj_new_impl */
-@@ -10260,11 +10286,11 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 				regs[BPF_REG_0].btf = ret_btf;
- 				regs[BPF_REG_0].btf_id = ret_btf_id;
- 
--				env->insn_aux_data[insn_idx].obj_new_size = ret_t->size;
--				env->insn_aux_data[insn_idx].kptr_struct_meta =
-+				insn_aux->obj_new_size = ret_t->size;
-+				insn_aux->kptr_struct_meta =
- 					btf_find_struct_meta(ret_btf, ret_btf_id);
- 			} else if (meta.func_id == special_kfunc_list[KF_bpf_obj_drop_impl]) {
--				env->insn_aux_data[insn_idx].kptr_struct_meta =
-+				insn_aux->kptr_struct_meta =
- 					btf_find_struct_meta(meta.arg_obj_drop.btf,
- 							     meta.arg_obj_drop.btf_id);
- 			} else if (meta.func_id == special_kfunc_list[KF_bpf_list_pop_front] ||
-@@ -10397,8 +10423,8 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 			regs[BPF_REG_0].id = ++env->id_gen;
- 	} /* else { add_kfunc_call() ensures it is btf_type_is_void(t) } */
- 
--	nargs = btf_type_vlen(func_proto);
--	args = (const struct btf_param *)(func_proto + 1);
-+	nargs = btf_type_vlen(meta.func_proto);
-+	args = (const struct btf_param *)(meta.func_proto + 1);
- 	for (i = 0; i < nargs; i++) {
- 		u32 regno = i + 1;
- 
++	for (i = 0; i < kset->set->cnt; i++) {
++		ret = btf_check_kfunc_protos(btf, kset->set->pairs[i].id,
++					     kset->set->pairs[i].flags);
++		if (ret)
++			goto err_out;
++	}
++
+ 	ret = btf_populate_kfunc_set(btf, hook, kset->set);
++err_out:
+ 	btf_put(btf);
+ 	return ret;
+ }
 -- 
 2.34.1
 
