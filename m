@@ -2,213 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A08E96AFA89
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDC86AFA7D
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjCGXfE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 18:35:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
+        id S230126AbjCGXeK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 18:34:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbjCGXen (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 18:34:43 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C453A8E98
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 15:33:50 -0800 (PST)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 327Kg4QL011844
-        for <bpf@vger.kernel.org>; Tue, 7 Mar 2023 15:33:39 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=geIAKPSU6XMI+auXswOSbzwZRLvdp28+u4JQppatNfY=;
- b=MXDjsbhXUVayeOsCCIZ2ZY/wNZAfd75ed1gKwa93c9eR+iIgwZ2Ng97yuGwk9n3HDc5B
- HzOCeOjVbUa1bfjAMXytK615YSeBLphPCgrFEB/2L786fotvAbiDxXPo46RCCTPDu5gr
- Z+9DClVdP7lut7pbXQKcn3lkihldHeKQxnfhmZms/IV7IsOYqVwlX3Nr8bpJD7QKXUpU
- +zYNVtYXwd9qbGlMwDQ/eYB+9UY34AnYzjNrHpj5vtPHmfMjfWp3sw8180VwIFAhX5sv
- yFR08ApQrf8LSNJ/9bau3BGLUPBzSzSVIGnHOMgAdmAvY2s5Z9puzuG6u5yOcLCUPUU5 Ww== 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3p6bu8scq1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 15:33:39 -0800
-Received: from twshared21709.17.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 7 Mar 2023 15:33:37 -0800
-Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 67BB66C7C9C7; Tue,  7 Mar 2023 15:33:13 -0800 (PST)
-From:   Kui-Feng Lee <kuifeng@meta.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <martin.lau@linux.dev>,
-        <song@kernel.org>, <kernel-team@meta.com>, <andrii@kernel.org>,
-        <sdf@google.com>
-CC:     Kui-Feng Lee <kuifeng@meta.com>
-Subject: [PATCH bpf-next v4 9/9] selftests/bpf: Test switching TCP Congestion Control algorithms.
-Date:   Tue, 7 Mar 2023 15:33:07 -0800
-Message-ID: <20230307233307.3626875-10-kuifeng@meta.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230307233307.3626875-1-kuifeng@meta.com>
-References: <20230307233307.3626875-1-kuifeng@meta.com>
+        with ESMTP id S229989AbjCGXdn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 18:33:43 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100E78F719;
+        Tue,  7 Mar 2023 15:33:26 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id c4so9203310pfl.0;
+        Tue, 07 Mar 2023 15:33:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678232005;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AUz9t3miV/6g18NoyX2KHMC0EiLYl+hvlFPuzWmCtsU=;
+        b=QDQgd8BXom7RVfHsgPHJlBb0eK5ZRzbHLqr7ARFKkWJFG+Es9/7qTcJCV0Cw11/UkE
+         6ueMj2FkyDMDQDNJTpf6bb+0RRC6eyabWmtxfTU6xUbRK7qq5+QZwk/Yjl6r3S2YQE0I
+         PRZU+mA2ztQn+hsjSxeoQT4nh4sXMJXW7udAW4+xpV35f4XbkcLTvq1jXnjewbNgyuSQ
+         Kb0NjU0u/F8hCcuQscxxKORkI7zgMq0XEQWHUb6Pys3UI/zzJSS2ZRVa/xeKrbEMBOEF
+         BSMM4IripbuhX3CMrwE4GdOf7kd4mdWYfCJWGiLKQsY1YhtfHYL91Nn+mD7xxDItEo8b
+         GLLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678232005;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=AUz9t3miV/6g18NoyX2KHMC0EiLYl+hvlFPuzWmCtsU=;
+        b=zvDzFPg8vHGqINMo6EEMIe2Ya2sOCspGjOJOFOcGqUrMF4wyxN7zUo5nbndxk1NkHc
+         kGIL0dtiePpA5S5FrXSfPZpvQLPNdJGiWuj8831Dm4SM1wn+WWDWp+nsj/3zJ/rZqrxM
+         1e/VicGH9Z90DsFaDfEcVnLkZzHX31RblnJ1tUoxm33o15jz9V5U2tDXejUCYyx3mAPN
+         xBImTDsLbErDNGg/XJPIG7hfhbyqIK9tdrZBPZVwI/hMGNtJWcKiVW6kv5bqOlAmqMxB
+         tEVQWaT6C0BKf1o7F0ePtJmmIQhfg1SSvr9BKYVCjtKDbPWwkJo4zh8/mlVFK5d69Khe
+         kLcg==
+X-Gm-Message-State: AO0yUKXCS6ledxpDErEDeCBNlvlqrfrkxMmpC7qY7Ra9FC0wftfwP4O/
+        q5dtjlIFNR52dTh+MFo2fJk=
+X-Google-Smtp-Source: AK7set8I740AwmmPZ55XZZrZRiOhoTgJIyrL0e/Js2b6mpEUTfIvuC2eI/4E1YJQ8xsXM+TrRoYRyg==
+X-Received: by 2002:a62:5210:0:b0:5d9:f3a6:a925 with SMTP id g16-20020a625210000000b005d9f3a6a925mr12317983pfb.24.1678232005281;
+        Tue, 07 Mar 2023 15:33:25 -0800 (PST)
+Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:15e8:b801:cd55:a496])
+        by smtp.gmail.com with ESMTPSA id l11-20020a62be0b000000b005da23d8cbffsm8342217pff.158.2023.03.07.15.33.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Mar 2023 15:33:24 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH 7/9] perf bpf filter: Add data_src sample data support
+Date:   Tue,  7 Mar 2023 15:33:07 -0800
+Message-Id: <20230307233309.3546160-8-namhyung@kernel.org>
+X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
+In-Reply-To: <20230307233309.3546160-1-namhyung@kernel.org>
+References: <20230307233309.3546160-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: F1uAjhIoNzDctHLnsCc6BH2WovWU-_Pk
-X-Proofpoint-ORIG-GUID: F1uAjhIoNzDctHLnsCc6BH2WovWU-_Pk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-07_16,2023-03-07_01,2023-02-09_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Create a pair of sockets that utilize the congestion control algorithm
-under a particular name. Then switch up this congestion control
-algorithm to another implementation and check whether newly created
-connections using the same cc name now run the new implementation.
+The data_src has many entries to express memory behaviors.  Add each
+term separately so that users can combine them for their purpose.
 
-Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+I didn't add prefix for the constants for simplicity as they are mostly
+distinguishable but I had to use l1_miss and l2_hit for mem_dtlb since
+mem_lvl has different values for the same names.  Note that I decided
+mem_lvl to be used as an alias of mem_lvlnum as it's deprecated now.
+According to the comment in the UAPI header, users should use the mix
+of mem_lvlnum, mem_remote and mem_snoop.  Also the SNOOPX bits are
+concatenated to mem_snoop for simplicity.
+
+The following terms are used for data_src and the corresponding perf
+sample data fields:
+
+ * mem_op : { load, store, pfetch, exec }
+ * mem_lvl: { l1, l2, l3, l4, cxl, io, any_cache, lfb, ram, pmem }
+ * mem_snoop: { none, hit, miss, hitm, fwd, peer }
+ * mem_remote: { remote }
+ * mem_lock: { locked }
+ * mem_dtlb { l1_hit, l1_miss, l2_hit, l2_miss, any_hit, any_miss, walk, fault }
+ * mem_blk { by_data, by_addr }
+ * mem_hops { hops0, hops1, hops2, hops3 }
+
+We can now use a filter expression like below:
+
+  'mem_op == load, mem_lvl <= l2, mem_dtlb == l1_hit'
+  'mem_dtlb == l2_miss, mem_hops > hops1'
+  'mem_lvl == ram, mem_remote == 1'
+
+Note that 'na' is shared among the terms as it has the same value except
+for mem_lvl.  I don't have a good idea to handle that for now.
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 38 ++++++++++++
- .../selftests/bpf/progs/tcp_ca_update.c       | 62 +++++++++++++++++++
- 2 files changed, 100 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/tcp_ca_update.c
+ tools/perf/util/bpf-filter.l                 | 61 ++++++++++++++++++++
+ tools/perf/util/bpf_skel/sample_filter.bpf.c | 23 ++++++++
+ 2 files changed, 84 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/=
-testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index e980188d4124..caaa9175ee36 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -8,6 +8,7 @@
- #include "bpf_dctcp.skel.h"
- #include "bpf_cubic.skel.h"
- #include "bpf_tcp_nogpl.skel.h"
-+#include "tcp_ca_update.skel.h"
- #include "bpf_dctcp_release.skel.h"
- #include "tcp_ca_write_sk_pacing.skel.h"
- #include "tcp_ca_incompl_cong_ops.skel.h"
-@@ -381,6 +382,41 @@ static void test_unsupp_cong_op(void)
- 	libbpf_set_print(old_print_fn);
+diff --git a/tools/perf/util/bpf-filter.l b/tools/perf/util/bpf-filter.l
+index 419f923b35c0..3e66b7a0215e 100644
+--- a/tools/perf/util/bpf-filter.l
++++ b/tools/perf/util/bpf-filter.l
+@@ -42,6 +42,12 @@ static int value(int base)
+ 	return BFT_NUM;
  }
-=20
-+static void test_update_ca(void)
+ 
++static int constant(int val)
 +{
-+	struct tcp_ca_update *skel;
-+	struct bpf_link *link;
-+	int saved_ca1_cnt;
-+	int err;
-+
-+	skel =3D tcp_ca_update__open();
-+	if (!ASSERT_OK_PTR(skel, "open"))
-+		return;
-+
-+	err =3D tcp_ca_update__load(skel);
-+	if (!ASSERT_OK(err, "load")) {
-+		tcp_ca_update__destroy(skel);
-+		return;
-+	}
-+
-+	link =3D bpf_map__attach_struct_ops(skel->maps.ca_update_1);
-+	ASSERT_OK_PTR(link, "attach_struct_ops");
-+
-+	do_test("tcp_ca_update", NULL);
-+	saved_ca1_cnt =3D skel->bss->ca1_cnt;
-+	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
-+
-+	err =3D bpf_link__update_map(link, skel->maps.ca_update_2);
-+	ASSERT_OK(err, "update_struct_ops");
-+
-+	do_test("tcp_ca_update", NULL);
-+	ASSERT_EQ(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
-+	ASSERT_GT(skel->bss->ca2_cnt, 0, "ca2_ca2_cnt");
-+
-+	bpf_link__destroy(link);
-+	tcp_ca_update__destroy(skel);
++	perf_bpf_filter_lval.num = val;
++	return BFT_NUM;
 +}
 +
- void test_bpf_tcp_ca(void)
+ static int error(const char *str)
  {
- 	if (test__start_subtest("dctcp"))
-@@ -399,4 +435,6 @@ void test_bpf_tcp_ca(void)
- 		test_incompl_cong_ops();
- 	if (test__start_subtest("unsupp_cong_op"))
- 		test_unsupp_cong_op();
-+	if (test__start_subtest("update_ca"))
-+		test_update_ca();
- }
-diff --git a/tools/testing/selftests/bpf/progs/tcp_ca_update.c b/tools/te=
-sting/selftests/bpf/progs/tcp_ca_update.c
-new file mode 100644
-index 000000000000..36a04be95df5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tcp_ca_update.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
+ 	printf("perf_bpf_filter: Unexpected filter %s: %s\n", str, perf_bpf_filter_text);
+@@ -80,6 +86,15 @@ retire_lat	{ return sample_part(PERF_SAMPLE_WEIGHT_STRUCT, 3); } /* alias for we
+ phys_addr	{ return sample(PERF_SAMPLE_PHYS_ADDR); }
+ code_pgsz	{ return sample(PERF_SAMPLE_CODE_PAGE_SIZE); }
+ data_pgsz	{ return sample(PERF_SAMPLE_DATA_PAGE_SIZE); }
++mem_op		{ return sample_part(PERF_SAMPLE_DATA_SRC, 1); }
++mem_lvlnum	{ return sample_part(PERF_SAMPLE_DATA_SRC, 2); }
++mem_lvl		{ return sample_part(PERF_SAMPLE_DATA_SRC, 2); } /* alias for mem_lvlnum */
++mem_snoop	{ return sample_part(PERF_SAMPLE_DATA_SRC, 3); } /* include snoopx */
++mem_remote	{ return sample_part(PERF_SAMPLE_DATA_SRC, 4); }
++mem_lock	{ return sample_part(PERF_SAMPLE_DATA_SRC, 5); }
++mem_dtlb	{ return sample_part(PERF_SAMPLE_DATA_SRC, 6); }
++mem_blk		{ return sample_part(PERF_SAMPLE_DATA_SRC, 7); }
++mem_hops	{ return sample_part(PERF_SAMPLE_DATA_SRC, 8); }
+ 
+ "=="		{ return operator(PBF_OP_EQ); }
+ "!="		{ return operator(PBF_OP_NEQ); }
+@@ -89,6 +104,52 @@ data_pgsz	{ return sample(PERF_SAMPLE_DATA_PAGE_SIZE); }
+ "<="		{ return operator(PBF_OP_LE); }
+ "&"		{ return operator(PBF_OP_AND); }
+ 
++na		{ return constant(PERF_MEM_OP_NA); }
++load		{ return constant(PERF_MEM_OP_LOAD); }
++store		{ return constant(PERF_MEM_OP_STORE); }
++pfetch		{ return constant(PERF_MEM_OP_PFETCH); }
++exec		{ return constant(PERF_MEM_OP_EXEC); }
 +
-+#include "vmlinux.h"
++l1		{ return constant(PERF_MEM_LVLNUM_L1); }
++l2		{ return constant(PERF_MEM_LVLNUM_L2); }
++l3		{ return constant(PERF_MEM_LVLNUM_L3); }
++l4		{ return constant(PERF_MEM_LVLNUM_L4); }
++cxl		{ return constant(PERF_MEM_LVLNUM_CXL); }
++io		{ return constant(PERF_MEM_LVLNUM_IO); }
++any_cache	{ return constant(PERF_MEM_LVLNUM_ANY_CACHE); }
++lfb		{ return constant(PERF_MEM_LVLNUM_LFB); }
++ram		{ return constant(PERF_MEM_LVLNUM_RAM); }
++pmem		{ return constant(PERF_MEM_LVLNUM_PMEM); }
 +
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
++none		{ return constant(PERF_MEM_SNOOP_NONE); }
++hit		{ return constant(PERF_MEM_SNOOP_HIT); }
++miss		{ return constant(PERF_MEM_SNOOP_MISS); }
++hitm		{ return constant(PERF_MEM_SNOOP_HITM); }
++fwd		{ return constant(PERF_MEM_SNOOPX_FWD); }
++peer		{ return constant(PERF_MEM_SNOOPX_PEER); }
 +
-+char _license[] SEC("license") =3D "GPL";
++remote		{ return constant(PERF_MEM_REMOTE_REMOTE); }
 +
-+int ca1_cnt =3D 0;
-+int ca2_cnt =3D 0;
++locked		{ return constant(PERF_MEM_LOCK_LOCKED); }
 +
-+#define USEC_PER_SEC 1000000UL
++l1_hit		{ return constant(PERF_MEM_TLB_L1 | PERF_MEM_TLB_HIT); }
++l1_miss		{ return constant(PERF_MEM_TLB_L1 | PERF_MEM_TLB_MISS); }
++l2_hit		{ return constant(PERF_MEM_TLB_L2 | PERF_MEM_TLB_HIT); }
++l2_miss		{ return constant(PERF_MEM_TLB_L2 | PERF_MEM_TLB_MISS); }
++any_hit		{ return constant(PERF_MEM_TLB_HIT); }
++any_miss	{ return constant(PERF_MEM_TLB_MISS); }
++walk		{ return constant(PERF_MEM_TLB_WK); }
++os		{ return constant(PERF_MEM_TLB_OS); }
++fault		{ return constant(PERF_MEM_TLB_OS); } /* alias for os */
 +
-+#define min(a, b) ((a) < (b) ? (a) : (b))
++by_data		{ return constant(PERF_MEM_BLK_DATA); }
++by_addr		{ return constant(PERF_MEM_BLK_ADDR); }
 +
-+static inline struct tcp_sock *tcp_sk(const struct sock *sk)
-+{
-+	return (struct tcp_sock *)sk;
-+}
++hops0		{ return constant(PERF_MEM_HOPS_0); }
++hops1		{ return constant(PERF_MEM_HOPS_1); }
++hops2		{ return constant(PERF_MEM_HOPS_2); }
++hops3		{ return constant(PERF_MEM_HOPS_3); }
 +
-+SEC("struct_ops/ca_update_1_cong_control")
-+void BPF_PROG(ca_update_1_cong_control, struct sock *sk,
-+	      const struct rate_sample *rs)
-+{
-+	ca1_cnt++;
-+}
+ ","		{ return ','; }
+ 
+ {ident}		{ return error("ident"); }
+diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+index d930401c5bfc..88dbc788d257 100644
+--- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
++++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+@@ -70,6 +70,29 @@ static inline __u64 perf_get_sample(struct bpf_perf_event_data_kern *kctx,
+ 		return kctx->data->code_page_size;
+ 	case PERF_SAMPLE_DATA_PAGE_SIZE:
+ 		return kctx->data->data_page_size;
++	case PERF_SAMPLE_DATA_SRC:
++		if (entry->part == 1)
++			return kctx->data->data_src.mem_op;
++		if (entry->part == 2)
++			return kctx->data->data_src.mem_lvl_num;
++		if (entry->part == 3) {
++			__u32 snoop = kctx->data->data_src.mem_snoop;
++			__u32 snoopx = kctx->data->data_src.mem_snoopx;
 +
-+SEC("struct_ops/ca_update_2_cong_control")
-+void BPF_PROG(ca_update_2_cong_control, struct sock *sk,
-+	      const struct rate_sample *rs)
-+{
-+	ca2_cnt++;
-+}
-+
-+SEC("struct_ops/ca_update_ssthresh")
-+__u32 BPF_PROG(ca_update_ssthresh, struct sock *sk)
-+{
-+	return tcp_sk(sk)->snd_ssthresh;
-+}
-+
-+SEC("struct_ops/ca_update_undo_cwnd")
-+__u32 BPF_PROG(ca_update_undo_cwnd, struct sock *sk)
-+{
-+	return tcp_sk(sk)->snd_cwnd;
-+}
-+
-+SEC(".struct_ops.link")
-+struct tcp_congestion_ops ca_update_1 =3D {
-+	.cong_control =3D (void *)ca_update_1_cong_control,
-+	.ssthresh =3D (void *)ca_update_ssthresh,
-+	.undo_cwnd =3D (void *)ca_update_undo_cwnd,
-+	.name =3D "tcp_ca_update",
-+};
-+
-+SEC(".struct_ops.link")
-+struct tcp_congestion_ops ca_update_2 =3D {
-+	.cong_control =3D (void *)ca_update_2_cong_control,
-+	.ssthresh =3D (void *)ca_update_ssthresh,
-+	.undo_cwnd =3D (void *)ca_update_undo_cwnd,
-+	.name =3D "tcp_ca_update",
-+};
---=20
-2.34.1
++			return (snoopx << 5) | snoop;
++		}
++		if (entry->part == 4)
++			return kctx->data->data_src.mem_remote;
++		if (entry->part == 5)
++			return kctx->data->data_src.mem_lock;
++		if (entry->part == 6)
++			return kctx->data->data_src.mem_dtlb;
++		if (entry->part == 7)
++			return kctx->data->data_src.mem_blk;
++		if (entry->part == 8)
++			return kctx->data->data_src.mem_hops;
++		/* return the whole word */
++		return kctx->data->data_src.val;
+ 	default:
+ 		break;
+ 	}
+-- 
+2.40.0.rc1.284.g88254d51c5-goog
 
