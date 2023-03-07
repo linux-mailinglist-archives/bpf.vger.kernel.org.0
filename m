@@ -2,205 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 003806ADBB8
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 11:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988A86AD9D3
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 10:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjCGKWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 05:22:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
+        id S230182AbjCGJFV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 04:05:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbjCGKWj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 05:22:39 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2869B6A437;
-        Tue,  7 Mar 2023 02:22:36 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id j11so30673474edq.4;
-        Tue, 07 Mar 2023 02:22:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678184555;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=W7I8VYoRHwVvwNfsff/RYaOA483668vWgpIglz/Ab4k=;
-        b=TfmOXaPll0mE4BY6gbG2M32Su6Q+9Em7OgkOEvFezViwrKjuK3Mfkjs9fh3gBbyVtN
-         j55PR4jkiy9jtZWN7XMZjR3wVy6rAE4LbG3QY+DSNeNqD3UCDHYftUd6gWjrp/T9FSdf
-         yg3tg5RuLSVOkiIHm0/QUb6DecGOQtlETkq/nNxlKDaGJpZQ1KA1zORbenhdYfZYJAo5
-         QGpZc06ARD5LeHq1WNLPtBjGa0AFnKMIVL/EtCKwM5udQzcGm3se9CyBZmFiwXWxUbHd
-         6Y3NGW7M6S5uC61q6RGluWCSPvmGSk6b/mpTmZcDwvIlsuwMldT/J6J0jNuSjboHQp1O
-         DHmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678184555;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W7I8VYoRHwVvwNfsff/RYaOA483668vWgpIglz/Ab4k=;
-        b=VgkOu1cmyVvesknuEDzldSJjklIJSyPmSX7Fhc5zlDKBLpjbeo8tJU0keuqEydD47m
-         Vg4EPrOltGHtE2Cgewdaedup6787S2pE/tXzbhYf1uqmD5B594/BqBUaLl5XoujRA0Y3
-         aXXF9MdounmX9WT7z6X/HK+q95Wn3IaerlK9W63iiYZyTFpO5JfdY5W8T6iJG+nJBQfX
-         P9pZXyftUSYS8CJIKYUAoYBzUiRe0ocBkNPF0NLiUYWuB7rYF8bzGJV6a6aEEvmY4ts3
-         09DxljsBTfGTWSxOPB0RBqoc9WLAJK0vb0uL3feocKzG0eZtJKjSzB+y2VJasItGjwLg
-         JaPg==
-X-Gm-Message-State: AO0yUKU0Riixc8XVzhgqfpBWMVlf1NObmnQPJR5MRaJcm98bFdC2vVkI
-        OMbFK/XJzif70rbi/R/S0yc=
-X-Google-Smtp-Source: AK7set/p1TAfnwSaiXp+HnQFFWGQB0OhgFX7Kj3C0KHqxeuj6MEvmR1D4l/+N904HtYDpVfyEElhlg==
-X-Received: by 2002:aa7:d84f:0:b0:4ae:eb0f:4273 with SMTP id f15-20020aa7d84f000000b004aeeb0f4273mr13720545eds.15.1678184555112;
-        Tue, 07 Mar 2023 02:22:35 -0800 (PST)
-Received: from localhost ([2001:620:618:580:2:80b3:0:830])
-        by smtp.gmail.com with ESMTPSA id y26-20020a170906519a00b008e53874f8d8sm5864061ejk.180.2023.03.07.02.22.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Mar 2023 02:22:34 -0800 (PST)
-Date:   Tue, 7 Mar 2023 11:22:33 +0100
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230157AbjCGJFU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 04:05:20 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F139932524;
+        Tue,  7 Mar 2023 01:05:19 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PW8fg20jHz4f3jZC;
+        Tue,  7 Mar 2023 17:05:15 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+        by APP4 (Coremail) with SMTP id gCh0CgDXia1L_gZkc5mfEw--.53857S2;
+        Tue, 07 Mar 2023 17:05:17 +0800 (CST)
+From:   Xu Kuohai <xukuohai@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-Subject: Re: [PATCH v13 bpf-next 09/10] bpf: Add bpf_dynptr_slice and
- bpf_dynptr_slice_rdwr
-Message-ID: <20230307102233.bemr47x625ity26z@apollo>
-References: <20230301154953.641654-1-joannelkoong@gmail.com>
- <20230301154953.641654-10-joannelkoong@gmail.com>
- <20230306071006.73t5vtmxrsykw4zu@apollo>
- <CAADnVQJ=wzztviB73jBy3+OYxUKhAX_jTGpS8Xv45vUVTDY-ZA@mail.gmail.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Subject: [PATCH bpf-next 0/2] update 32-bit bounds when the lower 32-bit value is not wrapping
+Date:   Tue,  7 Mar 2023 17:04:47 -0500
+Message-Id: <20230307220449.2933650-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJ=wzztviB73jBy3+OYxUKhAX_jTGpS8Xv45vUVTDY-ZA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-CM-TRANSID: gCh0CgDXia1L_gZkc5mfEw--.53857S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY-7kC6x804xWl14x267AKxVW8JVW5JwAF
+        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62
+        vIxIIY0VW8XVW5AwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xII
+        jxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjc
+        xK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IY
+        c4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI
+        0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY
+        0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+        IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+        MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+        WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWU
+        JVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+        1UYxBIdaVFxhVjvjDU0xZFpf9x07joksgUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
+        KHOP_HELO_FCRDNS,MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 07, 2023 at 03:23:25AM CET, Alexei Starovoitov wrote:
-> On Sun, Mar 5, 2023 at 11:10 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Wed, Mar 01, 2023 at 04:49:52PM CET, Joanne Koong wrote:
-> > > Two new kfuncs are added, bpf_dynptr_slice and bpf_dynptr_slice_rdwr.
-> > > The user must pass in a buffer to store the contents of the data slice
-> > > if a direct pointer to the data cannot be obtained.
-> > >
-> > > For skb and xdp type dynptrs, these two APIs are the only way to obtain
-> > > a data slice. However, for other types of dynptrs, there is no
-> > > difference between bpf_dynptr_slice(_rdwr) and bpf_dynptr_data.
-> > >
-> > > For skb type dynptrs, the data is copied into the user provided buffer
-> > > if any of the data is not in the linear portion of the skb. For xdp type
-> > > dynptrs, the data is copied into the user provided buffer if the data is
-> > > between xdp frags.
-> > >
-> > > If the skb is cloned and a call to bpf_dynptr_data_rdwr is made, then
-> > > the skb will be uncloned (see bpf_unclone_prologue()).
-> > >
-> > > Please note that any bpf_dynptr_write() automatically invalidates any prior
-> > > data slices of the skb dynptr. This is because the skb may be cloned or
-> > > may need to pull its paged buffer into the head. As such, any
-> > > bpf_dynptr_write() will automatically have its prior data slices
-> > > invalidated, even if the write is to data in the skb head of an uncloned
-> > > skb. Please note as well that any other helper calls that change the
-> > > underlying packet buffer (eg bpf_skb_pull_data()) invalidates any data
-> > > slices of the skb dynptr as well, for the same reasons.
-> > >
-> > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > > ---
-> >
-> > Sorry for chiming in late.
-> >
-> > I see one potential hole in bpf_dynptr_slice_rdwr. If the returned pointer is
-> > actually pointing to the stack (but verified as a PTR_TO_MEM in verifier state),
-> > we won't reflect changes to the stack state in the verifier for writes happening
-> > through it.
-> >
-> > For the worst case scenario, this will basically allow overwriting values of
-> > spilled pointers and doing arbitrary kernel memory reads/writes. This is only an
-> > issue when bpf_dynptr_slice_rdwr at runtime returns a pointer to the supplied
-> > buffer residing on program stack. To verify, by forcing the memcpy to buffer for
-> > skb_header_pointer I was able to make it dereference a garbage value for
-> > l4lb_all selftest.
-> >
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -2253,7 +2253,13 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset
-> >         case BPF_DYNPTR_TYPE_RINGBUF:
-> >                 return ptr->data + ptr->offset + offset;
-> >         case BPF_DYNPTR_TYPE_SKB:
-> > -               return skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer);
-> > +       {
-> > +               void *p = skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer);
-> > +               if (p == buffer)
-> > +                       return p;
-> > +               memcpy(buffer, p, len);
-> > +               return buffer;
-> > +       }
-> >
-> > --- a/tools/testing/selftests/bpf/progs/test_l4lb_noinline_dynptr.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_l4lb_noinline_dynptr.c
-> > @@ -470,7 +470,10 @@ int balancer_ingress(struct __sk_buff *ctx)
-> >         eth = bpf_dynptr_slice_rdwr(&ptr, 0, buffer, sizeof(buffer));
-> >         if (!eth)
-> >                 return TC_ACT_SHOT;
-> > -       eth_proto = eth->eth_proto;
-> > +       *(void **)buffer = ctx;
->
-> Great catch.
-> To fix the issue I think we should simply disallow such
-> stack abuse. The compiler won't be spilling registers
-> into C array on the stack.
-> This manual spill/fill is exploiting verifier logic.
-> After bpf_dynptr_slice_rdwr() we can mark all slots of the
-> buffer as STACK_POISON or some better name and
-> reject spill into such slots.
->
+This patchset updates __reg_combine_64_into_32 function to set 32-bit bounds
+when lower 32-bit value is not wrapping, and add cases to for it.
 
-I agree this is simpler, but I'm not sure it will work properly. Verifier won't
-know when the lifetime of the buffer ends, so if we disallow spills until its
-written over it's going to be a pain for users.
+Xu Kuohai (2):
+  bpf: update 32-bit bounds when the lower 32-bit value is not wrapping
+  selftests/bpf: check bounds not in the 32-bit range
 
-Something like:
+ kernel/bpf/verifier.c                         |  27 ++--
+ tools/testing/selftests/bpf/verifier/bounds.c | 121 ++++++++++++++++++
+ 2 files changed, 132 insertions(+), 16 deletions(-)
 
-for (...) {
-	char buf[64];
-	bpf_dynptr_slice_rdwr(..., buf, 64);
-	...
-}
+-- 
+2.30.2
 
-.. and then compiler decides to spill something where buf was located on stack
-outside the for loop. The verifier can't know when buf goes out of scope to
-unpoison the slots.
-
-> > +       *(void **)eth = (void *)0xdeadbeef;
-> > +       ctx = *(void **)buffer;
-> > +       eth_proto = eth->eth_proto + ctx->len;
-> >         if (eth_proto == bpf_htons(ETH_P_IP))
-> >                 err = process_packet(&ptr, eth, nh_off, false, ctx);
-> >
-> > I think the proper fix is to treat it as a separate return type distinct from
-> > PTR_TO_MEM like PTR_TO_MEM_OR_PKT (or handle PTR_TO_MEM | DYNPTR_* specially),
-> > fork verifier state whenever there is a write, so that one path verifies it as
-> > PTR_TO_PACKET, while another as PTR_TO_STACK (if buffer was a stack ptr). I
-> > think for the rest it's not a problem, but there are allow_ptr_leak checks
-> > applied to PTR_TO_STACK and PTR_TO_MAP_VALUE, so that needs to be rechecked.
-> > Then we ensure that program is safe in either path.
-> >
-> > Also we need to fix regsafe to not consider other PTR_TO_MEMs equivalent to such
-> > a pointer. We could also fork verifier states on return, to verify either path
-> > separately right from the point following the call instruction.
->
-> This is too complex imo.
-
-A better way to phrase this is to verify with R0 = PTR_TO_PACKET in one path,
-and push_stack with R0 = buffer's reg->type + size set to len in the other path
-for exploration later. In terms of verifier infra everything is there already,
-it just needs to analyze both cases which fall into the regular code handling
-the reg->type's. Probably then no adjustments to regsafe are needed either. It's
-like exploring branch instructions.
