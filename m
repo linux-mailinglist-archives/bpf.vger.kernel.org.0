@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C1C6AFA6F
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DE56AFA70
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 00:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbjCGXdV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 18:33:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43638 "EHLO
+        id S229960AbjCGXdX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 18:33:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbjCGXdS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 18:33:18 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F221D52F7C;
-        Tue,  7 Mar 2023 15:33:16 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id l1so14913758pjt.2;
-        Tue, 07 Mar 2023 15:33:16 -0800 (PST)
+        with ESMTP id S229940AbjCGXdU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 18:33:20 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C07E4E5EE;
+        Tue,  7 Mar 2023 15:33:18 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id bn17so8610566pgb.10;
+        Tue, 07 Mar 2023 15:33:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678231996;
+        d=gmail.com; s=20210112; t=1678231998;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hGXhvns0Fqsn+j0G+5qIK3kmqbdu5S85FOm2nPL5t1o=;
-        b=nld7nPfMYXjpcSCD2nFGAcf3iRsMkzEx2GJWOTGcKP96lgTmYid395gkSjMDqs6pER
-         dbfAdym/m01Q/39X3Ug2FBEtTxuQtNUjX0wNjOX7yY+ILVCeKg6I2TeVXCFeW+UVyQ4p
-         v6QU+UXFObyJwmGn6jeb4FCC9hv1scoTStDqa70bZQtGimbZmfta3pUn7QTQI1ZDcPDK
-         t+vrEVP2Ig96sVhSnyt/h76WBNNYMmO0qKeqf97AC5yxk/1ZAobB9LdkCEYIrrXPtbpJ
-         w8mcwf95/flQnhlDOwOwd7mT6LqNLYgUGXGm27PZ+yeXxcLKQIpXKoWApNscCWdjJXQh
-         ApTA==
+        bh=ZWY3pu1sUBwgULLA58qBvOo9hTklUr6qi9NkTdBlOtc=;
+        b=bJSqVD/jl+PkfJRGjXymRodsOUSYj3io692pFqwOEEBmN/yAOhuW/eykm05mRRzpez
+         7eRAFQNs7W/XWARmnqUowH9nFWuoprQFX9UC3C5wBhyq3440yUjBbKQl57rfeSLejIkv
+         uS+7O6K3qmlh4TJs9uryAEH8yxr9S84AqfKpFZYkJFsAa0SerpNdbBCKUqZ+mWMrDEa3
+         ezOuFCIa/pxWARVOE+OHRuX9oJimyVWeLGPZKs89WaVuz6xxUzG9UOePdx5ShN9BcTLE
+         KPOiOSvwgATBZVpx5nVqw0FBHYQqAR6Ld0zpgnQT5w0JvT+1G0015p2wfQukuimaXQY9
+         ifCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678231996;
+        d=1e100.net; s=20210112; t=1678231998;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=hGXhvns0Fqsn+j0G+5qIK3kmqbdu5S85FOm2nPL5t1o=;
-        b=zsK1Cp9xs24MRbhBmyfGAYxEp2LukpPsztpxaSgPQvcTB/cdDGuwxbaa3TMSf+d7T2
-         UCGNYRKAIjNJUi1tgqrz5VCJtsbxdjy9GYTAQ3jfDdf7IYzJaUreS4ITt1OM24lDKslo
-         GWv4PjqFynweOK/a16eucqj40GvK8fRtliAx0szEqK1MrAeH07cj7LPZt4Rvg8BgIp6s
-         1D85c/w/LSfDLyburbxJbpiMWTTOKNjnos8QrbtfMx8PMp6rYIeBpYPvGQ8+oFzaqLXK
-         nDlOwU4BlhrwB+TRN7/iGevm1jF3DDLtRs/o7kPL+YeMoWghte2boT/DDpp2qaaAlDA1
-         3Vhw==
-X-Gm-Message-State: AO0yUKWr0DRTqYB9l5CaME6FSyUJFqrgo4xN6WP5U6p29spHxaiKdUKR
-        XXPkKEtl4cK85LuBNpTI9eM=
-X-Google-Smtp-Source: AK7set9kPUyO2tqskMFIjmohwHr55/0vIZxq/Rj5e6uD0Tk3TSB06pzUAhxBQ9InphwVnHnP3aNyUw==
-X-Received: by 2002:a05:6a20:7d88:b0:cc:fa4b:3a6a with SMTP id v8-20020a056a207d8800b000ccfa4b3a6amr21943956pzj.58.1678231996272;
-        Tue, 07 Mar 2023 15:33:16 -0800 (PST)
+        bh=ZWY3pu1sUBwgULLA58qBvOo9hTklUr6qi9NkTdBlOtc=;
+        b=yEEb2jPYQyqE+4tqyv2mMZ2LzgThHa2Ibo1Wlz1+uYCrfXaNOWKK3RAykXLtAvEC9r
+         BIjbrB1iBlCrzDrsLB+DTxC5eAl9ENGQmcUhMLBOGfDAp+06K6E6EhcSw3VPRuErKNFC
+         2BYVdjrVudqYcbkHBkSy81NlVz0qw4xoDl2LLBhd6CeY51Mm/hSnw+hlrx30Dz9eRW/t
+         t8HAkfEkuDVMViaIrzvKCJReHEvEUij9XmPRbWojpp4K14vPEmbFxvxdUk7eFBG4j1Kc
+         fLKAPwVEn8fLpVdtGBx29GDonPTme8Wo3WqwchR2ai0uy+2tPY0uxoN0wFEcxW9x5vEu
+         Cqgw==
+X-Gm-Message-State: AO0yUKXkYnITP18Djh/R5kBK7nr0eDJCIfduQJ/ADv9f2kfm/NvcqQsF
+        5dp4gQjBjS86IFBcDaUHa4w=
+X-Google-Smtp-Source: AK7set9rLaCbqxNnlXw1sJRbLyeuvpCGZBY4hj1WshFCtlfJczEMbKp6EoyMzR5lHx1hMTV0rdAiiA==
+X-Received: by 2002:aa7:940b:0:b0:5a8:b705:4dd3 with SMTP id x11-20020aa7940b000000b005a8b7054dd3mr14090118pfo.13.1678231997817;
+        Tue, 07 Mar 2023 15:33:17 -0800 (PST)
 Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:15e8:b801:cd55:a496])
-        by smtp.gmail.com with ESMTPSA id l11-20020a62be0b000000b005da23d8cbffsm8342217pff.158.2023.03.07.15.33.14
+        by smtp.gmail.com with ESMTPSA id l11-20020a62be0b000000b005da23d8cbffsm8342217pff.158.2023.03.07.15.33.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Mar 2023 15:33:15 -0800 (PST)
+        Tue, 07 Mar 2023 15:33:17 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -66,9 +66,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 2/9] perf bpf filter: Implement event sample filtering
-Date:   Tue,  7 Mar 2023 15:33:02 -0800
-Message-Id: <20230307233309.3546160-3-namhyung@kernel.org>
+Subject: [PATCH 3/9] perf record: Add BPF event filter support
+Date:   Tue,  7 Mar 2023 15:33:03 -0800
+Message-Id: <20230307233309.3546160-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
 In-Reply-To: <20230307233309.3546160-1-namhyung@kernel.org>
 References: <20230307233309.3546160-1-namhyung@kernel.org>
@@ -84,362 +84,190 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The BPF program will be attached to a perf_event and be triggered when
-it overflows.  It'd iterate the filters map and compare the sample
-value according to the expression.  If any of them fails, the sample
-would be dropped.
+Use --filter option to set BPF filter for generic events other than the
+tracepoints or Intel PT.  The BPF program will check the sample data and
+filter according to the expression.
 
-Also it needs to have the corresponding sample data for the expression
-so it compares data->sample_flags with the given value.  To access the
-sample data, it uses the bpf_cast_to_kern_ctx() kfunc which was added
-in v6.2 kernel.
+For example, the below is the typical perf record for frequency mode.
+The sample period started from 1 and increased gradually.
+
+$ sudo ./perf record -e cycles true
+$ sudo ./perf script
+       perf-exec 2272336 546683.916875:          1 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+       perf-exec 2272336 546683.916892:          1 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+       perf-exec 2272336 546683.916899:          3 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+       perf-exec 2272336 546683.916905:         17 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+       perf-exec 2272336 546683.916911:        100 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+       perf-exec 2272336 546683.916917:        589 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+       perf-exec 2272336 546683.916924:       3470 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+       perf-exec 2272336 546683.916930:      20465 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+            true 2272336 546683.916940:     119873 cycles:  ffffffff8283afdd perf_iterate_ctx+0x2d ([kernel.kallsyms])
+            true 2272336 546683.917003:     461349 cycles:  ffffffff82892517 vma_interval_tree_insert+0x37 ([kernel.kallsyms])
+            true 2272336 546683.917237:     635778 cycles:  ffffffff82a11400 security_mmap_file+0x20 ([kernel.kallsyms])
+
+When you add a BPF filter to get samples having periods greater than 1000,
+the output would look like below:
+
+$ sudo ./perf record -e cycles --filter 'period > 1000' true
+$ sudo ./perf script
+       perf-exec 2273949 546850.708501:       5029 cycles:  ffffffff826f9e25 finish_wait+0x5 ([kernel.kallsyms])
+       perf-exec 2273949 546850.708508:      32409 cycles:  ffffffff826f9e25 finish_wait+0x5 ([kernel.kallsyms])
+       perf-exec 2273949 546850.708526:     143369 cycles:  ffffffff82b4cdbf xas_start+0x5f ([kernel.kallsyms])
+       perf-exec 2273949 546850.708600:     372650 cycles:  ffffffff8286b8f7 __pagevec_lru_add+0x117 ([kernel.kallsyms])
+       perf-exec 2273949 546850.708791:     482953 cycles:  ffffffff829190de __mod_memcg_lruvec_state+0x4e ([kernel.kallsyms])
+            true 2273949 546850.709036:     501985 cycles:  ffffffff828add7c tlb_gather_mmu+0x4c ([kernel.kallsyms])
+            true 2273949 546850.709292:     503065 cycles:      7f2446d97c03 _dl_map_object_deps+0x973 (/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
 
 Acked-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/Makefile.perf                     |   2 +-
- tools/perf/util/bpf-filter.c                 |  64 ++++++++++
- tools/perf/util/bpf-filter.h                 |  26 ++--
- tools/perf/util/bpf_skel/sample-filter.h     |  24 ++++
- tools/perf/util/bpf_skel/sample_filter.bpf.c | 126 +++++++++++++++++++
- tools/perf/util/evsel.h                      |   7 +-
- 6 files changed, 236 insertions(+), 13 deletions(-)
- create mode 100644 tools/perf/util/bpf_skel/sample-filter.h
- create mode 100644 tools/perf/util/bpf_skel/sample_filter.bpf.c
+ tools/perf/Documentation/perf-record.txt | 15 +++++++++++---
+ tools/perf/util/bpf_counter.c            |  3 +--
+ tools/perf/util/evlist.c                 | 25 +++++++++++++++++-------
+ tools/perf/util/evsel.c                  |  2 ++
+ tools/perf/util/parse-events.c           |  8 +++-----
+ 5 files changed, 36 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index bac9272682b7..474af4adea95 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -1047,7 +1047,7 @@ SKELETONS := $(SKEL_OUT)/bpf_prog_profiler.skel.h
- SKELETONS += $(SKEL_OUT)/bperf_leader.skel.h $(SKEL_OUT)/bperf_follower.skel.h
- SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h $(SKEL_OUT)/func_latency.skel.h
- SKELETONS += $(SKEL_OUT)/off_cpu.skel.h $(SKEL_OUT)/lock_contention.skel.h
--SKELETONS += $(SKEL_OUT)/kwork_trace.skel.h
-+SKELETONS += $(SKEL_OUT)/kwork_trace.skel.h $(SKEL_OUT)/sample_filter.skel.h
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index ff815c2f67e8..9f7b43a3086d 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -119,9 +119,12 @@ OPTIONS
+ 	  "perf report" to view group events together.
  
- $(SKEL_TMP_OUT) $(LIBAPI_OUTPUT) $(LIBBPF_OUTPUT) $(LIBPERF_OUTPUT) $(LIBSUBCMD_OUTPUT) $(LIBSYMBOL_OUTPUT):
- 	$(Q)$(MKDIR) -p $@
-diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-index c72e35d51240..f20e1bc03778 100644
---- a/tools/perf/util/bpf-filter.c
-+++ b/tools/perf/util/bpf-filter.c
-@@ -1,10 +1,74 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #include <stdlib.h>
+ --filter=<filter>::
+-        Event filter. This option should follow an event selector (-e) which
+-	selects either tracepoint event(s) or a hardware trace PMU
+-	(e.g. Intel PT or CoreSight).
++	Event filter.  This option should follow an event selector (-e).
++	If the event is a tracepoint, the filter string will be parsed by
++	the kernel.  If the event is a hardware trace PMU (e.g. Intel PT
++	or CoreSight), it'll be processed as an address filter.  Otherwise
++	it means a general filter using BPF which can be applied for any
++	kind of event.
  
-+#include <bpf/bpf.h>
-+#include <linux/err.h>
-+#include <internal/xyarray.h>
-+
-+#include "util/debug.h"
-+#include "util/evsel.h"
-+
- #include "util/bpf-filter.h"
- #include "util/bpf-filter-flex.h"
- #include "util/bpf-filter-bison.h"
+ 	- tracepoint filters
  
-+#include "bpf_skel/sample-filter.h"
-+#include "bpf_skel/sample_filter.skel.h"
+@@ -174,6 +177,12 @@ OPTIONS
+ 	within a single mapping.  MMAP events (or /proc/<pid>/maps) can be
+ 	examined to determine if that is a possibility.
+ 
++	- bpf filters
 +
-+#define FD(e, x, y) (*(int *)xyarray__entry(e->core.fd, x, y))
++	A BPF filter can access the sample data and make a decision based on the
++	data.  Users need to set an appropriate sample type to use the BPF
++	filter.
 +
-+int perf_bpf_filter__prepare(struct evsel *evsel)
-+{
-+	int i, x, y, fd;
-+	struct sample_filter_bpf *skel;
-+	struct bpf_program *prog;
-+	struct bpf_link *link;
-+	struct perf_bpf_filter_expr *expr;
-+
-+	skel = sample_filter_bpf__open_and_load();
-+	if (!skel) {
-+		pr_err("Failed to load perf sample-filter BPF skeleton\n");
-+		return -1;
-+	}
-+
-+	i = 0;
-+	fd = bpf_map__fd(skel->maps.filters);
-+	list_for_each_entry(expr, &evsel->bpf_filters, list) {
-+		struct perf_bpf_filter_entry entry = {
-+			.op = expr->op,
-+			.flags = expr->sample_flags,
-+			.value = expr->val,
-+		};
-+		bpf_map_update_elem(fd, &i, &entry, BPF_ANY);
-+		i++;
-+	}
-+
-+	prog = skel->progs.perf_sample_filter;
-+	for (x = 0; x < xyarray__max_x(evsel->core.fd); x++) {
-+		for (y = 0; y < xyarray__max_y(evsel->core.fd); y++) {
-+			link = bpf_program__attach_perf_event(prog, FD(evsel, x, y));
-+			if (IS_ERR(link)) {
-+				pr_err("Failed to attach perf sample-filter program\n");
-+				return PTR_ERR(link);
+ 	Multiple filters can be separated with space or comma.
+ 
+ --exclude-perf::
+diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+index eeee899fcf34..0414385794ee 100644
+--- a/tools/perf/util/bpf_counter.c
++++ b/tools/perf/util/bpf_counter.c
+@@ -781,8 +781,7 @@ extern struct bpf_counter_ops bperf_cgrp_ops;
+ 
+ static inline bool bpf_counter_skip(struct evsel *evsel)
+ {
+-	return list_empty(&evsel->bpf_counter_list) &&
+-		evsel->follower_skel == NULL;
++	return evsel->bpf_counter_ops == NULL;
+ }
+ 
+ int bpf_counter__install_pe(struct evsel *evsel, int cpu_map_idx, int fd)
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 817df2504a1e..648bddfb8441 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -31,6 +31,7 @@
+ #include "util/evlist-hybrid.h"
+ #include "util/pmu.h"
+ #include "util/sample.h"
++#include "util/bpf-filter.h"
+ #include <signal.h>
+ #include <unistd.h>
+ #include <sched.h>
+@@ -1086,17 +1087,27 @@ int evlist__apply_filters(struct evlist *evlist, struct evsel **err_evsel)
+ 	int err = 0;
+ 
+ 	evlist__for_each_entry(evlist, evsel) {
+-		if (evsel->filter == NULL)
+-			continue;
+-
+ 		/*
+ 		 * filters only work for tracepoint event, which doesn't have cpu limit.
+ 		 * So evlist and evsel should always be same.
+ 		 */
+-		err = perf_evsel__apply_filter(&evsel->core, evsel->filter);
+-		if (err) {
+-			*err_evsel = evsel;
+-			break;
++		if (evsel->filter) {
++			err = perf_evsel__apply_filter(&evsel->core, evsel->filter);
++			if (err) {
++				*err_evsel = evsel;
++				break;
 +			}
 +		}
-+	}
-+	evsel->bpf_skel = skel;
-+	return 0;
-+}
 +
-+int perf_bpf_filter__destroy(struct evsel *evsel)
-+{
-+	struct perf_bpf_filter_expr *expr, *tmp;
-+
-+	list_for_each_entry_safe(expr, tmp, &evsel->bpf_filters, list) {
-+		list_del(&expr->list);
-+		free(expr);
-+	}
-+	sample_filter_bpf__destroy(evsel->bpf_skel);
-+	return 0;
-+}
-+
- struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flags,
- 						       enum perf_bpf_filter_op op,
- 						       unsigned long val)
-diff --git a/tools/perf/util/bpf-filter.h b/tools/perf/util/bpf-filter.h
-index 93a0d3de038c..eb8e1ac43cdf 100644
---- a/tools/perf/util/bpf-filter.h
-+++ b/tools/perf/util/bpf-filter.h
-@@ -4,15 +4,7 @@
++		/*
++		 * non-tracepoint events can have BPF filters.
++		 */
++		if (!list_empty(&evsel->bpf_filters)) {
++			err = perf_bpf_filter__prepare(evsel);
++			if (err) {
++				*err_evsel = evsel;
++				break;
++			}
+ 		}
+ 	}
  
- #include <linux/list.h>
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 51e8ce6edddc..cae624fde026 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -50,6 +50,7 @@
+ #include "off_cpu.h"
+ #include "../perf-sys.h"
+ #include "util/parse-branch-options.h"
++#include "util/bpf-filter.h"
+ #include <internal/xyarray.h>
+ #include <internal/lib.h>
+ #include <internal/threadmap.h>
+@@ -1494,6 +1495,7 @@ void evsel__exit(struct evsel *evsel)
+ 	assert(list_empty(&evsel->core.node));
+ 	assert(evsel->evlist == NULL);
+ 	bpf_counter__destroy(evsel);
++	perf_bpf_filter__destroy(evsel);
+ 	evsel__free_counts(evsel);
+ 	perf_evsel__free_fd(&evsel->core);
+ 	perf_evsel__free_id(&evsel->core);
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 0336ff27c15f..4371a2bb2564 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -27,6 +27,7 @@
+ #include "perf.h"
+ #include "util/parse-events-hybrid.h"
+ #include "util/pmu-hybrid.h"
++#include "util/bpf-filter.h"
+ #include "tracepoint.h"
+ #include "thread_map.h"
  
--enum perf_bpf_filter_op {
--	PBF_OP_EQ,
--	PBF_OP_NEQ,
--	PBF_OP_GT,
--	PBF_OP_GE,
--	PBF_OP_LT,
--	PBF_OP_LE,
--	PBF_OP_AND,
--};
-+#include "bpf_skel/sample-filter.h"
+@@ -2537,11 +2538,8 @@ static int set_filter(struct evsel *evsel, const void *arg)
+ 		perf_pmu__scan_file(pmu, "nr_addr_filters",
+ 				    "%d", &nr_addr_filters);
  
- struct perf_bpf_filter_expr {
- 	struct list_head list;
-@@ -21,16 +13,30 @@ struct perf_bpf_filter_expr {
- 	unsigned long val;
- };
+-	if (!nr_addr_filters) {
+-		fprintf(stderr,
+-			"This CPU does not support address filtering\n");
+-		return -1;
+-	}
++	if (!nr_addr_filters)
++		return perf_bpf_filter__parse(&evsel->bpf_filters, str);
  
-+struct evsel;
-+
- #ifdef HAVE_BPF_SKEL
- struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flags,
- 						       enum perf_bpf_filter_op op,
- 						       unsigned long val);
- int perf_bpf_filter__parse(struct list_head *expr_head, const char *str);
-+int perf_bpf_filter__prepare(struct evsel *evsel);
-+int perf_bpf_filter__destroy(struct evsel *evsel);
-+
- #else /* !HAVE_BPF_SKEL */
-+
- static inline int perf_bpf_filter__parse(struct list_head *expr_head __maybe_unused,
- 					 const char *str __maybe_unused)
- {
--	return -ENOSYS;
-+	return -EOPNOTSUPP;
-+}
-+static inline int perf_bpf_filter__prepare(struct evsel *evsel __maybe_unused)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int perf_bpf_filter__destroy(struct evsel *evsel __maybe_unused)
-+{
-+	return -EOPNOTSUPP;
- }
- #endif /* HAVE_BPF_SKEL*/
- #endif /* PERF_UTIL_BPF_FILTER_H */
-diff --git a/tools/perf/util/bpf_skel/sample-filter.h b/tools/perf/util/bpf_skel/sample-filter.h
-new file mode 100644
-index 000000000000..862060bfda14
---- /dev/null
-+++ b/tools/perf/util/bpf_skel/sample-filter.h
-@@ -0,0 +1,24 @@
-+#ifndef PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H
-+#define PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H
-+
-+#define MAX_FILTERS  32
-+
-+/* supported filter operations */
-+enum perf_bpf_filter_op {
-+	PBF_OP_EQ,
-+	PBF_OP_NEQ,
-+	PBF_OP_GT,
-+	PBF_OP_GE,
-+	PBF_OP_LT,
-+	PBF_OP_LE,
-+	PBF_OP_AND
-+};
-+
-+/* BPF map entry for filtering */
-+struct perf_bpf_filter_entry {
-+	enum perf_bpf_filter_op op;
-+	__u64 flags;
-+	__u64 value;
-+};
-+
-+#endif /* PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H */
-\ No newline at end of file
-diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
-new file mode 100644
-index 000000000000..c07256279c3e
---- /dev/null
-+++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+// Copyright (c) 2023 Google
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+#include "sample-filter.h"
-+
-+/* BPF map that will be filled by user space */
-+struct filters {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, struct perf_bpf_filter_entry);
-+	__uint(max_entries, MAX_FILTERS);
-+} filters SEC(".maps");
-+
-+int dropped;
-+
-+void *bpf_cast_to_kern_ctx(void *) __ksym;
-+
-+/* new kernel perf_sample_data definition */
-+struct perf_sample_data___new {
-+	__u64 sample_flags;
-+} __attribute__((preserve_access_index));
-+
-+/* helper function to return the given perf sample data */
-+static inline __u64 perf_get_sample(struct bpf_perf_event_data_kern *kctx,
-+				    struct perf_bpf_filter_entry *entry)
-+{
-+	struct perf_sample_data___new *data = (void *)kctx->data;
-+
-+	if (!bpf_core_field_exists(data->sample_flags) ||
-+	    (data->sample_flags & entry->flags) == 0)
-+		return 0;
-+
-+	switch (entry->flags) {
-+	case PERF_SAMPLE_IP:
-+		return kctx->data->ip;
-+	case PERF_SAMPLE_ID:
-+		return kctx->data->id;
-+	case PERF_SAMPLE_TID:
-+		return kctx->data->tid_entry.tid;
-+	case PERF_SAMPLE_CPU:
-+		return kctx->data->cpu_entry.cpu;
-+	case PERF_SAMPLE_TIME:
-+		return kctx->data->time;
-+	case PERF_SAMPLE_ADDR:
-+		return kctx->data->addr;
-+	case PERF_SAMPLE_PERIOD:
-+		return kctx->data->period;
-+	case PERF_SAMPLE_TRANSACTION:
-+		return kctx->data->txn;
-+	case PERF_SAMPLE_WEIGHT:
-+		return kctx->data->weight.full;
-+	case PERF_SAMPLE_PHYS_ADDR:
-+		return kctx->data->phys_addr;
-+	case PERF_SAMPLE_CODE_PAGE_SIZE:
-+		return kctx->data->code_page_size;
-+	case PERF_SAMPLE_DATA_PAGE_SIZE:
-+		return kctx->data->data_page_size;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+/* BPF program to be called from perf event overflow handler */
-+SEC("perf_event")
-+int perf_sample_filter(void *ctx)
-+{
-+	struct bpf_perf_event_data_kern *kctx;
-+	struct perf_bpf_filter_entry *entry;
-+	__u64 sample_data;
-+	int i;
-+
-+	kctx = bpf_cast_to_kern_ctx(ctx);
-+
-+	for (i = 0; i < MAX_FILTERS; i++) {
-+		int key = i; /* needed for verifier :( */
-+
-+		entry = bpf_map_lookup_elem(&filters, &key);
-+		if (entry == NULL)
-+			break;
-+		sample_data = perf_get_sample(kctx, entry);
-+
-+		switch (entry->op) {
-+		case PBF_OP_EQ:
-+			if (!(sample_data == entry->value))
-+				goto drop;
-+			break;
-+		case PBF_OP_NEQ:
-+			if (!(sample_data != entry->value))
-+				goto drop;
-+			break;
-+		case PBF_OP_GT:
-+			if (!(sample_data > entry->value))
-+				goto drop;
-+			break;
-+		case PBF_OP_GE:
-+			if (!(sample_data >= entry->value))
-+				goto drop;
-+			break;
-+		case PBF_OP_LT:
-+			if (!(sample_data < entry->value))
-+				goto drop;
-+			break;
-+		case PBF_OP_LE:
-+			if (!(sample_data <= entry->value))
-+				goto drop;
-+			break;
-+		case PBF_OP_AND:
-+			if (!(sample_data & entry->value))
-+				goto drop;
-+			break;
-+		}
-+	}
-+	/* generate sample data */
-+	return 1;
-+
-+drop:
-+	__sync_fetch_and_add(&dropped, 1);
-+	return 0;
-+}
-+
-+char LICENSE[] SEC("license") = "Dual BSD/GPL";
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 814a49ebb7e3..d876ea134bf8 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -151,8 +151,10 @@ struct evsel {
- 	 */
- 	struct bpf_counter_ops	*bpf_counter_ops;
- 
--	/* for perf-stat -b */
--	struct list_head	bpf_counter_list;
-+	union {
-+		struct list_head	bpf_counter_list; /* for perf-stat -b */
-+		struct list_head	bpf_filters; /* for perf-record --filter */
-+	};
- 
- 	/* for perf-stat --use-bpf */
- 	int			bperf_leader_prog_fd;
-@@ -160,6 +162,7 @@ struct evsel {
- 	union {
- 		struct bperf_leader_bpf *leader_skel;
- 		struct bperf_follower_bpf *follower_skel;
-+		void *bpf_skel;
- 	};
- 	unsigned long		open_flags;
- 	int			precise_ip_original;
+ 	if (evsel__append_addr_filter(evsel, str) < 0) {
+ 		fprintf(stderr,
 -- 
 2.40.0.rc1.284.g88254d51c5-goog
 
