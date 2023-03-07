@@ -2,120 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE626AEB7A
-	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 18:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D531E6AEC4A
+	for <lists+bpf@lfdr.de>; Tue,  7 Mar 2023 18:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbjCGRpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 12:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53900 "EHLO
+        id S232276AbjCGRxw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 12:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232111AbjCGRoq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 12:44:46 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCFFA224E
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 09:40:29 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 85143B819BD
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 17:40:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 48440C4339B;
-        Tue,  7 Mar 2023 17:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678210823;
-        bh=0bpNRWBJM0h+HZqybL6RrGk9DzYu2MzSSLBscotWTZk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LClQZmRT9ZjhS2Y+kSw/KgsTsjl4NfJR9sE12tEsbCRGr1F5j9d8ge/KQKHKpCbTN
-         dBNuQwqX2MiA+wXf8zN248s34vTmgVYOMZghQaJB2p9bD3b64rA488F40Ogjc54wHz
-         9COJkQhH3dyRzAoIj6zLkB2uKr9PuHqDhyvdTwFubgMyJOWoeDyF9C/bGIm5RVG5+D
-         LCce/wmF9ua911v4aY21dx4dpkCU60mDHIhaCiUzn3Eoyq/PN2EKBvjjRyF4fCieqz
-         wildF0QcXSAfckjVtOid7Otd5TjDnV1YFshTCL73bK3s11B/wVxGKJ7BveAu6xYfZs
-         TK+ZlNRhQL6Pg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 272F3E61B65;
-        Tue,  7 Mar 2023 17:40:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229885AbjCGRxe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 12:53:34 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D060303F3;
+        Tue,  7 Mar 2023 09:48:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678211289; x=1709747289;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=CseGsboymzeRp0eTjTdXNQMvYr/oAqXs/xDFdB+CdIs=;
+  b=C7xMfMiNnB7zKMwKTB5wQJF64b7Y+wiUdHyptFXCY1teNK1KE6gCSt0T
+   yO4/nEzFY23ItSkjRBmqFe/cO/dpw7voNNpsQNDZhn+MtrUwgn2RmRQJF
+   TinABp349wC80a1fKCUV34X1vJTgW/wiYryhhi45ci/Gqzl/JhYQbUArR
+   2osbOXE47p/HdCpfl/NmIFmMI6KVN53UzDr8Ecep82j+jEHpS3XF0UAro
+   gAkhUaADGQIKokXOL8OLWwo0prrOSXx9jq3KY6U5rU65/KyfJvheGRiYl
+   eyTwXYjRBzOoFt3SB7w3sQhkBcZ4WiM33Nrbbv+pOeevC/47PidpWh0DU
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="398500884"
+X-IronPort-AV: E=Sophos;i="5.98,241,1673942400"; 
+   d="scan'208";a="398500884"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2023 09:48:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="786774620"
+X-IronPort-AV: E=Sophos;i="5.98,241,1673942400"; 
+   d="scan'208";a="786774620"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga002.fm.intel.com with ESMTP; 07 Mar 2023 09:48:08 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 7 Mar 2023 09:48:08 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 7 Mar 2023 09:48:07 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Tue, 7 Mar 2023 09:48:07 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.21; Tue, 7 Mar 2023 09:48:07 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YzJCUJftO8SgFUcEzc/YmFmXgr9J80Yt6pDI9PwpMQzq4Fx6RbHg7QV3R0ESzn1NVrSCJGSgZ4zEkpaQp9Pz8Jz+tnagVfUiDT+9z94B/sGP9BCcrF7KR3zH9XEaiJJnLO0UAO47khWMs705CqBb02joX7QfrIymK2PoWWrNoWvtVi0TRjj5CFeSHnnA7zpY/JNEub6XnBy9mz+h10iJTzUROmUdZa7CboqtlVH7w0IQlSe1lJX9bTTqvkaIzzqKLKNcRM/9FAB2ZpZWkHVe5ySh22AwS8fErYKGbUTCIMNnSkX5jVxxE3JMFF4kue0QZ5IW74M+nyzn60YGApJmag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ThrXkA+N7rjNut62oiJqq8WtB31JGrZV6lIBwxqxO0w=;
+ b=kHmMn9I0HiLZEiIGfJAJbrsSyUGnxBb/2wkE5emnpFaCKjeMnmtzfSZhREY1P875+IYdAVn5y5hnDiVmCzHTiDbKIiIuVgRK/HJu6OYovMD1SE/319tQzWpkMGVNerkJy939x3CWc6f/NsUe9VbfPCHfSFL3zGB7zT7tfWHDkrZahPaa3Hemq7jetLEQ5bSGbmKM9F7tw7VJmBDUIu2SffLQDNv6qGdKVi24fdHjtfx1ICePUfO5XyoTrbHdhDY6VEGL0KbUYr2wJiIM1X3uzq4f1kelouNwTLShr2SQBBZYTFlGkONfK5+918eBMrY1vbkoRwjn5rdU/WThzfdp0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by BN9PR11MB5513.namprd11.prod.outlook.com (2603:10b6:408:102::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.19; Tue, 7 Mar
+ 2023 17:48:05 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::3ff6:ca60:f9fe:6934]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::3ff6:ca60:f9fe:6934%4]) with mapi id 15.20.6156.029; Tue, 7 Mar 2023
+ 17:48:05 +0000
+Message-ID: <ee0aa756-4a9c-1d7a-4179-78024e41d37e@intel.com>
+Date:   Tue, 7 Mar 2023 18:47:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] xsk: Add missing overflow check in xdp_umem_reg
+Content-Language: en-US
+To:     Kal Conley <kal.conley@dectris.com>
+CC:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230307172306.786657-1-kal.conley@dectris.com>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20230307172306.786657-1-kal.conley@dectris.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0151.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:98::14) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 00/18] bpf: bpf memory usage 
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167821082315.1693.6957546778534183486.git-patchwork-notify@kernel.org>
-Date:   Tue, 07 Mar 2023 17:40:23 +0000
-References: <20230305124615.12358-1-laoar.shao@gmail.com>
-In-Reply-To: <20230305124615.12358-1-laoar.shao@gmail.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, horenc@vt.edu,
-        xiyou.wangcong@gmail.com, houtao1@huawei.com, bpf@vger.kernel.org
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|BN9PR11MB5513:EE_
+X-MS-Office365-Filtering-Correlation-Id: ed10018b-5ddf-4962-2a18-08db1f341aa7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3rbXXFEV89yNS/FhzBIvUC9nQlM9RnVDcJIanNRQ7e8MTmH03ta7sCfaIjnyyFJBP4CkoYBvNRZjVfDw9pzwQwSPkkBtFyiwcf4BcVFWBh7hfNDnpvloDZ57gyNVwrTkKBWKx2qP08K20sfLlhyw9h8xCul4JSKm4PQwqnwdYV1R3pZs4l/i9wmrWcUWvSVeKkX4lqIt8cURuHNHjy+1iqSNcIEwPr+Mjv6M2jhNYZGczOqkIjlw4P5mAjT7tC2tBAyIvQalXmEkWiShjHfV2ljvfoQFThk9GEvD632vESdJ/yVrWM0VpelUhp8ST0Ttu+tZ5y/1ZVwCuaqUdarGnYA9orISMnL0/I3iZAMXVKSag6aG0hYIEzjpekHP9uHIcdoh2fNnZq2Co3mCPEkfwhotalCeNBbP4oVXDmgUuUij+d1ya3Zc27xo1foLhP0NRYgUwxWxXlJEpzWI/mvynhl/7cCV4h7wv606yA0wNkQJnUO7vBWWDQQkCrXX8DNZmyp9P5UBPl/5kmj+G+zlOlm897YtX6LlQetrZ4v2E8uVKyIPQCRPk0+njNfT31q86La3MsmBh3zujxeMrAwU/PG9PAg0JD8S2PBT/PdUZVbbiGlvzTy53WYh80grleZsQB0AxAYGpS+/j5EDsv78HNffyydFFI09iISio6cjYBAqTDWhNQnChB8DBezipJcVUoegwLGt2a8qw0zEbIp2yBObAlKP/IfrQGkJ68pl24Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(136003)(376002)(346002)(366004)(396003)(39860400002)(451199018)(4326008)(66556008)(6916009)(83380400001)(66476007)(66946007)(8676002)(6486002)(36756003)(54906003)(478600001)(316002)(86362001)(31696002)(41300700001)(6666004)(2616005)(26005)(186003)(6512007)(6506007)(31686004)(2906002)(5660300002)(8936002)(7416002)(38100700002)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NkV3amNnVHFPSit1eWNVLzd0NTZpT3Y4algrZE9GekF3OWd5N1lZVnV5QjFi?=
+ =?utf-8?B?UCtSdkdKd0o4V2xyUW8wK2FnVWpuaUtqdzJIOUM3YkMzYkt0MTM1T3ptNVE2?=
+ =?utf-8?B?YWtzbnhJTnRsNkk3SW1LK0o2MnRGczdhTHlqN2dtQklGRUhqc3cvVFVFOEJC?=
+ =?utf-8?B?Rm1yc1VmUmhXWmhkZ0dweldMTzZ4K0cyTkZkdEtZSmZ6N0NyKzNZc2l1SXdQ?=
+ =?utf-8?B?RENjaTZCSktSbVg1MTlZM3JLTElLM3BZVTNIRlFySEhRdXNZRWUxVE9GR2NE?=
+ =?utf-8?B?bzNYQXFYOVdLckVIMzBpZHVVb3dSY2tBcS81dWEwNk5URnN4SUI3Y3NmOXY1?=
+ =?utf-8?B?UDN5a2JBemE1UW5IS25BM3pPUnVSdEtPTGdXQ3R3SEpqaXdybGtKeVVFK2ox?=
+ =?utf-8?B?aGJmMklTekx0b1I2eDRXUmNZVVJvNHBWaXlLUlFaR0JIaSs3QWpCVTlEcTM4?=
+ =?utf-8?B?dDh4VlM4SUhoWnFWZURFZ2gybjhzVytJV0ZsSmtabmd2NUp3WHA4N3A2cDRK?=
+ =?utf-8?B?ZWpvSG1BdDZDYmFVRlJ4Um9SSWJPdVFDSjhaNGZycG9YbVVoU1I1aWk4L1NX?=
+ =?utf-8?B?aHBFamVoQjBZSmh5MHRxSm1wbHRaWk01TlU4SlIrcXovZUlyUDNRK1JXMlpH?=
+ =?utf-8?B?Mnc3Nnd1YUdLVW0zakZ1R2hOTDlVbTU2NmVoeHhuUEZxSDdzYytjYUtSRFBS?=
+ =?utf-8?B?WUpzdTBxbUhUWjNOTmlNdHkvaVA2ZkRvMkRtMjNZejdUZEovWFpjbUEreVZ6?=
+ =?utf-8?B?Q2dLYjVVaHQ3b2JyS1FYcHdGNlpEOEIxY2lwTXF6RExaOFVENXBZektDTnYw?=
+ =?utf-8?B?bUhEb1RwcXlqU2tiaUZXMnRxamhTV1JBUGJxdmNIQkFEQXcvRnVZRlB5N011?=
+ =?utf-8?B?TVZRRDBWVEhrc0Y5d0MzVFZyNmJwUFVsNjlySWx2TUovK0FNSDZZcXF6bXZR?=
+ =?utf-8?B?M1ZjZ0dJcm5ZNm8xcnV0L28xUmVuV1ErQ3huNmE0TkRsRUo1K05hNk5pQVBs?=
+ =?utf-8?B?VCtURWR3U2QyamlzdVMwOWR5a3EzTWRrVmNvSGFBV0dhU05MdWZ6Zm40N0pt?=
+ =?utf-8?B?a2V1d2VmVndDZFZPMUIzZ1lCYWpwWEdHcWVCenNHL011VzZYQURtVDBJSTZD?=
+ =?utf-8?B?dDVjTy9BMjB5K1dmZmtON1hGRE45bHplM2RQd2pKUzhIVnRRTlhxZ1dCQ0pK?=
+ =?utf-8?B?TFBQejIyZHJpdVNhSFN6cjlqYWY1dTJvcitmVWUyZHVvUUQrMGMxOU1XVE1h?=
+ =?utf-8?B?VmNMZ1RJWUpQV0Z3dzBTQlhndm0xdjBKa0x0YW9GODZiYlp1all2ZmViNmd0?=
+ =?utf-8?B?VHlUQVZ2S09FQ3llMGpYcnpqVm9Hck1VMFdBcDU0QVR6QU1ORlBjODlYQzZH?=
+ =?utf-8?B?WmxHZUJ5V3VvWlppZWg5alR1eisrVHdGZjhxNFNOemRzNDY3d1J4ckFvNE9w?=
+ =?utf-8?B?cUpDaTI3b1J2RDRQa1QyYWs3YURucndyWkRBSk9IQnFYb2k4VjRTQmtSbjFr?=
+ =?utf-8?B?L3FUbXlONGo5aUsyR0Jtd0pucDRldmlTWk5qN0Fqa3JmamNFNWtNWlltVWZj?=
+ =?utf-8?B?RXpzbElqVHFRZ0FrMU1VVFdTOEh6WVJPRXpGM0QvVGsxWUtMdVllZzhsUTBz?=
+ =?utf-8?B?MGgxY25rcHJIK1gvQjhCaVZPZzVPVndodkhqZ2tYVHk4ZFcyZm1Jb1k2djNZ?=
+ =?utf-8?B?QzJ1UEFSY3JNMjBTelRxbGxQWEZiTUlOYzJqSkk4bktMSXhDVEM2bng1b2pF?=
+ =?utf-8?B?cUllVEVsbUNDa0JUS1lKNkRLYi8ybFhldHVzSnBOUXo3TEhxUTdjRDlHaHAv?=
+ =?utf-8?B?VUlnakRXMnVqLzYyRjN3TUllK3pUTmw5TGp3UDBIQThYcU92cEtNbUUyNGdZ?=
+ =?utf-8?B?V3hkUmFPODFqUUlXYWI1Um1kYktLeTBCSlRXaGpEM1VpY2RoeHppclUyL2Zn?=
+ =?utf-8?B?ZWdERlVYcUU1WCtTL09Dc1JmTUs5QUpGdFBmQnBaNGhpY1haQnAxWDE0YzVw?=
+ =?utf-8?B?RTZYeG1HUXNNRHd3YmtGZG5SU0EwNDNRckZzNytXK21YUUVxSm1RTnp5bWsv?=
+ =?utf-8?B?L3lPaUlrd1E2TFpsY2R4NkNuUzY3TE12RlgwQzBVbVVqUXIwa0hsWTlEdkdT?=
+ =?utf-8?B?S21yU2ZmNGN1TlAvRjBtMERuR0JHZUIrd1p6TysrWVRDNFZVS243bytoblFW?=
+ =?utf-8?Q?KfxbUFYycqnUE8ENqPO7ZWo=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed10018b-5ddf-4962-2a18-08db1f341aa7
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2023 17:48:05.1324
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3zDpeyR2RkhbExCygpt4xz7OV/etL4vTGatOs4F4cNZR4JASnduC/SXA+07DvcuFxqLVIoaNKaIt3lxYK5t1uHmV4WQ2SRbj8jufEkU5ch0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5513
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+From: Kal Conley <kal.conley@dectris.com>
+Date: Tue,  7 Mar 2023 18:23:06 +0100
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Sun,  5 Mar 2023 12:45:57 +0000 you wrote:
-> Currently we can't get bpf memory usage reliably either from memcg or
-> from bpftool.
+> The number of chunks can overflow u32. Make sure to return -EINVAL on
+> overflow.
 > 
-> In memcg, there's not a 'bpf' item in memory.stat, but only 'kernel',
-> 'sock', 'vmalloc' and 'percpu' which may related to bpf memory. With
-> these items we still can't get the bpf memory usage, because bpf memory
-> usage may far less than the kmem in a memcg, for example, the dentry may
-> consume lots of kmem.
+> Fixes: bbff2f321a86 ("xsk: new descriptor addressing scheme")
+> Signed-off-by: Kal Conley <kal.conley@dectris.com>
+> ---
+>  net/xdp/xdp_umem.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
 > 
-> [...]
+> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+> index 4681e8e8ad94..f1aa79018ce8 100644
+> --- a/net/xdp/xdp_umem.c
+> +++ b/net/xdp/xdp_umem.c
+> @@ -150,10 +150,11 @@ static int xdp_umem_account_pages(struct xdp_umem *umem)
+>  
+>  static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+>  {
+> -	u32 npgs_rem, chunk_size = mr->chunk_size, headroom = mr->headroom;
+> +	u32 chunk_size = mr->chunk_size, headroom = mr->headroom;
+>  	bool unaligned_chunks = mr->flags & XDP_UMEM_UNALIGNED_CHUNK_FLAG;
+> -	u64 npgs, addr = mr->addr, size = mr->len;
+> -	unsigned int chunks, chunks_rem;
+> +	u64 addr = mr->addr, size = mr->len;
+> +	u64 chunks, npgs;
+> +	u32 chunks_rem, npgs_rem;
 
-Here is the summary with links:
-  - [bpf-next,v4,01/18] bpf: add new map ops ->map_mem_usage
-    https://git.kernel.org/bpf/bpf-next/c/90a5527d7686
-  - [bpf-next,v4,02/18] bpf: lpm_trie memory usage
-    https://git.kernel.org/bpf/bpf-next/c/41d5941e7f9a
-  - [bpf-next,v4,03/18] bpf: hashtab memory usage
-    https://git.kernel.org/bpf/bpf-next/c/304849a27b34
-  - [bpf-next,v4,04/18] bpf: arraymap memory usage
-    https://git.kernel.org/bpf/bpf-next/c/1746d0555a87
-  - [bpf-next,v4,05/18] bpf: stackmap memory usage
-    https://git.kernel.org/bpf/bpf-next/c/cbb9b6068c68
-  - [bpf-next,v4,06/18] bpf: reuseport_array memory usage
-    https://git.kernel.org/bpf/bpf-next/c/2e89caf055a6
-  - [bpf-next,v4,07/18] bpf: ringbuf memory usage
-    https://git.kernel.org/bpf/bpf-next/c/2f7e4ab2caa9
-  - [bpf-next,v4,08/18] bpf: bloom_filter memory usage
-    https://git.kernel.org/bpf/bpf-next/c/71a49abe73cb
-  - [bpf-next,v4,09/18] bpf: cpumap memory usage
-    https://git.kernel.org/bpf/bpf-next/c/835f1fca9513
-  - [bpf-next,v4,10/18] bpf: devmap memory usage
-    https://git.kernel.org/bpf/bpf-next/c/fa5e83df173b
-  - [bpf-next,v4,11/18] bpf: queue_stack_maps memory usage
-    https://git.kernel.org/bpf/bpf-next/c/c6e66b42a348
-  - [bpf-next,v4,12/18] bpf: bpf_struct_ops memory usage
-    https://git.kernel.org/bpf/bpf-next/c/f062226d8d59
-  - [bpf-next,v4,13/18] bpf: local_storage memory usage
-    https://git.kernel.org/bpf/bpf-next/c/2f536977d6f1
-  - [bpf-next,v4,14/18] bpf, net: bpf_local_storage memory usage
-    https://git.kernel.org/bpf/bpf-next/c/7490b7f1c02e
-  - [bpf-next,v4,15/18] bpf, net: sock_map memory usage
-    https://git.kernel.org/bpf/bpf-next/c/73d2c61919e9
-  - [bpf-next,v4,16/18] bpf, net: xskmap memory usage
-    https://git.kernel.org/bpf/bpf-next/c/b4fd0d672bca
-  - [bpf-next,v4,17/18] bpf: offload map memory usage
-    https://git.kernel.org/bpf/bpf-next/c/9629363cd056
-  - [bpf-next,v4,18/18] bpf: enforce all maps having memory usage callback
-    https://git.kernel.org/bpf/bpf-next/c/6b4a6ea2c62d
+The RCT declaration style is messed up in the whole block. Please move
+lines around, there's nothing wrong in that.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>  	int err;
+>  
+>  	if (chunk_size < XDP_UMEM_MIN_CHUNK_SIZE || chunk_size > PAGE_SIZE) {
+> @@ -188,8 +189,8 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+>  	if (npgs > U32_MAX)
+>  		return -EINVAL;
+>  
+> -	chunks = (unsigned int)div_u64_rem(size, chunk_size, &chunks_rem);
+> -	if (chunks == 0)
+> +	chunks = div_u64_rem(size, chunk_size, &chunks_rem);
+> +	if (chunks == 0 || chunks > U32_MAX)
 
+You can change the first cond to `!chunks` while at it, it's more
+preferred than `== 0`.
 
+>  		return -EINVAL;
+
+Do you have any particular bugs that the current code leads to? Or it's
+just something that might hypothetically happen?
+
+>  
+>  	if (!unaligned_chunks && chunks_rem)
+> @@ -201,7 +202,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+>  	umem->size = size;
+>  	umem->headroom = headroom;
+>  	umem->chunk_size = chunk_size;
+> -	umem->chunks = chunks;
+> +	umem->chunks = (u32)chunks;
+
+You already checked @chunks fits into 32 bits, so the cast can be
+omitted here, it's redundant.
+
+>  	umem->npgs = (u32)npgs;
+>  	umem->pgs = NULL;
+>  	umem->user = NULL;
+
+Thanks,
+Olek
