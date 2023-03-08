@@ -2,76 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FAE6AFC82
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 02:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3425F6AFC8B
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 02:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbjCHBpN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 20:45:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
+        id S229540AbjCHBz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 20:55:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjCHBpM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 20:45:12 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D928C0C9
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 17:45:11 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id 6-20020a17090a190600b00237c5b6ecd7so738904pjg.4
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 17:45:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678239910;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tTkLOkqseK2iAa3KFJVWSxMOcHMS+Ra6sP+9Gk4TeIo=;
-        b=UM1ppsxf+TjLNiVpa2Ck9iRx2O1PZEI99CZ7yS5M0lbMpNUvW3uEvACepPLR76zIXF
-         iQxSKeBmCFqc7O4gNdqC6G6e+JW5k3+P3VUoFCvA0exuYhm4wrf/JQ90+ZI4gi2IZQEs
-         RfE4nIQtu/JlMQyqLOMbOjXDH2zu0hJXtdkRGNE1DBohX4Tql0/digVvfo6DYZo6cPoa
-         QZL/Sqc95qTm9BE3mgHlQ/Vy0g2+118ZFsVnTWo0vJrJhYMaNPgltqOWppnWG/8xSc1n
-         hZkHfmDcr2UQeV+v7LVhNjFNP+wPfDGAh2+HSWqD1ssfe6g6FNDHK5HikJa/L4U83hkC
-         K2vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678239910;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tTkLOkqseK2iAa3KFJVWSxMOcHMS+Ra6sP+9Gk4TeIo=;
-        b=DbpMUnkUWhEioJtCB3jcvw0HqhWiQQQVN6fSUlHG8RJjsyl39JMatPro28e71T9Db/
-         w/A1dD5vABBeqrLCGbPxDc6/XGemmUwddKI+u41VzYDUTgluGzHVie6fktynXc7ZbR+p
-         IevAa8TUIPXxGVaqDO8rJdLeAEYv/q9bhpvzsbDDA7KCPBOrRTYLbC5/F2LMN0DEXE8n
-         fghKhTTEldhOKi0t75U6BNmT6bl8KDh49wMYzyM5nX3tCw5YjkIm3JkU+vdcOfN+THjC
-         OB/qnObwBbvexMd9XwW8TyLiNKIq+Osv+Uc0S2mpi3V92ay2GV5uArCZCPE4D4CMzVkg
-         TzjQ==
-X-Gm-Message-State: AO0yUKX76J2TYK3mSxBZudJuJF+3dn3+4/Iv1eEeRfygKEBGUKe9aD4M
-        GeRqnNp2j9wqPRymsMOi5C8=
-X-Google-Smtp-Source: AK7set8Wna1rw6xx8TlePE62ShFfXyqlBU49bKar68XybB8I2nKzuU/8AsnkWRQEHN8QPNMs4u4DQw==
-X-Received: by 2002:a17:90b:38cc:b0:237:bf05:40b with SMTP id nn12-20020a17090b38cc00b00237bf05040bmr18225941pjb.20.1678239910551;
-        Tue, 07 Mar 2023 17:45:10 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21cf::1402? ([2620:10d:c090:400::5:173])
-        by smtp.gmail.com with ESMTPSA id fv16-20020a17090b0e9000b00233790759cesm9835147pjb.47.2023.03.07.17.45.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Mar 2023 17:45:10 -0800 (PST)
-Message-ID: <70f241c5-0f63-1e42-f502-55530478c998@gmail.com>
-Date:   Tue, 7 Mar 2023 17:45:00 -0800
+        with ESMTP id S229477AbjCHBz1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 20:55:27 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F9F9CFDC;
+        Tue,  7 Mar 2023 17:55:24 -0800 (PST)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3280Un8V014196;
+        Wed, 8 Mar 2023 01:55:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=DpD4QWY+AUKnWUVvgMGyXh6E6aFL9Ocfd4yjwaFSvvE=;
+ b=L5aTL+qwCeN1MhVnMf3Ox2k0w1wo2HK3M8qg6Nz3itdhZitEekGmybr871PllbjLZrac
+ d2VOFB/gfbz9c57N4E0lWjS1YWesn47c/fbFARbOAbPe5y6P1Ae0Dha6VLdMYpt5uRGy
+ R1JONVzaywAxC0Eq7G3uNdwQkOPSMQY9nbaEka/2Qu2eTOt8mE9frDMdT4UhvN+1C0pv
+ ysbBkRGV72C+9G3DnpD2Ja2KfwSe+meH6Sv6MHv4UlOuFDLV1evYRcJ1u6//SzPSEs9L
+ 0btAOrX8ivXX70ECcLnbs3HDF7vkwLhY/2xW3lj+HU7WZvvsBzn4MECIc6TaVotg/nWH CA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p6fvwsght-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Mar 2023 01:55:10 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3281UFHn039363;
+        Wed, 8 Mar 2023 01:55:09 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p6fvwsggw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Mar 2023 01:55:09 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3280dLi6002843;
+        Wed, 8 Mar 2023 01:55:06 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma06fra.de.ibm.com (PPS) with ESMTPS id 3p6g0pg1jh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Mar 2023 01:55:06 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3281t3qW60424462
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Mar 2023 01:55:03 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F1F920043;
+        Wed,  8 Mar 2023 01:55:03 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6687920040;
+        Wed,  8 Mar 2023 01:55:02 +0000 (GMT)
+Received: from heavy (unknown [9.171.43.1])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed,  8 Mar 2023 01:55:02 +0000 (GMT)
+Date:   Wed, 8 Mar 2023 02:55:00 +0100
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Joanne Koong <joannelkoong@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+Subject: Re: [PATCH v13 bpf-next 10/10] selftests/bpf: tests for using
+ dynptrs to parse skb and xdp buffers
+Message-ID: <20230308015500.6pycr5i4nynyu22n@heavy>
+References: <20230301154953.641654-1-joannelkoong@gmail.com>
+ <20230301154953.641654-11-joannelkoong@gmail.com>
+ <CAADnVQJCYcPnutRvjJgShAEokfrXfC4DToPOTJRuyzA1R64mBg@mail.gmail.com>
+ <CAJnrk1YNMoTEaWA6=wDS3iV4sV0A-5Afnn+p50hEvX8jR6GLHw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v4 7/9] libbpf: Update a bpf_link with another
- struct_ops.
-Content-Language: en-US, en-ZW
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kui-Feng Lee <kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
-        sdf@google.com
-References: <20230307233307.3626875-1-kuifeng@meta.com>
- <20230307233307.3626875-8-kuifeng@meta.com>
- <CAEf4BzYVcCRpdxzw1a__QqzrcwMFga5tRyvFGekZQxywr8Ue1w@mail.gmail.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAEf4BzYVcCRpdxzw1a__QqzrcwMFga5tRyvFGekZQxywr8Ue1w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+In-Reply-To: <CAJnrk1YNMoTEaWA6=wDS3iV4sV0A-5Afnn+p50hEvX8jR6GLHw@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: LLZ84yWuCmJUJSEaxGS_81Ni6iOMqT43
+X-Proofpoint-GUID: En-lB8LC25S_RlH4K7yG1CegTzfAnK67
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-07_18,2023-03-07_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 phishscore=0 adultscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2303080010
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,134 +102,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Mar 01, 2023 at 08:28:40PM -0800, Joanne Koong wrote:
+> On Wed, Mar 1, 2023 at 10:08 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Wed, Mar 1, 2023 at 7:51 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+> > >
+> > > 5) progs/dynptr_success.c
+> > >    * Add test case "test_skb_readonly" for testing attempts at writes
+> > >      on a prog type with read-only skb ctx.
+> > >    * Add "test_dynptr_skb_data" for testing that bpf_dynptr_data isn't
+> > >      supported for skb progs.
+> >
+> > I added
+> > +dynptr/test_dynptr_skb_data
+> > +dynptr/test_skb_readonly
+> > to DENYLIST.s390x and applied.
+> 
+> Thanks, I'm still not sure why s390x cannot load these programs. It is
+> being loaded in the same way as other tests like
+> test_parse_tcp_hdr_opt() are loading programs. I will keep looking
+> some more into this
 
+Hi,
 
-On 3/7/23 16:53, Andrii Nakryiko wrote:
-> On Tue, Mar 7, 2023 at 3:33 PM Kui-Feng Lee <kuifeng@meta.com> wrote:
->>
->> Introduce bpf_link__update_struct_ops(), which will allow you to
-> 
-> update_map, not update_struct_ops, please update
-> 
->> effortlessly transition the struct_ops map of any given bpf_link into
->> an alternative.
-> 
-> This reads confusingly, tbh. Why not say "bpf_link__update_map()
-> allows to atomically update underlying struct_ops implementation for
-> given struct_ops BPF link" or something like this? Would it be
-> accurate?
-> 
+I believe the culprit is:
 
-Right, it should be better.
+    insn->imm = BPF_CALL_IMM(bpf_dynptr_from_skb_rdonly);
 
->>
->> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
->> ---
->>   tools/lib/bpf/libbpf.c   | 36 ++++++++++++++++++++++++++++++++++++
->>   tools/lib/bpf/libbpf.h   |  1 +
->>   tools/lib/bpf/libbpf.map |  2 ++
->>   3 files changed, 39 insertions(+)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index a67efc3b3763..247de39d136f 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -11520,6 +11520,42 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
->>          return &link->link;
->>   }
->>
->> +/*
->> + * Swap the back struct_ops of a link with a new struct_ops map.
->> + */
->> +int bpf_link__update_map(struct bpf_link *link, const struct bpf_map *map)
->> +{
->> +       struct bpf_link_struct_ops *st_ops_link;
->> +       __u32 zero = 0;
->> +       int err, fd;
->> +
->> +       if (!bpf_map__is_struct_ops(map) || map->fd == -1)
-> 
-> let's not hard-code equality like this, < 0 is better
+s390x needs to know the kfunc model in order to emit the call (like
+i386), but after this assignment it's no longer possible to look it
+up in kfunc_tab by insn->imm. x86_64 does not need this, because its
+ABI is exactly the same as BPF ABI.
 
-Ok!
+The simplest solution seems to be adding an artificial kfunc_desc
+like this:
 
-> 
->> +               return -EINVAL;
->> +
->> +       st_ops_link = container_of(link, struct bpf_link_struct_ops, link);
->> +       /* Ensure the type of a link is correct */
->> +       if (st_ops_link->map_fd < 0)
->> +               return -EINVAL;
->> +
->> +       err = bpf_map_update_elem(map->fd, &zero, map->st_ops->kern_vdata, 0);
->> +       if (err && errno != EBUSY) {
-> 
-> don't use errno, err is perfectly fine to rely on
+    {
+        .func_model = desc->func_model,  /* model must be compatible */
+	.func_id = 0,                    /* unused at this point */
+        .imm = insn->imm,                /* new target */
+        .offset = 0,                     /* unused at this point */
+    }
 
-Ok!
+here and also after this assignment:
 
-> 
->> +               err = -errno;
->> +               free(link);
-> 
-> why freeing the link?...
+    insn->imm = BPF_CALL_IMM(xdp_kfunc);
 
-Urg! It is a mistake.
+What do you think?
 
-> 
-> 
->> +               return err;
->> +       }
->> +
->> +       fd = bpf_link_update(link->fd, map->fd, NULL);
->> +       if (fd < 0) {
->> +               err = -errno;
->> +               free(link);
-> 
-> same... please write tests that exercise both successful and
-> unsuccessful scenarios
+[...]
 
-Got it!
-
-> 
->> +               return err;
->> +       }
->> +
->> +       st_ops_link->map_fd = map->fd;
->> +
->> +       return 0;
->> +}
->> +
->>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_event_header *hdr,
->>                                                            void *private_data);
->>
->> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->> index 2efd80f6f7b9..5e62878d184c 100644
->> --- a/tools/lib/bpf/libbpf.h
->> +++ b/tools/lib/bpf/libbpf.h
->> @@ -695,6 +695,7 @@ bpf_program__attach_freplace(const struct bpf_program *prog,
->>   struct bpf_map;
->>
->>   LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map);
->> +LIBBPF_API int bpf_link__update_map(struct bpf_link *link, const struct bpf_map *map);
->>
->>   struct bpf_iter_attach_opts {
->>          size_t sz; /* size of this struct for forward/backward compatibility */
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index 11c36a3c1a9f..e83571b04c19 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -384,4 +384,6 @@ LIBBPF_1.1.0 {
->>   } LIBBPF_1.0.0;
->>
->>   LIBBPF_1.2.0 {
->> +       global:
->> +               bpf_link__update_map;
-> 
-> please always rebase before posting new versions of patch set,
-> LIBBPF_1.2.0 is not empty anymore
-> 
->>   } LIBBPF_1.1.0;
->> --
->> 2.34.1
->>
+Best regards,
+Ilya
