@@ -2,338 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDD36B129D
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 21:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E45176B1354
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 21:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbjCHUFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 15:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
+        id S230377AbjCHUqa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 15:46:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjCHUFC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 15:05:02 -0500
-Received: from out-53.mta0.migadu.com (out-53.mta0.migadu.com [91.218.175.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644AA7A912
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 12:05:00 -0800 (PST)
-Message-ID: <0fcce83c-30f6-87d1-7ead-281fb154e589@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1678305898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ubhjDY8UEIzu/+Hh75t8bySYZ1Ro86DYLL+WOQcA+hM=;
-        b=uBrAUFiQduCkYGZyT50ovit5MdjVW95zw6WxE7P1QGzmBaoXAiqwpCQSR1lykZY0vWFn4f
-        eVOkaeQydzA/BbrObRdqFTNnAi1W28EEwowamxyBDpE1ErEDXcWyGAX4Tby1vKpv6TGBDx
-        3hpw32N2nJEvphdv1ixxrQJgZ16vjNE=
-Date:   Wed, 8 Mar 2023 12:04:55 -0800
+        with ESMTP id S230369AbjCHUq3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 15:46:29 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0400D234EF
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 12:46:28 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id v11so18880672plz.8
+        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 12:46:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112; t=1678308387;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L8ZcjjhBiwRGJko2IIRlTomPDbsnZlPk0Gg0sXr/Noc=;
+        b=GCrmfhuCXvzx/a9T5A69BdZRiokurLjq475tWjRv/GOGSkOxga6TE8DgG+0/dlH9MU
+         BOYsdbkGaBFfgPiSxIEfPfO0NIMw/1Y120qvdGwu9bi0SedDI+M3tVzqJTHGBf1JiCEg
+         KWZhho5q6eBOYEOaU+jElItghp+SF+wOpHQnWFpHkPWVi0+n7zt31+3LMJjcIjTU6GTx
+         z3GTsvlgy8l/uY545vxuqtggltmOUPDoyYQsNtHP2AQ/x6ubFLg3nhvTZXUkwO2EWEQA
+         H9RoXkQE9/WQ3Vco8AgJY7HUM4Xkwr7t6GTeqjvcMwtulCpTtDyO3HZO0GmdFfGbqq7S
+         FLBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678308387;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L8ZcjjhBiwRGJko2IIRlTomPDbsnZlPk0Gg0sXr/Noc=;
+        b=QaFTyu7GtxdkyXwt+9606gZjwjWczoDLw+8nzExlFJLkNBIvxGi6V+CfQwZ2eAvxKR
+         zjJpQy+HdolI0BmzlahmLu+FAizlV0CnKIkmLLEXIZLnn5n/73AFuseyQ73FwNljTWe8
+         G4FdIaycrfAMDTnk8AeAoRYofxNS5vTsa/AnRvfktR4ltbQdb3drSDGBLF9srCxBNpbj
+         g0jerjlYdvWtW1ooKNBffHpKgMqOoNndN4ZVEqQIV0x1sny79m7vpIwXa1jukrE86hDk
+         JAjWdtuxlnl0izTl9E8IqR/p8r7nFjH+FocKvrOoI5QztTTMv+0zjIVVh4IbquBD1Joz
+         LUEw==
+X-Gm-Message-State: AO0yUKXMshIRN9z4QpBWv2Zzk/Wt+78Xwf9nOPuvXwMHEc1F6CvGNYuF
+        YUp27U5GbXjqf957Xloeronrz6quZYo=
+X-Google-Smtp-Source: AK7set+R40qI9VfxN0c0/2O6KEG9jUdZZgxXSMhVdcSiY/w9ZJIUnELN9IjqLBpNhNQiVXVFP5+3aA==
+X-Received: by 2002:a17:903:41c8:b0:19a:6ec0:50c2 with SMTP id u8-20020a17090341c800b0019a6ec050c2mr23884039ple.26.1678308387191;
+        Wed, 08 Mar 2023 12:46:27 -0800 (PST)
+Received: from mariner-vm.. ([131.107.147.246])
+        by smtp.gmail.com with ESMTPSA id kh4-20020a170903064400b0019cb4166266sm10233265plb.83.2023.03.08.12.46.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Mar 2023 12:46:26 -0800 (PST)
+From:   Dave Thaler <dthaler1968@googlemail.com>
+To:     bpf@vger.kernel.org
+Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
+Subject: [PATCH bpf-next v2 RESEND] bpf, docs: Add docs on extended 64-bit immediate instructions
+Date:   Wed,  8 Mar 2023 20:46:23 +0000
+Message-Id: <20230308204623.959-1-dthaler1968@googlemail.com>
+X-Mailer: git-send-email 2.33.4
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 3/8] bpf: Create links for BPF struct_ops
- maps.
-Content-Language: en-US
-To:     Kui-Feng Lee <kuifeng@meta.com>
-References: <20230308005050.255859-1-kuifeng@meta.com>
- <20230308005050.255859-4-kuifeng@meta.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
-In-Reply-To: <20230308005050.255859-4-kuifeng@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/7/23 4:50 PM, Kui-Feng Lee wrote:
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 00b6e1a2edaf..afca6c526fe4 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1548,6 +1548,7 @@ static inline void bpf_module_put(const void *data, struct module *owner)
->   	else
->   		module_put(owner);
->   }
-> +int bpf_struct_ops_link_create(union bpf_attr *attr);
->   
->   #ifdef CONFIG_NET
->   /* Define it here to avoid the use of forward declaration */
-> @@ -1588,6 +1589,11 @@ static inline int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map,
->   {
->   	return -EINVAL;
->   }
-> +static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
->   #endif
->   
->   #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
-> @@ -2379,6 +2385,11 @@ static inline void bpf_link_put(struct bpf_link *link)
->   {
->   }
->   
-> +static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
+From: Dave Thaler <dthaler@microsoft.com>
 
-The inline version is double defined. It does not look right. Please double check.
+Add docs on extended 64-bit immediate instructions, including six instructions
+previously undocumented.  Include a brief description of map objects, and variables,
+as used by those instructions.
 
-> +
->   static inline int bpf_obj_get_user(const char __user *pathname, int flags)
->   {
->   	return -EOPNOTSUPP;
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 976b194eb775..f9fc7b8af3c4 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1033,6 +1033,7 @@ enum bpf_attach_type {
->   	BPF_PERF_EVENT,
->   	BPF_TRACE_KPROBE_MULTI,
->   	BPF_LSM_CGROUP,
-> +	BPF_STRUCT_OPS,
->   	__MAX_BPF_ATTACH_TYPE
->   };
->   
-> @@ -1266,6 +1267,9 @@ enum {
->   
->   /* Create a map that is suitable to be an inner map with dynamic max entries */
->   	BPF_F_INNER_MAP		= (1U << 12),
-> +
-> +/* Create a map that will be registered/unregesitered by the backed bpf_link */
-> +	BPF_F_LINK		= (1U << 13),
->   };
->   
->   /* Flags for BPF_PROG_QUERY. */
-> @@ -1507,7 +1511,10 @@ union bpf_attr {
->   	} task_fd_query;
->   
->   	struct { /* struct used by BPF_LINK_CREATE command */
-> -		__u32		prog_fd;	/* eBPF program to attach */
-> +		union {
-> +			__u32		prog_fd;	/* eBPF program to attach */
-> +			__u32		map_fd;		/* struct_ops to attach */
-> +		};
->   		union {
->   			__u32		target_fd;	/* object to attach to */
->   			__u32		target_ifindex; /* target ifindex */
-> @@ -6379,6 +6386,9 @@ struct bpf_link_info {
->   		struct {
->   			__u32 ifindex;
->   		} xdp;
-> +		struct {
-> +			__u32 map_id;
-> +		} struct_ops;
->   	};
->   } __attribute__((aligned(8)));
->   
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index 9e097fcc9cf4..5a7e86cf67b5 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -16,6 +16,7 @@ enum bpf_struct_ops_state {
->   	BPF_STRUCT_OPS_STATE_INIT,
->   	BPF_STRUCT_OPS_STATE_INUSE,
->   	BPF_STRUCT_OPS_STATE_TOBEFREE,
-> +	BPF_STRUCT_OPS_STATE_READY,
->   };
->   
->   #define BPF_STRUCT_OPS_COMMON_VALUE			\
-> @@ -58,6 +59,11 @@ struct bpf_struct_ops_map {
->   	struct bpf_struct_ops_value kvalue;
->   };
->   
-> +struct bpf_struct_ops_link {
-> +	struct bpf_link link;
-> +	struct bpf_map __rcu *map;
-> +};
-> +
->   static DEFINE_MUTEX(update_mutex);
->   
->   #define VALUE_PREFIX "bpf_struct_ops_"
-> @@ -496,11 +502,24 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   		*(unsigned long *)(udata + moff) = prog->aux->id;
->   	}
->   
-> -	bpf_map_inc(map);
-> -
->   	set_memory_rox((long)st_map->image, 1);
-> +	if (st_map->map.map_flags & BPF_F_LINK) {
-> +		if (st_ops->validate) {
-> +			err = st_ops->validate(kdata);
-> +			if (err)
-> +				goto unlock;
+---
+V1 - V2: rebased on top of latest master
 
-This should at least be 'goto reset_unlock' to release the progs.
+Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+---
+ Documentation/bpf/instruction-set.rst | 56 +++++++++++++++++++++++----
+ Documentation/bpf/linux-notes.rst     | 10 +++++
+ 2 files changed, 58 insertions(+), 8 deletions(-)
 
-set_memory_rox(..., 1) should also be done after validate?
-
-> +		}
-> +		/* Let bpf_link handle registration & unregistration.
-> +		 *
-> +		 * Pair with smp_load_acquire() during lookup_elem().
-> +		 */
-> +		smp_store_release(&kvalue->state, BPF_STRUCT_OPS_STATE_READY);
-> +		goto unlock;
-> +	}
-> +
->   	err = st_ops->reg(kdata);
->   	if (likely(!err)) {
-> +		bpf_map_inc(map);
->   		/* Pair with smp_load_acquire() during lookup_elem().
->   		 * It ensures the above udata updates (e.g. prog->aux->id)
->   		 * can be seen once BPF_STRUCT_OPS_STATE_INUSE is set.
-> @@ -516,7 +535,6 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   	 */
->   	set_memory_nx((long)st_map->image, 1);
->   	set_memory_rw((long)st_map->image, 1);
-> -	bpf_map_put(map);
->   
->   reset_unlock:
->   	bpf_struct_ops_map_put_progs(st_map);
-> @@ -534,6 +552,9 @@ static int bpf_struct_ops_map_delete_elem(struct bpf_map *map, void *key)
->   	struct bpf_struct_ops_map *st_map;
->   
->   	st_map = (struct bpf_struct_ops_map *)map;
-> +	if (st_map->map.map_flags & BPF_F_LINK)
-> +		return -EOPNOTSUPP;
-> +
->   	prev_state = cmpxchg(&st_map->kvalue.state,
->   			     BPF_STRUCT_OPS_STATE_INUSE,
->   			     BPF_STRUCT_OPS_STATE_TOBEFREE);
-> @@ -601,7 +622,7 @@ static void bpf_struct_ops_map_free(struct bpf_map *map)
->   static int bpf_struct_ops_map_alloc_check(union bpf_attr *attr)
->   {
->   	if (attr->key_size != sizeof(unsigned int) || attr->max_entries != 1 ||
-> -	    attr->map_flags || !attr->btf_vmlinux_value_type_id)
-> +	    (attr->map_flags & ~BPF_F_LINK) || !attr->btf_vmlinux_value_type_id)
->   		return -EINVAL;
->   	return 0;
->   }
-> @@ -712,3 +733,98 @@ void bpf_struct_ops_put(const void *kdata)
->   
->   	bpf_map_put(&st_map->map);
->   }
-> +
-> +static void bpf_struct_ops_map_link_dealloc(struct bpf_link *link)
-> +{
-> +	struct bpf_struct_ops_link *st_link;
-> +	struct bpf_struct_ops_map *st_map;
-> +
-> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
-> +	st_map = (struct bpf_struct_ops_map *)st_link->map;
-
-/* protected by refcnt and no one is replacing it */
-rcu_dereference_protected(st_link->map, true);
-
-st_link->map is with __rcu. It should have warning when compile with 'make C=1 
-...'. Patchwork also reports this: 
-https://patchwork.kernel.org/project/netdevbpf/patch/20230308005050.255859-4-kuifeng@meta.com/. 
-Please pay attention to patchwork for errors.
-
-> +	st_map->st_ops->unreg(&st_map->kvalue.data);
-> +	bpf_map_put(st_link->map);
-
-Same here. Reading __rcu pointer without rcu_dereference_xxx.
-
-or simply use &st_map->map here. Otherwise, it will also have type mismatch warning.
-
-> +	kfree(st_link);
-> +}
-> +
-> +static void bpf_struct_ops_map_link_show_fdinfo(const struct bpf_link *link,
-> +					    struct seq_file *seq)
-> +{
-> +	struct bpf_struct_ops_link *st_link;
-> +	struct bpf_map *map;
-> +
-> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
-> +	rcu_read_lock();
-> +	map = rcu_dereference(st_link->map);
-> +	if (map)
-
-map cannot be NULL?
-
-> +		seq_printf(seq, "map_id:\t%d\n", map->id);
-> +	rcu_read_unlock();
-> +}
-> +
-> +static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
-> +					       struct bpf_link_info *info)
-> +{
-> +	struct bpf_struct_ops_link *st_link;
-> +	struct bpf_map *map;
-> +
-> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
-> +	rcu_read_lock();
-> +	map = rcu_dereference(st_link->map);
-> +	if (map)
-
-Same here.
-
-> +		info->struct_ops.map_id = map->id;
-> +	rcu_read_unlock();
-> +	return 0;
-> +}
-> +
-> +static const struct bpf_link_ops bpf_struct_ops_map_lops = {
-> +	.dealloc = bpf_struct_ops_map_link_dealloc,
-> +	.show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
-> +	.fill_link_info = bpf_struct_ops_map_link_fill_link_info,
-> +};
-> +
-> +int bpf_struct_ops_link_create(union bpf_attr *attr)
-> +{
-> +	struct bpf_struct_ops_link *link = NULL;
-> +	struct bpf_link_primer link_primer;
-> +	struct bpf_struct_ops_map *st_map;
-> +	struct bpf_map *map;
-> +	int err;
-> +
-> +	map = bpf_map_get(attr->link_create.map_fd);
-> +	if (!map)
-> +		return -EINVAL;
-> +
-> +	st_map = (struct bpf_struct_ops_map *)map;
-> +
-> +	if (map->map_type != BPF_MAP_TYPE_STRUCT_OPS || !(map->map_flags & BPF_F_LINK) ||
-> +	    /* Pair with smp_store_release() during map_update */
-> +	    smp_load_acquire(&st_map->kvalue.state) != BPF_STRUCT_OPS_STATE_READY) {
-> +		err = -EINVAL;
-> +		goto err_out;
-> +	}
-> +
-> +	link = kzalloc(sizeof(*link), GFP_USER);
-> +	if (!link) {
-> +		err = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL);
-> +	RCU_INIT_POINTER(link->map, map);
-> +
-> +	err = bpf_link_prime(&link->link, &link_primer);
-> +	if (err)
-> +		goto err_out;
-> +
-> +	err = st_map->st_ops->reg(st_map->kvalue.data);
-> +	if (err) {
-> +		bpf_link_cleanup(&link_primer);
-> +		goto err_out;
-> +	}
-> +
-> +	return bpf_link_settle(&link_primer);
-> +
-> +err_out:
-> +	bpf_map_put(map);
-> +	kfree(link);
-> +	return err;
-> +}
-> +
+diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+index db8789e6969..89087913fbf 100644
+--- a/Documentation/bpf/instruction-set.rst
++++ b/Documentation/bpf/instruction-set.rst
+@@ -385,14 +385,54 @@ and loaded back to ``R0``.
+ -----------------------------
+ 
+ Instructions with the ``BPF_IMM`` 'mode' modifier use the wide instruction
+-encoding for an extra imm64 value.
+-
+-There is currently only one such instruction.
+-
+-``BPF_LD | BPF_DW | BPF_IMM`` means::
+-
+-  dst = imm64
+-
++encoding defined in `Instruction encoding`_, and use the 'src' field of the
++basic instruction to hold an opcode subtype.
++
++The following instructions are defined, and use additional concepts defined below:
++
++=========================  ======  ===  =====================================  ===========  ==============
++opcode construction        opcode  src  pseudocode                             imm type     dst type
++=========================  ======  ===  =====================================  ===========  ==============
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x0  dst = imm64                            integer      integer
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x1  dst = map_by_fd(imm)                   map fd       map
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x2  dst = mva(map_by_fd(imm)) + next_imm   map fd       data pointer
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x3  dst = variable_addr(imm)               variable id  data pointer
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x4  dst = code_addr(imm)                   integer      code pointer
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x5  dst = map_by_idx(imm)                  map index    map
++BPF_IMM | BPF_DW | BPF_LD  0x18    0x6  dst = mva(map_by_idx(imm)) + next_imm  map index    data pointer
++=========================  ======  ===  =====================================  ===========  ==============
++
++where
++
++* map_by_fd(fd) means to convert a 32-bit POSIX file descriptor into an address of a map object (see `Map objects`_)
++* map_by_index(index) means to convert a 32-bit index into an address of a map object
++* mva(map) gets the address of the first value in a given map object
++* variable_addr(id) gets the address of a variable (see `Variables`_) with a given id
++* code_addr(offset) gets the address of the instruction at a specified relative offset in units of 64-bit blocks
++* the 'imm type' can be used by disassemblers for display
++* the 'dst type' can be used for verification and JIT compilation purposes
++
++Map objects
++~~~~~~~~~~~
++
++Maps are shared memory regions accessible by eBPF programs on some platforms, where we use the term "map object"
++to refer to an object containing the data and metadata (e.g., size) about the memory region.
++A map can have various semantics as defined in a separate document, and may or may not have a single
++contiguous memory region, but the 'mva(map)' is currently only defined for maps that do have a single
++contiguous memory region.  Support for maps is optional.
++
++Each map object can have a POSIX file descriptor (fd) if supported by the platform,
++where 'map_by_fd(fd)' means to get the map with the specified file descriptor.
++Each eBPF program can also be defined to use a set of maps associated with the program
++at load time, and 'map_by_index(index)' means to get the map with the given index in the set
++associated with the eBPF program containing the instruction.
++
++Variables
++~~~~~~~~~
++
++Variables are memory regions, identified by integer ids, accessible by eBPF programs on
++some platforms.  The 'variable_addr(id)' operation means to get the address of the memory region
++identified by the given id.  Support for such variables is optional.
+ 
+ Legacy BPF Packet access instructions
+ -------------------------------------
+diff --git a/Documentation/bpf/linux-notes.rst b/Documentation/bpf/linux-notes.rst
+index 956b0c86699..9a1bdbb8ac0 100644
+--- a/Documentation/bpf/linux-notes.rst
++++ b/Documentation/bpf/linux-notes.rst
+@@ -12,6 +12,16 @@ Byte swap instructions
+ 
+ ``BPF_FROM_LE`` and ``BPF_FROM_BE`` exist as aliases for ``BPF_TO_LE`` and ``BPF_TO_BE`` respectively.
+ 
++Map objects
++===========
++
++Linux only supports the 'mva(map)' operation on array maps with a single element.
++
++Variables
++=========
++
++Linux uses BTF ids to identify variables.
++
+ Legacy BPF Packet access instructions
+ =====================================
+ 
+-- 
+2.33.4
 
