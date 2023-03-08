@@ -2,70 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3196B0442
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 11:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F396B0439
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 11:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbjCHK3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 05:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjCHK2g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S230512AbjCHK2g (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 8 Mar 2023 05:28:36 -0500
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A565A6DC;
-        Wed,  8 Mar 2023 02:28:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1678271303; x=1709807303;
-  h=references:from:to:cc:subject:date:in-reply-to:
-   message-id:mime-version;
-  bh=ERuDuGcRTL804Rbo3GS7kLtS9og5lGMsy9rw0XXi7wc=;
-  b=Y1MHhVb9cYSzK8ooS8iRmAAvUI1aBjPiBMobuwdlNUaIB6rz1Wo9rSWZ
-   pHFqFuKm13ipvrwF751nGdXXilS2axyHpahFejMtuKSEOdVUJccIAqMnm
-   VC8zGqW8o9Gc2whR8c1qrfVTb5djBtorepPRSXjsGe5j+ibdh4yiSqbJX
-   c=;
-X-IronPort-AV: E=Sophos;i="5.98,243,1673913600"; 
-   d="scan'208";a="316081795"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2023 10:28:14 +0000
-Received: from EX19D016EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com (Postfix) with ESMTPS id EEB1BCCA0A;
-        Wed,  8 Mar 2023 10:28:08 +0000 (UTC)
-Received: from EX19D028EUB003.ant.amazon.com (10.252.61.31) by
- EX19D016EUA004.ant.amazon.com (10.252.50.4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.24; Wed, 8 Mar 2023 10:28:07 +0000
-Received: from u570694869fb251.ant.amazon.com.amazon.com (10.85.143.179) by
- EX19D028EUB003.ant.amazon.com (10.252.61.31) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.24; Wed, 8 Mar 2023 10:28:00 +0000
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230122AbjCHK2T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 05:28:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2E415895;
+        Wed,  8 Mar 2023 02:28:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B6F6161742;
+        Wed,  8 Mar 2023 10:28:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FC6FC433EF;
+        Wed,  8 Mar 2023 10:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678271296;
+        bh=3ATSMMmIqMCYSoje7sUGyuaLfmmC29rxXpx9pHsAz0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HruyILWz2z91atQn0pwC6BOg2QeSjDMlhQO3lWI/BWDIMbwJr2oaCIdZIBC2DcyP0
+         u+Ae2g3yr4pBHVZQmMBholQIS3GswVTi2boG8yI9WPQsLlPjqV+9aP9g46stBqn1YY
+         RnakilR57CKXs4HcwNeBSRte1vHqWTPLV9daig7NJarJjEBcWb/bDxcSc4YSkgTFqs
+         bnXYhT1Hdpl88ruBJppbszXMsU3JRt2rhqmhJYL+zcJCW2KTx+XD5yNpi4D3Wr79Pt
+         hMtzzE6I8Cnr9oS/bOuhJAEsLTXZ6PzvFyKwVwBNMaX3l5aRSthccauvN7P4i/bYDP
+         OPIrVvEmqTH1Q==
+Date:   Wed, 8 Mar 2023 11:28:12 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        saeedm@nvidia.com, tariqt@nvidia.com, leon@kernel.org,
+        shayagr@amazon.com, akiyano@amazon.com, darinzon@amazon.com,
+        sgoutham@marvell.com, lorenzo.bianconi@redhat.com, toke@redhat.com,
+        teknoraver@meta.com
+Subject: Re: [PATCH net-next 1/8] tools: ynl: fix render-max for flags
+ definition
+Message-ID: <ZAhjPNfv8PVKSpw2@lore-desk>
 References: <cover.1678200041.git.lorenzo@kernel.org>
- <dfa9327874de41c5efa44001518d4432f9afe304.1678200041.git.lorenzo@kernel.org>
-User-agent: mu4e 1.8.13; emacs 28.0.91
-From:   Shay Agroskin <shayagr@amazon.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>, <saeedm@nvidia.com>,
-        <tariqt@nvidia.com>, <leon@kernel.org>, <akiyano@amazon.com>,
-        <darinzon@amazon.com>, <sgoutham@marvell.com>,
-        <lorenzo.bianconi@redhat.com>, <toke@redhat.com>,
-        <teknoraver@meta.com>
-Subject: Re: [PATCH net-next 5/8] net: ena: take into account xdp_features
- setting tx/rx queues
-Date:   Wed, 8 Mar 2023 12:25:00 +0200
-In-Reply-To: <dfa9327874de41c5efa44001518d4432f9afe304.1678200041.git.lorenzo@kernel.org>
-Message-ID: <pj41zla60n1qs7.fsf@u570694869fb251.ant.amazon.com>
+ <b4359cc25819674de797029eb7e4a746853c1df4.1678200041.git.lorenzo@kernel.org>
+ <20230308000649.03adbcce@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Originating-IP: [10.85.143.179]
-X-ClientProxiedBy: EX19D044UWA002.ant.amazon.com (10.13.139.11) To
- EX19D028EUB003.ant.amazon.com (10.252.61.31)
-X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sg26xanjhsS6mPfY"
+Content-Disposition: inline
+In-Reply-To: <20230308000649.03adbcce@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -73,22 +63,66 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-Lorenzo Bianconi <lorenzo@kernel.org> writes:
+--sg26xanjhsS6mPfY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ena nic allows xdp just if enough hw queues are available for 
-> XDP.
-> Take into account queues configuration setting xdp_features.
->
-> Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  drivers/net/ethernet/amazon/ena/ena_ethtool.c | 15 
->  ++++++++++++---
->  drivers/net/ethernet/amazon/ena/ena_netdev.c  |  6 ++++--
->  2 files changed, 16 insertions(+), 5 deletions(-)
->
+> On Tue,  7 Mar 2023 15:53:58 +0100 Lorenzo Bianconi wrote:
+> > Properly manage render-max property for flags definition type
+> > introducing mask value and setting it to (last_element << 1) - 1
+> > instead of adding max value set to last_element + 1
+> >=20
+> > Fixes: be5bea1cc0bf ("net: add basic C code generators for Netlink")
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  tools/net/ynl/ynl-gen-c.py | 11 ++++++++---
+> >  1 file changed, 8 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/tools/net/ynl/ynl-gen-c.py b/tools/net/ynl/ynl-gen-c.py
+> > index 274e9c566f61..f2e41dd962d4 100755
+> > --- a/tools/net/ynl/ynl-gen-c.py
+> > +++ b/tools/net/ynl/ynl-gen-c.py
+> > @@ -1995,9 +1995,14 @@ def render_uapi(family, cw):
+> > =20
+> >              if const.get('render-max', False):
+> >                  cw.nl()
+> > -                max_name =3D c_upper(name_pfx + 'max')
+> > -                cw.p('__' + max_name + ',')
+> > -                cw.p(max_name + ' =3D (__' + max_name + ' - 1)')
+> > +                if const['type'] =3D=3D 'flags':
+> > +                    max_name =3D c_upper(name_pfx + 'mask')
+> > +                    max_val =3D f' =3D {(entry.user_value() << 1) - 1}=
+,'
+>=20
+> Hm, why not use const.get_mask() here? Rather than the last entry?
 
-For the ENA driver changes and the non-driver changes
-Reviewed-by: Shay Agroskin <shayagr@amazon.com>
+actually I did this change but it ended up in patch 3/8. I will fix it in v=
+2.
 
-Thank you for doing that (:
+Regards,
+Lorenzo
+
+>=20
+> > +                    cw.p(max_name + max_val)
+> > +                else:
+> > +                    max_name =3D c_upper(name_pfx + 'max')
+> > +                    cw.p('__' + max_name + ',')
+> > +                    cw.p(max_name + ' =3D (__' + max_name + ' - 1)')
+> >              cw.block_end(line=3D';')
+> >              cw.nl()
+> >          elif const['type'] =3D=3D 'const':
+>=20
+
+--sg26xanjhsS6mPfY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZAhjPAAKCRA6cBh0uS2t
+rMJ/AQDTcazZlObzi/XK6FpEt1hd9r+AFAoStz24EZcVcE/45AD/cH7LH7TqGQpj
+6a6P3BMfyVfOdK29ArCM8eaqVHYCXQE=
+=oW96
+-----END PGP SIGNATURE-----
+
+--sg26xanjhsS6mPfY--
