@@ -2,76 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990386B0703
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 13:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EA26B095F
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 14:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbjCHMZP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 07:25:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
+        id S231332AbjCHNg1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 08:36:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbjCHMZH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 07:25:07 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009F7B53D2
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 04:24:32 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id j11so45456835edq.4
-        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 04:24:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678278271;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/79u3NievU114h75XyEizn8Kbhu2zyr9KGTl1BwcSZI=;
-        b=V1hHxBqOPE2qUn8zBqILiGuhZWnPmGbCFd1gy6IE4x3MkHDPpDoqHsirtxgb/bM2ne
-         36VfGCEPAso7RN2p2wmmEsfIDnY7ccH+sTsPFY1O1w3C+XJkRv+ARxlmaV0O9XgITgsk
-         j4Ul2ZTdFF2HnldDczEwZkPNbkiUfdhJYPqMFE83b0AklieQskPuPNoFQsYdL0cu6eLD
-         6K6nWt+/rxaCTFD0ZJlGHa3TRbARUKl71DfdpFzgXLuKyTBCXXaCdxPjCs1A3NrCxiOw
-         POKb+4TRrgUv8oDu0ay7NxPQIpBljeNMWEPii+nxm8odpHxh4ezH4bdsRQGBX9ZCmWvj
-         ygWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678278271;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/79u3NievU114h75XyEizn8Kbhu2zyr9KGTl1BwcSZI=;
-        b=35CWpv20CJ0zM/szEki0WJM7mGLdwigkSZFfawfuOEkWsQbIJmCMHLxLqzirl1D5gD
-         qMXJS/eOBuoufbvfc1oQHEvltxKkVN1s5BUN1X/iaEmOw/KCT14ZF99EOJ3QhoYjGLZE
-         l3HdFid/7to//CPiDSyzv/becIh4W3sxOZ7x7Y1gVztgfhA4LrtHhvXfILFsyvJ8BY7N
-         Wwk9oXzLCFdU6/WgWisY9h+pw7Rknf1nLs0tgn2bJEtd4yZXcAr8oMLgbAypYvtkFwhe
-         a8oDSkJA56ErFN7kh1jDfSPgZ79XZ4PFHqh1yk2LQXXy2QiJidXypYS81RV8UYa+0FT4
-         v+lA==
-X-Gm-Message-State: AO0yUKUkKtMqWlbd+aYAaclNXfMLoeuVk68VlkcW1NjlLzcovOmNVyhu
-        jqyLIsx88u6iuGmsEkylCu8Yfg==
-X-Google-Smtp-Source: AK7set8HnTZCwP54a0MYhGz5sDoile+Y21+dgjFbbDezeItGGAVrJHJI16y6Q3L7KtIiJQpZawFodQ==
-X-Received: by 2002:a17:907:9703:b0:8af:514f:1078 with SMTP id jg3-20020a170907970300b008af514f1078mr21599887ejc.31.1678278270907;
-        Wed, 08 Mar 2023 04:24:30 -0800 (PST)
-Received: from google.com (94.189.141.34.bc.googleusercontent.com. [34.141.189.94])
-        by smtp.gmail.com with ESMTPSA id z30-20020a509e21000000b004bef1187754sm8127244ede.95.2023.03.08.04.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Mar 2023 04:24:30 -0800 (PST)
-Date:   Wed, 8 Mar 2023 12:24:26 +0000
-From:   Matt Bobrowski <mattbobrowski@google.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        shuah@kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: Re: [PATCH] bpf: Fix IMA test
-Message-ID: <ZAh+eqa4bcFfizwe@google.com>
-References: <20230308103713.1681200-1-roberto.sassu@huaweicloud.com>
- <ZAhrl0rK9Yume1Ed@google.com>
- <9f19f0ff41114f7c90cca681f438388a64807e92.camel@huaweicloud.com>
+        with ESMTP id S231518AbjCHNf5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 08:35:57 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A7E22033;
+        Wed,  8 Mar 2023 05:34:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678282465; x=1709818465;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=HatTWrrHt3K/oWCByU3gjtazbJHVWQK712JIU9vPotg=;
+  b=hLtf3ZZ37GE3YdYMXbORm6Mc67mc1YWVKvYCwAxsEVX6TL+kpKeBFGQ4
+   rjU/k2HpkEZSFNWdA+KuCZDVca7ArdheJQV6UebJL4QigGvvDzfqFk8tt
+   KK9hbeGZidiRVSwnfd1+0m+gsqnTC9pFPKyb5W99sdVwbK21ZfmCVIry0
+   H150Nv858vVAl3ndXaT4ge8N4eT6BlfCkMoMx+jjs8YLYq/uc8+k5H/X7
+   uZqj/060EJta/vTCR7ianmTTz44BJFSYTTRp+3ey2MmiJWzI7w3zS6Zxf
+   UMVNnOQikhyXblflQsB1/pa0QhnImyjfAcBmbJzBnspBeRAouZT7B2y5p
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="334863385"
+X-IronPort-AV: E=Sophos;i="5.98,244,1673942400"; 
+   d="scan'208";a="334863385"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2023 05:33:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="676971421"
+X-IronPort-AV: E=Sophos;i="5.98,244,1673942400"; 
+   d="scan'208";a="676971421"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga002.jf.intel.com with ESMTP; 08 Mar 2023 05:33:44 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 8 Mar 2023 05:33:43 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 8 Mar 2023 05:33:43 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Wed, 8 Mar 2023 05:33:43 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.175)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.21; Wed, 8 Mar 2023 05:33:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nATo8OwRlz2gLZIQxRTdcmq22OnnGrQTmXjTYtMnT7MTK7t7xglkL5k/txETm9UzltAnJH9dIm1CODQG0FXc0wrD7CXLlY9n321aW+muVImL52QPucZvQw4YqcC8iX2QL+FUJSLdpu88nzjchtn+W7hPyulSu34972TiHHrmKRWGqsE5YnYMYr/4ebiHjoOAmdbJxdDVxA4Eju3faZ+EbE8FZucJ7TCNZ4/uQtkqoxrO2Ade3Nti5AUeXTaJiKTq2ypDg/SHYQSe40fpo3rr07pEFZ1YLICmVsJcwrPmPdRomJLwCgIResoBEYgP38Pmxa4VcmqqK6b4IsFctxXW5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=950xfyB59QUFi32n+3+j9Mv4VADM6c8fCe8ujO7TTtk=;
+ b=S5kbtjUTYvnxhakHHtTjdC4jUYDlI1v52OjBA5a0TuAhl0rzzBe3JBFvx+pa80GT5HL+jtEWbHusTswhuZ8TRPcGf4CituKyCyyxVhNO0xUVDNus0U9H2YDgPqZnlk6NcZVxpQBKdCoEKAjYNWeHh/jQ1bBtEQZ7veGvVyymOGuC6jVvCEOcqUgXK47DO2ZSs9og6fQuGn5RBbOarjGmmBJJ4Zf6fKETIaP3khXVaKf5h56IF2hnN2Xn1XicVlIJ4zhR4YaS0/Vv7PGv2E1Vlxv+hRXb2cB5wp5ZG1pqKIm5Wa/1bDbs+9irrR3Z3WF/IrIpzJ4cNVg1fYupRV0uBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by PH7PR11MB7097.namprd11.prod.outlook.com (2603:10b6:510:20c::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.17; Wed, 8 Mar
+ 2023 13:33:38 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::7911:de29:ded:224]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::7911:de29:ded:224%5]) with mapi id 15.20.6178.017; Wed, 8 Mar 2023
+ 13:33:38 +0000
+Message-ID: <968526f7-d262-b69e-ca72-f56078158000@intel.com>
+Date:   Wed, 8 Mar 2023 14:32:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] xsk: Add missing overflow check in xdp_umem_reg
+To:     Kal Cutter Conley <kal.conley@dectris.com>
+CC:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230307172306.786657-1-kal.conley@dectris.com>
+ <ee0aa756-4a9c-1d7a-4179-78024e41d37e@intel.com>
+ <CAHApi-kcvc2qB0D6dV7OG99FsnzAEa-rchOMfySkZ-E=EOh_4w@mail.gmail.com>
+Content-Language: en-US
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <CAHApi-kcvc2qB0D6dV7OG99FsnzAEa-rchOMfySkZ-E=EOh_4w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0061.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4b::9) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9f19f0ff41114f7c90cca681f438388a64807e92.camel@huaweicloud.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|PH7PR11MB7097:EE_
+X-MS-Office365-Filtering-Correlation-Id: 46e36df1-a0b4-46d2-bd63-08db1fd9b96f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xyNAhr5uj2nPgpjkRLLqBalz/2eqM4gu+0UhPCBCXZYHJ/rFe/WST+E/Tul4rv6vwJlSOM9kZ8OubehsfKnDSnT+NT42n8UBqeoM4drNhCu3EhV7BdxGagEE7bMlcwne2NAXefkquTKLe80lNdIpEtlDtR67AcQipdDtLLKCC8XOJkD6HHPWX/ZlklHg11sC8GPBjjQujQ0ZC5nYYs6osWHP/rLjpJCOEE3YuJpphyYZUKaBqY3pqKksBmGzSe+qLUPYNAyVROI5iq7gqfN3GpR852104b8JbCiDz4/YL3CL15rw/HUCC4Vp5HLKQgbnCxNlRC5CJGeo2pOpUrGDt1M/jpo4+nBEGXEcE49+E9dbrGVaZft4wfHd2W2d2IEGAANAhg0IAeJjevkGaKo7/yzt9mFeP3CrtLqyz5uA4NGlVGHumlvX5OW/7TI+3EPzLG3eapBHutGwoOXK5g+sD2Mulf/Pr6YcjnuYgkUM3+FnGdbPvdWd0hfldCunZ+D+oq3h0w+9A9fuYONQlFLlVPLMI25dNlneJcNAfVkKvrlDqoGeTVA2RXPU0rbGkE28rDkjOt0ZZZHOJVViD+QijudgLEdAQkbhZmj7lvldyJVRogBG6rcZapntS4vWtuBV7EWcb4l/z6Vk3pafZ6SwoZjDnTwD+jFCA6gwHrCFLi/tuCsinSZmyNrNrMm2JmEczbcR5ROAfnVmi2LmQo44RF54qswwWvkTWlF76INi6Hw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(376002)(346002)(366004)(396003)(136003)(39860400002)(451199018)(36756003)(6666004)(6486002)(38100700002)(82960400001)(26005)(2616005)(6506007)(83380400001)(186003)(41300700001)(66556008)(8676002)(4326008)(66476007)(6916009)(2906002)(66946007)(8936002)(5660300002)(7416002)(54906003)(316002)(478600001)(86362001)(31696002)(6512007)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WE9mYUJrZFE0bm9Fd0NRSU42Sm1mcXBSRHYyUzBNL0RZL2J6VTRxQ281RVBh?=
+ =?utf-8?B?aEdpQUhzWkNnZ2ppeDZ4OUwxc05URm1ibk5LNUYvZ2c1QkFDRkFGNDMzNzFq?=
+ =?utf-8?B?eU9LYVJYS2N5ODNKZ2FGd3VJeHQ4dXpOMllrOXo2VHZJcE11WFB5ZitQbFZG?=
+ =?utf-8?B?OEFFWWRaNFZVS3RVdTFyZCtVbkpXQjU4ckx0YWF0TjlkQXZvOWl0WjR4K25v?=
+ =?utf-8?B?T3BidnNkcTJUSVdZZ3pJWXJmQjFlaDNJQjhaZG9Va0o2YTN0SWs1cmpLcWtk?=
+ =?utf-8?B?ZnlDWVVpNWgwakFOUW1ENVhUM3RVaTdOUHNiM3RhekIxZ3hKdlBzNGJtdjcz?=
+ =?utf-8?B?UHVvRm5mRW5yaW5kY2lyTEZmMVVxNGp5L1BBZDNYTXJZNmkwUmpoeVBMNE9p?=
+ =?utf-8?B?N2dmMWF4aThyelBhQTdhd0ZpTEtsR2QxL1BnQndqaEhDZTNoRDRWYlRqNDhr?=
+ =?utf-8?B?TUhLU1R1NWdFcjFiQWxsTkdxcHJFZUN6T2hBb1JSenVQaC9TbmpCdFNVMW82?=
+ =?utf-8?B?VHJya2ZtVVBTZ3ZKb1BxeU4vNUxWSmtHdlpkS3Z1Smo3SHlYWmZZQkdhSW44?=
+ =?utf-8?B?VnM4SWtuSUY2OWxzd1k0c2wxYWJxUmFYUldNMnlVRlFRdnJ6TWpzejJoOWpJ?=
+ =?utf-8?B?bmhubC93bjZOQjVBQlZVaXlmUHJuak5KTTBXQURaMUU1Qk9iYktqcys5MVlV?=
+ =?utf-8?B?Z3dOaGlzcEVyYVlXVVpDdFVYM0FFZ3B1M0p5a2tCbUszK2RLTGdHY0VQV251?=
+ =?utf-8?B?aGp6eUgyNDhGNDJBZUp1bGNORXFkdGFiQ25UK3d6K3JUelJvVDBhZ3NoYkpw?=
+ =?utf-8?B?cDRQZjNCanBPTjJ4TzZhb0MzK1dqQmk1SlBiZmt6aEU5aGsvVGd6cUNrTW5m?=
+ =?utf-8?B?TThSbkZra0JmTDlsOU53aWJDMmExWWlYNlZRenM0K1R2NldWaXFySEhPa1Fa?=
+ =?utf-8?B?cUZHek45TStBaDdLMFpRclJDSlE1MHpJTkdzWDVtby8wRndIeEtia2tIeTlO?=
+ =?utf-8?B?dElvdUI0bytnWXpRZDFZMXE5VTBJZU5MdFZMRTJNekJhaVIwcm9sWllvcVB5?=
+ =?utf-8?B?RW9TNU5GaWRzNW85QWZYeU90dWJIZTlLNGRaUUlIWGtsZnY2S3FkbEhuNzkw?=
+ =?utf-8?B?TENzb3B5QjY5ZTFEa2VJVG9pTG5zNnl3V1ZVYnE0NVBTb3l4aE9EcmlTNTFh?=
+ =?utf-8?B?Y3NVNkFkanRkb2Ewek91cnN5S2x3M2txS293U2hqckZ2M2U4VXA1YzNJWllQ?=
+ =?utf-8?B?NXJDUk1SRDA4VUZEbE1SeWdmZkd2c09YNWJKSnM5TENaUEZwR3kxNUt6UUlD?=
+ =?utf-8?B?YzZ4UmlJdlJEa0FseWZlSmRQNnU2ZDlnNjNmRmNJL2I5OXJQYm96UXFxUCtV?=
+ =?utf-8?B?R0ZBcmU3TElWQnhkM2dLenA4aFdNM1Vwc2JYcUZKTGtEUzRjOWhZRWR6RDhD?=
+ =?utf-8?B?VUJZZHVxNzlaYzJwSkpmbGFUdlFucFFxWm5xbWRLRWRMS1FxVEFWVUdCbTQz?=
+ =?utf-8?B?MEo2UGVaZ0plUnpub0FtME9JUUdkOHN2ajJnZVFBSnZlUUZtOWhuSkZ4TmQ5?=
+ =?utf-8?B?Ui9TNlBJaDNYV215UEEwUVFoeS8rbjk3TXJCYkN2Uk5yMFdReWZxQ2ZMSkxV?=
+ =?utf-8?B?dDFkZ0o4M3ZmQUkwS2dHTTVnQ1JkaTJqZERmWlVFSElKd3NCZ0lRMWY3dUxC?=
+ =?utf-8?B?ek5aYThidmRTYXBtUDE2bW5RdzVZM3NOdUZlaEVNVXpkNmI2NGNlR3pSclA1?=
+ =?utf-8?B?R3hHaTNJSEJraFlONW1VN3VKSi95ZmxDQWJCQ1hpK0YvS29pdjQ4dVh0QnFh?=
+ =?utf-8?B?WGdzZXFlZ0dieThYYXYrb1VXRk1DMnFZaGh6N0VxK1ZXNzJML3pjdlJlUXU0?=
+ =?utf-8?B?WWErQUNpK2tXOFlyNnpPVFk3VU9VV1lrTUpJaUkwZXVSNUtNdjRaVU8rV0pJ?=
+ =?utf-8?B?a3VNZGZEYU42ZXFuTW9kM3NwS1NNNE9rRDdHZnBGZ3hDZlVodGs4ZkpWRjNu?=
+ =?utf-8?B?b3EyUDJkS3M5TVpNTEFuNm44bC81b3RybmNUZW5pWHdLcXFVZElQaEpBRHBk?=
+ =?utf-8?B?b2xUL3cwa3dnSWNKQjdlT1EzMUdFK2hwQ3I5STVmSHVPSllKQi9CUzZ1WERt?=
+ =?utf-8?B?T3JwemlaajNaSkZKaDYrQzBGbTBrYlVRU2dSV25RZHRIaHlSWUNYMWZYTkRD?=
+ =?utf-8?Q?ecjINnwdjNLMd918/q6FQt0=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 46e36df1-a0b4-46d2-bd63-08db1fd9b96f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2023 13:33:38.5341
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0E+35uxSa1X0R+Cl1dtSfy73kPURFihWc2GhZ5BT77OIg4nPcgXzc8BbokwaHrHhnMIGIfmlGljK/b6YthEETSEB7+MQh0fSG6LYo7i8DCA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7097
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,103 +174,97 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 08, 2023 at 01:05:45PM +0100, Roberto Sassu wrote:
-> On Wed, 2023-03-08 at 11:03 +0000, Matt Bobrowski wrote:
-> > Ha! I was literally in the midst of sending through a patch for
-> > this. Thanks for also taking a look and beating me to it!
-> > 
-> > This LGTM, feel free to add:
-> > 
-> > Reviewed-by: Matt Bobrowski <mattbobrowski@google.com>
+From: Kal Conley <kal.conley@dectris.com>
+Date: Tue, 7 Mar 2023 19:58:51 +0100
+
+>> The RCT declaration style is messed up in the whole block. Please move
+>> lines around, there's nothing wrong in that.
 > 
-> Thanks.
+> I think I figured out what this is. Is this preference documented
+> somewhere? I will fix it.
+
+It's when you sort the declarations by the line length. I.e.
+
+short var a;
+longest var b;
+medium var c;
+
+=>
+
+longest var b;
+medium var c;
+short var a;
+
+I think it's documented somewhere in the kernel. You can try grepping by
+"Reverse Christmas Tree".
+
 > 
-> I have only one remain question. Should we accept the old behavior, or
-> simply reject it?
+>>
+>>>       int err;
+>>>
+>>>       if (chunk_size < XDP_UMEM_MIN_CHUNK_SIZE || chunk_size > PAGE_SIZE) {
+>>> @@ -188,8 +189,8 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+>>>       if (npgs > U32_MAX)
+>>>               return -EINVAL;
+>>>
+>>> -     chunks = (unsigned int)div_u64_rem(size, chunk_size, &chunks_rem);
+>>> -     if (chunks == 0)
+>>> +     chunks = div_u64_rem(size, chunk_size, &chunks_rem);
+>>> +     if (chunks == 0 || chunks > U32_MAX)
+>>
+>> You can change the first cond to `!chunks` while at it, it's more
+>> preferred than `== 0`.
+> 
+> If you want, I can change it. I generally like to keep unrelated
+> changes to a minimum.
 
-I assume you mean whether we should continue supporting the old,
-arguably incorrect, behavior in this test? I'm of the opinion that it
-is OK, given that this is how the API behaved prior to commit
-62622dab0a28.
+You modify the line either way, so I don't see any reasons to keep the
+code as-is. It's clear that replacing `== 0` to `!chunks` won't change
+the logic anyhow.
 
-I'll let others also chime in and share their .02 though...
+> 
+>>
+>>>               return -EINVAL;
+>>
+>> Do you have any particular bugs that the current code leads to? Or it's
+>> just something that might hypothetically happen?
+> 
+> If the UMEM is large enough, the code is broke. Maybe it can be
+> exploited somehow? It should be checked for exactly the same reasons
+> as `npgs` right above it.
+> 
+>>
+>>>
+>>>       if (!unaligned_chunks && chunks_rem)
+>>> @@ -201,7 +202,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+>>>       umem->size = size;
+>>>       umem->headroom = headroom;
+>>>       umem->chunk_size = chunk_size;
+>>> -     umem->chunks = chunks;
+>>> +     umem->chunks = (u32)chunks;
+>>
+>> You already checked @chunks fits into 32 bits, so the cast can be
+>> omitted here, it's redundant.
+> 
+> I made it consistent with the line right below it. It seems like the
+> cast may improve readability since it makes it known the truncation is
+> on purpose. I don't see how that is redundant with the safety check.
+> Should I change both lines?
 
-> > On Wed, Mar 08, 2023 at 11:37:13AM +0100, Roberto Sassu wrote:
-> > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > 
-> > > Commit 62622dab0a28 ("ima: return IMA digest value only when IMA_COLLECTED
-> > > flag is set") caused bpf_ima_inode_hash() to refuse to give non-fresh
-> > > digests. IMA test #3 assumed the old behavior, that bpf_ima_inode_hash()
-> > > still returned also non-fresh digests.
-> > > 
-> > > Correct the test by accepting both cases. If the samples returned are 1,
-> > > assume that the commit above is applied and that the returned digest is
-> > > fresh. If the samples returned are 2, assume that the commit above is not
-> > > applied, and check both the non-fresh and fresh digest.
-> > > 
-> > > Fixes: 62622dab0a28 ("ima: return IMA digest value only when IMA_COLLECTED flag is set")
-> > > Reported by: David Vernet <void@manifault.com>
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > ---
-> > >  .../selftests/bpf/prog_tests/test_ima.c       | 29 ++++++++++++++-----
-> > >  1 file changed, 21 insertions(+), 8 deletions(-)
-> > > 
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-> > > index b13feceb38f..810b14981c2 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/test_ima.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-> > > @@ -70,7 +70,7 @@ void test_test_ima(void)
-> > >  	u64 bin_true_sample;
-> > >  	char cmd[256];
-> > >  
-> > > -	int err, duration = 0;
-> > > +	int err, duration = 0, fresh_digest_idx = 0;
-> > >  	struct ima *skel = NULL;
-> > >  
-> > >  	skel = ima__open_and_load();
-> > > @@ -129,7 +129,15 @@ void test_test_ima(void)
-> > >  	/*
-> > >  	 * Test #3
-> > >  	 * - Goal: confirm that bpf_ima_inode_hash() returns a non-fresh digest
-> > > -	 * - Expected result: 2 samples (/bin/true: non-fresh, fresh)
-> > > +	 * - Expected result:
-> > > +	 *   1 sample (/bin/true: fresh) if commit 62622dab0a28 applied
-> > > +	 *   2 samples (/bin/true: non-fresh, fresh) if commit 62622dab0a28 is
-> > > +	 *     not applied
-> > > +	 *
-> > > +	 * If commit 62622dab0a28 ("ima: return IMA digest value only when
-> > > +	 * IMA_COLLECTED flag is set") is applied, bpf_ima_inode_hash() refuses
-> > > +	 * to give a non-fresh digest, hence the correct result is 1 instead of
-> > > +	 * 2.
-> > >  	 */
-> > >  	test_init(skel->bss);
-> > >  
-> > > @@ -144,13 +152,18 @@ void test_test_ima(void)
-> > >  		goto close_clean;
-> > >  
-> > >  	err = ring_buffer__consume(ringbuf);
-> > > -	ASSERT_EQ(err, 2, "num_samples_or_err");
-> > > -	ASSERT_NEQ(ima_hash_from_bpf[0], 0, "ima_hash");
-> > > -	ASSERT_NEQ(ima_hash_from_bpf[1], 0, "ima_hash");
-> > > -	ASSERT_EQ(ima_hash_from_bpf[0], bin_true_sample, "sample_equal_or_err");
-> > > +	ASSERT_GE(err, 1, "num_samples_or_err");
-> > > +	if (err == 2) {
-> > > +		ASSERT_NEQ(ima_hash_from_bpf[0], 0, "ima_hash");
-> > > +		ASSERT_EQ(ima_hash_from_bpf[0], bin_true_sample,
-> > > +			  "sample_equal_or_err");
-> > > +		fresh_digest_idx = 1;
-> > > +	}
-> > > +
-> > > +	ASSERT_NEQ(ima_hash_from_bpf[fresh_digest_idx], 0, "ima_hash");
-> > >  	/* IMA refreshed the digest. */
-> > > -	ASSERT_NEQ(ima_hash_from_bpf[1], bin_true_sample,
-> > > -		   "sample_different_or_err");
-> > > +	ASSERT_NEQ(ima_hash_from_bpf[fresh_digest_idx], bin_true_sample,
-> > > +		   "sample_equal_or_err");
-> > >  
-> > >  	/*
-> > >  	 * Test #4
-> > > -- 
-> > > 2.25.1
+I'd prefer to change both lines. You already check both @npgs and
+@chunks for being <= %U32_MAX and anyone can see it from the code, so
+the casts don't make anything more readable.
 
-/M
+> 
+>>
+>>>       umem->npgs = (u32)npgs;
+>>>       umem->pgs = NULL;
+>>>       umem->user = NULL;
+>>
+>> Thanks,
+>> Olek
+> 
+> Kal
+
+Thanks,
+Olek
