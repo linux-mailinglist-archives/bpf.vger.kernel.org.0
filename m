@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E45176B1354
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 21:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C976B1365
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 21:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbjCHUqa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 15:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
+        id S229492AbjCHUxJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 15:53:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbjCHUq3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 15:46:29 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0400D234EF
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 12:46:28 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id v11so18880672plz.8
-        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 12:46:27 -0800 (PST)
+        with ESMTP id S229475AbjCHUxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 15:53:09 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D296123305
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 12:53:06 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id h17-20020a17090aea9100b0023739b10792so99694pjz.1
+        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 12:53:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112; t=1678308387;
+        d=googlemail.com; s=20210112; t=1678308786;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L8ZcjjhBiwRGJko2IIRlTomPDbsnZlPk0Gg0sXr/Noc=;
-        b=GCrmfhuCXvzx/a9T5A69BdZRiokurLjq475tWjRv/GOGSkOxga6TE8DgG+0/dlH9MU
-         BOYsdbkGaBFfgPiSxIEfPfO0NIMw/1Y120qvdGwu9bi0SedDI+M3tVzqJTHGBf1JiCEg
-         KWZhho5q6eBOYEOaU+jElItghp+SF+wOpHQnWFpHkPWVi0+n7zt31+3LMJjcIjTU6GTx
-         z3GTsvlgy8l/uY545vxuqtggltmOUPDoyYQsNtHP2AQ/x6ubFLg3nhvTZXUkwO2EWEQA
-         H9RoXkQE9/WQ3Vco8AgJY7HUM4Xkwr7t6GTeqjvcMwtulCpTtDyO3HZO0GmdFfGbqq7S
-         FLBQ==
+        bh=JSPqJSHFcoBtsX/5P4b9fPdo+mPyhMh5bqZUtzJBWfQ=;
+        b=EnL8FBsSqJ+pL3d1QDmRUcDQVRzEAYlbvLlrJNHDnCP1WCR9IlEAtuACWC3QFmHpp6
+         4sKTA9/faI1TpiRfPvSvfnMA97ygk9bbV99Jbu4tlKsomduWkvoRzM6oxm9GxbcojPqg
+         HG29vGX8Ysi/nsqA4qvz2h+HbdlRzb0GMR/pkRFlornJFV52KNaU9xKNEWRbA/LLDVWn
+         h86sUPRvlFzuV+V2pOoEHVQJAup4GQ/fmJJc7mBaENopkQIuagyCFIT49x1kYGKIee/9
+         YO1THVGh1pHSj+yb4jbWgbC449/+umg+rOi1Q+QgtUbZzhyoI6UouP8GGqb+YeAt0L+b
+         sj2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678308387;
+        d=1e100.net; s=20210112; t=1678308786;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=L8ZcjjhBiwRGJko2IIRlTomPDbsnZlPk0Gg0sXr/Noc=;
-        b=QaFTyu7GtxdkyXwt+9606gZjwjWczoDLw+8nzExlFJLkNBIvxGi6V+CfQwZ2eAvxKR
-         zjJpQy+HdolI0BmzlahmLu+FAizlV0CnKIkmLLEXIZLnn5n/73AFuseyQ73FwNljTWe8
-         G4FdIaycrfAMDTnk8AeAoRYofxNS5vTsa/AnRvfktR4ltbQdb3drSDGBLF9srCxBNpbj
-         g0jerjlYdvWtW1ooKNBffHpKgMqOoNndN4ZVEqQIV0x1sny79m7vpIwXa1jukrE86hDk
-         JAjWdtuxlnl0izTl9E8IqR/p8r7nFjH+FocKvrOoI5QztTTMv+0zjIVVh4IbquBD1Joz
-         LUEw==
-X-Gm-Message-State: AO0yUKXMshIRN9z4QpBWv2Zzk/Wt+78Xwf9nOPuvXwMHEc1F6CvGNYuF
-        YUp27U5GbXjqf957Xloeronrz6quZYo=
-X-Google-Smtp-Source: AK7set+R40qI9VfxN0c0/2O6KEG9jUdZZgxXSMhVdcSiY/w9ZJIUnELN9IjqLBpNhNQiVXVFP5+3aA==
-X-Received: by 2002:a17:903:41c8:b0:19a:6ec0:50c2 with SMTP id u8-20020a17090341c800b0019a6ec050c2mr23884039ple.26.1678308387191;
-        Wed, 08 Mar 2023 12:46:27 -0800 (PST)
-Received: from mariner-vm.. ([131.107.147.246])
-        by smtp.gmail.com with ESMTPSA id kh4-20020a170903064400b0019cb4166266sm10233265plb.83.2023.03.08.12.46.26
+        bh=JSPqJSHFcoBtsX/5P4b9fPdo+mPyhMh5bqZUtzJBWfQ=;
+        b=CJup8OY1aXEkisyfFMZGvYEQLGYPK/GkFGqPvQH5zwihBlwhIyp7EKZ4WqO1Jzn/U5
+         TudY/7XEZs6XGasKADwCvS+Hgrwc1quKiQPG4lrvDndgRcNED/+a8lp3sBv73GYE/noR
+         cIJmbJHi+46hg7BiaOfgkjKjkcecvF5jbXOlJ8PazRRLIU2BVp1JbbDCSeaFqH85Is/0
+         2x0XdVHF5xitqFJorUoY6UALgQTAn75kyVHyw4Heq0hTOSrDCdLs8Qwy8cZSMm14oMPu
+         TtKhTqhwx/YnJWATk6u0U75oLdhEvWvSjlCVjqG5U/hIUTgRS7ll1fooassVXMBIMEgD
+         Ppjg==
+X-Gm-Message-State: AO0yUKXWbLUrnAiy23OBm275nYu1Ia/GLcaGWdogU00lOmjzclOBqOU2
+        9jCKs6cCdA65FgBzPDPfM9oFRlLyvHo=
+X-Google-Smtp-Source: AK7set/i4FSY5OAOe2hhOqoiS3A35wtt4/44I2zE7wqU2OVtabrSzg9LMeeLxN25trzAUzs1tEec4g==
+X-Received: by 2002:a05:6a20:841a:b0:bc:96bd:d701 with SMTP id c26-20020a056a20841a00b000bc96bdd701mr27400733pzd.13.1678308786036;
+        Wed, 08 Mar 2023 12:53:06 -0800 (PST)
+Received: from mariner-vm.. ([131.107.1.182])
+        by smtp.gmail.com with ESMTPSA id 3-20020aa79143000000b005810c4286d6sm9784462pfi.0.2023.03.08.12.53.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Mar 2023 12:46:26 -0800 (PST)
+        Wed, 08 Mar 2023 12:53:05 -0800 (PST)
 From:   Dave Thaler <dthaler1968@googlemail.com>
 To:     bpf@vger.kernel.org
 Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
-Subject: [PATCH bpf-next v2 RESEND] bpf, docs: Add docs on extended 64-bit immediate instructions
-Date:   Wed,  8 Mar 2023 20:46:23 +0000
-Message-Id: <20230308204623.959-1-dthaler1968@googlemail.com>
+Subject: [PATCH bpf-next v4] bpf, docs: Explain helper functions
+Date:   Wed,  8 Mar 2023 20:53:03 +0000
+Message-Id: <20230308205303.1308-1-dthaler1968@googlemail.com>
 X-Mailer: git-send-email 2.33.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -69,103 +69,84 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Dave Thaler <dthaler@microsoft.com>
 
-Add docs on extended 64-bit immediate instructions, including six instructions
-previously undocumented.  Include a brief description of map objects, and variables,
-as used by those instructions.
+Add brief text about existence of helper functions, with details to go in
+separate psABI text.
 
----
-V1 - V2: rebased on top of latest master
+Note that text about runtime functions (kfuncs) is part of a separate patch,
+not this one.
 
 Signed-off-by: Dave Thaler <dthaler@microsoft.com>
 ---
- Documentation/bpf/instruction-set.rst | 56 +++++++++++++++++++++++----
- Documentation/bpf/linux-notes.rst     | 10 +++++
- 2 files changed, 58 insertions(+), 8 deletions(-)
+V1 -> V2: addressed comments from Alexei and Stanislav
 
+V2 -> V3: addressed comments from David Vernet
+
+V3 -> V4: removed text that should be in psABI
+---
+ Documentation/bpf/clang-notes.rst     | 6 ++++++
+ Documentation/bpf/instruction-set.rst | 9 ++++++++-
+ Documentation/bpf/linux-notes.rst     | 8 ++++++++
+ 3 files changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/bpf/clang-notes.rst b/Documentation/bpf/clang-notes.rst
+index 528feddf2db..2c872a1ee08 100644
+--- a/Documentation/bpf/clang-notes.rst
++++ b/Documentation/bpf/clang-notes.rst
+@@ -20,6 +20,12 @@ Arithmetic instructions
+ For CPU versions prior to 3, Clang v7.0 and later can enable ``BPF_ALU`` support with
+ ``-Xclang -target-feature -Xclang +alu32``.  In CPU version 3, support is automatically included.
+ 
++Jump instructions
++=================
++
++If ``-O0`` is used, Clang will generate the ``BPF_CALL | BPF_X | BPF_JMP`` (0x8d)
++instruction, which is not supported by the Linux kernel verifier.
++
+ Atomic operations
+ =================
+ 
 diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index db8789e6969..89087913fbf 100644
+index db8789e6969..5e43e14abe8 100644
 --- a/Documentation/bpf/instruction-set.rst
 +++ b/Documentation/bpf/instruction-set.rst
-@@ -385,14 +385,54 @@ and loaded back to ``R0``.
- -----------------------------
+@@ -253,7 +253,7 @@ BPF_JSET  0x40   PC += off if dst & src
+ BPF_JNE   0x50   PC += off if dst != src
+ BPF_JSGT  0x60   PC += off if dst > src     signed
+ BPF_JSGE  0x70   PC += off if dst >= src    signed
+-BPF_CALL  0x80   function call
++BPF_CALL  0x80   function call              see `Helper functions`_
+ BPF_EXIT  0x90   function / program return  BPF_JMP only
+ BPF_JLT   0xa0   PC += off if dst < src     unsigned
+ BPF_JLE   0xb0   PC += off if dst <= src    unsigned
+@@ -264,6 +264,13 @@ BPF_JSLE  0xd0   PC += off if dst <= src    signed
+ The eBPF program needs to store the return value into register R0 before doing a
+ BPF_EXIT.
  
- Instructions with the ``BPF_IMM`` 'mode' modifier use the wide instruction
--encoding for an extra imm64 value.
--
--There is currently only one such instruction.
--
--``BPF_LD | BPF_DW | BPF_IMM`` means::
--
--  dst = imm64
--
-+encoding defined in `Instruction encoding`_, and use the 'src' field of the
-+basic instruction to hold an opcode subtype.
++Helper functions
++~~~~~~~~~~~~~~~~
 +
-+The following instructions are defined, and use additional concepts defined below:
-+
-+=========================  ======  ===  =====================================  ===========  ==============
-+opcode construction        opcode  src  pseudocode                             imm type     dst type
-+=========================  ======  ===  =====================================  ===========  ==============
-+BPF_IMM | BPF_DW | BPF_LD  0x18    0x0  dst = imm64                            integer      integer
-+BPF_IMM | BPF_DW | BPF_LD  0x18    0x1  dst = map_by_fd(imm)                   map fd       map
-+BPF_IMM | BPF_DW | BPF_LD  0x18    0x2  dst = mva(map_by_fd(imm)) + next_imm   map fd       data pointer
-+BPF_IMM | BPF_DW | BPF_LD  0x18    0x3  dst = variable_addr(imm)               variable id  data pointer
-+BPF_IMM | BPF_DW | BPF_LD  0x18    0x4  dst = code_addr(imm)                   integer      code pointer
-+BPF_IMM | BPF_DW | BPF_LD  0x18    0x5  dst = map_by_idx(imm)                  map index    map
-+BPF_IMM | BPF_DW | BPF_LD  0x18    0x6  dst = mva(map_by_idx(imm)) + next_imm  map index    data pointer
-+=========================  ======  ===  =====================================  ===========  ==============
-+
-+where
-+
-+* map_by_fd(fd) means to convert a 32-bit POSIX file descriptor into an address of a map object (see `Map objects`_)
-+* map_by_index(index) means to convert a 32-bit index into an address of a map object
-+* mva(map) gets the address of the first value in a given map object
-+* variable_addr(id) gets the address of a variable (see `Variables`_) with a given id
-+* code_addr(offset) gets the address of the instruction at a specified relative offset in units of 64-bit blocks
-+* the 'imm type' can be used by disassemblers for display
-+* the 'dst type' can be used for verification and JIT compilation purposes
-+
-+Map objects
-+~~~~~~~~~~~
-+
-+Maps are shared memory regions accessible by eBPF programs on some platforms, where we use the term "map object"
-+to refer to an object containing the data and metadata (e.g., size) about the memory region.
-+A map can have various semantics as defined in a separate document, and may or may not have a single
-+contiguous memory region, but the 'mva(map)' is currently only defined for maps that do have a single
-+contiguous memory region.  Support for maps is optional.
-+
-+Each map object can have a POSIX file descriptor (fd) if supported by the platform,
-+where 'map_by_fd(fd)' means to get the map with the specified file descriptor.
-+Each eBPF program can also be defined to use a set of maps associated with the program
-+at load time, and 'map_by_index(index)' means to get the map with the given index in the set
-+associated with the eBPF program containing the instruction.
-+
-+Variables
-+~~~~~~~~~
-+
-+Variables are memory regions, identified by integer ids, accessible by eBPF programs on
-+some platforms.  The 'variable_addr(id)' operation means to get the address of the memory region
-+identified by the given id.  Support for such variables is optional.
++Helper functions are a concept whereby BPF programs can call into a
++set of function calls exposed by the runtime.  Each helper
++function is identified by an integer used in a ``BPF_CALL`` instruction.
++The available helper functions may differ for each program type.
  
- Legacy BPF Packet access instructions
- -------------------------------------
+ Load and store instructions
+ ===========================
 diff --git a/Documentation/bpf/linux-notes.rst b/Documentation/bpf/linux-notes.rst
-index 956b0c86699..9a1bdbb8ac0 100644
+index 956b0c86699..f43b9c797bc 100644
 --- a/Documentation/bpf/linux-notes.rst
 +++ b/Documentation/bpf/linux-notes.rst
-@@ -12,6 +12,16 @@ Byte swap instructions
+@@ -12,6 +12,14 @@ Byte swap instructions
  
  ``BPF_FROM_LE`` and ``BPF_FROM_BE`` exist as aliases for ``BPF_TO_LE`` and ``BPF_TO_BE`` respectively.
  
-+Map objects
-+===========
++Jump instructions
++=================
 +
-+Linux only supports the 'mva(map)' operation on array maps with a single element.
-+
-+Variables
-+=========
-+
-+Linux uses BTF ids to identify variables.
++``BPF_CALL | BPF_X | BPF_JMP`` (0x8d), where the helper function
++integer would be read from a specified register, is not currently supported
++by the verifier.  Any programs with this instruction will fail to load
++until such support is added.
 +
  Legacy BPF Packet access instructions
  =====================================
