@@ -2,73 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4196AFDAF
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 04:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA83F6AFDD5
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 05:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbjCHD6S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 22:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
+        id S229484AbjCHEXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 23:23:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbjCHD6Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 22:58:16 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879ED43910
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 19:58:14 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id i34so60707878eda.7
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 19:58:14 -0800 (PST)
+        with ESMTP id S229468AbjCHEXP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 23:23:15 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267C632505
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 20:23:12 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id p20so16494079plw.13
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 20:23:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678247893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0Tlzmmymv6b69PVxJ1Sm9cagL1grmfqzVtN4rp8n3VM=;
-        b=izjOKz6RIwfLULeu44jvcjz9qq4SI4PK6MIEK6Bk519R/i5XOU6hhrNe5Q0OP47C9f
-         G5g2duLJN9MGSneletJYEWIXGXTj50M4gQKYQHIuGybJWqLhBe/Ffrj0qdQS0XUjSu1+
-         xiUnHCIKPU+KelrmLX/X+nBGgAxPK5IepwiLb0d86/NYvo/t2Wt6lhKPOdJQ4QpK+ncS
-         2/gJm6oGr/42W3Hd3OWBFjPzq2nW8bJR3gzbSYRA0vHW5JsK+et2ZPOaH/hROujP0AEu
-         SLt8s74/ehF2BPlpyP5cuzybEGiTctvCUH39mgNQeM+0QZwG4L7UsszWKWjdVMUkuSIY
-         IIoA==
+        d=gmail.com; s=20210112; t=1678249391;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=973BTH9aKc0U4Z5TbawtgXuLlerJ8sLNCZuvMPn2PZ8=;
+        b=To8iAxt4wNJHpkc2sMuCBFRfjIjIo9N/+ljW+mVD7lhF3JekUTpqOdZnC77CIWok1T
+         aT017PfleeLJADR3JwhA9VpAlvua96NY+Hhlem5kmSPQyT9sXzOcf9i1bSzUY7XRm+/6
+         upv5Gh5kZVyYTW9HGcLqulydkvRHuPbHRkT7N31Ddw52WYk0ufc9S/cxLUBLskUWMMFS
+         UY5kJQGmWkWo0PCmLIr478dv4tejntNGRI/KKAZhjmNCrQ0FqL9yT6JlMgiAPEXiogN6
+         RtB+XmZX2pOwB7cCOaSfMNDZAQ51JpGgE7bIAS8dbbjApVbo7DP5Wn4HdnLKQdFLRy1/
+         tf6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678247893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0Tlzmmymv6b69PVxJ1Sm9cagL1grmfqzVtN4rp8n3VM=;
-        b=7XnuPfGk5tQVPRNO1ZblR4ETcebXCbmInnDxaJ7qte4H8Xs0yUavK+ZFFBj++uaquA
-         uuLN75EMoM7ZI4lkDqtpUCBHc4o3UN02tTbiiqVl6r7/dB+aaiIoYm4o5bDlc7ElqPyE
-         17luod37gJwc/UmAQDTCC9iMiiHH7eTJ3WmU3sI+7egaTF0XKJXxyZpY2P+oe26jvEwq
-         MvilsjsprNWdctdChH8Y0109vj+y2xoRaslI4Z7TzMoZJLn+pNtVQGRW37y3n++Scila
-         LEtIhZwcRDHiKZ+SLlp+Wlm0qhV/tpM+p8cFPjtPrFUDZDX2wJrNKXuXdYgCi/gYd5tT
-         wcRA==
-X-Gm-Message-State: AO0yUKWwzOedm5nDZ/KO6DPDnOggX86fywj86wseg0l8E4Rwl1/4ZrZj
-        x1ECIqexYJlYSIovx++s7afDuaIKj42z2W3JXQn/Y/wfX7k=
-X-Google-Smtp-Source: AK7set8OhPx0vZTyAfagJr5/C0CDaWNO9Vr7WWCf7yEMUg4+/IKA+SpJncsH32r6y9uAllcejjamHsMACFxA7j7xEkI=
-X-Received: by 2002:a17:906:4bcb:b0:8b1:28f6:8ab3 with SMTP id
- x11-20020a1709064bcb00b008b128f68ab3mr8447062ejv.15.1678247892869; Tue, 07
- Mar 2023 19:58:12 -0800 (PST)
+        d=1e100.net; s=20210112; t=1678249391;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=973BTH9aKc0U4Z5TbawtgXuLlerJ8sLNCZuvMPn2PZ8=;
+        b=WwJKiZhpwXf8sJgun42DPsI9GhEg9k/+GkxZr00zK2AL0IXRgKQ1jlPXOyYgKKeax1
+         LJpSMfYREgg4mQSu3izR8uB2k+Ifqcb5ECtsMFPyaNh6NLY+p/n90jcU7SCH9qHUlXnh
+         c1cT2kj34s6Gelb4tpPZ1edfj4z67/5mLHRFRU+0rnsyi3V4HP/aZWNwAlu6Oe6EJR2g
+         Ve1CKME9nhLvZightva6oqHfGFs/3plBAOgAhuDTBvMmRuY4eHa+H9Sp6GSKoOPMEqra
+         v9KfTizcFrBfmbpiS7QleL+VDHUNwxiSYLHgtoggSi2aPhlLnu0s6I7XIF+5zZMLVKGN
+         rWEw==
+X-Gm-Message-State: AO0yUKWFI+yE6dwbfjoWhBz7aLQa/jFZ866+yWR9AKGv6LTj4PSpEA4h
+        wepIZ4z3VsiPynhG93CPCgg=
+X-Google-Smtp-Source: AK7set858AIXRm2Dbby9D44KNAyTn1w7E7aEmQMrx1wtI+GPJO9Pop+7Wt+YWnGAusqJRpuChRQSzQ==
+X-Received: by 2002:a17:902:e88e:b0:19a:8636:9e2c with SMTP id w14-20020a170902e88e00b0019a86369e2cmr21576020plg.57.1678249391426;
+        Tue, 07 Mar 2023 20:23:11 -0800 (PST)
+Received: from ?IPV6:2620:10d:c085:21c1::12b7? ([2620:10d:c090:400::5:e5a9])
+        by smtp.gmail.com with ESMTPSA id lg14-20020a170902fb8e00b0019a7f493151sm9112745plb.212.2023.03.07.20.23.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Mar 2023 20:23:10 -0800 (PST)
+Message-ID: <7425b219-4b47-c3f1-844d-61e27d03af03@gmail.com>
+Date:   Tue, 7 Mar 2023 20:23:05 -0800
 MIME-Version: 1.0
-References: <cover.1677583941.git.vmalik@redhat.com>
-In-Reply-To: <cover.1677583941.git.vmalik@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 7 Mar 2023 19:58:01 -0800
-Message-ID: <CAEf4BzY9h+ywcxo5=6WZbJzN=9_9UJ_fwKVEBDHWn=4PDPf33Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 0/2] Fix attaching fentry/fexit/fmod_ret/lsm
- to modules
-To:     Viktor Malik <vmalik@redhat.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next v4 8/9] libbpf: Use .struct_ops.link section to
+ indicate a struct_ops with a link.
+Content-Language: en-US, en-ZW
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kui-Feng Lee <kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+        sdf@google.com
+References: <20230307233307.3626875-1-kuifeng@meta.com>
+ <20230307233307.3626875-9-kuifeng@meta.com>
+ <CAEf4BzaopfY5azUh4yi=Bx3h7x9W9r=XCA1OeVrTFSK_X3s7UQ@mail.gmail.com>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAEf4BzaopfY5azUh4yi=Bx3h7x9W9r=XCA1OeVrTFSK_X3s7UQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,92 +79,245 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 4:27=E2=80=AFAM Viktor Malik <vmalik@redhat.com> wr=
-ote:
->
-> I noticed that the verifier behaves incorrectly when attaching to fentry
-> of multiple functions of the same name located in different modules (or
-> in vmlinux). The reason for this is that if the target program is not
-> specified, the verifier will search kallsyms for the trampoline address
-> to attach to. The entire kallsyms is always searched, not respecting the
-> module in which the function to attach to is located.
->
-> As Yonghong correctly pointed out, there is yet another issue - the
-> trampoline acquires the module reference in register_fentry which means
-> that if the module is unloaded between the place where the address is
-> found in the verifier and register_fentry, it is possible that another
-> module is loaded to the same address in the meantime, which may lead to
-> errors.
->
-> This patch fixes the above issues by extracting the module name from the
-> BTF of the attachment target (which must be specified) and by doing the
-> search in kallsyms of the correct module. At the same time, the module
-> reference is acquired right after the address is found and only released
-> right before the program itself is unloaded.
->
 
-is it expected that your newly added test fails on arm64? See [0]
 
-  [0] https://github.com/kernel-patches/bpf/actions/runs/4359596129/jobs/76=
-21687719
+On 3/7/23 17:07, Andrii Nakryiko wrote:
+> On Tue, Mar 7, 2023 at 3:33 PM Kui-Feng Lee <kuifeng@meta.com> wrote:
+>>
+>> Flags a struct_ops is to back a bpf_link by putting it to the
+>> ".struct_ops.link" section.  Once it is flagged, the created
+>> struct_ops can be used to create a bpf_link or update a bpf_link that
+>> has been backed by another struct_ops.
+>>
+>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 64 +++++++++++++++++++++++++++++++++---------
+>>   1 file changed, 50 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 247de39d136f..d66acd2fdbaa 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -467,6 +467,7 @@ struct bpf_struct_ops {
+>>   #define KCONFIG_SEC ".kconfig"
+>>   #define KSYMS_SEC ".ksyms"
+>>   #define STRUCT_OPS_SEC ".struct_ops"
+>> +#define STRUCT_OPS_LINK_SEC ".struct_ops.link"
+>>
+>>   enum libbpf_map_type {
+>>          LIBBPF_MAP_UNSPEC,
+>> @@ -596,6 +597,7 @@ struct elf_state {
+>>          Elf64_Ehdr *ehdr;
+>>          Elf_Data *symbols;
+>>          Elf_Data *st_ops_data;
+>> +       Elf_Data *st_ops_link_data;
+>>          size_t shstrndx; /* section index for section name strings */
+>>          size_t strtabidx;
+>>          struct elf_sec_desc *secs;
+>> @@ -605,6 +607,7 @@ struct elf_state {
+>>          int text_shndx;
+>>          int symbols_shndx;
+>>          int st_ops_shndx;
+>> +       int st_ops_link_shndx;
+>>   };
+>>
+>>   struct usdt_manager;
+>> @@ -1119,7 +1122,7 @@ static int bpf_object__init_kern_struct_ops_maps(struct bpf_object *obj)
+>>          return 0;
+>>   }
+>>
+>> -static int bpf_object__init_struct_ops_maps(struct bpf_object *obj)
+>> +static int bpf_object__init_struct_ops_maps_link(struct bpf_object *obj, bool link)
+> 
+> let's shorten it and not use double underscores, as this is not a
+> public bpf_object API, just "init_struct_ops_maps" probably is fine
+> 
+>>   {
+>>          const struct btf_type *type, *datasec;
+>>          const struct btf_var_secinfo *vsi;
+>> @@ -1127,18 +1130,33 @@ static int bpf_object__init_struct_ops_maps(struct bpf_object *obj)
+>>          const char *tname, *var_name;
+>>          __s32 type_id, datasec_id;
+>>          const struct btf *btf;
+>> +       const char *sec_name;
+>>          struct bpf_map *map;
+>> -       __u32 i;
+>> +       __u32 i, map_flags;
+>> +       Elf_Data *data;
+>> +       int shndx;
+>>
+>> -       if (obj->efile.st_ops_shndx == -1)
+>> +       if (link) {
+>> +               sec_name = STRUCT_OPS_LINK_SEC;
+>> +               shndx = obj->efile.st_ops_link_shndx;
+>> +               data = obj->efile.st_ops_link_data;
+>> +               map_flags = BPF_F_LINK;
+>> +       } else {
+>> +               sec_name = STRUCT_OPS_SEC;
+>> +               shndx = obj->efile.st_ops_shndx;
+>> +               data = obj->efile.st_ops_data;
+>> +               map_flags = 0;
+>> +       }
+> 
+> let's pass these as function arguments instead
+> 
+>> +
+>> +       if (shndx == -1)
+>>                  return 0;
+>>
+>>          btf = obj->btf;
+>> -       datasec_id = btf__find_by_name_kind(btf, STRUCT_OPS_SEC,
+>> +       datasec_id = btf__find_by_name_kind(btf, sec_name,
+>>                                              BTF_KIND_DATASEC);
+>>          if (datasec_id < 0) {
+>>                  pr_warn("struct_ops init: DATASEC %s not found\n",
+>> -                       STRUCT_OPS_SEC);
+>> +                       sec_name);
+>>                  return -EINVAL;
+>>          }
+>>
+>> @@ -1151,7 +1169,7 @@ static int bpf_object__init_struct_ops_maps(struct bpf_object *obj)
+>>                  type_id = btf__resolve_type(obj->btf, vsi->type);
+>>                  if (type_id < 0) {
+>>                          pr_warn("struct_ops init: Cannot resolve var type_id %u in DATASEC %s\n",
+>> -                               vsi->type, STRUCT_OPS_SEC);
+>> +                               vsi->type, sec_name);
+>>                          return -EINVAL;
+>>                  }
+>>
+>> @@ -1170,7 +1188,7 @@ static int bpf_object__init_struct_ops_maps(struct bpf_object *obj)
+>>                  if (IS_ERR(map))
+>>                          return PTR_ERR(map);
+>>
+>> -               map->sec_idx = obj->efile.st_ops_shndx;
+>> +               map->sec_idx = shndx;
+>>                  map->sec_offset = vsi->offset;
+>>                  map->name = strdup(var_name);
+>>                  if (!map->name)
+>> @@ -1180,6 +1198,7 @@ static int bpf_object__init_struct_ops_maps(struct bpf_object *obj)
+>>                  map->def.key_size = sizeof(int);
+>>                  map->def.value_size = type->size;
+>>                  map->def.max_entries = 1;
+>> +               map->def.map_flags = map_flags;
+>>
+>>                  map->st_ops = calloc(1, sizeof(*map->st_ops));
+>>                  if (!map->st_ops)
+>> @@ -1192,14 +1211,14 @@ static int bpf_object__init_struct_ops_maps(struct bpf_object *obj)
+>>                  if (!st_ops->data || !st_ops->progs || !st_ops->kern_func_off)
+>>                          return -ENOMEM;
+>>
+>> -               if (vsi->offset + type->size > obj->efile.st_ops_data->d_size) {
+>> +               if (vsi->offset + type->size > data->d_size) {
+>>                          pr_warn("struct_ops init: var %s is beyond the end of DATASEC %s\n",
+>> -                               var_name, STRUCT_OPS_SEC);
+>> +                               var_name, sec_name);
+>>                          return -EINVAL;
+>>                  }
+>>
+>>                  memcpy(st_ops->data,
+>> -                      obj->efile.st_ops_data->d_buf + vsi->offset,
+>> +                      data->d_buf + vsi->offset,
+>>                         type->size);
+>>                  st_ops->tname = tname;
+>>                  st_ops->type = type;
+>> @@ -1212,6 +1231,15 @@ static int bpf_object__init_struct_ops_maps(struct bpf_object *obj)
+>>          return 0;
+>>   }
+>>
+>> +static int bpf_object__init_struct_ops_maps(struct bpf_object *obj)
+> 
+> let's name this bpf_object_init_struct_ops, no double underscores
+> 
+>> +{
+>> +       int err;
+>> +
+>> +       err = bpf_object__init_struct_ops_maps_link(obj, false);
+>> +       err = err ?: bpf_object__init_struct_ops_maps_link(obj, true);
+>> +       return err;
+>> +}
+>> +
+>>   static struct bpf_object *bpf_object__new(const char *path,
+>>                                            const void *obj_buf,
+>>                                            size_t obj_buf_sz,
+>> @@ -1248,6 +1276,7 @@ static struct bpf_object *bpf_object__new(const char *path,
+>>          obj->efile.obj_buf_sz = obj_buf_sz;
+>>          obj->efile.btf_maps_shndx = -1;
+>>          obj->efile.st_ops_shndx = -1;
+>> +       obj->efile.st_ops_link_shndx = -1;
+>>          obj->kconfig_map_idx = -1;
+>>
+>>          obj->kern_version = get_kernel_version();
+>> @@ -1265,6 +1294,7 @@ static void bpf_object__elf_finish(struct bpf_object *obj)
+>>          obj->efile.elf = NULL;
+>>          obj->efile.symbols = NULL;
+>>          obj->efile.st_ops_data = NULL;
+>> +       obj->efile.st_ops_link_data = NULL;
+>>
+>>          zfree(&obj->efile.secs);
+>>          obj->efile.sec_cnt = 0;
+>> @@ -2753,12 +2783,13 @@ static bool libbpf_needs_btf(const struct bpf_object *obj)
+>>   {
+>>          return obj->efile.btf_maps_shndx >= 0 ||
+>>                 obj->efile.st_ops_shndx >= 0 ||
+>> +              obj->efile.st_ops_link_shndx >= 0 ||
+>>                 obj->nr_extern > 0;
+>>   }
+>>
+>>   static bool kernel_needs_btf(const struct bpf_object *obj)
+>>   {
+>> -       return obj->efile.st_ops_shndx >= 0;
+>> +       return obj->efile.st_ops_shndx >= 0 || obj->efile.st_ops_link_shndx >= 0;
+>>   }
+>>
+>>   static int bpf_object__init_btf(struct bpf_object *obj,
+>> @@ -3451,6 +3482,9 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
+>>                          } else if (strcmp(name, STRUCT_OPS_SEC) == 0) {
+>>                                  obj->efile.st_ops_data = data;
+>>                                  obj->efile.st_ops_shndx = idx;
+>> +                       } else if (strcmp(name, STRUCT_OPS_LINK_SEC) == 0) {
+>> +                               obj->efile.st_ops_link_data = data;
+>> +                               obj->efile.st_ops_link_shndx = idx;
+>>                          } else {
+>>                                  pr_info("elf: skipping unrecognized data section(%d) %s\n",
+>>                                          idx, name);
+>> @@ -3465,6 +3499,7 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
+>>                          /* Only do relo for section with exec instructions */
+>>                          if (!section_have_execinstr(obj, targ_sec_idx) &&
+>>                              strcmp(name, ".rel" STRUCT_OPS_SEC) &&
+>> +                           strcmp(name, ".rel" STRUCT_OPS_LINK_SEC) &&
+>>                              strcmp(name, ".rel" MAPS_ELF_SEC)) {
+>>                                  pr_info("elf: skipping relo section(%d) %s for section(%d) %s\n",
+>>                                          idx, name, targ_sec_idx,
+>> @@ -6611,7 +6646,7 @@ static int bpf_object__collect_relos(struct bpf_object *obj)
+>>                          return -LIBBPF_ERRNO__INTERNAL;
+>>                  }
+>>
+>> -               if (idx == obj->efile.st_ops_shndx)
+>> +               if (idx == obj->efile.st_ops_shndx || idx == obj->efile.st_ops_link_shndx)
+>>                          err = bpf_object__collect_st_ops_relos(obj, shdr, data);
+> 
+> this function calls find_struct_ops_map_by_offset() which assumes we
+> only have one struct_ops section. This won't work now, please double
+> check all this, there should be no assumption about specific section
+> index
 
-> ---
-> Changes in v9:
-> - two small changes suggested by Jiri Olsa and Jiri's ack
->
-> Changes in v8:
-> - added module_put to error paths in bpf_check_attach_target after the
->   module reference is acquired
->
-> Changes in v7:
-> - refactored the module reference manipulation (comments by Jiri Olsa)
-> - cleaned up the test (comments by Andrii Nakryiko)
->
-> Changes in v6:
-> - storing the module reference inside bpf_prog_aux instead of
->   bpf_trampoline and releasing it when the program is unloaded
->   (suggested by Jiri Olsa)
->
-> Changes in v5:
-> - fixed acquiring and releasing of module references by trampolines to
->   prevent modules being unloaded between address lookup and trampoline
->   allocation
->
-> Changes in v4:
-> - reworked module kallsyms lookup approach using existing functions,
->   verifier now calls btf_try_get_module to retrieve the module and
->   find_kallsyms_symbol_value to get the symbol address (suggested by
->   Alexei)
-> - included Jiri Olsa's comments
-> - improved description of the new test and added it as a comment into
->   the test source
->
-> Changes in v3:
-> - added trivial implementation for kallsyms_lookup_name_in_module() for
->   !CONFIG_MODULES (noticed by test robot, fix suggested by Hao Luo)
->
-> Changes in v2:
-> - introduced and used more space-efficient kallsyms lookup function,
->   suggested by Jiri Olsa
-> - included Hao Luo's comments
->
->
-> Viktor Malik (2):
->   bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
->   bpf/selftests: Test fentry attachment to shadowed functions
->
->  include/linux/bpf.h                           |   2 +
->  kernel/bpf/syscall.c                          |   6 +
->  kernel/bpf/trampoline.c                       |  28 ----
->  kernel/bpf/verifier.c                         |  18 ++-
->  kernel/module/internal.h                      |   5 +
->  net/bpf/test_run.c                            |   5 +
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   6 +
->  .../bpf/prog_tests/module_attach_shadow.c     | 128 ++++++++++++++++++
->  8 files changed, 169 insertions(+), 29 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach_=
-shadow.c
->
-> --
-> 2.39.1
->
+Yes, I will check the section index of maps.
+
+> 
+>>                  else if (idx == obj->efile.btf_maps_shndx)
+>>                          err = bpf_object__collect_map_relos(obj, shdr, data);
+>> @@ -8954,8 +8989,9 @@ static int bpf_object__collect_st_ops_relos(struct bpf_object *obj,
+>>                  }
+>>
+>>                  /* struct_ops BPF prog can be re-used between multiple
+>> -                * .struct_ops as long as it's the same struct_ops struct
+>> -                * definition and the same function pointer field
+>> +                * .struct_ops & .struct_ops.link as long as it's the
+>> +                * same struct_ops struct definition and the same
+>> +                * function pointer field
+>>                   */
+>>                  if (prog->attach_btf_id != st_ops->type_id ||
+>>                      prog->expected_attach_type != member_idx) {
+>> --
+>> 2.34.1
+>>
