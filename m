@@ -2,199 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CE76B0E22
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 17:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC1F6B0EAD
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 17:27:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbjCHQGl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 11:06:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
+        id S230201AbjCHQ1B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 11:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232391AbjCHQGU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 11:06:20 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AEC659E
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 08:05:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678291503; x=1709827503;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BpFetAArDcCPBr/nMaSDYetLHZ8h17rjsD15eRLfVDE=;
-  b=naRaBZrrrSatOZXhpDGOYlktpsSKp/Q3bdO+vg362NTSXSAvt8JnPeXS
-   hbKbpuKPcMnQjb3O6OsPxw51t4IMBHbQKMWxKMrV/GuUqbMzfTEvnKRex
-   aaSUQsN/pvbjXIWM2poBoj2RnXsTjAcQZDJhdHYObs/6S3i16OUR3QuP4
-   O9hlfVjhI6UwTTY14jsRiO+zPyhLjXrdmWsxJ99EiAJVDJAwzGWO/urWG
-   8IDXWFP/taw6QePgIXZGwdhfHdzvHCmLaPYFxtZTCCLGM+EEIUOM1Eq9/
-   LFgizmNjbpNN8fQCzfwisW2RPgeVI3KTkKU6sl8wDWlnQNbTw53FRv0oj
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="398773091"
-X-IronPort-AV: E=Sophos;i="5.98,244,1673942400"; 
-   d="scan'208";a="398773091"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2023 08:03:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="820278713"
-X-IronPort-AV: E=Sophos;i="5.98,244,1673942400"; 
-   d="scan'208";a="820278713"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Mar 2023 08:03:50 -0800
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pZwGb-0002FB-0b;
-        Wed, 08 Mar 2023 16:03:49 +0000
-Date:   Thu, 9 Mar 2023 00:03:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
-Cc:     oe-kbuild-all@lists.linux.dev, Kui-Feng Lee <kuifeng@meta.com>
-Subject: Re: [PATCH bpf-next v5 3/8] bpf: Create links for BPF struct_ops
- maps.
-Message-ID: <202303082340.qYFHo45I-lkp@intel.com>
-References: <20230308005050.255859-4-kuifeng@meta.com>
+        with ESMTP id S230333AbjCHQ0i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 11:26:38 -0500
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C31C9A7A;
+        Wed,  8 Mar 2023 08:26:32 -0800 (PST)
+Received: by mail-pj1-f54.google.com with SMTP id m8-20020a17090a4d8800b002377bced051so2977143pjh.0;
+        Wed, 08 Mar 2023 08:26:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678292791;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LQUZMW3ATClSf/r8H/ZNppEXmMdqJP2TRdMQdlzdBEU=;
+        b=mFReNd43myvP8sDRapVG/f0Mh5fq+amruVFC0XBXIDWMXg4hfE390EbOCvAmdWYC2z
+         JChEMlSFX83AY8Q14XMcuyjQM/FJ4Bxp3kDZFHTK35PmmLvz5C72wEv0MrDRS9KCoNKR
+         fGlevMH9T2ai8edqwEocZ1S09RZRH7jhPQ2f94kq2PVA9ZA9KHXXF8VO3ekaRnhDT4YA
+         DCCzvlEy5ZuOEYUf6tfQFV8Ds7Ca0iFN38k02EAcQ/th33+GsGMi2Gzqtu7ARGitpVSW
+         l2VKMVSWP7ZTjb3aOjY5zTlzJX7+V4y1WutlEZo1EbPI5EzZ4Y8oqfE3WbiF7aoE6Rdw
+         xYlg==
+X-Gm-Message-State: AO0yUKXdwuoEJmorcKBwL3po6hFJihJMgXB7V0Mo03h09dcoNeic2veG
+        yyF3eqV4ZyL33BKd25JvmeQ=
+X-Google-Smtp-Source: AK7set/ljF2NSlK5iXBS5nOBvYwYALtBT6qGPN3NaOl9NmTJAqQftRWcEmjCkHVWk/x0lRsa1htRvA==
+X-Received: by 2002:a17:90b:1b0f:b0:237:c18d:c459 with SMTP id nu15-20020a17090b1b0f00b00237c18dc459mr19250067pjb.31.1678292791395;
+        Wed, 08 Mar 2023 08:26:31 -0800 (PST)
+Received: from localhost.localdomain ([14.4.134.166])
+        by smtp.gmail.com with ESMTPSA id mv15-20020a17090b198f00b0023087e8adf8sm9363818pjb.21.2023.03.08.08.26.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Mar 2023 08:26:31 -0800 (PST)
+From:   Leesoo Ahn <lsahn@ooseel.net>
+To:     lsahn@ooseel.net
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH net-next] net: stmmac: call stmmac_finalize_xdp_rx() on a condition
+Date:   Thu,  9 Mar 2023 01:26:18 +0900
+Message-Id: <20230308162619.329372-1-lsahn@ooseel.net>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230308005050.255859-4-kuifeng@meta.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kui-Feng,
+The current codebase calls the function no matter net device has XDP
+programs or not. So the finalize function is being called everytime when RX
+bottom-half in progress. It needs a few machine instructions for nothing
+in the case that XDP programs are not attached at all.
 
-Thank you for the patch! Yet something to improve:
+Lets it call the function on a condition that if xdp_status variable has
+not zero value. That means XDP programs are attached to the net device
+and it should be finalized based on the variable.
 
-[auto build test ERROR on bpf-next/master]
+The following instructions show that it's better than calling the function
+unconditionally.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kui-Feng-Lee/bpf-Retire-the-struct_ops-map-kvalue-refcnt/20230308-085434
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230308005050.255859-4-kuifeng%40meta.com
-patch subject: [PATCH bpf-next v5 3/8] bpf: Create links for BPF struct_ops maps.
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20230308/202303082340.qYFHo45I-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/de9e43a5ac82dde718d80d8347e867a8fc935e0a
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Kui-Feng-Lee/bpf-Retire-the-struct_ops-map-kvalue-refcnt/20230308-085434
-        git checkout de9e43a5ac82dde718d80d8347e867a8fc935e0a
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 olddefconfig
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+  0.31 │6b8:   ldr     w0, [sp, #196]
+       │    ┌──cbz     w0, 6cc
+       │    │  mov     x1, x0
+       │    │  mov     x0, x27
+       │    │→ bl     stmmac_finalize_xdp_rx
+       │6cc:└─→ldr    x1, [sp, #176]
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303082340.qYFHo45I-lkp@intel.com/
+with 'if (xdp_status)' statement, jump to '6cc' label if xdp_status has
+zero value.
 
-All errors (new ones prefixed by >>):
+Signed-off-by: Leesoo Ahn <lsahn@ooseel.net>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-   In file included from drivers/net/virtio_net.c:13:
->> include/linux/bpf.h:2388:19: error: redefinition of 'bpf_struct_ops_link_create'
-    2388 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:1592:19: note: previous definition of 'bpf_struct_ops_link_create' with type 'int(union bpf_attr *)'
-    1592 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
---
-   In file included from include/linux/filter.h:9,
-                    from include/net/sock_reuseport.h:5,
-                    from include/net/tcp.h:35,
-                    from net/ipv4/netfilter/nf_reject_ipv4.c:8:
->> include/linux/bpf.h:2388:19: error: redefinition of 'bpf_struct_ops_link_create'
-    2388 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:1592:19: note: previous definition of 'bpf_struct_ops_link_create' with type 'int(union bpf_attr *)'
-    1592 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/ipv4/netfilter/nf_reject_ipv4.c: In function 'nf_send_reset':
-   net/ipv4/netfilter/nf_reject_ipv4.c:244:23: warning: variable 'niph' set but not used [-Wunused-but-set-variable]
-     244 |         struct iphdr *niph;
-         |                       ^~~~
---
-   In file included from include/linux/filter.h:9,
-                    from kernel/bpf/core.c:21:
->> include/linux/bpf.h:2388:19: error: redefinition of 'bpf_struct_ops_link_create'
-    2388 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:1592:19: note: previous definition of 'bpf_struct_ops_link_create' with type 'int(union bpf_attr *)'
-    1592 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/core.c:1632:12: warning: no previous prototype for 'bpf_probe_read_kernel' [-Wmissing-prototypes]
-    1632 | u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-         |            ^~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/core.c:2069:6: warning: no previous prototype for 'bpf_patch_call_args' [-Wmissing-prototypes]
-    2069 | void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
-         |      ^~~~~~~~~~~~~~~~~~~
---
-   In file included from include/linux/filter.h:9,
-                    from kernel/kallsyms.c:25:
->> include/linux/bpf.h:2388:19: error: redefinition of 'bpf_struct_ops_link_create'
-    2388 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:1592:19: note: previous definition of 'bpf_struct_ops_link_create' with type 'int(union bpf_attr *)'
-    1592 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/kallsyms.c:663:12: warning: no previous prototype for 'arch_get_kallsym' [-Wmissing-prototypes]
-     663 | int __weak arch_get_kallsym(unsigned int symnum, unsigned long *value,
-         |            ^~~~~~~~~~~~~~~~
---
-   In file included from include/linux/bpf-cgroup.h:5,
-                    from net/socket.c:55:
->> include/linux/bpf.h:2388:19: error: redefinition of 'bpf_struct_ops_link_create'
-    2388 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:1592:19: note: previous definition of 'bpf_struct_ops_link_create' with type 'int(union bpf_attr *)'
-    1592 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/socket.c: In function '__sys_getsockopt':
-   net/socket.c:2300:13: warning: variable 'max_optlen' set but not used [-Wunused-but-set-variable]
-    2300 |         int max_optlen;
-         |             ^~~~~~~~~~
---
-   In file included from net/ipv6/ip6_fib.c:18:
->> include/linux/bpf.h:2388:19: error: redefinition of 'bpf_struct_ops_link_create'
-    2388 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:1592:19: note: previous definition of 'bpf_struct_ops_link_create' with type 'int(union bpf_attr *)'
-    1592 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/ipv6/ip6_fib.c: In function 'fib6_add':
-   net/ipv6/ip6_fib.c:1378:32: warning: variable 'pn' set but not used [-Wunused-but-set-variable]
-    1378 |         struct fib6_node *fn, *pn = NULL;
-         |                                ^~
---
-   In file included from include/linux/filter.h:9,
-                    from include/net/sock_reuseport.h:5,
-                    from include/net/tcp.h:35,
-                    from include/linux/netfilter_ipv6.h:11,
-                    from net/ipv6/netfilter/nf_reject_ipv6.c:12:
->> include/linux/bpf.h:2388:19: error: redefinition of 'bpf_struct_ops_link_create'
-    2388 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:1592:19: note: previous definition of 'bpf_struct_ops_link_create' with type 'int(union bpf_attr *)'
-    1592 | static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/ipv6/netfilter/nf_reject_ipv6.c: In function 'nf_send_reset6':
-   net/ipv6/netfilter/nf_reject_ipv6.c:287:25: warning: variable 'ip6h' set but not used [-Wunused-but-set-variable]
-     287 |         struct ipv6hdr *ip6h;
-         |                         ^~~~
-
-
-vim +/bpf_struct_ops_link_create +2388 include/linux/bpf.h
-
-  2387	
-> 2388	static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-  2389	{
-  2390		return -EOPNOTSUPP;
-  2391	}
-  2392	
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index e4902a7bb61e..53c6e9b3a0c2 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -5145,7 +5145,8 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+ 		rx_q->state.len = len;
+ 	}
+ 
+-	stmmac_finalize_xdp_rx(priv, xdp_status);
++	if (xdp_status)
++		stmmac_finalize_xdp_rx(priv, xdp_status);
+ 
+ 	priv->xstats.rx_pkt_n += count;
+ 	priv->xstats.rxq_stats[queue].rx_pkt_n += count;
+@@ -5425,7 +5426,8 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 		rx_q->state.len = len;
+ 	}
+ 
+-	stmmac_finalize_xdp_rx(priv, xdp_status);
++	if (xdp_status)
++		stmmac_finalize_xdp_rx(priv, xdp_status);
+ 
+ 	stmmac_rx_refill(priv, queue);
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.34.1
+
