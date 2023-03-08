@@ -2,88 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A18F6B115A
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 19:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1E16B118D
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 20:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjCHSt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 13:49:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
+        id S229936AbjCHTAE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 14:00:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbjCHSto (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 13:49:44 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800ABCB676
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 10:49:40 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id da10so69714716edb.3
-        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 10:49:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1678301380;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZBpRHgewt5MiGF66U0DT4BDVvT3+VXwPETbuarc5Zwg=;
-        b=Sjxfr/ej//kTgJGRMe/M3L/gLgNtBP4o/m5i6MqR7sxC1C3k+CpEpLKMBm6vz/BTxE
-         Ma98xQ9Tkiuq5oXzb3TCN2xTyTe+WnKOtphoszKuh6qdD5+J5FJROE56DrRb59xM7t4A
-         jdjArJr2ZhajSDNWba82B+X6o4tHgh/ndvsHE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678301380;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZBpRHgewt5MiGF66U0DT4BDVvT3+VXwPETbuarc5Zwg=;
-        b=v7T4+biBZfE0qGuSOFcbDZTeW0As/8A6HxJCsyeoWtHYMwOqlD+y9emuLGgr6AmhGz
-         rm4u2X/rv5wNiXW5GW0+2QdDNQoTpjsjmM9T50iR1L4hg+w7wkKrR3lOs2gZewTx+Jgm
-         IEB/tGm9JU4E463PytCCfimYQZ6mmrRyZZtOj0hoc+MhjFnCUYAUGMpqQAmnxu8Gufwe
-         qXFDYtsTirlEmrqdJVGwWq+MWe7lJHzUvi+tyhW6EqAg9ymnQPWRq77Pbyfgcg0NJrwy
-         pAQhsa+dN62RmkATG4BdyvsRdDLJe51g/4o6uOZ4JQeywPSYdLOx5AIziNX7N6zeeMQ4
-         O7Dw==
-X-Gm-Message-State: AO0yUKU4d3DA2TCADutcs5XJ1/oXTFLIIclsuNn6hCW6sF8xraPxUkax
-        X/z4ZnYrZZwntFlHNKUvxpRBUjZ74JP/wniEEwvCAw==
-X-Google-Smtp-Source: AK7set/qyO7vtNLdMRPF6aLaljYqHnMHV091vjuGk3W/YxMAjtRnUTvnqpz62SKCAK+Tbplr0yxdoqOETLcMoeEwBRU=
-X-Received: by 2002:a50:d60d:0:b0:4bc:edde:14ff with SMTP id
- x13-20020a50d60d000000b004bcedde14ffmr10259842edi.0.1678301380094; Wed, 08
- Mar 2023 10:49:40 -0800 (PST)
+        with ESMTP id S229965AbjCHTAC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 14:00:02 -0500
+Received: from out-40.mta1.migadu.com (out-40.mta1.migadu.com [IPv6:2001:41d0:203:375::28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF96E85B14
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 10:59:57 -0800 (PST)
+Message-ID: <a3ec530d-af78-6ed1-4412-bb527aa7a148@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1678301995;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2fQ+fqCPaUfG1iltMbf86EIvZ+/hEi0mOrCMdm/N6T8=;
+        b=S7g942rmR0hXFaEICe3p4MkAagD/tu9CFYRaEkY8EtS7zrUoXixzI2uPy96dppx+fFaC5F
+        A/kuU0hBZUPOL4v1odgyu5ZU6DHCOJnl9oV3Arb/rmRnS4rnl2N8VI+MVPQDAmOU1Hg7Jq
+        /QxyPgVPTg7iRgabcmp+joYXvtXjf5s=
+Date:   Wed, 8 Mar 2023 10:59:44 -0800
 MIME-Version: 1.0
-References: <20230307172306.786657-1-kal.conley@dectris.com>
- <20230308105130.1113833-1-kal.conley@dectris.com> <4ddd3fe4-ed3c-495e-077c-1ac737488084@intel.com>
-In-Reply-To: <4ddd3fe4-ed3c-495e-077c-1ac737488084@intel.com>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Wed, 8 Mar 2023 19:49:29 +0100
-Message-ID: <CAHApi-=C3ym23bBQ2h8BOyOfUtYXs9eZNG0Z8G2zfPeaEQWeRg@mail.gmail.com>
-Subject: Re: [PATCH] xsk: Add missing overflow check in xdp_umem_reg
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf-next v5 2/8] net: Update an existing TCP congestion
+ control algorithm.
+Content-Language: en-US
+To:     Kui-Feng Lee <kuifeng@meta.com>
+References: <20230308005050.255859-1-kuifeng@meta.com>
+ <20230308005050.255859-3-kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230308005050.255859-3-kuifeng@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> The code is fine to me.
-> Please resubmit with the fixed subject and expanded commit message.
-> I'd also prefer that you sent v3 as a separate mail, *not* as a reply to
-> this thread.
+On 3/7/23 4:50 PM, Kui-Feng Lee wrote:
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 50cfc2388cbc..00b6e1a2edaf 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1512,6 +1512,8 @@ struct bpf_struct_ops {
+>   			   void *kdata, const void *udata);
+>   	int (*reg)(void *kdata);
+>   	void (*unreg)(void *kdata);
+> +	int (*update)(void *kdata, void *old_kdata);
+> +	int (*validate)(void *kdata);
+>   	const struct btf_type *type;
+>   	const struct btf_type *value_type;
+>   	const char *name;
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index db9f828e9d1e..2abb755e6a3a 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -1117,6 +1117,9 @@ struct tcp_congestion_ops {
+>   
+>   int tcp_register_congestion_control(struct tcp_congestion_ops *type);
+>   void tcp_unregister_congestion_control(struct tcp_congestion_ops *type);
+> +int tcp_update_congestion_control(struct tcp_congestion_ops *type,
+> +				  struct tcp_congestion_ops *old_type);
+> +int tcp_validate_congestion_control(struct tcp_congestion_ops *ca);
+>   
+>   void tcp_assign_congestion_control(struct sock *sk);
+>   void tcp_init_congestion_control(struct sock *sk);
+> diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
+> index ff4f89a2b02a..158f14e240d0 100644
+> --- a/net/bpf/bpf_dummy_struct_ops.c
+> +++ b/net/bpf/bpf_dummy_struct_ops.c
+> @@ -222,12 +222,18 @@ static void bpf_dummy_unreg(void *kdata)
+>   {
+>   }
+>   
+> +static int bpf_dummy_update(void *kdata, void *old_kdata)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>   struct bpf_struct_ops bpf_bpf_dummy_ops = {
+>   	.verifier_ops = &bpf_dummy_verifier_ops,
+>   	.init = bpf_dummy_init,
+>   	.check_member = bpf_dummy_ops_check_member,
+>   	.init_member = bpf_dummy_init_member,
+>   	.reg = bpf_dummy_reg,
+> +	.update = bpf_dummy_update,
+>   	.unreg = bpf_dummy_unreg,
+>   	.name = "bpf_dummy_ops",
+>   };
+> diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+> index 13fc0c185cd9..e8b27826283e 100644
+> --- a/net/ipv4/bpf_tcp_ca.c
+> +++ b/net/ipv4/bpf_tcp_ca.c
+> @@ -239,8 +239,6 @@ static int bpf_tcp_ca_init_member(const struct btf_type *t,
+>   		if (bpf_obj_name_cpy(tcp_ca->name, utcp_ca->name,
+>   				     sizeof(tcp_ca->name)) <= 0)
+>   			return -EINVAL;
+> -		if (tcp_ca_find(utcp_ca->name))
+> -			return -EEXIST;
 
-Done. I used "bpf" in the subject as you suggested, however I am a bit
-confused by this. Should changes under net/xdp generally use "bpf" in
-the subject?
+This belongs to patch 3 where BPF_F_LINK needs this. move it closer to where it 
+is actually used.
 
-Thanks,
-Kal
+>   		return 1;
+>   	}
+>   
+> @@ -266,13 +264,25 @@ static void bpf_tcp_ca_unreg(void *kdata)
+>   	tcp_unregister_congestion_control(kdata);
+>   }
+>   
+> +static int bpf_tcp_ca_update(void *kdata, void *old_kdata)
+> +{
+> +	return tcp_update_congestion_control(kdata, old_kdata);
+> +}
+> +
+> +static int bpf_tcp_ca_validate(void *kdata)
+> +{
+> +	return tcp_validate_congestion_control(kdata);
+> +}
+> +
+>   struct bpf_struct_ops bpf_tcp_congestion_ops = {
+>   	.verifier_ops = &bpf_tcp_ca_verifier_ops,
+>   	.reg = bpf_tcp_ca_reg,
+>   	.unreg = bpf_tcp_ca_unreg,
+> +	.update = bpf_tcp_ca_update,
+>   	.check_member = bpf_tcp_ca_check_member,
+>   	.init_member = bpf_tcp_ca_init_member,
+>   	.init = bpf_tcp_ca_init,
+> +	.validate = bpf_tcp_ca_validate,
+>   	.name = "tcp_congestion_ops",
+>   };
+
+In general, please move "validate" related bpf changes to patch 3 and "update" 
+related changes to patch 5. They are bpf specific (including the changes in 
+bpf_tcp_ca.c) and closer to where it will be used.
+
+Then patch 2 should only have changes in tcp_cong.c as the preparation work for 
+the later bpf needs. Please cc netdev for patch 2 in the next re-spin.
+
