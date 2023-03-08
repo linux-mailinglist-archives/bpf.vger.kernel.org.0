@@ -2,75 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A65E6B0EC0
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 17:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 757FC6B0FC8
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 18:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbjCHQ2v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 11:28:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        id S230007AbjCHRGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 12:06:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbjCHQ2d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 11:28:33 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F311CCE80
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 08:27:49 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id u3-20020a17090a450300b00239db6d7d47so2257646pjg.4
-        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 08:27:49 -0800 (PST)
+        with ESMTP id S230056AbjCHRGM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 12:06:12 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C31C78D8
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 09:05:58 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id j11so48949877edq.4
+        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 09:05:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678292869;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=noBRcmXPxLjRAX6O2YWkwxmsC7dESGXBHA15rLMOevU=;
-        b=NEfoAcZVpqf0vrdjGXgcX05XL42TnqYRr+fbzhmjcxs2J0Oq66zRITJ807K7kSttjQ
-         2GjXr5CAV9PFh4ykK0k1/P3Mtif1VHRgF4SDjHkN9NUjB9Kh83ZgZPk3ZYM/FSRZI5Yx
-         HCIyUGaj2FOKBD+Kq0t+7ouQh6fDoeZmVhMq7SBBlI1cHEbXPzYOvNilOD8ob9SL+4Hg
-         SOxSjdvghKvgKEQ/iEq1nFmvPUw8iL0GAhP+yDvRxZbcE+MKCu+XN/gcQvKZDpLYHgYQ
-         INhlRvIOh5QeLa6sTxWTmESb6hVdH7zxKyVdd1slZ7pQ6qu4T1LbZwVlVYEu/NWFH4fV
-         xlPA==
+        d=gmail.com; s=20210112; t=1678295157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2dSIBHZShgDNyZL1npO1Q8csh+EoPik7yFTi46Ldsdk=;
+        b=Uo9E9VDh/xbP8rRjf097dL5laxKmBy2kRlhQIM3m3TcHfPOneGkRCZPhaeLrJuiMF4
+         c/rC0RHgABq2GuIPsj4hTSjdct9vjHOjzgXUZIViBzGMCSrLEWXGEcSL849EsQJd+pvG
+         NTiOlZNpSdzNG+O1hPQGxBrE2nmu6HW3xBUubdThBxzXhDMluOy1UDJfw75Cz7qFhhgf
+         /ji5RlsZn9rokIzbekEtxhQWcn3ys7y9miBV3xhHXgd5EP5ec1yKeavd83ozFOx+iwmu
+         MxI0OqcY2NvBh17xZ0fJFIqm0yZrXM0+YBzKTTnnnbv4zaIAdvgqLbVtZsFjGdhqRysE
+         sWiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678292869;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=noBRcmXPxLjRAX6O2YWkwxmsC7dESGXBHA15rLMOevU=;
-        b=hFjB65gUEr5g1CT0uUblqgA6Y/tNJpFzSVGKRf4JYMPhu3d6OU3u/1fD0JwjdMiHqq
-         bit55L1DVPf9SKsoux8oGw8YwFPACscbgG2qCu8FxffWyqFuKDwtH531hFc/AeZtVYVF
-         GaPq/GP9lmwN35QWHzEAVyY5bOU0iZUOCI8jHeFD86kZwJwQDIhqgSa4Bapee0odC5pv
-         GW2Ifv3eRqlneJQxK2h8R/IEb7ctOsilRoL3LXMBvMDpAqUqfaAIquWLHalMZnEMO4kj
-         /9H2/0Id9QJbfZCHgLgsIaekXc1YKCh3Wn3WspMA0e1JVYXh6Fi2AiGxMrpk6M1qrVbl
-         Y/Cg==
-X-Gm-Message-State: AO0yUKVkZZUvmrNHf0rFdNlVittxgM6qvKlVgu+bliXWXjAJIJyx0vS0
-        FU9x6n9b1fVOHi8DNt6dyCg=
-X-Google-Smtp-Source: AK7set9VNDDLdVNFxwmO/e8EVICaneTX1qaGv5n5HGuini7RyS91RYrs6xV9Rmw8Ka6XtFdf//qGOA==
-X-Received: by 2002:a17:90a:341:b0:237:ae7c:1591 with SMTP id 1-20020a17090a034100b00237ae7c1591mr19234195pjf.26.1678292868735;
-        Wed, 08 Mar 2023 08:27:48 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21d6::126c? ([2620:10d:c090:400::5:d539])
-        by smtp.gmail.com with ESMTPSA id v19-20020a17090ad59300b0023493354f37sm10874533pju.26.2023.03.08.08.27.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Mar 2023 08:27:48 -0800 (PST)
-Message-ID: <23503351-16ee-e84c-33c4-43241614f7fb@gmail.com>
-Date:   Wed, 8 Mar 2023 08:27:36 -0800
+        d=1e100.net; s=20210112; t=1678295157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2dSIBHZShgDNyZL1npO1Q8csh+EoPik7yFTi46Ldsdk=;
+        b=OuoKTWbZvmUUEg97ihc8iE08DcVagvQFWCmTbaTlPzlkpz3ANbU/I3KbnbKh6QyGHD
+         xaj+eVeIcFLyjDGiJY+n9Ntgsjr+sa6GNsmvLKpAiESX4PiKplqdKfD+z7GyVwZYl7Qq
+         kNQ/MX40rjgGM7+A3qXJzdxDkmgbs5J/Dr+H1okfMOT3zRKNhE20OpXr9pdIdgI4Qx4c
+         DWfCYoo3a7XgG72hgxyTykZHqIFO7+6k24gjp0ur+WOjjnz9bpxQcMpmvod1OpdOFnW8
+         ttyz35GMEDC8L3wjPROLUvm7QrhvotWQKk+uzjmgr++3a6vN7GXkDKheWBHdBC+a+P5F
+         f3bQ==
+X-Gm-Message-State: AO0yUKVMZAtgsoPWpVb4aAmm56SGu+XERrmONArT4/G533pewbPNKiYd
+        mlJutbDNyANTw/00UDSqIk7u6mvJvqDegIkIM5c=
+X-Google-Smtp-Source: AK7set9MAA6a6ynFO+gDtutmyGvlPyt/4OzXqctsuhavf3gBNuMQnyPFgL6n6k0UoXXuy5mpHU9/Ab0EqCnH9V4GS08=
+X-Received: by 2002:a17:906:4bcb:b0:8b1:28f6:8ab3 with SMTP id
+ x11-20020a1709064bcb00b008b128f68ab3mr9586577ejv.15.1678295156815; Wed, 08
+ Mar 2023 09:05:56 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v4 6/9] bpf: Update the struct_ops of a bpf_link.
-Content-Language: en-US, en-ZW
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kui-Feng Lee <kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
-        sdf@google.com
-References: <20230307233307.3626875-1-kuifeng@meta.com>
- <20230307233307.3626875-7-kuifeng@meta.com>
- <CAEf4BzbK8s+VFG5HefydD7CRLzkRFKg-Er0PKV_-C2-yttfXzA@mail.gmail.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAEf4BzbK8s+VFG5HefydD7CRLzkRFKg-Er0PKV_-C2-yttfXzA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20230308035416.2591326-4-andrii@kernel.org> <202303082209.VIxMyiGz-lkp@intel.com>
+In-Reply-To: <202303082209.VIxMyiGz-lkp@intel.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Mar 2023 09:05:44 -0800
+Message-ID: <CAEf4BzbTsiFOQdCanh5DWwOg7dUZTtNBkUJDwg4jztw5dEWSdA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 3/8] bpf: add support for open-coded iterator loops
+To:     kernel test robot <lkp@intel.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev, kernel-team@meta.com,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,213 +70,188 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Mar 8, 2023 at 7:02=E2=80=AFAM kernel test robot <lkp@intel.com> wr=
+ote:
+>
+> Hi Andrii,
+>
+> I love your patch! Perhaps something to improve:
+>
+> [auto build test WARNING on bpf-next/master]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bp=
+f-factor-out-fetching-basic-kfunc-metadata/20230308-115539
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git =
+master
+> patch link:    https://lore.kernel.org/r/20230308035416.2591326-4-andrii%=
+40kernel.org
+> patch subject: [PATCH v4 bpf-next 3/8] bpf: add support for open-coded it=
+erator loops
+> config: hexagon-randconfig-r015-20230305 (https://download.01.org/0day-ci=
+/archive/20230308/202303082209.VIxMyiGz-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project 6740=
+9911353323ca5edf2049ef0df54132fa1ca7)
+> reproduce (this is a W=3D1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
+n/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/intel-lab-lkp/linux/commit/8f263e1296a91ff15=
+4a033d7cffbac3ee0ebf2ae
+>         git remote add linux-review https://github.com/intel-lab-lkp/linu=
+x
+>         git fetch --no-tags linux-review Andrii-Nakryiko/bpf-factor-out-f=
+etching-basic-kfunc-metadata/20230308-115539
+>         git checkout 8f263e1296a91ff154a033d7cffbac3ee0ebf2ae
+>         # save the config file
+>         mkdir build_dir && cp config build_dir/.config
+>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross W=
+=3D1 O=3Dbuild_dir ARCH=3Dhexagon olddefconfig
+>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross W=
+=3D1 O=3Dbuild_dir ARCH=3Dhexagon SHELL=3D/bin/bash kernel/bpf/
+>
+> If you fix the issue, kindly add following tag where applicable
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Link: https://lore.kernel.org/oe-kbuild-all/202303082209.VIxMyiGz-lkp@i=
+ntel.com/
+>
+> All warnings (new ones prefixed by >>):
+>
+>    In file included from kernel/bpf/verifier.c:7:
+>    In file included from include/linux/bpf-cgroup.h:5:
+>    In file included from include/linux/bpf.h:31:
+>    In file included from include/linux/memcontrol.h:13:
+>    In file included from include/linux/cgroup.h:26:
+>    In file included from include/linux/kernel_stat.h:9:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:11:
+>    In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1=
+:
+>    In file included from include/asm-generic/hardirq.h:17:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/hexagon/include/asm/io.h:334:
+>    include/asm-generic/io.h:547:31: warning: performing pointer arithmeti=
+c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            val =3D __raw_readb(PCI_IOBASE + addr);
+>                              ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:560:61: warning: performing pointer arithmeti=
+c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            val =3D __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE +=
+ addr));
+>                                                            ~~~~~~~~~~ ^
+>    include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded fro=
+m macro '__le16_to_cpu'
+>    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+>                                                      ^
+>    In file included from kernel/bpf/verifier.c:7:
+>    In file included from include/linux/bpf-cgroup.h:5:
+>    In file included from include/linux/bpf.h:31:
+>    In file included from include/linux/memcontrol.h:13:
+>    In file included from include/linux/cgroup.h:26:
+>    In file included from include/linux/kernel_stat.h:9:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:11:
+>    In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1=
+:
+>    In file included from include/asm-generic/hardirq.h:17:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/hexagon/include/asm/io.h:334:
+>    include/asm-generic/io.h:573:61: warning: performing pointer arithmeti=
+c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            val =3D __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE +=
+ addr));
+>                                                            ~~~~~~~~~~ ^
+>    include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded fro=
+m macro '__le32_to_cpu'
+>    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+>                                                      ^
+>    In file included from kernel/bpf/verifier.c:7:
+>    In file included from include/linux/bpf-cgroup.h:5:
+>    In file included from include/linux/bpf.h:31:
+>    In file included from include/linux/memcontrol.h:13:
+>    In file included from include/linux/cgroup.h:26:
+>    In file included from include/linux/kernel_stat.h:9:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:11:
+>    In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1=
+:
+>    In file included from include/asm-generic/hardirq.h:17:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/hexagon/include/asm/io.h:334:
+>    include/asm-generic/io.h:584:33: warning: performing pointer arithmeti=
+c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            __raw_writeb(value, PCI_IOBASE + addr);
+>                                ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:594:59: warning: performing pointer arithmeti=
+c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + add=
+r);
+>                                                          ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:604:59: warning: performing pointer arithmeti=
+c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + add=
+r);
+>                                                          ~~~~~~~~~~ ^
+> >> kernel/bpf/verifier.c:1244:23: warning: variable 'j' is uninitialized =
+when used here [-Wuninitialized]
+>                    if (slot->slot_type[j] =3D=3D STACK_ITER)
+>                                        ^
+>    kernel/bpf/verifier.c:1229:15: note: initialize the variable 'j' to si=
+lence this warning
+>            int spi, i, j;
+>                         ^
+>                          =3D 0
+>    7 warnings generated.
+>
+>
+> vim +/j +1244 kernel/bpf/verifier.c
+>
+>   1224
+>   1225  static bool is_iter_reg_valid_uninit(struct bpf_verifier_env *env=
+,
+>   1226                                       struct bpf_reg_state *reg, i=
+nt nr_slots)
+>   1227  {
+>   1228          struct bpf_func_state *state =3D func(env, reg);
+>   1229          int spi, i, j;
+>   1230
+>   1231          /* For -ERANGE (i.e. spi not falling into allocated stack=
+ slots), we
+>   1232           * will do check_mem_access to check and update stack bou=
+nds later, so
+>   1233           * return true for that case.
+>   1234           */
+>   1235          spi =3D iter_get_spi(env, reg, nr_slots);
+>   1236          if (spi =3D=3D -ERANGE)
+>   1237                  return true;
+>   1238          if (spi < 0)
+>   1239                  return spi;
 
+also, this should be return false
 
-On 3/7/23 16:49, Andrii Nakryiko wrote:
-> On Tue, Mar 7, 2023 at 3:33 PM Kui-Feng Lee <kuifeng@meta.com> wrote:
->>
->> By improving the BPF_LINK_UPDATE command of bpf(), it should allow you
->> to conveniently switch between different struct_ops on a single
->> bpf_link. This would enable smoother transitions from one struct_ops
->> to another.
->>
->> The struct_ops maps passing along with BPF_LINK_UPDATE should have the
->> BPF_F_LINK flag.
->>
->> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
->> ---
->>   include/linux/bpf.h            |  1 +
->>   include/uapi/linux/bpf.h       |  8 ++++--
->>   kernel/bpf/bpf_struct_ops.c    | 46 ++++++++++++++++++++++++++++++++++
->>   kernel/bpf/syscall.c           | 43 ++++++++++++++++++++++++++++---
->>   tools/include/uapi/linux/bpf.h |  7 +++++-
->>   5 files changed, 98 insertions(+), 7 deletions(-)
->>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 047d2c6aba88..2b5f150e370e 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -1405,6 +1405,7 @@ struct bpf_link_ops {
->>          void (*show_fdinfo)(const struct bpf_link *link, struct seq_file *seq);
->>          int (*fill_link_info)(const struct bpf_link *link,
->>                                struct bpf_link_info *info);
->> +       int (*update_map)(struct bpf_link *link, struct bpf_map *new_map);
->>   };
->>
->>   struct bpf_tramp_link {
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index eb3e435c5303..999e199ebe06 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -1555,8 +1555,12 @@ union bpf_attr {
->>
->>          struct { /* struct used by BPF_LINK_UPDATE command */
->>                  __u32           link_fd;        /* link fd */
->> -               /* new program fd to update link with */
->> -               __u32           new_prog_fd;
->> +               union {
->> +                       /* new program fd to update link with */
->> +                       __u32           new_prog_fd;
->> +                       /* new struct_ops map fd to update link with */
->> +                       __u32           new_map_fd;
->> +               };
->>                  __u32           flags;          /* extra flags */
->>                  /* expected link's program fd; is specified only if
->>                   * BPF_F_REPLACE flag is set in flags */
->> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->> index c71c8d73c7ad..2b850ce11617 100644
->> --- a/kernel/bpf/bpf_struct_ops.c
->> +++ b/kernel/bpf/bpf_struct_ops.c
->> @@ -759,10 +759,56 @@ static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
->>          return 0;
->>   }
->>
->> +static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map *new_map)
->> +{
->> +       struct bpf_struct_ops_value *kvalue;
->> +       struct bpf_struct_ops_map *st_map, *old_st_map;
->> +       struct bpf_struct_ops_link *st_link;
->> +       struct bpf_map *old_map;
->> +       int err = 0;
->> +
->> +       if (new_map->map_type != BPF_MAP_TYPE_STRUCT_OPS ||
->> +           !(new_map->map_flags & BPF_F_LINK))
->> +               return -EINVAL;
->> +
->> +       mutex_lock(&update_mutex);
->> +
->> +       st_link = container_of(link, struct bpf_struct_ops_link, link);
->> +
->> +       /* The new and old struct_ops must be the same type. */
->> +       st_map = container_of(new_map, struct bpf_struct_ops_map, map);
->> +
->> +       old_map = st_link->map;
->> +       old_st_map = container_of(old_map, struct bpf_struct_ops_map, map);
->> +       if (st_map->st_ops != old_st_map->st_ops ||
->> +           /* Pair with smp_store_release() during map_update */
->> +           smp_load_acquire(&st_map->kvalue.state) != BPF_STRUCT_OPS_STATE_READY) {
->> +               err = -EINVAL;
->> +               goto err_out;
->> +       }
->> +
->> +       kvalue = &st_map->kvalue;
->> +
->> +       err = st_map->st_ops->update(kvalue->data, old_st_map->kvalue.data);
->> +       if (err)
->> +               goto err_out;
->> +
->> +       bpf_map_inc(new_map);
->> +       rcu_assign_pointer(st_link->map, new_map);
->> +
->> +       bpf_map_put(old_map);
->> +
->> +err_out:
->> +       mutex_unlock(&update_mutex);
->> +
->> +       return err;
->> +}
->> +
->>   static const struct bpf_link_ops bpf_struct_ops_map_lops = {
->>          .dealloc = bpf_struct_ops_map_link_dealloc,
->>          .show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
->>          .fill_link_info = bpf_struct_ops_map_link_fill_link_info,
->> +       .update_map = bpf_struct_ops_map_link_update,
->>   };
->>
->>   int bpf_struct_ops_link_create(union bpf_attr *attr)
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 25b044fdd82b..94ab1336ff41 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -4646,6 +4646,30 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
->>          return ret;
->>   }
->>
->> +static int link_update_map(struct bpf_link *link, union bpf_attr *attr)
->> +{
->> +       struct bpf_map *new_map;
->> +       int ret = 0;
->> +
->> +       new_map = bpf_map_get(attr->link_update.new_map_fd);
->> +       if (IS_ERR(new_map))
->> +               return -EINVAL;
->> +
->> +       if (new_map->map_type != BPF_MAP_TYPE_STRUCT_OPS) {
->> +               ret = -EINVAL;
->> +               goto out_put_map;
->> +       }
->> +
->> +       if (link->ops->update_map)
->> +               ret = link->ops->update_map(link, new_map);
->> +       else
->> +               ret = -EINVAL;
->> +
->> +out_put_map:
->> +       bpf_map_put(new_map);
->> +       return ret;
->> +}
->> +
->>   #define BPF_LINK_UPDATE_LAST_FIELD link_update.old_prog_fd
->>
->>   static int link_update(union bpf_attr *attr)
->> @@ -4658,14 +4682,25 @@ static int link_update(union bpf_attr *attr)
->>          if (CHECK_ATTR(BPF_LINK_UPDATE))
->>                  return -EINVAL;
->>
->> -       flags = attr->link_update.flags;
->> -       if (flags & ~BPF_F_REPLACE)
->> -               return -EINVAL;
->> -
->>          link = bpf_link_get_from_fd(attr->link_update.link_fd);
->>          if (IS_ERR(link))
->>                  return PTR_ERR(link);
->>
->> +       flags = attr->link_update.flags;
->> +
->> +       if (link->ops->update_map) {
->> +               if (flags)      /* always replace the existing one */
->> +                       ret = -EINVAL;
->> +               else
->> +                       ret = link_update_map(link, attr);
->> +               goto out_put_link;
-> 
-> umm... BPF_F_REPLACE for link_update is specifying "update only if
-> current prog fd matches what I specify", let's not ignore it for
-> struct_ops. This will create a deviation in behavior unnecessarily.
-> Please keep it consistent.
+>   1240
+>   1241          for (i =3D 0; i < nr_slots; i++) {
+>   1242                  struct bpf_stack_state *slot =3D &state->stack[sp=
+i - i];
+>   1243
 
-Ok!
+for (j =3D 0; j < BPF_REG_SIZE; j++) got lost during rebasing, sigh. I
+have a test that's testing this exact condition to be checked
+properly, and it is passing (that is proper return false is returned
+here) consistently with the garbage value of j :(
 
-> 
-> 
->> +       }
->> +
->> +       if (flags & ~BPF_F_REPLACE) {
->> +               ret = -EINVAL;
->> +               goto out_put_link;
->> +       }
->> +
->>          new_prog = bpf_prog_get(attr->link_update.new_prog_fd);
->>          if (IS_ERR(new_prog)) {
->>                  ret = PTR_ERR(new_prog);
->> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
->> index cd0ff39981e8..259b8ab4f54e 100644
->> --- a/tools/include/uapi/linux/bpf.h
->> +++ b/tools/include/uapi/linux/bpf.h
->> @@ -1556,7 +1556,12 @@ union bpf_attr {
->>          struct { /* struct used by BPF_LINK_UPDATE command */
->>                  __u32           link_fd;        /* link fd */
->>                  /* new program fd to update link with */
->> -               __u32           new_prog_fd;
->> +               union {
->> +                       /* new program fd to update link with */
->> +                       __u32           new_prog_fd;
->> +                       /* new struct_ops map fd to update link with */
->> +                       __u32           new_map_fd;
->> +               };
->>                  __u32           flags;          /* extra flags */
->>                  /* expected link's program fd; is specified only if
->>                   * BPF_F_REPLACE flag is set in flags */
->> --
->> 2.34.1
->>
+Anyways, restored for loop here.
+
+> > 1244                  if (slot->slot_type[j] =3D=3D STACK_ITER)
+>   1245                          return false;
+>   1246          }
+>   1247
+>   1248          return true;
+>   1249  }
+>   1250
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests
