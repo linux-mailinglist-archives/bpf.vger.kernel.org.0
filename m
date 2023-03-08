@@ -2,216 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4476AFF21
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 07:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA416AFF34
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 08:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbjCHGyM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 01:54:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
+        id S229688AbjCHHAC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 02:00:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjCHGyL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 01:54:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C279D8C0E5
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 22:53:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678258402;
+        with ESMTP id S229621AbjCHHAB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 02:00:01 -0500
+Received: from out-9.mta1.migadu.com (out-9.mta1.migadu.com [IPv6:2001:41d0:203:375::9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B51EA18AC
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 22:59:59 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1678258797;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y86pDM0nF4SS/2l52+50ptoIaTxu1jy+95EBPWqW538=;
-        b=a80conT1auGpAERooSXm2HuQGdLnDzsoI99IZTrvrtDTWs4Z76E6dkbPodxpiWTQqSndNH
-        sI79vHO5ElNpl+0Med2O2KKOmDxA9Arx8lwKsdA/13SRJPTTdxEh6EBFyZhitposAZn1CQ
-        RuBuM/TYfr0TvviZ4ldJZgudEMgxlAM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-569-FCQme22mMkeALhw0GWaBEA-1; Wed, 08 Mar 2023 01:53:21 -0500
-X-MC-Unique: FCQme22mMkeALhw0GWaBEA-1
-Received: by mail-ed1-f72.google.com with SMTP id w7-20020a056402268700b004bbcdf3751bso22213272edd.1
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 22:53:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678258400;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y86pDM0nF4SS/2l52+50ptoIaTxu1jy+95EBPWqW538=;
-        b=maVHoZBRb236FOgOLhUqAIzrOHRx28hdNQMafJDOFRkZioWbZz5ho1dqCtHYeLqNtN
-         kSSko54rmoEurAd81/DmrQz/xQR8Y90vJJQqozuibZWt8sstkeeo0k7r6+a1zEJTISfI
-         w3n4zCTJWWdPRnAOxEz/BNAb+1RDMze7KUXcTghZ7FhzmPuQM1d7vpglWt73MiHbxhN5
-         D/cM1xlQYfgogUJkSTgWvU7uVe8sBQnDmQDk3Mr4oC6DShyYL6yKIiPuQZIUpfJSKlZo
-         qgWJEiX/UFIvAPSwtuRsRG7CTCDqYFbO6MG1+rfeN1quHp4g8bGnutdDFzWYwP/EzZKI
-         5CYw==
-X-Gm-Message-State: AO0yUKXc0cxsXK4twGM5+QyW9+Zix8z0bj5vodtuLySaM5fWfKtw/FV+
-        IQJOpYCr9gErs1JHesP8B0NpzkAXpqfny5O6UhrUJMcaTUhFX/+gHgCHzaAlOyTjwB+ziHETpqT
-        0qxdGhvLcOlLp
-X-Received: by 2002:a17:907:72c7:b0:889:d156:616d with SMTP id du7-20020a17090772c700b00889d156616dmr21552344ejc.27.1678258400252;
-        Tue, 07 Mar 2023 22:53:20 -0800 (PST)
-X-Google-Smtp-Source: AK7set9xF4xRWiMSSCuL+dL3ONYy7crKcxfjeDDKfUoTwq1xZ/S/2EmD4jkVLapobwjXJ06W9xks2w==
-X-Received: by 2002:a17:907:72c7:b0:889:d156:616d with SMTP id du7-20020a17090772c700b00889d156616dmr21552324ejc.27.1678258399943;
-        Tue, 07 Mar 2023 22:53:19 -0800 (PST)
-Received: from redhat.com ([2.52.138.216])
-        by smtp.gmail.com with ESMTPSA id bn17-20020a170906c0d100b008f7f6943d1dsm7044130ejb.42.2023.03.07.22.53.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Mar 2023 22:53:19 -0800 (PST)
-Date:   Wed, 8 Mar 2023 01:53:15 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        Yichun Zhang <yichun@openresty.com>,
-        Alexander Duyck <alexanderduyck@fb.com>
-Subject: Re: [PATCH net, stable v1 1/3] virtio_net: reorder some funcs
-Message-ID: <20230308015204-mutt-send-email-mst@kernel.org>
-References: <20230308024935.91686-1-xuanzhuo@linux.alibaba.com>
- <20230308024935.91686-2-xuanzhuo@linux.alibaba.com>
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6BAme+vrjJyVkRViHzF1pK/6JT5gm8TfZt5eYxAgcRE=;
+        b=mvScnlmtG81iQfICTp+mmdJ9TITJh+1g4AXcJKef2ZYt3n4b4uJhu4y8JD2IhmIvnOd0oJ
+        veOOw7vZdsXef3RTRe8AauidEauqq1p8Jyk/EkJkJXYl2c8SRa6coBAhEEAEdEOg8B0cwe
+        4qPmNSnPYNdM4SP4YxmroBDosVd1B3c=
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
+Subject: [PATCH v2 bpf-next 00/17] bpf: Use bpf_mem_cache_alloc/free in bpf_local_storage
+Date:   Tue,  7 Mar 2023 22:59:19 -0800
+Message-Id: <20230308065936.1550103-1-martin.lau@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230308024935.91686-2-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 08, 2023 at 10:49:33AM +0800, Xuan Zhuo wrote:
-> The purpose of this is to facilitate the subsequent addition of new
-> functions without introducing a separate declaration.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+This set is to use bpf_mem_cache_alloc/free in bpf_local_storage.
+The primary motivation is to solve the deadlock/recursion issue
+when bpf_task_storage is used in a bpf tracing prog [1]. This set
+also comes with a micro-benchmark to test the storage creation.
 
-this one isn't for stable naturally, stable can use forward declarations
-instead.
+Patch 1 to 4 are some general cleanup after bpf_local_storage
+has been extended to multiple kernel objects (sk, task, inode,
+and then cgrp).
 
-> ---
->  drivers/net/virtio_net.c | 92 ++++++++++++++++++++--------------------
->  1 file changed, 46 insertions(+), 46 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index fb5e68ed3ec2..8b31a04052f2 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -545,6 +545,52 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
->  	return skb;
->  }
->  
-> +static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
-> +{
-> +	unsigned int len;
-> +	unsigned int packets = 0;
-> +	unsigned int bytes = 0;
-> +	void *ptr;
-> +
-> +	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
-> +		if (likely(!is_xdp_frame(ptr))) {
-> +			struct sk_buff *skb = ptr;
-> +
-> +			pr_debug("Sent skb %p\n", skb);
-> +
-> +			bytes += skb->len;
-> +			napi_consume_skb(skb, in_napi);
-> +		} else {
-> +			struct xdp_frame *frame = ptr_to_xdp(ptr);
-> +
-> +			bytes += xdp_get_frame_len(frame);
-> +			xdp_return_frame(frame);
-> +		}
-> +		packets++;
-> +	}
-> +
-> +	/* Avoid overhead when no packets have been processed
-> +	 * happens when called speculatively from start_xmit.
-> +	 */
-> +	if (!packets)
-> +		return;
-> +
-> +	u64_stats_update_begin(&sq->stats.syncp);
-> +	sq->stats.bytes += bytes;
-> +	sq->stats.packets += packets;
-> +	u64_stats_update_end(&sq->stats.syncp);
-> +}
-> +
-> +static bool is_xdp_raw_buffer_queue(struct virtnet_info *vi, int q)
-> +{
-> +	if (q < (vi->curr_queue_pairs - vi->xdp_queue_pairs))
-> +		return false;
-> +	else if (q < vi->curr_queue_pairs)
-> +		return true;
-> +	else
-> +		return false;
-> +}
-> +
->  static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
->  				   struct send_queue *sq,
->  				   struct xdp_frame *xdpf)
-> @@ -1714,52 +1760,6 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
->  	return stats.packets;
->  }
->  
-> -static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
-> -{
-> -	unsigned int len;
-> -	unsigned int packets = 0;
-> -	unsigned int bytes = 0;
-> -	void *ptr;
-> -
-> -	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
-> -		if (likely(!is_xdp_frame(ptr))) {
-> -			struct sk_buff *skb = ptr;
-> -
-> -			pr_debug("Sent skb %p\n", skb);
-> -
-> -			bytes += skb->len;
-> -			napi_consume_skb(skb, in_napi);
-> -		} else {
-> -			struct xdp_frame *frame = ptr_to_xdp(ptr);
-> -
-> -			bytes += xdp_get_frame_len(frame);
-> -			xdp_return_frame(frame);
-> -		}
-> -		packets++;
-> -	}
-> -
-> -	/* Avoid overhead when no packets have been processed
-> -	 * happens when called speculatively from start_xmit.
-> -	 */
-> -	if (!packets)
-> -		return;
-> -
-> -	u64_stats_update_begin(&sq->stats.syncp);
-> -	sq->stats.bytes += bytes;
-> -	sq->stats.packets += packets;
-> -	u64_stats_update_end(&sq->stats.syncp);
-> -}
-> -
-> -static bool is_xdp_raw_buffer_queue(struct virtnet_info *vi, int q)
-> -{
-> -	if (q < (vi->curr_queue_pairs - vi->xdp_queue_pairs))
-> -		return false;
-> -	else if (q < vi->curr_queue_pairs)
-> -		return true;
-> -	else
-> -		return false;
-> -}
-> -
->  static void virtnet_poll_cleantx(struct receive_queue *rq)
->  {
->  	struct virtnet_info *vi = rq->vq->vdev->priv;
-> -- 
-> 2.32.0.3.g01195cf9f
+Patch 5 to 11 is to refactor the memory free logic into the new
+bpf_selem_free() and bpf_local_storage_free() functions. Together
+with the existing bpf_selem_alloc() and bpf_local_storage_alloc(),
+it should provide an easier way to change the alloc/free path in
+the future.
+
+Patch 12 to 14 is to use bpf_mem_cache_alloc/free.
+
+The remaining patches are selftests and benchmark.
+
+[1]: https://lore.kernel.org/bpf/20221118190109.1512674-1-namhyung@kernel.org/
+
+v2:
+- Added bpf_mem_cache_alloc_flags() and bpf_mem_cache_raw_free()
+  to hide the internal data structure of the bpf allocator.
+- Fixed a typo bug in bpf_selem_free()
+- Simplified the test_local_storage test by directly using
+  err returned from libbpf
+
+Martin KaFai Lau (17):
+  bpf: Move a few bpf_local_storage functions to static scope
+  bpf: Refactor codes into bpf_local_storage_destroy
+  bpf: Remove __bpf_local_storage_map_alloc
+  bpf: Remove the preceding __ from __bpf_selem_unlink_storage
+  bpf: Remember smap in bpf_local_storage
+  bpf: Repurpose use_trace_rcu to reuse_now in bpf_local_storage
+  bpf: Remove bpf_selem_free_fields*_rcu
+  bpf: Add bpf_selem_free_rcu callback
+  bpf: Add bpf_selem_free()
+  bpf: Add bpf_local_storage_rcu callback
+  bpf: Add bpf_local_storage_free()
+  bpf: Add a few bpf mem allocator functions
+  bpf: Use bpf_mem_cache_alloc/free in bpf_selem_alloc/free
+  bpf: Use bpf_mem_cache_alloc/free for bpf_local_storage
+  selftests/bpf: Replace CHECK with ASSERT in test_local_storage
+  selftests/bpf: Check freeing sk->sk_local_storage with
+    sk_local_storage->smap is NULL
+  selftests/bpf: Add local-storage-create benchmark
+
+ include/linux/bpf_local_storage.h             |  21 +-
+ include/linux/bpf_mem_alloc.h                 |   2 +
+ kernel/bpf/bpf_cgrp_storage.c                 |  11 +-
+ kernel/bpf/bpf_inode_storage.c                |  10 +-
+ kernel/bpf/bpf_local_storage.c                | 279 ++++++++++--------
+ kernel/bpf/bpf_task_storage.c                 |  11 +-
+ kernel/bpf/memalloc.c                         |  42 ++-
+ net/core/bpf_sk_storage.c                     |  12 +-
+ tools/testing/selftests/bpf/Makefile          |   2 +
+ tools/testing/selftests/bpf/bench.c           |   2 +
+ .../bpf/benchs/bench_local_storage_create.c   | 141 +++++++++
+ .../bpf/prog_tests/test_local_storage.c       |  47 ++-
+ .../bpf/progs/bench_local_storage_create.c    |  57 ++++
+ .../selftests/bpf/progs/local_storage.c       |  29 +-
+ 14 files changed, 446 insertions(+), 220 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bench_local_storage_create.c
+
+-- 
+2.34.1
 
