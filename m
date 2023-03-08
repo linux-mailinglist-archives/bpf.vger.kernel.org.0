@@ -2,166 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 795C06B0CF9
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 16:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 295836B0D4B
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 16:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbjCHPiJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 10:38:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
+        id S231724AbjCHPtL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 10:49:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbjCHPhw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 10:37:52 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D695FA56;
-        Wed,  8 Mar 2023 07:37:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678289850; x=1709825850;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=TVor/S2hgZcwPMgHxo2L9p/QI3yiEiOfe4gFSwTwePM=;
-  b=WqFUtOn9qRYT+WxdC0lGtoaPJYT+JnwJH9zMTEfnUOMbB97Yo4mswx23
-   xztoNCOXODtiAntepm0P5Cb0aBfh2s1To9yKjE5qKpKddeb2O7ToXLPjc
-   DYmS18Q3cPL7s8iEdgDieCCDDGyghiguKehev3LhLzsisxtCxcGkdp41+
-   yS+UJ7cSHGk0qOg6gBDhEeVM2LiICPDBn5HlvmlRBkb9Xj/uFkOO5oe+4
-   80uI7wsdcfKpamxr/gLFLk1+fovmMps/rWdQBEPjNibw3hncwPPgox7lO
-   6BlUg79EMeS16Nh1ujQUYf9pOxbnc/BUk4iqp1RAzBivTtLag3JikrM5a
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="422455492"
-X-IronPort-AV: E=Sophos;i="5.98,244,1673942400"; 
-   d="scan'208";a="422455492"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2023 07:34:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="677026274"
-X-IronPort-AV: E=Sophos;i="5.98,244,1673942400"; 
-   d="scan'208";a="677026274"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga002.jf.intel.com with ESMTP; 08 Mar 2023 07:34:47 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 8 Mar 2023 07:34:46 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Wed, 8 Mar 2023 07:34:46 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Wed, 8 Mar 2023 07:34:46 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Suibe+NbH4Uhzk7tZhz08iNa5JS7gEpmil8KAjOG33X1FUSDWr//1H/YDI4NqSaiXp61IIEiwaa5bGF3eXyTpl6325D8VdXR0tlRgdlp4KEntHxQoHSvEN4FM7ODdApILJquaM43oVJwk898khAqNnFTSYjgIwY5s9K4MSpzRjWfh9iwLjGiHq5PGJWzCpzJeJPwa2EUl0NachMOktUDSFQjk6/oi2OkPYIr4ZJmIbr6XTu7eJi1Dt7IGNt+Vewmnf6kyNnl3OH7r9OrJq+E2YlvKZk81fku/JEvr0qQHIXxFXabimaDgfjFXsxFKX7oGTezRiXMdF2gPJswdLSp0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KLbBOi8D4UFQkd2DABz2yxJsPN7sWi/ckJSa0wIE5O8=;
- b=O5AXGAklw5jirZmdwEq+yTKKyTt8kQr1i5EmEgUzG+zSLuyL0TXfoEwsxOugPzLgQbU2r1rFe90r0SEFq2OOleLMEYUm8ZsK7toDqXsDf8H2Mmp8unS4S1I0Dv3K7/R4d5JWrwFYgccKfL5dqFiV7AgdKz+hw5PasXr+dFrk72vUXavzWeT+lb0kwNwzVlvHtiUq45B40m+Brjo+J9ID2+wGCDz0YBmaJy/dzjOYWSyF8i1pJN8LOUOIobvV+1k3irhxXb873+wtUYpLrMsOwMHNbbwBrFemqxf6W4HKIeAI0whgZKzuM5FJTv00zzwkLtDJNxNaftqNlOKmRcRBxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by SJ0PR11MB5197.namprd11.prod.outlook.com (2603:10b6:a03:2d1::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.17; Wed, 8 Mar
- 2023 15:34:44 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::7911:de29:ded:224]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::7911:de29:ded:224%5]) with mapi id 15.20.6178.017; Wed, 8 Mar 2023
- 15:34:44 +0000
-Message-ID: <4ddd3fe4-ed3c-495e-077c-1ac737488084@intel.com>
-Date:   Wed, 8 Mar 2023 16:33:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] xsk: Add missing overflow check in xdp_umem_reg
-Content-Language: en-US
-To:     Kal Conley <kal.conley@dectris.com>
-CC:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230307172306.786657-1-kal.conley@dectris.com>
- <20230308105130.1113833-1-kal.conley@dectris.com>
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <20230308105130.1113833-1-kal.conley@dectris.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0098.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a1::14) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+        with ESMTP id S232059AbjCHPsu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 10:48:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807DA136C0
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 07:48:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678290479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u2aYp4k828paO2h5rj3MxTswJBSoiDLF+Fg9X0l8IWA=;
+        b=Dq4tvOQYpqTsOcqUB6D9w9gDcAf+pOfb16bKUWyRprn+AqoDYL10KGaWsoRKfAtaHaG7mD
+        //DmPxg+rhj1rB2v75HcPO4NTs/MY9bKcrv6URpeUZjJm14aNIKtdL05F2KI20Pbq04BDC
+        rA9slElAltZtgaC9PMEMmsZRqDW5PW8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-355-7W87eCCzOOWdUO5Vyel4Vg-1; Wed, 08 Mar 2023 10:47:58 -0500
+X-MC-Unique: 7W87eCCzOOWdUO5Vyel4Vg-1
+Received: by mail-wm1-f69.google.com with SMTP id j6-20020a05600c1c0600b003eaf882cb85so955987wms.9
+        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 07:47:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678290476;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u2aYp4k828paO2h5rj3MxTswJBSoiDLF+Fg9X0l8IWA=;
+        b=mMMO0lAyaMweVrI2pINWN1qyFfOrsejCzb24BCsVpXu6hxisxH7dk0k/fC2l6GEm9S
+         5bpL6sijdS7xazpJFWZGRLKgeJRtKYaJkDiT+3rocSChGZ2y1I9R8X5htMK4252Je41g
+         DNAPfO5Py0qXTyIKrUuJUOUV6NYFPvS0BbTsPyF+V8xUk3ad6LBNTWl47oTt0OpWTbw0
+         xUtKH6n7Lm/CQTlbHQn61EOcJS6GIU9Czq6Phz9Qcwv3W8TitIiDmUuU5l9Ri/nurePR
+         aPN4tunbCr/ZE6kQDXi9bzoFqF5tRhl7hrotMYQ0USaAVbUm0ITfVpzPU4wWmx1bRcrY
+         71Hg==
+X-Gm-Message-State: AO0yUKWMtHZBHs03Ut0HVRz2Ft+Pvcu0+zHQufsscE+YY2RxX2obNTzr
+        DOoYR9HZIxDc3WdgYgbnziVYqurt9cJaTO7crQWTJUFKHanSMY96h4PrmuMuC+fgJTG79i7mqGe
+        h75GQPQiuOLBN
+X-Received: by 2002:a5d:4486:0:b0:2c9:ee31:962a with SMTP id j6-20020a5d4486000000b002c9ee31962amr11179348wrq.64.1678290476332;
+        Wed, 08 Mar 2023 07:47:56 -0800 (PST)
+X-Google-Smtp-Source: AK7set+QDdXbeizTpc8SYwh1Qyqpz5WXRoTKRZxdmJXTe+90dzWsC34But3KQMEaYVGmq+5Z41kZyQ==
+X-Received: by 2002:a5d:4486:0:b0:2c9:ee31:962a with SMTP id j6-20020a5d4486000000b002c9ee31962amr11179340wrq.64.1678290475982;
+        Wed, 08 Mar 2023 07:47:55 -0800 (PST)
+Received: from localhost (net-188-216-77-84.cust.vodafonedsl.it. [188.216.77.84])
+        by smtp.gmail.com with ESMTPSA id s10-20020adfea8a000000b002c7e1a39adcsm15693003wrm.23.2023.03.08.07.47.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Mar 2023 07:47:55 -0800 (PST)
+Date:   Wed, 8 Mar 2023 16:47:53 +0100
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        saeedm@nvidia.com, leon@kernel.org, shayagr@amazon.com,
+        akiyano@amazon.com, darinzon@amazon.com, sgoutham@marvell.com,
+        toke@redhat.com, teknoraver@meta.com
+Subject: Re: [PATCH net-next 7/8] net/mlx5e: take into account device
+ reconfiguration for xdp_features flag
+Message-ID: <ZAiuKRDqQ+1cQb2J@lore-desk>
+References: <cover.1678200041.git.lorenzo@kernel.org>
+ <8857cb8138b33c8938782e2154a56b095d611d18.1678200041.git.lorenzo@kernel.org>
+ <c2d13e84-2c30-d930-37a4-4e984b85a0e4@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|SJ0PR11MB5197:EE_
-X-MS-Office365-Filtering-Correlation-Id: 98e5e42b-58e4-46dc-b16a-08db1feaa469
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6X1mcOjCAWzxB1ccY9wlFa9dRpr5M1bZSP0DmJg7qTgvpXLtTzWuGMPYER0bqEN+wes1vxbtqwSy01hgNeYR2KtmtVDyyKQ03rgyNODinyQcuFqvBgKfIUtmZkWdq0vTR8GbXsBYwy1XtEzsHhmxCk7Z/m1PG3xTXM6NGRkaPHkuCUxpRkLJo0svbX5F9uo1YGdd2uwxdAWU0JdTeFqGEXT+Rb1JVclJgjMZpnDZ2NZtAw9j/7Bf4ZSJwbYmXm+nOUlj8xMzRPJzeHb1EANtHK6PMakdYUydY4p04SeKVJYFGX19YD8llizdXTtcq9aQqPbOosIcqja18dnv7yCR+U1mlkrvFYOq/oBd6ONV0j9xkbV1G4jAuTRlGgGJL9FndP7SKkm4Yqyem94rC8Sa7UHHxash5qS43YEMv0NJKV4ZCRqppAV94GgBqr1pzUqOVWpZ0Lg+Eilt6RBus7dzgh4jx1ferJ6rdhzmA5f0VfvXS5uOVznFiBgYMRNSmDXSRMDNqdIXJjxaPYtlmBEnnS4KZyXrSMDQz5BA0HSdsdLUVb9BOzlnqIa5oKm6x7lSt/Egv8gegRCEn6cFT2jqtLkNGDRlrnHg/XgVCzMMlJvcBXsyH0pfbLh6VPVNrUNBopgq2fhcmASuQqsLOBai/EL5LhOY+7i61uEgNXvWRwqr2A0Hr/Ac+ikaNXACl22yD2vcIDFMM3vQnZvZXEmBODu1AKXB7gYY7zF1DJaERDs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(39860400002)(346002)(366004)(376002)(136003)(396003)(451199018)(4326008)(83380400001)(8676002)(6916009)(31686004)(66946007)(66476007)(66556008)(41300700001)(316002)(82960400001)(36756003)(54906003)(478600001)(5660300002)(38100700002)(8936002)(2616005)(2906002)(26005)(186003)(7416002)(86362001)(6486002)(31696002)(6512007)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a2VkS2ZRZjZRcHFoVnJLSk9FY2VrOHNndnNiVkxCdkJtV200OVVzNnpNMmhX?=
- =?utf-8?B?alVESHQwbG8xd0NaZ2FzazlDSEg4L0VaNmNNV3AxMzA0eVRSU1hEQWJvM0lK?=
- =?utf-8?B?ZXVpdmk1TTdEVTY1SWNwNkpjNVhnUnZaQVpHVEFKckFISXNjL1VIMVk5QmhT?=
- =?utf-8?B?Nk43RitmLy9WSnVDNFJoL1pYbkxJckJBVWtTTVJTaFcvMWpuZm5qaHc5eUtP?=
- =?utf-8?B?SzJsTVpPSEVIQWZsMUpsbHplTUlVRmloWU5sWkt2VDRFa1lwZDBJZXpRRWQ4?=
- =?utf-8?B?Rk5nTmk2d040TG00amZBTEVGeElWWExwdUxxa2xEOUdUUWtBTjVtQnhWUXIy?=
- =?utf-8?B?eW9uWXBFT1ZjR3VQZVIvcTNpVmExTzBnaCtCWkdmVjBhZ1RmSnBTNTMzdDJJ?=
- =?utf-8?B?MTNteWtoTkYxT1hJT2lnOHFMY1ZlYlRVb05TWnZvVjY5NzBxUFJWb1E2ZVR3?=
- =?utf-8?B?L3gwUWdGb1VvbFJWL3dieWFINk1mbU5QZlh1RXZPVWhWeHdZTklITWRUSTFQ?=
- =?utf-8?B?aWt5WS9DU2p6a2FNVmdpY3F5TmVkRFNoQiswOVhSS1k2NEYxMzI5RStOQ0tq?=
- =?utf-8?B?NEVZVmVrQ0hZbmhaT0wvSEx5ZWN4V1NNdHBkRGhMK0s4OFN6Z0hWZXFRN0dO?=
- =?utf-8?B?NjdibjBaOTJ6SVZBaHRSa0s3eXNNOU9RMU1RL0hMUlBxQ2RtK3V6KzBHT2Fp?=
- =?utf-8?B?d2JWWjZhOHhSNzNYN2pWUWtkN3VyN0puT2c2QTJpSE1tdVpiR0RRS0RpOUwx?=
- =?utf-8?B?SlNhT0d2SDlBVExEQlU4VnNtVlk0ODVuaVY3LzgyUy8zN1I2aHZYZzA0aTNI?=
- =?utf-8?B?SG1kNmFqL3llaWU2ZmJKSEVkK2tPc0xBbi9FZEdDMHFtRGRQR3M1VStNZzBV?=
- =?utf-8?B?R1RBTFpubFd0NTRUY1lKUkc5UkZWb3J3dy95Z2FjdDkzRDdISUFxNDgxQ3hJ?=
- =?utf-8?B?dVFMN1lRRHFDUUo5UjJYUndVMWNYdS9waFRRMWNaaDBPam5ld1ZCTTV3blI3?=
- =?utf-8?B?Zk02VUdHQ2ZnTFkxSDZua2dPZXdZWE56c0ZTN05ydCtEZE1JeWJMQTNKOEpn?=
- =?utf-8?B?TGxVNGw3WWkvWlhqalpGdjl1VWM2MDlIMHZtNkNid1ZCQ3JwbkZDdVNhcVFQ?=
- =?utf-8?B?NmtXbzZxTFcyTE9DR3RiTnlIMXRHR25HMldiRTg5SHY5TUJyWnBTZEdlektk?=
- =?utf-8?B?WDlTYVZueTBNRkdteW9aM3AvV2RlMDRKT1oyMHdSbkgvT0RNQmR3emsyUExJ?=
- =?utf-8?B?emsvWEtDbzJpSTVkWGMzY0RCb0NtZUZmcFJyZW5HVGNUVjl5cGlEdkdySG5y?=
- =?utf-8?B?QXA3dWVLcDdzSGR6QjIvQ0ZkTldveFdDS21YUXo5cW9aeEpuTjNSck03cTVn?=
- =?utf-8?B?T3QycjAvcEN3SUhHMUNCTmU3dk9PczlMdE1Wd3JETDRvWkIxRks4M3RCQjlD?=
- =?utf-8?B?eXdWempPMUpxVytXdUwvalAvMXk5QzdJVEMybVJvc2RXNWF3QTdnTFgyL0FB?=
- =?utf-8?B?YU9sWDIrR243QjUxbmpYZngrREVtMGYxVit4N211bTIvbUpFeWdQaHREaDcx?=
- =?utf-8?B?Zit0cUZVMmNvb0RyNFVWUVl3L0ZnUmF2eVZxeVJwV0hzQjg1b2xSdCtrNHlS?=
- =?utf-8?B?SzdmUzFXMkxxbmd1QWtvcit4N3NkdE55MEpRcGhVbFRMYkgxcWhoTHVEU3BY?=
- =?utf-8?B?Y2FmQ1NINUo4K1JMU3BkQ0ZiZjVheENhYlFrQkwycDlnU09NRXVoT3dnd2Vu?=
- =?utf-8?B?SXE4TkFZYUpWQVJqcDFmZUNmLzYrRGhVcU10RGE3eXY1UVpnTGs4Ry9FeDBk?=
- =?utf-8?B?Y1VZTVpCOHVwUFlwNVVyd1NzWllZNjhjNk1oSHJsTVRoZmVUc0p2VmQ0Uk9W?=
- =?utf-8?B?blZsM1pNZjRhenNYVFQzck5SVlFHcHNKcFY2VzFTc3hFRnRZM0ZIeDdRcDJv?=
- =?utf-8?B?MDljT3JFWkUxRWRDTlNxTmorZUZqWFRybFp2RFdQaUhSa1pYaENJUElvdDhO?=
- =?utf-8?B?bUdEdVZrTTNVSER4aFFIMzYyNmpESHZUMENucVViTFZNRXVoYUF5d0E1YjZu?=
- =?utf-8?B?SlRnQkdWa0trQ2xjSXBSdGQzQVNuZ0dPY0FCZFlqeW5PTFNnN25hdEtNUmNW?=
- =?utf-8?B?a2ZBL3Vyb0ZST1JPMlp1ZkloSzFOaVR2K1BzWGZyUHlKTmFvZzRRNml0bkhm?=
- =?utf-8?Q?a3D93ruAoeD3QzkCBn8QRoI=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98e5e42b-58e4-46dc-b16a-08db1feaa469
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2023 15:34:44.6599
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ldGXCVl/0TrpMPOgaiDr211UuW8OnESjAKdx0dQ46iW0pdO782Vtt4QmxQ2hZEf1lbc3gDPCK9V9Jv2v1k9b0tleX+M/qD7lxplKf/VqiNM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5197
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rMc+rVd0QyMnGonh"
+Content-Disposition: inline
+In-Reply-To: <c2d13e84-2c30-d930-37a4-4e984b85a0e4@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -169,74 +85,280 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Kal Conley <kal.conley@dectris.com>
-Date: Wed,  8 Mar 2023 11:51:30 +0100
 
-> [PATCH] xsk: Add missing overflow check in xdp_umem_reg
+--rMc+rVd0QyMnGonh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You need to mark it properly. It must've been
+>=20
+>=20
+> On 07/03/2023 16:54, Lorenzo Bianconi wrote:
+> > Take into account LRO and GRO configuration setting device xdp_features
+> > flag. Moreover consider channel rq_wq_type enabling rx scatter-gatter
+> > support in xdp_features flag.
+> >=20
+> > Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >   drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 +
+> >   .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 10 ++++-
+> >   .../net/ethernet/mellanox/mlx5/core/en_main.c | 45 ++++++++++++++++---
+> >   .../net/ethernet/mellanox/mlx5/core/en_rep.c  |  3 ++
+> >   4 files changed, 51 insertions(+), 8 deletions(-)
+> >=20
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net=
+/ethernet/mellanox/mlx5/core/en.h
+> > index 88460b7796e5..4276c6eb6820 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> > @@ -1243,6 +1243,7 @@ void mlx5e_build_nic_params(struct mlx5e_priv *pr=
+iv, struct mlx5e_xsk *xsk, u16
+> >   void mlx5e_rx_dim_work(struct work_struct *work);
+> >   void mlx5e_tx_dim_work(struct work_struct *work);
+> > +void mlx5e_set_xdp_feature(struct net_device *netdev);
+> >   netdev_features_t mlx5e_features_check(struct sk_buff *skb,
+> >   				       struct net_device *netdev,
+> >   				       netdev_features_t features);
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/dri=
+vers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > index 7708acc9b2ab..79fd21ecb9cb 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > @@ -1985,6 +1985,7 @@ static int set_pflag_rx_striding_rq(struct net_de=
+vice *netdev, bool enable)
+> >   	struct mlx5e_priv *priv =3D netdev_priv(netdev);
+> >   	struct mlx5_core_dev *mdev =3D priv->mdev;
+> >   	struct mlx5e_params new_params;
+> > +	int err;
+> >   	if (enable) {
+> >   		/* Checking the regular RQ here; mlx5e_validate_xsk_param called
+> > @@ -2005,7 +2006,14 @@ static int set_pflag_rx_striding_rq(struct net_d=
+evice *netdev, bool enable)
+> >   	MLX5E_SET_PFLAG(&new_params, MLX5E_PFLAG_RX_STRIDING_RQ, enable);
+> >   	mlx5e_set_rq_type(mdev, &new_params);
+> > -	return mlx5e_safe_switch_params(priv, &new_params, NULL, NULL, true);
+> > +	err =3D mlx5e_safe_switch_params(priv, &new_params, NULL, NULL, true);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	/* update XDP supported features */
+> > +	mlx5e_set_xdp_feature(netdev);
+> > +
+> > +	return 0;
+> >   }
+> >   static int set_pflag_rx_no_csum_complete(struct net_device *netdev, b=
+ool enable)
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/driver=
+s/net/ethernet/mellanox/mlx5/core/en_main.c
+> > index 76a9c5194a70..1b68dd2be2c5 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> > @@ -4004,6 +4004,30 @@ static int mlx5e_handle_feature(struct net_devic=
+e *netdev,
+> >   	return 0;
+> >   }
+> > +void mlx5e_set_xdp_feature(struct net_device *netdev)
+> > +{
+> > +	struct mlx5e_priv *priv =3D netdev_priv(netdev);
+> > +	bool ndo_xmit =3D test_bit(MLX5E_STATE_XDP_ACTIVE, &priv->state);
+>=20
+> Our driver doesn't require loading a dummy XDP program to have the
+> redirect-in ability. It's always there.
+>=20
+> I actually have a bug fix under internal review with Saeed that addresses
+> this.
+>=20
+> In addition, it cleans up the NETDEV_XDP_ACT_NDO_XMIT_SG as we do not
+> support it yet. I have a series that's adding support and will submit it
+> soon.
+>=20
+> Any reason you're submitting these fixes to net-next rather than net?
 
-[PATCH bpf v2] xsk: Add missing overflow check in xdp_umem_reg
+Hi Tariq,
 
-instead.
+I am fine to repost this series for net instead of net-next. Any downsides =
+about
+it?
 
-> The number of chunks can overflow u32. Make sure to return -EINVAL on
-> overflow.
+> Maybe it'd be better if we integrate the patches, here's my fix (still un=
+der
+> review...):
+>=20
+> Author: Tariq Toukan <tariqt@nvidia.com>
+> Date:   Thu Feb 23 08:58:04 2023 +0200
+>=20
+>     net/mlx5e: Fix exposed xdp_features
+>=20
+>     Always declare NETDEV_XDP_ACT_NDO_XMIT as the ndo_xdp_xmit callback
+>     is always functional per our design, and does not require loading
+>     a dummy xdp program.
+>=20
+>     Although non-linear XDP buffer is supported for XDP_TX flow, do not
+>     declare NETDEV_XDP_ACT_NDO_XMIT_SG as it is yet supported for
+>     redirected-in frames.
+>=20
+>     Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
+>     Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+>=20
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 53feb0529943..9a5d3ce1fbcd 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -4741,13 +4741,6 @@ static int mlx5e_xdp_set(struct net_device *netdev,
+> struct bpf_prog *prog)
+>         if (old_prog)
+>                 bpf_prog_put(old_prog);
+>=20
+> -       if (reset) {
+> -               if (prog)
+> -                       xdp_features_set_redirect_target(netdev, true);
+> -               else
+> -                       xdp_features_clear_redirect_target(netdev);
+> -       }
+> -
+>         if (!test_bit(MLX5E_STATE_OPENED, &priv->state) || reset)
+>                 goto unlock;
+>=20
+> @@ -5144,6 +5137,7 @@ static void mlx5e_build_nic_netdev(struct net_device
+> *netdev)
+>         netdev->features         |=3D NETIF_F_HW_VLAN_STAG_FILTER;
+>=20
+>         netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC |
+> NETDEV_XDP_ACT_REDIRECT |
+> +                              NETDEV_XDP_ACT_NDO_XMIT |
+>                                NETDEV_XDP_ACT_XSK_ZEROCOPY |
+>                                NETDEV_XDP_ACT_RX_SG;
 
-I'd mention here that cast removal, so that reviewers wouldn't ask why
-you did this.
+I am fine to drop this my patch and rely on the one you provided but it dep=
+ends
+on the eta about the described patches because otherwise real capabilities =
+and
+xdp-features will not be aligned. Any inputs on it?
 
-> 
-> Fixes: bbff2f321a86 ("xsk: new descriptor addressing scheme")
-> Signed-off-by: Kal Conley <kal.conley@dectris.com>
-> ---
->  net/xdp/xdp_umem.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index 4681e8e8ad94..02207e852d79 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -150,10 +150,11 @@ static int xdp_umem_account_pages(struct xdp_umem *umem)
->  
->  static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
->  {
-> -	u32 npgs_rem, chunk_size = mr->chunk_size, headroom = mr->headroom;
->  	bool unaligned_chunks = mr->flags & XDP_UMEM_UNALIGNED_CHUNK_FLAG;
-> -	u64 npgs, addr = mr->addr, size = mr->len;
-> -	unsigned int chunks, chunks_rem;
-> +	u32 chunk_size = mr->chunk_size, headroom = mr->headroom;
-> +	u64 addr = mr->addr, size = mr->len;
-> +	u32 chunks_rem, npgs_rem;
-> +	u64 chunks, npgs;
->  	int err;
->  
->  	if (chunk_size < XDP_UMEM_MIN_CHUNK_SIZE || chunk_size > PAGE_SIZE) {
-> @@ -188,8 +189,8 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
->  	if (npgs > U32_MAX)
->  		return -EINVAL;
->  
-> -	chunks = (unsigned int)div_u64_rem(size, chunk_size, &chunks_rem);
-> -	if (chunks == 0)
-> +	chunks = div_u64_rem(size, chunk_size, &chunks_rem);
-> +	if (!chunks || chunks > U32_MAX)
->  		return -EINVAL;
->  
->  	if (!unaligned_chunks && chunks_rem)
-> @@ -202,7 +203,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
->  	umem->headroom = headroom;
->  	umem->chunk_size = chunk_size;
->  	umem->chunks = chunks;
-> -	umem->npgs = (u32)npgs;
-> +	umem->npgs = npgs;
->  	umem->pgs = NULL;
->  	umem->user = NULL;
->  	umem->flags = mr->flags;
+>=20
+>=20
+> > +	struct mlx5e_params *params =3D &priv->channels.params;
+> > +	xdp_features_t val;
+> > +
+> > +	if (params->packet_merge.type !=3D MLX5E_PACKET_MERGE_NONE) {
+> > +		xdp_clear_features_flag(netdev);
+> > +		return;
+> > +	}
+> > +
+> > +	val =3D NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
+> > +	      NETDEV_XDP_ACT_XSK_ZEROCOPY;
+> > +	if (ndo_xmit)
+> > +		val |=3D NETDEV_XDP_ACT_NDO_XMIT;
+> > +	if (params->rq_wq_type =3D=3D MLX5_WQ_TYPE_CYCLIC) {
+> > +		val |=3D NETDEV_XDP_ACT_RX_SG;
+> > +		if (ndo_xmit)
+> > +			val |=3D NETDEV_XDP_ACT_NDO_XMIT_SG;
+>=20
+> This NETDEV_XDP_ACT_NDO_XMIT_SG capability is not related to the RQ type.
+> It's still not supported at this point.
 
-The code is fine to me.
-Please resubmit with the fixed subject and expanded commit message.
-I'd also prefer that you sent v3 as a separate mail, *not* as a reply to
-this thread.
+ack, I will fix it.
 
-Thanks,
-Olek
+>=20
+> BTW, I have a series completing all the missing capabilities (multibuf on
+> Striding + multibuf redirect-in), should be submitted in this kernel.
+
+cool :)
+
+Regards,
+Lorenzo
+
+>=20
+> > +	}
+> > +	xdp_set_features_flag(netdev, val);
+> > +}
+> > +
+> >   int mlx5e_set_features(struct net_device *netdev, netdev_features_t f=
+eatures)
+> >   {
+> >   	netdev_features_t oper_features =3D features;
+> > @@ -4030,6 +4054,9 @@ int mlx5e_set_features(struct net_device *netdev,=
+ netdev_features_t features)
+> >   		return -EINVAL;
+> >   	}
+> > +	/* update XDP supported features */
+> > +	mlx5e_set_xdp_feature(netdev);
+> > +
+> >   	return 0;
+> >   }
+> > @@ -4762,10 +4789,14 @@ static int mlx5e_xdp_set(struct net_device *net=
+dev, struct bpf_prog *prog)
+> >   		bpf_prog_put(old_prog);
+> >   	if (reset) {
+> > -		if (prog)
+> > -			xdp_features_set_redirect_target(netdev, true);
+> > -		else
+> > +		if (prog) {
+> > +			bool xmit_sg;
+> > +
+> > +			xmit_sg =3D new_params.rq_wq_type =3D=3D MLX5_WQ_TYPE_CYCLIC;
+>=20
+> Same, not related. Still not supported at this point.
+>=20
+> > +			xdp_features_set_redirect_target(netdev, xmit_sg);
+> > +		} else {
+> >   			xdp_features_clear_redirect_target(netdev);
+> > +		}
+> >   	}
+> >   	if (!test_bit(MLX5E_STATE_OPENED, &priv->state) || reset)
+> > @@ -5163,13 +5194,10 @@ static void mlx5e_build_nic_netdev(struct net_d=
+evice *netdev)
+> >   	netdev->features         |=3D NETIF_F_HIGHDMA;
+> >   	netdev->features         |=3D NETIF_F_HW_VLAN_STAG_FILTER;
+> > -	netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRE=
+CT |
+> > -			       NETDEV_XDP_ACT_XSK_ZEROCOPY |
+> > -			       NETDEV_XDP_ACT_RX_SG;
+> > -
+> >   	netdev->priv_flags       |=3D IFF_UNICAST_FLT;
+> >   	netif_set_tso_max_size(netdev, GSO_MAX_SIZE);
+> > +	mlx5e_set_xdp_feature(netdev);
+> >   	mlx5e_set_netdev_dev_addr(netdev);
+> >   	mlx5e_macsec_build_netdev(priv);
+> >   	mlx5e_ipsec_build_netdev(priv);
+> > @@ -5241,6 +5269,9 @@ static int mlx5e_nic_init(struct mlx5_core_dev *m=
+dev,
+> >   		mlx5_core_err(mdev, "TLS initialization failed, %d\n", err);
+> >   	mlx5e_health_create_reporters(priv);
+> > +	/* update XDP supported features */
+> > +	mlx5e_set_xdp_feature(netdev);
+> > +
+> >   	return 0;
+> >   }
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers=
+/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > index 9b9203443085..43fd12fb87b8 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > @@ -747,6 +747,9 @@ static void mlx5e_build_rep_params(struct net_devic=
+e *netdev)
+> >   	/* RQ */
+> >   	mlx5e_build_rq_params(mdev, params);
+> > +	/* update XDP supported features */
+> > +	mlx5e_set_xdp_feature(netdev);
+> > +
+> >   	/* CQ moderation params */
+> >   	params->rx_dim_enabled =3D MLX5_CAP_GEN(mdev, cq_moderation);
+> >   	mlx5e_set_rx_cq_mode_params(params, cq_period_mode);
+>=20
+
+--rMc+rVd0QyMnGonh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZAiuKQAKCRA6cBh0uS2t
+rB7PAP0SC0uXtgxP8IVnfoMtucBMLSKsJfPkSgYEIFTUGOQt+QD+LuapybqTcuuL
+ZPqsu2iF19D1ZcLGl7+mmeQJAMYfqws=
+=SWLI
+-----END PGP SIGNATURE-----
+
+--rMc+rVd0QyMnGonh--
+
