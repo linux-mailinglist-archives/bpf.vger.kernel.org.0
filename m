@@ -2,201 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C99A06B14CB
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 23:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2240D6B14FF
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 23:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjCHWJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 17:09:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
+        id S230335AbjCHWWU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 17:22:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjCHWJo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 17:09:44 -0500
-Received: from evilolive.daedalian.us (evilolive.daedalian.us [96.126.118.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D529384F49;
-        Wed,  8 Mar 2023 14:09:42 -0800 (PST)
-Received: by evilolive.daedalian.us (Postfix, from userid 111)
-        id 3BE3212398; Wed,  8 Mar 2023 14:09:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=daedalian.us;
-        s=default; t=1678313382;
-        bh=hpgitxCOU5nj6oddWyD9T9T7VS/UVfODqkkiFx8yIO0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gF9EWG/3/4T9bpmzMocSso0l1vx1Wl/P2LSRoaDoPFQERnah2pH5/ENcVA1Dd80S8
-         Ls60etDgCIVpoxT6iV9qsdkaGikyzuz5ijw+IIa0ECSa0nwD+M1ZU5gjMdP+CHFNsx
-         W9Gq6oiOeLfq2OLwng2PiNkRvZcnuRS9LskB4SnytbtP+OTti0Xj5R+VKZdPGmb47m
-         0L9/kHBtTarsPoamHYeKKOvHOUudDnsf7S7lJPQNSVXQX3aSAhqF81cTX8jHsy0RDb
-         CULD1GN1DDNORW2rtmq6LB7xfTsleR0hu7TdtRVsGXOqqqb54pVzwQ8OQiHzcpZ3JM
-         SltIdrtkLzpkQ==
+        with ESMTP id S230333AbjCHWWJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 17:22:09 -0500
+Received: from out-24.mta0.migadu.com (out-24.mta0.migadu.com [IPv6:2001:41d0:1004:224b::18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E979BE32
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 14:21:38 -0800 (PST)
+Message-ID: <5b760fdc-a3c2-f416-4729-c17e67f6b2d5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1678314096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lRO0FxBiOKulItnxcpwkYDg/R1sRbceQjZAUG0FCWQw=;
+        b=GjgREY08a+rpoHW0mLXROZvyl9yuqSnRY3koMfvCBZ+MtvrUZUEkArXhudBDisEhyWYCZB
+        kw5T4cSZdtW6mr+Sp6pARvTEqg2HazFfupHqBWLXiqOquwRnyE6FPYRhI0uwEQwaF1jjh7
+        x8SSC+17fA8HCBgNCRPZyFSWrNV5TpQ=
+Date:   Wed, 8 Mar 2023 14:21:33 -0800
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v5 5/8] bpf: Update the struct_ops of a bpf_link.
+Content-Language: en-US
+To:     Kui-Feng Lee <kuifeng@meta.com>
+References: <20230308005050.255859-1-kuifeng@meta.com>
+ <20230308005050.255859-6-kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230308005050.255859-6-kuifeng@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
-Received: from localhost.localdomain (static-47-181-121-78.lsan.ca.frontiernet.net [47.181.121.78])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by evilolive.daedalian.us (Postfix) with ESMTPSA id 7E6D2120F9;
-        Wed,  8 Mar 2023 14:09:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=daedalian.us;
-        s=default; t=1678313378;
-        bh=hpgitxCOU5nj6oddWyD9T9T7VS/UVfODqkkiFx8yIO0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=f5X8LIxAuP+f5W+e1JvPwCTHGoaQZY55me80o2nH3pWXPhWLudnNmvKsfHTBD5nHa
-         iXT/jjRkGfb0hHEIQorLOGUlWiJir44xxkWhGVi/kEIo9pAsPIK7PJ5k8/XaWMjIxo
-         kvbMYp1NIfvuxzrWVDUyVO8o9XJ8ESGX1ZRkRuA5dxxxShkUTq5I53MhDO5uhTbjx8
-         ZUCyNpbMb/izCB6lJNjI9jP8hoQHHx9vWtzkI7e/+S7/ah2XHCr65ZL9C5DzsyrVBV
-         KO8C8O+bL6aM7Qwpvj3CzocheXy7Himmn5gHmaNbg+3Fc7XG+sUjZKzQkVNR9A5lPc
-         yuhbsGTemoo4Q==
-From:   John Hickey <jjh@daedalian.us>
-To:     anthony.l.nguyen@intel.com
-Cc:     John Hickey <jjh@daedalian.us>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Shujin Li <lishujin@kuaishou.com>,
-        Jason Xing <xingwanli@kuaishou.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH net v3] ixgbe: Panic during XDP_TX with > 64 CPUs
-Date:   Wed,  8 Mar 2023 14:07:57 -0800
-Message-Id: <20230308220756.587317-1-jjh@daedalian.us>
-X-Mailer: git-send-email 2.37.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In commit 'ixgbe: let the xdpdrv work with more than 64 cpus'
-(4fe815850bdc), support was added to allow XDP programs to run on systems
-with more than 64 CPUs by locking the XDP TX rings and indexing them
-using cpu % 64 (IXGBE_MAX_XDP_QS).
+On 3/7/23 4:50 PM, Kui-Feng Lee wrote:
+> By improving the BPF_LINK_UPDATE command of bpf(), it should allow you
+> to conveniently switch between different struct_ops on a single
+> bpf_link. This would enable smoother transitions from one struct_ops
+> to another.
+> 
+> The struct_ops maps passing along with BPF_LINK_UPDATE should have the
+> BPF_F_LINK flag.
+> 
+> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+> ---
+>   include/linux/bpf.h            |  1 +
+>   include/uapi/linux/bpf.h       |  8 ++++--
+>   kernel/bpf/bpf_struct_ops.c    | 46 ++++++++++++++++++++++++++++++++++
+>   kernel/bpf/syscall.c           | 43 ++++++++++++++++++++++++++++---
+>   tools/include/uapi/linux/bpf.h |  7 +++++-
+>   5 files changed, 98 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index afca6c526fe4..29d555a82bad 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1470,6 +1470,7 @@ struct bpf_link_ops {
+>   	void (*show_fdinfo)(const struct bpf_link *link, struct seq_file *seq);
+>   	int (*fill_link_info)(const struct bpf_link *link,
+>   			      struct bpf_link_info *info);
+> +	int (*update_map)(struct bpf_link *link, struct bpf_map *new_map);
+>   };
+>   
+>   struct bpf_tramp_link {
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index f9fc7b8af3c4..edef9cf7d596 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1555,8 +1555,12 @@ union bpf_attr {
+>   
+>   	struct { /* struct used by BPF_LINK_UPDATE command */
+>   		__u32		link_fd;	/* link fd */
+> -		/* new program fd to update link with */
+> -		__u32		new_prog_fd;
+> +		union {
+> +			/* new program fd to update link with */
+> +			__u32		new_prog_fd;
+> +			/* new struct_ops map fd to update link with */
+> +			__u32           new_map_fd;
+> +		};
+>   		__u32		flags;		/* extra flags */
+>   		/* expected link's program fd; is specified only if
+>   		 * BPF_F_REPLACE flag is set in flags */
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index 5a7e86cf67b5..79e663869e51 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -775,10 +775,56 @@ static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
+>   	return 0;
+>   }
+>   
+> +static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map *new_map)
+> +{
+> +	struct bpf_struct_ops_value *kvalue;
+> +	struct bpf_struct_ops_map *st_map, *old_st_map;
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_map *old_map;
+> +	int err = 0;
+> +
+> +	if (new_map->map_type != BPF_MAP_TYPE_STRUCT_OPS ||
+> +	    !(new_map->map_flags & BPF_F_LINK))
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&update_mutex);
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +
+> +	/* The new and old struct_ops must be the same type. */
+> +	st_map = container_of(new_map, struct bpf_struct_ops_map, map);
 
-Upon trying this out patch via the Intel 5.18.6 out of tree driver
-on a system with more than 64 cores, the kernel paniced with an
-array-index-out-of-bounds at the return in ixgbe_determine_xdp_ring in
-ixgbe.h, which means ixgbe_determine_xdp_q_idx was just returning the
-cpu instead of cpu % IXGBE_MAX_XDP_QS.  An example splat:
+nit. move the st_link and st_map init out of the lock.
 
- ==========================================================================
- UBSAN: array-index-out-of-bounds in
- /var/lib/dkms/ixgbe/5.18.6+focal-1/build/src/ixgbe.h:1147:26
- index 65 is out of range for type 'ixgbe_ring *[64]'
- ==========================================================================
- BUG: kernel NULL pointer dereference, address: 0000000000000058
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] SMP NOPTI
- CPU: 65 PID: 408 Comm: ksoftirqd/65
- Tainted: G          IOE     5.15.0-48-generic #54~20.04.1-Ubuntu
- Hardware name: Dell Inc. PowerEdge R640/0W23H8, BIOS 2.5.4 01/13/2020
- RIP: 0010:ixgbe_xmit_xdp_ring+0x1b/0x1c0 [ixgbe]
- Code: 3b 52 d4 cf e9 42 f2 ff ff 66 0f 1f 44 00 00 0f 1f 44 00 00 55 b9
- 00 00 00 00 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 ec 08 <44> 0f b7
- 47 58 0f b7 47 5a 0f b7 57 54 44 0f b7 76 08 66 41 39 c0
- RSP: 0018:ffffbc3fcd88fcb0 EFLAGS: 00010282
- RAX: ffff92a253260980 RBX: ffffbc3fe68b00a0 RCX: 0000000000000000
- RDX: ffff928b5f659000 RSI: ffff928b5f659000 RDI: 0000000000000000
- RBP: ffffbc3fcd88fce0 R08: ffff92b9dfc20580 R09: 0000000000000001
- R10: 3d3d3d3d3d3d3d3d R11: 3d3d3d3d3d3d3d3d R12: 0000000000000000
- R13: ffff928b2f0fa8c0 R14: ffff928b9be20050 R15: 000000000000003c
- FS:  0000000000000000(0000) GS:ffff92b9dfc00000(0000)
- knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000058 CR3: 000000011dd6a002 CR4: 00000000007706e0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- PKRU: 55555554
- Call Trace:
-  <TASK>
-  ixgbe_poll+0x103e/0x1280 [ixgbe]
-  ? sched_clock_cpu+0x12/0xe0
-  __napi_poll+0x30/0x160
-  net_rx_action+0x11c/0x270
-  __do_softirq+0xda/0x2ee
-  run_ksoftirqd+0x2f/0x50
-  smpboot_thread_fn+0xb7/0x150
-  ? sort_range+0x30/0x30
-  kthread+0x127/0x150
-  ? set_kthread_struct+0x50/0x50
-  ret_from_fork+0x1f/0x30
-  </TASK>
+> +
+> +	old_map = st_link->map;
 
-I think this is how it happens:
+rcu_dereference_protected(...)
 
-Upon loading the first XDP program on a system with more than 64 CPUs,
-ixgbe_xdp_locking_key is incremented in ixgbe_xdp_setup.  However,
-immediately after this, the rings are reconfigured by ixgbe_setup_tc.
-ixgbe_setup_tc calls ixgbe_clear_interrupt_scheme which calls
-ixgbe_free_q_vectors which calls ixgbe_free_q_vector in a loop.
-ixgbe_free_q_vector decrements ixgbe_xdp_locking_key once per call if
-it is non-zero.  Commenting out the decrement in ixgbe_free_q_vector
-stopped my system from panicing.
+> +	old_st_map = container_of(old_map, struct bpf_struct_ops_map, map);
+> +	if (st_map->st_ops != old_st_map->st_ops ||
+> +	    /* Pair with smp_store_release() during map_update */
+> +	    smp_load_acquire(&st_map->kvalue.state) != BPF_STRUCT_OPS_STATE_READY) {
 
-I suspect to make the original patch work, I would need to load an XDP
-program and then replace it in order to get ixgbe_xdp_locking_key back
-above 0 since ixgbe_setup_tc is only called when transitioning between
-XDP and non-XDP ring configurations, while ixgbe_xdp_locking_key is
-incremented every time ixgbe_xdp_setup is called.
+nit. test the smp_load_acquire(&st_map...) outside of the lock.
+Do it together with the new_map checking at the beginning of the func.
 
-Also, ixgbe_setup_tc can be called via ethtool --set-channels, so this
-becomes another path to decrement ixgbe_xdp_locking_key to 0 on systems
-with greater than 64 CPUs.
+> +		err = -EINVAL;
+> +		goto err_out;
+> +	}
+> +
+> +	kvalue = &st_map->kvalue;
+> +
+> +	err = st_map->st_ops->update(kvalue->data, old_st_map->kvalue.data);
+> +	if (err)
+> +		goto err_out;
+> +
+> +	bpf_map_inc(new_map);
+> +	rcu_assign_pointer(st_link->map, new_map);
+> +
+> +	bpf_map_put(old_map);
+> +
+> +err_out:
+> +	mutex_unlock(&update_mutex);
+> +
+> +	return err;
+> +}
+> +
+>   static const struct bpf_link_ops bpf_struct_ops_map_lops = {
+>   	.dealloc = bpf_struct_ops_map_link_dealloc,
+>   	.show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
+>   	.fill_link_info = bpf_struct_ops_map_link_fill_link_info,
+> +	.update_map = bpf_struct_ops_map_link_update,
+>   };
+>   
+>   int bpf_struct_ops_link_create(union bpf_attr *attr)
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 3a4503987a48..c087dd2e2c08 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -4658,6 +4658,30 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+>   	return ret;
+>   }
+>   
+> +static int link_update_map(struct bpf_link *link, union bpf_attr *attr)
+> +{
+> +	struct bpf_map *new_map;
+> +	int ret = 0;
+> +
+> +	new_map = bpf_map_get(attr->link_update.new_map_fd);
+> +	if (IS_ERR(new_map))
+> +		return -EINVAL;
+> +
+> +	if (new_map->map_type != BPF_MAP_TYPE_STRUCT_OPS) {
 
-For this patch, I have changed static_branch_inc to static_branch_enable
-in ixgbe_setup_xdp.  We weren't counting references.  The
-ixgbe_xdp_locking_key only protects code in the XDP_TX path, which is
-not run when an XDP program is loaded.  The other condition for setting
-it on is the number of CPUs, which I assume is static.
+This is unnecessary test. The individual '.update_map()' should test for its own 
+map_type and the new bpf_struct_ops_map_link_update() does test it.
 
-Fixes: 4fe815850bdc ("ixgbe: let the xdpdrv work with more than 64 cpus")
-Signed-off-by: John Hickey <jjh@daedalian.us>
----
-v1 -> v2:
-	Added Fixes and net tag.  No code changes.
-v2 -> v3:
-	Added splat.  Slight clarification as to why ixgbe_xdp_locking_key
-	is not turned off.  Based on feedback from Maciej Fijalkowski.
----
- drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 3 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 2 +-
- 2 files changed, 1 insertion(+), 4 deletions(-)
+> +		ret = -EINVAL;
+> +		goto out_put_map;
+> +	}
+> +
+> +	if (link->ops->update_map)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-index f8156fe4b1dc..0ee943db3dc9 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-@@ -1035,9 +1035,6 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
- 	adapter->q_vector[v_idx] = NULL;
- 	__netif_napi_del(&q_vector->napi);
- 
--	if (static_key_enabled(&ixgbe_xdp_locking_key))
--		static_branch_dec(&ixgbe_xdp_locking_key);
--
- 	/*
- 	 * after a call to __netif_napi_del() napi may still be used and
- 	 * ixgbe_get_stats64() might access the rings on this vector,
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index ab8370c413f3..cd2fb72c67be 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -10283,7 +10283,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
- 	if (nr_cpu_ids > IXGBE_MAX_XDP_QS * 2)
- 		return -ENOMEM;
- 	else if (nr_cpu_ids > IXGBE_MAX_XDP_QS)
--		static_branch_inc(&ixgbe_xdp_locking_key);
-+		static_branch_enable(&ixgbe_xdp_locking_key);
- 
- 	old_prog = xchg(&adapter->xdp_prog, prog);
- 	need_reset = (!!prog != !!old_prog);
--- 
-2.37.2
+This has just been tested in link_update() before calling link_update_map().
+
+> +		ret = link->ops->update_map(link, new_map);
+> +	else
+> +		ret = -EINVAL;
+> +
+> +out_put_map:
+> +	bpf_map_put(new_map);
+> +	return ret;
+> +}
+> +
+>   #define BPF_LINK_UPDATE_LAST_FIELD link_update.old_prog_fd
+>   
+>   static int link_update(union bpf_attr *attr)
+> @@ -4670,14 +4694,25 @@ static int link_update(union bpf_attr *attr)
+>   	if (CHECK_ATTR(BPF_LINK_UPDATE))
+>   		return -EINVAL;
+>   
+> -	flags = attr->link_update.flags;
+> -	if (flags & ~BPF_F_REPLACE)
+> -		return -EINVAL;
+> -
+>   	link = bpf_link_get_from_fd(attr->link_update.link_fd);
+>   	if (IS_ERR(link))
+>   		return PTR_ERR(link);
+>   
+> +	flags = attr->link_update.flags;
+> +
+> +	if (link->ops->update_map) {
+> +		if (flags)	/* always replace the existing one */
+> +			ret = -EINVAL;
+> +		else
+> +			ret = link_update_map(link, attr);
+> +		goto out_put_link;
+> +	}
+> +
+> +	if (flags & ~BPF_F_REPLACE) {
+> +		ret = -EINVAL;
+> +		goto out_put_link;
+> +	}
+> +
+>   	new_prog = bpf_prog_get(attr->link_update.new_prog_fd);
+>   	if (IS_ERR(new_prog)) {
+>   		ret = PTR_ERR(new_prog);
 
