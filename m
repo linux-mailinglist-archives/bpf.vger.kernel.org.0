@@ -2,98 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E106B007B
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 09:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9446B009C
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 09:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjCHIHM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 03:07:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
+        id S230019AbjCHINl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 03:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjCHIHK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 03:07:10 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B7AA8E9E;
-        Wed,  8 Mar 2023 00:06:51 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B5C12616D2;
-        Wed,  8 Mar 2023 08:06:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7487C433D2;
-        Wed,  8 Mar 2023 08:06:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678262810;
-        bh=gCMUhNXLQ6tMhJL1mLPlFrGFePKFJgqZuppKqYN+6+Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mh9YgxGYzfNzIn/+BCApueF+6/jXMWwvZH03q7XPKTR4z8htNAykqfrDQyQONoI7U
-         1oqFMPC4Vd5eJ5n0CY8pRF8R+b+nadQOBzKVcu3xqlWF0a4DELe9dchRCQr+GyppxD
-         UM0tzMtalIBgFvPrBThLKv5aYELlYGHPOYRs2os8O0M6qoD7caVqRifxZE+cXk6b55
-         1wtRWDGHMnJSh/gQfZg1LgZA4w1o9mf1EuhWShlqNqkt/arSh9+q7UvSxY3x99Ximc
-         7rMz0ckP7INI5sT1aQ2zUM2u0kcQMZjr0KQ8kX/9zDBN2isZIfrXh6sJciHLKWdEDB
-         EjrlqpOo1NC4A==
-Date:   Wed, 8 Mar 2023 00:06:49 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        saeedm@nvidia.com, tariqt@nvidia.com, leon@kernel.org,
-        shayagr@amazon.com, akiyano@amazon.com, darinzon@amazon.com,
-        sgoutham@marvell.com, lorenzo.bianconi@redhat.com, toke@redhat.com,
-        teknoraver@meta.com
-Subject: Re: [PATCH net-next 1/8] tools: ynl: fix render-max for flags
- definition
-Message-ID: <20230308000649.03adbcce@kernel.org>
-In-Reply-To: <b4359cc25819674de797029eb7e4a746853c1df4.1678200041.git.lorenzo@kernel.org>
-References: <cover.1678200041.git.lorenzo@kernel.org>
-        <b4359cc25819674de797029eb7e4a746853c1df4.1678200041.git.lorenzo@kernel.org>
+        with ESMTP id S230107AbjCHIN2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 03:13:28 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF5A7C3D4;
+        Wed,  8 Mar 2023 00:13:14 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PWlNx0ZxKz16PH9;
+        Wed,  8 Mar 2023 16:10:25 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 8 Mar
+ 2023 16:13:12 +0800
+Subject: Re: [PATCH net, stable v1 3/3] virtio_net: add checking sq is full
+ inside xdp xmit
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>,
+        Yichun Zhang <yichun@openresty.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        <netdev@vger.kernel.org>
+References: <20230308024935.91686-1-xuanzhuo@linux.alibaba.com>
+ <20230308024935.91686-4-xuanzhuo@linux.alibaba.com>
+ <7eea924e-5cc3-8584-af95-04587f303f8f@huawei.com>
+ <1678259647.118581-1-xuanzhuo@linux.alibaba.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <5a4564dc-af93-4305-49a4-5ca16d737bc3@huawei.com>
+Date:   Wed, 8 Mar 2023 16:13:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1678259647.118581-1-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue,  7 Mar 2023 15:53:58 +0100 Lorenzo Bianconi wrote:
-> Properly manage render-max property for flags definition type
-> introducing mask value and setting it to (last_element << 1) - 1
-> instead of adding max value set to last_element + 1
+On 2023/3/8 15:14, Xuan Zhuo wrote:
+> On Wed, 8 Mar 2023 14:59:36 +0800, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>> On 2023/3/8 10:49, Xuan Zhuo wrote:
+>>> If the queue of xdp xmit is not an independent queue, then when the xdp
+>>> xmit used all the desc, the xmit from the __dev_queue_xmit() may encounter
+>>> the following error.
+>>>
+>>> net ens4: Unexpected TXQ (0) queue failure: -28
+>>>
+>>> This patch adds a check whether sq is full in xdp xmit.
+>>>
+>>> Fixes: 56434a01b12e ("virtio_net: add XDP_TX support")
+>>> Reported-by: Yichun Zhang <yichun@openresty.com>
+>>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>>> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+>>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+>>> ---
+>>>  drivers/net/virtio_net.c | 3 +++
+>>>  1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>>> index 46bbddaadb0d..1a309cfb4976 100644
+>>> --- a/drivers/net/virtio_net.c
+>>> +++ b/drivers/net/virtio_net.c
+>>> @@ -767,6 +767,9 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+>>>  	}
+>>>  	ret = nxmit;
+>>>
+>>> +	if (!is_xdp_raw_buffer_queue(vi, sq - vi->sq))
+>>> +		check_sq_full_and_disable(vi, dev, sq);
+>>> +
+>>
+>> Sorry if I missed something obvious here.
+>>
+>> As the comment in start_xmit(), the current skb is added to the sq->vq, so
+>> NETDEV_TX_BUSY can not be returned.
+>>
+>> 	/* If running out of space, stop queue to avoid getting packets that we
+>> 	 * are then unable to transmit.
+>> 	 * An alternative would be to force queuing layer to requeue the skb by
+>> 	 * returning NETDEV_TX_BUSY. However, NETDEV_TX_BUSY should not be
+>> 	 * returned in a normal path of operation: it means that driver is not
+>> 	 * maintaining the TX queue stop/start state properly, and causes
+>> 	 * the stack to do a non-trivial amount of useless work.
+>> 	 * Since most packets only take 1 or 2 ring slots, stopping the queue
+>> 	 * early means 16 slots are typically wasted.
+>> 	 */
+>>
+>> It there any reason not to check the sq->vq->num_free at the begin of start_xmit(),
+>> if the space is not enough for the current skb, TX queue is stopped and NETDEV_TX_BUSY
+>> is return to the stack to requeue the current skb.
+>>
+>> It seems it is the pattern that most network driver follow, and it seems we can avoid
+>> calling check_sq_full_and_disable() in this patch and not wasting 16 slots as mentioned
+>> in the comment above.
+>>
 > 
-> Fixes: be5bea1cc0bf ("net: add basic C code generators for Netlink")
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  tools/net/ynl/ynl-gen-c.py | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
 > 
-> diff --git a/tools/net/ynl/ynl-gen-c.py b/tools/net/ynl/ynl-gen-c.py
-> index 274e9c566f61..f2e41dd962d4 100755
-> --- a/tools/net/ynl/ynl-gen-c.py
-> +++ b/tools/net/ynl/ynl-gen-c.py
-> @@ -1995,9 +1995,14 @@ def render_uapi(family, cw):
->  
->              if const.get('render-max', False):
->                  cw.nl()
-> -                max_name = c_upper(name_pfx + 'max')
-> -                cw.p('__' + max_name + ',')
-> -                cw.p(max_name + ' = (__' + max_name + ' - 1)')
-> +                if const['type'] == 'flags':
-> +                    max_name = c_upper(name_pfx + 'mask')
-> +                    max_val = f' = {(entry.user_value() << 1) - 1},'
+> 
+>  * netdev_tx_t (*ndo_start_xmit)(struct sk_buff *skb,
+>  *                               struct net_device *dev);
+>  *	Called when a packet needs to be transmitted.
+>  *	Returns NETDEV_TX_OK.  Can return NETDEV_TX_BUSY, but you should stop
+>  *	the queue before that can happen; it's for obsolete devices and weird
+>  *	corner cases, but the stack really does a non-trivial amount
+>  *	of useless work if you return NETDEV_TX_BUSY.
+>  *	Required; cannot be NULL.
 
-Hm, why not use const.get_mask() here? Rather than the last entry?
+Thanks for the pointer. It is intersting, it seems most driver is not flollowing
+the suggestion.
 
-> +                    cw.p(max_name + max_val)
-> +                else:
-> +                    max_name = c_upper(name_pfx + 'max')
-> +                    cw.p('__' + max_name + ',')
-> +                    cw.p(max_name + ' = (__' + max_name + ' - 1)')
->              cw.block_end(line=';')
->              cw.nl()
->          elif const['type'] == 'const':
+I found out why the above comment was added, but I am not sure I understand
+what does "non-trivial amount of useless work" means yet.
+https://lists.linuxfoundation.org/pipermail/virtualization/2015-April/029718.html
 
+> 
+> It does not affect the XDP TX. It is just that there are some waste on the
+> path of the protocol stack.
+> 
+> For example, TCP will do some unnecessary work based on the return value here.
+
+I thought it was handled by the sched layer as below, TCP does not need to be
+be aware of that? Am I missed something.
+
+https://elixir.bootlin.com/linux/v6.3-rc1/source/net/sched/sch_generic.c#L362
+
+> 
+> Thanks.
+> 
+> 
+>>
+>>>  	if (flags & XDP_XMIT_FLUSH) {
+>>>  		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq))
+>>>  			kicks = 1;
+>>>
+> 
+> .
+> 
