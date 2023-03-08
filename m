@@ -2,152 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1E16B118D
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 20:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB0C6B11A0
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 20:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbjCHTAE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 14:00:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
+        id S230041AbjCHTDU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 14:03:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjCHTAC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 14:00:02 -0500
-Received: from out-40.mta1.migadu.com (out-40.mta1.migadu.com [IPv6:2001:41d0:203:375::28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF96E85B14
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 10:59:57 -0800 (PST)
-Message-ID: <a3ec530d-af78-6ed1-4412-bb527aa7a148@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1678301995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2fQ+fqCPaUfG1iltMbf86EIvZ+/hEi0mOrCMdm/N6T8=;
-        b=S7g942rmR0hXFaEICe3p4MkAagD/tu9CFYRaEkY8EtS7zrUoXixzI2uPy96dppx+fFaC5F
-        A/kuU0hBZUPOL4v1odgyu5ZU6DHCOJnl9oV3Arb/rmRnS4rnl2N8VI+MVPQDAmOU1Hg7Jq
-        /QxyPgVPTg7iRgabcmp+joYXvtXjf5s=
-Date:   Wed, 8 Mar 2023 10:59:44 -0800
+        with ESMTP id S229751AbjCHTDO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 14:03:14 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6767CF0DD;
+        Wed,  8 Mar 2023 11:02:38 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id i34so69758866eda.7;
+        Wed, 08 Mar 2023 11:02:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678302157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/5Z+GjZK0jjVCdxsL8eQRLypJERdumvmov4ue/9sZUE=;
+        b=hVOdNrsQRPOK/ibnS2ntwAFjBYwokVZ6gGS8i+gE6/a8z8jkb/tEaRJsZZyt1Z5JpJ
+         kAPgep5s8d2tSCoxcnkyaZlZlax66PXuA97Sc/ylSG6jEdhcsquFRS9lVejmvQ50CADt
+         Y9FczUu66zFKwnp5ES2m8WI3pzTTaDoE2R6ypGj7zzS0aLrkFP0BEGPAXSzkura+fptx
+         QEH9tknKe37DJj4o8qviJyOy8yBIMfn8X5Xv4y/c2tIdt02g2gAgURHsRvDBQR6sTL/F
+         pAUyfzuypg7zZ+OENkcnO5xEhJgB2/u8hCBar0bC8eyGFxQLShuJRcTRSYHpuyVkB9gR
+         lKLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678302157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/5Z+GjZK0jjVCdxsL8eQRLypJERdumvmov4ue/9sZUE=;
+        b=h7sKgpFM9NaIU3DGFEXYC6hABXlACMpqzIBfSk17c9g2IpCm4HYTD0iDyageiWPO45
+         vyJsDi2gy348D09X+UQQ5jPFLYdF+e6juEqOSXQR3M9r5bOUfl/cE/LbrknTjugDLUyu
+         9GMqoRRJh6rmfiecMoK6tmGDrhOO7dDCGsIHJ5hUUjXWRcqDWpETgQa5NgIxJ6V1/8h9
+         ad4gwShxlDBWxnZ4Pmx1AoL8II2aWsC0TyNq5BJXw5jBJdvDzzDcbKa00gaOvjPcX5el
+         cusDSMIr6lAfIKFk80KDMrU2AtHtqTchFzLJVYMzjIGmz1aVOF5ec/1voXDpa5D1If8e
+         TBCg==
+X-Gm-Message-State: AO0yUKVBvb9URLjbG3Y6rYJV7GNO6pkZ5b5AnI/z/XIPz3gmmrqAlsCZ
+        ofXal9XEH9STgH5Q1uIMTCGAnJrgJBiHAn1Ws0k=
+X-Google-Smtp-Source: AK7set8F6D8Ce3n8LWsXPwMLwz89XQbMMDlulMzGNIXf8oeqAfToTgDwnMgqMus/L8KToiww8KOH2JTzgwceVzM02xA=
+X-Received: by 2002:a50:9fc7:0:b0:4ac:b618:968e with SMTP id
+ c65-20020a509fc7000000b004acb618968emr10774796edf.1.1678302157187; Wed, 08
+ Mar 2023 11:02:37 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 2/8] net: Update an existing TCP congestion
- control algorithm.
-Content-Language: en-US
-To:     Kui-Feng Lee <kuifeng@meta.com>
-References: <20230308005050.255859-1-kuifeng@meta.com>
- <20230308005050.255859-3-kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230308005050.255859-3-kuifeng@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230301154953.641654-1-joannelkoong@gmail.com>
+ <20230308001621.432d9a1a@kernel.org> <CAEf4BzZzqFW=YBkK1+PKyXPhVmhFSqU=+OHJ6_1USK22UoKEvQ@mail.gmail.com>
+ <20230308092856.508129b1@kernel.org>
+In-Reply-To: <20230308092856.508129b1@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Mar 2023 11:02:24 -0800
+Message-ID: <CAEf4Bzb-RXP63mmN_kDM=hbTXO4xEcr+GoMPzgS6r-Ty3T5bqw@mail.gmail.com>
+Subject: Re: [PATCH v13 bpf-next 00/10] Add skb + xdp dynptrs
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org,
+        martin.lau@kernel.org, andrii@kernel.org, ast@kernel.org,
+        memxor@gmail.com, daniel@iogearbox.net, netdev@vger.kernel.org,
+        toke@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/7/23 4:50 PM, Kui-Feng Lee wrote:
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 50cfc2388cbc..00b6e1a2edaf 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1512,6 +1512,8 @@ struct bpf_struct_ops {
->   			   void *kdata, const void *udata);
->   	int (*reg)(void *kdata);
->   	void (*unreg)(void *kdata);
-> +	int (*update)(void *kdata, void *old_kdata);
-> +	int (*validate)(void *kdata);
->   	const struct btf_type *type;
->   	const struct btf_type *value_type;
->   	const char *name;
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index db9f828e9d1e..2abb755e6a3a 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -1117,6 +1117,9 @@ struct tcp_congestion_ops {
->   
->   int tcp_register_congestion_control(struct tcp_congestion_ops *type);
->   void tcp_unregister_congestion_control(struct tcp_congestion_ops *type);
-> +int tcp_update_congestion_control(struct tcp_congestion_ops *type,
-> +				  struct tcp_congestion_ops *old_type);
-> +int tcp_validate_congestion_control(struct tcp_congestion_ops *ca);
->   
->   void tcp_assign_congestion_control(struct sock *sk);
->   void tcp_init_congestion_control(struct sock *sk);
-> diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
-> index ff4f89a2b02a..158f14e240d0 100644
-> --- a/net/bpf/bpf_dummy_struct_ops.c
-> +++ b/net/bpf/bpf_dummy_struct_ops.c
-> @@ -222,12 +222,18 @@ static void bpf_dummy_unreg(void *kdata)
->   {
->   }
->   
-> +static int bpf_dummy_update(void *kdata, void *old_kdata)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
->   struct bpf_struct_ops bpf_bpf_dummy_ops = {
->   	.verifier_ops = &bpf_dummy_verifier_ops,
->   	.init = bpf_dummy_init,
->   	.check_member = bpf_dummy_ops_check_member,
->   	.init_member = bpf_dummy_init_member,
->   	.reg = bpf_dummy_reg,
-> +	.update = bpf_dummy_update,
->   	.unreg = bpf_dummy_unreg,
->   	.name = "bpf_dummy_ops",
->   };
-> diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
-> index 13fc0c185cd9..e8b27826283e 100644
-> --- a/net/ipv4/bpf_tcp_ca.c
-> +++ b/net/ipv4/bpf_tcp_ca.c
-> @@ -239,8 +239,6 @@ static int bpf_tcp_ca_init_member(const struct btf_type *t,
->   		if (bpf_obj_name_cpy(tcp_ca->name, utcp_ca->name,
->   				     sizeof(tcp_ca->name)) <= 0)
->   			return -EINVAL;
-> -		if (tcp_ca_find(utcp_ca->name))
-> -			return -EEXIST;
+On Wed, Mar 8, 2023 at 9:28=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wro=
+te:
+>
+> On Wed, 8 Mar 2023 09:08:09 -0800 Andrii Nakryiko wrote:
+> > On Wed, Mar 8, 2023 at 12:16=E2=80=AFAM Jakub Kicinski <kuba@kernel.org=
+> wrote:
+> > > On Wed,  1 Mar 2023 07:49:43 -0800 Joanne Koong wrote:
+> > > > This patchset is the 2nd in the dynptr series. The 1st can be found=
+ here [0].
+> > > >
+> > > > This patchset adds skb and xdp type dynptrs, which have two main be=
+nefits for
+> > > > packet parsing:
+> > > >     * allowing operations on sizes that are not statically known at
+> > > >       compile-time (eg variable-sized accesses).
+> > > >     * more ergonomic and less brittle iteration through data (eg do=
+es not need
+> > > >       manual if checking for being within bounds of data_end)
+> > > >
+> > > > When comparing the differences in runtime for packet parsing withou=
+t dynptrs
+> > > > vs. with dynptrs, there is no noticeable difference. Patch 9 contai=
+ns more
+> > > > details as well as examples of how to use skb and xdp dynptrs.
+> > >
+> > > Oddly I see an error trying to build net-next with clang 15.0.7,
+> > > but I'm 90% sure that it built yesterday, has anyone seen:
+> >
+> > yep, it was fixed in bpf-next:
+> >
+> > 2d5bcdcda879 ("bpf: Increase size of BTF_ID_LIST without
+> > CONFIG_DEBUG_INFO_BTF again")
+>
+> Perfect, thanks! Could you get that to us ASAP, please?
 
-This belongs to patch 3 where BPF_F_LINK needs this. move it closer to where it 
-is actually used.
-
->   		return 1;
->   	}
->   
-> @@ -266,13 +264,25 @@ static void bpf_tcp_ca_unreg(void *kdata)
->   	tcp_unregister_congestion_control(kdata);
->   }
->   
-> +static int bpf_tcp_ca_update(void *kdata, void *old_kdata)
-> +{
-> +	return tcp_update_congestion_control(kdata, old_kdata);
-> +}
-> +
-> +static int bpf_tcp_ca_validate(void *kdata)
-> +{
-> +	return tcp_validate_congestion_control(kdata);
-> +}
-> +
->   struct bpf_struct_ops bpf_tcp_congestion_ops = {
->   	.verifier_ops = &bpf_tcp_ca_verifier_ops,
->   	.reg = bpf_tcp_ca_reg,
->   	.unreg = bpf_tcp_ca_unreg,
-> +	.update = bpf_tcp_ca_update,
->   	.check_member = bpf_tcp_ca_check_member,
->   	.init_member = bpf_tcp_ca_init_member,
->   	.init = bpf_tcp_ca_init,
-> +	.validate = bpf_tcp_ca_validate,
->   	.name = "tcp_congestion_ops",
->   };
-
-In general, please move "validate" related bpf changes to patch 3 and "update" 
-related changes to patch 5. They are bpf specific (including the changes in 
-bpf_tcp_ca.c) and closer to where it will be used.
-
-Then patch 2 should only have changes in tcp_cong.c as the preparation work for 
-the later bpf needs. Please cc netdev for patch 2 in the next re-spin.
-
+yep, will send PR soon
