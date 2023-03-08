@@ -2,65 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB2D6AFB13
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 01:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C8F6AFB1C
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 01:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjCHA2Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 19:28:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
+        id S229885AbjCHAaa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 19:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjCHA2R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 19:28:17 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350618C51C
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 16:28:15 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id o12so59382589edb.9
-        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 16:28:14 -0800 (PST)
+        with ESMTP id S229830AbjCHAa2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 19:30:28 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE30A72AA
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 16:30:26 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id y35-20020a056a00182300b005e8e2c6afe2so8042688pfa.12
+        for <bpf@vger.kernel.org>; Tue, 07 Mar 2023 16:30:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678235293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I6k1xxXe+87729zRsewJNGVn4oC/ZvaqeCfirVdX3Lg=;
-        b=CwsoS/hIvsafIrQE3BOGYWfYFkxXhMf0nhaPjGFbi9zZ0Liyu7dbDjhfIU90LFTH8Z
-         TIQG20CJovLVLtI7e6aD0WFF9Z5nTCYyTAfOrCfyQ4mx/25Fp4A8r4U4Cq7Mi17x+o/N
-         WiKFdyX1paomNa1VZCW3Hd/i0qa9EkAaDfMuZZEfKll/kfb94414a7E5Coz/BHnr5HQi
-         Ef1IaaiptbUtbRy/dGS0l889MSDFgGaoDgm4squl0bTM+Dhb719wnPWPhY4z+T6t849O
-         W6fKH4dUqUVaiXcG2h77WboMxfCAp4/3+4B527EgLcbrub84bTsC4e9/Pp8oNg6+PHoY
-         pwQQ==
+        d=google.com; s=20210112; t=1678235426;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SWmklWyVCwxXFF6wO6v9mDT+U/6Przz0XnTBbNzMl+M=;
+        b=nEPr6VECvGe6NhTwzmP8wSYxHm/jEvwAdt6Nf1V10+vi5IktT6GFHvL8rBdGLMnVtH
+         9lA2h/IYUoP3jBX6WWElTHI28Ll7lRZpsuo/iN+946s3pGgW8IH5X0WzAmyLsaeYeFjD
+         JCMpdubtNGDzR7yfOd+tLfjak8QNM3m1nluDeA/Brik+UdUV9BeeuGYos6isWHWX8I87
+         GpRsHlkDi92tuWY/LiBIZpdf4kHZqGw34elLw5/0XQ0iLfRINdoTLZ8HM/gsQsvh0mYA
+         eNiKnTlXCP+v2Vt5cYtPZgdfKABpjBrhH0f8n/Spi/spBYNhIGzyFRwfDz2CMqEC9vh6
+         4wAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678235293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I6k1xxXe+87729zRsewJNGVn4oC/ZvaqeCfirVdX3Lg=;
-        b=6fsYCl7DaeAPx9fG5O2z5BakZMJW+w54s57BCPU1cExVTig3mrRnjYGyr8RmXDOWL+
-         NEyL3H89guKZj2hDYUn70p3nwpvI2LD6cbZeqHLFaGit8x4OpuCiva4JbSuZO7AKrE9T
-         Nj3BoyIB4fu6C3WqueHBpoU0TyB9Qqh48tc5yru/TWrYn3S/oNC7+7dOcPq+EZq7EeVg
-         jfvjVhUEjYi9/nwx3R9rE6BK/Hq1GVMkSmQ9nWRmq6wgVO03T+5FKtc8sbYjmzddpMAV
-         q1e9FlCt7ogMuYb0x3IWMJyvlHvHNrB1C3CusuG+8mVW+DerxE37dC/tRPh9U8qixPXz
-         EioQ==
-X-Gm-Message-State: AO0yUKUu+nk2cs4ACBfJHiTc5tegKfv1+ALVWWpEleknwxXaZP1Qm9oW
-        WXoLMnmg/W/MndXg5Bh/CqD7menrRwIumPErGds=
-X-Google-Smtp-Source: AK7set8QLMVFlxjHInvR8YbxvO/drktFlfIJf/oSU1NCeMAOGkInSp0/6wAdzHJDOncK/oKVl7RuAs2XorZRc9ZNgig=
-X-Received: by 2002:a50:c057:0:b0:4c1:b5de:b72d with SMTP id
- u23-20020a50c057000000b004c1b5deb72dmr9155392edd.5.1678235293532; Tue, 07 Mar
- 2023 16:28:13 -0800 (PST)
-MIME-Version: 1.0
-References: <CAO658oXX+_7FnAsv02x27FQRbm_Dw7d=tOmQ_Gfe=fB5Hv+C+g@mail.gmail.com>
-In-Reply-To: <CAO658oXX+_7FnAsv02x27FQRbm_Dw7d=tOmQ_Gfe=fB5Hv+C+g@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 7 Mar 2023 16:28:01 -0800
-Message-ID: <CAEf4BzZDv8hUD=_KYXNAO+EQMqHjqgEWurOcNF_huwX+CvmHXA@mail.gmail.com>
-Subject: Re: [Question] How can I get floating point registers on arm64
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>,
-        Dave Marchevsky <davemarchevsky@meta.com>
-Cc:     bpf <bpf@vger.kernel.org>
+        d=1e100.net; s=20210112; t=1678235426;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SWmklWyVCwxXFF6wO6v9mDT+U/6Przz0XnTBbNzMl+M=;
+        b=sHcS+lcSkJ5lp3iltGQ9EQ4SAbkHBbG795WDmnExqwIFVHWKkYHQSm3bJ41VmYtwj1
+         ez7ogzYt94MHtiMmsqQvApTDSxbwHXjItP8PksFT+QD4KZfEO3hkzuPVasSeeMa1WrjZ
+         swv3kNz+WKa4wEDf3V04XdDRSKTcy+NOQDoqXZREqM+3AyaJ6vs/DNcqfNYwGt2nPsB3
+         u8U3FtEX+ZOO3uSh2ltXxhVgICRPesp5HShex8qh9aBY8fCYF8VO52oplHNXOp2zUIfh
+         FJfMeqCHC8UEzH032WX9ivXooZI+KDzGEFwhkr6xYs/U6mTwrt9hKV/8oato0Ejp8hVn
+         eS9Q==
+X-Gm-Message-State: AO0yUKWTdBH37EgZK37Ck+vjl0qP1RIAilml/7/JUUt3hzVGO4FSHzUU
+        A3wbPpKPtmsp8yOshyKl/gaRaHceWUH1
+X-Google-Smtp-Source: AK7set/1oCu95AivzYKa9M4rxRkuUVpCxglBFgFEVUNGKBoNg8a61V4ubQnwxHaL2KN3ig51ffUXkYCuLGTn
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:9a99:fbc4:7488:8b5f])
+ (user=irogers job=sendgmr) by 2002:a17:90b:3594:b0:234:bcb5:2a5f with SMTP id
+ mm20-20020a17090b359400b00234bcb52a5fmr6097010pjb.5.1678235426354; Tue, 07
+ Mar 2023 16:30:26 -0800 (PST)
+Date:   Tue,  7 Mar 2023 16:30:20 -0800
+Message-Id: <20230308003020.3653271-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.rc0.216.gc4246ad0f0-goog
+Subject: [PATCH v2] perf lock contention: Fix builtin detection
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,41 +73,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 2, 2023 at 11:06=E2=80=AFAM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
->
-> Hi everyone,
->
-> I'm writing a uprobe program that I'm attaching to a function in a go
-> program on arm64. The function takes a float and as such loads the
-> parameters via 64-bit floating point registers i.e. `D0`.
->
-> However, the struct pt_regs context that uprobe programs have access
-> to only has a single set of 31 64-bit registers. These appear to be
-> the regular general purpose integer registers. My question is - how do
-> I access the second set of registers? If this question doesn't make
-> sense, am I misunderstanding how arm64 works?
->
+__has_builtin was passed the macro rather than the actual builtin
+feature. The builtin test isn't sufficient and a clang version test
+also needs to be performed.
 
-cc'ing Dave, as he was looking at this problem in the past (in the
-context of accessing xmm registers, but similar problem).
+Fixes: 1bece1351c65 ("perf lock contention: Support old rw_semaphore type")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-The conclusion was that we'd need to add a new helper (kfunc nowadays)
-that would do it for BPF program. Few things to consider:
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index e6007eaeda1a..141b36d13b19 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -182,7 +182,13 @@ static inline struct task_struct *get_lock_owner(__u64 lock, __u32 flags)
+ 		struct mutex *mutex = (void *)lock;
+ 		owner = BPF_CORE_READ(mutex, owner.counter);
+ 	} else if (flags == LCB_F_READ || flags == LCB_F_WRITE) {
+-#if __has_builtin(bpf_core_type_matches)
++	/*
++	 * Support for the BPF_TYPE_MATCHES argument to the
++	 * __builtin_preserve_type_info builtin was added at some point during
++	 * development of clang 15 and it's what is needed for
++	 * bpf_core_type_matches.
++	 */
++#if __has_builtin(__builtin_preserve_type_info) && __clang_major__ >= 15
+ 		if (bpf_core_type_matches(struct rw_semaphore___old)) {
+ 			struct rw_semaphore___old *rwsem = (void *)lock;
+ 			owner = (unsigned long)BPF_CORE_READ(rwsem, owner);
+-- 
+2.40.0.rc0.216.gc4246ad0f0-goog
 
-  - designing generic enough interface to allow reading various
-families of registers (FPU, XMM, etc) in some generic way
-  - consider whether do platform-specific or platform-agnostic
-interface (both possible)
-  - and most annoyingly, we'd need to handle kernel potentially
-modifying FPU state without (yet) restoring it. Dave investigated
-this, and in some recent kernels it seems like kernel code doesn't
-necessarily restore FPU state right after it's done with it, and
-rather sets some special flag to restore FPU state as kernel exits to
-user-space.
-
-Hopefully Dave can correct me and fill in details.
-
-
-> Thanks so much,
-> Grant
