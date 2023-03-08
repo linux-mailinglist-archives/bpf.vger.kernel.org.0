@@ -2,131 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 807476AFFAC
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 08:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8F76AFF9A
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 08:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjCHHab (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 02:30:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
+        id S229629AbjCHHWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 02:22:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjCHHa3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 02:30:29 -0500
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDA78DCE9;
-        Tue,  7 Mar 2023 23:30:27 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VdOglLx_1678260623;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VdOglLx_1678260623)
-          by smtp.aliyun-inc.com;
-          Wed, 08 Mar 2023 15:30:23 +0800
-Message-ID: <1678259647.118581-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net, stable v1 3/3] virtio_net: add checking sq is full inside xdp xmit
-Date:   Wed, 8 Mar 2023 15:14:07 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        with ESMTP id S229527AbjCHHWq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 02:22:46 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95120A6494;
+        Tue,  7 Mar 2023 23:22:42 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id v13so13779254ybu.0;
+        Tue, 07 Mar 2023 23:22:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678260162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hSTs7z8U4OKzKxKPcluZMUlf8OLeP+ZzGBZVTGs9IG8=;
+        b=ezycUTXAPczeGsa54dMiW5i9YpAp7Erendap2oQrGiPKz9aeDSjPolT606A3nImWR9
+         hfhG1501E2uOlAr/qmNo0Xt8FXou4/8JGqy+3GnUOn5xnyKlqjyhgQs1xVuraZusPRmK
+         TKa0IGh9sQBEvadisWhrss0JB4Lq/rzNGbz7wtWRD06LFX4Alrh0nDgEe8cYxE4EIVef
+         usAV1GSk2kqgvkhE7DZbmdtErb3RmrGrzrBZk3GBilxUafnHrqRG8Bg8WL9Gce3j14/X
+         s5ySCp6szKYl/pLPe0abrM8b9M8KE7gQn5nvhZcmd1eE53XgC7njLrIkALObS8Z1lvSn
+         OFyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678260162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hSTs7z8U4OKzKxKPcluZMUlf8OLeP+ZzGBZVTGs9IG8=;
+        b=i0qmEGY5Ima0xlEZQQbuQBwC2ksiu4nhcJ5LWcHKW93agOYGETQRyZOkx6G2KCM3VU
+         auXGFzZhbcnxupIw5PepeBueRZ8TzVmwGn3BQ11g+xitjhMkyOakOGYX73O8lPmMFzis
+         Wja6HC9/p/j0GhREVrdPhRbuUL+T04t90l+sKxOKRlgEkCxsov/2rHlmcqWC8OB3NuRF
+         lfarZ4RNsWrfSctLMqe88urXZgdLrViFbKG05cdO4HZxNp6g37WJuSkV7yNmhmqkB8Ah
+         3WO9EEQOwaQ8Ans97T9Me0bHTPDbuAcT3EmkgMx/ehI49sLNt+Vlfn5PolW1q1O3G+/H
+         Qnjw==
+X-Gm-Message-State: AO0yUKUOkeYbnlF2dbpy+uMSMVQSmk1yUdNZse+AdUy5q9W3UI9mLXF7
+        V98CkYeWAYrS63EhtTZewzRtuB4L1l0TvSAVIe+V64z6g9U=
+X-Google-Smtp-Source: AK7set8T0Kl6lvoi7bA6Bw0daXJU1J8FlrvrJ0Sk0AzSPsxy0oRyawv66Te0sLez10LpvSEEZBpt4My+bhP+uPNl3Ns=
+X-Received: by 2002:a25:8b03:0:b0:ad2:3839:f49 with SMTP id
+ i3-20020a258b03000000b00ad238390f49mr10572847ybl.5.1678260161813; Tue, 07 Mar
+ 2023 23:22:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20230301154953.641654-1-joannelkoong@gmail.com>
+ <20230301154953.641654-11-joannelkoong@gmail.com> <CAADnVQJCYcPnutRvjJgShAEokfrXfC4DToPOTJRuyzA1R64mBg@mail.gmail.com>
+ <CAJnrk1YNMoTEaWA6=wDS3iV4sV0A-5Afnn+p50hEvX8jR6GLHw@mail.gmail.com> <20230308015500.6pycr5i4nynyu22n@heavy>
+In-Reply-To: <20230308015500.6pycr5i4nynyu22n@heavy>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Tue, 7 Mar 2023 23:22:30 -0800
+Message-ID: <CAJnrk1Y1ONmEJpwDqGzCUmyrkDf9s_HpDhR5mW=6fNKM6PiXew@mail.gmail.com>
+Subject: Re: [PATCH v13 bpf-next 10/10] selftests/bpf: tests for using dynptrs
+ to parse skb and xdp buffers
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>,
-        Yichun Zhang <yichun@openresty.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        <netdev@vger.kernel.org>
-References: <20230308024935.91686-1-xuanzhuo@linux.alibaba.com>
- <20230308024935.91686-4-xuanzhuo@linux.alibaba.com>
- <7eea924e-5cc3-8584-af95-04587f303f8f@huawei.com>
-In-Reply-To: <7eea924e-5cc3-8584-af95-04587f303f8f@huawei.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 8 Mar 2023 14:59:36 +0800, Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> On 2023/3/8 10:49, Xuan Zhuo wrote:
-> > If the queue of xdp xmit is not an independent queue, then when the xdp
-> > xmit used all the desc, the xmit from the __dev_queue_xmit() may encounter
-> > the following error.
+On Tue, Mar 7, 2023 at 5:55=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.com>=
+ wrote:
+>
+> On Wed, Mar 01, 2023 at 08:28:40PM -0800, Joanne Koong wrote:
+> > On Wed, Mar 1, 2023 at 10:08=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Mar 1, 2023 at 7:51=E2=80=AFAM Joanne Koong <joannelkoong@gma=
+il.com> wrote:
+> > > >
+> > > > 5) progs/dynptr_success.c
+> > > >    * Add test case "test_skb_readonly" for testing attempts at writ=
+es
+> > > >      on a prog type with read-only skb ctx.
+> > > >    * Add "test_dynptr_skb_data" for testing that bpf_dynptr_data is=
+n't
+> > > >      supported for skb progs.
+> > >
+> > > I added
+> > > +dynptr/test_dynptr_skb_data
+> > > +dynptr/test_skb_readonly
+> > > to DENYLIST.s390x and applied.
 > >
-> > net ens4: Unexpected TXQ (0) queue failure: -28
-> >
-> > This patch adds a check whether sq is full in xdp xmit.
-> >
-> > Fixes: 56434a01b12e ("virtio_net: add XDP_TX support")
-> > Reported-by: Yichun Zhang <yichun@openresty.com>
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> > ---
-> >  drivers/net/virtio_net.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 46bbddaadb0d..1a309cfb4976 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -767,6 +767,9 @@ static int virtnet_xdp_xmit(struct net_device *dev,
-> >  	}
-> >  	ret = nxmit;
-> >
-> > +	if (!is_xdp_raw_buffer_queue(vi, sq - vi->sq))
-> > +		check_sq_full_and_disable(vi, dev, sq);
-> > +
+> > Thanks, I'm still not sure why s390x cannot load these programs. It is
+> > being loaded in the same way as other tests like
+> > test_parse_tcp_hdr_opt() are loading programs. I will keep looking
+> > some more into this
 >
-> Sorry if I missed something obvious here.
+> Hi,
 >
-> As the comment in start_xmit(), the current skb is added to the sq->vq, so
-> NETDEV_TX_BUSY can not be returned.
+> I believe the culprit is:
 >
-> 	/* If running out of space, stop queue to avoid getting packets that we
-> 	 * are then unable to transmit.
-> 	 * An alternative would be to force queuing layer to requeue the skb by
-> 	 * returning NETDEV_TX_BUSY. However, NETDEV_TX_BUSY should not be
-> 	 * returned in a normal path of operation: it means that driver is not
-> 	 * maintaining the TX queue stop/start state properly, and causes
-> 	 * the stack to do a non-trivial amount of useless work.
-> 	 * Since most packets only take 1 or 2 ring slots, stopping the queue
-> 	 * early means 16 slots are typically wasted.
-> 	 */
+>     insn->imm =3D BPF_CALL_IMM(bpf_dynptr_from_skb_rdonly);
 >
-> It there any reason not to check the sq->vq->num_free at the begin of start_xmit(),
-> if the space is not enough for the current skb, TX queue is stopped and NETDEV_TX_BUSY
-> is return to the stack to requeue the current skb.
+> s390x needs to know the kfunc model in order to emit the call (like
+> i386), but after this assignment it's no longer possible to look it
+> up in kfunc_tab by insn->imm. x86_64 does not need this, because its
+> ABI is exactly the same as BPF ABI.
 >
-> It seems it is the pattern that most network driver follow, and it seems we can avoid
-> calling check_sq_full_and_disable() in this patch and not wasting 16 slots as mentioned
-> in the comment above.
+> The simplest solution seems to be adding an artificial kfunc_desc
+> like this:
 >
+>     {
+>         .func_model =3D desc->func_model,  /* model must be compatible */
+>         .func_id =3D 0,                    /* unused at this point */
+>         .imm =3D insn->imm,                /* new target */
+>         .offset =3D 0,                     /* unused at this point */
+>     }
+>
+> here and also after this assignment:
+>
+>     insn->imm =3D BPF_CALL_IMM(xdp_kfunc);
+>
+> What do you think?
 
+Ohh interesting! This makes sense to me. In particular, you're
+referring to the bpf_jit_find_kfunc_model() call in bpf_jit_insn() (in
+arch/s390/net/bpf_jit_comp.c) as the one that fails out whenever
+insn->imm gets set, correct?
 
-
- * netdev_tx_t (*ndo_start_xmit)(struct sk_buff *skb,
- *                               struct net_device *dev);
- *	Called when a packet needs to be transmitted.
- *	Returns NETDEV_TX_OK.  Can return NETDEV_TX_BUSY, but you should stop
- *	the queue before that can happen; it's for obsolete devices and weird
- *	corner cases, but the stack really does a non-trivial amount
- *	of useless work if you return NETDEV_TX_BUSY.
- *	Required; cannot be NULL.
-
-It does not affect the XDP TX. It is just that there are some waste on the
-path of the protocol stack.
-
-For example, TCP will do some unnecessary work based on the return value here.
-
-Thanks.
-
+I like your proposed solution, I agree that this looks like the
+simplest, though maybe we should replace the existing kfunc_desc
+instead of adding it so we don't have to deal with the edge case of
+reaching MAX_KFUNC_DESCS? To get the func model of the new insn->imm,
+it seems pretty straightforward, it looks like we can just use
+btf_distill_func_proto(). or call add_kfunc_call() directly, which
+would do everything needed, but adds an additional unnecessary sort
+and more overhead for replacing (eg we'd need to first swap the old
+kfunc_desc with the last tab->descs[tab->nr_descs] entry and then
+delete the old kfunc_desc before adding the new one). What are your
+thoughts?
 
 >
-> >  	if (flags & XDP_XMIT_FLUSH) {
-> >  		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq))
-> >  			kicks = 1;
-> >
+> [...]
+>
+> Best regards,
+> Ilya
