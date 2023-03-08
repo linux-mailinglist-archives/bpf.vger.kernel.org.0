@@ -2,172 +2,338 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 984C76B1219
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 20:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDD36B129D
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 21:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjCHTfp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 8 Mar 2023 14:35:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
+        id S229941AbjCHUFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 15:05:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjCHTfo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 14:35:44 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD139BA876
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 11:35:41 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 328I0gM1030683
-        for <bpf@vger.kernel.org>; Wed, 8 Mar 2023 11:35:41 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p6ffpxh5p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 11:35:41 -0800
-Received: from twshared52565.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 8 Mar 2023 11:35:38 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 211E4299CAF01; Wed,  8 Mar 2023 11:35:33 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <davem@davemloft.net>
-CC:     <kuba@kernel.org>, <pabeni@redhat.com>, <edumazet@google.com>,
-        <daniel@iogearbox.net>, <ast@kernel.org>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: pull-request: bpf-next 2023-03-08
-Date:   Wed, 8 Mar 2023 11:35:33 -0800
-Message-ID: <20230308193533.1671597-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-Content-Type: text/plain; charset="UTF-8"
-X-FB-Internal: Safe
-X-Proofpoint-ORIG-GUID: LRySzqm6mo1exmgKnFJ1Oe4xKx1bN9q3
-X-Proofpoint-GUID: LRySzqm6mo1exmgKnFJ1Oe4xKx1bN9q3
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S229737AbjCHUFC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 15:05:02 -0500
+Received: from out-53.mta0.migadu.com (out-53.mta0.migadu.com [91.218.175.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644AA7A912
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 12:05:00 -0800 (PST)
+Message-ID: <0fcce83c-30f6-87d1-7ead-281fb154e589@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1678305898;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ubhjDY8UEIzu/+Hh75t8bySYZ1Ro86DYLL+WOQcA+hM=;
+        b=uBrAUFiQduCkYGZyT50ovit5MdjVW95zw6WxE7P1QGzmBaoXAiqwpCQSR1lykZY0vWFn4f
+        eVOkaeQydzA/BbrObRdqFTNnAi1W28EEwowamxyBDpE1ErEDXcWyGAX4Tby1vKpv6TGBDx
+        3hpw32N2nJEvphdv1ixxrQJgZ16vjNE=
+Date:   Wed, 8 Mar 2023 12:04:55 -0800
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-08_14,2023-03-08_03,2023-02-09_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next v5 3/8] bpf: Create links for BPF struct_ops
+ maps.
+Content-Language: en-US
+To:     Kui-Feng Lee <kuifeng@meta.com>
+References: <20230308005050.255859-1-kuifeng@meta.com>
+ <20230308005050.255859-4-kuifeng@meta.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
+In-Reply-To: <20230308005050.255859-4-kuifeng@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+On 3/7/23 4:50 PM, Kui-Feng Lee wrote:
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 00b6e1a2edaf..afca6c526fe4 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1548,6 +1548,7 @@ static inline void bpf_module_put(const void *data, struct module *owner)
+>   	else
+>   		module_put(owner);
+>   }
+> +int bpf_struct_ops_link_create(union bpf_attr *attr);
+>   
+>   #ifdef CONFIG_NET
+>   /* Define it here to avoid the use of forward declaration */
+> @@ -1588,6 +1589,11 @@ static inline int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map,
+>   {
+>   	return -EINVAL;
+>   }
+> +static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>   #endif
+>   
+>   #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
+> @@ -2379,6 +2385,11 @@ static inline void bpf_link_put(struct bpf_link *link)
+>   {
+>   }
+>   
+> +static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
 
-The following pull-request contains BPF updates for your *net-next* tree.
+The inline version is double defined. It does not look right. Please double check.
 
-We've added 23 non-merge commits during the last 2 day(s) which contain
-a total of 28 files changed, 414 insertions(+), 104 deletions(-).
+> +
+>   static inline int bpf_obj_get_user(const char __user *pathname, int flags)
+>   {
+>   	return -EOPNOTSUPP;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 976b194eb775..f9fc7b8af3c4 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1033,6 +1033,7 @@ enum bpf_attach_type {
+>   	BPF_PERF_EVENT,
+>   	BPF_TRACE_KPROBE_MULTI,
+>   	BPF_LSM_CGROUP,
+> +	BPF_STRUCT_OPS,
+>   	__MAX_BPF_ATTACH_TYPE
+>   };
+>   
+> @@ -1266,6 +1267,9 @@ enum {
+>   
+>   /* Create a map that is suitable to be an inner map with dynamic max entries */
+>   	BPF_F_INNER_MAP		= (1U << 12),
+> +
+> +/* Create a map that will be registered/unregesitered by the backed bpf_link */
+> +	BPF_F_LINK		= (1U << 13),
+>   };
+>   
+>   /* Flags for BPF_PROG_QUERY. */
+> @@ -1507,7 +1511,10 @@ union bpf_attr {
+>   	} task_fd_query;
+>   
+>   	struct { /* struct used by BPF_LINK_CREATE command */
+> -		__u32		prog_fd;	/* eBPF program to attach */
+> +		union {
+> +			__u32		prog_fd;	/* eBPF program to attach */
+> +			__u32		map_fd;		/* struct_ops to attach */
+> +		};
+>   		union {
+>   			__u32		target_fd;	/* object to attach to */
+>   			__u32		target_ifindex; /* target ifindex */
+> @@ -6379,6 +6386,9 @@ struct bpf_link_info {
+>   		struct {
+>   			__u32 ifindex;
+>   		} xdp;
+> +		struct {
+> +			__u32 map_id;
+> +		} struct_ops;
+>   	};
+>   } __attribute__((aligned(8)));
+>   
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index 9e097fcc9cf4..5a7e86cf67b5 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -16,6 +16,7 @@ enum bpf_struct_ops_state {
+>   	BPF_STRUCT_OPS_STATE_INIT,
+>   	BPF_STRUCT_OPS_STATE_INUSE,
+>   	BPF_STRUCT_OPS_STATE_TOBEFREE,
+> +	BPF_STRUCT_OPS_STATE_READY,
+>   };
+>   
+>   #define BPF_STRUCT_OPS_COMMON_VALUE			\
+> @@ -58,6 +59,11 @@ struct bpf_struct_ops_map {
+>   	struct bpf_struct_ops_value kvalue;
+>   };
+>   
+> +struct bpf_struct_ops_link {
+> +	struct bpf_link link;
+> +	struct bpf_map __rcu *map;
+> +};
+> +
+>   static DEFINE_MUTEX(update_mutex);
+>   
+>   #define VALUE_PREFIX "bpf_struct_ops_"
+> @@ -496,11 +502,24 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   		*(unsigned long *)(udata + moff) = prog->aux->id;
+>   	}
+>   
+> -	bpf_map_inc(map);
+> -
+>   	set_memory_rox((long)st_map->image, 1);
+> +	if (st_map->map.map_flags & BPF_F_LINK) {
+> +		if (st_ops->validate) {
+> +			err = st_ops->validate(kdata);
+> +			if (err)
+> +				goto unlock;
 
-The main changes are:
+This should at least be 'goto reset_unlock' to release the progs.
 
-1) Add more precise memory usage reporting for all BPF map types, from
-   Yafang Shao.
+set_memory_rox(..., 1) should also be done after validate?
 
-2) Add ARM32 USDT support to libbpf, from Puranjay Mohan.
+> +		}
+> +		/* Let bpf_link handle registration & unregistration.
+> +		 *
+> +		 * Pair with smp_load_acquire() during lookup_elem().
+> +		 */
+> +		smp_store_release(&kvalue->state, BPF_STRUCT_OPS_STATE_READY);
+> +		goto unlock;
+> +	}
+> +
+>   	err = st_ops->reg(kdata);
+>   	if (likely(!err)) {
+> +		bpf_map_inc(map);
+>   		/* Pair with smp_load_acquire() during lookup_elem().
+>   		 * It ensures the above udata updates (e.g. prog->aux->id)
+>   		 * can be seen once BPF_STRUCT_OPS_STATE_INUSE is set.
+> @@ -516,7 +535,6 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   	 */
+>   	set_memory_nx((long)st_map->image, 1);
+>   	set_memory_rw((long)st_map->image, 1);
+> -	bpf_map_put(map);
+>   
+>   reset_unlock:
+>   	bpf_struct_ops_map_put_progs(st_map);
+> @@ -534,6 +552,9 @@ static int bpf_struct_ops_map_delete_elem(struct bpf_map *map, void *key)
+>   	struct bpf_struct_ops_map *st_map;
+>   
+>   	st_map = (struct bpf_struct_ops_map *)map;
+> +	if (st_map->map.map_flags & BPF_F_LINK)
+> +		return -EOPNOTSUPP;
+> +
+>   	prev_state = cmpxchg(&st_map->kvalue.state,
+>   			     BPF_STRUCT_OPS_STATE_INUSE,
+>   			     BPF_STRUCT_OPS_STATE_TOBEFREE);
+> @@ -601,7 +622,7 @@ static void bpf_struct_ops_map_free(struct bpf_map *map)
+>   static int bpf_struct_ops_map_alloc_check(union bpf_attr *attr)
+>   {
+>   	if (attr->key_size != sizeof(unsigned int) || attr->max_entries != 1 ||
+> -	    attr->map_flags || !attr->btf_vmlinux_value_type_id)
+> +	    (attr->map_flags & ~BPF_F_LINK) || !attr->btf_vmlinux_value_type_id)
+>   		return -EINVAL;
+>   	return 0;
+>   }
+> @@ -712,3 +733,98 @@ void bpf_struct_ops_put(const void *kdata)
+>   
+>   	bpf_map_put(&st_map->map);
+>   }
+> +
+> +static void bpf_struct_ops_map_link_dealloc(struct bpf_link *link)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_struct_ops_map *st_map;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	st_map = (struct bpf_struct_ops_map *)st_link->map;
 
-3) Fix BTF_ID_LIST size causing problems in !CONFIG_DEBUG_INFO_BTF, from
-   Nathan Chancellor.
+/* protected by refcnt and no one is replacing it */
+rcu_dereference_protected(st_link->map, true);
 
-4) IMA selftests fix, from Roberto Sassu.
+st_link->map is with __rcu. It should have warning when compile with 'make C=1 
+...'. Patchwork also reports this: 
+https://patchwork.kernel.org/project/netdevbpf/patch/20230308005050.255859-4-kuifeng@meta.com/. 
+Please pay attention to patchwork for errors.
 
-5) libbpf fix in APK support code, from Daniel Müller.
+> +	st_map->st_ops->unreg(&st_map->kvalue.data);
+> +	bpf_map_put(st_link->map);
 
-Please consider pulling these changes from:
+Same here. Reading __rcu pointer without rcu_dereference_xxx.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+or simply use &st_map->map here. Otherwise, it will also have type mismatch warning.
 
-Thanks a lot!
+> +	kfree(st_link);
+> +}
+> +
+> +static void bpf_struct_ops_map_link_show_fdinfo(const struct bpf_link *link,
+> +					    struct seq_file *seq)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_map *map;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	rcu_read_lock();
+> +	map = rcu_dereference(st_link->map);
+> +	if (map)
 
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
+map cannot be NULL?
 
-Andrii Nakryiko, David Vernet, Hou Tao, Matt Bobrowski, Tom Rix
+> +		seq_printf(seq, "map_id:\t%d\n", map->id);
+> +	rcu_read_unlock();
+> +}
+> +
+> +static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
+> +					       struct bpf_link_info *info)
+> +{
+> +	struct bpf_struct_ops_link *st_link;
+> +	struct bpf_map *map;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	rcu_read_lock();
+> +	map = rcu_dereference(st_link->map);
+> +	if (map)
 
-----------------------------------------------------------------
+Same here.
 
-The following changes since commit 36e5e391a25af28dc1f4586f95d577b38ff4ed72:
+> +		info->struct_ops.map_id = map->id;
+> +	rcu_read_unlock();
+> +	return 0;
+> +}
+> +
+> +static const struct bpf_link_ops bpf_struct_ops_map_lops = {
+> +	.dealloc = bpf_struct_ops_map_link_dealloc,
+> +	.show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
+> +	.fill_link_info = bpf_struct_ops_map_link_fill_link_info,
+> +};
+> +
+> +int bpf_struct_ops_link_create(union bpf_attr *attr)
+> +{
+> +	struct bpf_struct_ops_link *link = NULL;
+> +	struct bpf_link_primer link_primer;
+> +	struct bpf_struct_ops_map *st_map;
+> +	struct bpf_map *map;
+> +	int err;
+> +
+> +	map = bpf_map_get(attr->link_create.map_fd);
+> +	if (!map)
+> +		return -EINVAL;
+> +
+> +	st_map = (struct bpf_struct_ops_map *)map;
+> +
+> +	if (map->map_type != BPF_MAP_TYPE_STRUCT_OPS || !(map->map_flags & BPF_F_LINK) ||
+> +	    /* Pair with smp_store_release() during map_update */
+> +	    smp_load_acquire(&st_map->kvalue.state) != BPF_STRUCT_OPS_STATE_READY) {
+> +		err = -EINVAL;
+> +		goto err_out;
+> +	}
+> +
+> +	link = kzalloc(sizeof(*link), GFP_USER);
+> +	if (!link) {
+> +		err = -ENOMEM;
+> +		goto err_out;
+> +	}
+> +	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL);
+> +	RCU_INIT_POINTER(link->map, map);
+> +
+> +	err = bpf_link_prime(&link->link, &link_primer);
+> +	if (err)
+> +		goto err_out;
+> +
+> +	err = st_map->st_ops->reg(st_map->kvalue.data);
+> +	if (err) {
+> +		bpf_link_cleanup(&link_primer);
+> +		goto err_out;
+> +	}
+> +
+> +	return bpf_link_settle(&link_primer);
+> +
+> +err_out:
+> +	bpf_map_put(map);
+> +	kfree(link);
+> +	return err;
+> +}
+> +
 
-  Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next (2023-03-06 20:36:39 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
-
-for you to fetch changes up to 12fabae03ca6474fd571bf6ddb37d009533305d6:
-
-  selftests/bpf: Fix IMA test (2023-03-08 11:15:39 -0800)
-
-----------------------------------------------------------------
-Alexei Starovoitov (1):
-      Merge branch 'bpf: bpf memory usage'
-
-Andrii Nakryiko (1):
-      Merge branch 'libbpf: usdt arm arg parsing support'
-
-Daniel Müller (1):
-      libbpf: Fix theoretical u32 underflow in find_cd() function
-
-Nathan Chancellor (1):
-      bpf: Increase size of BTF_ID_LIST without CONFIG_DEBUG_INFO_BTF again
-
-Puranjay Mohan (2):
-      libbpf: Refactor parse_usdt_arg() to re-use code
-      libbpf: USDT arm arg parsing support
-
-Roberto Sassu (1):
-      selftests/bpf: Fix IMA test
-
-Yafang Shao (18):
-      bpf: add new map ops ->map_mem_usage
-      bpf: lpm_trie memory usage
-      bpf: hashtab memory usage
-      bpf: arraymap memory usage
-      bpf: stackmap memory usage
-      bpf: reuseport_array memory usage
-      bpf: ringbuf memory usage
-      bpf: bloom_filter memory usage
-      bpf: cpumap memory usage
-      bpf: devmap memory usage
-      bpf: queue_stack_maps memory usage
-      bpf: bpf_struct_ops memory usage
-      bpf: local_storage memory usage
-      bpf, net: bpf_local_storage memory usage
-      bpf, net: sock_map memory usage
-      bpf, net: xskmap memory usage
-      bpf: offload map memory usage
-      bpf: enforce all maps having memory usage callback
-
- include/linux/bpf.h                               |   8 +
- include/linux/bpf_local_storage.h                 |   1 +
- include/linux/btf_ids.h                           |   2 +-
- include/net/xdp_sock.h                            |   1 +
- kernel/bpf/arraymap.c                             |  28 ++++
- kernel/bpf/bloom_filter.c                         |  12 ++
- kernel/bpf/bpf_cgrp_storage.c                     |   1 +
- kernel/bpf/bpf_inode_storage.c                    |   1 +
- kernel/bpf/bpf_local_storage.c                    |  10 ++
- kernel/bpf/bpf_struct_ops.c                       |  16 ++
- kernel/bpf/bpf_task_storage.c                     |   1 +
- kernel/bpf/cpumap.c                               |  10 ++
- kernel/bpf/devmap.c                               |  26 ++-
- kernel/bpf/hashtab.c                              |  43 +++++
- kernel/bpf/local_storage.c                        |   7 +
- kernel/bpf/lpm_trie.c                             |  11 ++
- kernel/bpf/offload.c                              |   6 +
- kernel/bpf/queue_stack_maps.c                     |  10 ++
- kernel/bpf/reuseport_array.c                      |   8 +
- kernel/bpf/ringbuf.c                              |  20 ++-
- kernel/bpf/stackmap.c                             |  14 ++
- kernel/bpf/syscall.c                              |  20 +--
- net/core/bpf_sk_storage.c                         |   1 +
- net/core/sock_map.c                               |  20 +++
- net/xdp/xskmap.c                                  |  13 ++
- tools/lib/bpf/usdt.c                              | 196 +++++++++++++---------
- tools/lib/bpf/zip.c                               |   3 +-
- tools/testing/selftests/bpf/prog_tests/test_ima.c |  29 +++-
- 28 files changed, 414 insertions(+), 104 deletions(-)
