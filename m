@@ -2,99 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3425F6AFC8B
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 02:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4476AFCC5
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 03:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjCHBz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Mar 2023 20:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
+        id S229706AbjCHCNU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Mar 2023 21:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjCHBz1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Mar 2023 20:55:27 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F9F9CFDC;
-        Tue,  7 Mar 2023 17:55:24 -0800 (PST)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3280Un8V014196;
-        Wed, 8 Mar 2023 01:55:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=DpD4QWY+AUKnWUVvgMGyXh6E6aFL9Ocfd4yjwaFSvvE=;
- b=L5aTL+qwCeN1MhVnMf3Ox2k0w1wo2HK3M8qg6Nz3itdhZitEekGmybr871PllbjLZrac
- d2VOFB/gfbz9c57N4E0lWjS1YWesn47c/fbFARbOAbPe5y6P1Ae0Dha6VLdMYpt5uRGy
- R1JONVzaywAxC0Eq7G3uNdwQkOPSMQY9nbaEka/2Qu2eTOt8mE9frDMdT4UhvN+1C0pv
- ysbBkRGV72C+9G3DnpD2Ja2KfwSe+meH6Sv6MHv4UlOuFDLV1evYRcJ1u6//SzPSEs9L
- 0btAOrX8ivXX70ECcLnbs3HDF7vkwLhY/2xW3lj+HU7WZvvsBzn4MECIc6TaVotg/nWH CA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p6fvwsght-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Mar 2023 01:55:10 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3281UFHn039363;
-        Wed, 8 Mar 2023 01:55:09 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p6fvwsggw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Mar 2023 01:55:09 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3280dLi6002843;
-        Wed, 8 Mar 2023 01:55:06 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma06fra.de.ibm.com (PPS) with ESMTPS id 3p6g0pg1jh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Mar 2023 01:55:06 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3281t3qW60424462
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Mar 2023 01:55:03 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9F1F920043;
-        Wed,  8 Mar 2023 01:55:03 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6687920040;
-        Wed,  8 Mar 2023 01:55:02 +0000 (GMT)
-Received: from heavy (unknown [9.171.43.1])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed,  8 Mar 2023 01:55:02 +0000 (GMT)
-Date:   Wed, 8 Mar 2023 02:55:00 +0100
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Joanne Koong <joannelkoong@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-Subject: Re: [PATCH v13 bpf-next 10/10] selftests/bpf: tests for using
- dynptrs to parse skb and xdp buffers
-Message-ID: <20230308015500.6pycr5i4nynyu22n@heavy>
-References: <20230301154953.641654-1-joannelkoong@gmail.com>
- <20230301154953.641654-11-joannelkoong@gmail.com>
- <CAADnVQJCYcPnutRvjJgShAEokfrXfC4DToPOTJRuyzA1R64mBg@mail.gmail.com>
- <CAJnrk1YNMoTEaWA6=wDS3iV4sV0A-5Afnn+p50hEvX8jR6GLHw@mail.gmail.com>
+        with ESMTP id S229483AbjCHCNS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Mar 2023 21:13:18 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CEF84F46;
+        Tue,  7 Mar 2023 18:13:17 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id h8so16283959plf.10;
+        Tue, 07 Mar 2023 18:13:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678241596;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WUi/jbYtXBOmmnZErU5v1Etksb+Orfwsi2v3q122Dds=;
+        b=antxJzNYxwpmrrIofTxl7WnzRWnd3JangQVBLAbjPacqvRH8OoDyVIfMQ1KmzKlu3Y
+         TI3or5HSTobP9+Xiw4M/FaypOtbX6Vtpd1ed1VsAZLZ8wMRx4cTyjcwpXFfZ8i+qg2M7
+         72FUTHh+RT0lkV5IurRLWBdNSGTGcu0aX2lKNNZKnAvwXf8sZuX6yHH7GfLxdhlYjxqU
+         wDB9Zdx5mKbPMzhKYFzgl995WHSWrMlvZtO5Sh3DmiEO4TaQeQPa8f9UTjDFEIWj5aWM
+         AUM21aP1HJkaVBxyWDUKGwMaREbijqWC+OtIvsFT0k9PBRQ8fbUWXuD9D4u8ite9ww8b
+         DQJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678241596;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WUi/jbYtXBOmmnZErU5v1Etksb+Orfwsi2v3q122Dds=;
+        b=tOnhchhYJqBfZOQDjV8I4QykHQfiBFqQTH+ZfV8SuaT70oO13Ch2Yrh9RxDXNMeDKJ
+         /YRx20MI9ryAm6XsYHmTDTwu5uoMlvnxw6bXu4j/CEcx4HGsBgDNJfIfQezPbp7w85mS
+         qyAdUQlXrM19xLnIAzdKLtYWltXVDjs6L68qrrQD2Xg1nyfjt8iFMtiNy4/UfLh7WWB5
+         G4baqNZUU2KJ3FBavZVW1RvfWhqCHdieGZXMgJTntJ/Pg+BPC2cBa3IM4AGNj4W0+9Of
+         /DR8C0OT30w+87klrJMa0u3d6m29NViEfxHRiXS0/LEsc2ZTrR3V7hxhd6uPLA5ywPWF
+         +szw==
+X-Gm-Message-State: AO0yUKUfit+hWwNHWnhSinN0z9ubrsJWQ6GkjlMzY2HLk4yIiXaw0L52
+        RIjLvzE+jpzOoJ7uRbaR6wM=
+X-Google-Smtp-Source: AK7set/OQB7Yy/JOEV6yCQmOoRVo9Usg/OnzO5tpYPfLJSgAk4oISQSImkLWH87e/7+k3sjYSY2gFA==
+X-Received: by 2002:a05:6a20:8407:b0:cc:eb3b:56e9 with SMTP id c7-20020a056a20840700b000cceb3b56e9mr22961764pzd.1.1678241596431;
+        Tue, 07 Mar 2023 18:13:16 -0800 (PST)
+Received: from KERNELXING-MB0.tencent.com ([103.7.29.31])
+        by smtp.gmail.com with ESMTPSA id a22-20020a62bd16000000b00592eb6f239fsm8337785pff.40.2023.03.07.18.13.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Mar 2023 18:13:16 -0800 (PST)
+From:   Jason Xing <kerneljasonxing@gmail.com>
+To:     simon.horman@corigine.com, willemdebruijn.kernel@gmail.com,
+        davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kerneljasonxing@gmail.com,
+        Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH v4 net-next] udp: introduce __sk_mem_schedule() usage
+Date:   Wed,  8 Mar 2023 10:11:53 +0800
+Message-Id: <20230308021153.99777-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJnrk1YNMoTEaWA6=wDS3iV4sV0A-5Afnn+p50hEvX8jR6GLHw@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LLZ84yWuCmJUJSEaxGS_81Ni6iOMqT43
-X-Proofpoint-GUID: En-lB8LC25S_RlH4K7yG1CegTzfAnK67
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-07_18,2023-03-07_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 phishscore=0 adultscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
- impostorscore=0 spamscore=0 malwarescore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2303080010
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,56 +71,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 01, 2023 at 08:28:40PM -0800, Joanne Koong wrote:
-> On Wed, Mar 1, 2023 at 10:08 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Mar 1, 2023 at 7:51 AM Joanne Koong <joannelkoong@gmail.com> wrote:
-> > >
-> > > 5) progs/dynptr_success.c
-> > >    * Add test case "test_skb_readonly" for testing attempts at writes
-> > >      on a prog type with read-only skb ctx.
-> > >    * Add "test_dynptr_skb_data" for testing that bpf_dynptr_data isn't
-> > >      supported for skb progs.
-> >
-> > I added
-> > +dynptr/test_dynptr_skb_data
-> > +dynptr/test_skb_readonly
-> > to DENYLIST.s390x and applied.
-> 
-> Thanks, I'm still not sure why s390x cannot load these programs. It is
-> being loaded in the same way as other tests like
-> test_parse_tcp_hdr_opt() are loading programs. I will keep looking
-> some more into this
+From: Jason Xing <kernelxing@tencent.com>
 
-Hi,
+Keep the accounting schema consistent across different protocols
+with __sk_mem_schedule(). Besides, it adjusts a little bit on how
+to calculate forward allocated memory compared to before. After
+applied this patch, we could avoid receive path scheduling extra
+amount of memory.
 
-I believe the culprit is:
+Link: https://lore.kernel.org/lkml/20230221110344.82818-1-kerneljasonxing@gmail.com/
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+v4:
+1) Move one statement outside of the helper suggested by Paolo Abeni
 
-    insn->imm = BPF_CALL_IMM(bpf_dynptr_from_skb_rdonly);
+v3:
+1) get rid of inline suggested by Simon Horman
 
-s390x needs to know the kfunc model in order to emit the call (like
-i386), but after this assignment it's no longer possible to look it
-up in kfunc_tab by insn->imm. x86_64 does not need this, because its
-ABI is exactly the same as BPF ABI.
+v2:
+1) change the title and body message
+2) use __sk_mem_schedule() instead suggested by Paolo Abeni
+---
+ net/ipv4/udp.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
-The simplest solution seems to be adding an artificial kfunc_desc
-like this:
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index c605d171eb2d..dc8feb54d835 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -1531,10 +1531,21 @@ static void busylock_release(spinlock_t *busy)
+ 		spin_unlock(busy);
+ }
+ 
++static int udp_rmem_schedule(struct sock *sk, int size)
++{
++	int delta;
++
++	delta = size - sk->sk_forward_alloc;
++	if (delta > 0 && !__sk_mem_schedule(sk, delta, SK_MEM_RECV))
++		return -ENOBUFS;
++
++	return 0;
++}
++
+ int __udp_enqueue_schedule_skb(struct sock *sk, struct sk_buff *skb)
+ {
+ 	struct sk_buff_head *list = &sk->sk_receive_queue;
+-	int rmem, delta, amt, err = -ENOMEM;
++	int rmem, err = -ENOMEM;
+ 	spinlock_t *busy = NULL;
+ 	int size;
+ 
+@@ -1567,16 +1578,10 @@ int __udp_enqueue_schedule_skb(struct sock *sk, struct sk_buff *skb)
+ 		goto uncharge_drop;
+ 
+ 	spin_lock(&list->lock);
+-	if (size >= sk->sk_forward_alloc) {
+-		amt = sk_mem_pages(size);
+-		delta = amt << PAGE_SHIFT;
+-		if (!__sk_mem_raise_allocated(sk, delta, amt, SK_MEM_RECV)) {
+-			err = -ENOBUFS;
+-			spin_unlock(&list->lock);
+-			goto uncharge_drop;
+-		}
+-
+-		sk->sk_forward_alloc += delta;
++	err = udp_rmem_schedule(sk, size);
++	if (err) {
++		spin_unlock(&list->lock);
++		goto uncharge_drop;
+ 	}
+ 
+ 	sk->sk_forward_alloc -= size;
+-- 
+2.37.3
 
-    {
-        .func_model = desc->func_model,  /* model must be compatible */
-	.func_id = 0,                    /* unused at this point */
-        .imm = insn->imm,                /* new target */
-        .offset = 0,                     /* unused at this point */
-    }
-
-here and also after this assignment:
-
-    insn->imm = BPF_CALL_IMM(xdp_kfunc);
-
-What do you think?
-
-[...]
-
-Best regards,
-Ilya
