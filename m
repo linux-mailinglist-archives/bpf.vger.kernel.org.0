@@ -2,363 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 295836B0D4B
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 16:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169296B0D68
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 16:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbjCHPtL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 10:49:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
+        id S231949AbjCHPxA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 10:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232059AbjCHPsu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 10:48:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807DA136C0
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 07:48:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678290479;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u2aYp4k828paO2h5rj3MxTswJBSoiDLF+Fg9X0l8IWA=;
-        b=Dq4tvOQYpqTsOcqUB6D9w9gDcAf+pOfb16bKUWyRprn+AqoDYL10KGaWsoRKfAtaHaG7mD
-        //DmPxg+rhj1rB2v75HcPO4NTs/MY9bKcrv6URpeUZjJm14aNIKtdL05F2KI20Pbq04BDC
-        rA9slElAltZtgaC9PMEMmsZRqDW5PW8=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-355-7W87eCCzOOWdUO5Vyel4Vg-1; Wed, 08 Mar 2023 10:47:58 -0500
-X-MC-Unique: 7W87eCCzOOWdUO5Vyel4Vg-1
-Received: by mail-wm1-f69.google.com with SMTP id j6-20020a05600c1c0600b003eaf882cb85so955987wms.9
-        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 07:47:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678290476;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u2aYp4k828paO2h5rj3MxTswJBSoiDLF+Fg9X0l8IWA=;
-        b=mMMO0lAyaMweVrI2pINWN1qyFfOrsejCzb24BCsVpXu6hxisxH7dk0k/fC2l6GEm9S
-         5bpL6sijdS7xazpJFWZGRLKgeJRtKYaJkDiT+3rocSChGZ2y1I9R8X5htMK4252Je41g
-         DNAPfO5Py0qXTyIKrUuJUOUV6NYFPvS0BbTsPyF+V8xUk3ad6LBNTWl47oTt0OpWTbw0
-         xUtKH6n7Lm/CQTlbHQn61EOcJS6GIU9Czq6Phz9Qcwv3W8TitIiDmUuU5l9Ri/nurePR
-         aPN4tunbCr/ZE6kQDXi9bzoFqF5tRhl7hrotMYQ0USaAVbUm0ITfVpzPU4wWmx1bRcrY
-         71Hg==
-X-Gm-Message-State: AO0yUKWMtHZBHs03Ut0HVRz2Ft+Pvcu0+zHQufsscE+YY2RxX2obNTzr
-        DOoYR9HZIxDc3WdgYgbnziVYqurt9cJaTO7crQWTJUFKHanSMY96h4PrmuMuC+fgJTG79i7mqGe
-        h75GQPQiuOLBN
-X-Received: by 2002:a5d:4486:0:b0:2c9:ee31:962a with SMTP id j6-20020a5d4486000000b002c9ee31962amr11179348wrq.64.1678290476332;
-        Wed, 08 Mar 2023 07:47:56 -0800 (PST)
-X-Google-Smtp-Source: AK7set+QDdXbeizTpc8SYwh1Qyqpz5WXRoTKRZxdmJXTe+90dzWsC34But3KQMEaYVGmq+5Z41kZyQ==
-X-Received: by 2002:a5d:4486:0:b0:2c9:ee31:962a with SMTP id j6-20020a5d4486000000b002c9ee31962amr11179340wrq.64.1678290475982;
-        Wed, 08 Mar 2023 07:47:55 -0800 (PST)
-Received: from localhost (net-188-216-77-84.cust.vodafonedsl.it. [188.216.77.84])
-        by smtp.gmail.com with ESMTPSA id s10-20020adfea8a000000b002c7e1a39adcsm15693003wrm.23.2023.03.08.07.47.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Mar 2023 07:47:55 -0800 (PST)
-Date:   Wed, 8 Mar 2023 16:47:53 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Tariq Toukan <ttoukan.linux@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        saeedm@nvidia.com, leon@kernel.org, shayagr@amazon.com,
-        akiyano@amazon.com, darinzon@amazon.com, sgoutham@marvell.com,
-        toke@redhat.com, teknoraver@meta.com
-Subject: Re: [PATCH net-next 7/8] net/mlx5e: take into account device
- reconfiguration for xdp_features flag
-Message-ID: <ZAiuKRDqQ+1cQb2J@lore-desk>
-References: <cover.1678200041.git.lorenzo@kernel.org>
- <8857cb8138b33c8938782e2154a56b095d611d18.1678200041.git.lorenzo@kernel.org>
- <c2d13e84-2c30-d930-37a4-4e984b85a0e4@gmail.com>
+        with ESMTP id S231821AbjCHPw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 10:52:58 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4223E636
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 07:52:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678290772; x=1709826772;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ksZy6yBgs1wq/8pT/Ohy0X8X8VT76kvpenT/22U/R6U=;
+  b=DhkUNBXdcBkC+y/sbUGOho+1bbj/3NEZqlk9BmG52PfyT3N35ax/Dsq5
+   +Uh9pvWYESAOwXzdhSwgxq3u8kOBIJJWLltM5F2lnLm7aH/14NchA2NQr
+   J1hdnz7pjZ2UOec5TQ5mfWnqUnQK+vnWNbSCVbYCrLnd1fGNLjEDx5trt
+   rHmLoS1dS9RLMotd/9hxzJxWyqWutg1nVLX97F+PDqyaRusOT8GVXiGoP
+   5ri3rVgZiUBVnahISE0TXq8xq22b8zzo1ypjgDlOu8AnSTE+NwTDlGOSl
+   wXWNA9ECLH0rWPlwzb+9QSYVDvci+Dyu8hQkN3fkwH0Hcde3MCHlmUfer
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="336207672"
+X-IronPort-AV: E=Sophos;i="5.98,244,1673942400"; 
+   d="scan'208";a="336207672"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2023 07:52:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10642"; a="766029013"
+X-IronPort-AV: E=Sophos;i="5.98,244,1673942400"; 
+   d="scan'208";a="766029013"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Mar 2023 07:52:49 -0800
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pZw5w-0002Ej-2u;
+        Wed, 08 Mar 2023 15:52:48 +0000
+Date:   Wed, 8 Mar 2023 23:52:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        andrii@kernel.org, kernel-team@meta.com, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 4/8] bpf: implement number iterator
+Message-ID: <202303082315.foifky6G-lkp@intel.com>
+References: <20230308035416.2591326-5-andrii@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rMc+rVd0QyMnGonh"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c2d13e84-2c30-d930-37a4-4e984b85a0e4@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230308035416.2591326-5-andrii@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Andrii,
 
---rMc+rVd0QyMnGonh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I love your patch! Yet something to improve:
 
->=20
->=20
-> On 07/03/2023 16:54, Lorenzo Bianconi wrote:
-> > Take into account LRO and GRO configuration setting device xdp_features
-> > flag. Moreover consider channel rq_wq_type enabling rx scatter-gatter
-> > support in xdp_features flag.
-> >=20
-> > Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >   drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 +
-> >   .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 10 ++++-
-> >   .../net/ethernet/mellanox/mlx5/core/en_main.c | 45 ++++++++++++++++---
-> >   .../net/ethernet/mellanox/mlx5/core/en_rep.c  |  3 ++
-> >   4 files changed, 51 insertions(+), 8 deletions(-)
-> >=20
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net=
-/ethernet/mellanox/mlx5/core/en.h
-> > index 88460b7796e5..4276c6eb6820 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> > @@ -1243,6 +1243,7 @@ void mlx5e_build_nic_params(struct mlx5e_priv *pr=
-iv, struct mlx5e_xsk *xsk, u16
-> >   void mlx5e_rx_dim_work(struct work_struct *work);
-> >   void mlx5e_tx_dim_work(struct work_struct *work);
-> > +void mlx5e_set_xdp_feature(struct net_device *netdev);
-> >   netdev_features_t mlx5e_features_check(struct sk_buff *skb,
-> >   				       struct net_device *netdev,
-> >   				       netdev_features_t features);
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/dri=
-vers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > index 7708acc9b2ab..79fd21ecb9cb 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > @@ -1985,6 +1985,7 @@ static int set_pflag_rx_striding_rq(struct net_de=
-vice *netdev, bool enable)
-> >   	struct mlx5e_priv *priv =3D netdev_priv(netdev);
-> >   	struct mlx5_core_dev *mdev =3D priv->mdev;
-> >   	struct mlx5e_params new_params;
-> > +	int err;
-> >   	if (enable) {
-> >   		/* Checking the regular RQ here; mlx5e_validate_xsk_param called
-> > @@ -2005,7 +2006,14 @@ static int set_pflag_rx_striding_rq(struct net_d=
-evice *netdev, bool enable)
-> >   	MLX5E_SET_PFLAG(&new_params, MLX5E_PFLAG_RX_STRIDING_RQ, enable);
-> >   	mlx5e_set_rq_type(mdev, &new_params);
-> > -	return mlx5e_safe_switch_params(priv, &new_params, NULL, NULL, true);
-> > +	err =3D mlx5e_safe_switch_params(priv, &new_params, NULL, NULL, true);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	/* update XDP supported features */
-> > +	mlx5e_set_xdp_feature(netdev);
-> > +
-> > +	return 0;
-> >   }
-> >   static int set_pflag_rx_no_csum_complete(struct net_device *netdev, b=
-ool enable)
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/driver=
-s/net/ethernet/mellanox/mlx5/core/en_main.c
-> > index 76a9c5194a70..1b68dd2be2c5 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > @@ -4004,6 +4004,30 @@ static int mlx5e_handle_feature(struct net_devic=
-e *netdev,
-> >   	return 0;
-> >   }
-> > +void mlx5e_set_xdp_feature(struct net_device *netdev)
-> > +{
-> > +	struct mlx5e_priv *priv =3D netdev_priv(netdev);
-> > +	bool ndo_xmit =3D test_bit(MLX5E_STATE_XDP_ACTIVE, &priv->state);
->=20
-> Our driver doesn't require loading a dummy XDP program to have the
-> redirect-in ability. It's always there.
->=20
-> I actually have a bug fix under internal review with Saeed that addresses
-> this.
->=20
-> In addition, it cleans up the NETDEV_XDP_ACT_NDO_XMIT_SG as we do not
-> support it yet. I have a series that's adding support and will submit it
-> soon.
->=20
-> Any reason you're submitting these fixes to net-next rather than net?
+[auto build test ERROR on bpf-next/master]
 
-Hi Tariq,
+url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bpf-factor-out-fetching-basic-kfunc-metadata/20230308-115539
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230308035416.2591326-5-andrii%40kernel.org
+patch subject: [PATCH v4 bpf-next 4/8] bpf: implement number iterator
+config: i386-randconfig-a015-20230306 (https://download.01.org/0day-ci/archive/20230308/202303082315.foifky6G-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/19acf9ca01e2927a29d3235b3aa73598430dcb70
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Andrii-Nakryiko/bpf-factor-out-fetching-basic-kfunc-metadata/20230308-115539
+        git checkout 19acf9ca01e2927a29d3235b3aa73598430dcb70
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash kernel/
 
-I am fine to repost this series for net instead of net-next. Any downsides =
-about
-it?
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303082315.foifky6G-lkp@intel.com/
 
-> Maybe it'd be better if we integrate the patches, here's my fix (still un=
-der
-> review...):
->=20
-> Author: Tariq Toukan <tariqt@nvidia.com>
-> Date:   Thu Feb 23 08:58:04 2023 +0200
->=20
->     net/mlx5e: Fix exposed xdp_features
->=20
->     Always declare NETDEV_XDP_ACT_NDO_XMIT as the ndo_xdp_xmit callback
->     is always functional per our design, and does not require loading
->     a dummy xdp program.
->=20
->     Although non-linear XDP buffer is supported for XDP_TX flow, do not
->     declare NETDEV_XDP_ACT_NDO_XMIT_SG as it is yet supported for
->     redirected-in frames.
->=20
->     Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
->     Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
->=20
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> index 53feb0529943..9a5d3ce1fbcd 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -4741,13 +4741,6 @@ static int mlx5e_xdp_set(struct net_device *netdev,
-> struct bpf_prog *prog)
->         if (old_prog)
->                 bpf_prog_put(old_prog);
->=20
-> -       if (reset) {
-> -               if (prog)
-> -                       xdp_features_set_redirect_target(netdev, true);
-> -               else
-> -                       xdp_features_clear_redirect_target(netdev);
-> -       }
-> -
->         if (!test_bit(MLX5E_STATE_OPENED, &priv->state) || reset)
->                 goto unlock;
->=20
-> @@ -5144,6 +5137,7 @@ static void mlx5e_build_nic_netdev(struct net_device
-> *netdev)
->         netdev->features         |=3D NETIF_F_HW_VLAN_STAG_FILTER;
->=20
->         netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC |
-> NETDEV_XDP_ACT_REDIRECT |
-> +                              NETDEV_XDP_ACT_NDO_XMIT |
->                                NETDEV_XDP_ACT_XSK_ZEROCOPY |
->                                NETDEV_XDP_ACT_RX_SG;
+All errors (new ones prefixed by >>):
 
-I am fine to drop this my patch and rely on the one you provided but it dep=
-ends
-on the eta about the described patches because otherwise real capabilities =
-and
-xdp-features will not be aligned. Any inputs on it?
+>> kernel/bpf/bpf_iter.c:794:2: error: call to __compiletime_assert_395 declared with 'error' attribute: BUILD_BUG_ON failed: __alignof__(struct bpf_iter_num_kern) != __alignof__(struct bpf_iter_num)
+           BUILD_BUG_ON(__alignof__(struct bpf_iter_num_kern) != __alignof__(struct bpf_iter_num));
+           ^
+   include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
+           BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+           ^
+   include/linux/build_bug.h:39:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
+   #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+                                       ^
+   include/linux/compiler_types.h:399:2: note: expanded from macro 'compiletime_assert'
+           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+           ^
+   include/linux/compiler_types.h:387:2: note: expanded from macro '_compiletime_assert'
+           __compiletime_assert(condition, msg, prefix, suffix)
+           ^
+   include/linux/compiler_types.h:380:4: note: expanded from macro '__compiletime_assert'
+                           prefix ## suffix();                             \
+                           ^
+   <scratch space>:74:1: note: expanded from here
+   __compiletime_assert_395
+   ^
+   1 error generated.
 
->=20
->=20
-> > +	struct mlx5e_params *params =3D &priv->channels.params;
-> > +	xdp_features_t val;
-> > +
-> > +	if (params->packet_merge.type !=3D MLX5E_PACKET_MERGE_NONE) {
-> > +		xdp_clear_features_flag(netdev);
-> > +		return;
-> > +	}
-> > +
-> > +	val =3D NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
-> > +	      NETDEV_XDP_ACT_XSK_ZEROCOPY;
-> > +	if (ndo_xmit)
-> > +		val |=3D NETDEV_XDP_ACT_NDO_XMIT;
-> > +	if (params->rq_wq_type =3D=3D MLX5_WQ_TYPE_CYCLIC) {
-> > +		val |=3D NETDEV_XDP_ACT_RX_SG;
-> > +		if (ndo_xmit)
-> > +			val |=3D NETDEV_XDP_ACT_NDO_XMIT_SG;
->=20
-> This NETDEV_XDP_ACT_NDO_XMIT_SG capability is not related to the RQ type.
-> It's still not supported at this point.
 
-ack, I will fix it.
+vim +/error +794 kernel/bpf/bpf_iter.c
 
->=20
-> BTW, I have a series completing all the missing capabilities (multibuf on
-> Striding + multibuf redirect-in), should be submitted in this kernel.
+   784	
+   785	__diag_push();
+   786	__diag_ignore_all("-Wmissing-prototypes",
+   787			  "Global functions as their definitions will be in vmlinux BTF");
+   788	
+   789	__bpf_kfunc int bpf_iter_num_new(struct bpf_iter_num *it, int start, int end)
+   790	{
+   791		struct bpf_iter_num_kern *s = (void *)it;
+   792	
+   793		BUILD_BUG_ON(sizeof(struct bpf_iter_num_kern) != sizeof(struct bpf_iter_num));
+ > 794		BUILD_BUG_ON(__alignof__(struct bpf_iter_num_kern) != __alignof__(struct bpf_iter_num));
+   795	
+   796		BTF_TYPE_EMIT(struct btf_iter_num);
+   797	
+   798		/* start == end is legit, it's an empty range and we'll just get NULL
+   799		 * on first (and any subsequent) bpf_iter_num_next() call
+   800		 */
+   801		if (start > end) {
+   802			s->cur = s->end = 0;
+   803			return -EINVAL;
+   804		}
+   805	
+   806		/* avoid overflows, e.g., if start == INT_MIN and end == INT_MAX */
+   807		if ((s64)end - (s64)start > BPF_MAX_LOOPS) {
+   808			s->cur = s->end = 0;
+   809			return -E2BIG;
+   810		}
+   811	
+   812		/* user will call bpf_iter_num_next() first,
+   813		 * which will set s->cur to exactly start value;
+   814		 * underflow shouldn't matter
+   815		 */
+   816		s->cur = start - 1;
+   817		s->end = end;
+   818	
+   819		return 0;
+   820	}
+   821	
 
-cool :)
-
-Regards,
-Lorenzo
-
->=20
-> > +	}
-> > +	xdp_set_features_flag(netdev, val);
-> > +}
-> > +
-> >   int mlx5e_set_features(struct net_device *netdev, netdev_features_t f=
-eatures)
-> >   {
-> >   	netdev_features_t oper_features =3D features;
-> > @@ -4030,6 +4054,9 @@ int mlx5e_set_features(struct net_device *netdev,=
- netdev_features_t features)
-> >   		return -EINVAL;
-> >   	}
-> > +	/* update XDP supported features */
-> > +	mlx5e_set_xdp_feature(netdev);
-> > +
-> >   	return 0;
-> >   }
-> > @@ -4762,10 +4789,14 @@ static int mlx5e_xdp_set(struct net_device *net=
-dev, struct bpf_prog *prog)
-> >   		bpf_prog_put(old_prog);
-> >   	if (reset) {
-> > -		if (prog)
-> > -			xdp_features_set_redirect_target(netdev, true);
-> > -		else
-> > +		if (prog) {
-> > +			bool xmit_sg;
-> > +
-> > +			xmit_sg =3D new_params.rq_wq_type =3D=3D MLX5_WQ_TYPE_CYCLIC;
->=20
-> Same, not related. Still not supported at this point.
->=20
-> > +			xdp_features_set_redirect_target(netdev, xmit_sg);
-> > +		} else {
-> >   			xdp_features_clear_redirect_target(netdev);
-> > +		}
-> >   	}
-> >   	if (!test_bit(MLX5E_STATE_OPENED, &priv->state) || reset)
-> > @@ -5163,13 +5194,10 @@ static void mlx5e_build_nic_netdev(struct net_d=
-evice *netdev)
-> >   	netdev->features         |=3D NETIF_F_HIGHDMA;
-> >   	netdev->features         |=3D NETIF_F_HW_VLAN_STAG_FILTER;
-> > -	netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRE=
-CT |
-> > -			       NETDEV_XDP_ACT_XSK_ZEROCOPY |
-> > -			       NETDEV_XDP_ACT_RX_SG;
-> > -
-> >   	netdev->priv_flags       |=3D IFF_UNICAST_FLT;
-> >   	netif_set_tso_max_size(netdev, GSO_MAX_SIZE);
-> > +	mlx5e_set_xdp_feature(netdev);
-> >   	mlx5e_set_netdev_dev_addr(netdev);
-> >   	mlx5e_macsec_build_netdev(priv);
-> >   	mlx5e_ipsec_build_netdev(priv);
-> > @@ -5241,6 +5269,9 @@ static int mlx5e_nic_init(struct mlx5_core_dev *m=
-dev,
-> >   		mlx5_core_err(mdev, "TLS initialization failed, %d\n", err);
-> >   	mlx5e_health_create_reporters(priv);
-> > +	/* update XDP supported features */
-> > +	mlx5e_set_xdp_feature(netdev);
-> > +
-> >   	return 0;
-> >   }
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers=
-/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > index 9b9203443085..43fd12fb87b8 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > @@ -747,6 +747,9 @@ static void mlx5e_build_rep_params(struct net_devic=
-e *netdev)
-> >   	/* RQ */
-> >   	mlx5e_build_rq_params(mdev, params);
-> > +	/* update XDP supported features */
-> > +	mlx5e_set_xdp_feature(netdev);
-> > +
-> >   	/* CQ moderation params */
-> >   	params->rx_dim_enabled =3D MLX5_CAP_GEN(mdev, cq_moderation);
-> >   	mlx5e_set_rx_cq_mode_params(params, cq_period_mode);
->=20
-
---rMc+rVd0QyMnGonh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZAiuKQAKCRA6cBh0uS2t
-rB7PAP0SC0uXtgxP8IVnfoMtucBMLSKsJfPkSgYEIFTUGOQt+QD+LuapybqTcuuL
-ZPqsu2iF19D1ZcLGl7+mmeQJAMYfqws=
-=SWLI
------END PGP SIGNATURE-----
-
---rMc+rVd0QyMnGonh--
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
