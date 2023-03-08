@@ -2,38 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30EC76AFF5E
-	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 08:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AE96AFF5F
+	for <lists+bpf@lfdr.de>; Wed,  8 Mar 2023 08:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbjCHHAd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 02:00:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        id S229876AbjCHHAi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 02:00:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjCHHA1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 02:00:27 -0500
-Received: from out-16.mta1.migadu.com (out-16.mta1.migadu.com [IPv6:2001:41d0:203:375::10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D639A17F4
-        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 23:00:25 -0800 (PST)
+        with ESMTP id S229880AbjCHHA2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 02:00:28 -0500
+Received: from out-60.mta1.migadu.com (out-60.mta1.migadu.com [IPv6:2001:41d0:203:375::3c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0A1A17EA
+        for <bpf@vger.kernel.org>; Tue,  7 Mar 2023 23:00:27 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1678258823;
+        t=1678258825;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eG/bY4GV3q1nPJWm0G4raxbIoSvMcSJYNB8DuhGS66I=;
-        b=Z2jJ/O9uLOxE6iuNSMeY5nXeAk9u4PrRD0iR7cboaVm5dSz9raRBeDZ/GYpg4nEjTZ5O+Y
-        7UpeefgfGdtk1DC+QFagLnelGOYYpxh3VvdZ8ZgFs2/+9cdsiGwcf2/kQbuRT07aHi8vUu
-        1fWkcP5xJuCagbejaxxPhlJlH0ZUHo8=
+        bh=/6V7rVw4kf0mTGZ7iZzGRjYjbkErxUVdqcFHccs+2g0=;
+        b=K/Pf2b5oLOFl2q8b8PDm+SAnGYJUbeZI6ixjGf/qrUInRkvA6axt/9AVwpWWPbr5Ma0piM
+        nqLseBtIgaEUV9VHbDeaG6as8yO2lYjgzd79bYR4GI4VpfcPtZFSmvKxydKtigxsaQMHpm
+        QTSh6ud5s7Y0J16x8hcZdNmI8FbkMhg=
 From:   Martin KaFai Lau <martin.lau@linux.dev>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH v2 bpf-next 14/17] bpf: Use bpf_mem_cache_alloc/free for bpf_local_storage
-Date:   Tue,  7 Mar 2023 22:59:33 -0800
-Message-Id: <20230308065936.1550103-15-martin.lau@linux.dev>
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
+Subject: [PATCH v2 bpf-next 15/17] selftests/bpf: Replace CHECK with ASSERT in test_local_storage
+Date:   Tue,  7 Mar 2023 22:59:34 -0800
+Message-Id: <20230308065936.1550103-16-martin.lau@linux.dev>
 In-Reply-To: <20230308065936.1550103-1-martin.lau@linux.dev>
 References: <20230308065936.1550103-1-martin.lau@linux.dev>
 MIME-Version: 1.0
@@ -50,187 +49,143 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-This patch uses bpf_mem_cache_alloc/free for allocating and freeing
-bpf_local_storage.
+This patch migrates the CHECK macro to ASSERT macro.
 
-The changes are similar to the previous patch when switching
-bpf_local_storage_elem to bpf_mem_cache_alloc/free.
-
-A few things that worth to mention for bpf_local_storage:
-
-The local_storage is deleted when the last selem is deleted.
-Before deleting a selem from local_storage, it needs to retrieve the
-local_storage->smap because the bpf_selem_unlink_storage_nolock()
-may have set it to NULL. Note that local_storage->smap may have
-already been NULL when the selem created this local_storage has
-been removed. In this case, call_rcu will be used to free the
-local_storage.
-
-When bpf_local_storage_alloc getting a reused memory, all
-fields are either in the correct values or will be initialized.
-'cache[]' must already be all NULLs. 'list' must be empty.
-Others will be initialized.
-
-Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- include/linux/bpf_local_storage.h |  1 +
- kernel/bpf/bpf_local_storage.c    | 50 ++++++++++++++++++++++++++-----
- 2 files changed, 43 insertions(+), 8 deletions(-)
+ .../bpf/prog_tests/test_local_storage.c       | 47 +++++++------------
+ 1 file changed, 17 insertions(+), 30 deletions(-)
 
-diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-index 550da364c8f9..ed35ce238b3d 100644
---- a/include/linux/bpf_local_storage.h
-+++ b/include/linux/bpf_local_storage.h
-@@ -57,6 +57,7 @@ struct bpf_local_storage_map {
- 	u16 elem_size;
- 	u16 cache_idx;
- 	struct bpf_mem_alloc selem_ma;
-+	struct bpf_mem_alloc storage_ma;
- };
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+index 9c77cd6b1eaf..563a9c746b7b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+@@ -13,8 +13,6 @@
+ #include "network_helpers.h"
+ #include "task_local_storage_helpers.h"
  
- struct bpf_local_storage_data {
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index 228abb6b6e64..7f3ad118735e 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -111,7 +111,7 @@ static void bpf_local_storage_free_rcu(struct rcu_head *rcu)
- 	struct bpf_local_storage *local_storage;
+-static unsigned int duration;
+-
+ #define TEST_STORAGE_VALUE 0xbeefdead
  
- 	local_storage = container_of(rcu, struct bpf_local_storage, rcu);
--	kfree(local_storage);
-+	bpf_mem_cache_raw_free(local_storage);
- }
+ struct storage {
+@@ -60,36 +58,30 @@ static bool check_syscall_operations(int map_fd, int obj_fd)
  
- static void bpf_local_storage_free_trace_rcu(struct rcu_head *rcu)
-@@ -126,13 +126,30 @@ static void bpf_local_storage_free_trace_rcu(struct rcu_head *rcu)
- }
+ 	/* Looking up an existing element should fail initially */
+ 	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val, 0);
+-	if (CHECK(!err || errno != ENOENT, "bpf_map_lookup_elem",
+-		  "err:%d errno:%d\n", err, errno))
++	if (!ASSERT_EQ(err, -ENOENT, "bpf_map_lookup_elem"))
+ 		return false;
  
- static void bpf_local_storage_free(struct bpf_local_storage *local_storage,
-+				   struct bpf_local_storage_map *smap,
- 				   bool reuse_now)
- {
--	if (!reuse_now)
-+	if (!reuse_now) {
- 		call_rcu_tasks_trace(&local_storage->rcu,
- 				     bpf_local_storage_free_trace_rcu);
--	else
-+		return;
-+	}
-+
-+	if (smap) {
-+		/* Instead of using the vanilla call_rcu(),
-+		 * bpf_mem_cache_free should be able to reuse local_storage
-+		 * immediately.
-+		 */
-+		migrate_disable();
-+		bpf_mem_cache_free(&smap->storage_ma, local_storage);
-+		migrate_enable();
-+	} else {
-+		/* smap could be NULL if the selem that triggered
-+		 * this 'local_storage' creation had been long gone.
-+		 * In this case, directly do call_rcu().
-+		 */
- 		call_rcu(&local_storage->rcu, bpf_local_storage_free_rcu);
-+	}
- }
+ 	/* Create a new element */
+ 	err = bpf_map_update_elem(map_fd, &obj_fd, &val, BPF_NOEXIST);
+-	if (CHECK(err < 0, "bpf_map_update_elem", "err:%d errno:%d\n", err,
+-		  errno))
++	if (!ASSERT_OK(err, "bpf_map_update_elem"))
+ 		return false;
  
- static void bpf_selem_free_rcu(struct rcu_head *rcu)
-@@ -230,6 +247,7 @@ static bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_stor
- static void bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
- 				     bool reuse_now)
- {
-+	struct bpf_local_storage_map *storage_smap;
- 	struct bpf_local_storage *local_storage;
- 	bool free_local_storage = false;
- 	unsigned long flags;
-@@ -240,6 +258,8 @@ static void bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
+ 	/* Lookup the newly created element */
+ 	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val, 0);
+-	if (CHECK(err < 0, "bpf_map_lookup_elem", "err:%d errno:%d", err,
+-		  errno))
++	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
+ 		return false;
  
- 	local_storage = rcu_dereference_check(selem->local_storage,
- 					      bpf_rcu_lock_held());
-+	storage_smap = rcu_dereference_check(local_storage->smap,
-+					     bpf_rcu_lock_held());
- 	raw_spin_lock_irqsave(&local_storage->lock, flags);
- 	if (likely(selem_linked_to_storage(selem)))
- 		free_local_storage = bpf_selem_unlink_storage_nolock(
-@@ -247,7 +267,8 @@ static void bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
- 	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
+ 	/* Check the value of the newly created element */
+-	if (CHECK(lookup_val.value != val.value, "bpf_map_lookup_elem",
+-		  "value got = %x errno:%d", lookup_val.value, val.value))
++	if (!ASSERT_EQ(lookup_val.value, val.value, "bpf_map_lookup_elem"))
+ 		return false;
  
- 	if (free_local_storage)
--		bpf_local_storage_free(local_storage, reuse_now);
-+		bpf_local_storage_free(local_storage, storage_smap,
-+				       reuse_now);
- }
+ 	err = bpf_map_delete_elem(map_fd, &obj_fd);
+-	if (CHECK(err, "bpf_map_delete_elem()", "err:%d errno:%d\n", err,
+-		  errno))
++	if (!ASSERT_OK(err, "bpf_map_delete_elem()"))
+ 		return false;
  
- void bpf_selem_link_storage_nolock(struct bpf_local_storage *local_storage,
-@@ -367,8 +388,10 @@ int bpf_local_storage_alloc(void *owner,
- 	if (err)
- 		return err;
+ 	/* The lookup should fail, now that the element has been deleted */
+ 	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val, 0);
+-	if (CHECK(!err || errno != ENOENT, "bpf_map_lookup_elem",
+-		  "err:%d errno:%d\n", err, errno))
++	if (!ASSERT_EQ(err, -ENOENT, "bpf_map_lookup_elem"))
+ 		return false;
  
--	storage = bpf_map_kzalloc(&smap->map, sizeof(*storage),
--				  gfp_flags | __GFP_NOWARN);
-+	migrate_disable();
-+	storage = bpf_mem_cache_alloc_flags(&smap->storage_ma, gfp_flags);
-+	migrate_enable();
-+
- 	if (!storage) {
- 		err = -ENOMEM;
- 		goto uncharge;
-@@ -414,7 +437,7 @@ int bpf_local_storage_alloc(void *owner,
- 	return 0;
+ 	return true;
+@@ -104,35 +96,32 @@ void test_test_local_storage(void)
+ 	char cmd[256];
  
- uncharge:
--	bpf_local_storage_free(storage, true);
-+	bpf_local_storage_free(storage, smap, true);
- 	mem_uncharge(smap, owner, sizeof(*storage));
- 	return err;
- }
-@@ -627,11 +650,15 @@ int bpf_local_storage_map_check_btf(const struct bpf_map *map,
+ 	skel = local_storage__open_and_load();
+-	if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
+ 		goto close_prog;
  
- void bpf_local_storage_destroy(struct bpf_local_storage *local_storage)
- {
-+	struct bpf_local_storage_map *storage_smap;
- 	struct bpf_local_storage_elem *selem;
- 	bool free_storage = false;
- 	struct hlist_node *n;
- 	unsigned long flags;
+ 	err = local_storage__attach(skel);
+-	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
++	if (!ASSERT_OK(err, "attach"))
+ 		goto close_prog;
  
-+	storage_smap = rcu_dereference_check(local_storage->smap,
-+					     bpf_rcu_lock_held());
-+
- 	/* Neither the bpf_prog nor the bpf_map's syscall
- 	 * could be modifying the local_storage->list now.
- 	 * Thus, no elem can be added to or deleted from the
-@@ -659,7 +686,7 @@ void bpf_local_storage_destroy(struct bpf_local_storage *local_storage)
- 	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
+ 	task_fd = sys_pidfd_open(getpid(), 0);
+-	if (CHECK(task_fd < 0, "pidfd_open",
+-		  "failed to get pidfd err:%d, errno:%d", task_fd, errno))
++	if (!ASSERT_GE(task_fd, 0, "pidfd_open"))
+ 		goto close_prog;
  
- 	if (free_storage)
--		bpf_local_storage_free(local_storage, true);
-+		bpf_local_storage_free(local_storage, storage_smap, true);
- }
+ 	if (!check_syscall_operations(bpf_map__fd(skel->maps.task_storage_map),
+ 				      task_fd))
+ 		goto close_prog;
  
- u64 bpf_local_storage_map_mem_usage(const struct bpf_map *map)
-@@ -710,6 +737,12 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
- 	if (err)
- 		goto free_smap;
+-	if (CHECK(!mkdtemp(tmp_dir_path), "mkdtemp",
+-		  "unable to create tmpdir: %d\n", errno))
++	if (!ASSERT_OK_PTR(mkdtemp(tmp_dir_path), "mkdtemp"))
+ 		goto close_prog;
  
-+	err = bpf_mem_alloc_init(&smap->storage_ma, sizeof(struct bpf_local_storage), false);
-+	if (err) {
-+		bpf_mem_alloc_destroy(&smap->selem_ma);
-+		goto free_smap;
-+	}
-+
- 	smap->cache_idx = bpf_local_storage_cache_idx_get(cache);
- 	return &smap->map;
+ 	snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_rm",
+ 		 tmp_dir_path);
+ 	snprintf(cmd, sizeof(cmd), "cp /bin/rm %s", tmp_exec_path);
+-	if (CHECK_FAIL(system(cmd)))
++	if (!ASSERT_OK(system(cmd), "system(cp)"))
+ 		goto close_prog_rmdir;
  
-@@ -783,6 +816,7 @@ void bpf_local_storage_map_free(struct bpf_map *map,
- 	synchronize_rcu();
+ 	rm_fd = open(tmp_exec_path, O_RDONLY);
+-	if (CHECK(rm_fd < 0, "open", "failed to open %s err:%d, errno:%d",
+-		  tmp_exec_path, rm_fd, errno))
++	if (!ASSERT_GE(rm_fd, 0, "open(tmp_exec_path)"))
+ 		goto close_prog_rmdir;
  
- 	bpf_mem_alloc_destroy(&smap->selem_ma);
-+	bpf_mem_alloc_destroy(&smap->storage_ma);
- 	kvfree(smap->buckets);
- 	bpf_map_area_free(smap);
- }
+ 	if (!check_syscall_operations(bpf_map__fd(skel->maps.inode_storage_map),
+@@ -145,7 +134,7 @@ void test_test_local_storage(void)
+ 	 * LSM program.
+ 	 */
+ 	err = run_self_unlink(&skel->bss->monitored_pid, tmp_exec_path);
+-	if (CHECK(err != EPERM, "run_self_unlink", "err %d want EPERM\n", err))
++	if (!ASSERT_EQ(err, EPERM, "run_self_unlink"))
+ 		goto close_prog_rmdir;
+ 
+ 	/* Set the process being monitored to be the current process */
+@@ -156,18 +145,16 @@ void test_test_local_storage(void)
+ 	 */
+ 	snprintf(cmd, sizeof(cmd), "mv %s/copy_of_rm %s/check_null_ptr",
+ 		 tmp_dir_path, tmp_dir_path);
+-	if (CHECK_FAIL(system(cmd)))
++	if (!ASSERT_OK(system(cmd), "system(mv)"))
+ 		goto close_prog_rmdir;
+ 
+-	CHECK(skel->data->inode_storage_result != 0, "inode_storage_result",
+-	      "inode_local_storage not set\n");
++	ASSERT_EQ(skel->data->inode_storage_result, 0, "inode_storage_result");
+ 
+ 	serv_sk = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
+-	if (CHECK(serv_sk < 0, "start_server", "failed to start server\n"))
++	if (!ASSERT_GE(serv_sk, 0, "start_server"))
+ 		goto close_prog_rmdir;
+ 
+-	CHECK(skel->data->sk_storage_result != 0, "sk_storage_result",
+-	      "sk_local_storage not set\n");
++	ASSERT_EQ(skel->data->sk_storage_result, 0, "sk_storage_result");
+ 
+ 	if (!check_syscall_operations(bpf_map__fd(skel->maps.sk_storage_map),
+ 				      serv_sk))
 -- 
 2.34.1
 
