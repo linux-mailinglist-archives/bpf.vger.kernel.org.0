@@ -2,129 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B434B6B302C
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 23:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 027E76B317E
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 23:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbjCIWFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 17:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
+        id S230407AbjCIWyj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 9 Mar 2023 17:54:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231223AbjCIWEt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 17:04:49 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3847AE7CBD
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 14:04:43 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id bn17so1954504pgb.10
-        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 14:04:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1678399482;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TecKA/qLSHNqUo87Vcc7qjzuRFiAfxthOVOs0V+b0QM=;
-        b=B/ifo454RThSbwsVJ1GiBxsO5yR0YgC0QC8xCrJPI+zw/5vKzpZV1K+3D7eENg9Wsy
-         NhM4rCbxaG+Lyfoo0bx+IQiPsmsPor9J52RV4wdVYji2kDxCGlrgBH6gAn5rHatZaZvn
-         IrmgDfkgCnX4VQgzpiTR3UdvFawHccoownBfvGk+fkWO3p8QhM/EUn38nsGj3bqAoHrM
-         EBu6GEwkP1B5t0E2+UxhfOzRVKkwGD0RXQq1SitNmj400OqF7EQ60JSX41H/WOdgKLm8
-         uBDloVEVY8ScotG0HkCdRT88uRgKKOMDrBvcKBUgrtmv4C6uYHu/E/Fxxh9H1PYBnoeh
-         iQ2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678399482;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TecKA/qLSHNqUo87Vcc7qjzuRFiAfxthOVOs0V+b0QM=;
-        b=3lIP/xCcFhUA17BcvWKdAcoLgBgKInV8hUMQ58XyidDicS8PxswSvULjcgK+C8Z9a5
-         b22E8YjjMEDXdR28muxgtCR72EQvxRqoAOul9dzZgVScxlRpGOFVLtXIRGLix84OA/gh
-         MrV0cyGG5hMUBTYbd3dhl0s+BPBCHheXuGHTv1fFJXKrI6DjQRzqeikqrawOOw6L8NVK
-         SbIAt1Qj5NQuIwJMirEuTRpxv48UyYbXuPstmVGc9ECqVMurN8nV/uM+wrsMa7S9rj+J
-         awtL9SBVrHKhIvvpDTT4KDQJpzEbglBeRSujp2kRIfV6i4lmoaSg7q69Fkj/F+ieRlWY
-         Erww==
-X-Gm-Message-State: AO0yUKUzSvCkZcV8yeRjrgrHK7EpaRdWdIWD7GljlQY6CUbtZenc35RV
-        qD1nZGMkjNImLShmZmOX52tu+h5seY9PtUb7TJA2
-X-Google-Smtp-Source: AK7set8bKYOJHSfTo3V36f2sVcFEqHiyfmKQ2F1unir5j8GMf0wWI3fvuuhPCS9zXNc+lm8Vuuq+UCQ/qTAM7wPhaDU=
-X-Received: by 2002:a05:6a00:14d6:b0:5aa:310c:e65b with SMTP id
- w22-20020a056a0014d600b005aa310ce65bmr10450213pfu.2.1678399482624; Thu, 09
- Mar 2023 14:04:42 -0800 (PST)
+        with ESMTP id S231272AbjCIWyc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 17:54:32 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEA95F514
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 14:54:16 -0800 (PST)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 329MK5ud002187
+        for <bpf@vger.kernel.org>; Thu, 9 Mar 2023 14:41:49 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p746p7eab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 14:41:48 -0800
+Received: from twshared29091.48.prn1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 9 Mar 2023 14:41:47 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id B88B229C0F063; Thu,  9 Mar 2023 14:41:32 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf] bpf: take into account liveness when propagating precision
+Date:   Thu, 9 Mar 2023 14:41:31 -0800
+Message-ID: <20230309224131.57449-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230309085433.1810314-1-roberto.sassu@huaweicloud.com>
- <20230309085433.1810314-2-roberto.sassu@huaweicloud.com> <397cb437bbd41e7eb223a07bc92a10bb57df696e.camel@linux.ibm.com>
-In-Reply-To: <397cb437bbd41e7eb223a07bc92a10bb57df696e.camel@linux.ibm.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 9 Mar 2023 17:04:31 -0500
-Message-ID: <CAHC9VhTt7xZqkfZQsWVLRHzza_9idzxkY7bXxzBMq=Xxfc6+Cg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] security: Introduce LSM_ORDER_LAST and set it for
- the integrity LSM
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        mic@digikod.net, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: TucmAqmBXp68cJnBSQZjkYaKw4263Y_9
+X-Proofpoint-GUID: TucmAqmBXp68cJnBSQZjkYaKw4263Y_9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-09_12,2023-03-09_01,2023-02-09_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 9, 2023 at 8:21=E2=80=AFAM Mimi Zohar <zohar@linux.ibm.com> wro=
-te:
-> On Thu, 2023-03-09 at 09:54 +0100, Roberto Sassu wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> >
-> > Introduce LSM_ORDER_LAST, to satisfy the requirement of LSMs needing to=
- be
-> > last, e.g. the 'integrity' LSM, without changing the kernel command lin=
-e or
-> > configuration.
-> >
-> > Also, set this order for the 'integrity' LSM. While not enforced, this =
-is
-> > the only LSM expected to use it.
-> >
-> > Similarly to LSM_ORDER_FIRST, LSMs with LSM_ORDER_LAST are always enabl=
-ed
-> > and put at the end of the LSM list.
-> >
-> > Finally, for LSM_ORDER_MUTABLE LSMs, set the found variable to true if =
-an
-> > LSM is found, regardless of its order. In this way, the kernel would no=
-t
-> > wrongly report that the LSM is not built-in in the kernel if its order =
-is
-> > LSM_ORDER_LAST.
-> >
-> > Fixes: 79f7865d844c ("LSM: Introduce "lsm=3D" for boottime LSM selectio=
-n")
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+When doing state comparison, if old state has register that is not
+marked as REG_LIVE_READ, then we just skip comparison, regardless what's
+the state of corresponing register in current state. This is because not
+REG_LIVE_READ register is irrelevant for further program execution and
+correctness. All good here.
 
-Warning: procedural nitpicking ahead ...
+But when we get to precision propagation, after two states were declared
+equivalent, we don't take into account old register's liveness, and thus
+attempt to propagate precision for register in current state even if
+that register in old state was not REG_LIVE_READ anymore. This is bad,
+because register in current state could be anything at all and this
+could cause -EFAULT due to internal logic bugs.
 
-The 'Signed-off-by' tag is in reference to the DCO, which makes sense
-to add if you are a patch author or are merging a patch into a tree,
-but it doesn't make much sense as a ACK/thumbs-up; this is why we have
-the 'Acked-by' and 'Reviewed-by' tags.  I generally read the
-'Acked-by' tag as "I'm the one responsible for a chunk of code
-affected by this patch and I'm okay with this change" and the
-'Reviewed-by' tag as "I looked at this patch and it looks like a good
-change to me".  Perhaps surprisingly to some, while an 'Acked-by' is a
-requirement for merging in a lot of cases, I appreciate 'Reviewed-by'
-tags much more as it indicates the patch is getting some third-part
-eyeballs on it ... so all you lurkers on this list, if you're
-reviewing patches as they hit your inbox, don't be shy about posting
-your 'Reviewed-by' tag if your comfortable doing so, we all welcome
-the help :)
+Fix by taking into account REG_LIVE_READ liveness mark to keep the logic
+in state comparison in sync with precision propagation.
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign=
--your-work-the-developer-s-certificate-of-origin
+Fixes: a3ce685dd01a ("bpf: fix precision tracking")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ kernel/bpf/verifier.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---=20
-paul-moore.com
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 272563a0b770..c847266d523b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -14201,7 +14201,8 @@ static int propagate_precision(struct bpf_verifier_env *env,
+ 		state_reg = state->regs;
+ 		for (i = 0; i < BPF_REG_FP; i++, state_reg++) {
+ 			if (state_reg->type != SCALAR_VALUE ||
+-			    !state_reg->precise)
++			    !state_reg->precise ||
++			    !(state_reg->live & REG_LIVE_READ))
+ 				continue;
+ 			if (env->log.level & BPF_LOG_LEVEL2)
+ 				verbose(env, "frame %d: propagating r%d\n", i, fr);
+@@ -14215,7 +14216,8 @@ static int propagate_precision(struct bpf_verifier_env *env,
+ 				continue;
+ 			state_reg = &state->stack[i].spilled_ptr;
+ 			if (state_reg->type != SCALAR_VALUE ||
+-			    !state_reg->precise)
++			    !state_reg->precise ||
++			    !(state_reg->live & REG_LIVE_READ))
+ 				continue;
+ 			if (env->log.level & BPF_LOG_LEVEL2)
+ 				verbose(env, "frame %d: propagating fp%d\n",
+-- 
+2.34.1
+
