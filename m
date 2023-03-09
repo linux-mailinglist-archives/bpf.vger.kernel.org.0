@@ -2,100 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D056B1F0E
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 09:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B58D6B20B4
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 10:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbjCII5h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 03:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53044 "EHLO
+        id S230330AbjCIJyC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 04:54:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbjCII5T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 03:57:19 -0500
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76386E349E;
-        Thu,  9 Mar 2023 00:56:19 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4PXN8n1dKFz9xtn2;
-        Thu,  9 Mar 2023 16:47:05 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwBHE1rqnglk6JWBAQ--.23851S5;
-        Thu, 09 Mar 2023 09:55:33 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        mic@digikod.net
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v3 3/3] security: Remove integrity from the LSM list in Kconfig
-Date:   Thu,  9 Mar 2023 09:54:33 +0100
-Message-Id: <20230309085433.1810314-4-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230309085433.1810314-1-roberto.sassu@huaweicloud.com>
-References: <20230309085433.1810314-1-roberto.sassu@huaweicloud.com>
+        with ESMTP id S230427AbjCIJxs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 04:53:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8162359D4
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 01:52:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678355576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CZC60F9J+/jh7Rt22bZOYs1SB4PuLwf5icuQF2XcQSA=;
+        b=ZuHUA5OeEeU//6R3tU646DTJQmHOpShz102v3u5ySlIBI8OBA+dB13w8oZ1KEW1O3ypXwF
+        nrV8FkZIgjii+UV8H9NBQfhuNHFRSYMV3gfFqbeTRyLcBar2UMRWfcOrrp1pReoCvH2zEq
+        c8OMISFbsGs9nTObpY8fWiFOzrzyGSM=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-383-X-qAh2fpOK6vnk8xtjBcJw-1; Thu, 09 Mar 2023 04:52:55 -0500
+X-MC-Unique: X-qAh2fpOK6vnk8xtjBcJw-1
+Received: by mail-ed1-f71.google.com with SMTP id g2-20020a056402320200b004e98d45ee7dso2225429eda.0
+        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 01:52:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678355572;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CZC60F9J+/jh7Rt22bZOYs1SB4PuLwf5icuQF2XcQSA=;
+        b=QKObErKxvxT1TppuwO7EYqbwZdekhX9Ks01FAox9jbkMMVARed4SVBOhSqJODpGuAj
+         VBUXgrEgvxvQEzQKy14TFwfYDXDDH7MrkETCOLecSPFqGuZCvoXdy5Z8pf5nG2qa9u7q
+         j2m/K3mtua0Nu8nzPjIo2a/CxzZDzsu9r89mU2n92rvz9hH8d3yWFh84OPTz537dXWs+
+         VXFN/fZlKSQahpCy/ejM0RmBEbueuTIR/BQorF+2/zqJ1YDq4mrYkMOPK/aGJAV1i8nv
+         e2yP7CJXqyvzArB9U4181VQbs/W92g1XOPt6BTEiRFsSKNSTAaWrvTZLqX90E9O8yOHh
+         O9rQ==
+X-Gm-Message-State: AO0yUKUfYvcJKeuawwUIZ0aAdtfGYFDslVNRwzkUhFkRaWDDeNLavJz0
+        oP7A+T8qQ85nGnAffCjrPqePCevXR0XNHWI5N4av5ocwIYOExSovgkQYDroy800TzqIPkBpAQzi
+        f+8R8tjjiHa0=
+X-Received: by 2002:a05:6402:1b1a:b0:4bb:c14d:1803 with SMTP id by26-20020a0564021b1a00b004bbc14d1803mr17769872edb.30.1678355571798;
+        Thu, 09 Mar 2023 01:52:51 -0800 (PST)
+X-Google-Smtp-Source: AK7set/Z5uAUoSXOtoDyKcsad+5fmqmiX95Ebm5JlGv6RJ/EWCyP65e0Ufxrsy34jv3ACaANIatH7A==
+X-Received: by 2002:a05:6402:1b1a:b0:4bb:c14d:1803 with SMTP id by26-20020a0564021b1a00b004bbc14d1803mr17769861edb.30.1678355571457;
+        Thu, 09 Mar 2023 01:52:51 -0800 (PST)
+Received: from [10.43.17.73] (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id m30-20020a50d7de000000b004c13fe8fabfsm9331147edj.84.2023.03.09.01.52.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Mar 2023 01:52:51 -0800 (PST)
+Message-ID: <21821216-f882-d036-776b-4a0c6473d2d4@redhat.com>
+Date:   Thu, 9 Mar 2023 10:52:50 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next v9 0/2] Fix attaching fentry/fexit/fmod_ret/lsm
+ to modules
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>
+References: <cover.1677583941.git.vmalik@redhat.com>
+ <CAEf4BzY9h+ywcxo5=6WZbJzN=9_9UJ_fwKVEBDHWn=4PDPf33Q@mail.gmail.com>
+From:   Viktor Malik <vmalik@redhat.com>
+In-Reply-To: <CAEf4BzY9h+ywcxo5=6WZbJzN=9_9UJ_fwKVEBDHWn=4PDPf33Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwBHE1rqnglk6JWBAQ--.23851S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFW5XFW3Kw4UJF4xtF1rtFb_yoW8Cw45pF
-        nrKay7tr9rZFyF9r4DXrnxCFyxC395Wr98Cay3Wa1DK3W3A3Wqqr47Kr15CF15Grs7AFZ8
-        Cry5Kw4a93ZFga7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
-        Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI
-        0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
-        67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MI
-        IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
-        14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU04x
-        RDUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQALBF1jj4pcuAAAsR
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+On 3/8/23 04:58, Andrii Nakryiko wrote:
+> On Tue, Feb 28, 2023 at 4:27 AM Viktor Malik <vmalik@redhat.com> wrote:
+>>
+>> I noticed that the verifier behaves incorrectly when attaching to fentry
+>> of multiple functions of the same name located in different modules (or
+>> in vmlinux). The reason for this is that if the target program is not
+>> specified, the verifier will search kallsyms for the trampoline address
+>> to attach to. The entire kallsyms is always searched, not respecting the
+>> module in which the function to attach to is located.
+>>
+>> As Yonghong correctly pointed out, there is yet another issue - the
+>> trampoline acquires the module reference in register_fentry which means
+>> that if the module is unloaded between the place where the address is
+>> found in the verifier and register_fentry, it is possible that another
+>> module is loaded to the same address in the meantime, which may lead to
+>> errors.
+>>
+>> This patch fixes the above issues by extracting the module name from the
+>> BTF of the attachment target (which must be specified) and by doing the
+>> search in kallsyms of the correct module. At the same time, the module
+>> reference is acquired right after the address is found and only released
+>> right before the program itself is unloaded.
+>>
+> 
+> is it expected that your newly added test fails on arm64? See [0]
+> 
+>    [0] https://github.com/kernel-patches/bpf/actions/runs/4359596129/jobs/7621687719
 
-Remove 'integrity' from the list of LSMs in Kconfig, as it is no longer
-necessary. Since the recent change (set order to LSM_ORDER_LAST), the
-'integrity' LSM is always enabled.
+I believe so, the test uses fentry and all fentry/fexit tests are
+failing on arm64 with the same error (524) and are disabled in the CI.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- security/Kconfig | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/security/Kconfig b/security/Kconfig
-index e6db09a779b..e109b4d5616 100644
---- a/security/Kconfig
-+++ b/security/Kconfig
-@@ -246,11 +246,11 @@ endchoice
- 
- config LSM
- 	string "Ordered list of enabled LSMs"
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,bpf" if DEFAULT_SECURITY_DAC
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
-+	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
-+	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
-+	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
-+	default "landlock,lockdown,yama,loadpin,safesetid,bpf" if DEFAULT_SECURITY_DAC
-+	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf"
- 	help
- 	  A comma-separated list of LSMs, in initialization order.
- 	  Any LSMs left off this list will be ignored. This can be
--- 
-2.25.1
+> 
+>> ---
+>> Changes in v9:
+>> - two small changes suggested by Jiri Olsa and Jiri's ack
+>>
+>> Changes in v8:
+>> - added module_put to error paths in bpf_check_attach_target after the
+>>    module reference is acquired
+>>
+>> Changes in v7:
+>> - refactored the module reference manipulation (comments by Jiri Olsa)
+>> - cleaned up the test (comments by Andrii Nakryiko)
+>>
+>> Changes in v6:
+>> - storing the module reference inside bpf_prog_aux instead of
+>>    bpf_trampoline and releasing it when the program is unloaded
+>>    (suggested by Jiri Olsa)
+>>
+>> Changes in v5:
+>> - fixed acquiring and releasing of module references by trampolines to
+>>    prevent modules being unloaded between address lookup and trampoline
+>>    allocation
+>>
+>> Changes in v4:
+>> - reworked module kallsyms lookup approach using existing functions,
+>>    verifier now calls btf_try_get_module to retrieve the module and
+>>    find_kallsyms_symbol_value to get the symbol address (suggested by
+>>    Alexei)
+>> - included Jiri Olsa's comments
+>> - improved description of the new test and added it as a comment into
+>>    the test source
+>>
+>> Changes in v3:
+>> - added trivial implementation for kallsyms_lookup_name_in_module() for
+>>    !CONFIG_MODULES (noticed by test robot, fix suggested by Hao Luo)
+>>
+>> Changes in v2:
+>> - introduced and used more space-efficient kallsyms lookup function,
+>>    suggested by Jiri Olsa
+>> - included Hao Luo's comments
+>>
+>>
+>> Viktor Malik (2):
+>>    bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
+>>    bpf/selftests: Test fentry attachment to shadowed functions
+>>
+>>   include/linux/bpf.h                           |   2 +
+>>   kernel/bpf/syscall.c                          |   6 +
+>>   kernel/bpf/trampoline.c                       |  28 ----
+>>   kernel/bpf/verifier.c                         |  18 ++-
+>>   kernel/module/internal.h                      |   5 +
+>>   net/bpf/test_run.c                            |   5 +
+>>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   6 +
+>>   .../bpf/prog_tests/module_attach_shadow.c     | 128 ++++++++++++++++++
+>>   8 files changed, 169 insertions(+), 29 deletions(-)
+>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
+>>
+>> --
+>> 2.39.1
+>>
+> 
 
