@@ -2,294 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265046B191C
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 03:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 900A16B191D
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 03:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjCICN5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 21:13:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
+        id S229974AbjCICOV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 21:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjCICNz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 21:13:55 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC1161A8D
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 18:13:48 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id f14so150086iow.5
-        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 18:13:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678328028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xDCu+k9I5uU9ZeyTijagvPSWTHvVWfU/xHE3X1obRdA=;
-        b=dipSQP9U03tyGH9iIucLnZ+CHfS8mkxPYC/AtXJfO832TcuO3QoByvI+6Uci295s7p
-         fA2hqBRkCc8bB0ZMgkrGFTYy5k5GBsaopWvkUGyIdT86m6qAPoh5sQ0peVqyaac+44bx
-         U8FF94CJ+IDhardjXsj3ub8vOIaAt2oJRTIl5dCD7Lms6O2I51mhkET8WnxJrhLDwl2l
-         m82MqiqWrvYwmnP/dd4F0bjz1jby+M/KxfnX0czHLuII+GwHnHDsFwydgj0EaU7Fzg2c
-         hlODJfjtSs+xPsbYqL7kTPxOFFOccA7cNgraGGKw0RQFuiEAUe7pgqxJW0LrMahKUuEH
-         CKHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678328028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xDCu+k9I5uU9ZeyTijagvPSWTHvVWfU/xHE3X1obRdA=;
-        b=pnOr6VedHQw/GmGFJU9kzUgNQkoYXG2a6smtE8D/FV/uZsawqrUkkDLLxabEBbZuHT
-         d5PNIwSYp5/qKpa8u1MRpD++5R3gi0tQ73hUHsFKJXg+COuElSzvJepqu7P0+PBbW7PP
-         CTNoCULfKfygk+gzigEhbfEYqYiSX8AKEnPm5KZQHPdS0Ws/hjMKjZAtEP7X7tNm4Y1X
-         Cj9kzQjY6vcHZTWo2hgOWghB6OEF1xPC+ZvF2RWqgeb6oCTEZr3iPKsFhuedRDnSFvXs
-         rvGFJ2ZmBMuP8s4l9hhD5Pc7nQHPyVz3oPpGoXvPkWbH+ZrXhH3US0A/PfRfAPtxVi7O
-         TodQ==
-X-Gm-Message-State: AO0yUKUt0lwN7g1WbvIzO81xXcCiN5DAETvMGLFNoq0TWgXlcm1zR6hv
-        GtzpZA7QP2lcE13qLZxfCuRfrh5MAyS/pYnGaR9lRQ==
-X-Google-Smtp-Source: AK7set+mWq6zJzHt94/3BeSde/daBudUBmiy0DGPNw2z7zo1D94NCuIcD0UN8oAwSxIzMMRpLPMDFnzDPe9ry/6ETaA=
-X-Received: by 2002:a6b:dc03:0:b0:74c:7eac:a064 with SMTP id
- s3-20020a6bdc03000000b0074c7eaca064mr9571737ioc.2.1678328027763; Wed, 08 Mar
- 2023 18:13:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20230116010115.490713-1-irogers@google.com> <CAP-5=fVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39dywaLxrO4Hpg@mail.gmail.com>
- <Y8mAuDvs566zwG67@kernel.org> <Y8myfqy5EMit3Kr/@krava>
-In-Reply-To: <Y8myfqy5EMit3Kr/@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 8 Mar 2023 18:13:34 -0800
-Message-ID: <CAP-5=fUugnKd=pGpZve7tKThhM5b0AqGMnuiELF+fZQw-xJz9w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Assume libbpf 1.0+
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andres Freund <andres@anarazel.de>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Christy Lee <christylee@fb.com>,
+        with ESMTP id S229623AbjCICOU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 21:14:20 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA8661529
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 18:14:16 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3291Ko6L030755;
+        Wed, 8 Mar 2023 18:14:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=ViS+71M+2b53wiD2PAdQC4mLDMvhYPnbpFBGMvsaMDs=;
+ b=ATW4mG8oPIN6Fj2xuAu+B2VRqhYMdHnJ+tBJZHG2V/buB4WW8tEjcd9AVPmUO229kxuv
+ IxxKHtlj4pFK4ewgbKWuCYjl4Ii6Ylnu17jR9ExLadkMDQ98Bu7fmfVjiUA+BeLfJppm
+ 6q0heJb9JDw+dGFXSej5t5hR7kRRXKmJedxj66Yc5GBjigEIP4YePy3DYRDBut1xUbeH
+ EoWwZxPhDkrWT8y4xH0vdvqXiANnBs2oLylIx4ooVqdNOkdev+zjxT5NJYY3nm9UJIua
+ 8zgJ9ZH3v68mGANQ0Vdv7OnD2vEj06gMv3UyjAsfRCptItm+BvGM9knWY/y9UfVeeBEK gg== 
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2044.outbound.protection.outlook.com [104.47.57.44])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p6fergker-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Mar 2023 18:14:02 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X40xAU8mYOMhdl/mTGlLPjQsw0RvjvWMfYSSriz9jPLBf+Om8NdL4R9n5+3X7B6DQv2v+NHBQRqCdtM+joWHqN7iJYL/71joEcijmgxUTbrAxQ5TtZNu45f6gytR0Gq86Zw62qH7fXFVbWECgxU8OovdQii8VeWXjZYuH6fXOQoBlUYKXOsl3gZGm6qTQLuoRyGtVQvlmKzmKb/u4dHwt8dJ4HiEoctqOr2p0nsO41lJn176ZCv8IBLyrePh6eJvBdPW/CB3BIDLLC9BoTvQYTZeoxrrU3jHBJN4OkC0wGxzby45pE7mAfPcOCH/oePNzYP0ZmA94JQPsvt9cEZkAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ViS+71M+2b53wiD2PAdQC4mLDMvhYPnbpFBGMvsaMDs=;
+ b=NMYJhwYD7npc1z86KS2xUcevA7xU7XfeTEA2u4Ob9ex5Ie8vBOSFe3C7cg3Iyao1WXBZQzuovJIJf7oiOMmYlbMzc3MLJl10/EcB9GUEoeC5jOO+EN/R3Eu0axGL3EppA2EIbf9+/H4/LvSDg0FExbw5cnwsxFZu+4qrcb/slAKNw4lk0E7hVaWGYEz6I1YJgihAQBHNI8gnYYi+kVbEHxoPt1MsUrCEw9ACGTK0UG89Sqs2UJC+sOmDKvCyAIIqMhNLMTCCmfpdftn096BlOGAPxOFW1VJd4VyNgoJY9Cfuet40CcAzZoo5lypkWVRpGsIGxjOXKnBTdYHS4Fhajw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SA1PR15MB4433.namprd15.prod.outlook.com (2603:10b6:806:194::20)
+ by SA0PR15MB4032.namprd15.prod.outlook.com (2603:10b6:806:81::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.19; Thu, 9 Mar
+ 2023 02:14:00 +0000
+Received: from SA1PR15MB4433.namprd15.prod.outlook.com
+ ([fe80::d2e4:5822:2021:8832]) by SA1PR15MB4433.namprd15.prod.outlook.com
+ ([fe80::d2e4:5822:2021:8832%8]) with mapi id 15.20.6156.029; Thu, 9 Mar 2023
+ 02:14:00 +0000
+Message-ID: <9da6a292-eccf-ff82-8ab1-66614d65cba1@meta.com>
+Date:   Wed, 8 Mar 2023 21:13:58 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.8.0
+Subject: Re: [PATCH v4 bpf-next] bpf: Refactor release_regno searching logic
+Content-Language: en-US
+To:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Guilherme Amadio <amadio@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Joanne Koong <joannelkoong@gmail.com>
+References: <20230309004504.1153898-1-davemarchevsky@fb.com>
+From:   Dave Marchevsky <davemarchevsky@meta.com>
+In-Reply-To: <20230309004504.1153898-1-davemarchevsky@fb.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BLAPR03CA0101.namprd03.prod.outlook.com
+ (2603:10b6:208:32a::16) To SA1PR15MB4433.namprd15.prod.outlook.com
+ (2603:10b6:806:194::20)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4433:EE_|SA0PR15MB4032:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3ef4a776-ea52-41d6-5a57-08db2043f22f
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: edPE+5HoZHaN/eGbUH506Uvwje2J/c0ru1qtzJbfE7vRcuMoiKfOTvwVBP7ANTcLIbS0loxWJdjdWSLFy4GgPI6EAPi+IcNPpwoF6dhKTT2oS+FFtT5wAo8hBtB2EvPo7s22KV9u4NLGbSDlBT6vcnSw5nrCcQy6gMcKItOr4HGbEg2jyRG83HtMu+9FTrK2mnZ1fdKy0hFeU4CgF6A3c7neJRGZpklubGeeao69rFKzmTliNwgCEM4JuWEBXaF4fziTtsyXaANQq0xndN0bZOI5vkZ1P+vsNNvoR75TcMK9Z/E9lVAX2i64wAk22WZj52c6RuISqluCKRZYiESo/0cNg4QdE/K1wvhCd0svA7hDmrKgqo+zqVEDEdMYt1JcVwzpHMomJXjl30DZSk/cNrQ1YqkNUBUR51PIsmOenhkawUSyH9JnZGyCz+hqNfxj5ORfrjJc4VVtCOiLJmIfYFp/I8ppjp1Qgdws8kLCL4g/Cb9AQDRj9EWcUhfKMOD4tHBIboGtlOq9w305EI+ywPI55dxFsXp/DC2Tja2+NCe1rtMMjGzHuTEge9Ls12NOfY7tET+NNJ4vAWvgS0KxoaNgTekpOQ75746AG2ENDDtgWT0Dle2tnYQ7oXpKYEciICvRmYxA0iWch04M3YWtUGRevRL69PRFP8o+lbkxLJB8GKj87r6k3yXg1OIqK+P1TUI98Zhv5AgB5b7W2+QgJWBxMffJMDC88R/EMHS5g0A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB4433.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(136003)(396003)(346002)(366004)(39860400002)(451199018)(31686004)(54906003)(36756003)(38100700002)(86362001)(31696002)(6512007)(6506007)(53546011)(83380400001)(186003)(2616005)(316002)(5660300002)(478600001)(6486002)(4326008)(41300700001)(8936002)(2906002)(66556008)(66476007)(8676002)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U0xSbEttbG5ZbFpJaEQ3WlBrVC9MM3MyamlqUm1TakZWMUd3cDVlaWtINTg0?=
+ =?utf-8?B?cGlRNzQyalJDMUFOTVdvdkFvSG5vNWNicTloalp1TFpNZDhrQ2VCTFMyUndM?=
+ =?utf-8?B?dEJibTFZVGYweEdDMlFSOHRHOFRyVFlaZDNveDdiVVdjV2dUdGdxQ1NxQ2FV?=
+ =?utf-8?B?WGVHRmxLQm9KZURvaUJqQzFiZ3gxTCtzNHBBUlFqT2Q5RzVpNVRqeEdMRU11?=
+ =?utf-8?B?Q0RTKzNpZXNpbmRyQ013bEFKZ2xmdjBKczlOVU1ma3Yya0VhM2E1dVJoY0h3?=
+ =?utf-8?B?bFlyaGNmQmxLNUV2eXBTTXpkaTJEbW8vVTRjR2RCSHJPRFZTWTdBTUdDYXY5?=
+ =?utf-8?B?dDIrT3ZsWDFhYnVDYnk3aER2bXRRVGlhR1MzNXhybmxERjA0R3NtS0xKWGhh?=
+ =?utf-8?B?ZHV6ajU5TDY1K3hnRGpSQnZpamNSc3dTOTlHRGVMbHdyMjF3MURUYW9hTkNZ?=
+ =?utf-8?B?c3ZWYjlReU1LcldEVlFnZmN5bUo0K2J6REVQQ1BWUytCTUtwMGNLWkx1WnJS?=
+ =?utf-8?B?YjlHRU1WMm9vWnB2K0tSNzZTSkZXdXh3M1FMeE9SOXBWbDRPWEJJQm1FZGk3?=
+ =?utf-8?B?Z0xVam9SSm14QzBMNXlRY09UM1J1dGRHdFYvTG5Zd1NlM3gxTmxZa1kwZ1ho?=
+ =?utf-8?B?b1BBQjZIYWVnNDdrKzV6NDJ4anBsd1ZLYzkvVjM3YmpwRVhIcU4vTlZDVG1X?=
+ =?utf-8?B?WTVXd1JQZ1BKU1lraUR4ajRtc0M3Sm5EUnIyTVZmbStqOW9TVDl0R08vT1hU?=
+ =?utf-8?B?VU5OdGVMaEZOUWhNS1ovZ0lkS2hZdmppNlN2eFl0TEloSUtROVNpeml6TEN5?=
+ =?utf-8?B?eXFIS2diOWhtUVEwa2MzNUdTZTh1R29zQWF2a1BLMGpFRy9ocWRKUTVkOWp4?=
+ =?utf-8?B?YWZ3djlZVElVZ0g5N0dNUW1IWW5QTm5icXp3NUhBYURlWDBDdjllNEZMQjd0?=
+ =?utf-8?B?ZDdkemZZMHFabzdQSmZEeW84dndFQUJaS3FRZXdRY1MwektJaUlJZFJvWnp1?=
+ =?utf-8?B?VkFocUxsc3NrbEdDTnM4aWVWczVyREx2YmgvdWgxUzQ0Wkw1c3Q0SlhPeDU4?=
+ =?utf-8?B?WENQc1RlUDdmZTlDanZ3dXlUOGRsZzhPQktlaGhQSDN0Slh1YXdkd1VDUzdO?=
+ =?utf-8?B?YjBHMUdkQXgwdHlzUnZBWXQ2MjZKa01Rd3oySXUrUTYvYUsyNWpsVGZ2Ymx6?=
+ =?utf-8?B?b040Um9OUHNTNXBsRjJScFlRR0FJcXN1RVczWTlOQ24wN2JrU1R4UXgvNW9P?=
+ =?utf-8?B?SjRsMk5uUDh0RTZvdE1SWFEwRzZxeU5qYWZXNi9VdXF3b0ZZQWlmZDRBbU9t?=
+ =?utf-8?B?dzN4djZyQTg2cXpDV0FxQVdvOFVXbEFYYWd0ekxkNGs5eXRnWG8wTW9tdUho?=
+ =?utf-8?B?Tnl2UVhySVpsN3JURWFTRjBYOEVGQkhCUStySFA0bDEvLy9jR24vN2dKa2ZL?=
+ =?utf-8?B?MktwYlZ0VS90bVluY1ZzcmVwQzB0WTRBM3JOODk4bDFZeDJrV3dRRWNIZnE3?=
+ =?utf-8?B?cFVlQ2Rwek1ueVBCRll2Mm81MTZLdEd5NG9jajJoK3Zwa09GU1Baa3kyNDM5?=
+ =?utf-8?B?OHlTcTgrUEg4ZUdKQjVTd01yazNxL2pjODJmbmZmbzI1cDlabmt2Q2YvZ1pD?=
+ =?utf-8?B?RVZycnhWVHNmYlpvZEp5cUx1TWcwRjU2YXVmYVVJR3kxY0NQK01WbFRlTzY1?=
+ =?utf-8?B?Ulh4WGZCNWZNWTBNWGFTcDlhSFpIT2hnQUgyMkFlKzFHVUZ2WjUxeWtWOTlu?=
+ =?utf-8?B?UXFzalM1T2JyOFlzaVVPK3FRTE5jTWZsTTJyUWoraEFvZWxadk52S3AyU3Zr?=
+ =?utf-8?B?Y1hMZWdVODRPZmdMNFJLdXJubGI2TGNlcGpkejJRZFZrc1BZd21MU2xzOWtE?=
+ =?utf-8?B?US9hZm0rVU90SzIwaitBd2tXcEduc0Qvajc5ZGs3WFJudzAyZTd6dGdsWkZU?=
+ =?utf-8?B?OE5jUHBlRG1TdHZ2SXVUZUdrcmFhSUFTMkVhZDUvZGlnbzhvRnJRTTZOcXBI?=
+ =?utf-8?B?VXdaVkVveGFmRkQ5T09aYi9jaEF5aDBXcE8vVDM1K2JvdmkzbTNUWTNSSXN1?=
+ =?utf-8?B?VHhRV1VrT2lKd1pFaDBmQWpvcUQwUGRLem02ZUt1eTBYRGhTbXlGbHQrb1M2?=
+ =?utf-8?B?RVFHM1JxdDd0YU5XRS9Sc1h5SWJSR2FtYzNTRmNVbkVuNnBmekNtM2RydmR6?=
+ =?utf-8?Q?vuw3tLAPju2riP2EEZSBoYE=3D?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ef4a776-ea52-41d6-5a57-08db2043f22f
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB4433.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2023 02:14:00.2550
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eNHh1pFWxMifdajRH8UdO4HBAnE/kJWFm9Ni6GeIPytuKeO9RyCdCHC6UZUNygsmijnA7+86NmwgN4BmlnQWHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4032
+X-Proofpoint-ORIG-GUID: xX7sdpVBmp9DcgsFjlxHn_v-oOU8DtnR
+X-Proofpoint-GUID: xX7sdpVBmp9DcgsFjlxHn_v-oOU8DtnR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-08_15,2023-03-08_03,2023-02-09_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 19, 2023 at 1:13=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Thu, Jan 19, 2023 at 02:41:12PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Jan 19, 2023 at 09:11:03AM -0800, Ian Rogers escreveu:
-> > > On Sun, Jan 15, 2023 at 5:01 PM Ian Rogers <irogers@google.com> wrote=
-:
-> > > > libbpf 1.0 was a major change in API. Perf has partially supported
-> > > > older libbpf's but an implementation may be:
-> > > > ..
-> > > >        pr_err("%s: not support, update libbpf\n", __func__);
-> > > >        return -ENOTSUP;
-> > > > ..
-> > > >
-> > > > Rather than build a binary that would fail at runtime it is
-> > > > preferrential just to build libbpf statically and link against
-> > > > that. The static version is in the kernel tools tree and newer than
-> > > > 1.0.
-> > > >
-> > > > These patches change the libbpf test to only pass when at least
-> > > > version 1.0 is installed, then remove the conditional build and
-> > > > feature logic.
-> > > >
-> > > > The issue is discussed here:
-> > > > https://lore.kernel.org/lkml/20230106151320.619514-1-irogers@google=
-.com/
-> > > > perf bpf:
-> > > >
-> > > > A variant of this fix was added to Linux 6.2 in:
-> > > > "perf bpf: Avoid build breakage with libbpf < 0.8.0 + LIBBPF_DYNAMI=
-C=3D1"
-> > > > https://lore.kernel.org/lkml/Y71+eh00Ju7WeEFX@kernel.org/
-> > > > This change goes further in removing logic that is now no longer
-> > > > necessary.
-> > > >
-> > > > v2. Rebase now that breakage fix patch is in linus/master.
-> > >
-> > > I missed the:
-> > > Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
-> > > I believe we are waiting for package maintainer input.
-> >
-> > Yes, as fedora:37 still is at libbpf 0.8.0 :-\
->
-> rawhide (f38) is already on 1.1.0 ... I'll check how bad it'd be to move
-> f37 to 1.x, but I had to do bulk update of like 10 other dependent packag=
-es
-> for f38, so not sure how bad it'd be for f37
->
-> jirka
+On 3/8/23 7:45 PM, Dave Marchevsky wrote:
+> Kfuncs marked KF_RELEASE indicate that they release some
+> previously-acquired arg. The verifier assumes that such a function will
+> only have one arg reg w/ ref_obj_id set, and that that arg is the one to
+> be released. Multiple kfunc arg regs have ref_obj_id set is considered
+> an invalid state.
+> 
+> For helpers, OBJ_RELEASE is used to tag a particular arg in the function
+> proto, not the function itself. The arg with OBJ_RELEASE type tag is the
+> arg that the helper will release. There can only be one such tagged arg.
+> When verifying arg regs, multiple helper arg regs w/ ref_obj_id set is
+> also considered an invalid state.
+> 
+> Currently the ref_obj_id and OBJ_RELEASE searching is done in the code
+> that examines each individual arg (check_func_arg for helpers and
+> check_kfunc_args inner loop for kfuncs). This patch pulls out this
+> searching to occur before individual arg type handling, resulting in a
+> cleaner separation of logic and shared logic between kfuncs and helpers.
+> 
+> Two new helper functions are added:
+>   * args_find_ref_obj_id_regno
+>     * For helpers and kfuncs. Searches through arg regs to find
+>       ref_obj_id reg and returns its regno.
+> 
+>   * helper_proto_find_release_arg_regno
+>     * For helpers only. Searches through fn proto args to find the
+>       OBJ_RELEASE arg and returns the corresponding regno.
+> 
+> The refactoring strives to keep failure logic and error messages
+> unchanged. However, because the release arg searching is now done before
+> any arg-specific type checking, verifier states that are invalid due to
+> both invalid release arg state _and_ some type- or helper-specific
+> checking logic might see the release arg-related error message first,
+> when previously verification would fail for the other reason.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> ---
 
-+Guilherme
-
-We were looking for maintainer input on these changes, but there is no
-update in over a month. Here is the original lore link:
-https://lore.kernel.org/lkml/CAP-5=3DfVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39dywaL=
-xrO4Hpg@mail.gmail.com/
-Should these changes land in perf-tools-next targeting Linux 6.4?
-
-Thanks,
-Ian
-
-> >
-> > This is what I have in the containers I test, sure, the older ones
-> > already have NO_LIBBPF=3D1 and some will get this added, and some I sti=
-ll
-> > need to ask for libbpf-devel (or the distro specific name, like
-> > libbpf-dev):
-> >
-> > [perfbuilder@five ~]$ podman images --format "{{.Repository}}:{{.Tag}}"=
- | grep /acmel/ | grep -v '<none>' | sort -t: -Vk1,2 | grep -v -- -x- | whi=
-le read image ; do echo -n $image: ; libbpf=3D$(podman run --rm -t --entryp=
-oint=3Dls $image -la /usr/lib64/libbpf.so.1) ; echo $libbpf ; done
-> > localhost/acmel/linux-perf-tools-build-almalinux:8:ls: cannot access '/=
-usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-almalinux:9:ls: cannot access '/=
-usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alpine:3.12:ls: /usr/lib64/libbp=
-f.so.1: No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alpine:3.13:ls: /usr/lib64/libbp=
-f.so.1: No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alpine:3.14:ls: /usr/lib64/libbp=
-f.so.1: No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alpine:3.15:ls: /usr/lib64/libbp=
-f.so.1: No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alpine:3.16:ls: /usr/lib64/libbp=
-f.so.1: No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alpine:3.17:ls: /usr/lib64/libbp=
-f.so.1: No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alpine:edge:ls: /usr/lib64/libbp=
-f.so.1: No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alt:p9:ls: cannot access '/usr/l=
-ib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alt:p10:ls: cannot access '/usr/=
-lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-alt:sisyphus:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-amazonlinux:2:ls: cannot access =
-/usr/lib64/libbpf.so.1: No such file or directory
-> > localhost/acmel/linux-perf-tools-build-amazonlinux:devel:ls: cannot acc=
-ess '/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-archlinux:base:lrwxrwxrwx 1 root=
- root 15 Oct 1 12:32 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.1
-> > localhost/acmel/linux-perf-tools-build-centos:8:ls: cannot access '/usr=
-/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-centos:stream:ls: cannot access =
-'/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-clearlinux:latest:lrwxrwxrwx 1 r=
-oot root 15 Sep 30 16:01 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.1
-> > localhost/acmel/linux-perf-tools-build-debian:10:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-debian:11:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-debian:experimental:ls: cannot a=
-ccess '/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:26:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:27:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:28:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:29:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:30:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:31:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:32:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:33:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:34:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:35:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:36:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:37:ls: cannot access '/us=
-r/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-fedora:38:lrwxrwxrwx. 1 root roo=
-t 15 Dec 20 14:39 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.0
-> > localhost/acmel/linux-perf-tools-build-fedora:rawhide:lrwxrwxrwx. 1 roo=
-t root 15 Dec 20 14:39 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.0
-> > localhost/acmel/linux-perf-tools-build-gentoo-stage3:latest:ls: cannot =
-access '/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-manjaro:base:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-opensuse:15.0:ls: cannot access =
-'/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-opensuse:15.1:ls: cannot access =
-'/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-opensuse:15.2:ls: cannot access =
-'/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-opensuse:15.3:ls: cannot access =
-'/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-opensuse:15.4:ls: cannot access =
-'/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-opensuse:15.5:ls: cannot access =
-'/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-opensuse:tumbleweed:lrwxrwxrwx. =
-1 root root 15 Nov 9 12:08 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.1
-> > localhost/acmel/linux-perf-tools-build-oraclelinux:8:ls: cannot access =
-'/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-oraclelinux:9:ls: cannot access =
-'/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-rockylinux:8:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-rockylinux:9:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-ubuntu:18.04:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-ubuntu:20.04:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-ubuntu:21.04:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-ubuntu:21.10:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-ubuntu:22.04:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-ubuntu:22.10:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > localhost/acmel/linux-perf-tools-build-ubuntu:23.04:ls: cannot access '=
-/usr/lib64/libbpf.so.1': No such file or directory
-> > [perfbuilder@five ~]$
-> >
-> > [perfbuilder@five linux-perf-tools-build]$ grep libbpf-dev */*/Dockerfi=
-le
-> > debian/experimental/Dockerfile:       libbpf-dev \
-> > fedora/35/Dockerfile:            libtraceevent-devel libbpf-devel \
-> > fedora/36/Dockerfile:            libtraceevent-devel libbpf-devel \
-> > fedora/37/Dockerfile:            libtraceevent-devel libbpf-devel \
-> > fedora/38/Dockerfile:            libtraceevent-devel libbpf-devel \
-> > fedora/rawhide/Dockerfile:    libtraceevent-devel libbpf-devel \
-> > opensuse/tumbleweed/Dockerfile:       libbpf-devel libtraceevent-devel =
-\
-> > ubuntu/22.04/Dockerfile:      libelf-dev libiberty-dev libdw-dev libaud=
-it-dev libtraceevent-dev libbpf-dev \
-> > ubuntu/22.10/Dockerfile:      libelf-dev libiberty-dev libdw-dev libaud=
-it-dev libtraceevent-dev libbpf-dev \
-> > ubuntu/23.04/Dockerfile:      libelf-dev libiberty-dev libdw-dev libaud=
-it-dev libtraceevent-dev libbpf-dev \
-> > [perfbuilder@five linux-perf-tools-build]$
-> >
-> > In some cases it gets dragged on differently, like with clearlinux,
-> > gentoo, archlinux, etc.
-> >
-> > Anyway, just a data point, I'll check if I'm missing installing it
-> > somewhere.
-> >
-> > - Arnaldo
+Bunch of CI test failures :(. Ignore. 
