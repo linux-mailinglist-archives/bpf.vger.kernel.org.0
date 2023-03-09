@@ -2,100 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A576B17DF
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 01:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142A16B17E3
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 01:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjCIAaZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 19:30:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
+        id S229667AbjCIAbD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 19:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjCIAaY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 19:30:24 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A0C9CFC2
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 16:30:23 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 34EBEB81E5C
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 00:30:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D8F28C4339C;
-        Thu,  9 Mar 2023 00:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678321820;
-        bh=rERj7rPrnR/NRing94zfELHlHaM5Eb0k7EWfL4flx6U=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Zj27TBXadvAsO0Tn0/MPCec8gNACswdhsAjEMSw48rzhx3tinaFfONF7cYL17TWWO
-         lPBK7Iw4gQIfNztVV8+RgB+vGCMaEe+QhWKj7f2ZpmZfdmphpm/STqCNwKDrnEzJzr
-         ASvsUPTDtAqkUQlAkxyerjDmAoqQgheLCA6IMV3dNb8AuJTkIcs2jC2oahuP3clZHc
-         ldlIf6iZNgXsut8xF5zvRUZw7w50rKPeRxTlkH+UkPfL6WV51gCaKSIlnbhMoFHAm0
-         l5k2DXIcd6yjArVGQCEEVgd86a5j9QnCS5F9bMLRy4G4kl5nv07ACZBN3Nmg9lBk6b
-         L6lWdxv2DIwbg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BDFB9E55B25;
-        Thu,  9 Mar 2023 00:30:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229634AbjCIAbB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 19:31:01 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F7C5552B;
+        Wed,  8 Mar 2023 16:31:00 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id C5C8D5C017E;
+        Wed,  8 Mar 2023 19:30:58 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 08 Mar 2023 19:30:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1678321858; x=1678408258; bh=WP
+        wVWF0IoiZrZqy+/FAl/fj3eRnsltm3szUz0R/YJXQ=; b=G80ZhESH6esAmX8eZy
+        TciXLj3ZMVwTL1/gaMxgcNgrC5vfKKp0CDSYjSJiTtt7xJdYJdlvb2bONbKEywOd
+        nLV3OLT2Q4WA8QkQUTDHVg8nLYlWCkMISBnd3SuY8FYD2WfqZ6+Oz2zO4ZMPTZrN
+        m9n79a39js7CDfq+fFNW/8UH4FOS+qUldHwnsEKpH5gq94iFXndp9J7c9wV2MRIm
+        kt40ZnZziBh6UerFkLL1IdT0+6jGfUPoE6cWGiF4Q2PkUhxqHwahYlx9bjrB+3HO
+        Kfv4W+kiOtxjJs8zgIJiMUocx8mqipg/dOfccviMfG+RkPU4TfaEw5iFiWHS5ss8
+        lSJw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1678321858; x=1678408258; bh=WPwVWF0IoiZrZ
+        qy+/FAl/fj3eRnsltm3szUz0R/YJXQ=; b=RD+9fBm8nykm3tr+gshXJNngnVB5l
+        HpnOAyqDdiM1E+CrVR0dfy/vucfFdwe5+4roo3T1Vq+8RdsIub/q6JWU0X1vrPBk
+        JByetFxVlcugGqAp9xLMO166AvGsbdsjhFj449p9SJkfWPPLqUjDisRvgxafJJ/f
+        YH2nVzxCrQzIhwdKoXstOp79KCqeOi90P8/DB3/dvgb93xE/V+B9KB2oQRrt6nja
+        eRiYTxNrd2/Z9ctCthBd2g3UAkS3EQZ1djv5XxMyrHZL4mRBySx3Z+d8ZxXmzuLk
+        sw2vNmEMABOKY7nljk6Tpl2E24OkKWkSmQ5sDwmIV2PoIPqWTdoMDwbnw==
+X-ME-Sender: <xms:wSgJZPJWcz3zGZGq2Gh8S93XDvjgTB07MrgXw4tffPJnLTtqUm6E1Q>
+    <xme:wSgJZDKNRxWHlvti7e7_0cLn8JjmPnBwQ0ZQmLndVdiAU9VJE_4oCu17MqbNhKdEc
+    qVxgr4XWG72wWoFRCk>
+X-ME-Received: <xmr:wSgJZHtiytUsHc7or1FivkwwCF66-QEkyK3cIQE3mU53e5VOyXL1-Kyx>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddugedgvddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:wSgJZIbc7ZOZwFopzUkCldgzI2NbXgQdARIxXxRFp7vr9aLcKfMA_g>
+    <xmx:wSgJZGYNM2ysi6tM-jdD2AMRztxQ5I97aG1W_ehdm7raUYozsqRdLg>
+    <xmx:wSgJZMD0tD5Xzsm_biSRR27OqQoAqc534erX6j6aOQditp27ba-ZeA>
+    <xmx:wigJZOoj4PAPQE5rjWasVfddaMZne_DX2hecuagbS62r6URzevdqKw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 8 Mar 2023 19:30:57 -0500 (EST)
+Date:   Wed, 8 Mar 2023 16:30:55 -0800
+From:   Boris Burkov <boris@bur.io>
+To:     sdf@google.com
+Cc:     Rong Tao <rtoax@foxmail.com>, andrii@kernel.org, rongtao@cestc.cn,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "open list:BPF [LIBRARY] (libbpf)" <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] libbpf: poison strlcpy()
+Message-ID: <20230309003055.GA6586@zen>
+References: <tencent_5695A257C4D16B4413036BA1DAACDECB0B07@qq.com>
+ <Y7cbM1D2YvB9tdqg@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v5 bpf-next 0/8] BPF open-coded iterators
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167832182077.29240.3250045548141316950.git-patchwork-notify@kernel.org>
-Date:   Thu, 09 Mar 2023 00:30:20 +0000
-References: <20230308184121.1165081-1-andrii@kernel.org>
-In-Reply-To: <20230308184121.1165081-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@meta.com, tj@kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y7cbM1D2YvB9tdqg@google.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Wed, 8 Mar 2023 10:41:13 -0800 you wrote:
-> Add support for open-coded (aka inline) iterators in BPF world. This is a next
-> evolution of gradually allowing more powerful and less restrictive looping and
-> iteration capabilities to BPF programs.
+On Thu, Jan 05, 2023 at 10:47:15AM -0800, sdf@google.com wrote:
+> On 01/05, Rong Tao wrote:
+> > From: Rong Tao <rongtao@cestc.cn>
 > 
-> We set up a framework for implementing all kinds of iterators (e.g., cgroup,
-> task, file, etc, iterators), but this patch set only implements numbers
-> iterator, which is used to implement ergonomic bpf_for() for-like construct
-> (see patches #4-#5). We also add bpf_for_each(), which is a generic
-> foreach-like construct that will work with any kind of open-coded iterator
-> implementation, as long as we stick with bpf_iter_<type>_{new,next,destroy}()
-> naming pattern (which we now enforce on the kernel side).
+> > Since commit 9fc205b413b3("libbpf: Add sane strncpy alternative and use
+> > it internally") introduce libbpf_strlcpy(), thus add strlcpy() to a poison
+> > list to prevent accidental use of it.
 > 
-> [...]
+> > Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> 
+> Acked-by: Stanislav Fomichev <sdf@google.com>
+> 
+> > ---
+> >   tools/lib/bpf/libbpf_internal.h | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> > diff --git a/tools/lib/bpf/libbpf_internal.h
+> > b/tools/lib/bpf/libbpf_internal.h
+> > index 377642ff51fc..2d26ded383ca 100644
+> > --- a/tools/lib/bpf/libbpf_internal.h
+> > +++ b/tools/lib/bpf/libbpf_internal.h
+> > @@ -20,8 +20,8 @@
+> >   /* make sure libbpf doesn't use kernel-only integer typedefs */
+> >   #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
+> 
+> > -/* prevent accidental re-addition of reallocarray() */
+> > -#pragma GCC poison reallocarray
+> > +/* prevent accidental re-addition of reallocarray()/strlcpy() */
+> > +#pragma GCC poison reallocarray strlcpy
 
-Here is the summary with links:
-  - [v5,bpf-next,1/8] bpf: factor out fetching basic kfunc metadata
-    https://git.kernel.org/bpf/bpf-next/c/07236eab7a31
-  - [v5,bpf-next,2/8] bpf: add iterator kfuncs registration and validation logic
-    https://git.kernel.org/bpf/bpf-next/c/215bf4962f6c
-  - [v5,bpf-next,3/8] bpf: add support for open-coded iterator loops
-    https://git.kernel.org/bpf/bpf-next/c/06accc8779c1
-  - [v5,bpf-next,4/8] bpf: implement numbers iterator
-    https://git.kernel.org/bpf/bpf-next/c/6018e1f407cc
-  - [v5,bpf-next,5/8] selftests/bpf: add bpf_for_each(), bpf_for(), and bpf_repeat() macros
-    https://git.kernel.org/bpf/bpf-next/c/8c2b5e90505e
-  - [v5,bpf-next,6/8] selftests/bpf: add iterators tests
-    https://git.kernel.org/bpf/bpf-next/c/57400dcce6c2
-  - [v5,bpf-next,7/8] selftests/bpf: add number iterator tests
-    https://git.kernel.org/bpf/bpf-next/c/f59b14609265
-  - [v5,bpf-next,8/8] selftests/bpf: implement and test custom testmod_seq iterator
-    https://git.kernel.org/bpf/bpf-next/c/7e86a8c4ac8d
+On my musl system, I believe this broke compilation, as string.h defines
+strlcpy, and is included after this poisoning when compiling strset.c
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+FWIW, I could work around it by adding
+#include <string.h>
+above
+#include <libbpf_internal.h>
+in strset.c, since the poison doesn't apply to symbols that existed
+before it ran, but this feels like a kludge, and not in the spirit of
+the original poisoning patch..
 
+I'm curious what the proper workaround should be for a libc that defines
+strlcpy.
 
+Thanks,
+Boris
+
+> 
+> >   #include "libbpf.h"
+> >   #include "btf.h"
+> > --
+> > 2.39.0
+> 
