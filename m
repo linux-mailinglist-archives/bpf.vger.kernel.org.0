@@ -2,89 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A386B2E11
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 21:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B876B2F85
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 22:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbjCIUAn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 15:00:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
+        id S230064AbjCIV3o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 16:29:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjCIUAk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 15:00:40 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D30FA8DE;
-        Thu,  9 Mar 2023 12:00:20 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6C96DB82088;
-        Thu,  9 Mar 2023 20:00:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1429BC433D2;
-        Thu,  9 Mar 2023 20:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678392018;
-        bh=ghTPUr8Y9UcJYMB55rlQXEdOc5NzVVj2fiPMBgsL30M=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=caTMDFtjQSi0VwcxdjUUJh2Sm8c9jkyu8HFUs0dIdlfYQYO6ccKxhsyB0IxAy6on7
-         ruapcN8UwXlrS7o/sDZEcxURwUSAoMtp56HHsF8+PyopsK7ukJ4u3zgFE4XJy7dkNS
-         pCx2Za/HUTRJ9dtcW85QokuqgVnyj/x49coKSRg0qhbIDUembzgjLLsGMH2jMS2KS9
-         UF4VJHyPxwN7i381H6JQ9KtqKISLdRqSSFGUnTNdy0BNFJh8FEQEs6NxOHeRhlqWP6
-         PLQ0W6aHbOdW/8mOOydHqolO1dCSz3fbeMObVLf84zvN8sujVvPxCj0vYZsewfvYOs
-         QrKWeQ3ZprrUA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EADE3E4D008;
-        Thu,  9 Mar 2023 20:00:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229923AbjCIV3o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 16:29:44 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A76637FB;
+        Thu,  9 Mar 2023 13:29:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678397383; x=1709933383;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=80zyLhOThSYk7O2hMgd2l5n+WSDRyjihPaH07zm+19c=;
+  b=M3QXWnMbHCTwd6HJE3WGzJGH7jvu9bw0nUKjenfxPMURzscicIOm3T9l
+   Ojlebxgtmn9cmebeP4HcAHCAtqo41PFdK0gQTrvSI5mdthkum1q22uUhy
+   vXqfotVJQlBS/PR+3/v6etPJF8y5JkeKnxpy1TGzxnACLYSi0jpXc8r4g
+   Gg5o2R995T8t2rS9sqpFEgbZHpprKqCTIn6YeQ5eL+hgHPtH8rZILDVLl
+   k4CUnzYDNYhlGogCZ4PdkzXBqQbjnjirT2OxNeSQASjf0LS3BuAQQxhxI
+   IA9strKxS+nHL7l4v9ezvD12uRwme/HNcxPx+nQqFiu/IQ2ir2HTQ0Twj
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10644"; a="338126092"
+X-IronPort-AV: E=Sophos;i="5.98,247,1673942400"; 
+   d="scan'208";a="338126092"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2023 13:29:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10644"; a="710011389"
+X-IronPort-AV: E=Sophos;i="5.98,247,1673942400"; 
+   d="scan'208";a="710011389"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by orsmga001.jf.intel.com with ESMTP; 09 Mar 2023 13:29:41 -0800
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, netdev@vger.kernel.org
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>,
+        tirthendu.sarkar@intel.com, maciej.fijalkowski@intel.com,
+        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org
+Subject: [PATCH net-next v2 0/8][pull request] i40e: support XDP multi-buffer
+Date:   Thu,  9 Mar 2023 13:28:11 -0800
+Message-Id: <20230309212819.1198218-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/2] selftests/bpf: use ifname instead of ifindex
- in XDP
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167839201795.28882.17670469043875720414.git-patchwork-notify@kernel.org>
-Date:   Thu, 09 Mar 2023 20:00:17 +0000
-References: <cover.1678382940.git.lorenzo@kernel.org>
-In-Reply-To: <cover.1678382940.git.lorenzo@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org, lorenzo.bianconi@redhat.com,
-        daniel@iogearbox.net
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Tirthendu Sarkar says:
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+This patchset adds multi-buffer support for XDP. Tx side already has
+support for multi-buffer. This patchset focuses on Rx side. The last
+patch contains actual multi-buffer changes while the previous ones are
+preparatory patches.
 
-On Thu,  9 Mar 2023 18:32:39 +0100 you wrote:
-> Use interface name instead of interface index in XDP compliance test tool logs.
-> Improve XDP compliance test tool error messages.
-> 
-> Changes since v1:
-> - split previous patch in two logically separated patches
-> 
-> Lorenzo Bianconi (2):
->   selftests/bpf: use ifname instead of ifindex in XDP compliance test
->     tool
->   selftests/bpf: improve error logs in XDP compliance test tool
-> 
-> [...]
+On receiving the first buffer of a packet, xdp_buff is built and its
+subsequent buffers are added to it as frags. While 'next_to_clean' keeps
+pointing to the first descriptor, the newly introduced 'next_to_process'
+keeps track of every descriptor for the packet. 
 
-Here is the summary with links:
-  - [bpf-next,v2,1/2] selftests/bpf: use ifname instead of ifindex in XDP compliance test tool
-    https://git.kernel.org/bpf/bpf-next/c/27a36bc3cdd5
-  - [bpf-next,v2,2/2] selftests/bpf: improve error logs in XDP compliance test tool
-    https://git.kernel.org/bpf/bpf-next/c/c1cd734c1bb3
+On receiving EOP buffer the XDP program is called and appropriate action
+is taken (building skb for XDP_PASS, reusing page for XDP_DROP, adjusting
+page offsets for XDP_{REDIRECT,TX}).
 
-You are awesome, thank you!
+The patchset also streamlines page offset adjustments for buffer reuse
+to make it easier to post process the rx_buffers after running XDP prog.
+
+With this patchset there does not seem to be any performance degradation
+for XDP_PASS and some improvement (~1% for XDP_TX, ~5% for XDP_DROP) when
+measured using xdp_rxq_info program from samples/bpf/ for 64B packets.
+
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+
+Changelog:
+	v1 -> v2:
+	- Make rx_buffer_len dependent on size of skb_shared_info instead
+	  of fixed size for legaxy-rx mode [Jakub Kicinski]
+	- Add checks to error out when size of skb_shared_info does not
+	  match expected size [Jakub Kicinski]
+
+v1: https://lore.kernel.org/netdev/20230306210822.3381942-1-anthony.l.nguyen@intel.com/
+
+The following are changes since commit db47fa2e4cbf180a39d8e6d6170962bd7d82e52d:
+  Merge branch 'sctp-add-another-two-stream-schedulers'
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue 40GbE
+
+Tirthendu Sarkar (8):
+  i40e: consolidate maximum frame size calculation for vsi
+  i40e: change Rx buffer size for legacy-rx to support XDP multi-buffer
+  i40e: add pre-xdp page_count in rx_buffer
+  i40e: Change size to truesize when using i40e_rx_buffer_flip()
+  i40e: use frame_sz instead of recalculating truesize for building skb
+  i40e: introduce next_to_process to i40e_ring
+  i40e: add xdp_buff to i40e_ring struct
+  i40e: add support for XDP multi-buffer Rx
+
+ .../net/ethernet/intel/i40e/i40e_ethtool.c    |   7 +
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  88 ++--
+ drivers/net/ethernet/intel/i40e/i40e_trace.h  |  20 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 420 ++++++++++--------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h   |  20 +-
+ 5 files changed, 321 insertions(+), 234 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.38.1
 
