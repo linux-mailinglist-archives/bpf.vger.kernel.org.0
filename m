@@ -2,113 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 334B66B2D51
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 20:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0ACB6B2DED
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 20:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbjCITD4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 14:03:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
+        id S229917AbjCITuW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 14:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbjCITDz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 14:03:55 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14CF65BB
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 11:03:52 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id x3so11030477edb.10
-        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 11:03:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678388631;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E9dOsDLoN3DQopI5fPgilKZ7oS9CzaCTHXkjH04bdHk=;
-        b=Ds/O1NYlWc+YPctWJPakYTVbIemXr+zPQkP1vMC/rNgk0mA2vD95plGyaqW9nRxMCF
-         cS0/nz5XJ+GC0kV/Q4p/5GDyt+eX21HSbh/MD4gN0jttHbey73+bzHgBA1jRlw20v70m
-         vuNeTq1GWe+gluhTKAD2ZrG8iUJeXwcdCcAZK0f6vGM32wbQ2Pgm+/AZasMQX/vgavp7
-         xe6R8C6iS4TS7H0phFRREf0klF3CkyDoFfACPjTHJNlV2Xr5e729D6doxuV4nw/UEBTz
-         iW7nav3U0V+SeXsL9pivsqJZFQDbhXW+B9xp46xhCwOydKjLHJVOYrw0R7ywJTMRLwax
-         hjHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678388631;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E9dOsDLoN3DQopI5fPgilKZ7oS9CzaCTHXkjH04bdHk=;
-        b=sFOTTVXuD3uBasMhhpcn22grmk2PL33VzJgnhhQE23zGDHdZc8LhnmI9QSxNnbwoee
-         RzAGrdnV9ldG+aesrFRRHz8EgrRbEPXw7syY9sii025i91SQVBZn7tnlNm7y50YzM5XM
-         PYusUY2zl+5Pdw5uHf90KxNfEe5V8BHJYW+xGKJsCIOW7ip+ydNX7aFaZh/WF3ufIF2Z
-         2fl7a6FQZhvGgs59bVjkL+pvc7vS4zujIEKReII7PEaWNiw4+WqGtcFNce0nycCEsSsG
-         CyQhsleGlBdA8uGMu4Vmw8IdpisamMFhEksV0BrkONEcbw6/JTSSyAadu4CPnfaL5nTz
-         pZCg==
-X-Gm-Message-State: AO0yUKVAZjaNQCKCx5ONHaNYppAZhVWWjENFGt5bmKy35SyUQvYbGAHM
-        tvNoQHbPtLJJb7p0nkIBIvq3uDdb5nYY02hvJYs=
-X-Google-Smtp-Source: AK7set+n8ut09UPlmIymbeEjcBLOLebp3KXd8eLSZJbMTyiV9yTHFPYDH/tbO6MSC3c1XMEOT++s45qwZ1GaPbotxMA=
-X-Received: by 2002:a17:906:48c9:b0:908:5055:9fed with SMTP id
- d9-20020a17090648c900b0090850559fedmr11905050ejt.5.1678388631385; Thu, 09 Mar
- 2023 11:03:51 -0800 (PST)
+        with ESMTP id S229945AbjCITuV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 14:50:21 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0D2F63A7
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 11:50:20 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E8DF461CDA
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 19:50:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4C8C6C4339B;
+        Thu,  9 Mar 2023 19:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678391419;
+        bh=od+XCEqlrXcQG0VRoFANl+5LbLfC1rOC2FuqzhWPtUM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=hYtWf+n+y1i6uFedUDTQQyZcxqjooH8eThkStrzQoEkBBCMxg0AhPKjoijxttGLCG
+         dG/NQUPDxzxs/VPnVlWGZGPbEIRbUIYeAm3OtOIdk38Jy/EZwBzVJV1VPDa9m7tIPF
+         muTupxkUjLYI0qFVPlFN8cIoptaYdSGGE8JsO3KyA+EHianUM8V2yey+P4QRl1m3BH
+         aZm8yPo6dXpZEG3P6LcUCfHCp4jdXAaiapV11wbdhpCMWNP1Wk+JopqZkGF2f2++qm
+         Bsn6qkN1hDRZsCmo5HcTg5tac/9aQp6+dbRydff8K4pPhilpkfEF1ensNvuh0bVDfd
+         K+3F1DXLOqgcg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 321EDE4D008;
+        Thu,  9 Mar 2023 19:50:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230309004836.2808610-1-jesussanp@google.com>
- <167832601863.28104.18004021177531379064.git-patchwork-notify@kernel.org>
- <CAK4Nh0gOSHfwb8Yuv_YAhKHH+gTr=rqt+ZnQi1yXQ7qLiqu21w@mail.gmail.com>
- <CAEf4BzbggD36JS4Z1dukPBqpTBapO-ptbfa3Qc8m9j5j-7ue=A@mail.gmail.com>
- <CAK4Nh0hjip7U4_oMYbCn1mx2j4n_y4FT67yMUDMY1ffu6RtOew@mail.gmail.com> <4afc9786-be46-8b7f-3e71-f457d6111c22@iogearbox.net>
-In-Reply-To: <4afc9786-be46-8b7f-3e71-f457d6111c22@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Mar 2023 11:03:39 -0800
-Message-ID: <CAEf4BzaWYT08cUbHCm-K-Z5mBhuZX32wRJnE_PY9WbeOu3vrjg@mail.gmail.com>
-Subject: Re: [PATCH] Revert "libbpf: Poison strlcpy()"
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Jesus Sanchez-Palencia <jesussanp@google.com>, andrii@kernel.org,
-        bpf@vger.kernel.org, sdf@google.com, rongtao@cestc.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Fix flaky fib_lookup test
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167839141920.24485.6307929046323939565.git-patchwork-notify@kernel.org>
+Date:   Thu, 09 Mar 2023 19:50:19 +0000
+References: <20230309060244.3242491-1-martin.lau@linux.dev>
+In-Reply-To: <20230309060244.3242491-1-martin.lau@linux.dev>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@meta.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 9, 2023 at 10:50=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
->
-> On 3/9/23 6:31 PM, Jesus Sanchez-Palencia wrote:
-> > On Thu, Mar 9, 2023 at 9:27=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >> On Thu, Mar 9, 2023 at 8:06=E2=80=AFAM Jesus Sanchez-Palencia
-> >> <jesussanp@google.com> wrote:
-> >>> On Wed, Mar 8, 2023 at 5:40=E2=80=AFPM <patchwork-bot+netdevbpf@kerne=
-l.org> wrote:
-> >>>>
-> >>>> Hello:
-> >>>>
-> >>>> This patch was applied to bpf/bpf-next.git (master)
-> >>>> by Andrii Nakryiko <andrii@kernel.org>:
-> >>>
-> >>> Andrii, are you planning to send this patch to 6.3-rc* since the buil=
-d
-> >>> is broken there?
-> >>> Just double-checking since it was applied to bpf-next.
-> >>
-> >> I didn't intend to, feel free to do that.
-> >
-> > Oh I always thought that fixes for the rc-* iterations had to come
-> > from the maintainer
-> > trees. Should I just send it to lkml directly?
-> >
-> >> But just curious, why are you building libbpf from kernel sources
-> >> instead of Github repo? Is it through perf build?
-> >
-> > Yes, through the perf build. We build it altogether as part of our kern=
-el build.
->
-> Ok, just moved over to bpf tree in that case where it will land in -rc's.
->
+Hello:
 
-Thanks, Daniel, for taking care of this!
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-> Thanks,
-> Daniel
+On Wed,  8 Mar 2023 22:02:44 -0800 you wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
+> 
+> There is a report that fib_lookup test is flaky when running in parallel.
+> A symptom of slowness or delay. An example:
+> 
+> Testing IPv6 stale neigh
+> set_lookup_params:PASS:inet_pton(IPV6_IFACE_ADDR) 0 nsec
+> test_fib_lookup:PASS:bpf_prog_test_run_opts 0 nsec
+> test_fib_lookup:FAIL:fib_lookup_ret unexpected fib_lookup_ret: actual 0 != expected 7
+> test_fib_lookup:FAIL:dmac not match unexpected dmac not match: actual 1 != expected 0
+> dmac expected 11:11:11:11:11:11 actual 00:00:00:00:00:00
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,bpf-next] selftests/bpf: Fix flaky fib_lookup test
+    https://git.kernel.org/bpf/bpf-next/c/a6865576317f
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
