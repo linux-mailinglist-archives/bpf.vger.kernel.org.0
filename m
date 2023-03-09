@@ -2,145 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 900706B2CFC
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 19:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8715D6B2D1E
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 19:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbjCIShD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 13:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40210 "EHLO
+        id S230375AbjCISu5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 13:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbjCIShC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 13:37:02 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B81FCF38
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 10:36:37 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id p13so1519632ilp.11
-        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 10:36:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678386997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JcKQIgodumKTKwDG1jrtUqE4ItB7pqN2TOLUifY1FmE=;
-        b=oHCE7Zi7oj41PA0PXpYWd1Th5YT3xm7/C+YIfP9vZtzNT8wqII4suUtmKJU55/mOQs
-         JgWeVZzv9E75of0Brn5qpsyshg2kuTFN3wbqOCrMRXsyvgT1DdfIy2HhngMA/wFzlJl3
-         gj+jmcQKyvDYqhvf8Kj2kwzbTJoHOLXW5Rnf4KxgH4r0oLfOReZn/z1B/HKPs41I2OW5
-         HX3Bcp54N8JFF26ED45MlgI7TRg3pACj/DXEhOLO266n1YFDgGaJbDhaij2zeRG8yYZk
-         kqJu+NU9DXtmTZKv3iWmpObzYixTGDpCwtdF9aKSNpP3pzCYaoL64cTDe0lNJw/Ak5m1
-         XNtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678386997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JcKQIgodumKTKwDG1jrtUqE4ItB7pqN2TOLUifY1FmE=;
-        b=doX3ud8z/IfpmN6GJyPD1jH8PCKfLIiDmIIA+jwFy9bCFHkXU7d8OCuvjAT8v8OIHF
-         RaB8IXRMbZ/J1j3YfyaIaQUve5sGGo/nt3M9J1IUXSHanrSPuOMrk8hxvracT+482OyD
-         wKW+Vru4rwaD42Dsho06qurtSJoC1enfhsseeHZn9wye2aocJnQK2Jy1pYnIhiEYYJyW
-         D/5CD8HE8ZGPCRBspeSc7kplPU/z4UuRENVd/XqEUdEcDmUXqSYuBjgnNXjqryDxVuQh
-         MzFb30ubqDm6UcqBhkdDySMQJH2ikmQ7X+KRImY7BUlZidnlH2hJfvigCY9ofQWZvdKo
-         +FYA==
-X-Gm-Message-State: AO0yUKXlv86moknz+VJ7qpJNHbp3t5y9p0/6WnmV8trNpt9OtXq4bDBu
-        KrDlzEmTNEVbpe5BiTSbMn4NcXDsUJt5lwfibOo=
-X-Google-Smtp-Source: AK7set+7cZih+NAUm1X7yFKE+xKAqCqip6/1HLu8kYd/ONI8gZe06ZiLjxQiWExDwF2QFfCByK8W5dpTpbzvLB4Df2Q=
-X-Received: by 2002:a05:6e02:928:b0:317:fc57:d2f7 with SMTP id
- o8-20020a056e02092800b00317fc57d2f7mr10565491ilt.6.1678386996855; Thu, 09 Mar
- 2023 10:36:36 -0800 (PST)
+        with ESMTP id S230427AbjCISus (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 13:50:48 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9963EFAAF2
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 10:50:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=v6m9LhzvdyUmNdGhCLMsN+mLfez7f51psF1rvVegUCk=; b=cYxzmEa3HX8tv9lLpwYDro1YIk
+        ahKiwE2z48BI8quV1rrlqo3+3foDXFbx2tKhPyl+scv0Yq9zKAoJ/3MpZjSgIyTBrDn1hsYLxnHKP
+        OlFwX+BW+K8ngnJr5cwPGai2X6d8jKBjygOAw/6poWe4t8Idd7vaHEMLpl2kRmqNcNzebWzGsFfxg
+        XvRiRWQmigqYBzmOnn4069DaZVC97MvXwW6MXl23p8ub3w19cNJOMLgoMIWdnn6rVMF7PVYppE77C
+        Bs6mSxA6PcP8X8FxIgRhagjumh7rd5wGVQcrmMYKLEc4THqr0LL8kOZzW/unF8BUpLhRiDtAojua6
+        47i0GVEQ==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1paLLY-000LkM-Dx; Thu, 09 Mar 2023 19:50:36 +0100
+Received: from [81.6.34.132] (helo=localhost.localdomain)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1paLLY-000B7W-61; Thu, 09 Mar 2023 19:50:36 +0100
+Subject: Re: [PATCH] Revert "libbpf: Poison strlcpy()"
+To:     Jesus Sanchez-Palencia <jesussanp@google.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     andrii@kernel.org, bpf@vger.kernel.org, sdf@google.com,
+        rongtao@cestc.cn
+References: <20230309004836.2808610-1-jesussanp@google.com>
+ <167832601863.28104.18004021177531379064.git-patchwork-notify@kernel.org>
+ <CAK4Nh0gOSHfwb8Yuv_YAhKHH+gTr=rqt+ZnQi1yXQ7qLiqu21w@mail.gmail.com>
+ <CAEf4BzbggD36JS4Z1dukPBqpTBapO-ptbfa3Qc8m9j5j-7ue=A@mail.gmail.com>
+ <CAK4Nh0hjip7U4_oMYbCn1mx2j4n_y4FT67yMUDMY1ffu6RtOew@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4afc9786-be46-8b7f-3e71-f457d6111c22@iogearbox.net>
+Date:   Thu, 9 Mar 2023 19:50:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <CAO658oXX+_7FnAsv02x27FQRbm_Dw7d=tOmQ_Gfe=fB5Hv+C+g@mail.gmail.com>
- <CAEf4BzZDv8hUD=_KYXNAO+EQMqHjqgEWurOcNF_huwX+CvmHXA@mail.gmail.com>
- <CAO658oVAMKPZT0cbAUmB82nXrj1StyawEJFSLPbWi8ZPtrVY+Q@mail.gmail.com> <fc8de596-aa8c-a92b-a288-d2bba2e08ff7@meta.com>
-In-Reply-To: <fc8de596-aa8c-a92b-a288-d2bba2e08ff7@meta.com>
-From:   Grant Seltzer Richman <grantseltzer@gmail.com>
-Date:   Thu, 9 Mar 2023 13:36:26 -0500
-Message-ID: <CAO658oXvAN12PFQhAQR2UXs78K-1vF3tAefd6-ToEzzQucNM=Q@mail.gmail.com>
-Subject: Re: [Question] How can I get floating point registers on arm64
-To:     Dave Marchevsky <davemarchevsky@meta.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAK4Nh0hjip7U4_oMYbCn1mx2j4n_y4FT67yMUDMY1ffu6RtOew@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26836/Thu Mar  9 09:23:04 2023)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 8, 2023 at 10:54=E2=80=AFPM Dave Marchevsky <davemarchevsky@met=
-a.com> wrote:
->
-> On 3/8/23 9:20 AM, Grant Seltzer Richman wrote:
-> > On Tue, Mar 7, 2023 at 7:28=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >>
-> >> On Thu, Mar 2, 2023 at 11:06=E2=80=AFAM Grant Seltzer Richman
-> >> <grantseltzer@gmail.com> wrote:
-> >>>
-> >>> Hi everyone,
-> >>>
-> >>> I'm writing a uprobe program that I'm attaching to a function in a go
-> >>> program on arm64. The function takes a float and as such loads the
-> >>> parameters via 64-bit floating point registers i.e. `D0`.
-> >>>
-> >>> However, the struct pt_regs context that uprobe programs have access
-> >>> to only has a single set of 31 64-bit registers. These appear to be
-> >>> the regular general purpose integer registers. My question is - how d=
-o
-> >>> I access the second set of registers? If this question doesn't make
-> >>> sense, am I misunderstanding how arm64 works?
-> >>>
-> >>
-> >> cc'ing Dave, as he was looking at this problem in the past (in the
-> >> context of accessing xmm registers, but similar problem).
-> >>
-> >> The conclusion was that we'd need to add a new helper (kfunc nowadays)
-> >> that would do it for BPF program. Few things to consider:
-> >>
-> >>   - designing generic enough interface to allow reading various
-> >> families of registers (FPU, XMM, etc) in some generic way
-> >>   - consider whether do platform-specific or platform-agnostic
-> >> interface (both possible)
-> >>   - and most annoyingly, we'd need to handle kernel potentially
-> >> modifying FPU state without (yet) restoring it. Dave investigated
-> >> this, and in some recent kernels it seems like kernel code doesn't
-> >> necessarily restore FPU state right after it's done with it, and
-> >> rather sets some special flag to restore FPU state as kernel exits to
-> >> user-space.
-> >
-> > Thanks for this info Andrii! I think your first couple points are
-> > manageable but I'm not familiar with FPU context switching. Will read
-> > up on it, and Dave if you're willing to give some guidance I'd happily
-> > put in the work to get this helper introduced!
-> >
->
-> Hi Grant,
->
-> I attempted to tackle this in a patchset a while back [0]. Had to abandon=
- it to
-> focus on other things, please feel free to use it as a starting point.
->
-> Happy to elaborate on Andrii's 3rd point above, there's definitely some n=
-uance
-> there that the series may not explain well. But need a day or so to page =
-it back
-> in :). Will update this thread with details.
+On 3/9/23 6:31 PM, Jesus Sanchez-Palencia wrote:
+> On Thu, Mar 9, 2023 at 9:27 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>> On Thu, Mar 9, 2023 at 8:06 AM Jesus Sanchez-Palencia
+>> <jesussanp@google.com> wrote:
+>>> On Wed, Mar 8, 2023 at 5:40 PM <patchwork-bot+netdevbpf@kernel.org> wrote:
+>>>>
+>>>> Hello:
+>>>>
+>>>> This patch was applied to bpf/bpf-next.git (master)
+>>>> by Andrii Nakryiko <andrii@kernel.org>:
+>>>
+>>> Andrii, are you planning to send this patch to 6.3-rc* since the build
+>>> is broken there?
+>>> Just double-checking since it was applied to bpf-next.
+>>
+>> I didn't intend to, feel free to do that.
+> 
+> Oh I always thought that fixes for the rc-* iterations had to come
+> from the maintainer
+> trees. Should I just send it to lkml directly?
+> 
+>> But just curious, why are you building libbpf from kernel sources
+>> instead of Github repo? Is it through perf build?
+> 
+> Yes, through the perf build. We build it altogether as part of our kernel build.
 
-Thanks Dave! I'm going to spend time over the new few days
-familiarizing myself with this code and will certainly follow up with
-questions. I see this patchset seems to specifically tackle x86 for
-now, I'm hoping to additionally get arm64 support as that's the
-priority for the project I work on.
+Ok, just moved over to bpf tree in that case where it will land in -rc's.
 
->   [0]: https://lore.kernel.org/bpf/20220512074321.2090073-1-davemarchevsk=
-y@fb.com/
->
-> >>
-> >> Hopefully Dave can correct me and fill in details.
-> >>
-> >>
-> >>> Thanks so much,
-> >>> Grant
+Thanks,
+Daniel
