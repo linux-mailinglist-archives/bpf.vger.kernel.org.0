@@ -2,136 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 796C76B2C16
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 18:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0226B2C7B
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 19:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbjCIRdJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 12:33:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        id S229830AbjCISBC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 13:01:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbjCIRdE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 12:33:04 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956925FD6;
-        Thu,  9 Mar 2023 09:33:00 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 434A8B81F91;
-        Thu,  9 Mar 2023 17:32:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D0F2C433D2;
-        Thu,  9 Mar 2023 17:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678383178;
-        bh=uiqiHQhIDw0aOs9OoPbT2HL8T0pBYxQnLuDKWp12tr8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a3ezjJHhqw0YyHjVMve9npPq9ivFX3VwWvCvSZI0y1R6Lzy9RmJJB39ruSRBvsz9w
-         r4XMQPEWdpVFkapvX0BzXoeQ4NT8qUGai/+gj6Ci5/RFsWR36bwOMPHxiZpT2JVBZS
-         M1eKwmMHvkol0o6ZjhLZWzYW+gsxLmpL4paY6G6I7v8psjv4a+1dJbNFNeM+g04HIY
-         S3GYwM/QC6Mroxu6OhpmrH/VxJbrsPrXlPXGGAiebxFvpjbgGSQSdinoN01XaGuM41
-         0FOvnYo9iLEBNWq01lSE2J0qLWmDZd+JcfL7WhX/1TwXHv0e1ebePCOyluj0x7F1PS
-         akOVnVAZPRWGw==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        lorenzo.bianconi@redhat.com, daniel@iogearbox.net
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: improve error logs in XDP compliance test tool
-Date:   Thu,  9 Mar 2023 18:32:41 +0100
-Message-Id: <212fc5bd214ff706f6ef1acbe7272cf4d803ca9c.1678382940.git.lorenzo@kernel.org>
+        with ESMTP id S229574AbjCISBB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 13:01:01 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F048AFCBC1
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 10:01:00 -0800 (PST)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 329HP7FQ029698;
+        Thu, 9 Mar 2023 18:00:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=f2YtmbBo/XIPEk+DAobJEAfO4YCF48VXlkBCn3DMtMQ=;
+ b=V6C054JGLG4fYd8N4OvI+qAuYm4wyVsXYqzc/Nut4flUJ035E9HlWNhA4FSVvUsGtG4A
+ N8TDG0Wf6AxNRIiZWEcgC62m9UbOOa8XGtiFPytkR4DSrGVc3HYuGjCqo8qbcVMJN1ZX
+ 202wi3JfOzrfEG7hdpFPH5QH3rkjYf0ZJyjJEgxkkMCbYJDE3azeKDu9Bx2TseH2HK36
+ 13HnCoeimvms7CgNYzzYN/q/BNY6xmoVXbG+0n8CkWIhK9GQim19+vojPnhlbmzZ7UrB
+ upKOFeRpzeAYowKmDQrewvOjttwgE5EmCxb4oa+sQsm2h2O1k+2WRi9fdZj+02yA9xng 1A== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p6qyquygn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Mar 2023 18:00:35 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 329GVgqm019995;
+        Thu, 9 Mar 2023 18:00:33 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3p6ftvjr65-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Mar 2023 18:00:33 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 329I0VeQ1442404
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Mar 2023 18:00:31 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D8A420040;
+        Thu,  9 Mar 2023 18:00:31 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A12512004D;
+        Thu,  9 Mar 2023 18:00:29 +0000 (GMT)
+Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.13.46])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Mar 2023 18:00:29 +0000 (GMT)
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v2 0/4] enable bpf_prog_pack allocator for powerpc
+Date:   Thu,  9 Mar 2023 23:30:24 +0530
+Message-Id: <20230309180028.180200-1-hbathini@linux.ibm.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <cover.1678382940.git.lorenzo@kernel.org>
-References: <cover.1678382940.git.lorenzo@kernel.org>
-MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5YOAAPNMIwN_Pcd9ev-R56cnpKrZlwDe
+X-Proofpoint-ORIG-GUID: 5YOAAPNMIwN_Pcd9ev-R56cnpKrZlwDe
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-09_09,2023-03-09_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 clxscore=1011 phishscore=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2303090141
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Improve some error logs reported in the XDP compliance test tool
+Most BPF programs are small, but they consume a page each. For systems
+with busy traffic and many BPF programs, this may also add significant
+pressure on instruction TLB. High iTLB pressure usually slows down the
+whole system causing visible performance degradation for production
+workloads.
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- tools/testing/selftests/bpf/xdp_features.c | 23 +++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+bpf_prog_pack, a customized allocator that packs multiple bpf programs
+into preallocated memory chunks, was proposed [1] to address it. This
+series extends this support on powerpc.
 
-diff --git a/tools/testing/selftests/bpf/xdp_features.c b/tools/testing/selftests/bpf/xdp_features.c
-index b060a0d24e44..b449788fbd39 100644
---- a/tools/testing/selftests/bpf/xdp_features.c
-+++ b/tools/testing/selftests/bpf/xdp_features.c
-@@ -152,20 +152,26 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
- 	case 'D':
- 		if (make_sockaddr(AF_INET6, arg, DUT_ECHO_PORT,
- 				  &env.dut_addr, NULL)) {
--			fprintf(stderr, "Invalid DUT address: %s\n", arg);
-+			fprintf(stderr,
-+				"Invalid address assigned to the Device Under Test: %s\n",
-+				arg);
- 			return ARGP_ERR_UNKNOWN;
- 		}
- 		break;
- 	case 'C':
- 		if (make_sockaddr(AF_INET6, arg, DUT_CTRL_PORT,
- 				  &env.dut_ctrl_addr, NULL)) {
--			fprintf(stderr, "Invalid DUT CTRL address: %s\n", arg);
-+			fprintf(stderr,
-+				"Invalid address assigned to the Device Under Test: %s\n",
-+				arg);
- 			return ARGP_ERR_UNKNOWN;
- 		}
- 		break;
- 	case 'T':
- 		if (make_sockaddr(AF_INET6, arg, 0, &env.tester_addr, NULL)) {
--			fprintf(stderr, "Invalid Tester address: %s\n", arg);
-+			fprintf(stderr,
-+				"Invalid address assigned to the Tester device: %s\n",
-+				arg);
- 			return ARGP_ERR_UNKNOWN;
- 		}
- 		break;
-@@ -454,7 +460,8 @@ static int dut_run(struct xdp_features *skel)
- 						   &key, sizeof(key),
- 						   &val, sizeof(val), 0);
- 			if (err) {
--				fprintf(stderr, "bpf_map_lookup_elem failed\n");
-+				fprintf(stderr,
-+					"bpf_map_lookup_elem failed (%d)\n", err);
- 				goto end_thread;
- 			}
- 
-@@ -496,7 +503,7 @@ static bool tester_collect_detected_cap(struct xdp_features *skel,
- 	err = bpf_map__lookup_elem(skel->maps.stats, &key, sizeof(key),
- 				   &val, sizeof(val), 0);
- 	if (err) {
--		fprintf(stderr, "bpf_map_lookup_elem failed\n");
-+		fprintf(stderr, "bpf_map_lookup_elem failed (%d)\n", err);
- 		return false;
- 	}
- 
-@@ -574,7 +581,8 @@ static int tester_run(struct xdp_features *skel)
- 
- 	sockfd = socket(AF_INET6, SOCK_STREAM, 0);
- 	if (sockfd < 0) {
--		fprintf(stderr, "Failed to create tester socket\n");
-+		fprintf(stderr,
-+			"Failed creating tester service control socket\n");
- 		return -errno;
- 	}
- 
-@@ -584,7 +592,8 @@ static int tester_run(struct xdp_features *skel)
- 	err = connect(sockfd, (struct sockaddr *)&env.dut_ctrl_addr,
- 		      sizeof(env.dut_ctrl_addr));
- 	if (err) {
--		fprintf(stderr, "Failed to connect to the DUT\n");
-+		fprintf(stderr,
-+			"Failed connecting to the Device Under Test control socket\n");
- 		return -errno;
- 	}
- 
+The first patch introduces patch_instructions() function to enable
+patching more than one instruction at a time. This change showed
+around 5X improvement in the time taken to run test_bpf test cases.
+Patches 2 & 3 add the arch specific functions needed to support this
+feature. Patch 4 enables the support for powerpc and ensures cleanup
+is handled racefully. Tested the changes successfully.
+
+[1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
+[2] https://lore.kernel.org/all/20221110184303.393179-1-hbathini@linux.ibm.com/ 
+
+Changes in v2:
+* Introduced patch_instructions() to help with patching bpf programs.
+
+Hari Bathini (4):
+  powerpc/code-patching: introduce patch_instructions()
+  powerpc/bpf: implement bpf_arch_text_copy
+  powerpc/bpf: implement bpf_arch_text_invalidate for bpf_prog_pack
+  powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
+
+ arch/powerpc/include/asm/code-patching.h |   1 +
+ arch/powerpc/lib/code-patching.c         | 151 ++++++++++++++++-------
+ arch/powerpc/net/bpf_jit.h               |   7 +-
+ arch/powerpc/net/bpf_jit_comp.c          | 142 ++++++++++++++++-----
+ arch/powerpc/net/bpf_jit_comp32.c        |   4 +-
+ arch/powerpc/net/bpf_jit_comp64.c        |   6 +-
+ 6 files changed, 226 insertions(+), 85 deletions(-)
+
 -- 
 2.39.2
 
