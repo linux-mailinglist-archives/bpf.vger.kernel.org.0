@@ -2,118 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF8E6B1B10
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 07:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5E46B1BD0
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 07:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjCIGC7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 01:02:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
+        id S229577AbjCIGvo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 01:51:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjCIGC6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 01:02:58 -0500
-Received: from out-19.mta0.migadu.com (out-19.mta0.migadu.com [91.218.175.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BE81FE3
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 22:02:54 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1678341772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Y6+Qv25+n+6WiSt0BQxdC2cSrf6/ckkPlUxW2MZug8g=;
-        b=sPKwjiWdOtlOD2LOGWsDpAO9KvUJWXTG7Yj/PZQxNSqmmXzsSCr1G0Sl4g7hIvlEX+IHC4
-        SUEvTjZEUnD9XhdOrBZKdbVVFEUySAf5dZI8Bi8n2le3Bjzmt96rj6d0D3U0p50YBkNmSC
-        89P7mQNIlOsAJoVbXVwLvSDVpEjsolk=
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
-Subject: [PATCH v2 bpf-next] selftests/bpf: Fix flaky fib_lookup test
-Date:   Wed,  8 Mar 2023 22:02:44 -0800
-Message-Id: <20230309060244.3242491-1-martin.lau@linux.dev>
+        with ESMTP id S229774AbjCIGvn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 01:51:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8BD93E2D;
+        Wed,  8 Mar 2023 22:51:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 097F361A01;
+        Thu,  9 Mar 2023 06:51:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F56AC433D2;
+        Thu,  9 Mar 2023 06:51:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678344701;
+        bh=5vy2q8a1kNSG2PJaeuSkCgz3Tv69W3F7z95NxLs4+7k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OnxQCzPMeQFFAPihqgV4fvOiIXv6yYsoWU04mjMlGxCgHHrvOT/suD7nYK/yRsCps
+         A9CrWrheS8CHnn2/wShhecayMN8tqAtOU/WZIPMHD8kwNuxuf6pDlw5YtHvrLR3KX3
+         heQZ95s+l5CFcujcMreuvfuHTj47ga6Olhc6JBCE39qvZWX5VrgADDWGhE096s4A/L
+         tkaT7gYYpPRERbktido+J7sS3GMrWver0NfzGr3Mo2mske2TucKLriiXi8f5OR4sxO
+         I6EIrwRegJlTmRmQoVTdYEsjZR12lSBkpYgXI+oMC7sdKM93xeLXwUbN9sM5RNODfc
+         YpZ6ozG1yiflA==
+Date:   Wed, 8 Mar 2023 22:51:40 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        Yichun Zhang <yichun@openresty.com>,
+        Alexander Duyck <alexanderduyck@fb.com>, netdev@vger.kernel.org
+Subject: Re: [PATCH net, stable v1 3/3] virtio_net: add checking sq is full
+ inside xdp xmit
+Message-ID: <20230308225140.46c22c89@kernel.org>
+In-Reply-To: <20230308071921-mutt-send-email-mst@kernel.org>
+References: <20230308024935.91686-1-xuanzhuo@linux.alibaba.com>
+        <20230308024935.91686-4-xuanzhuo@linux.alibaba.com>
+        <7eea924e-5cc3-8584-af95-04587f303f8f@huawei.com>
+        <1678259647.118581-1-xuanzhuo@linux.alibaba.com>
+        <5a4564dc-af93-4305-49a4-5ca16d737bc3@huawei.com>
+        <20230308071921-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+On Wed, 8 Mar 2023 07:21:07 -0500 Michael S. Tsirkin wrote:
+> > >  * netdev_tx_t (*ndo_start_xmit)(struct sk_buff *skb,
+> > >  *                               struct net_device *dev);
+> > >  *	Called when a packet needs to be transmitted.
+> > >  *	Returns NETDEV_TX_OK.  Can return NETDEV_TX_BUSY, but you should stop
+> > >  *	the queue before that can happen; it's for obsolete devices and weird
+> > >  *	corner cases, but the stack really does a non-trivial amount
+> > >  *	of useless work if you return NETDEV_TX_BUSY.
+> > >  *	Required; cannot be NULL.  
+> > 
+> > Thanks for the pointer. It is intersting, it seems most driver is not flollowing
+> > the suggestion.  
+> 
+> Yes - I don't know why.
 
-There is a report that fib_lookup test is flaky when running in parallel.
-A symptom of slowness or delay. An example:
-
-Testing IPv6 stale neigh
-set_lookup_params:PASS:inet_pton(IPV6_IFACE_ADDR) 0 nsec
-test_fib_lookup:PASS:bpf_prog_test_run_opts 0 nsec
-test_fib_lookup:FAIL:fib_lookup_ret unexpected fib_lookup_ret: actual 0 != expected 7
-test_fib_lookup:FAIL:dmac not match unexpected dmac not match: actual 1 != expected 0
-dmac expected 11:11:11:11:11:11 actual 00:00:00:00:00:00
-
-[ Note that the "fib_lookup_ret unexpected fib_lookup_ret actual 0 ..."
-  is reversed in terms of expected and actual value. Fixing in this
-  patch also. ]
-
-One possibility is the testing stale neigh entry was marked dead by the
-gc (in neigh_periodic_work). The default gc_stale_time sysctl is 60s.
-This patch increases it to 15 mins.
-
-It also:
-- fixes the reversed arg (actual vs expected) in one of the
-  ASSERT_EQ test
-- removes the nodad command arg when adding v4 neigh entry which
-  currently has a warning.
-
-Fixes: 168de0233586 ("selftests/bpf: Add bpf_fib_lookup test")
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
----
-v2: Fix a typo in commit message. s/5/15/ mins.
-    Fix assert message.
-
- tools/testing/selftests/bpf/prog_tests/fib_lookup.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/fib_lookup.c b/tools/testing/selftests/bpf/prog_tests/fib_lookup.c
-index 429393caf612..a1e712105811 100644
---- a/tools/testing/selftests/bpf/prog_tests/fib_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fib_lookup.c
-@@ -54,11 +54,19 @@ static int setup_netns(void)
- 	SYS(fail, "ip link add veth1 type veth peer name veth2");
- 	SYS(fail, "ip link set dev veth1 up");
- 
-+	err = write_sysctl("/proc/sys/net/ipv4/neigh/veth1/gc_stale_time", "900");
-+	if (!ASSERT_OK(err, "write_sysctl(net.ipv4.neigh.veth1.gc_stale_time)"))
-+		goto fail;
-+
-+	err = write_sysctl("/proc/sys/net/ipv6/neigh/veth1/gc_stale_time", "900");
-+	if (!ASSERT_OK(err, "write_sysctl(net.ipv6.neigh.veth1.gc_stale_time)"))
-+		goto fail;
-+
- 	SYS(fail, "ip addr add %s/64 dev veth1 nodad", IPV6_IFACE_ADDR);
- 	SYS(fail, "ip neigh add %s dev veth1 nud failed", IPV6_NUD_FAILED_ADDR);
- 	SYS(fail, "ip neigh add %s dev veth1 lladdr %s nud stale", IPV6_NUD_STALE_ADDR, DMAC);
- 
--	SYS(fail, "ip addr add %s/24 dev veth1 nodad", IPV4_IFACE_ADDR);
-+	SYS(fail, "ip addr add %s/24 dev veth1", IPV4_IFACE_ADDR);
- 	SYS(fail, "ip neigh add %s dev veth1 nud failed", IPV4_NUD_FAILED_ADDR);
- 	SYS(fail, "ip neigh add %s dev veth1 lladdr %s nud stale", IPV4_NUD_STALE_ADDR, DMAC);
- 
-@@ -158,7 +166,7 @@ void test_fib_lookup(void)
- 		if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
- 			continue;
- 
--		ASSERT_EQ(tests[i].expected_ret, skel->bss->fib_lookup_ret,
-+		ASSERT_EQ(skel->bss->fib_lookup_ret, tests[i].expected_ret,
- 			  "fib_lookup_ret");
- 
- 		ret = memcmp(tests[i].dmac, fib_params->dmac, sizeof(tests[i].dmac));
--- 
-2.34.1
-
+Most modern drivers don't stop the queue upfront?
+We try to catch it in review, so anything remotely recent should. 
+But a lot of people DTRT *and* check at the start of .xmit if 
+the skb fits (return BUSY if it doesn't) - defensive programming.
+But the BUSY path should never hit.
