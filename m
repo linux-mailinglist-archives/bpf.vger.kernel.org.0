@@ -2,84 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEB36B2C90
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 19:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB12E6B2C97
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 19:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbjCISDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 13:03:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
+        id S229613AbjCISFB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 13:05:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbjCISDB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 13:03:01 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9834A26B0
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 10:02:56 -0800 (PST)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 329HLdbl007166;
-        Thu, 9 Mar 2023 18:02:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=P98881FbyK+A3Tn+BC5wf435cQ2+7xZl55FdpZ7Y+PM=;
- b=RvneM20ybt0OyBBtXYlvJ+oU/khmFKK3Dm4koRMg1DqMo8n1AK+18Schk2/JJOs9JOkX
- hTu3Ytf7yksII4VfcjRu7afkMh0PQ9t4NsRPyk1gTIxkbBvc6rQ9rzpEnfoHfnyGPQDV
- Yz/iEf3F6Drsc1VMYfqW7Glf0XbQW5/GnlC3k4xdMyzFl6i3ApdMw7zSEIcF7sW5iEb0
- AeUj+Gm5QShucsebMeQ+dVSobU6wk/3i1LhoIh/DWSL1reifJy9qZfSQHeugMMWia5e+
- XQCgMlJX84EjgSAjU9nwAFoVAaHfLjHfDsYuFGgIoCQ5umf7apiAmiAG61XALYPL6XuL 6Q== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p6s9bbus2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Mar 2023 18:02:34 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 329GstAF030381;
-        Thu, 9 Mar 2023 18:02:31 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3p6g862pqq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Mar 2023 18:02:31 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 329I2TKU31457772
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Mar 2023 18:02:29 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0D17C2004B;
-        Thu,  9 Mar 2023 18:02:29 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C0CD12004D;
-        Thu,  9 Mar 2023 18:02:26 +0000 (GMT)
-Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.13.46])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  9 Mar 2023 18:02:26 +0000 (GMT)
-From:   Hari Bathini <hbathini@linux.ibm.com>
-To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 4/4] powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
-Date:   Thu,  9 Mar 2023 23:32:13 +0530
-Message-Id: <20230309180213.180263-5-hbathini@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230309180213.180263-1-hbathini@linux.ibm.com>
-References: <20230309180213.180263-1-hbathini@linux.ibm.com>
+        with ESMTP id S230016AbjCISE7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 13:04:59 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F415161AA3
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 10:04:57 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id a9so2848562plh.11
+        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 10:04:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1678385097;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qyNS/HvkNGO3HB6bTvr2A4GS1zLHx3Piz0FeFR4waQ4=;
+        b=fceVk74bncNKsZ1EMlrc9i2SeNms8rV7OTopHID0PJ2tFKsLi007QoaWNNV/aGoCVZ
+         jnMkLiSlogtE7LeO0rVsJSUvOFN2zMIlN2HSYEHOeFZUQX/lXLgqNu0x2fazo8fk6ng6
+         uxabmS/Pu5WeWIKR8HVlogC8GRUzJ0xlL7lDP2gzLGFrLsMhYXGG/kOiZqbznyBwG8dU
+         A7HIWmxEX0Agx7zZQKUHDBCgUrCQcokMlYNpXZ+gYLwnNZLRuWwEK8d9jdgWBrpHL7Vl
+         dcoTcFMCFnOoE6d34NniDy098WmMQ4JE+VfFY2wlc+azg1Am+CCo4Id4C05/4FVuDj9V
+         ostg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678385097;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qyNS/HvkNGO3HB6bTvr2A4GS1zLHx3Piz0FeFR4waQ4=;
+        b=CIWfT+Ly4IEMJXzBjlqXiFI8Yk1TJ84jj0qPCh+QTRvG7wuWCxFI7xNI5RkyZl2Dx3
+         Au/D1KL6uWjDEo3SxIwOv627b4Lx9JpPinix4+RhTBV2wBHBThV6NhUv0NN5uta9Lw4V
+         lhNcrZWB5dQojNqM8xYjyjiaU7jIKQdlkjy8VLIEW8Rwk9cPXgIPibtovQ58GUsru+cu
+         YxzuuHfCxC06pmLHMhV9SsNdwxNcXxFRP+DhIfXDHAWau35Hik3w34A9AxtvYcXTGAV6
+         4siWArPOow1q7loCwnYRpSl6sjwWrKd8Ch2snArFqe33pV8Is1EkV425LzAyRNdiAnB7
+         mgZA==
+X-Gm-Message-State: AO0yUKVEcNPWNZq5SIf+Bg+on6spvspifKwrEoj+TPEiJ2CaGVdbXgrJ
+        Q1EdfoWBN6TkyAireUKRdw3aArqHwDiqzAuatZJmZg==
+X-Google-Smtp-Source: AK7set9JrQxWdXQcVMc8iSO2R01eH5+mZEmdg05RgzRd98rkXynh/4dOJf0aC1W9tc/QBlsy6nspR+Pp4CBZdtVOH5A=
+X-Received: by 2002:a17:90a:f98f:b0:231:1dab:f8e with SMTP id
+ cq15-20020a17090af98f00b002311dab0f8emr8428085pjb.9.1678385096961; Thu, 09
+ Mar 2023 10:04:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: guf-wQyqrKBeSnrAo7JI9kGETjR-398Q
-X-Proofpoint-GUID: guf-wQyqrKBeSnrAo7JI9kGETjR-398Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-09_10,2023-03-09_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0 mlxlogscore=999
- priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2303090145
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <Y/fnZkXQdc8lkP7q@google.com> <874jrcklvf.fsf@toke.dk>
+ <CAKH8qBsoTiVja8=EXTcfJNYpF7JjgPoD=Wi4JBX5PGbggn=S4g@mail.gmail.com>
+ <878rgjjipq.fsf@toke.dk> <CAKH8qBstQb0CS1Q-dcx_jeZM2sKSMH3PHFww6=6Hy+3wJ-NL+Q@mail.gmail.com>
+ <CAJ8uoz0jnavFxMJ8tgb4+-+OsCPqVJQez8ULOTM2a60D4RmJ7A@mail.gmail.com> <b09048d9-217e-ca3f-3d17-e82c146cd2df@redhat.com>
+In-Reply-To: <b09048d9-217e-ca3f-3d17-e82c146cd2df@redhat.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 9 Mar 2023 10:04:45 -0800
+Message-ID: <CAKH8qBuviabUfBTFg3gOfpkWc+oFvFP-NcV4g2ipn7D=C2u_2g@mail.gmail.com>
+Subject: Re: [LSF/MM/BPF TOPIC] XDP metadata for TX
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>, brouer@redhat.com,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
+        lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,328 +74,157 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use bpf_jit_binary_pack_alloc in powerpc jit. The jit engine first
-writes the program to the rw buffer. When the jit is done, the program
-is copied to the final location with bpf_jit_binary_pack_finalize.
-With multiple jit_subprogs, bpf_jit_free is called on some subprograms
-that haven't got bpf_jit_binary_pack_finalize() yet. Implement custom
-bpf_jit_free() like in commit 1d5f82d9dd47 ("bpf, x86: fix freeing of
-not-finalized bpf_prog_pack") to call bpf_jit_binary_pack_finalize(),
-if necessary. While here, correct the misnomer powerpc64_jit_data to
-powerpc_jit_data as it is meant for both ppc32 and ppc64.
+On Tue, Mar 7, 2023 at 11:32=E2=80=AFAM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
+>
+>
+> On 03/03/2023 08.42, Magnus Karlsson wrote:
+> > On Mon, 27 Feb 2023 at 21:16, Stanislav Fomichev <sdf@google.com> wrote=
+:
+> >> On Mon, Feb 27, 2023 at 6:17 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@kernel.org> wrote:
+> >>> Stanislav Fomichev <sdf@google.com> writes:
+> >>>> On Thu, Feb 23, 2023 at 3:22 PM Toke H=C3=B8iland-J=C3=B8rgensen <to=
+ke@kernel.org> wrote:
+> >>>>>
+> >>>>> Stanislav Fomichev <sdf@google.com> writes:
+> >>>>>
+> >>>>>> I'd like to discuss a potential follow up for the previous "XDP RX
+> >>>>>> metadata" series [0].
+> >>>>>>
+> >>>>>> Now that we can access (a subset of) packet metadata at RX, I'd li=
+ke to
+> >>>>>> explore the options where we can export some of that metadata on T=
+X. And
+> >>>>>> also whether it might be possible to access some of the TX complet=
+ion
+> >>>>>> metadata (things like TX timestamp).
+> >>>>>>
+>
+> IMHO it makes sense to see TX metadata as two separate operations.
+>
+>   (1) Metadata written into the TX descriptor.
+>   (2) Metadata read when processing TX completion.
+>
+> These operations happen at two different points in time. Thus likely
+> need different BPF hooks.   Having BPF-progs running at each of these
+> points in time, will allow us to e.g. implement BQL (which is relevant
+> to XDP queuing effort).
 
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
----
- arch/powerpc/net/bpf_jit.h        |   7 +-
- arch/powerpc/net/bpf_jit_comp.c   | 104 +++++++++++++++++++++---------
- arch/powerpc/net/bpf_jit_comp32.c |   4 +-
- arch/powerpc/net/bpf_jit_comp64.c |   6 +-
- 4 files changed, 83 insertions(+), 38 deletions(-)
+I guess for (2) the question here is: is it worth having a separate
+hook? Or will a simple traceepoint as Toke suggested be enough? For
+BQL purposes, we can still attach a prog to that tracepoint, right?
 
-diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
-index d767e39d5645..a8b7480c4d43 100644
---- a/arch/powerpc/net/bpf_jit.h
-+++ b/arch/powerpc/net/bpf_jit.h
-@@ -168,15 +168,16 @@ static inline void bpf_clear_seen_register(struct codegen_context *ctx, int i)
- 
- void bpf_jit_init_reg_mapping(struct codegen_context *ctx);
- int bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func);
--int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-+int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct codegen_context *ctx,
- 		       u32 *addrs, int pass, bool extra_pass);
- void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx);
- void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx);
- void bpf_jit_realloc_regs(struct codegen_context *ctx);
- int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, int tmp_reg, long exit_addr);
- 
--int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct codegen_context *ctx,
--			  int insn_idx, int jmp_off, int dst_reg);
-+int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 *fimage, int pass,
-+			  struct codegen_context *ctx, int insn_idx,
-+			  int jmp_off, int dst_reg);
- 
- #endif
- 
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index d1794d9f0154..ece75c829499 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -42,10 +42,11 @@ int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, int tmp_reg,
- 	return 0;
- }
- 
--struct powerpc64_jit_data {
--	struct bpf_binary_header *header;
-+struct powerpc_jit_data {
-+	struct bpf_binary_header *hdr;
-+	struct bpf_binary_header *fhdr;
- 	u32 *addrs;
--	u8 *image;
-+	u8 *fimage;
- 	u32 proglen;
- 	struct codegen_context ctx;
- };
-@@ -62,15 +63,18 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	u8 *image = NULL;
- 	u32 *code_base;
- 	u32 *addrs;
--	struct powerpc64_jit_data *jit_data;
-+	struct powerpc_jit_data *jit_data;
- 	struct codegen_context cgctx;
- 	int pass;
- 	int flen;
--	struct bpf_binary_header *bpf_hdr;
-+	struct bpf_binary_header *fhdr = NULL;
-+	struct bpf_binary_header *hdr = NULL;
- 	struct bpf_prog *org_fp = fp;
- 	struct bpf_prog *tmp_fp;
- 	bool bpf_blinded = false;
- 	bool extra_pass = false;
-+	u8 *fimage = NULL;
-+	u32 *fcode_base;
- 	u32 extable_len;
- 	u32 fixup_len;
- 
-@@ -100,9 +104,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	addrs = jit_data->addrs;
- 	if (addrs) {
- 		cgctx = jit_data->ctx;
--		image = jit_data->image;
--		bpf_hdr = jit_data->header;
-+		fimage = jit_data->fimage;
-+		fhdr = jit_data->fhdr;
- 		proglen = jit_data->proglen;
-+		hdr = jit_data->hdr;
-+		image = (void *)hdr + ((void *)fimage - (void *)fhdr);
- 		extra_pass = true;
- 		goto skip_init_ctx;
- 	}
-@@ -120,7 +126,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	cgctx.stack_size = round_up(fp->aux->stack_depth, 16);
- 
- 	/* Scouting faux-generate pass 0 */
--	if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0, false)) {
-+	if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, false)) {
- 		/* We hit something illegal or unsupported. */
- 		fp = org_fp;
- 		goto out_addrs;
-@@ -135,7 +141,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	 */
- 	if (cgctx.seen & SEEN_TAILCALL || !is_offset_in_branch_range((long)cgctx.idx * 4)) {
- 		cgctx.idx = 0;
--		if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0, false)) {
-+		if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, false)) {
- 			fp = org_fp;
- 			goto out_addrs;
- 		}
-@@ -157,17 +163,19 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	proglen = cgctx.idx * 4;
- 	alloclen = proglen + FUNCTION_DESCR_SIZE + fixup_len + extable_len;
- 
--	bpf_hdr = bpf_jit_binary_alloc(alloclen, &image, 4, bpf_jit_fill_ill_insns);
--	if (!bpf_hdr) {
-+	fhdr = bpf_jit_binary_pack_alloc(alloclen, &fimage, 4, &hdr, &image,
-+					      bpf_jit_fill_ill_insns);
-+	if (!fhdr) {
- 		fp = org_fp;
- 		goto out_addrs;
- 	}
- 
- 	if (extable_len)
--		fp->aux->extable = (void *)image + FUNCTION_DESCR_SIZE + proglen + fixup_len;
-+		fp->aux->extable = (void *)fimage + FUNCTION_DESCR_SIZE + proglen + fixup_len;
- 
- skip_init_ctx:
- 	code_base = (u32 *)(image + FUNCTION_DESCR_SIZE);
-+	fcode_base = (u32 *)(fimage + FUNCTION_DESCR_SIZE);
- 
- 	/* Code generation passes 1-2 */
- 	for (pass = 1; pass < 3; pass++) {
-@@ -175,8 +183,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		cgctx.idx = 0;
- 		cgctx.alt_exit_addr = 0;
- 		bpf_jit_build_prologue(code_base, &cgctx);
--		if (bpf_jit_build_body(fp, code_base, &cgctx, addrs, pass, extra_pass)) {
--			bpf_jit_binary_free(bpf_hdr);
-+		if (bpf_jit_build_body(fp, code_base, fcode_base, &cgctx, addrs, pass, extra_pass)) {
-+			bpf_arch_text_copy(&fhdr->size, &hdr->size, sizeof(hdr->size));
-+			bpf_jit_binary_pack_free(fhdr, hdr);
- 			fp = org_fp;
- 			goto out_addrs;
- 		}
-@@ -192,21 +201,23 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		 * Note that we output the base address of the code_base
- 		 * rather than image, since opcodes are in code_base.
- 		 */
--		bpf_jit_dump(flen, proglen, pass, code_base);
-+		bpf_jit_dump(flen, proglen, pass, fcode_base);
- 
- #ifdef CONFIG_PPC64_ELF_ABI_V1
- 	/* Function descriptor nastiness: Address + TOC */
--	((u64 *)image)[0] = (u64)code_base;
-+	((u64 *)image)[0] = (u64)fcode_base;
- 	((u64 *)image)[1] = local_paca->kernel_toc;
- #endif
- 
--	fp->bpf_func = (void *)image;
-+	fp->bpf_func = (void *)fimage;
- 	fp->jited = 1;
- 	fp->jited_len = proglen + FUNCTION_DESCR_SIZE;
- 
--	bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + bpf_hdr->size);
- 	if (!fp->is_func || extra_pass) {
--		bpf_jit_binary_lock_ro(bpf_hdr);
-+		if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
-+			fp = org_fp;
-+			goto out_addrs;
-+		}
- 		bpf_prog_fill_jited_linfo(fp, addrs);
- out_addrs:
- 		kfree(addrs);
-@@ -216,8 +227,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		jit_data->addrs = addrs;
- 		jit_data->ctx = cgctx;
- 		jit_data->proglen = proglen;
--		jit_data->image = image;
--		jit_data->header = bpf_hdr;
-+		jit_data->fimage = fimage;
-+		jit_data->fhdr = fhdr;
-+		jit_data->hdr = hdr;
- 	}
- 
- out:
-@@ -231,12 +243,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
-  * The caller should check for (BPF_MODE(code) == BPF_PROBE_MEM) before calling
-  * this function, as this only applies to BPF_PROBE_MEM, for now.
-  */
--int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct codegen_context *ctx,
--			  int insn_idx, int jmp_off, int dst_reg)
-+int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 *fimage, int pass,
-+			  struct codegen_context *ctx, int insn_idx, int jmp_off,
-+			  int dst_reg)
- {
- 	off_t offset;
- 	unsigned long pc;
--	struct exception_table_entry *ex;
-+	struct exception_table_entry *ex, *ex_entry;
- 	u32 *fixup;
- 
- 	/* Populate extable entries only in the last pass */
-@@ -247,9 +260,16 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct code
- 	    WARN_ON_ONCE(ctx->exentry_idx >= fp->aux->num_exentries))
- 		return -EINVAL;
- 
-+	/*
-+	 * Program is firt written to image before copying to the
-+	 * final location (fimage). Accordingly, update in the image first.
-+	 * As all offsets used are relative, copying as is to the
-+	 * final location should be alright.
-+	 */
- 	pc = (unsigned long)&image[insn_idx];
-+	ex = (void *)fp->aux->extable - (void *)fimage + (void *)image;
- 
--	fixup = (void *)fp->aux->extable -
-+	fixup = (void *)ex -
- 		(fp->aux->num_exentries * BPF_FIXUP_LEN * 4) +
- 		(ctx->exentry_idx * BPF_FIXUP_LEN * 4);
- 
-@@ -260,17 +280,17 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct code
- 	fixup[BPF_FIXUP_LEN - 1] =
- 		PPC_RAW_BRANCH((long)(pc + jmp_off) - (long)&fixup[BPF_FIXUP_LEN - 1]);
- 
--	ex = &fp->aux->extable[ctx->exentry_idx];
-+	ex_entry = &ex[ctx->exentry_idx];
- 
--	offset = pc - (long)&ex->insn;
-+	offset = pc - (long)&ex_entry->insn;
- 	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
- 		return -ERANGE;
--	ex->insn = offset;
-+	ex_entry->insn = offset;
- 
--	offset = (long)fixup - (long)&ex->fixup;
-+	offset = (long)fixup - (long)&ex_entry->fixup;
- 	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
- 		return -ERANGE;
--	ex->fixup = offset;
-+	ex_entry->fixup = offset;
- 
- 	ctx->exentry_idx++;
- 	return 0;
-@@ -308,3 +328,27 @@ int bpf_arch_text_invalidate(void *dst, size_t len)
- 
- 	return ret;
- }
-+
-+void bpf_jit_free(struct bpf_prog *fp)
-+{
-+	if (fp->jited) {
-+		struct powerpc_jit_data *jit_data = fp->aux->jit_data;
-+		struct bpf_binary_header *hdr;
-+
-+		/*
-+		 * If we fail the final pass of JIT (from jit_subprogs),
-+		 * the program may not be finalized yet. Call finalize here
-+		 * before freeing it.
-+		 */
-+		if (jit_data) {
-+			bpf_jit_binary_pack_finalize(fp, jit_data->fhdr, jit_data->hdr);
-+			kvfree(jit_data->addrs);
-+			kfree(jit_data);
-+		}
-+		hdr = bpf_jit_binary_pack_hdr(fp);
-+		bpf_jit_binary_pack_free(hdr, NULL);
-+		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(fp));
-+	}
-+
-+	bpf_prog_unlock_free(fp);
-+}
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 7f91ea064c08..fb2761b54d64 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -278,7 +278,7 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
- }
- 
- /* Assemble the body code between the prologue & epilogue */
--int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-+int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct codegen_context *ctx,
- 		       u32 *addrs, int pass, bool extra_pass)
- {
- 	const struct bpf_insn *insn = fp->insnsi;
-@@ -997,7 +997,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 					jmp_off += 4;
- 				}
- 
--				ret = bpf_add_extable_entry(fp, image, pass, ctx, insn_idx,
-+				ret = bpf_add_extable_entry(fp, image, fimage, pass, ctx, insn_idx,
- 							    jmp_off, dst_reg);
- 				if (ret)
- 					return ret;
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 8dd3cabaa83a..37a8970a7065 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -343,7 +343,7 @@ asm (
- );
- 
- /* Assemble the body code between the prologue & epilogue */
--int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-+int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct codegen_context *ctx,
- 		       u32 *addrs, int pass, bool extra_pass)
- {
- 	enum stf_barrier_type stf_barrier = stf_barrier_type_get();
-@@ -922,8 +922,8 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				addrs[++i] = ctx->idx * 4;
- 
- 			if (BPF_MODE(code) == BPF_PROBE_MEM) {
--				ret = bpf_add_extable_entry(fp, image, pass, ctx, ctx->idx - 1,
--							    4, dst_reg);
-+				ret = bpf_add_extable_entry(fp, image, fimage, pass, ctx,
-+							    ctx->idx - 1, 4, dst_reg);
- 				if (ret)
- 					return ret;
- 			}
--- 
-2.39.2
+> >>>>>> I'm currently trying to understand whether the same approach I've =
+used
+> >>>>>> on RX could work at TX. By May I plan to have a bunch of options l=
+aid
+> >>>>>> out (currently considering XSK tx/compl programs and XDP tx/compl
+> >>>>>> programs) so we have something to discuss.
+> >>>>>
+> >>>>> I've been looking at ways of getting a TX-completion hook for the X=
+DP
+> >>>>> queueing stuff as well. For that, I think it could work to just hoo=
+k
+> >>>>> into xdp_return_frame(), but if you want to access hardware metadat=
+a
+> >>>>> it'll obviously have to be in the driver. A hook in the driver coul=
+d
+> >>>>> certainly be used for the queueing return as well, though, which ma=
+y
+> >>>>> help making it worth the trouble :)
+> >>>>
+> >>>> Yeah, I'd like to get to completion descriptors ideally; so nothing
+> >>>> better than a driver hook comes to mind so far :-(
+>
+> As Toke mentions, I'm also hoping we could leverage or extend the
+> xdp_return_frame() call.  Or implicitly add the "hook" at the existing
+> xdp_return_frame() call. This is about operation (2) *reading* some
+> metadata at TX completion time.
 
+Ack, noted, thx. Although, at least for mlx5e_free_xdpsq_desc, I don't
+see it being called for the af_xdp tx path. But maybe that's something
+we can amend in a couple of places (so xdp_return_frame would handle
+most xdp cases, and some new tbd func for af_xdp tx)?
+
+> Can this be mapped to the RX-kfuncs approach(?), by driver extending
+> (call/structs) with pointer to TX-desc + adaptor info and BPF-prog/hook
+> doing TX-kfuncs calls into driver (that knows how to extract completion
+> data).
+
+Yeah, that seems like a natural thing to do here.
+
+>
+> [...]
+> >>> Well, to me XDP_REDIRECT is the most interesting one (see above). I
+> >>> think we could even drop the XDP_TX case and only do this for
+> >>> XDP_REDIRECT, since XDP_TX is basically a special-case optimisation.
+> >>> I.e., it's possible to XDP_REDIRECT back to the same device, the fram=
+es
+> >>> will just take a slight detour up through the stack; but that could a=
+lso
+> >>> be a good thing if it means we'll have to do less surgery to the driv=
+ers
+> >>> to implement this for two paths.
+> >>>
+> >>> It does have the same challenge as you outlined above, though: At tha=
+t
+> >>> point the TX descriptor probably doesn't exist, so the driver NDO wil=
+l
+> >>> have to do something else with the data; but maybe we can solve that
+> >>> without moving the hook into the driver itself somehow?
+> >>
+> >> Ah, ok, yeah, I was putting XDP_TX / XDP_REDIRECT under the same
+> >> "transmit something out of xdp_rx hook" umbrella. We can maybe come up
+> >> with a skb-like-private metadata layout (as we've discussed previously
+> >> for skb) here as well? But not sure it would solve all the problems?
+>
+> This is operation (1) writing metadata into the TX descriptor.
+> In this case we have a metadata mapping problem, from RX on one device
+> driver to TX on another device driver. As you say, we also need to map
+> this SKBs, which have a fairly static set of metadata.
+>
+> For the most common metadata offloads (like TX-checksum, TX-vlan) I
+> think it makes sense to store those in xdp_frame area (use for SKB
+> mapping) and re-use these when at TX writing into the TX descriptor.
+
+[..]
+
+> BUT there are also metadata TX offloads offloads, like asking for a
+> specific Launch-Time for at packet, that needs a more flexible approach.
+
+Why can't these go into the same "common" xdp_frame area?
+
+> >> I'm thinking of an af_xdp case where it wants to program something
+> >> similar to tso/encap/tunneling offload (assuming af_xdp will get 4k+
+> >> support) or a checksum offload. Exposing access to the driver tx hooks
+> >> seems like the easiest way to get there?
+> >>
+> >>>> - AF_XDP TX - this one needs something deep in the driver (due to tx
+> >>>> zc) to populate the descriptors?
+> >>>
+> >>> Yeah, this one is a bit more challenging, but having a way to process
+> >>> AF_XDP frames in the kernel before they're sent out would be good in =
+any
+> >>> case (for things like policing what packets an AF_XDP application can
+> >>> send in a cloud deployment, for instance). Would be best if we could
+> >>> consolidate the XDP_REDIRECT and AF_XDP paths, I suppose...
+> >>>
+>
+> I agree, it would be best if we can consolidate the XDP_REDIRECT and
+> AF_XDP paths, else we have to re-implement the same for AF_XDP xmit path
+> (and maintain both paths). I also agree that being able to police what
+> packets an AF_XDP application can send is a useful feature (e.g. cloud
+> deployments).
+>
+> Looking forward to collaborate on this work!
+> --Jesper
+
+Thank you for the comments! So it looks like two things we potentially
+need to do/agree upon:
+1. User-facing API. One hook + tracepoint vs two hooks (and at what
+level: af_xdp vs xdp). I'll try to focus on that first (waiting for
+af_xdp patches that Magnus mentioned).
+2. Potentially internal refactoring to consolidate XDP_REDIRECT+AF_XDP
+(seems like something we should be able to discuss as we go; aka
+implementation details)
