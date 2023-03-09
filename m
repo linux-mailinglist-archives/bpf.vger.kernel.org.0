@@ -2,102 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC726B241C
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 13:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7746B2524
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 14:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbjCIM0d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 07:26:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
+        id S230113AbjCINVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 08:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbjCIM0V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 07:26:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C2DEAB97
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 04:26:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BE7F3B81EDF
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 12:26:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53A43C433D2;
-        Thu,  9 Mar 2023 12:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678364772;
-        bh=Oqk8Azjmvp35zHKdzJouSQ2y+xrmTqcAHDuoRkWN5dY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eBasOg153uzh6coWSIWDUf8LwkFfXtA6+08YNy5xchsytYiFHODzFpaN0VEsxu8IP
-         Y5KTPpP5+eRWlktgf/r2dqD1HcsUNsFncGIjvES6hxJdzgu2mAx1X8/BmUFz/2nLbD
-         vKhkxMbqZqglNDAARf7l9wPETUwuvTN66UuA+mP70eC6abGiK9XqeC6yB0Sb0TII7Y
-         Ga8rhvWBWS3lKUeSLTqHmx1XtZQf+39BiX4TJ+6D8w3v3uydPJz5/JSbJZsOc7I6Zd
-         0N517PW6MNdeer94E6KPANTqXWEULltyfwkRyGMRH/6bTJ9S91Sd2gSrzUYP8u3578
-         lmDFd0ae3PhgQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AC24A4049F; Thu,  9 Mar 2023 09:26:09 -0300 (-03)
-Date:   Thu, 9 Mar 2023 09:26:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: add
- --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags
- for v1.25
-Message-ID: <ZAnQYUPkUg0HBrlh@kernel.org>
-References: <1675949331-27935-1-git-send-email-alan.maguire@oracle.com>
- <CAADnVQ+hfQ9LEmEFXneB7hm17NvRniXSShrHLaM-1BrguLjLQw@mail.gmail.com>
- <CAADnVQJe6dRnhbSk92g5Np0tXyMxWLD+8LqUxYfYPr7dWkxzSw@mail.gmail.com>
- <ZAk8L17/EfR8siaz@kernel.org>
- <ZAmV8luLw+umNGqd@krava>
- <ZAmwzzrBfmp2GQzr@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZAmwzzrBfmp2GQzr@krava>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229825AbjCINVJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 08:21:09 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A2AE6FFE;
+        Thu,  9 Mar 2023 05:21:06 -0800 (PST)
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 329D4eCA029648;
+        Thu, 9 Mar 2023 13:20:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=pNHCbqRQafX/ACjbDKS29OWZUQTgc8vIxhSBvT7xme0=;
+ b=O8GRs4Es2Mmgk28NSbkjteFHV5l4cwoUOZselt2XH4yHzePswClyXxp3ncTvedAd6Nak
+ 0+HSYUmdGPzqBYUrouOE7ASckr6rQliLQDObM7uyd2fiwf3M1UVPlbM7Noa9YZPdKTHS
+ Ivtf1mBSI5O+db7EU08zvZAE3Z3+eagkFASETr6m/MnNmfG6X6ZZYiYjYQFDsm1ixVIf
+ SnuCZjDWbQj9E1/BW3Hb1YnHj3naHSA2IM6U/HcKHzXR3ME6gdLZq95g1sh0p2WHM9uV
+ 5mMHEPKhNsstpkkbGrpcN6W2m+bJUlMkAPL+qBKL3FZd/sJ6xUVJTJS+Re0MOXZKClk9 hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3p6t3bsxyj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Mar 2023 13:20:38 +0000
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 329D5bNm012989;
+        Thu, 9 Mar 2023 13:20:38 GMT
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3p6t3bsxy4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Mar 2023 13:20:38 +0000
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 329CU4u4023573;
+        Thu, 9 Mar 2023 13:20:37 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([9.208.129.119])
+        by ppma03dal.us.ibm.com (PPS) with ESMTPS id 3p6fnwkpg5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Mar 2023 13:20:37 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 329DKZGS19268266
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Mar 2023 13:20:36 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B82CF58061;
+        Thu,  9 Mar 2023 13:20:35 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB4DA5805D;
+        Thu,  9 Mar 2023 13:20:34 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.90.179])
+        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Mar 2023 13:20:34 +0000 (GMT)
+Message-ID: <397cb437bbd41e7eb223a07bc92a10bb57df696e.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 1/3] security: Introduce LSM_ORDER_LAST and set it
+ for the integrity LSM
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, mic@digikod.net
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keescook@chromium.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu, 09 Mar 2023 08:20:34 -0500
+In-Reply-To: <20230309085433.1810314-2-roberto.sassu@huaweicloud.com>
+References: <20230309085433.1810314-1-roberto.sassu@huaweicloud.com>
+         <20230309085433.1810314-2-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: klGFtrN_aONy7MWhWwYH4GEQF-YdaOII
+X-Proofpoint-ORIG-GUID: Tf2q3-RDKlL0JJXY9cIGOIypQYWVQ3r8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-09_06,2023-03-08_03,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 mlxlogscore=767 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1011 impostorscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2303090105
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Mar 09, 2023 at 11:11:27AM +0100, Jiri Olsa escreveu:
-> On Thu, Mar 09, 2023 at 09:16:53AM +0100, Jiri Olsa wrote:
-> > On Wed, Mar 08, 2023 at 10:53:51PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Mon, Feb 13, 2023 at 10:09:21PM -0800, Alexei Starovoitov escreveu:
-> > > > On Mon, Feb 13, 2023 at 7:12 PM Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > > > > Maybe we should make scripts/pahole-flags.sh selective
-> > > > > and don't apply skip_encoding_btf_inconsiste to bpf_testmod ?
+On Thu, 2023-03-09 at 09:54 +0100, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Introduce LSM_ORDER_LAST, to satisfy the requirement of LSMs needing to be
+> last, e.g. the 'integrity' LSM, without changing the kernel command line or
+> configuration.
+> 
+> Also, set this order for the 'integrity' LSM. While not enforced, this is
+> the only LSM expected to use it.
+> 
+> Similarly to LSM_ORDER_FIRST, LSMs with LSM_ORDER_LAST are always enabled
+> and put at the end of the LSM list.
+> 
+> Finally, for LSM_ORDER_MUTABLE LSMs, set the found variable to true if an
+> LSM is found, regardless of its order. In this way, the kernel would not
+> wrongly report that the LSM is not built-in in the kernel if its order is
+> LSM_ORDER_LAST.
+> 
+> Fixes: 79f7865d844c ("LSM: Introduce "lsm=" for boottime LSM selection")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-> > > > > Thoughts?
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 
-> > > > It's even worse with clang compiled kernel:
-
-> > > I tested what is now in the master branch with both gcc and clang, on
-> > > fedora:37, Alan also tested it, Jiri, it would be great if you could
-> > > check if reverting the revert works for you as well.
-
-> > ok, will check your master branch
-
-> looks good.. got no duplicates and passing bpf tests for both
-> gcc and clang setups
-
-Thanks for testing!
-
-Alexei, since you hit those problems, please consider redoing those
-tests in your environment so that we triple check all this.
-
-Thanks,
-
-- Arnaldo
