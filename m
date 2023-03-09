@@ -2,74 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB266B1DB1
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 09:18:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAD46B1DBE
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 09:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbjCIISL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 03:18:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
+        id S230076AbjCIIVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 03:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbjCIIRv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 03:17:51 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC70420A2D;
-        Thu,  9 Mar 2023 00:14:22 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id n18so1053128ybm.10;
-        Thu, 09 Mar 2023 00:14:22 -0800 (PST)
+        with ESMTP id S230062AbjCIIUj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 03:20:39 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA42DE1D1
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 00:16:55 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id h11so1004419wrm.5
+        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 00:16:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678349619;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=57n/+LRRePFei+PwepmtWg52Mbl3H508qcWE1bJ1n8Q=;
-        b=P9LtjoQu1DvX9A7HMv9CDKOFrd+Sn6iBl85R0e/rBAUtKr3mz/e1x7rRh4sccuDBFx
-         94rdxoZxOY34KJtYSMNNdpsWB74IEzblhrO0powjy5gg93WtG8Yt6LrfufCp4q7KnHA7
-         k7jdIt5IPlJbwmIPRykCnvSmgC6DjFmjrVnyS2oCdHwMqUaDAHPpcBMBFJSsACpTM/zM
-         Ymi0k8DFahDMXTfJWU701i1IJEClhCBdbR2pXS42EOiGUIJatg4+ek0/OZYXBaFgL3PH
-         p80fFHeJvNtRa0L45/r1gc1y61xDL2xKrUjUSyiDfy+myvFqsUAhZljyjjq/XhBM9xcB
-         UzhQ==
+        d=gmail.com; s=20210112; t=1678349814;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=m8wnah3tqTNqE9aY6keCD8XrogXEIwfFsInR1NH87YU=;
+        b=L8+UC9J+I1VU2OSLt3C6m580IpFeOqaJ7jmfwxCXKL34sBJMHMz2OtRtn2LiCrIBGl
+         FIETE+LNGw7MwKbn3gEvXC2OtCj4IBzJ91T/KH73jajOb99YGaNCtclM/qWg2rAcTkPP
+         D4UQS9VoOX7JsqlBJedPowN45NO5TuQXxlaa55HoHeOWFG5FMTzOzt2PRSQfL4GmhvPO
+         nTgtYjnJ8T4EPe2Bpfk+j5em8HnfLFwpzMVghbpZv6ktAI0G68IL5pF0/E6Tm9L4jIiU
+         pHsFKep29ZUes0FtFnXIWSGW+mmDHKpEZPZiJ+j85qyWCdwELrvE1GShESHbKsnBRXcQ
+         YFmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678349619;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=57n/+LRRePFei+PwepmtWg52Mbl3H508qcWE1bJ1n8Q=;
-        b=cR2A919EIh1rULntTRoMaZ3YXKrnKeRWZnQEh+ckL/nUwgOQi1gZX6AzUsBMKUvqPr
-         sJ47Sm8x73YAvb2VsVNvNCkX3DB2OLsF9ZWvfQUYlyxZ6oqCRnzEYMWkzNzEK8yLWQP0
-         75unFGM0zjCNaEV0EvJt0314EpzmlGqxkOPP7GBeZQbEWcPjT9sH2mUMqHOOtQOS3Chx
-         yeXLkee16RjByiQGOau1hni3ANpwXtc9bHq57oBEOPZc5jREB8+VaWsYB42ITy52ufok
-         4Q8+kIiIFVezw8u++lIyC9epH//en3ax95SklEs3vjfmqZA6H+szFMiI9jWREonWic9B
-         30GQ==
-X-Gm-Message-State: AO0yUKX/BSP3FIIxxPV1tEIGqcB7f2bBybpZtscwilprTwYYJzCVRvaF
-        WzU08/KiN6OEfHZ0hMErrtELfsEl8hBBD88hdcU=
-X-Google-Smtp-Source: AK7set+pn50q0Ebz4sv6D+0H35hXEv+QeO9rvQNcMPWOgnWCDY2Gg9fn/GNcFvCYxZ5D792KYM5d5HDidsHFjNM+S0o=
-X-Received: by 2002:a25:8d88:0:b0:b17:e69b:b82a with SMTP id
- o8-20020a258d88000000b00b17e69bb82amr3823298ybl.8.1678349619399; Thu, 09 Mar
- 2023 00:13:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20230301154953.641654-1-joannelkoong@gmail.com>
- <20230301154953.641654-11-joannelkoong@gmail.com> <CAADnVQJCYcPnutRvjJgShAEokfrXfC4DToPOTJRuyzA1R64mBg@mail.gmail.com>
- <CAJnrk1YNMoTEaWA6=wDS3iV4sV0A-5Afnn+p50hEvX8jR6GLHw@mail.gmail.com>
- <20230308015500.6pycr5i4nynyu22n@heavy> <CAJnrk1Y1ONmEJpwDqGzCUmyrkDf9s_HpDhR5mW=6fNKM6PiXew@mail.gmail.com>
- <c27727cfabced2b9207eabbba71bed158ca35eec.camel@linux.ibm.com>
-In-Reply-To: <c27727cfabced2b9207eabbba71bed158ca35eec.camel@linux.ibm.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Thu, 9 Mar 2023 00:13:28 -0800
-Message-ID: <CAJnrk1Za8KaAq4=v7X=YEHRu5jc3upR059AcY9eanr-v_9VSqg@mail.gmail.com>
-Subject: Re: [PATCH v13 bpf-next 10/10] selftests/bpf: tests for using dynptrs
- to parse skb and xdp buffers
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
+        d=1e100.net; s=20210112; t=1678349814;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m8wnah3tqTNqE9aY6keCD8XrogXEIwfFsInR1NH87YU=;
+        b=GfTk6XK84CEXTMaIeGhs9d8nVA9lzdDiIscxLeMH2GEXoPACfHyU754A+iPiy6TUQB
+         DWNewfo6dcBwZzj91w5XMj2hTyBV8h+B48m9kyce2QEdIHtR4PhiLIEglQyrB4jsfmGn
+         LItTlq7kz2bxCGMCgYDzuAj8LsQs1cPVLWsqwCwWgt3kHzoaQtcT+fU+30pdc4qLa/Oj
+         Pcv9wadTCt20zkd/Se69f2QWbmOdgsQcVNHsymqTQe7Yc55M6mCAj3CEG04hWyfsfxGx
+         GMFQZq/yJNMs1HdhnlZpXsTjlqiN/xgGM/jm5Kn1hUsiHkn3skkBz4Q65cFIEIWhoeFW
+         /PnA==
+X-Gm-Message-State: AO0yUKVMjrav/kIk8UW8nh1hILoVE8hYP/J/mUUdM57muU3gLyWt4R6K
+        WCUl84zfvItzHCC7/bCuPBI=
+X-Google-Smtp-Source: AK7set85lbJATXokfH0bOU62KHiDhn5SbCfD/3ARspp4WW3B7WGuhQQbnZRb8uf4J+rZiZX5U7OR8g==
+X-Received: by 2002:a5d:6a8b:0:b0:2c3:f0a6:43ee with SMTP id s11-20020a5d6a8b000000b002c3f0a643eemr16979722wru.20.1678349813751;
+        Thu, 09 Mar 2023 00:16:53 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id e15-20020a5d594f000000b002c56046a3b5sm17189221wri.53.2023.03.09.00.16.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Mar 2023 00:16:53 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 9 Mar 2023 09:16:50 +0100
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: add
+ --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags
+ for v1.25
+Message-ID: <ZAmV8luLw+umNGqd@krava>
+References: <1675949331-27935-1-git-send-email-alan.maguire@oracle.com>
+ <CAADnVQ+hfQ9LEmEFXneB7hm17NvRniXSShrHLaM-1BrguLjLQw@mail.gmail.com>
+ <CAADnVQJe6dRnhbSk92g5Np0tXyMxWLD+8LqUxYfYPr7dWkxzSw@mail.gmail.com>
+ <ZAk8L17/EfR8siaz@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZAk8L17/EfR8siaz@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -80,135 +86,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 8, 2023 at 6:24=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.com>=
- wrote:
->
-> On Tue, 2023-03-07 at 23:22 -0800, Joanne Koong wrote:
-> > On Tue, Mar 7, 2023 at 5:55=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.=
-com>
-> > wrote:
+On Wed, Mar 08, 2023 at 10:53:51PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Feb 13, 2023 at 10:09:21PM -0800, Alexei Starovoitov escreveu:
+> > On Mon, Feb 13, 2023 at 7:12 PM Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > On Thu, Feb 9, 2023 at 5:29 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> > > > +++ b/scripts/pahole-flags.sh
+> > > > @@ -23,5 +23,8 @@ if [ "${pahole_ver}" -ge "124" ]; then
+> > > >         # see PAHOLE_HAS_LANG_EXCLUDE
+> > > >         extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
+> > > >  fi
+> > > > +if [ "${pahole_ver}" -ge "125" ]; then
+> > > > +       extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
+> > > > +fi
 > > >
-> > > On Wed, Mar 01, 2023 at 08:28:40PM -0800, Joanne Koong wrote:
-> > > > On Wed, Mar 1, 2023 at 10:08=E2=80=AFAM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Mar 1, 2023 at 7:51=E2=80=AFAM Joanne Koong
-> > > > > <joannelkoong@gmail.com> wrote:
-> > > > > >
-> > > > > > 5) progs/dynptr_success.c
-> > > > > >    * Add test case "test_skb_readonly" for testing attempts
-> > > > > > at writes
-> > > > > >      on a prog type with read-only skb ctx.
-> > > > > >    * Add "test_dynptr_skb_data" for testing that
-> > > > > > bpf_dynptr_data isn't
-> > > > > >      supported for skb progs.
-> > > > >
-> > > > > I added
-> > > > > +dynptr/test_dynptr_skb_data
-> > > > > +dynptr/test_skb_readonly
-> > > > > to DENYLIST.s390x and applied.
-> > > >
-> > > > Thanks, I'm still not sure why s390x cannot load these programs.
-> > > > It is
-> > > > being loaded in the same way as other tests like
-> > > > test_parse_tcp_hdr_opt() are loading programs. I will keep
-> > > > looking
-> > > > some more into this
+> > > We landed this too soon.
+> > > #229     tracing_struct:FAIL
+> > > is failing now.
+> > > since bpf_testmod.ko is missing a bunch of functions though they're global.
 > > >
-> > > Hi,
+> > > I've tried a bunch of different flags and attributes, but none of them
+> > > helped.
+> > > The only thing that works is:
+> > > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > index 46500636d8cd..5fd0f75d5d20 100644
+> > > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > @@ -28,6 +28,7 @@ struct bpf_testmod_struct_arg_2 {
+> > >         long b;
+> > >  };
 > > >
-> > > I believe the culprit is:
+> > > +__attribute__((optimize("-O0")))
+> > >  noinline int
+> > >  bpf_testmod_test_struct_arg_1(struct bpf_testmod_struct_arg_2 a, int
+> > > b, int c) {
 > > >
-> > >     insn->imm =3D BPF_CALL_IMM(bpf_dynptr_from_skb_rdonly);
+> > > We cannot do:
+> > > --- a/tools/testing/selftests/bpf/bpf_testmod/Makefile
+> > > +++ b/tools/testing/selftests/bpf/bpf_testmod/Makefile
+> > > @@ -10,7 +10,7 @@ endif
+> > >  MODULES = bpf_testmod.ko
 > > >
-> > > s390x needs to know the kfunc model in order to emit the call (like
-> > > i386), but after this assignment it's no longer possible to look it
-> > > up in kfunc_tab by insn->imm. x86_64 does not need this, because
-> > > its
-> > > ABI is exactly the same as BPF ABI.
+> > >  obj-m += bpf_testmod.o
+> > > -CFLAGS_bpf_testmod.o = -I$(src)
+> > > +CFLAGS_bpf_testmod.o = -I$(src) -O0
 > > >
-> > > The simplest solution seems to be adding an artificial kfunc_desc
-> > > like this:
+> > > The build fails due to asm stuff.
 > > >
-> > >     {
-> > >         .func_model =3D desc->func_model,  /* model must be
-> > > compatible */
-> > >         .func_id =3D 0,                    /* unused at this point */
-> > >         .imm =3D insn->imm,                /* new target */
-> > >         .offset =3D 0,                     /* unused at this point */
-> > >     }
+> > > Maybe we should make scripts/pahole-flags.sh selective
+> > > and don't apply skip_encoding_btf_inconsiste to bpf_testmod ?
 > > >
-> > > here and also after this assignment:
-> > >
-> > >     insn->imm =3D BPF_CALL_IMM(xdp_kfunc);
-> > >
-> > > What do you think?
-> >
-> > Ohh interesting! This makes sense to me. In particular, you're
-> > referring to the bpf_jit_find_kfunc_model() call in bpf_jit_insn()
-> > (in
-> > arch/s390/net/bpf_jit_comp.c) as the one that fails out whenever
-> > insn->imm gets set, correct?
->
-> Precisely.
->
-> > I like your proposed solution, I agree that this looks like the
-> > simplest, though maybe we should replace the existing kfunc_desc
-> > instead of adding it so we don't have to deal with the edge case of
-> > reaching MAX_KFUNC_DESCS? To get the func model of the new insn->imm,
->
-> I wonder whether replacement is safe? This would depend on the
-> following functions returning the same value for the same inputs:
->
-> - may_access_direct_pkt_data() - this looks ok;
-> - bpf_dev_bound_resolve_kfunc() - I'm not so sure, any insights?
+> > > Thoughts?
+> > 
+> > It's even worse with clang compiled kernel:
+> 
+> I tested what is now in the master branch with both gcc and clang, on
+> fedora:37, Alan also tested it, Jiri, it would be great if you could
+> check if reverting the revert works for you as well.
 
-For the bpf_dev_bound_resolve_kfunc() case (in fixup_kfunc_call()), I
-think directly replacing the kfunc_desc here is okay because
-bpf_dev_bound_resolve_kfunc() is findingthe target device-specific
-version of the kfunc (if it exists) to replace the generic version of
-the kfunc with, and we're using that target device-specific version of
-the kfunc as the new updated insn->imm to call
+ok, will check your master branch
 
->
-> If it's not, then MAX_KFUNC_DESCS indeed becomes a concern.
->
-> > it seems pretty straightforward, it looks like we can just use
-> > btf_distill_func_proto(). or call add_kfunc_call() directly, which
-> > would do everything needed, but adds an additional unnecessary sort
-> > and more overhead for replacing (eg we'd need to first swap the old
-> > kfunc_desc with the last tab->descs[tab->nr_descs] entry and then
-> > delete the old kfunc_desc before adding the new one). What are your
-> > thoughts?
->
-> Is there a way to find BTF by function pointer?
-> IIUC bpf_dev_bound_resolve_kfunc() can return many different things,
-> and btf_distill_func_proto() and add_kfunc_call() need BTF.
-> A straightforward way that immediately comes to mind is to do kallsyms
-> lookup and then resolve by name, but this sounds clumsy.
->
+jirka
 
-I'm not sure whether there's a way to find the function's BTF by its
-pointer, but I think maybe we can use the vmlinux btf (which we can
-get through the bpf_get_btf_vmlinux() api) to get the func proto?
-
->
->
-> I've been looking into this in context of fixing (kfunc
-> __bpf_call_base) not fitting into 32 bits on s390x. A solution that
-
-Sorry, I'm not fully understanding - can you elaborate a little on
-what the issue is? why doesn't the __bpf_call_base address fit on
-s390x? my understanding is that s390x is a 64-bit architecture?
-
-> would solve both problems that I'm currently thinking about is to
-> associate
->
-> struct {
->     struct btf_func_model *m;
->     unsigned long addr;
-> } kfunc_callee;
->
-> with every insn - during verification it could live in
-> bpf_insn_aux_data, during jiting in bpf_prog, and afterwards it can
-> be freed. Any thoughts about this?
+> 
+> Thanks,
+> 
+> - Arnaldo
+> 
+> >     WARN: resolve_btfids: unresolved symbol tcp_reno_cong_avoid
+> >     WARN: resolve_btfids: unresolved symbol dctcp_update_alpha
+> >     WARN: resolve_btfids: unresolved symbol cubictcp_cong_avoid
+> >     WARN: resolve_btfids: unresolved symbol bpf_xdp_metadata_rx_timestamp
+> >     WARN: resolve_btfids: unresolved symbol bpf_xdp_metadata_rx_hash
+> >     WARN: resolve_btfids: unresolved symbol bpf_task_kptr_get
+> >     WARN: resolve_btfids: unresolved symbol bpf_task_acquire_not_zero
+> >     WARN: resolve_btfids: unresolved symbol bpf_rdonly_cast
+> >     WARN: resolve_btfids: unresolved symbol
+> > bpf_kfunc_call_test_static_unused_arg
+> >     WARN: resolve_btfids: unresolved symbol bpf_kfunc_call_test_ref
+> > 
+> > so I reverted this commit for now.
+> > Looks like pahole with skip_encoding_btf_inconsistent_proto needs
+> > to be more accurate.
+> > It's way too aggressive removing valid functions.
