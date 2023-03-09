@@ -2,68 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 163AD6B177A
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 01:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463FD6B17C3
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 01:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbjCIAFU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 19:05:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
+        id S229544AbjCIAWL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 19:22:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbjCIAEy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 19:04:54 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2F11ABCF
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 16:03:08 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id cp12so454158pfb.5
-        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 16:03:08 -0800 (PST)
+        with ESMTP id S229453AbjCIAWK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 19:22:10 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A83864B3B
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 16:22:08 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id ce8-20020a17090aff0800b0023a61cff2c6so4844078pjb.0
+        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 16:22:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678320111;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=geMAMwLOO1uq+XDPI7e116q9+UQ4qFA7rJjF24VxJ0Y=;
-        b=FM2MxX5A/KyMu5B3XjS4+/QwNjZm7pnqJo91zNk4eGYja7pE/bnEZI3an2akjpe2MS
-         8Dg15oNXKNevKdLACAU79LBJCUw8ntgfMNLMQfNstKK1G2B4FOOO47vbq2grICAyeJEn
-         /Y3pnLKrPP+ydiNpuUDoDDR+rNmN+cAOQDnFTjUOOEDjT5lQKM4qqZ3XPMOlo84jpC9N
-         IvDVDwWbIweUIAe0LmynzpamocYCUUCh+2ugQdOTnoO2EmetBStx8JP9fU41R0WIbsI0
-         AuGK6o1aqZuwMzu0MP5GJcEX7NiE8lqmn8m82RSOSbQW7hYKt8qiHtDncIjvl6UKuzYU
-         xdaw==
+        d=gmail.com; s=20210112; t=1678321328;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nBrgrhiqIunTg7Gy4AIxstMR18pdoox+VhLH3sz7YHk=;
+        b=E2HDMJUxQqFUwxwDdpGxU0S2TtREN+0iruK7bP8QjujIrf+9kraQ6rnn6YOrMpv2bX
+         K/z1lrG3WJlvKzB1U/lruAuTDU5+V+wB5UrePNFXQNp8H5vYtvvzK27XMUwz0J5vQbtM
+         zqoCH61Jl73DpcfNZL4eZtn+jzVhkNsmrlVAjLN/eVOSisXKejsuNhAA1QDHt4IN9oId
+         w0o60TM4FKYHpSt89DKQ0fs90I+6YXKYkS+qB7qeC2gU91/HdDzPKNK8L+iGHEc//048
+         gqjMQBhuq5pPwxbxhiVIyOXmjPy6HcYeUmm3RnGGCEW3w/E22BSshAmwhaSv1RiShVul
+         /IoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678320111;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=geMAMwLOO1uq+XDPI7e116q9+UQ4qFA7rJjF24VxJ0Y=;
-        b=Ckk/57Y6l1m8fyaGhzmK4l+OCKVu+yFkxxoCPhcotPRrMYKmXVF+wewx/2+dXNuQDx
-         HwnBbkTZLU1wvljKFL+adZ3CgUp0vWV+F/c+Miy/QdSpI79i/m14lrDgcNyX+GD9Kb3c
-         Jy79WpJxErnA1P83uKQ7m67wuJodhRF9ltyyjUikjhr/rsIyn90etS7mWrfp/1YjeZyV
-         aucuVCOsv1YOtU6KyebPgU5+F0ogwwsr9rn0o5us0UoIrpNZ5AdW/0Hk54BNuszLJRrJ
-         lbG7MrU5rf7H9CcxJEbaJkwFDy3eTKu4AmTyfM2XRZsJEHyiI0NFMT+kxghb9hKLJeSG
-         sbUw==
-X-Gm-Message-State: AO0yUKUpUuIBrfVXStyqZjXGMiU+MHeYa3Jc8Xn9A5FOg6fs7W8F8l9f
-        dMqKzOqgrcIZVQfloVahkrp6pdxMjXEqXPAq1sexdg==
-X-Google-Smtp-Source: AK7set9hklSyFqfl3N4lpSnheX6iPhPejaXaZepQ5V+SkuusYS/DZ8zl/6kVehSrAgEdPl6tad8XYq8XDTXKpcCPH90=
-X-Received: by 2002:a62:87cc:0:b0:592:453c:320a with SMTP id
- i195-20020a6287cc000000b00592453c320amr8445186pfe.5.1678320111365; Wed, 08
- Mar 2023 16:01:51 -0800 (PST)
+        d=1e100.net; s=20210112; t=1678321328;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nBrgrhiqIunTg7Gy4AIxstMR18pdoox+VhLH3sz7YHk=;
+        b=TAz29hnatsNjMtenfeZurJEny+tv201O+tJsoUPPzOIr0LegDcab1ZNdADs4e9zwMv
+         yc4QlRnTpjc35Rv9A77XfOhFblU+8jPVDsLwYvOK2SIk4x9ySmhaMuDZmx/o/+Ux4uGm
+         P8RiSsxaHMWqipQzygSFg4f9LIU6J6sKR4LpKrJHdL2ipOV9KWEQ5tnDjBOMZu0yC/sY
+         oUDbmqRQM6pGe0PB9WV7LHRqpVojgt1d+cZgt8y+h6moRhnuNHX7E8X9vV2Hd3tqgnpK
+         0HKO5ntEhuO1ysWKY8MPt9J20zeekS5V1O15nRug8nDp3jp3+1ORv3ehsa6SgO2yMPGq
+         MeNw==
+X-Gm-Message-State: AO0yUKWXfKhJKMl06Ohugz5USdF5oqozC7hb2gbcyAq9muxYQo3kAv1p
+        6iYTpX3rWTgZlLif3bd+7yY=
+X-Google-Smtp-Source: AK7set+yZ3GRITbmE1J3psp85y1r0MFNKd93tG4X/Z94fKf1PO3RkUGkvwwbT1U9N4qLRJz2OeAqDQ==
+X-Received: by 2002:a17:90a:190f:b0:237:d867:2260 with SMTP id 15-20020a17090a190f00b00237d8672260mr24954147pjg.4.1678321328018;
+        Wed, 08 Mar 2023 16:22:08 -0800 (PST)
+Received: from ?IPV6:2620:10d:c085:21d6::1660? ([2620:10d:c090:400::5:78e2])
+        by smtp.gmail.com with ESMTPSA id b7-20020a17090a800700b00233db0db3dfsm327381pjn.7.2023.03.08.16.22.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Mar 2023 16:22:07 -0800 (PST)
+Message-ID: <ce5b0ed3-f093-888d-9dbe-3f6f07bdac06@gmail.com>
+Date:   Wed, 8 Mar 2023 16:22:00 -0800
 MIME-Version: 1.0
-References: <CAK4Nh0igK=-wapie340gnoo4xazC8GP7EG7wjy1EEJokCLQanA@mail.gmail.com>
- <CAK4Nh0iEP5CAAe+i6o5AT=V=EfX2fW2FmoGCfU3+OgR1f-GMAg@mail.gmail.com>
-In-Reply-To: <CAK4Nh0iEP5CAAe+i6o5AT=V=EfX2fW2FmoGCfU3+OgR1f-GMAg@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 8 Mar 2023 16:01:39 -0800
-Message-ID: <CAKH8qBshq-J2H+Bo1xA=FzAJ6x_mo5yfW6oYjQ_u1QwLJ5CDog@mail.gmail.com>
-Subject: Re: Broken build on 6.3-rc1 with uClibc-ng based toolchains due to
- poisoned strlcpy
-To:     Jesus Sanchez-Palencia <jesussanp@google.com>
-Cc:     rongtao@cestc.cn, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next v5 4/8] libbpf: Create a bpf_link in
+ bpf_map__attach_struct_ops().
+Content-Language: en-US, en-ZW
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Kui-Feng Lee <kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
+References: <20230308005050.255859-1-kuifeng@meta.com>
+ <20230308005050.255859-5-kuifeng@meta.com>
+ <1b416290-733b-0470-3217-6e477e574931@linux.dev>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <1b416290-733b-0470-3217-6e477e574931@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,48 +78,107 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 8, 2023 at 3:51=E2=80=AFPM Jesus Sanchez-Palencia
-<jesussanp@google.com> wrote:
->
-> (+bpf folks, -perf folks)
->
-> Please see below.
->
-> On Wed, Mar 8, 2023 at 11:28=E2=80=AFAM Jesus Sanchez-Palencia
-> <jesussanp@google.com> wrote:
-> >
-> > Hi there,
-> >
-> > So commit 6d0c4b11e743("libbpf: Poison strlcpy()") added the pragma
-> > poison directive to libbpf_internal.h to protect against accidental
-> > usage of strlcpy. This has broken the build for some toolchains and
-> > the problem is that some libcs  (e.g. uClibc-ng) provide the strlcpy()
-> > declaration from string.h, which leads to a problem with the following
-> > include order:
-> >
-> >                  string.h,
-> >                  from Iibbpf_common.h:12,
-> >                  from libbpf.h:20,
-> >                  from libbpf_internal.h:26,
-> >                  from strset.c:9:
-> >
 
-[..]
 
-> > If we patch libbpf_internal.h and move the #pragma GCC poison
-> > directive to after the include list, we fix the problem but at the
-> > expense of leaving libbpf.h unprotected (and libbpf_common.h as well,
-> > of course).
+On 3/8/23 13:42, Martin KaFai Lau wrote:
+> On 3/7/23 4:50 PM, Kui-Feng Lee wrote:
+>> @@ -11566,22 +11591,34 @@ struct bpf_link *bpf_program__attach(const 
+>> struct bpf_program *prog)
+>>       return link;
+>>   }
+>> +struct bpf_link_struct_ops {
+>> +    struct bpf_link link;
+>> +    int map_fd;
+>> +};
+>> +
+>>   static int bpf_link__detach_struct_ops(struct bpf_link *link)
+>>   {
+>> +    struct bpf_link_struct_ops *st_link;
+>>       __u32 zero = 0;
+>> -    if (bpf_map_delete_elem(link->fd, &zero))
+>> -        return -errno;
+>> +    st_link = container_of(link, struct bpf_link_struct_ops, link);
+>> -    return 0;
+>> +    if (st_link->map_fd < 0) {
+> 
+> map_fd < 0 should always be true?
 
-Seems like a nice compromise? I'm assuming the original intent was to
-mostly protect the c files, not the headers. Andrii WDYT?
+If the user pass a wrong link, it can fail.
+I check it here explicitly even the kernel returns
+an error for deleting an element of a struct_ops w/ link.
 
-> >We could duplicate the directive on all these other libbpf
-> > headers after the include list, but that's code duplication so I
-> > wanted to bring this up here before I send out a patch.
-> >
-> > Let me know what you think or if you have any other suggestions, please=
-.
-> >
-> > Thanks,
-> > Jesus
+> 
+>> +        /* Fake bpf_link */
+>> +        if (bpf_map_delete_elem(link->fd, &zero))
+>> +            return -errno;
+>> +        return 0;
+>> +    }
+>> +
+>> +    /* Doesn't support detaching. */
+>> +    return -EOPNOTSUPP;
+>>   }
+>>   struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>>   {
+>> -    struct bpf_struct_ops *st_ops;
+>> -    struct bpf_link *link;
+>> -    __u32 i, zero = 0;
+>> -    int err;
+>> +    struct bpf_link_struct_ops *link;
+>> +    __u32 zero = 0;
+>> +    int err, fd;
+>>       if (!bpf_map__is_struct_ops(map) || map->fd == -1)
+>>           return libbpf_err_ptr(-EINVAL);
+>> @@ -11590,31 +11627,34 @@ struct bpf_link 
+>> *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>>       if (!link)
+>>           return libbpf_err_ptr(-EINVAL);
+>> -    st_ops = map->st_ops;
+>> -    for (i = 0; i < btf_vlen(st_ops->type); i++) {
+>> -        struct bpf_program *prog = st_ops->progs[i];
+>> -        void *kern_data;
+>> -        int prog_fd;
+>> +    /* kern_vdata should be prepared during the loading phase. */
+>> +    err = bpf_map_update_elem(map->fd, &zero, 
+>> map->st_ops->kern_vdata, 0);
+>> +    if (err) {
+>> +        err = -errno;
+>> +        free(link);
+>> +        return libbpf_err_ptr(err);
+>> +    }
+>> -        if (!prog)
+>> -            continue;
+>> -        prog_fd = bpf_program__fd(prog);
+>> -        kern_data = st_ops->kern_vdata + st_ops->kern_func_off[i];
+>> -        *(unsigned long *)kern_data = prog_fd;
+>> +    if (!(map->def.map_flags & BPF_F_LINK)) {
+>> +        /* Fake bpf_link */
+>> +        link->link.fd = map->fd;
+>> +        link->map_fd = -1;
+>> +        link->link.detach = bpf_link__detach_struct_ops;
+>> +        return &link->link;
+>>       }
+>> -    err = bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+>> -    if (err) {
+>> +    fd = bpf_link_create(map->fd, -1, BPF_STRUCT_OPS, NULL);
+>> +    if (fd < 0) {
+>>           err = -errno;
+>>           free(link);
+>>           return libbpf_err_ptr(err);
+>>       }
+>> -    link->detach = bpf_link__detach_struct_ops;
+>> -    link->fd = map->fd;
+>> +    link->link.fd = fd;
+>> +    link->map_fd = map->fd;
+> 
+> Does it need to set link->link.detach?
+
+Yes, I have made some changes to this part. The new code will set
+link->link.detach for BPF_F_LINK as well to cleanup fd.
+
+> 
+>> -    return link;
+>> +    return &link->link;
+>>   }
+>>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct 
+>> perf_event_header *hdr,
+> 
