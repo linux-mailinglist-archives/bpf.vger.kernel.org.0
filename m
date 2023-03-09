@@ -2,76 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 678536B2BFC
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 18:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 049056B2BFE
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 18:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjCIRZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 12:25:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        id S229910AbjCIRZu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 12:25:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjCIRZF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 12:25:05 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21D2F4014;
-        Thu,  9 Mar 2023 09:25:03 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id da10so10050050edb.3;
-        Thu, 09 Mar 2023 09:25:03 -0800 (PST)
+        with ESMTP id S229917AbjCIRZs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 12:25:48 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2DCF31E7
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 09:25:45 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id cy23so9895472edb.12
+        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 09:25:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678382702;
+        d=gmail.com; s=20210112; t=1678382743;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HrmnCwuqDBkKBTp5toyLRDgxwMb1mUSNwOKGOvXrNk8=;
-        b=YbMFQAN2CFlTRt/shmKFWoDHH43IVpYQv0SdPfm1P0UfpM2c2rY0m3J7N4tG0Q/3UO
-         niA4MqgL3o1TfWqbVSuZw0qSG5yX9f+bmGbnMokP/7KExMkIA98ymyTOQ/TIvY7X6rdK
-         F8j6/zYdxi8fVdjAkOL/jFjnbZWAOC2JsHX8CcLoMBshIkRXczOq/4+yIr/zybGd9bqF
-         +TRHSx1dsz7z/cG8zSds+BYnz5wMl7LfB5NnbZuUDz/n49I8gPt+FqiApPYgOqmjCENu
-         HGblFwoYSg0zMZGTRJRn+SMCYkpkd6fTebC4OoFtA6+EWvzczM8WI3Sib8AGBHg8zXSb
-         BgWg==
+        bh=srhDemZ+FglCyrTyITXmP6Dnz3XcJYTz0HC17JG/+9s=;
+        b=kUP30HeFaKQC592Gq8LzMvKYFn0TCfJnVo7aW+Ivwp+0HTgfyQb5UBpPYan8W1U9tc
+         J9UOQckeazAeZwdR6zgTJSh8x3QranwhvZCX21tEpyKkbQU5YqYiSvdIbCeFiHZzxDbU
+         BTFsRbqzyq7qnUPMMPKFr5FEhqFEgo9piVvQ/TF38NOBdi7u2VHFKcwfAKC6D7Gv3I0g
+         2bZaXiakSRettA6ZIj0UyuKMPBMNfOn54CcS8mbwAOpuzbYR9Iiq8qElvavysH14HogO
+         3I/DXbHvS/MuiTP0eieKinInKj7xvMFQp0jn2MRdsrFkR08EDTaKL1KDd7N31WL3JC84
+         OBiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678382702;
+        d=1e100.net; s=20210112; t=1678382743;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HrmnCwuqDBkKBTp5toyLRDgxwMb1mUSNwOKGOvXrNk8=;
-        b=UjkLqanfSQcAzP56BTY0AU93/1AQgH3OmsGHm7NIWBVZx/fV4aYqCMCFbQmgFVL5HF
-         52+SnRS01lp8C/4mpjOY5yI76gDhBjUMmx3lPqG6xzi4+8d+TtKWqGO2AYrZcrwQt3hK
-         gETmFU0UIXpBQDGymY89w5tktInt1WWJfzwOzNscblxQCXQ6M8uWduERCaTgjj5Ehe7J
-         75PEbKiNdJK547fuB7KL/2pCQQpurkuo7W4bwW5r42SJ6omis2OQBMx7sKrD0fzxG8pN
-         hMTWObwik2vzrTk9tFXNhvVMY1QGnI8e/TNyaSe82aa/nN4t1V+qdInE+Ze2/wG4YmdS
-         Xn0A==
-X-Gm-Message-State: AO0yUKWsHaEWHtokfzVlvFcHa6G5Nmbhk67SGSw9LwXU/QjdTifKLdgj
-        y9YkS4l1a/AR1sYascnJtv1XW3avzzrPZbEq3/c=
-X-Google-Smtp-Source: AK7set9+WAM2tkUR3P8z1o6OwFcOvtGcpMNZO6wiOAEM0Wf7cKJqwCUv8lccj1cA/eicaCLfU57xRkIAGSrSIMk1IdM=
-X-Received: by 2002:a17:906:6dc1:b0:8b1:76b8:9834 with SMTP id
- j1-20020a1709066dc100b008b176b89834mr11537033ejt.5.1678382702071; Thu, 09 Mar
- 2023 09:25:02 -0800 (PST)
+        bh=srhDemZ+FglCyrTyITXmP6Dnz3XcJYTz0HC17JG/+9s=;
+        b=iOQmKZNt8nfBVa8q30ukw37uLzaelYWPcuyVDkYBASVZJvvgsny2DHVtxCZNe3Uijr
+         rbpvh7zDXsJNZAvvbk2yStXQjp7+s3yyvVLLg7zI+euch2qDs1b3KQbCpw1xGqkPEhG7
+         ubrPOaZqGlf4SG4UW2KlfY7aSRXn89aoYmfSb5WxqzkCpaXtr1IhjvcazLhyzRvy8W14
+         KfbeslcXYZPMK+Q2OuUwnoodCBbJxzW0VGD7g8N7z8KoqFMVxyg2qD69ZG+NQ/IIuUZ1
+         2fgbIpFIHlMo8zYlOGveOcCVTbFgswlU4F8DnDEIsiuFGLMakAeDDn/Y6msikIVNbDWF
+         gq/g==
+X-Gm-Message-State: AO0yUKUYWc+HMRaFalRLuqwGQF7cM9DDmgGQVPJMqKvMeu1KYFHjKaQU
+        Iulxt1e6MLXGUzxM4BqKTMXsQdWRTFJQZhm4uWQ=
+X-Google-Smtp-Source: AK7set8BnlvnaZiRYgVyCg4Wxifrf6HxRXmS05O5fQHfQpt3TQ6I7HvbGrfoGWlei2MAMZmIp7mVoef1STZp+Te9eis=
+X-Received: by 2002:a17:906:6d98:b0:8ab:b606:9728 with SMTP id
+ h24-20020a1709066d9800b008abb6069728mr11592629ejt.5.1678382743450; Thu, 09
+ Mar 2023 09:25:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20230116010115.490713-1-irogers@google.com> <CAP-5=fVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39dywaLxrO4Hpg@mail.gmail.com>
- <Y8mAuDvs566zwG67@kernel.org> <Y8myfqy5EMit3Kr/@krava> <CAP-5=fUugnKd=pGpZve7tKThhM5b0AqGMnuiELF+fZQw-xJz9w@mail.gmail.com>
- <ZAmRjk1x4p4TrFb0@gentoo.org>
-In-Reply-To: <ZAmRjk1x4p4TrFb0@gentoo.org>
+References: <cover.1677583941.git.vmalik@redhat.com> <CAEf4BzY9h+ywcxo5=6WZbJzN=9_9UJ_fwKVEBDHWn=4PDPf33Q@mail.gmail.com>
+ <21821216-f882-d036-776b-4a0c6473d2d4@redhat.com>
+In-Reply-To: <21821216-f882-d036-776b-4a0c6473d2d4@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Mar 2023 09:24:50 -0800
-Message-ID: <CAEf4BzZJvEnWdTKVSgdBDr_KEgkW5HLHc7N-HRkmb-drCbg2uw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Assume libbpf 1.0+
-To:     Guilherme Amadio <amadio@gentoo.org>
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <olsajiri@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andres Freund <andres@anarazel.de>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Christy Lee <christylee@fb.com>,
+Date:   Thu, 9 Mar 2023 09:25:31 -0800
+Message-ID: <CAEf4BzYTu4zfZrmexo6fnYGtNgvFYXtbZk_NEQnZXCPuvjBmjA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 0/2] Fix attaching fentry/fexit/fmod_ret/lsm
+ to modules
+To:     Viktor Malik <vmalik@redhat.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
-        Ben Hutchings <ben@decadent.org.uk>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,89 +78,118 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 8, 2023 at 11:58=E2=80=AFPM Guilherme Amadio <amadio@gentoo.org=
+On Thu, Mar 9, 2023 at 1:52=E2=80=AFAM Viktor Malik <vmalik@redhat.com> wro=
+te:
+>
+> On 3/8/23 04:58, Andrii Nakryiko wrote:
+> > On Tue, Feb 28, 2023 at 4:27=E2=80=AFAM Viktor Malik <vmalik@redhat.com=
 > wrote:
->
-> On Wed, Mar 08, 2023 at 06:13:34PM -0800, Ian Rogers wrote:
-> > On Thu, Jan 19, 2023 at 1:13=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> =
-wrote:
-> > >
-> > > On Thu, Jan 19, 2023 at 02:41:12PM -0300, Arnaldo Carvalho de Melo wr=
-ote:
-> > > > Em Thu, Jan 19, 2023 at 09:11:03AM -0800, Ian Rogers escreveu:
-> > > > > On Sun, Jan 15, 2023 at 5:01 PM Ian Rogers <irogers@google.com> w=
-rote:
-> > > > > > libbpf 1.0 was a major change in API. Perf has partially suppor=
-ted
-> > > > > > older libbpf's but an implementation may be:
-> > > > > > ..
-> > > > > >        pr_err("%s: not support, update libbpf\n", __func__);
-> > > > > >        return -ENOTSUP;
-> > > > > > ..
-> > > > > >
-> > > > > > Rather than build a binary that would fail at runtime it is
-> > > > > > preferrential just to build libbpf statically and link against
-> > > > > > that. The static version is in the kernel tools tree and newer =
-than
-> > > > > > 1.0.
-> > > > > >
-> > > > > > These patches change the libbpf test to only pass when at least
-> > > > > > version 1.0 is installed, then remove the conditional build and
-> > > > > > feature logic.
-> > > > > >
-> > > > > > The issue is discussed here:
-> > > > > > https://lore.kernel.org/lkml/20230106151320.619514-1-irogers@go=
-ogle.com/
-> > > > > > perf bpf:
-> > > > > >
-> > > > > > A variant of this fix was added to Linux 6.2 in:
-> > > > > > "perf bpf: Avoid build breakage with libbpf < 0.8.0 + LIBBPF_DY=
-NAMIC=3D1"
-> > > > > > https://lore.kernel.org/lkml/Y71+eh00Ju7WeEFX@kernel.org/
-> > > > > > This change goes further in removing logic that is now no longe=
+> >>
+> >> I noticed that the verifier behaves incorrectly when attaching to fent=
+ry
+> >> of multiple functions of the same name located in different modules (o=
 r
-> > > > > > necessary.
-> > > > > >
-> > > > > > v2. Rebase now that breakage fix patch is in linus/master.
-> > > > >
-> > > > > I missed the:
-> > > > > Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > I believe we are waiting for package maintainer input.
-> > > >
-> > > > Yes, as fedora:37 still is at libbpf 0.8.0 :-\
-> > >
-> > > rawhide (f38) is already on 1.1.0 ... I'll check how bad it'd be to m=
-ove
-> > > f37 to 1.x, but I had to do bulk update of like 10 other dependent pa=
-ckages
-> > > for f38, so not sure how bad it'd be for f37
-> > >
-> > > jirka
+> >> in vmlinux). The reason for this is that if the target program is not
+> >> specified, the verifier will search kallsyms for the trampoline addres=
+s
+> >> to attach to. The entire kallsyms is always searched, not respecting t=
+he
+> >> module in which the function to attach to is located.
+> >>
+> >> As Yonghong correctly pointed out, there is yet another issue - the
+> >> trampoline acquires the module reference in register_fentry which mean=
+s
+> >> that if the module is unloaded between the place where the address is
+> >> found in the verifier and register_fentry, it is possible that another
+> >> module is loaded to the same address in the meantime, which may lead t=
+o
+> >> errors.
+> >>
+> >> This patch fixes the above issues by extracting the module name from t=
+he
+> >> BTF of the attachment target (which must be specified) and by doing th=
+e
+> >> search in kallsyms of the correct module. At the same time, the module
+> >> reference is acquired right after the address is found and only releas=
+ed
+> >> right before the program itself is unloaded.
+> >>
 > >
-> > +Guilherme
+> > is it expected that your newly added test fails on arm64? See [0]
 > >
-> > We were looking for maintainer input on these changes, but there is no
-> > update in over a month. Here is the original lore link:
-> > https://lore.kernel.org/lkml/CAP-5=3DfVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39d=
-ywaLxrO4Hpg@mail.gmail.com/
-> > Should these changes land in perf-tools-next targeting Linux 6.4?
+> >    [0] https://github.com/kernel-patches/bpf/actions/runs/4359596129/jo=
+bs/7621687719
 >
-> Gentoo has libbpf-1.1 already available, so requiring >libbpf-1.0 is not
-> a problem. We (Gentoo) just need to make sure to stabilize libbpf-1.x bef=
-ore
-> stabilizing newer versions of perf, as the stable libbpf is 0.8.1 at the =
-moment.
+> I believe so, the test uses fentry and all fentry/fexit tests are
+> failing on arm64 with the same error (524) and are disabled in the CI.
+
+
+Then you have to add newly added tests into DENYLIST.aarch64
+
 >
-
-libbpf v0.8 is basically all the 1.0 APIs, except by default 1.0
-semantics is not enforced, unless libbpf_set_strict_mode() is enabled.
-
-So, if 0.8 is a restriction, perf can stay on 0.8, use all the same
-APIs that are in 1.0 (except newer one added later, but I'm not sure
-perf needs any of the newer additions), and just stick to setting
-libbpf_set_strict_mode() unconditionally.
-
-
-> Best regards,
-> -Guilherme
+> >
+> >> ---
+> >> Changes in v9:
+> >> - two small changes suggested by Jiri Olsa and Jiri's ack
+> >>
+> >> Changes in v8:
+> >> - added module_put to error paths in bpf_check_attach_target after the
+> >>    module reference is acquired
+> >>
+> >> Changes in v7:
+> >> - refactored the module reference manipulation (comments by Jiri Olsa)
+> >> - cleaned up the test (comments by Andrii Nakryiko)
+> >>
+> >> Changes in v6:
+> >> - storing the module reference inside bpf_prog_aux instead of
+> >>    bpf_trampoline and releasing it when the program is unloaded
+> >>    (suggested by Jiri Olsa)
+> >>
+> >> Changes in v5:
+> >> - fixed acquiring and releasing of module references by trampolines to
+> >>    prevent modules being unloaded between address lookup and trampolin=
+e
+> >>    allocation
+> >>
+> >> Changes in v4:
+> >> - reworked module kallsyms lookup approach using existing functions,
+> >>    verifier now calls btf_try_get_module to retrieve the module and
+> >>    find_kallsyms_symbol_value to get the symbol address (suggested by
+> >>    Alexei)
+> >> - included Jiri Olsa's comments
+> >> - improved description of the new test and added it as a comment into
+> >>    the test source
+> >>
+> >> Changes in v3:
+> >> - added trivial implementation for kallsyms_lookup_name_in_module() fo=
+r
+> >>    !CONFIG_MODULES (noticed by test robot, fix suggested by Hao Luo)
+> >>
+> >> Changes in v2:
+> >> - introduced and used more space-efficient kallsyms lookup function,
+> >>    suggested by Jiri Olsa
+> >> - included Hao Luo's comments
+> >>
+> >>
+> >> Viktor Malik (2):
+> >>    bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
+> >>    bpf/selftests: Test fentry attachment to shadowed functions
+> >>
+> >>   include/linux/bpf.h                           |   2 +
+> >>   kernel/bpf/syscall.c                          |   6 +
+> >>   kernel/bpf/trampoline.c                       |  28 ----
+> >>   kernel/bpf/verifier.c                         |  18 ++-
+> >>   kernel/module/internal.h                      |   5 +
+> >>   net/bpf/test_run.c                            |   5 +
+> >>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   6 +
+> >>   .../bpf/prog_tests/module_attach_shadow.c     | 128 ++++++++++++++++=
+++
+> >>   8 files changed, 169 insertions(+), 29 deletions(-)
+> >>   create mode 100644 tools/testing/selftests/bpf/prog_tests/module_att=
+ach_shadow.c
+> >>
+> >> --
+> >> 2.39.1
+> >>
+> >
 >
