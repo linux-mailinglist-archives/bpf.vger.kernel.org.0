@@ -2,147 +2,294 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0123D6B18F1
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 02:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265046B191C
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 03:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjCIBx5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Mar 2023 20:53:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        id S230006AbjCICN5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Mar 2023 21:13:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjCIBx4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Mar 2023 20:53:56 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948256A9EB
-        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 17:53:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3018961A00
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 01:53:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66304C433D2;
-        Thu,  9 Mar 2023 01:53:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678326834;
-        bh=39gG0P6R7hMNDud2fPY7aCgEa3mHeB8FhJLhF9sV0d8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NLP42wbckXup3+2HYTgJzwIPM0Yhg2px+rLjh3mjZL145YUr5S3TUrskxRpARJOFt
-         Vq9ot1O2KunTLMCCTSX6942u2o3NdRUTYTJpVp7U6i1VnCmBSKJh9J66MiEo46Sb03
-         I2SMdKpY+6ExgQ1Z3ZNLGLMtnsZnC1TNKBnJpU0YLSoQo67SvdHTm0i3/AuMiBRyTO
-         GYO2o3atG0xcuKskd3V1JaKkomFoC2HFoPW4AZJsKFNG3qGMTv9vO4gLQPAAYgS09I
-         lz3T/DWgsfqw6HWqjAkYusPcZu7UydeAAmZ+7RKR/cuJW8hO7/xEfS5Fqj0d0j+pTE
-         z6SA7CY6wVphw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EAE994049F; Wed,  8 Mar 2023 22:53:51 -0300 (-03)
-Date:   Wed, 8 Mar 2023 22:53:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: add
- --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags
- for v1.25
-Message-ID: <ZAk8L17/EfR8siaz@kernel.org>
-References: <1675949331-27935-1-git-send-email-alan.maguire@oracle.com>
- <CAADnVQ+hfQ9LEmEFXneB7hm17NvRniXSShrHLaM-1BrguLjLQw@mail.gmail.com>
- <CAADnVQJe6dRnhbSk92g5Np0tXyMxWLD+8LqUxYfYPr7dWkxzSw@mail.gmail.com>
+        with ESMTP id S229989AbjCICNz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Mar 2023 21:13:55 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC1161A8D
+        for <bpf@vger.kernel.org>; Wed,  8 Mar 2023 18:13:48 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id f14so150086iow.5
+        for <bpf@vger.kernel.org>; Wed, 08 Mar 2023 18:13:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1678328028;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xDCu+k9I5uU9ZeyTijagvPSWTHvVWfU/xHE3X1obRdA=;
+        b=dipSQP9U03tyGH9iIucLnZ+CHfS8mkxPYC/AtXJfO832TcuO3QoByvI+6Uci295s7p
+         fA2hqBRkCc8bB0ZMgkrGFTYy5k5GBsaopWvkUGyIdT86m6qAPoh5sQ0peVqyaac+44bx
+         U8FF94CJ+IDhardjXsj3ub8vOIaAt2oJRTIl5dCD7Lms6O2I51mhkET8WnxJrhLDwl2l
+         m82MqiqWrvYwmnP/dd4F0bjz1jby+M/KxfnX0czHLuII+GwHnHDsFwydgj0EaU7Fzg2c
+         hlODJfjtSs+xPsbYqL7kTPxOFFOccA7cNgraGGKw0RQFuiEAUe7pgqxJW0LrMahKUuEH
+         CKHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678328028;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xDCu+k9I5uU9ZeyTijagvPSWTHvVWfU/xHE3X1obRdA=;
+        b=pnOr6VedHQw/GmGFJU9kzUgNQkoYXG2a6smtE8D/FV/uZsawqrUkkDLLxabEBbZuHT
+         d5PNIwSYp5/qKpa8u1MRpD++5R3gi0tQ73hUHsFKJXg+COuElSzvJepqu7P0+PBbW7PP
+         CTNoCULfKfygk+gzigEhbfEYqYiSX8AKEnPm5KZQHPdS0Ws/hjMKjZAtEP7X7tNm4Y1X
+         Cj9kzQjY6vcHZTWo2hgOWghB6OEF1xPC+ZvF2RWqgeb6oCTEZr3iPKsFhuedRDnSFvXs
+         rvGFJ2ZmBMuP8s4l9hhD5Pc7nQHPyVz3oPpGoXvPkWbH+ZrXhH3US0A/PfRfAPtxVi7O
+         TodQ==
+X-Gm-Message-State: AO0yUKUt0lwN7g1WbvIzO81xXcCiN5DAETvMGLFNoq0TWgXlcm1zR6hv
+        GtzpZA7QP2lcE13qLZxfCuRfrh5MAyS/pYnGaR9lRQ==
+X-Google-Smtp-Source: AK7set+mWq6zJzHt94/3BeSde/daBudUBmiy0DGPNw2z7zo1D94NCuIcD0UN8oAwSxIzMMRpLPMDFnzDPe9ry/6ETaA=
+X-Received: by 2002:a6b:dc03:0:b0:74c:7eac:a064 with SMTP id
+ s3-20020a6bdc03000000b0074c7eaca064mr9571737ioc.2.1678328027763; Wed, 08 Mar
+ 2023 18:13:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJe6dRnhbSk92g5Np0tXyMxWLD+8LqUxYfYPr7dWkxzSw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230116010115.490713-1-irogers@google.com> <CAP-5=fVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39dywaLxrO4Hpg@mail.gmail.com>
+ <Y8mAuDvs566zwG67@kernel.org> <Y8myfqy5EMit3Kr/@krava>
+In-Reply-To: <Y8myfqy5EMit3Kr/@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 8 Mar 2023 18:13:34 -0800
+Message-ID: <CAP-5=fUugnKd=pGpZve7tKThhM5b0AqGMnuiELF+fZQw-xJz9w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Assume libbpf 1.0+
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andres Freund <andres@anarazel.de>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Christy Lee <christylee@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Feb 13, 2023 at 10:09:21PM -0800, Alexei Starovoitov escreveu:
-> On Mon, Feb 13, 2023 at 7:12 PM Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > On Thu, Feb 9, 2023 at 5:29 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > > +++ b/scripts/pahole-flags.sh
-> > > @@ -23,5 +23,8 @@ if [ "${pahole_ver}" -ge "124" ]; then
-> > >         # see PAHOLE_HAS_LANG_EXCLUDE
-> > >         extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
-> > >  fi
-> > > +if [ "${pahole_ver}" -ge "125" ]; then
-> > > +       extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
-> > > +fi
+On Thu, Jan 19, 2023 at 1:13=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Thu, Jan 19, 2023 at 02:41:12PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Thu, Jan 19, 2023 at 09:11:03AM -0800, Ian Rogers escreveu:
+> > > On Sun, Jan 15, 2023 at 5:01 PM Ian Rogers <irogers@google.com> wrote=
+:
+> > > > libbpf 1.0 was a major change in API. Perf has partially supported
+> > > > older libbpf's but an implementation may be:
+> > > > ..
+> > > >        pr_err("%s: not support, update libbpf\n", __func__);
+> > > >        return -ENOTSUP;
+> > > > ..
+> > > >
+> > > > Rather than build a binary that would fail at runtime it is
+> > > > preferrential just to build libbpf statically and link against
+> > > > that. The static version is in the kernel tools tree and newer than
+> > > > 1.0.
+> > > >
+> > > > These patches change the libbpf test to only pass when at least
+> > > > version 1.0 is installed, then remove the conditional build and
+> > > > feature logic.
+> > > >
+> > > > The issue is discussed here:
+> > > > https://lore.kernel.org/lkml/20230106151320.619514-1-irogers@google=
+.com/
+> > > > perf bpf:
+> > > >
+> > > > A variant of this fix was added to Linux 6.2 in:
+> > > > "perf bpf: Avoid build breakage with libbpf < 0.8.0 + LIBBPF_DYNAMI=
+C=3D1"
+> > > > https://lore.kernel.org/lkml/Y71+eh00Ju7WeEFX@kernel.org/
+> > > > This change goes further in removing logic that is now no longer
+> > > > necessary.
+> > > >
+> > > > v2. Rebase now that breakage fix patch is in linus/master.
+> > >
+> > > I missed the:
+> > > Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
+> > > I believe we are waiting for package maintainer input.
 > >
-> > We landed this too soon.
-> > #229     tracing_struct:FAIL
-> > is failing now.
-> > since bpf_testmod.ko is missing a bunch of functions though they're global.
-> >
-> > I've tried a bunch of different flags and attributes, but none of them
-> > helped.
-> > The only thing that works is:
-> > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > index 46500636d8cd..5fd0f75d5d20 100644
-> > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > @@ -28,6 +28,7 @@ struct bpf_testmod_struct_arg_2 {
-> >         long b;
-> >  };
-> >
-> > +__attribute__((optimize("-O0")))
-> >  noinline int
-> >  bpf_testmod_test_struct_arg_1(struct bpf_testmod_struct_arg_2 a, int
-> > b, int c) {
-> >
-> > We cannot do:
-> > --- a/tools/testing/selftests/bpf/bpf_testmod/Makefile
-> > +++ b/tools/testing/selftests/bpf/bpf_testmod/Makefile
-> > @@ -10,7 +10,7 @@ endif
-> >  MODULES = bpf_testmod.ko
-> >
-> >  obj-m += bpf_testmod.o
-> > -CFLAGS_bpf_testmod.o = -I$(src)
-> > +CFLAGS_bpf_testmod.o = -I$(src) -O0
-> >
-> > The build fails due to asm stuff.
-> >
-> > Maybe we should make scripts/pahole-flags.sh selective
-> > and don't apply skip_encoding_btf_inconsiste to bpf_testmod ?
-> >
-> > Thoughts?
-> 
-> It's even worse with clang compiled kernel:
+> > Yes, as fedora:37 still is at libbpf 0.8.0 :-\
+>
+> rawhide (f38) is already on 1.1.0 ... I'll check how bad it'd be to move
+> f37 to 1.x, but I had to do bulk update of like 10 other dependent packag=
+es
+> for f38, so not sure how bad it'd be for f37
+>
+> jirka
 
-I tested what is now in the master branch with both gcc and clang, on
-fedora:37, Alan also tested it, Jiri, it would be great if you could
-check if reverting the revert works for you as well.
++Guilherme
+
+We were looking for maintainer input on these changes, but there is no
+update in over a month. Here is the original lore link:
+https://lore.kernel.org/lkml/CAP-5=3DfVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39dywaL=
+xrO4Hpg@mail.gmail.com/
+Should these changes land in perf-tools-next targeting Linux 6.4?
 
 Thanks,
+Ian
 
-- Arnaldo
-
->     WARN: resolve_btfids: unresolved symbol tcp_reno_cong_avoid
->     WARN: resolve_btfids: unresolved symbol dctcp_update_alpha
->     WARN: resolve_btfids: unresolved symbol cubictcp_cong_avoid
->     WARN: resolve_btfids: unresolved symbol bpf_xdp_metadata_rx_timestamp
->     WARN: resolve_btfids: unresolved symbol bpf_xdp_metadata_rx_hash
->     WARN: resolve_btfids: unresolved symbol bpf_task_kptr_get
->     WARN: resolve_btfids: unresolved symbol bpf_task_acquire_not_zero
->     WARN: resolve_btfids: unresolved symbol bpf_rdonly_cast
->     WARN: resolve_btfids: unresolved symbol
-> bpf_kfunc_call_test_static_unused_arg
->     WARN: resolve_btfids: unresolved symbol bpf_kfunc_call_test_ref
-> 
-> so I reverted this commit for now.
-> Looks like pahole with skip_encoding_btf_inconsistent_proto needs
-> to be more accurate.
-> It's way too aggressive removing valid functions.
+> >
+> > This is what I have in the containers I test, sure, the older ones
+> > already have NO_LIBBPF=3D1 and some will get this added, and some I sti=
+ll
+> > need to ask for libbpf-devel (or the distro specific name, like
+> > libbpf-dev):
+> >
+> > [perfbuilder@five ~]$ podman images --format "{{.Repository}}:{{.Tag}}"=
+ | grep /acmel/ | grep -v '<none>' | sort -t: -Vk1,2 | grep -v -- -x- | whi=
+le read image ; do echo -n $image: ; libbpf=3D$(podman run --rm -t --entryp=
+oint=3Dls $image -la /usr/lib64/libbpf.so.1) ; echo $libbpf ; done
+> > localhost/acmel/linux-perf-tools-build-almalinux:8:ls: cannot access '/=
+usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-almalinux:9:ls: cannot access '/=
+usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alpine:3.12:ls: /usr/lib64/libbp=
+f.so.1: No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alpine:3.13:ls: /usr/lib64/libbp=
+f.so.1: No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alpine:3.14:ls: /usr/lib64/libbp=
+f.so.1: No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alpine:3.15:ls: /usr/lib64/libbp=
+f.so.1: No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alpine:3.16:ls: /usr/lib64/libbp=
+f.so.1: No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alpine:3.17:ls: /usr/lib64/libbp=
+f.so.1: No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alpine:edge:ls: /usr/lib64/libbp=
+f.so.1: No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alt:p9:ls: cannot access '/usr/l=
+ib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alt:p10:ls: cannot access '/usr/=
+lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-alt:sisyphus:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-amazonlinux:2:ls: cannot access =
+/usr/lib64/libbpf.so.1: No such file or directory
+> > localhost/acmel/linux-perf-tools-build-amazonlinux:devel:ls: cannot acc=
+ess '/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-archlinux:base:lrwxrwxrwx 1 root=
+ root 15 Oct 1 12:32 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.1
+> > localhost/acmel/linux-perf-tools-build-centos:8:ls: cannot access '/usr=
+/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-centos:stream:ls: cannot access =
+'/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-clearlinux:latest:lrwxrwxrwx 1 r=
+oot root 15 Sep 30 16:01 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.1
+> > localhost/acmel/linux-perf-tools-build-debian:10:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-debian:11:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-debian:experimental:ls: cannot a=
+ccess '/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:26:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:27:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:28:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:29:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:30:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:31:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:32:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:33:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:34:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:35:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:36:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:37:ls: cannot access '/us=
+r/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-fedora:38:lrwxrwxrwx. 1 root roo=
+t 15 Dec 20 14:39 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.0
+> > localhost/acmel/linux-perf-tools-build-fedora:rawhide:lrwxrwxrwx. 1 roo=
+t root 15 Dec 20 14:39 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.0
+> > localhost/acmel/linux-perf-tools-build-gentoo-stage3:latest:ls: cannot =
+access '/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-manjaro:base:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-opensuse:15.0:ls: cannot access =
+'/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-opensuse:15.1:ls: cannot access =
+'/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-opensuse:15.2:ls: cannot access =
+'/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-opensuse:15.3:ls: cannot access =
+'/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-opensuse:15.4:ls: cannot access =
+'/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-opensuse:15.5:ls: cannot access =
+'/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-opensuse:tumbleweed:lrwxrwxrwx. =
+1 root root 15 Nov 9 12:08 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.1
+> > localhost/acmel/linux-perf-tools-build-oraclelinux:8:ls: cannot access =
+'/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-oraclelinux:9:ls: cannot access =
+'/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-rockylinux:8:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-rockylinux:9:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-ubuntu:18.04:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-ubuntu:20.04:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-ubuntu:21.04:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-ubuntu:21.10:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-ubuntu:22.04:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-ubuntu:22.10:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > localhost/acmel/linux-perf-tools-build-ubuntu:23.04:ls: cannot access '=
+/usr/lib64/libbpf.so.1': No such file or directory
+> > [perfbuilder@five ~]$
+> >
+> > [perfbuilder@five linux-perf-tools-build]$ grep libbpf-dev */*/Dockerfi=
+le
+> > debian/experimental/Dockerfile:       libbpf-dev \
+> > fedora/35/Dockerfile:            libtraceevent-devel libbpf-devel \
+> > fedora/36/Dockerfile:            libtraceevent-devel libbpf-devel \
+> > fedora/37/Dockerfile:            libtraceevent-devel libbpf-devel \
+> > fedora/38/Dockerfile:            libtraceevent-devel libbpf-devel \
+> > fedora/rawhide/Dockerfile:    libtraceevent-devel libbpf-devel \
+> > opensuse/tumbleweed/Dockerfile:       libbpf-devel libtraceevent-devel =
+\
+> > ubuntu/22.04/Dockerfile:      libelf-dev libiberty-dev libdw-dev libaud=
+it-dev libtraceevent-dev libbpf-dev \
+> > ubuntu/22.10/Dockerfile:      libelf-dev libiberty-dev libdw-dev libaud=
+it-dev libtraceevent-dev libbpf-dev \
+> > ubuntu/23.04/Dockerfile:      libelf-dev libiberty-dev libdw-dev libaud=
+it-dev libtraceevent-dev libbpf-dev \
+> > [perfbuilder@five linux-perf-tools-build]$
+> >
+> > In some cases it gets dragged on differently, like with clearlinux,
+> > gentoo, archlinux, etc.
+> >
+> > Anyway, just a data point, I'll check if I'm missing installing it
+> > somewhere.
+> >
+> > - Arnaldo
