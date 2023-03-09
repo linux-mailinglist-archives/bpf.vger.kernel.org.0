@@ -2,412 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F270C6B2C7F
-	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 19:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 011A16B2C84
+	for <lists+bpf@lfdr.de>; Thu,  9 Mar 2023 19:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbjCISBM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 13:01:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
+        id S230013AbjCISBj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 13:01:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbjCISBK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 13:01:10 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C76FCBE0
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 10:01:07 -0800 (PST)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 329G9q0U027961;
-        Thu, 9 Mar 2023 18:00:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=P98881FbyK+A3Tn+BC5wf435cQ2+7xZl55FdpZ7Y+PM=;
- b=RjLFZOnVuBvUeMzUQdLEM8u+HwdcTOvDqLDyita7vwHWJrwInpABQBqKjwlWwG/tXqBR
- cRywzPYBqkl9TfOMwrvASxeD5x2ddU6gIRSCxg32agEhV11tB2eRoM1ZjpzKow9JiNal
- AsfQHh2O1BCzv9ZhAIkduGwN4gMzDS9pYXWsftz+AY29ABqMKGc1mmDGo9c9LNIMfg9Z
- ncQvVfvjUeF5zeIYs2bIc6JlNmDAmnB7DpvLOzkhvRe9he6rDYRDdUGYxOYPWVaKF/NI
- gas9zd8nG1ZAA7aNLWYkHn1/jx1Rik2aVzNrHEV/0ww4L8V3UQ6USGNyonRFiJfiJLkC 0g== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p6sdgbp4u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Mar 2023 18:00:46 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 329DSuTn015592;
-        Thu, 9 Mar 2023 18:00:44 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3p6gbwa0fq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Mar 2023 18:00:43 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 329I0fSP63045920
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Mar 2023 18:00:41 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 813BB20049;
-        Thu,  9 Mar 2023 18:00:41 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EC4B820040;
-        Thu,  9 Mar 2023 18:00:38 +0000 (GMT)
-Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.13.46])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  9 Mar 2023 18:00:38 +0000 (GMT)
-From:   Hari Bathini <hbathini@linux.ibm.com>
-To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230032AbjCISBi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 13:01:38 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59123FCBC3
+        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 10:01:36 -0800 (PST)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 329HS0Hc014871
+        for <bpf@vger.kernel.org>; Thu, 9 Mar 2023 10:01:35 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=JmjDXMUVS6wzlpFJiyEaI37ff2AbuSyX5Tv9zewWX54=;
+ b=n1iKaNOgr7lWPXrvvS5cpoKo7NPlU26+N35A83EXrn8y0e26UTIRtNZ0OEnXKsf28elj
+ QPPJrNqiC9Cz7KjtPQJiQu4lOGJytHUquEcQzR0VBxYE9jHaS8O3PqDdIlw4O+yAHB/9
+ x3N2WJORWqctb2uCgx7irl8aRw1zdjGoBtk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p746p5p0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 10:01:34 -0800
+Received: from twshared21760.39.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 9 Mar 2023 10:01:19 -0800
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id EB63C18E84CEF; Thu,  9 Mar 2023 10:01:13 -0800 (PST)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v2 4/4] powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
-Date:   Thu,  9 Mar 2023 23:30:28 +0530
-Message-Id: <20230309180028.180200-5-hbathini@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230309180028.180200-1-hbathini@linux.ibm.com>
-References: <20230309180028.180200-1-hbathini@linux.ibm.com>
+        Kernel Team <kernel-team@fb.com>, <tj@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH v1 bpf-next 0/6] Support stashing local kptrs with bpf_kptr_xchg
+Date:   Thu, 9 Mar 2023 10:01:05 -0800
+Message-ID: <20230309180111.1618459-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: ySGKsIOrItr0Y-DI-Rkj4BsgmyNftCaE
+X-Proofpoint-GUID: ySGKsIOrItr0Y-DI-Rkj4BsgmyNftCaE
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: T_w-D2pMd6QDWcbx7TX4qD_JCBv__wWI
-X-Proofpoint-ORIG-GUID: T_w-D2pMd6QDWcbx7TX4qD_JCBv__wWI
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-09_09,2023-03-09_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 mlxscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2303090141
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use bpf_jit_binary_pack_alloc in powerpc jit. The jit engine first
-writes the program to the rw buffer. When the jit is done, the program
-is copied to the final location with bpf_jit_binary_pack_finalize.
-With multiple jit_subprogs, bpf_jit_free is called on some subprograms
-that haven't got bpf_jit_binary_pack_finalize() yet. Implement custom
-bpf_jit_free() like in commit 1d5f82d9dd47 ("bpf, x86: fix freeing of
-not-finalized bpf_prog_pack") to call bpf_jit_binary_pack_finalize(),
-if necessary. While here, correct the misnomer powerpc64_jit_data to
-powerpc_jit_data as it is meant for both ppc32 and ppc64.
+Local kptrs are kptrs allocated via bpf_obj_new with a type specified in pr=
+ogram
+BTF. A BPF program which creates a local kptr has exclusive control of the
+lifetime of the kptr, and, prior to terminating, must:
 
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
----
- arch/powerpc/net/bpf_jit.h        |   7 +-
- arch/powerpc/net/bpf_jit_comp.c   | 104 +++++++++++++++++++++---------
- arch/powerpc/net/bpf_jit_comp32.c |   4 +-
- arch/powerpc/net/bpf_jit_comp64.c |   6 +-
- 4 files changed, 83 insertions(+), 38 deletions(-)
+  * free the kptr via bpf_obj_drop
+  * If the kptr is a {list,rbtree} node, add the node to a {list, rbtree},
+    thereby passing control of the lifetime to the collection
 
-diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
-index d767e39d5645..a8b7480c4d43 100644
---- a/arch/powerpc/net/bpf_jit.h
-+++ b/arch/powerpc/net/bpf_jit.h
-@@ -168,15 +168,16 @@ static inline void bpf_clear_seen_register(struct codegen_context *ctx, int i)
- 
- void bpf_jit_init_reg_mapping(struct codegen_context *ctx);
- int bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func);
--int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-+int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct codegen_context *ctx,
- 		       u32 *addrs, int pass, bool extra_pass);
- void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx);
- void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx);
- void bpf_jit_realloc_regs(struct codegen_context *ctx);
- int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, int tmp_reg, long exit_addr);
- 
--int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct codegen_context *ctx,
--			  int insn_idx, int jmp_off, int dst_reg);
-+int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 *fimage, int pass,
-+			  struct codegen_context *ctx, int insn_idx,
-+			  int jmp_off, int dst_reg);
- 
- #endif
- 
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index d1794d9f0154..ece75c829499 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -42,10 +42,11 @@ int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, int tmp_reg,
- 	return 0;
- }
- 
--struct powerpc64_jit_data {
--	struct bpf_binary_header *header;
-+struct powerpc_jit_data {
-+	struct bpf_binary_header *hdr;
-+	struct bpf_binary_header *fhdr;
- 	u32 *addrs;
--	u8 *image;
-+	u8 *fimage;
- 	u32 proglen;
- 	struct codegen_context ctx;
- };
-@@ -62,15 +63,18 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	u8 *image = NULL;
- 	u32 *code_base;
- 	u32 *addrs;
--	struct powerpc64_jit_data *jit_data;
-+	struct powerpc_jit_data *jit_data;
- 	struct codegen_context cgctx;
- 	int pass;
- 	int flen;
--	struct bpf_binary_header *bpf_hdr;
-+	struct bpf_binary_header *fhdr = NULL;
-+	struct bpf_binary_header *hdr = NULL;
- 	struct bpf_prog *org_fp = fp;
- 	struct bpf_prog *tmp_fp;
- 	bool bpf_blinded = false;
- 	bool extra_pass = false;
-+	u8 *fimage = NULL;
-+	u32 *fcode_base;
- 	u32 extable_len;
- 	u32 fixup_len;
- 
-@@ -100,9 +104,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	addrs = jit_data->addrs;
- 	if (addrs) {
- 		cgctx = jit_data->ctx;
--		image = jit_data->image;
--		bpf_hdr = jit_data->header;
-+		fimage = jit_data->fimage;
-+		fhdr = jit_data->fhdr;
- 		proglen = jit_data->proglen;
-+		hdr = jit_data->hdr;
-+		image = (void *)hdr + ((void *)fimage - (void *)fhdr);
- 		extra_pass = true;
- 		goto skip_init_ctx;
- 	}
-@@ -120,7 +126,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	cgctx.stack_size = round_up(fp->aux->stack_depth, 16);
- 
- 	/* Scouting faux-generate pass 0 */
--	if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0, false)) {
-+	if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, false)) {
- 		/* We hit something illegal or unsupported. */
- 		fp = org_fp;
- 		goto out_addrs;
-@@ -135,7 +141,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	 */
- 	if (cgctx.seen & SEEN_TAILCALL || !is_offset_in_branch_range((long)cgctx.idx * 4)) {
- 		cgctx.idx = 0;
--		if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0, false)) {
-+		if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, false)) {
- 			fp = org_fp;
- 			goto out_addrs;
- 		}
-@@ -157,17 +163,19 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	proglen = cgctx.idx * 4;
- 	alloclen = proglen + FUNCTION_DESCR_SIZE + fixup_len + extable_len;
- 
--	bpf_hdr = bpf_jit_binary_alloc(alloclen, &image, 4, bpf_jit_fill_ill_insns);
--	if (!bpf_hdr) {
-+	fhdr = bpf_jit_binary_pack_alloc(alloclen, &fimage, 4, &hdr, &image,
-+					      bpf_jit_fill_ill_insns);
-+	if (!fhdr) {
- 		fp = org_fp;
- 		goto out_addrs;
- 	}
- 
- 	if (extable_len)
--		fp->aux->extable = (void *)image + FUNCTION_DESCR_SIZE + proglen + fixup_len;
-+		fp->aux->extable = (void *)fimage + FUNCTION_DESCR_SIZE + proglen + fixup_len;
- 
- skip_init_ctx:
- 	code_base = (u32 *)(image + FUNCTION_DESCR_SIZE);
-+	fcode_base = (u32 *)(fimage + FUNCTION_DESCR_SIZE);
- 
- 	/* Code generation passes 1-2 */
- 	for (pass = 1; pass < 3; pass++) {
-@@ -175,8 +183,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		cgctx.idx = 0;
- 		cgctx.alt_exit_addr = 0;
- 		bpf_jit_build_prologue(code_base, &cgctx);
--		if (bpf_jit_build_body(fp, code_base, &cgctx, addrs, pass, extra_pass)) {
--			bpf_jit_binary_free(bpf_hdr);
-+		if (bpf_jit_build_body(fp, code_base, fcode_base, &cgctx, addrs, pass, extra_pass)) {
-+			bpf_arch_text_copy(&fhdr->size, &hdr->size, sizeof(hdr->size));
-+			bpf_jit_binary_pack_free(fhdr, hdr);
- 			fp = org_fp;
- 			goto out_addrs;
- 		}
-@@ -192,21 +201,23 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		 * Note that we output the base address of the code_base
- 		 * rather than image, since opcodes are in code_base.
- 		 */
--		bpf_jit_dump(flen, proglen, pass, code_base);
-+		bpf_jit_dump(flen, proglen, pass, fcode_base);
- 
- #ifdef CONFIG_PPC64_ELF_ABI_V1
- 	/* Function descriptor nastiness: Address + TOC */
--	((u64 *)image)[0] = (u64)code_base;
-+	((u64 *)image)[0] = (u64)fcode_base;
- 	((u64 *)image)[1] = local_paca->kernel_toc;
- #endif
- 
--	fp->bpf_func = (void *)image;
-+	fp->bpf_func = (void *)fimage;
- 	fp->jited = 1;
- 	fp->jited_len = proglen + FUNCTION_DESCR_SIZE;
- 
--	bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + bpf_hdr->size);
- 	if (!fp->is_func || extra_pass) {
--		bpf_jit_binary_lock_ro(bpf_hdr);
-+		if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
-+			fp = org_fp;
-+			goto out_addrs;
-+		}
- 		bpf_prog_fill_jited_linfo(fp, addrs);
- out_addrs:
- 		kfree(addrs);
-@@ -216,8 +227,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		jit_data->addrs = addrs;
- 		jit_data->ctx = cgctx;
- 		jit_data->proglen = proglen;
--		jit_data->image = image;
--		jit_data->header = bpf_hdr;
-+		jit_data->fimage = fimage;
-+		jit_data->fhdr = fhdr;
-+		jit_data->hdr = hdr;
- 	}
- 
- out:
-@@ -231,12 +243,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
-  * The caller should check for (BPF_MODE(code) == BPF_PROBE_MEM) before calling
-  * this function, as this only applies to BPF_PROBE_MEM, for now.
-  */
--int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct codegen_context *ctx,
--			  int insn_idx, int jmp_off, int dst_reg)
-+int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 *fimage, int pass,
-+			  struct codegen_context *ctx, int insn_idx, int jmp_off,
-+			  int dst_reg)
- {
- 	off_t offset;
- 	unsigned long pc;
--	struct exception_table_entry *ex;
-+	struct exception_table_entry *ex, *ex_entry;
- 	u32 *fixup;
- 
- 	/* Populate extable entries only in the last pass */
-@@ -247,9 +260,16 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct code
- 	    WARN_ON_ONCE(ctx->exentry_idx >= fp->aux->num_exentries))
- 		return -EINVAL;
- 
-+	/*
-+	 * Program is firt written to image before copying to the
-+	 * final location (fimage). Accordingly, update in the image first.
-+	 * As all offsets used are relative, copying as is to the
-+	 * final location should be alright.
-+	 */
- 	pc = (unsigned long)&image[insn_idx];
-+	ex = (void *)fp->aux->extable - (void *)fimage + (void *)image;
- 
--	fixup = (void *)fp->aux->extable -
-+	fixup = (void *)ex -
- 		(fp->aux->num_exentries * BPF_FIXUP_LEN * 4) +
- 		(ctx->exentry_idx * BPF_FIXUP_LEN * 4);
- 
-@@ -260,17 +280,17 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, struct code
- 	fixup[BPF_FIXUP_LEN - 1] =
- 		PPC_RAW_BRANCH((long)(pc + jmp_off) - (long)&fixup[BPF_FIXUP_LEN - 1]);
- 
--	ex = &fp->aux->extable[ctx->exentry_idx];
-+	ex_entry = &ex[ctx->exentry_idx];
- 
--	offset = pc - (long)&ex->insn;
-+	offset = pc - (long)&ex_entry->insn;
- 	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
- 		return -ERANGE;
--	ex->insn = offset;
-+	ex_entry->insn = offset;
- 
--	offset = (long)fixup - (long)&ex->fixup;
-+	offset = (long)fixup - (long)&ex_entry->fixup;
- 	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
- 		return -ERANGE;
--	ex->fixup = offset;
-+	ex_entry->fixup = offset;
- 
- 	ctx->exentry_idx++;
- 	return 0;
-@@ -308,3 +328,27 @@ int bpf_arch_text_invalidate(void *dst, size_t len)
- 
- 	return ret;
- }
-+
-+void bpf_jit_free(struct bpf_prog *fp)
-+{
-+	if (fp->jited) {
-+		struct powerpc_jit_data *jit_data = fp->aux->jit_data;
-+		struct bpf_binary_header *hdr;
-+
-+		/*
-+		 * If we fail the final pass of JIT (from jit_subprogs),
-+		 * the program may not be finalized yet. Call finalize here
-+		 * before freeing it.
-+		 */
-+		if (jit_data) {
-+			bpf_jit_binary_pack_finalize(fp, jit_data->fhdr, jit_data->hdr);
-+			kvfree(jit_data->addrs);
-+			kfree(jit_data);
-+		}
-+		hdr = bpf_jit_binary_pack_hdr(fp);
-+		bpf_jit_binary_pack_free(hdr, NULL);
-+		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(fp));
-+	}
-+
-+	bpf_prog_unlock_free(fp);
-+}
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 7f91ea064c08..fb2761b54d64 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -278,7 +278,7 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
- }
- 
- /* Assemble the body code between the prologue & epilogue */
--int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-+int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct codegen_context *ctx,
- 		       u32 *addrs, int pass, bool extra_pass)
- {
- 	const struct bpf_insn *insn = fp->insnsi;
-@@ -997,7 +997,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 					jmp_off += 4;
- 				}
- 
--				ret = bpf_add_extable_entry(fp, image, pass, ctx, insn_idx,
-+				ret = bpf_add_extable_entry(fp, image, fimage, pass, ctx, insn_idx,
- 							    jmp_off, dst_reg);
- 				if (ret)
- 					return ret;
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 8dd3cabaa83a..37a8970a7065 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -343,7 +343,7 @@ asm (
- );
- 
- /* Assemble the body code between the prologue & epilogue */
--int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-+int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct codegen_context *ctx,
- 		       u32 *addrs, int pass, bool extra_pass)
- {
- 	enum stf_barrier_type stf_barrier = stf_barrier_type_get();
-@@ -922,8 +922,8 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				addrs[++i] = ctx->idx * 4;
- 
- 			if (BPF_MODE(code) == BPF_PROBE_MEM) {
--				ret = bpf_add_extable_entry(fp, image, pass, ctx, ctx->idx - 1,
--							    4, dst_reg);
-+				ret = bpf_add_extable_entry(fp, image, fimage, pass, ctx,
-+							    ctx->idx - 1, 4, dst_reg);
- 				if (ret)
- 					return ret;
- 			}
--- 
-2.39.2
+This series adds a third option:
 
+  * stash the kptr in a map value using bpf_kptr_xchg
+
+As indicated by the use of "stash" to describe this behavior, the intended =
+use
+of this feature is temporary storage of local kptrs. For example, a sched_e=
+xt
+([0]) scheduler may want to create an rbtree node for each new cgroup on cg=
+roup
+init, but to add that node to the rbtree as part of a separate program which
+runs on enqueue. Stashing the node in a map_value allows its lifetime to ou=
+tlive
+the execution of the cgroup_init program.
+
+Behavior:
+
+There is no semantic difference between adding a kptr to a graph collection=
+ and
+"stashing" it in a map. In both cases exclusive ownership of the kptr's lif=
+etime
+is passed to some containing data structure, which is responsible for
+bpf_obj_drop'ing it when the container goes away.
+
+Since graph collections also expect exclusive ownership of the nodes they
+contain, graph nodes cannot be both stashed in a map_value and contained by
+their corresponding collection.
+
+Implementation:
+
+Two observations simplify the verifier changes for this feature. First, kpt=
+rs
+("referenced kptrs" until a recent renaming) require registration of a
+dtor function as part of their acquire/release semantics, so that a referen=
+ced
+kptr which is placed in a map_value is properly released when the map goes =
+away.
+We want this exact behavior for local kptrs, but with bpf_obj_drop as the d=
+tor
+instead of a per-btf_id dtor.
+
+The second observation is that, in terms of identification, "referenced kpt=
+r"
+and "local kptr" already don't interfere with one another. Consider the
+following example:
+
+  struct node_data {
+          long key;
+          long data;
+          struct bpf_rb_node node;
+  };
+
+  struct map_value {
+          struct node_data __kptr *node;
+  };
+
+  struct {
+          __uint(type, BPF_MAP_TYPE_ARRAY);
+          __type(key, int);
+          __type(value, struct map_value);
+          __uint(max_entries, 1);
+  } some_nodes SEC(".maps");
+
+  struct map_value *mapval;
+  struct node_data *res;
+  int key =3D 0;
+
+  res =3D bpf_obj_new(typeof(*res));
+  if (!res) { /* err handling */ }
+
+  mapval =3D bpf_map_lookup_elem(&some_nodes, &key);
+  if (!mapval) { /* err handling */ }
+
+  res =3D bpf_kptr_xchg(&mapval->node, res);
+  if (res)
+          bpf_obj_drop(res);
+
+The __kptr tag identifies map_value's node as a referenced kptr, while the
+PTR_TO_BTF_ID which bpf_obj_new returns - a type in some non-vmlinux,
+non-module BTF - identifies res as a local kptr. Type tag on the pointer
+indicates referenced kptr, while the type of the pointee indicates local kp=
+tr.
+So using existing facilities we can tell the verifier about a "referenced k=
+ptr"
+pointer to a "local kptr" pointee.
+
+When kptr_xchg'ing a kptr into a map_value, the verifier can recognize local
+kptr types and treat them like referenced kptrs with a properly-typed
+bpf_obj_drop as a dtor.
+
+Other implementation notes:
+  * We don't need to do anything special to enforce "graph nodes cannot be
+    both stashed in a map_value and contained by their corresponding collec=
+tion"
+    * bpf_kptr_xchg both returns and takes as input a (possibly-null) owning
+      reference. It does not accept non-owning references as input by virtue
+      of requiring a ref_obj_id. By definition, if a program has an owning
+      ref to a node, the node isn't in a collection, so it's safe to pass
+      ownership via bpf_kptr_xchg.
+
+Summary of patches:
+
+  * Patches 1 - 3 are small refactorings.
+  * Patch 4 modifies BTF plumbing to support using bpf_obj_drop as a dtor
+  * Patch 5 adds verifier plumbing to support MEM_ALLOC-flagged param for
+    bpf_kptr_xchg
+  * Patch 6 adds selftests exercising the new behavior
+
+  [0]: https://lwn.net/Articles/916290/
+
+Dave Marchevsky (6):
+  bpf: verifier: Rename kernel_type_name helper to btf_type_name
+  bpf: btf: Remove unused btf_field_info_type enum
+  bpf: Change btf_record_find enum parameter to field_mask
+  bpf: Support __kptr to local kptrs
+  bpf: Allow local kptrs to be exchanged via bpf_kptr_xchg
+  selftests/bpf: Add local kptr stashing test
+
+ include/linux/bpf.h                           | 13 ++-
+ include/linux/btf.h                           |  2 -
+ kernel/bpf/btf.c                              | 40 +++++----
+ kernel/bpf/helpers.c                          | 11 ++-
+ kernel/bpf/syscall.c                          | 20 ++++-
+ kernel/bpf/verifier.c                         | 24 ++++--
+ .../bpf/prog_tests/local_kptr_stash.c         | 33 +++++++
+ .../selftests/bpf/progs/local_kptr_stash.c    | 85 +++++++++++++++++++
+ 8 files changed, 193 insertions(+), 35 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/local_kptr_stash=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/local_kptr_stash.c
+
+--=20
+2.34.1
