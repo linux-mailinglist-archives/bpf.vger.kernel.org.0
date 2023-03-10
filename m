@@ -2,90 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 852416B322F
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 00:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1211C6B32D4
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 01:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbjCIXp0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 18:45:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
+        id S229596AbjCJAiZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 19:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbjCIXpY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 18:45:24 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D75FAEE7
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 15:45:23 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id x20-20020a17090a8a9400b00233ba727724so6704504pjn.1
-        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 15:45:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1678405523;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=joK1iLs9YJ7HYS6kSzl2rZbt/PuSCafHcz/xrLe7jGo=;
-        b=bJFC/lAxRaHk+mJqFSplHzH565OHscdq/bY/9CaWiQOg8ijsx/QWt+KjSnlFrcR+xR
-         4I1MJqqwVstjWukbZY6XdRsy9bNQSN/vXnzu/GEMWzZTYVGIw135HxxyK2++JSB1jCwy
-         bP7vzNceDo79Gggr+2xGhQQcleXlWrDTzDQUlFJMW8ZQE1RtzafjjlEqdvydZ4fz8OTD
-         Y6VnRI+sJpkqAnzSvB0URvwz+nejVbgHzuJuAT+kACmJuxKTloH6ahZu62YHu56dSLtK
-         pQvzd09T9tcOEZKDsBrx1zvXbF56C2jQ+8HzE0y00ywXkIa00ErlFPhBOm7+RwTIXAz6
-         4XTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678405523;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=joK1iLs9YJ7HYS6kSzl2rZbt/PuSCafHcz/xrLe7jGo=;
-        b=yTc6YjtQs7ekvBJSK0yt7C7i2P0qIcUFE5SepamQGVHWCo3uN8i6F61443C7bS+Z6t
-         96TlJmGdQGNu2EUMzdu46YXnHaERkbju/5ql84u3789/41OXggEkFuXr7BQ2ir0CQSU/
-         w8+i09OXX8TPqQQAtG5s8iBfyhfSDx4nju+d1c3cszTQ8stRD+rx57wgqxeyFTCM8UM5
-         auJk7zPq3J+zragLZHFLshuhlYMbOKNmy17924hi/Oe6ruzLN9gY8P5DFGRAy5uyOVQ7
-         IkgkEmJFtO5A8+UgO34qVxYI8vf1JZCx7bQEzYm8ouL8IhypkNh1ce+OCLSMIGwM4YaY
-         Ttqg==
-X-Gm-Message-State: AO0yUKWwskSk6a/WmJqKH9c8vowJnwWbdB1bGE1FmKeIf2cutXTcv4Vz
-        jSJZTAPSBqDwH3Pm5B4GINIujdOZEkT3DPp1D9ZA
-X-Google-Smtp-Source: AK7set9RqqZSFE77wMatvCcE/t3Pq4nptu8SVgLeYYg9Y3Xs8cDwkREIi1LMWiYTY9uI7Ha62QlVV3bMgcEiTsZhy9c=
-X-Received: by 2002:a17:903:485:b0:19a:f22b:31d4 with SMTP id
- jj5-20020a170903048500b0019af22b31d4mr9142241plb.7.1678405523115; Thu, 09 Mar
- 2023 15:45:23 -0800 (PST)
+        with ESMTP id S229473AbjCJAiY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 19:38:24 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD275C9FD;
+        Thu,  9 Mar 2023 16:38:23 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4PXnGN0nSWz4x7v;
+        Fri, 10 Mar 2023 11:38:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1678408701;
+        bh=JsHc1igOc4Eb43fU6eO4BGsI5tx0g6dZVy+B67z7JMs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AktlXja5BihYVa6Q0S4+ghoDQ28KLwCMJ1elTPluDEFXZfOD770+HpJ9SgkpIE6au
+         7aWvAoPI//bka6Egt6OTpQK5TLd0GMGfpfzju20RF9eVhIR7rTEyvHa4WdYhtTmItK
+         Fn+0s76iKL4KyoNqtfGGf2KnUDr2C/0n9dhsxVJTL0ZJFy1D9h/LfkvEu/7pYmtbbu
+         nFizkky90GFBXrxATrkAt1ziQQdTjzJAbLCIhuf7SL29gx2lI7V6NTKgtW9++3w408
+         IsQ87UCIkYrXZjRjTqmGlvZRXEZi92tqQbTkh8lfMwcOEzUgxx3Mxw3B1TSfIDvhAf
+         GJmsMYJRiskIA==
+Date:   Fri, 10 Mar 2023 11:38:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        David Vernet <void@manifault.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the bpf tree
+Message-ID: <20230310113818.3f27de45@canb.auug.org.au>
+In-Reply-To: <20230307095812.236eb1be@canb.auug.org.au>
+References: <20230307095812.236eb1be@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230309085433.1810314-1-roberto.sassu@huaweicloud.com> <20230309085433.1810314-4-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20230309085433.1810314-4-roberto.sassu@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 9 Mar 2023 18:45:12 -0500
-Message-ID: <CAHC9VhSuXxpS_eae0gi4zGFYWEXrxFZD7joaV-qhNmmvf_tcMg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] security: Remove integrity from the LSM list in Kconfig
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, mic@digikod.net, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Y.WdL2fUM0E+dmerrA8t=Gx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 9, 2023 at 3:55=E2=80=AFAM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Remove 'integrity' from the list of LSMs in Kconfig, as it is no longer
-> necessary. Since the recent change (set order to LSM_ORDER_LAST), the
-> 'integrity' LSM is always enabled.
+--Sig_/Y.WdL2fUM0E+dmerrA8t=Gx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-See my comment in 1/3 about "always enabled".
+Hi all,
 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  security/Kconfig | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+On Tue, 7 Mar 2023 09:58:12 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+> Today's linux-next merge of the bpf-next tree got a conflict in:
+>=20
+>   Documentation/bpf/bpf_devel_QA.rst
+>=20
+> between commit:
+>=20
+>   b7abcd9c656b ("bpf, doc: Link to submitting-patches.rst for general pat=
+ch submission info")
+>=20
+> from the bpf tree and commit:
+>=20
+>   d56b0c461d19 ("bpf, docs: Fix link to netdev-FAQ target")
+>=20
+> from the bpf-next tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc Documentation/bpf/bpf_devel_QA.rst
+> index b421d94dc9f2,5f5f9ccc3862..000000000000
+> --- a/Documentation/bpf/bpf_devel_QA.rst
+> +++ b/Documentation/bpf/bpf_devel_QA.rst
+> @@@ -684,8 -684,12 +684,8 @@@ when
+>  =20
+>  =20
+>   .. Links
+> - .. _netdev-FAQ: Documentation/process/maintainer-netdev.rst
+>  -.. _Documentation/process/: https://www.kernel.org/doc/html/latest/proc=
+ess/
+> + .. _netdev-FAQ: https://www.kernel.org/doc/html/latest/process/maintain=
+er-netdev.html
+>   .. _selftests:
+>      https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/t=
+ree/tools/testing/selftests/bpf/
+>  -.. _Documentation/dev-tools/kselftest.rst:
+>  -   https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+>  -.. _Documentation/bpf/btf.rst: btf.rst
+>  =20
+>   Happy BPF hacking!
+
+This is now a conflict between the net-next tree and Linus' tree.
 
 --=20
-paul-moore.com
+Cheers,
+Stephen Rothwell
+
+--Sig_/Y.WdL2fUM0E+dmerrA8t=Gx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmQKe/sACgkQAVBC80lX
+0GwC1wf/RXdwB6V64d2FmGNLAOXcwdNdjog6gxjgZqNWqyp/L+gw9tFRB+2bUx4q
+8TT7yXos2gU3SB+IkExmgMSD5eCCzX3nDcqVstoFMnyfY7oYk7jhptIFq0zwbqrI
+QADkm6PAKQyYj5FNVYdpcHrdvr2Gsz5hifcB0OPp0Oj+ohNWP1bCAJ4fNSil4BjP
+Uaj/GatXItd+kPwDM1v88d8jr+yeCUV0Z14w0bhWu0dEj/hegmIy8wJ0K/vMCPQg
+UdA6LEHNfe+auaPqt8nFacW8uJ/bCk/OPC+/+EcDuNFJIZAdDxAzVQmsP7kIYuv3
+kFmSRJKMFxwJr+a7zCDDxLjXQJpEGQ==
+=SBe0
+-----END PGP SIGNATURE-----
+
+--Sig_/Y.WdL2fUM0E+dmerrA8t=Gx--
