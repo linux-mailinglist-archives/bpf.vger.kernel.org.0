@@ -2,162 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E19526B339F
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 02:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 372756B34AB
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 04:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjCJBYU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 20:24:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
+        id S229874AbjCJDTA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 22:19:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjCJBYT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 20:24:19 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33343EBD9A
-        for <bpf@vger.kernel.org>; Thu,  9 Mar 2023 17:24:18 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32A049o6014149
-        for <bpf@vger.kernel.org>; Thu, 9 Mar 2023 17:24:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=/znqWZyY5t+FzMG0CxGrxM7C1Z4z5m8YyhaOAuLqjl0=;
- b=egmPr9G9oIpObQ5dtMEeOkJggfxmuPRDZyhDYtd0m2ARzvCFJI5KJwSXOflsjoWyrEIP
- 6mgzaAfOmi0KzSmWzd+Lu9QqqK/oGwoqY8hUo4WaSFzgfZcdKEOUoWDwrGo3HytADh24
- bZ0UiZk+Mm4Gyrs3UjQkpKx2Ntz4KiWNC+4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p7sp58e21-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 09 Mar 2023 17:24:17 -0800
-Received: from twshared19568.39.frc1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 9 Mar 2023 17:24:16 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 031EA19D1896D; Thu,  9 Mar 2023 17:24:10 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next] selftests/bpf: Workaround verification failure for fexit_bpf2bpf/func_replace_return_code
-Date:   Thu, 9 Mar 2023 17:24:10 -0800
-Message-ID: <20230310012410.2920570-1-yhs@fb.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229612AbjCJDS7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 22:18:59 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F846FAF97;
+        Thu,  9 Mar 2023 19:18:57 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id ce7so2808885pfb.9;
+        Thu, 09 Mar 2023 19:18:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678418336;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rsCnFJ8PSGUzFdCzTiLh7Z1kzISQTZaHfvqBt6EF9ZU=;
+        b=F0mg0KC7a0wv8F1WT5DmHtrb7pJvxGTZsLveZUhw3z6Eb+PB4Zb02c+MckQ2BJ2fZS
+         WKviogH/Zf0ss0WMs5bedNJiXGu+9FJJ4tJgQoEpAiZKihS7Mb2bp8MObEmwzTpESzqX
+         eYCMe0S7DH/xDdCGTTRG9M1n6z0jQl6KvvpksmhRbkqDUYsGLhee2pKD6wG+taS4G/zl
+         imcgeenfAhIza6djkXz3a812+cyyhSYSibDyiYfPyfbmRVwRVQLKOmarFTYe9vZdTg3Q
+         crbp624fKUcF6MmlF6+yjMNs4xK31rero24nfp/ASX4TcUbC0tMOhDpHcmP8WDMz8GTL
+         9UvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678418336;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rsCnFJ8PSGUzFdCzTiLh7Z1kzISQTZaHfvqBt6EF9ZU=;
+        b=bUIl7NWddCt3/rLe0wMXLb8uuy2p6+MdVnYmqXdW6oY9H7XANN2Dc0vP9DiTOImGC9
+         zgNMn0xaCEWau3yD6aFLJjZf+7zaTU60vBuQdLB3ES95V1tNIrKnacliqxoyEwxKhA9Q
+         xbAnzcvPKSn5RmLk7zLIFjNQ5v76avsl8OS6k/GitphGhGOgeAG+OGulqoJVwAabXfTM
+         D30kvMRE4UU+AmfYEKUemjheNHBeXJNKE1iuMVwrJVj6r/gPzqu/GgJBn3Re0EQ5WvO/
+         j9secGGpd9DrMdFtHO0F+Bug1ZENmDXIK9KQSi2K6dAl0+wUrAEV/YIVU6+koj07+q4e
+         D/cw==
+X-Gm-Message-State: AO0yUKXQfQYemaYNTSVLNmVsWUP7HB9smYCajaiq6qPYabCcwuIK1CT8
+        I9PuHGXSP+NYZYcuyVCTv7g=
+X-Google-Smtp-Source: AK7set+iVUu6nuuCPTwGgCWPTBA4O6HZ276dcLjAxz9AFOIAnvFUofT57czHJWT/E37dXu5MrFKE2w==
+X-Received: by 2002:a05:6a00:ce:b0:5dc:fa22:1bd9 with SMTP id e14-20020a056a0000ce00b005dcfa221bd9mr18878923pfj.23.1678418336504;
+        Thu, 09 Mar 2023 19:18:56 -0800 (PST)
+Received: from debian.me (subs03-180-214-233-23.three.co.id. [180.214.233.23])
+        by smtp.gmail.com with ESMTPSA id e11-20020aa78c4b000000b005a87d636c70sm285961pfd.130.2023.03.09.19.18.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Mar 2023 19:18:55 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 1620A106628; Fri, 10 Mar 2023 10:18:51 +0700 (WIB)
+Date:   Fri, 10 Mar 2023 10:18:51 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     David Vernet <void@manifault.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the bpf tree
+Message-ID: <ZAqhm/VFjju2aOCP@debian.me>
+References: <20230307095812.236eb1be@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Y5MdoAXNJUxQxV3qVIJXNKOffMa0o0D_
-X-Proofpoint-GUID: Y5MdoAXNJUxQxV3qVIJXNKOffMa0o0D_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-09_14,2023-03-09_01,2023-02-09_01
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6PcdzRuw3Y4u/5hI"
+Content-Disposition: inline
+In-Reply-To: <20230307095812.236eb1be@canb.auug.org.au>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With latest llvm17, selftest fexit_bpf2bpf/func_replace_return_code
-has the following verification failure:
 
-  0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-  ; int connect_v4_prog(struct bpf_sock_addr *ctx)
-  0: (bf) r7 =3D r1                       ; R1=3Dctx(off=3D0,imm=3D0) R7_=
-w=3Dctx(off=3D0,imm=3D0)
-  1: (b4) w6 =3D 0                        ; R6_w=3D0
-  ; memset(&tuple.ipv4.saddr, 0, sizeof(tuple.ipv4.saddr));
-  ...
-  ; return do_bind(ctx) ? 1 : 0;
-  179: (bf) r1 =3D r7                     ; R1=3Dctx(off=3D0,imm=3D0) R7=3D=
-ctx(off=3D0,imm=3D0)
-  180: (85) call pc+147
-  Func#3 is global and valid. Skipping.
-  181: R0_w=3Dscalar()
-  181: (bc) w6 =3D w0                     ; R0_w=3Dscalar() R6_w=3Dscalar=
-(umax=3D4294967295,var_off=3D(0x0; 0xffffffff))
-  182: (05) goto pc-129
-  ; }
-  54: (bc) w0 =3D w6                      ; R0_w=3Dscalar(umax=3D42949672=
-95,var_off=3D(0x0; 0xffffffff)) R6_w=3Dscalar(umax=3D4294967295,var_off=3D=
-(0x0; 0xffffffff))
-  55: (95) exit
-  At program exit the register R0 has value (0x0; 0xffffffff) should have=
- been in (0x0; 0x1)
-  processed 281 insns (limit 1000000) max_states_per_insn 1 total_states =
-26 peak_states 26 mark_read 13
-  -- END PROG LOAD LOG --
-  libbpf: prog 'connect_v4_prog': failed to load: -22
+--6PcdzRuw3Y4u/5hI
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The corresponding source code:
+On Tue, Mar 07, 2023 at 09:58:12AM +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Today's linux-next merge of the bpf-next tree got a conflict in:
+>=20
+>   Documentation/bpf/bpf_devel_QA.rst
+>=20
+> between commit:
+>=20
+>   b7abcd9c656b ("bpf, doc: Link to submitting-patches.rst for general pat=
+ch submission info")
+>=20
+> from the bpf tree and commit:
+>=20
+>   d56b0c461d19 ("bpf, docs: Fix link to netdev-FAQ target")
+>=20
+> from the bpf-next tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc Documentation/bpf/bpf_devel_QA.rst
+> index b421d94dc9f2,5f5f9ccc3862..000000000000
+> --- a/Documentation/bpf/bpf_devel_QA.rst
+> +++ b/Documentation/bpf/bpf_devel_QA.rst
+> @@@ -684,8 -684,12 +684,8 @@@ when
+>  =20
+>  =20
+>   .. Links
+> - .. _netdev-FAQ: Documentation/process/maintainer-netdev.rst
+>  -.. _Documentation/process/: https://www.kernel.org/doc/html/latest/proc=
+ess/
+> + .. _netdev-FAQ: https://www.kernel.org/doc/html/latest/process/maintain=
+er-netdev.html
+>   .. _selftests:
+>      https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/t=
+ree/tools/testing/selftests/bpf/
+>  -.. _Documentation/dev-tools/kselftest.rst:
+>  -   https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+>  -.. _Documentation/bpf/btf.rst: btf.rst
+>  =20
+>   Happy BPF hacking!
 
-  __attribute__ ((noinline))
-  int do_bind(struct bpf_sock_addr *ctx)
-  {
-        struct sockaddr_in sa =3D {};
+I think the correct solution is to instead use internal link to netdev FAQ,
+to be consistent with my change in bpf tree:
 
-        sa.sin_family =3D AF_INET;
-        sa.sin_port =3D bpf_htons(0);
-        sa.sin_addr.s_addr =3D bpf_htonl(SRC_REWRITE_IP4);
-
-        if (bpf_bind(ctx, (struct sockaddr *)&sa, sizeof(sa)) !=3D 0)
-                return 0;
-
-        return 1;
-  }
-  ...
-  SEC("cgroup/connect4")
-  int connect_v4_prog(struct bpf_sock_addr *ctx)
-  {
-  ...
-        return do_bind(ctx) ? 1 : 0;
-  }
-
-Insn 180 is a call to 'do_bind'. The call's return value is also the retu=
-rn value
-for the program. Since do_bind() returns 0/1, so it is legitimate for com=
-piler to
-optimize 'return do_bind(ctx) ? 1 : 0' to 'return do_bind(ctx)'. However,=
- such
-optimization breaks verifier as the return value of 'do_bind()' is marked=
- as any
-scalar which violates the requirement of prog return value 0/1.
-
-There are two ways to fix this problem, (1) changing 'return 1' in do_bin=
-d() to
-e.g. 'return 10' so the compiler has to do 'do_bind(ctx) ? 1 :0', or (2)
-suggested by Andrii, marking do_bind() with __weak attribute so the compi=
-ler
-cannot make any assumption on do_bind() return value.
-
-This patch adopted adding __weak approach which is simpler and more resis=
-tant
-to potential compiler optimizations.
-
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/progs/connect4_prog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/te=
-sting/selftests/bpf/progs/connect4_prog.c
-index ec25371de789..7ef49ec04838 100644
---- a/tools/testing/selftests/bpf/progs/connect4_prog.c
-+++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
-@@ -32,7 +32,7 @@
- #define IFNAMSIZ 16
- #endif
+---- >8 ----
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_dev=
+el_QA.rst
+index 5f5f9ccc3862b4..e523991da9e0ce 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -128,7 +128,7 @@ into the bpf-next tree will make their way into net-nex=
+t tree. net and
+ net-next are both run by David S. Miller. From there, they will go
+ into the kernel mainline tree run by Linus Torvalds. To read up on the
+ process of net and net-next being merged into the mainline tree, see
+-the `netdev-FAQ`_.
++the :doc:`netdev-FAQ </process/maintainer-netdev>`.
 =20
--__attribute__ ((noinline))
-+__attribute__ ((noinline)) __weak
- int do_bind(struct bpf_sock_addr *ctx)
- {
- 	struct sockaddr_in sa =3D {};
---=20
-2.34.1
+=20
+=20
+@@ -147,7 +147,8 @@ request)::
+ Q: How do I indicate which tree (bpf vs. bpf-next) my patch should be appl=
+ied to?
+ --------------------------------------------------------------------------=
+-------
+=20
+-A: The process is the very same as described in the `netdev-FAQ`_,
++A: The process is the very same as described in the
++:doc:`netdev-FAQ </process/maintainer-netdev>`,
+ so please read up on it. The subject line must indicate whether the
+ patch is a fix or rather "next-like" content in order to let the
+ maintainers know whether it is targeted at bpf or bpf-next.
+@@ -206,8 +207,8 @@ ii) run extensive BPF test suite and
+ Once the BPF pull request was accepted by David S. Miller, then
+ the patches end up in net or net-next tree, respectively, and
+ make their way from there further into mainline. Again, see the
+-`netdev-FAQ`_ for additional information e.g. on how often they are
+-merged to mainline.
++:doc:`netdev-FAQ </process/maintainer-netdev>` for additional
++information e.g. on how often they are merged to mainline.
+=20
+ Q: How long do I need to wait for feedback on my BPF patches?
+ -------------------------------------------------------------
+@@ -230,7 +231,8 @@ Q: Are patches applied to bpf-next when the merge windo=
+w is open?
+ -----------------------------------------------------------------
+ A: For the time when the merge window is open, bpf-next will not be
+ processed. This is roughly analogous to net-next patch processing,
+-so feel free to read up on the `netdev-FAQ`_ about further details.
++so feel free to read up on the
++:doc:`netdev-FAQ </process/maintainer-netdev>` about further details.
+=20
+ During those two weeks of merge window, we might ask you to resend
+ your patch series once bpf-next is open again. Once Linus released
+@@ -394,7 +396,7 @@ netdev kernel mailing list in Cc and ask for the fix to=
+ be queued up:
+   netdev@vger.kernel.org
+=20
+ The process in general is the same as on netdev itself, see also the
+-`netdev-FAQ`_.
++:doc:`netdev-FAQ </process/maintainer-netdev>`.
+=20
+ Q: Do you also backport to kernels not currently maintained as stable?
+ ----------------------------------------------------------------------
+@@ -410,7 +412,7 @@ Q: The BPF patch I am about to submit needs to go to st=
+able as well
+ What should I do?
+=20
+ A: The same rules apply as with netdev patch submissions in general, see
+-the `netdev-FAQ`_.
++the :doc:`netdev-FAQ </process/maintainer-netdev>`.
+=20
+ Never add "``Cc: stable@vger.kernel.org``" to the patch description, but
+ ask the BPF maintainers to queue the patches instead. This can be done
+@@ -685,7 +687,6 @@ when:
+=20
+ .. Links
+ .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
+-.. _netdev-FAQ: https://www.kernel.org/doc/html/latest/process/maintainer-=
+netdev.html
+ .. _selftests:
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/tools/testing/selftests/bpf/
+ .. _Documentation/dev-tools/kselftest.rst:
 
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--6PcdzRuw3Y4u/5hI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZAqhkgAKCRD2uYlJVVFO
+o9tbAP96T3EuJs1K2w/DPLlZOJf3i6hR/yV6W7gd20/+W9d9NwEAtd5Djc5Fc5KQ
+OHRb1SbicIIhspeBQbBpSxOIobeSzwI=
+=AnfF
+-----END PGP SIGNATURE-----
+
+--6PcdzRuw3Y4u/5hI--
