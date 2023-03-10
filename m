@@ -2,61 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B09096B50C9
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 20:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 997B66B50D2
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 20:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjCJTQW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 14:16:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55014 "EHLO
+        id S230060AbjCJTTW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 14:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjCJTQU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 14:16:20 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391EC12DDF3;
-        Fri, 10 Mar 2023 11:16:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LHHbjScou7+C6E6wHBUk/ygGHeDh8h+eFwprnuKb46I=; b=M4Lgts/FsW4hhTDyN3qMaj2lQR
-        DExVzAT+/3cC2Hgb4JruiB5WyNqFOwA8vXLHfYCLxpVt6UVKpqp6dc4IKTU/ARJ7w2XyyseKrzToz
-        nwR893BYe5G28IyCAf96eKdkdLYYuJr/BUuZaxsF19EvsbTssANba8dJ5SZxZ1NvdTCfGKL+D12cO
-        XwfjGcFZQ/nRgFEIOuoUCWF1zYVh0InTFIgxXrmaR0+upPn/HPWtm2Ht3Cl7teR6vGTpqQHzqrS7A
-        PeickofgSAydEooMpcx3Pb94M3zDDYmnAZXSkHnzeBbvSegQI7LdbfbVK/fXwfIb3XwEl22SCrs2N
-        St64Popw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1paiDt-00FtEc-6c; Fri, 10 Mar 2023 19:16:13 +0000
-Date:   Fri, 10 Mar 2023 11:16:13 -0800
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Viktor Malik <vmalik@redhat.com>
+        with ESMTP id S230058AbjCJTTV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 14:19:21 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE98C120E8C
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 11:19:19 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id 6-20020a17090a190600b00237c5b6ecd7so10887066pjg.4
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 11:19:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678475959;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PMGAV1zzkicKsBM+CX3FOzZjLEcYw21MNxzmj9UXPqY=;
+        b=lSJXJKFoK7+FkUalgIJ41B+JHp3j3SRLjps2eKrMt0aJhSFZUo6xzfc3LtLrbtXfAn
+         K+oL7q1usUVMyjri3/BUGbTrfKTYznNROMEhp753diplRFaiivrNaDzLPRCIiG7a1ede
+         jhpYel9iMUfOFEes/RYHjln/MgaA0HIxSPrWHASyv2BjPkUxMVRSdodG44/91fhrZBe0
+         fyrXA+Odph+hKQJPZhxbiaSayaMZ/K/jaBATNfL9ykZNOXPQlPloQQeatSiSNIMl+QTo
+         Z2fyWrlSJxXpo/0GFJcSTSbBv7mWqe4UvEi2kvMRakBA3QVS7krVh2YCz46Tez3KRVSK
+         8rRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678475959;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PMGAV1zzkicKsBM+CX3FOzZjLEcYw21MNxzmj9UXPqY=;
+        b=6clA1kjfoo4vv6rn3RkbdOr42T25pcjNxKL2JIrnP/YB29WYTRDrFLv9i4bzhX1Zar
+         SlSwMHWPhVZZPZVF53Crso0ES0gGs/zLKy0hShzH7b1OLp7G2nPVktp2UZBJWN3ECC+I
+         nSlt74NqqZmFGvHv6rWtT/20nnCBPIiZOUmGjt9Xn3yNif64Rx5Na5+b6+tl59ymjZJ4
+         G85iDpwhyRKjIoXJWWopqr3ahxUkvCe9nWs4yUPuwH90LvDhxM9dCTzp8DndPkA0epIW
+         XcULDayGFMmoHNmTB0Qn0GRWML883wWn5kSo7xwpQ5rjGj15RM/3ZFEi7XBh28exaLoH
+         KyCw==
+X-Gm-Message-State: AO0yUKW7voEPcct0P4lya45Y/66VvUpo5yRW1tjV1Qi6pXx3zwKHRrRw
+        fbMQ22+qeTeRfh6N0g7I9+o=
+X-Google-Smtp-Source: AK7set8R1fgfr6d+ETc/5Jcn9FhGr9s7yOPxI6eSF1HvWY9mK5VJHCrbdfQHk5IptNEHPW5GVyksTQ==
+X-Received: by 2002:a17:903:1d1:b0:19e:6947:3b27 with SMTP id e17-20020a17090301d100b0019e69473b27mr34063199plh.58.1678475959271;
+        Fri, 10 Mar 2023 11:19:19 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:5c0c])
+        by smtp.gmail.com with ESMTPSA id ju10-20020a170903428a00b0019c93a9a854sm329155plb.213.2023.03.10.11.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Mar 2023 11:19:18 -0800 (PST)
+Date:   Fri, 10 Mar 2023 11:19:16 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-modules@vger.kernel.org,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH bpf-next v10 1/2] bpf: Fix attaching
- fentry/fexit/fmod_ret/lsm to modules
-Message-ID: <ZAuB/cnEsPt0f0vb@bombadil.infradead.org>
-References: <cover.1678432753.git.vmalik@redhat.com>
- <3f6a9d8ae850532b5ef864ef16327b0f7a669063.1678432753.git.vmalik@redhat.com>
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
+Subject: Re: [PATCH v2 bpf-next 12/17] bpf: Add a few bpf mem allocator
+ functions
+Message-ID: <20230310191916.xz3hxqxl2une2rhq@macbook-pro-6.dhcp.thefacebook.com>
+References: <20230308065936.1550103-1-martin.lau@linux.dev>
+ <20230308065936.1550103-13-martin.lau@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3f6a9d8ae850532b5ef864ef16327b0f7a669063.1678432753.git.vmalik@redhat.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+In-Reply-To: <20230308065936.1550103-13-martin.lau@linux.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,83 +73,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Please add linux-modules in the future. My review below.
-
-On Fri, Mar 10, 2023 at 08:40:59AM +0100, Viktor Malik wrote:
-> This resolves two problems with attachment of fentry/fexit/fmod_ret/lsm
-> to functions located in modules:
+On Tue, Mar 07, 2023 at 10:59:31PM -0800, Martin KaFai Lau wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
 > 
-> 1. The verifier tries to find the address to attach to in kallsyms. This
->    is always done by searching the entire kallsyms, not respecting the
->    module in which the function is located. Such approach causes an
->    incorrect attachment address to be computed if the function to attach
->    to is shadowed by a function of the same name located earlier in
->    kallsyms.
-
-Just a heads up, I realize you have tried to fix the issue here using
-semantics to get the module in other ways, but Nick's future work
-expands kallsyms to allow symbols for modules to be looked for, even
-if there are duplicates in kallsysms. He is working on that to help
-with tooling for tracing, but here seems to be an example use case
-which may be in-kernel. But you seem to indicate you've found an alternative
-solution anyway.
-
-Jiri, does live patching hunt for symbols in such opaque way too?
-Or does it resolve it using something similar as the technique here
-with a module notifier / its own linked list?
-
-> 2. If the address to attach to is located in a module, the module
->    reference is only acquired in register_fentry. If the module is
->    unloaded between the place where the address is found
->    (bpf_check_attach_target in the verifier) and register_fentry, it is
->    possible that another module is loaded to the same address which may
->    lead to potential errors.
+> This patch adds a few bpf mem allocator functions which will
+> be used in the bpf_local_storage in a later patch.
 > 
-> Since the attachment must contain the BTF of the program to attach to,
-> we extract the module from it and search for the function address in the
-> correct module (resolving problem no. 1). Then, the module reference is
-> taken directly in bpf_check_attach_target and stored in the bpf program
-> (in bpf_prog_aux). The reference is only released when the program is
-> unloaded (resolving problem no. 2).
+> bpf_mem_cache_alloc_flags(..., gfp_t flags) is added. When the
+> flags == GFP_KERNEL, it will fallback to __alloc(..., GFP_KERNEL).
+> bpf_local_storage knows its running context is sleepable (GFP_KERNEL)
+> and provides a better guarantee on memory allocation.
 > 
-> Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> bpf_local_storage has some uncommon cases that its selem
+> cannot be reused immediately. It handles its own
+> rcu_head and goes through a rcu_trace gp and then free it.
+> bpf_mem_cache_raw_free() is added for direct free purpose
+> without leaking the LLIST_NODE_SZ internal knowledge.
+> During free time, the 'struct bpf_mem_alloc *ma' is no longer
+> available. However, the caller should know if it is
+> percpu memory or not and it can call different raw_free functions.
+> bpf_local_storage does not support percpu value, so only
+> the non-percpu 'bpf_mem_cache_raw_free()' is added in
+> this patch.
+> 
+> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 > ---
+>  include/linux/bpf_mem_alloc.h |  2 ++
+>  kernel/bpf/memalloc.c         | 42 +++++++++++++++++++++++++++--------
+>  2 files changed, 35 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
+> index a7104af61ab4..3929be5743f4 100644
+> --- a/include/linux/bpf_mem_alloc.h
+> +++ b/include/linux/bpf_mem_alloc.h
+> @@ -31,5 +31,7 @@ void bpf_mem_free(struct bpf_mem_alloc *ma, void *ptr);
+>  /* kmem_cache_alloc/free equivalent: */
+>  void *bpf_mem_cache_alloc(struct bpf_mem_alloc *ma);
+>  void bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr);
+> +void bpf_mem_cache_raw_free(void *ptr);
+> +void *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags);
+>  
+>  #endif /* _BPF_MEM_ALLOC_H */
+> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> index 5fcdacbb8439..2b78eed27c9c 100644
+> --- a/kernel/bpf/memalloc.c
+> +++ b/kernel/bpf/memalloc.c
+> @@ -121,15 +121,8 @@ static struct llist_node notrace *__llist_del_first(struct llist_head *head)
+>  	return entry;
+>  }
+>  
+> -static void *__alloc(struct bpf_mem_cache *c, int node)
+> +static void *__alloc(struct bpf_mem_cache *c, int node, gfp_t flags)
+>  {
+> -	/* Allocate, but don't deplete atomic reserves that typical
+> -	 * GFP_ATOMIC would do. irq_work runs on this cpu and kmalloc
+> -	 * will allocate from the current numa node which is what we
+> -	 * want here.
+> -	 */
+> -	gfp_t flags = GFP_NOWAIT | __GFP_NOWARN | __GFP_ACCOUNT;
+> -
+>  	if (c->percpu_size) {
+>  		void **obj = kmalloc_node(c->percpu_size, flags, node);
+>  		void *pptr = __alloc_percpu_gfp(c->unit_size, 8, flags);
+> @@ -185,7 +178,12 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
+>  		 */
+>  		obj = __llist_del_first(&c->free_by_rcu);
+>  		if (!obj) {
+> -			obj = __alloc(c, node);
+> +			/* Allocate, but don't deplete atomic reserves that typical
+> +			 * GFP_ATOMIC would do. irq_work runs on this cpu and kmalloc
+> +			 * will allocate from the current numa node which is what we
+> +			 * want here.
+> +			 */
+> +			obj = __alloc(c, node, GFP_NOWAIT | __GFP_NOWARN | __GFP_ACCOUNT);
+>  			if (!obj)
+>  				break;
+>  		}
+> @@ -676,3 +674,29 @@ void notrace bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr)
+>  
+>  	unit_free(this_cpu_ptr(ma->cache), ptr);
+>  }
+> +
+> +void bpf_mem_cache_raw_free(void *ptr)
+> +{
+> +	kfree(ptr - LLIST_NODE_SZ);
+> +}
 
-My review of the critical part below.
+I think this needs a big comment explaining when it's ok to use it.
+The tradeoffs of missing free list and what it means.
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 45a082284464..3905bb20b9a1 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -18432,8 +18434,17 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
->  			else
->  				addr = (long) tgt_prog->aux->func[subprog]->bpf_func;
->  		} else {
-> -			addr = kallsyms_lookup_name(tname);
-> +			if (btf_is_module(btf)) {
-> +				mod = btf_try_get_module(btf);
-> +				if (mod)
-> +					addr = find_kallsyms_symbol_value(mod, tname);
-> +				else
-> +					addr = 0;
-> +			} else {
-> +				addr = kallsyms_lookup_name(tname);
-> +			}
->  			if (!addr) {
-> +				module_put(mod);
->  				bpf_log(log,
->  					"The address of function %s cannot be found\n",
->  					tname);
+Also it needs if (!ptr) return; for consistency.
 
-If btf_modules linked list is ensured to not remove the btf module
-during this operation, sure this is safe, as per the new guidelines I've
-posted for try_module_get() this seems to be using try_module_get()
-using the implied protection.
-
-Please review the docs. *If* it respects that usage then feel free to
-add:
-
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-
-  Luis
+The rest of the patches look fine. I've applied all except 12, 13, 14.
