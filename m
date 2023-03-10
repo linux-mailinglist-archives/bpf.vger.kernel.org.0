@@ -2,32 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A456B487B
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 16:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E55836B456D
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 15:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233764AbjCJPC4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 10:02:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
+        id S232609AbjCJOdj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 09:33:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233532AbjCJPCf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 10:02:35 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B02712E150;
-        Fri, 10 Mar 2023 06:55:51 -0800 (PST)
+        with ESMTP id S232560AbjCJOdS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 09:33:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC2523848;
+        Fri, 10 Mar 2023 06:33:04 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DB1561A47;
-        Fri, 10 Mar 2023 14:54:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30F27C433EF;
-        Fri, 10 Mar 2023 14:54:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 597BA6191D;
+        Fri, 10 Mar 2023 14:33:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33FD7C433EF;
+        Fri, 10 Mar 2023 14:33:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1678460098;
-        bh=y8vhD0H4l+A/BrdyMJv0lkuYKZVA9CPQalpg7zyF57E=;
+        s=korg; t=1678458783;
+        bh=yQJSZcfYXWTDUyGGmtHOLv8S1mP2iPgVwEZ5UYp+008=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QK/mY8LFTwjsjEldIiVP3FFDfPpzSiOaZrf1lGXJ8RtuUb4FiFVJqlUIKVq/d8Rhz
-         1b8SbXCXaYzCu8QVKsnugpE7OZAn9K9KY8lmaIZ449+ZM8N2LkfGMfA15dDKMzfQLZ
-         XQEzfbTS4OssCaZ1O9rI7owCBA9T1pefukxvJwgo=
+        b=s/kcfRgzt/O/ESEOhBn13h287+KB9MMp1z9OmuZOjteSq4JQnA8zE+FwxpMfDWXsY
+         h5YAfhDXgzzlqGb+W376pZ+PnVTpRFlZpXLGDfLHUvn8KEZRi/IGyKLzqzo02aF1Lf
+         QltaId+S7W1VSpArMtHIVdhGY5WVsHppUgcsN5Dc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -43,18 +43,18 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Tom Rix <trix@redhat.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 223/529] perf llvm: Fix inadvertent file creation
-Date:   Fri, 10 Mar 2023 14:36:06 +0100
-Message-Id: <20230310133815.336510503@linuxfoundation.org>
+Subject: [PATCH 5.4 143/357] perf llvm: Fix inadvertent file creation
+Date:   Fri, 10 Mar 2023 14:37:12 +0100
+Message-Id: <20230310133741.006036179@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230310133804.978589368@linuxfoundation.org>
-References: <20230310133804.978589368@linuxfoundation.org>
+In-Reply-To: <20230310133733.973883071@linuxfoundation.org>
+References: <20230310133733.973883071@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -104,10 +104,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 24 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/llvm-utils.c b/tools/perf/util/llvm-utils.c
-index 0bf6b4d4c90a7..570cde4640d05 100644
+index e7c7e3232fc5a..b275a1b297c30 100644
 --- a/tools/perf/util/llvm-utils.c
 +++ b/tools/perf/util/llvm-utils.c
-@@ -525,14 +525,37 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
+@@ -523,14 +523,37 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
  
  	pr_debug("llvm compiling command template: %s\n", template);
  
