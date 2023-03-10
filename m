@@ -2,68 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426136B5184
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 21:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639AF6B51B8
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 21:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbjCJUNC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 15:13:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        id S231239AbjCJUWv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 15:22:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbjCJUNB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 15:13:01 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC49259C7
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 12:12:55 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id me6-20020a17090b17c600b0023816b0c7ceso11048773pjb.2
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 12:12:55 -0800 (PST)
+        with ESMTP id S231158AbjCJUWt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 15:22:49 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E888B12DC02;
+        Fri, 10 Mar 2023 12:22:47 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id s11so25354045edy.8;
+        Fri, 10 Mar 2023 12:22:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678479175;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l/UDvt3n4Dinow42PUqI+KwQ/prFII7giLtC/GNgvwE=;
-        b=O6x7D3mwker/F5A52qjtSnN4g2NY1K+z85Z/icwnW8L7faaOdHpvlq7S+GeaWPyF/q
-         6nj0ATGWFSw6T+g0KDwEDahwC45YEWl7Fzk086m//k5YV4hgUQYZHAMjYE8k1EUeJR+9
-         JcIulTF/W7DQ1RxcauxIJcu5Y6NJ3FqnhI9cKIKk3nIcU25lZ1PVNj0Vu8J2/VzP3OYj
-         /6CNCoF9m1rGEVzCcpIWbzbVsQYA+9bbChdK+rwaG0DcH4fNb0EAVUoFegxB1kygiro9
-         Nou+8yhdz3k+c+qsDideLs+W+FDFB1fS2rHZD9cgMh1g9gmib7vkU1DmvnIKIaDnRw28
-         Bjug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678479175;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20210112; t=1678479766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=l/UDvt3n4Dinow42PUqI+KwQ/prFII7giLtC/GNgvwE=;
-        b=fcNSNa9+ujpoXIq30qhb6v0TEhiUTFp3KozR2xY7xyoP+MOQw7l+/kWG3Zoe3Tc/1a
-         qM1yjMGv0hY0RMgikYsI0x4n3vC+O9ZvtaoTVWmVyWbCRqDzlbfXhJxu5JFQ3P/MqqoK
-         ZgZH7poJsRo/b4XSO/XaXr+wABUqhXoaLu+usSRsmX7TeJmeY95y3dfdY6GziV6NfHWV
-         0u2pnaulNRmw4z3qdqBqmieaX/XIj3pdm7W5AopbcmpZDhlxK8Av+b/qiYuQaBXgnQUd
-         ae6DDvcWuFIWkQR/G9OCvmGvdW+X84KmO8AZLHv6oTZuyrM3eQTjFLv25TRZsApw3tS1
-         tcEQ==
-X-Gm-Message-State: AO0yUKVztbQe8hxtcZMFST3kkyqch1RGh59qMXKByyBgQ3yG1hu7fFLA
-        N1/dwI1dSqFh/gu06I9PjnY=
-X-Google-Smtp-Source: AK7set/QlZFB+Vw2CjSKghfCcH2serekT+UaBD+eCOCEno6HrARzIvbFVdEtA2M7nX9s6ljwMrGCVA==
-X-Received: by 2002:a17:903:120b:b0:19e:82aa:dc8a with SMTP id l11-20020a170903120b00b0019e82aadc8amr30942354plh.22.1678479175060;
-        Fri, 10 Mar 2023 12:12:55 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:5c0c])
-        by smtp.gmail.com with ESMTPSA id y16-20020a17090322d000b0019e60c645b1sm327521plg.305.2023.03.10.12.12.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Mar 2023 12:12:54 -0800 (PST)
-Date:   Fri, 10 Mar 2023 12:12:52 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, tj@kernel.org
-Subject: Re: [PATCH v1 bpf-next 6/6] selftests/bpf: Add local kptr stashing
- test
-Message-ID: <20230310201252.rwh3xu5e5s6udyhu@macbook-pro-6.dhcp.thefacebook.com>
-References: <20230309180111.1618459-1-davemarchevsky@fb.com>
- <20230309180111.1618459-7-davemarchevsky@fb.com>
+        bh=ORasYKUX0Hwis7sfGua1CSHjFk1HruseacmaBr5a+Uk=;
+        b=Xr7tRGNyOBC3CdRyrCHS+ePzgrFutYl2lauA4U2kxId9Ibdtglafm276EA2CQoLa/I
+         YWooVbkXjxxC04X9n2QyHRKboB70j3grprJH/fRMAd6IJcrd+5PzlNG9Dts1emyWrtE2
+         j0Xcwlv0P1TvrfIHwxilUNtxFHvgMIvv0TmGpl+4JWAWlatyL0g2+o0Ht3RU02DjgI0a
+         yLOj2Ua9c5i/nalbwV3k0lFJskYGyBvmT1EAfOfTT20yRDL1b9LEiYtuFCKOP+c406PT
+         UjU9Yi1ASE1SZ+ErFPNV525RPdMD15/r/3qR1hnBaH/BKaPsvZqy+ECGYcENp1Z9orIz
+         a2kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678479766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ORasYKUX0Hwis7sfGua1CSHjFk1HruseacmaBr5a+Uk=;
+        b=wrbCJaGl0vNYoPav1VY7YAzBKC8o1lxzuYB3KOC+9xto52086ZrgitMATlJ2EkSYG4
+         A2dQS2pIcUZpUGQUzqLVQi6Hpysf95IajsqK/xSs5OMrFt8AP9Qn0y+8BUk+rzW59jpB
+         wKXku6b3c1V+JPSqOo8j7JEnXFHm8SoMVFVFl2lINaFIyfX/VpR8L85IquJkON4+K+9c
+         F1tIkB1nLC8GKypnJibyZ9Cdrca2+RaWFwgZwrvsCntZrsa7gg1bty9cLzZ+bqutf6+J
+         xl+Ke3Zqw9dWFYqgyGYOLmyyIOCSHab+0khMcYrgt7Mmqqr+jV9tNrmM/q1Nx+x0T2mj
+         NF9A==
+X-Gm-Message-State: AO0yUKU/8zQUSziLa3o1oZElDKEY7tnFZMv0p0aEBotAUSWmcKlGuhvJ
+        pLdCryguO+/lyfZVqbE6Z7N8GumLMsb2YR9bPiA=
+X-Google-Smtp-Source: AK7set8+IJlquFhRcIll2Sg7NI6g9Rxrd9l9Dplhy9MmVoPi+eOapi1cXygTd87AZKZ9aPUtBON+QV/JWQhpJxTBm+E=
+X-Received: by 2002:a17:906:1643:b0:8af:4963:fb08 with SMTP id
+ n3-20020a170906164300b008af4963fb08mr13955189ejd.15.1678479766130; Fri, 10
+ Mar 2023 12:22:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230309180111.1618459-7-davemarchevsky@fb.com>
+References: <20230116010115.490713-1-irogers@google.com> <CAP-5=fVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39dywaLxrO4Hpg@mail.gmail.com>
+ <Y8mAuDvs566zwG67@kernel.org> <Y8myfqy5EMit3Kr/@krava> <CAP-5=fUugnKd=pGpZve7tKThhM5b0AqGMnuiELF+fZQw-xJz9w@mail.gmail.com>
+ <ZAmRjk1x4p4TrFb0@gentoo.org> <CAEf4BzZJvEnWdTKVSgdBDr_KEgkW5HLHc7N-HRkmb-drCbg2uw@mail.gmail.com>
+ <CAP-5=fWvMFXOaKA0bKaKdzYjqOxTCXGapJy-4x34hJyZxqD-Dw@mail.gmail.com>
+In-Reply-To: <CAP-5=fWvMFXOaKA0bKaKdzYjqOxTCXGapJy-4x34hJyZxqD-Dw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 10 Mar 2023 12:22:34 -0800
+Message-ID: <CAEf4BzZyxyqC1KB3zou46ckf3UvDY9PwgrKdofnPfbhXrN3=XQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Assume libbpf 1.0+
+To:     Ian Rogers <irogers@google.com>
+Cc:     Guilherme Amadio <amadio@gentoo.org>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andres Freund <andres@anarazel.de>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Christy Lee <christylee@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
+        Ben Hutchings <ben@decadent.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,134 +86,195 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 09, 2023 at 10:01:11AM -0800, Dave Marchevsky wrote:
-> Add a new selftest, local_kptr_stash, which uses bpf_kptr_xchg to stash
-> a bpf_obj_new-allocated object in a map.
-> 
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  .../bpf/prog_tests/local_kptr_stash.c         | 33 +++++++
->  .../selftests/bpf/progs/local_kptr_stash.c    | 85 +++++++++++++++++++
->  2 files changed, 118 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
->  create mode 100644 tools/testing/selftests/bpf/progs/local_kptr_stash.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c b/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
-> new file mode 100644
-> index 000000000000..98353e602741
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
-> @@ -0,0 +1,33 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-> +
-> +#include <test_progs.h>
-> +#include <network_helpers.h>
-> +
-> +#include "local_kptr_stash.skel.h"
-> +static void test_local_kptr_stash_simple(void)
-> +{
-> +	LIBBPF_OPTS(bpf_test_run_opts, opts,
-> +		    .data_in = &pkt_v4,
-> +		    .data_size_in = sizeof(pkt_v4),
-> +		    .repeat = 1,
-> +	);
-> +	struct local_kptr_stash *skel;
-> +	int ret;
-> +
-> +	skel = local_kptr_stash__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "local_kptr_stash__open_and_load"))
-> +		return;
-> +
-> +	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.stash_rb_node), &opts);
-> +	ASSERT_OK(ret, "local_kptr_stash_add_nodes run");
-> +	ASSERT_OK(opts.retval, "local_kptr_stash_add_nodes retval");
-> +
-> +	local_kptr_stash__destroy(skel);
-> +}
-> +
-> +void test_local_kptr_stash_success(void)
-> +{
-> +	if (test__start_subtest("rbtree_add_nodes"))
-> +		test_local_kptr_stash_simple();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash.c b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
-> new file mode 100644
-> index 000000000000..df7b419f3dc3
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
-> @@ -0,0 +1,85 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-> +
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_core_read.h>
-> +#include "bpf_experimental.h"
-> +
-> +struct node_data {
-> +	long key;
-> +	long data;
-> +	struct bpf_rb_node node;
-> +};
-> +
-> +struct map_value {
-> +	struct prog_test_ref_kfunc *not_kptr;
-> +	struct prog_test_ref_kfunc __kptr *val;
-> +	struct node_data __kptr *node;
-> +};
-> +
-> +/* This is necessary so that LLVM generates BTF for node_data struct
-> + * If it's not included, a fwd reference for node_data will be generated but
-> + * no struct. Example BTF of "node" field in map_value when not included:
-> + *
-> + * [10] PTR '(anon)' type_id=35
-> + * [34] FWD 'node_data' fwd_kind=struct
-> + * [35] TYPE_TAG 'kptr_ref' type_id=34
-> + *
-> + * (with no node_data struct defined)
-> + * Had to do the same w/ bpf_kfunc_call_test_release below
-> + */
-> +struct node_data *just_here_because_btf_bug;
-> +
-> +extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
-> +
-> +struct {
-> +        __uint(type, BPF_MAP_TYPE_ARRAY);
-> +        __type(key, int);
-> +        __type(value, struct map_value);
-> +        __uint(max_entries, 1);
-> +} some_nodes SEC(".maps");
-> +
-> +SEC("tc")
-> +long stash_rb_node(void *ctx)
-> +{
-> +	struct map_value *mapval;
-> +	struct node_data *res;
-> +	int key = 0;
-> +
-> +	res = bpf_obj_new(typeof(*res));
-> +	if (!res)
-> +		return 1;
-> +	res->key = 42;
-> +
-> +	mapval = bpf_map_lookup_elem(&some_nodes, &key);
-> +	if (!mapval) {
-> +		bpf_obj_drop(res);
-> +		return 1;
-> +	}
-> +
-> +	res = bpf_kptr_xchg(&mapval->node, res);
-> +	if (res)
-> +		bpf_obj_drop(res);
+On Thu, Mar 9, 2023 at 7:26=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> On Thu, Mar 9, 2023 at 9:25=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Mar 8, 2023 at 11:58=E2=80=AFPM Guilherme Amadio <amadio@gentoo=
+.org> wrote:
+> > >
+> > > On Wed, Mar 08, 2023 at 06:13:34PM -0800, Ian Rogers wrote:
+> > > > On Thu, Jan 19, 2023 at 1:13=E2=80=AFPM Jiri Olsa <olsajiri@gmail.c=
+om> wrote:
+> > > > >
+> > > > > On Thu, Jan 19, 2023 at 02:41:12PM -0300, Arnaldo Carvalho de Mel=
+o wrote:
+> > > > > > Em Thu, Jan 19, 2023 at 09:11:03AM -0800, Ian Rogers escreveu:
+> > > > > > > On Sun, Jan 15, 2023 at 5:01 PM Ian Rogers <irogers@google.co=
+m> wrote:
+> > > > > > > > libbpf 1.0 was a major change in API. Perf has partially su=
+pported
+> > > > > > > > older libbpf's but an implementation may be:
+> > > > > > > > ..
+> > > > > > > >        pr_err("%s: not support, update libbpf\n", __func__)=
+;
+> > > > > > > >        return -ENOTSUP;
+> > > > > > > > ..
+> > > > > > > >
+> > > > > > > > Rather than build a binary that would fail at runtime it is
+> > > > > > > > preferrential just to build libbpf statically and link agai=
+nst
+> > > > > > > > that. The static version is in the kernel tools tree and ne=
+wer than
+> > > > > > > > 1.0.
+> > > > > > > >
+> > > > > > > > These patches change the libbpf test to only pass when at l=
+east
+> > > > > > > > version 1.0 is installed, then remove the conditional build=
+ and
+> > > > > > > > feature logic.
+> > > > > > > >
+> > > > > > > > The issue is discussed here:
+> > > > > > > > https://lore.kernel.org/lkml/20230106151320.619514-1-iroger=
+s@google.com/
+> > > > > > > > perf bpf:
+> > > > > > > >
+> > > > > > > > A variant of this fix was added to Linux 6.2 in:
+> > > > > > > > "perf bpf: Avoid build breakage with libbpf < 0.8.0 + LIBBP=
+F_DYNAMIC=3D1"
+> > > > > > > > https://lore.kernel.org/lkml/Y71+eh00Ju7WeEFX@kernel.org/
+> > > > > > > > This change goes further in removing logic that is now no l=
+onger
+> > > > > > > > necessary.
+> > > > > > > >
+> > > > > > > > v2. Rebase now that breakage fix patch is in linus/master.
+> > > > > > >
+> > > > > > > I missed the:
+> > > > > > > Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
+> > > > > > > I believe we are waiting for package maintainer input.
+> > > > > >
+> > > > > > Yes, as fedora:37 still is at libbpf 0.8.0 :-\
+> > > > >
+> > > > > rawhide (f38) is already on 1.1.0 ... I'll check how bad it'd be =
+to move
+> > > > > f37 to 1.x, but I had to do bulk update of like 10 other dependen=
+t packages
+> > > > > for f38, so not sure how bad it'd be for f37
+> > > > >
+> > > > > jirka
+> > > >
+> > > > +Guilherme
+> > > >
+> > > > We were looking for maintainer input on these changes, but there is=
+ no
+> > > > update in over a month. Here is the original lore link:
+> > > > https://lore.kernel.org/lkml/CAP-5=3DfVUgc8xtBzGi66YRUxZHyXvW2kiMjG=
+z39dywaLxrO4Hpg@mail.gmail.com/
+> > > > Should these changes land in perf-tools-next targeting Linux 6.4?
+> > >
+> > > Gentoo has libbpf-1.1 already available, so requiring >libbpf-1.0 is =
+not
+> > > a problem. We (Gentoo) just need to make sure to stabilize libbpf-1.x=
+ before
+> > > stabilizing newer versions of perf, as the stable libbpf is 0.8.1 at =
+the moment.
+> > >
+> >
+> > libbpf v0.8 is basically all the 1.0 APIs, except by default 1.0
+> > semantics is not enforced, unless libbpf_set_strict_mode() is enabled.
+> >
+> > So, if 0.8 is a restriction, perf can stay on 0.8, use all the same
+> > APIs that are in 1.0 (except newer one added later, but I'm not sure
+> > perf needs any of the newer additions), and just stick to setting
+> > libbpf_set_strict_mode() unconditionally.
+>
+> Thanks Andrii,
+>
 
-May be add another tc prog with 2nd bpf_prog_test_run_opts that does:
-res = bpf_kptr_xchg(&mapval->node, NULL);
-and bpf_obj_drop-s it for real?
+Full disclosure, I'm totally supporting the switch to v1.0+, just
+trying to be helpful here from the standpoint of 0.x vs 1.x libbpf
+transition. See below. I believe you can keep 0.8+ dependency and drop
+all the legacy code completely.
 
-The first stash_rb_node() can allocate two objs into key=0 and key=1
-the 2nd prog can bpf_kptr_xchg only one of them,
-so we test both dtor on map free and explicit xchg+obj_drop.
+But just take it as an information, and feel free to do whatever you
+think is best with it.
 
-wdyt?
+> The default perf build is to build against tools/lib/bpf and
+> statically link libbpf in. This means by default we have the latest
+> libbpf 1.2. If any perf code has a dependency on 0.8 (we don't support
+> earlier) we need to #ifdef for it. Currently we have 7 feature tests
+> for libbpf, but perhaps there is some cruft that's carried forward.
+> The features are:
+>  - btf__load_from_kernel_by_id
+
+v0.5 API
+
+>  - bpf_prog_load
+>  - bpf_object__next_program
+>  - bpf_object__next_map
+
+all three are v0.6 APIs
+
+>  - bpf_program__set_insns
+
+v0.8 API
+
+>  - btf__raw_data
+>  - bpf_map_create
+
+both v0.6 API
+
+>
+> The not present implementations look like:
+> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools=
+/perf/util/bpf-loader.c?h=3Dperf-tools#n36
+> ```
+> int bpf_program__set_insns(struct bpf_program *prog __maybe_unused,
+>   struct bpf_insn *new_insns __maybe_unused, size_t new_insn_cnt __maybe_=
+unused)
+> {
+> pr_err("%s: not support, update libbpf\n", __func__);
+> return -ENOTSUP;
+> }
+>
+> int libbpf_register_prog_handler(const char *sec __maybe_unused,
+>                                  enum bpf_prog_type prog_type __maybe_unu=
+sed,
+>                                  enum bpf_attach_type exp_attach_type
+> __maybe_unused,
+>                                  const struct libbpf_prog_handler_opts
+> *opts __maybe_unused)
+> {
+> pr_err("%s: not support, update libbpf\n", __func__);
+> return -ENOTSUP;
+> }
+> ```
+
+both are v0.8 APIs
+
+> This will basically mean that while you dynamically linked with libbpf
+> 0.8 you are in all likelihood not going to get proper BPF support.
+> These changes up the version requirement to 1.0 and get rid entirely
+> of the feature tests - so no runtime failing implementations. If the
+
+100% supportive on upgrade and dropping feature checks. My point is
+that you don't need those feature checks with v0.8+ requirement.
+
+The only difference between staying on v0.8+ vs going all the way to
+v1.0+ would be that you have to keep libbpf_set_strict() call. In
+v1.0+ it's a noop, so could be dropped.
+
+> build determines at build time libbpf 1.0+ isn't present then it still
+> executes, switching from dynamic libbpf to the default static libbpf
+> that is at 1.2. As mentioned in this thread, distributions like Debian
+> use the default static linking of libbpf.
+>
+
+oh, that's nice, good to know
+
+> I'm not keen to hold on to the feature tests for the complexity that
+> they hold and their needlessly (as you can always statically link)
+> broken at runtime behavior. We could but my opinion is, let's not :-)
+
+I've been consistently advocating for static linking with libbpf, so
+100% support this.
+
+>
+> Thanks,
+> Ian
+>
+> > > Best regards,
+> > > -Guilherme
+> > >
