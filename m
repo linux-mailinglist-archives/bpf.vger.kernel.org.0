@@ -2,50 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F66E6B4A4D
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 16:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2906B4B1F
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 16:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbjCJPVU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 10:21:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49646 "EHLO
+        id S234349AbjCJPba (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 10:31:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234191AbjCJPU4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 10:20:56 -0500
+        with ESMTP id S233082AbjCJPbL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 10:31:11 -0500
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C064022117
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 07:11:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648FA144BC8
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 07:19:17 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 95075CE28EA
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 15:10:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9906C4339E;
-        Fri, 10 Mar 2023 15:10:16 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 10AC0CE2946
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 15:19:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15763C433D2;
+        Fri, 10 Mar 2023 15:18:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678461016;
-        bh=UtnE+2rYasr4unRkZ0We2Du+MBME5ifbkgCrSdyf+JM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=m/80yFCfSJb1Nl2hvZvqAaQH+4qCLIh4cwuyEl+AFcgiPBiByVfXCkbUWB+UJKuUn
-         iWMVsC+WbJGvsfwiwbXkcL0zw7CWon2hMVyoUWlvPfyKyTDrjJ68kiCdl8SplOuLkC
-         kKRgJ+6JMUt8PTxJ/uKzM5DNzOvQnYIUYsBo02lHKuaP3ToTd6ZiNd8uRqfBZ3ArWm
-         FLbX5oz8bQHa9eZv45zuv28l/bO3pxEYnDjdVaLymxj7sq8KFbjgBxqU0E3WA64nLt
-         pq8Zl/Kksf7RVwkifPV4zeJboh1uWjGnaHnz4JcvUH6vgL/0nez0w6ySNwaGTbu8wO
-         7LHHDd+xVtwEw==
+        s=k20201202; t=1678461538;
+        bh=sFhhpJtFUKqp8QWpoGWJ5AsjPE7DwQ3TyV3bWeQWKIA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E6syCki4hwdYxNVPlWJPit9te7ZIM35qSVSrgCUNpu8F6wpwlPRu5RcuMOWRhFrxe
+         wkXzYRHjioFUMjrTPBcJk204HjsL9QQpzDT+PINBI2p5KVL98ysUTdb3tovvKdT58i
+         hqeTFdInrlM5W9+/c2ZOcmPL+23zS00pD11cuf9f6uJz1eI+qCMrp1sfCppVgMlmtr
+         dZBl1+E0p/8ia462Noi1/7my6U7Qac9GTvRKCX4OVyo7U2XMzZLv/FGlQKp9EgCka7
+         4S0a3AA4FXELaLB3VTrKLErElbQTACUT6oMbKTtO+0eV8O9DjdPUEEbMqDz/C8p2xj
+         MlBYDmWgOzBaQ==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3D66D4049F; Fri, 10 Mar 2023 12:10:14 -0300 (-03)
-Date:   Fri, 10 Mar 2023 12:10:14 -0300
+        id 990BB4049F; Fri, 10 Mar 2023 12:18:55 -0300 (-03)
+Date:   Fri, 10 Mar 2023 12:18:55 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        bpf@vger.kernel.org
-Subject: Re: [RFC dwarves] syscall functions in BTF
-Message-ID: <ZAtGsuSO6Jx2ZLBy@kernel.org>
+Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        eddyz87@gmail.com, haoluo@google.com, jolsa@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        sinquersw@gmail.com, martin.lau@kernel.org, songliubraving@fb.com,
+        sdf@google.com, timo@incline.eu, yhs@fb.com, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves 0/3] dwarves: improve BTF encoder comparison
+ method
+Message-ID: <ZAtKX6+KU8g7Tet5@kernel.org>
+References: <1678459850-16140-1-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1678459850-16140-1-git-send-email-alan.maguire@oracle.com>
 X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -56,114 +60,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Mar 10, 2023 at 12:43:31PM +0000, Alan Maguire escreveu:
-> On 10/03/2023 10:07, Jiri Olsa wrote:
-> > hi,
-> > with latest pahole fixes we get rid of some syscall functions (with
-> > __x64_sys_ prefix) and it seems to fall down to 2 cases:
-> > 
-> > - weak syscall functions generated in kernel/sys_ni.c prevent these syscalls
-> >   to be generated in BTF. The reason is the __COND_SYSCALL macro uses
-> >   '__unused' for regs argument:
-> > 
-> >         #define __COND_SYSCALL(abi, name)                                      \
-> >                __weak long __##abi##_##name(const struct pt_regs *__unused);   \
-> >                __weak long __##abi##_##name(const struct pt_regs *__unused)    \
-> >                {                                                               \
-> >                        return sys_ni_syscall();                                \
-> >                }
-> > 
-> >   and having weak function with different argument name will rule out the
-> >   syscall from BTF functions
-> > 
-> >   the patch below workarounds this by using the same argument name,
-> >   but I guess the real fix would be to check the whole type not just
-> >   the argument name.. or ignore weak function if there's non weak one
-> > 
-> >   I guess there will be more cases like this in kernel
-> > 
-> >
+Em Fri, Mar 10, 2023 at 02:50:47PM +0000, Alan Maguire escreveu:
+> Currently when looking for function prototype mismatches with a view
+> to excluding inconsistent functions, we fall back to a comparison
+> between parameter names when the name and number of parameters match.
+> This is brittle, as it is sometimes the case that a function has
+> multiple type-identical definitions which use different parameters.
+> 
+> Here the existing dwarves_fprintf functionality is re-used to instead
+> create a string representation of the function prototype - minus the
+> parameter names - to support a less brittle comparison method.
+> 
+> To support this, patch 1 generalizes function prototype print to
+> take a conf_fprintf parameter; this allows us to customize the
+> parameters we use in prototype string generation.
+> 
+> Patch 2 supports generating prototypes without modifiers such
+> as const as they can lead to false positive prototype mismatches;
+> see the patch for details.
+> 
+> Finally patch 3 replaces the logic used to compare parameter
+> names with the prototype string comparison instead.
+> 
+> Using verbose pahole output we can see some of the rejected
+> comparisons.  73 comparisons are rejected via prototype
+> comparison, 63 of which are non "."-suffixed functions.  For
+> example:
+> 
+> function mismatch for 'name_show'('name_show'): 'ssize_t ()(struct kobject *, struct kobj_attribute *, char *)' != 'ssize_t ()(struct device *, struct device_attribute *, char *)'
+> 
+> With these changes, the syscalls defined in sys_ni.c
+> that Jiri mentioned were missing [1] are present in BTF:
+> 
+> [43071] FUNC '__ia32_compat_sys_io_setup' type_id=42335 linkage=static
+> [43295] FUNC '__ia32_sys_io_setup' type_id=42335 linkage=static
+> [47536] FUNC '__x64_sys_io_setup' type_id=42335 linkage=static
+> 
+> [43290] FUNC '__ia32_sys_io_destroy' type_id=42335 linkage=static
+> [47531] FUNC '__x64_sys_io_destroy' type_id=42335 linkage=static
+> 
+> [43072] FUNC '__ia32_compat_sys_io_submit' type_id=42335 linkage=static
+> [43296] FUNC '__ia32_sys_io_submit' type_id=42335 linkage=static
+> [47537] FUNC '__x64_sys_io_submit' type_id=42335 linkage=static
+> 
+> [1] https://lore.kernel.org/bpf/ZAsBYpsBV0wvkhh0@krava/
+
+I'll test this now, but b4 isn't liking the way you sent it:
+
+⬢[acme@toolbox pahole]$ b4 am -ctsl --cc-trailers 1678459850-16140-2-git-send-email-alan.maguire@oracle.com
+Grabbing thread from lore.kernel.org/all/1678459850-16140-2-git-send-email-alan.maguire%40oracle.com/t.mbox.gz
+Checking for newer revisions
+Grabbing search results from lore.kernel.org
+Analyzing 2 messages in the thread
+Checking attestation on all messages, may take a moment...
+---
+  ✓ [PATCH 1/3] dwarves_fprintf: generalize function prototype print to support passing conf
+    ✓ Signed: DKIM/oracle.com
+    + Link: https://lore.kernel.org/r/1678459850-16140-2-git-send-email-alan.maguire@oracle.com
+    + Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+  ERROR: missing [2/3]!
+  ERROR: missing [3/3]!
+---
+Total patches: 1
+---
+WARNING: Thread incomplete!
+Cover: ./20230310_alan_maguire_dwarves_improve_btf_encoder_comparison_method.cover
+ Link: https://lore.kernel.org/r/1678459850-16140-1-git-send-email-alan.maguire@oracle.com
+ Base: applies clean to current tree
+       git checkout -b 20230310_alan_maguire_oracle_com HEAD
+       git am ./20230310_alan_maguire_dwarves_improve_btf_encoder_comparison_method.mbx
+⬢[acme@toolbox pahole]$
+
+I'll apply one by one
  
-> Thanks for the report Jiri! I'm working on reusing the dwarves_fprintf.c
-> code to use string comparisons of function prototypes (minus parameter names!)
-> instead as a more robust comparison.  Hope to have something working soon..
-
-Humm, that could be an option, a simple strcmp after snprintf'ing the
-function prototype, but there is also the type__compare_members_types()
-approach, used to order types in pahole, the same could be done for
-function prototypes?
-
-I.e. to compare a function prototype for functions with the same name we
-would check its return value type, the number of arguments and then each
-of the arguments, continuing to consider the names as an heuristic that
-functions with all being so far equal having different argument names
-may indicate different functions, but if there is no name in both
-functions, look at its type instead, where we then would use
-type__compare_members_types() for structs/unions?
-
-- Arnaldo
-  
-> > - we also do not get any syscall with no arguments, because they are
-> >   generated as aliases to __do_<syscall> function:
-> > 
-> >         $ nm ./vmlinux | grep _sys_fork
-> >         ffffffff81174890 t __do_sys_fork
-> >         ffffffff81174890 T __ia32_sys_fork
-> >         ffffffff81174880 T __pfx___x64_sys_fork
-> >         ffffffff81174890 T __x64_sys_fork
-> > 
-> >   with:
-> >         #define __SYS_STUB0(abi, name)                                          \
-> >                 long __##abi##_##name(const struct pt_regs *regs);              \
-> >                 ALLOW_ERROR_INJECTION(__##abi##_##name, ERRNO);                 \
-> >                 long __##abi##_##name(const struct pt_regs *regs)               \
-> >                         __alias(__do_##name);
-> > 
-> >   the problem seems to be that there's no DWARF data for aliased symbol,
-> >   so pahole won't see any __x64_sys_fork record
-> >   I'm not sure how to fix this one
-> > 
+> Alan Maguire (3):
+>   dwarves_fprintf: generalize function prototype print to support
+>     passing conf
+>   dwarves_fprintf: support skipping modifier
+>   btf_encoder: compare functions via prototypes not parameter names
 > 
-> Is this one a new issue, or did you just spot it when looking at the other case?
+>  btf_encoder.c     | 67 +++++++++++++++++++++++++------------------------------
+>  dwarves.h         |  6 +++++
+>  dwarves_fprintf.c | 48 ++++++++++++++++++++++++++-------------
+>  3 files changed, 70 insertions(+), 51 deletions(-)
 > 
-> Thanks!
+> -- 
+> 1.8.3.1
 > 
-> Alan
-> 
-> >   technically we can always connect to __do_sys_fork, but we'd need to
-> >   have special cases for such syscalls.. would be great to have all with
-> >   '__x64_sys_' prefix
-> > 
-> > 
-> > thoughts?
-> > 
-> > thanks,
-> > jirka
-> > 
-> > 
-> > ---
-> > diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-> > index fd2669b1cb2d..e02dab630577 100644
-> > --- a/arch/x86/include/asm/syscall_wrapper.h
-> > +++ b/arch/x86/include/asm/syscall_wrapper.h
-> > @@ -80,8 +80,8 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
-> >  	}
-> >  
-> >  #define __COND_SYSCALL(abi, name)					\
-> > -	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
-> > -	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
-> > +	__weak long __##abi##_##name(const struct pt_regs *regs);	\
-> > +	__weak long __##abi##_##name(const struct pt_regs *regs)	\
-> >  	{								\
-> >  		return sys_ni_syscall();				\
-> >  	}
-> > 
-
--- 
-
-- Arnaldo
-
------ End forwarded message -----
 
 -- 
 
