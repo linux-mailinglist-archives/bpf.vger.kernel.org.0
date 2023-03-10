@@ -2,316 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FED6B34E1
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 04:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281E56B35A0
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 05:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbjCJDkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Mar 2023 22:40:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
+        id S229501AbjCJEfM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Mar 2023 23:35:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjCJDkg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Mar 2023 22:40:36 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84759900A7;
-        Thu,  9 Mar 2023 19:40:34 -0800 (PST)
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32A2KI99032690;
-        Fri, 10 Mar 2023 03:40:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=Oe9DkjbAGC+t2Cs2WHfP96anfEA/BSeXwMFQurIvHes=;
- b=s5HalVHfRwGCYQXqmyfjH+brJyn1UiObuPwXMmo4ZM0/qJUV596T9rV2f8No6utPUrVF
- 3E2+PbYkNEvSx6TaZqwt1UYPx0PURAd7LjKwv4owxjRNrsNhknd8V3uW0B/3WdgjLmUm
- 5Zl8rY0enoygsquPzLtxEkXVxCMVRXf4Uyd5LFUyDOicRwZqcsIICyqonodxWnW9sFkm
- 1UJu40+3OLDWw9LN00cTbUkUp0Rru+cNIZCtf6Cxc9/66xD3y6yVYa2hQC5xh74fvdWO
- es6Fi6z8BiDlRa9K6IRBmIf/9xh6HHNAP5XKvtWfEtzeCd4/yt5ob8JWcm6YkAX7H6DS wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p7fhy5jg8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Mar 2023 03:40:17 +0000
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32A3ZPXE016376;
-        Fri, 10 Mar 2023 03:40:17 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p7fhy5jfs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Mar 2023 03:40:17 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 329GjKOH020036;
-        Fri, 10 Mar 2023 03:40:15 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3p6ftvk94d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Mar 2023 03:40:15 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32A3eCYY55116234
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Mar 2023 03:40:12 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9FB822004E;
-        Fri, 10 Mar 2023 03:40:12 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E5D5220043;
-        Fri, 10 Mar 2023 03:40:11 +0000 (GMT)
-Received: from [9.171.22.18] (unknown [9.171.22.18])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 10 Mar 2023 03:40:11 +0000 (GMT)
-Message-ID: <67a28d535a91396a20e7fb5ff4c322395c947eb8.camel@linux.ibm.com>
-Subject: Re: [PATCH v13 bpf-next 10/10] selftests/bpf: tests for using
- dynptrs to parse skb and xdp buffers
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 10 Mar 2023 04:40:11 +0100
-In-Reply-To: <CAJnrk1Za8KaAq4=v7X=YEHRu5jc3upR059AcY9eanr-v_9VSqg@mail.gmail.com>
-References: <20230301154953.641654-1-joannelkoong@gmail.com>
-         <20230301154953.641654-11-joannelkoong@gmail.com>
-         <CAADnVQJCYcPnutRvjJgShAEokfrXfC4DToPOTJRuyzA1R64mBg@mail.gmail.com>
-         <CAJnrk1YNMoTEaWA6=wDS3iV4sV0A-5Afnn+p50hEvX8jR6GLHw@mail.gmail.com>
-         <20230308015500.6pycr5i4nynyu22n@heavy>
-         <CAJnrk1Y1ONmEJpwDqGzCUmyrkDf9s_HpDhR5mW=6fNKM6PiXew@mail.gmail.com>
-         <c27727cfabced2b9207eabbba71bed158ca35eec.camel@linux.ibm.com>
-         <CAJnrk1Za8KaAq4=v7X=YEHRu5jc3upR059AcY9eanr-v_9VSqg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        with ESMTP id S229453AbjCJEfK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Mar 2023 23:35:10 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7167FD299;
+        Thu,  9 Mar 2023 20:35:09 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id q23so2376171pgt.7;
+        Thu, 09 Mar 2023 20:35:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678422909;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rZEyg2YLs2CSLyVftGC2viHqt3DtUnop0r0wuxQQvOg=;
+        b=L4fY2prgHEY01QG+PL0iahqtO96MsjGO/j5vvMERD2Vz3QnmVvNjHDC6ja/Aqh1jsn
+         V34kpZSQ1vDOycvDkKyLCuXOPLiUxZZfS6IuTlZKwIdS4R225SEn2oBRR3BaY7RWbuvY
+         7VxWyHbWc0EwnxDnFwVG8F7Jn6LSmRjpI+AyEVAFZgezBKbjX7Qk3Xpw+/NqsUVmwf/U
+         qEw2WM4MtinmMYD/actrqz9c0w2oEI0AhKefOW/6AhFYqqo404TbS2tbViPkVvy1wmbX
+         dRHXeYMQvoVKwobYwj0MkPnlJPU7BNF+deFV51f61UPh1i15vNDOkr/Ue4M9LbilfoLD
+         VnvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678422909;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rZEyg2YLs2CSLyVftGC2viHqt3DtUnop0r0wuxQQvOg=;
+        b=dhX6SEdUgtUS2qi04h9t7yma8pLRhKhsvBOJXibiIlfZH+FVbKFYhqKAkSD1affCSl
+         OQ/Pdto8AlMJVxrjsoIDzupn/WPs81bv6FjsUUFTgnCQaLTVsCDMx2k2zQ+e3f4VE2B6
+         j+5Hmay3wuM0Rp3RybgxS0WpPVdXFdrqQXCcIrwE6Ca2/h2eXkUsSloFfliIDLdfZSWI
+         xX646PXcYCn2zOvOf6hQ9Ffl08J/IGPl4vz/eXiKZ7pOxeiyATDJgiqz5y+X4KMoalh4
+         BNsUIqAwPUYbDXP6evMj+YnH847mJ13V9bWCebLqBPSd3saubc375472mDXATbMuTqJN
+         KIcQ==
+X-Gm-Message-State: AO0yUKV1TZY2HSFAM0YfHE9T8XPhGFMR+VDtgTQ6YhSpgDupSB1bbWXf
+        gcJHm6BEBPBjAS0X2I95dHE=
+X-Google-Smtp-Source: AK7set8AkQTjnxl6PgZlr/Vh7yQysN7PX0v9tqyu6R9mcPo6mZ1wdndONGY9ROzJEMkCp8BL6bqbcA==
+X-Received: by 2002:aa7:8bd9:0:b0:5db:ba34:36eb with SMTP id s25-20020aa78bd9000000b005dbba3436ebmr19843019pfd.16.1678422909118;
+        Thu, 09 Mar 2023 20:35:09 -0800 (PST)
+Received: from debian.me (subs32-116-206-28-18.three.co.id. [116.206.28.18])
+        by smtp.gmail.com with ESMTPSA id n7-20020a62e507000000b005d72e54a7e1sm359780pff.215.2023.03.09.20.35.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Mar 2023 20:35:08 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 96A00106628; Fri, 10 Mar 2023 11:35:05 +0700 (WIB)
+Date:   Fri, 10 Mar 2023 11:35:05 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Sreevani Sreejith <ssreevani@meta.com>, void@manifault.com,
+        psreep@gmail.com, Linux BPF <bpf@vger.kernel.org>,
+        Linux-kernel@vger.kernel.org, andrii@kernel.org, mykola@meta.com
+Cc:     Linux Documentation <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH V2 bpf-next] BPF, docs: libbpf Overview Document
+Message-ID: <ZAqzeQZLNMyaZOck@debian.me>
+References: <20230309224930.4106982-1-ssreevani@meta.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: UHXqBJm0kcGzM1yZEr1eRNFHZHlhp_Sv
-X-Proofpoint-GUID: 2pYApqgcbmmjTzWpZuI-sq--0axKIZ-F
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-09_14,2023-03-09_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0
- suspectscore=0 clxscore=1015 phishscore=0 priorityscore=1501 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2303100026
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="CrzSA/fAm0tW3LNz"
+Content-Disposition: inline
+In-Reply-To: <20230309224930.4106982-1-ssreevani@meta.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2023-03-09 at 00:13 -0800, Joanne Koong wrote:
-> On Wed, Mar 8, 2023 at 6:24=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.co=
-m>
-> wrote:
-> >=20
-> > On Tue, 2023-03-07 at 23:22 -0800, Joanne Koong wrote:
-> > > On Tue, Mar 7, 2023 at 5:55=E2=80=AFPM Ilya Leoshkevich
-> > > <iii@linux.ibm.com>
-> > > wrote:
-> > > >=20
-> > > > On Wed, Mar 01, 2023 at 08:28:40PM -0800, Joanne Koong wrote:
-> > > > > On Wed, Mar 1, 2023 at 10:08=E2=80=AFAM Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > >=20
-> > > > > > On Wed, Mar 1, 2023 at 7:51=E2=80=AFAM Joanne Koong
-> > > > > > <joannelkoong@gmail.com> wrote:
-> > > > > > >=20
-> > > > > > > 5) progs/dynptr_success.c
-> > > > > > > =C2=A0=C2=A0 * Add test case "test_skb_readonly" for testing
-> > > > > > > attempts
-> > > > > > > at writes
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0 on a prog type with read-only skb ct=
-x.
-> > > > > > > =C2=A0=C2=A0 * Add "test_dynptr_skb_data" for testing that
-> > > > > > > bpf_dynptr_data isn't
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0 supported for skb progs.
-> > > > > >=20
-> > > > > > I added
-> > > > > > +dynptr/test_dynptr_skb_data
-> > > > > > +dynptr/test_skb_readonly
-> > > > > > to DENYLIST.s390x and applied.
-> > > > >=20
-> > > > > Thanks, I'm still not sure why s390x cannot load these
-> > > > > programs.
-> > > > > It is
-> > > > > being loaded in the same way as other tests like
-> > > > > test_parse_tcp_hdr_opt() are loading programs. I will keep
-> > > > > looking
-> > > > > some more into this
-> > > >=20
-> > > > Hi,
-> > > >=20
-> > > > I believe the culprit is:
-> > > >=20
-> > > > =C2=A0=C2=A0=C2=A0 insn->imm =3D BPF_CALL_IMM(bpf_dynptr_from_skb_r=
-donly);
-> > > >=20
-> > > > s390x needs to know the kfunc model in order to emit the call
-> > > > (like
-> > > > i386), but after this assignment it's no longer possible to
-> > > > look it
-> > > > up in kfunc_tab by insn->imm. x86_64 does not need this,
-> > > > because
-> > > > its
-> > > > ABI is exactly the same as BPF ABI.
-> > > >=20
-> > > > The simplest solution seems to be adding an artificial
-> > > > kfunc_desc
-> > > > like this:
-> > > >=20
-> > > > =C2=A0=C2=A0=C2=A0 {
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .func_model =3D desc->fu=
-nc_model,=C2=A0 /* model must be
-> > > > compatible */
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .func_id =3D 0,=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* unused at this
-> > > > point */
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .imm =3D insn->imm,=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 /* new target */
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .offset =3D 0,=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* unused at this
-> > > > point */
-> > > > =C2=A0=C2=A0=C2=A0 }
-> > > >=20
-> > > > here and also after this assignment:
-> > > >=20
-> > > > =C2=A0=C2=A0=C2=A0 insn->imm =3D BPF_CALL_IMM(xdp_kfunc);
-> > > >=20
-> > > > What do you think?
-> > >=20
-> > > Ohh interesting! This makes sense to me. In particular, you're
-> > > referring to the bpf_jit_find_kfunc_model() call in
-> > > bpf_jit_insn()
-> > > (in
-> > > arch/s390/net/bpf_jit_comp.c) as the one that fails out whenever
-> > > insn->imm gets set, correct?
-> >=20
-> > Precisely.
-> >=20
-> > > I like your proposed solution, I agree that this looks like the
-> > > simplest, though maybe we should replace the existing kfunc_desc
-> > > instead of adding it so we don't have to deal with the edge case
-> > > of
-> > > reaching MAX_KFUNC_DESCS? To get the func model of the new insn-
-> > > >imm,
-> >=20
-> > I wonder whether replacement is safe? This would depend on the
-> > following functions returning the same value for the same inputs:
-> >=20
-> > - may_access_direct_pkt_data() - this looks ok;
-> > - bpf_dev_bound_resolve_kfunc() - I'm not so sure, any insights?
+
+--CrzSA/fAm0tW3LNz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 09, 2023 at 02:49:30PM -0800, Sreevani Sreejith wrote:
+> From: Sreevani <ssreevani@meta.com>
 >=20
-> For the bpf_dev_bound_resolve_kfunc() case (in fixup_kfunc_call()), I
-> think directly replacing the kfunc_desc here is okay because
-> bpf_dev_bound_resolve_kfunc() is findingthe target device-specific
-> version of the kfunc (if it exists) to replace the generic version of
-> the kfunc with, and we're using that target device-specific version
-> of
-> the kfunc as the new updated insn->imm to call
-
-I'm worried that its return value is going to change while we are
-doing the rewriting. It looks as if
-__bpf_offload_dev_netdev_unregister() can cause this. So if we have
-two instructions that use the same generic kfunc, they may end up
-pointing to two different device-specific kfuncs, and the kfunc_tab
-will contain only one of the two.
-
-This sounds dangerous, but maybe I don't see some safeguard that
-already prevents or mitigates the effects of this?
-
-Stanislav, could you as the bpf_dev_bound_resolve_kfunc() author
-give your opinion please? I've seen your comment:
-
-+       /* We don't hold bpf_devs_lock while resolving several
-+        * kfuncs and can race with the unregister_netdevice().
-+        * We rely on bpf_dev_bound_match() check at attach
-+        * to render this program unusable.
-+        */
-
-and I'm wondering whether you meant bpf_prog_dev_bound_match(), and
-whether it protects against the ABA problem, i.e., if
-__bpf_offload_dev_netdev_unregister() is called twice, and we get
-aux->offload and aux->offload->netdev at the same addresses?
-
-> > If it's not, then MAX_KFUNC_DESCS indeed becomes a concern.
-> >=20
-> > > it seems pretty straightforward, it looks like we can just use
-> > > btf_distill_func_proto(). or call add_kfunc_call() directly,
-> > > which
-> > > would do everything needed, but adds an additional unnecessary
-> > > sort
-> > > and more overhead for replacing (eg we'd need to first swap the
-> > > old
-> > > kfunc_desc with the last tab->descs[tab->nr_descs] entry and then
-> > > delete the old kfunc_desc before adding the new one). What are
-> > > your
-> > > thoughts?
-> >=20
-> > Is there a way to find BTF by function pointer?
-> > IIUC bpf_dev_bound_resolve_kfunc() can return many different
-> > things,
-> > and btf_distill_func_proto() and add_kfunc_call() need BTF.
-> > A straightforward way that immediately comes to mind is to do
-> > kallsyms
-> > lookup and then resolve by name, but this sounds clumsy.
-> >=20
+> Summary: Document that provides an overview of libbpf features for BPF
+> application development.
 >=20
-> I'm not sure whether there's a way to find the function's BTF by its
-> pointer, but I think maybe we can use the vmlinux btf (which we can
-> get through the bpf_get_btf_vmlinux() api) to get the func proto?
-
-The device-specific function may come from a kernel module (e.g.,
-veth). But on second thought we don't need this at all; we should
-really just take func_model of the generic function, that we already
-have. If it is not the same as the model of the device-specific
-function, it must be a bug.
-
-> > I've been looking into this in context of fixing (kfunc
-> > __bpf_call_base) not fitting into 32 bits on s390x. A solution that
+> Reviewers:
 >=20
-> Sorry, I'm not fully understanding - can you elaborate a little on
-> what the issue is? why doesn't the __bpf_call_base address fit on
-> s390x? my understanding is that s390x is a 64-bit architecture?
+> Subscribers:
 
-On s390x modules and kernel are far away from each other, so
-BPF_CALL_IMM() may return ~40 significant bits. This makes the
-insn->imm rewriting trick unusable, because insn->imm is just 32 bits
-and cannot be extended. There is even a safeguard against this in
-add_kfunc_call() ("address of kernel function %s is out of range"
-check).
+Please remove the boilerplate above. The summary should become patch
+description.
 
-I had a patch that kept BTF ID in insn->imm, but it was decided that
-since it required adjusting several JITs, we should not be doing it.
+> +=3D=3D=3D=3D=3D=3D
+>  libbpf
+>  =3D=3D=3D=3D=3D=3D
 
-When the s390x JIT sees a kfunc call, it needs to find the respective
-kfunc's address and model.=C2=A0Normally this is done using kfunc_tab
-lookup. kfunc_tab is indexed by insn->imm values, which we cannot use
-for reasons outlined above. Hence the idea below: create another
-(unfortunately much less memory-efficient) kfunc_tab indexed by insn
-numbers.
+Why did you promote the heading above to title heading?
 
-Conveniently, this would also solve the problem that we are seeing
-here.
+> diff --git a/Documentation/bpf/libbpf/libbpf_overview.rst b/Documentation=
+/bpf/libbpf/libbpf_overview.rst
+> new file mode 100644
+> index 000000000000..549469aa2d3b
+> --- /dev/null
+> +++ b/Documentation/bpf/libbpf/libbpf_overview.rst
+> @@ -0,0 +1,238 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +.._libbpf-overview-label:
 
-> > would solve both problems that I'm currently thinking about is to
-> > associate
-> >=20
-> > struct {
-> > =C2=A0=C2=A0=C2=A0 struct btf_func_model *m;
-> > =C2=A0=C2=A0=C2=A0 unsigned long addr;
-> > } kfunc_callee;
-> >=20
-> > with every insn - during verification it could live in
-> > bpf_insn_aux_data, during jiting in bpf_prog, and afterwards it can
-> > be freed. Any thoughts about this?
+Missing space before label name. Or should the label name be
+"_libbpf-overview"?
 
+> +#################################
+> +BPF App Lifecycle and libbpf APIs
+> +#################################
+> <snipped> ...
+> +########################
+> +BPF Object Skeleton File
+> +########################
+> <snipped> ...
+> +---------------------------------------
+> +Other Advantages of Using Skeleton File
+> +---------------------------------------
+> +
+> <snipped> ...
+> +###########
+> +BPF Helpers
+> +###########
+> <snipped> ...
+> +#########################################
+> +BPF CO-RE (Compile Once =E2=80=93 Run Everywhere)
+> +#########################################
+> <snipped> ...
+
+See the bottom.
+
+> +You can generate the BTF information for the running kernel with the fol=
+lowing
+> +command:
+> +
+> +::
+> +
+> +$ bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
+
+My htmldocs build renders the code block above fine, but IMO the
+convention here is to indent it.
+
+> +The following code snippet shows how to read the parent field of a kernel
+> +``task_struct`` using BPF CO-RE and libbf. The basic helper to read a fi=
+eld in a
+> +CO-RE relocatable manner is ``bpf_core_read(dst, sz, src)``, which will =
+read
+> +``sz`` bytes from the field referenced by ``src`` into the memory pointe=
+d to by
+> +``dst``.
+> +
+> +  .. code-block:: C
+> +    :emphasize-lines: 6
+> +
+> +    //...
+> +    struct task_struct *task =3D (void *)bpf_get_current_task();
+> +    struct task_struct *parent_task;
+> +    int err;
+> +
+> +    err =3D bpf_core_read(&parent_task, sizeof(void *), &task->parent);
+> +    if (err) {
+> +      /* handle error */
+> +    }
+> +
+> +    /* parent_task contains the value of task->parent pointer */
+
+I guess :linenos: option also helps locating the highlighted line, right?
+
+> +###########################
+> +Getting Started with libbpf
+> +###########################
+> <snipped> ...
+> +###############
+> +libbpf and Rust
+> +###############
+> <snipped> ...
+> +########################
+> +Additional Documentation
+> +########################
+
+For section headings above, I'd like to strip the overline. Yet,
+Sphinx is smart when discriminating headings based on underline/overline
+character.
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--CrzSA/fAm0tW3LNz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZAqzdQAKCRD2uYlJVVFO
+o6OcAQClt3tCiKoO8NuaMrOiu4gmgX5OHuWjIm/L7+HHVI7MagD/ZgpKdhv+5eCn
+5ITdBbMueewsYJm/fgQmt/UsinBnMQg=
+=mWJu
+-----END PGP SIGNATURE-----
+
+--CrzSA/fAm0tW3LNz--
