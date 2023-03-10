@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C29396B53D1
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 23:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 610046B53DA
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 23:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232143AbjCJWGO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 17:06:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
+        id S229827AbjCJWIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 17:08:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbjCJWFU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 17:05:20 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A4C5FC7
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 14:04:19 -0800 (PST)
+        with ESMTP id S230328AbjCJWHv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 17:07:51 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C3520A37
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 14:06:36 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 35965B8240F
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 22:04:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0D64C433A4
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 22:04:16 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 611BEB8240F
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 22:06:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23CCBC433A7
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 22:06:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678485857;
-        bh=X+V1obY9k9q5Lqak9f20lCniJONGHDWm3UfEXRBKy3k=;
+        s=k20201202; t=1678485992;
+        bh=N9aHt9sxD+NNlh7IW6KfQ3IxapaUbKGJbqaYoa8yrcM=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=B4q13cBvQjexTrL7+QqLIpVLPfRfjKx5BHxMacXiwmCJUyJX26E3GBFRU2tNCIOw+
-         Lvrz/MkVCYJVoiARFoTFnK/DvVURxK0t1+4u13LEPm4roWEsJN93IJ0LN/BdKhBNWG
-         M09YrLF1thnYuMefe7ig+/jlHufHkr032dKyRg8cS5P01xhlhvd57ypu/c+B4D2kdb
-         HrKmv5Cxs9sTe/hKbkIT6szkTvvZzkEhBmHsEeYlc8tzbmsCA1dTDxo6k1QjZmon5N
-         BSgMMTezxq4B5qHN/oQ9fgmIIpXTZsXd7peFdR97u1689PS0uHkJD8Mvo7s11iTfQC
-         Rzo5hb1XX/p0Q==
-Received: by mail-lf1-f52.google.com with SMTP id s20so8482940lfb.11
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 14:04:16 -0800 (PST)
-X-Gm-Message-State: AO0yUKUlySpCuWSobs470X6iet+9oCeQQhP6o7G9SkRK+2QDnGd++Dh6
-        KLkC6kvMF04LpHHeQBmGNJzxcA9GOMQVKEm+pKA=
-X-Google-Smtp-Source: AK7set/Gf3Y2SAywkERyf8wbQ7IxYD4QzZr7tNhfTElRC0kHLCpAZvrxVel8DA5dL1b7PM0RIIKWkR63fXwXAelyw9Q=
-X-Received: by 2002:a19:e019:0:b0:4d8:86c2:75ea with SMTP id
- x25-20020a19e019000000b004d886c275eamr1664591lfg.3.1678485854943; Fri, 10 Mar
- 2023 14:04:14 -0800 (PST)
+        b=RCCxkqU8YZ6hS/jMFoVCDR4Zn2NDpsXhdyJ4ilFe8r/gEacLYvpkfvLVyiy1NIoZD
+         uQQ0kXbhobIUWP8WXRmX4Gu8sPOE1twIqu8xQ2LzCaGA7GINkeI3WKxb7jYNmlED9Y
+         6OwDOUiHsAqh0ccFVaa5UwK5iOHNA21CNoQLsf09PKiEvaeIvoeMIcOVB95RdT99/T
+         wdfmqzYQzV8pi05qa9/PEobvJJcTKh3PIYu/mdPWeFdZdMsZU4nDBpsyhM1QSWO4/d
+         v8eBtt4tDtACFjmgP9ZAQn9qBQRsy6HW6ruWeNs8XA+Grnyxw6YM7vc6Em2nW3eaSg
+         0VtQTVjahzARw==
+Received: by mail-lj1-f178.google.com with SMTP id h9so6843936ljq.2
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 14:06:32 -0800 (PST)
+X-Gm-Message-State: AO0yUKU8DF1RDdOUAcN5Oh6KVseDkBB09ziRgk75iF3ZzGQ6x2AAwz1X
+        Ex5ezufWfi15uCFDaHi0/1uWvBbhjuHAGOjD3SU=
+X-Google-Smtp-Source: AK7set8CSSl6Jn60lqJ3BwRCi1XAuwD9uNxFpvCfRGoNCsAfjI4WNjPTLPj8UV4+BLLitZF/4q2nQ1s1uHeqdl3lfrU=
+X-Received: by 2002:a05:651c:124e:b0:295:c458:da98 with SMTP id
+ h14-20020a05651c124e00b00295c458da98mr8444428ljh.5.1678485990139; Fri, 10 Mar
+ 2023 14:06:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20230309180213.180263-1-hbathini@linux.ibm.com> <20230309180213.180263-3-hbathini@linux.ibm.com>
-In-Reply-To: <20230309180213.180263-3-hbathini@linux.ibm.com>
+References: <20230309180213.180263-1-hbathini@linux.ibm.com> <20230309180213.180263-4-hbathini@linux.ibm.com>
+In-Reply-To: <20230309180213.180263-4-hbathini@linux.ibm.com>
 From:   Song Liu <song@kernel.org>
-Date:   Fri, 10 Mar 2023 14:04:01 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4pNHJ428Qf19Le=uuBFMRRmhF7r71ncsURvcpKvLZN_w@mail.gmail.com>
-Message-ID: <CAPhsuW4pNHJ428Qf19Le=uuBFMRRmhF7r71ncsURvcpKvLZN_w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] powerpc/bpf: implement bpf_arch_text_copy
+Date:   Fri, 10 Mar 2023 14:06:17 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7ChFn8Q38-Y76NBDVAoP=WnWOmZEyBN76ifnriTbF1tQ@mail.gmail.com>
+Message-ID: <CAPhsuW7ChFn8Q38-Y76NBDVAoP=WnWOmZEyBN76ifnriTbF1tQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] powerpc/bpf: implement bpf_arch_text_invalidate
+ for bpf_prog_pack
 To:     Hari Bathini <hbathini@linux.ibm.com>
 Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -58,8 +59,8 @@ Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org,
         Christophe Leroy <christophe.leroy@csgroup.eu>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,74 +71,45 @@ X-Mailing-List: bpf@vger.kernel.org
 On Thu, Mar 9, 2023 at 10:02=E2=80=AFAM Hari Bathini <hbathini@linux.ibm.co=
 m> wrote:
 >
-> bpf_arch_text_copy is used to dump JITed binary to RX page, allowing
-> multiple BPF programs to share the same page. Use the newly introduced
-> patch_instructions() to implement it. Around 5X improvement in speed
-> of execution observed, using the new patch_instructions() function
-> over patch_instruction(), while running the tests from test_bpf.ko.
+> Implement bpf_arch_text_invalidate and use it to fill unused part of
+> the bpf_prog_pack with trap instructions when a BPF program is freed.
 >
 > Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
 > ---
->  arch/powerpc/net/bpf_jit_comp.c | 23 ++++++++++++++++++++++-
->  1 file changed, 22 insertions(+), 1 deletion(-)
+>  arch/powerpc/net/bpf_jit_comp.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
 >
 > diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_c=
 omp.c
-> index e93aefcfb83f..0a70319116d1 100644
+> index 0a70319116d1..d1794d9f0154 100644
 > --- a/arch/powerpc/net/bpf_jit_comp.c
 > +++ b/arch/powerpc/net/bpf_jit_comp.c
-> @@ -13,9 +13,12 @@
->  #include <linux/netdevice.h>
->  #include <linux/filter.h>
->  #include <linux/if_vlan.h>
-> -#include <asm/kprobes.h>
-> +#include <linux/memory.h>
->  #include <linux/bpf.h>
+> @@ -293,3 +293,18 @@ void *bpf_arch_text_copy(void *dst, void *src, size_=
+t len)
 >
-> +#include <asm/kprobes.h>
-> +#include <asm/code-patching.h>
-> +
->  #include "bpf_jit.h"
->
->  static void bpf_jit_fill_ill_insns(void *area, unsigned int size)
-> @@ -272,3 +275,21 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 *=
-image, int pass, struct code
->         ctx->exentry_idx++;
->         return 0;
+>         return ret;
 >  }
 > +
-> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
+> +int bpf_arch_text_invalidate(void *dst, size_t len)
 > +{
-> +       void *ret =3D ERR_PTR(-EINVAL);
-> +       int err;
+> +       u32 inst =3D BREAKPOINT_INSTRUCTION;
+> +       int ret =3D -EINVAL;
+
+No need to set to -EINVAL here.
+
 > +
 > +       if (WARN_ON_ONCE(core_kernel_text((unsigned long)dst)))
 > +               return ret;
+
+Just return -EINVAL instead.
+
 > +
-> +       ret =3D dst;
 > +       mutex_lock(&text_mutex);
-> +       err =3D patch_instructions(dst, src, false, len);
-> +       if (err)
-> +               ret =3D ERR_PTR(err);
+> +       ret =3D patch_instructions(dst, &inst, true, len);
 > +       mutex_unlock(&text_mutex);
 > +
 > +       return ret;
 > +}
-
-It seems we don't really need "ret". How about something like:
-
-+void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-+{
-+       int err;
-+
-+       if (WARN_ON_ONCE(core_kernel_text((unsigned long)dst)))
-+               return ERR_PTR(-EINVAL);
-+
-+       mutex_lock(&text_mutex);
-+       err =3D patch_instructions(dst, src, false, len);
-+       mutex_unlock(&text_mutex);
-+
-+       return err ? ERR_PTR(err) : dst;
-+}
-
-Song
+> --
+> 2.39.2
+>
