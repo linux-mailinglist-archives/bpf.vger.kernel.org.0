@@ -2,443 +2,268 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B106B4FD2
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 19:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636836B4FE2
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 19:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjCJSJq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 13:09:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
+        id S230462AbjCJSMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 13:12:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbjCJSJo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 13:09:44 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51F811F696
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 10:09:39 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32AGa6HB014633
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 10:09:39 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=s2048-2021-q4;
- bh=hJNK4YjGIkZh/xBt1SCaPXWRkuG/zx4tHLB3rknhD90=;
- b=EFRT3QvIhaeCurT9hImIzONGBF5FFYilYWBQR2ZB2MMQ1HlzkHsk3lKKk1cZ/l5XlZdb
- giXiS7O47RS16FXzs7sd24uzTX80HEmx+x2w8DU5dEOzpbI1dXEWMXtNaq2u0TCAr1gq
- h/xfoikt/6VexpangmeyIY2bWNT90dyGqZ1nz2I3psrg+4NpQc4nmYV756wus1pvfkJx
- 86sfyd5JaoZSgeZLIZGRkca5+Qo1SCDbKnxHlWB/UeeT3CnfCYvyA+EgVp+Jj0LS+/HJ
- nf15o0cd7ZSmDWlNULw5GZqLvNd6cN9dmpVYmqsVUfuMjfJbCUZ2nJ5nMzDUCNCHp/aY rw== 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3p86w0h5yt-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 10:09:39 -0800
-Received: from twshared29091.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 10 Mar 2023 10:09:37 -0800
-Received: by devvm11876.prn0.facebook.com (Postfix, from userid 343873)
-        id 16390A7D446E; Fri, 10 Mar 2023 10:09:31 -0800 (PST)
-From:   Sreevani Sreejith <ssreevani@meta.com>
-To:     <void@manifault.com>, <psreep@gmail.com>, <bpf@vger.kernel.org>,
-        <Linux-kernel@vger.kernel.org>, <andrii@kernel.org>,
-        <mykola@meta.com>
-CC:     <linux-doc@vger.kernel.org>, Sreevani <ssreevani@meta.com>
-Subject: [PATCH V3 bpf-next] BPF, docs: libbpf Overview Document
-Date:   Fri, 10 Mar 2023 10:09:28 -0800
-Message-ID: <20230310180928.2462527-1-ssreevani@meta.com>
-X-Mailer: git-send-email 2.34.1
-Content-Type: text/plain; charset="UTF-8"
-X-FB-Internal: Safe
-X-Proofpoint-ORIG-GUID: XAObpvp58FJcaWHTuSFJYxi5iAMbKpmA
-X-Proofpoint-GUID: XAObpvp58FJcaWHTuSFJYxi5iAMbKpmA
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S230001AbjCJSMh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 13:12:37 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10580134AC2
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 10:12:32 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32AF4RXC016565;
+        Fri, 10 Mar 2023 18:12:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=F7JnPN7feLCHO3lZUJMgjJ4gqRMl5J6q1A88pb3Wb4M=;
+ b=2w8Q9TsjZ6rSKw/tsd5QISQWxQLCD9/BtxXZyZQhpuqVw18FFRax0bjCD3vPQok7ERhs
+ ONaNyoEqkT/BxzYRdMH3vF+mB7qgY57+XcS+Sjvg6LI/27Io5e7Y+ZbW09VWVuRHXARt
+ WZgnVbYZUeIdMfD1kgfq03Ks4jkhONm2cUjtXkqDxvoh/SUH7u5EC0+TOduB8qdFGc3t
+ 8EFCYzesGLqud8BxldkETJ7/211wsWoyyGNsRCHT2QFDwnt8cu7hKewYZ0EPayLFuxIZ
+ Yayvh+GyX8tUN2jfmMbtlSuSQRTLmI7bdeJONEtzNMPQ7tR1FOovrPDChshfV4R9hbLi bw== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3p5nn9a79s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Mar 2023 18:12:08 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 32AHSwE3024932;
+        Fri, 10 Mar 2023 18:12:06 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2174.outbound.protection.outlook.com [104.47.73.174])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3p6frc2kg2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Mar 2023 18:12:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dk+E8LMe3oQaQDvwDuUl8OEWG4fU5Tsz2aJlquCDbxbfmLrWK+/w3OalI3dA5V/cli1Vu54lQHgOt8/w14xAOiE3VcDtvMccFZn5hVvBWGhn9Dg3eQnvlEyy9jYwVQnGQ0+nBZ4e+KzOTV55IrlLuDcGad2HMgrPOOpvZbVkco07UNvLAHBhSmFjCk7mIAQkJeMymrx3kCeYwKPpFPaSVqfGECEagUNLxfupEhHR0w0HzBtmcc6S/wtvsarZtobbSrTINaOlbxiHczvw1FwaYjuthNO6GuxnB1hOLl3XnDeC4TpD62fS9Q10c7fK99Rb9JjQ2YLWR71DzKVK+EFmgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F7JnPN7feLCHO3lZUJMgjJ4gqRMl5J6q1A88pb3Wb4M=;
+ b=h3gD8M/YopKiHjORImr8qcmJX0g8JcnppSK6iiW3xJ+hiuF74EEgIoGflbado27+W6Rb7qk1US+RWIxFqkVoi/pVf4vsvHRMeP2LmLSaY0uV+JKnRHX2R+F1wXYA3xdVzRzpYGiabmtt/Efw6Vuip659R+alQ2NOaaA3yHXBa9cZNc+ZaTES3ST0BXANWGISJkxbXsbbaS577XWHZJmRr52FV5KcXA6/l0Q1KzIjLcaqQohZ8TPfha44jGodIAjsS5xbR9BCeuwTCbLcCiC1daaV9b0gov+r+t5UDSuZCdRmVPzk7laxVxhsalT0s0xqFHQmRmayat5as7puRimB8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F7JnPN7feLCHO3lZUJMgjJ4gqRMl5J6q1A88pb3Wb4M=;
+ b=ZCviZdEkPS1zlMbq9iKmSJ1GDS4JEHIHNY/S1BNFCs0pD7QeKZMHZc3o7umpy4/bCcTGta4YDbh6aao8xO3wGqh8IZLoSTnDFBmiVXLvH7zFT7K9L+TycBSpT7s3O+npBNsOw6Nv1woS3Dz0u67IAL9e1rrWP07u700kzICH+LI=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by CO1PR10MB4628.namprd10.prod.outlook.com (2603:10b6:303:6c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.20; Fri, 10 Mar
+ 2023 18:12:04 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::b7a:f60c:7239:80a2]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::b7a:f60c:7239:80a2%6]) with mapi id 15.20.6178.020; Fri, 10 Mar 2023
+ 18:12:04 +0000
+Subject: Re: [RFC dwarves] syscall functions in BTF
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     acme@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, bpf@vger.kernel.org
+References: <ZAsBYpsBV0wvkhh0@krava>
+ <faf34d4b-d7a3-2573-383b-2bd8db422734@oracle.com> <ZAtIEmbRSjol/XfK@krava>
+From:   Alan Maguire <alan.maguire@oracle.com>
+Message-ID: <1165988c-31e0-ae6a-b805-9880fb1e6ad3@oracle.com>
+Date:   Fri, 10 Mar 2023 18:11:57 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+In-Reply-To: <ZAtIEmbRSjol/XfK@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS4P190CA0057.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:656::6) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CO1PR10MB4628:EE_
+X-MS-Office365-Filtering-Correlation-Id: 124d7c94-4606-4ed3-4777-08db2192f38a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AgDleqgF1VgbbIlQKhoK42MnS8ncDfq/pPTGXho0FP8ivQFhDqjsbtvaWMAvAHDKIRjqyWz79WwNoXxcoyPPHo0MzFeZK/3gffp/Hds6M9cVmMJwAUt928AMKPASYbXBaJEzzM9tLq0/0OlZou229FiEIfgWIeIH4QmeL6RsJbnl1EXR2LAxeurfhdBqNAFgbf4VVFgN404sX8LvWylWBgFC5GoLo6x+NbBcRVl6anifnRYrp6RsM4//pT06h3IwaKqQgvMcQSq6TDFfi0Ajt5tvPXe3qlltEUU8VomMPxG3iGP+20a4jGhar3ZHckoa4XQJS0XvJu7NDp1mzV4xxvlVoM3fUSMy7DpeZ33GwBRiZYs/f3RQa76DMb0Sad42bbMBTOr3CQ47LndyEfghkyfXEml3ZHiH/Blv+ngb/roL5M8JxWoYgAFol/E1vjEmmGiwXL7aUMRcN5lxlxw/ufZt1segRM5ceu+SJVaBT+HNBvqWB8fk1iqY7dC92hAJFG1y1bUjZm0/e4rPrgzVRU79EH9dWuGK2o2WO5mZ2kSyjPC5yT1rKa78qa9Cyviadb7i1yAI8APkW9+xCO+E6Sh+wcEag1nOBjlAvmJh4vOH9BVpcqs2h5rtEEr3b6bU0bwBR3wtR4mfAgSzTrwqmYS3/daFe4MnwdSD+S6WXmqIXNwrVZuAUFY3H8jpzpGy5p+B6MSaAVsmDdq6GZvVExJYsy+Rf1Q9foePZhOsEJY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(366004)(39860400002)(346002)(396003)(136003)(376002)(451199018)(5660300002)(44832011)(7416002)(36756003)(83380400001)(66946007)(478600001)(6666004)(6512007)(6506007)(6486002)(2616005)(53546011)(186003)(4326008)(6916009)(8676002)(66476007)(8936002)(41300700001)(66556008)(38100700002)(31696002)(86362001)(316002)(2906002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WDVwTXRZSXM0amYzU0psRVp3L3l1UEh4Vkx5Y1VoajkxeVpQZTZ3MEUzVzVi?=
+ =?utf-8?B?Y05vRXBDRDlyYTdGSWdGOHlwTzd2cDJLN203WXdpYUVnSldMeWsySjlVaHRi?=
+ =?utf-8?B?OTc1cC85UE5HcTYxT0pvQ2ozZ2tvSWt3QkhIdmtBdG1ZZmtDc2N6byt5V0hU?=
+ =?utf-8?B?NFBrM29rL292a3JZODFsQzZ3L2ptVlN0aC8yd090Z3lhNGtkR0p5S0N1OWZr?=
+ =?utf-8?B?aDg0MDd6cG9CMHJ2U1ZsQmcwRlhHVDArTk94c0EybzhaZXhRcUNtS2NBTU03?=
+ =?utf-8?B?UTBudXdlajVIbzNhWUVzcUxoUkpITjJDRjd3ZW42RkhqSUxod0ZJMGo4dlE3?=
+ =?utf-8?B?U2RvTUx4M3IweGNJZGowY1JSeUZVOFk5UVJWSEgrZFY2WjYveVkvdkNwcjQv?=
+ =?utf-8?B?Zkh3cWdhWXA1MStRWElXdEVrOUFrSU9uZ25vZmt2UHRHR1pFVEJIRUF2dFFX?=
+ =?utf-8?B?TmVqeHAxSFhDWkFaVXhLdDV1bzd4eGtQSGdNRFBJQlhNUWFkSERrTlV3K25W?=
+ =?utf-8?B?OVkxaGNoM25iNkNPeDA4SUtZMGtPbDdFYWtGUm5ub0Q3SklCWWhwVkh2eXA3?=
+ =?utf-8?B?T3MyVUhaYjU3Y0VwelUxb3VQa2dBU0srcWVVdHFRMmQzajdIQkhYdWI3OFFP?=
+ =?utf-8?B?TkF1SlBWTTk5c01FaTFUNFF0OTNBU3RBSzJ2aTF0MHM5bEYySDhGemhUWllE?=
+ =?utf-8?B?ZnU0NGtleStTdnIyeDdwUEVtV0pZbHhRaVVadkxIZUQ5cVN3bXdsR28zMHZF?=
+ =?utf-8?B?d3dhUGR1WkxjRkQ3L1JwYUhud09FZUtFZ1hWNHgyZzhuVFdzVk5odWx5dzZU?=
+ =?utf-8?B?dUR5Q0NNU0VVL1Y2SXNGY0RTYUZGQnZQd0dvMEJqM0RzemprNjNneUNLalYy?=
+ =?utf-8?B?MnRjbUo0REptY2x3MHFHY0lxNkdTNW5pei92bjJ5eDVUZEkyNmxvZ215TjNj?=
+ =?utf-8?B?RytEcFYyblIySlJ3S1RncERGM0l2S09IelplSVNNQWt1djQyMWw2UFd6MFlu?=
+ =?utf-8?B?Y1Z1TUE3cTVSSExnbjY0Y29ZS0lURHpJUzRPTXFvTmJJYWx2aVVhUFAzeEF0?=
+ =?utf-8?B?cmFYNWV6bTNROEw5NVFIZ1NucE5mcHZZYkxhTU8raVlCcTQ2dkxETXBFcUJE?=
+ =?utf-8?B?ZHJaWHJLWUJlaUtTdkVhTHBKbjhSK3lUQmhsc3lnQ25BWXVEa1g5WG1meFZF?=
+ =?utf-8?B?bExvbnd6OXpXTkJ6WmhoTEo5NkVTNVhZWFp5cEVQUDZWcTZyRkE2dWRiNDFq?=
+ =?utf-8?B?ZS9xT2VzZmNDamtNN0V1Z1pnc2xNeFlmci94N3l3cFh1V3p4blRaa2VSRGJ0?=
+ =?utf-8?B?WEg4SVMwVFRhVWZsMnRKT0VMR2Z6aTFBUWU5YkRKck5pTS9KZC80ODViOERw?=
+ =?utf-8?B?dGV4NHErcjdFeW5DUjdqczcvUFJVdGhLRXh3Ri8yVVp2OHVCcGRIajhGeERL?=
+ =?utf-8?B?UFBRV21yUjRIMGlrZWp4cnRZdTA2N2pPOXNacHFoMDZScVp5QXp5UjNoWWFI?=
+ =?utf-8?B?VTFoN09PQnErT3A1QVJKV1hWKzI0TllDOGV6eko4N0k5NzcvZnBrMlRZQ2FY?=
+ =?utf-8?B?TWM0RjJuRWlldE1uN2JtYkZURUN3Q1lzcXBtZUJKS1hzSXpjNXRFUjBReTNZ?=
+ =?utf-8?B?ZEtoNXRWRWpLdkY2RUt4YjFhQ2RVYmU0bFBINmhzcmJHcXQyUzE2T0JFYXVy?=
+ =?utf-8?B?TEJzaUFBbmsrZ0tIZ1MrMUhITVdDTEtlb3VhM1NCMGNkeS9JaWJEcHQxSUpx?=
+ =?utf-8?B?alh5YlFLYUVkTnE0WWM4TlR4eVgzTjhhbHZSS1owVzZkaUdhUFkvRVJXaEVi?=
+ =?utf-8?B?VEZwSERzTXZ6dXRoYVYvMUcxcnRRbUx3MTB1VVVaQnl4Vm1QdW5zOTUvSVM2?=
+ =?utf-8?B?dUhRd1ViM3dTQlRmUW92V0QrcXdzV1pIeXB3aXg0NVhTc2xlYjBTaVdxVkxS?=
+ =?utf-8?B?VWd1clhYYVJxSTNMTlNZTExTbktSbHc1ZVdsMHFjQVRJTndBbVBTbmpqeTRR?=
+ =?utf-8?B?Tk9SUHJDbGErakdiU05YdUpGM3MvMGhmOGc2M0o4Yys4Y0U0N09tQURyeWpJ?=
+ =?utf-8?B?em5LNmg5WGtTbzVSdXZOZG9xT092QWtQdjV1aTRtSldvUGtLMWVQVWdZMkZ5?=
+ =?utf-8?B?b0lSUTlXdkYwa0pWTUtLSU9PZmhQWldIM211UmJ3RzhlMU9IUmZrdlZtaTVv?=
+ =?utf-8?Q?YGM+Lmm6z23YqNC2DI+iy74=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?dngrWkIwNXB4ZGFXWWsxSC9oL2c0NjdJd0NXN1VySWpxajdOS0FoeGRmWEdG?=
+ =?utf-8?B?Yks4NnlONlc1Um9DRWE3QXlrRnJYRmppQXA4REhsaFlYTm1DOHdOWFBHZi93?=
+ =?utf-8?B?KzAvcWZZNkZPbC9FcUtQUkErZEp4MUJzaXMzVTZZVk9nbG9EWk1hKy9NQ2d1?=
+ =?utf-8?B?SHhzOWY2L1hLV3pWZEJBd1pPdmoyMmppVFBGRHVEQis5YU81VkY5OHJxbzl6?=
+ =?utf-8?B?Q3FCdTMwWWhuTXdhU2o5Y1kweUd2YTh2MTNEb1NHaWhvaU8xZzlGZHRIYzRI?=
+ =?utf-8?B?OVdzUTlZVVVQZ2pGc0o3NGxYUTN2bE9XRE1KdDgwRGtmcTRrS3MrTkZ2Njkr?=
+ =?utf-8?B?c3pYMmZ3QWRIeHFZbE5SbGFHTEdIcHgydDlPR1paYlNzVVY5SGJPYzZudHFC?=
+ =?utf-8?B?ZFpNUTNiTVJlOU5OT0gxZ05uU3dYYkJQcjdvTmRmL2ZCU0VZUUlKUVluNlBw?=
+ =?utf-8?B?SURiMCtLMWtaTXBUV05wU3p1RU0zOU8xalZKSFBPQjQzM0E5QmhCbHgyWmtX?=
+ =?utf-8?B?YmhTTEw3dFJGWlEzTW95RThGanU1eU5oSnFHRWNDQ2t2S29OWk9Nei83Nk5M?=
+ =?utf-8?B?ekI1Y1RCY3lJRUhvVEFQaXNKbXY0Z3RYMDhxSXc5YkRCME1xa3lOU1NjOU1B?=
+ =?utf-8?B?WHBGdWhDZVpqclJnOHo0cHpiZXZJbVNYRStvbk5uSVhvcE9uTnQzeHdiOWZR?=
+ =?utf-8?B?NjFsdnJ4NnUrYmNJU3BRRllrbWM3UlNRVzhlZ1FBYWdMbENydHoreTM1TTN1?=
+ =?utf-8?B?YjlxcUVjUmJ0bkp5U0VkRnRkYUxXVE01Zk1RcHRQVW0yQm9LMWtrL2dGb1hU?=
+ =?utf-8?B?N1c5MEZPWWNTZU0xSUpnWWVtRjVPQm5GNUp1YWxxNExBajE0SU91MnVLZ0tL?=
+ =?utf-8?B?VFpURnZDUDZjanZCcFdEaXNRVW1SV2FrWmRhQmhjODVtSk5QTVNxYkdETS9M?=
+ =?utf-8?B?bVZzUkI4a3I2RXI0RWlOcmcwNVFxWDNsdnRUc3o1MnVrdzBkejhUTGVXOCt6?=
+ =?utf-8?B?QkdXd2ZWZzBpOHJBRlFKOWdhUDVhMUJBdzhPSkFmWmozTnBWUDdlb1RaVldD?=
+ =?utf-8?B?akFOM2JsRU9RdkhaelEzVTkrNmJ0UVhuaVREMmQ5c29MQWxlT3kxMnZzZzBQ?=
+ =?utf-8?B?emJuRW0zMWpocUdxMUc2czE1dUM0UTN1UXRjRWF6OWhQYk4yQ1NKbTdQMDZZ?=
+ =?utf-8?B?WFcxaEI5eUp2Y1Q2eUtpdW1NeFovYkZwRUFOQktob2h0ZmdnSTRWdWRvSkJY?=
+ =?utf-8?Q?ohfvNF1yBiNOpPW?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 124d7c94-4606-4ed3-4777-08db2192f38a
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2023 18:12:03.9643
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h3RxgdzZ4qzZqet4l4lV79NptPx/rdOZOTqSSmlr7dA/ZKdCG0dmT/R8kKoKF3jt4UbyK/J/NKgWCesqcLDAUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4628
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-10_09,2023-03-10_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2303100145
+X-Proofpoint-GUID: TlhXU-4CqcJnuZFxJ5DE3FgONxPGuls6
+X-Proofpoint-ORIG-GUID: TlhXU-4CqcJnuZFxJ5DE3FgONxPGuls6
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Sreevani <ssreevani@meta.com>
+On 10/03/2023 15:09, Jiri Olsa wrote:
+> On Fri, Mar 10, 2023 at 12:43:31PM +0000, Alan Maguire wrote:
+>> On 10/03/2023 10:07, Jiri Olsa wrote:
+>>> hi,
+>>> with latest pahole fixes we get rid of some syscall functions (with
+>>> __x64_sys_ prefix) and it seems to fall down to 2 cases:
+>>>
+>>> - weak syscall functions generated in kernel/sys_ni.c prevent these syscalls
+>>>   to be generated in BTF. The reason is the __COND_SYSCALL macro uses
+>>>   '__unused' for regs argument:
+>>>
+>>>         #define __COND_SYSCALL(abi, name)                                      \
+>>>                __weak long __##abi##_##name(const struct pt_regs *__unused);   \
+>>>                __weak long __##abi##_##name(const struct pt_regs *__unused)    \
+>>>                {                                                               \
+>>>                        return sys_ni_syscall();                                \
+>>>                }
+>>>
+>>>   and having weak function with different argument name will rule out the
+>>>   syscall from BTF functions
+>>>
+>>>   the patch below workarounds this by using the same argument name,
+>>>   but I guess the real fix would be to check the whole type not just
+>>>   the argument name.. or ignore weak function if there's non weak one
+>>>
+>>>   I guess there will be more cases like this in kernel
+>>>
+>>>
+>>
+>> Thanks for the report Jiri! I'm working on reusing the dwarves_fprintf.c
+>> code to use string comparisons of function prototypes (minus parameter names!)
+>> instead as a more robust comparison.  Hope to have something working soon..
+> 
+> great, I saw the patchset, will check
+> 
+>>  
+>>> - we also do not get any syscall with no arguments, because they are
+>>>   generated as aliases to __do_<syscall> function:
+>>>
+>>>         $ nm ./vmlinux | grep _sys_fork
+>>>         ffffffff81174890 t __do_sys_fork
+>>>         ffffffff81174890 T __ia32_sys_fork
+>>>         ffffffff81174880 T __pfx___x64_sys_fork
+>>>         ffffffff81174890 T __x64_sys_fork
+>>>
+>>>   with:
+>>>         #define __SYS_STUB0(abi, name)                                          \
+>>>                 long __##abi##_##name(const struct pt_regs *regs);              \
+>>>                 ALLOW_ERROR_INJECTION(__##abi##_##name, ERRNO);                 \
+>>>                 long __##abi##_##name(const struct pt_regs *regs)               \
+>>>                         __alias(__do_##name);
+>>>
+>>>   the problem seems to be that there's no DWARF data for aliased symbol,
+>>>   so pahole won't see any __x64_sys_fork record
+>>>   I'm not sure how to fix this one
+>>>
+>>
+>> Is this one a new issue, or did you just spot it when looking at the other case?
+> 
+> I was trying to attach to all syscalls and noticed some where missing,
+> it looks like the alias was used in this place for few years
+> 
 
-Summary: Document that provides an overview of libbpf features for BPF
-application development.
+I looked into this one; in the DWARF associated with these functions I see:
 
-Signed-off-by: Sreevani <ssreevani@meta.com>
----
-V2->V3: Fixed heading style format throughout the document.
+<1><756d2>: Abbrev Number: 24 (DW_TAG_subprogram)
+    <756d3>   DW_AT_external    : 1
+    <756d3>   DW_AT_name        : (indirect string, offset: 0x8552d): __x64_sys_fork
+    <756d7>   DW_AT_decl_file   : 7
+    <756d8>   DW_AT_decl_line   : 58
+    <756d9>   DW_AT_decl_column : 1
+    <756da>   DW_AT_prototyped  : 1
+    <756da>   DW_AT_type        : <0x73abd>
+    <756de>   DW_AT_declaration : 1
+    <756de>   DW_AT_sibling     : <0x756e8>
+ <2><756e2>: Abbrev Number: 18 (DW_TAG_formal_parameter)
+    <756e3>   DW_AT_type        : <0x73d42>
 
- Documentation/bpf/libbpf/index.rst           |  27 ++-
- Documentation/bpf/libbpf/libbpf_overview.rst | 228 +++++++++++++++++++
- 2 files changed, 246 insertions(+), 9 deletions(-)
- create mode 100644 Documentation/bpf/libbpf/libbpf_overview.rst
+So it's marked as a declaration, and BTF encoding has skipped declarations
+for a while now as they don't have parameter names; I checked out v1.24 of 
+dwarves and only __do_sys_fork() is encoded in BTF there too.  Looks like 
+the last relevant change around the syscall stubs was in 2020:
 
-diff --git a/Documentation/bpf/libbpf/index.rst b/Documentation/bpf/libbpf/=
-index.rst
-index f9b3b252e28f..3ac8c06fb8f4 100644
---- a/Documentation/bpf/libbpf/index.rst
-+++ b/Documentation/bpf/libbpf/index.rst
-@@ -2,23 +2,32 @@
-=20
- .. _libbpf:
-=20
-+######
- libbpf
--=3D=3D=3D=3D=3D=3D
-+######
-+
-+If you are looking to develop BPF applications using the libbpf library, t=
-his
-+directory contains important documentation that you should read.
-+
-+To get started, it is recommended to begin with the :doc:`libbpf Overview
-+<libbpf_overview>` document, which provides a high-level understanding of =
-the
-+libbpf APIs and their usage. This will give you a solid foundation to start
-+exploring and utilizing the various features of libbpf to develop your BPF
-+applications.
-=20
- .. toctree::
-    :maxdepth: 1
-=20
-+   libbpf_overview
-    API Documentation <https://libbpf.readthedocs.io/en/latest/api.html>
-    program_types
-    libbpf_naming_convention
-    libbpf_build
-=20
--This is documentation for libbpf, a userspace library for loading and
--interacting with bpf programs.
-=20
--All general BPF questions, including kernel functionality, libbpf APIs and
--their application, should be sent to bpf@vger.kernel.org mailing list.
--You can `subscribe <http://vger.kernel.org/vger-lists.html#bpf>`_ to the
--mailing list search its `archive <https://lore.kernel.org/bpf/>`_.
--Please search the archive before asking new questions. It very well might
--be that this was already addressed or answered before.
-+All general BPF questions, including kernel functionality, libbpf APIs and=
- their
-+application, should be sent to bpf@vger.kernel.org mailing list.  You can
-+`subscribe <http://vger.kernel.org/vger-lists.html#bpf>`_ to the mailing l=
-ist
-+search its `archive <https://lore.kernel.org/bpf/>`_.  Please search the a=
-rchive
-+before asking new questions. It may be that this was already addressed or
-+answered before.
-diff --git a/Documentation/bpf/libbpf/libbpf_overview.rst b/Documentation/b=
-pf/libbpf/libbpf_overview.rst
-new file mode 100644
-index 000000000000..59ed1c8ce215
---- /dev/null
-+++ b/Documentation/bpf/libbpf/libbpf_overview.rst
-@@ -0,0 +1,228 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+***************
-+libbpf Overview
-+***************
-+
-+libbpf is a C-based library containing a BPF loader that takes compiled BPF
-+object files and prepares and loads them into the Linux kernel. libbpf tak=
-es the
-+heavy lifting of loading, verifying, and attaching BPF programs to various
-+kernel hooks, allowing BPF application developers to focus only on BPF pro=
-gram
-+correctness and performance.
-+
-+The following are the high-level features supported by libbpf:
-+
-+* Provides high-level and low-level APIs for user space programs to intera=
-ct
-+  with BPF programs. The low-level APIs wrap all the bpf system call
-+  functionality, which is useful when users need more fine-grained control
-+  over the interactions between user space and BPF programs.
-+* Provides overall support for the BPF object skeleton generated by bpftoo=
-l.
-+  The skeleton file simplifies the process for the user space programs to =
-access
-+  global variables and work with BPF programs.
-+* Provides BPF-side APIS, including BPF helper definitions, BPF maps suppo=
-rt,
-+  and tracing helpers, allowing developers to simplify BPF code writing.
-+* Supports BPF CO-RE mechanism, enabling BPF developers to write portable
-+  BPF programs that can be compiled once and run across different kernel
-+  versions.
-+
-+This document will delve into the above concepts in detail, providing a de=
-eper
-+understanding of the capabilities and advantages of libbpf and how it can =
-help
-+you develop BPF applications efficiently.
-+
-+BPF App Lifecycle and libbpf APIs
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+A BPF application consists of one or more BPF programs (either cooperating=
- or
-+completely independent), BPF maps, and global variables. The global
-+variables are shared between all BPF programs, which allows them to cooper=
-ate on
-+a common set of data. libbpf provides APIs that user space programs can us=
-e to
-+manipulate the BPF programs by triggering different phases of a BPF applic=
-ation
-+lifecycle.
-+
-+The following section provides a brief overview of each phase in the BPF l=
-ife
-+cycle:
-+
-+* **Open phase**. In this phase, libbpf parses the BPF
-+  object file and discovers BPF maps, BPF programs, and global variables. =
-After
-+  a BPF app is opened, user space apps can make additional adjustments
-+  (setting BPF program types, if necessary; pre-setting initial values for
-+  global variables, etc.) before all the entities are created and loaded.
-+
-+* **Load phase**. In the load phase, libbpf creates BPF
-+  maps, resolves various relocations, and verifies and loads BPF programs =
-into
-+  the kernel. At this point, libbpf validates all the parts of a BPF appli=
-cation
-+  and loads the BPF program into the kernel, but no BPF program has yet be=
-en
-+  executed. After the load phase, it=E2=80=99s possible to set up the init=
-ial BPF map
-+  state without racing with the BPF program code execution.
-+
-+* **Attachment phase**. In this phase, libbpf
-+  attaches BPF programs to various BPF hook points (e.g., tracepoints, kpr=
-obes,
-+  cgroup hooks, network packet processing pipeline, etc.). During this
-+  phase, BPF programs perform useful work such as processing
-+  packets, or updating BPF maps and global variables that can be read from=
- user
-+  space.
-+
-+* **Tear down phase**. In the tear down phase,
-+  libbpf detaches BPF programs and unloads them from the kernel. BPF maps =
-are
-+  destroyed, and all the resources used by the BPF app are freed.
-+
-+BPF Object Skeleton File
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+BPF skeleton is an alternative interface to libbpf APIs for working with B=
-PF
-+objects. Skeleton code abstract away generic libbpf APIs to significantly
-+simplify code for manipulating BPF programs from user space. Skeleton code
-+includes a bytecode representation of the BPF object file, simplifying the
-+process of distributing your BPF code. With BPF bytecode embedded, there a=
-re no
-+extra files to deploy along with your application binary.
-+
-+You can generate the skeleton header file ``(.skel.h)`` for a specific obj=
-ect
-+file by passing the BPF object to the bpftool. The generated BPF skeleton
-+provides the following custom functions that correspond to the BPF lifecyc=
-le,
-+each of them prefixed with the specific object name:
-+
-+* ``<name>__open()`` =E2=80=93 creates and opens BPF application (``<name>=
-`` stands for
-+  the specific bpf object name)
-+* ``<name>__load()`` =E2=80=93 instantiates, loads,and verifies BPF applic=
-ation parts
-+* ``<name>__attach()`` =E2=80=93 attaches all auto-attachable BPF programs=
- (it=E2=80=99s
-+  optional, you can have more control by using libbpf APIs directly)
-+* ``<name>__destroy()`` =E2=80=93 detaches all BPF programs and
-+  frees up all used resources
-+
-+Using the skeleton code is the recommended way to work with bpf programs. =
-Keep
-+in mind, BPF skeleton provides access to the underlying BPF object, so wha=
-tever
-+was possible to do with generic libbpf APIs is still possible even when th=
-e BPF
-+skeleton is used. It's an additive convenience feature, with no syscalls, =
-and no
-+cumbersome code.
-+
-+Other Advantages of Using Skeleton File
-+---------------------------------------
-+
-+* BPF skeleton provides an interface for user space programs to work with =
-BPF
-+  global variables. The skeleton code memory maps global variables as a st=
-ruct
-+  into user space. The struct interface allows user space programs to init=
-ialize
-+  BPF programs before the BPF load phase and fetch and update data from us=
-er
-+  space afterward.
-+
-+* The ``skel.h`` file reflects the object file structure by listing out the
-+  available maps, programs, etc. BPF skeleton provides direct access to al=
-l the
-+  BPF maps and BPF programs as struct fields. This eliminates the need for
-+  string-based lookups with ``bpf_object_find_map_by_name()`` and
-+  ``bpf_object_find_program_by_name()`` APIs, reducing errors due to BPF s=
-ource
-+  code and user-space code getting out of sync.
-+
-+* The embedded bytecode representation of the object file ensures that the
-+  skeleton and the BPF object file are always in sync.
-+
-+BPF Helpers
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+libbpf provides BPF-side APIs that BPF programs can use to interact with t=
-he
-+system. The BPF helpers definition allows developers to use them in BPF co=
-de as
-+any other plain C function. For example, there are helper functions to pri=
-nt
-+debugging messages, get the time since the system was booted, interact wit=
-h BPF
-+maps, manipulate network packets, etc.
-+
-+For a complete description of what the helpers do, the arguments they take=
-, and
-+the return value, see the `bpf-helpers
-+<https://man7.org/linux/man-pages/man7/bpf-helpers.7.html>`_ man page.
-+
-+BPF CO-RE (Compile Once =E2=80=93 Run Everywhere)
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+BPF programs work in the kernel space and have access to kernel memory and=
- data
-+structures. One limitation that BPF applications come across is the lack of
-+portability across different kernel versions and configurations. `BCC
-+<https://github.com/iovisor/bcc/>`_ is one of the solutions for BPF
-+portability. However, it comes with runtime overhead and a large binary si=
-ze
-+from embedding the compiler with the application.
-+
-+libbpf steps up the BPF program portability by supporting the BPF CO-RE co=
-ncept.
-+BPF CO-RE brings together BTF type information, libbpf, and the compiler to
-+produce a single executable binary that you can run on multiple kernel ver=
-sions
-+and configurations.
-+
-+To make BPF programs portable libbpf relies on the BTF type information of=
- the
-+running kernel. Kernel also exposes this self-describing authoritative BTF
-+information through ``sysfs`` at ``/sys/kernel/btf/vmlinux``.
-+
-+You can generate the BTF information for the running kernel with the follo=
-wing
-+command:
-+
-+::
-+
-+  $ bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
-+
-+The command generates a ``vmlinux.h`` header file with all kernel types
-+(:doc:`BTF types </bpf/btf>`) that the running kernel uses. Including
-+``vmlinux.h`` in your BPF program eliminates dependency on system-wide ker=
-nel
-+headers.
-+
-+libbpf enables portability of BPF programs by looking at the BPF program=
-=E2=80=99s
-+recorded BTF type and relocation information and matching them to BTF
-+information (vmlinux) provided by the running kernel. libbpf then resolves=
- and
-+matches all the types and fields, and updates necessary offsets and other
-+relocatable data to ensure that BPF program=E2=80=99s logic functions corr=
-ectly for a
-+specific kernel on the host. BPF CO-RE concept thus eliminates overhead
-+associated with BPF development and allows developers to write portable BPF
-+applications without modifications and runtime source code compilation on =
-the
-+target machine.
-+
-+The following code snippet shows how to read the parent field of a kernel
-+``task_struct`` using BPF CO-RE and libbf. The basic helper to read a fiel=
-d in a
-+CO-RE relocatable manner is ``bpf_core_read(dst, sz, src)``, which will re=
-ad
-+``sz`` bytes from the field referenced by ``src`` into the memory pointed =
-to by
-+``dst``.
-+
-+  .. code-block:: C
-+    :emphasize-lines: 6
-+
-+    //...
-+    struct task_struct *task =3D (void *)bpf_get_current_task();
-+    struct task_struct *parent_task;
-+    int err;
-+
-+    err =3D bpf_core_read(&parent_task, sizeof(void *), &task->parent);
-+    if (err) {
-+      /* handle error */
-+    }
-+
-+    /* parent_task contains the value of task->parent pointer */
-+
-+In the code snippet, we first get a pointer to the current ``task_struct``=
- using
-+``bpf_get_current_task()``.  We then use ``bpf_core_read()`` to read the p=
-arent
-+field of task struct into the ``parent_task`` variable. ``bpf_core_read()`=
-` is
-+just like ``bpf_probe_read_kernel()`` BPF helper, except it records inform=
-ation
-+about the field that should be relocated on the target kernel. i.e, if the
-+``parent`` field gets shifted to a different offset within struct
-+``task_struct`` due to some new field added in front of it, libbpf will
-+automatically adjust the actual offset to the proper value.
-+
-+Getting Started with libbpf
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-+
-+Check out the `libbpf-bootstrap <https://github.com/libbpf/libbpf-bootstra=
-p>`_
-+repository with simple examples of using libbpf to build various BPF
-+applications.
-+
-+Also, find the libbpf API documentation `here
-+<https://libbpf.readthedocs.io/en/latest/api.html>`_
-+
-+libbpf and Rust
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+If you are building BPF applications in Rust, it is recommended to use the
-+`Libbpf-rs <https://github.com/libbpf/libbpf-rs>`_ library instead of bind=
-gen
-+bindings directly to libbpf. Libbpf-rs wraps libbpf functionality in
-+Rust-idiomatic interfaces and provides libbpf-cargo plugin to handle BPF c=
-ode
-+compilation and skeleton generation. Using Libbpf-rs will make building us=
-er
-+space part of the BPF application easier. Note that the BPF program themse=
-lves
-+must still be written in plain C.
-+
-+Additional Documentation
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+* `Program types and ELF Sections <https://libbpf.readthedocs.io/en/latest=
-/program_types.html>`_
-+* `API naming convention <https://libbpf.readthedocs.io/en/latest/libbpf_n=
-aming_convention.html>`_
-+* `Building libbpf <https://libbpf.readthedocs.io/en/latest/libbpf_build.h=
-tml>`_
-+* `API documentation Convention <https://libbpf.readthedocs.io/en/latest/l=
-ibbpf_naming_convention.html#api-documentation-convention>`_
---=20
-2.34.1
+d2b5de495ee9 ("x86/entry: Refactor SYSCALL_DEFINE0 macros")
 
+Alan
