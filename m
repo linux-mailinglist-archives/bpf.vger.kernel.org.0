@@ -2,195 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC06B6B517B
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 21:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426136B5184
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 21:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbjCJUL3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 15:11:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
+        id S230102AbjCJUNC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 15:13:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230353AbjCJUL0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 15:11:26 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A46F12BAF5;
-        Fri, 10 Mar 2023 12:11:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678479083; x=1710015083;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=wlVXFZVGaU2FZ11yt159gGylN9GgzV9sH08ZZQp+DD0=;
-  b=JrgZTdbic5t8FZb4V7ReGv9+YvYo2uP/UKPv3Egy74hkl/4YQEsaeLF4
-   8TOhuDYzxq65Pa0URf9UAKxP73EX7ppQgpmNMOqpXkm5GF/qwmjzNHeBc
-   hiUrRcjPgazOj03QVaVd2w4NVnXUMHLmYVaEy1c8m6ROFODdtLU3vZudA
-   jUK/En3UZVy6Be1WJf0uhycLpXEz1Z6NaZ+v8b4UDsg4trqknwVEyGSM7
-   kmj3UHO1vHJywRRqWSvkKTK72XbspShZ3HEBPcDkEZIs88tN0Q3E/TJcl
-   clSq85bjg5+JK4z5dfUUchWf/HMjkGDP4wIKcQNdtPxEsJHp5f2p9MY3q
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10645"; a="320673807"
-X-IronPort-AV: E=Sophos;i="5.98,250,1673942400"; 
-   d="scan'208";a="320673807"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2023 12:11:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10645"; a="710401897"
-X-IronPort-AV: E=Sophos;i="5.98,250,1673942400"; 
-   d="scan'208";a="710401897"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga001.jf.intel.com with ESMTP; 10 Mar 2023 12:11:22 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 10 Mar 2023 12:11:22 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Fri, 10 Mar 2023 12:11:22 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.48) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Fri, 10 Mar 2023 12:11:21 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=URwjZ84K//1ujDkyPygjlnKtb7wwn0qfmRzz8o+S8/jB2OsSwO6CmuSeiFKcB3gZ+Dpkw9uQCIAdW+Hb3vZmafpCZ4FjstA/UdgYz2wo7/p0E2dXJ2jj7/xq+3621VEYpfQwuGP9Btccu7dBCFnnc1fdCfVKG8ldz//3Z8H2O4gJSF/rQXHcEO/N/SfSEWZCZY/aQ5t6uRYbWPYWlaefMfOjuBqX6/vdiFxL6TOLWUZk8aOc+EICRSqex9rYPEltGhN0aylyY2voi97VRJFfsNduVlJZK5wf7IXwOePeVTitCGdhzzUtDZTF8M42vsd+05X58BxV6iGioTfRMnuLpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jGopdrfoU1eU3q+g7ntNc0NvNzjS1bXTtyyDsoSqa5U=;
- b=nU9eVrQtcOZvjkfXLJimpZtPzVeKJXpLTWxN2QiTyN8P471S0oEORwrfNJgGiWFrfs3WRybcLLcbeSpxCYerEwa/M3L3BKz4+vecEKEbJXIdwBwDYYQAGhYKP+XopGejc7R4AO7+lAI2J1J/ehIzZwNBNgGNOlAmm8DCHGbkMpZdz5JubDeKsLJkY2D7z0b1oX6THtlVMm3h7QJbrSSLppQthlhhhtkvekVYMeydlrVjyV+wpzVsJU3brde4QHaAemvU+iwCEovWdXRD+Z3pDqVxg8sIQnll/qgLmWvXKUNyVp6Z55tdzWRwjOEVfQ9aifglof+ouQMQs07e5X7YsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by IA1PR11MB6147.namprd11.prod.outlook.com (2603:10b6:208:3ed::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.19; Fri, 10 Mar
- 2023 20:11:12 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::7911:de29:ded:224]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::7911:de29:ded:224%5]) with mapi id 15.20.6178.017; Fri, 10 Mar 2023
- 20:11:12 +0000
-Message-ID: <2d9fa4bf-dc59-26a3-10f7-69455e2fcf5e@intel.com>
-Date:   Fri, 10 Mar 2023 21:10:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v2 0/3] xdp: recycle Page Pool backed skbs built
- from XDP frames
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230363AbjCJUNB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 15:13:01 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC49259C7
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 12:12:55 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id me6-20020a17090b17c600b0023816b0c7ceso11048773pjb.2
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 12:12:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678479175;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l/UDvt3n4Dinow42PUqI+KwQ/prFII7giLtC/GNgvwE=;
+        b=O6x7D3mwker/F5A52qjtSnN4g2NY1K+z85Z/icwnW8L7faaOdHpvlq7S+GeaWPyF/q
+         6nj0ATGWFSw6T+g0KDwEDahwC45YEWl7Fzk086m//k5YV4hgUQYZHAMjYE8k1EUeJR+9
+         JcIulTF/W7DQ1RxcauxIJcu5Y6NJ3FqnhI9cKIKk3nIcU25lZ1PVNj0Vu8J2/VzP3OYj
+         /6CNCoF9m1rGEVzCcpIWbzbVsQYA+9bbChdK+rwaG0DcH4fNb0EAVUoFegxB1kygiro9
+         Nou+8yhdz3k+c+qsDideLs+W+FDFB1fS2rHZD9cgMh1g9gmib7vkU1DmvnIKIaDnRw28
+         Bjug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678479175;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l/UDvt3n4Dinow42PUqI+KwQ/prFII7giLtC/GNgvwE=;
+        b=fcNSNa9+ujpoXIq30qhb6v0TEhiUTFp3KozR2xY7xyoP+MOQw7l+/kWG3Zoe3Tc/1a
+         qM1yjMGv0hY0RMgikYsI0x4n3vC+O9ZvtaoTVWmVyWbCRqDzlbfXhJxu5JFQ3P/MqqoK
+         ZgZH7poJsRo/b4XSO/XaXr+wABUqhXoaLu+usSRsmX7TeJmeY95y3dfdY6GziV6NfHWV
+         0u2pnaulNRmw4z3qdqBqmieaX/XIj3pdm7W5AopbcmpZDhlxK8Av+b/qiYuQaBXgnQUd
+         ae6DDvcWuFIWkQR/G9OCvmGvdW+X84KmO8AZLHv6oTZuyrM3eQTjFLv25TRZsApw3tS1
+         tcEQ==
+X-Gm-Message-State: AO0yUKVztbQe8hxtcZMFST3kkyqch1RGh59qMXKByyBgQ3yG1hu7fFLA
+        N1/dwI1dSqFh/gu06I9PjnY=
+X-Google-Smtp-Source: AK7set/QlZFB+Vw2CjSKghfCcH2serekT+UaBD+eCOCEno6HrARzIvbFVdEtA2M7nX9s6ljwMrGCVA==
+X-Received: by 2002:a17:903:120b:b0:19e:82aa:dc8a with SMTP id l11-20020a170903120b00b0019e82aadc8amr30942354plh.22.1678479175060;
+        Fri, 10 Mar 2023 12:12:55 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:5c0c])
+        by smtp.gmail.com with ESMTPSA id y16-20020a17090322d000b0019e60c645b1sm327521plg.305.2023.03.10.12.12.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Mar 2023 12:12:54 -0800 (PST)
+Date:   Fri, 10 Mar 2023 12:12:52 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "Jesper Dangaard Brouer" <brouer@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Song Liu <song@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Menglong Dong <imagedong@tencent.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20230303133232.2546004-1-aleksander.lobakin@intel.com>
- <73b5076c-335b-c746-b227-0edd40435ef5@redhat.com>
- <CAADnVQJ-kWG0eL8n5r3zBeXYaXihaqMcNrOP9++QuqsnhYzL_Q@mail.gmail.com>
-Content-Language: en-US
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <CAADnVQJ-kWG0eL8n5r3zBeXYaXihaqMcNrOP9++QuqsnhYzL_Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR2P281CA0061.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:93::18) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+        Kernel Team <kernel-team@fb.com>, tj@kernel.org
+Subject: Re: [PATCH v1 bpf-next 6/6] selftests/bpf: Add local kptr stashing
+ test
+Message-ID: <20230310201252.rwh3xu5e5s6udyhu@macbook-pro-6.dhcp.thefacebook.com>
+References: <20230309180111.1618459-1-davemarchevsky@fb.com>
+ <20230309180111.1618459-7-davemarchevsky@fb.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|IA1PR11MB6147:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5a8f3372-85ea-4a3b-37ef-08db21a3982a
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KBbWF+W+8ZGiK+34jXBevnbzjm4CvLUDAeB/y6OYc6M8V+x6D+qxahWnCBhCLlAAu4fLwtdmzNgKShrYb8YJNCu24ongc4uPK1HinqVJxwP9rznLJpxnQ7g33uLl1XtoLpBHTjk+VLlE3RlB2Q+4HH6UrH6NDld1+TvOg1MJ0xSX/gGlsRY0wKW0fl353vu9EfBqf98OXeQf67P7AmuXmrJcqKiZX21GpRTCIWA5M9kv4NetuUBNpm0BPv+4jEP/Md7aRMt+SZ/4a17OJ+pC+MDtWftmiE63Eg+euQWzn+XofOuq5q010SQ78ilb1AKyIhkqnA+y8uAC4farrsbOnvBuvuR/vHgJdA75r/w+fC6lq4j1VnacAVyyS6pfpjFltu8vPcAErkdsNs4VHRIKiXPw12Jli+0R3Gx+zv08u0tGcs4lWqbMLvivjL5hQCDZS8N89Cr0K6e4Ces5tjwPB9J7E4URr2CZ5ZkRcrmUx0KWxZOiDMMzbvA+prNiUwl+qbEm8lpZbfUpm5GEuLQUa/JJVAr9vxcCLORiTnNv1zdwT3LwQTwCLTBuWULO0jYAVWm8Tg8doKylBlZtuHedT52TyRSuTYFO4YFgabqNk4YheNhtMvzZYOma0HHIljgzc6CeSxgqAVQYuCpyrnaBlFluoqvKTSGqfVU1UJkHRe3CeQQauKytFmRGAeixZkgIeLie770XPXF2SMjRv1q/M4OgRuxgKwBuqmB8hZdPwjE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(136003)(39860400002)(366004)(396003)(346002)(376002)(451199018)(31686004)(54906003)(36756003)(6512007)(38100700002)(86362001)(31696002)(186003)(6506007)(82960400001)(26005)(5660300002)(2616005)(7416002)(316002)(478600001)(6486002)(4326008)(41300700001)(6916009)(4744005)(2906002)(8936002)(8676002)(66556008)(66476007)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VndibUltRGYveVFKMGxnRGljTHF5dHpsU0lUVlhHUXRQcitjOFgxL3FGVWlH?=
- =?utf-8?B?VGdTSTE4ZUYwNzcvczJSRFlnRkxpaG84K2orVnZ5OWYwb3FWWlorQi9mTmM2?=
- =?utf-8?B?MnMrcGU5Q0MyWVVaRTdXdjlUbFRoQlNUc2pMUEV0UTROSklWQjNnSGJnTWZ6?=
- =?utf-8?B?UXYyV1FhZ0NlRS8rMVh6QmF5MnZOOEZaekFoaDVZeXFIamVESVJEMm5KMTNy?=
- =?utf-8?B?Rzc3WEtQamdtalRYNERnNC92K09rRUxWbzlHRXRTOWY3YmtpeUNvL3VhczZJ?=
- =?utf-8?B?alNCWjZPQURmYk5rcUxYQkhFUmgvT1V4dG1WUFMwYzhEQXhlbHRGNC96S3Fa?=
- =?utf-8?B?MC9FNHA1bitZS2ZzN2dhRVdpSnFvSS9BWHdOclYvZUtzeThybVlkbkdRd3NI?=
- =?utf-8?B?Y3V3aHI5OFFxc3lzUnZoVzZqOENkV241WUFLRTM2OGYzZEN1Qi9ERmtrdU1i?=
- =?utf-8?B?TU9LTlJ2dk9OQlVTcGYvZHc5T3QvNHA1V2xxQXJoSDluOGpJSGFyczFiTTJK?=
- =?utf-8?B?eGZGZnUrRG4xWXRRcHNzcFJqOG5XcXhVUUh6Um4rU0hWdk93OVhsR0hzMnRK?=
- =?utf-8?B?MEVvcWtZWFdoTWFiZVg0bmRHWDFsL1FpZVN6dGIrYzF1aVhKcDZyYkx4YjM4?=
- =?utf-8?B?REREaEU2ZktLZ3dSZUlqS1pQYnIrQ1psZTc5dFhod29Ca1pLOUFRZW1uaFgr?=
- =?utf-8?B?TzJIdE43QTFOeXZmQjhjVlc5WFUrNVA3NndrOWszRzFJditHYm9IS2UwZG83?=
- =?utf-8?B?V2ZMSzkza1F4Z241ZE5RVVJsMXVYM3E4d0JtcmVDRTNkOThuOENQVlhCMjFT?=
- =?utf-8?B?eXhndVY0ZHlNMG1EdzRkenVGdU1Ka0F3VHB5U09raHBsRU43QTJqb054SHpa?=
- =?utf-8?B?QjBqdDBrMUJkck5xREc2ZU5teVVDYW9yNUpPb0VVMjd4L1N6OGZsbjI4YkFJ?=
- =?utf-8?B?Z0djb0wvTDFiRjByU0FFWkVhSkZkcFRXb3I2TDZxMVAxZDhGRXdleVVTSjlx?=
- =?utf-8?B?SmZiR3pSemw4SkxUcXFhVlhCUHBVZnB2MG4zMHIwMGpmK0Job3Iyb2RKVlNX?=
- =?utf-8?B?bGdhMkN4aTQvTndWa0hUT3Q0Szd0MUNoTFFXLzcySlVlTEJVRnpNVXRaK2JB?=
- =?utf-8?B?NEZwS3RiaUMxUkcycHVDdkhxU2d2c2loSHBiNDk4ZDEyajd6RVcwOTdpeE91?=
- =?utf-8?B?SDBVamgvRmEvMmo0ZlRrQjNZRUpMRjloR1VvTk5TOWtweTVMRjFiMEVDRWhJ?=
- =?utf-8?B?a282aWM2NDdXdTJLTzlibWdWS0RqdlNhYlJkQkxwZnNnQXBJZHBXSUtpaHov?=
- =?utf-8?B?V1dpTzlqMW83VzZUVHo2QUhzL1ZVb2JjNDc1K0VlY1IxQjNFYWJoTVJFU2Y2?=
- =?utf-8?B?YVE2SlQyeVJzK0tTaCttZ2NZM1JjWlljWHJVQlIya3FpVEwrSkJSRUN2QzR1?=
- =?utf-8?B?VUlaTHdnekRVSjAxcDFSRTYzKy9PVWw4RjRPVDZBNU91amhteGc0NzJQNEVq?=
- =?utf-8?B?NmFqVTA5eFFUNGFrbmw2Vm83c0xVRUlWeUNTNC9nRlRra1N4Y2pPT2FMN3ZE?=
- =?utf-8?B?RVBvWnVoMEo5OTNaOHY1ZzFlY3RydnZkMGdMeHA5RkpYUVhZYmlDSGdJTjFR?=
- =?utf-8?B?K3NsblBEZk5xOWFMblZPekR1dWE0NWVPdm5BMElsZHFMQkY1NkpTYnhRSExz?=
- =?utf-8?B?ZSszbnNHSzZTVGZkUEFrRG80SEF2NlI0bm4yY21FSXpBRlYyaUxUbTY5dWQ4?=
- =?utf-8?B?TC9DTTM5bHArQUhVVkkrTC84ald4VGFkNDNrZmJ1UFRYRkY0WkZ0T0lrT0dm?=
- =?utf-8?B?TTV0Rm9uSUtCdHNHMVFCa29hV2gyNlNUdThCQVkzdlZlUUNiekdrRFIwcnUv?=
- =?utf-8?B?R1ZUcDd3NU93UExnSzJUWEVsTkVkUW9hNmIrakk2M2VZTkk4Nng4QUYzbkFK?=
- =?utf-8?B?bzRJN3p1NnA4cUlIL29jZ1Uvc1o4SFJhak5FK3M1aVZ2cVFMSHNSMEM2TjI4?=
- =?utf-8?B?VGcrcXY3L0dmdCsvcEpCNTE2OHZITDRRYS9NK2VycnJ6S29aMTdFQTVDRjBv?=
- =?utf-8?B?T2g4R1NCZjZXVHQyNTNvZ3p5KytDR3ZtRzc0Z01RM29jakIyeE5WVFFYK1BM?=
- =?utf-8?B?Q3hjeHpwN2ErOWdFaDkyVXZyN0NEYjJuTVExWmYrTmc5V2lBcDVzbHFYeEFF?=
- =?utf-8?Q?bCbhyZqm40FHkFZC+c3XFNo=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a8f3372-85ea-4a3b-37ef-08db21a3982a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2023 20:11:12.3252
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Qp4QTC4qF4wWvu0+UMY5cX8We11eKs/FjIrZ6WDXQAhYNkXB0IyW/jD3n8cTwa4nQNmVAQ0kg4UFNxOKIPUlW2HLnRyxcwmJLW4AehL0Yow=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6147
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230309180111.1618459-7-davemarchevsky@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 10 Mar 2023 10:33:39 -0800
-
-> FYI
+On Thu, Mar 09, 2023 at 10:01:11AM -0800, Dave Marchevsky wrote:
+> Add a new selftest, local_kptr_stash, which uses bpf_kptr_xchg to stash
+> a bpf_obj_new-allocated object in a map.
 > 
-> test_xdp_do_redirect:FAIL:pkt_count_zero unexpected pkt_count_zero:
-> actual 9936 != expected 2
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> ---
+>  .../bpf/prog_tests/local_kptr_stash.c         | 33 +++++++
+>  .../selftests/bpf/progs/local_kptr_stash.c    | 85 +++++++++++++++++++
+>  2 files changed, 118 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/local_kptr_stash.c
 > 
-> see CI results.
-> It's a submitter job to monitor test results.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c b/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
+> new file mode 100644
+> index 000000000000..98353e602741
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
+> @@ -0,0 +1,33 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+> +
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +
+> +#include "local_kptr_stash.skel.h"
+> +static void test_local_kptr_stash_simple(void)
+> +{
+> +	LIBBPF_OPTS(bpf_test_run_opts, opts,
+> +		    .data_in = &pkt_v4,
+> +		    .data_size_in = sizeof(pkt_v4),
+> +		    .repeat = 1,
+> +	);
+> +	struct local_kptr_stash *skel;
+> +	int ret;
+> +
+> +	skel = local_kptr_stash__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "local_kptr_stash__open_and_load"))
+> +		return;
+> +
+> +	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.stash_rb_node), &opts);
+> +	ASSERT_OK(ret, "local_kptr_stash_add_nodes run");
+> +	ASSERT_OK(opts.retval, "local_kptr_stash_add_nodes retval");
+> +
+> +	local_kptr_stash__destroy(skel);
+> +}
+> +
+> +void test_local_kptr_stash_success(void)
+> +{
+> +	if (test__start_subtest("rbtree_add_nodes"))
+> +		test_local_kptr_stash_simple();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash.c b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
+> new file mode 100644
+> index 000000000000..df7b419f3dc3
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
+> @@ -0,0 +1,85 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+> +
+> +#include <vmlinux.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_core_read.h>
+> +#include "bpf_experimental.h"
+> +
+> +struct node_data {
+> +	long key;
+> +	long data;
+> +	struct bpf_rb_node node;
+> +};
+> +
+> +struct map_value {
+> +	struct prog_test_ref_kfunc *not_kptr;
+> +	struct prog_test_ref_kfunc __kptr *val;
+> +	struct node_data __kptr *node;
+> +};
+> +
+> +/* This is necessary so that LLVM generates BTF for node_data struct
+> + * If it's not included, a fwd reference for node_data will be generated but
+> + * no struct. Example BTF of "node" field in map_value when not included:
+> + *
+> + * [10] PTR '(anon)' type_id=35
+> + * [34] FWD 'node_data' fwd_kind=struct
+> + * [35] TYPE_TAG 'kptr_ref' type_id=34
+> + *
+> + * (with no node_data struct defined)
+> + * Had to do the same w/ bpf_kfunc_call_test_release below
+> + */
+> +struct node_data *just_here_because_btf_bug;
+> +
+> +extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
+> +
+> +struct {
+> +        __uint(type, BPF_MAP_TYPE_ARRAY);
+> +        __type(key, int);
+> +        __type(value, struct map_value);
+> +        __uint(max_entries, 1);
+> +} some_nodes SEC(".maps");
+> +
+> +SEC("tc")
+> +long stash_rb_node(void *ctx)
+> +{
+> +	struct map_value *mapval;
+> +	struct node_data *res;
+> +	int key = 0;
+> +
+> +	res = bpf_obj_new(typeof(*res));
+> +	if (!res)
+> +		return 1;
+> +	res->key = 42;
+> +
+> +	mapval = bpf_map_lookup_elem(&some_nodes, &key);
+> +	if (!mapval) {
+> +		bpf_obj_drop(res);
+> +		return 1;
+> +	}
+> +
+> +	res = bpf_kptr_xchg(&mapval->node, res);
+> +	if (res)
+> +		bpf_obj_drop(res);
 
-Yeah I saw it. Just for some reason I thought it's some CI problems,
-like "what could possibly go wrong?" :clownface: Sorry >_<
+May be add another tc prog with 2nd bpf_prog_test_run_opts that does:
+res = bpf_kptr_xchg(&mapval->node, NULL);
+and bpf_obj_drop-s it for real?
 
-The test assumes that only dropped pages get recycled, while this series
-actually implements recycling for redirected ones as well. I'll dig into
-this and adjust it on Monday. The code itself is fine :D
+The first stash_rb_node() can allocate two objs into key=0 and key=1
+the 2nd prog can bpf_kptr_xchg only one of them,
+so we test both dtor on map free and explicit xchg+obj_drop.
 
-Thanks,
-Olek
+wdyt?
