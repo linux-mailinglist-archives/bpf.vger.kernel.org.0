@@ -2,153 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 666AE6B5377
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 22:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7BDE6B5381
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 22:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbjCJVyc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 16:54:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
+        id S232090AbjCJV4i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 16:56:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbjCJVyF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 16:54:05 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4671F13B956;
-        Fri, 10 Mar 2023 13:50:39 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id k10so26029558edk.13;
-        Fri, 10 Mar 2023 13:50:39 -0800 (PST)
+        with ESMTP id S232084AbjCJV4R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 16:56:17 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1C012115E;
+        Fri, 10 Mar 2023 13:52:53 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id n6so7064232plf.5;
+        Fri, 10 Mar 2023 13:52:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678484956;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RoV3PGMyV6NfLVhZbTRmImIRKH3YuVH2//UBu/EBkeo=;
-        b=W9R1mfWb0/925s+VFRjlti8HVHv1zwtbU/bIDxjxLDk2LqStCvhUqVJ8LRxY3jbER7
-         Cqxyu/czJC5731sdFb+BihnAZam6dTIiho8ITsbxCXrJZ+/YKjjK+/c+onLHXVZNaPZr
-         jAy0JBhBZ4Kl/u8uBuleOiClq1xZRrIOsCiGC9Fi/xEEigVFcLv88x8Qt2jiFVGjfnDO
-         hB8225x88+QIn2djeCAixK81Dz3nY4u5znfyHNhvXo6z+TIGMtD38CtGHtGrSt/C2Ruc
-         ms0WsdvTj8sf9lfxr0eVtdBpF/ykoKneHMPdAR95ZW4bCsTTHcYeJNFnQQ/LANws6qnR
-         P5Mw==
+        d=gmail.com; s=20210112; t=1678485142;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pETZAj5VDBvPkB0dnNFpPaZAzmDWUE3HyOC8UG6486I=;
+        b=BcE8zC29FE4ucoAxuYrDJSIUsa/GDWb6ro30pP5GXLlmimrsNkqadlgAyUT44Fnvek
+         Uw0wOh4YoetAjRzWk7Lv1Ef7lxg/Qk2otnAvHUgm5xG64XV++LijUWQzeNdX5W0tBi9k
+         rb681CNRA7q02z+ZOIE3TBBA2mTZ49g94jmjliJkPFTq1KTSCE8nFBWzuQpADrhPQ0KP
+         Fjxb4fI//sEhuqFpnNmizKeTSj8qf5ILvRlB/SUneLbXvIQed8kx5WgBGNC0NXiBOB0c
+         k+w054A4sEySu8v6PPm3VtkEwAPAQfWart/5ysi2pYrSy+p4zCtZ78dPCkYiMNWOQm5w
+         8Asw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678484956;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1678485142;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RoV3PGMyV6NfLVhZbTRmImIRKH3YuVH2//UBu/EBkeo=;
-        b=PC0axxorOYnOIo+mCKEXt8u7s1l4CLVKXt9P8W3hD9WvfH4iiEMjCtfjIioGTMgf2q
-         crCNemDTNhppAK86gxjEa4p7h2KRqHidHF7XCP9mw+FDyO9Z+0mkFdkYfZVI+htghlQQ
-         jECpHO5LrbnPzSPE/0F9WNjNA4hOZOV+a1vPWEUaK7oKJVS+tS0Ebdp8fIoNExnCpe3d
-         rsn0wbbEI7I/mdlnbbVckmNIILTYxSKxoGVeOgMkWncMTu+sNvjlHvf22j+aMwFIRDJh
-         lqPrsXVmYPTwX1IafOYa5meaYnj9LXRKG/X9vdSIflHQrbFwXxd7fd0fUg0NIOXb4Hc5
-         TwXQ==
-X-Gm-Message-State: AO0yUKXt3jkCzzydQvgH8czjnlcX+2xia1NLmB4estM/ah6FeGI8wIiw
-        Zf9CzG/BygTA536TM6ii1OUxwcGk6uhpV7ZOFwwFwb3F8Xo=
-X-Google-Smtp-Source: AK7set/r+8y4v2aT9Vo81gFbH3ZZE/p1ZeEFHpm/ivOsz150OD8iU1bcoIsYDvWGYh1gKqeSRitdVyoPbAWIV9Dzd88=
-X-Received: by 2002:a17:906:5910:b0:8b1:78b8:4207 with SMTP id
- h16-20020a170906591000b008b178b84207mr14168104ejq.3.1678484956094; Fri, 10
- Mar 2023 13:49:16 -0800 (PST)
+        bh=pETZAj5VDBvPkB0dnNFpPaZAzmDWUE3HyOC8UG6486I=;
+        b=z/22Xi+fLTqmCQAOb8lqDtomerc0GPN6YmX4D4H4ftTqPoei1uP4twVVqGjMXGi79D
+         860fb4I+LI3wKd9GIENBAMxYKlG0cWE/1RAeHdl/w1plmZYDC9603tw/e39lnG5jijZR
+         K/MGT5oEScjkEZ1gUa5cbjDZ6oIo/02wCBN8l/1BxsDZMWxR+FYoarJR4KqCqK5UznIZ
+         jFMF7d3PGHgWLHM4UUgKDSTMB6lICPrJjA1WkgBdZom2Nvtkx4o5SPAQVI1k8RvxyZTR
+         qbZKXpS6r1EaXpCX3TBdiR5xQdSbmSQIiaChrR+iafLRBo30IU7h0ZT4ApvM5HNG7tTO
+         Drsg==
+X-Gm-Message-State: AO0yUKUFtVn6DqW4z8BOCspzShOg93HX0Wl6nBKu/c9PpXTGipnhR9Ey
+        WNESmnun++5LGy3TyDMkTue0fqO3y04=
+X-Google-Smtp-Source: AK7set+2KaDA+xbWXSJRMpqyskgCjo29jnRwLsb/oaT5Fa1npZhwXDqaAp7Vl5IC6+KDJDn8BbGmXg==
+X-Received: by 2002:a05:6a20:a121:b0:d3:6238:11c8 with SMTP id q33-20020a056a20a12100b000d3623811c8mr315109pzk.20.1678485141662;
+        Fri, 10 Mar 2023 13:52:21 -0800 (PST)
+Received: from google.com ([2601:647:6780:44b0:e32f:ca65:5413:8ef7])
+        by smtp.gmail.com with ESMTPSA id k10-20020aa790ca000000b005897f5436c0sm253555pfk.118.2023.03.10.13.52.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Mar 2023 13:52:21 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+Date:   Fri, 10 Mar 2023 13:52:18 -0800
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Ravi Bangoria <ravi.bangoria@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC/PATCHSET 0/9] perf record: Implement BPF sample filter (v4)
+Message-ID: <ZAumkq2L2bo8wDCk@google.com>
+References: <20230307233309.3546160-1-namhyung@kernel.org>
+ <9f692bd9-94e4-ee60-2174-561685b9b39a@amd.com>
 MIME-Version: 1.0
-References: <20230301154953.641654-1-joannelkoong@gmail.com>
- <20230301154953.641654-10-joannelkoong@gmail.com> <20230306071006.73t5vtmxrsykw4zu@apollo>
- <CAADnVQJ=wzztviB73jBy3+OYxUKhAX_jTGpS8Xv45vUVTDY-ZA@mail.gmail.com>
- <20230307102233.bemr47x625ity26z@apollo> <CAADnVQ+xOrCSwgxGQXNM5wHfOwV+x0csHfNyDYBHgyGVXgc2Ow@mail.gmail.com>
- <20230307173529.gi2crls7fktn6uox@apollo> <CAEf4Bza4N6XtXERkL+41F+_UsTT=T4B3gt0igP5mVVrzr9abXw@mail.gmail.com>
- <20230310211541.schh7iyrqgbgfaay@macbook-pro-6.dhcp.thefacebook.com> <20230310213839.zsiz7sky7q3zmjcp@apollo>
-In-Reply-To: <20230310213839.zsiz7sky7q3zmjcp@apollo>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 10 Mar 2023 13:49:04 -0800
-Message-ID: <CAADnVQJXwDLNsJ9GW4cZM44=gCsqm_tVkQ+eyaH_vpehNyVzcw@mail.gmail.com>
-Subject: Re: [PATCH v13 bpf-next 09/10] bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9f692bd9-94e4-ee60-2174-561685b9b39a@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 1:38=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Fri, Mar 10, 2023 at 10:15:41PM CET, Alexei Starovoitov wrote:
-> > On Tue, Mar 07, 2023 at 04:01:28PM -0800, Andrii Nakryiko wrote:
-> > > > > >
-> > > > > > I agree this is simpler, but I'm not sure it will work properly=
-. Verifier won't
-> > > > > > know when the lifetime of the buffer ends, so if we disallow sp=
-ills until its
-> > > > > > written over it's going to be a pain for users.
-> > > > > >
-> > > > > > Something like:
-> > > > > >
-> > > > > > for (...) {
-> > > > > >         char buf[64];
-> > > > > >         bpf_dynptr_slice_rdwr(..., buf, 64);
-> > > > > >         ...
-> > > > > > }
-> > > > > >
-> > > > > > .. and then compiler decides to spill something where buf was l=
-ocated on stack
-> > > > > > outside the for loop. The verifier can't know when buf goes out=
- of scope to
-> > > > > > unpoison the slots.
-> > > > >
-> > > > > You're saying the "verifier doesn't know when buf ...".
-> > > > > The same applies to the compiler. It has no visibility
-> > > > > into what bpf_dynptr_slice_rdwr is doing.
-> > > >
-> > > > That is true, it can't assume anything about the side effects. But =
-I am talking
-> > > > about the point in the program when the buffer object no longer liv=
-es. Use of
-> > > > the escaped pointer to such an object any longer is UB. The compile=
-r is well
-> > > > within its rights to reuse its stack storage at that point, includi=
-ng for
-> > > > spilling registers. Which is why "outside the for loop" in my earli=
-er reply.
-> > > >
-> > > > > So it never spills into a declared C array
-> > > > > as I tried to explain in the previous reply.
-> > > > > Spill/fill slots are always invisible to C.
-> > > > > (unless of course you do pointer arithmetic asm style)
-> > > >
-> > > > When the declared array's lifetime ends, it can.
-> > > > https://godbolt.org/z/Ez7v4xfnv
-> > > >
-> > > > The 2nd call to bar as part of unrolled loop happens with fp-8, the=
-n it calls
-> > > > baz, spills r0 to fp-8, and calls bar again with fp-8.
-> >
-> > Right. If user writes such program and does explicit store of spillable
-> > pointer into a stack.
-> > I was talking about compiler generated spill/fill and I still believe
-> > that compiler will not be reusing variable's stack memory for them.
-> >
->
-> But that example on godbolt is about the _compiler_ doing spill into a
-> variable's stack memory, once it is dead. There is no explicit store to s=
-pill
-> from the user happening there.
+Hi Ravi,
 
-Where do you see it?
-It's
-p =3D baz();
-and subsequent &p.
-That is user requested store.
-Your example has other undefined behavior.
-I tweaked it like this for clarity:
-https://godbolt.org/z/qhcKdeWjb
+On Fri, Mar 10, 2023 at 12:10:28PM +0530, Ravi Bangoria wrote:
+> Hi Namhyung,
+> 
+> Sorry, I should have tried earlier prototypes but missed it.
+
+No worries and thanks for your review!
+
+> 
+> > Maybe more useful example is when it deals with precise memory events.
+> > On AMD processors with IBS, you can filter only memory load with L1
+> > dTLB is missed like below.
+> > 
+> >   $ sudo ./perf record -ad -e ibs_op//p \
+> >   > --filter 'mem_op == load, mem_dtlb > l1_hit' sleep 1
+> >   [ perf record: Woken up 1 times to write data ]
+> >   [ perf record: Captured and wrote 1.338 MB perf.data (15 samples) ]
+> 
+> On my zen4 machine:
+> 
+>   $ sudo ./perf record -d -e ibs_op//p --filter 'mem_op == load' -c 100000 ~/test
+>   [ perf record: Woken up 6 times to write data ]
+>   [ perf record: Captured and wrote 1.436 MB perf.data (30966 samples) ]
+> 
+>   $ sudo ./perf mem report -F sample,mem --stdio
+>   #      Samples  Memory access
+>   # ............  ........................
+>            30325  L1 hit
+>              477  Local RAM hit
+>               89  L2 hit
+>               75  L3 hit
+> 
+> This looks good because IBS hw can't filter specific type of instruction
+> and thus unfiltered data will contain "NA" types of memory accesses, which
+> is absent here. So mem_op == load filter seems to be working.
+
+Good!
+
+> 
+> However, if I add "mem_lvl == l1" (or l2 / ram) in the filter, I see mostly
+> all samples are getting lost:
+> 
+>   $ sudo ./perf record -d -e ibs_op//p --filter 'mem_op == load, mem_lvl == l1' -c 100000 ~/test
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 0.019 MB perf.data ]
+> 
+>   $ sudo ./perf report --stat | grep SAMPLE
+>     LOST_SAMPLES events:          1  ( 0.8%)
+>     LOST_SAMPLES events:     136332
+> 
+> What am I missing?
+
+It seems IBS PMU doesn't set the mem_lvlnum field in the data source.
+As I said in the patch 7, 'mem_lvl' actually uses mem_lvlnum fields
+instead of mem_lvl because it's preferred according to the comment in
+the UAPI header.
+
+/*
+ * PERF_MEM_LVL_* namespace being depricated to some extent in the
+ * favour of newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields.
+ * Supporting this namespace inorder to not break defined ABIs.
+ *
+ * memory hierarchy (memory level, hit or miss)
+ */
+
+I'll post a patch to set it separately.
+
+> 
+> 2nd observation, invalid expressions like 'mem_op == load, mem_dtlb == l1'
+> are not failing, instead recording misleading data:
+> 
+>   $ sudo ./perf record -d -e ibs_op//p --filter 'mem_op == load, mem_dtlb == l1' -c 100000 ~/test
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 0.047 MB perf.data (614 samples) ]
+> 
+>   $ sudo ./perf script -F data_src | grep "TLB N/A" | wc -l
+>   614
+ 
+Good point, that's the limitation in the current implementation.
+I think it needs to keep the target sample field along with the
+constant so that it can detect unintended uses.  Let's me think
+about it more.
+
+Thanks,
+Namhyung
