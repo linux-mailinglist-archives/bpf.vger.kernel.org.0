@@ -2,80 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B60E6B4A2F
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 16:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F66E6B4A4D
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 16:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbjCJPUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 10:20:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
+        id S234100AbjCJPVU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 10:21:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234168AbjCJPT0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 10:19:26 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C9C13F56C
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 07:10:09 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id l7-20020a05600c1d0700b003eb5e6d906bso3633871wms.5
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 07:10:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678460949;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CF8ice3JvVbUuoONcaZEn272ZZcq+I9FazBjtU1ZU0U=;
-        b=LQ2lgpQ+WLzNRYYeFNewY1Dx0lW3a9pay1ATBzyIWXwfrFr1uN9gIwqpL6QETXCjBd
-         Omjfr0B6ly1+2msDFwP3/cgBzUxTedrkivF67kAosMTwEbcen6YKu3kok4ZyvYMLIY7f
-         066UxNX+YQPgLs8dcA01aMJ3BYEZc+RP9MS5CpjOMavWjCr8OpJANTRt7lbsVa0XVNb7
-         P+Z3CDGB9kDakdSxxQIUQ1uNutEnVleRTil4sx1kBPZHcWhE/VBw5Fm8dQODoRVmFq6v
-         UD7tmtLJsSIjo2TAIM7S/aC97j84VWHQLW8T9G4RrPWWpXkImYlCLHZPmsOMXd1dZ50T
-         jaQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678460949;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CF8ice3JvVbUuoONcaZEn272ZZcq+I9FazBjtU1ZU0U=;
-        b=WC9ZEbugLEmwaqW6kR7aUCpiehTFB09XxFEQdAhJbhlIac6MU8NDCQX8BnSmltK5h6
-         jIVs8RaoK4E5V6s7t9volz422oyZLFtEXX68KXRhuj5pS023RC+ZgfVxfym8x/DVD6mD
-         b/9l+0kzqR8GR3wNjRyzF3ElEwGVBKBN2ySPMGv3EGIc1dRJKRcHMJOpqub27KQRS9Wx
-         EAVddUk/M1cvZ+eSHZxx38I8n/OEnXRFTZ2M+VJmeEZxLhrBI7uNFLHRiq12vl9us3p+
-         PlvVVq94uRkdhcW4Lm5J+biEhcMAki5sZfUt8TeAZ34dxidNA5HX3aqOEWc7+NoBWrUN
-         Knng==
-X-Gm-Message-State: AO0yUKUYV6QXTR/31SbAKwsYvPft32TqwLNz7kHEfXSil2eevFfqb6hV
-        m1jhj365fiBj12eiRVh+/ORmsZ41cz25TQ==
-X-Google-Smtp-Source: AK7set8IuaQdKCZ3RyJ5+slpUOEW2XaZILuiFdobU5CVABJilKlqBNvkvuCQbHXql5IOA+7cbrUYjg==
-X-Received: by 2002:a05:600c:a41:b0:3eb:9822:f0 with SMTP id c1-20020a05600c0a4100b003eb982200f0mr2932598wmq.30.1678460948821;
-        Fri, 10 Mar 2023 07:09:08 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id bg16-20020a05600c3c9000b003e9ded91c27sm289007wmb.4.2023.03.10.07.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Mar 2023 07:09:08 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 10 Mar 2023 16:09:06 +0100
+        with ESMTP id S234191AbjCJPU4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 10:20:56 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C064022117
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 07:11:33 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 95075CE28EA
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 15:10:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9906C4339E;
+        Fri, 10 Mar 2023 15:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678461016;
+        bh=UtnE+2rYasr4unRkZ0We2Du+MBME5ifbkgCrSdyf+JM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=m/80yFCfSJb1Nl2hvZvqAaQH+4qCLIh4cwuyEl+AFcgiPBiByVfXCkbUWB+UJKuUn
+         iWMVsC+WbJGvsfwiwbXkcL0zw7CWon2hMVyoUWlvPfyKyTDrjJ68kiCdl8SplOuLkC
+         kKRgJ+6JMUt8PTxJ/uKzM5DNzOvQnYIUYsBo02lHKuaP3ToTd6ZiNd8uRqfBZ3ArWm
+         FLbX5oz8bQHa9eZv45zuv28l/bO3pxEYnDjdVaLymxj7sq8KFbjgBxqU0E3WA64nLt
+         pq8Zl/Kksf7RVwkifPV4zeJboh1uWjGnaHnz4JcvUH6vgL/0nez0w6ySNwaGTbu8wO
+         7LHHDd+xVtwEw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3D66D4049F; Fri, 10 Mar 2023 12:10:14 -0300 (-03)
+Date:   Fri, 10 Mar 2023 12:10:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, acme@kernel.org, ast@kernel.org,
+Cc:     Jiri Olsa <olsajiri@gmail.com>, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
         song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
         kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
         bpf@vger.kernel.org
 Subject: Re: [RFC dwarves] syscall functions in BTF
-Message-ID: <ZAtIEmbRSjol/XfK@krava>
-References: <ZAsBYpsBV0wvkhh0@krava>
- <faf34d4b-d7a3-2573-383b-2bd8db422734@oracle.com>
+Message-ID: <ZAtGsuSO6Jx2ZLBy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <faf34d4b-d7a3-2573-383b-2bd8db422734@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 12:43:31PM +0000, Alan Maguire wrote:
+Em Fri, Mar 10, 2023 at 12:43:31PM +0000, Alan Maguire escreveu:
 > On 10/03/2023 10:07, Jiri Olsa wrote:
 > > hi,
 > > with latest pahole fixes we get rid of some syscall functions (with
@@ -102,14 +83,26 @@ On Fri, Mar 10, 2023 at 12:43:31PM +0000, Alan Maguire wrote:
 > >   I guess there will be more cases like this in kernel
 > > 
 > >
-> 
+ 
 > Thanks for the report Jiri! I'm working on reusing the dwarves_fprintf.c
 > code to use string comparisons of function prototypes (minus parameter names!)
 > instead as a more robust comparison.  Hope to have something working soon..
 
-great, I saw the patchset, will check
+Humm, that could be an option, a simple strcmp after snprintf'ing the
+function prototype, but there is also the type__compare_members_types()
+approach, used to order types in pahole, the same could be done for
+function prototypes?
 
->  
+I.e. to compare a function prototype for functions with the same name we
+would check its return value type, the number of arguments and then each
+of the arguments, continuing to consider the names as an heuristic that
+functions with all being so far equal having different argument names
+may indicate different functions, but if there is no name in both
+functions, look at its type instead, where we then would use
+type__compare_members_types() for structs/unions?
+
+- Arnaldo
+  
 > > - we also do not get any syscall with no arguments, because they are
 > >   generated as aliases to __do_<syscall> function:
 > > 
@@ -132,9 +125,46 @@ great, I saw the patchset, will check
 > > 
 > 
 > Is this one a new issue, or did you just spot it when looking at the other case?
+> 
+> Thanks!
+> 
+> Alan
+> 
+> >   technically we can always connect to __do_sys_fork, but we'd need to
+> >   have special cases for such syscalls.. would be great to have all with
+> >   '__x64_sys_' prefix
+> > 
+> > 
+> > thoughts?
+> > 
+> > thanks,
+> > jirka
+> > 
+> > 
+> > ---
+> > diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+> > index fd2669b1cb2d..e02dab630577 100644
+> > --- a/arch/x86/include/asm/syscall_wrapper.h
+> > +++ b/arch/x86/include/asm/syscall_wrapper.h
+> > @@ -80,8 +80,8 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+> >  	}
+> >  
+> >  #define __COND_SYSCALL(abi, name)					\
+> > -	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
+> > -	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
+> > +	__weak long __##abi##_##name(const struct pt_regs *regs);	\
+> > +	__weak long __##abi##_##name(const struct pt_regs *regs)	\
+> >  	{								\
+> >  		return sys_ni_syscall();				\
+> >  	}
+> > 
 
-I was trying to attach to all syscalls and noticed some where missing,
-it looks like the alias was used in this place for few years
+-- 
 
-thanks,
-jirka
+- Arnaldo
+
+----- End forwarded message -----
+
+-- 
+
+- Arnaldo
