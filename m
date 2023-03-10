@@ -2,91 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D58E16B4CF3
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 17:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0946B4CD1
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 17:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbjCJQ3K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 11:29:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
+        id S229469AbjCJQ0T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 11:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbjCJQ2s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 11:28:48 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC8612B3FB
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 08:25:22 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B05AFB82342
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 16:20:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 51BD5C4339B;
-        Fri, 10 Mar 2023 16:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678465219;
-        bh=8t41AbpKwADZz5hBTm6hYwf4m//jGoYBZeIrke39k5s=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ad0fGzDnbzfyBl4RSiAEtCXxXfyQfIvteBxxhD3Qy6deWn3KPPoumsCjxnbGqsGKa
-         KX9Sq8mOvCNEUH+7KhRS7o87KnehoTVejZBbC6a9SBcy+QqAQ6vcSb5Zb4cfkX9lHN
-         1vXhq5uN9yjpgd+nALFfA2Gpn41CtZ3s1qMf+POecly1xm/22uD7c2pqX5p+aswF1v
-         5JYcnYiToRb04/3DhBkS8RxGKw4sHYc93q7nwOYsklCYq4qc3bYe11rIFxzQ88pTHk
-         BXakaEcv824T47SViA3A0xBKpkIZhVaaDfoY0feps2vRDS/NkFfAK3hMaUdHXA9AEy
-         m0k5Q5tHxxUlA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 37198E21EEB;
-        Fri, 10 Mar 2023 16:20:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231599AbjCJQ0F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 11:26:05 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2272AAD25
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 08:22:31 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id i5so6144746pla.2
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 08:22:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1678465342;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a1xKJv7I43t6QQTItfrGRf70Ny8ji2NWl1/miCvddqg=;
+        b=OCevYKE85PtLl+hcvLgkZwQ3myHlzDiEeMuoDh23Zzra4od6divy+o1JQQWdUhuk9A
+         o4/mgex6y9FDuZP3YNRgPHvXlyeMxVZl9OubIvYXQvW78EvctrppmPeakW5g8LZ61vjI
+         vWlBHtkqDhwJ/7KPaoyQ/JAsJhJk5BvulX6le0dXxyrKDw/5ho2SkEydVEBrLfOMYdN4
+         Zl/piiv2GK4Ycw+i0t34hH41UELJkzVOJ+aB3MTTnOaYrocKdG7AhEhhFCM0UJFBoPWD
+         IRUc8VGFMj9wnEVSfLtr5OG1mz/vRgfCXsWz0dgx+voqI/DjOmVSO7IcTRjwKyneN0xe
+         iHfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678465342;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a1xKJv7I43t6QQTItfrGRf70Ny8ji2NWl1/miCvddqg=;
+        b=BB/cQaUb8BdmwzUXRiR58J9y2wooAfRCeW5g79l/eLs8oR4fhf5gdByatqmKQQQzNz
+         7T2Q1WkxZ9/GqvB5zDsjSaDhv3U4bEyW8HBCDB9vHC/B3ICBba0AFLJTg/m0h4OoZMUt
+         XH3jR4vI0nO9DPwWXY3CEVBXa9JPfeaUuD+mGNn70utTMN7TSmNCYsO4ssZCtbjgY94i
+         7aAu9NUz+Hf9r0C7GSgVrI8t1dDDUSplnnaTzvyvUVhKqNc0+o3lLzVv0dYs5etyhQun
+         OTl77FjJAngOBb7jplXzZIv0e79BqSWObkAv53Z5f9MZpBzR+vx4zOH1IQzh/tPFXhW9
+         mTnw==
+X-Gm-Message-State: AO0yUKW+K2FPABVGYy7FXXfvrCo/zWISpAd9O+kR3L49loiIMdMo83ld
+        bN7jnk8NH1QCMS0hLOB+BugKAldS3JO6pfcrdV6f
+X-Google-Smtp-Source: AK7set9wiX9m/wyVQBYpK751vhyyv8tPww9RBQvJarvcNt2JTkPo0CSGYU9kGj441+l+YuH9JiTiVzuzQQpKcYNdobY=
+X-Received: by 2002:a17:90a:dc0d:b0:235:1fb7:393c with SMTP id
+ i13-20020a17090adc0d00b002351fb7393cmr1121568pjv.1.1678465342401; Fri, 10 Mar
+ 2023 08:22:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: make BPF_CFLAGS stricter with
- -Wall
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167846521921.31037.14904429312826497813.git-patchwork-notify@kernel.org>
-Date:   Fri, 10 Mar 2023 16:20:19 +0000
-References: <20230309054015.4068562-1-andrii@kernel.org>
-In-Reply-To: <20230309054015.4068562-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@meta.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230309085433.1810314-1-roberto.sassu@huaweicloud.com>
+ <20230309085433.1810314-2-roberto.sassu@huaweicloud.com> <397cb437bbd41e7eb223a07bc92a10bb57df696e.camel@linux.ibm.com>
+ <CAHC9VhTt7xZqkfZQsWVLRHzza_9idzxkY7bXxzBMq=Xxfc6+Cg@mail.gmail.com> <3c2ad86758d13939afa9dceaab87fee2ded8201f.camel@linux.ibm.com>
+In-Reply-To: <3c2ad86758d13939afa9dceaab87fee2ded8201f.camel@linux.ibm.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 10 Mar 2023 11:22:11 -0500
+Message-ID: <CAHC9VhQ80t8z79iYaY8xpoiQ5fTURoesaau+5r0bCXZrsO5GUQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] security: Introduce LSM_ORDER_LAST and set it for
+ the integrity LSM
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        mic@digikod.net, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keescook@chromium.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Mar 10, 2023 at 8:39=E2=80=AFAM Mimi Zohar <zohar@linux.ibm.com> wr=
+ote:
+> On Thu, 2023-03-09 at 17:04 -0500, Paul Moore wrote:
+> > On Thu, Mar 9, 2023 at 8:21=E2=80=AFAM Mimi Zohar <zohar@linux.ibm.com>=
+ wrote:
+> > > On Thu, 2023-03-09 at 09:54 +0100, Roberto Sassu wrote:
+> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > >
+> > > > Introduce LSM_ORDER_LAST, to satisfy the requirement of LSMs needin=
+g to be
+> > > > last, e.g. the 'integrity' LSM, without changing the kernel command=
+ line or
+> > > > configuration.
+> > > >
+> > > > Also, set this order for the 'integrity' LSM. While not enforced, t=
+his is
+> > > > the only LSM expected to use it.
+> > > >
+> > > > Similarly to LSM_ORDER_FIRST, LSMs with LSM_ORDER_LAST are always e=
+nabled
+> > > > and put at the end of the LSM list.
+> > > >
+> > > > Finally, for LSM_ORDER_MUTABLE LSMs, set the found variable to true=
+ if an
+> > > > LSM is found, regardless of its order. In this way, the kernel woul=
+d not
+> > > > wrongly report that the LSM is not built-in in the kernel if its or=
+der is
+> > > > LSM_ORDER_LAST.
+> > > >
+> > > > Fixes: 79f7865d844c ("LSM: Introduce "lsm=3D" for boottime LSM sele=
+ction")
+> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > >
+> > > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+> >
+> > Warning: procedural nitpicking ahead ...
+> >
+> > The 'Signed-off-by' tag is in reference to the DCO, which makes sense
+> > to add if you are a patch author or are merging a patch into a tree,
+> > but it doesn't make much sense as a ACK/thumbs-up; this is why we have
+> > the 'Acked-by' and 'Reviewed-by' tags.  I generally read the
+> > 'Acked-by' tag as "I'm the one responsible for a chunk of code
+> > affected by this patch and I'm okay with this change" and the
+> > 'Reviewed-by' tag as "I looked at this patch and it looks like a good
+> > change to me".  Perhaps surprisingly to some, while an 'Acked-by' is a
+> > requirement for merging in a lot of cases, I appreciate 'Reviewed-by'
+> > tags much more as it indicates the patch is getting some third-part
+> > eyeballs on it ... so all you lurkers on this list, if you're
+> > reviewing patches as they hit your inbox, don't be shy about posting
+> > your 'Reviewed-by' tag if your comfortable doing so, we all welcome
+> > the help :)
+> >
+> > https://www.kernel.org/doc/html/latest/process/submitting-patches.html#=
+sign-your-work-the-developer-s-certificate-of-origin
+>
+> In this case, it was a bit unclear who actually was going to upstream
+> this patch set.
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+FWIW, I wasn't expecting to see your sign-off without a note that you
+had merged it.  Normally I would have expected either an acked-by or a
+note that you had merged it, a sign-off without a merge notice seemed
+a little odd to me so I thought I would mention the above :)  No harm
+either way, I just figured a little discussion on process might not be
+a terrible idea to make sure we are all on the same page.
 
-On Wed, 8 Mar 2023 21:40:11 -0800 you wrote:
-> Make BPF-side compiler flags stricter by adding -Wall. Fix tons of small
-> issues pointed out by compiler immediately after that. That includes newly
-> added bpf_for(), bpf_for_each(), and bpf_repeat() macros.
-> 
-> Andrii Nakryiko (4):
->   selftests/bpf: prevent unused variable warning in bpf_for()
->   selftests/bpf: add __sink() macro to fake variable consumption
->   selftests/bpf: fix lots of silly mistakes pointed out by compiler
->   selftests/bpf: make BPF compiler flags stricter
-> 
-> [...]
+> It's better that you upstream it,  but since this
+> affects subsequent IMA and EVM patches, please create a topic branch.
 
-Here is the summary with links:
-  - [bpf-next,1/4] selftests/bpf: prevent unused variable warning in bpf_for()
-    https://git.kernel.org/bpf/bpf-next/c/2498e6231bfd
-  - [bpf-next,2/4] selftests/bpf: add __sink() macro to fake variable consumption
-    https://git.kernel.org/bpf/bpf-next/c/713461b895ef
-  - [bpf-next,3/4] selftests/bpf: fix lots of silly mistakes pointed out by compiler
-    https://git.kernel.org/bpf/bpf-next/c/c8ed66859397
-  - [bpf-next,4/4] selftests/bpf: make BPF compiler flags stricter
-    https://git.kernel.org/bpf/bpf-next/c/3d5a55ddc255
+I generally don't do topic branches for work that has been merged into
+a -next or -stable branch. I prefer to limit topic branches to
+special-cases where there is some value in keeping a central branch
+for multiple people to coordinate while the patchset is still in
+development; once a patchset has progressed far enough to be merged
+into a -stable or -next branch I stop maintaining the topic branch.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+In this particular case the changes to the IMA/EVM code looked very
+minor, so I doubt there would be a significant merge conflict with the
+IMA/EVM tree during this development cycle, but if you would prefer to
+take this patchset via the IMA/EVM tree that is okay with me; just let
+me know so I can ACK the two LSM-related patches (I'm going to review
+the latest posting today).
 
+As a bit of an aside, while this doesn't cover topic branches (once
+again, I consider those special cases), when managing the LSM tree I
+follow the process that is documented here:
 
+https://github.com/LinuxSecurityModule/kernel/blob/main/README.md
+
+[NOTE: the above GH repo is a read-only mirror of the canonical LSM
+kernel.org repo, it just happens that GH does a better job rendering
+txt]
+
+The main LSM repo process "docs" / pointers can be found in the main
+README or "about" page:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git/about
+
+If people have suggestions for a different approach to managing the
+LSM tree I'm always open to discussion.
+
+--=20
+paul-moore.com
