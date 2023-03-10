@@ -2,108 +2,246 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E236B3974
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 10:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8808E6B39E7
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 10:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbjCJJBp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 04:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58756 "EHLO
+        id S229997AbjCJJPM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 04:15:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbjCJJA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 04:00:57 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8DB10E278;
-        Fri, 10 Mar 2023 00:54:55 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4PY0593rGsz9v7H9;
-        Fri, 10 Mar 2023 16:46:05 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwDnbmUy8ApkK+yFAQ--.17497S5;
-        Fri, 10 Mar 2023 09:54:37 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        mic@digikod.net
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v4 3/3] security: Remove integrity from the LSM list in Kconfig
-Date:   Fri, 10 Mar 2023 09:54:01 +0100
-Message-Id: <20230310085401.1964889-4-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230310085401.1964889-1-roberto.sassu@huaweicloud.com>
-References: <20230310085401.1964889-1-roberto.sassu@huaweicloud.com>
+        with ESMTP id S230296AbjCJJOO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 04:14:14 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67669D1AD2;
+        Fri, 10 Mar 2023 01:09:23 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id t25-20020a1c7719000000b003eb052cc5ccso5473884wmi.4;
+        Fri, 10 Mar 2023 01:09:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678439362;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/UTh6kAyCKG6AZ+y68ZyBnqZnlhdEQTeB5V0SbFr7TA=;
+        b=ANgE7fCJ4StvLJ7eCNORUzR/dzSDuvrawlpZoNhZ+muiMHn6reTH0SD8FiVAsmC6Bj
+         69tesI0H5xjgLofxTgQPa3PPB+gudfNcKFpzPBihbucHikLC0T0krH9/kVM7z4e3qlGg
+         Hg3m3MlR/WPryKE6DbJLuDHWnIQV8pipjlcCmTHFX15ELAm1mvR5AIqHNlUF5ax4usI1
+         gk+KqxF10cBuNOUTF3pbkWzXFpbl4zq9BelOKREcgVL+OS2wMphJpFVyeCyExjAVNT+G
+         04mdW/WVvZQ9tz8eaAZ4RDcCbBvvk/kpRkYjuLdcnHV9uSgbqGc9tmcLdXZriotuxAtZ
+         KKVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678439362;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/UTh6kAyCKG6AZ+y68ZyBnqZnlhdEQTeB5V0SbFr7TA=;
+        b=1VSvO4cX3FrH46z+YmCkbOwgcJaXZqn68YHN7oRsT/IZrkvD8/PD4Lk2LmCTxVOhiP
+         vbVdXDs3vgHuO/Y0oWETi5FekL2fxTIOVJTdPqGddgwqFfT6YBG1NLpOJDuJtZvqAUvL
+         g+UdJuNRSJbjafYZJpXvMzZJfJuttOABb4plsUB+n9v2GKvx1dCJeeEogCvgxW1Qqxiv
+         eaFIWaygmOciSCL9rpRPtTdHOaochrQBww1QiEz8j+MJDoY7pEPUKA7okOwFfOgLWVq/
+         nZyA4Oj/Xk9mn4zeAJgOz1AtQ881PJyap87uSQt0aIGJEVZmblr+zpwrY1xQTjIwc/8e
+         TpVg==
+X-Gm-Message-State: AO0yUKVt7Yw4TEnWNniFUKaCG6EJTi0p9cWPReIyLJ1xCd0cU98sfz7w
+        Z1JJxFspcPtPOkbbzf54Mfc=
+X-Google-Smtp-Source: AK7set8Z7FBgGiZrIwOZC+VIZ+uHMMzNIkO3id365fsicLezhFCLrErwVqS51FXqWy6nPSnNqLJ2Tw==
+X-Received: by 2002:a1c:770b:0:b0:3e9:b2f2:27a9 with SMTP id t11-20020a1c770b000000b003e9b2f227a9mr1941366wmi.14.1678439361562;
+        Fri, 10 Mar 2023 01:09:21 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-8b88-53b7-c55c-8535.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:8b88:53b7:c55c:8535])
+        by smtp.gmail.com with ESMTPSA id n22-20020a7bc5d6000000b003eaf666cbe0sm1502073wmk.27.2023.03.10.01.09.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Mar 2023 01:09:21 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 10 Mar 2023 10:09:18 +0100
+To:     Ian Rogers <irogers@google.com>,
+        "Justin M. Forbes" <jforbes@fedoraproject.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andres Freund <andres@anarazel.de>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Christy Lee <christylee@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Guilherme Amadio <amadio@gentoo.org>
+Subject: Re: [PATCH v2 0/3] Assume libbpf 1.0+
+Message-ID: <ZArzvpnRyJatVSHR@krava>
+References: <20230116010115.490713-1-irogers@google.com>
+ <CAP-5=fVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39dywaLxrO4Hpg@mail.gmail.com>
+ <Y8mAuDvs566zwG67@kernel.org>
+ <Y8myfqy5EMit3Kr/@krava>
+ <CAP-5=fUugnKd=pGpZve7tKThhM5b0AqGMnuiELF+fZQw-xJz9w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwDnbmUy8ApkK+yFAQ--.17497S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFykCF13uw4rJw4xWr18Grg_yoW8Kr1fpF
-        srKay7trnrZFyF9r4DWrnxCFyxC3s5Wr98Cay3WF4DKa43Aa4qqrsrKr15CFy5Wrs7AFZ8
-        Gryagw1a93ZFgFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
-        JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-        0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-        JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAMBF1jj4ZsBQABsV
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAP-5=fUugnKd=pGpZve7tKThhM5b0AqGMnuiELF+fZQw-xJz9w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+On Wed, Mar 08, 2023 at 06:13:34PM -0800, Ian Rogers wrote:
+> On Thu, Jan 19, 2023 at 1:13 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Thu, Jan 19, 2023 at 02:41:12PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Thu, Jan 19, 2023 at 09:11:03AM -0800, Ian Rogers escreveu:
+> > > > On Sun, Jan 15, 2023 at 5:01 PM Ian Rogers <irogers@google.com> wrote:
+> > > > > libbpf 1.0 was a major change in API. Perf has partially supported
+> > > > > older libbpf's but an implementation may be:
+> > > > > ..
+> > > > >        pr_err("%s: not support, update libbpf\n", __func__);
+> > > > >        return -ENOTSUP;
+> > > > > ..
+> > > > >
+> > > > > Rather than build a binary that would fail at runtime it is
+> > > > > preferrential just to build libbpf statically and link against
+> > > > > that. The static version is in the kernel tools tree and newer than
+> > > > > 1.0.
+> > > > >
+> > > > > These patches change the libbpf test to only pass when at least
+> > > > > version 1.0 is installed, then remove the conditional build and
+> > > > > feature logic.
+> > > > >
+> > > > > The issue is discussed here:
+> > > > > https://lore.kernel.org/lkml/20230106151320.619514-1-irogers@google.com/
+> > > > > perf bpf:
+> > > > >
+> > > > > A variant of this fix was added to Linux 6.2 in:
+> > > > > "perf bpf: Avoid build breakage with libbpf < 0.8.0 + LIBBPF_DYNAMIC=1"
+> > > > > https://lore.kernel.org/lkml/Y71+eh00Ju7WeEFX@kernel.org/
+> > > > > This change goes further in removing logic that is now no longer
+> > > > > necessary.
+> > > > >
+> > > > > v2. Rebase now that breakage fix patch is in linus/master.
+> > > >
+> > > > I missed the:
+> > > > Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
+> > > > I believe we are waiting for package maintainer input.
+> > >
+> > > Yes, as fedora:37 still is at libbpf 0.8.0 :-\
+> >
+> > rawhide (f38) is already on 1.1.0 ... I'll check how bad it'd be to move
+> > f37 to 1.x, but I had to do bulk update of like 10 other dependent packages
+> > for f38, so not sure how bad it'd be for f37
+> >
+> > jirka
+> 
+> +Guilherme
+> 
+> We were looking for maintainer input on these changes, but there is no
+> update in over a month. Here is the original lore link:
+> https://lore.kernel.org/lkml/CAP-5=fVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39dywaLxrO4Hpg@mail.gmail.com/
+> Should these changes land in perf-tools-next targeting Linux 6.4?
 
-Remove 'integrity' from the list of LSMs in Kconfig, as it is no longer
-necessary. Since the recent change (set order to LSM_ORDER_LAST), the
-'integrity' LSM is always enabled (if selected in the kernel
-configuration).
+ugh, I did not include Justin :-\ sry
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- security/Kconfig | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+Justin,
+we are trying to move perf to use libbpf 1.0 only, which is fine for fedora 38,
+but fedora 37 is still on libbpf 0.8 (and it's not easy to do the bulk update)
 
-diff --git a/security/Kconfig b/security/Kconfig
-index e6db09a779b..1699dda6821 100644
---- a/security/Kconfig
-+++ b/security/Kconfig
-@@ -246,15 +246,17 @@ endchoice
- 
- config LSM
- 	string "Ordered list of enabled LSMs"
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,bpf" if DEFAULT_SECURITY_DAC
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
-+	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
-+	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
-+	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
-+	default "landlock,lockdown,yama,loadpin,safesetid,bpf" if DEFAULT_SECURITY_DAC
-+	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf"
- 	help
- 	  A comma-separated list of LSMs, in initialization order.
--	  Any LSMs left off this list will be ignored. This can be
--	  controlled at boot with the "lsm=" parameter.
-+	  Any LSMs left off this list, except for those with order
-+	  LSM_ORDER_FIRST and LSM_ORDER_LAST, which are always enabled
-+	  if selected in the kernel configuration, will be ignored.
-+	  This can be controlled at boot with the "lsm=" parameter.
- 
- 	  If unsure, leave this as the default.
- 
--- 
-2.25.1
+would fedora 37 even get to sync 6.4 kernel/kernel-tools?
 
+thanks,
+jirka
+
+> 
+> Thanks,
+> Ian
+> 
+> > >
+> > > This is what I have in the containers I test, sure, the older ones
+> > > already have NO_LIBBPF=1 and some will get this added, and some I still
+> > > need to ask for libbpf-devel (or the distro specific name, like
+> > > libbpf-dev):
+> > >
+> > > [perfbuilder@five ~]$ podman images --format "{{.Repository}}:{{.Tag}}" | grep /acmel/ | grep -v '<none>' | sort -t: -Vk1,2 | grep -v -- -x- | while read image ; do echo -n $image: ; libbpf=$(podman run --rm -t --entrypoint=ls $image -la /usr/lib64/libbpf.so.1) ; echo $libbpf ; done
+> > > localhost/acmel/linux-perf-tools-build-almalinux:8:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-almalinux:9:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alpine:3.12:ls: /usr/lib64/libbpf.so.1: No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alpine:3.13:ls: /usr/lib64/libbpf.so.1: No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alpine:3.14:ls: /usr/lib64/libbpf.so.1: No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alpine:3.15:ls: /usr/lib64/libbpf.so.1: No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alpine:3.16:ls: /usr/lib64/libbpf.so.1: No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alpine:3.17:ls: /usr/lib64/libbpf.so.1: No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alpine:edge:ls: /usr/lib64/libbpf.so.1: No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alt:p9:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alt:p10:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-alt:sisyphus:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-amazonlinux:2:ls: cannot access /usr/lib64/libbpf.so.1: No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-amazonlinux:devel:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-archlinux:base:lrwxrwxrwx 1 root root 15 Oct 1 12:32 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.1
+> > > localhost/acmel/linux-perf-tools-build-centos:8:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-centos:stream:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-clearlinux:latest:lrwxrwxrwx 1 root root 15 Sep 30 16:01 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.1
+> > > localhost/acmel/linux-perf-tools-build-debian:10:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-debian:11:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-debian:experimental:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:26:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:27:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:28:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:29:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:30:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:31:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:32:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:33:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:34:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:35:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:36:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:37:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-fedora:38:lrwxrwxrwx. 1 root root 15 Dec 20 14:39 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.0
+> > > localhost/acmel/linux-perf-tools-build-fedora:rawhide:lrwxrwxrwx. 1 root root 15 Dec 20 14:39 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.0
+> > > localhost/acmel/linux-perf-tools-build-gentoo-stage3:latest:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-manjaro:base:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-opensuse:15.0:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-opensuse:15.1:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-opensuse:15.2:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-opensuse:15.3:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-opensuse:15.4:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-opensuse:15.5:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-opensuse:tumbleweed:lrwxrwxrwx. 1 root root 15 Nov 9 12:08 /usr/lib64/libbpf.so.1 -> libbpf.so.1.0.1
+> > > localhost/acmel/linux-perf-tools-build-oraclelinux:8:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-oraclelinux:9:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-rockylinux:8:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-rockylinux:9:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-ubuntu:18.04:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-ubuntu:20.04:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-ubuntu:21.04:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-ubuntu:21.10:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-ubuntu:22.04:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-ubuntu:22.10:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > localhost/acmel/linux-perf-tools-build-ubuntu:23.04:ls: cannot access '/usr/lib64/libbpf.so.1': No such file or directory
+> > > [perfbuilder@five ~]$
+> > >
+> > > [perfbuilder@five linux-perf-tools-build]$ grep libbpf-dev */*/Dockerfile
+> > > debian/experimental/Dockerfile:       libbpf-dev \
+> > > fedora/35/Dockerfile:            libtraceevent-devel libbpf-devel \
+> > > fedora/36/Dockerfile:            libtraceevent-devel libbpf-devel \
+> > > fedora/37/Dockerfile:            libtraceevent-devel libbpf-devel \
+> > > fedora/38/Dockerfile:            libtraceevent-devel libbpf-devel \
+> > > fedora/rawhide/Dockerfile:    libtraceevent-devel libbpf-devel \
+> > > opensuse/tumbleweed/Dockerfile:       libbpf-devel libtraceevent-devel \
+> > > ubuntu/22.04/Dockerfile:      libelf-dev libiberty-dev libdw-dev libaudit-dev libtraceevent-dev libbpf-dev \
+> > > ubuntu/22.10/Dockerfile:      libelf-dev libiberty-dev libdw-dev libaudit-dev libtraceevent-dev libbpf-dev \
+> > > ubuntu/23.04/Dockerfile:      libelf-dev libiberty-dev libdw-dev libaudit-dev libtraceevent-dev libbpf-dev \
+> > > [perfbuilder@five linux-perf-tools-build]$
+> > >
+> > > In some cases it gets dragged on differently, like with clearlinux,
+> > > gentoo, archlinux, etc.
+> > >
+> > > Anyway, just a data point, I'll check if I'm missing installing it
+> > > somewhere.
+> > >
+> > > - Arnaldo
