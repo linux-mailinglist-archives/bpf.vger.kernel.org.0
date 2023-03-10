@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 610046B53DA
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 23:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235DA6B5489
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 23:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbjCJWIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 17:08:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
+        id S231540AbjCJWgr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 17:36:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbjCJWHv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 17:07:51 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C3520A37
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 14:06:36 -0800 (PST)
+        with ESMTP id S231513AbjCJWg0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 17:36:26 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB98125D8B
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 14:35:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 611BEB8240F
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 22:06:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23CCBC433A7
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 22:06:32 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 5C846CE2977
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 22:35:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88CB0C433A0
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 22:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678485992;
-        bh=N9aHt9sxD+NNlh7IW6KfQ3IxapaUbKGJbqaYoa8yrcM=;
+        s=k20201202; t=1678487727;
+        bh=usvplWCLhQjy8vPe9zko5TmX1jgzJrG8K0axsFi3i6w=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RCCxkqU8YZ6hS/jMFoVCDR4Zn2NDpsXhdyJ4ilFe8r/gEacLYvpkfvLVyiy1NIoZD
-         uQQ0kXbhobIUWP8WXRmX4Gu8sPOE1twIqu8xQ2LzCaGA7GINkeI3WKxb7jYNmlED9Y
-         6OwDOUiHsAqh0ccFVaa5UwK5iOHNA21CNoQLsf09PKiEvaeIvoeMIcOVB95RdT99/T
-         wdfmqzYQzV8pi05qa9/PEobvJJcTKh3PIYu/mdPWeFdZdMsZU4nDBpsyhM1QSWO4/d
-         v8eBtt4tDtACFjmgP9ZAQn9qBQRsy6HW6ruWeNs8XA+Grnyxw6YM7vc6Em2nW3eaSg
-         0VtQTVjahzARw==
-Received: by mail-lj1-f178.google.com with SMTP id h9so6843936ljq.2
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 14:06:32 -0800 (PST)
-X-Gm-Message-State: AO0yUKU8DF1RDdOUAcN5Oh6KVseDkBB09ziRgk75iF3ZzGQ6x2AAwz1X
-        Ex5ezufWfi15uCFDaHi0/1uWvBbhjuHAGOjD3SU=
-X-Google-Smtp-Source: AK7set8CSSl6Jn60lqJ3BwRCi1XAuwD9uNxFpvCfRGoNCsAfjI4WNjPTLPj8UV4+BLLitZF/4q2nQ1s1uHeqdl3lfrU=
-X-Received: by 2002:a05:651c:124e:b0:295:c458:da98 with SMTP id
- h14-20020a05651c124e00b00295c458da98mr8444428ljh.5.1678485990139; Fri, 10 Mar
- 2023 14:06:30 -0800 (PST)
+        b=pH2oR/LoStb9DOpSs9hwzrk2Dtup0SdtxFj9Vn2QZrODW0bQZcPTZsOMRKa0WUT/s
+         eVNxygZ5dK7aJzOptbc85r1Z8aP0cBHAPf842rW2FVmVJHGKihvmfzw12VcF3PF8Pd
+         yxDKQDdrWe2MuHIS2h22nrMdMIlOSF5QIKiIzsYwI+83m5497gEUiNIIQQlofKnIck
+         OHdp3AYBkosZ0RD9Dx7qOe97gQYgTYTjBmZXHwSTHo8CnK1UXNNrTFVIKjAJRztMr5
+         wkKuSMqOBg6HtscdSchA+nlT3UGSqJx8i+Sxk4q3LAdKjHmXb4R4HCRW0MejRaWgRx
+         Ys3P1tU1OqJwQ==
+Received: by mail-lf1-f52.google.com with SMTP id s22so8567470lfi.9
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 14:35:27 -0800 (PST)
+X-Gm-Message-State: AO0yUKVLzym6saAinDl5WDLPbsBB3RYhN5/Zu5J+y5G0/SP8tEoWSK5o
+        KAYxEOcLMQhG4z8PBp2SXC4mR95DtuJKQhufQq8=
+X-Google-Smtp-Source: AK7set+2gV8Y7Iqu2I0fKF9/RF1+QhuGz7Oe+KTlnvu6nEkG6OGIndksZJ42XN3PUKHnF/5a+cygx4+eHEwHU72Zro0=
+X-Received: by 2002:a05:6512:68:b0:4dd:a4e1:4861 with SMTP id
+ i8-20020a056512006800b004dda4e14861mr8380313lfo.3.1678487725397; Fri, 10 Mar
+ 2023 14:35:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20230309180213.180263-1-hbathini@linux.ibm.com> <20230309180213.180263-4-hbathini@linux.ibm.com>
-In-Reply-To: <20230309180213.180263-4-hbathini@linux.ibm.com>
+References: <20230309180213.180263-1-hbathini@linux.ibm.com> <20230309180213.180263-5-hbathini@linux.ibm.com>
+In-Reply-To: <20230309180213.180263-5-hbathini@linux.ibm.com>
 From:   Song Liu <song@kernel.org>
-Date:   Fri, 10 Mar 2023 14:06:17 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7ChFn8Q38-Y76NBDVAoP=WnWOmZEyBN76ifnriTbF1tQ@mail.gmail.com>
-Message-ID: <CAPhsuW7ChFn8Q38-Y76NBDVAoP=WnWOmZEyBN76ifnriTbF1tQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] powerpc/bpf: implement bpf_arch_text_invalidate
- for bpf_prog_pack
+Date:   Fri, 10 Mar 2023 14:35:12 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6FvOwXU6m8rPRqGEgV2P=CGN6AYNHsarO1iRmmAjmEMQ@mail.gmail.com>
+Message-ID: <CAPhsuW6FvOwXU6m8rPRqGEgV2P=CGN6AYNHsarO1iRmmAjmEMQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
 To:     Hari Bathini <hbathini@linux.ibm.com>
 Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -59,8 +58,8 @@ Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org,
         Christophe Leroy <christophe.leroy@csgroup.eu>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,48 +67,331 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 9, 2023 at 10:02=E2=80=AFAM Hari Bathini <hbathini@linux.ibm.co=
+On Thu, Mar 9, 2023 at 10:03=E2=80=AFAM Hari Bathini <hbathini@linux.ibm.co=
 m> wrote:
 >
-> Implement bpf_arch_text_invalidate and use it to fill unused part of
-> the bpf_prog_pack with trap instructions when a BPF program is freed.
+> Use bpf_jit_binary_pack_alloc in powerpc jit. The jit engine first
+> writes the program to the rw buffer. When the jit is done, the program
+> is copied to the final location with bpf_jit_binary_pack_finalize.
+> With multiple jit_subprogs, bpf_jit_free is called on some subprograms
+> that haven't got bpf_jit_binary_pack_finalize() yet. Implement custom
+> bpf_jit_free() like in commit 1d5f82d9dd47 ("bpf, x86: fix freeing of
+> not-finalized bpf_prog_pack") to call bpf_jit_binary_pack_finalize(),
+> if necessary. While here, correct the misnomer powerpc64_jit_data to
+> powerpc_jit_data as it is meant for both ppc32 and ppc64.
 >
 > Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
 > ---
->  arch/powerpc/net/bpf_jit_comp.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+>  arch/powerpc/net/bpf_jit.h        |   7 +-
+>  arch/powerpc/net/bpf_jit_comp.c   | 104 +++++++++++++++++++++---------
+>  arch/powerpc/net/bpf_jit_comp32.c |   4 +-
+>  arch/powerpc/net/bpf_jit_comp64.c |   6 +-
+>  4 files changed, 83 insertions(+), 38 deletions(-)
+>
+> diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
+> index d767e39d5645..a8b7480c4d43 100644
+> --- a/arch/powerpc/net/bpf_jit.h
+> +++ b/arch/powerpc/net/bpf_jit.h
+> @@ -168,15 +168,16 @@ static inline void bpf_clear_seen_register(struct c=
+odegen_context *ctx, int i)
+>
+>  void bpf_jit_init_reg_mapping(struct codegen_context *ctx);
+>  int bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, =
+u64 func);
+> -int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_c=
+ontext *ctx,
+> +int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, str=
+uct codegen_context *ctx,
+>                        u32 *addrs, int pass, bool extra_pass);
+>  void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx);
+>  void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx);
+>  void bpf_jit_realloc_regs(struct codegen_context *ctx);
+>  int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, int =
+tmp_reg, long exit_addr);
+>
+> -int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, str=
+uct codegen_context *ctx,
+> -                         int insn_idx, int jmp_off, int dst_reg);
+> +int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 *fimage, =
+int pass,
+> +                         struct codegen_context *ctx, int insn_idx,
+> +                         int jmp_off, int dst_reg);
+>
+>  #endif
 >
 > diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_c=
 omp.c
-> index 0a70319116d1..d1794d9f0154 100644
+> index d1794d9f0154..ece75c829499 100644
 > --- a/arch/powerpc/net/bpf_jit_comp.c
 > +++ b/arch/powerpc/net/bpf_jit_comp.c
-> @@ -293,3 +293,18 @@ void *bpf_arch_text_copy(void *dst, void *src, size_=
-t len)
+> @@ -42,10 +42,11 @@ int bpf_jit_emit_exit_insn(u32 *image, struct codegen=
+_context *ctx, int tmp_reg,
+>         return 0;
+>  }
+>
+> -struct powerpc64_jit_data {
+> -       struct bpf_binary_header *header;
+> +struct powerpc_jit_data {
+> +       struct bpf_binary_header *hdr;
+> +       struct bpf_binary_header *fhdr;
+>         u32 *addrs;
+> -       u8 *image;
+> +       u8 *fimage;
+>         u32 proglen;
+>         struct codegen_context ctx;
+>  };
+
+Some comments about the f- prefix will be helpful. (Yes, I should have done
+better job adding comments for the x86 counterpart..)
+
+> @@ -62,15 +63,18 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog =
+*fp)
+>         u8 *image =3D NULL;
+>         u32 *code_base;
+>         u32 *addrs;
+> -       struct powerpc64_jit_data *jit_data;
+> +       struct powerpc_jit_data *jit_data;
+>         struct codegen_context cgctx;
+>         int pass;
+>         int flen;
+> -       struct bpf_binary_header *bpf_hdr;
+> +       struct bpf_binary_header *fhdr =3D NULL;
+> +       struct bpf_binary_header *hdr =3D NULL;
+>         struct bpf_prog *org_fp =3D fp;
+>         struct bpf_prog *tmp_fp;
+>         bool bpf_blinded =3D false;
+>         bool extra_pass =3D false;
+> +       u8 *fimage =3D NULL;
+> +       u32 *fcode_base;
+>         u32 extable_len;
+>         u32 fixup_len;
+>
+> @@ -100,9 +104,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog=
+ *fp)
+>         addrs =3D jit_data->addrs;
+>         if (addrs) {
+>                 cgctx =3D jit_data->ctx;
+> -               image =3D jit_data->image;
+> -               bpf_hdr =3D jit_data->header;
+> +               fimage =3D jit_data->fimage;
+> +               fhdr =3D jit_data->fhdr;
+>                 proglen =3D jit_data->proglen;
+> +               hdr =3D jit_data->hdr;
+> +               image =3D (void *)hdr + ((void *)fimage - (void *)fhdr);
+>                 extra_pass =3D true;
+>                 goto skip_init_ctx;
+>         }
+> @@ -120,7 +126,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog =
+*fp)
+>         cgctx.stack_size =3D round_up(fp->aux->stack_depth, 16);
+>
+>         /* Scouting faux-generate pass 0 */
+> -       if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0, false)) {
+> +       if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, false)) =
+{
+>                 /* We hit something illegal or unsupported. */
+>                 fp =3D org_fp;
+>                 goto out_addrs;
+> @@ -135,7 +141,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog =
+*fp)
+>          */
+>         if (cgctx.seen & SEEN_TAILCALL || !is_offset_in_branch_range((lon=
+g)cgctx.idx * 4)) {
+>                 cgctx.idx =3D 0;
+> -               if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0, false)) {
+> +               if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, =
+false)) {
+>                         fp =3D org_fp;
+>                         goto out_addrs;
+>                 }
+> @@ -157,17 +163,19 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
+g *fp)
+>         proglen =3D cgctx.idx * 4;
+>         alloclen =3D proglen + FUNCTION_DESCR_SIZE + fixup_len + extable_=
+len;
+>
+> -       bpf_hdr =3D bpf_jit_binary_alloc(alloclen, &image, 4, bpf_jit_fil=
+l_ill_insns);
+> -       if (!bpf_hdr) {
+> +       fhdr =3D bpf_jit_binary_pack_alloc(alloclen, &fimage, 4, &hdr, &i=
+mage,
+> +                                             bpf_jit_fill_ill_insns);
+> +       if (!fhdr) {
+>                 fp =3D org_fp;
+>                 goto out_addrs;
+>         }
+>
+>         if (extable_len)
+> -               fp->aux->extable =3D (void *)image + FUNCTION_DESCR_SIZE =
++ proglen + fixup_len;
+> +               fp->aux->extable =3D (void *)fimage + FUNCTION_DESCR_SIZE=
+ + proglen + fixup_len;
+>
+>  skip_init_ctx:
+>         code_base =3D (u32 *)(image + FUNCTION_DESCR_SIZE);
+> +       fcode_base =3D (u32 *)(fimage + FUNCTION_DESCR_SIZE);
+>
+>         /* Code generation passes 1-2 */
+>         for (pass =3D 1; pass < 3; pass++) {
+> @@ -175,8 +183,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog =
+*fp)
+>                 cgctx.idx =3D 0;
+>                 cgctx.alt_exit_addr =3D 0;
+>                 bpf_jit_build_prologue(code_base, &cgctx);
+> -               if (bpf_jit_build_body(fp, code_base, &cgctx, addrs, pass=
+, extra_pass)) {
+> -                       bpf_jit_binary_free(bpf_hdr);
+> +               if (bpf_jit_build_body(fp, code_base, fcode_base, &cgctx,=
+ addrs, pass, extra_pass)) {
+> +                       bpf_arch_text_copy(&fhdr->size, &hdr->size, sizeo=
+f(hdr->size));
+> +                       bpf_jit_binary_pack_free(fhdr, hdr);
+>                         fp =3D org_fp;
+>                         goto out_addrs;
+>                 }
+> @@ -192,21 +201,23 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
+g *fp)
+>                  * Note that we output the base address of the code_base
+>                  * rather than image, since opcodes are in code_base.
+>                  */
+Maybe update the comment above with fcode_base to avoid
+confusion.
+
+> -               bpf_jit_dump(flen, proglen, pass, code_base);
+> +               bpf_jit_dump(flen, proglen, pass, fcode_base);
+>
+>  #ifdef CONFIG_PPC64_ELF_ABI_V1
+>         /* Function descriptor nastiness: Address + TOC */
+> -       ((u64 *)image)[0] =3D (u64)code_base;
+> +       ((u64 *)image)[0] =3D (u64)fcode_base;
+>         ((u64 *)image)[1] =3D local_paca->kernel_toc;
+>  #endif
+>
+> -       fp->bpf_func =3D (void *)image;
+> +       fp->bpf_func =3D (void *)fimage;
+>         fp->jited =3D 1;
+>         fp->jited_len =3D proglen + FUNCTION_DESCR_SIZE;
+>
+> -       bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + bpf_hdr->size);
+>         if (!fp->is_func || extra_pass) {
+> -               bpf_jit_binary_lock_ro(bpf_hdr);
+> +               if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
+> +                       fp =3D org_fp;
+> +                       goto out_addrs;
+> +               }
+>                 bpf_prog_fill_jited_linfo(fp, addrs);
+>  out_addrs:
+>                 kfree(addrs);
+> @@ -216,8 +227,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog =
+*fp)
+>                 jit_data->addrs =3D addrs;
+>                 jit_data->ctx =3D cgctx;
+>                 jit_data->proglen =3D proglen;
+> -               jit_data->image =3D image;
+> -               jit_data->header =3D bpf_hdr;
+> +               jit_data->fimage =3D fimage;
+> +               jit_data->fhdr =3D fhdr;
+> +               jit_data->hdr =3D hdr;
+>         }
+>
+>  out:
+> @@ -231,12 +243,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
+g *fp)
+>   * The caller should check for (BPF_MODE(code) =3D=3D BPF_PROBE_MEM) bef=
+ore calling
+>   * this function, as this only applies to BPF_PROBE_MEM, for now.
+>   */
+> -int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, int pass, str=
+uct codegen_context *ctx,
+> -                         int insn_idx, int jmp_off, int dst_reg)
+> +int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 *fimage, =
+int pass,
+> +                         struct codegen_context *ctx, int insn_idx, int =
+jmp_off,
+> +                         int dst_reg)
+>  {
+>         off_t offset;
+>         unsigned long pc;
+> -       struct exception_table_entry *ex;
+> +       struct exception_table_entry *ex, *ex_entry;
+>         u32 *fixup;
+>
+>         /* Populate extable entries only in the last pass */
+> @@ -247,9 +260,16 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 *=
+image, int pass, struct code
+>             WARN_ON_ONCE(ctx->exentry_idx >=3D fp->aux->num_exentries))
+>                 return -EINVAL;
+>
+> +       /*
+> +        * Program is firt written to image before copying to the
+s/firt/first/
+
+> +        * final location (fimage). Accordingly, update in the image firs=
+t.
+> +        * As all offsets used are relative, copying as is to the
+> +        * final location should be alright.
+> +        */
+>         pc =3D (unsigned long)&image[insn_idx];
+> +       ex =3D (void *)fp->aux->extable - (void *)fimage + (void *)image;
+>
+> -       fixup =3D (void *)fp->aux->extable -
+> +       fixup =3D (void *)ex -
+>                 (fp->aux->num_exentries * BPF_FIXUP_LEN * 4) +
+>                 (ctx->exentry_idx * BPF_FIXUP_LEN * 4);
+>
+> @@ -260,17 +280,17 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 =
+*image, int pass, struct code
+>         fixup[BPF_FIXUP_LEN - 1] =3D
+>                 PPC_RAW_BRANCH((long)(pc + jmp_off) - (long)&fixup[BPF_FI=
+XUP_LEN - 1]);
+>
+> -       ex =3D &fp->aux->extable[ctx->exentry_idx];
+> +       ex_entry =3D &ex[ctx->exentry_idx];
+>
+> -       offset =3D pc - (long)&ex->insn;
+> +       offset =3D pc - (long)&ex_entry->insn;
+>         if (WARN_ON_ONCE(offset >=3D 0 || offset < INT_MIN))
+>                 return -ERANGE;
+> -       ex->insn =3D offset;
+> +       ex_entry->insn =3D offset;
+>
+> -       offset =3D (long)fixup - (long)&ex->fixup;
+> +       offset =3D (long)fixup - (long)&ex_entry->fixup;
+>         if (WARN_ON_ONCE(offset >=3D 0 || offset < INT_MIN))
+>                 return -ERANGE;
+> -       ex->fixup =3D offset;
+> +       ex_entry->fixup =3D offset;
+>
+>         ctx->exentry_idx++;
+>         return 0;
+> @@ -308,3 +328,27 @@ int bpf_arch_text_invalidate(void *dst, size_t len)
 >
 >         return ret;
 >  }
 > +
-> +int bpf_arch_text_invalidate(void *dst, size_t len)
+> +void bpf_jit_free(struct bpf_prog *fp)
 > +{
-> +       u32 inst =3D BREAKPOINT_INSTRUCTION;
-> +       int ret =3D -EINVAL;
-
-No need to set to -EINVAL here.
-
+> +       if (fp->jited) {
+> +               struct powerpc_jit_data *jit_data =3D fp->aux->jit_data;
+> +               struct bpf_binary_header *hdr;
 > +
-> +       if (WARN_ON_ONCE(core_kernel_text((unsigned long)dst)))
-> +               return ret;
+> +               /*
+> +                * If we fail the final pass of JIT (from jit_subprogs),
+> +                * the program may not be finalized yet. Call finalize he=
+re
+> +                * before freeing it.
+> +                */
+> +               if (jit_data) {
+> +                       bpf_jit_binary_pack_finalize(fp, jit_data->fhdr, =
+jit_data->hdr);
 
-Just return -EINVAL instead.
+I just realized x86 is the same. But I think we only need the following
+here?
 
-> +
-> +       mutex_lock(&text_mutex);
-> +       ret =3D patch_instructions(dst, &inst, true, len);
-> +       mutex_unlock(&text_mutex);
-> +
-> +       return ret;
-> +}
-> --
-> 2.39.2
->
+bpf_arch_text_copy(&jit_data->fhdr->size, &jit_data->hdr->size,
+sizeof(jit_data->hdr->size));
+
+Right?
+
+Thanks,
+Song
