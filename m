@@ -2,53 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4E86B51FC
-	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 21:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C9E6B5291
+	for <lists+bpf@lfdr.de>; Fri, 10 Mar 2023 22:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbjCJUby (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 15:31:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
+        id S230131AbjCJVKZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 16:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231539AbjCJUbi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 15:31:38 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB5013B2A2
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 12:30:27 -0800 (PST)
+        with ESMTP id S231485AbjCJVKY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 16:10:24 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112AD12049B
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 13:10:23 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9D29DB82410
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 20:30:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 36F8BC4339B;
-        Fri, 10 Mar 2023 20:30:18 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BE482B822AD
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 21:10:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 75209C4339B;
+        Fri, 10 Mar 2023 21:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678480218;
-        bh=8/eTu5imn2JQt1ra3enfswE3qWY3uU6Cdf1YraaY+1w=;
+        s=k20201202; t=1678482620;
+        bh=umnA+c7uyfxqMFG+PApy0TOXyorTxiJzDoVZHXAbCII=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lpU/GjkdcxVWG8y8kJ6J7f3FYlzPaTZx5MfaEiUprx7NmPOsnJ29iytChCozqz2kz
-         o9oS1lAlrag0X/aa+iIpNMC1jl96uBzEU3h/pkqzKVkzWbBKaEs6hkpXhcOJXLIxUA
-         w7IOekHW6xfXmL79nRJnNxC8B8tvjqKZ2RG8APPRxiLzKzksQIf+Hnp9ecTsKaWDvH
-         x2bfWY5wXAGa2gSitnC8hlB19ylD1dADbacqabJee67zmsvHVxeEjEn5iK1rquqDnP
-         bzX5175piuud9IU3Lnj+MBueQ0MbWA0FCNQJD189/o63rMVpV1czUEHHLTKF44rh65
-         qrA9kVv6TWxXg==
+        b=JAceL80Wnki4k0BsnQ+wuNf6lBthC4yP+gCrLYIBlmoJb3gdmK4R41moSWGZI1DKQ
+         Z3rNUmtjQcf4KSif6wl6MrcTYvcX0ROaWOJ8Aqgp0zoVtPcntekpHYXXKvmM2f2YGn
+         I5dzvA3C7o9kXwcvZGfWCxMsDu9j4UupwACLtaJkBamuzegat35gOLcs2yMV8aImrK
+         ILoCKZhNZD0Dfe4DfYXdADeWdQ0xUjqUHf72OZLfpuHuQ1UQOGzqMrt0f3fcRwzYQA
+         23mczdSg52wx7C5vtzOaIxdSXpI0MLPMLwwIbXSEonY8V/SVE1jHlK0nHk5x1kcIqQ
+         UNbMDf4rA386w==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B6F6C59A4C;
-        Fri, 10 Mar 2023 20:30:18 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 56A8AE21EEE;
+        Fri, 10 Mar 2023 21:10:20 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v1 bpf-next 0/6] Support stashing local kptrs with
- bpf_kptr_xchg
+Subject: Re: [PATCH bpf-next v4] bpf, docs: Explain helper functions
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167848021810.31195.5242744618303272983.git-patchwork-notify@kernel.org>
-Date:   Fri, 10 Mar 2023 20:30:18 +0000
-References: <20230309180111.1618459-1-davemarchevsky@fb.com>
-In-Reply-To: <20230309180111.1618459-1-davemarchevsky@fb.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, tj@kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Message-Id: <167848262034.18309.4583085760649922064.git-patchwork-notify@kernel.org>
+Date:   Fri, 10 Mar 2023 21:10:20 +0000
+References: <20230308205303.1308-1-dthaler1968@googlemail.com>
+In-Reply-To: <20230308205303.1308-1-dthaler1968@googlemail.com>
+To:     Dave Thaler <dthaler1968@googlemail.com>
+Cc:     bpf@vger.kernel.org, bpf@ietf.org, dthaler@microsoft.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,33 +56,23 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu, 9 Mar 2023 10:01:05 -0800 you wrote:
-> Local kptrs are kptrs allocated via bpf_obj_new with a type specified in program
-> BTF. A BPF program which creates a local kptr has exclusive control of the
-> lifetime of the kptr, and, prior to terminating, must:
+On Wed,  8 Mar 2023 20:53:03 +0000 you wrote:
+> From: Dave Thaler <dthaler@microsoft.com>
 > 
->   * free the kptr via bpf_obj_drop
->   * If the kptr is a {list,rbtree} node, add the node to a {list, rbtree},
->     thereby passing control of the lifetime to the collection
+> Add brief text about existence of helper functions, with details to go in
+> separate psABI text.
+> 
+> Note that text about runtime functions (kfuncs) is part of a separate patch,
+> not this one.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v1,bpf-next,1/6] bpf: verifier: Rename kernel_type_name helper to btf_type_name
-    https://git.kernel.org/bpf/bpf-next/c/b32a5dae44cc
-  - [v1,bpf-next,2/6] bpf: btf: Remove unused btf_field_info_type enum
-    https://git.kernel.org/bpf/bpf-next/c/a4aa38897b6a
-  - [v1,bpf-next,3/6] bpf: Change btf_record_find enum parameter to field_mask
-    https://git.kernel.org/bpf/bpf-next/c/74843b57ec70
-  - [v1,bpf-next,4/6] bpf: Support __kptr to local kptrs
-    (no matching commit)
-  - [v1,bpf-next,5/6] bpf: Allow local kptrs to be exchanged via bpf_kptr_xchg
-    (no matching commit)
-  - [v1,bpf-next,6/6] selftests/bpf: Add local kptr stashing test
-    (no matching commit)
+  - [bpf-next,v4] bpf, docs: Explain helper functions
+    https://git.kernel.org/bpf/bpf-next/c/c1f9e14e3b67
 
 You are awesome, thank you!
 -- 
