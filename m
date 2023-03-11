@@ -2,97 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A89AF6B5D51
-	for <lists+bpf@lfdr.de>; Sat, 11 Mar 2023 16:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC326B5DF4
+	for <lists+bpf@lfdr.de>; Sat, 11 Mar 2023 17:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbjCKPZo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Mar 2023 10:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32938 "EHLO
+        id S230303AbjCKQg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Mar 2023 11:36:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjCKPZm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Mar 2023 10:25:42 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E45C1C0E
-        for <bpf@vger.kernel.org>; Sat, 11 Mar 2023 07:25:41 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id er25so4107540edb.5
-        for <bpf@vger.kernel.org>; Sat, 11 Mar 2023 07:25:41 -0800 (PST)
+        with ESMTP id S229874AbjCKQgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Mar 2023 11:36:25 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E128F5CEC9;
+        Sat, 11 Mar 2023 08:36:22 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id y10so5409376pfi.8;
+        Sat, 11 Mar 2023 08:36:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678548340;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qj8nrG0sL8loOIOhZdmt6f4M2skgayD9pumOqV207G8=;
-        b=RnaeuorGCGeD0RwEl8m2NuLgxwxAnOik9gHs11fcqc8kny4M4r//vqA8hTBsLrHAZf
-         sakGm/qNR8me8vv5K8Nu3+X4GqFJRTtZoUe7G2t6HWR3TZgErfG/CTUujQlH5d2cfBGi
-         mSLyzqK7fxiUic+lw36C4m0FKFjQsQsc/RzbwB1kbGv2uwD1PEcySFSjO5512wjEh0VJ
-         CWrY/1v0Cnhpay2Jdo1R3Dn6VyeJ2udm3vVcwXRxd03T3Wp1ughkkLeTUcP2dDs3R6ZC
-         D5zA4LidXekf6Pl2hyPGYqXRNZPs/0Idt+4PIqzTrP0qXcHYz/6GAR7b8iY7UTM09KAM
-         7kIw==
+        d=gmail.com; s=20210112; t=1678552582;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R27q+ruFizVfsZnI4Ph2nW9rPNDoG0WYlTi4uPHonSg=;
+        b=KULkSXc2OamSY41P4speudAtRYuqSs1EfdQ1mcnmMMAVtPTtjJnUGfsPFOdwnYKaU0
+         4YPTr9wbLFgO8N4nAkhWn0OoB/s8o6ZSt/86vp+yPgefnYxXtNW+fYHl7LGtS/fNfikl
+         yY06bXV3uSwwrzTRd2KfECm0hSY8gtvVbCcbjunDWGl6kXR/kKHBR4A5gOn2d2ALQ7tU
+         pSgpdW7Ss1f4Sa76Ftb0YgBuYM1+Ygkw+dqcXvMcMQOJJM+APufjIJYXn9P7FdHnbzcp
+         IIk5NyryV12bqfRh2/y6wMH7QLLqUlvS8bX6xN5FaxS2ODSuTLGFSZ+N4lkP4nw4MA4y
+         jLUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678548340;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qj8nrG0sL8loOIOhZdmt6f4M2skgayD9pumOqV207G8=;
-        b=Wl9i6dVX+dVDNScg4cgjD/g9KmQ2Jtmwr4GGUjLjPAx7EnolhRlpDdgIiFx+mVcOG9
-         uUUDMsr9FsUfX6vC/Qg//N85GRgPuUCrVB5YQBnBzuwlXUUr+mr4HrK8MGkGfF+eitYJ
-         mdBkUYUwg31G76uzZiH/mPmPxKJY4aIN7loEkMP6geBKzK4bxYVW8Z9W8BScOTAKo1e4
-         cHVxHhPltE5Sb0C/42oS+9UiSgsBeNd9IG5gsn1Uodue+QENstwYyzKBKc9BWNedz/F3
-         k3wwXbb182FYrPmaPOlqUkhsUgyYlosmKC6R6bDwS/3EEZ7mfWTNSJqaVCWF8oRg1dAu
-         wZ9Q==
-X-Gm-Message-State: AO0yUKW1anAjLPhdylbxN8z02GAwDQaGC6sHTHvtk0bQ1o7F84T/oz5p
-        vNv+hKbOfw6SwJ5GqFJnMielHTSR9C10zLkARc0=
-X-Google-Smtp-Source: AK7set9BNkqEBE3SdEJMH1G1h7g2R7IGS1VfeJLmc0YnKHcTcYx8BRgTp0utRVgwfz09iUGyB6HV7s34omJ9Tk1NAKk=
-X-Received: by 2002:a17:906:948a:b0:922:1fa2:af53 with SMTP id
- t10-20020a170906948a00b009221fa2af53mr575855ejx.14.1678548339751; Sat, 11 Mar
- 2023 07:25:39 -0800 (PST)
+        d=1e100.net; s=20210112; t=1678552582;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R27q+ruFizVfsZnI4Ph2nW9rPNDoG0WYlTi4uPHonSg=;
+        b=elAU/9Tf5XWqutregwaey5Hb9kEPDLMehthz+7/sWahcfUQHvYs9obv5VlHsPtCiWR
+         1k//7yAUYCzimDC936UkCbr3k0Nab93TTkJFv950kmy8+RFd+hyYKTgXsIFVn1K3Ncdx
+         9ID/kNlJ5F2B/0jFjMKP9bB8XmEhidpgDq15U81BxyRq27naMSrxyowUUM5G762kpD01
+         YCAh/HRaVKt+opmh+mg0JYj01dINcWv1ZS0Z6V5ujOOlMVeg+Ct4IrDpZmlHbgc0t/Wd
+         POXu1RR4fnFD+MNqi1L5hl/Yv2pazalbaesNW4hAtGzMg88EGQo0S+LiAGTmKkG7GYQz
+         zsyA==
+X-Gm-Message-State: AO0yUKWp4VpjOW1lyQ2VssIuYkDpaamKGVP1dsWVkNcc/nyzpDhSalPK
+        zQIy4n+o0B+4h3Cl57OSubU=
+X-Google-Smtp-Source: AK7set+UbftSCmso22uaHumhJFqS1Czrkx9Irsx7eNlbSsV19y8Tlpc48FGIS9yAeVyyjiVhJygo5g==
+X-Received: by 2002:aa7:96e2:0:b0:5a9:cbc3:ca70 with SMTP id i2-20020aa796e2000000b005a9cbc3ca70mr27132003pfq.24.1678552582273;
+        Sat, 11 Mar 2023 08:36:22 -0800 (PST)
+Received: from KERNELXING-MB0.tencent.com ([114.253.32.213])
+        by smtp.gmail.com with ESMTPSA id g21-20020a62e315000000b0058e08796e98sm1648917pfh.196.2023.03.11.08.36.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Mar 2023 08:36:21 -0800 (PST)
+From:   Jason Xing <kerneljasonxing@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com
+Cc:     kuniyu@amazon.com, liuhangbin@gmail.com, xiangxia.m.yue@gmail.com,
+        jiri@nvidia.com, andy.ren@getcruise.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kerneljasonxing@gmail.com, Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH net-next] net: introduce budget_squeeze to help us tune rx behavior
+Date:   Sun, 12 Mar 2023 00:36:14 +0800
+Message-Id: <20230311163614.92296-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: by 2002:a05:640c:2a06:b0:1b9:747b:f1ba with HTTP; Sat, 11 Mar 2023
- 07:25:39 -0800 (PST)
-Reply-To: wormer.amos@aol.com
-From:   Wormer Amos <sd05091959@gmail.com>
-Date:   Sat, 11 Mar 2023 16:25:39 +0100
-Message-ID: <CABheKPaok-8drjgU1cN5-WnhsDxnDaspiErfF+Ng8W_3ayd7UQ@mail.gmail.com>
-Subject: VERY IMPORTANT PLEASE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,SUBJ_ALL_CAPS,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:534 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5132]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [sd05091959[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [sd05091959[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Please are you capable for investment in your country. i
-need serious investment project with good background, kindly connect
-me to discuss details immediately. i will appreciate you to contact me
-on this email address Thanks and awaiting your quick response yours
-Amos
+From: Jason Xing <kernelxing@tencent.com>
+
+When we encounter some performance issue and then get lost on how
+to tune the budget limit and time limit in net_rx_action() function,
+we can separately counting both of them to avoid the confusion.
+
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+note: this commit is based on the link as below:
+https://lore.kernel.org/lkml/20230311151756.83302-1-kerneljasonxing@gmail.com/
+---
+ include/linux/netdevice.h |  1 +
+ net/core/dev.c            | 12 ++++++++----
+ net/core/net-procfs.c     |  9 ++++++---
+ 3 files changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 6a14b7b11766..5736311a2133 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3157,6 +3157,7 @@ struct softnet_data {
+ 	/* stats */
+ 	unsigned int		processed;
+ 	unsigned int		time_squeeze;
++	unsigned int		budget_squeeze;
+ #ifdef CONFIG_RPS
+ 	struct softnet_data	*rps_ipi_list;
+ #endif
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 253584777101..bed7a68fdb5d 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6637,6 +6637,7 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
+ 	unsigned long time_limit = jiffies +
+ 		usecs_to_jiffies(READ_ONCE(netdev_budget_usecs));
+ 	int budget = READ_ONCE(netdev_budget);
++	bool is_continue = true;
+ 	LIST_HEAD(list);
+ 	LIST_HEAD(repoll);
+ 
+@@ -6644,7 +6645,7 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
+ 	list_splice_init(&sd->poll_list, &list);
+ 	local_irq_enable();
+ 
+-	for (;;) {
++	for (; is_continue;) {
+ 		struct napi_struct *n;
+ 
+ 		skb_defer_free_flush(sd);
+@@ -6662,10 +6663,13 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
+ 		 * Allow this to run for 2 jiffies since which will allow
+ 		 * an average latency of 1.5/HZ.
+ 		 */
+-		if (unlikely(budget <= 0 ||
+-			     time_after_eq(jiffies, time_limit))) {
++		if (unlikely(budget <= 0)) {
++			sd->budget_squeeze++;
++			is_continue = false;
++		}
++		if (unlikely(time_after_eq(jiffies, time_limit))) {
+ 			sd->time_squeeze++;
+-			break;
++			is_continue = false;
+ 		}
+ 	}
+ 
+diff --git a/net/core/net-procfs.c b/net/core/net-procfs.c
+index 97a304e1957a..4d1a499d7c43 100644
+--- a/net/core/net-procfs.c
++++ b/net/core/net-procfs.c
+@@ -174,14 +174,17 @@ static int softnet_seq_show(struct seq_file *seq, void *v)
+ 	 */
+ 	seq_printf(seq,
+ 		   "%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x "
+-		   "%08x %08x\n",
+-		   sd->processed, sd->dropped, sd->time_squeeze, 0,
++		   "%08x %08x %08x %08x\n",
++		   sd->processed, sd->dropped,
++		   0, /* was old way to count time squeeze */
++		   0,
+ 		   0, 0, 0, 0, /* was fastroute */
+ 		   0,	/* was cpu_collision */
+ 		   sd->received_rps, flow_limit_count,
+ 		   0,	/* was len of two backlog queues */
+ 		   (int)seq->index,
+-		   softnet_input_pkt_queue_len(sd), softnet_process_queue_len(sd));
++		   softnet_input_pkt_queue_len(sd), softnet_process_queue_len(sd),
++		   sd->time_squeeze, sd->budget_squeeze);
+ 	return 0;
+ }
+ 
+-- 
+2.37.3
+
