@@ -2,109 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E611E6B55C1
-	for <lists+bpf@lfdr.de>; Sat, 11 Mar 2023 00:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5FD6B571D
+	for <lists+bpf@lfdr.de>; Sat, 11 Mar 2023 01:53:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbjCJXiY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Mar 2023 18:38:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51388 "EHLO
+        id S231220AbjCKAxX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Mar 2023 19:53:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbjCJXiW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Mar 2023 18:38:22 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0951C1B57B
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 15:38:17 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id p3-20020a17090ad30300b0023a1cd5065fso6652483pju.0
-        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 15:38:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112; t=1678491497;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xBc0RjkmAJoUMHV1ZGJ9wJmJAFimaZ97KsvLEgWqlXQ=;
-        b=bZOT4A/ZExCTmxknvCmYdWyLZAoJ8poIwSmfNEiVLdVlCFzmFkG2OxXxGXI3w6DOFy
-         nirmHFyau7cjKBwviG8P2pN/pQnNTScjSZux8e/2zzQHMDzOl4iFD9k09NJ1ABbKkwKY
-         PMnqKyOBAujCv5x7OsixmacC3QWMj+aGabXt00N9+8liP4N2xItTBPYegj4XO0HtK5Cp
-         aDWiPFlB/PWjxBXnAdFsvX9gE3EUzU8IFhWrfS8iFhiJ3o7HvzlmcCFfLBzRcALMpcrW
-         LlqJTJoQ8gdpvTgGQxPmPtX4HBxDYJnY+T/Gh2I5zu0Tf2vTiay7WOJ+UUHqXtHFtrX6
-         Ch7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678491497;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xBc0RjkmAJoUMHV1ZGJ9wJmJAFimaZ97KsvLEgWqlXQ=;
-        b=77+9BdYTueel2xxS5/DL0qlF7WNa3JNNghV+jQhCpbYTyWUocc1UEuYVfcE0qZHI0Y
-         JJlzzCumCt2fjWHEzWmRujpRsLQpav2699LISxyldE8QNRITHyUh9HaCRbA8HHkDedDC
-         T7M8Gaj2WWDSPEXn55mL2Vcs7ZRdYrmDL44ffol/ZGj6HR46+RIJ/qLGVLM3D2graGu6
-         uagkGRbaWE7/GAlBZ440XzDRPZZnSw2cMwkSvRaLGP/zdbQHheO7XqYZsW8hZLe3nLu8
-         fUDXGDuPQrat2rRg6jzyEqixNwz1W64YevymgjQu0YBb6lbHdNYAkIe09GnW6ZoCM6yv
-         gOcg==
-X-Gm-Message-State: AO0yUKVllaSavAA4c0T7nrBwctkdTZvkX/Qg1tJ4tjUmivIDQSJxeEMt
-        Q6WklHObVrZ2YyF2ie7z/9bvLzljkWw=
-X-Google-Smtp-Source: AK7set/uY7qVTl4b3W7RHMfqcVaguCEgGeGVIb6bKM4Zuj7ChTX/j44S55hzBIvBaPRinvG5I4c3aA==
-X-Received: by 2002:a17:902:eccb:b0:19f:2503:a201 with SMTP id a11-20020a170902eccb00b0019f2503a201mr246781plh.29.1678491497036;
-        Fri, 10 Mar 2023 15:38:17 -0800 (PST)
-Received: from mariner-vm.. ([131.107.1.213])
-        by smtp.gmail.com with ESMTPSA id b7-20020a170902a9c700b0019cd1ee1523sm154231plr.30.2023.03.10.15.38.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Mar 2023 15:38:16 -0800 (PST)
-From:   Dave Thaler <dthaler1968@googlemail.com>
-To:     bpf@vger.kernel.org
-Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
-Subject: [PATCH bpf-next] bpf, docs: Add signed comparison example
-Date:   Fri, 10 Mar 2023 23:38:14 +0000
-Message-Id: <20230310233814.4641-1-dthaler1968@googlemail.com>
-X-Mailer: git-send-email 2.33.4
+        with ESMTP id S231254AbjCKAxB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Mar 2023 19:53:01 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44826146F1A
+        for <bpf@vger.kernel.org>; Fri, 10 Mar 2023 16:51:08 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 30A0961D7F
+        for <bpf@vger.kernel.org>; Sat, 11 Mar 2023 00:50:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7E707C4339C;
+        Sat, 11 Mar 2023 00:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678495818;
+        bh=4Sb8gMDP1pkkmrFMoK4DMipF0lo+Z4hvXgk5lCnJL3k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fpGWwPNnPCT7VfbntpPdNRMhNtHlq2aSn4yIwPh+esLzEmfReA9rE0pgQiN3BoT1a
+         nit/j2sLzWHkMdkANVRmMqKikfKTtDKSWKxc7iBD8q8gvx19qxqbLWvAN1vOzPojlJ
+         iytVikzo6BJwBOPgtB00XVd1dsn1irrnUbRyuu9o8itwRbAmAP0LYx8usT5igPZvDZ
+         OgaZqtNhlb3h0uSjE1uT9NUh3jG/ILmDr272FfyEfWR8t6Gf/ZOx9wIxg/QiBTl9ZH
+         Kbl6x7M1dJVxn/n+wKk7MucK04luI3Z3fp6bJEhSBUVFF38ALNFD8zOKj8Vs+Zyp5i
+         wJGtjzsXY4NkQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 66730E21EEB;
+        Sat, 11 Mar 2023 00:50:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 bpf-next 0/3] Support stashing local kptrs with
+ bpf_kptr_xchg
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167849581841.26321.14560380151655803188.git-patchwork-notify@kernel.org>
+Date:   Sat, 11 Mar 2023 00:50:18 +0000
+References: <20230310230743.2320707-1-davemarchevsky@fb.com>
+In-Reply-To: <20230310230743.2320707-1-davemarchevsky@fb.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, kernel-team@fb.com,
+        tj@kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Dave Thaler <dthaler@microsoft.com>
+Hello:
 
-Improve clarity by adding an example of a signed comparison instruction
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Signed-off-by: Dave Thaler <dthaler@microsoft.com>
----
- Documentation/bpf/instruction-set.rst | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+On Fri, 10 Mar 2023 15:07:40 -0800 you wrote:
+> Local kptrs are kptrs allocated via bpf_obj_new with a type specified in program
+> BTF. A BPF program which creates a local kptr has exclusive control of the
+> lifetime of the kptr, and, prior to terminating, must:
+> 
+>   * free the kptr via bpf_obj_drop
+>   * If the kptr is a {list,rbtree} node, add the node to a {list, rbtree},
+>     thereby passing control of the lifetime to the collection
+> 
+> [...]
 
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index 5e43e14abe8..b4464058905 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -11,7 +11,8 @@ Documentation conventions
- =========================
- 
- For brevity, this document uses the type notion "u64", "u32", etc.
--to mean an unsigned integer whose width is the specified number of bits.
-+to mean an unsigned integer whose width is the specified number of bits,
-+and "s32", etc. to mean a signed integer of the specified number of bits.
- 
- Registers and calling convention
- ================================
-@@ -264,6 +265,14 @@ BPF_JSLE  0xd0   PC += off if dst <= src    signed
- The eBPF program needs to store the return value into register R0 before doing a
- BPF_EXIT.
- 
-+Example:
-+
-+``BPF_JSGE | BPF_X | BPF_JMP32`` (0x7e) means::
-+
-+  if (s32)dst s>= (s32)src goto +offset
-+
-+where 's>=' indicates a signed '>=' comparison.
-+
- Helper functions
- ~~~~~~~~~~~~~~~~
- 
+Here is the summary with links:
+  - [v2,bpf-next,1/3] bpf: Support __kptr to local kptrs
+    https://git.kernel.org/bpf/bpf-next/c/c8e187540914
+  - [v2,bpf-next,2/3] bpf: Allow local kptrs to be exchanged via bpf_kptr_xchg
+    https://git.kernel.org/bpf/bpf-next/c/738c96d5e2e3
+  - [v2,bpf-next,3/3] selftests/bpf: Add local kptr stashing test
+    https://git.kernel.org/bpf/bpf-next/c/5d8d6634cccf
+
+You are awesome, thank you!
 -- 
-2.33.4
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
