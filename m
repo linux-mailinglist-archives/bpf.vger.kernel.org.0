@@ -2,73 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 409F16B7AC9
-	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 15:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075306B7C51
+	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 16:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbjCMOqn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Mar 2023 10:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
+        id S230034AbjCMPqe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Mar 2023 11:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbjCMOqe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Mar 2023 10:46:34 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C225CC0C
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 07:46:02 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id h3so12860598lja.12
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 07:46:02 -0700 (PDT)
+        with ESMTP id S229899AbjCMPqd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Mar 2023 11:46:33 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF795D45D;
+        Mon, 13 Mar 2023 08:46:32 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id h12-20020a17090aea8c00b0023d1311fab3so2575068pjz.1;
+        Mon, 13 Mar 2023 08:46:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678718761;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZU3eeU90JBi/3GIk6p29rW5k1M8hDub5drqnvYJ6QdQ=;
-        b=cbBaf2qLv59ldJVok/VQBgk/MF97JmbPeTG+HugmmhyW0Og1/jIce904z69ZugC/Fa
-         73hiNsVR1Evxk88mpLttfdrwyX3OEQlwFVfO/F7alWxa3FpPJxRrFJkJnAjYLEfv+JHM
-         fop7pjPQYni3D+2INjYoBR/A/4ignMggCjqml22UTcDMIgkszUjLv8Pzuk3JH4UBd0e2
-         uzCH/BrBqb5V4LT5tyU0i+sMROMH7Tv6eAJpjoQs1q/xwYH9OkhD3rH+ktX0WP6TYuPg
-         gJaANHr1BNr8W0kZfIrTAlDalc7dwrcE+i8i1ZigpUQWeJK53u9dNt7HhaizBg564esf
-         cmcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678718761;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=gmail.com; s=20210112; t=1678722392;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZU3eeU90JBi/3GIk6p29rW5k1M8hDub5drqnvYJ6QdQ=;
-        b=1wvTsEOKuCMQlQ8aCOmPU8rYH/DKd7ddQmwsnzYmu4EtAAMdy5Lj0nU1z70mESPJke
-         j6Lp49N9Sm35YlBLdTxTgBrE+kwY5NwdTxkOcz6niX9BLRLxwpM5a7ylMvqPto3C/XpK
-         qfKf/B1TCjYy/XPgomJtDQWkQ9JWUXLk0qwxJpuGXlf7D11XZ27CDK1P7ijITzVDTgiz
-         qKBKgwWkeZLaQd1Q4Q735wvO7aA8souII+tiwM8hsZlEGLJ6OyRh8DwHO0rh3P+XRhh1
-         u3/8XnZPFawPaeYDBJIFf72PHJaKNVIUWpIOAGZFjieivztwBuIX20CVlZ4abfmI6ivO
-         0Uhg==
-X-Gm-Message-State: AO0yUKUZ7rSltD8DidF2ZBb41e0GT4jTMqtvk4wwlif9gIAFAsWHfgr1
-        25/TbtmBs6YVcsIllCbrn1g=
-X-Google-Smtp-Source: AK7set9pATtzCeI7W36un+hcMUsDjWioqpH+C7R3/Z7wPeH1bUjpw3f9rKxV0t88qyhAb0BSbjFmdg==
-X-Received: by 2002:a2e:b53a:0:b0:294:5a6c:5221 with SMTP id z26-20020a2eb53a000000b002945a6c5221mr3007542ljm.19.1678718760800;
-        Mon, 13 Mar 2023 07:46:00 -0700 (PDT)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id v19-20020a2e87d3000000b002959b1162f0sm7573ljj.96.2023.03.13.07.45.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Mar 2023 07:45:59 -0700 (PDT)
-Message-ID: <87964239858beb2fe8e2d625953a3606161c85b3.camel@gmail.com>
-Subject: Re: [PATCH dwarves 2/3] dwarves_fprintf: support skipping modifier
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        haoluo@google.com, jolsa@kernel.org, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sinquersw@gmail.com, martin.lau@kernel.org,
-        songliubraving@fb.com, sdf@google.com, timo@incline.eu, yhs@fb.com,
-        bpf@vger.kernel.org
-Date:   Mon, 13 Mar 2023 16:45:57 +0200
-In-Reply-To: <1678459850-16140-3-git-send-email-alan.maguire@oracle.com>
-References: <1678459850-16140-1-git-send-email-alan.maguire@oracle.com>
-         <1678459850-16140-3-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        bh=zDyOkoFnhZROPctgeWISqNuHE+Oq1ns/S8cynzzVLLQ=;
+        b=SZy093BBwASY2LmXz6fWeD2QN3KkuTZE8AZRG6U9RCkjysmUWW2hLKo1dQuwQb/uzU
+         /chwQhlAtbMZVSrj/1loXOvr6mUH1EA4co9ZSwSuEuwbSDrN870b3UhbuSMBmbWTkx7t
+         MKb0Em2KyOKa/sb39onVU/5BXDKbiU+/eqyBB+QERd+vQbRI1vOzofvr33u5KcuqhABd
+         P7HwsHv3oW2enBtVBzvTB6qpoxFLqAllo69JEkbz+IpKTnD1xKBgUuLUKK5ahZ1+yznh
+         HOmFLgDRWZlDzHZY6fgzrTdT6emIv/T7a7AS27u+X+1qENm0PF+5k9Udir3lTLzg6iex
+         3D9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678722392;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zDyOkoFnhZROPctgeWISqNuHE+Oq1ns/S8cynzzVLLQ=;
+        b=I/xbP93TzIrMumtw+TeoOJi+6CjY5O4veukCHLEicb3TEFYq1iUIt1HPg+spxlK8Pv
+         cmPEO/UFwqoIW1EETT03PnBTlpB6YrKajmd8D/TClmvA6vuyMFjgOP06e3IT4VK4jD5x
+         GDZd8HCoz4iesh89qgQslZzP2vSppaXOqu7/PhZhSgafSOhbxXIj9IMvAlYgihf0Fz1S
+         TGcdhWhEZnviCWSang7uEZ+g4PPUL4MwXZrCSTB+PxqCScEARw2WgSohibcM0oUVNo+7
+         CUg4JWEUFyAW8xRn/dmGy0/SYvUIrXZ4ftq61Nh5fIQYIhuyYK6FHo8wJB2l/MIz/oo0
+         /2kg==
+X-Gm-Message-State: AO0yUKUNao6UpzO9AwDWT32PMWOGhDBcF8iOPQiiSyNmtpGo9jKtL0Nt
+        whg7aOQC+Z+WL1S75/wkHI8=
+X-Google-Smtp-Source: AK7set/PzQK6v+D13DwO2XP5KhnGB9fm2o4OFc6rwAKhDceSoLF6j9djA69o4q7HHFFtl6GFJS6kYw==
+X-Received: by 2002:a17:902:b20d:b0:1a0:4046:23f2 with SMTP id t13-20020a170902b20d00b001a0404623f2mr3760708plr.56.1678722392278;
+        Mon, 13 Mar 2023 08:46:32 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c085:21c8::1441? ([2620:10d:c090:400::5:37cf])
+        by smtp.gmail.com with ESMTPSA id kc7-20020a17090333c700b0019cbe436b87sm59388plb.81.2023.03.13.08.46.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Mar 2023 08:46:31 -0700 (PDT)
+Message-ID: <ec19df13-0f0a-d05b-f2a2-6e8cfe072fa5@gmail.com>
+Date:   Mon, 13 Mar 2023 08:46:26 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next v6 2/8] net: Update an existing TCP congestion
+ control algorithm.
+Content-Language: en-US, en-ZW
+To:     Stephen Hemminger <stephen@networkplumber.org>,
+        Kui-Feng Lee <kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+        sdf@google.com, netdev@vger.kernel.org
+References: <20230310043812.3087672-1-kuifeng@meta.com>
+ <20230310043812.3087672-3-kuifeng@meta.com>
+ <20230310084750.482e633e@hermes.local>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20230310084750.482e633e@hermes.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,48 +79,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2023-03-10 at 14:50 +0000, Alan Maguire wrote:
-[...]
-> diff --git a/dwarves_fprintf.c b/dwarves_fprintf.c
-> index 5c6bf9c..b20a473 100644
-> --- a/dwarves_fprintf.c
-> +++ b/dwarves_fprintf.c
-> @@ -506,7 +506,8 @@ static const char *tag__ptr_name(const struct tag *ta=
-g, const struct cu *cu,
->  				struct tag *next_type =3D cu__type(cu, type->type);
-> =20
->  				if (next_type && tag__is_pointer(next_type)) {
-> -					const_pointer =3D "const ";
-> +					if (!conf->skip_emitting_modifier)
-> +						const_pointer =3D "const ";
->  					type =3D next_type;
->  				}
->  			}
-> @@ -580,13 +581,16 @@ static const char *__tag__name(const struct tag *ta=
-g, const struct cu *cu,
->  				   *type_str =3D __tag__name(type, cu, tmpbf,
->  							   sizeof(tmpbf),
->  							   pconf);
-> -			switch (tag->tag) {
-> -			case DW_TAG_volatile_type: prefix =3D "volatile "; break;
-> -			case DW_TAG_const_type:    prefix =3D "const ";	 break;
-> -			case DW_TAG_restrict_type: suffix =3D " restrict"; break;
-> -			case DW_TAG_atomic_type:   prefix =3D "_Atomic ";  break;
-> +			if (!conf->skip_emitting_modifier) {
-> +				switch (tag->tag) {
-> +				case DW_TAG_volatile_type: prefix =3D "volatile "; break;
-> +				case DW_TAG_const_type: prefix =3D "const"; break;
 
-Here the space is removed from literal "const " and this results in
-the following output (`pahole -F btf --sort ./vmlinux`):
 
-    struct ZSTD_inBuffer_s {
-            constvoid  *               src;                  /*     0     8=
- */
-            ...
-    };
+On 3/10/23 08:47, Stephen Hemminger wrote:
+> On Thu, 9 Mar 2023 20:38:07 -0800
+> Kui-Feng Lee <kuifeng@meta.com> wrote:
+> 
+>> This feature lets you immediately transition to another congestion
+>> control algorithm or implementation with the same name.  Once a name
+>> is updated, new connections will apply this new algorithm.
+>>
+>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+> 
+> What is the use case and userspace API for this?
+> The congestion control algorithm normally doesn't allow this because
+> algorithm specific variables (current state of connection) may not
+> work with another algorithm.
 
-(Sorry for late replies).
+Only new connections will apply the new algorithm, while
+existing connections keep using the algorithm applied. It shouldn't
+have the per-connection state/variable issue you mentioned.
 
-[...]
+It will be used to upgrade an existing algorithm to a new version.
+The userspace API is used in the 8th patch of this patchset.
+One of examples in the testcase is
+
+   link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
+   .......
+   err = bpf_link__update_map(link, skel->maps.ca_update_2);
+
+Calling bpf_link__update_map(...) will register ca_pupdate_2 and
+unregister ca_update_1 with the same name
+in one call.  However, the existing connections that has applied
+ca_update_1 keep using the algorithm except someone call
+setsockopt(TCP_CONGESTION, ...) on them.
+
+
+
+> 
+> Seems like you are opening Pandora's box here.
 
