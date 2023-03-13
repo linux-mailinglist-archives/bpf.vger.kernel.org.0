@@ -2,145 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4DC6B72CC
-	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 10:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A6D6B72FF
+	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 10:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjCMJlB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Mar 2023 05:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
+        id S229982AbjCMJpF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Mar 2023 05:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjCMJk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Mar 2023 05:40:58 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF1912E
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 02:40:57 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g10so17146093eda.1
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 02:40:57 -0700 (PDT)
+        with ESMTP id S229847AbjCMJpE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Mar 2023 05:45:04 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F4D12CCA;
+        Mon, 13 Mar 2023 02:45:03 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id f6-20020a17090ac28600b0023b9bf9eb63so2752575pjt.5;
+        Mon, 13 Mar 2023 02:45:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678700456;
+        d=gmail.com; s=20210112; t=1678700703;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=soYbTwP/olAXcSImXe2g6wB/n/lyQSdMQ8bWhKRYlYE=;
-        b=dZdjHQx7E2RAmEMB6KE4FQeV1dlSifkUCW5tQoqtdgXv64d/JABFX1CdVFcPecZdkh
-         TgcK3tjoEuqO9Qu6navo6wRfjKD/ypvNjdWb1bN71x1JdLss9DgNpV98BqfUVFrmTR5B
-         gh7t5oyRMNMZpwl72b0IrklzeU2JVR8EyfAE4W9Le7e6WtBJPW0TJb0PuEk/ntxkedkV
-         3xhYHDRWz97Rd6gWEcihUNr59KV4+9psooY32spugMHYQmS44XPrKgYhrd5WE5GApjBD
-         9Zk1ezI1kdw0wiXOL/0urKl0P8kzbTlGENmA641KaeBqxix8An7Zk/3J4thAFosMaUb7
-         n7cQ==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Of+FjKvd8s+vxa4KebPCKUMymCE/4pxsMzXCM2VIFgI=;
+        b=h7m7ha+Jr3ID7HHwjceLrXT/nNrw+V0JrGtoBM1w+3NKQwGPVbFfjTt4LvwV+EHSp5
+         o3FFel3SUS0BsEzxh8Jtqg5gSvzPQ463dkugulalwgJDadPsWEZv0G8cwWtDqpr8NHxG
+         Jip2ggqiUPjyybwjzWwzCSYq3J7kJXLWhnTepudhBMd+wfBL4QP2nZvxfPySE5xLPf4K
+         v+pqTMfCIqJkLrRB1QF8DmKjQo8+MsBfA/Rk94R+O/Va/oTHB5M7aOLo9bpAUa9nJQx1
+         hwMiUEn9Dk9qJi+bzfaP8Ot+4rER6cmRT7MXbtNgi3pTKxYQj0XrbjkJoC1n/sG0uVar
+         TfUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678700456;
+        d=1e100.net; s=20210112; t=1678700703;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=soYbTwP/olAXcSImXe2g6wB/n/lyQSdMQ8bWhKRYlYE=;
-        b=Vk3m4d19DN60TYKgM/MPHUZXLCJrmv2+j4jlxnesSeVmo/hHdakxldP69RUTdv6D2b
-         15y7gRea3Pnof4Vo5Z2u90X5bbMWlcMr39F1iFKWbzopfM+co4mcBbf7HFtiPFcZnJxg
-         ahUiZeZJTCCW/fLNPeb2QnvxQV9nPA65OSxVdqKnw/NpmDZxYaX0HvLCXKw3A66QyoZ2
-         JRdh29K3Rf7v1qZWEQf0IiEHUYcxECzOtnnjhcF5JurTfz2ktAa22OkGeOCgz1KQ6eWj
-         VpD5DoODNEKPe47Tlc0kvecFNNWnuherjttoam9yfiy4eRNqzoe3ilhkj2psHP3iTJPB
-         WgOw==
-X-Gm-Message-State: AO0yUKU9HXaH8lfUdnVvWUi4hDaHre5JPPnIUr49XqOGfiIJkAIKZYUs
-        ni62lGtSzxjXJ/VppTb/SLU=
-X-Google-Smtp-Source: AK7set+EElZaBGCC8QQBcfh7jcOdvdh+LlNmTJykMCaLOS5XG/ycNKRDE1M7PDM1ChTWLmITIpFnEw==
-X-Received: by 2002:aa7:c44b:0:b0:4fb:6796:14c0 with SMTP id n11-20020aa7c44b000000b004fb679614c0mr4212264edr.22.1678700455891;
-        Mon, 13 Mar 2023 02:40:55 -0700 (PDT)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id v12-20020a170906b00c00b008c76facbbf7sm3262174ejy.171.2023.03.13.02.40.54
+        bh=Of+FjKvd8s+vxa4KebPCKUMymCE/4pxsMzXCM2VIFgI=;
+        b=ZUvViCU834HAjKAnN1YvRXqzgl3HM8C2aPKR8pXiYUkYezfkAM0eG/FYUKPdIdB3Px
+         vZtMtk9VKw7+JuygQAShJ1SUkUHPpUZOLaP3i2TsoW8IodJPELGUNAxahtDq1rEet7wW
+         NcsRy4JqBIoEnElzhGD2XnGRkKuscd0KUWoXpUtbSDyn05uSYgMNkYaJG+vozYJnmHBN
+         Tory/Wu3q8tOD0z18Y9xKsdnIbXAnpZ3wLAxUvjQSpMW6p5ANzOwXHx5we3p3XIwituw
+         lWQOmkQkChpMfGY149k6W2KklUDmRDWjYVrDspUEdMay6et3BuJeD5TALUZx3M1IWbCp
+         Efww==
+X-Gm-Message-State: AO0yUKUws2kxUspWLoQHnJ7sqTjrkPXs14YzaiFql2/LWm4RjJMLzamS
+        47o2Z/O0xeOyVkDvJka6tUc=
+X-Google-Smtp-Source: AK7set+iHhuVpNlD9WMkgP9eruUEEmzysC7RHGFFNKSVnsdlOXaMn1+BKaVfxKkKp/7vVmfzLux3Pw==
+X-Received: by 2002:a05:6a21:9998:b0:d3:73be:3ea2 with SMTP id ve24-20020a056a21999800b000d373be3ea2mr8809433pzb.36.1678700702578;
+        Mon, 13 Mar 2023 02:45:02 -0700 (PDT)
+Received: from debian.me (subs02-180-214-232-18.three.co.id. [180.214.232.18])
+        by smtp.gmail.com with ESMTPSA id a10-20020a62bd0a000000b00593e84f2d08sm4040294pff.52.2023.03.13.02.45.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Mar 2023 02:40:55 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 13 Mar 2023 10:40:53 +0100
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     acme@kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        sinquersw@gmail.com, martin.lau@kernel.org, songliubraving@fb.com,
-        sdf@google.com, timo@incline.eu, yhs@fb.com, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves 0/3] dwarves: improve BTF encoder comparison
- method
-Message-ID: <ZA7vpa3A0IDUUL7W@krava>
-References: <1678459850-16140-1-git-send-email-alan.maguire@oracle.com>
+        Mon, 13 Mar 2023 02:45:02 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 688E1105FA7; Mon, 13 Mar 2023 16:44:59 +0700 (WIB)
+Date:   Mon, 13 Mar 2023 16:44:59 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Sreevani Sreejith <ssreevani@meta.com>, void@manifault.com,
+        psreep@gmail.com, bpf@vger.kernel.org,
+        Linux-kernel@vger.kernel.org, andrii@kernel.org, mykola@meta.com
+Cc:     linux-doc@vger.kernel.org
+Subject: Re: [PATCH V3 bpf-next] BPF, docs: libbpf Overview Document
+Message-ID: <ZA7wm8scokV+XPav@debian.me>
+References: <20230310180928.2462527-1-ssreevani@meta.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="okP/XnxEkGF/S5Bq"
 Content-Disposition: inline
-In-Reply-To: <1678459850-16140-1-git-send-email-alan.maguire@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <20230310180928.2462527-1-ssreevani@meta.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 02:50:47PM +0000, Alan Maguire wrote:
-> Currently when looking for function prototype mismatches with a view
-> to excluding inconsistent functions, we fall back to a comparison
-> between parameter names when the name and number of parameters match.
-> This is brittle, as it is sometimes the case that a function has
-> multiple type-identical definitions which use different parameters.
-> 
-> Here the existing dwarves_fprintf functionality is re-used to instead
-> create a string representation of the function prototype - minus the
-> parameter names - to support a less brittle comparison method.
-> 
-> To support this, patch 1 generalizes function prototype print to
-> take a conf_fprintf parameter; this allows us to customize the
-> parameters we use in prototype string generation.
-> 
-> Patch 2 supports generating prototypes without modifiers such
-> as const as they can lead to false positive prototype mismatches;
-> see the patch for details.
-> 
-> Finally patch 3 replaces the logic used to compare parameter
-> names with the prototype string comparison instead.
-> 
-> Using verbose pahole output we can see some of the rejected
-> comparisons.  73 comparisons are rejected via prototype
-> comparison, 63 of which are non "."-suffixed functions.  For
-> example:
-> 
-> function mismatch for 'name_show'('name_show'): 'ssize_t ()(struct kobject *, struct kobj_attribute *, char *)' != 'ssize_t ()(struct device *, struct device_attribute *, char *)'
-> 
-> With these changes, the syscalls defined in sys_ni.c
-> that Jiri mentioned were missing [1] are present in BTF:
-> 
-> [43071] FUNC '__ia32_compat_sys_io_setup' type_id=42335 linkage=static
-> [43295] FUNC '__ia32_sys_io_setup' type_id=42335 linkage=static
-> [47536] FUNC '__x64_sys_io_setup' type_id=42335 linkage=static
-> 
-> [43290] FUNC '__ia32_sys_io_destroy' type_id=42335 linkage=static
-> [47531] FUNC '__x64_sys_io_destroy' type_id=42335 linkage=static
-> 
-> [43072] FUNC '__ia32_compat_sys_io_submit' type_id=42335 linkage=static
-> [43296] FUNC '__ia32_sys_io_submit' type_id=42335 linkage=static
-> [47537] FUNC '__x64_sys_io_submit' type_id=42335 linkage=static
-> 
-> [1] https://lore.kernel.org/bpf/ZAsBYpsBV0wvkhh0@krava/
-> 
-> Alan Maguire (3):
->   dwarves_fprintf: generalize function prototype print to support
->     passing conf
->   dwarves_fprintf: support skipping modifier
->   btf_encoder: compare functions via prototypes not parameter names
 
-lgtm, the syscalls from sys_ni.c are there
+--okP/XnxEkGF/S5Bq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-for me the total number of syscalls increased from 249 to 432, great ;-)
+On Fri, Mar 10, 2023 at 10:09:28AM -0800, Sreevani Sreejith wrote:
+> From: Sreevani <ssreevani@meta.com>
+>=20
+> Summary: Document that provides an overview of libbpf features for BPF
+> application development.
 
-Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
+It seems like you ignore some of my reviews at [1]. Anyway, I repeat
+them here, augmenting my new comments.
 
-thanks,
-jirka
+The patch description should have been "Document overview of libbpf,
+including its features for developing BPF programs.".
 
-> 
->  btf_encoder.c     | 67 +++++++++++++++++++++++++------------------------------
->  dwarves.h         |  6 +++++
->  dwarves_fprintf.c | 48 ++++++++++++++++++++++++++-------------
->  3 files changed, 70 insertions(+), 51 deletions(-)
-> 
-> -- 
-> 1.8.3.1
-> 
+> +######
+>  libbpf
+> -=3D=3D=3D=3D=3D=3D
+> +######
+
+Why did you add heading overline and change the heading character marker?
+
+> +The following code snippet shows how to read the parent field of a kernel
+> +``task_struct`` using BPF CO-RE and libbf. The basic helper to read a fi=
+eld in a
+> +CO-RE relocatable manner is ``bpf_core_read(dst, sz, src)``, which will =
+read
+> +``sz`` bytes from the field referenced by ``src`` into the memory pointe=
+d to by
+> +``dst``.
+> +
+> +  .. code-block:: C
+> +    :emphasize-lines: 6
+> +
+> +    //...
+> +    struct task_struct *task =3D (void *)bpf_get_current_task();
+> +    struct task_struct *parent_task;
+> +    int err;
+> +
+> +    err =3D bpf_core_read(&parent_task, sizeof(void *), &task->parent);
+> +    if (err) {
+> +      /* handle error */
+> +    }
+> +
+> +    /* parent_task contains the value of task->parent pointer */
+
+You may want to also add :lineos: option or manually add line numbers
+if you add :emphasize-lines: so that readers can see the line number
+it refers to.
+
+> +Also, find the libbpf API documentation `here
+> +<https://libbpf.readthedocs.io/en/latest/api.html>`_
+
+"See also `libbpf API documentation <link>`_".
+
+> +
+> +libbpf and Rust
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +If you are building BPF applications in Rust, it is recommended to use t=
+he
+> +`Libbpf-rs <https://github.com/libbpf/libbpf-rs>`_ library instead of bi=
+ndgen
+> +bindings directly to libbpf. Libbpf-rs wraps libbpf functionality in
+> +Rust-idiomatic interfaces and provides libbpf-cargo plugin to handle BPF=
+ code
+> +compilation and skeleton generation. Using Libbpf-rs will make building =
+user
+> +space part of the BPF application easier. Note that the BPF program them=
+selves
+> +must still be written in plain C.
+
+BPF apps are application that use BPF program, right? I thought that
+despite there is libbpf-rs, I still have to develop BPF apps in C.
+
+Thanks.
+
+[1]: https://lore.kernel.org/linux-doc/ZAqzeQZLNMyaZOck@debian.me/
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--okP/XnxEkGF/S5Bq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZA7wlwAKCRD2uYlJVVFO
+ow8vAP4rjUd07tAFMNXeoUbvQ2+9unWvXYLxgNH7/5YFykfw7wD/asWTzftMz36d
+LRR+Tn7gOkXksj1jB+PZ4+OVTHyIKA0=
+=eyQJ
+-----END PGP SIGNATURE-----
+
+--okP/XnxEkGF/S5Bq--
