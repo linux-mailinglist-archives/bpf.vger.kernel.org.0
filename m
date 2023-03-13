@@ -2,55 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC04D6B7CDC
-	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 16:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 997F06B7D97
+	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 17:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbjCMPzG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 13 Mar 2023 11:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
+        id S230028AbjCMQcU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Mar 2023 12:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbjCMPzE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Mar 2023 11:55:04 -0400
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C371716AC0
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 08:54:23 -0700 (PDT)
-Received: by mail-io1-f79.google.com with SMTP id s1-20020a6bd301000000b0073e7646594aso6526988iob.8
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 08:54:23 -0700 (PDT)
+        with ESMTP id S229709AbjCMQcS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Mar 2023 12:32:18 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68FA7B49B
+        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 09:31:48 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id er25so22965467edb.5
+        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 09:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares.net; s=google; t=1678725080;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iC/9rxrLtt9j5YQSFIj4r+xqIhr4OIPVnE5VID9BZVo=;
+        b=YtADCUojuhirIfFRQL1K75A264lIItj+966LATxLRu6s7fqnP9LTwc+RnSBOr2EcbT
+         E9kGP2na4r89BHbgbTu7AZ1e5R+jpSnaB0D+TpNokmpEjrkwQP1lBU1uvUz0s8u7y3LR
+         5Fh+7q0UUy/aXKPe3Ahm+SWO46nK/U11SFIGasx2DnETfMGQUVbeq+JTp+mBpSLB/INF
+         tAvd5mVQKWBnACY+0rdmyJFUjWUtDgiw9T+nRsuzS9o+njas4jw2XdW6qfzy0GeDSTqv
+         uoipGOIKoNrL6oWZgqXGCp9qIilYErr0QQwMNpC24KPCzTPF6G30PkHQkm0kAmuqInLZ
+         6XOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678722835;
-        h=content-transfer-encoding:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I/P4nyi7jmV9gI9/8CWk2ut4YSoCbdN8RC307sLyIPI=;
-        b=2ZeKehE45J4SeJi33rZjIkre1IZHT4TGfWU87dV35X4fMfzzg/VHMHpdFaFRVjrxr9
-         nERazPBNQiXsIykKTd2hy/bRS4BKcU02urc9joVUSWrp5ORQpDl9EojMEfsj+8IjuZ0J
-         HKHBeKro3Gz//nwt3/v6kUB30RgPly+t9xdn6PyGZXN67EHsqvVZLGY1A6Z0QHTr3Qiy
-         REnqJHrTqL03wR1HRxZhbsw/QbPA5Ft4ZU9uZNsmGZpeLgPI2xqQ21bPu/TRejSDJTA7
-         dlsNjDa8xIJDiC6plfCipBjB6Ajcg24EQ8E9TFJ6viN+fSTAeKAOTyl7htSFbkEQWG2M
-         ss2A==
-X-Gm-Message-State: AO0yUKUfoiezszOtTDHqtN4i2xblhJDT40hRRz6ddVAtK7o7j3cLlBzK
-        dVjXXkcoEOEXbCOW2BNJJSkONbvMmDiWVNUDZiZjneByUjPt
-X-Google-Smtp-Source: AK7set/BqNfTut+qZJwpUuAaYvTdOcGsx97zaAGRHv/k5SDPIS7KdELDAfe2ydg7+LcHHoC4wLDzEXcmoAMcDxhyB7ANZG+dBTKI
+        d=1e100.net; s=20210112; t=1678725080;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iC/9rxrLtt9j5YQSFIj4r+xqIhr4OIPVnE5VID9BZVo=;
+        b=3A7O1uzRvlDphPbwMTCB0jaivo9YYkM3QqyoURy9E4kk4bpzMh//CxzeI8tpBvY24e
+         Y+P5vuNLYYrm12Bs4BM09IvLJ2Ezvz/6nW/L/gLuKAvQ/q+J9FiYsDqlDVZsqoOCXyDD
+         PsUGzs+KJssVEg+4QSLfc0izAGzbwJbh4Uq2zGJbSOcDsbGss4UCS3j+PEDEIOxjADP4
+         oQxcUBO2Sn0JWcLvmEI7kGL8nVkjNjVQJsQuvbSvhmGmjkig8AZyV6XRFILU6vbUt2Y7
+         NLMrkUfDVDcYI5fKFVFwNnE02Qqze/COx56J1EcfhXNqghFjb/l22GxfzAJmcu6vuG9F
+         lDWw==
+X-Gm-Message-State: AO0yUKVzExdFEO9Fu1y5SGV8VTTKdy2CoM94K0qQ2gg7pW/8PrLD+Smn
+        6yqEDDIhvdBblAecbG/9LTnffg==
+X-Google-Smtp-Source: AK7set+PlugTltwa4XqV6a/Qhb5TzyW/J1rlDrVJgoGyg5zLPsyfQOG83Zh0xrpRM/pyV7uWxPOa3A==
+X-Received: by 2002:a05:6402:7d3:b0:4b0:87ec:2b98 with SMTP id u19-20020a05640207d300b004b087ec2b98mr33964833edy.16.1678725080373;
+        Mon, 13 Mar 2023 09:31:20 -0700 (PDT)
+Received: from [10.44.2.5] ([81.246.10.41])
+        by smtp.gmail.com with ESMTPSA id pw23-20020a17090720b700b008f398f25beesm3629029ejb.189.2023.03.13.09.31.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Mar 2023 09:31:20 -0700 (PDT)
+Message-ID: <284f332d-675c-6d7f-94f0-5d8a944ea075@tessares.net>
+Date:   Mon, 13 Mar 2023 17:31:19 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a92:dac7:0:b0:310:d631:cd72 with SMTP id
- o7-20020a92dac7000000b00310d631cd72mr102422ilq.2.1678722835401; Mon, 13 Mar
- 2023 08:53:55 -0700 (PDT)
-Date:   Mon, 13 Mar 2023 08:53:55 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000047d32505f6ca1e86@google.com>
-Subject: [syzbot] net test error: WARNING: suspicious RCU usage in veth_set_xdp_features
-From:   syzbot <syzbot+c3d0d9c42d59ff644ea6@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
-        john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH net v2 6/8] veth: take into account device reconfiguration
+ for xdp_features flag
+Content-Language: en-GB
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, saeedm@nvidia.com,
+        leon@kernel.org, shayagr@amazon.com, akiyano@amazon.com,
+        darinzon@amazon.com, sgoutham@marvell.com,
+        lorenzo.bianconi@redhat.com, toke@redhat.com, teknoraver@meta.com,
+        ttoukan.linux@gmail.com
+References: <cover.1678364612.git.lorenzo@kernel.org>
+ <f20cfdb08d7357b0853d25be3b34ace4408693be.1678364613.git.lorenzo@kernel.org>
+ <f5167659-99d7-04a1-2175-60ff1dabae71@tessares.net>
+ <CANn89i+4F0QUqyDTqJ8GWrWvGnTyLTxja2hbL1W_rVdMqqmxaQ@mail.gmail.com>
+ <CANn89iL=zQQygGg4mkAG+MES6-CpkYBL5KY+kn4j=hAowexVZw@mail.gmail.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+In-Reply-To: <CANn89iL=zQQygGg4mkAG+MES6-CpkYBL5KY+kn4j=hAowexVZw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,125 +85,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Hi Eric,
 
-syzbot found the following issue on:
+On 13/03/2023 16:53, Eric Dumazet wrote:
+> On Mon, Mar 13, 2023 at 8:50 AM Eric Dumazet <edumazet@google.com> wrote:
+>>
+>> On Mon, Mar 13, 2023 at 7:15 AM Matthieu Baerts
+>> <matthieu.baerts@tessares.net> wrote:
+>>>
+>>> Hi Lorenzo,
+>>>
+>>> On 09/03/2023 13:25, Lorenzo Bianconi wrote:
+>>>> Take into account tx/rx queues reconfiguration setting device
+>>>> xdp_features flag. Moreover consider NETIF_F_GRO flag in order to enable
+>>>> ndo_xdp_xmit callback.
+>>>>
+>>>> Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
+>>>> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>>>
+>>> Thank you for the modification.
+>>>
+>>> Unfortunately, 'git bisect' just told me this modification is the origin
+>>> of a new WARN when using veth in a netns:
+>>>
+>>>
+>>> ###################### 8< ######################
+>>>
+>>> =============================
+>>> WARNING: suspicious RCU usage
+>>> 6.3.0-rc1-00144-g064d70527aaa #149 Not tainted
+>>> -----------------------------
+>>> drivers/net/veth.c:1265 suspicious rcu_dereference_check() usage!
+>>>
+>>> other info that might help us debug this:
+>>>
+>>
+>> Same observation here, I am releasing a syzbot report with a repro.
+>>
+>>
+> 
+> I guess a fix would be:
+> 
+> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> index 293dc3b2c84a6c1931e8df42cdcd5f2798004f3c..4da74ac27f9a2425d8d3f4ffcc93f453bd58e3a5
+> 100644
+> --- a/drivers/net/veth.c
+> +++ b/drivers/net/veth.c
+> @@ -1262,7 +1262,7 @@ static void veth_set_xdp_features(struct net_device *dev)
+>         struct veth_priv *priv = netdev_priv(dev);
+>         struct net_device *peer;
+> 
+> -       peer = rcu_dereference(priv->peer);
+> +       peer = rtnl_dereference(priv->peer);
+>         if (peer && peer->real_num_tx_queues <= dev->real_num_rx_queues) {
+>                 xdp_features_t val = NETDEV_XDP_ACT_BASIC |
+>                                      NETDEV_XDP_ACT_REDIRECT |
+> 
 
-HEAD commit:    064d70527aaa Merge git://git.kernel.org/pub/scm/linux/kern..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1155fa8ac80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=732758ed7ee39a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=c3d0d9c42d59ff644ea6
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+Thank you for having looked!
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/684589f5f27e/disk-064d7052.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c0a3e4044ee2/vmlinux-064d7052.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/27e1b018eb4e/bzImage-064d7052.xz
+This patch avoids the warning on our side.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c3d0d9c42d59ff644ea6@syzkaller.appspotmail.com
-
-chnl_net:caif_netlink_parms(): no params data found
-=============================
-WARNING: suspicious RCU usage
-6.3.0-rc1-syzkaller-00144-g064d70527aaa #0 Not tainted
------------------------------
-drivers/net/veth.c:1265 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-1 lock held by syz-executor.0/5084:
- #0: ffffffff8e102ec8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:75 [inline]
- #0: ffffffff8e102ec8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3e8/0xd50 net/core/rtnetlink.c:6171
-
-stack backtrace:
-CPU: 1 PID: 5084 Comm: syz-executor.0 Not tainted 6.3.0-rc1-syzkaller-00144-g064d70527aaa #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x136/0x150 lib/dump_stack.c:106
- lockdep_rcu_suspicious+0x208/0x3a0 kernel/locking/lockdep.c:6599
- veth_set_xdp_features+0x1c7/0x250 drivers/net/veth.c:1265
- veth_newlink+0x729/0x9d0 drivers/net/veth.c:1891
- rtnl_newlink_create net/core/rtnetlink.c:3440 [inline]
- __rtnl_newlink+0x10c2/0x1840 net/core/rtnetlink.c:3657
- rtnl_newlink+0x68/0xa0 net/core/rtnetlink.c:3670
- rtnetlink_rcv_msg+0x43d/0xd50 net/core/rtnetlink.c:6174
- netlink_rcv_skb+0x165/0x440 net/netlink/af_netlink.c:2574
- netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
- netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
- netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1942
- sock_sendmsg_nosec net/socket.c:724 [inline]
- sock_sendmsg+0xde/0x190 net/socket.c:747
- __sys_sendto+0x23a/0x340 net/socket.c:2142
- __do_sys_sendto net/socket.c:2154 [inline]
- __se_sys_sendto net/socket.c:2150 [inline]
- __x64_sys_sendto+0xe1/0x1b0 net/socket.c:2150
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fe359c3e12c
-Code: fa fa ff ff 44 8b 4c 24 2c 4c 8b 44 24 20 89 c5 44 8b 54 24 28 48 8b 54 24 18 b8 2c 00 00 00 48 8b 74 24 10 8b 7c 24 08 0f 05 <48> 3d 00 f0 ff ff 77 34 89 ef 48 89 44 24 08 e8 20 fb ff ff 48 8b
-RSP: 002b:00007ffd5c9024c0 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 00007fe35a8d4620 RCX: 00007fe359c3e12c
-RDX: 000000000000002c RSI: 00007fe35a8d4670 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00007ffd5c902514 R09: 000000000000000c
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
-R13: 00007fe35a8d4670 R14: 0000000000000003 R15: 0000000000000000
- </TASK>
-bridge0: port 1(bridge_slave_0) entered blocking state
-bridge0: port 1(bridge_slave_0) entered disabled state
-bridge_slave_0: entered allmulticast mode
-bridge_slave_0: entered promiscuous mode
-bridge0: port 2(bridge_slave_1) entered blocking state
-bridge0: port 2(bridge_slave_1) entered disabled state
-bridge_slave_1: entered allmulticast mode
-bridge_slave_1: entered promiscuous mode
-bond0: (slave bond_slave_0): Enslaving as an active interface with an up link
-bond0: (slave bond_slave_1): Enslaving as an active interface with an up link
-team0: Port device team_slave_0 added
-team0: Port device team_slave_1 added
-batman_adv: batadv0: Adding interface: batadv_slave_0
-batman_adv: batadv0: The MTU of interface batadv_slave_0 is too small (1500) to handle the transport of batman-adv packets. Packets going over this interface will be fragmented on layer2 which could impact the performance. Setting the MTU to 1560 would solve the problem.
-batman_adv: batadv0: Not using interface batadv_slave_0 (retrying later): interface not active
-batman_adv: batadv0: Adding interface: batadv_slave_1
-batman_adv: batadv0: The MTU of interface batadv_slave_1 is too small (1500) to handle the transport of batman-adv packets. Packets going over this interface will be fragmented on layer2 which could impact the performance. Setting the MTU to 1560 would solve the problem.
-batman_adv: batadv0: Not using interface batadv_slave_1 (retrying later): interface not active
-hsr_slave_0: entered promiscuous mode
-hsr_slave_1: entered promiscuous mode
-netdevsim netdevsim0 netdevsim0: renamed from eth0
-netdevsim netdevsim0 netdevsim1: renamed from eth1
-netdevsim netdevsim0 netdevsim2: renamed from eth2
-netdevsim netdevsim0 netdevsim3: renamed from eth3
-bridge0: port 2(bridge_slave_1) entered blocking state
-bridge0: port 2(bridge_slave_1) entered forwarding state
-bridge0: port 1(bridge_slave_0) entered blocking state
-bridge0: port 1(bridge_slave_0) entered forwarding state
-8021q: adding VLAN 0 to HW filter on device bond0
-8021q: adding VLAN 0 to HW filter on device team0
-hsr0: Slave A (hsr_slave_0) is not up; please bring it up to get a fully working HSR network
-hsr0: Slave B (hsr_slave_1) is not up; please bring it up to get a fully working HSR network
-8021q: adding VLAN 0 to HW filter on device batadv0
-veth0_vlan: entered promiscuous mode
-veth1_vlan: entered promiscuous mode
-veth0_macvtap: entered promiscuous mode
-veth1_macvtap: entered promiscuous mode
-batman_adv: batadv0: Interface activated: batadv_slave_0
-batman_adv: batadv0: Interface activated: batadv_slave_1
-netdevsim netdevsim0 netdevsim0: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
