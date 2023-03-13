@@ -2,105 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 323596B84DE
-	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 23:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293556B8620
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 00:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjCMWj5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Mar 2023 18:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
+        id S229701AbjCMXfo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Mar 2023 19:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjCMWj4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Mar 2023 18:39:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AD76FFF7;
-        Mon, 13 Mar 2023 15:39:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0B4A3B815E9;
-        Mon, 13 Mar 2023 22:39:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F03BC433D2;
-        Mon, 13 Mar 2023 22:39:49 +0000 (UTC)
-Date:   Mon, 13 Mar 2023 18:39:46 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ross Zwisler <zwisler@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Ross Zwisler <zwisler@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        "Michael S . Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: use canonical ftrace
- path
-Message-ID: <20230313183946.1a98ef01@gandalf.local.home>
-In-Reply-To: <20230313205628.1058720-3-zwisler@kernel.org>
-References: <20230310192050.4096886-1-zwisler@kernel.org>
-        <20230313205628.1058720-1-zwisler@kernel.org>
-        <20230313205628.1058720-3-zwisler@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229684AbjCMXfn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Mar 2023 19:35:43 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BAC848F0;
+        Mon, 13 Mar 2023 16:35:41 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id f16so14292431ljq.10;
+        Mon, 13 Mar 2023 16:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678750539;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=E7Ozr/dKw0VzyxgOBsFMtcGJgOPj4b0Gs2zXpszZekM=;
+        b=W89XNdlieQtt3EVATdurl4QZopyCQbDTLpUtPb6rPMc7uU6y5ZixpyiAwB0WghX+c9
+         CWqqnrfvt0v+LILDrN8SpJqIjuxxwV5kUlH7+Ei8lRMX7J/2mpmfpxuPrvoooFlVX2do
+         NVoU8IWRC8yTSUFImG+Ro1kLOzXMgsiludRdJ2DVMml7TrNkogyJyvBT5BGOMaE+l8Qb
+         9NbBcdbIRhJi9zIJH2Q0Voe4x3reozZtWIjHhGeNsHzgFjL1jKuNZ+OU/Oo6WllSm3ap
+         Z8JYSUk+bMv2XwEZDVHg7XYYr6EUj1GgDWnKLVaD73SWgNaKvjHukTqdJpaLsI3IrGuh
+         0mog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678750539;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E7Ozr/dKw0VzyxgOBsFMtcGJgOPj4b0Gs2zXpszZekM=;
+        b=YB3io4RthLDEQNWNhrw3heA/yqd1lgtUBSN70yu0cEBBYrjCh19MuYfEt+kPYlGUrz
+         m7NYxooB9hCUHSk+j3BZHu07KHTKlWB0PSrQOj2oXBP+hYefDEci+zojK5nq2LxGzBvI
+         tCgFBJhRoUvMNhrzzQ56/4NSOFZ1p9Td1jt1k3OGaMzE2hwigHl5BtMvQc8ei1nq07QP
+         eVRjyIqW8r3+B1xGmBjPQOcCt25/QYargdZIyUUi9ogMbvl2pYODvWVYDbvoV+2nU7lp
+         qpjJJDwSnDDdi337GnZir/ImGba1VFEU6cnXMtYvcy0AJ8zCw8o9UKUtCDd+iiQ5rUnC
+         Mp6A==
+X-Gm-Message-State: AO0yUKUgZq1KCIguB3fffYPYlc/HP4qDPjWC2vQMakietm8v1hgFOZ43
+        dWEygLa8NocCZhrm6X3im2I=
+X-Google-Smtp-Source: AK7set+OP0WxayPsD5LNtgJ2l7wAQ5WW95pMz/BVrY1yeu5GecjRZNHstqkvCkrky/X+IuosQthzZg==
+X-Received: by 2002:a05:651c:2326:b0:295:93c8:496f with SMTP id bi38-20020a05651c232600b0029593c8496fmr10018385ljb.9.1678750539359;
+        Mon, 13 Mar 2023 16:35:39 -0700 (PDT)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id k5-20020a2e8885000000b00295989df708sm195395lji.28.2023.03.13.16.35.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Mar 2023 16:35:38 -0700 (PDT)
+Message-ID: <2232e368e55eb401bde45ce1b20fb710e379ae9c.camel@gmail.com>
+Subject: Re: [PATCH dwarves 0/1] Support for new btf_type_tag encoding
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, jose.marchesi@oracle.com, david.faust@oracle.com
+Date:   Tue, 14 Mar 2023 01:35:37 +0200
+In-Reply-To: <ZA+Ibs4GBwv5mHPC@kernel.org>
+References: <20230313021744.406197-1-eddyz87@gmail.com>
+         <ZA+Ibs4GBwv5mHPC@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 13 Mar 2023 14:56:28 -0600
-Ross Zwisler <zwisler@kernel.org> wrote:
+On Mon, 2023-03-13 at 17:32 -0300, Arnaldo Carvalho de Melo wrote:
+[...]
+> >   @ -72998,8 +73022,8 @ struct sock {
+> >           /* --- cacheline 19 boundary (1216 bytes) --- */
+> >           int                        (*sk_backlog_rcv)(struct sock *, s=
+truct sk_buff *); /*  1216     8 */
+> >           void                       (*sk_destruct)(struct sock *); /* =
+ 1224     8 */
+> >   -       rcu *                      sk_reuseport_cb;      /*  1232    =
+ 8 */
+> >   -       rcu *                      sk_bpf_storage;       /*  1240    =
+ 8 */
+> >   +       <ERROR                    > sk_reuseport_cb;     /*  1232    =
+ 8 */
+> >   +       <ERROR                    > sk_bpf_storage;      /*  1240    =
+ 8 */
+> >=20
+> > (Also DWARF names refer to TYPE_TAG, not actual type name, fixed in pah=
+ole-new).
+> >=20
+> > Warn #1: pahole-next complains about unexpected child tags generated
+> > by clang, e.g.:
+> >=20
+> >   die__create_new_tag: unspecified_type WITH children!
+> >   die__create_new_base_type: DW_TAG_base_type WITH children!
 
-> From: Ross Zwisler <zwisler@google.com>
-> 
-> The canonical location for the tracefs filesystem is at
-> /sys/kernel/tracing.
-> 
-> But, from Documentation/trace/ftrace.rst:
-> 
->   Before 4.1, all ftrace tracing control files were within the debugfs
->   file system, which is typically located at /sys/kernel/debug/tracing.
->   For backward compatibility, when mounting the debugfs file system,
->   the tracefs file system will be automatically mounted at:
-> 
->   /sys/kernel/debug/tracing
-> 
-> Many tests in the bpf selftest code still refer to this older debugfs
-> path, so let's update them to avoid confusion.
-> 
-> Signed-off-by: Ross Zwisler <zwisler@google.com>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Hi Arnaldo,
+=20
+> Sure, we can remove those if the children is the expected one, leaving
+> the warning maybe for debug sessions.
 
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Yes, I handle it in the pahole-new. Warnings are not reported for
+DW_TAG_LLVM_annotation children when these are applicable.
 
--- Steve
+>=20
+> Thanks for the detailed implementation notes, references and tests
+> performed, please consider breaking it up into smaller pieces or
+> ellaborate on why you think can't be done.
 
-> ---
->  tools/testing/selftests/bpf/get_cgroup_id_user.c    |  9 +++++++--
->  .../selftests/bpf/prog_tests/kprobe_multi_test.c    |  7 ++++++-
->  .../selftests/bpf/prog_tests/task_fd_query_tp.c     |  9 +++++++--
->  .../selftests/bpf/prog_tests/tp_attach_query.c      |  9 +++++++--
->  .../testing/selftests/bpf/prog_tests/trace_printk.c | 10 +++++++---
->  .../selftests/bpf/prog_tests/trace_vprintk.c        | 10 +++++++---
->  .../selftests/bpf/progs/test_stacktrace_map.c       |  2 +-
->  tools/testing/selftests/bpf/progs/test_tracepoint.c |  2 +-
->  tools/testing/selftests/bpf/test_ftrace.sh          |  7 ++++++-
->  tools/testing/selftests/bpf/test_tunnel.sh          | 13 +++++++++----
->  tools/testing/selftests/bpf/trace_helpers.c         |  8 ++++++--
->  11 files changed, 64 insertions(+), 22 deletions(-)
+
+I can split the patch into several parts,
+it would be a bit stretched, though:
+1. change in btf_loader / dwarves_fprintf to correctly print names for
+   types with type tags;
+2. consolidation of `struct btf_type_tag_type` and `struct llvm_annotation`=
+;
+3. the logic to handle "btf:type_tags";
+4. support for "void __tag*" as unspecified type.
+
+Part #3 would still be quite big, +500 LoC or something like this.
+Will submit v2 today or tomorrow.
+
+Thanks,
+Eduard
+
+>=20
+> Thanks!
+>=20
+> - Arnaldo
+> =20
+> >=20
+> > Performance impact
+> > ------------------
+> >=20
+> > The update to `struct tag` might raise concerns regarding memory
+> > usage, additional steps in recode phase might raise concerns regarding
+> > execution time. Below is statistics collected for Kernel BTF
+> > generation.
+> >=20
+> > LLVM-new / LLVM-new / pahole-new:
+> >=20
+> > $ /usr/bin/time -v pahole -J --btf_gen_floats -j --lang_exclude=3Drust =
+.tmp_vmlinux.btf
+> >     ...
+> > 	User time (seconds): 22.29
+> > 	System time (seconds): 0.47
+> > 	Percent of CPU this job got: 483%
+> >     ...
+> > 	Maximum resident set size (kbytes): 714524
+> >     ...
+> >=20
+> > LLVM-new / LLVM-new / pahole-next:
+> >=20
+> > $ /usr/bin/time -v pahole -J --btf_gen_floats -j --lang_exclude=3Drust =
+.tmp_vmlinux.btf
+> >     ...
+> > 	User time (seconds): 20.96
+> > 	System time (seconds): 0.44
+> > 	Percent of CPU this job got: 473%
+> >     ...
+> > 	Maximum resident set size (kbytes): 700848
+> >     ...
+> >=20
+> > Links & revisions
+> > -----------------
+> >=20
+> > [1] Mailing list discussion regarding `btf:type_tag`
+> >     https://lore.kernel.org/bpf/87r0w9jjoq.fsf@oracle.com/
+> > [2] Suggestion to use btfdiff
+> >     https://lore.kernel.org/dwarves/ZAKpZGSHTvsS4r8E@kernel.org/T/#mddb=
+fe661e339485fb2b0e706b31329b46bf61bda
+> > [3] f759275c1c8e ("[AMDGPU] Regenerate sdwa-peephole.ll")
+> > [4] a9498899109d ("dwarf_loader: Support for btf:type_tag")
+> > [5] 49b5300f1f8f ("Merge branch 'Support stashing local kptrs with bpf_=
+kptr_xchg'")
+> > [6] LLVM changes to generate btf:type_tag, revisions stack:
+> >     https://reviews.llvm.org/D143966
+> >     https://reviews.llvm.org/D143967
+> >     https://reviews.llvm.org/D145891
+> >=20
+> > Eduard Zingerman (1):
+> >   dwarf_loader: Support for btf:type_tag
+> >=20
+> >  btf_encoder.c     |  13 +-
+> >  btf_loader.c      |  15 +-
+> >  dwarf_loader.c    | 763 +++++++++++++++++++++++++++++++++++++---------
+> >  dwarves.c         |   1 +
+> >  dwarves.h         |  68 +++--
+> >  dwarves_fprintf.c |  13 +
+> >  6 files changed, 693 insertions(+), 180 deletions(-)
+> >=20
+> > --=20
+> > 2.39.1
+> >=20
+>=20
 
