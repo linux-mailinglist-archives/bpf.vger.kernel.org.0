@@ -2,105 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4A36B74C5
-	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 11:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED65F6B775A
+	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 13:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbjCMKzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Mar 2023 06:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        id S229823AbjCMMUp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Mar 2023 08:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjCMKzN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Mar 2023 06:55:13 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEB410F8
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 03:55:12 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id er25so18758055edb.5
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 03:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678704911;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X3XSqvrj9FGCYS1ksd0C9vpvihqJ2xRJTy45N8qgQwo=;
-        b=CgbqrbEduUhQDA9T/3gqqSZSP0kToMpjUPlu2g15XORIeBRhioUz89n7ENsspLUv7i
-         jkdHvAhv0N/qQt8l6In+TE9NG3vDbycUDDAc/GO/0Xgl9kwumC9Ti5UKQZUIKZSLdtnX
-         rcdWAnuX24zdAkbBqHB2DfFTfxLNQZko80aC4PKEZIt3YQxRNPUfNEgkZz7FC0WwiweH
-         vQ0CrrrgStAhS84H8UQ4beC2FRXUY1zI3Ggj+CpiBpmb3ETJyIiI4GImo1/vtd1QL/RC
-         +SOCnXc1zv5HUUN2g92XoGJutacpY5ODo445LQYtQWk6LUysXyhoiJjt9vtj15JxONLD
-         YX5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678704911;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X3XSqvrj9FGCYS1ksd0C9vpvihqJ2xRJTy45N8qgQwo=;
-        b=5Y10AFV+YrJTnNEs36RporbsX3i/j0PRU9bjJwat/FWy+UsUw2Gc4mxvdbyxoCdHiU
-         Jj2FD9f1YUMKN8vNsAK2FqjBa4U3dzPY2M+xN+sI8IVAgLI+aIPqWGI+hJqtBR+lj/oq
-         eiNQukVa2zy4lFYwjM/PlCWtto5aweU5WzSI63wYSm/Eot331YPyPAMv7k0ickygjPAl
-         FYIwMKPItO32WpfW3sUPDZahXoBUmoW16wfHcDXnbEOiWKNho7ePKNowpio99iAyAc0a
-         oNU4WyTlaYCl9fGPtL4gHkFSNsrB+3b10p+b5XP2r6hBMAyFWDWCkgVJbbFRIEtK/HOx
-         202w==
-X-Gm-Message-State: AO0yUKVP1BrHqTo3NRFziTxLAkQoD7e4jgnyX2Bt8DMememehIFYPB/P
-        zag5s9zzWgg/HzBb+vz9XXWaGgF/EEfbppIytL8=
-X-Google-Smtp-Source: AK7set/epR7+acaEnX9czNGb15cbPJKc7ZXjktDg9cIgLkT+/KVU4RGvBYXWE/KQEFiTj58wMHSsaklEl7GPW4VR/0E=
-X-Received: by 2002:a17:906:3141:b0:8e5:411d:4d09 with SMTP id
- e1-20020a170906314100b008e5411d4d09mr17307729eje.15.1678704910658; Mon, 13
- Mar 2023 03:55:10 -0700 (PDT)
+        with ESMTP id S229819AbjCMMUi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Mar 2023 08:20:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353CB42BC6
+        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 05:20:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C52A46123A
+        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 12:20:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F36FC433D2;
+        Mon, 13 Mar 2023 12:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678710036;
+        bh=yXSFxTL1PpdCyfa50O1SbMj6H7vfC2TYQE9pYPUcmZI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ns+FBn2BMi9VINPVbBZq9XfWUduTWBo8IyMtc9+GMYtdj4IaeMQ6CaEaiD8wGbkIN
+         V8GH3u8hbDkTq/42VTSPOUW3r9ISSsi3J0hezTBriZzo8IlcdkxeNgbZ9CMyFhLnu+
+         IIm45Z859clCgb1/DJ2LKbmKu+9pZZYSNHv0mNnsAA6IsaPUXV6qJBaWfrrY5vyN/R
+         mOWxWQQIGl6fiCR2y0/lCxy3qxhcF+LYfEmCJPvs68L0MLZN1dyLbgtPyVaIypLtoT
+         xQkfZ2JU0xobvNl+C2EKA03Tj97r68NRyClmf2yqj4HBZyBteNDJFHq7dWi/rtGP/L
+         JVWzGxe4tv7dw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6B3E04049F; Mon, 13 Mar 2023 09:20:33 -0300 (-03)
+Date:   Mon, 13 Mar 2023 09:20:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        eddyz87@gmail.com, haoluo@google.com, jolsa@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        sinquersw@gmail.com, martin.lau@kernel.org, songliubraving@fb.com,
+        sdf@google.com, timo@incline.eu, yhs@fb.com, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves 2/3] dwarves_fprintf: support skipping modifier
+Message-ID: <ZA8VEfKWuQYH/Jnx@kernel.org>
+References: <1678459850-16140-1-git-send-email-alan.maguire@oracle.com>
+ <1678459850-16140-3-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
-Received: by 2002:a17:906:2650:b0:925:24a2:1f83 with HTTP; Mon, 13 Mar 2023
- 03:55:10 -0700 (PDT)
-Reply-To: hitnodeby23@yahoo.com
-From:   Hinda Itno Deby <barr.williamboafo1@gmail.com>
-Date:   Mon, 13 Mar 2023 03:55:10 -0700
-Message-ID: <CAK0gjPjNEu5ZSNO8zTa2poxsQVeL=-t2XueGi6zWN1A=Zy7dPQ@mail.gmail.com>
-Subject: Reply
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM,UNDISC_MONEY,
-        URG_BIZ autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:529 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5058]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [barr.williamboafo1[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [barr.williamboafo1[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [hitnodeby23[at]yahoo.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.6 URG_BIZ Contains urgent matter
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1678459850-16140-3-git-send-email-alan.maguire@oracle.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Em Fri, Mar 10, 2023 at 02:50:49PM +0000, Alan Maguire escreveu:
+> When doing BTF comparisons between functions defined in multiple
+> CUs, it was noticed a few critical functions failed prototype
+> comparisons due to multiple "const" modifiers; for example:
+> 
+> function mismatch for 'memchr_inv'('memchr_inv'): 'void * ()(const const void  * , int, size_t)' != 'void * ()(const void  *, int, size_t)'
+> 
+> function mismatch for 'strnlen'('strnlen'): '__kernel_size_t ()(const const char  * , __kernel_size_t)' != '__kernel_size_t ()(const char  *, size_t)'
+> 
+> (note the "const const" in the first parameter.)
+> 
+> As such it would be useful to omit modifiers for comparison
+> purposes.  Also noted was the fact that for the "no_parm_names"
+> case, an extra space was being emitted in some cases, also
+> throwing off string comparisons of prototypes.
+
+Running 'btfdiff vmlinux' after this change ends up in a segfault:
+
+⬢[acme@toolbox pahole]$ btfdiff vmlinux
+/var/home/acme/bin/btfdiff: line 34:  8183 Segmentation fault      (core dumped) ${pahole_bin} -F dwarf --flat_arrays --sort --jobs --suppress_aligned_attribute --suppress_force_paddings --suppress_packed --lang_exclude rust --show_private_classes $dwarf_input > $dwarf_output
+/var/home/acme/bin/btfdiff: line 39:  8237 Segmentation fault      (core dumped) ${pahole_bin} -F btf --sort --suppress_aligned_attribute --suppress_packed $btf_input > $btf_output
+⬢[acme@toolbox pahole]$
+
+Investigating.
+
+- Arnaldo
+ 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  dwarves.h         |  1 +
+>  dwarves_fprintf.c | 26 ++++++++++++++++----------
+>  2 files changed, 17 insertions(+), 10 deletions(-)
+> 
+> diff --git a/dwarves.h b/dwarves.h
+> index d04a36d..7a319d1 100644
+> --- a/dwarves.h
+> +++ b/dwarves.h
+> @@ -134,6 +134,7 @@ struct conf_fprintf {
+>  	uint8_t	   strip_inline:1;
+>  	uint8_t	   skip_emitting_atomic_typedefs:1;
+>  	uint8_t	   skip_emitting_errors:1;
+> +	uint8_t    skip_emitting_modifier:1;
+>  };
+>  
+>  struct cus;
+> diff --git a/dwarves_fprintf.c b/dwarves_fprintf.c
+> index 5c6bf9c..b20a473 100644
+> --- a/dwarves_fprintf.c
+> +++ b/dwarves_fprintf.c
+> @@ -506,7 +506,8 @@ static const char *tag__ptr_name(const struct tag *tag, const struct cu *cu,
+>  				struct tag *next_type = cu__type(cu, type->type);
+>  
+>  				if (next_type && tag__is_pointer(next_type)) {
+> -					const_pointer = "const ";
+> +					if (!conf->skip_emitting_modifier)
+> +						const_pointer = "const ";
+>  					type = next_type;
+>  				}
+>  			}
+> @@ -580,13 +581,16 @@ static const char *__tag__name(const struct tag *tag, const struct cu *cu,
+>  				   *type_str = __tag__name(type, cu, tmpbf,
+>  							   sizeof(tmpbf),
+>  							   pconf);
+> -			switch (tag->tag) {
+> -			case DW_TAG_volatile_type: prefix = "volatile "; break;
+> -			case DW_TAG_const_type:    prefix = "const ";	 break;
+> -			case DW_TAG_restrict_type: suffix = " restrict"; break;
+> -			case DW_TAG_atomic_type:   prefix = "_Atomic ";  break;
+> +			if (!conf->skip_emitting_modifier) {
+> +				switch (tag->tag) {
+> +				case DW_TAG_volatile_type: prefix = "volatile "; break;
+> +				case DW_TAG_const_type: prefix = "const"; break;
+> +				case DW_TAG_restrict_type: suffix = " restrict"; break;
+> +				case DW_TAG_atomic_type:   prefix = "_Atomic ";  break;
+> +				}
+>  			}
+> -			snprintf(bf, len, "%s%s%s ", prefix, type_str, suffix);
+> +			snprintf(bf, len, "%s%s%s%s", prefix, type_str, suffix,
+> +				 conf->no_parm_names ? "" : " ");
+>  		}
+>  		break;
+>  	case DW_TAG_array_type:
+> @@ -818,9 +822,11 @@ print_default:
+>  	case DW_TAG_const_type:
+>  		modifier = "const";
+>  print_modifier: {
+> -		size_t modifier_printed = fprintf(fp, "%s ", modifier);
+> -		tconf.type_spacing -= modifier_printed;
+> -		printed		   += modifier_printed;
+> +		if (!conf->skip_emitting_modifier) {
+> +			size_t modifier_printed = fprintf(fp, "%s ", modifier);
+> +			tconf.type_spacing -= modifier_printed;
+> +			printed		   += modifier_printed;
+> +		}
+>  
+>  		struct tag *ttype = cu__type(cu, type->type);
+>  		if (ttype) {
+> -- 
+> 1.8.3.1
+> 
+
 -- 
-Hello
 
-My name is Hinda Itno Deby Please I want us to discuss Urgent Business Proposal,
-
- If you are interested kindly reply to me so i can give you all the details.
-
-Thanks and God Bless You.
-Ms Hinda Itno Deby
+- Arnaldo
