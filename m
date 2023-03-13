@@ -2,261 +2,300 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D45326B8233
-	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 21:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D46AB6B82C7
+	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 21:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbjCMUHa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Mar 2023 16:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
+        id S230086AbjCMUcz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Mar 2023 16:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbjCMUH1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Mar 2023 16:07:27 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2101.outbound.protection.outlook.com [40.107.93.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D02F5D466;
-        Mon, 13 Mar 2023 13:07:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VACqJaFP2RXQyBM/lbqSK4sGHr6A2NbiYLYNY8U/PKZZ4xUVdaUAP/u33Euslfbk+K+1XVXnTREE8xFJPSLL4rnoaknvFdJLftfG2y18j30ZhJ3RqlqrkIHXqNgHT5yRPUWncW2E2va74n3a5u4cISMYSTxN9v7eNIMSq2brBqc5cSty6+4gRNIiIRBLwfY4Od1zF1569dj1NlC7XKcytrIxTN3OmbpTg09nxexhf5AWl529cCHyRm1Kx9y30RebUoMDWw6mnTr6OMm2+o67iA9lP9MV4pp194YDyHpS1z69bUPYDPr0kD5B9R652elcPRL+yVkYquhKXu5V4FPAvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5+YeJ2uLbjq1GybEmunfFZX0z0OiOiBoGmPNCohxB8c=;
- b=KQASdKzhQodqQRBXLSNjMF8EDj1hGOj7QZzXGUAAyDg9P+wPCCwMhPjmgxtokiSo3o1OD6m5VrFxIIWMSL0IHiMt8gmM1vUjmWL9Ml35LFni+lmnWNsm+tLM3hDLmukJSLrzV7ytuRPnfk37AQVIRC6MA66pvzg1AcCV5HALXRzpSzCSm878XvHhCR4PfGq/xQIYjXSvjTaREFAjcPQmw7tbvghkpiPrmZAGmRKpgnak8V7Wi+D/paYEfBHni0Ygv0UTWu8RQIWTHXlLxIUTS5hMwiQ6TuFbxpqfDgaEdWmJDkB8d7IGMdJzkI8kAWLCPIYNwkM2yQeigHvdPUtJZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5+YeJ2uLbjq1GybEmunfFZX0z0OiOiBoGmPNCohxB8c=;
- b=Fe+nNkY3sO6b1AYLcFPkGeafJoR7lalGPilEGJlbp0iSCeofGbXjyqS8EhXZdN4d97YOwxFiBKf8MQjPu1KufFpyrXDLn1VK8ei9ehbf5lyc7BZlt2AL7YjffozU8YTJRTY2QNQDcbtemVLlxRdlP/bILJlLnREZ6koW3ScgoJE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by SJ0PR13MB5320.namprd13.prod.outlook.com (2603:10b6:a03:3dc::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.24; Mon, 13 Mar
- 2023 20:07:21 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::85f5:bdb:fb9e:294c]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::85f5:bdb:fb9e:294c%2]) with mapi id 15.20.6178.024; Mon, 13 Mar 2023
- 20:07:21 +0000
-Date:   Mon, 13 Mar 2023 21:07:11 +0100
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Jason Xing <kerneljasonxing@gmail.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, kuniyu@amazon.com,
-        liuhangbin@gmail.com, xiangxia.m.yue@gmail.com, jiri@nvidia.com,
-        andy.ren@getcruise.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next] net: introduce budget_squeeze to help us tune
- rx behavior
-Message-ID: <ZA+CbyVQxsKQ4BLp@corigine.com>
-References: <20230311163614.92296-1-kerneljasonxing@gmail.com>
- <CAL+tcoAwodpnE2NjMLPhBbmHUvmKMgSykqx0EQ4YZaQHjrx0Hw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL+tcoAwodpnE2NjMLPhBbmHUvmKMgSykqx0EQ4YZaQHjrx0Hw@mail.gmail.com>
-X-ClientProxiedBy: AM0PR04CA0066.eurprd04.prod.outlook.com
- (2603:10a6:208:1::43) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+        with ESMTP id S230081AbjCMUcx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Mar 2023 16:32:53 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F177822022;
+        Mon, 13 Mar 2023 13:32:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7360BB81219;
+        Mon, 13 Mar 2023 20:32:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3BBC433D2;
+        Mon, 13 Mar 2023 20:32:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678739569;
+        bh=1gB3poui4BqCnHv7cEkvND7JTUJSPypXb08N9fpERMc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LBf2u+XYYHo6rxxnjtS7hFaqmqkHC1SSkjQpQCBq+ymzhoc57444REAAFQYqPoEJB
+         NHkRDGhSJJHU5sjj46k5UR1fk143WMv5pKKbFv4i8vDcdVknNZBvubWL54bOkpSoL9
+         NjbQ9o+8yAWUH6tL0I6Lwd0Web+ZQQKAIc06KHaIuAhn8uMAmFTH4HFz3p7HrxURq8
+         2eVW+HeP1KwTRBT6/oZg9lpG6pqjEak+Zs+lRFx4r+sRO8COjKr97YbyxAclNsjf+C
+         F2ppLR5sU3esOw6+Iyz5qRevR7IIn5F8amgqGM7jmSy9AP2kA4Zx8ru8+JESrtZAXl
+         hfc3HdsxH6pEw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1ED464049F; Mon, 13 Mar 2023 17:32:46 -0300 (-03)
+Date:   Mon, 13 Mar 2023 17:32:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     dwarves@vger.kernel.org, arnaldo.melo@gmail.com,
+        bpf@vger.kernel.org, kernel-team@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
+        jose.marchesi@oracle.com, david.faust@oracle.com
+Subject: Re: [PATCH dwarves 0/1] Support for new btf_type_tag encoding
+Message-ID: <ZA+Ibs4GBwv5mHPC@kernel.org>
+References: <20230313021744.406197-1-eddyz87@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|SJ0PR13MB5320:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9858bbb3-470c-4ce0-ae43-08db23fe8d9d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QJ3PVb2lqLlNxKpdlkFt/j8cKrZ52CzLE8i6MQlONu3fBVTSfsmJdgK4AlMR/j+9pflZ6JeruNw357PE0to4NEjev09ISp9TR66dvvCFBGuyung5+NRcSPFVdW+ne9yg9QGlx7KJZ4Gi8mD4FH5Vfj4usFL+acZDQJqEcig9bfBArSXWPkCcrEdxInmA5Dlg9lBN2MDwopeHE9XtUEkZd/eqZC+XfmKjykI0IoBfapVjRVE0BTterUZjg07QHnAD5fis/0d3bh0eeygXup9s5jEx+vT9qRWolxK7kI5/zCE3XFNnDfOUaL9GZH1/eYsdiCZ3y3pWFGJES7lKac71RQYSLKOOhAN6IIoHvwZ1DCKZ/HOt17vLux48Id99Yb58HBkg07MuxneetBGr4VZ6iRiX6d+2SkrtC8+JZqgFa8NSmJYA/D8j+Ow7CwQ30oNF9JdU6LoVR5FusP8VsEfHV2cG9jRtbJpI8Q4dABGTl8nMMYYYyMBQayC0Oc11s+HHCeMLMu+F+5zoAIrIzGn+sYMRq8Qt3TNmV7vqcBZyo99GIh6F+usO+hFhZU6eIMXJScZfyt0jprOBlvapO0i13vcd18UVkmqrBkHcw9Z6higmnLIdH3+Fb2z0qUX/ERa8mF3UllWS8OWDUzXjq191dadQ+8y1bIxqx/TzwxMcdIK67xCweAvTITLsu3Gx8Fu3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(366004)(346002)(39840400004)(376002)(396003)(136003)(451199018)(8936002)(478600001)(41300700001)(8676002)(66946007)(66476007)(6916009)(66556008)(4326008)(86362001)(36756003)(38100700002)(6506007)(6512007)(186003)(53546011)(6666004)(966005)(6486002)(2906002)(7416002)(44832011)(5660300002)(316002)(83380400001)(2616005)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Titwam9HOTlIN0hkcDZDM28wVUtuOExUUEFLSlk1cEd0TzBZZVQ0M0dyVHNj?=
- =?utf-8?B?ZjYyenVxOXIwcERrazlLS2tqaGc1Qk5aMmgvNWh2ZEZtb1RCR3o3SkJVc0Ny?=
- =?utf-8?B?K0RPWUFCdjhITC9OdkdiRjVOaVZjQWx5aU9JTWl5WXUyd1BQYm03SE5GemtF?=
- =?utf-8?B?Z1ZWcitRUm9kTWtrdStoSnB1Qy9zckk1NVRjOXp4MDIvc3VvcGt6R3VsWnRw?=
- =?utf-8?B?d08wMEVoTVBacno1UTNvU0dObEZqd0kwSlBITExlbksrQitoWllkMHZqZk1Y?=
- =?utf-8?B?b2ZhRUtsNzBOdkJyV2JLT2kwdEhtaVhuNG9lU1lsaVJrZnlySEtSR1NpSFlO?=
- =?utf-8?B?RU96dGxsNWh1L0syQnN6NlY2OGd2K01IZ3NKWWFqbGN6bW1YVkRueXp0MUla?=
- =?utf-8?B?RkpvUTY3REUrUk9QWWNqa2JEMitZd0xQVFVBSUN3N0E0eE44RFJVU3FpckM0?=
- =?utf-8?B?TUlqOVBsZ2FpWjV6NytEODJwRFUyOVdYODM1eTZubGQ4U1JJSnRBS1lLMkdP?=
- =?utf-8?B?b1BtRGxsRXNZbUpna3N6ZlhoQzZFZk5MdnRyZUVIYm96dnVvcU9xL0U5dy9v?=
- =?utf-8?B?ZXhsQ294TUdZazhnWExWNEI2UDNPNWtuTU55TmthZGxCVFA5ajBDREJSRTc3?=
- =?utf-8?B?K1VZYVhIdzhHUW9SaXNXKzJTeXg1a1AwSkhrVE1GMFFKVkExaGMwNDMySSta?=
- =?utf-8?B?Q292Unhha3hTMGJ2Mmt2Sk1mSjJHQmJjOWFBMTRQVnlHa0JXQjJMMlJUdzRF?=
- =?utf-8?B?VDA3Z0YxV3JwSzZ6WFZkcCs3YmVUUnN4ZHl1cUpkSXpTWE50R1dFbnVQcVBu?=
- =?utf-8?B?clY4cVUvdWY4S0pxcjMzWWJFYlhhUzdXdU0wSFdMaTBDS3lqY2dDTEI4STVL?=
- =?utf-8?B?Y2ZJNVNwSHl2SmlBYm43RnVpTnVFeTJWcTluQ21wQXJqOTlsU2Z6aTFTWWtE?=
- =?utf-8?B?WjY3UXdKUWdpQjFrUUl6VDhRWkJVOEFwMGFEeHJETmlZOE00Q3M0dnYyNy9r?=
- =?utf-8?B?aFQ2d3Z6am4veGVrYlludHc5QndtdXNpRk1yQnZUSmJHSmdWMHNoVEEyMnEy?=
- =?utf-8?B?TkwrN2tXSDdtZGIvdUl4MlgrYUNlY0JpTHdNQ0x1MXJrckd0SkRObXZRZnBx?=
- =?utf-8?B?bWh6ZXAwZVZMNlE0eGhEK21iUmRzdE9WYmgwRS9YdGNGekJNRG9EUG91elFY?=
- =?utf-8?B?ZmRtdmVxTkQ2Z1Z0T3JPd3kxVmd4NHNTOFowQS92K0JFWFBLRW1CQ01BRGRv?=
- =?utf-8?B?bS9IeGFYNjhhZnI2TXd4djhVSlRkWDdZMkwwa3JoZi9uMGZZTzhldzJsaEY2?=
- =?utf-8?B?UDdHZFBHYit0b0IzSU5ySW5odlRjT3JxczFsQlg4ZXBjM2p0YlJNYXVmZXNm?=
- =?utf-8?B?V3VUTzB3RGd1UGhzR3RLbzFUOFM3b2ljQ1FlQmxkdmZzcWU5bXo3RTZnRjds?=
- =?utf-8?B?dHZ2TThOdWtvT2srcVNJa1g4YXlzYlBPRCtEQld0RDJ4M0d6TExmaGdPQmF5?=
- =?utf-8?B?bjFXVkdodUhaVkp3WFlaWHk5UTYwZDUveXMzd002MFpEaDltZ2VuZDBGV0Fk?=
- =?utf-8?B?YUcrdmRPRFVCNmVBRjBUbE9KNmZkQVozdWV3b003ZUJQVTR4cTF6WksxQ0h5?=
- =?utf-8?B?UjY0dmE0emxaYWpuNUNzTHZ4KzJTUkowanFvUnBPZ28rM0hKM2grdmZZRzF2?=
- =?utf-8?B?SE5PVlFEbkRmZXcydmxwalZqOHcvaHpsUlp4SDBhd2Iyd0JYL3FyOTRsL3Zn?=
- =?utf-8?B?K0IzSzlHVXRtNHk0VWlLdGVtR1lub0xiY095SWd2SW1ldi94bmx6NVZpdjhV?=
- =?utf-8?B?WkdiMzBSRk5LaWUvYUhUVWNQa29lSS9TeFlubkhUMW1tek40ZWxkK00yUEtw?=
- =?utf-8?B?ZHFEeVh1OUgrY0U2bVdZQzg5cEEwNnZROVhlWTFsU3dNdlpuSldYN3JoNEhn?=
- =?utf-8?B?RmtTQWtETzBpelhtVm1jalhnQjBuRHQrZjlTbjBoNW9TeWJ1dm9vWWorbTFG?=
- =?utf-8?B?VE1IbTEySXpqYVVQUXIyOHFGZHBhSDVhcFhYaGEvai9lblpMR1hJWG4xVkgv?=
- =?utf-8?B?ZGJXZUh0TDYxeUttZTJ0Y0IrN1RXYzN1dllmVGhjLzBZeEpBVnovRDJHTEwx?=
- =?utf-8?B?T2NWc2JubXFzSkRtaXB2T1I3ekNleWZ1TlBnS1R1dXVJNHg2YzVFN01raDQw?=
- =?utf-8?B?MEVSN0c1UUJRam93eWk5cUJKb2wxMFZtUTZpSGpIL0ROWWtqUzA4UVllU0RY?=
- =?utf-8?B?NHpPZGlZUlVXdHNMSzBXOExJWk5RPT0=?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9858bbb3-470c-4ce0-ae43-08db23fe8d9d
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2023 20:07:21.1465
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h02FrQ4AXHF7wYyYzz+CcXbjU6vNAdcO25cpA+/Ko9g46WUIP1dTfM7Qq3gWuWGjZqnn4zh6bk6XzXUQudXShq0GAVImNFBiEJDNnIwMAP0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR13MB5320
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230313021744.406197-1-eddyz87@gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 13, 2023 at 10:05:18AM +0800, Jason Xing wrote:
-> On Sun, Mar 12, 2023 at 12:36 AM Jason Xing <kerneljasonxing@gmail.com> wrote:
-> >
-> > From: Jason Xing <kernelxing@tencent.com>
-> >
-> > When we encounter some performance issue and then get lost on how
-> > to tune the budget limit and time limit in net_rx_action() function,
-> > we can separately counting both of them to avoid the confusion.
-> >
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> > note: this commit is based on the link as below:
-> > https://lore.kernel.org/lkml/20230311151756.83302-1-kerneljasonxing@gmail.com/
-> > ---
-> >  include/linux/netdevice.h |  1 +
-> >  net/core/dev.c            | 12 ++++++++----
-> >  net/core/net-procfs.c     |  9 ++++++---
-> >  3 files changed, 15 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > index 6a14b7b11766..5736311a2133 100644
-> > --- a/include/linux/netdevice.h
-> > +++ b/include/linux/netdevice.h
-> > @@ -3157,6 +3157,7 @@ struct softnet_data {
-> >         /* stats */
-> >         unsigned int            processed;
-> >         unsigned int            time_squeeze;
-> > +       unsigned int            budget_squeeze;
-> >  #ifdef CONFIG_RPS
-> >         struct softnet_data     *rps_ipi_list;
-> >  #endif
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index 253584777101..bed7a68fdb5d 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -6637,6 +6637,7 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
-> >         unsigned long time_limit = jiffies +
-> >                 usecs_to_jiffies(READ_ONCE(netdev_budget_usecs));
-> >         int budget = READ_ONCE(netdev_budget);
-> > +       bool is_continue = true;
+Em Mon, Mar 13, 2023 at 04:17:43AM +0200, Eduard Zingerman escreveu:
+> In recent discussion in BPF mailing list ([1]) participants agreed to
+> add a new DWARF representation for "btf_type_tag" annotations.
 > 
-> I kept thinking during these days, I think it looks not that concise
-> and elegant and also the name is not that good though the function can
-> work.
+> Existing representation is DW_TAG_LLVM_annotation object attached as a
+> child to a DW_TAG_pointer_type. It means that "btf_type_tag"
+> annotation is attached to a pointee type.
 > 
-> In the next submission, I'm going to choose to use 'while()' instead
-> of 'for()' suggested by Stephen.
+> New representation is DW_TAG_LLVM_annotation object attached as a
+> child to *any* type. It means that "btf_type_tag" annotation is
+> attached to the parent type.
 > 
-> Does anyone else have some advice about this?
-
-What about:
-
-	int done = false
-
-	while (!done) {
-		...
-	}
-
-Or:
-
-	for (;;) {
-		int done = false;
-
-		...
-		if (done)
-			break;
-	}
-
+> Here is an example:
 > 
-> Thanks,
-> Jason
+>     int __attribute__((btf_type_tag("tag1"))) *g;
 > 
-> >         LIST_HEAD(list);
-> >         LIST_HEAD(repoll);
-> >
-> > @@ -6644,7 +6645,7 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
-> >         list_splice_init(&sd->poll_list, &list);
-> >         local_irq_enable();
-> >
-> > -       for (;;) {
-> > +       for (; is_continue;) {
-> >                 struct napi_struct *n;
-> >
-> >                 skb_defer_free_flush(sd);
-> > @@ -6662,10 +6663,13 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
-> >                  * Allow this to run for 2 jiffies since which will allow
-> >                  * an average latency of 1.5/HZ.
-> >                  */
-> > -               if (unlikely(budget <= 0 ||
-> > -                            time_after_eq(jiffies, time_limit))) {
-> > +               if (unlikely(budget <= 0)) {
-> > +                       sd->budget_squeeze++;
-> > +                       is_continue = false;
-> > +               }
-> > +               if (unlikely(time_after_eq(jiffies, time_limit))) {
-> >                         sd->time_squeeze++;
-> > -                       break;
-> > +                       is_continue = false;
-> >                 }
-> >         }
-> >
-> > diff --git a/net/core/net-procfs.c b/net/core/net-procfs.c
-> > index 97a304e1957a..4d1a499d7c43 100644
-> > --- a/net/core/net-procfs.c
-> > +++ b/net/core/net-procfs.c
-> > @@ -174,14 +174,17 @@ static int softnet_seq_show(struct seq_file *seq, void *v)
-> >          */
-> >         seq_printf(seq,
-> >                    "%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x "
-> > -                  "%08x %08x\n",
-> > -                  sd->processed, sd->dropped, sd->time_squeeze, 0,
-> > +                  "%08x %08x %08x %08x\n",
-> > +                  sd->processed, sd->dropped,
-> > +                  0, /* was old way to count time squeeze */
-> > +                  0,
-> >                    0, 0, 0, 0, /* was fastroute */
-> >                    0,   /* was cpu_collision */
-> >                    sd->received_rps, flow_limit_count,
-> >                    0,   /* was len of two backlog queues */
-> >                    (int)seq->index,
-> > -                  softnet_input_pkt_queue_len(sd), softnet_process_queue_len(sd));
-> > +                  softnet_input_pkt_queue_len(sd), softnet_process_queue_len(sd),
-> > +                  sd->time_squeeze, sd->budget_squeeze);
-> >         return 0;
-> >  }
-> >
-> > --
-> > 2.37.3
-> >
+> And corresponding DWARF:
 > 
+>     0x0000001e:   DW_TAG_variable
+>                     DW_AT_name      ("g")
+>                     DW_AT_type      (0x00000029 "int *")
+> 
+>     0x00000029:   DW_TAG_pointer_type
+>                     DW_AT_type      (0x00000032 "int")
+> 
+>     0x0000002e:     DW_TAG_LLVM_annotation
+>                       DW_AT_name    ("btf_type_tag")
+>                       DW_AT_const_value     ("tag1")
+> 
+>     0x00000032:   DW_TAG_base_type
+>                     DW_AT_name      ("int")
+> 
+> 
+> This patch adds logic necessary to handle such annotations in the
+> pahole tool. Examples like below are supported:
+> 
+>   #define __tag(val) __attribute__((btf_type_tag("__" #val)))
+> 
+>   struct      alpha {};
+>   union       bravo {};
+>   enum        charlie { X };
+>   typedef int delta;
+> 
+>   struct echo {
+>     int          * __tag(a)  a;
+>     int            __tag(b) *b;
+>     int            __tag(c)  c;
+>     void           __tag(d) *d;
+>     void           __tag(e) *e;
+>     struct alpha   __tag(f)  f;
+>     union  bravo   __tag(g)  g;
+>     enum   charlie __tag(h)  h;
+>     delta          __tag(i)  i;
+>     int __tag(j_result) (__tag(j) *j)(int __tag(j_param));
+>   } g;
+> 
+> Implementation details
+> ----------------------
+> 
+> Although this was not discussed in the mailing list, the proposed
+> implementation acts in a following way (for compatibility reasons):
+> - both forms could be present in the debug info;
+> - if any annotations corresponding to the new form are present in the
+>   debug info, annotations corresponding to the old form are ignored.
+
+agreed
+ 
+> Because the new form of type tags could be applied to any type it is
+> somewhat invasive from implementation point of view:
+
+Can you please see if you can break this patch into a series so that it
+helps with reviewing and bisection?
+
+> - Types `struct btf_type_tag_type` and `struct llvm_annotation` are
+>   consolidated as a single type `struct llvm_annotation`, in order to
+>   reside in a single `annots` list associated with struct/union/enum
+>   or typedef.
+> - The `annots` list, used to hold references to annotation objects,
+>   is put directly in `struct tag`.
+> - At the load phase it is not yet known whether new or old form is
+>   used for type tags encoding, so `struct llvm_annotation` objects are
+>   not added to the types table.
+> - The recode phase now consists of several steps:
+>   - depending on the results of the load phase, `struct llvm_annotation`
+>     objects corresponding to either old or new representations are
+>     added to the types table;
+>   - `tag__recode_dwarf_type()` is executed as usual, but it also
+>     collects information about type tags;
+>   - references to types that have type tag annotations are updated to
+>     point to the first annotation object.
+> 
+> Corresponding clang changes are tracked in [6].
+> 
+> Testing
+> -------
+> 
+> To verify the changes I used the following:
+> - Tools:
+>   - "LLVM-main"   :: LLVM at revision [3];
+>   - "LLVM-new"    :: LLVM at revision [3] with patches [6] applied;
+>   - "gcc"         :: GCC version 11.3 (no support for btf_type_tag annotations);
+>   - "pahole-next" :: dwarves at revision [4];
+>   - "pahole-new"  :: dwarves at revision [4] + this patch,
+>   - "kernel"      :: Linux Kernel bpf-next branch at revision [5]
+> - test cases:
+>   - kernel build;
+>   - kernel BPF test cases build, BPF tests execution
+>     (test_verifier, test_progs, test_progs-no_alu32, test_maps);
+>   - btfdiff script (suggested by Arnaldo, [2]).
+> - tool combinations (kernel compiler / clang for BPF tests / pahole version):
+>   - LLVM-main / LLVM-main / pahole-new
+>     - kernel build : ok
+>     - bpf tests    : ok
+>     - btfdiff      : ok (modulo diff #1, see below)
+>   - gcc       / LLVM-main / pahole-new
+>     - kernel build : ok
+>     - bpf tests    : ok
+>     - btfdiff      : ok
+>   - LLVM-new  / LLVM-new  / pahole-next
+>     - kernel build : ok with warnings (see warn #1 below)
+>     - bpf tests    : ok
+>     - btfdiff      : fails (see diff #2 below)
+>   - LLVM-new  / LLVM-new  / pahole-new
+>     - kernel build : ok
+>     - bpf tests    : ok
+>     - btfdiff      : ok (modulo diff #1, see below)
+>   - gcc       / LLVM-new  / pahole-new
+>     - kernel build : ok
+>     - bpf tests    : ok
+>     - btfdiff      : ok
+> 
+> Note on BPF tests: test case `verif_scale_loop6` fails for all
+> configurations above and 'LLVM-main / LLVM-main / pahole-next',
+> thus I consider this issue as unrelated.
+> 
+> Diff #1: Difference in flexible printing, several occurrences as below:
+> 
+>   @ -10531,7 +10531,7 @ struct bpf_cand_cache {
+>           struct {
+>                   const struct btf  * btf;                 /*    16     8 */
+>                   u32                id;                   /*    24     4 */
+>   -       } cands[0]; /*    16     0 */
+>   +       } cands[]; /*    16     0 */
+>    
+>           /* size: 16, cachelines: 1, members: 5 */
+>           /* last cacheline: 16 bytes */
+> 
+> Diff #2: pahole-next does not know how to print type name for types
+> with type tags, when reading from BTF:
+> 
+>   @ -72998,8 +73022,8 @ struct sock {
+>           /* --- cacheline 19 boundary (1216 bytes) --- */
+>           int                        (*sk_backlog_rcv)(struct sock *, struct sk_buff *); /*  1216     8 */
+>           void                       (*sk_destruct)(struct sock *); /*  1224     8 */
+>   -       rcu *                      sk_reuseport_cb;      /*  1232     8 */
+>   -       rcu *                      sk_bpf_storage;       /*  1240     8 */
+>   +       <ERROR                    > sk_reuseport_cb;     /*  1232     8 */
+>   +       <ERROR                    > sk_bpf_storage;      /*  1240     8 */
+> 
+> (Also DWARF names refer to TYPE_TAG, not actual type name, fixed in pahole-new).
+> 
+> Warn #1: pahole-next complains about unexpected child tags generated
+> by clang, e.g.:
+> 
+>   die__create_new_tag: unspecified_type WITH children!
+>   die__create_new_base_type: DW_TAG_base_type WITH children!
+
+Sure, we can remove those if the children is the expected one, leaving
+the warning maybe for debug sessions.
+
+Thanks for the detailed implementation notes, references and tests
+performed, please consider breaking it up into smaller pieces or
+ellaborate on why you think can't be done.
+
+Thanks!
+
+- Arnaldo
+ 
+> 
+> Performance impact
+> ------------------
+> 
+> The update to `struct tag` might raise concerns regarding memory
+> usage, additional steps in recode phase might raise concerns regarding
+> execution time. Below is statistics collected for Kernel BTF
+> generation.
+> 
+> LLVM-new / LLVM-new / pahole-new:
+> 
+> $ /usr/bin/time -v pahole -J --btf_gen_floats -j --lang_exclude=rust .tmp_vmlinux.btf
+>     ...
+> 	User time (seconds): 22.29
+> 	System time (seconds): 0.47
+> 	Percent of CPU this job got: 483%
+>     ...
+> 	Maximum resident set size (kbytes): 714524
+>     ...
+> 
+> LLVM-new / LLVM-new / pahole-next:
+> 
+> $ /usr/bin/time -v pahole -J --btf_gen_floats -j --lang_exclude=rust .tmp_vmlinux.btf
+>     ...
+> 	User time (seconds): 20.96
+> 	System time (seconds): 0.44
+> 	Percent of CPU this job got: 473%
+>     ...
+> 	Maximum resident set size (kbytes): 700848
+>     ...
+> 
+> Links & revisions
+> -----------------
+> 
+> [1] Mailing list discussion regarding `btf:type_tag`
+>     https://lore.kernel.org/bpf/87r0w9jjoq.fsf@oracle.com/
+> [2] Suggestion to use btfdiff
+>     https://lore.kernel.org/dwarves/ZAKpZGSHTvsS4r8E@kernel.org/T/#mddbfe661e339485fb2b0e706b31329b46bf61bda
+> [3] f759275c1c8e ("[AMDGPU] Regenerate sdwa-peephole.ll")
+> [4] a9498899109d ("dwarf_loader: Support for btf:type_tag")
+> [5] 49b5300f1f8f ("Merge branch 'Support stashing local kptrs with bpf_kptr_xchg'")
+> [6] LLVM changes to generate btf:type_tag, revisions stack:
+>     https://reviews.llvm.org/D143966
+>     https://reviews.llvm.org/D143967
+>     https://reviews.llvm.org/D145891
+> 
+> Eduard Zingerman (1):
+>   dwarf_loader: Support for btf:type_tag
+> 
+>  btf_encoder.c     |  13 +-
+>  btf_loader.c      |  15 +-
+>  dwarf_loader.c    | 763 +++++++++++++++++++++++++++++++++++++---------
+>  dwarves.c         |   1 +
+>  dwarves.h         |  68 +++--
+>  dwarves_fprintf.c |  13 +
+>  6 files changed, 693 insertions(+), 180 deletions(-)
+> 
+> -- 
+> 2.39.1
+> 
+
+-- 
+
+- Arnaldo
