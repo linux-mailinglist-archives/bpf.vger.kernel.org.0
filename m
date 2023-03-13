@@ -2,129 +2,268 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EC96B6E3F
-	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 04:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A976B6E5A
+	for <lists+bpf@lfdr.de>; Mon, 13 Mar 2023 05:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjCMDzX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Mar 2023 23:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        id S229862AbjCMEQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Mar 2023 00:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjCMDyo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Mar 2023 23:54:44 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4021A23D9D;
-        Sun, 12 Mar 2023 20:54:29 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id j3-20020a17090adc8300b0023d09aea4a6so1276247pjv.5;
-        Sun, 12 Mar 2023 20:54:29 -0700 (PDT)
+        with ESMTP id S229656AbjCMEQ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Mar 2023 00:16:29 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5097738B57;
+        Sun, 12 Mar 2023 21:16:28 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id f1so7462787qvx.13;
+        Sun, 12 Mar 2023 21:16:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678679669;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O8lGczpgHLvE7RnSt7vYDGP1Ii5/BaRcHQ5j2XjpcEI=;
-        b=AOEg9z4W6nyOpMfbmQ8mraE0Ga0hnpauG19ItBJTeGP9fLoQW9MFXqU+YokrGfJTcM
-         uo25ngtFHQ2ylwarPi5Z1mcmHCOfVUhOooLgbyqSR/b0QlyUaAblPFmhBLWbtTZhiVlC
-         KDn7gcJuoF0ngglfPDt67/NTlMZ01wBrJTpK/XZjzFjUQSKlU22p2QMJo+ZVf54nxVqY
-         KopWejd1kZOUJOf0lz4oEhsjU+Ovd7EhKIJLQGrU6gVT4z0QTQMrMLdrGpjaZcQtkVt+
-         0zALEIwKnnABKY1b4XpEOwnPkcSGp2wT11pK83PMJGH2LmBQFQBmc1VMfv7udr/qEb6b
-         vjXw==
+        d=gmail.com; s=20210112; t=1678680987;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vz27ubgSgsPVKRZhpyxnFdspvWFPLP5JenwDUWFDBsY=;
+        b=YK9DQ/jNHTXvRWyu2yYYY0CAls3Gdb6ch2O4u64f29wbegxjE1xEZTdhgxDYQ2SVP7
+         0ZPo9w+nUOLZLjHzX4OnSbZVJ9F4nby6ePtgLkGVc3ixmXExjM/neYqHIeefhLuB4JHP
+         c4CjXTiu+bNw2X29ToZGvHQVJ+lEeOZj0ZjvrMtSHkqluXIKZgJoTIl3ME7M6e0G3jF7
+         5foD9WFYgaziMhXMtKNtKC2knmnecTPt+r3p/ZGwTerqMpStyfSv6cJFHnvwULaTePR5
+         +gN4bmgWrIed7jl/GaRj2/42KvOOhZJg8e2ImSNBL+LsHDe/+dbLZ+LQfapqJdKSZU4Q
+         OdUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678679669;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O8lGczpgHLvE7RnSt7vYDGP1Ii5/BaRcHQ5j2XjpcEI=;
-        b=zrFo2fc38hUo7iHIpxg40NhheIjuFZag3jTPhFLivcZhrQCGxCoJ9CEHJ1b03ZVfrB
-         YTODAcvM4RjiTaEMNMJAhETcOS7EIvZqVVJ2zLWeu9A0JbhgxPwH4IVrZcSBuMRCJ9+9
-         eWgB/XwnJD1OsgHCNOkb3VW9TbThiIMZHBnPTqn/10cvgeHq3KW0KOtrbSu+6/uYmDn7
-         bKbka5t0gR1wut7nvtcP9Glv4i+gtVc65mHup/R4U4/YMlp+LAYCG5PQ6/IG5NnUfBL4
-         iwmDh00CYX1wUI4L1mseTtvzhl6H9sWxmhEGcos8Nza2t7sHS3HF04xZf3U5X2hYMoX0
-         /Jng==
-X-Gm-Message-State: AO0yUKW5j+QnT7IntSvaZnYd8Oe7eA65kwDFJy+KORmqPU0eT4oPevPm
-        xpZJEjxi7xpicBnh5NN5dm0lCnG86w4=
-X-Google-Smtp-Source: AK7set/iuYwAf5IXs0Bj0MqQMOX0grcoVOtMs+GxyLKr2Va0GQeA2Z/SRQEH36+H4IjtHwPmkUaPpg==
-X-Received: by 2002:a17:903:187:b0:19c:dc38:3eb5 with SMTP id z7-20020a170903018700b0019cdc383eb5mr43603213plg.14.1678679668694;
-        Sun, 12 Mar 2023 20:54:28 -0700 (PDT)
-Received: from debian.me (subs02-180-214-232-24.three.co.id. [180.214.232.24])
-        by smtp.gmail.com with ESMTPSA id kk3-20020a170903070300b0019f11caf11asm3567020plb.166.2023.03.12.20.54.27
+        d=1e100.net; s=20210112; t=1678680987;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vz27ubgSgsPVKRZhpyxnFdspvWFPLP5JenwDUWFDBsY=;
+        b=Va2jq7Lr6MIk7NyAAL189Q1wZgcP/jm2NFxRwfIaShe+YqlZDaukDmiTYU182tPWOZ
+         TEF8sfr3cKF7pys/FSUkT6OmzPCnH0snzsRcGMJIKqEIHmUUwKUP5q/98okGJpkcVlA4
+         tQ8oapmJsx7j+Lc130E4FYbn817U43aaeqO1sBROLtzZyFk6K2480C95rqXj8p9Wyuxn
+         Ji0ugmwpw7QMgKohcctymXRLM2CJmZn5A+QJDMNNv+dA2o0Mfmh9hILMJbW5uzRGCqb5
+         jyqpPBqmhMBvLg1BL4I5KtFWv44HHOhZdS1xIr5SOHuBOxW7uc1QuuI71iaIideqi4ox
+         H0rw==
+X-Gm-Message-State: AO0yUKWR+evEC974ifHMVF/GfdVFZD6xzaqcF0FuC0ks+XNtlwRWSNXY
+        1W2aGkh9WlyBNkx0QQB72HDX0jKUuHA=
+X-Google-Smtp-Source: AK7set8PwN/GkHQ03VMZm3th3t/Jnj6KmenKaNXJrgMALzd91oxkwGZXfI5zALwfYUOyn+Bp3unRCw==
+X-Received: by 2002:a05:6214:489:b0:56e:fef4:7ff1 with SMTP id pt9-20020a056214048900b0056efef47ff1mr12901472qvb.21.1678680987052;
+        Sun, 12 Mar 2023 21:16:27 -0700 (PDT)
+Received: from pop-os.attlocal.net ([2600:1700:65a0:ab60:af2d:ae33:c139:49d7])
+        by smtp.gmail.com with ESMTPSA id k14-20020ac8604e000000b003b63dfad2b4sm4845596qtm.0.2023.03.12.21.16.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Mar 2023 20:54:28 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 620CC106689; Mon, 13 Mar 2023 10:54:25 +0700 (WIB)
-Date:   Mon, 13 Mar 2023 10:54:25 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Joe Stringer <joe@isovalent.com>, bpf@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ast@kernel.org, corbet@lwn.net, martin.lau@linux.dev,
-        maxtram95@gmail.com
-Subject: Re: [PATCH bpf-next v3] docs/bpf: Add LRU internals description and
- graph
-Message-ID: <ZA6ecdQl3STWVAH6@debian.me>
-References: <20230312190600.324573-1-joe@isovalent.com>
+        Sun, 12 Mar 2023 21:16:26 -0700 (PDT)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [Patch net-next v2] sock_map: dump socket map id via diag
+Date:   Sun, 12 Mar 2023 21:16:19 -0700
+Message-Id: <20230313041619.394914-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/TLMb2wQzVHenkud"
-Content-Disposition: inline
-In-Reply-To: <20230312190600.324573-1-joe@isovalent.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Cong Wang <cong.wang@bytedance.com>
 
---/TLMb2wQzVHenkud
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Currently there is no way to know which sockmap a socket has been added
+to from outside, especially for that a socket can be added to multiple
+sockmap's. We could dump this via socket diag, as shown below.
 
-On Sun, Mar 12, 2023 at 12:05:59PM -0700, Joe Stringer wrote:
-> +Even if an LRU node may be acquired, maps of type ``BPF_MAP_TYPE_LRU_HAS=
-H``
-> +may fail to insert the entry into the map if other CPUs are heavily cont=
-ending
-> +on the global hashmap lock.
+Sample output:
 
-"Even if an LRU node can be acquired, ..."
+  # ./iproute2/misc/ss -tnaie --sockmap
+  ESTAB  0      344329     127.0.0.1:1234     127.0.0.1:40912 ino:21098 sk:5 cgroup:/user.slice/user-0.slice/session-c1.scope <-> sockmap: 1
 
-> +
-> +This algorithm is described visually in the following diagram. See the
-> +description in commit 3a08c2fd7634 ("bpf: LRU List") for a full explanat=
-ion of
-> +the corresponding operations:
-> +
-> +.. kernel-figure::  map_lru_hash_update.dot
-> +   :alt:    Diagram outlining the LRU eviction steps taken during map up=
-date
-> +
-> +   LRU hash eviction during map update for ``BPF_MAP_TYPE_LRU_HASH`` and
-> +   variants
-> +
-> <snipped> ...
-> +The dot file source for the above figure uses internal kernel function n=
-ames
-> +for the node names in order to make the corresponding logic easier to fi=
-nd.
+  # bpftool map
+  1: sockmap  flags 0x0
+  	key 4B  value 4B  max_entries 2  memlock 4096B
+	pids echo-sockmap(549)
+  4: array  name pid_iter.rodata  flags 0x480
+	key 4B  value 4B  max_entries 1  memlock 4096B
+	btf_id 10  frozen
+	pids bpftool(624)
 
-Shouldn't the figure note above be in :alt:?
+In the future, we could dump other sockmap related stats too, hence I
+make it a nested attribute.
 
-Otherwise LGTM.
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+---
+v2: rename enum's with more generic names
+    sock_map_idiag_dump -> sock_map_diag_dump()
+    make sock_map_diag_dump() return number of maps
 
---=20
-An old man doll... just what I always wanted! - Clara
+ include/linux/bpf.h            |  1 +
+ include/uapi/linux/inet_diag.h |  1 +
+ include/uapi/linux/sock_diag.h |  8 ++++++
+ include/uapi/linux/unix_diag.h |  1 +
+ net/core/sock_map.c            | 51 ++++++++++++++++++++++++++++++++++
+ net/ipv4/inet_diag.c           |  5 ++++
+ net/unix/diag.c                |  6 ++++
+ 7 files changed, 73 insertions(+)
 
---/TLMb2wQzVHenkud
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 6792a7940e1e..4cc315ce26a9 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2638,6 +2638,7 @@ int sock_map_bpf_prog_query(const union bpf_attr *attr,
+ void sock_map_unhash(struct sock *sk);
+ void sock_map_destroy(struct sock *sk);
+ void sock_map_close(struct sock *sk, long timeout);
++int sock_map_diag_dump(struct sock *sk, struct sk_buff *skb, int attr);
+ #else
+ static inline int bpf_dev_bound_kfunc_check(struct bpf_verifier_log *log,
+ 					    struct bpf_prog_aux *prog_aux)
+diff --git a/include/uapi/linux/inet_diag.h b/include/uapi/linux/inet_diag.h
+index 50655de04c9b..d1f1e4522633 100644
+--- a/include/uapi/linux/inet_diag.h
++++ b/include/uapi/linux/inet_diag.h
+@@ -161,6 +161,7 @@ enum {
+ 	INET_DIAG_SK_BPF_STORAGES,
+ 	INET_DIAG_CGROUP_ID,
+ 	INET_DIAG_SOCKOPT,
++	INET_DIAG_BPF_MAP,
+ 	__INET_DIAG_MAX,
+ };
+ 
+diff --git a/include/uapi/linux/sock_diag.h b/include/uapi/linux/sock_diag.h
+index 5f74a5f6091d..7c961940b408 100644
+--- a/include/uapi/linux/sock_diag.h
++++ b/include/uapi/linux/sock_diag.h
+@@ -62,4 +62,12 @@ enum {
+ 
+ #define SK_DIAG_BPF_STORAGE_MAX        (__SK_DIAG_BPF_STORAGE_MAX - 1)
+ 
++enum {
++	SK_DIAG_BPF_MAP_NONE,
++	SK_DIAG_BPF_MAP_IDS,
++	__SK_DIAG_BPF_MAP_MAX,
++};
++
++#define SK_DIAG_BPF_MAP_MAX        (__SK_DIAG_BPF_MAP_MAX - 1)
++
+ #endif /* _UAPI__SOCK_DIAG_H__ */
+diff --git a/include/uapi/linux/unix_diag.h b/include/uapi/linux/unix_diag.h
+index a1988576fa8a..b95a2b33521d 100644
+--- a/include/uapi/linux/unix_diag.h
++++ b/include/uapi/linux/unix_diag.h
+@@ -42,6 +42,7 @@ enum {
+ 	UNIX_DIAG_MEMINFO,
+ 	UNIX_DIAG_SHUTDOWN,
+ 	UNIX_DIAG_UID,
++	UNIX_DIAG_BPF_MAP,
+ 
+ 	__UNIX_DIAG_MAX,
+ };
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 9b854e236d23..8c4b3044e7a9 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1656,6 +1656,57 @@ void sock_map_close(struct sock *sk, long timeout)
+ }
+ EXPORT_SYMBOL_GPL(sock_map_close);
+ 
++int sock_map_diag_dump(struct sock *sk, struct sk_buff *skb, int attrtype)
++{
++	struct sk_psock_link *link;
++	struct nlattr *nla, *attr;
++	int nr_links = 0, ret = 0;
++	struct sk_psock *psock;
++	u32 *ids;
++
++	rcu_read_lock();
++	psock = sk_psock_get(sk);
++	if (unlikely(!psock)) {
++		rcu_read_unlock();
++		return 0;
++	}
++
++	nla = nla_nest_start_noflag(skb, attrtype);
++	if (!nla) {
++		sk_psock_put(sk, psock);
++		rcu_read_unlock();
++		return -EMSGSIZE;
++	}
++	spin_lock_bh(&psock->link_lock);
++	list_for_each_entry(link, &psock->link, list)
++		nr_links++;
++
++	attr = nla_reserve(skb, SK_DIAG_BPF_MAP_IDS,
++			   sizeof(link->map->id) * nr_links);
++	if (!attr) {
++		ret = -EMSGSIZE;
++		goto unlock;
++	}
++
++	ids = nla_data(attr);
++	list_for_each_entry(link, &psock->link, list) {
++		*ids = link->map->id;
++		ids++;
++	}
++unlock:
++	spin_unlock_bh(&psock->link_lock);
++	sk_psock_put(sk, psock);
++	rcu_read_unlock();
++	if (ret) {
++		nla_nest_cancel(skb, nla);
++	} else {
++		ret = nr_links;
++		nla_nest_end(skb, nla);
++	}
++	return ret;
++}
++EXPORT_SYMBOL_GPL(sock_map_diag_dump);
++
+ static int sock_map_iter_attach_target(struct bpf_prog *prog,
+ 				       union bpf_iter_link_info *linfo,
+ 				       struct bpf_iter_aux_info *aux)
+diff --git a/net/ipv4/inet_diag.c b/net/ipv4/inet_diag.c
+index b812eb36f0e3..0949909d5b46 100644
+--- a/net/ipv4/inet_diag.c
++++ b/net/ipv4/inet_diag.c
+@@ -197,6 +197,11 @@ int inet_diag_msg_attrs_fill(struct sock *sk, struct sk_buff *skb,
+ 		    &inet_sockopt))
+ 		goto errout;
+ 
++#ifdef CONFIG_BPF_SYSCALL
++	if (sock_map_diag_dump(sk, skb, INET_DIAG_BPF_MAP) < 0)
++		goto errout;
++#endif
++
+ 	return 0;
+ errout:
+ 	return 1;
+diff --git a/net/unix/diag.c b/net/unix/diag.c
+index 616b55c5b890..54aa8da2831e 100644
+--- a/net/unix/diag.c
++++ b/net/unix/diag.c
+@@ -6,6 +6,7 @@
+ #include <linux/skbuff.h>
+ #include <linux/module.h>
+ #include <linux/uidgid.h>
++#include <linux/bpf.h>
+ #include <net/netlink.h>
+ #include <net/af_unix.h>
+ #include <net/tcp_states.h>
+@@ -172,6 +173,11 @@ static int sk_diag_fill(struct sock *sk, struct sk_buff *skb, struct unix_diag_r
+ 	    sk_diag_dump_uid(sk, skb, user_ns))
+ 		goto out_nlmsg_trim;
+ 
++#ifdef CONFIG_BPF_SYSCALL
++	if (sock_map_diag_dump(sk, skb, UNIX_DIAG_BPF_MAP) < 0)
++		goto out_nlmsg_trim;
++#endif
++
+ 	nlmsg_end(skb, nlh);
+ 	return 0;
+ 
+-- 
+2.34.1
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZA6ebQAKCRD2uYlJVVFO
-o6i4AQDDoDu50SECyZ8tCj9UQ5Re9A/ZXIMWk4B2eh4IX+7HFwD9EFtVr2ElHKiq
-l5QvSUwTEuKlyXwZaxETArCgEMkVvAw=
-=Yi4J
------END PGP SIGNATURE-----
-
---/TLMb2wQzVHenkud--
