@@ -2,56 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 625E76B9DA0
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 18:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1876B9DAD
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 18:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbjCNRz1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 14 Mar 2023 13:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
+        id S230266AbjCNR5y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 14 Mar 2023 13:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjCNRz0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 13:55:26 -0400
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637DC6A7E;
-        Tue, 14 Mar 2023 10:55:25 -0700 (PDT)
-Received: by mail-io1-f52.google.com with SMTP id bf15so6753309iob.7;
-        Tue, 14 Mar 2023 10:55:25 -0700 (PDT)
+        with ESMTP id S229538AbjCNR5x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 13:57:53 -0400
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854DB76B4;
+        Tue, 14 Mar 2023 10:57:52 -0700 (PDT)
+Received: by mail-il1-f173.google.com with SMTP id j6so4590604ilr.7;
+        Tue, 14 Mar 2023 10:57:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678816524;
+        d=1e100.net; s=20210112; t=1678816671;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UC6SiqJv6vv+aMWv+c2O7wVq//MMLZA07pBFsShSM5s=;
-        b=xb5s8xNCTDias2b+Q7cG7pk6KBOnvuk4OCopA+Y8iJ/Yl8csITY2ezxktYI/J8ptaO
-         xrNck4Bqx1f9zomV8RLB2n0j+CB/KmNtuQI7UCsuCyRhm/A0daAlOwr+ShhrxkyrXgxd
-         eO3j9FlRI+p5oyanhWxS/wVJfsfc6vBoWmzYtbx9D50n6JYyNTqQPNxaPgA8LX6M8e86
-         U0B9h+po3s4yTHgXwzcH0xrvQ8yQXQqEzJH0dMCvw16D/CO86a0q3OsVujutqaUSpmFU
-         ZeToG9PhmAsU9b8aeeHMm5HeXGkefNJeS6bhvNBqjWOJEs6HYBxabX6Tiz++Nv1JGylT
-         1/Ow==
-X-Gm-Message-State: AO0yUKW3F215cH+2ph/J2bKiVWrOIXuIAX88Wa/TzzIa3u4GTF+goQQ+
-        bmqUZ8xWW37aV5RVVHKnmrGVxxRnIXSDYKIkVvk=
-X-Google-Smtp-Source: AK7set/mFHxf4wxT++oOO9bnKbj6PFDPNuBQQ/UlvR2FPcsP+Upe3oFecm93vcNbSOLqo2tzP0Dlcsh1GXTHObmwoQI=
-X-Received: by 2002:a5d:8d87:0:b0:744:f5bb:6e60 with SMTP id
- b7-20020a5d8d87000000b00744f5bb6e60mr18465052ioj.1.1678816524533; Tue, 14 Mar
- 2023 10:55:24 -0700 (PDT)
+        bh=PpqmR5FGblTUCTS1MnsgIvKqvurAy+dKc3s6nFwCqg0=;
+        b=WuLBA1CrNcteftdXP4OzRssv0UCpwk6bPrQ0I4Lruo+oesHlAcW+EDk4sD/Wy2ey11
+         1rzJ+aAofPFyvAEUfBXjr8ndpktA/v+vk0d4wLbvgm2gyfo6MssCtxxTMpLYAafz7zli
+         WmJJ54gbJ7JudXr2sH1YLQ1ksEGftDojl2ufB8UUED8vYZLH2QaBY3I4hG76svlpDX70
+         xgwlSnFxcKLCbgSovXEVao7fBkuwsqY1fAHaVU7gjasENnWGx9a3DC7MfQhWAMSDCEFe
+         /oJ3SX+FF1k2mjSqes6+cvQcVI8Ku7JLhddRMPFK0d0QGLD3RZRbOhAp5eujNDUBmPko
+         qhSQ==
+X-Gm-Message-State: AO0yUKWuydVyykx40VaMdsBVMe4BK3pOIC3rn4XJPtjyNynWq1Ccl34O
+        hGWwqU/nTELMR4OaN4kvPsY046xURfxZP2nkFs+owLcv
+X-Google-Smtp-Source: AK7set+oWO7uxZNcxezoNglqkni5RC4P6boAGCI7NJtJfa15OOr/snj7IE8Sbl7MntPQWtOb8fjXbrvF+Xay+KFz390=
+X-Received: by 2002:a92:d346:0:b0:313:fad9:a014 with SMTP id
+ a6-20020a92d346000000b00313fad9a014mr1969666ilh.5.1678816671660; Tue, 14 Mar
+ 2023 10:57:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230313204825.2665483-1-namhyung@kernel.org> <ZA+ZkRYADwtFEsPt@kernel.org>
- <ZBBnUlIQ5gLhoScx@kernel.org>
-In-Reply-To: <ZBBnUlIQ5gLhoScx@kernel.org>
+References: <20230307233309.3546160-1-namhyung@kernel.org> <f5b3de20-797c-4ff6-a85b-06c85b4eaa1b@amd.com>
+ <ZAtG43JZkUoO9XkF@kernel.org> <ZBBc5SQK2OhIGtGy@kernel.org> <9b2a3f48-44bc-3719-9ba1-b60f9382a5ba@amd.com>
+In-Reply-To: <9b2a3f48-44bc-3719-9ba1-b60f9382a5ba@amd.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 14 Mar 2023 10:55:13 -0700
-Message-ID: <CAM9d7cj7CSToKq7FKqYKCzpWddTfBW0GZH9ydGM2ZMdwNDGm2g@mail.gmail.com>
-Subject: Re: [PATCH 0/4] perf lock contention: Improve lock symbol display (v1)
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
+Date:   Tue, 14 Mar 2023 10:57:40 -0700
+Message-ID: <CAM9d7cjWbm1AcgEVx4ruYCtqxFVwEt_6SjoipmMPJRoUpk-hAQ@mail.gmail.com>
+Subject: Re: [RFC/PATCHSET 0/9] perf record: Implement BPF sample filter (v4)
+To:     Ravi Bangoria <ravi.bangoria@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
         Stephane Eranian <eranian@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -66,148 +69,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Arnaldo,
+Hello,
 
-On Tue, Mar 14, 2023 at 5:23 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Tue, Mar 14, 2023 at 8:27 AM Ravi Bangoria <ravi.bangoria@amd.com> wrote:
 >
-> Em Mon, Mar 13, 2023 at 06:45:53PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Mon, Mar 13, 2023 at 01:48:21PM -0700, Namhyung Kim escreveu:
-> > > Hello,
-> > >
-> > > This patchset improves the symbolization of locks for -l/--lock-addr mode.
-> > > As of now it only shows global lock symbols present in the kallsyms.  But
-> > > we can add some more lock symbols by traversing pointers in the BPF program.
-> > >
-> > > For example, mmap_lock can be reached from the mm_struct of the current task
-> > > (task_struct->mm->mmap_lock) and we can compare the address of the give lock
-> > > with it.  Similarly I've added 'siglock' for current->sighand->siglock.
+> On 14-Mar-23 5:09 PM, Arnaldo Carvalho de Melo wrote:
+> > Em Fri, Mar 10, 2023 at 12:04:03PM -0300, Arnaldo Carvalho de Melo escreveu:
+> >> Em Fri, Mar 10, 2023 at 03:28:03PM +0530, Ravi Bangoria escreveu:
+> >>>> It requires samples satisfy all the filter expressions otherwise it'd
+> >>>> drop the sample.  IOW filter expressions are connected with logical AND
+> >>>> operations unless they used "||" explicitly.  So if user has something
+> >>>> like 'A, B || C, D', then BOTH A and D should be true AND either B or C
+> >>>> also needs to be true.
+> >>>>
+> >>>> Essentially the BPF filter expression is:
+> >>>>
+> >>>>   <term> <operator> <value> (("," | "||") <term> <operator> <value>)*
+> >>>>
+> >>>> The <term> can be one of:
+> >>>>   ip, id, tid, pid, cpu, time, addr, period, txn, weight, phys_addr,
+> >>>>   code_pgsz, data_pgsz, weight1, weight2, weight3, ins_lat, retire_lat,
+> >>>>   p_stage_cyc, mem_op, mem_lvl, mem_snoop, mem_remote, mem_lock,
+> >>>>   mem_dtlb, mem_blk, mem_hops
+> >>>>
+> >>>> The <operator> can be one of:
+> >>>>   ==, !=, >, >=, <, <=, &
+> >>>>
+> >>>> The <value> can be one of:
+> >>>>   <number> (for any term)
+> >>>>   na, load, store, pfetch, exec (for mem_op)
+> >>>>   l1, l2, l3, l4, cxl, io, any_cache, lfb, ram, pmem (for mem_lvl)
+> >>>>   na, none, hit, miss, hitm, fwd, peer (for mem_snoop)
+> >>>>   remote (for mem_remote)
+> >>>>   na, locked (for mem_locked)
+> >>>>   na, l1_hit, l1_miss, l2_hit, l2_miss, any_hit, any_miss, walk, fault (for mem_dtlb)
+> >>>>   na, by_data, by_addr (for mem_blk)
+> >>>>   hops0, hops1, hops2, hops3 (for mem_hops)
+> >>>
+> >>> I think this and few examples should be added in perf-record man page.
+> >>
+> >> Agreed, and even mentioning cases where it overcome problems like the
+> >> filtering you mentioned for AMD systems.
+> >
+> > So, what do you think is best? Wait for v5 or apply v4 and then add
+> > documentation and other touches as followup patches?
 >
-> Hey, we can go a bit further by using something like pahole's
-> --expand_types and --expand_pointers and play iterating a type members
-> and looking for locks, like:
->
-> ⬢[acme@toolbox pahole]$ pahole task_struct | grep spinlock_t
->         spinlock_t                 alloc_lock;           /*  3280     4 */
->         raw_spinlock_t             pi_lock;              /*  3284     4 */
->         seqcount_spinlock_t        mems_allowed_seq;     /*  3616     4 */
-> ⬢[acme@toolbox pahole]$
->
-> Expand points will find mmap_lock:
->
-> ⬢[acme@toolbox pahole]$ pahole --expand_pointers -C task_struct | grep -B10 mmap_lock
->                                                                 } *pgd;
->                                                                 atomic_t                       membarrier_state;
->                                                                 atomic_t                       mm_users;
->                                                                 atomic_t                       mm_count;
->
->                                                                 /* XXX 4 bytes hole, try to pack */
->
->                                                                 atomic_long_t                  pgtables_bytes;
->                                                                 int                            map_count;
->                                                                 spinlock_t                     page_table_lock;
->                                                                 struct rw_semaphore                          mmap_lock;
-> ^C
-> ⬢[acme@toolbox pahole]$
->
->
-> ITs just too much expansion to see task_struct->mm, but it is there, of
-> course:
->
-> ⬢[acme@toolbox pahole]$ pahole mm_struct | grep mmap_lock
->                 struct rw_semaphore mmap_lock;           /*   120    40 */
-> ⬢[acme@toolbox pahole]$
->
-> Also:
->
-> ⬢[acme@toolbox pahole]$ pahole --contains rw_semaphore
-> address_space
-> signal_struct
-> key
-> inode
-> super_block
-> quota_info
-> user_namespace
-> blocking_notifier_head
-> backing_dev_info
-> anon_vma
-> tty_struct
-> cpufreq_policy
-> tcf_block
-> ipc_ids
-> autogroup
-> kvm_arch
-> posix_clock
-> listener_list
-> uprobe
-> kernfs_root
-> configfs_fragment
-> ext4_inode_info
-> ext4_group_info
-> btrfs_fs_info
-> extent_buffer
-> btrfs_dev_replace
-> btrfs_space_info
-> btrfs_inode
-> btrfs_block_group
-> tpm_chip
-> ib_device
-> ib_xrcd
-> blk_crypto_profile
-> controller
-> led_classdev
-> cppc_pcc_data
-> dm_snapshot
-> ⬢[acme@toolbox pahole]$
->
-> And:
->
-> ⬢[acme@toolbox pahole]$ pahole --find_pointers_to mm_struct
-> task_struct: mm
-> task_struct: active_mm
-> vm_area_struct: vm_mm
-> flush_tlb_info: mm
-> signal_struct: oom_mm
-> tlb_state: loaded_mm
-> linux_binprm: mm
-> mmu_gather: mm
-> trace_event_raw_xen_mmu_ptep_modify_prot: mm
-> trace_event_raw_xen_mmu_alloc_ptpage: mm
-> trace_event_raw_xen_mmu_pgd: mm
-> trace_event_raw_xen_mmu_flush_tlb_multi: mm
-> trace_event_raw_hyperv_mmu_flush_tlb_multi: mm
-> mmu_notifier: mm
-> mmu_notifier_range: mm
-> sgx_encl_mm: mm
-> rq: prev_mm
-> kvm: mm
-> cpuset_migrate_mm_work: mm
-> mmap_unlock_irq_work: mm
-> delayed_uprobe: mm
-> map_info: mm
-> trace_event_raw_mmap_lock: mm
-> trace_event_raw_mmap_lock_acquire_returned: mm
-> mm_walk: mm
-> make_exclusive_args: mm
-> mmu_interval_notifier: mm
-> mm_slot: mm
-> rmap_item: mm
-> trace_event_raw_mm_khugepaged_scan_pmd: mm
-> trace_event_raw_mm_collapse_huge_page: mm
-> trace_event_raw_mm_collapse_huge_page_swapin: mm
-> mm_slot: mm
-> move_charge_struct: mm
-> userfaultfd_ctx: mm
-> proc_maps_private: mm
-> remap_pfn: mm
-> intel_svm: mm
-> binder_alloc: vma_vm_mm
-> ⬢[acme@toolbox pahole]$
+> I'm fine with both :)
 
-This looks really cool! especially.
-
-I'm especially interested in adding super_block and kernfs_root.
-Let me see how I can add them.
+Unless there's an objection, I'd prefer you take the v4.
+I'll send a documentation update later.
 
 Thanks,
 Namhyung
