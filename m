@@ -2,146 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B60D6B8679
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 00:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D836F6B867B
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 01:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbjCMX7M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Mar 2023 19:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
+        id S229540AbjCNAAT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Mar 2023 20:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjCMX7I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Mar 2023 19:59:08 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026397D080;
-        Mon, 13 Mar 2023 16:59:03 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id x11so14762112pln.12;
-        Mon, 13 Mar 2023 16:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678751943;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nlkU9N2SG/AbcwmYI206kiozQXDShvHpsyCvMGKViBI=;
-        b=m6j/Seq56Oc/gUxZIDiLvvmUF/5kygdpl83xVs9abWQaec/G+NFakARqjM6RVU0/Ac
-         Ln5A2XKOu90P0WVdkrO614dFB1j7t+Io0ligNOYQ8tXvisNI1/z9ZqNlT7oYI5gNOJXZ
-         zeVyCnJtDo7LAdMNgROmRLiWLJBZt0wrNi8tCbptdGuPvBBv3u7taXSYHCwSGgpJE3zO
-         mWXm/o93CbWvGcVlo3NDG3wjgcPaPHCkbnbnwdSnAjBX4TIKywGU1Nksf79VFQikSOGI
-         8KKtyJoegLNcyrTqo6gnuJl+Wvx7/DaLRHsJNPQyDNxcOygKw34OgVtbusYm7wqOtdGt
-         TvRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678751943;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nlkU9N2SG/AbcwmYI206kiozQXDShvHpsyCvMGKViBI=;
-        b=q1Nree+TJSGNb8F5ZZqeB0N+9TGGpWpZfB5NwbZiAXOs9CA1oG4uiWflBonq/HlEJv
-         MOzPtm1KaRgIXyCm2FiLSQbLRgOSRH6FeKAPOnqp8At3sirK2uhX01RWOEkkXYSGD4V9
-         nqkDxHPrlM1F8sp72vNp8RWuLJkJyt+qNE+R++mrPZwu8oKiNlLPRV+p8zoBtqJCXB2M
-         TwXp2VUf4ODZuRCJnyXVWbs1LNb0iyvjbrhiJW8s71A/gjId4ftG+BdSGlg6fkUGf5Zu
-         +PqwK5AyHeu0YzbXMfm57JlWyhF4VR/R2G28LSUdLTwdOOtgu3a8nHhCoUDauwGZ4o7E
-         MYpQ==
-X-Gm-Message-State: AO0yUKUUGd4CG/j2gMoIgMJUqe51JjmSUrPSiAIhs9/DLpPzI5Gki0VU
-        AO9GkRLz0YvEbcbSSSrG8WU=
-X-Google-Smtp-Source: AK7set9TUuW1z2+5+1fYtrk1omDX2eJp1Wa2CLuxI81Q8aIGwTNp/xL3WgJiFXoheU/A1hzZXdFJHw==
-X-Received: by 2002:a05:6a20:1448:b0:c7:770a:557f with SMTP id a8-20020a056a20144800b000c7770a557fmr44481039pzi.50.1678751943311;
-        Mon, 13 Mar 2023 16:59:03 -0700 (PDT)
-Received: from dhcp-172-26-102-232.DHCP.thefacebook.com ([2620:10d:c090:400::5:ad6b])
-        by smtp.gmail.com with ESMTPSA id q25-20020a62e119000000b005d6999eec90sm258546pfh.120.2023.03.13.16.59.01
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 13 Mar 2023 16:59:02 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        void@manifault.com, davemarchevsky@meta.com, tj@kernel.org,
-        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add various tests to check helper access into ptr_to_btf_id.
-Date:   Mon, 13 Mar 2023 16:58:45 -0700
-Message-Id: <20230313235845.61029-4-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20230313235845.61029-1-alexei.starovoitov@gmail.com>
-References: <20230313235845.61029-1-alexei.starovoitov@gmail.com>
+        with ESMTP id S229482AbjCNAAT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Mar 2023 20:00:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1491E868A
+        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 17:00:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A20BA6155E
+        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 00:00:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 08E5AC4339B;
+        Tue, 14 Mar 2023 00:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678752017;
+        bh=fGMcEkTxE4HwXigGMYx4CSwGT5xwtxZxbublCpv/Msc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pSNLT0rez03h+YuoU2oDVsa0O8i9+WkmlLk7OBPKrUeGYrXXnPwyAj5gvEJoC8XVv
+         ++JRq/2r6kcw8ATuGYeg4cephdyVq8LxYrTWACTfGGPqFQoMQAKaIcNsRZtE2UxgEy
+         WSMykQAtyRUMIFIx3O92HiNb1AhJwzi0Tw35l6Lw3lCntKhJHoFNQQTdOWXK28PaOu
+         8RDyhBrMvpNhwgk1eV19bNyIN/I9wwz0rE+CtRas10YmM4QBaTpVMVGD8JRyTJB8xw
+         BBC7us83z1UyWWyPYhuGHJZ/vheSdFLM59SiOxyKU0poTThL4cfZgmSEKK8SRqgA2c
+         QyAy3UMFG5N/g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DEFBBE66CBA;
+        Tue, 14 Mar 2023 00:00:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v1 bpf-next] bpf: Disable migration when freeing stashed local
+ kptr using obj drop
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167875201690.9292.11466523661883628604.git-patchwork-notify@kernel.org>
+Date:   Tue, 14 Mar 2023 00:00:16 +0000
+References: <20230313214641.3731908-1-davemarchevsky@fb.com>
+In-Reply-To: <20230313214641.3731908-1-davemarchevsky@fb.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, kernel-team@fb.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+Hello:
 
-Add various tests to check helper access into ptr_to_btf_id.
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- .../selftests/bpf/progs/task_kfunc_failure.c  | 36 +++++++++++++++++++
- .../selftests/bpf/progs/task_kfunc_success.c  |  4 +++
- 2 files changed, 40 insertions(+)
+On Mon, 13 Mar 2023 14:46:41 -0700 you wrote:
+> When a local kptr is stashed in a map and freed when the map goes away,
+> currently an error like the below appears:
+> 
+> [   39.195695] BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u32:15/2875
+> [   39.196549] caller is bpf_mem_free+0x56/0xc0
+> [   39.196958] CPU: 15 PID: 2875 Comm: kworker/u32:15 Tainted: G           O       6.2.0-13016-g22df776a9a86 #4477
+> [   39.197897] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [   39.198949] Workqueue: events_unbound bpf_map_free_deferred
+> [   39.199470] Call Trace:
+> [   39.199703]  <TASK>
+> [   39.199911]  dump_stack_lvl+0x60/0x70
+> [   39.200267]  check_preemption_disabled+0xbf/0xe0
+> [   39.200704]  bpf_mem_free+0x56/0xc0
+> [   39.201032]  ? bpf_obj_new_impl+0xa0/0xa0
+> [   39.201430]  bpf_obj_free_fields+0x1cd/0x200
+> [   39.201838]  array_map_free+0xad/0x220
+> [   39.202193]  ? finish_task_switch+0xe5/0x3c0
+> [   39.202614]  bpf_map_free_deferred+0xea/0x210
+> [   39.203006]  ? lockdep_hardirqs_on_prepare+0xe/0x220
+> [   39.203460]  process_one_work+0x64f/0xbe0
+> [   39.203822]  ? pwq_dec_nr_in_flight+0x110/0x110
+> [   39.204264]  ? do_raw_spin_lock+0x107/0x1c0
+> [   39.204662]  ? lockdep_hardirqs_on_prepare+0xe/0x220
+> [   39.205107]  worker_thread+0x74/0x7a0
+> [   39.205451]  ? process_one_work+0xbe0/0xbe0
+> [   39.205818]  kthread+0x171/0x1a0
+> [   39.206111]  ? kthread_complete_and_exit+0x20/0x20
+> [   39.206552]  ret_from_fork+0x1f/0x30
+> [   39.206886]  </TASK>
+> 
+> [...]
 
-diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_failure.c b/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
-index 002c7f69e47f..27994d6b2914 100644
---- a/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
-+++ b/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
-@@ -301,3 +301,39 @@ int BPF_PROG(task_kfunc_from_lsm_task_free, struct task_struct *task)
- 	bpf_task_release(acquired);
- 	return 0;
- }
-+
-+SEC("tp_btf/task_newtask")
-+__failure __msg("access beyond the end of member comm")
-+int BPF_PROG(task_access_comm1, struct task_struct *task, u64 clone_flags)
-+{
-+	bpf_strncmp(task->comm, 17, "foo");
-+	return 0;
-+}
-+
-+SEC("tp_btf/task_newtask")
-+__failure __msg("access beyond the end of member comm")
-+int BPF_PROG(task_access_comm2, struct task_struct *task, u64 clone_flags)
-+{
-+	bpf_strncmp(task->comm + 1, 16, "foo");
-+	return 0;
-+}
-+
-+SEC("tp_btf/task_newtask")
-+__failure __msg("write into memory")
-+int BPF_PROG(task_access_comm3, struct task_struct *task, u64 clone_flags)
-+{
-+	bpf_probe_read_kernel(task->comm, 16, task->comm);
-+	return 0;
-+}
-+
-+SEC("fentry/__set_task_comm")
-+__failure __msg("R1 type=ptr_ expected")
-+int BPF_PROG(task_access_comm4, struct task_struct *task, const char *buf, bool exec)
-+{
-+	/*
-+	 * task->comm is a legacy ptr_to_btf_id. The verifier cannot guarantee
-+	 * its safety. Hence it cannot be accessed with normal load insns.
-+	 */
-+	bpf_strncmp(task->comm, 16, "foo");
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_success.c b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
-index aebc4bb14e7d..4f61596b0242 100644
---- a/tools/testing/selftests/bpf/progs/task_kfunc_success.c
-+++ b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
-@@ -207,6 +207,10 @@ int BPF_PROG(test_task_from_pid_invalid, struct task_struct *task, u64 clone_fla
- 	if (!is_test_kfunc_task())
- 		return 0;
- 
-+	bpf_strncmp(task->comm, 12, "foo");
-+	bpf_strncmp(task->comm, 16, "foo");
-+	bpf_strncmp(&task->comm[8], 4, "foo");
-+
- 	if (is_pid_lookup_valid(-1)) {
- 		err = 1;
- 		return 0;
+Here is the summary with links:
+  - [v1,bpf-next] bpf: Disable migration when freeing stashed local kptr using obj drop
+    https://git.kernel.org/bpf/bpf-next/c/9e36a204bd43
+
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
