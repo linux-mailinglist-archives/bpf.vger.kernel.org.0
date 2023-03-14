@@ -2,122 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DC76B960D
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 14:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA3A6B95D3
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 14:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232411AbjCNN0G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 09:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        id S232198AbjCNNS3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 09:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbjCNNZr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 09:25:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF90996616;
-        Tue, 14 Mar 2023 06:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CyA6aX3LWF3S0LPq2B7KDIy9+tGtAg2Aqm4KsZBo8Hk=; b=IjN16Nr/j4WtYjF4MKbc6hAh/E
-        r1bkPgb4/YGLPSO+ZHwaIHrCj6AYOllQjfgCiURKiKyBq/kCQXyJstxnIGpP0Vp2YeHco2JAHOzMx
-        fSXXBplsiWXjS1M9T8XQcAljcKIllA2fXBIzNlruoPlmC8WzJ+VS9zhbX79ayTGui8Q4CwDm0kTmu
-        Jhcre75eo3MY1gtiyS20cX/f7Sdv32876LgD2fKZ45TJf/GjH/ZYl4xy5PxXk9sg9M46M1hQWZq7B
-        X+GRLXQN4L6C2qX9h4igSgw7kW9G0VopqYa1C22FUfitHAIXtVRczeFUkUdA8DPHR+A9X2P7rg78c
-        pS15A3pw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pc4MQ-00CvDN-HJ; Tue, 14 Mar 2023 13:06:38 +0000
-Date:   Tue, 14 Mar 2023 13:06:38 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-block@vger.kernel.org,
-        bpf@vger.kernel.org, linux-xfs@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Re: [LSF/MM/BPF TOPIC] SLOB+SLAB allocators removal and future SLUB
- improvements
-Message-ID: <ZBBxXhvL/oS3uu5/@casper.infradead.org>
-References: <4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz>
+        with ESMTP id S229484AbjCNNSM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 09:18:12 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8ADA9DD3;
+        Tue, 14 Mar 2023 06:14:59 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id d13so5308394pjh.0;
+        Tue, 14 Mar 2023 06:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678799684;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d0gqt2xwBEWN7KFuDaD6z1O6+7EY4w/LU3lD9GJPLEo=;
+        b=aMYmE1hEuwdLlI/2zCCA0x2SToSWpaRHorskMf9UnZVyss+H4rEyTCBqz8QFZcFQ1q
+         /DDII02KRQISN8kCXiRkP1AMyj349zf9M7TO7MKM9GjG+uz2HMgBfYMtKw9S7W9g1Pjv
+         kvL/iNstrbXG7Fk6Kj+lq5xtn9SuOzo7IYWmJqu2AMmF9KwGG/uwQ8mNAg/G2k518e1V
+         pepXmPFsfGv500KeMt+5nvQmjXFkj0mo7tfnV1aHL/oUKtwwzKcqSNu8k7OGv9fYSFx6
+         SdqebQP7SCF455a2WyaK969NXm9g9q6zCViK63fVqr7gdTxjAL2DYnB2+uwzsV0OJfZ4
+         NPqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678799684;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d0gqt2xwBEWN7KFuDaD6z1O6+7EY4w/LU3lD9GJPLEo=;
+        b=h73YjexNfy8HJt2JXP2B3YGXw0JndY8q+rkmNuQpuQQZBubnHZT07Glrrk233p6ICE
+         ibok4YCEPH9kC01Mxe3yHW5NWEPtmWDbUoFV5G6pwBHxm0hfe6rHwuTp7j+AzHCtLmMZ
+         r4t8VGWJygGfTrRlOuOc4JLx6oMn/AuQ/3cEZvdTfJ7W5UZKFNDerMsQ4MvIkxd6PNOF
+         Gq4AC5KGcGV8EENMQsJcLv3MbQveqKf6rQ8w89rm1NODx4QUPbRogHZSl6kyf1Polpd4
+         HxW4yIvjmWQxiso8hiGOMNUCgKMD0MnL6v/UWRttErvyxkn2KamOS3ulKya7mbZug0vi
+         e0Ww==
+X-Gm-Message-State: AO0yUKWzOkmcoWc7azVanBHyIBQWzeaDbo3velhk0sFD6e7F64Tw3BcD
+        5SANrXJKmGBxfcTqWWvQzHM=
+X-Google-Smtp-Source: AK7set8zgMeknF6IwyMTFFnLPHBq+bdrvghaoUEyleC6B9ETERn/V9lTbUJITI8Tad0ShsR9nEm9fw==
+X-Received: by 2002:a17:903:2290:b0:19e:25b4:7740 with SMTP id b16-20020a170903229000b0019e25b47740mr47027414plh.28.1678799684655;
+        Tue, 14 Mar 2023 06:14:44 -0700 (PDT)
+Received: from KERNELXING-MB0.tencent.com ([103.7.29.31])
+        by smtp.gmail.com with ESMTPSA id g15-20020a17090a7d0f00b0023d36aa85fesm1465843pjl.40.2023.03.14.06.14.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Mar 2023 06:14:44 -0700 (PDT)
+From:   Jason Xing <kerneljasonxing@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        stephen@networkplumber.org, simon.horman@corigine.com,
+        sinquersw@gmail.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kerneljasonxing@gmail.com,
+        Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH v3 net-next 0/2] add some detailed data when reading softnet_stat
+Date:   Tue, 14 Mar 2023 21:14:25 +0800
+Message-Id: <20230314131427.85135-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 14, 2023 at 09:05:13AM +0100, Vlastimil Babka wrote:
-> The immediate benefit of that is that we can allow kfree() (and kfree_rcu())
-> to free objects from kmem_cache_alloc() - something that IIRC at least xfs
-> people wanted in the past, and SLOB was incompatible with that.
-> 
-> For SLAB removal I haven't yet heard any objections (but also didn't
-> deprecate it yet) but if there are any users due to particular workloads
-> doing better with SLAB than SLUB, we can discuss why those would regress and
-> what can be done about that in SLUB.
-> 
-> Once we have just one slab allocator in the kernel, we can take a closer
-> look at what the users are missing from it that forces them to create own
-> allocators (e.g. BPF), and could be considered to be added as a generic
-> implementation to SLUB.
+From: Jason Xing <kernelxing@tencent.com>
 
-With kfree() now working on kmem_cache_alloc(), I'd like to re-propose
-the introduction of a generic free() function which can free any
-allocated object.  It starts out looking a lot like kvfree(), but
-can be enhanced to cover other things ... here's a version I did from
-2018 before giving up on it when I realised slob made it impossible:
+Adding more detailed display of softnet_data when cating
+/proc/net/softnet_stat, which could help users understand more about
+which can be the bottlneck and then tune.
 
-+/**
-+ * free() - Free memory
-+ * @ptr: Pointer to memory
-+ *
-+ * This function can free almost any type of memory.  It can safely be
-+ * called on:
-+ * * NULL pointers.
-+ * * Pointers to read-only data (will do nothing).
-+ * * Pointers to memory allocated from kmalloc().
-+ * * Pointers to memory allocated from kmem_cache_alloc().
-+ * * Pointers to memory allocated from vmalloc().
-+ * * Pointers to memory allocated from alloc_percpu().
-+ * * Pointers to memory allocated from __get_free_pages().
-+ * * Pointers to memory allocated from page_frag_alloc().
-+ *
-+ * It cannot free memory allocated by dma_pool_alloc() or dma_alloc_coherent().
-+ */
-+void free(const void *ptr)
-+{
-+       struct page *page;
-+
-+       if (unlikely(ZERO_OR_NULL_PTR(ptr)))
-+               return;
-+       if (is_kernel_rodata((unsigned long)ptr))
-+               return;
-+
-+       page = virt_to_head_page(ptr);
-+       if (likely(PageSlab(page)))
-+               return kmem_cache_free(page->slab_cache, (void *)ptr);
-+
-+       if (is_vmalloc_addr(ptr))
-+               return vfree(ptr);
-+       if (is_kernel_percpu_address((unsigned long)ptr))
-+               free_percpu((void __percpu *)ptr);
-+       if (put_page_testzero(page))
-+               __put_page(page);
-+}
-+EXPORT_SYMBOL(free);
+Based on what we've dicussed in the previous mails, we could implement it
+in different ways, like put those display into separate sysfs file or add
+some tracepoints. Still I chose to touch the legacy file to print more
+useful data without changing some old data, say, length of backlog queues
+and time_squeeze.
 
-Looking at it now, I'd also include a test for stack memory (and do
-nothing if it is)
+After this, we wouldn't alter the behavior some user-space tools get used
+to meanwhile we could show more data.
 
-There are some prep patches that I'm not including here to clear out
-the use of 'free' as a function name (some conflicting identifiers named
-'free') and a fun one to set a SLAB_PAGE_DTOR on compound pages.
+Jason Xing (2):
+  net-sysfs: display two backlog queue len separately
+  net: introduce budget_squeeze to help us tune rx behavior
+
+ include/linux/netdevice.h |  1 +
+ net/core/dev.c            | 12 ++++++++----
+ net/core/net-procfs.c     | 25 ++++++++++++++++++++-----
+ 3 files changed, 29 insertions(+), 9 deletions(-)
+
+-- 
+2.37.3
+
