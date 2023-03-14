@@ -2,80 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE666B8A45
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 06:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853936B8A67
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 06:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjCNF1h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 01:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
+        id S229571AbjCNFdu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 01:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjCNF1f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 01:27:35 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A4F8F529;
-        Mon, 13 Mar 2023 22:27:34 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id fy10-20020a17090b020a00b0023b4bcf0727so6518350pjb.0;
-        Mon, 13 Mar 2023 22:27:34 -0700 (PDT)
+        with ESMTP id S229648AbjCNFdt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 01:33:49 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22979547C;
+        Mon, 13 Mar 2023 22:33:17 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id p6so15467233plf.0;
+        Mon, 13 Mar 2023 22:33:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678771654;
+        d=gmail.com; s=20210112; t=1678771997;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4D03rED555IfCoQrbUz4ZWLp8DNJPBkSCZrRpWNZxMU=;
-        b=PHK/eH6cxnMBDS+FpMlgzW09AXUjOoOlj8ASxxz2aTuLTVeKSUp7xKHTxKB7/Vcnkl
-         CwrVvnjVsspQikiPLvqlnnjBDOxS40eWdvJsSUGxDU9E81cNPnOowcX7tvis4axPax1e
-         vSywQecGqxKImEGF0uFw76T+kBlaJxqgol80grFJZkUz5kLNctM8vh3mtCgSko4Br0zB
-         XYfcFPVNVBkNm0OVf5Gv+KmHUfO9wlIw6xyR7Qh9BkdAGnnE+V6K5jyl3saNZFDyiF2U
-         BQBfFni82qvs4AvD+UDTygqlI33Uc561jC+hN2hOzrWdEFbRj8XdWiOJvOYvh9ZCYTSI
-         vyTg==
+        bh=36ibrafmLpamZn+W+iBl+mMmpgPiNGrxdApXdvo3HNs=;
+        b=kEZacOCLw56Qx213qJtO/0Hfid7kZe5TD11t8CLWcXyf3P/+WQObxCS1umZRuOS5Py
+         VSgddGfoMr2vHu1Z2ePfK4tUZT8b9U3oeSm54QE5Af4JomfBlMNRILr3M5mpoRySVu6B
+         w0U8UJ2zuPj25uWJMR5REelIUvpGOtH96c7JTTmFEJ08obA63Hlo9u20r4/RP384qn8E
+         rfhIOcj39DNbcXHyZeDzA197oYAShCzXZ/K6tmn7bZQLd4Xp8MojV4CYfzr3ECiPYT/5
+         UeFnNosMVU58ntnDH+8+vsUWOn0M+rr2GDPdniLWsT5D8F4dCJgI0oT/g2m8ZcK8TJv4
+         +8GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678771654;
+        d=1e100.net; s=20210112; t=1678771997;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=4D03rED555IfCoQrbUz4ZWLp8DNJPBkSCZrRpWNZxMU=;
-        b=DlsHwLFi6G4pF6Bh7cnD+PkE3ygxTqhqwtepAkiFWzjy58spAdQGK+D0Xhcs/pvguT
-         BM141plrOlYp7gPDh151BxpbH+vrlTHbE8N2Msed0zEhVmSgC59v7y1t3VO9lOeahOQU
-         ZlYQJA5a30l/0mDwBLCAkosaI3g3MkmlxThsbib7bkvp7AosCPo5gfbH+vaaRwZQXBFB
-         TBDuhg8EPS2oXRxkMieRdX429l4Lf/mCSKDX3P22EjzJWxqXFHVuZx+peTVJx2nMvrQq
-         Wu8xD2g1EEiE6lA+PVXY76NJs1SbhY5bdSvsVvaVasYmB/JKMgMKROSsGE/GAbBTxGSz
-         PFbg==
-X-Gm-Message-State: AO0yUKURnHXDkAOK+QAwPsf7wcNMPBO+mSCqMAvi6BcHUEu/sznu74HC
-        fxCSZzihvXAMBpuQd+wJuLY=
-X-Google-Smtp-Source: AK7set/4mOlSqk9UfChalfQ+S/QeZHZ3bmvtWmPxEpzecYyp26RBTvUEq8a4As4Nzv6DpHtOhUGiNw==
-X-Received: by 2002:a17:902:d54f:b0:19e:73a9:c21b with SMTP id z15-20020a170902d54f00b0019e73a9c21bmr34729856plf.45.1678771654019;
-        Mon, 13 Mar 2023 22:27:34 -0700 (PDT)
+        bh=36ibrafmLpamZn+W+iBl+mMmpgPiNGrxdApXdvo3HNs=;
+        b=xGxjuZYFRHi2a7lCOoRVSSXenwJ7YL9Gjzcm/17IZzJA6uOc/8j2FfUmrnQiKDZG1N
+         ay9/n2fJAE/mqEAs5TqiVmGR7GpGIV+e7noaWHpUVv3fZeuTYx6eBK3ENZf07i85t1ID
+         oMuI1O/Poo5claAQTpwlyZj+Rr+lFgfL4fUO73j5EnpXK5oJL+TRhlAKeyf2xOFqz+AI
+         jGsMn7P9wbVrl2rnZrCWlUAWQm5vFbpe8kKL3vf9qTR/PT1rU7Ozeew3DFqsAutN863+
+         cqw+kEw9YOImZSAu2j1KhS8sJajrYTweQNwabxDkOMvEIqt62bqx7M5HIqIn5HCoEWu/
+         +CyQ==
+X-Gm-Message-State: AO0yUKUpfj0vzNZrxEPSyhInvOd7Pu0GeyqXu6NGOiLKgrgvh6ZDzRSv
+        3khxeXpFlRBYmpC2Bq/o5Nn91H/jZN9mhA==
+X-Google-Smtp-Source: AK7set/cVq6J2rVydtId3Xw4lHsQcjcUS9ABzRALL8cCvtd3DNkC4zAt3av49kKoXtGXxdmfT0gzbQ==
+X-Received: by 2002:a17:902:7c0a:b0:1a0:4d34:f6a4 with SMTP id x10-20020a1709027c0a00b001a04d34f6a4mr4298519pll.55.1678771997056;
+        Mon, 13 Mar 2023 22:33:17 -0700 (PDT)
 Received: from localhost ([98.97.116.12])
-        by smtp.gmail.com with ESMTPSA id jx2-20020a170903138200b0019a7d6a9a76sm758621plb.111.2023.03.13.22.27.33
+        by smtp.gmail.com with ESMTPSA id km15-20020a17090327cf00b00194c2f78581sm746498plb.199.2023.03.13.22.33.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Mar 2023 22:27:33 -0700 (PDT)
-Date:   Mon, 13 Mar 2023 22:27:32 -0700
+        Mon, 13 Mar 2023 22:33:16 -0700 (PDT)
+Date:   Mon, 13 Mar 2023 22:33:15 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Ross Zwisler <zwisler@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     zwisler@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Yonghong Song <yhs@fb.com>, linux-kselftest@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        "Michael S . Tsirkin" <mst@redhat.com>
-Message-ID: <641005c453661_4258120826@john.notmuch>
-In-Reply-To: <20230313204050.GA592900@google.com>
-References: <20230310175209.2130880-1-zwisler@kernel.org>
- <20230310175209.2130880-2-zwisler@kernel.org>
- <20230310183352.2943e633@gandalf.local.home>
- <20230313204050.GA592900@google.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: use canonical ftrace path
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        void@manifault.com, davemarchevsky@meta.com, tj@kernel.org,
+        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Message-ID: <6410071b7186f_425812083@john.notmuch>
+In-Reply-To: <20230313235845.61029-1-alexei.starovoitov@gmail.com>
+References: <20230313235845.61029-1-alexei.starovoitov@gmail.com>
+Subject: RE: [PATCH bpf-next 0/3] bpf: Allow helpers access ptr_to_btf_id.
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -90,111 +75,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ross Zwisler wrote:
-> On Fri, Mar 10, 2023 at 06:33:52PM -0500, Steven Rostedt wrote:
-> > On Fri, 10 Mar 2023 10:52:09 -0700
-> > zwisler@kernel.org wrote:
-> > 
-> > > diff --git a/tools/testing/selftests/bpf/get_cgroup_id_user.c b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-> > > index 156743cf5870..4fa61ac8a0ee 100644
-> > > --- a/tools/testing/selftests/bpf/get_cgroup_id_user.c
-> > > +++ b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-> > > @@ -86,8 +86,12 @@ int main(int argc, char **argv)
-> > >  	pid = getpid();
-> > >  	bpf_map_update_elem(pidmap_fd, &key, &pid, 0);
-> > >  
-> > > -	snprintf(buf, sizeof(buf),
-> > > -		 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/tracing/events/%s/id", probe_name);
-> > > +	else
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > 
-> > I don't know how the BPF folks feel, but I do know some kernel developers
-> > prefer that if you need to break a single command into multiple lines that
-> > you then need to add brackets around it. As it makes it easier to read.
-> > 
-> > 	if (access("/sys/kernel/tracing/trace", F_OK) == 0) {
-> > 		snprintf(buf, sizeof(buf),
-> > 			 "/sys/kernel/tracing/events/%s/id", probe_name);
-> > 	} else {
-> > 		snprintf(buf, sizeof(buf),
-> > 			 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > 	}
-> > 
-> > 
-> > 
-> > >  	efd = open(buf, O_RDONLY, 0);
-> > >  	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-> > >  		goto close_prog;
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > > index 113dba349a57..22be0a9a5a0a 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > > @@ -338,7 +338,12 @@ static int get_syms(char ***symsp, size_t *cntp, bool kernel)
-> > >  	 * Filtering out duplicates by using hashmap__add, which won't
-> > >  	 * add existing entry.
-> > >  	 */
-> > > -	f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
-> > > +
-> > > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > > +		f = fopen("/sys/kernel/tracing/available_filter_functions", "r");
-> > > +	else
-> > > +		f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
-> > > +
-> > >  	if (!f)
-> > >  		return -EINVAL;
-> > >  
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-> > > index c717741bf8b6..60f92fd3c37a 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-> > > @@ -17,8 +17,12 @@ static void test_task_fd_query_tp_core(const char *probe_name,
-> > >  	if (CHECK(err, "bpf_prog_test_load", "err %d errno %d\n", err, errno))
-> > >  		goto close_prog;
-> > >  
-> > > -	snprintf(buf, sizeof(buf),
-> > > -		 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/tracing/events/%s/id", probe_name);
-> > > +	else
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > 
-> > Same here.
-> > 
-> > >  	efd = open(buf, O_RDONLY, 0);
-> > >  	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-> > >  		goto close_prog;
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> > > index 770fcc3bb1ba..d3e377fa8e9b 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> > > @@ -16,8 +16,12 @@ void serial_test_tp_attach_query(void)
-> > >  	for (i = 0; i < num_progs; i++)
-> > >  		obj[i] = NULL;
-> > >  
-> > > -	snprintf(buf, sizeof(buf),
-> > > -		 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
-> > > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/tracing/events/sched/sched_switch/id");
-> > > +	else
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
-> > 
-> > and here.
-> > 
-> > But perhaps the BPF folks don't care?
+Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> Sure, I agree that this is more readable.  I'll gather your Reviewed-by for
-> patch #1, make this change, rebase to the current bpf/bpf-next and send out
-> v4.
+> Allow code like:
+> bpf_strncmp(task->comm, 16, "foo");
+> 
+> Alexei Starovoitov (3):
+>   bpf: Fix bpf_strncmp proto.
+>   bpf: Allow helpers access trusted PTR_TO_BTF_ID.
+>   selftests/bpf: Add various tests to check helper access into
+>     ptr_to_btf_id.
+> 
+>  kernel/bpf/helpers.c                          |  2 +-
+>  kernel/bpf/verifier.c                         | 15 ++++++++
+>  .../selftests/bpf/progs/task_kfunc_failure.c  | 36 +++++++++++++++++++
+>  .../selftests/bpf/progs/task_kfunc_success.c  |  4 +++
+>  4 files changed, 56 insertions(+), 1 deletion(-)
+> 
+> -- 
+> 2.34.1
+> 
 
-
-Also for the patch. LGTM
+For the series,
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
