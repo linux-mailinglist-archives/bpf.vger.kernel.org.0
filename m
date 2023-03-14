@@ -2,61 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEC16B8A11
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 06:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9664A6B8A17
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 06:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjCNFH7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 01:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38866 "EHLO
+        id S229475AbjCNFJv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 01:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjCNFH6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 01:07:58 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5B4B759
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 22:07:57 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id p20so15338757plw.13
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 22:07:57 -0700 (PDT)
+        with ESMTP id S230020AbjCNFJu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 01:09:50 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9882D5A910;
+        Mon, 13 Mar 2023 22:09:48 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id s17so8213825pgv.4;
+        Mon, 13 Mar 2023 22:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678770476;
+        d=gmail.com; s=20210112; t=1678770588;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+lLiRVOLt+rNPgcLG+fvtd6JzA8SXYbh9mowzDFwkqU=;
-        b=FePqOMF3ai4ot0j/lXFU4FCVw2YJtRiMxx+ZeJyOjlAugLvscoXwFBrKPDpGYJlHJg
-         T8TxAbRLLBdjRRuOVsx7hO0miZ5Wy1P4fz+P0hsMH45Bj4MOLoC+KBcgWU8XKpu6IVve
-         lXC2rK9whZWxE35DE4or0orDXF8wsHyaqquKq+gMz4YXoVRTufjdgK/wpOYdQCgMU1l7
-         3SJCsORZ6HF2mM7XxcUynWUBr5gGvSrEwI6bvelWcoqENKd7MvQsFVtEZ5DyPZYyTsgA
-         d7oMyY8PIKLb6DCqicgjPvAjtMtvwMKkr4XldptNt+7XI7w9fw6k1828LKttT7GyxVdS
-         HpNg==
+        bh=kJwe1EkC8J3zS8Wr9IC+xL9zZ1GIIZJktIybcPhN72o=;
+        b=TmbgJE70HU8Dd9gu6wAm994jqb8A93QmQvhbg5AYaMTrbW0IHRL+JT/KNmwX0/xpR0
+         3+/wJnr627UZt8dwFicghcjITvtnDphsuBz7CmB8wHrHNG0AXFqnC6t2asTDLBLRC+Bu
+         PezmZ6CcthSs3aJUScLLMW2QlG3vyEUJzKd1SFgj4njb5OK/wsWs3ZYeM0OUghG47Jiw
+         KYXVSwRj+Y2BsW+tN6mRdf/OMWlXDqCwqd6sOLewbinS7GfbqNT5GOXVLqOi9gHT2nv/
+         HuoP9RYwsautN2Rz1wySpwH1u2QE9oPerK8mVpkx9S+rvzCsS4a+MTD55chBA3mx/IV7
+         Ta8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678770476;
+        d=1e100.net; s=20210112; t=1678770588;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=+lLiRVOLt+rNPgcLG+fvtd6JzA8SXYbh9mowzDFwkqU=;
-        b=EODTBrA2TzjxMJykDeJASEI9iWRkKRM90ZjPWg6qiQbk3+isOwwyyUJZhgRQZv0N24
-         tOnPigGbzLAYa6oCQBwaV6XyqH7+dZ4laj5MbDuhwkz/KnaAOulqUJzVrOMm9Afm7/aC
-         Jt9M3thdgzpAnXAEEe5MHNqDEq4rI95bW49XGpWpkODUsduEzAzDDjXqlduSAr8X6bt+
-         2fGWpm7QgxF4Mk1UxK3KWOCkwFeybz1Q88AOJsRsGpahmW5FZGA+KLJWf5/mV35G+uT8
-         UKKniC76atZTMMJZzOH7fWgkeWH8BXhSklI+kJIWwy4WooYSuRYOQxBv0I7f99GgKJdr
-         JY0g==
-X-Gm-Message-State: AO0yUKV/+7jFVtLVK+AYNaL6J6xH/vD2RHA+Hdoz2ox6zh6dj59BDDJC
-        7O+8TS/wpLyx1g0cPqNFCPM=
-X-Google-Smtp-Source: AK7set/B74Xnq3C1oKPHM/f8xzS1WFtG6YT5uFuBx2YgfBqw4caJ55X6hRdwqE3PYZ44im8mpOzlMA==
-X-Received: by 2002:a17:902:f54d:b0:1a0:4fda:54a with SMTP id h13-20020a170902f54d00b001a04fda054amr5146121plf.56.1678770476510;
-        Mon, 13 Mar 2023 22:07:56 -0700 (PDT)
+        bh=kJwe1EkC8J3zS8Wr9IC+xL9zZ1GIIZJktIybcPhN72o=;
+        b=v6iViVowmKMRbUAEax/vU5uN/Z7j3CcvHoinpuxoMGGeWPMTnjlCbFpdFre8JIJK/E
+         SMLo13ErxxbgZTf+gTyeYSiWf/K2hxksALUxs7MuValo2cK1/S1ZVT9IPTXT/vVcm7Be
+         tHQj+5m5rrxZUpciFO0KT7xeGN6Kjaiwwrd7ie3UT/9tOzjjS6mhNoWKm95HQyOZia07
+         iB4kU+uB5XhOhc8hBwP9JeZ0MDjKXdhe6dr8WwdD30Yru76NdIn8D4v+f66GQ8XWZuGQ
+         VzGp7DrAp1do4/anO8vpgMYTYIxlOVHJAsqIYzwfVGc9JZIypJt4n6Fg3+D/K0xDNmnW
+         hASw==
+X-Gm-Message-State: AO0yUKUqYPZ1mXqKWSc84xA6Xop9vEIanz9RL8RGnRzEtC+l9dbymSnr
+        W7plFJXeD380VdaBjNDvi8CAnQhVLuk=
+X-Google-Smtp-Source: AK7set8mKI5+zTeXQ0Jx2tZuCR9srHojnIsVXKy4IiVuimsx6xrFtdP0m+3jjJcMup3DyzCaE6ETWw==
+X-Received: by 2002:a62:1d0b:0:b0:5df:421d:1962 with SMTP id d11-20020a621d0b000000b005df421d1962mr25570030pfd.2.1678770588027;
+        Mon, 13 Mar 2023 22:09:48 -0700 (PDT)
 Received: from localhost ([98.97.116.12])
-        by smtp.gmail.com with ESMTPSA id t12-20020a170902a5cc00b0019c91989a1csm670009plq.300.2023.03.13.22.07.55
+        by smtp.gmail.com with ESMTPSA id k17-20020aa792d1000000b005a84ef49c63sm542888pfa.214.2023.03.13.22.09.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Mar 2023 22:07:55 -0700 (PDT)
-Date:   Mon, 13 Mar 2023 22:07:53 -0700
+        Mon, 13 Mar 2023 22:09:47 -0700 (PDT)
+Date:   Mon, 13 Mar 2023 22:09:45 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Dave Thaler <dthaler1968@googlemail.com>, bpf@vger.kernel.org
-Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
-Message-ID: <64100129e3da5_425812087b@john.notmuch>
-In-Reply-To: <20230311220912.5546-1-dthaler1968@googlemail.com>
-References: <20230311220912.5546-1-dthaler1968@googlemail.com>
-Subject: RE: [PATCH bpf-next v2] bpf, docs: Add extended call instructions
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        intel-wired-lan@lists.osuosl.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        anthony.l.nguyen@intel.com, magnus.karlsson@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Message-ID: <64100199e8980_425812081b@john.notmuch>
+In-Reply-To: <20230216122839.6878-1-maciej.fijalkowski@intel.com>
+References: <20230216122839.6878-1-maciej.fijalkowski@intel.com>
+Subject: RE: [PATCH intel-net] ice: xsk: disable txq irq before flushing hw
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -71,128 +74,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dave Thaler wrote:
-> From: Dave Thaler <dthaler@microsoft.com>
+Maciej Fijalkowski wrote:
+> ice_qp_dis() intends to stop a given queue pair that is a target of xsk
+> pool attach/detach. One of the steps is to disable interrupts on these
+> queues. It currently is broken in a way that txq irq is turned off
+> *after* HW flush which in turn takes no effect.
 > 
-> Add extended call instructions.  Since BPF can be used in userland
-> or SmartNICs, this uses the more generic "Platform-specific helper functions"
-> term as suggested by David Vernet, rather than the kernel specific "kfuncs".
+> ice_qp_dis():
+> -> ice_qvec_dis_irq()
+> --> disable rxq irq
+> --> flush hw
+> -> ice_vsi_stop_tx_ring()
+> -->disable txq irq
 > 
-> ---
-> V1 -> V2: addressed comments from David Vernet
+> Below splat can be triggered by following steps:
+> - start xdpsock WITHOUT loading xdp prog
+> - run xdp_rxq_info with XDP_TX action on this interface
+> - start traffic
+> - terminate xdpsock
 > 
-> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
-> ---
->  Documentation/bpf/instruction-set.rst | 63 +++++++++++++++++----------
->  Documentation/bpf/linux-notes.rst     |  4 ++
->  2 files changed, 44 insertions(+), 23 deletions(-)
+> [  256.312485] BUG: kernel NULL pointer dereference, address: 0000000000000018
+> [  256.319560] #PF: supervisor read access in kernel mode
+> [  256.324775] #PF: error_code(0x0000) - not-present page
+> [  256.329994] PGD 0 P4D 0
+> [  256.332574] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [  256.337006] CPU: 3 PID: 32 Comm: ksoftirqd/3 Tainted: G           OE      6.2.0-rc5+ #51
+> [  256.345218] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+> [  256.355807] RIP: 0010:ice_clean_rx_irq_zc+0x9c/0x7d0 [ice]
+> [  256.361423] Code: b7 8f 8a 00 00 00 66 39 ca 0f 84 f1 04 00 00 49 8b 47 40 4c 8b 24 d0 41 0f b7 45 04 66 25 ff 3f 66 89 04 24 0f 84 85 02 00 00 <49> 8b 44 24 18 0f b7 14 24 48 05 00 01 00 00 49 89 04 24 49 89 44
+> [  256.380463] RSP: 0018:ffffc900088bfd20 EFLAGS: 00010206
+> [  256.385765] RAX: 000000000000003c RBX: 0000000000000035 RCX: 000000000000067f
+> [  256.393012] RDX: 0000000000000775 RSI: 0000000000000000 RDI: ffff8881deb3ac80
+> [  256.400256] RBP: 000000000000003c R08: ffff889847982710 R09: 0000000000010000
+> [  256.407500] R10: ffffffff82c060c0 R11: 0000000000000004 R12: 0000000000000000
+> [  256.414746] R13: ffff88811165eea0 R14: ffffc9000d255000 R15: ffff888119b37600
+> [  256.421990] FS:  0000000000000000(0000) GS:ffff8897e0cc0000(0000) knlGS:0000000000000000
+> [  256.430207] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  256.436036] CR2: 0000000000000018 CR3: 0000000005c0a006 CR4: 00000000007706e0
+> [  256.443283] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  256.450527] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  256.457770] PKRU: 55555554
+> [  256.460529] Call Trace:
+> [  256.463015]  <TASK>
+> [  256.465157]  ? ice_xmit_zc+0x6e/0x150 [ice]
+> [  256.469437]  ice_napi_poll+0x46d/0x680 [ice]
+> [  256.473815]  ? _raw_spin_unlock_irqrestore+0x1b/0x40
+> [  256.478863]  __napi_poll+0x29/0x160
+> [  256.482409]  net_rx_action+0x136/0x260
+> [  256.486222]  __do_softirq+0xe8/0x2e5
+> [  256.489853]  ? smpboot_thread_fn+0x2c/0x270
+> [  256.494108]  run_ksoftirqd+0x2a/0x50
+> [  256.497747]  smpboot_thread_fn+0x1c1/0x270
+> [  256.501907]  ? __pfx_smpboot_thread_fn+0x10/0x10
+> [  256.506594]  kthread+0xea/0x120
+> [  256.509785]  ? __pfx_kthread+0x10/0x10
+> [  256.513597]  ret_from_fork+0x29/0x50
+> [  256.517238]  </TASK>
 > 
-> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-> index 5e43e14abe8..dc348544542 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -242,35 +242,52 @@ Jump instructions
->  otherwise identical operations.
->  The 'code' field encodes the operation as below:
->  
-> -========  =====  =========================  ============
-> -code      value  description                notes
-> -========  =====  =========================  ============
-> -BPF_JA    0x00   PC += off                  BPF_JMP only
-> -BPF_JEQ   0x10   PC += off if dst == src
-> -BPF_JGT   0x20   PC += off if dst > src     unsigned
-> -BPF_JGE   0x30   PC += off if dst >= src    unsigned
-> -BPF_JSET  0x40   PC += off if dst & src
-> -BPF_JNE   0x50   PC += off if dst != src
-> -BPF_JSGT  0x60   PC += off if dst > src     signed
-> -BPF_JSGE  0x70   PC += off if dst >= src    signed
-> -BPF_CALL  0x80   function call              see `Helper functions`_
-> -BPF_EXIT  0x90   function / program return  BPF_JMP only
-> -BPF_JLT   0xa0   PC += off if dst < src     unsigned
-> -BPF_JLE   0xb0   PC += off if dst <= src    unsigned
-> -BPF_JSLT  0xc0   PC += off if dst < src     signed
-> -BPF_JSLE  0xd0   PC += off if dst <= src    signed
-> -========  =====  =========================  ============
-> +========  =====  ===  ==========================  =========================================
-> +code      value  src  description                 notes
-> +========  =====  ===  ==========================  =========================================
-> +BPF_JA    0x0    0x0  PC += offset                BPF_JMP only
-> +BPF_JEQ   0x1    any  PC += offset if dst == src
-> +BPF_JGT   0x2    any  PC += offset if dst > src   unsigned
-> +BPF_JGE   0x3    any  PC += offset if dst >= src  unsigned
-> +BPF_JSET  0x4    any  PC += offset if dst & src
-> +BPF_JNE   0x5    any  PC += offset if dst != src
-> +BPF_JSGT  0x6    any  PC += offset if dst > src   signed
-> +BPF_JSGE  0x7    any  PC += offset if dst >= src  signed
-> +BPF_CALL  0x8    0x0  call helper function imm    see `Platform-agnostic helper functions`_
-> +BPF_CALL  0x8    0x1  call PC += offset           see `BPF-local functions`_
-> +BPF_CALL  0x8    0x2  call runtime function imm   see `Platform-specific helper functions`_
-> +BPF_EXIT  0x9    0x0  return                      BPF_JMP only
-> +BPF_JLT   0xa    any  PC += offset if dst < src   unsigned
-> +BPF_JLE   0xb    any  PC += offset if dst <= src  unsigned
-> +BPF_JSLT  0xc    any  PC += offset if dst < src   signed
-> +BPF_JSLE  0xd    any  PC += offset if dst <= src  signed
-> +========  =====  ===  ==========================  =========================================
->  
->  The eBPF program needs to store the return value into register R0 before doing a
->  BPF_EXIT.
->  
-> -Helper functions
-> -~~~~~~~~~~~~~~~~
-> +Platform-agnostic helper functions
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->  
-> -Helper functions are a concept whereby BPF programs can call into a
-> -set of function calls exposed by the runtime.  Each helper
-> +Platform-agnostic helper functions are a concept whereby BPF programs can call
-> +into a set of function calls exposed by the runtime.  Each helper
->  function is identified by an integer used in a ``BPF_CALL`` instruction.
-> -The available helper functions may differ for each program type.
-> +The available platform-agnostic helper functions may differ for each program
-> +type, but integer values are unique across all program types.
-> +
-> +Platform-specific helper functions
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +Platform-specific helper functions are helper functions that are unique to
-> +a particular platform.  They use a separate integer numbering space from
-> +platform-agnostic helper functions, but otherwise the same considerations
-
-How does the separate integer numbering space work in Linux? Here I guess
-we have platform agnostic and Linux specific helpers all mingled together
-correct?
-
-> +apply.  Platforms are not required to implement any platform-specific
-> +functions.
-> +
-> +BPF-local functions
-> +~~~~~~~~~~~~~~
-> +BPF-local functions are functions exposed by the same BPF program as the caller,
-> +and are referenced by offset from the call instruction, similar to ``BPF_JA``.
-> +A ``BPF_EXIT`` within the BPF-local function will return to the caller.
->  
->  Load and store instructions
->  ===========================
-> diff --git a/Documentation/bpf/linux-notes.rst b/Documentation/bpf/linux-notes.rst
-> index f43b9c797bc..bdc41293e8a 100644
-> --- a/Documentation/bpf/linux-notes.rst
-> +++ b/Documentation/bpf/linux-notes.rst
-> @@ -20,6 +20,10 @@ integer would be read from a specified register, is not currently supported
->  by the verifier.  Any programs with this instruction will fail to load
->  until such support is added.
->  
-> +For historical reasons, Linux has a number of Linux-specific helper functions
-> +that are encoded as platform-agnostic helper functions rather than
-> + platform-specific helper functions ("kfuncs").
-
-Is this the comment to address above integer numbering space on Linux
-being inconsistent with above docs?
-
-> +
->  Legacy BPF Packet access instructions
->  =====================================
->  
-> -- 
-> 2.33.4
+> In fact, irqs were not disabled and napi managed to be scheduled and run
+> while xsk_pool pointer was still valid, but SW ring of xdp_buff pointers
+> was already freed.
 > 
+> To fix this, call ice_qvec_dis_irq() after ice_vsi_stop_tx_ring(). Also
+> while at it, remove redundant ice_clean_rx_ring() call - this is handled
+> in ice_qp_clean_rings().
+> 
+> Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
+Looks reasonable to me for what its worth.
 
+Acked-by: John Fastabend <john.fastabend@gmail.com>
