@@ -2,57 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4B86B8A1B
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 06:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23516B8A36
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 06:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjCNFKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 01:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S229633AbjCNFUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 01:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjCNFKT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 01:10:19 -0400
+        with ESMTP id S229528AbjCNFUT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 01:20:19 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615605D89A;
-        Mon, 13 Mar 2023 22:10:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6FC5506D
+        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 22:20:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE0EB615D5;
-        Tue, 14 Mar 2023 05:10:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 49675C4339C;
-        Tue, 14 Mar 2023 05:10:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BBBEA615C9
+        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 05:20:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1AB78C4339B;
+        Tue, 14 Mar 2023 05:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678770617;
-        bh=cE5/+eBhcLUf6U82GCqGZsImd9QRoYP/wn3Bjv9SLKk=;
+        s=k20201202; t=1678771217;
+        bh=42JLK61NwXkd7VUuG81ooQFxgiMWzdDe13ath731SbU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=oIMIAcokfBTRxAcX7A92g0WRno1tTK4xzA68iKpMQmvh2+6bmYlZ1JcC5PfwJ5Hm0
-         CpzNxBa8gMsjcHbETRx38RCdm2sbsKVmnoijgHoS8Am+jN/d10wqZgIVgAi3QW3x77
-         Nf5zBz2BzF4GCdLw1jl0yv9MM9aq/5CwasZ6uhrW0rxomVCdmjg75ThX1EcF23ru19
-         RcEV9I/vt3fU7sGdyTQd3bWElKAIYOFmYbJQ536yYcJ32G8hNYTdh5waQnBqh+mqxZ
-         5Q8q5+ahXvPfo1+84b0Z1efTkF3bOmSgz4W5bRcKkVlAUGz015U0tOthHdhSjClYPG
-         aJL9ZMDScJ3Aw==
+        b=SFrSH+O2VsF5FsKiQeWLP2ER+pKwt046v78y404vE3DFIhOL2pnAOr1dKTUwytSLE
+         bKvpf9M79IthIw0g0Jyg0VLkmx3IN5KcXRbmV3IPqr6DR0HmGn3/aHarUq11Urhc1a
+         YqNnP5+B1DBtjvUZVZvDJ1M8RZM0urcK459sP/aUO92NzmZ629B2FnTwFok7Q4ilik
+         CKymNh6VQDI2MmnDBOCape8M0A4pz4FXF/884r4cyRsLRAJL+6bNIqZneHOim7mQZq
+         wtnHVmhZr0w2xsmcVTEwYTwQ0JAYVqBIgqjazzWWmKm7UzVW2jpsyXCrrYB1toZ98D
+         13tabd4Kk9t2A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2C38DE66CB8;
-        Tue, 14 Mar 2023 05:10:17 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EF392E66CBD;
+        Tue, 14 Mar 2023 05:20:16 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 1/2] bpf: use canonical ftrace path
+Subject: Re: [PATCH bpf-next] bpf, docs: Add signed comparison example
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167877061717.18868.4284758514562021959.git-patchwork-notify@kernel.org>
-Date:   Tue, 14 Mar 2023 05:10:17 +0000
-References: <20230313205628.1058720-2-zwisler@kernel.org>
-In-Reply-To: <20230313205628.1058720-2-zwisler@kernel.org>
-To:     Ross Zwisler <zwisler@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, zwisler@google.com, ast@kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, haoluo@google.com,
-        jgg@ziepe.ca, jolsa@kernel.org, john.fastabend@gmail.com,
-        kpsingh@kernel.org, leon@kernel.org, mark.rutland@arm.com,
-        martin.lau@linux.dev, mhiramat@kernel.org, mykolal@fb.com,
-        shuah@kernel.org, song@kernel.org, sdf@google.com,
-        rostedt@goodmis.org, yhs@fb.com, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mst@redhat.com
+Message-Id: <167877121697.23051.15228438821591357830.git-patchwork-notify@kernel.org>
+Date:   Tue, 14 Mar 2023 05:20:16 +0000
+References: <20230310233814.4641-1-dthaler1968@googlemail.com>
+In-Reply-To: <20230310233814.4641-1-dthaler1968@googlemail.com>
+To:     Dave Thaler <dthaler1968@googlemail.com>
+Cc:     bpf@vger.kernel.org, bpf@ietf.org, dthaler@microsoft.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,28 +56,22 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Mon, 13 Mar 2023 14:56:27 -0600 you wrote:
-> From: Ross Zwisler <zwisler@google.com>
+On Fri, 10 Mar 2023 23:38:14 +0000 you wrote:
+> From: Dave Thaler <dthaler@microsoft.com>
 > 
-> The canonical location for the tracefs filesystem is at /sys/kernel/tracing.
+> Improve clarity by adding an example of a signed comparison instruction
 > 
-> But, from Documentation/trace/ftrace.rst:
-> 
->   Before 4.1, all ftrace tracing control files were within the debugfs
->   file system, which is typically located at /sys/kernel/debug/tracing.
->   For backward compatibility, when mounting the debugfs file system,
->   the tracefs file system will be automatically mounted at:
-> 
-> [...]
+> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+> ---
+>  Documentation/bpf/instruction-set.rst | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [bpf-next,v4,1/2] bpf: use canonical ftrace path
-    https://git.kernel.org/bpf/bpf-next/c/27d7fdf06fdb
-  - [bpf-next,v4,2/2] selftests/bpf: use canonical ftrace path
-    https://git.kernel.org/bpf/bpf-next/c/ab4c15feb2eb
+  - [bpf-next] bpf, docs: Add signed comparison example
+    https://git.kernel.org/bpf/bpf-next/c/b9fe8e8d03d0
 
 You are awesome, thank you!
 -- 
