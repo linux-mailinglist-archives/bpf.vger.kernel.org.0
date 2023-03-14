@@ -2,183 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 812996B98FA
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 16:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4B86B9993
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 16:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjCNP1q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 11:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
+        id S231875AbjCNPgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 11:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjCNP1p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 11:27:45 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2056.outbound.protection.outlook.com [40.107.244.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CE43251E;
-        Tue, 14 Mar 2023 08:27:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CQ2DEvuXan3lU0u42SCf1iXG4ftfaWWs8S04PJoN3ni5REGGk6ZrdPPlnpH27yS3F9H49qY6BDyRrsm2WrXHhJSCgStqycBIVE9F4zlK0mhTRW8sYSjKSJl9PAFEd+9lPgjTpUoIvv9Bu6LS/FsH4NI7nDEeH/ZGExMo2s24he5PFiuK7Pzv61Xxuj/ytOkz/st4lT9xyevRb8pwpoXgZxXqx++NYnoElTgutClkLSzz90cYRWk2rYH+DYorJupla0glUeciONIDvX35XHfhAVxu0nBE320GqpeucgGJ6YXyqzeJnbMqZqe8tt5JTyPzqTyYoCBO38I8JF0uivFWxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F4E7W/DyImlX4EgQSOglPve0tXubJyAis/oGSLkugZU=;
- b=CXeoHr8WlB03T/y0hjwBdou991sneYRwZjWX1l/+FrNw/DWUKpL/dMboeIv4Nh4hSWa7+Ys6wuKt4db8rFQBsqCIC7Eph30CvMFMK5HYfA822tURpoVgTcv1sAbd6qC6TOELTft0ug4nsYfz02+Gqdv/ED1X9hI2M3j8ZDYm/BGinnCQyFI+yIwQ/5R8YkZ3RkdJ6icGqokwX3JfA1Crzoflnv1PARW91ZU+hJuxPYy0rWzloQH/mmOZsdnd7TyMcriWqw11bSvF7U8eFAe4ibE3EILNGFNBINkspUMBsOnzwPo/2gTaeDnbzlPnmhwdpQuRgCMFp8QV4gossFhh9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F4E7W/DyImlX4EgQSOglPve0tXubJyAis/oGSLkugZU=;
- b=hRBH4yHcVFxsZeWrxSKXOuZ1vgIEdqy9zNXhaE77gcBGQECaywGBG6GwPqPL35AC4J81mQN0bIZukms/rCtlq6aQsPXnZxvfFa2+BOqhGF0pjylZNWqFurSIgI+DdHlRpFoDBK3sertzGKn0eHADwkRVJFFDwtgiLVP13canI6I=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB6588.namprd12.prod.outlook.com (2603:10b6:510:210::10)
- by CY8PR12MB7754.namprd12.prod.outlook.com (2603:10b6:930:86::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.26; Tue, 14 Mar
- 2023 15:27:41 +0000
-Received: from PH7PR12MB6588.namprd12.prod.outlook.com
- ([fe80::d8e6:76b5:2c23:1247]) by PH7PR12MB6588.namprd12.prod.outlook.com
- ([fe80::d8e6:76b5:2c23:1247%4]) with mapi id 15.20.6178.024; Tue, 14 Mar 2023
- 15:27:41 +0000
-Message-ID: <9b2a3f48-44bc-3719-9ba1-b60f9382a5ba@amd.com>
-Date:   Tue, 14 Mar 2023 20:57:27 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [RFC/PATCHSET 0/9] perf record: Implement BPF sample filter (v4)
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-References: <20230307233309.3546160-1-namhyung@kernel.org>
- <f5b3de20-797c-4ff6-a85b-06c85b4eaa1b@amd.com> <ZAtG43JZkUoO9XkF@kernel.org>
- <ZBBc5SQK2OhIGtGy@kernel.org>
-Content-Language: en-US
-From:   Ravi Bangoria <ravi.bangoria@amd.com>
-In-Reply-To: <ZBBc5SQK2OhIGtGy@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0207.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:e9::18) To PH7PR12MB6588.namprd12.prod.outlook.com
- (2603:10b6:510:210::10)
+        with ESMTP id S231876AbjCNPf7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 11:35:59 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACBC241ED
+        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 08:35:02 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id e9-20020a056830200900b00694651d19f6so8596087otp.12
+        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 08:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1678808094;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LXF/sgIHn5IY/DFNG1dgAypPPI+KWpv/ETLtS0j9Gbs=;
+        b=IWUTCcHQjUi+pqw4fI/GIVwJJSKTLtj/WYk7MGzuHfeIKPwvR5jLu2DS/BJHNXY7dn
+         WDeRJiJl47VPSKCxy0aLVwb8L19WAUFb17AZ6Xu+Vf4H5E7WL/1ZT51uriXqhUoO5isS
+         nnu3Uvy0ZRpJZNMyOKg6Mdwq89KYKwJDqa0P0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678808094;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LXF/sgIHn5IY/DFNG1dgAypPPI+KWpv/ETLtS0j9Gbs=;
+        b=l1SEdvE4KEFcNwYQUW9EMAeiddKWtlCjfJnz3C557ctCePz57UQY18/RFd6k6sFUYw
+         DpVbaDqJUlMjFjRJ/gV3UvXvp02NIzclQK4nxdKAffmVASETGyEBxVkmXVwenXCt0FGc
+         FH1CHIvAsx/qQWbl2SIoG36Degw2c/8HNaKRBUFxA1ElCbA4z4896CjOEMzFFXRe1EC6
+         5PSXGazULd63ePpxj6wnN6mOdu1gLxYXUxYen7lhwJLkRVnupEYZ3UH03r7k+p7BjDmn
+         xal7K6tf8t5OMN3pKBdIc7wb0EAJGgPx4cYH3YJRIE5CuEnB5bkqRcVwigKeXnF6Uv4w
+         rlnw==
+X-Gm-Message-State: AO0yUKWzilSFHegL8FWOZfg+WLHBIimV/2m+PDEopVFGHAj52hthQqCR
+        RDjdaFM+6FllZZ703/n84nmZQw==
+X-Google-Smtp-Source: AK7set91vc8MbNbQSVG1q1MhN6sYhj1Rx/7InNJR/wggV2TUV8x+xX22ckKqB3U4MlO3gFG6q7FzCQ==
+X-Received: by 2002:a05:6830:4123:b0:684:ac9d:1a17 with SMTP id w35-20020a056830412300b00684ac9d1a17mr9915686ott.3.1678808094577;
+        Tue, 14 Mar 2023 08:34:54 -0700 (PDT)
+Received: from JNXK7M3.. ([2a09:bac5:bf22:96::f:316])
+        by smtp.gmail.com with ESMTPSA id a22-20020a9d4716000000b00693ea7bfdc2sm1180855otf.76.2023.03.14.08.34.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Mar 2023 08:34:54 -0700 (PDT)
+From:   Shawn Bohrer <sbohrer@cloudflare.com>
+To:     toshiaki.makita1@gmail.com
+Cc:     toke@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@cloudflare.com, lorenzo@kernel.org,
+        Shawn Bohrer <sbohrer@cloudflare.com>
+Subject: [PATCH] veth: Fix use after free in XDP_REDIRECT
+Date:   Tue, 14 Mar 2023 10:33:51 -0500
+Message-Id: <20230314153351.2201328-1-sbohrer@cloudflare.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZBCSAsUBeNvTPj/s@JNXK7M3>
+References: <ZBCSAsUBeNvTPj/s@JNXK7M3>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB6588:EE_|CY8PR12MB7754:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9ef90227-30e1-49c9-24e0-08db24a0a61d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zQ87fL/Jps8TMbaO/YGVbiezq+BO/uYU1wulLSIwU4bucSITGywjYKOZerEz0GKyrRvaqA9d/D5WyugmHaOoBQSWT9CB4Cg6EdO+s1EarUMQX+x+XUf68JLKg5ZfzesvuogRZDKGdQXsvM71z7F2hCjpMTr33tqNts9Cmo9RB2V6BM024cLKJm8+i+ohFZxVRgB4ZyfBeKih/TZdVK60aKFYvSkU05C3Mk9tOe529jxzShHhAdsJw73F1h+qrbSCjSSvO+7fLZTKUyLo5+3gCVQnxgzaAG5kTAO2MMvWbclkEQUXQMc3WmTYGfgBwDSMAJtH/NFedFtm7HQjGlhJOgFW+OyCWT4c6QOJ5dEjyCNe7E6PpkzA8KT2pvU6C3Aq6VT+4Qih/VMgkZNHb30MeaWSPB1Mf2UDq/fCMrtvI3PCOdyapK9pXifMgvA/bCYmjY3pvF/87sRWC0apURqEK4cISfRSboHW3hOmaS6X7rQndsCOyrSgNIokyZ8e/2PbuglY0OwoM4baRZUIRLI8F9H16fHYkn7W/2GdZUu4xuTFX0lZ+fcpM+qMhwsArZxkDSghB57xo8k0esFj3b5hoclLnj9cEm1yg4COJ0ZEU0R+BtXHDwWsCyA0l1FKcKFYp4qFZRZLrkUYFNttH2UEbIz/a4+crdrP9yITGIxPK8dNDoW3FEbdGFrUNECf1cYSrOFeVgxq100xk1sY3fh70i7wQUBM4rlkULStWT6WTyY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6588.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(39860400002)(136003)(366004)(396003)(346002)(451199018)(6512007)(6506007)(26005)(36756003)(6666004)(6486002)(66946007)(66476007)(478600001)(66556008)(8676002)(4326008)(6916009)(83380400001)(316002)(5660300002)(54906003)(44832011)(38100700002)(86362001)(2906002)(31696002)(53546011)(186003)(41300700001)(2616005)(7416002)(8936002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WFFCaEhWWU9vWXJJUWVyTWZVNDUwdDQ5d3FIQUNSZnZwODFlVnczcmN2Ui8z?=
- =?utf-8?B?WmdBNm5HQTc4RExYUW9uWlIxS3RYSnRJY0tRb1FrOVhOMks5U01tdExZN21B?=
- =?utf-8?B?ZHhIVVJJZDRvQW9oZm41MHlzWGNGUTBETXdzdmMyVjhtRmpDdGY2TS9udklT?=
- =?utf-8?B?RDlZb3NWYitDMkdLaHlMd0UvRGNqeHBZNithTTZEYUtwZ2YzaHVHZmE4Z0xh?=
- =?utf-8?B?SXgva1VGVWVvYnhXODcrQTRCVEY5RjRNanNxcGx1bVJCYjBYMEdFckN5QlBt?=
- =?utf-8?B?VjRnYU9KbWdMbUhBeEFXckdGNU9BVnIxUzhVZlR0TDlVVGNUMEpTT2hmaHZ5?=
- =?utf-8?B?bUoya1d6aUxqQ0ZUbkxvYzZQRjRjbDQ0RVBlUXEzSVBXVW9tRS9uUkpIeXd3?=
- =?utf-8?B?VHpycmFzMVozS1VDR2tuS1V0eEM5dW41dXcrQ1FjUDR1TkpXS3hIaWErN0Vy?=
- =?utf-8?B?bmxBUlhYb2JzRU9nVlVxVDFaa3hIcU9ja1FpUG5sMEFQVFdYZExIVDJncDIz?=
- =?utf-8?B?Ym5yU25EbHhkVVNLck80VzhXMnVmZUNyb1JVOEdhVzlvL0FsenBtZGNCdlpl?=
- =?utf-8?B?eEM0aGRXMHBabWdha2pGQlhmNTJDaFZRNS8xMkoyQjhiYVpmVzNlVGdMNzhC?=
- =?utf-8?B?dWFwUzQwbUQ3RUwrTVNPa2ExdDlmdGFQOEVPSmxRc01PUG43QXZKdXd1SFJq?=
- =?utf-8?B?Tmw1ZnpZanA2VmVBZnN3bTliaDhPb0lxL3pwZjkvTzB6VHNxMUJmRm1idHdQ?=
- =?utf-8?B?c0wrcFVvVnhHUDUrL3VPL3dXSzJDRW5SeHZibldvZjF3dld4OXIraW03dmNB?=
- =?utf-8?B?TlhyMHZUZUNvbXZtbUZ5UzR1VW16VjVIK1Fxc0x1SUVWaDVRU0ZlN3FzTmtC?=
- =?utf-8?B?YjJmb1cwVDR0bTcydHVzL1RlRCtXdCtDeWxMUXczclJGeENBakxCRU44cThF?=
- =?utf-8?B?N1pReVZxTVlrSEtWNG5sMEdCV214VlJBMkc4aXZjdlBDUkplQVJHV01paU9j?=
- =?utf-8?B?a1h0ZEJKLzI0UUg0QTFpUzBNQnlrMGxJNVVMNXJ2YnNBSVAyRFlYblJlOVR1?=
- =?utf-8?B?eGJRM0N3WnJtRUdteDBHd0lTbjl0SXJkRVByVnlxa1RmeWlZYUt1ZWx5T1ZY?=
- =?utf-8?B?T3VUQnRmYmJLY0ZoZlU1NVdaenZ0Rm54Z3g3UlhEbFBRR093QTZIV1RNR3o3?=
- =?utf-8?B?UEFOeWF5TkU0U2ZBU25vQW42NnZtMVREeFpyN1NTdjNVWW1vUG85MFl3Sk51?=
- =?utf-8?B?Qk14VCtqUDZGYzkrZHpJK1djbDdhUSttT3hUTzVWVEY3Q1hPVFl2dVpqL0Q0?=
- =?utf-8?B?dEJ2enlMZDV3Z05BTmZMVjQ2Z3V0c2kyQXc3ODQxZHUzUmM2NDMvb0FHVU9j?=
- =?utf-8?B?bUFQSDUvZVA0VU9tT1NTRnYrYUY2OEhKUDNMUExRWWxJZXA5TmozV3YxZnh6?=
- =?utf-8?B?cEUzczY1TDlzRnJkbVF2ZUhjZkY1WWs1bFhoaUpZNFZpTVZZOUVJTTg1NGZG?=
- =?utf-8?B?RWp4TnpCc3djc1JpSkI1cng3cHp6clQ5R1pNN2M2S0lOWkE0T0hvM3J3cnlV?=
- =?utf-8?B?Unc2VDVPRW9uTzZldkhUWTdJSkJXSmRmeFRGOVBMMEJsRlBmK04xd0I0V1NC?=
- =?utf-8?B?ZGZiM2YzVWFSMzJyT2NIUjY1UkdJNVp1QWtpNU1SZXhoaWpTSWlrNTF3OVhL?=
- =?utf-8?B?SlNWa20rcFNEd2IyWnV5NEs2S09TbW5xM1ZKNEExMWQ0clozK0tLYTZuQ1Fw?=
- =?utf-8?B?QVpDYjF1bXZCeHdJaDVKRUZOU2JqalA1Q2RJdThZcEVQSmlCMnFzUkRvTWRH?=
- =?utf-8?B?WWV2VHRYTGFVOTN5MU9xdEdMVlRFY2tKRFpGTGpJcTlmbkY1MWk5c0Y1cm4w?=
- =?utf-8?B?SXZ2eXZ6Z2g0ckV6K2l3blVhZTVtZ21rZnNzQ05WWU1PczZ6YitsNnJiZmRt?=
- =?utf-8?B?VTlEZUNoWHk3TGxUcXE2NnFTNHdPVzhsVm43eUcwS3JtSDFHN1hhOS9oWGtR?=
- =?utf-8?B?NVVJeHdaZjF0dFpMdy8yMWt6N2Y2UlQ0OHp1cHNBU1pDc0VLM0VOSE9EcS8z?=
- =?utf-8?B?TVptUXlGV09yYkZKbTFTTmh3RDNJVUpscGNEakI2aUtLSkVyczhsZUhTYjgx?=
- =?utf-8?Q?BC7fAHVaj7CVBFzgOZvhZI3rG?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ef90227-30e1-49c9-24e0-08db24a0a61d
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6588.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2023 15:27:40.7882
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZGO4mUF3lqqTZJS8zRwPIXPKQLKf73e9wvXWczqApYG/IBfJAv2iDIA4STRh19OB1eD+szjchAL2nJ+lPHMLoA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7754
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 14-Mar-23 5:09 PM, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Mar 10, 2023 at 12:04:03PM -0300, Arnaldo Carvalho de Melo escreveu:
->> Em Fri, Mar 10, 2023 at 03:28:03PM +0530, Ravi Bangoria escreveu:
->>>> It requires samples satisfy all the filter expressions otherwise it'd
->>>> drop the sample.  IOW filter expressions are connected with logical AND
->>>> operations unless they used "||" explicitly.  So if user has something
->>>> like 'A, B || C, D', then BOTH A and D should be true AND either B or C
->>>> also needs to be true.
->>>>
->>>> Essentially the BPF filter expression is:
->>>>
->>>>   <term> <operator> <value> (("," | "||") <term> <operator> <value>)*
->>>>
->>>> The <term> can be one of:
->>>>   ip, id, tid, pid, cpu, time, addr, period, txn, weight, phys_addr,
->>>>   code_pgsz, data_pgsz, weight1, weight2, weight3, ins_lat, retire_lat,
->>>>   p_stage_cyc, mem_op, mem_lvl, mem_snoop, mem_remote, mem_lock,
->>>>   mem_dtlb, mem_blk, mem_hops
->>>>
->>>> The <operator> can be one of:
->>>>   ==, !=, >, >=, <, <=, &
->>>>
->>>> The <value> can be one of:
->>>>   <number> (for any term)
->>>>   na, load, store, pfetch, exec (for mem_op)
->>>>   l1, l2, l3, l4, cxl, io, any_cache, lfb, ram, pmem (for mem_lvl)
->>>>   na, none, hit, miss, hitm, fwd, peer (for mem_snoop)
->>>>   remote (for mem_remote)
->>>>   na, locked (for mem_locked)
->>>>   na, l1_hit, l1_miss, l2_hit, l2_miss, any_hit, any_miss, walk, fault (for mem_dtlb)
->>>>   na, by_data, by_addr (for mem_blk)
->>>>   hops0, hops1, hops2, hops3 (for mem_hops)
->>>
->>> I think this and few examples should be added in perf-record man page.
->>
->> Agreed, and even mentioning cases where it overcome problems like the
->> filtering you mentioned for AMD systems.
-> 
-> So, what do you think is best? Wait for v5 or apply v4 and then add
-> documentation and other touches as followup patches?
+718a18a0c8a67f97781e40bdef7cdd055c430996 "veth: Rework veth_xdp_rcv_skb
+in order to accept non-linear skb" introduced a bug where it tried to
+use pskb_expand_head() if the headroom was less than
+XDP_PACKET_HEADROOM.  This however uses kmalloc to expand the head,
+which will later allow consume_skb() to free the skb while is it still
+in use by AF_XDP.
 
-I'm fine with both :)
+Previously if the headroom was less than XDP_PACKET_HEADROOM we
+continued on to allocate a new skb from pages so this restores that
+behavior.
 
-Thanks,
-Ravi
+BUG: KASAN: use-after-free in __xsk_rcv+0x18d/0x2c0
+Read of size 78 at addr ffff888976250154 by task napi/iconduit-g/148640
+
+CPU: 5 PID: 148640 Comm: napi/iconduit-g Kdump: loaded Tainted: G           O       6.1.4-cloudflare-kasan-2023.1.2 #1
+Hardware name: Quanta Computer Inc. QuantaPlex T41S-2U/S2S-MB, BIOS S2S_3B10.03 06/21/2018
+Call Trace:
+  <TASK>
+  dump_stack_lvl+0x34/0x48
+  print_report+0x170/0x473
+  ? __xsk_rcv+0x18d/0x2c0
+  kasan_report+0xad/0x130
+  ? __xsk_rcv+0x18d/0x2c0
+  kasan_check_range+0x149/0x1a0
+  memcpy+0x20/0x60
+  __xsk_rcv+0x18d/0x2c0
+  __xsk_map_redirect+0x1f3/0x490
+  ? veth_xdp_rcv_skb+0x89c/0x1ba0 [veth]
+  xdp_do_redirect+0x5ca/0xd60
+  veth_xdp_rcv_skb+0x935/0x1ba0 [veth]
+  ? __netif_receive_skb_list_core+0x671/0x920
+  ? veth_xdp+0x670/0x670 [veth]
+  veth_xdp_rcv+0x304/0xa20 [veth]
+  ? do_xdp_generic+0x150/0x150
+  ? veth_xdp_rcv_one+0xde0/0xde0 [veth]
+  ? _raw_spin_lock_bh+0xe0/0xe0
+  ? newidle_balance+0x887/0xe30
+  ? __perf_event_task_sched_in+0xdb/0x800
+  veth_poll+0x139/0x571 [veth]
+  ? veth_xdp_rcv+0xa20/0xa20 [veth]
+  ? _raw_spin_unlock+0x39/0x70
+  ? finish_task_switch.isra.0+0x17e/0x7d0
+  ? __switch_to+0x5cf/0x1070
+  ? __schedule+0x95b/0x2640
+  ? io_schedule_timeout+0x160/0x160
+  __napi_poll+0xa1/0x440
+  napi_threaded_poll+0x3d1/0x460
+  ? __napi_poll+0x440/0x440
+  ? __kthread_parkme+0xc6/0x1f0
+  ? __napi_poll+0x440/0x440
+  kthread+0x2a2/0x340
+  ? kthread_complete_and_exit+0x20/0x20
+  ret_from_fork+0x22/0x30
+  </TASK>
+
+Freed by task 148640:
+  kasan_save_stack+0x23/0x50
+  kasan_set_track+0x21/0x30
+  kasan_save_free_info+0x2a/0x40
+  ____kasan_slab_free+0x169/0x1d0
+  slab_free_freelist_hook+0xd2/0x190
+  __kmem_cache_free+0x1a1/0x2f0
+  skb_release_data+0x449/0x600
+  consume_skb+0x9f/0x1c0
+  veth_xdp_rcv_skb+0x89c/0x1ba0 [veth]
+  veth_xdp_rcv+0x304/0xa20 [veth]
+  veth_poll+0x139/0x571 [veth]
+  __napi_poll+0xa1/0x440
+  napi_threaded_poll+0x3d1/0x460
+  kthread+0x2a2/0x340
+  ret_from_fork+0x22/0x30
+
+The buggy address belongs to the object at ffff888976250000
+  which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 340 bytes inside of
+  2048-byte region [ffff888976250000, ffff888976250800)
+
+The buggy address belongs to the physical page:
+page:00000000ae18262a refcount:2 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x976250
+head:00000000ae18262a order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x2ffff800010200(slab|head|node=0|zone=2|lastcpupid=0x1ffff)
+raw: 002ffff800010200 0000000000000000 dead000000000122 ffff88810004cf00
+raw: 0000000000000000 0000000080080008 00000002ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff888976250000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff888976250080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ffff888976250100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                  ^
+  ffff888976250180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff888976250200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+
+Fixes: 718a18a0c8a6 ("veth: Rework veth_xdp_rcv_skb in order to accept non-linear skb")
+Signed-off-by: Shawn Bohrer <sbohrer@cloudflare.com>
+---
+ drivers/net/veth.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 1bb54de7124d..6b10aa3883c5 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -708,7 +708,7 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+ 	u32 frame_sz;
+ 
+ 	if (skb_shared(skb) || skb_head_is_locked(skb) ||
+-	    skb_shinfo(skb)->nr_frags) {
++	    skb_shinfo(skb)->nr_frags || skb_headroom(skb) < XDP_PACKET_HEADROOM) {
+ 		u32 size, len, max_head_size, off;
+ 		struct sk_buff *nskb;
+ 		struct page *page;
+@@ -773,9 +773,6 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+ 
+ 		consume_skb(skb);
+ 		skb = nskb;
+-	} else if (skb_headroom(skb) < XDP_PACKET_HEADROOM &&
+-		   pskb_expand_head(skb, VETH_XDP_HEADROOM, 0, GFP_ATOMIC)) {
+-		goto drop;
+ 	}
+ 
+ 	/* SKB "head" area always have tailroom for skb_shared_info */
+-- 
+2.34.1
+
