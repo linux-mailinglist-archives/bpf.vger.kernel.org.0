@@ -2,214 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 472BC6B8C03
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 08:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDE96B8E36
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 10:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbjCNHf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 03:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
+        id S229796AbjCNJLc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 05:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbjCNHfY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 03:35:24 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B348F7F01B;
-        Tue, 14 Mar 2023 00:35:22 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PbQKf2HsQz4f3pG8;
-        Tue, 14 Mar 2023 15:35:18 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-        by APP4 (Coremail) with SMTP id gCh0CgBnF6utIxBk_rhhFQ--.63403S4;
-        Tue, 14 Mar 2023 15:35:19 +0800 (CST)
-From:   Xu Kuohai <xukuohai@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229784AbjCNJL1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 05:11:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCE562B6F
+        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 02:10:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678785034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=inTYRuBYdEyfaIIdpUFfmONa7poVEUBWalb1yUnL2VM=;
+        b=cFIi7/PC+bSU2S9GCElMqL7/x69SDW0KnJD1+ciyooj8QuXOv9/3jniwparF5anJFzRIVP
+        IPjugdfS7m5CgP1xnTMiSoUM9DrnxnCxSewxPc0Dqfayqo1w9zJ94KbL6h8GMDwq1xXiqO
+        I/EF8EfiKaD5BYvHhgHFOCg+2/+6rJM=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-659-TRakANuINyqvInNodcCabw-1; Tue, 14 Mar 2023 05:10:32 -0400
+X-MC-Unique: TRakANuINyqvInNodcCabw-1
+Received: by mail-ed1-f72.google.com with SMTP id m8-20020a056402430800b004cdaaa4f428so21052914edc.20
+        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 02:10:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678785031;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=inTYRuBYdEyfaIIdpUFfmONa7poVEUBWalb1yUnL2VM=;
+        b=A51ch3pUzwTZzLvIARUFDQNIWKe/HCyFsanYYaPPDQ1S1uzP6SVOs3a+Gz2ALImFq5
+         H/JSi3G+hQwxdELN0AvaXhoNNPkeP1hOwgFzAxUhQGwoMqkbUZLe6PKZItgoacWd8z6Y
+         EymtmZlkq8RncI4kK1nkJYp55NxltaCavLcB1aDmabbyco7rpoVrtonufUuDlDiqJ+kk
+         x9o7C950jb8SahBfx1XcrJ6AiGHMiRDIytu3kxdylXfnvF5tNN/PkdfCeNxxAR0fFj33
+         yTdmsU53cDhSUY4ydesU4xd8endwMf3zg/lpF4CPJuaN86fi6Vy1j44FA0Tk7LG88esa
+         hTEg==
+X-Gm-Message-State: AO0yUKX2MzU7kSDV+PuFCGFfyIISXjjUeNtsx0PCjiMUYEMR7aGU0xJA
+        lVSiS46BZSB3Y6yuFIq0snW05KFpErAzwd19xlzbPJQlUXinw81tNnaoRPgYe1TsBrz7AA3r3hG
+        6FBaN0uNXlx6V
+X-Received: by 2002:a17:906:1c93:b0:87b:dac0:b23b with SMTP id g19-20020a1709061c9300b0087bdac0b23bmr1327860ejh.55.1678785031197;
+        Tue, 14 Mar 2023 02:10:31 -0700 (PDT)
+X-Google-Smtp-Source: AK7set9ca8MKg50CqdX2YBXH2dEYDlTe+JUpLw7Qppj9Xz64AY7ahYV20CH9ObIQMg77ERjtHm7/OQ==
+X-Received: by 2002:a17:906:1c93:b0:87b:dac0:b23b with SMTP id g19-20020a1709061c9300b0087bdac0b23bmr1327839ejh.55.1678785030910;
+        Tue, 14 Mar 2023 02:10:30 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:1f7:4129:3ef9:ea05:f0ca:6b81])
+        by smtp.gmail.com with ESMTPSA id hp2-20020a1709073e0200b008b175c46867sm846004ejc.116.2023.03.14.02.10.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Mar 2023 02:10:30 -0700 (PDT)
+Date:   Tue, 14 Mar 2023 05:10:24 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: check bounds not in the 32-bit range
-Date:   Tue, 14 Mar 2023 16:34:24 -0400
-Message-Id: <20230314203424.4015351-3-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230314203424.4015351-1-xukuohai@huaweicloud.com>
-References: <20230314203424.4015351-1-xukuohai@huaweicloud.com>
+        Heng Qi <hengqi@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net 1/2] virtio_net: fix page_to_skb() miss headroom
+Message-ID: <20230314051010-mutt-send-email-mst@kernel.org>
+References: <20230314083901.40521-1-xuanzhuo@linux.alibaba.com>
+ <20230314083901.40521-2-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBnF6utIxBk_rhhFQ--.63403S4
-X-Coremail-Antispam: 1UD129KBjvPXoW5XFyrGF1DAw4DAr1fKrW3p5X_Ar47ZoZ8Wr
-        y7tr48Gr1kXas3Kw4fCasrZw4rKF1vyFsIkayUAFyrZrnrZrZxJwn7XF4qvw1UWr18Z34U
-        XFn0kwnxJFykn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3AaLa
-        J3UjIYCTnIWjp_UUUOn7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAv
-        wI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VW8XVW5AwA204
-        8vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2II
-        xxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjc
-        xK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28E
-        F7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F4
-        0EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_
-        Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8c
-        xan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
-        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXw
-        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
-        67AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-        0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Gg
-        4DUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75 autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230314083901.40521-2-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xu Kuohai <xukuohai@huawei.com>
+On Tue, Mar 14, 2023 at 04:39:00PM +0800, Xuan Zhuo wrote:
+> Because headroom is not passed to page_to_skb(), this causes the shinfo
+> exceeds the range. Then the frags of shinfo are changed by other process.
+> 
+> [  157.724634] stack segment: 0000 [#1] PREEMPT SMP NOPTI
+> [  157.725358] CPU: 3 PID: 679 Comm: xdp_pass_user_f Tainted: G            E      6.2.0+ #150
+> [  157.726401] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/4
+> [  157.727820] RIP: 0010:skb_release_data+0x11b/0x180
+> [  157.728449] Code: 44 24 02 48 83 c3 01 39 d8 7e be 48 89 d8 48 c1 e0 04 41 80 7d 7e 00 49 8b 6c 04 30 79 0c 48 89 ef e8 89 b
+> [  157.730751] RSP: 0018:ffffc90000178b48 EFLAGS: 00010202
+> [  157.731383] RAX: 0000000000000010 RBX: 0000000000000001 RCX: 0000000000000000
+> [  157.732270] RDX: 0000000000000000 RSI: 0000000000000002 RDI: ffff888100dd0b00
+> [  157.733117] RBP: 5d5d76010f6e2408 R08: ffff888100dd0b2c R09: 0000000000000000
+> [  157.734013] R10: ffffffff82effd30 R11: 000000000000a14e R12: ffff88810981ffc0
+> [  157.734904] R13: ffff888100dd0b00 R14: 0000000000000002 R15: 0000000000002310
+> [  157.735793] FS:  00007f06121d9740(0000) GS:ffff88842fcc0000(0000) knlGS:0000000000000000
+> [  157.736794] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  157.737522] CR2: 00007ffd9a56c084 CR3: 0000000104bda001 CR4: 0000000000770ee0
+> [  157.738420] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  157.739283] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  157.740146] PKRU: 55555554
+> [  157.740502] Call Trace:
+> [  157.740843]  <IRQ>
+> [  157.741117]  kfree_skb_reason+0x50/0x120
+> [  157.741613]  __udp4_lib_rcv+0x52b/0x5e0
+> [  157.742132]  ip_protocol_deliver_rcu+0xaf/0x190
+> [  157.742715]  ip_local_deliver_finish+0x77/0xa0
+> [  157.743280]  ip_sublist_rcv_finish+0x80/0x90
+> [  157.743834]  ip_list_rcv_finish.constprop.0+0x16f/0x190
+> [  157.744493]  ip_list_rcv+0x126/0x140
+> [  157.744952]  __netif_receive_skb_list_core+0x29b/0x2c0
+> [  157.745602]  __netif_receive_skb_list+0xed/0x160
+> [  157.746190]  ? udp4_gro_receive+0x275/0x350
+> [  157.746732]  netif_receive_skb_list_internal+0xf2/0x1b0
+> [  157.747398]  napi_gro_receive+0xd1/0x210
+> [  157.747911]  virtnet_receive+0x75/0x1c0
+> [  157.748422]  virtnet_poll+0x48/0x1b0
+> [  157.748878]  __napi_poll+0x29/0x1b0
+> [  157.749330]  net_rx_action+0x27a/0x340
+> [  157.749812]  __do_softirq+0xf3/0x2fb
+> [  157.750298]  do_softirq+0xa2/0xd0
+> [  157.750745]  </IRQ>
+> [  157.751563]  <TASK>
+> [  157.752329]  __local_bh_enable_ip+0x6d/0x80
+> [  157.753178]  virtnet_xdp_set+0x482/0x860
+> [  157.754159]  ? __pfx_virtnet_xdp+0x10/0x10
+> [  157.755129]  dev_xdp_install+0xa4/0xe0
+> [  157.756033]  dev_xdp_attach+0x20b/0x5e0
+> [  157.756933]  do_setlink+0x82e/0xc90
+> [  157.757777]  ? __nla_validate_parse+0x12b/0x1e0
+> [  157.758744]  rtnl_setlink+0xd8/0x170
+> [  157.759549]  ? mod_objcg_state+0xcb/0x320
+> [  157.760328]  ? security_capable+0x37/0x60
+> [  157.761209]  ? security_capable+0x37/0x60
+> [  157.762072]  rtnetlink_rcv_msg+0x145/0x3d0
+> [  157.762929]  ? ___slab_alloc+0x327/0x610
+> [  157.763754]  ? __alloc_skb+0x141/0x170
+> [  157.764533]  ? __pfx_rtnetlink_rcv_msg+0x10/0x10
+> [  157.765422]  netlink_rcv_skb+0x58/0x110
+> [  157.766229]  netlink_unicast+0x21f/0x330
+> [  157.766951]  netlink_sendmsg+0x240/0x4a0
+> [  157.767654]  sock_sendmsg+0x93/0xa0
+> [  157.768434]  ? sockfd_lookup_light+0x12/0x70
+> [  157.769245]  __sys_sendto+0xfe/0x170
+> [  157.770079]  ? handle_mm_fault+0xe9/0x2d0
+> [  157.770859]  ? preempt_count_add+0x51/0xa0
+> [  157.771645]  ? up_read+0x3c/0x80
+> [  157.772340]  ? do_user_addr_fault+0x1e9/0x710
+> [  157.773166]  ? kvm_read_and_reset_apf_flags+0x49/0x60
+> [  157.774087]  __x64_sys_sendto+0x29/0x30
+> [  157.774856]  do_syscall_64+0x3c/0x90
+> [  157.775518]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> [  157.776382] RIP: 0033:0x7f06122def70
+> 
+> Fixes: 18117a842ab0 ("virtio-net: remove xdp related info from page_to_skb()")
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-Add cases to check if bound is updated correctly when 64-bit value is
-not in the 32-bit range.
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
- tools/testing/selftests/bpf/verifier/bounds.c | 121 ++++++++++++++++++
- 1 file changed, 121 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/verifier/bounds.c b/tools/testing/selftests/bpf/verifier/bounds.c
-index 33125d5f6772..74b1917d4208 100644
---- a/tools/testing/selftests/bpf/verifier/bounds.c
-+++ b/tools/testing/selftests/bpf/verifier/bounds.c
-@@ -753,3 +753,124 @@
- 	.result_unpriv = REJECT,
- 	.result = ACCEPT,
- },
-+{
-+	"bound check with JMP_JLT for crossing 64-bit signed boundary",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data_end)),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 8),
-+
-+	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
-+	BPF_LD_IMM64(BPF_REG_0, 0x7fffffffffffff10),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
-+
-+	BPF_LD_IMM64(BPF_REG_0, 0x8000000000000000),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
-+	/* r1 unsigned range is [0x7fffffffffffff10, 0x800000000000000f] */
-+	BPF_JMP_REG(BPF_JLT, BPF_REG_0, BPF_REG_1, -2),
-+
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+},
-+{
-+	"bound check with JMP_JSLT for crossing 64-bit signed boundary",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data_end)),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 8),
-+
-+	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
-+	BPF_LD_IMM64(BPF_REG_0, 0x7fffffffffffff10),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
-+
-+	BPF_LD_IMM64(BPF_REG_0, 0x8000000000000000),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
-+	/* r1 signed range is [S64_MIN, S64_MAX] */
-+	BPF_JMP_REG(BPF_JSLT, BPF_REG_0, BPF_REG_1, -2),
-+
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.errstr = "BPF program is too large",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+},
-+{
-+	"bound check for loop upper bound greater than U32_MAX",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data_end)),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 8),
-+
-+	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
-+	BPF_LD_IMM64(BPF_REG_0, 0x100000000),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
-+
-+	BPF_LD_IMM64(BPF_REG_0, 0x100000000),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
-+	BPF_JMP_REG(BPF_JLT, BPF_REG_0, BPF_REG_1, -2),
-+
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+},
-+{
-+	"bound check with JMP32_JLT for crossing 32-bit signed boundary",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data_end)),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 6),
-+
-+	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
-+	BPF_MOV32_IMM(BPF_REG_0, 0x7fffff10),
-+	BPF_ALU32_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
-+
-+	BPF_MOV32_IMM(BPF_REG_0, 0x80000000),
-+	BPF_ALU32_IMM(BPF_ADD, BPF_REG_0, 1),
-+	/* r1 unsigned range is [0, 0x8000000f] */
-+	BPF_JMP32_REG(BPF_JLT, BPF_REG_0, BPF_REG_1, -2),
-+
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+},
-+{
-+	"bound check with JMP32_JSLT for crossing 32-bit signed boundary",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data_end)),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 6),
-+
-+	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
-+	BPF_MOV32_IMM(BPF_REG_0, 0x7fffff10),
-+	BPF_ALU32_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
-+
-+	BPF_MOV32_IMM(BPF_REG_0, 0x80000000),
-+	BPF_ALU32_IMM(BPF_ADD, BPF_REG_0, 1),
-+	/* r1 signed range is [S32_MIN, S32_MAX] */
-+	BPF_JMP32_REG(BPF_JSLT, BPF_REG_0, BPF_REG_1, -2),
-+
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.errstr = "BPF program is too large",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+},
--- 
-2.30.2
+> ---
+>  drivers/net/virtio_net.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 1a309cfb4976..8ecf7a341d54 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -446,7 +446,8 @@ static unsigned int mergeable_ctx_to_truesize(void *mrg_ctx)
+>  static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+>  				   struct receive_queue *rq,
+>  				   struct page *page, unsigned int offset,
+> -				   unsigned int len, unsigned int truesize)
+> +				   unsigned int len, unsigned int truesize,
+> +				   unsigned int headroom)
+>  {
+>  	struct sk_buff *skb;
+>  	struct virtio_net_hdr_mrg_rxbuf *hdr;
+> @@ -464,11 +465,11 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+>  	else
+>  		hdr_padded_len = sizeof(struct padded_vnet_hdr);
+>  
+> -	buf = p;
+> +	buf = p - headroom;
+>  	len -= hdr_len;
+>  	offset += hdr_padded_len;
+>  	p += hdr_padded_len;
+> -	tailroom = truesize - hdr_padded_len - len;
+> +	tailroom = truesize - headroom  - hdr_padded_len - len;
+>  
+>  	shinfo_size = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+>  
+> @@ -1009,7 +1010,7 @@ static struct sk_buff *receive_big(struct net_device *dev,
+>  {
+>  	struct page *page = buf;
+>  	struct sk_buff *skb =
+> -		page_to_skb(vi, rq, page, 0, len, PAGE_SIZE);
+> +		page_to_skb(vi, rq, page, 0, len, PAGE_SIZE, 0);
+>  
+>  	stats->bytes += len - vi->hdr_len;
+>  	if (unlikely(!skb))
+> @@ -1332,7 +1333,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>  	rcu_read_unlock();
+>  
+>  skip_xdp:
+> -	head_skb = page_to_skb(vi, rq, page, offset, len, truesize);
+> +	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, headroom);
+>  	curr_skb = head_skb;
+>  
+>  	if (unlikely(!curr_skb))
+> -- 
+> 2.32.0.3.g01195cf9f
 
