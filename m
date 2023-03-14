@@ -2,212 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3E06B9CA8
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 18:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154E96B9D58
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 18:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbjCNRNk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 13:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
+        id S230371AbjCNRrT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 13:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbjCNRN3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 13:13:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AD5B2558;
-        Tue, 14 Mar 2023 10:13:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 39A936184A;
-        Tue, 14 Mar 2023 17:13:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C34BC433D2;
-        Tue, 14 Mar 2023 17:13:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678813994;
-        bh=3EG/KqnCYBhNqm2nyk0gyujI8TGKF/mLi6HG6scr/GA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U6vcq4phSJfbDANhHI1VBRfknuhY8hZCiyMl9EQadyaSebAPx37rxi4g/cHiWLh0d
-         Q8CStGViTHBh1U+gduchsYj52Z1UpuyQ60anuoSegizHXHm68uA5g5XMwXMNieO3RF
-         gkAP6Ks8lxZ+8dxBXJH4gDy6l7vtfGVF5RXuEj//99pu6e8cx+nSGREvn10yUGBuyL
-         y1Ju5HEpe4X5TWpQp1CWblHYmduA4as2JnuqOPePKN38kAxikxnhC7vZ522s/IqF/F
-         1zp9iVKjl+erQrGnzwPEsUOQ+hQ20JHjRZCJqY01LKe1yTOKEuY/i3GAkl5R79C6XO
-         pKziX5FHk4Whg==
-Date:   Tue, 14 Mar 2023 18:13:10 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Shawn Bohrer <sbohrer@cloudflare.com>
-Cc:     toshiaki.makita1@gmail.com, toke@kernel.org,
-        makita.toshiaki@lab.ntt.co.jp, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@cloudflare.com
-Subject: Re: [PATCH] veth: Fix use after free in XDP_REDIRECT
-Message-ID: <ZBCrJhy6TAi8fE15@lore-desk>
-References: <ZBCSAsUBeNvTPj/s@JNXK7M3>
- <20230314153351.2201328-1-sbohrer@cloudflare.com>
+        with ESMTP id S229743AbjCNRrS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 13:47:18 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F869EC2;
+        Tue, 14 Mar 2023 10:47:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678816036; x=1710352036;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6JFXQezPJc4pOMa74VcVpSsNQM51up4rLyEdYQaikmQ=;
+  b=J8cUet6jcUxM4PQVHdX2pshG6r75+YnIvDEKacCT/Mepgvu/oQgg+4Gj
+   FBqSlbRKtmiMTkJWhwCWJ/daX8yn5KXNUiXfm78JqB3NTwppcL14l4iiz
+   9lQCdoWi0100CdLWGL7adeBkw0DUBCJo7iyP0KoV4AdZdketJLlqkPrTv
+   COp5XUCvSusHCOkKIjcZKcbjPdZPcPzWezRst13yn9ROc810GG8ZUjY0v
+   LpLYYgwQ5RU5emlBjv2JITqFiTfMzqdGHZWNTqo9zBrF/huTToSU/Axy0
+   T0VePknjsh/dzWwaje937fDgDfaRAID6fLxGdkqu1aq5iSnz031uk3GZf
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10649"; a="365169528"
+X-IronPort-AV: E=Sophos;i="5.98,260,1673942400"; 
+   d="scan'208";a="365169528"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2023 10:47:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10649"; a="629129378"
+X-IronPort-AV: E=Sophos;i="5.98,260,1673942400"; 
+   d="scan'208";a="629129378"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by orsmga003.jf.intel.com with ESMTP; 14 Mar 2023 10:47:15 -0700
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, netdev@vger.kernel.org
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        anthony.l.nguyen@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Chandan Kumar Rout <chandanx.rout@intel.com>
+Subject: [PATCH net 1/1] ice: xsk: disable txq irq before flushing hw
+Date:   Tue, 14 Mar 2023 10:45:43 -0700
+Message-Id: <20230314174543.1048607-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="IRIFQ0q/8cliYCNI"
-Content-Disposition: inline
-In-Reply-To: <20230314153351.2201328-1-sbohrer@cloudflare.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
---IRIFQ0q/8cliYCNI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ice_qp_dis() intends to stop a given queue pair that is a target of xsk
+pool attach/detach. One of the steps is to disable interrupts on these
+queues. It currently is broken in a way that txq irq is turned off
+*after* HW flush which in turn takes no effect.
 
-> 718a18a0c8a67f97781e40bdef7cdd055c430996 "veth: Rework veth_xdp_rcv_skb
-> in order to accept non-linear skb" introduced a bug where it tried to
-> use pskb_expand_head() if the headroom was less than
-> XDP_PACKET_HEADROOM.  This however uses kmalloc to expand the head,
-> which will later allow consume_skb() to free the skb while is it still
-> in use by AF_XDP.
->=20
-> Previously if the headroom was less than XDP_PACKET_HEADROOM we
-> continued on to allocate a new skb from pages so this restores that
-> behavior.
->=20
-> BUG: KASAN: use-after-free in __xsk_rcv+0x18d/0x2c0
-> Read of size 78 at addr ffff888976250154 by task napi/iconduit-g/148640
->=20
-> CPU: 5 PID: 148640 Comm: napi/iconduit-g Kdump: loaded Tainted: G        =
-   O       6.1.4-cloudflare-kasan-2023.1.2 #1
-> Hardware name: Quanta Computer Inc. QuantaPlex T41S-2U/S2S-MB, BIOS S2S_3=
-B10.03 06/21/2018
-> Call Trace:
->   <TASK>
->   dump_stack_lvl+0x34/0x48
->   print_report+0x170/0x473
->   ? __xsk_rcv+0x18d/0x2c0
->   kasan_report+0xad/0x130
->   ? __xsk_rcv+0x18d/0x2c0
->   kasan_check_range+0x149/0x1a0
->   memcpy+0x20/0x60
->   __xsk_rcv+0x18d/0x2c0
->   __xsk_map_redirect+0x1f3/0x490
->   ? veth_xdp_rcv_skb+0x89c/0x1ba0 [veth]
->   xdp_do_redirect+0x5ca/0xd60
->   veth_xdp_rcv_skb+0x935/0x1ba0 [veth]
->   ? __netif_receive_skb_list_core+0x671/0x920
->   ? veth_xdp+0x670/0x670 [veth]
->   veth_xdp_rcv+0x304/0xa20 [veth]
->   ? do_xdp_generic+0x150/0x150
->   ? veth_xdp_rcv_one+0xde0/0xde0 [veth]
->   ? _raw_spin_lock_bh+0xe0/0xe0
->   ? newidle_balance+0x887/0xe30
->   ? __perf_event_task_sched_in+0xdb/0x800
->   veth_poll+0x139/0x571 [veth]
->   ? veth_xdp_rcv+0xa20/0xa20 [veth]
->   ? _raw_spin_unlock+0x39/0x70
->   ? finish_task_switch.isra.0+0x17e/0x7d0
->   ? __switch_to+0x5cf/0x1070
->   ? __schedule+0x95b/0x2640
->   ? io_schedule_timeout+0x160/0x160
->   __napi_poll+0xa1/0x440
->   napi_threaded_poll+0x3d1/0x460
->   ? __napi_poll+0x440/0x440
->   ? __kthread_parkme+0xc6/0x1f0
->   ? __napi_poll+0x440/0x440
->   kthread+0x2a2/0x340
->   ? kthread_complete_and_exit+0x20/0x20
->   ret_from_fork+0x22/0x30
->   </TASK>
->=20
-> Freed by task 148640:
->   kasan_save_stack+0x23/0x50
->   kasan_set_track+0x21/0x30
->   kasan_save_free_info+0x2a/0x40
->   ____kasan_slab_free+0x169/0x1d0
->   slab_free_freelist_hook+0xd2/0x190
->   __kmem_cache_free+0x1a1/0x2f0
->   skb_release_data+0x449/0x600
->   consume_skb+0x9f/0x1c0
->   veth_xdp_rcv_skb+0x89c/0x1ba0 [veth]
->   veth_xdp_rcv+0x304/0xa20 [veth]
->   veth_poll+0x139/0x571 [veth]
->   __napi_poll+0xa1/0x440
->   napi_threaded_poll+0x3d1/0x460
->   kthread+0x2a2/0x340
->   ret_from_fork+0x22/0x30
->=20
-> The buggy address belongs to the object at ffff888976250000
->   which belongs to the cache kmalloc-2k of size 2048
-> The buggy address is located 340 bytes inside of
->   2048-byte region [ffff888976250000, ffff888976250800)
->=20
-> The buggy address belongs to the physical page:
-> page:00000000ae18262a refcount:2 mapcount:0 mapping:0000000000000000 inde=
-x:0x0 pfn:0x976250
-> head:00000000ae18262a order:3 compound_mapcount:0 compound_pincount:0
-> flags: 0x2ffff800010200(slab|head|node=3D0|zone=3D2|lastcpupid=3D0x1ffff)
-> raw: 002ffff800010200 0000000000000000 dead000000000122 ffff88810004cf00
-> raw: 0000000000000000 0000000080080008 00000002ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
->=20
-> Memory state around the buggy address:
->   ffff888976250000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->   ffff888976250080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > ffff888976250100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                                                   ^
->   ffff888976250180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->   ffff888976250200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->=20
-> Fixes: 718a18a0c8a6 ("veth: Rework veth_xdp_rcv_skb in order to accept no=
-n-linear skb")
-> Signed-off-by: Shawn Bohrer <sbohrer@cloudflare.com>
+ice_qp_dis():
+-> ice_qvec_dis_irq()
+--> disable rxq irq
+--> flush hw
+-> ice_vsi_stop_tx_ring()
+-->disable txq irq
 
-Thx for fixing it.
+Below splat can be triggered by following steps:
+- start xdpsock WITHOUT loading xdp prog
+- run xdp_rxq_info with XDP_TX action on this interface
+- start traffic
+- terminate xdpsock
 
-Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
+[  256.312485] BUG: kernel NULL pointer dereference, address: 0000000000000018
+[  256.319560] #PF: supervisor read access in kernel mode
+[  256.324775] #PF: error_code(0x0000) - not-present page
+[  256.329994] PGD 0 P4D 0
+[  256.332574] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[  256.337006] CPU: 3 PID: 32 Comm: ksoftirqd/3 Tainted: G           OE      6.2.0-rc5+ #51
+[  256.345218] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+[  256.355807] RIP: 0010:ice_clean_rx_irq_zc+0x9c/0x7d0 [ice]
+[  256.361423] Code: b7 8f 8a 00 00 00 66 39 ca 0f 84 f1 04 00 00 49 8b 47 40 4c 8b 24 d0 41 0f b7 45 04 66 25 ff 3f 66 89 04 24 0f 84 85 02 00 00 <49> 8b 44 24 18 0f b7 14 24 48 05 00 01 00 00 49 89 04 24 49 89 44
+[  256.380463] RSP: 0018:ffffc900088bfd20 EFLAGS: 00010206
+[  256.385765] RAX: 000000000000003c RBX: 0000000000000035 RCX: 000000000000067f
+[  256.393012] RDX: 0000000000000775 RSI: 0000000000000000 RDI: ffff8881deb3ac80
+[  256.400256] RBP: 000000000000003c R08: ffff889847982710 R09: 0000000000010000
+[  256.407500] R10: ffffffff82c060c0 R11: 0000000000000004 R12: 0000000000000000
+[  256.414746] R13: ffff88811165eea0 R14: ffffc9000d255000 R15: ffff888119b37600
+[  256.421990] FS:  0000000000000000(0000) GS:ffff8897e0cc0000(0000) knlGS:0000000000000000
+[  256.430207] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  256.436036] CR2: 0000000000000018 CR3: 0000000005c0a006 CR4: 00000000007706e0
+[  256.443283] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  256.450527] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  256.457770] PKRU: 55555554
+[  256.460529] Call Trace:
+[  256.463015]  <TASK>
+[  256.465157]  ? ice_xmit_zc+0x6e/0x150 [ice]
+[  256.469437]  ice_napi_poll+0x46d/0x680 [ice]
+[  256.473815]  ? _raw_spin_unlock_irqrestore+0x1b/0x40
+[  256.478863]  __napi_poll+0x29/0x160
+[  256.482409]  net_rx_action+0x136/0x260
+[  256.486222]  __do_softirq+0xe8/0x2e5
+[  256.489853]  ? smpboot_thread_fn+0x2c/0x270
+[  256.494108]  run_ksoftirqd+0x2a/0x50
+[  256.497747]  smpboot_thread_fn+0x1c1/0x270
+[  256.501907]  ? __pfx_smpboot_thread_fn+0x10/0x10
+[  256.506594]  kthread+0xea/0x120
+[  256.509785]  ? __pfx_kthread+0x10/0x10
+[  256.513597]  ret_from_fork+0x29/0x50
+[  256.517238]  </TASK>
 
-> ---
->  drivers/net/veth.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->=20
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index 1bb54de7124d..6b10aa3883c5 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -708,7 +708,7 @@ static int veth_convert_skb_to_xdp_buff(struct veth_r=
-q *rq,
->  	u32 frame_sz;
-> =20
->  	if (skb_shared(skb) || skb_head_is_locked(skb) ||
-> -	    skb_shinfo(skb)->nr_frags) {
-> +	    skb_shinfo(skb)->nr_frags || skb_headroom(skb) < XDP_PACKET_HEADROO=
-M) {
->  		u32 size, len, max_head_size, off;
->  		struct sk_buff *nskb;
->  		struct page *page;
-> @@ -773,9 +773,6 @@ static int veth_convert_skb_to_xdp_buff(struct veth_r=
-q *rq,
-> =20
->  		consume_skb(skb);
->  		skb =3D nskb;
-> -	} else if (skb_headroom(skb) < XDP_PACKET_HEADROOM &&
-> -		   pskb_expand_head(skb, VETH_XDP_HEADROOM, 0, GFP_ATOMIC)) {
-> -		goto drop;
->  	}
-> =20
->  	/* SKB "head" area always have tailroom for skb_shared_info */
-> --=20
-> 2.34.1
->=20
+In fact, irqs were not disabled and napi managed to be scheduled and run
+while xsk_pool pointer was still valid, but SW ring of xdp_buff pointers
+was already freed.
 
---IRIFQ0q/8cliYCNI
-Content-Type: application/pgp-signature; name="signature.asc"
+To fix this, call ice_qvec_dis_irq() after ice_vsi_stop_tx_ring(). Also
+while at it, remove redundant ice_clean_rx_ring() call - this is handled
+in ice_qp_clean_rings().
 
------BEGIN PGP SIGNATURE-----
+Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
+Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com> (A Contingent Worker at Intel)
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/ice/ice_xsk.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZBCrJgAKCRA6cBh0uS2t
-rJ7KAPsEzzhaCu9reMFPepsk6VFiqR6fscdeIRKFJjcs8enwHwD/YkbPjM+gIuZx
-wiVCyW+a6PPEuHrbqvg77KVcC5DhVww=
-=YhAe
------END PGP SIGNATURE-----
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index 31565bbafa22..d1e489da7363 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -184,8 +184,6 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
+ 	}
+ 	netif_tx_stop_queue(netdev_get_tx_queue(vsi->netdev, q_idx));
+ 
+-	ice_qvec_dis_irq(vsi, rx_ring, q_vector);
+-
+ 	ice_fill_txq_meta(vsi, tx_ring, &txq_meta);
+ 	err = ice_vsi_stop_tx_ring(vsi, ICE_NO_RESET, 0, tx_ring, &txq_meta);
+ 	if (err)
+@@ -200,10 +198,11 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
+ 		if (err)
+ 			return err;
+ 	}
++	ice_qvec_dis_irq(vsi, rx_ring, q_vector);
++
+ 	err = ice_vsi_ctrl_one_rx_ring(vsi, false, q_idx, true);
+ 	if (err)
+ 		return err;
+-	ice_clean_rx_ring(rx_ring);
+ 
+ 	ice_qvec_toggle_napi(vsi, q_vector, false);
+ 	ice_qp_clean_rings(vsi, q_idx);
+-- 
+2.38.1
 
---IRIFQ0q/8cliYCNI--
