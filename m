@@ -2,225 +2,281 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB426B92A4
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 13:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC156B93CF
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 13:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbjCNMGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 08:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
+        id S231761AbjCNMbV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 08:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbjCNMGC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 08:06:02 -0400
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2109.outbound.protection.outlook.com [40.107.96.109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFC9A0F21;
-        Tue, 14 Mar 2023 05:05:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mOITzPUNq6/36u/b4/HomS6j+Mdj+XjAQBqKy6fd3DbNFNu6mz46vQQYHvDBzAfgy3+adEb25n15dfpdUCEnVADg1vz4NcLS/Kl8wbn4vCe3qNN1nCCirDBvy3h+hGtSydg30IIpMis+uHi55az/X3kpLDipwcEBFXGcuDumt5FpqBV6AR3WuFujYWXr5IgE3WdbSB4aR8HeH4LfXS633Qu3m7Pxlr8DYIiZjEdkUqcMsLaIRKos8/USLJ0J+SmcmDz3wLp0SZa8xRBFy5iGtDCsMumCEGcsSfGVY475tvygH09r2vNbUQl5qTUysUc9eBHbBSzDtlUEkt9KDXMOPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M0d4J5seEdmso+FAC9E+LZAoKw+aiVCGoVOeiSX7o1A=;
- b=Qm1DTQ2pznZ5P0KzUmGwtD7rZcBaIY9w2GAze750qGFiqpfzJKzAHdNlQbXgefSNheq0iiZq/+bpZN+g6bXIbhNL0B8ULOx7p9+tz5Onc5NlScWWFKNTiwqy6pPP1FItRravolND+wGK4B4ZDBIX6Q4fSgI+zvLJUN8q0bUP31lqE1EG5PhtcaNhrrOWCbeb/RRSKRhY7rKYDpJHKjHmn2ZB19RvMGxFrkUg3DTOHIca5iMi7PnTILUd1GrC91BkozsgPMX2I53F0gShZE6HkcIMHR2bCq82UGlZvFuuhPZwG7q9MbbDu/8fPzzb5LgcjaWXiRpAYwmhMxdbYGucwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M0d4J5seEdmso+FAC9E+LZAoKw+aiVCGoVOeiSX7o1A=;
- b=pSpK15YpGSM2J5LyjWFWRqz/SDmShk4NKqmOHOatSYG2AHF2tGvi2JBASKgobL5FMT6S9l07cBajyzciKjqPj1CIs07nbbWGmDUWrtqy+vGH+muk0y+x/38icUWgqWoNfYTf11mR02YNeLjF3Okw4MwnPzyF0f8TkZAmy05WMys=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by BN0PR13MB4743.namprd13.prod.outlook.com (2603:10b6:408:12e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.24; Tue, 14 Mar
- 2023 12:04:07 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::85f5:bdb:fb9e:294c]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::85f5:bdb:fb9e:294c%2]) with mapi id 15.20.6178.026; Tue, 14 Mar 2023
- 12:04:06 +0000
-Date:   Tue, 14 Mar 2023 13:03:59 +0100
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Jason Xing <kerneljasonxing@gmail.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        stephen@networkplumber.org, sinquersw@gmail.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH v2 net-next 2/2] net: introduce budget_squeeze to help us
- tune rx behavior
-Message-ID: <ZBBir/hjHRJz6Laf@corigine.com>
-References: <20230314030532.9238-1-kerneljasonxing@gmail.com>
- <20230314030532.9238-3-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230314030532.9238-3-kerneljasonxing@gmail.com>
-X-ClientProxiedBy: AM4PR05CA0018.eurprd05.prod.outlook.com (2603:10a6:205::31)
- To PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+        with ESMTP id S230114AbjCNMbC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 08:31:02 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFC97DA1;
+        Tue, 14 Mar 2023 05:30:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0246DB81905;
+        Tue, 14 Mar 2023 12:23:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41046C433EF;
+        Tue, 14 Mar 2023 12:23:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678796629;
+        bh=bHVG6dSQimW/cFHcRzTGys9iwkQ1d8n2ulEi+M5nzlI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AdF7YGKaXC36EjMn9dm3L8/jG9yINq2r7GVsB8N0q2+P2axrC8HURqhe9V1+n5v0a
+         dWxbWBNTOx46+825dyQN3FWk6Q04F8LwS165QGfJFb6xxzAsfEbb99Wj8SQMr3bmDd
+         bGQtAI4TvcNcHAmrSFIa6d8YJK8jXNJ7GOItanp6ig46SwT20JbPJYlHwDiM8VBgDe
+         9Nrvk8mwMbxdoQ6uuph6+QZQVxDADXSPSsJ3du8LWmjE88ybFaTO6WZiz0fh+dxPUl
+         in+8R1liTevsB57e69InZ5ihE4DJ273JLd98UhBiB9pCATvZz25UMt1hDgYXOmBi+5
+         VV8sFZQKxyW7g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B2FA74049F; Tue, 14 Mar 2023 09:23:46 -0300 (-03)
+Date:   Tue, 14 Mar 2023 09:23:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 0/4] perf lock contention: Improve lock symbol display
+ (v1)
+Message-ID: <ZBBnUlIQ5gLhoScx@kernel.org>
+References: <20230313204825.2665483-1-namhyung@kernel.org>
+ <ZA+ZkRYADwtFEsPt@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|BN0PR13MB4743:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8fc8c662-6fab-42de-60fa-08db2484363a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 19piSwpt48sc8YEdvfeE6lXziLmqowC+vEJ2VtVcDCZ6G1I49ui/EeNXGsS6QsRour27wxXRZy3KeR+jscUVuDldkJaIkT7x2p8MkAjLQMou1ZXHSQzJ0GnCiw5evdesFHvmOxxM7jxYDK7HBJ6lyHGGSW4W+84M8Xq9fD+l+PV6GF+9pLWo2nZiHsZXnke5G+R4Ode2x2RXub0nxoMHb37VwvZ8VFvLfTvPUqUBS9VAhf/DvCDtNh+FkR6pXWbOdganeJWmDMC4VrTA75kQSUMcpGX4VrXT8qU8D6SIBKpTlD+4+PbhDctmeB8jPKATRDMoGmL75POk4OR141rqQE3k55lfQjZ/NQuFge2WHjPegfgeJZkgs/2c1F1qBNy9h9Jp3WIVUlkrcv4cHZHUsw5O+b1+INPfK5uTO9lyBpMKHbPLDLLoidBGbmtclXi8zdRpsS3Rom9ttFWcE09K4YRi9ZB47V5IqDyRIZGWj4oGu/mjUPDW2tISzr0VHDNoMiTuOR9JpHbszFkaRtLM42BrwZ6AqyohWLWRFu6ffv5kKLZHs+5154VtuOALgkjpVQ5E06tMPr1w3R9hctkQxFUysMra2kt+s12RL91EknezjiA9+00K5fYDx3e0P4Dj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(346002)(136003)(366004)(376002)(39840400004)(451199018)(8676002)(36756003)(478600001)(316002)(66556008)(4326008)(66476007)(66946007)(7416002)(8936002)(44832011)(5660300002)(2906002)(41300700001)(86362001)(6916009)(6486002)(966005)(6506007)(6512007)(6666004)(2616005)(186003)(38100700002)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dSIXKf8Gh39yIrp9oTQP2V2wRCGqJ4MWlOXNtThw81rImREMahuho8cAevMO?=
- =?us-ascii?Q?lEuQo8rcPHilMM8tBUGHUJV7Xk24UvBoIecvZMz1wqcRm7HHYSg6724YEnYK?=
- =?us-ascii?Q?zsztFiRVHErVQz9cvNkcFDRnLsY1yA5MqTHeKC5V7TDIm6D4xOKeOHHQN5qH?=
- =?us-ascii?Q?FX0JtX3dqIyPq0LL7XoLGEWcRHOWOOWQp2/aexElneH+GcjHLjKA9Mm0RT9A?=
- =?us-ascii?Q?EVVx3Fjz8QFZw7ba0oYx+eM3Qv0/XtJObEKCIy4hYBdl2Gs2eUYQ7wbnas4w?=
- =?us-ascii?Q?Zz/IqJ31H5olcf2WILFJQvJvSvByENsLBf1uQaw9mRo6W4q2Io0yJi3Um3AR?=
- =?us-ascii?Q?01wcGzf5KCQPzOWCSF2TcOhwr6cDlb6Jw1GY+oLnRB7+gRtPSqkpfNHD12Xr?=
- =?us-ascii?Q?Gs1IEnC6i18m3WVU9q265KbcDC80PU6Y9sIrOuQo7NpKck/pXC7fQtjsxF0H?=
- =?us-ascii?Q?Sm0SXoIKendqglm7Nm7qJAXMpMJ9htPe4nyKnpUQtf2LMk9bqByb0xoWqU/N?=
- =?us-ascii?Q?cmWEPRabHna5EFVPObVHnByKfyDVrjrdd7wkeo9lywfPlzjrX7xGXUwB68xW?=
- =?us-ascii?Q?ePGmQaJhqqeyaU/33vR1vV9m8jd7T+eAZRN8KOVRzoCnsXLBUyQmbdd5bQW2?=
- =?us-ascii?Q?TOamfEymKGNt2Jx39fLJJFcLLW9VYBNSAr9eeBPhlcJf3YmGgwsKGXjSeVl5?=
- =?us-ascii?Q?uHcOX4mZf2T1aUsnsKelwWc0YMrY6CWLf1ItqY9nlied9E2kCIOwJlXNb/WQ?=
- =?us-ascii?Q?2749GwJymuL/84VsyB09+vq/+sepAnoy1F9nCsrHc0OQHiUX31+h+cG5PH2b?=
- =?us-ascii?Q?ra1V18S8mH5gmJF0yHwXISvAtxxIbAe2sWfobxtZgG7zLsqOXd+totOVXJ9F?=
- =?us-ascii?Q?xiwScOWtga2VG3gPJd00DeqiZaTXmXONqlOfCckx4asuSGdn21x6Pq99Cwny?=
- =?us-ascii?Q?M2voMyHaA57H/59HjtyvoQALCpFnVNH/Vl4ugNlrTQI7DKHw12XUeX5N9CAZ?=
- =?us-ascii?Q?JFXrGuXBq4ahVa2QjYeTfGhgFIPSKCphiFkP2l2awbQhZK98OdLzqzVSqx0G?=
- =?us-ascii?Q?JvnAnbSn+ts7aHundqNqaEg9jfmCwLj7DKT/ucX3F1nww/FF7d2JJgn4vK0u?=
- =?us-ascii?Q?genv0SACZ0ieueZyemf00maIiOMaahQEfMkEhroHybBYAEpmibQG1UlhDk93?=
- =?us-ascii?Q?lcmskpix0RinVu1xNBBMObIjJDVBlwQAyBRBp7kLqwHmT0kloUbeghqW3klx?=
- =?us-ascii?Q?1awx+0TQ7zRlbEyBBww66AwN2WNUumxGf009nlV6Obnz7WgQoqmd70Z9FVyk?=
- =?us-ascii?Q?aHRNWIk3fGzpM8FaBSZJOn9Z/r5QPoVfz0FzIH7jHOFfhM1oD/neqmDUQi+X?=
- =?us-ascii?Q?zZ1qTS/7xHb4eRzM75SzyIU6QWsLNT9hUVNzuP7Sgy+NH5Jclu3Iy5y+9uP0?=
- =?us-ascii?Q?4gRU+yVOnyTqrvaiWSeYCRjc49tBlNes9kC7hdORIA3hFHfqFIu+noYiSBPZ?=
- =?us-ascii?Q?/kG3YsnQuqoLdnZlNB/8+YQjSj5ps3Kq4aqVtCKD4F5U7Qy9608ngkx/dmdm?=
- =?us-ascii?Q?R0WL20IaxZqNUffjy+vg3JxUCCCBiK/Sx4ID6XUK5uCtoifKPprJ8FgC022t?=
- =?us-ascii?Q?oF37InDHzR3BDh+1u+OMrgQlHSGUeWBE1eWF2kqaZj9q+3fMDw9UlTjJTFNK?=
- =?us-ascii?Q?BMNgJA=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fc8c662-6fab-42de-60fa-08db2484363a
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2023 12:04:06.8854
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rQJJBYH/vzWFELcoaE8Q07J4LyooMSgtHRwIbbZ7jONOtHjXwBlLjx7edIeydCKthlw69r4ovTEWRbb90TG3gDNvOSFUr60r7oaRVlM6F4c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR13MB4743
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZA+ZkRYADwtFEsPt@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 14, 2023 at 11:05:32AM +0800, Jason Xing wrote:
-> From: Jason Xing <kernelxing@tencent.com>
+Em Mon, Mar 13, 2023 at 06:45:53PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Mon, Mar 13, 2023 at 01:48:21PM -0700, Namhyung Kim escreveu:
+> > Hello,
+> > 
+> > This patchset improves the symbolization of locks for -l/--lock-addr mode.
+> > As of now it only shows global lock symbols present in the kallsyms.  But
+> > we can add some more lock symbols by traversing pointers in the BPF program.
+> > 
+> > For example, mmap_lock can be reached from the mm_struct of the current task
+> > (task_struct->mm->mmap_lock) and we can compare the address of the give lock
+> > with it.  Similarly I've added 'siglock' for current->sighand->siglock.
+
+Hey, we can go a bit further by using something like pahole's
+--expand_types and --expand_pointers and play iterating a type members
+and looking for locks, like:
+
+⬢[acme@toolbox pahole]$ pahole task_struct | grep spinlock_t
+	spinlock_t                 alloc_lock;           /*  3280     4 */
+	raw_spinlock_t             pi_lock;              /*  3284     4 */
+	seqcount_spinlock_t        mems_allowed_seq;     /*  3616     4 */
+⬢[acme@toolbox pahole]$
+
+Expand points will find mmap_lock:
+
+⬢[acme@toolbox pahole]$ pahole --expand_pointers -C task_struct | grep -B10 mmap_lock
+								} *pgd;
+								atomic_t                       membarrier_state;
+								atomic_t                       mm_users;
+								atomic_t                       mm_count;
+
+								/* XXX 4 bytes hole, try to pack */
+
+								atomic_long_t                  pgtables_bytes;
+								int                            map_count;
+								spinlock_t                     page_table_lock;
+								struct rw_semaphore                          mmap_lock;
+^C
+⬢[acme@toolbox pahole]$
+
+
+ITs just too much expansion to see task_struct->mm, but it is there, of
+course:
+
+⬢[acme@toolbox pahole]$ pahole mm_struct | grep mmap_lock
+		struct rw_semaphore mmap_lock;           /*   120    40 */
+⬢[acme@toolbox pahole]$
+
+Also:
+
+⬢[acme@toolbox pahole]$ pahole --contains rw_semaphore
+address_space
+signal_struct
+key
+inode
+super_block
+quota_info
+user_namespace
+blocking_notifier_head
+backing_dev_info
+anon_vma
+tty_struct
+cpufreq_policy
+tcf_block
+ipc_ids
+autogroup
+kvm_arch
+posix_clock
+listener_list
+uprobe
+kernfs_root
+configfs_fragment
+ext4_inode_info
+ext4_group_info
+btrfs_fs_info
+extent_buffer
+btrfs_dev_replace
+btrfs_space_info
+btrfs_inode
+btrfs_block_group
+tpm_chip
+ib_device
+ib_xrcd
+blk_crypto_profile
+controller
+led_classdev
+cppc_pcc_data
+dm_snapshot
+⬢[acme@toolbox pahole]$
+
+And:
+
+⬢[acme@toolbox pahole]$ pahole --find_pointers_to mm_struct
+task_struct: mm
+task_struct: active_mm
+vm_area_struct: vm_mm
+flush_tlb_info: mm
+signal_struct: oom_mm
+tlb_state: loaded_mm
+linux_binprm: mm
+mmu_gather: mm
+trace_event_raw_xen_mmu_ptep_modify_prot: mm
+trace_event_raw_xen_mmu_alloc_ptpage: mm
+trace_event_raw_xen_mmu_pgd: mm
+trace_event_raw_xen_mmu_flush_tlb_multi: mm
+trace_event_raw_hyperv_mmu_flush_tlb_multi: mm
+mmu_notifier: mm
+mmu_notifier_range: mm
+sgx_encl_mm: mm
+rq: prev_mm
+kvm: mm
+cpuset_migrate_mm_work: mm
+mmap_unlock_irq_work: mm
+delayed_uprobe: mm
+map_info: mm
+trace_event_raw_mmap_lock: mm
+trace_event_raw_mmap_lock_acquire_returned: mm
+mm_walk: mm
+make_exclusive_args: mm
+mmu_interval_notifier: mm
+mm_slot: mm
+rmap_item: mm
+trace_event_raw_mm_khugepaged_scan_pmd: mm
+trace_event_raw_mm_collapse_huge_page: mm
+trace_event_raw_mm_collapse_huge_page_swapin: mm
+mm_slot: mm
+move_charge_struct: mm
+userfaultfd_ctx: mm
+proc_maps_private: mm
+remap_pfn: mm
+intel_svm: mm
+binder_alloc: vma_vm_mm
+⬢[acme@toolbox pahole]$
+
+- Arnaldo
+
+
+> > On the other hand, we can traverse some of semi-global locks like per-cpu,
+> > per-device, per-filesystem and so on.  I've added 'rqlock' for each cpu's
+> > runqueue lock.
+> > 
+> > It cannot cover all types of locks in the system but it'd be fairly usefule
+> > if we can add many of often contended locks.  I tried to add futex locks
+> > but it failed to find the __futex_data symbol from BTF.  I'm not sure why but
+> > I guess it's because the struct doesn't have a tag name.
+> > 
+> > Those locks are added just because they got caught during my test.
+> > It'd be nice if you suggest which locks to add and how to do that. :)
+> > I'm thinking if there's a way to track file-based locks (like epoll, etc).
+> > 
+> > Finally I also added a lock type name after the symbols (if any) so that we
+> > can get some idea even though it has no symbol.  The example output looks
+> > like below:
+> > 
+> >   $ sudo ./perf lock con -abl -- sleep 1
+> >    contended   total wait     max wait     avg wait            address   symbol
+> > 
+> >           44      6.13 ms    284.49 us    139.28 us   ffffffff92e06080   tasklist_lock (rwlock)
+> >          159    983.38 us     12.38 us      6.18 us   ffff8cc717c90000   siglock (spinlock)
+> >           10    679.90 us    153.35 us     67.99 us   ffff8cdc2872aaf8   mmap_lock (rwsem)
+> >            9    558.11 us    180.67 us     62.01 us   ffff8cd647914038   mmap_lock (rwsem)
+> >           78    228.56 us      7.82 us      2.93 us   ffff8cc700061c00    (spinlock)
+> >            5     41.60 us     16.93 us      8.32 us   ffffd853acb41468    (spinlock)
+> >           10     37.24 us      5.87 us      3.72 us   ffff8cd560b5c200   siglock (spinlock)
+> >            4     11.17 us      3.97 us      2.79 us   ffff8d053ddf0c80   rq_lock (spinlock)
+> >            1      7.86 us      7.86 us      7.86 us   ffff8cd64791404c    (spinlock)
+> >            1      4.13 us      4.13 us      4.13 us   ffff8d053d930c80   rq_lock (spinlock)
+> >            7      3.98 us      1.67 us       568 ns   ffff8ccb92479440    (mutex)
+> >            2      2.62 us      2.33 us      1.31 us   ffff8cc702e6ede0    (rwlock)
+> > 
+> > The tasklist_lock is global so it's from the kallsyms.  But others like
+> > siglock, mmap_lock and rq_lock are from the BPF.
 > 
-> When we encounter some performance issue and then get lost on how
-> to tune the budget limit and time limit in net_rx_action() function,
-> we can separately counting both of them to avoid the confusion.
+> Beautiful :-)
 > 
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-
-As per my comment on patch 1/2, I'd drop the "/* keep it untouched */"
-comment.
-
-That notwithstanding:
-
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
-
-> ---
-> v2:
-> 1) change the coding style suggested by Stephen and Simon
-> 2) Keep the display of the old data (time_squeeze) untouched suggested
-> by Kui-Feng
-> Link: https://lore.kernel.org/lkml/20230311163614.92296-1-kerneljasonxing@gmail.com/
-> ---
->  include/linux/netdevice.h |  1 +
->  net/core/dev.c            | 12 ++++++++----
->  net/core/net-procfs.c     |  9 ++++++---
->  3 files changed, 15 insertions(+), 7 deletions(-)
+> And the csets are _so_ small and demonstrate techniques that should be
+> used in more and more tools.
 > 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 6a14b7b11766..5736311a2133 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -3157,6 +3157,7 @@ struct softnet_data {
->  	/* stats */
->  	unsigned int		processed;
->  	unsigned int		time_squeeze;
-> +	unsigned int		budget_squeeze;
->  #ifdef CONFIG_RPS
->  	struct softnet_data	*rps_ipi_list;
->  #endif
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 253584777101..1518a366783b 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -6637,6 +6637,7 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
->  	unsigned long time_limit = jiffies +
->  		usecs_to_jiffies(READ_ONCE(netdev_budget_usecs));
->  	int budget = READ_ONCE(netdev_budget);
-> +	bool done = false;
->  	LIST_HEAD(list);
->  	LIST_HEAD(repoll);
+> Applied, testing.
+> 
+> - Arnaldo
 >  
-> @@ -6644,7 +6645,7 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
->  	list_splice_init(&sd->poll_list, &list);
->  	local_irq_enable();
->  
-> -	for (;;) {
-> +	while (!done) {
->  		struct napi_struct *n;
->  
->  		skb_defer_free_flush(sd);
-> @@ -6662,10 +6663,13 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
->  		 * Allow this to run for 2 jiffies since which will allow
->  		 * an average latency of 1.5/HZ.
->  		 */
-> -		if (unlikely(budget <= 0 ||
-> -			     time_after_eq(jiffies, time_limit))) {
-> +		if (unlikely(budget <= 0)) {
-> +			sd->budget_squeeze++;
-> +			done = true;
-> +		}
-> +		if (unlikely(time_after_eq(jiffies, time_limit))) {
->  			sd->time_squeeze++;
-> -			break;
-> +			done = true;
->  		}
->  	}
->  
-> diff --git a/net/core/net-procfs.c b/net/core/net-procfs.c
-> index 2809b663e78d..25810ee46a04 100644
-> --- a/net/core/net-procfs.c
-> +++ b/net/core/net-procfs.c
-> @@ -179,14 +179,17 @@ static int softnet_seq_show(struct seq_file *seq, void *v)
->  	 */
->  	seq_printf(seq,
->  		   "%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x "
-> -		   "%08x %08x\n",
-> -		   sd->processed, sd->dropped, sd->time_squeeze, 0,
-> +		   "%08x %08x %08x %08x\n",
-> +		   sd->processed, sd->dropped,
-> +		   sd->time_squeeze + sd->budget_squeeze, /* keep it untouched */
-> +		   0,
->  		   0, 0, 0, 0, /* was fastroute */
->  		   0,	/* was cpu_collision */
->  		   sd->received_rps, flow_limit_count,
->  		   softnet_backlog_len(sd),	/* keep it untouched */
->  		   (int)seq->index,
-> -		   softnet_input_pkt_queue_len(sd), softnet_process_queue_len(sd));
-> +		   softnet_input_pkt_queue_len(sd), softnet_process_queue_len(sd),
-> +		   sd->time_squeeze, sd->budget_squeeze);
->  	return 0;
->  }
->  
+> > You get get the code at 'perf/lock-symbol-v1' branch in
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+> > 
+> > Thanks,
+> > Namhyung
+> > 
+> > Namhyung Kim (4):
+> >   perf lock contention: Track and show mmap_lock with address
+> >   perf lock contention: Track and show siglock with address
+> >   perf lock contention: Show per-cpu rq_lock with address
+> >   perf lock contention: Show lock type with address
+> > 
+> >  tools/perf/builtin-lock.c                     | 46 +++++++----
+> >  tools/perf/util/bpf_lock_contention.c         | 35 ++++++++-
+> >  .../perf/util/bpf_skel/lock_contention.bpf.c  | 77 +++++++++++++++++++
+> >  tools/perf/util/bpf_skel/lock_data.h          | 14 ++++
+> >  4 files changed, 152 insertions(+), 20 deletions(-)
+> > 
+> > 
+> > base-commit: b8fa3e3833c14151a47ebebbc5427dcfe94bb407
+> > -- 
+> > 2.40.0.rc1.284.g88254d51c5-goog
+> > 
+> 
 > -- 
-> 2.37.3
 > 
+> - Arnaldo
+
+-- 
+
+- Arnaldo
