@@ -2,154 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2526B8AED
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 07:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FB66B8B53
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 07:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjCNGF7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 02:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37484 "EHLO
+        id S229880AbjCNGit (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 02:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjCNGF6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 02:05:58 -0400
-Received: from out-25.mta1.migadu.com (out-25.mta1.migadu.com [95.215.58.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898578DCEB
-        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 23:05:54 -0700 (PDT)
-Message-ID: <685fe34b-4f84-8bb2-4da7-67eef8ca3b0e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1678773952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o+SD+4TO51Ptk2KisSv0fSCt9ldtoaUwYbooz3qMg7g=;
-        b=nmm7tPcHpkoaD/2AOfRzo7lK1XcjjgrQTgPRmShEjWok/+bnBeYRsY44vVjz9HX4fAzTD0
-        FQ4yV3ZSg0fcgMNbu80z5QGn3H3WoCDim+iSCIk1dpYEsOL5gNmjbXu1vW0fZRZZzSYEl7
-        37tQRrcb/qUYSl/2HvQW9pQhMab5yoM=
-Date:   Mon, 13 Mar 2023 23:05:49 -0700
+        with ESMTP id S229854AbjCNGis (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 02:38:48 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650F22056A
+        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 23:38:46 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id x25so5063627vsj.2
+        for <bpf@vger.kernel.org>; Mon, 13 Mar 2023 23:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1678775925;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=34toPK5Jl7g5SJWTUbt6qHTuMP2kgJb9d92d5TQ6uKc=;
+        b=raCj5tUYX+K7OOxji5NdA+0Ff/Mdh9u8jl7XugmtOTZV1HUU/o7HEb8a7hZUM2WItC
+         30vLy46VtTKY/ppD2vx3ZoDy6f8ymm8eZWP7ZIR2zxMKl7yfDw31APFw8Fi9ZoTsLn97
+         +DtymiQV4vd6ANcOFbaskjpHQR5DTQWH7O7aWRL0w+8PT0aItswtzJ6ltV/X9rpQIHaf
+         QW14yTxF2P9S6M8/t5QadqD8UTRHTZYGispBW5kFTchvawkeED58mIFrPgvGttYqIesz
+         0WbuSkRwXYqHCSAhlnpUrrDrN3A/WTm6dIItOf07N5+X7GEtqnpRMipQCrkUsJDIsFSC
+         yP1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678775925;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=34toPK5Jl7g5SJWTUbt6qHTuMP2kgJb9d92d5TQ6uKc=;
+        b=KhnjsvthEevJQob0jg3L0ScBtHa34N2cbMuU3GIYBBXF7pDAVN4FjXddjc4COJ+zzH
+         wkSKkJb+1K8lrpcIH91VBFDAUnVLoq8dcnAz67gfAni5rBiccZCQyOj5wYQ+JJsMSFPt
+         uVnIun7RCX7RHZRL1BhRdNoQuN5zWakdfa0ht3xN1qdkEklb85NcQhDki6RA89Q9wm1T
+         +bCeHay8S2g+T39+4UxKAL+v/hDFuhjHVY+VT7wRG1kW908Yc0mW0+peS8bAiA3WMHnR
+         K4DZhprQdxM1uq+c/yHGDSgk8ndhxqfzFXLeduQrQR/3MbTFJ0Yu+Gi9Xe9ypJCws9Ej
+         OMzA==
+X-Gm-Message-State: AO0yUKUs6F+trEmQ/KkIAGXrUNCL7prLWaPoM3yojE/7QZXPc/9QMoNS
+        7KnIQgKf8xB8695IKef5Q1J8+MCrz1rAPMoCSvPyJQ==
+X-Google-Smtp-Source: AK7set/kfLikdpcpac3M0evkK49tLDLlO5sj8TiVD2479Mz9ekdBHkmkNuDWazJLrtOSTFRc8xaVUVAeNtyZ3HiXru4=
+X-Received: by 2002:a05:6102:23d1:b0:412:5424:e58e with SMTP id
+ x17-20020a05610223d100b004125424e58emr8949913vsr.0.1678775925387; Mon, 13 Mar
+ 2023 23:38:45 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 1/8] bpf: Retire the struct_ops map
- kvalue->refcnt.
-Content-Language: en-US
-To:     Kui-Feng Lee <kuifeng@meta.com>
-References: <20230310043812.3087672-1-kuifeng@meta.com>
- <20230310043812.3087672-2-kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230310043812.3087672-2-kuifeng@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 14 Mar 2023 12:08:34 +0530
+Message-ID: <CA+G9fYtBnwxAWXi2+GyNByApxnf_DtP1-6+_zOKAdJKnJBexjg@mail.gmail.com>
+Subject: next: zip.c:35:8: error: packed attribute causes inefficient
+ alignment for 'magic' [-Werror=attributes]
+To:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/9/23 8:38 PM, Kui-Feng Lee wrote:
-> We have replaced kvalue-refcnt with synchronize_rcu() to wait for an
-> RCU grace period.
-> 
-> Maintenance of kvalue->refcnt was a complicated task, as we had to
-> simultaneously keep track of two reference counts: one for the
-> reference count of bpf_map. When the kvalue->refcnt reaches zero, we
-> also have to reduce the reference count on bpf_map - yet these steps
-> are not performed in an atomic manner and require us to be vigilant
-> when managing them. By eliminating kvalue->refcnt, we can make our
-> maintenance more straightforward as the refcount of bpf_map is now
-> solely managed!
-> 
-> To prevent the trampoline image of a struct_ops from being released
-> while it is still in use, we wait for an RCU grace period. The
-> setsockopt(TCP_CONGESTION, "...") command allows you to change your
-> socket's congestion control algorithm and can result in releasing the
-> old struct_ops implementation.
+perf builds failing from Linux next-20230307..next-20230314 but pass on
+Linux mainline v6.3-rc2.
 
-If the setsockopt() above is referring to the syscall setsockopt(), then the old 
-struct_ops is fine. The old struct_ops is protected by the struct_ops map's 
-refcnt (or the current kvalue->refcnt). The sk in setsockopt(sk, ...) will no 
-longer use the old struct_ops before the refcnt is decremented. This part should 
-be the same as the tcp-cc kernel module.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> Moreover, since this function is
-> exposed through bpf_setsockopt(), it may be accessed by BPF programs
-> as well. To ensure that the trampoline image belonging to struct_op
-> can be safely called while its method is in use, struct_ops is
-> safeguarded with rcu_read_lock(). Doing so prevents any destruction of
-> the associated images before returning from a trampoline and requires
-> us to wait for an RCU grace period.
+Build log:
+---
+libbpf/staticobjs/zip.o
+zip.c:35:8: error: packed attribute causes inefficient alignment for
+'magic' [-Werror=attributes]
+   35 |  __u32 magic;
+      |        ^~~~~
+zip.c:40:8: error: packed attribute causes inefficient alignment for
+'this_disk' [-Werror=attributes]
+   40 |  __u16 this_disk;
+      |        ^~~~~~~~~
+zip.c:45:8: error: packed attribute causes inefficient alignment for
+'cd_disk' [-Werror=attributes]
+   45 |  __u16 cd_disk;
+      |        ^~~~~~~
+zip.c:50:8: error: packed attribute causes inefficient alignment for
+'cd_records' [-Werror=attributes]
+   50 |  __u16 cd_records;
+      |        ^~~~~~~~~~
+zip.c:55:8: error: packed attribute causes inefficient alignment for
+'cd_records_total' [-Werror=attributes]
+   55 |  __u16 cd_records_total;
+      |        ^~~~~~~~~~~~~~~~
+zip.c:58:8: error: packed attribute causes inefficient alignment for
+'cd_size' [-Werror=attributes]
+   58 |  __u32 cd_size;
+      |        ^~~~~~~
+zip.c:63:8: error: packed attribute causes inefficient alignment for
+'cd_offset' [-Werror=attributes]
+   63 |  __u32 cd_offset;
+      |        ^~~~~~~~~
+zip.c:66:8: error: packed attribute causes inefficient alignment for
+'comment_length' [-Werror=attributes]
+   66 |  __u16 comment_length;
+      |        ^~~~~~~~~~~~~~
+zip.c:79:8: error: packed attribute causes inefficient alignment for
+'magic' [-Werror=attributes]
+   79 |  __u32 magic;
+      |        ^~~~~
+zip.c:80:8: error: packed attribute causes inefficient alignment for
+'version' [-Werror=attributes]
+   80 |  __u16 version;
+      |        ^~~~~~~
+zip.c:82:8: error: packed attribute causes inefficient alignment for
+'min_version' [-Werror=attributes]
+   82 |  __u16 min_version;
+      |        ^~~~~~~~~~~
+zip.c:83:8: error: packed attribute causes inefficient alignment for
+'flags' [-Werror=attributes]
+   83 |  __u16 flags;
+      |        ^~~~~
+zip.c:84:8: error: packed attribute causes inefficient alignment for
+'compression' [-Werror=attributes]
+   84 |  __u16 compression;
+      |        ^~~~~~~~~~~
+zip.c:85:8: error: packed attribute causes inefficient alignment for
+'last_modified_time' [-Werror=attributes]
+   85 |  __u16 last_modified_time;
+      |        ^~~~~~~~~~~~~~~~~~
+zip.c:86:8: error: packed attribute causes inefficient alignment for
+'last_modified_date' [-Werror=attributes]
+   86 |  __u16 last_modified_date;
+      |        ^~~~~~~~~~~~~~~~~~
+zip.c:87:8: error: packed attribute causes inefficient alignment for
+'crc' [-Werror=attributes]
+   87 |  __u32 crc;
+      |        ^~~
+zip.c:88:8: error: packed attribute causes inefficient alignment for
+'compressed_size' [-Werror=attributes]
+   88 |  __u32 compressed_size;
+      |        ^~~~~~~~~~~~~~~
+zip.c:89:8: error: packed attribute causes inefficient alignment for
+'uncompressed_size' [-Werror=attributes]
+   89 |  __u32 uncompressed_size;
+      |        ^~~~~~~~~~~~~~~~~
+zip.c:90:8: error: packed attribute causes inefficient alignment for
+'file_name_length' [-Werror=attributes]
+   90 |  __u16 file_name_length;
+      |        ^~~~~~~~~~~~~~~~
+zip.c:91:8: error: packed attribute causes inefficient alignment for
+'extra_field_length' [-Werror=attributes]
+   91 |  __u16 extra_field_length;
+      |        ^~~~~~~~~~~~~~~~~~
+zip.c:92:8: error: packed attribute causes inefficient alignment for
+'file_comment_length' [-Werror=attributes]
+   92 |  __u16 file_comment_length;
+      |        ^~~~~~~~~~~~~~~~~~~
+zip.c:94:8: error: packed attribute causes inefficient alignment for
+'disk' [-Werror=attributes]
+   94 |  __u16 disk;
+      |        ^~~~
+zip.c:95:8: error: packed attribute causes inefficient alignment for
+'internal_attributes' [-Werror=attributes]
+   95 |  __u16 internal_attributes;
+      |        ^~~~~~~~~~~~~~~~~~~
+zip.c:108:8: error: packed attribute causes inefficient alignment for
+'magic' [-Werror=attributes]
+  108 |  __u32 magic;
+      |        ^~~~~
+zip.c:110:8: error: packed attribute causes inefficient alignment for
+'min_version' [-Werror=attributes]
+  110 |  __u16 min_version;
+      |        ^~~~~~~~~~~
+zip.c:111:8: error: packed attribute causes inefficient alignment for
+'flags' [-Werror=attributes]
+  111 |  __u16 flags;
+      |        ^~~~~
+zip.c:112:8: error: packed attribute causes inefficient alignment for
+'compression' [-Werror=attributes]
+  112 |  __u16 compression;
+      |        ^~~~~~~~~~~
+zip.c:113:8: error: packed attribute causes inefficient alignment for
+'last_modified_time' [-Werror=attributes]
+  113 |  __u16 last_modified_time;
+      |        ^~~~~~~~~~~~~~~~~~
+zip.c:114:8: error: packed attribute causes inefficient alignment for
+'last_modified_date' [-Werror=attributes]
+  114 |  __u16 last_modified_date;
+      |        ^~~~~~~~~~~~~~~~~~
+zip.c:118:8: error: packed attribute causes inefficient alignment for
+'file_name_length' [-Werror=attributes]
+  118 |  __u16 file_name_length;
+      |        ^~~~~~~~~~~~~~~~
+zip.c:119:8: error: packed attribute causes inefficient alignment for
+'extra_field_length' [-Werror=attributes]
+  119 |  __u16 extra_field_length;
+      |        ^~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
 
-The bpf_setsockopt(TCP_CONGESTION) is the reason that the trampoline image needs 
-a grace period, but I noticed RCU grace period itself is not enough for 
-trampoline image and more on this later.
-
-Another reason the struct_ops map needs a RCU grace period is because of the 
-bpf_try_module_get() (in tcp_set_default_congestion_control for example).
+Build links,
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2MfXEyvgh4ba9y3rkt6KPf6sUMR/
 
 
-> ---
->   include/linux/bpf.h         |  1 +
->   kernel/bpf/bpf_struct_ops.c | 68 ++++++++++++++++++++-----------------
->   kernel/bpf/syscall.c        |  6 ++--
->   3 files changed, 42 insertions(+), 33 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index e64ff1e89fb2..00ca92ea6f2e 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1938,6 +1938,7 @@ struct bpf_map *bpf_map_get_with_uref(u32 ufd);
->   struct bpf_map *__bpf_map_get(struct fd f);
->   void bpf_map_inc(struct bpf_map *map);
->   void bpf_map_inc_with_uref(struct bpf_map *map);
-> +struct bpf_map *__bpf_map_inc_not_zero(struct bpf_map *map, bool uref);
->   struct bpf_map * __must_check bpf_map_inc_not_zero(struct bpf_map *map);
->   void bpf_map_put_with_uref(struct bpf_map *map);
->   void bpf_map_put(struct bpf_map *map);
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index 38903fb52f98..ab7811a4c1dd 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -58,6 +58,11 @@ struct bpf_struct_ops_map {
->   	struct bpf_struct_ops_value kvalue;
->   };
->   
-> +struct bpf_struct_ops_link {
-> +	struct bpf_link link;
-> +	struct bpf_map __rcu *map;
-> +};
-
-Comparing with v5, this is moved from patch 3 to patch 1. It is not used here, 
-so it belongs to patch 3.
+History link,
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230314/testrun/15564056/suite/build/test/gcc-10-lkftconfig-perf/history/
 
 
-> @@ -574,6 +585,19 @@ static void bpf_struct_ops_map_free(struct bpf_map *map)
->   {
->   	struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
->   
-> +	/* The struct_ops's function may switch to another struct_ops.
-> +	 *
-> +	 * For example, bpf_tcp_cc_x->init() may switch to
-> +	 * another tcp_cc_y by calling
-> +	 * setsockopt(TCP_CONGESTION, "tcp_cc_y").
-> +	 * During the switch,  bpf_struct_ops_put(tcp_cc_x) is called
-> +	 * and its refcount may reach 0 which then free its
-> +	 * trampoline image while tcp_cc_x is still running.
-> +	 *
-> +	 * Thus, a rcu grace period is needed here.
-> +	 */
-> +	synchronize_rcu();
-
-After the trampoline image finished running a struct_ops's "prog", it still has 
-a few insn need to execute in the trampoline image, so it also needs to wait for 
-synchronize_rcu_tasks/call_rcu_tasks.
-
-This is an old issue, only happens when the struct_ops prog calls 
-bpf_setsockopt(TCP_CONGESTION) with CONFIG_PREEMPT and unlikely other upcoming 
-struct_ops subsystem may need this, please help to do a follow up fix on it 
-(separate from this set) to also wait for the rcu_tasks gp.
-
-
+--
+Linaro LKFT
+https://lkft.linaro.org
