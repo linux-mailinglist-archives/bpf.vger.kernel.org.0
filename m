@@ -2,115 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 508DF6B9F21
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 19:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2206B9FCF
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 20:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbjCNSx3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 14:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
+        id S229783AbjCNTbr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 15:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjCNSx2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 14:53:28 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B4C738B0;
-        Tue, 14 Mar 2023 11:52:56 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id ek18so34916228edb.6;
-        Tue, 14 Mar 2023 11:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678819975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bFOyZxhTEQ66iydcDjikLDtBNykrynyigYQE3FGKkOs=;
-        b=RoO1t3hXwmQpU/UQ95cT+vP5fCNybmsmvhDZabHye5Y2FrSzH3bjHCBNOND6I1HXyN
-         qJQ4TdTIq0v9UI0aAl27qtYQbRQD0CW/ErzcJvgIOkGkrmhQz0XXFJfNMJJPnwTB5oeM
-         4FOL3GllZ2ByfdwvhH/tkQ2rcvsb62rR/A/dP5vfNlDB81DbSatkjL3hnd7X0tKGbQ7p
-         jAiyI0ESdbHgtVwZCawZ07IusvxFnp8vmKmLMDtwVB9IPcOiIcz035A2QkAM2bg4iSxi
-         7fhPIvWluwJCynvrq9/gWPfizxUP17jbPlTS5zSCrK2GC9jHMrMlEo8ZVYOb0XqTJKEG
-         EYNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678819975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bFOyZxhTEQ66iydcDjikLDtBNykrynyigYQE3FGKkOs=;
-        b=nPiXbbPARYzFW1t2OjzYTZnOlttsOtLcaPN/6q/TWO979e+MYfAI5csPcHA3FR9cVn
-         JKncgszSXPiHEDGpMG4JDXARFcs18svv+Onyau+/O6yYTbmexpUsa9tELQlqM9bMDu2F
-         BaVGs1h0R8XUBnHIVfGgxlqnSgQigmzZBD7rQGoX4bCi4+A7rvICTekE11AX0DrSYzse
-         L5aw5KqZRKTDboPov1ojRVyKVhnVuajpsUjLieSioesukS202fhkYiKmVYfnV72Hu1FY
-         mu/8BbyeMP4Hjry4nD2vsDnLj/Mea+IGhE+8Sji/bx0LMYNRwdwpRYHM2VK1Bd/V6pIp
-         4aYg==
-X-Gm-Message-State: AO0yUKUONmvWUTMzkAC2Yy57/P4uwtaPRzH5xudxTox9I6pV90RG/v3n
-        F5ZFUTw7r2Rwg7PUqxUK9IR9Y7EGDepnTkrCZZw=
-X-Google-Smtp-Source: AK7set/IE1VM2wr2edOJrOf5TOMg6HrvmMvAsSawnujR4IBRheQlVDJI/j09ng/0zGcBLqdaXkGlUw2tkVDGdhS5kr8=
-X-Received: by 2002:a17:906:6b92:b0:926:8f9:735d with SMTP id
- l18-20020a1709066b9200b0092608f9735dmr1798824ejr.3.1678819974825; Tue, 14 Mar
- 2023 11:52:54 -0700 (PDT)
+        with ESMTP id S230395AbjCNTbp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 15:31:45 -0400
+Received: from out-15.mta0.migadu.com (out-15.mta0.migadu.com [IPv6:2001:41d0:1004:224b::f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CC5360A3
+        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 12:31:29 -0700 (PDT)
+Message-ID: <c6172fe2-7d88-f9f8-e19a-47c232f9cb75@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1678822287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jpb0Syl0w3M2RYRWL+D6ZXsAlme5/bd92q0A9qcn034=;
+        b=GA6+79xgEEorjqpRIjGJLRus/237ZKFgwHcN9/f6adnSLhAB18F5rj4cgBdo8F5D89Srj2
+        kv5PueqcYHd/pHnWbeEN28dRJ7kuIbzVXEpAseoNmlASbhTAvzptRFu2yXAIJ9fjJhGxbN
+        sN9g89XPf/z3NH+MuLV81fS/YFAfj5U=
+Date:   Tue, 14 Mar 2023 12:31:24 -0700
 MIME-Version: 1.0
-References: <20230313215553.1045175-1-aleksander.lobakin@intel.com> <ca1385b5-b3f8-73f3-276c-a2a08ec09aa0@intel.com>
-In-Reply-To: <ca1385b5-b3f8-73f3-276c-a2a08ec09aa0@intel.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 14 Mar 2023 11:52:43 -0700
-Message-ID: <CAADnVQJDz3hBEJ7kohXJ4HUZWZdbRRamfJbrZ6KUaRubBKQmfA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/4] xdp: recycle Page Pool backed skbs built
- from XDP frames
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Song Liu <song@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        Mykola Lysenko <mykolal@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3] docs/bpf: Add LRU internals description and
+ graph
+Content-Language: en-US
+To:     Joe Stringer <joe@isovalent.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ast@kernel.org, corbet@lwn.net, bagasdotme@gmail.com,
+        maxtram95@gmail.com, bpf@vger.kernel.org
+References: <20230312190600.324573-1-joe@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230312190600.324573-1-joe@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 14, 2023 at 4:58=E2=80=AFAM Alexander Lobakin
-<aleksander.lobakin@intel.com> wrote:
->
->   All error logs:
->   libbpf: prog 'trace_virtqueue_add_sgs': BPF program load failed: Bad
-> address
->   libbpf: prog 'trace_virtqueue_add_sgs': -- BEGIN PROG LOAD LOG --
->   The sequence of 8193 jumps is too complex.
->   verification time 77808 usec
->   stack depth 64
->   processed 156616 insns (limit 1000000) max_states_per_insn 8
-> total_states 1754 peak_states 1712 mark_read 12
->   -- END PROG LOAD LOG --
->   libbpf: prog 'trace_virtqueue_add_sgs': failed to load: -14
->   libbpf: failed to load object 'loop6.bpf.o'
->   scale_test:FAIL:expect_success unexpected error: -14 (errno 14)
->   #257     verif_scale_loop6:FAIL
->   Summary: 288/1766 PASSED, 21 SKIPPED, 1 FAILED
->
-> So, xdp_do_redirect, which was previously failing, now works fine. OTOH,
-> "verif_scale_loop6" now fails, but from what I understand from the log,
-> it has nothing with the series ("8193 jumps is too complex" -- I don't
-> even touch program-related stuff). I don't know what's the reason of it
-> failing, can it be some CI issues or maybe some recent commits?
+On 3/12/23 12:05 PM, Joe Stringer wrote:
+> Extend the bpf hashmap docs to include a brief description of the
+> internals of the LRU map type (setting appropriate API expectations),
+> including the original commit message from Martin and a variant on the
+> graph that I had presented during my Linux Plumbers Conference 2022 talk
+> on "Pressure feedback for LRU map types"[0].
+> 
+> The node names in the dot file correspond roughly to the functions where
+> the logic for those decisions or steps is defined, to help curious
+> developers to cross-reference and update this logic if the details of
+> the LRU implementation ever differ from this description.
+> 
+> [0]: https://lpc.events/event/16/contributions/1368/
+> 
+> Signed-off-by: Joe Stringer <joe@isovalent.com>
+> ---
+> v3: Use standard table syntax
+>      Replace inline commit message with reference to commit
+>      Fix incorrect Y/N label for common LRU check
+>      Rename some dotfile variables to reduce confusion between cases
+>      Minor wording touchups
+> v2: Fix issue that caused initial email submission to fail
+> ---
+>   Documentation/bpf/map_hash.rst            |  62 ++++++++
+>   Documentation/bpf/map_lru_hash_update.dot | 166 ++++++++++++++++++++++
+>   2 files changed, 228 insertions(+)
+>   create mode 100644 Documentation/bpf/map_lru_hash_update.dot
+> 
+> diff --git a/Documentation/bpf/map_hash.rst b/Documentation/bpf/map_hash.rst
+> index 8669426264c6..61602ce26561 100644
+> --- a/Documentation/bpf/map_hash.rst
+> +++ b/Documentation/bpf/map_hash.rst
+> @@ -1,5 +1,6 @@
+>   .. SPDX-License-Identifier: GPL-2.0-only
+>   .. Copyright (C) 2022 Red Hat, Inc.
+> +.. Copyright (C) 2022-2023 Isovalent, Inc.
+>   
+>   ===============================================
+>   BPF_MAP_TYPE_HASH, with PERCPU and LRU Variants
+> @@ -206,3 +207,64 @@ Userspace walking the map elements from the map declared above:
+>                       cur_key = &next_key;
+>               }
+>       }
+> +
+> +Internals
+> +=========
+> +
+> +This section of the document is targeted at Linux developers and describes
+> +aspects of the map implementations that are not considered stable ABI. The
+> +following details are subject to change in future versions of the kernel.
+> +
+> +``BPF_MAP_TYPE_LRU_HASH`` and variants
+> +--------------------------------------
+> +
+> +An LRU hashmap type consists of two properties: Firstly, it is a hash map and
+> +hence is indexable by key for constant time lookups. Secondly, when at map
+> +capacity, map updates will trigger eviction of old entries based on the age of
+> +the elements in a set of lists. Each of these properties may be either global
+> +or per-CPU, depending on the map type and flags used to create the map:
+> +
+> ++------------------------+---------------------------+----------------------------------+
+> +|                        | ``BPF_MAP_TYPE_LRU_HASH`` | ``BPF_MAP_TYPE_LRU_PERCPU_HASH`` |
+> ++========================+===========================+==================================+
+> +| ``BPF_NO_COMMON_LRU``  | Per-CPU LRU, global map   | Per-CPU LRU, per-cpu map         |
+> ++------------------------+---------------------------+----------------------------------+
+> +| ``!BPF_NO_COMMON_LRU`` | Global LRU, global map    | Global LRU, per-cpu map          |
+> ++------------------------+---------------------------+----------------------------------+
+> +
+> +Notably, there are various steps that the update algorithm attempts in order to
+> +enforce the LRU property which have increasing impacts on other CPUs involved
+> +in the following operation attempts:
+> +
+> +- Attempt to use CPU-local state to batch operations
+> +- Attempt to fetch free nodes from global lists
+> +- Attempt to pull any node from a global list and remove it from the hashmap
+> +- Attempt to pull any node from any CPU's list and remove it from the hashmap
+> +
+> +Even if an LRU node may be acquired, maps of type ``BPF_MAP_TYPE_LRU_HASH``
+> +may fail to insert the entry into the map if other CPUs are heavily contending
+> +on the global hashmap lock.
 
-Yeah. It's an issue with the latest clang.
-We don't have a workaround for this yet.
-It's not a blocker for your patchset.
-We didn't have time to look at it closely.
+The global hashmap lock described here is the action taken in htab_lock_bucket()?
+
+It is a percpu counter added in commit 20b6cc34ea74 ("bpf: Avoid hashtab 
+deadlock with map_locked") to avoid deadlock/recursion.
+
+I would suggest to simplify the diagram by removing the "Can lock this hashtab 
+bucket?" details. May be a note somewhere to mention why it will still fail to 
+shrink the list because the htab_lock_bucket() have detected potential 
+deadlock/recursion which is a very unlikely case.
+
+
+Thanks for the write-up!
