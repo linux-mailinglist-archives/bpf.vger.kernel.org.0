@@ -2,118 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8D26B9188
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 12:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B619E6B919B
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 12:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjCNLWW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 07:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        id S230109AbjCNL2M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 07:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbjCNLWR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 07:22:17 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106C987A35;
-        Tue, 14 Mar 2023 04:21:49 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id f18so19551682lfa.3;
-        Tue, 14 Mar 2023 04:21:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678792907;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YxLZd2G4eMO1n0QEMBSqPpLqzSkJkPkShGMuo23NQf0=;
-        b=GjxiKB+Yu+18P1uFK37adLy+90Ig4mKpegvLJUjbR4VyQIHRXCgRSTULuoY33dzKNP
-         8qExdM6fUGokwf9vDW7h3zs5QuDdwzVWjYJO/D4sblTJsDvbe9c+GvDG0kHvFHBv9oX2
-         dHVDJFYlxJXFx1NM6oog6X9vhwkxavJoyUTmsTdtMVj8VeY9S35X0OLaj2U5tjOcCqjm
-         PYm7u2MqnI08lh4W29+EtgVGRNsCxJpV4zmBtzeuFjPd6eCFIcVE0o2E5c5ScjJRVrCS
-         E95jgm4UnYGedkS42cpZ7mJDo37jjiU1A1z5HXMnk1ifNTKCjPQsq7vRvSGH56upDpm7
-         lbYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678792907;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YxLZd2G4eMO1n0QEMBSqPpLqzSkJkPkShGMuo23NQf0=;
-        b=AAdWaauh+bf2/KtsMNjJdjEL/zckCCz7mzmWxTnloAJ8oxD5a7oOJ+VWAkrZfHlNW1
-         u2dsEfy8vyD385sUe9dGmzQZQlcVAQxdvnasrpuwC7GfMTNd1sXMXL03KkGu8a2gspZf
-         Ugmtu2stnxGaV7SfaKDRL3xHWU26jXXQZSKm5MeJseGvMOBGawZClBGaD8uvL4YB+cQK
-         cBuE1WcrsneDJZcGKOr+GzYe9gpEOJHcveL81klTObXL8hiTd7+7i5hSV1kgkkLaI8u7
-         mbT7nJ9bNPb3uJSTfwbWilLQznf4v4LE6Cl997U6TR+HYk9nzMR52cXtY77hf7rdz2zx
-         O4Kg==
-X-Gm-Message-State: AO0yUKUG2zbuMK0QGi2ZkvGUK4A7K0fmHzoQ7ZVxj89J92HXD2O4D8dy
-        iKLJYtwEj1sXiGXa+jDx320=
-X-Google-Smtp-Source: AK7set81/7Y2iGgCtuoXfQyEom9t7oNhCfyhC5LYkTaz5uZ5ky/figvn21d9WQP8cbQU5XE/AOjnZw==
-X-Received: by 2002:a05:6512:24f:b0:4dd:998b:4dc7 with SMTP id b15-20020a056512024f00b004dd998b4dc7mr661582lfo.21.1678792907099;
-        Tue, 14 Mar 2023 04:21:47 -0700 (PDT)
-Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id x26-20020a19f61a000000b004d988f59633sm361093lfe.161.2023.03.14.04.21.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Mar 2023 04:21:46 -0700 (PDT)
-Message-ID: <1cb31e59286d33620e33d478fc8e948593e121ce.camel@gmail.com>
-Subject: Re: [PATCH dwarves 1/1] dwarf_loader: Support for btf:type_tag
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Alan Maguire <alan.maguire@oracle.com>, dwarves@vger.kernel.org,
-        arnaldo.melo@gmail.com
-Cc:     bpf@vger.kernel.org, kernel-team@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
-        jose.marchesi@oracle.com, david.faust@oracle.com
-Date:   Tue, 14 Mar 2023 13:21:43 +0200
-In-Reply-To: <cd8636e4-0d76-b26d-7ddf-b28d2896b05a@oracle.com>
-References: <20230313021744.406197-1-eddyz87@gmail.com>
-         <20230313021744.406197-2-eddyz87@gmail.com>
-         <cd8636e4-0d76-b26d-7ddf-b28d2896b05a@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229582AbjCNL2M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 07:28:12 -0400
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D771FA251;
+        Tue, 14 Mar 2023 04:28:09 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VdsByGS_1678793285;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VdsByGS_1678793285)
+          by smtp.aliyun-inc.com;
+          Tue, 14 Mar 2023 19:28:06 +0800
+Message-ID: <1678793273.5523777-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net v1 2/2] virtio_net: free xdp shinfo frags when build_skb_from_xdp_buff() fails
+Date:   Tue, 14 Mar 2023 19:27:53 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Heng Qi <hengqi@linux.alibaba.com>,
+        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+References: <20230314104939.67212-1-xuanzhuo@linux.alibaba.com>
+ <20230314104939.67212-3-xuanzhuo@linux.alibaba.com>
+ <faf3772c-b494-54bd-b29a-6cc3068985d5@huawei.com>
+In-Reply-To: <faf3772c-b494-54bd-b29a-6cc3068985d5@huawei.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2023-03-14 at 10:30 +0000, Alan Maguire wrote:
-[...]
-> > See also:
-> > [1] Mailing list discussion regarding `btf:type_tag`
-> >     https://lore.kernel.org/bpf/87r0w9jjoq.fsf@oracle.com/
-> >=20
->=20
-> I know there's a v2 coming but one suggestion and one other issue below..
->=20
-> this is a great explanation, thanks for the details! one other thing that=
- might help
-> here is specifying that the solution adopted is option 2 described in tha=
-t discussion
-> (at least I think it is?).
+On Tue, 14 Mar 2023 19:19:19 +0800, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> On 2023/3/14 18:49, Xuan Zhuo wrote:
+> > build_skb_from_xdp_buff() may return NULL, in this case
+> > we need to free the frags of xdp shinfo.
+> >
+> > Fixes: fab89bafa95b ("virtio-net: support multi-buffer xdp")
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> > ---
+> >  drivers/net/virtio_net.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index 8ecf7a341d54..d36183be0481 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -1273,9 +1273,12 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+> >
+> >  		switch (act) {
+> >  		case XDP_PASS:
+> > +			head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
+> > +			if (!head_skb)
+>
+> It is a error case, perhaps add a unlikely() for it.
 
-Hi Alan,
+Yes. Will fix.
 
-Yes, it's option #2, sorry should have noted it in the original message.
+Thanks.
 
-[...]
 
-> > -static void ftype__recode_dwarf_types(struct tag *tag, struct cu *cu);
-> > +/** Add @tuple to @ctx->mappings array, extend it if necessary. */
-> > +static int push_btf_type_tag_mapping(struct btf_type_tag_mapping *tupl=
-e,
-> > +				     struct recode_context *ctx)
-> > +{
-> > +	if (ctx->nr_allocated =3D=3D ctx->nr_entries) {
-> > +		uint32_t new_nr =3D ctx->nr_allocated * 2;
-> > +		void *new_array =3D reallocarray(ctx->mappings, new_nr,
-> > +					       sizeof(ctx->mappings[0]));
->=20
-> older libcs won't have reallocarray; might be good to either replace with=
- realloc
-> or define our own variant in dutil.h like was done with libbpf_reallocarr=
-ay()?
-
-Will use `realloc()`, thank you for the heads-up.
-
-Thanks,
-Eduard
+>
+> > +				goto err_xdp_frags;
+> > +
+> >  			if (unlikely(xdp_page != page))
+> >  				put_page(page);
+> > -			head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
+> >  			rcu_read_unlock();
+> >  			return head_skb;
+> >  		case XDP_TX:
+> >
