@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7696B986F
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 15:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389AC6B98C7
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 16:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbjCNO7n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 10:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
+        id S229590AbjCNPQK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 11:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbjCNO7m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 10:59:42 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589DE72B01
-        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 07:59:41 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id e194so15882157ybf.1
-        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 07:59:41 -0700 (PDT)
+        with ESMTP id S231355AbjCNPQJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 11:16:09 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BED5AE105
+        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 08:15:35 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5419d4c340aso126065417b3.11
+        for <bpf@vger.kernel.org>; Tue, 14 Mar 2023 08:15:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678805980;
+        d=google.com; s=20210112; t=1678806931;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c68s71ci5RzD1RLlqzOZqYMPisXV5XHHiU9eL0FAO2c=;
-        b=Ev3WCqJWjHJhYjE6/X6Z3t2+GsBR9Bk2cKqpPFUZxtr38To7DAATlQuj/C09ufn87h
-         oWs5XcVf6AhuVtzZ0N/bQLjHTZ4qhC/178eOZfDsTkfm6tdog2ZxqCC0ed6QNsede6Ag
-         QEUc2RNr0NrPkJeQXvRV6dq2zn1S9yspHAR8tO/kTEhFqrKBMXI+vPfqxR7grq/395rn
-         lYbD7fQXE8Wu1TUaBHrD3bSUc5EYTpvoQjEmsjm2SWo3BhMnVBDoul8SpMa29EApKJhk
-         NkmVOwIOG4pWbXUeyWOJ6rkR9dGWAf2tn45li/T3Gm8l9lkgbEOX+TXcS+CB5ENnloUo
-         GPuA==
+        bh=Mb8+E6m2WqIPXijCkvn4+H21mgnHkoR10v1IMUUcZr0=;
+        b=jmpaFxz/oWEOeDL/PrbbrCqP1pXG2ojMS2+Hx9jjRcV7LZgjVSAR3DME+ReuNpL8c/
+         ONH1WiSNthp2LBz4uVfdpuxk7cphOrlLVzgNiPxHstfMOyKZezfKT2MmSMKg2Cv7m3hk
+         UI4pEKHsv/iPaK91kJOTI39Ha1O5K8CPWJPznidxo7QlDYsthjhzaM6gUwZjR6+6tJFd
+         GgbH4zWWxHITktqx/VBklAStEqaKE7O82Bpx+5efTw4TU9aJp1RMQ5eIm4KXyUpia6Ls
+         GIUY/YdcyGtYG7YDNiBZIDxYt5q/ESX+K/uM4KUgz6PU6bQL/lhrW9HZZJjqFhjlUzKi
+         UrXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678805980;
+        d=1e100.net; s=20210112; t=1678806931;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c68s71ci5RzD1RLlqzOZqYMPisXV5XHHiU9eL0FAO2c=;
-        b=33cwtQBtm+yjHw9GJ3YnaLCVKrT0iBOdbKCv041JYTZoeH6kByZAfjYvArvDxN3PKA
-         F+uqIhU3nIKRqhBf6KDyyxHCGjTHKzlnicoHpGpcb6q9dgUUqPbS3vWGL+6LWWQr7zOv
-         Py/Gtr+1KST8oMAgxc2FEUlw9ZMqvHurmnQtQY4PZmlQ7uUJOHvWK5N0DyKvdt4mrG9E
-         5Ri3ccmJLR1ijnVAyfj7nS+PI0mBMFwShtwb6ZB8sXtWq45yt/ZlIpZUZL/rm6gR87al
-         wcNk/imMub4+Jirb3U+jDnysMVt2KIKW1NUGGKl0k9u28hock38c0gBpEy+lJEvEwraw
-         vhgA==
-X-Gm-Message-State: AO0yUKVNYB1VIADYraH2QpMypyVDUwrTyjsmPWcRFhibrZtT3tYhFl7d
-        a99ZYkEVlbB8dsG3zDxCWd71kgiF66XVYkpCwyckxA==
-X-Google-Smtp-Source: AK7set+taVqRjysfrXwZjEOrW14xiSSmBbVSfwPv8GseJcaGRfTAlBKx0b0vhLrr5SXTdaEBEDmocz6zQ+CfvBONjTM=
-X-Received: by 2002:a05:6902:4f:b0:b38:461f:daeb with SMTP id
- m15-20020a056902004f00b00b38461fdaebmr5052439ybh.6.1678805980327; Tue, 14 Mar
- 2023 07:59:40 -0700 (PDT)
+        bh=Mb8+E6m2WqIPXijCkvn4+H21mgnHkoR10v1IMUUcZr0=;
+        b=AMjPdn5htxZ5uNB/Uv9wnZPWbTQgy4LLLp61Fso5Ug+V+DbyxN20Sp3zsSYS17ZEdJ
+         FVTcDt+t9AkKgPHfMD38LBKHurfYDDnW8HwXV8SCr0LmKCIi8+1rTJCE6v10cOhVRjmb
+         1Pj4S4KEsACGWB731Jr8vf6QT4L+bN+gZcfWk95h3K8s+c2mz0T8jkQwweSbp52B2GRr
+         ZMNu4vBOUCTY5xOs3+hvrgc6FwcWuqvKAF6KUR6peAA1m3Lim26KSEZchM7OgrwyBnSQ
+         fmL3QliuZ731GyczOOaXj/UmmHjwbLTNbaEojA0rIz2uD1wL3pNCEpcD2yQUzb4IOZsX
+         uDlw==
+X-Gm-Message-State: AO0yUKUqw9djqikVhqrT+R7kZKE+Ntht1+Q3k0owRHUfY4UkrvOdFk29
+        v0sf6zAmzLFZeROeE+Sk11usGd9FQ0Xwo3JUw1H09w==
+X-Google-Smtp-Source: AK7set+3WyW9TClwj2X0yiptPJxGPByLfapst5/lXWp5akUIAjVHjNZRjrO90CZQ6cFryPDzDTlhYelh94yojRjBxO0=
+X-Received: by 2002:a81:a946:0:b0:52b:fd10:4809 with SMTP id
+ g67-20020a81a946000000b0052bfd104809mr26039079ywh.0.1678806930921; Tue, 14
+ Mar 2023 08:15:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230314030532.9238-1-kerneljasonxing@gmail.com> <20230314030532.9238-2-kerneljasonxing@gmail.com>
-In-Reply-To: <20230314030532.9238-2-kerneljasonxing@gmail.com>
+References: <20230314131427.85135-1-kerneljasonxing@gmail.com> <20230314131427.85135-2-kerneljasonxing@gmail.com>
+In-Reply-To: <20230314131427.85135-2-kerneljasonxing@gmail.com>
 From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 14 Mar 2023 07:59:27 -0700
-Message-ID: <CANn89iKP7GVxZ0HYcPQq5ryC+rtwyymZuHuvza_SoCOJeADzGw@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next 1/2] net-sysfs: display two backlog queue len separately
+Date:   Tue, 14 Mar 2023 08:15:19 -0700
+Message-ID: <CANn89iJzVjht5L1zxwCMTPXXoXdRMtRmzbL5UzHodhBJziCxYg@mail.gmail.com>
+Subject: Re: [PATCH v3 net-next 1/2] net-sysfs: display two backlog queue len separately
 To:     Jason Xing <kerneljasonxing@gmail.com>
 Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
         ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
@@ -65,7 +65,7 @@ Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,7 +73,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 13, 2023 at 8:06=E2=80=AFPM Jason Xing <kerneljasonxing@gmail.c=
+On Tue, Mar 14, 2023 at 6:14=E2=80=AFAM Jason Xing <kerneljasonxing@gmail.c=
 om> wrote:
 >
 > From: Jason Xing <kernelxing@tencent.com>
@@ -83,16 +83,21 @@ om> wrote:
 > Thus, we can then separate the display of both.
 >
 > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> Reviewed-by: Simon Horman <simon.horman@corigine.com>
 > ---
+> v3: drop the comment suggested by Simon
+> Link: https://lore.kernel.org/lkml/20230314030532.9238-2-kerneljasonxing@=
+gmail.com/
+>
 > v2: keep the total len of backlog queues untouched as Eric said
 > Link: https://lore.kernel.org/lkml/20230311151756.83302-1-kerneljasonxing=
 @gmail.com/
 > ---
->  net/core/net-procfs.c | 20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
+>  net/core/net-procfs.c | 19 +++++++++++++++----
+>  1 file changed, 15 insertions(+), 4 deletions(-)
 >
 > diff --git a/net/core/net-procfs.c b/net/core/net-procfs.c
-> index 1ec23bf8b05c..2809b663e78d 100644
+> index 1ec23bf8b05c..8056f39da8a1 100644
 > --- a/net/core/net-procfs.c
 > +++ b/net/core/net-procfs.c
 > @@ -115,10 +115,19 @@ static int dev_seq_show(struct seq_file *seq, void =
@@ -116,21 +121,10 @@ om> wrote:
 > -              skb_queue_len_lockless(&sd->process_queue);
 > +       return softnet_input_pkt_queue_len(sd) + softnet_process_queue_le=
 n(sd);
-
-Reading these variables twice might lead to inconsistency that can
-easily be avoided.
-
-I would suggest you cache the values,
-
-u32 len1 =3D softnet_input_pkt_queue_len(sd);
-u32 len2 =3D softnet_process_queue_len(sd);
-
-
-
 >  }
 >
 >  static struct softnet_data *softnet_get_online(loff_t *pos)
-> @@ -169,12 +178,15 @@ static int softnet_seq_show(struct seq_file *seq, v=
+> @@ -169,12 +178,14 @@ static int softnet_seq_show(struct seq_file *seq, v=
 oid *v)
 >          * mapping the data a specific CPU
 >          */
@@ -145,17 +139,19 @@ x %08x %08x "
 >                    0,   /* was cpu_collision */
 >                    sd->received_rps, flow_limit_count,
 > -                  softnet_backlog_len(sd), (int)seq->index);
-> +                  softnet_backlog_len(sd),     /* keep it untouched */
-                    len1 + len2.
-
-> +                  (int)seq->index,
+> +                  softnet_backlog_len(sd), (int)seq->index,
 > +                  softnet_input_pkt_queue_len(sd), softnet_process_queue=
 _len(sd));
-               len1,  len2);
-
 >         return 0;
->  }
->
-> --
-> 2.37.3
->
+
+
+It is customary to wait ~24 hours between each version, so that
+everybody gets a chance to comment,
+and to avoid polluting mailing lists with too many messages/day.
+
+(I see you are including lkml@, which seems unnecessary for this kind of pa=
+tch)
+
+Please address the feedback I gave for v2.
+
+Thanks.
