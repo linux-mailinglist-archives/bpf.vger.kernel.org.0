@@ -2,254 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D632F6BA18D
-	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 22:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 405536BA1AE
+	for <lists+bpf@lfdr.de>; Tue, 14 Mar 2023 22:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbjCNVmo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Mar 2023 17:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        id S230141AbjCNV7y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Mar 2023 17:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbjCNVmn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Mar 2023 17:42:43 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2A24617B;
-        Tue, 14 Mar 2023 14:42:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 67E6CCE1777;
-        Tue, 14 Mar 2023 21:42:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56A74C433D2;
-        Tue, 14 Mar 2023 21:42:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678830138;
-        bh=O2/V8An4y4HPQZQMLd2yHYKygWqd9I/oQmCKa9k5eG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DE8qK1Uk9MtI3yLlK5w4Htj2dluL101agFfvNwjS8Ik+k0NnE5GUNe3BVbdewNcAV
-         uwI8tAdAz9BghNUSLIoVYDGaSJ4a+WwqZAVkHJe/3HHZbj9bSbwHPLK+zIHEDbDMtG
-         6JGhAHr3ps8ABWDRrexxDr7ZtNXYw046cKUHsPf54ALYKkN4eTk5g+n9iVkl5nUXUI
-         F1okuaV80ZmEzb6SbQaIgF88AJVEaP1S8Ypc/ZeiXryvl5rM6ZVY/oQbWAPr/16q00
-         POvpZ8888MPkEk2w71iDxikxyvAMEysF1tK3YCNZG4v3sUvmWlethzZ1D+jrefkxHz
-         R1LA0skJ5szpw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1827B4049F; Tue, 14 Mar 2023 18:42:16 -0300 (-03)
-Date:   Tue, 14 Mar 2023 18:42:16 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 4/9] perf record: Record dropped sample count
-Message-ID: <ZBDqOMJexe7Cq3eM@kernel.org>
-References: <20230307233309.3546160-1-namhyung@kernel.org>
- <20230307233309.3546160-5-namhyung@kernel.org>
+        with ESMTP id S230140AbjCNV7x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Mar 2023 17:59:53 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B05110CD;
+        Tue, 14 Mar 2023 14:59:53 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id p6so18143170plf.0;
+        Tue, 14 Mar 2023 14:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678831192;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=V5oa+tnNxBRfCsHNQQwG3me8RtumyZ1n0X+cpzX6ubA=;
+        b=WvwN1155TYKVvu7tUubKWIepn90mQNjYZj5/fZlMOkRbc1xAUVIMIocLCI5/GtzpKD
+         HQNQ3EM1pqINmdm4EhCI2leugtYnwsUW9JHpqLoAtIIFXzXx2zXukJtgCvnzGUv4PZVn
+         qyXBAO0NAASGMrNMhqAT/ujDgktFpAVGSosI7D9iB4C0LAXA7nYG65TJmh2Rm5B+ff7F
+         Zc2VYhHqmCm3hjtFUuiEUmPVqrKRuy1sjn/V45Q3r2a082DxdIw7dBi+PLmhMR7f4XRt
+         BKmm/K0w8jf8dHB3NjqXOsrsvz5VPz7JZmSHaO5fpnA/y+Pnz9kk+HpHWFfeAJ0ZLCI5
+         AOxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678831192;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V5oa+tnNxBRfCsHNQQwG3me8RtumyZ1n0X+cpzX6ubA=;
+        b=kh4Y/QMzsBLZQEiPjb3/bvKAw2Hih2T3OE42t/XvIxtEx3eR7sHQffnktVJJPapEl1
+         XmTBi6pUJyCWSE1GaOjRtTr5vH4yLc1NAQljGZaCFMhMrD0//n4DMkd2uSb4cK2sT9gY
+         3ZgM2f6TafcTzmXazVYMwWv5tRTlpOAtmkVn5BuPgy7xKgsxE4GKDTjcyTtOF4y2wLJq
+         02l/g2DbE+AbsEMePTsbpKOGQ3R+0eoJQCPDo6jiwLG9IXQ/izQvKoLTj/PYga5/o6Q2
+         1Mr+3ikjXyCnXNwu9n9CaJuV9lHVR0GaL3AS2HDHGl5DPWHN1NgHl6TPTzpRGJ5BAtIy
+         1v8w==
+X-Gm-Message-State: AO0yUKXMan+Rx2Jd8dzaXPsh+63WD0u85pEeLS8ejxeFF+F8juMZogBV
+        cQQ+05E+XkrTlKTxcyGi4Zs=
+X-Google-Smtp-Source: AK7set+NhYRdrOANDeCF454npmEVGILBi6HXfyleUWq+DGnq9ihVSM2R239W2qVt2H8t2XsK4bz94w==
+X-Received: by 2002:a17:90a:1a03:b0:233:feb4:895f with SMTP id 3-20020a17090a1a0300b00233feb4895fmr38865457pjk.44.1678831192324;
+        Tue, 14 Mar 2023 14:59:52 -0700 (PDT)
+Received: from localhost ([2600:380:7656:8258:88b9:45ff:fe37:1816])
+        by smtp.gmail.com with ESMTPSA id lk15-20020a17090308cf00b001898ee9f723sm2237528plb.2.2023.03.14.14.59.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Mar 2023 14:59:51 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 14 Mar 2023 11:59:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: [PATCH bpf/for-next] cgroup: Make current_cgns_cgroup_dfl() safe to
+ call after exit_task_namespace()
+Message-ID: <ZBDuVWiFj2jiz3i8@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230307233309.3546160-5-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Mar 07, 2023 at 03:33:04PM -0800, Namhyung Kim escreveu:
-> When it uses bpf filters, event might drop some samples.  It'd be nice
-> if it can report how many samples it lost.  As LOST_SAMPLES event can
-> carry the similar information, let's use it for bpf filters.
-> 
-> To indicate it's from BPF filters, add a new misc flag for that and
-> do not display cpu load warnings.
+332ea1f697be ("bpf: Add bpf_cgroup_from_id() kfunc") added
+bpf_cgroup_from_id() which calls current_cgns_cgroup_dfl() through
+cgroup_get_from_id(). However, BPF programs may be attached to a point where
+current->nsproxy has already been cleared to NULL by exit_task_namespace()
+and calling bpf_cgroup_from_id() would cause an oops.
 
-This one isn't applying, can you please refresh on top of
-acme/tmp.perf-tools-next ?
+Just return the system-wide root if nsproxy has been cleared. This allows
+all cgroups to be looked up after the task passed through
+exit_task_namespace(), which semantically makes sense. Given that the only
+way to get this behavior is through BPF programs, it seems safe but let's
+see what others think.
 
-- Arnaldo
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Fixes: 332ea1f697be ("bpf: Add bpf_cgroup_from_id() kfunc")
+---
+Hello,
+
+Given that this is only exposed through a commit in bpf/for-next, I think
+it'd be best to route it together. If this looks okay, please apply to
+bpf/for-next.
+
+Thanks.
+
+ kernel/cgroup/cgroup.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 8bfb0e2a87ee..c0da5cb9f193 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -1465,8 +1465,20 @@ static struct cgroup *current_cgns_cgroup_dfl(void)
+ {
+ 	struct css_set *cset;
  
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/lib/perf/include/perf/event.h |  2 ++
->  tools/perf/builtin-record.c         | 38 ++++++++++++++++++-----------
->  tools/perf/util/bpf-filter.c        |  7 ++++++
->  tools/perf/util/bpf-filter.h        |  5 ++++
->  tools/perf/util/session.c           |  3 ++-
->  5 files changed, 40 insertions(+), 15 deletions(-)
-> 
-> diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
-> index ad47d7b31046..51b9338f4c11 100644
-> --- a/tools/lib/perf/include/perf/event.h
-> +++ b/tools/lib/perf/include/perf/event.h
-> @@ -70,6 +70,8 @@ struct perf_record_lost {
->  	__u64			 lost;
->  };
->  
-> +#define PERF_RECORD_MISC_LOST_SAMPLES_BPF (1 << 15)
-> +
->  struct perf_record_lost_samples {
->  	struct perf_event_header header;
->  	__u64			 lost;
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 8374117e66f6..197e802a150b 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -52,6 +52,7 @@
->  #include "util/pmu-hybrid.h"
->  #include "util/evlist-hybrid.h"
->  #include "util/off_cpu.h"
-> +#include "util/bpf-filter.h"
->  #include "asm/bug.h"
->  #include "perf.h"
->  #include "cputopo.h"
-> @@ -1856,24 +1857,16 @@ record__switch_output(struct record *rec, bool at_exit)
->  	return fd;
->  }
->  
-> -static void __record__read_lost_samples(struct record *rec, struct evsel *evsel,
-> +static void __record__save_lost_samples(struct record *rec, struct evsel *evsel,
->  					struct perf_record_lost_samples *lost,
-> -					int cpu_idx, int thread_idx)
-> +					int cpu_idx, int thread_idx, u64 lost_count,
-> +					u16 misc_flag)
->  {
-> -	struct perf_counts_values count;
->  	struct perf_sample_id *sid;
->  	struct perf_sample sample = {};
->  	int id_hdr_size;
->  
-> -	if (perf_evsel__read(&evsel->core, cpu_idx, thread_idx, &count) < 0) {
-> -		pr_err("read LOST count failed\n");
-> -		return;
-> -	}
-> -
-> -	if (count.lost == 0)
-> -		return;
-> -
-> -	lost->lost = count.lost;
-> +	lost->lost = lost_count;
->  	if (evsel->core.ids) {
->  		sid = xyarray__entry(evsel->core.sample_id, cpu_idx, thread_idx);
->  		sample.id = sid->id;
-> @@ -1882,6 +1875,7 @@ static void __record__read_lost_samples(struct record *rec, struct evsel *evsel,
->  	id_hdr_size = perf_event__synthesize_id_sample((void *)(lost + 1),
->  						       evsel->core.attr.sample_type, &sample);
->  	lost->header.size = sizeof(*lost) + id_hdr_size;
-> +	lost->header.misc = misc_flag;
->  	record__write(rec, NULL, lost, lost->header.size);
->  }
->  
-> @@ -1905,6 +1899,7 @@ static void record__read_lost_samples(struct record *rec)
->  
->  	evlist__for_each_entry(session->evlist, evsel) {
->  		struct xyarray *xy = evsel->core.sample_id;
-> +		u64 lost_count;
->  
->  		if (xy == NULL || evsel->core.fd == NULL)
->  			continue;
-> @@ -1916,12 +1911,27 @@ static void record__read_lost_samples(struct record *rec)
->  
->  		for (int x = 0; x < xyarray__max_x(xy); x++) {
->  			for (int y = 0; y < xyarray__max_y(xy); y++) {
-> -				__record__read_lost_samples(rec, evsel, lost, x, y);
-> +				struct perf_counts_values count;
-> +
-> +				if (perf_evsel__read(&evsel->core, x, y, &count) < 0) {
-> +					pr_err("read LOST count failed\n");
-> +					goto out;
-> +				}
-> +
-> +				if (count.lost) {
-> +					__record__save_lost_samples(rec, evsel, lost,
-> +								    x, y, count.lost, 0);
-> +				}
->  			}
->  		}
-> +
-> +		lost_count = perf_bpf_filter__lost_count(evsel);
-> +		if (lost_count)
-> +			__record__save_lost_samples(rec, evsel, lost, 0, 0, lost_count,
-> +						    PERF_RECORD_MISC_LOST_SAMPLES_BPF);
->  	}
-> +out:
->  	free(lost);
-> -
->  }
->  
->  static volatile sig_atomic_t workload_exec_errno;
-> diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-> index f20e1bc03778..7bd6f2e41513 100644
-> --- a/tools/perf/util/bpf-filter.c
-> +++ b/tools/perf/util/bpf-filter.c
-> @@ -69,6 +69,13 @@ int perf_bpf_filter__destroy(struct evsel *evsel)
->  	return 0;
->  }
->  
-> +u64 perf_bpf_filter__lost_count(struct evsel *evsel)
-> +{
-> +	struct sample_filter_bpf *skel = evsel->bpf_skel;
-> +
-> +	return skel ? skel->bss->dropped : 0;
-> +}
-> +
->  struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flags,
->  						       enum perf_bpf_filter_op op,
->  						       unsigned long val)
-> diff --git a/tools/perf/util/bpf-filter.h b/tools/perf/util/bpf-filter.h
-> index eb8e1ac43cdf..f0c66764c6d0 100644
-> --- a/tools/perf/util/bpf-filter.h
-> +++ b/tools/perf/util/bpf-filter.h
-> @@ -22,6 +22,7 @@ struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flag
->  int perf_bpf_filter__parse(struct list_head *expr_head, const char *str);
->  int perf_bpf_filter__prepare(struct evsel *evsel);
->  int perf_bpf_filter__destroy(struct evsel *evsel);
-> +u64 perf_bpf_filter__lost_count(struct evsel *evsel);
->  
->  #else /* !HAVE_BPF_SKEL */
->  
-> @@ -38,5 +39,9 @@ static inline int perf_bpf_filter__destroy(struct evsel *evsel __maybe_unused)
->  {
->  	return -EOPNOTSUPP;
->  }
-> +static inline u64 perf_bpf_filter__lost_count(struct evsel *evsel __maybe_unused)
-> +{
-> +	return 0;
-> +}
->  #endif /* HAVE_BPF_SKEL*/
->  #endif /* PERF_UTIL_BPF_FILTER_H */
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 749d5b5c135b..7d8d057d1772 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1582,7 +1582,8 @@ static int machines__deliver_event(struct machines *machines,
->  			evlist->stats.total_lost += event->lost.lost;
->  		return tool->lost(tool, event, sample, machine);
->  	case PERF_RECORD_LOST_SAMPLES:
-> -		if (tool->lost_samples == perf_event__process_lost_samples)
-> +		if (tool->lost_samples == perf_event__process_lost_samples &&
-> +		    !(event->header.misc & PERF_RECORD_MISC_LOST_SAMPLES_BPF))
->  			evlist->stats.total_lost_samples += event->lost_samples.lost;
->  		return tool->lost_samples(tool, event, sample, machine);
->  	case PERF_RECORD_READ:
-> -- 
-> 2.40.0.rc1.284.g88254d51c5-goog
-> 
-
+-	cset = current->nsproxy->cgroup_ns->root_cset;
+-	return __cset_cgroup_from_root(cset, &cgrp_dfl_root);
++	if (current->nsproxy) {
++		cset = current->nsproxy->cgroup_ns->root_cset;
++		return __cset_cgroup_from_root(cset, &cgrp_dfl_root);
++	} else {
++		/*
++		 * NOTE: This function may be called from bpf_cgroup_from_id()
++		 * on a task which has already passed exit_task_namespace() and
++		 * NULL nsproxy. Fall back to cgrp_dfl_root which will make all
++		 * cgroups visible for lookups. Given that BPF progs are
++		 * privileged, this shouldn't create security concerns but there
++		 * may be a better way to handle this.
++		 */
++		return &cgrp_dfl_root.cgrp;
++	}
+ }
+ 
+ /* look up cgroup associated with given css_set on the specified hierarchy */
 -- 
+2.39.2
 
-- Arnaldo
