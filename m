@@ -2,524 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F00A86BBA32
-	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 17:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB6E6BBA37
+	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 17:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbjCOQvS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 15 Mar 2023 12:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
+        id S232217AbjCOQvf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Mar 2023 12:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbjCOQvR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 12:51:17 -0400
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCFF3C0E;
-        Wed, 15 Mar 2023 09:51:15 -0700 (PDT)
-Received: by mail-io1-f44.google.com with SMTP id g6so8079230iov.13;
-        Wed, 15 Mar 2023 09:51:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678899075;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=to46wqpcUpRiCJFUTvKaXabbwPqf75Nx4TGMntb563k=;
-        b=69qi2+YbuSlSO9cJ+xYtCY6gJcAelqrz0kTghhEvYfvSiUGv95xBvR10mPKCrSj0Ko
-         PYEi7opbT0o1P6j/q1LrEDNvddDZaWGvq/BY58lRRaFlgKDUc+HALDt8Rs0beKmaoNM+
-         8H7ufcRueW+R9YPMZ+UmLdGqkpML34CDcaRNUNmzMJ1pgCabLKqz0JFVlW+Anaxpm06U
-         LdQ0VHSbVwo5PfnXampVlVzs1xLouqqADAnbUEKeq69RjbG14hwlIqt5H6/GafwfxlVq
-         cSnalAvrmcDs8Sqmhez8loUz8Ad3V1QfOsIdeMnpMg7H9UHv/VNMt8ciWQW0iNUJkN/0
-         zxUw==
-X-Gm-Message-State: AO0yUKXyb59rZP2AeTOFtwHoajWJMGaprj25DHum8mj+Zahg9NHvjXB4
-        l9rkSijXdlbRXXYhwAYpKvroHOtmTOpQp6zaI/E=
-X-Google-Smtp-Source: AK7set9zMHo4JNWp06axiugZYKrl+EPq5+mjbbbt084jmN80YVpH3BTq63ZfZMYSGhHWoK1kfih/XkdA+Qo4++Qq3/s=
-X-Received: by 2002:a5d:8d87:0:b0:744:f5bb:6e60 with SMTP id
- b7-20020a5d8d87000000b00744f5bb6e60mr19953396ioj.1.1678899074752; Wed, 15 Mar
- 2023 09:51:14 -0700 (PDT)
+        with ESMTP id S232190AbjCOQvd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Mar 2023 12:51:33 -0400
+Received: from faui40.informatik.uni-erlangen.de (faui40.informatik.uni-erlangen.de [131.188.34.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8877E042;
+        Wed, 15 Mar 2023 09:51:27 -0700 (PDT)
+Received: from [10.188.34.202] (i4laptop35.informatik.uni-erlangen.de [10.188.34.202])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: gerhorst)
+        by faui40.informatik.uni-erlangen.de (Postfix) with ESMTPSA id 4PcGcm3WFLznkbm;
+        Wed, 15 Mar 2023 17:51:20 +0100 (CET)
+Message-ID: <ff8135a6-506f-330f-89fb-f98672467b27@cs.fau.de>
+Date:   Wed, 15 Mar 2023 17:51:19 +0100
 MIME-Version: 1.0
-References: <20230314234237.3008956-1-namhyung@kernel.org> <20230314234237.3008956-3-namhyung@kernel.org>
- <ZBHxRaP7BC+qDzJ/@kernel.org> <ZBH0s5P2KV5bJR3h@kernel.org>
-In-Reply-To: <ZBH0s5P2KV5bJR3h@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 15 Mar 2023 09:51:03 -0700
-Message-ID: <CAM9d7cjrFT=c-Obw8TsVk3ntGtUEUoGzco8mUssiSPvuZN-iKw@mail.gmail.com>
-Subject: Re: [PATCH 02/10] perf bpf filter: Implement event sample filtering
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NUMERIC_HTTP_ADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+From:   Luis Gerhorst <gerhorst@cs.fau.de>
+Subject: bpf: misleading spec_v1 check on variable-offset stack read?
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Andrei Matei <andreimatei1@gmail.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Language: en-US
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-512; boundary="------------ms070705070308050000020908"
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 15, 2023 at 9:39 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Wed, Mar 15, 2023 at 01:24:37PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Tue, Mar 14, 2023 at 04:42:29PM -0700, Namhyung Kim escreveu:
-> > > The BPF program will be attached to a perf_event and be triggered when
-> > > it overflows.  It'd iterate the filters map and compare the sample
-> > > value according to the expression.  If any of them fails, the sample
-> > > would be dropped.
-> > >
-> > > Also it needs to have the corresponding sample data for the expression
-> > > so it compares data->sample_flags with the given value.  To access the
-> > > sample data, it uses the bpf_cast_to_kern_ctx() kfunc which was added
-> > > in v6.2 kernel.
-> > >
-> > > Acked-by: Jiri Olsa <jolsa@kernel.org>
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> >
-> >
-> > I'm noticing this while building on a debian:11 container:
-> >
-> >   GENSKEL /tmp/build/perf/util/bpf_skel/bperf_leader.skel.h
-> >   GENSKEL /tmp/build/perf/util/bpf_skel/bperf_follower.skel.h
-> >   GENSKEL /tmp/build/perf/util/bpf_skel/func_latency.skel.h
-> >   GENSKEL /tmp/build/perf/util/bpf_skel/bpf_prog_profiler.skel.h
-> >   GENSKEL /tmp/build/perf/util/bpf_skel/kwork_trace.skel.h
-> >   GENSKEL /tmp/build/perf/util/bpf_skel/sample_filter.skel.h
-> > libbpf: failed to find BTF for extern 'bpf_cast_to_kern_ctx' [21] section: -2
-> > Error: failed to open BPF object file: No such file or directory
-> > make[2]: *** [Makefile.perf:1085: /tmp/build/perf/util/bpf_skel/sample_filter.skel.h] Error 254
-> > make[2]: *** Deleting file '/tmp/build/perf/util/bpf_skel/sample_filter.skel.h'
-> > make[2]: *** Waiting for unfinished jobs....
-> > make[1]: *** [Makefile.perf:236: sub-make] Error 2
-> > make: *** [Makefile:70: all] Error 2
-> > make: Leaving directory '/git/perf-6.3.0-rc1/tools/perf'
-> > + exit 1
-> > [perfbuilder@five 11]$
->
-> Same thing on debian:10
+This is a cryptographically signed message in MIME format.
 
-Hmm.. I thought extern symbols with__ksym are runtime
-dependencies and it should build on old kernels too.
+--------------ms070705070308050000020908
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-BPF folks, any suggestions?
+Hello,
 
-Thanks,
-Namhyung
+is there any way to introduce variable-offset (stack) pointers without 
+using pointer arithmetic (BPF_ADD/SUB)? If yes, I believe this is a 
+security issue because these can be used in stack writes. If not, I 
+think the patch sent in reply to this mail should be applied. (I was not 
+able to find any indication that the former is the case.)
+
+Best regards,
+Luis
 
 
->
-> libbpf: failed to find BTF for extern 'bpf_cast_to_kern_ctx' [21] section: -2
-> Error: failed to open BPF object file: No such file or directory
-> make[2]: *** [Makefile.perf:1085: /tmp/build/perf/util/bpf_skel/sample_filter.skel.h] Error 254
-> make[2]: *** Deleting file '/tmp/build/perf/util/bpf_skel/sample_filter.skel.h'
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [Makefile.perf:236: sub-make] Error 2
-> make: *** [Makefile:70: all] Error 2
-> make: Leaving directory '/git/perf-6.3.0-rc1/tools/perf'
-> + exit 1
-> [perfbuilder@five 10]$
->
-> Works with debian:experimental:
->
->
-> [perfbuilder@five experimental]$ export BUILD_TARBALL=http://192.168.86.10/perf/perf-6.3.0-rc1.tar.xz
-> [perfbuilder@five experimental]$ time dm .
->    1   147.54 debian:experimental           : Ok   gcc (Debian 12.2.0-14) 12.2.0 , Debian clang version 14.0.6
-> BUILD_TARBALL_HEAD=d34a77f6cd75d2a75c64e78f3d949a12903a7cf0
->
-> Both with:
->
-> Debian clang version 14.0.6
-> Target: x86_64-pc-linux-gnu
-> Thread model: posix
-> InstalledDir: /usr/bin
-> Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12
-> Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12
-> Candidate multilib: .;@m64
-> Selected multilib: .;@m64
-> + rm -rf /tmp/build/perf
-> + mkdir /tmp/build/perf
-> + make ARCH= CROSS_COMPILE= EXTRA_CFLAGS= -C tools/perf O=/tmp/build/perf CC=clang
->
-> and:
->
-> COLLECT_GCC=gcc
-> COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/12/lto-wrapper
-> OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
-> OFFLOAD_TARGET_DEFAULT=1
-> Target: x86_64-linux-gnu
-> Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-12-bTRWOB/gcc-12-12.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
-> Thread model: posix
-> Supported LTO compression algorithms: zlib zstd
-> gcc version 12.2.0 (Debian 12.2.0-14)
-> + make ARCH= CROSS_COMPILE= EXTRA_CFLAGS= -C tools/perf O=/tmp/build/perf
-> make: Entering directory '/git/perf-6.3.0-rc1/tools/perf'
->
->
-> >
-> > > ---
-> > >  tools/perf/Makefile.perf                     |   2 +-
-> > >  tools/perf/util/bpf-filter.c                 |  64 ++++++++++
-> > >  tools/perf/util/bpf-filter.h                 |  26 ++--
-> > >  tools/perf/util/bpf_skel/sample-filter.h     |  24 ++++
-> > >  tools/perf/util/bpf_skel/sample_filter.bpf.c | 126 +++++++++++++++++++
-> > >  tools/perf/util/evsel.h                      |   7 +-
-> > >  6 files changed, 236 insertions(+), 13 deletions(-)
-> > >  create mode 100644 tools/perf/util/bpf_skel/sample-filter.h
-> > >  create mode 100644 tools/perf/util/bpf_skel/sample_filter.bpf.c
-> > >
-> > > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > > index dc9dda09b076..ed6b6a070f79 100644
-> > > --- a/tools/perf/Makefile.perf
-> > > +++ b/tools/perf/Makefile.perf
-> > > @@ -1050,7 +1050,7 @@ SKELETONS := $(SKEL_OUT)/bpf_prog_profiler.skel.h
-> > >  SKELETONS += $(SKEL_OUT)/bperf_leader.skel.h $(SKEL_OUT)/bperf_follower.skel.h
-> > >  SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h $(SKEL_OUT)/func_latency.skel.h
-> > >  SKELETONS += $(SKEL_OUT)/off_cpu.skel.h $(SKEL_OUT)/lock_contention.skel.h
-> > > -SKELETONS += $(SKEL_OUT)/kwork_trace.skel.h
-> > > +SKELETONS += $(SKEL_OUT)/kwork_trace.skel.h $(SKEL_OUT)/sample_filter.skel.h
-> > >
-> > >  $(SKEL_TMP_OUT) $(LIBAPI_OUTPUT) $(LIBBPF_OUTPUT) $(LIBPERF_OUTPUT) $(LIBSUBCMD_OUTPUT) $(LIBSYMBOL_OUTPUT):
-> > >     $(Q)$(MKDIR) -p $@
-> > > diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-> > > index c72e35d51240..f20e1bc03778 100644
-> > > --- a/tools/perf/util/bpf-filter.c
-> > > +++ b/tools/perf/util/bpf-filter.c
-> > > @@ -1,10 +1,74 @@
-> > >  /* SPDX-License-Identifier: GPL-2.0 */
-> > >  #include <stdlib.h>
-> > >
-> > > +#include <bpf/bpf.h>
-> > > +#include <linux/err.h>
-> > > +#include <internal/xyarray.h>
-> > > +
-> > > +#include "util/debug.h"
-> > > +#include "util/evsel.h"
-> > > +
-> > >  #include "util/bpf-filter.h"
-> > >  #include "util/bpf-filter-flex.h"
-> > >  #include "util/bpf-filter-bison.h"
-> > >
-> > > +#include "bpf_skel/sample-filter.h"
-> > > +#include "bpf_skel/sample_filter.skel.h"
-> > > +
-> > > +#define FD(e, x, y) (*(int *)xyarray__entry(e->core.fd, x, y))
-> > > +
-> > > +int perf_bpf_filter__prepare(struct evsel *evsel)
-> > > +{
-> > > +   int i, x, y, fd;
-> > > +   struct sample_filter_bpf *skel;
-> > > +   struct bpf_program *prog;
-> > > +   struct bpf_link *link;
-> > > +   struct perf_bpf_filter_expr *expr;
-> > > +
-> > > +   skel = sample_filter_bpf__open_and_load();
-> > > +   if (!skel) {
-> > > +           pr_err("Failed to load perf sample-filter BPF skeleton\n");
-> > > +           return -1;
-> > > +   }
-> > > +
-> > > +   i = 0;
-> > > +   fd = bpf_map__fd(skel->maps.filters);
-> > > +   list_for_each_entry(expr, &evsel->bpf_filters, list) {
-> > > +           struct perf_bpf_filter_entry entry = {
-> > > +                   .op = expr->op,
-> > > +                   .flags = expr->sample_flags,
-> > > +                   .value = expr->val,
-> > > +           };
-> > > +           bpf_map_update_elem(fd, &i, &entry, BPF_ANY);
-> > > +           i++;
-> > > +   }
-> > > +
-> > > +   prog = skel->progs.perf_sample_filter;
-> > > +   for (x = 0; x < xyarray__max_x(evsel->core.fd); x++) {
-> > > +           for (y = 0; y < xyarray__max_y(evsel->core.fd); y++) {
-> > > +                   link = bpf_program__attach_perf_event(prog, FD(evsel, x, y));
-> > > +                   if (IS_ERR(link)) {
-> > > +                           pr_err("Failed to attach perf sample-filter program\n");
-> > > +                           return PTR_ERR(link);
-> > > +                   }
-> > > +           }
-> > > +   }
-> > > +   evsel->bpf_skel = skel;
-> > > +   return 0;
-> > > +}
-> > > +
-> > > +int perf_bpf_filter__destroy(struct evsel *evsel)
-> > > +{
-> > > +   struct perf_bpf_filter_expr *expr, *tmp;
-> > > +
-> > > +   list_for_each_entry_safe(expr, tmp, &evsel->bpf_filters, list) {
-> > > +           list_del(&expr->list);
-> > > +           free(expr);
-> > > +   }
-> > > +   sample_filter_bpf__destroy(evsel->bpf_skel);
-> > > +   return 0;
-> > > +}
-> > > +
-> > >  struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flags,
-> > >                                                    enum perf_bpf_filter_op op,
-> > >                                                    unsigned long val)
-> > > diff --git a/tools/perf/util/bpf-filter.h b/tools/perf/util/bpf-filter.h
-> > > index 93a0d3de038c..eb8e1ac43cdf 100644
-> > > --- a/tools/perf/util/bpf-filter.h
-> > > +++ b/tools/perf/util/bpf-filter.h
-> > > @@ -4,15 +4,7 @@
-> > >
-> > >  #include <linux/list.h>
-> > >
-> > > -enum perf_bpf_filter_op {
-> > > -   PBF_OP_EQ,
-> > > -   PBF_OP_NEQ,
-> > > -   PBF_OP_GT,
-> > > -   PBF_OP_GE,
-> > > -   PBF_OP_LT,
-> > > -   PBF_OP_LE,
-> > > -   PBF_OP_AND,
-> > > -};
-> > > +#include "bpf_skel/sample-filter.h"
-> > >
-> > >  struct perf_bpf_filter_expr {
-> > >     struct list_head list;
-> > > @@ -21,16 +13,30 @@ struct perf_bpf_filter_expr {
-> > >     unsigned long val;
-> > >  };
-> > >
-> > > +struct evsel;
-> > > +
-> > >  #ifdef HAVE_BPF_SKEL
-> > >  struct perf_bpf_filter_expr *perf_bpf_filter_expr__new(unsigned long sample_flags,
-> > >                                                    enum perf_bpf_filter_op op,
-> > >                                                    unsigned long val);
-> > >  int perf_bpf_filter__parse(struct list_head *expr_head, const char *str);
-> > > +int perf_bpf_filter__prepare(struct evsel *evsel);
-> > > +int perf_bpf_filter__destroy(struct evsel *evsel);
-> > > +
-> > >  #else /* !HAVE_BPF_SKEL */
-> > > +
-> > >  static inline int perf_bpf_filter__parse(struct list_head *expr_head __maybe_unused,
-> > >                                      const char *str __maybe_unused)
-> > >  {
-> > > -   return -ENOSYS;
-> > > +   return -EOPNOTSUPP;
-> > > +}
-> > > +static inline int perf_bpf_filter__prepare(struct evsel *evsel __maybe_unused)
-> > > +{
-> > > +   return -EOPNOTSUPP;
-> > > +}
-> > > +static inline int perf_bpf_filter__destroy(struct evsel *evsel __maybe_unused)
-> > > +{
-> > > +   return -EOPNOTSUPP;
-> > >  }
-> > >  #endif /* HAVE_BPF_SKEL*/
-> > >  #endif /* PERF_UTIL_BPF_FILTER_H */
-> > > diff --git a/tools/perf/util/bpf_skel/sample-filter.h b/tools/perf/util/bpf_skel/sample-filter.h
-> > > new file mode 100644
-> > > index 000000000000..862060bfda14
-> > > --- /dev/null
-> > > +++ b/tools/perf/util/bpf_skel/sample-filter.h
-> > > @@ -0,0 +1,24 @@
-> > > +#ifndef PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H
-> > > +#define PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H
-> > > +
-> > > +#define MAX_FILTERS  32
-> > > +
-> > > +/* supported filter operations */
-> > > +enum perf_bpf_filter_op {
-> > > +   PBF_OP_EQ,
-> > > +   PBF_OP_NEQ,
-> > > +   PBF_OP_GT,
-> > > +   PBF_OP_GE,
-> > > +   PBF_OP_LT,
-> > > +   PBF_OP_LE,
-> > > +   PBF_OP_AND
-> > > +};
-> > > +
-> > > +/* BPF map entry for filtering */
-> > > +struct perf_bpf_filter_entry {
-> > > +   enum perf_bpf_filter_op op;
-> > > +   __u64 flags;
-> > > +   __u64 value;
-> > > +};
-> > > +
-> > > +#endif /* PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H */
-> > > \ No newline at end of file
-> > > diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
-> > > new file mode 100644
-> > > index 000000000000..c07256279c3e
-> > > --- /dev/null
-> > > +++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
-> > > @@ -0,0 +1,126 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +// Copyright (c) 2023 Google
-> > > +#include "vmlinux.h"
-> > > +#include <bpf/bpf_helpers.h>
-> > > +#include <bpf/bpf_tracing.h>
-> > > +#include <bpf/bpf_core_read.h>
-> > > +
-> > > +#include "sample-filter.h"
-> > > +
-> > > +/* BPF map that will be filled by user space */
-> > > +struct filters {
-> > > +   __uint(type, BPF_MAP_TYPE_ARRAY);
-> > > +   __type(key, int);
-> > > +   __type(value, struct perf_bpf_filter_entry);
-> > > +   __uint(max_entries, MAX_FILTERS);
-> > > +} filters SEC(".maps");
-> > > +
-> > > +int dropped;
-> > > +
-> > > +void *bpf_cast_to_kern_ctx(void *) __ksym;
-> > > +
-> > > +/* new kernel perf_sample_data definition */
-> > > +struct perf_sample_data___new {
-> > > +   __u64 sample_flags;
-> > > +} __attribute__((preserve_access_index));
-> > > +
-> > > +/* helper function to return the given perf sample data */
-> > > +static inline __u64 perf_get_sample(struct bpf_perf_event_data_kern *kctx,
-> > > +                               struct perf_bpf_filter_entry *entry)
-> > > +{
-> > > +   struct perf_sample_data___new *data = (void *)kctx->data;
-> > > +
-> > > +   if (!bpf_core_field_exists(data->sample_flags) ||
-> > > +       (data->sample_flags & entry->flags) == 0)
-> > > +           return 0;
-> > > +
-> > > +   switch (entry->flags) {
-> > > +   case PERF_SAMPLE_IP:
-> > > +           return kctx->data->ip;
-> > > +   case PERF_SAMPLE_ID:
-> > > +           return kctx->data->id;
-> > > +   case PERF_SAMPLE_TID:
-> > > +           return kctx->data->tid_entry.tid;
-> > > +   case PERF_SAMPLE_CPU:
-> > > +           return kctx->data->cpu_entry.cpu;
-> > > +   case PERF_SAMPLE_TIME:
-> > > +           return kctx->data->time;
-> > > +   case PERF_SAMPLE_ADDR:
-> > > +           return kctx->data->addr;
-> > > +   case PERF_SAMPLE_PERIOD:
-> > > +           return kctx->data->period;
-> > > +   case PERF_SAMPLE_TRANSACTION:
-> > > +           return kctx->data->txn;
-> > > +   case PERF_SAMPLE_WEIGHT:
-> > > +           return kctx->data->weight.full;
-> > > +   case PERF_SAMPLE_PHYS_ADDR:
-> > > +           return kctx->data->phys_addr;
-> > > +   case PERF_SAMPLE_CODE_PAGE_SIZE:
-> > > +           return kctx->data->code_page_size;
-> > > +   case PERF_SAMPLE_DATA_PAGE_SIZE:
-> > > +           return kctx->data->data_page_size;
-> > > +   default:
-> > > +           break;
-> > > +   }
-> > > +   return 0;
-> > > +}
-> > > +
-> > > +/* BPF program to be called from perf event overflow handler */
-> > > +SEC("perf_event")
-> > > +int perf_sample_filter(void *ctx)
-> > > +{
-> > > +   struct bpf_perf_event_data_kern *kctx;
-> > > +   struct perf_bpf_filter_entry *entry;
-> > > +   __u64 sample_data;
-> > > +   int i;
-> > > +
-> > > +   kctx = bpf_cast_to_kern_ctx(ctx);
-> > > +
-> > > +   for (i = 0; i < MAX_FILTERS; i++) {
-> > > +           int key = i; /* needed for verifier :( */
-> > > +
-> > > +           entry = bpf_map_lookup_elem(&filters, &key);
-> > > +           if (entry == NULL)
-> > > +                   break;
-> > > +           sample_data = perf_get_sample(kctx, entry);
-> > > +
-> > > +           switch (entry->op) {
-> > > +           case PBF_OP_EQ:
-> > > +                   if (!(sample_data == entry->value))
-> > > +                           goto drop;
-> > > +                   break;
-> > > +           case PBF_OP_NEQ:
-> > > +                   if (!(sample_data != entry->value))
-> > > +                           goto drop;
-> > > +                   break;
-> > > +           case PBF_OP_GT:
-> > > +                   if (!(sample_data > entry->value))
-> > > +                           goto drop;
-> > > +                   break;
-> > > +           case PBF_OP_GE:
-> > > +                   if (!(sample_data >= entry->value))
-> > > +                           goto drop;
-> > > +                   break;
-> > > +           case PBF_OP_LT:
-> > > +                   if (!(sample_data < entry->value))
-> > > +                           goto drop;
-> > > +                   break;
-> > > +           case PBF_OP_LE:
-> > > +                   if (!(sample_data <= entry->value))
-> > > +                           goto drop;
-> > > +                   break;
-> > > +           case PBF_OP_AND:
-> > > +                   if (!(sample_data & entry->value))
-> > > +                           goto drop;
-> > > +                   break;
-> > > +           }
-> > > +   }
-> > > +   /* generate sample data */
-> > > +   return 1;
-> > > +
-> > > +drop:
-> > > +   __sync_fetch_and_add(&dropped, 1);
-> > > +   return 0;
-> > > +}
-> > > +
-> > > +char LICENSE[] SEC("license") = "Dual BSD/GPL";
-> > > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> > > index c272c06565c0..68072ec655ce 100644
-> > > --- a/tools/perf/util/evsel.h
-> > > +++ b/tools/perf/util/evsel.h
-> > > @@ -150,8 +150,10 @@ struct evsel {
-> > >      */
-> > >     struct bpf_counter_ops  *bpf_counter_ops;
-> > >
-> > > -   /* for perf-stat -b */
-> > > -   struct list_head        bpf_counter_list;
-> > > +   union {
-> > > +           struct list_head        bpf_counter_list; /* for perf-stat -b */
-> > > +           struct list_head        bpf_filters; /* for perf-record --filter */
-> > > +   };
-> > >
-> > >     /* for perf-stat --use-bpf */
-> > >     int                     bperf_leader_prog_fd;
-> > > @@ -159,6 +161,7 @@ struct evsel {
-> > >     union {
-> > >             struct bperf_leader_bpf *leader_skel;
-> > >             struct bperf_follower_bpf *follower_skel;
-> > > +           void *bpf_skel;
-> > >     };
-> > >     unsigned long           open_flags;
-> > >     int                     precise_ip_original;
-> > > --
-> > > 2.40.0.rc1.284.g88254d51c5-goog
-> > >
-> >
-> > --
-> >
-> > - Arnaldo
->
-> --
->
-> - Arnaldo
+--------------ms070705070308050000020908
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgMFADCABgkqhkiG9w0BBwEAAKCC
+EeswggUSMIID+qADAgECAgkA4wvV+K8l2YEwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYT
+AkRFMSswKQYDVQQKDCJULVN5c3RlbXMgRW50ZXJwcmlzZSBTZXJ2aWNlcyBHbWJIMR8wHQYD
+VQQLDBZULVN5c3RlbXMgVHJ1c3QgQ2VudGVyMSUwIwYDVQQDDBxULVRlbGVTZWMgR2xvYmFs
+Um9vdCBDbGFzcyAyMB4XDTE2MDIyMjEzMzgyMloXDTMxMDIyMjIzNTk1OVowgZUxCzAJBgNV
+BAYTAkRFMUUwQwYDVQQKEzxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVu
+IEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsTB0RGTi1QS0kxLTArBgNVBAMTJERG
+Ti1WZXJlaW4gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgMjCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAMtg1/9moUHN0vqHl4pzq5lN6mc5WqFggEcVToyVsuXPztNXS43O+FZs
+FVV2B+pG/cgDRWM+cNSrVICxI5y+NyipCf8FXRgPxJiZN7Mg9mZ4F4fCnQ7MSjLnFp2uDo0p
+eQcAIFTcFV9Kltd4tjTTwXS1nem/wHdN6r1ZB+BaL2w8pQDcNb1lDY9/Mm3yWmpLYgHurDg0
+WUU2SQXaeMpqbVvAgWsRzNI8qIv4cRrKO+KA3Ra0Z3qLNupOkSk9s1FcragMvp0049ENF4N1
+xDkesJQLEvHVaY4l9Lg9K7/AjsMeO6W/VRCrKq4Xl14zzsjz9AkH4wKGMUZrAcUQDBHHWekC
+AwEAAaOCAXQwggFwMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUk+PYMiba1fFKpZFK4OpL
+4qIMz+EwHwYDVR0jBBgwFoAUv1kgNgB5oKAia4zV8mHSuCzLgkowEgYDVR0TAQH/BAgwBgEB
+/wIBAjAzBgNVHSAELDAqMA8GDSsGAQQBga0hgiwBAQQwDQYLKwYBBAGBrSGCLB4wCAYGZ4EM
+AQICMEwGA1UdHwRFMEMwQaA/oD2GO2h0dHA6Ly9wa2kwMzM2LnRlbGVzZWMuZGUvcmwvVGVs
+ZVNlY19HbG9iYWxSb290X0NsYXNzXzIuY3JsMIGGBggrBgEFBQcBAQR6MHgwLAYIKwYBBQUH
+MAGGIGh0dHA6Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL29jc3ByMEgGCCsGAQUFBzAChjxodHRw
+Oi8vcGtpMDMzNi50ZWxlc2VjLmRlL2NydC9UZWxlU2VjX0dsb2JhbFJvb3RfQ2xhc3NfMi5j
+ZXIwDQYJKoZIhvcNAQELBQADggEBAIcL/z4Cm2XIVi3WO5qYi3FP2ropqiH5Ri71sqQPrhE4
+eTizDnS6dl2e6BiClmLbTDPo3flq3zK9LExHYFV/53RrtCyD2HlrtrdNUAtmB7Xts5et6u5/
+MOaZ/SLick0+hFvu+c+Z6n/XUjkurJgARH5pO7917tALOxrN5fcPImxHhPalR6D90Bo0fa3S
+PXez7vTXTf/D6OWST1k+kEcQSrCFWMBvf/iu7QhCnh7U3xQuTY+8npTD5+32GPg8SecmqKc2
+2CzeIs2LgtjZeOJVEqM7h0S2EQvVDFKvaYwPBt/QolOLV5h7z/0HJPT8vcP9SpIClxvyt7bP
+ZYoaorVyGTkwggWsMIIElKADAgECAgcbY7rQHiw9MA0GCSqGSIb3DQEBCwUAMIGVMQswCQYD
+VQQGEwJERTFFMEMGA1UEChM8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hl
+biBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLEwdERk4tUEtJMS0wKwYDVQQDEyRE
+Rk4tVmVyZWluIENlcnRpZmljYXRpb24gQXV0aG9yaXR5IDIwHhcNMTYwNTI0MTEzODQwWhcN
+MzEwMjIyMjM1OTU5WjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9l
+cmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UE
+CwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ07eRxH3h+Gy8Zp1xCeOdfZojDbchwFfylf
+S2jxrRnWTOFrG7ELf6Gr4HuLi9gtzm6IOhDuV+UefwRRNuu6cG1joL6WLkDh0YNMZj0cZGnl
+m6Stcq5oOVGHecwX064vXWNxSzl660Knl5BpBb+Q/6RAcL0D57+eGIgfn5mITQ5HjUhfZZkQ
+0tkqSe3BuS0dnxLLFdM/fx5ULzquk1enfnjK1UriGuXtQX1TX8izKvWKMKztFwUkP7agCwf9
+TRqaA1KgNpzeJIdl5Of6x5ZzJBTN0OgbaJ4YWa52fvfRCng8h0uwN89Tyjo4EPPLR22MZD08
+WkVKusqAfLjz56dMTM0CAwEAAaOCAgUwggIBMBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0P
+AQH/BAQDAgEGMCkGA1UdIAQiMCAwDQYLKwYBBAGBrSGCLB4wDwYNKwYBBAGBrSGCLAEBBDAd
+BgNVHQ4EFgQUazqYi/nyU4na4K2yMh4JH+iqO3QwHwYDVR0jBBgwFoAUk+PYMiba1fFKpZFK
+4OpL4qIMz+EwgY8GA1UdHwSBhzCBhDBAoD6gPIY6aHR0cDovL2NkcDEucGNhLmRmbi5kZS9n
+bG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDBAoD6gPIY6aHR0cDovL2NkcDIu
+cGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDCB3QYIKwYB
+BQUHAQEEgdAwgc0wMwYIKwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLnBjYS5kZm4uZGUvT0NTUC1T
+ZXJ2ZXIvT0NTUDBKBggrBgEFBQcwAoY+aHR0cDovL2NkcDEucGNhLmRmbi5kZS9nbG9iYWwt
+cm9vdC1nMi1jYS9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSgYIKwYBBQUHMAKGPmh0dHA6Ly9j
+ZHAyLnBjYS5kZm4uZGUvZ2xvYmFsLXJvb3QtZzItY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0
+MA0GCSqGSIb3DQEBCwUAA4IBAQCBeEWkTqR/DlXwCbFqPnjMaDWpHPOVnj/z+N9rOHeJLI21
+rT7H8pTNoAauusyosa0zCLYkhmI2THhuUPDVbmCNT1IxQ5dGdfBi5G5mUcFCMWdQ5UnnOR7L
+n8qGSN4IFP8VSytmm6A4nwDO/afr0X9XLchMX9wQEZc+lgQCXISoKTlslPwQkgZ7nu7YRrQb
+tQMMONncsKk/cQYLsgMHM8KNSGMlJTx6e1du94oFOO+4oK4v9NsH1VuEGMGpuEvObJAaguS5
+Pfp38dIfMwK/U+d2+dwmJUFvL6Yb+qQTkPp8ftkLYF3sv8pBoGH7EUkp2KgtdRXYShjqFu9V
+NCIaE40GMIIHITCCBgmgAwIBAgIMJfzeCQJGjR2GicgiMA0GCSqGSIb3DQEBCwUAMIGNMQsw
+CQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRz
+Y2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQD
+DBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBMB4XDTIyMDExMTEwNDgyN1oXDTI1MDEx
+MDEwNDgyN1owgakxCzAJBgNVBAYTAkRFMQ8wDQYDVQQIDAZCYXllcm4xETAPBgNVBAcMCEVy
+bGFuZ2VuMTwwOgYDVQQKDDNGcmllZHJpY2gtQWxleGFuZGVyLVVuaXZlcnNpdGFldCBFcmxh
+bmdlbi1OdWVybmJlcmcxETAPBgNVBAQMCEdlcmhvcnN0MQ0wCwYDVQQqDARMdWlzMRYwFAYD
+VQQDDA1MdWlzIEdlcmhvcnN0MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyaD9
+1GYQ1cfsamslbh08nQ3JIeQo6BDEyRCMmxeUK8be1LXhDn/smIAcDoGR6gbBvMcG2w8v8y+p
+lA1N8FLsWUygfkUPHzt18W28Z9cVURI17Y5EffXrKxWO3rHBEVhL/KVREibnMwCtI+9lG9nW
+ktUhHscygUP/GFjH9OFZrNBhChwOcMmBUkdbGsN9JNFR/IC91UG4l0uUe4HTLBjn3SBvA2Ku
+4CcfE9+0PpwMc3U/ysUv58AKNP5xOdXd41mNH6C4lpbLU9RfIqtWcMBNrSRiuQXf+kAMsJZ3
+QdvRAeOmYGnfnotQv50dldQlDLzL5yM+hnF2dMc3sHYfN+jffzvvPRPFfMRAAabWTAMpDr+e
+Wg0xVuuhc3/qfp3HfD4ImC14D8PIq/HfTDwpfnngn86Tfw1+NlKcsFO2E2zo8ehR7fIZ4m5J
+EjJN0TAmrXdfkSfnTi+u7S3mTnm/8hSG1n0tGz8ChlNK4bQvjfbHDgDSNVYLiJ7mwvd2ezMU
+3O6GWO2Rkh2ajWz0wKsZj/c+qEah3vVK//hyAU5ZrUMBen0CC2VxDvrTqK5T9U3o2dlnRntH
+2mlBnAKZRPjXbqiZPaUafxGl3Ei4kucYqM7uGlRnuuoPHRdbHYl43LpVm3PrAznEio/T8RVQ
+oVsW0+bXBwNI0M6crOThU9VRC6vnABUCAwEAAaOCAmEwggJdMD4GA1UdIAQ3MDUwDwYNKwYB
+BAGBrSGCLAEBBDAQBg4rBgEEAYGtIYIsAQEECjAQBg4rBgEEAYGtIYIsAgEECjAJBgNVHRME
+AjAAMA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwHQYD
+VR0OBBYEFHKMa3m3JJ+2DN8JQfcfTTPnmog0MB8GA1UdIwQYMBaAFGs6mIv58lOJ2uCtsjIe
+CR/oqjt0MDMGA1UdEQQsMCqBEmdlcmhvcnN0QGNzLmZhdS5kZYEUbHVpcy5nZXJob3JzdEBm
+YXUuZGUwgY0GA1UdHwSBhTCBgjA/oD2gO4Y5aHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4t
+Y2EtZ2xvYmFsLWcyL3B1Yi9jcmwvY2FjcmwuY3JsMD+gPaA7hjlodHRwOi8vY2RwMi5wY2Eu
+ZGZuLmRlL2Rmbi1jYS1nbG9iYWwtZzIvcHViL2NybC9jYWNybC5jcmwwgdsGCCsGAQUFBwEB
+BIHOMIHLMDMGCCsGAQUFBzABhidodHRwOi8vb2NzcC5wY2EuZGZuLmRlL09DU1AtU2VydmVy
+L09DU1AwSQYIKwYBBQUHMAKGPWh0dHA6Ly9jZHAxLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2Jh
+bC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSQYIKwYBBQUHMAKGPWh0dHA6Ly9jZHAyLnBj
+YS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwDQYJKoZI
+hvcNAQELBQADggEBAJtkku/mMKt7UG2ghvD//mIuCVhB36VqetpOm0o8RaEIi/KA5jf8q2F+
+JihuV11chvT6Sie8UtGGu/V1l18LexvFmQIDMT31z1bbo7SzfHCRq+NZaCbUwECYKcewWa9u
+UUw+FQuZ4QzooMMMNvtNxCW5M1esjYbLonOoydT+FTva5RWJNAo4t4LgRJLX0WYUaM58viqb
+2Z6bweG+AnjpB2TwTwJ8NdlwpNN/q2aWQWYVUedK2X3vLetyIlyDY2z1lsWHvtGyU/PriEz/
+UDv7CMQphqhYobsg05DNs31hmW75XxfXXyXvOaLrjhUeSY6el04/a5Q6/fL7LXkcCivnMZMx
+ggUrMIIFJwIBATCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9l
+cmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UE
+CwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQQIMJfze
+CQJGjR2GicgiMA0GCWCGSAFlAwQCAwUAoIICXTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzAzMTUxNjUxMTlaME8GCSqGSIb3DQEJBDFCBECZPwPiBvZQ
+YHJYTURv6lyUVMNmcoTYAMk+E0JT41eHNdbESZhRg5445HF/Jx49M42aQoN8XhfPxUo2qSkP
+a0uOMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG
+9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcN
+AwICASgwga8GCSsGAQQBgjcQBDGBoTCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZl
+cmVpbiB6dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBl
+LiBWLjEQMA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNz
+dWluZyBDQQIMJfzeCQJGjR2GicgiMIGxBgsqhkiG9w0BCRACCzGBoaCBnjCBjTELMAkGA1UE
+BhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4g
+Rm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZO
+LVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQQIMJfzeCQJGjR2GicgiMA0GCSqGSIb3DQEBAQUA
+BIICAIamIF8FUAedjuQ66a++9vogDf6YHfvkDRON9r98D+u1MkfLDAwjr5XBIMyO7hst4Nj1
+iKkDOuAlA0SKfTNo3c14fdODZ23nj/T+PI+lLNQsaqOhfayF69iBzGbeBcarsi4iv4OWwB8u
+1H+kW0VmwT4TeIrn89ZoDSLzW5lKQ6+/HkbxgmrqY6DUd7ifcewNG1W62Wnn9aYSoiKQ3JU8
+CAK/TEQCE+WgyMlg2o4OVbXFbsHAZpMJ9+Pion+FiFwpn+jUQJiyR+dQOwUti5yy5NkRuHFM
+ig1PcEJeQkYNmJg83fII3wuPUdbnHkRp+ku7nLHgNmseYMLYnJtt3Bzwckb+2bh2EGygf7tW
+QKf1g/OQsa2iTeAgKG2ATD4CrA07/KgJC3iQuVE6y4Jvmiv6uGBQhJ499cu8Nba/VWGpcp0u
+oXQzIZaCyCPAW/cH2LtLs3urzMthATFoQjffItLg+GiAAmuJoCw6nJm9IBCjInhhec/bqwvk
+1Esfa2hOlSqFIlMuFqmrykB+mm7Fw1SkWlhz2JSwS1r0duzvGQeTf5P8ayxkI/mZ0Jp6lljI
+ZhfRfY/925IGwf3VLz2cGYIUd6N+l57ldvydEV1/aqV70afyhQLAszclT3/5QH8w99CwODaF
+kymq91RLsavHhdwSnXaLjAeAcupfJELBVOpqoiLWAAAAAAAA
+--------------ms070705070308050000020908--
