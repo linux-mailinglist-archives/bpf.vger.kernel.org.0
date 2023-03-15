@@ -2,340 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE436BBBC9
-	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 19:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88AC76BBBD2
+	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 19:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbjCOSOw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Mar 2023 14:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        id S232334AbjCOSQm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Mar 2023 14:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232474AbjCOSOt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 14:14:49 -0400
+        with ESMTP id S231244AbjCOSQl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Mar 2023 14:16:41 -0400
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036B27041A;
-        Wed, 15 Mar 2023 11:14:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0969B70432;
+        Wed, 15 Mar 2023 11:16:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678904088; x=1710440088;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=psW4ltM47YzFV+lI6WPgUwKpU1TugN5644KR9N4yiJU=;
-  b=IUNR70hjDXpHglE8umtZ+Gw+suUgUzHfmOkOIq5bfeIsnJbXs3wqo1dA
-   8l04zCMxloYGwIIpc67VoxGbfV2E9d9Xv8H3BCy4AFq1b3jTuCPBckoDZ
-   fMz6x8a1rmg+zFm+AAUJkYtFizfHjKsTKKWeLJQYCbhVSKbZpIMNNOe4b
-   BGgEnpPQCfMTVIY1K+q+xUKHqoJ1SpmH4rN3LPj1UidVu+lDou5yh8ame
-   Xq0k1eTi3v+zBQcPpv+H/OHw/nKelmG3CAnXMPJPSZjP5UIMcCybCD3O6
-   9gZSURYS6UUIgtGZq6iCd3Gi/Plnw91LtE6s+XqSK6OlHf2Y2uNfeB4A6
+  t=1678904200; x=1710440200;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=UoOLGCHElLJHE914g69hMuHVYDgaYmJxD786LnMTNxs=;
+  b=iOv06KshZv525NJj/uBVsHddL1J3eJ/86MfxhONT/qO/JxH94QkAQS9Q
+   tSeWRhYvFGrTUyjJygqvfWs3ZYCPtgRINnY3WXvi+XpV7O/isgxkz5fdQ
+   t3gzAK/1euxv/wEZNJrnjWHZm0UU0M1mxw6RL75EUIgpKObf79Pn0VSo+
+   qXwjVaTMIiAEQ4YRYxzHb70uojs0dbuYqVA0ee8LGqOzB9Nn2GdH57F3z
+   b1DF5bSSQrLeXd9Lkhr3GUWVlB7FxLuNVJuG5u/isnEWDCG9YkexkAlSY
+   w3MsjnPIIctYRcJ421nVi42Bgs7gSh+1SK0M9krC6xg+0ske67/l4qhl+
    w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10650"; a="424057638"
+X-IronPort-AV: E=McAfee;i="6500,9779,10650"; a="424058432"
 X-IronPort-AV: E=Sophos;i="5.98,262,1673942400"; 
-   d="scan'208";a="424057638"
+   d="scan'208";a="424058432"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2023 11:14:25 -0700
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2023 11:16:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10650"; a="709769281"
+X-IronPort-AV: E=McAfee;i="6500,9779,10650"; a="709770009"
 X-IronPort-AV: E=Sophos;i="5.98,262,1673942400"; 
-   d="scan'208";a="709769281"
+   d="scan'208";a="709770009"
 Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga008.jf.intel.com with ESMTP; 15 Mar 2023 11:13:53 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+  by orsmga008.jf.intel.com with ESMTP; 15 Mar 2023 11:16:39 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
  ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 15 Mar 2023 11:13:53 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ 15.1.2507.21; Wed, 15 Mar 2023 11:16:39 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Wed, 15 Mar 2023 11:13:53 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ 15.1.2507.21 via Frontend Transport; Wed, 15 Mar 2023 11:16:39 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.107)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Wed, 15 Mar 2023 11:13:53 -0700
+ 15.1.2507.21; Wed, 15 Mar 2023 11:16:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dDaVkkgCaBwNTCti0oFLuLleeOeqKppX4tyBL4WggXBin6fEkFSIVefXjFQvRg27bCyMl/iBS991DodkGJAZ8fsgeDmZl+wk4PkpIjrh31qsDjvdjcxBWPgT8ufcM/AgFjHVpZ+TbyJExcbrv90sh5BFAQx6YobYInM5eKnpTeWuSiqMvDLBVMRwC1YN3/qfdL5ttB9qIhuwJuAMfWaAXHoUM7K1krumzdIy74mY1VpHQxLCfcqAq5wkIFi1BX/d93U05hoUit5ryCLzQBPaHdBNJ/o4Y+jsYPiRkMrrdgDit0qmdilqwQKWMCwgtL01eMRIWWxRgt2pWiHqThYJOw==
+ b=GrJ3LkhyIAekF++Qj5ye9RPnkJ5LpDV863AyXjbVR6sTSLHkjC/Y5RMpTLxgTAUz/xYxB8pd+nevQJWDcgD+Zh+o8OEnQDjlPF5Yg5UOEl9oZ+eAH0sOAtlb5cvVUOQtzG+7SWoRzgNVa5I816CNJpUZcGJUbUVzE68TjKZqQUJsn20EKyycAfqoUNYoPoZFZj61W5Sg2Yq8GjQgGKYLb9KIeqEHM8cZgV3/HPdPYBrZTNS1lAQ4UQda5DsrldnXxtD1/KGjDArHq6iWfDlRpYdaC9W9L3Hsr/4QeIAfOVTqBYAj2SNe+L2/GRrIDxlUs1dxSFB9dUUFWrD0rcVr9g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gFtwMh+JjXETpIi2CEomfr6H6NcXVVezQeU7RL4womo=;
- b=I8uNt8Gu4+kmRlUEguYbJXMTozWTm5IKkAFob6+fQ/LROpMDsSHnq3EquoHPgONeT2hVtT0/6NmE4EoeUX05y26NNJwTkKcODN1mnWpLNkXeluHKT6zH0rQEuuPZgpQ8mCvqZpt9ESMgH2V+t4WpdAGdQNvN3O5BiEyRD56OpsiVJHiWhNxeFBB0/bW104pVviZcF0uu/laEV2qppjg4YdO8LilPN2xrZZGoRfCIvKYUEE0/ADpXuVlUxCJBiyu/Bsjrdt3MEWBO3v9/BM4TH2Dj1LzumK2UlLFL9o8OTqz1haTS3fVI+b5BPMs00C9QFB4MSemRTS9FrcM3eRSN/Q==
+ bh=wWlcTC/7MCDM5uFiCCPEH0VVVioGT/bM0uBWO+6CCmQ=;
+ b=fl/XtjZHU3fLwHXCw7mdHQZkyavHywLqtgYg4rajfEyBI29XpUwirM3WYXO9bN8PMAfMPvID7ct+il+gyqn7po2cgZ5QD5OoSbj8W5la7ya2Nh5vayJisFH2X94wFNwgoA2iZuM+lTBsE4FAGLOG9zDQ7TXzTKoo49GJDXT2R9tnOWJ7zl18XtELlqVXTDDDfBDw2qv/Sso0DbzwuHG7Glt4HjxJk/VUEUeRaABQgmL8aInitkcq2lrsiT3d1YWfd4v283dcE8xqIr47eURHOk744KK6zx9mYG38zm5mWuDces7y2vRWkqV8ie+11ERe4Z7X6MZ/x3coZ0T2g1YvRw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by CH0PR11MB5410.namprd11.prod.outlook.com (2603:10b6:610:d1::20) with
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by DM4PR11MB5390.namprd11.prod.outlook.com (2603:10b6:5:395::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.30; Wed, 15 Mar
- 2023 18:13:51 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::7911:de29:ded:224]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::7911:de29:ded:224%5]) with mapi id 15.20.6178.029; Wed, 15 Mar 2023
- 18:13:51 +0000
-Message-ID: <62f8f903-4eaf-1b82-a2e9-43179bcd10a1@intel.com>
-Date:   Wed, 15 Mar 2023 19:12:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v3 0/4] xdp: recycle Page Pool backed skbs built
- from XDP frames
-Content-Language: en-US
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Song Liu <song@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        "Mykola Lysenko" <mykolal@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20230313215553.1045175-1-aleksander.lobakin@intel.com>
- <ca1385b5-b3f8-73f3-276c-a2a08ec09aa0@intel.com>
- <CAADnVQJDz3hBEJ7kohXJ4HUZWZdbRRamfJbrZ6KUaRubBKQmfA@mail.gmail.com>
- <CAADnVQ+B_JOU+EpP=DKhbY9yXdN6GiRPnpTTXfEZ9sNkUeb-yQ@mail.gmail.com>
- <5b360c35-1671-c0b8-78ca-517c7cd535ae@intel.com>
- <2bda95d8-6238-f9ef-7dce-aa9320013a13@intel.com>
- <de59c0fca26400305ab34cc89e468e395b6256ac.camel@linux.ibm.com>
- <e07dd94022ad5731705891b9487cc9ed66328b94.camel@linux.ibm.com>
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <e07dd94022ad5731705891b9487cc9ed66328b94.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR3P281CA0051.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4a::9) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.26; Wed, 15 Mar
+ 2023 18:16:36 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::84dd:d3f2:6d99:d7ff]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::84dd:d3f2:6d99:d7ff%7]) with mapi id 15.20.6178.024; Wed, 15 Mar 2023
+ 18:16:36 +0000
+Date:   Wed, 15 Mar 2023 11:16:31 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        "Daniel Thompson" <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Chris Down <chris@chrisdown.name>,
+        Nick Terrell <terrelln@fb.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, <linux-modules@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <kgdb-bugreport@lists.sourceforge.net>,
+        <live-patching@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <llvm@lists.linux.dev>
+CC:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Piotr Gorski <piotrgorski@cachyos.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH] module/decompress: Never use kunmap() for local
+ un-mappings
+Message-ID: <64120b7f2e123_2513fa294a7@iweiny-mobl.notmuch>
+References: <20230315125256.22772-1-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230315125256.22772-1-fmdefrancesco@gmail.com>
+X-ClientProxiedBy: SJ0PR13CA0136.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c6::21) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|CH0PR11MB5410:EE_
-X-MS-Office365-Filtering-Correlation-Id: c6afacc9-57e3-47f6-de38-08db25810797
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|DM4PR11MB5390:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9c6d3333-c8f5-46c8-e567-08db258169e5
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Mj0Di+R+ak1ms3Oqixvuf/BAXj8MJMMY5FjgNxyx61w2DzR7+Fa5fUwop8Q+BPLRKgBDPLcAxNjD/4GFIDCnLBdyN1gCfMh/dLr/EPcgJQZgdcbkUR0sm7wZLh8Z5mhe+vMuDoYMmS77gS2QZderP1+0CEtrV71H5RsILQdESCC0uGyrpQEFEaOZJbYkFKJkr3mQWRSH2mAeOSwRL/a5ruo5Cpc6Z8kWCYLMg7StoIQiMbxHjpGRbi4klHiEk6ADP49vJEsoOMDKeaBGhnXWmVrGKqGD/u1xF2dxt8fcwVxoGBMkbZge1eP689uRFtFcJXWj9tzCOdAIO1wUvW5ihEUOgHcIRJSEu2wS8Sb21j9aFvN15VmhDhqrKlPQvXpmQMwceC1PQBTWd6ksw7yzKE/wWOsMZgvobMIbZTVD/K58I9epqDVLQBaVzZmHtdTN4c1DcS18zeeEOPaSvPM28fgP9xesjB7lmeqRFi68vskE8tBgZFzZwYs/TUTUjPAeW3XD0aHsbrID48Zd3D9XosMDj/NxLdASEcdw7NeL32FRzGb4vtzpcH3yaqhq9R4RadusfTMstbs0juvqPCGO+hNjMWE8CYL3tw/FohuCl5lGYdE+YHBcOnN9+39fS6GwAsh9eOIPnoXIQSPNTMjdjFlWHDufcC2lhO6lIgeWDkVxQR/1J7RTNrHTqCLt3lN4hKA/FFPky8lItnJ8ZtpCdxMhlgbXkbFmo9v130/Oqzw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(396003)(346002)(39860400002)(136003)(366004)(376002)(451199018)(82960400001)(31686004)(5660300002)(7416002)(2906002)(36756003)(31696002)(86362001)(41300700001)(8936002)(66476007)(66946007)(66556008)(316002)(110136005)(38100700002)(8676002)(4326008)(2616005)(478600001)(186003)(54906003)(53546011)(6666004)(26005)(6512007)(6506007)(83380400001)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: vWChfBLao6nKEH7jMLaaPDg6QB5SzgaXfDsTwU3/82rd2s2IVLOrc7UN3dt/geEG8awyu7BNf1XzMoAmB4gOLOQlt9IAhrfemIuTozlmRI+VAnPQDUubVlxzKM4PNArj9eUExuXPgHPA3v7yws+7i+5puavToOpX/ujwNcJX5RU8nO1zQC6V4DsIwqFulNO9DkrZZ3lR1Iip8QrLDcHXyVDXnfkEDHoQhJx8FuZ18Flvbg9WaMzMDVnrg6Ym725VPJ3Og/MlTnq/eTZlDLJ+hUAztUF7lTn4jQWJiKBJFunw8Fc80m02IY4HD4Bfr710NRwS0qckE/uIPon+PYn8OZ4jMxb+SQkd9aHBlJ4x9FdhSwOmc+rzRtpJTWgPTK4G2NkdNjxk9GPFBIwB5iOB4TCEp7NltyfeadO3VrvJwH9ihICTzHAWEsSd8Hwl/8v9FGCZ7rAF58TNYFlFiXnXc28hyUeRORBl+mm+HDRSODmhKZw7hH8nxoGruSnPG7Z98tkSqEB3cXa1UO9iFmb5Lulnp6rTnywb1+0QRvKQcL8l1w8DRoNUNvJKpFEWuDqduciOGRvHEXnd7lj3YN/HCvu9bE6P+0/Rzc2AYGLkcg4+V9Fj4xopD2erm3HopVJtzuQePCxBFHPkBaWHk+vbjDK2Z5/PhCZwH/L8eAVWTO+CjKoVWbdzQzbiB2G8aAZ4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(136003)(346002)(39860400002)(366004)(376002)(396003)(451199018)(7416002)(5660300002)(478600001)(2906002)(9686003)(6506007)(26005)(6512007)(6486002)(6666004)(107886003)(186003)(44832011)(86362001)(41300700001)(38100700002)(82960400001)(4326008)(66476007)(8676002)(8936002)(66946007)(921005)(316002)(66556008)(83380400001)(110136005)(54906003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Mkp0VmVWcEVEZkJSTDNsdi9oYmVwRGhzTDFtM1FPMkkyWXdSZXBUT2lXclBp?=
- =?utf-8?B?cVRMY2tuWjJIOWs0OGpWckVaNzZ4R0wrc015MVZ6M0piWTViM2hBWWI4eVRz?=
- =?utf-8?B?Q2lSZ2NQd2cxUVhBTlduUzZ5aUl0T0ZZZ09SQ1MrWHYxV29YQjRBNmtVdHBs?=
- =?utf-8?B?d005eCt5V1NoZWV5ZFhQbFloMmdKWVRtZ1dpeEZjVmtvZmZycVdTY2VqTGlm?=
- =?utf-8?B?U0tzUi94YTZQVVRBMDFIZ09tWlJ1WG4vaS9IOUtZTk5DTEh1K09CNUVzRk5P?=
- =?utf-8?B?ZzAvOUxYTS9ya0tIZXBZaGE3dXFJNHRjZG05Vkd0NjFoL0I3SE5sZjY5aWtT?=
- =?utf-8?B?d1U0amZaVGc2QzlsUDdlVjYwSmVQdUFOSy9tdzVjQys4eWxRZkVUalJwMHlv?=
- =?utf-8?B?V0dJc1VDRHB6eVVqMlJaWVZkT2hwOHY3N01nS0RhTEt4MnQxMGhQdFJuOHN1?=
- =?utf-8?B?ZmorcTRzc1FSaWh3RjRwZ0hNQmphYTJCSGMrWnNtL1Y3TTNBVE9Xem4wcUlo?=
- =?utf-8?B?dGViUGNyUFlUNk1DN2tTdTNhOTgyUGF2dnpDckZYU1prejUvN0VOSVFzbUh6?=
- =?utf-8?B?QnJGdlgvQUplbmlLeWdjbDV0VFp1SUR2REhTOFVwWWtSM0JYRUl3M0thMW8r?=
- =?utf-8?B?RElBVmpVN3FnLytNelZmRkIwVmt3Zzc4alhjdXBiNDBwMGZsWjVmVVA2NUl6?=
- =?utf-8?B?T1ZlVHZ6cGRJVzNFbWJCM0Y0NmpiMXVjYUNCc2VUVm0wTVVNNWl1cjJkYjdv?=
- =?utf-8?B?cXkvdGZLVDd5dkE0c1RKUllYRTFXM2Q2cEtjWFRFN1Jqd2ZIRGJpNE5ZQkY5?=
- =?utf-8?B?S1JRUXU5RlZ3YzlpRm1PSDBDdStreDRhalpYZ1U5bDh6bmJRREwyRkNCdVAw?=
- =?utf-8?B?VDViMzhpa1kwTVA3U2pQNC80aExXejRiWWhiaHhpR2Z0cmNsS2ltR2Q0R3N6?=
- =?utf-8?B?akdHVGVocW13cDYySHF5UkxEdlR5RzIvNWlkOHkwbjVyeFpGdWVQTmNScHhn?=
- =?utf-8?B?aEh5WDU1Y2lXL1owdXlKSzVQUG95alYyR0lrdlp6bUhKQkdTM2pITG5pYmFw?=
- =?utf-8?B?VGNGaGIrTXczcmhSaDRwN0M5RGNINjE1VmlueWVBaFdtd2d1cmlLYnBqaVU0?=
- =?utf-8?B?U3VwREluSk1RUlRYUm10ajl2a0VQc0xoRjdBMm9idDAxcURLZG1ERk9qNkQ0?=
- =?utf-8?B?T2RFMHl3TDQwUkFGK1hVcDBFMzNTejIyZW1MV1dmQUo1YmtvL1pvZFM1L3Z1?=
- =?utf-8?B?Z2JxWmtSWUVYVUNRY1ArcGlwRGFQZCtSb3FGc3FVd1BjRXh3bG1JNWJxc1g2?=
- =?utf-8?B?VnhHTkZOZ09uemNUUVM0K0p4bEdQYmZ2K2QveDdWY0x1aEFsMGdiS0JKbXJN?=
- =?utf-8?B?cTArS0J0V2poRkFycDNlajB4eWk4R3U2dTZaa0tLQ3hpcEVaanI1dVc3d2FV?=
- =?utf-8?B?MStDYXhtTDBxd2N2aHd1TlZrcytqcFdILzA4dHpXeGlrSXpOYXNGMnZ4Nmhn?=
- =?utf-8?B?TVlLdWtIZ1QwSU9sS24vZnRNNFc5S29OWFhhaVdqRlpmZVByUkFqTFNJM0xs?=
- =?utf-8?B?MW9zaVhNdnRNeEVIVXBaNTNmTktCZDFTWHQwbGdwdml2VWlVc0tmaXQ4SDRV?=
- =?utf-8?B?Z3htWXpzMVNlQytkeVJINGZVajZkcnkrMHFhVHlWdWVqWFQ5QmI4SmNGM3B3?=
- =?utf-8?B?WGdDdzlVTXdmT1J5K3g5djNhcGppTk9nSldsWmlJaHk5Y2hkd25vbjVkUGZq?=
- =?utf-8?B?NHV5TTJ0QWllZjlzUUF2aDAyWW03NlNFZTFnNitOK0RLQnlmcDFkejRiYXdD?=
- =?utf-8?B?Q0xlczBBQXJ0STVVUlNWcCtDNlNxTDh2SmxFNEdSREk3K2tPNC9LNzF4bFpr?=
- =?utf-8?B?bjhBVEtOZUk2Y2NqdnRCV0RXbXpZZStxOGRZQnNYc0JJaWhYcnpSaDFaMUhw?=
- =?utf-8?B?MEp2SWI0dXdzT3hFSzFjTWg5UlcxZjNKMFBpNDF2RVZrOXNtRlBIZzFHWXRU?=
- =?utf-8?B?RWFUNHBHSFNnRlhsVXNTeWdZY2lzWmlTOUcyUmZHcThHMlpPSlpBUjBZeXFL?=
- =?utf-8?B?WFBCNnVNQlBlWlBRNmF3R2xBZ3NtVVdvRnAzNTg2ckhYMmVoYS9NcFNlMmli?=
- =?utf-8?B?UENLRll5UXZlR291Wkg1QWhnenV2bjlodGFaL2lRdnVDMVFBcUdHdTJTSDB2?=
- =?utf-8?Q?uQZw7Cux3fDpAVpDs4ORkUE=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6afacc9-57e3-47f6-de38-08db25810797
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GnncIWgTad5+W7x2yjuHWrHTc0pNMjmyOgA8c7bmDKKmCDZY4Be1qf8VO/Ze?=
+ =?us-ascii?Q?3W+hzMuppVxAbSKPPEXA91VVjjmRp33BRDE3BKLo4OYZtni9XtNhIVyGixsy?=
+ =?us-ascii?Q?l782MEw20UQhm4nNHSnOelhYLggwF9dzWlUGa5bBGHD6EESICmGaQDIjrKWX?=
+ =?us-ascii?Q?E1Tjgjnfww8/0vhRWnH8LFdkm8c30xQ2rQcS5mB5jlVhgQCaPejnmBThLX3E?=
+ =?us-ascii?Q?V9xjInpl1mMqkqGJTTlXAiyrAhhlUOojwj9OPsHTs3mCCNCVKUyqOn+bMH4P?=
+ =?us-ascii?Q?ExNTW/G3LCGsMrFp/mV9hjuS/LHk5ZLWyoHxmnRuZ0Pf7QgBHtcrLcPQsE3b?=
+ =?us-ascii?Q?dggjvV7zPYcHLONSEuA9j0/RqN0T2CcjIsJSgk842Qq1X70hPZKMPvG7nvDp?=
+ =?us-ascii?Q?my7zzS6lAg6RcOTg7Na+9YR620PPSs+qRVeVU59mHjP8P0x76EVvzP+5jRIY?=
+ =?us-ascii?Q?ZqkmeBaexanWpEtYLgQvJFSmUlQk7JG/hcb2vRDfko3CEvbFRaNP3cdu/WxH?=
+ =?us-ascii?Q?mw/r3PY01qVsXIjVUh2stj/91twKWprRwSah/QiEJyKwsLw5uMngiy6jyHS8?=
+ =?us-ascii?Q?zyiiMmQmeD72Wj1l2XzpaEDTg05xaE2cPCjWpUZfj1L6MS6yA7+Ij2EWPiV0?=
+ =?us-ascii?Q?gtcfICm768SfLioahMmHddYw1cwCObIEZeyxmzenWMWe/P1hD1es0GX/cok7?=
+ =?us-ascii?Q?P7x7iCrx5FTmlxb+obeiJxAsgUUv+QHhbOLy0fN9E9RsrcgdlHzTwEu5V5Dp?=
+ =?us-ascii?Q?7D6PHTO+8R1LlrKFHBo/g73haZh1ETWHsYwqDVFZ7t5UHdYbMdu279XbmR74?=
+ =?us-ascii?Q?j7mr1bF5h8UBmMeGGocts1JSNfbhmYGbawFx6S7FVxykH7wI8xkr1EaCDlqE?=
+ =?us-ascii?Q?d1RPqvbP3YxBaJ0SrfznAYKCKwxWHVMd6Z0Nr7zRNFgCCF1HEp5fqF6INPlK?=
+ =?us-ascii?Q?rYvntlxDKu2S70t/paYkyeNTOohwMLXg3FFofitxQk2PjWqJ7l39sz1LYxT4?=
+ =?us-ascii?Q?K/Du5htsn8VL92nR+Nxztu0LJCzwV8Pxp3FbdsN7iMaUjRzcccHI78T7in6T?=
+ =?us-ascii?Q?mOcqjBiTScp3JmUJ+trja02zySAEsv2po7R0tfiEl+kfNSwKofOM6HMM+wf2?=
+ =?us-ascii?Q?lT4ez5eHmK5oJxfLn3H26cH1iuBgapu8NCqufS13Fcy/bVtKbmFi4gf5zhdR?=
+ =?us-ascii?Q?8e6kafDeIPS3t3eDA+bilo9onAngm65C8NFOv1EAYGN3sGE0yIw2ZsN+CI4T?=
+ =?us-ascii?Q?1Jsr9OupamEYLSCyvRDHt2dA6jDpKxogMTQ5sUgbM6ZOChjh43hOfjplsxWy?=
+ =?us-ascii?Q?mkk0VC37Ha60R+pe+T/olFOruOWIgGwmCuXbqaZIfm/Xs77cB/etR1IsIX8Z?=
+ =?us-ascii?Q?P0g0WfduhEplvunUwFYR3u37MbJqmSYlqm96Igh9uaF/9TilR5gn4AJjL4qK?=
+ =?us-ascii?Q?5qGSUyAI3B3Sfbyjrjz2/INry4tXQ2MXyNIkirMLRs2+GqkXdDimr3xF4SQy?=
+ =?us-ascii?Q?Wi04LlCfTxk9q59TzWy3qIiU85P1u3JMPPfwIqqM1UYV19Q2iAwLxm4iUMqu?=
+ =?us-ascii?Q?hQfaMfBe+zNiJC62sbwrvfsp2jH2xKbfzfOTXtkM?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c6d3333-c8f5-46c8-e567-08db258169e5
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2023 18:13:51.4896
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2023 18:16:36.5739
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lLH7zW9ZeNfTijR16wMpHQXzMFH2VuMKwCW2VC37A1nyMf4xGebTZyKmilkeUeSEEcgOKgzfHnbU/NzupvoEVMegfjqhRdC1iGL9KLzZGL0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5410
+X-MS-Exchange-CrossTenant-UserPrincipalName: u3wWrCeSHDbz1hN6Q2lZoAjYMOiM+kyUR3VrwvnoiuSK2P+2+uTyCiXOyaUjx/cQlzy53OpKBzlaHDyuu8Rg+A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5390
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-Date: Wed, 15 Mar 2023 19:00:47 +0100
+Fabio M. De Francesco wrote:
+> Use kunmap_local() to unmap pages locally mapped with kmap_local_page().
+> 
+> kunmap_local() must be called on the kernel virtual address returned by
+> kmap_local_page(), differently from how we use kunmap() which instead
+> expects the mapped page as its argument.
+> 
+> In module_zstd_decompress() we currently map with kmap_local_page() and
+> unmap with kunmap(). This breaks the code and so it should be fixed.
+> 
+> Cc: Piotr Gorski <piotrgorski@cachyos.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Ira Weiny <ira.weiny@intel.com>
 
-> On Wed, 2023-03-15 at 15:54 +0100, Ilya Leoshkevich wrote:
->> On Wed, 2023-03-15 at 11:54 +0100, Alexander Lobakin wrote:
->>> From: Alexander Lobakin <aleksander.lobakin@intel.com>
->>> Date: Wed, 15 Mar 2023 10:56:25 +0100
->>>
->>>> From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
->>>> Date: Tue, 14 Mar 2023 16:54:25 -0700
->>>>
->>>>> On Tue, Mar 14, 2023 at 11:52 AM Alexei Starovoitov
->>>>> <alexei.starovoitov@gmail.com> wrote:
->>>>
->>>> [...]
->>>>
->>>>> test_xdp_do_redirect:PASS:prog_run 0 nsec
->>>>> test_xdp_do_redirect:PASS:pkt_count_xdp 0 nsec
->>>>> test_xdp_do_redirect:PASS:pkt_count_zero 0 nsec
->>>>> test_xdp_do_redirect:FAIL:pkt_count_tc unexpected pkt_count_tc:
->>>>> actual
->>>>> 220 != expected 9998
->>>>> test_max_pkt_size:PASS:prog_run_max_size 0 nsec
->>>>> test_max_pkt_size:PASS:prog_run_too_big 0 nsec
->>>>> close_netns:PASS:setns 0 nsec
->>>>> #289 xdp_do_redirect:FAIL
->>>>> Summary: 270/1674 PASSED, 30 SKIPPED, 1 FAILED
->>>>>
->>>>> Alex,
->>>>> could you please take a look at why it's happening?
->>>>>
->>>>> I suspect it's an endianness issue in:
->>>>>         if (*metadata != 0x42)
->>>>>                 return XDP_ABORTED;
->>>>> but your patch didn't change that,
->>>>> so I'm not sure why it worked before.
->>>>
->>>> Sure, lemme fix it real quick.
->>>
->>> Hi Ilya,
->>>
->>> Do you have s390 testing setups? Maybe you could take a look, since
->>> I
->>> don't have one and can't debug it? Doesn't seem to be Endianness
->>> issue.
->>> I mean, I have this (the below patch), but not sure it will fix
->>> anything -- IIRC eBPF arch always matches the host arch ._.
->>> I can't figure out from the code what does happen wrongly :s And it
->>> happens only on s390.
->>>
->>> Thanks,
->>> Olek
->>> ---
->>> diff --git
->>> a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
->>> b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
->>> index 662b6c6c5ed7..b21371668447 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
->>> @@ -107,7 +107,7 @@ void test_xdp_do_redirect(void)
->>>                             .attach_point = BPF_TC_INGRESS);
->>>  
->>>         memcpy(&data[sizeof(__u32)], &pkt_udp, sizeof(pkt_udp));
->>> -       *((__u32 *)data) = 0x42; /* metadata test value */
->>> +       *((__u32 *)data) = htonl(0x42); /* metadata test value */
->>>  
->>>         skel = test_xdp_do_redirect__open();
->>>         if (!ASSERT_OK_PTR(skel, "skel"))
->>> diff --git
->>> a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
->>> b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
->>> index cd2d4e3258b8..2475bc30ced2 100644
->>> --- a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
->>> +++ b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
->>> @@ -1,5 +1,6 @@
->>>  // SPDX-License-Identifier: GPL-2.0
->>>  #include <vmlinux.h>
->>> +#include <bpf/bpf_endian.h>
->>>  #include <bpf/bpf_helpers.h>
->>>  
->>>  #define ETH_ALEN 6
->>> @@ -28,7 +29,7 @@ volatile int retcode = XDP_REDIRECT;
->>>  SEC("xdp")
->>>  int xdp_redirect(struct xdp_md *xdp)
->>>  {
->>> -       __u32 *metadata = (void *)(long)xdp->data_meta;
->>> +       __be32 *metadata = (void *)(long)xdp->data_meta;
->>>         void *data_end = (void *)(long)xdp->data_end;
->>>         void *data = (void *)(long)xdp->data;
->>>  
->>> @@ -44,7 +45,7 @@ int xdp_redirect(struct xdp_md *xdp)
->>>         if (metadata + 1 > data)
->>>                 return XDP_ABORTED;
->>>  
->>> -       if (*metadata != 0x42)
->>> +       if (*metadata != __bpf_htonl(0x42))
->>>                 return XDP_ABORTED;
->>>  
->>>         if (*payload == MARK_XMIT)
->>
->> Okay, I'll take a look. Two quick observations for now:
->>
->> - Unfortunately the above patch does not help.
->>
->> - In dmesg I see:
->>
->>     Driver unsupported XDP return value 0 on prog xdp_redirect (id
->> 23)
->>     dev N/A, expect packet loss!
-> 
-> I haven't identified the issue yet, but I have found a couple more
-> things that might be helpful:
-> 
-> - In problematic cases metadata contains 0, so this is not an
->   endianness issue. data is still reasonable though. I'm trying to
->   understand what is causing this.
-> 
-> - Applying the following diff:
-> 
-> --- a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-> @@ -52,7 +52,7 @@ int xdp_redirect(struct xdp_md *xdp)
->  
->         *payload = MARK_IN;
->  
-> -       if (bpf_xdp_adjust_meta(xdp, 4))
-> +       if (false && bpf_xdp_adjust_meta(xdp, 4))
->                 return XDP_ABORTED;
->  
->         if (retcode > XDP_PASS)
-> 
-> causes a kernel panic even on x86_64:
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000d28       
-> ...
-> Call Trace:            
->  <TASK>                                                               
->  build_skb_around+0x22/0xb0
->  __xdp_build_skb_from_frame+0x4e/0x130
->  bpf_test_run_xdp_live+0x65f/0x7c0
->  ? __pfx_xdp_test_run_init_page+0x10/0x10
->  bpf_prog_test_run_xdp+0x2ba/0x480
->  bpf_prog_test_run+0xeb/0x110
->  __sys_bpf+0x2b9/0x570
->  __x64_sys_bpf+0x1c/0x30
->  do_syscall_64+0x48/0xa0
->  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> 
-> I haven't looked into this at all, but I believe this needs to be
-> fixed - BPF should never cause kernel panics.
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-This one is basically the same issue as syzbot mentioned today (separate
-subthread). I'm waiting for a feedback from Toke on which way of fixing
-he'd prefer (I proposed 2). If those zeroed metadata magics that you
-observe have the same roots with the panic, one fix will smash 2 issues.
+> Fixes: 169a58ad824d ("module/decompress: Support zstd in-kernel decompression")
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>  kernel/module/decompress.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/module/decompress.c b/kernel/module/decompress.c
+> index bb79ac1a6d8f..7ddc87bee274 100644
+> --- a/kernel/module/decompress.c
+> +++ b/kernel/module/decompress.c
+> @@ -267,7 +267,7 @@ static ssize_t module_zstd_decompress(struct load_info *info,
+>  		zstd_dec.size = PAGE_SIZE;
+>  
+>  		ret = zstd_decompress_stream(dstream, &zstd_dec, &zstd_buf);
+> -		kunmap(page);
+> +		kunmap_local(zstd_dec.dst);
+>  		retval = zstd_get_error_code(ret);
+>  		if (retval)
+>  			break;
+> -- 
+> 2.39.2
+> 
 
-Thanks,
-Olek
+
