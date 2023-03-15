@@ -2,50 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9236BBF18
-	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 22:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD186BBFDE
+	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 23:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjCOVa1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Mar 2023 17:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
+        id S231127AbjCOWgY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Mar 2023 18:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbjCOVa1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 17:30:27 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E803A877
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 14:30:15 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 07F2A240418
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 22:30:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1678915814; bh=m54SJPDMKgQunReQ+qkptj382c5I/a2aEHMJ9afcPss=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bszt0ICVH35wZ7qBTsrAA1jg9r6/1sHEX0J6mZnCF1XPbxGqIr92nDyWmzi4HuLWy
-         te0xBLtaJDN4SbmTWG2i27oYHoSCeOjfoK65WzZQjZyCn/rEKQh4h3IeywRvH/grvF
-         e6zWC3TtiWHJ633xzZ8/qwmY0zeW6/Vxc90qVS2SMylQy91+M3oj+aQsHibKzF7ijo
-         yEl0uuSuXIT9qnT9RvMmz5eTyE1GRUs3QfJbZFDT66dFvD3b5YGv4RXv6Rpw6L3WRs
-         dmB7bJ5HKe8bzJq1NazzlwdofL/HbFRGjMHKd3Yhq4Y2gmqO2ckiIHoqMrItdfiO/u
-         nM7xRwvvlUeTg==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4PcNpV37z5z6tqj;
-        Wed, 15 Mar 2023 22:30:10 +0100 (CET)
-Date:   Wed, 15 Mar 2023 21:30:07 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com
-Cc:     Linux Kernel Functional Testing <lkft@linaro.org>
-Subject: Re: [PATCH bpf-next] libbpf: Ignore warnings about "inefficient
- alignment"
-Message-ID: <20230315213007.67al4dko5vhjzl5p@muellerd-fedora-MJ0AC3F3>
-References: <20230315171550.1551603-1-deso@posteo.net>
+        with ESMTP id S232303AbjCOWgU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Mar 2023 18:36:20 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2726A19F11;
+        Wed, 15 Mar 2023 15:36:13 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id l9-20020a17090a3f0900b0023d32684e7fso4384595pjc.1;
+        Wed, 15 Mar 2023 15:36:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678919772;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IOEmBovj2FFZNdFqth1MLg0JBxKL+SDjtFZi3HGAywg=;
+        b=LAB8ckQg5cPH+QV81C2+sSLpl7QdDsZTBnCxky5YEQ6/HHnpCNqHfL0ZIvsw4Rw1Ty
+         UFU23AsSJyMltPRYieqBs/2PbqjL/70ndl+eIGgiJDb+A4awjig6BvDEKDUUB1v1LTgv
+         vsndA7dhP64n91Fl1cBS3XaXE9MI5sHA6V20YClUfCEYCUbgeUQvFf0dAzf5NhIhndSW
+         Kox20rmnAym9AGhZr8uiB1EIwZWYP+LxQFsoLfCstwl39PKULQYnu6ygZ15jflOLJfMP
+         tu+6ZRjjqCUlusHJBTCr8NgwHZEGQaHRew+lL5jHzqS4kFnlZbQ6rluy+/clg1qvXR7i
+         fz+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678919772;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IOEmBovj2FFZNdFqth1MLg0JBxKL+SDjtFZi3HGAywg=;
+        b=2DqbjWFlzdWPghIIMWXRFs+7+dAOowNC2SIAsFvChNHOe/B694IKlj8fQJTsCTRcg/
+         PuS0qW9jEN8mru2j4UkYIBUwXa2ax4lNhiRs4F4YE7xQUTvdMPYmuh3M3baBBWBImYNy
+         oIKClCU7NbvJwLlU9VuNozazQvo+JwKQpbCx5Vt+99BoJi8necxkwC+yHCpvxD/2p+4L
+         rIOuVMuzcwrIFqISFSdHv9HlQU1tHbmx+wDL5eqNtC9p17W4bUOKzub9HG5arW+GNYPg
+         OGu60HX9Q95wsTbFAXpYvr2xnXFm+9H46Z4rECizLVAZ9F65e+Zxwnm1wxUoeM/dhBIs
+         2aCg==
+X-Gm-Message-State: AO0yUKXMndNdkO+HViwXfDwLcOHVbmlyM8o64grf+t0mq5kvd11DIluk
+        8stkXdz9+rb4NUrVulGgaxM=
+X-Google-Smtp-Source: AK7set/VdZFKwsda61FTqz6SCPVdpdJnP9M2iGBRlb8+35ARJNeL0bukbmTy6kkMCG+avV9UiwJjwQ==
+X-Received: by 2002:a05:6a20:3aa1:b0:d5:9216:9182 with SMTP id d33-20020a056a203aa100b000d592169182mr1374928pzh.9.1678919772264;
+        Wed, 15 Mar 2023 15:36:12 -0700 (PDT)
+Received: from dhcp-172-26-102-232.DHCP.thefacebook.com ([2620:10d:c090:400::5:2bcf])
+        by smtp.gmail.com with ESMTPSA id e5-20020aa78c45000000b005e5861932c9sm106710pfd.129.2023.03.15.15.36.10
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 15 Mar 2023 15:36:11 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        void@manifault.com, davemarchevsky@meta.com, tj@kernel.org,
+        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH bpf-next 0/2] bpf: Add detection of kfuncs.
+Date:   Wed, 15 Mar 2023 15:36:05 -0700
+Message-Id: <20230315223607.50803-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230315171550.1551603-1-deso@posteo.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,53 +70,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For what it's worth, I was unable to reproduce the original issue, locally and
-in CI. So this is a best guess at a fix based on the suggestion provided in the
-linked report.
+From: Alexei Starovoitov <ast@kernel.org>
 
-Thanks,
-Daniel
+Allow BPF programs detect at load time whether particular kfunc exists.
 
-On Wed, Mar 15, 2023 at 05:15:50PM +0000, Daniel Müller wrote:
-> Some consumers of libbpf compile the code base with different warnings
-> enabled. In a report for perf, for example, -Wpacked was set which
-> caused warnings about "inefficient alignment" to be emitted on a subset
-> of supported architectures.
-> With this change we silence specifically those warnings, as we
-> intentionally worked with packed structs.
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Link: https://lore.kernel.org/bpf/CA+G9fYtBnwxAWXi2+GyNByApxnf_DtP1-6+_zOKAdJKnJBexjg@mail.gmail.com/
-> Fixes: 1eebcb60633f ("libbpf: Implement basic zip archive parsing support")
-> Signed-off-by: Daniel Müller <deso@posteo.net>
-> ---
->  tools/lib/bpf/zip.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/tools/lib/bpf/zip.c b/tools/lib/bpf/zip.c
-> index f561aa..3f26d62 100644
-> --- a/tools/lib/bpf/zip.c
-> +++ b/tools/lib/bpf/zip.c
-> @@ -16,6 +16,10 @@
->  #include "libbpf_internal.h"
->  #include "zip.h"
->  
-> +#pragma GCC diagnostic push
-> +#pragma GCC diagnostic ignored "-Wpacked"
-> +#pragma GCC diagnostic ignored "-Wattributes"
-> +
->  /* Specification of ZIP file format can be found here:
->   * https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
->   * For a high level overview of the structure of a ZIP file see
-> @@ -119,6 +123,8 @@ struct local_file_header {
->  	__u16 extra_field_length;
->  } __attribute__((packed));
->  
-> +#pragma GCC diagnostic pop
-> +
->  struct zip_archive {
->  	void *data;
->  	__u32 size;
-> -- 
-> 2.34.1
-> 
+Alexei Starovoitov (2):
+  bpf: Allow ld_imm64 instruction to point to kfunc.
+  selftests/bpf: Add test for bpf_kfunc_exists().
+
+ kernel/bpf/verifier.c                              |  7 +++++--
+ tools/lib/bpf/bpf_helpers.h                        |  3 +++
+ .../selftests/bpf/progs/task_kfunc_success.c       | 14 +++++++++++++-
+ 3 files changed, 21 insertions(+), 3 deletions(-)
+
+-- 
+2.34.1
+
