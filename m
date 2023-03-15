@@ -2,110 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7D46BB6BC
-	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 15:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C17A46BB6D9
+	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 16:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbjCOO4z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Mar 2023 10:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
+        id S233277AbjCOPB5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Mar 2023 11:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232845AbjCOO4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 10:56:39 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070DA96F13;
-        Wed, 15 Mar 2023 07:56:01 -0700 (PDT)
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32FEpKPr023684;
-        Wed, 15 Mar 2023 14:54:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=58TrP3aNvrGOpiETL1qz8zNKT9vu92fU3RIyyVJRLXY=;
- b=a6vrzVgwbyULk14LJ3bwwT/hcvdvtHUFHpxG3Htkos6ssOROGhhVNg0gCsOKnq5T+OOR
- FeRyVx2khf4UuqshH+Gr4rrHVaQkPsZEH0Q59vlsoe0NtKgENUZYx3TBBkv1weJ3VwxK
- GUawWjr9ploCGOOwbsO2eMQzfkstDKYpXjT5rXzJAzzA23qrnyzoDJlZdoJkT9KgesUw
- kbMQPuWYX2QIwA3HhQDNe4mXIEVnLGjBxJOGNhnVBK96bhCln4KB99OmbpSFaLNIi1TH
- V3BGgi4I93Cn0AHYhzda4n9yRzOREl6+9/eKkdNM73Nu3CMDPyMTIxLNzFQSRqCwFZ2S yA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pbg59g2t5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Mar 2023 14:54:14 +0000
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32FEphjs028072;
-        Wed, 15 Mar 2023 14:54:13 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pbg59g2s0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Mar 2023 14:54:13 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32EN5toR001285;
-        Wed, 15 Mar 2023 14:54:11 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3pb29rrrxb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Mar 2023 14:54:11 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32FEs8Uk26084046
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Mar 2023 14:54:08 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 982B320043;
-        Wed, 15 Mar 2023 14:54:08 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A92720040;
-        Wed, 15 Mar 2023 14:54:07 +0000 (GMT)
-Received: from [9.171.20.11] (unknown [9.171.20.11])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 15 Mar 2023 14:54:07 +0000 (GMT)
-Message-ID: <de59c0fca26400305ab34cc89e468e395b6256ac.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v3 0/4] xdp: recycle Page Pool backed skbs
- built from XDP frames
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S232318AbjCOPBb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Mar 2023 11:01:31 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6265B44AF;
+        Wed, 15 Mar 2023 08:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678892443; x=1710428443;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=24cN8bb857t5S1RvNfMC1HoVeZNPmlm01in0PVOhX4Y=;
+  b=RNmJ/1tDSZfLv73tXA8taKV2yQnX5UedfpUpWRKCxMtg8OhqpILxWXYU
+   tHm3GN08Xb5viffSoHzX2cRnYK9e7d6hcd+16UBZaVuq/2Yp3ZNCEEHXB
+   RLQevvDW1axX/3UsNi/5z2POWq5MZ/5XfIZ5N1yAszIZpjPYkn8rdQ7ue
+   F5DztvsyK9fBs4o2cZfkAUfrML8r3l/G5WdkIWXGB4UzHz5CarzbwQcEf
+   9XhyqdMoU4mj6ciPe0pBuGgyxlDrgwSKOqlpOIaXx++pQLEesEbkpT1pr
+   Ou9gAhhQuOp913/aKqHWNUfdOmaKV0YnGvjob5Yp+pk7hdxF/OzEccwdV
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10649"; a="400305103"
+X-IronPort-AV: E=Sophos;i="5.98,262,1673942400"; 
+   d="scan'208";a="400305103"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2023 08:00:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10649"; a="789826393"
+X-IronPort-AV: E=Sophos;i="5.98,262,1673942400"; 
+   d="scan'208";a="789826393"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga002.fm.intel.com with ESMTP; 15 Mar 2023 08:00:16 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 15 Mar 2023 08:00:13 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 15 Mar 2023 08:00:12 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Wed, 15 Mar 2023 08:00:12 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.21; Wed, 15 Mar 2023 08:00:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iP2vzf7pdkOSQ42sFidxpJJLyJufgNjaqzURsKnn3i2/3D3KXfFA1VI6HFOlOqB8dT6nbEhSlRZPGbrps+PnC//n8K2uRazdIIlhvhY68VnN/gwbONSZexxeGNmqtk1SrG0oZRA8WG+PqNBZquwGgerSh1xrn+BdjWBQJg78tLGQWTcBFZ+Of0S/T0zPaoNA/VmBOIOVqSjq0TMJ+K/SYdCbw2Iygf87XAr0h1g8XGRYcWUttdwIxOGAVjcNp9mXtJTLMGlPPATQPaI8RQN2cKiWyp0xjs2kh3CM0+QYeDdkeSPuF5M4SacMk5IsSEsqq5VWVM770xUXjJr3PyMaXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YCKbMwB8NiCYTfxJH4w95EkXjp3vlTGdz6JPMaZ3x/8=;
+ b=XyqVLkxJko/vdlAWupRTYeyUN2xMZ6wnzuuxCoPGYZ36DPXoJHRJz1QmrWSFUJlMPqTNE9wWmVO5hZBvt8hWFahHEw15NaZdjDPkjLQMZ4h9G+bXndY7/lOF1G7Ndx4RNb8qtAfG1DQhBWh8MLj+wvBvANBP8Gp+OKgqu5qx6ixJVSHl8+XwB8RLd6RKdzlqAQxh/odPmvxkGslJIlPrRnMNgDJ8pX1ndxKBVqRduqQp9TXrgKIA7760UacXoGX81RIPJEN4vmnvbLMMcYbKsaqh9ikeUaq5tV+pF5n7zymjX+QYbWfTNVmRWFgQfhWKTqN+1H7ytD7B2sFfn62wAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by SJ2PR11MB8370.namprd11.prod.outlook.com (2603:10b6:a03:540::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.29; Wed, 15 Mar
+ 2023 15:00:10 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::7911:de29:ded:224]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::7911:de29:ded:224%5]) with mapi id 15.20.6178.029; Wed, 15 Mar 2023
+ 15:00:09 +0000
+Message-ID: <85d803a2-a315-809a-5eff-13892aff5401@intel.com>
+Date:   Wed, 15 Mar 2023 15:58:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next v3 3/4] xdp: recycle Page Pool backed skbs built
+ from XDP frames
+Content-Language: en-US
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
+        Martin KaFai Lau <martin.lau@linux.dev>, <brouer@redhat.com>,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Larysa Zaremba <larysa.zaremba@intel.com>,
-        Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
         Song Liu <song@kernel.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Menglong Dong <imagedong@tencent.com>,
-        Mykola Lysenko <mykolal@fb.com>,
+        "Mykola Lysenko" <mykolal@fb.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        "Jakub Kicinski" <kuba@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 15 Mar 2023 15:54:07 +0100
-In-Reply-To: <2bda95d8-6238-f9ef-7dce-aa9320013a13@intel.com>
+        Paolo Abeni <pabeni@redhat.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Freysteinn Alfredsson <Freysteinn.Alfredsson@kau.se>
 References: <20230313215553.1045175-1-aleksander.lobakin@intel.com>
-         <ca1385b5-b3f8-73f3-276c-a2a08ec09aa0@intel.com>
-         <CAADnVQJDz3hBEJ7kohXJ4HUZWZdbRRamfJbrZ6KUaRubBKQmfA@mail.gmail.com>
-         <CAADnVQ+B_JOU+EpP=DKhbY9yXdN6GiRPnpTTXfEZ9sNkUeb-yQ@mail.gmail.com>
-         <5b360c35-1671-c0b8-78ca-517c7cd535ae@intel.com>
-         <2bda95d8-6238-f9ef-7dce-aa9320013a13@intel.com>
+ <20230313215553.1045175-4-aleksander.lobakin@intel.com>
+ <11e480dd-7969-7b58-440e-3207b98d0ac5@redhat.com>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <11e480dd-7969-7b58-440e-3207b98d0ac5@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR0P281CA0091.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a9::11) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: q37Mty4IIP7UbWi20qsQUB7PGogWAcDn
-X-Proofpoint-GUID: 3nShfeaeuJ9k6P2Y5RRuP26GIbwjqqtX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-15_08,2023-03-15_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 suspectscore=0 mlxscore=0 clxscore=1011 phishscore=0
- spamscore=0 malwarescore=0 impostorscore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2302240000 definitions=main-2303150122
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|SJ2PR11MB8370:EE_
+X-MS-Office365-Filtering-Correlation-Id: fec07c2b-1cd3-47e8-4f4f-08db2565f84d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +z1Ka3HrqsJJfvulZFgW1RNBfd1uXAlue9KOCdHsBqle7He57e7v4qN4+VJ4vcTMFnPtyZKBVWHtc7N+Ssf518g5TjLsklXwbFmgwCsbaTzxkQUNik3O+/bU/0upHd2oO/8TuhRN0bi6cqBF3MYX+PMAWW+k+Xsj1tmCTBTUF/4cuzEhX4olOaKRvhYPVhEIjHrCKHWGCoi3C6GKwQYWGWfUttotFpkWuZeYJyvCU9jafILi6lVNcGVUWwMImDTz8mkqjEI5T0SrMx6jE9/KI7yCWsYvD9f0IB4joQZQLXdv8W2OxhoSDuwNUGyF8qNeSMW80DZjIO4p/Or1XlEYdNw9tRfG9IDUAKn2yUhN7sVysTd6ERmxBV7zwMx36T+39aQMbLmdIWg2byJd6pbFi/1bFiR1bhLaMADiK4Gd6/Aj4QrJVVOjmtGFk5PNc5U5Mes21eNsO6VjIiIqXKVgAwm6fSeYciUMBF3JOKBFL5C3SIJ6APcxpp+wmGVo/xNVEyX6h9DhuWg8X1KQRawAoEqsykRYosb00qrAoqu5DnSNfMYryPSdIGPYlc6boKUAl9u8PrIVqwwOZF0OAo1CkAVy/t+u/+PkzZWDyAzyRiEG46LHprndF2EYh44blwlMDM0iukDOomRs7xG6dtsCbWWu1Tpuse639FUiNHBzrsW0XY7aM8mEdOZFHvRr3MccJpcEmedncoMMFGYVMqEc6MbDgAN/YrSF1BsU1O11QTk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(366004)(39860400002)(136003)(376002)(346002)(396003)(451199018)(478600001)(66946007)(66556008)(6916009)(4326008)(66476007)(8676002)(82960400001)(36756003)(5660300002)(38100700002)(41300700001)(31696002)(86362001)(7416002)(8936002)(54906003)(316002)(6506007)(26005)(6512007)(186003)(6486002)(31686004)(6666004)(83380400001)(2616005)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZkFkZGhGSHJ0Um5UOEdXWTVaektqYjg4WDFzakhoUGRNS2pYTCtESkhkRXRC?=
+ =?utf-8?B?Ymsydmo1QXg3d0RRVzRzNVlGcXBTVHpvZm9hSDI2UnBuQW9tZ0t3VUsxUTly?=
+ =?utf-8?B?SXA3cHhBLzl3bUN3ZnYzZ0ZBTVIrK3hhVUMvdzNVMDhFWFh4THVQUFlMQ2Qw?=
+ =?utf-8?B?NjVyL2h3MEVIM0orOWxFRHRGNzNwQ3MxT3o5emgrUWpaVlk5Y0pQcUpQR293?=
+ =?utf-8?B?Z01uQlFaa0xubXFROHExZW1lQm1NUGdiZnhIUmRsdmt3N3FpakhlMm5uRTVi?=
+ =?utf-8?B?Y09vY3ZLZkdJOHA4c3ZjdG0raDFlM1d2dDZYaVhQOWphUHJqUkxSMTd2dHd1?=
+ =?utf-8?B?RmgwUzlnTFBuczVIVWNGUEJOV2lNLzd6YzhuWDJuVjFJY0p5b01VUVR0SFBN?=
+ =?utf-8?B?aHZVTFFoK3JMTXBvbUxSbUxWby9HaGNUOWtNK1FyNXpFRWluUkdqK2VYUHNz?=
+ =?utf-8?B?R2RSSkdwSkJRa3RWOVZaTS8rS0phY0tHc3pqeFFBbFRuNDhDMnBaWFhmMHg2?=
+ =?utf-8?B?dkw5aDU1dXNLWnhaaitGWTcweE05cXRTQ012SGRZOERGN3lZalZhZnB6Uith?=
+ =?utf-8?B?VGZtejNDZ0tXZnJoUmlJajdWVTMrTHIxSSttVzF6VDVGTVJFMy9Oa05aZmYr?=
+ =?utf-8?B?YXN3T09PaW1tZ0tlTjlGelphRlZLVnBrUkE3KzdvUG56VEJrTnlxdHg3UUkv?=
+ =?utf-8?B?WWJGckVHb2xzTElHVzYvdTdrOXdKT0tpcUpkcXpROWRjbGo4VDhsd1pQRStK?=
+ =?utf-8?B?TGxZZDg0TGlidExUMFZIMkFmcHczeHpBOUZWV3lseG1qOVZFb1FrTG9Ic2lq?=
+ =?utf-8?B?R1lIRjVJYjVFNUUyREZpb1BtRUluRjRCY3FpbWpQdi9vMmozNVEwb20zZ2x3?=
+ =?utf-8?B?NzA4VHB5VWJsSDdvOEVOdnh3ZS9YMEl5OGxqYU5xVzIvYi8vTjRnM0FDT2VF?=
+ =?utf-8?B?YW8zdkV3b1lOK2l3M2MxaDlodkVaUm54T0ZYWlBKbzZPb0trdUlMd1FoUmFY?=
+ =?utf-8?B?Vkp4K1dyamF4SUw4T250eEc5MHJrOGhjc1VxT2YzMGxMS0tnM3JBdWJlZFdN?=
+ =?utf-8?B?Qks1Yk5WSVZXeWRVdC9JVlVzMjZPdDYwanl6L2hEU2RmU0gvdVNpdU53ZlRD?=
+ =?utf-8?B?aE5rOXp4ZklVRFhUWHF1aEtqSFhRWUt1Sms3UzlOVTd0Zmx6QUJDQmgxa2l2?=
+ =?utf-8?B?Nm44dy9DTTUzMzVlZEIxU2Roa0RPZTVDam9RaFBreTVwL1o2Y04zaEs2YmF1?=
+ =?utf-8?B?bHRlZ1QwNDZOTnVmRXkrV2ZOWnlIb25GYzRFeFRkTzJjRWszRjgrNDNEcTVP?=
+ =?utf-8?B?dzF0L0p2ZnFwbjQ2cHRNaVdwa0Y3R2Z5TWcxL2dJOExtK1J3WHlJTFlqL0k1?=
+ =?utf-8?B?ZFpoM0NPY3lQUDJTVENZZzRDZUhlMzJmT0xySkM3SXplWTZFU2h0MXFxQTRq?=
+ =?utf-8?B?ajk3cGI3UVdCWlN6ZUxJQnd2SlRDSURDVDBkZHMxMTZQY0dPdFBxemRHU212?=
+ =?utf-8?B?czgwc25VdTQyQmRONEtncVpMSlJzRTFIbW10cGViZW5DVEJweXpzb3N4SnVO?=
+ =?utf-8?B?Umt4a0xJTnRqdzVmSUZQb24xY0pBK2hhUjVDWElOM1FXbnRrOW9SMVlBUHVp?=
+ =?utf-8?B?anpmVXhFbzN6Y24xTjlUUG50NXg5YTI4MnFWRmc1Q3pnVGsyWFRuOUtsSVh2?=
+ =?utf-8?B?WDB5Y2psWm1VdUJTLy9SaElHbEloLzJCNWF5MUJYQW1XbXA0YjdYbDlNemJQ?=
+ =?utf-8?B?SEtXeU1vSXZrczdkQVNjRE9WYnJ2dTA1TzdIMWg0Viswb3EyWGg4akh3RTJQ?=
+ =?utf-8?B?V0hSK243UVZWNHVUaWhYT0xMOFlNVms4RzNqZjZUZld5aWRvVC8xMnBMVCtC?=
+ =?utf-8?B?UEppbkpVcHhUa3F0NW56MStobFIxSlJWRmFMdWJFc1JjWmorcVdNQzA5TGNl?=
+ =?utf-8?B?WlhYMVh2YXA3V0VkZmNJQTVzdXNIa0tUQ1AzSzFiTFR4MXRpME0xeDZpc29n?=
+ =?utf-8?B?L3M5ZnovYkZHbExZWmlkbkplK3U3Z0dycy9qSXpDendCb25HTGJXLzhsekRo?=
+ =?utf-8?B?ZFF5Rk9RVGdubWhTNmNBdUtyanBWbXY5YWhmWm9CbXJBUVZkOW1JaGd0M0lT?=
+ =?utf-8?B?cjhYSnoyNzlVSnF1VnQ4ektvYnRnbThkWDIxMnc2dVBzT0Q0SnY2d3M1enNI?=
+ =?utf-8?Q?/ZcWd1hvj+Is7oOAsgGQlUY=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fec07c2b-1cd3-47e8-4f4f-08db2565f84d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2023 15:00:09.4391
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dnlnhr1YDpWJDNMhsIxks5AKHwn+mjOHpGiWVDbyjIz6ZLfBdWRNBPuBEozrRC1KJBq1894v8BCNFuaFgbzai6NwuP+5VB09pqlHBByStDQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8370
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,120 +180,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2023-03-15 at 11:54 +0100, Alexander Lobakin wrote:
-> From: Alexander Lobakin <aleksander.lobakin@intel.com>
-> Date: Wed, 15 Mar 2023 10:56:25 +0100
->=20
-> > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > Date: Tue, 14 Mar 2023 16:54:25 -0700
-> >=20
-> > > On Tue, Mar 14, 2023 at 11:52=E2=80=AFAM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> >=20
-> > [...]
-> >=20
-> > > test_xdp_do_redirect:PASS:prog_run 0 nsec
-> > > test_xdp_do_redirect:PASS:pkt_count_xdp 0 nsec
-> > > test_xdp_do_redirect:PASS:pkt_count_zero 0 nsec
-> > > test_xdp_do_redirect:FAIL:pkt_count_tc unexpected pkt_count_tc:
-> > > actual
-> > > 220 !=3D expected 9998
-> > > test_max_pkt_size:PASS:prog_run_max_size 0 nsec
-> > > test_max_pkt_size:PASS:prog_run_too_big 0 nsec
-> > > close_netns:PASS:setns 0 nsec
-> > > #289 xdp_do_redirect:FAIL
-> > > Summary: 270/1674 PASSED, 30 SKIPPED, 1 FAILED
-> > >=20
-> > > Alex,
-> > > could you please take a look at why it's happening?
-> > >=20
-> > > I suspect it's an endianness issue in:
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (*metadata !=3D 0x42)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 return XDP_ABORTED;
-> > > but your patch didn't change that,
-> > > so I'm not sure why it worked before.
-> >=20
-> > Sure, lemme fix it real quick.
->=20
-> Hi Ilya,
->=20
-> Do you have s390 testing setups? Maybe you could take a look, since I
-> don't have one and can't debug it? Doesn't seem to be Endianness
-> issue.
-> I mean, I have this (the below patch), but not sure it will fix
-> anything -- IIRC eBPF arch always matches the host arch ._.
-> I can't figure out from the code what does happen wrongly :s And it
-> happens only on s390.
->=20
-> Thanks,
-> Olek
-> ---
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-> b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-> index 662b6c6c5ed7..b21371668447 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-> @@ -107,7 +107,7 @@ void test_xdp_do_redirect(void)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 .attach_point =3D BPF_TC_INGRESS);
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memcpy(&data[sizeof(__u32=
-)], &pkt_udp, sizeof(pkt_udp));
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0*((__u32 *)data) =3D 0x42; /* =
-metadata test value */
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0*((__u32 *)data) =3D htonl(0x4=
-2); /* metadata test value */
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0skel =3D test_xdp_do_redi=
-rect__open();
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!ASSERT_OK_PTR(skel, =
-"skel"))
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-> b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-> index cd2d4e3258b8..2475bc30ced2 100644
-> --- a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-> @@ -1,5 +1,6 @@
-> =C2=A0// SPDX-License-Identifier: GPL-2.0
-> =C2=A0#include <vmlinux.h>
-> +#include <bpf/bpf_endian.h>
-> =C2=A0#include <bpf/bpf_helpers.h>
-> =C2=A0
-> =C2=A0#define ETH_ALEN 6
-> @@ -28,7 +29,7 @@ volatile int retcode =3D XDP_REDIRECT;
-> =C2=A0SEC("xdp")
-> =C2=A0int xdp_redirect(struct xdp_md *xdp)
-> =C2=A0{
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0__u32 *metadata =3D (void *)(l=
-ong)xdp->data_meta;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0__be32 *metadata =3D (void *)(=
-long)xdp->data_meta;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0void *data_end =3D (void =
-*)(long)xdp->data_end;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0void *data =3D (void *)(l=
-ong)xdp->data;
-> =C2=A0
-> @@ -44,7 +45,7 @@ int xdp_redirect(struct xdp_md *xdp)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (metadata + 1 > data)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return XDP_ABORTED;
-> =C2=A0
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (*metadata !=3D 0x42)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (*metadata !=3D __bpf_htonl=
-(0x42))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return XDP_ABORTED;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (*payload =3D=3D MARK_=
-XMIT)
+From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Date: Wed, 15 Mar 2023 15:55:44 +0100
 
-Okay, I'll take a look. Two quick observations for now:
+> 
+> On 13/03/2023 22.55, Alexander Lobakin wrote:
+>> __xdp_build_skb_from_frame() state(d):
+>>
+>> /* Until page_pool get SKB return path, release DMA here */
+>>
+>> Page Pool got skb pages recycling in April 2021, but missed this
+>> function.
+>>
+>> xdp_release_frame() is relevant only for Page Pool backed frames and it
+>> detaches the page from the corresponding page_pool in order to make it
+>> freeable via page_frag_free(). It can instead just mark the output skb
+>> as eligible for recycling if the frame is backed by a pp. No change for
+>> other memory model types (the same condition check as before).
+>> cpumap redirect and veth on Page Pool drivers now become zero-alloc (or
+>> almost).
+>>
+>> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+>> ---
+>>   net/core/xdp.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/net/core/xdp.c b/net/core/xdp.c
+>> index 8c92fc553317..a2237cfca8e9 100644
+>> --- a/net/core/xdp.c
+>> +++ b/net/core/xdp.c
+>> @@ -658,8 +658,8 @@ struct sk_buff *__xdp_build_skb_from_frame(struct
+>> xdp_frame *xdpf,
+>>        * - RX ring dev queue index    (skb_record_rx_queue)
+>>        */
+>>   -    /* Until page_pool get SKB return path, release DMA here */
+>> -    xdp_release_frame(xdpf);
+>> +    if (xdpf->mem.type == MEM_TYPE_PAGE_POOL)
+>> +        skb_mark_for_recycle(skb);
+> 
+> I hope this is safe ;-) ... Meaning hopefully drivers does the correct
+> thing when XDP_REDIRECT'ing page_pool pages.
 
-- Unfortunately the above patch does not help.
+Safe when it's done by the schoolbook. For now I'm observing only one
+syzbot issue with test_run due to that it assumes yet another bunch
+o'things I wouldn't rely on :D (separate subthread)
 
-- In dmesg I see:
+> 
+> Looking for drivers doing weird refcnt tricks and XDP_REDIRECT'ing, I
+> noticed the driver aquantia/atlantic (in aq_get_rxpages_xdp), but I now
+> see this is not using page_pool, so it should be affected by this (but I
+> worry if atlantic driver have a potential race condition for its refcnt
+> scheme).
 
-    Driver unsupported XDP return value 0 on prog xdp_redirect (id 23)
-    dev N/A, expect packet loss!
+If we encounter some driver using Page Pool, but mangling refcounts on
+redirect, we'll fix it ;)
+
+> 
+>>         /* Allow SKB to reuse area used by xdp_frame */
+>>       xdp_scrub_frame(xdpf);
+> 
+
+Thanks,
+Olek
