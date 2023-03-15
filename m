@@ -2,175 +2,300 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBED6BB3BC
-	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 13:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12D26BB519
+	for <lists+bpf@lfdr.de>; Wed, 15 Mar 2023 14:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233090AbjCOM4j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Mar 2023 08:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        id S231944AbjCONs2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Mar 2023 09:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233133AbjCOM4i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 08:56:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252CD26AF
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 05:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678884954;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=JaBgEDKfqWmVcH7ueaHiA2NEn4sgat0tMV862oPXgr4=;
-        b=Iw4FYWWyUweuveIjmyV7BhU3HmCyG7I9Pr8o+X5wfKnCm+HBMEQ60Yh5lIR2aVUv6i6JB9
-        ajf1VST82QDNrITlrDE+nHTAq5A/z6EKcsLL6xcRWCFUKIAXDG9OzlAYizV0hCmMfdJqHf
-        1PoiC6t4yFJvkk3TWL2c0O2pCScfOd4=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-583-aYcubN8LOmybI9eWPfdwew-1; Wed, 15 Mar 2023 08:55:53 -0400
-X-MC-Unique: aYcubN8LOmybI9eWPfdwew-1
-Received: by mail-ed1-f70.google.com with SMTP id z14-20020a05640235ce00b004e07ddbc2f8so26535378edc.7
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 05:55:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678884952;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JaBgEDKfqWmVcH7ueaHiA2NEn4sgat0tMV862oPXgr4=;
-        b=HoGLu5kkfhrptGx8U09YW2qs8savcf34NQBWO93ttTOYNwLp2+ibz2LKWcHbB9/73w
-         eHz+TNmICnn5teCayTUqFkteNHL8Zr891t+ZlfhDUzEdmwulTnG6BzK3RqSxKh9yqU4t
-         p3a8dt38DBET2dRfSboh9bRL6JWQj8E8UsMJkwHPG6TI3iSdB/9BeUHUexw2hUcen8rH
-         ppW4e8rWvnJb68uaQMKxAuyX3gfv2CKxHnDRNLOBaFYK5LMJJYI612S6Uk+2myyjdiex
-         K4vNR2UonXQD1kvFPmk/bmZnhgunlOZZEVmp5BWgQB4iMG45FDlzPak0516KczqWTnGI
-         QJZg==
-X-Gm-Message-State: AO0yUKW8taN++jxCHSYp7i3QD5yf5kqyEnUJjty2LgY958qgM5ERVgwz
-        rTgUPq19G1ryNzHzRkmVQuwVFyKSg9kfBcH4pZOPwfH+AC7HQ/5AYv8o/F/Fad/2nOk4hWI4XDZ
-        13JrvqZ4+/+kN
-X-Received: by 2002:a17:906:5619:b0:879:ec1a:4ac with SMTP id f25-20020a170906561900b00879ec1a04acmr5309055ejq.76.1678884951903;
-        Wed, 15 Mar 2023 05:55:51 -0700 (PDT)
-X-Google-Smtp-Source: AK7set92+fL8QpbWwG+iI45Vn0TA6DxsDamjpdhTlTEPG3PQ6xgwPGl4kxnIJbzVvn7UQ+LQTs+EeQ==
-X-Received: by 2002:a17:906:5619:b0:879:ec1a:4ac with SMTP id f25-20020a170906561900b00879ec1a04acmr5309031ejq.76.1678884951493;
-        Wed, 15 Mar 2023 05:55:51 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id qa17-20020a170907869100b008cecb8f374asm2498501ejc.0.2023.03.15.05.55.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 05:55:51 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 355E69E2E8C; Wed, 15 Mar 2023 13:55:50 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Igor Russkikh <irusskikh@marvell.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Taehee Yoo <ap420073@gmail.com>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Freysteinn Alfredsson <Freysteinn.Alfredsson@kau.se>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH net] net: atlantic: Fix crash when XDP is enabled but no program is loaded
-Date:   Wed, 15 Mar 2023 13:55:38 +0100
-Message-Id: <20230315125539.103319-1-toke@redhat.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S231921AbjCONs1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Mar 2023 09:48:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8A68C805;
+        Wed, 15 Mar 2023 06:47:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8AED661DA5;
+        Wed, 15 Mar 2023 13:47:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87A72C433EF;
+        Wed, 15 Mar 2023 13:47:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678888052;
+        bh=pLTTdcysDE6MuWCJgZEr33nFmAHkj+/laic2uRWrGpM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B4U2NIwt7leQZluMD/1StUmSwXjtb7crTNxEWND78mybiE/jkjbRmPVRWBqiV/0hr
+         pvd/GlHX0B7o5RYG3q75x9TSm0qmsdnbFlP21RfX2TiECpaT59PSYSpDxiSCI4GTK3
+         GW7ZGf3L76aO5Jb+eBHFaheNocqhj5BxNENo26FssKz+W7dPowaKZEFyXDtVB68p0t
+         7YDiZv97KrC7cGRK4kq3BbS7D153xybPbAYrzozMNMsBzzX7eYIh56YD2KrBHS74qd
+         1oebLvwTncCKM6chZcsYTy7vWbi9Z3jjUKLT2YZK6e6RnEkg2vMOCgx7psu3tpi4aw
+         lCREf0Tz9FgQw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 76FFD4049F; Wed, 15 Mar 2023 10:47:29 -0300 (-03)
+Date:   Wed, 15 Mar 2023 10:47:29 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        James Clark <james.clark@arm.com>, Hao Luo <haoluo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 03/10] perf record: Add BPF event filter support
+Message-ID: <ZBHMcfCr+GeQJ9Sz@kernel.org>
+References: <20230314234237.3008956-1-namhyung@kernel.org>
+ <20230314234237.3008956-4-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230314234237.3008956-4-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The aq_xdp_run_prog() function falls back to the XDP_ABORTED action
-handler (using a goto) if the operations for any of the other actions fail.
-The XDP_ABORTED handler in turn calls the bpf_warn_invalid_xdp_action()
-tracepoint. However, the function also jumps into the XDP_PASS helper if no
-XDP program is loaded on the device, which means the XDP_ABORTED handler
-can be run with a NULL program pointer. This results in a NULL pointer
-deref because the tracepoint dereferences the 'prog' pointer passed to it.
+Em Tue, Mar 14, 2023 at 04:42:30PM -0700, Namhyung Kim escreveu:
+> Use --filter option to set BPF filter for generic events other than the
+> tracepoints or Intel PT.  The BPF program will check the sample data and
+> filter according to the expression.
+> 
+> For example, the below is the typical perf record for frequency mode.
+> The sample period started from 1 and increased gradually.
+> 
+> $ sudo ./perf record -e cycles true
+> $ sudo ./perf script
+>        perf-exec 2272336 546683.916875:          1 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+>        perf-exec 2272336 546683.916892:          1 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+>        perf-exec 2272336 546683.916899:          3 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+>        perf-exec 2272336 546683.916905:         17 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+>        perf-exec 2272336 546683.916911:        100 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+>        perf-exec 2272336 546683.916917:        589 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+>        perf-exec 2272336 546683.916924:       3470 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+>        perf-exec 2272336 546683.916930:      20465 cycles:  ffffffff828499b8 perf_event_exec+0x298 ([kernel.kallsyms])
+>             true 2272336 546683.916940:     119873 cycles:  ffffffff8283afdd perf_iterate_ctx+0x2d ([kernel.kallsyms])
+>             true 2272336 546683.917003:     461349 cycles:  ffffffff82892517 vma_interval_tree_insert+0x37 ([kernel.kallsyms])
+>             true 2272336 546683.917237:     635778 cycles:  ffffffff82a11400 security_mmap_file+0x20 ([kernel.kallsyms])
+> 
+> When you add a BPF filter to get samples having periods greater than 1000,
+> the output would look like below:
 
-This situation can happen in multiple ways:
-- If a packet arrives between the removal of the program from the interface
-  and the static_branch_dec() in aq_xdp_setup()
-- If there are multiple devices using the same driver in the system and
-  one of them has an XDP program loaded and the other does not.
+Had to add:
 
-Fix this by refactoring the aq_xdp_run_prog() function to remove the 'goto
-pass' handling if there is no XDP program loaded. Instead, factor out the
-skb building in a separate small helper function.
-
-Fixes: 26efaef759a1 ("net: atlantic: Implement xdp data plane")
-Reported-by: Freysteinn Alfredsson <Freysteinn.Alfredsson@kau.se>
-Tested-by: Freysteinn Alfredsson <Freysteinn.Alfredsson@kau.se>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../net/ethernet/aquantia/atlantic/aq_ring.c  | 28 ++++++++++++++-----
- 1 file changed, 21 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-index 1e8d902e1c8e..7f933175cbda 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-@@ -412,6 +412,25 @@ int aq_xdp_xmit(struct net_device *dev, int num_frames,
- 	return num_frames - drop;
+diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+index be336f1b2b689602..153a13cdca9df1ea 100644
+--- a/tools/perf/util/python.c
++++ b/tools/perf/util/python.c
+@@ -19,6 +19,7 @@
+ #include "mmap.h"
+ #include "stat.h"
+ #include "metricgroup.h"
++#include "util/bpf-filter.h"
+ #include "util/env.h"
+ #include "util/pmu.h"
+ #include <internal/lib.h>
+@@ -135,6 +136,18 @@ int bpf_counter__disable(struct evsel *evsel __maybe_unused)
+ 	return 0;
  }
  
-+static struct sk_buff *aq_xdp_build_skb(struct xdp_buff *xdp,
-+					struct net_device *dev,
-+					struct aq_ring_buff_s *buff)
++// not to drag util/bpf-filter.c
++
++int perf_bpf_filter__prepare(struct evsel *evsel __maybe_unused)
 +{
-+	struct xdp_frame *xdpf;
-+	struct sk_buff *skb;
-+
-+	xdpf = xdp_convert_buff_to_frame(xdp);
-+	if (unlikely(!xdpf))
-+		return NULL;
-+
-+	skb = xdp_build_skb_from_frame(xdpf, dev);
-+	if (!skb)
-+		return NULL;
-+
-+	aq_get_rxpages_xdp(buff, xdp);
-+	return skb;
++	return 0;
 +}
 +
- static struct sk_buff *aq_xdp_run_prog(struct aq_nic_s *aq_nic,
- 				       struct xdp_buff *xdp,
- 				       struct aq_ring_s *rx_ring,
-@@ -431,7 +450,7 @@ static struct sk_buff *aq_xdp_run_prog(struct aq_nic_s *aq_nic,
- 
- 	prog = READ_ONCE(rx_ring->xdp_prog);
- 	if (!prog)
--		goto pass;
-+		return aq_xdp_build_skb(xdp, aq_nic->ndev, buff);
- 
- 	prefetchw(xdp->data_hard_start); /* xdp_frame write */
- 
-@@ -442,17 +461,12 @@ static struct sk_buff *aq_xdp_run_prog(struct aq_nic_s *aq_nic,
- 	act = bpf_prog_run_xdp(prog, xdp);
- 	switch (act) {
- 	case XDP_PASS:
--pass:
--		xdpf = xdp_convert_buff_to_frame(xdp);
--		if (unlikely(!xdpf))
--			goto out_aborted;
--		skb = xdp_build_skb_from_frame(xdpf, aq_nic->ndev);
-+		skb = aq_xdp_build_skb(xdp, aq_nic->ndev, buff);
- 		if (!skb)
- 			goto out_aborted;
- 		u64_stats_update_begin(&rx_ring->stats.rx.syncp);
- 		++rx_ring->stats.rx.xdp_pass;
- 		u64_stats_update_end(&rx_ring->stats.rx.syncp);
--		aq_get_rxpages_xdp(buff, xdp);
- 		return skb;
- 	case XDP_TX:
- 		xdpf = xdp_convert_buff_to_frame(xdp);
--- 
-2.39.2
++int perf_bpf_filter__destroy(struct evsel *evsel __maybe_unused)
++{
++	return 0;
++}
++
+ /*
+  * Support debug printing even though util/debug.c is not linked.  That means
+  * implementing 'verbose' and 'eprintf'.
 
+
+Please run 'perf test' before submitting patches,
+
+- Arnaldo
+ 
+> $ sudo ./perf record -e cycles --filter 'period > 1000' true
+> $ sudo ./perf script
+>        perf-exec 2273949 546850.708501:       5029 cycles:  ffffffff826f9e25 finish_wait+0x5 ([kernel.kallsyms])
+>        perf-exec 2273949 546850.708508:      32409 cycles:  ffffffff826f9e25 finish_wait+0x5 ([kernel.kallsyms])
+>        perf-exec 2273949 546850.708526:     143369 cycles:  ffffffff82b4cdbf xas_start+0x5f ([kernel.kallsyms])
+>        perf-exec 2273949 546850.708600:     372650 cycles:  ffffffff8286b8f7 __pagevec_lru_add+0x117 ([kernel.kallsyms])
+>        perf-exec 2273949 546850.708791:     482953 cycles:  ffffffff829190de __mod_memcg_lruvec_state+0x4e ([kernel.kallsyms])
+>             true 2273949 546850.709036:     501985 cycles:  ffffffff828add7c tlb_gather_mmu+0x4c ([kernel.kallsyms])
+>             true 2273949 546850.709292:     503065 cycles:      7f2446d97c03 _dl_map_object_deps+0x973 (/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+> 
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/Documentation/perf-record.txt | 15 +++++++++++---
+>  tools/perf/util/bpf_counter.c            |  3 +--
+>  tools/perf/util/evlist.c                 | 25 +++++++++++++++++-------
+>  tools/perf/util/evsel.c                  |  2 ++
+>  tools/perf/util/parse-events.c           |  8 +++-----
+>  5 files changed, 36 insertions(+), 17 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+> index ff815c2f67e8..122f71726eaa 100644
+> --- a/tools/perf/Documentation/perf-record.txt
+> +++ b/tools/perf/Documentation/perf-record.txt
+> @@ -119,9 +119,12 @@ OPTIONS
+>  	  "perf report" to view group events together.
+>  
+>  --filter=<filter>::
+> -        Event filter. This option should follow an event selector (-e) which
+> -	selects either tracepoint event(s) or a hardware trace PMU
+> -	(e.g. Intel PT or CoreSight).
+> +	Event filter.  This option should follow an event selector (-e).
+> +	If the event is a tracepoint, the filter string will be parsed by
+> +	the kernel.  If the event is a hardware trace PMU (e.g. Intel PT
+> +	or CoreSight), it'll be processed as an address filter.  Otherwise
+> +	it means a general filter using BPF which can be applied for any
+> +	kind of event.
+>  
+>  	- tracepoint filters
+>  
+> @@ -176,6 +179,12 @@ OPTIONS
+>  
+>  	Multiple filters can be separated with space or comma.
+>  
+> +	- bpf filters
+> +
+> +	A BPF filter can access the sample data and make a decision based on the
+> +	data.  Users need to set an appropriate sample type to use the BPF
+> +	filter.
+> +
+>  --exclude-perf::
+>  	Don't record events issued by perf itself. This option should follow
+>  	an event selector (-e) which selects tracepoint event(s). It adds a
+> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> index aa78a15a6f0a..1b77436e067e 100644
+> --- a/tools/perf/util/bpf_counter.c
+> +++ b/tools/perf/util/bpf_counter.c
+> @@ -763,8 +763,7 @@ extern struct bpf_counter_ops bperf_cgrp_ops;
+>  
+>  static inline bool bpf_counter_skip(struct evsel *evsel)
+>  {
+> -	return list_empty(&evsel->bpf_counter_list) &&
+> -		evsel->follower_skel == NULL;
+> +	return evsel->bpf_counter_ops == NULL;
+>  }
+>  
+>  int bpf_counter__install_pe(struct evsel *evsel, int cpu_map_idx, int fd)
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index b74e12239aec..cc491a037836 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -31,6 +31,7 @@
+>  #include "util/evlist-hybrid.h"
+>  #include "util/pmu.h"
+>  #include "util/sample.h"
+> +#include "util/bpf-filter.h"
+>  #include <signal.h>
+>  #include <unistd.h>
+>  #include <sched.h>
+> @@ -1086,17 +1087,27 @@ int evlist__apply_filters(struct evlist *evlist, struct evsel **err_evsel)
+>  	int err = 0;
+>  
+>  	evlist__for_each_entry(evlist, evsel) {
+> -		if (evsel->filter == NULL)
+> -			continue;
+> -
+>  		/*
+>  		 * filters only work for tracepoint event, which doesn't have cpu limit.
+>  		 * So evlist and evsel should always be same.
+>  		 */
+> -		err = perf_evsel__apply_filter(&evsel->core, evsel->filter);
+> -		if (err) {
+> -			*err_evsel = evsel;
+> -			break;
+> +		if (evsel->filter) {
+> +			err = perf_evsel__apply_filter(&evsel->core, evsel->filter);
+> +			if (err) {
+> +				*err_evsel = evsel;
+> +				break;
+> +			}
+> +		}
+> +
+> +		/*
+> +		 * non-tracepoint events can have BPF filters.
+> +		 */
+> +		if (!list_empty(&evsel->bpf_filters)) {
+> +			err = perf_bpf_filter__prepare(evsel);
+> +			if (err) {
+> +				*err_evsel = evsel;
+> +				break;
+> +			}
+>  		}
+>  	}
+>  
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index a83d8cd5eb51..dc3faf005c3b 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -50,6 +50,7 @@
+>  #include "off_cpu.h"
+>  #include "../perf-sys.h"
+>  #include "util/parse-branch-options.h"
+> +#include "util/bpf-filter.h"
+>  #include <internal/xyarray.h>
+>  #include <internal/lib.h>
+>  #include <internal/threadmap.h>
+> @@ -1517,6 +1518,7 @@ void evsel__exit(struct evsel *evsel)
+>  	assert(list_empty(&evsel->core.node));
+>  	assert(evsel->evlist == NULL);
+>  	bpf_counter__destroy(evsel);
+> +	perf_bpf_filter__destroy(evsel);
+>  	evsel__free_counts(evsel);
+>  	perf_evsel__free_fd(&evsel->core);
+>  	perf_evsel__free_id(&evsel->core);
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index 3b2e5bb3e852..6c5cf5244486 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -28,6 +28,7 @@
+>  #include "perf.h"
+>  #include "util/parse-events-hybrid.h"
+>  #include "util/pmu-hybrid.h"
+> +#include "util/bpf-filter.h"
+>  #include "tracepoint.h"
+>  #include "thread_map.h"
+>  
+> @@ -2542,11 +2543,8 @@ static int set_filter(struct evsel *evsel, const void *arg)
+>  		perf_pmu__scan_file(pmu, "nr_addr_filters",
+>  				    "%d", &nr_addr_filters);
+>  
+> -	if (!nr_addr_filters) {
+> -		fprintf(stderr,
+> -			"This CPU does not support address filtering\n");
+> -		return -1;
+> -	}
+> +	if (!nr_addr_filters)
+> +		return perf_bpf_filter__parse(&evsel->bpf_filters, str);
+>  
+>  	if (evsel__append_addr_filter(evsel, str) < 0) {
+>  		fprintf(stderr,
+> -- 
+> 2.40.0.rc1.284.g88254d51c5-goog
+> 
+
+-- 
+
+- Arnaldo
