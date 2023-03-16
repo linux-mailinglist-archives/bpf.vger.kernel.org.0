@@ -2,82 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7253B6BD72E
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 18:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B626BD747
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 18:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbjCPRe6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 13:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55192 "EHLO
+        id S229814AbjCPRlB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 13:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbjCPRev (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 13:34:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE785ADEE;
-        Thu, 16 Mar 2023 10:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZWCsXuEnx5NPHpKnprrXUTjLpix1zKrrJlc3ZEj5QZQ=; b=eZshu5PoYOFmhYfVeDH1ySCMbb
-        VkI0LmoRQng2JMFCroNhLnri1gdzRcxOo6i2qEYjto0yFHVM1YpN5mMvVD9uAEOQJfBop4fVucM32
-        aiPq9DFkUZqO+BMNj+4VTIzfwwTEm+XCuAyD/oBvOKctWlJl5cGIpsxBdOc7uqqsJTeMbD8dqabq9
-        jZbbuEWtB53VuQxyjrTbx/PABYlHTB8NlpD7iKdVB1zF+59VChK7ESu6Za0uCbDBUo9stnFJYSnZ7
-        QLuimxG/wuwQKmgDs5Llr7qXlNMi4KVPNT4KDyFnYWObHIG9pl0q8etPwfLbfDfNh4xWVC3sAD5jl
-        QWKFxWWg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pcrUv-00F2M2-Of; Thu, 16 Mar 2023 17:34:41 +0000
-Date:   Thu, 16 Mar 2023 17:34:41 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Namhyung Kim <namhyung@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
-Message-ID: <ZBNTMZjEoETU9d8N@casper.infradead.org>
-References: <20230316170149.4106586-1-jolsa@kernel.org>
+        with ESMTP id S229631AbjCPRlA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 13:41:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B696FC6419;
+        Thu, 16 Mar 2023 10:40:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 78081620CE;
+        Thu, 16 Mar 2023 17:40:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C737DC4339B;
+        Thu, 16 Mar 2023 17:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678988417;
+        bh=WbWJzWWmjrBLQSbLSwG+zCFQ5vbzSmmf/MuGY6JVjaY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WD1A5EIfxaW2EwkTzUE5gI/bgoh/KAjABQsV9JRwFXqaqJ7pddtA+ok+dGrw1rQEW
+         hL3/foiYYLyVIHhk95u4pkW1c9bKBYfVGe3t0LgWDU3zDf2YsCEsqeH3V03/0j1CW1
+         DhG5VTLVG7PPtFOdUHtcn6EsNPKuu5ZIwW11sxdIwqu9W0vvApWy4qIr/RoJNyo4FI
+         FYAN3JWutoLGSyMhjZ/vD82GqO+d84z0P18Kdme+ngxt6ZMYxQKJqT7QofvmfKZwlf
+         xu4GEIcfnKUor0HHse9Zu5kh7dkEgKOhC0c1g3LBv7Sbi+Q9ABheC90nApCAQ0IMIn
+         HJgXpfSDHRnhQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A2DA8E66CBB;
+        Thu, 16 Mar 2023 17:40:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230316170149.4106586-1-jolsa@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/1] ice: xsk: disable txq irq before flushing hw
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167898841766.29063.15581899056946442159.git-patchwork-notify@kernel.org>
+Date:   Thu, 16 Mar 2023 17:40:17 +0000
+References: <20230314174543.1048607-1-anthony.l.nguyen@intel.com>
+In-Reply-To: <20230314174543.1048607-1-anthony.l.nguyen@intel.com>
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org,
+        larysa.zaremba@intel.com, chandanx.rout@intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 06:01:40PM +0100, Jiri Olsa wrote:
-> hi,
-> this patchset adds build id object pointer to struct file object.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Tue, 14 Mar 2023 10:45:43 -0700 you wrote:
+> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 > 
-> We have several use cases for build id to be used in BPF programs
-> [2][3].
+> ice_qp_dis() intends to stop a given queue pair that is a target of xsk
+> pool attach/detach. One of the steps is to disable interrupts on these
+> queues. It currently is broken in a way that txq irq is turned off
+> *after* HW flush which in turn takes no effect.
+> 
+> [...]
 
-Yes, you have use cases, but you never answered the question I asked:
+Here is the summary with links:
+  - [net,1/1] ice: xsk: disable txq irq before flushing hw
+    https://git.kernel.org/netdev/net/c/b830c9642386
 
-Is this going to be enabled by every distro kernel, or is it for special
-use-cases where only people doing a very specialised thing who are
-willing to build their own kernels will use it?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Saying "hubble/tetragon" doesn't answer that question.  Maybe it does
-to you, but I have no idea what that software is.
 
-Put it another way: how does this make *MY* life better?  Literally me.
-How will it affect my life?
