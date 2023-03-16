@@ -2,168 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A533A6BD78E
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 18:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3910E6BD82E
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 19:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbjCPRxF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 13:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
+        id S229885AbjCPSal convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 16 Mar 2023 14:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbjCPRw4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 13:52:56 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DAC1EFC1;
-        Thu, 16 Mar 2023 10:52:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678989171; x=1710525171;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=QRih3njZUr377Ux29J6E8DuVOV2jEWZRLenNqTC3HQw=;
-  b=FNIx2AaUemVDBoHyq/v0YRfT15JHboRqBlN9pCf3Msmv7k2dsZeQ1MIC
-   icHyBHo/V7/sY3LqCg7H/DAkjSnCp3hwdxn3kNkE/PTh2n55gFJtQ3WzW
-   Rhp5Jyww7AJbCKc95r3Y6AgEcGzwNHR4F7Y7DVZBa5IWblO7XHfBnnMMh
-   rDBrEDGRsU0trqPgRQ4JeL8BTbKBuXhXTa4H54nIqyJu2SGMUM+ewcMvc
-   8mNZ0BdpmxfZiBvoUrOftPtIxrwipqz42z5vv3N0fs/zFeEboMxU5gzgN
-   YF4fT8UcDVlmi7T4wSNpTe7m5Y6gYFys3Pf+zVd+jkcLLKn8054zmvrsy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="317721473"
-X-IronPort-AV: E=Sophos;i="5.98,265,1673942400"; 
-   d="scan'208";a="317721473"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2023 10:52:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="823351351"
-X-IronPort-AV: E=Sophos;i="5.98,265,1673942400"; 
-   d="scan'208";a="823351351"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga001.fm.intel.com with ESMTP; 16 Mar 2023 10:52:09 -0700
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Song Liu <song@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: fix "metadata marker" getting overwritten by the netstack
-Date:   Thu, 16 Mar 2023 18:50:51 +0100
-Message-Id: <20230316175051.922550-3-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230316175051.922550-1-aleksander.lobakin@intel.com>
-References: <20230316175051.922550-1-aleksander.lobakin@intel.com>
+        with ESMTP id S229959AbjCPSal (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 14:30:41 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078F752928
+        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 11:30:38 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32GI6klZ032522
+        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 11:30:37 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pbpxsp9qy-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 11:30:37 -0700
+Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
+ ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 16 Mar 2023 11:30:34 -0700
+Received: from twshared58712.02.prn6.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 16 Mar 2023 11:30:34 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 77EBF2AC19577; Thu, 16 Mar 2023 11:30:21 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC:     <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next 0/6] BPF verifier rotating log
+Date:   Thu, 16 Mar 2023 11:30:07 -0700
+Message-ID: <20230316183013.2882810-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 7u6e60sHC-b8zZWuODoSyDD3lG-4agju
+X-Proofpoint-GUID: 7u6e60sHC-b8zZWuODoSyDD3lG-4agju
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-16_12,2023-03-16_01,2023-02-09_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei noticed xdp_do_redirect test on BPF CI started failing on
-BE systems after skb PP recycling was enabled:
+This patch set changes BPF verifier log behavior to behave as a rotating log,
+by default. If user-supplied log buffer is big enough to contain entire
+verifier log output, there is no effective difference. But where previously
+user supplied too small log buffer and would get -ENOSPC error result and the
+beginning part of the verifier log, now there will be no error and user will
+get ending part of verifier log filling up user-supplied log buffer.  Which
+is, in absolute majority of cases, is exactly what's useful, relevant, and
+what users want and need, as the ending of the verifier log is containing
+details of verifier failure and relevant state that got us to that failure. So
+this rotating mode is made default, but for some niche advanced debugging
+scenarios it's possible to request old behavior by specifying additional
+BPF_LOG_FIXED (8) flag.
 
-test_xdp_do_redirect:PASS:prog_run 0 nsec
-test_xdp_do_redirect:PASS:pkt_count_xdp 0 nsec
-test_xdp_do_redirect:PASS:pkt_count_zero 0 nsec
-test_xdp_do_redirect:FAIL:pkt_count_tc unexpected pkt_count_tc: actual
-220 != expected 9998
-test_max_pkt_size:PASS:prog_run_max_size 0 nsec
-test_max_pkt_size:PASS:prog_run_too_big 0 nsec
-close_netns:PASS:setns 0 nsec
- #289 xdp_do_redirect:FAIL
-Summary: 270/1674 PASSED, 30 SKIPPED, 1 FAILED
+This patch set adjusts libbpf to allow specifying flags beyond 1 | 2 | 4. We
+also add --log-size and --log-fixed options to veristat to be able to both
+test this functionality manually, but also to be used in various debugging
+scenarios. We also add selftests that tries many variants of log buffer size
+to stress-test correctness of internal verifier log bookkeeping code.
 
-and it doesn't happen on LE systems.
-Ilya then hunted it down to:
+Andrii Nakryiko (6):
+  bpf: split off basic BPF verifier log into separate file
+  bpf: remove minimum size restrictions on verifier log buffer
+  bpf: switch BPF verifier log to be a rotating log by default
+  libbpf: don't enfore verifier log levels on libbpf side
+  selftests/bpf: add more veristat control over verifier log options
+  selftests/bpf: add fixed vs rotating verifier log tests
 
- #0  0x0000000000aaeee6 in neigh_hh_output (hh=0x83258df0,
-skb=0x88142200) at linux/include/net/neighbour.h:503
- #1  0x0000000000ab2cda in neigh_output (skip_cache=false,
-skb=0x88142200, n=<optimized out>) at linux/include/net/neighbour.h:544
- #2  ip6_finish_output2 (net=net@entry=0x88edba00, sk=sk@entry=0x0,
-skb=skb@entry=0x88142200) at linux/net/ipv6/ip6_output.c:134
- #3  0x0000000000ab4cbc in __ip6_finish_output (skb=0x88142200, sk=0x0,
-net=0x88edba00) at linux/net/ipv6/ip6_output.c:195
- #4  ip6_finish_output (net=0x88edba00, sk=0x0, skb=0x88142200) at
-linux/net/ipv6/ip6_output.c:206
+ include/linux/bpf_verifier.h                  |  47 ++--
+ kernel/bpf/Makefile                           |   3 +-
+ kernel/bpf/log.c                              | 251 ++++++++++++++++++
+ kernel/bpf/verifier.c                         |  86 +-----
+ tools/lib/bpf/bpf.c                           |   2 -
+ .../selftests/bpf/prog_tests/log_fixup.c      |   1 +
+ .../selftests/bpf/prog_tests/verifier_log.c   |  89 +++++++
+ tools/testing/selftests/bpf/veristat.c        |  42 ++-
+ 8 files changed, 416 insertions(+), 105 deletions(-)
+ create mode 100644 kernel/bpf/log.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier_log.c
 
-xdp_do_redirect test places a u32 marker (0x42) right before the Ethernet
-header to check it then in the XDP program and return %XDP_ABORTED if it's
-not there. Neigh xmit code likes to round up hard header length to speed
-up copying the header, so it overwrites two bytes in front of the Eth
-header. On LE systems, 0x42 is one byte at `data - 4`, while on BE it's
-`data - 1`, what explains why it happens only there.
-It didn't happen previously due to that %XDP_PASS meant the page will be
-discarded and replaced by a new one, but now it can be recycled as well,
-while bpf_test_run code doesn't reinitialize the content of recycled
-pages. This mark is limited to this particular test and its setup though,
-so there's no need to predict 1000 different possible cases. Just move
-it 4 bytes to the left, still keeping it 32 bit to match on more bytes.
-
-Fixes: 9c94bbf9a87b ("xdp: recycle Page Pool backed skbs built from XDP frames")
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/CAADnVQ+B_JOU+EpP=DKhbY9yXdN6GiRPnpTTXfEZ9sNkUeb-yQ@mail.gmail.com
-Reported-by: Ilya Leoshkevich <iii@linux.ibm.com> # + debugging
-Link: https://lore.kernel.org/bpf/8341c1d9f935f410438e79d3bd8a9cc50aefe105.camel@linux.ibm.com
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c | 7 ++++---
- tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c | 2 +-
- 2 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-index 856cbc29e6a1..4eaa3dcaebc8 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-@@ -86,12 +86,12 @@ static void test_max_pkt_size(int fd)
- void test_xdp_do_redirect(void)
- {
- 	int err, xdp_prog_fd, tc_prog_fd, ifindex_src, ifindex_dst;
--	char data[sizeof(pkt_udp) + sizeof(__u32)];
-+	char data[sizeof(pkt_udp) + sizeof(__u64)];
- 	struct test_xdp_do_redirect *skel = NULL;
- 	struct nstoken *nstoken = NULL;
- 	struct bpf_link *link;
- 	LIBBPF_OPTS(bpf_xdp_query_opts, query_opts);
--	struct xdp_md ctx_in = { .data = sizeof(__u32),
-+	struct xdp_md ctx_in = { .data = sizeof(__u64),
- 				 .data_end = sizeof(data) };
- 	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
- 			    .data_in = &data,
-@@ -105,8 +105,9 @@ void test_xdp_do_redirect(void)
- 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
- 			    .attach_point = BPF_TC_INGRESS);
- 
--	memcpy(&data[sizeof(__u32)], &pkt_udp, sizeof(pkt_udp));
-+	memcpy(&data[sizeof(__u64)], &pkt_udp, sizeof(pkt_udp));
- 	*((__u32 *)data) = 0x42; /* metadata test value */
-+	*((__u32 *)data + 4) = 0;
- 
- 	skel = test_xdp_do_redirect__open();
- 	if (!ASSERT_OK_PTR(skel, "skel"))
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-index cd2d4e3258b8..5baaafed0d2d 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-@@ -52,7 +52,7 @@ int xdp_redirect(struct xdp_md *xdp)
- 
- 	*payload = MARK_IN;
- 
--	if (bpf_xdp_adjust_meta(xdp, 4))
-+	if (bpf_xdp_adjust_meta(xdp, sizeof(__u64)))
- 		return XDP_ABORTED;
- 
- 	if (retcode > XDP_PASS)
 -- 
-2.39.2
+2.34.1
 
