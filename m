@@ -2,105 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 425026BCCD7
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 11:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3E56BCD41
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 11:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbjCPKcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 06:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39686 "EHLO
+        id S229454AbjCPKvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 06:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbjCPKcQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 06:32:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D1B7F014
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 03:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678962681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SzJaaWO/7EuX5tDnjB19knJh8PK6PQAkAoydrrzGacg=;
-        b=P0JZdBp6/k/FyZQ3k09sbVSdnUwp4DX7rNAaEJT8q0aydLDNUV1TaeEnWd/JB3AtE018s4
-        GMSuBZtgHjqYjMHUQMsSLH6L5b7a/aw1/4RsLbTXdPjKZ3vMJe3igaTQAOTU+X6LiRJWhY
-        bp0FPfXAoPiZagrnCaCwltHaBzqzIm4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-470-hLH4sHgYP6Co6ScYQP4OPQ-1; Thu, 16 Mar 2023 06:31:12 -0400
-X-MC-Unique: hLH4sHgYP6Co6ScYQP4OPQ-1
-Received: by mail-ed1-f72.google.com with SMTP id t26-20020a50d71a000000b005003c5087caso1111355edi.1
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 03:31:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678962671;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SzJaaWO/7EuX5tDnjB19knJh8PK6PQAkAoydrrzGacg=;
-        b=UGbnrnYfJ0RxA/6AXI2n2QscAI3hjV5qLwRItwzxGIn2fEvBWRyDNqJqzlBn8OmJwz
-         Ma1vH4QZv5n3S/G7QNCPlb8f2GtHxsg7kjsmZaz9SlXryOpniv/mA22rYCaISISZWOg6
-         iVNHn8WUgSG3SOkRux6rXmoFhAyDFf44GEMIe0QzWBEVs/CS/IEX453TiyawRDf/khKM
-         Pv1UBEyXWkBgk2NjAmxXn0fQAnZRr5bf+XHhcNM2ROFUwFhT+ObyvjiqvmyMumzd99iq
-         Ot76RgobzazJ2subBNW7may6kTQHS5Fp1+xyFNYgb5bUoH7PXC0QyIHF9VOiVOjydOd8
-         eDeg==
-X-Gm-Message-State: AO0yUKWFH88+B+GiNSWI/Kqdcw0doP04MHqBYtpy0SjKAkg2As0qoJ+v
-        fh2xSFnL9nmdp9U3F6ZBrPLM0hxZ/kaia/POpDJAk9spLqtV/KOUCryiNDMg0HlcBXbhEeR4oaH
-        Gd/Qdn0U/5Mj+
-X-Received: by 2002:a17:906:1e14:b0:92c:5f1:8288 with SMTP id g20-20020a1709061e1400b0092c05f18288mr9361683ejj.13.1678962670601;
-        Thu, 16 Mar 2023 03:31:10 -0700 (PDT)
-X-Google-Smtp-Source: AK7set8VG9YlCq6/l+AX88fmGMGeO24S81Vya4FY3NfMGbeFbMIn3Ilod/VTed7mwPcXxk9CZAZUgg==
-X-Received: by 2002:a17:906:1e14:b0:92c:5f1:8288 with SMTP id g20-20020a1709061e1400b0092c05f18288mr9361623ejj.13.1678962669766;
-        Thu, 16 Mar 2023 03:31:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id d20-20020a1709063ed400b008d1693c212csm3643695ejj.8.2023.03.16.03.31.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Mar 2023 03:31:09 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B9EC69E2F89; Thu, 16 Mar 2023 11:31:08 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        void@manifault.com, davemarchevsky@meta.com, tj@kernel.org,
-        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 0/2] bpf: Add detection of kfuncs.
-In-Reply-To: <20230315223607.50803-1-alexei.starovoitov@gmail.com>
-References: <20230315223607.50803-1-alexei.starovoitov@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 16 Mar 2023 11:31:08 +0100
-Message-ID: <87jzzh9edv.fsf@toke.dk>
+        with ESMTP id S229506AbjCPKvW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 06:51:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8336D65BE;
+        Thu, 16 Mar 2023 03:51:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2874B61FD7;
+        Thu, 16 Mar 2023 10:51:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD5EC433D2;
+        Thu, 16 Mar 2023 10:51:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678963879;
+        bh=xiPIb8+Q4UJ4wW93hhwCVGhKL7SNf8ibQmalvww6fW4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MN2tOFO3KcXeFwwAQFVithapHhc9Rf6hQon5Yfe87Tb9epmMATRa0QszTCBYtOowk
+         1NLke/UmDrH7v0QtvpzREwcpBSkAAF/1MEIMcmu4GT9caAlb79wFP5Gvwj3S2JZjNN
+         dYbAf2PhJ2B0sIS3XrbIqnVSf8K69EwXtFRmCjVGu5wUYUANoFVNQOYUsxA60FI9W/
+         dkg+XAZ+aZ6AdgB8cWp+Wa0HFTeXvRIAmeTwthLikcirwiXNYXqG4v/e0kb2D2eoQp
+         CxA7F5+YJoQzN5BeCIdwyxVuEq5UhL3p7WeYKgnfjtHW5MggDbEw/fLcB9GmR3RMX9
+         HSl3ulFaU3l9Q==
+Date:   Thu, 16 Mar 2023 12:03:57 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, tariqt@nvidia.com, bpf@vger.kernel.org
+Subject: Re: [PATCH net] net: xdp: don't call notifiers during driver init
+Message-ID: <ZBL3nVZ4LVWUPRva@localhost.localdomain>
+References: <20230316002903.492497-1-kuba@kernel.org>
+ <ebe10b79-34c2-4e85-2cf7-b7491266748e@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="CH98NzvD0Jqt94fk"
+Content-Disposition: inline
+In-Reply-To: <ebe10b79-34c2-4e85-2cf7-b7491266748e@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Allow BPF programs detect at load time whether particular kfunc exists.
->
-> Alexei Starovoitov (2):
->   bpf: Allow ld_imm64 instruction to point to kfunc.
->   selftests/bpf: Add test for bpf_kfunc_exists().
->
->  kernel/bpf/verifier.c                              |  7 +++++--
->  tools/lib/bpf/bpf_helpers.h                        |  3 +++
->  .../selftests/bpf/progs/task_kfunc_success.c       | 14 +++++++++++++-
->  3 files changed, 21 insertions(+), 3 deletions(-)
+--CH98NzvD0Jqt94fk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Nice!
+>=20
+>=20
+> On 16/03/2023 2:29, Jakub Kicinski wrote:
+> > Drivers will commonly perform feature setting during init, if they use
+> > the xdp_set_features_flag() helper they'll likely run into an ASSERT_RT=
+NL()
+> > inside call_netdevice_notifiers_info().
+> >=20
+> > Don't call the notifier until the device is actually registered.
+> > Nothing should be tracking the device until its registered.
+> >=20
+> > Fixes: 4d5ab0ad964d ("net/mlx5e: take into account device reconfigurati=
+on for xdp_features flag")
+> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > ---
+> > CC: ast@kernel.org
+> > CC: daniel@iogearbox.net
+> > CC: hawk@kernel.org
+> > CC: john.fastabend@gmail.com
+> > CC: lorenzo@kernel.org
+> > CC: tariqt@nvidia.com
+> > CC: bpf@vger.kernel.org
+> > ---
+> >   net/core/xdp.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >=20
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index 87e654b7d06c..5722a1fc6e9e 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -781,6 +781,9 @@ void xdp_set_features_flag(struct net_device *dev, =
+xdp_features_t val)
+> >   		return;
+> >   	dev->xdp_features =3D val;
+> > +
+> > +	if (dev->reg_state < NETREG_REGISTERED)
+> > +		return;
+>=20
+> I maybe need to dig deeper, but, it looks strange to still
+> call_netdevice_notifiers in cases > NETREG_REGISTERED.
+>=20
+> Isn't it problematic to call it with NETREG_UNREGISTERED ?
+>=20
+> For comparison, netif_set_real_num_tx_queues has this ASSERT_RTNL() only
+> under dev->reg_state =3D=3D NETREG_REGISTERED || dev->reg_state =3D=3D
+> NETREG_UNREGISTERING.
 
-For the series:
+does it make sense to run call_netdevice_notifiers() in xdp_set_features_fl=
+ag()
+just if dev->reg_state is NETREG_REGISTERED?
+Moreover, looking at the code it seems netdev code can run with dev->reg_st=
+ate
+set to NETREG_UNREGISTERED and without holding RTNL lock, right?
 
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Regards,
+Lorenzo
 
+>=20
+> >   	call_netdevice_notifiers(NETDEV_XDP_FEAT_CHANGE, dev);
+> >   }
+> >   EXPORT_SYMBOL_GPL(xdp_set_features_flag);
+
+--CH98NzvD0Jqt94fk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZBL3mgAKCRA6cBh0uS2t
+rMphAP42u+uRvCdXF5ch/08W4qaGU07ZVaIrKLefmthSmLsyqAD/W0BKCQdhy2O0
+zCy88wPIYw9BogGQVJCbrEcuC5Zwkwc=
+=qoyD
+-----END PGP SIGNATURE-----
+
+--CH98NzvD0Jqt94fk--
