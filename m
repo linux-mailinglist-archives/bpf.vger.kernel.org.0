@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 744BB6BDADD
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 22:23:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0FC6BDADA
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 22:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjCPVXu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 17:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47746 "EHLO
+        id S229784AbjCPVXe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 17:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbjCPVXl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 17:23:41 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4B126C3C;
-        Thu, 16 Mar 2023 14:23:29 -0700 (PDT)
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32GKonMq037322;
-        Thu, 16 Mar 2023 21:21:12 GMT
+        with ESMTP id S229780AbjCPVXc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 17:23:32 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A7D7FD7A;
+        Thu, 16 Mar 2023 14:23:18 -0700 (PDT)
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32GKHiaK013110;
+        Thu, 16 Mar 2023 21:22:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
  from : to : cc : date : in-reply-to : references : content-type :
  content-transfer-encoding : mime-version; s=pp1;
- bh=Jh8ZAuaeF5aIaMaD9WJLz1qBSiDwjjRX3WwRGvOI3OQ=;
- b=I9ygiKPJWqrzVWcRd5HtBzN6snu9cC5FcsOViOioP2gl4iro9dAZkP/ppxRTNWcPYvFT
- VmLymnpXRJm9MHob53Zxhj7eb9N3UdBABI7zEWCgaf3/62qF2FdBzhI2+AqgcV/WZxlJ
- MM1YbveZRtMEvv0BRnatrEmCaKodOkQ7ULBT/gLzIsgGmxamZYKOJY+XLwWbKaIESg+J
- /Eizvq1KZtUO4nHFZRIv1oH89qnV/U2BGVF2XwQZhY5YvOouxTVdhwRErsaghhkjIq+Y
- TNPU/fMwpnObMBOQttGB/ZxaL4/PYM4qxVW+Czvyl5BOyGZb0dBLNnd09qY9GQgYI/hU 7A== 
+ bh=he5J0iRg5FQM4/BFUlIEk8rfm5PkUKxos/03omQltC8=;
+ b=HfJcFnT2xcwHFWuPtp7K2iA0OrsBrQqZeGMLVpl5qO44UKJPktzSxpIxgU1tFZwn+Vez
+ XulauhENDu2ejcrNjJhK1eo8jYy1MHSALqXMJL7kOsP/MlmuvuRALp2NGt77caBJygpJ
+ Ty73hpHE+JPFLeuuSL/JaSP9TPaFo3dstM/L9xURIbgNCQLQK3uoDRhBhokdRtGPypU9
+ 0VIQ4bogMhPw4dxRqInPb/WnFZNrgZqDYwhgLwPnyhsjGyNaChpU0L1iBkZkSuQxUyA0
+ 1n6U9xVZjkVBtqQFW89WgmRHXQ9+KOLBlbbgebK0lnmxTAShZVWKyogpSA6U0IDVbomf Pg== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcagh0mmc-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pca191avd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Mar 2023 21:21:11 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32GKpFuN038453;
-        Thu, 16 Mar 2023 21:21:11 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pcagh0mka-1
+        Thu, 16 Mar 2023 21:22:33 +0000
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32GLEUcA030603;
+        Thu, 16 Mar 2023 21:22:32 GMT
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pca191auc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Mar 2023 21:21:11 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32GIBgup027506;
-        Thu, 16 Mar 2023 21:21:09 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3pbsyxs0du-1
+        Thu, 16 Mar 2023 21:22:32 +0000
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32GIIYH1024419;
+        Thu, 16 Mar 2023 21:22:30 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma02fra.de.ibm.com (PPS) with ESMTPS id 3pbsmbh14v-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Mar 2023 21:21:08 +0000
+        Thu, 16 Mar 2023 21:22:29 +0000
 Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32GLL6Wg60424492
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32GLMRGD18678492
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Mar 2023 21:21:06 GMT
+        Thu, 16 Mar 2023 21:22:27 GMT
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B79120043;
-        Thu, 16 Mar 2023 21:21:06 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 8E2FA20043;
+        Thu, 16 Mar 2023 21:22:27 +0000 (GMT)
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A891020040;
-        Thu, 16 Mar 2023 21:21:05 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id B44A92004D;
+        Thu, 16 Mar 2023 21:22:26 +0000 (GMT)
 Received: from [9.171.2.157] (unknown [9.171.2.157])
         by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 16 Mar 2023 21:21:05 +0000 (GMT)
-Message-ID: <5d2f728944c4763dc0a010f72dc7a19cbb66a90d.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf, test_run: fix crashes due to XDP
- frame overwriting/corruption
+        Thu, 16 Mar 2023 21:22:26 +0000 (GMT)
+Message-ID: <8f6bf3e51b5b56ac4cc93dc51456eec221eca559.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: fix "metadata marker"
+ getting overwritten by the netstack
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -72,31 +72,30 @@ Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Song Liu <song@kernel.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+e1d1b65f7c32f2a86a9f@syzkaller.appspotmail.com
-Date:   Thu, 16 Mar 2023 22:21:05 +0100
-In-Reply-To: <20230316175051.922550-2-aleksander.lobakin@intel.com>
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 16 Mar 2023 22:22:26 +0100
+In-Reply-To: <20230316175051.922550-3-aleksander.lobakin@intel.com>
 References: <20230316175051.922550-1-aleksander.lobakin@intel.com>
-         <20230316175051.922550-2-aleksander.lobakin@intel.com>
+         <20230316175051.922550-3-aleksander.lobakin@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WpSHdeVU_xNiXxnOBqXKxumusxkHLuzw
-X-Proofpoint-ORIG-GUID: SjUTPrTd8R0Y46Z3m4xbS-eYzrmSIkTB
+X-Proofpoint-GUID: OWC2jf06NfgwRMtftpX9sfrH8CWE6kRd
+X-Proofpoint-ORIG-GUID: 8ml5RAaVrcz0E1wMKOaUZjW7f52h7P2b
 Content-Transfer-Encoding: quoted-printable
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-16_14,2023-03-16_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2303150002
- definitions=main-2303160158
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501 mlxscore=0
+ spamscore=0 malwarescore=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303150002 definitions=main-2303160158
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -104,107 +103,146 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, 2023-03-16 at 18:50 +0100, Alexander Lobakin wrote:
-> syzbot and Ilya faced the splats when %XDP_PASS happens for
-> bpf_test_run
-> after skb PP recycling was enabled for
-> {__,}xdp_build_skb_from_frame():
+> Alexei noticed xdp_do_redirect test on BPF CI started failing on
+> BE systems after skb PP recycling was enabled:
 >=20
-> BUG: kernel NULL pointer dereference, address: 0000000000000d28
-> RIP: 0010:memset_erms+0xd/0x20 arch/x86/lib/memset_64.S:66
-> [...]
-> Call Trace:
-> =C2=A0<TASK>
-> =C2=A0__finalize_skb_around net/core/skbuff.c:321 [inline]
-> =C2=A0__build_skb_around+0x232/0x3a0 net/core/skbuff.c:379
-> =C2=A0build_skb_around+0x32/0x290 net/core/skbuff.c:444
-> =C2=A0__xdp_build_skb_from_frame+0x121/0x760 net/core/xdp.c:622
-> =C2=A0xdp_recv_frames net/bpf/test_run.c:248 [inline]
-> =C2=A0xdp_test_run_batch net/bpf/test_run.c:334 [inline]
-> =C2=A0bpf_test_run_xdp_live+0x1289/0x1930 net/bpf/test_run.c:362
-> =C2=A0bpf_prog_test_run_xdp+0xa05/0x14e0 net/bpf/test_run.c:1418
-> [...]
+> test_xdp_do_redirect:PASS:prog_run 0 nsec
+> test_xdp_do_redirect:PASS:pkt_count_xdp 0 nsec
+> test_xdp_do_redirect:PASS:pkt_count_zero 0 nsec
+> test_xdp_do_redirect:FAIL:pkt_count_tc unexpected pkt_count_tc:
+> actual
+> 220 !=3D expected 9998
+> test_max_pkt_size:PASS:prog_run_max_size 0 nsec
+> test_max_pkt_size:PASS:prog_run_too_big 0 nsec
+> close_netns:PASS:setns 0 nsec
+> =C2=A0#289 xdp_do_redirect:FAIL
+> Summary: 270/1674 PASSED, 30 SKIPPED, 1 FAILED
 >=20
-> This happens due to that it calls xdp_scrub_frame(), which nullifies
-> xdpf->data. bpf_test_run code doesn't reinit the frame when the XDP
-> program doesn't adjust head or tail. Previously, %XDP_PASS meant the
-> page will be released from the pool and returned to the MM layer, but
-> now it does return to the Pool with the nullified xdpf->data, which
-> doesn't get reinitialized then.
-> So, in addition to checking whether the head and/or tail have been
-> adjusted, check also for a potential XDP frame corruption. xdpf->data
-> is 100% affected and also xdpf->flags is the field closest to the
-> metadata / frame start. Checking for these two should be enough for
-> non-extreme cases.
+> and it doesn't happen on LE systems.
+> Ilya then hunted it down to:
+>=20
+> =C2=A0#0=C2=A0 0x0000000000aaeee6 in neigh_hh_output (hh=3D0x83258df0,
+> skb=3D0x88142200) at linux/include/net/neighbour.h:503
+> =C2=A0#1=C2=A0 0x0000000000ab2cda in neigh_output (skip_cache=3Dfalse,
+> skb=3D0x88142200, n=3D<optimized out>) at
+> linux/include/net/neighbour.h:544
+> =C2=A0#2=C2=A0 ip6_finish_output2 (net=3Dnet@entry=3D0x88edba00, sk=3Dsk@=
+entry=3D0x0,
+> skb=3Dskb@entry=3D0x88142200) at linux/net/ipv6/ip6_output.c:134
+> =C2=A0#3=C2=A0 0x0000000000ab4cbc in __ip6_finish_output (skb=3D0x8814220=
+0,
+> sk=3D0x0,
+> net=3D0x88edba00) at linux/net/ipv6/ip6_output.c:195
+> =C2=A0#4=C2=A0 ip6_finish_output (net=3D0x88edba00, sk=3D0x0, skb=3D0x881=
+42200) at
+> linux/net/ipv6/ip6_output.c:206
+>=20
+> xdp_do_redirect test places a u32 marker (0x42) right before the
+> Ethernet
+> header to check it then in the XDP program and return %XDP_ABORTED if
+> it's
+> not there. Neigh xmit code likes to round up hard header length to
+> speed
+> up copying the header, so it overwrites two bytes in front of the Eth
+> header. On LE systems, 0x42 is one byte at `data - 4`, while on BE
+> it's
+> `data - 1`, what explains why it happens only there.
+> It didn't happen previously due to that %XDP_PASS meant the page will
+> be
+> discarded and replaced by a new one, but now it can be recycled as
+> well,
+> while bpf_test_run code doesn't reinitialize the content of recycled
+> pages. This mark is limited to this particular test and its setup
+> though,
+> so there's no need to predict 1000 different possible cases. Just
+> move
+> it 4 bytes to the left, still keeping it 32 bit to match on more
+> bytes.
 >=20
 > Fixes: 9c94bbf9a87b ("xdp: recycle Page Pool backed skbs built from
 > XDP frames")
-> Reported-by: syzbot+e1d1b65f7c32f2a86a9f@syzkaller.appspotmail.com
+> Reported-by: Alexei Starovoitov <ast@kernel.org>
 > Link:
-> https://lore.kernel.org/bpf/000000000000f1985705f6ef2243@google.com
-> Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> https://lore.kernel.org/bpf/CAADnVQ+B_JOU+EpP=3DDKhbY9yXdN6GiRPnpTTXfEZ9s=
+NkUeb-yQ@mail.gmail.com
+> Reported-by: Ilya Leoshkevich <iii@linux.ibm.com> # + debugging
 > Link:
-> https://lore.kernel.org/bpf/e07dd94022ad5731705891b9487cc9ed66328b94.came=
+> https://lore.kernel.org/bpf/8341c1d9f935f410438e79d3bd8a9cc50aefe105.came=
 l@linux.ibm.com
 > Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 > ---
-> =C2=A0net/bpf/test_run.c | 12 +++++++++++-
-> =C2=A01 file changed, 11 insertions(+), 1 deletion(-)
+> =C2=A0tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c | 7 ++++---
+> =C2=A0tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c | 2 +-
+> =C2=A02 files changed, 5 insertions(+), 4 deletions(-)
 >=20
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index 71226f68270d..8d6b31209bd6 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -208,6 +208,16 @@ static void xdp_test_run_teardown(struct
-> xdp_test_data *xdp)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0kfree(xdp->skbs);
-> =C2=A0}
-> =C2=A0
-> +static bool frame_was_changed(const struct xdp_page_head *head)
-> +{
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* xdp_scrub_frame() zeroes th=
-e data pointer, flags is the
-> last field,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * i.e. has the highest chance=
-s to be overwritten. If those
-> two are
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * untouched, it's most likely=
- safe to skip the context
-> reset.
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return head->frm.data !=3D hea=
-d->orig_ctx.data ||
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 head->frm.flags !=3D head->orig_ctx.flags;
-> +}
-> +
-> =C2=A0static bool ctx_was_changed(struct xdp_page_head *head)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+> b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+> index 856cbc29e6a1..4eaa3dcaebc8 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+> @@ -86,12 +86,12 @@ static void test_max_pkt_size(int fd)
+> =C2=A0void test_xdp_do_redirect(void)
 > =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return head->orig_ctx.dat=
-a !=3D head->ctx.data ||
-> @@ -217,7 +227,7 @@ static bool ctx_was_changed(struct xdp_page_head
-> *head)
-> =C2=A0
-> =C2=A0static void reset_ctx(struct xdp_page_head *head)
-> =C2=A0{
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (likely(!ctx_was_changed(he=
-ad)))
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (likely(!frame_was_changed(=
-head) &&
-> !ctx_was_changed(head)))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int err, xdp_prog_fd, tc_=
+prog_fd, ifindex_src, ifindex_dst;
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0char data[sizeof(pkt_udp) + si=
+zeof(__u32)];
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0char data[sizeof(pkt_udp) + si=
+zeof(__u64)];
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct test_xdp_do_redire=
+ct *skel =3D NULL;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct nstoken *nstoken =
+=3D NULL;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct bpf_link *link;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0LIBBPF_OPTS(bpf_xdp_query=
+_opts, query_opts);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct xdp_md ctx_in =3D { .da=
+ta =3D sizeof(__u32),
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct xdp_md ctx_in =3D { .da=
+ta =3D sizeof(__u64),
 > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return;
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .data_end =3D sizeof(data) };
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0DECLARE_LIBBPF_OPTS(bpf_t=
+est_run_opts, opts,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 .data_in =3D &data,
+> @@ -105,8 +105,9 @@ void test_xdp_do_redirect(void)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0DECLARE_LIBBPF_OPTS(bpf_t=
+c_hook, tc_hook,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 .attach_point =3D BPF_TC_INGRESS);
 > =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0head->ctx.data =3D head->=
-orig_ctx.data;
-
-With this test begins to work on s390x:
-
-# ./test_progs -t xdp_do_redirect
-IPv6: ADDRCONF(NETDEV_CHANGE): veth_dst: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): veth_src: link becomes ready
-#290     xdp_do_redirect:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Thanks!
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memcpy(&data[sizeof(__u32)], &=
+pkt_udp, sizeof(pkt_udp));
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memcpy(&data[sizeof(__u64)], &=
+pkt_udp, sizeof(pkt_udp));
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0*((__u32 *)data) =3D 0x42=
+; /* metadata test value */
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0*((__u32 *)data + 4) =3D 0;
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0skel =3D test_xdp_do_redi=
+rect__open();
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!ASSERT_OK_PTR(skel, =
+"skel"))
+> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
+> b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
+> index cd2d4e3258b8..5baaafed0d2d 100644
+> --- a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
+> +++ b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
+> @@ -52,7 +52,7 @@ int xdp_redirect(struct xdp_md *xdp)
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0*payload =3D MARK_IN;
+> =C2=A0
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (bpf_xdp_adjust_meta(xdp, 4=
+))
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (bpf_xdp_adjust_meta(xdp, s=
+izeof(__u64)))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0return XDP_ABORTED;
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (retcode > XDP_PASS)
 
 Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
