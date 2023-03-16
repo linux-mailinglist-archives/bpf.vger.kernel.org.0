@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD106BC33D
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 02:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CD06BC340
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 02:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjCPBT6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Mar 2023 21:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
+        id S229687AbjCPBWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Mar 2023 21:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjCPBT5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 21:19:57 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7014928E44
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 18:19:54 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id h8so1590453ede.8
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 18:19:54 -0700 (PDT)
+        with ESMTP id S229464AbjCPBWf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Mar 2023 21:22:35 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A2F72012
+        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 18:22:31 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id h8so1606973ede.8
+        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 18:22:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1678929593;
+        d=isovalent.com; s=google; t=1678929749;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X6WPmqtphJvBgFBNycelI/R5ZAd4TzcDyEgrAAAfBQY=;
-        b=aAGaaforSe9E7/ymyqTllBFc0Dq2h/pC81v2JehvjJM78NuBxFBUFbYavRPFwjXlki
-         G0Hg59IHQsWqjIkirlZrclHMfb1MLTAPEt99ja+FBBLxBapcjKnyIC8qoeXHc3IuLMwO
-         +XZBWFdbLv6S9a2bStfyYIuqeqHOVMCcNowJbyQH/xFAsb1qlybPwy7mBO3mGc0aNpUt
-         ufok0iQ2kTCjQ8GCqANnmWnRPs3YbeVwX2wR1Kl/lNpojTtmnCoCeHIvTAPX9pLLCfZa
-         +WoAtZtAclBvpB3UNtJJd+P7kh+3ewd21rmUtHh0ZhwG60YoR5TbeNq5/RvCu8mgY6Yx
-         6XeA==
+        bh=nk5MnEj+9VdMq2koFjsXyLeZ+RHukG9plsb5KVbpDTg=;
+        b=e+7tQkAQ2uUODrnzOrY6Ips2/7+bIYTNXPx6aMCM1eR1GeiKx/tKzSh8Bj6I/MP34k
+         Wz+8TJHIWu6R7JemAB2R7ittFu5xBMal/raUmVrxB8V40iec+dAftGd4BiapoOM3cNqY
+         sj7Vtek0LI/yMFB25r27MSF95TKaooXqBfATR8GA6piJKchdGM4iUPDzNmO/gtfVHkYs
+         TLb5/5fyNFuEyBkJ8NsUOoBvAly/fmbPFDy1rx1jwNcmKj/JJ9nA/ZRdB5YJe//ifn8b
+         50W3XrmHTzRIzDBswedqRHtP+tTb0NnE+sDpGD/hIf43HLKvZrEwLJDn8enB/mgzNArw
+         aueg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678929593;
+        d=1e100.net; s=20210112; t=1678929749;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X6WPmqtphJvBgFBNycelI/R5ZAd4TzcDyEgrAAAfBQY=;
-        b=luk5KkWg7oMSsAcwDyrpV44dCKeaxphDJodszUbqhhcMSYFuytbzRblE9jMm2sBkI/
-         9lc68/oNQMOAasZ4raQpIfP71mt9KCG6CRNw0hMil6Jb255B2rPZOfHjYw/zjv8mm6qh
-         miqm+uBH65qN8I+pwg4owhOuH1Su8n66WtuXvH5EepZVLBPq+29F8N0Lp3iBIuO7OjDF
-         siHkgdpdnrsHp8QLLXq66foJ9jxzXo4u/EdzvgNrRmay2euRtjKUdyBQ42gXmVwNejbV
-         KVQn/HzxBZ72uYPUuEXx/EclXzJWWbXwYV8do6hC57yWrca96hGMVQmeHZFSBArPMZWE
-         oy0w==
-X-Gm-Message-State: AO0yUKU0NVL0Cws7c/EfUf9bqoN6an2Jyb2EQNgeWwvX1DEkehhMba11
-        o4ApJDck4Ap22CXASbBa6UO2V156nkpRStlJ0yB7Yg==
-X-Google-Smtp-Source: AK7set9ZnAfCv1TXEp81dZGBQciEmGQx6bFkwQnlONPgDH2FTJCnypC62XYn1tZsJ3llLR6dsQoe5StrCFYD5E9eWa0=
-X-Received: by 2002:a50:9f48:0:b0:4fa:d919:86dd with SMTP id
- b66-20020a509f48000000b004fad91986ddmr2533880edf.4.1678929592868; Wed, 15 Mar
- 2023 18:19:52 -0700 (PDT)
+        bh=nk5MnEj+9VdMq2koFjsXyLeZ+RHukG9plsb5KVbpDTg=;
+        b=YW8RABZ+R9AIFxGSMtxt95H3c39dawt8lloNp8CstXV6W4VOpehyFm+0DZYRTsJIGE
+         G5QC56AXZvpinanRXSDmTTSkRYchLeO9sSSvcK9+5r1YLUYxQO0TWCWOwe0ndMvZTk1F
+         FId3OCKG/kDsF9frvCbGFi6GuXFpAk/F3AoXLFd9mojEJBER00mdkrtnxsDgmc3mq3jJ
+         /KqnOz+K+ztBOReTzO5mkifeSc1Z6zJg7WB7opD9cnpZndkhze7elifU2iuxLUkXRKDU
+         7MHQVigEnRNOqF1wYAcMvtgk2LZ9tZZ+zdWtzBpyUYbYYKkV0CrjU0af81yxcF+ikpnj
+         Xiig==
+X-Gm-Message-State: AO0yUKVKwVAWM1NEZKpgGkVaeam5WNVZR5SOl/wu+eN8CH7hSPRv2cMK
+        kKnrC1kvOhH7LYbk/aPcL5oJHUV/1dRWMmC9h2aUCQ==
+X-Google-Smtp-Source: AK7set9vUQWlnYib29M7GxGUMKP+4/l9rWjXcSKXwSBOGUAVjRwK82k8x0u1IBJKP1XHqNoKznFC4u6JpgMJWUT0U4U=
+X-Received: by 2002:a50:8a9a:0:b0:4fa:3c0b:741 with SMTP id
+ j26-20020a508a9a000000b004fa3c0b0741mr2496372edj.4.1678929749501; Wed, 15 Mar
+ 2023 18:22:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230312190600.324573-1-joe@isovalent.com> <6410046013834_42581208fd@john.notmuch>
-In-Reply-To: <6410046013834_42581208fd@john.notmuch>
+References: <20230312190600.324573-1-joe@isovalent.com> <ZBB8vZ8EJRv2d7mD@mail.gmail.com>
+In-Reply-To: <ZBB8vZ8EJRv2d7mD@mail.gmail.com>
 From:   Joe Stringer <joe@isovalent.com>
-Date:   Wed, 15 Mar 2023 18:19:41 -0700
-Message-ID: <CADa=Rywk4cm7LB_QQO662Mqjnb=HNb=Gnj76Jm+AYE15SUp6Uw@mail.gmail.com>
+Date:   Wed, 15 Mar 2023 18:22:18 -0700
+Message-ID: <CADa=RywQPwBib1MKs3+TFK4K6yh8sd2UkERkU5bzHZ9VS77hyw@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v3] docs/bpf: Add LRU internals description and graph
-To:     John Fastabend <john.fastabend@gmail.com>
+To:     Maxim Mikityanskiy <maxtram95@gmail.com>
 Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, ast@kernel.org, corbet@lwn.net,
-        martin.lau@linux.dev, bagasdotme@gmail.com, maxtram95@gmail.com
+        martin.lau@linux.dev, bagasdotme@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -68,149 +68,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 13, 2023 at 10:21=E2=80=AFPM John Fastabend
-<john.fastabend@gmail.com> wrote:
+On Tue, Mar 14, 2023 at 6:55=E2=80=AFAM Maxim Mikityanskiy <maxtram95@gmail=
+.com> wrote:
 >
-> Joe Stringer wrote:
-> > Extend the bpf hashmap docs to include a brief description of the
-> > internals of the LRU map type (setting appropriate API expectations),
-> > including the original commit message from Martin and a variant on the
-> > graph that I had presented during my Linux Plumbers Conference 2022 tal=
-k
-> > on "Pressure feedback for LRU map types"[0].
-> >
-> > The node names in the dot file correspond roughly to the functions wher=
-e
-> > the logic for those decisions or steps is defined, to help curious
-> > developers to cross-reference and update this logic if the details of
-> > the LRU implementation ever differ from this description.
-> >
-> > [0]: https://lpc.events/event/16/contributions/1368/
-> >
-> > Signed-off-by: Joe Stringer <joe@isovalent.com>
->
->
-> Thanks couple nits below
->
-> > ---
-> > v3: Use standard table syntax
-> >     Replace inline commit message with reference to commit
-> >     Fix incorrect Y/N label for common LRU check
-> >     Rename some dotfile variables to reduce confusion between cases
-> >     Minor wording touchups
-> > v2: Fix issue that caused initial email submission to fail
-> > ---
-> >  Documentation/bpf/map_hash.rst            |  62 ++++++++
-> >  Documentation/bpf/map_lru_hash_update.dot | 166 ++++++++++++++++++++++
-> >  2 files changed, 228 insertions(+)
-> >  create mode 100644 Documentation/bpf/map_lru_hash_update.dot
-> > diff --git a/Documentation/bpf/map_hash.rst b/Documentation/bpf/map_has=
-h.rst
-> > index 8669426264c6..61602ce26561 100644
-> > --- a/Documentation/bpf/map_hash.rst
-> > +++ b/Documentation/bpf/map_hash.rst
-> > @@ -1,5 +1,6 @@
-> >  .. SPDX-License-Identifier: GPL-2.0-only
-> >  .. Copyright (C) 2022 Red Hat, Inc.
-> > +.. Copyright (C) 2022-2023 Isovalent, Inc.
-> >
-> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >  BPF_MAP_TYPE_HASH, with PERCPU and LRU Variants
-> > @@ -206,3 +207,64 @@ Userspace walking the map elements from the map de=
-clared above:
-> >                      cur_key =3D &next_key;
-> >              }
-> >      }
-> > +
-> > +Internals
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +This section of the document is targeted at Linux developers and descr=
-ibes
-> > +aspects of the map implementations that are not considered stable ABI.=
- The
-> > +following details are subject to change in future versions of the kern=
-el.
-> > +
-> > +``BPF_MAP_TYPE_LRU_HASH`` and variants
-> > +--------------------------------------
-> > +
-> > +An LRU hashmap type consists of two properties: Firstly, it is a hash =
-map and
-> > +hence is indexable by key for constant time lookups. Secondly, when at=
- map
-> > +capacity, map updates will trigger eviction of old entries based on th=
-e age of
-> > +the elements in a set of lists. Each of these properties may be either=
- global
-> > +or per-CPU, depending on the map type and flags used to create the map=
-:
-> > +
-> > ++------------------------+---------------------------+----------------=
-------------------+
-> > +|                        | ``BPF_MAP_TYPE_LRU_HASH`` | ``BPF_MAP_TYPE_=
-LRU_PERCPU_HASH`` |
-> > ++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
-> > +| ``BPF_NO_COMMON_LRU``  | Per-CPU LRU, global map   | Per-CPU LRU, pe=
-r-cpu map         |
-> > ++------------------------+---------------------------+----------------=
-------------------+
-> > +| ``!BPF_NO_COMMON_LRU`` | Global LRU, global map    | Global LRU, per=
--cpu map          |
-> > ++------------------------+---------------------------+----------------=
-------------------+
->
-> Above all seems API to me. Maybe move the statement about not considered =
-stable
-> ABI down here? Something like,
->
-> "
-> The internal details of which entry is evicted and acquiring a new entry
-> are not considered stable and may change in the future. But the current
-> impelementation is as follows.
-> "
->
-> Or something like that?
+> On Sun, Mar 12, 2023 at 12:05:59PM -0700, Joe Stringer wrote:
 
-Yep sounds good to me, I'll fix that up.
+<snip>
 
+> I believe there are some inaccuracies, though. As far as I see it,
+> local_freelist_check corresponds to __local_list_pop_free in the common
+> LRU case, specifically, to checking its return value; use_local_node
+> corresponds to returning that value; and common_lru_check corresponds
+> to bpf_lru_pop_free (for both common and percpu LRU, that's where the
+> distinction is made).
+
+Ah yes, thanks for the pointers, will fix up. I started with reviewing
+the shared case since I was primarily interested in the behaviour
+there, then I added the other cases later. Adding the function names
+was one of the later ideas but it's difficult to get accurate.
+
+> > +  local_freelist_check [shape=3Ddiamond,fillcolor=3D1,
+> > +    label=3D"Local freelist\nnode available?"];
+> > +  // The following corresponds to __local_list_pop_free() for common L=
+RU case.
+> > +  use_local_node [shape=3Drectangle,
+> > +    label=3D"Use node owned\nby this CPU"]
 > > +
-> > +Notably, there are various steps that the update algorithm attempts in=
- order to
-> > +enforce the LRU property which have increasing impacts on other CPUs i=
-nvolved
-> > +in the following operation attempts:
-> > +
-> > +- Attempt to use CPU-local state to batch operations
-> > +- Attempt to fetch free nodes from global lists
-> > +- Attempt to pull any node from a global list and remove it from the h=
-ashmap
-> > +- Attempt to pull any node from any CPU's list and remove it from the =
-hashmap
-> > +
-> > +Even if an LRU node may be acquired, maps of type ``BPF_MAP_TYPE_LRU_H=
-ASH``
-> > +may fail to insert the entry into the map if other CPUs are heavily co=
-ntending
-> > +on the global hashmap lock.
+> > +  common_lru_check [shape=3Ddiamond,
+> > +    label=3D"Map created with\ncommon LRU?\n(!BPF_NO_COMMON_LRU)"];
 >
-> Similarly this is ABI correct? Probably we can also specify the error cod=
-e?
-> Assuming it is just EBUSY or EAGAIN?
+> Nit: the exact flag name is BPF_F_NO_COMMON_LRU.
 
-Hmm. It's EBUSY right now. Also looks like we're missing corresponding
-docs in the uapi header for this case:
+Will fix.
 
-https://github.com/torvalds/linux/blob/9c1bec9c0b08abeac72ed6214b723adc2240=
-13bf/include/uapi/linux/bpf.h#L163
+> Thanks again for this patch, this piece of documentation really helped
+> me understand internals of the LRU hashmap.
 
-I think that "this function may fail due to contention on map usage,
-in which case it returns EBUSY" (or similar wording) is reasonable to
-document as ABI. IMO that should go in the header linked above (which
-gets turned into UAPI docs elsewhere). This particular phrasing is
-going into more detail around things like the hashmap lock which
-should not be described as part of the uAPI/ABI.
+Glad to hear, thanks for the feedback on the patch!
