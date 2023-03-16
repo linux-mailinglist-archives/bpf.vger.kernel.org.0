@@ -2,106 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CD06BC340
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 02:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 981996BC357
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 02:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjCPBWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Mar 2023 21:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
+        id S229488AbjCPBc3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Mar 2023 21:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjCPBWf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 21:22:35 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A2F72012
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 18:22:31 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id h8so1606973ede.8
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 18:22:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1678929749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nk5MnEj+9VdMq2koFjsXyLeZ+RHukG9plsb5KVbpDTg=;
-        b=e+7tQkAQ2uUODrnzOrY6Ips2/7+bIYTNXPx6aMCM1eR1GeiKx/tKzSh8Bj6I/MP34k
-         Wz+8TJHIWu6R7JemAB2R7ittFu5xBMal/raUmVrxB8V40iec+dAftGd4BiapoOM3cNqY
-         sj7Vtek0LI/yMFB25r27MSF95TKaooXqBfATR8GA6piJKchdGM4iUPDzNmO/gtfVHkYs
-         TLb5/5fyNFuEyBkJ8NsUOoBvAly/fmbPFDy1rx1jwNcmKj/JJ9nA/ZRdB5YJe//ifn8b
-         50W3XrmHTzRIzDBswedqRHtP+tTb0NnE+sDpGD/hIf43HLKvZrEwLJDn8enB/mgzNArw
-         aueg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678929749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nk5MnEj+9VdMq2koFjsXyLeZ+RHukG9plsb5KVbpDTg=;
-        b=YW8RABZ+R9AIFxGSMtxt95H3c39dawt8lloNp8CstXV6W4VOpehyFm+0DZYRTsJIGE
-         G5QC56AXZvpinanRXSDmTTSkRYchLeO9sSSvcK9+5r1YLUYxQO0TWCWOwe0ndMvZTk1F
-         FId3OCKG/kDsF9frvCbGFi6GuXFpAk/F3AoXLFd9mojEJBER00mdkrtnxsDgmc3mq3jJ
-         /KqnOz+K+ztBOReTzO5mkifeSc1Z6zJg7WB7opD9cnpZndkhze7elifU2iuxLUkXRKDU
-         7MHQVigEnRNOqF1wYAcMvtgk2LZ9tZZ+zdWtzBpyUYbYYKkV0CrjU0af81yxcF+ikpnj
-         Xiig==
-X-Gm-Message-State: AO0yUKVKwVAWM1NEZKpgGkVaeam5WNVZR5SOl/wu+eN8CH7hSPRv2cMK
-        kKnrC1kvOhH7LYbk/aPcL5oJHUV/1dRWMmC9h2aUCQ==
-X-Google-Smtp-Source: AK7set9vUQWlnYib29M7GxGUMKP+4/l9rWjXcSKXwSBOGUAVjRwK82k8x0u1IBJKP1XHqNoKznFC4u6JpgMJWUT0U4U=
-X-Received: by 2002:a50:8a9a:0:b0:4fa:3c0b:741 with SMTP id
- j26-20020a508a9a000000b004fa3c0b0741mr2496372edj.4.1678929749501; Wed, 15 Mar
- 2023 18:22:29 -0700 (PDT)
+        with ESMTP id S229799AbjCPBcX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Mar 2023 21:32:23 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3E788D80
+        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 18:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678930342; x=1710466342;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hgNs+2LCIw1VdcWJgnaEyGtYI9oIxF1N3ox9qlRdiJ4=;
+  b=A/gEWbPnacX6kvm2qsLidpyin7vhPjtLLWwPNzNiVmEG9om6StRfIgPw
+   mo8ae6mgQxeG3CeWcBF8We6c3Vm1DXdyo/rLHFVvL7zJGZagHVQeYK1gZ
+   8Xhua5VVky+ZPO0/M9xVgmq0sANknWYqujVmPdlejyymuGFGQCZ2fa9xl
+   Qm8/NlwgktBZHl8l6DTqjTIFPLyZpgT7kiTmzxek0901ou5yXWwRW7eri
+   Sm/4fKjXCFs/1+50+DUe/T/E9UyG84h+naF3Unj0GNWzXC5kAf7n16WwU
+   G2VLf8kuN2+tb1GPodzVgv6B1S1b9Np/EGsTnrYHegS2rkXa9DDILXvWW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10650"; a="336552647"
+X-IronPort-AV: E=Sophos;i="5.98,264,1673942400"; 
+   d="scan'208";a="336552647"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2023 18:32:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10650"; a="672954468"
+X-IronPort-AV: E=Sophos;i="5.98,264,1673942400"; 
+   d="scan'208";a="672954468"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 15 Mar 2023 18:32:16 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pccTX-0008Ct-0x;
+        Thu, 16 Mar 2023 01:32:15 +0000
+Date:   Thu, 16 Mar 2023 09:32:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCH bpf-next v10 1/2] bpf: Fix attaching
+ fentry/fexit/fmod_ret/lsm to modules
+Message-ID: <202303160919.SGyfD0uE-lkp@intel.com>
+References: <3f6a9d8ae850532b5ef864ef16327b0f7a669063.1678432753.git.vmalik@redhat.com>
 MIME-Version: 1.0
-References: <20230312190600.324573-1-joe@isovalent.com> <ZBB8vZ8EJRv2d7mD@mail.gmail.com>
-In-Reply-To: <ZBB8vZ8EJRv2d7mD@mail.gmail.com>
-From:   Joe Stringer <joe@isovalent.com>
-Date:   Wed, 15 Mar 2023 18:22:18 -0700
-Message-ID: <CADa=RywQPwBib1MKs3+TFK4K6yh8sd2UkERkU5bzHZ9VS77hyw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] docs/bpf: Add LRU internals description and graph
-To:     Maxim Mikityanskiy <maxtram95@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ast@kernel.org, corbet@lwn.net,
-        martin.lau@linux.dev, bagasdotme@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3f6a9d8ae850532b5ef864ef16327b0f7a669063.1678432753.git.vmalik@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 14, 2023 at 6:55=E2=80=AFAM Maxim Mikityanskiy <maxtram95@gmail=
-.com> wrote:
->
-> On Sun, Mar 12, 2023 at 12:05:59PM -0700, Joe Stringer wrote:
+Hi Viktor,
 
-<snip>
+Thank you for the patch! Yet something to improve:
 
-> I believe there are some inaccuracies, though. As far as I see it,
-> local_freelist_check corresponds to __local_list_pop_free in the common
-> LRU case, specifically, to checking its return value; use_local_node
-> corresponds to returning that value; and common_lru_check corresponds
-> to bpf_lru_pop_free (for both common and percpu LRU, that's where the
-> distinction is made).
+[auto build test ERROR on bpf-next/master]
 
-Ah yes, thanks for the pointers, will fix up. I started with reviewing
-the shared case since I was primarily interested in the behaviour
-there, then I added the other cases later. Adding the function names
-was one of the later ideas but it's difficult to get accurate.
+url:    https://github.com/intel-lab-lkp/linux/commits/Viktor-Malik/bpf-Fix-attaching-fentry-fexit-fmod_ret-lsm-to-modules/20230310-154848
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/3f6a9d8ae850532b5ef864ef16327b0f7a669063.1678432753.git.vmalik%40redhat.com
+patch subject: [PATCH bpf-next v10 1/2] bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
+config: arm-buildonly-randconfig-r005-20230312 (https://download.01.org/0day-ci/archive/20230316/202303160919.SGyfD0uE-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project 67409911353323ca5edf2049ef0df54132fa1ca7)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm cross compiling tool for clang build
+        # apt-get install binutils-arm-linux-gnueabi
+        # https://github.com/intel-lab-lkp/linux/commit/a6713fb8bbf7954ee98fec48f2a1f1e33814d92a
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Viktor-Malik/bpf-Fix-attaching-fentry-fexit-fmod_ret-lsm-to-modules/20230310-154848
+        git checkout a6713fb8bbf7954ee98fec48f2a1f1e33814d92a
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash kernel/
 
-> > +  local_freelist_check [shape=3Ddiamond,fillcolor=3D1,
-> > +    label=3D"Local freelist\nnode available?"];
-> > +  // The following corresponds to __local_list_pop_free() for common L=
-RU case.
-> > +  use_local_node [shape=3Drectangle,
-> > +    label=3D"Use node owned\nby this CPU"]
-> > +
-> > +  common_lru_check [shape=3Ddiamond,
-> > +    label=3D"Map created with\ncommon LRU?\n(!BPF_NO_COMMON_LRU)"];
->
-> Nit: the exact flag name is BPF_F_NO_COMMON_LRU.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303160919.SGyfD0uE-lkp@intel.com/
 
-Will fix.
+All errors (new ones prefixed by >>):
 
-> Thanks again for this patch, this piece of documentation really helped
-> me understand internals of the LRU hashmap.
+   In file included from kernel/bpf/verifier.c:27:
+>> kernel/bpf/../module/internal.h:260:14: error: expected ')'
+                                                          const char *name)
+                                                          ^
+   kernel/bpf/../module/internal.h:259:55: note: to match this '('
+   static inline unsigned long find_kallsyms_symbol_value(struct module *mod
+                                                         ^
+>> kernel/bpf/verifier.c:18440:45: error: too many arguments to function call, expected single argument 'mod', have 2 arguments
+                                           addr = find_kallsyms_symbol_value(mod, tname);
+                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~      ^~~~~
+   kernel/bpf/../module/internal.h:259:29: note: 'find_kallsyms_symbol_value' declared here
+   static inline unsigned long find_kallsyms_symbol_value(struct module *mod
+                               ^
+   2 errors generated.
 
-Glad to hear, thanks for the feedback on the patch!
+
+vim +260 kernel/bpf/../module/internal.h
+
+   250	
+   251	static inline bool sect_empty(const Elf_Shdr *sect)
+   252	{
+   253		return !(sect->sh_flags & SHF_ALLOC) || sect->sh_size == 0;
+   254	}
+   255	#else /* !CONFIG_KALLSYMS */
+   256	static inline void init_build_id(struct module *mod, const struct load_info *info) { }
+   257	static inline void layout_symtab(struct module *mod, struct load_info *info) { }
+   258	static inline void add_kallsyms(struct module *mod, const struct load_info *info) { }
+   259	static inline unsigned long find_kallsyms_symbol_value(struct module *mod
+ > 260							       const char *name)
+   261	{
+   262		return 0;
+   263	}
+   264	#endif /* CONFIG_KALLSYMS */
+   265	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
