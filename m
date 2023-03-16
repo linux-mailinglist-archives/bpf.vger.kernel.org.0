@@ -2,116 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C56A06BD47D
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 16:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162316BD4B9
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 17:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbjCPP6q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 11:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
+        id S229611AbjCPQL2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 12:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbjCPP6p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 11:58:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1E3193F3
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 08:58:43 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1pcpzT-0001Wg-0O; Thu, 16 Mar 2023 16:58:07 +0100
-Received: from pengutronix.de (unknown [IPv6:2a00:20:3043:e035:5ae3:9609:678c:e1fb])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id EEF27194E2F;
-        Thu, 16 Mar 2023 15:57:59 +0000 (UTC)
-Date:   Thu, 16 Mar 2023 16:57:58 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, dccp@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-can@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-x25@vger.kernel.org,
-        mptcp@lists.linux.dev, rds-devel@oss.oracle.com,
-        tipc-discussion@lists.sourceforge.net,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [RFC PATCH 28/28] sock: Remove ->sendpage*() in favour of
- sendmsg(MSG_SPLICE_PAGES)
-Message-ID: <20230316155758.5ylpybqjma7x4lbs@pengutronix.de>
-References: <20230316152618.711970-1-dhowells@redhat.com>
- <20230316152618.711970-29-dhowells@redhat.com>
+        with ESMTP id S229476AbjCPQL2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 12:11:28 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A288C8898
+        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 09:11:27 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id r27so3004657lfe.10
+        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 09:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678983085;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q9K9250mRicINX0Dfxf071y/GDvSJd+yQt4casiHRz8=;
+        b=YDD3TibhdrHBbnKCXhCPKSGwfa1mC8JeGKiEqzmoED2IdJHOoy4Rr8Yjkc06JrH9Ls
+         DDqLYqdwjSAVLP4p31uWmjzzi2YCcUUSzf7khvvL+A03rDjVLYLdH7iYaUMowWTsFPjL
+         QtYAu7mqDPGeqdBAEwgjegqOJSs3kRyx83rjow3sOdPGyG3e48hp+wFa3EeL4iYOOoCF
+         LbOJsl/h3UwmeLRmGXP4wEMJM86lOG8wwiwe+p45H893e12w1rivy1a6xmzP0SCQTihj
+         k2783+KA2lZ4x62lgRvrZelOB8WErYQqADhoY2lJtu8TElguG+crx7+8Ib9PsZJEzJDg
+         aALg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678983085;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q9K9250mRicINX0Dfxf071y/GDvSJd+yQt4casiHRz8=;
+        b=vIpiEtx8hF5Yer33SB80+czB0fYh3oFEqsXL680W+yWK8l+Z7Ic3WFDXjmFutB9XPU
+         gZ2XW0acdF5VAraZNFRwiu0ZdV1TjxfTwBe6bhIQ/9tCRGsXozBKItlNesOs0nUugDiT
+         YY0QysQyE2RcoDEp6tsRc1csnLGuo1UsY6y043VQbA8DM6JVqq1DLSgGJFDym+s/6i/6
+         uvK3nuYJK1zRmXLPfBFck0zg7DLhcx43uZlqVorE2imtFzQzoYhWKqKGCqlvaew8aI3L
+         IT4F3miLzkkdNe4Jcjim2B/w3fU3xNRSCQ2CleLKGL2DjVSEyBWcZWd3+88Xzdg9xm1M
+         Ju6A==
+X-Gm-Message-State: AO0yUKUKp9dPZJe3ubl2Vd3n9gMGahN6C53t0eE/e7wdpIk3S0IXehP/
+        cE3G6BIzk+miZhd8KdYb4m+3HjoNsk9LxmeHsoY=
+X-Google-Smtp-Source: AK7set9uc0EUKv2KTzjmVFJ5ZFMVh4bOYDiekeJM8Ok96dc4byANDGftyQhQcMy7NfuHpWIGOS32i3ahgoRPSKFqxg0=
+X-Received: by 2002:a05:6512:3b22:b0:4e8:4409:bb76 with SMTP id
+ f34-20020a0565123b2200b004e84409bb76mr5255627lfv.2.1678983085479; Thu, 16 Mar
+ 2023 09:11:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="km5oeoth2y26yqyc"
-Content-Disposition: inline
-In-Reply-To: <20230316152618.711970-29-dhowells@redhat.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: bpf@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:651c:1059:b0:295:ba26:8ad0 with HTTP; Thu, 16 Mar 2023
+ 09:11:24 -0700 (PDT)
+Reply-To: sgtkaylam28@gmail.com
+From:   Sgt Kayla Manthey <ramatoutoumey1@gmail.com>
+Date:   Thu, 16 Mar 2023 16:11:24 +0000
+Message-ID: <CAFFFc6S1uG1zTkjoh3zw-HrUMkWo+eAPdadmjQWXRKKR-PQwbw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_60,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:12a listed in]
+        [list.dnswl.org]
+        *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
+        *      [score: 0.7023]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [ramatoutoumey1[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [ramatoutoumey1[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [sgtkaylam28[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
---km5oeoth2y26yqyc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 16.03.2023 15:26:18, David Howells wrote:
-> [!] Note: This is a work in progress.  At the moment, some things won't
->     build if this patch is applied.  nvme, kcm, smc, tls.
->=20
-> Remove ->sendpage() and ->sendpage_locked().  sendmsg() with
-> MSG_SPLICE_PAGES should be used instead.  This allows multiple pages and
-> multipage folios to be passed through.
->=20
-> Signed-off-by: David Howells <dhowells@redhat.com>
-
-> cc: linux-can@vger.kernel.org
-
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for net/can
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---km5oeoth2y26yqyc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmQTPIMACgkQvlAcSiqK
-BOj6JAgAtfBV5yq+uNvtDfdNTDCgUnr0pkrsEqo0Ygt0A84TUlJF1K9QFkFTlvFo
-NEtegJFeDvbE8EmvRgOnpoTRcMQwDClaw5c7O7TquCr3SEAcXECesFYUVLWR7hsf
-Mk3DzSWUNIqMeSUOAEPBPfWNGGQWdjut5IQHdhuIs2/irjgsb5GZJ27rYyV9F/+l
-daE1Ac6RGnKq9zV/UszZ7AbfKA7bI9TVioWBVmIFCQZeWJprHq5rD0LTH6+QjdyQ
-5AdUTjTbZ/YRTjr4KQQkISfoq8oMC/zVENiagYZ89SGTbciIaCeqBpvdgUVKTob6
-2Uoo/o+yUY90Dy8JPw9/gLSsthDGaw==
-=IhKV
------END PGP SIGNATURE-----
-
---km5oeoth2y26yqyc--
+-- 
+Hello,
+Please did you receive my previous letter? Write me back
