@@ -2,97 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB276BC361
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 02:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D54B26BC363
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 02:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjCPBjj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Mar 2023 21:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
+        id S229487AbjCPBl1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Mar 2023 21:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjCPBjj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 21:39:39 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DC491B6C
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 18:39:38 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id fd5so1729070edb.7
-        for <bpf@vger.kernel.org>; Wed, 15 Mar 2023 18:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678930776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PAl9L1VdKK9T4FPnDb4eK9GFbN1rBiUNLvSKvbeXWfc=;
-        b=T37qC6AIrqE3EMHD0jntWlPnspV/4IKsLrQsWHG+x+qn6CBMdyHZQevnTG/Gm9HEdY
-         qu4CnrOAeWJzkwb57a8FImJR2eCeq/Fkilo6kZvwREVXt+tei7lBw1igVi6JXrO5K6Dt
-         TdGxxKqOrb8NDf/vlaIDz1euI2I8motKRuhBgZXyZ2y2uAJge2jZKVQdFuPFQJwLqcRv
-         o92SCaj/YYrBQcjg8Jqsfip27JmibCobEy1HUSD53md17lzGen7wuulI5iB5H5pu6YoZ
-         2x8LkmJ7CY3RkROt9yfKMkPYkLIpul16NhkgfZKjq+Q/myZXtODGB77qkgtGkAhEbOE7
-         fElQ==
+        with ESMTP id S229456AbjCPBl0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Mar 2023 21:41:26 -0400
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00659ABB1C;
+        Wed, 15 Mar 2023 18:41:25 -0700 (PDT)
+Received: by mail-qt1-f173.google.com with SMTP id h19so292618qtn.1;
+        Wed, 15 Mar 2023 18:41:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678930776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PAl9L1VdKK9T4FPnDb4eK9GFbN1rBiUNLvSKvbeXWfc=;
-        b=pq+x4GSd4RoblnMqsn/mNMxTKHG4aOnE3UlOT6EwlMIIEUEL795eLTOsj4TcnVtjmr
-         cmhZDOk+5pBoaFGzdwbhNpC6wMFlX7CpiDwhMjkU0I5lF9d10u4FkbDdxyoF2dmnWXos
-         7v0k+IdPNzCTioqzz7j1jktFJvyGR4DFBAvLrKPvj8vejbuVbk9S9XEXPjeEIfxIvdnU
-         p5Cm+Tj01cEHo1pDOKaMHBujhxePzfA0NyD74WDVg6eEH18B8HFS0qa07iVJnIpmU6lE
-         9fXSUg4g1RN51mbzjgeeCIk8Q0jHba+9PTWXZdI+n2r4kBBOaa7w6bENInAe5B10iawP
-         RvKw==
-X-Gm-Message-State: AO0yUKWeFEhKHpneROLN3luiY7Xho7EjhNZ+icStlygXLf6YjeFhBhNJ
-        U9ZLoVThPwQGSeyMBufhqTrMYT5EiKyuhNNlg+k=
-X-Google-Smtp-Source: AK7set/nQFF7BQiVEvXaqwJkujkApr1O8Em/CXTTZWlDH+0L3EYoqGjf3pjR+sZYtLYSf0olM88MJ6UXmQdgFmP76lk=
-X-Received: by 2002:a17:906:9483:b0:8b1:2898:2138 with SMTP id
- t3-20020a170906948300b008b128982138mr4333785ejx.3.1678930776380; Wed, 15 Mar
- 2023 18:39:36 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1678930884;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P55rgRz7v69PxyoCgb99Xdtulupv+YyUUL74psxzFss=;
+        b=o8Xr1lUpwYr7kSO7EpdlIecPeiwNZGBPD2321U0mf5D4Zk2bPluVmA1d9LWEiKmr+p
+         qO3ZnbG/dhEI3HX8N6KHn/w/NALeDBVuU0roD/AIXf4/r994IC7a0D578nw5SUdzETHn
+         llnUAPkWVztkl087PhYC1HDgyt1d737o8TFeKAFkyW3okPo0hIor2U/YoHB7LnGqMxTO
+         ol8D+VLH+QhgjC/9tBZYtGnUhBhaX27yYF3fISc+jU/UIESr6UntPqz/vrFqWT0JidPn
+         ldLza/VhWacSQ+VFHsWqcuOQBvwDHyI+uBBVrMCCBeGgjmZNFlE7FbxqRtVjwiDZEe1Z
+         GKAg==
+X-Gm-Message-State: AO0yUKVHLsNn7kjNsslyV1uxAdHsdK4izVBBgVdOgUkwlNAxuCZ3At3Y
+        AtCdjdKq6BBwF3lkbvMbVVFOiBlnyY7/sJef
+X-Google-Smtp-Source: AK7set/vq5oAulAOo6+oXgQkLzxSzeDaTgB5dkSmnjSvYtDjYnIWUel1zyNTWkJNlW+Fi6jcfgmrCg==
+X-Received: by 2002:ac8:7fc6:0:b0:3bf:bbaf:5c82 with SMTP id b6-20020ac87fc6000000b003bfbbaf5c82mr3700973qtk.21.1678930884435;
+        Wed, 15 Mar 2023 18:41:24 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:5c58])
+        by smtp.gmail.com with ESMTPSA id w19-20020a05620a0e9300b00746279f3fd5sm573675qkm.9.2023.03.15.18.41.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Mar 2023 18:41:23 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: [PATCH bpf-next 0/5] Make struct bpf_cpumask RCU safe
+Date:   Wed, 15 Mar 2023 20:41:17 -0500
+Message-Id: <20230316014122.678082-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-References: <3f6a9d8ae850532b5ef864ef16327b0f7a669063.1678432753.git.vmalik@redhat.com>
- <202303160919.SGyfD0uE-lkp@intel.com> <CAADnVQJ+-ThSUMzEgWu6OtkWB-bdqZKPiRxWUEbL5L=cPjeezg@mail.gmail.com>
-In-Reply-To: <CAADnVQJ+-ThSUMzEgWu6OtkWB-bdqZKPiRxWUEbL5L=cPjeezg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 15 Mar 2023 18:39:25 -0700
-Message-ID: <CAADnVQKWtWZg+zHfA2AOwwMKipWog-MpeR88AcXN=bJuuQu6_g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 1/2] bpf: Fix attaching fentry/fexit/fmod_ret/lsm
- to modules
-To:     kernel test robot <lkp@intel.com>
-Cc:     Viktor Malik <vmalik@redhat.com>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 15, 2023 at 6:34=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Mar 15, 2023 at 6:32=E2=80=AFPM kernel test robot <lkp@intel.com>=
- wrote:
-> >
-> > Hi Viktor,
-> >
-> > Thank you for the patch! Yet something to improve:
->
-> Argh. Comma is missing.
-> Viktor,
-> please send a fix asap.
+The struct bpf_cpumask type is currently not RCU safe. It uses the
+bpf_mem_cache_{alloc,free}() APIs to allocate and release cpumasks, and
+those allocations may be reused before an RCU grace period has elapsed.
+We want to be able to enable using this pattern in BPF programs:
 
-Actually, since it was at the top of bpf-next
-I fixed it myself and force pushed bpf-next.
+private(MASK) static struct bpf_cpumask __kptr *global;
+
+int BPF_PROG(prog, ...)
+{
+	struct bpf_cpumask *cpumask;
+
+	bpf_rcu_read_lock();
+	cpumask = global;
+	if (!cpumask) {
+		bpf_rcu_read_unlock();
+		return -1;
+	}
+	bpf_cpumask_setall(cpumask);
+	...
+	bpf_rcu_read_unlock();
+}
+
+In other words, to be able to pass a kptr to KF_RCU bpf_cpumask kfuncs
+without requiring the acquisition and release of refcounts using
+bpf_cpumask_kptr_get(). This patchset enables this by making the struct
+bpf_cpumask type RCU safe, and removing the bpf_cpumask_kptr_get()
+function.
+
+David Vernet (5):
+  bpf: Free struct bpf_cpumask in call_rcu handler
+  bpf: Mark struct bpf_cpumask as rcu protected
+  bpf/selftests: Test using global cpumask kptr with RCU
+  bpf: Remove bpf_cpumask_kptr_get() kfunc
+  bpf,docs: Remove bpf_cpumask_kptr_get() from documentation
+
+ Documentation/bpf/cpumasks.rst                | 30 +++-----
+ kernel/bpf/cpumask.c                          | 37 +++-------
+ kernel/bpf/verifier.c                         |  1 +
+ .../selftests/bpf/prog_tests/cpumask.c        |  2 +-
+ .../selftests/bpf/progs/cpumask_common.h      |  7 +-
+ .../selftests/bpf/progs/cpumask_failure.c     | 68 +++++++++++++++----
+ .../selftests/bpf/progs/cpumask_success.c     | 29 ++++----
+ 7 files changed, 95 insertions(+), 79 deletions(-)
+
+-- 
+2.39.0
+
