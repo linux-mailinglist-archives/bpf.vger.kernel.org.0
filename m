@@ -2,29 +2,29 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC306BD833
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 19:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EBD6BD82D
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 19:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbjCPSd3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 16 Mar 2023 14:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34854 "EHLO
+        id S229577AbjCPSal convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 16 Mar 2023 14:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbjCPSd2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 14:33:28 -0400
+        with ESMTP id S229885AbjCPSak (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 14:30:40 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CE122A04
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 11:33:22 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32GI79uK030286
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 11:33:22 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pbpxdeb5d-1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BED52916
+        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 11:30:37 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32GI6klY032522
+        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 11:30:37 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pbpxsp9qy-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 11:33:22 -0700
-Received: from twshared24004.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 11:30:37 -0700
+Received: from twshared58712.02.prn6.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 16 Mar 2023 11:33:21 -0700
+ 15.1.2507.17; Thu, 16 Mar 2023 11:30:34 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
         id 80CAA2AC19580; Thu, 16 Mar 2023 11:30:23 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
@@ -39,17 +39,17 @@ In-Reply-To: <20230316183013.2882810-1-andrii@kernel.org>
 References: <20230316183013.2882810-1-andrii@kernel.org>
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: kxtQp2r1bynr8qqB6XOJM8xnh4EXJWHA
-X-Proofpoint-GUID: kxtQp2r1bynr8qqB6XOJM8xnh4EXJWHA
+X-Proofpoint-ORIG-GUID: nYGasoiXTvDRrukZVy183G_QIxJA2ThH
+X-Proofpoint-GUID: nYGasoiXTvDRrukZVy183G_QIxJA2ThH
 Content-Transfer-Encoding: 8BIT
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-16_12,2023-03-16_02,2023-02-09_01
+ definitions=2023-03-16_12,2023-03-16_01,2023-02-09_01
 X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
