@@ -2,58 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 499446BC403
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 03:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E876BC530
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 05:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjCPCxq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Mar 2023 22:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
+        id S229525AbjCPEUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 00:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjCPCxo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 22:53:44 -0400
+        with ESMTP id S229464AbjCPEUV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 00:20:21 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD381ADE0;
-        Wed, 15 Mar 2023 19:53:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2801A954;
+        Wed, 15 Mar 2023 21:20:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A90FAB81FA2;
-        Thu, 16 Mar 2023 02:53:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4C50C433EF;
-        Thu, 16 Mar 2023 02:53:39 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CC80BB81FBB;
+        Thu, 16 Mar 2023 04:20:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 65926C4339B;
+        Thu, 16 Mar 2023 04:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678935220;
-        bh=U6vi7FwBOAtQjdOn0Mr1hOIpoxeUx8OuGidQW56SK94=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=i+NNVM61slkjVhR6VuHLySykIGhGSV5SRESxpqeqapWY1by15Mmo9FcrPavwsFPrd
-         pqzKt8U6xPaF8Wz/nwI8rcuA371KIeltcm4A9Lug9EIBfrdnc4JMTvnfUaonS1Db68
-         MZ7QRwhW+gX3oiRUk1EGtMUk4sk4rIcN+TxsrcV2Z8mZEav9iY7mIAaIBQvPD9NeTq
-         RiXUuiGkpypi91rM5LzYxlnwWj1Ir7ducTSFSMPnDnUTmBeAe9+pFPRsAJhyCpONDc
-         AiTqSW1bNswS7L5JRgUc47JWCWpEfSsRERj4ZrwYpOEIScItKYrQDx7g1q8OjWwNxZ
-         CcJ5RXDKXBNBg==
-Date:   Wed, 15 Mar 2023 19:53:38 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, saeedm@nvidia.com,
-        leon@kernel.org, shayagr@amazon.com, akiyano@amazon.com,
-        darinzon@amazon.com, sgoutham@marvell.com,
-        lorenzo.bianconi@redhat.com, toke@redhat.com, teknoraver@meta.com,
-        ttoukan.linux@gmail.com
-Subject: Re: [PATCH net v2 7/8] net/mlx5e: take into account device
- reconfiguration for xdp_features flag
-Message-ID: <20230315195338.563e1399@kernel.org>
-In-Reply-To: <ZBKC8lxQurwQpj4k@x130>
-References: <cover.1678364612.git.lorenzo@kernel.org>
-        <16c37367670903e86f863cc8c481100dd4b3a323.1678364613.git.lorenzo@kernel.org>
-        <20230315163900.381dd25e@kernel.org>
-        <20230315172932.71de01fa@kernel.org>
-        <ZBKC8lxQurwQpj4k@x130>
+        s=k20201202; t=1678940417;
+        bh=2Ue7eCK1RHPG30/1sgFeein0aQgNO7hDTPq9R4C+FME=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Y8u/ZxWWpb97QEyx+XiNGHJFAqHm8K4N0zC/amQ78P3C3X+Lcab9DaWTcexkMW8ZN
+         w5ojBt9hDuxnsCnZyVwGM7xDNwkXQSyc7RkdaLEPRcBtQCmtguq/5Hn7BHEke5iYC7
+         U0x3yWUBAUVU60RxTFEXQzhWXVQtxmGy+464xmiDIaQrU8whvjFLgc1DyJPf+bucBG
+         ClpUX87X8cyq1m13gpkJWycNrjzDdq+mKQZtPDJ/jpDg15Zm6xZschzOrr5/INkRs9
+         MO6mBrNevLo3nErsFV/IB9c72eLZEjAhDLJoFlsYr0QMpQzwB0IkC8yImLohhSMe9X
+         hCEm+FS0moXSw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5072BE66CBF;
+        Thu, 16 Mar 2023 04:20:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] veth: Fix use after free in XDP_REDIRECT
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167894041732.26311.6593717674885265121.git-patchwork-notify@kernel.org>
+Date:   Thu, 16 Mar 2023 04:20:17 +0000
+References: <20230314153351.2201328-1-sbohrer@cloudflare.com>
+In-Reply-To: <20230314153351.2201328-1-sbohrer@cloudflare.com>
+To:     Shawn Bohrer <sbohrer@cloudflare.com>
+Cc:     toshiaki.makita1@gmail.com, toke@kernel.org,
+        makita.toshiaki@lab.ntt.co.jp, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com, lorenzo@kernel.org
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,14 +56,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 15 Mar 2023 19:46:10 -0700 Saeed Mahameed wrote:
-> >I think so.. let me send a full patch.  
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 14 Mar 2023 10:33:51 -0500 you wrote:
+> 718a18a0c8a67f97781e40bdef7cdd055c430996 "veth: Rework veth_xdp_rcv_skb
+> in order to accept non-linear skb" introduced a bug where it tried to
+> use pskb_expand_head() if the headroom was less than
+> XDP_PACKET_HEADROOM.  This however uses kmalloc to expand the head,
+> which will later allow consume_skb() to free the skb while is it still
+> in use by AF_XDP.
 > 
-> We have an  internal version of a fix, Tariq is finalizing some review
-> comments and we will be posting it ASAP.
+> [...]
 
-Ah, I already posted. Does it look different?
+Here is the summary with links:
+  - veth: Fix use after free in XDP_REDIRECT
+    https://git.kernel.org/netdev/net/c/7c10131803e4
 
-https://patchwork.kernel.org/project/netdevbpf/patch/20230316002903.492497-1-kuba@kernel.org/
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I wanted to make sure that it's ready for tomorrow's PR
+
