@@ -2,150 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9826BD627
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 17:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9FB6BD693
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 18:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbjCPQph (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 12:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
+        id S229674AbjCPRCH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 13:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjCPQpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 12:45:36 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B772364F;
-        Thu, 16 Mar 2023 09:45:23 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id o12so10052429edb.9;
-        Thu, 16 Mar 2023 09:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678985121;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qk1KsGWLQztfODkdNA5CzyfHGVNa/z2WXDSLe6Kroh4=;
-        b=TPl+6VW4i1BEntBSGrmHQhuPkLML1xqbQGeMJKTVjspAc7xPiOba9iZZ6L1U/Io5Ww
-         WuBvjosXRcdiEPrST6aNoi7cK0u42OAGRO1n60HNQRKZwtIfRoNULJIMSBWBqjaj7imW
-         uzPjbsZr9+Sb941AuVsWSLHmrkY7a4L+uiQ+xfYKXtmQ7PkZ8fgFo6EC7APH0jWWxsuM
-         vR4+aZ/XJX+5sdpBmwZ+K7rmSzxMtRcMiL+5dNbGzyp9Ksh1nRqiPlRRTfWUbU3NKgO2
-         DZQef3frrc2GxXCeDZDJNRMTT6moJcZ7YKo1WRQEZ2l/FMn6zsITqqFb94Q5M/FgS0ro
-         BAbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678985121;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qk1KsGWLQztfODkdNA5CzyfHGVNa/z2WXDSLe6Kroh4=;
-        b=E4mxZUa2H83ZR60xleeQKqBAw8zuigk95f3U5un1LJHogB7Eu3fLdwvS4buhLhT5rR
-         +W2tVYPdKlGj9f9LY7dzKJ0uckFgZwDJrbgUGbausb0nf53p5lGCNsND8pWRNCmKVesk
-         JEDlTTkof1aWwv2r0CjfruxoANAZyAP6V0TcRPmyyBtisY6fD84HgXhQcFcIlwsrGSil
-         Jh/pbfwWNriGyV1cy0kDdlOXv3NP7VHJFJ+I7ZcO45U1sX38u9tpSo2ySKr05DJjWaPS
-         bHr6xC30v+Q7nj0wdQwKPtw3Q8Vny+9dLX/PEAlx4GPepmJLhbXKAvJU9pPSAsmloWuf
-         x2wA==
-X-Gm-Message-State: AO0yUKV+zU8WsJ9P/gs+rsdFM8poPmUBMWAJwvndGlBdVu3aW34+ZPas
-        HT+994VUydRdI/3Zo+BeLDZDdSmjD/j5tzsQUiQ=
-X-Google-Smtp-Source: AK7set+n8BZhzkGD4ZyVPUj5SbSUpkrn7DsakOw8BaQfdZ36BLko2RCh5UwkfeOmpLxAd4+nOFvx4rrGkMvcRySKxx4=
-X-Received: by 2002:a17:907:36e:b0:877:747d:4a85 with SMTP id
- rs14-20020a170907036e00b00877747d4a85mr5740162ejb.3.1678985121420; Thu, 16
- Mar 2023 09:45:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230315223607.50803-1-alexei.starovoitov@gmail.com>
- <20230315223607.50803-2-alexei.starovoitov@gmail.com> <e3a68d87c4f7589ab19fe6ddf6b0341404108386.camel@gmail.com>
-In-Reply-To: <e3a68d87c4f7589ab19fe6ddf6b0341404108386.camel@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 16 Mar 2023 09:45:10 -0700
-Message-ID: <CAADnVQL62Qr0ChNgOcs0o-pJ+x9HKx8R-TY321XaGqY=TSL2jQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow ld_imm64 instruction to point to kfunc.
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S229631AbjCPRCF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 13:02:05 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43A79B2F7;
+        Thu, 16 Mar 2023 10:01:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 746D3B8228C;
+        Thu, 16 Mar 2023 17:01:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BABF6C4339B;
+        Thu, 16 Mar 2023 17:01:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678986117;
+        bh=iAe83v06CelvQ5x9yL4BVebJHJ8BOoQ+WiuxJO46PLc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UrAFSXvLQU2L+HELh4Ww55FjwUFPh88C4WrAY8SuExteQeDon/zQi9uIlnQ0FeLUN
+         IloCjLYHlbUgUQ9Q9TsI1exG7B+AjPZNwB2NWj39PMHS3epq0d2Mth7nidheT4cxW4
+         6qSEwwCxL3uVBH8whbcX+/nskeSD772HAApttUAqVdHZy8vIyYxWVVxNA5XPFAi4m7
+         zQjb2XvY9Mw+JrwQftcZWPS7Jfx/qmNqGiaWa0KcCqz2SuzuIhhWdOqR32100jjvvw
+         f3raN7WrqQRL9KfyDpOifwgo1nJj0rDvM57S64hE+TJjTBKfS/cDZ7fCeanU41XyGw
+         z6eEp+AwgZg0w==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        David Vernet <void@manifault.com>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Tejun Heo <tj@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Namhyung Kim <namhyung@gmail.com>,
+        Dave Chinner <david@fromorbit.com>
+Subject: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
+Date:   Thu, 16 Mar 2023 18:01:40 +0100
+Message-Id: <20230316170149.4106586-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 7:14=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Wed, 2023-03-15 at 15:36 -0700, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Allow ld_imm64 insn with BPF_PSEUDO_BTF_ID to hold the address of kfunc=
-.
-> > PTR_MEM is already recognized for NULL-ness by is_branch_taken(),
-> > so unresolved kfuncs will be seen as zero.
-> > This allows BPF programs to detect at load time whether kfunc is presen=
-t
-> > in the kernel with bpf_kfunc_exists() macro.
-> >
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> >  kernel/bpf/verifier.c       | 7 +++++--
-> >  tools/lib/bpf/bpf_helpers.h | 3 +++
-> >  2 files changed, 8 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 60793f793ca6..4e49d34d8cd6 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -15955,8 +15955,8 @@ static int check_pseudo_btf_id(struct bpf_verif=
-ier_env *env,
-> >               goto err_put;
-> >       }
-> >
-> > -     if (!btf_type_is_var(t)) {
-> > -             verbose(env, "pseudo btf_id %d in ldimm64 isn't KIND_VAR.=
-\n", id);
-> > +     if (!btf_type_is_var(t) && !btf_type_is_func(t)) {
-> > +             verbose(env, "pseudo btf_id %d in ldimm64 isn't KIND_VAR =
-or KIND_FUNC\n", id);
-> >               err =3D -EINVAL;
-> >               goto err_put;
-> >       }
-> > @@ -15990,6 +15990,9 @@ static int check_pseudo_btf_id(struct bpf_verif=
-ier_env *env,
-> >               aux->btf_var.reg_type =3D PTR_TO_BTF_ID | MEM_PERCPU;
-> >               aux->btf_var.btf =3D btf;
-> >               aux->btf_var.btf_id =3D type;
-> > +     } else if (!btf_type_is_func(t)) {
-> > +             aux->btf_var.reg_type =3D PTR_TO_MEM | MEM_RDONLY;
-> > +             aux->btf_var.mem_size =3D 0;
->
-> This if statement has the following conditions in master:
->
->         if (percpu) {
->         // ...
->         } else if (!btf_type_is_struct(t)) {
->         // ...
->         } else {
->         // ...
->         }
->
-> Conditions `!btf_type_is_func()` and `!btf_type_is_struct()` are
-> not mutually exclusive, thus adding `if (!btf_type_is_func())`
-> would match certain conditions that were previously matched by struct
-> case, wouldn't it? E.g. if type is `BTF_KIND_INT`?
+hi,
+this patchset adds build id object pointer to struct file object.
 
-ohh. good catch!
+We have several use cases for build id to be used in BPF programs
+[2][3].
 
-> Although, I was not able to trigger it, as it seems that pahole only
-> encodes per-cpu vars in BTF.
+Having build id pointer stored directly in file object allows to get
+build id reliably regardless of the execution context as described
+in [3].
 
-right. that's why we don't have selftests for this code
-that could have caught my braino.
+Previous iteration [1] stored build id pointer into inode, but it
+became clear that struct file object is better place, because we read 
+the build id when the file is mmap-ed and as Dave Chinner said [4]:
 
-There were patches to add vars to vmlinux btf, but it didn't materialize ye=
-t.
+> Yes, the problem being that we can cache hundreds of millions of
+> inodes in memory, and only a very small subset of them are going to
+> have open files associated with them. And an even smaller subset are
+> going to be mmapped.
+
+thanks,
+jirka
+
+
+v3 changes:
+  - moved build id back to file object (discussed in [4])
+  - drop patch 4, it's not needed [Andrii]
+  - added ack to patch 7 [Andrii]
+  - replaced BUILD_ID_SIZE_MAX macro with enum [Andrii]
+  - few re-formatting fixes [Andrii]
+
+v2 changes:
+  - store build id under inode [Matthew Wilcox]
+  - use urandom_read and liburandom_read.so for test [Andrii]
+  - add libelf-based helper to fetch build ID from elf [Andrii]
+  - store build id or error we got when reading it [Andrii]
+  - use full name i_build_id [Andrii]
+  - several tests fixes [Andrii]
+
+
+[1] https://lore.kernel.org/bpf/20230228093206.821563-1-jolsa@kernel.org/
+[2] https://lore.kernel.org/bpf/CA+khW7juLEcrTOd7iKG3C_WY8L265XKNo0iLzV1fE=o-cyeHcQ@mail.gmail.com/
+[3] https://lore.kernel.org/bpf/ZABf26mV0D0LS7r%2F@krava/
+[4] https://lore.kernel.org/bpf/20230228220714.GJ2825702@dread.disaster.area/
+---
+Jiri Olsa (9):
+      mm: Store build id in file object
+      perf: Use file object build id in perf_event_mmap_event
+      bpf: Use file object build id in stackmap
+      bpf: Switch BUILD_ID_SIZE_MAX to enum
+      selftests/bpf: Add read_buildid function
+      selftests/bpf: Add err.h header
+      selftests/bpf: Replace extract_build_id with read_build_id
+      selftests/bpf: Add iter_task_vma_buildid test
+      selftests/bpf: Add file_build_id test
+
+ fs/file_table.c                                                  |  3 +++
+ include/linux/buildid.h                                          | 21 ++++++++++++++++++-
+ include/linux/fs.h                                               |  7 +++++++
+ kernel/bpf/stackmap.c                                            | 24 +++++++++++++++++++++-
+ kernel/events/core.c                                             | 43 ++++++++++++++++++++++++++++++++++----
+ lib/buildid.c                                                    | 42 +++++++++++++++++++++++++++++++++++++
+ mm/Kconfig                                                       |  9 ++++++++
+ mm/mmap.c                                                        | 18 ++++++++++++++++
+ tools/testing/selftests/bpf/Makefile                             |  7 ++++++-
+ tools/testing/selftests/bpf/no_build_id.c                        |  6 ++++++
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c                | 78 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/file_build_id.c           | 98 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c     | 19 +++++++----------
+ tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c | 17 ++++++---------
+ tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c    | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/err.h                          | 18 ++++++++++++++++
+ tools/testing/selftests/bpf/progs/file_build_id.c                | 70 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/profiler.inc.h                 |  3 +--
+ tools/testing/selftests/bpf/test_progs.c                         | 25 ----------------------
+ tools/testing/selftests/bpf/test_progs.h                         | 11 +++++++++-
+ tools/testing/selftests/bpf/trace_helpers.c                      | 86 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/trace_helpers.h                      |  5 +++++
+ 22 files changed, 608 insertions(+), 58 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/no_build_id.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/file_build_id.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c
+ create mode 100644 tools/testing/selftests/bpf/progs/err.h
+ create mode 100644 tools/testing/selftests/bpf/progs/file_build_id.c
