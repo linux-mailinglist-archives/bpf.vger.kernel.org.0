@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D54B26BC363
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 02:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311D76BC366
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 02:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbjCPBl1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Mar 2023 21:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        id S229456AbjCPBl2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Mar 2023 21:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjCPBl0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Mar 2023 21:41:26 -0400
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00659ABB1C;
-        Wed, 15 Mar 2023 18:41:25 -0700 (PDT)
-Received: by mail-qt1-f173.google.com with SMTP id h19so292618qtn.1;
-        Wed, 15 Mar 2023 18:41:25 -0700 (PDT)
+        with ESMTP id S229704AbjCPBl2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Mar 2023 21:41:28 -0400
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2436BAB080;
+        Wed, 15 Mar 2023 18:41:27 -0700 (PDT)
+Received: by mail-qt1-f171.google.com with SMTP id t9so267390qtx.8;
+        Wed, 15 Mar 2023 18:41:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678930884;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P55rgRz7v69PxyoCgb99Xdtulupv+YyUUL74psxzFss=;
-        b=o8Xr1lUpwYr7kSO7EpdlIecPeiwNZGBPD2321U0mf5D4Zk2bPluVmA1d9LWEiKmr+p
-         qO3ZnbG/dhEI3HX8N6KHn/w/NALeDBVuU0roD/AIXf4/r994IC7a0D578nw5SUdzETHn
-         llnUAPkWVztkl087PhYC1HDgyt1d737o8TFeKAFkyW3okPo0hIor2U/YoHB7LnGqMxTO
-         ol8D+VLH+QhgjC/9tBZYtGnUhBhaX27yYF3fISc+jU/UIESr6UntPqz/vrFqWT0JidPn
-         ldLza/VhWacSQ+VFHsWqcuOQBvwDHyI+uBBVrMCCBeGgjmZNFlE7FbxqRtVjwiDZEe1Z
-         GKAg==
-X-Gm-Message-State: AO0yUKVHLsNn7kjNsslyV1uxAdHsdK4izVBBgVdOgUkwlNAxuCZ3At3Y
-        AtCdjdKq6BBwF3lkbvMbVVFOiBlnyY7/sJef
-X-Google-Smtp-Source: AK7set/vq5oAulAOo6+oXgQkLzxSzeDaTgB5dkSmnjSvYtDjYnIWUel1zyNTWkJNlW+Fi6jcfgmrCg==
-X-Received: by 2002:ac8:7fc6:0:b0:3bf:bbaf:5c82 with SMTP id b6-20020ac87fc6000000b003bfbbaf5c82mr3700973qtk.21.1678930884435;
-        Wed, 15 Mar 2023 18:41:24 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1678930886;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RmYJO+iIXCovawotEcIt4TeAe1rA/wKRkg1b4WWjtqo=;
+        b=k02aeUMyEIDSiaISUUew1Pm80Sr21sa1WkgpEnh8QfN6tmURi5iJJIAHnCyRU9nPy7
+         f32sLb5SNjPSiWJzTjnxGcgLecazi/YgI4jfCDFxZ9u48DChaXf4TDw1nfE2TrWoYFj/
+         GGiL+bmGOUQqotvIh0lnH6TGdFCCGm0OsjcS707t29zWCkq059CTMwiGmIqh9DitoGBK
+         3e6M6MxaT0NMdrUubnAoltd4YDf0Pk+uaJAmtxO0bl8ke2Vg2dxFW98zPLJr64gbhLQi
+         9IuFRZuYWFAsb7EVfGzNs4FGxBTDOEzNoMvcc3gj7ZH/gWq9TyAKXHLRfjPi9Y0GsdgZ
+         wRIQ==
+X-Gm-Message-State: AO0yUKWMrfU0Rm9/m2cs7sdZX/nG6YfwVH1T/+3cceOeEgFhS5SO+1IO
+        4HVVi9W21uq2wsWRNZcU6dKRN9UN5941VYl/
+X-Google-Smtp-Source: AK7set/tePkpx+xqSL3Fa44zFtsjJiZ1mY595ah/w/GGapXjUAczBIgrfnSHIPfdccQaAlsvhA4wiA==
+X-Received: by 2002:a05:622a:1449:b0:3b8:6c8e:4f85 with SMTP id v9-20020a05622a144900b003b86c8e4f85mr3085144qtx.43.1678930885853;
+        Wed, 15 Mar 2023 18:41:25 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:400::5:5c58])
-        by smtp.gmail.com with ESMTPSA id w19-20020a05620a0e9300b00746279f3fd5sm573675qkm.9.2023.03.15.18.41.23
+        by smtp.gmail.com with ESMTPSA id f33-20020a05622a1a2100b003bfb5fd72a7sm5048670qtb.86.2023.03.15.18.41.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 18:41:23 -0700 (PDT)
+        Wed, 15 Mar 2023 18:41:25 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -44,66 +44,94 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com
-Subject: [PATCH bpf-next 0/5] Make struct bpf_cpumask RCU safe
-Date:   Wed, 15 Mar 2023 20:41:17 -0500
-Message-Id: <20230316014122.678082-1-void@manifault.com>
+Subject: [PATCH bpf-next 1/5] bpf: Free struct bpf_cpumask in call_rcu handler
+Date:   Wed, 15 Mar 2023 20:41:18 -0500
+Message-Id: <20230316014122.678082-2-void@manifault.com>
 X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230316014122.678082-1-void@manifault.com>
+References: <20230316014122.678082-1-void@manifault.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The struct bpf_cpumask type is currently not RCU safe. It uses the
-bpf_mem_cache_{alloc,free}() APIs to allocate and release cpumasks, and
-those allocations may be reused before an RCU grace period has elapsed.
-We want to be able to enable using this pattern in BPF programs:
+The struct bpf_cpumask type uses the bpf_mem_cache_{alloc,free}() APIs
+to allocate and free its cpumasks. The bpf_mem allocator may currently
+immediately reuse some memory when its freed, without waiting for an RCU
+read cycle to elapse. We want to be able to treat struct bpf_cpumask
+objects as completely RCU safe.
 
-private(MASK) static struct bpf_cpumask __kptr *global;
+This is necessary for two reasons:
 
-int BPF_PROG(prog, ...)
-{
-	struct bpf_cpumask *cpumask;
+1. bpf_cpumask_kptr_get() currently does an RCU-protected
+   refcnt_inc_not_zero(). This of course assumes that the underlying
+   memory is not reused, and is therefore unsafe in its current form.
 
-	bpf_rcu_read_lock();
-	cpumask = global;
-	if (!cpumask) {
-		bpf_rcu_read_unlock();
-		return -1;
-	}
-	bpf_cpumask_setall(cpumask);
-	...
-	bpf_rcu_read_unlock();
-}
+2. We want to be able to get rid of bpf_cpumask_kptr_get() entirely, and
+   intead use the superior kptr RCU semantics now afforded by the
+   verifier.
 
-In other words, to be able to pass a kptr to KF_RCU bpf_cpumask kfuncs
-without requiring the acquisition and release of refcounts using
-bpf_cpumask_kptr_get(). This patchset enables this by making the struct
-bpf_cpumask type RCU safe, and removing the bpf_cpumask_kptr_get()
-function.
+This patch fixes (1), and enables (2), by making struct bpf_cpumask RCU
+safe. A subsequent patch will update the verifier to allow struct
+bpf_cpumask * pointers to be passed to KF_RCU kfuncs, and then a latter
+patch will remove bpf_cpumask_kptr_get().
 
-David Vernet (5):
-  bpf: Free struct bpf_cpumask in call_rcu handler
-  bpf: Mark struct bpf_cpumask as rcu protected
-  bpf/selftests: Test using global cpumask kptr with RCU
-  bpf: Remove bpf_cpumask_kptr_get() kfunc
-  bpf,docs: Remove bpf_cpumask_kptr_get() from documentation
+Fixes: 516f4d3397c9 ("bpf: Enable cpumasks to be queried and used as kptrs")
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ kernel/bpf/cpumask.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
- Documentation/bpf/cpumasks.rst                | 30 +++-----
- kernel/bpf/cpumask.c                          | 37 +++-------
- kernel/bpf/verifier.c                         |  1 +
- .../selftests/bpf/prog_tests/cpumask.c        |  2 +-
- .../selftests/bpf/progs/cpumask_common.h      |  7 +-
- .../selftests/bpf/progs/cpumask_failure.c     | 68 +++++++++++++++----
- .../selftests/bpf/progs/cpumask_success.c     | 29 ++++----
- 7 files changed, 95 insertions(+), 79 deletions(-)
-
+diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+index b6587ec40f1b..9ab462c5848a 100644
+--- a/kernel/bpf/cpumask.c
++++ b/kernel/bpf/cpumask.c
+@@ -24,6 +24,7 @@
+  */
+ struct bpf_cpumask {
+ 	cpumask_t cpumask;
++	struct rcu_head rcu;
+ 	refcount_t usage;
+ };
+ 
+@@ -108,6 +109,16 @@ __bpf_kfunc struct bpf_cpumask *bpf_cpumask_kptr_get(struct bpf_cpumask **cpumas
+ 	return cpumask;
+ }
+ 
++static void cpumask_free_cb(struct rcu_head *head)
++{
++	struct bpf_cpumask *cpumask;
++
++	cpumask = container_of(head, struct bpf_cpumask, rcu);
++	migrate_disable();
++	bpf_mem_cache_free(&bpf_cpumask_ma, cpumask);
++	migrate_enable();
++}
++
+ /**
+  * bpf_cpumask_release() - Release a previously acquired BPF cpumask.
+  * @cpumask: The cpumask being released.
+@@ -121,11 +132,8 @@ __bpf_kfunc void bpf_cpumask_release(struct bpf_cpumask *cpumask)
+ 	if (!cpumask)
+ 		return;
+ 
+-	if (refcount_dec_and_test(&cpumask->usage)) {
+-		migrate_disable();
+-		bpf_mem_cache_free(&bpf_cpumask_ma, cpumask);
+-		migrate_enable();
+-	}
++	if (refcount_dec_and_test(&cpumask->usage))
++		call_rcu(&cpumask->rcu, cpumask_free_cb);
+ }
+ 
+ /**
 -- 
 2.39.0
 
