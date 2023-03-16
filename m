@@ -2,122 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BADC6BD780
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 18:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 831176BD77D
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 18:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbjCPRuy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 13:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
+        id S230202AbjCPRu1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 13:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbjCPRut (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 13:50:49 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F23B145B62
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 10:50:33 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id bp11so1434587ilb.3
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 10:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678989031;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wVREMZ5kpSW/gc2Ge3hXpJkQknE5nkfYCVcEvxv4EXI=;
-        b=asLa2HDFhrf4l/5L/rbsFjIMDSD0pGnamZAh61JnlEKslGh4/ioiqBPX5uimZuV0/A
-         l9Uu2x/ecW9+abZ5qSQlxUkjLcxSO4AjWkr2OAV6V20nTK80dRjDAVHq9s4SNcHZaCTh
-         b/EMGCnN6cbq8pBPRyI3yiSwd4l+szi8F2T9/R/zJdHOpp2H+nZM+3rja9gmrjzL09aV
-         8lzePT6Z0KcwYBoJ83jCr/EoE3t87+M/o+qfIQ5LGn+BHwcypDU2tBHD+I1ut+qd2cmS
-         ccWeNJOdkJgAGQDu7tIrozPi3pqswZfkqeC1NtX9dIp0M+C033XYN3Mw5Raq2rTKVtl0
-         qSug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678989031;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wVREMZ5kpSW/gc2Ge3hXpJkQknE5nkfYCVcEvxv4EXI=;
-        b=hInHBD7o7RaeW2RAghmyAsINW7fRpMfbEquq9LpjuJGzmJnFGNGUG39DIBC5MwnjSv
-         7FF1/DzKSCYuPt3/S17YFrp8cl6oFK1xGmJSYVRz3/fOqosxiSP4t/XBBJMwZnFkp5aJ
-         j9vqBKBLPC7E8nqC7k4/jC9KjuScm08EQfsBgX5T+umohCZApFr2H8iuDUcPf399dzj6
-         8GnyYtXivJcSPaduvOXf3fNa9/wBW+bs5RnJewyungYqQ088f+ZjI6Biu/XUfhFFGhnt
-         Zhltxh3MvF9tebOSLIrnYXZJQ4fITqniRxsMnGzCdibCeWLOtUjuXCTX4EM1zgeIZsMN
-         7Yag==
-X-Gm-Message-State: AO0yUKVEs48URBlIloKLeH0xEE8rDKW3LHLai1dEeMG+jn1Jn84/Ci48
-        EX8y9T14/gIzDxp+f0IUt9OGnmnH2A7FdVmnjsbO6Q==
-X-Google-Smtp-Source: AK7set8mXf20D2vvZ13VDFjuQCTRthMKZlP5n2x8/krArMampywj3ASCIlATMoK0zgwEG6o2Ok5YuhGPd3VwvvLLZVk=
-X-Received: by 2002:a92:c542:0:b0:313:93c8:e71b with SMTP id
- a2-20020a92c542000000b0031393c8e71bmr243410ilj.15.1678989031152; Thu, 16 Mar
- 2023 10:50:31 -0700 (PDT)
+        with ESMTP id S230234AbjCPRuZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 13:50:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C95DCA40;
+        Thu, 16 Mar 2023 10:50:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6C865B822F0;
+        Thu, 16 Mar 2023 17:50:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0EC62C4339B;
+        Thu, 16 Mar 2023 17:50:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678989020;
+        bh=IJDYG+9CxMOoa0OhQpSvem/aupmEe+hwiEbqjI121r0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=hxAJ+P55+9YksBnbEHsTRNP3zNvY/3vyJvSJ7oQ7Yu/qpJNrUzqOR63UZw6majpi9
+         9ADeBqRNUofbadwieVSkbfJI/XrhFnHhjH89BryZBfhT+AUa1V8RWSm7iaNnhdeUmJ
+         DM4+MHWCQjf5+xjjYQ0zFFRsIVphHoMeTcpWHJG07xvpsAymJV3yFoNeaGXAHKdgq6
+         Z9S9SRSGMpQ8cN2ORkYfvG6MmI8OPkCP4oPolwq5g8T9XzhHFm0U5xchI2OeZSdA8d
+         vAgIOb+K4hQcHgc35Yr9U1y1peG3G3g7SqhGKlbv1zBtNHSoImDFUmdUU791KIM5Db
+         XfkgVWuET8/CA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DFD12E66CBF;
+        Thu, 16 Mar 2023 17:50:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230316170149.4106586-1-jolsa@kernel.org> <ZBNTMZjEoETU9d8N@casper.infradead.org>
-In-Reply-To: <ZBNTMZjEoETU9d8N@casper.infradead.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 16 Mar 2023 10:50:16 -0700
-Message-ID: <CAP-5=fVYriALLwF2FU1ZUtLuHndnvPw=3SctVqY6Uwex8JfscA@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Namhyung Kim <namhyung@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2 0/2] virtio_net: fix two bugs related to XDP
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167898901991.2133.10546001323200249698.git-patchwork-notify@kernel.org>
+Date:   Thu, 16 Mar 2023 17:50:19 +0000
+References: <20230315015223.89137-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20230315015223.89137-1-xuanzhuo@linux.alibaba.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        hengqi@linux.alibaba.com,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 10:35=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
-g> wrote:
->
-> On Thu, Mar 16, 2023 at 06:01:40PM +0100, Jiri Olsa wrote:
-> > hi,
-> > this patchset adds build id object pointer to struct file object.
-> >
-> > We have several use cases for build id to be used in BPF programs
-> > [2][3].
->
-> Yes, you have use cases, but you never answered the question I asked:
->
-> Is this going to be enabled by every distro kernel, or is it for special
-> use-cases where only people doing a very specialised thing who are
-> willing to build their own kernels will use it?
->
-> Saying "hubble/tetragon" doesn't answer that question.  Maybe it does
-> to you, but I have no idea what that software is.
->
-> Put it another way: how does this make *MY* life better?  Literally me.
-> How will it affect my life?
+Hello:
 
-So at Google we use build IDs for all profiling, I believe Meta is the
-same but obviously I can't speak for them. For BPF program stack
-traces, using build ID + offset stack traces is preferable to perf's
-whole system synthesis of mmap events based on data held in
-/proc/pid/maps. Individual stack traces are larger, but you avoid the
-ever growing problem of coming up with some initial virtual memory
-state that will allow you to identify samples.
+This series was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-This doesn't answer the question about how this will help you, but I
-expect over time you will see scalability issues and also want to use
-tools assuming build IDs are present and cheap to access.
+On Wed, 15 Mar 2023 09:52:21 +0800 you wrote:
+> This patch set fixes two bugs related to XDP.
+> These two patch is not associated.
+> 
+> v2:
+>     1. add unlikely()
+> 
+> v1:
+>     1. fix the grammer error
+> 
+> [...]
 
-Thanks,
-Ian
+Here is the summary with links:
+  - [net,v2,1/2] virtio_net: fix page_to_skb() miss headroom
+    https://git.kernel.org/netdev/net/c/fa0f1ba7c823
+  - [net,v2,2/2] virtio_net: free xdp shinfo frags when build_skb_from_xdp_buff() fails
+    https://git.kernel.org/netdev/net/c/1a3bd6eabae3
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
