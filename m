@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D16956BD380
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 16:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E1F6BD3BF
+	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 16:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjCPP2G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 11:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
+        id S231603AbjCPPad (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 11:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231428AbjCPP2D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 11:28:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E48A18A7
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 08:26:43 -0700 (PDT)
+        with ESMTP id S231588AbjCPP3T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 11:29:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF4CE1908
+        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 08:27:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678980402;
+        s=mimecast20190719; t=1678980448;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=V4A9+ThbnxeOTamldoFRxBPwB7/WQbFmJXJUgDasL0c=;
-        b=gFTDnLL3aU3mgOPrmlOnuHouFjakXsDMvqg5WSIVD57wQkV4Hdq/l20zt67KxLKsLnHPWO
-        qOWQP0SlhDboC1cjWvxyVnXZPSUGVzp9Lg2wH6qR4UItJz7SSIYK1wIjcK0DAg+QJZho8w
-        QJ8/J1EDuriPQYQPuZ79xa1AHnRPDfk=
+        bh=cLmy3QT3PxPcXOXP8Tmrcj7ottmHeL6VPbhO66kxXIU=;
+        b=QEDSMsw1OeqJ2z6f/raydzgM3RcjZKOB0hHkDB8/5qFpC+R3NcVU++cb7SOG43RiZzobI5
+        b5O1qCou6HVcUAORtXvKg5MlNFhUcwhAif4SOP9BtZtgZX0FRcyvo2iBHGs7Cbjg3luCh8
+        pl2pr2n2jUAYkfyfWqEHLOuyN2t4dZs=
 Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
  [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-592-b1SC9PDcPYSYvZwVDt6M2w-1; Thu, 16 Mar 2023 11:26:37 -0400
-X-MC-Unique: b1SC9PDcPYSYvZwVDt6M2w-1
+ us-mta-531-HxkbzJbbNIOwbn5zC8ZlYg-1; Thu, 16 Mar 2023 11:27:24 -0400
+X-MC-Unique: HxkbzJbbNIOwbn5zC8ZlYg-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 31C5638149B9;
-        Thu, 16 Mar 2023 15:26:36 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 684F938149BF;
+        Thu, 16 Mar 2023 15:27:18 +0000 (UTC)
 Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1CF1E1121315;
-        Thu, 16 Mar 2023 15:26:34 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 521EB1121315;
+        Thu, 16 Mar 2023 15:27:16 +0000 (UTC)
 From:   David Howells <dhowells@redhat.com>
 To:     Matthew Wilcox <willy@infradead.org>,
         "David S. Miller" <davem@davemloft.net>,
@@ -53,9 +53,9 @@ Cc:     David Howells <dhowells@redhat.com>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         John Fastabend <john.fastabend@gmail.com>,
         Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Subject: [RFC PATCH 05/28] tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around tcp_sendmsg
-Date:   Thu, 16 Mar 2023 15:25:55 +0000
-Message-Id: <20230316152618.711970-6-dhowells@redhat.com>
+Subject: [RFC PATCH 21/28] tcp_bpf: Make tcp_bpf_sendpage() go through tcp_bpf_sendmsg(MSG_SPLICE_PAGES)
+Date:   Thu, 16 Mar 2023 15:26:11 +0000
+Message-Id: <20230316152618.711970-22-dhowells@redhat.com>
 In-Reply-To: <20230316152618.711970-1-dhowells@redhat.com>
 References: <20230316152618.711970-1-dhowells@redhat.com>
 MIME-Version: 1.0
@@ -71,9 +71,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-do_tcp_sendpages() is now just a small wrapper around tcp_sendmsg_locked(),
-so inline it.  This is part of replacing ->sendpage() with a call to
-sendmsg() with MSG_SPLICE_PAGES set.
+Translate tcp_bpf_sendpage() calls to tcp_bpf_sendmsg(MSG_SPLICE_PAGES).
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 cc: John Fastabend <john.fastabend@gmail.com>
@@ -84,63 +82,73 @@ cc: Jakub Kicinski <kuba@kernel.org>
 cc: Paolo Abeni <pabeni@redhat.com>
 cc: Jens Axboe <axboe@kernel.dk>
 cc: Matthew Wilcox <willy@infradead.org>
-cc: netdev@vger.kernel.org
 cc: bpf@vger.kernel.org
+cc: netdev@vger.kernel.org
 ---
- net/ipv4/tcp_bpf.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ net/ipv4/tcp_bpf.c | 49 +++++++++-------------------------------------
+ 1 file changed, 9 insertions(+), 40 deletions(-)
 
 diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index cf26d65ca389..7f17134637eb 100644
+index 7f17134637eb..de37a4372437 100644
 --- a/net/ipv4/tcp_bpf.c
 +++ b/net/ipv4/tcp_bpf.c
-@@ -72,11 +72,13 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+@@ -485,49 +485,18 @@ static int tcp_bpf_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ static int tcp_bpf_sendpage(struct sock *sk, struct page *page, int offset,
+ 			    size_t size, int flags)
  {
- 	bool apply = apply_bytes;
- 	struct scatterlist *sge;
-+	struct msghdr msghdr = { .msg_flags = flags | MSG_SPLICE_PAGES, };
- 	struct page *page;
- 	int size, ret = 0;
- 	u32 off;
+-	struct sk_msg tmp, *msg = NULL;
+-	int err = 0, copied = 0;
+-	struct sk_psock *psock;
+-	bool enospc = false;
+-
+-	psock = sk_psock_get(sk);
+-	if (unlikely(!psock))
+-		return tcp_sendpage(sk, page, offset, size, flags);
++	struct bio_vec bvec;
++	struct msghdr msg = {
++		.msg_flags = flags | MSG_SPLICE_PAGES,
++	};
  
- 	while (1) {
-+		struct bio_vec bvec;
- 		bool has_tx_ulp;
+-	lock_sock(sk);
+-	if (psock->cork) {
+-		msg = psock->cork;
+-	} else {
+-		msg = &tmp;
+-		sk_msg_init(msg);
+-	}
++	bvec_set_page(&bvec, page, size, offset);
++	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
  
- 		sge = sk_msg_elem(msg, msg->sg.start);
-@@ -88,16 +90,18 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
- 		tcp_rate_check_app_limited(sk);
- retry:
- 		has_tx_ulp = tls_sw_has_ctx_tx(sk);
--		if (has_tx_ulp) {
--			flags |= MSG_SENDPAGE_NOPOLICY;
--			ret = kernel_sendpage_locked(sk,
--						     page, off, size, flags);
--		} else {
--			ret = do_tcp_sendpages(sk, page, off, size, flags);
--		}
-+		if (has_tx_ulp)
-+			msghdr.msg_flags |= MSG_SENDPAGE_NOPOLICY;
+-	/* Catch case where ring is full and sendpage is stalled. */
+-	if (unlikely(sk_msg_full(msg)))
+-		goto out_err;
+-
+-	sk_msg_page_add(msg, page, size, offset);
+-	sk_mem_charge(sk, size);
+-	copied = size;
+-	if (sk_msg_full(msg))
+-		enospc = true;
+-	if (psock->cork_bytes) {
+-		if (size > psock->cork_bytes)
+-			psock->cork_bytes = 0;
+-		else
+-			psock->cork_bytes -= size;
+-		if (psock->cork_bytes && !enospc)
+-			goto out_err;
+-		/* All cork bytes are accounted, rerun the prog. */
+-		psock->eval = __SK_NONE;
+-		psock->cork_bytes = 0;
+-	}
++	if (flags & MSG_SENDPAGE_NOTLAST)
++		msg.msg_flags |= MSG_MORE;
  
-+		if (flags & MSG_SENDPAGE_NOTLAST)
-+			msghdr.msg_flags |= MSG_MORE;
-+
-+		bvec_set_page(&bvec, page, size, off);
-+		iov_iter_bvec(&msghdr.msg_iter, ITER_SOURCE, &bvec, 1, size);
-+		ret = tcp_sendmsg_locked(sk, &msghdr, size);
- 		if (ret <= 0)
- 			return ret;
-+
- 		if (apply)
- 			apply_bytes -= ret;
- 		msg->sg.size -= ret;
-@@ -398,7 +402,7 @@ static int tcp_bpf_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 	long timeo;
- 	int flags;
+-	err = tcp_bpf_send_verdict(sk, psock, msg, &copied, flags);
+-out_err:
+-	release_sock(sk);
+-	sk_psock_put(sk, psock);
+-	return copied ? copied : err;
++	return tcp_bpf_sendmsg(sk, &msg, size);
+ }
  
--	/* Don't let internal do_tcp_sendpages() flags through */
-+	/* Don't let internal sendpage flags through */
- 	flags = (msg->msg_flags & ~MSG_SENDPAGE_DECRYPTED);
- 	flags |= MSG_NO_SHARED_FRAGS;
- 
+ enum {
 
