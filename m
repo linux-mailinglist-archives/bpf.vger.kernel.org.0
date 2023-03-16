@@ -2,195 +2,321 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5FF6BDBCF
-	for <lists+bpf@lfdr.de>; Thu, 16 Mar 2023 23:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7355C6BDCA8
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 00:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjCPWhV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 18:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        id S229702AbjCPXGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 19:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbjCPWhT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 18:37:19 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2ECADCF40
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 15:37:15 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id h14so1645321pgj.7
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 15:37:15 -0700 (PDT)
+        with ESMTP id S229488AbjCPXGT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 19:06:19 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE4EE046;
+        Thu, 16 Mar 2023 16:06:16 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id er8so2087416edb.0;
+        Thu, 16 Mar 2023 16:06:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1679006234;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20210112; t=1679007975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rMsZs7vaY1dtQwWiuc4rO1C9d6gVJ6aT1A7riq+UoUo=;
-        b=gp/w5AkIOYoqbzMmXD2sg40YoEY4FYEGbNGdp9hdueh2QotdreQLnSMzj6Wx8RdVF0
-         zYb151FM6yJTta6NkLRHNAG4kreSU1C8CzagtwNVA0WZoorRq6sfRZFN4wHC2W7etaOA
-         M9sm+EVq3gJ2aV4/ina6rYz79jpCbQQppSnsOGHfKoZy4VbKIBUYWRxwGi+p2j4LpML/
-         YBbdlKKUJDjByfXFygFYdNnvdjHRqPqeOdmTqHdZGeb5wjHOdErrETpVeRWma8C5tUtK
-         BIODu4QJvrU0/lNl9S0Ha1qeQZOW12xLIdLszw3WCjDpg0MA8InQZXD6zx5bMtJWZpoL
-         lFXQ==
+        bh=1lbwgNVP8/EzUPzs9Cc5aFDmpJKB5seYqAjSB8co8rY=;
+        b=K4Mfsjm5mY4M25QmVpgUu/4iqEfY8OLxOH1IhKrnEMtj2ZtLwb96A3S6TimmsUdzDD
+         FpsxYj6orpg6peh43rC1o27EJBVV02n7jzbK2F8DYcm6k6VAtQFUNJ60Ou4+ntJ4P6Y1
+         4NR3BiAOqVmwk4OB2rx+h7VRa56RawRDcM7ww6qblASERe0OR+Zl8wfwQg1FNI71wjga
+         kOUqaygOO7MvGzysLmTKIQRPr3JvQIvyEAWCV0ykGkPXzc0RJpOXrJ2clVsIShd96bjP
+         cET8U/2gcTQ6DIrUnv0/4/dS3w9wuMkrq41l3HGEqpxC2d50lJKk2tocLYkXg/74jOpa
+         HiBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679006234;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1679007975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rMsZs7vaY1dtQwWiuc4rO1C9d6gVJ6aT1A7riq+UoUo=;
-        b=T+5N3uQ1Vm3CGKuvwf/ECEUIHl7DUhTcNA033eZmbu0y96K9kPJniLGmw9tbZ9QT+G
-         VvhTK2o+kwfnDiJivpOFi+l6Q8VsSXJFtQNfytrhUIbp7eBmo9XPUTpik02nXgBA3Ie3
-         0JPvwz4/t1UE/MyINc2SzV/O+Wv/3MDqxOCCk0zO/239yEMlU3yCymbNWSirKZKcxVaY
-         msTmxuVPvR7xcXdW1cB17qypLUuLUPcRww119JPeH5SGnmPAXofHKSnUVhraGkYT2LcG
-         rFnBbmz46R9xW7mUWdLZSZeCy2KNnepxQY2VAlq8OOJxd9jjf/ZJyNyKZrnRnvwGESlz
-         z7cQ==
-X-Gm-Message-State: AO0yUKXfrJ9FCL+bA/wWPR4IZhfdn99kXKAtffGLp+nFb2BrMptw1dKY
-        WFbxg7ZsnXfy2EaXtJV39QuoPg==
-X-Google-Smtp-Source: AK7set+r9ykO27ngLD4FsAfg8yOkCYCSszKJLPibpXnxGB6rjDWSozY6pMOCW+mQih+yzdMAvsDo1A==
-X-Received: by 2002:a62:640b:0:b0:5a8:beb3:d55f with SMTP id y11-20020a62640b000000b005a8beb3d55fmr3764123pfb.32.1679006234478;
-        Thu, 16 Mar 2023 15:37:14 -0700 (PDT)
-Received: from ?IPv6:2601:647:4900:bd:5414:9cc1:4350:d262? ([2601:647:4900:bd:5414:9cc1:4350:d262])
-        by smtp.gmail.com with ESMTPSA id t19-20020a62ea13000000b005a8de0f4c64sm203533pfh.82.2023.03.16.15.37.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Mar 2023 15:37:14 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v2 bpf-next 2/3] bpf: Add bpf_sock_destroy kfunc
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <b28af125-f6dc-d5af-8c07-10aaababb465@linux.dev>
-Date:   Thu, 16 Mar 2023 15:37:12 -0700
-Cc:     kafai@fb.com, Stanislav Fomichev <sdf@google.com>,
-        bpf@vger.kernel.org
+        bh=1lbwgNVP8/EzUPzs9Cc5aFDmpJKB5seYqAjSB8co8rY=;
+        b=X3D01TpgH8PXKrASUAgugS6a05shJuFUOL52mS/8KUdHDhecmNOHbjWNk8UApmmKGP
+         jhegZ512LkLylhcrORFA3KWrd3njUqlGGFv8DFf+Qn34p76TmirvsPbsVfG7ojUKMNXW
+         sxGdEKxl72R+2EeiriU5gBrS0zeC+PYwplMnIkrgvS8GT/N5clyRibYROHWRW/pQ5Umi
+         TyDMX46cAxM1ZngtLtgZ+ushdiNo6jbDOr7URvaD2CcMcpUjx2+O6N/q5T40vyZxSmkr
+         S8uFj+nVASGpOMLMDTYBub7Fi/+ygk/szyRWoBXc09DBcDi7HMXVAVcZ9odXhxJ4MbBf
+         F0gw==
+X-Gm-Message-State: AO0yUKXOdtQQ9MKHwJ2wKmuNsuGYSDYvuzYDiKaHPXsfwn3B4yYOGSd4
+        YtgwqtRv28V/KsmI6jte5LMjYYs6U5TB9Fk5dRI=
+X-Google-Smtp-Source: AK7set/yGJWDqEW2XnZrMDjr8U0e8Bl8EjO1HkIe5BTDGkV28fIVFrMnZj5BF/mpOQpNXCnuapOYB10QITC2RYSarAQ=
+X-Received: by 2002:a17:906:8552:b0:8ab:b606:9728 with SMTP id
+ h18-20020a170906855200b008abb6069728mr6233918ejy.5.1679007975250; Thu, 16 Mar
+ 2023 16:06:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230315223607.50803-1-alexei.starovoitov@gmail.com>
+ <20230315223607.50803-2-alexei.starovoitov@gmail.com> <CAEf4BzaSMB6oKBO2VXvz4cVE9wXqYq+vyD=EOe3YJ3a-L==WCg@mail.gmail.com>
+ <CAADnVQLud8-+pexQo8rscVM2d8K2dsYU1rJbFGK2ZZygdAgkQA@mail.gmail.com>
+In-Reply-To: <CAADnVQLud8-+pexQo8rscVM2d8K2dsYU1rJbFGK2ZZygdAgkQA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 16 Mar 2023 16:06:02 -0700
+Message-ID: <CAEf4Bzat4dFCP40cMbDwPK-LyPKJtO1d0M44m9EbNajU9UgxFw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow ld_imm64 instruction to point to kfunc.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Tejun Heo <tj@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <FB695169-4640-4E50-901D-84CF145765F2@isovalent.com>
-References: <20230223215311.926899-1-aditi.ghag@isovalent.com>
- <20230223215311.926899-3-aditi.ghag@isovalent.com>
- <b28af125-f6dc-d5af-8c07-10aaababb465@linux.dev>
-To:     Martin KaFai Lau <martin.lau@linux.dev>, edumazet@google.com
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Mar 16, 2023 at 3:26=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Mar 16, 2023 at 1:34=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Mar 15, 2023 at 3:36=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > From: Alexei Starovoitov <ast@kernel.org>
+> > >
+> > > Allow ld_imm64 insn with BPF_PSEUDO_BTF_ID to hold the address of kfu=
+nc.
+> > > PTR_MEM is already recognized for NULL-ness by is_branch_taken(),
+> > > so unresolved kfuncs will be seen as zero.
+> > > This allows BPF programs to detect at load time whether kfunc is pres=
+ent
+> > > in the kernel with bpf_kfunc_exists() macro.
+> > >
+> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > > ---
+> > >  kernel/bpf/verifier.c       | 7 +++++--
+> > >  tools/lib/bpf/bpf_helpers.h | 3 +++
+> > >  2 files changed, 8 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 60793f793ca6..4e49d34d8cd6 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -15955,8 +15955,8 @@ static int check_pseudo_btf_id(struct bpf_ver=
+ifier_env *env,
+> > >                 goto err_put;
+> > >         }
+> > >
+> > > -       if (!btf_type_is_var(t)) {
+> > > -               verbose(env, "pseudo btf_id %d in ldimm64 isn't KIND_=
+VAR.\n", id);
+> > > +       if (!btf_type_is_var(t) && !btf_type_is_func(t)) {
+> > > +               verbose(env, "pseudo btf_id %d in ldimm64 isn't KIND_=
+VAR or KIND_FUNC\n", id);
+> > >                 err =3D -EINVAL;
+> > >                 goto err_put;
+> > >         }
+> > > @@ -15990,6 +15990,9 @@ static int check_pseudo_btf_id(struct bpf_ver=
+ifier_env *env,
+> > >                 aux->btf_var.reg_type =3D PTR_TO_BTF_ID | MEM_PERCPU;
+> > >                 aux->btf_var.btf =3D btf;
+> > >                 aux->btf_var.btf_id =3D type;
+> > > +       } else if (!btf_type_is_func(t)) {
+> > > +               aux->btf_var.reg_type =3D PTR_TO_MEM | MEM_RDONLY;
+> > > +               aux->btf_var.mem_size =3D 0;
+> > >         } else if (!btf_type_is_struct(t)) {
+> > >                 const struct btf_type *ret;
+> > >                 const char *tname;
+> > > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.=
+h
+> > > index 7d12d3e620cc..43abe4c29409 100644
+> > > --- a/tools/lib/bpf/bpf_helpers.h
+> > > +++ b/tools/lib/bpf/bpf_helpers.h
+> > > @@ -177,6 +177,9 @@ enum libbpf_tristate {
+> > >  #define __kptr_untrusted __attribute__((btf_type_tag("kptr_untrusted=
+")))
+> > >  #define __kptr __attribute__((btf_type_tag("kptr")))
+> > >
+> > > +/* pass function pointer through asm otherwise compiler assumes that=
+ any function !=3D 0 */
+> > > +#define bpf_kfunc_exists(fn) ({ void *__p =3D fn; asm ("" : "+r"(__p=
+)); __p; })
+> > > +
+> >
+> > I think we shouldn't add this helper macro. It just obfuscates a
+> > misuse of libbpf features and will be more confusing in practice.
+>
+> I don't think it obfuscates anything.
+> If __weak is missing in extern declaration of kfunc the libbpf will
+> error anyway, so there is no danger to miss it.
+>
+> > If I understand the comment, that asm is there to avoid compiler
+> > optimization of *knowing* that kfunc exists (it's extern is resolved
+> > to something other than 0), even if kfunc's ksym is not declared with
+> > __weak.
+>
+> That's the current behavior of the combination of llvm and libbpf.
+> Resolution of weak is a linker job. libbpf loading process is
+> equivalent to linking. It's "linking" bpf elf .o into kernel and
+> resolving weak symbols.
+> We can document and guarantee that libbpf will evaluate
+> unresolved into zero, but we might have a hard time doing the same with
+> compilers. It's currently the case for LLVM and I hope GCC will follow.
+> Here is nice writeup about weak:
+> https://maskray.me/blog/2021-04-25-weak-symbol
+>
+> Two things to notice in that writeup:
+> 1. "Unresolved weak symbols have a zero value."
+> This is part of ELF spec for linkers.
+> In our case it applies to libbpf.
+> But it doesn't apply to compilers.
+>
+> 2. "GCC<5 (at least x86_64 and arm) may emit PC-relative relocations
+> for hidden undefined weak symbols. GCC<5 i386 may optimize if (&foo)
+> foo(); to unconditional foo();"
+
+Ok, so
+
+/* pass function pointer through asm otherwise compiler assumes that
+any function !=3D 0 */
+
+comment was referring to compiler assuming that function !=3D 0 for
+__weak symbol? I definitely didn't read it this way. And "compiler
+assumes that function !=3D 0" seems a bit too strong of a statement,
+because at least Clang doesn't.
+
+>
+> In other words if compiler implements weak as PC-relative
+> the optimizer part of the compiler may consider it as always not-null
+> and optimize the check out.
+>
+> We can try to prevent that in LLVM and GCC compilers.
+
+I'd definitely do that, yes. Seems like GCC also realized that this is
+not good, so GCC>5 don't do this "optimization" (or whatever it was).
+
+It seems like we are good right now.
+
+We have tests for validating this for .kconfig and .ksym, so
+regardless of the macro let's have tests for .ksym functions as well.
+I think it's reasonable behavior that Clang has today and having a
+test we can detect regression and work with compilers to fix this.
+Just like we did previously with .rodata where GCC and Clang diverged.
+
+> Another approach is to have a macro that passes weak addr through asm
+> which prevents such optimization.
+> So we still rely on libbpf resolving to zero while "linking" and
+> macro prevents compilers from messing up the check.
+> I feel it's safer to do it with macro.
+>
+> I guess I'm fine leaving it out for now and just do
+> if (bpf_rcu_read_lock)
+>    bpf_rcu_read_lock();
+>
+> though such code looks ugly and begs for a comment or macro like:
+>
+> if (bpf_kfunc_exists(bpf_rcu_read_lock))
+>    bpf_rcu_read_lock();
+>
+> or
+>
+> if (bpf_rcu_read_lock) // unknown weak kfunc resolve to zero by libbpf
+>    // and compiler won't optimize it out
+>    bpf_rcu_read_lock();
+>
+> but adding such comment everywhere feels odd.
+> macro is a cleaner way to document the code.
+
+It's subjective. To me, checking whether __weak extern is non-NULL
+seems pretty clean and explicit. From blog that you referred:
+
+  > The ELF specification says "Unresolved weak symbols have a zero
+value." This property can be used to check whether a definition is
+provided.
+
+So this is quite intended use cases even outside of BPF world.
 
 
-> On Feb 28, 2023, at 2:55 PM, Martin KaFai Lau <martin.lau@linux.dev> =
-wrote:
->=20
-> On 2/23/23 1:53 PM, Aditi Ghag wrote:
->> +/* bpf_sock_destroy: Destroy the given socket with ECONNABORTED =
-error code.
->> + *
->> + * The helper expects a non-NULL pointer to a full socket. It =
-invokes
->> + * the protocol specific socket destroy handlers.
->> + *
->> + * The helper can only be called from BPF contexts that have =
-acquired the socket
->> + * locks.
->> + *
->> + * Parameters:
->> + * @sock: Pointer to socket to be destroyed
->> + *
->> + * Return:
->> + * On error, may return EPROTONOSUPPORT, EINVAL.
->> + * EPROTONOSUPPORT if protocol specific destroy handler is not =
-implemented.
->> + * 0 otherwise
->> + */
->> +int bpf_sock_destroy(struct sock_common *sock)
->> +{
->> +	/* Validates the socket can be type casted to a full socket. */
->> +	struct sock *sk =3D sk_to_full_sk((struct sock *)sock);
->=20
-> If sk !=3D sock, sk is not locked.
->=20
-> Does it have to do sk_to_full_sk()? =46rom looking at tcp_abort(), it =
-can handle TCP_NEW_SYN_RECV and TCP_TIME_WAIT. The bpf-tcp-iter is =
-iterating the hashtables that may have sk in different states. Ideally, =
-bpf-tcp-iter should be able to use bpf_sock_destroy() to abort the sk in =
-different states also.
+But for macro, it's not kfunc-specific (and macro itself has no way to
+check that you are actually passing kfunc ksym), so even if it was a
+macro, it would be better to call it something more generic like
+bpf_ksym_exists() (though that will work for .kconfig, yet will be
+inappropriately named).
 
-I initially added the check for request sockets as tcp_abort references =
-some of the fields outside of `sock_common`, but tcp_abort does have a =
-special handling for both req and time_wait sockets, as you pointed out. =
-So I'll remove the  `sk_to_full_sk()` call.
+The asm bit, though, seems to be a premature thing that can hide real
+compiler issues, so I'm still hesitant to add it. It should work today
+with modern compilers, so I'd test and validate this.
 
+>
+> > __weak has a consistent semantics to indicate something that's
+> > optional. This is documented (e.g., [0] for kconfig variables) We do
+> > have tests making sure this works for weak __kconfig and variable
+> > __ksyms. Let's add similar ones for kfunc ksyms.
+>
+> Right. We should definitely document that libbpf resolves
+> unknown __ksym __weak into zero.
 
-Eric/Martin:
+Yep.
 
->Ideally, bpf-tcp-iter should be able to use bpf_sock_destroy() to abort =
-the sk in different states also.
+>
+> > +       if (bpf_iter_num_new2) { // works
+> > +               struct bpf_iter_num it;
+> > +               bpf_iter_num_new2(&it, 0, 100);
+> > +               bpf_iter_num_destroy(&it);
+> > +       }
+>
+> It works, but how many people know that unknown weak resolves to zero ?
+> I didn't know until yesterday.
 
-On somewhat of a related note, I ran into an interesting problem while =
-adding more tests to exercise changes in the first commit ("Implement =
-batching for UDP sockets iterator") more. As it turns out, UDP =
-*listening* sockets weren't getting destroyed as client sockets.=20
+I was explicit about this from the very beginning of BPF CO-RE work.
+ksyms were added later, but semantics was consistent between .kconfig
+and .ksym. Documentation can't be ever good enough and discoverable
+enough (like [0]), of course, but let's do our best to make it as
+obvious as possible. This __weak behavior is tested and used in
+multiple selftests as well:
 
-So here is what the test does at a high level -=20
-1) Start SO_REUSEPORT servers. (I hit same issue for regular UDP =
-listening sockets as well.)
-2) Run BPF iterators that destroys sockets (there are only server =
-sockets).
-3) Start a regular server that binds on the same port as the ones from =
-(1) with the expectation that it succeeds after (1) sockets were =
-destroyed. The server fails to bind!=20
-
-When I debugged the issue, I found that the listening UDP sockets were =
-still lurking around in the hash table even after they were supposed to =
-be destroyed. With the help of kprobes and print statements in the BPF =
-test iterator program, I confirmed that tcp_abort and the internal =
-function calls (specifically, `__udp_disconnect`) were getting invoked =
-as expected, and the `sk_state` was also being set to `TCP_CLOSE`. Upon =
-further investigation, I found that the socket unhash and source port =
-reset wasn't happening. This is the relevant code - =
-https://github.com/torvalds/linux/blob/master/net/ipv4/udp.c#L1988 [1]. =
-When I commented out the `SOCK_BINDPORT_LOCK` check, the new test passed =
-as sockets were getting destroyed correctly.
-
-I didn't observe similar behavior with TCP, and TCP listening sockets =
-were correctly getting destroyed. `tcp_set_state` unhashes sockets =
-unconditionally for `TCP_CLOSE` state.
-
-Can you share insights into why the socket unhashing and source port =
-reset doesn't happen for bind'ed sockets? If that's expected, I suppose =
-we'll need to unhash and reset source ports for sockets getting =
-destroyed, right?
-(I wonder if this was an oversight when `__udp_disconnect` was =
-introduced in commit 286c72deabaa240b7eebbd99496ed3324d69f3c0.)
+$ git grep -E '(__kconfig|__ksym) __weak'
+progs/bpf_iter_ipv6_route.c:extern bool CONFIG_IPV6_SUBTREES __kconfig __we=
+ak;
+progs/get_func_ip_test.c:extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak=
+;
+progs/linked_vars1.c:extern bool CONFIG_BPF_SYSCALL __kconfig __weak;
+progs/linked_vars1.c:extern const void bpf_link_fops __ksym __weak;
+progs/lsm_cgroup.c:extern bool CONFIG_SECURITY_SELINUX __kconfig __weak;
+progs/lsm_cgroup.c:extern bool CONFIG_SECURITY_SMACK __kconfig __weak;
+progs/lsm_cgroup.c:extern bool CONFIG_SECURITY_APPARMOR __kconfig __weak;
+progs/profiler.inc.h:extern bool CONFIG_CGROUP_PIDS __kconfig __weak;
+progs/read_bpf_task_storage_busy.c:extern bool CONFIG_PREEMPT __kconfig __w=
+eak;
+progs/task_kfunc_success.c:void invalid_kfunc(void) __ksym __weak;
+progs/task_storage_nodeadlock.c:extern bool CONFIG_PREEMPT __kconfig __weak=
+;
+progs/test_core_extern.c:extern int LINUX_UNKNOWN_VIRTUAL_EXTERN
+__kconfig __weak;
+progs/test_core_extern.c:extern enum libbpf_tristate CONFIG_TRISTATE
+__kconfig __weak;
+progs/test_core_extern.c:extern bool CONFIG_BOOL __kconfig __weak;
+progs/test_core_extern.c:extern char CONFIG_CHAR __kconfig __weak;
+progs/test_core_extern.c:extern uint16_t CONFIG_USHORT __kconfig __weak;
+progs/test_core_extern.c:extern int CONFIG_INT __kconfig __weak;
+progs/test_core_extern.c:extern uint64_t CONFIG_ULONG __kconfig __weak;
+progs/test_core_extern.c:extern const char CONFIG_STR[8] __kconfig __weak;
+progs/test_core_extern.c:extern uint64_t CONFIG_MISSING __kconfig __weak;
+progs/test_ksyms.c:extern const void bpf_link_fops1 __ksym __weak;
+progs/test_ksyms_module.c:extern void
+bpf_testmod_invalid_mod_kfunc(void) __ksym __weak;
+progs/test_ksyms_weak.c:extern const struct rq runqueues __ksym
+__weak; /* typed */
+progs/test_ksyms_weak.c:extern const void bpf_prog_active __ksym
+__weak; /* typeless */
+progs/test_ksyms_weak.c:extern const void bpf_link_fops1 __ksym __weak;
+progs/test_ksyms_weak.c:extern const int bpf_link_fops2 __ksym __weak;
 
 
-If it's easier, I can push the next version of patches where I've =
-addresses review comments, and added new tests. We can then continue =
-this discussion there. In the latest version, I've modified [1] with a =
-`TCP_CLOSE` state check.
-
-[1] if (!(sk->sk_userlocks & SOCK_BINDPORT_LOCK)) {
-		sk->sk_prot->unhash(sk);
-		inet->inet_sport =3D 0;
-     }
-
->=20
-> Otherwise, the bpf_sock_destroy kfunc is aborting the listener while =
-the bpf prog expects to abort a req_sk.
->=20
->> +
->> +	if (!sk)
->> +		return -EINVAL;
->> +
->> +	/* The locking semantics that allow for synchronous execution of =
-the
->> +	 * destroy handlers are only supported for TCP and UDP.
->> +	 */
->> +	if (!sk->sk_prot->diag_destroy || sk->sk_protocol =3D=3D =
-IPPROTO_RAW)
->> +		return -EOPNOTSUPP;
->> +
->> +	return sk->sk_prot->diag_destroy(sk, ECONNABORTED);
->> +}
->> +
->> +__diag_pop()
->=20
-
+  [0] https://nakryiko.com/posts/bpf-core-reference-guide/#kconfig-extern-v=
+ariables
