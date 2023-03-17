@@ -2,70 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBD36BF31C
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 21:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BF36BF35F
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229654AbjCQUw3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 16:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
+        id S229817AbjCQVA3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbjCQUw2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 16:52:28 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A4053736
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 13:52:28 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id o6-20020a17090a9f8600b0023f32869993so6537412pjp.1
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 13:52:28 -0700 (PDT)
+        with ESMTP id S229814AbjCQVAX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:00:23 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D85EB255A
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:00:21 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id k2so6594049pll.8
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679086347;
+        d=gmail.com; s=20210112; t=1679086821;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=niqv7FCnHV0plgCLOazz6LnM6EOKIk28oxxs0odNkgA=;
-        b=png4BY1XOe7io7Esmc02Ob5SB0d6wSUqCESzDvmwj6HRg6uoMyykVAHbS3LUqAHPTq
-         4HmLQL2d2bZuMhtwaWc+jfQL78QLUugOqfgC0oC62KPmR/+6jg5XwYHPju7CfZWgdIIV
-         9pIfK5HlyeooRJquOSLyOA21CSEIpKUEY4ZDC9z+0k/CIXRT9zpVNWmtgN51DKO6Fw0U
-         PNzhLLemuai8H+x2No+1208I8PgGB3ofKVP9HDbu29DddXREmSbQqct1FeLlJznDO8BB
-         jszIdV7w+RO2SDdjQuTY/XXKXi+pjwuGMJUlZbqgkaM9JSJvxpKZJwk7KCBgdyC3f776
-         elcw==
+        bh=Qe5qEpjGKP2k6P99IGcpA1zzjrWOI8DmjEmj1sFHkv0=;
+        b=HV5a9UEYN6rnWMz5q+Nh9w1Kt1/y8Q+GSkrMYjtQZqjeJ1VqK3Ub7UaX5Obw/5LYUQ
+         b4svSqCXrh0KItm1mFkarkustqTxkCevdPmdMPpR6OKMHLmZc1dmtMIRECRC03ZQT9qR
+         ziDNW0b0VK/IVBNfGuO8L2/f3gJEcwuF53qccgWr7/Y4zE/xjE829sBn+bm/Tnll1ofu
+         nZ78i7aeJS7vbRO1LrK8jkGmhUS6XufVQVIquUTFh3TYHfWyNcMdNK8GCn3nq9iL5C6u
+         1KdFvXNdd9uYw6mapBeXz42/8DGUFmeULmgKOERadX+S4f2gBIpsouDPwa1XDjQa+3rF
+         5fNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679086347;
+        d=1e100.net; s=20210112; t=1679086821;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=niqv7FCnHV0plgCLOazz6LnM6EOKIk28oxxs0odNkgA=;
-        b=DKx8S4njUJzGHhJZZ8Kh8VCFLogGuVqqDBRI5kgFInmvrfqifgWKGx7fwm021YqVOo
-         LPs8IgBAzmOsoon3tQpcnE7Ofmd/ViSkM694NpOxYrtxiRfQpSr6xIYbXSY5qIEiPIjd
-         vu5nMOHjUcfXAgc8pdnOXoN/hhg/767AlD1RwMbN+IX+3I/T5SPXxiOl0l+OSJwgvVA5
-         dZZJxeqzuUMew2eXPA2KL1T2BuuyZpX9CXw5VA9VV7uaFsv5WuH7J+a0Pz5AjlTp+nu1
-         Iv+H2E8Jt1S3XptpEINRUcB4pdHneYhFVOqps7frIReQ4jkxtMPXILiBmN5pcc5gx1Uu
-         327Q==
-X-Gm-Message-State: AO0yUKUc4saBpyIIiG5YnmDj/QFXEO9t81h1ZSZ2rNMEDvvWRDEdAp1k
-        nCT2oAATbQJo+4thBiMMkmnhVOOPoSA=
-X-Google-Smtp-Source: AK7set97pvbIHFs4uKdjjA3wuUKQswsfZqLM4SXGY/3LXA/asetjdTEchbn0k3e83wJF8X292k0NHA==
-X-Received: by 2002:a05:6a20:2451:b0:cc:f47b:9a with SMTP id t17-20020a056a20245100b000ccf47b009amr10808785pzc.1.1679086347447;
-        Fri, 17 Mar 2023 13:52:27 -0700 (PDT)
+        bh=Qe5qEpjGKP2k6P99IGcpA1zzjrWOI8DmjEmj1sFHkv0=;
+        b=Ph5gfL14dnf9AdUme9PX1jWm1GXf2xPg1Avvbfwlh12Gz1zT3DEfdCFtpgUEyiqmJ5
+         4jRsIz+xV6DHNipTSJXJo7JT8KVId2At8DVhpe78+ms3kWCG6mQSoaj2zTDP++tnFZZ2
+         DcHabOVxNUO9cWJiSB7xv6G8j6oWoH/lWeWPo0ZOYh1P7Zv1UZawT1huZmicP/OqtkxK
+         EmQDBnt0ssK8J4zisueL2ZiA8L7ERF7845MFQqfl3gC2+ZSngE3XR/WxfMwpzYATwlDm
+         UUPXkkZ5WF6Z39Lmn5bJjm+mlHMoIzoj6TzmQDQmIIHqYQLT0bKndO/RQsdXuP82Rcvp
+         B6Qg==
+X-Gm-Message-State: AO0yUKVgKuOZ5Ee+2cmBzYORSN+f2pHxKtaF6i+HEj9/vMnx3uJJIGd7
+        5g2XPf0mZ6eIYfPTj2MsvvyGBH4G/D4=
+X-Google-Smtp-Source: AK7set8lFQyfU8cOpArl32r6BOJTZcVwGM7exSIevR55K9Q0ClOAzqUSN94DY67YdcPW0ak3119ZoA==
+X-Received: by 2002:a17:903:283:b0:19d:244:a3a8 with SMTP id j3-20020a170903028300b0019d0244a3a8mr10438787plr.10.1679086821137;
+        Fri, 17 Mar 2023 14:00:21 -0700 (PDT)
 Received: from ?IPV6:2620:10d:c085:21e8::1380? ([2620:10d:c090:400::5:87c3])
-        by smtp.gmail.com with ESMTPSA id a24-20020aa78658000000b00597caf6236esm1934201pfo.150.2023.03.17.13.52.26
+        by smtp.gmail.com with ESMTPSA id l18-20020a170902d35200b0019468fe44d3sm1971334plk.25.2023.03.17.14.00.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Mar 2023 13:52:26 -0700 (PDT)
-Message-ID: <5a40cd89-2bc1-7a66-b9da-485fc9a6a412@gmail.com>
-Date:   Fri, 17 Mar 2023 13:52:25 -0700
+        Fri, 17 Mar 2023 14:00:20 -0700 (PDT)
+Message-ID: <0d93b64f-ec74-0ad4-26fb-c66306f1492f@gmail.com>
+Date:   Fri, 17 Mar 2023 14:00:19 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v7 3/8] bpf: Create links for BPF struct_ops
- maps.
+Subject: Re: [PATCH bpf-next v7 4/8] libbpf: Create a bpf_link in
+ bpf_map__attach_struct_ops().
 Content-Language: en-US, en-ZW
 To:     Martin KaFai Lau <martin.lau@linux.dev>,
         Kui-Feng Lee <kuifeng@meta.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
         kernel-team@meta.com, andrii@kernel.org, sdf@google.com
 References: <20230316023641.2092778-1-kuifeng@meta.com>
- <20230316023641.2092778-4-kuifeng@meta.com>
- <9b18b21b-4429-fd87-8c74-0de2900eee42@linux.dev>
+ <20230316023641.2092778-5-kuifeng@meta.com>
+ <228648b6-c6f0-d194-2e72-c7aaf095a35d@linux.dev>
 From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <9b18b21b-4429-fd87-8c74-0de2900eee42@linux.dev>
+In-Reply-To: <228648b6-c6f0-d194-2e72-c7aaf095a35d@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -80,66 +80,31 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 3/17/23 11:10, Martin KaFai Lau wrote:
+On 3/17/23 11:44, Martin KaFai Lau wrote:
 > On 3/15/23 7:36 PM, Kui-Feng Lee wrote:
->> +int bpf_struct_ops_link_create(union bpf_attr *attr)
->> +{
->> +    struct bpf_struct_ops_link *link = NULL;
->> +    struct bpf_link_primer link_primer;
->> +    struct bpf_struct_ops_map *st_map;
->> +    struct bpf_map *map;
->> +    int err;
->> +
->> +    map = bpf_map_get(attr->link_create.map_fd);
->> +    if (!map)
->> +        return -EINVAL;
->> +
->> +    st_map = (struct bpf_struct_ops_map *)map;
->> +
->> +    if (!bpf_struct_ops_valid_to_reg(map)) {
->> +        err = -EINVAL;
->> +        goto err_out;
->> +    }
->> +
->> +    link = kzalloc(sizeof(*link), GFP_USER);
->> +    if (!link) {
->> +        err = -ENOMEM;
->> +        goto err_out;
->> +    }
->> +    bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, 
->> &bpf_struct_ops_map_lops, NULL);
->> +    RCU_INIT_POINTER(link->map, map);
-> 
-> The link->map assignment should be done with the bpf_link_settle(), 
-> meaning only assign after everything else has succeeded.
-> 
-> The link is not exposed to user space until bpf_link_settle(). The 
-> link->map assignment can be done after ->reg succeeded and do it just 
-> before bpf_link_settle(). Then there is no need to do the 
-> RCU_INIT_POINTER(link->map, NULL) dance in the error case.
-> 
-
-Sound good! I will move this line.
-
->> +
->> +    err = bpf_link_prime(&link->link, &link_primer);
->> +    if (err)
->> +        goto err_out;
->> +
->> +    err = st_map->st_ops->reg(st_map->kvalue.data);
+>> @@ -11590,31 +11631,32 @@ struct bpf_link 
+>> *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>>       if (!link)
+>>           return libbpf_err_ptr(-EINVAL);
+>> -    st_ops = map->st_ops;
+>> -    for (i = 0; i < btf_vlen(st_ops->type); i++) {
+>> -        struct bpf_program *prog = st_ops->progs[i];
+>> -        void *kern_data;
+>> -        int prog_fd;
+>> +    /* kern_vdata should be prepared during the loading phase. */
+>> +    err = bpf_map_update_elem(map->fd, &zero, 
+>> map->st_ops->kern_vdata, 0);
 >> +    if (err) {
->> +        /* No RCU since no one has a chance to read this pointer yet. */
->> +        RCU_INIT_POINTER(link->map, NULL);
->> +        bpf_link_cleanup(&link_primer);
->> +        link = NULL;
->> +        goto err_out;
+> 
+> It should not fail for BPF_F_LINK struct_ops when err is EBUSY.
+> The struct_ops map can attach, detach, and then attach again.
+> 
+> It needs a test for this case.
+
+Got it!
+
+> 
+>> +        free(link);
+>> +        return libbpf_err_ptr(err);
 >> +    }
->> +
->> +    return bpf_link_settle(&link_primer);
->> +
->> +err_out:
->> +    bpf_map_put(map);
->> +    kfree(link);
->> +    return err;
->> +}
 > 
