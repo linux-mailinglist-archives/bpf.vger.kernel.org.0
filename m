@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5177B6BEB6F
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 15:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 723326BEB79
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 15:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbjCQOfF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 10:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58052 "EHLO
+        id S229669AbjCQOgo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 10:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbjCQOem (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 10:34:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE30AE6FC4
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 07:33:46 -0700 (PDT)
+        with ESMTP id S231317AbjCQOe5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 10:34:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84EDE63EC
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 07:33:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679063625;
+        s=mimecast20190719; t=1679063633;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mjoXfv22y8bGZIaFBiqJSnnyyPeBBhNiGzC+o+ftHU0=;
-        b=OXjiBNdX1ZoZke9iJCLRjBFm457eK7w+rvnvbUQM7IkfqYZZ5CUzXMHGFkFk8A9m5YyBMF
-        2DqYmVsBMxWGGWalGvLUI5KapQAmgJ6sFWaUh9Hn0V3Jo1TL3WiFZU/5FXE96xQjkxFyES
-        ZnYGVBaE/tx/80gg7IJ+OH14mEm5EKg=
+        bh=SNzfne+ehiwMF7uvGVh6OwjGKWcTNK9/K/phIg4/2Ik=;
+        b=a+XcdIaD5KBQutMnBbYek96+tqlEaVjIPydduqz1UmmJtMHo1PHvYIbHJ1ss5THSqtMH+z
+        KnzQjhuHw2m4Vh2MCc3EqpVptRj7FKtK/mbjU8WLEXTTOnWw5AmZmCMgz0UCRpWDxs5gG5
+        z3YyL6cehJumoEtNZv1fYwWw2aCEIgw=
 Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
  [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-442-vEsSmLi-MDG77URLj2TIkw-1; Fri, 17 Mar 2023 10:33:42 -0400
-X-MC-Unique: vEsSmLi-MDG77URLj2TIkw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+ us-mta-483-dwuN1lf1M0mwo0zLkpjCnA-1; Fri, 17 Mar 2023 10:33:47 -0400
+X-MC-Unique: dwuN1lf1M0mwo0zLkpjCnA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 25AB3385F36B;
-        Fri, 17 Mar 2023 14:33:42 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1ECFE3C0F38A;
+        Fri, 17 Mar 2023 14:33:47 +0000 (UTC)
 Received: from firesoul.localdomain (unknown [10.45.242.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E006D40D1C7;
-        Fri, 17 Mar 2023 14:33:41 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D988A43FBE;
+        Fri, 17 Mar 2023 14:33:46 +0000 (UTC)
 Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 17C9530721A6C;
-        Fri, 17 Mar 2023 15:33:41 +0100 (CET)
-Subject: [PATCH bpf-next V1 6/7] igc: add XDP hints kfuncs for RX timestamp
+        by firesoul.localdomain (Postfix) with ESMTP id 25A6130721A6C;
+        Fri, 17 Mar 2023 15:33:46 +0100 (CET)
+Subject: [PATCH bpf-next V1 7/7] igc: add XDP hints kfuncs for RX hash
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
 To:     bpf@vger.kernel.org
 Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
@@ -49,18 +49,18 @@ Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
         larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
         anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
         boon.leong.ong@intel.com
-Date:   Fri, 17 Mar 2023 15:33:41 +0100
-Message-ID: <167906362105.2706833.16377530444749058977.stgit@firesoul>
+Date:   Fri, 17 Mar 2023 15:33:46 +0100
+Message-ID: <167906362611.2706833.3815510480830561339.stgit@firesoul>
 In-Reply-To: <167906343576.2706833.17489167761084071890.stgit@firesoul>
 References: <167906343576.2706833.17489167761084071890.stgit@firesoul>
 User-Agent: StGit/1.4
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,87 +68,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The NIC hardware RX timestamping mechanism adds an optional tailored
-header before the MAC header containing packet reception time. Optional
-depending on RX descriptor TSIP status bit (IGC_RXDADV_STAT_TSIP). In
-case this bit is set driver does offset adjustments to packet data start
-and extracts the timestamp.
+This implements XDP hints kfunc for RX-hash (xmo_rx_hash) straightforward
+by returning the u32 hash value.
 
-The timestamp need to be extracted before invoking the XDP bpf_prog,
-because this area just before the packet is also accessible by XDP via
-data_meta context pointer (and helper bpf_xdp_adjust_meta). Thus, an XDP
-bpf_prog can potentially overwrite this and corrupt data that we want to
-extract with the new kfunc for reading the timestamp.
+The associated RSS-type for the hash value isn't available to the BPF-prog
+caller. This is problematic if BPF-prog tries to do L4 load-balancing with
+the hardware hash, but the RSS hash type is L3 based.
+
+For this driver this issue occurs for UDP packets, as driver (default
+config) does L3 hashing for UDP packets (excludes UDP src/dest ports in
+hash calc). Tested that the igc_rss_type_num for UDP is either
+IGC_RSS_TYPE_HASH_IPV4 or IGC_RSS_TYPE_HASH_IPV6.
 
 Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 ---
- drivers/net/ethernet/intel/igc/igc.h      |    1 +
- drivers/net/ethernet/intel/igc/igc_main.c |   20 ++++++++++++++++++++
- 2 files changed, 21 insertions(+)
+ drivers/net/ethernet/intel/igc/igc_main.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-index bc67a52e47e8..29941734f1a1 100644
---- a/drivers/net/ethernet/intel/igc/igc.h
-+++ b/drivers/net/ethernet/intel/igc/igc.h
-@@ -503,6 +503,7 @@ struct igc_rx_buffer {
- struct igc_xdp_buff {
- 	struct xdp_buff xdp;
- 	union igc_adv_rx_desc *rx_desc;
-+	ktime_t rx_ts; /* data indication bit IGC_RXDADV_STAT_TSIP */
- };
- 
- struct igc_q_vector {
 diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index a78d7e6bcfd6..f66285c85444 100644
+index f66285c85444..846041119fd4 100644
 --- a/drivers/net/ethernet/intel/igc/igc_main.c
 +++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -2539,6 +2539,7 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
- 		if (igc_test_staterr(rx_desc, IGC_RXDADV_STAT_TSIP)) {
- 			timestamp = igc_ptp_rx_pktstamp(q_vector->adapter,
- 							pktbuf);
-+			ctx.rx_ts = timestamp;
- 			pkt_offset = IGC_TS_HDR_LEN;
- 			size -= IGC_TS_HDR_LEN;
- 		}
-@@ -2727,6 +2728,7 @@ static int igc_clean_rx_irq_zc(struct igc_q_vector *q_vector, const int budget)
- 		if (igc_test_staterr(desc, IGC_RXDADV_STAT_TSIP)) {
- 			timestamp = igc_ptp_rx_pktstamp(q_vector->adapter,
- 							bi->xdp->data);
-+			ctx->rx_ts = timestamp;
- 
- 			bi->xdp->data += IGC_TS_HDR_LEN;
- 
-@@ -6481,6 +6483,23 @@ u32 igc_rd32(struct igc_hw *hw, u32 reg)
- 	return value;
+@@ -6496,8 +6496,21 @@ static int igc_xdp_rx_timestamp(const struct xdp_md *_ctx, u64 *timestamp)
+ 	return -ENODATA;
  }
  
-+static int igc_xdp_rx_timestamp(const struct xdp_md *_ctx, u64 *timestamp)
++static int igc_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash)
 +{
 +	const struct igc_xdp_buff *ctx = (void *)_ctx;
 +
-+	if (igc_test_staterr(ctx->rx_desc, IGC_RXDADV_STAT_TSIP)) {
-+		*timestamp = ctx->rx_ts;
++	if (!(ctx->xdp.rxq->dev->features & NETIF_F_RXHASH))
++		return -ENODATA;
 +
-+		return 0;
-+	}
++	*hash = le32_to_cpu(ctx->rx_desc->wb.lower.hi_dword.rss);
 +
-+	return -ENODATA;
++	return 0;
 +}
 +
-+const struct xdp_metadata_ops igc_xdp_metadata_ops = {
-+	.xmo_rx_timestamp		= igc_xdp_rx_timestamp,
-+};
-+
+ const struct xdp_metadata_ops igc_xdp_metadata_ops = {
+ 	.xmo_rx_timestamp		= igc_xdp_rx_timestamp,
++	.xmo_rx_hash			= igc_xdp_rx_hash,
+ };
+ 
  /**
-  * igc_probe - Device Initialization Routine
-  * @pdev: PCI device information struct
-@@ -6554,6 +6573,7 @@ static int igc_probe(struct pci_dev *pdev,
- 	hw->hw_addr = adapter->io_addr;
- 
- 	netdev->netdev_ops = &igc_netdev_ops;
-+	netdev->xdp_metadata_ops = &igc_xdp_metadata_ops;
- 	igc_ethtool_set_ops(netdev);
- 	netdev->watchdog_timeo = 5 * HZ;
- 
 
 
