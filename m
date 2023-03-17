@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 222866BF446
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1ABC6BF47A
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbjCQVgU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
+        id S231221AbjCQVi6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbjCQVgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:36:09 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092AB4AD25;
-        Fri, 17 Mar 2023 14:35:25 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id c18so6658520ple.11;
-        Fri, 17 Mar 2023 14:35:25 -0700 (PDT)
+        with ESMTP id S231391AbjCQVi1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:38:27 -0400
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2302774A6C;
+        Fri, 17 Mar 2023 14:36:51 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id qe8-20020a17090b4f8800b0023f07253a2cso6625817pjb.3;
+        Fri, 17 Mar 2023 14:36:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679088843;
+        d=gmail.com; s=20210112; t=1679088845;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X6qz8Axre0zWemU+wtTjt8NnBoL1lg5OlFMGApoRxNc=;
-        b=CuW8/lpwFnxQ67YvF+TfhggE1zVruHd28MH7kNA52B4YdNuXAQovYBoqFFJJFtMWle
-         VRkl0RTm4kIQgXteqZxZ1hFDIBVXgiavfFYG/qXzTe09qZeevxVbV2t13cm2Xz7ev/ca
-         WPKfRt+xEcFPqsDpw6lA/+qehrpcXAgjaF1C3PUPoAOjGV+aRFnVuoXkJGJezCNk3qAx
-         s+uw0YagcHE9UNFrWNq5egcZfxp6BkjgMhpDRhAoXhS4Xqi0cO+Aa8sEG3II3WvmpMUf
-         2QxFiXp10Gq3+Br7jkk8vNxiCBDXIPDBp5apqkhymDBjX61Eb980ZWR3ASzQED6FK0jl
-         1YTg==
+        bh=QK2aJVKovuD8X9fkbu87j/H7Z7JuonUqKoeh6yiYhnU=;
+        b=DWP/A6JL25BlAScJg8Mki7VMS8L338jbzxjTJehps9vOBsi9ZV1lfEeMKn2IjLzSKM
+         Bey1eWR5JXAi5uMKygnqVH918L2m7qjWG5UxVBH/OyHQgq8pDAtgN5HxXXg8duYQq2f3
+         JfCRrofmXL7UEVArd9u70V8nrEJzAeU/XrnWqAl1XOoHZZvRGDEQHcPDiHqea0tM/Ik2
+         vN7UQ867RTfemMFk9v+/RSMukUoKV1V01Ea/ME/QRzsD+Gq7K/3/yFPRbGbuMIZX7QEm
+         gm8K+O6t3a6nd4Vm9siK4gxKpdI8inMcz046rPnqciExTJYWnbvErJ16PYTUpZKVbjlZ
+         ksIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679088843;
+        d=1e100.net; s=20210112; t=1679088845;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=X6qz8Axre0zWemU+wtTjt8NnBoL1lg5OlFMGApoRxNc=;
-        b=Ke4tXfTJaohiGzXNIx4/lnuFJBw2gSFTjIBV+NDPdAyM8xSf6KGl8ZMH6zTGY8RE9r
-         gkkntKEF6DVRDEYrG5vMfSHbhyNYCR+hyocdKMGsLzCZ95g0es/CORbqWDBi5M2nvnkh
-         WpAOuaKfjAzbYwb0xh0HBsN/WIhjCpH7VFcaNEmUYV0S0rCZ+pXCSpYrDqUGQ+mjVX8U
-         xHNA0mUAJN7xhFTzUnMx2RHQTXNquYJy1XD5IUHKDy5BtP0sXas1r729nSxMly3O6Ahg
-         LG2Kl9fMbhgjnqeFEkLcgd/78cnxhuLed0RV0HO+tNhSIVvuVYPTiIoeaCVQFRe5VphN
-         46mQ==
-X-Gm-Message-State: AO0yUKU18Ut7A4CzWaJQOM5bAAc+po2cZDM4/zhruYbCviprCNVHu665
-        WuTjH5Tzl/CaGuORyYmGQH4=
-X-Google-Smtp-Source: AK7set+5U0vFlbi8Qucd968t4RJ5sZmCSbvb4lu7vsIf4g6NLJQJc+aJ4mhWG8IrIb0v5XTiTtawQw==
-X-Received: by 2002:a17:90b:17d0:b0:23f:634a:6c7 with SMTP id me16-20020a17090b17d000b0023f634a06c7mr2937291pjb.15.1679088842922;
-        Fri, 17 Mar 2023 14:34:02 -0700 (PDT)
+        bh=QK2aJVKovuD8X9fkbu87j/H7Z7JuonUqKoeh6yiYhnU=;
+        b=O3vgLBlYtWn8MCQYqBxaefaqU3ah/cu1FIieCQ8wN0zltkESkV/EgW9CmsnffL4DwL
+         KEzUk/glYCkUJt+0OWXNPehdd2Lg4dYkdDcahlafiNpNLEBYFi2hKzri61TiDhqvI9l2
+         /zWH9VenNFb0fiWQ7X3rxdzP5C09s3pZ+z7XGmK2kr+DNSLySBLcitAcJ4an0Ddj158F
+         uXnTM4IGjOae0Ym2rUryKGHm9rLHyNWIEwSfwknqisAVBtWMMUu8NaGL2wOLOq2v1bvY
+         qdu7QlUW0UXfYROmurKz1vRNpwwo/AGrdRKF+v8NhNGIIKTHNkYjxR2X5STEn/gUtVeW
+         SKxQ==
+X-Gm-Message-State: AO0yUKX90hIJb96Lu+0DPU+kASv75fN86r+idMlQWjpTqMcI+f/lIMJE
+        THvwmFOMegC3w4TfK4IBnDI=
+X-Google-Smtp-Source: AK7set8B/7PevrNGdStT+45BZoFOmumu4wp0v36haQyhTH+fqHdz/ucGTEC9p63/hgY3fJHRwhaOgA==
+X-Received: by 2002:a17:90a:de94:b0:237:47b0:3235 with SMTP id n20-20020a17090ade9400b0023747b03235mr9519254pjv.32.1679088844803;
+        Fri, 17 Mar 2023 14:34:04 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id t7-20020a170902bc4700b0019a91895cdfsm2002559plz.50.2023.03.17.14.34.02
+        by smtp.gmail.com with ESMTPSA id x3-20020a17090abc8300b0023f4274bd9asm1837666pjr.29.2023.03.17.14.34.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Mar 2023 14:34:02 -0700 (PDT)
+        Fri, 17 Mar 2023 14:34:04 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From:   Tejun Heo <tj@kernel.org>
 To:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -62,9 +62,9 @@ To:     torvalds@linux-foundation.org, mingo@redhat.com,
         dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@meta.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 11/32] sched: Add normal_policy()
-Date:   Fri, 17 Mar 2023 11:33:12 -1000
-Message-Id: <20230317213333.2174969-12-tj@kernel.org>
+Subject: [PATCH 12/32] sched_ext: Add boilerplate for extensible scheduler class
+Date:   Fri, 17 Mar 2023 11:33:13 -1000
+Message-Id: <20230317213333.2174969-13-tj@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230317213333.2174969-1-tj@kernel.org>
 References: <20230317213333.2174969-1-tj@kernel.org>
@@ -72,21 +72,21 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A new BPF extensible sched_class will need to dynamically change how a task
-picks its sched_class. For example, if the loaded BPF scheduler progs fail,
-the tasks will be forced back on CFS even if the task's policy is set to the
-new sched_class. To support such mapping, add normal_policy() which wraps
-testing for %SCHED_NORMAL. This doesn't cause any behavior changes.
+This adds dummy implementations of sched_ext interfaces which interact with
+the scheduler core and hook them in the correct places. As they're all
+dummies, this doesn't cause any behavior changes. This is split out to help
+reviewing.
 
-v2: Update the description with more details on the expected use.
+v2: balance_scx_on_up() dropped. This will be handled in sched_ext proper.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
@@ -94,44 +94,223 @@ Acked-by: Josh Don <joshdon@google.com>
 Acked-by: Hao Luo <haoluo@google.com>
 Acked-by: Barret Rhoden <brho@google.com>
 ---
- kernel/sched/fair.c  | 2 +-
- kernel/sched/sched.h | 8 +++++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ include/linux/sched/ext.h | 12 ++++++++++++
+ kernel/fork.c             |  2 ++
+ kernel/sched/core.c       | 32 ++++++++++++++++++++++++--------
+ kernel/sched/ext.h        | 24 ++++++++++++++++++++++++
+ kernel/sched/idle.c       |  2 ++
+ kernel/sched/sched.h      |  2 ++
+ 6 files changed, 66 insertions(+), 8 deletions(-)
+ create mode 100644 include/linux/sched/ext.h
+ create mode 100644 kernel/sched/ext.h
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 28204472a3f1..ea3788ef9686 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7806,7 +7806,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
- 	 * Batch and idle tasks do not preempt non-idle tasks (their preemption
- 	 * is driven by the tick):
- 	 */
--	if (unlikely(p->policy != SCHED_NORMAL) || !sched_feat(WAKEUP_PREEMPTION))
-+	if (unlikely(!normal_policy(p->policy)) || !sched_feat(WAKEUP_PREEMPTION))
- 		return;
+diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
+new file mode 100644
+index 000000000000..a05dfcf533b0
+--- /dev/null
++++ b/include/linux/sched/ext.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_SCHED_EXT_H
++#define _LINUX_SCHED_EXT_H
++
++#ifdef CONFIG_SCHED_CLASS_EXT
++#error "NOT IMPLEMENTED YET"
++#else	/* !CONFIG_SCHED_CLASS_EXT */
++
++static inline void sched_ext_free(struct task_struct *p) {}
++
++#endif	/* CONFIG_SCHED_CLASS_EXT */
++#endif	/* _LINUX_SCHED_EXT_H */
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 0d166537a1a3..68d08701acd0 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -23,6 +23,7 @@
+ #include <linux/sched/task.h>
+ #include <linux/sched/task_stack.h>
+ #include <linux/sched/cputime.h>
++#include <linux/sched/ext.h>
+ #include <linux/seq_file.h>
+ #include <linux/rtmutex.h>
+ #include <linux/init.h>
+@@ -843,6 +844,7 @@ void __put_task_struct(struct task_struct *tsk)
+ 	WARN_ON(refcount_read(&tsk->usage));
+ 	WARN_ON(tsk == current);
  
- 	find_matching_se(&se, &pse);
++	sched_ext_free(tsk);
+ 	io_uring_free(tsk);
+ 	cgroup_free(tsk);
+ 	task_numa_free(tsk, true);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index aa63371aa84c..9ecee40eb0bc 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4682,6 +4682,8 @@ late_initcall(sched_core_sysctl_init);
+  */
+ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ {
++	int ret;
++
+ 	__sched_fork(clone_flags, p);
+ 	/*
+ 	 * We mark the process as NEW here. This guarantees that
+@@ -4718,12 +4720,16 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 		p->sched_reset_on_fork = 0;
+ 	}
+ 
+-	if (dl_prio(p->prio))
+-		return -EAGAIN;
+-	else if (rt_prio(p->prio))
++	scx_pre_fork(p);
++
++	if (dl_prio(p->prio)) {
++		ret = -EAGAIN;
++		goto out_cancel;
++	} else if (rt_prio(p->prio)) {
+ 		p->sched_class = &rt_sched_class;
+-	else
++	} else {
+ 		p->sched_class = &fair_sched_class;
++	}
+ 
+ 	init_entity_runnable_average(&p->se);
+ 
+@@ -4741,6 +4747,10 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 	RB_CLEAR_NODE(&p->pushable_dl_tasks);
+ #endif
+ 	return 0;
++
++out_cancel:
++	scx_cancel_fork(p);
++	return ret;
+ }
+ 
+ int sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs)
+@@ -4771,16 +4781,18 @@ int sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs)
+ 		p->sched_class->task_fork(p);
+ 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+ 
+-	return 0;
++	return scx_fork(p);
+ }
+ 
+ void sched_cancel_fork(struct task_struct *p)
+ {
++	scx_cancel_fork(p);
+ }
+ 
+ void sched_post_fork(struct task_struct *p)
+ {
+ 	uclamp_post_fork(p);
++	scx_post_fork(p);
+ }
+ 
+ unsigned long to_ratio(u64 period, u64 runtime)
+@@ -5935,7 +5947,7 @@ static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
+ 	 * We can terminate the balance pass as soon as we know there is
+ 	 * a runnable task of @class priority or higher.
+ 	 */
+-	for_class_range(class, prev->sched_class, &idle_sched_class) {
++	for_balance_class_range(class, prev->sched_class, &idle_sched_class) {
+ 		if (class->balance(rq, prev, rf))
+ 			break;
+ 	}
+@@ -5953,6 +5965,9 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	const struct sched_class *class;
+ 	struct task_struct *p;
+ 
++	if (scx_enabled())
++		goto restart;
++
+ 	/*
+ 	 * Optimization: we know that if all tasks are in the fair class we can
+ 	 * call that function directly, but only if the @prev task wasn't of a
+@@ -5978,7 +5993,7 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ restart:
+ 	put_prev_task_balance(rq, prev, rf);
+ 
+-	for_each_class(class) {
++	for_each_active_class(class) {
+ 		p = class->pick_next_task(rq);
+ 		if (p)
+ 			return p;
+@@ -6011,7 +6026,7 @@ static inline struct task_struct *pick_task(struct rq *rq)
+ 	const struct sched_class *class;
+ 	struct task_struct *p;
+ 
+-	for_each_class(class) {
++	for_each_active_class(class) {
+ 		p = class->pick_task(rq);
+ 		if (p)
+ 			return p;
+@@ -9953,6 +9968,7 @@ void __init sched_init(void)
+ 	balance_push_set(smp_processor_id(), false);
+ #endif
+ 	init_sched_fair_class();
++	init_sched_ext_class();
+ 
+ 	psi_init();
+ 
+diff --git a/kernel/sched/ext.h b/kernel/sched/ext.h
+new file mode 100644
+index 000000000000..6a93c4825339
+--- /dev/null
++++ b/kernel/sched/ext.h
+@@ -0,0 +1,24 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifdef CONFIG_SCHED_CLASS_EXT
++#error "NOT IMPLEMENTED YET"
++#else	/* CONFIG_SCHED_CLASS_EXT */
++
++#define scx_enabled()		false
++
++static inline void scx_pre_fork(struct task_struct *p) {}
++static inline int scx_fork(struct task_struct *p) { return 0; }
++static inline void scx_post_fork(struct task_struct *p) {}
++static inline void scx_cancel_fork(struct task_struct *p) {}
++static inline void init_sched_ext_class(void) {}
++
++#define for_each_active_class		for_each_class
++#define for_balance_class_range		for_class_range
++
++#endif	/* CONFIG_SCHED_CLASS_EXT */
++
++#if defined(CONFIG_SCHED_CLASS_EXT) && defined(CONFIG_SMP)
++#error "NOT IMPLEMENTED YET"
++#else
++static inline void scx_update_idle(struct rq *rq, bool idle) {}
++#endif
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index e9ef66be2870..65378f0be8dc 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -407,11 +407,13 @@ static void check_preempt_curr_idle(struct rq *rq, struct task_struct *p, int fl
+ 
+ static void put_prev_task_idle(struct rq *rq, struct task_struct *prev)
+ {
++	scx_update_idle(rq, false);
+ }
+ 
+ static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
+ {
+ 	update_idle_core(rq);
++	scx_update_idle(rq, true);
+ 	schedstat_inc(rq->sched_goidle);
+ }
+ 
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 958613dd8290..6397843b4482 100644
+index 6397843b4482..6c42b042daa4 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -182,9 +182,15 @@ static inline int idle_policy(int policy)
- {
- 	return policy == SCHED_IDLE;
- }
-+
-+static inline int normal_policy(int policy)
-+{
-+	return policy == SCHED_NORMAL;
-+}
-+
- static inline int fair_policy(int policy)
- {
--	return policy == SCHED_NORMAL || policy == SCHED_BATCH;
-+	return normal_policy(policy) || policy == SCHED_BATCH;
- }
+@@ -3411,4 +3411,6 @@ enum cpu_cftype_id {
+ extern struct cftype cpu_cftypes[CPU_CFTYPE_CNT + 1];
+ #endif /* CONFIG_CGROUP_SCHED */
  
- static inline int rt_policy(int policy)
++#include "ext.h"
++
+ #endif /* _KERNEL_SCHED_SCHED_H */
 -- 
 2.39.2
 
