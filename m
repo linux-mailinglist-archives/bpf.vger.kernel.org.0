@@ -2,258 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2C06BECCF
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 16:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676F16BEE3F
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 17:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjCQPYD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 11:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
+        id S230027AbjCQQ2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 12:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbjCQPXz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 11:23:55 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEAD4ECA;
-        Fri, 17 Mar 2023 08:23:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=alwacGIsYUkAEyXPWeQ4Vcq46Ox3tubR5cPVZUbOrno=; b=hY2cOctRb2VFQOGXVpUOq1ce46
-        ZxoUS7JdciaXQXEFeoxFjDZXS/r6mLOdEZKLuW+2mMyXJ+32GMa93P3iukKSMory3UEX7m/LWgxav
-        +7Lt05pE2vsSjm0LaNVx0pMdKTczMC0LJArS/45RVsyJkGy1a12L22gqwsT1GafsY5t1HNkotZASZ
-        dgzrY87cNO/fvUQNIOAlSO8Ck+uQrjW6y87Kd/FRzWW57DkjanpvFo6c/IrWioAOS3v3IakfNSFQu
-        kOPArRPUwUv68+c/h/BML3lJPxAWTUQhCFRS/vMGlGMFJ2sfowi+GaWpCtmRxBct0UV4OwhWY0vTR
-        PZxeKpJA==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pdBvp-000IIF-IF; Fri, 17 Mar 2023 16:23:49 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pdBvp-000N4L-6y; Fri, 17 Mar 2023 16:23:49 +0100
-Subject: Re: [PATCH bpf-next v7 2/8] net: Update an existing TCP congestion
- control algorithm.
-To:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
-Cc:     netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>
-References: <20230316023641.2092778-1-kuifeng@meta.com>
- <20230316023641.2092778-3-kuifeng@meta.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f72b77c3-15ac-3de3-5bce-c263564c1487@iogearbox.net>
-Date:   Fri, 17 Mar 2023 16:23:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229954AbjCQQ2t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 12:28:49 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB0510A9C;
+        Fri, 17 Mar 2023 09:28:42 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id x13so22656491edd.1;
+        Fri, 17 Mar 2023 09:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679070521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=74EL4TBuCVmFpQQhUt5n0awpVLMK7sULp4bcds7EKs8=;
+        b=R/Hut9Ov688CKlFGwrRiv8D+eLnunyvxfuh5/DECp28ocLpGJ1/bRqNXXPnwmRq3C7
+         71s13dmz9Az1l3Fp0qVGUMDFOHJydzyv2HBs/ukQ2NkQI7MxvqlSz2Aoyc7K5z5UlYUu
+         128gnrW3jmTgy3JXJHMty1DqddSs9M4ohuWlG8DQLAZdVaJX96j6CRuECKDp3z7MsNBj
+         VchMJG8Nfgd/3+7VCuYt/+qDmKfA8nonMjj67aP9c2WxHPauXS07xFtA6onm2NDHZ980
+         lYZ0VDhzfNa+xCrsnNiClDLFokX7IZQnNqW3LgaNAQpbabqurt/YCR22eUmLHzEVfK7X
+         Uukg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679070521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=74EL4TBuCVmFpQQhUt5n0awpVLMK7sULp4bcds7EKs8=;
+        b=c/6EpspeIjfI/leSvuzKRS8N8fYJzRoc8e9+CkuGSWXo7MnJSVvoKQSl7kXWEoeEK0
+         PtokdNeOJ7/dMLHyiuhHevLY2TyDqdTqTF3ugfbYAWi8K24jzNsokeXrBWtVfhlo+39P
+         H2yeYOL3d141TtkzaiA7ltNLahaSGa7mXaXHCHyf4+CLaCx8r0t44nSMW5r156JG9DPs
+         q22OngJcpe6iaZH6r389cyFlffy9QFAm96ukM6saHlU+y56FcHmJ5P/uZjHqsKDk5bD3
+         BmGqd+ikpy7wnJqMZbERTkcPtaaCYa7LzS5SUXxHAvcW3GnA+NayUUThKgaO0EfQ++/B
+         faXQ==
+X-Gm-Message-State: AO0yUKWB09pX1r4MXxvPC2M88+ioZZKgENTrQmDxTIa1M7DluGdMyEM6
+        LJuT12T9cFpRrPyZiUDeMvGC4HfGNweemo6aB8A=
+X-Google-Smtp-Source: AK7set8HkhIwAhKduIxQa3C3vFwR7I5DA0meAYnsoM+1foV2+YzjrnpGgSMtCLVvXY0yZvhqHoiMWkx7QMPHumvkuiE=
+X-Received: by 2002:a17:906:c7ca:b0:922:26ae:c68c with SMTP id
+ dc10-20020a170906c7ca00b0092226aec68cmr75967ejb.5.1679070520950; Fri, 17 Mar
+ 2023 09:28:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230316023641.2092778-3-kuifeng@meta.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26846/Fri Mar 17 08:22:57 2023)
+References: <20230315223607.50803-1-alexei.starovoitov@gmail.com>
+ <20230315223607.50803-2-alexei.starovoitov@gmail.com> <CAEf4BzaSMB6oKBO2VXvz4cVE9wXqYq+vyD=EOe3YJ3a-L==WCg@mail.gmail.com>
+ <CAADnVQLud8-+pexQo8rscVM2d8K2dsYU1rJbFGK2ZZygdAgkQA@mail.gmail.com>
+ <CAEf4Bzat4dFCP40cMbDwPK-LyPKJtO1d0M44m9EbNajU9UgxFw@mail.gmail.com> <20230317013909.ckwsrcvvuisdars5@dhcp-172-26-102-232.dhcp.thefacebook.com>
+In-Reply-To: <20230317013909.ckwsrcvvuisdars5@dhcp-172-26-102-232.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 17 Mar 2023 09:28:28 -0700
+Message-ID: <CAEf4BzbqOcnOjYOV-rEAGEK+D9-rvPNH+6XCQXTkAyqZJLfcCg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow ld_imm64 instruction to point to kfunc.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Tejun Heo <tj@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/16/23 3:36 AM, Kui-Feng Lee wrote:
-> This feature lets you immediately transition to another congestion
-> control algorithm or implementation with the same name.  Once a name
-> is updated, new connections will apply this new algorithm.
-> 
-> The purpose is to update a customized algorithm implemented in BPF
-> struct_ops with a new version on the flight.  The following is an
-> example of using the userspace API implemented in later BPF patches.
-> 
->     link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
->     .......
->     err = bpf_link__update_map(link, skel->maps.ca_update_2);
-> 
-> We first load and register an algorithm implemented in BPF struct_ops,
-> then swap it out with a new one using the same name. After that, newly
-> created connections will apply the updated algorithm, while older ones
-> retain the previous version already applied.
-> 
-> This patch also takes this chance to refactor the ca validation into
-> the new tcp_validate_congestion_control() function.
-> 
-> Cc: netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
-> ---
->   include/net/tcp.h   |  3 +++
->   net/ipv4/tcp_cong.c | 60 +++++++++++++++++++++++++++++++++++++++------
->   2 files changed, 56 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index db9f828e9d1e..2abb755e6a3a 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -1117,6 +1117,9 @@ struct tcp_congestion_ops {
->   
->   int tcp_register_congestion_control(struct tcp_congestion_ops *type);
->   void tcp_unregister_congestion_control(struct tcp_congestion_ops *type);
-> +int tcp_update_congestion_control(struct tcp_congestion_ops *type,
-> +				  struct tcp_congestion_ops *old_type);
-> +int tcp_validate_congestion_control(struct tcp_congestion_ops *ca);
->   
->   void tcp_assign_congestion_control(struct sock *sk);
->   void tcp_init_congestion_control(struct sock *sk);
-> diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
-> index db8b4b488c31..c90791ae8389 100644
-> --- a/net/ipv4/tcp_cong.c
-> +++ b/net/ipv4/tcp_cong.c
-> @@ -75,14 +75,8 @@ struct tcp_congestion_ops *tcp_ca_find_key(u32 key)
->   	return NULL;
->   }
->   
-> -/*
-> - * Attach new congestion control algorithm to the list
-> - * of available options.
-> - */
-> -int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
-> +int tcp_validate_congestion_control(struct tcp_congestion_ops *ca)
->   {
-> -	int ret = 0;
-> -
->   	/* all algorithms must implement these */
->   	if (!ca->ssthresh || !ca->undo_cwnd ||
->   	    !(ca->cong_avoid || ca->cong_control)) {
-> @@ -90,6 +84,20 @@ int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
->   		return -EINVAL;
->   	}
->   
-> +	return 0;
-> +}
-> +
-> +/* Attach new congestion control algorithm to the list
-> + * of available options.
-> + */
-> +int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
-> +{
-> +	int ret;
-> +
-> +	ret = tcp_validate_congestion_control(ca);
-> +	if (ret)
-> +		return ret;
-> +
->   	ca->key = jhash(ca->name, sizeof(ca->name), strlen(ca->name));
->   
->   	spin_lock(&tcp_cong_list_lock);
-> @@ -130,6 +138,44 @@ void tcp_unregister_congestion_control(struct tcp_congestion_ops *ca)
->   }
->   EXPORT_SYMBOL_GPL(tcp_unregister_congestion_control);
->   
-> +/* Replace a registered old ca with a new one.
-> + *
-> + * The new ca must have the same name as the old one, that has been
-> + * registered.
-> + */
-> +int tcp_update_congestion_control(struct tcp_congestion_ops *ca, struct tcp_congestion_ops *old_ca)
-> +{
-> +	struct tcp_congestion_ops *existing;
-> +	int ret;
-> +
-> +	ret = tcp_validate_congestion_control(ca);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ca->key = jhash(ca->name, sizeof(ca->name), strlen(ca->name));
-> +
-> +	spin_lock(&tcp_cong_list_lock);
-> +	existing = tcp_ca_find_key(old_ca->key);
-> +	if (ca->key == TCP_CA_UNSPEC || !existing || strcmp(existing->name, ca->name)) {
-> +		pr_notice("%s not registered or non-unique key\n",
-> +			  ca->name);
-> +		ret = -EINVAL;
-> +	} else if (existing != old_ca) {
-> +		pr_notice("invalid old congestion control algorithm to replace\n");
-> +		ret = -EINVAL;
-> +	} else {
-> +		/* Add the new one before removing the old one to keep
-> +		 * one implementation available all the time.
-> +		 */
-> +		list_add_tail_rcu(&ca->list, &tcp_cong_list);
-> +		list_del_rcu(&existing->list);
-> +		pr_debug("%s updated\n", ca->name);
-> +	}
-> +	spin_unlock(&tcp_cong_list_lock);
-> +
-> +	return ret;
-> +}
+On Thu, Mar 16, 2023 at 6:39=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Mar 16, 2023 at 04:06:02PM -0700, Andrii Nakryiko wrote:
+> >
+> > /* pass function pointer through asm otherwise compiler assumes that
+> > any function !=3D 0 */
+> >
+> > comment was referring to compiler assuming that function !=3D 0 for
+> > __weak symbol? I definitely didn't read it this way. And "compiler
+> > assumes that function !=3D 0" seems a bit too strong of a statement,
+> > because at least Clang doesn't.
+>
+> Correct. Instead of 'any function' it should be 'any non-weak function'.
 
-Was wondering if we could have tcp_register_congestion_control and tcp_update_congestion_control
-could be refactored for reuse. Maybe like below. From the function itself what is not clear whether
-callers that replace an existing one should do the synchronize_rcu() themselves or if this should
-be part of tcp_update_congestion_control?
+ok, your new macro implementation seems to prevent usage of non-weak
+ksyms, which is great
 
-int tcp_check_congestion_control(struct tcp_congestion_ops *ca)
-{
-	/* All algorithms must implement these. */
-	if (!ca->ssthresh || !ca->undo_cwnd ||
-	    !(ca->cong_avoid || ca->cong_control)) {
-		pr_err("%s does not implement required ops\n", ca->name);
-		return -EINVAL;
-	}
-	if (ca->key == TCP_CA_UNSPEC)
-		ca->key = jhash(ca->name, sizeof(ca->name), strlen(ca->name));
-	if (ca->key == TCP_CA_UNSPEC) {
-		pr_notice("%s results in zero key\n", ca->name);
-		return -EEXIST;
-	}
-	return 0;
-}
+>
+> >
+> > But for macro, it's not kfunc-specific (and macro itself has no way to
+> > check that you are actually passing kfunc ksym), so even if it was a
+> > macro, it would be better to call it something more generic like
+> > bpf_ksym_exists() (though that will work for .kconfig, yet will be
+> > inappropriately named).
+>
+> Rigth. bpf_ksym_exists() is what I proposed couple emails ago in my reply=
+ to Ed.
+>
 
-/* Attach new congestion control algorithm to the list of available
-  * options or replace an existing one if old is non-NULL.
-  */
-int tcp_update_congestion_control(struct tcp_congestion_ops *new,
-				  struct tcp_congestion_ops *old)
-{
-	struct tcp_congestion_ops *found;
-	int ret;
+I don't see it, maybe some email was dropped. But sounds good.
 
-	ret = tcp_check_congestion_control(new);
-	if (ret)
-		return ret;
-	if (old &&
-	    (old->key != new->key ||
-	     strcmp(old->name, new->name))) {
-		pr_notice("%s & %s have non-matching congestion control names\n",
-			  old->name, new->name);
-		return -EINVAL;
-	}
-	spin_lock(&tcp_cong_list_lock);
-	found = tcp_ca_find_key(new->key);
-	if (old) {
-		if (found == old) {
-			list_add_tail_rcu(&new->list, &tcp_cong_list);
-			list_del_rcu(&old->list);
-		} else {
-			pr_notice("%s not registered\n", old->name);
-			ret = -EINVAL;
-		}
-	} else {
-		if (found) {
-			pr_notice("%s already registered\n", new->name);
-			ret = -EEXIST;
-		} else {
-			list_add_tail_rcu(&new->list, &tcp_cong_list);
-		}
-	}
-	spin_unlock(&tcp_cong_list_lock);
-	return ret;
-}
+> > The asm bit, though, seems to be a premature thing that can hide real
+> > compiler issues, so I'm still hesitant to add it. It should work today
+> > with modern compilers, so I'd test and validate this.
+>
+> We're using asm in lots of place to avoid fighting with compiler.
+> This is just one of them, but I found a different way to prevent
+> silent optimizations. I'll go with:
+>
+> #define bpf_ksym_exists(sym) \
+>        ({ _Static_assert(!__builtin_constant_p(!!sym), #sym " should be m=
+arked as __weak"); !!sym; })
+>
+> It will address the silent dead code elimination issue and
+> will detect missing weak immediately at build time.
 
-int tcp_register_congestion_control(struct tcp_congestion_ops *ca)
-{
-	return tcp_update_congestion_control(ca, NULL);
-}
-EXPORT_SYMBOL_GPL(tcp_register_congestion_control);
+Yep, I like this protection against using non-weak ksym with this
+check. It's very helpful, thanks!
+
+>
+> Just going with:
+>
+> if (bpf_rcu_read_lock) // comment about weak
+>    bpf_rcu_read_lock();
+> else
+>   ..
+>
+> and forgetting to use __weak in bpf_rcu_read_lock() declaration will make=
+ it
+> "work" on current kernels. The compiler will optimize 'if' and 'else' out=
+ and
+> libbpf will happily find that kfunc in the kernel.
+> While the program will fail to load on kernels without this kfunc much la=
+ter with:
+> libbpf: extern (func ksym) 'bpf_rcu_read_lock': not found in kernel or mo=
+dule BTFs.
+>
+
+Yep. Good testing is still important, of course.
+
+> Which is the opposite of what that block of bpf code wanted to achieve.
+
+I like the new bpf_ksym_exists() implementation, now I think it adds
+value, instead of hiding an issue.
+
+>
+> > > It works, but how many people know that unknown weak resolves to zero=
+ ?
+> > > I didn't know until yesterday.
+> >
+> > I was explicit about this from the very beginning of BPF CO-RE work.
+> > ksyms were added later, but semantics was consistent between .kconfig
+> > and .ksym. Documentation can't be ever good enough and discoverable
+> > enough (like [0]), of course, but let's do our best to make it as
+> ...
+> >   [0] https://nakryiko.com/posts/bpf-core-reference-guide/#kconfig-exte=
+rn-variables
+>
+> I read it long ago, but reading is one thing and remembering small detail=
+s is another.
+
+That's understandable, no worries. I'm just saying that this is
+officially supported semantics, so if compilers somehow break this,
+I'd like to rely on BPF selftests to detect this early, thanks to BPF
+CI's use of nightly Clang builds (and eventually hopefully we'll also
+use GCC-BPF nightlies).
