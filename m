@@ -2,57 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2336BE02B
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 05:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1D06BE037
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 05:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbjCQEaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 00:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50430 "EHLO
+        id S229918AbjCQEkZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 00:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjCQEaO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 00:30:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3912C32CEC;
-        Thu, 16 Mar 2023 21:30:07 -0700 (PDT)
+        with ESMTP id S229872AbjCQEkY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 00:40:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2F727D6E;
+        Thu, 16 Mar 2023 21:40:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C95DC6213E;
-        Fri, 17 Mar 2023 04:30:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75A53C433D2;
-        Fri, 17 Mar 2023 04:30:05 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2AAAEB82449;
+        Fri, 17 Mar 2023 04:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A2424C4339C;
+        Fri, 17 Mar 2023 04:40:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679027406;
-        bh=nonMteQ8r4AFz96wz9F6Zp1jokFm2wRTfb7GKDo5D4o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hM31DBTFLe+ucWX+5axVmKvF738eEjWuDIxwf1QFTv8amVpMrAL7w4Bg5rNWTpTfn
-         Mnw56AVN45yoG5ZR8isHBndDAwasn2w+/gY823m9pWfyQViL4Vojt2oTkO1dx8CaHA
-         bBa/OzA4fMlQg4riPRbxUpJxaO0EE/bqbSZHxzF3ZG5gnpk+M62lvU2yWPuHaoetJp
-         gRfW6cZf/km21sGjWNE+US4p3g7JXzqaAdXClr5BnMW1Tq6Am4nVH6T+C6bJUeK0jk
-         DcIn8Ieu58LRcp+jmcAVqZX+0OsWLy96wjywvKbQQdIxPvt/ZcUc5BRLe07bd/au7I
-         bq3YxE4R4xyUA==
-Date:   Thu, 16 Mar 2023 21:30:04 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jason Xing <kerneljasonxing@gmail.com>
-Cc:     jbrouer@redhat.com, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        stephen@networkplumber.org, simon.horman@corigine.com,
-        sinquersw@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH v4 net-next 2/2] net: introduce budget_squeeze to help
- us tune rx behavior
-Message-ID: <20230316213004.6a59f452@kernel.org>
-In-Reply-To: <CAL+tcoD+BoXsEBS5T_kvuUzDTuF3N7kO1eLqwNP3Wy6hps+BBA@mail.gmail.com>
-References: <20230315092041.35482-1-kerneljasonxing@gmail.com>
-        <20230315092041.35482-3-kerneljasonxing@gmail.com>
-        <20230316172020.5af40fe8@kernel.org>
-        <CAL+tcoDNvMUenwNEH2QByEY7cS1qycTSw1TLFSnNKt4Q0dCJUw@mail.gmail.com>
-        <20230316202648.1f8c2f80@kernel.org>
-        <CAL+tcoD+BoXsEBS5T_kvuUzDTuF3N7kO1eLqwNP3Wy6hps+BBA@mail.gmail.com>
+        s=k20201202; t=1679028019;
+        bh=Hv0O98FHMJMlf9hVnLnggH9Zq/u9yD2dvLMndkSVZfE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ionWvsmCG2DOuWe79gxKqB7deTH7OGXLLKD2BoZVza5jnRCb9R5278G0GXET9n+Jn
+         BZqMvUhnpTpupxRSV//5kg70TFZJRvbzLkxoxb7TTi9J/zAp0DaJKyrQS2WUNQmDCr
+         iGatIHLp+kEO2m+P9fB+bGdYzdKaRMqPNGyrqlrUqMJCO60Mfqw6U/xQVZCxvtHzpO
+         4M2kmLqjEvL0bg75IGUgXWmVwPcHylPyoDWFS0GSECKvKXWmCm86H5inCrOl7QJGy8
+         4mcwmu4moyAfbcojcuJjoJlaSLHUUArN5wSMXzf41zzM3b+/WRJ/zs8MR3IV27lkuY
+         QLTPyVCJQjdGg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7C4E0E2A03A;
+        Fri, 17 Mar 2023 04:40:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] net: xdp: don't call notifiers during driver init
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167902801950.7493.7591082991842203309.git-patchwork-notify@kernel.org>
+Date:   Fri, 17 Mar 2023 04:40:19 +0000
+References: <20230316220234.598091-1-kuba@kernel.org>
+In-Reply-To: <20230316220234.598091-1-kuba@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, lorenzo@kernel.org,
+        tariqt@nvidia.com, bpf@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,9 +57,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 17 Mar 2023 12:11:46 +0800 Jason Xing wrote:
-> I understand. One more thing I would like to know is about the state
-> of 1/2 patch.
+Hello:
 
-That one seems fine, we already collect the information so we can
-expose it.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu, 16 Mar 2023 15:02:34 -0700 you wrote:
+> Drivers will commonly perform feature setting during init, if they use
+> the xdp_set_features_flag() helper they'll likely run into an ASSERT_RTNL()
+> inside call_netdevice_notifiers_info().
+> 
+> Don't call the notifier until the device is actually registered.
+> Nothing should be tracking the device until its registered and
+> after its unregistration has started.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v2] net: xdp: don't call notifiers during driver init
+    https://git.kernel.org/netdev/net/c/769639c1fe8a
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
