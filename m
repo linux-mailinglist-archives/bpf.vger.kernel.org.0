@@ -2,64 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9216BDE20
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 02:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB0E6BDE36
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 02:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjCQBWo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 21:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        id S229702AbjCQBjX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 21:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjCQBWn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 21:22:43 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2B42823C
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 18:22:42 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id ek18so14708158edb.6
-        for <bpf@vger.kernel.org>; Thu, 16 Mar 2023 18:22:42 -0700 (PDT)
+        with ESMTP id S229697AbjCQBjW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 21:39:22 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1287611EBF;
+        Thu, 16 Mar 2023 18:39:14 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id u3-20020a17090a450300b00239db6d7d47so3435442pjg.4;
+        Thu, 16 Mar 2023 18:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679016161;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FD2v/N5eE12jm5P/MiAf+C1MY7r1gZF0qKAv5ES+TlM=;
-        b=JKRLLXyx46gHwz07M91qikwbMulC+cagjQfJcrFfLiMZ+OkujbeOVxwsHyJJZ4wEEU
-         6To+SoTpsdNwKIntzelyJ7jLyrWtiuq3yOtVP2ebIZ0e5do1qqs6EF8zutW7HaUo3j10
-         XFMdRDlg13lmqGZ7wbhuCvVdHQet1iDz7+EFgIRyARXI1tYnbrknXj1JMjLWmC5n3am8
-         iPfLFTZ0RVArRbyCkkIC+UIHluUIoF9xxwKgSUQ3mzJQEb2IuxwhyZy3dZfnypAdAGsZ
-         hDOj3SIGl0IfDQvQ/fHlj9matlZlYjeBpJpMSukMzrrRrSae0I1RXcNbQAV7Ms2Ah1hX
-         eZ9g==
+        d=gmail.com; s=20210112; t=1679017153;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LgL3jmUKYcGmk59NnGq21AmoLBz29O0EQuLBsPjDTqE=;
+        b=WuNTnj1jRj5rETMyAh6a/Q3pYCKH7eewrTyQfHlkvFT2SlPqWlQ2TNJTt97CG6dJtX
+         6qzn3OA2TtNW62ltj/BHfc20+Blc54wDAj466dFasVQA8hMaML4dXonW6d5ZLaObSQwx
+         lV2KdiylG7YyDGaSblopfE8SMB4KRiJooP2YpJEfuz6Oos+o0QxZ9LSqw3ZFf04h7Z4f
+         1FwDHFVRQl3gJlweUXl4HKeymE2l6ebRZTRVlRwu0CU7aYUMtO3OZAtkNvyWx0L0iEdA
+         GGV1DxMS1w+PPWLw1tHZf6xEjERBYIDUuC77qrcGhGeSYG6pkuUcTGll297MdwBn0ViK
+         4ZVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679016161;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FD2v/N5eE12jm5P/MiAf+C1MY7r1gZF0qKAv5ES+TlM=;
-        b=B2yvThHN14z2QkI2mEL4hJ6pFjPELEFZ7pdGjicc+Z97AdAGd+hrzv6+9AVkqlVnld
-         O+FC+fNUIB2RKcOFgU9Sivb40MC4sd8m9xA1kqMonr1ZMCVdl8mkJI7xmf+tM4/EWrTw
-         D+iTmbK/30ogOlC0dXHFsc7KpyimIM/IR1CeaiHAwtdpGdcA1P079mcPp2win+nu2p1h
-         GTYcrmwcyJSt/Lkp0v7RZsoaWsCaQJUL97eoQuNVfAlTAz2ixowj3npLXfEGGm8fYBjw
-         /IyOHiwXnLGDfI0hslbqsCsexnIebUqdurh3eO6zqDC+WbFdGzkYOr5X4tZIuiEOhuiF
-         TjQg==
-X-Gm-Message-State: AO0yUKXbd67o0gjLvfNmUTiD9wnXFEBHyVhYC3JUnlVlYw9wYusTKCBq
-        JLbxn1s/5i97qit9HyYTk0Qra05rgty3rN3v/alNtpQE
-X-Google-Smtp-Source: AK7set8DZed6zNst0O+d1gDH9g7DI++DwZvkrkD+swjNVr4raxRffh7nKoo9PlHf6igSycSm8s1Pdp01+tuwv5jkjy8=
-X-Received: by 2002:a17:906:8552:b0:8ae:9f1e:a1c5 with SMTP id
- h18-20020a170906855200b008ae9f1ea1c5mr5920262ejy.3.1679016161166; Thu, 16 Mar
- 2023 18:22:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAAFY1_4a5MC0-BkGcRx-5n-vdXZbjjrjEukwur+n4AOXFhMHFw@mail.gmail.com>
-In-Reply-To: <CAAFY1_4a5MC0-BkGcRx-5n-vdXZbjjrjEukwur+n4AOXFhMHFw@mail.gmail.com>
+        d=1e100.net; s=20210112; t=1679017153;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LgL3jmUKYcGmk59NnGq21AmoLBz29O0EQuLBsPjDTqE=;
+        b=Nn1HrRKvvXApZGim13OwoWJbZ0i7gqkhdDs3vTAu0wWAJ8MiVNHVhwzJG3862WyOK/
+         Bt3XhIh3A+RFAK166LgZlV+z1mJ8hnu0taxXTcvUZ06ggWwbKr6POgE7U/6C9bvJXsgq
+         Is8UPQeK6AmLGJ2u/LJLHuYGiU1phm1ZjNrb3r9kre/DpdznGMdY/kYVCNKH4TUfF6a6
+         JjRvA6u0CGPbxed7zbDh043eqc1Gt8JA0td1RU694noW9TLnooP1O2qdeSkg7jTuDsoG
+         3F2UYyLW9VcKPQeDwZmn7no8JJ7Ehf8bcxkwL/5wLgvj4/u50dQLsZ86sE/4vQY9iTBi
+         QlIA==
+X-Gm-Message-State: AO0yUKWMgo7ego2oDmfBl0+i3mGu+Zz6h8+ExfS1LXmhfC7yHOaVVpWL
+        5DSl61rFqKyOxsmuzbGDSyqQgdRF39s=
+X-Google-Smtp-Source: AK7set+3H+ZXVcSWJKUz2ES3eiPpN6QY4LJVLAM05fPoE+TlNGTafygqU++M+RZ/F5rJxvP5V487XQ==
+X-Received: by 2002:a17:903:1108:b0:1a1:465b:2d22 with SMTP id n8-20020a170903110800b001a1465b2d22mr6789371plh.47.1679017153425;
+        Thu, 16 Mar 2023 18:39:13 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:2bcf])
+        by smtp.gmail.com with ESMTPSA id x21-20020a170902ea9500b0019c2cf12d15sm319700plb.116.2023.03.16.18.39.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Mar 2023 18:39:12 -0700 (PDT)
+Date:   Thu, 16 Mar 2023 18:39:09 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 16 Mar 2023 18:22:29 -0700
-Message-ID: <CAADnVQLcqDOzXPSUUNyFE=UJHBP-ZgOEqFfaGynTUL-jQnw-=w@mail.gmail.com>
-Subject: Re: bpf_timer memory utilization
-To:     Chris Lai <chrlai@riotgames.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Tejun Heo <tj@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow ld_imm64 instruction to point to
+ kfunc.
+Message-ID: <20230317013909.ckwsrcvvuisdars5@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230315223607.50803-1-alexei.starovoitov@gmail.com>
+ <20230315223607.50803-2-alexei.starovoitov@gmail.com>
+ <CAEf4BzaSMB6oKBO2VXvz4cVE9wXqYq+vyD=EOe3YJ3a-L==WCg@mail.gmail.com>
+ <CAADnVQLud8-+pexQo8rscVM2d8K2dsYU1rJbFGK2ZZygdAgkQA@mail.gmail.com>
+ <CAEf4Bzat4dFCP40cMbDwPK-LyPKJtO1d0M44m9EbNajU9UgxFw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzat4dFCP40cMbDwPK-LyPKJtO1d0M44m9EbNajU9UgxFw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,22 +83,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 12:18=E2=80=AFPM Chris Lai <chrlai@riotgames.com> w=
-rote:
->
-> Hello,
-> Using BPF Hashmap with bpf_timer for each entry value and callback to
-> delete the entry after 1 minute.
-> Constantly creating load to insert elements onto the map, we have
-> observed the following:
-> -3M map capacity, 1 minute bpf_timer callback/cleanup, memory usage
-> peaked around 5GB
-> -16M map capacity, 1 minute bpf_timer callback/cleanup, memory usage
-> peaked around 34GB
-> -24M map capacity, 1 minute bpf_timer callback/cleanup, memory usage
-> peaked around 55GB
-> Wondering if this is expected and what is causing the huge increase in
-> memory as we increase the number of elements inserted onto the map.
-> Thank you.
+On Thu, Mar 16, 2023 at 04:06:02PM -0700, Andrii Nakryiko wrote:
+> 
+> /* pass function pointer through asm otherwise compiler assumes that
+> any function != 0 */
+> 
+> comment was referring to compiler assuming that function != 0 for
+> __weak symbol? I definitely didn't read it this way. And "compiler
+> assumes that function != 0" seems a bit too strong of a statement,
+> because at least Clang doesn't.
 
-That's not normal. Do you have a small reproducer?
+Correct. Instead of 'any function' it should be 'any non-weak function'.
+
+> 
+> But for macro, it's not kfunc-specific (and macro itself has no way to
+> check that you are actually passing kfunc ksym), so even if it was a
+> macro, it would be better to call it something more generic like
+> bpf_ksym_exists() (though that will work for .kconfig, yet will be
+> inappropriately named).
+
+Rigth. bpf_ksym_exists() is what I proposed couple emails ago in my reply to Ed.
+
+> The asm bit, though, seems to be a premature thing that can hide real
+> compiler issues, so I'm still hesitant to add it. It should work today
+> with modern compilers, so I'd test and validate this.
+
+We're using asm in lots of place to avoid fighting with compiler.
+This is just one of them, but I found a different way to prevent
+silent optimizations. I'll go with:
+
+#define bpf_ksym_exists(sym) \
+       ({ _Static_assert(!__builtin_constant_p(!!sym), #sym " should be marked as __weak"); !!sym; })
+
+It will address the silent dead code elimination issue and
+will detect missing weak immediately at build time.
+
+Just going with:
+
+if (bpf_rcu_read_lock) // comment about weak
+   bpf_rcu_read_lock();
+else
+  ..
+
+and forgetting to use __weak in bpf_rcu_read_lock() declaration will make it
+"work" on current kernels. The compiler will optimize 'if' and 'else' out and
+libbpf will happily find that kfunc in the kernel.
+While the program will fail to load on kernels without this kfunc much later with:
+libbpf: extern (func ksym) 'bpf_rcu_read_lock': not found in kernel or module BTFs.
+
+Which is the opposite of what that block of bpf code wanted to achieve.
+
+> > It works, but how many people know that unknown weak resolves to zero ?
+> > I didn't know until yesterday.
+> 
+> I was explicit about this from the very beginning of BPF CO-RE work.
+> ksyms were added later, but semantics was consistent between .kconfig
+> and .ksym. Documentation can't be ever good enough and discoverable
+> enough (like [0]), of course, but let's do our best to make it as
+...
+>   [0] https://nakryiko.com/posts/bpf-core-reference-guide/#kconfig-extern-variables
+
+I read it long ago, but reading is one thing and remembering small details is another.
