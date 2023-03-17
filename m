@@ -2,233 +2,797 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EB26BF3BB
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0C46BF43B
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbjCQVV6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        id S229817AbjCQVfu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjCQVV5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:21:57 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62182C795C
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:21:51 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id t76-20020a635f4f000000b0050bea7a0577so1524169pgb.12
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:21:51 -0700 (PDT)
+        with ESMTP id S230112AbjCQVft (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:35:49 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F43234D5;
+        Fri, 17 Mar 2023 14:35:12 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id u5so6669680plq.7;
+        Fri, 17 Mar 2023 14:35:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679088110;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PzsBZNbSc5Cbu7o6c4aa6/HqL8bVQjVwQw8nR/BqY10=;
-        b=M3pyj4WXzRt5UOa9AGraYYh1SMXzBIrCA12O1wU1pGc3u4z8qivxajOailzHPT20mJ
-         bB42c+Ws9X1LLYsiqQD6IZe1BJSIllAIVbN2utQOdT9d1jyqlBDpt99ebpcOKI5zDZpt
-         rUqxrV6frBBIY7ISv1P4cvRqIrH3xvBCAiQVFgLxcC9muYMA8LOuBs3AlEIU9lIYtD8y
-         kXg8mlfbVKAibTjQ5fdhWcU0ocFMf4zVJhI4nde1oGlTuxESqEml0JFrPQjL5fDA/2s8
-         1+ghb9aXrSg8QzQjteR7mPTcQWf4tIH184yf43wOd077i9g8I+P8btQ11XZFGpKU8aIe
-         EQBw==
+        d=gmail.com; s=20210112; t=1679088824;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=7hnITdLXIqBgI+41S7SvVDJy9Ij/ea7Hu2f8/dEBweQ=;
+        b=V49fzQJPOtOROa353DInD1cAynZtc1GvZDPIccPNHQqvMMawTBu/kjlqMqlvo+LGGP
+         I8HN3fe0pb+zWu2Dcgd/R0XnjK1N6SSrJM7YG8dL9LKC6rNBFgEFMLg7UaWP5l+EzWIh
+         0VJb62yRjGeHa7vhbITUbddIH4uyt71NmQ3kW/bgJs9nbDZ52bLsHpu1+qIglLZ5KcvM
+         xF9/VvPXKMzsV4G51DV6NENp4P+vHO8Eket8oLgD7jXMDGM3Es6+gW85n/9j/YJWCLPz
+         cIhlgH0RIBzoytgPW8iwRD8pVSQsWVghThMd2KM/sOK2hSlt8tGG64KlkAn+ImxmZku0
+         7SjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679088110;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PzsBZNbSc5Cbu7o6c4aa6/HqL8bVQjVwQw8nR/BqY10=;
-        b=JSVoa98pRwm1/bQizPjpVb2zDPHBLPaW5HA3Z2gjrkOdDL8x9i55IPgxMFHUmSt1yy
-         U83U2VU6jES/k9Wkqba9RmyTj1l9EwVU9mLlaAm4fVeOxfMo0rCsMRPCPeEUePVWZ5ZF
-         fvKAh/YVj4FeHkpPPKAu3j+rH/8Fna22XM6joUP0y5aZ8pvWLLsKmj0oNr4jnUrMZG5v
-         O5VUg8pYvMEt5kwnYB0OMvvXEBlaSgGN+nJPn/vyFDcRUcCL6leQJ8OUnKHPy+2sPv4D
-         EMysl+mkCpGqflwMKGyz4G2Mvu4HhJQZVXxGGB6eJpnSm8pYQNYG61c0Fm+Dlep5hTqP
-         GQcg==
-X-Gm-Message-State: AO0yUKU1SnOPXK6RSDsM/vMsjNjK/YIb8oAnFrf9CkR3K4DQJYw73pnf
-        QtAkljBhZn4U/7BmkYUKo2sMdH4=
-X-Google-Smtp-Source: AK7set9tu9oc1RUjxgzKPCg+fE9JjxddXFmRXUmD2tbjQ8Qh5j337E8HODQsf2FImw0oHf/u/g7DsGE=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:903:2585:b0:19f:28f4:1db with SMTP id
- jb5-20020a170903258500b0019f28f401dbmr3468766plb.8.1679088110486; Fri, 17 Mar
- 2023 14:21:50 -0700 (PDT)
-Date:   Fri, 17 Mar 2023 14:21:48 -0700
-In-Reply-To: <167906359575.2706833.545256364239637451.stgit@firesoul>
-Mime-Version: 1.0
-References: <167906343576.2706833.17489167761084071890.stgit@firesoul> <167906359575.2706833.545256364239637451.stgit@firesoul>
-Message-ID: <ZBTZ7J9B6yXNJO1m@google.com>
-Subject: Re: [PATCH bpf-next V1 1/7] xdp: bpf_xdp_metadata use EOPNOTSUPP for
- no driver support
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20210112; t=1679088824;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7hnITdLXIqBgI+41S7SvVDJy9Ij/ea7Hu2f8/dEBweQ=;
+        b=lA1isF8Z2bBESaiscYdDTLw5SksHOyvehfGq2q3+422tz9PDbEPXNaUgmZQ0qchsnv
+         iJmsse/PbZJYSxx6OlpfAcSe6xxO835GHSdGahnWb97MBK+CbqxmHaXXetaXn+3yLsnI
+         CFU7g9so/T+C4NXUlSx85n4RLTv+lrRe7EHcl5nTfucPMnruGrdq2OrfhQj2hmMQM3Qb
+         x53sl0cLBSGCsHISuixizOr4nZtu/Tnev3ttLhgEalS69zTzVh7Iwjr3apEQd0FsXudx
+         n7rDglGCW521OLnGxjyIkZqjvIPEGth7UFbaXYSTHLFlXdIjIi4234d4ch/ZjFSViJOk
+         Elqg==
+X-Gm-Message-State: AO0yUKWLipkJ6QRSOvCE99uG/VKj0thiO1DzFbpJWXVJFsz+yfHYjwxj
+        aGzZq2lAzvQ/FfLNnkE1es4=
+X-Google-Smtp-Source: AK7set8vK+Ov51oHWV5BGNNv7+fp9OLPqIjSiZFH6lfeA2Om3Yy+l7qdaT6Vkk+M2vO9uM8FGfc5fw==
+X-Received: by 2002:a17:902:d485:b0:19f:2332:d2ca with SMTP id c5-20020a170902d48500b0019f2332d2camr10597839plg.52.1679088823302;
+        Fri, 17 Mar 2023 14:33:43 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id iy5-20020a170903130500b001991f3d85acsm1958440plb.299.2023.03.17.14.33.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Mar 2023 14:33:42 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+From:   Tejun Heo <tj@kernel.org>
+To:     torvalds@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, brho@google.com, pjt@google.com,
+        derkling@google.com, haoluo@google.com, dvernet@meta.com,
+        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com
+Subject: [PATCHSET v3] sched: Implement BPF extensible scheduler class
+Date:   Fri, 17 Mar 2023 11:33:01 -1000
+Message-Id: <20230317213333.2174969-1-tj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/17, Jesper Dangaard Brouer wrote:
-> When driver doesn't implement a bpf_xdp_metadata kfunc the fallback
-> implementation returns EOPNOTSUPP, which indicate device driver doesn't
-> implement this kfunc.
+Changes
+-------
 
-> Currently many drivers also return EOPNOTSUPP when the hint isn't
-> available, which is inconsistent from an API point of view. Instead
-> change drivers to return ENODATA in these cases.
+This is v3 of sched_ext (SCX) patchset. The followings are changes from v2
+(http://lkml.kernel.org/r/20230128001639.3510083-1-tj@kernel.org).
 
-> There can be natural cases why a driver doesn't provide any hardware
-> info for a specific hint, even on a frame to frame basis (e.g. PTP).
-> Lets keep these cases as separate return codes.
+- ops.set_weight() added to allow BPF schedulers to track weight changes
+  without polling p->scx.weight.
 
-> When describing the return values, adjust the function kernel-doc layout
-> to get proper rendering for the return values.
+- scx_bpf_task_cgroup() kfunc added to allow BPF scheduler to reliably
+  determine the current cpu cgroup under rq lock protection. This required
+  improving the kf_mask SCX operation verification mechanism and adding
+  0023-sched_ext-Track-tasks-that-are-subjects-of-the-in-fl.patch.
 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+- Updated to use the latest BPF improvements including KF_RCU and the inline
+  iterator.
 
-I don't remember whether the previous discussion ended in something?
-IIRC Martin was preferring to use xdp-features for this instead?
+- scx_example_flatcg added to 0024-sched_ext-Add-cgroup-support.patch. It
+  uses the new BPF RB tree support to implement flattened cgroup hierarchy.
 
-Personally I'm fine with having this convention, but I'm not sure how well
-we'll be able to enforce them. (In general, I'm not a fan of userspace
-changing it's behavior based on errno. If it's mostly for
-debugging/development - seems ok)
+- A DSQ now also contains an rbtree so that it can be used to implement
+  vtime based scheduling among tasks sharing a DSQ conveniently and
+  efficiently. For more details, see
+  0029-sched_ext-Add-vtime-ordered-priority-queue-to-dispat.patch. All
+  eligible example schedulers are updated to default to weighted vtime
+  scheduilng.
 
-> ---
->   Documentation/networking/xdp-rx-metadata.rst     |    7 +++++--
->   drivers/net/ethernet/mellanox/mlx4/en_rx.c       |    4 ++--
->   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |    4 ++--
->   drivers/net/veth.c                               |    4 ++--
->   net/core/xdp.c                                   |   10 ++++++++--
->   5 files changed, 19 insertions(+), 10 deletions(-)
+- atropos scheduler's userspace code is substantially restructred and
+  rewritten. The binary is renamed to scx_atropos and can auto-config the
+  domains according to the cache topology.
 
-> diff --git a/Documentation/networking/xdp-rx-metadata.rst  
-> b/Documentation/networking/xdp-rx-metadata.rst
-> index aac63fc2d08b..25ce72af81c2 100644
-> --- a/Documentation/networking/xdp-rx-metadata.rst
-> +++ b/Documentation/networking/xdp-rx-metadata.rst
-> @@ -23,10 +23,13 @@ metadata is supported, this set will grow:
->   An XDP program can use these kfuncs to read the metadata into stack
->   variables for its own consumption. Or, to pass the metadata on to other
->   consumers, an XDP program can store it into the metadata area carried
-> -ahead of the packet.
-> +ahead of the packet. Not all packets will necessary have the requested
-> +metadata available in which case the driver returns ``-ENODATA``.
+- Various other example scheduler updates including scx_example_dummy being
+  renamed to scx_example_simple, the example schedulers defaulting to
+  enabling switch_all and clarifying performance expectation of each example
+  scheduler.
 
->   Not all kfuncs have to be implemented by the device driver; when not
-> -implemented, the default ones that return ``-EOPNOTSUPP`` will be used.
-> +implemented, the default ones that return ``-EOPNOTSUPP`` will be used
-> +to indicate the device driver have not implemented this kfunc.
-> +
+- A bunch of fixes and improvements. Please refer to each patch for details.
 
->   Within an XDP frame, the metadata layout (accessed via ``xdp_buff``) is
->   as follows::
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c  
-> b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> index 0869d4fff17b..4b5e459b6d49 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> @@ -674,7 +674,7 @@ int mlx4_en_xdp_rx_timestamp(const struct xdp_md  
-> *ctx, u64 *timestamp)
->   	struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
+v1 (http://lkml.kernel.org/r/20221130082313.3241517-1-tj@kernel.org) -> v2:
 
->   	if (unlikely(_ctx->ring->hwtstamp_rx_filter != HWTSTAMP_FILTER_ALL))
-> -		return -EOPNOTSUPP;
-> +		return -ENODATA;
+- Rebased on top of bpf/for-next - a5f6b9d577eb ("Merge branch 'Enable
+  struct_ops programs to be sleepable'"). There were several missing
+  features including generic cpumask helpers and sleepable struct_ops
+  operation support that v1 was working around. The rebase gets rid of all
+  SCX specific temporary helpers.
 
->   	*timestamp = mlx4_en_get_hwtstamp(_ctx->mdev,
->   					  mlx4_en_get_cqe_ts(_ctx->cqe));
-> @@ -686,7 +686,7 @@ int mlx4_en_xdp_rx_hash(const struct xdp_md *ctx, u32  
-> *hash)
->   	struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
+- Some kfunc helpers are context-sensitive and can only be called from
+  specific operations. v1 didn't restrict kfunc accesses allowing them to be
+  misused which can lead to crashes and other malfunctions. v2 makes more
+  kfuncs safe to be called from anywhere and implements per-task mask based
+  runtime access control for the rest. The longer-term plan is to make the
+  BPF verifier enforce these restrictions. Combined with the above, sans
+  mistakes and bugs, it shouldn't be possible to crash the machine through
+  SCX and its helpers.
 
->   	if (unlikely(!(_ctx->dev->features & NETIF_F_RXHASH)))
-> -		return -EOPNOTSUPP;
-> +		return -ENODATA;
+- Core-sched support. While v1 implemented the pick_task operation, there
+  were multiple missing pieces for working core-sched support. v2 adds
+  0027-sched_ext-Implement-core-sched-support.patch. SCX by default
+  implements global FIFO ordering and allows the BPF schedulers to implement
+  custom ordering via scx_ops.core_sched_before(). scx_example_qmap is
+  updated so that the five queues' relative priorities are correctly
+  reflected when core-sched is enabled.
 
->   	*hash = be32_to_cpu(_ctx->cqe->immed_rss_invalid);
->   	return 0;
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c  
-> b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> index bcd6370de440..c5dae48b7932 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> @@ -162,7 +162,7 @@ static int mlx5e_xdp_rx_timestamp(const struct xdp_md  
-> *ctx, u64 *timestamp)
->   	const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
+- Dropped balance_scx_on_up() which was called from put_prev_task_balance().
+  UP support is now contained in SCX proper.
 
->   	if (unlikely(!mlx5e_rx_hw_stamp(_ctx->rq->tstamp)))
-> -		return -EOPNOTSUPP;
-> +		return -ENODATA;
+- 0002-sched-Encapsulate-task-attribute-change-sequence-int.patch adds
+  SCHED_CHANGE_BLOCK() which encapsulates the preparation and restoration
+  sequences used for task attribute changes. For SCX, this replaces
+  sched_deq_and_put_task() and sched_enq_and_set_task() from v1.
 
->   	*timestamp =  mlx5e_cqe_ts_to_ns(_ctx->rq->ptp_cyc2time,
->   					 _ctx->rq->clock, get_cqe_ts(_ctx->cqe));
-> @@ -174,7 +174,7 @@ static int mlx5e_xdp_rx_hash(const struct xdp_md  
-> *ctx, u32 *hash)
->   	const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
+- 0011-sched-Add-reason-to-sched_move_task.patch dropped from v1. SCX now
+  distinguishes cgroup and autogroup tg's using task_group_is_autogroup().
 
->   	if (unlikely(!(_ctx->xdp.rxq->dev->features & NETIF_F_RXHASH)))
-> -		return -EOPNOTSUPP;
-> +		return -ENODATA;
+- Other misc changes including fixes for bugs that Julia Lawall noticed and
+  patch descriptions updates with more details on how the introduced changes
+  are going to be used.
 
->   	*hash = be32_to_cpu(_ctx->cqe->rss_hash_result);
->   	return 0;
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index 1bb54de7124d..046461ee42ea 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -1610,7 +1610,7 @@ static int veth_xdp_rx_timestamp(const struct  
-> xdp_md *ctx, u64 *timestamp)
->   	struct veth_xdp_buff *_ctx = (void *)ctx;
+- MAINTAINERS entries added.
 
->   	if (!_ctx->skb)
-> -		return -EOPNOTSUPP;
-> +		return -ENODATA;
+The followings are discussion points which were raised but didn't result in
+code changes in this iteration.
 
->   	*timestamp = skb_hwtstamps(_ctx->skb)->hwtstamp;
->   	return 0;
-> @@ -1621,7 +1621,7 @@ static int veth_xdp_rx_hash(const struct xdp_md  
-> *ctx, u32 *hash)
->   	struct veth_xdp_buff *_ctx = (void *)ctx;
+- There were discussions around exposing __setscheduler_prio() and, in v2,
+  SCHED_CHANGE_BLOCK() in kernel/sched/sched.h. Switching scheduler
+  implementations is innate for SCX. At the very least, it needs to be able
+  to turn on and off the BPF scheduler which requires something equivalent
+  to SCHED_CHANGE_BLOCK(). The use of __setscheduler_prio() depends on the
+  behavior we want to present to userspace. The current one of using CFS as
+  the fallback when BPF scheduler is not available seems more friendly and
+  less error-prone to other options.
 
->   	if (!_ctx->skb)
-> -		return -EOPNOTSUPP;
-> +		return -ENODATA;
+- Another discussion point was around for_each_active_class() and friends
+  which skip over CFS or SCX when it's known that the sched_class must be
+  empty. I left it as-is for now as it seems to be cleaner and more robust
+  than trying to plug each operation which may added unnecessary overheads.
 
->   	*hash = skb_get_hash(_ctx->skb);
->   	return 0;
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 8d3ad315f18d..7133017bcd74 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -705,7 +705,10 @@ __diag_ignore_all("-Wmissing-prototypes",
->    * @ctx: XDP context pointer.
->    * @timestamp: Return value pointer.
->    *
-> - * Returns 0 on success or ``-errno`` on error.
-> + * Return:
-> + * * Returns 0 on success or ``-errno`` on error.
-> + * * ``-EOPNOTSUPP`` : means device driver does not implement kfunc
-> + * * ``-ENODATA``    : means no RX-timestamp available for this frame
->    */
->   __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,  
-> u64 *timestamp)
->   {
-> @@ -717,7 +720,10 @@ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const  
-> struct xdp_md *ctx, u64 *tim
->    * @ctx: XDP context pointer.
->    * @hash: Return value pointer.
->    *
-> - * Returns 0 on success or ``-errno`` on error.
-> + * Return:
-> + * * Returns 0 on success or ``-errno`` on error.
-> + * * ``-EOPNOTSUPP`` : means device driver doesn't implement kfunc
-> + * * ``-ENODATA``    : means no RX-hash available for this frame
->    */
->   __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32  
-> *hash)
->   {
+Overview
+--------
 
+This patch set proposes a new scheduler class called ‘ext_sched_class’, or
+sched_ext, which allows scheduling policies to be implemented as BPF programs.
+
+More details will be provided on the overall architecture of sched_ext
+throughout the various patches in this set, as well as in the “How” section
+below. We realize that this patch set is a significant proposal, so we will be
+going into depth in the following “Motivation” section to explain why we think
+it’s justified. That section is laid out as follows, touching on three main
+axes where we believe that sched_ext provides significant value:
+
+1. Ease of experimentation and exploration: Enabling rapid iteration of new
+   scheduling policies.
+
+2. Customization: Building application-specific schedulers which implement
+   policies that are not applicable to general-purpose schedulers.
+
+3. Rapid scheduler deployments: Non-disruptive swap outs of scheduling
+   policies in production environments.
+
+After the motivation section, we’ll provide a more detailed (but still
+high-level) overview of how sched_ext works.
+
+Motivation
+----------
+
+1. Ease of experimentation and exploration
+
+*Why is exploration important?*
+
+Scheduling is a challenging problem space. Small changes in scheduling
+behavior can have a significant impact on various components of a system, with
+the corresponding effects varying widely across different platforms,
+architectures, and workloads.
+
+While complexities have always existed in scheduling, they have increased
+dramatically over the past 10-15 years. In the mid-late 2000s, cores were
+typically homogeneous and further apart from each other, with the criteria for
+scheduling being roughly the same across the entire die.
+
+Systems in the modern age are by comparison much more complex. Modern CPU
+designs, where the total power budget of all CPU cores often far exceeds the
+power budget of the socket, with dynamic frequency scaling, and with or
+without chiplets, have significantly expanded the scheduling problem space.
+Cache hierarchies have become less uniform, with Core Complex (CCX) designs
+such as recent AMD processors having multiple shared L3 caches within a single
+socket. Such topologies resemble NUMA sans persistent NUMA node stickiness.
+
+Use-cases have become increasingly complex and diverse as well. Applications
+such as mobile and VR have strict latency requirements to avoid missing
+deadlines that impact user experience. Stacking workloads in servers is
+constantly pushing the demands on the scheduler in terms of workload isolation
+and resource distribution.
+
+Experimentation and exploration are important for any non-trivial problem
+space. However, given the recent hardware and software developments, we
+believe that experimentation and exploration are not just important, but
+_critical_ in the scheduling problem space.
+
+Indeed, other approaches in industry are already being explored. AMD has
+proposed an experimental patch set [0] which enables userspace to provide
+hints to the scheduler via “Userspace Hinting”. The approach adds a prctl()
+API which allows callers to set a numerical “hint” value on a struct
+task_struct. This hint is then optionally read by the scheduler to adjust the
+cost calculus for various scheduling decisions.
+
+[0]: https://lore.kernel.org/lkml/20220910105326.1797-1-kprateek.nayak@amd.com/
+
+Huawei have also expressed interest [1] in enabling some form of programmable
+scheduling. While we’re unaware of any patch sets which have been sent to the
+upstream list for this proposal, it similarly illustrates the need for more
+flexibility in the scheduler.
+
+[1]: https://lore.kernel.org/bpf/dedc7b72-9da4-91d0-d81d-75360c177188@huawei.com/
+
+Additionally, Google has developed ghOSt [2] with the goal of enabling custom,
+userspace driven scheduling policies. Prior presentations at LPC [3] have
+discussed ghOSt and how BPF can be used to accelerate scheduling.
+
+[2]: https://dl.acm.org/doi/pdf/10.1145/3477132.3483542
+[3]: https://lpc.events/event/16/contributions/1365/
+
+*Why can’t we just explore directly with CFS?*
+
+Experimenting with CFS directly or implementing a new sched_class from scratch
+is of course possible, but is often difficult and time consuming. Newcomers to
+the scheduler often require years to understand the codebase and become
+productive contributors. Even for seasoned kernel engineers, experimenting
+with and upstreaming features can take a very long time. The iteration process
+itself is also time consuming, as testing scheduler changes on real hardware
+requires reinstalling the kernel and rebooting the host.
+ 
+Core scheduling is an example of a feature that took a significant amount of
+time and effort to integrate into the kernel. Part of the difficulty with core
+scheduling was the inherent mismatch in abstraction between the desire to
+perform core-wide scheduling, and the per-cpu design of the kernel scheduler.
+This caused issues, for example ensuring proper fairness between the
+independent runqueues of SMT siblings.
+
+The high barrier to entry for working on the scheduler is an impediment to
+academia as well. Master’s/PhD candidates who are interested in improving the
+scheduler will spend years ramping-up, only to complete their degrees just as
+they’re finally ready to make significant changes. A lower entrance barrier
+would allow researchers to more quickly ramp up, test out hypotheses, and
+iterate on novel ideas. Research methodology is also severely hampered by the
+high barrier of entry to make modifications; for example, the Shenango [4] and
+Shinjuku scheduling policies used sched affinity to replicate the desired
+policy semantics, due to the difficulty of incorporating these policies into
+the kernel directly.
+
+[4]: https://www.usenix.org/system/files/nsdi19-ousterhout.pdf
+
+The iterative process itself also imposes a significant cost to working on the
+scheduler. Testing changes requires developers to recompile and reinstall the
+kernel, reboot their machines, rewarm their workloads, and then finally rerun
+their benchmarks. Though some of this overhead could potentially be mitigated
+by enabling schedulers to be implemented as kernel modules, a machine crash or
+subtle system state corruption is always only one innocuous mistake away.
+These problems are exacerbated when testing production workloads in a
+datacenter environment as well, where multiple hosts may be involved in an
+experiment; requiring a significantly longer ramp up time. Warming up memcache
+instances in the Meta production environment takes hours, for example.
+
+*How does sched_ext help with exploration?*
+
+sched_ext attempts to address all of the problems described above. In this
+section, we’ll describe the benefits to experimentation and exploration that
+are afforded by sched_ext, provide real-world examples of those benefits, and
+discuss some of the trade-offs and considerations in our design choices.
+
+One of our main goals was to lower the barrier to entry for experimenting
+with the scheduler. sched_ext provides ergonomic callbacks and helpers to
+ease common operations such as managing idle CPUs, scheduling tasks on
+arbitrary CPUs, handling preemptions from other scheduling classes, and
+more. While sched_ext does require some ramp-up, the complexity is
+self-contained, and the learning curve gradual. Developers can ramp up by
+first implementing simple policies such as global weighted vtime scheduling
+in only tens of lines of code, and then continue to learn the APIs and
+building blocks available with sched_ext as they build more featureful and
+complex schedulers.
+
+Another critical advantage provided by sched_ext is the use of BPF. BPF
+provides strong safety guarantees by statically analyzing programs at load
+time to ensure that they cannot corrupt or crash the system. sched_ext
+guarantees system integrity no matter what BPF scheduler is loaded, and
+provides mechanisms to safely disable the current BPF scheduler and migrate
+tasks back to a trusted scheduler. For example, we also implement in-kernel
+safety mechanisms to guarantee that a misbehaving scheduler cannot
+indefinitely starve tasks. BPF also enables sched_ext to significantly improve
+iteration speed for running experiments. Loading and unloading a BPF scheduler
+is simply a matter of running and terminating a sched_ext binary.
+
+BPF also provides programs with a rich set of APIs, such as maps, kfuncs,
+and BPF helpers. In addition to providing useful building blocks to programs
+that run entirely in kernel space (such as many of our example schedulers),
+these APIs also allow programs to leverage user space in making scheduling
+decisions. Specifically, the Atropos sample scheduler has a relatively
+simple weighted vtime or FIFO scheduling layer in BPF, paired with a load
+balancing component in userspace written in Rust. As described in more
+detail below, we also built a more general user-space scheduling framework
+called “rhone” by leveraging various BPF features.
+
+On the other hand, BPF does have shortcomings, as can be plainly seen from the
+complexity in some of the example schedulers. scx_example_pair.bpf.c
+illustrates this point well. To start, it requires a good amount of code to
+emulate cgroup-local-storage. In the kernel proper, this would simply be a
+matter of adding another pointer to the struct cgroup, but in BPF, it requires
+a complex juggling of data amongst multiple different maps, a good amount of
+boilerplate code, and some unwieldy bpf_loop()‘s and atomics. The code is also
+littered with explicit and often unnecessary sanity checks to appease the
+verifier.
+
+That being said, BPF is being rapidly improved. For example, Yonghong Song
+recently upstreamed a patch set [5] to add a cgroup local storage map type,
+allowing scx_example_pair.bpf.c to be simplified. There are plans to address
+other issues as well, such as providing statically-verified locking, and
+avoiding the need for unnecessary sanity checks. Addressing these shortcomings
+is a high priority for BPF, and as progress continues to be made, we expect
+most deficiencies to be addressed in the not-too-distant future.
+
+[5]: https://lore.kernel.org/bpf/20221026042835.672317-1-yhs@fb.com/
+
+Yet another exploration advantage of sched_ext is helping widening the scope
+of experiments. For example, sched_ext makes it easy to defer CPU assignment
+until a task starts executing, allowing schedulers to share scheduling queues
+at any granularity (hyper-twin, CCX and so on). Additionally, higher level
+frameworks can be built on top to further widen the scope. For example, the
+aforementioned “rhone” [6] library allows implementing scheduling policies in
+user-space by encapsulating the complexity around communicating scheduling
+decisions with the kernel. This allows taking advantage of a richer
+programming environment in user-space, enabling experimenting with, for
+instance, more complex mathematical models.
+
+[6]: https://github.com/Decave/rhone
+
+sched_ext also allows developers to leverage machine learning. At Meta, we
+experimented with using machine learning to predict whether a running task
+would soon yield its CPU. These predictions can be used to aid the scheduler
+in deciding whether to keep a runnable task on its current CPU rather than
+migrating it to an idle CPU, with the hope of avoiding unnecessary cache
+misses. Using a tiny neural net model with only one hidden layer of size 16,
+and a decaying count of 64 syscalls as a feature, we were able to achieve a
+15% throughput improvement on an Nginx benchmark, with an 87% inference
+accuracy.
+
+2. Customization
+
+This section discusses how sched_ext can enable users to run workloads on
+application-specific schedulers.
+
+*Why deploy custom schedulers rather than improving CFS?*
+
+Implementing application-specific schedulers and improving CFS are not
+conflicting goals. Scheduling features explored with sched_ext which yield
+beneficial results, and which are sufficiently generalizable, can and should
+be integrated into CFS. However, CFS is fundamentally designed to be a general
+purpose scheduler, and thus is not conducive to being extended with some
+highly targeted application or hardware specific changes.
+
+Targeted, bespoke scheduling has many potential use cases. For example, VM
+scheduling can make certain optimizations that are infeasible in CFS due to
+the constrained problem space (scheduling a static number of long-running
+VCPUs versus an arbitrary number of threads). Additionally, certain
+applications might want to make targeted policy decisions based on hints
+directly from the application (for example, a service that knows the different
+deadlines of incoming RPCs).
+
+Google has also experimented with some promising, novel scheduling policies.
+One example is “central” scheduling, wherein a single CPU makes all scheduling
+decisions for the entire system. This allows most cores on the system to be
+fully dedicated to running workloads, and can have significant performance
+improvements for certain use cases. For example, central scheduling with VCPUs
+can avoid expensive vmexits and cache flushes, by instead delegating the
+responsibility of preemption checks from the tick to a single CPU. See
+scx_example_central.bpf.c for a simple example of a central scheduling policy
+built in sched_ext.
+
+Some workloads also have non-generalizable constraints which enable
+optimizations in a scheduling policy which would otherwise not be feasible.
+For example,VM workloads at Google typically have a low overcommit ratio
+compared to the number of physical CPUs. This allows the scheduler to support
+bounded tail latencies, as well as longer blocks of uninterrupted time.
+
+Yet another interesting use case is the scx_example_flatcg scheduler, which
+is in 0024-sched_ext-Add-cgroup-support.patch and provides a flattened
+hierarchical vtree for cgroups. This scheduler does not account for
+thundering herd problems among cgroups, and therefore may not be suitable
+for inclusion in CFS. However, in a simple benchmark using wrk[8] on apache
+serving a CGI script calculating sha1sum of a small file, it outperformed
+CFS by ~3% with CPU controller disabled and by ~10% with two apache
+instances competing with 2:1 weight ratio nested four level deep.
+
+[7] https://github.com/wg/wrk
+
+Certain industries require specific scheduling behaviors that do not apply
+broadly. For example, ARINC 653 defines scheduling behavior that is widely
+used by avionic software, and some out-of-tree implementations
+(https://ieeexplore.ieee.org/document/7005306) have been built. While the
+upstream community may decide to merge one such implementation in the future,
+it would also be entirely reasonable to not do so given the narrowness of
+use-case, and non-generalizable, strict requirements. Such cases can be well
+served by sched_ext in all stages of the software development lifecycle --
+development, testing, deployment and maintenance.
+
+There are also classes of policy exploration, such as machine learning, or
+responding in real-time to application hints, that are significantly harder
+(and not necessarily appropriate) to integrate within the kernel itself.
+
+*Won’t this increase fragmentation?*
+
+We acknowledge that to some degree, sched_ext does run the risk of increasing
+the fragmentation of scheduler implementations. As a result of exploration,
+however, we believe that enabling the larger ecosystem to innovate will
+ultimately accelerate the overall development and performance of Linux.
+Additionally, our licensing and API stability policies should incentivize
+users to upstream their schedulers.
+
+BPF programs are required to be GPLv2, which is enforced by the verifier on
+program loads. With regards to API stability, just as with other semi-internal
+interfaces such as BPF kfuncs, we won’t be providing any API stability
+guarantees to BPF schedulers. While we intend to make an effort to provide
+compatibility when possible, we will not provide any explicit, strong
+guarantees as the kernel typically does with e.g. UAPI headers. For users who
+decide to keep their schedulers out-of-tree,the licensing and maintenance
+overheads will be fundamentally the same as for carrying out-of-tree patches.
+
+With regards to the schedulers included in this patch set, and any other
+schedulers we implement in the future, both Meta and Google will open-source
+all of the schedulers we implement which have any relevance to the broader
+upstream community. We expect that some of these, such as the example
+schedulers and scx_example_flatcg scheduler, will be upstreamed as part of
+the kernel tree. Distros will be able to package and release these
+schedulers with the kernel, allowing users to utilize these schedulers
+out-of-the-box without requiring any additional work or dependencies such as
+clang or building the scheduler programs themselves. Other schedulers and
+scheduling frameworks such as rhone may be open-sourced through separate
+per-project repos.
+
+3. Rapid scheduler deployments
+
+Rolling out kernel upgrades is a slow and iterative process. At a large scale
+it can take months to roll a new kernel out to a fleet of servers. While this
+latency is expected and inevitable for normal kernel upgrades, it can become
+highly problematic when kernel changes are required to fix bugs. Livepatch [8]
+is available to quickly roll out critical security fixes to large fleets, but
+the scope of changes that can be applied with livepatching is fairly limited,
+and would likely not be usable for patching scheduling policies. With
+sched_ext, new scheduling policies can be rapidly rolled out to production
+environments.
+
+[8]: https://www.kernel.org/doc/html/latest/livepatch/livepatch.html
+
+As an example, one of the variants of the L1 Terminal Fault (L1TF) [9]
+vulnerability allows a VCPU running a VM to read arbitrary host kernel
+memory for pages in L1 data cache. The solution was to implement core
+scheduling, which ensures that tasks running as hypertwins have the same
+“cookie”.
+
+[9]: https://www.intel.com/content/www/us/en/architecture-and-technology/l1tf.html
+
+While core scheduling works well, it took a long time to finalize and land
+upstream. This long rollout period was painful, and required organizations to
+make difficult choices amongst a bad set of options. Some companies such as
+Google chose to implement and use their own custom L1TF-safe scheduler, others
+chose to run without hyper-threading enabled, and yet others left
+hyper-threading enabled and crossed their fingers.
+
+Once core scheduling was upstream, organizations had to upgrade the kernels on
+their entire fleets. As downtime is not an option for many, these upgrades had
+to be gradually rolled out, which can take a very long time for large fleets.
+
+An example of an sched_ext scheduler that illustrates core scheduling
+semantics is scx_example_pair.bpf.c, which co-schedules pairs of tasks from
+the same cgroup, and is resilient to L1TF vulnerabilities. While this example
+scheduler is certainly not suitable for production in its current form, a
+similar scheduler that is more performant and featureful could be written and
+deployed if necessary.
+
+Rapid scheduling deployments can similarly be useful to quickly roll-out new
+scheduling features without requiring kernel upgrades. At Google, for example,
+it was observed that some low-priority workloads were causing degraded
+performance for higher-priority workloads due to consuming a disproportionate
+share of memory bandwidth. While a temporary mitigation was to use sched
+affinity to limit the footprint of this low-priority workload to a small
+subset of CPUs, a preferable solution would be to implement a more featureful
+task-priority mechanism which automatically throttles lower-priority tasks
+which are causing memory contention for the rest of the system. Implementing
+this in CFS and rolling it out to the fleet could take a very long time.
+
+sched_ext would directly address these gaps. If another hardware bug or
+resource contention issue comes in that requires scheduler support to
+mitigate, sched_ext can be used to experiment with and test different
+policies. Once a scheduler is available, it can quickly be rolled out to as
+many hosts as necessary, and function as a stop-gap solution until a
+longer-term mitigation is upstreamed.
+
+How
+---
+
+sched_ext is a new sched_class which allows scheduling policies to be
+implemented in BPF programs.
+
+sched_ext leverages BPF’s struct_ops feature to define a structure which
+exports function callbacks and flags to BPF programs that wish to implement
+scheduling policies. The struct_ops structure exported by sched_ext is struct
+sched_ext_ops, and is conceptually similar to struct sched_class. The role of
+sched_ext is to map the complex sched_class callbacks to the more simple and
+ergonomic struct sched_ext_ops callbacks.
+
+Unlike some other BPF program types which have ABI requirements due to
+exporting UAPIs, struct_ops has no ABI requirements whatsoever. This provides
+us with the flexibility to change the APIs provided to schedulers as
+necessary. BPF struct_ops is also already being used successfully in other
+subsystems, such as in support of TCP congestion control.
+
+The only struct_ops field that is required to be specified by a scheduler is
+the ‘name’ field. Otherwise, sched_ext will provide sane default behavior,
+such as automatically choosing an idle CPU on the task wakeup path if
+.select_cpu() is missing.
+
+*Dispatch queues*
+
+To bridge the workflow imbalance between the scheduler core and sched_ext_ops
+callbacks, sched_ext uses simple FIFOs called dispatch queues (dsq's). By
+default, there is one global dsq (SCX_DSQ_GLOBAL), and one local per-CPU dsq
+(SCX_DSQ_LOCAL). SCX_DSQ_GLOBAL is provided for convenience and need not be
+used by a scheduler that doesn't require it. As described in more detail
+below, SCX_DSQ_LOCAL is the per-CPU FIFO that sched_ext pulls from when
+putting the next task on the CPU. The BPF scheduler can manage an arbitrary
+number of dsq's using scx_bpf_create_dsq() and scx_bpf_destroy_dsq().
+
+*Scheduling cycle*
+
+The following briefly shows a typical workflow for how a waking task is
+scheduled and executed.
+
+1. When a task is waking up, .select_cpu() is the first operation invoked.
+   This serves two purposes. It both allows a scheduler to optimize task
+   placement by specifying a CPU where it expects the task to eventually be
+   scheduled, and the latter is that the selected CPU will be woken if it’s
+   idle.
+
+2. Once the target CPU is selected, .enqueue() is invoked. It can make one of
+   the following decisions:
+
+   - Immediately dispatch the task to either the global dsq (SCX_DSQ_GLOBAL)
+     or the current CPU’s local dsq (SCX_DSQ_LOCAL).
+
+   - Immediately dispatch the task to a user-created dispatch queue.
+
+   - Queue the task on the BPF side, e.g. in an rbtree map for a vruntime
+     scheduler, with the intention of dispatching it at a later time from
+     .dispatch().
+
+3. When a CPU is ready to schedule, it first looks at its local dsq. If empty,
+   it invokes .consume() which should make one or more scx_bpf_consume() calls
+   to consume tasks from dsq's. If a scx_bpf_consume() call succeeds, the CPU
+   has the next task to run and .consume() can return. If .consume() is not
+   defined, sched_ext will by-default consume from only the built-in
+   SCX_DSQ_GLOBAL dsq.
+
+4. If there's still no task to run, .dispatch() is invoked which should make
+   one or more scx_bpf_dispatch() calls to dispatch tasks from the BPF
+   scheduler to one of the dsq's. If more than one task has been dispatched,
+   go back to the previous consumption step.
+
+*Verifying callback behavior*
+
+sched_ext always verifies that any value returned from a callback is valid,
+and will issue an error and unload the scheduler if it is not. For example, if
+.select_cpu() returns an invalid CPU, or if an attempt is made to invoke the
+scx_bpf_dispatch() with invalid enqueue flags. Furthermore, if a task remains
+runnable for too long without being scheduled, sched_ext will detect it and
+error-out the scheduler.
+
+Closing Thoughts
+----------------
+
+Both Meta and Google have experimented quite a lot with schedulers in the last
+several years. Google has benchmarked various workloads using user space
+scheduling, and have achieved performance wins by trading off generality for
+application specific needs. At Meta, we have not yet deployed sched_ext on any
+production workloads, though our preliminary experiments indicate that
+sched_ext would provide significant performance wins when deployed at scale.
+If successfully upstreamed, we expect to leverage it extensively to run
+various experiments and develop customized schedulers for a number of critical
+workloads.
+
+In closing, both Meta and Google believe that sched_ext will significantly
+evolve how the broader community explores the scheduling problem space,
+empowering continued improvement to the in-kernel scheduler, while also
+enabling targeted policies for custom applications. We’ll be able to
+experiment easier and faster, explore uncharted areas, and deploy emergency
+scheduler changes when necessary. The same applies to anyone who wants to work
+on the scheduler, including academia and specialized industries. sched_ext
+will push forward the state of the art when it comes to scheduling and
+performance in Linux.
+
+Written By
+----------
+
+David Vernet <dvernet@meta.com>
+Josh Don <joshdon@google.com>
+Tejun Heo <tj@kernel.org>
+Barret Rhoden <brho@google.com>
+
+Supported By
+------------
+
+Paul Turner <pjt@google.com>
+Neel Natu <neelnatu@google.com>
+Patrick Bellasi <derkling@google.com>
+Hao Luo <haoluo@google.com>
+Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+
+Patchset
+--------
+
+This patchset is on top of bpf/for-next as of 2023-03-16:
+
+ b8a2e3f93d41 ("cgroup: Make current_cgns_cgroup_dfl() safe to call after exit_task_namespace()")
+
+and contains the following patches:
+
+NOTE: The doc added by 0030 contains a high-level overview and might be good
+      place to start.
+
+ 0001-cgroup-Implement-cgroup_show_cftypes.patch
+ 0002-sched-Encapsulate-task-attribute-change-sequence-int.patch
+ 0003-sched-Restructure-sched_class-order-sanity-checks-in.patch
+ 0004-sched-Allow-sched_cgroup_fork-to-fail-and-introduce-.patch
+ 0005-sched-Add-sched_class-reweight_task.patch
+ 0006-sched-Add-sched_class-switching_to-and-expose-check_.patch
+ 0007-sched-Factor-out-cgroup-weight-conversion-functions.patch
+ 0008-sched-Expose-css_tg-__setscheduler_prio-and-SCHED_CH.patch
+ 0009-sched-Enumerate-CPU-cgroup-file-types.patch
+ 0010-sched-Add-reason-to-sched_class-rq_-on-off-line.patch
+ 0011-sched-Add-normal_policy.patch
+ 0012-sched_ext-Add-boilerplate-for-extensible-scheduler-c.patch
+ 0013-sched_ext-Implement-BPF-extensible-scheduler-class.patch
+ 0014-sched_ext-Add-scx_example_simple-and-scx_example_qma.patch
+ 0015-sched_ext-Add-sysrq-S-which-disables-the-BPF-schedul.patch
+ 0016-sched_ext-Implement-runnable-task-stall-watchdog.patch
+ 0017-sched_ext-Allow-BPF-schedulers-to-disallow-specific-.patch
+ 0018-sched_ext-Allow-BPF-schedulers-to-switch-all-eligibl.patch
+ 0019-sched_ext-Implement-scx_bpf_kick_cpu-and-task-preemp.patch
+ 0020-sched_ext-Make-watchdog-handle-ops.dispatch-looping-.patch
+ 0021-sched_ext-Add-task-state-tracking-operations.patch
+ 0022-sched_ext-Implement-tickless-support.patch
+ 0023-sched_ext-Track-tasks-that-are-subjects-of-the-in-fl.patch
+ 0024-sched_ext-Add-cgroup-support.patch
+ 0025-sched_ext-Implement-SCX_KICK_WAIT.patch
+ 0026-sched_ext-Implement-sched_ext_ops.cpu_acquire-releas.patch
+ 0027-sched_ext-Implement-sched_ext_ops.cpu_online-offline.patch
+ 0028-sched_ext-Implement-core-sched-support.patch
+ 0029-sched_ext-Add-vtime-ordered-priority-queue-to-dispat.patch
+ 0030-sched_ext-Documentation-scheduler-Document-extensibl.patch
+ 0031-sched_ext-Add-a-basic-userland-vruntime-scheduler.patch
+ 0032-sched_ext-Add-a-rust-userspace-hybrid-example-schedu.patch
+
+0001     : Cgroup prep.
+
+0002-0011: Scheduler prep.
+
+0012-0014: sched_ext core implementation and a couple example BPF scheduler.
+
+0015-0018: Utility features including safety mechanisms and switch-all.
+
+0019-0022: Kicking and preempting other CPUs, task state transition tracking
+           and tickless support. Demonstrated with an example central
+           scheduler which makes all scheduling decisions on one CPU.
+
+0023-0026: cgroup support and the ability to wait for other CPUs after
+           kicking them. Demonstrated with an example pair scheduler which
+           guarantees that a hyperthread pair always executes tasks from the
+           same cgroup at any given time.
+
+0027     : Add CPU hotplug callbacks.
+
+0028     : Add core-sched support.
+
+0029     : Add DSQ rbtree support.
+
+0030     : Add documentation.
+
+0031-0032: Add two example schedulers. One demonstrating deferring most
+           scheduling decisions to userland. The other demonstrating a
+           hybrid approach where load balancing decisions are made by
+           userspace written in rust.
+
+The patchset is also available in the following git branch:
+
+ https://github.com/htejun/sched_ext sched_ext-v3
+
+diffstat follows.
+
+ Documentation/scheduler/index.rst             |    1 
+ Documentation/scheduler/sched-ext.rst         |  230 +
+ MAINTAINERS                                   |    3 
+ drivers/tty/sysrq.c                           |    1 
+ include/asm-generic/vmlinux.lds.h             |    1 
+ include/linux/cgroup-defs.h                   |    8 
+ include/linux/cgroup.h                        |    5 
+ include/linux/sched.h                         |    5 
+ include/linux/sched/ext.h                     |  709 ++++
+ include/linux/sched/task.h                    |    3 
+ include/uapi/linux/sched.h                    |    1 
+ init/Kconfig                                  |    5 
+ init/init_task.c                              |   12 
+ kernel/Kconfig.preempt                        |   24 
+ kernel/bpf/bpf_struct_ops_types.h             |    4 
+ kernel/cgroup/cgroup.c                        |   97 
+ kernel/fork.c                                 |   17 
+ kernel/sched/build_policy.c                   |    5 
+ kernel/sched/core.c                           |  496 +-
+ kernel/sched/deadline.c                       |    4 
+ kernel/sched/debug.c                          |    6 
+ kernel/sched/ext.c                            | 4326 ++++++++++++++++++++++++++
+ kernel/sched/ext.h                            |  245 +
+ kernel/sched/fair.c                           |    9 
+ kernel/sched/idle.c                           |    2 
+ kernel/sched/rt.c                             |    4 
+ kernel/sched/sched.h                          |  158 
+ kernel/sched/topology.c                       |    4 
+ tools/sched_ext/.gitignore                    |    9 
+ tools/sched_ext/Makefile                      |  216 +
+ tools/sched_ext/atropos/.gitignore            |    3 
+ tools/sched_ext/atropos/Cargo.toml            |   28 
+ tools/sched_ext/atropos/build.rs              |   70 
+ tools/sched_ext/atropos/rustfmt.toml          |    8 
+ tools/sched_ext/atropos/src/atropos_sys.rs    |   10 
+ tools/sched_ext/atropos/src/bpf/atropos.bpf.c |  751 ++++
+ tools/sched_ext/atropos/src/bpf/atropos.h     |   44 
+ tools/sched_ext/atropos/src/main.rs           |  942 +++++
+ tools/sched_ext/gnu/stubs.h                   |    1 
+ tools/sched_ext/scx_common.bpf.h              |  289 +
+ tools/sched_ext/scx_example_central.bpf.c     |  334 ++
+ tools/sched_ext/scx_example_central.c         |   94 
+ tools/sched_ext/scx_example_flatcg.bpf.c      |  872 +++++
+ tools/sched_ext/scx_example_flatcg.c          |  232 +
+ tools/sched_ext/scx_example_flatcg.h          |   49 
+ tools/sched_ext/scx_example_pair.bpf.c        |  627 +++
+ tools/sched_ext/scx_example_pair.c            |  143 
+ tools/sched_ext/scx_example_pair.h            |   10 
+ tools/sched_ext/scx_example_qmap.bpf.c        |  401 ++
+ tools/sched_ext/scx_example_qmap.c            |  107 
+ tools/sched_ext/scx_example_simple.bpf.c      |  128 
+ tools/sched_ext/scx_example_simple.c          |  101 
+ tools/sched_ext/scx_example_userland.bpf.c    |  269 +
+ tools/sched_ext/scx_example_userland.c        |  402 ++
+ tools/sched_ext/scx_example_userland_common.h |   19 
+ tools/sched_ext/user_exit_info.h              |   50 
+ 56 files changed, 12362 insertions(+), 232 deletions(-)
+
+Thanks.
+
+--
+tejun
 
