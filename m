@@ -2,130 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7E06BDF97
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 04:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BEC6BDFCF
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 04:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbjCQD1J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Mar 2023 23:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58892 "EHLO
+        id S229654AbjCQDv2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Mar 2023 23:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjCQD1A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Mar 2023 23:27:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B3362B56;
-        Thu, 16 Mar 2023 20:26:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C98EA62123;
-        Fri, 17 Mar 2023 03:26:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B994C433D2;
-        Fri, 17 Mar 2023 03:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679023610;
-        bh=CxdQYn7r5li7ZhcwLAavPETe1WSXXkBuy5qiVH1WQJ0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NJ/OCd0Lj8mIYaxC0/bIixFMqfx0SSXsUzGjIybDj1V24ya39REb3CeILgjV/vGmv
-         rsYGqR7O7gfMu6aJLKY3J0wB+AJuObY1zIUIb4TZORUNPgCKQasBGm1KPrREAn4U4p
-         s0/YkXf4CRn1g9SpfB2kayWIspK5PpIMNL++2qGJyUx8HPE/4yaiYG/GyD3iKzX2iR
-         8/IRmfCSwbp0jAedxCrlBuK/GOaaTaM20+0xYKj9a4lM0UtOFN+K/ziNgg6sq4+URE
-         Sfv/2kwIcsqYtMvXrtZuMXU4k5qM3qeIARLv+sU50vSk9hrRqDxGXzQ1uH6fYECvd4
-         MW46mjhpcAlPg==
-Date:   Thu, 16 Mar 2023 20:26:48 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jason Xing <kerneljasonxing@gmail.com>
-Cc:     jbrouer@redhat.com, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        stephen@networkplumber.org, simon.horman@corigine.com,
-        sinquersw@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH v4 net-next 2/2] net: introduce budget_squeeze to help
- us tune rx behavior
-Message-ID: <20230316202648.1f8c2f80@kernel.org>
-In-Reply-To: <CAL+tcoDNvMUenwNEH2QByEY7cS1qycTSw1TLFSnNKt4Q0dCJUw@mail.gmail.com>
-References: <20230315092041.35482-1-kerneljasonxing@gmail.com>
-        <20230315092041.35482-3-kerneljasonxing@gmail.com>
-        <20230316172020.5af40fe8@kernel.org>
-        <CAL+tcoDNvMUenwNEH2QByEY7cS1qycTSw1TLFSnNKt4Q0dCJUw@mail.gmail.com>
+        with ESMTP id S229611AbjCQDv1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Mar 2023 23:51:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17C376070;
+        Thu, 16 Mar 2023 20:51:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6e5vgV9Lhq/FUovigpv1aQ+kfiWhjBTgyYSzrwszW/M=; b=RkgV/CLM0H4tbM+sMx80KLuyZI
+        dhlobK9j/Zpdl37/xfWN7sk8uzdEF1sMSNimFevN1BOWVS4+VnFHCRMPFNviV6jgqSKr/R2usMGVa
+        RyLURFWSuNiUJOzucNIF0hAkeYzU9Mv2Re4vYNb7wEdkB+7c785k79P1Y2oSmegvz39Apa6v29/kp
+        INL7HuskgHrZmd8pWt7+VcOEHVAcxYKBIdzqIw/z4Pp4Wd1rwUte1cGugOTh9sSNhSfZCfH0ap6wM
+        I/ybbA6jm7zMzvCbNc7/lzIWdoJEP/lWSrKGnDyxaBrNDukTEYb5N6c+blBV4fKli/754t71UzsAT
+        Y6R05JGQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pd17b-00FTM7-BU; Fri, 17 Mar 2023 03:51:15 +0000
+Date:   Fri, 17 Mar 2023 03:51:15 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Namhyung Kim <namhyung@gmail.com>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
+Message-ID: <ZBPjs1b8crUv4ur6@casper.infradead.org>
+References: <20230316170149.4106586-1-jolsa@kernel.org>
+ <ZBNTMZjEoETU9d8N@casper.infradead.org>
+ <CAP-5=fVYriALLwF2FU1ZUtLuHndnvPw=3SctVqY6Uwex8JfscA@mail.gmail.com>
+ <CAEf4BzYgyGTVv=cDwaW+DBke1uk_aLCg3CB_9W6+9tkS8Nyn_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYgyGTVv=cDwaW+DBke1uk_aLCg3CB_9W6+9tkS8Nyn_Q@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 17 Mar 2023 10:27:11 +0800 Jason Xing wrote:
-> > That is the common case, and can be understood from the napi trace  
+On Thu, Mar 16, 2023 at 02:51:52PM -0700, Andrii Nakryiko wrote:
+> Yep, Meta is also capturing stack traces with build ID as well, if
+> possible. Build IDs help with profiling short-lived processes which
+> exit before the profiling session is done and user-space tooling is
+> able to collect /proc/<pid>/maps contents (which is what Ian is
+> referring to here). But also build ID allows to offload more of the
+> expensive stack symbolization process (converting raw memory addresses
+> into human readable function+offset+file path+line numbers
+> information) to dedicated remote servers, by allowing to cache and
+> reuse preprocessed DWARF/ELF information based on build ID.
 > 
-> Thanks for your reply. It is commonly happening every day on many servers.
-
-Right but the common issue is the time squeeze, not budget squeeze,
-and either way the budget squeeze doesn't really matter because 
-the softirq loop will call us again soon, if softirq itself is 
-not scheduled out.
-
-So if you want to monitor a meaningful event in your fleet, I think 
-a better event to monitor is the number of times ksoftirqd was woken 
-up and latency of it getting onto the CPU.
-
-Did you try to measure that?
-
-(Please do *not* send patches to touch softirq code right now, just
-measure first. We are trying to improve the situation but the core
-kernel maintainers are weary of changes:
-https://lwn.net/Articles/925540/
-so if both of us start sending code they will probably take neither
-patches :()
-
-> > point and probing the kernel with bpftrace. We should only add  
+> I believe perf tool is also using build ID, so any tool relying on
+> perf capturing full and complete profiling data for system-wide
+> performance analysis would benefit as well.
 > 
-> We probably can deduce (or guess) which one causes the latency because
-> trace_napi_poll() only counts the budget consumed per poll.
-> 
-> Besides, tracing napi poll is totally ok with the testbed but not ok
-> with those servers with heavy load which bpftrace related tools
-> capturing the data from the hot path may cause some bad impact,
-> especially with special cards equipped, say, 100G nic card. Resorting
-> to legacy file softnet_stat is relatively feasible based on my limited
-> knowledge.
+> Generally speaking, there is a whole ecosystem built on top of
+> assumption that binaries have build ID and profiling tooling is able
+> to provide more value if those build IDs are more reliably collected.
+> Which ultimately benefits the entire open-source ecosystem by allowing
+> people to spot issues (not necessarily just performance, it could be
+> correctness issues as well) more reliably, fix them, and benefit every
+> user.
 
-Right, but we're still measuring something relatively irrelevant.
-As I said the softirq loop will call us again. In my experience
-network queues get long when ksoftirqd is woken up but not scheduled
-for a long time. That is the source of latency. You may have the same
-problem (high latency) without consuming the entire budget.
-
-I think if we wanna make new stats we should try to come up with a way
-of capturing the problem rather than one of the symptoms.
-
-> Paolo also added backlog queues into this file in 2020 (see commit:
-> 7d58e6555870d). I believe that after this patch, there are few or no
-> more new data that is needed to print for the next few years.
-> 
-> > uAPI for statistics which must be maintained contiguously. For  
-> 
-> In this patch, I didn't touch the old data as suggested in the
-> previous emails and only separated the old way of counting
-> @time_squeeze into two parts (time_squeeze and budget_squeeze). Using
-> budget_squeeze can help us profile the server and tune it more
-> usefully.
-> 
-> > investigations tracing will always be orders of magnitude more
-> > powerful :(  
-> 
-> > On the time squeeze BTW, have you found out what the problem was?
-> > In workloads I've seen the time problems are often because of noise
-> > in how jiffies are accounted (cgroup code disables interrupts
-> > for long periods of time, for example, making jiffies increment
-> > by 2, 3 or 4 rather than by 1).  
-> 
-> Yes ! The issue of jiffies increment troubles those servers more often
-> than not. For a small group of servers, budget limit is also a
-> problem. Sometimes we might treat guest OS differently.
+But build IDs are _generally_ available.  The only problem (AIUI)
+is when you're trying to examine the contents of one container from
+another container.  And to solve that problem, you're imposing a cost
+on everybody else with (so far) pretty vague justifications.  I really
+don't like to see you growing struct file for this (nor struct inode,
+nor struct vm_area_struct).  It's all quite unsatisfactory and I don't
+have a good suggestion.
