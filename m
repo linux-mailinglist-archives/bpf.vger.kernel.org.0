@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B91466BF443
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BED6BF450
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbjCQVgH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
+        id S231184AbjCQVg3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbjCQVfy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:35:54 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB902F049;
-        Fri, 17 Mar 2023 14:35:14 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gp15-20020a17090adf0f00b0023d1bbd9f9eso10590225pjb.0;
-        Fri, 17 Mar 2023 14:35:14 -0700 (PDT)
+        with ESMTP id S229734AbjCQVgW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:36:22 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E56C2B9D9;
+        Fri, 17 Mar 2023 14:35:38 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id e15-20020a17090ac20f00b0023d1b009f52so10569099pjt.2;
+        Fri, 17 Mar 2023 14:35:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679088829;
+        d=gmail.com; s=20210112; t=1679088830;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nAoxgWK3CFgz0aTuA8BNCG0HD1YgZYimkX7KWNGAibg=;
-        b=TZidGMi9uz5AczAn70op7sGAvjY19LclymC/wY9OfEByuRYWwzv4OrsI985z9/fjt8
-         sX/Pp4O4WbHkKT2WBLzY5An1LDEcAWzSixHr6Bic54cTb/YK3rlGcpXY1MATNFtc0tVH
-         e2cIFHytnWkuy04GmIdsxnX/T9Z4ZfBTTjPW5DuyZumM/LZGnhF83mHEeLcRBCdUrbih
-         mox9SlD/21AgGmqMoVwgCedymRO81Worr/mZgGvxj3aKwf/OBAHmhok1t30IPttCAEKJ
-         qBf9mPf6Vmsei0i/8+uXmLM8MT489PG4ykSFEZUfy4T1Wrk+m84pPY8d5FQAsl398W3y
-         oQ7g==
+        bh=Hj8cLjQDLjXQ1ZfCGY4fgdKd/DSkCX4r/5xti3BJx2Q=;
+        b=SL77xmJ9qXwFUFkWfvQLbr2oAZctrFIRH1zYs6aiSXgaXesy4X9bbCc43J+9eu7BwZ
+         oQ5gpgLhJe8AlvwhIjFD9fwm6HOV+aTa/I02IjXcjxAmaJNGPS3ymgflyQg833brBgs7
+         84m+/ooDtKn6Ij3ePqTiRldtbg/5JadmV2CKcQHFrYHK1MIZb3JiQZItVnLirykhMwD+
+         4DXceV50PClFpYHAnpemnfed3iOsz3CZOXKBLcLNOYZQ0bjx2AwMxczYK+4Wbtn5m0Td
+         6qyHhqHDOe90XFAfM7/SJjOm33J83u/+ekfpbYg6lZzffSkpzsbctqrsa8GiLeQQhE54
+         qDtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679088829;
+        d=1e100.net; s=20210112; t=1679088830;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=nAoxgWK3CFgz0aTuA8BNCG0HD1YgZYimkX7KWNGAibg=;
-        b=z+hnQbBSgEHB/Kr4Zi3Kbz4mEb3cIxL6UbMzn+K3OPL4cOIfA08fpNDzR9ueEZyIuT
-         z7VwHIk1zdIzEV4nihkYwl0ziHu6tOHFfe09tOCv7uvkF3e3wC10uh7AFTZXYxfZ9tkI
-         4U3kFgHo1t5yiaER05IqKIaV4T6hxU9o5aaPZe4NItnLnEiZOFfgkjZJxtXE0ve8uKkJ
-         3NC/tVnsVUQ5i5AZQt3mLjy4B98xDum5K9+Qqn0tlCJardxBUttshE0jxWueEDXhbl/s
-         gU+1a6Of2LxR3e5v7hW5+4Bzni80RPOQWBWCsdHfwH2ukIRRMN2ewu5ckNeAGTi9gAuX
-         LXzw==
-X-Gm-Message-State: AO0yUKW1jzv0ZXACei1K1o9a11IisG3OuVsoPvf9XVOeDkpEmcc7glHx
-        NBUVZ0kuHESZTUK7lXFlvSg=
-X-Google-Smtp-Source: AK7set86/h6ziTkK0pAspNoconBVMYYTPv67WsHRZfqva69Cn4BU9SpzZjGCrVZIj302+XwRg0aO0Q==
-X-Received: by 2002:a17:902:db0e:b0:19a:b869:f2f8 with SMTP id m14-20020a170902db0e00b0019ab869f2f8mr10501930plx.21.1679088828634;
-        Fri, 17 Mar 2023 14:33:48 -0700 (PDT)
+        bh=Hj8cLjQDLjXQ1ZfCGY4fgdKd/DSkCX4r/5xti3BJx2Q=;
+        b=dBqx6jNGU870rF2nB3NnRfn+uSFhXDgJOXZgfiJWYa/YWheyzySirKyKr6K2PYxKAr
+         UaNGpsrA3KIlNUlX4CL1uXvCNgDMSsgRQUdDLN0EC7VIkXYjiuZ4Zl3x3SMK3Vko5fdc
+         3c/Ej3Y5XNvXUddHznN/+IISKGDWk719DCGCwkGWCL8MKD8MBqObjQRsLXPorMLGlqsN
+         6X/CAm+evanquY+3zxpS5CKLp1AY8KDkvKUu+7zcU2kHZa9Fu7q4RqKpHBT+so2aIFt1
+         2HP2cvUW8CCZTJIXpPJ2nDv7UlYZiXGX5/0lrhml7COf5KDlLlnLK7zUJL4jjMh83bgY
+         Oqcg==
+X-Gm-Message-State: AO0yUKUwXNGzff0TtoybdnxugoabD+n/hiKBwVoblu9qK6bf5LpwWC4H
+        usEUy0u0cwZyyvEL4SiJb34=
+X-Google-Smtp-Source: AK7set8tTIMwbsrX82yWCWzS7G+Yo1Zo2mQnccqtgoMU9W4EomnZ107bQTHWY8qfkhWvNO360+SAtA==
+X-Received: by 2002:a17:902:ec91:b0:1a0:72b8:4030 with SMTP id x17-20020a170902ec9100b001a072b84030mr10550746plg.48.1679088830398;
+        Fri, 17 Mar 2023 14:33:50 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id g6-20020a1709026b4600b001a19cf1b37esm1988777plt.40.2023.03.17.14.33.48
+        by smtp.gmail.com with ESMTPSA id jl24-20020a170903135800b001a0450da45csm1973726plb.185.2023.03.17.14.33.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Mar 2023 14:33:48 -0700 (PDT)
+        Fri, 17 Mar 2023 14:33:50 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From:   Tejun Heo <tj@kernel.org>
 To:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -62,9 +62,9 @@ To:     torvalds@linux-foundation.org, mingo@redhat.com,
         dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@meta.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 03/32] sched: Restructure sched_class order sanity checks in sched_init()
-Date:   Fri, 17 Mar 2023 11:33:04 -1000
-Message-Id: <20230317213333.2174969-4-tj@kernel.org>
+Subject: [PATCH 04/32] sched: Allow sched_cgroup_fork() to fail and introduce sched_cancel_fork()
+Date:   Fri, 17 Mar 2023 11:33:05 -1000
+Message-Id: <20230317213333.2174969-5-tj@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230317213333.2174969-1-tj@kernel.org>
 References: <20230317213333.2174969-1-tj@kernel.org>
@@ -80,40 +80,133 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, sched_init() checks that the sched_class'es are in the expected
-order by testing each adjacency which is a bit brittle and makes it
-cumbersome to add optional sched_class'es. Instead, let's verify whether
-they're in the expected order using sched_class_above() which is what
-matters.
+A new BPF extensible sched_class will need more control over the forking
+process. It wants to be able to fail from sched_cgroup_fork() after the new
+task's sched_task_group is initialized so that the loaded BPF program can
+prepare the task with its cgroup association is established and reject fork
+if e.g. allocation fails.
+
+Allow sched_cgroup_fork() to fail by making it return int instead of void
+and adding sched_cancel_fork() to undo sched_fork() in the error path.
+
+sched_cgroup_fork() doesn't fail yet and this patch shouldn't cause any
+behavior changes.
+
+v2: Patch description updated to detail the expected use.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
+Acked-by: Josh Don <joshdon@google.com>
+Acked-by: Hao Luo <haoluo@google.com>
+Acked-by: Barret Rhoden <brho@google.com>
 ---
- kernel/sched/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/linux/sched/task.h |  3 ++-
+ kernel/fork.c              | 15 ++++++++++-----
+ kernel/sched/core.c        |  8 +++++++-
+ 3 files changed, 19 insertions(+), 7 deletions(-)
 
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index 357e0068497c..dcff721170c3 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -58,7 +58,8 @@ extern asmlinkage void schedule_tail(struct task_struct *prev);
+ extern void init_idle(struct task_struct *idle, int cpu);
+ 
+ extern int sched_fork(unsigned long clone_flags, struct task_struct *p);
+-extern void sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs);
++extern int sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs);
++extern void sched_cancel_fork(struct task_struct *p);
+ extern void sched_post_fork(struct task_struct *p);
+ extern void sched_dead(struct task_struct *p);
+ 
+diff --git a/kernel/fork.c b/kernel/fork.c
+index f68954d05e89..0d166537a1a3 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2242,7 +2242,7 @@ static __latent_entropy struct task_struct *copy_process(
+ 
+ 	retval = perf_event_init_task(p, clone_flags);
+ 	if (retval)
+-		goto bad_fork_cleanup_policy;
++		goto bad_fork_sched_cancel_fork;
+ 	retval = audit_alloc(p);
+ 	if (retval)
+ 		goto bad_fork_cleanup_perf;
+@@ -2383,7 +2383,9 @@ static __latent_entropy struct task_struct *copy_process(
+ 	 * cgroup specific, it unconditionally needs to place the task on a
+ 	 * runqueue.
+ 	 */
+-	sched_cgroup_fork(p, args);
++	retval = sched_cgroup_fork(p, args);
++	if (retval)
++		goto bad_fork_cancel_cgroup;
+ 
+ 	/*
+ 	 * From this point on we must avoid any synchronous user-space
+@@ -2429,13 +2431,13 @@ static __latent_entropy struct task_struct *copy_process(
+ 	/* Don't start children in a dying pid namespace */
+ 	if (unlikely(!(ns_of_pid(pid)->pid_allocated & PIDNS_ADDING))) {
+ 		retval = -ENOMEM;
+-		goto bad_fork_cancel_cgroup;
++		goto bad_fork_core_free;
+ 	}
+ 
+ 	/* Let kill terminate clone/fork in the middle */
+ 	if (fatal_signal_pending(current)) {
+ 		retval = -EINTR;
+-		goto bad_fork_cancel_cgroup;
++		goto bad_fork_core_free;
+ 	}
+ 
+ 	/* No more failure paths after this point. */
+@@ -2510,10 +2512,11 @@ static __latent_entropy struct task_struct *copy_process(
+ 
+ 	return p;
+ 
+-bad_fork_cancel_cgroup:
++bad_fork_core_free:
+ 	sched_core_free(p);
+ 	spin_unlock(&current->sighand->siglock);
+ 	write_unlock_irq(&tasklist_lock);
++bad_fork_cancel_cgroup:
+ 	cgroup_cancel_fork(p, args);
+ bad_fork_put_pidfd:
+ 	if (clone_flags & CLONE_PIDFD) {
+@@ -2552,6 +2555,8 @@ static __latent_entropy struct task_struct *copy_process(
+ 	audit_free(p);
+ bad_fork_cleanup_perf:
+ 	perf_event_free_task(p);
++bad_fork_sched_cancel_fork:
++	sched_cancel_fork(p);
+ bad_fork_cleanup_policy:
+ 	lockdep_free_task(p);
+ #ifdef CONFIG_NUMA
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index fb080ca54d80..efac96fd6cfd 100644
+index efac96fd6cfd..fdf4dba12a7e 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -9794,12 +9794,12 @@ void __init sched_init(void)
- 	int i;
+@@ -4768,7 +4768,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 	return 0;
+ }
  
- 	/* Make sure the linker didn't screw up */
--	BUG_ON(&idle_sched_class != &fair_sched_class + 1 ||
--	       &fair_sched_class != &rt_sched_class + 1 ||
--	       &rt_sched_class   != &dl_sched_class + 1);
- #ifdef CONFIG_SMP
--	BUG_ON(&dl_sched_class != &stop_sched_class + 1);
-+	BUG_ON(!sched_class_above(&stop_sched_class, &dl_sched_class));
- #endif
-+	BUG_ON(!sched_class_above(&dl_sched_class, &rt_sched_class));
-+	BUG_ON(!sched_class_above(&rt_sched_class, &fair_sched_class));
-+	BUG_ON(!sched_class_above(&fair_sched_class, &idle_sched_class));
+-void sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs)
++int sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs)
+ {
+ 	unsigned long flags;
  
- 	wait_bit_init();
+@@ -4795,6 +4795,12 @@ void sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs)
+ 	if (p->sched_class->task_fork)
+ 		p->sched_class->task_fork(p);
+ 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
++
++	return 0;
++}
++
++void sched_cancel_fork(struct task_struct *p)
++{
+ }
  
+ void sched_post_fork(struct task_struct *p)
 -- 
 2.39.2
 
