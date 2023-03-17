@@ -2,88 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4C56BEF59
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 18:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A34F96BEF6F
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 18:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjCQRQo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 13:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
+        id S229904AbjCQRS2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 13:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjCQRQn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 13:16:43 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A906B854A;
-        Fri, 17 Mar 2023 10:16:40 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id c10so3520370pfv.13;
-        Fri, 17 Mar 2023 10:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679073400;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Y24dD9SurSVZudT7syqKqVCObHCsVLG0RCYuKVO5vg=;
-        b=lz5YCQ+mtJiinHFfCtTtEWIh1QFnjmiq9b1/1QOphlbcyrKBmxBV8NmJX0pYxiaDyx
-         Zh8b4JGFOIIRimI8Pu6TPtpxXUltYC5CdFOiqsV+HRDxN1XWDSZsqs8xeSvqsGqflQCh
-         OrxxcYmmBlgcaCmB+kjolqikeI9FmpaUsyrthVjurymPAs5XwsVD0T86pHXpmSgQd+9i
-         CvsHGnsYj5Rg0+jlqni+0g1Y+uDawko6CDqN2QRJSY7kjt/wO+oAWtPKL+p+XuYcz9Yh
-         tFnFhjvX4WN5aiHWjcOP/4acCHS/7jAuaWysxBKS6Ow+yArEsd0eGPZZ0Tf4zOdQdwKz
-         1qqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679073400;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Y24dD9SurSVZudT7syqKqVCObHCsVLG0RCYuKVO5vg=;
-        b=k4pEwPi8j4ruE2OnlrZP4kfKs7Pb2Zd9APLbg96bwDVPX7baYiEynHgY4KZI6lONEm
-         0N0CISy99BJ0qBM5L+bBgi0Tvt263voVLSv98NDIwAQRIlQUT3Z8xa1ijTlJqj8PQg+J
-         l/nCV4Ko6ZaLIKt+IexSDQ0t0w9hy8waVMwKFXY/x8c7B1qx77O16RRPtJghvca/Z1Rm
-         4wLkjXEGlKUJ1vlF0X/05ICfbP5XDS52PcBsDUKoMbrMPsqXqlLGvxJwHEV3sJgxEaIC
-         H9v0434jVv8aKPf0uN4ZbKPX0rWhzlVyYDun58q8L8bk8eG6eGW3yb/QDIg6hkH26hOl
-         +9wA==
-X-Gm-Message-State: AO0yUKXx0E7DNMUPB/ijy8wBekvDetORQykv2FNEExZDhORaDbCNQhRG
-        kCZZ0whSZ7i2HzdPrrUyUxI=
-X-Google-Smtp-Source: AK7set/Bq9UvcAsURmU3NPoXn/5o6fZ+BnWZhTN+6XSGaKMKzrvRKnTECbUMIcOIo9RnuSx13obL1w==
-X-Received: by 2002:a62:1a4e:0:b0:622:ec07:c6bc with SMTP id a75-20020a621a4e000000b00622ec07c6bcmr7263293pfa.15.1679073399844;
-        Fri, 17 Mar 2023 10:16:39 -0700 (PDT)
-Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:2bcf])
-        by smtp.gmail.com with ESMTPSA id x20-20020aa784d4000000b005a8bc154bf4sm1824761pfn.39.2023.03.17.10.16.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Mar 2023 10:16:39 -0700 (PDT)
-Date:   Fri, 17 Mar 2023 10:16:36 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     starmiku1207184332@gmail.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@outlook.com
-Subject: Re: [PATCH v2] kernel: bpf: stackmap: fix a possible sleep-in-atomic
- bug in bpf_mmap_unlock_get_irq_work()
-Message-ID: <20230317171636.ftelyp6ty7mgo4rt@dhcp-172-26-102-232.dhcp.thefacebook.com>
-References: <20230317035227.22293-1-starmiku1207184332@gmail.com>
+        with ESMTP id S229533AbjCQRS1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 13:18:27 -0400
+Received: from out-28.mta1.migadu.com (out-28.mta1.migadu.com [95.215.58.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F976392A4
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 10:18:25 -0700 (PDT)
+Message-ID: <ee8cab13-9018-5f62-0415-16409ee1610b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1679073503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XNvWVpgcpdz3Drl42R2YlRRtNcb69Lsle/tO9L8T248=;
+        b=FtxyL7hMI4JazSeRpuBj/Aki/3f0EJguOUePTExKp7DBttL0GH08TRQG4pPxh/fEnVGNxK
+        PR3EZVaIxiMAmD8Ry4dfKwqaDjgh2KHS8JCOc82LOms4dZMzXVV1A07Spb1MiGg1d4JHCG
+        YijB9mBmEwgxuTE5ZD/v9kmr0LRp0nc=
+Date:   Fri, 17 Mar 2023 10:18:19 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230317035227.22293-1-starmiku1207184332@gmail.com>
+Subject: Re: [PATCH bpf-next v7 2/8] net: Update an existing TCP congestion
+ control algorithm.
+Content-Language: en-US
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
+        ast@kernel.org, song@kernel.org, kernel-team@meta.com,
+        andrii@kernel.org, sdf@google.com
+References: <20230316023641.2092778-1-kuifeng@meta.com>
+ <20230316023641.2092778-3-kuifeng@meta.com>
+ <f72b77c3-15ac-3de3-5bce-c263564c1487@iogearbox.net>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <f72b77c3-15ac-3de3-5bce-c263564c1487@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 17, 2023 at 03:52:27AM +0000, starmiku1207184332@gmail.com wrote:
-> context because of its possible sleep operation. However, mmap_read_unlock()
-> is unsafely called in a preempt disabled context when spin_lock() or
-> rcu_read_lock() has been called.
+On 3/17/23 8:23 AM, Daniel Borkmann wrote:
+>  From the function itself what is not clear whether
+> callers that replace an existing one should do the synchronize_rcu() themselves 
+> or if this should
+> be part of tcp_update_congestion_control?
 
-Why is that unsafe?
-See __up_read(). It's doing preempt_disable().
-
-
-> -	if (irqs_disabled()) {
-> +	if (in_atomic() || irqs_disabled()) {
-
-We cannot do this. It will significantly hurt stack traces with build_id.
+bpf_struct_ops_map_free (in patch 1) also does synchronize_rcu() for another 
+reason (bpf_setsockopt), so the caller (bpf_struct_ops) is doing it. From 
+looking at tcp_unregister_congestion_control(), make sense that it is more 
+correct to have another synchronize_rcu() also in tcp_update_congestion_control 
+in case there will be other non bpf_struct_ops caller doing update in the future.
