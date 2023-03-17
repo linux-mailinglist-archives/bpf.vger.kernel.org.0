@@ -2,69 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EB06BF47E
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 965A36BF47F
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbjCQVmI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53974 "EHLO
+        id S229581AbjCQVmm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbjCQVlr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:41:47 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406A65DCB8
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:40:38 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id o6-20020a17090a9f8600b0023f32869993so6647417pjp.1
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:40:38 -0700 (PDT)
+        with ESMTP id S229599AbjCQVme (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:42:34 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A7DA279
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:41:52 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id h12-20020a17090aea8c00b0023d1311fab3so6652779pjz.1
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:41:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679089155;
+        d=gmail.com; s=20210112; t=1679089212;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JHwsZegNAf4nARUjlBYtpe/56/Cp7gywNbTMA9rXbsc=;
-        b=Kl76Iij3eY8nIWvcrAeaV9mkMvNl1Cld4NkLV99X9nQCLMnIA7IQeFyNyDIueNCo6e
-         rhuQGwljHItHnOJ2linMu7X4RmZc9FWIJubTVHlaYda8bnbQvg+QQV8cHBVi5waaWH7p
-         Li8P0AD/yZh7g80IAduOr8MNQ0SaqrlsVCcuBOZ4qMZUjQUnPE8n/tloqhNWcYbIeZs7
-         XtPleCMwPzrzniAutBiobA2buiaTqZCXCiZ7EquOJd6v4MsoPf/35Fd4Ll0QuEFapBqc
-         T2y16BcEKRHorR8+4S9lkoF/K+xM+EdLQcc+MSbLKoM0Uh0LV6F0ZrFpEXIUDUbQk8hN
-         TzMA==
+        bh=P758vDYdsMV7GFnOFc9ZssF1eK8/BtU47OPtmEOidEo=;
+        b=YEhC4ZvP94sUS3hqurfT9m7L7mQTm7BizBNL5I5YlcpzDmpA7WfWNv2W1hsJeDO8uq
+         9bTgVatudKfzLiDhe/0QhVKpDFMQ2Iklxu9Ua/2xrfg/e5Lj4SD6Lse6nQx8A8gTTCV3
+         e//qVoCXkPrXAXXaKU1gG7KgCaN0gMPGv8usFSDiy5O2FhY+Id5b/pjFc98fH8P26aFc
+         ZYG0eo0METJLHv+wp6/T9Ti2L6UmoJ9RtiK0ZYJ+J8bE5p8YmUg+1FGdvTqYup5T4P0n
+         PSR1OR7/sGIO15wGx2KybgdHxQ5rjt00Ifmscf7RFR/6slbTGSJehlyzNe2QO2vF9Ppi
+         6EPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679089155;
+        d=1e100.net; s=20210112; t=1679089212;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JHwsZegNAf4nARUjlBYtpe/56/Cp7gywNbTMA9rXbsc=;
-        b=v8vRzKre3+9whOjsk4Klnyx8iOreEjDt5oAcfhYnrWZ4YDtKrnjn86x6mK4PdjBUZj
-         L3wQZAZqd1pX2UNt1SvHRED7RI71jVxuUvy/Z5tMaP+eJKiY0Sp9QpOq3NJjoUhG07Au
-         KW15GnBLdL6v5VNhwOQoUGN3TxfEma6ih4Fs5Bg5Yzb5wxxtSX5Aoy3fLL3XCwM1OmUD
-         rU2yNlkL3vjr+rgO/b1dWFWi+7WX+ZJqoJEWsJIlBu3tWb/qaeLtd+EhqWZ9tN0pAiSm
-         yY5Nk2IS+nHzikRwL8Izp6fMquKc7DQDjqPXxp4/WxRNZ0+Z4KmXADPHV8oQPRzEO3Ey
-         ZDZA==
-X-Gm-Message-State: AO0yUKWJDwdI93RQnSgH4G6m044PZyBrYID027JCPWozz2LCp0+1bv9d
-        E4YQH3fEvu/ilAUbOQOeaTs=
-X-Google-Smtp-Source: AK7set+sR1fNAIy1ExR/hu3OVBMLrf0PgnmwloFrOsRU0lELGNmW82f497R0ZuRYuHqcIzr1z0wMMA==
-X-Received: by 2002:a17:903:120a:b0:1a0:4f24:cae0 with SMTP id l10-20020a170903120a00b001a04f24cae0mr5111562plh.12.1679089155650;
-        Fri, 17 Mar 2023 14:39:15 -0700 (PDT)
+        bh=P758vDYdsMV7GFnOFc9ZssF1eK8/BtU47OPtmEOidEo=;
+        b=K6CgObZ41yUSBXbHemsDmur7voFEZvbQ6rHU4MJXnOfc8WoK4XQQu7+1FBrtApMoT/
+         gSiJXi4WAmAABe2zFunuL3aG+wN0F4cH0puATnZ/TqMJs0i56N739Rt57ZN4Iq7eQrhD
+         FSAVfKj2bCsb9FAArHhBMDyu+jJY92+UGnYUowfiWZ6bmBzknRqXaxIMW1okMc0kwArr
+         MrVGrEbSDr9CKtMubbj+dKQNCoO8NDe1ZiXPiFXJL/4WnR0AikASKbmG5rCT+rsNgWOz
+         zfBMKxLPeON5ypea/nOHdUuqdB9AjoZacOcjHZg/ZtFC1SrdxxeWuJNQYYWIq045b62e
+         NdXQ==
+X-Gm-Message-State: AO0yUKU5zQRJUkyY+9DvGw8Kxcs6l07ZP7E6Dsy7Hbmy9Cn4K54cAYok
+        8Oogsco39lQc1NAVweGbgobN/s6LpSM=
+X-Google-Smtp-Source: AK7set9ksl+24bFaAxUEnyL+/BJIImsV6FnhzvCf/qcdAZP88XWXAi2JK5dMn173FY3lCV/CEaO5oQ==
+X-Received: by 2002:a17:903:283:b0:19a:e96a:58b3 with SMTP id j3-20020a170903028300b0019ae96a58b3mr10557122plr.22.1679089212441;
+        Fri, 17 Mar 2023 14:40:12 -0700 (PDT)
 Received: from ?IPV6:2620:10d:c085:21e8::1380? ([2620:10d:c090:400::5:87c3])
-        by smtp.gmail.com with ESMTPSA id d18-20020a170902aa9200b001a1add0d616sm945653plr.161.2023.03.17.14.39.13
+        by smtp.gmail.com with ESMTPSA id t10-20020a170902b20a00b001a0403f6a97sm1971696plr.202.2023.03.17.14.40.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Mar 2023 14:39:15 -0700 (PDT)
-Message-ID: <323e271d-c30a-a5ef-0636-a1f648f7fa63@gmail.com>
-Date:   Fri, 17 Mar 2023 14:39:12 -0700
+        Fri, 17 Mar 2023 14:40:12 -0700 (PDT)
+Message-ID: <a4dcfcf6-ac5b-3767-daf7-a055dfcac3cb@gmail.com>
+Date:   Fri, 17 Mar 2023 14:40:10 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v7 5/8] bpf: Update the struct_ops of a bpf_link.
+Subject: Re: [PATCH bpf-next v7 6/8] libbpf: Update a bpf_link with another
+ struct_ops.
 Content-Language: en-US, en-ZW
 To:     Martin KaFai Lau <martin.lau@linux.dev>,
         Kui-Feng Lee <kuifeng@meta.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
         kernel-team@meta.com, andrii@kernel.org, sdf@google.com
 References: <20230316023641.2092778-1-kuifeng@meta.com>
- <20230316023641.2092778-6-kuifeng@meta.com>
- <690c5fff-4828-c849-c946-1f1a29e168c8@linux.dev>
+ <20230316023641.2092778-7-kuifeng@meta.com>
+ <2cb64258-e566-00c3-7a40-f63e90f3bf97@linux.dev>
 From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <690c5fff-4828-c849-c946-1f1a29e168c8@linux.dev>
+In-Reply-To: <2cb64258-e566-00c3-7a40-f63e90f3bf97@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,136 +80,92 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 3/17/23 12:23, Martin KaFai Lau wrote:
+On 3/17/23 12:42, Martin KaFai Lau wrote:
 > On 3/15/23 7:36 PM, Kui-Feng Lee wrote:
->> +static int bpf_struct_ops_map_link_update(struct bpf_link *link, 
->> struct bpf_map *new_map)
+>> Introduce bpf_link__update_map(), which allows to atomically update
+>> underlying struct_ops implementation for given struct_ops BPF link
+>>
+>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c   | 30 ++++++++++++++++++++++++++++++
+>>   tools/lib/bpf/libbpf.h   |  1 +
+>>   tools/lib/bpf/libbpf.map |  1 +
+>>   3 files changed, 32 insertions(+)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 6dbae7ffab48..63ec1f8fe8a0 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -11659,6 +11659,36 @@ struct bpf_link 
+>> *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>>       return &link->link;
+>>   }
+>> +/*
+>> + * Swap the back struct_ops of a link with a new struct_ops map.
+>> + */
+>> +int bpf_link__update_map(struct bpf_link *link, const struct bpf_map 
+>> *map)
 >> +{
->> +    struct bpf_struct_ops_map *st_map, *old_st_map;
->> +    struct bpf_struct_ops_link *st_link;
->> +    struct bpf_map *old_map;
->> +    int err = 0;
+>> +    struct bpf_link_struct_ops *st_ops_link;
+>> +    __u32 zero = 0;
+>> +    int err, fd;
 >> +
->> +    st_link = container_of(link, struct bpf_struct_ops_link, link);
->> +    st_map = container_of(new_map, struct bpf_struct_ops_map, map);
->> +
->> +    if (!bpf_struct_ops_valid_to_reg(new_map))
+>> +    if (!bpf_map__is_struct_ops(map) || map->fd < 0)
 >> +        return -EINVAL;
 >> +
->> +    mutex_lock(&update_mutex);
->> +
->> +    old_map = rcu_dereference_protected(st_link->map, 
->> lockdep_is_held(&update_mutex));
->> +    old_st_map = container_of(old_map, struct bpf_struct_ops_map, map);
->> +    /* The new and old struct_ops must be the same type. */
->> +    if (st_map->st_ops != old_st_map->st_ops) {
->> +        err = -EINVAL;
->> +        goto err_out;
->> +    }
->> +
->> +    err = st_map->st_ops->update(st_map->kvalue.data, 
->> old_st_map->kvalue.data);
-> 
-> I don't think it has completely addressed Andrii's comment in v4 
-> regarding BPF_F_REPLACE: 
-> https://lore.kernel.org/bpf/CAEf4BzbK8s+VFG5HefydD7CRLzkRFKg-Er0PKV_-C2-yttfXzA@mail.gmail.com/
-
-I just check with Andrii.
-For this, I will add a old_map_fd field in bpf_attr to pass a fd of
-the old map.  The definition of the type of bpf_link_ops::update_map
-will be changed to pass an old_map.  So, we can check if it is expected.
-
-> 
-> For now, tcp_update_congestion_control() enforces the same cc-name. 
-> However, it is still not the same as what BPF_F_REPLACE intented to do: 
-> update only when it is the same old-map. Same cc-name does not 
-> necessarily mean the same old-map.
-
-st_ops->update() will check if old_st_mp->kvalue.data is the same
-one registered before.  That will enforce that old_st_map is old_map.
-
-> 
->> +    if (err)
->> +        goto err_out;
->> +
->> +    bpf_map_inc(new_map);
->> +    rcu_assign_pointer(st_link->map, new_map);
->> +    bpf_map_put(old_map);
->> +
->> +err_out:
->> +    mutex_unlock(&update_mutex);
->> +
->> +    return err;
->> +}
->> +
->>   static const struct bpf_link_ops bpf_struct_ops_map_lops = {
->>       .dealloc = bpf_struct_ops_map_link_dealloc,
->>       .show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
->>       .fill_link_info = bpf_struct_ops_map_link_fill_link_info,
->> +    .update_map = bpf_struct_ops_map_link_update,
->>   };
->>   int bpf_struct_ops_link_create(union bpf_attr *attr)
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 5a45e3bf34e2..6fa10d108278 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -4676,6 +4676,21 @@ static int link_create(union bpf_attr *attr, 
->> bpfptr_t uattr)
->>       return ret;
->>   }
->> +static int link_update_map(struct bpf_link *link, union bpf_attr *attr)
->> +{
->> +    struct bpf_map *new_map;
->> +    int ret = 0;
-> 
-> nit. init zero is unnecessarily.
-> 
->> +
->> +    new_map = bpf_map_get(attr->link_update.new_map_fd);
->> +    if (IS_ERR(new_map))
+>> +    st_ops_link = container_of(link, struct bpf_link_struct_ops, link);
+>> +    /* Ensure the type of a link is correct */
+>> +    if (st_ops_link->map_fd < 0)
 >> +        return -EINVAL;
 >> +
->> +    ret = link->ops->update_map(link, new_map);
+>> +    err = bpf_map_update_elem(map->fd, &zero, 
+>> map->st_ops->kern_vdata, 0);
+>> +    if (err && err != -EBUSY)
+>> +        return err;
 >> +
->> +    bpf_map_put(new_map);
->> +    return ret;
+>> +    fd = bpf_link_update(link->fd, map->fd, NULL);
+> 
+> bpf_link_update() returns ok/error. Using "fd = ..." is confusing. Use 
+> "err = ..." instead and remove the need of "int fd;".
+
+got it.
+
+> 
+>> +    if (fd < 0)
+>> +        return fd;
+>> +
+>> +    st_ops_link->map_fd = map->fd;
+>> +
+>> +    return 0;
 >> +}
 >> +
->>   #define BPF_LINK_UPDATE_LAST_FIELD link_update.old_prog_fd
->>   static int link_update(union bpf_attr *attr)
->> @@ -4696,6 +4711,11 @@ static int link_update(union bpf_attr *attr)
->>       if (IS_ERR(link))
->>           return PTR_ERR(link);
->> +    if (link->ops->update_map) {
->> +        ret = link_update_map(link, attr);
->> +        goto out_put_link;
->> +    }
->> +
->>       new_prog = bpf_prog_get(attr->link_update.new_prog_fd);
->>       if (IS_ERR(new_prog)) {
->>           ret = PTR_ERR(new_prog);
->> diff --git a/net/bpf/bpf_dummy_struct_ops.c 
->> b/net/bpf/bpf_dummy_struct_ops.c
->> index ff4f89a2b02a..158f14e240d0 100644
->> --- a/net/bpf/bpf_dummy_struct_ops.c
->> +++ b/net/bpf/bpf_dummy_struct_ops.c
->> @@ -222,12 +222,18 @@ static void bpf_dummy_unreg(void *kdata)
->>   {
->>   }
->> +static int bpf_dummy_update(void *kdata, void *old_kdata)
->> +{
->> +    return -EOPNOTSUPP;
->> +}
->> +
->>   struct bpf_struct_ops bpf_bpf_dummy_ops = {
->>       .verifier_ops = &bpf_dummy_verifier_ops,
->>       .init = bpf_dummy_init,
->>       .check_member = bpf_dummy_ops_check_member,
->>       .init_member = bpf_dummy_init_member,
->>       .reg = bpf_dummy_reg,
->> +    .update = bpf_dummy_update,
-> 
-> When looking at this together in patch 5, the changes in 
-> bpf_dummy_struct_ops.c should not be needed.
-> 
+>>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct 
+>> perf_event_header *hdr,
+>>                                 void *private_data);
+>> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+>> index db4992a036f8..1615e55e2e79 100644
+>> --- a/tools/lib/bpf/libbpf.h
+>> +++ b/tools/lib/bpf/libbpf.h
+>> @@ -719,6 +719,7 @@ bpf_program__attach_freplace(const struct 
+>> bpf_program *prog,
+>>   struct bpf_map;
+>>   LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct 
+>> bpf_map *map);
+>> +LIBBPF_API int bpf_link__update_map(struct bpf_link *link, const 
+>> struct bpf_map *map);
+>>   struct bpf_iter_attach_opts {
+>>       size_t sz; /* size of this struct for forward/backward 
+>> compatibility */
+>> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+>> index 50dde1f6521e..cc05be376257 100644
+>> --- a/tools/lib/bpf/libbpf.map
+>> +++ b/tools/lib/bpf/libbpf.map
+>> @@ -387,6 +387,7 @@ LIBBPF_1.2.0 {
+>>       global:
+>>           bpf_btf_get_info_by_fd;
+>>           bpf_link_get_info_by_fd;
+>> +        bpf_link__update_map;
+>>           bpf_map_get_info_by_fd;
+>>           bpf_prog_get_info_by_fd;
+>>   } LIBBPF_1.1.0;
 > 
