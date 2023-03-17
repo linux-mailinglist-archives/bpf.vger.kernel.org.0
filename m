@@ -2,109 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CBE6BF072
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 19:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FE06BF07F
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 19:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjCQSK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 14:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
+        id S229879AbjCQSOx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 14:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjCQSK4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 14:10:56 -0400
-Received: from out-39.mta1.migadu.com (out-39.mta1.migadu.com [95.215.58.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5350936FD7
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 11:10:54 -0700 (PDT)
-Message-ID: <9b18b21b-4429-fd87-8c74-0de2900eee42@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1679076652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9JuVGhibCao2hzNBwdOorZVhKeSQ7ImAbynMxgGpOtA=;
-        b=dN3lVoaaXec7y99gzLJ+BBhArs3nR85kCgGPOxyMWoZJ2QfYySBIF0TyujwDC+rOclZ1G3
-        1Q6+CObRpwEs1sA9kD5GBaqBFUi47yUShyJzZouMskasuTeHvQ8e9CbT2twUm/7Xi05C0J
-        tK4/w5llKG++fZD/3aQhk0Th6U/OCBs=
-Date:   Fri, 17 Mar 2023 11:10:48 -0700
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 3/8] bpf: Create links for BPF struct_ops
- maps.
-Content-Language: en-US
-To:     Kui-Feng Lee <kuifeng@meta.com>
-References: <20230316023641.2092778-1-kuifeng@meta.com>
- <20230316023641.2092778-4-kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230316023641.2092778-4-kuifeng@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        with ESMTP id S231127AbjCQSOv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 14:14:51 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6E910CF;
+        Fri, 17 Mar 2023 11:14:39 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id bc12so5582866plb.0;
+        Fri, 17 Mar 2023 11:14:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679076879;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=otfyDpFCPzxMzK3GkuSY9i91p07sQSN8bJCLl3mN8gw=;
+        b=IpeaH88/UcBSShOdjtOpThXWEaK79KyxFMsBfpJOMq7IC1VpSMtIICkJhD7FjVFvwZ
+         8c3lVnAQm1+yNPOk+W8flbvHLrOxA7UugQbu6TNEqVXAFux35MSsf8V4AuUTYoy1HgPp
+         CRy1X0rLz7Rp1T6T0rl8LYkBclHXMSp36V0HSjr64E4M7TbEdi9XqHF1u/pbOyfGiZ8e
+         FmPWnnIAPDpdunrsPWZvRtzKxM97RfKADzDk1A3CLN31UO2aqdUrvuuVjnoW/Ecihrj0
+         6zevmqBWuJ+ToO0XTvuWBrS7i70xxKlkNQDu4zhgPDherHdUj/5vzHJFrRCzVKBWwS1y
+         XYJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679076879;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=otfyDpFCPzxMzK3GkuSY9i91p07sQSN8bJCLl3mN8gw=;
+        b=Q1dcFgqHxc5P7Ug7hgplSLjnuS/d2J0nFU5hMJys37ap6wzZH5pLpPT+QjCBlKWP9i
+         k106wRGaP0a3hZyC9Ebfw0oMUCY3MN1e39WeztaL1J7gfzHZTo5HTbatKO74RKD3G9Hp
+         wYNavHd6urG1Dfv1t1crkTyPsET9tdAQNCUJUepILoK8Dyf1KRQHLCRN4pzZWq2kqyvc
+         Ew/udH1d23oFSOvikg7HdnVkwd2E3C0eLuEFQkXEP/uw+1Me02SF0eGQ/G2xqehPFtgr
+         92CZIboMt2Ijf6JxZ+U3RKrVMNlpLZOVjriC9so7hGchMbXtYCG3QT3zDHtQUzfA14se
+         ryCA==
+X-Gm-Message-State: AO0yUKWrygK9Yq6jCprGBs17dG7aVtugJjfunUruZMzMkUqrQXRdwC/J
+        Inu4vVgDzziD1HQS+DyUAac=
+X-Google-Smtp-Source: AK7set+mFvRissBVGakA2MSl/xYt6xf64Ra6tLA5iH2TEqHcJJ6TurwwK13mSni8Yy9GAYVPJIeakQ==
+X-Received: by 2002:a17:90b:3143:b0:234:d3a:2a38 with SMTP id ip3-20020a17090b314300b002340d3a2a38mr8906804pjb.43.1679076879274;
+        Fri, 17 Mar 2023 11:14:39 -0700 (PDT)
+Received: from localhost ([98.97.36.54])
+        by smtp.gmail.com with ESMTPSA id x21-20020a170902ea9500b0019c2cf12d15sm1835138plb.116.2023.03.17.11.14.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Mar 2023 11:14:38 -0700 (PDT)
+Date:   Fri, 17 Mar 2023 11:14:37 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        starmiku1207184332@gmail.com
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@outlook.com
+Message-ID: <6414ae0db3f69_984f8208cb@john.notmuch>
+In-Reply-To: <20230317171636.ftelyp6ty7mgo4rt@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230317035227.22293-1-starmiku1207184332@gmail.com>
+ <20230317171636.ftelyp6ty7mgo4rt@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Subject: Re: [PATCH v2] kernel: bpf: stackmap: fix a possible sleep-in-atomic
+ bug in bpf_mmap_unlock_get_irq_work()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/15/23 7:36 PM, Kui-Feng Lee wrote:
-> +int bpf_struct_ops_link_create(union bpf_attr *attr)
-> +{
-> +	struct bpf_struct_ops_link *link = NULL;
-> +	struct bpf_link_primer link_primer;
-> +	struct bpf_struct_ops_map *st_map;
-> +	struct bpf_map *map;
-> +	int err;
-> +
-> +	map = bpf_map_get(attr->link_create.map_fd);
-> +	if (!map)
-> +		return -EINVAL;
-> +
-> +	st_map = (struct bpf_struct_ops_map *)map;
-> +
-> +	if (!bpf_struct_ops_valid_to_reg(map)) {
-> +		err = -EINVAL;
-> +		goto err_out;
-> +	}
-> +
-> +	link = kzalloc(sizeof(*link), GFP_USER);
-> +	if (!link) {
-> +		err = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL);
-> +	RCU_INIT_POINTER(link->map, map);
+Alexei Starovoitov wrote:
+> On Fri, Mar 17, 2023 at 03:52:27AM +0000, starmiku1207184332@gmail.com wrote:
+> > context because of its possible sleep operation. However, mmap_read_unlock()
+> > is unsafely called in a preempt disabled context when spin_lock() or
+> > rcu_read_lock() has been called.
+> 
+> Why is that unsafe?
+> See __up_read(). It's doing preempt_disable().
 
-The link->map assignment should be done with the bpf_link_settle(), meaning only 
-assign after everything else has succeeded.
+Yep I didn't see the issue either that is why I asked for the stack trace. If
+its a bug we would want a reproducer as well seems like it should be trivially
+tested in selftests.
 
-The link is not exposed to user space until bpf_link_settle(). The link->map 
-assignment can be done after ->reg succeeded and do it just before 
-bpf_link_settle(). Then there is no need to do the RCU_INIT_POINTER(link->map, 
-NULL) dance in the error case.
+> 
+> 
+> > -	if (irqs_disabled()) {
+> > +	if (in_atomic() || irqs_disabled()) {
+> 
+> We cannot do this. It will significantly hurt stack traces with build_id.
 
-> +
-> +	err = bpf_link_prime(&link->link, &link_primer);
-> +	if (err)
-> +		goto err_out;
-> +
-> +	err = st_map->st_ops->reg(st_map->kvalue.data);
-> +	if (err) {
-> +		/* No RCU since no one has a chance to read this pointer yet. */
-> +		RCU_INIT_POINTER(link->map, NULL);
-> +		bpf_link_cleanup(&link_primer);
-> +		link = NULL;
-> +		goto err_out;
-> +	}
-> +
-> +	return bpf_link_settle(&link_primer);
-> +
-> +err_out:
-> +	bpf_map_put(map);
-> +	kfree(link);
-> +	return err;
-> +}
 
