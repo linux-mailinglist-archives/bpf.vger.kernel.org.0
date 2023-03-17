@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D5F6BF392
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89066BF3A7
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbjCQVJQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39464 "EHLO
+        id S229892AbjCQVN1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjCQVJP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:09:15 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871BF10AAC
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:09:14 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id j125-20020a25d283000000b008f257b16d71so6414086ybg.15
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:09:14 -0700 (PDT)
+        with ESMTP id S229995AbjCQVN0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:13:26 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA91262FF9
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:13:18 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id j9-20020aa79289000000b00625894ca452so3236901pfa.22
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:13:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679087353;
+        d=google.com; s=20210112; t=1679087598;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QX9P4WNhAiimp8bMVI7pbGpexEm1CSWbcups6XutsBs=;
-        b=ff85pds0T+/d1FplNtdt15zMozZzvvdTyBPXlmViTL+rcyQNXX+goVZ1Jri6AbyVOT
-         sKXuuol1NI3K21OUSoCuiZV0KQyC1xpHPSbo0CdEHn9P6n5TQBk53YPEjxTgJgdxsk+b
-         e0EH9SIh2G1/jl3VF7Exq76YXEAk72Lag9j3Gw3U2aeOh0YUNeRBV56NPPuFM+5eh8TS
-         zZrM/iNZ5n1XC2Q/KcS07ZSLBeuJ2SWXIO8ixwi+SR57OBe6dKODd0YIODaUU1qGARa4
-         LaRbRjPcTgdkfqZlWBncEiAR2xcqWQB7cJ86Sf8cW7vj9Y7ernFQl8D9kIEN/4d+gMQI
-         UcoA==
+        bh=QrCUL/IGk54+SRxEDAGZ4cJXeb0snqO4bHPhQ/dVI4Q=;
+        b=PU8vs4E5e6ghVuGp8NM4vO9YnC+Tj+QscxvmGFXINdIujpv1l/0Z3SL08tlzAU4heT
+         uSSQUgQ2x1Mp1ykqsLRfhZBO9aShvD6pqe3R3vRjLUmcorcH5RDbwcwjcKjEiTAcbGen
+         MImT7AscwjCF5Uw82RPwLkhtJESF2axcTlr8BUIbiIaVJ7Xb6yoNPzHKS6X3vq06x+N2
+         sipleHRi/4Vckclg3UVU4tP0JFPSLhjjoMRkWyWoZqjizHz9gm/JedLC1mTLljhI1NIK
+         KGYvPVaV0kymAmX756tlvW2AkxN2SbpLE1C6jZeuAaGeC0T8BU+cK6BP9kCVe+TrnlnS
+         BJWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679087353;
+        d=1e100.net; s=20210112; t=1679087598;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QX9P4WNhAiimp8bMVI7pbGpexEm1CSWbcups6XutsBs=;
-        b=5+A5ckncRN680wWgaH4nXJVs+jicXnsKYe7fOkPuOzzst+W7omS35ov9sHZ1goD9qO
-         L0KQ3ZsKrhbgzj6NnDMmAN5OIbVFqyk2T9GuE+TZDy5GeXAj2V3p3fEnOOUnABHpKojl
-         OQoxHVW0Th9+CIgtTqjNxNw1jaDhml5kNPrT0Smx0UeprUhelYtXHkFahKwj+tC3vrvE
-         tJOPacPM5zJYlS+UAFktEObHodBLWXsi1livrN8gCtuz4ccbGKpcdQ1hi4IKFXTgVgXO
-         VFiJjVEGjum1FSMC4h1Bb5M678AJbY077oTpV91ONXeRm804lO//WYHSqnUgA8M4c2EK
-         LuGA==
-X-Gm-Message-State: AO0yUKWx+23lQXLz3w9arZLjVxlbt3XLFpWuMSUeuDNIXmc+nzH0n5gH
-        TaCyDgWVGyqLEampyyBQwbpv3yQ=
-X-Google-Smtp-Source: AK7set9p/saix2JDOUGzrqPV0lqYjOfCIZCKDJWI3pqUDlD39c2PxuVf/4OiqY4JENYN7TUKXu9Hlmc=
+        bh=QrCUL/IGk54+SRxEDAGZ4cJXeb0snqO4bHPhQ/dVI4Q=;
+        b=hqPIEXWEtbm5IPGb3QnYIHh+9E7TJbBR7EDThG4kmd8hd3U/S3X6xgwFCk6fnHmq+Q
+         pbsJr1lLa6Nh2IkizCFkRtS5+puhpjqLLLI2JdxoX4KMMHVcSisIzr7WsYoOLGCxKINY
+         t+5fx3XmQH8VtIz66+0J1/trjmt/eQzCWBuUI37HBwzzbnlozqQ1oRHc+8TdZVk6KBAx
+         ciPTjlL9AjFadW8/31veLa6xq9+j4Huu/RSQgOdxJx4jPyYA7cDc8FL55E60BTVuM7cx
+         VUtX0YdiwcKzbF/F0vOusJO8hyxEXZ0yGef+MzIgQOTPKkkCsXmPm+lOMDtFCENuf+Ea
+         8Nkw==
+X-Gm-Message-State: AO0yUKU/BT7+fvrgDkKEAmjzL7T6PIPj42BYTLIXDBXrciEL49HN1xDS
+        2zOfUqZ1Bia3UhpIRYJ+SvT3dEA=
+X-Google-Smtp-Source: AK7set9AAuLyGkvi/Qt66TYj53e5MBcSr8TF1vXUUvJ2uwZNcWye632kPx7liFKfwrSQNZWTjg3Jl18=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6902:1d0:b0:a5f:0:bf12 with SMTP id
- u16-20020a05690201d000b00a5f0000bf12mr515676ybh.13.1679087353838; Fri, 17 Mar
- 2023 14:09:13 -0700 (PDT)
-Date:   Fri, 17 Mar 2023 14:09:12 -0700
-In-Reply-To: <167906360589.2706833.6188844928251441787.stgit@firesoul>
+ (user=sdf job=sendgmr) by 2002:a17:902:a3c7:b0:1a0:51f6:a252 with SMTP id
+ q7-20020a170902a3c700b001a051f6a252mr3537782plb.3.1679087598192; Fri, 17 Mar
+ 2023 14:13:18 -0700 (PDT)
+Date:   Fri, 17 Mar 2023 14:13:16 -0700
+In-Reply-To: <167906361094.2706833.8381428662566265476.stgit@firesoul>
 Mime-Version: 1.0
-References: <167906343576.2706833.17489167761084071890.stgit@firesoul> <167906360589.2706833.6188844928251441787.stgit@firesoul>
-Message-ID: <ZBTW+NP1pLPlXRqa@google.com>
-Subject: Re: [PATCH bpf-next V1 3/7] selftests/bpf: xdp_hw_metadata track more timestamps
+References: <167906343576.2706833.17489167761084071890.stgit@firesoul> <167906361094.2706833.8381428662566265476.stgit@firesoul>
+Message-ID: <ZBTX7CBzNk9SaWgx@google.com>
+Subject: Re: [PATCH bpf-next V1 4/7] selftests/bpf: xdp_hw_metadata RX hash
+ return code info
 From:   Stanislav Fomichev <sdf@google.com>
 To:     Jesper Dangaard Brouer <brouer@redhat.com>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org,
@@ -70,198 +71,82 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 03/17, Jesper Dangaard Brouer wrote:
-> To correlate the hardware RX timestamp with something, add tracking of
-> two software timestamps both clock source CLOCK_TAI (see description in
-> man clock_gettime(2)).
+> When driver developers add XDP-hints kfuncs for RX hash it is
+> practical to print the return code in bpf_printk trace pipe log.
 
-> XDP metadata is extended with xdp_timestamp for capturing when XDP
-> received the packet. Populated with BPF helper bpf_ktime_get_tai_ns(). I
-> could not find a BPF helper for getting CLOCK_REALTIME, which would have
-> been preferred. In userspace when AF_XDP sees the packet another
-> software timestamp is recorded via clock_gettime() also clock source
-> CLOCK_TAI.
-
-> Example output shortly after loading igc driver:
-
->    poll: 1 (0)
->    xsk_ring_cons__peek: 1
->    0x11fc958: rx_desc[7]->addr=10000000000f000 addr=f100 comp_addr=f000
->    rx_hash: 0x00000000
->    rx_timestamp:  1676297171760293047 (sec:1676297171.7603)
->    XDP RX-time:   1676297208760355863 (sec:1676297208.7604) delta  
-> sec:37.0001
->    AF_XDP time:   1676297208760416292 (sec:1676297208.7604) delta  
-> sec:0.0001 (60.429 usec)
->    0x11fc958: complete idx=15 addr=f000
-
-> The first observation is that the 37 sec difference between RX HW vs XDP
-> timestamps, which indicate hardware is likely clock source
-> CLOCK_REALTIME, because (as of this writing) CLOCK_TAI is initialised
-> with a 37 sec offset.
-
-> The 60 usec (microsec) difference between XDP vs AF_XDP userspace is the
-> userspace wakeup time. On this hardware it was caused by CPU idle sleep
-> states, which can be reduced by tuning /dev/cpu_dma_latency.
-
-> View current requested/allowed latency bound via:
->    hexdump --format '"%d\n"' /dev/cpu_dma_latency
-
-> More explanation of the output and how this can be used to identify
-> clock drift for the HW clock can be seen here[1]:
-
-> [1]  
-> https://github.com/xdp-project/xdp-project/blob/master/areas/hints/xdp_hints_kfuncs02_driver_igc.org
+> Print hash value as a hex value, both AF_XDP userspace and bpf_prog,
+> as this makes it easier to spot poor quality hashes.
 
 > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
 Acked-by: Stanislav Fomichev <sdf@google.com>
 
-With a small nit below.
+(with a small suggestion below, maybe can do separately?)
 
 > ---
->   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    8 ++-
->   tools/testing/selftests/bpf/xdp_hw_metadata.c      |   46  
-> ++++++++++++++++++--
->   tools/testing/selftests/bpf/xdp_metadata.h         |    1
->   3 files changed, 47 insertions(+), 8 deletions(-)
+>   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++++++---
+>   tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++++-
+>   2 files changed, 10 insertions(+), 4 deletions(-)
 
 > diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c  
 > b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> index 4c55b4d79d3d..f2a3b70a9882 100644
+> index f2a3b70a9882..f2278ca2ad03 100644
 > --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
 > +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> @@ -69,9 +69,11 @@ int rx(struct xdp_md *ctx)
->   		return XDP_PASS;
->   	}
-
-> -	if (!bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp))
-> -		bpf_printk("populated rx_timestamp with %llu", meta->rx_timestamp);
-> -	else
-> +	if (!bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp)) {
-> +		meta->xdp_timestamp = bpf_ktime_get_tai_ns();
-> +		bpf_printk("populated rx_timestamp with  %llu", meta->rx_timestamp);
-> +		bpf_printk("populated xdp_timestamp with %llu", meta->xdp_timestamp);
-> +	} else
+> @@ -76,10 +76,13 @@ int rx(struct xdp_md *ctx)
+>   	} else
 >   		meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
 
-Nit: curly braces around else {} block as well?
+> -	if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+> -		bpf_printk("populated rx_hash with %u", meta->rx_hash);
+> -	else
+> +	ret = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
+> +	if (ret >= 0) {
+> +		bpf_printk("populated rx_hash with 0x%08X", meta->rx_hash);
+> +	} else {
+> +		bpf_printk("rx_hash not-avail errno:%d", ret);
+>   		meta->rx_hash = 0; /* Used by AF_XDP as not avail signal */
+> +	}
 
-
->   	if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+>   	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
+>   }
 > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c  
 > b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> index 1c8acb68b977..400bfe19abfe 100644
+> index 400bfe19abfe..f3ec07ccdc95 100644
 > --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
 > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> @@ -27,6 +27,7 @@
->   #include <sys/mman.h>
->   #include <net/if.h>
->   #include <poll.h>
-> +#include <time.h>
+> @@ -3,6 +3,9 @@
+>   /* Reference program for verifying XDP metadata on real HW. Functional  
+> test
+>    * only, doesn't test the performance.
+>    *
 
->   #include "xdp_metadata.h"
+[..]
 
-> @@ -134,14 +135,47 @@ static void refill_rx(struct xsk *xsk, __u64 addr)
->   	}
->   }
+> + * BPF-prog bpf_printk info outout can be access via
+> + * /sys/kernel/debug/tracing/trace_pipe
 
-> -static void verify_xdp_metadata(void *data)
-> +#define NANOSEC_PER_SEC 1000000000 /* 10^9 */
-> +static __u64 gettime(clockid_t clock_id)
-> +{
-> +	struct timespec t;
-> +	int res;
-> +
-> +	/* See man clock_gettime(2) for type of clock_id's */
-> +	res = clock_gettime(clock_id, &t);
-> +
-> +	if (res < 0)
-> +		error(res, errno, "Error with clock_gettime()");
-> +
-> +	return (__u64) t.tv_sec * NANOSEC_PER_SEC + t.tv_nsec;
-> +}
-> +
-> +static void verify_xdp_metadata(void *data, clockid_t clock_id)
->   {
->   	struct xdp_meta *meta;
+Maybe we should just dump the contents of
+/sys/kernel/debug/tracing/trace for every poll cycle?
+
+We can also maybe enable tracing in this program transparently?
+I usually forget 'echo 1 >
+/sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enable'
+myself :-)
+
+> + *
+>    * RX:
+>    * - UDP 9091 packets are diverted into AF_XDP
+>    * - Metadata verified:
+> @@ -156,7 +159,7 @@ static void verify_xdp_metadata(void *data, clockid_t  
+> clock_id)
 
 >   	meta = data - sizeof(*meta);
 
-> -	printf("rx_timestamp: %llu\n", meta->rx_timestamp);
->   	printf("rx_hash: %u\n", meta->rx_hash);
-> +	printf("rx_timestamp:  %llu (sec:%0.4f)\n", meta->rx_timestamp,
-> +	       (double)meta->rx_timestamp / NANOSEC_PER_SEC);
-> +	if (meta->rx_timestamp) {
-> +		__u64 usr_clock = gettime(clock_id);
-> +		__u64 xdp_clock = meta->xdp_timestamp;
-> +		__s64 delta_X = xdp_clock - meta->rx_timestamp;
-> +		__s64 delta_X2U = usr_clock - xdp_clock;
-> +
-> +		printf("XDP RX-time:   %llu (sec:%0.4f) delta sec:%0.4f (%0.3f  
-> usec)\n",
-> +		       xdp_clock, (double)xdp_clock / NANOSEC_PER_SEC,
-> +		       (double)delta_X / NANOSEC_PER_SEC,
-> +		       (double)delta_X / 1000);
-> +
-> +		printf("AF_XDP time:   %llu (sec:%0.4f) delta sec:%0.4f (%0.3f  
-> usec)\n",
-> +		       usr_clock, (double)usr_clock / NANOSEC_PER_SEC,
-> +		       (double)delta_X2U / NANOSEC_PER_SEC,
-> +		       (double)delta_X2U / 1000);
-> +	}
-> +
->   }
-
->   static void verify_skb_metadata(int fd)
-> @@ -189,7 +223,7 @@ static void verify_skb_metadata(int fd)
->   	printf("skb hwtstamp is not found!\n");
->   }
-
-> -static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd)
-> +static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd,  
-> clockid_t clock_id)
->   {
->   	const struct xdp_desc *rx_desc;
->   	struct pollfd fds[rxq + 1];
-> @@ -237,7 +271,8 @@ static int verify_metadata(struct xsk *rx_xsk, int  
-> rxq, int server_fd)
->   			addr = xsk_umem__add_offset_to_addr(rx_desc->addr);
->   			printf("%p: rx_desc[%u]->addr=%llx addr=%llx comp_addr=%llx\n",
->   			       xsk, idx, rx_desc->addr, addr, comp_addr);
-> -			verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr));
-> +			verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr),
-> +					    clock_id);
->   			xsk_ring_cons__release(&xsk->rx, 1);
->   			refill_rx(xsk, comp_addr);
->   		}
-> @@ -364,6 +399,7 @@ static void timestamping_enable(int fd, int val)
-
->   int main(int argc, char *argv[])
->   {
-> +	clockid_t clock_id = CLOCK_TAI;
->   	int server_fd = -1;
->   	int ret;
->   	int i;
-> @@ -437,7 +473,7 @@ int main(int argc, char *argv[])
->   		error(1, -ret, "bpf_xdp_attach");
-
->   	signal(SIGINT, handle_signal);
-> -	ret = verify_metadata(rx_xsk, rxq, server_fd);
-> +	ret = verify_metadata(rx_xsk, rxq, server_fd, clock_id);
->   	close(server_fd);
->   	cleanup();
->   	if (ret)
-> diff --git a/tools/testing/selftests/bpf/xdp_metadata.h  
-> b/tools/testing/selftests/bpf/xdp_metadata.h
-> index f6780fbb0a21..260345b2c6f1 100644
-> --- a/tools/testing/selftests/bpf/xdp_metadata.h
-> +++ b/tools/testing/selftests/bpf/xdp_metadata.h
-> @@ -11,5 +11,6 @@
-
->   struct xdp_meta {
->   	__u64 rx_timestamp;
-> +	__u64 xdp_timestamp;
->   	__u32 rx_hash;
->   };
+> -	printf("rx_hash: %u\n", meta->rx_hash);
+> +	printf("rx_hash: 0x%08X\n", meta->rx_hash);
+>   	printf("rx_timestamp:  %llu (sec:%0.4f)\n", meta->rx_timestamp,
+>   	       (double)meta->rx_timestamp / NANOSEC_PER_SEC);
+>   	if (meta->rx_timestamp) {
 
 
