@@ -2,68 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF546BF60A
-	for <lists+bpf@lfdr.de>; Sat, 18 Mar 2023 00:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 932466BF626
+	for <lists+bpf@lfdr.de>; Sat, 18 Mar 2023 00:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjCQXNJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 19:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
+        id S229974AbjCQXUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 19:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbjCQXNI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 19:13:08 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB7249D0
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 16:13:06 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id er8so14390394edb.0
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 16:13:06 -0700 (PDT)
+        with ESMTP id S230041AbjCQXUK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 19:20:10 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9800399C1;
+        Fri, 17 Mar 2023 16:20:05 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id h8so26122941ede.8;
+        Fri, 17 Mar 2023 16:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679094785;
+        d=gmail.com; s=20210112; t=1679095204;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/A52h1IirVGjBb60KcQpdYTIOWZWxeOQC2P1jf+ep/s=;
-        b=UrBLt/OE+ikLWzwiypJQ2TjmIvfrJP8UUAwB22hyQYwQw+GLNtbhBqjDyQYlFeT5MH
-         CrY6Pz60b/vsoEmnyBGImZJIIcvYFlDPj4YKa5Ro6fIS7CtN6rBV2LSpQ21I4omzAsGm
-         ZtRUjLx4xrA4jJOdLrHAsymDdRfXXM+0PC35+5yYi5k8RjyAjKNPFjEIA/hUcaz0dS4u
-         q2s87xrzhPKuDhJMmRBCeyylxNeK8fyzhZDiyOel/2r5owNCzWxuRiaxa5E8JBz8YyGZ
-         JVFFyIcL0Nyck4r5D3B7Tf9yNfY2mXiZoF/mGpdpet2KNHRFrt0Dd1pn9OQnjXzYKukr
-         3iXA==
+        bh=AyVTmbTVSjXbyxvFuyac08iu7oVxn+bhU8z80CY/FHY=;
+        b=P+GzctP8nFk1SD1AfjJSjbb6wLkTlq5AZxMIu7VU/BbcCd3bYVrFkhcy1lfjqpDJDb
+         0q4NOig2WlyVYfC1qpoNb/GANDT5YvnPodcIWEsEHDl7O74YS72LbGCBLxDu2/fSC7Gu
+         C5d5+T9S2WaSUrvYthsKb6cY6aUXKJXZCe6/JTG+8Yi0gQ2BhxMuq7934mBEZhK7TQl4
+         Tge/JpxeAKXj6MVw8izxAnNE7w97hTZiPNTHqURU1kqrJHyhvHW3lkcNaFq+aeQSyjV3
+         flmqel5hnfhcaCEwE7yX8CH+S2Xv7UqRhq04CWJu4M/gg/+x7hxiNybYrbQavY0n+8s9
+         6rtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679094785;
+        d=1e100.net; s=20210112; t=1679095204;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/A52h1IirVGjBb60KcQpdYTIOWZWxeOQC2P1jf+ep/s=;
-        b=6nCksSDCOtdSP9kOe7/6xodLy+KA3cGKac0WkEyM+ryPefeHOHOkDSIDxmzFH6wBoc
-         UBm1eFCN2I9Okpt2xOdxWgzZ9dBzJAxUSzXkvw4vYmw1qnqeUdqj0H9LVYgRJ0NvYMKv
-         Zk1Q6OAlg5YEytj8oMmsw3Jky4iU+gf5OqFdrfbIcArs5TgquYVm0AFfayfNmRPd3HFM
-         GdUiyzrPpzYnlr8NVrSo0j2v8ZIvFkiRefeJ+73SMRWRGv6CNmB4KsCEjNseXteJhZdi
-         OrUJhEHaL3FrP5CHNgw2bY2h5LQQ2kl8T95ux1QDxdHAtrhxmuu6Ez0YbjvgYhndanCE
-         Bv5A==
-X-Gm-Message-State: AO0yUKV0LDmBVsQXv3RekwPWquof5fExjL8mdWlljV44aErglPva+4mM
-        RhttJ6Bc3LEAl2qMY96lYkgNkbE7xfLS+emM+l4=
-X-Google-Smtp-Source: AK7set/E+2qOTLoRWNtonKbVQHBOsmhFPaN5upw7Yhm1RQJDADfFtV4zzvwcJrGQ8IDD2Ywotd35FNn1q/Rte1nnDqo=
-X-Received: by 2002:a50:8e14:0:b0:4fb:f19:883 with SMTP id 20-20020a508e14000000b004fb0f190883mr2691047edw.1.1679094784845;
- Fri, 17 Mar 2023 16:13:04 -0700 (PDT)
+        bh=AyVTmbTVSjXbyxvFuyac08iu7oVxn+bhU8z80CY/FHY=;
+        b=YaIcQB0Th1n3Q72a0+asOYjEvdwc3W3/XnK/pVm3M9xrL06h3kOz5+ZloGYeOPw6Sq
+         /ewHwotPFTaVi8/tnprXy7Xx+ZsepcvLGyjIafKGJvcb/Ej0RxE+HfEKEeDpdV9CrN+P
+         47F8UyZmSV3l0ssekCqml0WbyrscRszLqxlLf+NfqIhnDWK1GuCY4GSi45BFH20kVJHF
+         eJV9+PvCxwiViF8FFIAV9+vtMtxixQu8RwExq2fwV0rvi2Ce4dl3QCTJXOagXlIwRlqN
+         YBNX9nuPwYiVrxL34OkdT9RXyWDr/L38Eu93Yey82uWBgX6NTMHyn8BbuDaf7plQUhQn
+         BIxA==
+X-Gm-Message-State: AO0yUKXhmH8UBLIe2SQiTq9v39AxrC1O3EgmE7ZQyXdIYDvvZUAldxFB
+        qB3nziD+P/JZqHkOTV9XLWLdZ4pZDP4DN2k3tSc=
+X-Google-Smtp-Source: AK7set9h2id2G0gurvZflYSdEEGkYpWcdfVmBfdlvazFgqJbRJBrgNrY6JehbmwYl20UsZGEv53uW6E5WOvjsftJ7DM=
+X-Received: by 2002:a17:906:844d:b0:930:310:abf1 with SMTP id
+ e13-20020a170906844d00b009300310abf1mr500288ejy.5.1679095204391; Fri, 17 Mar
+ 2023 16:20:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230317220351.2970665-1-andrii@kernel.org> <20230317220351.2970665-4-andrii@kernel.org>
- <bb0b7006-9a22-df8e-f623-d8a9d3069fc1@iogearbox.net>
-In-Reply-To: <bb0b7006-9a22-df8e-f623-d8a9d3069fc1@iogearbox.net>
+References: <20230315195405.2051559-1-ssreevani@meta.com> <20230317225259.GA28462@maniforge>
+In-Reply-To: <20230317225259.GA28462@maniforge>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 17 Mar 2023 16:12:52 -0700
-Message-ID: <CAEf4BzYM8Z1gp4x+tRLE2BFFi9idmuRiTSrHB7cGFA94E2hLmw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/6] bpf: switch BPF verifier log to be a
- rotating log by default
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@kernel.org, kernel-team@meta.com,
-        i@lmb.io, timo@incline.eu, alessandro.d@gmail.com,
-        Dave Tucker <dave@dtucker.co.uk>
+Date:   Fri, 17 Mar 2023 16:19:52 -0700
+Message-ID: <CAEf4BzaZ95Gv3Dkke+1gv1nRG41sroMaFb8Lqv93G7LAL7XBCA@mail.gmail.com>
+Subject: Re: [PATCH V4 bpf-next] BPF, docs: libbpf Overview Document
+To:     David Vernet <void@manifault.com>
+Cc:     Sreevani Sreejith <ssreevani@meta.com>, bpf@vger.kernel.org,
+        psreep@gmail.com, andrii@kernel.org, mykolal@meta.com,
+        Linux-kernel@vger.kernel.org, bagasdotme@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,94 +69,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 17, 2023 at 4:02=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
+On Fri, Mar 17, 2023 at 3:53=E2=80=AFPM David Vernet <void@manifault.com> w=
+rote:
 >
-> On 3/17/23 11:03 PM, Andrii Nakryiko wrote:
-> > Currently, if user-supplied log buffer to collect BPF verifier log turn=
-s
-> > out to be too small to contain full log, bpf() syscall return -ENOSPC,
-> > fails BPF program verification/load, but preserves first N-1 bytes of
-> > verifier log (where N is the size of user-supplied buffer).
+> On Wed, Mar 15, 2023 at 12:54:05PM -0700, Sreevani Sreejith wrote:
+> > From: Sreevani <ssreevani@meta.com>
 > >
-> > This is problematic in a bunch of common scenarios, especially when
-> > working with real-world BPF programs that tend to be pretty complex as
-> > far as verification goes and require big log buffers. Typically, it's
-> > when debugging tricky cases at log level 2 (verbose). Also, when BPF pr=
-ogram
-> > is successfully validated, log level 2 is the only way to actually see
-> > verifier state progression and all the important details.
+> > This patch documents overview of libbpf, including its features for
+> > developing BPF programs.
 > >
-> > Even with log level 1, it's possible to get -ENOSPC even if the final
-> > verifier log fits in log buffer, if there is a code path that's deep
-> > enough to fill up entire log, even if normally it would be reset later
-> > on (there is a logic to chop off successfully validated portions of BPF
-> > verifier log).
-> >
-> > In short, it's not always possible to pre-size log buffer. Also, in
-> > practice, the end of the log most often is way more important than the
-> > beginning.
-> >
-> > This patch switches BPF verifier log behavior to effectively behave as
-> > rotating log. That is, if user-supplied log buffer turns out to be too
-> > short, instead of failing with -ENOSPC, verifier will keep overwriting
-> > previously written log, effectively treating user's log buffer as a rin=
-g
-> > buffer.
-> >
-> > Importantly, though, to preserve good user experience and not require
-> > every user-space application to adopt to this new behavior, before
-> > exiting to user-space verifier will rotate log (in place) to make it
-> > start at the very beginning of user buffer as a continuous
-> > zero-terminated string. The contents will be a chopped off N-1 last
-> > bytes of full verifier log, of course.
-> >
-> > Given beginning of log is sometimes important as well, we add
-> > BPF_LOG_FIXED (which equals 8) flag to force old behavior, which allows
-> > tools like veristat to request first part of verifier log, if necessary=
-.
-> >
-> > On the implementation side, conceptually, it's all simple. We maintain
-> > 64-bit logical start and end positions. If we need to truncate the log,
-> > start position will be adjusted accordingly to lag end position by
-> > N bytes. We then use those logical positions to calculate their matchin=
-g
-> > actual positions in user buffer and handle wrap around the end of the
-> > buffer properly. Finally, right before returning from bpf_check(), we
-> > rotate user log buffer contents in-place as necessary, to make log
-> > contents contiguous. See comments in relevant functions for details.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: Sreevani <ssreevani@meta.com>
 >
-> Did you check behavior with other loaders if changing default works ok
-> for them, e.g. their behavior/buffer around ENOSPC handling for growing?
+> Looks great, thanks Sreevani.
 >
-> The go loader library did some parsing around the log [0], adding Lorenz
-> and Timo for Cc for checking.
-
-I didn't, no. Thanks for pinging Lorenz and Timo.
-
-Libbpf by default uses 16MB right now, I didn't touch that part yet,
-but it might be good to reduce this size if the kernel supports this
-new behavior. Go library seems to be using 64KB, which probably would
-be adequate for a lot of cases, but yeah, maybe Go library would like
-to use slightly bigger default if rotating log behavior is supported
-by kernel?
-
-Alternative would be to make this rotating behavior opt-in, but that
-would require active actions by multiple libraries and applications to
-actively detect support. Given the rotating behavior seems like a good
-default behavior I wish we had from the very beginning, I went for
-making it default.
-
-Let's see what Lorenz and Timo think.
-
-Adding also aya-rs main contributors (Allesandro and Dave). Seems like
-aya-rs uses very small 10KB minimum log buf size, which might be a bit
-inadequate with rotating log semantics.
-
-
-
+> Acked-by: David Vernet <void@manifault.com>
 >
->    [0] https://github.com/cilium/ebpf/blob/master/internal/errors.go
->        https://github.com/cilium/ebpf/blob/master/prog.go#L61
+
+Applied suggestions and switched to consistent "=3D=3D=3D=3D=3D" over/under=
+ top
+level header in both files. Applied to bpf-next, thanks!
+
+> > ---
+> > Changelog:
+> >
+> > v3 =3D https://lore.kernel.org/all/20230310180928.2462527-1-ssreevani@m=
+eta.com/
+> > v3 -> v4:
+> >    * Update BTF types link
+> >    * Update patch summary
+> >    * Indent code options line
+> >    * Update "See also" wording
+> >
+> >  Documentation/bpf/libbpf/index.rst           |  27 ++-
+> >  Documentation/bpf/libbpf/libbpf_overview.rst | 228 +++++++++++++++++++
+> >  2 files changed, 246 insertions(+), 9 deletions(-)
+> >  create mode 100644 Documentation/bpf/libbpf/libbpf_overview.rst
+> >
+> > diff --git a/Documentation/bpf/libbpf/index.rst b/Documentation/bpf/lib=
+bpf/index.rst
+> > index f9b3b252e28f..3ac8c06fb8f4 100644
+> > --- a/Documentation/bpf/libbpf/index.rst
+> > +++ b/Documentation/bpf/libbpf/index.rst
+> > @@ -2,23 +2,32 @@
+> >
+> >  .. _libbpf:
+> >
+> > +######
+> >  libbpf
+> > -=3D=3D=3D=3D=3D=3D
+> > +######
+> > +
+> > +If you are looking to develop BPF applications using the libbpf librar=
+y, this
+> > +directory contains important documentation that you should read.
+> > +
+> > +To get started, it is recommended to begin with the :doc:`libbpf Overv=
+iew
+> > +<libbpf_overview>` document, which provides a high-level understanding=
+ of the
+> > +libbpf APIs and their usage. This will give you a solid foundation to =
+start
+> > +exploring and utilizing the various features of libbpf to develop your=
+ BPF
+> > +applications.
+> >
+> >  .. toctree::
+> >     :maxdepth: 1
+> >
+> > +   libbpf_overview
+> >     API Documentation <https://libbpf.readthedocs.io/en/latest/api.html=
+>
+> >     program_types
+> >     libbpf_naming_convention
+> >     libbpf_build
+> >
+
+[...]
