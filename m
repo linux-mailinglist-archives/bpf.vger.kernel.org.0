@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 225E36BF464
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6970B6BF459
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbjCQVhZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
+        id S229786AbjCQVgu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbjCQVgi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:36:38 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0963E4B807;
-        Fri, 17 Mar 2023 14:35:50 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id om3-20020a17090b3a8300b0023efab0e3bfso10421615pjb.3;
-        Fri, 17 Mar 2023 14:35:50 -0700 (PDT)
+        with ESMTP id S230501AbjCQVg0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:36:26 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724E847806;
+        Fri, 17 Mar 2023 14:35:41 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id j3-20020a17090adc8300b0023d09aea4a6so10550714pjv.5;
+        Fri, 17 Mar 2023 14:35:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679088863;
+        d=gmail.com; s=20210112; t=1679088865;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6r2fOL3rD+vduV0LHS7egjhJ2wEMiRGrFAoqb6nik1o=;
-        b=XG1RhO3nYeS7D0gNGDFwkgLyY+5r1/xRSm91eiN75ugDUFD5X4DhWVHRZqLqG+IK4H
-         czdScpUYsVlYBxkkqYyD/0bZfzchGACRv8peHI4+xrwa9s4Ez9QWS1uiWq2rp26wnf5n
-         1dwjTqYrGATisTX/SA6r7Hz5YwYDRTKxOpUpn5WPb9SKkGTMbRVt4j8GG8ixZdl3Edjl
-         ZL/OaYGyxi4BEgBBRMPlVEm8/16oQGS5JPkweQ7kf+5sC7HJH/huCsSOO/Zhc/SDJmdv
-         Be3BdHjYaWEzDc4g+JI9F1qFXEG1hG4I7mKZeumMIio+4n1YoGBnBZewzKBC9eqclinI
-         0f/Q==
+        bh=RSrWwn78A8NkyoI+B6fTIg1qB48gzCqnhlfC8zaKofU=;
+        b=bAJustyimCzGyUNZgui6WmJ41dqCROMR0HuUpK6eoRL78iUIT9q/55S041hqCnYWnN
+         ICczAp6A5ZLEXdcN21+zoqTNxwXuCrBAkA4DAckVjj470nKvk3Kna1VSjjSdJembBlz3
+         OwqbAPamEOGT3eSeyiQJzrmthixbaFrIn6JHJahf9zFDFw8/iCnI4/HyVS4BlzjKRStY
+         /AnmGPJ0/vl7tzaTXWDcfwwZWjXWP5pO6Ra9mIJeWKuudvRVDjGii+pCrlJqFaBlWtCo
+         ybPf6aomavu6v+eVJ+ZvOdtShGftW8fa7Us0+mSoeh1+4Kic1r3uXh+0yhefqv7gIk7b
+         1pDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679088863;
+        d=1e100.net; s=20210112; t=1679088865;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=6r2fOL3rD+vduV0LHS7egjhJ2wEMiRGrFAoqb6nik1o=;
-        b=uz4qjtAp+GB38HvhppTfuTGfMcsgCE2BjE2t79fPUSrjhfRw3AfLijUwItPkRKJ85C
-         UrDA7WyDsfbRGRDq1M31eRQu6ceubvuqaClSb7BaVj3J260PANDn6RGW+PO3/MHzurO3
-         I1/y08PUtTCN4CkBGEhI6F7tkbXQYcmGpSQTAMAbdvZeBnYy3hCKTPuCDNHqdaGUXwG8
-         Jr7CerHMfC79u88+rWHI2Mvq0DxF0o5Ctqqg3CuCTrL0CED5rdmqGYccw5fCELT6tiAA
-         A86k/mX1c4uNs+5rGmLY2k3HQWBCx6SfeSGodliTLBRVUTPYaiAWikuQs7RmCF3jr4+o
-         uPIg==
-X-Gm-Message-State: AO0yUKXeAIvX6yo6AoxXq6/8Dc1gCh3gmFzd6rBZBAEl57U2+exJrvjT
-        s2RpT45fWO1T7OKMimvuCWE=
-X-Google-Smtp-Source: AK7set+vwFAxB/k/i2EHPVN5gLHGP75QaIsRfwnEoXfER0p+FVp7Z/aWICTSZnwUpuPu2yMPggIYEg==
-X-Received: by 2002:a17:90b:4c0b:b0:23d:35cf:44be with SMTP id na11-20020a17090b4c0b00b0023d35cf44bemr4534865pjb.6.1679088863070;
-        Fri, 17 Mar 2023 14:34:23 -0700 (PDT)
+        bh=RSrWwn78A8NkyoI+B6fTIg1qB48gzCqnhlfC8zaKofU=;
+        b=W8klN+JVZt6CzBPT3B8+4EYN5CGVgbLpW87HpCkcc5lKLzk8noyjObEfQQTqmWHaP/
+         gT1LtSlgZK0cwfSPD95EaWPf8GwO2V9li0iA9At2vg09E78RFdKozhAr/yhs9NbGdlQL
+         FPzLlwygpGfIGiGWtDTZHdTZ/8jjJk44p6TkeDluUUsVdBiSrK1be/Hb+YCUyskwZiyN
+         /XZrNwdUMONYvWdVx8Cu3hkFTztq9563jCzlwi8VAMKdZ8bM5iPduLMEJxiyn8EqcdkR
+         NDumUsHt0lPR5SXwnoGFQ5GHeLpNuayT2mCrVUYML+t7CWylakwmu6Oy5FaWQo4snN7W
+         eUdg==
+X-Gm-Message-State: AO0yUKXX+7xX7DL4N8UDCyVp5yhEvFhqCepFUp9uUgwX3TyQv03hLGgc
+        YdLk4p579aRoW1LIv9FyPHk=
+X-Google-Smtp-Source: AK7set8Bma9o2aao6NaaLFQAvw962fF6KWbQYyfO4Nw5Xcp6WobtWua5ckzqpWMWtpyBxzTb+JCcZw==
+X-Received: by 2002:a17:902:e195:b0:1a0:6721:6cd2 with SMTP id y21-20020a170902e19500b001a067216cd2mr6909965pla.28.1679088864896;
+        Fri, 17 Mar 2023 14:34:24 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id hg4-20020a17090b300400b002340d317f3esm1844386pjb.52.2023.03.17.14.34.22
+        by smtp.gmail.com with ESMTPSA id d3-20020a170902728300b0019c32968271sm1994614pll.11.2023.03.17.14.34.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Mar 2023 14:34:22 -0700 (PDT)
+        Fri, 17 Mar 2023 14:34:24 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From:   Tejun Heo <tj@kernel.org>
 To:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -62,9 +62,9 @@ To:     torvalds@linux-foundation.org, mingo@redhat.com,
         dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@meta.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 22/32] sched_ext: Implement tickless support
-Date:   Fri, 17 Mar 2023 11:33:23 -1000
-Message-Id: <20230317213333.2174969-23-tj@kernel.org>
+Subject: [PATCH 23/32] sched_ext: Track tasks that are subjects of the in-flight SCX operation
+Date:   Fri, 17 Mar 2023 11:33:24 -1000
+Message-Id: <20230317213333.2174969-24-tj@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230317213333.2174969-1-tj@kernel.org>
 References: <20230317213333.2174969-1-tj@kernel.org>
@@ -80,420 +80,255 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow BPF schedulers to indicate tickless operation by setting p->scx.slice
-to SCX_SLICE_INF. A CPU whose current task has infinte slice goes into
-tickless operation.
+When some SCX operations are in flight, it is known that the subject task's
+rq lock is held throughout which makes it safe to access certain fields of
+the task - e.g. its current task_group. We want to add SCX kfunc helpers
+that can make use of this guarantee - e.g. to help determining the currently
+associated CPU cgroup from the task's current task_group.
 
-scx_example_central is updated to use tickless operations for all tasks and
-instead use a BPF timer to expire slices. This also uses the SCX_ENQ_PREEMPT
-and task state tracking added by the previous patches.
+As it'd be dangerous call such a helper on a task which isn't rq lock
+protected, the helper should be able to verify the input task and reject
+accordingly. This patch adds sched_ext_entity.kf_tasks[] that track the
+tasks which are currently being operated on by a terminal SCX operation. The
+new SCX_CALL_OP_[2]TASK[_RET]() can be used when invoking SCX operations
+which take tasks as arguments and the scx_kf_allowed_on_arg_tasks() can be
+used by kfunc helpers to verify the input task status.
 
-Currently, there is no way to pin the timer on the central CPU, so it may
-end up on one of the worker CPUs; however, outside of that, the worker CPUs
-can go tickless both while running sched_ext tasks and idling.
-
-With schbench running, scx_example_central shows:
-
-  root@test ~# grep ^LOC /proc/interrupts; sleep 10; grep ^LOC /proc/interrupts
-  LOC:     142024        656        664        449   Local timer interrupts
-  LOC:     161663        663        665        449   Local timer interrupts
-
-Without it:
-
-  root@test ~ [SIGINT]# grep ^LOC /proc/interrupts; sleep 10; grep ^LOC /proc/interrupts
-  LOC:     188778       3142       3793       3993   Local timer interrupts
-  LOC:     198993       5314       6323       6438   Local timer interrupts
-
-While scx_example_central itself is too barebone to be useful as a
-production scheduler, a more featureful central scheduler can be built using
-the same approach. Google's experience shows that such an approach can have
-significant benefits for certain applications such as VM hosting.
-
-v2: * Convert to BPF inline iterators.
+Note that as sched_ext_entity.kf_tasks[] can't handle nesting, the tracking
+is currently only limited to terminal SCX operations. If needed in the
+future, this restriction can be removed by moving the tracking to the task
+side with a couple per-task counters.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
-Acked-by: Josh Don <joshdon@google.com>
-Acked-by: Hao Luo <haoluo@google.com>
-Acked-by: Barret Rhoden <brho@google.com>
 ---
- include/linux/sched/ext.h                 |   1 +
- kernel/sched/core.c                       |   9 +-
- kernel/sched/ext.c                        |  43 +++++++-
- kernel/sched/ext.h                        |   2 +
- kernel/sched/sched.h                      |   6 ++
- tools/sched_ext/scx_example_central.bpf.c | 121 ++++++++++++++++++++--
- tools/sched_ext/scx_example_central.c     |   3 +-
- 7 files changed, 173 insertions(+), 12 deletions(-)
+ include/linux/sched/ext.h |  2 +
+ kernel/sched/ext.c        | 91 +++++++++++++++++++++++++++++++--------
+ 2 files changed, 76 insertions(+), 17 deletions(-)
 
 diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
-index 16eb54635e35..2f2ee3e05904 100644
+index 2f2ee3e05904..1ed07b4bdb24 100644
 --- a/include/linux/sched/ext.h
 +++ b/include/linux/sched/ext.h
-@@ -19,6 +19,7 @@ enum scx_consts {
- 	SCX_EXIT_MSG_LEN	= 1024,
+@@ -449,6 +449,7 @@ enum scx_kf_mask {
+ 	SCX_KF_REST		= 1 << 5, /* other rq-locked operations */
  
- 	SCX_SLICE_DFL		= 20 * NSEC_PER_MSEC,
-+	SCX_SLICE_INF		= U64_MAX,	/* infinite, implies nohz */
+ 	__SCX_KF_RQ_LOCKED	= SCX_KF_DISPATCH | SCX_KF_ENQUEUE | SCX_KF_REST,
++	__SCX_KF_TERMINAL	= SCX_KF_ENQUEUE | SCX_KF_REST,
  };
  
  /*
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index bc90327f950d..a7e0725c2469 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1202,13 +1202,16 @@ bool sched_can_stop_tick(struct rq *rq)
- 		return true;
+@@ -464,6 +465,7 @@ struct sched_ext_entity {
+ 	s32			sticky_cpu;
+ 	s32			holding_cpu;
+ 	u32			kf_mask;	/* see scx_kf_mask above */
++	struct task_struct	*kf_tasks[2];	/* see SCX_CALL_OP_TASK() */
+ 	atomic64_t		ops_state;
+ 	unsigned long		runnable_at;
  
- 	/*
--	 * If there are no DL,RR/FIFO tasks, there must only be CFS tasks left;
--	 * if there's more than one we need the tick for involuntary
--	 * preemption.
-+	 * If there are no DL,RR/FIFO tasks, there must only be CFS or SCX tasks
-+	 * left. For CFS, if there's more than one we need the tick for
-+	 * involuntary preemption. For SCX, ask.
- 	 */
- 	if (!scx_switched_all() && rq->nr_running > 1)
- 		return false;
- 
-+	if (scx_enabled() && !scx_can_stop_tick(rq))
-+		return false;
-+
- 	return true;
- }
- #endif /* CONFIG_NO_HZ_FULL */
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index c9aa74e55999..ed35b5575b9f 100644
+index ed35b5575b9f..ac7b2d57b656 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -478,7 +478,8 @@ static void update_curr_scx(struct rq *rq)
- 	account_group_exec_runtime(curr, delta_exec);
- 	cgroup_account_cputime(curr, delta_exec);
+@@ -239,6 +239,47 @@ do {										\
+ 	__ret;									\
+ })
  
--	curr->scx.slice -= min(curr->scx.slice, delta_exec);
-+	if (curr->scx.slice != SCX_SLICE_INF)
-+		curr->scx.slice -= min(curr->scx.slice, delta_exec);
- }
- 
- static void dispatch_enqueue(struct scx_dispatch_q *dsq, struct task_struct *p,
-@@ -1400,6 +1401,20 @@ static void set_next_task_scx(struct rq *rq, struct task_struct *p, bool first)
- 		SCX_CALL_OP(SCX_KF_REST, running, p);
- 
- 	watchdog_unwatch_task(p, true);
++/*
++ * Some kfuncs are allowed only on the tasks that are subjects of the
++ * in-progress scx_ops operation for, e.g., locking guarantees. To enforce such
++ * restrictions, the following SCX_CALL_OP_*() variants should be used when
++ * invoking scx_ops operations that take task arguments. These can only be used
++ * for non-nesting operations due to the way the tasks are tracked.
++ *
++ * kfuncs which can only operate on such tasks can in turn use
++ * scx_kf_allowed_on_arg_tasks() to test whether the invocation is allowed on
++ * the specific task.
++ */
++#define SCX_CALL_OP_TASK(mask, op, task, args...)				\
++do {										\
++	BUILD_BUG_ON(mask & ~__SCX_KF_TERMINAL);				\
++	current->scx.kf_tasks[0] = task;					\
++	SCX_CALL_OP(mask, op, task, ##args);					\
++	current->scx.kf_tasks[0] = NULL;					\
++} while (0)
 +
-+	/*
-+	 * @p is getting newly scheduled or got kicked after someone updated its
-+	 * slice. Refresh whether tick can be stopped. See can_stop_tick_scx().
-+	 */
-+	if ((p->scx.slice == SCX_SLICE_INF) !=
-+	    (bool)(rq->scx.flags & SCX_RQ_CAN_STOP_TICK)) {
-+		if (p->scx.slice == SCX_SLICE_INF)
-+			rq->scx.flags |= SCX_RQ_CAN_STOP_TICK;
-+		else
-+			rq->scx.flags &= ~SCX_RQ_CAN_STOP_TICK;
++#define SCX_CALL_OP_TASK_RET(mask, op, task, args...)				\
++({										\
++	__typeof__(scx_ops.op(task, ##args)) __ret;				\
++	BUILD_BUG_ON(mask & ~__SCX_KF_TERMINAL);				\
++	current->scx.kf_tasks[0] = task;					\
++	__ret = SCX_CALL_OP_RET(mask, op, task, ##args);			\
++	current->scx.kf_tasks[0] = NULL;					\
++	__ret;									\
++})
 +
-+		sched_update_tick_dependency(rq);
-+	}
++#define SCX_CALL_OP_2TASKS_RET(mask, op, task0, task1, args...)			\
++({										\
++	__typeof__(scx_ops.op(task0, task1, ##args)) __ret;			\
++	BUILD_BUG_ON(mask & ~__SCX_KF_TERMINAL);				\
++	current->scx.kf_tasks[0] = task0;					\
++	current->scx.kf_tasks[1] = task1;					\
++	__ret = SCX_CALL_OP_RET(mask, op, task0, task1, ##args);		\
++	current->scx.kf_tasks[0] = NULL;					\
++	current->scx.kf_tasks[1] = NULL;					\
++	__ret;									\
++})
++
+ /* @mask is constant, always inline to cull unnecessary branches */
+ static __always_inline bool scx_kf_allowed(u32 mask)
+ {
+@@ -269,6 +310,22 @@ static __always_inline bool scx_kf_allowed(u32 mask)
+ 	return true;
  }
  
- static void put_prev_task_scx(struct rq *rq, struct task_struct *p)
-@@ -1940,6 +1955,26 @@ int scx_check_setscheduler(struct task_struct *p, int policy)
- 	return 0;
- }
- 
-+#ifdef CONFIG_NO_HZ_FULL
-+bool scx_can_stop_tick(struct rq *rq)
++/* see SCX_CALL_OP_TASK() */
++static __always_inline bool scx_kf_allowed_on_arg_tasks(u32 mask,
++							struct task_struct *p)
 +{
-+	struct task_struct *p = rq->curr;
-+
-+	if (scx_ops_disabling())
++	if (!scx_kf_allowed(__SCX_KF_RQ_LOCKED))
 +		return false;
 +
-+	if (p->sched_class != &ext_sched_class)
-+		return true;
++	if (unlikely((p != current->scx.kf_tasks[0] &&
++		      p != current->scx.kf_tasks[1]))) {
++		scx_ops_error("called on a task not being operated on");
++		return false;
++	}
 +
-+	/*
-+	 * @rq can dispatch from different DSQs, so we can't tell whether it
-+	 * needs the tick or not by looking at nr_running. Allow stopping ticks
-+	 * iff the BPF scheduler indicated so. See set_next_task_scx().
-+	 */
-+	return rq->scx.flags & SCX_RQ_CAN_STOP_TICK;
++	return true;
 +}
-+#endif
 +
- /*
-  * Omitted operations:
-  *
-@@ -2100,7 +2135,7 @@ static void scx_ops_disable_workfn(struct kthread_work *work)
- 	struct rhashtable_iter rht_iter;
- 	struct scx_dispatch_q *dsq;
- 	const char *reason;
--	int i, type;
-+	int i, cpu, type;
+ /**
+  * scx_task_iter_init - Initialize a task iterator
+  * @iter: iterator to init
+@@ -706,7 +763,7 @@ static void do_enqueue_task(struct rq *rq, struct task_struct *p, u64 enq_flags,
+ 	WARN_ON_ONCE(*ddsp_taskp);
+ 	*ddsp_taskp = p;
  
- 	type = atomic_read(&scx_exit_type);
- 	while (true) {
-@@ -2197,6 +2232,10 @@ static void scx_ops_disable_workfn(struct kthread_work *work)
- 	scx_task_iter_exit(&sti);
- 	spin_unlock_irq(&scx_tasks_lock);
+-	SCX_CALL_OP(SCX_KF_ENQUEUE, enqueue, p, enq_flags);
++	SCX_CALL_OP_TASK(SCX_KF_ENQUEUE, enqueue, p, enq_flags);
  
-+	/* kick all CPUs to restore ticks */
-+	for_each_possible_cpu(cpu)
-+		resched_cpu(cpu);
-+
- forward_progress_guaranteed:
  	/*
- 	 * Here, every runnable task is guaranteed to make forward progress and
-diff --git a/kernel/sched/ext.h b/kernel/sched/ext.h
-index 0b04626e8ca2..9c9284f91e38 100644
---- a/kernel/sched/ext.h
-+++ b/kernel/sched/ext.h
-@@ -82,6 +82,7 @@ int scx_fork(struct task_struct *p);
- void scx_post_fork(struct task_struct *p);
- void scx_cancel_fork(struct task_struct *p);
- int scx_check_setscheduler(struct task_struct *p, int policy);
-+bool scx_can_stop_tick(struct rq *rq);
- void init_sched_ext_class(void);
+ 	 * If not directly dispatched, QUEUEING isn't clear yet and dispatch or
+@@ -778,7 +835,7 @@ static void enqueue_task_scx(struct rq *rq, struct task_struct *p, int enq_flags
+ 	add_nr_running(rq, 1);
  
- __printf(2, 3) void scx_ops_error_type(enum scx_exit_type type,
-@@ -141,6 +142,7 @@ static inline void scx_post_fork(struct task_struct *p) {}
- static inline void scx_cancel_fork(struct task_struct *p) {}
- static inline int scx_check_setscheduler(struct task_struct *p,
- 					 int policy) { return 0; }
-+static inline bool scx_can_stop_tick(struct rq *rq) { return true; }
- static inline void init_sched_ext_class(void) {}
- static inline void scx_notify_sched_tick(void) {}
+ 	if (SCX_HAS_OP(runnable))
+-		SCX_CALL_OP(SCX_KF_REST, runnable, p, enq_flags);
++		SCX_CALL_OP_TASK(SCX_KF_REST, runnable, p, enq_flags);
  
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index cbdfc7b61225..e6dacf488a20 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -686,12 +686,18 @@ struct cfs_rq {
- };
+ 	do_enqueue_task(rq, p, enq_flags, sticky_cpu);
+ }
+@@ -803,7 +860,7 @@ static void ops_dequeue(struct task_struct *p, u64 deq_flags)
+ 		BUG();
+ 	case SCX_OPSS_QUEUED:
+ 		if (SCX_HAS_OP(dequeue))
+-			SCX_CALL_OP(SCX_KF_REST, dequeue, p, deq_flags);
++			SCX_CALL_OP_TASK(SCX_KF_REST, dequeue, p, deq_flags);
  
- #ifdef CONFIG_SCHED_CLASS_EXT
-+/* scx_rq->flags, protected by the rq lock */
-+enum scx_rq_flags {
-+	SCX_RQ_CAN_STOP_TICK	= 1 << 0,
-+};
-+
- struct scx_rq {
- 	struct scx_dispatch_q	local_dsq;
- 	struct list_head	watchdog_list;
- 	u64			ops_qseq;
- 	u64			extra_enq_flags;	/* see move_task_to_local_dsq() */
- 	u32			nr_running;
-+	u32			flags;
- 	cpumask_var_t		cpus_to_kick;
- 	cpumask_var_t		cpus_to_preempt;
- 	struct irq_work		kick_cpus_irq_work;
-diff --git a/tools/sched_ext/scx_example_central.bpf.c b/tools/sched_ext/scx_example_central.bpf.c
-index 443504fa68f8..4cec04b4c2ed 100644
---- a/tools/sched_ext/scx_example_central.bpf.c
-+++ b/tools/sched_ext/scx_example_central.bpf.c
-@@ -13,7 +13,26 @@
-  *    through per-CPU BPF queues. The current design is chosen to maximally
-  *    utilize and verify various SCX mechanisms such as LOCAL_ON dispatching.
-  *
-- * b. Preemption
-+ * b. Tickless operation
-+ *
-+ *    All tasks are dispatched with the infinite slice which allows stopping the
-+ *    ticks on CONFIG_NO_HZ_FULL kernels running with the proper nohz_full
-+ *    parameter. The tickless operation can be observed through
-+ *    /proc/interrupts.
-+ *
-+ *    Periodic switching is enforced by a periodic timer checking all CPUs and
-+ *    preempting them as necessary. Unfortunately, BPF timer currently doesn't
-+ *    have a way to pin to a specific CPU, so the periodic timer isn't pinned to
-+ *    the central CPU.
-+ *
-+ * c. Preemption
-+ *
-+ *    Kthreads are unconditionally queued to the head of a matching local dsq
-+ *    and dispatched with SCX_DSQ_PREEMPT. This ensures that a kthread is always
-+ *    prioritized over user threads, which is required for ensuring forward
-+ *    progress as e.g. the periodic timer may run on a ksoftirqd and if the
-+ *    ksoftirqd gets starved by a user thread, there may not be anything else to
-+ *    vacate that user thread.
-  *
-  *    SCX_KICK_PREEMPT is used to trigger scheduling and CPUs to move to the
-  *    next tasks.
-@@ -42,7 +61,7 @@ const volatile s32 central_cpu;
- const volatile u32 nr_cpu_ids = 64;	/* !0 for veristat, set during init */
- 
- u64 nr_total, nr_locals, nr_queued, nr_lost_pids;
--u64 nr_dispatches, nr_mismatches, nr_retries;
-+u64 nr_timers, nr_dispatches, nr_mismatches, nr_retries;
- u64 nr_overflows;
- 
- struct user_exit_info uei;
-@@ -55,6 +74,7 @@ struct {
- 
- /* can't use percpu map due to bad lookups */
- static bool cpu_gimme_task[MAX_CPUS];
-+static u64 cpu_started_at[MAX_CPUS];
- 
- struct central_timer {
- 	struct bpf_timer timer;
-@@ -67,6 +87,11 @@ struct {
- 	__type(value, struct central_timer);
- } central_timer SEC(".maps");
- 
-+static bool vtime_before(u64 a, u64 b)
-+{
-+	return (s64)(a - b) < 0;
-+}
-+
- s32 BPF_STRUCT_OPS(central_select_cpu, struct task_struct *p,
- 		   s32 prev_cpu, u64 wake_flags)
- {
-@@ -85,9 +110,22 @@ void BPF_STRUCT_OPS(central_enqueue, struct task_struct *p, u64 enq_flags)
- 
- 	__sync_fetch_and_add(&nr_total, 1);
- 
-+	/*
-+	 * Push per-cpu kthreads at the head of local dsq's and preempt the
-+	 * corresponding CPU. This ensures that e.g. ksoftirqd isn't blocked
-+	 * behind other threads which is necessary for forward progress
-+	 * guarantee as we depend on the BPF timer which may run from ksoftirqd.
-+	 */
-+	if ((p->flags & PF_KTHREAD) && p->nr_cpus_allowed == 1) {
-+		__sync_fetch_and_add(&nr_locals, 1);
-+		scx_bpf_dispatch(p, SCX_DSQ_LOCAL, SCX_SLICE_INF,
-+				 enq_flags | SCX_ENQ_PREEMPT);
-+		return;
-+	}
-+
- 	if (bpf_map_push_elem(&central_q, &pid, 0)) {
- 		__sync_fetch_and_add(&nr_overflows, 1);
--		scx_bpf_dispatch(p, FALLBACK_DSQ_ID, SCX_SLICE_DFL, enq_flags);
-+		scx_bpf_dispatch(p, FALLBACK_DSQ_ID, SCX_SLICE_INF, enq_flags);
- 		return;
+ 		if (atomic64_try_cmpxchg(&p->scx.ops_state, &opss,
+ 					 SCX_OPSS_NONE))
+@@ -854,11 +911,11 @@ static void dequeue_task_scx(struct rq *rq, struct task_struct *p, int deq_flags
+ 	 */
+ 	if (SCX_HAS_OP(stopping) && task_current(rq, p)) {
+ 		update_curr_scx(rq);
+-		SCX_CALL_OP(SCX_KF_REST, stopping, p, false);
++		SCX_CALL_OP_TASK(SCX_KF_REST, stopping, p, false);
  	}
  
-@@ -120,13 +158,13 @@ static bool dispatch_to_cpu(s32 cpu)
- 		 */
- 		if (!bpf_cpumask_test_cpu(cpu, p->cpus_ptr)) {
- 			__sync_fetch_and_add(&nr_mismatches, 1);
--			scx_bpf_dispatch(p, FALLBACK_DSQ_ID, SCX_SLICE_DFL, 0);
-+			scx_bpf_dispatch(p, FALLBACK_DSQ_ID, SCX_SLICE_INF, 0);
- 			bpf_task_release(p);
- 			continue;
- 		}
+ 	if (SCX_HAS_OP(quiescent))
+-		SCX_CALL_OP(SCX_KF_REST, quiescent, p, deq_flags);
++		SCX_CALL_OP_TASK(SCX_KF_REST, quiescent, p, deq_flags);
  
- 		/* dispatch to local and mark that @cpu doesn't need more */
--		scx_bpf_dispatch(p, SCX_DSQ_LOCAL_ON | cpu, SCX_SLICE_DFL, 0);
-+		scx_bpf_dispatch(p, SCX_DSQ_LOCAL_ON | cpu, SCX_SLICE_INF, 0);
+ 	if (deq_flags & SCX_DEQ_SLEEP)
+ 		p->scx.flags |= SCX_TASK_DEQD_FOR_SLEEP;
+@@ -877,7 +934,7 @@ static void yield_task_scx(struct rq *rq)
+ 	struct task_struct *p = rq->curr;
  
- 		if (cpu != central_cpu)
- 			scx_bpf_kick_cpu(cpu, 0);
-@@ -194,12 +232,81 @@ void BPF_STRUCT_OPS(central_dispatch, s32 cpu, struct task_struct *prev)
+ 	if (SCX_HAS_OP(yield))
+-		SCX_CALL_OP_RET(SCX_KF_REST, yield, p, NULL);
++		SCX_CALL_OP_2TASKS_RET(SCX_KF_REST, yield, p, NULL);
+ 	else
+ 		p->scx.slice = 0;
+ }
+@@ -887,7 +944,7 @@ static bool yield_to_task_scx(struct rq *rq, struct task_struct *to)
+ 	struct task_struct *from = rq->curr;
+ 
+ 	if (SCX_HAS_OP(yield))
+-		return SCX_CALL_OP_RET(SCX_KF_REST, yield, from, to);
++		return SCX_CALL_OP_2TASKS_RET(SCX_KF_REST, yield, from, to);
+ 	else
+ 		return false;
+ }
+@@ -1398,7 +1455,7 @@ static void set_next_task_scx(struct rq *rq, struct task_struct *p, bool first)
+ 
+ 	/* see dequeue_task_scx() on why we skip when !QUEUED */
+ 	if (SCX_HAS_OP(running) && (p->scx.flags & SCX_TASK_QUEUED))
+-		SCX_CALL_OP(SCX_KF_REST, running, p);
++		SCX_CALL_OP_TASK(SCX_KF_REST, running, p);
+ 
+ 	watchdog_unwatch_task(p, true);
+ 
+@@ -1454,7 +1511,7 @@ static void put_prev_task_scx(struct rq *rq, struct task_struct *p)
+ 
+ 	/* see dequeue_task_scx() on why we skip when !QUEUED */
+ 	if (SCX_HAS_OP(stopping) && (p->scx.flags & SCX_TASK_QUEUED))
+-		SCX_CALL_OP(SCX_KF_REST, stopping, p, true);
++		SCX_CALL_OP_TASK(SCX_KF_REST, stopping, p, true);
+ 
+ 	/*
+ 	 * If we're being called from put_prev_task_balance(), balance_scx() may
+@@ -1617,8 +1674,8 @@ static int select_task_rq_scx(struct task_struct *p, int prev_cpu, int wake_flag
+ 	if (SCX_HAS_OP(select_cpu)) {
+ 		s32 cpu;
+ 
+-		cpu = SCX_CALL_OP_RET(SCX_KF_REST, select_cpu, p, prev_cpu,
+-				      wake_flags);
++		cpu = SCX_CALL_OP_TASK_RET(SCX_KF_REST, select_cpu, p, prev_cpu,
++					   wake_flags);
+ 		if (ops_cpu_valid(cpu)) {
+ 			return cpu;
+ 		} else {
+@@ -1644,8 +1701,8 @@ static void set_cpus_allowed_scx(struct task_struct *p,
+ 	 * designation pointless. Cast it away when calling the operation.
+ 	 */
+ 	if (SCX_HAS_OP(set_cpumask))
+-		SCX_CALL_OP(SCX_KF_REST, set_cpumask, p,
+-			    (struct cpumask *)p->cpus_ptr);
++		SCX_CALL_OP_TASK(SCX_KF_REST, set_cpumask, p,
++				 (struct cpumask *)p->cpus_ptr);
+ }
+ 
+ static void reset_idle_masks(void)
+@@ -1806,7 +1863,7 @@ static void scx_ops_enable_task(struct task_struct *p)
+ 
+ 	if (SCX_HAS_OP(enable)) {
+ 		struct scx_enable_args args = { };
+-		SCX_CALL_OP(SCX_KF_REST, enable, p, &args);
++		SCX_CALL_OP_TASK(SCX_KF_REST, enable, p, &args);
  	}
+ 	p->scx.flags &= ~SCX_TASK_OPS_PREPPED;
+ 	p->scx.flags |= SCX_TASK_OPS_ENABLED;
+@@ -1845,7 +1902,7 @@ static void refresh_scx_weight(struct task_struct *p)
+ 
+ 	p->scx.weight = sched_weight_to_cgroup(weight);
+ 	if (SCX_HAS_OP(set_weight))
+-		SCX_CALL_OP(SCX_KF_REST, set_weight, p, p->scx.weight);
++		SCX_CALL_OP_TASK(SCX_KF_REST, set_weight, p, p->scx.weight);
  }
  
-+void BPF_STRUCT_OPS(central_running, struct task_struct *p)
-+{
-+	s32 cpu = scx_bpf_task_cpu(p);
-+	u64 *started_at = MEMBER_VPTR(cpu_started_at, [cpu]);
-+	if (started_at)
-+		*started_at = bpf_ktime_get_ns() ?: 1;	/* 0 indicates idle */
-+}
-+
-+void BPF_STRUCT_OPS(central_stopping, struct task_struct *p, bool runnable)
-+{
-+	s32 cpu = scx_bpf_task_cpu(p);
-+	u64 *started_at = MEMBER_VPTR(cpu_started_at, [cpu]);
-+	if (started_at)
-+		*started_at = 0;
-+}
-+
-+static int central_timerfn(void *map, int *key, struct bpf_timer *timer)
-+{
-+	u64 now = bpf_ktime_get_ns();
-+	u64 nr_to_kick = nr_queued;
-+	s32 i;
-+
-+	bpf_for(i, 0, nr_cpu_ids) {
-+		s32 cpu = (nr_timers + i) % nr_cpu_ids;
-+		u64 *started_at;
-+
-+		if (cpu == central_cpu)
-+			continue;
-+
-+		/* kick iff the current one exhausted its slice */
-+		started_at = MEMBER_VPTR(cpu_started_at, [cpu]);
-+		if (started_at && *started_at &&
-+		    vtime_before(now, *started_at + SCX_SLICE_DFL))
-+			continue;
-+
-+		/* and there's something pending */
-+		if (scx_bpf_dsq_nr_queued(FALLBACK_DSQ_ID) ||
-+		    scx_bpf_dsq_nr_queued(SCX_DSQ_LOCAL_ON | cpu))
-+			;
-+		else if (nr_to_kick)
-+			nr_to_kick--;
-+		else
-+			continue;
-+
-+		scx_bpf_kick_cpu(cpu, SCX_KICK_PREEMPT);
-+	}
-+
-+	scx_bpf_kick_cpu(central_cpu, SCX_KICK_PREEMPT);
-+
-+	bpf_timer_start(timer, TIMER_INTERVAL_NS, 0);
-+	__sync_fetch_and_add(&nr_timers, 1);
-+	return 0;
-+}
-+
- int BPF_STRUCT_OPS_SLEEPABLE(central_init)
- {
-+	u32 key = 0;
-+	struct bpf_timer *timer;
-+	int ret;
-+
- 	if (!switch_partial)
- 		scx_bpf_switch_all();
- 
--	return scx_bpf_create_dsq(FALLBACK_DSQ_ID, -1);
-+	ret = scx_bpf_create_dsq(FALLBACK_DSQ_ID, -1);
-+	if (ret)
-+		return ret;
-+
-+	timer = bpf_map_lookup_elem(&central_timer, &key);
-+	if (!timer)
-+		return -ESRCH;
-+
-+	bpf_timer_init(timer, &central_timer, CLOCK_MONOTONIC);
-+	bpf_timer_set_callback(timer, central_timerfn);
-+	ret = bpf_timer_start(timer, TIMER_INTERVAL_NS, 0);
-+	return ret;
+ void scx_pre_fork(struct task_struct *p)
+@@ -1936,8 +1993,8 @@ static void switching_to_scx(struct rq *rq, struct task_struct *p)
+ 	 * different scheduler class. Keep the BPF scheduler up-to-date.
+ 	 */
+ 	if (SCX_HAS_OP(set_cpumask))
+-		SCX_CALL_OP(SCX_KF_REST, set_cpumask, p,
+-			    (struct cpumask *)p->cpus_ptr);
++		SCX_CALL_OP_TASK(SCX_KF_REST, set_cpumask, p,
++				 (struct cpumask *)p->cpus_ptr);
  }
  
- void BPF_STRUCT_OPS(central_exit, struct scx_exit_info *ei)
-@@ -219,6 +326,8 @@ struct sched_ext_ops central_ops = {
- 	.select_cpu		= (void *)central_select_cpu,
- 	.enqueue		= (void *)central_enqueue,
- 	.dispatch		= (void *)central_dispatch,
-+	.running		= (void *)central_running,
-+	.stopping		= (void *)central_stopping,
- 	.init			= (void *)central_init,
- 	.exit			= (void *)central_exit,
- 	.name			= "central",
-diff --git a/tools/sched_ext/scx_example_central.c b/tools/sched_ext/scx_example_central.c
-index 959b305a93a9..7ad591cbdc65 100644
---- a/tools/sched_ext/scx_example_central.c
-+++ b/tools/sched_ext/scx_example_central.c
-@@ -76,7 +76,8 @@ int main(int argc, char **argv)
- 		       skel->bss->nr_locals,
- 		       skel->bss->nr_queued,
- 		       skel->bss->nr_lost_pids);
--		printf("                    dispatch:%10lu mismatch:%10lu retry:%10lu\n",
-+		printf("timer   :%10lu dispatch:%10lu mismatch:%10lu retry:%10lu\n",
-+		       skel->bss->nr_timers,
- 		       skel->bss->nr_dispatches,
- 		       skel->bss->nr_mismatches,
- 		       skel->bss->nr_retries);
+ static void check_preempt_curr_scx(struct rq *rq, struct task_struct *p,int wake_flags) {}
 -- 
 2.39.2
 
