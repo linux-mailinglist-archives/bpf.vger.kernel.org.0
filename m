@@ -2,151 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E89066BF3A7
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E21CF6BF3A9
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbjCQVN1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
+        id S230080AbjCQVO2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjCQVN0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:13:26 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA91262FF9
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:13:18 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id j9-20020aa79289000000b00625894ca452so3236901pfa.22
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 14:13:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679087598;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QrCUL/IGk54+SRxEDAGZ4cJXeb0snqO4bHPhQ/dVI4Q=;
-        b=PU8vs4E5e6ghVuGp8NM4vO9YnC+Tj+QscxvmGFXINdIujpv1l/0Z3SL08tlzAU4heT
-         uSSQUgQ2x1Mp1ykqsLRfhZBO9aShvD6pqe3R3vRjLUmcorcH5RDbwcwjcKjEiTAcbGen
-         MImT7AscwjCF5Uw82RPwLkhtJESF2axcTlr8BUIbiIaVJ7Xb6yoNPzHKS6X3vq06x+N2
-         sipleHRi/4Vckclg3UVU4tP0JFPSLhjjoMRkWyWoZqjizHz9gm/JedLC1mTLljhI1NIK
-         KGYvPVaV0kymAmX756tlvW2AkxN2SbpLE1C6jZeuAaGeC0T8BU+cK6BP9kCVe+TrnlnS
-         BJWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679087598;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QrCUL/IGk54+SRxEDAGZ4cJXeb0snqO4bHPhQ/dVI4Q=;
-        b=hqPIEXWEtbm5IPGb3QnYIHh+9E7TJbBR7EDThG4kmd8hd3U/S3X6xgwFCk6fnHmq+Q
-         pbsJr1lLa6Nh2IkizCFkRtS5+puhpjqLLLI2JdxoX4KMMHVcSisIzr7WsYoOLGCxKINY
-         t+5fx3XmQH8VtIz66+0J1/trjmt/eQzCWBuUI37HBwzzbnlozqQ1oRHc+8TdZVk6KBAx
-         ciPTjlL9AjFadW8/31veLa6xq9+j4Huu/RSQgOdxJx4jPyYA7cDc8FL55E60BTVuM7cx
-         VUtX0YdiwcKzbF/F0vOusJO8hyxEXZ0yGef+MzIgQOTPKkkCsXmPm+lOMDtFCENuf+Ea
-         8Nkw==
-X-Gm-Message-State: AO0yUKU/BT7+fvrgDkKEAmjzL7T6PIPj42BYTLIXDBXrciEL49HN1xDS
-        2zOfUqZ1Bia3UhpIRYJ+SvT3dEA=
-X-Google-Smtp-Source: AK7set9AAuLyGkvi/Qt66TYj53e5MBcSr8TF1vXUUvJ2uwZNcWye632kPx7liFKfwrSQNZWTjg3Jl18=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:a3c7:b0:1a0:51f6:a252 with SMTP id
- q7-20020a170902a3c700b001a051f6a252mr3537782plb.3.1679087598192; Fri, 17 Mar
- 2023 14:13:18 -0700 (PDT)
-Date:   Fri, 17 Mar 2023 14:13:16 -0700
-In-Reply-To: <167906361094.2706833.8381428662566265476.stgit@firesoul>
-Mime-Version: 1.0
-References: <167906343576.2706833.17489167761084071890.stgit@firesoul> <167906361094.2706833.8381428662566265476.stgit@firesoul>
-Message-ID: <ZBTX7CBzNk9SaWgx@google.com>
-Subject: Re: [PATCH bpf-next V1 4/7] selftests/bpf: xdp_hw_metadata RX hash
- return code info
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229868AbjCQVO1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:14:27 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1512884B;
+        Fri, 17 Mar 2023 14:14:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cHqfWu/5jLA19Bc4SPAq+8G3pCotHNCQZAShat/fUf4=; b=ThJc2vpScZAiBQxgjZDotCj6p9
+        DTMXzCRy/yOVCF1einZD1BU3rJhnQlNH/lx0rME2jZK8WR2dHAQCIrEvB7h+6AuCu2BbZMhLp0Q00
+        nTH6K91KnBffoDwCNL9mWkxkDt119Qqu2/YNsFWqzbKjFjUHE0YRZOL0HNo27frzNWUMmSiPS/RrA
+        vaJ19v53ST1t6XJKO8KVCuiX7sa9MO4YtCw2PcXkZt7xKzB3MGXTHTztFzp0+U4jZWfUduusForhh
+        XiwJ6m3g2kURSNAnW4uDwXALalBS5zSd/NEhT8m1wOrCLKqKICf2NMWUdxUCp9JkxOHQg9ozJu8u/
+        ZOqYY8aw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pdHOl-00HSsX-0w;
+        Fri, 17 Mar 2023 21:14:03 +0000
+Date:   Fri, 17 Mar 2023 21:14:03 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Namhyung Kim <namhyung@gmail.com>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
+Message-ID: <20230317211403.GZ3390869@ZenIV>
+References: <20230316170149.4106586-1-jolsa@kernel.org>
+ <ZBNTMZjEoETU9d8N@casper.infradead.org>
+ <CAP-5=fVYriALLwF2FU1ZUtLuHndnvPw=3SctVqY6Uwex8JfscA@mail.gmail.com>
+ <CAEf4BzYgyGTVv=cDwaW+DBke1uk_aLCg3CB_9W6+9tkS8Nyn_Q@mail.gmail.com>
+ <ZBPjs1b8crUv4ur6@casper.infradead.org>
+ <CAEf4BzbPa-5b9uU0+GN=iaMGc6otje3iNQd+MOg_byTSYU8fEQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbPa-5b9uU0+GN=iaMGc6otje3iNQd+MOg_byTSYU8fEQ@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/17, Jesper Dangaard Brouer wrote:
-> When driver developers add XDP-hints kfuncs for RX hash it is
-> practical to print the return code in bpf_printk trace pipe log.
+On Fri, Mar 17, 2023 at 09:33:17AM -0700, Andrii Nakryiko wrote:
 
-> Print hash value as a hex value, both AF_XDP userspace and bpf_prog,
-> as this makes it easier to spot poor quality hashes.
+> > But build IDs are _generally_ available.  The only problem (AIUI)
+> > is when you're trying to examine the contents of one container from
+> > another container.  And to solve that problem, you're imposing a cost
+> > on everybody else with (so far) pretty vague justifications.  I really
+> > don't like to see you growing struct file for this (nor struct inode,
+> > nor struct vm_area_struct).  It's all quite unsatisfactory and I don't
+> > have a good suggestion.
+> 
+> There is a lot of profiling, observability and debugging tooling built
+> using BPF. And when capturing stack traces from BPF programs, if the
+> build ID note is not physically present in memory, fetching it from
+> the BPF program might fail in NMI (and other non-faultable contexts).
+> This patch set is about making sure we always can fetch build ID, even
+> from most restrictive environments. It's guarded by Kconfig to avoid
+> adding 8 bytes of overhead to struct file for environment where this
+> might be unacceptable, giving users and distros a choice.
 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
-Acked-by: Stanislav Fomichev <sdf@google.com>
-
-(with a small suggestion below, maybe can do separately?)
-
-> ---
->   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++++++---
->   tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++++-
->   2 files changed, 10 insertions(+), 4 deletions(-)
-
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c  
-> b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> index f2a3b70a9882..f2278ca2ad03 100644
-> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> @@ -76,10 +76,13 @@ int rx(struct xdp_md *ctx)
->   	} else
->   		meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
-
-> -	if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
-> -		bpf_printk("populated rx_hash with %u", meta->rx_hash);
-> -	else
-> +	ret = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
-> +	if (ret >= 0) {
-> +		bpf_printk("populated rx_hash with 0x%08X", meta->rx_hash);
-> +	} else {
-> +		bpf_printk("rx_hash not-avail errno:%d", ret);
->   		meta->rx_hash = 0; /* Used by AF_XDP as not avail signal */
-> +	}
-
->   	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
->   }
-> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c  
-> b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> index 400bfe19abfe..f3ec07ccdc95 100644
-> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> @@ -3,6 +3,9 @@
->   /* Reference program for verifying XDP metadata on real HW. Functional  
-> test
->    * only, doesn't test the performance.
->    *
-
-[..]
-
-> + * BPF-prog bpf_printk info outout can be access via
-> + * /sys/kernel/debug/tracing/trace_pipe
-
-Maybe we should just dump the contents of
-/sys/kernel/debug/tracing/trace for every poll cycle?
-
-We can also maybe enable tracing in this program transparently?
-I usually forget 'echo 1 >
-/sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enable'
-myself :-)
-
-> + *
->    * RX:
->    * - UDP 9091 packets are diverted into AF_XDP
->    * - Metadata verified:
-> @@ -156,7 +159,7 @@ static void verify_xdp_metadata(void *data, clockid_t  
-> clock_id)
-
->   	meta = data - sizeof(*meta);
-
-> -	printf("rx_hash: %u\n", meta->rx_hash);
-> +	printf("rx_hash: 0x%08X\n", meta->rx_hash);
->   	printf("rx_timestamp:  %llu (sec:%0.4f)\n", meta->rx_timestamp,
->   	       (double)meta->rx_timestamp / NANOSEC_PER_SEC);
->   	if (meta->rx_timestamp) {
-
-
+Lovely.  As an exercise you might want to collect the stats on the
+number of struct file instances on the system vs. the number of files
+that happen to be ELF objects and are currently mmapped anywhere.
+That does depend upon the load, obviously, but it's not hard to collect -
+you already have more than enough hooks inserted in the relevant places.
+That might give a better appreciation of the reactions...
