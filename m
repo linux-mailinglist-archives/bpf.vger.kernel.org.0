@@ -2,66 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 932466BF626
-	for <lists+bpf@lfdr.de>; Sat, 18 Mar 2023 00:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863506BF6A1
+	for <lists+bpf@lfdr.de>; Sat, 18 Mar 2023 00:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjCQXUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 19:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
+        id S229516AbjCQXtB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 19:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjCQXUK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 19:20:10 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9800399C1;
-        Fri, 17 Mar 2023 16:20:05 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id h8so26122941ede.8;
-        Fri, 17 Mar 2023 16:20:05 -0700 (PDT)
+        with ESMTP id S229560AbjCQXtA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 19:49:00 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A58337F36
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 16:48:59 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id k2so6951594pll.8
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 16:48:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679095204;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AyVTmbTVSjXbyxvFuyac08iu7oVxn+bhU8z80CY/FHY=;
-        b=P+GzctP8nFk1SD1AfjJSjbb6wLkTlq5AZxMIu7VU/BbcCd3bYVrFkhcy1lfjqpDJDb
-         0q4NOig2WlyVYfC1qpoNb/GANDT5YvnPodcIWEsEHDl7O74YS72LbGCBLxDu2/fSC7Gu
-         C5d5+T9S2WaSUrvYthsKb6cY6aUXKJXZCe6/JTG+8Yi0gQ2BhxMuq7934mBEZhK7TQl4
-         Tge/JpxeAKXj6MVw8izxAnNE7w97hTZiPNTHqURU1kqrJHyhvHW3lkcNaFq+aeQSyjV3
-         flmqel5hnfhcaCEwE7yX8CH+S2Xv7UqRhq04CWJu4M/gg/+x7hxiNybYrbQavY0n+8s9
-         6rtw==
+        d=gmail.com; s=20210112; t=1679096939;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/q3wz3Q+5JY5+/70JULlQiA+vc6mEz5xzAaU07WwZj8=;
+        b=FUYz+isAtBRPdVFaflWOYigh3pkJwA2+JuqrFYCi1iY+ofTdT6cLAEulXq92ndgsXf
+         6uQJykYR0rQeWE10ZL0qLuED/4ZyMh8V8ehJSWzZUTIqf6H880zKimQzzwXBQctcLeHj
+         lQ1YjDn/YBCqQ2ROCb2DWqELHJzy2FU0LRggu5rx5F5Sr1s5YeACIhdVEgUo4DX96/j+
+         /c7b2869DCTLDNN8uPy/tloq3r2VZxpaN9bDHG1BRVE4XKL1vQ56F3HId3YMzKzjimq0
+         7BpvSdToTwm9st211+XISr9XLqEv0WzKWN4ZTm122m0nN1eZ6mtgDRo881Pur/G/fNrf
+         7Adg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679095204;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AyVTmbTVSjXbyxvFuyac08iu7oVxn+bhU8z80CY/FHY=;
-        b=YaIcQB0Th1n3Q72a0+asOYjEvdwc3W3/XnK/pVm3M9xrL06h3kOz5+ZloGYeOPw6Sq
-         /ewHwotPFTaVi8/tnprXy7Xx+ZsepcvLGyjIafKGJvcb/Ej0RxE+HfEKEeDpdV9CrN+P
-         47F8UyZmSV3l0ssekCqml0WbyrscRszLqxlLf+NfqIhnDWK1GuCY4GSi45BFH20kVJHF
-         eJV9+PvCxwiViF8FFIAV9+vtMtxixQu8RwExq2fwV0rvi2Ce4dl3QCTJXOagXlIwRlqN
-         YBNX9nuPwYiVrxL34OkdT9RXyWDr/L38Eu93Yey82uWBgX6NTMHyn8BbuDaf7plQUhQn
-         BIxA==
-X-Gm-Message-State: AO0yUKXhmH8UBLIe2SQiTq9v39AxrC1O3EgmE7ZQyXdIYDvvZUAldxFB
-        qB3nziD+P/JZqHkOTV9XLWLdZ4pZDP4DN2k3tSc=
-X-Google-Smtp-Source: AK7set9h2id2G0gurvZflYSdEEGkYpWcdfVmBfdlvazFgqJbRJBrgNrY6JehbmwYl20UsZGEv53uW6E5WOvjsftJ7DM=
-X-Received: by 2002:a17:906:844d:b0:930:310:abf1 with SMTP id
- e13-20020a170906844d00b009300310abf1mr500288ejy.5.1679095204391; Fri, 17 Mar
- 2023 16:20:04 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1679096939;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/q3wz3Q+5JY5+/70JULlQiA+vc6mEz5xzAaU07WwZj8=;
+        b=Y/i0sU4ydXnpH5BjBkLDP7H0D9iFW+ahDytW9tWC6J76S4bgkx7k2z7NU7UNSn8WwN
+         EfOmvUYaoY2jla+waVboCEcNQ6AhECBMFvRPGvphtN+U3ZWk3g3DrlF4qqhINmTP6Z+L
+         WGrdUNaxWEEjaoybm3tumEbeRY+xmq9SKk9R0Pg1rQzR2C9t/aU7GAqXDGnZGIlVDmZP
+         HhmLGGhlfJFdkDc3tfxVGxfCB+OUhwtGO07E6DoX1yIghJDgD65cVGzlA0jM8da/xF2s
+         pGB1xVH5dvJ6Mo46fQsJl7Mzp2HiqdS3JE3tVnmF52ae9tMNUuv9SNvWqFJZ6GBz69M8
+         G7OQ==
+X-Gm-Message-State: AO0yUKU+pIEzzI8bQVdHGyqLmLKGKI0Btt072lppYSejNMA4XauQZZgB
+        76Ebp2qmuZd3EMlbdYv2OF0=
+X-Google-Smtp-Source: AK7set82TOazVDKLw1h1hUFnxLakoRHGCtwcSYXXibkQUEfsZbJKS2rwct/ksCSuhhXrqBgShYa5Og==
+X-Received: by 2002:a17:902:fa04:b0:1a0:5349:7779 with SMTP id la4-20020a170902fa0400b001a053497779mr8010661plb.5.1679096939052;
+        Fri, 17 Mar 2023 16:48:59 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c085:21e8::1380? ([2620:10d:c090:400::5:87c3])
+        by smtp.gmail.com with ESMTPSA id v23-20020a17090331d700b0019a74841c9bsm2061127ple.192.2023.03.17.16.48.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Mar 2023 16:48:58 -0700 (PDT)
+Message-ID: <d39b2168-a79d-ad84-ba34-17ca4eb6ead2@gmail.com>
+Date:   Fri, 17 Mar 2023 16:48:56 -0700
 MIME-Version: 1.0
-References: <20230315195405.2051559-1-ssreevani@meta.com> <20230317225259.GA28462@maniforge>
-In-Reply-To: <20230317225259.GA28462@maniforge>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 17 Mar 2023 16:19:52 -0700
-Message-ID: <CAEf4BzaZ95Gv3Dkke+1gv1nRG41sroMaFb8Lqv93G7LAL7XBCA@mail.gmail.com>
-Subject: Re: [PATCH V4 bpf-next] BPF, docs: libbpf Overview Document
-To:     David Vernet <void@manifault.com>
-Cc:     Sreevani Sreejith <ssreevani@meta.com>, bpf@vger.kernel.org,
-        psreep@gmail.com, andrii@kernel.org, mykolal@meta.com,
-        Linux-kernel@vger.kernel.org, bagasdotme@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next v7 4/8] libbpf: Create a bpf_link in
+ bpf_map__attach_struct_ops().
+Content-Language: en-US, en-ZW
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kui-Feng Lee <kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+        sdf@google.com
+References: <20230316023641.2092778-1-kuifeng@meta.com>
+ <20230316023641.2092778-5-kuifeng@meta.com>
+ <CAEf4BzZjEm_cKNnZZrDHci0i-vOvCOvCdWd3KBOeiBC0=FoM7Q@mail.gmail.com>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAEf4BzZjEm_cKNnZZrDHci0i-vOvCOvCdWd3KBOeiBC0=FoM7Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,79 +79,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 17, 2023 at 3:53=E2=80=AFPM David Vernet <void@manifault.com> w=
-rote:
->
-> On Wed, Mar 15, 2023 at 12:54:05PM -0700, Sreevani Sreejith wrote:
-> > From: Sreevani <ssreevani@meta.com>
-> >
-> > This patch documents overview of libbpf, including its features for
-> > developing BPF programs.
-> >
-> > Signed-off-by: Sreevani <ssreevani@meta.com>
->
-> Looks great, thanks Sreevani.
->
-> Acked-by: David Vernet <void@manifault.com>
->
 
-Applied suggestions and switched to consistent "=3D=3D=3D=3D=3D" over/under=
- top
-level header in both files. Applied to bpf-next, thanks!
 
-> > ---
-> > Changelog:
-> >
-> > v3 =3D https://lore.kernel.org/all/20230310180928.2462527-1-ssreevani@m=
-eta.com/
-> > v3 -> v4:
-> >    * Update BTF types link
-> >    * Update patch summary
-> >    * Indent code options line
-> >    * Update "See also" wording
-> >
-> >  Documentation/bpf/libbpf/index.rst           |  27 ++-
-> >  Documentation/bpf/libbpf/libbpf_overview.rst | 228 +++++++++++++++++++
-> >  2 files changed, 246 insertions(+), 9 deletions(-)
-> >  create mode 100644 Documentation/bpf/libbpf/libbpf_overview.rst
-> >
-> > diff --git a/Documentation/bpf/libbpf/index.rst b/Documentation/bpf/lib=
-bpf/index.rst
-> > index f9b3b252e28f..3ac8c06fb8f4 100644
-> > --- a/Documentation/bpf/libbpf/index.rst
-> > +++ b/Documentation/bpf/libbpf/index.rst
-> > @@ -2,23 +2,32 @@
-> >
-> >  .. _libbpf:
-> >
-> > +######
-> >  libbpf
-> > -=3D=3D=3D=3D=3D=3D
-> > +######
-> > +
-> > +If you are looking to develop BPF applications using the libbpf librar=
-y, this
-> > +directory contains important documentation that you should read.
-> > +
-> > +To get started, it is recommended to begin with the :doc:`libbpf Overv=
-iew
-> > +<libbpf_overview>` document, which provides a high-level understanding=
- of the
-> > +libbpf APIs and their usage. This will give you a solid foundation to =
-start
-> > +exploring and utilizing the various features of libbpf to develop your=
- BPF
-> > +applications.
-> >
-> >  .. toctree::
-> >     :maxdepth: 1
-> >
-> > +   libbpf_overview
-> >     API Documentation <https://libbpf.readthedocs.io/en/latest/api.html=
->
-> >     program_types
-> >     libbpf_naming_convention
-> >     libbpf_build
-> >
+On 3/17/23 15:23, Andrii Nakryiko wrote:
+> On Wed, Mar 15, 2023 at 7:37 PM Kui-Feng Lee <kuifeng@meta.com> wrote:
+>>
+>> bpf_map__attach_struct_ops() was creating a dummy bpf_link as a
+>> placeholder, but now it is constructing an authentic one by calling
+>> bpf_link_create() if the map has the BPF_F_LINK flag.
+>>
+>> You can flag a struct_ops map with BPF_F_LINK by calling
+>> bpf_map__set_map_flags().
+>>
+>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 90 +++++++++++++++++++++++++++++++-----------
+>>   1 file changed, 66 insertions(+), 24 deletions(-)
+>>
+> 
+> [...]
+> 
+>> -               if (!prog)
+>> -                       continue;
+>> +       link->link.detach = bpf_link__detach_struct_ops;
+>>
+>> -               prog_fd = bpf_program__fd(prog);
+>> -               kern_data = st_ops->kern_vdata + st_ops->kern_func_off[i];
+>> -               *(unsigned long *)kern_data = prog_fd;
+>> +       if (!(map->def.map_flags & BPF_F_LINK)) {
+>> +               /* w/o a real link */
+>> +               link->link.fd = map->fd;
+>> +               link->map_fd = -1;
+>> +               return &link->link;
+>>          }
+>>
+>> -       err = bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
+>> -       if (err) {
+>> -               err = -errno;
+>> +       fd = bpf_link_create(map->fd, -1, BPF_STRUCT_OPS, NULL);
+> 
+> pass 0, not -1. BPF APIs have a convention that fd=0 means "no fd was
+> provided". And actually kernel should have rejected this -1, so please
+> check why that didn't happen in your testing, we might be missing some
+> kernel validation.
 
-[...]
+Oh! probe_perf_link() also pass -1 as well.
+I will fix it.
+
+> 
+> 
+>> +       if (fd < 0) {
+>>                  free(link);
+>> -               return libbpf_err_ptr(err);
+>> +               return libbpf_err_ptr(fd);
+>>          }
+>>
+>> -       link->detach = bpf_link__detach_struct_ops;
+>> -       link->fd = map->fd;
+>> +       link->link.fd = fd;
+>> +       link->map_fd = map->fd;
+>>
+>> -       return link;
+>> +       return &link->link;
+>>   }
+>>
+>>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_event_header *hdr,
+>> --
+>> 2.34.1
+>>
