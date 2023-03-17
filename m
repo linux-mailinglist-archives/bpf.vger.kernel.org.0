@@ -2,79 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 587776BF490
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E2A6BF4D6
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 23:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjCQVsb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
+        id S230357AbjCQWEM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 17 Mar 2023 18:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjCQVsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:48:25 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11E338B52;
-        Fri, 17 Mar 2023 14:47:41 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id iw3so6704056plb.6;
-        Fri, 17 Mar 2023 14:47:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679089597;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F/BU/W8lH7cT5BJ1G0LSjqLvqmzeVi/1nXNmiJsFiQw=;
-        b=ExxFDNebIPcEMGNRBSRPuF6/2/qWbWZJp1w8uIcEMu6itos3/DoG6V2t2qQitkGNcC
-         TlkWMaEPUq6RXcWEi6b8hXSDjA7xT5lG05PuUuL3O994K9yblZvEZMyPZ9hICKJ/8wrf
-         KWXxm/ou2sBcRLtUY/9XnJ2DAka3AR1JTOuGdNTUrgPN1Qld0mR/UUWpMTQ0ReAFj26d
-         Y/5zjEaRTMvuVhEzpS9wllw7Wdwy8FAzEUVOEoQLaIrjA5ZS9pkC38J0kNb3mGEzlxsH
-         UMGT0CE/odXvvgEc/eds5NTukVWUxysBa6/c2d9T814AQ/zxzj3JtoBgaeCXkMvz15Qe
-         Gz7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679089597;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F/BU/W8lH7cT5BJ1G0LSjqLvqmzeVi/1nXNmiJsFiQw=;
-        b=FNZH888kDMB2T40KfqaAAA/GqTmFJHXiRshuLe0Wz1YBmL2vKEHuF8wBaIVNmCmFZR
-         8vtwe7TD4NyxelFcpumBYb3qd/OX4CAJ3YMx5J+v3OoPbrpiD5gXTA0NlJVvun0MrMgv
-         P1PJCj42DfsZJd0PiNM5jX3BN5VmzTYLGjOC+IN8A5X/a1ifR0O8rcV7lVXC37cOZemA
-         jS/TTntzUnbgE1rexmeKXI+MZXNX5y8dJlgN/sa2lqDz8ghuEFB+D9bMob+xotl+zjVs
-         h80QHAwYh5epmgujp1YVd7RMrZRgS3gbjCDK8yBaeVCDScj0J92W0uKNS+SA2oSQPbyT
-         gPxA==
-X-Gm-Message-State: AO0yUKWzYP/Hb4hw5/mjsfr7yRcpjXKcBtH7RxtcJPFbYA03mQE39hmg
-        x2sTcxVZrxvcYQwGWYPjLTY=
-X-Google-Smtp-Source: AK7set8MILLIaeW6Xq+4Uh9meXyQ6MxrFX0iBrKJ+UOvhYnz/ZiAugZ228Jnyxkz7FwexRr40QX5UA==
-X-Received: by 2002:a17:902:cecd:b0:19e:9f97:f427 with SMTP id d13-20020a170902cecd00b0019e9f97f427mr10457478plg.10.1679089597455;
-        Fri, 17 Mar 2023 14:46:37 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c085:21e8::1380? ([2620:10d:c090:400::5:87c3])
-        by smtp.gmail.com with ESMTPSA id a10-20020a170902b58a00b00198b01b412csm1958472pls.303.2023.03.17.14.46.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Mar 2023 14:46:36 -0700 (PDT)
-Message-ID: <8a268c26-ea57-89ec-9fea-72ec5b8e12e2@gmail.com>
-Date:   Fri, 17 Mar 2023 14:46:34 -0700
+        with ESMTP id S230351AbjCQWEM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 18:04:12 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6C535EF1
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 15:04:02 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32HKFTnQ016599
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 15:04:01 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pccf56qcv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 15:04:01 -0700
+Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
+ ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Fri, 17 Mar 2023 15:04:00 -0700
+Received: from twshared13785.14.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Fri, 17 Mar 2023 15:04:00 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id D18A42AEB7473; Fri, 17 Mar 2023 15:03:52 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC:     <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next 0/6] BPF verifier rotating log
+Date:   Fri, 17 Mar 2023 15:03:45 -0700
+Message-ID: <20230317220351.2970665-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v7 2/8] net: Update an existing TCP congestion
- control algorithm.
-Content-Language: en-US, en-ZW
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
-        ast@kernel.org, song@kernel.org, kernel-team@meta.com,
-        andrii@kernel.org, sdf@google.com
-References: <20230316023641.2092778-1-kuifeng@meta.com>
- <20230316023641.2092778-3-kuifeng@meta.com>
- <f72b77c3-15ac-3de3-5bce-c263564c1487@iogearbox.net>
- <ee8cab13-9018-5f62-0415-16409ee1610b@linux.dev>
- <b8b54ef5-8a24-5886-8f4e-8856dbaa9c34@iogearbox.net>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <b8b54ef5-8a24-5886-8f4e-8856dbaa9c34@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: vd0XKmMZGOYqIPg8zzlCS8YRGPPOScmz
+X-Proofpoint-ORIG-GUID: vd0XKmMZGOYqIPg8zzlCS8YRGPPOScmz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-17_17,2023-03-16_02,2023-02-09_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,32 +58,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patch set changes BPF verifier log behavior to behave as a rotating log,
+by default. If user-supplied log buffer is big enough to contain entire
+verifier log output, there is no effective difference. But where previously
+user supplied too small log buffer and would get -ENOSPC error result and the
+beginning part of the verifier log, now there will be no error and user will
+get ending part of verifier log filling up user-supplied log buffer.
 
+Which is, in absolute majority of cases, is exactly what's useful, relevant,
+and what users want and need, as the ending of the verifier log is containing
+details of verifier failure and relevant state that got us to that failure. So
+this rotating mode is made a default, but for some niche advanced debugging
+scenarios it's possible to request old behavior by specifying additional
+BPF_LOG_FIXED (8) flag.
 
-On 3/17/23 10:23, Daniel Borkmann wrote:
-> On 3/17/23 6:18 PM, Martin KaFai Lau wrote:
->> On 3/17/23 8:23 AM, Daniel Borkmann wrote:
->>>  From the function itself what is not clear whether
->>> callers that replace an existing one should do the synchronize_rcu() 
->>> themselves or if this should
->>> be part of tcp_update_congestion_control?
->>
->> bpf_struct_ops_map_free (in patch 1) also does synchronize_rcu() for 
->> another reason (bpf_setsockopt), so the caller (bpf_struct_ops) is 
->> doing it. From looking at tcp_unregister_congestion_control(), make 
->> sense that it is more correct to have another synchronize_rcu() also 
->> in tcp_update_congestion_control in case there will be other non 
->> bpf_struct_ops caller doing update in the future.
-> 
-> Agree, I was looking at 'bpf: Update the struct_ops of a bpf_link', and 
-> essentially as-is
-> it was implicit via map free. +1, tcp_update_congestion_control() would 
-> be more obvious and
-> better for other/non-BPF users.
+This patch set adjusts libbpf to allow specifying flags beyond 1 | 2 | 4. We
+also add --log-size and --log-fixed options to veristat to be able to both
+test this functionality manually, but also to be used in various debugging
+scenarios. We also add selftests that tries many variants of log buffer size
+to stress-test correctness of internal verifier log bookkeeping code.
 
-It makes sense to me.
-I will refactor functions as well.
+v1->v2:
+  - fixed using logical end_pos, which could get out of buffer bounds, in
+    bpf_vlog_reset() (Alexei);
+  - added more strict testing of log buffer beyond allowed size, tested that
+    this caugh the above bug (before fixing it in kernel); also added
+    log_level 1 testing for program that fails to load (it stress tests
+    bpf_vlog_reset() some more);
+  - switched to div_u64_rem() for u64 modulo, reported by kernel test robot;
+    considered switching to u32 and handle overflows/underflows, but decided
+    against that because log->end_pos is used in some additional logic around
+    formatting verifier state next to each instruction and it was getting too
+    tricky to cleanly reason about underflows/overflows. Keeping it simple
+    with u64 (which are now always incresing and non-overflowing) and
+    div_u64_rem().
 
-> 
-> Thanks,
-> Daniel
+Andrii Nakryiko (6):
+  bpf: split off basic BPF verifier log into separate file
+  bpf: remove minimum size restrictions on verifier log buffer
+  bpf: switch BPF verifier log to be a rotating log by default
+  libbpf: don't enfore verifier log levels on libbpf side
+  selftests/bpf: add more veristat control over verifier log options
+  selftests/bpf: add fixed vs rotating verifier log tests
+
+ include/linux/bpf_verifier.h                  |  47 ++--
+ kernel/bpf/Makefile                           |   3 +-
+ kernel/bpf/log.c                              | 254 ++++++++++++++++++
+ kernel/bpf/verifier.c                         |  86 +-----
+ tools/lib/bpf/bpf.c                           |   2 -
+ .../selftests/bpf/prog_tests/log_fixup.c      |   1 +
+ .../selftests/bpf/prog_tests/verifier_log.c   | 156 +++++++++++
+ tools/testing/selftests/bpf/veristat.c        |  42 ++-
+ 8 files changed, 486 insertions(+), 105 deletions(-)
+ create mode 100644 kernel/bpf/log.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier_log.c
+
+-- 
+2.34.1
+
