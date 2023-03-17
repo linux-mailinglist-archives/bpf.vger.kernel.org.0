@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 081BB6BF449
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 222866BF446
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjCQVgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
+        id S231199AbjCQVgU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbjCQVgL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:36:11 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945C14AD34;
-        Fri, 17 Mar 2023 14:35:26 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id e15-20020a17090ac20f00b0023d1b009f52so10569536pjt.2;
-        Fri, 17 Mar 2023 14:35:26 -0700 (PDT)
+        with ESMTP id S230071AbjCQVgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:36:09 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092AB4AD25;
+        Fri, 17 Mar 2023 14:35:25 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id c18so6658520ple.11;
+        Fri, 17 Mar 2023 14:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679088841;
+        d=gmail.com; s=20210112; t=1679088843;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YWw2v1UnTVnbdS72T7wGx5fNyybAmUxe9bUw37LCRvo=;
-        b=Agw5iz0eFlCMtSGY5mRtsHN6rrRxdhNbZnER8AKAoat/O5xaHjX7SL3c7GZ3qItUsL
-         hKON97uP+aKGWt92sQDNkmCOwFR8wv2wZhO0Ktu3Sh4A8hHGoJlxnGYWXYZ56LTFmfiA
-         LYq1c1+/Qous0sUaovLvwojE/SPl1jgbceikPlt1UYOawglhpTlW4SBNL0Ar7TfIIEI4
-         Qj0WmyY9QbrBY/dTd1N7FtbcrYl9hG4BM8FQJ32sEhqzqwAfRDS88DZke5fqsLtmqaAV
-         5TNVeHqUlE8j29hQaGSMr8xR4zkIEN2/t0RDYS9sHR8Wc0LWq6cWKdDY+1RFdJqyk83+
-         IODw==
+        bh=X6qz8Axre0zWemU+wtTjt8NnBoL1lg5OlFMGApoRxNc=;
+        b=CuW8/lpwFnxQ67YvF+TfhggE1zVruHd28MH7kNA52B4YdNuXAQovYBoqFFJJFtMWle
+         VRkl0RTm4kIQgXteqZxZ1hFDIBVXgiavfFYG/qXzTe09qZeevxVbV2t13cm2Xz7ev/ca
+         WPKfRt+xEcFPqsDpw6lA/+qehrpcXAgjaF1C3PUPoAOjGV+aRFnVuoXkJGJezCNk3qAx
+         s+uw0YagcHE9UNFrWNq5egcZfxp6BkjgMhpDRhAoXhS4Xqi0cO+Aa8sEG3II3WvmpMUf
+         2QxFiXp10Gq3+Br7jkk8vNxiCBDXIPDBp5apqkhymDBjX61Eb980ZWR3ASzQED6FK0jl
+         1YTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679088841;
+        d=1e100.net; s=20210112; t=1679088843;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=YWw2v1UnTVnbdS72T7wGx5fNyybAmUxe9bUw37LCRvo=;
-        b=fvoJTAs1grpzOVprgPTyizQGWP8SQZxcxfJHsbyAMGhQ8Pbrc7rrR8jV1Q3Kkqxg7q
-         TVbwMpyViGlWtCNvDT4JnV+v/rsoCWWUMaS5N6ye+Bdb/iRyXlmwzfod3a4ug2y+Ro0g
-         vNFGYSHA+LJwXzXhABMWtIT8dLToXE71UnX57Vg3cMwx/dJRIMLDs1ASUB+1S9roIEvw
-         IaSwT/SzBBof7t8xZ/uTxNdVQTO/H6nNfJfrsa6lGhmw04feFXYUJT/PjqJ/DSD6kCkY
-         4CHQpb/Vn6jTZk6NA7FUaV0iIt/I7gi9z6170VJE3UR59BzTFZGjXu6qTrN2aZqV0sNv
-         iECA==
-X-Gm-Message-State: AO0yUKV+BZcFl/cnkwNypEDvIgKXeYT5t4p4FvEGgi4yf4MWfGoA6ykV
-        9qh4Ghry2uIbjZb3IC+0mf8=
-X-Google-Smtp-Source: AK7set94O+oaHyjhIU7+YxEozCc8PCEm3AqV/gZy35nCSnqfd8vw+u819uDUEAXPXUcSEztLpr4W+g==
-X-Received: by 2002:a17:90b:4f90:b0:23b:4bf6:bbfa with SMTP id qe16-20020a17090b4f9000b0023b4bf6bbfamr10391873pjb.11.1679088841085;
-        Fri, 17 Mar 2023 14:34:01 -0700 (PDT)
+        bh=X6qz8Axre0zWemU+wtTjt8NnBoL1lg5OlFMGApoRxNc=;
+        b=Ke4tXfTJaohiGzXNIx4/lnuFJBw2gSFTjIBV+NDPdAyM8xSf6KGl8ZMH6zTGY8RE9r
+         gkkntKEF6DVRDEYrG5vMfSHbhyNYCR+hyocdKMGsLzCZ95g0es/CORbqWDBi5M2nvnkh
+         WpAOuaKfjAzbYwb0xh0HBsN/WIhjCpH7VFcaNEmUYV0S0rCZ+pXCSpYrDqUGQ+mjVX8U
+         xHNA0mUAJN7xhFTzUnMx2RHQTXNquYJy1XD5IUHKDy5BtP0sXas1r729nSxMly3O6Ahg
+         LG2Kl9fMbhgjnqeFEkLcgd/78cnxhuLed0RV0HO+tNhSIVvuVYPTiIoeaCVQFRe5VphN
+         46mQ==
+X-Gm-Message-State: AO0yUKU18Ut7A4CzWaJQOM5bAAc+po2cZDM4/zhruYbCviprCNVHu665
+        WuTjH5Tzl/CaGuORyYmGQH4=
+X-Google-Smtp-Source: AK7set+5U0vFlbi8Qucd968t4RJ5sZmCSbvb4lu7vsIf4g6NLJQJc+aJ4mhWG8IrIb0v5XTiTtawQw==
+X-Received: by 2002:a17:90b:17d0:b0:23f:634a:6c7 with SMTP id me16-20020a17090b17d000b0023f634a06c7mr2937291pjb.15.1679088842922;
+        Fri, 17 Mar 2023 14:34:02 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id w23-20020a17090a15d700b00233b5d6b4b5sm5326472pjd.16.2023.03.17.14.34.00
+        by smtp.gmail.com with ESMTPSA id t7-20020a170902bc4700b0019a91895cdfsm2002559plz.50.2023.03.17.14.34.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Mar 2023 14:34:00 -0700 (PDT)
+        Fri, 17 Mar 2023 14:34:02 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From:   Tejun Heo <tj@kernel.org>
 To:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -62,9 +62,9 @@ To:     torvalds@linux-foundation.org, mingo@redhat.com,
         dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@meta.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 10/32] sched: Add @reason to sched_class->rq_{on|off}line()
-Date:   Fri, 17 Mar 2023 11:33:11 -1000
-Message-Id: <20230317213333.2174969-11-tj@kernel.org>
+Subject: [PATCH 11/32] sched: Add normal_policy()
+Date:   Fri, 17 Mar 2023 11:33:12 -1000
+Message-Id: <20230317213333.2174969-12-tj@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230317213333.2174969-1-tj@kernel.org>
 References: <20230317213333.2174969-1-tj@kernel.org>
@@ -80,16 +80,13 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-->rq_{on|off}line are called either during CPU hotplug or cpuset partition
-updates. A planned BPF extensible sched_class wants to tell the BPF
-scheduler progs about CPU hotplug events in a way that's synchronized with
-rq state changes.
+A new BPF extensible sched_class will need to dynamically change how a task
+picks its sched_class. For example, if the loaded BPF scheduler progs fail,
+the tasks will be forced back on CFS even if the task's policy is set to the
+new sched_class. To support such mapping, add normal_policy() which wraps
+testing for %SCHED_NORMAL. This doesn't cause any behavior changes.
 
-As the BPF scheduler progs aren't necessarily affected by cpuset partition
-updates, we need a way to distinguish the two types of events. Let's add an
-argument to tell them apart.
-
-v2: Patch description updated to detail the expected use.
+v2: Update the description with more details on the expected use.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
@@ -97,193 +94,44 @@ Acked-by: Josh Don <joshdon@google.com>
 Acked-by: Hao Luo <haoluo@google.com>
 Acked-by: Barret Rhoden <brho@google.com>
 ---
- kernel/sched/core.c     | 12 ++++++------
- kernel/sched/deadline.c |  4 ++--
- kernel/sched/fair.c     |  4 ++--
- kernel/sched/rt.c       |  4 ++--
- kernel/sched/sched.h    | 13 +++++++++----
- kernel/sched/topology.c |  4 ++--
- 6 files changed, 23 insertions(+), 18 deletions(-)
+ kernel/sched/fair.c  | 2 +-
+ kernel/sched/sched.h | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 59136fafa94c..aa63371aa84c 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9428,7 +9428,7 @@ static inline void balance_hotplug_wait(void)
- 
- #endif /* CONFIG_HOTPLUG_CPU */
- 
--void set_rq_online(struct rq *rq)
-+void set_rq_online(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (!rq->online) {
- 		const struct sched_class *class;
-@@ -9438,19 +9438,19 @@ void set_rq_online(struct rq *rq)
- 
- 		for_each_class(class) {
- 			if (class->rq_online)
--				class->rq_online(rq);
-+				class->rq_online(rq, reason);
- 		}
- 	}
- }
- 
--void set_rq_offline(struct rq *rq)
-+void set_rq_offline(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->online) {
- 		const struct sched_class *class;
- 
- 		for_each_class(class) {
- 			if (class->rq_offline)
--				class->rq_offline(rq);
-+				class->rq_offline(rq, reason);
- 		}
- 
- 		cpumask_clear_cpu(rq->cpu, rq->rd->online);
-@@ -9546,7 +9546,7 @@ int sched_cpu_activate(unsigned int cpu)
- 	rq_lock_irqsave(rq, &rf);
- 	if (rq->rd) {
- 		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
--		set_rq_online(rq);
-+		set_rq_online(rq, RQ_ONOFF_HOTPLUG);
- 	}
- 	rq_unlock_irqrestore(rq, &rf);
- 
-@@ -9591,7 +9591,7 @@ int sched_cpu_deactivate(unsigned int cpu)
- 	if (rq->rd) {
- 		update_rq_clock(rq);
- 		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
--		set_rq_offline(rq);
-+		set_rq_offline(rq, RQ_ONOFF_HOTPLUG);
- 	}
- 	rq_unlock_irqrestore(rq, &rf);
- 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 71b24371a6f7..a7bb573c4c82 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2518,7 +2518,7 @@ static void set_cpus_allowed_dl(struct task_struct *p,
- }
- 
- /* Assumes rq->lock is held */
--static void rq_online_dl(struct rq *rq)
-+static void rq_online_dl(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->dl.overloaded)
- 		dl_set_overload(rq);
-@@ -2529,7 +2529,7 @@ static void rq_online_dl(struct rq *rq)
- }
- 
- /* Assumes rq->lock is held */
--static void rq_offline_dl(struct rq *rq)
-+static void rq_offline_dl(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->dl.overloaded)
- 		dl_clear_overload(rq);
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 681ab0dd0bc1..28204472a3f1 100644
+index 28204472a3f1..ea3788ef9686 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -11805,14 +11805,14 @@ void trigger_load_balance(struct rq *rq)
- 	nohz_balancer_kick(rq);
- }
+@@ -7806,7 +7806,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
+ 	 * Batch and idle tasks do not preempt non-idle tasks (their preemption
+ 	 * is driven by the tick):
+ 	 */
+-	if (unlikely(p->policy != SCHED_NORMAL) || !sched_feat(WAKEUP_PREEMPTION))
++	if (unlikely(!normal_policy(p->policy)) || !sched_feat(WAKEUP_PREEMPTION))
+ 		return;
  
--static void rq_online_fair(struct rq *rq)
-+static void rq_online_fair(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	update_sysctl();
- 
- 	update_runtime_enabled(rq);
- }
- 
--static void rq_offline_fair(struct rq *rq)
-+static void rq_offline_fair(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	update_sysctl();
- 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 0a11f44adee5..2b4c769438a1 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -2473,7 +2473,7 @@ static void task_woken_rt(struct rq *rq, struct task_struct *p)
- }
- 
- /* Assumes rq->lock is held */
--static void rq_online_rt(struct rq *rq)
-+static void rq_online_rt(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->rt.overloaded)
- 		rt_set_overload(rq);
-@@ -2484,7 +2484,7 @@ static void rq_online_rt(struct rq *rq)
- }
- 
- /* Assumes rq->lock is held */
--static void rq_offline_rt(struct rq *rq)
-+static void rq_offline_rt(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->rt.overloaded)
- 		rt_clear_overload(rq);
+ 	find_matching_se(&se, &pse);
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 67f7f1149630..958613dd8290 100644
+index 958613dd8290..6397843b4482 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -2183,6 +2183,11 @@ extern const u32		sched_prio_to_wmult[40];
- 
- #define RETRY_TASK		((void *)-1UL)
- 
-+enum rq_onoff_reason {
-+	RQ_ONOFF_HOTPLUG,		/* CPU is going on/offline */
-+	RQ_ONOFF_TOPOLOGY,		/* sched domain topology update */
-+};
+@@ -182,9 +182,15 @@ static inline int idle_policy(int policy)
+ {
+ 	return policy == SCHED_IDLE;
+ }
 +
- struct affinity_context {
- 	const struct cpumask *new_mask;
- 	struct cpumask *user_mask;
-@@ -2219,8 +2224,8 @@ struct sched_class {
- 
- 	void (*set_cpus_allowed)(struct task_struct *p, struct affinity_context *ctx);
- 
--	void (*rq_online)(struct rq *rq);
--	void (*rq_offline)(struct rq *rq);
-+	void (*rq_online)(struct rq *rq, enum rq_onoff_reason reason);
-+	void (*rq_offline)(struct rq *rq, enum rq_onoff_reason reason);
- 
- 	struct rq *(*find_lock_rq)(struct task_struct *p, struct rq *rq);
- #endif
-@@ -2787,8 +2792,8 @@ static inline void double_rq_unlock(struct rq *rq1, struct rq *rq2)
- 	raw_spin_rq_unlock(rq1);
++static inline int normal_policy(int policy)
++{
++	return policy == SCHED_NORMAL;
++}
++
+ static inline int fair_policy(int policy)
+ {
+-	return policy == SCHED_NORMAL || policy == SCHED_BATCH;
++	return normal_policy(policy) || policy == SCHED_BATCH;
  }
  
--extern void set_rq_online (struct rq *rq);
--extern void set_rq_offline(struct rq *rq);
-+extern void set_rq_online (struct rq *rq, enum rq_onoff_reason reason);
-+extern void set_rq_offline(struct rq *rq, enum rq_onoff_reason reason);
- extern bool sched_smp_initialized;
- 
- #else /* CONFIG_SMP */
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 051aaf65c749..155c4e7e0f08 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -495,7 +495,7 @@ void rq_attach_root(struct rq *rq, struct root_domain *rd)
- 		old_rd = rq->rd;
- 
- 		if (cpumask_test_cpu(rq->cpu, old_rd->online))
--			set_rq_offline(rq);
-+			set_rq_offline(rq, RQ_ONOFF_TOPOLOGY);
- 
- 		cpumask_clear_cpu(rq->cpu, old_rd->span);
- 
-@@ -513,7 +513,7 @@ void rq_attach_root(struct rq *rq, struct root_domain *rd)
- 
- 	cpumask_set_cpu(rq->cpu, rd->span);
- 	if (cpumask_test_cpu(rq->cpu, cpu_active_mask))
--		set_rq_online(rq);
-+		set_rq_online(rq, RQ_ONOFF_TOPOLOGY);
- 
- 	raw_spin_rq_unlock_irqrestore(rq, flags);
- 
+ static inline int rt_policy(int policy)
 -- 
 2.39.2
 
