@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6446BF44F
-	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE016BF453
+	for <lists+bpf@lfdr.de>; Fri, 17 Mar 2023 22:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbjCQVg2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 17:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
+        id S230330AbjCQVgd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 17:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbjCQVgU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 17:36:20 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B9B166C7;
-        Fri, 17 Mar 2023 14:35:37 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id om3-20020a17090b3a8300b0023efab0e3bfso10421494pjb.3;
-        Fri, 17 Mar 2023 14:35:37 -0700 (PDT)
+        with ESMTP id S230469AbjCQVgX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 17:36:23 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400FF3D908;
+        Fri, 17 Mar 2023 14:35:38 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id l9-20020a17090a3f0900b0023d32684e7fso8929451pjc.1;
+        Fri, 17 Mar 2023 14:35:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679088860;
+        d=gmail.com; s=20210112; t=1679088861;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Mk9CUHzVKpOlxfASIcLRI047WvC8d0hSApNZ1eNw/Uk=;
-        b=WPIVV69RpJIbvGcLuqXOWfUgw/sU++b6jBanC0NTrMl5BvEFoEhWCO97W/svLCF3sw
-         a8fxqxuvgaFJhJ9ENr6S89RkX2X5x4wziNjoKWYWrmVvInutTHfoo07ef/6ljf0R8GeH
-         3FipStChOOk7IDKotVVuwLXMqI4AyMmPcdTK1riUWuldogFr38EMFyXmhHjENEZE+Mbh
-         e+O3qFqU6BWK9S+rgksSFCE4NqdcgV5K0yOazwLALnHIqHRW9FLaEBQUYZS69/rn2YXL
-         sfNzdQSpUOWCyDP+lqaT72P/c2fS8wM2LDSXl0ieue+1NlwtZtPaS4x4FwGqPAPJgGBc
-         fcZQ==
+        bh=+9y1dItfFtvTCcd2jMRX78Y3CvuU5tntYbyJY+7/t8A=;
+        b=ZpXwb6WPuIxmUQqBt/R3yfcYXdA/7uFM9veLj2HAlkXZzsnvCKCo2eYLCtmp14uugo
+         vQCrkDAVapWb9kT3E3oUOAHtJky++qTgxsiFPrtI+gFhRjvxOfsxRi4tmMVob8jCMRlU
+         ZR5VKttkktVdbc6Fh93bCOAADhEjk6/cIeYePW72/mioshB3wvVB7teXIEnEz5yZ8eAH
+         es+sM/WOSD9W1ElluEQYh2wuQ/Pqdz0luC4FEHWJLJWuzd4XMROeKwaDMgUeEc+GDtvQ
+         FSEOKDTsqdBtqYYbh6ke/d9Hb9kmgUl/1d2wv10qCOdhXikbnFqUYBI/LCJlgYkd+O5W
+         Wxjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679088860;
+        d=1e100.net; s=20210112; t=1679088861;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Mk9CUHzVKpOlxfASIcLRI047WvC8d0hSApNZ1eNw/Uk=;
-        b=2JyUt9MyTzaKO5U2nbD/Xy83EeUykWtJsCxDHSMCabAKTG9rpo96Aq+2MqOcPSp8oS
-         gsdgEZPotWkvc/mQmquODHM9nx4/8jr6Y7d2yD4Wpw4qLiD6mgcnOTyWQ+5LUIVggoq2
-         3Onq0OoBO+asgahTSF3DxMObrrCLN/vKc2kH17ozgEHYg3/tv11fit6iHZL/jJzJdluc
-         oatM+oLTtBQot5H3LskRnUNnWN10PHihkUJljW0uEHyX82bILhCKWwjfla+R4gS+sekS
-         k3poyC2W2+MyPA7F6saS//q1Flt1Hr8+ASRDaYeFlD0I0daZxmgALlE1a0pbopMhZVK6
-         8eLg==
-X-Gm-Message-State: AO0yUKVkL2iqGkTuj3v4mDu9XOBuAxH+WcW4+ggvh0Bplc4wK9A5esTs
-        ewPVOY+EJlGqp/yrxXSrwB0=
-X-Google-Smtp-Source: AK7set8lM50/5c9PlIEBMvHNeacJDx2qZkNXtlgQQo1yAg0K7rZVYircLpf74FlRyWWiKRzinOOrpA==
-X-Received: by 2002:a17:902:c40c:b0:19f:2dff:21a4 with SMTP id k12-20020a170902c40c00b0019f2dff21a4mr9713294plk.16.1679088859713;
-        Fri, 17 Mar 2023 14:34:19 -0700 (PDT)
+        bh=+9y1dItfFtvTCcd2jMRX78Y3CvuU5tntYbyJY+7/t8A=;
+        b=5q3HxNbwy2+Aba/Emeg8/rn11Vj+Y7Lj3WtRXc4MXWxHDamXTJswSQcrUMekd2pvv1
+         B+CL/v+XEP6LjfxgBR2Wt3c6YffQ3DVZ8Mx9FC+R59+hs3AlvLoSnCTHbw3jhgaMvdfS
+         C605hNX8uMeDKEh/oFycKoyeuvZXx9IvG7uuQDhZWlz9RzGI2U+F6SGEqFpFr0bOjroO
+         9gMaPWFtw6CHFrU4aVjc5yglRGLJ/2JVq8jOnUotCigYajCQwZc5D5fR8Jltq68HdGn0
+         Y1PlqBGJFnzSsTTXqoxA20dqzfAwxOq9lCkOG/KEPHELM7TOT9qbhZFt5BQf+S0u0s3c
+         bF8A==
+X-Gm-Message-State: AO0yUKXMekpWOwMramRFD/XygX0QNni2MllABvJpRX6iCHbVtFjpu0Ez
+        zyovIh9w5J3Awhy54V+YwlE=
+X-Google-Smtp-Source: AK7set8B9xSI+6ufe/QmUf+zYTjIF6lxtlzSfJ5ut4Z3OiKHhCzqVs57qr5Hb8p/Lh/KdCXTusHZ9Q==
+X-Received: by 2002:a05:6a20:b285:b0:d7:5f98:d2a3 with SMTP id ei5-20020a056a20b28500b000d75f98d2a3mr5443486pzb.54.1679088861348;
+        Fri, 17 Mar 2023 14:34:21 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id b23-20020a170902d89700b0019c912c19d3sm1710371plz.62.2023.03.17.14.34.19
+        by smtp.gmail.com with ESMTPSA id j10-20020a63fc0a000000b00503000f0492sm1873374pgi.14.2023.03.17.14.34.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Mar 2023 14:34:19 -0700 (PDT)
+        Fri, 17 Mar 2023 14:34:21 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From:   Tejun Heo <tj@kernel.org>
 To:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -62,9 +62,9 @@ To:     torvalds@linux-foundation.org, mingo@redhat.com,
         dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@meta.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 20/32] sched_ext: Make watchdog handle ops.dispatch() looping stall
-Date:   Fri, 17 Mar 2023 11:33:21 -1000
-Message-Id: <20230317213333.2174969-21-tj@kernel.org>
+Subject: [PATCH 21/32] sched_ext: Add task state tracking operations
+Date:   Fri, 17 Mar 2023 11:33:22 -1000
+Message-Id: <20230317213333.2174969-22-tj@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230317213333.2174969-1-tj@kernel.org>
 References: <20230317213333.2174969-1-tj@kernel.org>
@@ -80,157 +80,174 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The dispatch path retries if the local DSQ is still empty after
-ops.dispatch() either dispatched or consumed a task. This is both out of
-necessity and for convenience. It has to retry because the dispatch path
-might lose the tasks to dequeue while the rq lock is released while trying
-to migrate tasks across CPUs, and the retry mechanism makes ops.dispatch()
-implementation easier as it only needs to make some forward progress each
-iteration.
+Being able to track the task runnable and running state transitions are
+useful for a variety of purposes including latency tracking and load factor
+calculation.
 
-However, this makes it possible for ops.dispatch() to stall CPUs by
-repeatedly dispatching ineligible tasks. If all CPUs are stalled that way,
-the watchdog or sysrq handler can't run and the system can't be saved. Let's
-address the issue by breaking out of the dispatch loop after 32 iterations.
+Currently, BPF schedulers don't have a good way of tracking these
+transitions. Becoming runnable can be determined from ops.enqueue() but
+becoming quiescent can only be inferred from the lack of subsequent enqueue.
+Also, as the local dsq can have multiple tasks and some events are handled
+in the sched_ext core, it's difficult to determine when a given task starts
+and stops executing.
 
-It is unlikely but not impossible for ops.dispatch() to legitimately go over
-the iteration limit. We want to come back to the dispatch path in such cases
-as not doing so risks stalling the CPU by idling with runnable tasks
-pending. As the previous task is still current in balance_scx(),
-resched_curr() doesn't do anything - it will just get cleared. Let's instead
-use scx_kick_bpf() which will trigger reschedule after switching to the next
-task which will likely be the idle task.
+This patch adds sched_ext_ops.runnable(), .running(), .stopping() and
+.quiescent() operations to track the task runnable and running state
+transitions. They're mostly self explanatory; however, we want to ensure
+that running <-> stopping transitions are always contained within runnable
+<-> quiescent transitions which is a bit different from how the scheduler
+core behaves. This adds a bit of complication. See the comment in
+dequeue_task_scx().
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
+Acked-by: Josh Don <joshdon@google.com>
+Acked-by: Hao Luo <haoluo@google.com>
+Acked-by: Barret Rhoden <brho@google.com>
 ---
- kernel/sched/ext.c                     | 17 +++++++++++++++++
- tools/sched_ext/scx_example_qmap.bpf.c | 17 +++++++++++++++++
- tools/sched_ext/scx_example_qmap.c     |  8 ++++++--
- 3 files changed, 40 insertions(+), 2 deletions(-)
+ include/linux/sched/ext.h | 65 +++++++++++++++++++++++++++++++++++++++
+ kernel/sched/ext.c        | 31 +++++++++++++++++++
+ 2 files changed, 96 insertions(+)
 
+diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
+index ac19b720374d..16eb54635e35 100644
+--- a/include/linux/sched/ext.h
++++ b/include/linux/sched/ext.h
+@@ -192,6 +192,71 @@ struct sched_ext_ops {
+ 	 */
+ 	void (*dispatch)(s32 cpu, struct task_struct *prev);
+ 
++	/**
++	 * runnable - A task is becoming runnable on its associated CPU
++	 * @p: task becoming runnable
++	 * @enq_flags: %SCX_ENQ_*
++	 *
++	 * This and the following three functions can be used to track a task's
++	 * execution state transitions. A task becomes ->runnable() on a CPU,
++	 * and then goes through one or more ->running() and ->stopping() pairs
++	 * as it runs on the CPU, and eventually becomes ->quiescent() when it's
++	 * done running on the CPU.
++	 *
++	 * @p is becoming runnable on the CPU because it's
++	 *
++	 * - waking up (%SCX_ENQ_WAKEUP)
++	 * - being moved from another CPU
++	 * - being restored after temporarily taken off the queue for an
++	 *   attribute change.
++	 *
++	 * This and ->enqueue() are related but not coupled. This operation
++	 * notifies @p's state transition and may not be followed by ->enqueue()
++	 * e.g. when @p is being dispatched to a remote CPU. Likewise, a task
++	 * may be ->enqueue()'d without being preceded by this operation e.g.
++	 * after exhausting its slice.
++	 */
++	void (*runnable)(struct task_struct *p, u64 enq_flags);
++
++	/**
++	 * running - A task is starting to run on its associated CPU
++	 * @p: task starting to run
++	 *
++	 * See ->runnable() for explanation on the task state notifiers.
++	 */
++	void (*running)(struct task_struct *p);
++
++	/**
++	 * stopping - A task is stopping execution
++	 * @p: task stopping to run
++	 * @runnable: is task @p still runnable?
++	 *
++	 * See ->runnable() for explanation on the task state notifiers. If
++	 * !@runnable, ->quiescent() will be invoked after this operation
++	 * returns.
++	 */
++	void (*stopping)(struct task_struct *p, bool runnable);
++
++	/**
++	 * quiescent - A task is becoming not runnable on its associated CPU
++	 * @p: task becoming not runnable
++	 * @deq_flags: %SCX_DEQ_*
++	 *
++	 * See ->runnable() for explanation on the task state notifiers.
++	 *
++	 * @p is becoming quiescent on the CPU because it's
++	 *
++	 * - sleeping (%SCX_DEQ_SLEEP)
++	 * - being moved to another CPU
++	 * - being temporarily taken off the queue for an attribute change
++	 *   (%SCX_DEQ_SAVE)
++	 *
++	 * This and ->dequeue() are related but not coupled. This operation
++	 * notifies @p's state transition and may not be preceded by ->dequeue()
++	 * e.g. when @p is being dispatched to a remote CPU.
++	 */
++	void (*quiescent)(struct task_struct *p, u64 deq_flags);
++
+ 	/**
+ 	 * yield - Yield CPU
+ 	 * @from: yielding task
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index d1f09ab51c4a..56fa5eed33ac 100644
+index 56fa5eed33ac..c9aa74e55999 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -9,6 +9,7 @@
- enum scx_internal_consts {
- 	SCX_NR_ONLINE_OPS	= SCX_OP_IDX(init),
- 	SCX_DSP_DFL_MAX_BATCH	= 32,
-+	SCX_DSP_MAX_LOOPS	= 32,
- 	SCX_WATCHDOG_MAX_TIMEOUT = 30 * HZ,
- };
+@@ -776,6 +776,9 @@ static void enqueue_task_scx(struct rq *rq, struct task_struct *p, int enq_flags
+ 	rq->scx.nr_running++;
+ 	add_nr_running(rq, 1);
  
-@@ -168,6 +169,7 @@ static DEFINE_PER_CPU(struct scx_dsp_ctx, scx_dsp_ctx);
- 
- void scx_bpf_dispatch(struct task_struct *p, u64 dsq_id, u64 slice,
- 		      u64 enq_flags);
-+void scx_bpf_kick_cpu(s32 cpu, u64 flags);
- 
- struct scx_task_iter {
- 	struct sched_ext_entity		cursor;
-@@ -1287,6 +1289,7 @@ static int balance_scx(struct rq *rq, struct task_struct *prev,
- 	struct scx_rq *scx_rq = &rq->scx;
- 	struct scx_dsp_ctx *dspc = this_cpu_ptr(&scx_dsp_ctx);
- 	bool prev_on_scx = prev->sched_class == &ext_sched_class;
-+	int nr_loops = SCX_DSP_MAX_LOOPS;
- 
- 	lockdep_assert_rq_held(rq);
- 
-@@ -1341,6 +1344,20 @@ static int balance_scx(struct rq *rq, struct task_struct *prev,
- 			return 1;
- 		if (consume_dispatch_q(rq, rf, &scx_dsq_global))
- 			return 1;
++	if (SCX_HAS_OP(runnable))
++		SCX_CALL_OP(SCX_KF_REST, runnable, p, enq_flags);
 +
-+		/*
-+		 * ops.dispatch() can trap us in this loop by repeatedly
-+		 * dispatching ineligible tasks. Break out once in a while to
-+		 * allow the watchdog to run. As IRQ can't be enabled in
-+		 * balance(), we want to complete this scheduling cycle and then
-+		 * start a new one. IOW, we want to call resched_curr() on the
-+		 * next, most likely idle, task, not the current one. Use
-+		 * scx_bpf_kick_cpu() for deferred kicking.
-+		 */
-+		if (unlikely(!--nr_loops)) {
-+			scx_bpf_kick_cpu(cpu_of(rq), 0);
-+			break;
-+		}
- 	} while (dspc->nr_tasks);
+ 	do_enqueue_task(rq, p, enq_flags, sticky_cpu);
+ }
  
- 	return 0;
-diff --git a/tools/sched_ext/scx_example_qmap.bpf.c b/tools/sched_ext/scx_example_qmap.bpf.c
-index abb134fb18ce..ed704a4024c0 100644
---- a/tools/sched_ext/scx_example_qmap.bpf.c
-+++ b/tools/sched_ext/scx_example_qmap.bpf.c
-@@ -28,6 +28,7 @@ const volatile u64 slice_ns = SCX_SLICE_DFL;
- const volatile bool switch_partial;
- const volatile u32 stall_user_nth;
- const volatile u32 stall_kernel_nth;
-+const volatile u32 dsp_inf_loop_after;
- const volatile s32 disallow_tgid;
+@@ -836,6 +839,26 @@ static void dequeue_task_scx(struct rq *rq, struct task_struct *p, int deq_flags
  
- u32 test_error_cnt;
-@@ -187,6 +188,22 @@ void BPF_STRUCT_OPS(qmap_dispatch, s32 cpu, struct task_struct *prev)
- 	s32 pid;
- 	int i;
+ 	ops_dequeue(p, deq_flags);
  
-+	if (dsp_inf_loop_after && nr_dispatched > dsp_inf_loop_after) {
-+		struct task_struct *p;
-+
-+		/*
-+		 * PID 2 should be kthreadd which should mostly be idle and off
-+		 * the scheduler. Let's keep dispatching it to force the kernel
-+		 * to call this function over and over again.
-+		 */
-+		p = bpf_task_from_pid(2);
-+		if (p) {
-+			scx_bpf_dispatch(p, SCX_DSQ_GLOBAL, slice_ns, 0);
-+			bpf_task_release(p);
-+			return;
-+		}
++	/*
++	 * A currently running task which is going off @rq first gets dequeued
++	 * and then stops running. As we want running <-> stopping transitions
++	 * to be contained within runnable <-> quiescent transitions, trigger
++	 * ->stopping() early here instead of in put_prev_task_scx().
++	 *
++	 * @p may go through multiple stopping <-> running transitions between
++	 * here and put_prev_task_scx() if task attribute changes occur while
++	 * balance_scx() leaves @rq unlocked. However, they don't contain any
++	 * information meaningful to the BPF scheduler and can be suppressed by
++	 * skipping the callbacks if the task is !QUEUED.
++	 */
++	if (SCX_HAS_OP(stopping) && task_current(rq, p)) {
++		update_curr_scx(rq);
++		SCX_CALL_OP(SCX_KF_REST, stopping, p, false);
 +	}
 +
- 	if (!idx || !cnt) {
- 		scx_bpf_error("failed to lookup idx[%p], cnt[%p]", idx, cnt);
- 		return;
-diff --git a/tools/sched_ext/scx_example_qmap.c b/tools/sched_ext/scx_example_qmap.c
-index f94fd39c4ed8..3f68dae47bd0 100644
---- a/tools/sched_ext/scx_example_qmap.c
-+++ b/tools/sched_ext/scx_example_qmap.c
-@@ -20,12 +20,13 @@ const char help_fmt[] =
- "\n"
- "See the top-level comment in .bpf.c for more details.\n"
- "\n"
--"Usage: %s [-s SLICE_US] [-e COUNT] [-t COUNT] [-T COUNT] [-d PID] [-p]\n"
-+"Usage: %s [-s SLICE_US] [-e COUNT] [-t COUNT] [-T COUNT] [-l COUNT] [-d PID] [-p]\n"
- "\n"
- "  -s SLICE_US   Override slice duration\n"
- "  -e COUNT      Trigger scx_bpf_error() after COUNT enqueues\n"
- "  -t COUNT      Stall every COUNT'th user thread\n"
- "  -T COUNT      Stall every COUNT'th kernel thread\n"
-+"  -l COUNT      Trigger dispatch infinite looping after COUNT dispatches\n"
- "  -d PID        Disallow a process from switching into SCHED_EXT (-1 for self)\n"
- "  -p            Switch only tasks on SCHED_EXT policy intead of all\n"
- "  -h            Display this help and exit\n";
-@@ -51,7 +52,7 @@ int main(int argc, char **argv)
- 	skel = scx_example_qmap__open();
- 	assert(skel);
++	if (SCX_HAS_OP(quiescent))
++		SCX_CALL_OP(SCX_KF_REST, quiescent, p, deq_flags);
++
+ 	if (deq_flags & SCX_DEQ_SLEEP)
+ 		p->scx.flags |= SCX_TASK_DEQD_FOR_SLEEP;
+ 	else
+@@ -1372,6 +1395,10 @@ static void set_next_task_scx(struct rq *rq, struct task_struct *p, bool first)
  
--	while ((opt = getopt(argc, argv, "s:e:t:T:d:ph")) != -1) {
-+	while ((opt = getopt(argc, argv, "s:e:t:T:l:d:ph")) != -1) {
- 		switch (opt) {
- 		case 's':
- 			skel->rodata->slice_ns = strtoull(optarg, NULL, 0) * 1000;
-@@ -65,6 +66,9 @@ int main(int argc, char **argv)
- 		case 'T':
- 			skel->rodata->stall_kernel_nth = strtoul(optarg, NULL, 0);
- 			break;
-+		case 'l':
-+			skel->rodata->dsp_inf_loop_after = strtoul(optarg, NULL, 0);
-+			break;
- 		case 'd':
- 			skel->rodata->disallow_tgid = strtol(optarg, NULL, 0);
- 			if (skel->rodata->disallow_tgid < 0)
+ 	p->se.exec_start = rq_clock_task(rq);
+ 
++	/* see dequeue_task_scx() on why we skip when !QUEUED */
++	if (SCX_HAS_OP(running) && (p->scx.flags & SCX_TASK_QUEUED))
++		SCX_CALL_OP(SCX_KF_REST, running, p);
++
+ 	watchdog_unwatch_task(p, true);
+ }
+ 
+@@ -1410,6 +1437,10 @@ static void put_prev_task_scx(struct rq *rq, struct task_struct *p)
+ 
+ 	update_curr_scx(rq);
+ 
++	/* see dequeue_task_scx() on why we skip when !QUEUED */
++	if (SCX_HAS_OP(stopping) && (p->scx.flags & SCX_TASK_QUEUED))
++		SCX_CALL_OP(SCX_KF_REST, stopping, p, true);
++
+ 	/*
+ 	 * If we're being called from put_prev_task_balance(), balance_scx() may
+ 	 * have decided that @p should keep running.
 -- 
 2.39.2
 
