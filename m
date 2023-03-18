@@ -2,76 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401886BF72E
-	for <lists+bpf@lfdr.de>; Sat, 18 Mar 2023 02:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431006BF741
+	for <lists+bpf@lfdr.de>; Sat, 18 Mar 2023 02:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjCRBR4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Mar 2023 21:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48206 "EHLO
+        id S229575AbjCRBlX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Mar 2023 21:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjCRBRy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Mar 2023 21:17:54 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A03E2501
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 18:17:53 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id p20so7094231plw.13
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 18:17:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679102273;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/bxEGCl74NBjmYda5W+5RT/IrofV83VCCSuSPlISIGs=;
-        b=o1KJK8mrzJl+wH72W7LzuJqUcSmhVrV466lmGbxr2kflBzgmmS73Dq5Y8AyH2EmVKe
-         qsS8unHtT66mfWYk/gu8hV0Tkeh0BlFb+d4JkXjyOKsk7nxNzwckj0dGcXAuGQa6Eme2
-         1ptVpXlEt5U/VyviioKLKZ7uNLMEwmWWJrhgETozvjnysCeOSkSraasZIEHPROLTfT0T
-         HG7d18HyWBLgqLNtmsTcxhdWXd5KZHS7EN2ip0fuGr/fBvAR0srAvta0awTXpl2z7OIL
-         vkMomHY7ZUhusRxGOzCXMQ6YRCBU1oQI5rtcdi+zMGbo9uQnWuGbbw+sLw+4u2Dk5JX/
-         9GtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679102273;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/bxEGCl74NBjmYda5W+5RT/IrofV83VCCSuSPlISIGs=;
-        b=hAibkh00LCcITVsuDumm88XEkxPsh46bEkvM8rqcEHaX9Rg4KdyZrQleaiSAwCF/XA
-         wThNPG4DbPObuOjygWXrXuISytFzi/sDsyY0+rC4OyGoZHCvhovnbJObVE09YcJHRvju
-         nIJFyQJDFqAcI04qk7nJw8RKYb8bfz27VzTgXHIux3oJMvLBPnWp0y+Eydez7zCffV57
-         0anfAZ80mXyDdtMwJRmLpDp2u1GAkqX5OjlzGHZ7GfsRBzSQwk2bsD5Zx3EhkNUsgIrU
-         +43B59+/ylZtG/nYMNjfjXfafz1gGDN2kZW6gYg0BUsMUOStO+ZLRAbJyKG55rpjOy6T
-         alww==
-X-Gm-Message-State: AO0yUKUYp7AjXySqJfWcOZV1pFIKcQlu91TCnDYQ5SrdsNaHJmPSGAoa
-        zpHxf0npMSuKorfkmC3txyM=
-X-Google-Smtp-Source: AK7set8H0Gl/RQq0UdEmgFA1GKuHGdh6ArIGuyw7ZyrA4693sxH4xys5eyF94ryRiK+BWdK9e8WWsA==
-X-Received: by 2002:a05:6a20:b704:b0:d0:15c9:4e67 with SMTP id fg4-20020a056a20b70400b000d015c94e67mr8951839pzb.19.1679102273312;
-        Fri, 17 Mar 2023 18:17:53 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c085:21e8::1380? ([2620:10d:c090:400::5:87c3])
-        by smtp.gmail.com with ESMTPSA id d16-20020aa78150000000b005825b8e0540sm2090555pfn.204.2023.03.17.18.17.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Mar 2023 18:17:52 -0700 (PDT)
-Message-ID: <b9010a3f-1a37-17f9-6185-c9563b81429a@gmail.com>
-Date:   Fri, 17 Mar 2023 18:17:51 -0700
+        with ESMTP id S229478AbjCRBlW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Mar 2023 21:41:22 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D4236FF9
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 18:41:21 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PdkDn4YbxzHwcD;
+        Sat, 18 Mar 2023 09:39:05 +0800 (CST)
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Sat, 18 Mar 2023 09:41:18 +0800
+Subject: Re: bpf_timer memory utilization
+To:     Chris Lai <chrlai@riotgames.com>
+CC:     bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <CAAFY1_4a5MC0-BkGcRx-5n-vdXZbjjrjEukwur+n4AOXFhMHFw@mail.gmail.com>
+ <CAADnVQLcqDOzXPSUUNyFE=UJHBP-ZgOEqFfaGynTUL-jQnw-=w@mail.gmail.com>
+ <CAAFY1_66-b063v+edsHPBbK6iuiE=KoY38=kr0FVzVLg5gkE_w@mail.gmail.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <af9d6b81-b3d4-9f48-5ec2-da00c084bf28@huawei.com>
+Date:   Sat, 18 Mar 2023 09:41:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v7 6/8] libbpf: Update a bpf_link with another
- struct_ops.
-Content-Language: en-US, en-ZW
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kui-Feng Lee <kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
-        sdf@google.com
-References: <20230316023641.2092778-1-kuifeng@meta.com>
- <20230316023641.2092778-7-kuifeng@meta.com>
- <CAEf4BzaYUdyfA4nL-SRiUUVCKKeO-oL6xXuXqa2WSvJqOQb_7g@mail.gmail.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAEf4BzaYUdyfA4nL-SRiUUVCKKeO-oL6xXuXqa2WSvJqOQb_7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <CAAFY1_66-b063v+edsHPBbK6iuiE=KoY38=kr0FVzVLg5gkE_w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,97 +53,53 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 3/17/23 15:33, Andrii Nakryiko wrote:
-> On Wed, Mar 15, 2023 at 7:37 PM Kui-Feng Lee <kuifeng@meta.com> wrote:
->>
->> Introduce bpf_link__update_map(), which allows to atomically update
->> underlying struct_ops implementation for given struct_ops BPF link
->>
->> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
->> ---
->>   tools/lib/bpf/libbpf.c   | 30 ++++++++++++++++++++++++++++++
->>   tools/lib/bpf/libbpf.h   |  1 +
->>   tools/lib/bpf/libbpf.map |  1 +
->>   3 files changed, 32 insertions(+)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 6dbae7ffab48..63ec1f8fe8a0 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -11659,6 +11659,36 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
->>          return &link->link;
->>   }
->>
->> +/*
->> + * Swap the back struct_ops of a link with a new struct_ops map.
->> + */
->> +int bpf_link__update_map(struct bpf_link *link, const struct bpf_map *map)
->> +{
->> +       struct bpf_link_struct_ops *st_ops_link;
->> +       __u32 zero = 0;
->> +       int err, fd;
->> +
->> +       if (!bpf_map__is_struct_ops(map) || map->fd < 0)
->> +               return -EINVAL;
->> +
->> +       st_ops_link = container_of(link, struct bpf_link_struct_ops, link);
->> +       /* Ensure the type of a link is correct */
->> +       if (st_ops_link->map_fd < 0)
->> +               return -EINVAL;
->> +
->> +       err = bpf_map_update_elem(map->fd, &zero, map->st_ops->kern_vdata, 0);
->> +       if (err && err != -EBUSY)
-> 
-> Why is it ok to ignore -EBUSY? Let's leave a comment as well, as this
-> is not clear.
+On 3/18/2023 12:40 AM, Chris Lai wrote:
+> Might be a bug using bpf_timer on Hashmap?
+> With same setups using bpf_timer but with LRU_Hashmap, the memory
+> usage is way better: see following
+>
+> with LRU_Hashmap
+> 16M capacity, 1 minute bpf_timer callback/cleanup..  (pre-allocation
+> ~5G),  memory usage peaked ~7G (Flat and does not fluctuate - unlike
+> Hashmap)
+> 32M capacity, 1 minute bpf_timer callback/cleanup..  (pre-allocation
+> ~8G),  memory usage peaked ~12G (Flat and does not fluctuate - unlike
+> Hashmap)
+In your setup, LRU hash map is preallocated and normal hash map is not
+preallocated (aka BPF_F_NO_PREALLOC), right ? If it is true, could you please
+test the memory usage of preallocated hash map ? Also could you please  share
+the version of used Linux kernel and the way on how to create hash map and
+operate on hash map ?
+>
+>
+>
+> On Thu, Mar 16, 2023 at 6:22 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Thu, Mar 16, 2023 at 12:18 PM Chris Lai <chrlai@riotgames.com> wrote:
+>>> Hello,
+>>> Using BPF Hashmap with bpf_timer for each entry value and callback to
+>>> delete the entry after 1 minute.
+>>> Constantly creating load to insert elements onto the map, we have
+>>> observed the following:
+>>> -3M map capacity, 1 minute bpf_timer callback/cleanup, memory usage
+>>> peaked around 5GB
+>>> -16M map capacity, 1 minute bpf_timer callback/cleanup, memory usage
+>>> peaked around 34GB
+>>> -24M map capacity, 1 minute bpf_timer callback/cleanup, memory usage
+>>> peaked around 55GB
+>>> Wondering if this is expected and what is causing the huge increase in
+>>> memory as we increase the number of elements inserted onto the map.
+>>> Thank you.
+Do the addition and deletion of hash map entry happen on different CPU ? If it
+is true and bpf memory allocator is used (kernel version >= 6.1), the memory
+blow-up may be explainable. Because the new allocation can not reuse the memory
+freed by entry deletion, so the memory usage will increase rapidly. I had tested
+such case and also written one selftest for such case, but it seems it only can
+be mitigated [1], because RCU tasks trace GP is slow. If your setup is sticking
+to non-preallocated hash map, you could first try to add
+"rcupdate.rcu_task_enqueue_lim=nr_cpus" in kernel bootcmd to mitigate the problem.
 
-got it!
+[1] https://lore.kernel.org/bpf/20221209010947.3130477-1-houtao@huaweicloud.com/
+>> That's not normal. Do you have a small reproducer?
+> .
 
-> 
->> +               return err;
->> +
->> +       fd = bpf_link_update(link->fd, map->fd, NULL);
->> +       if (fd < 0)
->> +               return fd;
->> +
->> +       st_ops_link->map_fd = map->fd;
->> +
->> +       return 0;
->> +}
->> +
->>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_event_header *hdr,
->>                                                            void *private_data);
->>
->> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->> index db4992a036f8..1615e55e2e79 100644
->> --- a/tools/lib/bpf/libbpf.h
->> +++ b/tools/lib/bpf/libbpf.h
->> @@ -719,6 +719,7 @@ bpf_program__attach_freplace(const struct bpf_program *prog,
->>   struct bpf_map;
->>
->>   LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map);
->> +LIBBPF_API int bpf_link__update_map(struct bpf_link *link, const struct bpf_map *map);
->>
->>   struct bpf_iter_attach_opts {
->>          size_t sz; /* size of this struct for forward/backward compatibility */
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index 50dde1f6521e..cc05be376257 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -387,6 +387,7 @@ LIBBPF_1.2.0 {
->>          global:
->>                  bpf_btf_get_info_by_fd;
->>                  bpf_link_get_info_by_fd;
->> +               bpf_link__update_map;
-> 
-> nit: this should go before bpf_link_get_info_by_fd ('_' orders before 'g')
-
-ok!
-
-> 
->>                  bpf_map_get_info_by_fd;
->>                  bpf_prog_get_info_by_fd;
->>   } LIBBPF_1.1.0;
->> --
->> 2.34.1
->>
