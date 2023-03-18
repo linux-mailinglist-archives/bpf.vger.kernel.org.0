@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EF96BF82F
-	for <lists+bpf@lfdr.de>; Sat, 18 Mar 2023 06:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F946BF808
+	for <lists+bpf@lfdr.de>; Sat, 18 Mar 2023 06:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbjCRF5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Mar 2023 01:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
+        id S229839AbjCRFjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Mar 2023 01:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbjCRF5J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Mar 2023 01:57:09 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E306CA7B9
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 22:57:07 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 32I0F5oG025781
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 22:57:07 -0700
+        with ESMTP id S229652AbjCRFjE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Mar 2023 01:39:04 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC785474D7
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 22:39:02 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32I3D4SP024703
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 22:39:02 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=250zDJIaOCI/0NSrmRzvQLYeEZCXgM1J8p6NoY5yvAo=;
- b=U/iCgNBjnOdUuMDf+wf67Xe3HpLYMbQRX+XVNIDqRxUmA/Cu0KZ1Zwm6mEcS6WACkhdm
- Hb97dt5zPyFlSSDTTt/p1MPMX6HtMKZ1v048U96Gv6wvPJcOq70i9mzNLmeOQl76bPcC
- /SXjDwJ1n62RGS+1gq0yx4V/YDenqjvEJl0r/Ez/qD5dZZ5GF6MRFYNpJd68pPeslhML
- sC0BpVyQsDeGzqaAvF78mm4rpY0mndN9ZtxLMwb2sa8Q99KWinjV64LQVM5gVTF1KvZX
- R1RD0TlOeaShx+ZhTQArYqNMD0WWGeBu0nK84EMCtwH6onzmxfJBf02AsjC/xpEhID5V HQ== 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3pcndedww9-4
+ bh=cLGbrYiSP2GxYN6pv6+F/7L8SNzfXLZ0+yVDwT2Ok/w=;
+ b=TcI2yP5w4/AylosloIZg2tFRB9y0l4te4McM+fDLhCz4bBJkLlteQaKpTMynKRueUO9b
+ GD3ml77A7J2V/6lM8O91YqTiQubXFawnBaYQ3wuXwzPvnZKr8V5A+l34bf0j1nkXTDtd
+ 3tKNIlDc/xVa0l6CU00tza5aEN3bP4b8eNaK2kahKiUYM8X+1VuwUmVwySaNyRh/RcI9
+ 5kXCSL71Bntl6zlOwq69DcwG9a1yXSiiTZgCU1qE3I+4Ea11QDt9/kbc2/SYJsgFdvOu
+ zXo6um0KPdZkuhUIicQcdvJJoiKU5z6Iv2+Z2Hk1YKB/gFt6Z3jRTE60NqPBxekfiuEZ xg== 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pcsvvmb4f-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 22:57:07 -0700
-Received: from twshared15216.17.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 17 Mar 2023 22:39:01 -0700
+Received: from twshared21709.17.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 17 Mar 2023 22:57:04 -0700
+ 15.1.2507.17; Fri, 17 Mar 2023 22:39:00 -0700
 Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 65AC879EB02F; Fri, 17 Mar 2023 22:31:53 -0700 (PDT)
+        id A292079EB04F; Fri, 17 Mar 2023 22:31:54 -0700 (PDT)
 From:   Kui-Feng Lee <kuifeng@meta.com>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <martin.lau@linux.dev>,
         <song@kernel.org>, <kernel-team@meta.com>, <andrii@kernel.org>,
         <sdf@google.com>
 CC:     Kui-Feng Lee <kuifeng@meta.com>
-Subject: [PATCH bpf-next v8 7/8] libbpf: Use .struct_ops.link section to indicate a struct_ops with a link.
-Date:   Fri, 17 Mar 2023 22:31:43 -0700
-Message-ID: <20230318053144.1180301-8-kuifeng@meta.com>
+Subject: [PATCH bpf-next v8 8/8] selftests/bpf: Test switching TCP Congestion Control algorithms.
+Date:   Fri, 17 Mar 2023 22:31:44 -0700
+Message-ID: <20230318053144.1180301-9-kuifeng@meta.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230318053144.1180301-1-kuifeng@meta.com>
 References: <20230318053144.1180301-1-kuifeng@meta.com>
@@ -51,8 +51,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: dBNXk_u6jTisnKIi2W3vl8IuLmX8eRNG
-X-Proofpoint-ORIG-GUID: dBNXk_u6jTisnKIi2W3vl8IuLmX8eRNG
+X-Proofpoint-GUID: HLZpnYnyy9FkoJDiPZIPcdyUZLoLYw_9
+X-Proofpoint-ORIG-GUID: HLZpnYnyy9FkoJDiPZIPcdyUZLoLYw_9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-18_02,2023-03-16_02,2023-02-09_01
@@ -66,269 +66,254 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Flags a struct_ops is to back a bpf_link by putting it to the
-".struct_ops.link" section.  Once it is flagged, the created
-struct_ops can be used to create a bpf_link or update a bpf_link that
-has been backed by another struct_ops.
+Create a pair of sockets that utilize the congestion control algorithm
+under a particular name. Then switch up this congestion control
+algorithm to another implementation and check whether newly created
+connections using the same cc name now run the new implementation.
+
+Also, try to update a link with a struct_ops that is without
+BPF_F_LINK or with a wrong or different name.  These cases should fail
+due to the violation of assumptions.  To update a bpf_link of a
+struct_ops, it must be replaced with another struct_ops that is
+identical in type and name and has the BPF_F_LINK flag.
+
+The other test case is to create links from the same struct_ops more
+than once.  It makes sure a struct_ops can be used repeatly.
 
 Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 60 +++++++++++++++++++++++++++++++-----------
- 1 file changed, 44 insertions(+), 16 deletions(-)
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 116 ++++++++++++++++++
+ .../selftests/bpf/progs/tcp_ca_update.c       |  80 ++++++++++++
+ 2 files changed, 196 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/tcp_ca_update.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index f84d68c049e3..d801ab3a46d8 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -468,6 +468,7 @@ struct bpf_struct_ops {
- #define KCONFIG_SEC ".kconfig"
- #define KSYMS_SEC ".ksyms"
- #define STRUCT_OPS_SEC ".struct_ops"
-+#define STRUCT_OPS_LINK_SEC ".struct_ops.link"
-=20
- enum libbpf_map_type {
- 	LIBBPF_MAP_UNSPEC,
-@@ -597,6 +598,7 @@ struct elf_state {
- 	Elf64_Ehdr *ehdr;
- 	Elf_Data *symbols;
- 	Elf_Data *st_ops_data;
-+	Elf_Data *st_ops_link_data;
- 	size_t shstrndx; /* section index for section name strings */
- 	size_t strtabidx;
- 	struct elf_sec_desc *secs;
-@@ -606,6 +608,7 @@ struct elf_state {
- 	int text_shndx;
- 	int symbols_shndx;
- 	int st_ops_shndx;
-+	int st_ops_link_shndx;
- };
-=20
- struct usdt_manager;
-@@ -1119,7 +1122,8 @@ static int bpf_object__init_kern_struct_ops_maps(st=
-ruct bpf_object *obj)
- 	return 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/=
+testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+index e980188d4124..5f3602326bbc 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+@@ -8,6 +8,7 @@
+ #include "bpf_dctcp.skel.h"
+ #include "bpf_cubic.skel.h"
+ #include "bpf_tcp_nogpl.skel.h"
++#include "tcp_ca_update.skel.h"
+ #include "bpf_dctcp_release.skel.h"
+ #include "tcp_ca_write_sk_pacing.skel.h"
+ #include "tcp_ca_incompl_cong_ops.skel.h"
+@@ -381,6 +382,113 @@ static void test_unsupp_cong_op(void)
+ 	libbpf_set_print(old_print_fn);
  }
 =20
--static int bpf_object__init_struct_ops_maps(struct bpf_object *obj)
-+static int init_struct_ops_maps(struct bpf_object *obj, const char *sec_=
-name,
-+				int shndx, Elf_Data *data, __u32 map_flags)
- {
- 	const struct btf_type *type, *datasec;
- 	const struct btf_var_secinfo *vsi;
-@@ -1130,15 +1134,15 @@ static int bpf_object__init_struct_ops_maps(struc=
-t bpf_object *obj)
- 	struct bpf_map *map;
- 	__u32 i;
-=20
--	if (obj->efile.st_ops_shndx =3D=3D -1)
-+	if (shndx =3D=3D -1)
- 		return 0;
-=20
- 	btf =3D obj->btf;
--	datasec_id =3D btf__find_by_name_kind(btf, STRUCT_OPS_SEC,
-+	datasec_id =3D btf__find_by_name_kind(btf, sec_name,
- 					    BTF_KIND_DATASEC);
- 	if (datasec_id < 0) {
- 		pr_warn("struct_ops init: DATASEC %s not found\n",
--			STRUCT_OPS_SEC);
-+			sec_name);
- 		return -EINVAL;
- 	}
-=20
-@@ -1151,7 +1155,7 @@ static int bpf_object__init_struct_ops_maps(struct =
-bpf_object *obj)
- 		type_id =3D btf__resolve_type(obj->btf, vsi->type);
- 		if (type_id < 0) {
- 			pr_warn("struct_ops init: Cannot resolve var type_id %u in DATASEC %s=
-\n",
--				vsi->type, STRUCT_OPS_SEC);
-+				vsi->type, sec_name);
- 			return -EINVAL;
- 		}
-=20
-@@ -1170,7 +1174,7 @@ static int bpf_object__init_struct_ops_maps(struct =
-bpf_object *obj)
- 		if (IS_ERR(map))
- 			return PTR_ERR(map);
-=20
--		map->sec_idx =3D obj->efile.st_ops_shndx;
-+		map->sec_idx =3D shndx;
- 		map->sec_offset =3D vsi->offset;
- 		map->name =3D strdup(var_name);
- 		if (!map->name)
-@@ -1180,6 +1184,7 @@ static int bpf_object__init_struct_ops_maps(struct =
-bpf_object *obj)
- 		map->def.key_size =3D sizeof(int);
- 		map->def.value_size =3D type->size;
- 		map->def.max_entries =3D 1;
-+		map->def.map_flags =3D map_flags;
-=20
- 		map->st_ops =3D calloc(1, sizeof(*map->st_ops));
- 		if (!map->st_ops)
-@@ -1192,14 +1197,14 @@ static int bpf_object__init_struct_ops_maps(struc=
-t bpf_object *obj)
- 		if (!st_ops->data || !st_ops->progs || !st_ops->kern_func_off)
- 			return -ENOMEM;
-=20
--		if (vsi->offset + type->size > obj->efile.st_ops_data->d_size) {
-+		if (vsi->offset + type->size > data->d_size) {
- 			pr_warn("struct_ops init: var %s is beyond the end of DATASEC %s\n",
--				var_name, STRUCT_OPS_SEC);
-+				var_name, sec_name);
- 			return -EINVAL;
- 		}
-=20
- 		memcpy(st_ops->data,
--		       obj->efile.st_ops_data->d_buf + vsi->offset,
-+		       data->d_buf + vsi->offset,
- 		       type->size);
- 		st_ops->tname =3D tname;
- 		st_ops->type =3D type;
-@@ -1212,6 +1217,19 @@ static int bpf_object__init_struct_ops_maps(struct=
- bpf_object *obj)
- 	return 0;
- }
-=20
-+static int bpf_object_init_struct_ops(struct bpf_object *obj)
++static void test_update_ca(void)
 +{
++	struct tcp_ca_update *skel;
++	struct bpf_link *link;
++	int saved_ca1_cnt;
 +	int err;
 +
-+	err =3D init_struct_ops_maps(obj, STRUCT_OPS_SEC, obj->efile.st_ops_shn=
-dx,
-+				   obj->efile.st_ops_data, 0);
-+	err =3D err ?: init_struct_ops_maps(obj, STRUCT_OPS_LINK_SEC,
-+					  obj->efile.st_ops_link_shndx,
-+					  obj->efile.st_ops_link_data,
-+					  BPF_F_LINK);
-+	return err;
++	skel =3D tcp_ca_update__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open"))
++		return;
++
++	link =3D bpf_map__attach_struct_ops(skel->maps.ca_update_1);
++	ASSERT_OK_PTR(link, "attach_struct_ops");
++
++	do_test("tcp_ca_update", NULL);
++	saved_ca1_cnt =3D skel->bss->ca1_cnt;
++	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
++
++	err =3D bpf_link__update_map(link, skel->maps.ca_update_2);
++	ASSERT_OK(err, "update_map");
++
++	do_test("tcp_ca_update", NULL);
++	ASSERT_EQ(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
++	ASSERT_GT(skel->bss->ca2_cnt, 0, "ca2_ca2_cnt");
++
++	bpf_link__destroy(link);
++	tcp_ca_update__destroy(skel);
 +}
 +
- static struct bpf_object *bpf_object__new(const char *path,
- 					  const void *obj_buf,
- 					  size_t obj_buf_sz,
-@@ -1248,6 +1266,7 @@ static struct bpf_object *bpf_object__new(const cha=
-r *path,
- 	obj->efile.obj_buf_sz =3D obj_buf_sz;
- 	obj->efile.btf_maps_shndx =3D -1;
- 	obj->efile.st_ops_shndx =3D -1;
-+	obj->efile.st_ops_link_shndx =3D -1;
- 	obj->kconfig_map_idx =3D -1;
-=20
- 	obj->kern_version =3D get_kernel_version();
-@@ -1265,6 +1284,7 @@ static void bpf_object__elf_finish(struct bpf_objec=
-t *obj)
- 	obj->efile.elf =3D NULL;
- 	obj->efile.symbols =3D NULL;
- 	obj->efile.st_ops_data =3D NULL;
-+	obj->efile.st_ops_link_data =3D NULL;
-=20
- 	zfree(&obj->efile.secs);
- 	obj->efile.sec_cnt =3D 0;
-@@ -2619,7 +2639,7 @@ static int bpf_object__init_maps(struct bpf_object =
-*obj,
- 	err =3D bpf_object__init_user_btf_maps(obj, strict, pin_root_path);
- 	err =3D err ?: bpf_object__init_global_data_maps(obj);
- 	err =3D err ?: bpf_object__init_kconfig_map(obj);
--	err =3D err ?: bpf_object__init_struct_ops_maps(obj);
-+	err =3D err ?: bpf_object_init_struct_ops(obj);
-=20
- 	return err;
- }
-@@ -2753,12 +2773,13 @@ static bool libbpf_needs_btf(const struct bpf_obj=
-ect *obj)
++static void test_update_wrong(void)
++{
++	struct tcp_ca_update *skel;
++	struct bpf_link *link;
++	int saved_ca1_cnt;
++	int err;
++
++	skel =3D tcp_ca_update__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open"))
++		return;
++
++	link =3D bpf_map__attach_struct_ops(skel->maps.ca_update_1);
++	ASSERT_OK_PTR(link, "attach_struct_ops");
++
++	do_test("tcp_ca_update", NULL);
++	saved_ca1_cnt =3D skel->bss->ca1_cnt;
++	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
++
++	err =3D bpf_link__update_map(link, skel->maps.ca_wrong);
++	ASSERT_ERR(err, "update_map");
++
++	do_test("tcp_ca_update", NULL);
++	ASSERT_GT(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
++
++	bpf_link__destroy(link);
++	tcp_ca_update__destroy(skel);
++}
++
++static void test_mixed_links(void)
++{
++	struct tcp_ca_update *skel;
++	struct bpf_link *link, *link_nl;
++	int err;
++
++	skel =3D tcp_ca_update__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open"))
++		return;
++
++	link_nl =3D bpf_map__attach_struct_ops(skel->maps.ca_no_link);
++	ASSERT_OK_PTR(link_nl, "attach_struct_ops_nl");
++
++	link =3D bpf_map__attach_struct_ops(skel->maps.ca_update_1);
++	ASSERT_OK_PTR(link, "attach_struct_ops");
++
++	do_test("tcp_ca_update", NULL);
++	ASSERT_GT(skel->bss->ca1_cnt, 0, "ca1_ca1_cnt");
++
++	err =3D bpf_link__update_map(link, skel->maps.ca_no_link);
++	ASSERT_ERR(err, "update_map");
++
++	bpf_link__destroy(link);
++	bpf_link__destroy(link_nl);
++	tcp_ca_update__destroy(skel);
++}
++
++static void test_multi_links(void)
++{
++	struct tcp_ca_update *skel;
++	struct bpf_link *link;
++
++	skel =3D tcp_ca_update__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open"))
++		return;
++
++	link =3D bpf_map__attach_struct_ops(skel->maps.ca_update_1);
++	ASSERT_OK_PTR(link, "attach_struct_ops_1st");
++	bpf_link__destroy(link);
++
++	/* A map should be able to be used to create links multiple
++	 * times.
++	 */
++	link =3D bpf_map__attach_struct_ops(skel->maps.ca_update_1);
++	ASSERT_OK_PTR(link, "attach_struct_ops_2nd");
++	bpf_link__destroy(link);
++
++	tcp_ca_update__destroy(skel);
++}
++
+ void test_bpf_tcp_ca(void)
  {
- 	return obj->efile.btf_maps_shndx >=3D 0 ||
- 	       obj->efile.st_ops_shndx >=3D 0 ||
-+	       obj->efile.st_ops_link_shndx >=3D 0 ||
- 	       obj->nr_extern > 0;
+ 	if (test__start_subtest("dctcp"))
+@@ -399,4 +507,12 @@ void test_bpf_tcp_ca(void)
+ 		test_incompl_cong_ops();
+ 	if (test__start_subtest("unsupp_cong_op"))
+ 		test_unsupp_cong_op();
++	if (test__start_subtest("update_ca"))
++		test_update_ca();
++	if (test__start_subtest("update_wrong"))
++		test_update_wrong();
++	if (test__start_subtest("mixed_links"))
++		test_mixed_links();
++	if (test__start_subtest("multi_links"))
++		test_multi_links();
  }
-=20
- static bool kernel_needs_btf(const struct bpf_object *obj)
- {
--	return obj->efile.st_ops_shndx >=3D 0;
-+	return obj->efile.st_ops_shndx >=3D 0 || obj->efile.st_ops_link_shndx >=
-=3D 0;
- }
-=20
- static int bpf_object__init_btf(struct bpf_object *obj,
-@@ -3451,6 +3472,9 @@ static int bpf_object__elf_collect(struct bpf_objec=
-t *obj)
- 			} else if (strcmp(name, STRUCT_OPS_SEC) =3D=3D 0) {
- 				obj->efile.st_ops_data =3D data;
- 				obj->efile.st_ops_shndx =3D idx;
-+			} else if (strcmp(name, STRUCT_OPS_LINK_SEC) =3D=3D 0) {
-+				obj->efile.st_ops_link_data =3D data;
-+				obj->efile.st_ops_link_shndx =3D idx;
- 			} else {
- 				pr_info("elf: skipping unrecognized data section(%d) %s\n",
- 					idx, name);
-@@ -3465,6 +3489,7 @@ static int bpf_object__elf_collect(struct bpf_objec=
-t *obj)
- 			/* Only do relo for section with exec instructions */
- 			if (!section_have_execinstr(obj, targ_sec_idx) &&
- 			    strcmp(name, ".rel" STRUCT_OPS_SEC) &&
-+			    strcmp(name, ".rel" STRUCT_OPS_LINK_SEC) &&
- 			    strcmp(name, ".rel" MAPS_ELF_SEC)) {
- 				pr_info("elf: skipping relo section(%d) %s for section(%d) %s\n",
- 					idx, name, targ_sec_idx,
-@@ -6611,7 +6636,7 @@ static int bpf_object__collect_relos(struct bpf_obj=
-ect *obj)
- 			return -LIBBPF_ERRNO__INTERNAL;
- 		}
-=20
--		if (idx =3D=3D obj->efile.st_ops_shndx)
-+		if (idx =3D=3D obj->efile.st_ops_shndx || idx =3D=3D obj->efile.st_ops=
-_link_shndx)
- 			err =3D bpf_object__collect_st_ops_relos(obj, shdr, data);
- 		else if (idx =3D=3D obj->efile.btf_maps_shndx)
- 			err =3D bpf_object__collect_map_relos(obj, shdr, data);
-@@ -8850,6 +8875,7 @@ const char *libbpf_bpf_prog_type_str(enum bpf_prog_=
-type t)
- }
-=20
- static struct bpf_map *find_struct_ops_map_by_offset(struct bpf_object *=
-obj,
-+						     int sec_idx,
- 						     size_t offset)
- {
- 	struct bpf_map *map;
-@@ -8859,7 +8885,8 @@ static struct bpf_map *find_struct_ops_map_by_offse=
-t(struct bpf_object *obj,
- 		map =3D &obj->maps[i];
- 		if (!bpf_map__is_struct_ops(map))
- 			continue;
--		if (map->sec_offset <=3D offset &&
-+		if (map->sec_idx =3D=3D sec_idx &&
-+		    map->sec_offset <=3D offset &&
- 		    offset - map->sec_offset < map->def.value_size)
- 			return map;
- 	}
-@@ -8901,7 +8928,7 @@ static int bpf_object__collect_st_ops_relos(struct =
-bpf_object *obj,
- 		}
-=20
- 		name =3D elf_sym_str(obj, sym->st_name) ?: "<?>";
--		map =3D find_struct_ops_map_by_offset(obj, rel->r_offset);
-+		map =3D find_struct_ops_map_by_offset(obj, shdr->sh_info, rel->r_offse=
-t);
- 		if (!map) {
- 			pr_warn("struct_ops reloc: cannot find map at rel->r_offset %zu\n",
- 				(size_t)rel->r_offset);
-@@ -8968,8 +8995,9 @@ static int bpf_object__collect_st_ops_relos(struct =
-bpf_object *obj,
- 		}
-=20
- 		/* struct_ops BPF prog can be re-used between multiple
--		 * .struct_ops as long as it's the same struct_ops struct
--		 * definition and the same function pointer field
-+		 * .struct_ops & .struct_ops.link as long as it's the
-+		 * same struct_ops struct definition and the same
-+		 * function pointer field
- 		 */
- 		if (prog->attach_btf_id !=3D st_ops->type_id ||
- 		    prog->expected_attach_type !=3D member_idx) {
+diff --git a/tools/testing/selftests/bpf/progs/tcp_ca_update.c b/tools/te=
+sting/selftests/bpf/progs/tcp_ca_update.c
+new file mode 100644
+index 000000000000..b93a0ed33057
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tcp_ca_update.c
+@@ -0,0 +1,80 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") =3D "GPL";
++
++int ca1_cnt =3D 0;
++int ca2_cnt =3D 0;
++
++static inline struct tcp_sock *tcp_sk(const struct sock *sk)
++{
++	return (struct tcp_sock *)sk;
++}
++
++SEC("struct_ops/ca_update_1_init")
++void BPF_PROG(ca_update_1_init, struct sock *sk)
++{
++	ca1_cnt++;
++}
++
++SEC("struct_ops/ca_update_2_init")
++void BPF_PROG(ca_update_2_init, struct sock *sk)
++{
++	ca2_cnt++;
++}
++
++SEC("struct_ops/ca_update_cong_control")
++void BPF_PROG(ca_update_cong_control, struct sock *sk,
++	      const struct rate_sample *rs)
++{
++}
++
++SEC("struct_ops/ca_update_ssthresh")
++__u32 BPF_PROG(ca_update_ssthresh, struct sock *sk)
++{
++	return tcp_sk(sk)->snd_ssthresh;
++}
++
++SEC("struct_ops/ca_update_undo_cwnd")
++__u32 BPF_PROG(ca_update_undo_cwnd, struct sock *sk)
++{
++	return tcp_sk(sk)->snd_cwnd;
++}
++
++SEC(".struct_ops.link")
++struct tcp_congestion_ops ca_update_1 =3D {
++	.init =3D (void *)ca_update_1_init,
++	.cong_control =3D (void *)ca_update_cong_control,
++	.ssthresh =3D (void *)ca_update_ssthresh,
++	.undo_cwnd =3D (void *)ca_update_undo_cwnd,
++	.name =3D "tcp_ca_update",
++};
++
++SEC(".struct_ops.link")
++struct tcp_congestion_ops ca_update_2 =3D {
++	.init =3D (void *)ca_update_2_init,
++	.cong_control =3D (void *)ca_update_cong_control,
++	.ssthresh =3D (void *)ca_update_ssthresh,
++	.undo_cwnd =3D (void *)ca_update_undo_cwnd,
++	.name =3D "tcp_ca_update",
++};
++
++SEC(".struct_ops.link")
++struct tcp_congestion_ops ca_wrong =3D {
++	.cong_control =3D (void *)ca_update_cong_control,
++	.ssthresh =3D (void *)ca_update_ssthresh,
++	.undo_cwnd =3D (void *)ca_update_undo_cwnd,
++	.name =3D "tcp_ca_wrong",
++};
++
++SEC(".struct_ops")
++struct tcp_congestion_ops ca_no_link =3D {
++	.cong_control =3D (void *)ca_update_cong_control,
++	.ssthresh =3D (void *)ca_update_ssthresh,
++	.undo_cwnd =3D (void *)ca_update_undo_cwnd,
++	.name =3D "tcp_ca_no_link",
++};
 --=20
 2.34.1
 
