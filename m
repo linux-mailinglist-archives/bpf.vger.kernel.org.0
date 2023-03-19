@@ -2,69 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE9F6BFFCB
-	for <lists+bpf@lfdr.de>; Sun, 19 Mar 2023 08:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6326BFFCC
+	for <lists+bpf@lfdr.de>; Sun, 19 Mar 2023 08:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbjCSHhi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Mar 2023 03:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
+        id S229481AbjCSHjS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Mar 2023 03:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjCSHhh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Mar 2023 03:37:37 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602391515E
-        for <bpf@vger.kernel.org>; Sun, 19 Mar 2023 00:37:34 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id 133so2847656qkh.8
-        for <bpf@vger.kernel.org>; Sun, 19 Mar 2023 00:37:34 -0700 (PDT)
+        with ESMTP id S229861AbjCSHjR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Mar 2023 03:39:17 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3DF1B31C
+        for <bpf@vger.kernel.org>; Sun, 19 Mar 2023 00:39:14 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id t9so9935673qtx.8
+        for <bpf@vger.kernel.org>; Sun, 19 Mar 2023 00:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679211453;
+        d=gmail.com; s=20210112; t=1679211553;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aHu2z1nhNaih7n88M6X8xgvwrGn+C+FhH21HuBFc+Rw=;
-        b=BbKknQBJpDUysvloJ8q7gXPvbazDISxdU5A3ej/euKyHt3Nk2FapGzBfNO2ys/TgMd
-         Br2PYNxBNtubFJBl42j+UqoKc8Vs7FSrNYPBS4q+al8QU2QfWNFL2ANRA+A32febzU38
-         lHRyNUMD8u1G/CJmRFy3JIuzGSAScnD08/fqWqVVoiTLDEz5Ioug9jax9TT4heIF5IWx
-         DXYV6LyllqnXDIj6Y8adVjBJOexu8Sx3UF+1Nn8a2rlXFydXhGbC/iJQhw6+dqneQrDD
-         a5SdWBYuC7H5d8tkAlGP2jqJDbBfu+pK55S66Z0QwEBdV8VXUlBZQCflg8sJaUH3d69v
-         ZukA==
+        bh=3HSeEQ4JCB9RTOBsFnKC3Z8CyYqW4wonc9wVXqs0aW8=;
+        b=au+vBLb+MM7ulgcjNtG+v6T0dAS4n4ejgGh1RA6+hUjhXu3tnCxHYnwGQ2W3SHSum3
+         Oqvt5H8wRXZ7O9WQZ1xSiWeBQryEIM8470ypzTfRAis8LplfrTByhG94nNjhiAsV6A2z
+         zbusqJ/ZLTi0BHvmS+BKQxRAZNIfnz/6GPkWthgS6l6oFsoILril6Mu2ugr1slxwT3kV
+         J+4dAIeoSXdqorlUzChXIAqwnW8chbzfH2nzvjCVQg79HtAejRclzjcuNIa3SoQi8SsZ
+         UfpaMK6/4gsmxoCQVVnUhtIhnrkbRilDk5oVj95JGiXS6Z4cWjpq30LKn++aj9v+6AWB
+         iwcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679211453;
+        d=1e100.net; s=20210112; t=1679211553;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aHu2z1nhNaih7n88M6X8xgvwrGn+C+FhH21HuBFc+Rw=;
-        b=WzD+Gwvagn0RMo0jhOs+U6FOuOqRR6WlbeO/nvE3AHseitDmmnZioaEBdfwLbM79yF
-         BRF9zo/t9PK/QTIDNB6LNXMMoPBPwUJ3UolkuIwpXixM/1go4R9CybdOeCQasHmT2O8u
-         80sUpDlOME8hVXb0FMAPMlMusY9e1AJcIClawxOmrmR09TRY7kYHVg4OHXGgpSv7hZYh
-         9SohjKRvH4XwPxNkPY55yCo6Z4pf1/vqLgOmcig22VT0HsD/CoyBQBr2TjbWy7Szmhc6
-         VPwAp5Jr6mtE42RXhprlFn2nfNWjodb8TzxpFfMoXsUs7ZkKTevQDMiYi3dA++TRdM00
-         x9dQ==
-X-Gm-Message-State: AO0yUKVirj9hT410Ud4u83or42d5IyvgvmcDZagpvYg91i80/S/0Sfgf
-        kZw9RP9ryCbTnqI2ne0ZG6mh3MlBW/oLG4MKFZc=
-X-Google-Smtp-Source: AK7set8//15ZVN3zMSEjAjujf0sYzniy94se04MN6daMYh6zBm86BdqQ38py2JRiG/eFC+vQ5SvQ5H8cSENQkT4Sb0E=
-X-Received: by 2002:a05:620a:a12:b0:746:7228:9533 with SMTP id
- i18-20020a05620a0a1200b0074672289533mr519778qka.4.1679211453431; Sun, 19 Mar
- 2023 00:37:33 -0700 (PDT)
+        bh=3HSeEQ4JCB9RTOBsFnKC3Z8CyYqW4wonc9wVXqs0aW8=;
+        b=XGjHBC/HMEiYKxA8vQKqAt03q/hxzZEzB615NbcTUgPLtZU4YVo2tZ5RKwh3g2xG2g
+         HwuGqoHyaOH2JXFfXRY84g6M3u/cUnwCqmS2ahB3RMxV4+hRf26qatfK1QfdopVA6jEe
+         t4Peu8sRd3Q2cr885i3+q14sjERG/Aa7OoRv/n3/Gcd3RRQuXUvSqePfLdJ9jr2QwGOQ
+         6d+ju+YQCafjHFoPj48MqoWDNKkWRB/w48IScfZ9Qe2rW3doZevMue8YlyLKATG/xKvk
+         cXztlDF45DeHPgT81+zQhssLyHw6kEPfl6WUXQH6cF/OVizVVwTfnzRysr8Sh6ARi3XO
+         dNIA==
+X-Gm-Message-State: AO0yUKVREOBMs2djeAQHrbB3k9Yd0ydCcjhYIRiHMJ+qvTRfFSb7Iq/4
+        dN3HgVpP4CkVnHYPystDZ2oHYwqXg6xi6MfWQrM=
+X-Google-Smtp-Source: AK7set9SxHeuqPgC4pHXuHWVidIKIqjTYEAO4qTWFzxmzjR94l5xqGrmMcFhpw5VbBN48FZWPYJghds7gFpLQ94CyBU=
+X-Received: by 2002:ac8:42c6:0:b0:3c0:40c1:e5ac with SMTP id
+ g6-20020ac842c6000000b003c040c1e5acmr3629009qtm.6.1679211553407; Sun, 19 Mar
+ 2023 00:39:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230317114832.13622-1-laoar.shao@gmail.com> <CAADnVQK25mz+9JZrKLEwFbJougyF08_9in=dEdrsvqSOaKRneA@mail.gmail.com>
-In-Reply-To: <CAADnVQK25mz+9JZrKLEwFbJougyF08_9in=dEdrsvqSOaKRneA@mail.gmail.com>
+References: <20230317114832.13622-1-laoar.shao@gmail.com> <CAEf4BzbdFHt00E+XbZdmT4wYFfx8isfvRQ9JpbUkDaH30XaMtw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbdFHt00E+XbZdmT4wYFfx8isfvRQ9JpbUkDaH30XaMtw@mail.gmail.com>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sun, 19 Mar 2023 15:36:57 +0800
-Message-ID: <CALOAHbA9rQGGmBN7dV4qqdeq0MQAbK_m4f19nj-BTXo9zbe1Tg@mail.gmail.com>
+Date:   Sun, 19 Mar 2023 15:38:37 +0800
+Message-ID: <CALOAHbBoOZNsCu-uj0UiY-0knCKjB12W8boQnjaP6faZ-h4Dkw@mail.gmail.com>
 Subject: Re: [PATCH bpf-next] selftests/bpf: Filter out preempt_count_
  functions from kprobe_multi bench
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,8 +71,8 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 18, 2023 at 12:52=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Sat, Mar 18, 2023 at 12:41=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
 > On Fri, Mar 17, 2023 at 4:49=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com=
 > wrote:
@@ -125,35 +119,54 @@ sub
 > > function, which is not executed in rcu safe context so the kprobe handl=
 er
 > > on top of it will trigger the rcu warning.
+> >
+> > Filtering out preempt_count_ functions from the bench test.
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c=
+ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> > index 22be0a9..5561b93 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> > @@ -379,6 +379,8 @@ static int get_syms(char ***symsp, size_t *cntp, bo=
+ol kernel)
+> >                 if (!strncmp(name, "__ftrace_invalid_address__",
+> >                              sizeof("__ftrace_invalid_address__") - 1))
+> >                         continue;
+> > +               if (!strncmp(name, "preempt_count_", strlen("preempt_co=
+unt_")))
+> > +                       continue;
+> >
 >
-> Why is that?
+> let's add str_has_pfx() helper macro from libbpf_internal.h to
+> test_progs.h and use that instead of repeating each substring twice?
+>
 
-It is caused by CONFIG_CONTEXT_TRACKING_USER=3Dy, and it seems the
-preempt_count_sub is executed before the RCU is watching.
-  user_exit_irqoff
-      if (context_tracking_enabled())  // CONFIG_CONTEXT_TRACKING_USER=3Dy
-          __ct_user_exit(CONTEXT_USER);
-             ct_kernel_enter
-                 ...
-                 // RCU is not watching here ...
-                 ct_kernel_enter_state(offset);
-                 // ... but is watching here.
+Thanks for the suggestion.
 
-It can be reproduced with a simple bpf code as follows when
-CONFIG_CONTEXT_TRACKING_USER=3Dy,
-  SEC("kprobe.multi/preempt_count_sub")
-  int kprobe_multi_trace()
-  {
-      return 0;
-  }
+> Here's what libbpf is doing:
+>
+> /* Check whether a string `str` has prefix `pfx`, regardless if `pfx` is
+>  * a string literal known at compilation time or char * pointer known onl=
+y at
+>  * runtime.
+>  */
+> #define str_has_pfx(str, pfx) \
+>         (strncmp(str, pfx, __builtin_constant_p(pfx) ? sizeof(pfx) - 1
+> : strlen(pfx)) =3D=3D 0)
+>
+>
+> >                 err =3D hashmap__add(map, name, 0);
+> >                 if (err =3D=3D -EEXIST)
+> > --
+> > 1.8.3.1
+> >
 
-> preempt_count itself is fine.
-> The problem is elsewhere.
-> Since !rcu_is_watching() it some sort of idle or some other issue.
 
-Not sure if we need to improve the code under
-CONFIG_CONTEXT_TRACKING_USER=3Dy, but it seems skipping "preempt_count_"
-in kprobe_multi test case would be a quick fix.
 
 --=20
 Regards
