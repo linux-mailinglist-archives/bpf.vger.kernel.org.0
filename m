@@ -2,145 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 333E96C049F
-	for <lists+bpf@lfdr.de>; Sun, 19 Mar 2023 20:58:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC3C6C04CE
+	for <lists+bpf@lfdr.de>; Sun, 19 Mar 2023 21:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjCST6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Mar 2023 15:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
+        id S229964AbjCSUaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Mar 2023 16:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbjCST6c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Mar 2023 15:58:32 -0400
-Received: from mail-wm1-x362.google.com (mail-wm1-x362.google.com [IPv6:2a00:1450:4864:20::362])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC8B193DA
-        for <bpf@vger.kernel.org>; Sun, 19 Mar 2023 12:58:29 -0700 (PDT)
-Received: by mail-wm1-x362.google.com with SMTP id o11-20020a05600c4fcb00b003eb33ea29a8so6298423wmq.1
-        for <bpf@vger.kernel.org>; Sun, 19 Mar 2023 12:58:29 -0700 (PDT)
+        with ESMTP id S229950AbjCSUaU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Mar 2023 16:30:20 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD991CBC6;
+        Sun, 19 Mar 2023 13:30:19 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id lr16-20020a17090b4b9000b0023f187954acso10406683pjb.2;
+        Sun, 19 Mar 2023 13:30:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1679255908;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ugxvd8UKF7NxIIzphZkT6ey/EusNfyQo98VW+VJFOiI=;
-        b=KVi2bUlaxkySvVdD7fhFj3qNpgz5FCFnpwYkhvQvB+1g/8EtZhSYaen0b7yYjGGYuF
-         NL0NWeX+eOgD6zmL90OXF54N7JhNozKky3ouuw3FVLEWT+DtvaQIE+/cqM2OPjCaqy2V
-         FHmk9p2o9CBGvChm+kdqqvbXoFs5/aQnY3voQ=
+        d=gmail.com; s=20210112; t=1679257818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=z6U7h+18D0pAf+5776vhLSgUetS4tsbDR4TcPakq23Y=;
+        b=ZtIH7ZyVso5irfhW2mx27LQVkDKdVklVivZ36isjuTRRIDtc8lzibbxMcmF5qPaRP6
+         oN24b0Tb/fBzA/69qep9pG+KDDej91whoaGjQOeEjcQN3z950bVVPkAdfkdZrm+uB00a
+         bjg/wtZDFTwHnFI4t7sNcoAbGAai7v7qLTjx4V2ULQHx5n87zLnaq0OlPJfaZBJoS+6D
+         MOktTg8mT6YsMLEfj2uN8yqjZPCbghZxar/zr6Vv0Du+NO74UTeC2rlkKn0gst841BsF
+         rGmu4glHWprBqmma7fOfC+mUUoUmVwU/UagToqUUNKK17Cfz8NcNNLjWDQnkbGJ3nv8J
+         FMeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679255908;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ugxvd8UKF7NxIIzphZkT6ey/EusNfyQo98VW+VJFOiI=;
-        b=luar4lbodrLkrYz4UZ+s4D5p+ZSg1dI0mTRG5KPIhOhLkhAVg9UVkO5ROQ0hzYlSi0
-         JqQF7MeGLfYLbqAAqUP0KwsE3fvWkwqRDib51+NMTV+lqYF1Rfd5aRAQBQabrTvPqI1W
-         6q/lIc8VQwG8+CHMmwb7ai8tUSNeQQYCCJLcdS4nIHLSH5ui+k3O1tmbGRFXLzdLEBCE
-         OqgrgE540KkZF16WW4OV66kkTLhAYYL0jcuLjrTlQEd2VMGzzNJF33/GLPpMF2vz9VjG
-         uK3dbykTTBDmRIqxE9mylXPmHAybdarJ3+20gDKXDK1zEgvtegJUu1uBD6/V826ANGa1
-         GIog==
-X-Gm-Message-State: AO0yUKXkP12Sdosr6iBrkaLzufvV7caUigJzllwu0hK6URbyxJEDxtMG
-        aEM9OTU8blKmXKr64n4EVoCW99uz5rzxReJOY5mmZ4SWM4hn
-X-Google-Smtp-Source: AK7set+3PKHJJmz3XmMQAw6iCJpB6/q2hhXE/qAPOBhgn9qUnFXl5SWdKtZpa8Pn+dkZw+C8wHGU2K+Wzh2w
-X-Received: by 2002:a1c:ed16:0:b0:3ed:a45d:aee9 with SMTP id l22-20020a1ced16000000b003eda45daee9mr4993314wmh.39.1679255908000;
-        Sun, 19 Mar 2023 12:58:28 -0700 (PDT)
-Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
-        by smtp-relay.gmail.com with ESMTPS id m26-20020a7bca5a000000b003b499f88f52sm2728807wml.7.2023.03.19.12.58.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Mar 2023 12:58:27 -0700 (PDT)
-X-Relaying-Domain: dectris.com
-From:   Kal Conley <kal.conley@dectris.com>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] selftests: xsk: Add tests for 8K and 9K frame sizes
-Date:   Sun, 19 Mar 2023 20:56:56 +0100
-Message-Id: <20230319195656.326701-4-kal.conley@dectris.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230319195656.326701-1-kal.conley@dectris.com>
-References: <20230319195656.326701-1-kal.conley@dectris.com>
+        d=1e100.net; s=20210112; t=1679257818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z6U7h+18D0pAf+5776vhLSgUetS4tsbDR4TcPakq23Y=;
+        b=6sVpB59Gix3/SDq3B1gpX/hW2FCEWmBYFFRiz+15YDOH0YcTX+DeOoj95rbBxC5ndM
+         KF3dMHFpltDuXCgNRNzSsorLfo0Z2XjslNwgekWK4jlH7xzIwy3Zdp8jTStVWp4FKHKH
+         0EK/9RpaDrnBYJV2J9Wmoy11XQ3UndAAlvl0mZAp15n3MpWh6ea3Zdv1BVo2NG9CHnBU
+         JP76zqzhAsRElmddPXYSnRrRh00XX4LQs17RlolaCoezTabcolgqP6RGXzKtGczYouor
+         gkCxSUUZZOnfjDFVqAIBf63Bp2Ku0+RcLOxlNy5y/oOuZr81vKdjgJt3azSMglztT7XE
+         zWiQ==
+X-Gm-Message-State: AO0yUKU7nYRuXzK6fIezwqgJQWFKXXXD6dGaagxFkRmSobTtbEdcX8ys
+        UzflUxVdwmEIChREw/4Mn12Z2sg2FMQ=
+X-Google-Smtp-Source: AK7set/Gzaj+6e7u7rwZunWpEkZi4zyAJpL/4RPh974sc0xZe5hk17vr5uQlrNV6fQ5Xk+T0sJjcew==
+X-Received: by 2002:a05:6a20:429a:b0:c2:fb92:3029 with SMTP id o26-20020a056a20429a00b000c2fb923029mr20853968pzj.33.1679257818395;
+        Sun, 19 Mar 2023 13:30:18 -0700 (PDT)
+Received: from dhcp-172-26-102-232.DHCP.thefacebook.com ([2620:10d:c090:400::5:2bcf])
+        by smtp.gmail.com with ESMTPSA id g6-20020a62e306000000b005a8bf239f5csm4937215pfh.193.2023.03.19.13.30.16
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sun, 19 Mar 2023 13:30:18 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        void@manifault.com, davemarchevsky@meta.com, tj@kernel.org,
+        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH bpf-next 1/2] libbpf: Fix ld_imm64 copy logic for ksym in light skeleton.
+Date:   Sun, 19 Mar 2023 13:30:13 -0700
+Message-Id: <20230319203014.55866-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests:
-- RUN_TO_COMPLETION_8K_FRAME_SIZE: frame_size=8192 (aligned)
-- RUN_TO_COMPLETION_9K_FRAME_SIZE: frame_size=9000 (unaligned)
+From: Alexei Starovoitov <ast@kernel.org>
 
-Signed-off-by: Kal Conley <kal.conley@dectris.com>
+Unlike normal libbpf the light skeleton 'loader' program is doing
+btf_find_by_name_kind() call at run-time to find ksym in the kernel and
+populate its {btf_id, btf_obj_fd} pair in ld_imm64 insn. To avoid doing the
+search multiple times for the same ksym it remembers the first patched ld_imm64
+insn and copies {btf_id, btf_obj_fd} from it into subsequent ld_imm64 insn.
+Fix a bug in copying logic, since it may incorrectly clear BPF_PSEUDO_BTF_ID flag.
+
+Also replace always true if (btf_obj_fd >= 0) check with unconditional JMP_JA
+to clarify the code.
+
+Fixes: d995816b77eb ("libbpf: Avoid reload of imm for weak, unresolved, repeating ksym")
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/testing/selftests/bpf/xskxceiver.c | 24 ++++++++++++++++++++++++
- tools/testing/selftests/bpf/xskxceiver.h |  2 ++
- 2 files changed, 26 insertions(+)
+ tools/lib/bpf/gen_loader.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 7a47ef28fbce..f10ff8c5e9c5 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -1789,6 +1789,30 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
- 		testapp_validate_traffic(test);
- 		break;
-+	case TEST_TYPE_RUN_TO_COMPLETION_8K_FRAME:
-+		if (!hugepages_present(test->ifobj_tx)) {
-+			ksft_test_result_skip("No 2M huge pages present.\n");
-+			return;
-+		}
-+		test_spec_set_name(test, "RUN_TO_COMPLETION_8K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 8192;
-+		test->ifobj_rx->umem->frame_size = 8192;
-+		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
-+		testapp_validate_traffic(test);
-+		break;
-+	case TEST_TYPE_RUN_TO_COMPLETION_9K_FRAME:
-+		if (!hugepages_present(test->ifobj_tx)) {
-+			ksft_test_result_skip("No 2M huge pages present.\n");
-+			return;
-+		}
-+		test_spec_set_name(test, "RUN_TO_COMPLETION_9K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 9000;
-+		test->ifobj_rx->umem->frame_size = 9000;
-+		test->ifobj_tx->umem->unaligned_mode = true;
-+		test->ifobj_rx->umem->unaligned_mode = true;
-+		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
-+		testapp_validate_traffic(test);
-+		break;
- 	case TEST_TYPE_RX_POLL:
- 		test->ifobj_rx->use_poll = true;
- 		test_spec_set_name(test, "POLL_RX");
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 3e8ec7d8ec32..ff723b6d7852 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -70,6 +70,8 @@ enum test_mode {
- enum test_type {
- 	TEST_TYPE_RUN_TO_COMPLETION,
- 	TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME,
-+	TEST_TYPE_RUN_TO_COMPLETION_8K_FRAME,
-+	TEST_TYPE_RUN_TO_COMPLETION_9K_FRAME,
- 	TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT,
- 	TEST_TYPE_RX_POLL,
- 	TEST_TYPE_TX_POLL,
+diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
+index 23f5c46708f8..b74c82bb831e 100644
+--- a/tools/lib/bpf/gen_loader.c
++++ b/tools/lib/bpf/gen_loader.c
+@@ -804,11 +804,13 @@ static void emit_relo_ksym_btf(struct bpf_gen *gen, struct ksym_relo_desc *relo,
+ 		return;
+ 	/* try to copy from existing ldimm64 insn */
+ 	if (kdesc->ref > 1) {
+-		move_blob2blob(gen, insn + offsetof(struct bpf_insn, imm), 4,
+-			       kdesc->insn + offsetof(struct bpf_insn, imm));
+ 		move_blob2blob(gen, insn + sizeof(struct bpf_insn) + offsetof(struct bpf_insn, imm), 4,
+ 			       kdesc->insn + sizeof(struct bpf_insn) + offsetof(struct bpf_insn, imm));
+-		/* jump over src_reg adjustment if imm is not 0, reuse BPF_REG_0 from move_blob2blob */
++		move_blob2blob(gen, insn + offsetof(struct bpf_insn, imm), 4,
++			       kdesc->insn + offsetof(struct bpf_insn, imm));
++		/* jump over src_reg adjustment if imm (btf_id) is not 0, reuse BPF_REG_0 from move_blob2blob
++		 * If btf_id is zero, clear BPF_PSEUDO_BTF_ID flag in src_reg of ld_imm64 insn
++		 */
+ 		emit(gen, BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 3));
+ 		goto clear_src_reg;
+ 	}
+@@ -831,7 +833,7 @@ static void emit_relo_ksym_btf(struct bpf_gen *gen, struct ksym_relo_desc *relo,
+ 	emit(gen, BPF_STX_MEM(BPF_W, BPF_REG_8, BPF_REG_7,
+ 			      sizeof(struct bpf_insn) + offsetof(struct bpf_insn, imm)));
+ 	/* skip src_reg adjustment */
+-	emit(gen, BPF_JMP_IMM(BPF_JSGE, BPF_REG_7, 0, 3));
++	emit(gen, BPF_JMP_IMM(BPF_JA, 0, 0, 3));
+ clear_src_reg:
+ 	/* clear bpf_object__relocate_data's src_reg assignment, otherwise we get a verifier failure */
+ 	reg_mask = src_reg_mask();
 -- 
-2.39.2
+2.34.1
 
