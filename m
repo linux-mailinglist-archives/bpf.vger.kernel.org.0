@@ -2,85 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3026BFBFC
-	for <lists+bpf@lfdr.de>; Sat, 18 Mar 2023 18:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7778C6BFF31
+	for <lists+bpf@lfdr.de>; Sun, 19 Mar 2023 04:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjCRRk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Mar 2023 13:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
+        id S229799AbjCSDGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Mar 2023 23:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjCRRkv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Mar 2023 13:40:51 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4314F2213F;
-        Sat, 18 Mar 2023 10:40:50 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id p34so41759wms.3;
-        Sat, 18 Mar 2023 10:40:50 -0700 (PDT)
+        with ESMTP id S229514AbjCSDGg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Mar 2023 23:06:36 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C7920D06;
+        Sat, 18 Mar 2023 20:06:35 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id h8so34530601ede.8;
+        Sat, 18 Mar 2023 20:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679161249;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ev2W7AwgvE+3tr7BAXXjW37/uLiVAl5wqa5Vqup/X18=;
-        b=Yl7l77+G+vWuZBrzmXQxIW4PhdcbuiWftbjibBta14w9f+IW+cP4rAqaUOEf54VsBP
-         XXcfsI0nfYwJA26CqS7T9F2Or0MsGLRdgDyme5Bhatkxfkcj3tht1cJWu9TO+QDzTDNj
-         /+QwOVyIXX+kAOQ60wi/wjA2WoOlZiSPw/7SrmfgWl4W1SF52ThmMuN26J9efm9dsWZT
-         wsgOC23KF0f0mJ0gi83B9lDDLlXm8j+xgWzfOmoVixSjCIi/R2VS0ynCo0MaWodEYm7Y
-         HFFiy/qM9A7HDTs3Iizi2lRpDpkyc5F5Qu0y6qpkXshh+P2hNhr3cHN9B8b7g4ihnEOF
-         8tew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679161249;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20210112; t=1679195194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ev2W7AwgvE+3tr7BAXXjW37/uLiVAl5wqa5Vqup/X18=;
-        b=3LUngfb4BiFGfMgzvRGhmvVuBDqiroFnNS7Aom49uUkt3qR4x1QhoJCTZnbE5YwIda
-         Dh03Ar/PI3CrXIelvgTx+fL0yYdCUlxeByWrlrpzi/C2tGosU+VgeQ/b2WTi2JrCAVZW
-         jK4RKV2vNSJCawy88owdQ0/eTOLcTpwQzyLBKEFIFsaFDYsfZ3lab46HpyzkcEB/aQt8
-         BQ/oVPJh4DEc8gyJHM/F8U7fk0Ztq+9bhzuPNkZQcNrnkNibarVlQbUd5ljJcHC2gjG6
-         jLkdA73q6pWf0fG92Yo8LgLMfmXaVfu1BZY24v+8KGcE2gK3MVBGl2z81vCN22dDdfdU
-         BI/w==
-X-Gm-Message-State: AO0yUKXitvYhzq6k1ewfdbahaGHRwtkyLHr0ZwNajaXpRDLTuD+QiiiF
-        HMVmjyRmM31UcIX4jFXZ7/s=
-X-Google-Smtp-Source: AK7set9zXPa/ih+Bbwm7sQZOKAnG69++6aoehqPt/kHsTPtM2UGAPjvGCSsnG1ECr9Gokzh9oSseng==
-X-Received: by 2002:a05:600c:358e:b0:3ed:2a41:8525 with SMTP id p14-20020a05600c358e00b003ed2a418525mr17932303wmq.22.1679161249516;
-        Sat, 18 Mar 2023 10:40:49 -0700 (PDT)
-Received: from krava (net-93-147-243-166.cust.vodafonedsl.it. [93.147.243.166])
-        by smtp.gmail.com with ESMTPSA id b15-20020adfe30f000000b002c706c754fesm4797373wrj.32.2023.03.18.10.40.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Mar 2023 10:40:49 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sat, 18 Mar 2023 18:40:45 +0100
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Namhyung Kim <namhyung@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
-Message-ID: <ZBX3nRWtc6+EI13W@krava>
-References: <20230316170149.4106586-1-jolsa@kernel.org>
- <ZBNTMZjEoETU9d8N@casper.infradead.org>
- <ZBV3beyxYhKv/kMp@krava>
- <ZBXV3crf/wX5D9lo@casper.infradead.org>
+        bh=GGSR/jvqYyLC5uiAvVKQBCSDdL+jSStCaDouthbxepc=;
+        b=R/PA770rEIHWvQOFKpKDmcqe29Ox143+BpESqy1PdFoYv8imzrID2FZUK6ufyztlhS
+         aFSAvbAlKtbYxFur5DUYBQCs5yW6+SXeeCCrA/4u9fLIjIm5McQaGIVtQ5bEALiz4I3F
+         +A/tasVvr/IOzTsaKLlmuCrTAMYywOnTfo9spFDKG3h45uh69fKlSsu0FPgygjDMpLzC
+         NLOx8rke0FTZ5Py4l4ziDwWRYn4GhcrFVDzXstu4QXBCTu1qyQlS9B6OnpQM+LQl2EJN
+         8WfT0wUszu0TbQgXVB5c2KJT63iQiug7p+gc9uXXOnrAzT2Q4tmCbgJY+mj2CWte4FeT
+         S0Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679195194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GGSR/jvqYyLC5uiAvVKQBCSDdL+jSStCaDouthbxepc=;
+        b=KYP4mxoMtqzyRwXn9odUe2zvHD6CX6JWs1qbOK8hI90BWcW0mL0t+zgX0nS4em6pLx
+         gvLIYZ1xEvfcnjjck71YYfAnRtS69uqvjYB4g3NcxEY/T/b6WRhFkfVGqqLih+2fhtyu
+         77GUrMyn2mn2NfL+Xh6DzTcFmkdN6doObqt+p91yZsy9GEGMu7ZOqxaPZf7M9Rq5yLCX
+         VBOxENl9kC45jZZwLfgS5y3tHb5wBm5EShSeVl4LYMS4QVDUODgilDfpyrYuplh60OWL
+         acgzzSNr6lDSZwzOnr6umibXQil6Ox+R9ta6UYRfds1MvPHUT+pkVv4XviH6NAQBglbj
+         6O7Q==
+X-Gm-Message-State: AO0yUKVgpxrSerHRnKpoPGC45X13tkXpqNplsmuXYAQUk+dV0L9Yoq8o
+        s8FJJCLd4nGlbpUWwk28wH4xDFfGQ0Q7HyqZLsQ=
+X-Google-Smtp-Source: AK7set+NEYvkXkhBS8MEj6cIM5HkblBtJwRGJ9AWwvpKZ4NZH5sNPGsl9k98QYig+vNafDF19YbrmEOVnxofBIuuRhM=
+X-Received: by 2002:a17:906:abd6:b0:92a:a75e:6b9 with SMTP id
+ kq22-20020a170906abd600b0092aa75e06b9mr1855022ejb.11.1679195193635; Sat, 18
+ Mar 2023 20:06:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZBXV3crf/wX5D9lo@casper.infradead.org>
+References: <20230315092041.35482-1-kerneljasonxing@gmail.com> <20230315092041.35482-2-kerneljasonxing@gmail.com>
+In-Reply-To: <20230315092041.35482-2-kerneljasonxing@gmail.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Sun, 19 Mar 2023 11:05:57 +0800
+Message-ID: <CAL+tcoCpgWUep+jAo--E2CGFp_AshZ+r89fGK_o7fOz9QqB8MA@mail.gmail.com>
+Subject: Re: [PATCH v4 net-next 1/2] net-sysfs: display two backlog queue len separately
+To:     jbrouer@redhat.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        stephen@networkplumber.org, simon.horman@corigine.com,
+        sinquersw@gmail.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -91,36 +72,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 18, 2023 at 03:16:45PM +0000, Matthew Wilcox wrote:
-> On Sat, Mar 18, 2023 at 09:33:49AM +0100, Jiri Olsa wrote:
-> > On Thu, Mar 16, 2023 at 05:34:41PM +0000, Matthew Wilcox wrote:
-> > > On Thu, Mar 16, 2023 at 06:01:40PM +0100, Jiri Olsa wrote:
-> > > > hi,
-> > > > this patchset adds build id object pointer to struct file object.
-> > > > 
-> > > > We have several use cases for build id to be used in BPF programs
-> > > > [2][3].
-> > > 
-> > > Yes, you have use cases, but you never answered the question I asked:
-> > > 
-> > > Is this going to be enabled by every distro kernel, or is it for special
-> > > use-cases where only people doing a very specialised thing who are
-> > > willing to build their own kernels will use it?
-> > 
-> > I hope so, but I guess only time tell.. given the response by Ian and Andrii
-> > there are 3 big users already
-> 
-> So the whole "There's a config option to turn it off" shtick is just a
-> fig-leaf.  I won't ever see it turned off.  You're imposing the cost of
-> this on EVERYONE who runs a distro kernel.  And almost nobody will see
-> any benefits from it.  Thanks for admitting that.
-> 
+On Wed, Mar 15, 2023 at 5:21=E2=80=AFPM Jason Xing <kerneljasonxing@gmail.c=
+om> wrote:
+>
+> From: Jason Xing <kernelxing@tencent.com>
+>
+> Sometimes we need to know which one of backlog queue can be exactly
+> long enough to cause some latency when debugging this part is needed.
+> Thus, we can then separate the display of both.
+>
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
-sure, I understand that's legit way of looking at this
+I just noticed that the state of this patch is "Changes Requested" in
+the patchwork[1]. But I didn't see any feedback on this. Please let me
+know if someone is available and provide more suggestions which are
+appreciated.
 
-I can imagine distros would have that enabled for debugging version of
-the kernel (like in fedora), and if that proves to be useful the standard
-kernel might take it, but yes, there's price (for discussion as pointed
-by Andrii) and it'd be for the distro maintainers to decide
+[1]: https://patchwork.kernel.org/project/netdevbpf/patch/20230315092041.35=
+482-2-kerneljasonxing@gmail.com/
 
-jirka
+Thanks,
+Jason
+
+> ---
+> v4:
+> 1) avoid the inconsistency through caching variables suggested
+> by Eric.
+> Link: https://lore.kernel.org/lkml/20230314030532.9238-2-kerneljasonxing@=
+gmail.com/
+> 2) remove the unused function: softnet_backlog_len()
+>
+> v3: drop the comment suggested by Simon
+> Link: https://lore.kernel.org/lkml/20230314030532.9238-2-kerneljasonxing@=
+gmail.com/
+>
+> v2: keep the total len of backlog queues untouched as Eric said
+> Link: https://lore.kernel.org/lkml/20230311151756.83302-1-kerneljasonxing=
+@gmail.com/
+> ---
+>  net/core/net-procfs.c | 18 +++++++++++++-----
+>  1 file changed, 13 insertions(+), 5 deletions(-)
+>
+> diff --git a/net/core/net-procfs.c b/net/core/net-procfs.c
+> index 1ec23bf8b05c..09f7ed1a04e8 100644
+> --- a/net/core/net-procfs.c
+> +++ b/net/core/net-procfs.c
+> @@ -115,10 +115,14 @@ static int dev_seq_show(struct seq_file *seq, void =
+*v)
+>         return 0;
+>  }
+>
+> -static u32 softnet_backlog_len(struct softnet_data *sd)
+> +static u32 softnet_input_pkt_queue_len(struct softnet_data *sd)
+>  {
+> -       return skb_queue_len_lockless(&sd->input_pkt_queue) +
+> -              skb_queue_len_lockless(&sd->process_queue);
+> +       return skb_queue_len_lockless(&sd->input_pkt_queue);
+> +}
+> +
+> +static u32 softnet_process_queue_len(struct softnet_data *sd)
+> +{
+> +       return skb_queue_len_lockless(&sd->process_queue);
+>  }
+>
+>  static struct softnet_data *softnet_get_online(loff_t *pos)
+> @@ -152,6 +156,8 @@ static void softnet_seq_stop(struct seq_file *seq, vo=
+id *v)
+>  static int softnet_seq_show(struct seq_file *seq, void *v)
+>  {
+>         struct softnet_data *sd =3D v;
+> +       u32 input_qlen =3D softnet_input_pkt_queue_len(sd);
+> +       u32 process_qlen =3D softnet_process_queue_len(sd);
+>         unsigned int flow_limit_count =3D 0;
+>
+>  #ifdef CONFIG_NET_FLOW_LIMIT
+> @@ -169,12 +175,14 @@ static int softnet_seq_show(struct seq_file *seq, v=
+oid *v)
+>          * mapping the data a specific CPU
+>          */
+>         seq_printf(seq,
+> -                  "%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08=
+x %08x %08x\n",
+> +                  "%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08=
+x %08x %08x "
+> +                  "%08x %08x\n",
+>                    sd->processed, sd->dropped, sd->time_squeeze, 0,
+>                    0, 0, 0, 0, /* was fastroute */
+>                    0,   /* was cpu_collision */
+>                    sd->received_rps, flow_limit_count,
+> -                  softnet_backlog_len(sd), (int)seq->index);
+> +                  input_qlen + process_qlen, (int)seq->index,
+> +                  input_qlen, process_qlen);
+>         return 0;
+>  }
+>
+> --
+> 2.37.3
+>
