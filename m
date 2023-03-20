@@ -2,240 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D44B6C225B
-	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 21:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4775C6C228D
+	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 21:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbjCTUQF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Mar 2023 16:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
+        id S229931AbjCTUZZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Mar 2023 16:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjCTUQE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Mar 2023 16:16:04 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C8F31E2E
-        for <bpf@vger.kernel.org>; Mon, 20 Mar 2023 13:15:57 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id k2so13774039pll.8
-        for <bpf@vger.kernel.org>; Mon, 20 Mar 2023 13:15:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679343356;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xSz84hF+4DVQ974S2+UpAOdAKV+U+s4CN6K8Xq1SnKY=;
-        b=VonBZmxv+uEJQb7X99iKRMD7Ss+JPVswSou27Lbtd0KOq/AY1VvyRfkjOasTLGgbpy
-         Baw+HsoNj+8KVmpaI5KgUtCFd5VS4ledOWesFtqUNRnmIFJr2NUCS9H1Y+gsyJu8+yEU
-         F5HQpAWY/sdz57v8E+aWCt7Jsa3H/brNTSlwCBtFLe6GsuN8DvSuJ98C8UXJQwqc1Ckv
-         CinfG8OeKOhYani2nEkVEW9zdOb2SUeH6TrTuwQjqQDD0xJaeEUQ9KM9ItGSxOleq5Rc
-         Pxr11VKJ3oXpn0HPfu7TnNVUBjkgYFYBs3U5cVzJTmHtdXDrc0XO1XtRP5/EL99fVWKZ
-         2xbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679343356;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xSz84hF+4DVQ974S2+UpAOdAKV+U+s4CN6K8Xq1SnKY=;
-        b=az4eqDmaIt5ot2LIX1shfIY8uwNTOFXw/n/uLAe6c4aNVe0IKm97ZfcFKYnbXzaIoS
-         a+Trj6G91D+l+53uiYAQVSBuJVZGfN8KkRKpMvI3Lg/86c92y/21ssllQtQyZBsR8dip
-         xY7CYI2wY14pcHt3kdhcXkIupCW7lZWhTd0etNfneinvi9sKPtcZkgK5/15HnCWWjK78
-         q8lihwQxZ4827GG8CEsBSFh94lo1QuWd1ZHajcLLsapfRUZmeNkwkKMR1LWifivDaWCe
-         KpBJuXn8/zgM3C2tnpZSGho7htIhfIpPxK1PlIc+734ZUKRBZkB2yd25aVPbH8w4Lb6b
-         G26A==
-X-Gm-Message-State: AO0yUKXwvNKx3ILIkAx0OiPo2bYIrm09m7c9MJ14+KJmY6Jv/A72piF4
-        HE5CVGrgHWGqiCncchW5TSg=
-X-Google-Smtp-Source: AK7set/fM8tBLzXh5eyA9jJ6eUFgxz8kCewrexBLDUQ+qG0w6Xe1tkpfKsAyCCzfCM91VIE+dJM45A==
-X-Received: by 2002:a05:6a20:8f03:b0:cc:f27d:eb83 with SMTP id b3-20020a056a208f0300b000ccf27deb83mr22802720pzk.53.1679343356508;
-        Mon, 20 Mar 2023 13:15:56 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c085:21e1::15f9? ([2620:10d:c090:400::5:48b7])
-        by smtp.gmail.com with ESMTPSA id e25-20020aa78c59000000b0058837da69edsm6732449pfd.128.2023.03.20.13.15.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Mar 2023 13:15:55 -0700 (PDT)
-Message-ID: <0e08cc21-1f90-e0b3-ef9a-7a1cb3d62673@gmail.com>
-Date:   Mon, 20 Mar 2023 13:15:54 -0700
+        with ESMTP id S230194AbjCTUZE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Mar 2023 16:25:04 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409F09E;
+        Mon, 20 Mar 2023 13:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679343902; x=1710879902;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KIVDdjsYnIsbLZQqcW5ppQQ9NCMVMlN1ylEKQ8oyZGY=;
+  b=bEos6USIPfLZey4HmrhykyJR/CT9apRb/9eOx8BbgbFqk5bkwAL6h51b
+   nSGdvp0lqjlzqyqz6+9vnzrcTWALfk0iWr11wVDMCHP8r+YnY760nb5H4
+   sBV8s/YxWCQ3abC45CFdaGaGyBoX2HchPjFjP94xAV6bGAzIbDGwN7fWK
+   uvmSRe05EsF0CNe8S0Mka91OZ76jl+RLCrwXHyk43RmjZ/gBoYkdA6BCi
+   dyRP832eB+4IN+L2qUm5D8YHL1VbaSrUvU2m3BEs5tE9xbt47oFi5+MJr
+   BU0JfKpLGlH1qvrI8R2iTLiW8vnUzyBgac08GDp2NkTN75u49VqqLnicX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10655"; a="319170103"
+X-IronPort-AV: E=Sophos;i="5.98,276,1673942400"; 
+   d="scan'208";a="319170103"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2023 13:25:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10655"; a="674546518"
+X-IronPort-AV: E=Sophos;i="5.98,276,1673942400"; 
+   d="scan'208";a="674546518"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 20 Mar 2023 13:24:56 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1peM3r-000BI6-2k;
+        Mon, 20 Mar 2023 20:24:55 +0000
+Date:   Tue, 21 Mar 2023 04:24:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nuno =?iso-8859-1?Q?Gon=E7alves?= <nunog@fr24.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        netdev@vger.kernel.org,
+        Nuno =?iso-8859-1?Q?Gon=E7alves?= <nunog@fr24.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] xsk: allow remap of fill and/or completion rings
+Message-ID: <202303210417.mv8mDIaV-lkp@intel.com>
+References: <20230320105323.187307-1-nunog@fr24.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v9 0/8] Transit between BPF TCP congestion
- controls.
-Content-Language: en-US, en-ZW
-To:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
-References: <20230320192410.1624645-1-kuifeng@meta.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20230320192410.1624645-1-kuifeng@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230320105323.187307-1-nunog@fr24.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This thread is sent by accident.  Please ignore this thread and check
-the other thread sent with the same subject.
-Sorry for wasting your time.
+Hi Nuno,
 
-On 3/20/23 12:24, Kui-Feng Lee wrote:
-> Major changes:
-> 
->   - Create bpf_links in the kernel for BPF struct_ops to register and
->     unregister it.
-> 
->   - Enables switching between implementations of bpf-tcp-cc under a
->     name instantly by replacing the backing struct_ops map of a
->     bpf_link.
-> 
-> Previously, BPF struct_ops didn't go off, as even when the user
-> program creating it was terminated, none of these ever were pinned.
-> For instance, the TCP congestion control subsystem indirectly
-> maintains a reference count on the struct_ops of any registered BPF
-> implemented algorithm. Thus, the algorithm won't be deactivated until
-> someone deliberately unregisters it.  For compatibility with other BPF
-> programs, bpf_links have been created to work in coordination with
-> struct_ops maps. This ensures that the registration and unregistration
-> of these respective maps is carried out at the start and end of the
-> bpf_link.
-> 
-> We also faced complications when attempting to replace an existing TCP
-> congestion control algorithm with a new implementation on the fly. A
-> struct_ops map was used to register a TCP congestion control algorithm
-> with a unique name.  We had to either register the alternative
-> implementation with a new name and move over or unregister the current
-> one before being able to reregistration with the same name.  To fix
-> this problem, we can an option to migrate the registration of the
-> algorithm from struct_ops maps to bpf_links. By modifying the backing
-> map of a bpf_link, it suddenly becomes possible to replace an existing
-> TCP congestion control algorithm with ease.
-> 
-> ---
-> 
-> The major differences form v8:
-> 
->   - Check bpf_struct_ops::{validate,update} in
->     bpf_struct_ops_map_alloc()
-> 
-> The major differences from v7:
-> 
->   - Use synchronize_rcu_mult(call_rcu, call_rcu_tasks) to replace
->     synchronize_rcu() *** BLURB HERE *** synchronize_rcu_tasks().
-> 
->   - Call synchronize_rcu() in tcp_update_congestion_control().
-> 
->   - Handle -EBUSY in bpf_map__attach_struct_ops() to allow a struct_ops
->     can be used to create links more than once.  Include a test case.
-> 
->   - Add old_map_fd to bpf_attr and handle BPF_F_REPLACE in
->     bpf_struct_ops_map_link_update().
-> 
->   - Remove changes in bpf_dummy_struct_ops.c and add a check of .update
->     function pointer of bpf_struct_ops.
-> 
-> The major differences from v6:
-> 
->   - Reword commit logs of the patch 1, 2, and 8.
-> 
->   - Call syncrhonize_rcu_tasks() as well in bpf_struct_ops_map_free().
-> 
->   - Refactor bpf_struct_ops_map_free() so that
->     bpf_struct_ops_map_alloc() can free a struct_ops without waiting
->     for a RCU grace period.
-> 
-> The major differences from v5:
-> 
->   - Add a new step to bpf_object__load() to prepare vdata.
-> 
->   - Accept BPF_F_REPLACE.
-> 
->   - Check section IDs in find_struct_ops_map_by_offset()
-> 
->   - Add a test case to check mixing w/ and w/o link struct_ops.
-> 
->   - Add a test case of using struct_ops w/o link to update a link.
-> 
->   - Improve bpf_link__detach_struct_ops() to handle the w/ link case.
-> 
-> The major differences from v4:
-> 
->   - Rebase.
-> 
->   - Reorder patches and merge part 4 to part 2 of the v4.
-> 
-> The major differences from v3:
-> 
->   - Remove bpf_struct_ops_map_free_rcu(), and use synchronize_rcu().
-> 
->   - Improve the commit log of the part 1.
-> 
->   - Before transitioning to the READY state, we conduct a value check
->     to ensure that struct_ops can be successfully utilized and links
->     created later.
-> 
-> The major differences from v2:
-> 
->   - Simplify states
-> 
->     - Remove TOBEUNREG.
-> 
->     - Rename UNREG to READY.
-> 
->   - Stop using the refcnt of the kvalue of a struct_ops. Explicitly
->     increase and decrease the refcount of struct_ops.
-> 
->   - Prepare kernel vdata during the load phase of libbpf.
-> 
-> The major differences from v1:
-> 
->   - Added bpf_struct_ops_link to replace the previous union-based
->     approach.
-> 
->   - Added UNREG and TOBEUNREG to the state of bpf_struct_ops_map.
-> 
->     - bpf_struct_ops_transit_state() maintains state transitions.
-> 
->   - Fixed synchronization issue.
-> 
->   - Prepare kernel vdata of struct_ops during the loading phase of
->     bpf_object.
-> 
->   - Merged previous patch 3 to patch 1.
-> 
-> v8: https://lore.kernel.org/all/20230318053144.1180301-1-kuifeng@meta.com/
-> v7: https://lore.kernel.org/all/20230316023641.2092778-1-kuifeng@meta.com/
-> v6: https://lore.kernel.org/all/20230310043812.3087672-1-kuifeng@meta.com/
-> v5: https://lore.kernel.org/all/20230308005050.255859-1-kuifeng@meta.com/
-> v4: https://lore.kernel.org/all/20230307232913.576893-1-andrii@kernel.org/
-> v3: https://lore.kernel.org/all/20230303012122.852654-1-kuifeng@meta.com/
-> v2: https://lore.kernel.org/bpf/20230223011238.12313-1-kuifeng@meta.com/
-> v1: https://lore.kernel.org/bpf/20230214221718.503964-1-kuifeng@meta.com/
-> 
-> Kui-Feng Lee (8):
->    bpf: Retire the struct_ops map kvalue->refcnt.
->    net: Update an existing TCP congestion control algorithm.
->    bpf: Create links for BPF struct_ops maps.
->    libbpf: Create a bpf_link in bpf_map__attach_struct_ops().
->    bpf: Update the struct_ops of a bpf_link.
->    libbpf: Update a bpf_link with another struct_ops.
->    libbpf: Use .struct_ops.link section to indicate a struct_ops with a
->      link.
->    selftests/bpf: Test switching TCP Congestion Control algorithms.
-> 
->   include/linux/bpf.h                           |  11 +
->   include/net/tcp.h                             |   3 +
->   include/uapi/linux/bpf.h                      |  33 ++-
->   kernel/bpf/bpf_struct_ops.c                   | 250 +++++++++++++++---
->   kernel/bpf/syscall.c                          |  63 ++++-
->   net/ipv4/bpf_tcp_ca.c                         |  14 +-
->   net/ipv4/tcp_cong.c                           |  65 ++++-
->   tools/include/uapi/linux/bpf.h                |  33 ++-
->   tools/lib/bpf/libbpf.c                        | 190 ++++++++++---
->   tools/lib/bpf/libbpf.h                        |   1 +
->   tools/lib/bpf/libbpf.map                      |   1 +
->   .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 116 ++++++++
->   .../selftests/bpf/progs/tcp_ca_update.c       |  80 ++++++
->   13 files changed, 759 insertions(+), 101 deletions(-)
->   create mode 100644 tools/testing/selftests/bpf/progs/tcp_ca_update.c
-> 
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Nuno-Gon-alves/xsk-allow-remap-of-fill-and-or-completion-rings/20230320-190022
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230320105323.187307-1-nunog%40fr24.com
+patch subject: [PATCH bpf-next] xsk: allow remap of fill and/or completion rings
+config: i386-randconfig-a004 (https://download.01.org/0day-ci/archive/20230321/202303210417.mv8mDIaV-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/56f6a0c68dd5f4419fd7685cc83ceee2c70f3f2e
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Nuno-Gon-alves/xsk-allow-remap-of-fill-and-or-completion-rings/20230320-190022
+        git checkout 56f6a0c68dd5f4419fd7685cc83ceee2c70f3f2e
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303210417.mv8mDIaV-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> net/xdp/xsk.c:1303:24: error: use of undeclared identifier 'xs'
+           int state = READ_ONCE(xs->state);
+                                 ^
+>> net/xdp/xsk.c:1303:24: error: use of undeclared identifier 'xs'
+>> net/xdp/xsk.c:1303:24: error: use of undeclared identifier 'xs'
+>> net/xdp/xsk.c:1303:24: error: use of undeclared identifier 'xs'
+>> net/xdp/xsk.c:1303:24: error: use of undeclared identifier 'xs'
+>> net/xdp/xsk.c:1303:24: error: use of undeclared identifier 'xs'
+>> net/xdp/xsk.c:1303:24: error: use of undeclared identifier 'xs'
+>> net/xdp/xsk.c:1303:6: error: initializing 'int' with an expression of incompatible type 'void'
+           int state = READ_ONCE(xs->state);
+               ^       ~~~~~~~~~~~~~~~~~~~~
+>> net/xdp/xsk.c:1318:8: error: cannot take the address of an rvalue of type 'struct xsk_queue *'
+                           q = READ_ONCE(state == XSK_READY ? xs->fq_tmp :
+                               ^         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:50:2: note: expanded from macro 'READ_ONCE'
+           __READ_ONCE(x);                                                 \
+           ^           ~
+   include/asm-generic/rwonce.h:44:70: note: expanded from macro '__READ_ONCE'
+   #define __READ_ONCE(x)  (*(const volatile __unqual_scalar_typeof(x) *)&(x))
+                                                                         ^ ~
+   net/xdp/xsk.c:1321:8: error: cannot take the address of an rvalue of type 'struct xsk_queue *'
+                           q = READ_ONCE(state == XSK_READY ? xs->cq_tmp :
+                               ^         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:50:2: note: expanded from macro 'READ_ONCE'
+           __READ_ONCE(x);                                                 \
+           ^           ~
+   include/asm-generic/rwonce.h:44:70: note: expanded from macro '__READ_ONCE'
+   #define __READ_ONCE(x)  (*(const volatile __unqual_scalar_typeof(x) *)&(x))
+                                                                         ^ ~
+   10 errors generated.
+
+
+vim +/xs +1303 net/xdp/xsk.c
+
+  1297	
+  1298	static int xsk_mmap(struct file *file, struct socket *sock,
+  1299			    struct vm_area_struct *vma)
+  1300	{
+  1301		loff_t offset = (loff_t)vma->vm_pgoff << PAGE_SHIFT;
+  1302		unsigned long size = vma->vm_end - vma->vm_start;
+> 1303		int state = READ_ONCE(xs->state);
+  1304		struct xdp_sock *xs = xdp_sk(sock->sk);
+  1305		struct xsk_queue *q = NULL;
+  1306	
+  1307		if (!(state == XSK_READY || state == XSK_BOUND))
+  1308			return -EBUSY;
+  1309	
+  1310		if (offset == XDP_PGOFF_RX_RING) {
+  1311			q = READ_ONCE(xs->rx);
+  1312		} else if (offset == XDP_PGOFF_TX_RING) {
+  1313			q = READ_ONCE(xs->tx);
+  1314		} else {
+  1315			/* Matches the smp_wmb() in XDP_UMEM_REG */
+  1316			smp_rmb();
+  1317			if (offset == XDP_UMEM_PGOFF_FILL_RING)
+> 1318				q = READ_ONCE(state == XSK_READY ? xs->fq_tmp :
+  1319								   xs->pool->fq);
+  1320			else if (offset == XDP_UMEM_PGOFF_COMPLETION_RING)
+  1321				q = READ_ONCE(state == XSK_READY ? xs->cq_tmp :
+  1322								   xs->pool->cq);
+  1323		}
+  1324	
+  1325		if (!q)
+  1326			return -EINVAL;
+  1327	
+  1328		/* Matches the smp_wmb() in xsk_init_queue */
+  1329		smp_rmb();
+  1330		if (size > q->ring_vmalloc_size)
+  1331			return -EINVAL;
+  1332	
+  1333		return remap_vmalloc_range(vma, q->ring, 0);
+  1334	}
+  1335	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
