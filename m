@@ -2,40 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F14586C13AB
-	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 14:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EFC6C13DD
+	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 14:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbjCTNlK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Mar 2023 09:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
+        id S231558AbjCTNp4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Mar 2023 09:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbjCTNlI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Mar 2023 09:41:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F9DC16D;
-        Mon, 20 Mar 2023 06:41:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D1267B80E95;
-        Mon, 20 Mar 2023 13:41:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA6DC433EF;
-        Mon, 20 Mar 2023 13:41:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679319663;
-        bh=m4Ctj4kIFOL0/XkcpQrCPJp8I1gfPrht8FQ7ZHbdmEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hm2LGu0FCwJJUNOp614eorFKh/KuFSCDhHYOLcD+709GFWFbl3CxYcNzVzHzyvLCu
-         hh45PpkT1rgw0+SFWev5nWm5IUhDMpkxFpXVS6n11mhC8FMpjX9wgE04U6NDXOMy4p
-         smjXnBHgSGlRtVnWVMQ8xDjxNzP3pwrFFTCR3iz33q+tpE1VSz0xsef9a3hrEOfr+j
-         igE9ldBWgT6+DkMdexO0tyzIpNsq21qY2MNKSpK9rT+ocmp6/Ltz/KpqWPFFYcmk8o
-         z9jLO03YODXnlTx2mQ6kcFOzDQJf4W6VJM28bL2g+KU3HfweyKkiU3i/Gxj7eV6KDG
-         NUHrHoPv3ZT4Q==
-Date:   Mon, 20 Mar 2023 15:40:58 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     Nuno =?iso-8859-1?Q?Gon=E7alves?= <nunog@fr24.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        with ESMTP id S231610AbjCTNpg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Mar 2023 09:45:36 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5963126C07;
+        Mon, 20 Mar 2023 06:45:18 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5416b0ab0ecso224895737b3.6;
+        Mon, 20 Mar 2023 06:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679319916;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bSb4O0PeaHNe3gBc2pcRz8CtU7cfiYwV5urttGac2b0=;
+        b=bgh02FDftrt+sddaley3rGdy4OqlNDYBVbU3GNguh/cnKLFKoq81wEV9MG5iS2fnvJ
+         0sz+Ef6zmCrdUgCp7rRV3ojvassHZBkBUMx/a06oQ+E/4hCfyJCtkXTUYMOLzFNaDrUY
+         uyGD0CiOgsrZHLX3rn1OVElrPO0kN6dBDyaG6mQvp45npbaxX3y52qR8Sx+vAtOOSAdd
+         RAtfPfsiG61u+IzoHleOkrodhQcAN1nx0DSqQWb9z7vKLFQT9nhnUoc4KEXR9XOBLe9r
+         7qpKeBpaTZMH/eTVVhvP2cYJWjvNjXMxkWjJA7UQVAa49NtaWkoPiT0MUeE/fQ69gk3J
+         P31A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679319916;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bSb4O0PeaHNe3gBc2pcRz8CtU7cfiYwV5urttGac2b0=;
+        b=2jcTz9k44kDhzG5UzvOaRzssH3Ws+yRKPudtkFO6afcrGpmzVp+SxqRNHq/0tJsFFU
+         Zmlrq9AvYkRNg0v1lgsMna07eO2XtnTTeI4dvJqzVioy9fUvMMMbQzP43pNRrZMVRIVg
+         +BWYLK3tWI3d2Oxb0UALD4Q2UwmHJ+m5/1dJ+nASo4EcFMo7V8nNZMDtH4qJmChzPiNo
+         i0Z+0LVJCIRiUR30vjpZcuT1RutK9XWPYQXdSiBhuCfYf6o26JN98YwuUmGmwN5fYGu7
+         8Z7FH9csg3AbArXXYIaBwIpcII79PRtSHT9hc/+5mhMQ9Trn54KeU8cvX2dVoGGwresp
+         semg==
+X-Gm-Message-State: AO0yUKU7PORiBs3GDAl36ARd5x3cViutoa05tRHaY04nC1PSUHoUwQl2
+        Ftd6c13/g8fp/qISROM11gniBRbHeGNZ+UNK4X4Blnk4mDVjjA==
+X-Google-Smtp-Source: AK7set92By9N0r2WjB8v8U0HoFS7LbXZRgxPzy2+9DTwwYD6my7jo4lxlXnDBlrM0Sdt9kxvPfQqR6DpZOmBCdBz/js=
+X-Received: by 2002:a81:431b:0:b0:544:94fe:4244 with SMTP id
+ q27-20020a81431b000000b0054494fe4244mr10343937ywa.10.1679319914612; Mon, 20
+ Mar 2023 06:45:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230320105323.187307-1-nunog@fr24.com> <20230320110314.GJ36557@unreal>
+ <CAJ8uoz1kbFsttvWNTUdtYcwEa=hQvky2z0Jfn0=9b5v6m_FVXg@mail.gmail.com> <20230320134058.GM36557@unreal>
+In-Reply-To: <20230320134058.GM36557@unreal>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 20 Mar 2023 14:45:03 +0100
+Message-ID: <CAJ8uoz2ctdQzG8V+13RUQW0BjK1-L6ckP=HbxcAz2xerYhCsLQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: allow remap of fill and/or completion rings
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     =?UTF-8?Q?Nuno_Gon=C3=A7alves?= <nunog@fr24.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
@@ -50,77 +71,76 @@ Cc:     Nuno =?iso-8859-1?Q?Gon=E7alves?= <nunog@fr24.com>,
         John Fastabend <john.fastabend@gmail.com>,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] xsk: allow remap of fill and/or completion rings
-Message-ID: <20230320134058.GM36557@unreal>
-References: <20230320105323.187307-1-nunog@fr24.com>
- <20230320110314.GJ36557@unreal>
- <CAJ8uoz1kbFsttvWNTUdtYcwEa=hQvky2z0Jfn0=9b5v6m_FVXg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ8uoz1kbFsttvWNTUdtYcwEa=hQvky2z0Jfn0=9b5v6m_FVXg@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 20, 2023 at 01:27:18PM +0100, Magnus Karlsson wrote:
-> On Mon, 20 Mar 2023 at 12:09, Leon Romanovsky <leon@kernel.org> wrote:
+On Mon, 20 Mar 2023 at 14:41, Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Mon, Mar 20, 2023 at 01:27:18PM +0100, Magnus Karlsson wrote:
+> > On Mon, 20 Mar 2023 at 12:09, Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > On Mon, Mar 20, 2023 at 10:53:23AM +0000, Nuno Gon=C3=A7alves wrote:
+> > > > The remap of fill and completion rings was frowned upon as they
+> > > > control the usage of UMEM which does not support concurrent use.
+> > > > At the same time this would disallow the remap of this rings
+> > > > into another process.
+> > > >
+> > > > A possible use case is that the user wants to transfer the socket/
+> > > > UMEM ownerwhip to another process (via SYS_pidfd_getfd) and so
 > >
-> > On Mon, Mar 20, 2023 at 10:53:23AM +0000, Nuno Gonçalves wrote:
-> > > The remap of fill and completion rings was frowned upon as they
-> > > control the usage of UMEM which does not support concurrent use.
-> > > At the same time this would disallow the remap of this rings
-> > > into another process.
-> > >
-> > > A possible use case is that the user wants to transfer the socket/
-> > > UMEM ownerwhip to another process (via SYS_pidfd_getfd) and so
-> 
-> nit: ownership
-> 
-> > > would need to also remap this rings.
-> > >
-> > > This will have no impact on current usages and just relaxes the
-> > > remap limitation.
-> > >
-> > > Signed-off-by: Nuno Gonçalves <nunog@fr24.com>
-> > > ---
-> > >  net/xdp/xsk.c | 9 ++++++---
-> > >  1 file changed, 6 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > index 2ac58b282b5eb..2af4ff64b22bd 100644
-> > > --- a/net/xdp/xsk.c
-> > > +++ b/net/xdp/xsk.c
-> > > @@ -1300,10 +1300,11 @@ static int xsk_mmap(struct file *file, struct socket *sock,
-> > >  {
-> > >       loff_t offset = (loff_t)vma->vm_pgoff << PAGE_SHIFT;
-> > >       unsigned long size = vma->vm_end - vma->vm_start;
-> > > +     int state = READ_ONCE(xs->state);
-> 
-> Reverse Christmas Tree notation here please. Move it one line down to
-> after the *xs declaration.
-> 
-> > >       struct xdp_sock *xs = xdp_sk(sock->sk);
-> > >       struct xsk_queue *q = NULL;
-> > >
-> > > -     if (READ_ONCE(xs->state) != XSK_READY)
-> > > +     if (!(state == XSK_READY || state == XSK_BOUND))
+> > nit: ownership
 > >
-> > This if(..) is actually:
-> >  if (state != XSK_READY && state != XSK_BOUND)
-> 
-> Nuno had it like that to start with when he sent the patch privately
-> to me, but I responded that I prefered the current one. It is easier
-> to understand if read out aloud IMO. 
+> > > > would need to also remap this rings.
+> > > >
+> > > > This will have no impact on current usages and just relaxes the
+> > > > remap limitation.
+> > > >
+> > > > Signed-off-by: Nuno Gon=C3=A7alves <nunog@fr24.com>
+> > > > ---
+> > > >  net/xdp/xsk.c | 9 ++++++---
+> > > >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > index 2ac58b282b5eb..2af4ff64b22bd 100644
+> > > > --- a/net/xdp/xsk.c
+> > > > +++ b/net/xdp/xsk.c
+> > > > @@ -1300,10 +1300,11 @@ static int xsk_mmap(struct file *file, stru=
+ct socket *sock,
+> > > >  {
+> > > >       loff_t offset =3D (loff_t)vma->vm_pgoff << PAGE_SHIFT;
+> > > >       unsigned long size =3D vma->vm_end - vma->vm_start;
+> > > > +     int state =3D READ_ONCE(xs->state);
+> >
+> > Reverse Christmas Tree notation here please. Move it one line down to
+> > after the *xs declaration.
+> >
+> > > >       struct xdp_sock *xs =3D xdp_sk(sock->sk);
+> > > >       struct xsk_queue *q =3D NULL;
+> > > >
+> > > > -     if (READ_ONCE(xs->state) !=3D XSK_READY)
+> > > > +     if (!(state =3D=3D XSK_READY || state =3D=3D XSK_BOUND))
+> > >
+> > > This if(..) is actually:
+> > >  if (state !=3D XSK_READY && state !=3D XSK_BOUND)
+> >
+> > Nuno had it like that to start with when he sent the patch privately
+> > to me, but I responded that I prefered the current one. It is easier
+> > to understand if read out aloud IMO.
+>
+> "Not equal" is much easier to understand than "not" of whole expression.
 
-"Not equal" is much easier to understand than "not" of whole expression.
+Then my brain is wired differently ;-).
 
-> Do not have any strong feelings either way since the statements are equivalent.
-> 
-> > Thanks
+> > Do not have any strong feelings either way since the statements are equ=
+ivalent.
+> >
+> > > Thanks
