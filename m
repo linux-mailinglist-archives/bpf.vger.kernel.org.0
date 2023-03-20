@@ -2,88 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B66956C1D82
-	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 18:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F362A6C1DAE
+	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 18:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjCTRPu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Mar 2023 13:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34494 "EHLO
+        id S232388AbjCTRVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Mar 2023 13:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233663AbjCTRP2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Mar 2023 13:15:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775867DB7;
-        Mon, 20 Mar 2023 10:11:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 91F3D6171D;
-        Mon, 20 Mar 2023 17:10:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EACD9C4339B;
-        Mon, 20 Mar 2023 17:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679332218;
-        bh=AdWbRcFzE/2uJj7rERHEyavQ7IFjXu6nLUNbp/HSMh4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=k2XY4fYsb+xvJM9i75WFa1FvzHLzaBMpr+K58NtS1hmpcXDbMnko5QKReKe7PJqhK
-         +bGqHK+ppPokp75w8NRPWcTsuQos+9VgR79yKkdlkc/V6Pt3I2NbTF70WofuG+Xsso
-         gYoY8qTp6xvdPIM6/z0EErhiXQqI4t33lCYttLi2bJNKUdzVe7WOOmPFH9/25rYikw
-         Ihbx7i8ay7BuZwjUZpR/n+gLMyT4FYRB7ChhgcwhQLNeZquqhTs7XrZBX8Mbjw9sUk
-         UbtIbNXtyWgE5wQf7TVroH1ujX6p7+pIMi9nuwVC+WZvn5P+RclowbqcllVEI866Bl
-         Qftlkxhb44Opg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D0264E4F0D9;
-        Mon, 20 Mar 2023 17:10:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S233126AbjCTRVT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Mar 2023 13:21:19 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE02E19B
+        for <bpf@vger.kernel.org>; Mon, 20 Mar 2023 10:17:11 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id i5so2734243eda.0
+        for <bpf@vger.kernel.org>; Mon, 20 Mar 2023 10:17:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riotgames.com; s=riotgames; t=1679332618;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xj8m6NJ5K4EI7XzRvok9Q3As5sg5z2gkkL25vHzzhSg=;
+        b=Vqw8zNezShgV37Uq1deF5XjWNEgEU7lsWN9StUvMtXYzfCCOMACPA5o8VBuzz0zXio
+         NN1wdEDg5kgnU8ORyDGyBu2KP27qfp1DYKOOpHD4hghoGOQw4/EIVVY1EDj6Lk1bFoHR
+         g9Un//9jkiJe45aoVZpBPhRqwZHomPcp0Km+w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679332618;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xj8m6NJ5K4EI7XzRvok9Q3As5sg5z2gkkL25vHzzhSg=;
+        b=L0khMhK3EfMLvOdUA2rPHdwoXHSIleMLQWmKrCFWwdU/wUYoMC1lKMN71oTxGu1FTB
+         C3cI5HChm/7w60lGbTSO92pFQnf0TWAHkRc88Aeyt7fyvM/HeC2SclgWzBc6sgzy4mOJ
+         9IfGyShDo+Dv5BxXQRs41+FslvrIa7P3lUGAnx5QXgqxeheT3eoeR8X/1ltgBjQReN1O
+         TbJmEAJMVr0UeFW/69xHjgnv8sQE2bZY8oPlHfvXp6rrUzSpuHvjCQvhtwgVb/YfsySZ
+         WGgsx3ZvjD+NaJp9ikzfpqLFSMLvBl7KXO6E9HkzCVk/P8IYWebIzkXxpjqhJfolF0hu
+         xqjg==
+X-Gm-Message-State: AO0yUKX5CsVIPj2Wpxq0ZQBLG+wm+z9XYUVsXwtdSiR0wt6FnYLjRk67
+        HwV0fEDngbqMpJKEvo7CrOIVCHw8ftzMGfbeMzRSyJmyH9l40IhJFCU=
+X-Google-Smtp-Source: AK7set+RHP+3LQPCS9/By8g7ZhUZLdKV+zDLksDU/FihrCHx4lwO7DGZYYr6/FB//AD6cFgtyw9WaS05eqXveS4/A7M=
+X-Received: by 2002:a17:906:8418:b0:8e6:266c:c75e with SMTP id
+ n24-20020a170906841800b008e6266cc75emr4498785ejx.14.1679332618295; Mon, 20
+ Mar 2023 10:16:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 1/2] libbpf: Fix ld_imm64 copy logic for ksym in
- light skeleton.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167933221784.21251.7059999522754844144.git-patchwork-notify@kernel.org>
-Date:   Mon, 20 Mar 2023 17:10:17 +0000
-References: <20230319203014.55866-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20230319203014.55866-1-alexei.starovoitov@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, void@manifault.com, davemarchevsky@meta.com,
-        tj@kernel.org, memxor@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CAAFY1_4a5MC0-BkGcRx-5n-vdXZbjjrjEukwur+n4AOXFhMHFw@mail.gmail.com>
+ <CAADnVQLcqDOzXPSUUNyFE=UJHBP-ZgOEqFfaGynTUL-jQnw-=w@mail.gmail.com>
+ <CAAFY1_66-b063v+edsHPBbK6iuiE=KoY38=kr0FVzVLg5gkE_w@mail.gmail.com> <af9d6b81-b3d4-9f48-5ec2-da00c084bf28@huawei.com>
+In-Reply-To: <af9d6b81-b3d4-9f48-5ec2-da00c084bf28@huawei.com>
+From:   Chris Lai <chrlai@riotgames.com>
+Date:   Mon, 20 Mar 2023 10:16:47 -0700
+Message-ID: <CAAFY1_5YwjwFAj53eoGNsD0gVukrVppf=b7cNznAJOcrhY-PEA@mail.gmail.com>
+Subject: Re: bpf_timer memory utilization
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi,
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+In my setup, both (LRU and HASH) are preallocated.
+Kernel verson: Linux version 5.17.12-300.fc36.x86_64
+I am doing load test via load generator (Spirent) to an DUT appliance.
 
-On Sun, 19 Mar 2023 13:30:13 -0700 you wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> Unlike normal libbpf the light skeleton 'loader' program is doing
-> btf_find_by_name_kind() call at run-time to find ksym in the kernel and
-> populate its {btf_id, btf_obj_fd} pair in ld_imm64 insn. To avoid doing the
-> search multiple times for the same ksym it remembers the first patched ld_imm64
-> insn and copies {btf_id, btf_obj_fd} from it into subsequent ld_imm64 insn.
-> Fix a bug in copying logic, since it may incorrectly clear BPF_PSEUDO_BTF_ID flag.
-> 
-> [...]
+Code snippet
 
-Here is the summary with links:
-  - [bpf-next,1/2] libbpf: Fix ld_imm64 copy logic for ksym in light skeleton.
-    https://git.kernel.org/bpf/bpf-next/c/a506d6ce1dd1
-  - [bpf-next,2/2] selftest/bpf: Add a test case for ld_imm64 copy logic.
-    https://git.kernel.org/bpf/bpf-next/c/bb4a6a923729
+#define MAXIMUM_CONNECTIONS 3000000
+#define CALL_BACK_TIME 60000000000
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+struct ip_flow_tuple {
+...
+};
 
+struct ip_flow_entry {
+...
+struct bpf_timer timer;
+};
 
+// HASH
+struct {
+__uint(type, BPF_MAP_TYPE_HASH);
+__uint(max_entries, MAXIMUM_CONNECTIONS);
+__type(key, struct ip_flow_tuple);
+__type(value, struct ip_flow_entry);
+} flow_table __attribute__((section(".maps"), used));
+
+// LRU
+struct {
+__uint(type, BPF_MAP_TYPE_LRU_HASH);
+__uint(max_entries, MAXIMUM_CONNECTIONS);
+__type(key, struct ip_flow_tuple);
+__type(value, struct ip_flow_entry);
+} flow_table __attribute__((section(".maps"), used));
+
+SEC("xdp")
+int testMapTimer(struct xdp_md *ctx) {
+...
+struct ip_flow_tuple in_ip_flow_tuple =3D {
+   ...
+}
+
+struct ip_flow_entry *in_ip_flow_entry =3D
+bpf_map_lookup_elem(&flow_table, &in_ip_flow_tuple);
+if (in_ip_flow_entry =3D=3D NULL) {
+    struct ip_flow_entry in_ip_flow_entry_new =3D {};
+    bpf_map_update_elem(&flow_table, &in_ip_flow_tuple,
+&in_ip_flow_entry_new, BPF_ANY);
+    struct ip_flow_entry *flow_entry_value =3D
+bpf_map_lookup_elem(&flow_table, &in_ip_flow_tuple);
+
+    if (flow_entry_value) {
+        bpf_timer_init(&flow_entry_value->timer, &flow_table, 0);
+        bpf_timer_set_callback(&flow_entry_value->timer, myTimerCallback);
+        bpf_timer_start(&flow_entry_value->timer, (__u64)CALL_BACK_TIME, 0)=
+;
+    }
+
+}
+...
+
+}
+
+On Fri, Mar 17, 2023 at 6:41=E2=80=AFPM Hou Tao <houtao1@huawei.com> wrote:
+>
+>
+>
+> On 3/18/2023 12:40 AM, Chris Lai wrote:
+> > Might be a bug using bpf_timer on Hashmap?
+> > With same setups using bpf_timer but with LRU_Hashmap, the memory
+> > usage is way better: see following
+> >
+> > with LRU_Hashmap
+> > 16M capacity, 1 minute bpf_timer callback/cleanup..  (pre-allocation
+> > ~5G),  memory usage peaked ~7G (Flat and does not fluctuate - unlike
+> > Hashmap)
+> > 32M capacity, 1 minute bpf_timer callback/cleanup..  (pre-allocation
+> > ~8G),  memory usage peaked ~12G (Flat and does not fluctuate - unlike
+> > Hashmap)
+> In your setup, LRU hash map is preallocated and normal hash map is not
+> preallocated (aka BPF_F_NO_PREALLOC), right ? If it is true, could you pl=
+ease
+> test the memory usage of preallocated hash map ? Also could you please  s=
+hare
+> the version of used Linux kernel and the way on how to create hash map an=
+d
+> operate on hash map ?
+> >
+> >
+> >
+> > On Thu, Mar 16, 2023 at 6:22=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >> On Thu, Mar 16, 2023 at 12:18=E2=80=AFPM Chris Lai <chrlai@riotgames.c=
+om> wrote:
+> >>> Hello,
+> >>> Using BPF Hashmap with bpf_timer for each entry value and callback to
+> >>> delete the entry after 1 minute.
+> >>> Constantly creating load to insert elements onto the map, we have
+> >>> observed the following:
+> >>> -3M map capacity, 1 minute bpf_timer callback/cleanup, memory usage
+> >>> peaked around 5GB
+> >>> -16M map capacity, 1 minute bpf_timer callback/cleanup, memory usage
+> >>> peaked around 34GB
+> >>> -24M map capacity, 1 minute bpf_timer callback/cleanup, memory usage
+> >>> peaked around 55GB
+> >>> Wondering if this is expected and what is causing the huge increase i=
+n
+> >>> memory as we increase the number of elements inserted onto the map.
+> >>> Thank you.
+> Do the addition and deletion of hash map entry happen on different CPU ? =
+If it
+> is true and bpf memory allocator is used (kernel version >=3D 6.1), the m=
+emory
+> blow-up may be explainable. Because the new allocation can not reuse the =
+memory
+> freed by entry deletion, so the memory usage will increase rapidly. I had=
+ tested
+> such case and also written one selftest for such case, but it seems it on=
+ly can
+> be mitigated [1], because RCU tasks trace GP is slow. If your setup is st=
+icking
+> to non-preallocated hash map, you could first try to add
+> "rcupdate.rcu_task_enqueue_lim=3Dnr_cpus" in kernel bootcmd to mitigate t=
+he problem.
+>
+> [1] https://lore.kernel.org/bpf/20221209010947.3130477-1-houtao@huaweiclo=
+ud.com/
+> >> That's not normal. Do you have a small reproducer?
+> > .
+>
