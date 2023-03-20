@@ -2,118 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 293ED6C14ED
-	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 15:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E15EA6C16CA
+	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 16:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbjCTOiB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Mar 2023 10:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
+        id S232216AbjCTPJH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Mar 2023 11:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbjCTOiA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Mar 2023 10:38:00 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8F827480
-        for <bpf@vger.kernel.org>; Mon, 20 Mar 2023 07:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References;
-        bh=eHeAeK4+9D07K6vksSUgXp+IEWn25O17u+IQ/sSz6zE=; b=iDW1DR+YGlwt+9gISnaIUUHvhM
-        Go3nCf9U7UYuxaabyqouCA+5EnUxmzFaBl6aFclV5atLUKaZy7XyeiV8KGtz6RdZu+rmoDzVvyUBC
-        LUWcm1aC1flxxYvx+WrIE3kBOhriv0UeslXYeteUZCLzxm+eXXOuLrkXgjfiSNN+rTs76fCUA0Hrf
-        OmAMRB54UNb0SQb7bIqbf8gR157fOKxqLt6QWq5gz4wU3uN056hHawyfg2/za45CbzfMNp95vR78E
-        0MqKdq9v1nLDnA6zyB8dQZf4GEa9Ouc7hN/C0uTd3WAPtL+9ziSxTUVtzswbQJhfzUqPHctRzIDcJ
-        0YxvceqA==;
-Received: from [81.6.34.132] (helo=localhost)
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1peGdi-000NBy-U4; Mon, 20 Mar 2023 15:37:34 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     bpf@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Haynes <sh@synk.net>,
-        Lefteris Alexakis <lefteris.alexakis@kpn.com>
-Subject: [PATCH bpf] bpf: Adjust insufficient default bpf_jit_limit
-Date:   Mon, 20 Mar 2023 15:37:25 +0100
-Message-Id: <20230320143725.8394-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        with ESMTP id S232203AbjCTPIq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Mar 2023 11:08:46 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FC0158B4;
+        Mon, 20 Mar 2023 08:04:14 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id j7so13433650ybg.4;
+        Mon, 20 Mar 2023 08:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679324652;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UfQbiHyuciDYZ6wT1sRsPTIPKxB7RSLYf+crBU68Qi0=;
+        b=j8k2+/3VarZSc/NMQHcwhYtJz5zq9bSfVj0k4A+7CeW8eANT8LP5VD7BHmhgHX+BHL
+         /w9tVseKnuZ0NocKzEf01YhSTVAMiO3FKqhd82rQjPvCkzAyu/7tHP1ZOPdfdNHyGM40
+         uk6Rq1tBGejbFEcol4lOS3uDHR66VPE32/lrvBj6htFlSrzaqqE+K3Mj3wCAuCXWfe6I
+         LX2l0cClZPaHrhyh658PZjq1UA80o5B1g0nMBdxA+tPMwYynkzsGkB0MeZP77a1Kg+ca
+         q/2oL7S1R29Px19BEeUxK/l3ElXHx1oZcv4b6C3vjnHCIrZSTRuhngXfBG8ewOSUFM0x
+         ta3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679324652;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UfQbiHyuciDYZ6wT1sRsPTIPKxB7RSLYf+crBU68Qi0=;
+        b=W902NNWLW1Qck8812qwZSjMup2XbCDxLiBQGILCvp4eKH27d+a3xp2D8HCmJe27BqA
+         DlwW2Uts2I7+WLFzeS1V0rsF8EOQTF8fxWJXYlhbe7ELkuM8Dopn8QvNgKxAxLJQ2dja
+         2BA1Ca5s5W4Nzx1jUOEj9J6pJH410S8fqbRFHkyo32hfZ95fqrNoTic9QzdAVrlk4Vhe
+         VnK04y8UAdbD8JLWMfMoH9zbZBOFhOVRBKt3mbaT1gXZqpwl5gG7g4kMgP//II5ttKIQ
+         YCPhJ8/oDOTIHkMrsh59fp+DD2noDvDPfBjmIbCSz79Iys1h3dhoz8rvWSMDy7npf6bf
+         y1XQ==
+X-Gm-Message-State: AO0yUKWbQqyLDCkLTmFJqGWQIGWkvq7r6d/wksBhC4UeAKe2Z9moqpxL
+        6g9PESM3f6Jtrqz+jTbGbttEenfnyHEzimn0Lp5SUo3MqdzH/g==
+X-Google-Smtp-Source: AK7set+T4SQFGUzShpw9RAeXFNVykJfZsE+AjE5Jgx8IMziSWwoV9OuKg6TnM2XPaYHyIKLIi1W7kJ7lL2bh7xi6vxE=
+X-Received: by 2002:a5b:c47:0:b0:ac9:cb97:bd0e with SMTP id
+ d7-20020a5b0c47000000b00ac9cb97bd0emr4310434ybr.5.1679324652143; Mon, 20 Mar
+ 2023 08:04:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26849/Mon Mar 20 08:24:18 2023)
+References: <20230320105323.187307-1-nunog@fr24.com> <20230320110314.GJ36557@unreal>
+ <CAJ8uoz1kbFsttvWNTUdtYcwEa=hQvky2z0Jfn0=9b5v6m_FVXg@mail.gmail.com>
+ <20230320134058.GM36557@unreal> <CAJ8uoz2ctdQzG8V+13RUQW0BjK1-L6ckP=HbxcAz2xerYhCsLQ@mail.gmail.com>
+In-Reply-To: <CAJ8uoz2ctdQzG8V+13RUQW0BjK1-L6ckP=HbxcAz2xerYhCsLQ@mail.gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 20 Mar 2023 16:04:00 +0100
+Message-ID: <CAJ8uoz3XqUOmrUhP0i5GZmYhvDHMB6vd6f68zqN1WcLqSiUcJg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: allow remap of fill and/or completion rings
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     =?UTF-8?Q?Nuno_Gon=C3=A7alves?= <nunog@fr24.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We've seen recent AWS EKS (Kubernetes) user reports like the following:
+On Mon, 20 Mar 2023 at 14:45, Magnus Karlsson <magnus.karlsson@gmail.com> w=
+rote:
+>
+> On Mon, 20 Mar 2023 at 14:41, Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Mon, Mar 20, 2023 at 01:27:18PM +0100, Magnus Karlsson wrote:
+> > > On Mon, 20 Mar 2023 at 12:09, Leon Romanovsky <leon@kernel.org> wrote=
+:
+> > > >
+> > > > On Mon, Mar 20, 2023 at 10:53:23AM +0000, Nuno Gon=C3=A7alves wrote=
+:
+> > > > > The remap of fill and completion rings was frowned upon as they
+> > > > > control the usage of UMEM which does not support concurrent use.
+> > > > > At the same time this would disallow the remap of this rings
 
-  After upgrading EKS nodes from v20230203 to v20230217 on our 1.24 EKS
-  clusters after a few days a number of the nodes have containers stuck
-  in ContainerCreating state or liveness/readiness probes reporting the
-  following error:
+these rings
 
-    Readiness probe errored: rpc error: code = Unknown desc = failed to
-    exec in container: failed to start exec "4a11039f730203ffc003b7[...]":
-    OCI runtime exec failed: exec failed: unable to start container process:
-    unable to init seccomp: error loading seccomp filter into kernel:
-    error loading seccomp filter: errno 524: unknown
+> > > > > into another process.
+> > > > >
+> > > > > A possible use case is that the user wants to transfer the socket=
+/
+> > > > > UMEM ownerwhip to another process (via SYS_pidfd_getfd) and so
+> > >
+> > > nit: ownership
+> > >
+> > > > > would need to also remap this rings.
 
-  However, we had not been seeing this issue on previous AMIs and it only
-  started to occur on v20230217 (following the upgrade from kernel 5.4 to
-  5.10) with no other changes to the underlying cluster or workloads.
+these rings
 
-  We tried the suggestions from that issue (sysctl net.core.bpf_jit_limit=452534528)
-  which helped to immediately allow containers to be created and probes to
-  execute but after approximately a day the issue returned and the value
-  returned by cat /proc/vmallocinfo | grep bpf_jit | awk '{s+=$2} END {print s}'
-  was steadily increasing.
+> > > > >
+> > > > > This will have no impact on current usages and just relaxes the
+> > > > > remap limitation.
+> > > > >
+> > > > > Signed-off-by: Nuno Gon=C3=A7alves <nunog@fr24.com>
+> > > > > ---
+> > > > >  net/xdp/xsk.c | 9 ++++++---
+> > > > >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > > > >
+> > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > > index 2ac58b282b5eb..2af4ff64b22bd 100644
+> > > > > --- a/net/xdp/xsk.c
+> > > > > +++ b/net/xdp/xsk.c
+> > > > > @@ -1300,10 +1300,11 @@ static int xsk_mmap(struct file *file, st=
+ruct socket *sock,
+> > > > >  {
+> > > > >       loff_t offset =3D (loff_t)vma->vm_pgoff << PAGE_SHIFT;
+> > > > >       unsigned long size =3D vma->vm_end - vma->vm_start;
+> > > > > +     int state =3D READ_ONCE(xs->state);
+> > >
+> > > Reverse Christmas Tree notation here please. Move it one line down to
+> > > after the *xs declaration.
+> > >
+> > > > >       struct xdp_sock *xs =3D xdp_sk(sock->sk);
+> > > > >       struct xsk_queue *q =3D NULL;
+> > > > >
+> > > > > -     if (READ_ONCE(xs->state) !=3D XSK_READY)
+> > > > > +     if (!(state =3D=3D XSK_READY || state =3D=3D XSK_BOUND))
+> > > >
+> > > > This if(..) is actually:
+> > > >  if (state !=3D XSK_READY && state !=3D XSK_BOUND)
+> > >
+> > > Nuno had it like that to start with when he sent the patch privately
+> > > to me, but I responded that I prefered the current one. It is easier
+> > > to understand if read out aloud IMO.
+> >
+> > "Not equal" is much easier to understand than "not" of whole expression=
+.
+>
+> Then my brain is wired differently ;-).
 
-I tested bpf tree to observe bpf_jit_charge_modmem, bpf_jit_uncharge_modmem
-their sizes passed in as well as bpf_jit_current under tcpdump BPF filter,
-seccomp BPF and native (e)BPF programs, and the behavior all looks sane
-and expected, that is nothing "leaking" from an upstream perspective.
+Nuno, please prepare a v2 by fixing the now four things above and
+reverting this if-expression to what you had before. It is two against
+one, so I yield. After that, it is good to go from my point of view.
 
-The bpf_jit_limit knob was originally added in order to avoid a situation
-where unprivileged applications loading BPF programs (e.g. seccomp BPF
-policies) consuming all the module memory space via BPF JIT such that loading
-of kernel modules would be prevented. The default limit was defined back in
-2018 and while good enough back then, we are generally seeing far more BPF
-consumers today.
+Thanks!
 
-Adjust the limit for the BPF JIT pool from originally 1/4 to now 1/2 of the
-module memory space to better reflect today's needs and avoid more users
-running into potentially hard to debug issues.
-
-Fixes: fdadd04931c2 ("bpf: fix bpf_jit_limit knob for PAGE_SIZE >= 64K")
-Reported-by: Stephen Haynes <sh@synk.net>
-Reported-by: Lefteris Alexakis <lefteris.alexakis@kpn.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://github.com/awslabs/amazon-eks-ami/issues/1179
-Link: https://github.com/awslabs/amazon-eks-ami/issues/1219
----
- kernel/bpf/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index b297e9f60ca1..e2d256c82072 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -972,7 +972,7 @@ static int __init bpf_jit_charge_init(void)
- {
- 	/* Only used as heuristic here to derive limit. */
- 	bpf_jit_limit_max = bpf_jit_alloc_exec_limit();
--	bpf_jit_limit = min_t(u64, round_up(bpf_jit_limit_max >> 2,
-+	bpf_jit_limit = min_t(u64, round_up(bpf_jit_limit_max >> 1,
- 					    PAGE_SIZE), LONG_MAX);
- 	return 0;
- }
--- 
-2.27.0
-
+> > > Do not have any strong feelings either way since the statements are e=
+quivalent.
+> > >
+> > > > Thanks
