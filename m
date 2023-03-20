@@ -2,119 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C91C86C0878
-	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 02:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A93B6C0847
+	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 02:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbjCTB2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Mar 2023 21:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        id S231305AbjCTBJM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Mar 2023 21:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjCTB1v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Mar 2023 21:27:51 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C61425294;
-        Sun, 19 Mar 2023 18:20:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 45588B80D44;
-        Mon, 20 Mar 2023 00:54:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78F13C4339B;
-        Mon, 20 Mar 2023 00:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679273673;
-        bh=CDjeeZ1RdIAASgt1N4rP5Uw1t49BKchPFbEVdT+waE4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r5y4CKs3V+8WgmqXqAe/I0++CZp4cSyz2Re4sPQoMItV71RNuNCNAhegk2/G/HmhC
-         aim2RP3+H9pPCL+6ZIGBovnEyrIL0JXIhmp3OZPMH574U1CW0cFzJqglFo39bt6gdv
-         Q1LVtSlSZO7bRj/FLITcRmnRMkRMWY6a9NmM1kqzQYVE25Ds58H08wDQyldnIBZAOn
-         GOicYer4OV3I1UryzRV+6ETArIv1Y0+pUkCJOEbyWUqM92Cpx6e13yp3d+bpWVoK1Z
-         f0+E1VrQ1ueZSZb03SbHA51SvdV9jnkOoNaj5as1jtBrZM57xTIrOP4MuXgeqg22Zy
-         OfkSY1OVQkHVQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lorenz Bauer <lorenz.bauer@isovalent.com>,
-        Lorenz Bauer <lmb@isovalent.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, andrii@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shuah@kernel.org, yhs@fb.com,
-        eddyz87@gmail.com, sdf@google.com, iii@linux.ibm.com,
-        memxor@gmail.com, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 08/29] selftests/bpf: check that modifier resolves after pointer
-Date:   Sun, 19 Mar 2023 20:53:50 -0400
-Message-Id: <20230320005413.1428452-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230320005413.1428452-1-sashal@kernel.org>
-References: <20230320005413.1428452-1-sashal@kernel.org>
+        with ESMTP id S231336AbjCTBIs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Mar 2023 21:08:48 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBD315CB0;
+        Sun, 19 Mar 2023 18:00:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679274040; x=1710810040;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=smOBfRVqrOhWu8XvcIR133OdyNbI2Ln/Zggu1BX7YS8=;
+  b=OG2VMp5nb9Uuu9Orp85uxBOlJ0OXP8P9cAbEjCT2zrDYDBchyY6eAzH/
+   E6k9wr5lsSmlybnCH1aJsXwKkp+5XpoxIwBy6Pn5JgjKsh/7hvtduM+u1
+   UYi7U+1fLRtJN3268ChLL9EIAHBQ6hCblJ4LxEQTw/xJtdB9k6wxHg3R+
+   2TaucFWNme21HKRwVuNOhMJnq9hzJGT96OdIaXHYhcno72qx1694ds8kb
+   mPzGWmN20Lk8rLdg/Q7EcgquYmcxUdr2moR3cwoQKZWJIhM1fkMUCPnuM
+   ti1lI/EyARicGPRol61ZGU7v9V2LJbHq4dUNVWm0RMx3RbLg28KqPB4NK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10654"; a="326921316"
+X-IronPort-AV: E=Sophos;i="5.98,274,1673942400"; 
+   d="scan'208";a="326921316"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2023 17:59:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10654"; a="630939113"
+X-IronPort-AV: E=Sophos;i="5.98,274,1673942400"; 
+   d="scan'208";a="630939113"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 19 Mar 2023 17:59:26 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pe3rw-000AjO-3C;
+        Mon, 20 Mar 2023 00:59:24 +0000
+Date:   Mon, 20 Mar 2023 08:58:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kal Conley <kal.conley@dectris.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        netdev@vger.kernel.org, Kal Conley <kal.conley@dectris.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
+Message-ID: <202303200837.DNorzOFV-lkp@intel.com>
+References: <20230319195656.326701-2-kal.conley@dectris.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230319195656.326701-2-kal.conley@dectris.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Lorenz Bauer <lorenz.bauer@isovalent.com>
+Hi Kal,
 
-[ Upstream commit dfdd608c3b365f0fd49d7e13911ebcde06b9865b ]
+Thank you for the patch! Yet something to improve:
 
-Add a regression test that ensures that a VAR pointing at a
-modifier which follows a PTR (or STRUCT or ARRAY) is resolved
-correctly by the datasec validator.
+[auto build test ERROR on bpf/master]
+[also build test ERROR on next-20230317]
+[cannot apply to bpf-next/master linus/master v6.3-rc3]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-Link: https://lore.kernel.org/r/20230306112138.155352-3-lmb@isovalent.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/btf.c | 28 ++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+url:    https://github.com/intel-lab-lkp/linux/commits/Kal-Conley/xsk-Support-UMEM-chunk_size-PAGE_SIZE/20230320-035849
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+patch link:    https://lore.kernel.org/r/20230319195656.326701-2-kal.conley%40dectris.com
+patch subject: [PATCH bpf-next 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
+config: arm-mvebu_v5_defconfig (https://download.01.org/0day-ci/archive/20230320/202303200837.DNorzOFV-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project 67409911353323ca5edf2049ef0df54132fa1ca7)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm cross compiling tool for clang build
+        # apt-get install binutils-arm-linux-gnueabi
+        # https://github.com/intel-lab-lkp/linux/commit/bbcc35c4ff807754bf61ef2c1f11195533e53de0
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Kal-Conley/xsk-Support-UMEM-chunk_size-PAGE_SIZE/20230320-035849
+        git checkout bbcc35c4ff807754bf61ef2c1f11195533e53de0
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash net/core/
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-index 24dd6214394e0..d711f4bea98ea 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-@@ -879,6 +879,34 @@ static struct btf_raw_test raw_tests[] = {
- 	.btf_load_err = true,
- 	.err_str = "Invalid elem",
- },
-+{
-+	.descr = "var after datasec, ptr followed by modifier",
-+	.raw_types = {
-+		/* .bss section */				/* [1] */
-+		BTF_TYPE_ENC(NAME_TBD, BTF_INFO_ENC(BTF_KIND_DATASEC, 0, 2),
-+			sizeof(void*)+4),
-+		BTF_VAR_SECINFO_ENC(4, 0, sizeof(void*)),
-+		BTF_VAR_SECINFO_ENC(6, sizeof(void*), 4),
-+		/* int */					/* [2] */
-+		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),
-+		/* int* */					/* [3] */
-+		BTF_TYPE_ENC(0, BTF_INFO_ENC(BTF_KIND_PTR, 0, 0), 2),
-+		BTF_VAR_ENC(NAME_TBD, 3, 0),			/* [4] */
-+		/* const int */					/* [5] */
-+		BTF_TYPE_ENC(0, BTF_INFO_ENC(BTF_KIND_CONST, 0, 0), 2),
-+		BTF_VAR_ENC(NAME_TBD, 5, 0),			/* [6] */
-+		BTF_END_RAW,
-+	},
-+	.str_sec = "\0a\0b\0c\0",
-+	.str_sec_size = sizeof("\0a\0b\0c\0"),
-+	.map_type = BPF_MAP_TYPE_ARRAY,
-+	.map_name = ".bss",
-+	.key_size = sizeof(int),
-+	.value_size = sizeof(void*)+4,
-+	.key_type_id = 0,
-+	.value_type_id = 1,
-+	.max_entries = 1,
-+},
- /* Test member exceeds the size of struct.
-  *
-  * struct A {
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303200837.DNorzOFV-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from net/core/xdp.c:22:
+   In file included from include/net/xdp_sock_drv.h:10:
+>> include/net/xsk_buff_pool.h:179:43: error: use of undeclared identifier 'HPAGE_SIZE'
+           bool cross_pg = pool->hugetlb ? (addr & (HPAGE_SIZE - 1)) + len > HPAGE_SIZE :
+                                                    ^
+   include/net/xsk_buff_pool.h:179:68: error: use of undeclared identifier 'HPAGE_SIZE'
+           bool cross_pg = pool->hugetlb ? (addr & (HPAGE_SIZE - 1)) + len > HPAGE_SIZE :
+                                                                             ^
+   2 errors generated.
+
+
+vim +/HPAGE_SIZE +179 include/net/xsk_buff_pool.h
+
+   175	
+   176	static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
+   177							 u64 addr, u32 len)
+   178	{
+ > 179		bool cross_pg = pool->hugetlb ? (addr & (HPAGE_SIZE - 1)) + len > HPAGE_SIZE :
+   180						(addr & (PAGE_SIZE - 1)) + len > PAGE_SIZE;
+   181	
+   182		if (likely(!cross_pg))
+   183			return false;
+   184	
+   185		if (pool->dma_pages_cnt) {
+   186			return !(pool->dma_pages[addr >> PAGE_SHIFT] &
+   187				 XSK_NEXT_PG_CONTIG_MASK);
+   188		}
+   189	
+   190		/* skb path */
+   191		return addr + len > pool->addrs_cnt;
+   192	}
+   193	
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
