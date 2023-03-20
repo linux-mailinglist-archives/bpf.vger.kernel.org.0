@@ -2,109 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C10F16C18DA
-	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 16:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4736C19F8
+	for <lists+bpf@lfdr.de>; Mon, 20 Mar 2023 16:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbjCTP2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Mar 2023 11:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
+        id S233255AbjCTPki (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Mar 2023 11:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232925AbjCTP1k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Mar 2023 11:27:40 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF0A37F0B;
-        Mon, 20 Mar 2023 08:20:50 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id w9so48224053edc.3;
-        Mon, 20 Mar 2023 08:20:50 -0700 (PDT)
+        with ESMTP id S233247AbjCTPkP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Mar 2023 11:40:15 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD69135EE5
+        for <bpf@vger.kernel.org>; Mon, 20 Mar 2023 08:31:57 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id cn12so2694031edb.4
+        for <bpf@vger.kernel.org>; Mon, 20 Mar 2023 08:31:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679325648;
+        d=isovalent.com; s=google; t=1679326314;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9Kw+qaW0IRgkPXI2zqL3VUWrpjrCLz4zhcfmeF4b5oA=;
-        b=C5MmYe4hIyT+Y8n015wyAjPw9sbmwsnOwL0EYcCzMatk6V2UeEdFsIBWApWBC/JRH+
-         IzFVJp6kQ6UyD7VPU9rM2g6xQkJR9HdAvhqjTVVkC6wsv3MPqL/RA2huyAkX4ijUb3bq
-         11t9uV5QP+7qHjTC8ZmZnyuGLE9cy4A6zeYE3aJHRaA5VWonHd5ju6lHsKChZ7iaPIIo
-         kFMvzed/JjSPTn9pgDxKMziaUvyWBHdoYvYynJdsMopzdgnOPxg5xyoX9XdC4r/XZMbN
-         GcrXhR42MvmXJyXxOUj38F24XDCvYn/gVjIOm3bwEydBB2/02H8EkMsRf44aejX0LmZc
-         7RFg==
+        bh=ONCoqAuPFAdxcHJlJkmwpKMX/MPlR6FkYHZLYnTGWGA=;
+        b=ZAG07fjd1pGdKzK6v1r6GnVVdTiwCGVdbZgvimV0oMBbMrtpEp7Vf5VtfChYznrOc6
+         H0M5oKF/oqkK+eiujHnj4RkGkHe1EGUWGTj5spGvroIRSc0RunHN0DZeywnFEy+ELW3g
+         I1IsObzaSbYO7aYSdtbhiiuZyLfr04luFU8Ju/hnMT9QRQjo3bnL3xU12gKF8bXKVocG
+         wPSKeMuXRncMIA08YpSBxkh35gUR42GYCP/ZSehhvMNiZVSOhSd24vgR4AsLaeCwcD26
+         mQChHP13oK+HLvVovVvuVvI/Re5PiAqBU2KoYz0eW9Tb3NAQLfevbE9pwLetC1J9bp4O
+         FRPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679325648;
+        d=1e100.net; s=20210112; t=1679326314;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9Kw+qaW0IRgkPXI2zqL3VUWrpjrCLz4zhcfmeF4b5oA=;
-        b=iUzn6jtoMV/VxstEXl2WooR31o7K36nu+Dmw+3EFdKfMrhb212kxWfrxkN+ZRPWsZ/
-         qJaiuaYK5g5xpoZWXr5XAuXEPshm3CSdTSxR24YSLfDHl0Z/7/8UHPlG2Ub0LAumHg04
-         iH/hHKPlHAwNA/et78bvtasDunG0jYpuWv4D/Yqep80lISJYz31BFZSFkC1PkYBQnHQk
-         8ATs8zsZyfdY9I/BsSCyDyO3LO+ezxijL/ofdUcCzQJFBVN217HluzD9ucq5Hv4Ol44o
-         9WdBzw27ZWJorqBmmamoixih22V830YTKQLoLxIEYcyEjGUoVDjxQajmBHaZ+u3j4zl7
-         NSYg==
-X-Gm-Message-State: AO0yUKWt1PmWKKptS6bZti1hu7178CF4/24lM5T+gjTTE23U66x0A+cX
-        P8Ul8Y8veckCQwVQl6bn5SJZoaQD5zoS2SD15bY=
-X-Google-Smtp-Source: AK7set+Q0q+E+Sb7r+JKFFBfzrPzalPnaL3jlI25hjs4owdnUGqXQmQeZs5QC1jSLJ07ZIrQYRKsGqeRwskdeiuTu2U=
-X-Received: by 2002:a17:906:4d84:b0:92e:a234:110a with SMTP id
- s4-20020a1709064d8400b0092ea234110amr4340421eju.3.1679325648130; Mon, 20 Mar
- 2023 08:20:48 -0700 (PDT)
+        bh=ONCoqAuPFAdxcHJlJkmwpKMX/MPlR6FkYHZLYnTGWGA=;
+        b=QrHakQsHYzOi6e9hi6bFJJjIO64/vUG4RVNs+pxcCZw/grELSJIVQ8kpv80y7iqqMj
+         5YRsZ+NIwTXTHg3icBYarxwjmPlUUp+bF/mvXtP9it65Vx/ertiYRK5A7Zp5Ux7SGWDA
+         yHq+FcSCdF+T5oOzh/Yvm3aAThXu2CJuyRJx8a43IIOZH0NoJS8a5B36uBI/OlZeEAh/
+         CxOjX8yHH2A7A0f8p9AxgDgb6BDo6zzFDWpB9k63+qkPWpy4Ca94qGlqPUz0PXemXT/v
+         AYtDLZsNHOVkNoB2YMEm5/+SS3BIHq2eMTi9lHhiBCl136GWyDobbRNBFgDJKl0s1UeD
+         GMJg==
+X-Gm-Message-State: AO0yUKXRNlDMpHx2ojl6qmzwb6DGGdUPKPUsKH6OKL4xnTOfP0ghXmbc
+        yxPa/gi1G7ouHMxdJmJULqFiYfkA1co5W4n2Mo0rqg==
+X-Google-Smtp-Source: AK7set9zRda+HOBbyE1RH7U3Q5LdXAIFkGANo3ucDxxjiF5CtJ+awwn6fl76qqAqukfOF4oE95J6aFnk+XfPYhz4GPU=
+X-Received: by 2002:a17:906:cf8d:b0:930:310:abef with SMTP id
+ um13-20020a170906cf8d00b009300310abefmr4344539ejb.3.1679326313919; Mon, 20
+ Mar 2023 08:31:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230317035227.22293-1-starmiku1207184332@gmail.com>
- <20230317171636.ftelyp6ty7mgo4rt@dhcp-172-26-102-232.dhcp.thefacebook.com>
- <CALyQVayJaZ_s9yuL07ReZRmTT52ua7B+92CdYnLi9GiegpOKNw@mail.gmail.com>
- <20230319164714.zu6kqylibrzug4ja@dhcp-172-26-102-232.dhcp.thefacebook.com> <CALyQVazN_KTOhNVowuOV4FSr_zd5htCaBJ+xKgCDaL1LgVG50Q@mail.gmail.com>
-In-Reply-To: <CALyQVazN_KTOhNVowuOV4FSr_zd5htCaBJ+xKgCDaL1LgVG50Q@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 20 Mar 2023 08:20:36 -0700
-Message-ID: <CAADnVQJXAkyCd0vXPQa54gQgRpvG4Z7N+JD3+HXcbFb-+O=GLA@mail.gmail.com>
-Subject: Re: [PATCH v2] kernel: bpf: stackmap: fix a possible sleep-in-atomic
- bug in bpf_mmap_unlock_get_irq_work()
-To:     Teng Qi <starmiku1207184332@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        baijiaju1990@outlook.com
+References: <20230320005258.1428043-1-sashal@kernel.org> <20230320005258.1428043-8-sashal@kernel.org>
+In-Reply-To: <20230320005258.1428043-8-sashal@kernel.org>
+From:   Lorenz Bauer <lmb@isovalent.com>
+Date:   Mon, 20 Mar 2023 15:31:42 +0000
+Message-ID: <CAN+4W8g6AcQQWe7rrBVOFYoqeQA-1VbUP_W7DPS3q0k-czOLfg@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.2 08/30] selftests/bpf: check that modifier
+ resolves after pointer
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@kernel.org>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, shuah@kernel.org,
+        yhs@fb.com, eddyz87@gmail.com, sdf@google.com, error27@gmail.com,
+        iii@linux.ibm.com, memxor@gmail.com, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 20, 2023 at 5:28=E2=80=AFAM Teng Qi <starmiku1207184332@gmail.c=
-om> wrote:
+On Mon, Mar 20, 2023 at 12:53=E2=80=AFAM Sasha Levin <sashal@kernel.org> wr=
+ote:
 >
-> Yeah, we got your points. There are two key questions. The first question=
- is
-> that preempt_disable() and preempt_enable() will be conflicted with vfree=
-()
-> before the mmap_read_unlock().
+> From: Lorenz Bauer <lorenz.bauer@isovalent.com>
+>
+> [ Upstream commit dfdd608c3b365f0fd49d7e13911ebcde06b9865b ]
+>
+> Add a regression test that ensures that a VAR pointing at a
+> modifier which follows a PTR (or STRUCT or ARRAY) is resolved
+> correctly by the datasec validator.
+>
+> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+> Link: https://lore.kernel.org/r/20230306112138.155352-3-lmb@isovalent.com
+> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-What does this sentence mean?
+Hi Sasha,
 
-> The second question is that thousands callers
-> of up_read() only make sure irqs_disabled() =3D=3D false needed fixed if
-> the mmap_read_unlock() is fixed.
+Can you explain why this patch was selected? I'd prefer to not
+backport the test, since it frequently leads to breakage when trying
+to build selftests/bpf on stable kernels.
 
-that doesn't answer my question either.
-
-> Detecting ebpf bugs can be challenging since it is difficult to prove tha=
-t a
-> bug can be triggered during runtime, as well as fixing the bug. We decide=
-d to
-> give up this patch that fixes the possible sleep-in-atomic bug in
-> bpf_mmap_unlock_get_irq_work(). Instead, we will focus on improving our s=
-tatic
-> analysis tool to find ebpf-specific bugs.
-
-Please don't.
+Thanks
+Lorenz
