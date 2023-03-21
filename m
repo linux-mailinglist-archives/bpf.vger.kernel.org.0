@@ -2,83 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 108CE6C3198
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 13:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F29226C31AB
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 13:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbjCUMYO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 08:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
+        id S231253AbjCUM0L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 08:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjCUMYN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 08:24:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EB54D2AF
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 05:22:37 -0700 (PDT)
+        with ESMTP id S230143AbjCUMZ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 08:25:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEB54BEB1
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 05:24:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679401352;
+        s=mimecast20190719; t=1679401497;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=bhYIAqjSaFFOuKGO8P8w2NdVEdEzB+ZDIXOhFeNjrwE=;
-        b=d3IC7mdkoxIxYwjzkiKl3bJ2nLlF8zOLbOy1+U9rMrHuAf87nY1j0jojEFbcnQWKjwwns9
-        hglmSG0gn0nJ0L7nL+S422a7IIlFS7BHTmHRfcdA1sugnpo1xrQS5rOOCedO5MRjoTCPLu
-        ULmTEsaHgYWpe/Iue/hH3mAlyhhapM4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=ZEM2O5AZZfhh/tv2fFyNWLmvspB6ddGG/uJLc6m+gqo=;
+        b=YExc8EATnouPIjllzeUSYifwBr4jkyt8wJnvNLIafkRiwBBp9M2DPyIMm2tuASUShRhvx1
+        mLj1SlTXrky7x6UEjkzaEoVh2RCgfvNtrdNEUcT3CFXeLDTYVLe9RrXKbTEq1e4CDN4Wkw
+        zwUvs8kfflaHKlJakF3fP1GhxSNRPZ0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-639-gRNfBjw-MJ-6WLLRUZBtpw-1; Tue, 21 Mar 2023 08:22:30 -0400
-X-MC-Unique: gRNfBjw-MJ-6WLLRUZBtpw-1
-Received: by mail-wr1-f72.google.com with SMTP id u27-20020adfa19b000000b002d3b9266941so1181402wru.2
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 05:22:30 -0700 (PDT)
+ us-mta-626-8C717VARMfukEt3sAlVMcQ-1; Tue, 21 Mar 2023 08:24:56 -0400
+X-MC-Unique: 8C717VARMfukEt3sAlVMcQ-1
+Received: by mail-ed1-f70.google.com with SMTP id r19-20020a50aad3000000b005002e950cd3so21975435edc.11
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 05:24:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679401350;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bhYIAqjSaFFOuKGO8P8w2NdVEdEzB+ZDIXOhFeNjrwE=;
-        b=7TnU2VqOkGW6KaoeBciwfPWl6z4xgiyjyfpFNPGMZiL0XUBC2CKv+aHtK4NhkjylVw
-         Jcbb6kBBdD8lIuv4vhM1EEdDWkGfqUTwUu2QwHaeLaG7pf5ARLKe4/4aZnQIQ6AH5UZ5
-         E4akuE6+sLklpBqmlWolSmzDHrnVEhhvQhmmt1KGR1DrxmxtmlWzt8keAXhfcczzsrnk
-         Oris/yGaaJdl++B7/upwwSBHrbtHCkuviZQ2iMwwQYd308TFta/AmNG0Qtttl4Nz4fYN
-         90TSJ7SnPIMmDc0iBhTEQacd8CDT/F39Y80i9mrfCfZzRNb3fdPsICNeJF/JWphChvCQ
-         8zJQ==
-X-Gm-Message-State: AO0yUKWWhJOsCj+Z9wa47/s/bH7DtYHLPGTjqYZ4TQc4NjDPoZm0KsqT
-        7Hlm9SZSSh/4tp8IiWnjR3mfNNZZdRzq+U+dAPjX1DjT9fFPWcdIKc2EtPwiHHXqfFTJdXeM8wx
-        jEhAJ2rijPDqF
-X-Received: by 2002:a1c:f20e:0:b0:3ed:ac66:9445 with SMTP id s14-20020a1cf20e000000b003edac669445mr2297562wmc.8.1679401349796;
-        Tue, 21 Mar 2023 05:22:29 -0700 (PDT)
-X-Google-Smtp-Source: AK7set8YeKutAAOEemeAKynuByQv3FxmQfnuDB21wRMtth8a1Pu+Sesej59PAmO4YgxyGIvYNZKqfg==
-X-Received: by 2002:a1c:f20e:0:b0:3ed:ac66:9445 with SMTP id s14-20020a1cf20e000000b003edac669445mr2297546wmc.8.1679401349536;
-        Tue, 21 Mar 2023 05:22:29 -0700 (PDT)
-Received: from redhat.com ([2.52.1.105])
-        by smtp.gmail.com with ESMTPSA id c16-20020a7bc850000000b003ee2bed222asm2127363wml.32.2023.03.21.05.22.27
+        d=1e100.net; s=20210112; t=1679401495;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZEM2O5AZZfhh/tv2fFyNWLmvspB6ddGG/uJLc6m+gqo=;
+        b=DOz1Fw5Eexg8T8HQ32Zb5NFcgiff+d7xl5LOURNS7Ha5zPrHcT/39HApl2UHE4mxLh
+         da/I8rOXTkzOnj3UYUYBGXgwzstgLktDKmfSa6/K+DBL0xuX2DS3iqy8i3sY74BqVqeT
+         etMKWbuL7jUprKuhcyAbBpZzg5wJJvfQLw8Qm3aXg2YDghejrc+ZKpU/QUF0kSvTxV1t
+         dietYeuOIDZymKmOIWB4Qk17nr11mxXTOjd6AXhQog6vZ+JWsqwetfjDz0fXcAyOpbFa
+         BIph3fU6D/5S+wlbrueL7TPH5RLMVa+9vAqUnR9BIG/AvHoWW2jZ69orU/FQFkOQcA0/
+         rwOw==
+X-Gm-Message-State: AO0yUKURWixWx5Cpjipi5tCVdy/n/FDWOgpnVDIne2RxrjMV9ZYyYrEV
+        bfa49+991/pg6DfMr1Oe0bbdN/5n04HoQIdXQyBi3Z489O/C4KiCl+i8lH0pdaqnv1jQqQejd18
+        1sN9/RJv1ygRo
+X-Received: by 2002:a17:906:22d4:b0:931:a0cb:1ef1 with SMTP id q20-20020a17090622d400b00931a0cb1ef1mr2582548eja.7.1679401495090;
+        Tue, 21 Mar 2023 05:24:55 -0700 (PDT)
+X-Google-Smtp-Source: AK7set827uIV36c4Q1wXEiOLcV0/nXL1g/9nodarT2GYrZjfT+RM2GjdaYDd2zEWkCpVLiPEKr/xMQ==
+X-Received: by 2002:a17:906:22d4:b0:931:a0cb:1ef1 with SMTP id q20-20020a17090622d400b00931a0cb1ef1mr2582528eja.7.1679401494725;
+        Tue, 21 Mar 2023 05:24:54 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id u24-20020a17090657d800b00934823127c8sm2567103ejr.78.2023.03.21.05.24.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Mar 2023 05:22:29 -0700 (PDT)
-Date:   Tue, 21 Mar 2023 08:22:25 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [RFC net-next 0/8] virtio_net: refactor xdp codes
-Message-ID: <20230321082216-mutt-send-email-mst@kernel.org>
-References: <20230315041042.88138-1-xuanzhuo@linux.alibaba.com>
- <1679399929.1424522-1-xuanzhuo@linux.alibaba.com>
- <1679401220.8186114-1-xuanzhuo@linux.alibaba.com>
+        Tue, 21 Mar 2023 05:24:54 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 58FFD9E3449; Tue, 21 Mar 2023 13:24:53 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next V1 1/7] xdp: bpf_xdp_metadata
+ use EOPNOTSUPP for no driver support
+In-Reply-To: <f42ff647-11b2-4f09-7652-ad85d35b5617@redhat.com>
+References: <167906343576.2706833.17489167761084071890.stgit@firesoul>
+ <167906359575.2706833.545256364239637451.stgit@firesoul>
+ <ZBTZ7J9B6yXNJO1m@google.com>
+ <f42ff647-11b2-4f09-7652-ad85d35b5617@redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 21 Mar 2023 13:24:53 +0100
+Message-ID: <87bkkm8f6y.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1679401220.8186114-1-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,74 +85,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 08:20:20PM +0800, Xuan Zhuo wrote:
-> On Tue, 21 Mar 2023 19:58:49 +0800, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> > On Wed, 15 Mar 2023 12:10:34 +0800, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> > > Due to historical reasons, the implementation of XDP in virtio-net is relatively
-> > > chaotic. For example, the processing of XDP actions has two copies of similar
-> > > code. Such as page, xdp_page processing, etc.
-> > >
-> > > The purpose of this patch set is to refactor these code. Reduce the difficulty
-> > > of subsequent maintenance. Subsequent developers will not introduce new bugs
-> > > because of some complex logical relationships.
-> > >
-> > > In addition, the supporting to AF_XDP that I want to submit later will also need
-> > > to reuse the logic of XDP, such as the processing of actions, I don't want to
-> > > introduce a new similar code. In this way, I can reuse these codes in the
-> > > future.
-> > >
-> > > This patches are developed on the top of another patch set[1]. I may have to
-> > > wait to merge this. So this patch set is a RFC.
-> >
-> >
-> > Hi, Jason:
-> >
-> > Now, the patch set[1] has been in net-next. So this patch set can been merge
-> > into net-next.
-> >
-> > Please review.
-> 
-> 
-> I do not know why this patch set miss Jason. I send it normally. ^_^
-> 
-> Thanks.
+Jesper Dangaard Brouer <jbrouer@redhat.com> writes:
 
+> On 17/03/2023 22.21, Stanislav Fomichev wrote:
+>> On 03/17, Jesper Dangaard Brouer wrote:
+>>> When driver doesn't implement a bpf_xdp_metadata kfunc the fallback
+>>> implementation returns EOPNOTSUPP, which indicate device driver doesn't
+>>> implement this kfunc.
+>> 
+>>> Currently many drivers also return EOPNOTSUPP when the hint isn't
+>>> available, which is inconsistent from an API point of view. Instead
+>>> change drivers to return ENODATA in these cases.
+>> 
+>>> There can be natural cases why a driver doesn't provide any hardware
+>>> info for a specific hint, even on a frame to frame basis (e.g. PTP).
+>>> Lets keep these cases as separate return codes.
+>> 
+>>> When describing the return values, adjust the function kernel-doc layout
+>>> to get proper rendering for the return values.
+>> 
+>>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>> 
+>> I don't remember whether the previous discussion ended in something?
+>> IIRC Martin was preferring to use xdp-features for this instead?
+>> 
+>
+> IIRC Martin asked for a second vote/opinion to settle the vote.
+> The xdp-features use is orthogonal and this patch does not prohibit the
+> later implementation of xdp-features, to detect if driver doesn't
+> implement kfuncs via using global vars.  Not applying this patch leaves
+> the API in an strange inconsistent state, because of an argument that in
+> the *future* we can use xdp-features to solve *one* of the discussed
+> use-cases for another return code.
+> I argued for a practical PTP use-case where not all frames contain the
+> PTP timestamp.  This patch solve this use-case *now*, so I don't see why
+> we should stall solving this, because of a "future" feature we might
+> never get around to implement, which require the user to use global vars.
+>
+>
+>> Personally I'm fine with having this convention, but I'm not sure how well
+>> we'll be able to enforce them. (In general, I'm not a fan of userspace
+>> changing it's behavior based on errno. If it's mostly for
+>> debugging/development - seems ok)
+>>
+>
+> We enforce the API by documenting the return behavior, like below.  If a 
+> driver violate this, then we will fix the driver code with a fixes tag.
+>
+> My ask is simply let not have ambiguous return codes.
 
-repost as non-rfc.
+FWIW I don't get the opposition to this patch: having distinct return
+codes strictly increases the amount of information that is available to
+the caller. Even if some driver happens to use the "wrong" return code,
+it's still an improvement for all the drivers that do the right thing
+(and, well, we can fix broken drivers). And if a BPF program doesn't
+care about the type of failure they can just ignore treat all error
+codes the same; realistically, that is what most programs will do, but
+that doesn't mean we can't provide the more-granular error codes to the
+programs that do care.
 
-> 
-> 
-> >
-> > Thanks.
-> >
-> >
-> > >
-> > > Please review.
-> > >
-> > > Thanks.
-> > >
-> > > [1]. https://lore.kernel.org/netdev/20230315015223.89137-1-xuanzhuo@linux.alibaba.com/
-> > >
-> > >
-> > > Xuan Zhuo (8):
-> > >   virtio_net: mergeable xdp: put old page immediately
-> > >   virtio_net: mergeable xdp: introduce mergeable_xdp_prepare
-> > >   virtio_net: introduce virtnet_xdp_handler() to seprate the logic of
-> > >     run xdp
-> > >   virtio_net: separate the logic of freeing xdp shinfo
-> > >   virtio_net: separate the logic of freeing the rest mergeable buf
-> > >   virtio_net: auto release xdp shinfo
-> > >   virtio_net: introduce receive_mergeable_xdp()
-> > >   virtio_net: introduce receive_small_xdp()
-> > >
-> > >  drivers/net/virtio_net.c | 615 +++++++++++++++++++++++----------------
-> > >  1 file changed, 357 insertions(+), 258 deletions(-)
-> > >
-> > > --
-> > > 2.32.0.3.g01195cf9f
-> > >
-> > > _______________________________________________
-> > > Virtualization mailing list
-> > > Virtualization@lists.linux-foundation.org
-> > > https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+My only concern with this patch is that it targets bpf-next and carries
+no Fixes tag, so we'll end up with a kernel release that doesn't have
+this change...
+
+-Toke
 
