@@ -2,140 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931E16C32EF
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 14:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 165936C3330
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 14:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjCUNdE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 09:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53022 "EHLO
+        id S230189AbjCUNrz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 09:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjCUNdE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 09:33:04 -0400
+        with ESMTP id S229833AbjCUNrz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 09:47:55 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118832ED45
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 06:32:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C871737F38
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 06:47:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679405539;
+        s=mimecast20190719; t=1679406427;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XAb2uxPKaKIV+ehim9J4b/qc8T7HsQ8APwR4QoSZVhY=;
-        b=GZ1kaYSN1GJqzuxJCpSJLjQ93DiXhBrM/LdhvcqPxKvd9bDOkkGac1uj0lUDOvFhb40PFz
-        Kp6JYWxcKsCOwuA5+WQTMCvdXkYPOnTo3Bp/LM1JhT6oY9jMVjDENSd0Ez+pJTKNPTsIgx
-        mo8qTHm2T7qHg/NsVt+nGNwZbMC2ewg=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-182-OMWp0hKvPwizUr8-GblZYA-1; Tue, 21 Mar 2023 09:32:11 -0400
-X-MC-Unique: OMWp0hKvPwizUr8-GblZYA-1
-Received: by mail-ed1-f71.google.com with SMTP id m18-20020a50d7d2000000b00501dfd867a4so2064766edj.20
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 06:32:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679405529;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XAb2uxPKaKIV+ehim9J4b/qc8T7HsQ8APwR4QoSZVhY=;
-        b=yf68C57c4isP+wrQGUoGEDdwA3rCqyxacmdjE+Tl0kMwB/T9PXwdG/Go76IpN0XTIR
-         oLdeUptyRjIvfE60CYaxeEgIbBMtiXQfCVJjSGTgE5jNz+1jF/HX4KAZr2VkomPP0uAF
-         cYDHq7Z8f6H/8fWEO46DFUt778Sz+EXL+YwC0x9X+Zl4OIa38IoBiIx8sywK+gZYDhv5
-         P71cIPh8qAp99X04uX++jRCCYR2zC2ErR0z8JpPViCROMIFjTFre36LP37h8xYnis+dX
-         Ha2CL46/c9Klj//gbyOjGadv2TcuYVr3xfkj7Y8Xeoos6n9i1LVqcnpd9uPfZA9VV2Ag
-         3dTQ==
-X-Gm-Message-State: AO0yUKWP+ifXVERq6kSkXl0Hw+OTkYshoWwt2Q4IVFmaIULj+lw6z+kP
-        ac5vNumrPlbKQ/HQVl85RbcUrQpfMgBEgUMNkDveOYgMjywSbWMZF8z1YilVg4o4AwiInSv2R/K
-        j4BS4c3YdepM7
-X-Received: by 2002:a17:906:14c2:b0:932:35b1:47f8 with SMTP id y2-20020a17090614c200b0093235b147f8mr2654432ejc.34.1679405529044;
-        Tue, 21 Mar 2023 06:32:09 -0700 (PDT)
-X-Google-Smtp-Source: AK7set81J2bqWCjI8tdWygfhO8d83WHUen2iHUass/RxzdNgyGmELyDyU0u1VQUNZ+2byG3sKFHSwg==
-X-Received: by 2002:a17:906:14c2:b0:932:35b1:47f8 with SMTP id y2-20020a17090614c200b0093235b147f8mr2654413ejc.34.1679405528787;
-        Tue, 21 Mar 2023 06:32:08 -0700 (PDT)
-Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id lt11-20020a170906fa8b00b008e54ac90de1sm5790753ejb.74.2023.03.21.06.32.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Mar 2023 06:32:08 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <8edd0206-0f2a-d5e7-27de-a0a9cc92526e@redhat.com>
-Date:   Tue, 21 Mar 2023 14:32:07 +0100
+         content-transfer-encoding:content-transfer-encoding;
+        bh=u0vcj8yQCVSq1K7a3xv3DSDoQVn1iGPLpiir1Gw25As=;
+        b=WuFs+6ttkbrHFSU0/BH1lngFzyVF6qOk45BL6PG20zsaidsaPxs2wSKej1G5dQq0mpLPXT
+        7+Ho3RFQ1OHehXnf3hliGu77V8NO6cb09NSt4iDFqhoSWuLZYr3tWeJOge6b+rGvgDqEXT
+        Z9/1SkvSUYRGxjWGhW8HZLEX2t9u3vs=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-354-RJS224pMPayh0XBeCSSY6Q-1; Tue, 21 Mar 2023 09:47:04 -0400
+X-MC-Unique: RJS224pMPayh0XBeCSSY6Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C0C1F3815F79;
+        Tue, 21 Mar 2023 13:47:02 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.45.242.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 62BA040C6E68;
+        Tue, 21 Mar 2023 13:47:02 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 809E8300000D0;
+        Tue, 21 Mar 2023 14:47:01 +0100 (CET)
+Subject: [PATCH bpf-next V2 0/6] XDP-hints kfuncs for Intel driver igc
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Stanislav Fomichev <sdf@google.com>, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
+        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net
+Date:   Tue, 21 Mar 2023 14:47:01 +0100
+Message-ID: <167940634187.2718137.10209374282891218398.stgit@firesoul>
+User-Agent: StGit/1.4
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        yoong.siang.song@intel.com, boon.leong.ong@intel.com
-Subject: Re: [PATCH bpf-next V1 4/7] selftests/bpf: xdp_hw_metadata RX hash
- return code info
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-References: <167906343576.2706833.17489167761084071890.stgit@firesoul>
- <167906361094.2706833.8381428662566265476.stgit@firesoul>
- <ZBTX7CBzNk9SaWgx@google.com>
-In-Reply-To: <ZBTX7CBzNk9SaWgx@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Implemented XDP-hints metadata kfuncs for Intel driver igc.
+
+Primarily used the tool in tools/testing/selftests/bpf/ xdp_hw_metadata,
+when doing driver development of these features. Recommend other driver
+developers to do the same. In the process xdp_hw_metadata was updated to
+help assist development. I've documented my practical experience with igc
+and tool here[1].
+
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/hints/xdp_hints_kfuncs02_driver_igc.org
+
+This patchset implement RX-hash as a simple u32 value (as this is the
+current kfunc API), but my experience with RX-hash is that we will also
+need to provide the Hash-type for this raw value to be useful to
+BPF-developers. This will be addressed in followup work once this patchset
+lands.
+
+---
+
+Jesper Dangaard Brouer (6):
+      igc: enable and fix RX hash usage by netstack
+      selftests/bpf: xdp_hw_metadata track more timestamps
+      selftests/bpf: xdp_hw_metadata RX hash return code info
+      igc: add igc_xdp_buff wrapper for xdp_buff in driver
+      igc: add XDP hints kfuncs for RX timestamp
+      igc: add XDP hints kfuncs for RX hash
 
 
-On 17/03/2023 22.13, Stanislav Fomichev wrote:
-> On 03/17, Jesper Dangaard Brouer wrote:
->> When driver developers add XDP-hints kfuncs for RX hash it is
->> practical to print the return code in bpf_printk trace pipe log.
-> 
->> Print hash value as a hex value, both AF_XDP userspace and bpf_prog,
->> as this makes it easier to spot poor quality hashes.
-> 
->> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> 
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> 
-> (with a small suggestion below, maybe can do separately?)
-> 
->> ---
->>   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++++++---
->>   tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++++-
->>   2 files changed, 10 insertions(+), 4 deletions(-)
-[...]
->> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c 
->> b/tools/testing/selftests/bpf/xdp_hw_metadata.c
->> index 400bfe19abfe..f3ec07ccdc95 100644
->> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
->> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
->> @@ -3,6 +3,9 @@
->>   /* Reference program for verifying XDP metadata on real HW. 
->> Functional test
->>    * only, doesn't test the performance.
->>    *
-> 
-> [..]
-> 
->> + * BPF-prog bpf_printk info outout can be access via
->> + * /sys/kernel/debug/tracing/trace_pipe
-> 
-> Maybe we should just dump the contents of
-> /sys/kernel/debug/tracing/trace for every poll cycle?
-> 
+ drivers/net/ethernet/intel/igc/igc.h          | 35 +++++++
+ drivers/net/ethernet/intel/igc/igc_main.c     | 94 ++++++++++++++++---
+ .../selftests/bpf/progs/xdp_hw_metadata.c     | 18 ++--
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 51 ++++++++--
+ tools/testing/selftests/bpf/xdp_metadata.h    |  1 +
+ 5 files changed, 176 insertions(+), 23 deletions(-)
 
-I think this belongs to a separate patch.
+--
 
-> We can also maybe enable tracing in this program transparently?
-> I usually forget 'echo 1 >
-> /sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enable'
-> myself :-)
-> 
-What is this trick?
-
---Jesper
 
