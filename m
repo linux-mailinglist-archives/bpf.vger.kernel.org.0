@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 021E26C3869
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 18:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3266C3895
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 18:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbjCURix (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 13:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
+        id S229592AbjCURtZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 13:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjCURir (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 13:38:47 -0400
-Received: from out-19.mta0.migadu.com (out-19.mta0.migadu.com [91.218.175.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A7A5552D
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 10:38:00 -0700 (PDT)
-Message-ID: <0c4dc26d-a2d9-bd65-b151-e3bf8bae0660@linux.dev>
+        with ESMTP id S229496AbjCURtY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 13:49:24 -0400
+Received: from out-55.mta0.migadu.com (out-55.mta0.migadu.com [IPv6:2001:41d0:1004:224b::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E781C26BE
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 10:49:22 -0700 (PDT)
+Message-ID: <6157e6c1-1085-b4da-120b-98ccbdfa411d@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1679420206;
+        t=1679420961;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=S4cFuHfpan97/2eRKpRtNHMInm3hDWxYMDNJid2Gxrk=;
-        b=TvjWIT1NPFTZWhQTKO7ieWdrtNDIvvMOr7k/D/7T+t+8c/lWVa9jLlD3zJux+Je51LMvbP
-        2qxZkOpTmDrf7U4S/RspnI83nX1cn0qxbDRXzJI1r4MOairdeTtYxSiAjcHIWTII7c+ef3
-        7FD6QO20yTpYjoBx010wP+crrGr/Ck4=
-Date:   Tue, 21 Mar 2023 10:36:40 -0700
+        bh=WMxCx3WvUf5NPdDmLTw1CS5qOA5f23HUTTOvorjtF0M=;
+        b=J/dA/+9c2P8Xen5u7x+pg2E83JllNe5rZHN9BdRXgf9tf6KgBu7ELnRm+8CdDkDQsnNfsl
+        qztZe0sOunb2uLw/3abwAFKWzQ18DagJUgFjkAzx9+XTThJixU3Vo4HEPOKPdR7Nucwrzu
+        f7/MxHsHY+476SzuIqhxyfMxg3OEytg=
+Date:   Tue, 21 Mar 2023 10:49:16 -0700
 MIME-Version: 1.0
 Subject: Re: [PATCH bpf-next v9 4/8] libbpf: Create a bpf_link in
  bpf_map__attach_struct_ops().
 Content-Language: en-US
 To:     Kui-Feng Lee <kuifeng@meta.com>
-References: <20230320192410.1624645-1-kuifeng@meta.com>
- <20230320192410.1624645-5-kuifeng@meta.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
+References: <20230320195644.1953096-1-kuifeng@meta.com>
+ <20230320195644.1953096-5-kuifeng@meta.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
         kernel-team@meta.com, andrii@kernel.org, sdf@google.com
-In-Reply-To: <20230320192410.1624645-5-kuifeng@meta.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230320195644.1953096-5-kuifeng@meta.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
@@ -50,7 +50,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/20/23 12:24 PM, Kui-Feng Lee wrote:
+On 3/20/23 12:56 PM, Kui-Feng Lee wrote:
 >   struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
 >   {
 > -	struct bpf_struct_ops *st_ops;
@@ -92,6 +92,8 @@ hmm... This still does not look right. 'err' could be -EBUSY here and should not
 be treated as success for non BPF_F_LINK case. The above 'err && err != -EBUSY' 
 check should also consider the BPF_F_LINK map_flags.
 
+[ Replied on the wrong v9, so copy-and-paste the reply back to this v9. ]
+
 > +		/* w/o a real link */
 > +		link->link.fd = map->fd;
 > +		link->map_fd = -1;
@@ -116,4 +118,6 @@ check should also consider the BPF_F_LINK map_flags.
 > -	return link;
 > +	return &link->link;
 >   }
+>   
+>   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_event_header *hdr,
 
