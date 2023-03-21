@@ -2,138 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C9D6C3977
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 19:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6636C3975
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 19:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbjCUSql (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S230452AbjCUSql (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 21 Mar 2023 14:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60954 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbjCUSqa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230479AbjCUSqa (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 21 Mar 2023 14:46:30 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950D856536
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 11:45:50 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id d10so9162314pgt.12
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 11:45:50 -0700 (PDT)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4389F5651D
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 11:45:49 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id o2so9606384plg.4
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 11:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679424348;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9M8M7IInQVU+iyBpHPhc67fDUT5XDtEvAxluXmaN7aQ=;
-        b=Hy3+bYbnBhFqAArV10Ykd5BRd70Z48mpTI27X42Ai9+2R8wXW5u/rimqgLJp+Ibswf
-         YR44x0GVQ7gT8rdBjWMAKwimQS6CYxYUG8sc3gK1q5acCeanOiIGw2PAWOqHlI7/TFnj
-         Dzq/LY5lgObm2IQd5rH8iigv4Q2ragNKBSV2DU7c+E5VbmBWaQLEgy6+X9WpUccLUorO
-         +ES7ld+oCEaHs1V95DAaP8nBwKGFjBRqWWqYJfXnKkVfT/NB92UqP0U2/kC8GomIewkg
-         j8NqSFiFWvg57K2eeu6dDa5z0jU+ogCbrGBWJyqmHWdeiTmhSpm/+qkJKJ1zVRfX5w9P
-         KymQ==
+        d=isovalent.com; s=google; t=1679424348;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ry0HKca0xdvBhNGOZmAmHVj5EjeKBoQg8ueUPsfqq58=;
+        b=HVnqSBaP5shvsPkqzN9bc+hrGoFbP9o0y8W2lNXtxaNEXIJNr/2V37if5lO2fUE0d/
+         iNtXzGn//4anelkY/CtuW/NwuOiWSmGoGj/GXGM95Y9Vy2bAzEqTq0t7r9VFt0BOen0D
+         aKTFnI7qZiWxNBayj/BHismjsDl2/6N9wJLYm5jAQuh+sVcDzBtsmJPpaR5B0U6+uVxN
+         GMZNjlHNMc9MRLrgBjwNBqprTTV4uPxq88EMG1WsOIdtF3U61TSu70HG5TaKXgNZ8buA
+         cOIpEPpBo86sCoE15BDhQb6yfbRqeXXgj8RXdrncqkjUsNxwHfv3ABqV3+jPWUOducsy
+         grzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112; t=1679424348;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9M8M7IInQVU+iyBpHPhc67fDUT5XDtEvAxluXmaN7aQ=;
-        b=EB2klQj5742Bp+Lrj0NnIcSOoB/2mn5UI/pJ3b4FM0l3TZm0W9vppfg7sX0RPnBZJc
-         Tsj5mI6M6e1h5hqFOKDTh3acIbUgzXyR1LMCHmwPRRyQ7Nwr0lEolrLU4/anHDxpHwJz
-         dxTZMT5Zfgjz/DYY5gV2/GxJq3u0qcUEKGNRN2bC3soVuKiwFMoOZPeAMNXNK7psarjG
-         8kGoblqKqCDGXTBY0QnVInxDVT8E+NAu8Aa/PTnaUJ97KJ5H59NX+MzGiO2Tx05CpBBU
-         n9xMRWvViNmgq9GiiP0V5TaS7/eh3+GQ/7/dYuY7GUxIM6+PNtOfUvoQzZzsAW2k5NSE
-         UNZw==
-X-Gm-Message-State: AO0yUKVsUNsNdDIPN3F1X/juC7mL20VxFR4/5nsEI3P1wRmihP7jz3Di
-        8S6vDCy0DaEDPSTyjIaa6zDcw1ByXeFfzZTLUJzJMg==
-X-Google-Smtp-Source: AK7set8eWSOB+hY/s8FgnYAtG+oz9cOr6kNpMapkGLpcaiVk96EuV7hKGhrQ0/ZHT1qqMbVxbR/O/73ddcAj/GAwDUY=
-X-Received: by 2002:a05:6a00:851:b0:628:30d:2d2f with SMTP id
- q17-20020a056a00085100b00628030d2d2fmr459685pfk.5.1679424348068; Tue, 21 Mar
- 2023 11:45:48 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ry0HKca0xdvBhNGOZmAmHVj5EjeKBoQg8ueUPsfqq58=;
+        b=lNgOypMhqjWKVknNhA3e88pfr8ER3oMHTz2AyPPHAkcjhkiHAfG1ScP5p299nsx0zT
+         mhsgI9pxq4Gz1UFL4rkaW0eaU5uwfFCb7MRqFL0GnjlhcdvDxyhSIh86y2LvVuRMbivl
+         1CpxS0Oo9oSBDkI/77YYpPmHa8Lmm9bbt/O0C0T62spPqL0zgXjXuy8qQ5QJ2cMh7v6G
+         p+Ks+OtIk4quW05oZzjEGJTxM3M+eY5koi6dVAdf1broeuuFdrMbnC1XhiAqUzO3oUw9
+         bnk4pxjzf619cDQjMWYEAZ/FibFUIKthp72yi/IHDynQtfFQD4GcR7DSsDXkeKNgNuce
+         Ugyw==
+X-Gm-Message-State: AO0yUKXpchkU+latB5vVQx+JdCxi1Vama2esoVO+wlv5ODha5/OHnMTn
+        FKj2sGZMkd0dWAUIh+EXa2c5w2Jr1ar/QnpP9Jc=
+X-Google-Smtp-Source: AK7set/7k6L8/5lMju9Z2FaG/Qfhh02CdX0jfmyMPj4FwB9gGzXkt/2gmtWLzfVXctG20qW3A17ceQ==
+X-Received: by 2002:a17:90b:1e42:b0:23d:39e0:13b with SMTP id pi2-20020a17090b1e4200b0023d39e0013bmr579629pjb.43.1679424347649;
+        Tue, 21 Mar 2023 11:45:47 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4611:8100::1])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c15500b0019cf747253csm9095878plj.87.2023.03.21.11.45.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Mar 2023 11:45:47 -0700 (PDT)
+From:   Aditi Ghag <aditi.ghag@isovalent.com>
+To:     bpf@vger.kernel.org
+Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
+        aditi.ghag@isovalent.com
+Subject: [PATCH v3 bpf-next 0/5] bpf-next: Add socket destroy capability
+Date:   Tue, 21 Mar 2023 18:45:36 +0000
+Message-Id: <20230321184541.1857363-1-aditi.ghag@isovalent.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <167906343576.2706833.17489167761084071890.stgit@firesoul>
- <167906361094.2706833.8381428662566265476.stgit@firesoul> <ZBTX7CBzNk9SaWgx@google.com>
- <8edd0206-0f2a-d5e7-27de-a0a9cc92526e@redhat.com>
-In-Reply-To: <8edd0206-0f2a-d5e7-27de-a0a9cc92526e@redhat.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 21 Mar 2023 11:45:35 -0700
-Message-ID: <CAKH8qBvm24VJS4RMNUjHi24LqpYJnOYs_Md-J3FCEvp2vm7rcg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next V1 4/7] selftests/bpf: xdp_hw_metadata RX hash
- return code info
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        yoong.siang.song@intel.com, boon.leong.ong@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 6:32=E2=80=AFAM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
->
->
->
-> On 17/03/2023 22.13, Stanislav Fomichev wrote:
-> > On 03/17, Jesper Dangaard Brouer wrote:
-> >> When driver developers add XDP-hints kfuncs for RX hash it is
-> >> practical to print the return code in bpf_printk trace pipe log.
-> >
-> >> Print hash value as a hex value, both AF_XDP userspace and bpf_prog,
-> >> as this makes it easier to spot poor quality hashes.
-> >
-> >> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> >
-> > Acked-by: Stanislav Fomichev <sdf@google.com>
-> >
-> > (with a small suggestion below, maybe can do separately?)
-> >
-> >> ---
-> >>   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++++++---
-> >>   tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++++-
-> >>   2 files changed, 10 insertions(+), 4 deletions(-)
-> [...]
-> >> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> >> b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> >> index 400bfe19abfe..f3ec07ccdc95 100644
-> >> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> >> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> >> @@ -3,6 +3,9 @@
-> >>   /* Reference program for verifying XDP metadata on real HW.
-> >> Functional test
-> >>    * only, doesn't test the performance.
-> >>    *
-> >
-> > [..]
-> >
-> >> + * BPF-prog bpf_printk info outout can be access via
-> >> + * /sys/kernel/debug/tracing/trace_pipe
-> >
-> > Maybe we should just dump the contents of
-> > /sys/kernel/debug/tracing/trace for every poll cycle?
-> >
->
-> I think this belongs to a separate patch.
+This patch adds the capability to destroy sockets in BPF. We plan to use
+the capability in Cilium to force client sockets to reconnect when their
+remote load-balancing backends are deleted. The other use case is
+on-the-fly policy enforcement where existing socket connections prevented
+by policies need to be terminated.
 
-SG. If you prefer to keep the comment let's also s/outout/outPut/.
+The use cases, and more details around
+the selected approach was presented at LPC 2022 -
+https://lpc.events/event/16/contributions/1358/.
+RFC discussion -
+https://lore.kernel.org/netdev/CABG=zsBEh-P4NXk23eBJw7eajB5YJeRS7oPXnTAzs=yob4EMoQ@mail.gmail.com/T/#u.
+v2 patch series -
+https://lore.kernel.org/bpf/20230223215311.926899-1-aditi.ghag@isovalent.com/T/#t
 
-> > We can also maybe enable tracing in this program transparently?
-> > I usually forget 'echo 1 >
-> > /sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enable'
-> > myself :-)
-> >
-> What is this trick?
+v3 highlights:
+- Martin's review comments:
+  - UDP iterator batching patch supports resume operation.
+  - Removed "full_sock" check from the destroy kfunc.
+  - Reset of metadata in case of rebatching.
+- Extended selftests to cover cases for destroying listening sockets.
+- Fixes for destroying listening TCP and UDP sockets.
+- Stan's review:
+  - Refactored selftests to use ASSERT_* in lieu of CHECK.
+  - Free leaking afinfo in fini_udp.
+- Restructured test cases per Andrii's comment.
 
-On the recent kernels I think this event has to be explicitly enabled
-for bpf_prink() to work? Not sure.
-That's why having something like enable_tracing() and dump_trace()
-here might be helpful for whoever is running the prog.
+Notes to the reviewers:
 
-> --Jesper
->
+- There are two RFC commits for being able to destroy listening TCP and
+  UDP sockets. The TCP commit isn't quite correct, as inet_unhash could
+  be invoked from BPF context for cases other than iterator.
+  The UDP commit seems reasonable based on my understanding of the code,
+  but it may lead to unintended behavior when there are sockets
+  listening on wildcard and specific address with a common port.
+  I would appreciate insights into both the commits, as I'm not
+  intimately familiar with some of the overall code path.
+
+(Below notes are same as v2 patch series.)
+- I hit a snag while writing the kfunc where verifier complained about the
+  `sock_common` type passed from TCP iterator. With kfuncs, there don't
+  seem to be any options available to pass BTF type hints to the verifier
+  (equivalent of `ARG_PTR_TO_BTF_ID_SOCK_COMMON`, as was the case with the
+  helper).  As a result, I changed the argument type of the sock_destory
+  kfunc to `sock_common`.
+
+- The `vmlinux.h` import in the selftest prog unexpectedly led to libbpf
+  failing to load the program. As it turns out, the libbpf kfunc related
+  code doesn't seem to handle BTF `FWD` type for structs. I've attached debug
+  information about the issue in case the loader logic can accommodate such
+  gotchas. Although the error in this case was specific to the test imports.
+
+Aditi Ghag (5):
+  bpf: Implement batching in UDP iterator
+  bpf: Add bpf_sock_destroy kfunc
+  [RFC] net: Skip taking lock in BPF context
+  [RFC] udp: Fix destroying UDP listening sockets
+  selftests/bpf: Add tests for bpf_sock_destroy
+
+ include/net/udp.h                             |   1 +
+ net/core/filter.c                             |  54 ++++
+ net/ipv4/inet_hashtables.c                    |   9 +-
+ net/ipv4/tcp.c                                |  16 +-
+ net/ipv4/udp.c                                | 283 +++++++++++++++++-
+ .../selftests/bpf/prog_tests/sock_destroy.c   | 190 ++++++++++++
+ .../selftests/bpf/progs/sock_destroy_prog.c   | 151 ++++++++++
+ 7 files changed, 684 insertions(+), 20 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+
+-- 
+2.34.1
+
