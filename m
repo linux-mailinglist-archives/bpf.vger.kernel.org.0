@@ -2,87 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D806C3DB4
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 23:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E88D6C3DBE
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 23:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjCUW0P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 18:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
+        id S229852AbjCUWeB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 18:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjCUW0P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 18:26:15 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A7C570B4
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 15:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=amj/cY5Bd4KpaGirGywKy4Xv735jwOwUujTU15ug2Mk=; b=EClpkbZYIBvSMEUst3IyLdgjNl
-        qoiqBkHNy4SpQfygdXeE+73IXRSoBWuSweFsF90M5L2O6TekRAXi5mldVqReoqYGaSl8OKbsa7igy
-        FG+BqTTOouB9SZ9UnPnmyIjpLNHTlZ4FAgJoFP7xuLnAkp1qiONMS+1B0yKt0ya0YHyQlj0RhoIdD
-        z06aBxVqMLOhQifrACZ19tUwyWlGhOqvhSPuG/akXbrOOCYfaS4XFVEDcHIt2XwLqmhk52DjhUtIu
-        klO7s0LR7enUHfeWNYWS76qqyrrRa/cS/eHO3d0Rojo8JKGAUGKWMB9K1Be1IuIhk87zvYJEta3iR
-        1KPBzYcw==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pekQk-00086N-2w; Tue, 21 Mar 2023 23:26:10 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pekQj-000XBt-Tg; Tue, 21 Mar 2023 23:26:09 +0100
-Subject: [stable] seccomp: Move copy_seccomp() to no failure path.
-To:     Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc:     bpf@vger.kernel.org, lefteris.alexakis@kpn.com, sh@synk.net
-References: <20230320143725.8394-1-daniel@iogearbox.net>
- <20230321170925.74358-1-kuniyu@amazon.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2a09e672-5cc4-346d-2536-5efa5a59bae1@iogearbox.net>
-Date:   Tue, 21 Mar 2023 23:26:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229839AbjCUWeA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 18:34:00 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8373A4FF12
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 15:33:57 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id x3so65615308edb.10
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 15:33:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679438036;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ygh2dOnchEjotW1npT2lXEsa/zQJph3IDmf55htkwdg=;
+        b=I1HFpoVAYpnDcZyan3O1GnhqPY1svHBlZJ5KD+XYpOIFx/KOVehEZh6MVVe7jhFqS8
+         HcMEP0DVCjbP+ZZ9m4dHSZNb7T02VEtvfxCYHNNTyao2nkBsYzZlWshXRTFA/9yHvJQ4
+         IGC5m4h7XvjVZ1wwSYcWJw4HPoDoHvwBzyVKezS3CvPbZyCj028jmFNEI/hCYXlgHR5r
+         podMV8SbJUVTYl3aJqZTvK7NH0UIPUHDvZqRPNB9lIXuaFmJIaFJtNKTx+qfwfXMP1rY
+         8K1DUCzxkfFvDpBdZ+YGTanmala2Y+fIZtSFVt5r8IFKaxFBzGn5+XnPeQB3SIV9sWNU
+         INHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679438036;
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ygh2dOnchEjotW1npT2lXEsa/zQJph3IDmf55htkwdg=;
+        b=Euygcd/6GI4ZjkC7f7wLv8P1WGWV9JmJOQ55rz6nOeTRD+OQYAZTdfhJIj+2LFjoVQ
+         rMNuLC2cM2M5x6LmVQDFsJKERGnyCG0EBAvk2xL+Pi46w8Dpd3rGoPh9ibZxqy9FNUZQ
+         e97Z4qsbZEA08VffdqDgVXGH+lAXkGG4BZj5GE3TDXEIP6iLAVBH90RDPUbmMLQCooW6
+         tsKKAJkPDYWWiZRc7pItbDmqtUt8zPK7cb6l+YcV/dYjG5uQT/BT45+z8C+i/tGyjVQk
+         yqys/kgsWq4MWEXkA3DcldFIFNy01MC5AGd/mh9JmSFs2hCQ/5Hfj41SfrDKEEEC0sE0
+         2FYw==
+X-Gm-Message-State: AO0yUKU1540dA3I7XuDiAWmzV6x+Lk6V2f4nhb3XauWa+4IlcYmebsFn
+        +1OKjIfkC6JhPJIgJ6Gz7MGSbw0YQf7Sc60LNas=
+X-Google-Smtp-Source: AK7set8sbLN+VwHN3olQtqhqTrykfLG9XDEAfx3ROKG9rWkdwS80TI/IJzhtwRJrRu3VaTTi+/oJK7RXczd1B17f5Pk=
+X-Received: by 2002:a17:906:dd2:b0:926:5020:1421 with SMTP id
+ p18-20020a1709060dd200b0092650201421mr2306582eji.9.1679438035723; Tue, 21 Mar
+ 2023 15:33:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230321170925.74358-1-kuniyu@amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26850/Tue Mar 21 08:22:52 2023)
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Sender: madh89103@gmail.com
+Received: by 2002:a05:6f02:aa1:b0:49:b424:e9d9 with HTTP; Tue, 21 Mar 2023
+ 15:33:54 -0700 (PDT)
+From:   Mrs Aisha Al-Qaddafi <mrsaishaalqaddaffi58@gmail.com>
+Date:   Tue, 21 Mar 2023 15:33:54 -0700
+X-Google-Sender-Auth: HWFPNyCeuCe_AvOduv_DiNLI0sg
+Message-ID: <CAN++AGgsxxfgkQkomB85dZ2Hvr6CE2cDRT83v-9X+nxX4ox9Vg@mail.gmail.com>
+Subject: HELLO DEAR PLEASE KINDLY REPLY MY EMAIL IS URGENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        LOTS_OF_MONEY,MILLION_HUNDRED,MILLION_USD,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,T_HK_NAME_FM_MR_MRS,UNDISC_MONEY
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:541 listed in]
+        [list.dnswl.org]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [madh89103[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [madh89103[at]gmail.com]
+        *  1.0 MILLION_USD BODY: Talks about millions of dollars
+        *  1.7 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kuniyuki,
+In the name of Allah the Merciful,Peace be upon you and God's mercy
+and blessings be upon you
+Please bear with me. I am writing this letter to you with tears and
+sorrow from my heart.
+I am sending this message to you from where i am now, Aisha Ghaddafi
+is my name, I am presently living here,i am a Widow and single Mother
+with three Children, the only biological Daughter of late Libyan
+President (Late Colonel Muammar Ghaddafi) and presently I am under
+political asylum protection by the government of this country.
 
-On 3/21/23 6:09 PM, Kuniyuki Iwashima wrote:
-[...]
->> Link: https://github.com/awslabs/amazon-eks-ami/issues/1179
->> Link: https://github.com/awslabs/amazon-eks-ami/issues/1219
-> 
-> I'm investigating these issues with EKS folks.  On the issue 1179, the
-> customer was using our 5.4 kernel, and on 1219, 5.10 kernel.
-> 
-> Then, I found my memleak fix commit a1140cb215fa ("seccomp: Move
-> copy_seccomp() to no failure path.") was not backported to upstream 5.10
-> stable trees.  We'll test if the issue can be reproduced with/without
-> the fix.
+I have funds worth $27.500.000.00 US Dollars "Twenty Seven Million
+Five Hundred Thousand United State Dollars" which I want to entrust to
+you for investment project assistance in your country.
 
-Good to know that 5.10 EKS kernel is based on top of stable one. It indeed
-looks like this could be happening there given a1140cb215fa is missing. I
-wonder given it has proper Fixes tag why it didn't made it into stable tree
-already. Thanks for checking, if it confirms, then lets ping Greg to cherry-
-pick.
-
-> Anyway, I'll backport this patch to our all trees.
-
-Sounds good, thanks!
-Daniel
+Kindly reply urgently for more details.
+Thanks
+Yours Truly
+Aisha
