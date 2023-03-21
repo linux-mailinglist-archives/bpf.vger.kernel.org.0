@@ -2,144 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5566C3CF2
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 22:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772B96C3CFE
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 22:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbjCUVn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 17:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        id S229629AbjCUVwS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 17:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbjCUVn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 17:43:57 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016FE274BF
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 14:43:46 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id z11so9933185pfh.4
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 14:43:45 -0700 (PDT)
+        with ESMTP id S229550AbjCUVwR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 17:52:17 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4269C3B3F3;
+        Tue, 21 Mar 2023 14:52:16 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id qe8-20020a17090b4f8800b0023f07253a2cso17302848pjb.3;
+        Tue, 21 Mar 2023 14:52:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1679435025;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wkqKxCIT8XSpIV1aPbJLhOlYIQwEOZ33cUJOE82gt7A=;
-        b=hQgG2ULgtH2dhMLeW03uXsPTVJU2KT5FvEZhYg0OAQJTuRscXlfGXIkXiNMqQiZtmq
-         AHIpUWBqtBmpVsj0y0ZJ/CdTFweNG9wj9MkFyrgi1BSa14LImJZETVKrjYz4LyLrn0i/
-         yqtdYK71BX2N+nroHrIIv4/ze0J0eBihX9b5abWNiCPhjtbWalGXQrKXaMDysmA2riJF
-         OesQH45w/eNPVFmYLK3wYMoZBCwsm2P26bg6XLLjUi3eBirxhfkWRP5bkPG4YWvx9lnb
-         LtgWYLt/yzfp/tUqE56/kNVvY1VTGwOT7WXV7vx1CnnfzzJITcLJGHH8puDLpIAb27vS
-         JdeA==
+        d=gmail.com; s=20210112; t=1679435536;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cYk+VTiKCOdjhdiIS1p70M1pqYxzTu1OUt2vaZGGAsM=;
+        b=DuJ5gB+5QST29hKwu/1YXW0u6YB/Q/4GvO5Z2cr/vOy8sR9OXDqMPmdPrBMewuTRYw
+         l/J3/k4+aJcrfipybmtfu9I4/wMkIFwrFz//qaBs1x3MSVaYS/AARCT2IXlVUxCVztgJ
+         Kt8p0t2FeQtOBFcq/QCvyfmGTPSrYvk1n4ecixk1vU895YZ/cvGpmZBAD2shwSD/kONB
+         tLbVZ+JTiSg9A89ikk8lCLECzH7KcRhZzzT/S+yXdLDeu2i+a4n4D9A47Y/Bd2/CZj4V
+         4j6DTy4EwL2xRf/XebYRTgYoT2L31HarqasmPK5uQUpJilhAYIWA3yZUdoK/9loYy9gE
+         IBSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679435025;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wkqKxCIT8XSpIV1aPbJLhOlYIQwEOZ33cUJOE82gt7A=;
-        b=g8qSbp2ykVtgb04zGPjRdR3roh/UrAW7uS5hDhtPvCgazTOD5dMRCuhYwY62jmHY/2
-         eXEwNOvLIH/xzeAdjatckGEWB161y0Sv0wrIFucl4x5jQjBtBrXQKhV+23S0t9XiuJ/n
-         j+HDavAsIL/j6VFaIY/phjS20t9gtVwNNeb7jP4rkvIubZQvZciFC5gNBN5bgdRA71tr
-         Dst/bA7uGYpT2vcYvfYWb8GGbuYa+GR2hYz44MQJ2Fh17sTP8zEMtkuqA4aQqOnOr2HD
-         zBtf7qy/dZNUD3c6K4iPN+bO0a7TCfbIPp0stTlWGakF6g5OhvScwoBJEm0HdBDmz9Qv
-         Mehg==
-X-Gm-Message-State: AO0yUKXWEPIQyjA0iYw6XTwK75WkbGQmYhdzREZwTBIcM61vFsHy8ue4
-        hyiPC6qvAtSurCOB1lslCWlM4x7lROeRO0XFh3o=
-X-Google-Smtp-Source: AK7set/ATnkXvwSPfF/pMkeZHs024AQcV7lUVnj1XBti4Ua0f4WZmlMhXsBM5b6xHLSXmfTN13xv6Q==
-X-Received: by 2002:aa7:958f:0:b0:626:7e73:2f44 with SMTP id z15-20020aa7958f000000b006267e732f44mr944751pfj.9.1679435025288;
-        Tue, 21 Mar 2023 14:43:45 -0700 (PDT)
-Received: from ?IPv6:2601:647:4900:bd:3c2d:23b3:12df:a2a1? ([2601:647:4900:bd:3c2d:23b3:12df:a2a1])
-        by smtp.gmail.com with ESMTPSA id v21-20020aa78515000000b006259beddb63sm8285261pfn.44.2023.03.21.14.43.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Mar 2023 14:43:44 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v3 bpf-next 3/5] [RFC] net: Skip taking lock in BPF
- context
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <FB5E0B90-2A54-4B35-9393-1E4F018FFBFC@isovalent.com>
-Date:   Tue, 21 Mar 2023 14:43:43 -0700
-Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7545E13C-029A-4964-89EF-A1F13E76D82D@isovalent.com>
-References: <20230321184541.1857363-1-aditi.ghag@isovalent.com>
- <20230321184541.1857363-4-aditi.ghag@isovalent.com>
- <ZBoiShkzD5KY2uIt@google.com>
- <FB5E0B90-2A54-4B35-9393-1E4F018FFBFC@isovalent.com>
-To:     Stanislav Fomichev <sdf@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
+        d=1e100.net; s=20210112; t=1679435536;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cYk+VTiKCOdjhdiIS1p70M1pqYxzTu1OUt2vaZGGAsM=;
+        b=QRwyuy5JkwEWD6XiwrEIkwDHxeVQepRcc5qL9JGbcfQr3cUxqldXgApF/OgsenW466
+         4ICKui8u0d85QjzPTJl6XoVYmYJ2sVDIJ/3v6nHN5Xd6hiOuiySeYi3SiO1ZdIeswopg
+         4O+6XAdsBb6bzunAnY/DnvfJ+StT7CG8igYYRy5GdjzJ9SjqrQ6LLltgMmnZbAsc0NHl
+         sNrb3posW8yuhquGYhJwcE/ma7Uv6Z0IpGFe6OraNUaiolaXHmiV3aeShDKqRFs1CmVC
+         Lo1OmjbcesSs8xxOuKW0XkUdGX+JPPbwtR+S7/xvh5hzGlcwKHHNW4Z/m4yk6LdNzLKc
+         opSw==
+X-Gm-Message-State: AO0yUKUCVE2daqLpZFR/GTlTtKZ/yvi2i5GkqrGvm9oX8KGvW1htUqHX
+        ZhRgWX6gE04ISTSIC6cXjkT0FuCF/Qg=
+X-Google-Smtp-Source: AK7set82b+PbGCWZnn4J+2tXsUcpuAj8rhtED1olJyhFWGJsA29L8SBvs2LyQSxJFvx300O518HqlQ==
+X-Received: by 2002:a05:6a20:2e13:b0:c7:6f26:ca0 with SMTP id be19-20020a056a202e1300b000c76f260ca0mr2732380pzb.54.1679435535681;
+        Tue, 21 Mar 2023 14:52:15 -0700 (PDT)
+Received: from john.lan ([98.97.36.54])
+        by smtp.gmail.com with ESMTPSA id m3-20020a63fd43000000b004facdf070d6sm8661331pgj.39.2023.03.21.14.52.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Mar 2023 14:52:15 -0700 (PDT)
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     jakub@cloudflare.com, daniel@iogearbox.net, lmb@isovalent.com,
+        cong.wang@bytedance.com
+Cc:     bpf@vger.kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, edumazet@google.com, ast@kernel.org,
+        andrii@kernel.org, will@isovalent.com
+Subject: [PATCH bpf 00/11] bpf sockmap fixes
+Date:   Tue, 21 Mar 2023 14:52:01 -0700
+Message-Id: <20230321215212.525630-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Fixes for sockmap running against NGINX TCP tests and also on an
+underprovisioned VM so that we hit error (ENOMEM) cases regularly.
 
+The first 3 patches fix cases related to ENOMEM that were either
+causing splats or data hangs.
 
-> On Mar 21, 2023, at 2:37 PM, Aditi Ghag <aditi.ghag@isovalent.com> =
-wrote:
->=20
->=20
->=20
->> On Mar 21, 2023, at 2:31 PM, Stanislav Fomichev <sdf@google.com> =
-wrote:
->>=20
->> On 03/21, Aditi Ghag wrote:
->>> When sockets are destroyed in the BPF iterator context, sock
->>> lock is already acquired, so skip taking the lock. This allows
->>> TCP listening sockets to be destroyed from BPF programs.
->>=20
->>> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
->>> ---
->>> net/ipv4/inet_hashtables.c | 9 ++++++---
->>> 1 file changed, 6 insertions(+), 3 deletions(-)
->>=20
->>> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
->>> index e41fdc38ce19..5543a3e0d1b4 100644
->>> --- a/net/ipv4/inet_hashtables.c
->>> +++ b/net/ipv4/inet_hashtables.c
->>> @@ -777,9 +777,11 @@ void inet_unhash(struct sock *sk)
->>> 		/* Don't disable bottom halves while acquiring the lock =
-to
->>> 		 * avoid circular locking dependency on PREEMPT_RT.
->>> 		 */
->>> -		spin_lock(&ilb2->lock);
->>> +		if (!has_current_bpf_ctx())
->>> +			spin_lock(&ilb2->lock);
->>> 		if (sk_unhashed(sk)) {
->>> -			spin_unlock(&ilb2->lock);
->>> +			if (!has_current_bpf_ctx())
->>> +				spin_unlock(&ilb2->lock);
->>=20
->> That's bucket lock, why do we have to skip it?
->=20
-> Because we take the bucket lock while iterating UDP sockets. See the =
-first commit in this series around batching. But not all BPF contexts =
-that could invoke this function may not acquire the lock, so we can't =
-always skip it.=20
+Then 4-7 resolved cases found when running NGINX with its sockets
+assigned to sockmap. These mostly have to do with handling fin/shutdown
+incorrectly and ensuring epoll_wait works as expected.
 
-Sorry, my buttery fingers hit the sent button too soon. You are right, =
-it's the bucket and not *sock* lock. The commit that adds batching =
-releases the bucket lock. I'll take a look at the stack trace again.=20
+Patches 8 and 9 extract some of the logic used for sockmap_listen tests
+so that we can use it in other tests because it didn't make much
+sense to me to add tests to the sockmap_listen cases when here we
+are testing send/recv *basic* cases.
 
+Finally patches 10 and 11 add the new tests to ensure we handle
+ioctl(FIONREAD) and shutdown correctly.
 
->=20
->>=20
->>> 			return;
->>> 		}
->>=20
->>> @@ -788,7 +790,8 @@ void inet_unhash(struct sock *sk)
->>=20
->>> 		__sk_nulls_del_node_init_rcu(sk);
->>> 		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
->>> -		spin_unlock(&ilb2->lock);
->>> +		if (!has_current_bpf_ctx())
->>> +			spin_unlock(&ilb2->lock);
->>> 	} else {
->>> 		spinlock_t *lock =3D inet_ehash_lockp(hashinfo, =
-sk->sk_hash);
->>=20
->>> --
->>> 2.34.1
+To test the series I ran the NGINX compliance tests and the sockmap
+selftests.
+
+There are some more things to be done here, but these 11 patches
+stand on their own in my opionion and fix issues we are having in
+CI now. For bpf-next we can fixup/improve selftests to use the
+ASSERT_* in sockmap_helpers, streamline some of the testing, and
+add more tests. We also still are debugging a few additional flakes
+patches coming soon.
+
+John Fastabend (11):
+  bpf: sockmap, pass skb ownership through read_skb
+  bpf: sockmap, convert schedule_work into delayed_work
+  bpf: sockmap, improved check for empty queue
+  bpf: sockmap, handle fin correctly
+  bpf: sockmap, TCP data stall on recv before accept
+  bpf: sockmap, wake up polling after data copy
+  bpf: sockmap incorrectly handling copied_seq
+  bpf: sockmap, pull socket helpers out of listen test for general use
+  bpf: sockmap, build helper to create connected socket pair
+  bpf: sockmap, test shutdown() correctly exits epoll and recv()=0
+  bpf: sockmap, test FIONREAD returns correct bytes in rx buffer
+
+ include/linux/skmsg.h                         |   2 +-
+ include/net/tcp.h                             |   1 +
+ net/core/skmsg.c                              |  58 ++-
+ net/core/sock_map.c                           |   3 +-
+ net/ipv4/tcp.c                                |   9 -
+ net/ipv4/tcp_bpf.c                            |  81 +++-
+ net/ipv4/udp.c                                |   5 +-
+ net/unix/af_unix.c                            |   5 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 119 +++++-
+ .../bpf/prog_tests/sockmap_helpers.h          | 374 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 352 +----------------
+ .../bpf/progs/test_sockmap_pass_prog.c        |  32 ++
+ 12 files changed, 659 insertions(+), 382 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
+
+-- 
+2.33.0
 
