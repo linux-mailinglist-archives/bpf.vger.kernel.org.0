@@ -2,110 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F29F6C3CBA
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 22:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD7C6C3CD3
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 22:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbjCUVb7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 17:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
+        id S229905AbjCUVhY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 17:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjCUVb6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 17:31:58 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FF9584A0
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 14:31:56 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id i36-20020a635424000000b0050f93a35888so1623399pgb.17
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 14:31:56 -0700 (PDT)
+        with ESMTP id S229854AbjCUVhU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 17:37:20 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED06336FD2
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 14:37:17 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id o12so65184177edb.9
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 14:37:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679434315;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BHaAr0uDAMxGAcb/KipOUQu6/FQIs0rhE+32XUg/qjU=;
-        b=j9tPSOPKmVWWyArQXRU009Jg8h4u639apWU23LgsjLQsM7WeceF5snjZNpa476OMU1
-         qbb2m4Ba3cSwIlBliulfi7d3z9jYP7/dNPMY96n3/y057QMmlQlkzq0MNrq0pcoSFSw/
-         n3GkPfag7kquJ4cBDCYLlF2VR2+nXuhxiFljLpyv2vRkrL06ER3FjqCzo2z3CuXF5/Yk
-         fFWUyIFRszl+5OMRma8aZmnaVZaUfRSpfXUdPfQAYN2uwyzxwxZGeSpjlPwloOBt1aIP
-         5Lw9f9KV8O3ZxPXqJhfK2GydE/CyFQGaf/HeqkHIE/nl2h0aED5KjMw7YrXwStGpam9d
-         2OXg==
+        d=gmail.com; s=20210112; t=1679434636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vIxpnDN2XOCMZEdVpXbCPUIgl3UgN6HIUNp59OLsU+s=;
+        b=EHdTSWUEJeI//LtRCgkMaAp1x1StnZmH04iV9DB4YahXeKGpfYALBGUYhADQEKuNB2
+         5bj+5N1IzN9p8dG9yqnCiQwpGhARlveD27SO5Bt3rUAqg66ddYvTyKbzSVPLphM/QhSo
+         LBmN7gRdFOMPenpXsCAkvi6kiOidoMYK0sDb8/yll5QQYQwy99gPGW8xYhsqrk6ajhAC
+         zXAyTVsToC7A+yl2odlZAz23lA+MsdZTGDGkM055rBZ4yf/7fCtMtKPfxkv0meeVuOGH
+         47JT7Yfz/7WFLK6As0xk1XNv3BjK2Q6IoQCP8+DRptCfj0m/Sxx2Kl1bmZEO279hb32W
+         8Bmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679434315;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BHaAr0uDAMxGAcb/KipOUQu6/FQIs0rhE+32XUg/qjU=;
-        b=Pz+6lcOHXo6ak2py5g2NViGfAlY0Dhz4ifPV+BCuWluuxuuKXCRmXK94EJSQ39kTAD
-         RpMzh4d5erDBO+AdBJK5Hl+OEDf2GGc2JAzMOA/3vg51M+ZpA2fnnVPZQBTH/mIZ4OzO
-         QEazaWNiwBIwjyokp4NTWiWxm/y3tst8YNIeASJDj0TgZesLW73WeldjwFo4zNhpncdu
-         CD4viyRyaubr4tmJr7AoaMmSYU0cKPtuqrdIcWf8afF/H2s+HnqEVs39DdEO6+f1Uiwg
-         FZkXgiOz/6xXm9w7NcoiF77I8ecLjSXWdO0Uk0ej8ntWZN6deghznMEvobj0BZme/YZD
-         skCA==
-X-Gm-Message-State: AO0yUKWgsuPVs1ulyqYkiSGPUXQzDMg7DlhdKwgUYNukPKw/WBgWS+qF
-        zG97ONcSMT0QUEiohfF886wNoyQ=
-X-Google-Smtp-Source: AK7set8RXRP/1D8JaseSa6mJ1mqLl+OZmNRrOo5uzMqvlgM5qXXZBFVejvqzYW3MVGIVlozzXY12hJQ=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a65:61b0:0:b0:50c:bde:50c7 with SMTP id
- i16-20020a6561b0000000b0050c0bde50c7mr115615pgv.12.1679434315388; Tue, 21 Mar
- 2023 14:31:55 -0700 (PDT)
-Date:   Tue, 21 Mar 2023 14:31:54 -0700
-In-Reply-To: <20230321184541.1857363-4-aditi.ghag@isovalent.com>
-Mime-Version: 1.0
-References: <20230321184541.1857363-1-aditi.ghag@isovalent.com> <20230321184541.1857363-4-aditi.ghag@isovalent.com>
-Message-ID: <ZBoiShkzD5KY2uIt@google.com>
-Subject: Re: [PATCH v3 bpf-next 3/5] [RFC] net: Skip taking lock in BPF context
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20210112; t=1679434636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vIxpnDN2XOCMZEdVpXbCPUIgl3UgN6HIUNp59OLsU+s=;
+        b=Sd1egCTrvMzqS7Sxsl3sj6/MQon+Kbw4r/N4jnYgniT/MLYMTDCrsJnSkL8JeUtX0t
+         /a6fbDJLiFRIdGBbLjXOzf3uViw7diwijk48IxYG6tMZLrtNcu0hYMa6DkvNV1X4Trg9
+         i+OZjP4fDHsi86R7HvQt5xHT24q/vOrc5y3FLMdqqPInmwV7ghL6gBB2PWAmn2SVTAgX
+         bueoAU/KYpylA56boJN3EgoXDid1jGS2I9v6TO3pNEHPgZdjun30ypvOfL92ShVxTLaj
+         DXha1gciW8cGjCAdw4tQ9mY5ku+ld9mEjT6k7zFY8TycR+Q+BHZyl3FJd0SnSSdlgpqD
+         5BNw==
+X-Gm-Message-State: AO0yUKU0on8l95OvR4k1q88zjaZJemjqKK4FyYVANXPZA9DprqKZXcpr
+        MfM5AZJ8SO61011Sz0NJfIYsIvsOFvn6BMXexic=
+X-Google-Smtp-Source: AK7set/ZJX10/cSe7fwcVSPYRwNL7YZFiAIguQDSc0uy9FlQZ0yfnWQmZw6W5/kVjD5a/s6KpRbEHJ4LprzUQzhNNo4=
+X-Received: by 2002:a17:906:2f02:b0:877:747d:4a85 with SMTP id
+ v2-20020a1709062f0200b00877747d4a85mr2076342eji.3.1679434636224; Tue, 21 Mar
+ 2023 14:37:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230318011324.203830-1-inwardvessel@gmail.com> <a16c0bc28b0e252263ad689571e14015733cdd77.camel@gmail.com>
+In-Reply-To: <a16c0bc28b0e252263ad689571e14015733cdd77.camel@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 21 Mar 2023 14:37:04 -0700
+Message-ID: <CAADnVQKKUPDosq3c_bwjKGxME=06ZksfXK=gZoJ6eFGxaeJrPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] error checking where helpers call bpf_map_ops
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     inwardvessel <inwardvessel@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@meta.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/21, Aditi Ghag wrote:
-> When sockets are destroyed in the BPF iterator context, sock
-> lock is already acquired, so skip taking the lock. This allows
-> TCP listening sockets to be destroyed from BPF programs.
+On Mon, Mar 20, 2023 at 7:19=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Fri, 2023-03-17 at 18:13 -0700, inwardvessel wrote:
+> > From: JP Kobryn <inwardvessel@gmail.com>
+> >
+> > Within bpf programs, the bpf helper functions can make inline calls to
+> > kernel functions. In this scenario there can be a disconnect between th=
+e
+> > register the kernel function writes a return value to and the register =
+the
+> > bpf program uses to evaluate that return value.
+> >
+> > As an example, this bpf code:
+> >
+> > long err =3D bpf_map_update_elem(...);
+> > if (err && err !=3D -EEXIST)
+> >       // got some error other than -EEXIST
+> >
+> > ...can result in the bpf assembly:
+> >
+> > ; err =3D bpf_map_update_elem(&mymap, &key, &val, BPF_NOEXIST);
+> >   37: movabs $0xffff976a10730400,%rdi
+> >   41: mov    $0x1,%ecx
+> >   46: call   0xffffffffe103291c       ; htab_map_update_elem
+> > ; if (err && err !=3D -EEXIST) {
+> >   4b: cmp    $0xffffffffffffffef,%rax ; cmp -EEXIST,%rax
+> >   4f: je     0x000000000000008e
+> >   51: test   %rax,%rax
+> >   54: je     0x000000000000008e
+> >
+> > The compare operation here evaluates %rax, while in the preceding call =
+to
+> > htab_map_update_elem the corresponding assembly returns -EEXIST via %ea=
+x:
+> >
+> > movl $0xffffffef, %r9d
+> > ...
+> > movl %r9d, %eax
+> >
+> > ...since it's returning int (32-bit). So the resulting comparison becom=
+es:
+> >
+> > cmp $0xffffffffffffffef, $0x00000000ffffffef
+> >
+> > ...making it not possible to check for negative errors or specific erro=
+rs,
+> > since the sign value is left at the 32nd bit. It means in the original
+> > example, the conditional branch will be entered even when the error is
+> > -EEXIST, which was not intended.
+> >
+> > The selftests added cover these cases for the different bpf_map_ops
+> > functions. When the second patch is applied, changing the return type o=
+f
+> > those functions to long, the comparison works as intended and the tests
+> > pass.
+> >
+>
+> Looks like this fixes commit from 2020:
+> bdb7b79b4ce8 ("bpf: Switch most helper return values from 32-bit int to 6=
+4-bit long")
+>
+> To add to the summary: the issue is caused by the fact that test
+> program uses map function definitions from `bpf_helper_defs.h`, e.g.:
+>
+>     static long (*bpf_map_update_elem)(...) 2;
+>
+> These definitions are generated from `include/uapi/linux/bpf.h`,
+> which specifies the return type for this helper to be `long`
+> (changed to from `int` in the commit mentioned above).
+> That's why clang does not insert sign extension instructions when
+> helper is called.
 
-> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
-> ---
->   net/ipv4/inet_hashtables.c | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
+JP,
 
-> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-> index e41fdc38ce19..5543a3e0d1b4 100644
-> --- a/net/ipv4/inet_hashtables.c
-> +++ b/net/ipv4/inet_hashtables.c
-> @@ -777,9 +777,11 @@ void inet_unhash(struct sock *sk)
->   		/* Don't disable bottom halves while acquiring the lock to
->   		 * avoid circular locking dependency on PREEMPT_RT.
->   		 */
-> -		spin_lock(&ilb2->lock);
-> +		if (!has_current_bpf_ctx())
-> +			spin_lock(&ilb2->lock);
->   		if (sk_unhashed(sk)) {
-> -			spin_unlock(&ilb2->lock);
-> +			if (!has_current_bpf_ctx())
-> +				spin_unlock(&ilb2->lock);
+could you please add Ed's clarification to the commit log
+and add 'Fixes: bdb7b79b4ce8 ...' tag and respin ?
 
-That's bucket lock, why do we have to skip it?
+>
+> Interesting how this went under the radar for so long, probably
+> because user code mostly uses `int` to catch return value of map
+> functions.
+>
+> That commit changes return types for a lot of functions.
+> I looked through function definitions and verifier.c code for those,
+> but have not found any additional issues, except for two obvious:
+> - bpf_redirect_map / ops->map_redirect
+> - bpf_for_each_map_elem / ops->map_for_each_callback
 
->   			return;
->   		}
+Please fix these two as well in the same patch.
 
-> @@ -788,7 +790,8 @@ void inet_unhash(struct sock *sk)
+> Tested-By: Eduard Zingerman <eddyz87@gmail.com>
 
->   		__sk_nulls_del_node_init_rcu(sk);
->   		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
-> -		spin_unlock(&ilb2->lock);
-> +		if (!has_current_bpf_ctx())
-> +			spin_unlock(&ilb2->lock);
->   	} else {
->   		spinlock_t *lock = inet_ehash_lockp(hashinfo, sk->sk_hash);
+and please carry the Tested-by tag in the respin.
 
-> --
-> 2.34.1
-
+Thanks!
