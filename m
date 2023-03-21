@@ -2,66 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 822B46C3362
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 14:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1356C33C5
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 15:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbjCUNx0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 09:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
+        id S230039AbjCUOMg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 10:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231271AbjCUNxZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 09:53:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3D73B228
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 06:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679406758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=NKGCgFqY7ArwF0AL3MK2xFVBlJMuZ/y6sH3A7OQOvkM=;
-        b=Nn9lPvEKLsR3UNq0Vp1fQoWotGBSqU6WXQX4pvwwDwOmy0DF2El5m/9D3HZA2ef3RIS0rk
-        iUZt7x76kOE9Fe1wcJ7FPSAyivj79SMD+2vQVZD7n2F3Ta3sJO4A7SG0eQ6no6LBY8CyBH
-        cuck/UZMmtJk7TeZAYrN/t4LDUMBxjY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-178-N1pSd_bSOQaw3mdF8Y3H-g-1; Tue, 21 Mar 2023 09:52:33 -0400
-X-MC-Unique: N1pSd_bSOQaw3mdF8Y3H-g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229743AbjCUOMf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 10:12:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12ECC4AFDF;
+        Tue, 21 Mar 2023 07:12:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AAAAA101A531;
-        Tue, 21 Mar 2023 13:52:32 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.45.242.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4B7C185768;
-        Tue, 21 Mar 2023 13:52:32 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 4C5D330721A6C;
-        Tue, 21 Mar 2023 14:52:31 +0100 (CET)
-Subject: [PATCH bpf V2] xdp: bpf_xdp_metadata use EOPNOTSUPP for no driver
- support
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        Stanislav Fomichev <sdf@google.com>, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
-        davem@davemloft.net
-Date:   Tue, 21 Mar 2023 14:52:31 +0100
-Message-ID: <167940675120.2718408.8176058626864184420.stgit@firesoul>
-User-Agent: StGit/1.4
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+        by ams.source.kernel.org (Postfix) with ESMTPS id C2875B816EC;
+        Tue, 21 Mar 2023 14:12:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D64CDC433D2;
+        Tue, 21 Mar 2023 14:12:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679407951;
+        bh=VUblCBlGq6BxeQ8EVDvDqcA5ve3wzpR0PTtnv6H9WD0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZNSrrs5C/EF+kBay2XHVa7rBId5O1mlvoL7JIVqrO2iWDktEGL79bkFspl7HLu5T0
+         OzaEhDbYMf7+Rv0oMuXarSv/6ZX4Tg6w9bgrGUKzKHTcWwCTqVvAmw9sLXZDZLU0+h
+         7JZ20WlBziqa8enewY4MrVfgtHaIXvsFTTXAAqNZ631rYw2JAUrA1+nED0hGdpkBSr
+         D05+eVw0TxQ+w7VazP0SxcA/CIOVCyPkohiKyCuF11sM0sMtEbdGWoOBVrmTjLm+Mo
+         5eZf9vS377EMgkW9Tc0IaqjReaS6hCy9qfKwnwx8Znbtt46Wd+V+Q+EgnEhPomSnmd
+         wlGz0ncrWiO6A==
+Date:   Tue, 21 Mar 2023 23:12:27 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     rostedt@goodmis.org, alexei.starovoitov@gmail.com,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <olsajiri@gmail.com>
+Subject: Re: [PATCH] tracing: Refuse fprobe if RCU is not watching
+Message-Id: <20230321231227.44cc5eb356c3df5fd50d6b64@kernel.org>
+In-Reply-To: <20230321020103.13494-1-laoar.shao@gmail.com>
+References: <20230321020103.13494-1-laoar.shao@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,147 +56,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When driver doesn't implement a bpf_xdp_metadata kfunc the fallback
-implementation returns EOPNOTSUPP, which indicate device driver doesn't
-implement this kfunc.
+On Tue, 21 Mar 2023 02:01:03 +0000
+Yafang Shao <laoar.shao@gmail.com> wrote:
 
-Currently many drivers also return EOPNOTSUPP when the hint isn't
-available, which is ambiguous from an API point of view. Instead
-change drivers to return ENODATA in these cases.
+> It hits below warning on my test machine when running
+> selftests/bpf/test_progs,
+> 
+> [  702.223611] ------------[ cut here ]------------
+> [  702.224168] RCU not on for: preempt_count_sub+0x0/0xa0
+> [  702.224770] WARNING: CPU: 14 PID: 5267 at include/linux/trace_recursion.h:162 fprobe_handler.part.0+0x1b8/0x1c0
+> [  702.231740] CPU: 14 PID: 5267 Comm: main_amd64 Kdump: loaded Tainted: G           O       6.2.0+ #584
+> [  702.233169] RIP: 0010:fprobe_handler.part.0+0x1b8/0x1c0
+> [  702.241388] Call Trace:
+> [  702.241615]  <TASK>
+> [  702.241811]  fprobe_handler+0x22/0x30
+> [  702.242129]  0xffffffffc04710f7
+> [  702.242417] RIP: 0010:preempt_count_sub+0x5/0xa0
+> [  702.242809] Code: c8 50 68 94 42 0e b5 48 cf e9 f9 fd ff ff 0f 1f 80 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 e8 4b cd 38 0b <55> 8b 0d 9c d0 cf 02 48 89 e5 85 c9 75 1b 65 8b 05 be 78 f4 4a 89
+> [  702.244752] RSP: 0018:ffffaf6187d27f10 EFLAGS: 00000082 ORIG_RAX: 0000000000000000
+> [  702.245801] RAX: 000000000000000e RBX: 0000000001b6ab72 RCX: 0000000000000000
+> [  702.246804] RDX: 0000000000000000 RSI: ffffffffb627967d RDI: 0000000000000001
+> [  702.247801] RBP: ffffaf6187d27f30 R08: 0000000000000000 R09: 0000000000000000
+> [  702.248786] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000000ca
+> [  702.249782] R13: ffffaf6187d27f58 R14: 0000000000000000 R15: 0000000000000000
+> [  702.250785]  ? preempt_count_sub+0x5/0xa0
+> [  702.251540]  ? syscall_enter_from_user_mode+0x96/0xc0
+> [  702.252368]  ? preempt_count_sub+0x5/0xa0
+> [  702.253104]  ? syscall_enter_from_user_mode+0x96/0xc0
+> [  702.253918]  do_syscall_64+0x16/0x90
+> [  702.254613]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> [  702.255422] RIP: 0033:0x46b793
+> 
+> This issue happens under CONFIG_CONTEXT_TRACKING_USER=y. When a task
+> enters from user mode to kernel mode, or enters from user mode to irq,
+> it excutes preempt_count_sub before RCU begins watching, and thus this
+> warning is triggered.
+> 
+> We should not handle fprobe if RCU is not watching.
 
-There can be natural cases why a driver doesn't provide any hardware
-info for a specific hint, even on a frame to frame basis (e.g. PTP).
-Lets keep these cases as separate return codes.
+Good catch!
 
-When describing the return values, adjust the function kernel-doc layout
-to get proper rendering for the return values.
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Fixes: ab46182d0dcb ("net/mlx4_en: Support RX XDP metadata")
-Fixes: bc8d405b1ba9 ("net/mlx5e: Support RX XDP metadata")
-Fixes: 306531f0249f ("veth: Support RX XDP metadata")
-Fixes: 3d76a4d3d4e5 ("bpf: XDP metadata RX kfuncs")
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- Documentation/networking/xdp-rx-metadata.rst     |    7 +++++--
- drivers/net/ethernet/mellanox/mlx4/en_rx.c       |    4 ++--
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |    4 ++--
- drivers/net/veth.c                               |    4 ++--
- net/core/xdp.c                                   |   10 ++++++++--
- 5 files changed, 19 insertions(+), 10 deletions(-)
+Thank you!
 
-diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
-index aac63fc2d08b..25ce72af81c2 100644
---- a/Documentation/networking/xdp-rx-metadata.rst
-+++ b/Documentation/networking/xdp-rx-metadata.rst
-@@ -23,10 +23,13 @@ metadata is supported, this set will grow:
- An XDP program can use these kfuncs to read the metadata into stack
- variables for its own consumption. Or, to pass the metadata on to other
- consumers, an XDP program can store it into the metadata area carried
--ahead of the packet.
-+ahead of the packet. Not all packets will necessary have the requested
-+metadata available in which case the driver returns ``-ENODATA``.
- 
- Not all kfuncs have to be implemented by the device driver; when not
--implemented, the default ones that return ``-EOPNOTSUPP`` will be used.
-+implemented, the default ones that return ``-EOPNOTSUPP`` will be used
-+to indicate the device driver have not implemented this kfunc.
-+
- 
- Within an XDP frame, the metadata layout (accessed via ``xdp_buff``) is
- as follows::
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-index 0869d4fff17b..4b5e459b6d49 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-@@ -674,7 +674,7 @@ int mlx4_en_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
- 	struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
- 
- 	if (unlikely(_ctx->ring->hwtstamp_rx_filter != HWTSTAMP_FILTER_ALL))
--		return -EOPNOTSUPP;
-+		return -ENODATA;
- 
- 	*timestamp = mlx4_en_get_hwtstamp(_ctx->mdev,
- 					  mlx4_en_get_cqe_ts(_ctx->cqe));
-@@ -686,7 +686,7 @@ int mlx4_en_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
- 	struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
- 
- 	if (unlikely(!(_ctx->dev->features & NETIF_F_RXHASH)))
--		return -EOPNOTSUPP;
-+		return -ENODATA;
- 
- 	*hash = be32_to_cpu(_ctx->cqe->immed_rss_invalid);
- 	return 0;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index bcd6370de440..c5dae48b7932 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -162,7 +162,7 @@ static int mlx5e_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
- 	const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
- 
- 	if (unlikely(!mlx5e_rx_hw_stamp(_ctx->rq->tstamp)))
--		return -EOPNOTSUPP;
-+		return -ENODATA;
- 
- 	*timestamp =  mlx5e_cqe_ts_to_ns(_ctx->rq->ptp_cyc2time,
- 					 _ctx->rq->clock, get_cqe_ts(_ctx->cqe));
-@@ -174,7 +174,7 @@ static int mlx5e_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
- 	const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
- 
- 	if (unlikely(!(_ctx->xdp.rxq->dev->features & NETIF_F_RXHASH)))
--		return -EOPNOTSUPP;
-+		return -ENODATA;
- 
- 	*hash = be32_to_cpu(_ctx->cqe->rss_hash_result);
- 	return 0;
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 1bb54de7124d..046461ee42ea 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1610,7 +1610,7 @@ static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
- 	struct veth_xdp_buff *_ctx = (void *)ctx;
- 
- 	if (!_ctx->skb)
--		return -EOPNOTSUPP;
-+		return -ENODATA;
- 
- 	*timestamp = skb_hwtstamps(_ctx->skb)->hwtstamp;
- 	return 0;
-@@ -1621,7 +1621,7 @@ static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
- 	struct veth_xdp_buff *_ctx = (void *)ctx;
- 
- 	if (!_ctx->skb)
--		return -EOPNOTSUPP;
-+		return -ENODATA;
- 
- 	*hash = skb_get_hash(_ctx->skb);
- 	return 0;
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 8d3ad315f18d..7133017bcd74 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -705,7 +705,10 @@ __diag_ignore_all("-Wmissing-prototypes",
-  * @ctx: XDP context pointer.
-  * @timestamp: Return value pointer.
-  *
-- * Returns 0 on success or ``-errno`` on error.
-+ * Return:
-+ * * Returns 0 on success or ``-errno`` on error.
-+ * * ``-EOPNOTSUPP`` : means device driver does not implement kfunc
-+ * * ``-ENODATA``    : means no RX-timestamp available for this frame
-  */
- __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
- {
-@@ -717,7 +720,10 @@ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *tim
-  * @ctx: XDP context pointer.
-  * @hash: Return value pointer.
-  *
-- * Returns 0 on success or ``-errno`` on error.
-+ * Return:
-+ * * Returns 0 on success or ``-errno`` on error.
-+ * * ``-EOPNOTSUPP`` : means device driver doesn't implement kfunc
-+ * * ``-ENODATA``    : means no RX-hash available for this frame
-  */
- __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash)
- {
+> 
+> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Jiri Olsa <olsajiri@gmail.com>
+> ---
+>  kernel/trace/fprobe.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index e8143e3..fe4b248 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -27,6 +27,9 @@ static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+>  	struct fprobe *fp;
+>  	int bit;
+>  
+> +	if (!rcu_is_watching())
+> +		return;
+> +
+>  	fp = container_of(ops, struct fprobe, ops);
+>  	if (fprobe_disabled(fp))
+>  		return;
+> -- 
+> 1.8.3.1
+> 
 
 
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
