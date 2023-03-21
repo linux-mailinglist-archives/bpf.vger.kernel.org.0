@@ -2,54 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1356C33C5
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 15:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F1E6C33DF
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 15:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbjCUOMg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 10:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
+        id S229743AbjCUORV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 10:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjCUOMf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 10:12:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12ECC4AFDF;
-        Tue, 21 Mar 2023 07:12:34 -0700 (PDT)
+        with ESMTP id S229924AbjCUORU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 10:17:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185E72212D;
+        Tue, 21 Mar 2023 07:17:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C2875B816EC;
-        Tue, 21 Mar 2023 14:12:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D64CDC433D2;
-        Tue, 21 Mar 2023 14:12:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679407951;
-        bh=VUblCBlGq6BxeQ8EVDvDqcA5ve3wzpR0PTtnv6H9WD0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZNSrrs5C/EF+kBay2XHVa7rBId5O1mlvoL7JIVqrO2iWDktEGL79bkFspl7HLu5T0
-         OzaEhDbYMf7+Rv0oMuXarSv/6ZX4Tg6w9bgrGUKzKHTcWwCTqVvAmw9sLXZDZLU0+h
-         7JZ20WlBziqa8enewY4MrVfgtHaIXvsFTTXAAqNZ631rYw2JAUrA1+nED0hGdpkBSr
-         D05+eVw0TxQ+w7VazP0SxcA/CIOVCyPkohiKyCuF11sM0sMtEbdGWoOBVrmTjLm+Mo
-         5eZf9vS377EMgkW9Tc0IaqjReaS6hCy9qfKwnwx8Znbtt46Wd+V+Q+EgnEhPomSnmd
-         wlGz0ncrWiO6A==
-Date:   Tue, 21 Mar 2023 23:12:27 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+        by ams.source.kernel.org (Postfix) with ESMTPS id AFA3DB816ED;
+        Tue, 21 Mar 2023 14:17:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B68AC433EF;
+        Tue, 21 Mar 2023 14:17:14 +0000 (UTC)
+Date:   Tue, 21 Mar 2023 10:17:11 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     rostedt@goodmis.org, alexei.starovoitov@gmail.com,
+Cc:     mhiramat@kernel.org, alexei.starovoitov@gmail.com,
         linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <olsajiri@gmail.com>
+        Jiri Olsa <olsajiri@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
 Subject: Re: [PATCH] tracing: Refuse fprobe if RCU is not watching
-Message-Id: <20230321231227.44cc5eb356c3df5fd50d6b64@kernel.org>
+Message-ID: <20230321101711.625d0ccb@gandalf.local.home>
 In-Reply-To: <20230321020103.13494-1-laoar.shao@gmail.com>
 References: <20230321020103.13494-1-laoar.shao@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -93,13 +84,6 @@ Yafang Shao <laoar.shao@gmail.com> wrote:
 > warning is triggered.
 > 
 > We should not handle fprobe if RCU is not watching.
-
-Good catch!
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you!
-
 > 
 > Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
@@ -120,14 +104,19 @@ Thank you!
 >  
 > +	if (!rcu_is_watching())
 > +		return;
+
+Hmm, at least on 6.3, this should not be an issue anymore. I believe that
+all locations that have ftrace callbacks should now have rcu watching?
+
+I think we *want* a warn on when this happens.
+
+Peter?
+
+-- Steve
+
+
 > +
 >  	fp = container_of(ops, struct fprobe, ops);
 >  	if (fprobe_disabled(fp))
 >  		return;
-> -- 
-> 1.8.3.1
-> 
 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
