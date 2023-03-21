@@ -2,42 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3266C3895
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 18:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BF76C3907
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 19:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjCURtZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 13:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
+        id S230080AbjCUSSX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 14:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjCURtY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 13:49:24 -0400
-Received: from out-55.mta0.migadu.com (out-55.mta0.migadu.com [IPv6:2001:41d0:1004:224b::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E781C26BE
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 10:49:22 -0700 (PDT)
-Message-ID: <6157e6c1-1085-b4da-120b-98ccbdfa411d@linux.dev>
+        with ESMTP id S229819AbjCUSSW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 14:18:22 -0400
+Received: from out-53.mta0.migadu.com (out-53.mta0.migadu.com [IPv6:2001:41d0:1004:224b::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6218242BCE
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 11:18:21 -0700 (PDT)
+Message-ID: <9d370e0b-f57b-0a3e-9b1b-58930b0dfee1@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1679420961;
+        t=1679422699;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WMxCx3WvUf5NPdDmLTw1CS5qOA5f23HUTTOvorjtF0M=;
-        b=J/dA/+9c2P8Xen5u7x+pg2E83JllNe5rZHN9BdRXgf9tf6KgBu7ELnRm+8CdDkDQsnNfsl
-        qztZe0sOunb2uLw/3abwAFKWzQ18DagJUgFjkAzx9+XTThJixU3Vo4HEPOKPdR7Nucwrzu
-        f7/MxHsHY+476SzuIqhxyfMxg3OEytg=
-Date:   Tue, 21 Mar 2023 10:49:16 -0700
+        bh=YLpYcY8j5ENczp+OhM+5TuJq33aTHBCffICueGFOmY8=;
+        b=OetJ9KsgIm4jncrjz80CoGtyz8Wi8DmsR6KS2XtfTaUL0TP8kURJlZhTNvo+zFHzdCTPyt
+        QuEuKmWGOYON37AilDfJptFynjOwr+kHuXA0T/QgZOijPr9Q1p6q2f7heuYltN25DpEIfs
+        viA+HQKAD99o8e23RHiJYWIGE5pEKys=
+Date:   Tue, 21 Mar 2023 11:18:16 -0700
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v9 4/8] libbpf: Create a bpf_link in
- bpf_map__attach_struct_ops().
+Subject: Re: [PATCH bpf-next v9 5/8] bpf: Update the struct_ops of a bpf_link.
 Content-Language: en-US
 To:     Kui-Feng Lee <kuifeng@meta.com>
 References: <20230320195644.1953096-1-kuifeng@meta.com>
- <20230320195644.1953096-5-kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
+ <20230320195644.1953096-6-kuifeng@meta.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230320195644.1953096-5-kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        kernel-team@meta.com, andrii@kernel.org, sdf@google.com
+In-Reply-To: <20230320195644.1953096-6-kuifeng@meta.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
@@ -51,73 +50,52 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 3/20/23 12:56 PM, Kui-Feng Lee wrote:
->   struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
->   {
-> -	struct bpf_struct_ops *st_ops;
-> -	struct bpf_link *link;
-> -	__u32 i, zero = 0;
-> -	int err;
-> +	struct bpf_link_struct_ops *link;
-> +	__u32 zero = 0;
-> +	int err, fd;
->   
->   	if (!bpf_map__is_struct_ops(map) || map->fd == -1)
->   		return libbpf_err_ptr(-EINVAL);
-> @@ -11596,31 +11637,32 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
->   	if (!link)
->   		return libbpf_err_ptr(-EINVAL);
->   
-> -	st_ops = map->st_ops;
-> -	for (i = 0; i < btf_vlen(st_ops->type); i++) {
-> -		struct bpf_program *prog = st_ops->progs[i];
-> -		void *kern_data;
-> -		int prog_fd;
-> +	/* kern_vdata should be prepared during the loading phase. */
-> +	err = bpf_map_update_elem(map->fd, &zero, map->st_ops->kern_vdata, 0);
-> +	if (err && err != -EBUSY) {
-> +		free(link);
-> +		return libbpf_err_ptr(err);
+> +static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map *new_map,
+> +					  struct bpf_map *expected_old_map)
+> +{
+> +	struct bpf_struct_ops_map *st_map, *old_st_map;
+> +	struct bpf_map *old_map;
+> +	struct bpf_struct_ops_link *st_link;
+> +	int err = 0;
+> +
+> +	st_link = container_of(link, struct bpf_struct_ops_link, link);
+> +	st_map = container_of(new_map, struct bpf_struct_ops_map, map);
+> +
+> +	if (!bpf_struct_ops_valid_to_reg(new_map))
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&update_mutex);
+> +
+> +	old_map = rcu_dereference_protected(st_link->map, lockdep_is_held(&update_mutex));
+> +	if (expected_old_map && old_map != expected_old_map) {
+> +		err = -EINVAL;
+> +		goto err_out;
 > +	}
->   
-> -		if (!prog)
-> -			continue;
-> +	link->link.detach = bpf_link__detach_struct_ops;
->   
-> -		prog_fd = bpf_program__fd(prog);
-> -		kern_data = st_ops->kern_vdata + st_ops->kern_func_off[i];
-> -		*(unsigned long *)kern_data = prog_fd;
-> +	if (!(map->def.map_flags & BPF_F_LINK)) {
+> +
+> +	old_st_map = container_of(old_map, struct bpf_struct_ops_map, map);
+> +	/* The new and old struct_ops must be the same type. */
+> +	if (st_map->st_ops != old_st_map->st_ops) {
+> +		err = -EINVAL;
 
-hmm... This still does not look right. 'err' could be -EBUSY here and should not 
-be treated as success for non BPF_F_LINK case. The above 'err && err != -EBUSY' 
-check should also consider the BPF_F_LINK map_flags.
+Other ".update_prog" implementation returns -EPERM. eg. take a look at 
+cgroup_bpf_replace().
 
-[ Replied on the wrong v9, so copy-and-paste the reply back to this v9. ]
+> +		goto err_out;
+> +	}
+> +
+> +	err = st_map->st_ops->update(st_map->kvalue.data, old_st_map->kvalue.data);
+> +	if (err)
+> +		goto err_out;
+> +
+> +	bpf_map_inc(new_map);
+> +	rcu_assign_pointer(st_link->map, new_map);
+> +	bpf_map_put(old_map);
+> +
+> +err_out:
+> +	mutex_unlock(&update_mutex);
+> +
+> +	return err;
+> +}
+> +
 
-> +		/* w/o a real link */
-> +		link->link.fd = map->fd;
-> +		link->map_fd = -1;
-> +		return &link->link;
->   	}
->   
-> -	err = bpf_map_update_elem(map->fd, &zero, st_ops->kern_vdata, 0);
-> -	if (err) {
-> -		err = -errno;
-> +	fd = bpf_link_create(map->fd, 0, BPF_STRUCT_OPS, NULL);
-> +	if (fd < 0) {
->   		free(link);
-> -		return libbpf_err_ptr(err);
-> +		return libbpf_err_ptr(fd);
->   	}
->   
-> -	link->detach = bpf_link__detach_struct_ops;
-> -	link->fd = map->fd;
-> +	link->link.fd = fd;
-> +	link->map_fd = map->fd;
->   
-> -	return link;
-> +	return &link->link;
->   }
->   
->   typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_event_header *hdr,
 
