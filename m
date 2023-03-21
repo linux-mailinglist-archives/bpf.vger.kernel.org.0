@@ -2,92 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1264C6C3263
-	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 14:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD56C6C32E1
+	for <lists+bpf@lfdr.de>; Tue, 21 Mar 2023 14:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjCUNOm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 09:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
+        id S230039AbjCUNaC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 09:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbjCUNOl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 09:14:41 -0400
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3939820058
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 06:14:39 -0700 (PDT)
-Received: by mail-il1-f200.google.com with SMTP id d6-20020a92d786000000b00316f1737173so7915070iln.16
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 06:14:39 -0700 (PDT)
+        with ESMTP id S231173AbjCUN35 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 09:29:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A016925BB3
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 06:29:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1679405348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KBT69eGsdJbkXc2Kqm0JT5NVzfmXd6DGRkgXONrvjXA=;
+        b=YCu3oSAaVfOkyXsJxijYAUCDYxdono85wyRLfWYxZ2Ok6AAGxvYJICOp/w5wfhU/PyjJrq
+        /KBAIN1z5ej5KqOOQt13gofdtXd24/QTGibtq2yPJ8/ZblpLNVBjJ4BILaxveTAdfQ5I5j
+        UN0Ed6xjE300ovjmTJUeMksgP8xeYSM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-411-PHumPvUePwSUooUJIShEEg-1; Tue, 21 Mar 2023 09:29:07 -0400
+X-MC-Unique: PHumPvUePwSUooUJIShEEg-1
+Received: by mail-ed1-f69.google.com with SMTP id h11-20020a0564020e8b00b004e59d4722a3so21861731eda.6
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 06:29:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679404478;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d1E/CPVb6H8VyxRsyGiJWxP2UWi3TCzv8QPJdKDcVdk=;
-        b=pVD2GNme4ckRWwRDGIJWIsFHK5s+uscpACwLhHkgHJw6e45InVHTIygVOGFcGF7Trb
-         22xNie8bT4z2DtZY8q4puWjQ/XH3EoVKatgf7jz10zt96y22hRbYghH9KrcXKJWjaDRj
-         WuEvuencrfw/Ic4MabOO9e96XppT/H7a3i41K2il5boyJS8AL/kdMPUCMxLtYSfJCfU0
-         zbE92p8wagB+0rP+v/CQJuJRNsD0NFdaFuHYfhQDtFC2IyP060/b2ycPLe4KqEdI/GTp
-         S+W/oOL0DOYU9aZ1SDPv1ntMlpPfiS4M1C49bL+qQsXnRJEfSTbQ/AYwNG8YHerxAiQU
-         FJEQ==
-X-Gm-Message-State: AO0yUKXolR8g6iltSfrYQxyvAhFUQBUpDjxmYxRRCls+jpDi3hE45Ce6
-        k/zm8x37fbsDXSYT3zQCxb+GDienibhmEstpd6tx/lwSmDTq
-X-Google-Smtp-Source: AK7set/s6ej3JV3Xsl6KlLwe5mBRC4+3HQxIGvDZNFwhkHinh5peA+vo1p3wVHAfY3eJ5A7/xT9ehxiKPiehGXUDwIA3ROPqBwGS
+        d=1e100.net; s=20210112; t=1679405346;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KBT69eGsdJbkXc2Kqm0JT5NVzfmXd6DGRkgXONrvjXA=;
+        b=r0Ih8IjVNoZIHTf9E2yQLbE6oCettWWyK8wi0jmSsy0bzyiDCTA6tLHiGS0EMSqv4A
+         7Lp2FfQXSwovCqZ9aV/Xr3QJj+JMqiE9L2HsA/hsIbc8VKR6LMhv1DKSqV/veSs4JRiM
+         mlbwDhe4Ob6iB8tJbzsJLc0gLPXhMlNdFYD7kJ3kFL/g2mNKQ67SPKJParaa17masd40
+         EC3kaliaTW1LRjOdYIdCueBbOFSe32Lc+soC7pyPLw729DU3zU9ajC9qMcy+ICTB83Sh
+         Bj4imqYwmiV13dLFzrUGi2yV/NFD4Rp2dbTvpU9sgr0lWa+QAn9IyZNF9y6My1sivVAd
+         n4ig==
+X-Gm-Message-State: AO0yUKUwDAP1fZNMmkPo2bjN350U3asYF6cS+5R6nAFZYj+804vY0ZDp
+        wL8FzaRm8ma/NOZGSFPQf7QmkcYfOHvqppca+Iq781wiC7BPjcq7L9JyrpPCQ5RsuEcUjoNLbsw
+        NKKLT2sW8t3RO
+X-Received: by 2002:a17:906:2a90:b0:8aa:1f89:122e with SMTP id l16-20020a1709062a9000b008aa1f89122emr2522988eje.39.1679405346361;
+        Tue, 21 Mar 2023 06:29:06 -0700 (PDT)
+X-Google-Smtp-Source: AK7set8N84f6PrcisRryVo+0pO6902MzYLtcEeH0RYnzA6yc8t+iHYhhZWknIh8hdyjLeghVEQuPjQ==
+X-Received: by 2002:a17:906:2a90:b0:8aa:1f89:122e with SMTP id l16-20020a1709062a9000b008aa1f89122emr2522964eje.39.1679405346081;
+        Tue, 21 Mar 2023 06:29:06 -0700 (PDT)
+Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id z9-20020a1709067e4900b0092be390b51asm5811868ejr.113.2023.03.21.06.29.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Mar 2023 06:29:05 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <5655574a-71b5-79df-890e-81f3bd5e1cc2@redhat.com>
+Date:   Tue, 21 Mar 2023 14:29:04 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a6b:8d46:0:b0:752:f038:6322 with SMTP id
- p67-20020a6b8d46000000b00752f0386322mr846819iod.0.1679404478524; Tue, 21 Mar
- 2023 06:14:38 -0700 (PDT)
-Date:   Tue, 21 Mar 2023 06:14:38 -0700
-In-Reply-To: <000000000000ea7a5c05f051fd00@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006071aa05f768d333@google.com>
-Subject: Re: [syzbot] riscv/fixes boot error: WARNING in __apply_to_page_range (2)
-From:   syzbot <syzbot+5702f46b5b22bdb38b7e@syzkaller.appspotmail.com>
-To:     alex@ghiti.fr, andrii@kernel.org, aou@eecs.berkeley.edu,
-        ast@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, dvyukov@google.com, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        luke.r.nels@gmail.com, martin.lau@linux.dev, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, sdf@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, xi.wang@gmail.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com
+Subject: Re: [PATCH bpf-next V1 3/7] selftests/bpf: xdp_hw_metadata track more
+ timestamps
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+References: <167906343576.2706833.17489167761084071890.stgit@firesoul>
+ <167906360589.2706833.6188844928251441787.stgit@firesoul>
+ <ZBTW+NP1pLPlXRqa@google.com>
+In-Reply-To: <ZBTW+NP1pLPlXRqa@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This bug is marked as fixed by commit:
-riscv: Rework kasan population functions
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+On 17/03/2023 22.09, Stanislav Fomichev wrote:
+>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c 
+>> b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> index 4c55b4d79d3d..f2a3b70a9882 100644
+>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> @@ -69,9 +69,11 @@ int rx(struct xdp_md *ctx)
+>>           return XDP_PASS;
+>>       }
+> 
+>> -    if (!bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp))
+>> -        bpf_printk("populated rx_timestamp with %llu", meta->rx_timestamp);
+>> -    else
+>> +    if (!bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp)) {
+>> +        meta->xdp_timestamp = bpf_ktime_get_tai_ns();
+>> +        bpf_printk("populated rx_timestamp with  %llu", meta->rx_timestamp);
+>> +        bpf_printk("populated xdp_timestamp with %llu", meta->xdp_timestamp);
+>> +    } else
+>>           meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
+> 
+> Nit: curly braces around else {} block as well?
 
-#syz fix: exact-commit-title
+Good point, fixed in V2
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
-
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=5702f46b5b22bdb38b7e
-
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 10 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
