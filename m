@@ -2,160 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0156C4BB6
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 14:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897636C4FA2
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 16:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbjCVNas (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 09:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S231338AbjCVPpW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 11:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbjCVNar (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 09:30:47 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78A45FA76
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 06:30:45 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id x198so11266524ybe.9
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 06:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679491845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fj1ZEndN827h6H99ZndY6ISgjudYJ+QA+1NK7dJ1MKY=;
-        b=dAp2Sm7P7M3MQaKNyWk6eEx7+O4qGXWX0+DMyeBe3i97co13uziImImpyMJGF4jLLb
-         xA77N70wHknYdtIkxdMcbPBi2dV8fgnGDSaeaFCa1mFqNyi2hAATsozRzSBv/TnqPMkF
-         p09JSU9UaWA35VbyplGqVFuvokTma7h74NFHl8ZLBKedG+qa8hQwxqEo3Q/saaytLRUt
-         ofrdVXGmJBE5HUYGnmLV2DdhSwXE4W2Ugc8LdfDSnlBxpyp7jCxvYpN09mVgXGfV4ziy
-         GFKhfQ4GzQyhKr+1Ky1+Ok7ncgb4g4cPb8nGHR4kSsvg1DAbYXUUWTkSj/BZF9mwKCf5
-         lJ3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679491845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fj1ZEndN827h6H99ZndY6ISgjudYJ+QA+1NK7dJ1MKY=;
-        b=t11q29q/0albZ14LrIeHrK7bVsEh/yX0XgSfse+Ypusiv8NCrABlRcmpI2QLzSc1cz
-         H1FZzCqOAR2wpY5AfoN9flzVf1ZTar7lj8dVfqhqO52nxE/l4UTtv9dvPjwEcalaMbnM
-         UTWKsnYVqe1/IuHAdtvqvyy3QSD/XQnmR64k9tOnTfkvLLPetsHoH6Bgo7LKfrqbh0m9
-         PjjcM/yubyzmpUm5BtseXMBo/87M0BwnLVI1irPSwtd2tENLkrh6+sV2k//btHYu3YKQ
-         SL/KeRDPF9wtCg7hG71hGZ+dOmg+hRKPGkubY3U+yUhmDNPRHZATFopY+yPDDZGIKuPf
-         Hk7Q==
-X-Gm-Message-State: AAQBX9eb7+y9G3auE1nIHNjGFVhqBGfr51geB+NFRYu74OB0gaA+Fw8X
-        IAmZL/G5VsHCZswUc0A1LizEjnLXD2Z+5jthPRqnzA==
-X-Google-Smtp-Source: AKy350bWFZJIkHw1dTAPTwr1WPguwRn3chvLp7222Dwm6xMXDK8TwrXNFJdroXPfKjAnjFCm6fSEeVSjJIIxXsUW6gM=
-X-Received: by 2002:a25:5456:0:b0:b69:eb08:8f3b with SMTP id
- i83-20020a255456000000b00b69eb088f3bmr5910216ybb.4.1679491844680; Wed, 22 Mar
- 2023 06:30:44 -0700 (PDT)
+        with ESMTP id S231307AbjCVPpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 11:45:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F0E62D94;
+        Wed, 22 Mar 2023 08:45:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8AD2FB81D37;
+        Wed, 22 Mar 2023 15:45:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18DB4C433EF;
+        Wed, 22 Mar 2023 15:45:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679499911;
+        bh=piznudyQ7uqbaBZcF98HpIF4CU1dBOZ+wPLdqX0TKmM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GPTMOF2QYze+8g9op7JZXCl4pxzpbiXWubKMKya6NKMfPPSCGp43Ffx1kefd5rQuo
+         9VFqJAAQ86YK7t4MJT7ii5MQZI6E45Hj5aXg3fFcM+34JVAE9bTrAsbKLA1GJYdO3E
+         GScOT5p3bPBNZtrVCqkEgiljnrgsSeGJWISFVGz3jfgJY7pEh086t5cdx38iyjHN+g
+         KlPygj/UDC31vTBV0TBtTOCYsv5z2VvPQ9utBCNF7EdgoHzNWSli5J5mGyOw4tMVEL
+         3dnojFfiV/VvdOGIChvgg8ax/1pfu530QH3LG7iRqJcfiHsMbkxf/mJpe+qAgtPBnE
+         mrNf2qH8OPv2w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4E5E34052D; Wed, 22 Mar 2023 12:45:08 -0300 (-03)
+Date:   Wed, 22 Mar 2023 12:45:08 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Namhyung Kim <namhyung@gmail.com>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
+Message-ID: <ZBsihOYrMCILT2cI@kernel.org>
+References: <20230316170149.4106586-1-jolsa@kernel.org>
+ <ZBNTMZjEoETU9d8N@casper.infradead.org>
+ <ZBV3beyxYhKv/kMp@krava>
+ <ZBXV3crf/wX5D9lo@casper.infradead.org>
 MIME-Version: 1.0
-References: <4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz> <CAANmLtzajny8ZK_QKVYOxLc8L9gyWG6Uu7YyL-CR-qfwphVTzg@mail.gmail.com>
- <ZBr8Gf53CbJc0b5E@hyeyoo>
-In-Reply-To: <ZBr8Gf53CbJc0b5E@hyeyoo>
-From:   Binder Makin <merimus@google.com>
-Date:   Wed, 22 Mar 2023 09:30:32 -0400
-Message-ID: <CAANmLtzQRsRHVRdMGccNK_+Ov1H_30ntWdhBJaHDBpYLzmVR6w@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] SLOB+SLAB allocators removal and future SLUB improvements
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-block@vger.kernel.org,
-        bpf@vger.kernel.org, linux-xfs@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZBXV3crf/wX5D9lo@casper.infradead.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Blah, sorry, lets try this.
-https://docs.google.com/spreadsheets/d/e/2PACX-1vS1uiw85AIpzgcVlvNlDCD9PuCI=
-ubiaJvBrKIC5OyAQURZHogOuCtpFNsC-zGHZ4-XNKJVcGgkpL-KH/pubhtml
+Em Sat, Mar 18, 2023 at 03:16:45PM +0000, Matthew Wilcox escreveu:
+> On Sat, Mar 18, 2023 at 09:33:49AM +0100, Jiri Olsa wrote:
+> > On Thu, Mar 16, 2023 at 05:34:41PM +0000, Matthew Wilcox wrote:
+> > > On Thu, Mar 16, 2023 at 06:01:40PM +0100, Jiri Olsa wrote:
+> > > > hi,
+> > > > this patchset adds build id object pointer to struct file object.
+> > > > 
+> > > > We have several use cases for build id to be used in BPF programs
+> > > > [2][3].
+> > > 
+> > > Yes, you have use cases, but you never answered the question I asked:
+> > > 
+> > > Is this going to be enabled by every distro kernel, or is it for special
+> > > use-cases where only people doing a very specialised thing who are
+> > > willing to build their own kernels will use it?
+> > 
+> > I hope so, but I guess only time tell.. given the response by Ian and Andrii
+> > there are 3 big users already
+> 
+> So the whole "There's a config option to turn it off" shtick is just a
+> fig-leaf.  I won't ever see it turned off.  You're imposing the cost of
+> this on EVERYONE who runs a distro kernel.  And almost nobody will see
+> any benefits from it.  Thanks for admitting that.
 
-On Wed, Mar 22, 2023 at 9:02=E2=80=AFAM Hyeonggon Yoo <42.hyeyoo@gmail.com>=
- wrote:
->
-> On Wed, Mar 22, 2023 at 08:15:28AM -0400, Binder Makin wrote:
-> > Was looking at SLAB removal and started by running A/B tests of SLAB vs
-> > SLUB.  Please note these are only preliminary results.
-> >
-> > These were run using 6.1.13 configured for SLAB/SLUB.
-> > Machines were standard datacenter servers.
-> >
-> > Hackbench shows completion time, so smaller is better.
-> > On all others larger is better.
-> > https://docs.google.com/spreadsheets/d/e/2PACX-1vQ47Mekl8BOp3ekCefwL6wL=
-8SQiv6Qvp5avkU2ssQSh41gntjivE-aKM4PkwzkC4N_s_MxUdcsokhhz/pubhtml
-> >
-> > Some notes:
-> > SUnreclaim and SReclaimable shows unreclaimable and reclaimable memory.
-> > Substantially higher with SLUB, but I believe that is to be expected.
-> >
-> > Various results showing a 5-10% degradation with SLUB.  That feels
-> > concerning to me, but I'm not sure what others' tolerance would be.
->
-> Hello Binder,
->
-> Thank you for sharing the data on which workloads
-> SLUB performs worse than SLAB. This information is critical for
-> improving SLUB and deprecating SLAB.
->
-> By the way, it appears that the spreadsheet is currently set to private.
-> Could you make it public for me to access?
->
-> I am really interested in performing similar experiments on my machines
-> to obtain comparable data that can be utilized to enhance SLUB.
->
-> Thanks,
-> Hyeonggon
->
-> > redis results on AMD show some pretty bad degredations.  10-20% range
-> > netpipe on Intel also has issues.. 10-17%
-> >
-> > On Tue, Mar 14, 2023 at 4:05=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
-> wrote:
-> >
-> > > As you're probably aware, my plan is to get rid of SLOB and SLAB, lea=
-ving
-> > > only SLUB going forward. The removal of SLOB seems to be going well, =
-there
-> > > were no objections to the deprecation and I've posted v1 of the remov=
-al
-> > > itself [1] so it could be in -next soon.
-> > >
-> > > The immediate benefit of that is that we can allow kfree() (and
-> > > kfree_rcu())
-> > > to free objects from kmem_cache_alloc() - something that IIRC at leas=
-t xfs
-> > > people wanted in the past, and SLOB was incompatible with that.
-> > >
-> > > For SLAB removal I haven't yet heard any objections (but also didn't
-> > > deprecate it yet) but if there are any users due to particular worklo=
-ads
-> > > doing better with SLAB than SLUB, we can discuss why those would regr=
-ess
-> > > and
-> > > what can be done about that in SLUB.
-> > >
-> > > Once we have just one slab allocator in the kernel, we can take a clo=
-ser
-> > > look at what the users are missing from it that forces them to create=
- own
-> > > allocators (e.g. BPF), and could be considered to be added as a gener=
-ic
-> > > implementation to SLUB.
-> > >
-> > > Thanks,
-> > > Vlastimil
-> > >
-> > > [1] https://lore.kernel.org/all/20230310103210.22372-1-vbabka@suse.cz=
-/
+I agree that build-ids are not useful for all 'struct file' uses, just
+for executable files and for people wanting to have better observability
+capabilities.
+
+Having said that, it seems there will be no extra memory overhead at
+least for a fedora:36 x86_64 kernel:
+
+void __init files_init(void)
+{
+        filp_cachep = kmem_cache_create("filp", sizeof(struct file), 0,
+                        SLAB_HWCACHE_ALIGN | SLAB_PANIC | SLAB_ACCOUNT, NULL);
+        percpu_counter_init(&nr_files, 0, GFP_KERNEL);
+}
+
+[root@quaco ~]# pahole file | grep size: -A2
+	/* size: 232, cachelines: 4, members: 20 */
+	/* sum members: 228, holes: 1, sum holes: 4 */
+	/* last cacheline: 40 bytes */
+[acme@quaco perf-tools]$ uname -a
+Linux quaco 6.1.11-100.fc36.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Feb  9 20:36:30 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+[root@quaco ~]# head -2 /proc/slabinfo 
+slabinfo - version: 2.1
+# name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
+[root@quaco ~]# grep -w filp /proc/slabinfo 
+filp               12452  13056    256   32    2 : tunables    0    0    0 : slabdata    408    408      0
+[root@quaco ~]#
+
+so there are 24 bytes on the 4th cacheline that are not being used,
+right?
+
+One other observation is that maybe we could do it as the 'struct sock'
+hierachy in networking, where we would have a 'struct exec_file' that
+would be:
+
+	struct exec_file {
+		struct file file;
+		char build_id[20];
+	}
+
+say, and then when we create the 'struct file' in __alloc_file() we
+could check some bit in 'flags' like Al Viro suggested and pick a
+different slab than 'filp_cachep', that has that extra space for the
+build_id (and whatever else exec related state we may end up wanting, if
+ever).
+
+No core fs will need to know about that except when we go free it, to
+free from the right slab cache.
+
+In current distro configs, no overhead would take place if I read that
+SLAB_HWCACHE_ALIGN thing right, no?
+
+- Arnaldo
