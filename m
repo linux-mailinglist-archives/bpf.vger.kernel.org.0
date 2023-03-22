@@ -2,124 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A13866C598D
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 23:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2C76C59A0
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 23:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjCVWpz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 18:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
+        id S229497AbjCVWxu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 18:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjCVWpy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 18:45:54 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106FC6A58
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 15:45:54 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id eg48so79121053edb.13
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 15:45:53 -0700 (PDT)
+        with ESMTP id S229597AbjCVWxt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 18:53:49 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D5429E21
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 15:53:46 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id cy23so79194509edb.12
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 15:53:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679525152;
+        d=gmail.com; s=20210112; t=1679525625;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f4TE9FJs6kf3hoZRIDdfAdAhdLQml0Cgb65TIqYsERU=;
-        b=LGSjUukiho/dQkxkFvB0qP7Nof+d3N3DB5QsD81Io0GHbed/PPgHHRNRW9yessgESu
-         U2lMFrMzfzfnZysKKOr/KcvKMt8VYu7Gf+hXN2Tc6zl6y7gq4JlBVWepwBN75jCEZcRt
-         qQsMpdDzwuWnFGHHvaMfqVIyewd3bItJqkuy5Ic5sGrlnRwBoSGQWOicmMj4nXPpM7/4
-         sSh3l2AAMVvJKQJ+y0Lav0qGcVea5cCJdYy+MKS1q1YuwEJnobRp1O0O4nPedKsiihiL
-         +o0SHNLJfQWkwRfGgZ9SScZyaXwC1IYASeZzNWAFfwPhMb4qoqsKyDnxG4Xy+24Qpt+C
-         nScA==
+        bh=aalP+mrXC8ka8Cn/RCiZ15O9/uhHMuDDpy7O85LUhVg=;
+        b=KsMoGzA+rNURG0kBE1pv6GAurxXnoFQR290uADmLkhujlr5+K6ba8fSvKZSqwmG6Ec
+         V4KPRGfEFhPcyquyR3zhNcn0/v+Q/O6bTPUTCzBQHvDuSOArN6plKf03589Ox7Cut70X
+         HthwZXHVaGLPogqXkv8xMJUNRQ8MtZPcRJ4/DXD75ZF+b8N5xzzZYt+4cGVoDaDzPqf+
+         yUhLZ/TRTGpxhDkggJMenDxU5VGeUZXvpLumkTuqSx5YzSeBLommbkiRIbDuZW4us56f
+         dgnYkjlLOUGcfjgK+tUxRCPGB6qDef9X3h9pXxlsAaKZ+vawNf46+nPXX8vtu817ND7R
+         i1tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679525152;
+        d=1e100.net; s=20210112; t=1679525625;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=f4TE9FJs6kf3hoZRIDdfAdAhdLQml0Cgb65TIqYsERU=;
-        b=aeWBiQ+P71BksqiP6UfMHqzpDxAUmefv3uWPic7s1PyB2tTlciVlYK8u4Ih7HSI/NT
-         RB2M31oZKH4M9ZOfgt5GVe3MUUZW/8HDuvbVQ5VNvVJX7Twwp945A1BeHtNfpKhzK73P
-         5wuDPnjAGXraghRpMgIHxb+CgDxNWemoCSYLl1Bta/mgyrU6A4uGGTBpUJ75JaCtAPo5
-         rPYD2YVs1Bh563S1g/MFafPUwA4iuLrLUfUJ5kq8jFUw2B96jmDMNBYGUjnQFZqrGQg2
-         2JYQfpaLPW5tfer9vVdmuwE1CnNVOti9NRpH/aqxZo88bXPGTk/FHsa67Fs8RPi1vB2o
-         xf8w==
-X-Gm-Message-State: AO0yUKXmHRxVoNmJP1iW4jxlPCnG3878JgbwMQtkRJUeAh0E9DwETsJj
-        ULtobenUosKWnT8ZEfpQtvVxan2zXMdCOw29/UfMgaw+rrmwEA==
-X-Google-Smtp-Source: AK7set/FVBgsz94E/nRFir7FQUbV52OEwIIO4ZHAE+8VInM5ZaZqSRtOyk7COFZgA9RmQO0FCf1tbM1nTMdjp7UHyQM=
-X-Received: by 2002:a17:906:f755:b0:932:dac6:3e2f with SMTP id
- jp21-20020a170906f75500b00932dac63e2fmr4050841ejb.12.1679525152381; Wed, 22
- Mar 2023 15:45:52 -0700 (PDT)
+        bh=aalP+mrXC8ka8Cn/RCiZ15O9/uhHMuDDpy7O85LUhVg=;
+        b=VdLSY00pqFA4NYijxwphtvQsapnc15cVFG8MFdw3VhVcXn1N9YvzcGotz2e6W57CEE
+         WCIopaUo6EEw93YbNQAeW3eNR7F/tOCoXsTFUBLqMOmY3LeeFG6kofb6Tg9szTXs8yZr
+         CdnvcTTnj39U32Xfw5R7BcVjZMY2fueiBjgjiFWrSAAwZmIPfqFXGLA3IIuneWZeowA2
+         CrRCcnEGDlt+dL09jLl9utrb5wVHMB39SQJw4Yj+jgnlHbrbx16ilhpm9+6mhX08Mh3t
+         Yb0qvk2SShlAYCcmg4763LV6pFTRImO43bq7Hp6+gQ5sBTFH//Ca+2kPJnNjZaDw2l8h
+         PXwA==
+X-Gm-Message-State: AO0yUKXXH4EkVip0/ALVc9liySLTcuTnfW/UBK38CIxrQchZNlSGC55N
+        c3eb6tyVKXZFIowxNDGw8ydLmsbb0iRwim6SMfM=
+X-Google-Smtp-Source: AK7set+WNl5sCJtoZbBEZOMQeWpEMUpe1zrqxsWcqThHCkSFgu1jDNWFPxhP2nkWlwQnuQzYzgaGSpbpWYgNI2UhvZw=
+X-Received: by 2002:a50:9ecb:0:b0:4ab:49b9:686d with SMTP id
+ a69-20020a509ecb000000b004ab49b9686dmr4354489edf.1.1679525625192; Wed, 22 Mar
+ 2023 15:53:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAMAi7A7+b6crWHyn9AQ+itsSh8vZ8D5=WEKatAaHj-V_4mjw-g@mail.gmail.com>
- <ZBo164Lc2eL3HUvN@krava> <CAMAi7A7Y=m=i-yEOuh-sO-5R5zEGQuo1VwOLKsgvFcv4RRhbhQ@mail.gmail.com>
- <ZBr7Jt9+yr0PHk6K@krava> <CAADnVQLCSMBhHzOgB1iYMpWVTYsKerMUJ_8MX1W+7BNveF+0tQ@mail.gmail.com>
- <CAMAi7A4asgEE7MKOJC7ak4Q-wWXtfnHTtv8+x0GZ88ZUWZLMKQ@mail.gmail.com> <CAADnVQKxbzULYHhWUr=OQWke-QJt6QkVsO7pVBNpgurQMZPWkQ@mail.gmail.com>
-In-Reply-To: <CAADnVQKxbzULYHhWUr=OQWke-QJt6QkVsO7pVBNpgurQMZPWkQ@mail.gmail.com>
-From:   Davide Miola <davide.miola99@gmail.com>
-Date:   Wed, 22 Mar 2023 23:45:41 +0100
-Message-ID: <CAMAi7A4e=yJrCBrWMuKGs37LjOMeVAQzBPvMiysG7QW1gL0yHw@mail.gmail.com>
-Subject: Re: bpf: missed fentry/fexit invocations due to implicit recursion
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>
+References: <176c368f-bcce-4779-8cc9-a8a46d9e517d@kili.mountain>
+In-Reply-To: <176c368f-bcce-4779-8cc9-a8a46d9e517d@kili.mountain>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 22 Mar 2023 15:53:33 -0700
+Message-ID: <CAEf4BzbF5To2OFt7W2N4tWbTdcyNn40gGW=JY4Mu+m8nR6QpCw@mail.gmail.com>
+Subject: Re: [bug report] bpf: add support for open-coded iterator loops
+To:     Dan Carpenter <error27@gmail.com>
+Cc:     andrii@kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 22 Mar 2023 at 23:21, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Mar 21, 2023 at 1:47=E2=80=AFAM Dan Carpenter <error27@gmail.com> w=
+rote:
 >
-> On Wed, Mar 22, 2023 at 2:39=E2=80=AFPM Davide Miola <davide.miola99@gmai=
-l.com> wrote:
-> >
-> > On Wed, 22 Mar 2023 at 17:06, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > > On Wed, Mar 22, 2023 at 6:10=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com=
-> wrote:
-> > > >
-> > > > there was discussion about this some time ago:
-> > > >   https://lore.kernel.org/bpf/CAEf4BzZ-xe-zSjbBpKLHfQKPnTRTBMA2Eg38=
-2+_4kQoTLnj4eQ@mail.gmail.com/
-> > > >
-> > > > seems the 'active' problem andrii described fits to your case as we=
-ll
-> > >
-> > > I suspect per-cpu recursion counter will miss more events in this cas=
-e,
-> > > since _any_ kprobe on that cpu will be blocked.
-> > > If missing events is not an issue you probably want a per-cpu counter
-> > > that is specific to your single ip_queue_xmit attach point.
-> >
-> > The difference between the scenario described in the linked thread
-> > and mine is also the reason why I think in-bpf solutions like a
-> > per-cpu guard can't work here: my programs are recursing due to irqs
-> > interrupting them and invoking ip_queue_xmit, not because some helper
-> > I'm using ends up calling ip_queue_xmit. Recursion can happen
-> > anywhere in my programs, even before they get the chance to set a
-> > flag or increment a counter in a per-cpu map, since there is no
-> > atomic "bpf_map_lookup_and_increment" (or is there?)
+> Hello Andrii Nakryiko,
 >
-> __sync_fetch_and_add() is supported. A bunch of selftests are using it.
-> Or you can use bpf_spin_lock.
+> The patch 06accc8779c1: "bpf: add support for open-coded iterator
+> loops" from Mar 8, 2023, leads to the following Smatch static checker
+> warning:
+>
+>         kernel/bpf/verifier.c:6781 process_iter_arg()
+>         warn: assigning signed to unsigned: 'meta->iter.spi =3D spi' '(-3=
+4),0-268435454'
+>
+> kernel/bpf/verifier.c
+>     6762 static int process_iter_arg(struct bpf_verifier_env *env, int re=
+gno, int insn_idx,
+>     6763                             struct bpf_kfunc_call_arg_meta *meta=
+)
+>     6764 {
+>     6765         struct bpf_reg_state *regs =3D cur_regs(env), *reg =3D &=
+regs[regno];
+>     6766         const struct btf_type *t;
+>     6767         const struct btf_param *arg;
+>     6768         int spi, err, i, nr_slots;
+>     6769         u32 btf_id;
+>     6770
+>     6771         /* btf_check_iter_kfuncs() ensures we don't need to vali=
+date anything here */
+>     6772         arg =3D &btf_params(meta->func_proto)[0];
+>     6773         t =3D btf_type_skip_modifiers(meta->btf, arg->type, NULL=
+);        /* PTR */
+>     6774         t =3D btf_type_skip_modifiers(meta->btf, t->type, &btf_i=
+d);        /* STRUCT */
+>     6775         nr_slots =3D t->size / BPF_REG_SIZE;
+>     6776
+>     6777         spi =3D iter_get_spi(env, reg, nr_slots);
+>     6778         if (spi < 0 && spi !=3D -ERANGE)
+>                                 ^^^^^^^^^^^^^^
+> Assume iter_get_spi() returns -ERANGE
+>
+>     6779                 return spi;
+>     6780
+> --> 6781         meta->iter.spi =3D spi;
+>
+> meta->iter.spi is a u8.  How is this going to work?  At the very least
+> it needs a comment.
 
-Sure, but I'd still have to lookup the element from the map first.
-At a minimum it would look something like:
+The reason why all this works is because this meta->iter.spi field is
+used only for iter_next() functions, at which point it is validated by
+is_iter_reg_valid_init() to not be an -ERANGE.
 
-SEC("fentry/ip_queue_xmit")
-int BPF_PROG(entry_prog) {
-    int key =3D 0;
-    int64_t *guard =3D bpf_map_lookup_elem(&per_cpu, &key);
-    if (guard) {
-        if (__sync_fetch_and_add(guard, 1) =3D=3D 0) {
-            ...
-        }
-    }
-}
+But I think I'll just move this part to after the below if, and
+-ERANGE is not going to be an allowable case there.
 
-The program could be interrupted before it reaches
-__sync_fetch_and_add (just tested this and it does not solve the
-problem)
+Thanks for pointing this out!
+
+>
+>     6782         meta->iter.frameno =3D reg->frameno;
+>     6783
+>     6784         if (is_iter_new_kfunc(meta)) {
+>     6785                 /* bpf_iter_<type>_new() expects pointer to unin=
+it iter state */
+>     6786                 if (!is_iter_reg_valid_uninit(env, reg, nr_slots=
+)) {
+>     6787                         verbose(env, "expected uninitialized ite=
+r_%s as arg #%d\n",
+>     6788                                 iter_type_str(meta->btf, btf_id)=
+, regno);
+>     6789                         return -EINVAL;
+>     6790                 }
+>     6791
+>     6792                 for (i =3D 0; i < nr_slots * 8; i +=3D BPF_REG_S=
+IZE) {
+>     6793                         err =3D check_mem_access(env, insn_idx, =
+regno,
+>     6794                                                i, BPF_DW, BPF_WR=
+ITE, -1, false);
+>     6795                         if (err)
+>     6796                                 return err;
+>     6797                 }
+>     6798
+>     6799                 err =3D mark_stack_slots_iter(env, reg, insn_idx=
+, meta->btf, btf_id, nr_slots);
+>     6800                 if (err)
+>     6801                         return err;
+>     6802         } else {
+>     6803                 /* iter_next() or iter_destroy() expect initiali=
+zed iter state*/
+>     6804                 if (!is_iter_reg_valid_init(env, reg, meta->btf,=
+ btf_id, nr_slots)) {
+>     6805                         verbose(env, "expected an initialized it=
+er_%s as arg #%d\n",
+>     6806                                 iter_type_str(meta->btf, btf_id)=
+, regno);
+>     6807                         return -EINVAL;
+>     6808                 }
+>     6809
+>     6810                 err =3D mark_iter_read(env, reg, spi, nr_slots);
+>
+> If spi is -ERANGE here then it leads to an array underflow.
+
+-ERANGE can't happen because is_iter_reg_valid_init() will reject it first.
+
+>
+>     6811                 if (err)
+>     6812                         return err;
+>     6813
+>     6814                 meta->ref_obj_id =3D iter_ref_obj_id(env, reg, s=
+pi);
+>     6815
+>     6816                 if (is_iter_destroy_kfunc(meta)) {
+>     6817                         err =3D unmark_stack_slots_iter(env, reg=
+, nr_slots);
+>     6818                         if (err)
+>     6819                                 return err;
+>     6820                 }
+>     6821         }
+>     6822
+>     6823         return 0;
+>     6824 }
+>
+> regards,
+> dan carpenter
