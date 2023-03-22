@@ -2,63 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE256C53C6
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 19:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 041F26C5477
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 20:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjCVSef (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 14:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
+        id S231429AbjCVTCY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 15:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjCVSef (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 14:34:35 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378C3305E0;
-        Wed, 22 Mar 2023 11:34:34 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id cy23so76644126edb.12;
-        Wed, 22 Mar 2023 11:34:34 -0700 (PDT)
+        with ESMTP id S229980AbjCVTCG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 15:02:06 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309695BCA6
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 12:00:49 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id bc12so19556601plb.0
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 12:00:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679510072;
+        d=google.com; s=20210112; t=1679511640;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zXYVlCwzaCfo+TEgKRpH4aKOEUQ6BiDkt6e2qr/DXFc=;
-        b=fF+TBG+Lq4+D06+SOgB+UV/iHXuR665aEs3vP9TN9sIrpcu2QGKc1rPbt4THqHFwuk
-         DdaoZ6Ul73wtcxi8kCx5cZ7DzlgyilNGPMhcbltGWJopC7YHHpYOhvZQ8o1YIMrocCpE
-         HWvmT/oiuvzZAvhFXTdp8pCeXAiAz1N7b82Ju2mOY0zBEg2tcxMvBmS9I2f733aNcuey
-         ltOjZU8F6IyFJ1QZNaLRK2bd1WtxBt1ICj3SX/nCUaoCd6nS8Cyc8cJwv/xEsHJcU8eA
-         dzeh3CWrJU6OJcU3HNe9/BZspG42mLWTYaiNdbH0uos0zeQFSckGUrqa+rdXGUISLJJl
-         IHXA==
+        bh=TPw82u/EjYlcJdkmo1criCAcJTkt8OjlZmqtDmpev+Y=;
+        b=LXpsDxg24mECGDgep6nvpz2DEltVZE0ISwM+WcIPJ1q5Rt+7eJiqvPkEvWORKM+hWO
+         H7M+g/sPLdKmHcczC65vIQgiqlJaFcO9Ns5RD+YVhU2NC3D2MjGrbaHhA24Skc/MlPbo
+         s18xo6tkWmD5vHFzUHp9rlB42XKRsUKJb4W1RruD3v9UeUOw2PcMamLlp0AKaY446uO0
+         mJ3xqDD2aiE5AvpQU8DznF15fBXA+LKX2wthnnFbSkOJOlcb11MWEMxfLN1bf/4EO3D/
+         G6EZoNpGMk9jbBlP3DXZ8ifsZQeTgHOdUTwXO9GArz1LJBxJOMNq0S2eflA/nby03cY/
+         tRow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679510072;
+        d=1e100.net; s=20210112; t=1679511640;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zXYVlCwzaCfo+TEgKRpH4aKOEUQ6BiDkt6e2qr/DXFc=;
-        b=UmxJ3GPq1HPbPhr/Gjy01gdPAhiZ3f43VhBHaI9SsSfbeNNpNMyzpeS6MOXIOPGKqn
-         moTksJiFPFqKTYnbAGiQZ//WbcUvTOhKdYwu/oniXocT/7hzg3/DzWMqxdI/X8HYrOVa
-         G7aHhe8q6ypnHMi23K7p/EoWf2xFpW+WgAOK4+KEALtY5yyY2Qu8nK0CIP0Ya4nbZQob
-         h9lIjyeLi3Yps5GcfZFkIfslDWT1YsPdh954Ftc9kFjeG2xeIWqcxoyN1Ea9ULuGYtB1
-         lLmD13QbAm6LIVAhfLJLaRlmhwcIEL0CCXqXElc5lUZInH9K4xa6hgHydVOPJdZELNNo
-         CkSA==
-X-Gm-Message-State: AO0yUKVXSI2cYGewh4lGTDghHkvs7Z1WLmjLYVqabbwq2910qqboqY+e
-        i6BWQo0Ex50+rHpgwglKwDfJV7OqpkujXmGNTvQ=
-X-Google-Smtp-Source: AK7set+cm8vcp787lnxRtwapHZN5BJEt7huWdkMB3WhRgBBpjK5k1sP0sjkwT6LiP1GE3bE/5t41Vq0oMY8RqjEeOvw=
-X-Received: by 2002:a17:906:f858:b0:92a:581:ac49 with SMTP id
- ks24-20020a170906f85800b0092a0581ac49mr3776308ejb.3.1679510072459; Wed, 22
- Mar 2023 11:34:32 -0700 (PDT)
+        bh=TPw82u/EjYlcJdkmo1criCAcJTkt8OjlZmqtDmpev+Y=;
+        b=6tZZKjV1vN6u+mHi2cKJpsmbG/F35kuluuOt0b6n51xTwaRGPXozHyMi6fPIwy10Lu
+         K9ttYjc+1eIjaWAN5Dz3s/WHsJsz4B6V3oYQMKj8aSUA6UzMmgjFxfpQ3nLY/alRF/9n
+         mK/76VcSyHxy+D6X+aNDm0TgrupBbbdaCs6/CCH6XEwO6vTKlNlmvhwZeIpcrvp3SVck
+         y+jBZZdlvQIGx1j0ZIuW3rONaOAr03flaz5cnahm6T8pQuh8N+d0GI9Yf36Y6Ay7iLL2
+         Q4rEePov5853iObygvB0SHBj3uuJ91XqnD86uaVTtIecVzfBCZFDUDOWWZeklBeSvlc8
+         xvLg==
+X-Gm-Message-State: AO0yUKUI/dgSOxaOAeINsq8mhlPuOiy0qRHAKzSXOgk6NTYIv2ziPkIl
+        87NS79HcRCMmQMwWizTIYRl42WF3QMpMnTsD3TREFQ==
+X-Google-Smtp-Source: AK7set+hMDqiJnRnl+PIVoRNKWPVSBo6QIL0bDWogooZje/Gc+I/wzyla2g7mCUY9FBrk2Dbxr75BPu01CHVYNjlXZs=
+X-Received: by 2002:a17:90a:f28d:b0:23d:424d:400f with SMTP id
+ fs13-20020a17090af28d00b0023d424d400fmr1429526pjb.9.1679511639636; Wed, 22
+ Mar 2023 12:00:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <167940675120.2718408.8176058626864184420.stgit@firesoul> <682a413b-4f84-cc06-d378-3b44d721c64e@gmail.com>
-In-Reply-To: <682a413b-4f84-cc06-d378-3b44d721c64e@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Mar 2023 11:34:21 -0700
-Message-ID: <CAADnVQ+AAiFPDkn0r9+1YAcjgLRoF63HspmcL2CQeqvQcHC57A@mail.gmail.com>
-Subject: Re: [PATCH bpf V2] xdp: bpf_xdp_metadata use EOPNOTSUPP for no driver support
-To:     Tariq Toukan <ttoukan.linux@gmail.com>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+References: <167940634187.2718137.10209374282891218398.stgit@firesoul>
+ <167940643669.2718137.4624187727245854475.stgit@firesoul> <CAKH8qBuv-9TXAmi0oTbB0atC4f6jzFcFhAgQ3D89VX45vUU9hw@mail.gmail.com>
+ <080640fc-5835-26f1-2b20-ff079bd59182@redhat.com> <CAADnVQKsxzLTZ2XoLbmKKLAeaSyvf3P+w8V143iZ4cEWWTEUfw@mail.gmail.com>
+In-Reply-To: <CAADnVQKsxzLTZ2XoLbmKKLAeaSyvf3P+w8V143iZ4cEWWTEUfw@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 22 Mar 2023 12:00:28 -0700
+Message-ID: <CAKH8qBuHaaqnV-_mb1Roao9ZDrEHm+1Cj77hPZSRgwxoqphvxQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V2 3/6] selftests/bpf: xdp_hw_metadata RX hash
+ return code info
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -77,9 +79,10 @@ Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
         "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,37 +90,96 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 1:43=E2=80=AFPM Tariq Toukan <ttoukan.linux@gmail.c=
-om> wrote:
+On Wed, Mar 22, 2023 at 9:07=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
+> On Wed, Mar 22, 2023 at 9:05=E2=80=AFAM Jesper Dangaard Brouer
+> <jbrouer@redhat.com> wrote:
+> >
+> >
+> >
+> > On 21/03/2023 19.47, Stanislav Fomichev wrote:
+> > > On Tue, Mar 21, 2023 at 6:47=E2=80=AFAM Jesper Dangaard Brouer
+> > > <brouer@redhat.com> wrote:
+> > >>
+> > >> When driver developers add XDP-hints kfuncs for RX hash it is
+> > >> practical to print the return code in bpf_printk trace pipe log.
+> > >>
+> > >> Print hash value as a hex value, both AF_XDP userspace and bpf_prog,
+> > >> as this makes it easier to spot poor quality hashes.
+> > >>
+> > >> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > >> ---
+> > >>   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++++++--=
+-
+> > >>   tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++++-
+> > >>   2 files changed, 10 insertions(+), 4 deletions(-)
+> > >>
+> > >> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/t=
+ools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > >> index 40c17adbf483..ce07010e4d48 100644
+> > >> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > >> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > >> @@ -77,10 +77,13 @@ int rx(struct xdp_md *ctx)
+> > >>                  meta->rx_timestamp =3D 0; /* Used by AF_XDP as not =
+avail signal */
+> > >>          }
+> > >>
+> > >> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+> > >> -               bpf_printk("populated rx_hash with %u", meta->rx_has=
+h);
+> > >> -       else
+> > >> +       ret =3D bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
+> > >> +       if (ret >=3D 0) {
+> > >> +               bpf_printk("populated rx_hash with 0x%08X", meta->rx=
+_hash);
+> > >> +       } else {
+> > >> +               bpf_printk("rx_hash not-avail errno:%d", ret);
+> > >>                  meta->rx_hash =3D 0; /* Used by AF_XDP as not avail=
+ signal */
+> > >> +       }
+> > >>
+> > >>          return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS=
+);
+> > >>   }
+> > >> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/t=
+esting/selftests/bpf/xdp_hw_metadata.c
+> > >> index 400bfe19abfe..f3ec07ccdc95 100644
+> > >> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > >> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > >> @@ -3,6 +3,9 @@
+> > >>   /* Reference program for verifying XDP metadata on real HW. Functi=
+onal test
+> > >>    * only, doesn't test the performance.
+> > >>    *
+> > >> + * BPF-prog bpf_printk info outout can be access via
+> > >> + * /sys/kernel/debug/tracing/trace_pipe
+> > >
+> > > s/outout/output/
+> > >
+> >
+> > Fixed in V3
+> >
+> > > But let's maybe drop it? If you want to make it more usable, let's
+> > > have a separate patch to enable tracing and periodically dump it to
+> > > the console instead (as previously discussed).
+> >
+> > Cat'ing /sys/kernel/debug/tracing/trace_pipe work for me regardless of
+> > setting in
+> > /sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enable
+> >
+> > We likely need a followup patch that adds a BPF config switch that can
+> > disable bpf_printk calls, because this adds overhead and thus affects
+> > the timestamps.
 >
->
-> On 21/03/2023 15:52, Jesper Dangaard Brouer wrote:
-> > When driver doesn't implement a bpf_xdp_metadata kfunc the fallback
-> > implementation returns EOPNOTSUPP, which indicate device driver doesn't
-> > implement this kfunc.
-> >
-> > Currently many drivers also return EOPNOTSUPP when the hint isn't
-> > available, which is ambiguous from an API point of view. Instead
-> > change drivers to return ENODATA in these cases.
-> >
-> > There can be natural cases why a driver doesn't provide any hardware
-> > info for a specific hint, even on a frame to frame basis (e.g. PTP).
-> > Lets keep these cases as separate return codes.
-> >
-> > When describing the return values, adjust the function kernel-doc layou=
-t
-> > to get proper rendering for the return values.
-> >
-> > Fixes: ab46182d0dcb ("net/mlx4_en: Support RX XDP metadata")
-> > Fixes: bc8d405b1ba9 ("net/mlx5e: Support RX XDP metadata")
-> > Fixes: 306531f0249f ("veth: Support RX XDP metadata")
-> > Fixes: 3d76a4d3d4e5 ("bpf: XDP metadata RX kfuncs")
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
->
-> For the mlx4/5 parts:
-> Acked-by: Tariq Toukan <tariqt@nvidia.com>
+> No. This is by design.
+> Do not use bpf_printk* in production.
 
-FYI this patch was applied to bpf tree.
-
-pw-bot doesn't notice bpf tree anymore :(
+But that's not for the production? xdp_hw_metadata is a small tool to
+verify that the metadata being dumped is correct (during the
+development).
+We have a proper (less verbose) selftest in
+{progs,prog_tests}/xdp_metadata.c (over veth).
+This xdp_hw_metadata was supposed to be used for running it against
+the real hardware, so having as much debugging at hand as possible
+seems helpful? (at least it was helpful to me when playing with mlx4)
