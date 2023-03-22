@@ -2,270 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F4C6C40B7
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 04:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E61B6C40C3
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 04:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbjCVDDZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 23:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
+        id S230215AbjCVDEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 23:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbjCVDDV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 23:03:21 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4501A15C9F;
-        Tue, 21 Mar 2023 20:03:20 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VeOqVkP_1679454196;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VeOqVkP_1679454196)
-          by smtp.aliyun-inc.com;
-          Wed, 22 Mar 2023 11:03:17 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        with ESMTP id S229642AbjCVDET (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 23:04:19 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B956125B7
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 20:03:47 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id bc12so17470748plb.0
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 20:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679454226;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nSzK+kAddtDOWun3i0mOuWQ/h7aW5t+0sg8tPr0P2po=;
+        b=Vkkzqf0IxqkKpi2/xavP/3JYK5PXE9AvcXMIx9JAJ0SB3+gyQkXECqEJgiZd0ATstX
+         g+p2kidaTylhzlbEsXJLXyQx8hQfIC7U5TUSBlgK4S2xZpXV0G+2LneEB4WQY+OjDdGL
+         p5txxssWVmT5bYrcvjaVrw6faRgoqGer1SLRoLwufCjk78Zsn0PUJbWiz2EETp4QuG9u
+         2lCAqC3B6cV5NMOFzk4SYS3GM36CXU9IgBOigrdNZa2rfgR+VkrOsWcy3F3bS/hshbXE
+         CmKxmxIbuz89dZyZvhPNe9LvapvYMELpMCo29ZHrJxBWqUX10AAF68wKznR0AxMUUxea
+         FX5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679454226;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nSzK+kAddtDOWun3i0mOuWQ/h7aW5t+0sg8tPr0P2po=;
+        b=yTkyLI76JuBD1pjaQKWIi7QNIaWNHru0Jpd9kkzZ/W/MdOBbMi3TaM6m8SFIDlAV0f
+         xEs65AevINF2K7ALHurWcWA339nApTaBWnKMNJ9o6y8mXVo2Iq6/w0GuIxReZapx26lj
+         f9YHpZc7Ept5JvEqlhDhiAi7LI4jq5fK8uzcW3RTLYX+LjAZ7Vk3tJp4Z/iroLul0JXD
+         8RlzVpbORHj7OHOV5fNf4YhQRoGFhyrwHaygLV9r23VDjHQBo71A+MPNWwel3MVGdKRU
+         rzpaM37qm62R9cd6CkLLEiRl2eZ2qdl0YiKzEmCt/1p+FpTEVZERfXZBBHfjukhCAUBP
+         Dd8w==
+X-Gm-Message-State: AO0yUKUwcXM2bSjTiZaGdF8Ur1oCKsqMTrCTUZ2nHMp8bPoI2IhtXoaA
+        zN3umDiUYYoZAK0iPyAWpM8=
+X-Google-Smtp-Source: AK7set/oO9YfZrgSlJp+E8HlyKluFK+JYQOzt2vg+T59amrJQC8C2fBIDIKQC0P1fiTHogYUr5Cabg==
+X-Received: by 2002:a17:902:f9c8:b0:1a1:b36d:7803 with SMTP id kz8-20020a170902f9c800b001a1b36d7803mr1167418plb.36.1679454225724;
+        Tue, 21 Mar 2023 20:03:45 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:f4cc])
+        by smtp.gmail.com with ESMTPSA id jc20-20020a17090325d400b001963a178dfcsm9420298plb.244.2023.03.21.20.03.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Mar 2023 20:03:45 -0700 (PDT)
+Date:   Tue, 21 Mar 2023 20:03:42 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Xu Kuohai <xukuohai@huaweicloud.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH net-next 8/8] virtio_net: introduce receive_small_xdp()
-Date:   Wed, 22 Mar 2023 11:03:08 +0800
-Message-Id: <20230322030308.16046-9-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20230322030308.16046-1-xuanzhuo@linux.alibaba.com>
-References: <20230322030308.16046-1-xuanzhuo@linux.alibaba.com>
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Fix __reg_bound_offset 64->32 var_off
+ subreg propagation
+Message-ID: <20230322030342.sl4n62pmep3rc6vg@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230321193354.10445-1-daniel@iogearbox.net>
 MIME-Version: 1.0
-X-Git-Hash: 7e9e1372f356
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230321193354.10445-1-daniel@iogearbox.net>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The purpose of this patch is to simplify the receive_small().
-Separate all the logic of XDP of small into a function.
+On Tue, Mar 21, 2023 at 08:33:53PM +0100, Daniel Borkmann wrote:
+> Xu reports that after commit 3f50f132d840 ("bpf: Verifier, do explicit ALU32
+> bounds tracking"), the following BPF program is rejected by the verifier:
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+...
+> index d517d13878cf..d66e70707172 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1823,9 +1823,9 @@ static void __reg_bound_offset(struct bpf_reg_state *reg)
+>  	struct tnum var64_off = tnum_intersect(reg->var_off,
+>  					       tnum_range(reg->umin_value,
+>  							  reg->umax_value));
+> -	struct tnum var32_off = tnum_intersect(tnum_subreg(reg->var_off),
+> -						tnum_range(reg->u32_min_value,
+> -							   reg->u32_max_value));
+> +	struct tnum var32_off = tnum_intersect(tnum_subreg(var64_off),
+> +					       tnum_range(reg->u32_min_value,
+> +							  reg->u32_max_value));
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 165 +++++++++++++++++++++++----------------
- 1 file changed, 97 insertions(+), 68 deletions(-)
+Great fix and excellent analysis!
+The CI is complaining though:
+test_align:FAIL:pointer variable subtraction unexpected error: 1 (errno 13)
+#1/12    align/pointer variable subtraction:FAIL
+#1       align:FAIL
+Summary: 289/1752 PASSED, 29 SKIPPED, 1 FAILED
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 6ecb17e972e1..23b1a6fd1224 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -939,6 +939,96 @@ static struct page *xdp_linearize_page(struct receive_queue *rq,
- 	return NULL;
- }
- 
-+static struct sk_buff *receive_small_xdp(struct net_device *dev,
-+					 struct virtnet_info *vi,
-+					 struct receive_queue *rq,
-+					 struct bpf_prog *xdp_prog,
-+					 void *buf,
-+					 void *ctx,
-+					 unsigned int len,
-+					 unsigned int *xdp_xmit,
-+					 struct virtnet_rq_stats *stats)
-+{
-+	unsigned int xdp_headroom = (unsigned long)ctx;
-+	unsigned int header_offset = VIRTNET_RX_PAD + xdp_headroom;
-+	unsigned int headroom = vi->hdr_len + header_offset;
-+	struct virtio_net_hdr_mrg_rxbuf *hdr = buf + header_offset;
-+	struct page *page = virt_to_head_page(buf);
-+	struct page *xdp_page;
-+	unsigned int buflen;
-+	struct xdp_buff xdp;
-+	struct sk_buff *skb;
-+	unsigned int delta = 0;
-+	unsigned int metasize = 0;
-+	void *orig_data;
-+	u32 act;
-+
-+	if (unlikely(hdr->hdr.gso_type))
-+		goto err_xdp;
-+
-+	if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
-+		int offset = buf - page_address(page) + header_offset;
-+		unsigned int tlen = len + vi->hdr_len;
-+		int num_buf = 1;
-+
-+		xdp_headroom = virtnet_get_headroom(vi);
-+		header_offset = VIRTNET_RX_PAD + xdp_headroom;
-+		headroom = vi->hdr_len + header_offset;
-+		buflen = SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
-+			SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-+		xdp_page = xdp_linearize_page(rq, &num_buf, page,
-+					      offset, header_offset,
-+					      &tlen);
-+		if (!xdp_page)
-+			goto err_xdp;
-+
-+		buf = page_address(xdp_page);
-+		put_page(page);
-+		page = xdp_page;
-+	}
-+
-+	xdp_init_buff(&xdp, buflen, &rq->xdp_rxq);
-+	xdp_prepare_buff(&xdp, buf + VIRTNET_RX_PAD + vi->hdr_len,
-+			 xdp_headroom, len, true);
-+	orig_data = xdp.data;
-+
-+	act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
-+
-+	switch (act) {
-+	case VIRTNET_XDP_RES_PASS:
-+		/* Recalculate length in case bpf program changed it */
-+		delta = orig_data - xdp.data;
-+		len = xdp.data_end - xdp.data;
-+		metasize = xdp.data - xdp.data_meta;
-+		break;
-+
-+	case VIRTNET_XDP_RES_CONSUMED:
-+		goto xdp_xmit;
-+
-+	case VIRTNET_XDP_RES_DROP:
-+		goto err_xdp;
-+	}
-+
-+	skb = build_skb(buf, buflen);
-+	if (!skb)
-+		goto err;
-+
-+	skb_reserve(skb, headroom - delta);
-+	skb_put(skb, len);
-+	if (metasize)
-+		skb_metadata_set(skb, metasize);
-+
-+	return skb;
-+
-+err_xdp:
-+	stats->xdp_drops++;
-+err:
-+	stats->drops++;
-+	put_page(page);
-+xdp_xmit:
-+	return NULL;
-+}
-+
- static struct sk_buff *receive_small(struct net_device *dev,
- 				     struct virtnet_info *vi,
- 				     struct receive_queue *rq,
-@@ -949,15 +1039,11 @@ static struct sk_buff *receive_small(struct net_device *dev,
- {
- 	struct sk_buff *skb;
- 	struct bpf_prog *xdp_prog;
--	unsigned int xdp_headroom = (unsigned long)ctx;
--	unsigned int header_offset = VIRTNET_RX_PAD + xdp_headroom;
-+	unsigned int header_offset = VIRTNET_RX_PAD;
- 	unsigned int headroom = vi->hdr_len + header_offset;
- 	unsigned int buflen = SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
- 			      SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 	struct page *page = virt_to_head_page(buf);
--	unsigned int delta = 0;
--	struct page *xdp_page;
--	unsigned int metasize = 0;
- 
- 	len -= vi->hdr_len;
- 	stats->bytes += len;
-@@ -977,57 +1063,9 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 	rcu_read_lock();
- 	xdp_prog = rcu_dereference(rq->xdp_prog);
- 	if (xdp_prog) {
--		struct virtio_net_hdr_mrg_rxbuf *hdr = buf + header_offset;
--		struct xdp_buff xdp;
--		void *orig_data;
--		u32 act;
--
--		if (unlikely(hdr->hdr.gso_type))
--			goto err_xdp;
--
--		if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
--			int offset = buf - page_address(page) + header_offset;
--			unsigned int tlen = len + vi->hdr_len;
--			int num_buf = 1;
--
--			xdp_headroom = virtnet_get_headroom(vi);
--			header_offset = VIRTNET_RX_PAD + xdp_headroom;
--			headroom = vi->hdr_len + header_offset;
--			buflen = SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
--				 SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
--			xdp_page = xdp_linearize_page(rq, &num_buf, page,
--						      offset, header_offset,
--						      &tlen);
--			if (!xdp_page)
--				goto err_xdp;
--
--			buf = page_address(xdp_page);
--			put_page(page);
--			page = xdp_page;
--		}
--
--		xdp_init_buff(&xdp, buflen, &rq->xdp_rxq);
--		xdp_prepare_buff(&xdp, buf + VIRTNET_RX_PAD + vi->hdr_len,
--				 xdp_headroom, len, true);
--		orig_data = xdp.data;
--
--		act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
--
--		switch (act) {
--		case VIRTNET_XDP_RES_PASS:
--			/* Recalculate length in case bpf program changed it */
--			delta = orig_data - xdp.data;
--			len = xdp.data_end - xdp.data;
--			metasize = xdp.data - xdp.data_meta;
--			break;
--
--		case VIRTNET_XDP_RES_CONSUMED:
--			rcu_read_unlock();
--			goto xdp_xmit;
--
--		case VIRTNET_XDP_RES_DROP:
--			goto err_xdp;
--		}
-+		skb = receive_small_xdp(dev, vi, rq, xdp_prog, buf, ctx, len, xdp_xmit, stats);
-+		rcu_read_unlock();
-+		return skb;
- 	}
- 	rcu_read_unlock();
- 
-@@ -1035,25 +1073,16 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 	skb = build_skb(buf, buflen);
- 	if (!skb)
- 		goto err;
--	skb_reserve(skb, headroom - delta);
-+	skb_reserve(skb, headroom);
- 	skb_put(skb, len);
--	if (!xdp_prog) {
--		buf += header_offset;
--		memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
--	} /* keep zeroed vnet hdr since XDP is loaded */
--
--	if (metasize)
--		skb_metadata_set(skb, metasize);
- 
-+	buf += header_offset;
-+	memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
- 	return skb;
- 
--err_xdp:
--	rcu_read_unlock();
--	stats->xdp_drops++;
- err:
- 	stats->drops++;
- 	put_page(page);
--xdp_xmit:
- 	return NULL;
- }
- 
--- 
-2.32.0.3.g01195cf9f
+Please roll the update for the test into the fix.
 
+Also agree that bpf-next is a good target for the fix.
+It doesn't look risky, but since it was there for so long it can go through
+bpf-next just fine.
