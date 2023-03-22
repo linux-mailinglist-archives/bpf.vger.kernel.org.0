@@ -2,151 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 897636C4FA2
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 16:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE1F6C4FCC
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 16:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbjCVPpW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 11:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
+        id S229719AbjCVP6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 11:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjCVPpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 11:45:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F0E62D94;
-        Wed, 22 Mar 2023 08:45:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8AD2FB81D37;
-        Wed, 22 Mar 2023 15:45:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18DB4C433EF;
-        Wed, 22 Mar 2023 15:45:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679499911;
-        bh=piznudyQ7uqbaBZcF98HpIF4CU1dBOZ+wPLdqX0TKmM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GPTMOF2QYze+8g9op7JZXCl4pxzpbiXWubKMKya6NKMfPPSCGp43Ffx1kefd5rQuo
-         9VFqJAAQ86YK7t4MJT7ii5MQZI6E45Hj5aXg3fFcM+34JVAE9bTrAsbKLA1GJYdO3E
-         GScOT5p3bPBNZtrVCqkEgiljnrgsSeGJWISFVGz3jfgJY7pEh086t5cdx38iyjHN+g
-         KlPygj/UDC31vTBV0TBtTOCYsv5z2VvPQ9utBCNF7EdgoHzNWSli5J5mGyOw4tMVEL
-         3dnojFfiV/VvdOGIChvgg8ax/1pfu530QH3LG7iRqJcfiHsMbkxf/mJpe+qAgtPBnE
-         mrNf2qH8OPv2w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4E5E34052D; Wed, 22 Mar 2023 12:45:08 -0300 (-03)
-Date:   Wed, 22 Mar 2023 12:45:08 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Namhyung Kim <namhyung@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
-Message-ID: <ZBsihOYrMCILT2cI@kernel.org>
-References: <20230316170149.4106586-1-jolsa@kernel.org>
- <ZBNTMZjEoETU9d8N@casper.infradead.org>
- <ZBV3beyxYhKv/kMp@krava>
- <ZBXV3crf/wX5D9lo@casper.infradead.org>
+        with ESMTP id S229519AbjCVP6b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 11:58:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D806486C
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 08:57:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1679500662;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sigT2R9uIcwlR9W7ZCCufyIQLe9oLQ0ypEEE7tJ90Yo=;
+        b=BJlNMk1XeSdyKqSveLKGjoZWqXyNikqr2T1QHL/zi4v58Kn3oENvs+MjjHfDUcZYDlmwvH
+        5n9Ih9RVLCd5sEzfN02M2qXUS7V6trXOKnnlK16VxxXOgqpuF9ia12Z7se8BZrq4d7JtSZ
+        pju4ZMJFMM7gawqVn8slzMXbjlrKIXQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-32-2dw2786yNIerjYq-X-6hdA-1; Wed, 22 Mar 2023 11:57:40 -0400
+X-MC-Unique: 2dw2786yNIerjYq-X-6hdA-1
+Received: by mail-ed1-f71.google.com with SMTP id t26-20020a50d71a000000b005003c5087caso26194705edi.1
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 08:57:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679500659;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sigT2R9uIcwlR9W7ZCCufyIQLe9oLQ0ypEEE7tJ90Yo=;
+        b=riZR0t9wIsm4awfbDiR9iQ2wgHvPLkNm01ChdhKKRm6NDsjvvZnwslOKWTjZHJtg8W
+         FLlcdy46V15tOcOt+BYUFhpqUrPPTh/D5QfdlAmo3PntPF8vXb9Ky4K8QvDjHnwtPlwe
+         h6QpRP8hG6A/nbj7WYmEs8+YsVqSMSnVSorqSDKDuOW2tuYEIudOuZozKL8eitSeGbfU
+         RLIGpVnnFn4qDS9NQj9p3dg36fkOL3kaqIqLklQLTT/tSGluIhw9Mg4h9FtLkQLSdxD+
+         fLKjamGugBFRdzvfMItqYDXs/FkQWR30Pz815i1mcmqnpbjpmzbti0r7MrVJkHW89gBp
+         XL1Q==
+X-Gm-Message-State: AO0yUKW3Z2DVEH5tY0GRumKb99NgtX3b1z87YCqaB88NTuwKOklgq2p/
+        0Goy/91L71F59HXrnSGs5l7e2xvK3boVuRKL52XH7b+LV/oKKwD1H87Nxi4vcOkZ8aMZaFcB4oI
+        RrpsBl8ijgU6k
+X-Received: by 2002:a17:906:1853:b0:92f:fc08:bb0a with SMTP id w19-20020a170906185300b0092ffc08bb0amr7172256eje.37.1679500659688;
+        Wed, 22 Mar 2023 08:57:39 -0700 (PDT)
+X-Google-Smtp-Source: AK7set9fkk/QFCBQcadzxl/lPAWqLf42GpkbOwji4VtQJtZYST5h158xmD4SDUjEKLyq/7tc1ZJzmw==
+X-Received: by 2002:a17:906:1853:b0:92f:fc08:bb0a with SMTP id w19-20020a170906185300b0092ffc08bb0amr7172228eje.37.1679500659403;
+        Wed, 22 Mar 2023 08:57:39 -0700 (PDT)
+Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id e8-20020a170906c00800b008e1509dde19sm7321305ejz.205.2023.03.22.08.57.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Mar 2023 08:57:38 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <b12c88b4-6921-8a12-e8c5-8ec950ec8d48@redhat.com>
+Date:   Wed, 22 Mar 2023 16:57:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZBXV3crf/wX5D9lo@casper.infradead.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com
+Subject: Re: [PATCH bpf-next V1 4/7] selftests/bpf: xdp_hw_metadata RX hash
+ return code info
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <167906343576.2706833.17489167761084071890.stgit@firesoul>
+ <167906361094.2706833.8381428662566265476.stgit@firesoul>
+ <ZBTX7CBzNk9SaWgx@google.com>
+ <8edd0206-0f2a-d5e7-27de-a0a9cc92526e@redhat.com>
+ <CAKH8qBvm24VJS4RMNUjHi24LqpYJnOYs_Md-J3FCEvp2vm7rcg@mail.gmail.com>
+In-Reply-To: <CAKH8qBvm24VJS4RMNUjHi24LqpYJnOYs_Md-J3FCEvp2vm7rcg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sat, Mar 18, 2023 at 03:16:45PM +0000, Matthew Wilcox escreveu:
-> On Sat, Mar 18, 2023 at 09:33:49AM +0100, Jiri Olsa wrote:
-> > On Thu, Mar 16, 2023 at 05:34:41PM +0000, Matthew Wilcox wrote:
-> > > On Thu, Mar 16, 2023 at 06:01:40PM +0100, Jiri Olsa wrote:
-> > > > hi,
-> > > > this patchset adds build id object pointer to struct file object.
-> > > > 
-> > > > We have several use cases for build id to be used in BPF programs
-> > > > [2][3].
-> > > 
-> > > Yes, you have use cases, but you never answered the question I asked:
-> > > 
-> > > Is this going to be enabled by every distro kernel, or is it for special
-> > > use-cases where only people doing a very specialised thing who are
-> > > willing to build their own kernels will use it?
-> > 
-> > I hope so, but I guess only time tell.. given the response by Ian and Andrii
-> > there are 3 big users already
+
+
+On 21/03/2023 19.45, Stanislav Fomichev wrote:
+> On Tue, Mar 21, 2023 at 6:32 AM Jesper Dangaard Brouer
+> <jbrouer@redhat.com> wrote:
+>>
+>>
+>>
+>> On 17/03/2023 22.13, Stanislav Fomichev wrote:
+>>> On 03/17, Jesper Dangaard Brouer wrote:
+>>>> When driver developers add XDP-hints kfuncs for RX hash it is
+>>>> practical to print the return code in bpf_printk trace pipe log.
+>>>
+>>>> Print hash value as a hex value, both AF_XDP userspace and bpf_prog,
+>>>> as this makes it easier to spot poor quality hashes.
+>>>
+>>>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>>>
+>>> Acked-by: Stanislav Fomichev <sdf@google.com>
+>>>
+>>> (with a small suggestion below, maybe can do separately?)
+>>>
+>>>> ---
+>>>>    .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++++++---
+>>>>    tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++++-
+>>>>    2 files changed, 10 insertions(+), 4 deletions(-)
+>> [...]
+>>>> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+>>>> b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+>>>> index 400bfe19abfe..f3ec07ccdc95 100644
+>>>> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+>>>> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+>>>> @@ -3,6 +3,9 @@
+>>>>    /* Reference program for verifying XDP metadata on real HW.
+>>>> Functional test
+>>>>     * only, doesn't test the performance.
+>>>>     *
+>>>
+>>> [..]
+>>>
+>>>> + * BPF-prog bpf_printk info outout can be access via
+>>>> + * /sys/kernel/debug/tracing/trace_pipe
+>>>
+>>> Maybe we should just dump the contents of
+>>> /sys/kernel/debug/tracing/trace for every poll cycle?
+>>>
+>>
+>> I think this belongs to a separate patch.
 > 
-> So the whole "There's a config option to turn it off" shtick is just a
-> fig-leaf.  I won't ever see it turned off.  You're imposing the cost of
-> this on EVERYONE who runs a distro kernel.  And almost nobody will see
-> any benefits from it.  Thanks for admitting that.
+> SG. If you prefer to keep the comment let's also s/outout/outPut/.
 
-I agree that build-ids are not useful for all 'struct file' uses, just
-for executable files and for people wanting to have better observability
-capabilities.
+Sorry, missed this... will fix in V3
 
-Having said that, it seems there will be no extra memory overhead at
-least for a fedora:36 x86_64 kernel:
+> 
+>>> We can also maybe enable tracing in this program transparently?
+>>> I usually forget 'echo 1 >
+>>> /sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enable'
+>>> myself :-)
+>>>
+>> What is this trick?
+> 
+> On the recent kernels I think this event has to be explicitly enabled
+> for bpf_prink() to work? Not sure.
 
-void __init files_init(void)
-{
-        filp_cachep = kmem_cache_create("filp", sizeof(struct file), 0,
-                        SLAB_HWCACHE_ALIGN | SLAB_PANIC | SLAB_ACCOUNT, NULL);
-        percpu_counter_init(&nr_files, 0, GFP_KERNEL);
-}
+The output still work for me then I have zero in 
+/sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enable
 
-[root@quaco ~]# pahole file | grep size: -A2
-	/* size: 232, cachelines: 4, members: 20 */
-	/* sum members: 228, holes: 1, sum holes: 4 */
-	/* last cacheline: 40 bytes */
-[acme@quaco perf-tools]$ uname -a
-Linux quaco 6.1.11-100.fc36.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Feb  9 20:36:30 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
-[root@quaco ~]# head -2 /proc/slabinfo 
-slabinfo - version: 2.1
-# name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
-[root@quaco ~]# grep -w filp /proc/slabinfo 
-filp               12452  13056    256   32    2 : tunables    0    0    0 : slabdata    408    408      0
-[root@quaco ~]#
+> That's why having something like enable_tracing() and dump_trace()
+> here might be helpful for whoever is running the prog.
+> 
 
-so there are 24 bytes on the 4th cacheline that are not being used,
-right?
-
-One other observation is that maybe we could do it as the 'struct sock'
-hierachy in networking, where we would have a 'struct exec_file' that
-would be:
-
-	struct exec_file {
-		struct file file;
-		char build_id[20];
-	}
-
-say, and then when we create the 'struct file' in __alloc_file() we
-could check some bit in 'flags' like Al Viro suggested and pick a
-different slab than 'filp_cachep', that has that extra space for the
-build_id (and whatever else exec related state we may end up wanting, if
-ever).
-
-No core fs will need to know about that except when we go free it, to
-free from the right slab cache.
-
-In current distro configs, no overhead would take place if I read that
-SLAB_HWCACHE_ALIGN thing right, no?
-
-- Arnaldo
