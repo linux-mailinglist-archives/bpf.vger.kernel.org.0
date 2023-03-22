@@ -2,169 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5082E6C44CE
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 09:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC89D6C44FB
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 09:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbjCVIWZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 04:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
+        id S230238AbjCVIdY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 04:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbjCVIWX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 04:22:23 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDFE5941D;
-        Wed, 22 Mar 2023 01:22:21 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PhLz20wz8zrW78;
-        Wed, 22 Mar 2023 16:21:18 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 22 Mar
- 2023 16:22:19 +0800
-Subject: Re: [PATCH net-next 1/8] virtio_net: mergeable xdp: put old page
- immediately
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, <netdev@vger.kernel.org>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>
-References: <20230322030308.16046-1-xuanzhuo@linux.alibaba.com>
- <20230322030308.16046-2-xuanzhuo@linux.alibaba.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <4bd07874-b1ad-336b-b15e-ba56a10182e9@huawei.com>
-Date:   Wed, 22 Mar 2023 16:22:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        with ESMTP id S230226AbjCVIdS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 04:33:18 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A1D2C648
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 01:33:14 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id e15-20020a17090ac20f00b0023d1b009f52so22893003pjt.2
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 01:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=galvanick-com.20210112.gappssmtp.com; s=20210112; t=1679473994;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bOLSU2uX9ab53eE7ZlnZpFXsNC4k5aYNkyZHPSKS1ys=;
+        b=D8CrHSULZpHd7mlUHItMRe99TmzKgH4IsHGRYeS/WO2x6Tb+KvYlZJUveGVmSaqdlP
+         dF2HKSbr+npcSs2qSmGTUhik6Jqhw6g77ErsNU81P8ZZzo86XVUK9GCe+PoZDuV+uQEv
+         TBkfF2WEU7hGGNpxGWyxovQKlZfIlIF1I8XDuo8nyhJv5pz0Ysu/nu9ro2lrzUsvYueB
+         qjWc5kl1cpNh2lFT/A6b4nDm55tKS+vp8JlBiM9sKZUYdp6IOOLL9EYcNV1QlsAbUgX/
+         pqLl1cNPr4AoSQ0EbI7HsgoiqD4txIpA6I8wn5ViLON1EznRr+OjpQOZFYkSdZKwRBvU
+         18gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679473994;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bOLSU2uX9ab53eE7ZlnZpFXsNC4k5aYNkyZHPSKS1ys=;
+        b=hrddvzZr8a9G4ZYAlojCJbFNsOSHX30Uz01tqj4RR+RvDxReROJEyARQDVkosNygiU
+         sDD8ASRAFKE3ApdGEEvVSoZv6tCfxOet8saD2GbT+us4LeKBTisZatV1YDgxPrKTvTr3
+         lPu5/DEoTwAl43BmoVhroAvIsUFl3fHj6j4uxEfa234DANNj6gyKRZtQuL5U9H4FL+ad
+         GLSUzF43aEmkIEevYngWYOyMVGxpkzBh+AbzlajFq9+TQKpfCpZLTn/6plwleV0swFxF
+         DRGI8z4W6hucQcZ0f0YGSimvid1RAOXI3iNetTqHmYrxtJ3CRVRzrdItpkxR1mssemb6
+         aJUA==
+X-Gm-Message-State: AO0yUKVvFL2gkESuNhBgkEx4L+WMNmii4jAgE+18yLAoMrYDJOucaSog
+        99VxKSs6r3sNJG5we/xntD1Yhu6yeBMuctUhu+GoOET5ImNds9h1RjU6lg==
+X-Google-Smtp-Source: AK7set/WhR8i3CC40heLDXcCi1rECzBf1yeIm0llGVEyXmxiK1Gg4utwy1IluJ97UBACLYmDTWYCvXLMZqIxTQ5/kMc=
+X-Received: by 2002:a17:90b:3c2:b0:23f:6eff:9430 with SMTP id
+ go2-20020a17090b03c200b0023f6eff9430mr824120pjb.3.1679473993881; Wed, 22 Mar
+ 2023 01:33:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230322030308.16046-2-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.3 required=5.0 tests=NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+From:   Douglas Gastonguay-Goddard <doug@galvanick.com>
+Date:   Wed, 22 Mar 2023 01:33:03 -0700
+Message-ID: <CAEQOFwKDdSfr+Ohd37HDZ8EEug+MV3iVsWyZKB2CKTfO-UBO+Q@mail.gmail.com>
+Subject: [QUESTION] bpf: Task struct content availability differences between
+ tracepoint and fexit
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2023/3/22 11:03, Xuan Zhuo wrote:
-> In the xdp implementation of virtio-net mergeable, it always checks
-> whether two page is used and a page is selected to release. This is
-> complicated for the processing of action, and be careful.
-> 
-> In the entire process, we have such principles:
-> * If xdp_page is used (PASS, TX, Redirect), then we release the old
->   page.
-> * If it is a drop case, we will release two. The old page obtained from
->   buf is release inside err_xdp, and xdp_page needs be relased by us.
-> 
-> But in fact, when we allocate a new page, we can release the old page
-> immediately. Then just one is using, we just need to release the new
-> page for drop case. On the drop path, err_xdp will release the variable
-> "page", so we only need to let "page" point to the new xdp_page in
-> advance.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index e2560b6f7980..4d2bf1ce0730 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1245,6 +1245,9 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  			if (!xdp_page)
->  				goto err_xdp;
->  			offset = VIRTIO_XDP_HEADROOM;
-> +
-> +			put_page(page);
+I am porting some code from an accept4(2) tracepoint to a fexit hook.
+Previously the tracepoint captured the enter and exit events
+separately so capturing everything in a single fexit hook is
+appealing.
 
-the error handling of xdp_linearize_page() does not seems self contained.
-Does it not seem better：
-1. if xdp_linearize_page() succesed, call put_page() for first buffer just
-   as put_page() is call for other buffer
-2. or call virtqueue_get_buf() and put_page() for all the buffer of the packet
-   so the error handling is not needed outside the virtqueue_get_buf().
+Inside of the exit tracepoint I was traversing the task struct to
+retrieve the connecting address. The path being as follows, but
+through a bunch of bpf_probe_read() calls.
 
-In that case, it seems we can just do below without xdp_page:
-page = xdp_linearize_page(rq, num_buf, page, ...);
+((struct socket *)task->files->fd_array[connfd]->private_data)->sk->
+__sk_common.skc_family
+__sk_common.skc_dport
+__sk_common.skc_daddr
 
+Worked consistently in the tracepoint.
 
-> +			page = xdp_page;
->  		} else if (unlikely(headroom < virtnet_get_headroom(vi))) {
->  			xdp_room = SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM +
->  						  sizeof(struct skb_shared_info));
-> @@ -1259,6 +1262,9 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  			       page_address(page) + offset, len);
->  			frame_sz = PAGE_SIZE;
->  			offset = VIRTIO_XDP_HEADROOM;
-> +
-> +			put_page(page);
-> +			page = xdp_page;
+In the fexit implementation , testing with `nc -l 127.0.0.1 1234` and
+`nc 127.0.0.1 1234`, `task->files->fd_array[connfd]` contains 0.
+However, when running netcat under strace, e.g. `strace nc -l
+127.0.0.1 1234`, it returns a valid pointer and finishes the
+traversal!
 
-It seems we can limit the scope of xdp_page in this "else if" block.
+I am wondering if the fexit hook is being called before the socket is
+written back to the task (like an XDP?) or what could cause this
+behavior. I am getting the task struct with `bpf_get_current_task()`.
 
->  		} else {
->  			xdp_page = page;
->  		}
-
-It seems the above else block is not needed anymore.
-
-> @@ -1278,8 +1284,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  			if (unlikely(!head_skb))
->  				goto err_xdp_frags;
->  
-> -			if (unlikely(xdp_page != page))
-> -				put_page(page);
->  			rcu_read_unlock();
->  			return head_skb;
->  		case XDP_TX:
-> @@ -1297,8 +1301,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  				goto err_xdp_frags;
->  			}
->  			*xdp_xmit |= VIRTIO_XDP_TX;
-> -			if (unlikely(xdp_page != page))
-> -				put_page(page);
->  			rcu_read_unlock();
->  			goto xdp_xmit;
->  		case XDP_REDIRECT:
-> @@ -1307,8 +1309,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  			if (err)
->  				goto err_xdp_frags;
->  			*xdp_xmit |= VIRTIO_XDP_REDIR;
-> -			if (unlikely(xdp_page != page))
-> -				put_page(page);
->  			rcu_read_unlock();
->  			goto xdp_xmit;
->  		default:
-> @@ -1321,9 +1321,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  			goto err_xdp_frags;
->  		}
->  err_xdp_frags:
-> -		if (unlikely(xdp_page != page))
-> -			__free_pages(xdp_page, 0);
-
-It seems __free_pages() and put_page() is used interchangeably here.
-Perhaps using __free_pages() have performance reason? As the comment below:
-
-https://elixir.bootlin.com/linux/v6.3-rc3/source/net/core/page_pool.c#L500
-
-> -
->  		if (xdp_buff_has_frags(&xdp)) {
->  			shinfo = xdp_get_shared_info_from_buff(&xdp);
->  			for (i = 0; i < shinfo->nr_frags; i++) {
-> 
+Thank you for the help,
+Douglas
