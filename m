@@ -2,56 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8958F6C4B3E
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 14:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0156C4BB6
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 14:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjCVNCr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 09:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
+        id S230455AbjCVNas (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 09:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbjCVNCq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 09:02:46 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C2261888;
-        Wed, 22 Mar 2023 06:02:45 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id gp15-20020a17090adf0f00b0023d1bbd9f9eso23564671pjb.0;
-        Wed, 22 Mar 2023 06:02:45 -0700 (PDT)
+        with ESMTP id S230369AbjCVNar (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 09:30:47 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78A45FA76
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 06:30:45 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id x198so11266524ybe.9
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 06:30:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679490164;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ViRmkYI1T/q9AleFDZxnzz9BK+OfJL44ohwRmj/wb8E=;
-        b=ARhhmfUoXSena1pM+E1Grp6YR3kCOnLV3kdIDePvpVJUQ2dg3kLrsYVgolxTx2noL5
-         sog/oqz4IL9fJBM1nyglLa7MRO/EhEoJ1Jeh3J0ytt7mkrOCD8UwWdeQT1ipF6sruQqO
-         8HoSJW0OcaX4k2Oua8aRQVmQ9Ik3tWCM1ggl+QRNTG9Rtwm/d5rYvl1QKbtiP5tOw0xQ
-         P6vJtMlVTlAXKOnPaESrHNQ3pWA9mdU82lW7FArwmXwdj4ZIm4g9EY9Pt7V/jGiyOJMK
-         LzAC9eu83kinbzMQrsKvkoxtmr7rP0u1E5vHvuMSB5TpJW7X0GsZC5srFqvlKwVD38kZ
-         gN8Q==
+        d=google.com; s=20210112; t=1679491845;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fj1ZEndN827h6H99ZndY6ISgjudYJ+QA+1NK7dJ1MKY=;
+        b=dAp2Sm7P7M3MQaKNyWk6eEx7+O4qGXWX0+DMyeBe3i97co13uziImImpyMJGF4jLLb
+         xA77N70wHknYdtIkxdMcbPBi2dV8fgnGDSaeaFCa1mFqNyi2hAATsozRzSBv/TnqPMkF
+         p09JSU9UaWA35VbyplGqVFuvokTma7h74NFHl8ZLBKedG+qa8hQwxqEo3Q/saaytLRUt
+         ofrdVXGmJBE5HUYGnmLV2DdhSwXE4W2Ugc8LdfDSnlBxpyp7jCxvYpN09mVgXGfV4ziy
+         GFKhfQ4GzQyhKr+1Ky1+Ok7ncgb4g4cPb8nGHR4kSsvg1DAbYXUUWTkSj/BZF9mwKCf5
+         lJ3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679490164;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ViRmkYI1T/q9AleFDZxnzz9BK+OfJL44ohwRmj/wb8E=;
-        b=FmPIwVy268HJjO0k5qISDH4v55lo/C3WKroh4RzhE21xDWHKIgwwWZLsk2wCpocf7z
-         kreHByBSTiY8v0OTInS5xdpwBAZlxg37m6hwcbbG89/1aIITm4wQs/zyndCUz5Zz8mhz
-         POHiPkRNTHru/84c0BQlaAnCdqep5T7fNwVrIHZEU4GrS627t55IO3QkkmxhQ+pe7f9i
-         Ju0gIpGoqwrvdwm2g8o0fLitkYrb7UlEbfCLJDSvBKivR+wcKnhzSAyk3UpXQDFk7CZS
-         j1Q8YEvVy9AcwpAnXeTROJ8HCM6DmNDMHH5CKdFTL0W0cosOqYd7E1pByiq4QPXnxWq3
-         sERw==
-X-Gm-Message-State: AO0yUKVGz2v0S9viB+R3/YE7ABNj2QmgEiAtIYBgvVUKQn0O7mYoLQlO
-        z35ZI+Q76p/qaQF/82MHKyw=
-X-Google-Smtp-Source: AK7set8i0yrjEu/hxv3QebJCfgsiDSAkrFFCBeuESthSVvyA2rynV3aw+/+Dw2F3mR4N9qvZR/IeUQ==
-X-Received: by 2002:a17:90b:4d0d:b0:23a:87d1:9586 with SMTP id mw13-20020a17090b4d0d00b0023a87d19586mr3318684pjb.23.1679490164008;
-        Wed, 22 Mar 2023 06:02:44 -0700 (PDT)
-Received: from hyeyoo ([210.205.188.148])
-        by smtp.gmail.com with ESMTPSA id w5-20020a1709029a8500b001a064cff3c5sm10502457plp.43.2023.03.22.06.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Mar 2023 06:02:42 -0700 (PDT)
-Date:   Wed, 22 Mar 2023 22:02:28 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Binder Makin <merimus@google.com>
+        d=1e100.net; s=20210112; t=1679491845;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fj1ZEndN827h6H99ZndY6ISgjudYJ+QA+1NK7dJ1MKY=;
+        b=t11q29q/0albZ14LrIeHrK7bVsEh/yX0XgSfse+Ypusiv8NCrABlRcmpI2QLzSc1cz
+         H1FZzCqOAR2wpY5AfoN9flzVf1ZTar7lj8dVfqhqO52nxE/l4UTtv9dvPjwEcalaMbnM
+         UTWKsnYVqe1/IuHAdtvqvyy3QSD/XQnmR64k9tOnTfkvLLPetsHoH6Bgo7LKfrqbh0m9
+         PjjcM/yubyzmpUm5BtseXMBo/87M0BwnLVI1irPSwtd2tENLkrh6+sV2k//btHYu3YKQ
+         SL/KeRDPF9wtCg7hG71hGZ+dOmg+hRKPGkubY3U+yUhmDNPRHZATFopY+yPDDZGIKuPf
+         Hk7Q==
+X-Gm-Message-State: AAQBX9eb7+y9G3auE1nIHNjGFVhqBGfr51geB+NFRYu74OB0gaA+Fw8X
+        IAmZL/G5VsHCZswUc0A1LizEjnLXD2Z+5jthPRqnzA==
+X-Google-Smtp-Source: AKy350bWFZJIkHw1dTAPTwr1WPguwRn3chvLp7222Dwm6xMXDK8TwrXNFJdroXPfKjAnjFCm6fSEeVSjJIIxXsUW6gM=
+X-Received: by 2002:a25:5456:0:b0:b69:eb08:8f3b with SMTP id
+ i83-20020a255456000000b00b69eb088f3bmr5910216ybb.4.1679491844680; Wed, 22 Mar
+ 2023 06:30:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz> <CAANmLtzajny8ZK_QKVYOxLc8L9gyWG6Uu7YyL-CR-qfwphVTzg@mail.gmail.com>
+ <ZBr8Gf53CbJc0b5E@hyeyoo>
+In-Reply-To: <ZBr8Gf53CbJc0b5E@hyeyoo>
+From:   Binder Makin <merimus@google.com>
+Date:   Wed, 22 Mar 2023 09:30:32 -0400
+Message-ID: <CAANmLtzQRsRHVRdMGccNK_+Ov1H_30ntWdhBJaHDBpYLzmVR6w@mail.gmail.com>
+Subject: Re: [LSF/MM/BPF TOPIC] SLOB+SLAB allocators removal and future SLUB improvements
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
 Cc:     Vlastimil Babka <vbabka@suse.cz>,
         lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
         linux-mm@kvack.org, linux-block@vger.kernel.org,
@@ -61,87 +64,98 @@ Cc:     Vlastimil Babka <vbabka@suse.cz>,
         Pekka Enberg <penberg@kernel.org>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Re: [LSF/MM/BPF TOPIC] SLOB+SLAB allocators removal and future SLUB
- improvements
-Message-ID: <ZBr8Gf53CbJc0b5E@hyeyoo>
-References: <4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz>
- <CAANmLtzajny8ZK_QKVYOxLc8L9gyWG6Uu7YyL-CR-qfwphVTzg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAANmLtzajny8ZK_QKVYOxLc8L9gyWG6Uu7YyL-CR-qfwphVTzg@mail.gmail.com>
-X-Spam-Status: No, score=1.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 22, 2023 at 08:15:28AM -0400, Binder Makin wrote:
-> Was looking at SLAB removal and started by running A/B tests of SLAB vs
-> SLUB.  Please note these are only preliminary results.
-> 
-> These were run using 6.1.13 configured for SLAB/SLUB.
-> Machines were standard datacenter servers.
-> 
-> Hackbench shows completion time, so smaller is better.
-> On all others larger is better.
-> https://docs.google.com/spreadsheets/d/e/2PACX-1vQ47Mekl8BOp3ekCefwL6wL8SQiv6Qvp5avkU2ssQSh41gntjivE-aKM4PkwzkC4N_s_MxUdcsokhhz/pubhtml
+Blah, sorry, lets try this.
+https://docs.google.com/spreadsheets/d/e/2PACX-1vS1uiw85AIpzgcVlvNlDCD9PuCI=
+ubiaJvBrKIC5OyAQURZHogOuCtpFNsC-zGHZ4-XNKJVcGgkpL-KH/pubhtml
+
+On Wed, Mar 22, 2023 at 9:02=E2=80=AFAM Hyeonggon Yoo <42.hyeyoo@gmail.com>=
+ wrote:
 >
-> Some notes:
-> SUnreclaim and SReclaimable shows unreclaimable and reclaimable memory.
-> Substantially higher with SLUB, but I believe that is to be expected.
-> 
-> Various results showing a 5-10% degradation with SLUB.  That feels
-> concerning to me, but I'm not sure what others' tolerance would be.
-
-Hello Binder,
-
-Thank you for sharing the data on which workloads
-SLUB performs worse than SLAB. This information is critical for
-improving SLUB and deprecating SLAB.
-
-By the way, it appears that the spreadsheet is currently set to private.
-Could you make it public for me to access?
-
-I am really interested in performing similar experiments on my machines
-to obtain comparable data that can be utilized to enhance SLUB.
-
-Thanks,
-Hyeonggon
-
-> redis results on AMD show some pretty bad degredations.  10-20% range
-> netpipe on Intel also has issues.. 10-17%
-> 
-> On Tue, Mar 14, 2023 at 4:05 AM Vlastimil Babka <vbabka@suse.cz> wrote:
-> 
-> > As you're probably aware, my plan is to get rid of SLOB and SLAB, leaving
-> > only SLUB going forward. The removal of SLOB seems to be going well, there
-> > were no objections to the deprecation and I've posted v1 of the removal
-> > itself [1] so it could be in -next soon.
+> On Wed, Mar 22, 2023 at 08:15:28AM -0400, Binder Makin wrote:
+> > Was looking at SLAB removal and started by running A/B tests of SLAB vs
+> > SLUB.  Please note these are only preliminary results.
 > >
-> > The immediate benefit of that is that we can allow kfree() (and
-> > kfree_rcu())
-> > to free objects from kmem_cache_alloc() - something that IIRC at least xfs
-> > people wanted in the past, and SLOB was incompatible with that.
+> > These were run using 6.1.13 configured for SLAB/SLUB.
+> > Machines were standard datacenter servers.
 > >
-> > For SLAB removal I haven't yet heard any objections (but also didn't
-> > deprecate it yet) but if there are any users due to particular workloads
-> > doing better with SLAB than SLUB, we can discuss why those would regress
-> > and
-> > what can be done about that in SLUB.
+> > Hackbench shows completion time, so smaller is better.
+> > On all others larger is better.
+> > https://docs.google.com/spreadsheets/d/e/2PACX-1vQ47Mekl8BOp3ekCefwL6wL=
+8SQiv6Qvp5avkU2ssQSh41gntjivE-aKM4PkwzkC4N_s_MxUdcsokhhz/pubhtml
 > >
-> > Once we have just one slab allocator in the kernel, we can take a closer
-> > look at what the users are missing from it that forces them to create own
-> > allocators (e.g. BPF), and could be considered to be added as a generic
-> > implementation to SLUB.
+> > Some notes:
+> > SUnreclaim and SReclaimable shows unreclaimable and reclaimable memory.
+> > Substantially higher with SLUB, but I believe that is to be expected.
 > >
-> > Thanks,
-> > Vlastimil
+> > Various results showing a 5-10% degradation with SLUB.  That feels
+> > concerning to me, but I'm not sure what others' tolerance would be.
+>
+> Hello Binder,
+>
+> Thank you for sharing the data on which workloads
+> SLUB performs worse than SLAB. This information is critical for
+> improving SLUB and deprecating SLAB.
+>
+> By the way, it appears that the spreadsheet is currently set to private.
+> Could you make it public for me to access?
+>
+> I am really interested in performing similar experiments on my machines
+> to obtain comparable data that can be utilized to enhance SLUB.
+>
+> Thanks,
+> Hyeonggon
+>
+> > redis results on AMD show some pretty bad degredations.  10-20% range
+> > netpipe on Intel also has issues.. 10-17%
 > >
-> > [1] https://lore.kernel.org/all/20230310103210.22372-1-vbabka@suse.cz/
+> > On Tue, Mar 14, 2023 at 4:05=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
+> wrote:
+> >
+> > > As you're probably aware, my plan is to get rid of SLOB and SLAB, lea=
+ving
+> > > only SLUB going forward. The removal of SLOB seems to be going well, =
+there
+> > > were no objections to the deprecation and I've posted v1 of the remov=
+al
+> > > itself [1] so it could be in -next soon.
+> > >
+> > > The immediate benefit of that is that we can allow kfree() (and
+> > > kfree_rcu())
+> > > to free objects from kmem_cache_alloc() - something that IIRC at leas=
+t xfs
+> > > people wanted in the past, and SLOB was incompatible with that.
+> > >
+> > > For SLAB removal I haven't yet heard any objections (but also didn't
+> > > deprecate it yet) but if there are any users due to particular worklo=
+ads
+> > > doing better with SLAB than SLUB, we can discuss why those would regr=
+ess
+> > > and
+> > > what can be done about that in SLUB.
+> > >
+> > > Once we have just one slab allocator in the kernel, we can take a clo=
+ser
+> > > look at what the users are missing from it that forces them to create=
+ own
+> > > allocators (e.g. BPF), and could be considered to be added as a gener=
+ic
+> > > implementation to SLUB.
+> > >
+> > > Thanks,
+> > > Vlastimil
+> > >
+> > > [1] https://lore.kernel.org/all/20230310103210.22372-1-vbabka@suse.cz=
+/
