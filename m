@@ -2,203 +2,269 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 910426C5AB5
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 00:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF496C5AC8
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 00:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjCVXn2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 19:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
+        id S230356AbjCVXph (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 19:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjCVXnT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 19:43:19 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFDF23A44
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 16:42:47 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id i5so32750830eda.0
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 16:42:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679528563;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I1OPJZjqBwy0zOOVnswHpBe8pDgJAvG2anGP2Zl/KuQ=;
-        b=kloCGPdfLdNg+Ky79b6NoSZXhmvO8ZS0m3b99y9QRQBrgF3RF5Gn/5Wh6gLmMoc6WM
-         nc/P+rihvf5VVm5n77KXfyucrFU2FTslBmEX6Y7qd5W/j+lWvyXu/XLx0ux5oEY04qmZ
-         JZec0d/Ef84nmBG4HumQNzaNjC8vxSrQCCNPjhw5+Xn5VWA328Q1+kwypl3v5xaC3yYx
-         hwK73+NFP4D1DsFAE4wmxgtECTHvaNPW4APnTXCa2rrJWS9l1dkiNiNLVEEa80LXSJLR
-         uWRzHBN4TAhFqkIG9bQmWEXaWZek/o/ykppQlBePyu5rTekj4OeaFn4lmnM/B20aKPqh
-         aFQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679528563;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I1OPJZjqBwy0zOOVnswHpBe8pDgJAvG2anGP2Zl/KuQ=;
-        b=zIwmSXMlxK82yDXMq3f6RpCKBFcjmnaKjOHbD4U6jXvsei8lDX0Ul/rb740GYgxgtQ
-         GaeC5OpxjS9Bpwb3mfJUot4/sF6F5cfVWIAG4GVgdhzb0DZCaT6fvkgrA7E4C8LBIBik
-         eJjXiCyokKAeAwL2wd7l+AjUHCZik7a0e7t8W4rnfNWonv/k5iIM/N+uMt4ys1GKVJJE
-         iCSv/6t1bmJ9oY/pzDCWz5z/thIZF9jHZ4au7rkqLXcxA7uVp6FpsYOpfogz8y1YNDCL
-         +g5C6zXGf44WDApn5xQcFBM8b6nrpN0BZUOKKHZmOO499cRvOKShrLvmi/agNMGt2vMJ
-         bMGg==
-X-Gm-Message-State: AO0yUKVg3YfzxhgFZN6SxzYeH3RsFHTKHfeRRn7pKOF5zR1eGtoofckV
-        yIoSPp+ar1L4M8AvHY/w/EfOXBokGNJplsoVYCU=
-X-Google-Smtp-Source: AK7set/pK8kxz7wl3ZI81sVG7fnmhqY3g++rYzofxBzjzdX/iwydHeLRwSgxe2Th7B5lkXgtVZGQ+ssIaBkALB6LvsU=
-X-Received: by 2002:a17:906:148d:b0:92d:591f:645f with SMTP id
- x13-20020a170906148d00b0092d591f645fmr4368254ejc.5.1679528563683; Wed, 22 Mar
- 2023 16:42:43 -0700 (PDT)
+        with ESMTP id S230435AbjCVXpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 19:45:16 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879152FCE5;
+        Wed, 22 Mar 2023 16:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679528700; x=1711064700;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qw02EwvrD9YAPynAX4WZC2T8OQkJ5gsR8oDM2kkWs3E=;
+  b=MYIK/t8ObWuxSfFUHUjKED7jRDID4ZAE63yp4SP3/TbB2Pg/kJVvtLte
+   bUCXh1qzdolttFFUShQsUMZgAAoiWYCqUu1w240tnUQe9DT0ngZwi8Kdq
+   hkkTe6XGYsAdT8rdBehh2INzGNd6KcqS7FJJtD+syG05r/1l0amLlVPsv
+   CpWhJyIT4gp0MY4+U5kQwYDMB63pAxWtvi9OrTWTMlf8LzQ31t6dnRw2i
+   +O8WhWnsbNOGgCl+YrqWtsaXf+eOhyB86TcrZL98HVZJrbNwvjD9bSSaK
+   7empCtf1vhJzEOFlNxA6X41TQ0V8IVpXUIDgGl6yZ0Ey8q41WB4aTC3UJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="404247102"
+X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
+   d="scan'208";a="404247102"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2023 16:44:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="712444421"
+X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
+   d="scan'208";a="712444421"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 22 Mar 2023 16:44:06 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pf87c-000Dki-1Z;
+        Wed, 22 Mar 2023 23:44:00 +0000
+Date:   Thu, 23 Mar 2023 07:43:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 7/8] virtio_net: introduce
+ receive_mergeable_xdp()
+Message-ID: <202303230720.XUavHilr-lkp@intel.com>
+References: <20230322030308.16046-8-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20230321232813.3376064-1-kuifeng@meta.com> <20230321232813.3376064-7-kuifeng@meta.com>
-In-Reply-To: <20230321232813.3376064-7-kuifeng@meta.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 22 Mar 2023 16:42:31 -0700
-Message-ID: <CAEf4BzYSeXv=TVSenowUsY16twEULh7p0ZiqB=ZXQ=hDTofNQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 6/8] libbpf: Update a bpf_link with another struct_ops.
-To:     Kui-Feng Lee <kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
-        sdf@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230322030308.16046-8-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 4:28=E2=80=AFPM Kui-Feng Lee <kuifeng@meta.com> wro=
-te:
->
-> Introduce bpf_link__update_map(), which allows to atomically update
-> underlying struct_ops implementation for given struct_ops BPF link
->
-> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
-> ---
->  tools/lib/bpf/bpf.h      |  5 ++++-
->  tools/lib/bpf/libbpf.c   | 35 +++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.h   |  1 +
->  tools/lib/bpf/libbpf.map |  1 +
->  4 files changed, 41 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index f0f786373238..4fae4e698a8e 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -335,7 +335,10 @@ LIBBPF_API int bpf_link_detach(int link_fd);
->  struct bpf_link_update_opts {
->         size_t sz; /* size of this struct for forward/backward compatibil=
-ity */
->         __u32 flags;       /* extra flags */
-> -       __u32 old_prog_fd; /* expected old program FD */
-> +       union {
-> +               __u32 old_prog_fd; /* expected old program FD */
-> +               __u32 old_map_fd;  /* expected old map FD */
-> +       };
+Hi Xuan,
 
-so for these low-level wrappers in libbpf with OPTS we've been trying
-to avoid unnecessary unions. If you look at bpf_link_create and
-bpf_link_create_ops some fields that are in a union in kernel UAPI are
-actually listed as separate fields, and libbpf makes sure that both
-fields are not specified at the same time (like iter_info_len and
-target_btf_id, for instance).
+Thank you for the patch! Perhaps something to improve:
 
-So let's do the same here, instead of making a union, let's have
+[auto build test WARNING on net-next/main]
 
-__u32 old_prog_fd;
-__u32 old_map_fd;
+url:    https://github.com/intel-lab-lkp/linux/commits/Xuan-Zhuo/virtio_net-mergeable-xdp-put-old-page-immediately/20230322-110445
+patch link:    https://lore.kernel.org/r/20230322030308.16046-8-xuanzhuo%40linux.alibaba.com
+patch subject: [PATCH net-next 7/8] virtio_net: introduce receive_mergeable_xdp()
+config: i386-randconfig-a002 (https://download.01.org/0day-ci/archive/20230323/202303230720.XUavHilr-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/c00edb888e239eb9eb468c0e93419f373f5e72a7
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Xuan-Zhuo/virtio_net-mergeable-xdp-put-old-page-immediately/20230322-110445
+        git checkout c00edb888e239eb9eb468c0e93419f373f5e72a7
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash drivers/net/
 
-and then in bpf_link_update() implementation make sure that both can't
-be set at the same time.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303230720.XUavHilr-lkp@intel.com/
 
-The rest of the patch looks good to me, thanks.
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/virtio_net.c:1399:6: warning: variable 'page' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+           if (unlikely(len > truesize - room)) {
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/compiler.h:78:22: note: expanded from macro 'unlikely'
+   # define unlikely(x)    __builtin_expect(!!(x), 0)
+                           ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/virtio_net.c:1490:11: note: uninitialized use occurs here
+           put_page(page);
+                    ^~~~
+   drivers/net/virtio_net.c:1399:2: note: remove the 'if' if its condition is always false
+           if (unlikely(len > truesize - room)) {
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/virtio_net.c:1392:19: note: initialize the variable 'page' to silence this warning
+           struct page *page;
+                            ^
+                             = NULL
+>> drivers/net/virtio_net.c:1399:6: warning: variable 'num_buf' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+           if (unlikely(len > truesize - room)) {
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/compiler.h:78:22: note: expanded from macro 'unlikely'
+   # define unlikely(x)    __builtin_expect(!!(x), 0)
+                           ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/virtio_net.c:1491:25: note: uninitialized use occurs here
+           mergeable_buf_free(rq, num_buf, dev, stats);
+                                  ^~~~~~~
+   drivers/net/virtio_net.c:1399:2: note: remove the 'if' if its condition is always false
+           if (unlikely(len > truesize - room)) {
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/virtio_net.c:1393:13: note: initialize the variable 'num_buf' to silence this warning
+           int num_buf;
+                      ^
+                       = 0
+   2 warnings generated.
 
 
->  };
->  #define bpf_link_update_opts__last_field old_prog_fd
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 3b257d5170cb..935a7da501d7 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -11670,6 +11670,41 @@ struct bpf_link *bpf_map__attach_struct_ops(cons=
-t struct bpf_map *map)
->         return &link->link;
->  }
->
-> +/*
-> + * Swap the back struct_ops of a link with a new struct_ops map.
-> + */
-> +int bpf_link__update_map(struct bpf_link *link, const struct bpf_map *ma=
-p)
-> +{
-> +       struct bpf_link_struct_ops *st_ops_link;
-> +       __u32 zero =3D 0;
-> +       int err;
-> +
-> +       if (!bpf_map__is_struct_ops(map) || map->fd < 0)
-> +               return -EINVAL;
-> +
-> +       st_ops_link =3D container_of(link, struct bpf_link_struct_ops, li=
-nk);
-> +       /* Ensure the type of a link is correct */
-> +       if (st_ops_link->map_fd < 0)
-> +               return -EINVAL;
-> +
-> +       err =3D bpf_map_update_elem(map->fd, &zero, map->st_ops->kern_vda=
-ta, 0);
-> +       /* It can be EBUSY if the map has been used to create or
-> +        * update a link before.  We don't allow updating the value of
-> +        * a struct_ops once it is set.  That ensures that the value
-> +        * never changed.  So, it is safe to skip EBUSY.
-> +        */
-> +       if (err && err !=3D -EBUSY)
-> +               return err;
-> +
-> +       err =3D bpf_link_update(link->fd, map->fd, NULL);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       st_ops_link->map_fd =3D map->fd;
-> +
-> +       return 0;
-> +}
-> +
->  typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_ev=
-ent_header *hdr,
->                                                           void *private_d=
-ata);
->
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index db4992a036f8..1615e55e2e79 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -719,6 +719,7 @@ bpf_program__attach_freplace(const struct bpf_program=
- *prog,
->  struct bpf_map;
->
->  LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_=
-map *map);
-> +LIBBPF_API int bpf_link__update_map(struct bpf_link *link, const struct =
-bpf_map *map);
->
->  struct bpf_iter_attach_opts {
->         size_t sz; /* size of this struct for forward/backward compatibil=
-ity */
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 50dde1f6521e..a5aa3a383d69 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -386,6 +386,7 @@ LIBBPF_1.1.0 {
->  LIBBPF_1.2.0 {
->         global:
->                 bpf_btf_get_info_by_fd;
-> +               bpf_link__update_map;
->                 bpf_link_get_info_by_fd;
->                 bpf_map_get_info_by_fd;
->                 bpf_prog_get_info_by_fd;
-> --
-> 2.34.1
->
+vim +1399 drivers/net/virtio_net.c
+
+  1375	
+  1376	static struct sk_buff *receive_mergeable(struct net_device *dev,
+  1377						 struct virtnet_info *vi,
+  1378						 struct receive_queue *rq,
+  1379						 void *buf,
+  1380						 void *ctx,
+  1381						 unsigned int len,
+  1382						 unsigned int *xdp_xmit,
+  1383						 struct virtnet_rq_stats *stats)
+  1384	{
+  1385		unsigned int truesize = mergeable_ctx_to_truesize(ctx);
+  1386		unsigned int headroom = mergeable_ctx_to_headroom(ctx);
+  1387		unsigned int tailroom = headroom ? sizeof(struct skb_shared_info) : 0;
+  1388		unsigned int room = SKB_DATA_ALIGN(headroom + tailroom);
+  1389		struct virtio_net_hdr_mrg_rxbuf *hdr;
+  1390		struct sk_buff *head_skb, *curr_skb;
+  1391		struct bpf_prog *xdp_prog;
+  1392		struct page *page;
+  1393		int num_buf;
+  1394		int offset;
+  1395	
+  1396		head_skb = NULL;
+  1397		stats->bytes += len - vi->hdr_len;
+  1398	
+> 1399		if (unlikely(len > truesize - room)) {
+  1400			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+  1401				 dev->name, len, (unsigned long)(truesize - room));
+  1402			dev->stats.rx_length_errors++;
+  1403			goto err_skb;
+  1404		}
+  1405	
+  1406		if (likely(vi->xdp_enabled)) {
+  1407			rcu_read_lock();
+  1408			xdp_prog = rcu_dereference(rq->xdp_prog);
+  1409			if (xdp_prog) {
+  1410				head_skb = receive_mergeable_xdp(dev, vi, rq, xdp_prog,
+  1411								 buf, ctx, len, xdp_xmit,
+  1412								 stats);
+  1413				rcu_read_unlock();
+  1414				return head_skb;
+  1415			}
+  1416			rcu_read_unlock();
+  1417		}
+  1418	
+  1419		hdr = buf;
+  1420		num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+  1421		page = virt_to_head_page(buf);
+  1422		offset = buf - page_address(page);
+  1423	
+  1424		head_skb = page_to_skb(vi, rq, page, offset, len, truesize, headroom);
+  1425		curr_skb = head_skb;
+  1426	
+  1427		if (unlikely(!curr_skb))
+  1428			goto err_skb;
+  1429		while (--num_buf) {
+  1430			int num_skb_frags;
+  1431	
+  1432			buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
+  1433			if (unlikely(!buf)) {
+  1434				pr_debug("%s: rx error: %d buffers out of %d missing\n",
+  1435					 dev->name, num_buf,
+  1436					 virtio16_to_cpu(vi->vdev,
+  1437							 hdr->num_buffers));
+  1438				dev->stats.rx_length_errors++;
+  1439				goto err_buf;
+  1440			}
+  1441	
+  1442			stats->bytes += len;
+  1443			page = virt_to_head_page(buf);
+  1444	
+  1445			truesize = mergeable_ctx_to_truesize(ctx);
+  1446			headroom = mergeable_ctx_to_headroom(ctx);
+  1447			tailroom = headroom ? sizeof(struct skb_shared_info) : 0;
+  1448			room = SKB_DATA_ALIGN(headroom + tailroom);
+  1449			if (unlikely(len > truesize - room)) {
+  1450				pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+  1451					 dev->name, len, (unsigned long)(truesize - room));
+  1452				dev->stats.rx_length_errors++;
+  1453				goto err_skb;
+  1454			}
+  1455	
+  1456			num_skb_frags = skb_shinfo(curr_skb)->nr_frags;
+  1457			if (unlikely(num_skb_frags == MAX_SKB_FRAGS)) {
+  1458				struct sk_buff *nskb = alloc_skb(0, GFP_ATOMIC);
+  1459	
+  1460				if (unlikely(!nskb))
+  1461					goto err_skb;
+  1462				if (curr_skb == head_skb)
+  1463					skb_shinfo(curr_skb)->frag_list = nskb;
+  1464				else
+  1465					curr_skb->next = nskb;
+  1466				curr_skb = nskb;
+  1467				head_skb->truesize += nskb->truesize;
+  1468				num_skb_frags = 0;
+  1469			}
+  1470			if (curr_skb != head_skb) {
+  1471				head_skb->data_len += len;
+  1472				head_skb->len += len;
+  1473				head_skb->truesize += truesize;
+  1474			}
+  1475			offset = buf - page_address(page);
+  1476			if (skb_can_coalesce(curr_skb, num_skb_frags, page, offset)) {
+  1477				put_page(page);
+  1478				skb_coalesce_rx_frag(curr_skb, num_skb_frags - 1,
+  1479						     len, truesize);
+  1480			} else {
+  1481				skb_add_rx_frag(curr_skb, num_skb_frags, page,
+  1482						offset, len, truesize);
+  1483			}
+  1484		}
+  1485	
+  1486		ewma_pkt_len_add(&rq->mrg_avg_pkt_len, head_skb->len);
+  1487		return head_skb;
+  1488	
+  1489	err_skb:
+  1490		put_page(page);
+  1491		mergeable_buf_free(rq, num_buf, dev, stats);
+  1492	
+  1493	err_buf:
+  1494		stats->drops++;
+  1495		dev_kfree_skb(head_skb);
+  1496		return NULL;
+  1497	}
+  1498	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
