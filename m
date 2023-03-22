@@ -2,251 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B15F6C3EE5
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 01:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766AD6C3EE6
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 01:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbjCVAAh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 20:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        id S229513AbjCVACQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 20:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjCVAAg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 20:00:36 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714B01C7E7
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 17:00:35 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id o2so10348603plg.4
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 17:00:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1679443235;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OlL5Bq/8UfJJKh8uObMBtLoyDQEvfbDlcdXWpMvzI5k=;
-        b=PdRWUSN0XOSfJkGNjDPcSbu8qjn/DEplnCRbJ3asDnfKSQPhXeTlbCr5dtDb3vTV6I
-         OH5FmWjEhRoYDwoDfXzX7j7GJRYEtkF5FDrrpvWkqh8SWZF9ulGclBcPaL2E5sLKiuVa
-         LalItF3KZG24WMY97KcoJL8M/0sN6bc/eUQC3JtLB8ZbJ1ExgapeI7IrK8X3uKA8UqEj
-         zAiO+7Z04ILDxfbiVXRb5PPh8Yt86g4mCN0stP8aGKVqK7V/Mp6/GQ1gILrdUtO0zIIO
-         7lzPkHjBGibTXO/XMu27s4xczjVu9BSL5JBvb/kjRKeQtgHFzqxAVbEclEjZqlHzMdx2
-         WJRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679443235;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OlL5Bq/8UfJJKh8uObMBtLoyDQEvfbDlcdXWpMvzI5k=;
-        b=sbuv1oDqgeS7yMWWz3nF5kmeyPROeK2tFDZIshAoTYoV3JoVmJEvZySOfzyzCAu5bh
-         lWCCZvXkPiAQaMN9XvCbp5u41jF6kGodEi6sMANvSgsztwxYKTp1GkjiPn5+L6ZOQSlG
-         uftPxv3NnlM3eligZgU3KuLnBUqVOpJ71iTB3n1l2h0L7cRa8IF25Ge2McnX0jbFK2tz
-         w4kSUI53HaRSAb7GK8OPH5EGY7dsBGwtSsn46FGIzQVieI8uh4WMNr1SzAU2FSfxwYRa
-         lMQJXVGtFSOt1sbTAKU6Q15/EMwFa2GF+XhKoM+mBt+pfQIJwk0xs8N4ySulPMu/2Zvv
-         PcYQ==
-X-Gm-Message-State: AO0yUKWUV6Oiz58+JRFDBXgeOLX/ORhBfYJKdKaO4WPGO3iL0elgxSwd
-        7P5i/NUy4KTWAQ8sh4CmkyF9vugFtMcxy2TBt1s=
-X-Google-Smtp-Source: AK7set+1vbGe/9Y1D1jrNyHPWRr4u2vdHU9IdzeU2r5rKBPys3eqlpgEzAlFBrI9ewW/Y2bJqiBS+Q==
-X-Received: by 2002:a17:90b:17d2:b0:22c:816e:d67d with SMTP id me18-20020a17090b17d200b0022c816ed67dmr1557306pjb.24.1679443234826;
-        Tue, 21 Mar 2023 17:00:34 -0700 (PDT)
-Received: from ?IPv6:2607:fb90:27d2:7ec9:b95c:972f:4df2:a852? ([2607:fb90:27d2:7ec9:b95c:972f:4df2:a852])
-        by smtp.gmail.com with ESMTPSA id c12-20020a170902848c00b0019e30e3068bsm9300282plo.168.2023.03.21.17.00.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Mar 2023 17:00:34 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v3 bpf-next 2/5] bpf: Add bpf_sock_destroy kfunc
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <aa458066-529f-cb84-ce4e-2c780aad17bf@linux.dev>
-Date:   Tue, 21 Mar 2023 17:00:32 -0700
-Cc:     kafai@fb.com, Stanislav Fomichev <sdf@google.com>,
-        edumazet@google.com, bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <181130C0-6EC6-49EB-BF16-DC23F36AF254@isovalent.com>
+        with ESMTP id S229459AbjCVACP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 20:02:15 -0400
+Received: from out-7.mta0.migadu.com (out-7.mta0.migadu.com [IPv6:2001:41d0:1004:224b::7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5D42686E
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 17:02:13 -0700 (PDT)
+Message-ID: <1931c8d8-0706-a2cf-f156-cb17b7d8cce8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1679443331;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dYlklpx/k/yKVztH5kDUqjzXoZs13UhwoQjJJhI22Ec=;
+        b=wxWYwaoOgLouF/xfZTY+9nu2m1e4kNhaFEz9sxPw2b5NUUpSSKJ03UjMdGKbTLP/aoh4FS
+        zbmclaUOZV3H6QJJtfz+YVuKod5US4g0KbX4CRU6uM3crtWbROi3yoYVjlgzKAkW3Eb/PN
+        sblT1Et0d9dqjLz/uPIge3UmzqxxwtQ=
+Date:   Tue, 21 Mar 2023 17:02:09 -0700
+MIME-Version: 1.0
+Subject: Re: [PATCH v3 bpf-next 3/5] [RFC] net: Skip taking lock in BPF
+ context
+Content-Language: en-US
+To:     Aditi Ghag <aditi.ghag@isovalent.com>
+Cc:     bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Stanislav Fomichev <sdf@google.com>
 References: <20230321184541.1857363-1-aditi.ghag@isovalent.com>
- <20230321184541.1857363-3-aditi.ghag@isovalent.com>
- <aa458066-529f-cb84-ce4e-2c780aad17bf@linux.dev>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
+ <20230321184541.1857363-4-aditi.ghag@isovalent.com>
+ <ZBoiShkzD5KY2uIt@google.com>
+ <DF1B817F-2623-421E-9C7E-FFA9816083EB@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <DF1B817F-2623-421E-9C7E-FFA9816083EB@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 3/21/23 4:39 PM, Aditi Ghag wrote:
+> 
+> 
+>> On Mar 21, 2023, at 2:31 PM, Stanislav Fomichev <sdf@google.com> wrote:
+>>
+>> On 03/21, Aditi Ghag wrote:
+>>> When sockets are destroyed in the BPF iterator context, sock
+>>> lock is already acquired, so skip taking the lock. This allows
+>>> TCP listening sockets to be destroyed from BPF programs.
+>>
+>>> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+>>> ---
+>>>   net/ipv4/inet_hashtables.c | 9 ++++++---
+>>>   1 file changed, 6 insertions(+), 3 deletions(-)
+>>
+>>> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+>>> index e41fdc38ce19..5543a3e0d1b4 100644
+>>> --- a/net/ipv4/inet_hashtables.c
+>>> +++ b/net/ipv4/inet_hashtables.c
+>>> @@ -777,9 +777,11 @@ void inet_unhash(struct sock *sk)
+>>>   		/* Don't disable bottom halves while acquiring the lock to
+>>>   		 * avoid circular locking dependency on PREEMPT_RT.
+>>>   		 */
+>>> -		spin_lock(&ilb2->lock);
+>>> +		if (!has_current_bpf_ctx())
+>>> +			spin_lock(&ilb2->lock);
+>>>   		if (sk_unhashed(sk)) {
+>>> -			spin_unlock(&ilb2->lock);
+>>> +			if (!has_current_bpf_ctx())
+>>> +				spin_unlock(&ilb2->lock);
+>>
+>> That's bucket lock, why do we have to skip it?
+> 
+> Good catch! We shouldn't skip it. So the issue is that BPF TCP iterator acquires the sock fast lock that disables BH, and then inet_unhash acquires the bucket lock, but this is in reverse order to when the sock lock is acquired with BH enabled.
+> 
+> @Martin: I wonder if you ran into similar issues while working on the BPF TCP iterator batching changes for setsockopt?
 
-> On Mar 21, 2023, at 4:43 PM, Martin KaFai Lau <martin.lau@linux.dev> =
-wrote:
->=20
-> On 3/21/23 11:45 AM, Aditi Ghag wrote:
->> diff --git a/include/net/udp.h b/include/net/udp.h
->> index de4b528522bb..d2999447d3f2 100644
->> --- a/include/net/udp.h
->> +++ b/include/net/udp.h
->> @@ -437,6 +437,7 @@ struct udp_seq_afinfo {
->>  struct udp_iter_state {
->>  	struct seq_net_private  p;
->>  	int			bucket;
->> +	int			offset;
->=20
-> All offset change is easier to review with patch 1 together, so please =
-move them to patch 1.
+The existing helpers don't need to acquire bucket log. afaik, the destroy kfunc 
+is the first. [ Unrelated note, the bh disable had recently be removed for lhash 
+in commit 4f9bf2a2f5aa. ]
 
-Thanks for the quick review!=20
+If I read this splat correctly, similar to the earlier reply in patch 2 for a 
+different issue, an easy solution is to use lock_sock() instead of 
+lock_sock_fast() in bpf_iter_tcp_seq_show() .
 
-Oh boy... Absolutely! Looks like I misplaced the changes during =
-interactive rebase. Can I fix this up in this patch itself instead of =
-creating a new patch series? That way, I can batch things up in the next =
-revision.=20
-
->=20
->>  	struct udp_seq_afinfo	*bpf_seq_afinfo;
->>  };
->>  diff --git a/net/core/filter.c b/net/core/filter.c
->> index 1d6f165923bf..ba3e0dac119c 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -11621,3 +11621,57 @@ bpf_sk_base_func_proto(enum bpf_func_id =
-func_id)
->>    	return func;
->>  }
->> +
->> +/* Disables missing prototype warnings */
->> +__diag_push();
->> +__diag_ignore_all("-Wmissing-prototypes",
->> +		  "Global functions as their definitions will be in =
-vmlinux BTF");
->> +
->> +/* bpf_sock_destroy: Destroy the given socket with ECONNABORTED =
-error code.
->> + *
->> + * The helper expects a non-NULL pointer to a socket. It invokes the
->> + * protocol specific socket destroy handlers.
->> + *
->> + * The helper can only be called from BPF contexts that have =
-acquired the socket
->> + * locks.
->> + *
->> + * Parameters:
->> + * @sock: Pointer to socket to be destroyed
->> + *
->> + * Return:
->> + * On error, may return EPROTONOSUPPORT, EINVAL.
->> + * EPROTONOSUPPORT if protocol specific destroy handler is not =
-implemented.
->> + * 0 otherwise
->> + */
->> +__bpf_kfunc int bpf_sock_destroy(struct sock_common *sock)
->> +{
->> +	struct sock *sk =3D (struct sock *)sock;
->> +
->> +	if (!sk)
->> +		return -EINVAL;
->> +
->> +	/* The locking semantics that allow for synchronous execution of =
-the
->> +	 * destroy handlers are only supported for TCP and UDP.
->> +	 */
->> +	if (!sk->sk_prot->diag_destroy || sk->sk_protocol =3D=3D =
-IPPROTO_RAW)
->> +		return -EOPNOTSUPP;
->> +
->> +	return sk->sk_prot->diag_destroy(sk, ECONNABORTED);
->> +}
->> +
->> +__diag_pop()
->> +
->> +BTF_SET8_START(sock_destroy_kfunc_set)
->> +BTF_ID_FLAGS(func, bpf_sock_destroy)
->> +BTF_SET8_END(sock_destroy_kfunc_set)
->> +
->> +static const struct btf_kfunc_id_set bpf_sock_destroy_kfunc_set =3D =
-{
->> +	.owner =3D THIS_MODULE,
->> +	.set   =3D &sock_destroy_kfunc_set,
->> +};
->> +
->> +static int init_subsystem(void)
->> +{
->> +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, =
-&bpf_sock_destroy_kfunc_set);
->=20
-> It still needs a way to guarantee the running context is safe to use =
-this kfunc.  BPF_PROG_TYPE_TRACING is too broad. Trying to brainstorm =
-ways here instead of needing to filter by expected_attach_type. I wonder =
-using KF_TRUSTED_ARGS like this:
->=20
-> BTF_ID_FLAGS(func, bpf_sock_destroy, KF_TRUSTED_ARGS)
->=20
-> is enough or it needs some care to filter out BPF_TRACE_RAW_TP after =
-looking at prog_args_trusted().
-> or it needs another tag to specify this kfunc requires the arg to be =
-locked also.
->=20
-
-
-Agreed. We had some open ended discussion in the earlier patch.=20
-
-
->> +}
->> +late_initcall(init_subsystem);
->> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
->> index 33f559f491c8..59a833c0c872 100644
->> --- a/net/ipv4/tcp.c
->> +++ b/net/ipv4/tcp.c
->> @@ -4678,8 +4678,10 @@ int tcp_abort(struct sock *sk, int err)
->>  		return 0;
->>  	}
->>  -	/* Don't race with userspace socket closes such as tcp_close. */
->> -	lock_sock(sk);
->> +	/* BPF context ensures sock locking. */
->> +	if (!has_current_bpf_ctx())
->> +		/* Don't race with userspace socket closes such as =
-tcp_close. */
->> +		lock_sock(sk);
->=20
-> This is ok.
->=20
->>    	if (sk->sk_state =3D=3D TCP_LISTEN) {
->>  		tcp_set_state(sk, TCP_CLOSE);
->> @@ -4688,7 +4690,8 @@ int tcp_abort(struct sock *sk, int err)
->>    	/* Don't race with BH socket closes such as =
-inet_csk_listen_stop. */
->>  	local_bh_disable();
->> -	bh_lock_sock(sk);
->> +	if (!has_current_bpf_ctx())
->> +		bh_lock_sock(sk);
->=20
-> This may or may not work, depending on the earlier lock_sock_fast() =
-done in bpf_iter_tcp_seq_show() returned true or false. It is probably a =
-good reason to replace the lock_sock_fast() with lock_sock() in =
-bpf_iter_tcp_seq_show().
-
-
-:) We would have to replace lock_sock_fast with lock_sock anyway, else =
-this causes problems in inet_unhash while destroying TCP listening =
-socket, see - =
-https://lore.kernel.org/bpf/20230321184541.1857363-1-aditi.ghag@isovalent.=
-com/T/#m0bb85df6482e7eae296b00394c482254db544748.=20
-
-
->=20
->>    	if (!sock_flag(sk, SOCK_DEAD)) {
->>  		sk->sk_err =3D err;
->> @@ -4700,10 +4703,13 @@ int tcp_abort(struct sock *sk, int err)
->>  		tcp_done(sk);
->>  	}
->>  -	bh_unlock_sock(sk);
->> +	if (!has_current_bpf_ctx())
->> +		bh_unlock_sock(sk);
->> +
->>  	local_bh_enable();
->>  	tcp_write_queue_purge(sk);
->> -	release_sock(sk);
->> +	if (!has_current_bpf_ctx())
->> +		release_sock(sk);
->>  	return 0;
->>  }
->>  EXPORT_SYMBOL_GPL(tcp_abort);
->=20
+> 
+> Here is the truncated stack trace:
+> 
+>      1.494510] test_progs/118 [HC0[0]:SC0[4]:HE1:SE0] is trying to acquire:
+> [    1.495123] ffff9ec9c184da10 (&h->lhash2[i].lock){+.+.}-{2:2}, at: inet_unhash+0x96/0xd0
+> [    1.495867]
+> [    1.495867] and this task is already holding:
+> [    1.496401] ffff9ec9c23400b0 (slock-AF_INET6){+.-.}-{2:2}, at: __lock_sock_fast+0x33/0x70
+> [    1.497148] which would create a new lock dependency:
+> [    1.497619]  (slock-AF_INET6){+.-.}-{2:2} -> (&h->lhash2[i].lock){+.+.}-{2:2}
+> [    1.498278]
+> [    1.498278] but this new dependency connects a SOFTIRQ-irq-safe lock:
+> [    1.499011]  (slock-AF_INET6){+.-.}-{2:2}
+> [    1.499014]
+> [    1.499014] ... which became SOFTIRQ-irq-safe at:
+> [    1.499968]   lock_acquire+0xcd/0x330
+> [    1.500316]   _raw_spin_lock+0x33/0x40
+> [    1.500670]   sk_clone_lock+0x146/0x520
+> [    1.501030]   inet_csk_clone_lock+0x1b/0x110
+> [    1.501433]   tcp_create_openreq_child+0x22/0x3f0
+> [    1.501873]   tcp_v6_syn_recv_sock+0x96/0x940
+> [    1.502284]   tcp_check_req+0x137/0x660
+> [    1.502646]   tcp_v6_rcv+0xa63/0xe80
+> [    1.502994]   ip6_protocol_deliver_rcu+0x78/0x590
+> [    1.503434]   ip6_input_finish+0x72/0x140
+> [    1.503818]   __netif_receive_skb_one_core+0x63/0xa0
+> :
+> :
+> 
+> [    1.512311] to a SOFTIRQ-irq-unsafe lock:
+> [    1.512773]  (&h->lhash2[i].lock){+.+.}-{2:2}
+> [    1.512776]
+> [    1.512776] ... which became SOFTIRQ-irq-unsafe at:
+> [    1.513691] ...
+> [    1.513692]   lock_acquire+0xcd/0x330
+> [    1.514168]   _raw_spin_lock+0x33/0x40
+> [    1.514492]   __inet_hash+0x4b/0x210
+> [    1.514802]   inet_csk_listen_start+0xe6/0x100
+> [    1.515188]   inet_listen+0x95/0x1d0
+> [    1.515510]   __sys_listen+0x69/0xb0
+> [    1.515825]   __x64_sys_listen+0x14/0x20
+> [    1.516163]   do_syscall_64+0x3c/0x90
+> [    1.516481]   entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> :
+> :
+> 
+> [    1.560494]  ... acquired at:
+> [    1.560634]    lock_acquire+0xcd/0x330
+> [    1.560804]    _raw_spin_lock_bh+0x38/0x50
+> [    1.561002]    inet_unhash+0x96/0xd0
+> [    1.561168]    tcp_set_state+0x6a/0x210
+> [    1.561352]    tcp_abort+0x12b/0x230
+> [    1.561518]    bpf_prog_f4110fb1100e26b5_iter_tcp6_server+0xa3/0xaa
+> [    1.561799]    bpf_iter_run_prog+0x1ff/0x340
+> [    1.561990]    bpf_iter_tcp_seq_show+0xca/0x190
+> [    1.562193]    bpf_seq_read+0x177/0x450
+> [    1.562363]    vfs_read+0xc6/0x300
+> [    1.562516]    ksys_read+0x69/0xf0
+> [    1.562665]    do_syscall_64+0x3c/0x90
+> [    1.562838]    entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> 
+>>
+>>>   			return;
+>>>   		}
+>>
+>>> @@ -788,7 +790,8 @@ void inet_unhash(struct sock *sk)
+>>
+>>>   		__sk_nulls_del_node_init_rcu(sk);
+>>>   		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
+>>> -		spin_unlock(&ilb2->lock);
+>>> +		if (!has_current_bpf_ctx())
+>>> +			spin_unlock(&ilb2->lock);
+>>>   	} else {
+>>>   		spinlock_t *lock = inet_ehash_lockp(hashinfo, sk->sk_hash);
+>>
+>>> --
+>>> 2.34.1
+> 
 
