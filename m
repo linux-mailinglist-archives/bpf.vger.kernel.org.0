@@ -2,130 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AE96C4A92
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 13:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 888D46C4AAD
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 13:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbjCVMav (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 08:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
+        id S230046AbjCVMeY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 08:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbjCVMan (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 08:30:43 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D7559E6C
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 05:30:40 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id e71so20796893ybc.0
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 05:30:40 -0700 (PDT)
+        with ESMTP id S229534AbjCVMeW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 08:34:22 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1FC52F7B;
+        Wed, 22 Mar 2023 05:34:21 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id q23so5166627pfs.2;
+        Wed, 22 Mar 2023 05:34:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679488240;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hIDnRaN9sxd0xnZDEDrl7FwoOB+6T8A94tkf+oMcNsM=;
-        b=hwEVw8FNtToCOmLQzJtRNJ/OkEWC4Dguci+blmJcuw5u2JD4IBIE2+21El8yJXYoS4
-         xuyDJwhGLwfaZi4e9bgZZGHhFGtOICW8hbt23BhzniyCEPVGOXnYg5c3h5ZbYmsCAqzr
-         Ul3z2M8L2Z/jcy8nHggkc/OqzRO00lMvkcrhcmAvsTir82DbqXUWHEi1I0pl9naV+vso
-         //rUba+Z/gTIow6PImoH69N7wZehEHDn3oDGDLUfWuVliKEdajCUSZwA9E/tNQddm/fB
-         YJA2gkwEYdZDmOzm1TMbsjMExHS//8LA6sjV4vQxVz+tjTXv/wXuRWBAxV6D3ze4hQfa
-         7+rA==
+        d=gmail.com; s=20210112; t=1679488461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i5V9xwXeXLLD+KrCDhZHNlARjVnQzbrA2drRGNTtvTM=;
+        b=CDVrPbquHqM6HszFxuFUX2B3vFLX7cGGnLlzfIXA9zqINFHXAUX5B+u28t/1ETgD5R
+         3vSi6wpz1ys/mGkAntVqxg1ARpmJv+WgcckV7eE0GHqspgLihaH0YU4Xgy/v4hD4ZslS
+         Baa7r/FR4OlY7SXjweixs0l2H6uf3IKdKOnYctTpB65NUohQ+7qRHMoBqzQqzxYuo0pJ
+         5BHh8jE+OszzoW7tR9gseN4sJG6ia4Co/um2Lg4SzHGF3HMm2LVlzQpOY6mpGG6leV8N
+         l13+6azf0a2F2vwpZCO9TkY5LA1uMuvzs3NhP4rhyk5xAxbAj0mAEj/oex9MEq3cKtms
+         QNAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679488240;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hIDnRaN9sxd0xnZDEDrl7FwoOB+6T8A94tkf+oMcNsM=;
-        b=n3zjvY+NNMeKJsm5vFmCrcfG9Gt3EvGNMdBzjukrFRkaOpWtnFSungEtkdWjb8UlPg
-         si9pR2a1ektHbaOb4lZ5WytN5ecJ/Qfy//v42TDfauws86LHptGmND2LrwDnookpD9xB
-         ovrOcflhUbppq4svmjO5dLFAxI/884xzHm/3OBtBEvKwCtLYMLoe7huADIrookFBvayf
-         iTOI8oLTkrM1KYxCj0d3QI5+wYcgeY30TD1Jd9c/FQbLhepTFK6o/O2Gj27uyQFH0hMO
-         6PCbzQiliKnTx6jZxr8pvb+L8XcAUg6BxuHmpTse2u/PbQKfmWlMUARHRlJKqmuHJRpa
-         NhAg==
-X-Gm-Message-State: AAQBX9fT6PTgaYPuM7cMzzY8STFkapxaXNhxP3RfeL6QnkbnCJ3jRSVZ
-        3jkYdaPClj+Ir2neHndEkY8H+CyK/yyKQXY8OLhSsg==
-X-Google-Smtp-Source: AKy350brVrs9DIoKaxSl5+ZQ+gEXyG50JHgNzUqBm/HoXTIpFkpBjkTYSzxIQd9ZikPcfWRmDPMlyrDfrlfnAJgtd8I=
-X-Received: by 2002:a25:d256:0:b0:a3f:191f:dfb4 with SMTP id
- j83-20020a25d256000000b00a3f191fdfb4mr5148818ybg.58.1679488239630; Wed, 22
- Mar 2023 05:30:39 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1679488461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i5V9xwXeXLLD+KrCDhZHNlARjVnQzbrA2drRGNTtvTM=;
+        b=eQUEuHVsUbAix8ECTQ4KT+LqkSa9CzNYxlqW+Eu1gW0bE/Tlwu14NXu38kIHhDzQ1S
+         5OUluSyy652E+HdLm7WfdBvu+JW6wGkCQAZJDnN24ZnFgemppOST6adbHgj1KqbjwRhu
+         mmPWWjzcSyU4r9zQBk92JHu++S4lC9bKTgvtqCzfIk8Mplf9unp2HHOGdeQ7CDavNtV8
+         qZTNoSmjTG/VHrDjBQfH40IcUhPRlxUeh6BLJycD4LgCnZgRdrX0GVeIb4eQf2yxtog7
+         oV86vX1PCOmugGwJWhhgJbwKpGax9XetwVCmjNAs97H9dJLV5Gw7BEE7WSqVOU1sJxtr
+         Pf9g==
+X-Gm-Message-State: AO0yUKVaPPZ4TEZHU+kxJube2G7wpXr534eaJyHPPiE6j5FMJ68YpXam
+        bHl7I+RtWsz3PnnZNQQ5WV4=
+X-Google-Smtp-Source: AK7set+SjG5SfufUMJ0PRkkAShlqktMKpQsqeCGtZJxdP7AhsNBXop2LwGx6eAvpMjdX7Qk4ANsA+w==
+X-Received: by 2002:a62:2581:0:b0:622:ec07:c6bc with SMTP id l123-20020a622581000000b00622ec07c6bcmr2946097pfl.15.1679488460857;
+        Wed, 22 Mar 2023 05:34:20 -0700 (PDT)
+Received: from debian.me (subs02-180-214-232-12.three.co.id. [180.214.232.12])
+        by smtp.gmail.com with ESMTPSA id b11-20020aa7870b000000b005ac419804d5sm1038423pfo.98.2023.03.22.05.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Mar 2023 05:34:20 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id D6A611065AA; Wed, 22 Mar 2023 19:34:16 +0700 (WIB)
+Date:   Wed, 22 Mar 2023 19:34:16 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>, corbet@lwn.net,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        dsahern@kernel.org, shuah@kernel.org, brauner@kernel.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, ebiederm@xmission.com,
+        mcgrof@kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH 5/5] doc: Add documentation for the User Mode Driver
+ management library
+Message-ID: <ZBr1yGQtNIXsgRYS@debian.me>
+References: <20230317145240.363908-1-roberto.sassu@huaweicloud.com>
+ <20230317145240.363908-6-roberto.sassu@huaweicloud.com>
 MIME-Version: 1.0
-References: <4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz>
-In-Reply-To: <4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz>
-From:   Binder Makin <merimus@google.com>
-Date:   Wed, 22 Mar 2023 08:30:27 -0400
-Message-ID: <CAANmLtwGS75WJ9AXfmqZv73pNdHJn6zfrrCCWjKK_6jPk9pWRg@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] SLOB+SLAB allocators removal and future SLUB improvements
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-block@vger.kernel.org,
-        bpf@vger.kernel.org, linux-xfs@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n/OawJ+UwZzJM60M"
+Content-Disposition: inline
+In-Reply-To: <20230317145240.363908-6-roberto.sassu@huaweicloud.com>
+X-Spam-Status: No, score=1.3 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Was looking at SLAB removal and started by running A/B tests of SLAB
-vs SLUB.  Please note these are only preliminary results.
 
-These were run using 6.1.13 configured for SLAB/SLUB.
-Machines were standard datacenter servers.
+--n/OawJ+UwZzJM60M
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hackbench shows completion time, so smaller is better.
-On all others larger is better.
-https://docs.google.com/spreadsheets/d/e/2PACX-1vQ47Mekl8BOp3ekCefwL6wL8SQi=
-v6Qvp5avkU2ssQSh41gntjivE-aKM4PkwzkC4N_s_MxUdcsokhhz/pubhtml
+On Fri, Mar 17, 2023 at 03:52:40PM +0100, Roberto Sassu wrote:
+> +The `UMD Manager` is the frontend interface to any user or
+> +kernel-originated request. It invokes the `UMD Loader` to start the
+> +`UMD Handler`, and communicates with the latter to satisfy the request.
+> +
+> +The `UMD Loader` is merely responsible to extract the `user binary` from
+> +the kernel module, copy it to a tmpfs filesystem, fork the current proce=
+ss,
+> +start the `UMD Handler`, and create a pipe for the communication between
+> +the `UMD Manager` and the `UMD Handler`.
+> +
+> +The `UMD Handler` reads requests from the `UMD Manager`, processes them
+> +internally, and sends the response to it.
 
-Some notes:
-SUnreclaim and SReclaimable shows unreclaimable and reclaimable memory.
-Substantially higher with SLUB, but I believe that is to be expected.
+I think you can write out the full forms (UMD manager, UMD loader, and
+UMD handler) once and for subsequent mentions of these, UMD can be
+omitted, since the manager/loader/handler will obviously refers to the
+UMD one.
 
-Various results showing a 5-10% degradation with SLUB.  That feels
-concerning to me, but I'm not sure what others' tolerance would be.
+Otherwise LGTM, thanks!
 
-redis results on AMD show some pretty bad degredations.  10-20% range
-netpipe on Intel also has issues.. 10-17%
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
+--=20
+An old man doll... just what I always wanted! - Clara
 
-On Tue, Mar 14, 2023 at 4:05=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> As you're probably aware, my plan is to get rid of SLOB and SLAB, leaving
-> only SLUB going forward. The removal of SLOB seems to be going well, ther=
-e
-> were no objections to the deprecation and I've posted v1 of the removal
-> itself [1] so it could be in -next soon.
->
-> The immediate benefit of that is that we can allow kfree() (and kfree_rcu=
-())
-> to free objects from kmem_cache_alloc() - something that IIRC at least xf=
-s
-> people wanted in the past, and SLOB was incompatible with that.
->
-> For SLAB removal I haven't yet heard any objections (but also didn't
-> deprecate it yet) but if there are any users due to particular workloads
-> doing better with SLAB than SLUB, we can discuss why those would regress =
-and
-> what can be done about that in SLUB.
->
-> Once we have just one slab allocator in the kernel, we can take a closer
-> look at what the users are missing from it that forces them to create own
-> allocators (e.g. BPF), and could be considered to be added as a generic
-> implementation to SLUB.
->
-> Thanks,
-> Vlastimil
->
-> [1] https://lore.kernel.org/all/20230310103210.22372-1-vbabka@suse.cz/
->
+--n/OawJ+UwZzJM60M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZBr1wwAKCRD2uYlJVVFO
+o2XjAP98cKjwFVj5tKztgFgnpo2hMzFfJttUJXQOZJllxh9/PAEAziMVaUg2INAl
+TElZ2NEmhAMWDKyYC7XmwIioKYn8HAI=
+=kqxF
+-----END PGP SIGNATURE-----
+
+--n/OawJ+UwZzJM60M--
