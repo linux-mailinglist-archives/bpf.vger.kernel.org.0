@@ -2,83 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF576C5961
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 23:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 046386C5962
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 23:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjCVWUX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 18:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        id S229436AbjCVWVy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 18:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjCVWUX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 18:20:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC8A86B6
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 15:20:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E0CDEB81E2F
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 22:20:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 889ABC4339C;
-        Wed, 22 Mar 2023 22:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679523619;
-        bh=i7rNq3s2kjFEhiPFt8DGcS9osqAXSTiG07Jc/8B9Mi4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=P5rsC+5uzjAw2FuXzdKuNlg1i0PMZ0vcPyJt83qriRdP8NCvY5wRaCbQ8rErwz1Nj
-         eYXMcHItFDDa0NfuiCzUWdSBhQVn9o2r1oGnGohgugbaZTG9h+46ESx8SFqfnUhPCv
-         ypSXXu2rIhH0Uyu4THnbFh0bQ9Y41IRMxkxHABnYvAieS8xFjVMlk2yRZXevzP6io8
-         lfrsKDtGRykci58JoD/esfGMWLTJz+dkBZH51Eku8qIi7KBkdGOJ0ZAQbN18nh+O0q
-         JCdmmV3IgiKhcH/0W/LZVO3aVv4Yys8NJgZhkpAwdLTFp5vEe+hgkLfLpHQfCEe1jJ
-         ggVAzfXegr7vw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 53ABBE66C8D;
-        Wed, 22 Mar 2023 22:20:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229798AbjCVWVx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 18:21:53 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499852201C
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 15:21:52 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id w9so79096725edc.3
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 15:21:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679523711;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+LG6MFSIFjL6qEDLicvDvhMOxvlECjuW9OqxbH766Lc=;
+        b=kDX01DBvW9Sln+U6eX3aPbsfXaCJ2qqK+PPX6nuSSI2Zmrv1Vb0ZacyoSqZ1gAfJjk
+         PWUrP7urijZpexEM9yqS1P4PGDsNI43Ml4JkUZ7ILLiQAnweboM9jw5rpgDiyD0ZcPul
+         7w6CV62HXpm1blXpTICV3a5QMm2ENUYnpSdC9/9kPPog5yeZwjFhi9nltKWn+7X8iWoh
+         +rh7IpQsbcEViIeK8ANnAVOwyQwqs5sSwvYMHbJuOqkfMz/sm3QhUJL6meZ6KAz9KkOn
+         ycpIrz20794/K5viSi9kagvYc7B16Ad5zx/Gj8g35K2+QYoEVUaHFsg4ys78ibBjTCNZ
+         a8Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679523711;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+LG6MFSIFjL6qEDLicvDvhMOxvlECjuW9OqxbH766Lc=;
+        b=vWOD3hVKa6nYy4IoEi+fRfG7hSFGmsJeRBENZOacdx07qKEG+x7dqX3Rxtow/3hoAE
+         0vjUCmoLh/OqpoOI00PeLyv73J6tjMF0VPWP/YfpiBApwyYe139eMuKaFLr1HQPBrgwE
+         QsDpS0YtFjEUHy7djEvIGOaZioU7d8lDnQSSl2HDPzLDSqqgNyQKqMFARYgEA0pcgj3B
+         yDqkRYkfXsmDF5VpFqovHsxsjIDT3ulAPZyOMRI2gCOlh2i/RjG985aaU/YDDtW8Ok2g
+         nkcEFxL1NqPkR/y67zu+HoCwBqSCgSVALkD08pKkUFxvWc0W+gqUUb0pu1VXOU8vdN4R
+         FBIg==
+X-Gm-Message-State: AO0yUKUeUwpvJzzZGK8EqSGqbpJUVfmPEKFHjyajChVZ2ezr5ikH21jt
+        HmVKln68dA/2hOlnaga5BmIkHikr9ouwBJX3fdhAoOLxdWw=
+X-Google-Smtp-Source: AK7set+fdi0DgU1V7MzSCLyD9S4dCWW3pLAw8Q6gqeZwKv59WHzryeNmgUg4hyS938ameF7lrzvNeKzJ2AF8z1vYpXE=
+X-Received: by 2002:a50:cd1d:0:b0:4fc:8749:cd77 with SMTP id
+ z29-20020a50cd1d000000b004fc8749cd77mr4388624edi.3.1679523710529; Wed, 22 Mar
+ 2023 15:21:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/2] error checking where helpers call bpf_map_ops
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167952361933.28284.6508431809533336142.git-patchwork-notify@kernel.org>
-Date:   Wed, 22 Mar 2023 22:20:19 +0000
-References: <20230322194754.185781-1-inwardvessel@gmail.com>
-In-Reply-To: <20230322194754.185781-1-inwardvessel@gmail.com>
-To:     JP Kobryn <inwardvessel@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, yhs@meta.com,
-        ast@kernel.org, kernel-team@meta.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <CAMAi7A7+b6crWHyn9AQ+itsSh8vZ8D5=WEKatAaHj-V_4mjw-g@mail.gmail.com>
+ <ZBo164Lc2eL3HUvN@krava> <CAMAi7A7Y=m=i-yEOuh-sO-5R5zEGQuo1VwOLKsgvFcv4RRhbhQ@mail.gmail.com>
+ <ZBr7Jt9+yr0PHk6K@krava> <CAADnVQLCSMBhHzOgB1iYMpWVTYsKerMUJ_8MX1W+7BNveF+0tQ@mail.gmail.com>
+ <CAMAi7A4asgEE7MKOJC7ak4Q-wWXtfnHTtv8+x0GZ88ZUWZLMKQ@mail.gmail.com>
+In-Reply-To: <CAMAi7A4asgEE7MKOJC7ak4Q-wWXtfnHTtv8+x0GZ88ZUWZLMKQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 22 Mar 2023 15:21:39 -0700
+Message-ID: <CAADnVQKxbzULYHhWUr=OQWke-QJt6QkVsO7pVBNpgurQMZPWkQ@mail.gmail.com>
+Subject: Re: bpf: missed fentry/fexit invocations due to implicit recursion
+To:     Davide Miola <davide.miola99@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Mar 22, 2023 at 2:39=E2=80=AFPM Davide Miola <davide.miola99@gmail.=
+com> wrote:
+>
+> On Wed, 22 Mar 2023 at 17:06, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> > On Wed, Mar 22, 2023 at 6:10=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> =
+wrote:
+> > >
+> > > there was discussion about this some time ago:
+> > >   https://lore.kernel.org/bpf/CAEf4BzZ-xe-zSjbBpKLHfQKPnTRTBMA2Eg382+=
+_4kQoTLnj4eQ@mail.gmail.com/
+> > >
+> > > seems the 'active' problem andrii described fits to your case as well
+> >
+> > I suspect per-cpu recursion counter will miss more events in this case,
+> > since _any_ kprobe on that cpu will be blocked.
+> > If missing events is not an issue you probably want a per-cpu counter
+> > that is specific to your single ip_queue_xmit attach point.
+>
+> The difference between the scenario described in the linked thread
+> and mine is also the reason why I think in-bpf solutions like a
+> per-cpu guard can't work here: my programs are recursing due to irqs
+> interrupting them and invoking ip_queue_xmit, not because some helper
+> I'm using ends up calling ip_queue_xmit. Recursion can happen
+> anywhere in my programs, even before they get the chance to set a
+> flag or increment a counter in a per-cpu map, since there is no
+> atomic "bpf_map_lookup_and_increment" (or is there?)
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Wed, 22 Mar 2023 12:47:52 -0700 you wrote:
-> Within bpf programs, the bpf helper functions can make inline calls to
-> kernel functions. In this scenario there can be a disconnect between the
-> register the kernel function writes a return value to and the register the
-> bpf program uses to evaluate that return value.
-> 
-> As an example, this bpf code:
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2,bpf-next,1/2] bpf/selftests: coverage for bpf_map_ops errors
-    https://git.kernel.org/bpf/bpf-next/c/830154cdc579
-  - [v2,bpf-next,2/2] bpf: return long from bpf_map_ops funcs
-    https://git.kernel.org/bpf/bpf-next/c/d7ba4cc900bf
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+__sync_fetch_and_add() is supported. A bunch of selftests are using it.
+Or you can use bpf_spin_lock.
