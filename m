@@ -2,93 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 631B96C58E4
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 22:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578246C58FF
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 22:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbjCVVjy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 17:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
+        id S229949AbjCVVxB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 17:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbjCVVjx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 17:39:53 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF23113E0
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 14:39:52 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id x3so78622102edb.10
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 14:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679521191;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sWD62G2mdCV8orpZNelTsZ/qyiQ3TStXFdJPyjX5x1Q=;
-        b=FchTKmvKh/hhZ6U8PKvtNO7CQMmVhHLY4cPDb3cjqU65MCr0YuVKfYDnLHShB6P/On
-         n3phDjrmbI0bzN1GiofBUmeNmwXMtriJz6BYk2aAN+zSTAGEzjyEW+dZGaXp9PY7ThwQ
-         wjrpy4lTP1vcMTOLvt5xfN9uZRe1ijUnacinGiC0MSrZlWUMtlIyleQJsYeDx+2X17Rq
-         oDvvXdpEqbJjF13K3wW4CDg+Bkm1NP4SZfvkqfkx8VdP+yfb7buZTYS5yvW1XlSbg7Bw
-         exWfWB3iJcsVClQVTLx3QZXXdZvgdJXNGQjk3iqvI4fdlf5NPwxUE0ybAC1y4hXKGzhT
-         EbPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679521191;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sWD62G2mdCV8orpZNelTsZ/qyiQ3TStXFdJPyjX5x1Q=;
-        b=NhhTMwbJwMwzWdXyfacMooNPnDwSeDT+Xzr4cBpIiAgv3kz6rw1BbhXLHzApJk0Inz
-         7Us86UIquRPG3PqxjgxsE0GPC8dcXk2/qI6sD3dH43DvRXw2NIXpN1HFSfqOZUNPhjD0
-         8r+0Q80wFzxFtqzePE63xR2FiKJdsjGroZe4qEGkYEEvkNplvo01uvevbFPkGBxPQ7Gy
-         bz8SdZFs1H2JeCBuxCFXs1cPxG4U+ZrQpNSFG3/gNA64U0gZsG8XHLYbyF5j534PTXpH
-         J243M7saHHre4PEOtGAQvjpoIakUisSKqKdNJpjZmY89xo+mV5jUdvA9xE4inJBsrsjX
-         TJHA==
-X-Gm-Message-State: AO0yUKVqR/FMnGDDWcMQ8fTAgu7NwQggDdEnMSZWMeYf/Iqfq5/eznFB
-        RTL3r/S6ERdOJ2tMXly9CIRLHAhKU2ynUq2L2UB5Vq9G5vJ5vw==
-X-Google-Smtp-Source: AK7set/fUpynTGKN30iA4mIp4xC9F6W+GAS7blt5+PxSOAE8gBqeTXtfYmfea71C889NzTS20YzFxRxjVhEYPYIbaG8=
-X-Received: by 2002:a50:930d:0:b0:4fc:e5c:902 with SMTP id m13-20020a50930d000000b004fc0e5c0902mr4316456eda.8.1679521190756;
- Wed, 22 Mar 2023 14:39:50 -0700 (PDT)
+        with ESMTP id S230023AbjCVVw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 17:52:58 -0400
+Received: from out-36.mta0.migadu.com (out-36.mta0.migadu.com [IPv6:2001:41d0:1004:224b::24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B5534026
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 14:52:54 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1679521972;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bYoWmdzl2W1pyPtN74eGSJiP1C5DmIA+BUBmi3a/gXg=;
+        b=uh5CWILNCJ3nUO3boccW09eoxWY1HwNtMd60NtbyDrBsOR7kpmaUmdhO87bmvDNb3w7hZW
+        KrjurmsyJy1QDqMoUM0aKDCiPxrhgolgF9QX+NI9gZS2FTFjwWI6HM9o+IMzxrG0kvodsY
+        I8lfqJPL3GWWmJZFE7VN1Ux01BADHPM=
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
+Subject: [PATCH v3 bpf-next 0/5] bpf: Use bpf_mem_cache_alloc/free in bpf_local_storage
+Date:   Wed, 22 Mar 2023 14:52:41 -0700
+Message-Id: <20230322215246.1675516-1-martin.lau@linux.dev>
 MIME-Version: 1.0
-References: <CAMAi7A7+b6crWHyn9AQ+itsSh8vZ8D5=WEKatAaHj-V_4mjw-g@mail.gmail.com>
- <ZBo164Lc2eL3HUvN@krava> <CAMAi7A7Y=m=i-yEOuh-sO-5R5zEGQuo1VwOLKsgvFcv4RRhbhQ@mail.gmail.com>
- <ZBr7Jt9+yr0PHk6K@krava> <CAADnVQLCSMBhHzOgB1iYMpWVTYsKerMUJ_8MX1W+7BNveF+0tQ@mail.gmail.com>
-In-Reply-To: <CAADnVQLCSMBhHzOgB1iYMpWVTYsKerMUJ_8MX1W+7BNveF+0tQ@mail.gmail.com>
-From:   Davide Miola <davide.miola99@gmail.com>
-Date:   Wed, 22 Mar 2023 22:39:40 +0100
-Message-ID: <CAMAi7A4asgEE7MKOJC7ak4Q-wWXtfnHTtv8+x0GZ88ZUWZLMKQ@mail.gmail.com>
-Subject: Re: bpf: missed fentry/fexit invocations due to implicit recursion
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 22 Mar 2023 at 17:06, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> On Wed, Mar 22, 2023 at 6:10=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wr=
-ote:
-> >
-> > there was discussion about this some time ago:
-> >   https://lore.kernel.org/bpf/CAEf4BzZ-xe-zSjbBpKLHfQKPnTRTBMA2Eg382+_4=
-kQoTLnj4eQ@mail.gmail.com/
-> >
-> > seems the 'active' problem andrii described fits to your case as well
->
-> I suspect per-cpu recursion counter will miss more events in this case,
-> since _any_ kprobe on that cpu will be blocked.
-> If missing events is not an issue you probably want a per-cpu counter
-> that is specific to your single ip_queue_xmit attach point.
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-The difference between the scenario described in the linked thread
-and mine is also the reason why I think in-bpf solutions like a
-per-cpu guard can't work here: my programs are recursing due to irqs
-interrupting them and invoking ip_queue_xmit, not because some helper
-I'm using ends up calling ip_queue_xmit. Recursion can happen
-anywhere in my programs, even before they get the chance to set a
-flag or increment a counter in a per-cpu map, since there is no
-atomic "bpf_map_lookup_and_increment" (or is there?)
+This set is a continuation of the effort in using
+bpf_mem_cache_alloc/free in bpf_local_storage [1]
+
+Major change is only using bpf_mem_alloc for task and cgrp storage
+while sk and inode stay with kzalloc/kfree. The details is
+in patch 2.
+
+[1]: https://lore.kernel.org/bpf/20230308065936.1550103-1-martin.lau@linux.dev/
+
+v3:
+- Only use bpf_mem_alloc for task and cgrp storage.
+- sk and inode storage stay with kzalloc/kfree.
+- Check NULL and add comments in bpf_mem_cache_raw_free() in patch 1.
+- Added test and benchmark for task storage.
+
+v2:
+- Added bpf_mem_cache_alloc_flags() and bpf_mem_cache_raw_free()
+  to hide the internal data structure of the bpf allocator.
+- Fixed a typo bug in bpf_selem_free()
+- Simplified the test_local_storage test by directly using
+  err returned from libbpf
+
+Martin KaFai Lau (5):
+  bpf: Add a few bpf mem allocator functions
+  bpf: Use bpf_mem_cache_alloc/free in bpf_local_storage_elem
+  bpf: Use bpf_mem_cache_alloc/free for bpf_local_storage
+  selftests/bpf: Test task storage when local_storage->smap is NULL
+  selftests/bpf: Add bench for task storage creation
+
+ include/linux/bpf_local_storage.h             |   7 +-
+ include/linux/bpf_mem_alloc.h                 |   2 +
+ kernel/bpf/bpf_cgrp_storage.c                 |   2 +-
+ kernel/bpf/bpf_inode_storage.c                |   2 +-
+ kernel/bpf/bpf_local_storage.c                | 223 ++++++++++++++++--
+ kernel/bpf/bpf_task_storage.c                 |   2 +-
+ kernel/bpf/memalloc.c                         |  59 ++++-
+ net/core/bpf_sk_storage.c                     |   2 +-
+ tools/testing/selftests/bpf/bench.c           |   2 +
+ .../bpf/benchs/bench_local_storage_create.c   | 151 ++++++++++--
+ .../bpf/prog_tests/test_local_storage.c       |   7 +-
+ .../bpf/progs/bench_local_storage_create.c    |  25 ++
+ .../selftests/bpf/progs/local_storage.c       |  56 +++--
+ 13 files changed, 472 insertions(+), 68 deletions(-)
+
+-- 
+2.34.1
+
