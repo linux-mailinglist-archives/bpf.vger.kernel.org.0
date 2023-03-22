@@ -2,42 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1218C6C3F19
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 01:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166A66C3F23
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 01:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjCVA3J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Mar 2023 20:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        id S229629AbjCVAgY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Mar 2023 20:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjCVA3I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Mar 2023 20:29:08 -0400
-Received: from out-47.mta0.migadu.com (out-47.mta0.migadu.com [91.218.175.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6981D442EB
-        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 17:29:07 -0700 (PDT)
-Message-ID: <8d8f605d-f722-8a91-4dcf-2017cad40f7b@linux.dev>
+        with ESMTP id S229487AbjCVAgY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Mar 2023 20:36:24 -0400
+Received: from out-14.mta0.migadu.com (out-14.mta0.migadu.com [IPv6:2001:41d0:1004:224b::e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C13D57D0A
+        for <bpf@vger.kernel.org>; Tue, 21 Mar 2023 17:36:23 -0700 (PDT)
+Message-ID: <73eafb52-76e2-81b3-93ad-a80379ba6100@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1679444945;
+        t=1679445381;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wDC9Ih3WhES37UutzlIVGKMbYDWZZoHCLDYDz/6dnHw=;
-        b=lTLxkvHqSyyCjBZTqmDsMVVWHkJ4bzhXa1X6YaLuYWvsKJvPp5AxHlK2AeFcgJEuFR96HK
-        mEF0/Myj9b8unVI1CPX2L+MfLk/ipzhSdfZnBJ5Sh56v5k8UJUtvKVmlZBVXAILodz2/Yw
-        z9LSFPgWTeFVXFCkUhXU3+Ey+v46440=
-Date:   Tue, 21 Mar 2023 17:29:02 -0700
+        bh=RhIxpNyiWDog8xM6DOtT92OUwTy3yfz8bCZ1hnWt0y8=;
+        b=K9SE9MTWid2tiUElHj02MtYArNqOdDwxOkL5oq8VEWKpXGUUE95nVI7mtDSkMI5H6akp+z
+        HneAZSDP34g5zevPrabhTVxf7HSxNs6ieOjUN4GDl+YYvceP0gW7KyWwpXUN+dsdlGAd0n
+        mFJvZYUr0qV+uqMed31iy4CRUVdXitQ=
+Date:   Tue, 21 Mar 2023 17:36:19 -0700
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 bpf-next 4/5] [RFC] udp: Fix destroying UDP listening
- sockets
+Subject: Re: [PATCH v3 bpf-next 2/5] bpf: Add bpf_sock_destroy kfunc
 Content-Language: en-US
 To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
-        bpf <bpf@vger.kernel.org>
+Cc:     kafai@fb.com, Stanislav Fomichev <sdf@google.com>,
+        edumazet@google.com, bpf@vger.kernel.org
 References: <20230321184541.1857363-1-aditi.ghag@isovalent.com>
- <20230321184541.1857363-5-aditi.ghag@isovalent.com>
+ <20230321184541.1857363-3-aditi.ghag@isovalent.com>
+ <aa458066-529f-cb84-ce4e-2c780aad17bf@linux.dev>
+ <181130C0-6EC6-49EB-BF16-DC23F36AF254@isovalent.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230321184541.1857363-5-aditi.ghag@isovalent.com>
+In-Reply-To: <181130C0-6EC6-49EB-BF16-DC23F36AF254@isovalent.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
@@ -50,65 +51,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/21/23 11:45 AM, Aditi Ghag wrote:
-> Previously, UDP listening sockets that bind'ed to a port
-> weren't getting properly destroyed via udp_abort.
-> Specifically, the sockets were left in the UDP hash table with
-> unset source port.
-> Fix the issue by unconditionally unhashing and resetting source
-> port for sockets that are getting destroyed. This would mean
-> that in case of sockets listening on wildcarded address and
-> on a specific address with a common port, users would have to
-> explicitly select the socket(s) they intend to destroy.
+On 3/21/23 5:00 PM, Aditi Ghag wrote:
+>> n Mar 21, 2023, at 4:43 PM, Martin KaFai Lau<martin.lau@linux.dev>  wrote:
+>>
+>> On 3/21/23 11:45 AM, Aditi Ghag wrote:
+>>> diff --git a/include/net/udp.h b/include/net/udp.h
+>>> index de4b528522bb..d2999447d3f2 100644
+>>> --- a/include/net/udp.h
+>>> +++ b/include/net/udp.h
+>>> @@ -437,6 +437,7 @@ struct udp_seq_afinfo {
+>>>   struct udp_iter_state {
+>>>   	struct seq_net_private  p;
+>>>   	int			bucket;
+>>> +	int			offset;
+>> All offset change is easier to review with patch 1 together, so please move them to patch 1.
+> Thanks for the quick review!
 > 
-> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
-> ---
->   net/ipv4/udp.c | 21 ++++++++++++++++++++-
->   1 file changed, 20 insertions(+), 1 deletion(-)
+> Oh boy... Absolutely! Looks like I misplaced the changes during interactive rebase. Can I fix this up in this patch itself instead of creating a new patch series? That way, I can batch things up in the next revision.
 > 
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index 02d357713838..a495ac88fcee 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -1965,6 +1965,25 @@ int udp_pre_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
->   }
->   EXPORT_SYMBOL(udp_pre_connect);
->   
-> +int __udp_disconnect_with_abort(struct sock *sk)
-> +{
-> +	struct inet_sock *inet = inet_sk(sk);
-> +
-> +	sk->sk_state = TCP_CLOSE;
-> +	inet->inet_daddr = 0;
-> +	inet->inet_dport = 0;
-> +	sock_rps_reset_rxhash(sk);
-> +	sk->sk_bound_dev_if = 0;
-> +	inet_reset_saddr(sk);
-> +	inet->inet_sport = 0;
-> +	sk_dst_reset(sk);
-> +	/* (TBD) In case of sockets listening on wildcard and specific address
-> +	 * with a common port, socket will be removed from {hash, hash2} table.
-> +	 */
-> +	sk->sk_prot->unhash(sk);
 
-hmm... not sure if I understand the use case. The idea is to enforce the user 
-space to bind() again when it gets error from read(fd) because the source 
-ip/port needs to change when sending to another dst IP/port? Does it have a 
-usage example in the selftests?
-
-> +	return 0;
-> +}
-> +
->   int __udp_disconnect(struct sock *sk, int flags)
->   {
->   	struct inet_sock *inet = inet_sk(sk);
-> @@ -2937,7 +2956,7 @@ int udp_abort(struct sock *sk, int err)
->   
->   	sk->sk_err = err;
->   	sk_error_report(sk);
-> -	__udp_disconnect(sk, 0);
-> +	__udp_disconnect_with_abort(sk);
->   
->   out:
->   	if (!has_current_bpf_ctx())
-
+Instead of re-posting a single patch, it will be easier to batch up all the 
+changes in one set in the next revision after the review comments in v3.
