@@ -2,86 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0196C4420
-	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 08:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 582E66C4421
+	for <lists+bpf@lfdr.de>; Wed, 22 Mar 2023 08:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbjCVHc4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 03:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
+        id S229744AbjCVHdc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Mar 2023 03:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjCVHcx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 03:32:53 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1B95BC99
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 00:32:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=MpGVPOb/NVM+8aN5hh2iHqHJRSBSfSzPO53radfUn+E=; b=moDwU/fFtGrT23A3CJsAT5WVhf
-        IeNX+mpNH0L42cXce/pP44bkdQz82asoSBDLl5vqSLSpSF/JzNlBAEPCt+UkHEAgbUUEVK0bZufC/
-        V40PmV/UbgJlTTErVNrBtWTIKhGNpY4YB9IX3PjGCwB0sblnrSDHMpvwwAs1v2dV547xBVB9sMjdb
-        ozLtxTsNnXn1I4Q7uTUeio5dEsssjDVrPIT2jBynNA7tzS7AL8jSjWUj1oyVrpl89JkHbqkbCDr/X
-        2wyRLDu8nCttufY+S0MEDlKaSwylJzvPda7Ta1FD+MvXBMKNNqS//2Fvi7a4Ml1IDt2JW+piC/msb
-        eIToZVsA==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pesxf-000HWm-Ck; Wed, 22 Mar 2023 08:32:43 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pesxf-000739-6M; Wed, 22 Mar 2023 08:32:43 +0100
-Subject: Re: [stable] seccomp: Move copy_seccomp() to no failure path.
-To:     Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc:     bpf@vger.kernel.org, lefteris.alexakis@kpn.com, sh@synk.net
-References: <2a09e672-5cc4-346d-2536-5efa5a59bae1@iogearbox.net>
- <20230321233544.25287-1-kuniyu@amazon.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <1c7b9523-a5a4-7148-bf29-33d3bf2a0b10@iogearbox.net>
-Date:   Wed, 22 Mar 2023 08:32:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229645AbjCVHdb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Mar 2023 03:33:31 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C9B4ECEE
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 00:33:30 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id eg48so68949666edb.13
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 00:33:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679470409;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DhKo4uPOKGEjmlqKw99Ku48Qcs3BaHFMsvQsM8SpoVs=;
+        b=OXLMUhhdGdxNmH/k8fSLKrI6pAxdM+7x7y+jvsgxzyKsG5IDdNTBM/hlTAin0vwu65
+         FFivOoVEAoF6I1m2V/IavLJOsxbdOo8EsuCOS59MWGhXGIgM6jyYGRiRAjxf3+JsbZn2
+         gVgeJJb7GJ43PzeyuQ335xvWhoPkZ8T/GHrELn8fawvv088kNUSsBlgzyZLQIvxK26Ru
+         USgcGkNuJ9ujH/HV13XfrheCPCkSrHqlneBPiXF/XqDzeXYBqcW0AL0/RA0QgX20JQ+4
+         TCo7+8k2XsB5OmHaz8HQye4Icqxva6dEaWUXx8aGrU/zyfLI2BTeXqwnSBdIBJ4EyScZ
+         FpXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679470409;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DhKo4uPOKGEjmlqKw99Ku48Qcs3BaHFMsvQsM8SpoVs=;
+        b=32j+R19LuYT2oRNkjk6X75b1f1u3BGZn7oPPK96UUc3xJ/aKFY6LELkdqXpKkRLBHz
+         WQuN5nb112XJPxii6QC5L5Dqbb7NUOQg7WmU+ZspEgKjdgjzEt+9y4oU4GuoInWGphLV
+         IA2PwirSdEaWyLGha8Fd/lgkVauL6VzM69Px6T2stCjgDoFV9Hjt/R56532t7ybISvK3
+         D3YAYqdh2NsETHKWiHlb7I47hNd8GYmYh4nAGXaMEEB1l8gFca/Y3KEjSMUbgGQsqIdu
+         My2ZIpQynreo0oqAGgB6k9OZp5kLl7Njs1fbG4NouEaV2ZY6gbf/HpnD6ovaQ3g0Bxqh
+         OeHg==
+X-Gm-Message-State: AO0yUKU02jV7z/3Wbk3WrAT3p0GPRfh1Kc8tJxYh3h4a74o99HL+5YQ3
+        1zIyI39SIXj5ApqGkN2l1mgeT9mnD0YWdm3zMnmTt8JA6rTzVA==
+X-Google-Smtp-Source: AK7set8SeTCy1B6h1b6mb8dfdWYNxMLjyihTp4fVSgF/NXxufee+Qtr3I91ZQKCDgUCuItV+GI0vjFf/kOuFxzqN68w=
+X-Received: by 2002:a17:906:fb0b:b0:933:4ca3:9672 with SMTP id
+ lz11-20020a170906fb0b00b009334ca39672mr2932957ejb.12.1679470409398; Wed, 22
+ Mar 2023 00:33:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230321233544.25287-1-kuniyu@amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26850/Tue Mar 21 08:22:52 2023)
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+References: <CAMAi7A7+b6crWHyn9AQ+itsSh8vZ8D5=WEKatAaHj-V_4mjw-g@mail.gmail.com>
+ <ZBo164Lc2eL3HUvN@krava>
+In-Reply-To: <ZBo164Lc2eL3HUvN@krava>
+From:   Davide Miola <davide.miola99@gmail.com>
+Date:   Wed, 22 Mar 2023 08:33:18 +0100
+Message-ID: <CAMAi7A7Y=m=i-yEOuh-sO-5R5zEGQuo1VwOLKsgvFcv4RRhbhQ@mail.gmail.com>
+Subject: Re: bpf: missed fentry/fexit invocations due to implicit recursion
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/22/23 12:35 AM, Kuniyuki Iwashima wrote:
->> On 3/21/23 6:09 PM, Kuniyuki Iwashima wrote:
->> [...]
->>>> Link: https://github.com/awslabs/amazon-eks-ami/issues/1179
->>>> Link: https://github.com/awslabs/amazon-eks-ami/issues/1219
->>>
->>> I'm investigating these issues with EKS folks.  On the issue 1179, the
->>> customer was using our 5.4 kernel, and on 1219, 5.10 kernel.
->>>
->>> Then, I found my memleak fix commit a1140cb215fa ("seccomp: Move
->>> copy_seccomp() to no failure path.") was not backported to upstream 5.10
->>> stable trees.  We'll test if the issue can be reproduced with/without
->>> the fix.
->>
->> Good to know that 5.10 EKS kernel is based on top of stable one. It indeed
->> looks like this could be happening there given a1140cb215fa is missing. I
->> wonder given it has proper Fixes tag why it didn't made it into stable tree
->> already. Thanks for checking, if it confirms, then lets ping Greg to cherry-
->> pick.
-> 
-> The commit conflicted with 5.10, so it was missed, I guess.
-> I'll send a backporting patch for stable.
+> seems correct to me, can you see see recursion_misses counter in
+> bpftool prog output for the entry tracing program?
 
-Awesome, thanks!
+Indeed I can. The problem here is that the recursion is not triggered
+by my programs; from my point of view any miss is basically a random
+event, and the fact that entry and exit progs can miss independently
+means that, at any point, I can count two exits for one entry or
+(worse) just one exit for two entries, making the whole mechanism
+wildly unreliable.
+
+Would using kprobes/kretprobes instead of fentry/fexit here be my
+best compromise? It is my understanding (please correct me if I'm
+wrong) that kprobes' recursion prevention is per-cpu rather than
+per-program, so in this case there would be no imbalance in the
+number of misses between the entry and exit probes.
