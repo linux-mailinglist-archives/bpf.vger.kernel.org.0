@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EA36C6F32
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 18:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59B96C6FA4
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 18:47:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjCWRfz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 13:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
+        id S230377AbjCWRrb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 13:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbjCWRfn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 13:35:43 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46F71166D;
-        Thu, 23 Mar 2023 10:35:26 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id h8so90079247ede.8;
-        Thu, 23 Mar 2023 10:35:26 -0700 (PDT)
+        with ESMTP id S230154AbjCWRr3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 13:47:29 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0133AAE
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 10:47:27 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id l7so5109128pjg.5
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 10:47:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679592922;
+        d=google.com; s=20210112; t=1679593647;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HRKLfvrETKKRHqppJOUGcPm5Thl8LCTv37ptHgjATCw=;
-        b=bN4uLl311Hp3OsFquz9kbJJ2LR6wVRZ2mSI3cteP/v7Ho1RrSjDIlDwTZAbo84mQoW
-         vABMOKbkRo1wz09xiTi/Oen1Gqu0eA7EKsa05lNttOCmEW+DYreVihhBFg6ml2VU+DTl
-         CH/UdFwbbrilHeNExKw3YA91uAzwE3qXmfNvNm4uaOiyVjTsyD3tM8XB+CRrF7sqjZrh
-         sYGOkv6eI3sxtZepNNfDG4CIp+juQa0LAP7oKDKv4Nn/PpUF3RnuKzD7Php0pJyo5vVm
-         pZEleWMkkIxD6RTt/t+/seQ6eiRd1eM19+WcaORH5MvpzM4OpKdUUd1kVfYvSkx/Q4TY
-         WVNQ==
+        bh=MrBZ0nz68uE3t6xSRgI7OHtKH0JjKMui2GQsaqCY+sg=;
+        b=IkDstmOdzk/q+esDvki1hLUwLhy7jviXIUGf6R0VCLCDEUvH9/vniskofyMlpNn4p0
+         tF58XNQRalKjjOy6zREkk4ljIbuoXW8ecj1TAHpFxaCUZsmEHfv1znfr72GyoYb1D3EU
+         2JD3F6x4R1XyYVQ+FH3DH9TK2VPR/2hEcOr0giJg508qh4EJDXQcQ0O2FqmEvHEKyayz
+         4mXLsQdBTb+h2Dkz/Nab4zrxDvYNpddUGesPdWCS9FiC7apY3CaSh7iToi+nPYtDiTgA
+         CtCEVac7PEfrT8MOARgEyaDSKVKQZ8/e9SDQ0Ff0ZzHI00eJgI5IlJtMGUgmTtOPQsrb
+         Nzhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679592922;
+        d=1e100.net; s=20210112; t=1679593647;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HRKLfvrETKKRHqppJOUGcPm5Thl8LCTv37ptHgjATCw=;
-        b=SHI7DqKWMlNj2Ijdb2d5vRbvsk6UHcyvihgGpuV6J4qDnnFBu2Hp22MbPbLKN9Yznk
-         oUQs+kVH5y89ZVaAE2YuFYLIQfVvUxnhkiZzDAU2yBvm6bwkcNaJOL1pKmt8wojQGHuU
-         DPibAvEryHxXym/xI64mdEERF7nDz+Q395fjvYiRORGtu1RZNH3dAqAIN0JO+jIT1fzO
-         sovcqRbLphJLrkWOTi1z+RGj/A5LKQGPpL7SJyJTD4HfIcFgNHwS6JaZAC3smTMza+rw
-         1lCDQpkHndjlLYKiKdaR4s16uR1HxnLMUxja/Svjt3thrrowMmU8js/8wvKGoI3iS/bU
-         Jvww==
-X-Gm-Message-State: AO0yUKVzyVGzP83N11veZhg2lrjHqlo54k4HfxqLovJHRrm/mo5fMqP0
-        q2KrNdPst1JWDbC725r5+XJs3PAJvse/2RL6AXI=
-X-Google-Smtp-Source: AK7set8K/L1zB6jSQTc0sdzB8WzanW0af/plqKt56NPau/aklI+gV0w6LkAVFuVHJimGN7Llb88lbPiQ/xMJHXUBXwk=
-X-Received: by 2002:a05:6402:278e:b0:501:dfd8:67c5 with SMTP id
- b14-20020a056402278e00b00501dfd867c5mr5060794ede.3.1679592922058; Thu, 23 Mar
- 2023 10:35:22 -0700 (PDT)
+        bh=MrBZ0nz68uE3t6xSRgI7OHtKH0JjKMui2GQsaqCY+sg=;
+        b=ZCtWj3lk3+V+EpfWIsZMzwmuELyQRS6M2R9faBAsXuDCcssfXhO2+YZgAUKz1U1COD
+         L871K4zZ+qBa0BBVfsvq0OoSVKPBGvtbKzUuEtEl8ZYtz1J12HEhWUZQ/SAUKntllRiP
+         gJqCTTV7iuCOQGkpoTPOY0lsq8Akb60qVEVmZCUnSwNvJlZg+wEtSr593Ob2chLPDsXg
+         DENcDXvsP/rPyj+ihFklzo4rd261yu7eir7QTyqmhyyENpT0Mxj98kuIbFPKAUeIZ7pd
+         2XuaLbZZ8HeH/vPO8w6rD0PBdPreQOnK0Ihi1Y5VGtsYpLUWObJ36yUIhrSgCoUKEyrm
+         ZCKA==
+X-Gm-Message-State: AO0yUKUCn78htcy85EMphZ1Hr2UJun7bhTwVnrd2dlet7XEK6Z9z1HwO
+        wPKe3awlGhmaZtXRoX1oyfhqmcqfTo3oBxkLKYCvqQ==
+X-Google-Smtp-Source: AK7set9SsDjpHXXpn9LybZrBkAmTip5nn0QPvC1h5az6Nb7PCBmYe/cQbiygXksd8ubtpKveTf+sRaaIHcJNuJ71lrg=
+X-Received: by 2002:a17:90a:684f:b0:23b:4e6e:aed9 with SMTP id
+ e15-20020a17090a684f00b0023b4e6eaed9mr2613896pjm.9.1679593646774; Thu, 23 Mar
+ 2023 10:47:26 -0700 (PDT)
 MIME-Version: 1.0
 References: <167940634187.2718137.10209374282891218398.stgit@firesoul>
  <167940643669.2718137.4624187727245854475.stgit@firesoul> <CAKH8qBuv-9TXAmi0oTbB0atC4f6jzFcFhAgQ3D89VX45vUU9hw@mail.gmail.com>
@@ -54,15 +54,16 @@ References: <167940634187.2718137.10209374282891218398.stgit@firesoul>
  <CAADnVQ+6FeQ97DZLco3OtbtXQvGUAY4nr5tM++6NEDr+u8m7GQ@mail.gmail.com>
  <CAKH8qBvzVASpUu3M=6ohDqJgJjoR33jQ-J44ESD9SdkvFoGAZg@mail.gmail.com>
  <CAADnVQLC7ma7SWPOcjXhsZ2N0OyVtBr7TzCoT-_Dn+zQ2DEyWg@mail.gmail.com>
- <CAKH8qBuqxxVM9fSB43cAvvTnaHkA-JNRy=gufCqYf5GNbRA-8g@mail.gmail.com> <d7ac4f80-b65c-5201-086e-3b2645cbe7fe@redhat.com>
-In-Reply-To: <d7ac4f80-b65c-5201-086e-3b2645cbe7fe@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 23 Mar 2023 10:35:10 -0700
-Message-ID: <CAADnVQ+Jc6G78gJOA758bkCt4sgiwaxgC7S0cr9J=XBPfMDUSg@mail.gmail.com>
+ <CAKH8qBuqxxVM9fSB43cAvvTnaHkA-JNRy=gufCqYf5GNbRA-8g@mail.gmail.com>
+ <d7ac4f80-b65c-5201-086e-3b2645cbe7fe@redhat.com> <CAADnVQ+Jc6G78gJOA758bkCt4sgiwaxgC7S0cr9J=XBPfMDUSg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+Jc6G78gJOA758bkCt4sgiwaxgC7S0cr9J=XBPfMDUSg@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 23 Mar 2023 10:47:15 -0700
+Message-ID: <CAKH8qBupRYEg+SPMTMb4h532GESG7P1QdaFJ-+zrbARVN9xrdA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next V2 3/6] selftests/bpf: xdp_hw_metadata RX hash
  return code info
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
@@ -84,9 +85,10 @@ Cc:     Stanislav Fomichev <sdf@google.com>,
         "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,191 +96,302 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 1:51=E2=80=AFAM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
+On Thu, Mar 23, 2023 at 10:35=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->
-> On 22/03/2023 20.33, Stanislav Fomichev wrote:
-> > On Wed, Mar 22, 2023 at 12:30=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >>
-> >> On Wed, Mar 22, 2023 at 12:23=E2=80=AFPM Stanislav Fomichev <sdf@googl=
-e.com> wrote:
-> >>>
-> >>> On Wed, Mar 22, 2023 at 12:17=E2=80=AFPM Alexei Starovoitov
-> >>> <alexei.starovoitov@gmail.com> wrote:
-> >>>>
-> >>>> On Wed, Mar 22, 2023 at 12:00=E2=80=AFPM Stanislav Fomichev <sdf@goo=
+> On Thu, Mar 23, 2023 at 1:51=E2=80=AFAM Jesper Dangaard Brouer
+> <jbrouer@redhat.com> wrote:
+> >
+> >
+> > On 22/03/2023 20.33, Stanislav Fomichev wrote:
+> > > On Wed, Mar 22, 2023 at 12:30=E2=80=AFPM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > >>
+> > >> On Wed, Mar 22, 2023 at 12:23=E2=80=AFPM Stanislav Fomichev <sdf@goo=
 gle.com> wrote:
-> >>>>>
-> >>>>> On Wed, Mar 22, 2023 at 9:07=E2=80=AFAM Alexei Starovoitov
-> >>>>> <alexei.starovoitov@gmail.com> wrote:
-> >>>>>>
-> >>>>>> On Wed, Mar 22, 2023 at 9:05=E2=80=AFAM Jesper Dangaard Brouer
-> >>>>>> <jbrouer@redhat.com> wrote:
-> >>>>>>>
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> On 21/03/2023 19.47, Stanislav Fomichev wrote:
-> >>>>>>>> On Tue, Mar 21, 2023 at 6:47=E2=80=AFAM Jesper Dangaard Brouer
-> >>>>>>>> <brouer@redhat.com> wrote:
-> >>>>>>>>>
-> >>>>>>>>> When driver developers add XDP-hints kfuncs for RX hash it is
-> >>>>>>>>> practical to print the return code in bpf_printk trace pipe log=
-.
-> >>>>>>>>>
-> >>>>>>>>> Print hash value as a hex value, both AF_XDP userspace and bpf_=
-prog,
-> >>>>>>>>> as this makes it easier to spot poor quality hashes.
-> >>>>>>>>>
-> >>>>>>>>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> >>>>>>>>> ---
-> >>>>>>>>>    .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++=
-++++---
-> >>>>>>>>>    tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++=
-++-
-> >>>>>>>>>    2 files changed, 10 insertions(+), 4 deletions(-)
-> >>>>>>>>>
-> >>>>>>>>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.=
-c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> >>>>>>>>> index 40c17adbf483..ce07010e4d48 100644
-> >>>>>>>>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> >>>>>>>>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> >>>>>>>>> @@ -77,10 +77,13 @@ int rx(struct xdp_md *ctx)
-> >>>>>>>>>                   meta->rx_timestamp =3D 0; /* Used by AF_XDP a=
-s not avail signal */
-> >>>>>>>>>           }
-> >>>>>>>>>
-> >>>>>>>>> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
-> >>>>>>>>> -               bpf_printk("populated rx_hash with %u", meta->r=
-x_hash);
-> >>>>>>>>> -       else
-> >>>>>>>>> +       ret =3D bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
-> >>>>>>>>> +       if (ret >=3D 0) {
-> >>>>>>>>> +               bpf_printk("populated rx_hash with 0x%08X", met=
-a->rx_hash);
-> >>>>>>>>> +       } else {
-> >>>>>>>>> +               bpf_printk("rx_hash not-avail errno:%d", ret);
-> >>>>>>>>>                   meta->rx_hash =3D 0; /* Used by AF_XDP as not=
- avail signal */
-> >>>>>>>>> +       }
-> >>>>>>>>>
-> >>>>>>>>>           return bpf_redirect_map(&xsk, ctx->rx_queue_index, XD=
-P_PASS);
-> >>>>>>>>>    }
-> >>>>>>>>> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/to=
-ols/testing/selftests/bpf/xdp_hw_metadata.c
-> >>>>>>>>> index 400bfe19abfe..f3ec07ccdc95 100644
-> >>>>>>>>> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> >>>>>>>>> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> >>>>>>>>> @@ -3,6 +3,9 @@
-> >>>>>>>>>    /* Reference program for verifying XDP metadata on real HW. =
-Functional test
-> >>>>>>>>>     * only, doesn't test the performance.
-> >>>>>>>>>     *
-> >>>>>>>>> + * BPF-prog bpf_printk info outout can be access via
-> >>>>>>>>> + * /sys/kernel/debug/tracing/trace_pipe
-> >>>>>>>>
-> >>>>>>>> s/outout/output/
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> Fixed in V3
-> >>>>>>>
-> >>>>>>>> But let's maybe drop it? If you want to make it more usable, let=
-'s
-> >>>>>>>> have a separate patch to enable tracing and periodically dump it=
- to
-> >>>>>>>> the console instead (as previously discussed).
-> >>>>>>>
-> >>>>>>> Cat'ing /sys/kernel/debug/tracing/trace_pipe work for me regardle=
-ss of
-> >>>>>>> setting in
-> >>>>>>> /sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enabl=
-e
-> >>>>>>>
-> >>>>>>> We likely need a followup patch that adds a BPF config switch tha=
-t can
-> >>>>>>> disable bpf_printk calls, because this adds overhead and thus aff=
-ects
-> >>>>>>> the timestamps.
-> >>>>>>
-> >>>>>> No. This is by design.
-> >>>>>> Do not use bpf_printk* in production.
->
-> I fully agree do not use bpf_printk in *production*.
->
-> >>>>>
-> >>>>> But that's not for the production? xdp_hw_metadata is a small tool =
-to
-> >>>>> verify that the metadata being dumped is correct (during the
-> >>>>> development).
-> >>>>> We have a proper (less verbose) selftest in
-> >>>>> {progs,prog_tests}/xdp_metadata.c (over veth).
-> >>>>> This xdp_hw_metadata was supposed to be used for running it against
-> >>>>> the real hardware, so having as much debugging at hand as possible
-> >>>>> seems helpful? (at least it was helpful to me when playing with mlx=
-4)
->
-> My experience when developing these kfuncs for igc (real hardware), this
-> "tool" xdp_hw_metadata was super helpful, because it was very verbose
-> (and I was juggling reading chip registers BE/LE and see patch1 a buggy
-> implementation for RX-hash).
->
-> As I wrote in cover-letter, I recommend other driver developers to do
-> the same, because it really help speed up the development. In theory
-> xdp_hw_metadata doesn't belong in selftests directory and IMHO it should
-> have been placed in samples/bpf/, but given the relationship with real
-> selftest {progs,prog_tests}/xdp_metadata.c I think it makes sense to
-> keep here.
->
->
-> >>>>
-> >>>> The only use of bpf_printk is for debugging of bpf progs themselves.
-> >>>> It should not be used in any tool.
-> >>>
-> >>> Hmm, good point. I guess it also means we won't have to mess with
-> >>> enabling/dumping ftrace (and don't need this comment about cat'ing th=
-e
-> >>> file).
-> >>> Jesper, maybe we can instead pass the status of those
-> >>> bpf_xdp_metadata_xxx kfuncs via 'struct xdp_meta'? And dump this info
-> >>> from the userspace if needed.
-> >>
-> >> There are so many other ways for bpf prog to communicate with user spa=
-ce.
-> >> Use ringbuf, perf_event buffer, global vars, maps, etc.
-> >> trace_pipe is debug only because it's global and will conflict with
-> >> all other debug sessions.
->
-> I want to highlight above paragraph: It is very true for production
-> code. (Anyone Googling this pay attention to above paragraph).
->
+> > >>>
+> > >>> On Wed, Mar 22, 2023 at 12:17=E2=80=AFPM Alexei Starovoitov
+> > >>> <alexei.starovoitov@gmail.com> wrote:
+> > >>>>
+> > >>>> On Wed, Mar 22, 2023 at 12:00=E2=80=AFPM Stanislav Fomichev <sdf@g=
+oogle.com> wrote:
+> > >>>>>
+> > >>>>> On Wed, Mar 22, 2023 at 9:07=E2=80=AFAM Alexei Starovoitov
+> > >>>>> <alexei.starovoitov@gmail.com> wrote:
+> > >>>>>>
+> > >>>>>> On Wed, Mar 22, 2023 at 9:05=E2=80=AFAM Jesper Dangaard Brouer
+> > >>>>>> <jbrouer@redhat.com> wrote:
+> > >>>>>>>
+> > >>>>>>>
+> > >>>>>>>
+> > >>>>>>> On 21/03/2023 19.47, Stanislav Fomichev wrote:
+> > >>>>>>>> On Tue, Mar 21, 2023 at 6:47=E2=80=AFAM Jesper Dangaard Brouer
+> > >>>>>>>> <brouer@redhat.com> wrote:
+> > >>>>>>>>>
+> > >>>>>>>>> When driver developers add XDP-hints kfuncs for RX hash it is
+> > >>>>>>>>> practical to print the return code in bpf_printk trace pipe l=
+og.
+> > >>>>>>>>>
+> > >>>>>>>>> Print hash value as a hex value, both AF_XDP userspace and bp=
+f_prog,
+> > >>>>>>>>> as this makes it easier to spot poor quality hashes.
+> > >>>>>>>>>
+> > >>>>>>>>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > >>>>>>>>> ---
+> > >>>>>>>>>    .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 =
+++++++---
+> > >>>>>>>>>    tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 =
+++++-
+> > >>>>>>>>>    2 files changed, 10 insertions(+), 4 deletions(-)
+> > >>>>>>>>>
+> > >>>>>>>>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadat=
+a.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > >>>>>>>>> index 40c17adbf483..ce07010e4d48 100644
+> > >>>>>>>>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > >>>>>>>>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > >>>>>>>>> @@ -77,10 +77,13 @@ int rx(struct xdp_md *ctx)
+> > >>>>>>>>>                   meta->rx_timestamp =3D 0; /* Used by AF_XDP=
+ as not avail signal */
+> > >>>>>>>>>           }
+> > >>>>>>>>>
+> > >>>>>>>>> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+> > >>>>>>>>> -               bpf_printk("populated rx_hash with %u", meta-=
+>rx_hash);
+> > >>>>>>>>> -       else
+> > >>>>>>>>> +       ret =3D bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash)=
+;
+> > >>>>>>>>> +       if (ret >=3D 0) {
+> > >>>>>>>>> +               bpf_printk("populated rx_hash with 0x%08X", m=
+eta->rx_hash);
+> > >>>>>>>>> +       } else {
+> > >>>>>>>>> +               bpf_printk("rx_hash not-avail errno:%d", ret)=
+;
+> > >>>>>>>>>                   meta->rx_hash =3D 0; /* Used by AF_XDP as n=
+ot avail signal */
+> > >>>>>>>>> +       }
+> > >>>>>>>>>
+> > >>>>>>>>>           return bpf_redirect_map(&xsk, ctx->rx_queue_index, =
+XDP_PASS);
+> > >>>>>>>>>    }
+> > >>>>>>>>> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/=
+tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > >>>>>>>>> index 400bfe19abfe..f3ec07ccdc95 100644
+> > >>>>>>>>> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > >>>>>>>>> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > >>>>>>>>> @@ -3,6 +3,9 @@
+> > >>>>>>>>>    /* Reference program for verifying XDP metadata on real HW=
+. Functional test
+> > >>>>>>>>>     * only, doesn't test the performance.
+> > >>>>>>>>>     *
+> > >>>>>>>>> + * BPF-prog bpf_printk info outout can be access via
+> > >>>>>>>>> + * /sys/kernel/debug/tracing/trace_pipe
+> > >>>>>>>>
+> > >>>>>>>> s/outout/output/
+> > >>>>>>>>
+> > >>>>>>>
+> > >>>>>>> Fixed in V3
+> > >>>>>>>
+> > >>>>>>>> But let's maybe drop it? If you want to make it more usable, l=
+et's
+> > >>>>>>>> have a separate patch to enable tracing and periodically dump =
+it to
+> > >>>>>>>> the console instead (as previously discussed).
+> > >>>>>>>
+> > >>>>>>> Cat'ing /sys/kernel/debug/tracing/trace_pipe work for me regard=
+less of
+> > >>>>>>> setting in
+> > >>>>>>> /sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/ena=
+ble
+> > >>>>>>>
+> > >>>>>>> We likely need a followup patch that adds a BPF config switch t=
+hat can
+> > >>>>>>> disable bpf_printk calls, because this adds overhead and thus a=
+ffects
+> > >>>>>>> the timestamps.
+> > >>>>>>
+> > >>>>>> No. This is by design.
+> > >>>>>> Do not use bpf_printk* in production.
 > >
-> > =F0=9F=91=8D makes sense, ty! hopefully we won't have to add a separate=
- channel
-> > for those and can (ab)use the metadata area.
+> > I fully agree do not use bpf_printk in *production*.
 > >
+> > >>>>>
+> > >>>>> But that's not for the production? xdp_hw_metadata is a small too=
+l to
+> > >>>>> verify that the metadata being dumped is correct (during the
+> > >>>>> development).
+> > >>>>> We have a proper (less verbose) selftest in
+> > >>>>> {progs,prog_tests}/xdp_metadata.c (over veth).
+> > >>>>> This xdp_hw_metadata was supposed to be used for running it again=
+st
+> > >>>>> the real hardware, so having as much debugging at hand as possibl=
+e
+> > >>>>> seems helpful? (at least it was helpful to me when playing with m=
+lx4)
+> >
+> > My experience when developing these kfuncs for igc (real hardware), thi=
+s
+> > "tool" xdp_hw_metadata was super helpful, because it was very verbose
+> > (and I was juggling reading chip registers BE/LE and see patch1 a buggy
+> > implementation for RX-hash).
+> >
+> > As I wrote in cover-letter, I recommend other driver developers to do
+> > the same, because it really help speed up the development. In theory
+> > xdp_hw_metadata doesn't belong in selftests directory and IMHO it shoul=
+d
+> > have been placed in samples/bpf/, but given the relationship with real
+> > selftest {progs,prog_tests}/xdp_metadata.c I think it makes sense to
+> > keep here.
+> >
+> >
+> > >>>>
+> > >>>> The only use of bpf_printk is for debugging of bpf progs themselve=
+s.
+> > >>>> It should not be used in any tool.
+> > >>>
+> > >>> Hmm, good point. I guess it also means we won't have to mess with
+> > >>> enabling/dumping ftrace (and don't need this comment about cat'ing =
+the
+> > >>> file).
+> > >>> Jesper, maybe we can instead pass the status of those
+> > >>> bpf_xdp_metadata_xxx kfuncs via 'struct xdp_meta'? And dump this in=
+fo
+> > >>> from the userspace if needed.
+> > >>
+> > >> There are so many other ways for bpf prog to communicate with user s=
+pace.
+> > >> Use ringbuf, perf_event buffer, global vars, maps, etc.
+> > >> trace_pipe is debug only because it's global and will conflict with
+> > >> all other debug sessions.
+> >
+> > I want to highlight above paragraph: It is very true for production
+> > code. (Anyone Googling this pay attention to above paragraph).
+> >
+> > >
+> > > =F0=9F=91=8D makes sense, ty! hopefully we won't have to add a separa=
+te channel
+> > > for those and can (ab)use the metadata area.
+> > >
+> >
+> > Proposed solution: How about default disabling the bpf_printk's via a
+> > macro define, and then driver developer can manually reenable them
+> > easily via a single define, to enable a debugging mode.
+> >
+> > I was only watching /sys/kernel/debug/tracing/trace_pipe when I was
+> > debugging a driver issue.  Thus, an extra step of modifying a single
+> > define in BPF seems easier, than instrumenting my driver with printk.
 >
-> Proposed solution: How about default disabling the bpf_printk's via a
-> macro define, and then driver developer can manually reenable them
-> easily via a single define, to enable a debugging mode.
+> It's certainly fine to have commented out bpf_printk in selftests
+> and sample code.
+> But the patch does:
+> +       if (ret >=3D 0) {
+> +               bpf_printk("populated rx_hash with 0x%08X", meta->rx_hash=
+);
+> +       } else {
+> +               bpf_printk("rx_hash not-avail errno:%d", ret);
+>                 meta->rx_hash =3D 0; /* Used by AF_XDP as not avail signa=
+l */
+> +       }
 >
-> I was only watching /sys/kernel/debug/tracing/trace_pipe when I was
-> debugging a driver issue.  Thus, an extra step of modifying a single
-> define in BPF seems easier, than instrumenting my driver with printk.
+> It feels that printk is the only thing that provides the signal to the us=
+er.
+> Doing s/ret >=3D 0/true/ won't make any difference to selftest and
+> to the consumer and that's my main concern with such selftest/samples.
 
-It's certainly fine to have commented out bpf_printk in selftests
-and sample code.
-But the patch does:
-+       if (ret >=3D 0) {
-+               bpf_printk("populated rx_hash with 0x%08X", meta->rx_hash);
-+       } else {
-+               bpf_printk("rx_hash not-avail errno:%d", ret);
-                meta->rx_hash =3D 0; /* Used by AF_XDP as not avail signal =
-*/
-+       }
+I agree, having this signal delivered to the user (without the ifdefs)
+seems like a better way to go.
+Seems trivial to do something like the following below? (untested,
+doesn't compile, gmail-copy-pasted so don't try to apply it)
 
-It feels that printk is the only thing that provides the signal to the user=
-.
-Doing s/ret >=3D 0/true/ won't make any difference to selftest and
-to the consumer and that's my main concern with such selftest/samples.
+diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+index 4c55b4d79d3d..061c410f68ea 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+@@ -12,6 +12,9 @@ struct {
+  __type(value, __u32);
+ } xsk SEC(".maps");
+
++int received;
++int dropped;
++
+ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
+  __u64 *timestamp) __ksym;
+ extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
+@@ -52,11 +55,11 @@ int rx(struct xdp_md *ctx)
+  if (udp->dest !=3D bpf_htons(9091))
+  return XDP_PASS;
+
+- bpf_printk("forwarding UDP:9091 to AF_XDP");
++ __sync_fetch_and_add(&received, 1);
+
+  ret =3D bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
+  if (ret !=3D 0) {
+- bpf_printk("bpf_xdp_adjust_meta returned %d", ret);
++ __sync_fetch_and_add(&dropped, 1);
+  return XDP_PASS;
+  }
+
+@@ -65,19 +68,12 @@ int rx(struct xdp_md *ctx)
+  meta =3D data_meta;
+
+  if (meta + 1 > data) {
+- bpf_printk("bpf_xdp_adjust_meta doesn't appear to work");
++ __sync_fetch_and_add(&dropped, 1);
+  return XDP_PASS;
+  }
+
+- if (!bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp))
+- bpf_printk("populated rx_timestamp with %llu", meta->rx_timestamp);
+- else
+- meta->rx_timestamp =3D 0; /* Used by AF_XDP as not avail signal */
+-
+- if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+- bpf_printk("populated rx_hash with %u", meta->rx_hash);
+- else
+- meta->rx_hash =3D 0; /* Used by AF_XDP as not avail signal */
++ meta->rx_timestamp_ret =3D bpf_xdp_metadata_rx_timestamp(ctx,
+&meta->rx_timestamp);
++ meta->rx_hash_ret =3D bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
+
+  return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
+ }
+diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+index 1c8acb68b977..a4ea742547b5 100644
+--- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+@@ -140,8 +140,17 @@ static void verify_xdp_metadata(void *data)
+
+  meta =3D data - sizeof(*meta);
+
+- printf("rx_timestamp: %llu\n", meta->rx_timestamp);
+- printf("rx_hash: %u\n", meta->rx_hash);
++ printf("received: %d dropped: %d\n", obj->xxx->received, obj->xxx->droppe=
+d);
++
++ if (meta->rx_timestamp_ret)
++ printf("rx_timestamp errno: %d\n", meta->rx_timestamp_ret);
++ else
++ printf("rx_timestamp: %llu\n", meta->rx_timestamp);
++
++ if (meta->rx_hash_ret)
++ printf("rx_hash errno: %d\n", meta->rx_hash_ret);
++ else
++ printf("rx_hash: %u\n", meta->rx_hash);
+ }
+
+ static void verify_skb_metadata(int fd)
+diff --git a/tools/testing/selftests/bpf/xdp_metadata.h
+b/tools/testing/selftests/bpf/xdp_metadata.h
+index f6780fbb0a21..179f8d902059 100644
+--- a/tools/testing/selftests/bpf/xdp_metadata.h
++++ b/tools/testing/selftests/bpf/xdp_metadata.h
+@@ -10,6 +10,8 @@
+ #endif
+
+ struct xdp_meta {
++ int rx_timestamp_ret;
+  __u64 rx_timestamp;
++ int rx_hash_ret;
+  __u32 rx_hash;
+ };
