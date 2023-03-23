@@ -2,50 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B67286C5F3A
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 06:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1636C6C5F3E
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 07:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbjCWF6w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 01:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39888 "EHLO
+        id S229499AbjCWGAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 02:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjCWF6u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 01:58:50 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA382410B;
-        Wed, 22 Mar 2023 22:58:47 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VeTApVT_1679551122;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VeTApVT_1679551122)
-          by smtp.aliyun-inc.com;
-          Thu, 23 Mar 2023 13:58:43 +0800
-Message-ID: <1679551089.625654-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next 1/8] virtio_net: mergeable xdp: put old page immediately
-Date:   Thu, 23 Mar 2023 13:58:09 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20230322030308.16046-1-xuanzhuo@linux.alibaba.com>
- <20230322030308.16046-2-xuanzhuo@linux.alibaba.com>
- <4bd07874-b1ad-336b-b15e-ba56a10182e9@huawei.com>
- <1679535365.5410192-1-xuanzhuo@linux.alibaba.com>
- <CACGkMEvS7N1tXFD2-2n2upY15JF6=0uaAebewsP8=K+Cwbtgsg@mail.gmail.com>
-In-Reply-To: <CACGkMEvS7N1tXFD2-2n2upY15JF6=0uaAebewsP8=K+Cwbtgsg@mail.gmail.com>
+        with ESMTP id S229617AbjCWGAN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 02:00:13 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC112473C;
+        Wed, 22 Mar 2023 23:00:11 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id bl39so6204232qkb.10;
+        Wed, 22 Mar 2023 23:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679551210;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=khkEh87VOV5qByXCjte01mLcaqpsWFmMCoN/d+getgU=;
+        b=naVGbe97QoHtHXJNGHJ53BjrnlFmDAgUJgbaJRV8uLuZlosSi+3jyHx9Ik0O1enWU0
+         t6dgPiCjnpGCDJ+YxSWrgv8CMkWeZNg/4cD8XovwadXWRjHuJy0q5a+Bd9WCWhO46Nhu
+         zM2gtxpF2Zz8zUGN41HuoYx7M6nGHsQySkqbU4wyxh2QUc4gpAV37rt4dOv57NQkNEDT
+         15ha/lxNQXk/hYwbm0iuwo/kzyLpG2Akc98SEv5mt5O7L9lFQoxKb5IHA9hVvKqKYYkl
+         11tx1kEZLFe5hTRYXBYAEa5MoFO8/vJgBekObFmC7Y6brKA4BmuG30C6u+MiQ3UnD78H
+         j0yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679551210;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=khkEh87VOV5qByXCjte01mLcaqpsWFmMCoN/d+getgU=;
+        b=mbvGDVhXLKY4YLWvnb/vY9PtB0aY4pWoPOjfQp2QkL4FCs7FJaw39YohsOLmGP3xyV
+         I9e47gy65ZaTgjixx943BzxyW24CJ+URMFmeKVLDQABRMU2iIxwYTi0dkVO6gisos0lE
+         ou+3MJyQUrIU5DjHpS9775Pt/YXNy12MP5t09yDX7Rcv8Owtj4VVNnjceLv99+fgTAsc
+         8Q5Om8lRSVg2iqjXLw3RIpbL6uWqqLP/+iqrVbut8Yy/hPs0p8jyq1pqSynnEDuA/Fey
+         l7SPKo4Z1SPEEt29EnkZXYoHmLgVWZ0Dv4M9aNJgh62ijwoD5xk6iG/Npg6Msrkduxp0
+         NQCQ==
+X-Gm-Message-State: AO0yUKWRNi3d7r6PuRA6HP/qF7klIHwXux1Z67Nyc/rfUMAdkwzO/58f
+        5+xPUjsCVFbPZA7WsDRDusjrA4VIK0g7xQtA8SA=
+X-Google-Smtp-Source: AK7set/eCGEMNixWax9ZGSzn/UXHfberlduHP+jIdICEZKNzSBW0J1/xJkY2D9/lQddgNb5xk+ytZCMZXQRjOd23cqY=
+X-Received: by 2002:a37:688a:0:b0:746:96c2:e458 with SMTP id
+ d132-20020a37688a000000b0074696c2e458mr932959qkc.4.1679551210235; Wed, 22 Mar
+ 2023 23:00:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230321020103.13494-1-laoar.shao@gmail.com> <20230321101711.625d0ccb@gandalf.local.home>
+In-Reply-To: <20230321101711.625d0ccb@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 23 Mar 2023 13:59:34 +0800
+Message-ID: <CALOAHbAfQxAMQTwDHnMOLHDfz=Mo0gFwu9i3bS0emttUTodA4g@mail.gmail.com>
+Subject: Re: [PATCH] tracing: Refuse fprobe if RCU is not watching
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mhiramat@kernel.org, alexei.starovoitov@gmail.com,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,171 +72,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 23 Mar 2023 13:38:30 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Thu, Mar 23, 2023 at 9:43=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba=
-.com> wrote:
-> >
-> > On Wed, 22 Mar 2023 16:22:18 +0800, Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
-> > > On 2023/3/22 11:03, Xuan Zhuo wrote:
-> > > > In the xdp implementation of virtio-net mergeable, it always checks
-> > > > whether two page is used and a page is selected to release. This is
-> > > > complicated for the processing of action, and be careful.
-> > > >
-> > > > In the entire process, we have such principles:
-> > > > * If xdp_page is used (PASS, TX, Redirect), then we release the old
-> > > >   page.
-> > > > * If it is a drop case, we will release two. The old page obtained =
-from
-> > > >   buf is release inside err_xdp, and xdp_page needs be relased by u=
-s.
-> > > >
-> > > > But in fact, when we allocate a new page, we can release the old pa=
-ge
-> > > > immediately. Then just one is using, we just need to release the new
-> > > > page for drop case. On the drop path, err_xdp will release the vari=
-able
-> > > > "page", so we only need to let "page" point to the new xdp_page in
-> > > > advance.
-> > > >
-> > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > ---
-> > > >  drivers/net/virtio_net.c | 15 ++++++---------
-> > > >  1 file changed, 6 insertions(+), 9 deletions(-)
-> > > >
-> > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > > index e2560b6f7980..4d2bf1ce0730 100644
-> > > > --- a/drivers/net/virtio_net.c
-> > > > +++ b/drivers/net/virtio_net.c
-> > > > @@ -1245,6 +1245,9 @@ static struct sk_buff *receive_mergeable(stru=
-ct net_device *dev,
-> > > >                     if (!xdp_page)
-> > > >                             goto err_xdp;
-> > > >                     offset =3D VIRTIO_XDP_HEADROOM;
-> > > > +
-> > > > +                   put_page(page);
-> > >
-> > > the error handling of xdp_linearize_page() does not seems self contai=
-ned.
-> > > Does it not seem better=EF=BC=9A
-> > > 1. if xdp_linearize_page() succesed, call put_page() for first buffer=
- just
-> > >    as put_page() is call for other buffer
-> > > 2. or call virtqueue_get_buf() and put_page() for all the buffer of t=
-he packet
-> > >    so the error handling is not needed outside the virtqueue_get_buf(=
-).
-> > >
-> > > In that case, it seems we can just do below without xdp_page:
-> > > page =3D xdp_linearize_page(rq, num_buf, page, ...);
-> >
-> >
-> > This does look better.
-> >
-> > In fact, we already have vq reset, we can load XDP based on vq reset.
-> > In this way, we can run without xdp_linearize_page.
+On Tue, Mar 21, 2023 at 10:17=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
+g> wrote:
 >
-> The goal is to try our best not to drop packets, so I think it's
-> better to keep it.
+> On Tue, 21 Mar 2023 02:01:03 +0000
+> Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> > It hits below warning on my test machine when running
+> > selftests/bpf/test_progs,
+> >
+> > [  702.223611] ------------[ cut here ]------------
+> > [  702.224168] RCU not on for: preempt_count_sub+0x0/0xa0
+> > [  702.224770] WARNING: CPU: 14 PID: 5267 at include/linux/trace_recurs=
+ion.h:162 fprobe_handler.part.0+0x1b8/0x1c0
+> > [  702.231740] CPU: 14 PID: 5267 Comm: main_amd64 Kdump: loaded Tainted=
+: G           O       6.2.0+ #584
+> > [  702.233169] RIP: 0010:fprobe_handler.part.0+0x1b8/0x1c0
+> > [  702.241388] Call Trace:
+> > [  702.241615]  <TASK>
+> > [  702.241811]  fprobe_handler+0x22/0x30
+> > [  702.242129]  0xffffffffc04710f7
+> > [  702.242417] RIP: 0010:preempt_count_sub+0x5/0xa0
+> > [  702.242809] Code: c8 50 68 94 42 0e b5 48 cf e9 f9 fd ff ff 0f 1f 80=
+ 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 e8 4b cd 38 0b=
+ <55> 8b 0d 9c d0 cf 02 48 89 e5 85 c9 75 1b 65 8b 05 be 78 f4 4a 89
+> > [  702.244752] RSP: 0018:ffffaf6187d27f10 EFLAGS: 00000082 ORIG_RAX: 00=
+00000000000000
+> > [  702.245801] RAX: 000000000000000e RBX: 0000000001b6ab72 RCX: 0000000=
+000000000
+> > [  702.246804] RDX: 0000000000000000 RSI: ffffffffb627967d RDI: 0000000=
+000000001
+> > [  702.247801] RBP: ffffaf6187d27f30 R08: 0000000000000000 R09: 0000000=
+000000000
+> > [  702.248786] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000=
+0000000ca
+> > [  702.249782] R13: ffffaf6187d27f58 R14: 0000000000000000 R15: 0000000=
+000000000
+> > [  702.250785]  ? preempt_count_sub+0x5/0xa0
+> > [  702.251540]  ? syscall_enter_from_user_mode+0x96/0xc0
+> > [  702.252368]  ? preempt_count_sub+0x5/0xa0
+> > [  702.253104]  ? syscall_enter_from_user_mode+0x96/0xc0
+> > [  702.253918]  do_syscall_64+0x16/0x90
+> > [  702.254613]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> > [  702.255422] RIP: 0033:0x46b793
+> >
+> > This issue happens under CONFIG_CONTEXT_TRACKING_USER=3Dy. When a task
+> > enters from user mode to kernel mode, or enters from user mode to irq,
+> > it excutes preempt_count_sub before RCU begins watching, and thus this
+> > warning is triggered.
+> >
+> > We should not handle fprobe if RCU is not watching.
+> >
+> > Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Cc: Jiri Olsa <olsajiri@gmail.com>
+> > ---
+> >  kernel/trace/fprobe.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> > index e8143e3..fe4b248 100644
+> > --- a/kernel/trace/fprobe.c
+> > +++ b/kernel/trace/fprobe.c
+> > @@ -27,6 +27,9 @@ static void fprobe_handler(unsigned long ip, unsigned=
+ long parent_ip,
+> >       struct fprobe *fp;
+> >       int bit;
+> >
+> > +     if (!rcu_is_watching())
+> > +             return;
+>
+> Hmm, at least on 6.3, this should not be an issue anymore. I believe that
+> all locations that have ftrace callbacks should now have rcu watching?
+>
+
+Hi Steven,
+
+I have verified the latest linux-trace tree,
+    git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+trace/core
+
+The result of "uname -r" is ''6.3.0-rc3+".
+This issue still exists, and after applying this patch it disappears.
+It can be reproduced with a simple bpf program as follows,
+    SEC("kprobe.multi/preempt_count_sub")
+    int fprobe_test()
+    {
+        return 0;
+    }
+
+> I think we *want* a warn on when this happens.
+>
+> Peter?
+>
 
 
-Yes. vq reset may drop some packets.
 
-Thanks.
-
->
-> Thanks
->
-> >
-> >
-> > >
-> > >
-> > > > +                   page =3D xdp_page;
-> > > >             } else if (unlikely(headroom < virtnet_get_headroom(vi)=
-)) {
-> > > >                     xdp_room =3D SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM=
- +
-> > > >                                               sizeof(struct skb_sha=
-red_info));
-> > > > @@ -1259,6 +1262,9 @@ static struct sk_buff *receive_mergeable(stru=
-ct net_device *dev,
-> > > >                            page_address(page) + offset, len);
-> > > >                     frame_sz =3D PAGE_SIZE;
-> > > >                     offset =3D VIRTIO_XDP_HEADROOM;
-> > > > +
-> > > > +                   put_page(page);
-> > > > +                   page =3D xdp_page;
-> > >
-> > > It seems we can limit the scope of xdp_page in this "else if" block.
-> > >
-> > > >             } else {
-> > > >                     xdp_page =3D page;
-> > > >             }
-> > >
-> > > It seems the above else block is not needed anymore.
-> >
-> > Yes, the follow-up patch has this optimization.
-> >
-> >
-> > >
-> > > > @@ -1278,8 +1284,6 @@ static struct sk_buff *receive_mergeable(stru=
-ct net_device *dev,
-> > > >                     if (unlikely(!head_skb))
-> > > >                             goto err_xdp_frags;
-> > > >
-> > > > -                   if (unlikely(xdp_page !=3D page))
-> > > > -                           put_page(page);
-> > > >                     rcu_read_unlock();
-> > > >                     return head_skb;
-> > > >             case XDP_TX:
-> > > > @@ -1297,8 +1301,6 @@ static struct sk_buff *receive_mergeable(stru=
-ct net_device *dev,
-> > > >                             goto err_xdp_frags;
-> > > >                     }
-> > > >                     *xdp_xmit |=3D VIRTIO_XDP_TX;
-> > > > -                   if (unlikely(xdp_page !=3D page))
-> > > > -                           put_page(page);
-> > > >                     rcu_read_unlock();
-> > > >                     goto xdp_xmit;
-> > > >             case XDP_REDIRECT:
-> > > > @@ -1307,8 +1309,6 @@ static struct sk_buff *receive_mergeable(stru=
-ct net_device *dev,
-> > > >                     if (err)
-> > > >                             goto err_xdp_frags;
-> > > >                     *xdp_xmit |=3D VIRTIO_XDP_REDIR;
-> > > > -                   if (unlikely(xdp_page !=3D page))
-> > > > -                           put_page(page);
-> > > >                     rcu_read_unlock();
-> > > >                     goto xdp_xmit;
-> > > >             default:
-> > > > @@ -1321,9 +1321,6 @@ static struct sk_buff *receive_mergeable(stru=
-ct net_device *dev,
-> > > >                     goto err_xdp_frags;
-> > > >             }
-> > > >  err_xdp_frags:
-> > > > -           if (unlikely(xdp_page !=3D page))
-> > > > -                   __free_pages(xdp_page, 0);
-> > >
-> > > It seems __free_pages() and put_page() is used interchangeably here.
-> > > Perhaps using __free_pages() have performance reason? As the comment =
-below:
-> > >
-> > > https://elixir.bootlin.com/linux/v6.3-rc3/source/net/core/page_pool.c=
-#L500
-> >
-> >
-> > Yes, but now we don't seem to be very good to distinguish it. But I thi=
-nk
-> > it doesn't matter. This logic is rare under actual situation.
-> >
-> > Thanks.
-> >
-> >
-> > >
-> > > > -
-> > > >             if (xdp_buff_has_frags(&xdp)) {
-> > > >                     shinfo =3D xdp_get_shared_info_from_buff(&xdp);
-> > > >                     for (i =3D 0; i < shinfo->nr_frags; i++) {
-> > > >
-> >
->
+--=20
+Regards
+Yafang
