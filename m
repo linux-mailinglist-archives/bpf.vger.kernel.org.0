@@ -2,175 +2,283 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 469296C6F2B
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 18:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EA36C6F32
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 18:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbjCWRfC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 13:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
+        id S232090AbjCWRfz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 13:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231628AbjCWRe7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 13:34:59 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A46199C5
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 10:34:35 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id bz27so15718666qtb.1
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 10:34:35 -0700 (PDT)
+        with ESMTP id S231614AbjCWRfn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 13:35:43 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46F71166D;
+        Thu, 23 Mar 2023 10:35:26 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id h8so90079247ede.8;
+        Thu, 23 Mar 2023 10:35:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112; t=1679592825;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CZLXBmA41bOiDNyv2hz7XrEIq6hNyBHTJSZ1wV7jb+Y=;
-        b=kqP1eE1tL+wzCUnNqIYAlvN8tJmINyAiPen+kx5VrAY4oKGNxvQ2ayaV5CBTOH244L
-         wSwev4CFWIXuiAIp5ed+/xowiomE7u/QDssFht8UY98/sZfqfi1/IV7aogEUqbnf1lLu
-         n9zP+g0UuDb1eJIEACMFT1Ehij4gm/nLjZ9hYqaV8hMSV4pLbzoOiPzomoGhbIC8c436
-         OVk+Aq3xUTZkCRsAI+b/2Pu9kd/r1FSfr3GrCG8qsKEAzLRt4Op45wJCxou54rFiV1wS
-         vYtAKT5xhifZ6zNpwwlYm5VHESq+Sd0jNHWKiIIERy7uTrHrl3bTT55XUNKACw86m7+J
-         6YEA==
+        d=gmail.com; s=20210112; t=1679592922;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HRKLfvrETKKRHqppJOUGcPm5Thl8LCTv37ptHgjATCw=;
+        b=bN4uLl311Hp3OsFquz9kbJJ2LR6wVRZ2mSI3cteP/v7Ho1RrSjDIlDwTZAbo84mQoW
+         vABMOKbkRo1wz09xiTi/Oen1Gqu0eA7EKsa05lNttOCmEW+DYreVihhBFg6ml2VU+DTl
+         CH/UdFwbbrilHeNExKw3YA91uAzwE3qXmfNvNm4uaOiyVjTsyD3tM8XB+CRrF7sqjZrh
+         sYGOkv6eI3sxtZepNNfDG4CIp+juQa0LAP7oKDKv4Nn/PpUF3RnuKzD7Php0pJyo5vVm
+         pZEleWMkkIxD6RTt/t+/seQ6eiRd1eM19+WcaORH5MvpzM4OpKdUUd1kVfYvSkx/Q4TY
+         WVNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679592825;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CZLXBmA41bOiDNyv2hz7XrEIq6hNyBHTJSZ1wV7jb+Y=;
-        b=cwM5WFjg/T26VLzl+Cotz8XiHQ8zxAk2OU1nuMevJEm01ag0iRYFn4Kgyauvkmqy5D
-         cub8GAIN8fNsrsUdNkPHRyyaRlll5YRg5DFY8O7jLKqSgOSZqYiSZ/g3dlZ4Qn0H57Zi
-         r+x4vFOulgX2TYiXVeZFy2MOKxKGCvo/Suyp2EmQnszrVHiXIuV8gz6rZX3sEMB4WuIs
-         arQiOKwwOFDeVVRedJHpPfTlCSSv5fa6WKIwBOzkiFgQcGjcYWTDTOW4kZbw/7C/rR+T
-         uCIRwIepwQ4ipD7OxDfYz8SJpIwc1aIF/tch+NeW/ogoEutfT5ifWxp+uwN9AzUnjRwh
-         f9Vg==
-X-Gm-Message-State: AO0yUKWnssdyFROGIZzAPLTNhs/qZVrL7YPTb9U+xNEKf/lZhe+joHZd
-        Ypr3adT19m17kyevIqOq7CreCQ==
-X-Google-Smtp-Source: AK7set8xtnTqAdTFnGSiN2Htn9NjFRZXFckL22JLDWTFvLdbaXRXU6d+bQQm+F6Bjwd83f2G1P4quw==
-X-Received: by 2002:a05:622a:5cf:b0:3e3:3941:d175 with SMTP id d15-20020a05622a05cf00b003e33941d175mr172725qtb.38.1679592824854;
-        Thu, 23 Mar 2023 10:33:44 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:62db])
-        by smtp.gmail.com with ESMTPSA id 66-20020a370b45000000b0071eddd3bebbsm5237213qkl.81.2023.03.23.10.33.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 10:33:44 -0700 (PDT)
-Date:   Thu, 23 Mar 2023 13:33:43 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-Message-ID: <20230323173343.GF739026@cmpxchg.org>
-References: <20230323040037.2389095-2-yosryahmed@google.com>
- <CALvZod7e7dMmkhKtXPAxmXjXQoTyeBf3Bht8HJC8AtWW93As3g@mail.gmail.com>
- <CAJD7tkbziGh+6hnMysHkoNr_HGBKU+s1rSGj=gZLki0ALT-jLg@mail.gmail.com>
- <CALvZod5GT=bZsLXsG500pNkEJpMB1o2KJau4=r0eHB-c8US53A@mail.gmail.com>
- <CAJD7tkY6Wf2OWja+f-JeFM5DdMCyLzbXxZ8KF0MjcYOKri-vtA@mail.gmail.com>
- <CALvZod5mJBAQ5adym7UNEruL-tOOOi+Y_ZiKsfOYqXPmGVPUEA@mail.gmail.com>
- <CAJD7tkYWo_aB7a4SHXNQDHwcaTELonOk_Vd8q0=x8vwGy2VkYg@mail.gmail.com>
- <CALvZod7f9Rejb_WrZ+Ajegz-NsQ7iPQegRDMdk5Ya0a0w=40kg@mail.gmail.com>
- <CALvZod7-6F84POkNetA2XJB-24wms=5q_s495NEthO8b63rL4A@mail.gmail.com>
- <CAJD7tkbGCgk9VkGdec0=AdHErds4XQs1LzJMhqVryXdjY5PVAg@mail.gmail.com>
+        d=1e100.net; s=20210112; t=1679592922;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HRKLfvrETKKRHqppJOUGcPm5Thl8LCTv37ptHgjATCw=;
+        b=SHI7DqKWMlNj2Ijdb2d5vRbvsk6UHcyvihgGpuV6J4qDnnFBu2Hp22MbPbLKN9Yznk
+         oUQs+kVH5y89ZVaAE2YuFYLIQfVvUxnhkiZzDAU2yBvm6bwkcNaJOL1pKmt8wojQGHuU
+         DPibAvEryHxXym/xI64mdEERF7nDz+Q395fjvYiRORGtu1RZNH3dAqAIN0JO+jIT1fzO
+         sovcqRbLphJLrkWOTi1z+RGj/A5LKQGPpL7SJyJTD4HfIcFgNHwS6JaZAC3smTMza+rw
+         1lCDQpkHndjlLYKiKdaR4s16uR1HxnLMUxja/Svjt3thrrowMmU8js/8wvKGoI3iS/bU
+         Jvww==
+X-Gm-Message-State: AO0yUKVzyVGzP83N11veZhg2lrjHqlo54k4HfxqLovJHRrm/mo5fMqP0
+        q2KrNdPst1JWDbC725r5+XJs3PAJvse/2RL6AXI=
+X-Google-Smtp-Source: AK7set8K/L1zB6jSQTc0sdzB8WzanW0af/plqKt56NPau/aklI+gV0w6LkAVFuVHJimGN7Llb88lbPiQ/xMJHXUBXwk=
+X-Received: by 2002:a05:6402:278e:b0:501:dfd8:67c5 with SMTP id
+ b14-20020a056402278e00b00501dfd867c5mr5060794ede.3.1679592922058; Thu, 23 Mar
+ 2023 10:35:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkbGCgk9VkGdec0=AdHErds4XQs1LzJMhqVryXdjY5PVAg@mail.gmail.com>
-X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <167940634187.2718137.10209374282891218398.stgit@firesoul>
+ <167940643669.2718137.4624187727245854475.stgit@firesoul> <CAKH8qBuv-9TXAmi0oTbB0atC4f6jzFcFhAgQ3D89VX45vUU9hw@mail.gmail.com>
+ <080640fc-5835-26f1-2b20-ff079bd59182@redhat.com> <CAADnVQKsxzLTZ2XoLbmKKLAeaSyvf3P+w8V143iZ4cEWWTEUfw@mail.gmail.com>
+ <CAKH8qBuHaaqnV-_mb1Roao9ZDrEHm+1Cj77hPZSRgwxoqphvxQ@mail.gmail.com>
+ <CAADnVQ+6FeQ97DZLco3OtbtXQvGUAY4nr5tM++6NEDr+u8m7GQ@mail.gmail.com>
+ <CAKH8qBvzVASpUu3M=6ohDqJgJjoR33jQ-J44ESD9SdkvFoGAZg@mail.gmail.com>
+ <CAADnVQLC7ma7SWPOcjXhsZ2N0OyVtBr7TzCoT-_Dn+zQ2DEyWg@mail.gmail.com>
+ <CAKH8qBuqxxVM9fSB43cAvvTnaHkA-JNRy=gufCqYf5GNbRA-8g@mail.gmail.com> <d7ac4f80-b65c-5201-086e-3b2645cbe7fe@redhat.com>
+In-Reply-To: <d7ac4f80-b65c-5201-086e-3b2645cbe7fe@redhat.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 23 Mar 2023 10:35:10 -0700
+Message-ID: <CAADnVQ+Jc6G78gJOA758bkCt4sgiwaxgC7S0cr9J=XBPfMDUSg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V2 3/6] selftests/bpf: xdp_hw_metadata RX hash
+ return code info
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 09:17:33AM -0700, Yosry Ahmed wrote:
-> On Thu, Mar 23, 2023 at 9:10 AM Shakeel Butt <shakeelb@google.com> wrote:
+On Thu, Mar 23, 2023 at 1:51=E2=80=AFAM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
+>
+>
+> On 22/03/2023 20.33, Stanislav Fomichev wrote:
+> > On Wed, Mar 22, 2023 at 12:30=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >>
+> >> On Wed, Mar 22, 2023 at 12:23=E2=80=AFPM Stanislav Fomichev <sdf@googl=
+e.com> wrote:
+> >>>
+> >>> On Wed, Mar 22, 2023 at 12:17=E2=80=AFPM Alexei Starovoitov
+> >>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>
+> >>>> On Wed, Mar 22, 2023 at 12:00=E2=80=AFPM Stanislav Fomichev <sdf@goo=
+gle.com> wrote:
+> >>>>>
+> >>>>> On Wed, Mar 22, 2023 at 9:07=E2=80=AFAM Alexei Starovoitov
+> >>>>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>>>
+> >>>>>> On Wed, Mar 22, 2023 at 9:05=E2=80=AFAM Jesper Dangaard Brouer
+> >>>>>> <jbrouer@redhat.com> wrote:
+> >>>>>>>
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> On 21/03/2023 19.47, Stanislav Fomichev wrote:
+> >>>>>>>> On Tue, Mar 21, 2023 at 6:47=E2=80=AFAM Jesper Dangaard Brouer
+> >>>>>>>> <brouer@redhat.com> wrote:
+> >>>>>>>>>
+> >>>>>>>>> When driver developers add XDP-hints kfuncs for RX hash it is
+> >>>>>>>>> practical to print the return code in bpf_printk trace pipe log=
+.
+> >>>>>>>>>
+> >>>>>>>>> Print hash value as a hex value, both AF_XDP userspace and bpf_=
+prog,
+> >>>>>>>>> as this makes it easier to spot poor quality hashes.
+> >>>>>>>>>
+> >>>>>>>>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> >>>>>>>>> ---
+> >>>>>>>>>    .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++=
+++++---
+> >>>>>>>>>    tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++=
+++-
+> >>>>>>>>>    2 files changed, 10 insertions(+), 4 deletions(-)
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.=
+c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> >>>>>>>>> index 40c17adbf483..ce07010e4d48 100644
+> >>>>>>>>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> >>>>>>>>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> >>>>>>>>> @@ -77,10 +77,13 @@ int rx(struct xdp_md *ctx)
+> >>>>>>>>>                   meta->rx_timestamp =3D 0; /* Used by AF_XDP a=
+s not avail signal */
+> >>>>>>>>>           }
+> >>>>>>>>>
+> >>>>>>>>> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+> >>>>>>>>> -               bpf_printk("populated rx_hash with %u", meta->r=
+x_hash);
+> >>>>>>>>> -       else
+> >>>>>>>>> +       ret =3D bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
+> >>>>>>>>> +       if (ret >=3D 0) {
+> >>>>>>>>> +               bpf_printk("populated rx_hash with 0x%08X", met=
+a->rx_hash);
+> >>>>>>>>> +       } else {
+> >>>>>>>>> +               bpf_printk("rx_hash not-avail errno:%d", ret);
+> >>>>>>>>>                   meta->rx_hash =3D 0; /* Used by AF_XDP as not=
+ avail signal */
+> >>>>>>>>> +       }
+> >>>>>>>>>
+> >>>>>>>>>           return bpf_redirect_map(&xsk, ctx->rx_queue_index, XD=
+P_PASS);
+> >>>>>>>>>    }
+> >>>>>>>>> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/to=
+ols/testing/selftests/bpf/xdp_hw_metadata.c
+> >>>>>>>>> index 400bfe19abfe..f3ec07ccdc95 100644
+> >>>>>>>>> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> >>>>>>>>> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> >>>>>>>>> @@ -3,6 +3,9 @@
+> >>>>>>>>>    /* Reference program for verifying XDP metadata on real HW. =
+Functional test
+> >>>>>>>>>     * only, doesn't test the performance.
+> >>>>>>>>>     *
+> >>>>>>>>> + * BPF-prog bpf_printk info outout can be access via
+> >>>>>>>>> + * /sys/kernel/debug/tracing/trace_pipe
+> >>>>>>>>
+> >>>>>>>> s/outout/output/
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> Fixed in V3
+> >>>>>>>
+> >>>>>>>> But let's maybe drop it? If you want to make it more usable, let=
+'s
+> >>>>>>>> have a separate patch to enable tracing and periodically dump it=
+ to
+> >>>>>>>> the console instead (as previously discussed).
+> >>>>>>>
+> >>>>>>> Cat'ing /sys/kernel/debug/tracing/trace_pipe work for me regardle=
+ss of
+> >>>>>>> setting in
+> >>>>>>> /sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enabl=
+e
+> >>>>>>>
+> >>>>>>> We likely need a followup patch that adds a BPF config switch tha=
+t can
+> >>>>>>> disable bpf_printk calls, because this adds overhead and thus aff=
+ects
+> >>>>>>> the timestamps.
+> >>>>>>
+> >>>>>> No. This is by design.
+> >>>>>> Do not use bpf_printk* in production.
+>
+> I fully agree do not use bpf_printk in *production*.
+>
+> >>>>>
+> >>>>> But that's not for the production? xdp_hw_metadata is a small tool =
+to
+> >>>>> verify that the metadata being dumped is correct (during the
+> >>>>> development).
+> >>>>> We have a proper (less verbose) selftest in
+> >>>>> {progs,prog_tests}/xdp_metadata.c (over veth).
+> >>>>> This xdp_hw_metadata was supposed to be used for running it against
+> >>>>> the real hardware, so having as much debugging at hand as possible
+> >>>>> seems helpful? (at least it was helpful to me when playing with mlx=
+4)
+>
+> My experience when developing these kfuncs for igc (real hardware), this
+> "tool" xdp_hw_metadata was super helpful, because it was very verbose
+> (and I was juggling reading chip registers BE/LE and see patch1 a buggy
+> implementation for RX-hash).
+>
+> As I wrote in cover-letter, I recommend other driver developers to do
+> the same, because it really help speed up the development. In theory
+> xdp_hw_metadata doesn't belong in selftests directory and IMHO it should
+> have been placed in samples/bpf/, but given the relationship with real
+> selftest {progs,prog_tests}/xdp_metadata.c I think it makes sense to
+> keep here.
+>
+>
+> >>>>
+> >>>> The only use of bpf_printk is for debugging of bpf progs themselves.
+> >>>> It should not be used in any tool.
+> >>>
+> >>> Hmm, good point. I guess it also means we won't have to mess with
+> >>> enabling/dumping ftrace (and don't need this comment about cat'ing th=
+e
+> >>> file).
+> >>> Jesper, maybe we can instead pass the status of those
+> >>> bpf_xdp_metadata_xxx kfuncs via 'struct xdp_meta'? And dump this info
+> >>> from the userspace if needed.
+> >>
+> >> There are so many other ways for bpf prog to communicate with user spa=
+ce.
+> >> Use ringbuf, perf_event buffer, global vars, maps, etc.
+> >> trace_pipe is debug only because it's global and will conflict with
+> >> all other debug sessions.
+>
+> I want to highlight above paragraph: It is very true for production
+> code. (Anyone Googling this pay attention to above paragraph).
+>
 > >
-> > On Thu, Mar 23, 2023 at 8:46 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > On Thu, Mar 23, 2023 at 8:43 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > >
-> > > > On Thu, Mar 23, 2023 at 8:40 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > > > >
-> > > > > On Thu, Mar 23, 2023 at 6:36 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > > > >
-> > > > > [...]
-> > > > > > > >
-> > > > > > > > > 2. Are we really calling rstat flush in irq context?
-> > > > > > > >
-> > > > > > > > I think it is possible through the charge/uncharge path:
-> > > > > > > > memcg_check_events()->mem_cgroup_threshold()->mem_cgroup_usage(). I
-> > > > > > > > added the protection against flushing in an interrupt context for
-> > > > > > > > future callers as well, as it may cause a deadlock if we don't disable
-> > > > > > > > interrupts when acquiring cgroup_rstat_lock.
-> > > > > > > >
-> > > > > > > > > 3. The mem_cgroup_flush_stats() call in mem_cgroup_usage() is only
-> > > > > > > > > done for root memcg. Why is mem_cgroup_threshold() interested in root
-> > > > > > > > > memcg usage? Why not ignore root memcg in mem_cgroup_threshold() ?
-> > > > > > > >
-> > > > > > > > I am not sure, but the code looks like event notifications may be set
-> > > > > > > > up on root memcg, which is why we need to check thresholds.
-> > > > > > >
-> > > > > > > This is something we should deprecate as root memcg's usage is ill defined.
-> > > > > >
-> > > > > > Right, but I think this would be orthogonal to this patch series.
-> > > > > >
-> > > > >
-> > > > > I don't think we can make cgroup_rstat_lock a non-irq-disabling lock
-> > > > > without either breaking a link between mem_cgroup_threshold and
-> > > > > cgroup_rstat_lock or make mem_cgroup_threshold work without disabling
-> > > > > irqs.
-> > > > >
-> > > > > So, this patch can not be applied before either of those two tasks are
-> > > > > done (and we may find more such scenarios).
-> > > >
-> > > >
-> > > > Could you elaborate why?
-> > > >
-> > > > My understanding is that with an in_task() check to make sure we only
-> > > > acquire cgroup_rstat_lock from non-irq context it should be fine to
-> > > > acquire cgroup_rstat_lock without disabling interrupts.
-> > >
-> > > From mem_cgroup_threshold() code path, cgroup_rstat_lock will be taken
-> > > with irq disabled while other code paths will take cgroup_rstat_lock
-> > > with irq enabled. This is a potential deadlock hazard unless
-> > > cgroup_rstat_lock is always taken with irq disabled.
+> > =F0=9F=91=8D makes sense, ty! hopefully we won't have to add a separate=
+ channel
+> > for those and can (ab)use the metadata area.
 > >
-> > Oh you are making sure it is not taken in the irq context through
-> > should_skip_flush(). Hmm seems like a hack. Normally it is recommended
-> > to actually remove all such users instead of silently
-> > ignoring/bypassing the functionality.
+>
+> Proposed solution: How about default disabling the bpf_printk's via a
+> macro define, and then driver developer can manually reenable them
+> easily via a single define, to enable a debugging mode.
+>
+> I was only watching /sys/kernel/debug/tracing/trace_pipe when I was
+> debugging a driver issue.  Thus, an extra step of modifying a single
+> define in BPF seems easier, than instrumenting my driver with printk.
 
-+1
+It's certainly fine to have commented out bpf_printk in selftests
+and sample code.
+But the patch does:
++       if (ret >=3D 0) {
++               bpf_printk("populated rx_hash with 0x%08X", meta->rx_hash);
++       } else {
++               bpf_printk("rx_hash not-avail errno:%d", ret);
+                meta->rx_hash =3D 0; /* Used by AF_XDP as not avail signal =
+*/
++       }
 
-It shouldn't silently skip the requested operation, rather it
-shouldn't be requested from an incompatible context.
-
-> > So, how about removing mem_cgroup_flush_stats() from
-> > mem_cgroup_usage(). It will break the known chain which is taking
-> > cgroup_rstat_lock with irq disabled and you can add
-> > WARN_ON_ONCE(!in_task()).
-> 
-> This changes the behavior in a more obvious way because:
-> 1. The memcg_check_events()->mem_cgroup_threshold()->mem_cgroup_usage()
-> path is also exercised in a lot of paths outside irq context, this
-> will change the behavior for any event thresholds on the root memcg.
-> With proposed skipped flushing in irq context we only change the
-> behavior in a small subset of cases.
-
-Can you do
-
-	/* Note: stale usage data when called from irq context!! */
-	if (in_task())
-		mem_cgroup_flush_stats()
-
-directly in the callsite? Maybe even include the whole callchain in
-the comment that's currently broken and needs fixing/removing.
+It feels that printk is the only thing that provides the signal to the user=
+.
+Doing s/ret >=3D 0/true/ won't make any difference to selftest and
+to the consumer and that's my main concern with such selftest/samples.
