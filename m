@@ -2,82 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8BD6C740E
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 00:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC0F6C744C
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 00:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbjCWXgF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 19:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33468 "EHLO
+        id S229522AbjCWX6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 19:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbjCWXgF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 19:36:05 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A631A241E3;
-        Thu, 23 Mar 2023 16:36:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 40082B8229F;
-        Thu, 23 Mar 2023 23:36:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DE535C433D2;
-        Thu, 23 Mar 2023 23:36:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679614561;
-        bh=Am8M97vwZh11u6tbk3dsmDenbosqisOkpHc2ErBtE6Y=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mIv8B7G8q3laeVrr0l9MGJ6vCSdS9OrXJi4xxpSZYsRr3F4JyRwlvJVDqlutnPHUm
-         ixd0v/FwXZezERtUT4Od8MVPWPNHdCRriPPg4y73ZjoWP25gajU4qWcKsa/fwHeX4S
-         QCKmt2xlPFdQ/MiuwOk4/4rJAjnjoZcgwTZ3Jl56LRh3FJMrE838GO6QKvH06P4TXy
-         nFBzAGwKK4gEYMlNRxkNSXHvAbtANHf/E2gEYpN52a+mCvBZt8bChKn0MYhnG1KNMP
-         zGwtNMfbmTWviB+mHVjqQvbSJCV0ZgnfZVfwWIN9tUa7VyqXxn9uSB/CA1TeFx8FKs
-         zb33r2xEhvURw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CCB01E61B85;
-        Thu, 23 Mar 2023 23:36:01 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229499AbjCWX6b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 19:58:31 -0400
+Received: from out-5.mta1.migadu.com (out-5.mta1.migadu.com [95.215.58.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C932BF26
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 16:58:30 -0700 (PDT)
+Message-ID: <306f23cd-918f-f0e3-9521-53be8e362458@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1679615908;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C10r8V5Xu+QXGYhouwD+//dZi0OTWk2dTPdWAMiN2rU=;
+        b=KgF6Zhy90qEJ1wS2n188d9fMPSSI9RVyhLvzQNFqYbBGQRdDP71sLfjy7rSiWupxe43UBu
+        BWegOuKNpKekQBFEMTdBADznTN2W0RhcajkuAQw5+27arrp1XDJ7e20ZOjLZNvZCc/I5+c
+        4G0owaXAEudP5g6R43xVim+QHjMMEs8=
+Date:   Thu, 23 Mar 2023 16:58:23 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf 2023-03-23
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167961456183.10917.11553657218961185651.git-patchwork-notify@kernel.org>
-Date:   Thu, 23 Mar 2023 23:36:01 +0000
-References: <20230323225221.6082-1-daniel@iogearbox.net>
-In-Reply-To: <20230323225221.6082-1-daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v4 bpf-next 2/4] bpf: Add bpf_sock_destroy kfunc
+Content-Language: en-US
+To:     Aditi Ghag <aditi.ghag@isovalent.com>
+Cc:     sdf@google.com, edumazet@google.com, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
+ <20230323200633.3175753-3-aditi.ghag@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230323200633.3175753-3-aditi.ghag@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This pull request was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Thu, 23 Mar 2023 23:52:21 +0100 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
+On 3/23/23 1:06 PM, Aditi Ghag wrote:
+> The socket destroy kfunc is used to forcefully terminate sockets from
+> certain BPF contexts. We plan to use the capability in Cilium to force
+> client sockets to reconnect when their remote load-balancing backends are
+> deleted. The other use case is on-the-fly policy enforcement where existing
+> socket connections prevented by policies need to be forcefully terminated.
+> The helper allows terminating sockets that may or may not be actively
+> sending traffic.
 > 
-> The following pull-request contains BPF updates for your *net* tree.
+> The helper is currently exposed to certain BPF iterators where users can
+> filter, and terminate selected sockets.  Additionally, the helper can only
+> be called from these BPF contexts that ensure socket locking in order to
+> allow synchronous execution of destroy helpers that also acquire socket
+> locks. The previous commit that batches UDP sockets during iteration
+> facilitated a synchronous invocation of the destroy helper from BPF context
+> by skipping taking socket locks in the destroy handler. TCP iterators
+> already supported batching.
 > 
-> We've added 8 non-merge commits during the last 13 day(s) which contain
-> a total of 21 files changed, 238 insertions(+), 161 deletions(-).
+> The helper takes `sock_common` type argument, even though it expects, and
+> casts them to a `sock` pointer. This enables the verifier to allow the
+> sock_destroy kfunc to be called for TCP with `sock_common` and UDP with
+> `sock` structs. As a comparison, BPF helpers enable this behavior with the
+> `ARG_PTR_TO_BTF_ID_SOCK_COMMON` argument type. However, there is no such
+> option available with the verifier logic that handles kfuncs where BTF
+> types are inferred. Furthermore, as `sock_common` only has a subset of
+> certain fields of `sock`, casting pointer to the latter type might not
+> always be safe. Hence, the BPF kfunc converts the argument to a full sock
+> before casting.
 > 
-> [...]
+> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+> ---
+>   net/core/filter.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++
 
-Here is the summary with links:
-  - pull-request: bpf 2023-03-23
-    https://git.kernel.org/netdev/net/c/1b4ae19e432d
+This patch has merge conflict: https://github.com/kernel-patches/bpf/pull/4811, 
+so please rebase in the next respin.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+I took a quick skim but haven't finished. Please hold off the respin and review 
+can be continued on this revision.
 
