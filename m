@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 021436C7186
+	by mail.lfdr.de (Postfix) with ESMTP id D394A6C7187
 	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 21:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbjCWUGz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 16:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S231248AbjCWUG4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 16:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjCWUGy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S229508AbjCWUGy (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 23 Mar 2023 16:06:54 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70B125BAB
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 13:06:52 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id l9-20020a17090a3f0900b0023d32684e7fso4030427pjc.1
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 13:06:52 -0700 (PDT)
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D7125E0D
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 13:06:53 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id o6-20020a17090a9f8600b0023f32869993so3060515pjp.1
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 13:06:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1679602012;
+        d=isovalent.com; s=google; t=1679602013;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xlv5ThkHMgAmdLiCImP4wBlf4uCQmcFpqTg5KqFl6q0=;
-        b=SgQEuwObwxUt1FIYwDdG6HrM0z1xeRnQbvP3CY7Tj/e4HJntHMayzW+qVnzmJFwwf6
-         NfEt+11hXrAdIeeE3Y+JG5+wYKI2gYvaTB2bxkJBSujnGaXXLwyIa0mKtZwWRaRkNtPv
-         Sf933DsCumwwCMkcPgMFKPHbTlPVdGyVG26r3wXIx4v8U7Ux+wrYVvbw1EZmq0wOit5N
-         WPSq+JLYkOYy0w7feII1i7OvfC8THBSe2Ju68SQkkh0cYepzN3NaShMX39E/9s5HOIPR
-         739hMAFyPYak68uNtUdeie27mMI6/qzdhwLCqmk9SMRG+npNehiOnGldYjvX87EhCDLQ
-         jR4A==
+        bh=JW0tiAWBVLKjnwIUis1lvm04oebQt67O7eZhyfelwws=;
+        b=eBGeADZfk0TYeLGMQfqd8+yxtYmv15ALJi4Js6FzcvhX/bfuYve9cjy/awPL98ZjKa
+         +6MpSTUEHa9flk4KyLoykQ+Fe3dP/kGdMiQTJRqOj9tdAOSdUz7LhvyefCDgEW1Yob1w
+         VmY3BQgLufHoFDk10qivs1N8pQVL20Vl4515zIpHKs8DZ5ou5zXkTsCqLIuErxQyCWBj
+         t+toQE1Ej38ii1g8uD2QkhYH0EHx4bvrDRKIihz7XQlOcRr5ftTVLlWJ3Hwa/X5vXmqu
+         tZEKZfd9tZDOlNFBYgMhhRf7mS/Kq1HST775bvnS/jkxG92H5RwHaES4vnXs6C7spXqH
+         IIWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679602012;
+        d=1e100.net; s=20210112; t=1679602013;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xlv5ThkHMgAmdLiCImP4wBlf4uCQmcFpqTg5KqFl6q0=;
-        b=PZP0cKPqGEXlRR22ttgwv0UolfTCpB4DIkv6Hu7i+me08azwg41M91ckras+rqFkfu
-         RSVdkTBSsSyVLR2Tqgbzl8rD5wm+hGj7TENY+hVzVcdFzjXv9sG+1WwzYz8Up77ReJTQ
-         iZjajMCiRMYPlu0KmJe4Gw2F/7W8itEx2TsdZBuMONxvNjzTGF9CiyKoprCq0kHvUwfZ
-         zsm74f4zKAJ6si40IXuzzKob6qX5qldAN3fSDURMIjOtn7QhSOgFHd+/EX9xnfx6cERm
-         O5kCE115EugX6jcS1n8GZyvx2WJ4NNYfvA7syvObT/J9Q4ADFZgqVovfJ8oGQPFdoIxn
-         Ca/Q==
-X-Gm-Message-State: AAQBX9ecK3MrB7kLY0+79dGVJy0yS71dppFewsYayCwkjjPTqvfp6E3f
-        KcoQbFLVOpERNFDCRckyrR9nl1/9wKHcPpc4Iiw=
-X-Google-Smtp-Source: AK7set/ZFtw4h4WWyXThSfIWPPWRNsL/8OOJZTGys94sbTxw9L7GqUdPm6xor+K2MjtJYFxguoolEg==
-X-Received: by 2002:a17:90a:17a9:b0:23f:452c:7a4f with SMTP id q38-20020a17090a17a900b0023f452c7a4fmr43561pja.46.1679602011960;
-        Thu, 23 Mar 2023 13:06:51 -0700 (PDT)
+        bh=JW0tiAWBVLKjnwIUis1lvm04oebQt67O7eZhyfelwws=;
+        b=05wDErAsRMFSEgnY8OqffrWlj62DMpSNC1Q3OMsmVo0alKd40Swfj3xO3NA6XkfgCc
+         khNy7rU2D7zyC9dtFVV4bHSQpLKQIRHiNJnaVOMTyQyPHq9UAt9BuWfwGfbGuwIetXcU
+         u682fvwx9drZggxjfKvfDR84FQ1SWBCpdPF7qkpWyvP9uOWuYTFISlvoZ8V+fYRANtrP
+         AZYOOeDSqZDyfXnVU8z8rW1HhCzypnOQ/Trs/TbMxO313mdWcM86QhkUuT3iVjz7TG9k
+         XXiD3ZKJnLHMxQ0VmXa9WmNK0NIaHbnOLV2jtR+KKNM5scLiH1alBWKt6/3HZacP8V6q
+         JsBg==
+X-Gm-Message-State: AAQBX9fxG4+tKX/jRZjGWNktkoKTx1lbUV126CUisVwVIvm2GLlS3iyV
+        LWiVXLMYOHiKkF+ED01D6/XhWPud2gWcfVAgI3s=
+X-Google-Smtp-Source: AKy350a4PxFjTOqgOs582So2YuwSIDOgT+20ei8L0nqIA0mrpkDi9nrgCElRfMErogp2yohykid9IQ==
+X-Received: by 2002:a17:903:cc:b0:19e:6e00:4676 with SMTP id x12-20020a17090300cc00b0019e6e004676mr35811plc.61.1679602012832;
+        Thu, 23 Mar 2023 13:06:52 -0700 (PDT)
 Received: from localhost.localdomain ([2604:1380:4611:8100::1])
-        by smtp.gmail.com with ESMTPSA id j12-20020a17090276cc00b0019aaab3f9d7sm12701698plt.113.2023.03.23.13.06.51
+        by smtp.gmail.com with ESMTPSA id j12-20020a17090276cc00b0019aaab3f9d7sm12701698plt.113.2023.03.23.13.06.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 13:06:51 -0700 (PDT)
+        Thu, 23 Mar 2023 13:06:52 -0700 (PDT)
 From:   Aditi Ghag <aditi.ghag@isovalent.com>
 To:     bpf@vger.kernel.org
 Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
-        aditi.ghag@isovalent.com, Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH v4 bpf-next 1/4] bpf: Implement batching in UDP iterator
-Date:   Thu, 23 Mar 2023 20:06:30 +0000
-Message-Id: <20230323200633.3175753-2-aditi.ghag@isovalent.com>
+        aditi.ghag@isovalent.com
+Subject: [PATCH v4 bpf-next 2/4] bpf: Add bpf_sock_destroy kfunc
+Date:   Thu, 23 Mar 2023 20:06:31 +0000
+Message-Id: <20230323200633.3175753-3-aditi.ghag@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
 References: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
@@ -70,367 +70,157 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Batch UDP sockets from BPF iterator that allows for overlapping locking
-semantics in BPF/kernel helpers executed in BPF programs.  This facilitates
-BPF socket destroy kfunc (introduced by follow-up patches) to execute from
-BPF iterator programs.
+The socket destroy kfunc is used to forcefully terminate sockets from
+certain BPF contexts. We plan to use the capability in Cilium to force
+client sockets to reconnect when their remote load-balancing backends are
+deleted. The other use case is on-the-fly policy enforcement where existing
+socket connections prevented by policies need to be forcefully terminated.
+The helper allows terminating sockets that may or may not be actively
+sending traffic.
 
-Previously, BPF iterators acquired the sock lock and sockets hash table
-bucket lock while executing BPF programs. This prevented BPF helpers that
-again acquire these locks to be executed from BPF iterators.  With the
-batching approach, we acquire a bucket lock, batch all the bucket sockets,
-and then release the bucket lock. This enables BPF or kernel helpers to
-skip sock locking when invoked in the supported BPF contexts.
+The helper is currently exposed to certain BPF iterators where users can
+filter, and terminate selected sockets.  Additionally, the helper can only
+be called from these BPF contexts that ensure socket locking in order to
+allow synchronous execution of destroy helpers that also acquire socket
+locks. The previous commit that batches UDP sockets during iteration
+facilitated a synchronous invocation of the destroy helper from BPF context
+by skipping taking socket locks in the destroy handler. TCP iterators
+already supported batching.
 
-The batching logic is similar to the logic implemented in TCP iterator:
-https://lore.kernel.org/bpf/20210701200613.1036157-1-kafai@fb.com/.
+The helper takes `sock_common` type argument, even though it expects, and
+casts them to a `sock` pointer. This enables the verifier to allow the
+sock_destroy kfunc to be called for TCP with `sock_common` and UDP with
+`sock` structs. As a comparison, BPF helpers enable this behavior with the
+`ARG_PTR_TO_BTF_ID_SOCK_COMMON` argument type. However, there is no such
+option available with the verifier logic that handles kfuncs where BTF
+types are inferred. Furthermore, as `sock_common` only has a subset of
+certain fields of `sock`, casting pointer to the latter type might not
+always be safe. Hence, the BPF kfunc converts the argument to a full sock
+before casting.
 
-Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
 Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
 ---
- include/net/udp.h |   1 +
- net/ipv4/udp.c    | 255 ++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 247 insertions(+), 9 deletions(-)
+ net/core/filter.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++
+ net/ipv4/tcp.c    | 10 ++++++---
+ net/ipv4/udp.c    |  6 ++++--
+ 3 files changed, 65 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/udp.h b/include/net/udp.h
-index de4b528522bb..d2999447d3f2 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -437,6 +437,7 @@ struct udp_seq_afinfo {
- struct udp_iter_state {
- 	struct seq_net_private  p;
- 	int			bucket;
-+	int			offset;
- 	struct udp_seq_afinfo	*bpf_seq_afinfo;
- };
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 1d6f165923bf..ba3e0dac119c 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -11621,3 +11621,57 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
  
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index c605d171eb2d..58c620243e47 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -3152,6 +3152,171 @@ struct bpf_iter__udp {
- 	int bucket __aligned(8);
- };
- 
-+struct bpf_udp_iter_state {
-+	struct udp_iter_state state;
-+	unsigned int cur_sk;
-+	unsigned int end_sk;
-+	unsigned int max_sk;
-+	struct sock **batch;
-+	bool st_bucket_done;
+ 	return func;
+ }
++
++/* Disables missing prototype warnings */
++__diag_push();
++__diag_ignore_all("-Wmissing-prototypes",
++		  "Global functions as their definitions will be in vmlinux BTF");
++
++/* bpf_sock_destroy: Destroy the given socket with ECONNABORTED error code.
++ *
++ * The helper expects a non-NULL pointer to a socket. It invokes the
++ * protocol specific socket destroy handlers.
++ *
++ * The helper can only be called from BPF contexts that have acquired the socket
++ * locks.
++ *
++ * Parameters:
++ * @sock: Pointer to socket to be destroyed
++ *
++ * Return:
++ * On error, may return EPROTONOSUPPORT, EINVAL.
++ * EPROTONOSUPPORT if protocol specific destroy handler is not implemented.
++ * 0 otherwise
++ */
++__bpf_kfunc int bpf_sock_destroy(struct sock_common *sock)
++{
++	struct sock *sk = (struct sock *)sock;
++
++	if (!sk)
++		return -EINVAL;
++
++	/* The locking semantics that allow for synchronous execution of the
++	 * destroy handlers are only supported for TCP and UDP.
++	 */
++	if (!sk->sk_prot->diag_destroy || sk->sk_protocol == IPPROTO_RAW)
++		return -EOPNOTSUPP;
++
++	return sk->sk_prot->diag_destroy(sk, ECONNABORTED);
++}
++
++__diag_pop()
++
++BTF_SET8_START(sock_destroy_kfunc_set)
++BTF_ID_FLAGS(func, bpf_sock_destroy)
++BTF_SET8_END(sock_destroy_kfunc_set)
++
++static const struct btf_kfunc_id_set bpf_sock_destroy_kfunc_set = {
++	.owner = THIS_MODULE,
++	.set   = &sock_destroy_kfunc_set,
 +};
 +
-+static unsigned short seq_file_family(const struct seq_file *seq);
-+static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
-+				      unsigned int new_batch_sz);
-+
-+static inline bool seq_sk_match(struct seq_file *seq, const struct sock *sk)
++static int init_subsystem(void)
 +{
-+	unsigned short family = seq_file_family(seq);
-+
-+	/* AF_UNSPEC is used as a match all */
-+	return ((family == AF_UNSPEC || family == sk->sk_family) &&
-+		net_eq(sock_net(sk), seq_file_net(seq)));
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_sock_destroy_kfunc_set);
 +}
-+
-+static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
-+{
-+	struct bpf_udp_iter_state *iter = seq->private;
-+	struct udp_iter_state *state = &iter->state;
-+	struct net *net = seq_file_net(seq);
-+	struct udp_seq_afinfo *afinfo = state->bpf_seq_afinfo;
-+	struct udp_table *udptable;
-+	struct sock *first_sk = NULL;
-+	struct sock *sk;
-+	unsigned int bucket_sks = 0;
-+	bool resized = false;
-+	int offset = 0;
-+	int new_offset;
-+
-+	/* The current batch is done, so advance the bucket. */
-+	if (iter->st_bucket_done) {
-+		state->bucket++;
-+		state->offset = 0;
-+	}
-+
-+	udptable = udp_get_table_afinfo(afinfo, net);
-+
-+	if (state->bucket > udptable->mask) {
-+		state->bucket = 0;
-+		state->offset = 0;
-+		return NULL;
-+	}
-+
-+again:
-+	/* New batch for the next bucket.
-+	 * Iterate over the hash table to find a bucket with sockets matching
-+	 * the iterator attributes, and return the first matching socket from
-+	 * the bucket. The remaining matched sockets from the bucket are batched
-+	 * before releasing the bucket lock. This allows BPF programs that are
-+	 * called in seq_show to acquire the bucket lock if needed.
-+	 */
-+	iter->cur_sk = 0;
-+	iter->end_sk = 0;
-+	iter->st_bucket_done = false;
-+	first_sk = NULL;
-+	bucket_sks = 0;
-+	offset = state->offset;
-+	new_offset = offset;
-+
-+	for (; state->bucket <= udptable->mask; state->bucket++) {
-+		struct udp_hslot *hslot = &udptable->hash[state->bucket];
-+
-+		if (hlist_empty(&hslot->head)) {
-+			offset = 0;
-+			continue;
-+		}
-+
-+		spin_lock_bh(&hslot->lock);
-+		/* Resume from the last saved position in a bucket before
-+		 * iterator was stopped.
-+		 */
-+		while (offset-- > 0) {
-+			sk_for_each(sk, &hslot->head)
-+				continue;
-+		}
-+		sk_for_each(sk, &hslot->head) {
-+			if (seq_sk_match(seq, sk)) {
-+				if (!first_sk)
-+					first_sk = sk;
-+				if (iter->end_sk < iter->max_sk) {
-+					sock_hold(sk);
-+					iter->batch[iter->end_sk++] = sk;
-+				}
-+				bucket_sks++;
-+			}
-+			new_offset++;
-+		}
-+		spin_unlock_bh(&hslot->lock);
-+
-+		if (first_sk)
-+			break;
-+
-+		/* Reset the current bucket's offset before moving to the next bucket. */
-+		offset = 0;
-+		new_offset = 0;
-+	}
-+
-+	/* All done: no batch made. */
-+	if (!first_sk)
-+		goto ret;
-+
-+	if (iter->end_sk == bucket_sks) {
-+		/* Batching is done for the current bucket; return the first
-+		 * socket to be iterated from the batch.
-+		 */
-+		iter->st_bucket_done = true;
-+		goto ret;
-+	}
-+	if (!resized && !bpf_iter_udp_realloc_batch(iter, bucket_sks * 3 / 2)) {
-+		resized = true;
-+		/* Go back to the previous bucket to resize its batch. */
-+		state->bucket--;
-+		goto again;
-+	}
-+ret:
-+	state->offset = new_offset;
-+	return first_sk;
-+}
-+
-+static void *bpf_iter_udp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-+{
-+	struct bpf_udp_iter_state *iter = seq->private;
-+	struct udp_iter_state *state = &iter->state;
-+	struct sock *sk;
-+
-+	/* Whenever seq_next() is called, the iter->cur_sk is
-+	 * done with seq_show(), so unref the iter->cur_sk.
-+	 */
-+	if (iter->cur_sk < iter->end_sk) {
-+		sock_put(iter->batch[iter->cur_sk++]);
-+		++state->offset;
-+	}
-+
-+	/* After updating iter->cur_sk, check if there are more sockets
-+	 * available in the current bucket batch.
-+	 */
-+	if (iter->cur_sk < iter->end_sk) {
-+		sk = iter->batch[iter->cur_sk];
-+	} else {
-+		// Prepare a new batch.
-+		sk = bpf_iter_udp_batch(seq);
-+	}
-+
-+	++*pos;
-+	return sk;
-+}
-+
-+static void *bpf_iter_udp_seq_start(struct seq_file *seq, loff_t *pos)
-+{
-+	/* bpf iter does not support lseek, so it always
-+	 * continue from where it was stop()-ped.
-+	 */
-+	if (*pos)
-+		return bpf_iter_udp_batch(seq);
-+
-+	return SEQ_START_TOKEN;
-+}
-+
- static int udp_prog_seq_show(struct bpf_prog *prog, struct bpf_iter_meta *meta,
- 			     struct udp_sock *udp_sk, uid_t uid, int bucket)
- {
-@@ -3172,18 +3337,38 @@ static int bpf_iter_udp_seq_show(struct seq_file *seq, void *v)
- 	struct bpf_prog *prog;
- 	struct sock *sk = v;
- 	uid_t uid;
-+	bool slow;
-+	int rc;
- 
- 	if (v == SEQ_START_TOKEN)
++late_initcall(init_subsystem);
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 33f559f491c8..5df6231016e3 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -4678,8 +4678,10 @@ int tcp_abort(struct sock *sk, int err)
  		return 0;
- 
-+	slow = lock_sock_fast(sk);
-+
-+	if (unlikely(sk_unhashed(sk))) {
-+		rc = SEQ_SKIP;
-+		goto unlock;
-+	}
-+
- 	uid = from_kuid_munged(seq_user_ns(seq), sock_i_uid(sk));
- 	meta.seq = seq;
- 	prog = bpf_iter_get_info(&meta, false);
--	return udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
-+	rc = udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
-+
-+unlock:
-+	unlock_sock_fast(sk, slow);
-+	return rc;
-+}
-+
-+static void bpf_iter_udp_unref_batch(struct bpf_udp_iter_state *iter)
-+{
-+	while (iter->cur_sk < iter->end_sk)
-+		sock_put(iter->batch[iter->cur_sk++]);
- }
- 
- static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
- {
-+	struct bpf_udp_iter_state *iter = seq->private;
- 	struct bpf_iter_meta meta;
- 	struct bpf_prog *prog;
- 
-@@ -3194,15 +3379,31 @@ static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
- 			(void)udp_prog_seq_show(prog, &meta, v, 0, 0);
  	}
  
--	udp_seq_stop(seq, v);
-+	if (iter->cur_sk < iter->end_sk) {
-+		bpf_iter_udp_unref_batch(iter);
-+		iter->st_bucket_done = false;
-+	}
+-	/* Don't race with userspace socket closes such as tcp_close. */
+-	lock_sock(sk);
++	/* BPF context ensures sock locking. */
++	if (!has_current_bpf_ctx())
++		/* Don't race with userspace socket closes such as tcp_close. */
++		lock_sock(sk);
+ 
+ 	if (sk->sk_state == TCP_LISTEN) {
+ 		tcp_set_state(sk, TCP_CLOSE);
+@@ -4701,9 +4703,11 @@ int tcp_abort(struct sock *sk, int err)
+ 	}
+ 
+ 	bh_unlock_sock(sk);
++
+ 	local_bh_enable();
+ 	tcp_write_queue_purge(sk);
+-	release_sock(sk);
++	if (!has_current_bpf_ctx())
++		release_sock(sk);
+ 	return 0;
  }
+ EXPORT_SYMBOL_GPL(tcp_abort);
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index 58c620243e47..408836102e20 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -2925,7 +2925,8 @@ EXPORT_SYMBOL(udp_poll);
  
- static const struct seq_operations bpf_iter_udp_seq_ops = {
--	.start		= udp_seq_start,
--	.next		= udp_seq_next,
-+	.start		= bpf_iter_udp_seq_start,
-+	.next		= bpf_iter_udp_seq_next,
- 	.stop		= bpf_iter_udp_seq_stop,
- 	.show		= bpf_iter_udp_seq_show,
- };
-+
-+static unsigned short seq_file_family(const struct seq_file *seq)
-+{
-+	const struct udp_seq_afinfo *afinfo;
-+
-+	/* BPF iterator: bpf programs to filter sockets. */
-+	if (seq->op == &bpf_iter_udp_seq_ops)
-+		return AF_UNSPEC;
-+
-+	/* Proc fs iterator */
-+	afinfo = pde_data(file_inode(seq->file));
-+	return afinfo->family;
-+}
- #endif
- 
- const struct seq_operations udp_seq_ops = {
-@@ -3413,9 +3614,30 @@ static struct pernet_operations __net_initdata udp_sysctl_ops = {
- DEFINE_BPF_ITER_FUNC(udp, struct bpf_iter_meta *meta,
- 		     struct udp_sock *udp_sk, uid_t uid, int bucket)
- 
-+static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
-+				      unsigned int new_batch_sz)
-+{
-+	struct sock **new_batch;
-+
-+	new_batch = kvmalloc_array(new_batch_sz, sizeof(*new_batch),
-+				   GFP_USER | __GFP_NOWARN);
-+	if (!new_batch)
-+		return -ENOMEM;
-+
-+	bpf_iter_udp_unref_batch(iter);
-+	kvfree(iter->batch);
-+	iter->batch = new_batch;
-+	iter->max_sk = new_batch_sz;
-+
-+	return 0;
-+}
-+
-+#define INIT_BATCH_SZ 16
-+
- static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
+ int udp_abort(struct sock *sk, int err)
  {
--	struct udp_iter_state *st = priv_data;
-+	struct bpf_udp_iter_state *iter = priv_data;
-+	struct udp_iter_state *st = &iter->state;
- 	struct udp_seq_afinfo *afinfo;
- 	int ret;
+-	lock_sock(sk);
++	if (!has_current_bpf_ctx())
++		lock_sock(sk);
  
-@@ -3427,24 +3649,39 @@ static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
- 	afinfo->udp_table = NULL;
- 	st->bpf_seq_afinfo = afinfo;
- 	ret = bpf_iter_init_seq_net(priv_data, aux);
--	if (ret)
-+	if (ret) {
- 		kfree(afinfo);
-+		return ret;
-+	}
-+	ret = bpf_iter_udp_realloc_batch(iter, INIT_BATCH_SZ);
-+	if (ret) {
-+		bpf_iter_fini_seq_net(priv_data);
-+		return ret;
-+	}
-+	iter->cur_sk = 0;
-+	iter->end_sk = 0;
-+	iter->st_bucket_done = false;
-+	st->bucket = 0;
-+	st->offset = 0;
-+
- 	return ret;
+ 	/* udp{v6}_destroy_sock() sets it under the sk lock, avoid racing
+ 	 * with close()
+@@ -2938,7 +2939,8 @@ int udp_abort(struct sock *sk, int err)
+ 	__udp_disconnect(sk, 0);
+ 
+ out:
+-	release_sock(sk);
++	if (!has_current_bpf_ctx())
++		release_sock(sk);
+ 
+ 	return 0;
  }
- 
- static void bpf_iter_fini_udp(void *priv_data)
- {
--	struct udp_iter_state *st = priv_data;
-+	struct bpf_udp_iter_state *iter = priv_data;
-+	struct udp_iter_state *st = &iter->state;
- 
--	kfree(st->bpf_seq_afinfo);
- 	bpf_iter_fini_seq_net(priv_data);
-+	kfree(st->bpf_seq_afinfo);
-+	kvfree(iter->batch);
- }
- 
- static const struct bpf_iter_seq_info udp_seq_info = {
- 	.seq_ops		= &bpf_iter_udp_seq_ops,
- 	.init_seq_private	= bpf_iter_init_udp,
- 	.fini_seq_private	= bpf_iter_fini_udp,
--	.seq_priv_size		= sizeof(struct udp_iter_state),
-+	.seq_priv_size		= sizeof(struct bpf_udp_iter_state),
- };
- 
- static struct bpf_iter_reg udp_reg_info = {
 -- 
 2.34.1
 
