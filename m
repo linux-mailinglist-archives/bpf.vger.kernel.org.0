@@ -2,125 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C6F6C6CE0
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 17:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 341BA6C6CEA
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 17:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbjCWQDM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 12:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52134 "EHLO
+        id S230059AbjCWQHG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 12:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbjCWQDL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 12:03:11 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C491D13DD2
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 09:03:03 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id eh3so88848298edb.11
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 09:03:03 -0700 (PDT)
+        with ESMTP id S229691AbjCWQHF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 12:07:05 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F0630281
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 09:06:59 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id y15so28466119lfa.7
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 09:06:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679587382;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0qq4eAJlExkTdfdM7Y2EFZtPczMJ0l3cf4DT7uOI7JI=;
-        b=b2L3krFnhws7f+p6hNHEuWxd6zHS4DqTuXhpP/rStBHvPGchFK0OAE51Mv5Gggdeva
-         0g+X1gb+kxTGwE7MuENLR+hBwy5CJCvKIeflwI8gTeX7juPYoXVi6mToYkQu2jsd6VVK
-         XkpNk/cz5nwC5XHfmfjMuww1FYcjHs0qPmGVGUo4z9Ghsk7Eb1tXZJTLTmpPar+FodLP
-         ufTGqdkDyfaPIyftUYuOdlRHEhAF00xxGUsvAS7AFhZdslbx6UQqkV+Zc9Xvt9lR/pVo
-         p0D8+Hc5PEtyv37lvNruiMQD1DsZALHgLLaWg+NZbdFcsLcZ3CNgbGpSXxz9y6+ZVaJt
-         NXIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679587382;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20210112; t=1679587618;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0qq4eAJlExkTdfdM7Y2EFZtPczMJ0l3cf4DT7uOI7JI=;
-        b=zJQtOnk0vndcyHTxifQnRJvuvYqUv96GzU0zfmU7Qr1RHJTt1a1f2kvOJ45RazW6tg
-         hfZ9yfGyaV8Tj8uCLbt5d8OzwROlJ62kPEqdtm4F+fNydrwy5f69+Iv2no716FNqQXTD
-         VPIiyK7TcmauKH/H75C/wShdoXNvIO9eF2a8wcGFh/uDpYLdyMertTcAuMFBbtLMwF7u
-         i0QRWW9ipWEXjbs1m259eMKgwOErujsfykq9wdKvLdUq3E5QjG2JRVeEGao1jkT1+bbc
-         tkR3iONkg8jC5ESKh3VBp0JQmMWK7VYROAiQEzSiFZayegLgyyOif/nmN+uZ/N0I87Ln
-         AAwQ==
-X-Gm-Message-State: AO0yUKW3Xb5+dsAUrKk1PCDVrtgZz2l8XnBHWuUWix3ajAS5xMqo3U5k
-        8pX8z9rYPlJPOwuhG8GsV7+oTP76qIgvzUg7nortIg==
-X-Google-Smtp-Source: AK7set/CTEwM+vAIIaFjtAYd2scGR7MdjQ8kvYZ6kSB1SLo+YTrn50F185ArhVjN2rVBhkCYuegGR8kNlO2/oWLc7XU=
-X-Received: by 2002:a17:906:34cd:b0:8e5:411d:4d09 with SMTP id
- h13-20020a17090634cd00b008e5411d4d09mr5207827ejb.15.1679587382152; Thu, 23
- Mar 2023 09:03:02 -0700 (PDT)
+        bh=bYR+TcNAb57HIBY+DJdHPWQ48HOpkEZ/ZRHsSFux8M4=;
+        b=pkBMD4hEQmSQ0/LvOiWX33O5wgdTWwDWdpCnCKn0roTf92+3OFs+E1/HdnIGaux2uA
+         6A0sJtbSlquw9RvAtwGZ7JaKjSEDaS4LEeLAGcNzYbOIgq/T069plkuckpQ1sIAMsvuG
+         gHaURVrM1yb6Cls8k+NWFORvRhewBQ/0XKgnyf2raQmuAzBn+dqeieTUT4zPOTaHGgk1
+         BEH3IWKUe6Z71mUM2d4FIg9bcDELTWej98gmATf8Ur/v/6cH7My/eRfLGEIVpG/Dg6Cx
+         xFK5JtSqllmr0fHEl79pTm0VLgMVhkhzUaq8RgtxH28XQEmKyCq4ie4bwPghLaUu9WD/
+         xWVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679587618;
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bYR+TcNAb57HIBY+DJdHPWQ48HOpkEZ/ZRHsSFux8M4=;
+        b=Oay/FTy4RiGR5PM1w1xAoOi0Jai8Wttmk4Sc58TLRrAwn/PQ1VKPEB+/p7Cj9fftyN
+         l4I8wDCLMwPskWOYpU+svvEqMFxwIxt3UnaiEO1xqrNw3xIJq1NzK2yIutSsfV4UIz8U
+         k6gFNU23yu/Jqu/0+ClvvvXCJ7PP0jXjkUQROf2HKJGyuu4/7zSVm+TLnRGvc/SV96w1
+         9xJW5OoHug4xg71H9e1iq8KxX51YQNA9NFD5kIRdJYWnF/s5owIx3FisPqVJtR3yqLSQ
+         Gf7filMg1XqyEa9borcVDbQKgUj6OpAVIUF3OZ2LYVqDyXJV/b/ZymRBMFB+eZ1M/qTU
+         V+Dg==
+X-Gm-Message-State: AO0yUKUsrAw0zgAl/+Lai/6U7hQF+hrT+xvIpW9UpA+OL92nmxFptX0e
+        FRkDqE8swNelv/XDrQkVt6B9aq3BCu0aLpWDoxY=
+X-Google-Smtp-Source: AK7set939CwReN70zlzui9h1DTprbKCKUUL3aMBkYQ3IebBXwio8JmGLCj4sfawRTviyJEyeIWu4Lwixm5ZKn2hn/58=
+X-Received: by 2002:ac2:5224:0:b0:4e9:74fe:91b8 with SMTP id
+ i4-20020ac25224000000b004e974fe91b8mr3320009lfl.6.1679587617811; Thu, 23 Mar
+ 2023 09:06:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230323040037.2389095-1-yosryahmed@google.com>
- <20230323040037.2389095-7-yosryahmed@google.com> <20230323160030.GD739026@cmpxchg.org>
-In-Reply-To: <20230323160030.GD739026@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 23 Mar 2023 09:02:25 -0700
-Message-ID: <CAJD7tkZ2cOQ8fVRewxznYin6VgeRHiJAQMZbhhi6cT64xfRvqg@mail.gmail.com>
-Subject: Re: [RFC PATCH 6/7] workingset: memcg: sleep when flushing stats in workingset_refault()
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
+Sender: ccollvuk@gmail.com
+Received: by 2002:ab3:5408:0:b0:224:15fc:cad4 with HTTP; Thu, 23 Mar 2023
+ 09:06:57 -0700 (PDT)
+From:   Mrs Aisha Al-Qaddafi <mrsaishag16@gmail.com>
+Date:   Thu, 23 Mar 2023 16:06:57 +0000
+X-Google-Sender-Auth: xbqVOBysxMmgJOVili1CScAd9tg
+Message-ID: <CAGzvb1EBnZYyqJus-517EFAG1V1PFqkwnP+vd-hYZDXGRRy=Wg@mail.gmail.com>
+Subject: Allah the Merciful,Peace be upon you
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=4.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,LOTS_OF_MONEY,
+        MILLION_HUNDRED,MILLION_USD,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,UNDISC_MONEY autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 9:00=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Thu, Mar 23, 2023 at 04:00:36AM +0000, Yosry Ahmed wrote:
-> > In workingset_refault(), we call mem_cgroup_flush_stats_delayed() to
-> > flush stats within an RCU read section and with sleeping disallowed.
-> > Move the call to mem_cgroup_flush_stats_delayed() above the RCU read
-> > section and allow sleeping to avoid unnecessarily performing a lot of
-> > work without sleeping.
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > ---
-> >
-> > A lot of code paths call into workingset_refault(), so I am not
-> > generally sure at all whether it's okay to sleep in all contexts or not=
-.
-> > Feedback here would be very helpful.
-> >
-> > ---
-> >  mm/workingset.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/mm/workingset.c b/mm/workingset.c
-> > index 042eabbb43f6..410bc6684ea7 100644
-> > --- a/mm/workingset.c
-> > +++ b/mm/workingset.c
-> > @@ -406,6 +406,8 @@ void workingset_refault(struct folio *folio, void *=
-shadow)
-> >       unpack_shadow(shadow, &memcgid, &pgdat, &eviction, &workingset);
-> >       eviction <<=3D bucket_order;
-> >
-> > +     /* Flush stats (and potentially sleep) before holding RCU read lo=
-ck */
-> > +     mem_cgroup_flush_stats_delayed(true);
->
-> Btw, it might be a good time to rename this while you're in the
-> area. delayed suggests this is using a delayed_work, but this is
-> actually sometimes flushing directly from the callsite.
->
-> What it's doing is ratelimited calls. A better name would be:
->
->         mem_cgroup_flush_stats_ratelimited()
+Please bear with me. I am writing this letter to you with tears and
+sorrow from my heart.
 
-Agreed. Will do in the next version.
+I am sending this message to you from where i am now, Aisha Ghaddafi
+is my name, I am presently living here,i am a Widow and single Mother
+with three Children, the only biological Daughter of late Libyan
+President (Late Colonel Muammar Ghaddafi) and presently I am under
+political asylum protection by the government of this country.
+
+I have funds worth $27.500.000.00 US Dollars "Twenty Seven Million
+Five Hundred Thousand United State Dollars" which I want to entrust to
+you for investment project assistance in your country.
+
+Kindly reply urgently for more details.
+
+Thanks
+
+Yours Truly
+
+Mrs Aisha
