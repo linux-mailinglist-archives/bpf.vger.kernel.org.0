@@ -2,69 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF996C6173
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 09:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 746356C6245
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 09:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjCWISK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 04:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44746 "EHLO
+        id S231166AbjCWIwm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 04:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjCWISJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 04:18:09 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E48E8A64
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 01:18:08 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id eh3so82988178edb.11
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 01:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679559487;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QnXPPvUayRYrcW/acR8CYZCA7ZJe7nR8oOT0eJriZjg=;
-        b=qmsHHclhj00G70NZv7sBZ9p2xLwRMKFdetpnmTNkSQJp9uD8g48Osrh7We+s2oc0rK
-         2ey0MjKd2TxWvQ5rAKvuD1Sk/8iy+gbLHIy98L63ZWI6snZajE3Okb5zPlk9GqypWVdE
-         JS1Pm7uffRNWPEUvnozz/gGB2eRk71lViT8hUpnSVCVrkx5kfL0/ozHGxmkgrCm9mjPm
-         /K4h7/5yotm3O84rna1Tww9g2Tx6AgQiMMu+bCjzD+7+4IWYzb6IrWLyLkubmeiD0jWz
-         ZkILOWPqJks7eC2RQLegG3juO5Q4OWX58ehszE0sW/Agi6pBOhij4RtuqIcrSahRiX+K
-         MaBQ==
+        with ESMTP id S230487AbjCWIwi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 04:52:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8FC12862
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 01:51:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1679561508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j5gzYRXzVkiLOcSv37gdQPBZach6Z3N054lQ3FIqJMg=;
+        b=NwCrm250Efw6SOBDKFEFvbgSWE4hQnHTdYr+wfbTrffsHaVcEc3BhGZZcMkRs1xP6h9yH6
+        PH6cOUvS59U1X3qq5eWd7hQHt9d82Sn7RHrZvUvdR5eDpZFnSpg8D+6ITMBvbVFtNxouDE
+        PcxUlPBaC9zDokcfK67OMKD6UVRymh0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-528-6ORJiJXiM2SZQ0WVjFHPMA-1; Thu, 23 Mar 2023 04:51:47 -0400
+X-MC-Unique: 6ORJiJXiM2SZQ0WVjFHPMA-1
+Received: by mail-ed1-f70.google.com with SMTP id c11-20020a509f8b000000b00501e2facf47so10493750edf.16
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 01:51:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679559487;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QnXPPvUayRYrcW/acR8CYZCA7ZJe7nR8oOT0eJriZjg=;
-        b=oLC3Lhh2fcm/oz7Q0NZNCjFZFqFjmMfuYcnnAYPSKGma46kkIB8J2tT0y8gY1G91td
-         YKaFuFAgA0mMDUYSoxQiVcPTvRDemYTpJhAgonvrmdzJeEkahdG1JvM1/PS/NcYG1OYo
-         QQskJfFxzRqe60owwBwPE/PDW1ftrPhtsmeuOCgzpJ6sd4iu6hhngQP9OBz+CaFpN9se
-         ZRgfhLaQcXb8Fi9Oge97WkZPOo4TUeABlt6KUyDhZdwPsebFuI8KNyfsdX//JLT3rLo3
-         GWZRely0Pxi04ccVXvXeN6iwEBWO1Tw4bg6MD4WYWJ0WnZruCytyJJkZ5e2FJMR+YF3O
-         qj5Q==
-X-Gm-Message-State: AO0yUKW2QDVC8PeWxIeIpYx6KzyXGcOsuMfrP2kJi3EmbkA3jtOtMqSv
-        NQH0WDKv6EupBdL4hLEgRWWYhdS5CO32odsCE0KW5MY9+aWC5g==
-X-Google-Smtp-Source: AK7set/ctG+DjDhR31YQML1Y0f98l0oDLTCcLFI9oSe+7ns2QoTXa4EPxB11n+syE2weYE5im5V+v13g/7NXGrux0v8=
-X-Received: by 2002:a50:9b55:0:b0:4fc:473d:3308 with SMTP id
- a21-20020a509b55000000b004fc473d3308mr2555505edj.8.1679559486528; Thu, 23 Mar
- 2023 01:18:06 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1679561506;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j5gzYRXzVkiLOcSv37gdQPBZach6Z3N054lQ3FIqJMg=;
+        b=ms1lAlrlsuP6nbVPQqKk3bTukO+skvdLBiqvlUxYGhrsXzRAhKmdEjSrHkl/EcgZhK
+         WHztwHRl1rO6MKr/3H+inAdyuhtIKpg2R7GjobRQJpLAkHMIozKDCSgMZbiCqX77Oazc
+         7WeyuEdpuYvu4gyGJi1fbqQ0TOKBt1oMuLE04vS2m39o+j8kCN7dNX88eWocgg88/QKF
+         L9yXxl0ha78Rl9icVrKt1L4er+UAAl5J8DoSDJZ9OxUg7kosPQ/ActWEY9uaVsDrgQU6
+         4LkyHRdXHS5CEJ6/r80EBZiWVmVFGiVxB02Wn061dnXhVl1tbBCZXSJtGjZMetKKLQCh
+         GwNA==
+X-Gm-Message-State: AO0yUKVfXVKs+H67/bH+tK9nVQm88Ey1ld+PEoJ3XcoiUFHb4VGGcbPy
+        ELeOdA40nGB5zvRy0eGj4m/iwGMMWju8BuCss+GYHqlNYj8HeYtmAjdwpFbViR7ecsR7g3NxYnf
+        YnLFZV7dDEb3Z
+X-Received: by 2002:aa7:cb87:0:b0:4fc:154:3fda with SMTP id r7-20020aa7cb87000000b004fc01543fdamr10115417edt.4.1679561505963;
+        Thu, 23 Mar 2023 01:51:45 -0700 (PDT)
+X-Google-Smtp-Source: AK7set9ArOW5k1PgG9N2RSTMxnzGIZveA0mr+cYVpJ89mRrFw1sLL8uekgGPY0/WSR1hHofSGeufVA==
+X-Received: by 2002:aa7:cb87:0:b0:4fc:154:3fda with SMTP id r7-20020aa7cb87000000b004fc01543fdamr10115390edt.4.1679561505647;
+        Thu, 23 Mar 2023 01:51:45 -0700 (PDT)
+Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id m10-20020a50998a000000b004e48f8df7e2sm8935019edb.72.2023.03.23.01.51.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Mar 2023 01:51:45 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <d7ac4f80-b65c-5201-086e-3b2645cbe7fe@redhat.com>
+Date:   Thu, 23 Mar 2023 09:51:43 +0100
 MIME-Version: 1.0
-References: <CAMAi7A7+b6crWHyn9AQ+itsSh8vZ8D5=WEKatAaHj-V_4mjw-g@mail.gmail.com>
- <ZBo164Lc2eL3HUvN@krava> <CAMAi7A7Y=m=i-yEOuh-sO-5R5zEGQuo1VwOLKsgvFcv4RRhbhQ@mail.gmail.com>
- <ZBr7Jt9+yr0PHk6K@krava> <CAADnVQLCSMBhHzOgB1iYMpWVTYsKerMUJ_8MX1W+7BNveF+0tQ@mail.gmail.com>
- <CAMAi7A4asgEE7MKOJC7ak4Q-wWXtfnHTtv8+x0GZ88ZUWZLMKQ@mail.gmail.com>
- <CAADnVQKxbzULYHhWUr=OQWke-QJt6QkVsO7pVBNpgurQMZPWkQ@mail.gmail.com>
- <CAMAi7A4e=yJrCBrWMuKGs37LjOMeVAQzBPvMiysG7QW1gL0yHw@mail.gmail.com> <CAADnVQKp9QLDKZTs=ArxQfSBDKXS769BOUYFpBn0O2oumrvO5A@mail.gmail.com>
-In-Reply-To: <CAADnVQKp9QLDKZTs=ArxQfSBDKXS769BOUYFpBn0O2oumrvO5A@mail.gmail.com>
-From:   Davide Miola <davide.miola99@gmail.com>
-Date:   Thu, 23 Mar 2023 09:17:56 +0100
-Message-ID: <CAMAi7A6gY_6nEfMouYOCKKHZL6ebNj-X81i8ioeZ=7wBKvsHgg@mail.gmail.com>
-Subject: Re: bpf: missed fentry/fexit invocations due to implicit recursion
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH bpf-next V2 3/6] selftests/bpf: xdp_hw_metadata RX hash
+ return code info
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <167940634187.2718137.10209374282891218398.stgit@firesoul>
+ <167940643669.2718137.4624187727245854475.stgit@firesoul>
+ <CAKH8qBuv-9TXAmi0oTbB0atC4f6jzFcFhAgQ3D89VX45vUU9hw@mail.gmail.com>
+ <080640fc-5835-26f1-2b20-ff079bd59182@redhat.com>
+ <CAADnVQKsxzLTZ2XoLbmKKLAeaSyvf3P+w8V143iZ4cEWWTEUfw@mail.gmail.com>
+ <CAKH8qBuHaaqnV-_mb1Roao9ZDrEHm+1Cj77hPZSRgwxoqphvxQ@mail.gmail.com>
+ <CAADnVQ+6FeQ97DZLco3OtbtXQvGUAY4nr5tM++6NEDr+u8m7GQ@mail.gmail.com>
+ <CAKH8qBvzVASpUu3M=6ohDqJgJjoR33jQ-J44ESD9SdkvFoGAZg@mail.gmail.com>
+ <CAADnVQLC7ma7SWPOcjXhsZ2N0OyVtBr7TzCoT-_Dn+zQ2DEyWg@mail.gmail.com>
+ <CAKH8qBuqxxVM9fSB43cAvvTnaHkA-JNRy=gufCqYf5GNbRA-8g@mail.gmail.com>
+In-Reply-To: <CAKH8qBuqxxVM9fSB43cAvvTnaHkA-JNRy=gufCqYf5GNbRA-8g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,86 +108,150 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 23 Mar 2023 at 00:00, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Mar 22, 2023 at 3:45=E2=80=AFPM Davide Miola <davide.miola99@gmai=
-l.com> wrote:
-> >
-> > On Wed, 22 Mar 2023 at 23:21, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Mar 22, 2023 at 2:39=E2=80=AFPM Davide Miola <davide.miola99@=
-gmail.com> wrote:
-> > > >
-> > > > On Wed, 22 Mar 2023 at 17:06, Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > On Wed, Mar 22, 2023 at 6:10=E2=80=AFAM Jiri Olsa <olsajiri@gmail=
-.com> wrote:
-> > > > > >
-> > > > > > there was discussion about this some time ago:
-> > > > > >   https://lore.kernel.org/bpf/CAEf4BzZ-xe-zSjbBpKLHfQKPnTRTBMA2=
-Eg382+_4kQoTLnj4eQ@mail.gmail.com/
-> > > > > >
-> > > > > > seems the 'active' problem andrii described fits to your case a=
-s well
-> > > > >
-> > > > > I suspect per-cpu recursion counter will miss more events in this=
- case,
-> > > > > since _any_ kprobe on that cpu will be blocked.
-> > > > > If missing events is not an issue you probably want a per-cpu cou=
-nter
-> > > > > that is specific to your single ip_queue_xmit attach point.
-> > > >
-> > > > The difference between the scenario described in the linked thread
-> > > > and mine is also the reason why I think in-bpf solutions like a
-> > > > per-cpu guard can't work here: my programs are recursing due to irq=
-s
-> > > > interrupting them and invoking ip_queue_xmit, not because some help=
-er
-> > > > I'm using ends up calling ip_queue_xmit. Recursion can happen
-> > > > anywhere in my programs, even before they get the chance to set a
-> > > > flag or increment a counter in a per-cpu map, since there is no
-> > > > atomic "bpf_map_lookup_and_increment" (or is there?)
-> > >
-> > > __sync_fetch_and_add() is supported. A bunch of selftests are using i=
-t.
-> > > Or you can use bpf_spin_lock.
-> >
-> > Sure, but I'd still have to lookup the element from the map first.
-> > At a minimum it would look something like:
-> >
-> > SEC("fentry/ip_queue_xmit")
-> > int BPF_PROG(entry_prog) {
-> >     int key =3D 0;
-> >     int64_t *guard =3D bpf_map_lookup_elem(&per_cpu, &key);
-> >     if (guard) {
-> >         if (__sync_fetch_and_add(guard, 1) =3D=3D 0) {
-> >             ...
-> >         }
-> >     }
-> > }
-> >
-> > The program could be interrupted before it reaches
-> > __sync_fetch_and_add (just tested this and it does not solve the
-> > problem)
->
-> Ahh. I got confused by your bpf_map_lookup_and_increment idea.
-> It won't help here either if you're concerned of IRQ
-> after prog starts and before the first lookup.
-> You can use global data. In such case there is no lookup function call.
-> It reduces the race window, but it's theoretically still there.
 
-Per-cpu global variables? Is that a thing?
+On 22/03/2023 20.33, Stanislav Fomichev wrote:
+> On Wed, Mar 22, 2023 at 12:30 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Wed, Mar 22, 2023 at 12:23 PM Stanislav Fomichev <sdf@google.com> wrote:
+>>>
+>>> On Wed, Mar 22, 2023 at 12:17 PM Alexei Starovoitov
+>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>
+>>>> On Wed, Mar 22, 2023 at 12:00 PM Stanislav Fomichev <sdf@google.com> wrote:
+>>>>>
+>>>>> On Wed, Mar 22, 2023 at 9:07 AM Alexei Starovoitov
+>>>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>>>
+>>>>>> On Wed, Mar 22, 2023 at 9:05 AM Jesper Dangaard Brouer
+>>>>>> <jbrouer@redhat.com> wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> On 21/03/2023 19.47, Stanislav Fomichev wrote:
+>>>>>>>> On Tue, Mar 21, 2023 at 6:47 AM Jesper Dangaard Brouer
+>>>>>>>> <brouer@redhat.com> wrote:
+>>>>>>>>>
+>>>>>>>>> When driver developers add XDP-hints kfuncs for RX hash it is
+>>>>>>>>> practical to print the return code in bpf_printk trace pipe log.
+>>>>>>>>>
+>>>>>>>>> Print hash value as a hex value, both AF_XDP userspace and bpf_prog,
+>>>>>>>>> as this makes it easier to spot poor quality hashes.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>>>>>>>>> ---
+>>>>>>>>>    .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++++++---
+>>>>>>>>>    tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++++-
+>>>>>>>>>    2 files changed, 10 insertions(+), 4 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>>>>>>>>> index 40c17adbf483..ce07010e4d48 100644
+>>>>>>>>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>>>>>>>>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>>>>>>>>> @@ -77,10 +77,13 @@ int rx(struct xdp_md *ctx)
+>>>>>>>>>                   meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
+>>>>>>>>>           }
+>>>>>>>>>
+>>>>>>>>> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+>>>>>>>>> -               bpf_printk("populated rx_hash with %u", meta->rx_hash);
+>>>>>>>>> -       else
+>>>>>>>>> +       ret = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
+>>>>>>>>> +       if (ret >= 0) {
+>>>>>>>>> +               bpf_printk("populated rx_hash with 0x%08X", meta->rx_hash);
+>>>>>>>>> +       } else {
+>>>>>>>>> +               bpf_printk("rx_hash not-avail errno:%d", ret);
+>>>>>>>>>                   meta->rx_hash = 0; /* Used by AF_XDP as not avail signal */
+>>>>>>>>> +       }
+>>>>>>>>>
+>>>>>>>>>           return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
+>>>>>>>>>    }
+>>>>>>>>> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+>>>>>>>>> index 400bfe19abfe..f3ec07ccdc95 100644
+>>>>>>>>> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+>>>>>>>>> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+>>>>>>>>> @@ -3,6 +3,9 @@
+>>>>>>>>>    /* Reference program for verifying XDP metadata on real HW. Functional test
+>>>>>>>>>     * only, doesn't test the performance.
+>>>>>>>>>     *
+>>>>>>>>> + * BPF-prog bpf_printk info outout can be access via
+>>>>>>>>> + * /sys/kernel/debug/tracing/trace_pipe
+>>>>>>>>
+>>>>>>>> s/outout/output/
+>>>>>>>>
+>>>>>>>
+>>>>>>> Fixed in V3
+>>>>>>>
+>>>>>>>> But let's maybe drop it? If you want to make it more usable, let's
+>>>>>>>> have a separate patch to enable tracing and periodically dump it to
+>>>>>>>> the console instead (as previously discussed).
+>>>>>>>
+>>>>>>> Cat'ing /sys/kernel/debug/tracing/trace_pipe work for me regardless of
+>>>>>>> setting in
+>>>>>>> /sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enable
+>>>>>>>
+>>>>>>> We likely need a followup patch that adds a BPF config switch that can
+>>>>>>> disable bpf_printk calls, because this adds overhead and thus affects
+>>>>>>> the timestamps.
+>>>>>>
+>>>>>> No. This is by design.
+>>>>>> Do not use bpf_printk* in production.
 
-> Try kprobes, but they're slower and I suspect you'll miss more events,
-> because all kprobe progs are in one bucket.
->
-> Better approach is to switch to networking hooks instead of tracing.
+I fully agree do not use bpf_printk in *production*.
 
-Yeah, worst case kprobes would be acceptable, the number of
-problematic interruptions is quite small to the point where losing
-more events shouldn't be an issue, but I agree I should be looking
-for a better hook.
+>>>>>
+>>>>> But that's not for the production? xdp_hw_metadata is a small tool to
+>>>>> verify that the metadata being dumped is correct (during the
+>>>>> development).
+>>>>> We have a proper (less verbose) selftest in
+>>>>> {progs,prog_tests}/xdp_metadata.c (over veth).
+>>>>> This xdp_hw_metadata was supposed to be used for running it against
+>>>>> the real hardware, so having as much debugging at hand as possible
+>>>>> seems helpful? (at least it was helpful to me when playing with mlx4)
 
-Thanks!
+My experience when developing these kfuncs for igc (real hardware), this
+"tool" xdp_hw_metadata was super helpful, because it was very verbose
+(and I was juggling reading chip registers BE/LE and see patch1 a buggy
+implementation for RX-hash).
+
+As I wrote in cover-letter, I recommend other driver developers to do
+the same, because it really help speed up the development. In theory
+xdp_hw_metadata doesn't belong in selftests directory and IMHO it should
+have been placed in samples/bpf/, but given the relationship with real
+selftest {progs,prog_tests}/xdp_metadata.c I think it makes sense to
+keep here.
+
+
+>>>>
+>>>> The only use of bpf_printk is for debugging of bpf progs themselves.
+>>>> It should not be used in any tool.
+>>>
+>>> Hmm, good point. I guess it also means we won't have to mess with
+>>> enabling/dumping ftrace (and don't need this comment about cat'ing the
+>>> file).
+>>> Jesper, maybe we can instead pass the status of those
+>>> bpf_xdp_metadata_xxx kfuncs via 'struct xdp_meta'? And dump this info
+>>> from the userspace if needed.
+>>
+>> There are so many other ways for bpf prog to communicate with user space.
+>> Use ringbuf, perf_event buffer, global vars, maps, etc.
+>> trace_pipe is debug only because it's global and will conflict with
+>> all other debug sessions.
+
+I want to highlight above paragraph: It is very true for production
+code. (Anyone Googling this pay attention to above paragraph).
+
+> 
+> 👍 makes sense, ty! hopefully we won't have to add a separate channel
+> for those and can (ab)use the metadata area.
+> 
+
+Proposed solution: How about default disabling the bpf_printk's via a 
+macro define, and then driver developer can manually reenable them 
+easily via a single define, to enable a debugging mode.
+
+I was only watching /sys/kernel/debug/tracing/trace_pipe when I was 
+debugging a driver issue.  Thus, an extra step of modifying a single 
+define in BPF seems easier, than instrumenting my driver with printk.
+
+--Jesper
+
