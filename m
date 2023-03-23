@@ -2,133 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263696C5E08
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 05:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA20E6C5E27
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 05:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbjCWEc7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 00:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38514 "EHLO
+        id S229463AbjCWEpr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 00:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjCWEc6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 00:32:58 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A1C19B1
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 21:32:55 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id n125so23407885ybg.7
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 21:32:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679545974;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wrIDK0fVrbx7cxzc4APSQQIB8Tdld7ibFj4Oysy8xfU=;
-        b=FIzImCYRhfKjUT9pnu01dLLA4HDQ3BXtcjgTBHFJpnBLcGZGoGO939DvVsE0ACCLBD
-         HAUrEyMh7dQYQpfiSzh1z2T4aoliQXDY2PtH8zUgWHZJ+Wlzj09Hc57J7+LzbWPLwJ30
-         QPFFiP3KO6t2VwC9VgJYqd0EckGB6umtsMwnb3yJ2JSFju2Dm4jDvh5VHkd965tUFaZj
-         W+NjP9qTR3O5ZH/o08OwnNf2A5eKq4nOVV2mM+FZmrLAYG0SehoQ+EDazL9xDG8TNlTx
-         kCxHR0bIyEU/UZVe+dMYjlb9si4q45Gfnc1KLNTqhs8UX7jHYv+TWSPptwMfEaiMEV+x
-         pf/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679545974;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wrIDK0fVrbx7cxzc4APSQQIB8Tdld7ibFj4Oysy8xfU=;
-        b=cjN18bCTVwJcDLur/ko1lONNNCX1RrkNX5HIJ/n0uFlhwnc+hMBTndhuyoEC8QUUSt
-         d2iMwzT3y26AShfymwkqgML5KHXSmuWBXYByesCVITkFtPpnH8izbG0QZEJII6RbcN6Z
-         NnfcrYZGdyTrX0DRlTcabm3MFgFIp5zBYgOeBzRYjsvoSxIkN4Emr6bsZGDaCHJ3E1Yc
-         cl9alwN+kLEFv/Tpz/zR3rnsJ8AjBAZxKisT/DEktOn6tBjum5P8ln4suPgYjyWv9dYb
-         I/F/m46XsdvUaEqHi6aDFfmPiReVsIjsGDFtDcKrZ1/zhkp+Kj/8Rnb2slnYcC/rPctK
-         8T9Q==
-X-Gm-Message-State: AAQBX9fFTI+ZbB6gUI7mnQ7RLWbXbObkBaQAx05qGgSsElTDTD8zkNXp
-        L4zsFI+yl8qFI+H1tRzcgcZQBY2iVf8JKZF+uB4Azg==
-X-Google-Smtp-Source: AKy350bBapFtyhRnakDaJ98q33qTvbSPFQRHJsMpzHiU7Bnmsr7y712jIsm3XTxYLrqYW8o05V+X9pbP9RgpV7J2f94=
-X-Received: by 2002:a25:800d:0:b0:b3b:6576:b22b with SMTP id
- m13-20020a25800d000000b00b3b6576b22bmr1372177ybk.12.1679545974133; Wed, 22
- Mar 2023 21:32:54 -0700 (PDT)
+        with ESMTP id S229379AbjCWEpq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 00:45:46 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2D225E33;
+        Wed, 22 Mar 2023 21:45:44 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Pht4B4VYmz17MMS;
+        Thu, 23 Mar 2023 12:42:34 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 23 Mar
+ 2023 12:45:41 +0800
+Subject: Re: [PATCH net-next 2/8] virtio_net: mergeable xdp: introduce
+ mergeable_xdp_prepare
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+References: <20230322030308.16046-1-xuanzhuo@linux.alibaba.com>
+ <20230322030308.16046-3-xuanzhuo@linux.alibaba.com>
+ <c7749936-c154-da51-ccfb-f16150d19c62@huawei.com>
+ <1679535924.6219428-2-xuanzhuo@linux.alibaba.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <215e791d-1802-2419-ff59-49476bcdcd02@huawei.com>
+Date:   Thu, 23 Mar 2023 12:45:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <20230323040037.2389095-1-yosryahmed@google.com> <20230323040037.2389095-3-yosryahmed@google.com>
-In-Reply-To: <20230323040037.2389095-3-yosryahmed@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 22 Mar 2023 21:32:42 -0700
-Message-ID: <CALvZod5MnM8UJ0pj44QYb4sVwgFZ1B2KpSL6oqBQbJU3wH6eNA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/7] memcg: do not disable interrupts when holding stats_flush_lock
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <1679535924.6219428-2-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.3 required=5.0 tests=NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 22, 2023 at 9:00=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> The rstat flushing code was modified so that we do not disable interrupts
-> when we hold the global rstat lock. Do the same for stats_flush_lock on
-> the memcg side to avoid unnecessarily disabling interrupts throughout
-> flushing.
->
-> Since the code exclusively uses trylock to acquire this lock, it should
-> be fine to hold from interrupt contexts or normal contexts without
-> disabling interrupts as a deadlock cannot occur. For interrupt contexts
-> we will return immediately without flushing anyway.
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  mm/memcontrol.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 5abffe6f8389..e0e92b38fa51 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -636,15 +636,17 @@ static inline void memcg_rstat_updated(struct mem_c=
-group *memcg, int val)
->
->  static void __mem_cgroup_flush_stats(void)
->  {
-> -       unsigned long flag;
-> -
-> -       if (!spin_trylock_irqsave(&stats_flush_lock, flag))
-> +       /*
-> +        * This lock can be acquired from interrupt context,
+On 2023/3/23 9:45, Xuan Zhuo wrote:
+> On Wed, 22 Mar 2023 19:52:48 +0800, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>> On 2023/3/22 11:03, Xuan Zhuo wrote:
+>>> Separating the logic of preparation for xdp from receive_mergeable.
+>>>
+>>> The purpose of this is to simplify the logic of execution of XDP.
+>>>
+>>> The main logic here is that when headroom is insufficient, we need to
+>>> allocate a new page and calculate offset. It should be noted that if
+>>> there is new page, the variable page will refer to the new page.
+>>>
+>>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>>> ---
+>>>  drivers/net/virtio_net.c | 135 ++++++++++++++++++++++-----------------
+>>>  1 file changed, 77 insertions(+), 58 deletions(-)
+>>>
+>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>>> index 4d2bf1ce0730..bb426958cdd4 100644
+>>> --- a/drivers/net/virtio_net.c
+>>> +++ b/drivers/net/virtio_net.c
+>>> @@ -1162,6 +1162,79 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>>>  	return 0;
+>>>  }
+>>>
+>>> +static void *mergeable_xdp_prepare(struct virtnet_info *vi,
+>>> +				   struct receive_queue *rq,
+>>> +				   struct bpf_prog *xdp_prog,
+>>> +				   void *ctx,
+>>> +				   unsigned int *frame_sz,
+>>> +				   int *num_buf,
+>>> +				   struct page **page,
+>>> +				   int offset,
+>>> +				   unsigned int *len,
+>>> +				   struct virtio_net_hdr_mrg_rxbuf *hdr)
+>>
+>> The naming convention seems to be xdp_prepare_mergeable().
+> 
+> What convention?
+> 
+> 
+>>
+>>> +{
+>>> +	unsigned int truesize = mergeable_ctx_to_truesize(ctx);
+>>> +	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
+>>> +	struct page *xdp_page;
+>>> +	unsigned int xdp_room;
+>>> +
+>>> +	/* Transient failure which in theory could occur if
+>>> +	 * in-flight packets from before XDP was enabled reach
+>>> +	 * the receive path after XDP is loaded.
+>>> +	 */
+>>> +	if (unlikely(hdr->hdr.gso_type))
+>>> +		return NULL;
+>>> +
+>>> +	/* Now XDP core assumes frag size is PAGE_SIZE, but buffers
+>>> +	 * with headroom may add hole in truesize, which
+>>> +	 * make their length exceed PAGE_SIZE. So we disabled the
+>>> +	 * hole mechanism for xdp. See add_recvbuf_mergeable().
+>>> +	 */
+>>> +	*frame_sz = truesize;
+>>> +
+>>> +	/* This happens when headroom is not enough because
+>>> +	 * of the buffer was prefilled before XDP is set.
+>>> +	 * This should only happen for the first several packets.
+>>> +	 * In fact, vq reset can be used here to help us clean up
+>>> +	 * the prefilled buffers, but many existing devices do not
+>>> +	 * support it, and we don't want to bother users who are
+>>> +	 * using xdp normally.
+>>> +	 */
+>>> +	if (!xdp_prog->aux->xdp_has_frags &&
+>>> +	    (*num_buf > 1 || headroom < virtnet_get_headroom(vi))) {
+>>> +		/* linearize data for XDP */
+>>> +		xdp_page = xdp_linearize_page(rq, num_buf,
+>>> +					      *page, offset,
+>>> +					      VIRTIO_XDP_HEADROOM,
+>>> +					      len);
+>>> +
+>>> +		if (!xdp_page)
+>>> +			return NULL;
+>>> +	} else if (unlikely(headroom < virtnet_get_headroom(vi))) {
+>>> +		xdp_room = SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM +
+>>> +					  sizeof(struct skb_shared_info));
+>>> +		if (*len + xdp_room > PAGE_SIZE)
+>>> +			return NULL;
+>>> +
+>>> +		xdp_page = alloc_page(GFP_ATOMIC);
+>>> +		if (!xdp_page)
+>>> +			return NULL;
+>>> +
+>>> +		memcpy(page_address(xdp_page) + VIRTIO_XDP_HEADROOM,
+>>> +		       page_address(*page) + offset, *len);
+>>
+>> It seems the above 'else if' was not really tested even before this patch,
+>> as there is no "--*num_buf" if xdp_linearize_page() is not called, which
+>> may causes virtnet_build_xdp_buff_mrg() to comsume one more buffer than
+>> expected?
+> 
+> Why do you think so?
 
-How? What's the code path?
 
-> but we only acquire
-> +        * using trylock so it should be fine as we cannot cause a deadlo=
-ck.
-> +        */
-> +       if (!spin_trylock(&stats_flush_lock))
->                 return;
->
->         flush_next_time =3D jiffies_64 + 2*FLUSH_TIME;
->         cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
->         atomic_set(&stats_flush_threshold, 0);
-> -       spin_unlock_irqrestore(&stats_flush_lock, flag);
-> +       spin_unlock(&stats_flush_lock);
->  }
->
->  void mem_cgroup_flush_stats(void)
-> --
-> 2.40.0.rc1.284.g88254d51c5-goog
->
+In first 'if' block, there is a "--*num_buf" before gotoing 'err_xdp'
+for virtqueue_get_buf() failure in xdp_linearize_page().
+
+But here there is no "--*num_buf" before gotoing 'err_xdp' for
+alloc_page() failure.
+
+So one of them has to be wrong, right?
+
+> 
+>>
+>> Also, it seems better to split the xdp_linearize_page() to two functions
+>> as pskb_expand_head() and __skb_linearize() do, one to expand the headroom,
+>> the other one to do the linearizing.
+> 
+> No skb here.
+
+I means following the semantics of pskb_expand_head() and __skb_linearize(),
+not to combine the headroom expanding and linearizing into one function as
+xdp_linearize_page() does now if we want a better refoctor result.
+
+> 
+> 
+>>
