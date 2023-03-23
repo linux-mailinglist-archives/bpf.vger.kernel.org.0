@@ -2,154 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 598016C5D67
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 04:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EEE6C5DA5
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 05:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbjCWDq0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Mar 2023 23:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
+        id S229463AbjCWEA4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 00:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbjCWDqZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Mar 2023 23:46:25 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463C92C677;
-        Wed, 22 Mar 2023 20:46:23 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VeShdPK_1679543179;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VeShdPK_1679543179)
-          by smtp.aliyun-inc.com;
-          Thu, 23 Mar 2023 11:46:19 +0800
-Message-ID: <1679543111.9544318-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next 1/8] virtio_net: mergeable xdp: put old page immediately
-Date:   Thu, 23 Mar 2023 11:45:11 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-References: <20230322030308.16046-1-xuanzhuo@linux.alibaba.com>
- <20230322030308.16046-2-xuanzhuo@linux.alibaba.com>
- <4bd07874-b1ad-336b-b15e-ba56a10182e9@huawei.com>
- <1679535365.5410192-1-xuanzhuo@linux.alibaba.com>
- <941a16c5-ba64-ca49-9af9-68d9615dca00@huawei.com>
-In-Reply-To: <941a16c5-ba64-ca49-9af9-68d9615dca00@huawei.com>
+        with ESMTP id S229461AbjCWEAw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 00:00:52 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EFF1F5F1
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 21:00:42 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i11-20020a256d0b000000b0086349255277so21516986ybc.8
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 21:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1679544041;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dQm6vY6azaIWfVBk9OleqJiypEWxonUrfDuxGdzwvEo=;
+        b=Wqjo2gOwLuBNwjRWcqy/e97mtEalxuitp0xY/9ucFAeoVjzZqkLFNj+Kg/bS7+SLso
+         0mEqszCZOwticCjD28rnJun5qYG8zLpCe7Lgqr1Zcq77xAINPLQkmlCr1RUZ3ZFrFZLe
+         yVSSzSX2DRXw2LGgoiHCS2XSksG6+AorfME/vlcB+xENetBawM2tXFoeFxzlxQ+CDzRr
+         rABuT5MXEbil4k21Tw2rj0lLKNuTBpVjCslzrHFHpTW3cYQbR83DpY9L8+R2A0wlBskB
+         V7890htQHHBp7dpJzFMQR7ATN69oyvzWl1Z0FZ3aHCz1QscoKhEDDw6wgjhuKwrEdKtk
+         wggQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679544041;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dQm6vY6azaIWfVBk9OleqJiypEWxonUrfDuxGdzwvEo=;
+        b=kRv3d1qrb5/OpvQPZJaKt/km7xjfElWtIkl5XzwMmWFPVb4hc3kxohc93jlNdMtLJA
+         I5YzRKKprLW2Jpe28St7Vk51oeaF/32H4BRPmvppHxDp9miVtcS4K0uIu5i2DuG5YFQ+
+         tDp2Tv3KyHL2ujfxszM+9uq6zONblSWY+RLw67BmCS8VSbN3SCwqoprh9MEy+Xoy+6Nz
+         ep38pstvhb8z2KcQ95Nhx8lVPRofZNzK7wIl1k25PcQR9R5Qdo0eZT+zQds4YaoltKQw
+         30CsSrA6eIIPjvJVW3PBo3iP8wtHHLbkbUnUgQe/BI28Dza+e3kSSFnaJipHuK1Hk2Q5
+         zuOw==
+X-Gm-Message-State: AAQBX9eVSki8g0/f7nJ44jjv5FeNzA/JSPpBIjnOtbBJ+hm0rQsFN/ck
+        dFR4UrXjfrwlGG9U5R6zRJ0sxHOtsAZpCdCO
+X-Google-Smtp-Source: AKy350Z2wOemdLUQ3DTnBtcfhLATRQqZsbL/MHNlEb2SKIexwcp8tfmae32ViTPN5/R0R1QUYdUH7T2cgfJO0+nV
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a25:840a:0:b0:b26:884:c35e with SMTP id
+ u10-20020a25840a000000b00b260884c35emr1126100ybk.4.1679544041493; Wed, 22 Mar
+ 2023 21:00:41 -0700 (PDT)
+Date:   Thu, 23 Mar 2023 04:00:30 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
+Message-ID: <20230323040037.2389095-1-yosryahmed@google.com>
+Subject: [RFC PATCH 0/7] Make rstat flushing IRQ and sleep friendly
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Vasily Averin <vasily.averin@linux.dev>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, bpf@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 23 Mar 2023 11:38:34 +0800, Yunsheng Lin <linyunsheng@huawei.com> w=
-rote:
-> On 2023/3/23 9:36, Xuan Zhuo wrote:
-> > On Wed, 22 Mar 2023 16:22:18 +0800, Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
-> >> On 2023/3/22 11:03, Xuan Zhuo wrote:
-> >>> In the xdp implementation of virtio-net mergeable, it always checks
-> >>> whether two page is used and a page is selected to release. This is
-> >>> complicated for the processing of action, and be careful.
-> >>>
-> >>> In the entire process, we have such principles:
-> >>> * If xdp_page is used (PASS, TX, Redirect), then we release the old
-> >>>   page.
-> >>> * If it is a drop case, we will release two. The old page obtained fr=
-om
-> >>>   buf is release inside err_xdp, and xdp_page needs be relased by us.
-> >>>
-> >>> But in fact, when we allocate a new page, we can release the old page
-> >>> immediately. Then just one is using, we just need to release the new
-> >>> page for drop case. On the drop path, err_xdp will release the variab=
-le
-> >>> "page", so we only need to let "page" point to the new xdp_page in
-> >>> advance.
-> >>>
-> >>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> >>> ---
-> >>>  drivers/net/virtio_net.c | 15 ++++++---------
-> >>>  1 file changed, 6 insertions(+), 9 deletions(-)
-> >>>
-> >>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> >>> index e2560b6f7980..4d2bf1ce0730 100644
-> >>> --- a/drivers/net/virtio_net.c
-> >>> +++ b/drivers/net/virtio_net.c
-> >>> @@ -1245,6 +1245,9 @@ static struct sk_buff *receive_mergeable(struct=
- net_device *dev,
-> >>>  			if (!xdp_page)
-> >>>  				goto err_xdp;
-> >>>  			offset =3D VIRTIO_XDP_HEADROOM;
-> >>> +
-> >>> +			put_page(page);
-> >>
-> >> the error handling of xdp_linearize_page() does not seems self contain=
-ed.
-> >> Does it not seem better=EF=BC=9A
-> >> 1. if xdp_linearize_page() succesed, call put_page() for first buffer =
-just
-> >>    as put_page() is call for other buffer
-> >> 2. or call virtqueue_get_buf() and put_page() for all the buffer of th=
-e packet
-> >>    so the error handling is not needed outside the virtqueue_get_buf().
-> >>
-> >> In that case, it seems we can just do below without xdp_page:
-> >> page =3D xdp_linearize_page(rq, num_buf, page, ...);
-> >
-> >
-> > This does look better.
-> >
-> > In fact, we already have vq reset, we can load XDP based on vq reset.
-> > In this way, we can run without xdp_linearize_page.
->
-> For compatibility, it is still needed, right?
+Currently, if rstat flushing is invoked using the irqsafe variant
+cgroup_rstat_flush_irqsafe(), we keep interrupts disabled and do not
+sleep for the entire flush operation, which is O(# cpus * # cgroups).
+This can be rather dangerous.
 
-Yes
+Not all contexts that use cgroup_rstat_flush_irqsafe() actually cannot
+sleep, and among those that cannot sleep, not all contexts require
+interrupts to be disabled. This patch series breaks down the
+O(# cpus * # cgroups) duration that we disable interrupts for into a
+series of O(# cgroups) durations. Disabling interrupts is deferred to
+the caller if needed.
 
+Patch 1 mainly addresses this by not requiring interrupts to be
+disabled for the global rstat lock to be acquired. As a side effect of
+that, the we disable rstat flushing in interrupt context. See patch 1
+for more details.
 
->
-> >
-> >
-> >>
-> >>
-> >>> +			page =3D xdp_page;
-> >>>  		} else if (unlikely(headroom < virtnet_get_headroom(vi))) {
-> >>>  			xdp_room =3D SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM +
-> >>>  						  sizeof(struct skb_shared_info));
-> >>> @@ -1259,6 +1262,9 @@ static struct sk_buff *receive_mergeable(struct=
- net_device *dev,
-> >>>  			       page_address(page) + offset, len);
-> >>>  			frame_sz =3D PAGE_SIZE;
-> >>>  			offset =3D VIRTIO_XDP_HEADROOM;
-> >>> +
-> >>> +			put_page(page);
-> >>> +			page =3D xdp_page;
-> >>
-> >> It seems we can limit the scope of xdp_page in this "else if" block.
-> >>
-> >>>  		} else {
-> >>>  			xdp_page =3D page;
-> >>>  		}
-> >>
-> >> It seems the above else block is not needed anymore.
-> >
-> > Yes, the follow-up patch has this optimization.
->
-> Isn't refoctor patch supposed to be self-contianed too, instead of
-> depending on follow-up patch?
+One thing I am not sure about is whether the only caller of
+cgroup_rstat_flush_hold() -- cgroup_base_stat_cputime_show(),
+currently has any dependency on that call disabling interrupts.
 
+Patch 2 follows suit for stats_flush_lock in the memcg code, allowing it
+to be acquired without disabling interrupts.
 
-I mean that the #2 patch do this.
+Patch 3 removes cgroup_rstat_flush_irqsafe() and updates
+cgroup_rstat_flush() to be more explicit about sleeping.
 
-Thanks.
+Patch 4 changes memcg code paths that invoke rstat flushing to sleep
+where possible. The patch changes code paths where it is naturally saef
+to sleep: userspace reads and the background periodic flusher.
+
+Patches 5 & 6 allow sleeping while rstat flushing in reclaim context and
+refault context. I am not sure if this is okay, especially the latter,
+so I placed them in separate patches for ease of revert/drop.
+
+Patch 7 is a slightly tangential optimization that limits the work done
+by rstat flushing in some scenarios.
+
+Yosry Ahmed (7):
+  cgroup: rstat: only disable interrupts for the percpu lock
+  memcg: do not disable interrupts when holding stats_flush_lock
+  cgroup: rstat: remove cgroup_rstat_flush_irqsafe()
+  memcg: sleep during flushing stats in safe contexts
+  vmscan: memcg: sleep when flushing stats during reclaim
+  workingset: memcg: sleep when flushing stats in workingset_refault()
+  memcg: do not modify rstat tree for zero updates
+
+ block/blk-cgroup.c         |  2 +-
+ include/linux/cgroup.h     |  3 +--
+ include/linux/memcontrol.h |  8 +++---
+ kernel/cgroup/cgroup.c     |  4 +--
+ kernel/cgroup/rstat.c      | 54 ++++++++++++++++++++------------------
+ mm/memcontrol.c            | 52 ++++++++++++++++++++++--------------
+ mm/vmscan.c                |  2 +-
+ mm/workingset.c            |  4 +--
+ 8 files changed, 73 insertions(+), 56 deletions(-)
+
+-- 
+2.40.0.rc1.284.g88254d51c5-goog
+
