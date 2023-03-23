@@ -2,247 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6551A6C6E27
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 17:52:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18B76C6E31
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 17:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbjCWQwj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 12:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
+        id S231656AbjCWQ5N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 12:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbjCWQwj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 12:52:39 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA77093FD
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 09:52:35 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id i5so42703242eda.0
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 09:52:35 -0700 (PDT)
+        with ESMTP id S230009AbjCWQ5M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 12:57:12 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8B2B5
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 09:57:11 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id eh3so89648798edb.11
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 09:57:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679590354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VOHurpH2QBVwThGFlZ8crYEQpG4K5Nj3qYdrgtUjem4=;
-        b=kMaWqgzR2vvNtaGPfonHpApcQDQuX605YFrobGccymTC1kzhDvZj3uzUwY/OGu1ojC
-         JSsawrHWC2d9REN3PawI0wk2z84JKtSMJGNAcW3qeVKuZ/FcofM5K0fzLaNcGJMRKo//
-         bYSp9T2JFuLa93mdHlpQEHWZgonpp5svFktD/LhmLFo8bG7LR64XMrKzIJG5Xjnzppx2
-         EoThWl3HouEyGSMwNEv79uwgbweYttltY124sshwnzdRlWfX0zQ9veQCVY4S1ap4ew8P
-         jVbECrk69bG41wCMNi+NeC0pFUfs7PpUdqglwIj85HadF5SaiBJvLfxWVBRe05eYplnK
-         dqjQ==
+        d=gmail.com; s=20210112; t=1679590630;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1UiNcgKJk5Ockh0QkEB7yiupoKT+uowmNc0GqeUY4nw=;
+        b=eBS0GNOIdciOY3L+hDDfePLD9olXKtMhZzV0HxrR2DuOh4NIL056ve4psI2Od7BXkJ
+         MPTE2qmaUFio4vB9xWxX0DnZ+r8jss8SrnpNKb/WM3Wd5QScK8E8HDMqhbL7Ez+KhxxM
+         sB/xca6m7P8q5a3m8Jl8PPikw+XHvXav2/IKijp/pynKT7S1cEGpvabkJ10dZSYqkX2t
+         ENZFg6mmOH6WdW90rdVEC9WqlE0U5DaGZbZ1GPeYpu1w2YCs7kT/zWCIzPUfsMfpeWsD
+         Qscrmoet1hytgL6/hkRagD2Fy2iy6sQChhxPGJ9pg+EI2YLzIRouOtBn2Npopp2/nlaT
+         XmeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679590354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VOHurpH2QBVwThGFlZ8crYEQpG4K5Nj3qYdrgtUjem4=;
-        b=f0gt9YG4SXjO65ekEUiTIyBYvI7Wdwuz1FczTuf/b4m3RhTEubdqQYENMQqSIaKbu/
-         EfUw2Efwwc/nnXdVP7VFZQOKKo6plz/57N7wVb7fSMjKpzW9LGYNI941gldw+OdMif/D
-         718SOGtBvJHnIDHZJd0abYHCQAXIX+KFZEDDTo4bhl3hDrZo7f37XBFglzyJj2rqCPl9
-         aH98g6cnQ10z9pBsh4m/b1hhPubbYvgLahsvvYm2b0SJZ5F39dEAOe8za6kV9aiDPdML
-         6CtQqQKfqWrfilnlRH/8ZEjGThScx8pjIWtkyW4NCxVG4na8EMwrLBo9+8zYG7A/f7JA
-         fm7Q==
-X-Gm-Message-State: AO0yUKVR6VDv9bKbMVkptHOo5QSNHVa7HhGHYDQP+0CEu5hhyQ+ZaOmx
-        yZYtdXrPUYIpJFEW8ocu5yEkPIJmHVCwkpg5rGPx/g==
-X-Google-Smtp-Source: AK7set+U3wM4AVKZXmpx06Cmy/94BK6HfVYrrB+ArtsuCtgA+szuZwv9dwe3eDhDdUiOyZgzCIEBm2GbYXOT5dk+zAM=
-X-Received: by 2002:a17:906:344d:b0:933:7658:8b44 with SMTP id
- d13-20020a170906344d00b0093376588b44mr5407827ejb.15.1679590354122; Thu, 23
- Mar 2023 09:52:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230323040037.2389095-1-yosryahmed@google.com>
- <20230323040037.2389095-2-yosryahmed@google.com> <CALvZod7e7dMmkhKtXPAxmXjXQoTyeBf3Bht8HJC8AtWW93As3g@mail.gmail.com>
- <CAJD7tkbziGh+6hnMysHkoNr_HGBKU+s1rSGj=gZLki0ALT-jLg@mail.gmail.com>
- <CALvZod5GT=bZsLXsG500pNkEJpMB1o2KJau4=r0eHB-c8US53A@mail.gmail.com>
- <CAJD7tkY6Wf2OWja+f-JeFM5DdMCyLzbXxZ8KF0MjcYOKri-vtA@mail.gmail.com>
- <CALvZod5mJBAQ5adym7UNEruL-tOOOi+Y_ZiKsfOYqXPmGVPUEA@mail.gmail.com>
- <CAJD7tkYWo_aB7a4SHXNQDHwcaTELonOk_Vd8q0=x8vwGy2VkYg@mail.gmail.com>
- <CALvZod7f9Rejb_WrZ+Ajegz-NsQ7iPQegRDMdk5Ya0a0w=40kg@mail.gmail.com>
- <CALvZod7-6F84POkNetA2XJB-24wms=5q_s495NEthO8b63rL4A@mail.gmail.com>
- <CAJD7tkbGCgk9VkGdec0=AdHErds4XQs1LzJMhqVryXdjY5PVAg@mail.gmail.com>
- <CALvZod7saq910u4JxnuY4C7EwiK5vgNF=-Bv+236RprUOQdkjw@mail.gmail.com>
- <CAJD7tkb8oHoK5RW96tEXjY9iyJpMXfGAvnFw1rG-5Sr+Mpubdg@mail.gmail.com> <CALvZod5USCtNtnPuYRbRv_psBCNytQWWQ592TFsJLfrLpyLJmw@mail.gmail.com>
-In-Reply-To: <CALvZod5USCtNtnPuYRbRv_psBCNytQWWQ592TFsJLfrLpyLJmw@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 23 Mar 2023 09:51:57 -0700
-Message-ID: <CAJD7tkad5NbqjXZ1qLaNx1g-FYsrv-BVLcNinycFStG_Bu0_zw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
+        d=1e100.net; s=20210112; t=1679590630;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1UiNcgKJk5Ockh0QkEB7yiupoKT+uowmNc0GqeUY4nw=;
+        b=lPrPZW7T4pUU4Q+5Rpkz+92KmiMmRfCAyNxde/8Ty70EmWZX5k+tji0DEWq7baZRIo
+         8ZF+xVXEweymwgLTCxkLq9INPhb0rREaN8rB6eQecvl2NkVQ2lkjc7WykEJFu05sOFlx
+         TYqstd/MRTkyIklbFZWuv8ZmkXAlBLmJaNgOvQcl90372oGWoKMAixTVbyJ7cfhX+s2E
+         b8ufVngH4GVaJu2SZhW+gPHTQGtCisY66iYb54nsjQUbouIoAWyVyeG+IGo2t9A13jNh
+         PvFIVSj/9B2ZALpPt6X82M40v2HMM4t/qObttspT37dgeD16hQSxR+TZGptyUYQLsOdt
+         AL3w==
+X-Gm-Message-State: AO0yUKWnRjxO3HJ/mZMFWySMySBdWDeqY/l8b/MhIkDZaNmFJRiYAnom
+        E+Gn1JYGxZBow2BAs01YExVT8SLqOmo=
+X-Google-Smtp-Source: AK7set+z6HhCWQ7e35TdAeSqhCJfUZe8nQN01HTyi8Xke/XGEkTIKD0zXoyWgUjlc4+6apvyvd/Cvg==
+X-Received: by 2002:a05:6402:1c95:b0:4af:7bdc:188e with SMTP id cy21-20020a0564021c9500b004af7bdc188emr6847737edb.16.1679590629782;
+        Thu, 23 Mar 2023 09:57:09 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id q28-20020a50aa9c000000b004fb556e905fsm9442715edc.49.2023.03.23.09.57.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Mar 2023 09:57:08 -0700 (PDT)
+Message-ID: <9ee3c62518ec9fc3aa72c4b59a997cda17acc376.camel@gmail.com>
+Subject: Re: GCC-BPF triggers double free in libbpf Error: failed to link
+ 'linked_maps2.bpf.o': Cannot allocate memory (12)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Date:   Thu, 23 Mar 2023 18:57:07 +0200
+In-Reply-To: <CAEf4BzZ-x4U5NM7wsCcuESGXkoBbf_pk3CwJzA+gsj=WLwHSkQ@mail.gmail.com>
+References: <CADvTj4o7ZWUikKwNTwFq0O_AaX+46t_+Ca9gvWMYdWdRtTGeHQ@mail.gmail.com>
+         <CAEf4BzbEaTbEn1j9vLtmS1-8uJf0Bz-8wfmZj8N4Mmedt29nag@mail.gmail.com>
+         <c55f31dc3ae7e346e2a6d16d3e467e5460346b91.camel@gmail.com>
+         <CAEf4BzZ-x4U5NM7wsCcuESGXkoBbf_pk3CwJzA+gsj=WLwHSkQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 9:45=E2=80=AFAM Shakeel Butt <shakeelb@google.com> =
-wrote:
->
-> On Thu, Mar 23, 2023 at 9:37=E2=80=AFAM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Thu, Mar 23, 2023 at 9:29=E2=80=AFAM Shakeel Butt <shakeelb@google.c=
-om> wrote:
-> > >
-> > > On Thu, Mar 23, 2023 at 9:18=E2=80=AFAM Yosry Ahmed <yosryahmed@googl=
-e.com> wrote:
-> > > >
-> > > > On Thu, Mar 23, 2023 at 9:10=E2=80=AFAM Shakeel Butt <shakeelb@goog=
-le.com> wrote:
-> > > > >
-> > > > > On Thu, Mar 23, 2023 at 8:46=E2=80=AFAM Shakeel Butt <shakeelb@go=
-ogle.com> wrote:
-> > > > > >
-> > > > > > On Thu, Mar 23, 2023 at 8:43=E2=80=AFAM Yosry Ahmed <yosryahmed=
-@google.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, Mar 23, 2023 at 8:40=E2=80=AFAM Shakeel Butt <shakeel=
-b@google.com> wrote:
-> > > > > > > >
-> > > > > > > > On Thu, Mar 23, 2023 at 6:36=E2=80=AFAM Yosry Ahmed <yosrya=
-hmed@google.com> wrote:
-> > > > > > > > >
-> > > > > > > > [...]
-> > > > > > > > > > >
-> > > > > > > > > > > > 2. Are we really calling rstat flush in irq context=
-?
-> > > > > > > > > > >
-> > > > > > > > > > > I think it is possible through the charge/uncharge pa=
-th:
-> > > > > > > > > > > memcg_check_events()->mem_cgroup_threshold()->mem_cgr=
-oup_usage(). I
-> > > > > > > > > > > added the protection against flushing in an interrupt=
- context for
-> > > > > > > > > > > future callers as well, as it may cause a deadlock if=
- we don't disable
-> > > > > > > > > > > interrupts when acquiring cgroup_rstat_lock.
-> > > > > > > > > > >
-> > > > > > > > > > > > 3. The mem_cgroup_flush_stats() call in mem_cgroup_=
-usage() is only
-> > > > > > > > > > > > done for root memcg. Why is mem_cgroup_threshold() =
-interested in root
-> > > > > > > > > > > > memcg usage? Why not ignore root memcg in mem_cgrou=
-p_threshold() ?
-> > > > > > > > > > >
-> > > > > > > > > > > I am not sure, but the code looks like event notifica=
-tions may be set
-> > > > > > > > > > > up on root memcg, which is why we need to check thres=
-holds.
-> > > > > > > > > >
-> > > > > > > > > > This is something we should deprecate as root memcg's u=
-sage is ill defined.
-> > > > > > > > >
-> > > > > > > > > Right, but I think this would be orthogonal to this patch=
- series.
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > I don't think we can make cgroup_rstat_lock a non-irq-disab=
-ling lock
-> > > > > > > > without either breaking a link between mem_cgroup_threshold=
- and
-> > > > > > > > cgroup_rstat_lock or make mem_cgroup_threshold work without=
- disabling
-> > > > > > > > irqs.
-> > > > > > > >
-> > > > > > > > So, this patch can not be applied before either of those tw=
-o tasks are
-> > > > > > > > done (and we may find more such scenarios).
-> > > > > > >
-> > > > > > >
-> > > > > > > Could you elaborate why?
-> > > > > > >
-> > > > > > > My understanding is that with an in_task() check to make sure=
- we only
-> > > > > > > acquire cgroup_rstat_lock from non-irq context it should be f=
-ine to
-> > > > > > > acquire cgroup_rstat_lock without disabling interrupts.
-> > > > > >
-> > > > > > From mem_cgroup_threshold() code path, cgroup_rstat_lock will b=
-e taken
-> > > > > > with irq disabled while other code paths will take cgroup_rstat=
-_lock
-> > > > > > with irq enabled. This is a potential deadlock hazard unless
-> > > > > > cgroup_rstat_lock is always taken with irq disabled.
-> > > > >
-> > > > > Oh you are making sure it is not taken in the irq context through
-> > > > > should_skip_flush(). Hmm seems like a hack. Normally it is recomm=
-ended
-> > > > > to actually remove all such users instead of silently
-> > > > > ignoring/bypassing the functionality.
-> > > >
-> > > > It is a workaround, we simply accept to read stale stats in irq
-> > > > context instead of the expensive flush operation.
-> > > >
-> > > > >
-> > > > > So, how about removing mem_cgroup_flush_stats() from
-> > > > > mem_cgroup_usage(). It will break the known chain which is taking
-> > > > > cgroup_rstat_lock with irq disabled and you can add
-> > > > > WARN_ON_ONCE(!in_task()).
-> > > >
-> > > > This changes the behavior in a more obvious way because:
-> > > > 1. The memcg_check_events()->mem_cgroup_threshold()->mem_cgroup_usa=
-ge()
-> > > > path is also exercised in a lot of paths outside irq context, this
-> > > > will change the behavior for any event thresholds on the root memcg=
+On Thu, 2023-03-23 at 09:36 -0700, Andrii Nakryiko wrote:
+[...]
+> >=20
+> > The documentation says that `realloc(ptr, 0)` frees `ptr`.
+> > So, I assume that issue is caused by handling of empty sections.
+>=20
+> yep, thanks for repro steps! It's a quite interesting behavior. There
+> are two reallocs involved:
+>=20
+> First, dst->raw_data is NULL, dst_final_sz is 0, realloc succeeds and
+> returns non-NULL pointer (which according to documentation can be
+> freed with free()). All good.
+>=20
+> Second one, for second file, we have non-NULL dst->raw_data returned
+> from previous realloc(), we pass it to realloc() with dst_final_sz
+> still 0. But *NOW* we get NULL as a return (and original special
+> pointer "helpfully" freed for us). This we handle as -ENOMEM and exit.
+>=20
+> Amazingly non-error-prone behavior, of course.
+
+Yep, a surprising behavior.
+Can't find any historical context on why this was the choice.
+
+>=20
+> > This is easy to test using object files produced by LLVM:
+> >=20
+> >   $ touch empty
+> >   $ llvm-objcopy --add-section .foobar=3Dempty linked_maps1.bpf.o
+> >   $ llvm-objcopy --add-section .foobar=3Dempty linked_maps2.bpf.o
+> >   $ bpftool --debug gen object linked_maps.linked1.o linked_maps1.bpf.o=
+ linked_maps2.bpf.o
+> >   libbpf: linker: adding object file 'linked_maps1.bpf.o'...
+> >   libbpf: linker: adding object file 'linked_maps2.bpf.o'...
+> >   Error: failed to link 'linked_maps2.bpf.o': Cannot allocate memory (1=
+2)
+> >   free(): double free detected in tcache 2
+> >   Aborted (core dumped)
+> >=20
+> > The valgrind output also matches the one attached to the original email=
 .
-> > > > With proposed skipped flushing in irq context we only change the
-> > > > behavior in a small subset of cases.
-> > > >
-> > > > I think we can skip flushing in irq context for now, and separately
-> > > > deprecate threshold events for the root memcg. When that is done we
-> > > > can come back and remove should_skip_flush() and add a VM_BUG_ON or
-> > > > WARN_ON_ONCE instead. WDYT?
-> > > >
-> > > > 2. mem_cgroup_usage() is also used when reading usage from userspac=
-e.
-> > > > This should be an easy workaround though.
-> > >
-> > > This is a cgroup v1 behavior and to me it is totally reasonable to ge=
-t
-> > > the 2 second stale root's usage. Even if you want to skip flushing in
-> > > irq, do that in the memcg code and keep VM_BUG_ON/WARN_ON_ONCE in the
-> > > rstat core code. This way we will know if other subsystems are doing
-> > > the same or not.
-> >
-> > We can do that. Basically in mem_cgroup_usage() have:
-> >
-> > /* Some useful comment */
-> > if (in_task())
-> >     mem_cgroup_flush_stats();
-> >
-> > and in cgroup_rstat_flush() have:
-> > WARN_ON_ONCE(!in_task());
-> >
-> > I am assuming VM_BUG_ON is not used outside mm code.
-> >
-> > The only thing that worries me is that if there is another unlikely
-> > path somewhere that flushes stats in irq context we may run into a
-> > deadlock. I am a little bit nervous about not skipping flushing if
-> > !in_task() in cgroup_rstat_flush().
->
-> I think it is a good thing. We will find such scenarios and fix those
-> instead of hiding them forever or keeping the door open for new such
-> scenarios.
+> > Something like below fixes it:
+> >=20
+> > diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+> > index d7069780984a..ff3833e55c55 100644
+> > --- a/tools/lib/bpf/linker.c
+> > +++ b/tools/lib/bpf/linker.c
+> > @@ -1113,7 +1113,7 @@ static int extend_sec(struct bpf_linker *linker, =
+struct dst_sec *dst, struct src
+> >         /* no need to re-align final size */
+> >         dst_final_sz =3D dst_align_sz + src->shdr->sh_size;
+> >=20
+> > -       if (src->shdr->sh_type !=3D SHT_NOBITS) {
+> > +       if (dst_final_sz !=3D 0 && src->shdr->sh_type !=3D SHT_NOBITS) =
+{
+> >                 tmp =3D realloc(dst->raw_data, dst_final_sz);
+> >                 if (!tmp)
+>=20
+> let's maybe document this quirk instead of preventing realloc() call:
+>=20
+> /* comment here explaining the quirks of realloc() API and it's
+> inconsistent runtime behavior */
+> if (!tmp && dst_final_sz > 0)
+>   return -ENOMEM;
 
-Sure, I can do that in the next version. I will include a patch that
-adds an in_task() check to mem_cgroup_usage() before this one. Since
-BUG_ON() is discouraged and VM_BUG_ON() is mm specific, I guess we are
-left with WARN_ON_ONCE() for the rstat core code, right?
+Agree.
 
-Thanks Shakeel. Any other thoughts I should address for the next version?
+>=20
+> Eduard, are you going to send a proper patch for this? Thanks!
+
+Will do, need to figure out how to encode the test case within selftests.
+Still, would be good if James can confirm that the issue is fixed on his si=
+de.
+
+>=20
+> >                         return -ENOMEM;
+> >=20
+> >=20
+> > BPF selftests are passing for me with this change,
+> > objcopy-based reproducer no longer reports error.
+> > WDYT?
+> >=20
+> > James, could you please test this patch with bpf-gcc?
+> > (you will have to re-compile libbpf and bpftool,
+> >  I had to separately do `make -C tools/bpf/bpftool`
+> >  before re-building selftests for some reason)
+> >=20
+> > Thanks,
+> > Eduard
+> >=20
+[...]
