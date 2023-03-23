@@ -2,111 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D243A6C666B
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 12:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1462A6C6692
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 12:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjCWLUQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 07:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
+        id S229791AbjCWLaz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 07:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbjCWLUP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 07:20:15 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5581C420E
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 04:20:14 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id w9so84913086edc.3
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 04:20:14 -0700 (PDT)
+        with ESMTP id S229451AbjCWLay (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 07:30:54 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E53AD27;
+        Thu, 23 Mar 2023 04:30:53 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id i9so20057376wrp.3;
+        Thu, 23 Mar 2023 04:30:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679570413;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gz4AK/13/8ZJIP9HjSHztDp0bLQ6grKDoEelg0z8QUo=;
-        b=OeUuijq4iX1ovc96Ebf+Ond6zOQNWiTqaQmqAY9VvS77AsJ1SwLe5sn+yws0RrZLSo
-         74OtJqb9CRLtfV9eifuPQzrePvrrOBsm6ZOPjelhnXp6BDpnWHUsm5Z2dw65fpjqELwW
-         U9WGFDZNFYe3aBUs9/HAMzK0Oa26d8AkPNTPfEPaMw8Dmp8apEe4huNGxCDtD/vpGQNZ
-         hyPoF3UWo86dieX/YQhlz7x56+BBcT15FhnjNcZv1XXJWCFQQ7UkbTkIVfk7Sa9vEizw
-         c2L6a4pfUbRa8EPod9n/JZFEVEld51vfVS2JcowZ1sAwtSC97SAP+xWY7D2ng2kLMm20
-         Me8Q==
+        d=gmail.com; s=20210112; t=1679571052;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zY62E3taIidO3hGOd5wWvRP3S0XrrcHHNrzlQQ+yG/I=;
+        b=AUHkdaJRAmsu/4O6t590y2vFDiDXILgf/TkRzJNc4RFIBjztdmAZ8TZMiSywCEm9I2
+         KfrFWPVv0iHtZbdbPinviv0cz8eMWUr2muJ7YR6ld91vO/L4f9GcBbCBBMWtVL6jrC8s
+         Yx0x5JzdQ1LQ+5/hr5EaHFlDcgEaeoIy7dNy9s4ZnyxmXu94LqDaw/SqwXp2nDhElLAO
+         WFPcz0eozGTdY1KqRiO3WgUPwATBFeRTqBVGt71L5gZDWxVMjkGyf5Kubr7GLTiu7Bc5
+         pA2PgRDQIvC9tRGDI1erHTTR5KLN+7++i4M2c+kY3mIpWCLPzoKwbXN7JFlCPy6ZR6Ed
+         Oqew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679570413;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=gz4AK/13/8ZJIP9HjSHztDp0bLQ6grKDoEelg0z8QUo=;
-        b=HcTGbD/VIFZ5WCs1haRx/HZS0F+AWt11iKDGClkd1v2cJ8+IwuLjZ1a0ux+E9eSM/M
-         BmQJSRDle83Q7GSkw/USZOZySFzm+HHSj7UXwq60xDJ8HxpEP9yXTaYTGW8+anNzxN22
-         wtuhhh0mLSd9hLEl8iazemBQI/dV9XC2fJ8GVp3RbBH2o30pg7nUwvYsB+5n6jGSKTRW
-         kgELkRrk6DFg+4su6osrh85FwgRok8o3RRkzKPUL34+/D9F0OmxR5tqIYMGw7dQcgj0u
-         KB7hhqQnWuLV3UB/xaNBT21xLf3tBHn8qIzO5UaxGnSgMwBkWMZnWNtH6ccjXVBemmHd
-         AjZA==
-X-Gm-Message-State: AO0yUKXnfl0rEhbblNxyS3VhNKEA5SwEdoF0t8auU25EkiQ4ilHYmsoe
-        noLYMmKw70l6Tty1OmZKqMY=
-X-Google-Smtp-Source: AK7set+ep1fSC9asM5YXzb9pSzeYYD7SEZx//pT9jaUGbBJFm3vOwkQm44TpZEJHS6wjnijAZQ7HJQ==
-X-Received: by 2002:a05:6402:54b:b0:4fb:6357:f393 with SMTP id i11-20020a056402054b00b004fb6357f393mr10338717edx.1.1679570412594;
-        Thu, 23 Mar 2023 04:20:12 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id k19-20020a508ad3000000b00501c0eaf10csm6108579edk.40.2023.03.23.04.20.11
+        d=1e100.net; s=20210112; t=1679571052;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zY62E3taIidO3hGOd5wWvRP3S0XrrcHHNrzlQQ+yG/I=;
+        b=Lmm7NPoCltoExHh5Hz6E3zzAIJQqnYiqmMGooAqZ4luv69gbowS9ZelicXRbtKSHAG
+         9RVU6vzyhLlMeCCvZn50WyRaKftRqaySnUX0kJmO+/RdTvccixfaoq6HuOmyWILWiuZ0
+         WMnto/0GSs1AhQonYxJ7ig3R3nWOOkv1dpzG9FE0q4o/1Wj3RkhBorX8zaQ6S9zEyr/U
+         vdR4YpN2AP6sH8FKN12idMFwQ6ug9tW52w+2zGR3tycHxRlwe2F/NGbCWRLZuyUfvdRA
+         woDbg+ysbmEtKiFKf3JJpccfXB7BlGpPZjuE6Df0oNpQuUTXfVdTmnoTXAiOahbjcSEW
+         AsLg==
+X-Gm-Message-State: AAQBX9exMoPy+44p35gTgGtrdqPSNz6lifn9TaXrN1RCUDfqEawDsOg/
+        xV0vIzxFzNpyb8TGxjGlEg8=
+X-Google-Smtp-Source: AKy350Z1Cq3tJUQbPKAwFACOfc9Qhkl/i3pVwrVprLRUk7xFFOAsGg7Y6IfkICzatZxCkNdXugM++Q==
+X-Received: by 2002:adf:ec0b:0:b0:2d7:4c98:78fe with SMTP id x11-20020adfec0b000000b002d74c9878femr2640551wrn.34.1679571051623;
+        Thu, 23 Mar 2023 04:30:51 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id b15-20020adfe30f000000b002c706c754fesm15993836wrj.32.2023.03.23.04.30.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 04:20:12 -0700 (PDT)
-Message-ID: <e184fc97a5afcf05c7c627b79163060c86f59f90.camel@gmail.com>
-Subject: Re: How to avoid race conditions in older kernel where spinlock is
- unavailable
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     =?UTF-8?Q?=E5=88=98=E7=95=85?= <fluency0726@gmail.com>,
-        bpf@vger.kernel.org
-Date:   Thu, 23 Mar 2023 13:20:11 +0200
-In-Reply-To: <CA+hefuS341OjUuWnxwVXj6QPMLcJLxvr+OREb_nEYrnt5kuBsQ@mail.gmail.com>
-References: <CA+hefuS341OjUuWnxwVXj6QPMLcJLxvr+OREb_nEYrnt5kuBsQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Thu, 23 Mar 2023 04:30:51 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 23 Mar 2023 12:30:48 +0100
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+c49e17557ddb5725583d@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, boqun.feng@gmail.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        fgheet255t@gmail.com, haoluo@google.com, hawk@kernel.org,
+        hdanton@sina.com, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, longman@redhat.com,
+        martin.lau@linux.dev, mingo@redhat.com, netdev@vger.kernel.org,
+        peterz@infradead.org, rostedt@goodmis.org, sdf@google.com,
+        song@kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, will@kernel.org, yhs@fb.com
+Subject: Re: [syzbot] [bpf?] [trace?] possible deadlock in bpf_trace_printk
+Message-ID: <ZBw4aDjCv6kwuxzQ@krava>
+References: <0000000000006294c805e106db34@google.com>
+ <000000000000690cbc05f779cba8@google.com>
+ <CACT4Y+Z1Vm+ci43qnoZiF89mo_R1eQV0Cd9Y_MUNoXD1FytR2A@mail.gmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+Z1Vm+ci43qnoZiF89mo_R1eQV0Cd9Y_MUNoXD1FytR2A@mail.gmail.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2023-03-23 at 14:53 +0800, =E5=88=98=E7=95=85 wrote:
-> Hi all
->=20
-> I'm developing an ebpf program to capture all descendant processes of
-> a specific process (e.g., a shell process), so I use kretprobe to
-> monitor the return of _do_fork() function in kernel. I maintained a
-> pid_map (BPF_MAP_TYPE_ARRAY) to store the PIDs of the descendant
-> processes and a ptr_map  (BPF_MAP_TYPE_ARRAY with only 1 element) as a
-> pointer which points to the first empty element in the pid_map.
-> Everytime the ebpf program is triggered, it will traverse all PIDs
-> stored in the pid_map to see whether the current process is a
-> descendant of the initial process, if so, the PID of the newly created
-> process will be added to the pid_map and the ptr_map is also updated.
-> Then I realized there are data races, because on an SMP system, ebpf
-> programs that run on different CPU cores may access the ptr_map
-> simultaneously. To solve this problem, I searched related docs and
-> found that spinlock is available in the newest kernel. However, I'm
-> working on 4.19 kernel which doesn't support spinlock, I wonder if
-> there is any synchronization mechanism that I can use to solve this
-> race condition. I'd be appreciate if anyone can help me :)
+On Thu, Mar 23, 2023 at 08:50:10AM +0100, Dmitry Vyukov wrote:
+> On Wed, 22 Mar 2023 at 10:29, syzbot
+> <syzbot+c49e17557ddb5725583d@syzkaller.appspotmail.com> wrote:
+> >
+> > syzbot suspects this issue was fixed by commit:
+> >
+> > commit 05b24ff9b2cfabfcfd951daaa915a036ab53c9e1
+> > Author: Jiri Olsa <jolsa@kernel.org>
+> > Date:   Fri Sep 16 07:19:14 2022 +0000
+> >
+> >     bpf: Prevent bpf program recursion for raw tracepoint probes
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10a653d6c80000
+> > start commit:   a335366bad13 Merge tag 'gpio-fixes-for-v6.0-rc6' of git://..
+> > git tree:       upstream
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=9e66520f224211a2
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=c49e17557ddb5725583d
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e27480880000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12737fbf080000
+> >
+> > If the result looks correct, please mark the issue as fixed by replying with:
+> >
+> > #syz fix: bpf: Prevent bpf program recursion for raw tracepoint probes
+> >
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> Looks reasonable:
+> 
+> #syz fix: bpf: Prevent bpf program recursion for raw tracepoint probes
 
-Hi Chang,
+agreed, thanks
 
-If all you need is to bump a counter you can probably use
-__sync_fetch_and_add() intrinsic.
-Looking trough BPF samples I see it used in the code from 2015,
-e.g. in samples/bpf/sockex3_kern.c.
-However, I'm not sure why not simply inspect `struct task_struct::parent` f=
-ield?
-
-Thanks,
-Eduard
-
->=20
-> Thank you!
->=20
-> Chang Liu
-
+jirka
