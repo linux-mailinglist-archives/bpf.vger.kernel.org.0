@@ -2,227 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F656C69A5
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 14:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A146C6A58
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 15:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbjCWNhH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 09:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
+        id S230498AbjCWOBf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 10:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbjCWNhF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 09:37:05 -0400
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C7018A9F;
-        Thu, 23 Mar 2023 06:37:01 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4Pj5jc1mmTz9xHM1;
-        Thu, 23 Mar 2023 21:27:16 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwCHCATRVRxk2BbCAQ--.54288S2;
-        Thu, 23 Mar 2023 14:36:34 +0100 (CET)
-Message-ID: <e0b828d994a8427ad48b7b514f75d751ea791b47.camel@huaweicloud.com>
-Subject: Re: [PATCH 0/5] usermode_driver: Add management library and API
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231313AbjCWOBP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 10:01:15 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB9B38B72
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 07:00:33 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id y14so20622733wrq.4
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 07:00:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679580028;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aD5dgg32lUHch62xwzd5QkGTM33R6/TU2XSBbE44wd0=;
+        b=XlkqvU5i5UxhspJxeSJg3HEL8ig5lurJckjC40VTqd8J+Xv2dE8s5m58ZHrAjCtgTi
+         ywcdRcUxd4nQUnjfhRSI2npY/wKNlxFyLDFDvgr0qGDSDPsyyQvYWkT7wWqRhdj++GXZ
+         AbDiKSMIewzRD1N82xxI2blkfCM4DxzjPqThcLoIR35qNB7d+x6MJTYXWhZ29oCGmwFB
+         ESXdhsbbXi8rab9ZBgINYQqwDjHwNXHhKa2ruwLGZYRz89yhvlvvQV0+Z4i7A8qREV+9
+         XBPupvanF9CirBN2KhOQav8CB7O+IoAmDN9fHz3F/dxkeOlDo1rtH/Tz0406we6xB7r5
+         qsMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679580028;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aD5dgg32lUHch62xwzd5QkGTM33R6/TU2XSBbE44wd0=;
+        b=KnHEF7E6Ut47pzfGQwsptSYnL4nWz9R23vtM/ULDmrgwqlGXeysaK4PHNija3FezZP
+         fCLhGOynEe9HoPYFPyFdHZOh0Jg8I/yBQ/9chKPwQe44O0tX+iFoX+ebT+tZlDU3POMr
+         mp0hrZXrMZtgw1kAZNRRc8bI8zePQwn5tVa+GDXGwurBwMutiaA0zBwhPP0+Y/dcrO6E
+         xGcAyHzujxmSyamhbxXigoOwbyuqEb840qXh43rH/9NeLfdLYNr0FedKfZ2dzH1Ri0Pz
+         t5TiOb7z2zKMnERJBtI7FmYd3WbsmAhFwT1P3rT0jLJDUJl/+MK8yapcr2dzjZ6hGhHf
+         zdng==
+X-Gm-Message-State: AAQBX9fDqKLC7+Etxzd2I3RfYZ1P9s+FljLc3XeohLCCzeZXXymaDWDO
+        Oz22jCC19ztjdWForrCe6XsDlyYtS0lOWlpLKUE=
+X-Google-Smtp-Source: AKy350Zxy+DNgd0WQmo0O6Ks6f+DwYf4c3Gf0dxBJOrI0D29ZVkUSapQQ2ZgJ+svTtCbY5Jk8dtGsQ==
+X-Received: by 2002:adf:ffca:0:b0:2bf:f4f7:be9c with SMTP id x10-20020adfffca000000b002bff4f7be9cmr2465613wrs.14.1679580027886;
+        Thu, 23 Mar 2023 07:00:27 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a7-20020a5d5087000000b002c55306f6edsm16177563wrt.54.2023.03.23.07.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Mar 2023 07:00:27 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 23 Mar 2023 15:00:25 +0100
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Viktor Malik <vmalik@redhat.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Luis R. Rodriguez" <mcgrof@kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 23 Mar 2023 14:36:17 +0100
-In-Reply-To: <CAADnVQJC0h7rtuntt0tqS5BbxWsmyWs3ZSbboZMmUKetMG2VhA@mail.gmail.com>
-References: <20230317145240.363908-1-roberto.sassu@huaweicloud.com>
-         <CAADnVQLKONwKwkJMopRq-dzcV2ZejrjGzyuzW_5QX=0BY=Z4jw@mail.gmail.com>
-         <b5c80613c696818ce89b92dac54e98878ec3ccd0.camel@huaweicloud.com>
-         <CAADnVQJC0h7rtuntt0tqS5BbxWsmyWs3ZSbboZMmUKetMG2VhA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Hao Luo <haoluo@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH bpf-next v6 1/2] bpf: Fix attaching
+ fentry/fexit/fmod_ret/lsm to modules
+Message-ID: <ZBxbeYZ/+tOtEiNB@krava>
+References: <cover.1676542796.git.vmalik@redhat.com>
+ <e627742ab86ed28632bc9b6c56ef65d7f98eadbc.1676542796.git.vmalik@redhat.com>
+ <Y+40os27pQ8det/o@krava>
+ <1992d09a-0ef8-66e3-1da0-5d13c2fecc3d@redhat.com>
+ <Y+5Q0UK09HsxM4ht@krava>
+ <ZBrPMkv8YVRiWwCR@samus.usersys.redhat.com>
+ <ZBrxMWfmE/1RG/u0@krava>
+ <CAADnVQLwvZyQXyRNn_oaBKx-EH_NauZHTg8+-MOMXo91MibX=A@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwCHCATRVRxk2BbCAQ--.54288S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3AryktFy7tFyktr48CrWxWFg_yoWxXr4DpF
-        WrCFWjka1DJF17ArZ2vw18Ca409397tw43WrnrGryfZ3Z09FyIkr1I9F4a9FnrGr4Skw1Y
-        qr4jya4293Z8ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAFBF1jj4sTwwAAsq
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <CAADnVQLwvZyQXyRNn_oaBKx-EH_NauZHTg8+-MOMXo91MibX=A@mail.gmail.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2023-03-22 at 15:27 -0700, Alexei Starovoitov wrote:
-> On Wed, Mar 22, 2023 at 5:08 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > On Tue, 2023-03-21 at 19:23 -0700, Alexei Starovoitov wrote:
-> > > On Fri, Mar 17, 2023 at 7:53 AM Roberto Sassu
-> > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > 
-> > > > A User Mode Driver (UMD) is a specialization of a User Mode Helper (UMH),
-> > > > which runs a user space process from a binary blob, and creates a
-> > > > bidirectional pipe, so that the kernel can make a request to that process,
-> > > > and the latter provides its response. It is currently used by bpfilter,
-> > > > although it does not seem to do any useful work.
-> > > 
-> > > FYI the new home for bpfilter is here:
-> > > https://github.com/facebook/bpfilter
-> > 
-> > Thanks. I just ensured that it worked, by doing:
-> > 
-> > getsockopt(fd, SOL_IP, IPT_SO_GET_INFO, &info, &optlen);
-> > 
-> > and accepting IPT_SO_GET_INFO in main.c.
-> > 
-> > > > The problem is, if other users would like to implement a UMD similar to
-> > > > bpfilter, they would have to duplicate the code. Instead, make an UMD
-> > > > management library and API from the existing bpfilter and sockopt code,
-> > > > and move it to common kernel code.
-> > > > 
-> > > > Also, define the software architecture and the main components of the
-> > > > library: the UMD Manager, running in the kernel, acting as the frontend
-> > > > interface to any user or kernel-originated request; the UMD Loader, also
-> > > > running in the kernel, responsible to load the UMD Handler; the UMD
-> > > > Handler, running in user space, responsible to handle requests from the UMD
-> > > > Manager and to send to it the response.
-> > > 
-> > > That doesn't look like a generic interface for UMD.
-> > 
-> > What would make it more generic? I made the API message format-
-> > independent. It has the capability of starting the user space process
-> > as required, when there is a communication.
-> > 
-> > > It was a quick hack to get bpfilter off the ground, but certainly
-> > > not a generic one.
-> > 
-> > True, it is not generic in the sense that it can accomodate any
-> > possible use case. The main goal is to move something that was running
-> > in the kernel to user space, with the same isolation guarantees as if
-> > the code was executed in the kernel.
+On Wed, Mar 22, 2023 at 09:03:46AM -0700, Alexei Starovoitov wrote:
+> On Wed, Mar 22, 2023 at 5:14 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Wed, Mar 22, 2023 at 10:49:38AM +0100, Artem Savkov wrote:
+> >
+> > SNIP
+> >
+> > > > > Hm, do we even need to preempt_disable? IIUC, preempt_disable is used
+> > > > > in module kallsyms to prevent taking the module lock b/c kallsyms are
+> > > > > used in the oops path. That shouldn't be an issue here, is that correct?
+> > > >
+> > > > btf_try_get_module calls try_module_get which disables the preemption,
+> > > > so no need to call it in here
+> > >
+> > > It does, but it reenables preemption right away so it is enabled by the
+> > > time we call find_kallsyms_symbol_value(). I am getting the following
+> > > lockdep splat while running module_fentry_shadow test from test_progs.
+> > >
+> > > [   12.017973][  T488] =============================
+> > > [   12.018529][  T488] WARNING: suspicious RCU usage
+> > > [   12.018987][  T488] 6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804 Tainted: G           OE
+> > > [   12.019898][  T488] -----------------------------
+> > > [   12.020391][  T488] kernel/module/kallsyms.c:448 suspicious rcu_dereference_check() usage!
+> > > [   12.021335][  T488]
+> > > [   12.021335][  T488] other info that might help us debug this:
+> > > [   12.021335][  T488]
+> > > [   12.022416][  T488]
+> > > [   12.022416][  T488] rcu_scheduler_active = 2, debug_locks = 1
+> > > [   12.023297][  T488] no locks held by test_progs/488.
+> > > [   12.023854][  T488]
+> > > [   12.023854][  T488] stack backtrace:
+> > > [   12.024336][  T488] CPU: 0 PID: 488 Comm: test_progs Tainted: G           OE      6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804
+> > > [   12.025290][  T488] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.1-2.fc37 04/01/2014
+> > > [   12.026108][  T488] Call Trace:
+> > > [   12.026381][  T488]  <TASK>
+> > > [   12.026649][  T488]  dump_stack_lvl+0xb4/0x110
+> > > [   12.027060][  T488]  lockdep_rcu_suspicious+0x158/0x1f0
+> > > [   12.027541][  T488]  find_kallsyms_symbol_value+0xe8/0x110
+> > > [   12.028028][  T488]  bpf_check_attach_target+0x838/0xa20
+> > > [   12.028511][  T488]  check_attach_btf_id+0x144/0x3f0
+> > > [   12.028957][  T488]  ? __pfx_cmp_subprogs+0x10/0x10
+> > > [   12.029408][  T488]  bpf_check+0xeec/0x1850
+> > > [   12.029799][  T488]  ? ktime_get_with_offset+0x124/0x1d0
+> > > [   12.030247][  T488]  bpf_prog_load+0x87a/0xed0
+> > > [   12.030627][  T488]  ? __lock_release+0x5f/0x160
+> > > [   12.031010][  T488]  ? __might_fault+0x53/0xb0
+> > > [   12.031394][  T488]  ? selinux_bpf+0x6c/0xa0
+> > > [   12.031756][  T488]  __sys_bpf+0x53c/0x1240
+> > > [   12.032115][  T488]  __x64_sys_bpf+0x27/0x40
+> > > [   12.032476][  T488]  do_syscall_64+0x3e/0x90
+> > > [   12.032835][  T488]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> >
+> >
+> > hum, for some reason I can't reproduce, but looks like we need to disable
+> > preemption for find_kallsyms_symbol_value.. could you please check with
+> > patch below?
+> >
+> > also could you please share your .config? not sure why I can't reproduce
+> >
+> > thanks,
+> > jirka
+> >
+> >
+> > ---
+> > diff --git a/kernel/module/kallsyms.c b/kernel/module/kallsyms.c
+> > index ab2376a1be88..bdc911dbcde5 100644
+> > --- a/kernel/module/kallsyms.c
+> > +++ b/kernel/module/kallsyms.c
+> > @@ -442,7 +442,7 @@ int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
+> >  }
+> >
+> >  /* Given a module and name of symbol, find and return the symbol's value */
+> > -unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
+> > +static unsigned long __find_kallsyms_symbol_value(struct module *mod, const char *name)
+> >  {
+> >         unsigned int i;
+> >         struct mod_kallsyms *kallsyms = rcu_dereference_sched(mod->kallsyms);
+> > @@ -466,7 +466,7 @@ static unsigned long __module_kallsyms_lookup_name(const char *name)
+> >         if (colon) {
+> >                 mod = find_module_all(name, colon - name, false);
+> >                 if (mod)
+> > -                       return find_kallsyms_symbol_value(mod, colon + 1);
+> > +                       return __find_kallsyms_symbol_value(mod, colon + 1);
+> >                 return 0;
+> >         }
+> >
+> > @@ -475,7 +475,7 @@ static unsigned long __module_kallsyms_lookup_name(const char *name)
+> >
+> >                 if (mod->state == MODULE_STATE_UNFORMED)
+> >                         continue;
+> > -               ret = find_kallsyms_symbol_value(mod, name);
+> > +               ret = __find_kallsyms_symbol_value(mod, name);
+> >                 if (ret)
+> >                         return ret;
+> >         }
+> > @@ -494,6 +494,16 @@ unsigned long module_kallsyms_lookup_name(const char *name)
+> >         return ret;
+> >  }
+> >
+> > +unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
+> > +{
+> > +       unsigned long ret;
+> > +
+> > +       preempt_disable();
+> > +       ret = __find_kallsyms_symbol_value(mod, name);
+> > +       preempt_enable();
+> > +       return ret;
+> > +}
 > 
-> They are not the same guarantees.
-> UMD is exactly equivalent to root process running in user space.
-> Meaning it can be killed, ptraced, priority inverted, etc
+> That doesn't look right.
+> I think the issue is misuse of rcu_dereference_sched in
+> find_kallsyms_symbol_value.
 
-That is the starting point.
+it seems to be using rcu pointer to keep symbols for module init time and
+then core symbols for after init.. and switch between them when module is
+loaded, hence the strange rcu usage I think
 
-I suppose you can remove any privilege from the UMD process, it just
-needs to read/write from/to a pipe (and in my case to use socket() with
-AF_ALG to interact with the Crypto API).
+Petr, Zhen, any idea/insight?
 
-Also, as I mentioned, you can enforce a very strict seccomp profile,
-which forces the UMD process to use a very limited number of system
-calls.
-
-For the interactions of the rest of the system to the UMD process, you
-could deny with an LSM all the operations that you mentioned. The rest
-of the system would not be affected, only operations which have the UMD
-process as target are denied.
-
-> > > > I have two use cases, but for sake of brevity I will propose one.
-> > > > 
-> > > > I would like to add support for PGP keys and signatures in the kernel, so
-> > > > that I can extend secure boot to applications, and allow/deny code
-> > > > execution based on the signed file digests included in RPM headers.
-> > > > 
-> > > > While I proposed a patch set a while ago (based on a previous work of David
-> > > > Howells), the main objection was that the PGP packet parser should not run
-> > > > in the kernel.
-> > > > 
-> > > > That makes a perfect example for using a UMD. If the PGP parser is moved to
-> > > > user space (UMD Handler), and the kernel (UMD Manager) just instantiates
-> > > > the key and verifies the signature on already parsed data, this would
-> > > > address the concern.
-> > > 
-> > > I don't think PGP parser belongs to UMD either.
-> > > Please do it as a normal user space process and define a proper
-> > > protocol for communication between kernel and user space.
-> > 
-> > UMD is better in the sense that it establishes a bidirectional pipe
-> > between the kernel and the user space process. With that, there is no
-> > need to further restrict the access to a sysfs file, for example.
-> 
-> If a simple pipe is good enough then you can have a kernel module
-> that creates it and interacts with the user space process.
-
-Few points I forgot to mention.
-
-With the UMD approach, the binary blob is embedded in the kernel
-module, which means that no external dependencies are needed for
-integrity verification. The binary is statically compiled, and the
-kernel write-protects it at run-time.
-
-Second, since DIGLIM would check the integrity of any executable,
-including init, the PGP signature verification needs to occur before.
-So, the PGP UMD should be already started by then. That is not going to
-be a problem, since the binary is copied to a private tmpfs mount.
-
-> Out-of-tree bpftiler can do that, so can you.
-
-As far as I can see, the out-of-tree bpfilter works exactly in the same
-way as the in-tree counterpart. The binary blob is embedded in the
-kernel module.
-
-> PGP is not suitable for kernel git repo either as kernel code or as UMD.
-
-Well, the asymmetric key type can be extended with new parsers, so this
-possibility was already taken into account. The objection that the PGP
-parser should not run in kernel space is fair, but I think the UMD
-approach fully addresses that.
-
-Also, I agree with you that we should not just take any code and
-pretend that it is part of the kernel. However, in this particular
-case, the purpose of the PGP UMD would be simply to extract very few
-information from the PGP packets. The asymmetric key type and the
-signature verification infrastructure already take care of the rest.
-
-PGP keys and signatures would act as an additional system trust anchor
-for verifying critical system data (for DIGLIM, which executables are
-allowed to run), similarly to how X.509 certificates are used for
-verifying kernel modules. RPM headers, executables digests are taken
-from, are signed with PGP, so there is no other way than adding this
-functionality.
-
-And unfortunately, especially for features impacting the entire system,
-out-of-tree drivers are not really an option:
-
-https://docs.fedoraproject.org/en-US/quick-docs/kernel/overview/#_out_of_tree_drivers
-
-Thanks
-
-Roberto
-
+thanks,
+jirka
