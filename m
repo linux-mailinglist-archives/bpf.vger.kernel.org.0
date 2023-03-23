@@ -2,67 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 290BE6C5F12
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 06:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFF06C5F19
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 06:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjCWFjf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 01:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
+        id S230228AbjCWFls (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 01:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjCWFje (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 01:39:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F15522020
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 22:38:47 -0700 (PDT)
+        with ESMTP id S230196AbjCWFlr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 01:41:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8D1F3
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 22:40:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679549926;
+        s=mimecast20190719; t=1679550056;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Jri6+NrCPtekgZqOyxyD0WomJ0of3wHnx2G0FZIYbvw=;
-        b=LS3FMEy35gIDHyO+O2fffOejaKkYQEsDeXetme+W5JIKmGzASMy2T76/5MIF6RS/I4CD0P
-        bo9oLfLm5JVkdg20PDFdXYt/F89vh+jCay2dJFnfdb0VDjoZCqJ04H5e8v/qRLPc10KGcv
-        Xam8SGq691rWdCDGPPMR6TofvyTdRXA=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=D8WMSh/aQ+eAzT9IfV/3va57SyXLtifjECFun3hDE68=;
+        b=Kd4Nr4ZZ2vPWUYQbwSM3kBk/sHoQV/SQjloPxdEM15C5sRZFOTerbBEADuHHeP0xe5fI6r
+        zkxUr5QLSJU5GFv2v+VFFiVxRrFPsKyIw77VryiFbCy7n4/htBj0AG2kUNvbYMNlzEiLQ0
+        6Ntea6FaMcWif4sn/BA+cvxmRJLs4j0=
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
+ [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-160-i64yjtm-PSqKi3MpM8T5SA-1; Thu, 23 Mar 2023 01:38:43 -0400
-X-MC-Unique: i64yjtm-PSqKi3MpM8T5SA-1
-Received: by mail-ot1-f71.google.com with SMTP id e2-20020a9d5602000000b00694299f6ea9so9577671oti.19
-        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 22:38:43 -0700 (PDT)
+ us-mta-65-6NlAmfFMMEmJPahrElbefA-1; Thu, 23 Mar 2023 01:40:55 -0400
+X-MC-Unique: 6NlAmfFMMEmJPahrElbefA-1
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-17270774b8fso10939864fac.3
+        for <bpf@vger.kernel.org>; Wed, 22 Mar 2023 22:40:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679549922;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jri6+NrCPtekgZqOyxyD0WomJ0of3wHnx2G0FZIYbvw=;
-        b=QEwAIQBxxCRHAN4BvzlNtEl9A+okmOolSe9UVNYqyC0eMJ04nBALSe6w4pWCnFVwiU
-         GRi6FjIEY89oun4tJv4+Ve4FJ/S3n7X9rgRFGpzEgc9gMBnoMX9y33Gl12XivOKAF8Bo
-         B546Vnai7gX+5tkIBKmQWY3gIRC4ZY4UvdqxF88UsE/kgGyzwxifFcUwxiEMQ2BIxb0n
-         zgGldorEVe0Wdw27rhXVAvtoJLODjFWFHePjLBI1YTGzGWmVW0TJU0xlHWMI980kmtzO
-         SyhkYpyIa4+YyKMjmwsvhsX4bL6oHfYXtET1izpzl7H6DB+QCFPcAIa6ho1BxvgOy9ts
-         VtxQ==
-X-Gm-Message-State: AO0yUKUO3Xkmh6nsufB4/jw3wdhWG1dj5TJ2DVDo/NiDNPWYHVTeQKx+
-        yoBjYYLocrpOxyCLAGmhyHtWmza3yuRM7JqtCW/e6ORqKvnSfOY93OHZtjTbHdhQ0qsOvIhHADz
-        5MGSjhr/zJk+Wod2s9SX+YUMcxxbV
-X-Received: by 2002:a54:4189:0:b0:384:c4a:1b49 with SMTP id 9-20020a544189000000b003840c4a1b49mr1724138oiy.9.1679549922159;
-        Wed, 22 Mar 2023 22:38:42 -0700 (PDT)
-X-Google-Smtp-Source: AK7set9edpIRb55hBUWyafl2NYnWiJJoCRnUZ/SSVGI/aYqPK/FO76woi7mOTZOqxI9TFyPNpDP1uoPL8mvJSXFe5hc=
-X-Received: by 2002:a54:4189:0:b0:384:c4a:1b49 with SMTP id
- 9-20020a544189000000b003840c4a1b49mr1724117oiy.9.1679549921765; Wed, 22 Mar
- 2023 22:38:41 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1679550054;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D8WMSh/aQ+eAzT9IfV/3va57SyXLtifjECFun3hDE68=;
+        b=g2E0wV5C1bDecfd6JJlENjQrPAoDaIOFEH5fnCH4PwZTdRyC4qunZX9SbE9BfFxSkC
+         19SijsKs3/kuH2gKrVBjlSUmqrQyusZ3mS1geQR798l7T9iSxGOCMd3391Z3ApYiRVrs
+         70F3IpMMOpZ93FJb1Ll+ELOC1T0l1m+gZObdv4AB/cwTmoaZJCs6Ec8zl4IVkIvZx5Lk
+         KUc6Qivosu33sHrSLE+8aaPuBfwIsMX0lOpeOr4b06+h5Hn3aJX8Hx9fEPkVKutlXpK6
+         xBboPg4G3ZH3Lobj5dunQEz9zzmqH86Vtb6pkAoiukHkMPe2q/Oys5kbyvPRwZcZx/hi
+         HaWA==
+X-Gm-Message-State: AAQBX9cthwyoEOLLWVSTNC7muFIoTNIWIgsW/38pu8hbWbtctS0dkPPK
+        aqlJFB7zLzZZ/bmsyUDnvquYXRx2BxvsL5vXHKpgfe5b6664gKc6OyHYRe6aAlastO4LwVdTON2
+        KjBrvpwDP9F6JxQ9nI0nE8CyPt7x8
+X-Received: by 2002:a05:6871:8f14:b0:177:83f7:351c with SMTP id zz20-20020a0568718f1400b0017783f7351cmr593756oab.9.1679550054419;
+        Wed, 22 Mar 2023 22:40:54 -0700 (PDT)
+X-Google-Smtp-Source: AK7set9g1YSjMDMQC+7+4yeX/CPsFYBSYAc0A6erI1PPIA4fosMlO2u/x57fcKvYMnvLOFEHYjlSjRzQvBThlEzDl9M=
+X-Received: by 2002:a05:6871:8f14:b0:177:83f7:351c with SMTP id
+ zz20-20020a0568718f1400b0017783f7351cmr593745oab.9.1679550054237; Wed, 22 Mar
+ 2023 22:40:54 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230322030308.16046-1-xuanzhuo@linux.alibaba.com>
- <20230322030308.16046-2-xuanzhuo@linux.alibaba.com> <4bd07874-b1ad-336b-b15e-ba56a10182e9@huawei.com>
- <1679535365.5410192-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1679535365.5410192-1-xuanzhuo@linux.alibaba.com>
+ <20230322030308.16046-3-xuanzhuo@linux.alibaba.com> <c7749936-c154-da51-ccfb-f16150d19c62@huawei.com>
+ <1679535924.6219428-2-xuanzhuo@linux.alibaba.com> <215e791d-1802-2419-ff59-49476bcdcd02@huawei.com>
+In-Reply-To: <215e791d-1802-2419-ff59-49476bcdcd02@huawei.com>
 From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 23 Mar 2023 13:38:30 +0800
-Message-ID: <CACGkMEvS7N1tXFD2-2n2upY15JF6=0uaAebewsP8=K+Cwbtgsg@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/8] virtio_net: mergeable xdp: put old page immediately
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+Date:   Thu, 23 Mar 2023 13:40:43 +0800
+Message-ID: <CACGkMEv=0gt6LS0HSgKELQqnWfQ2UdFgAKdvh=CLaAPLeNytww@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/8] virtio_net: mergeable xdp: introduce mergeable_xdp_prepare
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -75,7 +74,6 @@ Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
         netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
@@ -86,159 +84,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 9:43=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> On Wed, 22 Mar 2023 16:22:18 +0800, Yunsheng Lin <linyunsheng@huawei.com>=
- wrote:
-> > On 2023/3/22 11:03, Xuan Zhuo wrote:
-> > > In the xdp implementation of virtio-net mergeable, it always checks
-> > > whether two page is used and a page is selected to release. This is
-> > > complicated for the processing of action, and be careful.
-> > >
-> > > In the entire process, we have such principles:
-> > > * If xdp_page is used (PASS, TX, Redirect), then we release the old
-> > >   page.
-> > > * If it is a drop case, we will release two. The old page obtained fr=
-om
-> > >   buf is release inside err_xdp, and xdp_page needs be relased by us.
-> > >
-> > > But in fact, when we allocate a new page, we can release the old page
-> > > immediately. Then just one is using, we just need to release the new
-> > > page for drop case. On the drop path, err_xdp will release the variab=
-le
-> > > "page", so we only need to let "page" point to the new xdp_page in
-> > > advance.
-> > >
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > ---
-> > >  drivers/net/virtio_net.c | 15 ++++++---------
-> > >  1 file changed, 6 insertions(+), 9 deletions(-)
-> > >
-> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > index e2560b6f7980..4d2bf1ce0730 100644
-> > > --- a/drivers/net/virtio_net.c
-> > > +++ b/drivers/net/virtio_net.c
-> > > @@ -1245,6 +1245,9 @@ static struct sk_buff *receive_mergeable(struct=
- net_device *dev,
-> > >                     if (!xdp_page)
-> > >                             goto err_xdp;
-> > >                     offset =3D VIRTIO_XDP_HEADROOM;
-> > > +
-> > > +                   put_page(page);
 > >
-> > the error handling of xdp_linearize_page() does not seems self containe=
-d.
-> > Does it not seem better=EF=BC=9A
-> > 1. if xdp_linearize_page() succesed, call put_page() for first buffer j=
-ust
-> >    as put_page() is call for other buffer
-> > 2. or call virtqueue_get_buf() and put_page() for all the buffer of the=
- packet
-> >    so the error handling is not needed outside the virtqueue_get_buf().
+> >>
+> >> Also, it seems better to split the xdp_linearize_page() to two functions
+> >> as pskb_expand_head() and __skb_linearize() do, one to expand the headroom,
+> >> the other one to do the linearizing.
 > >
-> > In that case, it seems we can just do below without xdp_page:
-> > page =3D xdp_linearize_page(rq, num_buf, page, ...);
+> > No skb here.
 >
->
-> This does look better.
->
-> In fact, we already have vq reset, we can load XDP based on vq reset.
-> In this way, we can run without xdp_linearize_page.
+> I means following the semantics of pskb_expand_head() and __skb_linearize(),
+> not to combine the headroom expanding and linearizing into one function as
+> xdp_linearize_page() does now if we want a better refoctor result.
 
-The goal is to try our best not to drop packets, so I think it's
-better to keep it.
+Not sure it's worth it, since the use is very specific unless we could
+find a case that wants only one of them.
 
 Thanks
 
 >
->
 > >
 > >
-> > > +                   page =3D xdp_page;
-> > >             } else if (unlikely(headroom < virtnet_get_headroom(vi)))=
- {
-> > >                     xdp_room =3D SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM +
-> > >                                               sizeof(struct skb_share=
-d_info));
-> > > @@ -1259,6 +1262,9 @@ static struct sk_buff *receive_mergeable(struct=
- net_device *dev,
-> > >                            page_address(page) + offset, len);
-> > >                     frame_sz =3D PAGE_SIZE;
-> > >                     offset =3D VIRTIO_XDP_HEADROOM;
-> > > +
-> > > +                   put_page(page);
-> > > +                   page =3D xdp_page;
-> >
-> > It seems we can limit the scope of xdp_page in this "else if" block.
-> >
-> > >             } else {
-> > >                     xdp_page =3D page;
-> > >             }
-> >
-> > It seems the above else block is not needed anymore.
->
-> Yes, the follow-up patch has this optimization.
->
->
-> >
-> > > @@ -1278,8 +1284,6 @@ static struct sk_buff *receive_mergeable(struct=
- net_device *dev,
-> > >                     if (unlikely(!head_skb))
-> > >                             goto err_xdp_frags;
-> > >
-> > > -                   if (unlikely(xdp_page !=3D page))
-> > > -                           put_page(page);
-> > >                     rcu_read_unlock();
-> > >                     return head_skb;
-> > >             case XDP_TX:
-> > > @@ -1297,8 +1301,6 @@ static struct sk_buff *receive_mergeable(struct=
- net_device *dev,
-> > >                             goto err_xdp_frags;
-> > >                     }
-> > >                     *xdp_xmit |=3D VIRTIO_XDP_TX;
-> > > -                   if (unlikely(xdp_page !=3D page))
-> > > -                           put_page(page);
-> > >                     rcu_read_unlock();
-> > >                     goto xdp_xmit;
-> > >             case XDP_REDIRECT:
-> > > @@ -1307,8 +1309,6 @@ static struct sk_buff *receive_mergeable(struct=
- net_device *dev,
-> > >                     if (err)
-> > >                             goto err_xdp_frags;
-> > >                     *xdp_xmit |=3D VIRTIO_XDP_REDIR;
-> > > -                   if (unlikely(xdp_page !=3D page))
-> > > -                           put_page(page);
-> > >                     rcu_read_unlock();
-> > >                     goto xdp_xmit;
-> > >             default:
-> > > @@ -1321,9 +1321,6 @@ static struct sk_buff *receive_mergeable(struct=
- net_device *dev,
-> > >                     goto err_xdp_frags;
-> > >             }
-> > >  err_xdp_frags:
-> > > -           if (unlikely(xdp_page !=3D page))
-> > > -                   __free_pages(xdp_page, 0);
-> >
-> > It seems __free_pages() and put_page() is used interchangeably here.
-> > Perhaps using __free_pages() have performance reason? As the comment be=
-low:
-> >
-> > https://elixir.bootlin.com/linux/v6.3-rc3/source/net/core/page_pool.c#L=
-500
->
->
-> Yes, but now we don't seem to be very good to distinguish it. But I think
-> it doesn't matter. This logic is rare under actual situation.
->
-> Thanks.
->
->
-> >
-> > > -
-> > >             if (xdp_buff_has_frags(&xdp)) {
-> > >                     shinfo =3D xdp_get_shared_info_from_buff(&xdp);
-> > >                     for (i =3D 0; i < shinfo->nr_frags; i++) {
-> > >
+> >>
 >
 
