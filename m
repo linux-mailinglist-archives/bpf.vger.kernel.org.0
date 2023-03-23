@@ -2,215 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 891EF6C7118
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 20:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F0C6C713E
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 20:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbjCWTfg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 15:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
+        id S229489AbjCWTpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 15:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbjCWTff (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 15:35:35 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAF71A662
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 12:35:33 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-544787916d9so411976897b3.13
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 12:35:33 -0700 (PDT)
+        with ESMTP id S229794AbjCWTpO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 15:45:14 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FEE4C0D
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 12:45:12 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id bo10so17051457oib.11
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 12:45:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679600133;
+        d=gmail.com; s=20210112; t=1679600712; x=1682192712;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7VcmchQqt9DaMxSLZ78hVIFyFO9YofibofDFlcn/C/A=;
-        b=qcmPuY4UNpBr+P2ZKeYHu1R051ec4TvA2Clkq4ip2880X7aXBn2kafw99H0CzcQE8Y
-         55btBqMovU8tiALDLxofgtxE/bZ0HgUAqQ7/uL9ivj3gfCrk6Yuh0oGKI0h3hhLcEY7P
-         dflHLX+NDoqrZpncNEKvk51KUcHVmknk2JEAaqvkhAXJHpK54fIOZMMCA7hah18AZ/bd
-         JkZhELoYu+zcuogS32m/qQmFm811rpAtxS23YU+81bGhLBg7rvz3YmoDRQyp8dCCDNhb
-         lUPfwH5qF/cf+E5RouEWAGBRgF9zRDRmzCb9ikWcAdK0VJGHDe0vWwWNlwRMGXpXzXAs
-         LaXw==
+        bh=V8hztKdMCDryCv0V0FiBLuxq6zsSKgXktYEHJPrxFts=;
+        b=mu6lDAMGrLcAqPY815Eyp+RmUHl8+iFfJB7AESjC7j55V3AJQatxWbthTugNYGe5M1
+         DERloDo+HoUiC2fdUMmOKqynBGy4He6opVOVLuUHN1fd5aYdNQgE0zCwK8Eiiln7CNjq
+         wX8zXJxAx1z7wOjaesOdRavrweSovknKaWiSF9zNYef/MkVsoyjRHz7NHO6wBVinHJUX
+         Y1CIHfhIVpv0ckkLkH8cQ0wnONDwLgLWYld8/DklTzhu13jV8WCvZZKVVi2nbmK2L5X8
+         KecbtATrzigM2tgi2weq4LvBYGbaNgZV12vOHM64jDb/dyj/NwFoavLbilwrcw32zZuN
+         qYFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679600133;
+        d=1e100.net; s=20210112; t=1679600712; x=1682192712;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7VcmchQqt9DaMxSLZ78hVIFyFO9YofibofDFlcn/C/A=;
-        b=sELqQx28ZY+x48epTcGRgUFwQbre3D3CukgCI1yqOKa4Gjha8mI1kJxGzcpJTkiqog
-         CPUg/tse7rprbsEfCf4VhqS2u00z1tMqwOw8nmuY7d6aAWNWghDThts6fTiRN0e5QI+3
-         jSFb/JqtasfyVb0+w8NVzBVj5GcQy3IEgNMfMNa4lkONnWOdfD2/poBgkwiHyl1AkOg0
-         6rgVzoUZ/vLvEDLfT/3qFOEuklFngPSSStTHgQfPu+aS69PGACsP1pRXYn6WFzrkTmNW
-         85jrGNjwxKDHBnyrxAApoYeZm8MqpmeugH8Y4acgI0/gn04jVcRReE6i5mjmgULPZCGo
-         +1EQ==
-X-Gm-Message-State: AAQBX9fXhzGggGZk9J/5yZt3Ep2vsOncL5OQbcVd/I1xDevjCmGhbhFz
-        sZ4nCRllqLbwFD6aOEf9x9y+XJHCejcjFLS/gaY9Jg==
-X-Google-Smtp-Source: AKy350ZXwVmW+8wxag0P4Y079RwZrC59m2sOfutsdJVuOG7wMxgYoQ6G9rfVZpnKi1K8J8jngBYLKTgqhGctfMls/iw=
-X-Received: by 2002:a81:ef08:0:b0:545:883a:542c with SMTP id
- o8-20020a81ef08000000b00545883a542cmr1610295ywm.0.1679600131909; Thu, 23 Mar
- 2023 12:35:31 -0700 (PDT)
+        bh=V8hztKdMCDryCv0V0FiBLuxq6zsSKgXktYEHJPrxFts=;
+        b=w+0uFHcKi8krFMFhfv4dGNBjbECqtjWY5/RV4R2s4JP/v5UOgh1JI7dk++IbsdqxW/
+         qHkOCQ9wMnLJ+bl4+cYHh65G9JRLzkT3HbTvpzby0CgPBFFV+zwNH4hMOyOq+BAVHJhA
+         JdTkUicoSqwfNPoh8TOtIWWA+bMJ6aaY+Sd4k8Flmjvxw4W0T5uTFe5yoX7U6uLSRe4d
+         dVQ2X0D5YHH/GM4dN+UOt9qBCtYNeEGA9emA5Q+wa02tC25RhejWSfFOGigW85+zxSb6
+         zqUs0eg+fhUP78JtQFj1rVEESgM3PfitUTrxaiWa07AydFsHbI8qsusVBW6IcZwBmrTE
+         OYzQ==
+X-Gm-Message-State: AO0yUKXu9E6Aitv2C2GlKUsHUAAd8gi6NjtQrHOUq+bffTp5OjwhP9O+
+        v8GV1F41s9rWxX1wm3P8Mjrt7K22SMaZuCYjd5XQf6VMh0w=
+X-Google-Smtp-Source: AK7set8D82ut8DGTUfFWuLsKoAFPcSEDoKCboHoqkkfSfLlIN9mwRYT4vfxFAwx1pJZvn8/6363b0Q8pTDZ5y36Le00=
+X-Received: by 2002:aca:2b06:0:b0:387:2f8e:fd55 with SMTP id
+ i6-20020aca2b06000000b003872f8efd55mr2633207oik.4.1679600711897; Thu, 23 Mar
+ 2023 12:45:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230323040037.2389095-1-yosryahmed@google.com>
- <20230323040037.2389095-5-yosryahmed@google.com> <20230323155613.GC739026@cmpxchg.org>
- <CAJD7tkZ7Dz9myftc9bg7jhiaOYcn7qJ+V4sxZ_2kfnb+k=zhJQ@mail.gmail.com>
- <20230323172732.GE739026@cmpxchg.org> <CAJD7tkbtHhzOytu3hfN8tjdAyNq0BZXYN8TEipS4NTApUzkL7w@mail.gmail.com>
-In-Reply-To: <CAJD7tkbtHhzOytu3hfN8tjdAyNq0BZXYN8TEipS4NTApUzkL7w@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 23 Mar 2023 12:35:20 -0700
-Message-ID: <CALvZod4z6F2Rr3prKdLqBuWUjippOBoLFw3QFFY7Bk=czm5iHg@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/7] memcg: sleep during flushing stats in safe contexts
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
+References: <CADvTj4o7ZWUikKwNTwFq0O_AaX+46t_+Ca9gvWMYdWdRtTGeHQ@mail.gmail.com>
+ <CAEf4BzbEaTbEn1j9vLtmS1-8uJf0Bz-8wfmZj8N4Mmedt29nag@mail.gmail.com> <c55f31dc3ae7e346e2a6d16d3e467e5460346b91.camel@gmail.com>
+In-Reply-To: <c55f31dc3ae7e346e2a6d16d3e467e5460346b91.camel@gmail.com>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Thu, 23 Mar 2023 13:45:00 -0600
+Message-ID: <CADvTj4r7C=RGqn2G8SY_MhiFmwV2wVAQpOyG3f9Rix3OOJT-Ow@mail.gmail.com>
+Subject: Re: GCC-BPF triggers double free in libbpf Error: failed to link
+ 'linked_maps2.bpf.o': Cannot allocate memory (12)
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 11:08=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
+On Thu, Mar 23, 2023 at 6:57=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
 >
-> On Thu, Mar 23, 2023 at 10:27=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.=
-org> wrote:
-> >
-> > On Thu, Mar 23, 2023 at 09:01:12AM -0700, Yosry Ahmed wrote:
-> > > On Thu, Mar 23, 2023 at 8:56=E2=80=AFAM Johannes Weiner <hannes@cmpxc=
-hg.org> wrote:
-> > > >
-> > > > On Thu, Mar 23, 2023 at 04:00:34AM +0000, Yosry Ahmed wrote:
-> > > > > @@ -644,26 +644,26 @@ static void __mem_cgroup_flush_stats(void)
-> > > > >               return;
-> > > > >
-> > > > >       flush_next_time =3D jiffies_64 + 2*FLUSH_TIME;
-> > > > > -     cgroup_rstat_flush(root_mem_cgroup->css.cgroup, false);
-> > > > > +     cgroup_rstat_flush(root_mem_cgroup->css.cgroup, may_sleep);
-> > > >
-> > > > How is it safe to call this with may_sleep=3Dtrue when it's holding=
- the
-> > > > stats_flush_lock?
+> On Wed, 2023-03-22 at 22:18 -0700, Andrii Nakryiko wrote:
+> > On Wed, Mar 22, 2023 at 9:26=E2=80=AFPM James Hilliard
+> > <james.hilliard1@gmail.com> wrote:
 > > >
-> > > stats_flush_lock is always called with trylock, it is only used today
-> > > so that we can skip flushing if another cpu is already doing a flush
-> > > (which is not 100% correct as they may have not finished flushing yet=
-,
-> > > but that's orthogonal here). So I think it should be safe to sleep as
-> > > no one can be blocked waiting for this spinlock.
+> > > I'm seeing this gen object error with gcc does not occur in llvm for =
+a
+> > > bpf test(which uses both linked_maps1.c and linked_maps2.c) in
+> > > bpf-next.
+> > >
+> > > I presume there is a bug in GCC which is triggering a double free bug=
+ in libbpf.
+> > >
 > >
-> > I see. It still cannot sleep while the lock is held, though, because
-> > preemption is disabled. Make sure you have all lock debugging on while
-> > testing this.
+> > Could you somehow share .o files for linked_maps1.c and
+> > linked_maps2.c, so I can try to repro locally?
 >
-> Thanks for pointing this out, will do.
+> Looking at the stack trace, second free is reported here:
 >
-> >
-> > > Perhaps it would be better semantically to replace the spinlock with
-> > > an atomic test and set, instead of having a lock that can only be use=
-d
-> > > with trylock?
-> >
-> > It could be helpful to clarify what stats_flush_lock is protecting
-> > first. Keep in mind that locks should protect data, not code paths.
-> >
-> > Right now it's doing multiple things:
-> >
-> > 1. It protects updates to stats_flush_threshold
-> > 2. It protects updates to flush_next_time
-> > 3. It serializes calls to cgroup_rstat_flush() based on those ratelimit=
-s
-> >
-> > However,
-> >
-> > 1. stats_flush_threshold is already an atomic
-> >
-> > 2. flush_next_time is not atomic. The writer is locked, but the reader
-> >    is lockless. If the reader races with a flush, you could see this:
-> >
-> >                                         if (time_after(jiffies, flush_n=
-ext_time))
-> >         spin_trylock()
-> >         flush_next_time =3D now + delay
-> >         flush()
-> >         spin_unlock()
-> >                                         spin_trylock()
-> >                                         flush_next_time =3D now + delay
-> >                                         flush()
-> >                                         spin_unlock()
-> >
-> >    which means we already can get flushes at a higher frequency than
-> >    FLUSH_TIME during races. But it isn't really a problem.
-> >
-> >    The reader could also see garbled partial updates, so it needs at
-> >    least READ_ONCE and WRITE_ONCE protection.
-> >
-> > 3. Serializing cgroup_rstat_flush() calls against the ratelimit
-> >    factors is currently broken because of the race in 2. But the race
-> >    is actually harmless, all we might get is the occasional earlier
-> >    flush. If there is no delta, the flush won't do much. And if there
-> >    is, the flush is justified.
-> >
-> > In summary, it seems to me the lock can be ditched altogether. All the
-> > code needs is READ_ONCE/WRITE_ONCE around flush_next_time.
+>   void bpf_linker__free(struct bpf_linker *linker)
+>   {
+>         ...
+>         for (i =3D 1; i < linker->sec_cnt; i++) {
+>                 ...
+>                 free(sec->sec_name);
+> here -->        free(sec->raw_data);
+>                 free(sec->sec_vars);
+>                 ...
+>         }
+>         ...
+>   }
 >
-> Thanks a lot for this analysis. I agree that the lock can be removed
-> with proper READ_ONCE/WRITE_ONCE, but I think there is another purpose
-> of the lock that we are missing here.
+> And first free is reported here:
 >
-> I think one other purpose of the lock is avoiding a thundering herd
-> problem on cgroup_rstat_lock, particularly from reclaim context, as
-> mentioned by the log of  commit aa48e47e3906 ("memcg: infrastructure
-> to flush memcg stats").
+>   static int extend_sec(struct bpf_linker *linker, struct dst_sec *dst, s=
+truct src_sec *src)
+>   {
+>         ...
+>         dst_align =3D dst->shdr->sh_addralign;
+>         src_align =3D src->shdr->sh_addralign;
+>         ...
 >
-> While testing, I did notice that removing this lock indeed causes a
-> thundering herd problem if we have a lot of concurrent reclaimers. The
-> trylock makes sure we abort immediately if someone else is flushing --
-> which is not ideal because that flusher might have just started, and
-> we may end up reading stale data anyway.
+>         dst_align_sz =3D (dst->sec_sz + dst_align - 1) / dst_align * dst_=
+align;
 >
-> This is why I suggested replacing the lock by an atomic, and do
-> something like this if we want to maintain the current behavior:
+>         /* no need to re-align final size */
+>         dst_final_sz =3D dst_align_sz + src->shdr->sh_size;
 >
-> static void __mem_cgroup_flush_stats(void)
-> {
->     ...
->     if (atomic_xchg(&ongoing_flush, 1))
->         return;
->     ...
->     atomic_set(&ongoing_flush, 0)
-> }
+>         if (src->shdr->sh_type !=3D SHT_NOBITS) {
+> here -->        tmp =3D realloc(dst->raw_data, dst_final_sz);
+>                 if (!tmp)
+>                         return -ENOMEM;
+>                 dst->raw_data =3D tmp;
+>                 ...
+>         }
+>         ...
+>   }
 >
-> Alternatively, if we want to change the behavior and wait for the
-> concurrent flusher to finish flushing, we can maybe spin until
-> ongoing_flush goes back to 0 and then return:
+> The documentation says that `realloc(ptr, 0)` frees `ptr`.
+> So, I assume that issue is caused by handling of empty sections.
+> This is easy to test using object files produced by LLVM:
 >
-> static void __mem_cgroup_flush_stats(void)
-> {
->     ...
->     if (atomic_xchg(&ongoing_flush, 1)) {
->         /* wait until the ongoing flusher finishes to get updated stats *=
-/
->         while (atomic_read(&ongoing_flush) {};
->         return;
->     }
->     /* flush the stats ourselves */
->     ...
->     atomic_set(&ongoing_flush, 0)
-> }
+>   $ touch empty
+>   $ llvm-objcopy --add-section .foobar=3Dempty linked_maps1.bpf.o
+>   $ llvm-objcopy --add-section .foobar=3Dempty linked_maps2.bpf.o
+>   $ bpftool --debug gen object linked_maps.linked1.o linked_maps1.bpf.o l=
+inked_maps2.bpf.o
+>   libbpf: linker: adding object file 'linked_maps1.bpf.o'...
+>   libbpf: linker: adding object file 'linked_maps2.bpf.o'...
+>   Error: failed to link 'linked_maps2.bpf.o': Cannot allocate memory (12)
+>   free(): double free detected in tcache 2
+>   Aborted (core dumped)
 >
+> The valgrind output also matches the one attached to the original email.
+> Something like below fixes it:
+>
+> diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+> index d7069780984a..ff3833e55c55 100644
+> --- a/tools/lib/bpf/linker.c
+> +++ b/tools/lib/bpf/linker.c
+> @@ -1113,7 +1113,7 @@ static int extend_sec(struct bpf_linker *linker, st=
+ruct dst_sec *dst, struct src
+>         /* no need to re-align final size */
+>         dst_final_sz =3D dst_align_sz + src->shdr->sh_size;
+>
+> -       if (src->shdr->sh_type !=3D SHT_NOBITS) {
+> +       if (dst_final_sz !=3D 0 && src->shdr->sh_type !=3D SHT_NOBITS) {
+>                 tmp =3D realloc(dst->raw_data, dst_final_sz);
+>                 if (!tmp)
+>                         return -ENOMEM;
+>
+>
+> BPF selftests are passing for me with this change,
+> objcopy-based reproducer no longer reports error.
 > WDYT?
+>
+> James, could you please test this patch with bpf-gcc?
+> (you will have to re-compile libbpf and bpftool,
+>  I had to separately do `make -C tools/bpf/bpftool`
+>  before re-building selftests for some reason)
 
-I would go with your first approach i.e. no spinning.
+Yep, can confirm this patch does indeed appear to fix the issue. There
+are no longer any valgrind errors for me.
+
+>
+> Thanks,
+> Eduard
+>
+> >
+> > > GCC gen object failure:
+> > >
+> > > =3D=3D2125110=3D=3D Command:
+> > > /home/buildroot/bpf-next/tools/testing/selftests/bpf/tools/sbin/bpfto=
+ol
+> > > --debug gen object
+> > > /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linked_m=
+aps.linked1.o
+> > > /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linked_m=
+aps1.bpf.o
+> > > /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linked_m=
+aps2.bpf.o
+> > > =3D=3D2125110=3D=3D
+> > > libbpf: linker: adding object file
+> > > '/home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linked_=
+maps1.bpf.o'...
+> > > libbpf: linker: adding object file
+> > > '/home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linked_=
+maps2.bpf.o'...
+> > > Error: failed to link
+> > > '/home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linked_=
+maps2.bpf.o':
+> > > Cannot allocate memory (12)
+> > > =3D=3D2125110=3D=3D Invalid free() / delete / delete[] / realloc()
+> > > =3D=3D2125110=3D=3D    at 0x484B0C4: free (vg_replace_malloc.c:884)
+> > > =3D=3D2125110=3D=3D    by 0x17F8AB: bpf_linker__free (linker.c:204)
+> > > =3D=3D2125110=3D=3D    by 0x12833C: do_object (gen.c:1608)
+> > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
+> > > =3D=3D2125110=3D=3D    by 0x129B53: do_gen (gen.c:2332)
+> > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
+> > > =3D=3D2125110=3D=3D    by 0x12DB9E: main (main.c:539)
+> > > =3D=3D2125110=3D=3D  Address 0xda4b420 is 0 bytes after a block of si=
+ze 0 free'd
+> > > =3D=3D2125110=3D=3D    at 0x484B027: free (vg_replace_malloc.c:883)
+> > > =3D=3D2125110=3D=3D    by 0x484D6F8: realloc (vg_replace_malloc.c:145=
+1)
+> > > =3D=3D2125110=3D=3D    by 0x181FA3: extend_sec (linker.c:1117)
+> > > =3D=3D2125110=3D=3D    by 0x182326: linker_append_sec_data (linker.c:=
+1201)
+> > > =3D=3D2125110=3D=3D    by 0x1803DC: bpf_linker__add_file (linker.c:45=
+3)
+> > > =3D=3D2125110=3D=3D    by 0x12829E: do_object (gen.c:1593)
+> > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
+> > > =3D=3D2125110=3D=3D    by 0x129B53: do_gen (gen.c:2332)
+> > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
+> > > =3D=3D2125110=3D=3D    by 0x12DB9E: main (main.c:539)
+> > > =3D=3D2125110=3D=3D  Block was alloc'd at
+> > > =3D=3D2125110=3D=3D    at 0x484876A: malloc (vg_replace_malloc.c:392)
+> > > =3D=3D2125110=3D=3D    by 0x484D6EB: realloc (vg_replace_malloc.c:145=
+1)
+> > > =3D=3D2125110=3D=3D    by 0x181FA3: extend_sec (linker.c:1117)
+> > > =3D=3D2125110=3D=3D    by 0x182326: linker_append_sec_data (linker.c:=
+1201)
+> > > =3D=3D2125110=3D=3D    by 0x1803DC: bpf_linker__add_file (linker.c:45=
+3)
+> > > =3D=3D2125110=3D=3D    by 0x12829E: do_object (gen.c:1593)
+> > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
+> > > =3D=3D2125110=3D=3D    by 0x129B53: do_gen (gen.c:2332)
+> > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
+> > > =3D=3D2125110=3D=3D    by 0x12DB9E: main (main.c:539)
+>
