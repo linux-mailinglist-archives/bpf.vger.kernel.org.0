@@ -2,188 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 302E06C701F
-	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 19:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37CE6C7036
+	for <lists+bpf@lfdr.de>; Thu, 23 Mar 2023 19:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbjCWSTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 14:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
+        id S229708AbjCWSb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 14:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbjCWSTb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 14:19:31 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D322BD51D
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 11:19:27 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id ga7so8843406qtb.2
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 11:19:27 -0700 (PDT)
+        with ESMTP id S231168AbjCWSb1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 14:31:27 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE1A24CAD
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 11:31:26 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id o2so15721827plg.4
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 11:31:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112; t=1679595566;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4UdIOBBpU5M34Q+dnxHktyTShJiu1SyYtXU+zhX+XRQ=;
-        b=iSci0p8JFRPXqHPEil3M1UZ/AptTFLyiH4nOONlx8jlszjb2lxcuRkMBw7UZXMYuIb
-         9VHiSPLwsHCGWKxBshnY3dxP8I+VjQfUKrOS8QxSItXdSt2WijBjz2KEim5klCxbUPhR
-         gr9geE8sgGsa6YxvHsaCLYHtCOhtZ6Cj5uxcAZqUHM/Oo9TpSV6LTpCjwajd0gTTy2/o
-         iGV78mzHEJs46abGoP8FjHVkdxrPvpdUU0X6sI4iRzWXH+1PxvpLLlNb42LXVJdJuGZu
-         4FeSqA110YAy7/7r+UTZpX1+gN+1sKQK2Ig4sSlYBcZ1rci0KNN0Hu5Nnn+hpheYoXSX
-         jdGw==
+        d=google.com; s=20210112; t=1679596286;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bC/Mz5u7YlewT1HLwsFEME9qfkAG95/Hkr8q/kmVKAs=;
+        b=svYI1nEuWI/9EQK9hiVCC0QhsQ0xmRgXnafVsGEDRjXGq5v9hcrKbmc0vOw6PCR6yF
+         yDPhW+KDg5dPB9hbiqyjzk2l/788JJ0GI7XiedoS/ksl2Ow+Cnh6C1sz/WhIB7guw+aA
+         n/2toZl+37kUFgrl+9iqemVCACMCabZFFsXHHxZz0ptylXGL7N4JIa2aAPrf+7d4QAtr
+         W+dVz3k5B2SmMRrVqemms7cHqb1xhL3qdE5IREPiVnH2rlOQBDB1pkwDvpBppIAP7brF
+         G/AymQlEAKBGW4Lx7A6yBVJ69oHnIbGNx8qppWoAhr9FJZziAXio/PRTDHkznDMrsDTR
+         1o1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679595566;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4UdIOBBpU5M34Q+dnxHktyTShJiu1SyYtXU+zhX+XRQ=;
-        b=E24QnlhmKDzfwK9KpoSJKh8g1Zwat35aya22/xZhXouAR0ZXdVXR7ZaNijHUdCXMM1
-         h2GkRX2q1St6OXd+jNax8lbgPDiTDrlGXsxsnvxsKEwkPOK2P9YhKNqcRY7TGB3HZX6y
-         gqCUzE8TWKG6l6cG28wOsOiSlpSDr9lq3REIuBZnbbqc33Itfn7fiXmZ6TYY3+Ey27YY
-         7mkhoH58ndNEm+oYdZCt2hszulEEKtAWTlG8tHmJhRUEGYxYUrSTO2s3h/WKRCGcXrB1
-         p4Usa9h0FUfvqesTFwXWYrrV/YJIdcSFXlegJSB9U8rO/sLV+OeJ1O8/CfVuVHLaGeEc
-         tNfw==
-X-Gm-Message-State: AO0yUKUI3rKeUdAi4AaPfOP192MjJJ3IEmx5ph3uciwie9nQ9bDjKn17
-        yBOhN+YuQFF+EEGxjNMy2f6EAg==
-X-Google-Smtp-Source: AK7set9X6TOXaFdht8hm7kOrpFUZVVpedAsVNDkKxUnVmus8Zt4lWACuNapirPGhMz9HPMD31ZR6Hw==
-X-Received: by 2002:a05:622a:15d2:b0:3e3:8502:fbcb with SMTP id d18-20020a05622a15d200b003e38502fbcbmr394669qty.40.1679595566584;
-        Thu, 23 Mar 2023 11:19:26 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:62db])
-        by smtp.gmail.com with ESMTPSA id f16-20020ac86ed0000000b003e390b48958sm1837405qtv.55.2023.03.23.11.19.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 11:19:26 -0700 (PDT)
-Date:   Thu, 23 Mar 2023 14:19:25 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-Message-ID: <20230323181925.GA742010@cmpxchg.org>
-References: <CAJD7tkbziGh+6hnMysHkoNr_HGBKU+s1rSGj=gZLki0ALT-jLg@mail.gmail.com>
- <CALvZod5GT=bZsLXsG500pNkEJpMB1o2KJau4=r0eHB-c8US53A@mail.gmail.com>
- <CAJD7tkY6Wf2OWja+f-JeFM5DdMCyLzbXxZ8KF0MjcYOKri-vtA@mail.gmail.com>
- <CALvZod5mJBAQ5adym7UNEruL-tOOOi+Y_ZiKsfOYqXPmGVPUEA@mail.gmail.com>
- <CAJD7tkYWo_aB7a4SHXNQDHwcaTELonOk_Vd8q0=x8vwGy2VkYg@mail.gmail.com>
- <CALvZod7f9Rejb_WrZ+Ajegz-NsQ7iPQegRDMdk5Ya0a0w=40kg@mail.gmail.com>
- <CALvZod7-6F84POkNetA2XJB-24wms=5q_s495NEthO8b63rL4A@mail.gmail.com>
- <CAJD7tkbGCgk9VkGdec0=AdHErds4XQs1LzJMhqVryXdjY5PVAg@mail.gmail.com>
- <20230323173343.GF739026@cmpxchg.org>
- <CAJD7tkb_Zpp4PqFNBJ3__7t5eiYwuqaZc=08B1g=S_tMF+wgSQ@mail.gmail.com>
+        d=1e100.net; s=20210112; t=1679596286;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bC/Mz5u7YlewT1HLwsFEME9qfkAG95/Hkr8q/kmVKAs=;
+        b=RXjrSFO9BiOH4ND4/qX4YRpJd9tEN2e0lWo0Fx24gIBiEPnuWGehfVI+ZAjvixNRp/
+         P/xuZbaZwA+ZWtL/Hs1oS59tpNcW0bkXwNaizDJXGaYwZZ544GobdoDGtB2vp7FX8IpE
+         QUQIdaML8xWzvkgWWQnmsFKJim8KEP3AdEfPHOYsjUeYc5XpPGJ/gdK7zFd1EeSM6dHL
+         CvQ1CQoYbQo1PGMESN131zXEhYKEg6sNKNGNUHvXW8CJo791jKZD1pemfbSL1AfGPYc6
+         9eLk+BxPQzIyhqiCfS3LUB5MvKdUe6Pmwgf3OeBNQuyuRhcpX3+h/MaLPcsQnjb2EhSh
+         3NWA==
+X-Gm-Message-State: AO0yUKWu2tkp+4i64+Acchz1+8vZ2tEfNPDakd9bMPzd3L7KYDX0+2KE
+        Aw8I7WLhSA7ymRmtZzMFIKfPl2PxwOTOa8wnSk2BbYs4XwBE+PZ5UiI=
+X-Google-Smtp-Source: AK7set/+utno3KtsS8SJ+AUgAuyaUpBnt2FspbadFr6HSED+ghQ4knNEhFrJ51e/3R6Fu8ilXuCPUc20MRi7AS3Xa10=
+X-Received: by 2002:a17:902:708b:b0:1a0:6001:2e0e with SMTP id
+ z11-20020a170902708b00b001a060012e0emr2723629plk.8.1679596285735; Thu, 23 Mar
+ 2023 11:31:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkb_Zpp4PqFNBJ3__7t5eiYwuqaZc=08B1g=S_tMF+wgSQ@mail.gmail.com>
-X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230302172757.9548-1-fw@strlen.de> <20230302172757.9548-2-fw@strlen.de>
+ <ZAEG1gtoXl125GlW@google.com> <20230303002752.GA4300@breakpoint.cc> <20230323004123.lkdsxqqto55fs462@kashmir.localdomain>
+In-Reply-To: <20230323004123.lkdsxqqto55fs462@kashmir.localdomain>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 23 Mar 2023 11:31:14 -0700
+Message-ID: <CAKH8qBvw58QyazkSh2U80iVPmbMEOGY0T8dLKX5PWg4b+bxqMw@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 bpf-next 1/3] bpf: add bpf_link support for
+ BPF_NETFILTER programs
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 11:09:30AM -0700, Yosry Ahmed wrote:
-> On Thu, Mar 23, 2023 at 10:33 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Thu, Mar 23, 2023 at 09:17:33AM -0700, Yosry Ahmed wrote:
-> > > On Thu, Mar 23, 2023 at 9:10 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > > >
-> > > > On Thu, Mar 23, 2023 at 8:46 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > > > >
-> > > > > On Thu, Mar 23, 2023 at 8:43 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > > > >
-> > > > > > On Thu, Mar 23, 2023 at 8:40 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, Mar 23, 2023 at 6:36 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > > > > > >
-> > > > > > > [...]
-> > > > > > > > > >
-> > > > > > > > > > > 2. Are we really calling rstat flush in irq context?
-> > > > > > > > > >
-> > > > > > > > > > I think it is possible through the charge/uncharge path:
-> > > > > > > > > > memcg_check_events()->mem_cgroup_threshold()->mem_cgroup_usage(). I
-> > > > > > > > > > added the protection against flushing in an interrupt context for
-> > > > > > > > > > future callers as well, as it may cause a deadlock if we don't disable
-> > > > > > > > > > interrupts when acquiring cgroup_rstat_lock.
-> > > > > > > > > >
-> > > > > > > > > > > 3. The mem_cgroup_flush_stats() call in mem_cgroup_usage() is only
-> > > > > > > > > > > done for root memcg. Why is mem_cgroup_threshold() interested in root
-> > > > > > > > > > > memcg usage? Why not ignore root memcg in mem_cgroup_threshold() ?
-> > > > > > > > > >
-> > > > > > > > > > I am not sure, but the code looks like event notifications may be set
-> > > > > > > > > > up on root memcg, which is why we need to check thresholds.
-> > > > > > > > >
-> > > > > > > > > This is something we should deprecate as root memcg's usage is ill defined.
-> > > > > > > >
-> > > > > > > > Right, but I think this would be orthogonal to this patch series.
-> > > > > > > >
-> > > > > > >
-> > > > > > > I don't think we can make cgroup_rstat_lock a non-irq-disabling lock
-> > > > > > > without either breaking a link between mem_cgroup_threshold and
-> > > > > > > cgroup_rstat_lock or make mem_cgroup_threshold work without disabling
-> > > > > > > irqs.
-> > > > > > >
-> > > > > > > So, this patch can not be applied before either of those two tasks are
-> > > > > > > done (and we may find more such scenarios).
-> > > > > >
-> > > > > >
-> > > > > > Could you elaborate why?
-> > > > > >
-> > > > > > My understanding is that with an in_task() check to make sure we only
-> > > > > > acquire cgroup_rstat_lock from non-irq context it should be fine to
-> > > > > > acquire cgroup_rstat_lock without disabling interrupts.
-> > > > >
-> > > > > From mem_cgroup_threshold() code path, cgroup_rstat_lock will be taken
-> > > > > with irq disabled while other code paths will take cgroup_rstat_lock
-> > > > > with irq enabled. This is a potential deadlock hazard unless
-> > > > > cgroup_rstat_lock is always taken with irq disabled.
-> > > >
-> > > > Oh you are making sure it is not taken in the irq context through
-> > > > should_skip_flush(). Hmm seems like a hack. Normally it is recommended
-> > > > to actually remove all such users instead of silently
-> > > > ignoring/bypassing the functionality.
-> >
-> > +1
-> >
-> > It shouldn't silently skip the requested operation, rather it
-> > shouldn't be requested from an incompatible context.
-> >
-> > > > So, how about removing mem_cgroup_flush_stats() from
-> > > > mem_cgroup_usage(). It will break the known chain which is taking
-> > > > cgroup_rstat_lock with irq disabled and you can add
-> > > > WARN_ON_ONCE(!in_task()).
+On Wed, Mar 22, 2023 at 5:41=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Hi Florian, Stan,
+>
+> On Fri, Mar 03, 2023 at 01:27:52AM +0100, Florian Westphal wrote:
+> > Stanislav Fomichev <sdf@google.com> wrote:
+> > > On 03/02, Florian Westphal wrote:
+> > > > +                 struct {
+> > > > +                         __u32           pf;
+> > > > +                         __u32           hooknum;
+> > > > +                         __s32           prio;
+> > > > +                 } netfilter;
 > > >
-> > > This changes the behavior in a more obvious way because:
-> > > 1. The memcg_check_events()->mem_cgroup_threshold()->mem_cgroup_usage()
-> > > path is also exercised in a lot of paths outside irq context, this
-> > > will change the behavior for any event thresholds on the root memcg.
-> > > With proposed skipped flushing in irq context we only change the
-> > > behavior in a small subset of cases.
+> > > For recent tc BPF program extensions, we've discussed that it might b=
+e
+> > > better
+> > > to have an option to attach program before/after another one in the c=
+hain.
+> > > So the API essentially would receive a before/after flag + fd/id of t=
+he
+> > >
+> > > Should we do something similar here? See [0] for the original
+> > > discussion.
+> > >
+> > > 0: https://lore.kernel.org/bpf/YzzWDqAmN5DRTupQ@google.com/
 > >
-> > Can you do
+> > Thanks for the pointer, I will have a look.
 > >
-> >         /* Note: stale usage data when called from irq context!! */
-> >         if (in_task())
-> >                 mem_cgroup_flush_stats()
+> > The above exposes the "prio" of netfilter hooks, so someone
+> > that needs their hook to run early on, say, before netfilters
+> > nat engine, could just use INT_MIN.
 > >
-> > directly in the callsite? Maybe even include the whole callchain in
-> > the comment that's currently broken and needs fixing/removing.
-> 
-> Yeah, we can do that in mem_cgroup_usage(), which is the only context
-> that I am aware of that may flush from irq context. We can also add
-> WARN_ON_ONCE(!in_task()) in the rstat core flushing code to catch any
-> other code paths that we are not aware of -- which may result in a
-> deadlock, but hopefully if there is a violation it will be caught soon
-> enough.
+> > We could -- for nf bpf -- make the bpf_link fail if a hook
+> > with the same priority already exists to avoid the "undefined
+> > behaviour" here (same prio means register order decides what
+> > hook function runs first ...).
+> >
+> > This could be relevant if you have e.g. one bpf program collecting
+> > statistics vs. one doing drops.
+> >
+> > I'll dig though the thread and would try to mimic the tc link
+> > mechanism as close as possible.
+>
+> While I think the direction the TC link discussion took is totally fine,
+> TC has the advantage (IIUC) of being a somewhat isolated hook. Meaning
+> it does not make sense for a user to mix priority values && before/after
+> semantics.
+>
+> Netfilter is different in that there is by default modules active with
+> fixed priority values. So mixing in before/after semantics here could
+> get confusing.
 
-That sounds good to me, thanks!
+I don't remember the details, so pls correct me, but last time I
+looked, this priority was basically an ordering within a hook?
+And there were a bunch of kernel-hardcoded values. So either that
+whole story has to become a UAPI (so the bpf program knows
+before/after which kernel hook it has to run), or we need some other
+ordering mechanism. (I'm not sure what's the story with bpf vs kernel
+hooks interop, so maybe it's all moot?)
+Am I missing something? Can you share more about why those fixed
+priorities are fine?
 
+> Thanks,
+> Daniel
