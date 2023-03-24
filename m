@@ -2,102 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D27376C8629
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 20:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4FD6C862F
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 20:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbjCXTtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 15:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52930 "EHLO
+        id S231904AbjCXTu1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 15:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbjCXTtH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 15:49:07 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1784D59D5;
-        Fri, 24 Mar 2023 12:49:06 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id x3so12040282edb.10;
-        Fri, 24 Mar 2023 12:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679687344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5dGXja0zvpydJsZsuWVMkoEKw4WPEINUjm2uBsr6JaU=;
-        b=hs+ldOsjN8SnevYkzSOcp4cUBEN4Xz3SacCSZd9EtvwORoBt+sjEovcWxwL5NRPud/
-         5xtC+0z/mihjmMb9UwUJHVANr65g4XGxlUbowxfEyRQNVL2fbf3D5UnoHBKwlTNdqeca
-         DellOa12KN2h9XCNNadej7ttPf9Gq9ezLz03YnxpIXt59Fs36Ey5JUYBA8ovvNhEviUz
-         TMXBWFTpwMXnuTPYUzvqp5WSAIybWC7VCvuMCTc33hipAa9Cb1fYT1PSGeyqZH1VSsRZ
-         s7RuGtEbereB47YaGeVgLLSSFeeOZFk6r68ZoYAYvf54FwKsYH/54Xofkpik0jJRGogR
-         SPMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679687344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5dGXja0zvpydJsZsuWVMkoEKw4WPEINUjm2uBsr6JaU=;
-        b=4oNYKaVCrwr4JYztL+Cl5b+qUkOeaKqtdiPlUc/pKZUX6NUTr6DbdYjmz/ZDsKdhuW
-         514SiHA1AjmfkYfhsL7PsbwetXQpicEckjmGvuCr2SmjwDmhXcYIUc9LCUlvP5iUzctg
-         TeGMp+Dna7sc9Ign2id2fAwteYL8WrALTgvZaQYFZNNO7DCs0mV4YXEc87T4cwXp/HrE
-         QZ2HIw9Knp0tTIpUCynPStsGsMdBx2lRaZNTrh9ZMlYzodeZ8PfkxX/vnzyIyOkVsdI7
-         pgRSSGOD/Ux2jhXMaEfaaGyo33P65lVkiWSL41PFrS/vNKnn+vmiyhfBUhBve78bDKWc
-         Vjgw==
-X-Gm-Message-State: AAQBX9dzy/XsYjSyO8BNTaDFYYaeK80+qVI6gJd5QwgCkAxPEYArasK+
-        f5ODvs//Y9NGiO9UYeKkunMmE8qoBVy3+0GEEQ6M+2Kurg0tTidF
-X-Google-Smtp-Source: AKy350ZSA0zMugpWag/aWNzDe6DH4VbciU7FRSO8/Ns0h3xwxK448eN6P/ZPeRUIQsY0L0n+v2e7VRgBj5PuJtuhA4U=
-X-Received: by 2002:a50:cc94:0:b0:4fb:c8e3:1ae2 with SMTP id
- q20-20020a50cc94000000b004fbc8e31ae2mr2144838edi.3.1679687344430; Fri, 24 Mar
- 2023 12:49:04 -0700 (PDT)
+        with ESMTP id S231896AbjCXTuZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 15:50:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3B120042
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 12:50:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 13013B82437
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:50:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C3F70C433D2;
+        Fri, 24 Mar 2023 19:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679687418;
+        bh=0Hy5u4cvLpSa+lGNlckbUEGqgfTOIjOrfU7EawF02U4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=FE5gvmFq0alvglJ1G5ByeNSJZB+U59XwvYIdm7mRXHohuHc5S2EwdFa8LLfbFvq43
+         4os2C1XIw5T6zxEbe7EfE4EJBdjb4AzZLE4m4wu7OD4yd8o2eBA8pM3zYnGsGRRAsd
+         YoS+Pjkr1Voo1mlqFtTgwpEIxnKqt5upH2VCn/koe7OyWzlXA0H9yaN2gA//6EoRNp
+         Xjd06ZAjjOGlSqltne4aSswnY2OKpn8wFLUrd+wPaZsJog+PYR4nGi2G5zRNhsUmFU
+         Ehd+hGW3+rMVqd7GfULF3DeTYYhmVAaHvBcbcBkEwuh6ylv2xScOW0ftGOCGWQzR+T
+         /hI7U70ft5dng==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9BE02E2A039;
+        Fri, 24 Mar 2023 19:50:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230324123626.2177476-1-sashal@kernel.org> <CAHk-=wgmKqvUrKx6+N6NzKJuQn0OY2xrDApzHAdJj23ztjzcBw@mail.gmail.com>
-In-Reply-To: <CAHk-=wgmKqvUrKx6+N6NzKJuQn0OY2xrDApzHAdJj23ztjzcBw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 24 Mar 2023 12:48:53 -0700
-Message-ID: <CAADnVQLJNtCmSXy1DP-ihbZAgkEySVPPH9u4TGZMOOfKiCvtUw@mail.gmail.com>
-Subject: Re: [PATCH] capability: test_deny_namespace breakage due to
- capability conversion to u64
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: Check IS_ERR for the bpf_map_get() return value
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167968741863.13374.17216973053184162920.git-patchwork-notify@kernel.org>
+Date:   Fri, 24 Mar 2023 19:50:18 +0000
+References: <20230324184241.1387437-1-martin.lau@linux.dev>
+In-Reply-To: <20230324184241.1387437-1-martin.lau@linux.dev>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@meta.com,
+        syzbot+71ccc0fe37abb458406b@syzkaller.appspotmail.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 9:49=E2=80=AFAM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, Mar 24, 2023 at 5:36=E2=80=AFAM Sasha Levin <sashal@kernel.org> w=
-rote:
-> >
-> > Commit f122a08b197d ("capability: just use a 'u64' instead of a 'u32[2]=
-'
-> > array") attempts to use BIT_LL() but actually wanted to use BIT_ULL(),
-> > fix it up to make the test compile and run again.
+Hello:
 
-It would only fix the compilation error, but the test would still fail.
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-> This got fixed differently by e8c8361cfdbf ("selftests/bpf: Fix
-> progs/test_deny_namespace.c issues").
+On Fri, 24 Mar 2023 11:42:41 -0700 you wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
+> 
+> This patch fixes a mistake in checking NULL instead of
+> checking IS_ERR for the bpf_map_get() return value.
+> 
+> It also fixes the return value in link_update_map() from -EINVAL
+> to PTR_ERR(*_map).
+> 
+> [...]
 
-exactly. It's not just the macro that had to be adjusted.
+Here is the summary with links:
+  - [bpf-next] bpf: Check IS_ERR for the bpf_map_get() return value
+    https://git.kernel.org/bpf/bpf-next/c/55fbae05476d
 
-> I wonder what drugs made me think BIT_LL() was ok. Maybe my wife puts
-> something in the coffee?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-$ make C=3D2 kernel/bpf/core.o
-kernel/bpf/core.c:1822:43: error: arithmetics on pointers to functions
-kernel/bpf/core.c:1827:48: error: arithmetics on pointers to functions
-kernel/bpf/core.c:2073:77: error: subtraction of functions? Share your drug=
-s
 
-:)
