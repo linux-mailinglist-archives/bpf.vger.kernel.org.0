@@ -2,189 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 221A16C7826
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 07:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0BB6C78B6
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 08:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbjCXGs4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 02:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
+        id S231307AbjCXHWu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 03:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjCXGsx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 02:48:53 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36934C65D;
-        Thu, 23 Mar 2023 23:48:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679640527; x=1711176527;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=9cHqpLHTxnsUPa8c9kpDtBW2FSdkKd0hGhDKrXu+dn0=;
-  b=V+3entaGMGIjp9+39A6mVSwx8zyGz28BvRogNmX8ZqRO1p+JkFRgCQYY
-   t28NPkyl9q9Aaqe21paYYqQ3DkC+YEwvpNvPLW/itTFsQSzyyTonKjKXW
-   lESbO/b4NUP2VyWZpQ1Ce7/YJww9AwfkAiADsabcbrEz6JbB0YFE3aEn7
-   uoZN3v9pyvQycuy1sf+qpqsUWX6QvKnCVg7+J/zB6gSQYDGPZZgvaDZgs
-   fmbctXXiUx6mAO0q1iaSc1pzvAZOsHB9OWy32xtLqSTcKA2M47bmmaLrG
-   rLmlJ/38cNypy5wV498ZuS++jJfM1JQ6CY0D4A0nKYZ4gB95N3z2KKIo1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="341277006"
-X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
-   d="scan'208";a="341277006"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 23:48:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="771759746"
-X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
-   d="scan'208";a="771759746"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Mar 2023 23:48:45 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 23 Mar 2023 23:48:45 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 23 Mar 2023 23:48:44 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Thu, 23 Mar 2023 23:48:44 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Thu, 23 Mar 2023 23:48:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XyNKfrs5lCY8DIjJIi3wqSBi9vq2vkCG6J25xyKA2DAocwTGu/74MK2BRl77CByEqCGlu9CkitvO4gV8qi40MQuGkmxadPpBQyt3N5GGQ467zyCcSqK11qNWKyPqTiVFEvh0qvAHgipfrq/isnqpP6wXlyCXjVyMBzN4HQ7gipas6CirGgZ9bCPCRTIUYIqaMa+TdMtrPKL2D29rp9PHifE9VBjH+UWWTDJnM9fKvUsloH/Z/H/d3itGWwrE06pB0P58EcSkloSNGdT71DEKgQCDY+CLaKLjGjeI7XrTtI/eYWx2cMk/vDS+CBrtco/XuyFU517cEypaZ+7ecMcJMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+8nZRGRvk5hqzrv3l1KL7UbqtfKuHdMRRkhdbQrT2eQ=;
- b=KM3m190m+BD6lvZLjSnXB2goD3JyFqR3salmuJ3CS859yrq95lYjHiinXkFhmaMO3jY5ICSKPIP9r5fCmH+4kB0/wXQqg8sD8E0ZIA5BBdLqF6UFEurSrWIyr9tCheyJTb7SbIH08FznTNENSsrQG9/rKtm/UsJO69SYJIbPtxzwvr27x+d36TstpgiTnT4BXYIroCfWBcNXNMxLkaK+X87pbwK66z9tRVgtcqZ+GZpWkwBXCMuvnJwbSDRGeMsny503PL7ATz/jCW3TXtlEdBwbAEG4RvpSOExxolXPp4HfZCXPx1eajFuzyavxot7/L+e1dQar3gaeQA4ZsTJLRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
- by SA1PR11MB6736.namprd11.prod.outlook.com (2603:10b6:806:25f::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Fri, 24 Mar
- 2023 06:48:43 +0000
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::4381:c78f:bb87:3a37]) by IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::4381:c78f:bb87:3a37%8]) with mapi id 15.20.6178.038; Fri, 24 Mar 2023
- 06:48:43 +0000
-Date:   Fri, 24 Mar 2023 07:48:35 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Nuno =?iso-8859-1?Q?Gon=E7alves?= <nunog@fr24.com>
-CC:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Christian Brauner" <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next V3] xsk: allow remap of fill and/or completion
- rings
-Message-ID: <ZB1Hw6XZnrDLLNhA@boxer>
-References: <20230323210125.10880-1-nunog@fr24.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230323210125.10880-1-nunog@fr24.com>
-X-ClientProxiedBy: FR3P281CA0023.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1c::7) To IA1PR11MB6097.namprd11.prod.outlook.com
- (2603:10b6:208:3d7::17)
+        with ESMTP id S231272AbjCXHWt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 03:22:49 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA7161AE
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 00:22:47 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id eh3so4126033edb.11
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 00:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1679642566;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fa396lb8MjMOl888rXohQoljyuvFkmmjAMpaedz2iKQ=;
+        b=KJ9iz5Uxy+UE7eTmfuZpdee6ope6aJEfkespR2fZMv6ZHIq8x8lW4vifO9yR+IS7pd
+         AK7dGPutrSQ13hJJ80evRzpXtgobfZFo8jXuTzRATpMeqGO6i8D5NSa73p0qsx5i481+
+         7yXiGgxPWmcaJdwbUyT1PbP3K0ZyFQ7Al79kpt3c+Idj9EX40zqvfzZ8aXiS7pBZAi5c
+         qDNLiwlOYnW0tVo8pGG8bbNsjTBTTctF7v1u8gW1K9bJA0CKfZjEf/5jsWat5ZudO5jG
+         cU9nAY6htLcFCArHxPUvuBAUnt26YcyoPsjONXhbMoH+B0T69pLrtxIpj5GEcP1xxW3T
+         K9jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679642566;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fa396lb8MjMOl888rXohQoljyuvFkmmjAMpaedz2iKQ=;
+        b=dET+43rg3nTD/TyZB3Y16z8/ZM7JYLxB8yAIkIgpvsRisU17qoNuJXMJlt50uPW0VI
+         9pJ0LINOnvhtR5thFwmV2GVPaiAQba/Yfxs6WG/3Re7/5zI5IljY4s2gYZnlRfFoxvmb
+         LAtYPgrwvK8T6Epuqtd0M4Kd3JYZZuPIBWyzkZ9joIDyn+v3IQm1Qa7l7h9sA2rhn0pu
+         XzchqJD4zWnFNMlf/AOsx1PpCNIoLizZhFrVSH/yGfI6rnJMVNeHy2gq+ZflglbWU3Pu
+         CZmKpVwmCqh61SRW7ukurkwkEdg9tCkviQN7XPvAnh7PbFRLRU37f6A9IFr3xi6AirCS
+         9v1Q==
+X-Gm-Message-State: AO0yUKXfScpVyodKmfvG+koTiVC8wZlLYZ4xqDpdO2+1yDU8NnWO1oJO
+        eQwAnUdwbXrUypHlD6Rp3oup2RkHHBZ3B21nAkUaPg==
+X-Google-Smtp-Source: AK7set9nDooOE3Uv4xSdzevtlYQN6Wrt2NapQojoPuIK5bxgo1JQyfUpt3JH2yw9C0xTBXIvxswIEM39+kTwiiQaVDw=
+X-Received: by 2002:a05:6402:540c:b0:4fb:e069:77ac with SMTP id
+ ev12-20020a056402540c00b004fbe06977acmr6398957edb.0.1679642566177; Fri, 24
+ Mar 2023 00:22:46 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|SA1PR11MB6736:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8d36c5e8-1c3b-4f15-fd81-08db2c33cee0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w38a0o0tYRj23CfvNU3QMPqpVZY0Qw74iwqEe+6XOflx4BMbCGyOqYreD3McBM4iySC9ThDRjWGYVj63R4yNJUwgWcrGLAr1yFCAJx91m5Cm5rU4nQPzwKjc6byQy5RMgkLdeKQ1uSIZS1MKDgjhVUgsvAER38GVZkngt7cSKp5GIBIpZnKW3FRpqMbpKCvocsbbjhtblvwJOkVEUal3v3/VIgPE1YXZ9BAC8S57MrK4n9O+jAQUh9lIjp/Hx05oiNsKjyx9G17hDzsWTa/Hrv5btb6wj4aCnT0M4ls2rL8osgnchT1RA3Cm1ELAkk3iF3ynHTNoyd7pDf9Mbl+3CYdUrF7C94u9K82DzYqgCtHl56JMhGUOpYpUhIwkWcQvJu+wbNaqweOeugtWZqze6LeNES4KZhVNP2S3ap50gmZ3Xzz2dPzbASegANf89O/Bm6f30VLpRcCFbal9hX7ehKFubf81FBYzOzLOUTlBwqDUd/Sf+vzzmPGPjgkfZMKLAuW+5GH/7U71Q7mmEkEHGIEnecXPciAVt84OPSjd9N9+npdSBgLygTsCXlqg7in4QQFPT5oTg7ACdG1nOLWkEbvqUlXrPlgP+quJ5CrctsGmYyJu+ynbb/IyTWHz/DOt
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(396003)(136003)(39860400002)(346002)(366004)(376002)(451199018)(83380400001)(186003)(26005)(9686003)(478600001)(6486002)(6666004)(66476007)(4326008)(8676002)(66556008)(6916009)(316002)(54906003)(66946007)(6506007)(6512007)(41300700001)(8936002)(82960400001)(2906002)(5660300002)(7416002)(44832011)(38100700002)(33716001)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?kAklK8qlxUA1bOMcQxSgBdvfGV5ufdEBdDD4747l9REOMoL9xRuxd1D7kS?=
- =?iso-8859-1?Q?dfJhZq4X3DMVxe72FmkWahc/wPoRuLwPdHJ1yk2UiEPQwxW2lXZt0pH6Up?=
- =?iso-8859-1?Q?Kv2btRT1C13snA719/WY4/ujSKSXgP/W4Dw3hir+gm79XaH/RJPNeSjpTt?=
- =?iso-8859-1?Q?+u0H21WcfYCJTFUeYfc33ZmU4I9tCMFx1YOypdYgVQPJp5paQhjwyZvpu+?=
- =?iso-8859-1?Q?WyqGf12sU2n8i0PVVXqJULIE0TWJuscjlYfoTmWyTFzsISO/BDiY+ZfW7l?=
- =?iso-8859-1?Q?t/8AzwPXhAHxPPvgWSxyZQnRdRQW9J5XzLCUj6E5hDApwLZ2GnNO769myv?=
- =?iso-8859-1?Q?x70KAHi6umKi7QMQwQTUNfP8Bgcgxi8M9cWbLNjSl4IryyCzeo26GTBLu1?=
- =?iso-8859-1?Q?xfDYyhPsfja2bHedKxE98O0Y4uXM5cXV0C+qEFEa89a7f5GgJG0NNGksNI?=
- =?iso-8859-1?Q?poWg5uyy1PbR66HFmDL01iVH8jkGOeWEkaryH7NTcdD7rfEWMWYzypSKwJ?=
- =?iso-8859-1?Q?vcyhyNSc6tnFzp3Uw+ogCgE5QzyalTEWkPXOuaaKsUEuKeBuhelZZBlNGt?=
- =?iso-8859-1?Q?7bXB4iMTShuJRDjiLul+zev3fwSsh5BI9abkIKgMSsiPgwGL6/zgHBwVSx?=
- =?iso-8859-1?Q?63BrFTujV1DnbGF8u2721m+OsfMDgMStLN4qj08RiAjcpjV0feZpk7pZie?=
- =?iso-8859-1?Q?JXGSpTpsIxAvaLv01BXIPtedpgjFulmQ1g5lKqKy0hi5f6eDD+vpivs939?=
- =?iso-8859-1?Q?tqLpaT5Tch8lXA/aaYFFji6seoL3gGs8O5EHYyovwoBcR/QhgL/MQewg4b?=
- =?iso-8859-1?Q?yODn1/F7p3kfvmpqveYA4EVIjjUEoDbKkZ+n1BlV5mFe7gr4PAItRPV38G?=
- =?iso-8859-1?Q?SuhezLHGrg1TkS8GwHLYli2gXaAi2taSD6YDOqJzelvFTVuajtm5zG8Ze9?=
- =?iso-8859-1?Q?JMOQ/CeEuPH0UYYnRYSbKX6fOQ9O24tI8xISDO9uFA/5rWkVY+p8u+DCZI?=
- =?iso-8859-1?Q?YV6+4cLuJgopZHk5Yb0YvR+LusNg+l3uSK4KRQdm30lv3IP5celiK9ubE+?=
- =?iso-8859-1?Q?r2a+nT0WgYX6z9SzGL9ML/j7u7aLrDTJJ6Lp8nskgxVTQSQ70opCDhipnK?=
- =?iso-8859-1?Q?ZhtYoS4OPQOjDCT2aE3y+lpZfolMAavf9iIboUszaUz+HK2OGDHJNvyKJk?=
- =?iso-8859-1?Q?nY/CW//68E9zVdGciQOsvm01ooa/31YD0DC9aM5YX5D9nisFvJxcV+FN0W?=
- =?iso-8859-1?Q?wJXkmI3CeMR/8fTBCSqw/MS+ZPgAzw+X02VSfYrWUvE+thCmoG6+MphHDw?=
- =?iso-8859-1?Q?DzjKX7Nn/qn3qijiaeFLue5k8R+JssaOIK4jVOt+Q7gXsrR0rkDsSIR/oi?=
- =?iso-8859-1?Q?C/SEY9k6tMx7zCdrLIcmq9ytbGTQyW7WnIOfQQdvJvrd8UNCwiOIYdPNI2?=
- =?iso-8859-1?Q?OZH0QAzLZ/O9DaV6L4BQmIcbF+mkoK84jtp723lThXSYyD0AbWwRVlH4s+?=
- =?iso-8859-1?Q?ztc1zqxHy32fCKaQfrl22N4E28LVzy33ijG1PXBpNSxqhxZOGtvlKFdBtT?=
- =?iso-8859-1?Q?rDbBWIGYe9O/dkcFqfYOlzwKgStlz7WhNzbXzH+NOY0IQtznt9NAFJ8k4W?=
- =?iso-8859-1?Q?6rxIx7VLWF+Gd/jt2j6vZf7rVg7iDhbKGtu0x9Iobsm0oOa+t81znU7Dsr?=
- =?iso-8859-1?Q?ZbQu+y6RGxWRloNUQNE=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d36c5e8-1c3b-4f15-fd81-08db2c33cee0
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2023 06:48:43.0425
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QFS/O+b0QKSedWvw+ON8E7BJX8XJocbgwLpOr7C695opWPkX0Y2WpBhbaM95c4jShahtIxlcq3fHEz0hjoAjF+Wd0fgRnbAejTWloLOa458=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6736
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230323040037.2389095-1-yosryahmed@google.com>
+ <20230323040037.2389095-2-yosryahmed@google.com> <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
+In-Reply-To: <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 24 Mar 2023 00:22:09 -0700
+Message-ID: <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
+ percpu lock
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 09:01:24PM +0000, Nuno Gonçalves wrote:
-> The remap of fill and completion rings was frowned upon as they
-> control the usage of UMEM which does not support concurrent use.
-> At the same time this would disallow the remap of these rings
-> into another process.
-> 
-> A possible use case is that the user wants to transfer the socket/
-> UMEM ownership to another process (via SYS_pidfd_getfd) and so
-> would need to also remap these rings.
-> 
-> This will have no impact on current usages and just relaxes the
-> remap limitation.
-> 
-> Signed-off-by: Nuno Gonçalves <nunog@fr24.com>
-> ---
->  net/xdp/xsk.c | 166 +++++++++++++++++++++++++-------------------------
->  1 file changed, 84 insertions(+), 82 deletions(-)
+On Thu, Mar 23, 2023 at 6:39=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Thu, Mar 23, 2023 at 04:00:31AM +0000, Yosry Ahmed wrote:
+> > Currently, when sleeping is not allowed during rstat flushing, we hold
+> > the global rstat lock with interrupts disabled throughout the entire
+> > flush operation. Flushing in an O(# cgroups * # cpus) operation, and
+> > having interrupts disabled throughout is dangerous.
+> >
+> > For some contexts, we may not want to sleep, but can be interrupted
+> > (e.g. while holding a spinlock or RCU read lock). As such, do not
+> > disable interrupts throughout rstat flushing, only when holding the
+> > percpu lock. This breaks down the O(# cgroups * # cpus) duration with
+> > interrupts disabled to a series of O(# cgroups) durations.
+> >
+> > Furthermore, if a cpu spinning waiting for the global rstat lock, it
+> > doesn't need to spin with interrupts disabled anymore.
+>
+> I'm generally not a fan of big spin locks w/o irq protection. They too of=
+ten
+> become a source of unpredictable latency spikes. As you said, the global
+> rstat lock can be held for quite a while. Removing _irq makes irq latency
+> better on the CPU but on the other hand it makes a lot more likely that t=
+he
+> lock is gonna be held even longer, possibly significantly so depending on
+> the configuration and workload which will in turn stall other CPUs waitin=
+g
+> for the lock. Sure, irqs are being serviced quicker but if the cost is mo=
+re
+> and longer !irq context multi-cpu stalls, what's the point?
+>
+> I don't think there's anything which requires the global lock to be held
+> throughout the entire flushing sequence and irq needs to be disabled when
+> grabbing the percpu lock anyway, so why not just release the global lock =
+on
+> CPU boundaries instead? We don't really lose anything significant that wa=
+y.
+> The durations of irq disabled sections are still about the same as in the
+> currently proposed solution at O(# cgroups) and we avoid the risk of hold=
+ing
+> the global lock for too long unexpectedly from getting hit repeatedly by
+> irqs while holding the global lock.
 
-Interesting, 166 lines touched whereas v2 was about only 9 :) Please make
-yourself familiar with Documentation/process/submitting-patches.rst.
+Thanks for taking a look!
 
-Tell us what are the differences between your patch revisions, e.g. how
-did you fix the build error that Daniel reported.
+I think a problem with this approach is that we risk having to contend
+for the global lock at every CPU boundary in atomic contexts. Right
+now we contend for the global lock once, and once we have it we go
+through all CPUs to flush, only having to contend with updates taking
+the percpu locks at this point. If we unconditionally release &
+reacquire the global lock at every CPU boundary then we may contend
+for it much more frequently with concurrent flushers.
 
-Don't include irrevelant changes such as style fixes to this patch.
+On the memory controller side, concurrent flushers are already held
+back to avoid a thundering herd problem on the global rstat lock, but
+flushers from outside the memory controller can still compete together
+or with a flusher from the memory controller. In this case, we risk
+contending the global lock more and concurrent flushers taking a
+longer period of time, which may end up causing multi-CPU stalls
+anyway, right? Also, if we keep _irq when spinning for the lock, then
+concurrent flushers still need to spin with irq disabled -- another
+problem that this series tries to fix.
+
+This is particularly a problem for flushers in atomic contexts. There
+is a flusher in mem_cgroup_wb_stats() that flushes while holding
+another spinlock, and a flusher in mem_cgroup_usage() that flushes
+with irqs disabled. If flushing takes a longer period of time due to
+repeated lock contention, it affects such atomic context negatively.
+
+I am not sure how all of this matters in practice, it depends heavily
+on the workloads and the configuration like you mentioned. I am just
+pointing out the potential disadvantages of reacquiring the lock at
+every CPU boundary in atomic contexts.
+
+>
+> Thanks.
+>
+> --
+> tejun
