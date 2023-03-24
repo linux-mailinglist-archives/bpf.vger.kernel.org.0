@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAC16C88F6
+	by mail.lfdr.de (Postfix) with ESMTP id BCE776C88F7
 	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 00:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbjCXXCb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S231841AbjCXXCb (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 24 Mar 2023 19:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52220 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjCXXCa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S231810AbjCXXCa (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 24 Mar 2023 19:02:30 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB021DB84
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F931DB88
         for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 16:02:28 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id j24so3258951wrd.0
+Received: by mail-wr1-x42d.google.com with SMTP id q19so162677wrc.5
         for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 16:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1679698947;
+        d=isovalent.com; s=google; t=1679698948;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MzN6tvpsCaYcS65BGuMVc3R8tGhbb9PBn4o+9mQg/WA=;
-        b=gpn2kVZE+bNdBOgE0FlWgaTbOpM/Uh4FcGM01KTOXpZiKbY5MxQaL4u5I8CRgFF1NC
-         KZdIZmOiAekH7AGjLnz0kjYtv7/pHpVHVUHlLFdAOSPGxQ2pDNe6BgAxOd7crPphwHqd
-         9h6+GbhP/yf5tYFfQBdXUkDwTHLpNKbJEWypVt/XDzZLyMWYpyQBzUc/nGMoitwTx8sg
-         trzZiPRvE11ybnW2FPtPLk655c3zq+K1Yje7VVwwU3PdIXlrD9yv7vsPmIEG2W+6bdpE
-         sYbRCGmIExkUOkeI9f/HjUU5xmvUP7B7O/TFovRLMyBZSKoylfcjAmtryyIHCfebld9z
-         PYFw==
+        bh=NSyg7i7CDZTnqKN9ZDevHyjOTAmDl0F2Z8eezV1CL60=;
+        b=NyahoSg+crISts5tUVqMkKvK/1C7/t14nEHzw1ioa9iWiHM6bM7BnTjvvxz/MIa3PU
+         E/md5Ha5IBzct3p+oho79i93T1+4OU0NW/Pmj1B6QGp6BHwTGWqagOXjj+inwcOYdpK5
+         6asR5XBtqXVF0uZttg6LCZwAGOUkh3M3YFTzfD1nhQWxnYF5SGFUUN1ZGPlk1lQ4oN/1
+         T1x7G77sbq7JKnrwJaPo9aomQsZ2OX0arwbFTXGtrXVtG1MLPhjxKDnusMx1ZHaotkmq
+         bmEEW3c5lq+T0FoDjOle4r8DK0Jk0B93eLrq079UgfC/HZQkS5So9keG6vddflp4GDWM
+         RGpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679698947;
+        d=1e100.net; s=20210112; t=1679698948;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MzN6tvpsCaYcS65BGuMVc3R8tGhbb9PBn4o+9mQg/WA=;
-        b=bcXnChGBpvoN6rVyNheeZRyGSFLV7ceJToZKVaiEj+nxU6EMxxgw0woSOBslBBYE7i
-         SnBz0kufxd0emwrRgKORzbxH31frfVW4zn8RkaN9MtydqVhQhBeHuXP1ri4m/+YjlwyY
-         Ke4Wy3I1T9h55JBC9vkDSo3psmvMzzKQ/4nvSO52aDy9OZ5IWkggUO8f7sf/iqiMDMYq
-         rPie/0Cl7NT5eSy9F3z061R/mquNSpCw1GpV++9h74Yuibg5X34eprz0J4S4iV8GbhCA
-         HNb1l8vyZ5HRFbTPk7FfvXZOwfZPtiUdrvRCrxRO97VwzobAdjrYT1zcsy5CoOfYryEg
-         Tg/A==
-X-Gm-Message-State: AAQBX9cRINbflAJ9UdzKQgCLSJsSTFtgTn47JuhChZOv5E+0z/S4tZ66
-        e6Ns4rXYS2gdk8HvhuywxQc2MA==
-X-Google-Smtp-Source: AKy350asXMrek77O4CLLnwnauQ16OhbSnIQEBUjUclhNAr07z0lTLmEm9uYWA56GoZi4IxcEFCRayA==
-X-Received: by 2002:a5d:4dcf:0:b0:2d1:55fe:36b3 with SMTP id f15-20020a5d4dcf000000b002d155fe36b3mr3260505wru.16.1679698946825;
-        Fri, 24 Mar 2023 16:02:26 -0700 (PDT)
+        bh=NSyg7i7CDZTnqKN9ZDevHyjOTAmDl0F2Z8eezV1CL60=;
+        b=vJAwrGDqYr2cVo3sN91e2UF90YluE4rX3fu79W6eBkCGwmifc6h3Elq+mvGwi8VR6d
+         WMZUDc6dhoBgVyb9+CWT0FxM58i4GcS1w5+waZSuxot7ADPhw2IG6lP4cO42FST7tfAS
+         b9i+PRayq7tfT8Q1brPFyDnucXzdawEA9ownGPF6Z3xI6I9PcF7HARZlhgNfy4g8xsG7
+         Fe4Vstyje9TadmMKFfrThSjI1AqWenHn3eaBYQvyvaS4An/pnuVssyeA0D/fjL/G5Neg
+         g/P25BCLUL4FJzIKxEmI9Vg4fIyLmteuuZckc+RrIbqqWzKmfeBQuurknvGc6MJYkDh5
+         sokw==
+X-Gm-Message-State: AAQBX9ckVKv3b2Jhm2NQra9CSDLIUlCwabo79wh+qqDspMawNBlAHGew
+        /Yx8FPdaAhESCsURvow5OjtO8g==
+X-Google-Smtp-Source: AKy350bHkwi78rdxERmzzWwhHl5HCNaRAF1BeXwQgs8ZKIf9lsnGDHCn45N+FzeuBH4iGB6EBxKdog==
+X-Received: by 2002:a5d:58e9:0:b0:2d1:87f:2cd1 with SMTP id f9-20020a5d58e9000000b002d1087f2cd1mr3954126wrd.25.1679698948203;
+        Fri, 24 Mar 2023 16:02:28 -0700 (PDT)
 Received: from harfang.fritz.box ([2a02:8011:e80c:0:c17f:3e3e:3455:90b])
-        by smtp.gmail.com with ESMTPSA id c16-20020adffb50000000b002c56179d39esm19340342wrs.44.2023.03.24.16.02.25
+        by smtp.gmail.com with ESMTPSA id c16-20020adffb50000000b002c56179d39esm19340342wrs.44.2023.03.24.16.02.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Mar 2023 16:02:26 -0700 (PDT)
+        Fri, 24 Mar 2023 16:02:27 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,9 +60,9 @@ Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 4/5] bpftool: Support "opcodes", "linum", "visual" simultaneously
-Date:   Fri, 24 Mar 2023 23:02:08 +0000
-Message-Id: <20230324230209.161008-5-quentin@isovalent.com>
+Subject: [PATCH bpf-next 5/5] bpftool: Support printing opcodes and source file references in CFG
+Date:   Fri, 24 Mar 2023 23:02:09 +0000
+Message-Id: <20230324230209.161008-6-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230324230209.161008-1-quentin@isovalent.com>
 References: <20230324230209.161008-1-quentin@isovalent.com>
@@ -77,175 +77,228 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When dumping a program, the keywords "opcodes" (for printing the raw
-opcodes), "linum" (for displaying the filename, line number, column
-number along with the source code), and "visual" (for generating the
-control flow graph for translated programs) are mutually exclusive. But
-there's no reason why they should be. Let's make it possible to pass
-several of them at once. The "file FILE" option, which makes bpftool
-output a binary image to a file, remains incompatible with the others.
+Add support for displaying opcodes or/and file references (filepath,
+line and column numbers) when dumping the control flow graphs of loaded
+BPF programs with bpftool.
 
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- .../bpftool/Documentation/bpftool-prog.rst    |  8 +--
- tools/bpf/bpftool/bash-completion/bpftool     | 18 +++---
- tools/bpf/bpftool/prog.c                      | 61 ++++++++++---------
- 3 files changed, 48 insertions(+), 39 deletions(-)
+ tools/bpf/bpftool/btf_dumper.c    | 19 ++++++++++++++++++-
+ tools/bpf/bpftool/cfg.c           | 22 ++++++++++++++--------
+ tools/bpf/bpftool/cfg.h           |  3 ++-
+ tools/bpf/bpftool/main.h          |  2 +-
+ tools/bpf/bpftool/prog.c          |  2 +-
+ tools/bpf/bpftool/xlated_dumper.c | 15 +++++++++++++--
+ tools/bpf/bpftool/xlated_dumper.h |  3 ++-
+ 7 files changed, 51 insertions(+), 15 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 06d1e4314406..9443c524bb76 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -28,8 +28,8 @@ PROG COMMANDS
- =============
+diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+index 504d7c75cc27..54cb105c1648 100644
+--- a/tools/bpf/bpftool/btf_dumper.c
++++ b/tools/bpf/bpftool/btf_dumper.c
+@@ -843,7 +843,7 @@ static void dotlabel_puts(const char *s)
+ }
  
- |	**bpftool** **prog** { **show** | **list** } [*PROG*]
--|	**bpftool** **prog dump xlated** *PROG* [{**file** *FILE* | **opcodes** | **visual** | **linum**}]
--|	**bpftool** **prog dump jited**  *PROG* [{**file** *FILE* | **opcodes** | **linum**}]
-+|	**bpftool** **prog dump xlated** *PROG* [{ **file** *FILE* | [**opcodes**] [**linum**] [**visual**] }]
-+|	**bpftool** **prog dump jited**  *PROG* [{ **file** *FILE* | [**opcodes**] [**linum**] }]
- |	**bpftool** **prog pin** *PROG* *FILE*
- |	**bpftool** **prog** { **load** | **loadall** } *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*] [**autoattach**]
- |	**bpftool** **prog attach** *PROG* *ATTACH_TYPE* [*MAP*]
-@@ -88,7 +88,7 @@ DESCRIPTION
- 		  programs. On such kernels bpftool will automatically emit this
- 		  information as well.
+ void btf_dump_linfo_dotlabel(const struct btf *btf,
+-			     const struct bpf_line_info *linfo)
++			     const struct bpf_line_info *linfo, bool linum)
+ {
+ 	const char *line = btf__name_by_offset(btf, linfo->line_off);
  
--	**bpftool prog dump xlated** *PROG* [{ **file** *FILE* | **opcodes** | **visual** | **linum** }]
-+	**bpftool prog dump xlated** *PROG* [{ **file** *FILE* | [**opcodes**] [**linum**] [**visual**] }]
- 		  Dump eBPF instructions of the programs from the kernel. By
- 		  default, eBPF will be disassembled and printed to standard
- 		  output in human-readable format. In this case, **opcodes**
-@@ -109,7 +109,7 @@ DESCRIPTION
- 		  be displayed.  If **linum** is specified, the filename, line
- 		  number and line column will also be displayed.
+@@ -851,6 +851,23 @@ void btf_dump_linfo_dotlabel(const struct btf *btf,
+ 		return;
+ 	line = ltrim(line);
  
--	**bpftool prog dump jited**  *PROG* [{ **file** *FILE* | **opcodes** | **linum** }]
-+	**bpftool prog dump jited**  *PROG* [{ **file** *FILE* | [**opcodes**] [**linum**] }]
- 		  Dump jited image (host machine code) of the program.
++	if (linum) {
++		const char *file = btf__name_by_offset(btf, linfo->file_name_off);
++
++		/* More forgiving on file because linum option is
++		 * expected to provide more info than the already
++		 * available src line.
++		 */
++		if (!file)
++			file = "";
++
++		printf("; [file:");
++		dotlabel_puts(file);
++		printf("line_num:%u line_col:%u]\\l\\\n",
++		       BPF_LINE_INFO_LINE_NUM(linfo->line_col),
++		       BPF_LINE_INFO_LINE_COL(linfo->line_col));
++	}
++
+ 	printf("; ");
+ 	dotlabel_puts(line);
+ 	printf("\\l\\\n");
+diff --git a/tools/bpf/bpftool/cfg.c b/tools/bpf/bpftool/cfg.c
+index 9fdc1f0cdd6e..eec437cca2ea 100644
+--- a/tools/bpf/bpftool/cfg.c
++++ b/tools/bpf/bpftool/cfg.c
+@@ -381,7 +381,8 @@ static void cfg_destroy(struct cfg *cfg)
+ }
  
- 		  If *FILE* is specified image will be written to a file,
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 35f26f7c1124..98eb3852e771 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -268,7 +268,7 @@ _bpftool()
+ static void
+-draw_bb_node(struct func_node *func, struct bb_node *bb, struct dump_data *dd)
++draw_bb_node(struct func_node *func, struct bb_node *bb, struct dump_data *dd,
++	     bool opcodes, bool linum)
+ {
+ 	const char *shape;
  
-     # Deal with simplest keywords
-     case $prev in
--        help|hex|opcodes|visual|linum)
-+        help|hex)
-             return 0
-             ;;
-         tag)
-@@ -366,13 +366,17 @@ _bpftool()
-                             return 0
-                             ;;
-                         *)
--                            _bpftool_once_attr 'file'
-+                            # "file" is not compatible with other keywords here
-+                            if _bpftool_search_list 'file'; then
-+                                return 0
-+                            fi
-+                            if ! _bpftool_search_list 'linum opcodes visual'; then
-+                                _bpftool_once_attr 'file'
-+                            fi
-+                            _bpftool_once_attr 'linum'
-+                            _bpftool_once_attr 'opcodes'
-                             if _bpftool_search_list 'xlated'; then
--                                COMPREPLY+=( $( compgen -W 'opcodes visual linum' -- \
--                                    "$cur" ) )
--                            else
--                                COMPREPLY+=( $( compgen -W 'opcodes linum' -- \
--                                    "$cur" ) )
-+                                _bpftool_once_attr 'visual'
-                             fi
-                             return 0
-                             ;;
+@@ -401,7 +402,8 @@ draw_bb_node(struct func_node *func, struct bb_node *bb, struct dump_data *dd)
+ 		unsigned int start_idx;
+ 		printf("{\\\n");
+ 		start_idx = bb->head - func->start;
+-		dump_xlated_for_graph(dd, bb->head, bb->tail, start_idx);
++		dump_xlated_for_graph(dd, bb->head, bb->tail, start_idx,
++				      opcodes, linum);
+ 		printf("}");
+ 	}
+ 
+@@ -427,12 +429,14 @@ static void draw_bb_succ_edges(struct func_node *func, struct bb_node *bb)
+ 	}
+ }
+ 
+-static void func_output_bb_def(struct func_node *func, struct dump_data *dd)
++static void
++func_output_bb_def(struct func_node *func, struct dump_data *dd,
++		   bool opcodes, bool linum)
+ {
+ 	struct bb_node *bb;
+ 
+ 	list_for_each_entry(bb, &func->bbs, l) {
+-		draw_bb_node(func, bb, dd);
++		draw_bb_node(func, bb, dd, opcodes, linum);
+ 	}
+ }
+ 
+@@ -452,7 +456,8 @@ static void func_output_edges(struct func_node *func)
+ 	       func_idx, ENTRY_BLOCK_INDEX, func_idx, EXIT_BLOCK_INDEX);
+ }
+ 
+-static void cfg_dump(struct cfg *cfg, struct dump_data *dd)
++static void
++cfg_dump(struct cfg *cfg, struct dump_data *dd, bool opcodes, bool linum)
+ {
+ 	struct func_node *func;
+ 
+@@ -460,14 +465,15 @@ static void cfg_dump(struct cfg *cfg, struct dump_data *dd)
+ 	list_for_each_entry(func, &cfg->funcs, l) {
+ 		printf("subgraph \"cluster_%d\" {\n\tstyle=\"dashed\";\n\tcolor=\"black\";\n\tlabel=\"func_%d ()\";\n",
+ 		       func->idx, func->idx);
+-		func_output_bb_def(func, dd);
++		func_output_bb_def(func, dd, opcodes, linum);
+ 		func_output_edges(func);
+ 		printf("}\n");
+ 	}
+ 	printf("}\n");
+ }
+ 
+-void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len)
++void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len,
++		     bool opcodes, bool linum)
+ {
+ 	struct bpf_insn *insn = buf;
+ 	struct cfg cfg;
+@@ -476,7 +482,7 @@ void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len)
+ 	if (cfg_build(&cfg, insn, len))
+ 		return;
+ 
+-	cfg_dump(&cfg, dd);
++	cfg_dump(&cfg, dd, opcodes, linum);
+ 
+ 	cfg_destroy(&cfg);
+ }
+diff --git a/tools/bpf/bpftool/cfg.h b/tools/bpf/bpftool/cfg.h
+index 909d17e6d4c2..b3793f4e1783 100644
+--- a/tools/bpf/bpftool/cfg.h
++++ b/tools/bpf/bpftool/cfg.h
+@@ -6,6 +6,7 @@
+ 
+ #include "xlated_dumper.h"
+ 
+-void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len);
++void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len,
++		     bool opcodes, bool linum);
+ 
+ #endif /* __BPF_TOOL_CFG_H */
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index e9ee514b22d4..00d11ca6d3f2 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -230,7 +230,7 @@ void btf_dump_linfo_plain(const struct btf *btf,
+ void btf_dump_linfo_json(const struct btf *btf,
+ 			 const struct bpf_line_info *linfo, bool linum);
+ void btf_dump_linfo_dotlabel(const struct btf *btf,
+-			     const struct bpf_line_info *linfo);
++			     const struct bpf_line_info *linfo, bool linum);
+ 
+ struct nlattr;
+ struct ifinfomsg;
 diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index d855118f0d96..567ac37dbd86 100644
+index 567ac37dbd86..848f57a7d762 100644
 --- a/tools/bpf/bpftool/prog.c
 +++ b/tools/bpf/bpftool/prog.c
-@@ -907,37 +907,42 @@ static int do_dump(int argc, char **argv)
- 	if (nb_fds < 1)
- 		goto exit_free;
+@@ -854,7 +854,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+ 		else if (json_output)
+ 			dump_xlated_json(&dd, buf, member_len, opcodes, linum);
+ 		else if (visual)
+-			dump_xlated_cfg(&dd, buf, member_len);
++			dump_xlated_cfg(&dd, buf, member_len, opcodes, linum);
+ 		else
+ 			dump_xlated_plain(&dd, buf, member_len, opcodes, linum);
+ 		kernel_syms_destroy(&dd);
+diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
+index 5fbe94aa8589..c5e03833fadf 100644
+--- a/tools/bpf/bpftool/xlated_dumper.c
++++ b/tools/bpf/bpftool/xlated_dumper.c
+@@ -361,7 +361,8 @@ void dump_xlated_plain(struct dump_data *dd, void *buf, unsigned int len,
+ }
  
--	if (is_prefix(*argv, "file")) {
--		NEXT_ARG();
--		if (!argc) {
--			p_err("expected file path");
--			goto exit_close;
--		}
--		if (nb_fds > 1) {
--			p_err("several programs matched");
--			goto exit_close;
--		}
-+	while (argc) {
-+		if (is_prefix(*argv, "file")) {
-+			NEXT_ARG();
-+			if (!argc) {
-+				p_err("expected file path");
-+				goto exit_close;
-+			}
-+			if (nb_fds > 1) {
-+				p_err("several programs matched");
-+				goto exit_close;
-+			}
-+
-+			filepath = *argv;
-+			NEXT_ARG();
-+		} else if (is_prefix(*argv, "opcodes")) {
-+			opcodes = true;
-+			NEXT_ARG();
-+		} else if (is_prefix(*argv, "visual")) {
-+			if (nb_fds > 1) {
-+				p_err("several programs matched");
-+				goto exit_close;
-+			}
+ void dump_xlated_for_graph(struct dump_data *dd, void *buf_start, void *buf_end,
+-			   unsigned int start_idx)
++			   unsigned int start_idx,
++			   bool opcodes, bool linum)
+ {
+ 	const struct bpf_insn_cbs cbs = {
+ 		.cb_print	= print_insn_for_graph,
+@@ -405,7 +406,7 @@ void dump_xlated_for_graph(struct dump_data *dd, void *buf_start, void *buf_end,
  
--		filepath = *argv;
--		NEXT_ARG();
--	} else if (is_prefix(*argv, "opcodes")) {
--		opcodes = true;
--		NEXT_ARG();
--	} else if (is_prefix(*argv, "visual")) {
--		if (nb_fds > 1) {
--			p_err("several programs matched");
-+			visual = true;
-+			NEXT_ARG();
-+		} else if (is_prefix(*argv, "linum")) {
-+			linum = true;
-+			NEXT_ARG();
-+		} else {
-+			usage();
- 			goto exit_close;
+ 			linfo = bpf_prog_linfo__lfind(prog_linfo, insn_off, 0);
+ 			if (linfo && linfo != last_linfo) {
+-				btf_dump_linfo_dotlabel(btf, linfo);
++				btf_dump_linfo_dotlabel(btf, linfo, linum);
+ 				last_linfo = linfo;
+ 			}
  		}
--
--		visual = true;
--		NEXT_ARG();
--	} else if (is_prefix(*argv, "linum")) {
--		linum = true;
--		NEXT_ARG();
+@@ -413,6 +414,16 @@ void dump_xlated_for_graph(struct dump_data *dd, void *buf_start, void *buf_end,
+ 		printf("%d: ", insn_off);
+ 		print_bpf_insn(&cbs, cur, true);
+ 
++		if (opcodes) {
++			printf("       ");
++			fprint_hex(stdout, cur, 8, " ");
++			if (double_insn && cur <= insn_end - 1) {
++				printf(" ");
++				fprint_hex(stdout, cur + 1, 8, " ");
++			}
++			printf("\\l\\\n");
++		}
++
+ 		if (cur != insn_end)
+ 			printf(" | ");
  	}
+diff --git a/tools/bpf/bpftool/xlated_dumper.h b/tools/bpf/bpftool/xlated_dumper.h
+index 54847e174273..9a946377b0e6 100644
+--- a/tools/bpf/bpftool/xlated_dumper.h
++++ b/tools/bpf/bpftool/xlated_dumper.h
+@@ -34,6 +34,7 @@ void dump_xlated_json(struct dump_data *dd, void *buf, unsigned int len,
+ void dump_xlated_plain(struct dump_data *dd, void *buf, unsigned int len,
+ 		       bool opcodes, bool linum);
+ void dump_xlated_for_graph(struct dump_data *dd, void *buf, void *buf_end,
+-			   unsigned int start_index);
++			   unsigned int start_index,
++			   bool opcodes, bool linum);
  
--	if (argc) {
--		usage();
-+	if (filepath && (opcodes || visual || linum)) {
-+		p_err("'file' is not compatible with 'opcodes', 'visual', or 'linum'");
- 		goto exit_close;
- 	}
- 
-@@ -2417,8 +2422,8 @@ static int do_help(int argc, char **argv)
- 
- 	fprintf(stderr,
- 		"Usage: %1$s %2$s { show | list } [PROG]\n"
--		"       %1$s %2$s dump xlated PROG [{ file FILE | opcodes | visual | linum }]\n"
--		"       %1$s %2$s dump jited  PROG [{ file FILE | opcodes | linum }]\n"
-+		"       %1$s %2$s dump xlated PROG [{ file FILE | [opcodes] [linum] [visual] }]\n"
-+		"       %1$s %2$s dump jited  PROG [{ file FILE | [opcodes] [linum] }]\n"
- 		"       %1$s %2$s pin   PROG FILE\n"
- 		"       %1$s %2$s { load | loadall } OBJ  PATH \\\n"
- 		"                         [type TYPE] [dev NAME] \\\n"
+ #endif
 -- 
 2.34.1
 
