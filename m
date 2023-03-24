@@ -2,89 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC0F6C744C
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 00:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0C46C7523
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 02:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbjCWX6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Mar 2023 19:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        id S229794AbjCXBjl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Mar 2023 21:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjCWX6b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Mar 2023 19:58:31 -0400
-Received: from out-5.mta1.migadu.com (out-5.mta1.migadu.com [95.215.58.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C932BF26
-        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 16:58:30 -0700 (PDT)
-Message-ID: <306f23cd-918f-f0e3-9521-53be8e362458@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1679615908;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C10r8V5Xu+QXGYhouwD+//dZi0OTWk2dTPdWAMiN2rU=;
-        b=KgF6Zhy90qEJ1wS2n188d9fMPSSI9RVyhLvzQNFqYbBGQRdDP71sLfjy7rSiWupxe43UBu
-        BWegOuKNpKekQBFEMTdBADznTN2W0RhcajkuAQw5+27arrp1XDJ7e20ZOjLZNvZCc/I5+c
-        4G0owaXAEudP5g6R43xVim+QHjMMEs8=
-Date:   Thu, 23 Mar 2023 16:58:23 -0700
+        with ESMTP id S229508AbjCXBjj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Mar 2023 21:39:39 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5220040C0;
+        Thu, 23 Mar 2023 18:39:38 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id kc4so516512plb.10;
+        Thu, 23 Mar 2023 18:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679621977;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=diknpbDhmJOoggKEsWIo361E1xjQ+rSUkFKYJZdkY28=;
+        b=gnLz9UYgts87Q3W2eAEqb/mHOi71mt9PGOMXo3NEdCjx7le5V/SdRfNH8QY4DX91PR
+         mCvDShHmWN+U7wlmjHd9cNHfFqLwHTUB+uMCgGW9/AhNY0yULgXlcZ4Yr6gh/o4Q76pD
+         cpevHL0IWLcIVZwFvShEgeRYVAOmSQ439XwAhpgltMNrVpWg6AP/2rmWh2ioK5uFVZu+
+         5o1qQYTV+9U6tf8A347nKJPhMMsepQ9SGZRRmNplq7DNiyWcq7TmfeLRBH8sG0ZbzbPv
+         0nPC1d127qZAyd2STxenO3kLgZbv3SE2IDCsan4ukhVtSm1eAZoY1dhs1c1XqtCOMOe9
+         nA2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679621977;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=diknpbDhmJOoggKEsWIo361E1xjQ+rSUkFKYJZdkY28=;
+        b=erxmBPiCJRFwCG0Q87PgsIXkIPgTPUF+xEEKYBFlQjNz2RCG4ciOONux3B9bjtLleh
+         xpWbORQ1cRwIaKc8/Yzx334kkh0U5xY8iXt5sKCxT+1FeHAvA2m5YHQ6eGAt9KLqhJFq
+         /di/G5Xus09mWMMN3nfKsVa/HQitCIQChzTyvm80pqgjukphpV9fc+OY0gcwlsJ02jKE
+         3eRfRgAo1eJN4ZgTsudmx0I7Ofy6tYOYjVGJ/P4ouBUc9ydltY/eHfNl9qwy0fsdXZE1
+         /2FRb6xjwkYWXqOOetwEKxhFpcD0it+qDe/xVl2TFI9w2VttH9IJq0NTaQ/yBNtzmy75
+         wqTg==
+X-Gm-Message-State: AAQBX9eI4IIWZo8g03iTA/9vErNnsEDI1lGGsQxOA+oqt5rf+WA+Qt60
+        rojynH84IrteAIGXJV+WZkQ=
+X-Google-Smtp-Source: AKy350Z2/Lmf5xqmVragfODC9cX5JhU/nXhgivLUccuwhKWSqvt3QF7E94kIlv5aol/eYR0rE7fg+w==
+X-Received: by 2002:a17:902:f546:b0:19c:be57:9c82 with SMTP id h6-20020a170902f54600b0019cbe579c82mr999628plf.65.1679621977225;
+        Thu, 23 Mar 2023 18:39:37 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id d13-20020a170902728d00b001994fc55998sm12884105pll.217.2023.03.23.18.39.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Mar 2023 18:39:36 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 23 Mar 2023 15:39:35 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
+ percpu lock
+Message-ID: <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
+References: <20230323040037.2389095-1-yosryahmed@google.com>
+ <20230323040037.2389095-2-yosryahmed@google.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 bpf-next 2/4] bpf: Add bpf_sock_destroy kfunc
-Content-Language: en-US
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     sdf@google.com, edumazet@google.com, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-References: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
- <20230323200633.3175753-3-aditi.ghag@isovalent.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230323200633.3175753-3-aditi.ghag@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230323040037.2389095-2-yosryahmed@google.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/23/23 1:06 PM, Aditi Ghag wrote:
-> The socket destroy kfunc is used to forcefully terminate sockets from
-> certain BPF contexts. We plan to use the capability in Cilium to force
-> client sockets to reconnect when their remote load-balancing backends are
-> deleted. The other use case is on-the-fly policy enforcement where existing
-> socket connections prevented by policies need to be forcefully terminated.
-> The helper allows terminating sockets that may or may not be actively
-> sending traffic.
-> 
-> The helper is currently exposed to certain BPF iterators where users can
-> filter, and terminate selected sockets.  Additionally, the helper can only
-> be called from these BPF contexts that ensure socket locking in order to
-> allow synchronous execution of destroy helpers that also acquire socket
-> locks. The previous commit that batches UDP sockets during iteration
-> facilitated a synchronous invocation of the destroy helper from BPF context
-> by skipping taking socket locks in the destroy handler. TCP iterators
-> already supported batching.
-> 
-> The helper takes `sock_common` type argument, even though it expects, and
-> casts them to a `sock` pointer. This enables the verifier to allow the
-> sock_destroy kfunc to be called for TCP with `sock_common` and UDP with
-> `sock` structs. As a comparison, BPF helpers enable this behavior with the
-> `ARG_PTR_TO_BTF_ID_SOCK_COMMON` argument type. However, there is no such
-> option available with the verifier logic that handles kfuncs where BTF
-> types are inferred. Furthermore, as `sock_common` only has a subset of
-> certain fields of `sock`, casting pointer to the latter type might not
-> always be safe. Hence, the BPF kfunc converts the argument to a full sock
-> before casting.
-> 
-> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
-> ---
->   net/core/filter.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++
+Hello,
 
-This patch has merge conflict: https://github.com/kernel-patches/bpf/pull/4811, 
-so please rebase in the next respin.
+On Thu, Mar 23, 2023 at 04:00:31AM +0000, Yosry Ahmed wrote:
+> Currently, when sleeping is not allowed during rstat flushing, we hold
+> the global rstat lock with interrupts disabled throughout the entire
+> flush operation. Flushing in an O(# cgroups * # cpus) operation, and
+> having interrupts disabled throughout is dangerous.
+> 
+> For some contexts, we may not want to sleep, but can be interrupted
+> (e.g. while holding a spinlock or RCU read lock). As such, do not
+> disable interrupts throughout rstat flushing, only when holding the
+> percpu lock. This breaks down the O(# cgroups * # cpus) duration with
+> interrupts disabled to a series of O(# cgroups) durations.
+> 
+> Furthermore, if a cpu spinning waiting for the global rstat lock, it
+> doesn't need to spin with interrupts disabled anymore.
 
-I took a quick skim but haven't finished. Please hold off the respin and review 
-can be continued on this revision.
+I'm generally not a fan of big spin locks w/o irq protection. They too often
+become a source of unpredictable latency spikes. As you said, the global
+rstat lock can be held for quite a while. Removing _irq makes irq latency
+better on the CPU but on the other hand it makes a lot more likely that the
+lock is gonna be held even longer, possibly significantly so depending on
+the configuration and workload which will in turn stall other CPUs waiting
+for the lock. Sure, irqs are being serviced quicker but if the cost is more
+and longer !irq context multi-cpu stalls, what's the point?
 
+I don't think there's anything which requires the global lock to be held
+throughout the entire flushing sequence and irq needs to be disabled when
+grabbing the percpu lock anyway, so why not just release the global lock on
+CPU boundaries instead? We don't really lose anything significant that way.
+The durations of irq disabled sections are still about the same as in the
+currently proposed solution at O(# cgroups) and we avoid the risk of holding
+the global lock for too long unexpectedly from getting hit repeatedly by
+irqs while holding the global lock.
+
+Thanks.
+
+-- 
+tejun
