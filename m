@@ -2,136 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B52006C7C26
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 11:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4670A6C7D3D
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 12:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbjCXKCu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 06:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S229752AbjCXLd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 07:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbjCXKCr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 06:02:47 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED75823C4A
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 03:02:42 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id g17so1489635lfv.4
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 03:02:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fr24.com; s=google; t=1679652161;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hqniG2RTuzYc41TgGVo3CFmOEDPj8x/ry7qdxr2ig3U=;
-        b=WdI66PJPmXPEQ9JwFdMZEGzbWsV7VQNXtqHY0IP5KW3ugIT1HddLLFCZGJiW+0fXBb
-         acjfwE58oDPoFP7rSLsBqLYWet8dEnJR4hojFRxQSooIUzKmz4r5C9IPF2+YdVyfqzas
-         6q99o1Fh4jZ8c0agitV0Og+EynCvHsrEpn0Gh5nMyQUIsFkNumPNWlNkYWL4nit46dJa
-         RKpVlISZwv1/YbooAg7Rfz8nR8W7MyR46ZDSvEL6PtuKDXtHvjKDJ6ErB9Rvdee/gqET
-         GfS6FtV8SXIGlSKQ+0c0q4BVxM3LttghMmcZXwRrCNeg8juuGHOZFIVzxAl8ZKVCOL//
-         SdwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679652161;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hqniG2RTuzYc41TgGVo3CFmOEDPj8x/ry7qdxr2ig3U=;
-        b=5G4l68lKQUphbo0UflAq2yAozno8WRG8PKlx1rq10BAoelzbY1sU4RWrCuCmK8rPAf
-         fLRdNsKFHRx9xV2q8pUStjdCxGFGjYaDseorhHCyZf3YtCH36NYmcr1/x8TpxWV6MzNw
-         bhlTeHvuq6R89Na9aknoTwLVe0xBhGsfO79Nglj3dzGF/KxuAm909vea/Vmc/iRhk7KW
-         ka1C4KZckelmbgjFISHmDnqpgwsVcnB0ORkbGuyQm900pnb6GMiXpE510RaDuHRCE7C4
-         82pD+zeo8E462xxSYUp/zyswdAHJRVavuxe4CuT8DRVYsB/facn9Vay3gXOEoAK7ISME
-         DdDQ==
-X-Gm-Message-State: AAQBX9eyGoXZkJaUgt1K3ny6dQiSb86evcibE/WrgwByBZAmifZr79Rq
-        1F+Jwf7RBaTtDa/zv3Y9J2wHlg==
-X-Google-Smtp-Source: AKy350afxW/MzPpBo1E2U1b5voWjHTIIgFJ0cAMVXcl7lU1aJbGr3gBYCSMuQrZgHHbXj2qJBotQ7w==
-X-Received: by 2002:a19:ae02:0:b0:4ea:129c:528 with SMTP id f2-20020a19ae02000000b004ea129c0528mr653408lfc.56.1679652161179;
-        Fri, 24 Mar 2023 03:02:41 -0700 (PDT)
-Received: from localhost.localdomain (bl20-118-143.dsl.telepac.pt. [2.81.118.143])
-        by smtp.googlemail.com with ESMTPSA id q23-20020a19a417000000b004d865c781eesm3282268lfc.24.2023.03.24.03.02.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Mar 2023 03:02:40 -0700 (PDT)
-From:   =?UTF-8?q?Nuno=20Gon=C3=A7alves?= <nunog@fr24.com>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     =?UTF-8?q?Nuno=20Gon=C3=A7alves?= <nunog@fr24.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next V4] xsk: allow remap of fill and/or completion rings
-Date:   Fri, 24 Mar 2023 10:02:22 +0000
-Message-Id: <20230324100222.13434-1-nunog@fr24.com>
-X-Mailer: git-send-email 2.40.0
+        with ESMTP id S229508AbjCXLd7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 07:33:59 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D306B1C7FB;
+        Fri, 24 Mar 2023 04:33:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 83EE2B8239C;
+        Fri, 24 Mar 2023 11:33:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F2BC4339B;
+        Fri, 24 Mar 2023 11:33:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679657634;
+        bh=gN1rw7P5nD0EPnar+Hih8wRjO2zp+3Y1UdQYfZsCqBs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oKBFZiTSugNI6NXoGDFM/eBf78cVT9COzfU+bK3uSgOS53e3/8uY8Lu7lDAbjrduk
+         f+o8I4IP6BYkZGnxLmFm4qVfvm7dJSJkandF8nEHZh/DaIWiYRlpfG6z0ULmtwPtIg
+         nDHS6FGdnDYwICHFy4dxqwAXliGTH64w++/LYtza0OHzdJky1GlEg3mil1o4aW6rbz
+         Si9H/Df8j+pf7qs8sOV622rw/SqwGlYi73awC5Nv4oZBD90kbgTPSq3JXLOam8tfXA
+         kH7kbVtZ3aljmfG69UC5diNO8GcTecvllVT+g4KIePYuMC3aOG6ac2SfijvN6YPeoE
+         ncSzwNoANakxg==
+Received: by mail-lf1-f44.google.com with SMTP id br6so1810469lfb.11;
+        Fri, 24 Mar 2023 04:33:54 -0700 (PDT)
+X-Gm-Message-State: AAQBX9dTve0JONSYQmUyJyR56PQSmIso5wytq8LDFdP8iNPZ96Yw35Qh
+        s3AdWz0odaJVclBtzsyALS+Q8HQVkfStO+11k8c=
+X-Google-Smtp-Source: AKy350b8q3+lUeJ9w5ZT9GW50L8qAY6bqdL3UY0CHDzs4u9bAT5b8qVWBbNxvRz6Pby8JiJnvjS/qp42bIAdEGY9RWU=
+X-Received: by 2002:ac2:4a89:0:b0:4ea:12f7:a725 with SMTP id
+ l9-20020ac24a89000000b004ea12f7a725mr650882lfp.4.1679657632209; Fri, 24 Mar
+ 2023 04:33:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20221012233500.156764-1-masahiroy@kernel.org> <ZBovCrMXJk7NPISp@aurel32.net>
+ <CAMj1kXHwtb9aY+vd4e69Wg47GpL0sT=dDaCUA1sF7=edzc+Qeg@mail.gmail.com> <ZBzAp457rrO52FPy@aurel32.net>
+In-Reply-To: <ZBzAp457rrO52FPy@aurel32.net>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 24 Mar 2023 12:33:40 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHvfHwQFX1SKbUvpHWOr3+i7Tp5Hod-_jZE4hDHZmmRZg@mail.gmail.com>
+Message-ID: <CAMj1kXHvfHwQFX1SKbUvpHWOr3+i7Tp5Hod-_jZE4hDHZmmRZg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: remove special treatment for the link order of head.o
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The remap of fill and completion rings was frowned upon as they
-control the usage of UMEM which does not support concurrent use.
-At the same time this would disallow the remap of these rings
-into another process.
+(cc BTF list and maintainer)
 
-A possible use case is that the user wants to transfer the socket/
-UMEM ownership to another process (via SYS_pidfd_getfd) and so
-would need to also remap these rings.
+On Thu, 23 Mar 2023 at 22:12, Aurelien Jarno <aurelien@aurel32.net> wrote:
+>
+> Hi,
+>
+> On 2023-03-22 15:51, Ard Biesheuvel wrote:
+> > On Tue, 21 Mar 2023 at 23:26, Aurelien Jarno <aurelien@aurel32.net> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On 2022-10-13 08:35, Masahiro Yamada wrote:
+> > > > In the previous discussion (see the Link tag), Ard pointed out that
+> > > > arm/arm64/kernel/head.o does not need any special treatment - the only
+> > > > piece that must appear right at the start of the binary image is the
+> > > > image header which is emitted into .head.text.
+> > > >
+> > > > The linker script does the right thing to do. The build system does
+> > > > not need to manipulate the link order of head.o.
+> > > >
+> > > > Link: https://lore.kernel.org/lkml/CAMj1kXH77Ja8bSsq2Qj8Ck9iSZKw=1F8Uy-uAWGVDm4-CG=EuA@mail.gmail.com/
+> > > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > > ---
+> > > >
+> > > >  scripts/head-object-list.txt | 1 -
+> > > >  1 file changed, 1 deletion(-)
+> > > >
+> > > > diff --git a/scripts/head-object-list.txt b/scripts/head-object-list.txt
+> > > > index b16326a92c45..f226e45e3b7b 100644
+> > > > --- a/scripts/head-object-list.txt
+> > > > +++ b/scripts/head-object-list.txt
+> > > > @@ -15,7 +15,6 @@ arch/alpha/kernel/head.o
+> > > >  arch/arc/kernel/head.o
+> > > >  arch/arm/kernel/head-nommu.o
+> > > >  arch/arm/kernel/head.o
+> > > > -arch/arm64/kernel/head.o
+> > > >  arch/csky/kernel/head.o
+> > > >  arch/hexagon/kernel/head.o
+> > > >  arch/ia64/kernel/head.o
+> > >
+> > > This patch causes a significant increase of the arch/arm64/boot/Image
+> > > size. For instance the generic arm64 Debian kernel went from 31 to 39 MB
+> > > after this patch has been applied to the 6.1 stable tree.
+> > >
+> > > In turn this causes issues with some bootloaders, for instance U-Boot on
+> > > a Raspberry Pi limits the kernel size to 36 MB.
+> > >
+> >
+> > I cannot reproduce this with mainline
+> >
+> > With the patch
+> >
+> > $ size vmlinux
+> >    text    data     bss     dec     hex filename
+> > 24567309 14752630 621680 39941619 26175f3 vmlinux
+> >
+> > With the patch reverted
+> >
+> > $ size vmlinux
+> >    text    data     bss     dec     hex filename
+> > 24567309 14752694 621680 39941683 2617633 vmlinux
+>
+> I have tried with the current mainline, this is what I get, using GCC 12.2.0
+> and binutils 2.40:
+>
+>    text    data     bss     dec     hex filename
+> 32531655        8192996  621968 41346619        276e63b vmlinux.orig
+> 25170610        8192996  621968 33985574        2069426 vmlinux.revert
+>
+> > It would help to compare the resulting vmlinux ELF images from both
+> > builds to see where the extra space is being allocated
+>
+> At a first glance, it seems the extra space is allocated in the BTF
+> section. I have uploaded the resulting files as well as the config file
+> I used there:
+> https://temp.aurel32.net/linux-arm64-size-head.o.tar.gz
+>
 
-This will have no impact on current usages and just relaxes the
-remap limitation.
+Indeed. So we go from
 
-Signed-off-by: Nuno Gonçalves <nunog@fr24.com>
----
-V3 -> V4: Remove undesired format changes
-V2 -> V3: Call READ_ONCE for each variable and not for the ternary operator
-V1 -> V2: Format and comment changes
+  [15] .BTF              PROGBITS         ffff8000091d1ff4  011e1ff4
+       00000000005093d6  0000000000000000   A       0     0     1
 
- net/xdp/xsk.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+to
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 2ac58b282b5eb..cc1e7f15fa731 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -1301,9 +1301,10 @@ static int xsk_mmap(struct file *file, struct socket *sock,
- 	loff_t offset = (loff_t)vma->vm_pgoff << PAGE_SHIFT;
- 	unsigned long size = vma->vm_end - vma->vm_start;
- 	struct xdp_sock *xs = xdp_sk(sock->sk);
-+	int state = READ_ONCE(xs->state);
- 	struct xsk_queue *q = NULL;
+  [15] .BTF              PROGBITS         ffff8000091d1ff4  011e1ff4
+       0000000000c0e5eb  0000000000000000   A       0     0     1
 
--	if (READ_ONCE(xs->state) != XSK_READY)
-+	if (state != XSK_READY && state != XSK_BOUND)
- 		return -EBUSY;
+i.e, from 5 MiB to 12+ MiB of BTF metadata.
 
- 	if (offset == XDP_PGOFF_RX_RING) {
-@@ -1314,9 +1315,11 @@ static int xsk_mmap(struct file *file, struct socket *sock,
- 		/* Matches the smp_wmb() in XDP_UMEM_REG */
- 		smp_rmb();
- 		if (offset == XDP_UMEM_PGOFF_FILL_RING)
--			q = READ_ONCE(xs->fq_tmp);
-+			q = state == XSK_READY ? READ_ONCE(xs->fq_tmp) :
-+						 READ_ONCE(xs->pool->fq);
- 		else if (offset == XDP_UMEM_PGOFF_COMPLETION_RING)
--			q = READ_ONCE(xs->cq_tmp);
-+			q = state == XSK_READY ? READ_ONCE(xs->cq_tmp) :
-+						 READ_ONCE(xs->pool->cq);
- 	}
-
- 	if (!q)
---
-2.40.0
-
+To me, it is not clear at all how one would be related to the other,
+so it will leave it to the Kbuild and BTF experts to chew on this one.
