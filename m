@@ -2,133 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDCD6C767B
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 05:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C296C77A8
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 07:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbjCXEJJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 00:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
+        id S230350AbjCXGLt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 02:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbjCXEJH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 00:09:07 -0400
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EFE3C13;
-        Thu, 23 Mar 2023 21:09:04 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VeWKYmk_1679630939;
-Received: from 30.221.149.192(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VeWKYmk_1679630939)
-          by smtp.aliyun-inc.com;
-          Fri, 24 Mar 2023 12:09:00 +0800
-Message-ID: <6b4728e0-dfb7-ec7b-630f-87ee42233fe8@linux.alibaba.com>
-Date:   Fri, 24 Mar 2023 12:08:59 +0800
+        with ESMTP id S231308AbjCXGLs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 02:11:48 -0400
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797BA1A947
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 23:11:46 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id 3-20020a6b1403000000b007588213c81aso598783iou.18
+        for <bpf@vger.kernel.org>; Thu, 23 Mar 2023 23:11:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679638306;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5EazmNoR1OZ8o2+YMKLz7ea0FZT1O49LxZhIVVOGASU=;
+        b=PAG0M3jaopraD8VtGZMwImdMU/xEGymyGMCTU4aH8o9ysRLR3bMq9MmjKDALCgOJFe
+         YHcRu9XX/0x4tVdw24zfqzGkHvH9HUTuhTYh70A4+1ICdqxkIHouhG6Qz8gQGvY5ykB1
+         frPcVF3DLxruu/AHFLf9CW5z2UovZfMDpBonC0InajgohhDzqzwhMEop4Rwjpn0LL799
+         bg9qaBsEC/q+D1gF0Jqjym4K10nDbflnSgXxMVuI0WqjCYEiXTlNRWxlAhLqgN1fye4R
+         lowdr3mPqK2RAMkPyGtX2tpD5WXlVgudKwW2lKUhNQeKZYEhAsU1R1OU+NJLxcg6YXLG
+         TcZQ==
+X-Gm-Message-State: AO0yUKXVleGoEOIIGRJejuVPiK3k8/Efvza9g1rVMZljRt88LjM5gXN5
+        gaL3XgaGybhi++/E831KVOJeU+QXBQa6zNUh2NOB8pxmgNwy
+X-Google-Smtp-Source: AK7set+//66vpydVGOj72rdCt3BRmCaHG0x83OrdHCybr9gyo5Im+LelP6LCqnOTCELfnC83HNox1AjctyxVmZg345qUV5gKqQF/
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v2 1/2] net/smc: Introduce BPF injection
- capability for SMC
-Content-Language: en-US
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, kgraul@linux.ibm.com, wenjia@linux.ibm.com,
-        jaka@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-References: <1676981919-64884-1-git-send-email-alibuda@linux.alibaba.com>
- <1676981919-64884-2-git-send-email-alibuda@linux.alibaba.com>
- <76e226e6-f3bf-f740-c86c-6ee214aff07d@linux.dev>
- <72030784-451a-2042-cbb7-98e1f9a544d5@linux.alibaba.com>
- <366b9486-9a00-6add-d54b-5c3f4d35afe9@linux.dev>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <366b9486-9a00-6add-d54b-5c3f4d35afe9@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a6b:500e:0:b0:751:96ce:ed7d with SMTP id
+ e14-20020a6b500e000000b0075196ceed7dmr4707751iob.1.1679638305809; Thu, 23 Mar
+ 2023 23:11:45 -0700 (PDT)
+Date:   Thu, 23 Mar 2023 23:11:45 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000091ae5305f79f447f@google.com>
+Subject: [syzbot] [bpf?] [net?] general protection fault in bpf_struct_ops_link_create
+From:   syzbot <syzbot+71ccc0fe37abb458406b@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, kuifeng@meta.com,
+        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=3.1 required=5.0 tests=FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    226bc6ae6405 Merge branch 'Transit between BPF TCP congest..
+git tree:       bpf-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=139c727ac80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cab35c936731a347
+dashboard link: https://syzkaller.appspot.com/bug?extid=71ccc0fe37abb458406b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ef67a1c80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=119c20fec80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ac055f681ed7/disk-226bc6ae.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3895cc8a51d2/vmlinux-226bc6ae.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1b18bb9fae05/bzImage-226bc6ae.xz
+
+The issue was bisected to:
+
+commit 68b04864ca425d1894c96b8141d4fba1181f11cb
+Author: Kui-Feng Lee <kuifeng@meta.com>
+Date:   Thu Mar 23 03:24:00 2023 +0000
+
+    bpf: Create links for BPF struct_ops maps.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116731b1c80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=136731b1c80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=156731b1c80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+71ccc0fe37abb458406b@syzkaller.appspotmail.com
+Fixes: 68b04864ca42 ("bpf: Create links for BPF struct_ops maps.")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 1 PID: 5081 Comm: syz-executor182 Not tainted 6.2.0-syzkaller-13084-g226bc6ae6405 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
+RIP: 0010:bpf_struct_ops_valid_to_reg kernel/bpf/bpf_struct_ops.c:764 [inline]
+RIP: 0010:bpf_struct_ops_link_create+0xb1/0x390 kernel/bpf/bpf_struct_ops.c:879
+Code: 95 81 eb ff 48 85 c0 48 89 c5 0f 84 9e 02 00 00 e8 24 27 dd ff 48 8d 7d 18 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 60 02 00 00 44 8b 65 18 bf 1a
+RSP: 0018:ffffc90003b8fc38 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 1ffff92000771f87 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff81a7dc8c RDI: 000000000000000f
+RBP: fffffffffffffff7 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
+R13: 000000000000002c R14: ffffc90003b8fde8 R15: 0000000000000000
+FS:  0000555556538300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000eaa388 CR3: 00000000206d2000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ link_create kernel/bpf/syscall.c:4585 [inline]
+ __sys_bpf+0x3b77/0x53b0 kernel/bpf/syscall.c:5129
+ __do_sys_bpf kernel/bpf/syscall.c:5163 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5161 [inline]
+ __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5161
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fc374490ae9
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffe2184578 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fc374490ae9
+RDX: 0000000000000010 RSI: 0000000020001340 RDI: 000000000000001c
+RBP: 00007fc374454c90 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fc374454d20
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bpf_struct_ops_valid_to_reg kernel/bpf/bpf_struct_ops.c:764 [inline]
+RIP: 0010:bpf_struct_ops_link_create+0xb1/0x390 kernel/bpf/bpf_struct_ops.c:879
+Code: 95 81 eb ff 48 85 c0 48 89 c5 0f 84 9e 02 00 00 e8 24 27 dd ff 48 8d 7d 18 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 60 02 00 00 44 8b 65 18 bf 1a
+RSP: 0018:ffffc90003b8fc38 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 1ffff92000771f87 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff81a7dc8c RDI: 000000000000000f
+RBP: fffffffffffffff7 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
+R13: 000000000000002c R14: ffffc90003b8fde8 R15: 0000000000000000
+FS:  0000555556538300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000eaa388 CR3: 00000000206d2000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	95                   	xchg   %eax,%ebp
+   1:	81 eb ff 48 85 c0    	sub    $0xc08548ff,%ebx
+   7:	48 89 c5             	mov    %rax,%rbp
+   a:	0f 84 9e 02 00 00    	je     0x2ae
+  10:	e8 24 27 dd ff       	callq  0xffdd2739
+  15:	48 8d 7d 18          	lea    0x18(%rbp),%rdi
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2e:	84 c0                	test   %al,%al
+  30:	74 08                	je     0x3a
+  32:	3c 03                	cmp    $0x3,%al
+  34:	0f 8e 60 02 00 00    	jle    0x29a
+  3a:	44 8b 65 18          	mov    0x18(%rbp),%r12d
+  3e:	bf                   	.byte 0xbf
+  3f:	1a                   	.byte 0x1a
 
 
-On 3/24/23 4:46 AM, Martin KaFai Lau wrote:
-> On 3/9/23 3:49 AM, D. Wythe wrote:
->>>> --- /dev/null
->>>> +++ b/net/smc/bpf_smc_struct_ops.c
->>>> @@ -0,0 +1,146 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>> +
->>>> +#include <linux/kernel.h>
->>>> +#include <linux/bpf_verifier.h>
->>>> +#include <linux/btf_ids.h>
->>>> +#include <linux/bpf.h>
->>>> +#include <linux/btf.h>
->>>> +#include <net/sock.h>
->>>> +#include <net/smc.h>
->>>> +
->>>> +extern struct bpf_struct_ops smc_sock_negotiator_ops;
->>>> +
->>>> +DEFINE_RWLOCK(smc_sock_negotiator_ops_rwlock);
->>>> +struct smc_sock_negotiator_ops *negotiator;
->>>
->>> Is it sure one global negotiator (policy) will work for all 
->>> smc_sock? or each sk should have its own negotiator and the 
->>> negotiator is selected by setsockopt.
->>>
->> This is really a good question,  we can really consider adding an 
->> independent negotiator for each sock.
->>
->> But just like the TCP congestion control , the global negotiator can 
->> be used for sock without
->>
->> special requirements.
->
-> It is different from TCP congestion control (CC). TCP CC has a global 
-> default but each sk can select what tcp-cc to use and there can be 
-> multiple tcp-cc registered under different names.
->
-> It sounds like smc using tcp_sock should be able to have different 
-> negotiator also (eg. based on dst IP or some other tcp connection 
-> characteristic). The tcp-cc registration, per-sock selection and the 
-> rcu_read_lock+refcnt are well understood and there are other bpf 
-> infrastructure to support the per sock tcp-cc selection (like 
-> bpf_setsockopt).
->
-> For the network stack, there is little reason other af_* should not 
-> follow at the beginning considering the infrastructure has already 
-> been built. The one single global negotiator and reader/writer lock in 
-> this patch reads like an effort wanted to give it a try and see if it 
-> will be useful before implementing the whole thing. It is better to 
-> keep it off the tree for now until it is more ready.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Hi Martin,
-
-Thank you very much for your comments. I have indeed removed global 
-negotiator from my latest implementation.
-
-The latest design is that users can register a negotiator implementation 
-indexed by name, smc_sock can use bpf_setsockopt to specify
-whether a specific negotiation implementation is required via name. If 
-there are no settings, there will be no negotiators.
-
-What do you think?
-
-In addition, I am very sorry that I have not issued my implementation 
-for such a long time, and I have encountered some problems with the 
-implementation because
-the SMC needs to be built as kernel module, I have struggled with the 
-bpf_setsockopt implementation, and there are some new self-testes that 
-need to be written.
-
-However, I believe that I can send a new version as soon as possible.
-
-
-Best wishes
-D. Wythe
-
-
-
-
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
