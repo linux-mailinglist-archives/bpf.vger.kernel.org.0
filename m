@@ -2,92 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 297866C8256
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 17:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A0D6C8288
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 17:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbjCXQ3U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 12:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S231629AbjCXQkR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 12:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbjCXQ3T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 12:29:19 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4EC2D55
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 09:29:18 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id o32so1496214wms.1
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 09:29:18 -0700 (PDT)
+        with ESMTP id S231626AbjCXQkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 12:40:16 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B476A1B2DF
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 09:40:14 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id cn12so10300032edb.4
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 09:40:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=avride-ai.20210112.gappssmtp.com; s=20210112; t=1679675357;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vQXdzREpNC82aYwfc8tVXYz0QLDEIupXUCEjM5LGLfs=;
-        b=BSMa6/FcGG3BqV2L4oFydmdvPeRSOZha4DUcOFC9pJl+xw6zQCG6NWxT1yxPKAnkYZ
-         NSCwv+2f///ZaUX+HHm+m+/aX6VtWu1MpGhFHDLoNWOfpq2AKOmuX4FK1UtbCltNXHf9
-         oRDmbb7yv7bdX7+qbY/MGZh7HMsOgLDW3W8OahMYV7EvYI/ZUOL14+2cIaZVAXL/ZesU
-         7fPIvcaykbIa+/wx/wZfiRr53QPrxb4tk2CMLHl+rypffMRmGcoZyq4Wd8xTpDtwAHII
-         D4jcumNmO74hxqTkHH1QDMwCKiHT+iN1qSmSFRX06moHqPz4RUNwrIAqz4bCD1Fh6yfm
-         a5mQ==
+        d=linux-foundation.org; s=google; t=1679676013;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NkqrrrBli7iwioLLpZaqx7X4Cp1aCl3V92ectHxHlRw=;
+        b=P8fF38dqC7mw9gR50t3xfU0Ct4Nh3npY6bKtO0d0nGq8Nl8Rv6ETrQVG9oxcsQiDCP
+         CHDU/FOdQ20gQdHBZQNU62irjEaj0204Jf2AYW5kuTzmAVqDaXXNkR0/h9D8HhgrPbrL
+         yfrespfSxEuMuSQRx27xgZNMt1QigBMmFwVF8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679675357;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vQXdzREpNC82aYwfc8tVXYz0QLDEIupXUCEjM5LGLfs=;
-        b=m3KQB1ANVBuyMqbYMRJ244/FvEpCdk5Vla7FFmJmJkkA4Ndwf8YGz1S1uXz3iwLOHP
-         jqLwQpP4wHCRkK0WoCn+lNRUhjPKwWsoCipIVn5HKrMtiuCdm/Kgvfz7dCB6hy2hc9kP
-         JtkbISUpNO/KUsuycSBSzepTiP50mGSr0uYQoc3aNGOl7F1DY44ONAKiNXofnZgKeXwF
-         3CDRCMVRXoDzN8wM4IyfiEocNeT9O+2vpAPC+e/u6xKUGfoMn+CWVon/ro1QThNtD4nz
-         5KOOQd84g2RAUr5UkbG9aO9l3nfJ7G+lo9TDm12xC1XrlNe7yPlnVivI5Jf4NWyGo6cL
-         vOuQ==
-X-Gm-Message-State: AO0yUKWVl2NA8BCkJtmwsIB87ifLuMuoI8EeA1YL0ezYsvHdD/NoUlfW
-        DJNiNil2pPESRn+PfWL8KsMzIrsXNacfkkQZFL/jjg==
-X-Google-Smtp-Source: AK7set/c+uH5wmSAGpa4jPOylG90xtB0qEfwoDO4wvdhv7BPaFdnNB9bQWlmZbJJWFkmULV0p366Ng==
-X-Received: by 2002:a05:600c:2101:b0:3ee:7e12:f50 with SMTP id u1-20020a05600c210100b003ee7e120f50mr2604794wml.8.1679675357040;
-        Fri, 24 Mar 2023 09:29:17 -0700 (PDT)
-Received: from smtpclient.apple ([2001:40a8:400:600:fccd:d2cd:4b16:abe7])
-        by smtp.gmail.com with ESMTPSA id z5-20020a05600c0a0500b003ee5fa61f45sm290704wmp.3.2023.03.24.09.29.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Mar 2023 09:29:16 -0700 (PDT)
-From:   Kamil Zaripov <zaripov-kamil@avride.ai>
-Content-Type: text/plain;
-        charset=us-ascii
+        d=1e100.net; s=20210112; t=1679676013;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NkqrrrBli7iwioLLpZaqx7X4Cp1aCl3V92ectHxHlRw=;
+        b=7i4W93nKCWiT4B0ziFM2AGGoWf3MhHB2N2tIvDmER5+7JfOaTF9Tn/LWMMwsbFCYn0
+         qgDRrN8k21bo6ofqjZM7P5xKJjiyuysdq/9PB2zCr9gWzvGS3WjeR/MAJ2DwBJSl8pve
+         W0AZXmuFE9KICcFtvjg7C4JG9YcLvu+Yio49tmcJ+F/9pmg4x8/HKC1LJ3sm44ADdUrW
+         PJDn5IOFaGejx6Fg91vrqYqaDofb5jH9tKM+ZREtlWZdUzUvjBss39cOueTycRh3Lby5
+         ldFKNdH62we7C86+4yjGY3k1JJf0xDBQR7wE33n1wl1s0FdDhIWBQvJNLWgCTNrecZm7
+         2mVg==
+X-Gm-Message-State: AAQBX9eiVhknGdd1NfjAjn3Nm67CWR4Z1SxG1a6Z+clZZXA+TDWVvWlP
+        J5yBE3xIkEsAZYSB39eknLVRmp0evxdxjzWiHkHs0g==
+X-Google-Smtp-Source: AKy350aMH0lq2FhHvvqohi1LRgMjgVe8Oul8w9DbX5oNBbf5n4CXyar01OzTUjhlh4fPneOAgRcelw==
+X-Received: by 2002:a17:906:3ac2:b0:8af:3b78:315d with SMTP id z2-20020a1709063ac200b008af3b78315dmr3489770ejd.23.1679676012952;
+        Fri, 24 Mar 2023 09:40:12 -0700 (PDT)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id a16-20020a170906245000b0093a6e9c2634sm5075234ejb.192.2023.03.24.09.40.12
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Mar 2023 09:40:12 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id t10so10153957edd.12
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 09:40:12 -0700 (PDT)
+X-Received: by 2002:a17:906:7846:b0:933:1967:a984 with SMTP id
+ p6-20020a170906784600b009331967a984mr1673964ejm.15.1679676012002; Fri, 24 Mar
+ 2023 09:40:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230324123626.2177476-1-sashal@kernel.org>
+In-Reply-To: <20230324123626.2177476-1-sashal@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 24 Mar 2023 09:39:55 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgmKqvUrKx6+N6NzKJuQn0OY2xrDApzHAdJj23ztjzcBw@mail.gmail.com>
+Message-ID: <CAHk-=wgmKqvUrKx6+N6NzKJuQn0OY2xrDApzHAdJj23ztjzcBw@mail.gmail.com>
+Subject: Re: [PATCH] capability: test_deny_namespace breakage due to
+ capability conversion to u64
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
-Subject: Network RX per process per interface statistics 
-Message-Id: <F75020C7-9247-4F15-96CC-C3E6F11C0429@avride.ai>
-Date:   Fri, 24 Mar 2023 19:29:15 +0300
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-X-Mailer: Apple Mail (2.3696.120.41.1.1)
-X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi everyone,
+On Fri, Mar 24, 2023 at 5:36=E2=80=AFAM Sasha Levin <sashal@kernel.org> wro=
+te:
+>
+> Commit f122a08b197d ("capability: just use a 'u64' instead of a 'u32[2]'
+> array") attempts to use BIT_LL() but actually wanted to use BIT_ULL(),
+> fix it up to make the test compile and run again.
 
-I trying to make a BPF program that can collect per process per =
-interface statistics of network data consumption. Right now most =
-difficult part for me is RX traffic.
+This got fixed differently by e8c8361cfdbf ("selftests/bpf: Fix
+progs/test_deny_namespace.c issues").
 
-I have tried to find some point in the sk_buff's way up to network stack =
-where I can extract info both about the network interface which captured =
-package and the process that will consume this data but failed. So I =
-have to listen events in several points and somehow merge collected =
-data.
+I wonder what drugs made me think BIT_LL() was ok. Maybe my wife puts
+something in the coffee?
 
-The last point I found at which sk_buff still contains information about =
-network device that captured this sk_buff is netif_receive_skb =
-tracepoint. The first point where I can found information about process =
-is protocol's rcv handlers (like tcp_v4_do_rcv). But I have some =
-questions, to finish my program:
-
-1. It seems that sk_buff modifies during handling, so how can I "match" =
-sk_buff with same data in netif_receive_skb and in tcp_v4_do_rcv?
-2. Maybe there is some good point where I can attach listener and where =
-I can extract both process and interface info for each package?
-
-Regards
-Zaripov Kamil.=
+                Linus
