@@ -2,350 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0A86C7DCD
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 13:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2DF6C7DEC
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 13:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbjCXMPQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 08:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
+        id S231411AbjCXMT7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 08:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbjCXMPP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 08:15:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF9A149BD
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 05:14:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679660070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pBTZYWuFZuf/Tn0BpTtzc8rxHh/vXia0nkhx33ZjAzM=;
-        b=IWntMRAyMgDYdWPizsjtddS9bHH71UVtXaXBYrcNQz5X8F+eQSGXp4Ms6OTTxfU8VbMeIP
-        2dhcP1XnpH48WCPbEHqWH8FxwkcYOztnI9fIkDp+wyztR7s6BBY5gRzExjyOHz0G/FsTqh
-        RR4aYCUSkUwFFHhaEi7HFKmnhhaJ8B0=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-333-DuHW86C1PxaNMLQhxp5Ekg-1; Fri, 24 Mar 2023 08:14:29 -0400
-X-MC-Unique: DuHW86C1PxaNMLQhxp5Ekg-1
-Received: by mail-lf1-f69.google.com with SMTP id a14-20020a19ca0e000000b004e95c80075aso648956lfg.3
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 05:14:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679660067;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:subject:cc:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pBTZYWuFZuf/Tn0BpTtzc8rxHh/vXia0nkhx33ZjAzM=;
-        b=wXGYSZb9S7enLsNWXaUWbHXeIUklsn9DqmqpiURcHzoMDYhg6HN0DkOMivLTsp/B1d
-         GXo495d5lldHRwBHa9+nADoxh9exPUOXs+TfPFCa+TPYHOvWmtWgNaaZLPZ3F2eZxADm
-         hSWY7IMjugr839WgDmPAbRdTPhsJflCl2NSZUnSqVnQs+fytZ7qjmUX3I2d01uAEELD6
-         XEZIOg0P3FbmDbBZdk9CKWTBPJqU0GU8VHQzBFYpV9xflBWV7PzN1hMyFlzjZaKHniNC
-         JO/2NEqd5qv0Q2Kd9j05xgGOIQUrR25RDWy6SHAwCtG0LY6pLnuI4/RFOkr85MxntiXz
-         I0lg==
-X-Gm-Message-State: AAQBX9dKZl5aQJ6gQeCJRW5axWW8n2OA7dcFh0JfhB/ORJBVV+w7LNzK
-        tkod85HLT7uPG/LhJH0bno/caF1pLC68GTx9NLj2p7s9P04ndy+RasnQBQHorWRDuBd/5HVUdvs
-        YdWSZtu6D87ii
-X-Received: by 2002:ac2:5628:0:b0:4d8:82d5:f5bc with SMTP id b8-20020ac25628000000b004d882d5f5bcmr669110lff.34.1679660067662;
-        Fri, 24 Mar 2023 05:14:27 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ZGgrq+m4WPQmmsrlK4MMSv11q3GGWp6SPbTmKMQIY/s+s9AMABuSCGVG9pWmv7/y1UkqIgEg==
-X-Received: by 2002:ac2:5628:0:b0:4d8:82d5:f5bc with SMTP id b8-20020ac25628000000b004d882d5f5bcmr669105lff.34.1679660067227;
-        Fri, 24 Mar 2023 05:14:27 -0700 (PDT)
-Received: from [192.168.42.100] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id x22-20020a19f616000000b0048a982ad0a8sm3328632lfe.23.2023.03.24.05.14.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Mar 2023 05:14:26 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <6d9dbeb8-e1e7-8f8e-73eb-8fa66a1323de@redhat.com>
-Date:   Fri, 24 Mar 2023 13:14:24 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Cc:     brouer@redhat.com, Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        with ESMTP id S230377AbjCXMT4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 08:19:56 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E081C15881;
+        Fri, 24 Mar 2023 05:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679660371; x=1711196371;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=mpEi9Kvh0PjO2+bOGSbPqWUh9HNgZCiDpkHIPDte4WI=;
+  b=SuWgqiTB9BL0USUDWzlmjXOv9DiTOWfbb1EuxPYIM6XfP25Sd0dAPpIJ
+   MbE4JHRtnUAHOmat2zhbCwigbGovg6gx4cJCug8o+qYr9MnmZrPhbu6kp
+   ivN/CbIBo1YW8/57A/Gd1hBw9qLKNnwgZMKQpdrxEBZklv/Rtsvjc/tgP
+   rdsRu92qiEqF0mAdaNeMBOtSruoazaAOAXu/HUsLeF3S0VpHgZc6lbfSt
+   kfuHpf8m6BSWI5AXZYm3DwpzC2GUL+FikMrN+99EaHhMvSNI2odJnYGNa
+   mnTNtbof0k/XOh1GuT64SLUWrfxSmCgge74KJeAxJwtLWuzNZOwyISuYz
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="367498773"
+X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
+   d="scan'208";a="367498773"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2023 05:19:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="1012236128"
+X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
+   d="scan'208";a="1012236128"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Mar 2023 05:19:12 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 24 Mar 2023 05:19:12 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Fri, 24 Mar 2023 05:19:12 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.21; Fri, 24 Mar 2023 05:19:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PSmICWx9ALSbA8eXmcF+TiEfvuJDvZxIgkRM5U2wFiz9SyQpuRtwFGQbgb1LUJ/QtiLy/ct9QoRp8DOIRRCc6PQhwsoro1B3gx2X29Hu7w5rQalrDVSyiqYT6xFhR3370cnemrxZSqUo8Wa5N+IsSK5btXUXt50DlbklnSsBx01JY+h+urM5iR3yFUfq4sWsUketrTArIDb0wXulOTePtBYdeqisiAoQzezuJdgaMFdygUbwfq6hASRYALJyjLri949Tl72cTgDJ7frFeEs04Omxj+5yIE/iMZsm+l3JnfMeKjkk/6sMJS7XGHcxGerX0JDdpjXSmNDJwb5TOvMIcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qkudvS4OdiYeJg21G/GQwEJvfByrpNo2g2+k74zzjzU=;
+ b=CCEAxy09Phy3Fi2JouaZp5mT4E2uyQJ5GQhLPlyb3sTwuGDUZSfXnr1en11rMc+CxaO03TCJY3uAJnu0cG4z68XKr57RSCveISU6LD8/j1Xn3SGA2cfK+hS8uUoZ6MrYJjni8vj1CzemRUuazakVs0NuzE4LkHZZeltt6p3VjVLRPinncnRHnhear1joq2epHzSJdo6OCySf7WPUlOd6KdcwizDCFI/loEr6riqNo4uLXp7OGWokk9Esk8J4/p4zWdITl0zqdkBcUeRY+shMQhe8VTHA1bJ6QwbBPgFbJQTa6qcMrhZCaHQHZe8BdK63+Swhl2RA2vN3mufVP/+wsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ PH7PR11MB7661.namprd11.prod.outlook.com (2603:10b6:510:27b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.38; Fri, 24 Mar
+ 2023 12:19:10 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::dbd:99dd:96d:3ab3]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::dbd:99dd:96d:3ab3%7]) with mapi id 15.20.6178.039; Fri, 24 Mar 2023
+ 12:19:10 +0000
+Date:   Fri, 24 Mar 2023 13:19:02 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Nuno =?iso-8859-1?Q?Gon=E7alves?= <nunog@fr24.com>
+CC:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Christian Brauner" <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH bpf-next V2 3/6] selftests/bpf: xdp_hw_metadata RX hash
- return code info
-To:     Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <167940634187.2718137.10209374282891218398.stgit@firesoul>
- <167940643669.2718137.4624187727245854475.stgit@firesoul>
- <CAKH8qBuv-9TXAmi0oTbB0atC4f6jzFcFhAgQ3D89VX45vUU9hw@mail.gmail.com>
- <080640fc-5835-26f1-2b20-ff079bd59182@redhat.com>
- <CAADnVQKsxzLTZ2XoLbmKKLAeaSyvf3P+w8V143iZ4cEWWTEUfw@mail.gmail.com>
- <CAKH8qBuHaaqnV-_mb1Roao9ZDrEHm+1Cj77hPZSRgwxoqphvxQ@mail.gmail.com>
- <CAADnVQ+6FeQ97DZLco3OtbtXQvGUAY4nr5tM++6NEDr+u8m7GQ@mail.gmail.com>
- <CAKH8qBvzVASpUu3M=6ohDqJgJjoR33jQ-J44ESD9SdkvFoGAZg@mail.gmail.com>
- <CAADnVQLC7ma7SWPOcjXhsZ2N0OyVtBr7TzCoT-_Dn+zQ2DEyWg@mail.gmail.com>
- <CAKH8qBuqxxVM9fSB43cAvvTnaHkA-JNRy=gufCqYf5GNbRA-8g@mail.gmail.com>
- <d7ac4f80-b65c-5201-086e-3b2645cbe7fe@redhat.com>
- <CAADnVQ+Jc6G78gJOA758bkCt4sgiwaxgC7S0cr9J=XBPfMDUSg@mail.gmail.com>
- <CAKH8qBupRYEg+SPMTMb4h532GESG7P1QdaFJ-+zrbARVN9xrdA@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CAKH8qBupRYEg+SPMTMb4h532GESG7P1QdaFJ-+zrbARVN9xrdA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        John Fastabend <john.fastabend@gmail.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next V4] xsk: allow remap of fill and/or completion
+ rings
+Message-ID: <ZB2VNg7yVxAjJEMV@boxer>
+References: <20230324100222.13434-1-nunog@fr24.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230324100222.13434-1-nunog@fr24.com>
+X-ClientProxiedBy: LO2P265CA0430.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a0::34) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|PH7PR11MB7661:EE_
+X-MS-Office365-Filtering-Correlation-Id: e4a0abae-a96d-4fa8-bca9-08db2c61f8a3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8Wu97DJyoZmQoILqFJSVYWVzo7kYQmURwfak/n9B4fiW5Cuy1O2kJC1izslus7VsgoPSf7gwJjrnTLqwpSpZ1X7vf0peZ8eBOF9pRbjdBbYVN1V19FaRGva5FARw2oL6v6zuRJOF3E6KgTOYE4o/NwPQm6HYsJ5WTi5wKqDccfy08ArlIQbxzjW/BRpPQv62/ID09N9BqvrFIiVz6cHvNLSZqJxuCKXsg3tuLvnUVx8Lqo3jlrKb621AtK/gKY2Snke+ZEDC9zVJjlP7DB6yiDmRNAxdCbImFh0dHmcdJk8FIqcA+DUYlZ+YsjBgYASmtMVKVRg9dClB79r1Gh0ksaLD6mZJ+3Cvr4rgna65yWRDueD2tb9wfkbgU7QThW8Tl9aBVtZwhWNl+UTPb5AZTOcKTMU5a1UglvaNIM7Bh0Pjp9EPunSccu5Z8pajj0Nsg6D7TDU/AGl7CHa0UTa+BxG8yS5T6/YC0gp4B+hRnDcgTZ1iq1snbqnzVKktBbb1C2OmlyEONuMZPrctpnfHx+Ch6+SyQaJCEklKdt9RiU1HRWrnu29PUAFcAy3y8dKUjTSSm38outpgXa/eEcObqn6/LcHhs18FgJ171GhmLQEqNkV7zM0c2GopKUPlOmWB1y+my50Hkvtom3BzR9RHOw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(376002)(396003)(39860400002)(366004)(346002)(136003)(451199018)(4326008)(41300700001)(8676002)(5660300002)(7416002)(6916009)(44832011)(2906002)(66476007)(82960400001)(86362001)(38100700002)(6666004)(6486002)(316002)(478600001)(8936002)(83380400001)(66556008)(33716001)(54906003)(6512007)(26005)(66946007)(6506007)(186003)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?jG9gboowZyd+jL0U2EsRXxuuBPY5lqvnRKjVxwrMaHtvfBGOy0IK31NLPX?=
+ =?iso-8859-1?Q?A9fF+aHHNdfxFbZboV4Cvj0kQtBXafQnaynPXWRCQeluum0jo9t5dOImqc?=
+ =?iso-8859-1?Q?O+lc1hFe5CM0DKO65xT7Y8gi0TjAue6+bmJJqxLoZ2u0JKWVNz1f3baTMI?=
+ =?iso-8859-1?Q?DVi5nZxjUieoZTinjK2ULoYOHUp/1cKzWK8AHJegZ/BNulLMLpFqb0v0Xq?=
+ =?iso-8859-1?Q?8ebCpAQi599J20GrB7/Ds38Q8qeYfwPV1q5oyse+SNerGW5A7FJzOn2ms3?=
+ =?iso-8859-1?Q?e9CvdwE7XBsUdfFjmLxFiWQptPZsl9ZYy/NMFr1T2HJixOuAvUiGIVhEWw?=
+ =?iso-8859-1?Q?LX7nZY73ON9EkolmdP1LqVbWKZ/bL7ft0Wkz0olJAnFVNJ0G/hgxT6K6Bl?=
+ =?iso-8859-1?Q?qEkBEx2duBWX9PYcxcIBuSrldiiBXNDFx7UCwM3jRzpqe1K6Eyql814wTH?=
+ =?iso-8859-1?Q?eKbf5StDxTZ/AKWXytJ3/g4i7eE9hsgK60GAb1xl/6cTBGGU9z0yEWYsQz?=
+ =?iso-8859-1?Q?eJ0wZQncWnwArrNpTYaz4S2ZFnK4IA3ZU6v8nCkP6HWh26/O5AG6kmYsT3?=
+ =?iso-8859-1?Q?rzWLHfkAsBP3gQ8UZKV0EKdX07h8fibkiRlsVSJhtTSJd67ORjHtCNTTi9?=
+ =?iso-8859-1?Q?5lSBFQUp4exiBulbxGLMebVCr+UKvQ7FuuXrObpeJKa473C9nLKNvRgW/h?=
+ =?iso-8859-1?Q?CEVvC2oGCDJ48N/7c7HqGBXfjUwHttchPScOgLyBc4p3uycVej8nhI+jOu?=
+ =?iso-8859-1?Q?Ud8isX4ls8CWxO8lPzGTMIfwfyk7nHnecPdhs4pkGuKCj1jpbvZrqCI2Fv?=
+ =?iso-8859-1?Q?Zoimtne+Z/4YXa9CK1rMuVYVv62GLTnjFnb4MdmSHTCWNwPsDDLoWN0vaB?=
+ =?iso-8859-1?Q?Qcj2XvhGpl2g/asLG2P1zELNsHFkHiIswxmKQ1jjAl7LlQXL6j6hnm+N0/?=
+ =?iso-8859-1?Q?0WXfR9MfvslSwXIg+OVqt7tFMT1cgMSVCVJbPyDGIDo3VD5Y6RAryYP/2R?=
+ =?iso-8859-1?Q?z9ii+eoIJWiVkVJXwk3hAbSOO1ZJphlcuEOvb+kWBa6YoQFnqTuBFs1v+P?=
+ =?iso-8859-1?Q?Yu3/V6JMfPBW9RXC1oMql9akAi1N80JMHVVrm2A36Gqzuk+NGR5FTfDuyf?=
+ =?iso-8859-1?Q?W3Jta11OO+ansh389eh4oGYAHx8HuxhqjnwcE3aKEJupE2FhBHCgQuw5AX?=
+ =?iso-8859-1?Q?/BGGy2BYQ3LYDzxzCxG1YSM/CRnNuQOBoFZABeYpb9z0ABs0WxstnvMxbl?=
+ =?iso-8859-1?Q?2E6ItaggWuab6sbQ00eik+IzO57TICPFpkZ+5iBb9jIfIPWP5Qb7MCvZR9?=
+ =?iso-8859-1?Q?CJGukKZzoRAY2dcaFt/3NJ1liqXZwigvYIZVKiHQtlQuSAGr0ypNvjac8X?=
+ =?iso-8859-1?Q?7cSohToR7viKUaFWY2Os2TQgoC0s5CE6K2VQeOLMETIi6a0nhJYxAmF81p?=
+ =?iso-8859-1?Q?RxQgnICMMgpBeEvHEuIMeH3SsvIamEn0ghGSfYv9BGm8Ji9r97kZ9OYVxc?=
+ =?iso-8859-1?Q?05aVHBtSe6RmrpmjlArIIcjy6CRHcpDwBwmzfWGKBUxdU5UV1c/M3Gfo54?=
+ =?iso-8859-1?Q?BhF9M0irhDRlVlvlT8Elw1IMa/v0/CSsfv6LFUb09jKitV79kcmXGgV5xS?=
+ =?iso-8859-1?Q?0luVHT88frY6LvB9jrv+ekWDUo57al/LPKB8xQMJqJ1zou+yJj3/4WyGbr?=
+ =?iso-8859-1?Q?d1oJONzmSb9Iqd3Qgqw=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4a0abae-a96d-4fa8-bca9-08db2c61f8a3
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2023 12:19:09.9549
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2nkX2/ZNR9WMJ4hyD2QDGBcdf1qi17sHWRPEdJLTB+ubaxNW0itA+YuCOM+e1HVFiye0Buiy0cx24+3wlJ2OaVSbG4h3VH52NKzxnf35HgM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7661
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 23/03/2023 18.47, Stanislav Fomichev wrote:
-> On Thu, Mar 23, 2023 at 10:35 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->>
->> On Thu, Mar 23, 2023 at 1:51 AM Jesper Dangaard Brouer
->> <jbrouer@redhat.com> wrote:
->>>
->>>
->>> On 22/03/2023 20.33, Stanislav Fomichev wrote:
->>>> On Wed, Mar 22, 2023 at 12:30 PM Alexei Starovoitov
->>>> <alexei.starovoitov@gmail.com> wrote:
->>>>>
->>>>> On Wed, Mar 22, 2023 at 12:23 PM Stanislav Fomichev <sdf@google.com> wrote:
->>>>>>
->>>>>> On Wed, Mar 22, 2023 at 12:17 PM Alexei Starovoitov
->>>>>> <alexei.starovoitov@gmail.com> wrote:
->>>>>>>
->>>>>>> On Wed, Mar 22, 2023 at 12:00 PM Stanislav Fomichev <sdf@google.com> wrote:
->>>>>>>>
->>>>>>>> On Wed, Mar 22, 2023 at 9:07 AM Alexei Starovoitov
->>>>>>>> <alexei.starovoitov@gmail.com> wrote:
->>>>>>>>>
->>>>>>>>> On Wed, Mar 22, 2023 at 9:05 AM Jesper Dangaard Brouer
->>>>>>>>> <jbrouer@redhat.com> wrote:
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> On 21/03/2023 19.47, Stanislav Fomichev wrote:
->>>>>>>>>>> On Tue, Mar 21, 2023 at 6:47 AM Jesper Dangaard Brouer
->>>>>>>>>>> <brouer@redhat.com> wrote:
->>>>>>>>>>>>
->>>>>>>>>>>> When driver developers add XDP-hints kfuncs for RX hash it is
->>>>>>>>>>>> practical to print the return code in bpf_printk trace pipe log.
->>>>>>>>>>>>
->>>>>>>>>>>> Print hash value as a hex value, both AF_XDP userspace and bpf_prog,
->>>>>>>>>>>> as this makes it easier to spot poor quality hashes.
->>>>>>>>>>>>
->>>>>>>>>>>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
->>>>>>>>>>>> ---
->>>>>>>>>>>>     .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    9 ++++++---
->>>>>>>>>>>>     tools/testing/selftests/bpf/xdp_hw_metadata.c      |    5 ++++-
->>>>>>>>>>>>     2 files changed, 10 insertions(+), 4 deletions(-)
->>>>>>>>>>>>
->>>>>>>>>>>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
->>>>>>>>>>>> index 40c17adbf483..ce07010e4d48 100644
->>>>>>>>>>>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
->>>>>>>>>>>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
->>>>>>>>>>>> @@ -77,10 +77,13 @@ int rx(struct xdp_md *ctx)
->>>>>>>>>>>>                    meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
->>>>>>>>>>>>            }
->>>>>>>>>>>>
->>>>>>>>>>>> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
->>>>>>>>>>>> -               bpf_printk("populated rx_hash with %u", meta->rx_hash);
->>>>>>>>>>>> -       else
->>>>>>>>>>>> +       ret = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
->>>>>>>>>>>> +       if (ret >= 0) {
->>>>>>>>>>>> +               bpf_printk("populated rx_hash with 0x%08X", meta->rx_hash);
->>>>>>>>>>>> +       } else {
->>>>>>>>>>>> +               bpf_printk("rx_hash not-avail errno:%d", ret);
->>>>>>>>>>>>                    meta->rx_hash = 0; /* Used by AF_XDP as not avail signal */
->>>>>>>>>>>> +       }
->>>>>>>>>>>>
->>>>>>>>>>>>            return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
->>>>>>>>>>>>     }
->>>>>>>>>>>> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
->>>>>>>>>>>> index 400bfe19abfe..f3ec07ccdc95 100644
->>>>>>>>>>>> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
->>>>>>>>>>>> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
->>>>>>>>>>>> @@ -3,6 +3,9 @@
->>>>>>>>>>>>     /* Reference program for verifying XDP metadata on real HW. Functional test
->>>>>>>>>>>>      * only, doesn't test the performance.
->>>>>>>>>>>>      *
->>>>>>>>>>>> + * BPF-prog bpf_printk info outout can be access via
->>>>>>>>>>>> + * /sys/kernel/debug/tracing/trace_pipe
->>>>>>>>>>>
->>>>>>>>>>> s/outout/output/
->>>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> Fixed in V3
->>>>>>>>>>
->>>>>>>>>>> But let's maybe drop it? If you want to make it more usable, let's
->>>>>>>>>>> have a separate patch to enable tracing and periodically dump it to
->>>>>>>>>>> the console instead (as previously discussed).
->>>>>>>>>>
->>>>>>>>>> Cat'ing /sys/kernel/debug/tracing/trace_pipe work for me regardless of
->>>>>>>>>> setting in
->>>>>>>>>> /sys/kernel/debug/tracing/events/bpf_trace/bpf_trace_printk/enable
->>>>>>>>>>
->>>>>>>>>> We likely need a followup patch that adds a BPF config switch that can
->>>>>>>>>> disable bpf_printk calls, because this adds overhead and thus affects
->>>>>>>>>> the timestamps.
->>>>>>>>>
->>>>>>>>> No. This is by design.
->>>>>>>>> Do not use bpf_printk* in production.
->>>
->>> I fully agree do not use bpf_printk in *production*.
->>>
->>>>>>>>
->>>>>>>> But that's not for the production? xdp_hw_metadata is a small tool to
->>>>>>>> verify that the metadata being dumped is correct (during the
->>>>>>>> development).
->>>>>>>> We have a proper (less verbose) selftest in
->>>>>>>> {progs,prog_tests}/xdp_metadata.c (over veth).
->>>>>>>> This xdp_hw_metadata was supposed to be used for running it against
->>>>>>>> the real hardware, so having as much debugging at hand as possible
->>>>>>>> seems helpful? (at least it was helpful to me when playing with mlx4)
->>>
->>> My experience when developing these kfuncs for igc (real hardware), this
->>> "tool" xdp_hw_metadata was super helpful, because it was very verbose
->>> (and I was juggling reading chip registers BE/LE and see patch1 a buggy
->>> implementation for RX-hash).
->>>
->>> As I wrote in cover-letter, I recommend other driver developers to do
->>> the same, because it really help speed up the development. In theory
->>> xdp_hw_metadata doesn't belong in selftests directory and IMHO it should
->>> have been placed in samples/bpf/, but given the relationship with real
->>> selftest {progs,prog_tests}/xdp_metadata.c I think it makes sense to
->>> keep here.
->>>
->>>
->>>>>>>
->>>>>>> The only use of bpf_printk is for debugging of bpf progs themselves.
->>>>>>> It should not be used in any tool.
->>>>>>
->>>>>> Hmm, good point. I guess it also means we won't have to mess with
->>>>>> enabling/dumping ftrace (and don't need this comment about cat'ing the
->>>>>> file).
->>>>>> Jesper, maybe we can instead pass the status of those
->>>>>> bpf_xdp_metadata_xxx kfuncs via 'struct xdp_meta'? And dump this info
->>>>>> from the userspace if needed.
->>>>>
->>>>> There are so many other ways for bpf prog to communicate with user space.
->>>>> Use ringbuf, perf_event buffer, global vars, maps, etc.
->>>>> trace_pipe is debug only because it's global and will conflict with
->>>>> all other debug sessions.
->>>
->>> I want to highlight above paragraph: It is very true for production
->>> code. (Anyone Googling this pay attention to above paragraph).
->>>
->>>>
->>>> 👍 makes sense, ty! hopefully we won't have to add a separate channel
->>>> for those and can (ab)use the metadata area.
->>>>
->>>
->>> Proposed solution: How about default disabling the bpf_printk's via a
->>> macro define, and then driver developer can manually reenable them
->>> easily via a single define, to enable a debugging mode.
->>>
->>> I was only watching /sys/kernel/debug/tracing/trace_pipe when I was
->>> debugging a driver issue.  Thus, an extra step of modifying a single
->>> define in BPF seems easier, than instrumenting my driver with printk.
->>
->> It's certainly fine to have commented out bpf_printk in selftests
->> and sample code.
->> But the patch does:
->> +       if (ret >= 0) {
->> +               bpf_printk("populated rx_hash with 0x%08X", meta->rx_hash);
->> +       } else {
->> +               bpf_printk("rx_hash not-avail errno:%d", ret);
->>                  meta->rx_hash = 0; /* Used by AF_XDP as not avail signal */
->> +       }
->>
->> It feels that printk is the only thing that provides the signal to the user.
->> Doing s/ret >= 0/true/ won't make any difference to selftest and
->> to the consumer and that's my main concern with such selftest/samples.
+On Fri, Mar 24, 2023 at 10:02:22AM +0000, Nuno Gon�alves wrote:
+> The remap of fill and completion rings was frowned upon as they
+> control the usage of UMEM which does not support concurrent use.
+> At the same time this would disallow the remap of these rings
+> into another process.
 > 
-> I agree, having this signal delivered to the user (without the ifdefs)
-> seems like a better way to go.
-
-I agree that we have a signal that we are not delivering to the user.
-
-Just so we are on the same page, let me explain how above code is
-problematic. As the rx_hash value zero have two meanings:
-
-  (1) Negative 'ret' set rx_hash=0 as err signal to AF_XDP "user"
-  (2) Hardware set rx_hash=0, when hash-type == IGC_RSS_TYPE_NO_HASH
-
-Case (2) happens for all L2 packets e.g. ARP packets.  See in patch-1
-where I map IGC_RSS_TYPE_NO_HASH to netstack type PKT_HASH_TYPE_L2.
-I did consider return errno/negative number for IGC_RSS_TYPE_NO_HASH,
-but I wanted to keep kfunc code as simple as possible (both for speed
-and if we need to unroll as byte-code later). As i225 hardware still
-writes zero into hash word I choose to keep code simple.
-
-
-IMHO this symptom is related to an API problem of the kfunc, that
-doesn't provide the hash-type.
-
-> Seems trivial to do something like the following below? (untested,
-> doesn't compile, gmail-copy-pasted so don't try to apply it)
+> A possible use case is that the user wants to transfer the socket/
+> UMEM ownership to another process (via SYS_pidfd_getfd) and so
+> would need to also remap these rings.
 > 
-
-If the kfunc provided the hash-type, which will be a positive number.
-Then I would add a signed integer to meta, which can store the hash-type
-or the negative errno number.
-
-
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> index 4c55b4d79d3d..061c410f68ea 100644
-> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> @@ -12,6 +12,9 @@ struct {
->    __type(value, __u32);
->   } xsk SEC(".maps");
+> This will have no impact on current usages and just relaxes the
+> remap limitation.
 > 
-> +int received;
-> +int dropped;
-> +
->   extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
->    __u64 *timestamp) __ksym;
->   extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
-> @@ -52,11 +55,11 @@ int rx(struct xdp_md *ctx)
->    if (udp->dest != bpf_htons(9091))
->    return XDP_PASS;
+> Signed-off-by: Nuno Gon�alves <nunog@fr24.com>
+> ---
+> V3 -> V4: Remove undesired format changes
+> V2 -> V3: Call READ_ONCE for each variable and not for the ternary operator
+> V1 -> V2: Format and comment changes
 
-It we wanted to make this program user "friendly", we should also count
-packets that doesn't get redirected to AF_XDP "user" and instead skipped.
+thanks, it now looks good to me, i applied this locally and it builds, so:
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-> - bpf_printk("forwarding UDP:9091 to AF_XDP");
-> + __sync_fetch_and_add(&received, 1);
+but i am giving a last call to Magnus since he was acking this before.
+
 > 
->    ret = bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
->    if (ret != 0) {
-> - bpf_printk("bpf_xdp_adjust_meta returned %d", ret);
-> + __sync_fetch_and_add(&dropped, 1);
->    return XDP_PASS;
-
-Is it a "dropped" or a "skipped" packet (return XDP_PASS)?
-
->    }
-[...]
-
---Jesper
-
+>  net/xdp/xsk.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 2ac58b282b5eb..cc1e7f15fa731 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -1301,9 +1301,10 @@ static int xsk_mmap(struct file *file, struct socket *sock,
+>  	loff_t offset = (loff_t)vma->vm_pgoff << PAGE_SHIFT;
+>  	unsigned long size = vma->vm_end - vma->vm_start;
+>  	struct xdp_sock *xs = xdp_sk(sock->sk);
+> +	int state = READ_ONCE(xs->state);
+>  	struct xsk_queue *q = NULL;
+> 
+> -	if (READ_ONCE(xs->state) != XSK_READY)
+> +	if (state != XSK_READY && state != XSK_BOUND)
+>  		return -EBUSY;
+> 
+>  	if (offset == XDP_PGOFF_RX_RING) {
+> @@ -1314,9 +1315,11 @@ static int xsk_mmap(struct file *file, struct socket *sock,
+>  		/* Matches the smp_wmb() in XDP_UMEM_REG */
+>  		smp_rmb();
+>  		if (offset == XDP_UMEM_PGOFF_FILL_RING)
+> -			q = READ_ONCE(xs->fq_tmp);
+> +			q = state == XSK_READY ? READ_ONCE(xs->fq_tmp) :
+> +						 READ_ONCE(xs->pool->fq);
+>  		else if (offset == XDP_UMEM_PGOFF_COMPLETION_RING)
+> -			q = READ_ONCE(xs->cq_tmp);
+> +			q = state == XSK_READY ? READ_ONCE(xs->cq_tmp) :
+> +						 READ_ONCE(xs->pool->cq);
+>  	}
+> 
+>  	if (!q)
+> --
+> 2.40.0
+> 
