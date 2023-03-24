@@ -2,83 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4FD6C862F
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 20:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2636C8684
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 21:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbjCXTu1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 15:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        id S231823AbjCXUIB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 16:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbjCXTuZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 15:50:25 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3B120042
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 12:50:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 13013B82437
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:50:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C3F70C433D2;
-        Fri, 24 Mar 2023 19:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679687418;
-        bh=0Hy5u4cvLpSa+lGNlckbUEGqgfTOIjOrfU7EawF02U4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FE5gvmFq0alvglJ1G5ByeNSJZB+U59XwvYIdm7mRXHohuHc5S2EwdFa8LLfbFvq43
-         4os2C1XIw5T6zxEbe7EfE4EJBdjb4AzZLE4m4wu7OD4yd8o2eBA8pM3zYnGsGRRAsd
-         YoS+Pjkr1Voo1mlqFtTgwpEIxnKqt5upH2VCn/koe7OyWzlXA0H9yaN2gA//6EoRNp
-         Xjd06ZAjjOGlSqltne4aSswnY2OKpn8wFLUrd+wPaZsJog+PYR4nGi2G5zRNhsUmFU
-         Ehd+hGW3+rMVqd7GfULF3DeTYYhmVAaHvBcbcBkEwuh6ylv2xScOW0ftGOCGWQzR+T
-         /hI7U70ft5dng==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9BE02E2A039;
-        Fri, 24 Mar 2023 19:50:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229864AbjCXUIA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 16:08:00 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F21B445;
+        Fri, 24 Mar 2023 13:07:59 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id x3so12203306edb.10;
+        Fri, 24 Mar 2023 13:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679688478;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vwDdbXQ+Kq3hsMLWwf0D7a7P6qWxTGqxL0bP6Pa+IhM=;
+        b=J+UaawPiJmMi7uhnTrF9yyvXI4oPYzXk+B7f7zlP7Z/XjkkNGDNM7O/BIVrKXqnMLB
+         oMHpezXAsxorxYJBpIePgj72FfEEGK5dEJTmgoGI0zwRl9lMxPaglrNH/GBjhNkA/d09
+         wY6eZRGiq5A8Ihmhqssqo4xt7BMiEu24az3eZ1/JmgJMT48nvdzMpVSQUUZ8mV4U1Imh
+         JMwbHhESbUAYPZ/rL9mHbE+Fskv/X0hBE4OKpYjaUr+v7QoYO39GvuY5y/KAGlvBmPp+
+         G4yi4YCiu0eAw9x3A4l9tcCF0ZgLzxumrQ9YlRyTe23cUOpJoZy+D6daNjaNyejPTFp5
+         KiAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679688478;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vwDdbXQ+Kq3hsMLWwf0D7a7P6qWxTGqxL0bP6Pa+IhM=;
+        b=zHINZTiuUc6yCf0J/bmXwlTkH1dNMFMWZRdhIWz2HmIHlOkulqJCNTiMR0wpUUn+db
+         UGM0Bmlkgpix6N6RCIcJgL69HMhnenMrV2w8Y9pTuhGH8VY2YPUWG0mKNUP9pCCSEkDt
+         ByOrJL0QjzlYnx4ybc+dhm+j/KftfszxCPuiEEGrH/oKajgrcRUaGW4cb3a1Sbl9inO8
+         Y8DA5Ay0ldVtOpCrnrq4ibIli0okiww7dCx+3LnCRGGddcB17ZbBJhei/aYGvlmCgfV+
+         /oXpcmfOuFdt/4BzMOivhOUhiIiuyei+4XxkDDrMr4Df+0kdtMosTmyw+dezULuKr9uy
+         HA9A==
+X-Gm-Message-State: AAQBX9cD60nqBr+c2AKtQk8r36k+8pDbvyY5+lqUiACcEE6l5bCJeOSw
+        UWJVeWbDcBjkFbM8Kvd76KTAeBlLw9OSO+l/CPg=
+X-Google-Smtp-Source: AKy350bw1yO8Awn13tAOWWEnh9YWbI9QxUzylFg2TH7Rj6K2NfRLMeoAbyrJYGZOr2oNNRiQeSpw8NqAuS97k7kVibk=
+X-Received: by 2002:a17:906:ee89:b0:92e:a234:110a with SMTP id
+ wt9-20020a170906ee8900b0092ea234110amr2060398ejb.3.1679688477723; Fri, 24 Mar
+ 2023 13:07:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Check IS_ERR for the bpf_map_get() return value
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167968741863.13374.17216973053184162920.git-patchwork-notify@kernel.org>
-Date:   Fri, 24 Mar 2023 19:50:18 +0000
-References: <20230324184241.1387437-1-martin.lau@linux.dev>
-In-Reply-To: <20230324184241.1387437-1-martin.lau@linux.dev>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@meta.com,
-        syzbot+71ccc0fe37abb458406b@syzkaller.appspotmail.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <f9303bdc-b1a7-be5e-56c6-dfa8232b8b55@web.de> <9e0a7e6c-484d-92e0-ddf9-6e541403327e@web.de>
+In-Reply-To: <9e0a7e6c-484d-92e0-ddf9-6e541403327e@web.de>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 24 Mar 2023 13:07:46 -0700
+Message-ID: <CAADnVQKEivv6t+v9evOWptt=i4ddte4OmV=o-BNWPm-ZQ9YfdQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Improve exception handling in rbtree_add_and_remove()
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     kernel-janitors@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        David Vernet <void@manifault.com>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Yonghong Song <yhs@fb.com>, cocci@inria.fr,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Mar 24, 2023 at 7:13=E2=80=AFAM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> Date: Fri, 24 Mar 2023 14:54:18 +0100
+>
+> The label =E2=80=9Cerr_out=E2=80=9D was used to jump to another pointer c=
+heck despite of
+> the detail in the implementation of the function =E2=80=9Crbtree_add_and_=
+remove=E2=80=9D
+> that it was determined already that a corresponding variable contained
+> a null pointer.
+>
+> 1. Thus return directly after the first call of the function
+>    =E2=80=9Cbpf_obj_new=E2=80=9D failed.
+>
+> 2. Delete two questionable checks.
+>
+> 3. Omit an extra initialisation (for the variable =E2=80=9Cm=E2=80=9D)
+>    which became unnecessary with this refactoring.
+>
+>
+> This issue was detected by using the Coccinelle software.
+>
+> Fixes: 215249f6adc0359e3546829e7ee622b5e309b0ad ("selftests/bpf: Add rbtr=
+ee selftests")
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Fri, 24 Mar 2023 11:42:41 -0700 you wrote:
-> From: Martin KaFai Lau <martin.lau@kernel.org>
-> 
-> This patch fixes a mistake in checking NULL instead of
-> checking IS_ERR for the bpf_map_get() return value.
-> 
-> It also fixes the return value in link_update_map() from -EINVAL
-> to PTR_ERR(*_map).
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] bpf: Check IS_ERR for the bpf_map_get() return value
-    https://git.kernel.org/bpf/bpf-next/c/55fbae05476d
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Nack.
+Please stop sending such "cleanup" patches.
