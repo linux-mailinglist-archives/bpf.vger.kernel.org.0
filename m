@@ -2,253 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E49986C888C
-	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 23:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BD86C8895
+	for <lists+bpf@lfdr.de>; Fri, 24 Mar 2023 23:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjCXWpw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 24 Mar 2023 18:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        id S231786AbjCXWuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 18:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbjCXWpv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 18:45:51 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39045128
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 15:45:50 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32OJFEsC029274
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 15:33:30 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3phhut9005-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 15:33:30 -0700
-Received: from twshared58712.02.prn6.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 24 Mar 2023 15:33:29 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 8DDE42BC80532; Fri, 24 Mar 2023 15:33:21 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 3/3] veristat: guess and substitue underlying program type for freplace (EXT) progs
-Date:   Fri, 24 Mar 2023 15:33:13 -0700
-Message-ID: <20230324223314.3294345-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230324223314.3294345-1-andrii@kernel.org>
-References: <20230324223314.3294345-1-andrii@kernel.org>
+        with ESMTP id S231766AbjCXWut (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 18:50:49 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C786EB67
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 15:50:48 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id b20so13620430edd.1
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 15:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1679698247;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k4C4+ig9qii8cFMiMH7UB83VKoFh5dhcH5qAN4vMsyQ=;
+        b=PNZilH1Gjf6oog3t5h9HCkdzcH1etVK5NHRvqEGz0tzMA6UkvV8oibBMlnELMdCsTx
+         ESv3g4RuIOXbzQrTC6JLpovuuTr2leIRJnt5pu6Ur8taswzMfoVb3b76ogYPK9rIUKoz
+         ZroJcsC87UZfJJ2+P4nODPSm6IGXHRapFkl2XStb5f6xPFrqB4NCxRgBRY328FFsfaDb
+         t6M4EYsSyH+txGLv4+tb4mRYPL29/PWW8y0ndgEQEPnNflpkS9g0D0g6ILZ3+M7P/deo
+         ZMVQpgzWN70olFlt/oeGeYGAsjRYrdlraZNnRwlFQ+LQ65cNhoGA3o8yS9sSslR5pm/L
+         5tjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679698247;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k4C4+ig9qii8cFMiMH7UB83VKoFh5dhcH5qAN4vMsyQ=;
+        b=uFk7PF1uwjJpQNS4Aw4bMNJ+PHY/WnJAPz5z5RcUwwFGPvfV091BJiSZMAK0MBLYyX
+         87kCAEEoXhL++8+SOOsnIoRiBM/8ORnly5ZS+/1CLhrOUszI96lwKf4ddwlY0h9BmUBI
+         nQp0QfVyUU4A/WoEFDP2O/tZUODAoF247tXBeHKFJCuGfEFtoezQZGpD7p+3YlPywyg6
+         sPNYydAKCJelMyx+dj065pse6CkjjpEGjMEx4PVUe+terNSUx0/UQkRz6S63XE3FCQCX
+         pUXw4ZzQFA9GMcH8BxILI6Pg9bEczE6HzXlQKePm1c1fRt+YTWB3OIQtmOIU+fPXsD2Q
+         m1Ig==
+X-Gm-Message-State: AAQBX9fNHxyF1l0VNwj0Qdsmlwg3+ZBmL/1V7oKY5F7LDsTLJnKiUrap
+        wtyIoMQ0v3V04fSHjO6+mxkWMbB88TD3dw0iKiuhpg==
+X-Google-Smtp-Source: AKy350as1fjLqRzEXcj4LkTEmL/GZJV50WUfZRkDVfUJxjhMe3gHdgiiXSgPCONXQe0PAnrHWJ2DjRG+gGSUM+zjV0U=
+X-Received: by 2002:a50:a6d7:0:b0:4fa:71a2:982b with SMTP id
+ f23-20020a50a6d7000000b004fa71a2982bmr2076902edc.0.1679698246555; Fri, 24 Mar
+ 2023 15:50:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 3BsWVnql4vOxDHVx7BqOwWIooxUonC4m
-X-Proofpoint-GUID: 3BsWVnql4vOxDHVx7BqOwWIooxUonC4m
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-24_11,2023-03-24_01,2023-02-09_01
-X-Spam-Status: No, score=-0.5 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230323040037.2389095-1-yosryahmed@google.com>
+ <20230323040037.2389095-2-yosryahmed@google.com> <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
+ <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com> <53582a07-81c6-35eb-10bf-7920b27483be@redhat.com>
+In-Reply-To: <53582a07-81c6-35eb-10bf-7920b27483be@redhat.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 24 Mar 2023 15:50:10 -0700
+Message-ID: <CAJD7tkZA-LxAVA5SWRzMeQ17T26qGBApPqErqT_SpCbrtCJQkA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
+ percpu lock
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SEC("freplace") (i.e., BPF_PROG_TYPE_EXT) programs are not loadable as
-is through veristat, as kernel expects actual program's FD during
-BPF_PROG_LOAD time, which veristat has no way of knowing.
+On Fri, Mar 24, 2023 at 7:12=E2=80=AFAM Waiman Long <longman@redhat.com> wr=
+ote:
+>
+> On 3/24/23 03:22, Yosry Ahmed wrote:
+> > On Thu, Mar 23, 2023 at 6:39=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote=
+:
+> >> Hello,
+> >>
+> >> On Thu, Mar 23, 2023 at 04:00:31AM +0000, Yosry Ahmed wrote:
+> >>> Currently, when sleeping is not allowed during rstat flushing, we hol=
+d
+> >>> the global rstat lock with interrupts disabled throughout the entire
+> >>> flush operation. Flushing in an O(# cgroups * # cpus) operation, and
+> >>> having interrupts disabled throughout is dangerous.
+> >>>
+> >>> For some contexts, we may not want to sleep, but can be interrupted
+> >>> (e.g. while holding a spinlock or RCU read lock). As such, do not
+> >>> disable interrupts throughout rstat flushing, only when holding the
+> >>> percpu lock. This breaks down the O(# cgroups * # cpus) duration with
+> >>> interrupts disabled to a series of O(# cgroups) durations.
+> >>>
+> >>> Furthermore, if a cpu spinning waiting for the global rstat lock, it
+> >>> doesn't need to spin with interrupts disabled anymore.
+> >> I'm generally not a fan of big spin locks w/o irq protection. They too=
+ often
+> >> become a source of unpredictable latency spikes. As you said, the glob=
+al
+> >> rstat lock can be held for quite a while. Removing _irq makes irq late=
+ncy
+> >> better on the CPU but on the other hand it makes a lot more likely tha=
+t the
+> >> lock is gonna be held even longer, possibly significantly so depending=
+ on
+> >> the configuration and workload which will in turn stall other CPUs wai=
+ting
+> >> for the lock. Sure, irqs are being serviced quicker but if the cost is=
+ more
+> >> and longer !irq context multi-cpu stalls, what's the point?
+> >>
+> >> I don't think there's anything which requires the global lock to be he=
+ld
+> >> throughout the entire flushing sequence and irq needs to be disabled w=
+hen
+> >> grabbing the percpu lock anyway, so why not just release the global lo=
+ck on
+> >> CPU boundaries instead? We don't really lose anything significant that=
+ way.
+> >> The durations of irq disabled sections are still about the same as in =
+the
+> >> currently proposed solution at O(# cgroups) and we avoid the risk of h=
+olding
+> >> the global lock for too long unexpectedly from getting hit repeatedly =
+by
+> >> irqs while holding the global lock.
+> > Thanks for taking a look!
+> >
+> > I think a problem with this approach is that we risk having to contend
+> > for the global lock at every CPU boundary in atomic contexts. Right
+> Isn't it the plan to just do a trylock in atomic contexts so that it
+> won't get stuck spinning for the lock for an indeterminate amount of time=
+?
 
-Unfortunately, freplace programs are a pretty important class of
-programs, especially when dealing with XDP chaining solutions, which
-rely on EXT programs.
+Not exactly. On the memory controller side, we currently only allow
+one flusher at a time and force all flushers to flush the full
+hierarchy, such that concurrent flushers can skip. This is done for
+both atomic and non-atomic contexts.
 
-So let's do our best and teach veristat to try to guess the original
-program type, based on program's context argument type. And if guessing
-process succeeds, we manually override freplace/EXT with guessed program
-type using bpf_program__set_type() setter to increase chances of proper
-BPF verification.
+For flushers outside the memory controller, they can still contend the
+lock among themselves or with flushers in the memory controller. In
+this case, instead of contending the lock once, they contend it at
+each CPU boundary.
 
-We rely on BTF and maintain a simple lookup table. This process is
-obviously not 100% bulletproof, as valid program might not use context
-and thus wouldn't have to specify correct type. Also, __sk_buff is very
-ambiguous and is the context type across many different program types.
-We pick BPF_PROG_TYPE_CGROUP_SKB for now, which seems to work fine in
-practice so far. Similarly, some program types require specifying attach
-type, and so we pick one out of possible few variants.
+> > now we contend for the global lock once, and once we have it we go
+> > through all CPUs to flush, only having to contend with updates taking
+> > the percpu locks at this point. If we unconditionally release &
+> > reacquire the global lock at every CPU boundary then we may contend
+> > for it much more frequently with concurrent flushers.
+>
+> Note that with the use of qspinlock in all the major arches, the impact
+> of thundering herds of lockers are much less serious than before. There
+> are certainly some overhead in doing multiple lock acquires and
+> releases, but that shouldn't been too excessive.
 
-Best effort at its best. But this makes veristat even more widely
-applicable.
+I ran some tests to measure this. Since I am using a cgroup v1
+hierarchy, I cannot reproduce contention between memory controller
+flushers and non-memory controller flushers, so I removed the "one
+memory flusher only" restriction to have concurrent memory flushers
+compete for the global rstat lock to measure the impact:
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/veristat.c | 117 ++++++++++++++++++++++++-
- 1 file changed, 113 insertions(+), 4 deletions(-)
+Before (only one flusher allowed to compete for the global rstat lock):
+            ---cgroup_rstat_flush
+               |
+                --1.27%--cgroup_rstat_flush_locked
+                          |
+                           --0.94%--mem_cgroup_css_rstat_flush
 
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index 263df32fbda8..cd9018ef5759 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -15,6 +15,7 @@
- #include <sys/sysinfo.h>
- #include <sys/stat.h>
- #include <bpf/libbpf.h>
-+#include <bpf/btf.h>
- #include <libelf.h>
- #include <gelf.h>
- #include <float.h>
-@@ -778,7 +779,59 @@ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *
- 	return 0;
- }
- 
--static void fixup_obj(struct bpf_object *obj)
-+static int guess_prog_type_by_ctx_name(const char *ctx_name,
-+				       enum bpf_prog_type *prog_type,
-+				       enum bpf_attach_type *attach_type)
-+{
-+	/* We need to guess program type based on its declared context type.
-+	 * This guess can't be perfect as many different program types might
-+	 * share the same context type.  So we can only hope to reasonably
-+	 * well guess this and get lucky.
-+	 *
-+	 * Just in case, we support both UAPI-side type names and
-+	 * kernel-internal names.
-+	 */
-+	static struct {
-+		const char *uapi_name;
-+		const char *kern_name;
-+		enum bpf_prog_type prog_type;
-+		enum bpf_attach_type attach_type;
-+	} ctx_map[] = {
-+		/* __sk_buff is most ambiguous, for now we assume cgroup_skb */
-+		{ "__sk_buff", "sk_buff", BPF_PROG_TYPE_CGROUP_SKB, BPF_CGROUP_INET_INGRESS },
-+		{ "bpf_sock", "sock", BPF_PROG_TYPE_CGROUP_SOCK, BPF_CGROUP_INET4_POST_BIND },
-+		{ "bpf_sock_addr", "bpf_sock_addr_kern",  BPF_PROG_TYPE_CGROUP_SOCK_ADDR, BPF_CGROUP_INET4_BIND },
-+		{ "bpf_sock_ops", "bpf_sock_ops_kern", BPF_PROG_TYPE_SOCK_OPS, BPF_CGROUP_SOCK_OPS },
-+		{ "sk_msg_md", "sk_msg", BPF_PROG_TYPE_SK_MSG, BPF_SK_MSG_VERDICT },
-+		{ "bpf_cgroup_dev_ctx", "bpf_cgroup_dev_ctx", BPF_PROG_TYPE_CGROUP_DEVICE, BPF_CGROUP_DEVICE },
-+		{ "bpf_sysctl", "bpf_sysctl_kern", BPF_PROG_TYPE_CGROUP_SYSCTL, BPF_CGROUP_SYSCTL },
-+		{ "bpf_sockopt", "bpf_sockopt_kern", BPF_PROG_TYPE_CGROUP_SOCKOPT, BPF_CGROUP_SETSOCKOPT },
-+		{ "sk_reuseport_md", "sk_reuseport_kern", BPF_PROG_TYPE_SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT_OR_MIGRATE },
-+		{ "bpf_sk_lookup", "bpf_sk_lookup_kern", BPF_PROG_TYPE_SK_LOOKUP, BPF_SK_LOOKUP },
-+		{ "xdp_md", "xdp_buff", BPF_PROG_TYPE_XDP, BPF_XDP },
-+		/* tracing types with no expected attach type */
-+		{ "bpf_user_pt_regs_t", "pt_regs", BPF_PROG_TYPE_KPROBE },
-+		{ "bpf_perf_event_data", "bpf_perf_event_data_kern", BPF_PROG_TYPE_PERF_EVENT },
-+		{ "bpf_raw_tracepoint_args", NULL, BPF_PROG_TYPE_RAW_TRACEPOINT },
-+	};
-+	int i;
-+
-+	if (!ctx_name)
-+		return -EINVAL;
-+
-+	for (i = 0; i < ARRAY_SIZE(ctx_map); i++) {
-+		if (strcmp(ctx_map[i].uapi_name, ctx_name) == 0 ||
-+		    (!ctx_map[i].kern_name || strcmp(ctx_map[i].kern_name, ctx_name) == 0)) {
-+			*prog_type = ctx_map[i].prog_type;
-+			*attach_type = ctx_map[i].attach_type;
-+			return 0;
-+		}
-+	}
-+
-+	return -ESRCH;
-+}
-+
-+static void fixup_obj(struct bpf_object *obj, struct bpf_program *prog, const char *filename)
- {
- 	struct bpf_map *map;
- 
-@@ -798,18 +851,74 @@ static void fixup_obj(struct bpf_object *obj)
- 				bpf_map__set_max_entries(map, 1);
- 		}
- 	}
-+
-+	/* SEC(freplace) programs can't be loaded with veristat as is,
-+	 * but we can try guessing their target program's expected type by
-+	 * looking at the type of program's first argument and substituting
-+	 * corresponding program type
-+	 */
-+	if (bpf_program__type(prog) == BPF_PROG_TYPE_EXT) {
-+		const struct btf *btf = bpf_object__btf(obj);
-+		const char *prog_name = bpf_program__name(prog);
-+		enum bpf_prog_type prog_type;
-+		enum bpf_attach_type attach_type;
-+		const struct btf_type *t;
-+		const char *ctx_name;
-+		int id;
-+
-+		if (!btf)
-+			goto skip_freplace_fixup;
-+
-+		id = btf__find_by_name_kind(btf, prog_name, BTF_KIND_FUNC);
-+		t = btf__type_by_id(btf, id);
-+		t = btf__type_by_id(btf, t->type);
-+		if (!btf_is_func_proto(t) || btf_vlen(t) != 1)
-+			goto skip_freplace_fixup;
-+
-+		/* context argument is a pointer to a struct/typedef */
-+		t = btf__type_by_id(btf, btf_params(t)[0].type);
-+		while (t && btf_is_mod(t))
-+			t = btf__type_by_id(btf, t->type);
-+		if (!t || !btf_is_ptr(t))
-+			goto skip_freplace_fixup;
-+		t = btf__type_by_id(btf, t->type);
-+		while (t && btf_is_mod(t))
-+			t = btf__type_by_id(btf, t->type);
-+		if (!t)
-+			goto skip_freplace_fixup;
-+
-+		ctx_name = btf__name_by_offset(btf, t->name_off);
-+
-+		if (guess_prog_type_by_ctx_name(ctx_name, &prog_type, &attach_type) == 0) {
-+			bpf_program__set_type(prog, prog_type);
-+			bpf_program__set_expected_attach_type(prog, attach_type);
-+
-+			if (!env.quiet) {
-+				printf("Using guessed program type '%s' for %s/%s...\n",
-+					libbpf_bpf_prog_type_str(prog_type),
-+					filename, prog_name);
-+			}
-+		} else {
-+			if (!env.quiet) {
-+				printf("Failed to guess program type for freplace program with context type name '%s' for %s/%s. Consider using canonical type names to help veristat...\n",
-+					ctx_name, filename, prog_name);
-+			}
-+		}
-+	}
-+skip_freplace_fixup:
- }
- 
- static int process_prog(const char *filename, struct bpf_object *obj, struct bpf_program *prog)
- {
- 	const char *prog_name = bpf_program__name(prog);
-+	const char *base_filename = basename(filename);
- 	size_t buf_sz = sizeof(verif_log_buf);
- 	char *buf = verif_log_buf;
- 	struct verif_stats *stats;
- 	int err = 0;
- 	void *tmp;
- 
--	if (!should_process_file_prog(basename(filename), bpf_program__name(prog))) {
-+	if (!should_process_file_prog(base_filename, bpf_program__name(prog))) {
- 		env.progs_skipped++;
- 		return 0;
- 	}
-@@ -835,12 +944,12 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
- 	verif_log_buf[0] = '\0';
- 
- 	/* increase chances of successful BPF object loading */
--	fixup_obj(obj);
-+	fixup_obj(obj, prog, base_filename);
- 
- 	err = bpf_object__load(obj);
- 	env.progs_processed++;
- 
--	stats->file_name = strdup(basename(filename));
-+	stats->file_name = strdup(base_filename);
- 	stats->prog_name = strdup(bpf_program__name(prog));
- 	stats->stats[VERDICT] = err == 0; /* 1 - success, 0 - failure */
- 	parse_verif_log(buf, buf_sz, stats);
--- 
-2.34.1
+After (concurrent flushers allowed to compete for the global rstat lock):
+            ---cgroup_rstat_flush
+               |
+               |--4.94%--_raw_spin_lock
+               |          |
+               |           --4.94%--queued_spin_lock_slowpath
+               |
+                --0.92%--cgroup_rstat_flush_locked
+                          |
+                           --0.56%--mem_cgroup_css_rstat_flush
 
+This was run with 20 processes trying to flush concurrently, so it may
+be excessive, but it seems like in this case lock contention makes a
+significant difference.
+
+Again, this is not a regression for non-atomic flushers, as they
+already compete for the lock at every CPU boundary, but for atomic
+flushers that don't give up the lock at all today, it would be a
+regression to start competing for the lock at every CPU boundary. This
+patch series aims to minimize the number of atomic flushers (brings
+them down to two, one of which is not common), so this may be fine.
+
+My main concern is that for some flushers that this series converts
+from atomic to non-atomic, we may notice a regression later and revert
+it (e.g. refault path), which is why I have them in separate patches.
+If we regress the atomic flushing path, it would be a larger surgery
+to restore the performance for these paths -- which is why I would
+rather keep the atomic path without excessive lock contention.
+
+Thoughts?
+
+>
+> I am all in for reducing lock hold time as much as possible as it will
+> improve the response time.
+>
+> Cheers,
+> Longman
+>
