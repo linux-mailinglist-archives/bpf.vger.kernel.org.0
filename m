@@ -2,264 +2,361 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E5D6C8A57
-	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 03:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1260B6C8A5B
+	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 03:55:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbjCYCyn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 22:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
+        id S229794AbjCYCzz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 22:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjCYCym (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 22:54:42 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4F215170;
-        Fri, 24 Mar 2023 19:54:40 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id i5so15103146eda.0;
-        Fri, 24 Mar 2023 19:54:40 -0700 (PDT)
+        with ESMTP id S229505AbjCYCzz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 22:55:55 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B231D15CBB
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:55:52 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id m6-20020a05600c3b0600b003ee6e324b19so2001207wms.1
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:55:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679712879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sRLA3AVBBHEbXMLoaXv9UfX4+UgIZrAq1UG9X24q8oA=;
-        b=UYqqbQxrYcFlwyWfoAsiljg848pmpCwLH0hEVNA96BfXUEEAOxU2eOOeNeK4626oeI
-         Y39dn/yp8caxqBtGxdPRJFKnOdGW+OzuxKmglhwUraMBrRCFwkTw6idY1MEhcvvBTSQd
-         3/O17kP84zwpOg+BRpmtkRCJOAmUZqKOMk1QlYh4LUGCwCKljFh/7EpDeUJfvLTb5lWG
-         5AM3kIHP0cZX/fHnw7epNnOtRiT22bb13M7azFm1qJWohtDdGQw+PdTNelTPGd37OGrF
-         fooNiMSl/HBfPzLi80EwGpxNINV0XiwaXSgj+Jk4uIFOQhW44T44yX018u+GoDkdQLga
-         NWMg==
+        d=gmail.com; s=20210112; t=1679712951;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=91xLV0ON/5lnkS3eAR2hwixWiggrIqRku3RaBzf2ZbM=;
+        b=qoRE/AZPAep/jTkxROZE5OIIac7jWilXiTE2+0Xhcezg7b7JIS4PUywAJ2wueBHbVu
+         jhaAQPEjdKR7BubQkq9hJ+1bJ8jdeeiOPGvAP9QsL65gIW3OaoOzZzPBML1USxtgd322
+         U4z38UaM18m5lNmpwnb+ulotHYm0ChQFtQU1USixJ/DwG/b++xwa95KojcUtlCpxCUAe
+         w2plbTm70H8eZ4cr2z3nGOsWCkU0cQ+MIZ/MphmTUNtoB0iDrKOuyrXqf36N+mGqPhFo
+         Sq52G3gHIW38qGMi0+mA5Ouda/OdrzfF1voFvCuUxlr5NiYNU2pWdmw9XKZkzVpq/LXt
+         0vOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679712879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sRLA3AVBBHEbXMLoaXv9UfX4+UgIZrAq1UG9X24q8oA=;
-        b=kmlxxQG24eoIC9Sq0VqzRXViaf/5K5L17fhwKVx7C5Ev5faTDEs47witWM4cMo1qJz
-         oAJZfKsHb0kR+8w9e0DCPvbqUZVtFatQwQXeZiiuyRQLE1JaPAlbZ9bPHwGxXy6npgvF
-         7L9SMm6mrgnTSugNVVP4a5OECxg2MJrQKfom+6Q6Pa+xH7IIGJjtIwa4YCJIdoFO4p7C
-         ZWMVGW+aqSulLaO2yyVemqqLBTaTxTVbp6EnhsPlWrtJGlHRSePBssTpaOY3I2JZwyMH
-         o0ITlB9D+m5yT/Hnsqmt99H9N8edQwhCjw2BQ44/Ite3DtfrYEin7F+dDHHeeU1yt71q
-         d3NA==
-X-Gm-Message-State: AAQBX9ecWZF2oIfkG7tcNxgBU+7XCkqX4U+Nc7uWdlbQXGO9lXl8gUFA
-        j9N1gSLaAy/R9jkhwrfescsYEjbhsOxWDezBPFQ=
-X-Google-Smtp-Source: AKy350YyKqLq37BwTMQL1st81LQynw0UYRKshOWcpI4mo10TRiJUhC3HDWyxCxV5Du1xaOZi/rg54yF2qdwnUCxTPq0=
-X-Received: by 2002:a17:907:da8:b0:877:747d:4a85 with SMTP id
- go40-20020a1709070da800b00877747d4a85mr2582166ejc.3.1679712878695; Fri, 24
- Mar 2023 19:54:38 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1679712951;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=91xLV0ON/5lnkS3eAR2hwixWiggrIqRku3RaBzf2ZbM=;
+        b=4jNHBEODtn5DlRWSxoL1PW+vQFTr2c3ncQf898gO5Dc1JwHZiZGGaVcCCYpEovyZwc
+         xrySNakNalQRkM+YdnUdHdy4tQBnKo3LHkzwF3sI8asG9IYuS3k0waECFZn8JzBDpPa0
+         TGwTjhnEHgdMZLrwPsJPufQBcsib3xDPy6DKjLqhYVIhjyEnxjKW971cWfweUQnbesf8
+         06BCjROdowYR9E8CM7Fwbs0WNlFo9AyqK7CcBDh3Qp9LxA9LKDtptbiVp8p2nkucNCsT
+         PjIHZxDW4Lnkzde+gqCG4ymsgLMZ1Q1CMgm890EulGMWU8NT9czuH7SeJkt3UTZSFeVu
+         +YVA==
+X-Gm-Message-State: AO0yUKW4a4UGgUtyK7ILGs5S/9MoJMFFimT98d9XQuT3sZD/tHrZBuju
+        TGSF9kn0Zm09s6wprppv7Ovgyuz0kdU=
+X-Google-Smtp-Source: AK7set/pGaI+sXTxvOjHr9tLIa4teTvX8DTP7aS1YtT0S/EAx7gkYbbkCDcKN/mZMVZuWO4ljaLkGw==
+X-Received: by 2002:a7b:c8c4:0:b0:3ed:ce6f:e86e with SMTP id f4-20020a7bc8c4000000b003edce6fe86emr3814046wml.23.1679712950686;
+        Fri, 24 Mar 2023 19:55:50 -0700 (PDT)
+Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id m1-20020a05600c4f4100b003ee1e07a14asm1428724wmq.45.2023.03.24.19.55.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Mar 2023 19:55:49 -0700 (PDT)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        kernel-team@fb.com, yhs@fb.com,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 00/43] First set of verifier/*.c migrated to inline assembly
+Date:   Sat, 25 Mar 2023 04:54:41 +0200
+Message-Id: <20230325025524.144043-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-References: <20230317145240.363908-1-roberto.sassu@huaweicloud.com>
- <CAADnVQLKONwKwkJMopRq-dzcV2ZejrjGzyuzW_5QX=0BY=Z4jw@mail.gmail.com>
- <b5c80613c696818ce89b92dac54e98878ec3ccd0.camel@huaweicloud.com>
- <CAADnVQJC0h7rtuntt0tqS5BbxWsmyWs3ZSbboZMmUKetMG2VhA@mail.gmail.com> <e0b828d994a8427ad48b7b514f75d751ea791b47.camel@huaweicloud.com>
-In-Reply-To: <e0b828d994a8427ad48b7b514f75d751ea791b47.camel@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 24 Mar 2023 19:54:27 -0700
-Message-ID: <CAADnVQJv0qWaxRD2_tmXeR9Wf=zdnvk8SwztOAorGaer0dFv3w@mail.gmail.com>
-Subject: Re: [PATCH 0/5] usermode_driver: Add management library and API
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Luis R. Rodriguez" <mcgrof@kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 6:37=E2=80=AFAM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> On Wed, 2023-03-22 at 15:27 -0700, Alexei Starovoitov wrote:
-> > On Wed, Mar 22, 2023 at 5:08=E2=80=AFAM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > On Tue, 2023-03-21 at 19:23 -0700, Alexei Starovoitov wrote:
-> > > > On Fri, Mar 17, 2023 at 7:53=E2=80=AFAM Roberto Sassu
-> > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > >
-> > > > > A User Mode Driver (UMD) is a specialization of a User Mode Helpe=
-r (UMH),
-> > > > > which runs a user space process from a binary blob, and creates a
-> > > > > bidirectional pipe, so that the kernel can make a request to that=
- process,
-> > > > > and the latter provides its response. It is currently used by bpf=
-ilter,
-> > > > > although it does not seem to do any useful work.
-> > > >
-> > > > FYI the new home for bpfilter is here:
-> > > > https://github.com/facebook/bpfilter
-> > >
-> > > Thanks. I just ensured that it worked, by doing:
-> > >
-> > > getsockopt(fd, SOL_IP, IPT_SO_GET_INFO, &info, &optlen);
-> > >
-> > > and accepting IPT_SO_GET_INFO in main.c.
-> > >
-> > > > > The problem is, if other users would like to implement a UMD simi=
-lar to
-> > > > > bpfilter, they would have to duplicate the code. Instead, make an=
- UMD
-> > > > > management library and API from the existing bpfilter and sockopt=
- code,
-> > > > > and move it to common kernel code.
-> > > > >
-> > > > > Also, define the software architecture and the main components of=
- the
-> > > > > library: the UMD Manager, running in the kernel, acting as the fr=
-ontend
-> > > > > interface to any user or kernel-originated request; the UMD Loade=
-r, also
-> > > > > running in the kernel, responsible to load the UMD Handler; the U=
-MD
-> > > > > Handler, running in user space, responsible to handle requests fr=
-om the UMD
-> > > > > Manager and to send to it the response.
-> > > >
-> > > > That doesn't look like a generic interface for UMD.
-> > >
-> > > What would make it more generic? I made the API message format-
-> > > independent. It has the capability of starting the user space process
-> > > as required, when there is a communication.
-> > >
-> > > > It was a quick hack to get bpfilter off the ground, but certainly
-> > > > not a generic one.
-> > >
-> > > True, it is not generic in the sense that it can accomodate any
-> > > possible use case. The main goal is to move something that was runnin=
-g
-> > > in the kernel to user space, with the same isolation guarantees as if
-> > > the code was executed in the kernel.
-> >
-> > They are not the same guarantees.
-> > UMD is exactly equivalent to root process running in user space.
-> > Meaning it can be killed, ptraced, priority inverted, etc
->
-> That is the starting point.
->
-> I suppose you can remove any privilege from the UMD process, it just
-> needs to read/write from/to a pipe (and in my case to use socket() with
-> AF_ALG to interact with the Crypto API).
->
-> Also, as I mentioned, you can enforce a very strict seccomp profile,
-> which forces the UMD process to use a very limited number of system
-> calls.
->
-> For the interactions of the rest of the system to the UMD process, you
-> could deny with an LSM all the operations that you mentioned. The rest
-> of the system would not be affected, only operations which have the UMD
-> process as target are denied.
->
-> > > > > I have two use cases, but for sake of brevity I will propose one.
-> > > > >
-> > > > > I would like to add support for PGP keys and signatures in the ke=
-rnel, so
-> > > > > that I can extend secure boot to applications, and allow/deny cod=
-e
-> > > > > execution based on the signed file digests included in RPM header=
-s.
-> > > > >
-> > > > > While I proposed a patch set a while ago (based on a previous wor=
-k of David
-> > > > > Howells), the main objection was that the PGP packet parser shoul=
-d not run
-> > > > > in the kernel.
-> > > > >
-> > > > > That makes a perfect example for using a UMD. If the PGP parser i=
-s moved to
-> > > > > user space (UMD Handler), and the kernel (UMD Manager) just insta=
-ntiates
-> > > > > the key and verifies the signature on already parsed data, this w=
-ould
-> > > > > address the concern.
-> > > >
-> > > > I don't think PGP parser belongs to UMD either.
-> > > > Please do it as a normal user space process and define a proper
-> > > > protocol for communication between kernel and user space.
-> > >
-> > > UMD is better in the sense that it establishes a bidirectional pipe
-> > > between the kernel and the user space process. With that, there is no
-> > > need to further restrict the access to a sysfs file, for example.
-> >
-> > If a simple pipe is good enough then you can have a kernel module
-> > that creates it and interacts with the user space process.
->
-> Few points I forgot to mention.
->
-> With the UMD approach, the binary blob is embedded in the kernel
-> module, which means that no external dependencies are needed for
-> integrity verification. The binary is statically compiled, and the
-> kernel write-protects it at run-time.
->
-> Second, since DIGLIM would check the integrity of any executable,
-> including init, the PGP signature verification needs to occur before.
-> So, the PGP UMD should be already started by then. That is not going to
-> be a problem, since the binary is copied to a private tmpfs mount.
->
-> > Out-of-tree bpftiler can do that, so can you.
->
-> As far as I can see, the out-of-tree bpfilter works exactly in the same
-> way as the in-tree counterpart. The binary blob is embedded in the
-> kernel module.
->
-> > PGP is not suitable for kernel git repo either as kernel code or as UMD=
-.
->
-> Well, the asymmetric key type can be extended with new parsers, so this
-> possibility was already taken into account. The objection that the PGP
-> parser should not run in kernel space is fair, but I think the UMD
-> approach fully addresses that.
->
-> Also, I agree with you that we should not just take any code and
-> pretend that it is part of the kernel. However, in this particular
-> case, the purpose of the PGP UMD would be simply to extract very few
-> information from the PGP packets. The asymmetric key type and the
-> signature verification infrastructure already take care of the rest.
->
-> PGP keys and signatures would act as an additional system trust anchor
-> for verifying critical system data (for DIGLIM, which executables are
-> allowed to run), similarly to how X.509 certificates are used for
-> verifying kernel modules. RPM headers, executables digests are taken
-> from, are signed with PGP, so there is no other way than adding this
-> functionality.
->
-> And unfortunately, especially for features impacting the entire system,
-> out-of-tree drivers are not really an option:
+This is a follow up for RFC [1]. It migrates a first batch of 38
+verifier/*.c tests to inline assembly and use of ./test_progs for
+actual execution. The migration is done by a python script (see [2]).
 
-I think you have to start out of tree and prove that the PGP thing
-is worth considering at all.
-Only then we can talk about merits of UMD and generalization
-of pipe interface if it's applicable.
+Each migrated verifier/xxx.c file is mapped to progs/verifier_xxx.c
+plus an entry in the prog_tests/verifier.c. One patch per each file.
 
-DIGLIM and everything else you mentioned above doesn't add weight
-to the decision. PGP work should be acceptable on its own.
-Out-of-tree is a method to prove that it works and later argue
-for inclusion as in-tree either as kernel module or UMD.
-Generalization of current bpfilter is out of scope here.
+A few patches at the beginning of the patch-set extend test_loader
+with necessary functionality, mainly:
+- support for tests execution in unprivileged mode;
+- support for test runs for test programs.
+
+Migrated tests could be selected for execution using the following filter:
+
+  ./test_progs -a verifier_*
+  
+An example of the migrated test:
+
+  SEC("xdp")
+  __description("XDP pkt read, pkt_data' > pkt_end, corner case, good access")
+  __success __retval(0) __flag(BPF_F_ANY_ALIGNMENT)
+  __naked void end_corner_case_good_access_1(void)
+  {
+          asm volatile ("                                 \
+          r2 = *(u32*)(r1 + %[xdp_md_data]);              \
+          r3 = *(u32*)(r1 + %[xdp_md_data_end]);          \
+          r1 = r2;                                        \
+          r1 += 8;                                        \
+          if r1 > r3 goto l0_%=;                          \
+          r0 = *(u64*)(r1 - 8);                           \
+  l0_%=:  r0 = 0;                                         \
+          exit;                                           \
+  "       :
+          : __imm_const(xdp_md_data, offsetof(struct xdp_md, data)),
+            __imm_const(xdp_md_data_end, offsetof(struct xdp_md, data_end))
+          : __clobber_all);
+  }
+
+Changes compared to RFC:
+- test_loader.c is extended to support test program runs;
+- capabilities handling now matches behavior of test_verifier;
+- BPF_ST_MEM instructions are automatically replaced by BPF_STX_MEM
+  instructions to overcome current clang limitations;
+- tests styling updates according to RFC feedback;
+- 38 migrated files are included instead of 1.
+
+I used the following means for testing:
+- migration tool itself has a set of self-tests;
+- migrated tests are passing;
+- manually compared each old/new file side-by-side.
+
+While doing side-by-side comparison I've noted a few defects in the
+original tests:
+- and.c:
+  - One of the jump targets is off by one;
+  - BPF_ST_MEM wrong OFF/IMM ordering;
+- array_access.c:
+  - BPF_ST_MEM wrong OFF/IMM ordering;
+- value_or_null.c:
+  - BPF_ST_MEM wrong OFF/IMM ordering.
+
+These defects would be addressed separately.
+
+[1] RFC
+    https://lore.kernel.org/bpf/20230123145148.2791939-1-eddyz87@gmail.com/
+[2] Migration tool
+    https://github.com/eddyz87/verifier-tests-migrator
+
+Eduard Zingerman (43):
+  selftests/bpf: Report program name on parse_test_spec error
+  selftests/bpf: __imm_insn & __imm_const macro for bpf_misc.h
+  selftests/bpf: Unprivileged tests for test_loader.c
+  selftests/bpf: Tests execution support for test_loader.c
+  selftests/bpf: prog_tests entry point for migrated test_verifier tests
+  selftests/bpf: verifier/and.c converted to inline assembly
+  selftests/bpf: verifier/array_access.c converted to inline assembly
+  selftests/bpf: verifier/basic_stack.c converted to inline assembly
+  selftests/bpf: verifier/bounds_deduction.c converted to inline
+    assembly
+  selftests/bpf: verifier/bounds_mix_sign_unsign.c converted to inline
+    assembly
+  selftests/bpf: verifier/cfg.c converted to inline assembly
+  selftests/bpf: verifier/cgroup_inv_retcode.c converted to inline
+    assembly
+  selftests/bpf: verifier/cgroup_skb.c converted to inline assembly
+  selftests/bpf: verifier/cgroup_storage.c converted to inline assembly
+  selftests/bpf: verifier/const_or.c converted to inline assembly
+  selftests/bpf: verifier/ctx_sk_msg.c converted to inline assembly
+  selftests/bpf: verifier/direct_stack_access_wraparound.c converted to
+    inline assembly
+  selftests/bpf: verifier/div0.c converted to inline assembly
+  selftests/bpf: verifier/div_overflow.c converted to inline assembly
+  selftests/bpf: verifier/helper_access_var_len.c converted to inline
+    assembly
+  selftests/bpf: verifier/helper_packet_access.c converted to inline
+    assembly
+  selftests/bpf: verifier/helper_restricted.c converted to inline
+    assembly
+  selftests/bpf: verifier/helper_value_access.c converted to inline
+    assembly
+  selftests/bpf: verifier/int_ptr.c converted to inline assembly
+  selftests/bpf: verifier/ld_ind.c converted to inline assembly
+  selftests/bpf: verifier/leak_ptr.c converted to inline assembly
+  selftests/bpf: verifier/map_ptr.c converted to inline assembly
+  selftests/bpf: verifier/map_ret_val.c converted to inline assembly
+  selftests/bpf: verifier/masking.c converted to inline assembly
+  selftests/bpf: verifier/meta_access.c converted to inline assembly
+  selftests/bpf: verifier/raw_stack.c converted to inline assembly
+  selftests/bpf: verifier/raw_tp_writable.c converted to inline assembly
+  selftests/bpf: verifier/ringbuf.c converted to inline assembly
+  selftests/bpf: verifier/spill_fill.c converted to inline assembly
+  selftests/bpf: verifier/stack_ptr.c converted to inline assembly
+  selftests/bpf: verifier/uninit.c converted to inline assembly
+  selftests/bpf: verifier/value_adj_spill.c converted to inline assembly
+  selftests/bpf: verifier/value.c converted to inline assembly
+  selftests/bpf: verifier/value_or_null.c converted to inline assembly
+  selftests/bpf: verifier/var_off.c converted to inline assembly
+  selftests/bpf: verifier/xadd.c converted to inline assembly
+  selftests/bpf: verifier/xdp.c converted to inline assembly
+  selftests/bpf: verifier/xdp_direct_packet_access.c converted to inline
+    assembly
+
+ tools/testing/selftests/bpf/Makefile          |   10 +-
+ tools/testing/selftests/bpf/autoconf_helper.h |    9 +
+ .../selftests/bpf/prog_tests/verifier.c       |  106 +
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   42 +
+ .../selftests/bpf/progs/verifier_and.c        |  107 +
+ .../bpf/progs/verifier_array_access.c         |  529 +++++
+ .../bpf/progs/verifier_basic_stack.c          |  100 +
+ .../bpf/progs/verifier_bounds_deduction.c     |  171 ++
+ .../progs/verifier_bounds_mix_sign_unsign.c   |  554 ++++++
+ .../selftests/bpf/progs/verifier_cfg.c        |  100 +
+ .../bpf/progs/verifier_cgroup_inv_retcode.c   |   89 +
+ .../selftests/bpf/progs/verifier_cgroup_skb.c |  227 +++
+ .../bpf/progs/verifier_cgroup_storage.c       |  308 +++
+ .../selftests/bpf/progs/verifier_const_or.c   |   82 +
+ .../selftests/bpf/progs/verifier_ctx_sk_msg.c |  228 +++
+ .../verifier_direct_stack_access_wraparound.c |   56 +
+ .../selftests/bpf/progs/verifier_div0.c       |  213 ++
+ .../bpf/progs/verifier_div_overflow.c         |  144 ++
+ .../progs/verifier_helper_access_var_len.c    |  825 ++++++++
+ .../bpf/progs/verifier_helper_packet_access.c |  550 ++++++
+ .../bpf/progs/verifier_helper_restricted.c    |  279 +++
+ .../bpf/progs/verifier_helper_value_access.c  | 1245 ++++++++++++
+ .../selftests/bpf/progs/verifier_int_ptr.c    |  157 ++
+ .../selftests/bpf/progs/verifier_ld_ind.c     |  110 ++
+ .../selftests/bpf/progs/verifier_leak_ptr.c   |   92 +
+ .../selftests/bpf/progs/verifier_map_ptr.c    |  159 ++
+ .../bpf/progs/verifier_map_ret_val.c          |  110 ++
+ .../selftests/bpf/progs/verifier_masking.c    |  410 ++++
+ .../bpf/progs/verifier_meta_access.c          |  284 +++
+ .../selftests/bpf/progs/verifier_raw_stack.c  |  371 ++++
+ .../bpf/progs/verifier_raw_tp_writable.c      |   50 +
+ .../selftests/bpf/progs/verifier_ringbuf.c    |  131 ++
+ .../selftests/bpf/progs/verifier_spill_fill.c |  374 ++++
+ .../selftests/bpf/progs/verifier_stack_ptr.c  |  484 +++++
+ .../selftests/bpf/progs/verifier_uninit.c     |   61 +
+ .../selftests/bpf/progs/verifier_value.c      |  158 ++
+ .../bpf/progs/verifier_value_adj_spill.c      |   78 +
+ .../bpf/progs/verifier_value_or_null.c        |  288 +++
+ .../selftests/bpf/progs/verifier_var_off.c    |  349 ++++
+ .../selftests/bpf/progs/verifier_xadd.c       |  124 ++
+ .../selftests/bpf/progs/verifier_xdp.c        |   24 +
+ .../progs/verifier_xdp_direct_packet_access.c | 1722 +++++++++++++++++
+ tools/testing/selftests/bpf/test_loader.c     |  536 ++++-
+ tools/testing/selftests/bpf/test_verifier.c   |   25 +-
+ tools/testing/selftests/bpf/unpriv_helpers.c  |   26 +
+ tools/testing/selftests/bpf/unpriv_helpers.h  |    7 +
+ tools/testing/selftests/bpf/verifier/and.c    |   68 -
+ .../selftests/bpf/verifier/array_access.c     |  379 ----
+ .../selftests/bpf/verifier/basic_stack.c      |   64 -
+ .../selftests/bpf/verifier/bounds_deduction.c |  136 --
+ .../bpf/verifier/bounds_mix_sign_unsign.c     |  411 ----
+ tools/testing/selftests/bpf/verifier/cfg.c    |   73 -
+ .../bpf/verifier/cgroup_inv_retcode.c         |   72 -
+ .../selftests/bpf/verifier/cgroup_skb.c       |  197 --
+ .../selftests/bpf/verifier/cgroup_storage.c   |  220 ---
+ .../testing/selftests/bpf/verifier/const_or.c |   60 -
+ .../selftests/bpf/verifier/ctx_sk_msg.c       |  181 --
+ .../verifier/direct_stack_access_wraparound.c |   40 -
+ tools/testing/selftests/bpf/verifier/div0.c   |  184 --
+ .../selftests/bpf/verifier/div_overflow.c     |  110 --
+ .../bpf/verifier/helper_access_var_len.c      |  650 -------
+ .../bpf/verifier/helper_packet_access.c       |  460 -----
+ .../bpf/verifier/helper_restricted.c          |  196 --
+ .../bpf/verifier/helper_value_access.c        |  953 ---------
+ .../testing/selftests/bpf/verifier/int_ptr.c  |  161 --
+ tools/testing/selftests/bpf/verifier/ld_ind.c |   72 -
+ .../testing/selftests/bpf/verifier/leak_ptr.c |   67 -
+ .../testing/selftests/bpf/verifier/map_ptr.c  |   99 -
+ .../selftests/bpf/verifier/map_ret_val.c      |   65 -
+ .../testing/selftests/bpf/verifier/masking.c  |  322 ---
+ .../selftests/bpf/verifier/meta_access.c      |  235 ---
+ .../selftests/bpf/verifier/raw_stack.c        |  305 ---
+ .../selftests/bpf/verifier/raw_tp_writable.c  |   35 -
+ .../testing/selftests/bpf/verifier/ringbuf.c  |   95 -
+ .../selftests/bpf/verifier/spill_fill.c       |  345 ----
+ .../selftests/bpf/verifier/stack_ptr.c        |  359 ----
+ tools/testing/selftests/bpf/verifier/uninit.c |   39 -
+ tools/testing/selftests/bpf/verifier/value.c  |  104 -
+ .../selftests/bpf/verifier/value_adj_spill.c  |   43 -
+ .../selftests/bpf/verifier/value_or_null.c    |  220 ---
+ .../testing/selftests/bpf/verifier/var_off.c  |  291 ---
+ tools/testing/selftests/bpf/verifier/xadd.c   |   97 -
+ tools/testing/selftests/bpf/verifier/xdp.c    |   14 -
+ .../bpf/verifier/xdp_direct_packet_access.c   | 1468 --------------
+ 84 files changed, 11994 insertions(+), 9000 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/autoconf_helper.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_and.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_array_access.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_basic_stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_bounds_mix_sign_unsign.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_cfg.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_cgroup_inv_retcode.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_cgroup_skb.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_cgroup_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_const_or.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_ctx_sk_msg.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_direct_stack_access_wraparound.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_div0.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_div_overflow.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_helper_access_var_len.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_helper_packet_access.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_helper_restricted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_helper_value_access.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_int_ptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_ld_ind.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_leak_ptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_map_ptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_map_ret_val.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_masking.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_meta_access.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_raw_stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_raw_tp_writable.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_ringbuf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_stack_ptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_uninit.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_value.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_value_adj_spill.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_value_or_null.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_var_off.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_xadd.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_xdp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_xdp_direct_packet_access.c
+ create mode 100644 tools/testing/selftests/bpf/unpriv_helpers.c
+ create mode 100644 tools/testing/selftests/bpf/unpriv_helpers.h
+ delete mode 100644 tools/testing/selftests/bpf/verifier/and.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/array_access.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/basic_stack.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/bounds_deduction.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/bounds_mix_sign_unsign.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/cfg.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/cgroup_inv_retcode.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/cgroup_skb.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/cgroup_storage.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/const_or.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/ctx_sk_msg.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/direct_stack_access_wraparound.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/div0.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/div_overflow.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/helper_access_var_len.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/helper_packet_access.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/helper_restricted.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/helper_value_access.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/int_ptr.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/ld_ind.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/leak_ptr.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/map_ptr.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/map_ret_val.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/masking.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/meta_access.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/raw_stack.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/raw_tp_writable.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/ringbuf.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/spill_fill.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/stack_ptr.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/uninit.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/value.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/value_adj_spill.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/value_or_null.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/var_off.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/xadd.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/xdp.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/xdp_direct_packet_access.c
+
+-- 
+2.40.0
+
