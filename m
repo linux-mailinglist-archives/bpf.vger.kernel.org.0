@@ -2,73 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E416C894C
-	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 00:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE8B6C89CC
+	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 02:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbjCXXeN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 19:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
+        id S229920AbjCYBJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 21:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbjCXXeM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 19:34:12 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DFB2128;
-        Fri, 24 Mar 2023 16:34:10 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id eg48so13703773edb.13;
-        Fri, 24 Mar 2023 16:34:10 -0700 (PDT)
+        with ESMTP id S229441AbjCYBJA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 21:09:00 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76CE10CC
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 18:08:59 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id ix20so3412121plb.3
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 18:08:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679700849;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UgItKrX+omIU9rZpNlw4Q+2It9vk7cbT9xavBL46gQE=;
-        b=jhhtQYQhwSI1lUOacB6rX6mQ6I9kcNngJjlT25U2XMe2EBOP2LZkRzUJI5uO0onZT9
-         QS9spWGM6ub7lEX5PQZwpfVufsW/HoiurnwsZyA2JTDaiwfFSGhG3Oyfl9SQh71iG0o3
-         gjrCNIk+aT5plzF5gcJbsHAkNqknm6OhSvr3lkAgVe9naRZHzLaNBPCa+rap90AcIItL
-         s6LZax6BRYSjhY2VW9RIyvIRwNJQxZdmYddrdrqUv6Q5kBUdshsk0EfRiWXpLL670K9e
-         Kf2QljzpYsiwn7F2/BINg4/dXiHGDT/VdChMuPjee77g6zEwfTERr7XSoLdaisvZKjFH
-         Q6iQ==
+        d=gmail.com; s=20210112; t=1679706539;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w+RhrKrarnMEEmf+wRd26hfnVCy90LImCwtPKsNxygg=;
+        b=SS+bal+5MpOn7V1HWkYGA5Gc9X2P6l/FBsZajJGbsu6WqkawrpzSGr5jfJ/ucIlYeC
+         +JQJKU5lb5+QlCCS1BLonK8Wkuq+DU10IYAGSg/vbnQASvKfmRdHyDPz3MkACfWuBe7G
+         1U5FhLUG81EaWFzjdcUMw+NufhinB59V5lxlSjVkwuTSmCG1h2hVvgjxchIPFNKUV4uW
+         DXhIf5s9y/wPHMBBFlAm/nJnsNAr+qCS5BMsCbOX/ZmSESVKkBX8nLBiB2IHvwM9DzAu
+         w/WS6IzC+uGOieQ4faS8TJVvLcb8BBAkWKFp3iGSq4j9Ka2rH/qJ3KbhtOFJ/OwSyWSy
+         UqsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679700849;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UgItKrX+omIU9rZpNlw4Q+2It9vk7cbT9xavBL46gQE=;
-        b=RBBEE7e8LW+JEhgcX21HwWdlkLFJIKqQoe9u8L9yT6r7idHKzBj2ETTX7LrhaX6Vdq
-         nBmuMrQ+OiIJ3eBvOYV0gKSSpj4Vh8GVIuBTlmh5vgBsQo3TbHhymOhyHOzSCxaY0tDq
-         FWd06D52B2gPIL2R/JvYJuNgbxhH3fG+CWX+NHUKL4qbr+4AehqKbXfL2nSDO2q8spYe
-         W9jotzZTRTNe/g6BLuUCtSV4rASa0WG8mam1ZfhZiLmwlvNqUbPPBY9WQJB8BDr+rkDt
-         VpTDA0TEaHwbR21IHyG3ILRAMf3JAEyiu3pOeiWilmfXKpPMUY0oM/uxjg/mlVjRUwnY
-         sOBA==
-X-Gm-Message-State: AAQBX9dQRbWvO/G5IlScfvE+TP3T1+amRAGJyapvy2AO7m2v3JcOom9L
-        IfKx3Z59ZuMIoWHfEH5DYTplaw4XjvLVYxnfFjI=
-X-Google-Smtp-Source: AKy350brcVccDKLSCNemmSxxbeInWb75qa6vMOl2tfUtV4JIn1vn2IHNipB+v4CqYEiT4ZW+T2GgE8018gwBsfqqAjE=
-X-Received: by 2002:a17:907:f90:b0:924:32b2:e3d1 with SMTP id
- kb16-20020a1709070f9000b0092432b2e3d1mr2278540ejc.3.1679700848823; Fri, 24
- Mar 2023 16:34:08 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1679706539;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w+RhrKrarnMEEmf+wRd26hfnVCy90LImCwtPKsNxygg=;
+        b=2Hy4/ZGuHNt5XXuV5VJlZG7zOjDNYefEcqMuRVk5eQCNZEk8mDltyfTFZMfybyf14q
+         NbhVK/dkytq7Pc+p046RfI77UzWwsmWmAuKdan4re0wrXuLmbta0bspp2Qyet0ragLNK
+         khvUnBt6ygOrqyVUWYrD3a0SyiGT5jiEDwntbAwV+P2FB2nUqvcElcCzFAj8PDFmrnC+
+         1HKeacP1id9dhw3CWUVXnwgJ2UkIFTy0Yt2bwGicOHpdtWvqHr+6ELj2gfCMMSgUEnrq
+         VKlo2pVU5CUigfo996Aes2X/ltBsRoG3UylUvZG6Ut3k+fLPKcVYn0ENbAhiF5BwLgyq
+         yDvg==
+X-Gm-Message-State: AAQBX9c47FbKoS8KAOS6gD531mGpXZ2HIyZUm4p1k64hI3U6Fq68+nta
+        8Sz19tPeNT00iYAc7pK0Xn5+AACzvo0=
+X-Google-Smtp-Source: AKy350bjWZ6X9wZ2FgsgnDbH2e9kVXSaytkTzxPvj8BvAiHAKdHze50oGOZfL8WgaMyvrBdoIF6WJQ==
+X-Received: by 2002:a17:902:ce8e:b0:1a0:65ae:df32 with SMTP id f14-20020a170902ce8e00b001a065aedf32mr5609329plg.37.1679706539107;
+        Fri, 24 Mar 2023 18:08:59 -0700 (PDT)
+Received: from localhost.localdomain ([98.42.16.172])
+        by smtp.gmail.com with ESMTPSA id y18-20020a170902b49200b001a1ba37d06csm12509460plr.29.2023.03.24.18.08.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Mar 2023 18:08:58 -0700 (PDT)
+From:   JP Kobryn <inwardvessel@gmail.com>
+To:     bpf@vger.kernel.org, andrii@kernel.org
+Cc:     kernel-team@meta.com, inwardvessel@gmail.com
+Subject: [PATCH bpf-next] libbpf: synchronize access to print function pointer
+Date:   Fri, 24 Mar 2023 18:08:45 -0700
+Message-Id: <20230325010845.46000-1-inwardvessel@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20221012233500.156764-1-masahiroy@kernel.org> <ZBovCrMXJk7NPISp@aurel32.net>
- <CAMj1kXHwtb9aY+vd4e69Wg47GpL0sT=dDaCUA1sF7=edzc+Qeg@mail.gmail.com>
- <ZBzAp457rrO52FPy@aurel32.net> <CAMj1kXHvfHwQFX1SKbUvpHWOr3+i7Tp5Hod-_jZE4hDHZmmRZg@mail.gmail.com>
-In-Reply-To: <CAMj1kXHvfHwQFX1SKbUvpHWOr3+i7Tp5Hod-_jZE4hDHZmmRZg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 24 Mar 2023 16:33:57 -0700
-Message-ID: <CAADnVQLniq_NTN+dayioY76UvJ6Rt88wC31tboQx0UAvMn3Few@mail.gmail.com>
-Subject: Re: [PATCH] arm64: remove special treatment for the link order of head.o
-To:     Ard Biesheuvel <ardb@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -79,120 +67,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 4:39=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> wr=
-ote:
->
-> (cc BTF list and maintainer)
->
-> On Thu, 23 Mar 2023 at 22:12, Aurelien Jarno <aurelien@aurel32.net> wrote=
-:
-> >
-> > Hi,
-> >
-> > On 2023-03-22 15:51, Ard Biesheuvel wrote:
-> > > On Tue, 21 Mar 2023 at 23:26, Aurelien Jarno <aurelien@aurel32.net> w=
-rote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > On 2022-10-13 08:35, Masahiro Yamada wrote:
-> > > > > In the previous discussion (see the Link tag), Ard pointed out th=
-at
-> > > > > arm/arm64/kernel/head.o does not need any special treatment - the=
- only
-> > > > > piece that must appear right at the start of the binary image is =
-the
-> > > > > image header which is emitted into .head.text.
-> > > > >
-> > > > > The linker script does the right thing to do. The build system do=
-es
-> > > > > not need to manipulate the link order of head.o.
-> > > > >
-> > > > > Link: https://lore.kernel.org/lkml/CAMj1kXH77Ja8bSsq2Qj8Ck9iSZKw=
-=3D1F8Uy-uAWGVDm4-CG=3DEuA@mail.gmail.com/
-> > > > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > > ---
-> > > > >
-> > > > >  scripts/head-object-list.txt | 1 -
-> > > > >  1 file changed, 1 deletion(-)
-> > > > >
-> > > > > diff --git a/scripts/head-object-list.txt b/scripts/head-object-l=
-ist.txt
-> > > > > index b16326a92c45..f226e45e3b7b 100644
-> > > > > --- a/scripts/head-object-list.txt
-> > > > > +++ b/scripts/head-object-list.txt
-> > > > > @@ -15,7 +15,6 @@ arch/alpha/kernel/head.o
-> > > > >  arch/arc/kernel/head.o
-> > > > >  arch/arm/kernel/head-nommu.o
-> > > > >  arch/arm/kernel/head.o
-> > > > > -arch/arm64/kernel/head.o
-> > > > >  arch/csky/kernel/head.o
-> > > > >  arch/hexagon/kernel/head.o
-> > > > >  arch/ia64/kernel/head.o
-> > > >
-> > > > This patch causes a significant increase of the arch/arm64/boot/Ima=
-ge
-> > > > size. For instance the generic arm64 Debian kernel went from 31 to =
-39 MB
-> > > > after this patch has been applied to the 6.1 stable tree.
-> > > >
-> > > > In turn this causes issues with some bootloaders, for instance U-Bo=
-ot on
-> > > > a Raspberry Pi limits the kernel size to 36 MB.
-> > > >
-> > >
-> > > I cannot reproduce this with mainline
-> > >
-> > > With the patch
-> > >
-> > > $ size vmlinux
-> > >    text    data     bss     dec     hex filename
-> > > 24567309 14752630 621680 39941619 26175f3 vmlinux
-> > >
-> > > With the patch reverted
-> > >
-> > > $ size vmlinux
-> > >    text    data     bss     dec     hex filename
-> > > 24567309 14752694 621680 39941683 2617633 vmlinux
-> >
-> > I have tried with the current mainline, this is what I get, using GCC 1=
-2.2.0
-> > and binutils 2.40:
-> >
-> >    text    data     bss     dec     hex filename
-> > 32531655        8192996  621968 41346619        276e63b vmlinux.orig
-> > 25170610        8192996  621968 33985574        2069426 vmlinux.revert
-> >
-> > > It would help to compare the resulting vmlinux ELF images from both
-> > > builds to see where the extra space is being allocated
-> >
-> > At a first glance, it seems the extra space is allocated in the BTF
-> > section. I have uploaded the resulting files as well as the config file
-> > I used there:
-> > https://temp.aurel32.net/linux-arm64-size-head.o.tar.gz
-> >
->
-> Indeed. So we go from
->
->   [15] .BTF              PROGBITS         ffff8000091d1ff4  011e1ff4
->        00000000005093d6  0000000000000000   A       0     0     1
->
-> to
->
->   [15] .BTF              PROGBITS         ffff8000091d1ff4  011e1ff4
->        0000000000c0e5eb  0000000000000000   A       0     0     1
->
-> i.e, from 5 MiB to 12+ MiB of BTF metadata.
->
-> To me, it is not clear at all how one would be related to the other,
-> so it will leave it to the Kbuild and BTF experts to chew on this one.
+This patch prevents races on the print function pointer, allowing the
+libbpf_set_print() function to become thread safe.
 
-That's a huge increase.
-It's not just that commit responsible, but the whole series ?
-https://lore.kernel.org/lkml/20220906061313.1445810-1-masahiroy@kernel.org/
-I'm guessing "Link vmlinux and modules in parallel" is related.
-I'm not sure what "parallel link" means. Running 'ar' in parallel?
-I cannot read makefile syntax, so no idea.
+Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 9 ++++++---
+ tools/lib/bpf/libbpf.h | 3 +++
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-Jiri, Andrii, Alan, please take a look.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index f6a071db5c6e..15737d7b5a28 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -216,9 +216,10 @@ static libbpf_print_fn_t __libbpf_pr = __base_pr;
+ 
+ libbpf_print_fn_t libbpf_set_print(libbpf_print_fn_t fn)
+ {
+-	libbpf_print_fn_t old_print_fn = __libbpf_pr;
++	libbpf_print_fn_t old_print_fn;
++
++	old_print_fn = __atomic_exchange_n(&__libbpf_pr, fn, __ATOMIC_RELAXED);
+ 
+-	__libbpf_pr = fn;
+ 	return old_print_fn;
+ }
+ 
+@@ -227,8 +228,10 @@ void libbpf_print(enum libbpf_print_level level, const char *format, ...)
+ {
+ 	va_list args;
+ 	int old_errno;
++	libbpf_print_fn_t print_fn;
+ 
+-	if (!__libbpf_pr)
++	print_fn = __atomic_load_n(&__libbpf_pr, __ATOMIC_RELAXED);
++	if (!print_fn)
+ 		return;
+ 
+ 	old_errno = errno;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 1615e55e2e79..4478809ff9ca 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -99,6 +99,9 @@ typedef int (*libbpf_print_fn_t)(enum libbpf_print_level level,
+ /**
+  * @brief **libbpf_set_print()** sets user-provided log callback function to
+  * be used for libbpf warnings and informational messages.
++ *
++ * This function is thread safe.
++ *
+  * @param fn The log print function. If NULL, libbpf won't print anything.
+  * @return Pointer to old print function.
+  */
+-- 
+2.39.2
+
