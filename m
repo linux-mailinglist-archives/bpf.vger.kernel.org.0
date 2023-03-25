@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CCC6C90FB
-	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 22:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E92D86C90FD
+	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 22:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbjCYVcG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Mar 2023 17:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59788 "EHLO
+        id S229575AbjCYVc3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Mar 2023 17:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjCYVcF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Mar 2023 17:32:05 -0400
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EAFCC19;
-        Sat, 25 Mar 2023 14:32:04 -0700 (PDT)
-Received: by mail-qv1-f52.google.com with SMTP id g9so4334827qvt.8;
-        Sat, 25 Mar 2023 14:32:04 -0700 (PDT)
+        with ESMTP id S229446AbjCYVc3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Mar 2023 17:32:29 -0400
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2ACCC00;
+        Sat, 25 Mar 2023 14:32:19 -0700 (PDT)
+Received: by mail-qv1-f53.google.com with SMTP id 59so4293676qva.11;
+        Sat, 25 Mar 2023 14:32:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679779923;
+        d=1e100.net; s=20210112; t=1679779939;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WvytPOgIy3Mzp1dIziBHWQjN9qpIziod7hYaS4cen+M=;
-        b=Y34KnqYZlK5vXV2421T4gbHnREimFrxzx4Ih2ombUGEVfWA+K7YvaFN0K2TvFxJheU
-         L3Tz4T2Gcd+lBK7GZbR99eyrFHcyU60IQUeAov7c4s0EuO4XIYugttsQa/TLKrdCanKs
-         gnLC1lH9W/haShPG+puuTA7z+xXT+Hw5AKZjaFi3uEXdzL77qy1Ot/BqP5CcXSIVn9VL
-         yU2M/OGa1n1F9o53M5m13twf3Nqlxnv2GUfQSwfI0ULfE8eJYPpepT8rxT/LaD20nq/H
-         ebSLaHl7BRnyVZV0AE5y0z8z0zMgpidKJBImTyus2yLF6O9Auk7qMZzV10M0feTGzjke
-         JqUQ==
-X-Gm-Message-State: AAQBX9dKCw5tX26CwU9l0wMSEQwqYoQVz94tnXLplxhgk6gGQR2+dxgT
-        vyTGHLdlU9Kdy//0ygFFEdF+uIHtdjSUAQD4kzU=
-X-Google-Smtp-Source: AKy350bUjO0srAaw17BBSGXnuViTo0DVMu7OEflLlNXPoayy/mmKo9CFHMhrqtFX4H0mGWYB1yatDg==
-X-Received: by 2002:a05:6214:ac6:b0:5ac:208c:4e64 with SMTP id g6-20020a0562140ac600b005ac208c4e64mr13523457qvi.37.1679779923301;
-        Sat, 25 Mar 2023 14:32:03 -0700 (PDT)
+        bh=beTKJfiS4cdFGvjwvhWeZJkcVPSdZmhKDIoBjmdTTxM=;
+        b=wROKc2odk+PGDIC0jrAC4F2WpEt4JtXwUtXOKofljq3jGiNDXJeGB4l/0p3bh5xeyZ
+         hkNz6CuuBn2C4warfq/d5OajSwR65ZF/GVVYMf60qQRLafQ3fBgCk+9I7zi0dHRBw1O0
+         HW73iNciwpVy2qjVn/zmO12PwVZ1xxwbU3uF3RYYEhLYSszE+oFNmyDZfAcylQbBQ/P/
+         umUnVJqs+9UgsrLOwTGi5NVyuKIt1T73GGBjmbGORR1SZ+VnhZmc11QKC8yuCyLWukhd
+         A7XYgIkyyDyRhNKEIeUWZBE5PWfVtu3hFjNYY3rRE6Y2vrTl+PTMtorA2P7hH+ZNm+xg
+         2E9A==
+X-Gm-Message-State: AAQBX9ew0igcySMQM/n4P/QIFp9fGzM7CiYzlyRcnRMDy4hu0KiZWKoF
+        /0TXVVwDLTeTo9bk6FP0fKdJuUFPS14FNCHeqmo=
+X-Google-Smtp-Source: AKy350YUeJB5IIYKLJtrE6eHiS1NoZqKJBfN1G4aPqm3+KL4ESP5bbDM+68fbfBN99SrEdy/yyPCqg==
+X-Received: by 2002:a05:6214:2a87:b0:5c6:403d:7af4 with SMTP id jr7-20020a0562142a8700b005c6403d7af4mr10878487qvb.43.1679779938528;
+        Sat, 25 Mar 2023 14:32:18 -0700 (PDT)
 Received: from localhost ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id z8-20020a0cd788000000b005dd8b934587sm1713947qvi.31.2023.03.25.14.32.02
+        by smtp.gmail.com with ESMTPSA id mg18-20020a056214561200b005dd8b93457dsm1711403qvb.21.2023.03.25.14.32.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Mar 2023 14:32:03 -0700 (PDT)
+        Sat, 25 Mar 2023 14:32:18 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -44,9 +44,9 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com
-Subject: [PATCH bpf-next 1/3] bpf: Only invoke kptr dtor following non-NULL xchg
-Date:   Sat, 25 Mar 2023 16:31:42 -0500
-Message-Id: <20230325213144.486885-2-void@manifault.com>
+Subject: [PATCH bpf-next 2/3] bpf: Remove now-unnecessary NULL checks for KF_RELEASE kfuncs
+Date:   Sat, 25 Mar 2023 16:31:45 -0500
+Message-Id: <20230325213144.486885-3-void@manifault.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230325213144.486885-1-void@manifault.com>
 References: <20230325213144.486885-1-void@manifault.com>
@@ -62,55 +62,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a map value is being freed, we loop over all of the fields of the
-corresponding BPF object and issue the appropriate cleanup calls
-corresponding to the field's type. If the field is a referenced kptr, we
-atomically xchg the value out of the map, and invoke the kptr's
-destructor on whatever was there before (or bpf_obj_drop() it if it was
-a local kptr).
-
-Currently, we always invoke the destructor (either bpf_obj_drop() or the
-kptr's registered destructor) on any KPTR_REF-type field in a map, even
-if there wasn't a value in the map. This means that any function serving
-as the kptr's KF_RELEASE destructor must always treat the argument as
-possibly NULL, as the following can and regularly does happen:
-
-void *xchgd_field;
-
-/* No value was in the map, so xchgd_field is NULL */
-xchgd_field = (void *)xchg(unsigned long *field_ptr, 0);
-field->kptr.dtor(xchgd_field);
-
-These are odd semantics to impose on KF_RELEASE kfuncs -- BPF programs
-are prohibited by the verifier from passing NULL pointers to KF_RELEASE
-kfuncs, so it doesn't make sense to require this of BPF programs, but
-not the main kernel destructor path. It's also unnecessary to invoke any
-cleanup logic for local kptrs. If there is no object there, there's
-nothing to drop.
-
-So as to allow KF_RELEASE kfuncs to fully assume that an argument is
-non-NULL, this patch updates a KPTR_REF's destructor to only be invoked
-when a non-NULL value is xchg'd out of the kptr map field.
+Now that we're not invoking kfunc destructors when the kptr in a map was
+NULL, we no longer require NULL checks in many of our KF_RELEASE kfuncs.
+This patch removes those NULL checks.
 
 Signed-off-by: David Vernet <void@manifault.com>
 ---
- kernel/bpf/syscall.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/hid/bpf/hid_bpf_dispatch.c | 3 ---
+ kernel/bpf/cpumask.c               | 3 ---
+ kernel/bpf/helpers.c               | 6 ------
+ net/bpf/test_run.c                 | 3 ---
+ net/netfilter/nf_conntrack_bpf.c   | 2 --
+ 5 files changed, 17 deletions(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a09597c95029..e18ac7fdc210 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -677,6 +677,9 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
- 			break;
- 		case BPF_KPTR_REF:
- 			xchgd_field = (void *)xchg((unsigned long *)field_ptr, 0);
-+			if (!xchgd_field)
-+				break;
-+
- 			if (!btf_is_kernel(field->kptr.btf)) {
- 				pointee_struct_meta = btf_find_struct_meta(field->kptr.btf,
- 									   field->kptr.btf_id);
+diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf_dispatch.c
+index 8a034a555d4c..d9ef45fcaeab 100644
+--- a/drivers/hid/bpf/hid_bpf_dispatch.c
++++ b/drivers/hid/bpf/hid_bpf_dispatch.c
+@@ -342,9 +342,6 @@ hid_bpf_release_context(struct hid_bpf_ctx *ctx)
+ {
+ 	struct hid_bpf_ctx_kern *ctx_kern;
+ 
+-	if (!ctx)
+-		return;
+-
+ 	ctx_kern = container_of(ctx, struct hid_bpf_ctx_kern, ctx);
+ 
+ 	kfree(ctx_kern);
+diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+index db9da2194c1a..e991af7dc13c 100644
+--- a/kernel/bpf/cpumask.c
++++ b/kernel/bpf/cpumask.c
+@@ -102,9 +102,6 @@ static void cpumask_free_cb(struct rcu_head *head)
+  */
+ __bpf_kfunc void bpf_cpumask_release(struct bpf_cpumask *cpumask)
+ {
+-	if (!cpumask)
+-		return;
+-
+ 	if (refcount_dec_and_test(&cpumask->usage))
+ 		call_rcu(&cpumask->rcu, cpumask_free_cb);
+ }
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index f753676ef652..8980f6859443 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2089,9 +2089,6 @@ __bpf_kfunc struct task_struct *bpf_task_kptr_get(struct task_struct **pp)
+  */
+ __bpf_kfunc void bpf_task_release(struct task_struct *p)
+ {
+-	if (!p)
+-		return;
+-
+ 	put_task_struct(p);
+ }
+ 
+@@ -2148,9 +2145,6 @@ __bpf_kfunc struct cgroup *bpf_cgroup_kptr_get(struct cgroup **cgrpp)
+  */
+ __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
+ {
+-	if (!cgrp)
+-		return;
+-
+ 	cgroup_put(cgrp);
+ }
+ 
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 8d6b31209bd6..27587f1c5f36 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -615,9 +615,6 @@ bpf_kfunc_call_memb_acquire(void)
+ 
+ __bpf_kfunc void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
+ {
+-	if (!p)
+-		return;
+-
+ 	refcount_dec(&p->cnt);
+ }
+ 
+diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
+index cd99e6dc1f35..002e9d24a1e9 100644
+--- a/net/netfilter/nf_conntrack_bpf.c
++++ b/net/netfilter/nf_conntrack_bpf.c
+@@ -401,8 +401,6 @@ __bpf_kfunc struct nf_conn *bpf_ct_insert_entry(struct nf_conn___init *nfct_i)
+  */
+ __bpf_kfunc void bpf_ct_release(struct nf_conn *nfct)
+ {
+-	if (!nfct)
+-		return;
+ 	nf_ct_put(nfct);
+ }
+ 
 -- 
 2.39.0
 
