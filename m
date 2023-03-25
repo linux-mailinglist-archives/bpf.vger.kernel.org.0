@@ -2,174 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 999016C8A2E
-	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 03:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D326C8A54
+	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 03:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbjCYCSf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 22:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59446 "EHLO
+        id S229522AbjCYCyK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 22:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbjCYCSf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 22:18:35 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCAD2706
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:18:32 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id r11so14748490edd.5
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:18:32 -0700 (PDT)
+        with ESMTP id S229505AbjCYCyJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 22:54:09 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4039E15170
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:54:09 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id pm10-20020a17090b3c4a00b0023ff02aced2so3681666pjb.1
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679710711;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uw0vvRX6fB45yziv3c2fRfTS3bTqjYau48XTnRaZKUQ=;
-        b=O7Jst4Abb03/2SPXMx5C68RHpw3r3kFMKH7fZnFXh0aJIp2ZBgoM9SwaZL0lI/9pGh
-         nOnlLtm4EcFl3i8d0j46aVqMGUTdlYBqj5yZXFsOZY9Wt0HiaQAMqbcFmRL6lcVCWdbx
-         TnkXpXZS53IaAukR3UsCxNyfv1DwvSSVUN2GtB8yMaLijLAA2wiQ4TtPwRaAWmO3RNMB
-         ssGwMxA6FnWB+KLIdXXQrz42GNgvAWzmC9y1auxEEhX5ynPFv8qM/jW7VouPr1t8bz9W
-         o/YBrB3nWIDIOZaWdVAxep7Nkgx0jPcDgraTEVMPnZzXibYcCq16TyKvx4l4lRaML3zU
-         Wd7g==
+        d=google.com; s=20210112; t=1679712848;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cMDD1MJeFWH1fUS3NN+T164qPGehR/b6EvKhekU9vEY=;
+        b=Gl0lmlPUiCNbqlGNCY1ZYI02tDgE5FqOnR2CML5/7nvUTxQETzKcrm+ty33Fzuej9+
+         LO/YMWrRpLaa6lbnBFzm75mw9+x4L3hWQUGE5i8k8E43f07+svcboFJxLMqwcBg0zCrv
+         DOPNV+c+oQN7Um6DcziYdNB/KxmzBPZBMU1Zs2EXcXAqPzmNlUa3HdYVBa/YVDwE5aHc
+         3IjdPY5S8qKF4b2B5Ed+QMI3sGbtPZC07jDTahrMpRJnbOhWO9mcUgnCPNNv2UpCF158
+         FKqlL3ME86Uk7LSW1wmGK41+7mGtpTt6q4py+WU/KjXg/nY5B3NlNmmFe3HriKzNDdZ+
+         5IAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679710711;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Uw0vvRX6fB45yziv3c2fRfTS3bTqjYau48XTnRaZKUQ=;
-        b=3iPlymdLNmB8U2YmmJt2veJiqqE0T/we6F00w2AUh7/wNtkEBSOiPjNVFu8oj8o2lw
-         rrFnMafJWkAOXByBPrxoU/ATJ/q8nZnd25prIz6VWsR/s2Qx1aaHnP6wZrlIq3mU6NSk
-         GXbOZ/0cIgfITb0+zGkpYGpKFUIwc1FgKjJx7iytIa6OmhF82RYrVXNU7Aj0piRtXouI
-         sFLjeRVjUOlljy9VDcUKyAzyixBS6jCKTdIKXm0IXHeU5L5t+lHJJS6B/ls/sIIq24vG
-         K2qJ12gSQcmn6PyUh4qKqF1uu8sfMe5RqaTCerY3XebmBmu1H98abtGv3xWdcmG8ESPJ
-         5rTw==
-X-Gm-Message-State: AAQBX9coJK2lZ0NJAoas26FlKhFvjcnkdoKf/xU+JxbFj7+YWaqgW2JD
-        EXCQdGRwVl5elQzGQx/moignZgYgedlgbixQQ+IX7g==
-X-Google-Smtp-Source: AKy350a0I79S1SUmVIQ6HRmx0m1CdZp1+LfkjYwoFLdgBR60G/VLIqAXQszZ4lDVKDYUrsvufqHj6nn/nq6hxnyegx8=
-X-Received: by 2002:a17:906:eec7:b0:93e:186f:ea0d with SMTP id
- wu7-20020a170906eec700b0093e186fea0dmr2057027ejb.15.1679710710778; Fri, 24
- Mar 2023 19:18:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230323040037.2389095-1-yosryahmed@google.com>
- <20230323040037.2389095-2-yosryahmed@google.com> <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
- <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com> <ZB5UalkjGngcBDEJ@slm.duckdns.org>
-In-Reply-To: <ZB5UalkjGngcBDEJ@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 24 Mar 2023 19:17:54 -0700
-Message-ID: <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20210112; t=1679712848;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cMDD1MJeFWH1fUS3NN+T164qPGehR/b6EvKhekU9vEY=;
+        b=GlGBIU2F1OcqfftyQZ1xTioCBu24QQ11720a4YBZOoo6ILAwyqSgg9nwGPgGp6nkbK
+         13EwKjTG5njzUTjSdg9PnyfEq47sCzr9EpJyzVG7yKtJmsQIjMQ11uIkjO1ECRHwnIoi
+         YrJlls9UA8oT2+9NmJysW3lMQaXaOhHO66hXz480tKwkhRifnKxiiyvWf4hinShyLrOb
+         mqZ3A1SgYeyy5l8mNjAZQHFImYJhuzZHTjJbt3YR/l9w0mDj//F+ik1Oc0lbpGJvoexB
+         vueh7a3rytjHslOJ5VhuLNzHY8sbdxpFlMidQBBGUs7DdInAmfF0wmvNR0xwYo/ohsTw
+         yxiw==
+X-Gm-Message-State: AAQBX9e0mms8vwdrJCOSCXbL+1lNYClcHoY5UudTJRtSaE3R4Gn9Iija
+        UHlExLRAuAjc/FZxMKlgf7EeNgI=
+X-Google-Smtp-Source: AKy350anF6QTD2Sm1E4rMvtf11sqGJQhyiBpcRMHb7Ok1e/DV2kPOLYHmCXvODHWhU9BffAceqOnCBM=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:5201:0:b0:4fc:2058:fa29 with SMTP id
+ g1-20020a635201000000b004fc2058fa29mr1244789pgb.1.1679712848363; Fri, 24 Mar
+ 2023 19:54:08 -0700 (PDT)
+Date:   Fri, 24 Mar 2023 19:54:07 -0700
+In-Reply-To: <20230324230209.161008-3-quentin@isovalent.com>
+Mime-Version: 1.0
+References: <20230324230209.161008-1-quentin@isovalent.com> <20230324230209.161008-3-quentin@isovalent.com>
+Message-ID: <ZB5iT1ux8YIL/Jr8@google.com>
+Subject: Re: [PATCH bpf-next 2/5] bpftool: Fix bug for long instructions in
+ program CFG dumps
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 6:54=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Fri, Mar 24, 2023 at 12:22:09AM -0700, Yosry Ahmed wrote:
-> > I think a problem with this approach is that we risk having to contend
-> > for the global lock at every CPU boundary in atomic contexts. Right
-> > now we contend for the global lock once, and once we have it we go
-> > through all CPUs to flush, only having to contend with updates taking
-> > the percpu locks at this point. If we unconditionally release &
-> > reacquire the global lock at every CPU boundary then we may contend
-> > for it much more frequently with concurrent flushers.
-> >
-> > On the memory controller side, concurrent flushers are already held
-> > back to avoid a thundering herd problem on the global rstat lock, but
-> > flushers from outside the memory controller can still compete together
-> > or with a flusher from the memory controller. In this case, we risk
-> > contending the global lock more and concurrent flushers taking a
-> > longer period of time, which may end up causing multi-CPU stalls
-> > anyway, right? Also, if we keep _irq when spinning for the lock, then
-> > concurrent flushers still need to spin with irq disabled -- another
-> > problem that this series tries to fix.
-> >
-> > This is particularly a problem for flushers in atomic contexts. There
-> > is a flusher in mem_cgroup_wb_stats() that flushes while holding
-> > another spinlock, and a flusher in mem_cgroup_usage() that flushes
-> > with irqs disabled. If flushing takes a longer period of time due to
-> > repeated lock contention, it affects such atomic context negatively.
-> >
-> > I am not sure how all of this matters in practice, it depends heavily
-> > on the workloads and the configuration like you mentioned. I am just
-> > pointing out the potential disadvantages of reacquiring the lock at
-> > every CPU boundary in atomic contexts.
->
-> So, I'm not too convinced by the arguments for a couple reasons:
->
-> * It's not very difficult to create conditions where a contented non-irq
->   protected spinlock is held unnecessarily long due to heavy IRQ irq load=
- on
->   the holding CPU. This can easily extend the amount of time the lock is
->   held by multiple times if not orders of magnitude. That is likely a
->   significantly worse problem than the contention on the lock cacheline
->   which will lead to a lot more gradual degradation.
+On 03/24, Quentin Monnet wrote:
+> When dumping the control flow graphs for programs using the 16-byte long
+> load instruction, we need to skip the second part of this instruction
+> when looking for the next instruction to process. Otherwise, we end up
+> printing "BUG_ld_00" from the kernel disassembler in the CFG.
 
-I agree that can be a problem, it depends on the specific workload and
-configuration. The continuous lock contention at each CPU boundary
-causes a regression (see my reply to Waiman), but I am not sure if
-it's worse than the scenario you are describing.
+> Fixes: efcef17a6d65 ("tools: bpftool: generate .dot graph from CFG  
+> information")
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>   tools/bpf/bpftool/xlated_dumper.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
 
->
-> * If concurrent flushing is an actual problem, we need and can implement =
-a
->   better solution. There's quite a bit of maneuvering room here given tha=
-t
->   the flushing operations are mostly idempotent in close time proximity a=
-nd
->   there's no real atomicity requirement across different segments of
->   flushing operations.
+> diff --git a/tools/bpf/bpftool/xlated_dumper.c  
+> b/tools/bpf/bpftool/xlated_dumper.c
+> index 6fe3134ae45d..3daa05d9bbb7 100644
+> --- a/tools/bpf/bpftool/xlated_dumper.c
+> +++ b/tools/bpf/bpftool/xlated_dumper.c
+> @@ -372,8 +372,15 @@ void dump_xlated_for_graph(struct dump_data *dd,  
+> void *buf_start, void *buf_end,
+>   	struct bpf_insn *insn_start = buf_start;
+>   	struct bpf_insn *insn_end = buf_end;
+>   	struct bpf_insn *cur = insn_start;
+> +	bool double_insn = false;
 
-Concurrent flushing can be a problem for some workloads, especially in
-the MM code we flush in the reclaim and refault paths. This is
-currently mitigated by only allowing one flusher at a time from the
-memcg side, but contention can still happen with flushing when a
-cgroup is being freed or other flushers in other subsystems.
+>   	for (; cur <= insn_end; cur++) {
+> +		if (double_insn) {
+> +			double_insn = false;
+> +			continue;
+> +		}
+> +		double_insn = cur->code == (BPF_LD | BPF_IMM | BPF_DW);
+> +
+>   		printf("% 4d: ", (int)(cur - insn_start + start_idx));
+>   		print_bpf_insn(&cbs, cur, true);
+>   		if (cur != insn_end)
 
-I tried allowing concurrent flushing by completely removing the global
-rstat lock, and only depending on the percpu locks for
-synchronization. For this to be correct the global stat counters need
-to be atomic, this introduced a slow down for flushing in general. I
-also noticed heavier lock contention on the percpu locks, since all
-flushers try to acquire all locks in the same order. I even tried
-implementing a simple retry scheme where we try to acquire the percpu
-lock, and if we fail we queue the current cpu and move to the next
-one. This ended up causing a little bit of slowness as well. Together
-with the slowness introduced by atomic operations it seemed like a
-significant regression in the simple flushing path.
+Any reason not to do the following here instead?
 
-Don't get me wrong, I am all for modifying the current approach, I
-just want to make sure we are making the correct decision for *most*
-workloads. Keep in mind that this series aims to minimize the number
-of flushers from atomic contexts as well, and for non-atomic flushers
-we allow giving up the lock at CPU boundaries anyway. The current
-approach only keeps the lock held throughout for atomic flushers.
+	if (cur->code == (BPF_LD | BPF_IMM | BPF_DW))
+		cur++;
 
-Any ideas here are welcome!
-
->
-> Thanks.
->
 > --
-> tejun
+> 2.34.1
+
