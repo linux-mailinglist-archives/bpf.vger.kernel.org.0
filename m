@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 398D96C8A7F
-	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 03:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBABE6C8A81
+	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 03:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbjCYC46 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 22:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40430 "EHLO
+        id S232156AbjCYC5A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 22:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbjCYC44 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 22:56:56 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA0F1B324
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:56:43 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id v1so3521331wrv.1
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:56:43 -0700 (PDT)
+        with ESMTP id S232147AbjCYC47 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 22:56:59 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E075D1B2C5
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:56:45 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id o32so2103862wms.1
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:56:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679713002;
+        d=gmail.com; s=20210112; t=1679713004;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m4oW0JwNogQCNfzqE6zaDTTVyaUxQaeJq8d46W//qx8=;
-        b=kvtLaLPt+53W8BBO5nkqVLX0pBUhpqDUR9bTnaxwj1YufJNKRVhlMFHUTVyrF/qLhT
-         P78Wd1G0r2BPZ+76tOTSv6FRU6bMJoEAwvnPUkbuvuG/QrgkRG5M5k2rUdbcspWlBfjN
-         CBHyjlkSQPOvGXidluG1XD2Ew4j/ORpOYeHjsOaglJmassxXLWo/ZYARsXorofPZtyya
-         /g/4YLZ6eKwSb8tFuiuvp026B+aI9wa7TFttz0rdDGQ2Nm08WxNKkSKHMrfVeg4Q5Z2J
-         SXAE932Mld31UA375xF2HCfjuXhdxKSnyUnFPIit9bu9JG9ZgOqLNv4v9v43/+wiZBfp
-         vIZQ==
+        bh=gR0jilUmo7dz/wC4pByzZfJDXRDqH4pd949i8Opheqo=;
+        b=X6fwXHWYDYC/jhjYeA2kex23D3gyz8dOP1wsL50+ENHh7LcZa6NnoGPrt5LM8OdSve
+         q8G2eiag4LkeIGThgDm+tdzZOZHvXEo+kMhiF6Hl61XZJW5CzpoXc06ckP9zJN5atR6W
+         f1wCN+d3lEI3KIAtEeQU+Tzt7lb0bOasMCN2VFjhWMZedNR0hsAUxDCHsmNcI3QXIoeN
+         X7Wy4hCozG0lg/0J7swkAqVRs5gysz94x3dW1SXdgSUAxx+b4ROvRQ3uNCZYWTGY6d3q
+         xjffK2hMAXS0g6Bpv1AeZC92lIh2Extkh3ZPUhBPmDBVP8Am648QKuUHneDR6lgPl6ou
+         Aw9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679713002;
+        d=1e100.net; s=20210112; t=1679713004;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m4oW0JwNogQCNfzqE6zaDTTVyaUxQaeJq8d46W//qx8=;
-        b=c6D0nPGixYsrzfOMirr5ZGWQdyCnXLHzdqH21JJSifmiYrRs9HXLLteXaQ5rYy2c35
-         JayRaPEvlqf7qqk1Ua8kCc38043RtEoyS6sZAdTeDBk2G+ZY2ph5UC7wGMrP4jCW8bDJ
-         AuyFRTdnEX2kF2IUeVQozHG4ya9uie36Okexzm1trikMPUhIkij+JtP0wcI4T6gXdamk
-         Z9Kr7nHVGpSmN+Yc+3BIy2nK8wEAHRyqO20mCj2hT6dJGZaUtF/Tm/3aEnyO65oglMIt
-         Z4hxsYweX2pqGXX//a4ScezufJewONN4Blfa/tWJETH4eeEGuf3Xj2e8wzW4/wwPmrsq
-         eyXA==
-X-Gm-Message-State: AAQBX9cvPg1ePvvyBLZ1BE0tQHmQXo61fhL44cShpoGPv9D3xjYuEN+T
-        0JxRN7WmdJ8+EmHU1f9eP5BQdg50Fzg=
-X-Google-Smtp-Source: AKy350bqmWb3RvFZCyHSSTBl7TtbOm5reD9e6L1dvzs5v5D0rhBMraXFng60juS5JasnPIkGuOQkTA==
-X-Received: by 2002:a5d:4b42:0:b0:2c5:5349:22c1 with SMTP id w2-20020a5d4b42000000b002c5534922c1mr6264212wrs.5.1679713002817;
-        Fri, 24 Mar 2023 19:56:42 -0700 (PDT)
+        bh=gR0jilUmo7dz/wC4pByzZfJDXRDqH4pd949i8Opheqo=;
+        b=QxHa/lT7cB+BGr8ZuisMKQrHzhknZoG8rhJQiRCDq0gDXrDUFJdeZZZ2d2xh8Ktie5
+         Lgxkz963/8mSvLwWYdXxNdaGL2OQ560+kFyM41OiXFBZfZwIi2SqHijV/v69smbEefxE
+         O+1qiSB5Rv0kXzaIYS8Vs/X3Ku0dokkRCpl6EMUnzFZdm/NbA5O/1CJmH6hwZM2c5gNi
+         w9s6G1jCV5zRjuTAplSe93sr68xQnoklRRbpjTerLp//ApyS0I5iXhBrlTSfHJbKlGnE
+         akFvcQe8vpq+nbK86QBb/ARHB8hU062sFbu6P2lD7Y5AF7qssq/q8g5d4TvfgVTZAgiR
+         YD2w==
+X-Gm-Message-State: AO0yUKW6EntLxKpj0yQubUSTK597E1HZR+/GtTYXwU/wgs8PLxX3NeAG
+        HffcKupovzJ/RsVb2X0eL9QMIFfuB9g=
+X-Google-Smtp-Source: AK7set9LKKgyiLAjGA9SR9B/yrgwFhka7W+HwQ4WXJ3tzl/9AENI5FHVKZmdrw5Xk5gZZ3kMkGzsIw==
+X-Received: by 2002:a1c:4b13:0:b0:3ed:33a1:ba8e with SMTP id y19-20020a1c4b13000000b003ed33a1ba8emr3881494wma.1.1679713004012;
+        Fri, 24 Mar 2023 19:56:44 -0700 (PDT)
 Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id m1-20020a05600c4f4100b003ee1e07a14asm1428724wmq.45.2023.03.24.19.56.41
+        by smtp.gmail.com with ESMTPSA id m1-20020a05600c4f4100b003ee1e07a14asm1428724wmq.45.2023.03.24.19.56.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Mar 2023 19:56:42 -0700 (PDT)
+        Fri, 24 Mar 2023 19:56:43 -0700 (PDT)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
         kernel-team@fb.com, yhs@fb.com,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 36/43] selftests/bpf: verifier/uninit.c converted to inline assembly
-Date:   Sat, 25 Mar 2023 04:55:17 +0200
-Message-Id: <20230325025524.144043-37-eddyz87@gmail.com>
+Subject: [PATCH bpf-next 37/43] selftests/bpf: verifier/value_adj_spill.c converted to inline assembly
+Date:   Sat, 25 Mar 2023 04:55:18 +0200
+Message-Id: <20230325025524.144043-38-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230325025524.144043-1-eddyz87@gmail.com>
 References: <20230325025524.144043-1-eddyz87@gmail.com>
@@ -72,145 +72,166 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test verifier/uninit.c automatically converted to use inline assembly.
+Test verifier/value_adj_spill.c automatically converted to use inline assembly.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
  .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../selftests/bpf/progs/verifier_uninit.c     | 61 +++++++++++++++++++
- tools/testing/selftests/bpf/verifier/uninit.c | 39 ------------
- 3 files changed, 63 insertions(+), 39 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_uninit.c
- delete mode 100644 tools/testing/selftests/bpf/verifier/uninit.c
+ .../bpf/progs/verifier_value_adj_spill.c      | 78 +++++++++++++++++++
+ .../selftests/bpf/verifier/value_adj_spill.c  | 43 ----------
+ 3 files changed, 80 insertions(+), 43 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_value_adj_spill.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/value_adj_spill.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index ce1ca8c0c02e..c6e69b3827dc 100644
+index c6e69b3827dc..825c8583fecf 100644
 --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
 +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -33,6 +33,7 @@
- #include "verifier_ringbuf.skel.h"
+@@ -34,6 +34,7 @@
  #include "verifier_spill_fill.skel.h"
  #include "verifier_stack_ptr.skel.h"
-+#include "verifier_uninit.skel.h"
+ #include "verifier_uninit.skel.h"
++#include "verifier_value_adj_spill.skel.h"
  
  __maybe_unused
  static void run_tests_aux(const char *skel_name, skel_elf_bytes_fn elf_bytes_factory)
-@@ -88,3 +89,4 @@ void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writable); }
- void test_verifier_ringbuf(void)              { RUN(verifier_ringbuf); }
+@@ -90,3 +91,4 @@ void test_verifier_ringbuf(void)              { RUN(verifier_ringbuf); }
  void test_verifier_spill_fill(void)           { RUN(verifier_spill_fill); }
  void test_verifier_stack_ptr(void)            { RUN(verifier_stack_ptr); }
-+void test_verifier_uninit(void)               { RUN(verifier_uninit); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_uninit.c b/tools/testing/selftests/bpf/progs/verifier_uninit.c
+ void test_verifier_uninit(void)               { RUN(verifier_uninit); }
++void test_verifier_value_adj_spill(void)      { RUN(verifier_value_adj_spill); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_value_adj_spill.c b/tools/testing/selftests/bpf/progs/verifier_value_adj_spill.c
 new file mode 100644
-index 000000000000..7718cd7d19ce
+index 000000000000..d7a5ba9bbe6a
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_uninit.c
-@@ -0,0 +1,61 @@
++++ b/tools/testing/selftests/bpf/progs/verifier_value_adj_spill.c
+@@ -0,0 +1,78 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/* Converted from tools/testing/selftests/bpf/verifier/uninit.c */
++/* Converted from tools/testing/selftests/bpf/verifier/value_adj_spill.c */
 +
 +#include <linux/bpf.h>
 +#include <bpf/bpf_helpers.h>
-+#include "../../../include/linux/filter.h"
 +#include "bpf_misc.h"
 +
-+SEC("socket")
-+__description("read uninitialized register")
-+__failure __msg("R2 !read_ok")
-+__failure_unpriv
-+__naked void read_uninitialized_register(void)
-+{
-+	asm volatile ("					\
-+	r0 = r2;					\
-+	exit;						\
-+"	::: __clobber_all);
-+}
++#define MAX_ENTRIES 11
++
++struct test_val {
++	unsigned int index;
++	int foo[MAX_ENTRIES];
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, long long);
++	__type(value, struct test_val);
++} map_hash_48b SEC(".maps");
 +
 +SEC("socket")
-+__description("read invalid register")
-+__failure __msg("R15 is invalid")
-+__failure_unpriv
-+__naked void read_invalid_register(void)
++__description("map element value is preserved across register spilling")
++__success __failure_unpriv __msg_unpriv("R0 leaks addr")
++__retval(0)
++__naked void is_preserved_across_register_spilling(void)
 +{
 +	asm volatile ("					\
-+	.8byte %[mov64_reg];				\
-+	exit;						\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = 0;						\
++	*(u64*)(r2 + 0) = r1;				\
++	r1 = %[map_hash_48b] ll;			\
++	call %[bpf_map_lookup_elem];			\
++	if r0 == 0 goto l0_%=;				\
++	r1 = 42;					\
++	*(u64*)(r0 + 0) = r1;				\
++	r1 = r10;					\
++	r1 += -184;					\
++	*(u64*)(r1 + 0) = r0;				\
++	r3 = *(u64*)(r1 + 0);				\
++	r1 = 42;					\
++	*(u64*)(r3 + 0) = r1;				\
++l0_%=:	exit;						\
 +"	:
-+	: __imm_insn(mov64_reg, BPF_MOV64_REG(BPF_REG_0, -1))
++	: __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_48b)
 +	: __clobber_all);
 +}
 +
 +SEC("socket")
-+__description("program doesn't init R0 before exit")
-+__failure __msg("R0 !read_ok")
-+__failure_unpriv
-+__naked void t_init_r0_before_exit(void)
++__description("map element value or null is marked on register spilling")
++__success __failure_unpriv __msg_unpriv("R0 leaks addr")
++__retval(0)
++__naked void is_marked_on_register_spilling(void)
 +{
 +	asm volatile ("					\
-+	r2 = r1;					\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("program doesn't init R0 before exit in all branches")
-+__failure __msg("R0 !read_ok")
-+__msg_unpriv("R1 pointer comparison")
-+__naked void before_exit_in_all_branches(void)
-+{
-+	asm volatile ("					\
-+	if r1 >= 0 goto l0_%=;				\
-+	r0 = 1;						\
-+	r0 += 2;					\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = 0;						\
++	*(u64*)(r2 + 0) = r1;				\
++	r1 = %[map_hash_48b] ll;			\
++	call %[bpf_map_lookup_elem];			\
++	r1 = r10;					\
++	r1 += -152;					\
++	*(u64*)(r1 + 0) = r0;				\
++	if r0 == 0 goto l0_%=;				\
++	r3 = *(u64*)(r1 + 0);				\
++	r1 = 42;					\
++	*(u64*)(r3 + 0) = r1;				\
 +l0_%=:	exit;						\
-+"	::: __clobber_all);
++"	:
++	: __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_48b)
++	: __clobber_all);
 +}
 +
 +char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/verifier/uninit.c b/tools/testing/selftests/bpf/verifier/uninit.c
+diff --git a/tools/testing/selftests/bpf/verifier/value_adj_spill.c b/tools/testing/selftests/bpf/verifier/value_adj_spill.c
 deleted file mode 100644
-index 987a5871ff1d..000000000000
---- a/tools/testing/selftests/bpf/verifier/uninit.c
+index 7135e8021b81..000000000000
+--- a/tools/testing/selftests/bpf/verifier/value_adj_spill.c
 +++ /dev/null
-@@ -1,39 +0,0 @@
+@@ -1,43 +0,0 @@
 -{
--	"read uninitialized register",
+-	"map element value is preserved across register spilling",
 -	.insns = {
--	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
+-	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+-	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
+-	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 6),
+-	BPF_ST_MEM(BPF_DW, BPF_REG_0, 0, 42),
+-	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -184),
+-	BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_1, 0),
+-	BPF_ST_MEM(BPF_DW, BPF_REG_3, 0, 42),
 -	BPF_EXIT_INSN(),
 -	},
--	.errstr = "R2 !read_ok",
--	.result = REJECT,
+-	.fixup_map_hash_48b = { 3 },
+-	.errstr_unpriv = "R0 leaks addr",
+-	.result = ACCEPT,
+-	.result_unpriv = REJECT,
 -},
 -{
--	"read invalid register",
+-	"map element value or null is marked on register spilling",
 -	.insns = {
--	BPF_MOV64_REG(BPF_REG_0, -1),
+-	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+-	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
+-	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -152),
+-	BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
+-	BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_1, 0),
+-	BPF_ST_MEM(BPF_DW, BPF_REG_3, 0, 42),
 -	BPF_EXIT_INSN(),
 -	},
--	.errstr = "R15 is invalid",
--	.result = REJECT,
--},
--{
--	"program doesn't init R0 before exit",
--	.insns = {
--	BPF_ALU64_REG(BPF_MOV, BPF_REG_2, BPF_REG_1),
--	BPF_EXIT_INSN(),
--	},
--	.errstr = "R0 !read_ok",
--	.result = REJECT,
--},
--{
--	"program doesn't init R0 before exit in all branches",
--	.insns = {
--	BPF_JMP_IMM(BPF_JGE, BPF_REG_1, 0, 2),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 2),
--	BPF_EXIT_INSN(),
--	},
--	.errstr = "R0 !read_ok",
--	.errstr_unpriv = "R1 pointer comparison",
--	.result = REJECT,
+-	.fixup_map_hash_48b = { 3 },
+-	.errstr_unpriv = "R0 leaks addr",
+-	.result = ACCEPT,
+-	.result_unpriv = REJECT,
 -},
 -- 
 2.40.0
