@@ -2,122 +2,270 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3547D6C8AF6
-	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 05:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B01256C8B3A
+	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 07:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbjCYEqV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Mar 2023 00:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
+        id S230360AbjCYGGL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Mar 2023 02:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbjCYEqT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Mar 2023 00:46:19 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDF117CD7
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 21:46:18 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id p15so4613653ybl.9
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 21:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679719577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Aev6aZrFaneoIiT/5tO9n5SSh+Wv4Vl/zFxv2Nlcyh0=;
-        b=jN2jTtgXG0MrqNXQHFKmsc791+de108Oh0Rhy1JgtjGoPG4Hj5J7eUVxCplL/0D7fL
-         w8DGJQ33Zi5JSMExvCHrjTVMdaBX7d9GQzf3sh4ZraMPUlu6+NC5KSEf8XeOa5xRIjhJ
-         hYE3O49f9xjjCx0uDYS77v95m03lU8he8bktQo8exbPFh8JntTp7XxH7+pxNleBSTUpV
-         rzuW18l8MU2WF/D+z+glfnWAPNxInVBOC3pY0fpfODA8RkDXbBdPIw6M6eLRlxzcDyJj
-         br31rqbMmHpBn3kWbKf4bjMoluldCcJAWs3ys6pKgCwDrUJSLBvdwk8wZJz5STfGKyxt
-         opdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679719577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Aev6aZrFaneoIiT/5tO9n5SSh+Wv4Vl/zFxv2Nlcyh0=;
-        b=1FuriQ9RwBlghZETs+c4hwBlQXS0RlqHFxDBr1LRMLDUzlF8ktbnyJVFWvrg2Cu4oC
-         lVLNiVmR2BVQAfZClhZOdm5F8D7R3rWmWljiURzK7lhLlUgAFSFnqKyOHUL9T2jcG1lw
-         NmMpYcmiK1p0zKfiCFHRgxbAl8rAy30L3c5+8kp1Jg/eHM5Yg5pDnIpRsSXK8PJ3+5Hl
-         4k2utZafo83pqv/vMiJwDVXiJ1+gloIFyBjqGcp9tpfA6wojEu7wO7dSIU+fA6MPQpTa
-         7sDts7oZFzUwNzOSzlz7qaz2NklxQpQxIKxBOhd+bvR56/u5oh7rK1NgS9PdVtK1m7bS
-         u91Q==
-X-Gm-Message-State: AAQBX9er9atV6tjb9XV4jrTvE57xBo1t4Yfakj+kXIX/6Byg/4BPy9j0
-        KA7wcGIv6l051bH1vwv/eP7BeqsqPyjGZdSQB6EvxA==
-X-Google-Smtp-Source: AKy350Yt0pCFGWtHoQ3DVNQUt0XzkNrgeeZ+uhqRK5ArUARnbotr/g1RQRnJk3yXETMnUhHFOHup0KR6oRPuSva8c3M=
-X-Received: by 2002:a05:6902:a93:b0:b78:5f10:672a with SMTP id
- cd19-20020a0569020a9300b00b785f10672amr1584792ybb.12.1679719577172; Fri, 24
- Mar 2023 21:46:17 -0700 (PDT)
+        with ESMTP id S229448AbjCYGGK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Mar 2023 02:06:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A3F13DCF;
+        Fri, 24 Mar 2023 23:06:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E22F608D6;
+        Sat, 25 Mar 2023 06:06:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BEA0C4339B;
+        Sat, 25 Mar 2023 06:06:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679724368;
+        bh=BCxAEBlwGFkw9Mfm0eOS9Vy5xcNAozgVMijfd4lHFIM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iDyRwqHCF4uNBHnbWjh/OboD/2fIRpjNxWc3poq+1yMxR024Bci4DRGVfrIQbLwzE
+         Xv1It2Ap3PqE+1jy5IGubvRffIQk+EPJOGr9X/Trl8Wu8VNagHtmQRbQhKa4tIfSpr
+         2LKID0c3BzyJXdKtGBJBWfZY2moB1C3XD85cAYBhihfxUn1IjTOO65gZ6+l+cE9u2V
+         7Dak+KMQhuWqP98Cw9hrOR86jXXu4NYQfpoBw12MiqZWAYI1nzB5W176DG7q6e32uk
+         dc72S6SJ0UQtg2Z7oYwvjheGOBCeo591C5MoAshSJhNRPiST/6SV74NygxZbMme9qv
+         hRQsf0DX061LQ==
+Received: by mail-ot1-f41.google.com with SMTP id m20-20020a9d6094000000b0069caf591747so2008373otj.2;
+        Fri, 24 Mar 2023 23:06:07 -0700 (PDT)
+X-Gm-Message-State: AO0yUKVMDPwxFrqB3pwEtLczBNPbhtjxWY9PQSUVgysM4Oq3ZLeQN/8/
+        AXPYqDJ3RGTfes81P07nBBbY/TAl7NpPr05Wjok=
+X-Google-Smtp-Source: AK7set9LmUQYlR75y9+C4467lM8C4MZE69jAqqZd1f6f8o0izmcvjQUQobEmbcB8vfheeNSKtObx91JmtQdNSvNf/FA=
+X-Received: by 2002:a9d:349:0:b0:69a:7f40:3fb9 with SMTP id
+ 67-20020a9d0349000000b0069a7f403fb9mr4764963otv.3.1679724367175; Fri, 24 Mar
+ 2023 23:06:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230323040037.2389095-1-yosryahmed@google.com>
- <20230323040037.2389095-2-yosryahmed@google.com> <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
- <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
- <ZB5UalkjGngcBDEJ@slm.duckdns.org> <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com>
- <CALvZod6rF0D21hcV7xnqD+oRkn=x5NLi5GOkPpyaPa859uDH+Q@mail.gmail.com> <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com>
-In-Reply-To: <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 24 Mar 2023 21:46:05 -0700
-Message-ID: <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
+References: <20221012233500.156764-1-masahiroy@kernel.org> <ZBovCrMXJk7NPISp@aurel32.net>
+ <CAMj1kXHwtb9aY+vd4e69Wg47GpL0sT=dDaCUA1sF7=edzc+Qeg@mail.gmail.com>
+ <ZBzAp457rrO52FPy@aurel32.net> <CAMj1kXHvfHwQFX1SKbUvpHWOr3+i7Tp5Hod-_jZE4hDHZmmRZg@mail.gmail.com>
+In-Reply-To: <CAMj1kXHvfHwQFX1SKbUvpHWOr3+i7Tp5Hod-_jZE4hDHZmmRZg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 25 Mar 2023 15:05:30 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASdsWMP2jud4niOkrR5+a2jG-Vfo0XEa63bh3L3W6_t0Q@mail.gmail.com>
+Message-ID: <CAK7LNASdsWMP2jud4niOkrR5+a2jG-Vfo0XEa63bh3L3W6_t0Q@mail.gmail.com>
+Subject: Re: [PATCH] arm64: remove special treatment for the link order of head.o
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 9:37=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
+On Fri, Mar 24, 2023 at 8:33=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> wr=
+ote:
 >
-> On Fri, Mar 24, 2023 at 9:31=E2=80=AFPM Shakeel Butt <shakeelb@google.com=
-> wrote:
+> (cc BTF list and maintainer)
+>
+> On Thu, 23 Mar 2023 at 22:12, Aurelien Jarno <aurelien@aurel32.net> wrote=
+:
 > >
-> > On Fri, Mar 24, 2023 at 7:18=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > >
-> > [...]
-> > > Any ideas here are welcome!
-> > >
+> > Hi,
 > >
-> > Let's move forward. It seems like we are not going to reach an
-> > agreement on making cgroup_rstat_lock a non-irq lock. However there is
-> > agreement on the memcg code of not flushing in irq context and the
-> > cleanup Johannes has requested. Let's proceed with those for now. We
-> > can come back to cgroup_rstat_lock later if we still see issues in
-> > production.
+> > On 2023-03-22 15:51, Ard Biesheuvel wrote:
+> > > On Tue, 21 Mar 2023 at 23:26, Aurelien Jarno <aurelien@aurel32.net> w=
+rote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > On 2022-10-13 08:35, Masahiro Yamada wrote:
+> > > > > In the previous discussion (see the Link tag), Ard pointed out th=
+at
+> > > > > arm/arm64/kernel/head.o does not need any special treatment - the=
+ only
+> > > > > piece that must appear right at the start of the binary image is =
+the
+> > > > > image header which is emitted into .head.text.
+> > > > >
+> > > > > The linker script does the right thing to do. The build system do=
+es
+> > > > > not need to manipulate the link order of head.o.
+> > > > >
+> > > > > Link: https://lore.kernel.org/lkml/CAMj1kXH77Ja8bSsq2Qj8Ck9iSZKw=
+=3D1F8Uy-uAWGVDm4-CG=3DEuA@mail.gmail.com/
+> > > > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > > > ---
+> > > > >
+> > > > >  scripts/head-object-list.txt | 1 -
+> > > > >  1 file changed, 1 deletion(-)
+> > > > >
+> > > > > diff --git a/scripts/head-object-list.txt b/scripts/head-object-l=
+ist.txt
+> > > > > index b16326a92c45..f226e45e3b7b 100644
+> > > > > --- a/scripts/head-object-list.txt
+> > > > > +++ b/scripts/head-object-list.txt
+> > > > > @@ -15,7 +15,6 @@ arch/alpha/kernel/head.o
+> > > > >  arch/arc/kernel/head.o
+> > > > >  arch/arm/kernel/head-nommu.o
+> > > > >  arch/arm/kernel/head.o
+> > > > > -arch/arm64/kernel/head.o
+> > > > >  arch/csky/kernel/head.o
+> > > > >  arch/hexagon/kernel/head.o
+> > > > >  arch/ia64/kernel/head.o
+> > > >
+> > > > This patch causes a significant increase of the arch/arm64/boot/Ima=
+ge
+> > > > size. For instance the generic arm64 Debian kernel went from 31 to =
+39 MB
+> > > > after this patch has been applied to the 6.1 stable tree.
+> > > >
+> > > > In turn this causes issues with some bootloaders, for instance U-Bo=
+ot on
+> > > > a Raspberry Pi limits the kernel size to 36 MB.
+> > > >
+> > >
+> > > I cannot reproduce this with mainline
+> > >
+> > > With the patch
+> > >
+> > > $ size vmlinux
+> > >    text    data     bss     dec     hex filename
+> > > 24567309 14752630 621680 39941619 26175f3 vmlinux
+> > >
+> > > With the patch reverted
+> > >
+> > > $ size vmlinux
+> > >    text    data     bss     dec     hex filename
+> > > 24567309 14752694 621680 39941683 2617633 vmlinux
+> >
+> > I have tried with the current mainline, this is what I get, using GCC 1=
+2.2.0
+> > and binutils 2.40:
+> >
+> >    text    data     bss     dec     hex filename
+> > 32531655        8192996  621968 41346619        276e63b vmlinux.orig
+> > 25170610        8192996  621968 33985574        2069426 vmlinux.revert
+> >
+> > > It would help to compare the resulting vmlinux ELF images from both
+> > > builds to see where the extra space is being allocated
+> >
+> > At a first glance, it seems the extra space is allocated in the BTF
+> > section. I have uploaded the resulting files as well as the config file
+> > I used there:
+> > https://temp.aurel32.net/linux-arm64-size-head.o.tar.gz
+> >
 >
-> Even if we do not flush from irq context, we still flush from atomic
-> contexts that will currently hold the lock with irqs disabled
-> throughout the entire flush sequence. A primary purpose of this reason
-> is to avoid that.
+> Indeed. So we go from
 >
-> We can either:
-> (a) Proceed with the following approach of making cgroup_rstat_lock a
-> non-irq lock.
-> (b) Proceed with Tejun's suggestion of always releasing and
-> reacquiring the lock at CPU boundaries, even for atomic flushes (if
-> the spinlock needs a break ofc).
-> (c) Something else.
+>   [15] .BTF              PROGBITS         ffff8000091d1ff4  011e1ff4
+>        00000000005093d6  0000000000000000   A       0     0     1
+>
+> to
+>
+>   [15] .BTF              PROGBITS         ffff8000091d1ff4  011e1ff4
+>        0000000000c0e5eb  0000000000000000   A       0     0     1
+>
+> i.e, from 5 MiB to 12+ MiB of BTF metadata.
+>
+> To me, it is not clear at all how one would be related to the other,
+> so it will leave it to the Kbuild and BTF experts to chew on this one.
 
-(d) keep the status quo regarding cgroup_rstat_lock
-(e) decouple the discussion of cgroup_rstat_lock from the agreed
-improvements. Send the patches for the agreed ones and continue
-discussing cgroup_rstat_lock.
+
+
+Strange.
+
+I used the .config file Aurelien provided, but
+I still cannot reproduce this issue.
+
+
+The vmlinux size is small
+as-is in the current mainline.
+
+
+
+[mainline]
+
+
+masahiro@zoe:~/ref/linux(master)$ git log --oneline -1
+65aca32efdcb (HEAD -> master, origin/master, origin/HEAD) Merge tag
+'mm-hotfixes-stable-2023-03-24-17-09' of
+git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-size  vmlinux
+   text    data     bss     dec     hex filename
+24561282 8186912 622032 33370226 1fd3072 vmlinux
+masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-readelf -S
+vmlinux | grep -A1 BTF
+  [15] .BTF              PROGBITS         ffff8000091c0708  011d0708
+       000000000048209c  0000000000000000   A       0     0     1
+  [16] .BTF_ids          PROGBITS         ffff8000096427a4  016527a4
+       0000000000000a1c  0000000000000000   A       0     0     1
+
+
+
+
+[mainline + revert 994b7ac]
+
+masahiro@zoe:~/ref/linux2(testing)$ git log --oneline -2
+856c80dd789c (HEAD -> testing) Revert "arm64: remove special treatment
+for the link order of head.o"
+65aca32efdcb (origin/master, origin/HEAD, master) Merge tag
+'mm-hotfixes-stable-2023-03-24-17-09' of
+git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+masahiro@zoe:~/ref/linux2(testing)$ aarch64-linux-gnu-size  vmlinux
+   text    data     bss     dec     hex filename
+24561329 8186912 622032 33370273 1fd30a1 vmlinux
+masahiro@zoe:~/ref/linux2(testing)$ aarch64-linux-gnu-readelf -S
+vmlinux | grep -A1 BTF
+  [15] .BTF              PROGBITS         ffff8000091c0708  011d0708
+       00000000004820cb  0000000000000000   A       0     0     1
+  [16] .BTF_ids          PROGBITS         ffff8000096427d4  016527d4
+       0000000000000a1c  0000000000000000   A       0     0     1
+
+
+
+I still do not know what affects reproducibility.
+(compiler version, pahole version, etc. ?)
+
+
+
+
+Aurelien used GCC 12 + binutils 2.40, but
+my toolchain is a bit older.
+
+
+
+FWIW, I tested this on Ubuntu 22.04LTS.
+
+masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-gcc --version
+aarch64-linux-gnu-gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+masahiro@zoe:~/ref/linux(master)$ pahole --version
+v1.22
+
+masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-as --version
+GNU assembler (GNU Binutils for Ubuntu) 2.38
+Copyright (C) 2022 Free Software Foundation, Inc.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or later.
+This program has absolutely no warranty.
+This assembler was configured for a target of `aarch64-linux-gnu'.
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
