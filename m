@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3247F6C8A69
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFB36C8A6A
 	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 03:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbjCYC4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 22:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
+        id S231795AbjCYC4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 22:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231795AbjCYC4R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 22:56:17 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D651B2C1
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:56:13 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id bg16-20020a05600c3c9000b003eb34e21bdfso4187551wmb.0
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:56:13 -0700 (PDT)
+        with ESMTP id S231823AbjCYC4S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 22:56:18 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC0D1ADF1
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:56:15 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id n10-20020a05600c4f8a00b003ee93d2c914so3828951wmq.2
+        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 19:56:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679712971;
+        d=gmail.com; s=20210112; t=1679712973;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XlaIZs/IkkBptzr0u20dosL0OjImscdrFg/Y8qd3Nhs=;
-        b=iwXm5sZxZNR1J+/wwUm2+oVy8rJyHSKgssrWmixC3ceLHuBYbjNm2aFkmGjghTnOIm
-         3PvpI04zMPycKzVSIDUeqm76mZK5D+bM8eroz9Y+wfPP+wncrG0Yul9DmhCqFevT2+R2
-         DnHpyFtfvMJHOrqM/z0R+Fo+Npcrh68yxMHB/i2HmBsZCgcXKe1YXBulpDbX9h1rQxzU
-         wtkjJa1bLASSSRaym5R3wPBbC5TF/qdMfyJ7wBNxinnO/N/cYMisWSrijxgIP0/pfEhI
-         Y/Mq3yZZxzMT3uMMg22iOih9vr/fywDKEI7IjECXF9BdkDHu2XdxpRwuOZvxfe4uW0gR
-         7p8g==
+        bh=WFjcaT9K8HTGjlnAluLpv/fxc4PAmBKFU8WpFpQpxiQ=;
+        b=NneJfujX0IlFYCpWGRRwwz70stQ77OkC/xD3Zj+w5XJDnc8tdmidwh3N4QC3tkaLOw
+         Zu93YJPFFCE0wwSgf6ydptDwgIsXGTI13KZh84GP9pBscXjTuCT2betZdKm8ihbUjajo
+         aqF7Wqiu2C7MBUNlsoAtyHTAzNS5g5+dUNQDjvvCCmTzOEHQjKxpdnljaBpNA9Q70vSB
+         xoBkXjaEkt3bZgU2Q5zuvyI3/w9ngI/lXEvk0YPS6Picyi2zzUFGSVb9uAptMC/m63Le
+         zNWC333eylb+q8Zls3iL0JVoRFFVn0IKLn18qpBmarOIYd8l8gJwm5QO9FDSZM3lvpv/
+         Vfkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679712971;
+        d=1e100.net; s=20210112; t=1679712973;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XlaIZs/IkkBptzr0u20dosL0OjImscdrFg/Y8qd3Nhs=;
-        b=ErdDd92feo1+FYGxXJtp7FklOtopmHoQwDX4hfIRqqEWIcBB9FB4iAHWut/gx1LdZ8
-         xWHeWBOtqwkPHxJL+gAk69sSwo8MIqhTnhHqw+Hk4b1bp0nEQMbmi+iEvWItqHkdGhwe
-         B9mvwUQSuoSea0SHHjO00UiiUbQ+NctlUfNBFWj5TuP/1R+KbXxEsWomhEsqGFW8LPpj
-         0eBRnfrmgfrg4rB8apr/5XcUwniCOAPHZluI/poLWiOHpYdR0VZ2JJIN+P9Hm9mI6Zja
-         44Hh4dJvt0mKZYSMHOFn+DQpo0i2qSqophwbjmP+0n9hQwwVkAFHbZEUbLiZ4581i5iY
-         mr+Q==
-X-Gm-Message-State: AAQBX9fBRXtZGMkj9HFA/Sg19fw7vCvHi7RINaqj0FjvpTkZEfrSU/Kq
-        sIUvU+mPJaaqSfOH14DIj3cTXV6j7nA=
-X-Google-Smtp-Source: AKy350b8M1EKKt6aCyVtnqmqjPQZLo60A08VAWgOJUb7Ez820FHmWxRyKm7zTdMbatuCUiOCbIBF7w==
-X-Received: by 2002:a7b:c005:0:b0:3ef:5dd6:2f94 with SMTP id c5-20020a7bc005000000b003ef5dd62f94mr2374590wmb.31.1679712971583;
-        Fri, 24 Mar 2023 19:56:11 -0700 (PDT)
+        bh=WFjcaT9K8HTGjlnAluLpv/fxc4PAmBKFU8WpFpQpxiQ=;
+        b=BN7nMKPKWmDjXKuWeR+ctzlPYJQXNSpZPW3CVWoLAP8vgjDLdPbgpYt3yeb2RN2xfp
+         eZQu84crE/nIz9FpsfyDdpgQgfNNQHUKZJWLszPEqmh13PovM/waUg3qBdytoH0w94O/
+         +LNqwr16GghSHijxaXnOyXHblW0DiFTHab5MMOxAqbazuVCEej1VEcTVjM1fGpNmySkb
+         7KW6cJoEN9ncfQSG+cT3j9pdYSxwJaIQYxu9n3lRaQWNI4jDWnWTgYWPFqgzeeaYCH4D
+         vtH8AK9jH03hToP2vqWIjOHrSA7mQOrS79Qs3b0G9AG0oxKInGj2WMqxbiLNvX5M5I8U
+         ++dQ==
+X-Gm-Message-State: AO0yUKVaZDnYxJOcliq2hx+ahQT/a/TBJbWXVTFh/CTXU/Ef72gotuXJ
+        7W/ssb3k3shKvgfmuFH84fR5kFTm3L4=
+X-Google-Smtp-Source: AK7set/lFceCYWrLtYjaIZgeO1+qxJdOutlmsvy6z4xf6sY/SpI024ogvN0KIQbk2avGlJmCXkDv7A==
+X-Received: by 2002:a05:600c:2209:b0:3ee:64d5:bac9 with SMTP id z9-20020a05600c220900b003ee64d5bac9mr3666547wml.9.1679712973396;
+        Fri, 24 Mar 2023 19:56:13 -0700 (PDT)
 Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id m1-20020a05600c4f4100b003ee1e07a14asm1428724wmq.45.2023.03.24.19.56.10
+        by smtp.gmail.com with ESMTPSA id m1-20020a05600c4f4100b003ee1e07a14asm1428724wmq.45.2023.03.24.19.56.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Mar 2023 19:56:11 -0700 (PDT)
+        Fri, 24 Mar 2023 19:56:12 -0700 (PDT)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
         kernel-team@fb.com, yhs@fb.com,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 13/43] selftests/bpf: verifier/cgroup_skb.c converted to inline assembly
-Date:   Sat, 25 Mar 2023 04:54:54 +0200
-Message-Id: <20230325025524.144043-14-eddyz87@gmail.com>
+Subject: [PATCH bpf-next 14/43] selftests/bpf: verifier/cgroup_storage.c converted to inline assembly
+Date:   Sat, 25 Mar 2023 04:54:55 +0200
+Message-Id: <20230325025524.144043-15-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230325025524.144043-1-eddyz87@gmail.com>
 References: <20230325025524.144043-1-eddyz87@gmail.com>
@@ -72,468 +72,572 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test verifier/cgroup_skb.c automatically converted to use inline assembly.
+Test verifier/cgroup_storage.c automatically converted to use inline assembly.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
  .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../selftests/bpf/progs/verifier_cgroup_skb.c | 227 ++++++++++++++++++
- .../selftests/bpf/verifier/cgroup_skb.c       | 197 ---------------
- 3 files changed, 229 insertions(+), 197 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_cgroup_skb.c
- delete mode 100644 tools/testing/selftests/bpf/verifier/cgroup_skb.c
+ .../bpf/progs/verifier_cgroup_storage.c       | 308 ++++++++++++++++++
+ .../selftests/bpf/verifier/cgroup_storage.c   | 220 -------------
+ 3 files changed, 310 insertions(+), 220 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_cgroup_storage.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/cgroup_storage.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index b138c9894abb..53e41af90821 100644
+index 53e41af90821..3b47620a1f42 100644
 --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
 +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -10,6 +10,7 @@
- #include "verifier_bounds_mix_sign_unsign.skel.h"
+@@ -11,6 +11,7 @@
  #include "verifier_cfg.skel.h"
  #include "verifier_cgroup_inv_retcode.skel.h"
-+#include "verifier_cgroup_skb.skel.h"
+ #include "verifier_cgroup_skb.skel.h"
++#include "verifier_cgroup_storage.skel.h"
  
  __maybe_unused
  static void run_tests_aux(const char *skel_name, skel_elf_bytes_fn elf_bytes_factory)
-@@ -42,3 +43,4 @@ void test_verifier_bounds_deduction(void)     { RUN(verifier_bounds_deduction);
- void test_verifier_bounds_mix_sign_unsign(void) { RUN(verifier_bounds_mix_sign_unsign); }
+@@ -44,3 +45,4 @@ void test_verifier_bounds_mix_sign_unsign(void) { RUN(verifier_bounds_mix_sign_u
  void test_verifier_cfg(void)                  { RUN(verifier_cfg); }
  void test_verifier_cgroup_inv_retcode(void)   { RUN(verifier_cgroup_inv_retcode); }
-+void test_verifier_cgroup_skb(void)           { RUN(verifier_cgroup_skb); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_cgroup_skb.c b/tools/testing/selftests/bpf/progs/verifier_cgroup_skb.c
+ void test_verifier_cgroup_skb(void)           { RUN(verifier_cgroup_skb); }
++void test_verifier_cgroup_storage(void)       { RUN(verifier_cgroup_storage); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_cgroup_storage.c b/tools/testing/selftests/bpf/progs/verifier_cgroup_storage.c
 new file mode 100644
-index 000000000000..5ee3d349d6d0
+index 000000000000..9a13f5c11ac7
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_cgroup_skb.c
-@@ -0,0 +1,227 @@
++++ b/tools/testing/selftests/bpf/progs/verifier_cgroup_storage.c
+@@ -0,0 +1,308 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/* Converted from tools/testing/selftests/bpf/verifier/cgroup_skb.c */
++/* Converted from tools/testing/selftests/bpf/verifier/cgroup_storage.c */
 +
 +#include <linux/bpf.h>
 +#include <bpf/bpf_helpers.h>
++#include "../../../include/linux/filter.h"
 +#include "bpf_misc.h"
 +
-+SEC("cgroup/skb")
-+__description("direct packet read test#1 for CGROUP_SKB")
-+__success __failure_unpriv
-+__msg_unpriv("invalid bpf_context access off=76 size=4")
-+__retval(0)
-+__naked void test_1_for_cgroup_skb(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u32*)(r1 + %[__sk_buff_data]);		\
-+	r3 = *(u32*)(r1 + %[__sk_buff_data_end]);	\
-+	r4 = *(u32*)(r1 + %[__sk_buff_len]);		\
-+	r5 = *(u32*)(r1 + %[__sk_buff_pkt_type]);	\
-+	r6 = *(u32*)(r1 + %[__sk_buff_mark]);		\
-+	*(u32*)(r1 + %[__sk_buff_mark]) = r6;		\
-+	r7 = *(u32*)(r1 + %[__sk_buff_queue_mapping]);	\
-+	r8 = *(u32*)(r1 + %[__sk_buff_protocol]);	\
-+	r9 = *(u32*)(r1 + %[__sk_buff_vlan_present]);	\
-+	r0 = r2;					\
-+	r0 += 8;					\
-+	if r0 > r3 goto l0_%=;				\
-+	r0 = *(u8*)(r2 + 0);				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__sk_buff_data, offsetof(struct __sk_buff, data)),
-+	  __imm_const(__sk_buff_data_end, offsetof(struct __sk_buff, data_end)),
-+	  __imm_const(__sk_buff_len, offsetof(struct __sk_buff, len)),
-+	  __imm_const(__sk_buff_mark, offsetof(struct __sk_buff, mark)),
-+	  __imm_const(__sk_buff_pkt_type, offsetof(struct __sk_buff, pkt_type)),
-+	  __imm_const(__sk_buff_protocol, offsetof(struct __sk_buff, protocol)),
-+	  __imm_const(__sk_buff_queue_mapping, offsetof(struct __sk_buff, queue_mapping)),
-+	  __imm_const(__sk_buff_vlan_present, offsetof(struct __sk_buff, vlan_present))
-+	: __clobber_all);
-+}
++struct {
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
++	__uint(max_entries, 0);
++	__type(key, struct bpf_cgroup_storage_key);
++	__type(value, char[TEST_DATA_LEN]);
++} cgroup_storage SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, long long);
++	__type(value, long long);
++} map_hash_8b SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
++	__uint(max_entries, 0);
++	__type(key, struct bpf_cgroup_storage_key);
++	__type(value, char[64]);
++} percpu_cgroup_storage SEC(".maps");
 +
 +SEC("cgroup/skb")
-+__description("direct packet read test#2 for CGROUP_SKB")
++__description("valid cgroup storage access")
 +__success __success_unpriv __retval(0)
-+__naked void test_2_for_cgroup_skb(void)
++__naked void valid_cgroup_storage_access(void)
 +{
 +	asm volatile ("					\
-+	r4 = *(u32*)(r1 + %[__sk_buff_vlan_tci]);	\
-+	r5 = *(u32*)(r1 + %[__sk_buff_vlan_proto]);	\
-+	r6 = *(u32*)(r1 + %[__sk_buff_priority]);	\
-+	*(u32*)(r1 + %[__sk_buff_priority]) = r6;	\
-+	r7 = *(u32*)(r1 + %[__sk_buff_ingress_ifindex]);\
-+	r8 = *(u32*)(r1 + %[__sk_buff_tc_index]);	\
-+	r9 = *(u32*)(r1 + %[__sk_buff_hash]);		\
-+	r0 = 0;						\
++	r2 = 0;						\
++	r1 = %[cgroup_storage] ll;			\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 0);				\
++	r0 = r1;					\
++	r0 &= 1;					\
 +	exit;						\
 +"	:
-+	: __imm_const(__sk_buff_hash, offsetof(struct __sk_buff, hash)),
-+	  __imm_const(__sk_buff_ingress_ifindex, offsetof(struct __sk_buff, ingress_ifindex)),
-+	  __imm_const(__sk_buff_priority, offsetof(struct __sk_buff, priority)),
-+	  __imm_const(__sk_buff_tc_index, offsetof(struct __sk_buff, tc_index)),
-+	  __imm_const(__sk_buff_vlan_proto, offsetof(struct __sk_buff, vlan_proto)),
-+	  __imm_const(__sk_buff_vlan_tci, offsetof(struct __sk_buff, vlan_tci))
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(cgroup_storage)
 +	: __clobber_all);
 +}
 +
 +SEC("cgroup/skb")
-+__description("direct packet read test#3 for CGROUP_SKB")
++__description("invalid cgroup storage access 1")
++__failure __msg("cannot pass map_type 1 into func bpf_get_local_storage")
++__failure_unpriv
++__naked void invalid_cgroup_storage_access_1(void)
++{
++	asm volatile ("					\
++	r2 = 0;						\
++	r1 = %[map_hash_8b] ll;				\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 0);				\
++	r0 = r1;					\
++	r0 &= 1;					\
++	exit;						\
++"	:
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(map_hash_8b)
++	: __clobber_all);
++}
++
++SEC("cgroup/skb")
++__description("invalid cgroup storage access 2")
++__failure __msg("fd 1 is not pointing to valid bpf_map")
++__failure_unpriv
++__naked void invalid_cgroup_storage_access_2(void)
++{
++	asm volatile ("					\
++	r2 = 0;						\
++	.8byte %[ld_map_fd];				\
++	.8byte 0;					\
++	call %[bpf_get_local_storage];			\
++	r0 &= 1;					\
++	exit;						\
++"	:
++	: __imm(bpf_get_local_storage),
++	  __imm_insn(ld_map_fd, BPF_RAW_INSN(BPF_LD | BPF_DW | BPF_IMM, BPF_REG_1, BPF_PSEUDO_MAP_FD, 0, 1))
++	: __clobber_all);
++}
++
++SEC("cgroup/skb")
++__description("invalid cgroup storage access 3")
++__failure __msg("invalid access to map value, value_size=64 off=256 size=4")
++__failure_unpriv
++__naked void invalid_cgroup_storage_access_3(void)
++{
++	asm volatile ("					\
++	r2 = 0;						\
++	r1 = %[cgroup_storage] ll;			\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 256);				\
++	r1 += 1;					\
++	r0 = 0;						\
++	exit;						\
++"	:
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(cgroup_storage)
++	: __clobber_all);
++}
++
++SEC("cgroup/skb")
++__description("invalid cgroup storage access 4")
++__failure __msg("invalid access to map value, value_size=64 off=-2 size=4")
++__failure_unpriv
++__flag(BPF_F_ANY_ALIGNMENT)
++__naked void invalid_cgroup_storage_access_4(void)
++{
++	asm volatile ("					\
++	r2 = 0;						\
++	r1 = %[cgroup_storage] ll;			\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 - 2);				\
++	r0 = r1;					\
++	r1 += 1;					\
++	exit;						\
++"	:
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(cgroup_storage)
++	: __clobber_all);
++}
++
++SEC("cgroup/skb")
++__description("invalid cgroup storage access 5")
++__failure __msg("get_local_storage() doesn't support non-zero flags")
++__failure_unpriv
++__naked void invalid_cgroup_storage_access_5(void)
++{
++	asm volatile ("					\
++	r2 = 7;						\
++	r1 = %[cgroup_storage] ll;			\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 0);				\
++	r0 = r1;					\
++	r0 &= 1;					\
++	exit;						\
++"	:
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(cgroup_storage)
++	: __clobber_all);
++}
++
++SEC("cgroup/skb")
++__description("invalid cgroup storage access 6")
++__failure __msg("get_local_storage() doesn't support non-zero flags")
++__msg_unpriv("R2 leaks addr into helper function")
++__naked void invalid_cgroup_storage_access_6(void)
++{
++	asm volatile ("					\
++	r2 = r1;					\
++	r1 = %[cgroup_storage] ll;			\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 0);				\
++	r0 = r1;					\
++	r0 &= 1;					\
++	exit;						\
++"	:
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(cgroup_storage)
++	: __clobber_all);
++}
++
++SEC("cgroup/skb")
++__description("valid per-cpu cgroup storage access")
 +__success __success_unpriv __retval(0)
-+__naked void test_3_for_cgroup_skb(void)
++__naked void per_cpu_cgroup_storage_access(void)
 +{
 +	asm volatile ("					\
-+	r4 = *(u32*)(r1 + %[__sk_buff_cb_0]);		\
-+	r5 = *(u32*)(r1 + %[__sk_buff_cb_1]);		\
-+	r6 = *(u32*)(r1 + %[__sk_buff_cb_2]);		\
-+	r7 = *(u32*)(r1 + %[__sk_buff_cb_3]);		\
-+	r8 = *(u32*)(r1 + %[__sk_buff_cb_4]);		\
-+	r9 = *(u32*)(r1 + %[__sk_buff_napi_id]);	\
-+	*(u32*)(r1 + %[__sk_buff_cb_0]) = r4;		\
-+	*(u32*)(r1 + %[__sk_buff_cb_1]) = r5;		\
-+	*(u32*)(r1 + %[__sk_buff_cb_2]) = r6;		\
-+	*(u32*)(r1 + %[__sk_buff_cb_3]) = r7;		\
-+	*(u32*)(r1 + %[__sk_buff_cb_4]) = r8;		\
-+	r0 = 0;						\
++	r2 = 0;						\
++	r1 = %[percpu_cgroup_storage] ll;		\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 0);				\
++	r0 = r1;					\
++	r0 &= 1;					\
 +	exit;						\
 +"	:
-+	: __imm_const(__sk_buff_cb_0, offsetof(struct __sk_buff, cb[0])),
-+	  __imm_const(__sk_buff_cb_1, offsetof(struct __sk_buff, cb[1])),
-+	  __imm_const(__sk_buff_cb_2, offsetof(struct __sk_buff, cb[2])),
-+	  __imm_const(__sk_buff_cb_3, offsetof(struct __sk_buff, cb[3])),
-+	  __imm_const(__sk_buff_cb_4, offsetof(struct __sk_buff, cb[4])),
-+	  __imm_const(__sk_buff_napi_id, offsetof(struct __sk_buff, napi_id))
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(percpu_cgroup_storage)
 +	: __clobber_all);
 +}
 +
 +SEC("cgroup/skb")
-+__description("direct packet read test#4 for CGROUP_SKB")
-+__success __success_unpriv __retval(0)
-+__naked void test_4_for_cgroup_skb(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u32*)(r1 + %[__sk_buff_family]);		\
-+	r3 = *(u32*)(r1 + %[__sk_buff_remote_ip4]);	\
-+	r4 = *(u32*)(r1 + %[__sk_buff_local_ip4]);	\
-+	r5 = *(u32*)(r1 + %[__sk_buff_remote_ip6_0]);	\
-+	r5 = *(u32*)(r1 + %[__sk_buff_remote_ip6_1]);	\
-+	r5 = *(u32*)(r1 + %[__sk_buff_remote_ip6_2]);	\
-+	r5 = *(u32*)(r1 + %[__sk_buff_remote_ip6_3]);	\
-+	r6 = *(u32*)(r1 + %[__sk_buff_local_ip6_0]);	\
-+	r6 = *(u32*)(r1 + %[__sk_buff_local_ip6_1]);	\
-+	r6 = *(u32*)(r1 + %[__sk_buff_local_ip6_2]);	\
-+	r6 = *(u32*)(r1 + %[__sk_buff_local_ip6_3]);	\
-+	r7 = *(u32*)(r1 + %[__sk_buff_remote_port]);	\
-+	r8 = *(u32*)(r1 + %[__sk_buff_local_port]);	\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__sk_buff_family, offsetof(struct __sk_buff, family)),
-+	  __imm_const(__sk_buff_local_ip4, offsetof(struct __sk_buff, local_ip4)),
-+	  __imm_const(__sk_buff_local_ip6_0, offsetof(struct __sk_buff, local_ip6[0])),
-+	  __imm_const(__sk_buff_local_ip6_1, offsetof(struct __sk_buff, local_ip6[1])),
-+	  __imm_const(__sk_buff_local_ip6_2, offsetof(struct __sk_buff, local_ip6[2])),
-+	  __imm_const(__sk_buff_local_ip6_3, offsetof(struct __sk_buff, local_ip6[3])),
-+	  __imm_const(__sk_buff_local_port, offsetof(struct __sk_buff, local_port)),
-+	  __imm_const(__sk_buff_remote_ip4, offsetof(struct __sk_buff, remote_ip4)),
-+	  __imm_const(__sk_buff_remote_ip6_0, offsetof(struct __sk_buff, remote_ip6[0])),
-+	  __imm_const(__sk_buff_remote_ip6_1, offsetof(struct __sk_buff, remote_ip6[1])),
-+	  __imm_const(__sk_buff_remote_ip6_2, offsetof(struct __sk_buff, remote_ip6[2])),
-+	  __imm_const(__sk_buff_remote_ip6_3, offsetof(struct __sk_buff, remote_ip6[3])),
-+	  __imm_const(__sk_buff_remote_port, offsetof(struct __sk_buff, remote_port))
-+	: __clobber_all);
-+}
-+
-+SEC("cgroup/skb")
-+__description("invalid access of tc_classid for CGROUP_SKB")
-+__failure __msg("invalid bpf_context access")
++__description("invalid per-cpu cgroup storage access 1")
++__failure __msg("cannot pass map_type 1 into func bpf_get_local_storage")
 +__failure_unpriv
-+__naked void tc_classid_for_cgroup_skb(void)
++__naked void cpu_cgroup_storage_access_1(void)
 +{
 +	asm volatile ("					\
-+	r0 = *(u32*)(r1 + %[__sk_buff_tc_classid]);	\
-+	r0 = 0;						\
++	r2 = 0;						\
++	r1 = %[map_hash_8b] ll;				\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 0);				\
++	r0 = r1;					\
++	r0 &= 1;					\
 +	exit;						\
 +"	:
-+	: __imm_const(__sk_buff_tc_classid, offsetof(struct __sk_buff, tc_classid))
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(map_hash_8b)
 +	: __clobber_all);
 +}
 +
 +SEC("cgroup/skb")
-+__description("invalid access of data_meta for CGROUP_SKB")
-+__failure __msg("invalid bpf_context access")
++__description("invalid per-cpu cgroup storage access 2")
++__failure __msg("fd 1 is not pointing to valid bpf_map")
 +__failure_unpriv
-+__naked void data_meta_for_cgroup_skb(void)
++__naked void cpu_cgroup_storage_access_2(void)
 +{
 +	asm volatile ("					\
-+	r0 = *(u32*)(r1 + %[__sk_buff_data_meta]);	\
-+	r0 = 0;						\
++	r2 = 0;						\
++	.8byte %[ld_map_fd];				\
++	.8byte 0;					\
++	call %[bpf_get_local_storage];			\
++	r0 &= 1;					\
 +	exit;						\
 +"	:
-+	: __imm_const(__sk_buff_data_meta, offsetof(struct __sk_buff, data_meta))
++	: __imm(bpf_get_local_storage),
++	  __imm_insn(ld_map_fd, BPF_RAW_INSN(BPF_LD | BPF_DW | BPF_IMM, BPF_REG_1, BPF_PSEUDO_MAP_FD, 0, 1))
 +	: __clobber_all);
 +}
 +
 +SEC("cgroup/skb")
-+__description("invalid access of flow_keys for CGROUP_SKB")
-+__failure __msg("invalid bpf_context access")
++__description("invalid per-cpu cgroup storage access 3")
++__failure __msg("invalid access to map value, value_size=64 off=256 size=4")
 +__failure_unpriv
-+__naked void flow_keys_for_cgroup_skb(void)
++__naked void cpu_cgroup_storage_access_3(void)
 +{
 +	asm volatile ("					\
-+	r0 = *(u32*)(r1 + %[__sk_buff_flow_keys]);	\
++	r2 = 0;						\
++	r1 = %[percpu_cgroup_storage] ll;		\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 256);				\
++	r1 += 1;					\
 +	r0 = 0;						\
 +	exit;						\
 +"	:
-+	: __imm_const(__sk_buff_flow_keys, offsetof(struct __sk_buff, flow_keys))
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(percpu_cgroup_storage)
 +	: __clobber_all);
 +}
 +
 +SEC("cgroup/skb")
-+__description("invalid write access to napi_id for CGROUP_SKB")
-+__failure __msg("invalid bpf_context access")
++__description("invalid per-cpu cgroup storage access 4")
++__failure __msg("invalid access to map value, value_size=64 off=-2 size=4")
 +__failure_unpriv
-+__naked void napi_id_for_cgroup_skb(void)
++__flag(BPF_F_ANY_ALIGNMENT)
++__naked void cpu_cgroup_storage_access_4(void)
 +{
 +	asm volatile ("					\
-+	r9 = *(u32*)(r1 + %[__sk_buff_napi_id]);	\
-+	*(u32*)(r1 + %[__sk_buff_napi_id]) = r9;	\
-+	r0 = 0;						\
++	r2 = 0;						\
++	r1 = %[cgroup_storage] ll;			\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 - 2);				\
++	r0 = r1;					\
++	r1 += 1;					\
 +	exit;						\
 +"	:
-+	: __imm_const(__sk_buff_napi_id, offsetof(struct __sk_buff, napi_id))
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(cgroup_storage)
 +	: __clobber_all);
 +}
 +
 +SEC("cgroup/skb")
-+__description("write tstamp from CGROUP_SKB")
-+__success __failure_unpriv
-+__msg_unpriv("invalid bpf_context access off=152 size=8")
-+__retval(0)
-+__naked void write_tstamp_from_cgroup_skb(void)
++__description("invalid per-cpu cgroup storage access 5")
++__failure __msg("get_local_storage() doesn't support non-zero flags")
++__failure_unpriv
++__naked void cpu_cgroup_storage_access_5(void)
 +{
 +	asm volatile ("					\
-+	r0 = 0;						\
-+	*(u64*)(r1 + %[__sk_buff_tstamp]) = r0;		\
-+	r0 = 0;						\
++	r2 = 7;						\
++	r1 = %[percpu_cgroup_storage] ll;		\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 0);				\
++	r0 = r1;					\
++	r0 &= 1;					\
 +	exit;						\
 +"	:
-+	: __imm_const(__sk_buff_tstamp, offsetof(struct __sk_buff, tstamp))
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(percpu_cgroup_storage)
 +	: __clobber_all);
 +}
 +
 +SEC("cgroup/skb")
-+__description("read tstamp from CGROUP_SKB")
-+__success __success_unpriv __retval(0)
-+__naked void read_tstamp_from_cgroup_skb(void)
++__description("invalid per-cpu cgroup storage access 6")
++__failure __msg("get_local_storage() doesn't support non-zero flags")
++__msg_unpriv("R2 leaks addr into helper function")
++__naked void cpu_cgroup_storage_access_6(void)
 +{
 +	asm volatile ("					\
-+	r0 = *(u64*)(r1 + %[__sk_buff_tstamp]);		\
-+	r0 = 0;						\
++	r2 = r1;					\
++	r1 = %[percpu_cgroup_storage] ll;		\
++	call %[bpf_get_local_storage];			\
++	r1 = *(u32*)(r0 + 0);				\
++	r0 = r1;					\
++	r0 &= 1;					\
 +	exit;						\
 +"	:
-+	: __imm_const(__sk_buff_tstamp, offsetof(struct __sk_buff, tstamp))
++	: __imm(bpf_get_local_storage),
++	  __imm_addr(percpu_cgroup_storage)
 +	: __clobber_all);
 +}
 +
 +char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/verifier/cgroup_skb.c b/tools/testing/selftests/bpf/verifier/cgroup_skb.c
+diff --git a/tools/testing/selftests/bpf/verifier/cgroup_storage.c b/tools/testing/selftests/bpf/verifier/cgroup_storage.c
 deleted file mode 100644
-index 52e4c03b076b..000000000000
---- a/tools/testing/selftests/bpf/verifier/cgroup_skb.c
+index 97057c0a1b8a..000000000000
+--- a/tools/testing/selftests/bpf/verifier/cgroup_storage.c
 +++ /dev/null
-@@ -1,197 +0,0 @@
+@@ -1,220 +0,0 @@
 -{
--	"direct packet read test#1 for CGROUP_SKB",
+-	"valid cgroup storage access",
 -	.insns = {
--	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
--		    offsetof(struct __sk_buff, data)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
--		    offsetof(struct __sk_buff, data_end)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_1,
--		    offsetof(struct __sk_buff, len)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_5, BPF_REG_1,
--		    offsetof(struct __sk_buff, pkt_type)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_1,
--		    offsetof(struct __sk_buff, mark)),
--	BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_6,
--		    offsetof(struct __sk_buff, mark)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_1,
--		    offsetof(struct __sk_buff, queue_mapping)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_8, BPF_REG_1,
--		    offsetof(struct __sk_buff, protocol)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_9, BPF_REG_1,
--		    offsetof(struct __sk_buff, vlan_present)),
--	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 8),
--	BPF_JMP_REG(BPF_JGT, BPF_REG_0, BPF_REG_3, 1),
--	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_2, 0),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
 -	BPF_EXIT_INSN(),
 -	},
--	.result = ACCEPT,
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "invalid bpf_context access off=76 size=4",
--	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
--},
--{
--	"direct packet read test#2 for CGROUP_SKB",
--	.insns = {
--	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_1,
--		    offsetof(struct __sk_buff, vlan_tci)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_5, BPF_REG_1,
--		    offsetof(struct __sk_buff, vlan_proto)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_1,
--		    offsetof(struct __sk_buff, priority)),
--	BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_6,
--		    offsetof(struct __sk_buff, priority)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_1,
--		    offsetof(struct __sk_buff, ingress_ifindex)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_8, BPF_REG_1,
--		    offsetof(struct __sk_buff, tc_index)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_9, BPF_REG_1,
--		    offsetof(struct __sk_buff, hash)),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
--	BPF_EXIT_INSN(),
--	},
+-	.fixup_cgroup_storage = { 1 },
 -	.result = ACCEPT,
 -	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
 -},
 -{
--	"direct packet read test#3 for CGROUP_SKB",
+-	"invalid cgroup storage access 1",
 -	.insns = {
--	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_5, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[1])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[2])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[3])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_8, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[4])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_9, BPF_REG_1,
--		    offsetof(struct __sk_buff, napi_id)),
--	BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_4,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_5,
--		    offsetof(struct __sk_buff, cb[1])),
--	BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_6,
--		    offsetof(struct __sk_buff, cb[2])),
--	BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_7,
--		    offsetof(struct __sk_buff, cb[3])),
--	BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_8,
--		    offsetof(struct __sk_buff, cb[4])),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
 -	BPF_EXIT_INSN(),
 -	},
--	.result = ACCEPT,
+-	.fixup_map_hash_8b = { 1 },
+-	.result = REJECT,
+-	.errstr = "cannot pass map_type 1 into func bpf_get_local_storage",
 -	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
 -},
 -{
--	"direct packet read test#4 for CGROUP_SKB",
+-	"invalid cgroup storage access 2",
 -	.insns = {
--	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
--		    offsetof(struct __sk_buff, family)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
--		    offsetof(struct __sk_buff, remote_ip4)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_1,
--		    offsetof(struct __sk_buff, local_ip4)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_5, BPF_REG_1,
--		    offsetof(struct __sk_buff, remote_ip6[0])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_5, BPF_REG_1,
--		    offsetof(struct __sk_buff, remote_ip6[1])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_5, BPF_REG_1,
--		    offsetof(struct __sk_buff, remote_ip6[2])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_5, BPF_REG_1,
--		    offsetof(struct __sk_buff, remote_ip6[3])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_1,
--		    offsetof(struct __sk_buff, local_ip6[0])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_1,
--		    offsetof(struct __sk_buff, local_ip6[1])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_1,
--		    offsetof(struct __sk_buff, local_ip6[2])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_1,
--		    offsetof(struct __sk_buff, local_ip6[3])),
--	BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_1,
--		    offsetof(struct __sk_buff, remote_port)),
--	BPF_LDX_MEM(BPF_W, BPF_REG_8, BPF_REG_1,
--		    offsetof(struct __sk_buff, local_port)),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
--	BPF_EXIT_INSN(),
--	},
--	.result = ACCEPT,
--	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
--},
--{
--	"invalid access of tc_classid for CGROUP_SKB",
--	.insns = {
--	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, tc_classid)),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 1),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
 -	BPF_EXIT_INSN(),
 -	},
 -	.result = REJECT,
--	.errstr = "invalid bpf_context access",
+-	.errstr = "fd 1 is not pointing to valid bpf_map",
 -	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
 -},
 -{
--	"invalid access of data_meta for CGROUP_SKB",
+-	"invalid cgroup storage access 3",
 -	.insns = {
--	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, data_meta)),
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 256),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
 -	BPF_MOV64_IMM(BPF_REG_0, 0),
 -	BPF_EXIT_INSN(),
 -	},
+-	.fixup_cgroup_storage = { 1 },
 -	.result = REJECT,
--	.errstr = "invalid bpf_context access",
+-	.errstr = "invalid access to map value, value_size=64 off=256 size=4",
 -	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
 -},
 -{
--	"invalid access of flow_keys for CGROUP_SKB",
+-	"invalid cgroup storage access 4",
 -	.insns = {
--	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, flow_keys)),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, -2),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
 -	BPF_EXIT_INSN(),
 -	},
+-	.fixup_cgroup_storage = { 1 },
 -	.result = REJECT,
--	.errstr = "invalid bpf_context access",
+-	.errstr = "invalid access to map value, value_size=64 off=-2 size=4",
 -	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+-	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
 -},
 -{
--	"invalid write access to napi_id for CGROUP_SKB",
+-	"invalid cgroup storage access 5",
 -	.insns = {
--	BPF_LDX_MEM(BPF_W, BPF_REG_9, BPF_REG_1,
--		    offsetof(struct __sk_buff, napi_id)),
--	BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_9,
--		    offsetof(struct __sk_buff, napi_id)),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_MOV64_IMM(BPF_REG_2, 7),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
 -	BPF_EXIT_INSN(),
 -	},
+-	.fixup_cgroup_storage = { 1 },
 -	.result = REJECT,
--	.errstr = "invalid bpf_context access",
+-	.errstr = "get_local_storage() doesn't support non-zero flags",
 -	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
 -},
 -{
--	"write tstamp from CGROUP_SKB",
+-	"invalid cgroup storage access 6",
 -	.insns = {
--	BPF_MOV64_IMM(BPF_REG_0, 0),
--	BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0,
--		    offsetof(struct __sk_buff, tstamp)),
--	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_MOV64_REG(BPF_REG_2, BPF_REG_1),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
 -	BPF_EXIT_INSN(),
 -	},
+-	.fixup_cgroup_storage = { 1 },
+-	.result = REJECT,
+-	.errstr = "get_local_storage() doesn't support non-zero flags",
+-	.errstr_unpriv = "R2 leaks addr into helper function",
+-	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+-},
+-{
+-	"valid per-cpu cgroup storage access",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
+-	BPF_EXIT_INSN(),
+-	},
+-	.fixup_percpu_cgroup_storage = { 1 },
 -	.result = ACCEPT,
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "invalid bpf_context access off=152 size=8",
 -	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
 -},
 -{
--	"read tstamp from CGROUP_SKB",
+-	"invalid per-cpu cgroup storage access 1",
 -	.insns = {
--	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, tstamp)),
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
+-	BPF_EXIT_INSN(),
+-	},
+-	.fixup_map_hash_8b = { 1 },
+-	.result = REJECT,
+-	.errstr = "cannot pass map_type 1 into func bpf_get_local_storage",
+-	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+-},
+-{
+-	"invalid per-cpu cgroup storage access 2",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 1),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
+-	BPF_EXIT_INSN(),
+-	},
+-	.result = REJECT,
+-	.errstr = "fd 1 is not pointing to valid bpf_map",
+-	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+-},
+-{
+-	"invalid per-cpu cgroup storage access 3",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 256),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
 -	BPF_MOV64_IMM(BPF_REG_0, 0),
 -	BPF_EXIT_INSN(),
 -	},
--	.result = ACCEPT,
+-	.fixup_percpu_cgroup_storage = { 1 },
+-	.result = REJECT,
+-	.errstr = "invalid access to map value, value_size=64 off=256 size=4",
+-	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+-},
+-{
+-	"invalid per-cpu cgroup storage access 4",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, -2),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
+-	BPF_EXIT_INSN(),
+-	},
+-	.fixup_cgroup_storage = { 1 },
+-	.result = REJECT,
+-	.errstr = "invalid access to map value, value_size=64 off=-2 size=4",
+-	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+-	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+-},
+-{
+-	"invalid per-cpu cgroup storage access 5",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_2, 7),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
+-	BPF_EXIT_INSN(),
+-	},
+-	.fixup_percpu_cgroup_storage = { 1 },
+-	.result = REJECT,
+-	.errstr = "get_local_storage() doesn't support non-zero flags",
+-	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+-},
+-{
+-	"invalid per-cpu cgroup storage access 6",
+-	.insns = {
+-	BPF_MOV64_REG(BPF_REG_2, BPF_REG_1),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
+-	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
+-	BPF_EXIT_INSN(),
+-	},
+-	.fixup_percpu_cgroup_storage = { 1 },
+-	.result = REJECT,
+-	.errstr = "get_local_storage() doesn't support non-zero flags",
+-	.errstr_unpriv = "R2 leaks addr into helper function",
 -	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
 -},
 -- 
