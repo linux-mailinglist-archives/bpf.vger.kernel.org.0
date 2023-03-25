@@ -2,138 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4406C8A11
-	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 02:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D876C8A15
+	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 02:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbjCYByy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 21:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
+        id S231282AbjCYB5j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 21:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjCYByx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 21:54:53 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CC52128;
-        Fri, 24 Mar 2023 18:54:52 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id o2so3466925plg.4;
-        Fri, 24 Mar 2023 18:54:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679709292;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rZD4yeAZYRZA0h6Sa2287K8z27FVJ3yK8JKUr0lQOXE=;
-        b=mC2DwxizegktL3ml5ZkgW4iCveIfhyJtMgfrimZIa1j1Y8YW2I4IZ0tdvhZc1A2gBf
-         bPpL453iMfkKE7Q2iWa4l856pfAiURxN5/VWU5iRKWYdb8bkZ3t7oIn4Ot9AMCUHitJ1
-         fCBSfv9sMBPT7l1ZZx+O8DWyTvwkVSxYlGe9lG/wtPJtTqKF+eHZphHY8fK58NNu/2RP
-         gJ6z0onrbm2DECMNfgl9WtEt3NFf22+/uIlkkjpNvmM6Bun+RuVdmYM0bG3VPR8NAMhS
-         fy/MyqxnmIPai73OJB0s480cJGQXc7QfJTxlb9Gf6+IA3XpIVl5ws2XDBcGAJ5Rj3nhv
-         6k6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679709292;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rZD4yeAZYRZA0h6Sa2287K8z27FVJ3yK8JKUr0lQOXE=;
-        b=foSxrAun58eoPwjaqBixSDbsStCoQLq6LTSbK4yZbWBlOMuJBxA07qQMZX3EDQnytC
-         dG9s4XvOjpYvguULEi35Z/1L/3WH5WZj+K5S6uDRpU0XXM6mx/gKzkUvfjBjOK54y6yc
-         5aBw7Clal18anfOvuH001VO1z9+Jp1/EW0Z5hFi32ymWtA6Tg+TQaHe2ZaPQysZu3HgG
-         qNw88JT/jnI3NNLxXYc34olOY61Ueeg7YAR59JVb9rmCwXJ6+e4b79gVKElfJ2fwIYQu
-         RzFvneax9q+ItSPKE9BgUbU5+Nzy4/DMU/pETUahbf7ns11bOwKPuC1oLPsmPVr/ylPU
-         yDpQ==
-X-Gm-Message-State: AAQBX9cr3p/Pv+2c7dmdDYpMzRUIzagRzy0KTrRbUeR7MOD7x5ByMK/F
-        G6Cdc8TH4qU7p81uRcV5Vfc=
-X-Google-Smtp-Source: AKy350ayeAKBbmYB88nMPmyXyjU6HNDMbK6lhYJvfZOmCtey/uCIZ7/8QwM1J7mRvwtCkk9eMFLdBg==
-X-Received: by 2002:a17:902:d4c7:b0:19e:6760:305b with SMTP id o7-20020a170902d4c700b0019e6760305bmr4705364plg.47.1679709292101;
-        Fri, 24 Mar 2023 18:54:52 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id bf11-20020a170902b90b00b00194caf3e975sm2019425plb.208.2023.03.24.18.54.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Mar 2023 18:54:51 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 24 Mar 2023 15:54:50 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-Message-ID: <ZB5UalkjGngcBDEJ@slm.duckdns.org>
-References: <20230323040037.2389095-1-yosryahmed@google.com>
- <20230323040037.2389095-2-yosryahmed@google.com>
- <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
- <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
+        with ESMTP id S229505AbjCYB5i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 21:57:38 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FEFA27B;
+        Fri, 24 Mar 2023 18:57:35 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Pk2Jp4lMkz4f3jXr;
+        Sat, 25 Mar 2023 09:57:30 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+        by APP4 (Coremail) with SMTP id gCh0CgCnWa0LVR5k8bYQGA--.31219S2;
+        Sat, 25 Mar 2023 09:57:32 +0800 (CST)
+Message-ID: <253dd595-c850-c09f-2057-641487024fb7@huaweicloud.com>
+Date:   Sat, 25 Mar 2023 09:57:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
-X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: add bound tracking for BPF_MOD
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+References: <20230324045842.729719-1-xukuohai@huaweicloud.com>
+ <20230324045842.729719-2-xukuohai@huaweicloud.com>
+ <CAADnVQLKxssX1K_CSpbkcOPep2NNnoTRt2bMFzKhCo5AaUzwWA@mail.gmail.com>
+From:   Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <CAADnVQLKxssX1K_CSpbkcOPep2NNnoTRt2bMFzKhCo5AaUzwWA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCnWa0LVR5k8bYQGA--.31219S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr1ktF4DJF48GFyDJr4xWFg_yoWktrXEk3
+        s2ywn5uwnxGwn7Can3A3WqqryDCa1DGry5GrWaqr12qFyxAr9YkFn5Crn2yr98GFWfJ3yD
+        Jrnavay7Zw1SqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU13rcDUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-On Fri, Mar 24, 2023 at 12:22:09AM -0700, Yosry Ahmed wrote:
-> I think a problem with this approach is that we risk having to contend
-> for the global lock at every CPU boundary in atomic contexts. Right
-> now we contend for the global lock once, and once we have it we go
-> through all CPUs to flush, only having to contend with updates taking
-> the percpu locks at this point. If we unconditionally release &
-> reacquire the global lock at every CPU boundary then we may contend
-> for it much more frequently with concurrent flushers.
+On 3/24/2023 1:16 AM, Alexei Starovoitov wrote:
+> On Thu, Mar 23, 2023 at 8:59 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>>
+>> From: Xu Kuohai <xukuohai@huawei.com>
+>>
+>> dst_reg is marked as unknown when BPF_MOD instruction is verified, causing
+>> the following bpf prog to be incorrectly rejected.
+>>
+>> 0: r0 = 0
+>> 1: r0 %= 1   // r0 is marked as unknown
+>> 2: r1 = 0
+>> 3: r1 += 1
+>> 4: if r1 < r0 goto pc-2 // verifier treats the loop as unbounded
+>> 5: exit
+>>
+>> To teach verifier to accept the above prog, this patch adds bound tracking
+>> for BPF_MOD.
+>>
+>> The approach is based on the following rules:
+>>
+>> 1. BPF_MOD is unsigned;
+>>
+>> 2. For an unsigned constant divisor x:
+>>
+>>   a. when x != 0, the resulted dst_reg bits are in the range [0, x - 1],
+>>      and if no wrapping occurs, the result can be further narrowed down
+>>      to [umin mod x, umax mod x];
+>>
+>>   b. when x == 0, dst_reg is truncated to 32 bits by mod32 or remains
+>>      unchanged by mod64.
+>>
+>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 > 
-> On the memory controller side, concurrent flushers are already held
-> back to avoid a thundering herd problem on the global rstat lock, but
-> flushers from outside the memory controller can still compete together
-> or with a flusher from the memory controller. In this case, we risk
-> contending the global lock more and concurrent flushers taking a
-> longer period of time, which may end up causing multi-CPU stalls
-> anyway, right? Also, if we keep _irq when spinning for the lock, then
-> concurrent flushers still need to spin with irq disabled -- another
-> problem that this series tries to fix.
-> 
-> This is particularly a problem for flushers in atomic contexts. There
-> is a flusher in mem_cgroup_wb_stats() that flushes while holding
-> another spinlock, and a flusher in mem_cgroup_usage() that flushes
-> with irqs disabled. If flushing takes a longer period of time due to
-> repeated lock contention, it affects such atomic context negatively.
-> 
-> I am not sure how all of this matters in practice, it depends heavily
-> on the workloads and the configuration like you mentioned. I am just
-> pointing out the potential disadvantages of reacquiring the lock at
-> every CPU boundary in atomic contexts.
+> Same Nack as before.
 
-So, I'm not too convinced by the arguments for a couple reasons:
+Sorry, I did not receive Nack for this patch before.
 
-* It's not very difficult to create conditions where a contented non-irq
-  protected spinlock is held unnecessarily long due to heavy IRQ irq load on
-  the holding CPU. This can easily extend the amount of time the lock is
-  held by multiple times if not orders of magnitude. That is likely a
-  significantly worse problem than the contention on the lock cacheline
-  which will lead to a lot more gradual degradation.
+> You haven't answered _why_ anyone needs it.
 
-* If concurrent flushing is an actual problem, we need and can implement a
-  better solution. There's quite a bit of maneuvering room here given that
-  the flushing operations are mostly idempotent in close time proximity and
-  there's no real atomicity requirement across different segments of
-  flushing operations.
+No idea, I simply believe it's good to have a closer estimate of the result.
 
-Thanks.
-
--- 
-tejun
