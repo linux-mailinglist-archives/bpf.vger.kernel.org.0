@@ -2,123 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE8B6C89CC
-	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 02:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4406C8A11
+	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 02:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjCYBJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Mar 2023 21:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
+        id S231980AbjCYByy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Mar 2023 21:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjCYBJA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Mar 2023 21:09:00 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76CE10CC
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 18:08:59 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id ix20so3412121plb.3
-        for <bpf@vger.kernel.org>; Fri, 24 Mar 2023 18:08:59 -0700 (PDT)
+        with ESMTP id S229505AbjCYByx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Mar 2023 21:54:53 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CC52128;
+        Fri, 24 Mar 2023 18:54:52 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id o2so3466925plg.4;
+        Fri, 24 Mar 2023 18:54:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679706539;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=w+RhrKrarnMEEmf+wRd26hfnVCy90LImCwtPKsNxygg=;
-        b=SS+bal+5MpOn7V1HWkYGA5Gc9X2P6l/FBsZajJGbsu6WqkawrpzSGr5jfJ/ucIlYeC
-         +JQJKU5lb5+QlCCS1BLonK8Wkuq+DU10IYAGSg/vbnQASvKfmRdHyDPz3MkACfWuBe7G
-         1U5FhLUG81EaWFzjdcUMw+NufhinB59V5lxlSjVkwuTSmCG1h2hVvgjxchIPFNKUV4uW
-         DXhIf5s9y/wPHMBBFlAm/nJnsNAr+qCS5BMsCbOX/ZmSESVKkBX8nLBiB2IHvwM9DzAu
-         w/WS6IzC+uGOieQ4faS8TJVvLcb8BBAkWKFp3iGSq4j9Ka2rH/qJ3KbhtOFJ/OwSyWSy
-         UqsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679706539;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20210112; t=1679709292;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=w+RhrKrarnMEEmf+wRd26hfnVCy90LImCwtPKsNxygg=;
-        b=2Hy4/ZGuHNt5XXuV5VJlZG7zOjDNYefEcqMuRVk5eQCNZEk8mDltyfTFZMfybyf14q
-         NbhVK/dkytq7Pc+p046RfI77UzWwsmWmAuKdan4re0wrXuLmbta0bspp2Qyet0ragLNK
-         khvUnBt6ygOrqyVUWYrD3a0SyiGT5jiEDwntbAwV+P2FB2nUqvcElcCzFAj8PDFmrnC+
-         1HKeacP1id9dhw3CWUVXnwgJ2UkIFTy0Yt2bwGicOHpdtWvqHr+6ELj2gfCMMSgUEnrq
-         VKlo2pVU5CUigfo996Aes2X/ltBsRoG3UylUvZG6Ut3k+fLPKcVYn0ENbAhiF5BwLgyq
-         yDvg==
-X-Gm-Message-State: AAQBX9c47FbKoS8KAOS6gD531mGpXZ2HIyZUm4p1k64hI3U6Fq68+nta
-        8Sz19tPeNT00iYAc7pK0Xn5+AACzvo0=
-X-Google-Smtp-Source: AKy350bjWZ6X9wZ2FgsgnDbH2e9kVXSaytkTzxPvj8BvAiHAKdHze50oGOZfL8WgaMyvrBdoIF6WJQ==
-X-Received: by 2002:a17:902:ce8e:b0:1a0:65ae:df32 with SMTP id f14-20020a170902ce8e00b001a065aedf32mr5609329plg.37.1679706539107;
-        Fri, 24 Mar 2023 18:08:59 -0700 (PDT)
-Received: from localhost.localdomain ([98.42.16.172])
-        by smtp.gmail.com with ESMTPSA id y18-20020a170902b49200b001a1ba37d06csm12509460plr.29.2023.03.24.18.08.58
+        bh=rZD4yeAZYRZA0h6Sa2287K8z27FVJ3yK8JKUr0lQOXE=;
+        b=mC2DwxizegktL3ml5ZkgW4iCveIfhyJtMgfrimZIa1j1Y8YW2I4IZ0tdvhZc1A2gBf
+         bPpL453iMfkKE7Q2iWa4l856pfAiURxN5/VWU5iRKWYdb8bkZ3t7oIn4Ot9AMCUHitJ1
+         fCBSfv9sMBPT7l1ZZx+O8DWyTvwkVSxYlGe9lG/wtPJtTqKF+eHZphHY8fK58NNu/2RP
+         gJ6z0onrbm2DECMNfgl9WtEt3NFf22+/uIlkkjpNvmM6Bun+RuVdmYM0bG3VPR8NAMhS
+         fy/MyqxnmIPai73OJB0s480cJGQXc7QfJTxlb9Gf6+IA3XpIVl5ws2XDBcGAJ5Rj3nhv
+         6k6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679709292;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rZD4yeAZYRZA0h6Sa2287K8z27FVJ3yK8JKUr0lQOXE=;
+        b=foSxrAun58eoPwjaqBixSDbsStCoQLq6LTSbK4yZbWBlOMuJBxA07qQMZX3EDQnytC
+         dG9s4XvOjpYvguULEi35Z/1L/3WH5WZj+K5S6uDRpU0XXM6mx/gKzkUvfjBjOK54y6yc
+         5aBw7Clal18anfOvuH001VO1z9+Jp1/EW0Z5hFi32ymWtA6Tg+TQaHe2ZaPQysZu3HgG
+         qNw88JT/jnI3NNLxXYc34olOY61Ueeg7YAR59JVb9rmCwXJ6+e4b79gVKElfJ2fwIYQu
+         RzFvneax9q+ItSPKE9BgUbU5+Nzy4/DMU/pETUahbf7ns11bOwKPuC1oLPsmPVr/ylPU
+         yDpQ==
+X-Gm-Message-State: AAQBX9cr3p/Pv+2c7dmdDYpMzRUIzagRzy0KTrRbUeR7MOD7x5ByMK/F
+        G6Cdc8TH4qU7p81uRcV5Vfc=
+X-Google-Smtp-Source: AKy350ayeAKBbmYB88nMPmyXyjU6HNDMbK6lhYJvfZOmCtey/uCIZ7/8QwM1J7mRvwtCkk9eMFLdBg==
+X-Received: by 2002:a17:902:d4c7:b0:19e:6760:305b with SMTP id o7-20020a170902d4c700b0019e6760305bmr4705364plg.47.1679709292101;
+        Fri, 24 Mar 2023 18:54:52 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id bf11-20020a170902b90b00b00194caf3e975sm2019425plb.208.2023.03.24.18.54.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Mar 2023 18:08:58 -0700 (PDT)
-From:   JP Kobryn <inwardvessel@gmail.com>
-To:     bpf@vger.kernel.org, andrii@kernel.org
-Cc:     kernel-team@meta.com, inwardvessel@gmail.com
-Subject: [PATCH bpf-next] libbpf: synchronize access to print function pointer
-Date:   Fri, 24 Mar 2023 18:08:45 -0700
-Message-Id: <20230325010845.46000-1-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 24 Mar 2023 18:54:51 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 24 Mar 2023 15:54:50 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
+ percpu lock
+Message-ID: <ZB5UalkjGngcBDEJ@slm.duckdns.org>
+References: <20230323040037.2389095-1-yosryahmed@google.com>
+ <20230323040037.2389095-2-yosryahmed@google.com>
+ <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
+ <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch prevents races on the print function pointer, allowing the
-libbpf_set_print() function to become thread safe.
+Hello,
 
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
----
- tools/lib/bpf/libbpf.c | 9 ++++++---
- tools/lib/bpf/libbpf.h | 3 +++
- 2 files changed, 9 insertions(+), 3 deletions(-)
+On Fri, Mar 24, 2023 at 12:22:09AM -0700, Yosry Ahmed wrote:
+> I think a problem with this approach is that we risk having to contend
+> for the global lock at every CPU boundary in atomic contexts. Right
+> now we contend for the global lock once, and once we have it we go
+> through all CPUs to flush, only having to contend with updates taking
+> the percpu locks at this point. If we unconditionally release &
+> reacquire the global lock at every CPU boundary then we may contend
+> for it much more frequently with concurrent flushers.
+> 
+> On the memory controller side, concurrent flushers are already held
+> back to avoid a thundering herd problem on the global rstat lock, but
+> flushers from outside the memory controller can still compete together
+> or with a flusher from the memory controller. In this case, we risk
+> contending the global lock more and concurrent flushers taking a
+> longer period of time, which may end up causing multi-CPU stalls
+> anyway, right? Also, if we keep _irq when spinning for the lock, then
+> concurrent flushers still need to spin with irq disabled -- another
+> problem that this series tries to fix.
+> 
+> This is particularly a problem for flushers in atomic contexts. There
+> is a flusher in mem_cgroup_wb_stats() that flushes while holding
+> another spinlock, and a flusher in mem_cgroup_usage() that flushes
+> with irqs disabled. If flushing takes a longer period of time due to
+> repeated lock contention, it affects such atomic context negatively.
+> 
+> I am not sure how all of this matters in practice, it depends heavily
+> on the workloads and the configuration like you mentioned. I am just
+> pointing out the potential disadvantages of reacquiring the lock at
+> every CPU boundary in atomic contexts.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index f6a071db5c6e..15737d7b5a28 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -216,9 +216,10 @@ static libbpf_print_fn_t __libbpf_pr = __base_pr;
- 
- libbpf_print_fn_t libbpf_set_print(libbpf_print_fn_t fn)
- {
--	libbpf_print_fn_t old_print_fn = __libbpf_pr;
-+	libbpf_print_fn_t old_print_fn;
-+
-+	old_print_fn = __atomic_exchange_n(&__libbpf_pr, fn, __ATOMIC_RELAXED);
- 
--	__libbpf_pr = fn;
- 	return old_print_fn;
- }
- 
-@@ -227,8 +228,10 @@ void libbpf_print(enum libbpf_print_level level, const char *format, ...)
- {
- 	va_list args;
- 	int old_errno;
-+	libbpf_print_fn_t print_fn;
- 
--	if (!__libbpf_pr)
-+	print_fn = __atomic_load_n(&__libbpf_pr, __ATOMIC_RELAXED);
-+	if (!print_fn)
- 		return;
- 
- 	old_errno = errno;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 1615e55e2e79..4478809ff9ca 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -99,6 +99,9 @@ typedef int (*libbpf_print_fn_t)(enum libbpf_print_level level,
- /**
-  * @brief **libbpf_set_print()** sets user-provided log callback function to
-  * be used for libbpf warnings and informational messages.
-+ *
-+ * This function is thread safe.
-+ *
-  * @param fn The log print function. If NULL, libbpf won't print anything.
-  * @return Pointer to old print function.
-  */
+So, I'm not too convinced by the arguments for a couple reasons:
+
+* It's not very difficult to create conditions where a contented non-irq
+  protected spinlock is held unnecessarily long due to heavy IRQ irq load on
+  the holding CPU. This can easily extend the amount of time the lock is
+  held by multiple times if not orders of magnitude. That is likely a
+  significantly worse problem than the contention on the lock cacheline
+  which will lead to a lot more gradual degradation.
+
+* If concurrent flushing is an actual problem, we need and can implement a
+  better solution. There's quite a bit of maneuvering room here given that
+  the flushing operations are mostly idempotent in close time proximity and
+  there's no real atomicity requirement across different segments of
+  flushing operations.
+
+Thanks.
+
 -- 
-2.39.2
-
+tejun
