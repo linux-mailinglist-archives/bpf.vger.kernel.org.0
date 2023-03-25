@@ -2,167 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 440666C8D17
-	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 11:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D624B6C8D18
+	for <lists+bpf@lfdr.de>; Sat, 25 Mar 2023 11:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjCYKXZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Mar 2023 06:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
+        id S229591AbjCYKXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Mar 2023 06:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjCYKXY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Mar 2023 06:23:24 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A696CC00
-        for <bpf@vger.kernel.org>; Sat, 25 Mar 2023 03:23:22 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id z18so2457002pgj.13
-        for <bpf@vger.kernel.org>; Sat, 25 Mar 2023 03:23:22 -0700 (PDT)
+        with ESMTP id S230073AbjCYKXl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Mar 2023 06:23:41 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2411164A
+        for <bpf@vger.kernel.org>; Sat, 25 Mar 2023 03:23:38 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id a16so3510719pjs.4
+        for <bpf@vger.kernel.org>; Sat, 25 Mar 2023 03:23:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112; t=1679739801;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ogHvFp5W4VZQ/COOYeomRjYjWy0vaDSzhVHiCwG/GNA=;
-        b=nKniuQtfwCWDxyUC7y62NuvEqUaaeoz6ovTkjl7ixashWxqDPAl7uceRtMJ2UN2PsC
-         7iTR+YeTfU1SREVw6y2ErIBFf6Mrx1YnQSIfvQmXZF8s3S1dYXO0MlQ29aKeOG6McUXq
-         TDXLq8Lm73dM10XSh1qA88/u56MeD6jqB/xUEAhhpN2sOHdOlLcDqtNfJrx8jC8W34iB
-         KrWRhuXiZKP7jGdj7o+2fcWc0v534Pf9fI/8X8lagzm8ZvxbQjf1CjnpSL1UD+Ds4xKD
-         en0C1YGElvmFny+QSDAm8xMRGqg+aD6QHmjG3nHm1/dXLeTWVVzSZlISFgEsc87gWGL0
-         umYQ==
+        d=gmail.com; s=20210112; t=1679739818;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=71PnYgVAJ2sH+p9bYNHJSsZPBskJ4aq6i5nHdj4FDhc=;
+        b=p1rxStxyf0fuboB/iDcwz85fU5RIrsAtBI7ohdUh68udPVK/McMURQHPng4/WBl/4J
+         iXEa37oMFORJMV+Ay9FSMWe/iYo6ccfYao3mpNHtGwZGgiTTLa8lRPjUuKV47a8e66jE
+         E47jZ3jDbI2x6KYe0Qu5MLBsl+JFT01uie/XY2hQFNj7J+MX2unU/Sh4WBt0SlujqTRJ
+         i+ZVvyQieggTUhhEw6ms4YJTNFVdQrwqyIOQCqGdMgxVlWdOLN+sRCSYD8/o0bl3Iu4I
+         sk9J2CoudYgTajwMnj2gGE0OTxEff3/555dbvseMxSvxTPn2MZ1ZNblo42eHFoEI1pNc
+         Nf5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679739801;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ogHvFp5W4VZQ/COOYeomRjYjWy0vaDSzhVHiCwG/GNA=;
-        b=RIxE+fHNwIhFeAU374b7CEeYHd0MCKs6aV2uR4lN1Slw75mzT5756qaB7aCaecxJJR
-         qZHh/zzUgvVoMUC8E6tSRpom1PasWCWbDxmAnvz+8KHCB2ulRyiRDKGVhs1zY5g1bCZk
-         XNq1zD4Nn3epvaODaJrodTlmZPvmWoR39GVeIAMIeOX4SUVYx7OIl72HCrTjzmIR0pi0
-         Qq0eXGNvP1PJfizyFkzD56bacD5O+uESGJ3fvH+SWmI9/KKldFKeJgyMU/YlATdZjvP4
-         t6XtyraWrBfHtlnzKSCITKFbAGAxcKthZ+lYxioRL7uITCI3XcXXO7ETQdyeDH7G5o2x
-         UP+g==
-X-Gm-Message-State: AAQBX9c1DipadC2AmlqK+5WT1fTI746m0MZro8p8aPMGzj6lmOye+Qh1
-        jH1UHxovpdXj2GlChEiBrf2S2AbL+Dy4rg==
-X-Google-Smtp-Source: AKy350ZsB3wy/CQK0jh4OwZTY01awUg86+Nrd/g4DZtjTd9emvgfURQQvmW9BbW+88onXo48g1jbPA==
-X-Received: by 2002:a62:1a49:0:b0:625:ffed:b3d1 with SMTP id a70-20020a621a49000000b00625ffedb3d1mr5270258pfa.7.1679739801213;
-        Sat, 25 Mar 2023 03:23:21 -0700 (PDT)
-Received: from mariner-vm.. (dhcp-9320.meeting.ietf.org. [31.133.147.32])
-        by smtp.gmail.com with ESMTPSA id a24-20020a62e218000000b00627f2f23624sm11656419pfi.159.2023.03.25.03.23.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Mar 2023 03:23:20 -0700 (PDT)
-From:   Dave Thaler <dthaler1968@googlemail.com>
-To:     bpf@vger.kernel.org
-Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
-Subject: [PATCH bpf-next v4] bpf, docs: Add extended call instructions
-Date:   Sat, 25 Mar 2023 10:23:14 +0000
-Message-Id: <20230325102314.1504-1-dthaler1968@googlemail.com>
-X-Mailer: git-send-email 2.33.4
+        d=1e100.net; s=20210112; t=1679739818;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=71PnYgVAJ2sH+p9bYNHJSsZPBskJ4aq6i5nHdj4FDhc=;
+        b=Ec4KHRtxBQZOkEOhlZRijq7nEl5/KrTpx840XNHuaz0xDjSD1KLVuRjvYlLKKG7LDy
+         OCfGx91tRpPFSQvlqdHyel71yQJjt52ujNQDuo3nL2TpvKSZ/LR83Y4R91skXOHKMT5S
+         783tAZ+wxcbg09braqBTE3wvydXnP8ekD1iwkspnD7bbjRjwfDAcqBTSaNUQnzZgmVdU
+         Qfpuxq5pV2HXWtesSQGCUBpka1W+J26JpUVZLMf/gW30yB0NOsLIxLNy+RoS89feYAIE
+         6/mmY5AygtEac8UPjnnuWXGKeNym65280Uvul4C+aUC0x9HAKoc1TvUjsR4F0+NXN5jU
+         56Qw==
+X-Gm-Message-State: AAQBX9c4gUtRPXAK5m6/dDa43MJJTZ8AoLorcNNcx5GLVid5deoazHwq
+        2zatJwf12jCCV+LJcPwUrq3D+uTT8sCuee4hZBM=
+X-Google-Smtp-Source: AKy350ZH1Hd/GigTxWCdiKE4Aupryh4uQDcjkT3Gstx1pz+doWOSsdjbi8njadaxvS1QYyOjetIZi+bi2BBTvXxvISo=
+X-Received: by 2002:a17:90a:b881:b0:23d:2f4:af49 with SMTP id
+ o1-20020a17090ab88100b0023d02f4af49mr1661729pjr.4.1679739818349; Sat, 25 Mar
+ 2023 03:23:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+Reply-To: abusalam8070@gmail.com
+Sender: asimmahmood4040@gmail.com
+Received: by 2002:a05:7022:491:b0:60:a367:48b6 with HTTP; Sat, 25 Mar 2023
+ 03:23:37 -0700 (PDT)
+From:   =?UTF-8?B?TXIuwqBBYnXCoFNhbGFt?= <salamabu370@gmail.com>
+Date:   Sat, 25 Mar 2023 10:23:37 +0000
+X-Google-Sender-Auth: N2aT57i6wTPjBc8t0ekRPKXnqwQ
+Message-ID: <CAPmk-nB+PwNQS-uxH7Xa-1Q8WcA7eExn4nm3jN7m2JUZRdD7oQ@mail.gmail.com>
+Subject: REPLY URGENTLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: Yes, score=7.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,
+        MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        SUBJ_ALL_CAPS,T_HK_NAME_FM_MR_MRS,UNDISC_FREEM,UNDISC_MONEY
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:1036 listed in]
+        [list.dnswl.org]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [asimmahmood4040[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [salamabu370[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [abusalam8070[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  1.1 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Dave Thaler <dthaler@microsoft.com>
-
-Add extended call instructions.  Uses the term "program-local" for
-call by offset.  And there are instructions for calling helper functions
-by "address" (the old way of using integer values), and for calling
-helper functions by BTF ID (for kfuncs).
-
----
-V1 -> V2: addressed comments from David Vernet
-
-V2 -> V3: make descriptions in table consistent with updated names
-
-V3 -> V4: addressed comments from Alexei
-
-Signed-off-by: Dave Thaler <dthaler@microsoft.com>
----
- Documentation/bpf/instruction-set.rst | 59 +++++++++++++++++----------
- 1 file changed, 37 insertions(+), 22 deletions(-)
-
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index 5e43e14abe8..ed8f35becb2 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -242,35 +242,50 @@ Jump instructions
- otherwise identical operations.
- The 'code' field encodes the operation as below:
- 
--========  =====  =========================  ============
--code      value  description                notes
--========  =====  =========================  ============
--BPF_JA    0x00   PC += off                  BPF_JMP only
--BPF_JEQ   0x10   PC += off if dst == src
--BPF_JGT   0x20   PC += off if dst > src     unsigned
--BPF_JGE   0x30   PC += off if dst >= src    unsigned
--BPF_JSET  0x40   PC += off if dst & src
--BPF_JNE   0x50   PC += off if dst != src
--BPF_JSGT  0x60   PC += off if dst > src     signed
--BPF_JSGE  0x70   PC += off if dst >= src    signed
--BPF_CALL  0x80   function call              see `Helper functions`_
--BPF_EXIT  0x90   function / program return  BPF_JMP only
--BPF_JLT   0xa0   PC += off if dst < src     unsigned
--BPF_JLE   0xb0   PC += off if dst <= src    unsigned
--BPF_JSLT  0xc0   PC += off if dst < src     signed
--BPF_JSLE  0xd0   PC += off if dst <= src    signed
--========  =====  =========================  ============
-+========  =====  ===  ===========================================  =========================================
-+code      value  src  description                                  notes
-+========  =====  ===  ===========================================  =========================================
-+BPF_JA    0x0    0x0  PC += offset                                 BPF_JMP only
-+BPF_JEQ   0x1    any  PC += offset if dst == src
-+BPF_JGT   0x2    any  PC += offset if dst > src                    unsigned
-+BPF_JGE   0x3    any  PC += offset if dst >= src                   unsigned
-+BPF_JSET  0x4    any  PC += offset if dst & src
-+BPF_JNE   0x5    any  PC += offset if dst != src
-+BPF_JSGT  0x6    any  PC += offset if dst > src                    signed
-+BPF_JSGE  0x7    any  PC += offset if dst >= src                   signed
-+BPF_CALL  0x8    0x0  call helper function by address		   see `Helper functions`_
-+BPF_CALL  0x8    0x1  call PC += offset                            see `Program-local functions`_
-+BPF_CALL  0x8    0x2  call helper function by BTF ID               see `Helper functions`_
-+BPF_EXIT  0x9    0x0  return                                       BPF_JMP only
-+BPF_JLT   0xa    any  PC += offset if dst < src                    unsigned
-+BPF_JLE   0xb    any  PC += offset if dst <= src                   unsigned
-+BPF_JSLT  0xc    any  PC += offset if dst < src                    signed
-+BPF_JSLE  0xd    any  PC += offset if dst <= src                   signed
-+========  =====  ===  ===========================================  =========================================
- 
- The eBPF program needs to store the return value into register R0 before doing a
--BPF_EXIT.
-+``BPF_EXIT``.
- 
- Helper functions
- ~~~~~~~~~~~~~~~~
- 
- Helper functions are a concept whereby BPF programs can call into a
--set of function calls exposed by the runtime.  Each helper
--function is identified by an integer used in a ``BPF_CALL`` instruction.
--The available helper functions may differ for each program type.
-+set of function calls exposed by the underlying platform.
-+
-+Historically, each helper function was identified by an address
-+encoded in the imm field.  The available helper functions may differ
-+for each program type, but address values are unique across all program types.
-+
-+Platforms that support the BPF Type Format (BTF) support identifying
-+a helper function by a BTF ID encoded in the imm field, where the BTF ID
-+identifies the helper name and type.
-+
-+Program-local functions
-+~~~~~~~~~~~~~~~~~~~~~~~
-+Program-local functions are functions exposed by the same BPF program as the
-+caller, and are referenced by offset from the call instruction, similar to
-+``BPF_JA``.  A ``BPF_EXIT`` within the program-local function will return to
-+the caller.
- 
- Load and store instructions
- ===========================
--- 
-2.33.4
-
+RGVhcsKgRnJpZW5kLA0KDQpNecKgbmFtZcKgaXPCoE1yLsKgQWJ1wqBTYWxhbS7CoEnCoGFtwqB3
+b3JraW5nwqB3aXRowqBvbmXCoG9mwqB0aGXCoHByaW1lwqBiYW5rc8KgaW4NCkJ1cmtpbmHCoEZh
+c28uwqBIZXJlwqBpbsKgdGhpc8KgYmFua8KgZXhpc3RlZMKgYWRvcm1hbnTCoGFjY291bnRmb3LC
+oG1hbnkNCnllYXJzLMKgd2hpY2jCoGJlbG9uZ2VkwqB0b8Kgb25lwqBvZsKgb3VywqBsYXRlwqBm
+b3JlaWduwqBjdXN0b21lcnMuwqBUaGXCoGFtb3VudA0KaW7CoHRoaXPCoGFjY291bnTCoHN0YW5k
+c8KgYXTCoCQxMywzMDAsMDAwLjAwIChUaGlydGVlbsKgTWlsbGlvbsKgVGhyZWUNCkh1bmRyZWTC
+oFRob3VzYW5kwqBVU8KgRG9sbGFycykuDQoNCknCoHdhbnTCoGHCoGZvcmVpZ27CoGFjY291bnTC
+oHdoZXJlwqB0aGXCoGJhbmvCoHdpbGzCoHRyYW5zZmVywqB0aGlzwqBmdW5kLsKgSQ0Ka25vd8Kg
+eW91wqB3b3VsZMKgYmXCoHN1cnByaXNlZMKgdG/CoHJlYWR0aGlzwqBtZXNzYWdlLGVzcGVjaWFs
+bHnCoGZyb21zb21lb25lDQpyZWxhdGl2ZWx5wqB1bmtub3duwqB0b8KgeW91LsKgQnV0LMKgZG/C
+oG5vdMKgd29ycnnCoHlvdXJzZWxmwqBzb8KgbXVjaC7CoFRoaXPCoGlzDQphwqBnZW51aW5lLMKg
+cmlza8KgZnJlZcKgYW5kwqBsZWdhbMKgYnVzaW5lc3PCoHRyYW5zYWN0aW9uLsKgQWxswqBkZXRh
+aWxzwqBzaGFsbA0KYmXCoHNlbnTCoHRvwqB5b3XCoG9uY2XCoEnCoHJlY2VpdmXCoHlvdXLCoGtp
+bmTCoHJlc3BvbnNlLg0KDQpJwqB3YXPCoHZlcnnCoGZvcnR1bmF0ZcKgdG/CoGNvbWXCoGFjcm9z
+c8KgdGhlwqBkZWNlYXNlZMKgY3VzdG9tZXInc8Kgc2VjdXJpdHkNCmZpbGXCoGR1cmluZ8KgZG9j
+dW1lbnRhdGlvbsKgb2bCoG9sZMKgYW5kwqBhYmFuZG9uZWQgY3VzdG9tZXInc8KgZmlsZXPCoGZv
+csKgYW4NCm9mZmljaWFswqBkb2N1bWVudGF0aW9uwqBhbmTCoGF1ZGl0wqBvZsKgdGhlwqB5ZWFy
+wqAyMDIyLg0KDQpJZsKgeW91wqBhcmXCoHJlYWxsecKgc3VyZcKgb2bCoHlvdXLCoHNpbmNlcml0
+eSzCoHRydXN0d29ydGhpbmVzcywNCmFjY291bnRhYmlsaXR5wqBhbmTCoGNvbmZpZGVudGlhbGl0
+ecKgb3ZlcsKgdGhpc8KgdHJhbnNhY3Rpb24swqByZXBsecKgYmFjaw0KdG/CoG1lIHVyZ2VudGx5
+wqB0aHJvdWdowqBtecKgcHJpdmF0ZcKgZW1haWzCoGFkZHJlc3M6DQphYnVzYWxhbTgwNzBAZ21h
+aWwuY29tDQoNCkJlc3TCoHJlZ2FyZHMuDQpNci7CoEFidcKgU2FsYW0NCg==
