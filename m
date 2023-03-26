@@ -2,137 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AB66C9276
-	for <lists+bpf@lfdr.de>; Sun, 26 Mar 2023 06:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9EC56C9277
+	for <lists+bpf@lfdr.de>; Sun, 26 Mar 2023 07:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbjCZE74 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Mar 2023 00:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
+        id S230048AbjCZFAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 26 Mar 2023 01:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbjCZE7z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 Mar 2023 00:59:55 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A048E83FB
-        for <bpf@vger.kernel.org>; Sat, 25 Mar 2023 21:59:54 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id lr16-20020a17090b4b9000b0023f187954acso5566311pjb.2
-        for <bpf@vger.kernel.org>; Sat, 25 Mar 2023 21:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679806794;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zmCR7wvoBI76X2bv8+FRrtcMQa8rH3PZ1ENSx+LcaUQ=;
-        b=Fxadq7XIPbWWqhF0geupqdFi8wnvfL3L8e//qyo5Y3tqBE5sdClJ1DHTSoSuNqkZ4/
-         PdTHvuUSoOUlHUGR2093VvXWnbi7tUqnVeioR5Fl7K5uDVKrQhQCsA7DMji85yeDz0EI
-         G5mQMystYIemvhsBkKJILYQ4wOtP3PNsC+4xM62GjeuOiPeGHNM0afoZbh/vjQ/BQz0a
-         zgMM1WcGXHHCNPY3axcEiajSdnIOo3MUAw5b9ZyKnOMIkNP18Eu/JdlGsP3f9tC4A785
-         nNFd1bRUlC6d2L50BX9Ht38R1XnPGLl+ah1nBBDFL1CWcqFaQ0eqt77CJ3CO5LUmE9hq
-         iBuQ==
+        with ESMTP id S229795AbjCZFAW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 26 Mar 2023 01:00:22 -0400
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EA383FB
+        for <bpf@vger.kernel.org>; Sat, 25 Mar 2023 22:00:20 -0700 (PDT)
+Received: by mail-qv1-f46.google.com with SMTP id x8so4675877qvr.9
+        for <bpf@vger.kernel.org>; Sat, 25 Mar 2023 22:00:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679806794;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zmCR7wvoBI76X2bv8+FRrtcMQa8rH3PZ1ENSx+LcaUQ=;
-        b=qTJ9yNPGML2zuAWWrZVlkqJ7CVx2rBIIgvw9Xu3HX/RQJTcLs+zph9C6PCxKPi8RwK
-         dmNC6fKvOokqIEujVNnxNPbOqjt/4RGsNFPDTfWbhdVIiu5FElCJH/6U+/q7nd1cME4I
-         ykTaInFaoJGONYpL4bWYnn4lE0v47hpZnydLDohUzCiEYmhHG82ju2gWfgcG4E1tNhqB
-         OLSLj6/Csf2SdYEn+yGsOotQPU2x4Les2Rlx9PHnmiIzBcHT4w41XJkeXv+z9YMl3yds
-         ltqRIMuAeVO49frux/BLlbuhl/CaY+9I2j+TfDnbx79yWichy5HMcBrQO8hyCL9aZqja
-         w4AQ==
-X-Gm-Message-State: AO0yUKUtGlYuhZhu0czcMhZlSgKmDT5vK0R6VmH3X9ENDej1Lq5Cwdly
-        ouYd0DbWn6i92biKAbQVyHBIMGm/SOh2DCP+
-X-Google-Smtp-Source: AK7set9xtzvRd5kkc08AxqWgKgaSp/cl0CymBwqQgNCSpdwseOxSmbnZ/IaD/tEoFUu5nc+VEil4KA==
-X-Received: by 2002:a05:6a20:7b29:b0:dc:a14e:d9bf with SMTP id s41-20020a056a207b2900b000dca14ed9bfmr6403155pzh.43.1679806793832;
-        Sat, 25 Mar 2023 21:59:53 -0700 (PDT)
-Received: from MacBook-Pro-6.local (i223-217-15-101.s41.a014.ap.plala.or.jp. [223.217.15.101])
-        by smtp.gmail.com with ESMTPSA id v14-20020aa7808e000000b0062bae1101c5sm3125716pff.202.2023.03.25.21.59.51
+        d=1e100.net; s=20210112; t=1679806820;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cuGZ97UW3R3q0cU4FGB1wEXWudmLjK1WOZkIXfL6ZY4=;
+        b=2n80GCiY6R3w5lmLq2CW3MtO7LjKNBeOINa6rRKa5ud5DDg6FQaaIxOi2UEgqDLK1z
+         WzYl22zq1TD4nZAOdNTp8R+NJ3Q8T2+34XY8jgxPxnY0DNiAlrvS0RvbKycnPtLIR6E0
+         jvoVj+lEs41EHtsyDdpHnPl4ba9R71ddVJqXIGjdqc9TytYEltAh6HN/2zndMTzLsq4F
+         +/zRPsav6BeH2U44PrxX535lwGf6e73fvqyVRwkzCVGuWYEirjmlERxwK4REGsLy66cI
+         q2a7xGEHG7cuzHNUHQJaqL6/AUdQ8WPhTJb1t4SSMpS/Wv28GekIjl6+XlANzIaxT5Au
+         ovfA==
+X-Gm-Message-State: AAQBX9fOtj2CUzzRhu5QGXxkWMF4wQxoicX+VyR2NYm4VFNIr9dlinOZ
+        RxJK8TVdSffvZQoQcNrFUCQbo5IM3tCEJPH4Fvk=
+X-Google-Smtp-Source: AKy350atNXKpudhZ7gAS2dCQQxSyAQkn1VqObtqBOzdFkzYeGwZvAwsUnvvDtlWrb6B7as1dnWCQfA==
+X-Received: by 2002:ad4:4eaf:0:b0:56e:a6f1:8cf with SMTP id ed15-20020ad44eaf000000b0056ea6f108cfmr13787965qvb.6.1679806819565;
+        Sat, 25 Mar 2023 22:00:19 -0700 (PDT)
+Received: from maniforge ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id h15-20020a0cd80f000000b005dd8b93458fsm1937824qvj.39.2023.03.25.22.00.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Mar 2023 21:59:53 -0700 (PDT)
-Date:   Sat, 25 Mar 2023 21:59:44 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2 bpf-next 3/3] veristat: guess and substitue underlying
- program type for freplace (EXT) progs
-Message-ID: <20230326045944.rjayv2d2xbdlz5m2@MacBook-Pro-6.local>
-References: <20230324232745.3959567-1-andrii@kernel.org>
- <20230324232745.3959567-4-andrii@kernel.org>
+        Sat, 25 Mar 2023 22:00:19 -0700 (PDT)
+Date:   Sun, 26 Mar 2023 00:00:17 -0500
+From:   David Vernet <void@manifault.com>
+To:     Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
+Cc:     bpf@vger.kernel.org, bpf@ietf.org,
+        Dave Thaler <dthaler@microsoft.com>
+Subject: Re: [Bpf] [PATCH bpf-next v3] bpf, docs: Add docs on extended 64-bit
+ immediate instructions
+Message-ID: <20230326050017.GI363182@maniforge>
+References: <20230325224305.2157-1-dthaler1968@googlemail.com>
+ <20230326032839.GF363182@maniforge>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230324232745.3959567-4-andrii@kernel.org>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230326032839.GF363182@maniforge>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=0.5 required=5.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 04:27:45PM -0700, Andrii Nakryiko wrote:
-> +static int guess_prog_type_by_ctx_name(const char *ctx_name,
-> +				       enum bpf_prog_type *prog_type,
-> +				       enum bpf_attach_type *attach_type)
-> +{
-> +	/* We need to guess program type based on its declared context type.
-> +	 * This guess can't be perfect as many different program types might
-> +	 * share the same context type.  So we can only hope to reasonably
-> +	 * well guess this and get lucky.
-> +	 *
-> +	 * Just in case, we support both UAPI-side type names and
-> +	 * kernel-internal names.
-> +	 */
-> +	static struct {
-> +		const char *uapi_name;
-> +		const char *kern_name;
-> +		enum bpf_prog_type prog_type;
-> +		enum bpf_attach_type attach_type;
-> +	} ctx_map[] = {
-> +		/* __sk_buff is most ambiguous, for now we assume cgroup_skb */
-> +		{ "__sk_buff", "sk_buff", BPF_PROG_TYPE_CGROUP_SKB, BPF_CGROUP_INET_INGRESS },
-> +		{ "bpf_sock", "sock", BPF_PROG_TYPE_CGROUP_SOCK, BPF_CGROUP_INET4_POST_BIND },
-> +		{ "bpf_sock_addr", "bpf_sock_addr_kern",  BPF_PROG_TYPE_CGROUP_SOCK_ADDR, BPF_CGROUP_INET4_BIND },
-> +		{ "bpf_sock_ops", "bpf_sock_ops_kern", BPF_PROG_TYPE_SOCK_OPS, BPF_CGROUP_SOCK_OPS },
-> +		{ "sk_msg_md", "sk_msg", BPF_PROG_TYPE_SK_MSG, BPF_SK_MSG_VERDICT },
-> +		{ "bpf_cgroup_dev_ctx", "bpf_cgroup_dev_ctx", BPF_PROG_TYPE_CGROUP_DEVICE, BPF_CGROUP_DEVICE },
-> +		{ "bpf_sysctl", "bpf_sysctl_kern", BPF_PROG_TYPE_CGROUP_SYSCTL, BPF_CGROUP_SYSCTL },
-> +		{ "bpf_sockopt", "bpf_sockopt_kern", BPF_PROG_TYPE_CGROUP_SOCKOPT, BPF_CGROUP_SETSOCKOPT },
-> +		{ "sk_reuseport_md", "sk_reuseport_kern", BPF_PROG_TYPE_SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT_OR_MIGRATE },
-> +		{ "bpf_sk_lookup", "bpf_sk_lookup_kern", BPF_PROG_TYPE_SK_LOOKUP, BPF_SK_LOOKUP },
-> +		{ "xdp_md", "xdp_buff", BPF_PROG_TYPE_XDP, BPF_XDP },
-> +		/* tracing types with no expected attach type */
-> +		{ "bpf_user_pt_regs_t", "pt_regs", BPF_PROG_TYPE_KPROBE },
-> +		{ "bpf_perf_event_data", "bpf_perf_event_data_kern", BPF_PROG_TYPE_PERF_EVENT },
-> +		{ "bpf_raw_tracepoint_args", NULL, BPF_PROG_TYPE_RAW_TRACEPOINT },
-> +	};
-> +	int i;
-> +
-> +	if (!ctx_name)
-> +		return -EINVAL;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(ctx_map); i++) {
-> +		if (strcmp(ctx_map[i].uapi_name, ctx_name) == 0 ||
-> +		    (!ctx_map[i].kern_name || strcmp(ctx_map[i].kern_name, ctx_name) == 0)) {
+On Sat, Mar 25, 2023 at 10:28:39PM -0500, David Vernet wrote:
+> On Sat, Mar 25, 2023 at 10:43:05PM +0000, Dave Thaler wrote:
+> > From: Dave Thaler <dthaler@microsoft.com>
+> > 
+> > Add docs on extended 64-bit immediate instructions, including six instructions
+> > previously undocumented.  Include a brief description of map objects, and variables,
+> > as used by those instructions.
+> > 
+> > ---
+> > V1 -> V2: rebased on top of latest master
+> > 
+> > V2 -> V3: addressed comments from Alexei
+> > 
+> > Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+> > ---
+> >  Documentation/bpf/instruction-set.rst | 56 +++++++++++++++++++++++----
+> >  Documentation/bpf/linux-notes.rst     | 13 +++++++
+> >  2 files changed, 61 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+> > index db8789e6969..2c8347d63e7 100644
+> > --- a/Documentation/bpf/instruction-set.rst
+> > +++ b/Documentation/bpf/instruction-set.rst
+> > @@ -385,14 +385,54 @@ and loaded back to ``R0``.
+> >  -----------------------------
+> >  
+> >  Instructions with the ``BPF_IMM`` 'mode' modifier use the wide instruction
+> > -encoding for an extra imm64 value.
+> > -
+> > -There is currently only one such instruction.
+> > -
+> > -``BPF_LD | BPF_DW | BPF_IMM`` means::
+> > -
+> > -  dst = imm64
+> > -
+> > +encoding defined in `Instruction encoding`_, and use the 'src' field of the
+> > +basic instruction to hold an opcode subtype.
+> > +
+> > +The following instructions are defined, and use additional concepts defined below:
+> 
+> nit: Perhaps this is a bit clearer? Wdyt?
+> 
+> The following opcode subtypes are defined for `BPF_IMM | BPF_DQ |
+> BPF_LD` instructions, with new terms such as "map" defined further
+> below:
 
-I'm struggling to understand above A || (B || C) logic.
-() are redundant?
+Oops, meant to say `BPF_IMM | BPF_DW | BPF_LD`
 
-> +			*prog_type = ctx_map[i].prog_type;
-> +			*attach_type = ctx_map[i].attach_type;
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	return -ESRCH;
+> 
+> > +
+> > +=========================  ======  ===  =========================================  ===========  ==============
+> > +opcode construction        opcode  src  pseudocode                                 imm type     dst type
+> > +=========================  ======  ===  =========================================  ===========  ==============
+> > +BPF_IMM | BPF_DW | BPF_LD  0x18    0x0  dst = imm64                                integer      integer
+> > +BPF_IMM | BPF_DW | BPF_LD  0x18    0x1  dst = map_by_fd(imm)                       map fd       map
+> > +BPF_IMM | BPF_DW | BPF_LD  0x18    0x2  dst = map_val(map_by_fd(imm)) + next_imm   map fd       data pointer
+> > +BPF_IMM | BPF_DW | BPF_LD  0x18    0x3  dst = var_addr(imm)                        variable id  data pointer
+> > +BPF_IMM | BPF_DW | BPF_LD  0x18    0x4  dst = code_addr(imm)                       integer      code pointer
+> > +BPF_IMM | BPF_DW | BPF_LD  0x18    0x5  dst = map_by_idx(imm)                      map index    map
+> > +BPF_IMM | BPF_DW | BPF_LD  0x18    0x6  dst = map_val(map_by_idx(imm)) + next_imm  map index    data pointer
+> > +=========================  ======  ===  =========================================  ===========  ==============
+> > +
+> > +where
+> > +
+> > +* map_by_fd(imm) means to convert a 32-bit POSIX file descriptor into an address of a map object (see `Map objects`_)
+> > +* map_by_idx(imm) means to convert a 32-bit index into an address of a map object
+> > +* map_val(map) gets the address of the first value in a given map object
+> > +* var_addr(imm) gets the address of a platform variable (see `Platform Variables`_) with a given id
+> > +* code_addr(imm) gets the address of the instruction at a specified relative offset in number of (64-bit) instructions
+> > +* the 'imm type' can be used by disassemblers for display
+> > +* the 'dst type' can be used for verification and JIT compilation purposes
+> > +
+> > +Map objects
+> > +~~~~~~~~~~~
+> > +
+> > +Maps are shared memory regions accessible by eBPF programs on some platforms, where we use the term "map object"
+> > +to refer to an object containing the data and metadata (e.g., size) about the memory region.
+> > +A map can have various semantics as defined in a separate document, and may or may not have a single
+> > +contiguous memory region, but the 'map_val(map)' is currently only defined for maps that do have a single
+> > +contiguous memory region.
+> > +
+> > +Each map object can have a POSIX file descriptor (fd) if supported by the platform,
+> > +where 'map_by_fd(imm)' means to get the map with the specified file descriptor.
+> > +Each BPF program can also be defined to use a set of maps associated with the program
+> > +at load time, and 'map_by_idx(imm)' means to get the map with the given index in the set
+> > +associated with the BPF program containing the instruction.
+> > +
+> > +Platform Variables
+> > +~~~~~~~~~~~~~~~~~~
+> > +
+> > +Platform variables are memory regions, identified by integer ids, exposed by the runtime and accessible by BPF programs on
+> > +some platforms.  The 'var_addr(imm)' operation means to get the address of the memory region
+> > +identified by the given id.
+> >  
+> >  Legacy BPF Packet access instructions
+> >  -------------------------------------
+> > diff --git a/Documentation/bpf/linux-notes.rst b/Documentation/bpf/linux-notes.rst
+> > index 956b0c86699..2d161467105 100644
+> > --- a/Documentation/bpf/linux-notes.rst
+> > +++ b/Documentation/bpf/linux-notes.rst
+> > @@ -12,6 +12,19 @@ Byte swap instructions
+> >  
+> >  ``BPF_FROM_LE`` and ``BPF_FROM_BE`` exist as aliases for ``BPF_TO_LE`` and ``BPF_TO_BE`` respectively.
+> >  
+> > +Map objects
+> > +===========
+> > +
+> > +Linux only supports the 'map_val(map)' operation on array maps with a single element.
+> > +
+> > +Linux uses an fd_array to store maps associated with a BPF program. Thus,
+> > +map_by_index(index) uses the fd at that index in the array.
+> > +
+> > +Variables
+> > +=========
+> > +
+> > +Linux uses BTF ids to identify variables.
+> 
+> Not quite sure exactly what this means. Linux uses BTF ids to identify
+> _types_, right? This doesn't seem like something that needs to be
+> specified as Linux specific either, even if it's not yet supported
+> elsewhere. Certain legacy things such as Linux-specific helpers make
+> sense, but not sure about BTF ids.
 
-This will never be hit, since "bpf_raw_tracepoint_args", NULL is last and
-it will always succeed.
+Ok, I read over this some more and I think I understand what the
+intention was here. You were specifying that for the following
+instruction encoding:
 
-The idea is to always succeed in guessing and default to raw_tp ?
-... and there should be only one entry with kern_name == NULL...
-But it's not mentioned anywhere in the comments.
-A weird way to implement a default.
-I'm definitely missing something.
+=========================  ======  ===  ===================  ===========  ============
+opcode construction        opcode  src  pseudocode           imm type     dst type
+=========================  ======  ===  ===================  ===========  ============
+BPF_IMM | BPF_DW | BPF_LD  0x18    0x3  dst = var_addr(imm)  variable id  data pointer
+
+imm is a BTF ID, and it is Linux-specific that var_addr(imm) happens to
+be mapping a BTF ID to an actual variable address that is stored in dst.
+Is that right? If so, I think this section needs to include a bit more
+context so that it makes sense on its own. What about something like
+this:
+
+The following 64-bit immediate instruction specifies that a variable
+address, which corresponds to some integer stored in the immediate
+field, should be loaded:
+
+=========================  ======  ===  =========================================  ===========  ==============
+opcode construction        opcode  src  pseudocode                                 imm type     dst type
+=========================  ======  ===  =========================================  ===========  ==============
+BPF_IMM | BPF_DW | BPF_LD  0x18    0x3  dst = var_addr(imm)                        variable id  data pointer
+
+On Linux, this integer is a BTF ID.
+
+> > +
+> >  Legacy BPF Packet access instructions
+> >  =====================================
+> >  
+> > -- 
+> > 2.33.4
+> > 
+> > -- 
+> > Bpf mailing list
+> > Bpf@ietf.org
+> > https://www.ietf.org/mailman/listinfo/bpf
