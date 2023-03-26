@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCB46C9375
-	for <lists+bpf@lfdr.de>; Sun, 26 Mar 2023 11:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7666C937A
+	for <lists+bpf@lfdr.de>; Sun, 26 Mar 2023 11:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbjCZJWo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Mar 2023 05:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        id S232118AbjCZJXF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 26 Mar 2023 05:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231970AbjCZJWg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 Mar 2023 05:22:36 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512169761;
-        Sun, 26 Mar 2023 02:22:26 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id cn12so2512279qtb.8;
-        Sun, 26 Mar 2023 02:22:26 -0700 (PDT)
+        with ESMTP id S232019AbjCZJWn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 26 Mar 2023 05:22:43 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F63B9775;
+        Sun, 26 Mar 2023 02:22:27 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id r5so5877097qtp.4;
+        Sun, 26 Mar 2023 02:22:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679822545;
+        d=gmail.com; s=20210112; t=1679822546;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yzrxwrWAnCBXqogVtCjOEq28yTqtM3iptGUsgJEuXWI=;
-        b=EOer77E0LtfFk5y/lMefHgP5KaR43zAlptvyxKct+Vk51+7/uX1YJjJTUCQui/7SwY
-         jZb/qCgxfZs5JvSKJMWt+3T1/2kFjpKtlw6tWsDDhcOhFMIs4+v3McHXz+Dm0hD3BqxP
-         nozGYDtGnh9ZU0zVbyelEFydKVwi4atm1jyOhA+0icYhB7BDM2KZNIsuOtZuTj2u7dtN
-         p7FpSKE7UzzpjtyNR6TrkL1m2eaoQIb3TFZQ43E2HWwmVg1HTMXx17GvnAnxwS3vsOPG
-         QcOt+QgG+dW9jmzy7iC0FGDaLidTptgmBrRPRU3dV3x/wAUTwKrW7WxRq4HSxeBiDBaJ
-         c5rQ==
+        bh=ciAal/rEXFScF3qvMlCUWJgominifo4LMMWsWoEwMYs=;
+        b=Gyf1IL9gVS0wtpFR0kRiBs7uCodqNZyxVG45yqVX+yuoIEpw2QOioq6tmmJ9YLIEgC
+         oT52OXhprtvLBdVOOLWXTiwfQjjoX6sgH6ZbTBUPN12KpSDRYfxo2oJ+aplDSw4+E5dd
+         4fGI/BWn0Y4SlNEHBWThgoKvxtJAfSs+JzoK4ajxz6jEwRIuff24dUmvRaa0TJUIXbFz
+         KfEL9Q5CvF2FxK4IOBdUYAbxfg059gBprx/IpH7/WEknO7zP0FYZMf2M78hE40M9IVzw
+         eCk0NQh2AHUTXyuosUbxtm6eAo3nm1zgEeRw9bWmeBVCNS1HufHtHyF1Iiwu2jbeIrzo
+         MlTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679822545;
+        d=1e100.net; s=20210112; t=1679822546;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yzrxwrWAnCBXqogVtCjOEq28yTqtM3iptGUsgJEuXWI=;
-        b=LY9zQYhAy9i/o6imx9biMdqaE56naPV14XtfihQ85Owe6LLrFqNZWaoGiuRXKi0Z3g
-         QXrAY2l9xwWcQZlCYo54jSi76Pz/XmrAhQCDinLbpSRDYjcF169x4H0ozuga2z3cc1Bx
-         AK9vyvUnackr6C9X85s2xvpUdp8AuioRyTVuep7IGqfkB0hf4ofSyRvRfR4ZU18BAMS/
-         W5/QqQwiNES2MznlrhEzBBUUmT2RBUklVKdyJFUlrO5I7w2oai42gUbaww5Y0vSWBTgc
-         yWF376ZHj7CxKO9LQXMf7CfRTJJ2bp+uTbY+gJuo0T3mXdZyWGnGqtPcAnMtHVfpyoB0
-         c47w==
-X-Gm-Message-State: AAQBX9fl9iH9EuWEI+k3NnxwDgv3xY8OwvGKgJ8RW9bPTD1hM/MjPTIx
-        xSwLCyY7NIwPIDwb3SuGu0w=
-X-Google-Smtp-Source: AK7set8M6zfz3X5CPC7/DoJ9uXrvklPCsodJDcqWq+WX69uwYe2dRtEx8t4rk6jrJVpxkD+8zVsWhw==
-X-Received: by 2002:a05:622a:199a:b0:3d7:db35:f2c1 with SMTP id u26-20020a05622a199a00b003d7db35f2c1mr14762506qtc.15.1679822545146;
-        Sun, 26 Mar 2023 02:22:25 -0700 (PDT)
+        bh=ciAal/rEXFScF3qvMlCUWJgominifo4LMMWsWoEwMYs=;
+        b=nuioiVUL1dF4q/dev8TJgiO9PHO06YM34REYP45Lps75cPjYTD0htOauYEMdLEpRDh
+         v3o/qxSrJBU3w0x+eDa4blr+1DJFa4xEd24XycAVp40juXgBrIx9nq6Rwd88JsSqQrCg
+         mTEa1FcN5DMwF74SlWGT1bxVn7+ifo7wJfKiKwYv42+g1pi6pN7N1WLHYlMMmz+AbOGB
+         ot6Whf1nu7skPLyXvXQXmmbsw9Dh91GibYXRyg9pVy+/FooK8cbAphsAJUTPKd5wXPEY
+         IMAIDNvS4EHEbL6VsXwZ9lcMEiTCzrI2w4bTKULPIJHsZE996vr/gt3fvymHW07aoYcM
+         V4+g==
+X-Gm-Message-State: AO0yUKVk8yS6mJBaM2dYbGpc4FfkRKFcJD8PCQ9CpeH6tvLNlTepi7nl
+        3bXuWAdNxAw6VFc1iP3Sy9g2/3znClrEi0MNX/8=
+X-Google-Smtp-Source: AK7set/Tu1m404G1UMWbUZYLpO7ogYjIDGBCA6cAP+5qHVmqVs/C5xcahi1CKlAOun6clKaIJLQLKw==
+X-Received: by 2002:a05:622a:1748:b0:3ba:2203:6c92 with SMTP id l8-20020a05622a174800b003ba22036c92mr15755300qtk.10.1679822546087;
+        Sun, 26 Mar 2023 02:22:26 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:1000:1a1f:5400:4ff:fe5e:1d32])
-        by smtp.gmail.com with ESMTPSA id y5-20020ac87085000000b003e014845d9esm10257987qto.74.2023.03.26.02.22.24
+        by smtp.gmail.com with ESMTPSA id y5-20020ac87085000000b003e014845d9esm10257987qto.74.2023.03.26.02.22.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Mar 2023 02:22:24 -0700 (PDT)
+        Sun, 26 Mar 2023 02:22:25 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -56,9 +56,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         haoluo@google.com, jolsa@kernel.org
 Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 09/13] bpf: Alloc and free bpf_prog id in bpf namespace
-Date:   Sun, 26 Mar 2023 09:22:04 +0000
-Message-Id: <20230326092208.13613-10-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 10/13] bpf: Alloc and free bpf_link id in bpf namespace
+Date:   Sun, 26 Mar 2023 09:22:05 +0000
+Message-Id: <20230326092208.13613-11-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230326092208.13613-1-laoar.shao@gmail.com>
 References: <20230326092208.13613-1-laoar.shao@gmail.com>
@@ -74,281 +74,308 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Similar to bpf map, We only expose the bpf map id under current bpf
-namespace to user. The prog->aux->id is still the id in the init bpf
+Similar to bpf map, We only expose the bpf link id under current bpf
+namespace to user. The link->id is still the id in the init bpf
 namespace.
-The id of used_maps is also the id in current bpf namespace.
 
 The result as follows,
 
-Run bpftool in current namespace,
+Run bpftool in a new bpf namespace,
 $ bpftool map show
 4: array  name kprobe_b.rodata  flags 0x80
         key 4B  value 37B  max_entries 1  memlock 360B
-        btf_id 96  frozen
-        pids kprobe(8790)
+        btf_id 79  frozen
+        pids kprobe(8322)
 5: array  name kprobe_b.data  flags 0x400
         key 4B  value 4B  max_entries 1  memlock 8192B
-        btf_id 96
-        pids kprobe(8790)
+        btf_id 79
+        pids kprobe(8322)
 
 $ bpftool prog show
 7: kprobe  name kretprobe_run  tag 0de47cc241a2b1b3  gpl
-        loaded_at 2023-03-21T10:20:58+0800  uid 0
+        loaded_at 2023-03-21T13:54:34+0800  uid 0
         xlated 56B  jited 39B  memlock 4096B  map_ids 4
-        btf_id 96
+        btf_id 79
+        pids kprobe(8322)
 9: kprobe  name kprobe_run  tag bf163b23cd3b174d  gpl
-        loaded_at 2023-03-21T10:20:58+0800  uid 0
+        loaded_at 2023-03-21T13:54:34+0800  uid 0
         xlated 48B  jited 35B  memlock 4096B  map_ids 4
-        btf_id 96
+        btf_id 79
+        pids kprobe(8322)
 
-At the same time, run bpftool in init bpf namespace.
+$ bpftool link show
+1: perf_event  prog 9
+        bpf_cookie 0
+        pids kprobe(8322)
+2: perf_event  prog 7
+        bpf_cookie 0
+        pids kprobe(8322)
+
+At the same time, run bpftool in the init bpf namespace,
 $ bpftool map show
-18: array  name kprobe_b.rodata  flags 0x80
+8: array  name kprobe_b.rodata  flags 0x80
         key 4B  value 37B  max_entries 1  memlock 360B
-        btf_id 96  frozen
-        pids kprobe(8790)
-19: array  name kprobe_b.data  flags 0x400
+        btf_id 79  frozen
+        pids kprobe(8322)
+9: array  name kprobe_b.data  flags 0x400
         key 4B  value 4B  max_entries 1  memlock 8192B
-        btf_id 96
-        pids kprobe(8790)
+        btf_id 79
+        pids kprobe(8322)
 
 $ bpftool prog show
-29: kprobe  name kretprobe_run  tag 0de47cc241a2b1b3  gpl
-        loaded_at 2023-03-21T10:20:58+0800  uid 0
-        xlated 56B  jited 39B  memlock 4096B  map_ids 18
-        btf_id 96
-        pids kprobe(8790)
-31: kprobe  name kprobe_run  tag bf163b23cd3b174d  gpl
-        loaded_at 2023-03-21T10:20:58+0800  uid 0
-        xlated 48B  jited 35B  memlock 4096B  map_ids 18
-        btf_id 96
-        pids kprobe(8790)
+15: kprobe  name kretprobe_run  tag 0de47cc241a2b1b3  gpl
+        loaded_at 2023-03-21T13:54:34+0800  uid 0
+        xlated 56B  jited 39B  memlock 4096B  map_ids 8
+        btf_id 79
+        pids kprobe(8322)
+17: kprobe  name kprobe_run  tag bf163b23cd3b174d  gpl
+        loaded_at 2023-03-21T13:54:34+0800  uid 0
+        xlated 48B  jited 35B  memlock 4096B  map_ids 8
+        btf_id 79
+        pids kprobe(8322)
 
-In init bpf namespace, bpftool can also show other bpf progs, but the
-bpftool running in the new bpf namespace can't.
+$ bpftool link show
+2: perf_event  prog 17
+        bpf_cookie 0
+        pids kprobe(8322)
+3: perf_event  prog 15
+        bpf_cookie 0
+        pids kprobe(8322)
+
+The bpftool running in the init bpf namespace can also show other bpf
+links, but the bpftool in the new bpf namespace can only show the links
+in its current bpf namespace.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/bpf.h                       |  3 +-
+ include/linux/bpf.h                       |  2 ++
  kernel/bpf/bpf_namespace.c                |  1 +
- kernel/bpf/syscall.c                      | 56 ++++++++++---------------------
+ kernel/bpf/syscall.c                      | 55 +++++++++++--------------------
  tools/bpf/bpftool/skeleton/pid_iter.bpf.c |  3 +-
- 4 files changed, 22 insertions(+), 41 deletions(-)
+ 4 files changed, 24 insertions(+), 37 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 2a1f19c..16f2a01 100644
+index 16f2a01..efa14ac 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -1416,6 +1416,7 @@ struct bpf_prog_aux {
- 		struct work_struct work;
- 		struct rcu_head	rcu;
- 	};
+@@ -1468,6 +1468,7 @@ struct bpf_link {
+ 	const struct bpf_link_ops *ops;
+ 	struct bpf_prog *prog;
+ 	struct work_struct work;
 +	struct bpf_obj_id *obj_id;
  };
  
- struct bpf_prog {
-@@ -1940,8 +1941,6 @@ struct bpf_prog *bpf_prog_get_type_dev(u32 ufd, enum bpf_prog_type type,
- struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
- void bpf_prog_put(struct bpf_prog *prog);
+ struct bpf_link_ops {
+@@ -1506,6 +1507,7 @@ struct bpf_link_primer {
+ 	struct file *file;
+ 	int fd;
+ 	u32 id;
++	struct bpf_obj_id *obj_id;
+ };
  
--void bpf_prog_free_id(struct bpf_prog *prog);
--
- struct btf_field *btf_record_find(const struct btf_record *rec,
- 				  u32 offset, u32 field_mask);
- void btf_record_free(struct btf_record *rec);
+ struct bpf_struct_ops_value;
 diff --git a/kernel/bpf/bpf_namespace.c b/kernel/bpf/bpf_namespace.c
-index 6a6ef70..8c70945 100644
+index 8c70945..c7d62ef 100644
 --- a/kernel/bpf/bpf_namespace.c
 +++ b/kernel/bpf/bpf_namespace.c
-@@ -12,6 +12,7 @@
- 
+@@ -13,6 +13,7 @@
  #define MAX_BPF_NS_LEVEL 32
  DEFINE_SPINLOCK(map_idr_lock);
-+DEFINE_SPINLOCK(prog_idr_lock);
+ DEFINE_SPINLOCK(prog_idr_lock);
++DEFINE_SPINLOCK(link_idr_lock);
  static struct kmem_cache *bpfns_cachep;
  static struct kmem_cache *obj_id_cache[MAX_PID_NS_LEVEL];
  static struct ns_common *bpfns_get(struct task_struct *task);
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 1335200..4725924 100644
+index 4725924..855d5f7 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
 @@ -48,8 +48,6 @@
  #define BPF_OBJ_FLAG_MASK   (BPF_F_RDONLY | BPF_F_WRONLY)
  
  DEFINE_PER_CPU(int, bpf_prog_active);
--static DEFINE_IDR(prog_idr);
--DEFINE_SPINLOCK(prog_idr_lock);
- static DEFINE_IDR(link_idr);
- DEFINE_SPINLOCK(link_idr_lock);
+-static DEFINE_IDR(link_idr);
+-DEFINE_SPINLOCK(link_idr_lock);
  
-@@ -1983,32 +1981,10 @@ static void bpf_audit_prog(const struct bpf_prog *prog, unsigned int op)
- 	if (unlikely(!ab))
- 		return;
- 	audit_log_format(ab, "prog-id=%u op=%s",
--			 prog->aux->id, bpf_audit_str[op]);
-+			 bpf_obj_id_vnr(prog->aux->obj_id), bpf_audit_str[op]);
- 	audit_log_end(ab);
+ int sysctl_unprivileged_bpf_disabled __read_mostly =
+ 	IS_BUILTIN(CONFIG_BPF_UNPRIV_DEFAULT_OFF) ? 2 : 0;
+@@ -2670,17 +2668,11 @@ void bpf_link_init(struct bpf_link *link, enum bpf_link_type type,
+ 	atomic64_set(&link->refcnt, 1);
+ 	link->type = type;
+ 	link->id = 0;
++	link->obj_id = NULL;
+ 	link->ops = ops;
+ 	link->prog = prog;
  }
  
--static int bpf_prog_alloc_id(struct bpf_prog *prog)
+-static void bpf_link_free_id(int id)
+-{
+-	spin_lock_bh(&link_idr_lock);
+-	idr_remove(&link_idr, id);
+-	spin_unlock_bh(&link_idr_lock);
+-}
+-
+ /* Clean up bpf_link and corresponding anon_inode file and FD. After
+  * anon_inode is created, bpf_link can't be just kfree()'d due to deferred
+  * anon_inode's release() call. This helper marksbpf_link as
+@@ -2692,7 +2684,7 @@ void bpf_link_cleanup(struct bpf_link_primer *primer)
+ {
+ 	primer->link->prog = NULL;
+ 	if (primer->id) {
+-		bpf_link_free_id(primer->id);
++		bpf_free_obj_id(primer->obj_id, LINK_OBJ_ID);
+ 		primer->id = 0;
+ 	}
+ 	fput(primer->file);
+@@ -2708,7 +2700,7 @@ void bpf_link_inc(struct bpf_link *link)
+ static void bpf_link_free(struct bpf_link *link)
+ {
+ 	if (link->id) {
+-		bpf_link_free_id(link->id);
++		bpf_free_obj_id(link->obj_id, LINK_OBJ_ID);
+ 		link->id = 0;
+ 	}
+ 	if (link->prog) {
+@@ -2774,7 +2766,7 @@ static void bpf_link_show_fdinfo(struct seq_file *m, struct file *filp)
+ 		   "link_type:\t%s\n"
+ 		   "link_id:\t%u\n",
+ 		   bpf_link_type_strs[link->type],
+-		   link->id);
++		   bpf_obj_id_vnr(link->obj_id));
+ 	if (prog) {
+ 		bin2hex(prog_tag, prog->tag, sizeof(prog->tag));
+ 		seq_printf(m,
+@@ -2797,19 +2789,6 @@ static void bpf_link_show_fdinfo(struct seq_file *m, struct file *filp)
+ 	.write		= bpf_dummy_write,
+ };
+ 
+-static int bpf_link_alloc_id(struct bpf_link *link)
 -{
 -	int id;
 -
 -	idr_preload(GFP_KERNEL);
--	spin_lock_bh(&prog_idr_lock);
--	id = idr_alloc_cyclic(&prog_idr, prog, 1, INT_MAX, GFP_ATOMIC);
--	spin_unlock_bh(&prog_idr_lock);
+-	spin_lock_bh(&link_idr_lock);
+-	id = idr_alloc_cyclic(&link_idr, link, 1, INT_MAX, GFP_ATOMIC);
+-	spin_unlock_bh(&link_idr_lock);
 -	idr_preload_end();
 -
 -	return id;
 -}
 -
--void bpf_prog_free_id(struct bpf_prog *prog)
--{
--	unsigned long flags;
--
--	spin_lock_irqsave(&prog_idr_lock, flags);
--	idr_remove(&prog_idr, prog->aux->id);
--	spin_unlock_irqrestore(&prog_idr_lock, flags);
--}
--
- static void __bpf_prog_put_rcu(struct rcu_head *rcu)
+ /* Prepare bpf_link to be exposed to user-space by allocating anon_inode file,
+  * reserving unused FD and allocating ID from link_idr. This is to be paired
+  * with bpf_link_settle() to install FD and ID and expose bpf_link to
+@@ -2825,23 +2804,23 @@ static int bpf_link_alloc_id(struct bpf_link *link)
+  */
+ int bpf_link_prime(struct bpf_link *link, struct bpf_link_primer *primer)
  {
- 	struct bpf_prog_aux *aux = container_of(rcu, struct bpf_prog_aux, rcu);
-@@ -2056,7 +2032,7 @@ static void bpf_prog_put_deferred(struct work_struct *work)
- 	 * simply waiting for refcnt to drop to be freed.
- 	 */
- 	if (prog->aux->id) {
--		bpf_prog_free_id(prog);
-+		bpf_free_obj_id(prog->aux->obj_id, PROG_OBJ_ID);
- 		prog->aux->id = 0;
- 	}
- 	__bpf_prog_put_noref(prog, true);
-@@ -2157,7 +2133,7 @@ static void bpf_prog_show_fdinfo(struct seq_file *m, struct file *filp)
- 		   prog->jited,
- 		   prog_tag,
- 		   prog->pages * 1ULL << PAGE_SHIFT,
--		   prog->aux->id,
-+		   bpf_obj_id_vnr(prog->aux->obj_id),
- 		   stats.nsecs,
- 		   stats.cnt,
- 		   stats.misses,
-@@ -2468,6 +2444,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
- 	enum bpf_prog_type type = attr->prog_type;
- 	struct bpf_prog *prog, *dst_prog = NULL;
- 	struct btf *attach_btf = NULL;
 +	struct bpf_obj_id *obj_id;
- 	int err;
- 	char license[128];
- 	bool is_gpl;
-@@ -2621,12 +2598,13 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
- 	if (err < 0)
- 		goto free_used_maps;
+ 	struct file *file;
+-	int fd, id;
++	int fd;
  
--	err = bpf_prog_alloc_id(prog);
--	if (err < 0)
-+	obj_id = bpf_alloc_obj_id(current->nsproxy->bpf_ns, prog, PROG_OBJ_ID);
-+	if (IS_ERR(obj_id))
- 		goto free_used_maps;
--	prog->aux->id = err;
-+	prog->aux->obj_id = obj_id;
-+	prog->aux->id = bpf_obj_id_nr(obj_id);
+ 	fd = get_unused_fd_flags(O_CLOEXEC);
+ 	if (fd < 0)
+ 		return fd;
  
--	/* Upon success of bpf_prog_alloc_id(), the BPF prog is
-+	/* Upon success of bpf_alloc_obj_id(), the BPF prog is
- 	 * effectively publicly exposed. However, retrieving via
- 	 * bpf_prog_get_fd_by_id() will take another reference,
- 	 * therefore it cannot be gone underneath us.
-@@ -2803,7 +2781,7 @@ static void bpf_link_show_fdinfo(struct seq_file *m, struct file *filp)
- 			   "prog_tag:\t%s\n"
- 			   "prog_id:\t%u\n",
- 			   prog_tag,
--			   prog->aux->id);
-+			   bpf_obj_id_vnr(prog->aux->obj_id));
+-
+-	id = bpf_link_alloc_id(link);
+-	if (id < 0) {
++	obj_id = bpf_alloc_obj_id(current->nsproxy->bpf_ns, link, LINK_OBJ_ID);
++	if (IS_ERR(obj_id)) {
+ 		put_unused_fd(fd);
+-		return id;
++		return PTR_ERR(obj_id);
  	}
- 	if (link->ops->show_fdinfo)
- 		link->ops->show_fdinfo(link, m);
-@@ -3706,11 +3684,12 @@ struct bpf_map *bpf_map_get_curr_or_next(u32 *id)
  
- struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id)
- {
-+	struct bpf_namespace *ns = current->nsproxy->bpf_ns;
- 	struct bpf_prog *prog;
+ 	file = anon_inode_getfile("bpf_link", &bpf_link_fops, link, O_CLOEXEC);
+ 	if (IS_ERR(file)) {
+-		bpf_link_free_id(id);
++		bpf_free_obj_id(obj_id, LINK_OBJ_ID);
+ 		put_unused_fd(fd);
+ 		return PTR_ERR(file);
+ 	}
+@@ -2849,7 +2828,8 @@ int bpf_link_prime(struct bpf_link *link, struct bpf_link_primer *primer)
+ 	primer->link = link;
+ 	primer->file = file;
+ 	primer->fd = fd;
+-	primer->id = id;
++	primer->id = bpf_obj_id_nr(obj_id);
++	primer->obj_id = obj_id;
+ 	return 0;
+ }
  
- 	spin_lock_bh(&prog_idr_lock);
- again:
--	prog = idr_get_next(&prog_idr, id);
-+	prog = idr_get_next(&ns->idr[PROG_OBJ_ID], id);
- 	if (prog) {
- 		prog = bpf_prog_inc_not_zero(prog);
- 		if (IS_ERR(prog)) {
-@@ -3727,13 +3706,14 @@ struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id)
- 
- struct bpf_prog *bpf_prog_by_id(u32 id)
- {
-+	struct bpf_namespace *ns = current->nsproxy->bpf_ns;
- 	struct bpf_prog *prog;
- 
- 	if (!id)
- 		return ERR_PTR(-ENOENT);
- 
- 	spin_lock_bh(&prog_idr_lock);
--	prog = idr_find(&prog_idr, id);
-+	prog = idr_find(&ns->idr[PROG_OBJ_ID], id);
- 	if (prog)
- 		prog = bpf_prog_inc_not_zero(prog);
- 	else
-@@ -3939,7 +3919,7 @@ static int bpf_prog_get_info_by_fd(struct file *file,
+@@ -2858,6 +2838,7 @@ int bpf_link_settle(struct bpf_link_primer *primer)
+ 	/* make bpf_link fetchable by ID */
+ 	spin_lock_bh(&link_idr_lock);
+ 	primer->link->id = primer->id;
++	primer->link->obj_id = primer->obj_id;
+ 	spin_unlock_bh(&link_idr_lock);
+ 	/* make bpf_link fetchable by FD */
+ 	fd_install(primer->fd, primer->file);
+@@ -4265,7 +4246,7 @@ static int bpf_link_get_info_by_fd(struct file *file,
  		return -EFAULT;
  
- 	info.type = prog->type;
--	info.id = prog->aux->id;
-+	info.id = bpf_obj_id_vnr(prog->aux->obj_id);
- 	info.load_time = prog->aux->load_time;
- 	info.created_by_uid = from_kuid_munged(current_user_ns(),
- 					       prog->aux->user->uid);
-@@ -4287,7 +4267,7 @@ static int bpf_link_get_info_by_fd(struct file *file,
  	info.type = link->type;
- 	info.id = link->id;
+-	info.id = link->id;
++	info.id = bpf_obj_id_vnr(link->obj_id);
  	if (link->prog)
--		info.prog_id = link->prog->aux->id;
-+		info.prog_id = bpf_obj_id_vnr(link->prog->aux->obj_id);
+ 		info.prog_id = bpf_obj_id_vnr(link->prog->aux->obj_id);
  
- 	if (link->ops->fill_link_info) {
- 		err = link->ops->fill_link_info(link, &info);
-@@ -4452,7 +4432,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
- 			struct bpf_raw_event_map *btp = raw_tp->btp;
+@@ -4748,6 +4729,7 @@ static struct bpf_link *bpf_link_inc_not_zero(struct bpf_link *link)
  
- 			err = bpf_task_fd_query_copy(attr, uattr,
--						     raw_tp->link.prog->aux->id,
-+						     bpf_obj_id_vnr(raw_tp->link.prog->aux->obj_id),
- 						     BPF_FD_TYPE_RAW_TRACEPOINT,
- 						     btp->tp->name, 0, 0);
- 			goto put_file;
-@@ -5048,7 +5028,7 @@ static int __sys_bpf(int cmd, bpfptr_t uattr, unsigned int size)
+ struct bpf_link *bpf_link_by_id(u32 id)
+ {
++	struct bpf_namespace *ns = current->nsproxy->bpf_ns;
+ 	struct bpf_link *link;
+ 
+ 	if (!id)
+@@ -4755,7 +4737,7 @@ struct bpf_link *bpf_link_by_id(u32 id)
+ 
+ 	spin_lock_bh(&link_idr_lock);
+ 	/* before link is "settled", ID is 0, pretend it doesn't exist yet */
+-	link = idr_find(&link_idr, id);
++	link = idr_find(&ns->idr[LINK_OBJ_ID], id);
+ 	if (link) {
+ 		if (link->id)
+ 			link = bpf_link_inc_not_zero(link);
+@@ -4770,11 +4752,12 @@ struct bpf_link *bpf_link_by_id(u32 id)
+ 
+ struct bpf_link *bpf_link_get_curr_or_next(u32 *id)
+ {
++	struct bpf_namespace *ns = current->nsproxy->bpf_ns;
+ 	struct bpf_link *link;
+ 
+ 	spin_lock_bh(&link_idr_lock);
+ again:
+-	link = idr_get_next(&link_idr, id);
++	link = idr_get_next(&ns->idr[LINK_OBJ_ID], id);
+ 	if (link) {
+ 		link = bpf_link_inc_not_zero(link);
+ 		if (IS_ERR(link)) {
+@@ -5086,7 +5069,7 @@ static int __sys_bpf(int cmd, bpfptr_t uattr, unsigned int size)
  		break;
- 	case BPF_PROG_GET_NEXT_ID:
+ 	case BPF_LINK_GET_NEXT_ID:
  		err = bpf_obj_get_next_id(&attr, uattr.user,
--					  &prog_idr, &prog_idr_lock);
-+					  &ns->idr[PROG_OBJ_ID], &prog_idr_lock);
+-					  &link_idr, &link_idr_lock);
++					  &ns->idr[LINK_OBJ_ID], &link_idr_lock);
  		break;
- 	case BPF_MAP_GET_NEXT_ID:
- 		err = bpf_obj_get_next_id(&attr, uattr.user,
+ 	case BPF_ENABLE_STATS:
+ 		err = bpf_enable_stats(&attr);
 diff --git a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
-index a71aef7..1fd8ceb 100644
+index 1fd8ceb..e2237ad 100644
 --- a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
 +++ b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
-@@ -28,7 +28,8 @@ static __always_inline __u32 get_obj_id(void *ent, enum bpf_obj_type type)
- 
- 	switch (type) {
- 	case BPF_OBJ_PROG:
--		return BPF_CORE_READ((struct bpf_prog *)ent, aux, id);
-+		obj_id = BPF_CORE_READ((struct bpf_prog *)ent, aux, obj_id);
+@@ -36,7 +36,8 @@ static __always_inline __u32 get_obj_id(void *ent, enum bpf_obj_type type)
+ 	case BPF_OBJ_BTF:
+ 		return BPF_CORE_READ((struct btf *)ent, id);
+ 	case BPF_OBJ_LINK:
+-		return BPF_CORE_READ((struct bpf_link *)ent, id);
++		obj_id = BPF_CORE_READ((struct bpf_link *)ent, obj_id);
 +		break;
- 	case BPF_OBJ_MAP:
- 		obj_id = BPF_CORE_READ((struct bpf_map *)ent, obj_id);
- 		break;
+ 	default:
+ 		return 0;
+ 	}
 -- 
 1.8.3.1
 
