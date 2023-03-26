@@ -2,80 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A176C9252
-	for <lists+bpf@lfdr.de>; Sun, 26 Mar 2023 06:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5336C9261
+	for <lists+bpf@lfdr.de>; Sun, 26 Mar 2023 06:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbjCZEMG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Mar 2023 00:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
+        id S231735AbjCZEke (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 26 Mar 2023 00:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjCZEMG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 Mar 2023 00:12:06 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D149770
-        for <bpf@vger.kernel.org>; Sat, 25 Mar 2023 21:12:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 94BCAB80BA6
-        for <bpf@vger.kernel.org>; Sun, 26 Mar 2023 04:12:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2C1BAC4339C;
-        Sun, 26 Mar 2023 04:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679803920;
-        bh=Rjd41U2sR59weQjI83zdEbe0C63Toj7U3POn5zOX8L0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=K0O0kVz8pwhtqdPc1eKZ0RoLdzri2L45+mOki8IaUFynFcG+fiIhz71PqClL0quSC
-         kdBMy01QGSRb+zAXgnWNE6F8sbOEwH+qJYvocofIRgG33bvu1QznkRaGSa5+sHWEgz
-         7uRQyC2HZveMGfNiYGA8L756mz+NktRB1oJ5zEIUUm9qV0/76MdvxVr4NjAap1gi03
-         ERWQqaadWzLTTVaAQlDcjHxcLHEI77cwem8u/X4/4vzs+WevoiM/jI/jtGzYtcimPL
-         HZqp0GBRN5Q/ArZlB7MXycMrgS4u2floixikFqduBPFBvUFeQIlxwRdSh+M15jIa73
-         Rl6hR0N6w50Yw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 017E4E55B3C;
-        Sun, 26 Mar 2023 04:12:00 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231410AbjCZEkd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 26 Mar 2023 00:40:33 -0400
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8B1618D;
+        Sat, 25 Mar 2023 21:40:30 -0700 (PDT)
+X-UUID: b6cde0c7e2b64c718c7dc18a8eab4dc3-20230326
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.20,REQID:8e8edc52-f736-4f72-9b68-3722b697739c,IP:10,
+        URL:0,TC:0,Content:0,EDM:25,RT:0,SF:1,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:36
+X-CID-INFO: VERSION:1.1.20,REQID:8e8edc52-f736-4f72-9b68-3722b697739c,IP:10,UR
+        L:0,TC:0,Content:0,EDM:25,RT:0,SF:1,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:36
+X-CID-META: VersionHash:25b5999,CLOUDID:0cdd7f29-564d-42d9-9875-7c868ee415ec,B
+        ulkID:230326123044RXI7AJ6O,BulkQuantity:3,Recheck:0,SF:38|24|17|19|43|102,
+        TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,O
+        SI:0,OSA:0,AV:0
+X-CID-BVR: 0
+X-UUID: b6cde0c7e2b64c718c7dc18a8eab4dc3-20230326
+X-User: guodongtai@kylinos.cn
+Received: from localhost.localdomain [(210.12.40.82)] by mailgw
+        (envelope-from <guodongtai@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 124657828; Sun, 26 Mar 2023 12:40:21 +0800
+From:   George Guo <guodongtai@kylinos.cn>
+To:     chenhuacai@kernel.org, masahiroy@kernel.org,
+        michal.lkml@markovi.net
+Cc:     kernel@xen0n.name, ndesaulniers@google.com, daniel@iogearbox.net,
+        ast@kernel.org, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH] loongarch/bpf: Fix bpf load failed with CONFIG_BPF_JIT_ALWAYS_ON, caused by jit (BPF_ST | BPF_NOSPEC) code
+Date:   Sun, 26 Mar 2023 12:40:19 +0800
+Message-Id: <20230326044019.2139628-1-guodongtai@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v5] bpf, docs: Add extended call instructions
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167980392000.14901.12533099274998539757.git-patchwork-notify@kernel.org>
-Date:   Sun, 26 Mar 2023 04:12:00 +0000
-References: <20230326033117.1075-1-dthaler1968@googlemail.com>
-In-Reply-To: <20230326033117.1075-1-dthaler1968@googlemail.com>
-To:     Dave Thaler <dthaler1968@googlemail.com>
-Cc:     bpf@vger.kernel.org, bpf@ietf.org, dthaler@microsoft.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Here just skip the code(BPF_ST | BPF_NOSPEC) that has no couterpart to the loongarch.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+To verify, use ltp testcase:
 
-On Sun, 26 Mar 2023 03:31:17 +0000 you wrote:
-> From: Dave Thaler <dthaler@microsoft.com>
-> 
-> Add extended call instructions.  Uses the term "program-local" for
-> call by offset.  And there are instructions for calling helper functions
-> by "address" (the old way of using integer values), and for calling
-> helper functions by BTF ID (for kfuncs).
-> 
-> [...]
+Without this patch:
+$ ./bpf_prog02
+... ...
+bpf_common.c:123: TBROK: Failed verification: ??? (524)
 
-Here is the summary with links:
-  - [bpf-next,v5] bpf, docs: Add extended call instructions
-    https://git.kernel.org/bpf/bpf-next/c/8cfee110711e
+Summary:
+passed   0
+failed   0
+broken   1
+skipped  0
+warnings 0
 
-You are awesome, thank you!
+With this patch:
+$ ./bpf_prog02
+... ...
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  0
+warnings 0
+
+Signed-off-by: George Guo <guodongtai@kylinos.cn>
+---
+ arch/loongarch/net/bpf_jit.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+index 288003a9f0ca..745d344385ed 100644
+--- a/arch/loongarch/net/bpf_jit.c
++++ b/arch/loongarch/net/bpf_jit.c
+@@ -1046,6 +1046,11 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+ 		if (ctx->image == NULL)
+ 			ctx->offset[i] = ctx->idx;
+ 
++		/* skip the code that has no couterpart to the host arch */
++		if(insn->code == (BPF_ST | BPF_NOSPEC)) {
++			continue;
++		}
++
+ 		ret = build_insn(insn, ctx, extra_pass);
+ 		if (ret > 0) {
+ 			i++;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
