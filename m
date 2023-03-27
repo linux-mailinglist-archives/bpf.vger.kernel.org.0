@@ -2,290 +2,458 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 773066CB0FB
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 23:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4C56CB1CB
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 00:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjC0VtM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 17:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
+        id S229464AbjC0W2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 18:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjC0Vsy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 17:48:54 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C48B1FE3
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 14:48:52 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id ew6so41914341edb.7
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 14:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679953731;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QPzuF47o2L5Qq9Xg7DXFTgMzn4134xmU7/wIPDpG6fc=;
-        b=ndaHbD83sFkZgj+KuuiuyTE4cg0Yc+VvzeAKOOBcRhw71I9AaEkzsi4kmbYM3Ngx7f
-         uzQIbSb2ukNUeHq3X0iHpoMvy1K7ScQ2ZPRwmbGPARF8+zglnX7hVm7746Wf7JmanpnV
-         pV4phPRRAx75oyHD5R7IrEEkjpnDo39wP1pezGhk7Nw9iY7PVuRJInoxuU4y6fVAekcl
-         lp8B3Q6D+7UAlEtb5by7318b1Ysi8SminlSzl9t+o2eNNGe/HmQtv3MwUGKy3fHROlJG
-         9ENUPCcB0dI4lTGK8l3xnzUCCKfbczjVvPQRdgxfrYh5fC/DvhCJZj1NmPyGaA5yZrKS
-         ex8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679953731;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QPzuF47o2L5Qq9Xg7DXFTgMzn4134xmU7/wIPDpG6fc=;
-        b=CXfWr6GQvr1UWH0FSL8Ae0bUZQFfxpkPP+qxFKvgnQpJKW19LzPAeAcRSh5iv7jTS6
-         Yq7Xd2WUGO3vLFUyBw5gBq1ZkUD5ydlCF/i5KEMAC5wQ+6ozLJuCkK6zeh3sFXjRqiiT
-         kJXnSM9eAZKJzh9a3xLEl1z5wd2qIb8R8/UW94K6Q7nj31UZ57s6+dfse4pcwCQqaHWa
-         snXoz2GxqYLvyiOZu2MILJ8UVwG23b22/oxVFe81GIDpyDMz2PS3h8xVFdcboOKIbdep
-         AI8IuSY8Fy8lbqHoOAuioXgXc8iVnqcekZty5S08M561DtGIXgk6o8GiLNIFqKD6r7BH
-         JdVg==
-X-Gm-Message-State: AAQBX9cCTv68OqoRnZa1vALWBuVdIi/mxycGYQCCJiRYwwdzR05iUhvv
-        0ggI62M2S2LwK5nQaLQvvLI=
-X-Google-Smtp-Source: AKy350aVHI72HJ1NLNDf9V2ljIz2vq6oqJgXru0sLJx9fMPW/hYwHZGQxAB6iSz01PYyYinPhGy1VA==
-X-Received: by 2002:a17:907:6f0d:b0:946:b942:ad6a with SMTP id sy13-20020a1709076f0d00b00946b942ad6amr285266ejc.38.1679953730893;
-        Mon, 27 Mar 2023 14:48:50 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id le1-20020a170907170100b00930d505a567sm14454686ejc.128.2023.03.27.14.48.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Mar 2023 14:48:50 -0700 (PDT)
-Message-ID: <55da8c265fda2b45817ef70bdc57e4c2d168b74d.camel@gmail.com>
-Subject: Re: GCC-BPF triggers double free in libbpf Error: failed to link
- 'linked_maps2.bpf.o': Cannot allocate memory (12)
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Date:   Tue, 28 Mar 2023 00:48:49 +0300
-In-Reply-To: <CAEf4BzZ-x4U5NM7wsCcuESGXkoBbf_pk3CwJzA+gsj=WLwHSkQ@mail.gmail.com>
-References: <CADvTj4o7ZWUikKwNTwFq0O_AaX+46t_+Ca9gvWMYdWdRtTGeHQ@mail.gmail.com>
-         <CAEf4BzbEaTbEn1j9vLtmS1-8uJf0Bz-8wfmZj8N4Mmedt29nag@mail.gmail.com>
-         <c55f31dc3ae7e346e2a6d16d3e467e5460346b91.camel@gmail.com>
-         <CAEf4BzZ-x4U5NM7wsCcuESGXkoBbf_pk3CwJzA+gsj=WLwHSkQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S229456AbjC0W2i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 18:28:38 -0400
+Received: from out-44.mta0.migadu.com (out-44.mta0.migadu.com [IPv6:2001:41d0:1004:224b::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F163E1997
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 15:28:35 -0700 (PDT)
+Message-ID: <c77f069e-69a4-bc0a-dc92-c77cd0f7df08@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1679956112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qNXZmzkfQu7AFIvuVw4d1vt9wu+hspBdl2iQD8FXFZU=;
+        b=JNKqZrnVVhzIWiqxjEIwGLzCyCAsW/bifF/xQJcY0mvdrcOFTSHEP6goHipLG5cHD42bQZ
+        KEhU+xGhWqUwWzkKb0F//gnF5u1pH1YHRVYlk37uV+lUdbe/g1QGkXl10nScNdoyW3j+2N
+        CJV5CpI/1y7KPPF2B1x4Ih8Oi83J81I=
+Date:   Mon, 27 Mar 2023 15:28:28 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v4 bpf-next 1/4] bpf: Implement batching in UDP iterator
+Content-Language: en-US
+To:     Aditi Ghag <aditi.ghag@isovalent.com>
+Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
+        Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
+References: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
+ <20230323200633.3175753-2-aditi.ghag@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230323200633.3175753-2-aditi.ghag@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2023-03-23 at 09:36 -0700, Andrii Nakryiko wrote:
-> On Thu, Mar 23, 2023 at 5:57=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >=20
-> > On Wed, 2023-03-22 at 22:18 -0700, Andrii Nakryiko wrote:
-> > > On Wed, Mar 22, 2023 at 9:26=E2=80=AFPM James Hilliard
-> > > <james.hilliard1@gmail.com> wrote:
-> > > >=20
-> > > > I'm seeing this gen object error with gcc does not occur in llvm fo=
-r a
-> > > > bpf test(which uses both linked_maps1.c and linked_maps2.c) in
-> > > > bpf-next.
-> > > >=20
-> > > > I presume there is a bug in GCC which is triggering a double free b=
-ug in libbpf.
-> > > >=20
-> > >=20
-> > > Could you somehow share .o files for linked_maps1.c and
-> > > linked_maps2.c, so I can try to repro locally?
-> >=20
-> > Looking at the stack trace, second free is reported here:
-> >=20
-> >   void bpf_linker__free(struct bpf_linker *linker)
-> >   {
-> >         ...
-> >         for (i =3D 1; i < linker->sec_cnt; i++) {
-> >                 ...
-> >                 free(sec->sec_name);
-> > here -->        free(sec->raw_data);
-> >                 free(sec->sec_vars);
-> >                 ...
-> >         }
-> >         ...
-> >   }
-> >=20
-> > And first free is reported here:
-> >=20
-> >   static int extend_sec(struct bpf_linker *linker, struct dst_sec *dst,=
- struct src_sec *src)
-> >   {
-> >         ...
-> >         dst_align =3D dst->shdr->sh_addralign;
-> >         src_align =3D src->shdr->sh_addralign;
-> >         ...
-> >=20
-> >         dst_align_sz =3D (dst->sec_sz + dst_align - 1) / dst_align * ds=
-t_align;
-> >=20
-> >         /* no need to re-align final size */
-> >         dst_final_sz =3D dst_align_sz + src->shdr->sh_size;
-> >=20
-> >         if (src->shdr->sh_type !=3D SHT_NOBITS) {
-> > here -->        tmp =3D realloc(dst->raw_data, dst_final_sz);
-> >                 if (!tmp)
-> >                         return -ENOMEM;
-> >                 dst->raw_data =3D tmp;
-> >                 ...
-> >         }
-> >         ...
-> >   }
-> >=20
-> > The documentation says that `realloc(ptr, 0)` frees `ptr`.
-> > So, I assume that issue is caused by handling of empty sections.
->=20
-> yep, thanks for repro steps! It's a quite interesting behavior. There
-> are two reallocs involved:
->=20
-> First, dst->raw_data is NULL, dst_final_sz is 0, realloc succeeds and
-> returns non-NULL pointer (which according to documentation can be
-> freed with free()). All good.
->=20
-> Second one, for second file, we have non-NULL dst->raw_data returned
-> from previous realloc(), we pass it to realloc() with dst_final_sz
-> still 0. But *NOW* we get NULL as a return (and original special
-> pointer "helpfully" freed for us). This we handle as -ENOMEM and exit.
->=20
-> Amazingly non-error-prone behavior, of course.
->=20
-> > This is easy to test using object files produced by LLVM:
-> >=20
-> >   $ touch empty
-> >   $ llvm-objcopy --add-section .foobar=3Dempty linked_maps1.bpf.o
-> >   $ llvm-objcopy --add-section .foobar=3Dempty linked_maps2.bpf.o
-> >   $ bpftool --debug gen object linked_maps.linked1.o linked_maps1.bpf.o=
- linked_maps2.bpf.o
-> >   libbpf: linker: adding object file 'linked_maps1.bpf.o'...
-> >   libbpf: linker: adding object file 'linked_maps2.bpf.o'...
-> >   Error: failed to link 'linked_maps2.bpf.o': Cannot allocate memory (1=
-2)
-> >   free(): double free detected in tcache 2
-> >   Aborted (core dumped)
-> >=20
-> > The valgrind output also matches the one attached to the original email=
-.
-> > Something like below fixes it:
-> >=20
-> > diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-> > index d7069780984a..ff3833e55c55 100644
-> > --- a/tools/lib/bpf/linker.c
-> > +++ b/tools/lib/bpf/linker.c
-> > @@ -1113,7 +1113,7 @@ static int extend_sec(struct bpf_linker *linker, =
-struct dst_sec *dst, struct src
-> >         /* no need to re-align final size */
-> >         dst_final_sz =3D dst_align_sz + src->shdr->sh_size;
-> >=20
-> > -       if (src->shdr->sh_type !=3D SHT_NOBITS) {
-> > +       if (dst_final_sz !=3D 0 && src->shdr->sh_type !=3D SHT_NOBITS) =
-{
-> >                 tmp =3D realloc(dst->raw_data, dst_final_sz);
-> >                 if (!tmp)
->=20
-> let's maybe document this quirk instead of preventing realloc() call:
->=20
-> /* comment here explaining the quirks of realloc() API and it's
-> inconsistent runtime behavior */
-> if (!tmp && dst_final_sz > 0)
->   return -ENOMEM;
->=20
-> Eduard, are you going to send a proper patch for this? Thanks!
+On 3/23/23 1:06 PM, Aditi Ghag wrote:
+> Batch UDP sockets from BPF iterator that allows for overlapping locking
+> semantics in BPF/kernel helpers executed in BPF programs.  This facilitates
+> BPF socket destroy kfunc (introduced by follow-up patches) to execute from
+> BPF iterator programs.
+> 
+> Previously, BPF iterators acquired the sock lock and sockets hash table
+> bucket lock while executing BPF programs. This prevented BPF helpers that
+> again acquire these locks to be executed from BPF iterators.  With the
+> batching approach, we acquire a bucket lock, batch all the bucket sockets,
+> and then release the bucket lock. This enables BPF or kernel helpers to
+> skip sock locking when invoked in the supported BPF contexts.
+> 
+> The batching logic is similar to the logic implemented in TCP iterator:
+> https://lore.kernel.org/bpf/20210701200613.1036157-1-kafai@fb.com/.
+> 
+> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
+> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+> ---
+>   include/net/udp.h |   1 +
+>   net/ipv4/udp.c    | 255 ++++++++++++++++++++++++++++++++++++++++++++--
+>   2 files changed, 247 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/net/udp.h b/include/net/udp.h
+> index de4b528522bb..d2999447d3f2 100644
+> --- a/include/net/udp.h
+> +++ b/include/net/udp.h
+> @@ -437,6 +437,7 @@ struct udp_seq_afinfo {
+>   struct udp_iter_state {
+>   	struct seq_net_private  p;
+>   	int			bucket;
+> +	int			offset;
 
-I finally got back to this and have a question which I should have
-asked on Thursday, sorry. Why do you want to preserve a call to
-realloc() when dst_final_sz is 0?
+offset should be moved to 'struct bpf_udp_iter_state' instead. It is specific to 
+bpf_iter only.
 
-Suppose we have N files all merging and having an empty section,
-then dst->raw_data would constantly flip-flop between 2 states:
-1. special pointer to memory of size zero;
-2. NULL.
+>   	struct udp_seq_afinfo	*bpf_seq_afinfo;
+>   };
+>   
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index c605d171eb2d..58c620243e47 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -3152,6 +3152,171 @@ struct bpf_iter__udp {
+>   	int bucket __aligned(8);
+>   };
+>   
+> +struct bpf_udp_iter_state {
+> +	struct udp_iter_state state;
+> +	unsigned int cur_sk;
+> +	unsigned int end_sk;
+> +	unsigned int max_sk;
+> +	struct sock **batch;
+> +	bool st_bucket_done;
+> +};
+> +
+> +static unsigned short seq_file_family(const struct seq_file *seq);
+> +static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
+> +				      unsigned int new_batch_sz);
+> +
+> +static inline bool seq_sk_match(struct seq_file *seq, const struct sock *sk)
+> +{
+> +	unsigned short family = seq_file_family(seq);
+> +
+> +	/* AF_UNSPEC is used as a match all */
+> +	return ((family == AF_UNSPEC || family == sk->sk_family) &&
+> +		net_eq(sock_net(sk), seq_file_net(seq)));
+> +}
+> +
+> +static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
+> +{
+> +	struct bpf_udp_iter_state *iter = seq->private;
+> +	struct udp_iter_state *state = &iter->state;
+> +	struct net *net = seq_file_net(seq);
+> +	struct udp_seq_afinfo *afinfo = state->bpf_seq_afinfo;
+> +	struct udp_table *udptable;
+> +	struct sock *first_sk = NULL;
+> +	struct sock *sk;
+> +	unsigned int bucket_sks = 0;
+> +	bool resized = false;
+> +	int offset = 0;
+> +	int new_offset;
+> +
+> +	/* The current batch is done, so advance the bucket. */
+> +	if (iter->st_bucket_done) {
+> +		state->bucket++;
+> +		state->offset = 0;
+> +	}
+> +
+> +	udptable = udp_get_table_afinfo(afinfo, net);
+> +
+> +	if (state->bucket > udptable->mask) {
+> +		state->bucket = 0;
+> +		state->offset = 0;
+> +		return NULL;
+> +	}
+> +
+> +again:
+> +	/* New batch for the next bucket.
+> +	 * Iterate over the hash table to find a bucket with sockets matching
+> +	 * the iterator attributes, and return the first matching socket from
+> +	 * the bucket. The remaining matched sockets from the bucket are batched
+> +	 * before releasing the bucket lock. This allows BPF programs that are
+> +	 * called in seq_show to acquire the bucket lock if needed.
+> +	 */
+> +	iter->cur_sk = 0;
+> +	iter->end_sk = 0;
+> +	iter->st_bucket_done = false;
+> +	first_sk = NULL;
+> +	bucket_sks = 0;
+> +	offset = state->offset;
+> +	new_offset = offset;
+> +
+> +	for (; state->bucket <= udptable->mask; state->bucket++) {
+> +		struct udp_hslot *hslot = &udptable->hash[state->bucket];
 
-This shouldn't cause any issues but is kinda weird. If realloc() is
-avoided the dst->raw_data would preserve it's original state (set to
-zero by add_dst_sec()).
+Use udptable->hash"2" which is hashed by addr and port. It will help to get a 
+smaller batch. It was the comment given in v2.
 
->=20
-> >                         return -ENOMEM;
-> >=20
-> >=20
-> > BPF selftests are passing for me with this change,
-> > objcopy-based reproducer no longer reports error.
-> > WDYT?
-> >=20
-> > James, could you please test this patch with bpf-gcc?
-> > (you will have to re-compile libbpf and bpftool,
-> >  I had to separately do `make -C tools/bpf/bpftool`
-> >  before re-building selftests for some reason)
-> >=20
-> > Thanks,
-> > Eduard
-> >=20
-> > >=20
-> > > > GCC gen object failure:
-> > > >=20
-> > > > =3D=3D2125110=3D=3D Command:
-> > > > /home/buildroot/bpf-next/tools/testing/selftests/bpf/tools/sbin/bpf=
-tool
-> > > > --debug gen object
-> > > > /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linked=
-_maps.linked1.o
-> > > > /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linked=
-_maps1.bpf.o
-> > > > /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linked=
-_maps2.bpf.o
-> > > > =3D=3D2125110=3D=3D
-> > > > libbpf: linker: adding object file
-> > > > '/home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linke=
-d_maps1.bpf.o'...
-> > > > libbpf: linker: adding object file
-> > > > '/home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linke=
-d_maps2.bpf.o'...
-> > > > Error: failed to link
-> > > > '/home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/linke=
-d_maps2.bpf.o':
-> > > > Cannot allocate memory (12)
-> > > > =3D=3D2125110=3D=3D Invalid free() / delete / delete[] / realloc()
-> > > > =3D=3D2125110=3D=3D    at 0x484B0C4: free (vg_replace_malloc.c:884)
-> > > > =3D=3D2125110=3D=3D    by 0x17F8AB: bpf_linker__free (linker.c:204)
-> > > > =3D=3D2125110=3D=3D    by 0x12833C: do_object (gen.c:1608)
-> > > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
-> > > > =3D=3D2125110=3D=3D    by 0x129B53: do_gen (gen.c:2332)
-> > > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
-> > > > =3D=3D2125110=3D=3D    by 0x12DB9E: main (main.c:539)
-> > > > =3D=3D2125110=3D=3D  Address 0xda4b420 is 0 bytes after a block of =
-size 0 free'd
-> > > > =3D=3D2125110=3D=3D    at 0x484B027: free (vg_replace_malloc.c:883)
-> > > > =3D=3D2125110=3D=3D    by 0x484D6F8: realloc (vg_replace_malloc.c:1=
-451)
-> > > > =3D=3D2125110=3D=3D    by 0x181FA3: extend_sec (linker.c:1117)
-> > > > =3D=3D2125110=3D=3D    by 0x182326: linker_append_sec_data (linker.=
-c:1201)
-> > > > =3D=3D2125110=3D=3D    by 0x1803DC: bpf_linker__add_file (linker.c:=
-453)
-> > > > =3D=3D2125110=3D=3D    by 0x12829E: do_object (gen.c:1593)
-> > > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
-> > > > =3D=3D2125110=3D=3D    by 0x129B53: do_gen (gen.c:2332)
-> > > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
-> > > > =3D=3D2125110=3D=3D    by 0x12DB9E: main (main.c:539)
-> > > > =3D=3D2125110=3D=3D  Block was alloc'd at
-> > > > =3D=3D2125110=3D=3D    at 0x484876A: malloc (vg_replace_malloc.c:39=
-2)
-> > > > =3D=3D2125110=3D=3D    by 0x484D6EB: realloc (vg_replace_malloc.c:1=
-451)
-> > > > =3D=3D2125110=3D=3D    by 0x181FA3: extend_sec (linker.c:1117)
-> > > > =3D=3D2125110=3D=3D    by 0x182326: linker_append_sec_data (linker.=
-c:1201)
-> > > > =3D=3D2125110=3D=3D    by 0x1803DC: bpf_linker__add_file (linker.c:=
-453)
-> > > > =3D=3D2125110=3D=3D    by 0x12829E: do_object (gen.c:1593)
-> > > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
-> > > > =3D=3D2125110=3D=3D    by 0x129B53: do_gen (gen.c:2332)
-> > > > =3D=3D2125110=3D=3D    by 0x12CDAB: cmd_select (main.c:206)
-> > > > =3D=3D2125110=3D=3D    by 0x12DB9E: main (main.c:539)
-> >=20
+> +
+> +		if (hlist_empty(&hslot->head)) {
+> +			offset = 0;
+> +			continue;
+> +		}
+> +
+> +		spin_lock_bh(&hslot->lock);
+> +		/* Resume from the last saved position in a bucket before
+> +		 * iterator was stopped.
+> +		 */
+> +		while (offset-- > 0) {
+> +			sk_for_each(sk, &hslot->head)
+> +				continue;
+> +		}
+
+hmm... how does the above while loop and sk_for_each loop actually work?
+
+> +		sk_for_each(sk, &hslot->head) {
+
+Here starts from the beginning of the hslot->head again. doesn't look right also.
+
+Am I missing something here?
+
+> +			if (seq_sk_match(seq, sk)) {
+> +				if (!first_sk)
+> +					first_sk = sk;
+> +				if (iter->end_sk < iter->max_sk) {
+> +					sock_hold(sk);
+> +					iter->batch[iter->end_sk++] = sk;
+> +				}
+> +				bucket_sks++;
+> +			}
+> +			new_offset++;
+
+And this new_offset is outside of seq_sk_match, so it is not counting for the 
+seq_file_net(seq) netns alone.
+
+> +		}
+> +		spin_unlock_bh(&hslot->lock);
+> +
+> +		if (first_sk)
+> +			break;
+> +
+> +		/* Reset the current bucket's offset before moving to the next bucket. */
+> +		offset = 0;
+> +		new_offset = 0;
+> +	}
+> +
+> +	/* All done: no batch made. */
+> +	if (!first_sk)
+> +		goto ret;
+> +
+> +	if (iter->end_sk == bucket_sks) {
+> +		/* Batching is done for the current bucket; return the first
+> +		 * socket to be iterated from the batch.
+> +		 */
+> +		iter->st_bucket_done = true;
+> +		goto ret;
+> +	}
+> +	if (!resized && !bpf_iter_udp_realloc_batch(iter, bucket_sks * 3 / 2)) {
+> +		resized = true;
+> +		/* Go back to the previous bucket to resize its batch. */
+> +		state->bucket--;
+> +		goto again;
+> +	}
+> +ret:
+> +	state->offset = new_offset;
+> +	return first_sk;
+> +}
+> +
+> +static void *bpf_iter_udp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> +{
+> +	struct bpf_udp_iter_state *iter = seq->private;
+> +	struct udp_iter_state *state = &iter->state;
+> +	struct sock *sk;
+> +
+> +	/* Whenever seq_next() is called, the iter->cur_sk is
+> +	 * done with seq_show(), so unref the iter->cur_sk.
+> +	 */
+> +	if (iter->cur_sk < iter->end_sk) {
+> +		sock_put(iter->batch[iter->cur_sk++]);
+> +		++state->offset;
+
+but then,
+if I read it correctly, this offset counting is only for netns specific to 
+seq_file_net(seq) because batch is specific to seq_file_net(net). Is it going to 
+work?
+
+> +	}
+> +
+> +	/* After updating iter->cur_sk, check if there are more sockets
+> +	 * available in the current bucket batch.
+> +	 */
+> +	if (iter->cur_sk < iter->end_sk) {
+> +		sk = iter->batch[iter->cur_sk];
+> +	} else {
+> +		// Prepare a new batch.
+> +		sk = bpf_iter_udp_batch(seq);
+> +	}
+> +
+> +	++*pos;
+> +	return sk;
+> +}
+> +
+> +static void *bpf_iter_udp_seq_start(struct seq_file *seq, loff_t *pos)
+> +{
+> +	/* bpf iter does not support lseek, so it always
+> +	 * continue from where it was stop()-ped.
+> +	 */
+> +	if (*pos)
+> +		return bpf_iter_udp_batch(seq);
+> +
+> +	return SEQ_START_TOKEN;
+> +}
+> +
+>   static int udp_prog_seq_show(struct bpf_prog *prog, struct bpf_iter_meta *meta,
+>   			     struct udp_sock *udp_sk, uid_t uid, int bucket)
+>   {
+> @@ -3172,18 +3337,38 @@ static int bpf_iter_udp_seq_show(struct seq_file *seq, void *v)
+>   	struct bpf_prog *prog;
+>   	struct sock *sk = v;
+>   	uid_t uid;
+> +	bool slow;
+> +	int rc;
+>   
+>   	if (v == SEQ_START_TOKEN)
+>   		return 0;
+>   
+> +	slow = lock_sock_fast(sk);
+> +
+> +	if (unlikely(sk_unhashed(sk))) {
+> +		rc = SEQ_SKIP;
+> +		goto unlock;
+> +	}
+> +
+>   	uid = from_kuid_munged(seq_user_ns(seq), sock_i_uid(sk));
+>   	meta.seq = seq;
+>   	prog = bpf_iter_get_info(&meta, false);
+> -	return udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
+> +	rc = udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
+> +
+> +unlock:
+> +	unlock_sock_fast(sk, slow);
+> +	return rc;
+> +}
+> +
+> +static void bpf_iter_udp_unref_batch(struct bpf_udp_iter_state *iter)
+
+nit. Please use the same naming as in tcp-iter and unix-iter, so 
+bpf_iter_udp_put_batch().
+
+> +{
+> +	while (iter->cur_sk < iter->end_sk)
+> +		sock_put(iter->batch[iter->cur_sk++]);
+>   }
+>   
+>   static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
+>   {
+> +	struct bpf_udp_iter_state *iter = seq->private;
+>   	struct bpf_iter_meta meta;
+>   	struct bpf_prog *prog;
+>   
+> @@ -3194,15 +3379,31 @@ static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
+>   			(void)udp_prog_seq_show(prog, &meta, v, 0, 0);
+>   	}
+>   
+> -	udp_seq_stop(seq, v);
+> +	if (iter->cur_sk < iter->end_sk) {
+> +		bpf_iter_udp_unref_batch(iter);
+> +		iter->st_bucket_done = false;
+> +	}
+>   }
+>   
+>   static const struct seq_operations bpf_iter_udp_seq_ops = {
+> -	.start		= udp_seq_start,
+> -	.next		= udp_seq_next,
+> +	.start		= bpf_iter_udp_seq_start,
+> +	.next		= bpf_iter_udp_seq_next,
+>   	.stop		= bpf_iter_udp_seq_stop,
+>   	.show		= bpf_iter_udp_seq_show,
+>   };
+> +
+> +static unsigned short seq_file_family(const struct seq_file *seq)
+> +{
+> +	const struct udp_seq_afinfo *afinfo;
+> +
+> +	/* BPF iterator: bpf programs to filter sockets. */
+> +	if (seq->op == &bpf_iter_udp_seq_ops)
+> +		return AF_UNSPEC;
+> +
+> +	/* Proc fs iterator */
+> +	afinfo = pde_data(file_inode(seq->file));
+> +	return afinfo->family;
+> +}
+>   #endif
+>   
+>   const struct seq_operations udp_seq_ops = {
+> @@ -3413,9 +3614,30 @@ static struct pernet_operations __net_initdata udp_sysctl_ops = {
+>   DEFINE_BPF_ITER_FUNC(udp, struct bpf_iter_meta *meta,
+>   		     struct udp_sock *udp_sk, uid_t uid, int bucket)
+>   
+> +static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
+> +				      unsigned int new_batch_sz)
+> +{
+> +	struct sock **new_batch;
+> +
+> +	new_batch = kvmalloc_array(new_batch_sz, sizeof(*new_batch),
+> +				   GFP_USER | __GFP_NOWARN);
+> +	if (!new_batch)
+> +		return -ENOMEM;
+> +
+> +	bpf_iter_udp_unref_batch(iter);
+> +	kvfree(iter->batch);
+> +	iter->batch = new_batch;
+> +	iter->max_sk = new_batch_sz;
+> +
+> +	return 0;
+> +}
+> +
+> +#define INIT_BATCH_SZ 16
+> +
+>   static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
+>   {
+> -	struct udp_iter_state *st = priv_data;
+> +	struct bpf_udp_iter_state *iter = priv_data;
+> +	struct udp_iter_state *st = &iter->state;
+>   	struct udp_seq_afinfo *afinfo;
+>   	int ret;
+>   
+> @@ -3427,24 +3649,39 @@ static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
+>   	afinfo->udp_table = NULL;
+>   	st->bpf_seq_afinfo = afinfo;
+>   	ret = bpf_iter_init_seq_net(priv_data, aux);
+> -	if (ret)
+> +	if (ret) {
+>   		kfree(afinfo);
+> +		return ret;
+> +	}
+> +	ret = bpf_iter_udp_realloc_batch(iter, INIT_BATCH_SZ);
+> +	if (ret) {
+> +		bpf_iter_fini_seq_net(priv_data);
+> +		return ret;
+> +	}
+> +	iter->cur_sk = 0;
+> +	iter->end_sk = 0;
+> +	iter->st_bucket_done = false;
+> +	st->bucket = 0;
+> +	st->offset = 0;
+
+ From looking at the tcp and unix counter part, I don't think this zeroings is 
+necessary.
+
+> +
+>   	return ret;
+>   }
+>   
+>   static void bpf_iter_fini_udp(void *priv_data)
+>   {
+> -	struct udp_iter_state *st = priv_data;
+> +	struct bpf_udp_iter_state *iter = priv_data;
+> +	struct udp_iter_state *st = &iter->state;
+>   
+> -	kfree(st->bpf_seq_afinfo);
+
+The st->bpf_seq_afinfo should no longer be needed. Please remove it from 'struct 
+udp_iter_state'.
+
+The other AF_UNSPEC test in the existing udp_get_{first,next,...} should be 
+cleaned up to use the refactored seq_sk_match() also.
+
+These two changes should be done as the first one (or two?) cleanup patches 
+before the actual udp batching patch. The tcp-iter-batching patch set could be a 
+reference point on how the patch set could be structured.
+
+>   	bpf_iter_fini_seq_net(priv_data);
+> +	kfree(st->bpf_seq_afinfo);
+> +	kvfree(iter->batch);
+>   }
+>   
+>   static const struct bpf_iter_seq_info udp_seq_info = {
+>   	.seq_ops		= &bpf_iter_udp_seq_ops,
+>   	.init_seq_private	= bpf_iter_init_udp,
+>   	.fini_seq_private	= bpf_iter_fini_udp,
+> -	.seq_priv_size		= sizeof(struct udp_iter_state),
+> +	.seq_priv_size		= sizeof(struct bpf_udp_iter_state),
+>   };
+>   
+>   static struct bpf_iter_reg udp_reg_info = {
 
