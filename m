@@ -2,82 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD756CB244
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 01:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674EA6CB2A8
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 01:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjC0XYN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 19:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
+        id S229705AbjC0Xwm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 19:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjC0XXx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 19:23:53 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D2CC5
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 16:23:52 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id w9so42719483edc.3
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 16:23:52 -0700 (PDT)
+        with ESMTP id S229464AbjC0Xwl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 19:52:41 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13251B8
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 16:52:40 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id ek18so42864695edb.6
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 16:52:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679959430;
+        d=gmail.com; s=20210112; t=1679961159;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2sthNEXRrhXPflNLlQaZ/R6XYUJ5sFT3zFaO3Oj8iQU=;
-        b=W+Tv96+pFUlhT5JOOrNtcy47rsqxINYX5Iydl2ZhOjD2ZICVF/srMD4pjGFArnDzTC
-         kPELiLr2qm8nbVs2H3GBDurYFGHHHR4YppJMTiQgYYWDafqzi7oz9Du7VQA6lba1jKXq
-         dwn2vZhC36MqALm/QJpx59PUuvFUdHNBjYQvAl4nTFdcu6Cb2GfBntbxfBbl6jFLwYkS
-         xFSElExlWZVdm5acLMkTXu9+vioAED99Ij0oJd6h+lwLDOoAZY3FueFbhm3i8L+Th0Ha
-         nQFF7w8Ehg6MPHtETaxtVvSE4I3f3hAepMquA1Zlg0t/TDXtMd7OTTczELyQE4Wsmo2Y
-         0q3g==
+        bh=LE+GDtujY5dEp2QJlqwGeGf176HPNBVbeHSxIB1aKd8=;
+        b=TZztNehgbhekYOCdhGkVRnLy0f0T2OoD2Priq4kM2Qa9l+aoMz2IaNZwN2G/d9EkFK
+         dIqkYaEVEYd9ikQ/cPNySF6oOvGy9/wiwBhQ1jcEc2bat83mvnmWFnn7p973xYxj/Ran
+         839s/eG1f6gAJFIk9fbEj/oDsa9KFr1XmvkVc/cMZJAYHe9eESckqEvlJsYMGQQWksji
+         I9hz9dI8iLkBXIwzbOnpEDKsrjTi+QcK90Dh4KDBiVtVHATKYgPCeo9ZR/Cyor2Ur6V+
+         x8dCxItkTE+PmmPLHQ3O64qSKrm7Dp3olg1RYLJKTDYeZ6qg52GyLTRX+1sH/CJIXpJN
+         jTGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679959430;
+        d=1e100.net; s=20210112; t=1679961159;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2sthNEXRrhXPflNLlQaZ/R6XYUJ5sFT3zFaO3Oj8iQU=;
-        b=TILYpQBtuAB5z0d3r2sRJjVCsnsm2MqaHEai+QQOC8GwXQRu/wgWOIBwOiXuDGxo/u
-         hs2z6Ls3nC40wdQ0o1fMjag0QrrqUQJx/rKw9dh7GnJswbBnsGPm8qXC2Hfc9CBUsA2z
-         rfjd7XxfUnSdvgJ0GWG3b+Iv7QO8p2tqBd6IQ0mCDd4tu6VF6Dphxpd3VMJuufSpvkfH
-         hDCrxeQLNKDBkrnEUVqXW+sijTUajzv4mbM+9GuJ+z4WI922MbbzHbo2V3r8VFwcBqUY
-         w7SpPtDmVH2dw/rHSHyS/gbScamewbIzIws3YhYDsVQ8Y8DBzllT6wRTuBV3RZi/L4iZ
-         zT7A==
-X-Gm-Message-State: AAQBX9fjdTZF4s1Pa5PeYy8eDE2WTIK6860RTvJVOGpeBrKH3s1eeJ2K
-        Th1Diq/E5PBngWMYKW9AG5ye0hF3ii2SKG+j5ZJ85w==
-X-Google-Smtp-Source: AKy350axSMcFglrC9LKGtyy/jSyGyc9yKavwwCk6Ag/35Vw5JpZJlLk5zGZNXtD+EFFmpK2mYo3yPnkogMK64CtmxC8=
-X-Received: by 2002:a50:8e0d:0:b0:4fc:473d:3308 with SMTP id
- 13-20020a508e0d000000b004fc473d3308mr6749360edw.8.1679959430371; Mon, 27 Mar
- 2023 16:23:50 -0700 (PDT)
+        bh=LE+GDtujY5dEp2QJlqwGeGf176HPNBVbeHSxIB1aKd8=;
+        b=ZXkozV3/G6ZChFr1Rc2RJukk/K5yozqUNT6lUOukms56KZa7nj79dtqO5v+46SYU9h
+         zAWjkCIBXkh9X1JvVIORM5NQe6SdNKnL8slTiTUIklIf6G7RsCI/U7SE+IgSOl9ISw1O
+         JHT0tFuxxT8YcG3HC3su5n2Wy6sOsCPv2btgprtwzaapY3cyW/JUlZ8/opaYrdII1kTv
+         gaYSoz0ZDP6IIM0bHYOeLoXpUqeIHZDnFatUBA9UaxGqGDoLrRqtskiz9hBOVhZwwNuk
+         COdYOR93OhbHuVcN587w9NHyj2FJME2ubESwnuhyC1O+uWNf/2c5TjeDlZeyKQDsqFdQ
+         bI5A==
+X-Gm-Message-State: AAQBX9fLMrmA3MllJCHYIxUj7KxZhnZpvwn7xQ/vCNn4UlrIRsWtzZhO
+        1sgPOzgWKakmi67eq2pyqMC6xWR3f+2V2KkAWN4elqNU
+X-Google-Smtp-Source: AKy350auL/+C8SIfRo16zz4lGkBakAH3JUFzjiZPC+60y9sf8SMiJMtnlG2Jd/e9bD2/nxkMx+bshVnFVO1IkUWni6A=
+X-Received: by 2002:a17:906:6692:b0:944:70f7:6fae with SMTP id
+ z18-20020a170906669200b0094470f76faemr2597696ejo.5.1679961159260; Mon, 27 Mar
+ 2023 16:52:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230323040037.2389095-1-yosryahmed@google.com>
- <20230323040037.2389095-2-yosryahmed@google.com> <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
- <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
- <ZB5UalkjGngcBDEJ@slm.duckdns.org> <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com>
- <CALvZod6rF0D21hcV7xnqD+oRkn=x5NLi5GOkPpyaPa859uDH+Q@mail.gmail.com>
- <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com> <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com>
-In-Reply-To: <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 27 Mar 2023 16:23:13 -0700
-Message-ID: <CAJD7tkZrp=4zWvjE9_010TAG1T_crCbf9P64UzJABspgcrGPKg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
+References: <CADvTj4o7ZWUikKwNTwFq0O_AaX+46t_+Ca9gvWMYdWdRtTGeHQ@mail.gmail.com>
+ <CAEf4BzbEaTbEn1j9vLtmS1-8uJf0Bz-8wfmZj8N4Mmedt29nag@mail.gmail.com>
+ <c55f31dc3ae7e346e2a6d16d3e467e5460346b91.camel@gmail.com>
+ <CAEf4BzZ-x4U5NM7wsCcuESGXkoBbf_pk3CwJzA+gsj=WLwHSkQ@mail.gmail.com>
+ <55da8c265fda2b45817ef70bdc57e4c2d168b74d.camel@gmail.com>
+ <CAEf4BzYMrXrGs0MFTqN6yxjRby-ALDbeC1aMEFjdSHO_1AsOwA@mail.gmail.com> <b38121e0f9129d388b9426be4b2a88f87b4b5bb6.camel@gmail.com>
+In-Reply-To: <b38121e0f9129d388b9426be4b2a88f87b4b5bb6.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Mar 2023 16:52:26 -0700
+Message-ID: <CAEf4Bza84U5XOQ2RfYuBvXn47QnH+0XH5R=D=NE7yPdL+GafCQ@mail.gmail.com>
+Subject: Re: GCC-BPF triggers double free in libbpf Error: failed to link
+ 'linked_maps2.bpf.o': Cannot allocate memory (12)
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,81 +74,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 9:46=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
-wrote:
+On Mon, Mar 27, 2023 at 4:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On Fri, Mar 24, 2023 at 9:37=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Fri, Mar 24, 2023 at 9:31=E2=80=AFPM Shakeel Butt <shakeelb@google.c=
-om> wrote:
+> On Mon, 2023-03-27 at 15:50 -0700, Andrii Nakryiko wrote:
+> [...]
 > > >
-> > > On Fri, Mar 24, 2023 at 7:18=E2=80=AFPM Yosry Ahmed <yosryahmed@googl=
-e.com> wrote:
-> > > >
-> > > [...]
-> > > > Any ideas here are welcome!
-> > > >
-> > >
-> > > Let's move forward. It seems like we are not going to reach an
-> > > agreement on making cgroup_rstat_lock a non-irq lock. However there i=
-s
-> > > agreement on the memcg code of not flushing in irq context and the
-> > > cleanup Johannes has requested. Let's proceed with those for now. We
-> > > can come back to cgroup_rstat_lock later if we still see issues in
-> > > production.
+> > > I finally got back to this and have a question which I should have
+> > > asked on Thursday, sorry. Why do you want to preserve a call to
+> > > realloc() when dst_final_sz is 0?
 > >
-> > Even if we do not flush from irq context, we still flush from atomic
-> > contexts that will currently hold the lock with irqs disabled
-> > throughout the entire flush sequence. A primary purpose of this reason
-> > is to avoid that.
-> >
-> > We can either:
-> > (a) Proceed with the following approach of making cgroup_rstat_lock a
-> > non-irq lock.
-> > (b) Proceed with Tejun's suggestion of always releasing and
-> > reacquiring the lock at CPU boundaries, even for atomic flushes (if
-> > the spinlock needs a break ofc).
-> > (c) Something else.
+> > Because it's supposed to work correctly. Why is it weird? realloc API
+> > is supposed to work with zeros, so I'd rather have one code path that
+> > handles all the cases instead of avoiding calling realloc().
 >
-> (d) keep the status quo regarding cgroup_rstat_lock
-> (e) decouple the discussion of cgroup_rstat_lock from the agreed
-> improvements. Send the patches for the agreed ones and continue
-> discussing cgroup_rstat_lock.
+> Having two ways to encode effectively identical state feels weird.
 
+It's weird on the realloc() side. But from libbpf's side, we always
+call realloc(), always use its results, always pass it into free().
+It's one way: consistently use realloc()+free() API.
 
-Ah, I lost sight of the fact that the rest of the patch series does
-not strictly depend on this patch. I will respin the rest of the patch
-series separately. Thanks, Shakeel.
-
-Meanwhile, it would be useful to reach an agreement here to stop
-acquiring the cgroup_rstat_lock for a long time with irq disabled in
-atomic contexts.
-
-Tejun, if having the lock be non-irq is a non-starter for you, I can
-send a patch that instead gives up the lock and reacquires it at every
-CPU boundary unconditionally -- or perhaps every N CPU boundaries to
-avoid excessively releasing and reacquiring the lock.
-
-Something like:
-
-static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
-{
-    ...
-    for_each_possible_cpu(cpu) {
-        ...
-        /* Always yield the at CPU boundaries to enable irqs */
-        spin_unlock_irq(&cgroup_rstat_lock);
-
-        /* if @may_sleep, play nice and yield if necessary */
-        if (may_sleep)
-            cond_resched();
-
-        spin_lock_irq(&cgroup_rstat_lock);
-    }
-}
-
-If you have other ideas to avoid disabling irq's for the entire flush
-sequence I am also open to that.
-
-Thanks!
+> Ok, thank you, I'll send the patch the way you suggest shortly.
+>
+> [...]
