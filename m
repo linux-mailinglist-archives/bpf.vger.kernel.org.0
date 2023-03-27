@@ -2,257 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 330DE6CADF4
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 20:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C5E6CADFC
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 20:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbjC0SwS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 27 Mar 2023 14:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
+        id S230507AbjC0SzY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 14:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232263AbjC0SwR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 14:52:17 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F561997
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:52:15 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32RC0ZEP025557
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:52:14 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3phxg33a5s-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:52:14 -0700
-Received: from twshared52565.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 27 Mar 2023 11:52:12 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 763182C1D3DE3; Mon, 27 Mar 2023 11:52:09 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v4 bpf-next 3/3] veristat: guess and substitue underlying program type for freplace (EXT) progs
-Date:   Mon, 27 Mar 2023 11:52:02 -0700
-Message-ID: <20230327185202.1929145-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230327185202.1929145-1-andrii@kernel.org>
-References: <20230327185202.1929145-1-andrii@kernel.org>
+        with ESMTP id S229970AbjC0SzX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 14:55:23 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDB019A9;
+        Mon, 27 Mar 2023 11:55:21 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id w9so40314950edc.3;
+        Mon, 27 Mar 2023 11:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679943320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c+nsytMysp1FODhWu2kvGCHUtSXEQamFOMFgO+AwSM0=;
+        b=mRRfr2QQg4wrQsULbADTNA0f7sNdq9Yfzr4G3XTPm44vHYLshTgW9NdfLqPmVdbMHz
+         GE267NY87l1ef3hndV8F3BrOwE8/Dg1g3pajN0wNXn3w6+pXf/Vv7BZUenBm/fqjn0rm
+         EG9/Mr/UQsL91VQ4uxBm8nuctTWbNdpcaCGWGcAQLUeA3SH/1xRaXzegeYNCLx0RQo9q
+         Edpd8tFzIuhzbKeUor/mh4ySV+bMYpmk1mIZBdHzI8bTjpgbFRYYePkbDJ0ngSE2pHZc
+         bHeAz/gfxF028QgDa18tfafEV2k6KnPNaNAaxAmTkGfXrcGWVP0GYUl8HM9vP7Ogqp8i
+         R1PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679943320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c+nsytMysp1FODhWu2kvGCHUtSXEQamFOMFgO+AwSM0=;
+        b=GX9uXKEAtDjYfhm+tcmoNwJHv3rAOL/qdjUkPaTJJDdS3yLWI5yPScyG/H7dZA73J3
+         L5kXx0PiKwf59nEjlVZGsyREzOnjl0r5RREgNGbumDmY5diLPD0Yc0B10ZLe3lOH2cS9
+         PgLgA7M1tV6M+SxUjTHELnNka7q6IbtcCTmA7Fk+c4W2lCyp2KL3a4OVW04JAcZuTxxN
+         bwzNgu1Is9N/vhjzQ+9Bj6Y4A8I/odnDRn04rAcEJoqyZYo8eVQrCioe+AXgoW1ePwoe
+         4uTKwTYKcKOgIpgiSO1pQNKBJkdAkHfofn3mgZ56syniCX97hVJedxE4oGjXqyUKG4o3
+         X4Jg==
+X-Gm-Message-State: AAQBX9cscDPDzJ+wwvhLf19FhP8F/EUJgOWQj57LEbRHd3u52x4mi2l9
+        ygw5G7B2kuXyGos0DSX2oUItOcirHxP3f5YO6/h/gBqc/4c=
+X-Google-Smtp-Source: AKy350aY2aM4jwoQXFs5GSRWcG4jTb2IK4+pB+UMlbIKcJ0c9jiMF9bKuIZkegCiRSbYZUAZHEkGGdIFGRzJS6IwF2Y=
+X-Received: by 2002:a17:906:af0d:b0:932:38d5:ff86 with SMTP id
+ lx13-20020a170906af0d00b0093238d5ff86mr6690398ejb.5.1679943320202; Mon, 27
+ Mar 2023 11:55:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 509-P-AaVDXSXeNNXr2u1coQxj9Sa8-o
-X-Proofpoint-ORIG-GUID: 509-P-AaVDXSXeNNXr2u1coQxj9Sa8-o
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-24_11,2023-03-27_02,2023-02-09_01
-X-Spam-Status: No, score=-0.5 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230327153538.850440-1-xukuohai@huaweicloud.com>
+ <CAEf4BzZuf=G0sEk5XqB0nAbvr81uRChLa96WDz0jCSG82=kofQ@mail.gmail.com> <a4e44814-3c92-ccab-2a14-7824dfd44488@huaweicloud.com>
+In-Reply-To: <a4e44814-3c92-ccab-2a14-7824dfd44488@huaweicloud.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Mar 2023 11:55:08 -0700
+Message-ID: <CAEf4Bzb4JD89CC8yEmnD91pdCMyzhCT5YkU4cv2feLUj8Dcf6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Remove two infinite loop bound
+ check cases
+To:     Xu Kuohai <xukuohai@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SEC("freplace") (i.e., BPF_PROG_TYPE_EXT) programs are not loadable as
-is through veristat, as kernel expects actual program's FD during
-BPF_PROG_LOAD time, which veristat has no way of knowing.
+On Sun, Mar 26, 2023 at 11:21=E2=80=AFPM Xu Kuohai <xukuohai@huaweicloud.co=
+m> wrote:
+>
+> On 3/27/2023 11:20 AM, Andrii Nakryiko wrote:
+> > On Sun, Mar 26, 2023 at 7:45=E2=80=AFPM Xu Kuohai <xukuohai@huaweicloud=
+.com> wrote:
+> >>
+> >> From: Xu Kuohai <xukuohai@huawei.com>
+> >>
+> >> The two infinite loop bound check cases added by commit
+> >> 1a3148fc171f ("selftests/bpf: Check when bounds are not in the 32-bit =
+range")
+> >> take a long time to execute but don't add much value.
+> >>
+> >> Remove them to reduce run time of test_verifier.
+> >
+> > Summary: 2042 PASSED, 0 SKIPPED, 1 FAILED
+> >
+> > real    0m4.780s
+> > user    0m0.458s
+> > sys     0m3.871s
+> >
+> >
+> > 5 seconds isn't such a long time, especially when we compare it to
+> > test_progs (even with parallelization).
+> >
+>
+> Well, I actually don't know if it is "long time".
+>
+> This patch was sent to address Alexei's concern about the run time
+> of test_verifier in mail [1].
 
-Unfortunately, freplace programs are a pretty important class of
-programs, especially when dealing with XDP chaining solutions, which
-rely on EXT programs.
+  > These infinite loops don't add much value to the actual test.
+  > Please rewrite them without infinite loops.
 
-So let's do our best and teach veristat to try to guess the original
-program type, based on program's context argument type. And if guessing
-process succeeds, we manually override freplace/EXT with guessed program
-type using bpf_program__set_type() setter to increase chances of proper
-BPF verification.
+Alexei asked to improve the test, not to just remove it, if I
+understand correctly. If the test is there, presumably it's useful. If
+it can be implemented better, let's do that. Just removing the test
+seems like a wrong move.
 
-We rely on BTF and maintain a simple lookup table. This process is
-obviously not 100% bulletproof, as valid program might not use context
-and thus wouldn't have to specify correct type. Also, __sk_buff is very
-ambiguous and is the context type across many different program types.
-We pick BPF_PROG_TYPE_CGROUP_SKB for now, which seems to work fine in
-practice so far. Similarly, some program types require specifying attach
-type, and so we pick one out of possible few variants.
-
-Best effort at its best. But this makes veristat even more widely
-applicable.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/veristat.c | 121 ++++++++++++++++++++++++-
- 1 file changed, 117 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index 263df32fbda8..055df1abd7ca 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -15,6 +15,7 @@
- #include <sys/sysinfo.h>
- #include <sys/stat.h>
- #include <bpf/libbpf.h>
-+#include <bpf/btf.h>
- #include <libelf.h>
- #include <gelf.h>
- #include <float.h>
-@@ -778,7 +779,62 @@ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *
- 	return 0;
- }
- 
--static void fixup_obj(struct bpf_object *obj)
-+static int guess_prog_type_by_ctx_name(const char *ctx_name,
-+				       enum bpf_prog_type *prog_type,
-+				       enum bpf_attach_type *attach_type)
-+{
-+	/* We need to guess program type based on its declared context type.
-+	 * This guess can't be perfect as many different program types might
-+	 * share the same context type.  So we can only hope to reasonably
-+	 * well guess this and get lucky.
-+	 *
-+	 * Just in case, we support both UAPI-side type names and
-+	 * kernel-internal names.
-+	 */
-+	static struct {
-+		const char *uapi_name;
-+		const char *kern_name;
-+		enum bpf_prog_type prog_type;
-+		enum bpf_attach_type attach_type;
-+	} ctx_map[] = {
-+		/* __sk_buff is most ambiguous, for now we assume cgroup_skb */
-+		{ "__sk_buff", "sk_buff", BPF_PROG_TYPE_CGROUP_SKB, BPF_CGROUP_INET_INGRESS },
-+		{ "bpf_sock", "sock", BPF_PROG_TYPE_CGROUP_SOCK, BPF_CGROUP_INET4_POST_BIND },
-+		{ "bpf_sock_addr", "bpf_sock_addr_kern",  BPF_PROG_TYPE_CGROUP_SOCK_ADDR, BPF_CGROUP_INET4_BIND },
-+		{ "bpf_sock_ops", "bpf_sock_ops_kern", BPF_PROG_TYPE_SOCK_OPS, BPF_CGROUP_SOCK_OPS },
-+		{ "sk_msg_md", "sk_msg", BPF_PROG_TYPE_SK_MSG, BPF_SK_MSG_VERDICT },
-+		{ "bpf_cgroup_dev_ctx", "bpf_cgroup_dev_ctx", BPF_PROG_TYPE_CGROUP_DEVICE, BPF_CGROUP_DEVICE },
-+		{ "bpf_sysctl", "bpf_sysctl_kern", BPF_PROG_TYPE_CGROUP_SYSCTL, BPF_CGROUP_SYSCTL },
-+		{ "bpf_sockopt", "bpf_sockopt_kern", BPF_PROG_TYPE_CGROUP_SOCKOPT, BPF_CGROUP_SETSOCKOPT },
-+		{ "sk_reuseport_md", "sk_reuseport_kern", BPF_PROG_TYPE_SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT_OR_MIGRATE },
-+		{ "bpf_sk_lookup", "bpf_sk_lookup_kern", BPF_PROG_TYPE_SK_LOOKUP, BPF_SK_LOOKUP },
-+		{ "xdp_md", "xdp_buff", BPF_PROG_TYPE_XDP, BPF_XDP },
-+		/* tracing types with no expected attach type */
-+		{ "bpf_user_pt_regs_t", "pt_regs", BPF_PROG_TYPE_KPROBE },
-+		{ "bpf_perf_event_data", "bpf_perf_event_data_kern", BPF_PROG_TYPE_PERF_EVENT },
-+		/* raw_tp programs use u64[] from kernel side, we don't want
-+		 * to match on that, probably; so NULL for kern-side type
-+		 */
-+		{ "bpf_raw_tracepoint_args", NULL, BPF_PROG_TYPE_RAW_TRACEPOINT },
-+	};
-+	int i;
-+
-+	if (!ctx_name)
-+		return -EINVAL;
-+
-+	for (i = 0; i < ARRAY_SIZE(ctx_map); i++) {
-+		if (strcmp(ctx_map[i].uapi_name, ctx_name) == 0 ||
-+		    (ctx_map[i].kern_name && strcmp(ctx_map[i].kern_name, ctx_name) == 0)) {
-+			*prog_type = ctx_map[i].prog_type;
-+			*attach_type = ctx_map[i].attach_type;
-+			return 0;
-+		}
-+	}
-+
-+	return -ESRCH;
-+}
-+
-+static void fixup_obj(struct bpf_object *obj, struct bpf_program *prog, const char *filename)
- {
- 	struct bpf_map *map;
- 
-@@ -798,18 +854,75 @@ static void fixup_obj(struct bpf_object *obj)
- 				bpf_map__set_max_entries(map, 1);
- 		}
- 	}
-+
-+	/* SEC(freplace) programs can't be loaded with veristat as is,
-+	 * but we can try guessing their target program's expected type by
-+	 * looking at the type of program's first argument and substituting
-+	 * corresponding program type
-+	 */
-+	if (bpf_program__type(prog) == BPF_PROG_TYPE_EXT) {
-+		const struct btf *btf = bpf_object__btf(obj);
-+		const char *prog_name = bpf_program__name(prog);
-+		enum bpf_prog_type prog_type;
-+		enum bpf_attach_type attach_type;
-+		const struct btf_type *t;
-+		const char *ctx_name;
-+		int id;
-+
-+		if (!btf)
-+			goto skip_freplace_fixup;
-+
-+		id = btf__find_by_name_kind(btf, prog_name, BTF_KIND_FUNC);
-+		t = btf__type_by_id(btf, id);
-+		t = btf__type_by_id(btf, t->type);
-+		if (!btf_is_func_proto(t) || btf_vlen(t) != 1)
-+			goto skip_freplace_fixup;
-+
-+		/* context argument is a pointer to a struct/typedef */
-+		t = btf__type_by_id(btf, btf_params(t)[0].type);
-+		while (t && btf_is_mod(t))
-+			t = btf__type_by_id(btf, t->type);
-+		if (!t || !btf_is_ptr(t))
-+			goto skip_freplace_fixup;
-+		t = btf__type_by_id(btf, t->type);
-+		while (t && btf_is_mod(t))
-+			t = btf__type_by_id(btf, t->type);
-+		if (!t)
-+			goto skip_freplace_fixup;
-+
-+		ctx_name = btf__name_by_offset(btf, t->name_off);
-+
-+		if (guess_prog_type_by_ctx_name(ctx_name, &prog_type, &attach_type) == 0) {
-+			bpf_program__set_type(prog, prog_type);
-+			bpf_program__set_expected_attach_type(prog, attach_type);
-+
-+			if (!env.quiet) {
-+				printf("Using guessed program type '%s' for %s/%s...\n",
-+					libbpf_bpf_prog_type_str(prog_type),
-+					filename, prog_name);
-+			}
-+		} else {
-+			if (!env.quiet) {
-+				printf("Failed to guess program type for freplace program with context type name '%s' for %s/%s. Consider using canonical type names to help veristat...\n",
-+					ctx_name, filename, prog_name);
-+			}
-+		}
-+	}
-+skip_freplace_fixup:
-+	return;
- }
- 
- static int process_prog(const char *filename, struct bpf_object *obj, struct bpf_program *prog)
- {
- 	const char *prog_name = bpf_program__name(prog);
-+	const char *base_filename = basename(filename);
- 	size_t buf_sz = sizeof(verif_log_buf);
- 	char *buf = verif_log_buf;
- 	struct verif_stats *stats;
- 	int err = 0;
- 	void *tmp;
- 
--	if (!should_process_file_prog(basename(filename), bpf_program__name(prog))) {
-+	if (!should_process_file_prog(base_filename, bpf_program__name(prog))) {
- 		env.progs_skipped++;
- 		return 0;
- 	}
-@@ -835,12 +948,12 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
- 	verif_log_buf[0] = '\0';
- 
- 	/* increase chances of successful BPF object loading */
--	fixup_obj(obj);
-+	fixup_obj(obj, prog, base_filename);
- 
- 	err = bpf_object__load(obj);
- 	env.progs_processed++;
- 
--	stats->file_name = strdup(basename(filename));
-+	stats->file_name = strdup(base_filename);
- 	stats->prog_name = strdup(bpf_program__name(prog));
- 	stats->stats[VERDICT] = err == 0; /* 1 - success, 0 - failure */
- 	parse_verif_log(buf, buf_sz, stats);
--- 
-2.34.1
-
+>
+> [1] https://lore.kernel.org/bpf/20230322213056.2470-1-daniel@iogearbox.ne=
+t/T/#mb3d6363a693ccd63d416d9d787db17f8fdcb8442
+>
+> >>
+> >> Fixes: 1a3148fc171f ("selftests/bpf: Check when bounds are not in the =
+32-bit range")
+> >> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> >> ---
+> >>   tools/testing/selftests/bpf/verifier/bounds.c | 50 -----------------=
+--
+> >>   1 file changed, 50 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/verifier/bounds.c b/tools/tes=
+ting/selftests/bpf/verifier/bounds.c
+> >> index 74b1917d4208..515a8222f08f 100644
+> >> --- a/tools/testing/selftests/bpf/verifier/bounds.c
+> >> +++ b/tools/testing/selftests/bpf/verifier/bounds.c
+> >> @@ -777,31 +777,6 @@
+> >>          .result =3D ACCEPT,
+> >>          .prog_type =3D BPF_PROG_TYPE_XDP,
+> >>   },
+> >> -{
+> >> -       "bound check with JMP_JSLT for crossing 64-bit signed boundary=
+",
+> >> -       .insns =3D {
+> >> -       BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_m=
+d, data)),
+> >> -       BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_m=
+d, data_end)),
+> >> -       BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
+> >> -       BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
+> >> -       BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 8),
+> >> -
+> >> -       BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
+> >> -       BPF_LD_IMM64(BPF_REG_0, 0x7fffffffffffff10),
+> >> -       BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
+> >> -
+> >> -       BPF_LD_IMM64(BPF_REG_0, 0x8000000000000000),
+> >> -       BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+> >> -       /* r1 signed range is [S64_MIN, S64_MAX] */
+> >> -       BPF_JMP_REG(BPF_JSLT, BPF_REG_0, BPF_REG_1, -2),
+> >> -
+> >> -       BPF_MOV64_IMM(BPF_REG_0, 0),
+> >> -       BPF_EXIT_INSN(),
+> >> -       },
+> >> -       .errstr =3D "BPF program is too large",
+> >> -       .result =3D REJECT,
+> >> -       .prog_type =3D BPF_PROG_TYPE_XDP,
+> >> -},
+> >>   {
+> >>          "bound check for loop upper bound greater than U32_MAX",
+> >>          .insns =3D {
+> >> @@ -849,28 +824,3 @@
+> >>          .result =3D ACCEPT,
+> >>          .prog_type =3D BPF_PROG_TYPE_XDP,
+> >>   },
+> >> -{
+> >> -       "bound check with JMP32_JSLT for crossing 32-bit signed bounda=
+ry",
+> >> -       .insns =3D {
+> >> -       BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_m=
+d, data)),
+> >> -       BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_m=
+d, data_end)),
+> >> -       BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
+> >> -       BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
+> >> -       BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 6),
+> >> -
+> >> -       BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
+> >> -       BPF_MOV32_IMM(BPF_REG_0, 0x7fffff10),
+> >> -       BPF_ALU32_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
+> >> -
+> >> -       BPF_MOV32_IMM(BPF_REG_0, 0x80000000),
+> >> -       BPF_ALU32_IMM(BPF_ADD, BPF_REG_0, 1),
+> >> -       /* r1 signed range is [S32_MIN, S32_MAX] */
+> >> -       BPF_JMP32_REG(BPF_JSLT, BPF_REG_0, BPF_REG_1, -2),
+> >> -
+> >> -       BPF_MOV64_IMM(BPF_REG_0, 0),
+> >> -       BPF_EXIT_INSN(),
+> >> -       },
+> >> -       .errstr =3D "BPF program is too large",
+> >> -       .result =3D REJECT,
+> >> -       .prog_type =3D BPF_PROG_TYPE_XDP,
+> >> -},
+> >> --
+> >> 2.30.2
+> >>
+> > .
+>
