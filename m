@@ -2,130 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4880A6C9F62
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 11:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA426CA101
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 12:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbjC0Jac (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 05:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
+        id S232513AbjC0KNV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 06:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232453AbjC0Jab (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 05:30:31 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47EF3A92;
-        Mon, 27 Mar 2023 02:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=NQ76cs9m2PfyRb1nvWbSz8Et10awSsHsXz4HNPXF8yg=; b=QZ9Vn6XQoPo/vkVnwWKgjNwNQF
-        i+T6Yl3JETlALqU5VTD5LuRKWBkxlUZfMnccx1V/R8P1y1jb2Nn5vNn7qwhEJjK8c6CJnqa+IvXYv
-        fSsK289ahjDc6UcYJ6PNuPJdYbA6zEy2NiIQ1OKZDK5Ou9RVm5ztS1GIL6bIVPQLOz4PR1pye5B0O
-        3vVEIr7XrOnjpURdrjUhayo44zsagA6WzNAlLWxZihURKdHXLk/exMEpuHu1wCA+H5uKVfWFO4jHw
-        sx55zP9IskZDpk3E1MCtVVDVaPNI846+iakQvvoZc3HFZinQFEwTulPbXBfyfpt6jwzMW6C0Vf0N7
-        kIjdICDw==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pgjAz-0007hb-0h; Mon, 27 Mar 2023 11:30:05 +0200
-Received: from [219.59.88.22] (helo=localhost.localdomain)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pgjAw-000UQh-Hd; Mon, 27 Mar 2023 11:30:03 +0200
-Subject: Re: [PATCH] loongarch/bpf: Fix bpf load failed with
- CONFIG_BPF_JIT_ALWAYS_ON, caused by jit (BPF_ST | BPF_NOSPEC) code
-To:     George Guo <guodongtai@kylinos.cn>, chenhuacai@kernel.org,
-        masahiroy@kernel.org, michal.lkml@markovi.net
-Cc:     kernel@xen0n.name, ndesaulniers@google.com, ast@kernel.org,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, bpf@vger.kernel.org
-References: <20230326044019.2139628-1-guodongtai@kylinos.cn>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c1932d0d-cf3f-5005-958d-7e08dddf42c9@iogearbox.net>
-Date:   Mon, 27 Mar 2023 11:29:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S233424AbjC0KNU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 06:13:20 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB06C1;
+        Mon, 27 Mar 2023 03:13:11 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id p34so4705710wms.3;
+        Mon, 27 Mar 2023 03:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679911990;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=59tA2lCnliRvQCtKSZm7EmR6QrSpBlAsOZLbQEqcLPI=;
+        b=BrWg7aw+Awtki2c0xRG2ewC1alYtCx/pT1kjf6sk3heQGvoWLEwubOi09TCbNZmlud
+         tDZEzXQOmyhGGBwDLLMtQaA3TFwfRDMTZhtWme1IzfOCf01ybA0rKvEshjt4ToqZZAky
+         QHPuu4VIvjk2WA0TJkDDZzgC35QuerjpKMOvL7UKuinwM9PCEYL/3LOSStS9c+DRIB2c
+         +s5BdQB0FBfonPrM8RMASE5nuTxYSaarbcUJWY8QkUjaxbvUnsKYMM9dI8LKhqbRGpqq
+         5jxL9NDpKc5P7o3hr4ae0HlVGMQxhPhgNZBEfkg2M00nNeBQnAR8db5nw8+fmxKXaLY3
+         B+kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679911990;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=59tA2lCnliRvQCtKSZm7EmR6QrSpBlAsOZLbQEqcLPI=;
+        b=naZaffRl1kBabtGKCOmXrwGNL/N9np03BG1tNv3IPmXLWCPKscEoqMMfAgGoyW2v+G
+         Z9/37wHMFMYDu7y0a5AFVo6uwewYbS8Vi2WXd9/dJJ1GoJlx14JAljZrgG3TAi0s3GOF
+         /JEh7QWrEC8MZQ8xPOu8eIQ8GFjvF9VTCGTfkFpN7kXubkSnRIeI7apDs1dY3hKRMDhb
+         igxckX5giqmv7OyN8we7mIwbxevA7vJ5TOcHGaWfsFo1VJbshslYjntMnJUhVEm7/gpy
+         S3rd5JHsEW/owoG7Z5OLe9PokplKvzAs7tl8iRnBqxkHnpQQlTMa3jdfoNuE6E8mS+xh
+         PrGg==
+X-Gm-Message-State: AO0yUKXMZB92R2krX2I+N4DXhnHlpZ7YLaAtdZ9q4hNuEcFFrRMQWr6L
+        ChyJz62PNeZEc6KqQiUU1oE=
+X-Google-Smtp-Source: AK7set+bVHe7/hUAi2tiQsz/edpntTs8WNPcsTWmy0dO5OdEOWbwFoLcz9zWHfUpADOBZILauD9d1Q==
+X-Received: by 2002:a7b:c5c1:0:b0:3ee:5bd8:d537 with SMTP id n1-20020a7bc5c1000000b003ee5bd8d537mr8837744wmk.5.1679911990061;
+        Mon, 27 Mar 2023 03:13:10 -0700 (PDT)
+Received: from suse.localnet (host-87-19-99-235.retail.telecomitalia.it. [87.19.99.235])
+        by smtp.gmail.com with ESMTPSA id j19-20020a05600c1c1300b003ede2c4701dsm8317814wms.14.2023.03.27.03.13.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Mar 2023 03:13:09 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Evgeniy Dushistov <dushistov@mail.ru>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 0/4] fs/ufs: Replace kmap() with kmap_local_page
+Date:   Mon, 27 Mar 2023 12:13:08 +0200
+Message-ID: <11383508.F0gNSz5aLb@suse>
+In-Reply-To: <20221229225100.22141-1-fmdefrancesco@gmail.com>
+References: <20221229225100.22141-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20230326044019.2139628-1-guodongtai@kylinos.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26856/Mon Mar 27 09:24:05 2023)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/26/23 6:40 AM, George Guo wrote:
-> Here just skip the code(BPF_ST | BPF_NOSPEC) that has no couterpart to the loongarch.
-> 
-> To verify, use ltp testcase:
-> 
-> Without this patch:
-> $ ./bpf_prog02
-> ... ...
-> bpf_common.c:123: TBROK: Failed verification: ??? (524)
-> 
-> Summary:
-> passed   0
-> failed   0
-> broken   1
-> skipped  0
-> warnings 0
-> 
-> With this patch:
-> $ ./bpf_prog02
-> ... ...
-> Summary:
-> passed   0
-> failed   0
-> broken   0
-> skipped  0
-> warnings 0
-> 
-> Signed-off-by: George Guo <guodongtai@kylinos.cn>
-> ---
->   arch/loongarch/net/bpf_jit.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index 288003a9f0ca..745d344385ed 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -1046,6 +1046,11 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
->   		if (ctx->image == NULL)
->   			ctx->offset[i] = ctx->idx;
->   
-> +		/* skip the code that has no couterpart to the host arch */
-> +		if(insn->code == (BPF_ST | BPF_NOSPEC)) {
-> +			continue;
-> +		}
+On gioved=C3=AC 29 dicembre 2022 23:50:56 CEST Fabio M. De Francesco wrote:
+> kmap() is being deprecated in favor of kmap_local_page().
+>=20
+> There are two main problems with kmap(): (1) It comes with an overhead as
+> the mapping space is restricted and protected by a global lock for
+> synchronization and (2) it also requires global TLB invalidation when the
+> kmap=E2=80=99s pool wraps and it might block when the mapping space is fu=
+lly
+> utilized until a slot becomes available.
+>=20
+> With kmap_local_page() the mappings are per thread, CPU local, can take
+> page faults, and can be called from any context (including interrupts).
+> It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
+> the tasks can be preempted and, when they are scheduled to run again, the
+> kernel virtual addresses are restored and still valid.
+>=20
+> Since its use in fs/ufs is safe everywhere, it should be preferred.
+>=20
+> Therefore, replace kmap() with kmap_local_page() in fs/ufs. kunmap_local()
+> requires the mapping address, so return that address from ufs_get_page()
+> to be used in ufs_put_page().
 
-Small nit, but could we align with other JIT implementations and place it into similar
-location for consistency? Above looks a bit out of place and it should really be part
-of build_insn.
+Hi Al,
 
-diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-index 288003a9f0ca..d586df48ecc6 100644
---- a/arch/loongarch/net/bpf_jit.c
-+++ b/arch/loongarch/net/bpf_jit.c
-@@ -1022,6 +1022,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx, bool ext
-                 emit_atomic(insn, ctx);
-                 break;
+I see that this series is here since Dec 29, 2022.
+Is there anything that prevents its merging?=20
+Can you please its four patches in your tree?
 
-+       /* Speculation barrier */
-+       case BPF_ST | BPF_NOSPEC:
-+               break;
-+
-         default:
-                 pr_err("bpf_jit: unknown opcode %02x\n", code);
-                 return -EINVAL;
+Thanks,
+
+=46abio
+
+>=20
+> This series could have not been ever made because nothing prevented the
+> previous patch from working properly but Al Viro made a long series of
+> very appreciated comments about how many unnecessary and redundant lines
+> of code I could have removed. He could see things I was entirely unable
+> to notice. Furthermore, he also provided solutions and details about how
+> I could decompose a single patch into a small series of three
+> independent units.[1][2][3]
+>=20
+> I want to thank him so much for the patience, kindness and the time he
+> decided to spend to provide those analysis and write three messages full
+> of interesting insights.[1][2][3]
+>=20
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+>=20
+> Changes from v1:
+> 	1/3: No changes.
+> 	2/3: Restore the return of "err" that was mistakenly deleted
+> 	     together with the removal of the "out" label in
+> 	     ufs_add_link(). Thanks to Al Viro.[4]
+> 	     Return the address of the kmap()'ed page instead of a
+> 	     pointer to a pointer to the mapped page; a page_address()
+> 	     had been overlooked in ufs_get_page(). Thanks to Al
+> 	     Viro.[5]
+> 	3/3: Return the kernel virtual address got from the call to
+> 	     kmap_local_page() after conversion from kmap(). Again
+> 	     thanks to Al Viro.[6]
+>=20
+> Changes from v2:
+> 	1/3: No changes.
+> 	2/3: Rework ufs_get_page() because the previous version had two
+> 	     errors: (1) It could return an invalid pages with the out
+> 	     argument "page" and (2) it could return "page_address(page)"
+> 	     also in cases where read_mapping_page() returned an error
+> 	     and the page is never kmap()'ed. Thanks to Al Viro.[7]
+> 	3/3: Rework ufs_get_page() after conversion to
+> 	     kmap_local_page(), in accordance to the last changes in 2/3.
+>=20
+> Changes from v3:
+> 	1/3: No changes.
+> 	2/3: No changes.
+> 	3/3: Replace kunmap() with kunmap_local().
+>=20
+> Changes from v4:
+> 	1/4: It was 1/3.
+> 	2/4: Move the declaration of a page into an inner loop. Add Ira
+> 	     Weiny's "Reviewed-by" tag (thanks!).
+> 	3/4: Add this patch to use ufs_put_page() to replace three kunmap()
+> 	     and put_page() in namei.c. Thanks to Ira Weiny who noticed that
+> 	     I had overlooked their presence.
+> 	4/4: Remove an unnecessary masking that is already carried out by
+> 	     kunmap_local() via kunmap_local_indexed(). Add a comment to
+> 	     clarify that a ufs_dir_entry passed to ufs_delete_entry()
+> 	     points in the same page we need the address of. Suggested by
+> 	     Ira Weiny.
+>=20
+> [1] https://lore.kernel.org/lkml/Y4E++JERgUMoqfjG@ZenIV/#t
+> [2] https://lore.kernel.org/lkml/Y4FG0O7VWTTng5yh@ZenIV/#t
+> [3] https://lore.kernel.org/lkml/Y4ONIFJatIGsVNpf@ZenIV/#t
+> [4] https://lore.kernel.org/lkml/Y5Zc0qZ3+zsI74OZ@ZenIV/#t
+> [5] https://lore.kernel.org/lkml/Y5ZZy23FFAnQDR3C@ZenIV/#t
+> [6] https://lore.kernel.org/lkml/Y5ZcMPzPG9h6C9eh@ZenIV/#t
+> [7] https://lore.kernel.org/lkml/Y5glgpD7fFifC4Fi@ZenIV/#t
+>=20
+> The cover letter of the v1 series is at
+> https://lore.kernel.org/lkml/20221211213111.30085-1-fmdefrancesco@gmail.c=
+om/
+> The cover letter of the v2 series is at
+> https://lore.kernel.org/lkml/20221212231906.19424-1-fmdefrancesco@gmail.c=
+om/
+> The cover letter of the v3 series is at
+> https://lore.kernel.org/lkml/20221217184749.968-1-fmdefrancesco@gmail.com/
+> The cover letter of the v4 series is at
+> https://lore.kernel.org/lkml/20221221172802.18743-1-fmdefrancesco@gmail.c=
+om/
+>=20
+> Fabio M. De Francesco (4):
+>   fs/ufs: Use the offset_in_page() helper
+>   fs/ufs: Change the signature of ufs_get_page()
+>   fs/ufs: Use ufs_put_page() in ufs_rename()
+>   fs/ufs: Replace kmap() with kmap_local_page()
+>=20
+>  fs/ufs/dir.c   | 131 +++++++++++++++++++++++++++----------------------
+>  fs/ufs/namei.c |  11 ++---
+>  fs/ufs/ufs.h   |   1 +
+>  3 files changed, 78 insertions(+), 65 deletions(-)
+>=20
+> --
+> 2.39.0
+
+
+
 
