@@ -2,138 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C616C9CB2
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 09:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4880A6C9F62
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 11:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbjC0HsL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 03:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
+        id S232580AbjC0Jac (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 05:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232655AbjC0HsJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 03:48:09 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2EAB421F;
-        Mon, 27 Mar 2023 00:47:47 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id n125so9315371ybg.7;
-        Mon, 27 Mar 2023 00:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679903267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5jEg0Kavtz8jsyZXSPmOUPqZAH/yIhikE612EoIKMaA=;
-        b=CWzX3MeDJD5tZ0iHpfje86riHrkvOALPPBd/yYpmIuvwabELoPsjWainSl37pRjUss
-         iF1cto5vBAV+JjAtCJvI+dVYO7SpKLXL3v95pGKeDaF//xt3XH7/CuqEYeNSxqAGk6yv
-         t5WuHB/Loj94YY1kn2KjJ98oyW9uK9CWHKfzgJX/omQvws8RvUw+V/Q1EAeeRcs2X6sO
-         q6pw7PGdMeyXw2hy2l5xf5bqd9CLGuA5a4lhI+pwwHc5ZjC6yhN9N4xG0FEC9ZOQzzQL
-         GTFhLAATQTAYO2+PmIQ3igqrWvm5nGPgh7kEmjo6Ru3xkVHDaeXi27+PZ4SdMzv7VkVI
-         ZuaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679903267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5jEg0Kavtz8jsyZXSPmOUPqZAH/yIhikE612EoIKMaA=;
-        b=7HCHk5n7enNVT/xkjyGp7tXHg34T8OHyGlv4Zmxv7ZIU4RXuEG2E5HoDZ4HDnA2IQV
-         qN2POxqTBODAZ04hlaHLGFiw2M2f8aFdb/991TfHn5BwxJnOU3ExbWTLs25LNzu28LZP
-         WKPPo4axZkXR0A3iCihToil+1MzspQ66YnmVmFoxc5Nrt7ksB0fPgaKP8rfc0o2KZ4wc
-         E7RuIoMiHg9DeTXvzsxPe9vOepqchc4xkUe0QC7okWdWQ/+kSs2B6M/LxqHJHku0xFJS
-         pbpMMFBd80WjrVosz7zWBll6s4oRbEQuG5mrfhE1igd5+IYUvpxPZwiZ7DWFPwS1FaEp
-         ZHlA==
-X-Gm-Message-State: AAQBX9chuRq5Kes13iG8koSTAvMXddj7jm+5KcL1kX5gxtAdB/vLpKzX
-        YnycqrOifeLiQubBADtb0/q6rTXefE1z+X7GQ4/yVEK4
-X-Google-Smtp-Source: AKy350YBc+5wf92eUPh0T5RBO6d/mw5JA3KjPJaAy9VvjP1v2egYxUTWrVq+49bQ+FvFJgc8FBxx4bI2wso+bXunAzM=
-X-Received: by 2002:a05:6902:124a:b0:b43:8424:2a4c with SMTP id
- t10-20020a056902124a00b00b4384242a4cmr6620042ybu.10.1679903266779; Mon, 27
- Mar 2023 00:47:46 -0700 (PDT)
+        with ESMTP id S232453AbjC0Jab (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 05:30:31 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47EF3A92;
+        Mon, 27 Mar 2023 02:30:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=NQ76cs9m2PfyRb1nvWbSz8Et10awSsHsXz4HNPXF8yg=; b=QZ9Vn6XQoPo/vkVnwWKgjNwNQF
+        i+T6Yl3JETlALqU5VTD5LuRKWBkxlUZfMnccx1V/R8P1y1jb2Nn5vNn7qwhEJjK8c6CJnqa+IvXYv
+        fSsK289ahjDc6UcYJ6PNuPJdYbA6zEy2NiIQ1OKZDK5Ou9RVm5ztS1GIL6bIVPQLOz4PR1pye5B0O
+        3vVEIr7XrOnjpURdrjUhayo44zsagA6WzNAlLWxZihURKdHXLk/exMEpuHu1wCA+H5uKVfWFO4jHw
+        sx55zP9IskZDpk3E1MCtVVDVaPNI846+iakQvvoZc3HFZinQFEwTulPbXBfyfpt6jwzMW6C0Vf0N7
+        kIjdICDw==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pgjAz-0007hb-0h; Mon, 27 Mar 2023 11:30:05 +0200
+Received: from [219.59.88.22] (helo=localhost.localdomain)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pgjAw-000UQh-Hd; Mon, 27 Mar 2023 11:30:03 +0200
+Subject: Re: [PATCH] loongarch/bpf: Fix bpf load failed with
+ CONFIG_BPF_JIT_ALWAYS_ON, caused by jit (BPF_ST | BPF_NOSPEC) code
+To:     George Guo <guodongtai@kylinos.cn>, chenhuacai@kernel.org,
+        masahiroy@kernel.org, michal.lkml@markovi.net
+Cc:     kernel@xen0n.name, ndesaulniers@google.com, ast@kernel.org,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, bpf@vger.kernel.org
+References: <20230326044019.2139628-1-guodongtai@kylinos.cn>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c1932d0d-cf3f-5005-958d-7e08dddf42c9@iogearbox.net>
+Date:   Mon, 27 Mar 2023 11:29:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20230306071006.73t5vtmxrsykw4zu@apollo> <CAADnVQJ=wzztviB73jBy3+OYxUKhAX_jTGpS8Xv45vUVTDY-ZA@mail.gmail.com>
- <20230307102233.bemr47x625ity26z@apollo> <CAADnVQ+xOrCSwgxGQXNM5wHfOwV+x0csHfNyDYBHgyGVXgc2Ow@mail.gmail.com>
- <20230307173529.gi2crls7fktn6uox@apollo> <CAEf4Bza4N6XtXERkL+41F+_UsTT=T4B3gt0igP5mVVrzr9abXw@mail.gmail.com>
- <20230310211541.schh7iyrqgbgfaay@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYo-8ckyi-aogvW9HijNh+Z81CE__mWtmVJtCzuY+oECA@mail.gmail.com>
- <CAADnVQLBDNqqfoNOV=mPxvsMdXLJCK_g1qmHjqxo=PED_vbhuw@mail.gmail.com>
- <CAJnrk1YCbLxcKT_FY_UdO9YBOz9fTyFQFTB8P0_2swPc39egvg@mail.gmail.com>
- <20230313144135.5xvgdfvfknb4liwh@apollo> <CAEf4BzacF6pj7wHJ4NH3GBe4rtkaLSZUU1xahhQ37892Ds2ZmA@mail.gmail.com>
-In-Reply-To: <CAEf4BzacF6pj7wHJ4NH3GBe4rtkaLSZUU1xahhQ37892Ds2ZmA@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 27 Mar 2023 00:47:35 -0700
-Message-ID: <CAJnrk1Y=u_9sVo1QhNopRu7F7tRsmZmcNDMeiUw+QF3rtQQ2og@mail.gmail.com>
-Subject: Re: [PATCH v13 bpf-next 09/10] bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230326044019.2139628-1-guodongtai@kylinos.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26856/Mon Mar 27 09:24:05 2023)
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 11:55=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Mar 13, 2023 at 7:41=E2=80=AFAM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-[...]
-> > > > For bpf_dynptr_slice_rdrw we can mark buffer[] in stack as
-> > > > poisoned with dynptr_id =3D=3D R0's PTR_TO_MEM dynptr_id.
-> > > > Then as soon as first spillable reg touches that poisoned stack are=
-a
-> > > > we can invalidate all PTR_TO_MEM's with that dynptr_id.
-> > >
-> > > Okay, this makes sense to me. are you already currently working or
-> > > planning to work on a fix for this Kumar, or should i take a stab at
-> > > it?
-> >
-> > I'm not planning to do so, so go ahead. One more thing I noticed just n=
-ow is
-> > that we probably need to update regsafe to perform a check_ids comparis=
-on for
-> > dynptr_id for dynptr PTR_TO_MEMs? It was not a problem back when f8064a=
-b90d66
-> > ("bpf: Invalidate slices on destruction of dynptrs on stack") was added=
- but
-> > 567da5d253cd ("bpf: improve regsafe() checks for PTR_TO_{MEM,BUF,TP_BUF=
-FER}")
-> > added PTR_TO_MEM in the switch statement.
->
-> I can take care of this. But I really would like to avoid these
-> special cases of extra dynptr_id, exactly for reasons like this
-> omitted check.
->
-> What do people think about generalizing current ref_obj_id to be more
-> like "lifetime id" (to borrow Rust terminology a bit), which would be
-> an object (which might or might not be a tracked reference) defining
-> the scope/lifetime of the current register (whatever it represents).
->
-> I haven't looked through code much, but I've been treating ref_obj_id
-> as that already in my thinking before, and it seems to be a better
-> approach than having a special-case of dynptr_id.
->
-> Thoughts?
+On 3/26/23 6:40 AM, George Guo wrote:
+> Here just skip the code(BPF_ST | BPF_NOSPEC) that has no couterpart to the loongarch.
+> 
+> To verify, use ltp testcase:
+> 
+> Without this patch:
+> $ ./bpf_prog02
+> ... ...
+> bpf_common.c:123: TBROK: Failed verification: ??? (524)
+> 
+> Summary:
+> passed   0
+> failed   0
+> broken   1
+> skipped  0
+> warnings 0
+> 
+> With this patch:
+> $ ./bpf_prog02
+> ... ...
+> Summary:
+> passed   0
+> failed   0
+> broken   0
+> skipped  0
+> warnings 0
+> 
+> Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> ---
+>   arch/loongarch/net/bpf_jit.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index 288003a9f0ca..745d344385ed 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -1046,6 +1046,11 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+>   		if (ctx->image == NULL)
+>   			ctx->offset[i] = ctx->idx;
+>   
+> +		/* skip the code that has no couterpart to the host arch */
+> +		if(insn->code == (BPF_ST | BPF_NOSPEC)) {
+> +			continue;
+> +		}
 
-Thanks for taking care of this (and apologies for the late reply). i
-think the dynptr_id field would still be needed in this case to
-associate a slice with a dynptr, so that when a dynptr is invalidated
-its slices get invalidated as well. I'm not sure we could get away
-with just having ref_obj_id symbolize that in the case where the
-underlying object is a tracked reference, because for example, it
-seems like a dynptr would need both a unique reference id to the
-object (so that if for example there are two dynptrs pointing to the
-same object, they will both be assignedthe same reference id so the
-object can't for example be freed twice) and also its own dynptr id so
-that its slices get invalidated if the dynptr is invalidated
+Small nit, but could we align with other JIT implementations and place it into similar
+location for consistency? Above looks a bit out of place and it should really be part
+of build_insn.
+
+diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+index 288003a9f0ca..d586df48ecc6 100644
+--- a/arch/loongarch/net/bpf_jit.c
++++ b/arch/loongarch/net/bpf_jit.c
+@@ -1022,6 +1022,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx, bool ext
+                 emit_atomic(insn, ctx);
+                 break;
+
++       /* Speculation barrier */
++       case BPF_ST | BPF_NOSPEC:
++               break;
++
+         default:
+                 pr_err("bpf_jit: unknown opcode %02x\n", code);
+                 return -EINVAL;
+
