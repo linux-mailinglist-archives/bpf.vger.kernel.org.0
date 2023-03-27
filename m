@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9906CA219
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 13:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B966CA21C
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 13:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjC0LHJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 07:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
+        id S232245AbjC0LHM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 07:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjC0LHJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 07:07:09 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B5E13C3F
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 04:07:01 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id h17so8303777wrt.8
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 04:07:01 -0700 (PDT)
+        with ESMTP id S232289AbjC0LHK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 07:07:10 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6F149E7
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 04:07:02 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id y14so8320301wrq.4
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 04:07:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1679915220;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nNsP+L/+XR0RhI6lVzczdxo5OkXdY2EmjBH8/8NxDV4=;
-        b=gML9eSDLALzd0cfzhFP//ToAvVGB2XEfgn2QTdHpRSFFhRVsdTzeQ+g8qnvM4VsJf0
-         DlntUmy/F8wB4LsEwaVEahCB6Qfs4VS0zKSDjlCzf/qYAm03UuwJqpLFNAUNhSbU4K8+
-         02eTuSEJWxyKmrGZ784mPewbQ99ec7tB6ZT6zpC2M0cX1tI6ZFMNdNEUH1K0f9Ea5ztE
-         uG0Bi7CRz+ABofEhePguAYeHnC3O0W+qIV5spWAX1wmjCtismJVJiKTitKpNH+ieiPAF
-         Lvntmurz+e1yWHaliNfzuNcdH2qd9RZc18NhEzQJ6QFJvN2oxcSxmBJgjdkeRsQ1ZdFI
-         LKAA==
+        d=isovalent.com; s=google; t=1679915221;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tdbq4lmxLHPeXEL0ChlDeaLo4kGZUdEE3QdxGLd/gz4=;
+        b=KwoHvkNEqu9FCON162UXvg9k1YBDSUO2uZk7lVgJV1QweCLW5XY+g+1yfvNyB9NILg
+         IfXWpXIfBoHyLBtVIKP9r8A0yI79+rJNS+7OYhoU7z6yd5UkB4nPQ1ZzKVRp9otVYg0T
+         sSKvoAb03/8b7GD7qm1qjbwSFdwrnGg0zSJw+Gfs+MbDuxmEMuN78jiYxF6zfFHfYymA
+         lYj8KvK3QWUvUnQgiD23UECNf5S3Nq/Hj9FCOqC6IrSue4qBmIq49VKJz0h8qiLxBvSt
+         HkAMDSznBWKvCDMuPBvQfuNFrbtAU+aqm826VnAZa3r+AJJkn26Wi2xawvvnav9H8qcd
+         O2bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679915220;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nNsP+L/+XR0RhI6lVzczdxo5OkXdY2EmjBH8/8NxDV4=;
-        b=WjUPdBeiR4jGkT7u3k0ntxFT4lPx+9Mx01yapdVZKpMPO1nmlw9ji8qnJlERO3dPSA
-         jkkUSXiNSu3YlQMhMckjddkzNkXi2OluqIS6iM3gNp//oDfbHGQ1UAvXm7K/L0o8l+2w
-         lQHa4pbF4TkSjr2Quvn0iq4IzYitVcuXLgf7AlKWZmk0SizJzZ/h0F8MPo4g1Um/tXt7
-         OY12LdQOCoUz+NBPOaZ6nnkmXouAeDJuiYFJd0iJ4fd8DoJXoN84ykWoqny0Do2sckH1
-         StyNS9/vwYsp+2gRnxZKFqqH8is2nASWylV0Y7bN0Y/y/KgywieqvrxmAKfc6RTGRNVO
-         mhaw==
-X-Gm-Message-State: AAQBX9e0o02hUasIglU+3dmlGpw8XS2WvdlJAjshp2OyJUgmyMqzTvrr
-        zGDpcPj8kEL1jKu7usFjI74Gsg==
-X-Google-Smtp-Source: AKy350b6UBQBCZ2OAP6lhcKyEZ2FDlgQnX5562j6hEwrCw+a77jcVSyh63lTrc+jGU+k4l8T89qXgg==
-X-Received: by 2002:a5d:51c8:0:b0:2d4:53d7:ea7f with SMTP id n8-20020a5d51c8000000b002d453d7ea7fmr9092353wrv.3.1679915219987;
-        Mon, 27 Mar 2023 04:06:59 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1679915221;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tdbq4lmxLHPeXEL0ChlDeaLo4kGZUdEE3QdxGLd/gz4=;
+        b=Yi/v/yu1dndjCdB/UA1jxKalC7skPkYv3xJqEal2wG3e9u4w5P29XhhUes2HXZXjYU
+         kyiVU/r5ik8dOsCK5JQ5f5H5E/peO3ug/ZWj7J8F9s6hPH9wAHlTHqEeU4Yritu2QMA8
+         ZM+FuAmF+2ClmJRkVHe3WGjOr6m8ckz40Js7sXtb/hfOfLL887ltADf8i5adXmhIIAHP
+         nSCTeWqy/JvJGaPijKo6Q/9ek1FVuwiS1U3Y3wf/2BFoUS3i+4ucrkYPte1+l8a0bQt2
+         purPiCrFp1aDxfDd1cNPsabxXSRauVEMKG/zHT3cu83JmMeox2cdpGT195ljIgvgpv1D
+         AFZA==
+X-Gm-Message-State: AAQBX9fCdv1TCP6vrtqcDlTwEgCOkvnzf8DrvdeEi/KCuI9FqvdT6NJR
+        kN3EUdzEBleBPAYi1+GivamE0Q==
+X-Google-Smtp-Source: AKy350aIj1D5H9+aEyITzaD6AtE8o0toVrpnZ+BlrXkLzX80/WGUmBPHavmH6g7WwXN25IxaUNigIg==
+X-Received: by 2002:a5d:6dc5:0:b0:2cf:e3d8:5df9 with SMTP id d5-20020a5d6dc5000000b002cfe3d85df9mr8344253wrz.58.1679915220809;
+        Mon, 27 Mar 2023 04:07:00 -0700 (PDT)
 Received: from harfang.fritz.box ([2a02:8011:e80c:0:61cd:634a:c75b:ba10])
-        by smtp.gmail.com with ESMTPSA id k10-20020a5d6e8a000000b002d1daafea30sm24772958wrz.34.2023.03.27.04.06.59
+        by smtp.gmail.com with ESMTPSA id k10-20020a5d6e8a000000b002d1daafea30sm24772958wrz.34.2023.03.27.04.07.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Mar 2023 04:06:59 -0700 (PDT)
+        Mon, 27 Mar 2023 04:07:00 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -59,10 +60,12 @@ Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2 0/5] bpftool: Add inline annotations when dumping program CFGs
-Date:   Mon, 27 Mar 2023 12:06:50 +0100
-Message-Id: <20230327110655.58363-1-quentin@isovalent.com>
+Subject: [PATCH bpf-next v2 1/5] bpftool: Fix documentation about line info display for prog dumps
+Date:   Mon, 27 Mar 2023 12:06:51 +0100
+Message-Id: <20230327110655.58363-2-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230327110655.58363-1-quentin@isovalent.com>
+References: <20230327110655.58363-1-quentin@isovalent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -74,34 +77,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This set contains some improvements for bpftool's "visual" program dump
-option, which produces the control flow graph in a DOT format. The main
-objective is to add support for inline annotations on such graphs, so that
-we can have the C source code for the program showing up alongside the
-instructions, when available. The last commits also make it possible to
-display the line numbers or the bare opcodes in the graph, as supported by
-regular program dumps.
+The documentation states that when line_info is available when dumping a
+program, the source line will be displayed "by default". There is no
+notion of "default" here: the line is always displayed if available,
+there is no way currently to turn it off.
 
-v2: Replace fputc(..., stdout) with putchar(...) in dotlabel_puts().
+In the next sentence, the documentation states that if "linum" is used
+on the command line, the relevant filename, line, and column will be
+displayed "on top of the source line". This is incorrect, as they are
+currently displayed on the right side of the source line (or on top of
+the eBPF instruction, not the source).
 
-Quentin Monnet (5):
-  bpftool: Fix documentation about line info display for prog dumps
-  bpftool: Fix bug for long instructions in program CFG dumps
-  bpftool: Support inline annotations when dumping the CFG of a program
-  bpftool: Support "opcodes", "linum", "visual" simultaneously
-  bpftool: Support printing opcodes and source file references in CFG
+This commit fixes the documentation to address these points.
 
- .../bpftool/Documentation/bpftool-prog.rst    | 18 ++---
- tools/bpf/bpftool/bash-completion/bpftool     | 18 +++--
- tools/bpf/bpftool/btf_dumper.c                | 49 ++++++++++++
- tools/bpf/bpftool/cfg.c                       | 29 +++----
- tools/bpf/bpftool/cfg.h                       |  5 +-
- tools/bpf/bpftool/main.h                      |  2 +
- tools/bpf/bpftool/prog.c                      | 78 ++++++++++---------
- tools/bpf/bpftool/xlated_dumper.c             | 52 ++++++++++++-
- tools/bpf/bpftool/xlated_dumper.h             |  3 +-
- 9 files changed, 182 insertions(+), 72 deletions(-)
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Acked-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/bpf/bpftool/Documentation/bpftool-prog.rst | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+index 14de72544995..06d1e4314406 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+@@ -106,9 +106,8 @@ DESCRIPTION
+ 		  CFG in DOT format, on standard output.
+ 
+ 		  If the programs have line_info available, the source line will
+-		  be displayed by default.  If **linum** is specified,
+-		  the filename, line number and line column will also be
+-		  displayed on top of the source line.
++		  be displayed.  If **linum** is specified, the filename, line
++		  number and line column will also be displayed.
+ 
+ 	**bpftool prog dump jited**  *PROG* [{ **file** *FILE* | **opcodes** | **linum** }]
+ 		  Dump jited image (host machine code) of the program.
+@@ -120,9 +119,8 @@ DESCRIPTION
+ 		  **opcodes** controls if raw opcodes will be printed.
+ 
+ 		  If the prog has line_info available, the source line will
+-		  be displayed by default.  If **linum** is specified,
+-		  the filename, line number and line column will also be
+-		  displayed on top of the source line.
++		  be displayed.  If **linum** is specified, the filename, line
++		  number and line column will also be displayed.
+ 
+ 	**bpftool prog pin** *PROG* *FILE*
+ 		  Pin program *PROG* as *FILE*.
 -- 
 2.34.1
 
