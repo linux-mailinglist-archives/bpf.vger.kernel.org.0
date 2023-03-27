@@ -2,114 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA97A6CACDA
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 20:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7836CACF5
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 20:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbjC0SRu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 14:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
+        id S231375AbjC0SXu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 27 Mar 2023 14:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjC0SRt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 14:17:49 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8625213C;
-        Mon, 27 Mar 2023 11:17:48 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id fb38so6296936pfb.7;
-        Mon, 27 Mar 2023 11:17:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679941068;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Vi/Vv4Ii7DOvoFpFwntmDUanvKO2EfmjxpTZ1StCdY=;
-        b=I26JdAX+3TuKYJjsCYyzhZ9B09gut/FTRMAvLKPKWdkPU9mZgCjwhb1k94kK8ks8iA
-         QJA+vQ3ymv/++GennEwkjrDo9C6Ff7qrdU+IOpbQjBMvD0Tj2Ktkg38a2Exhp33nrJR6
-         w2yUoW/LwEAtbqeNkiGyXLqSHPvttQENVcVaZ4/aIXUqjxwZAgyFp9lpzhonluRkcU2l
-         O3p3oBDuVEWAzcQaRVWDg5YVUJc7ws78TB/JeNuF0ZRhXxj/xIxiQsJ3YxhaQvVbPDjJ
-         yytbG6pdnK5Bte0ZfKA/LOywNxSs2sCO2QIemIzHEnzw58K5+VO1GGxJKjNa8qkcUnh1
-         CVlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679941068;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+Vi/Vv4Ii7DOvoFpFwntmDUanvKO2EfmjxpTZ1StCdY=;
-        b=LaCysDhem23M8ScseagGSppASG2ZHy2ttGTVwX8aQ7mLRVcIOTO+jDuW5OFLb8B0Br
-         68PMvnaCFoHqmycq1Q2xr+ZWYcymrxGw5Bj+It+vDKJsZjC3dFnkrN1wJXDN0QAUwDTK
-         ElUKcUqplOc1JYA4QPPgASdDWlemHPt0967GCC62L8+4EV1DrG1jYwI3EDGP8YjAEFCy
-         Q2LXW0eWNuTsAvIunEwOrPHudWf/ujblSt3TESvAfArTVxRi6ItLM1gI3wkby3eZ+N2K
-         Tfyp4nsifjSUGPK9XK420iMr8KmUyN4a+b0ELjy8VpRK+UuJml2oA54E/qyHtQML3Aao
-         KClQ==
-X-Gm-Message-State: AAQBX9cm9iFzwcJ7fU/XkHPopBCc0h+rC4ebNBHXaN7QEyq5XEF6OzL6
-        mMfCwJAzqbb/LdOpxkyIryk=
-X-Google-Smtp-Source: AKy350Y8012cAr/N6sF0Ywui6BJ1fiKkY6zGyYY2AJjke0ROq/QFduoR2RbH8S8BdP+vcVAL/vuuKg==
-X-Received: by 2002:aa7:9696:0:b0:5a8:bcf2:125 with SMTP id f22-20020aa79696000000b005a8bcf20125mr12462613pfk.21.1679941068276;
-        Mon, 27 Mar 2023 11:17:48 -0700 (PDT)
-Received: from localhost ([98.97.117.131])
-        by smtp.gmail.com with ESMTPSA id x4-20020aa79184000000b005a8b4dcd21asm19930470pfa.15.2023.03.27.11.17.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Mar 2023 11:17:47 -0700 (PDT)
-Date:   Mon, 27 Mar 2023 11:17:45 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>, cong.wang@bytedance.com,
-        jakub@cloudflare.com, daniel@iogearbox.net, lmb@isovalent.com,
-        edumazet@google.com
-Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        will@isovalent.com
-Message-ID: <6421ddc9f15b8_18d4f208ec@john.notmuch>
-In-Reply-To: <20230327175446.98151-1-john.fastabend@gmail.com>
-References: <20230327175446.98151-1-john.fastabend@gmail.com>
-Subject: RE: [PATCH bpf v2 00/11] bpf sockmap fixes
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        with ESMTP id S230328AbjC0SXo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 14:23:44 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649DF4203
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:23:29 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 32RClHte022893
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:23:28 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3pkbertc68-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:23:28 -0700
+Received: from twshared38955.16.prn3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Mon, 27 Mar 2023 11:23:27 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 0C9F92C1CAF89; Mon, 27 Mar 2023 11:23:16 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC:     <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH v3 bpf-next 0/3] veristat: add better support of freplace programs
+Date:   Mon, 27 Mar 2023 11:20:16 -0700
+Message-ID: <20230327182019.1671432-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
+Content-Type: text/plain; charset="UTF-8"
+X-FB-Internal: Safe
+X-Proofpoint-ORIG-GUID: YSSVj4viA64U5n6Iu3rCyYFTS1UWgHSG
+X-Proofpoint-GUID: YSSVj4viA64U5n6Iu3rCyYFTS1UWgHSG
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-24_11,2023-03-27_02,2023-02-09_01
+X-Spam-Status: No, score=-0.5 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend wrote:
-> Fixes for sockmap running against NGINX TCP tests and also on an
-> underprovisioned VM so that we hit error (ENOMEM) cases regularly.
-> 
-> The first 3 patches fix cases related to ENOMEM that were either
-> causing splats or data hangs.
-> 
-> Then 4-7 resolved cases found when running NGINX with its sockets
-> assigned to sockmap. These mostly have to do with handling fin/shutdown
-> incorrectly and ensuring epoll_wait works as expected.
-> 
-> Patches 8 and 9 extract some of the logic used for sockmap_listen tests
-> so that we can use it in other tests because it didn't make much
-> sense to me to add tests to the sockmap_listen cases when here we
-> are testing send/recv *basic* cases.
-> 
-> Finally patches 10 and 11 add the new tests to ensure we handle
-> ioctl(FIONREAD) and shutdown correctly.
-> 
-> To test the series I ran the NGINX compliance tests and the sockmap
-> selftests. For now our compliance test just runs with SK_PASS.
-> 
-> There are some more things to be done here, but these 11 patches
-> stand on their own in my opionion and fix issues we are having in
-> CI now. For bpf-next we can fixup/improve selftests to use the
-> ASSERT_* in sockmap_helpers, streamline some of the testing, and
-> add more tests. We also still are debugging a few additional flakes
-> patches coming soon.
-> 
-> v2: use skb_queue_empty instead of *_empty_lockless (Eric)
->     oops incorrectly updated copied_seq on DROP case (Eric)
->     added test for drop case copied_seq update
-> 
+Teach veristat how to deal with freplace BPF programs. As they can't be
+directly loaded by veristat without custom user-space part that sets correct
+target program FD, veristat always fails freplace programs. This patch set
+teaches veristat to guess target program type that will be inherited by
+freplace program itself, and subtitute it for BPF_PROG_TYPE_EXT (freplace) one
+for the purposes of BPF verification.
 
-Sorry folks on the to line there I resent with the cc list here. I had
-suppressed the CC list in the first batch.
+Patch #1 fixes bug in libbpf preventing overriding freplace with specific
+program type.
 
-.John
+Patch #2 adds convenient -d flag to request veristat to emit libbpf debug
+logs. It help debugging why a specific BPF program fails to load, if the
+problem is not due to BPF verification itself.
+
+v2->v3:
+  - fix bpf_obj_id selftest that uses legacy bpf_prog_test_load() helper,
+    which always sets program type programmatically; teach the helper to do it
+    only if actually necessary (Stanislav);
+v1->v2:
+  - fix compilation error reported by old GCC (my GCC v11 doesn't produce even
+    a warning) and Clang (see CI failure at [0]):
+
+GCC version:
+
+  veristat.c: In function ‘fixup_obj’:
+  veristat.c:908:1: error: label at end of compound statement
+    908 | skip_freplace_fixup:
+        | ^~~~~~~~~~~~~~~~~~~
+
+Clang version:
+
+  veristat.c:909:1: error: label at end of compound statement is a C2x extension [-Werror,-Wc2x-extensions]
+  }
+  ^
+  1 error generated.
+
+  [0] https://github.com/kernel-patches/bpf/actions/runs/4515972059/jobs/7953845335
+
+Andrii Nakryiko (3):
+  libbpf: disassociate section handler on explicit
+    bpf_program__set_type() call
+  veristat: add -d debug mode option to see debug libbpf log
+  veristat: guess and substitue underlying program type for freplace
+    (EXT) progs
+
+ tools/lib/bpf/libbpf.c                        |   1 +
+ tools/testing/selftests/bpf/testing_helpers.c |   2 +-
+ tools/testing/selftests/bpf/veristat.c        | 126 +++++++++++++++++-
+ 3 files changed, 123 insertions(+), 6 deletions(-)
+
+-- 
+2.34.1
+
