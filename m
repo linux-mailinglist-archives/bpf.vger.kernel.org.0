@@ -2,68 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA426CA101
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 12:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9896CA177
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 12:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbjC0KNV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 06:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46424 "EHLO
+        id S233716AbjC0Kax (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 06:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233424AbjC0KNU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 06:13:20 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB06C1;
-        Mon, 27 Mar 2023 03:13:11 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id p34so4705710wms.3;
-        Mon, 27 Mar 2023 03:13:11 -0700 (PDT)
+        with ESMTP id S233738AbjC0KaY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 06:30:24 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BC6170C
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 03:30:10 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id t4so2955798wra.7
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 03:30:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679911990;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=59tA2lCnliRvQCtKSZm7EmR6QrSpBlAsOZLbQEqcLPI=;
-        b=BrWg7aw+Awtki2c0xRG2ewC1alYtCx/pT1kjf6sk3heQGvoWLEwubOi09TCbNZmlud
-         tDZEzXQOmyhGGBwDLLMtQaA3TFwfRDMTZhtWme1IzfOCf01ybA0rKvEshjt4ToqZZAky
-         QHPuu4VIvjk2WA0TJkDDZzgC35QuerjpKMOvL7UKuinwM9PCEYL/3LOSStS9c+DRIB2c
-         +s5BdQB0FBfonPrM8RMASE5nuTxYSaarbcUJWY8QkUjaxbvUnsKYMM9dI8LKhqbRGpqq
-         5jxL9NDpKc5P7o3hr4ae0HlVGMQxhPhgNZBEfkg2M00nNeBQnAR8db5nw8+fmxKXaLY3
-         B+kA==
+        d=isovalent.com; s=google; t=1679913010;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8ZA8j3Gto9WQ2WAm5xcPzOdBR8bMn9kZ6Ph11du0N00=;
+        b=FHp1y03ySXMGMR1zTGx7NypwzdCTugbSV9vlf/ZnZc2R5GgNqm7ILEes8Il8l+NN7f
+         STY+MpwKm3x8uvepGGEltcum+vIH+RZydYWT8MPWOSfu9G2aMLPvXrh+Ka7jwqQtx5EL
+         RH0r0nvk0cRiOygaAGXtjwetWqsDXFTMYploDWdBNwPQIhl/lG1JlWP52CYBGnDIg/Y5
+         FShSkff90QRX84EgIUI9kTSyhK1pn4G/LMFEwZuDfHpA6q6e4QFzy5lzmbIfhvn9Ib6f
+         /O+lREZTjOgyvjVXV1kPQkfAcMi/UhxOYoQA4a5lBmhAFkJAFeSdyhNgt6cYpEViwGNl
+         JpIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679911990;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=59tA2lCnliRvQCtKSZm7EmR6QrSpBlAsOZLbQEqcLPI=;
-        b=naZaffRl1kBabtGKCOmXrwGNL/N9np03BG1tNv3IPmXLWCPKscEoqMMfAgGoyW2v+G
-         Z9/37wHMFMYDu7y0a5AFVo6uwewYbS8Vi2WXd9/dJJ1GoJlx14JAljZrgG3TAi0s3GOF
-         /JEh7QWrEC8MZQ8xPOu8eIQ8GFjvF9VTCGTfkFpN7kXubkSnRIeI7apDs1dY3hKRMDhb
-         igxckX5giqmv7OyN8we7mIwbxevA7vJ5TOcHGaWfsFo1VJbshslYjntMnJUhVEm7/gpy
-         S3rd5JHsEW/owoG7Z5OLe9PokplKvzAs7tl8iRnBqxkHnpQQlTMa3jdfoNuE6E8mS+xh
-         PrGg==
-X-Gm-Message-State: AO0yUKXMZB92R2krX2I+N4DXhnHlpZ7YLaAtdZ9q4hNuEcFFrRMQWr6L
-        ChyJz62PNeZEc6KqQiUU1oE=
-X-Google-Smtp-Source: AK7set+bVHe7/hUAi2tiQsz/edpntTs8WNPcsTWmy0dO5OdEOWbwFoLcz9zWHfUpADOBZILauD9d1Q==
-X-Received: by 2002:a7b:c5c1:0:b0:3ee:5bd8:d537 with SMTP id n1-20020a7bc5c1000000b003ee5bd8d537mr8837744wmk.5.1679911990061;
-        Mon, 27 Mar 2023 03:13:10 -0700 (PDT)
-Received: from suse.localnet (host-87-19-99-235.retail.telecomitalia.it. [87.19.99.235])
-        by smtp.gmail.com with ESMTPSA id j19-20020a05600c1c1300b003ede2c4701dsm8317814wms.14.2023.03.27.03.13.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Mar 2023 03:13:09 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Evgeniy Dushistov <dushistov@mail.ru>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 0/4] fs/ufs: Replace kmap() with kmap_local_page
-Date:   Mon, 27 Mar 2023 12:13:08 +0200
-Message-ID: <11383508.F0gNSz5aLb@suse>
-In-Reply-To: <20221229225100.22141-1-fmdefrancesco@gmail.com>
-References: <20221229225100.22141-1-fmdefrancesco@gmail.com>
+        d=1e100.net; s=20210112; t=1679913010;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8ZA8j3Gto9WQ2WAm5xcPzOdBR8bMn9kZ6Ph11du0N00=;
+        b=6DHKt9MsOhVh+ikKDTs0tZ7/nCRgC4Zic9CjUEEZkyFLBJpOGZTXv+bL78dobBGT+v
+         Y7MrWMJMFKMF2BrFO+VKaDdq1pN+IRRkaFhmvMzfMLAo/YwHjlCLGRfyf/8mQSBKk41+
+         ZF+Eq+hW6rDPwT+zC3Z1E7xXW3pb3cRTPpE8HrgddFj8lFlONCmtQsuekggA4+j+VgZN
+         Wbm4VzWEMsYL/pz7QASt/1i8/P/JPzmP6ubHItLM6rTxkFnnu26qASOGL8vOCWQ7j6v3
+         oi56QNUYQ2iIxxRdCmlHhS/xEMIaYmZBRKmoVExhIobxBMgGkMJhBfYfDNS7N52xfc/X
+         mawA==
+X-Gm-Message-State: AAQBX9cnpFN5Unv43OwRU7Hn8K5G9i6fJe6D1LyxYCL6MoqElV1256I3
+        i8qJLGbzqFpCLme9nu5l4yMhnw==
+X-Google-Smtp-Source: AKy350YJlNzhpyAp0mc5yrRAyu4gOYwLWH/gGbOwacWFMwvPUqD2+lImiaXHGx0ojLdSZr7HewZ7Ng==
+X-Received: by 2002:adf:f5c8:0:b0:2dc:cb11:bed3 with SMTP id k8-20020adff5c8000000b002dccb11bed3mr8672455wrp.68.1679913010264;
+        Mon, 27 Mar 2023 03:30:10 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:61cd:634a:c75b:ba10? ([2a02:8011:e80c:0:61cd:634a:c75b:ba10])
+        by smtp.gmail.com with ESMTPSA id o9-20020a05600c510900b003ed793d9de0sm21337205wms.1.2023.03.27.03.30.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Mar 2023 03:30:10 -0700 (PDT)
+Message-ID: <1257fbac-30aa-d1e8-f517-b682e43408cd@isovalent.com>
+Date:   Mon, 27 Mar 2023 11:30:09 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH bpf-next 2/5] bpftool: Fix bug for long instructions in
+ program CFG dumps
+Content-Language: en-GB
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+References: <20230324230209.161008-1-quentin@isovalent.com>
+ <20230324230209.161008-3-quentin@isovalent.com> <ZB5iT1ux8YIL/Jr8@google.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <ZB5iT1ux8YIL/Jr8@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,130 +82,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On gioved=C3=AC 29 dicembre 2022 23:50:56 CEST Fabio M. De Francesco wrote:
-> kmap() is being deprecated in favor of kmap_local_page().
->=20
-> There are two main problems with kmap(): (1) It comes with an overhead as
-> the mapping space is restricted and protected by a global lock for
-> synchronization and (2) it also requires global TLB invalidation when the
-> kmap=E2=80=99s pool wraps and it might block when the mapping space is fu=
-lly
-> utilized until a slot becomes available.
->=20
-> With kmap_local_page() the mappings are per thread, CPU local, can take
-> page faults, and can be called from any context (including interrupts).
-> It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
-> the tasks can be preempted and, when they are scheduled to run again, the
-> kernel virtual addresses are restored and still valid.
->=20
-> Since its use in fs/ufs is safe everywhere, it should be preferred.
->=20
-> Therefore, replace kmap() with kmap_local_page() in fs/ufs. kunmap_local()
-> requires the mapping address, so return that address from ufs_get_page()
-> to be used in ufs_put_page().
+2023-03-24 19:54 UTC-0700 ~ Stanislav Fomichev <sdf@google.com>
+> On 03/24, Quentin Monnet wrote:
+>> When dumping the control flow graphs for programs using the 16-byte long
+>> load instruction, we need to skip the second part of this instruction
+>> when looking for the next instruction to process. Otherwise, we end up
+>> printing "BUG_ld_00" from the kernel disassembler in the CFG.
+> 
+>> Fixes: efcef17a6d65 ("tools: bpftool: generate .dot graph from CFG
+>> information")
+>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>> ---
+>>   tools/bpf/bpftool/xlated_dumper.c | 7 +++++++
+>>   1 file changed, 7 insertions(+)
+> 
+>> diff --git a/tools/bpf/bpftool/xlated_dumper.c
+>> b/tools/bpf/bpftool/xlated_dumper.c
+>> index 6fe3134ae45d..3daa05d9bbb7 100644
+>> --- a/tools/bpf/bpftool/xlated_dumper.c
+>> +++ b/tools/bpf/bpftool/xlated_dumper.c
+>> @@ -372,8 +372,15 @@ void dump_xlated_for_graph(struct dump_data *dd,
+>> void *buf_start, void *buf_end,
+>>       struct bpf_insn *insn_start = buf_start;
+>>       struct bpf_insn *insn_end = buf_end;
+>>       struct bpf_insn *cur = insn_start;
+>> +    bool double_insn = false;
+> 
+>>       for (; cur <= insn_end; cur++) {
+>> +        if (double_insn) {
+>> +            double_insn = false;
+>> +            continue;
+>> +        }
+>> +        double_insn = cur->code == (BPF_LD | BPF_IMM | BPF_DW);
+>> +
+>>           printf("% 4d: ", (int)(cur - insn_start + start_idx));
+>>           print_bpf_insn(&cbs, cur, true);
+>>           if (cur != insn_end)
+> 
+> Any reason not to do the following here instead?
+> 
+>     if (cur->code == (BPF_LD | BPF_IMM | BPF_DW))
+>         cur++;
 
-Hi Al,
-
-I see that this series is here since Dec 29, 2022.
-Is there anything that prevents its merging?=20
-Can you please its four patches in your tree?
-
-Thanks,
-
-=46abio
-
->=20
-> This series could have not been ever made because nothing prevented the
-> previous patch from working properly but Al Viro made a long series of
-> very appreciated comments about how many unnecessary and redundant lines
-> of code I could have removed. He could see things I was entirely unable
-> to notice. Furthermore, he also provided solutions and details about how
-> I could decompose a single patch into a small series of three
-> independent units.[1][2][3]
->=20
-> I want to thank him so much for the patience, kindness and the time he
-> decided to spend to provide those analysis and write three messages full
-> of interesting insights.[1][2][3]
->=20
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
->=20
-> Changes from v1:
-> 	1/3: No changes.
-> 	2/3: Restore the return of "err" that was mistakenly deleted
-> 	     together with the removal of the "out" label in
-> 	     ufs_add_link(). Thanks to Al Viro.[4]
-> 	     Return the address of the kmap()'ed page instead of a
-> 	     pointer to a pointer to the mapped page; a page_address()
-> 	     had been overlooked in ufs_get_page(). Thanks to Al
-> 	     Viro.[5]
-> 	3/3: Return the kernel virtual address got from the call to
-> 	     kmap_local_page() after conversion from kmap(). Again
-> 	     thanks to Al Viro.[6]
->=20
-> Changes from v2:
-> 	1/3: No changes.
-> 	2/3: Rework ufs_get_page() because the previous version had two
-> 	     errors: (1) It could return an invalid pages with the out
-> 	     argument "page" and (2) it could return "page_address(page)"
-> 	     also in cases where read_mapping_page() returned an error
-> 	     and the page is never kmap()'ed. Thanks to Al Viro.[7]
-> 	3/3: Rework ufs_get_page() after conversion to
-> 	     kmap_local_page(), in accordance to the last changes in 2/3.
->=20
-> Changes from v3:
-> 	1/3: No changes.
-> 	2/3: No changes.
-> 	3/3: Replace kunmap() with kunmap_local().
->=20
-> Changes from v4:
-> 	1/4: It was 1/3.
-> 	2/4: Move the declaration of a page into an inner loop. Add Ira
-> 	     Weiny's "Reviewed-by" tag (thanks!).
-> 	3/4: Add this patch to use ufs_put_page() to replace three kunmap()
-> 	     and put_page() in namei.c. Thanks to Ira Weiny who noticed that
-> 	     I had overlooked their presence.
-> 	4/4: Remove an unnecessary masking that is already carried out by
-> 	     kunmap_local() via kunmap_local_indexed(). Add a comment to
-> 	     clarify that a ufs_dir_entry passed to ufs_delete_entry()
-> 	     points in the same page we need the address of. Suggested by
-> 	     Ira Weiny.
->=20
-> [1] https://lore.kernel.org/lkml/Y4E++JERgUMoqfjG@ZenIV/#t
-> [2] https://lore.kernel.org/lkml/Y4FG0O7VWTTng5yh@ZenIV/#t
-> [3] https://lore.kernel.org/lkml/Y4ONIFJatIGsVNpf@ZenIV/#t
-> [4] https://lore.kernel.org/lkml/Y5Zc0qZ3+zsI74OZ@ZenIV/#t
-> [5] https://lore.kernel.org/lkml/Y5ZZy23FFAnQDR3C@ZenIV/#t
-> [6] https://lore.kernel.org/lkml/Y5ZcMPzPG9h6C9eh@ZenIV/#t
-> [7] https://lore.kernel.org/lkml/Y5glgpD7fFifC4Fi@ZenIV/#t
->=20
-> The cover letter of the v1 series is at
-> https://lore.kernel.org/lkml/20221211213111.30085-1-fmdefrancesco@gmail.c=
-om/
-> The cover letter of the v2 series is at
-> https://lore.kernel.org/lkml/20221212231906.19424-1-fmdefrancesco@gmail.c=
-om/
-> The cover letter of the v3 series is at
-> https://lore.kernel.org/lkml/20221217184749.968-1-fmdefrancesco@gmail.com/
-> The cover letter of the v4 series is at
-> https://lore.kernel.org/lkml/20221221172802.18743-1-fmdefrancesco@gmail.c=
-om/
->=20
-> Fabio M. De Francesco (4):
->   fs/ufs: Use the offset_in_page() helper
->   fs/ufs: Change the signature of ufs_get_page()
->   fs/ufs: Use ufs_put_page() in ufs_rename()
->   fs/ufs: Replace kmap() with kmap_local_page()
->=20
->  fs/ufs/dir.c   | 131 +++++++++++++++++++++++++++----------------------
->  fs/ufs/namei.c |  11 ++---
->  fs/ufs/ufs.h   |   1 +
->  3 files changed, 78 insertions(+), 65 deletions(-)
->=20
-> --
-> 2.39.0
-
-
-
-
+Yes, I reuse double_insn in patch 5 to print the last 8 raw bytes of the
+instruction if "opcodes" is passed. I could make it work with your
+suggestion too, but would likely have to test "cur->code" a second time,
+I'm not sure we'd gain in readability overall. I'll keep the variable
+for v2.
