@@ -2,90 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6146CAE16
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 21:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA9E6CAE3D
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 21:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbjC0TER (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 15:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
+        id S232374AbjC0TMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 15:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjC0TEQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 15:04:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7401FEC;
-        Mon, 27 Mar 2023 12:04:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EB723B818A4;
-        Mon, 27 Mar 2023 19:04:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADE7DC4339B;
-        Mon, 27 Mar 2023 19:04:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679943851;
-        bh=5gBuPNoKep58jZJZ2A7T/PwMZj21euhJkbbmerZDQl8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sw05c/rO4PxHWF3R2aaZ8OKUInpF3cxm0e2+Sf69qvtnKH7XVIWehtO+3owXuSiWF
-         /3uDucZMvDBifEbDl692VTOoJYS5ymNBir9tdKub8ik2q24652nJyuku4MxlrXy5L4
-         tcxksh1WgwNRFg6WrWS1c8CbauK+WWYM0zzn6rNLqudqNOXY6luQ4G0jWIZ0sICBpx
-         4CuK4QQTdiiLPx8W7EKm+peW4l/HiVM36ekjeYBA81SMIugfL6wG1/j5ur1VvU/5Rr
-         2ucsB8JgRMx5QSCz+2ug8KOc95Pu5Pnc1OnGZU7Etjzgm5jyx4XHdEN9Muk507tncb
-         TJFbuhGiN+vjQ==
-Received: by mail-lf1-f41.google.com with SMTP id c29so12796902lfv.3;
-        Mon, 27 Mar 2023 12:04:11 -0700 (PDT)
-X-Gm-Message-State: AAQBX9fRYwA2dZ2DIPj3vRfcMTuqygjOaKwOMFL2/V+7oFY4j+T2TLSy
-        XzKMjOPAIHk2Cxa/VVdTCfb5vxscN9DzBFhbuqc=
-X-Google-Smtp-Source: AKy350aI7otTUFAj1Lu3xkTRCygHh6+IkNJ0FCb50NrI4XbsKhMraNZsmBGv5AeouqLYd6UZy//NWILZAo5bQ+khyDY=
-X-Received: by 2002:ac2:5dd7:0:b0:4e8:5f14:20fb with SMTP id
- x23-20020ac25dd7000000b004e85f1420fbmr3873834lfq.3.1679943849639; Mon, 27 Mar
- 2023 12:04:09 -0700 (PDT)
+        with ESMTP id S230161AbjC0TMY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 15:12:24 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E32E10E5
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 12:11:54 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id cr18so5808828qtb.0
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 12:11:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1679944313;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v7QgF4SPMByI95xKzR5JGt1MbjLLP8ljYyAalP24SZ0=;
+        b=fj9ssUNvI0n6VKKx7zevE6u4UkHwEvocg0Hwc+ADRIU82d6JgjBqmN8nQCar5UMtmK
+         c3wYyRc/0lYfxRMiHLOGqojq7mSU+v0qyN7P5q793z4033nycPbedcUKGr4pQcb3/dr9
+         2AABL2LLCF3J6o49Ugq/FZHqbBDaq24f3OQfsvWOmQIgQT9L2kfL12Bcy4hiN+O+lzAt
+         dVMpMikros3nEcW9kg31ahO8Am7qSRuh3LEjDhcGT/XCCSj6+NyX3/ohlvdd0U3ylYHD
+         1ESXpfdvTsQ5mczGInyzTOkj43Ug0vegCxekafyazAeF9TlncJbddRnDRwvLnPXkKkjm
+         3VHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679944313;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v7QgF4SPMByI95xKzR5JGt1MbjLLP8ljYyAalP24SZ0=;
+        b=mCssL6MXbJAzD/AiSUJH+XF9INJRWeJq5Bjeu3R64H41T4tRkzXs77AXdlRrvJahHy
+         PyF4W4vKo9yfrwO8q27r0g7vi7YwAR1xWfjwVUflW5fNi/U0+qoq9NBGIOO/Qv5nuy2C
+         k/4IA7IYkCgocz6ETXoFEJU3pMJnaHNBGNB6g8Nt5cCTiEVze8u0R4StEXdGhVJXG5cH
+         5HnaRFLo3pN1VXIjoMuozm0JV+R75MWOYIRxrp3qi4ZcvBQscujMHWYiZDEho0JZZq7P
+         9JikF8KhpkKqJhlu4YDAyH2v2ouTca+lDE3hu86dqksHVjLr6BEWXM7PNG2un9endSgC
+         tTPw==
+X-Gm-Message-State: AAQBX9f2/0X6JsKli/IOQPZSV2y157/3pyMSXfSYQATcya8WlD2gCyoP
+        S1uFDs3kUOO9QZvS9dWekvcX+g==
+X-Google-Smtp-Source: AKy350bgbPKaehPavn4jrWcChc00F0kRsdrrQ9tfFTF5o7GVzpAXwL0VK3B2pUdIMuH1t8ze8fyp6w==
+X-Received: by 2002:ac8:5f53:0:b0:3e4:e58c:d321 with SMTP id y19-20020ac85f53000000b003e4e58cd321mr9356681qta.33.1679944313444;
+        Mon, 27 Mar 2023 12:11:53 -0700 (PDT)
+Received: from [172.17.0.3] ([130.44.215.126])
+        by smtp.gmail.com with ESMTPSA id d185-20020a37b4c2000000b007425ef4cbc2sm16989236qkf.100.2023.03.27.12.11.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Mar 2023 12:11:52 -0700 (PDT)
+From:   Bobby Eshleman <bobby.eshleman@bytedance.com>
+Subject: [PATCH net-next v4 0/3] Add support for sockmap to vsock.
+Date:   Mon, 27 Mar 2023 19:11:50 +0000
+Message-Id: <20230327-vsock-sockmap-v4-0-c62b7cd92a85@bytedance.com>
 MIME-Version: 1.0
-References: <20230326092208.13613-1-laoar.shao@gmail.com>
-In-Reply-To: <20230326092208.13613-1-laoar.shao@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 27 Mar 2023 12:03:56 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW43EiH0tVKU8s+JwV_V6EBETTDyXsAmMzAftpVtcgLHag@mail.gmail.com>
-Message-ID: <CAPhsuW43EiH0tVKU8s+JwV_V6EBETTDyXsAmMzAftpVtcgLHag@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 00/13] bpf: Introduce BPF namespace
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHbqIWQC/1WNQQrCMBBFr1Jm7eCYBIpeRVxkpqMNYloypRRK7
+ 27izs2HB//xdjAtSQ1u3Q5F12RpyhXCqQMZY34ppqEyOHKevOtxtUne2OYTZ/TEdCXpSYYLVIe
+ jKXKJWcZmcThz+Ffaay76TNuveoesC2bdFngcxxfYw958jwAAAA==
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 26, 2023 at 2:22=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
-wrote:
->
-> Currently only CAP_SYS_ADMIN can iterate BPF object IDs and convert IDs
-> to FDs, that's intended for BPF's security model[1]. Not only does it
-> prevent non-privilidged users from getting other users' bpf program, but
-> also it prevents the user from iterating his own bpf objects.
->
-> In container environment, some users want to run bpf programs in their
-> containers. These users can run their bpf programs under CAP_BPF and
-> some other specific CAPs, but they can't inspect their bpf programs in a
-> generic way. For example, the bpftool can't be used as it requires
-> CAP_SYS_ADMIN. That is very inconvenient.
+We're testing usage of vsock as a way to redirect guest-local UDS
+requests to the host and this patch series greatly improves the
+performance of such a setup.
 
-Agreed that it is important to enable tools like bpftool without
-CAP_SYS_ADMIN. However, I am not sure whether we need a new
-namespace for this. Can we reuse some existing namespace for this?
+Compared to copying packets via userspace, this improves throughput by
+121% in basic testing.
 
-If we do need a new namespace, maybe we should share some effort
-with tracer namespace proposal [1]?
+Tested as follows.
 
-Thanks,
-Song
+Setup: guest unix dgram sender -> guest vsock redirector -> host vsock
+       server
+Threads: 1
+Payload: 64k
+No sockmap:
+- 76.3 MB/s
+- The guest vsock redirector was
+  "socat VSOCK-CONNECT:2:1234 UNIX-RECV:/path/to/sock"
+Using sockmap (this patch):
+- 168.8 MB/s (+121%)
+- The guest redirector was a simple sockmap echo server,
+  redirecting unix ingress to vsock 2:1234 egress.
+- Same sender and server programs
 
-[1] https://lpc.events/event/16/contributions/1237/
+*Note: these numbers are from RFC v1
+
+Only the virtio transport has been tested. The loopback transport was
+used in writing bpf/selftests, but not thoroughly tested otherwise.
+
+This series requires the skb patch.
+
+Changes in v4:
+- af_vsock: fix parameter alignment in vsock_dgram_recvmsg()
+- af_vsock: add TCP_ESTABLISHED comment in vsock_dgram_connect()
+- vsock/bpf: change ret type to bool
+
+Changes in v3:
+- vsock/bpf: Refactor wait logic in vsock_bpf_recvmsg() to avoid
+  backwards goto
+- vsock/bpf: Check psock before acquiring slock
+- vsock/bpf: Return bool instead of int of 0 or 1
+- vsock/bpf: Wrap macro args __sk/__psock in parens
+- vsock/bpf: Place comment trailer */ on separate line
+
+Changes in v2:
+- vsock/bpf: rename vsock_dgram_* -> vsock_*
+- vsock/bpf: change sk_psock_{get,put} and {lock,release}_sock() order
+  to minimize slock hold time
+- vsock/bpf: use "new style" wait
+- vsock/bpf: fix bug in wait log
+- vsock/bpf: add check that recvmsg sk_type is one dgram, seqpacket, or
+  stream.  Return error if not one of the three.
+- virtio/vsock: comment __skb_recv_datagram() usage
+- virtio/vsock: do not init copied in read_skb()
+- vsock/bpf: add ifdef guard around struct proto in dgram_recvmsg()
+- selftests/bpf: add vsock loopback config for aarch64
+- selftests/bpf: add vsock loopback config for s390x
+- selftests/bpf: remove vsock device from vmtest.sh qemu machine
+- selftests/bpf: remove CONFIG_VIRTIO_VSOCKETS=y from config.x86_64
+- vsock/bpf: move transport-related (e.g., if (!vsk->transport)) checks
+  out of fast path
+
+Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+---
+Bobby Eshleman (3):
+      vsock: support sockmap
+      selftests/bpf: add vsock to vmtest.sh
+      selftests/bpf: add a test case for vsock sockmap
+
+ drivers/vhost/vsock.c                              |   1 +
+ include/linux/virtio_vsock.h                       |   1 +
+ include/net/af_vsock.h                             |  17 ++
+ net/vmw_vsock/Makefile                             |   1 +
+ net/vmw_vsock/af_vsock.c                           |  64 +++++++-
+ net/vmw_vsock/virtio_transport.c                   |   2 +
+ net/vmw_vsock/virtio_transport_common.c            |  25 +++
+ net/vmw_vsock/vsock_bpf.c                          | 174 +++++++++++++++++++++
+ net/vmw_vsock/vsock_loopback.c                     |   2 +
+ tools/testing/selftests/bpf/config.aarch64         |   2 +
+ tools/testing/selftests/bpf/config.s390x           |   3 +
+ tools/testing/selftests/bpf/config.x86_64          |   3 +
+ .../selftests/bpf/prog_tests/sockmap_listen.c      | 163 +++++++++++++++++++
+ 13 files changed, 452 insertions(+), 6 deletions(-)
+---
+base-commit: e5b42483ccce50d5b957f474fd332afd4ef0c27b
+change-id: 20230327-vsock-sockmap-30b090c70cd1
+
+Best regards,
+-- 
+Bobby Eshleman <bobby.eshleman@bytedance.com>
+
