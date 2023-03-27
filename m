@@ -2,126 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDAB6CACE9
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 20:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5DD6CAD0E
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 20:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbjC0SVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 14:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
+        id S229606AbjC0Scj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 14:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbjC0SVv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 14:21:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFEC3A8D
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:21:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679941262;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8QmIkpEKXa5UxgJDPzN81fUKnNNvP0DAA7O3XVhN+u0=;
-        b=EQ6t3VRB5Zba27t5ZzvVizS9pm3bknvNU0d/FXKE2Z0s1413tAlAefNjv7q5E5c7SllITe
-        nB8/3Qhado5pNVq2j8Qf42XFfAzYvcG0AoN8pJf/zABkmewpfBGYUlNlGku4kKoQMAq4Ke
-        fcRC8Ow+4DvMCg1kYS3REW71JkraonY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-472-tCNcZ_oONhihQz907N6nSA-1; Mon, 27 Mar 2023 14:20:59 -0400
-X-MC-Unique: tCNcZ_oONhihQz907N6nSA-1
-Received: by mail-ed1-f71.google.com with SMTP id m18-20020a50d7d2000000b00501dfd867a4so13918960edj.20
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:20:59 -0700 (PDT)
+        with ESMTP id S231139AbjC0Scj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 14:32:39 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AF73AAB
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:32:35 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id ew6so39957591edb.7
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679941953;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tVD8yUwOZlbr33agwo1MtLByZkicXh4/kmNJUuNmcKw=;
+        b=ITGW1nPSWm133rjUPQMm3wCAv0cnms1DFFOvKMu56qZ730h4sIqtPlGaDjIIPgYXRF
+         MaJHWEVIT4cAxzSCt3zB/jewT+KWg4tokkc1ZR/XmD4lYPefqjX7TTwF7Zxh+BX4YThr
+         oki5rbJqLjFE63jf5dv1qBrSO37I0zP+2dh06NLqKXj03hU135IZAtJEPSDMEI8GULGT
+         KMtkbLYkMoi1C9JC6ZigEYIgEg7cSE8ahQpXWxA3ihnx3TwRv3gHrm3e4Hr5AoRTRoiV
+         Q+W5Jyv6P9ECz4QAQQHtmTR64AWgwD1hxcz260YYha4Fdof/JjA6oc3XLp8WkyHLwHRP
+         p37A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679941258;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8QmIkpEKXa5UxgJDPzN81fUKnNNvP0DAA7O3XVhN+u0=;
-        b=o1aP9KeiqW28XvBkUmKgDPNkjAmRyE8r10ZqgTiD2zT6twpbAiUG0KsdNnbs0KX/so
-         2GnVvB1EYHhKQ9Dt1CfGFa2quhGCJa9CrddtIR4OrMJKrFppbYMOPyBjkeizR6jWJs3L
-         sF0RT2QgFbZXsW6sPVb5jVyQGZ1eKhhnNGlFGEUpN3P0SXuzuqh/9oFUkKOSAmsgnhWa
-         BMEOWT8RB07SadkwO+R1sVmnAEcFxIc8+iIumhp4MycIDO0WuGAUtUD2Z9VRKaa0UDZF
-         qJp6fmQQKE1Q1T+4LbDp1KedRP6q7NBO3WzoO+IGQH+KkicmMtxjmVYJULD3EZSneWF8
-         Milw==
-X-Gm-Message-State: AAQBX9ec9xX8/D4YWwmluyeBNinQ7ymYXcAliDg0AHIv6dx9qO3UyACl
-        c1XZpcyBcHWrHLdx3mWwgiVmavj5nsYEi37xGZwdHXje1haA4D6KhwYr857WUCu/hXLboemyUuO
-        En4x9XM917yQ=
-X-Received: by 2002:a17:906:578c:b0:88f:a236:69e6 with SMTP id k12-20020a170906578c00b0088fa23669e6mr13411015ejq.7.1679941258630;
-        Mon, 27 Mar 2023 11:20:58 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YyqZAVBR4sO7omGkqBh61MtackTk3PX7Mi9DzjBUxd+qSqTRoWMD57UFZPSeAY/JpJfDLw8w==
-X-Received: by 2002:a17:906:578c:b0:88f:a236:69e6 with SMTP id k12-20020a170906578c00b0088fa23669e6mr13410994ejq.7.1679941258315;
-        Mon, 27 Mar 2023 11:20:58 -0700 (PDT)
-Received: from [192.168.0.159] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id l11-20020a1709066b8b00b00939faf4be97sm9309590ejr.215.2023.03.27.11.20.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Mar 2023 11:20:58 -0700 (PDT)
-Message-ID: <c076e249-705a-e1bb-c657-f80cd4f2145b@redhat.com>
-Date:   Mon, 27 Mar 2023 20:20:56 +0200
+        d=1e100.net; s=20210112; t=1679941953;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tVD8yUwOZlbr33agwo1MtLByZkicXh4/kmNJUuNmcKw=;
+        b=M7wy3DA+PIkxnG+M8W1jKl8D4GcbfgXCRgMZXCzLT7GEfdO4LFUH8jfKR4aNVL+y50
+         PwJBILqplLLE0zIJSTH4pkdY8UKP0OeLRzGcFrUvzSBS7qySbMni7BMjp1B83pxRs6bL
+         gTUXI8e5awluuM7/yRMusc7xEA+T7l9fkhLuxIJed8+LROgAO1x2iha3BPO2hnmiOjjY
+         UhJvkVO4fsdgkWyZ/kj+cLvUaNkPI6BXnfyakMGbhnhgSlsTYwvK79y7AbtEuSrn9OK6
+         qQu8mk3FHlEBFPfFjCYz/zNICprm3RotnWRFcizTXRxlI1cAE5OZjSD6fRqcF0Ndad7V
+         m2/g==
+X-Gm-Message-State: AAQBX9d3thBMXBwaMqapCKOOsflR4bVvCuLVxBYGT8KUiEgQ3oHGY5xA
+        q/M7OEgmtlW/QWrRmw8k5vwRHqQS5SjWZ0ucqAYegAQaMR8=
+X-Google-Smtp-Source: AKy350Z7eq2Ju2CbQsFTSl9rnAsSeok6vxOtFJxZcvNXfdyjCOptBCRlJzj/L/YxNwbwENEfxCW+b0RIk7ayQC3+LDI=
+X-Received: by 2002:a17:906:6692:b0:944:70f7:6fae with SMTP id
+ z18-20020a170906669200b0094470f76faemr2231000ejo.5.1679941953441; Mon, 27 Mar
+ 2023 11:32:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next] kallsyms: move module-related functions under
- correct configs
-Content-Language: en-US
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-modules@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, kernel test robot <lkp@intel.com>
-References: <20230327161251.1129511-1-vmalik@redhat.com>
- <ZCHWtptOwPPtUe+u@bombadil.infradead.org>
-From:   Viktor Malik <vmalik@redhat.com>
-In-Reply-To: <ZCHWtptOwPPtUe+u@bombadil.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230325010845.46000-1-inwardvessel@gmail.com> <ZB5mAffV69GUEIZU@google.com>
+In-Reply-To: <ZB5mAffV69GUEIZU@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Mar 2023 11:32:21 -0700
+Message-ID: <CAEf4BzaFpC_3Wgf56Tw=O-Vb28Wf5vguaJkvQNaRMN=0v7puvg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: synchronize access to print function pointer
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     JP Kobryn <inwardvessel@gmail.com>, bpf@vger.kernel.org,
+        andrii@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/27/23 19:47, Luis Chamberlain wrote:
-> On Mon, Mar 27, 2023 at 06:12:51PM +0200, Viktor Malik wrote:
->> Functions for searching module kallsyms should have non-empty
->> definitions only if CONFIG_MODULES=y and CONFIG_KALLSYMS=y. Until now,
->> only CONFIG_MODULES check was used for many of these, which may have
->> caused complilation errors on some configs.
->>
->> This patch moves all relevant functions under the correct configs.
->>
->> Signed-off-by: Viktor Malik <vmalik@redhat.com>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Link: https://lore.kernel.org/oe-kbuild-all/202303181535.RFDCnz3E-lkp@intel.com/
-> 
-> Thanks Viktor!  Does this fix something from an existing commit? If so
-> which one?  The commit log should mention it.
+On Fri, Mar 24, 2023 at 8:09=E2=80=AFPM Stanislav Fomichev <sdf@google.com>=
+ wrote:
+>
+> On 03/24, JP Kobryn wrote:
+> > This patch prevents races on the print function pointer, allowing the
+> > libbpf_set_print() function to become thread safe.
+>
+> Why does it have to be thread-safe? The rest of the APIs aren't, so
 
-Ah, right, I forgot about that. The commit log is missing:
+It doesn't have to, but if it can be made thread-safe trivially, it
+probably should be. Rust users are especially sensitive to this (see
+discussion in [0] for example).
 
-Fixes: bd5314f8dd2d ("kallsyms, bpf: Move find_kallsyms_symbol_value out of internal header")
+Generally speaking, yep, libbpf APIs are not thread-safe by default
+(we don't do explicit locking anywhere inside libbpf), but there are a
+bunch of APIs that are inherently thread-safe as they are stateless
+(like feature probing, string conversion APIs, I suspect upon
+inspection we'll see that all bpf_program__attach_*() APIs are also
+probably thread-safe already). So we should start marking them as such
+to avoid confusion and uncertainty for users. I'd also like to
+document somewhere that two independent bpf_objects can be used safely
+on two separate threads, because whatever state they are sharing (like
+feature detection cache) is designed in such a way to be thread-safe
+and shareable with no locking.
 
-I can post v2 but I'm also fine with maintainers applying the tag.
+  [0] https://github.com/libbpf/libbpf-rs/pull/374#issuecomment-1462565778
 
-Thanks!
-Viktor
+> why can't use solve it on your side by wrapping those calls with a
+> mutex?
 
-> 
->    LUis
-> 
+It would be very unfortunate to wrap libbpf_set_print and *all other
+libbpf API* in mutex.
 
+>
+> (is there some context I'm missing?)
+>
+> > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> > ---
+> >   tools/lib/bpf/libbpf.c | 9 ++++++---
+> >   tools/lib/bpf/libbpf.h | 3 +++
+> >   2 files changed, 9 insertions(+), 3 deletions(-)
+>
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index f6a071db5c6e..15737d7b5a28 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -216,9 +216,10 @@ static libbpf_print_fn_t __libbpf_pr =3D __base_pr=
+;
+>
+> >   libbpf_print_fn_t libbpf_set_print(libbpf_print_fn_t fn)
+> >   {
+> > -     libbpf_print_fn_t old_print_fn =3D __libbpf_pr;
+> > +     libbpf_print_fn_t old_print_fn;
+> > +
+> > +     old_print_fn =3D __atomic_exchange_n(&__libbpf_pr, fn, __ATOMIC_R=
+ELAXED);
+>
+> > -     __libbpf_pr =3D fn;
+> >       return old_print_fn;
+> >   }
+>
+> > @@ -227,8 +228,10 @@ void libbpf_print(enum libbpf_print_level level,
+> > const char *format, ...)
+> >   {
+> >       va_list args;
+> >       int old_errno;
+> > +     libbpf_print_fn_t print_fn;
+>
+> > -     if (!__libbpf_pr)
+> > +     print_fn =3D __atomic_load_n(&__libbpf_pr, __ATOMIC_RELAXED);
+> > +     if (!print_fn)
+> >               return;
+>
+> >       old_errno =3D errno;
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index 1615e55e2e79..4478809ff9ca 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -99,6 +99,9 @@ typedef int (*libbpf_print_fn_t)(enum
+> > libbpf_print_level level,
+> >   /**
+> >    * @brief **libbpf_set_print()** sets user-provided log callback
+> > function to
+> >    * be used for libbpf warnings and informational messages.
+> > + *
+> > + * This function is thread safe.
+> > + *
+> >    * @param fn The log print function. If NULL, libbpf won't print
+> > anything.
+> >    * @return Pointer to old print function.
+> >    */
+> > --
+> > 2.39.2
+>
