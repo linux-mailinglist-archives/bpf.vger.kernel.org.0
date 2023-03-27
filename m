@@ -2,69 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B4C6CAA17
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 18:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6709A6CAAA9
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 18:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbjC0QOL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 12:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
+        id S230116AbjC0Qdw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 12:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbjC0QOK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 12:14:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD43219BF
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 09:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679933603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2AxP1O7sml6Z95M//KVYu3KPUF5AM2A4gmOVSjfr8v8=;
-        b=BOeviLK8zKk4IFI/zAyIWNlNGbS3HV4iGuZrLIdnfxeMeb4lHLfdIEQZMj8rTZ06Zoxqa5
-        /PAM/SN0BD3ZyC/4eZd90hv+ecuIlQBHy/wI/GILLJwTThNbyI7sJMnJctkZFbwuZoREk+
-        wEK183nmygSk9WTtla6ZwBp/WSOStsY=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-185-4Mti2eS0MwSGgsjZ8kg3LA-1; Mon, 27 Mar 2023 12:13:19 -0400
-X-MC-Unique: 4Mti2eS0MwSGgsjZ8kg3LA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5CED93C18342;
-        Mon, 27 Mar 2023 16:13:18 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.45.224.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D22B140E949;
-        Mon, 27 Mar 2023 16:13:13 +0000 (UTC)
-From:   Viktor Malik <vmalik@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S230218AbjC0Qdv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 12:33:51 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76F12D40
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 09:33:32 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d2-20020a170902cec200b001a1e8390831so6053363plg.5
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 09:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1679934812;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fA2zieBxTjdVfCwnOph3Od7VcLY7duNKtodxOlsYfxs=;
+        b=Hae9QW2JbyAAG5zwkI0VObm5Nf0zp943IdRLLMXg+o3YXLHUXtnRJH5JCN3OyNinPV
+         y8/sS4EBKPo/KfUGgzT/qn9ggzA/ZQSSKTRIliZuPxi+OkIF4OF845KM4EBTtdo2UV/4
+         jOzMuq0gZ5P1xo6/89MPNoOL7B8EhqXHDiHtZGE1xtYdfxvFyF3VR4AKifERSa5+oYnI
+         sVnpCbjr6MjJoXar1CcjbEleTgjeUXOtqxkqoVmDKskiwMOLHibZY0/P7orf8jRlgA5R
+         IiPUu/xniM1NfBBJZ6xOrkjOfOLy9ZnVkCmIp9kdMpzvS80x710easGWXsjSh3uOu/hN
+         lsDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679934812;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fA2zieBxTjdVfCwnOph3Od7VcLY7duNKtodxOlsYfxs=;
+        b=fca1xHBQgForOz9d7POS7Qy9iHe2/d5y1ph/F46V4sIQy+XOK304hIEOPgrQ5UjyFK
+         mjd0azM29LY0UtuYnLwpx95OO3lDMLV5hOmKqMnGm5rrlwgxj16Ovi2yR1+udvemXG9i
+         f6j9xVvWkbnsSZvAH26ewTBH/WBJyTdPK7aktWl8k8hf4OsK4Gl0an+iUl/+nMniylw3
+         VeiCONJprWp92wRrx/9L1dn5ssuuTtxb0+7lZc1EC3LC8ymuQHEFfFQqcShxayNd28EW
+         zOpjRdMvPBwHHRrTRS/U4wz13NfvNjakuW0NG8EuQPkWcuDB//LoeUz/PZoe7T6Q+OPi
+         M2Dw==
+X-Gm-Message-State: AAQBX9fikwVvQsiNmhHARBqX42itdRCg9GE37FFD3BSIMUpsiuXroabT
+        cGbASnjrffCnADO2ug/2rLDqyrk=
+X-Google-Smtp-Source: AKy350bxpHgRH6Eay2SuXA9l+kzQYxGgY88ZBcHeRlQaBkPizBSLR5rB+LhBAIctnGVZPhtFdV6jWNs=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:24c4:b0:629:f9a2:64e6 with SMTP id
+ d4-20020a056a0024c400b00629f9a264e6mr6536393pfv.4.1679934812367; Mon, 27 Mar
+ 2023 09:33:32 -0700 (PDT)
+Date:   Mon, 27 Mar 2023 09:33:30 -0700
+In-Reply-To: <ZB9UdB5pgOAacioS@pop-os.localdomain>
+Mime-Version: 1.0
+References: <20230319191913.61236-1-xiyou.wangcong@gmail.com>
+ <CAKH8qBtoYREbbRaedAfv=cEv2a5gBEYLSLy2eqcMYvsN7sqE=Q@mail.gmail.com> <ZB9UdB5pgOAacioS@pop-os.localdomain>
+Message-ID: <ZCHFWr5rqnYNK3qS@google.com>
+Subject: Re: [Patch net-next v3] sock_map: dump socket map id via diag
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Viktor Malik <vmalik@redhat.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH bpf-next] kallsyms: move module-related functions under correct configs
-Date:   Mon, 27 Mar 2023 18:12:51 +0200
-Message-Id: <20230327161251.1129511-1-vmalik@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,221 +72,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Functions for searching module kallsyms should have non-empty
-definitions only if CONFIG_MODULES=y and CONFIG_KALLSYMS=y. Until now,
-only CONFIG_MODULES check was used for many of these, which may have
-caused complilation errors on some configs.
-
-This patch moves all relevant functions under the correct configs.
-
-Signed-off-by: Viktor Malik <vmalik@redhat.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/oe-kbuild-all/202303181535.RFDCnz3E-lkp@intel.com/
----
- include/linux/module.h | 155 ++++++++++++++++++++++-------------------
- 1 file changed, 84 insertions(+), 71 deletions(-)
-
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 41cfd3be57e5..eaad4b7a3788 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -608,16 +608,6 @@ static inline bool within_module(unsigned long addr, const struct module *mod)
- /* Search for module by name: must be in a RCU-sched critical section. */
- struct module *find_module(const char *name);
- 
--/* Returns 0 and fills in value, defined and namebuf, or -ERANGE if
--   symnum out of range. */
--int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
--			char *name, char *module_name, int *exported);
--
--/* Look for this name: can be of form module:name. */
--unsigned long module_kallsyms_lookup_name(const char *name);
--
--unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name);
--
- extern void __noreturn __module_put_and_kthread_exit(struct module *mod,
- 			long code);
- #define module_put_and_kthread_exit(code) __module_put_and_kthread_exit(THIS_MODULE, code)
-@@ -661,20 +651,6 @@ static inline void __module_get(struct module *module)
- 	__mod ? __mod->name : "kernel";		\
- })
- 
--/* Dereference module function descriptor */
--void *dereference_module_function_descriptor(struct module *mod, void *ptr);
--
--/* For kallsyms to ask for address resolution.  namebuf should be at
-- * least KSYM_NAME_LEN long: a pointer to namebuf is returned if
-- * found, otherwise NULL. */
--const char *module_address_lookup(unsigned long addr,
--			    unsigned long *symbolsize,
--			    unsigned long *offset,
--			    char **modname, const unsigned char **modbuildid,
--			    char *namebuf);
--int lookup_module_symbol_name(unsigned long addr, char *symname);
--int lookup_module_symbol_attrs(unsigned long addr, unsigned long *size, unsigned long *offset, char *modname, char *name);
--
- int register_module_notifier(struct notifier_block *nb);
- int unregister_module_notifier(struct notifier_block *nb);
- 
-@@ -765,45 +741,6 @@ static inline void module_put(struct module *module)
- 
- #define module_name(mod) "kernel"
- 
--/* For kallsyms to ask for address resolution.  NULL means not found. */
--static inline const char *module_address_lookup(unsigned long addr,
--					  unsigned long *symbolsize,
--					  unsigned long *offset,
--					  char **modname,
--					  const unsigned char **modbuildid,
--					  char *namebuf)
--{
--	return NULL;
--}
--
--static inline int lookup_module_symbol_name(unsigned long addr, char *symname)
--{
--	return -ERANGE;
--}
--
--static inline int lookup_module_symbol_attrs(unsigned long addr, unsigned long *size, unsigned long *offset, char *modname, char *name)
--{
--	return -ERANGE;
--}
--
--static inline int module_get_kallsym(unsigned int symnum, unsigned long *value,
--					char *type, char *name,
--					char *module_name, int *exported)
--{
--	return -ERANGE;
--}
--
--static inline unsigned long module_kallsyms_lookup_name(const char *name)
--{
--	return 0;
--}
--
--static inline unsigned long find_kallsyms_symbol_value(struct module *mod,
--						       const char *name)
--{
--	return 0;
--}
--
- static inline int register_module_notifier(struct notifier_block *nb)
- {
- 	/* no events will happen anyway, so this can always succeed */
-@@ -831,13 +768,6 @@ static inline void set_module_sig_enforced(void)
- {
- }
- 
--/* Dereference module function descriptor */
--static inline
--void *dereference_module_function_descriptor(struct module *mod, void *ptr)
--{
--	return ptr;
--}
--
- #endif /* CONFIG_MODULES */
- 
- #ifdef CONFIG_SYSFS
-@@ -899,7 +829,39 @@ int module_kallsyms_on_each_symbol(const char *modname,
- 				   int (*fn)(void *, const char *,
- 					     struct module *, unsigned long),
- 				   void *data);
--#else
-+
-+/* Dereference module function descriptor */
-+void *dereference_module_function_descriptor(struct module *mod, void *ptr);
-+
-+/* For kallsyms to ask for address resolution.  namebuf should be at
-+ * least KSYM_NAME_LEN long: a pointer to namebuf is returned if
-+ * found, otherwise NULL.
-+ */
-+const char *module_address_lookup(unsigned long addr,
-+			    unsigned long *symbolsize,
-+			    unsigned long *offset,
-+			    char **modname, const unsigned char **modbuildid,
-+			    char *namebuf);
-+int lookup_module_symbol_name(unsigned long addr, char *symname);
-+int lookup_module_symbol_attrs(unsigned long addr,
-+			       unsigned long *size,
-+			       unsigned long *offset,
-+			       char *modname,
-+			       char *name);
-+
-+/* Returns 0 and fills in value, defined and namebuf, or -ERANGE if
-+ * symnum out of range.
-+ */
-+int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
-+			char *name, char *module_name, int *exported);
-+
-+/* Look for this name: can be of form module:name. */
-+unsigned long module_kallsyms_lookup_name(const char *name);
-+
-+unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name);
-+
-+#else	/* CONFIG_MODULES && CONFIG_KALLSYMS */
-+
- static inline int module_kallsyms_on_each_symbol(const char *modname,
- 						 int (*fn)(void *, const char *,
- 						 struct module *, unsigned long),
-@@ -907,6 +869,57 @@ static inline int module_kallsyms_on_each_symbol(const char *modname,
- {
- 	return -EOPNOTSUPP;
- }
-+
-+/* Dereference module function descriptor */
-+static inline
-+void *dereference_module_function_descriptor(struct module *mod, void *ptr)
-+{
-+	return ptr;
-+}
-+
-+/* For kallsyms to ask for address resolution.  NULL means not found. */
-+static inline const char *module_address_lookup(unsigned long addr,
-+					  unsigned long *symbolsize,
-+					  unsigned long *offset,
-+					  char **modname,
-+					  const unsigned char **modbuildid,
-+					  char *namebuf)
-+{
-+	return NULL;
-+}
-+
-+static inline int lookup_module_symbol_name(unsigned long addr, char *symname)
-+{
-+	return -ERANGE;
-+}
-+
-+static inline int lookup_module_symbol_attrs(unsigned long addr,
-+					     unsigned long *size,
-+					     unsigned long *offset,
-+					     char *modname,
-+					     char *name)
-+{
-+	return -ERANGE;
-+}
-+
-+static inline int module_get_kallsym(unsigned int symnum, unsigned long *value,
-+					char *type, char *name,
-+					char *module_name, int *exported)
-+{
-+	return -ERANGE;
-+}
-+
-+static inline unsigned long module_kallsyms_lookup_name(const char *name)
-+{
-+	return 0;
-+}
-+
-+static inline unsigned long find_kallsyms_symbol_value(struct module *mod,
-+						       const char *name)
-+{
-+	return 0;
-+}
-+
- #endif  /* CONFIG_MODULES && CONFIG_KALLSYMS */
- 
- #endif /* _LINUX_MODULE_H */
--- 
-2.39.2
-
+T24gMDMvMjUsIENvbmcgV2FuZyB3cm90ZToNCj4gT24gTW9uLCBNYXIgMjAsIDIwMjMgYXQgMTE6
+MTM6MDNBTSAtMDcwMCwgU3RhbmlzbGF2IEZvbWljaGV2IHdyb3RlOg0KPiA+IE9uIFN1biwgTWFy
+IDE5LCAyMDIzIGF0IDEyOjE54oCvUE0gQ29uZyBXYW5nIDx4aXlvdS53YW5nY29uZ0BnbWFpbC5j
+b20+ICANCj4gd3JvdGU6DQo+ID4gPg0KPiA+ID4gRnJvbTogQ29uZyBXYW5nIDxjb25nLndhbmdA
+Ynl0ZWRhbmNlLmNvbT4NCj4gPiA+DQo+ID4gPiBDdXJyZW50bHkgdGhlcmUgaXMgbm8gd2F5IHRv
+IGtub3cgd2hpY2ggc29ja21hcCBhIHNvY2tldCBoYXMgYmVlbiAgDQo+IGFkZGVkDQo+ID4gPiB0
+byBmcm9tIG91dHNpZGUsIGVzcGVjaWFsbHkgZm9yIHRoYXQgYSBzb2NrZXQgY2FuIGJlIGFkZGVk
+IHRvIG11bHRpcGxlDQo+ID4gPiBzb2NrbWFwJ3MuIFdlIGNvdWxkIGR1bXAgdGhpcyB2aWEgc29j
+a2V0IGRpYWcsIGFzIHNob3duIGJlbG93Lg0KPiA+ID4NCj4gPiA+IFNhbXBsZSBvdXRwdXQ6DQo+
+ID4gPg0KPiA+ID4gICAjIC4vaXByb3V0ZTIvbWlzYy9zcyAtdG5haWUgLS1icGYtbWFwDQo+ID4g
+PiAgIEVTVEFCICAwICAgICAgMzQ0MzI5ICAgICAxMjcuMC4wLjE6MTIzNCAgICAgMTI3LjAuMC4x
+OjQwOTEyICANCj4gaW5vOjIxMDk4IHNrOjUgY2dyb3VwOi91c2VyLnNsaWNlL3VzZXItMC5zbGlj
+ZS9zZXNzaW9uLWMxLnNjb3BlIDwtPiAgDQo+IHNvY2ttYXA6IDENCj4gPiA+DQo+ID4gPiAgICMg
+YnBmdG9vbCBtYXANCj4gPiA+ICAgMTogc29ja21hcCAgZmxhZ3MgMHgwDQo+ID4gPiAgICAgICAg
+IGtleSA0QiAgdmFsdWUgNEIgIG1heF9lbnRyaWVzIDIgIG1lbWxvY2sgNDA5NkINCj4gPiA+ICAg
+ICAgICAgcGlkcyBlY2hvLXNvY2ttYXAoNTQ5KQ0KPiA+ID4gICA0OiBhcnJheSAgbmFtZSBwaWRf
+aXRlci5yb2RhdGEgIGZsYWdzIDB4NDgwDQo+ID4gPiAgICAgICAgIGtleSA0QiAgdmFsdWUgNEIg
+IG1heF9lbnRyaWVzIDEgIG1lbWxvY2sgNDA5NkINCj4gPiA+ICAgICAgICAgYnRmX2lkIDEwICBm
+cm96ZW4NCj4gPiA+ICAgICAgICAgcGlkcyBicGZ0b29sKDYyNCkNCj4gPiA+DQo+ID4gPiBJbiB0
+aGUgZnV0dXJlLCB3ZSBjb3VsZCBkdW1wIG90aGVyIHNvY2ttYXAgcmVsYXRlZCBzdGF0cyB0b28s
+IGhlbmNlIEkNCj4gPiA+IG1ha2UgaXQgYSBuZXN0ZWQgYXR0cmlidXRlLg0KPiA+ID4NCj4gPiA+
+IENjOiBKb2huIEZhc3RhYmVuZCA8am9obi5mYXN0YWJlbmRAZ21haWwuY29tPg0KPiA+ID4gQ2M6
+IEpha3ViIFNpdG5pY2tpIDxqYWt1YkBjbG91ZGZsYXJlLmNvbT4NCj4gPiA+IFNpZ25lZC1vZmYt
+Ynk6IENvbmcgV2FuZyA8Y29uZy53YW5nQGJ5dGVkYW5jZS5jb20+DQo+ID4NCj4gPiBMb29rcyBm
+aW5lIGZyb20gbXkgUE9XLCB3aWxsIGxldCBvdGhlcnMgY29tbWVudC4NCj4gPg0KPiA+IE9uZSB0
+aGluZyBJIHN0aWxsIGRvbid0IHVuZGVyc3RhbmQgaGVyZTogd2hhdCBpcyBtaXNzaW5nIGZyb20g
+dGhlDQo+ID4gc29ja2V0IGl0ZXJhdG9ycyB0byBpbXBsZW1lbnQgdGhpcz8gSXMgaXQgYWxsIHRo
+ZSBza19wc29ja19nZXQgbWFnaWM/DQo+ID4gSSByZW1lbWJlciB5b3UgZGlzbWlzc2VkIFlvbmdo
+b25nJ3Mgc3VnZ2VzdGlvbiBvbiB2MSwgYnV0IGhhdmUgeW91DQo+ID4gYWN0dWFsbHkgdHJpZWQg
+aXQ/DQoNCj4gSSBhbSB2ZXJ5IGNvbmZ1c2VkLiBTbyBpbiBvcmRlciB0byBmaWd1cmUgb3V0IHdo
+aWNoIHNvY2ttYXAgYSBzb2NrZXQgaGFzDQo+IGJlZW4gYWRkZWQgdG8sIEkgaGF2ZSB0byBkdW1w
+ICphbGwqIHNvY2ttYXAncz8/PyBJdCBzZWVtcyB5b3UgYXJlDQo+IHN1Z2dlc3RpbmcgdG8gc29s
+dmUgdGhpcyB3aXRoIGEgbW9yZSBjb21wbGV4IGFuZCB1bm5lY2Vzc2FyeSBhcHByb2FjaD8NCj4g
+UGxlYXNlIHRlbGwgbWUgd2h5LCBJIGFtIHJlYWxseSBsb3N0LCBJIGRvbid0IGV2ZW4gc2VlIHRo
+ZXJlIGlzIGEgcG9pbnQNCj4gdG8gbWFrZSBoZXJlLg0KDQpXaXRoIGEgc29ja2V0IGl0ZXIsIHlv
+dSBjYW4gaXRlcmF0ZSBvdmVyIGFsbCBzb2NrZXRzIGFuZCBydW4gc29tZSBicGYNCnByb2dyYW0g
+b24gaXQgZG8gZHVtcCBzb21lIHN0YXRlLiBTbyB5b3UnZCBpdGVyYXRlIG92ZXIgdGhlIHNvY2tl
+dHMsDQpub3Qgc29ja21hcHMuIEZvciBlYWNoIHNvY2tldCB5b3UgZ2V0IGEgcG9pbnRlciB0byBz
+b2NrIGFuZCB5b3UgZG8gdGhlIHNhbWUNCnNrX3Bzb2NrX2dldCtsaXN0X2Zvcl9lYWNoX2VudHJ5
+KHBzb2NrLT5saW5rKS4NCg0KKGluIHRoZW9yeTsgd291bGQgYmUgaW50ZXJlc3RpbmcgdG8gc2Vl
+IHdoZXRoZXIgaXQgd29ya3MgaW4gcHJhY3RpY2UpDQoNCj4gPg0KPiA+IEFsc286IGEgdGVzdCB3
+b3VsZCBiZSBuaWNlIHRvIGhhdmUuIEkga25vdyB5b3UndmUgdGVzdGVkIGl0IHdpdGggdGhlDQo+
+ID4gaXByb3V0ZTIsIGJ1dCBoYXZpbmcgc29tZXRoaW5nIHJlZ3VsYXJseSBleGVyY2lzZWQgYnkg
+dGhlIGNpIHNlZW1zDQo+ID4gZ29vZCB0byBoYXZlIChhbmQgbm90IGEgdG9uIG9mIHdvcmspLg0K
+DQo+IFN1cmUsIHNvIHdoZXJlIGFyZSB0aGUgdGVzdHMgZm9yIHNvY2tldCBkaWFnPyBJIGRvbid0
+IHNlZSBhbnkgd2l0aGluIHRoZQ0KPiB0cmVlOg0KDQo+ICQgZ2l0IGdyZXAgSU5FVF9ESUFHX1NP
+Q0tPUFQgLS0gdG9vbHMvDQo+ICQNCg0KPiBOb3RlLCB0aGlzIGlzIG5vdCBzdWl0YWJsZSBmb3Ig
+YnBmIHNlbGZ0ZXN0cywgYmVjYXVzZSBpdCBpcyBsZXNzIHJlbGV2YW50DQo+IHRvIGJwZiwgbXVj
+aCBtb3JlIHJlbGV2YW50IHRvIHNvY2tldCBkaWFnLiBJIHRob3VnaHQgdGhpcyBpcyBvYnZpb3Vz
+Lg0KDQpOZXZlciB0b28gbGF0ZSB0byBzdGFydCB0ZXN0aW5nIHRob3NlIHNvY2sgZGlhZyBwYXRo
+cyA6LSkNClB1dCB0aGVtIGluIHRoZSBuZXQgc2VsZnRlc3RzIGlmIHlvdSBkb24ndCB0aGluayBi
+cGYgc2VsZnRlc3RzIGlzIHRoZSByaWdodA0KZml0Pw0KDQo+IFRoYW5rcy4NCg==
