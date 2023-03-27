@@ -2,258 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE336CACF7
-	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 20:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDAB6CACE9
+	for <lists+bpf@lfdr.de>; Mon, 27 Mar 2023 20:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbjC0SX4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 27 Mar 2023 14:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
+        id S229550AbjC0SVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 14:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbjC0SXw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 14:23:52 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08C1420A
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:23:34 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 32RDDDTO013443
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:23:34 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3phvfc3jvp-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:23:33 -0700
-Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
- ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 27 Mar 2023 11:23:31 -0700
-Received: from twshared52565.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 27 Mar 2023 11:23:31 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 2BE0F2C1CB054; Mon, 27 Mar 2023 11:23:22 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v3 bpf-next 3/3] veristat: guess and substitue underlying program type for freplace (EXT) progs
-Date:   Mon, 27 Mar 2023 11:20:19 -0700
-Message-ID: <20230327182019.1671432-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230327182019.1671432-1-andrii@kernel.org>
-References: <20230327182019.1671432-1-andrii@kernel.org>
+        with ESMTP id S230468AbjC0SVv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 14:21:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFEC3A8D
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:21:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1679941262;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8QmIkpEKXa5UxgJDPzN81fUKnNNvP0DAA7O3XVhN+u0=;
+        b=EQ6t3VRB5Zba27t5ZzvVizS9pm3bknvNU0d/FXKE2Z0s1413tAlAefNjv7q5E5c7SllITe
+        nB8/3Qhado5pNVq2j8Qf42XFfAzYvcG0AoN8pJf/zABkmewpfBGYUlNlGku4kKoQMAq4Ke
+        fcRC8Ow+4DvMCg1kYS3REW71JkraonY=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-472-tCNcZ_oONhihQz907N6nSA-1; Mon, 27 Mar 2023 14:20:59 -0400
+X-MC-Unique: tCNcZ_oONhihQz907N6nSA-1
+Received: by mail-ed1-f71.google.com with SMTP id m18-20020a50d7d2000000b00501dfd867a4so13918960edj.20
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 11:20:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679941258;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8QmIkpEKXa5UxgJDPzN81fUKnNNvP0DAA7O3XVhN+u0=;
+        b=o1aP9KeiqW28XvBkUmKgDPNkjAmRyE8r10ZqgTiD2zT6twpbAiUG0KsdNnbs0KX/so
+         2GnVvB1EYHhKQ9Dt1CfGFa2quhGCJa9CrddtIR4OrMJKrFppbYMOPyBjkeizR6jWJs3L
+         sF0RT2QgFbZXsW6sPVb5jVyQGZ1eKhhnNGlFGEUpN3P0SXuzuqh/9oFUkKOSAmsgnhWa
+         BMEOWT8RB07SadkwO+R1sVmnAEcFxIc8+iIumhp4MycIDO0WuGAUtUD2Z9VRKaa0UDZF
+         qJp6fmQQKE1Q1T+4LbDp1KedRP6q7NBO3WzoO+IGQH+KkicmMtxjmVYJULD3EZSneWF8
+         Milw==
+X-Gm-Message-State: AAQBX9ec9xX8/D4YWwmluyeBNinQ7ymYXcAliDg0AHIv6dx9qO3UyACl
+        c1XZpcyBcHWrHLdx3mWwgiVmavj5nsYEi37xGZwdHXje1haA4D6KhwYr857WUCu/hXLboemyUuO
+        En4x9XM917yQ=
+X-Received: by 2002:a17:906:578c:b0:88f:a236:69e6 with SMTP id k12-20020a170906578c00b0088fa23669e6mr13411015ejq.7.1679941258630;
+        Mon, 27 Mar 2023 11:20:58 -0700 (PDT)
+X-Google-Smtp-Source: AKy350YyqZAVBR4sO7omGkqBh61MtackTk3PX7Mi9DzjBUxd+qSqTRoWMD57UFZPSeAY/JpJfDLw8w==
+X-Received: by 2002:a17:906:578c:b0:88f:a236:69e6 with SMTP id k12-20020a170906578c00b0088fa23669e6mr13410994ejq.7.1679941258315;
+        Mon, 27 Mar 2023 11:20:58 -0700 (PDT)
+Received: from [192.168.0.159] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id l11-20020a1709066b8b00b00939faf4be97sm9309590ejr.215.2023.03.27.11.20.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Mar 2023 11:20:58 -0700 (PDT)
+Message-ID: <c076e249-705a-e1bb-c657-f80cd4f2145b@redhat.com>
+Date:   Mon, 27 Mar 2023 20:20:56 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: -gUVFoSvWer2R628RbT-MsNwAcroF5Uq
-X-Proofpoint-GUID: -gUVFoSvWer2R628RbT-MsNwAcroF5Uq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-24_11,2023-03-27_02,2023-02-09_01
-X-Spam-Status: No, score=-0.5 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next] kallsyms: move module-related functions under
+ correct configs
+Content-Language: en-US
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-modules@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, kernel test robot <lkp@intel.com>
+References: <20230327161251.1129511-1-vmalik@redhat.com>
+ <ZCHWtptOwPPtUe+u@bombadil.infradead.org>
+From:   Viktor Malik <vmalik@redhat.com>
+In-Reply-To: <ZCHWtptOwPPtUe+u@bombadil.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SEC("freplace") (i.e., BPF_PROG_TYPE_EXT) programs are not loadable as
-is through veristat, as kernel expects actual program's FD during
-BPF_PROG_LOAD time, which veristat has no way of knowing.
+On 3/27/23 19:47, Luis Chamberlain wrote:
+> On Mon, Mar 27, 2023 at 06:12:51PM +0200, Viktor Malik wrote:
+>> Functions for searching module kallsyms should have non-empty
+>> definitions only if CONFIG_MODULES=y and CONFIG_KALLSYMS=y. Until now,
+>> only CONFIG_MODULES check was used for many of these, which may have
+>> caused complilation errors on some configs.
+>>
+>> This patch moves all relevant functions under the correct configs.
+>>
+>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Link: https://lore.kernel.org/oe-kbuild-all/202303181535.RFDCnz3E-lkp@intel.com/
+> 
+> Thanks Viktor!  Does this fix something from an existing commit? If so
+> which one?  The commit log should mention it.
 
-Unfortunately, freplace programs are a pretty important class of
-programs, especially when dealing with XDP chaining solutions, which
-rely on EXT programs.
+Ah, right, I forgot about that. The commit log is missing:
 
-So let's do our best and teach veristat to try to guess the original
-program type, based on program's context argument type. And if guessing
-process succeeds, we manually override freplace/EXT with guessed program
-type using bpf_program__set_type() setter to increase chances of proper
-BPF verification.
+Fixes: bd5314f8dd2d ("kallsyms, bpf: Move find_kallsyms_symbol_value out of internal header")
 
-We rely on BTF and maintain a simple lookup table. This process is
-obviously not 100% bulletproof, as valid program might not use context
-and thus wouldn't have to specify correct type. Also, __sk_buff is very
-ambiguous and is the context type across many different program types.
-We pick BPF_PROG_TYPE_CGROUP_SKB for now, which seems to work fine in
-practice so far. Similarly, some program types require specifying attach
-type, and so we pick one out of possible few variants.
+I can post v2 but I'm also fine with maintainers applying the tag.
 
-Best effort at its best. But this makes veristat even more widely
-applicable.
+Thanks!
+Viktor
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/veristat.c | 118 ++++++++++++++++++++++++-
- 1 file changed, 114 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index 263df32fbda8..a422fa986dc4 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -15,6 +15,7 @@
- #include <sys/sysinfo.h>
- #include <sys/stat.h>
- #include <bpf/libbpf.h>
-+#include <bpf/btf.h>
- #include <libelf.h>
- #include <gelf.h>
- #include <float.h>
-@@ -778,7 +779,59 @@ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *
- 	return 0;
- }
- 
--static void fixup_obj(struct bpf_object *obj)
-+static int guess_prog_type_by_ctx_name(const char *ctx_name,
-+				       enum bpf_prog_type *prog_type,
-+				       enum bpf_attach_type *attach_type)
-+{
-+	/* We need to guess program type based on its declared context type.
-+	 * This guess can't be perfect as many different program types might
-+	 * share the same context type.  So we can only hope to reasonably
-+	 * well guess this and get lucky.
-+	 *
-+	 * Just in case, we support both UAPI-side type names and
-+	 * kernel-internal names.
-+	 */
-+	static struct {
-+		const char *uapi_name;
-+		const char *kern_name;
-+		enum bpf_prog_type prog_type;
-+		enum bpf_attach_type attach_type;
-+	} ctx_map[] = {
-+		/* __sk_buff is most ambiguous, for now we assume cgroup_skb */
-+		{ "__sk_buff", "sk_buff", BPF_PROG_TYPE_CGROUP_SKB, BPF_CGROUP_INET_INGRESS },
-+		{ "bpf_sock", "sock", BPF_PROG_TYPE_CGROUP_SOCK, BPF_CGROUP_INET4_POST_BIND },
-+		{ "bpf_sock_addr", "bpf_sock_addr_kern",  BPF_PROG_TYPE_CGROUP_SOCK_ADDR, BPF_CGROUP_INET4_BIND },
-+		{ "bpf_sock_ops", "bpf_sock_ops_kern", BPF_PROG_TYPE_SOCK_OPS, BPF_CGROUP_SOCK_OPS },
-+		{ "sk_msg_md", "sk_msg", BPF_PROG_TYPE_SK_MSG, BPF_SK_MSG_VERDICT },
-+		{ "bpf_cgroup_dev_ctx", "bpf_cgroup_dev_ctx", BPF_PROG_TYPE_CGROUP_DEVICE, BPF_CGROUP_DEVICE },
-+		{ "bpf_sysctl", "bpf_sysctl_kern", BPF_PROG_TYPE_CGROUP_SYSCTL, BPF_CGROUP_SYSCTL },
-+		{ "bpf_sockopt", "bpf_sockopt_kern", BPF_PROG_TYPE_CGROUP_SOCKOPT, BPF_CGROUP_SETSOCKOPT },
-+		{ "sk_reuseport_md", "sk_reuseport_kern", BPF_PROG_TYPE_SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT_OR_MIGRATE },
-+		{ "bpf_sk_lookup", "bpf_sk_lookup_kern", BPF_PROG_TYPE_SK_LOOKUP, BPF_SK_LOOKUP },
-+		{ "xdp_md", "xdp_buff", BPF_PROG_TYPE_XDP, BPF_XDP },
-+		/* tracing types with no expected attach type */
-+		{ "bpf_user_pt_regs_t", "pt_regs", BPF_PROG_TYPE_KPROBE },
-+		{ "bpf_perf_event_data", "bpf_perf_event_data_kern", BPF_PROG_TYPE_PERF_EVENT },
-+		{ "bpf_raw_tracepoint_args", NULL, BPF_PROG_TYPE_RAW_TRACEPOINT },
-+	};
-+	int i;
-+
-+	if (!ctx_name)
-+		return -EINVAL;
-+
-+	for (i = 0; i < ARRAY_SIZE(ctx_map); i++) {
-+		if (strcmp(ctx_map[i].uapi_name, ctx_name) == 0 ||
-+		    (!ctx_map[i].kern_name || strcmp(ctx_map[i].kern_name, ctx_name) == 0)) {
-+			*prog_type = ctx_map[i].prog_type;
-+			*attach_type = ctx_map[i].attach_type;
-+			return 0;
-+		}
-+	}
-+
-+	return -ESRCH;
-+}
-+
-+static void fixup_obj(struct bpf_object *obj, struct bpf_program *prog, const char *filename)
- {
- 	struct bpf_map *map;
- 
-@@ -798,18 +851,75 @@ static void fixup_obj(struct bpf_object *obj)
- 				bpf_map__set_max_entries(map, 1);
- 		}
- 	}
-+
-+	/* SEC(freplace) programs can't be loaded with veristat as is,
-+	 * but we can try guessing their target program's expected type by
-+	 * looking at the type of program's first argument and substituting
-+	 * corresponding program type
-+	 */
-+	if (bpf_program__type(prog) == BPF_PROG_TYPE_EXT) {
-+		const struct btf *btf = bpf_object__btf(obj);
-+		const char *prog_name = bpf_program__name(prog);
-+		enum bpf_prog_type prog_type;
-+		enum bpf_attach_type attach_type;
-+		const struct btf_type *t;
-+		const char *ctx_name;
-+		int id;
-+
-+		if (!btf)
-+			goto skip_freplace_fixup;
-+
-+		id = btf__find_by_name_kind(btf, prog_name, BTF_KIND_FUNC);
-+		t = btf__type_by_id(btf, id);
-+		t = btf__type_by_id(btf, t->type);
-+		if (!btf_is_func_proto(t) || btf_vlen(t) != 1)
-+			goto skip_freplace_fixup;
-+
-+		/* context argument is a pointer to a struct/typedef */
-+		t = btf__type_by_id(btf, btf_params(t)[0].type);
-+		while (t && btf_is_mod(t))
-+			t = btf__type_by_id(btf, t->type);
-+		if (!t || !btf_is_ptr(t))
-+			goto skip_freplace_fixup;
-+		t = btf__type_by_id(btf, t->type);
-+		while (t && btf_is_mod(t))
-+			t = btf__type_by_id(btf, t->type);
-+		if (!t)
-+			goto skip_freplace_fixup;
-+
-+		ctx_name = btf__name_by_offset(btf, t->name_off);
-+
-+		if (guess_prog_type_by_ctx_name(ctx_name, &prog_type, &attach_type) == 0) {
-+			bpf_program__set_type(prog, prog_type);
-+			bpf_program__set_expected_attach_type(prog, attach_type);
-+
-+			if (!env.quiet) {
-+				printf("Using guessed program type '%s' for %s/%s...\n",
-+					libbpf_bpf_prog_type_str(prog_type),
-+					filename, prog_name);
-+			}
-+		} else {
-+			if (!env.quiet) {
-+				printf("Failed to guess program type for freplace program with context type name '%s' for %s/%s. Consider using canonical type names to help veristat...\n",
-+					ctx_name, filename, prog_name);
-+			}
-+		}
-+	}
-+skip_freplace_fixup:
-+	return;
- }
- 
- static int process_prog(const char *filename, struct bpf_object *obj, struct bpf_program *prog)
- {
- 	const char *prog_name = bpf_program__name(prog);
-+	const char *base_filename = basename(filename);
- 	size_t buf_sz = sizeof(verif_log_buf);
- 	char *buf = verif_log_buf;
- 	struct verif_stats *stats;
- 	int err = 0;
- 	void *tmp;
- 
--	if (!should_process_file_prog(basename(filename), bpf_program__name(prog))) {
-+	if (!should_process_file_prog(base_filename, bpf_program__name(prog))) {
- 		env.progs_skipped++;
- 		return 0;
- 	}
-@@ -835,12 +945,12 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
- 	verif_log_buf[0] = '\0';
- 
- 	/* increase chances of successful BPF object loading */
--	fixup_obj(obj);
-+	fixup_obj(obj, prog, base_filename);
- 
- 	err = bpf_object__load(obj);
- 	env.progs_processed++;
- 
--	stats->file_name = strdup(basename(filename));
-+	stats->file_name = strdup(base_filename);
- 	stats->prog_name = strdup(bpf_program__name(prog));
- 	stats->stats[VERDICT] = err == 0; /* 1 - success, 0 - failure */
- 	parse_verif_log(buf, buf_sz, stats);
--- 
-2.34.1
+> 
+>    LUis
+> 
 
