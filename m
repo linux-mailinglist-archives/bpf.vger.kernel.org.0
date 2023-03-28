@@ -2,67 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F0C6CBCB8
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 12:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463B56CBE1A
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 13:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbjC1Kmy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 06:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
+        id S229611AbjC1LvN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 07:51:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbjC1Kmw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 06:42:52 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B256184
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 03:42:39 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id h8so47683858ede.8
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 03:42:38 -0700 (PDT)
+        with ESMTP id S230103AbjC1LvM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 07:51:12 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710AB4EE7;
+        Tue, 28 Mar 2023 04:51:11 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id a5so11577747qto.6;
+        Tue, 28 Mar 2023 04:51:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1680000157;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=E67QkEzCNAq47Ml/E7tI+pCsv4ObEgVJOjmaRjPADiI=;
-        b=xu3NcJLUNpgyUQzXHi9taAmPBo+H2aI8gVmQcEP6QKGkQ2HEcsIpdQgBGQdRnk5MyW
-         +yjq7R2GknuVu0oJMRlNhePhb+gFnPnTrct3ffhofz4eoGYO6BxGweiRFsRRgsEA6LJG
-         7cBBwm5WDP4yfeKayokKtl86BSMy+gGPB+/zI=
+        d=gmail.com; s=20210112; t=1680004270;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AvPaHNstAk8NaFn8ceUI/B1bRd8Qv6rcPFoP0UGHZwI=;
+        b=pcB77RCIWcFCOE6akpAKpuY61NVXIQmVKAKxfSX1VrNHmWGrTIc77qxqx7ZgfA1cX4
+         jlwqAa637cQD1+3iBhqEuZYAn1MfETL5CpT0glZRPXxmHWdhXHPG0Hg1J+UckBWqbGvl
+         cGZNHou8zEs4HLZAxS1Sugzw7g8qIvHU/D/Wwfpqw1QqlZMnFuvNLKW71ezAUR6RNY5d
+         P7la5f9FkmyoYMliy11r6p8eb2it1zyfI13+mEtC2MQZSlaqs3yDdATh82HqTw9OO3I/
+         /ufYaxWcwJ4Z/zkFEaCpd7AIYARMRtr4L1ljtdLyDcZTavRKAFB9JTn+owQ17itcAn29
+         vcUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680000157;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E67QkEzCNAq47Ml/E7tI+pCsv4ObEgVJOjmaRjPADiI=;
-        b=HJrbDfqv6tfH46OnUeYwJSvoYE/+unvO8guse5U5Fl7Dr47pqbQ6j8ZmLIiDOdJ843
-         WHrbsMfr9byCGRzw6XtEIrzwUFVr25E6jsPDrYaiWxaY08RbZQHPs5Lx4eB3eJg3bdYc
-         kdsmJJZbsK5qEvvBQ+VHrlKbFtnN6Ay53PaVApStwu5rmLFlmlQqUOjRnyvgsCIq2k/f
-         Xrr0+JjgBHpswYm/SF/BzIYlI2/CI7v+0cs1KaWD/VNdHl+L5RRtcGKMOdzmqav3eyhU
-         cbXve7nxUHVcnGe4rXl2udbjwhnpHpChnF4eBxuHrmU5lmTRqFHaK3f8dQf9aBCf3LmA
-         l+8w==
-X-Gm-Message-State: AAQBX9csQB7Fawf/wyO+2Mk7e8IqmIaGiQ7ij2GGM29aMzuz0rwstY0s
-        4W+dqwQkHSm64cnk7tVA59Ac4Q==
-X-Google-Smtp-Source: AKy350YBl5etg5/17gje+/DGV9caWxDJRdWRcFTJjazHs+7WSosS/63vwpHi+89IBEuVaAHIRRdcmA==
-X-Received: by 2002:aa7:c2c8:0:b0:501:cde5:4cc9 with SMTP id m8-20020aa7c2c8000000b00501cde54cc9mr14389480edp.39.1680000157593;
-        Tue, 28 Mar 2023 03:42:37 -0700 (PDT)
-Received: from cloudflare.com (79.184.147.137.ipv4.supernova.orange.pl. [79.184.147.137])
-        by smtp.gmail.com with ESMTPSA id v30-20020a50a45e000000b005021d17d896sm6266731edb.21.2023.03.28.03.42.36
+        d=1e100.net; s=20210112; t=1680004270;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AvPaHNstAk8NaFn8ceUI/B1bRd8Qv6rcPFoP0UGHZwI=;
+        b=5ro1EyzDdPWg7Tjdof9zI2xFWi8DAB56V+T30ZxEHPj9UxoMNWzIaUcdhnLK64GFvw
+         ht55VkGC3rekWKuOGS6t4llG4NW2akTTezYplHFvjJKmpYD2anCTckquSzt7mC/LpKYa
+         KqXTOwGbzm3yjV6PBNeQCQCqthaZ+XKpIpsjJjGEZYsGkRnkZfTiG3649Mkk6Af6+Yoi
+         dbav9PGURn8Inz1tOkn84whqLKtlH/KQ3YY9a/nD+uiuIZSNLgSa3oduoMESJBO1dJaS
+         ejM2eSD6yDQY6pA3j0QhTawotexOI8cpiLjNkp9muHCAi0UDyGzcWYnFJQtRt1uU1VUt
+         VHFQ==
+X-Gm-Message-State: AO0yUKXzYVrXQ10vzJ3/aFsGybpyDIyiSvwTMy2jy1tB6hEhr3C7E5q7
+        GNwyIJVBG6gpVgq7yf4fUjw=
+X-Google-Smtp-Source: AK7set91A88WfhhIENa0IRxAejver5WHDU0AoBZOdceCvBfnc7XQK2w1E9mICtZcdvLEcxactGYtfw==
+X-Received: by 2002:a05:622a:170b:b0:3e3:7e24:a35a with SMTP id h11-20020a05622a170b00b003e37e24a35amr24949264qtk.9.1680004270484;
+        Tue, 28 Mar 2023 04:51:10 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:5:5c17:5400:4ff:fe5e:f4cc])
+        by smtp.gmail.com with ESMTPSA id m15-20020ac8688f000000b003e4e9aba4b3sm1352734qtq.73.2023.03.28.04.51.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Mar 2023 03:42:37 -0700 (PDT)
-References: <20230327175446.98151-1-john.fastabend@gmail.com>
- <20230327175446.98151-2-john.fastabend@gmail.com>
-User-agent: mu4e 1.6.10; emacs 28.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     cong.wang@bytedance.com, daniel@iogearbox.net, lmb@isovalent.com,
-        edumazet@google.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, will@isovalent.com
-Subject: Re: [PATCH bpf v2 01/12] bpf: sockmap, pass skb ownership through
- read_skb
-Date:   Tue, 28 Mar 2023 12:42:14 +0200
-In-reply-to: <20230327175446.98151-2-john.fastabend@gmail.com>
-Message-ID: <87y1nh5f8k.fsf@cloudflare.com>
+        Tue, 28 Mar 2023 04:51:10 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Subject: [RFC PATCH net-next] bpf, net: support redirecting to ifb with bpf
+Date:   Tue, 28 Mar 2023 11:51:05 +0000
+Message-Id: <20230328115105.13553-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,68 +72,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 27, 2023 at 10:54 AM -07, John Fastabend wrote:
-> The read_skb hook calls consume_skb() now, but this means that if the
-> recv_actor program wants to use the skb it needs to inc the ref cnt
-> so that the consume_skb() doesn't kfree the sk_buff.
->
-> This is problematic because in some error cases under memory pressure
-> we may need to linearize the sk_buff from sk_psock_skb_ingress_enqueue().
-> Then we get this,
->
->  skb_linearize()
->    __pskb_pull_tail()
->      pskb_expand_head()
->        BUG_ON(skb_shared(skb))
->
-> Because we incremented users refcnt from sk_psock_verdict_recv() we
-> hit the bug on with refcnt > 1 and trip it.
->
-> To fix lets simply pass ownership of the sk_buff through the skb_read
-> call. Then we can drop the consume from read_skb handlers and assume
-> the verdict recv does any required kfree.
->
-> Bug found while testing in our CI which runs in VMs that hit memory
-> constraints rather regularly. William tested TCP read_skb handlers.
->
-> [  106.536188] ------------[ cut here ]------------
-> [  106.536197] kernel BUG at net/core/skbuff.c:1693!
-> [  106.536479] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-> [  106.536726] CPU: 3 PID: 1495 Comm: curl Not tainted 5.19.0-rc5 #1
-> [  106.537023] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ArchLinux 1.16.0-1 04/01/2014
-> [  106.537467] RIP: 0010:pskb_expand_head+0x269/0x330
-> [  106.538585] RSP: 0018:ffffc90000138b68 EFLAGS: 00010202
-> [  106.538839] RAX: 000000000000003f RBX: ffff8881048940e8 RCX: 0000000000000a20
-> [  106.539186] RDX: 0000000000000002 RSI: 0000000000000000 RDI: ffff8881048940e8
-> [  106.539529] RBP: ffffc90000138be8 R08: 00000000e161fd1a R09: 0000000000000000
-> [  106.539877] R10: 0000000000000018 R11: 0000000000000000 R12: ffff8881048940e8
-> [  106.540222] R13: 0000000000000003 R14: 0000000000000000 R15: ffff8881048940e8
-> [  106.540568] FS:  00007f277dde9f00(0000) GS:ffff88813bd80000(0000) knlGS:0000000000000000
-> [  106.540954] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  106.541227] CR2: 00007f277eeede64 CR3: 000000000ad3e000 CR4: 00000000000006e0
-> [  106.541569] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [  106.541915] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [  106.542255] Call Trace:
-> [  106.542383]  <IRQ>
-> [  106.542487]  __pskb_pull_tail+0x4b/0x3e0
-> [  106.542681]  skb_ensure_writable+0x85/0xa0
-> [  106.542882]  sk_skb_pull_data+0x18/0x20
-> [  106.543084]  bpf_prog_b517a65a242018b0_bpf_skskb_http_verdict+0x3a9/0x4aa9
-> [  106.543536]  ? migrate_disable+0x66/0x80
-> [  106.543871]  sk_psock_verdict_recv+0xe2/0x310
-> [  106.544258]  ? sk_psock_write_space+0x1f0/0x1f0
-> [  106.544561]  tcp_read_skb+0x7b/0x120
-> [  106.544740]  tcp_data_queue+0x904/0xee0
-> [  106.544931]  tcp_rcv_established+0x212/0x7c0
-> [  106.545142]  tcp_v4_do_rcv+0x174/0x2a0
-> [  106.545326]  tcp_v4_rcv+0xe70/0xf60
-> [  106.545500]  ip_protocol_deliver_rcu+0x48/0x290
-> [  106.545744]  ip_local_deliver_finish+0xa7/0x150
->
-> Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
-> Reported-by: William Findlay <will@isovalent.com>
-> Tested-by: William Findlay <will@isovalent.com>
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
+In our container environment, we are using EDT-bpf to limit the egress
+bandwidth. EDT-bpf can be used to limit egress only, but can't be used
+to limit ingress. Some of our users also want to limit the ingress
+bandwidth. But after applying EDT-bpf, which is based on clsact qdisc,
+it is impossible to limit the ingress bandwidth currently, due to some
+reasons,
+1). We can't add ingress qdisc
+The ingress qdisc can't coexist with clsact qdisc as clsact has both
+ingress and egress handler. So our traditional method to limit ingress
+bandwidth can't work any more.
+2). We can't redirect ingress packet to ifb with bpf
+By trying to analyze if it is possible to redirect the ingress packet to
+ifb with a bpf program, we find that the ifb device is not supported by
+bpf redirect yet.
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+This patch tries to resolve it by supporting redirecting to ifb with bpf
+program.
+
+There're some other users who want to resolve this issue as well. By
+searching it in the lore, it shows that Jesper[1] and Tonghao[2] used to
+propose similar solution. This proposal is almost the same with Jesper's
+proposal, so I add Jesper's Co-developed-by here.
+
+[1]. https://lore.kernel.org/bpf/160650040800.2890576.9811290366501747109.stgit@firesoul/
+[2]. https://lore.kernel.org/netdev/20220324135653.2189-1-xiangxia.m.yue@gmail.com/
+
+Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+---
+ net/core/dev.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 18dc8d7..3e63f6b 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3956,6 +3956,7 @@ int dev_loopback_xmit(struct net *net, struct sock *sk, struct sk_buff *skb)
+ 		return NULL;
+ 	case TC_ACT_REDIRECT:
+ 		/* No need to push/pop skb's mac_header here on egress! */
++		skb_set_redirected(skb, skb->tc_at_ingress);
+ 		skb_do_redirect(skb);
+ 		*ret = NET_XMIT_SUCCESS;
+ 		return NULL;
+@@ -5138,6 +5139,7 @@ static __latent_entropy void net_tx_action(struct softirq_action *h)
+ 		 * redirecting to another netdev
+ 		 */
+ 		__skb_push(skb, skb->mac_len);
++		skb_set_redirected(skb, skb->tc_at_ingress);
+ 		if (skb_do_redirect(skb) == -EAGAIN) {
+ 			__skb_pull(skb, skb->mac_len);
+ 			*another = true;
+-- 
+1.8.3.1
+
