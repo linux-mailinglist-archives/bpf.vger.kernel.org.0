@@ -2,189 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 115CC6CC61E
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 17:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF30A6CC638
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 17:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbjC1PXb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 11:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49712 "EHLO
+        id S233979AbjC1P2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 11:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233291AbjC1PXK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 11:23:10 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0BEEB64
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 08:21:25 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id f22so7879757plr.0
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 08:21:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680016855;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bjGeHIEYAS2j3Kyp1JMk2wgI4QYPfJYf+eTOeffiKhI=;
-        b=JsDqxB4dkdIf1M9J/YxU/Sk3bKTVWndFz+S3iHOqoajn6KArNxk3UBvpGRZNnMSRJQ
-         3LbLtzOMjulgxyczmutElUbHJAWlWqltbmAwcgqSJ+HQyDMUcpkSylcZcLk3L2IiQdkw
-         gyQSlcgT4ryP+s6fuMyVnrWuOJY7JhsO5C8hRVQxpDULnDFs61O+Veu4tfNAYj/13+/f
-         yp0onsF9dXZNS47NBGHk1yywNWP2NqFaPzaNl+EihQHh31nvfHn+VqTKGIWgaux59LqG
-         XrPve05jBkJXWsYkg0Jp9mneKC6OxiNEEm7H5Zf8S6Z2soAOvVkhEiAC1V571vdfxpWa
-         HHzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680016855;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bjGeHIEYAS2j3Kyp1JMk2wgI4QYPfJYf+eTOeffiKhI=;
-        b=ynGhAAcNStAWLc3KRQea0z0OKb802rpiUE3mF2FmIIJS0oWYWhD6Ptz6OrT4YrJVCO
-         j+J3ZFyp1jzoNh5ubqWQ96a/NvfCUnimD0Gizf0c7mOt7GjFDFB+S53TKlM6XjPkkTI3
-         oHujeAn0vEZWcDo32ijNKkihyQ8Cf/YUfZvuCUkk4BaDJGyoVaAcTKrljvjHRiaPr3W3
-         WJAAda2LfpXM2zkDY20UdFLN0P0UaLGr66gjgWyfPbI0jxnVnnOlO1z0+5xbckM8gWIJ
-         Sp+I4zTUSgcLE8aMZSkUcNL6i2S2GJr9svlyVIKp8HZwL5E1IOobwnL4T7rGpMkizuvv
-         U2AA==
-X-Gm-Message-State: AAQBX9fVBYDSSU+ZVMYAdD6Z7ir/Fet7jASVfO35rgguOyqQHngIdDxZ
-        BKcGjVJlqP4DtDZH9jRyPgnSjA==
-X-Google-Smtp-Source: AKy350ZUDZ08a0UTQT6fl8Jrkp11MmPAJ3/ZFDqa04LDmA5xfwdLEaBSooyijFHAx/lnIgCooiuPTQ==
-X-Received: by 2002:a17:90b:1e43:b0:23f:8752:98be with SMTP id pi3-20020a17090b1e4300b0023f875298bemr18730611pjb.4.1680016854720;
-        Tue, 28 Mar 2023 08:20:54 -0700 (PDT)
-Received: from ?IPv6:2601:647:4900:1fbb:74d3:2bc6:6239:344c? ([2601:647:4900:1fbb:74d3:2bc6:6239:344c])
-        by smtp.gmail.com with ESMTPSA id iq10-20020a17090afb4a00b0023b29b464f9sm9436682pjb.27.2023.03.28.08.20.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Mar 2023 08:20:54 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v4 bpf-next 3/4] bpf,tcp: Avoid taking fast sock lock in
- iterator
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <ZB4Z7cnF+RDMaKvW@google.com>
-Date:   Tue, 28 Mar 2023 08:20:52 -0700
-Cc:     bpf@vger.kernel.org, kafai@fb.com,
-        Eric Dumazet <edumazet@google.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9A24468B-2F5C-4556-B413-4974409C4590@isovalent.com>
-References: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
- <20230323200633.3175753-4-aditi.ghag@isovalent.com>
- <ZB4Z7cnF+RDMaKvW@google.com>
-To:     Stanislav Fomichev <sdf@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        with ESMTP id S233930AbjC1P2C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 11:28:02 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4301911648;
+        Tue, 28 Mar 2023 08:26:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EB88EB81D75;
+        Tue, 28 Mar 2023 15:26:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5856BC433EF;
+        Tue, 28 Mar 2023 15:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680017195;
+        bh=oXvvDCyaunVTVYn7N2Vixkpy19o10GalO85q5YlGpwk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KMcLmdsqpyFR3YaYMhyh7x4sYdD8VcqUa1lFO6Bap34Np6a1F/kdv7YTCVOyNk2si
+         tVjb3AFZyNbnc5nnfu7poj/Ll8Qt6ry2DR/G+Zg5bWRP2EVkvWhBpSMkbl4OQ4jPns
+         5xDQrNJ2FaThJlrqAOBxCyX9FzHV2LV3pGieJTk/9LvOQa8BkjG0Aodi8osulqges1
+         LnSrlkIznkW+M6B28PNxRr/Yt6JGeyMfEironS+N/gusrigTpK1fZeWDx9DAPlCP26
+         5admiFFvg3fzeUJQP3Bo/IWQcTe1/lv9htKKmt3Cpv1rtg8Y/Fq1Bd1qli+84HSLIV
+         CVqbd7MpLTJTQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 710F44052D; Tue, 28 Mar 2023 12:26:32 -0300 (-03)
+Date:   Tue, 28 Mar 2023 12:26:32 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, jose.marchesi@oracle.com, david.faust@oracle.com,
+        alan.maguire@oracle.com
+Subject: Re: [PATCH dwarves v2 1/5] fprintf: Correct names for types with
+ btf_type_tag attribute
+Message-ID: <ZCMHKFdmjVpOSNsJ@kernel.org>
+References: <20230314230417.1507266-1-eddyz87@gmail.com>
+ <20230314230417.1507266-2-eddyz87@gmail.com>
+ <ZCLy0hjyR3KuYy3e@kernel.org>
+ <f4803213ab27c65517eea19a12be78dd4ec9f6b0.camel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f4803213ab27c65517eea19a12be78dd4ec9f6b0.camel@gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Em Tue, Mar 28, 2023 at 05:08:48PM +0300, Eduard Zingerman escreveu:
+> On Tue, 2023-03-28 at 10:59 -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Mar 15, 2023 at 01:04:13AM +0200, Eduard Zingerman escreveu:
+> > > The following example contains a structure field annotated with
+> > > btf_type_tag attribute:
+> > > 
+> > >     #define __tag1 __attribute__((btf_type_tag("tag1")))
+> > > 
+> > >     struct st {
+> > >       int __tag1 *a;
+> > >     } g;
+> > > 
+> > > It is not printed correctly by `pahole -F dwarf` command:
+> > > 
+> > >     $ clang -g -c test.c -o test.o
+> > >     pahole -F dwarf test.o
+> > >     struct st {
+> > >     	tag1 *                     a;                    /*     0     8 */
+> > >     	...
+> > >     };
+> > > 
+> > > Note the type for variable `a`: `tag1` is printed instead of `int`.
+> > > This commit teaches `type__fprintf()` and `__tag_name()` logic to skip
+> > > `DW_TAG_LLVM_annotation` objects that are used to encode type tags.
+> > 
+> > I noticed this:
+> > 
+> > ⬢[acme@toolbox pahole]$ pahole --sort -F btf ../vmlinux-clang-pahole-1.25+rust > /tmp/clang
+> > ⬢[acme@toolbox pahole]$ pahole --sort -F btf ../vmlinux-gcc-pahole-1.25+rust > /tmp/gcc
+> > 
+> > 
+> > --- /tmp/gcc    2023-03-28 10:55:37.075999474 -0300
+> > +++ /tmp/clang  2023-03-28 10:55:53.324436319 -0300
+> > @@ -70,21 +70,21 @@
+> >  struct Qdisc {
+> >         int                        (*enqueue)(struct sk_buff *, struct Qdisc *, struct sk_buff * *); /*     0     8 */
+> >         struct sk_buff *           (*dequeue)(struct Qdisc *); /*     8     8 */
+> >         unsigned int               flags;                /*    16     4 */
+> >         u32                        limit;                /*    20     4 */
+> >         const struct Qdisc_ops  *  ops;                  /*    24     8 */
+> > -       struct qdisc_size_table *  stab;                 /*    32     8 */
+> > +       struct qdisc_size_table    stab;                 /*    32     8 */
+> >         struct hlist_node          hash;                 /*    40    16 */
+> >         u32                        handle;               /*    56     4 */
+> >         u32                        parent;               /*    60     4 */
+> >         /* --- cacheline 1 boundary (64 bytes) --- */
+> >         struct netdev_queue *      dev_queue;            /*    64     8 */
+> > -       struct net_rate_estimator * rate_est;            /*    72     8 */
+> > -       struct gnet_stats_basic_sync * cpu_bstats;       /*    80     8 */
+> > -       struct gnet_stats_queue *  cpu_qstats;           /*    88     8 */
+> > +       struct net_rate_estimator  rate_est;             /*    72     8 */
+> > +       struct gnet_stats_basic_sync cpu_bstats;         /*    80     8 */
+> > +       struct gnet_stats_queue    cpu_qstats;           /*    88     8 */
+> >         int                        pad;                  /*    96     4 */
+> >         refcount_t                 refcnt;               /*   100     4 */
+> > 
+> >         /* XXX 24 bytes hole, try to pack */
+> > 
+> >         /* --- cacheline 2 boundary (128 bytes) --- */
+> > 
+> > And:
+> > 
+> > struct Qdisc {
+> >         int                     (*enqueue)(struct sk_buff *skb,
+> >                                            struct Qdisc *sch,
+> >                                            struct sk_buff **to_free);
+> >         struct sk_buff *        (*dequeue)(struct Qdisc *sch);
+> >         unsigned int            flags;
+> > #define TCQ_F_BUILTIN           1
+> > #define TCQ_F_INGRESS           2
+> > #define TCQ_F_CAN_BYPASS        4
+> > #define TCQ_F_MQROOT            8
+> > #define TCQ_F_ONETXQUEUE        0x10 /* dequeue_skb() can assume all skbs are for
+> >                                       * q->dev_queue : It can test
+> >                                       * netif_xmit_frozen_or_stopped() before
+> >                                       * dequeueing next packet.
+> >                                       * Its true for MQ/MQPRIO slaves, or non
+> >                                       * multiqueue device.
+> >                                       */
+> > #define TCQ_F_WARN_NONWC        (1 << 16)
+> > #define TCQ_F_CPUSTATS          0x20 /* run using percpu statistics */
+> > #define TCQ_F_NOPARENT          0x40 /* root of its hierarchy :
+> >                                       * qdisc_tree_decrease_qlen() should stop.
+> >                                       */
+> > #define TCQ_F_INVISIBLE         0x80 /* invisible by default in dump */
+> > #define TCQ_F_NOLOCK            0x100 /* qdisc does not require locking */
+> > #define TCQ_F_OFFLOADED         0x200 /* qdisc is offloaded to HW */
+> >         u32                     limit;
+> >         const struct Qdisc_ops  *ops;
+> >         struct qdisc_size_table __rcu *stab;
+> >         struct hlist_node       hash;
+> >         u32                     handle;
+> >         u32                     parent;
+> > 
+> >         struct netdev_queue     *dev_queue;
+> > 
+> >         struct net_rate_estimator __rcu *rate_est;
+> >         struct gnet_stats_basic_sync __percpu *cpu_bstats;
+> >         struct gnet_stats_queue __percpu *cpu_qstats;
+> >         int                     pad;
+> >         refcount_t              refcnt;
+> > 
+> > 
+> > I'll try to fix now.
+> 
+> Ouch. The fields are annotated with type tags, which are ignored by gcc.
+> If this is not urgent I can debug it either later today or tomorrow.
 
+Sure, but look:
 
-> On Mar 24, 2023, at 2:45 PM, Stanislav Fomichev <sdf@google.com> =
-wrote:
->=20
-> On 03/23, Aditi Ghag wrote:
->> Previously, BPF TCP iterator was acquiring fast version of sock lock =
-that
->> disables the BH. This introduced a circular dependency with code =
-paths that
->> later acquire sockets hash table bucket lock.
->> Replace the fast version of sock lock with slow that faciliates BPF
->> programs executed from the iterator to destroy TCP listening sockets
->> using the bpf_sock_destroy kfunc.
->=20
->> Here is a stack trace that motivated this change:
->=20
->> ```
->> 1) sock_lock with BH disabled + bucket lock
->=20
->> lock_acquire+0xcd/0x330
->> _raw_spin_lock_bh+0x38/0x50
->> inet_unhash+0x96/0xd0
->> tcp_set_state+0x6a/0x210
->> tcp_abort+0x12b/0x230
->> bpf_prog_f4110fb1100e26b5_iter_tcp6_server+0xa3/0xaa
->> bpf_iter_run_prog+0x1ff/0x340
->> bpf_iter_tcp_seq_show+0xca/0x190
->> bpf_seq_read+0x177/0x450
->> vfs_read+0xc6/0x300
->> ksys_read+0x69/0xf0
->> do_syscall_64+0x3c/0x90
->> entry_SYSCALL_64_after_hwframe+0x72/0xdc
->=20
->> 2) sock lock with BH enable
->=20
->> [    1.499968]   lock_acquire+0xcd/0x330
->> [    1.500316]   _raw_spin_lock+0x33/0x40
->> [    1.500670]   sk_clone_lock+0x146/0x520
->> [    1.501030]   inet_csk_clone_lock+0x1b/0x110
->> [    1.501433]   tcp_create_openreq_child+0x22/0x3f0
->> [    1.501873]   tcp_v6_syn_recv_sock+0x96/0x940
->> [    1.502284]   tcp_check_req+0x137/0x660
->> [    1.502646]   tcp_v6_rcv+0xa63/0xe80
->> [    1.502994]   ip6_protocol_deliver_rcu+0x78/0x590
->> [    1.503434]   ip6_input_finish+0x72/0x140
->> [    1.503818]   __netif_receive_skb_one_core+0x63/0xa0
->> [    1.504281]   process_backlog+0x79/0x260
->> [    1.504668]   __napi_poll.constprop.0+0x27/0x170
->> [    1.505104]   net_rx_action+0x14a/0x2a0
->> [    1.505469]   __do_softirq+0x165/0x510
->> [    1.505842]   do_softirq+0xcd/0x100
->> [    1.506172]   __local_bh_enable_ip+0xcc/0xf0
->> [    1.506588]   ip6_finish_output2+0x2a8/0xb00
->> [    1.506988]   ip6_finish_output+0x274/0x510
->> [    1.507377]   ip6_xmit+0x319/0x9b0
->> [    1.507726]   inet6_csk_xmit+0x12b/0x2b0
->> [    1.508096]   __tcp_transmit_skb+0x549/0xc40
->> [    1.508498]   tcp_rcv_state_process+0x362/0x1180
->=20
->> ```
->=20
->> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
->=20
-> Acked-by: Stanislav Fomichev <sdf@google.com>
->=20
-> Don't need fixes because it doesn't trigger without your new
-> bpf_sock_destroy?
+> > -       struct qdisc_size_table *  stab;                 /*    32     8 */
+> > +       struct qdisc_size_table    stab;                 /*    32     8 */
 
-That's right.
+Its the DW_TAG_pointer_type that is getting lost somehow:
 
->=20
->=20
->> ---
->>  net/ipv4/tcp_ipv4.c | 5 ++---
->>  1 file changed, 2 insertions(+), 3 deletions(-)
->=20
->> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
->> index ea370afa70ed..f2d370a9450f 100644
->> --- a/net/ipv4/tcp_ipv4.c
->> +++ b/net/ipv4/tcp_ipv4.c
->> @@ -2962,7 +2962,6 @@ static int bpf_iter_tcp_seq_show(struct =
-seq_file *seq, void *v)
->>  	struct bpf_iter_meta meta;
->>  	struct bpf_prog *prog;
->>  	struct sock *sk =3D v;
->> -	bool slow;
->>  	uid_t uid;
->>  	int ret;
->=20
->> @@ -2970,7 +2969,7 @@ static int bpf_iter_tcp_seq_show(struct =
-seq_file *seq, void *v)
->>  		return 0;
->=20
->>  	if (sk_fullsock(sk))
->> -		slow =3D lock_sock_fast(sk);
->> +		lock_sock(sk);
->=20
->>  	if (unlikely(sk_unhashed(sk))) {
->>  		ret =3D SEQ_SKIP;
->> @@ -2994,7 +2993,7 @@ static int bpf_iter_tcp_seq_show(struct =
-seq_file *seq, void *v)
->=20
->>  unlock:
->>  	if (sk_fullsock(sk))
->> -		unlock_sock_fast(sk, slow);
->> +		release_sock(sk);
->>  	return ret;
->=20
->>  }
->> --
->> 2.34.1
+ <1><b0af32>: Abbrev Number: 81 (DW_TAG_structure_type)
+    <b0af33>   DW_AT_name        : (indirect string, offset: 0xe825): Qdisc
+    <b0af37>   DW_AT_byte_size   : 384
+    <b0af39>   DW_AT_decl_file   : 223
+    <b0af3a>   DW_AT_decl_line   : 72
 
+<SNIP>
+
+ <2><b0af77>: Abbrev Number: 65 (DW_TAG_member)
+    <b0af78>   DW_AT_name        : (indirect string, offset: 0x4745ff): stab
+    <b0af7c>   DW_AT_type        : <0xb0b76b>
+    <b0af80>   DW_AT_decl_file   : 223
+    <b0af81>   DW_AT_decl_line   : 99
+    <b0af82>   DW_AT_data_member_location: 32
+
+<SNIP>
+
+<1><b0b76b>: Abbrev Number: 61 (DW_TAG_pointer_type)
+    <b0b76c>   DW_AT_type        : <0xb0b77a>
+ <2><b0b770>: Abbrev Number: 62 (User TAG value: 0x6000)
+    <b0b771>   DW_AT_name        : (indirect string, offset: 0x378): btf_type_tag
+    <b0b775>   DW_AT_const_value : (indirect string, offset: 0x6e93): rcu
+ <2><b0b779>: Abbrev Number: 0
+ <1><b0b77a>: Abbrev Number: 69 (DW_TAG_structure_type)
+    <b0b77b>   DW_AT_name        : (indirect string, offset: 0x6e5ed): qdisc_size_table
+    <b0b77f>   DW_AT_byte_size   : 64
+    <b0b780>   DW_AT_decl_file   : 223
+    <b0b781>   DW_AT_decl_line   : 56
+
+ 
+So it's all there in the DWARF info:
+
+   b0af77 has type 0xb0b76b which is a DW_TAG_pointer_type that has type
+   0xb0b77a, that is DW_TAG_structure_type.
+
+Now lets see how this was encoded into BTF:
+
+[4725] STRUCT 'Qdisc' size=384 vlen=28
+<SNIP>
+        'stab' type_id=4790 bits_offset=256
+<SNIP>
+[4790] PTR '(anon)' type_id=4789
+<SNIP>
+[4789] TYPE_TAG 'rcu' type_id=4791
+<SNIP>
+[4791] STRUCT 'qdisc_size_table' size=64 vlen=5
+        'rcu' type_id=320 bits_offset=0
+        'list' type_id=87 bits_offset=128
+        'szopts' type_id=4792 bits_offset=256
+        'refcnt' type_id=16 bits_offset=448
+        'data' type_id=4659 bits_offset=480
+
+So it all seems ok, we should keep all the info and teach fprintf to
+handle TYPE_TAG.
+
+Which you tried, but somehow the '*' link is missing.
+
+- Arnaldo
