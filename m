@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFAC6CB6CD
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 08:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919666CB6D7
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 08:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbjC1GRM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 02:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
+        id S232521AbjC1GR2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 02:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232446AbjC1GRF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 02:17:05 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BB83C1D
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 23:16:49 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id o10-20020a17090ac08a00b0023f3196fa6fso2973000pjs.2
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 23:16:49 -0700 (PDT)
+        with ESMTP id S232526AbjC1GRI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 02:17:08 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1C33C2B
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 23:16:51 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id t12-20020a65608c000000b005091ec4f2d4so3007672pgu.20
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 23:16:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679984209;
+        d=google.com; s=20210112; t=1679984211;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+vNiceMoZ2PdzrNG/xVeRzEo7O+ovCZNHcQMp7VClk4=;
-        b=FtVms547YGVdf9XAqjguoo0WST2Bomcq4pMeCW3qlg0ksZV5swPoVz0GmrxFu8vfrh
-         HBzgJptVGGKy7geKpBPvC2PsWo0HmjT2F27i9dbdVA6zCF4EYemeZRNrh89DbSPqLObX
-         h82tbSvZ/WCeLjLtii1Meb+k3BLVneGl+TdsHqmfTXT/vAFZIC+/S3Aw9k3ElSrpUy7X
-         9xgxQRUTlE19S9rQfATi59HRnf65TEpEpviTmJbLID2U9/qvSayVfcGFQGEl03zvUEu5
-         uDhGnK3XWBy1kJngfOB04Odcd1UeEO5WA33WjKyVDhleLQy8k50zMQSY0RXklX82o1Jn
-         CmFQ==
+        bh=IdlOdGF0YCCYf+h2+Wx+Pr2285UVOLm52gCW9Jb/OEo=;
+        b=dxPzci0vIh1xyJxlLBjWkEhAjm9YbPSdsUTO5u3B5j0mjvT8KDBeosrn5UiPm3Ksna
+         ECFLKks3+i/JLwnVARkeiq9XCne6PDhOU+plEpcmqroZ0FIo5b3stpDp4azRz7RDEUXr
+         fg0RX+xHWkbr/97SE9yMggMcSWIL9SDqbA2byVm27sTtHVM/RcaUTUFVwNm3hT6OyTW8
+         KGm1B3oJJOu2mLGqIrSENlsxO5AJatCTwMfnNnO9IVILzvLEURQL9lNGe4Pge9n4mWvC
+         01ODxHoNCu+DMqEmep2UjWrEts9KjVkOV7sWpi8aLYcEgH/6hlGK54jM+qhbvTAI+Y6D
+         5qIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679984209;
+        d=1e100.net; s=20210112; t=1679984211;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+vNiceMoZ2PdzrNG/xVeRzEo7O+ovCZNHcQMp7VClk4=;
-        b=GfYV3R9xnh9l3z8WuqrnaUjQDVQvTGC8yegUinzI2k2dt/0hoU/nNlcN3G+3YEQ2L2
-         BCzZw8C6oAjMzs4vBD0erkiuE0IPq3NQwwPrbpuyYE47G7ZY+cLywGN35SHCcBPEmmRD
-         IBRQ+rAIYY+JQda+e0d0KJhAgVQ/Dmah7Rgs5rHJY02EyOAfvHbCC+33SBHQWrMTh9Bk
-         2aRkgxN2Fnqo8p2XYLaudfHsmZ+3tq8iARQEjPP+SfE/sE/Od6qT63RFTeE6rDpH0/9X
-         c8c2jQRxyMBBozIP8e1lbu9QFLthrIusq56ZXO/AHULshke5Y93/SUzQ6nrprrrjna9A
-         nYoA==
-X-Gm-Message-State: AAQBX9fTkqNeGNosuDYTkQ2nXTEM2c/d27SCyUelSt8ruVJrLZk2Vw8w
-        rmtr3kFFRu6naqSZSgsNbL7GkeNXSueyCZiP
-X-Google-Smtp-Source: AKy350az2ZQxKTBjGyFUiNza+YDGvWpTHjavWcHAugAuQk4rmOEm1wQoqfQkURL2u01jT9Cm3t+xr5muiADnxiOT
+        bh=IdlOdGF0YCCYf+h2+Wx+Pr2285UVOLm52gCW9Jb/OEo=;
+        b=uDQ9XRsMUTGgMDvFVTpWR9V3ccDqXYLU4jvP7/5+itjevGZeoKk1YvP0NDxFNki7oJ
+         u9wjoW0Ui+m/Fi5m5n5jrzttpYoL0bRaKavOnf+bkUbH+iXNF6m1Pt7NhG0O65jPSKpj
+         ya8i1wlRppvmrHo7l75GQuS49gvSnzm3TlfwXXCL4ljH7aDSKlJON2doCCc6qIx5Chuv
+         RvFAI1hizRRxVpvkHONK7VgO2POqX4qcCKjklGqL0eqRdFD3gb98gq9iUROKm7OeGQvm
+         u2NtNDGQT4P7YEPoTgL49UlaVHCoXETlZ4pyOFAJOva9Ax5Egd+MXauoIBraRjrCdMLw
+         uXBA==
+X-Gm-Message-State: AAQBX9cE4AO25Nu1paoVJ82VbJYvCbdvyU7vtPJecWX7l+i775nLerKX
+        ACtZL7Pi0nfK1EN2QRPwywxk2uGj8s4N/3/t
+X-Google-Smtp-Source: AKy350ZiMUeqTdYquDazwFQP3GVswROLJyitcbpH2br9NmUFXZZud9qfmMVPueO4yaGFykMkMD2PV8f94RgXrI2o
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a05:6a00:1a46:b0:625:c7de:48c1 with
- SMTP id h6-20020a056a001a4600b00625c7de48c1mr7269994pfv.4.1679984209151; Mon,
- 27 Mar 2023 23:16:49 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 06:16:33 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a17:90a:74c9:b0:23f:1105:4295 with SMTP
+ id p9-20020a17090a74c900b0023f11054295mr4298168pjl.7.1679984210825; Mon, 27
+ Mar 2023 23:16:50 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 06:16:34 +0000
 In-Reply-To: <20230328061638.203420-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20230328061638.203420-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-Message-ID: <20230328061638.203420-5-yosryahmed@google.com>
-Subject: [PATCH v1 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing outside
- task context
+Message-ID: <20230328061638.203420-6-yosryahmed@google.com>
+Subject: [PATCH v1 5/9] memcg: replace stats_flush_lock with an atomic
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
@@ -79,29 +78,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-rstat flushing is too expensive to perform in irq context.
-The previous patch removed the only context that may invoke an rstat
-flush from irq context, add a WARN_ON_ONCE() to detect future
-violations, or those that we are not aware of.
+As Johannes notes in [1], stats_flush_lock is currently used to:
+(a) Protect updated to stats_flush_threshold.
+(b) Protect updates to flush_next_time.
+(c) Serializes calls to cgroup_rstat_flush() based on those ratelimits.
+
+However:
+
+1. stats_flush_threshold is already an atomic
+
+2. flush_next_time is not atomic. The writer is locked, but the reader
+   is lockless. If the reader races with a flush, you could see this:
+
+                                        if (time_after(jiffies, flush_next_time))
+        spin_trylock()
+        flush_next_time = now + delay
+        flush()
+        spin_unlock()
+                                        spin_trylock()
+                                        flush_next_time = now + delay
+                                        flush()
+                                        spin_unlock()
+
+   which means we already can get flushes at a higher frequency than
+   FLUSH_TIME during races. But it isn't really a problem.
+
+   The reader could also see garbled partial updates, so it needs at
+   least READ_ONCE and WRITE_ONCE protection.
+
+3. Serializing cgroup_rstat_flush() calls against the ratelimit
+   factors is currently broken because of the race in 2. But the race
+   is actually harmless, all we might get is the occasional earlier
+   flush. If there is no delta, the flush won't do much. And if there
+   is, the flush is justified.
+
+So the lock can be removed all together. However, the lock also served
+the purpose of preventing a thundering herd problem for concurrent
+flushers, see [2]. Use an atomic instead to serve the purpose of
+unifying concurrent flushers.
+
+[1]https://lore.kernel.org/lkml/20230323172732.GE739026@cmpxchg.org/
+[2]https://lore.kernel.org/lkml/20210716212137.1391164-2-shakeelb@google.com/
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- kernel/cgroup/rstat.c | 2 ++
- 1 file changed, 2 insertions(+)
+ mm/memcontrol.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index d3252b0416b6..c2571939139f 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -176,6 +176,8 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ff39f78f962e..64ff33e02c96 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -585,8 +585,8 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+  */
+ static void flush_memcg_stats_dwork(struct work_struct *w);
+ static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
+-static DEFINE_SPINLOCK(stats_flush_lock);
+ static DEFINE_PER_CPU(unsigned int, stats_updates);
++static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
+ static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
+ static u64 flush_next_time;
+ 
+@@ -636,15 +636,18 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ 
+ static void __mem_cgroup_flush_stats(void)
  {
- 	int cpu;
+-	unsigned long flag;
+-
+-	if (!spin_trylock_irqsave(&stats_flush_lock, flag))
++	/*
++	 * We always flush the entire tree, so concurrent flushers can just
++	 * skip. This avoids a thundering herd problem on the rstat global lock
++	 * from memcg flushers (e.g. reclaim, refault, etc).
++	 */
++	if (atomic_xchg(&stats_flush_ongoing, 1))
+ 		return;
  
-+	/* rstat flushing is too expensive for irq context */
-+	WARN_ON_ONCE(!in_task());
- 	lockdep_assert_held(&cgroup_rstat_lock);
+-	flush_next_time = jiffies_64 + 2*FLUSH_TIME;
++	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+ 	cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
+ 	atomic_set(&stats_flush_threshold, 0);
+-	spin_unlock_irqrestore(&stats_flush_lock, flag);
++	atomic_set(&stats_flush_ongoing, 0);
+ }
  
- 	for_each_possible_cpu(cpu) {
+ void mem_cgroup_flush_stats(void)
+@@ -655,7 +658,7 @@ void mem_cgroup_flush_stats(void)
+ 
+ void mem_cgroup_flush_stats_ratelimited(void)
+ {
+-	if (time_after64(jiffies_64, flush_next_time))
++	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
+ 		mem_cgroup_flush_stats();
+ }
+ 
 -- 
 2.40.0.348.gf938b09366-goog
 
