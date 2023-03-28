@@ -2,176 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1806CCAF1
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 21:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CDF6CCB50
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 22:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjC1Twv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 15:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35880 "EHLO
+        id S229804AbjC1UQ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 16:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjC1Twu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 15:52:50 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0E81BEF;
-        Tue, 28 Mar 2023 12:52:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229869AbjC1UQr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 16:16:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8C42D5A
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 13:15:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680034559;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YigewdPBeYqOsJxoAFsWFxZgQfPRMsLTddttN90KAIE=;
+        b=Y9B32Wh+TyOoRWHwDgVCBNrW8rOmqgp1f+SgV83DwcK3w4af+MWEF399Tn8CfS8mtPm47+
+        Zm/4I4JD5EH3MaiMUBmlOzeCy8FtTMHBTkI5v+Fh80zx/+MuKsisQPbroUW8KV8IEyJyHB
+        hMBXIpEkJREwFCGGcLxwLnEO2Kpbqxg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-592-OoImuCilPmWJnwZP-4tI8Q-1; Tue, 28 Mar 2023 16:15:55 -0400
+X-MC-Unique: OoImuCilPmWJnwZP-4tI8Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F12A1B81DF4;
-        Tue, 28 Mar 2023 19:52:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E59DC433EF;
-        Tue, 28 Mar 2023 19:52:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680033166;
-        bh=3tCsQlZNxjpj6kRrRVaA2+D40G/G8omyRmcPC6eNHcs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S8c83d6zKDAseuUsmPwdWmhujxfPqFtrEXrW653rlLKUrkNLZqsnZfSf2rOmri2lF
-         eblSB48mq0XMv5XNxHk/TSur5NY0H94GtwFqxAhZ6B6xyq1OXzxumv5C57bm/PmnUr
-         LGRSRFfPPY+g8EPNJLtDGbY3jQipSeiMah3zR0CxiBcHrfFH/IaWe3ezeGGsKGsqVL
-         HhFiGKP/Y3OixbpkKK47mEFSa82RCJrr2ju3/yTReI8G6JPU/aJSZhLacNNDrOUcVP
-         nJtW4msn5ahphR3iPD5l/7lxjqeME9MNH7aqUZAfUpdDk4aJTni2/afC89IWzIX0WV
-         aJGQepl2T6dUQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C8F6F4052D; Tue, 28 Mar 2023 16:52:43 -0300 (-03)
-Date:   Tue, 28 Mar 2023 16:52:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <bpf@vger.kernel.org>
-Subject: Re: [PATCH] arm64: remove special treatment for the link order of
- head.o
-Message-ID: <ZCNFi65T4anhk6hH@kernel.org>
-References: <20221012233500.156764-1-masahiroy@kernel.org>
- <ZBovCrMXJk7NPISp@aurel32.net>
- <CAMj1kXHwtb9aY+vd4e69Wg47GpL0sT=dDaCUA1sF7=edzc+Qeg@mail.gmail.com>
- <ZBzAp457rrO52FPy@aurel32.net>
- <CAMj1kXHvfHwQFX1SKbUvpHWOr3+i7Tp5Hod-_jZE4hDHZmmRZg@mail.gmail.com>
- <CAK7LNASdsWMP2jud4niOkrR5+a2jG-Vfo0XEa63bh3L3W6_t0Q@mail.gmail.com>
- <CAK7LNASUbyDV-kMi3fuihUdfnhtzHnk9wosQ0w-fuamDcT2ZBg@mail.gmail.com>
- <2d8f0889da0e3dfa9c1c8fe9da301d54636a2e6d.camel@gmail.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 858DB101A553;
+        Tue, 28 Mar 2023 20:15:54 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.45.242.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E8DD440D6;
+        Tue, 28 Mar 2023 20:15:54 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 21EE330736C72;
+        Tue, 28 Mar 2023 22:15:53 +0200 (CEST)
+Subject: [PATCH bpf RFC 0/4] XDP-hints: API change for RX-hash kfunc
+ bpf_xdp_metadata_rx_hash
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Stanislav Fomichev <sdf@google.com>, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
+        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net
+Date:   Tue, 28 Mar 2023 22:15:53 +0200
+Message-ID: <168003451121.3027256.13000250073816770554.stgit@firesoul>
+User-Agent: StGit/1.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d8f0889da0e3dfa9c1c8fe9da301d54636a2e6d.camel@gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Mar 28, 2023 at 01:33:29PM +0300, Eduard Zingerman escreveu:
-> On Sat, 2023-03-25 at 20:42 +0900, Masahiro Yamada wrote:
-> [...]
-> > > Strange.
-> > > 
-> > > I used the .config file Aurelien provided, but
-> > > I still cannot reproduce this issue.
-> > > 
-> > > The vmlinux size is small as-is in the current mainline.
-> > > 
-> > > [mainline]
-> > > 
-> > > masahiro@zoe:~/ref/linux(master)$ git log --oneline -1
-> > > 65aca32efdcb (HEAD -> master, origin/master, origin/HEAD) Merge tag
-> > > 'mm-hotfixes-stable-2023-03-24-17-09' of
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-> > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-size  vmlinux
-> > >    text    data     bss     dec     hex filename
-> > > 24561282 8186912 622032 33370226 1fd3072 vmlinux
-> > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-readelf -S
-> > > vmlinux | grep -A1 BTF
-> > >   [15] .BTF              PROGBITS         ffff8000091c0708  011d0708
-> > >        000000000048209c  0000000000000000   A       0     0     1
-> > >   [16] .BTF_ids          PROGBITS         ffff8000096427a4  016527a4
-> > >        0000000000000a1c  0000000000000000   A       0     0     1
-> > > 
-> > > [mainline + revert 994b7ac]
-> > > 
-> > > masahiro@zoe:~/ref/linux2(testing)$ git log --oneline -2
-> > > 856c80dd789c (HEAD -> testing) Revert "arm64: remove special treatment
-> > > for the link order of head.o"
-> > > 65aca32efdcb (origin/master, origin/HEAD, master) Merge tag
-> > > 'mm-hotfixes-stable-2023-03-24-17-09' of
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-> > > masahiro@zoe:~/ref/linux2(testing)$ aarch64-linux-gnu-size  vmlinux
-> > >    text    data     bss     dec     hex filename
-> > > 24561329 8186912 622032 33370273 1fd30a1 vmlinux
-> > > masahiro@zoe:~/ref/linux2(testing)$ aarch64-linux-gnu-readelf -S
-> > > vmlinux | grep -A1 BTF
-> > >   [15] .BTF              PROGBITS         ffff8000091c0708  011d0708
-> > >        00000000004820cb  0000000000000000   A       0     0     1
-> > >   [16] .BTF_ids          PROGBITS         ffff8000096427d4  016527d4
-> > >        0000000000000a1c  0000000000000000   A       0     0     1
-> > > 
-> > > 
-> > > 
-> > > I still do not know what affects reproducibility.
-> > > (compiler version, pahole version, etc. ?)
-> > > 
-> > > 
-> > > 
-> > > 
-> > > Aurelien used GCC 12 + binutils 2.40, but
-> > > my toolchain is a bit older.
-> > > 
-> > > FWIW, I tested this on Ubuntu 22.04LTS.
-> > > 
-> > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-gcc --version
-> > > aarch64-linux-gnu-gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0
-> > > Copyright (C) 2021 Free Software Foundation, Inc.
-> > > This is free software; see the source for copying conditions.  There is NO
-> > > warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> > > 
-> > > masahiro@zoe:~/ref/linux(master)$ pahole --version
-> > > v1.22
-> > > 
-> > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-as --version
-> > > GNU assembler (GNU Binutils for Ubuntu) 2.38
-> > > Copyright (C) 2022 Free Software Foundation, Inc.
-> > > This program is free software; you may redistribute it under the terms of
-> > > the GNU General Public License version 3 or later.
-> > > This program has absolutely no warranty.
-> > > This assembler was configured for a target of `aarch64-linux-gnu'.
-> > 
-> > I did the same things in Deiban sid
-> > in order to use newer versions of tools.
-> 
-> 
-> Hi Masahiro,
-> 
-> An upgrade from gcc 11 to gcc 12, BTF section increase and a number of
-> duplicate IDs reported by resolve_btfids matches the description of
-> the following thread:
-> 
-> https://lore.kernel.org/bpf/Y%2FP1yxAuV6Wj3A0K@google.com/
-> 
-> The issue is caused by change in GNU assembler DWARF generation.
-> I've sent a patch to fix it a few weeks ago and it is merged in
-> dwarves master:
-> 
-> a9498899109d ("dwarf_loader: Fix for BTF id drift caused by adding unspecified types")
-> 
-> Could you please grab a fresh version of dwarves from:
-> 
-> git@github.com:acmel/dwarves.git
-> 
-> compile 'pahole' and try with?
+Notice targeted 6.3-rc kernel via bpf git tree.
 
-pahole 1.25 is long overdue, so let see if this got fixed with what is
-in master, please take a look, you can as well get it from:
+Current API for bpf_xdp_metadata_rx_hash() returns the raw RSS hash value,
+but doesn't provide information on the RSS hash type (part of 6.3-rc).
 
-git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+This patchset proposal is to use the return value from
+bpf_xdp_metadata_rx_hash() to provide the RSS hash type.
 
-- Arnald o
+---
+
+Jesper Dangaard Brouer (4):
+      xdp: rss hash types representation
+      igc: bpf_xdp_metadata_rx_hash return xdp rss hash type
+      veth: bpf_xdp_metadata_rx_hash return xdp rss hash type
+      mlx5: bpf_xdp_metadata_rx_hash return xdp rss hash type
+
+
+ drivers/net/ethernet/intel/igc/igc_main.c     | 22 ++++++-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 61 ++++++++++++++++++-
+ drivers/net/veth.c                            |  2 +-
+ include/linux/mlx5/device.h                   | 14 ++++-
+ include/net/xdp.h                             | 54 ++++++++++++++++
+ net/core/xdp.c                                |  4 +-
+ 6 files changed, 150 insertions(+), 7 deletions(-)
+
+--
+
