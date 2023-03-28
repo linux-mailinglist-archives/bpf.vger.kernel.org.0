@@ -2,98 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8246CC0B8
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 15:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74426CC126
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 15:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbjC1N02 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 09:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46634 "EHLO
+        id S232721AbjC1NkQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 09:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjC1N01 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 09:26:27 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188A57293
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 06:26:26 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id i6so15014943ybu.8
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 06:26:26 -0700 (PDT)
+        with ESMTP id S230263AbjC1NkP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 09:40:15 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E967DB3;
+        Tue, 28 Mar 2023 06:40:13 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id i5so50093496eda.0;
+        Tue, 28 Mar 2023 06:40:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680009985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8bJymL0yBKvMYTD1Xc/qu3GglkLI9FvB8Lv/yuqvRQc=;
-        b=eZy1jM+Kd53ZIzWNbOqgWbWL45Dr+Nw9ANo2PWtQbmVaWtrjCdrDAwPWv3yK9p7pwn
-         NdX2H4aYwg5QRk1CBz5Q+PDjxvTvxqOymyHBX8fhYiwV1krbMVJo3/thEa0eeD2ncqtr
-         11MW+NX2xIo4RJWivNGz5B/TSrAzZmnzZLla0MAE4rR5mfGrSLcqNM08TimNues3s+u/
-         7Y5UuSgD0RzJHWmkNAiahoW2q/TpdkuXvww90IJ4ZT0HDPDLUtzwosiL6k1Ay9MagttR
-         Xll6pq0j7ma1HAlACEp1cDHFcxilfs9tVtLUSpSaT3tswN2NAz96yvtBv6Q2jzszETWW
-         11rA==
+        d=gmail.com; s=20210112; t=1680010811;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JLvUIdsE77WPnmyAOUBKh7R4ujLXvQXFucKTylQ06w8=;
+        b=KPqtpDKbsQatpBrH7pMhXg/w9V2HPSO9K3/WuKavv9FXcYaV4VAS/7S7RyDs2x8L6o
+         tMvcmASclMixCnBPypIvXRrfzPGzcutZzjck2os1TFmPFhqMPhzWL4NDRH0y/cbrQOD6
+         Ksxg7zkEDnz0PZ5zGeamP6drEerVT6DNQNnREYpiE2mrR5flTX6ksm/CiZmYDOCoDPc4
+         n2jE1u6gdxfI8NTKMFTrOrxuy9JFI4Mkk2WQeEvMq53XzO1x0MclhaT+Qo4qpsj1zCq1
+         Go8SKJaaWPQoS756jYe5t+94Q5WguAnQznI9yaOnY0v65CnDigAQBhrxHyxCFkZrQfFI
+         L3uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680009985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8bJymL0yBKvMYTD1Xc/qu3GglkLI9FvB8Lv/yuqvRQc=;
-        b=EyYjBxE9yB/rBF/F0QAiDKZgLPoNEFP/yFVwI/IzEJVHf+LwYiSsSliDNAYJ4/I5Iy
-         e9wI3ThqpBVpNUeGPqboHLN+P7B7XDJI/uu3LsZFCNyokTCdGh+LgvU/RyPxWOyOH0nJ
-         W0DkMauSny2zfaX/7QkvMwJm/b/QeSvAI7PfXaLh490Cmps2Z8VvJxda59a9SP+1gbZO
-         dT6W2FAKZNkm49br6b/xV0uwl8EttrSzgfeCLm5dlMKzQ1o74vGLmkm6cEDQcWiMWAZq
-         llUEMmoIrtVRO4TE3FhWc6YIiBE5rajR95T1yxwxKLqQMmdDmeTUjNoTiR+w5uTLqc7K
-         afOQ==
-X-Gm-Message-State: AAQBX9fydzn7mPDdVFmoPbC4P1gB61QsOaQp3rbaYhTPKmcqKVVbqojN
-        +NzD6Cn4l9dnnVramwM/Vreffsi+D3ofEvcjxqBPSA==
-X-Google-Smtp-Source: AKy350Zja1hP9WxwT3nbR4kgm/32+esIcZm0ttA35DlxybRpCP5Bjc/9FU70PICjQ5T/32D5BoknkSe4x+2lmAwB5IY=
-X-Received: by 2002:a25:e054:0:b0:b6b:d3f3:45af with SMTP id
- x81-20020a25e054000000b00b6bd3f345afmr9852686ybg.1.1680009985214; Tue, 28 Mar
- 2023 06:26:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230328061638.203420-1-yosryahmed@google.com> <20230328061638.203420-4-yosryahmed@google.com>
-In-Reply-To: <20230328061638.203420-4-yosryahmed@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 28 Mar 2023 06:26:14 -0700
-Message-ID: <CALvZod6n64b80+ZPX13bBiJWagcMJBstAcLauQoiT=UMdx0QGw@mail.gmail.com>
-Subject: Re: [PATCH v1 3/9] memcg: do not flush stats in irq context
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
+        d=1e100.net; s=20210112; t=1680010811;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JLvUIdsE77WPnmyAOUBKh7R4ujLXvQXFucKTylQ06w8=;
+        b=aNh5PhHeMDqFsmv11D/194ddUmATMExce+Mx9LOvHZkCHOGJ5/1V3v0VKoRMblktmr
+         enDRzmp1FeMGiTMZiq5jKYandx/O5VJAQyIl97zwGMTco4MhOzyUDmRme3uPhiKh0gg7
+         SA45tLvhhX1EUlogolqDw3bd+ZUN8qof1R5XXs5Tevrwb9040on7Lct9vB4RJGJUFTVb
+         XkNXzL0HI1gcpCBn433Z1qoEQG8yQzjdVMIQJPR7kbULs47HfNjf1mbQi16TV+jgLAGb
+         apX0ZVbX/PEiFwnIFjmou9IXlaUPzjtEV4xcrjbEhvpMALQfIutx7Hn53hmCO74mGrcj
+         9BpQ==
+X-Gm-Message-State: AO0yUKXmccEkPeUHz/MUJpg36crV1/ouGbEaI04g4j8oeDjz7tLkzQ/Q
+        Sv5buqTACbxybCaef4+S2ek=
+X-Google-Smtp-Source: AK7set/6dlovLUOqBBDlkUHpAp11a1m9flDKxP9+DbhBERu/m/neoxFwZuGc02xyl4u5msLMbifqwg==
+X-Received: by 2002:a05:6402:944:b0:4ad:f811:e267 with SMTP id h4-20020a056402094400b004adf811e267mr21822273edz.12.1680010811476;
+        Tue, 28 Mar 2023 06:40:11 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id m1-20020a50c181000000b005024faae65esm941393edf.10.2023.03.28.06.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Mar 2023 06:40:10 -0700 (PDT)
+Message-ID: <7a27dae4640f3e84507773f3763924c1d5d7244a.camel@gmail.com>
+Subject: Re: [PATCH dwarves v2 1/5] fprintf: Correct names for types with
+ btf_type_tag attribute
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, jose.marchesi@oracle.com, david.faust@oracle.com,
+        alan.maguire@oracle.com
+Date:   Tue, 28 Mar 2023 16:40:08 +0300
+In-Reply-To: <ZCLgVrwpb3fhnnE7@kernel.org>
+References: <20230314230417.1507266-1-eddyz87@gmail.com>
+         <20230314230417.1507266-2-eddyz87@gmail.com> <ZCGCBF5iYxCtBQKh@kernel.org>
+         <b89f55694845d9d8784fe02700f184ff1de83e2e.camel@gmail.com>
+         <ZCLgVrwpb3fhnnE7@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 27, 2023 at 11:16=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> Currently, the only context in which we can invoke an rstat flush from
-> irq context is through mem_cgroup_usage() on the root memcg when called
-> from memcg_check_events(). An rstat flush is an expensive operation that
-> should not be done in irq context, so do not flush stats and use the
-> stale stats in this case.
->
-> Arguably, usage threshold events are not reliable on the root memcg
-> anyway since its usage is ill-defined.
->
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Suggested-by: Shakeel Butt <shakeelb@google.com>
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+On Tue, 2023-03-28 at 09:40 -0300, Arnaldo Carvalho de Melo wrote:
+[...]
+> > Maybe put this patch-set on-hold until that is resolved?
+>=20
+> Ok, so I'll apply just the first two, to get btfdiff a down to those
+> zero sized arrays when processing clang generated DWARF for a recent
+> kernel, see below.
+>=20
+> Ok?
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+Sure, thank you!
+
+[...]
