@@ -2,180 +2,429 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D291D6CB51F
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 05:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C446CB521
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 05:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbjC1Dt5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Mar 2023 23:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
+        id S229610AbjC1Dv2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Mar 2023 23:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232263AbjC1Dt0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Mar 2023 23:49:26 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F9710F;
-        Mon, 27 Mar 2023 20:49:24 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id bz27so10765043qtb.1;
-        Mon, 27 Mar 2023 20:49:24 -0700 (PDT)
+        with ESMTP id S229527AbjC1Dv1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Mar 2023 23:51:27 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD1FDE
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 20:51:25 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id q27so7286291oiw.0
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 20:51:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679975363;
+        d=gmail.com; s=20210112; t=1679975484; x=1682567484;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HYdPeA+UWexFRE0OoJTlmAdbF4mqSQlbLyQM/knBsw8=;
-        b=WVKJYTG7vUfGNZTR4gZ+Fc33B8syBwIgaw/gdeXr2NDscAXo1jYEUnY9hTuGqN+L0N
-         0w8qcUzJdgTAbWWo4rbJQFUQRf2sgrGhy53BRLRowp7m8SFX6d4ezzanP5penKfTy3e/
-         uYFvaxKCkktmn9sgCkw3jE0fRIgDDEIEJrLhDwMKpfNh6kJQzqzrgRv3coLlVs2tgMyg
-         R06tIHHGMa0eqt7mMTviZKZI4s01g3GTfMVyBAA3E3aWGWaifKcTlcq1/7hg/R+Pt0/C
-         eSvx/A5QZknloRymoVkOiXiK1rHH+9oCOYs9v8qOzYWT0ilVZm9BRRK9Zq7VafpDzc7O
-         TXMg==
+        bh=KP4aDBVaEurwa7zB1mnYWNVHY7VQcr+WbJQXh8HfTXg=;
+        b=eRc9EeOxSxdQoToUZRHLYzp59dSb0zLytEUHQQF9TmeEhumhNeCNSTdzRxb7lvojGw
+         jRF4iPD7PQDcxweDlNVEDnom+EtvBpuKG/oHZrWotwp3PTTQLHXIN+c3m6Z8FNnMOKB5
+         Vmq5MP1s0x7pIplZPADZtljvnPK9Q4ddqgQnSQSkh0GdBxNvSeHxrwBQdlduoSd/99DX
+         D8Rx6pLvhzHap80XbHmdBBOdAITVoSZ6vMBiXR3QDHFIiCV6q71GBcRU4Bjl9EArAq80
+         iyhnPmpFHhKRjQOQYLDymTVs+Eroq0hTf7737DNWPF3pz6Holgvd2Ya2S7gIGGum2uR1
+         Z+rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679975363;
+        d=1e100.net; s=20210112; t=1679975484; x=1682567484;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HYdPeA+UWexFRE0OoJTlmAdbF4mqSQlbLyQM/knBsw8=;
-        b=wbdFpJLJIga5bg01GwDzb6/6RKIv9XYFHGrD69wdYOnXF2xx3qQra8ubuMykcoJXY7
-         oTaPnzWXDKTuvoKf4kR86OCN/H9faqis/F7dTMg6UjOaHFEVGZwTQkkMhL89j7/2UBbo
-         Fd/oPhqM0dTKdMyvUL9ZJXemFYdUq5Z5H8m2DpQuoKw9bqxrrE8AgBTm/FGNkix/2Ivq
-         75ki8ZRv7yRVOZC+1ZwEHc5tdZxxoTNBBMLGQZD/M8GKtXNjUU8uR3OhfAEqDA1I8frR
-         rPCWTdgVKNr4UjP/H+Rh8csf6DDEplHasydxRTjNaGqCPRwePCQ3VzlCwbQmj8v8mxmt
-         Tvbg==
-X-Gm-Message-State: AAQBX9eY4Mm6lwm7wr7gvK4hTfVGsmL7JLEqqLbCFdH+gbr53jIVVXtQ
-        P/YExL7okrDdw8WUTgfCZftJhMoKiyPuN5qGyaI=
-X-Google-Smtp-Source: AKy350Z8N2H7Lk5QLmiJpPqxdtoiygkMVT4197lBsUC4Nbfrb6+XzoPBPj441J+RcxRrodU7omqH8ze5x6cxc/Bzqw4=
-X-Received: by 2002:a05:622a:1998:b0:3e4:ed8e:6dd8 with SMTP id
- u24-20020a05622a199800b003e4ed8e6dd8mr1110161qtc.6.1679975363648; Mon, 27 Mar
- 2023 20:49:23 -0700 (PDT)
+        bh=KP4aDBVaEurwa7zB1mnYWNVHY7VQcr+WbJQXh8HfTXg=;
+        b=iz/VGPSt2hxO8PL9/7wJlMLJ/OSAF/ICprza9m6LgIaxqS3xZ4RkQFy85D7N4o6JmR
+         1XSbiaX0vc+/7tQtW51q8P0FWRL9bXS5Vvm2aTtnDdQmDCJC29x8p2M1d/VU9hmZU+3G
+         z1dKY3RC2BM4ADPTNvfZe1RpKvhUIi9XCp2QEArvbJAjluNnW1rQJB3bnlE1nB+9wulF
+         gEdFwEy2jmFgxvxMB58eSddwVQEI9RHHIXaXcKpeJcWekXTtEBuxwV2EXaHcGLrRn64J
+         8vkjLS5gfiTHgAXasABP/W3FtJaoX95AKf/QQSh4xA5ywW0c/DdTXJ0V8U1hxuv/QLHB
+         HTFA==
+X-Gm-Message-State: AAQBX9dP1x5mTLAgwSTJAfK39FC6kc302Clawj+H2ocH5/blMI+LVxxl
+        zkaFV1wFA3OftP4GlMuKI5CK/he5uScekB93m8I=
+X-Google-Smtp-Source: AKy350afjskApT40qEyTRF/b7ECNRFUER+rJ5qRqRbRzgrjKjtybAQvGuwThj08MAhhhXfgmpnLJEqJMQCUlirasS4o=
+X-Received: by 2002:a54:450a:0:b0:389:53dc:cdf2 with SMTP id
+ l10-20020a54450a000000b0038953dccdf2mr203238oil.4.1679975484498; Mon, 27 Mar
+ 2023 20:51:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <CALOAHbA-wRARTaKOrwqvf-rZF1BkNNuEGLgaysY7n6bAqmDRqg@mail.gmail.com>
- <877cv17wan.fsf@toke.dk>
-In-Reply-To: <877cv17wan.fsf@toke.dk>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 28 Mar 2023 11:48:47 +0800
-Message-ID: <CALOAHbAd4NHCa4gaSLejyM6c9RYn+TEG=mX+NVnhBYa7Rp97sg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 00/13] bpf: Introduce BPF namespace
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230322215246.1675516-1-martin.lau@linux.dev> <20230322215246.1675516-6-martin.lau@linux.dev>
+In-Reply-To: <20230322215246.1675516-6-martin.lau@linux.dev>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Mon, 27 Mar 2023 21:51:13 -0600
+Message-ID: <CADvTj4rP3kPODxARVTEs2HsNFOof-BZtr8OsEKdjgcGVOTqKaA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 5/5] selftests/bpf: Add bench for task storage creation
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com,
+        "Jose E. Marchesi" <jemarch@gnu.org>,
+        David Faust <david.faust@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 4:51=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@kernel.org> wrote:
+On Mon, Mar 27, 2023 at 9:42=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
 >
-> Yafang Shao <laoar.shao@gmail.com> writes:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
 >
-> > On Sun, Mar 26, 2023 at 6:49=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgense=
-n <toke@kernel.org> wrote:
-> >>
-> >> Yafang Shao <laoar.shao@gmail.com> writes:
-> >>
-> >> > Currently only CAP_SYS_ADMIN can iterate BPF object IDs and convert =
-IDs
-> >> > to FDs, that's intended for BPF's security model[1]. Not only does i=
-t
-> >> > prevent non-privilidged users from getting other users' bpf program,=
- but
-> >> > also it prevents the user from iterating his own bpf objects.
-> >> >
-> >> > In container environment, some users want to run bpf programs in the=
-ir
-> >> > containers. These users can run their bpf programs under CAP_BPF and
-> >> > some other specific CAPs, but they can't inspect their bpf programs =
-in a
-> >> > generic way. For example, the bpftool can't be used as it requires
-> >> > CAP_SYS_ADMIN. That is very inconvenient.
-> >> >
-> >> > Without CAP_SYS_ADMIN, the only way to get the information of a bpf =
-object
-> >> > which is not created by the process itself is with SCM_RIGHTS, that
-> >> > requires each processes which created bpf object has to implement a =
-unix
-> >> > domain socket to share the fd of a bpf object between different
-> >> > processes, that is really trivial and troublesome.
-> >> >
-> >> > Hence we need a better mechanism to get bpf object info without
-> >> > CAP_SYS_ADMIN.
-> >> >
-> >> > BPF namespace is introduced in this patchset with an attempt to remo=
-ve
-> >> > the CAP_SYS_ADMIN requirement. The user can create bpf map, prog and
-> >> > link in a specific bpf namespace, then these bpf objects will not be
-> >> > visible to the users in a different bpf namespace. But these bpf
-> >> > objects are visible to its parent bpf namespace, so the sys admin ca=
-n
-> >> > still iterate and inspect them.
-> >> >
-> >> > BPF namespace is similar to PID namespace, and the bpf objects are
-> >> > similar to tasks, so BPF namespace is very easy to understand. These
-> >> > patchset only implements BPF namespace for bpf map, prog and link. I=
-n the
-> >> > future we may extend it to other bpf objects like btf, bpffs and etc=
-.
-> >>
-> >> May? I think we should cover all of the existing BPF objects from the
-> >> beginning here, or we may miss important interactions that will
-> >> invalidate the whole idea.
-> >
-> > This patchset is intended to address iterating bpf IDs and converting
-> > IDs to FDs.  To be more specific, it covers
-> > BPF_{PROG,MAP,LINK}_GET_NEXT_ID and BPF_{PROG,MAP,LINK}_GET_FD_BY_ID.
-> > It should also include BPF_BTF_GET_NEXT_ID and BPF_BTF_GET_FD_BY_ID,
-> > but I don't implement it because I find we can do more wrt BTF, for
-> > example, if we can expose a small amount of BTFs in the vmlinux to
-> > non-root bpf namespace.
-> > But, yes, I should implement BTF ID in this patchset.
+> This patch adds a task storage benchmark to the existing
+> local-storage-create benchmark.
 >
-> Right, as you can see by my comment on that patch, not including the btf
-> id is a tad confusing, so yeah, better include that.
+> For task storage,
+> ./bench --storage-type task --batch-size 32:
+>    bpf_ma: Summary: creates   30.456 =C2=B1 0.507k/s ( 30.456k/prod), 6.0=
+8 kmallocs/create
+> no bpf_ma: Summary: creates   31.962 =C2=B1 0.486k/s ( 31.962k/prod), 6.1=
+3 kmallocs/create
 >
-> >> In particular, I'm a little worried about the
-> >> interaction between namespaces and bpffs; what happens if you're in a
-> >> bpf namespace and you try to read a BPF object from a bpffs that belon=
-gs
-> >> to a different namespace? Does the operation fail? Is the object hidde=
-n
-> >> entirely? Something else?
-> >>
-> >
-> > bpffs is a different topic and it can be implemented in later patchsets=
-.
-> > bpffs has its own specific problem even without the bpf namespace.
-> > 1. The user can always get the information of a bpf object through its
-> > corresponding pinned file.
-> > In our practice, different container users have different bpffs, and
-> > we allow the container user to bind-mount its bpffs only, so others'
-> > bpffs are invisible.
-> > To make it better with the bpf namespace, I think we can fail the
-> > operation if the pinned file doesn't belong to its bpf namespace. That
-> > said, we will add pinned bpf files into the bpf namespace in the next
-> > step.
-> >
-> > 2. The user can always iterate bpf objects through progs.debug and maps=
-.debug
-> > progs.debug and maps.debug are debugging purposes only. So I think we
-> > can handle it later.
+> ./bench --storage-type task --batch-size 64:
+>    bpf_ma: Summary: creates   30.197 =C2=B1 1.476k/s ( 30.197k/prod), 6.0=
+8 kmallocs/create
+> no bpf_ma: Summary: creates   31.103 =C2=B1 0.297k/s ( 31.103k/prod), 6.1=
+3 kmallocs/create
 >
-> Well, I disagree. Working out these issues with bpffs is an important
-> aspect to get a consistent API, and handwaving it away risks merging
-> something that will turn out to not be workable further down the line at
-> which point we can't change it.
+> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/bench.c           |   2 +
+>  .../bpf/benchs/bench_local_storage_create.c   | 151 ++++++++++++++++--
+>  .../bpf/progs/bench_local_storage_create.c    |  25 +++
+>  3 files changed, 164 insertions(+), 14 deletions(-)
 >
+> diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftest=
+s/bpf/bench.c
+> index dc3827c1f139..d9c080ac1796 100644
+> --- a/tools/testing/selftests/bpf/bench.c
+> +++ b/tools/testing/selftests/bpf/bench.c
+> @@ -278,6 +278,7 @@ extern struct argp bench_local_storage_argp;
+>  extern struct argp bench_local_storage_rcu_tasks_trace_argp;
+>  extern struct argp bench_strncmp_argp;
+>  extern struct argp bench_hashmap_lookup_argp;
+> +extern struct argp bench_local_storage_create_argp;
+>
+>  static const struct argp_child bench_parsers[] =3D {
+>         { &bench_ringbufs_argp, 0, "Ring buffers benchmark", 0 },
+> @@ -288,6 +289,7 @@ static const struct argp_child bench_parsers[] =3D {
+>         { &bench_local_storage_rcu_tasks_trace_argp, 0,
+>                 "local_storage RCU Tasks Trace slowdown benchmark", 0 },
+>         { &bench_hashmap_lookup_argp, 0, "Hashmap lookup benchmark", 0 },
+> +       { &bench_local_storage_create_argp, 0, "local-storage-create benc=
+hmark", 0 },
+>         {},
+>  };
+>
+> diff --git a/tools/testing/selftests/bpf/benchs/bench_local_storage_creat=
+e.c b/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
+> index f8b2a640ccbe..abb0321d4f34 100644
+> --- a/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
+> +++ b/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
+> @@ -3,19 +3,71 @@
+>
+>  #include <sys/types.h>
+>  #include <sys/socket.h>
+> +#include <pthread.h>
+> +#include <argp.h>
+>
+>  #include "bench.h"
+>  #include "bench_local_storage_create.skel.h"
+>
+> -#define BATCH_SZ 32
+> -
+>  struct thread {
+> -       int fds[BATCH_SZ];
+> +       int *fds;
+> +       pthread_t *pthds;
+> +       int *pthd_results;
+>  };
+>
+>  static struct bench_local_storage_create *skel;
+>  static struct thread *threads;
+> -static long socket_errs;
+> +static long create_owner_errs;
+> +static int storage_type =3D BPF_MAP_TYPE_SK_STORAGE;
+> +static int batch_sz =3D 32;
+> +
+> +enum {
+> +       ARG_BATCH_SZ =3D 9000,
+> +       ARG_STORAGE_TYPE =3D 9001,
+> +};
+> +
+> +static const struct argp_option opts[] =3D {
+> +       { "batch-size", ARG_BATCH_SZ, "BATCH_SIZE", 0,
+> +         "The number of storage creations in each batch" },
+> +       { "storage-type", ARG_STORAGE_TYPE, "STORAGE_TYPE", 0,
+> +         "The type of local storage to test (socket or task)" },
+> +       {},
+> +};
+> +
+> +static error_t parse_arg(int key, char *arg, struct argp_state *state)
+> +{
+> +       int ret;
+> +
+> +       switch (key) {
+> +       case ARG_BATCH_SZ:
+> +               ret =3D atoi(arg);
+> +               if (ret < 1) {
+> +                       fprintf(stderr, "invalid batch-size\n");
+> +                       argp_usage(state);
+> +               }
+> +               batch_sz =3D ret;
+> +               break;
+> +       case ARG_STORAGE_TYPE:
+> +               if (!strcmp(arg, "task")) {
+> +                       storage_type =3D BPF_MAP_TYPE_TASK_STORAGE;
+> +               } else if (!strcmp(arg, "socket")) {
+> +                       storage_type =3D BPF_MAP_TYPE_SK_STORAGE;
+> +               } else {
+> +                       fprintf(stderr, "invalid storage-type (socket or =
+task)\n");
+> +                       argp_usage(state);
+> +               }
+> +               break;
+> +       default:
+> +               return ARGP_ERR_UNKNOWN;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +const struct argp bench_local_storage_create_argp =3D {
+> +       .options =3D opts,
+> +       .parser =3D parse_arg,
+> +};
+>
+>  static void validate(void)
+>  {
+> @@ -28,6 +80,8 @@ static void validate(void)
+>
+>  static void setup(void)
+>  {
+> +       int i;
+> +
+>         skel =3D bench_local_storage_create__open_and_load();
+>         if (!skel) {
+>                 fprintf(stderr, "error loading skel\n");
+> @@ -35,10 +89,16 @@ static void setup(void)
+>         }
+>
+>         skel->bss->bench_pid =3D getpid();
+> -
+> -       if (!bpf_program__attach(skel->progs.socket_post_create)) {
+> -               fprintf(stderr, "Error attaching bpf program\n");
+> -               exit(1);
+> +       if (storage_type =3D=3D BPF_MAP_TYPE_SK_STORAGE) {
+> +               if (!bpf_program__attach(skel->progs.socket_post_create))=
+ {
+> +                       fprintf(stderr, "Error attaching bpf program\n");
+> +                       exit(1);
+> +               }
+> +       } else {
+> +               if (!bpf_program__attach(skel->progs.fork)) {
+> +                       fprintf(stderr, "Error attaching bpf program\n");
+> +                       exit(1);
+> +               }
+>         }
+>
+>         if (!bpf_program__attach(skel->progs.kmalloc)) {
+> @@ -52,6 +112,29 @@ static void setup(void)
+>                 fprintf(stderr, "cannot alloc thread_res\n");
+>                 exit(1);
+>         }
+> +
+> +       for (i =3D 0; i < env.producer_cnt; i++) {
+> +               struct thread *t =3D &threads[i];
+> +
+> +               if (storage_type =3D=3D BPF_MAP_TYPE_SK_STORAGE) {
+> +                       t->fds =3D malloc(batch_sz * sizeof(*t->fds));
+> +                       if (!t->fds) {
+> +                               fprintf(stderr, "cannot alloc t->fds\n");
+> +                               exit(1);
+> +                       }
+> +               } else {
+> +                       t->pthds =3D malloc(batch_sz * sizeof(*t->pthds))=
+;
+> +                       if (!t->pthds) {
+> +                               fprintf(stderr, "cannot alloc t->pthds\n"=
+);
+> +                               exit(1);
+> +                       }
+> +                       t->pthd_results =3D malloc(batch_sz * sizeof(*t->=
+pthd_results));
+> +                       if (!t->pthd_results) {
+> +                               fprintf(stderr, "cannot alloc t->pthd_res=
+ults\n");
+> +                               exit(1);
+> +                       }
+> +               }
+> +       }
+>  }
+>
+>  static void measure(struct bench_res *res)
+> @@ -65,20 +148,20 @@ static void *consumer(void *input)
+>         return NULL;
+>  }
+>
+> -static void *producer(void *input)
+> +static void *sk_producer(void *input)
+>  {
+>         struct thread *t =3D &threads[(long)(input)];
+>         int *fds =3D t->fds;
+>         int i;
+>
+>         while (true) {
+> -               for (i =3D 0; i < BATCH_SZ; i++) {
+> +               for (i =3D 0; i < batch_sz; i++) {
+>                         fds[i] =3D socket(AF_INET6, SOCK_DGRAM, 0);
+>                         if (fds[i] =3D=3D -1)
+> -                               atomic_inc(&socket_errs);
+> +                               atomic_inc(&create_owner_errs);
+>                 }
+>
+> -               for (i =3D 0; i < BATCH_SZ; i++) {
+> +               for (i =3D 0; i < batch_sz; i++) {
+>                         if (fds[i] !=3D -1)
+>                                 close(fds[i]);
+>                 }
+> @@ -87,6 +170,42 @@ static void *producer(void *input)
+>         return NULL;
+>  }
+>
+> +static void *thread_func(void *arg)
+> +{
+> +       return NULL;
+> +}
+> +
+> +static void *task_producer(void *input)
+> +{
+> +       struct thread *t =3D &threads[(long)(input)];
+> +       pthread_t *pthds =3D t->pthds;
+> +       int *pthd_results =3D t->pthd_results;
+> +       int i;
+> +
+> +       while (true) {
+> +               for (i =3D 0; i < batch_sz; i++) {
+> +                       pthd_results[i] =3D pthread_create(&pthds[i], NUL=
+L, thread_func, NULL);
+> +                       if (pthd_results[i])
+> +                               atomic_inc(&create_owner_errs);
+> +               }
+> +
+> +               for (i =3D 0; i < batch_sz; i++) {
+> +                       if (!pthd_results[i])
+> +                               pthread_join(pthds[i], NULL);;
+> +               }
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+> +static void *producer(void *input)
+> +{
+> +       if (storage_type =3D=3D BPF_MAP_TYPE_SK_STORAGE)
+> +               return sk_producer(input);
+> +       else
+> +               return task_producer(input);
+> +}
+> +
+>  static void report_progress(int iter, struct bench_res *res, long delta_=
+ns)
+>  {
+>         double creates_per_sec, kmallocs_per_create;
+> @@ -123,14 +242,18 @@ static void report_final(struct bench_res res[], in=
+t res_cnt)
+>         printf("Summary: creates %8.3lf \u00B1 %5.3lfk/s (%7.3lfk/prod), =
+",
+>                creates_mean, creates_stddev, creates_mean / env.producer_=
+cnt);
+>         printf("%4.2lf kmallocs/create\n", (double)total_kmallocs / total=
+_creates);
+> -       if (socket_errs || skel->bss->create_errs)
+> -               printf("socket() errors %ld create_errs %ld\n", socket_er=
+rs,
+> +       if (create_owner_errs || skel->bss->create_errs)
+> +               printf("%s() errors %ld create_errs %ld\n",
+> +                      storage_type =3D=3D BPF_MAP_TYPE_SK_STORAGE ?
+> +                      "socket" : "pthread_create",
+> +                      create_owner_errs,
+>                        skel->bss->create_errs);
+>  }
+>
+>  /* Benchmark performance of creating bpf local storage  */
+>  const struct bench bench_local_storage_create =3D {
+>         .name =3D "local-storage-create",
+> +       .argp =3D &bench_local_storage_create_argp,
+>         .validate =3D validate,
+>         .setup =3D setup,
+>         .producer_thread =3D producer,
+> diff --git a/tools/testing/selftests/bpf/progs/bench_local_storage_create=
+.c b/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
+> index 2814bab54d28..7c851c9d5e47 100644
+> --- a/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
+> +++ b/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
+> @@ -22,6 +22,13 @@ struct {
+>         __type(value, struct storage);
+>  } sk_storage_map SEC(".maps");
+>
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+> +       __uint(map_flags, BPF_F_NO_PREALLOC);
+> +       __type(key, int);
+> +       __type(value, struct storage);
+> +} task_storage_map SEC(".maps");
+> +
+>  SEC("raw_tp/kmalloc")
+>  int BPF_PROG(kmalloc, unsigned long call_site, const void *ptr,
+>              size_t bytes_req, size_t bytes_alloc, gfp_t gfp_flags,
+> @@ -32,6 +39,24 @@ int BPF_PROG(kmalloc, unsigned long call_site, const v=
+oid *ptr,
+>         return 0;
+>  }
+>
+> +SEC("tp_btf/sched_process_fork")
+> +int BPF_PROG(fork, struct task_struct *parent, struct task_struct *child=
+)
 
-Sure, I will include bpffs in the next version.
+Apparently fork is a built-in function in bpf-gcc:
 
---=20
-Regards
-Yafang
+In file included from progs/bench_local_storage_create.c:6:
+progs/bench_local_storage_create.c:43:14: error: conflicting types for
+built-in function 'fork'; expected 'int(void)'
+[-Werror=3Dbuiltin-declaration-mismatch]
+   43 | int BPF_PROG(fork, struct task_struct *parent, struct
+task_struct *child)
+      |              ^~~~
+
+I haven't been able to find this documented anywhere however.
+
+> +{
+> +       struct storage *stg;
+> +
+> +       if (parent->tgid !=3D bench_pid)
+> +               return 0;
+> +
+> +       stg =3D bpf_task_storage_get(&task_storage_map, child, NULL,
+> +                                  BPF_LOCAL_STORAGE_GET_F_CREATE);
+> +       if (stg)
+> +               __sync_fetch_and_add(&create_cnts, 1);
+> +       else
+> +               __sync_fetch_and_add(&create_errs, 1);
+> +
+> +       return 0;
+> +}
+> +
+>  SEC("lsm.s/socket_post_create")
+>  int BPF_PROG(socket_post_create, struct socket *sock, int family, int ty=
+pe,
+>              int protocol, int kern)
+> --
+> 2.34.1
+>
+>
