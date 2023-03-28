@@ -2,59 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 861CB6CCA57
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 20:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6576CCA59
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 21:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbjC1S55 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 14:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        id S229479AbjC1TAk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 15:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjC1S54 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 14:57:56 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9C7A2
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 11:57:55 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id q88so9855895qvq.13
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 11:57:55 -0700 (PDT)
+        with ESMTP id S229544AbjC1TAj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 15:00:39 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820A82721
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 12:00:37 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id i5so54014113eda.0
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 12:00:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680029874;
+        d=google.com; s=20210112; t=1680030036;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=13zTQ3Cr/anSDqz1yarZAy/6uVf71AcQ6m3G4N+b2UI=;
-        b=pYNbvcYNQZrEwPedM0SUYUMeQ3VBmF0yORVFbeRWvSSuADLj7PLRe3MTjgJiI9l6hX
-         rEeAcFT7CMrd/cfpFSxAFSN+QirTz6JdTpr8d2MUVRDhowPwvlezADyf3Gc6nNV6p3lg
-         +BUL7W9o1BYKD9ppqjOIwozgk5Z2bPBbRxpz2QmZxv9MF8t0D5hBNPbyRMRhRdLzf93L
-         iKKKW3TSOjiHK3ghNQMWCdtYMvE+jlrRw4VxxymCNE/ZVqIOkiOo9QEea98AF1nh0Psx
-         edQHUJYRJtsZ82gG59FXukIoDN8zHfYKgvIGBZI6UobJj7m05kOgw7Lm+16DX8BPqG+y
-         h1lg==
+        bh=VaFE8MJ/rJnWu49G6qaf7Zeu9SjJjHyr+HaKIIGZlo8=;
+        b=hGNPwQWTEYe3CZmGYHi60X2aSfRWtVK8WiJ7nu3mjdJk4YmjuiqYe9pQ+CDJlPYyxd
+         /pi9trbtJtSOm7MifwcGnSBImrwX+6Z42snV0nbBlJ7UXJ/eKh48Yn/EV7NYVDSmmbPt
+         Rb0l9k4E3FCIRsq0+yQqNxV2ey483qI2f6DnbBWaNsDKB3buuC+B9cupFif5N8kLGalN
+         EqIH5K8IIPJWWoiCFHfQlnBM7LhKzgagHTbCa9LC7C/ObuzCHw9amKjqLxPdo/JKx3RO
+         c+XsEE64L2GpM8WO4QZD+clco6JbOEINCGSlyDLrWKVTxZp91kvGAVcL2J04SbpNs5mz
+         w6JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680029874;
+        d=1e100.net; s=20210112; t=1680030036;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=13zTQ3Cr/anSDqz1yarZAy/6uVf71AcQ6m3G4N+b2UI=;
-        b=sCvJQSfXTzv/fJJa7Lnovm3JpCumWCVqlGwZN3Hhck6EllUL2qLA6iYSIgUGahD+qA
-         bKYxbMz3yucn5zk2UVXXewMM4lGQW9aaCItI0A3UK1WAYo4Xf7BqvAQ7JOZdEPAx60MC
-         z1NAOicIdEzAYdLtEU8A6Ou2MVtNiERXAsVt/m+oIYCnLb9jOglHLGmUqOzMrVclkH3E
-         ylKRh5hm9tE3yp1NXjbOSc8yZNgTl7jSVghhuO8NvuaVfPsMSrxr3V7zid77uSgFXUdY
-         +plLd4Y/AzyALwurlFFRDrI2D992BMeMr8eb3ljo685z1K0gcWz2KxlD/qQPIOyMYF9v
-         ScnQ==
-X-Gm-Message-State: AAQBX9fIVjt6MxKbcMJe3udKAY7o8B4QTHGMeurc1JSQHjPu2m52ZQRQ
-        dy/7IRXv3A36zBVaCaH/i1twVSmgokYzqSMJgJz++9DMuiHFMYRCMufExw==
-X-Google-Smtp-Source: AKy350aCx5BHA9UDzXeGhHnSqbOkKx+i4E2oohGx8eb3Co0SWEAeK7ItsVrqMT1VZdL8SSj1bLkse/EHg3Qzz1PvBiQ=
-X-Received: by 2002:ad4:4d4e:0:b0:56e:9f09:ee58 with SMTP id
- m14-20020ad44d4e000000b0056e9f09ee58mr3248264qvm.8.1680029874187; Tue, 28 Mar
- 2023 11:57:54 -0700 (PDT)
+        bh=VaFE8MJ/rJnWu49G6qaf7Zeu9SjJjHyr+HaKIIGZlo8=;
+        b=uSp2FHSXHmSBdXRgA8/+SDVKGZkSPlkgeC+lcqPbDmVfI2S/cmYU0iNvzf0su9vZ3K
+         YEqQS3m/kDYMLi8Hw1Y/1N97SqRCC62JAOkfY2A9r7Kk/SRjOefk9GR8RnkUdyDWYdli
+         Duva4GtG2Gbzavxq17Jo9CgMuUyC5SMDUSveGeSaUst0WeqRSF2qFmo2Y8thnlq99z9b
+         yom4ILhagRR+0EoqjPDG+mHEOawiztU1+6pGG2cLxhAyo6IIV4WMfJWkCbJ+gH9OTWoF
+         LeuASJ8ulyxBZ0slfXdDszEGd4AqYkbAmM7Aq3eUv0gXJJFR2dnQ+IehcCZ+zPasSKHc
+         yjgQ==
+X-Gm-Message-State: AAQBX9cFpP9sIuWTQSRAl9nHmnxzNcg9PDWB8YRFn40QTIQjE2T78WHd
+        pdLoTZsBs8MUlgnwhMINezkLpElASQtIOX6fRERtIA==
+X-Google-Smtp-Source: AKy350Yhk/i0+JPviKO6ga1I/DH2EtAh9hdlzqBienFUiCmmezrhPlteMpnkr+v35C7I9/6s8VzBjh8YFxr470tp00Q=
+X-Received: by 2002:a50:d756:0:b0:4fc:e5c:902 with SMTP id i22-20020a50d756000000b004fc0e5c0902mr8274473edj.8.1680030035893;
+ Tue, 28 Mar 2023 12:00:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <9c5c8b7e-1d89-a3af-5400-14fde81f4429@linux.dev> <CAKH8qBvRCBrZz0Cx8w8VsYGJKOLQXf9xzc50ce_nQenhGNdx7w@mail.gmail.com>
-In-Reply-To: <CAKH8qBvRCBrZz0Cx8w8VsYGJKOLQXf9xzc50ce_nQenhGNdx7w@mail.gmail.com>
-From:   YiFei Zhu <zhuyifei@google.com>
-Date:   Tue, 28 Mar 2023 11:57:43 -0700
-Message-ID: <CAA-VZP=fUeX7ELEKJQfsJavXyZ7=rp-ebfwCa8jN6b_WKvXFqg@mail.gmail.com>
-Subject: Re: Flaky bpf cg_storage_* tests
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>
+References: <20230328061638.203420-1-yosryahmed@google.com>
+ <20230328061638.203420-5-yosryahmed@google.com> <ZCMojk50vjiK6mBe@cmpxchg.org>
+In-Reply-To: <ZCMojk50vjiK6mBe@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 28 Mar 2023 11:59:59 -0700
+Message-ID: <CAJD7tkYA=0rKSmtQzYQpZ2DuUoJq0bQcVqPgSpVEs0M4zAktnw@mail.gmail.com>
+Subject: Re: [PATCH v1 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
@@ -68,52 +81,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 11:08=E2=80=AFAM Stanislav Fomichev <sdf@google.com=
-> wrote:
+On Tue, Mar 28, 2023 at 10:49=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.or=
+g> wrote:
 >
-> On Tue, Mar 28, 2023 at 10:40=E2=80=AFAM Martin KaFai Lau <martin.lau@lin=
-ux.dev> wrote:
+> On Tue, Mar 28, 2023 at 06:16:33AM +0000, Yosry Ahmed wrote:
+> > rstat flushing is too expensive to perform in irq context.
+> > The previous patch removed the only context that may invoke an rstat
+> > flush from irq context, add a WARN_ON_ONCE() to detect future
+> > violations, or those that we are not aware of.
 > >
-> > Hi YiFei and Stan, it is observed that the cg_stroage_* tests fail from=
- time to
-> > time. A recent example is
-> > https://github.com/kernel-patches/bpf/actions/runs/4543867424/jobs/8009=
-943115?pr=3D3924
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+> >  kernel/cgroup/rstat.c | 2 ++
+> >  1 file changed, 2 insertions(+)
 > >
-> > Could you help to take a look? may be run it under netns and also have =
-better
-> > filtering by ip/port when counting packets?
+> > diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> > index d3252b0416b6..c2571939139f 100644
+> > --- a/kernel/cgroup/rstat.c
+> > +++ b/kernel/cgroup/rstat.c
+> > @@ -176,6 +176,8 @@ static void cgroup_rstat_flush_locked(struct cgroup=
+ *cgrp, bool may_sleep)
+> >  {
+> >       int cpu;
+> >
+> > +     /* rstat flushing is too expensive for irq context */
+> > +     WARN_ON_ONCE(!in_task());
+> >       lockdep_assert_held(&cgroup_rstat_lock);
 >
-> Error: #43/2 cg_storage_multi/isolated
-> test_isolated:PASS:skel-load 0 nsec
-> test_isolated:PASS:parent-egress1-cg-attach 0 nsec
-> test_isolated:PASS:parent-egress2-cg-attach 0 nsec
-> test_isolated:PASS:parent-ingress-cg-attach 0 nsec
-> test_isolated:PASS:first-connect-send 0 nsec
-> test_isolated:FAIL:first-invoke invocations=3D2
->
-> Error: #43/3 cg_storage_multi/shared
-> test_shared:PASS:skel-load 0 nsec
-> test_shared:PASS:parent-egress1-cg-attach 0 nsec
-> test_shared:PASS:parent-egress2-cg-attach 0 nsec
-> test_shared:PASS:parent-ingress-cg-attach 0 nsec
-> test_shared:PASS:first-connect-send 0 nsec
-> test_shared:FAIL:first-invoke invocations=3D2
->
-> Probably because we're using tcp? And race with syn vs syn+ack
-> (invocatoins=3D1 vs invocations=3D2)?
+> This seems a bit arbitrary. Why is an irq caller forbidden, but an
+> irq-disabled, non-preemptible section caller is allowed? The latency
+> impact on the system would be the same, right?
 
-I don't remember what I wrote in the test :)
+Thanks for taking a look.
 
-Nope it's not TCP. I see line 65:
-  server_fd =3D start_server(AF_INET, SOCK_DGRAM, NULL, 0, 0);
+So in the first patch series the initial purpose was to make sure
+cgroup_rstat_lock was never acquired in an irq context, so that we can
+stop disabling irqs while holding it. Tejun disagreed with this
+approach though.
 
-However I see line 169:
-  * Assert that there is three runs, two with parent cgroup egress and
-  * one with parent cgroup ingress, stored in separate parent storages.
+We currently have one caller that calls flushing with irqs disabled
+(mem_cgroup_usage()) -- so we cannot forbid such callers (yet), but I
+thought we can at least forbid callers from irq context now (or catch
+those that we are not aware of), and then maybe forbid irqs_disabled()
+contexts as well we can get rid of that callsite.
 
-Expected 3 got 2, is it possible we are racing against ingress?
-
-> YiFei, maybe we should count only pure syns?
->
-> > Thanks!
+WDYT?
