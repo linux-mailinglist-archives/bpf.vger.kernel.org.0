@@ -2,185 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 298586CCC20
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 23:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA886CCC3B
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 23:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjC1VeD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 17:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
+        id S229951AbjC1VnV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 17:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjC1VeC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 17:34:02 -0400
-Received: from out-38.mta1.migadu.com (out-38.mta1.migadu.com [IPv6:2001:41d0:203:375::26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D065826BE
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 14:34:00 -0700 (PDT)
-Message-ID: <d03ee937-5c78-1c7a-c487-4fae508627aa@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1680039239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nc9ECcjUwazLFupUuxnVwyMddwwHCNc2HHq3hxpZjVY=;
-        b=MrqQmjowRsNmGnS/06bz4S2WUGMUqzGwZObp0vUnmLqyzj0uVNWdiiORUfgPFC0VRmnZn8
-        RgbHdzm5rx1ir7jCsj9h4JBITbmAqrSdo5e8/kdzFnjxCquYr9bejT9F9Q5fVtKjTdACZK
-        IzvdrqCe4Cte/fbORjoTQjrzLO1bOPQ=
-Date:   Tue, 28 Mar 2023 14:33:55 -0700
+        with ESMTP id S229556AbjC1VnP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 17:43:15 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FE52D68;
+        Tue, 28 Mar 2023 14:43:11 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id cn12so55431918edb.4;
+        Tue, 28 Mar 2023 14:43:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680039789;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xvPLTtKlU0vNaz9725r81EHFLKAu4AQ65dj5fg+SF9o=;
+        b=PHzYOgN3kiUberFUFRdpHlY1IeaKO2su/u4MjPlENAtPs1jUgI9VRf8otOVAos+JcL
+         U/FDVRJbNVs8TslMAMqO9wdBebDufzTpB5j60GkblJyBQaoEOi3Ze9eWuIT7bZxcLl2Q
+         21G10Z793p2Nc7DYKBDuugDswH94Be+y0UNE1o01YawDMpf5VX7m3Ni3jOwKPsLsU/vY
+         lpm6XDmbaWDhkda3EldQLNUx+ie3pjhSmvQeAxw1uuJM8kMDQzfWv9QFXG7IpnOBukVE
+         WZcAPWZuRt5JD4ronusHFxNw1xLZOoI8NFyDz2UtWkxk/SBQ0Bgw7e/T42x60fEh1BLW
+         ARAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680039789;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xvPLTtKlU0vNaz9725r81EHFLKAu4AQ65dj5fg+SF9o=;
+        b=f6jYh0RqQWchPPjmbCUAP944sEymPP7QbhCwqxMkvWxwbNs8lmpncf74zrg8s9Uspt
+         pZYNNnpRs/JS9auVJ39wd1uX4DCl1NE4toO8qR0Fmy5zp6LrYtqISD88GeM8bUKgmoL5
+         9LOGaowMEaGDKLOFuNASsGxMT6UfOi5UyH88DHqjxXdfKaYB7qk7Jh2jrte3BNcjIt4S
+         HkEB6beY5ZwK2qifWdBXu2OlcrOvsYzmTW+LLYQNxLKp2wdX7i2r/hKIQB2pED9t84++
+         wXJDzqcQlZyKgR/k540jjYwsexJHyIxWXfrDMps6T0tovW7RVGg9Vno1+A8994QYAPFV
+         nXjA==
+X-Gm-Message-State: AAQBX9fmpl1Rzy3THEd3yg4N5Bm91CgQSpOoBNnj673s/sik5BVznrFg
+        hEpYzj6kpZkpK/ibx24sT/8qY97tfePFcR+eT7c=
+X-Google-Smtp-Source: AKy350aySh1k6SU2Zakrc+HUzPRxbOk4VjgCQEdQFoUpBC1PHkeludEjEA0Yeiy88DUuJzO1DQIycIJ2jhyLZppxeg0=
+X-Received: by 2002:a50:d6c3:0:b0:501:d489:f797 with SMTP id
+ l3-20020a50d6c3000000b00501d489f797mr8806073edj.1.1680039789534; Tue, 28 Mar
+ 2023 14:43:09 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 bpf-next 1/4] bpf: Implement batching in UDP iterator
-Content-Language: en-US
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     sdf@google.com, edumazet@google.com,
-        Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
-References: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
- <20230323200633.3175753-2-aditi.ghag@isovalent.com>
- <c77f069e-69a4-bc0a-dc92-c77cd0f7df08@linux.dev>
- <FF565E79-7C76-4525-8835-931146319F21@isovalent.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <FF565E79-7C76-4525-8835-931146319F21@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230306071006.73t5vtmxrsykw4zu@apollo> <CAADnVQJ=wzztviB73jBy3+OYxUKhAX_jTGpS8Xv45vUVTDY-ZA@mail.gmail.com>
+ <20230307102233.bemr47x625ity26z@apollo> <CAADnVQ+xOrCSwgxGQXNM5wHfOwV+x0csHfNyDYBHgyGVXgc2Ow@mail.gmail.com>
+ <20230307173529.gi2crls7fktn6uox@apollo> <CAEf4Bza4N6XtXERkL+41F+_UsTT=T4B3gt0igP5mVVrzr9abXw@mail.gmail.com>
+ <20230310211541.schh7iyrqgbgfaay@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzYo-8ckyi-aogvW9HijNh+Z81CE__mWtmVJtCzuY+oECA@mail.gmail.com>
+ <CAADnVQLBDNqqfoNOV=mPxvsMdXLJCK_g1qmHjqxo=PED_vbhuw@mail.gmail.com>
+ <CAJnrk1YCbLxcKT_FY_UdO9YBOz9fTyFQFTB8P0_2swPc39egvg@mail.gmail.com>
+ <20230313144135.5xvgdfvfknb4liwh@apollo> <CAEf4BzacF6pj7wHJ4NH3GBe4rtkaLSZUU1xahhQ37892Ds2ZmA@mail.gmail.com>
+ <CAJnrk1Y=u_9sVo1QhNopRu7F7tRsmZmcNDMeiUw+QF3rtQQ2og@mail.gmail.com>
+In-Reply-To: <CAJnrk1Y=u_9sVo1QhNopRu7F7tRsmZmcNDMeiUw+QF3rtQQ2og@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 28 Mar 2023 14:42:57 -0700
+Message-ID: <CAEf4BzaLmKr4Jc_Hmoqc=uWnpcGXJMzzZVt9nrU8pvhXOPzbmQ@mail.gmail.com>
+Subject: Re: [PATCH v13 bpf-next 09/10] bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/28/23 10:06 AM, Aditi Ghag wrote:
->>> +static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
->>> +{
->>> +	struct bpf_udp_iter_state *iter = seq->private;
->>> +	struct udp_iter_state *state = &iter->state;
->>> +	struct net *net = seq_file_net(seq);
->>> +	struct udp_seq_afinfo *afinfo = state->bpf_seq_afinfo;
->>> +	struct udp_table *udptable;
->>> +	struct sock *first_sk = NULL;
->>> +	struct sock *sk;
->>> +	unsigned int bucket_sks = 0;
->>> +	bool resized = false;
->>> +	int offset = 0;
->>> +	int new_offset;
->>> +
->>> +	/* The current batch is done, so advance the bucket. */
->>> +	if (iter->st_bucket_done) {
->>> +		state->bucket++;
->>> +		state->offset = 0;
->>> +	}
->>> +
->>> +	udptable = udp_get_table_afinfo(afinfo, net);
->>> +
->>> +	if (state->bucket > udptable->mask) {
->>> +		state->bucket = 0;
->>> +		state->offset = 0;
->>> +		return NULL;
->>> +	}
->>> +
->>> +again:
->>> +	/* New batch for the next bucket.
->>> +	 * Iterate over the hash table to find a bucket with sockets matching
->>> +	 * the iterator attributes, and return the first matching socket from
->>> +	 * the bucket. The remaining matched sockets from the bucket are batched
->>> +	 * before releasing the bucket lock. This allows BPF programs that are
->>> +	 * called in seq_show to acquire the bucket lock if needed.
->>> +	 */
->>> +	iter->cur_sk = 0;
->>> +	iter->end_sk = 0;
->>> +	iter->st_bucket_done = false;
->>> +	first_sk = NULL;
->>> +	bucket_sks = 0;
->>> +	offset = state->offset;
->>> +	new_offset = offset;
->>> +
->>> +	for (; state->bucket <= udptable->mask; state->bucket++) {
->>> +		struct udp_hslot *hslot = &udptable->hash[state->bucket];
->>
->> Use udptable->hash"2" which is hashed by addr and port. It will help to get a smaller batch. It was the comment given in v2.
-> 
-> I thought I replied to your review comment, but looks like I didn't. My bad!
-> I already gave it a shot, and I'll need to understand better how udptable->hash2 is populated. When I swapped hash with hash2, there were no sockets to iterate. Am I missing something obvious?
+On Mon, Mar 27, 2023 at 12:47=E2=80=AFAM Joanne Koong <joannelkoong@gmail.c=
+om> wrote:
+>
+> On Thu, Mar 16, 2023 at 11:55=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Mar 13, 2023 at 7:41=E2=80=AFAM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> [...]
+> > > > > For bpf_dynptr_slice_rdrw we can mark buffer[] in stack as
+> > > > > poisoned with dynptr_id =3D=3D R0's PTR_TO_MEM dynptr_id.
+> > > > > Then as soon as first spillable reg touches that poisoned stack a=
+rea
+> > > > > we can invalidate all PTR_TO_MEM's with that dynptr_id.
+> > > >
+> > > > Okay, this makes sense to me. are you already currently working or
+> > > > planning to work on a fix for this Kumar, or should i take a stab a=
+t
+> > > > it?
+> > >
+> > > I'm not planning to do so, so go ahead. One more thing I noticed just=
+ now is
+> > > that we probably need to update regsafe to perform a check_ids compar=
+ison for
+> > > dynptr_id for dynptr PTR_TO_MEMs? It was not a problem back when f806=
+4ab90d66
+> > > ("bpf: Invalidate slices on destruction of dynptrs on stack") was add=
+ed but
+> > > 567da5d253cd ("bpf: improve regsafe() checks for PTR_TO_{MEM,BUF,TP_B=
+UFFER}")
+> > > added PTR_TO_MEM in the switch statement.
+> >
+> > I can take care of this. But I really would like to avoid these
+> > special cases of extra dynptr_id, exactly for reasons like this
+> > omitted check.
+> >
+> > What do people think about generalizing current ref_obj_id to be more
+> > like "lifetime id" (to borrow Rust terminology a bit), which would be
+> > an object (which might or might not be a tracked reference) defining
+> > the scope/lifetime of the current register (whatever it represents).
+> >
+> > I haven't looked through code much, but I've been treating ref_obj_id
+> > as that already in my thinking before, and it seems to be a better
+> > approach than having a special-case of dynptr_id.
+> >
+> > Thoughts?
+>
+> Thanks for taking care of this (and apologies for the late reply). i
+> think the dynptr_id field would still be needed in this case to
+> associate a slice with a dynptr, so that when a dynptr is invalidated
+> its slices get invalidated as well. I'm not sure we could get away
+> with just having ref_obj_id symbolize that in the case where the
+> underlying object is a tracked reference, because for example, it
+> seems like a dynptr would need both a unique reference id to the
+> object (so that if for example there are two dynptrs pointing to the
+> same object, they will both be assignedthe same reference id so the
+> object can't for example be freed twice) and also its own dynptr id so
+> that its slices get invalidated if the dynptr is invalidated
 
-Take a look at udp_lib_lport_inuse2() on how it iterates.
+Can you elaborate on specific example? Because let's say dynptr is
+created from some refcounted object. Then that dynptr's id field will
+be a unique "dynptr id", dynptr's ref_obj_id will point to that
+refcounted object from which we derived dynptr itself. And then when
+we create slices from dynptrs, then each slice gets its own unique id,
+but records dynptr's id as slice's ref_obj_id. So we end up with this
+hierarchy of id + ref_obj_id forming a tree.
 
-> 
->>
->>> +
->>> +		if (hlist_empty(&hslot->head)) {
->>> +			offset = 0;
->>> +			continue;
->>> +		}
->>> +
->>> +		spin_lock_bh(&hslot->lock);
->>> +		/* Resume from the last saved position in a bucket before
->>> +		 * iterator was stopped.
->>> +		 */
->>> +		while (offset-- > 0) {
->>> +			sk_for_each(sk, &hslot->head)
->>> +				continue;
->>> +		}
->>
->> hmm... how does the above while loop and sk_for_each loop actually work?
->>
->>> +		sk_for_each(sk, &hslot->head) {
->>
->> Here starts from the beginning of the hslot->head again. doesn't look right also.
->>
->> Am I missing something here?
->>
->>> +			if (seq_sk_match(seq, sk)) {
->>> +				if (!first_sk)
->>> +					first_sk = sk;
->>> +				if (iter->end_sk < iter->max_sk) {
->>> +					sock_hold(sk);
->>> +					iter->batch[iter->end_sk++] = sk;
->>> +				}
->>> +				bucket_sks++;
->>> +			}
->>> +			new_offset++;
->>
->> And this new_offset is outside of seq_sk_match, so it is not counting for the seq_file_net(seq) netns alone.
-> 
-> This logic to resume iterator is buggy, indeed! So I was trying to account for the cases where the current bucket could've been updated since we release the bucket lock.
-> This is what I intended to do -
-> 
-> +loop:
->                  sk_for_each(sk, &hslot->head) {
->                          if (seq_sk_match(seq, sk)) {
-> +                               /* Resume from the last saved position in the
-> +                                * bucket before iterator was stopped.
-> +                                */
-> +                               while (offset && offset-- > 0)
-> +                                       goto loop;
+Or am I missing something?
 
-still does not look right. merely a loop decrementing offset one at a time and 
-then go back to the beginning of hslot->head?
-
-A quick (untested and uncompiled) thought :
-
-				/* Skip the first 'offset' number of sk
-				 * and not putting them in the iter->batch[].
-				 */
-				if (offset) {
-					offset--;
-					continue;
-				}
-
->                                  if (!first_sk)
->                                          first_sk = sk;
->                                  if (iter->end_sk < iter->max_sk) {
-> @@ -3245,8 +3244,8 @@ static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
->                                          iter->batch[iter->end_sk++] = sk;
->                                  }
->                                  bucket_sks++ > +                              new_offset++;
->                          }
-> 
-> This handles the case when sockets that weren't iterated in the previous round got deleted by the time iterator was resumed. But it's possible that previously iterated sockets got deleted before the iterator was later resumed, and the offset is now outdated. Ideally, iterator should be invalidated in this case, but there is no way to track this, is there? Any thoughts?
-
-I would not worry about this update in-between case. race will happen anyway 
-when the bucket lock is released. This should be very unlikely when hash"2" is used.
-
-
+I want to take a look at simplifying this at some point, so I'll know
+more details once I start digging into code. Right now I still fail to
+see why we need a third ID for dynptr.
