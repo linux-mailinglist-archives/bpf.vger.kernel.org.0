@@ -2,182 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE116CCC64
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 23:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B46F6CCC75
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 23:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbjC1V5M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 17:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        id S230074AbjC1V64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 17:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbjC1V5K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 17:57:10 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37FD273A;
-        Tue, 28 Mar 2023 14:56:53 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id g7so9007970pfu.2;
-        Tue, 28 Mar 2023 14:56:53 -0700 (PDT)
+        with ESMTP id S230071AbjC1V6z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 17:58:55 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E999D
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 14:58:54 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id m12-20020a62f20c000000b0062612a76a08so6311637pfh.2
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 14:58:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680040611;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=odlvPMU0DvOEA8Zyoa7tw66A464oovwujJNAX+TA7BY=;
-        b=Aes6vhsEHGl9+S+XBQ1os1tsS3ccUvB8Vita4tFZ1pTO8Af9yOSh8W66anrirzO8YW
-         BEiB1YMjsACR2RCLeK9FGYolTyn1q9nZMbvG3XEKFJ04mcQ1btoAFAZFfLljBDWHNPsA
-         mZ6nhf7GZIU7LIK4E1X1YBCLoETFl3odvFjARzZ+l/U0Y07GqXdDBPKOWNpneqNfN5vJ
-         e+C4p8/bYY4jdlE3ZhkNg3a9heH+yrK4ayCw48cv30+kBHPopIxrI27sdTikY0eQvIhe
-         x0T7eshz3ckZ+ggTu9/pTGUl+ItNPuKNdmhyhPoqFt3gxL3+yDJDOCWtGnYjUg059Nni
-         MIMQ==
+        d=google.com; s=20210112; t=1680040734;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8yYfTRlVy8+a3jmgxVqWb3McvAzlOI0eWzfqMDXbjb8=;
+        b=lQWr9ruWMNQzFwN+NqZhX+ZsQWL/uLkGdtGW//t2mxE5ASz7x0PvQ2GqN8PtUnIYTi
+         LisiskLnzotzHe2F6xJD5Rr2Tl1ymDuahcNDHi33lsFk1p+7Rf8iRzRM20VEreK5MVhO
+         lOkTGxRbesKwLf1dV1fwYPNJp00cmV10bDcZQncPTL7hyy7th2Ukcvbks8ju/7eHY0XV
+         joBA0mxBfn7WhixeqYWCwXMons8geOV7uCMeYFI9bwv8GxIUUGi7ltjPouJiyyks/fZB
+         2OeVe0TN0eMB9dj2Ty6mrYZFIHX4udnYHVvpWFEaaNcVOMB2A+p/MNIf5xA6MnfRsMaQ
+         v3WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680040611;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=odlvPMU0DvOEA8Zyoa7tw66A464oovwujJNAX+TA7BY=;
-        b=1dyGDcLkveEbycXWoYEc5VqG7jNYmj2hM+36Ci13MGcDjV7+o9jY6poUPf8rOz4nvS
-         GDgCRn8YvWrAidjNwwKqRXMxUy14tr12YF10+SY22/7gn3OMaCEM1rnh+0kTmYNbKZQA
-         /Ai92CHEm7Gs2LYhfPrYwCia3u64a0Ffm4Q0M4jCZ6n0BxTuJyxutOg7O5+wv2aE/2m1
-         OtS+JPzQfGZgyni5cX5fNR3b1wKdmJcMj1joxzZ8RoB+7+zzP33zgwC5SEOsgFN8sykv
-         jxWSZ1jqnvxqk/GTId/U0Ag5obvLb1XE/S8p9bmZB/FGBMKF4xy8YCQ5qnk9+pzb7xUi
-         3M7w==
-X-Gm-Message-State: AAQBX9fREpLswKh/9AmcRAwXxEu2DWX1e4DW+1rIiYbza1aBGxZEfTE+
-        E3IAJG1H2nxVHDo21VUZS78=
-X-Google-Smtp-Source: AK7set+0JDGKHYDfUmhNiD24vp24TtBUrFDVWQi+4Ws2kUO77zPIcUUFH2UFrW8Whj6PnxUzdbcS7Q==
-X-Received: by 2002:aa7:8f3c:0:b0:627:6328:79d7 with SMTP id y28-20020aa78f3c000000b00627632879d7mr13897242pfr.34.1680040611138;
-        Tue, 28 Mar 2023 14:56:51 -0700 (PDT)
-Received: from localhost ([98.97.117.131])
-        by smtp.gmail.com with ESMTPSA id g13-20020a62e30d000000b0062a51587499sm10756999pfh.109.2023.03.28.14.56.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Mar 2023 14:56:50 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 14:56:49 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     cong.wang@bytedance.com, daniel@iogearbox.net, lmb@isovalent.com,
-        edumazet@google.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, will@isovalent.com
-Message-ID: <642362a1403ee_286af20850@john.notmuch>
-In-Reply-To: <87tty55aou.fsf@cloudflare.com>
-References: <20230327175446.98151-1-john.fastabend@gmail.com>
- <20230327175446.98151-3-john.fastabend@gmail.com>
- <87tty55aou.fsf@cloudflare.com>
-Subject: Re: [PATCH bpf v2 02/12] bpf: sockmap, convert schedule_work into
- delayed_work
+        d=1e100.net; s=20210112; t=1680040734;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8yYfTRlVy8+a3jmgxVqWb3McvAzlOI0eWzfqMDXbjb8=;
+        b=JLBhZvfJ0OMxOoxfMd/xjLHZF5HpFSBab6NMh9OdGfwjMTvM21xLA9jIuqH9ciMgeF
+         FdP9nnGZCAnPILpXi4iODFpstS/k4jc14nkGMfxZL0R1Y1gLPQfyyuL/EL86fJIBu25n
+         dCW2RFwDNeCFZHFvEJIba+DWZ/jx0GJ1W6PRRMJqnBJKhQeIMfCPVMZq1jEMFDZDS73E
+         ZPjDElVPLGZtzYvEsNQpQNbXaIb8/C0mIrhCydVhHmTBpDqU4yOwBrIwoo6IcRadqdua
+         4zcYj/+Gcwkc6sTwg4La+tDK0PqfBtWBlNTCs1MwnLfsjhzHx6MPSozihmU6vKH4fzfP
+         R2Xw==
+X-Gm-Message-State: AAQBX9eZFEDPfIJBGPquxe2oDMbf2fMDmA8WQC8rNHGV3NGQ7YrnxmsT
+        DjgAFnF4YM9o3KrzdsKMJ7/luzw=
+X-Google-Smtp-Source: AKy350aeM1DJXTixgfwMy9Tmk+d6l64HsTntHsGf93MuO5cskm0HFqWDJcVdNNqftsvPIS5nvLMBCfg=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:1414:b0:625:96ce:f774 with SMTP id
+ l20-20020a056a00141400b0062596cef774mr9000445pfu.0.1680040733979; Tue, 28 Mar
+ 2023 14:58:53 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 14:58:52 -0700
+In-Reply-To: <168003455815.3027256.7575362149566382055.stgit@firesoul>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <168003451121.3027256.13000250073816770554.stgit@firesoul> <168003455815.3027256.7575362149566382055.stgit@firesoul>
+Message-ID: <ZCNjHAY81gS02FVW@google.com>
+Subject: Re: [PATCH bpf RFC 1/4] xdp: rss hash types representation
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
+        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Mon, Mar 27, 2023 at 10:54 AM -07, John Fastabend wrote:
-> > Sk_buffs are fed into sockmap verdict programs either from a strparser
-> > (when the user might want to decide how framing of skb is done by attaching
-> > another parser program) or directly through tcp_read_sock. The
-> > tcp_read_sock is the preferred method for performance when the BPF logic is
-> > a stream parser.
-> >
-> > The flow for Cilium's common use case with a stream parser is,
-> >
-> >  tcp_read_sock()
-> >   sk_psock_verdict_recv
-> >     ret = bpf_prog_run_pin_on_cpu()
-> >     sk_psock_verdict_apply(sock, skb, ret)
-> >      // if system is under memory pressure or app is slow we may
-> >      // need to queue skb. Do this queuing through ingress_skb and
-> >      // then kick timer to wake up handler
-> >      skb_queue_tail(ingress_skb, skb)
-> >      schedule_work(work);
-> >
-> >
-> > The work queue is wired up to sk_psock_backlog(). This will then walk the
-> > ingress_skb skb list that holds our sk_buffs that could not be handled,
-> > but should be OK to run at some later point. However, its possible that
-> > the workqueue doing this work still hits an error when sending the skb.
-> > When this happens the skbuff is requeued on a temporary 'state' struct
-> > kept with the workqueue. This is necessary because its possible to
-> > partially send an skbuff before hitting an error and we need to know how
-> > and where to restart when the workqueue runs next.
-> >
-> > Now for the trouble, we don't rekick the workqueue. This can cause a
-> > stall where the skbuff we just cached on the state variable might never
-> > be sent. This happens when its the last packet in a flow and no further
-> > packets come along that would cause the system to kick the workqueue from
-> > that side.
-> >
-> > To fix we could do simple schedule_work(), but while under memory pressure
-> > it makes sense to back off some instead of continue to retry repeatedly. So
-> > instead to fix convert schedule_work to schedule_delayed_work and add
-> > backoff logic to reschedule from backlog queue on errors. Its not obvious
-> > though what a good backoff is so use '1'.
-> >
-> > To test we observed some flakes whil running NGINX compliance test with
-> > sockmap we attributed these failed test to this bug and subsequent issue.
-> >
-> > Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
-> > Tested-by: William Findlay <will@isovalent.com>
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
+On 03/28, Jesper Dangaard Brouer wrote:
+> The RSS hash type specifies what portion of packet data NIC hardware used
+> when calculating RSS hash value. The RSS types are focused on Internet
+> traffic protocols at OSI layers L3 and L4. L2 (e.g. ARP) often get hash
+> value zero and no RSS type. For L3 focused on IPv4 vs. IPv6, and L4
+> primarily TCP vs UDP, but some hardware supports SCTP.
 
-[...]
+> Hardware RSS types are differently encoded for each hardware NIC. Most
+> hardware represent RSS hash type as a number. Determining L3 vs L4 often
+> requires a mapping table as there often isn't a pattern or sorting
+> according to ISO layer.
 
-> > --- a/net/core/skmsg.c
-> > +++ b/net/core/skmsg.c
-> > @@ -481,7 +481,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
-> >  	}
-> >  out:
-> >  	if (psock->work_state.skb && copied > 0)
-> > -		schedule_work(&psock->work);
-> > +		schedule_delayed_work(&psock->work, 0);
-> >  	return copied;
-> >  }
-> >  EXPORT_SYMBOL_GPL(sk_msg_recvmsg);
-> > @@ -639,7 +639,8 @@ static void sk_psock_skb_state(struct sk_psock *psock,
-> >  
-> >  static void sk_psock_backlog(struct work_struct *work)
-> >  {
-> > -	struct sk_psock *psock = container_of(work, struct sk_psock, work);
-> > +	struct delayed_work *dwork = to_delayed_work(work);
-> > +	struct sk_psock *psock = container_of(dwork, struct sk_psock, work);
-> >  	struct sk_psock_work_state *state = &psock->work_state;
-> >  	struct sk_buff *skb = NULL;
-> >  	bool ingress;
-> > @@ -679,6 +680,10 @@ static void sk_psock_backlog(struct work_struct *work)
-> >  				if (ret == -EAGAIN) {
-> >  					sk_psock_skb_state(psock, state, skb,
-> >  							   len, off);
-> > +
-> > +					// Delay slightly to prioritize any
-> > +					// other work that might be here.
-> > +					schedule_delayed_work(&psock->work, 1);
-> 
-> Do IIUC that this means we can back out changes from commit bec217197b41
-> ("skmsg: Schedule psock work if the cached skb exists on the psock")?
+> The patch introduce a XDP RSS hash type (xdp_rss_hash_type) that can both
+> be seen as a number that is ordered according by ISO layer, and can be bit
+> masked to separate IPv4 and IPv6 types for L4 protocols. Room is available
+> for extending later while keeping these properties. This maps and unifies
+> difference to hardware specific hashes.
 
-Yeah I think so this is a more direct way to get the same result. I'm also
-thinking this check,
+Looks good overall. Any reason we're making this specific layout?
+Why not simply the following?
 
-       if (psock->work_state.skb && copied > 0)
-               schedule_work(&psock->work)
+enum {
+	XDP_RSS_TYPE_NONE = 0,
+	XDP_RSS_TYPE_IPV4 = BIT(0),
+	XDP_RSS_TYPE_IPV6 = BIT(1),
+	/* IPv6 with extension header. */
+	/* let's note ^^^ it in the UAPI? */
+	XDP_RSS_TYPE_IPV6_EX = BIT(2),
+	XDP_RSS_TYPE_UDP = BIT(3),
+	XDP_RSS_TYPE_TCP = BIT(4),
+	XDP_RSS_TYPE_SCTP = BIT(5),
+}
 
-is not correct copied=0 which could happen on empty queue could be the
-result of a skb stuck from this eagain error in backlog.
+And then using XDP_RSS_TYPE_IPV4|XDP_RSS_TYPE_UDP vs XDP_RSS_TYPE_IPV6|XXX ?
 
-I think its OK to revert that patch in a separate patch. And ideally we
-could get some way to load up the stack to hit these corner cases without
-running long stress tests.
+> This proposal change the kfunc API bpf_xdp_metadata_rx_hash() to return
+> this RSS hash type on success.
 
-WDYT?
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>   include/net/xdp.h |   51  
+> +++++++++++++++++++++++++++++++++++++++++++++++++++
+>   net/core/xdp.c    |    4 +++-
+>   2 files changed, 54 insertions(+), 1 deletion(-)
 
-> 
-> Nit: Comment syntax.
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 5393b3ebe56e..63f462f5ea7f 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -8,6 +8,7 @@
 
-Yep happy to fix.
+>   #include <linux/skbuff.h> /* skb_shared_info */
+>   #include <uapi/linux/netdev.h>
+> +#include <linux/bitfield.h>
+
+>   /**
+>    * DOC: XDP RX-queue information
+> @@ -396,6 +397,56 @@ XDP_METADATA_KFUNC_xxx
+>   MAX_XDP_METADATA_KFUNC,
+>   };
+
+> +/* For partitioning of xdp_rss_hash_type */
+> +#define RSS_L3		GENMASK(2,0) /* 3-bits = values between 1-7 */
+> +#define L4_BIT		BIT(3)       /* 1-bit - L4 indication */
+> +#define RSS_L4_IPV4	GENMASK(6,4) /* 3-bits */
+> +#define RSS_L4_IPV6	GENMASK(9,7) /* 3-bits */
+> +#define RSS_L4		GENMASK(9,3) /* = 7-bits - covering L4 IPV4+IPV6 */
+> +#define L4_IPV6_EX_BIT	BIT(9)       /* 1-bit - L4 IPv6 with Extension  
+> hdr */
+> +				     /* 11-bits in total */
+> +
+> +/* The XDP RSS hash type (xdp_rss_hash_type) can both be seen as a  
+> number that
+> + * is ordered according by ISO layer, and can be bit masked to separate  
+> IPv4 and
+> + * IPv6 types for L4 protocols. Room is available for extending later  
+> while
+> + * keeping above properties, as this need to cover NIC hardware RSS  
+> types.
+> + */
+> +enum xdp_rss_hash_type {
+> +	XDP_RSS_TYPE_NONE            = 0,
+> +	XDP_RSS_TYPE_L2              = XDP_RSS_TYPE_NONE,
+> +
+> +	XDP_RSS_TYPE_L3_MASK         = RSS_L3,
+> +	XDP_RSS_TYPE_L3_IPV4         = FIELD_PREP_CONST(RSS_L3, 1),
+> +	XDP_RSS_TYPE_L3_IPV6         = FIELD_PREP_CONST(RSS_L3, 2),
+> +	XDP_RSS_TYPE_L3_IPV6_EX      = FIELD_PREP_CONST(RSS_L3, 4),
+> +
+> +	XDP_RSS_TYPE_L4_MASK         = RSS_L4,
+> +	XDP_RSS_TYPE_L4_SHIFT        = __bf_shf(RSS_L4),
+> +	XDP_RSS_TYPE_L4_MASK_EX      = RSS_L4 | L4_IPV6_EX_BIT,
+> +
+> +	XDP_RSS_TYPE_L4_IPV4_MASK    = RSS_L4_IPV4,
+> +	XDP_RSS_TYPE_L4_BIT          = L4_BIT,
+> +	XDP_RSS_TYPE_L4_IPV4_TCP     = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV4, 1),
+> +	XDP_RSS_TYPE_L4_IPV4_UDP     = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV4, 2),
+> +	XDP_RSS_TYPE_L4_IPV4_SCTP    = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV4, 3),
+> +
+> +	XDP_RSS_TYPE_L4_IPV6_MASK    = RSS_L4_IPV6,
+> +	XDP_RSS_TYPE_L4_IPV6_TCP     = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV6, 1),
+> +	XDP_RSS_TYPE_L4_IPV6_UDP     = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV6, 2),
+> +	XDP_RSS_TYPE_L4_IPV6_SCTP    = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV6, 3),
+> +
+> +	XDP_RSS_TYPE_L4_IPV6_EX_MASK = L4_IPV6_EX_BIT,
+> +	XDP_RSS_TYPE_L4_IPV6_TCP_EX  = XDP_RSS_TYPE_L4_IPV6_TCP |L4_IPV6_EX_BIT,
+> +	XDP_RSS_TYPE_L4_IPV6_UDP_EX  = XDP_RSS_TYPE_L4_IPV6_UDP |L4_IPV6_EX_BIT,
+> +	XDP_RSS_TYPE_L4_IPV6_SCTP_EX = XDP_RSS_TYPE_L4_IPV6_SCTP|L4_IPV6_EX_BIT,
+> +};
+> +#undef RSS_L3
+> +#undef L4_BIT
+> +#undef RSS_L4_IPV4
+> +#undef RSS_L4_IPV6
+> +#undef RSS_L4
+> +#undef L4_IPV6_EX_BIT
+> +
+>   #ifdef CONFIG_NET
+>   u32 bpf_xdp_metadata_kfunc_id(int id);
+>   bool bpf_dev_bound_kfunc_id(u32 btf_id);
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 7133017bcd74..81d41df30695 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -721,12 +721,14 @@ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const  
+> struct xdp_md *ctx, u64 *tim
+>    * @hash: Return value pointer.
+>    *
+>    * Return:
+> - * * Returns 0 on success or ``-errno`` on error.
+> + * * Returns (positive) RSS hash **type** on success or ``-errno`` on  
+> error.
+> + * * ``enum xdp_rss_hash_type`` : RSS hash type
+>    * * ``-EOPNOTSUPP`` : means device driver doesn't implement kfunc
+>    * * ``-ENODATA``    : means no RX-hash available for this frame
+>    */
+>   __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32  
+> *hash)
+>   {
+> +	BTF_TYPE_EMIT(enum xdp_rss_hash_type);
+>   	return -EOPNOTSUPP;
+>   }
+
+
+
