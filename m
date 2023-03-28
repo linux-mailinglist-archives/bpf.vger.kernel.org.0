@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0E16CCCE9
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 00:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565816CCCED
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 00:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbjC1WRE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 18:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38762 "EHLO
+        id S230127AbjC1WRO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 18:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbjC1WRC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 18:17:02 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6361C2D74
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:16:53 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id l14-20020a170902f68e00b001a1a9a1d326so8323762plg.9
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:16:53 -0700 (PDT)
+        with ESMTP id S229749AbjC1WRM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 18:17:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FF12D4F
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:16:55 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b124-20020a253482000000b00b72947f6a54so13497081yba.14
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:16:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680041813;
+        d=google.com; s=20210112; t=1680041814;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ECd9n7cK9XN/T+IJ39MyPXAm65DzgHuyZCFnDGQgZIE=;
-        b=hC/hCzGf8kQKLtuU/Lq4g/PH8Bikoaov/kMCU55X6hS3y0cgLvVqN0Ui9SeHKqoI2Y
-         MLR9yv7Q6ZpTQchtNNsVDSGumEgnJDRGOrdjWF1vQ04Hu4VkyeJ+agrrQETPfZvxGuwE
-         fYcWpRh33+ZEKqsq/V4FxFGt/SOC7Xson0BSVI7SL+S7Djz8oPuCrC/TQcGQu540vmXS
-         GyCet5dMYq6C9cPRyqnOFXjOod08thOhwnsgDFjm//XeVxGxDJp0Yqlgz0MeTNLqnkrX
-         POTGQvY7O/HgL6iaisQLmX0ut7TKBC/YmOGLurxCyE9UYzyCbGnroCIDWbRRsYz1/a88
-         d5vA==
+        bh=kpfCPbcrVlI467nPrWnClcfZlWEh8/oKLk4mWLWwJ5M=;
+        b=aB5XInM5shRFEupjVRfOVTwIp8OT/8GOCdpf0mMVeXPooztYFeqB/4fTyYFky42c2L
+         cHJL0WAYSCnTVIPjouGLoaqK+AnedliRs9QJra7EnwTz3y2TYL063GYspGDlo69C/aKX
+         Q4WCP9t0FZSy4z5mYrJKLFahZFndlIErOfAb2mjxfSIGPKnJVKuUODD216rqjI4tCXyS
+         D6OSq62KYNM8d3Y/gjIsH2sn135NHZXDjDoSFmzJ5ShWqmWT9/5W9qO3Eof0i2wwkL4l
+         11B1AMdH7KMsOMtqPWcbVxPahm2yYwvYDsj0ARVEud+qGQ3Lehzgwg9PonWNXUtgVgTf
+         eH8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680041813;
+        d=1e100.net; s=20210112; t=1680041814;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ECd9n7cK9XN/T+IJ39MyPXAm65DzgHuyZCFnDGQgZIE=;
-        b=N2pyNZCrkTxcKHIH5PPBes7USDg7IYHUkxubveXxs3JQN8PItmNnCAEdCYYBy1oCyP
-         bYlMCAbHpBA9D964kdzSGlTp0sueGuEbMT8SLLIV5wEZk3LYBXC0xOZbZrCeA2i3ca3G
-         st5qgXva3NLEVHE6z6Wg73h5jgdELITUEiS2memvHG/6oWkdlmxVvL+hKbZ/1LfZXWa2
-         KCUNwRJLKKNZZfjOF+KjZ6V51zRYlUAJm9H5lZz1JhPgPFNP+FYY6aw3vDachJliUUvv
-         3CKUIt2H7zmKMfjH++q2KkZJy9TXshIhZyOh9C8pjur11Elyolrf/Y9O6jjfR3BeNqWh
-         thsA==
-X-Gm-Message-State: AAQBX9cAkvS6rzxs86dz2YRpg3gRg8FvDf+l63cG3QDIzqqXM4toRr8Q
-        Pm4N0c/LcMzub2AC228ImeVgFnVs1MsjAHCl
-X-Google-Smtp-Source: AKy350bt7vkQiq6OhtHhv/j8fBGrKxEfoXOdpNRwyGSGJDzpsapd3WOuPFqtBqzF+StnrMen5GR5vLj6Xa5jtVdE
+        bh=kpfCPbcrVlI467nPrWnClcfZlWEh8/oKLk4mWLWwJ5M=;
+        b=H0G1nxNVLOb//2ijpCNAwQivWjDZpt/ATaMjEqdiLP4Kgf4tsQCmrqtfDBBxHByIYH
+         zv6jQTF3KUlgtpINim+fHGDoFfu1qQtOldGXlZP8GKlqRGCw28GZoUBhfhJQv2QRanQp
+         A4OUR0lA/svQyZuCjqX5oFsos3rW6U8xACmpqcJydSE/xTfh/9+2pq96qGNyS3yhqJzb
+         3w4hz1wDOqBOP7H5bzx/j//WBHTCDta5L1ueabf8d605eUijKjSgoNlim2+AneTDP0WY
+         uM45N321NZ1ACnYQT3m5B9GOrsvAXcGcvlgMw+1/yMap514qscgEkDRpQVDCFbaAgo8q
+         IewA==
+X-Gm-Message-State: AAQBX9cdlB0zosiFD3fxi/ES/fonwxTESkPZSDKMhkyF5o+MEC083/Ub
+        hDQa3bcoTI4Yh7F9qOam+mUJGtLuPaO7DLYZ
+X-Google-Smtp-Source: AKy350a5zKI96b1WoEMsf2Uk1BbmTXMpgnT5uYIBtloHj2QDwXA1RiFaSK6WQDs33/Qs1TEwSL1tU23SVOrmYfBj
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:90a:6943:b0:236:a1f9:9a9d with SMTP
- id j3-20020a17090a694300b00236a1f99a9dmr64331pjm.2.1680041812843; Tue, 28 Mar
- 2023 15:16:52 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 22:16:36 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:1586:b0:b33:531b:3dd4 with
+ SMTP id k6-20020a056902158600b00b33531b3dd4mr8636279ybu.1.1680041814635; Tue,
+ 28 Mar 2023 15:16:54 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 22:16:37 +0000
 In-Reply-To: <20230328221644.803272-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20230328221644.803272-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-Message-ID: <20230328221644.803272-2-yosryahmed@google.com>
-Subject: [PATCH v2 1/9] cgroup: rename cgroup_rstat_flush_"irqsafe" to "atomic"
+Message-ID: <20230328221644.803272-3-yosryahmed@google.com>
+Subject: [PATCH v2 2/9] memcg: rename mem_cgroup_flush_stats_"delayed" to "ratelimited"
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
@@ -78,67 +78,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-cgroup_rstat_flush_irqsafe() can be a confusing name. It may read as
-"irqs are disabled throughout", which is what the current implementation
-does (currently under discussion [1]), but is not the intention. The
-intention is that this function is safe to call from atomic contexts.
-Name it as such.
+mem_cgroup_flush_stats_delayed() suggests his is using a delayed_work,
+but this is actually sometimes flushing directly from the callsite.
+
+What it's doing is ratelimited calls. A better name would be
+mem_cgroup_flush_stats_ratelimited().
 
 Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 Acked-by: Shakeel Butt <shakeelb@google.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- include/linux/cgroup.h | 2 +-
- kernel/cgroup/rstat.c  | 4 ++--
- mm/memcontrol.c        | 2 +-
+ include/linux/memcontrol.h | 4 ++--
+ mm/memcontrol.c            | 2 +-
+ mm/workingset.c            | 2 +-
  3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 3410aecffdb4..885f5395fcd0 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -692,7 +692,7 @@ static inline void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
-  */
- void cgroup_rstat_updated(struct cgroup *cgrp, int cpu);
- void cgroup_rstat_flush(struct cgroup *cgrp);
--void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp);
-+void cgroup_rstat_flush_atomic(struct cgroup *cgrp);
- void cgroup_rstat_flush_hold(struct cgroup *cgrp);
- void cgroup_rstat_flush_release(void);
- 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 831f1f472bb8..d3252b0416b6 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -241,12 +241,12 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index b6eda2ab205d..ac3f3b3a45e2 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1037,7 +1037,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
  }
  
- /**
-- * cgroup_rstat_flush_irqsafe - irqsafe version of cgroup_rstat_flush()
-+ * cgroup_rstat_flush_atomic- atomic version of cgroup_rstat_flush()
-  * @cgrp: target cgroup
-  *
-  * This function can be called from any context.
-  */
--void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp)
-+void cgroup_rstat_flush_atomic(struct cgroup *cgrp)
+ void mem_cgroup_flush_stats(void);
+-void mem_cgroup_flush_stats_delayed(void);
++void mem_cgroup_flush_stats_ratelimited(void);
+ 
+ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 			      int val);
+@@ -1535,7 +1535,7 @@ static inline void mem_cgroup_flush_stats(void)
  {
- 	unsigned long flags;
+ }
+ 
+-static inline void mem_cgroup_flush_stats_delayed(void)
++static inline void mem_cgroup_flush_stats_ratelimited(void)
+ {
+ }
  
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 5abffe6f8389..0205e58ea430 100644
+index 0205e58ea430..c3b6aae78901 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -642,7 +642,7 @@ static void __mem_cgroup_flush_stats(void)
- 		return;
- 
- 	flush_next_time = jiffies_64 + 2*FLUSH_TIME;
--	cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
-+	cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
- 	atomic_set(&stats_flush_threshold, 0);
- 	spin_unlock_irqrestore(&stats_flush_lock, flag);
+@@ -653,7 +653,7 @@ void mem_cgroup_flush_stats(void)
+ 		__mem_cgroup_flush_stats();
  }
+ 
+-void mem_cgroup_flush_stats_delayed(void)
++void mem_cgroup_flush_stats_ratelimited(void)
+ {
+ 	if (time_after64(jiffies_64, flush_next_time))
+ 		mem_cgroup_flush_stats();
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 00c6f4d9d9be..af862c6738c3 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -462,7 +462,7 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 
+ 	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
+ 
+-	mem_cgroup_flush_stats_delayed();
++	mem_cgroup_flush_stats_ratelimited();
+ 	/*
+ 	 * Compare the distance to the existing workingset size. We
+ 	 * don't activate pages that couldn't stay resident even if
 -- 
 2.40.0.348.gf938b09366-goog
 
