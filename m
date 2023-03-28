@@ -2,138 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E250B6CCADA
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 21:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1806CCAF1
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 21:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbjC1TnK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 15:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
+        id S229532AbjC1Twv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 15:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjC1TnJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 15:43:09 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CBB19C
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 12:43:08 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id ek18so54246274edb.6
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 12:43:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680032586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nqIPDr+ZqfoCi8eQc3DTNr+ThF98a/RBvzrvNFqWYDM=;
-        b=TIEXaRQDBAZ6mBWE2R4TELhNaijNMDedZH3kg6n0ljtndAxJLXXqyFQwcErH6B46Lz
-         U9BN+2qoq3bDs+Ypbo1k5NzI/RQIygK7ia03C7cfrRO0ByWfBXsdRCT0alHvfQTfmvRe
-         qv9IocyC7Cjb3idOoIKKeNX5YVur0irro0khGXutbTnhV67ua5rmPZ8USHumeZuOnxd8
-         bw+LUtnZMfNIRTh+++D2tITNO4f5XHgKLCv401nXpXS49KzLZKP/0ycEI4wvThEYgq34
-         SdVY6fUmkfV2iCF/Uacl+jKfcVLSr1puNKsWanMsSlWfcXyo+ZpeNqbzs0La62nvhfVM
-         xa2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680032586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nqIPDr+ZqfoCi8eQc3DTNr+ThF98a/RBvzrvNFqWYDM=;
-        b=HhpfC9Z9q6Ht8dyH0szlyXhVK+V3cXzmRjeFicxddaBb9Vi2t+vV254MNsGlbc0eug
-         nO16d8LVrchU9z/wBFlFatSjYGxq+H3XqcX73Pb7Uhf21kOn+Duk48eLWDwTpnAGkYKT
-         XfkG7u+Oj0sz4zXvXTGoQO61NRRDqpZlxNQmoCCgHog87IgBhTYRKTFoG3QMIjsnyxul
-         uAmOw6PiHcZkaZAcMkS0hyakgllPwcnla0UA8dhVJ31ZM1IFo7gUvCS4KsNErvzmwb9/
-         224V6F92uZbviplcraLqfnKfJZuloYuZ3Rv46+zHVvLrATl0cjPA1z3njpkaT5iMxu5N
-         SB1g==
-X-Gm-Message-State: AAQBX9e21FDS+hYoOsuzQ3MBT3qrNkkLYP+2OgAStXLO0eZ83ekBGsRj
-        +Vq/Uw9ZUV7Jh+nZpw+33bfV4BvqWc5CMFHudiUjuA==
-X-Google-Smtp-Source: AKy350Y+r8YQubYTs8R7PJEitaPs1q0OlTz1iemnZQ7KI+3/VnM/MXrQyknZBxEGhPVmnt+/5hUtEtoV/kv4VWDou8E=
-X-Received: by 2002:a50:a444:0:b0:500:5463:35de with SMTP id
- v4-20020a50a444000000b00500546335demr8511392edb.8.1680032586465; Tue, 28 Mar
- 2023 12:43:06 -0700 (PDT)
+        with ESMTP id S229456AbjC1Twu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 15:52:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0E81BEF;
+        Tue, 28 Mar 2023 12:52:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F12A1B81DF4;
+        Tue, 28 Mar 2023 19:52:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E59DC433EF;
+        Tue, 28 Mar 2023 19:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680033166;
+        bh=3tCsQlZNxjpj6kRrRVaA2+D40G/G8omyRmcPC6eNHcs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S8c83d6zKDAseuUsmPwdWmhujxfPqFtrEXrW653rlLKUrkNLZqsnZfSf2rOmri2lF
+         eblSB48mq0XMv5XNxHk/TSur5NY0H94GtwFqxAhZ6B6xyq1OXzxumv5C57bm/PmnUr
+         LGRSRFfPPY+g8EPNJLtDGbY3jQipSeiMah3zR0CxiBcHrfFH/IaWe3ezeGGsKGsqVL
+         HhFiGKP/Y3OixbpkKK47mEFSa82RCJrr2ju3/yTReI8G6JPU/aJSZhLacNNDrOUcVP
+         nJtW4msn5ahphR3iPD5l/7lxjqeME9MNH7aqUZAfUpdDk4aJTni2/afC89IWzIX0WV
+         aJGQepl2T6dUQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C8F6F4052D; Tue, 28 Mar 2023 16:52:43 -0300 (-03)
+Date:   Tue, 28 Mar 2023 16:52:43 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <bpf@vger.kernel.org>
+Subject: Re: [PATCH] arm64: remove special treatment for the link order of
+ head.o
+Message-ID: <ZCNFi65T4anhk6hH@kernel.org>
+References: <20221012233500.156764-1-masahiroy@kernel.org>
+ <ZBovCrMXJk7NPISp@aurel32.net>
+ <CAMj1kXHwtb9aY+vd4e69Wg47GpL0sT=dDaCUA1sF7=edzc+Qeg@mail.gmail.com>
+ <ZBzAp457rrO52FPy@aurel32.net>
+ <CAMj1kXHvfHwQFX1SKbUvpHWOr3+i7Tp5Hod-_jZE4hDHZmmRZg@mail.gmail.com>
+ <CAK7LNASdsWMP2jud4niOkrR5+a2jG-Vfo0XEa63bh3L3W6_t0Q@mail.gmail.com>
+ <CAK7LNASUbyDV-kMi3fuihUdfnhtzHnk9wosQ0w-fuamDcT2ZBg@mail.gmail.com>
+ <2d8f0889da0e3dfa9c1c8fe9da301d54636a2e6d.camel@gmail.com>
 MIME-Version: 1.0
-References: <20230328061638.203420-1-yosryahmed@google.com>
- <20230328061638.203420-6-yosryahmed@google.com> <20230328141523.txyhl7wt7wtvssea@google.com>
- <CAJD7tkYo=CeXJPUi_KxjzC0QCxC2qd_J2_FQi_aXh7svD8u60A@mail.gmail.com>
- <CALvZod4Gsngc6MjXdk4s5+ePVjsgcVppdRmsQovN6gSrxzdbfA@mail.gmail.com> <CAJD7tkb_YA3fvo3LgCzR+X-b-r-AmAR68hNR=xT7B6TJfBa54A@mail.gmail.com>
-In-Reply-To: <CAJD7tkb_YA3fvo3LgCzR+X-b-r-AmAR68hNR=xT7B6TJfBa54A@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 28 Mar 2023 12:42:30 -0700
-Message-ID: <CAJD7tkYbZKikn8VEzuuCL9pPiD_PX1gXdK7r9v8q-skKPBYf2w@mail.gmail.com>
-Subject: Re: [PATCH v1 5/9] memcg: replace stats_flush_lock with an atomic
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d8f0889da0e3dfa9c1c8fe9da301d54636a2e6d.camel@gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 12:34=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> On Tue, Mar 28, 2023 at 12:28=E2=80=AFPM Shakeel Butt <shakeelb@google.co=
-m> wrote:
-> >
-> > On Tue, Mar 28, 2023 at 11:53=E2=80=AFAM Yosry Ahmed <yosryahmed@google=
-.com> wrote:
-> > >
-> > [...]
-> > > > > +     if (atomic_xchg(&stats_flush_ongoing, 1))
-> > > >
-> > > > Have you profiled this? I wonder if we should replace the above wit=
-h
-> > > >
-> > > >         if (atomic_read(&stats_flush_ongoing) || atomic_xchg(&stats=
-_flush_ongoing, 1))
-> > >
-> > > I profiled the entire series with perf and I haven't noticed a notabl=
-e
-> > > difference between before and after the patch series -- but maybe som=
-e
-> > > specific access patterns cause a regression, not sure.
-> > >
-> > > Does an atomic_cmpxchg() satisfy the same purpose? it's easier to rea=
-d
-> > > / more concise I guess.
-> > >
-> > > Something like
-> > >
-> > >     if (atomic_cmpxchg(&stats_flush_ongoing, 0, 1))
-> > >
-> > > WDYT?
-> > >
-> >
-> > No, I don't think cmpxchg will be any different from xchg(). On x86,
-> > the cmpxchg will always write to stats_flush_ongoing and depending on
-> > the comparison result, it will either be 0 or 1 here.
-> >
-> > If you see the implementation of queued_spin_trylock(), it does the
-> > same as well.
->
-> Interesting. I thought cmpxchg by definition will compare first and
-> only do the write if stats_flush_ongoing =3D=3D 0 in this case.
->
-> I thought queued_spin_trylock() was doing an atomic_read() first to
-> avoid the LOCK instruction unnecessarily the lock is held by someone
-> else.
+Em Tue, Mar 28, 2023 at 01:33:29PM +0300, Eduard Zingerman escreveu:
+> On Sat, 2023-03-25 at 20:42 +0900, Masahiro Yamada wrote:
+> [...]
+> > > Strange.
+> > > 
+> > > I used the .config file Aurelien provided, but
+> > > I still cannot reproduce this issue.
+> > > 
+> > > The vmlinux size is small as-is in the current mainline.
+> > > 
+> > > [mainline]
+> > > 
+> > > masahiro@zoe:~/ref/linux(master)$ git log --oneline -1
+> > > 65aca32efdcb (HEAD -> master, origin/master, origin/HEAD) Merge tag
+> > > 'mm-hotfixes-stable-2023-03-24-17-09' of
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+> > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-size  vmlinux
+> > >    text    data     bss     dec     hex filename
+> > > 24561282 8186912 622032 33370226 1fd3072 vmlinux
+> > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-readelf -S
+> > > vmlinux | grep -A1 BTF
+> > >   [15] .BTF              PROGBITS         ffff8000091c0708  011d0708
+> > >        000000000048209c  0000000000000000   A       0     0     1
+> > >   [16] .BTF_ids          PROGBITS         ffff8000096427a4  016527a4
+> > >        0000000000000a1c  0000000000000000   A       0     0     1
+> > > 
+> > > [mainline + revert 994b7ac]
+> > > 
+> > > masahiro@zoe:~/ref/linux2(testing)$ git log --oneline -2
+> > > 856c80dd789c (HEAD -> testing) Revert "arm64: remove special treatment
+> > > for the link order of head.o"
+> > > 65aca32efdcb (origin/master, origin/HEAD, master) Merge tag
+> > > 'mm-hotfixes-stable-2023-03-24-17-09' of
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+> > > masahiro@zoe:~/ref/linux2(testing)$ aarch64-linux-gnu-size  vmlinux
+> > >    text    data     bss     dec     hex filename
+> > > 24561329 8186912 622032 33370273 1fd30a1 vmlinux
+> > > masahiro@zoe:~/ref/linux2(testing)$ aarch64-linux-gnu-readelf -S
+> > > vmlinux | grep -A1 BTF
+> > >   [15] .BTF              PROGBITS         ffff8000091c0708  011d0708
+> > >        00000000004820cb  0000000000000000   A       0     0     1
+> > >   [16] .BTF_ids          PROGBITS         ffff8000096427d4  016527d4
+> > >        0000000000000a1c  0000000000000000   A       0     0     1
+> > > 
+> > > 
+> > > 
+> > > I still do not know what affects reproducibility.
+> > > (compiler version, pahole version, etc. ?)
+> > > 
+> > > 
+> > > 
+> > > 
+> > > Aurelien used GCC 12 + binutils 2.40, but
+> > > my toolchain is a bit older.
+> > > 
+> > > FWIW, I tested this on Ubuntu 22.04LTS.
+> > > 
+> > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-gcc --version
+> > > aarch64-linux-gnu-gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0
+> > > Copyright (C) 2021 Free Software Foundation, Inc.
+> > > This is free software; see the source for copying conditions.  There is NO
+> > > warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> > > 
+> > > masahiro@zoe:~/ref/linux(master)$ pahole --version
+> > > v1.22
+> > > 
+> > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-as --version
+> > > GNU assembler (GNU Binutils for Ubuntu) 2.38
+> > > Copyright (C) 2022 Free Software Foundation, Inc.
+> > > This program is free software; you may redistribute it under the terms of
+> > > the GNU General Public License version 3 or later.
+> > > This program has absolutely no warranty.
+> > > This assembler was configured for a target of `aarch64-linux-gnu'.
+> > 
+> > I did the same things in Deiban sid
+> > in order to use newer versions of tools.
+> 
+> 
+> Hi Masahiro,
+> 
+> An upgrade from gcc 11 to gcc 12, BTF section increase and a number of
+> duplicate IDs reported by resolve_btfids matches the description of
+> the following thread:
+> 
+> https://lore.kernel.org/bpf/Y%2FP1yxAuV6Wj3A0K@google.com/
+> 
+> The issue is caused by change in GNU assembler DWARF generation.
+> I've sent a patch to fix it a few weeks ago and it is merged in
+> dwarves master:
+> 
+> a9498899109d ("dwarf_loader: Fix for BTF id drift caused by adding unspecified types")
+> 
+> Could you please grab a fresh version of dwarves from:
+> 
+> git@github.com:acmel/dwarves.git
+> 
+> compile 'pahole' and try with?
 
-Anyway, perhaps it's better to follow what queued_spin_trylock() is
-doing, even if only to avoid locking the cache line unnecessarily.
+pahole 1.25 is long overdue, so let see if this got fixed with what is
+in master, please take a look, you can as well get it from:
 
-(Although now that I think about it, I wonder why atomic_cmpxchg
-doesn't do this by default, food for thought)
+git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+
+- Arnald o
