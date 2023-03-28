@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 861C66CCD00
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 00:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682996CCCFC
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 00:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjC1WRX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 18:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39296 "EHLO
+        id S230159AbjC1WRY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 18:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbjC1WRP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230161AbjC1WRP (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 28 Mar 2023 18:17:15 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B312D30C4
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:17:00 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id x68-20020a628647000000b0062624c52117so6377813pfd.14
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:17:00 -0700 (PDT)
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EF330EE
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:17:02 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id b8-20020aa78708000000b005eaa50faa35so6495198pfo.20
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680041820;
+        d=google.com; s=20210112; t=1680041822;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PicCaNLBAprYzcnNZKIFMVmM/pcbqkg3z9jyIWcMc+U=;
-        b=h3KlqW+jIEJYTK+BpLRlcd0fDHvnJwiAwYWj6YfVTBV4VsUspeq7grO2+Nyd5Hs9eL
-         i4P1tnbfhFqPfNn0TjyAIHaXO2gZSr29zn48TaONjgFqCTDEnUQ3f8yJSse0IzidGN/G
-         NpCoYbM12CNmhz16TMo5PtvGfqzYl/w2IuM1QOzqxIgbpDSLm4BrT8d/pKei+Ju4GCP/
-         Ogx40HCdcd1U7cHn91PPNKl9xn/1CmyhrjIjg+lC++Gh679/KOFvr1XoPNmeY+cl/pIr
-         M7KlNiqZzpwmUKaPk8gBIyxokfcnZJdVNjXvvh+f/KGJuZhwnOInjtgGjgRxKbQyAU78
-         gp4g==
+        bh=rItEK+KYvsSIiuNXlyB23Cs11TTT5fJ8aFIXbrMiIEw=;
+        b=IxPRAGCqLmO64hebIOFNkgw1YGUDJSVyfgVVBwxUcvdgL59f7l4LN5zMPrXb+jjbv/
+         44AuhCK3u7FtNfz2jZoS0YDY1UIo89Iub/aEWQsolPiMTjtNQ86ze7JWsd1EKsY5Y1Aw
+         07n0xvSJnL2lwlEm697GGmrpvMBX0F+5BNT3XjdQx09Cev4XnMOYZ7hcuMbACVnhAT8t
+         T+Q0avDfvu5GCgeBYFMaudoWaGLkL6vKFSabNVsNzlmPSiAqWuR+oN/II5DxoATas6tB
+         N+Po8vyHrMmHA1KarR8lOaWajBlxLkTT4ktZV7Et/fSUfAvv7rnsRtElYoPsoIvIEGG6
+         moFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680041820;
+        d=1e100.net; s=20210112; t=1680041822;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PicCaNLBAprYzcnNZKIFMVmM/pcbqkg3z9jyIWcMc+U=;
-        b=UczFphIC2gK4VO8EeKaUKy0yhVBwqXHEqogVaamehir3B1FiCjw2uUHe7rfkpUjq0U
-         EUMFo1bXY7YBtbU9Qsp83i1kvlbKAQKoypwwafH4l9kfFUmSybuEdCCNpyyl+51rpm6R
-         lwq/V+H3yHI/sKtl/2tywo7GJlcl95oh+SvryqD3QffZ0U5JEWCKvyp7PCQeFjy/XgVp
-         IxUU8IkmP+LqX3s6byOQ39vosdyHb7qiALHmXqnouvJD57zZx/HWZBkWer2Gys2fAhGc
-         sPIclOwNeQnUUNhFgsJvqGS3+QhnGgPrtFEKCulsHhiOMs8DJD+pum9y3xcxcMnxTN1I
-         WzVg==
-X-Gm-Message-State: AAQBX9fkNJZ0eMfotiVoca7BeZSbbg0EDcUzsRvkhzcQIMj9WNcdCyPp
-        nIj2S52SXRCh9WcUkYOwdApfBGcUldqWtsyq
-X-Google-Smtp-Source: AKy350aocwWe2yH7hemOfHMFd7M5GQ6mfc2FkU5LSUuK9d8xU2zKVz1ThP6UHoZndV91Ud7xpyV60PqDU9oxBKYZ
+        bh=rItEK+KYvsSIiuNXlyB23Cs11TTT5fJ8aFIXbrMiIEw=;
+        b=mIQde18nJtcUZQL/hQesgfVjPExOqejc7SwBuMO+1uHc8yea78M/nbgjO10EY18KjR
+         t9ZndQPdkejx7242VUH+dGTEMyoLJWClXCsB/NT7d1HbLp5GMdf/7zhluzFtENdafQwn
+         wCmM71O3jUkymQmQdXnfzWS28qzLcOohK8OFtq9hnV1HeM1xK0Od4Stp3+kISBM6cfGz
+         +uOcraIz7KZZp6VJchxFbbBcGxJSTVjj74ElmWNB7YouXfmgGAbsMHe+ZCK6kxjdCXAJ
+         1JPgFejzgCCa5V6QmYYkeMUxi5AVNLVK4KDuHqDUwjFOqbcZ77dpKyV7pr27ZKGUnzEL
+         AWsg==
+X-Gm-Message-State: AAQBX9dvgSN9Aiz5FH/MqU/ZwC6uU5v2aJ5CVfZ8AG+o77vnvPdadqEc
+        2L50jzkbdPiEm3f1HCnlEyJfbH838RGjhtL5
+X-Google-Smtp-Source: AKy350bXvyCoGIAXSg9szgc2JGdZUl73nsfa2Et7WueltHgrvj0bY0SpfT6d/5uVqOXZZR9I4CnMF+3pkDT4wLPq
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
  (user=yosryahmed job=sendgmr) by 2002:a63:ce08:0:b0:50c:6cd:cace with SMTP id
- y8-20020a63ce08000000b0050c06cdcacemr4745231pgf.2.1680041819916; Tue, 28 Mar
- 2023 15:16:59 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 22:16:40 +0000
+ y8-20020a63ce08000000b0050c06cdcacemr4745262pgf.2.1680041821773; Tue, 28 Mar
+ 2023 15:17:01 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 22:16:41 +0000
 In-Reply-To: <20230328221644.803272-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20230328221644.803272-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-Message-ID: <20230328221644.803272-6-yosryahmed@google.com>
-Subject: [PATCH v2 5/9] memcg: replace stats_flush_lock with an atomic
+Message-ID: <20230328221644.803272-7-yosryahmed@google.com>
+Subject: [PATCH v2 6/9] memcg: sleep during flushing stats in safe contexts
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
@@ -78,102 +78,177 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As Johannes notes in [1], stats_flush_lock is currently used to:
-(a) Protect updated to stats_flush_threshold.
-(b) Protect updates to flush_next_time.
-(c) Serializes calls to cgroup_rstat_flush() based on those ratelimits.
+Currently, all contexts that flush memcg stats do so with sleeping not
+allowed. Some of these contexts are perfectly safe to sleep in, such as
+reading cgroup files from userspace or the background periodic flusher.
 
-However:
+Refactor the code to make mem_cgroup_flush_stats() non-atomic (aka
+sleepable), and provide a separate atomic version. The atomic version is
+used in reclaim, refault, writeback, and in mem_cgroup_usage(). All
+other code paths are left to use the non-atomic version. This includes
+callbacks for userspace reads and the periodic flusher.
 
-1. stats_flush_threshold is already an atomic
-
-2. flush_next_time is not atomic. The writer is locked, but the reader
-   is lockless. If the reader races with a flush, you could see this:
-
-                                        if (time_after(jiffies, flush_next_time))
-        spin_trylock()
-        flush_next_time = now + delay
-        flush()
-        spin_unlock()
-                                        spin_trylock()
-                                        flush_next_time = now + delay
-                                        flush()
-                                        spin_unlock()
-
-   which means we already can get flushes at a higher frequency than
-   FLUSH_TIME during races. But it isn't really a problem.
-
-   The reader could also see garbled partial updates, so it needs at
-   least READ_ONCE and WRITE_ONCE protection.
-
-3. Serializing cgroup_rstat_flush() calls against the ratelimit
-   factors is currently broken because of the race in 2. But the race
-   is actually harmless, all we might get is the occasional earlier
-   flush. If there is no delta, the flush won't do much. And if there
-   is, the flush is justified.
-
-So the lock can be removed all together. However, the lock also served
-the purpose of preventing a thundering herd problem for concurrent
-flushers, see [2]. Use an atomic instead to serve the purpose of
-unifying concurrent flushers.
-
-[1]https://lore.kernel.org/lkml/20230323172732.GE739026@cmpxchg.org/
-[2]https://lore.kernel.org/lkml/20210716212137.1391164-2-shakeelb@google.com/
+Since refault is the only caller of mem_cgroup_flush_stats_ratelimited(),
+change it to mem_cgroup_flush_stats_atomic_ratelimited(). Reclaim and
+refault code paths are modified to do non-atomic flushing in separate
+later patches -- so it will eventually be changed back to
+mem_cgroup_flush_stats_ratelimited().
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Shakeel Butt <shakeelb@google.com>
 ---
- mm/memcontrol.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ include/linux/memcontrol.h |  9 ++++++--
+ mm/memcontrol.c            | 45 ++++++++++++++++++++++++++++++--------
+ mm/vmscan.c                |  2 +-
+ mm/workingset.c            |  2 +-
+ 4 files changed, 45 insertions(+), 13 deletions(-)
 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index ac3f3b3a45e2..b424ba3ebd09 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1037,7 +1037,8 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ }
+ 
+ void mem_cgroup_flush_stats(void);
+-void mem_cgroup_flush_stats_ratelimited(void);
++void mem_cgroup_flush_stats_atomic(void);
++void mem_cgroup_flush_stats_atomic_ratelimited(void);
+ 
+ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 			      int val);
+@@ -1535,7 +1536,11 @@ static inline void mem_cgroup_flush_stats(void)
+ {
+ }
+ 
+-static inline void mem_cgroup_flush_stats_ratelimited(void)
++static inline void mem_cgroup_flush_stats_atomic(void)
++{
++}
++
++static inline void mem_cgroup_flush_stats_atomic_ratelimited(void)
+ {
+ }
+ 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ff39f78f962e..65750f8b8259 100644
+index 65750f8b8259..a2ce3aa10d94 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -585,8 +585,8 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
-  */
- static void flush_memcg_stats_dwork(struct work_struct *w);
- static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
--static DEFINE_SPINLOCK(stats_flush_lock);
- static DEFINE_PER_CPU(unsigned int, stats_updates);
-+static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
- static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
- static u64 flush_next_time;
+@@ -634,7 +634,7 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ 	}
+ }
  
-@@ -636,15 +636,19 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 
- static void __mem_cgroup_flush_stats(void)
+-static void __mem_cgroup_flush_stats(void)
++static void do_flush_stats(bool atomic)
  {
--	unsigned long flag;
--
--	if (!spin_trylock_irqsave(&stats_flush_lock, flag))
-+	/*
-+	 * We always flush the entire tree, so concurrent flushers can just
-+	 * skip. This avoids a thundering herd problem on the rstat global lock
-+	 * from memcg flushers (e.g. reclaim, refault, etc).
-+	 */
-+	if (atomic_read(&stats_flush_ongoing) ||
-+	    atomic_xchg(&stats_flush_ongoing, 1))
+ 	/*
+ 	 * We always flush the entire tree, so concurrent flushers can just
+@@ -646,26 +646,46 @@ static void __mem_cgroup_flush_stats(void)
  		return;
  
--	flush_next_time = jiffies_64 + 2*FLUSH_TIME;
-+	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
- 	cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
+ 	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+-	cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
++
++	if (atomic)
++		cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
++	else
++		cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
++
  	atomic_set(&stats_flush_threshold, 0);
--	spin_unlock_irqrestore(&stats_flush_lock, flag);
-+	atomic_set(&stats_flush_ongoing, 0);
+ 	atomic_set(&stats_flush_ongoing, 0);
  }
  
++static bool should_flush_stats(void)
++{
++	return atomic_read(&stats_flush_threshold) > num_online_cpus();
++}
++
  void mem_cgroup_flush_stats(void)
-@@ -655,7 +659,7 @@ void mem_cgroup_flush_stats(void)
- 
- void mem_cgroup_flush_stats_ratelimited(void)
  {
--	if (time_after64(jiffies_64, flush_next_time))
-+	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
- 		mem_cgroup_flush_stats();
+-	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
+-		__mem_cgroup_flush_stats();
++	if (should_flush_stats())
++		do_flush_stats(false);
  }
  
+-void mem_cgroup_flush_stats_ratelimited(void)
++void mem_cgroup_flush_stats_atomic(void)
++{
++	if (should_flush_stats())
++		do_flush_stats(true);
++}
++
++void mem_cgroup_flush_stats_atomic_ratelimited(void)
+ {
+ 	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
+-		mem_cgroup_flush_stats();
++		mem_cgroup_flush_stats_atomic();
+ }
+ 
+ static void flush_memcg_stats_dwork(struct work_struct *w)
+ {
+-	__mem_cgroup_flush_stats();
++	/*
++	 * Always flush here so that flushing in latency-sensitive paths is
++	 * as cheap as possible.
++	 */
++	do_flush_stats(false);
+ 	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
+ }
+ 
+@@ -3685,9 +3705,12 @@ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
+ 		 * done from irq context; use stale stats in this case.
+ 		 * Arguably, usage threshold events are not reliable on the root
+ 		 * memcg anyway since its usage is ill-defined.
++		 *
++		 * Additionally, other call paths through memcg_check_events()
++		 * disable irqs, so make sure we are flushing stats atomically.
+ 		 */
+ 		if (in_task())
+-			mem_cgroup_flush_stats();
++			mem_cgroup_flush_stats_atomic();
+ 		val = memcg_page_state(memcg, NR_FILE_PAGES) +
+ 			memcg_page_state(memcg, NR_ANON_MAPPED);
+ 		if (swap)
+@@ -4610,7 +4633,11 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
+ 	struct mem_cgroup *parent;
+ 
+-	mem_cgroup_flush_stats();
++	/*
++	 * wb_writeback() takes a spinlock and calls
++	 * wb_over_bg_thresh()->mem_cgroup_wb_stats(). Do not sleep.
++	 */
++	mem_cgroup_flush_stats_atomic();
+ 
+ 	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
+ 	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 9c1c5e8b24b8..a9511ccb936f 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2845,7 +2845,7 @@ static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
+ 	 * Flush the memory cgroup stats, so that we read accurate per-memcg
+ 	 * lruvec stats for heuristics.
+ 	 */
+-	mem_cgroup_flush_stats();
++	mem_cgroup_flush_stats_atomic();
+ 
+ 	/*
+ 	 * Determine the scan balance between anon and file LRUs.
+diff --git a/mm/workingset.c b/mm/workingset.c
+index af862c6738c3..dab0c362b9e3 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -462,7 +462,7 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 
+ 	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
+ 
+-	mem_cgroup_flush_stats_ratelimited();
++	mem_cgroup_flush_stats_atomic_ratelimited();
+ 	/*
+ 	 * Compare the distance to the existing workingset size. We
+ 	 * don't activate pages that couldn't stay resident even if
 -- 
 2.40.0.348.gf938b09366-goog
 
