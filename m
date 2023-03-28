@@ -2,157 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA886CCC3B
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 23:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A1A6CCC44
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 23:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbjC1VnV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 17:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
+        id S229886AbjC1VuX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 17:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjC1VnP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 17:43:15 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FE52D68;
-        Tue, 28 Mar 2023 14:43:11 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id cn12so55431918edb.4;
-        Tue, 28 Mar 2023 14:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680039789;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xvPLTtKlU0vNaz9725r81EHFLKAu4AQ65dj5fg+SF9o=;
-        b=PHzYOgN3kiUberFUFRdpHlY1IeaKO2su/u4MjPlENAtPs1jUgI9VRf8otOVAos+JcL
-         U/FDVRJbNVs8TslMAMqO9wdBebDufzTpB5j60GkblJyBQaoEOi3Ze9eWuIT7bZxcLl2Q
-         21G10Z793p2Nc7DYKBDuugDswH94Be+y0UNE1o01YawDMpf5VX7m3Ni3jOwKPsLsU/vY
-         lpm6XDmbaWDhkda3EldQLNUx+ie3pjhSmvQeAxw1uuJM8kMDQzfWv9QFXG7IpnOBukVE
-         WZcAPWZuRt5JD4ronusHFxNw1xLZOoI8NFyDz2UtWkxk/SBQ0Bgw7e/T42x60fEh1BLW
-         ARAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680039789;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xvPLTtKlU0vNaz9725r81EHFLKAu4AQ65dj5fg+SF9o=;
-        b=f6jYh0RqQWchPPjmbCUAP944sEymPP7QbhCwqxMkvWxwbNs8lmpncf74zrg8s9Uspt
-         pZYNNnpRs/JS9auVJ39wd1uX4DCl1NE4toO8qR0Fmy5zp6LrYtqISD88GeM8bUKgmoL5
-         9LOGaowMEaGDKLOFuNASsGxMT6UfOi5UyH88DHqjxXdfKaYB7qk7Jh2jrte3BNcjIt4S
-         HkEB6beY5ZwK2qifWdBXu2OlcrOvsYzmTW+LLYQNxLKp2wdX7i2r/hKIQB2pED9t84++
-         wXJDzqcQlZyKgR/k540jjYwsexJHyIxWXfrDMps6T0tovW7RVGg9Vno1+A8994QYAPFV
-         nXjA==
-X-Gm-Message-State: AAQBX9fmpl1Rzy3THEd3yg4N5Bm91CgQSpOoBNnj673s/sik5BVznrFg
-        hEpYzj6kpZkpK/ibx24sT/8qY97tfePFcR+eT7c=
-X-Google-Smtp-Source: AKy350aySh1k6SU2Zakrc+HUzPRxbOk4VjgCQEdQFoUpBC1PHkeludEjEA0Yeiy88DUuJzO1DQIycIJ2jhyLZppxeg0=
-X-Received: by 2002:a50:d6c3:0:b0:501:d489:f797 with SMTP id
- l3-20020a50d6c3000000b00501d489f797mr8806073edj.1.1680039789534; Tue, 28 Mar
- 2023 14:43:09 -0700 (PDT)
+        with ESMTP id S229729AbjC1VuX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 17:50:23 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0041B8
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 14:50:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 50B21CE1D0A
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 21:50:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 57489C4339B;
+        Tue, 28 Mar 2023 21:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680040218;
+        bh=ceNFkOz3lphB/tZfPG+obpegZYVsP4dCykLcuPFlji4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Uxp8fcY6eMmOIfI4FtubYGG1ITcyCiugPEY6tP86Z/FrjB1y9Olp6ok03z0bqqnaB
+         roX65kYiJNXpY1CebjkV22DGbbZoNY2m6j7fsntZdncXtxM1ceRV19NSBDhV/nOEur
+         HtvK/jRagPJrb1ln14RVBeIcALo23Hxpu7q10KXcgHddNgsPziRCXoQblYFh9tzehF
+         ABechS8nhUG1Zh+uZ6edtwPHHTICDNPPUGq9V9RYgkA4xWQGBUnqKfCmosdt9f0Nou
+         V2W6/zM8GEpLMnRd8P8rkwGUpGLEFM9DlTKMDTHoHzE40ldrLmbaniQpY+SppAmDn6
+         1Kg42zUiJKYkg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3AF9DE50D76;
+        Tue, 28 Mar 2023 21:50:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230306071006.73t5vtmxrsykw4zu@apollo> <CAADnVQJ=wzztviB73jBy3+OYxUKhAX_jTGpS8Xv45vUVTDY-ZA@mail.gmail.com>
- <20230307102233.bemr47x625ity26z@apollo> <CAADnVQ+xOrCSwgxGQXNM5wHfOwV+x0csHfNyDYBHgyGVXgc2Ow@mail.gmail.com>
- <20230307173529.gi2crls7fktn6uox@apollo> <CAEf4Bza4N6XtXERkL+41F+_UsTT=T4B3gt0igP5mVVrzr9abXw@mail.gmail.com>
- <20230310211541.schh7iyrqgbgfaay@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYo-8ckyi-aogvW9HijNh+Z81CE__mWtmVJtCzuY+oECA@mail.gmail.com>
- <CAADnVQLBDNqqfoNOV=mPxvsMdXLJCK_g1qmHjqxo=PED_vbhuw@mail.gmail.com>
- <CAJnrk1YCbLxcKT_FY_UdO9YBOz9fTyFQFTB8P0_2swPc39egvg@mail.gmail.com>
- <20230313144135.5xvgdfvfknb4liwh@apollo> <CAEf4BzacF6pj7wHJ4NH3GBe4rtkaLSZUU1xahhQ37892Ds2ZmA@mail.gmail.com>
- <CAJnrk1Y=u_9sVo1QhNopRu7F7tRsmZmcNDMeiUw+QF3rtQQ2og@mail.gmail.com>
-In-Reply-To: <CAJnrk1Y=u_9sVo1QhNopRu7F7tRsmZmcNDMeiUw+QF3rtQQ2og@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Mar 2023 14:42:57 -0700
-Message-ID: <CAEf4BzaLmKr4Jc_Hmoqc=uWnpcGXJMzzZVt9nrU8pvhXOPzbmQ@mail.gmail.com>
-Subject: Re: [PATCH v13 bpf-next 09/10] bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/2] verifier/xdp_direct_packet_access.c converted to
+ inline assembly
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168004021823.3305.10312090785832689380.git-patchwork-notify@kernel.org>
+Date:   Tue, 28 Mar 2023 21:50:18 +0000
+References: <20230328020813.392560-1-eddyz87@gmail.com>
+In-Reply-To: <20230328020813.392560-1-eddyz87@gmail.com>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+        yhs@fb.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 27, 2023 at 12:47=E2=80=AFAM Joanne Koong <joannelkoong@gmail.c=
-om> wrote:
->
-> On Thu, Mar 16, 2023 at 11:55=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Mar 13, 2023 at 7:41=E2=80=AFAM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Tue, 28 Mar 2023 05:08:11 +0300 you wrote:
+> verifier/xdp_direct_packet_access.c automatically converted to inline
+> assembly using [1].
+> 
+> This is a leftover from [2], the last patch in a batch was blocked by
+> mail server for being too long. This patch-set splits it in two:
+> - one to add migrated test to progs/
+> - one to remove old test from verifier/
+> 
 > [...]
-> > > > > For bpf_dynptr_slice_rdrw we can mark buffer[] in stack as
-> > > > > poisoned with dynptr_id =3D=3D R0's PTR_TO_MEM dynptr_id.
-> > > > > Then as soon as first spillable reg touches that poisoned stack a=
-rea
-> > > > > we can invalidate all PTR_TO_MEM's with that dynptr_id.
-> > > >
-> > > > Okay, this makes sense to me. are you already currently working or
-> > > > planning to work on a fix for this Kumar, or should i take a stab a=
-t
-> > > > it?
-> > >
-> > > I'm not planning to do so, so go ahead. One more thing I noticed just=
- now is
-> > > that we probably need to update regsafe to perform a check_ids compar=
-ison for
-> > > dynptr_id for dynptr PTR_TO_MEMs? It was not a problem back when f806=
-4ab90d66
-> > > ("bpf: Invalidate slices on destruction of dynptrs on stack") was add=
-ed but
-> > > 567da5d253cd ("bpf: improve regsafe() checks for PTR_TO_{MEM,BUF,TP_B=
-UFFER}")
-> > > added PTR_TO_MEM in the switch statement.
-> >
-> > I can take care of this. But I really would like to avoid these
-> > special cases of extra dynptr_id, exactly for reasons like this
-> > omitted check.
-> >
-> > What do people think about generalizing current ref_obj_id to be more
-> > like "lifetime id" (to borrow Rust terminology a bit), which would be
-> > an object (which might or might not be a tracked reference) defining
-> > the scope/lifetime of the current register (whatever it represents).
-> >
-> > I haven't looked through code much, but I've been treating ref_obj_id
-> > as that already in my thinking before, and it seems to be a better
-> > approach than having a special-case of dynptr_id.
-> >
-> > Thoughts?
->
-> Thanks for taking care of this (and apologies for the late reply). i
-> think the dynptr_id field would still be needed in this case to
-> associate a slice with a dynptr, so that when a dynptr is invalidated
-> its slices get invalidated as well. I'm not sure we could get away
-> with just having ref_obj_id symbolize that in the case where the
-> underlying object is a tracked reference, because for example, it
-> seems like a dynptr would need both a unique reference id to the
-> object (so that if for example there are two dynptrs pointing to the
-> same object, they will both be assignedthe same reference id so the
-> object can't for example be freed twice) and also its own dynptr id so
-> that its slices get invalidated if the dynptr is invalidated
 
-Can you elaborate on specific example? Because let's say dynptr is
-created from some refcounted object. Then that dynptr's id field will
-be a unique "dynptr id", dynptr's ref_obj_id will point to that
-refcounted object from which we derived dynptr itself. And then when
-we create slices from dynptrs, then each slice gets its own unique id,
-but records dynptr's id as slice's ref_obj_id. So we end up with this
-hierarchy of id + ref_obj_id forming a tree.
+Here is the summary with links:
+  - [bpf-next,1/2] selftests/bpf: verifier/xdp_direct_packet_access.c converted to inline assembly
+    https://git.kernel.org/bpf/bpf-next/c/6e9e141a7a28
+  - [bpf-next,2/2] selftests/bpf: remove verifier/xdp_direct_packet_access.c, converted to progs/verifier_xdp_direct_packet_access.c
+    https://git.kernel.org/bpf/bpf-next/c/c63a7d8bbb54
 
-Or am I missing something?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I want to take a look at simplifying this at some point, so I'll know
-more details once I start digging into code. Right now I still fail to
-see why we need a third ID for dynptr.
+
