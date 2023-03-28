@@ -2,198 +2,321 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFCB6CBF69
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 14:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16956CBF96
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 14:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232748AbjC1Ml1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 08:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        id S232866AbjC1Mqq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 08:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232743AbjC1MlV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 08:41:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA6EAD08;
-        Tue, 28 Mar 2023 05:41:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2ABD461756;
-        Tue, 28 Mar 2023 12:40:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 349F9C433EF;
-        Tue, 28 Mar 2023 12:40:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680007257;
-        bh=CQ4IVV781DkJukhgUnV5I5MiXxgHEAr0yze5wUMQGD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jSTD76emm4A5eKALdBIaQ3QiObyvc/EMlMJt1TRimdv0s8YTuRll6/Rq9kQR3XDjw
-         sqMkhpkSleRPEYmdPECEutj2gCeiENx0CmU5HMvyTzt6j3Ia7MUB3xVKmCqrYhA8A9
-         1v/P1oFza2mt/o1UowBVxbRT1fC1Cqbzqn62LJ5/mXwU6/MqO897VtuLWvbYTiKa8G
-         K3qAjdom1k9nS5yK3xMKWA6n/Q8bbJn7c98vqe91bCXhX8rlmEWAY1a2kMbFh5xMJP
-         9QNtVNpgGxMlYzcB5dOekgE6GS7qsfU1kWQAFNvfcnt2Jfia5tRFShgeKmOrdbpYpt
-         v83NWk1SnFYsA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A0F324052D; Tue, 28 Mar 2023 09:40:54 -0300 (-03)
-Date:   Tue, 28 Mar 2023 09:40:54 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, jose.marchesi@oracle.com, david.faust@oracle.com,
-        alan.maguire@oracle.com
-Subject: Re: [PATCH dwarves v2 1/5] fprintf: Correct names for types with
- btf_type_tag attribute
-Message-ID: <ZCLgVrwpb3fhnnE7@kernel.org>
-References: <20230314230417.1507266-1-eddyz87@gmail.com>
- <20230314230417.1507266-2-eddyz87@gmail.com>
- <ZCGCBF5iYxCtBQKh@kernel.org>
- <b89f55694845d9d8784fe02700f184ff1de83e2e.camel@gmail.com>
+        with ESMTP id S232987AbjC1Mqb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 08:46:31 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97855AD17
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 05:46:08 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id eg48so49103220edb.13
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 05:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680007560;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L4q9/iwM65tb/OvTKZFpk+w9s73Eu6LVNDglMXspTfE=;
+        b=l5ETRQXTbeJuN4EV4y4/9Cx2MGG4rrcK3nPnMVKXY//m55aclD75WJ7Y2VptgXva8u
+         cIXUSI7sNPRkCfuZvk18XIQfmVePlhib/BJx9eFWdAi0hui5OmByQ9cD8vynPfwiVqf1
+         u0sLjPbAHDvDoPddPjGv+mkQ/M5L8t6scM1g4PGizMlWLCiHzx+5GC8V+7j56339eiRK
+         LI2sWq9xpwiMzvzl02OwnW4SsJAG4RqyDb0rC9ZO9VEf2fh5Xcg/3B59KnXd5Thy/voH
+         WZo4fZdSD0JL2DzzJJtqImyJ4Q0OP3mfUMMwjA/vcHjawKL5nj1aI8/DQeko/47iLYDt
+         X3gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680007560;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L4q9/iwM65tb/OvTKZFpk+w9s73Eu6LVNDglMXspTfE=;
+        b=PK2dRL0XR/5plWQniqK0TMxbIpWRK8m94fAcJC3rFQhDTybx3y5FfTji4DsxIxiAT+
+         G4DN+4ZsXs0orBskT9vVk9D1CfHtH6zD09c1KTmHVfh9NyL/oPRoZDC8hp/zudHv0rth
+         /8W4sCZOGDU49N4VMyNH/kZIfZnNQsDLuaJc/UK8GLkk34FtxWQ63OoxxinDZbCqXZHh
+         WB+05c3ISfWq69AnBTKwUloOUdeUOeJ2Ixakwpy5/1YZj5ykWyeWROiXbYZOErKdoNDb
+         Yid4GMriPZs8jI92+OjlPlNBHoPYvWYEZ3HfwI6Hc+IBr1ZLvOVfYMwjqmYli2sG1Qq/
+         5plg==
+X-Gm-Message-State: AAQBX9eHa777ljjln/idiOTZU0qy5o98iVbuZoVX2d/ySOS+NpuM4sQ7
+        BgrAvPcYoftdduSn0Afli7h7ZlDIwymEFQ==
+X-Google-Smtp-Source: AKy350aUJ53kqggBr2RRS1vDt7+IMhBPoWYuxw4w0GXPlxRXrElbpY02BgKjqHXWwhQ+iMQnczOJyg==
+X-Received: by 2002:a17:907:2e19:b0:930:9f89:65ef with SMTP id ig25-20020a1709072e1900b009309f8965efmr14845562ejc.11.1680007560435;
+        Tue, 28 Mar 2023 05:46:00 -0700 (PDT)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id hy16-20020a1709068a7000b00931d3509af1sm15140326ejc.222.2023.03.28.05.45.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Mar 2023 05:45:59 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 28 Mar 2023 14:45:57 +0200
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH bpf-next v3 00/12] bpf: Support 64-bit pointers to kfuncs
+Message-ID: <ZCLhhUmzeQY7amRC@krava>
+References: <20230222223714.80671-1-iii@linux.ibm.com>
+ <CAADnVQ+c_+sCXgb63_Kqp8Qb_0cMDcHXrDsbtoP60LiWerWpkQ@mail.gmail.com>
+ <8e53174c5d5bae318a38997a7e276d7cdbccfa00.camel@linux.ibm.com>
+ <CAADnVQJ9-wBrAw5+Y17Bxv4+CrLHmtkjuU143eD3fwhpQ1wvKA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b89f55694845d9d8784fe02700f184ff1de83e2e.camel@gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <CAADnVQJ9-wBrAw5+Y17Bxv4+CrLHmtkjuU143eD3fwhpQ1wvKA@mail.gmail.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Mar 27, 2023 at 03:10:22PM +0300, Eduard Zingerman escreveu:
-> On Mon, 2023-03-27 at 08:46 -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Mar 15, 2023 at 01:04:13AM +0200, Eduard Zingerman escreveu:
-> > > The following example contains a structure field annotated with
-> > > btf_type_tag attribute:
-> > > 
-> > >     #define __tag1 __attribute__((btf_type_tag("tag1")))
-> > > 
-> > >     struct st {
-> > >       int __tag1 *a;
-> > >     } g;
-> > > 
-> > > It is not printed correctly by `pahole -F dwarf` command:
-> > > 
-> > >     $ clang -g -c test.c -o test.o
-> > >     pahole -F dwarf test.o
-> > >     struct st {
-> > >     	tag1 *                     a;                    /*     0     8 */
-> > >     	...
-> > >     };
-> > > 
-> > > Note the type for variable `a`: `tag1` is printed instead of `int`.
-> > > This commit teaches `type__fprintf()` and `__tag_name()` logic to skip
-> > > `DW_TAG_LLVM_annotation` objects that are used to encode type tags.
-> > 
-> > I'm applying this now to make progress on this front, but longer term we
-> > should printf it too, as we want the output to match the original source
-> > code as much as possible from the type information.
+On Fri, Feb 24, 2023 at 04:02:50PM -0800, Alexei Starovoitov wrote:
+> On Thu, Feb 23, 2023 at 12:43 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+> >
+> > On Thu, 2023-02-23 at 09:17 -0800, Alexei Starovoitov wrote:
+> > > On Wed, Feb 22, 2023 at 2:37 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> > > wrote:
+> > > >
+> > > > v2:
+> > > > https://lore.kernel.org/bpf/20230215235931.380197-1-iii@linux.ibm.com/
+> > > > v2 -> v3: Drop BPF_HELPER_CALL (Alexei).
+> > > >           Drop the merged check_subprogs() cleanup.
+> > > >           Adjust arm, sparc and i386 JITs.
+> > > >           Fix a few portability issues in test_verifier.
+> > > >           Fix a few sparc64 issues.
+> > > >           Trim s390x denylist.
+> > >
+> > > I don't think it's a good idea to change a bunch of JITs
+> > > that you cannot test just to address the s390 issue.
+> > > Please figure out an approach that none of the JITs need changes.
+> >
+> > What level of testing for these JITs would you find acceptable?
 > 
-> Understood, thank you.
-> 
-> Also, I want to give a heads-up about ongoing discussion in:
-> https://reviews.llvm.org/D143967
-> 
-> The gist of the discussion is that for the code like:
-> 
->   volatile __tag("foo") int;
->   
-> Kernel expects BTF to be:
-> 
->   __tag("foo") -> volatile -> int
->   
-> And I encode it in DWARF as:
-> 
->   volatile       -> int
->     __tag("foo")
->     
-> But GCC guys argue that DWARF should be like this:
-> 
->   volatile       -> int
->                       __tag("foo")
-> 
-> So, to get the BTF to a form acceptable for kernel some additional
-> pahole modifications might be necessary. (I will work on a prototype
-> for such modifications this week).
-> 
-> Maybe put this patch-set on-hold until that is resolved?
+> Just find a way to avoid changing them.
 
-Ok, so I'll apply just the first two, to get btfdiff a down to those
-zero sized arrays when processing clang generated DWARF for a recent
-kernel, see below.
+hi,
+sending another stub on this
 
-Ok?
+the idea is to use 'func_id' in insn->imm for s390 arch and keep
+other archs to use the current BPF_CALL_IMM(addr) value
 
-- A rnaldo
+this way the s390 arch is able to lookup the kfunc_desc and use
+the stored kfunc address
 
-⬢[acme@toolbox pahole]$ git log --oneline -5
-b43651673676c1dc (HEAD -> master) btf_loader: A hack for BTF import of btf_type_tag attributes
-e7fb771f2649fc1b fprintf: Correct names for types with btf_type_tag attribute
-4d17096076b2351f (quaco/master, quaco/HEAD, github/tmp.master, github/next, acme/tmp.master, acme/next) btf_encoder: Compare functions via prototypes not parameter names
-82730394195276ac fprintf: Support skipping modifier
-d184aaa125ea40ff fprintf: Generalize function prototype print to support passing conf
-⬢[acme@toolbox pahole]$
+I added insn->off to the kfunc_desc sorting, which is not needed
+for !__s390__ case, but it won't hurt... we can have that separated
+as well if needed
 
-⬢[acme@toolbox pahole]$ btfdiff ../vmlinux-clang-pahole-1.25+rust
-die__process_class: tag not supported 0x2f (template_type_parameter)!
-die__process_class: tag not supported 0x33 (variant_part)!
---- /tmp/btfdiff.dwarf.EiDOTz	2023-03-28 09:38:09.283942846 -0300
-+++ /tmp/btfdiff.btf.rWM9v6	2023-03-28 09:38:09.624952028 -0300
-@@ -14496,7 +14496,7 @@ struct bpf_cand_cache {
- 	struct {
- 		const struct btf  * btf;                 /*    16     8 */
- 		u32                id;                   /*    24     4 */
--	} cands[0]; /*    16     0 */
-+	} cands[]; /*    16     0 */
+the patch below is completely untested on s390x of course, but it
+does not seem to break x86 ;-)
 
- 	/* size: 16, cachelines: 1, members: 5 */
- 	/* last cacheline: 16 bytes */
-@@ -18310,7 +18310,7 @@ struct btf_id_set8 {
- 	struct {
- 		u32                id;                   /*     8     4 */
- 		u32                flags;                /*    12     4 */
--	} pairs[0]; /*     8     0 */
-+	} pairs[]; /*     8     0 */
+I think we could have config option for that instead of using __s390x__
 
- 	/* size: 8, cachelines: 1, members: 3 */
- 	/* last cacheline: 8 bytes */
-@@ -27765,7 +27765,7 @@ struct cpu_rmap {
- 	struct {
- 		u16                index;                /*    16     2 */
- 		u16                dist;                 /*    18     2 */
--	} near[0]; /*    16     0 */
-+	} near[]; /*    16     0 */
+thoughts?
 
- 	/* size: 16, cachelines: 1, members: 5 */
- 	/* last cacheline: 16 bytes */
-@@ -73931,7 +73931,7 @@ struct linux_efi_memreserve {
- 	struct {
- 		phys_addr_t        base;                 /*    16     8 */
- 		phys_addr_t        size;                 /*    24     8 */
--	} entry[0]; /*    16     0 */
-+	} entry[]; /*    16     0 */
+thanks,
+jirka
 
- 	/* size: 16, cachelines: 1, members: 4 */
- 	/* last cacheline: 16 bytes */
-@@ -84345,7 +84345,7 @@ struct netlink_policy_dump_state {
- 	struct {
- 		const struct nla_policy  * policy;       /*    16     8 */
- 		unsigned int       maxtype;              /*    24     4 */
--	} policies[0]; /*    16     0 */
-+	} policies[]; /*    16     0 */
 
- 	/* size: 16, cachelines: 1, members: 4 */
- 	/* sum members: 12, holes: 1, sum holes: 4 */
-@@ -139178,7 +139178,7 @@ struct uv_rtc_timer_head {
- 		/* XXX 4 bytes hole, try to pack */
-
- 		u64                expires;              /*    24     8 */
--	} cpu[0]; /*    16     0 */
-+	} cpu[]; /*    16     0 */
-
- 	/* size: 16, cachelines: 1, members: 4 */
- 	/* sum members: 12, holes: 1, sum holes: 4 */
-⬢[acme@toolbox pahole]$
+---
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2d8f3f639e68..b60945e135ee 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2296,6 +2296,8 @@ bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
+ const struct btf_func_model *
+ bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+ 			 const struct bpf_insn *insn);
++int bpf_get_kfunc_addr(const struct bpf_prog *prog, u32 func_id, u16 offset,
++		       u8 **func_addr);
+ struct bpf_core_ctx {
+ 	struct bpf_verifier_log *log;
+ 	const struct btf *btf;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index b297e9f60ca1..06459df0a8c0 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1186,10 +1186,12 @@ int bpf_jit_get_func_addr(const struct bpf_prog *prog,
+ {
+ 	s16 off = insn->off;
+ 	s32 imm = insn->imm;
++	bool fixed;
+ 	u8 *addr;
++	int err;
+ 
+-	*func_addr_fixed = insn->src_reg != BPF_PSEUDO_CALL;
+-	if (!*func_addr_fixed) {
++	switch (insn->src_reg) {
++	case BPF_PSEUDO_CALL:
+ 		/* Place-holder address till the last pass has collected
+ 		 * all addresses for JITed subprograms in which case we
+ 		 * can pick them up from prog->aux.
+@@ -1201,15 +1203,28 @@ int bpf_jit_get_func_addr(const struct bpf_prog *prog,
+ 			addr = (u8 *)prog->aux->func[off]->bpf_func;
+ 		else
+ 			return -EINVAL;
+-	} else {
++		fixed = false;
++		break;
++	case 0:
+ 		/* Address of a BPF helper call. Since part of the core
+ 		 * kernel, it's always at a fixed location. __bpf_call_base
+ 		 * and the helper with imm relative to it are both in core
+ 		 * kernel.
+ 		 */
+ 		addr = (u8 *)__bpf_call_base + imm;
++		fixed = true;
++		break;
++	case BPF_PSEUDO_KFUNC_CALL:
++		err = bpf_get_kfunc_addr(prog, imm, off, &addr);
++		if (err)
++			return err;
++		fixed = true;
++		break;
++	default:
++		return -EINVAL;
+ 	}
+ 
++	*func_addr_fixed = fixed;
+ 	*func_addr = (unsigned long)addr;
+ 	return 0;
+ }
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 20eb2015842f..a83750542a09 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2443,6 +2443,7 @@ struct bpf_kfunc_desc {
+ 	u32 func_id;
+ 	s32 imm;
+ 	u16 offset;
++	unsigned long addr;
+ };
+ 
+ struct bpf_kfunc_btf {
+@@ -2492,6 +2493,23 @@ find_kfunc_desc(const struct bpf_prog *prog, u32 func_id, u16 offset)
+ 		       sizeof(tab->descs[0]), kfunc_desc_cmp_by_id_off);
+ }
+ 
++int bpf_get_kfunc_addr(const struct bpf_prog *prog, u32 func_id, u16 offset,
++		       u8 **func_addr)
++{
++#ifdef __s390x__
++	const struct bpf_kfunc_desc *desc;
++
++	desc = find_kfunc_desc(prog, func_id, offset);
++	if (!desc)
++		return -EFAULT;
++
++	*func_addr = (u8 *)desc->addr;
++#else
++	*func_addr = (u8 *)__bpf_call_base + func_id;
++#endif
++	return 0;
++}
++
+ static struct btf *__find_kfunc_desc_btf(struct bpf_verifier_env *env,
+ 					 s16 offset)
+ {
+@@ -2672,6 +2690,9 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
+ 		return -EINVAL;
+ 	}
+ 
++#ifdef __s390x__
++	call_imm = func_id;
++#else
+ 	call_imm = BPF_CALL_IMM(addr);
+ 	/* Check whether or not the relative offset overflows desc->imm */
+ 	if ((unsigned long)(s32)call_imm != call_imm) {
+@@ -2679,17 +2700,25 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
+ 			func_name);
+ 		return -EINVAL;
+ 	}
++#endif
+ 
+ 	if (bpf_dev_bound_kfunc_id(func_id)) {
+ 		err = bpf_dev_bound_kfunc_check(&env->log, prog_aux);
+ 		if (err)
+ 			return err;
++#ifdef __s390x__
++		xdp_kfunc = bpf_dev_bound_resolve_kfunc(env->prog, func_id);
++		if (xdp_kfunc)
++			addr = (unsigned long)xdp_kfunc;
++		/* fallback to default kfunc when not supported by netdev */
++#endif
+ 	}
+ 
+ 	desc = &tab->descs[tab->nr_descs++];
+ 	desc->func_id = func_id;
+ 	desc->imm = call_imm;
+ 	desc->offset = offset;
++	desc->addr = addr;
+ 	err = btf_distill_func_proto(&env->log, desc_btf,
+ 				     func_proto, func_name,
+ 				     &desc->func_model);
+@@ -2699,19 +2728,15 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
+ 	return err;
+ }
+ 
+-static int kfunc_desc_cmp_by_imm(const void *a, const void *b)
++static int kfunc_desc_cmp_by_imm_off(const void *a, const void *b)
+ {
+ 	const struct bpf_kfunc_desc *d0 = a;
+ 	const struct bpf_kfunc_desc *d1 = b;
+ 
+-	if (d0->imm > d1->imm)
+-		return 1;
+-	else if (d0->imm < d1->imm)
+-		return -1;
+-	return 0;
++	return d0->imm - d1->imm ?: d0->offset - d1->offset;
+ }
+ 
+-static void sort_kfunc_descs_by_imm(struct bpf_prog *prog)
++static void sort_kfunc_descs_by_imm_off(struct bpf_prog *prog)
+ {
+ 	struct bpf_kfunc_desc_tab *tab;
+ 
+@@ -2720,7 +2745,7 @@ static void sort_kfunc_descs_by_imm(struct bpf_prog *prog)
+ 		return;
+ 
+ 	sort(tab->descs, tab->nr_descs, sizeof(tab->descs[0]),
+-	     kfunc_desc_cmp_by_imm, NULL);
++	     kfunc_desc_cmp_by_imm_off, NULL);
+ }
+ 
+ bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog)
+@@ -2734,13 +2759,14 @@ bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+ {
+ 	const struct bpf_kfunc_desc desc = {
+ 		.imm = insn->imm,
++		.offset = insn->off,
+ 	};
+ 	const struct bpf_kfunc_desc *res;
+ 	struct bpf_kfunc_desc_tab *tab;
+ 
+ 	tab = prog->aux->kfunc_tab;
+ 	res = bsearch(&desc, tab->descs, tab->nr_descs,
+-		      sizeof(tab->descs[0]), kfunc_desc_cmp_by_imm);
++		      sizeof(tab->descs[0]), kfunc_desc_cmp_by_imm_off);
+ 
+ 	return res ? &res->func_model : NULL;
+ }
+@@ -17886,7 +17912,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 		}
+ 	}
+ 
+-	sort_kfunc_descs_by_imm(env->prog);
++	sort_kfunc_descs_by_imm_off(env->prog);
+ 
+ 	return 0;
+ }
