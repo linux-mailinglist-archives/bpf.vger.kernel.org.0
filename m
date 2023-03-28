@@ -2,47 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0833B6CBE77
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 14:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112DC6CBEE8
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 14:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbjC1MEk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 08:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
+        id S230381AbjC1MUz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 08:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbjC1MEc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 08:04:32 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36C57ECF;
-        Tue, 28 Mar 2023 05:04:27 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R841e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vet2gxL_1680005061;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vet2gxL_1680005061)
-          by smtp.aliyun-inc.com;
-          Tue, 28 Mar 2023 20:04:21 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH net-next 8/8] virtio_net: introduce receive_small_xdp()
-Date:   Tue, 28 Mar 2023 20:04:12 +0800
-Message-Id: <20230328120412.110114-9-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20230328120412.110114-1-xuanzhuo@linux.alibaba.com>
-References: <20230328120412.110114-1-xuanzhuo@linux.alibaba.com>
+        with ESMTP id S229654AbjC1MUy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 08:20:54 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059101AC
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 05:20:53 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id eh3so48815256edb.11
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 05:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1680006051;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=k0ihwQt2nqdrwOe9JLFYGsen3V9a0AkY0Ja7Mxmjdic=;
+        b=cdY6DsRd5fCeM2URW+mDXaUD00uIvtJzeYlj9HGxvUTs6pCUYXEkop4diNOtjdkOj2
+         C4MO66ZjagSmfpikCPPnGgx16kaRGsUDyEvWMZzp9xZCzWzS5it7u0VZe19lthXLwBpJ
+         NETsNVK5oq5v5TWGafSQCyhRwJma0Os6GJapg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680006051;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k0ihwQt2nqdrwOe9JLFYGsen3V9a0AkY0Ja7Mxmjdic=;
+        b=fQkTICbcj0SlIbUctip9ar87QrMTkypky4WbSMUhAK1m/5XG9Si0xIYPolvErJFcxO
+         iT0zTAJZh8SgWkRksDIqC6NXpHBrMWcpCMYpmh2QUKih2BuKWQAJ7U3S3LYn6xe+B++z
+         3Dtp1Drh9ac4oCxVbykyNVPMel/KXCQ0yPNSJJTknEpVbRt8Y0OdUnMX4nkCyLzzNmNm
+         0TrHJ81CsPoBvgYtWq0aIY49ezS2DnGLFWmfKlYvcWEw6TiK6taFBuk3DqZT44qnGNqd
+         2HfkdB0QSjqj4iykEQSrFR7noZw1ntExg9nGj05rYWFAteqjNL/8DqP+ZGropQ3qQoIz
+         Oxsg==
+X-Gm-Message-State: AAQBX9fj9lqIhQmtFEYZNxWN7ZvrzDY5hLLxWA7rCQ9V5fl3FiKM6HWP
+        N1XeY9wgJecX8+wLHE1QGeC6QQt+VxZ4q344vK4=
+X-Google-Smtp-Source: AKy350bRcb9OoYfrgbGllA/FaDg7R1VVPVhPQiPVbyJvcu4BleKhs5iRr8p+o49TaulcllkigkxC8w==
+X-Received: by 2002:aa7:cac4:0:b0:4fc:709f:7abd with SMTP id l4-20020aa7cac4000000b004fc709f7abdmr14860038edt.2.1680006051368;
+        Tue, 28 Mar 2023 05:20:51 -0700 (PDT)
+Received: from cloudflare.com (79.184.147.137.ipv4.supernova.orange.pl. [79.184.147.137])
+        by smtp.gmail.com with ESMTPSA id cd2-20020a170906b34200b0092c8da1e5ecsm15238229ejb.21.2023.03.28.05.20.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Mar 2023 05:20:50 -0700 (PDT)
+References: <20230327175446.98151-1-john.fastabend@gmail.com>
+ <20230327175446.98151-3-john.fastabend@gmail.com>
+User-agent: mu4e 1.6.10; emacs 28.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     cong.wang@bytedance.com, daniel@iogearbox.net, lmb@isovalent.com,
+        edumazet@google.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, will@isovalent.com
+Subject: Re: [PATCH bpf v2 02/12] bpf: sockmap, convert schedule_work into
+ delayed_work
+Date:   Tue, 28 Mar 2023 14:09:27 +0200
+In-reply-to: <20230327175446.98151-3-john.fastabend@gmail.com>
+Message-ID: <87tty55aou.fsf@cloudflare.com>
 MIME-Version: 1.0
-X-Git-Hash: 822c071fd47f
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+Content-Type: text/plain
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,225 +70,171 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The purpose of this patch is to simplify the receive_small().
-Separate all the logic of XDP of small into a function.
+On Mon, Mar 27, 2023 at 10:54 AM -07, John Fastabend wrote:
+> Sk_buffs are fed into sockmap verdict programs either from a strparser
+> (when the user might want to decide how framing of skb is done by attaching
+> another parser program) or directly through tcp_read_sock. The
+> tcp_read_sock is the preferred method for performance when the BPF logic is
+> a stream parser.
+>
+> The flow for Cilium's common use case with a stream parser is,
+>
+>  tcp_read_sock()
+>   sk_psock_verdict_recv
+>     ret = bpf_prog_run_pin_on_cpu()
+>     sk_psock_verdict_apply(sock, skb, ret)
+>      // if system is under memory pressure or app is slow we may
+>      // need to queue skb. Do this queuing through ingress_skb and
+>      // then kick timer to wake up handler
+>      skb_queue_tail(ingress_skb, skb)
+>      schedule_work(work);
+>
+>
+> The work queue is wired up to sk_psock_backlog(). This will then walk the
+> ingress_skb skb list that holds our sk_buffs that could not be handled,
+> but should be OK to run at some later point. However, its possible that
+> the workqueue doing this work still hits an error when sending the skb.
+> When this happens the skbuff is requeued on a temporary 'state' struct
+> kept with the workqueue. This is necessary because its possible to
+> partially send an skbuff before hitting an error and we need to know how
+> and where to restart when the workqueue runs next.
+>
+> Now for the trouble, we don't rekick the workqueue. This can cause a
+> stall where the skbuff we just cached on the state variable might never
+> be sent. This happens when its the last packet in a flow and no further
+> packets come along that would cause the system to kick the workqueue from
+> that side.
+>
+> To fix we could do simple schedule_work(), but while under memory pressure
+> it makes sense to back off some instead of continue to retry repeatedly. So
+> instead to fix convert schedule_work to schedule_delayed_work and add
+> backoff logic to reschedule from backlog queue on errors. Its not obvious
+> though what a good backoff is so use '1'.
+>
+> To test we observed some flakes whil running NGINX compliance test with
+> sockmap we attributed these failed test to this bug and subsequent issue.
+>
+> Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
+> Tested-by: William Findlay <will@isovalent.com>
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  include/linux/skmsg.h |  2 +-
+>  net/core/skmsg.c      | 19 ++++++++++++-------
+>  net/core/sock_map.c   |  3 ++-
+>  3 files changed, 15 insertions(+), 9 deletions(-)
+>
+> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> index 84f787416a54..904ff9a32ad6 100644
+> --- a/include/linux/skmsg.h
+> +++ b/include/linux/skmsg.h
+> @@ -105,7 +105,7 @@ struct sk_psock {
+>  	struct proto			*sk_proto;
+>  	struct mutex			work_mutex;
+>  	struct sk_psock_work_state	work_state;
+> -	struct work_struct		work;
+> +	struct delayed_work		work;
+>  	struct rcu_work			rwork;
+>  };
+>  
+> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> index 2b6d9519ff29..96a6a3a74a67 100644
+> --- a/net/core/skmsg.c
+> +++ b/net/core/skmsg.c
+> @@ -481,7 +481,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+>  	}
+>  out:
+>  	if (psock->work_state.skb && copied > 0)
+> -		schedule_work(&psock->work);
+> +		schedule_delayed_work(&psock->work, 0);
+>  	return copied;
+>  }
+>  EXPORT_SYMBOL_GPL(sk_msg_recvmsg);
+> @@ -639,7 +639,8 @@ static void sk_psock_skb_state(struct sk_psock *psock,
+>  
+>  static void sk_psock_backlog(struct work_struct *work)
+>  {
+> -	struct sk_psock *psock = container_of(work, struct sk_psock, work);
+> +	struct delayed_work *dwork = to_delayed_work(work);
+> +	struct sk_psock *psock = container_of(dwork, struct sk_psock, work);
+>  	struct sk_psock_work_state *state = &psock->work_state;
+>  	struct sk_buff *skb = NULL;
+>  	bool ingress;
+> @@ -679,6 +680,10 @@ static void sk_psock_backlog(struct work_struct *work)
+>  				if (ret == -EAGAIN) {
+>  					sk_psock_skb_state(psock, state, skb,
+>  							   len, off);
+> +
+> +					// Delay slightly to prioritize any
+> +					// other work that might be here.
+> +					schedule_delayed_work(&psock->work, 1);
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 168 +++++++++++++++++++++++----------------
- 1 file changed, 100 insertions(+), 68 deletions(-)
+Do IIUC that this means we can back out changes from commit bec217197b41
+("skmsg: Schedule psock work if the cached skb exists on the psock")?
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index c8978d8d8adb..37cd0bf97a16 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -939,6 +939,99 @@ static struct page *xdp_linearize_page(struct receive_queue *rq,
- 	return NULL;
- }
- 
-+static struct sk_buff *receive_small_xdp(struct net_device *dev,
-+					 struct virtnet_info *vi,
-+					 struct receive_queue *rq,
-+					 struct bpf_prog *xdp_prog,
-+					 void *buf,
-+					 void *ctx,
-+					 unsigned int len,
-+					 unsigned int *xdp_xmit,
-+					 struct virtnet_rq_stats *stats)
-+{
-+	unsigned int xdp_headroom = (unsigned long)ctx;
-+	unsigned int header_offset = VIRTNET_RX_PAD + xdp_headroom;
-+	unsigned int headroom = vi->hdr_len + header_offset;
-+	struct virtio_net_hdr_mrg_rxbuf *hdr = buf + header_offset;
-+	struct page *page = virt_to_head_page(buf);
-+	struct page *xdp_page;
-+	unsigned int buflen;
-+	struct xdp_buff xdp;
-+	struct sk_buff *skb;
-+	unsigned int delta = 0;
-+	unsigned int metasize = 0;
-+	void *orig_data;
-+	u32 act;
-+
-+	buflen = SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
-+		SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-+
-+	if (unlikely(hdr->hdr.gso_type))
-+		goto err_xdp;
-+
-+	if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
-+		int offset = buf - page_address(page) + header_offset;
-+		unsigned int tlen = len + vi->hdr_len;
-+		int num_buf = 1;
-+
-+		xdp_headroom = virtnet_get_headroom(vi);
-+		header_offset = VIRTNET_RX_PAD + xdp_headroom;
-+		headroom = vi->hdr_len + header_offset;
-+		buflen = SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
-+			SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-+		xdp_page = xdp_linearize_page(rq, &num_buf, page,
-+					      offset, header_offset,
-+					      &tlen);
-+		if (!xdp_page)
-+			goto err_xdp;
-+
-+		buf = page_address(xdp_page);
-+		put_page(page);
-+		page = xdp_page;
-+	}
-+
-+	xdp_init_buff(&xdp, buflen, &rq->xdp_rxq);
-+	xdp_prepare_buff(&xdp, buf + VIRTNET_RX_PAD + vi->hdr_len,
-+			 xdp_headroom, len, true);
-+	orig_data = xdp.data;
-+
-+	act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
-+
-+	switch (act) {
-+	case VIRTNET_XDP_RES_PASS:
-+		/* Recalculate length in case bpf program changed it */
-+		delta = orig_data - xdp.data;
-+		len = xdp.data_end - xdp.data;
-+		metasize = xdp.data - xdp.data_meta;
-+		break;
-+
-+	case VIRTNET_XDP_RES_CONSUMED:
-+		goto xdp_xmit;
-+
-+	case VIRTNET_XDP_RES_DROP:
-+		goto err_xdp;
-+	}
-+
-+	skb = build_skb(buf, buflen);
-+	if (!skb)
-+		goto err;
-+
-+	skb_reserve(skb, headroom - delta);
-+	skb_put(skb, len);
-+	if (metasize)
-+		skb_metadata_set(skb, metasize);
-+
-+	return skb;
-+
-+err_xdp:
-+	stats->xdp_drops++;
-+err:
-+	stats->drops++;
-+	put_page(page);
-+xdp_xmit:
-+	return NULL;
-+}
-+
- static struct sk_buff *receive_small(struct net_device *dev,
- 				     struct virtnet_info *vi,
- 				     struct receive_queue *rq,
-@@ -949,15 +1042,11 @@ static struct sk_buff *receive_small(struct net_device *dev,
- {
- 	struct sk_buff *skb;
- 	struct bpf_prog *xdp_prog;
--	unsigned int xdp_headroom = (unsigned long)ctx;
--	unsigned int header_offset = VIRTNET_RX_PAD + xdp_headroom;
-+	unsigned int header_offset = VIRTNET_RX_PAD;
- 	unsigned int headroom = vi->hdr_len + header_offset;
- 	unsigned int buflen = SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
- 			      SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 	struct page *page = virt_to_head_page(buf);
--	unsigned int delta = 0;
--	struct page *xdp_page;
--	unsigned int metasize = 0;
- 
- 	len -= vi->hdr_len;
- 	stats->bytes += len;
-@@ -977,57 +1066,9 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 	rcu_read_lock();
- 	xdp_prog = rcu_dereference(rq->xdp_prog);
- 	if (xdp_prog) {
--		struct virtio_net_hdr_mrg_rxbuf *hdr = buf + header_offset;
--		struct xdp_buff xdp;
--		void *orig_data;
--		u32 act;
--
--		if (unlikely(hdr->hdr.gso_type))
--			goto err_xdp;
--
--		if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
--			int offset = buf - page_address(page) + header_offset;
--			unsigned int tlen = len + vi->hdr_len;
--			int num_buf = 1;
--
--			xdp_headroom = virtnet_get_headroom(vi);
--			header_offset = VIRTNET_RX_PAD + xdp_headroom;
--			headroom = vi->hdr_len + header_offset;
--			buflen = SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
--				 SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
--			xdp_page = xdp_linearize_page(rq, &num_buf, page,
--						      offset, header_offset,
--						      &tlen);
--			if (!xdp_page)
--				goto err_xdp;
--
--			buf = page_address(xdp_page);
--			put_page(page);
--			page = xdp_page;
--		}
--
--		xdp_init_buff(&xdp, buflen, &rq->xdp_rxq);
--		xdp_prepare_buff(&xdp, buf + VIRTNET_RX_PAD + vi->hdr_len,
--				 xdp_headroom, len, true);
--		orig_data = xdp.data;
--
--		act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
--
--		switch (act) {
--		case VIRTNET_XDP_RES_PASS:
--			/* Recalculate length in case bpf program changed it */
--			delta = orig_data - xdp.data;
--			len = xdp.data_end - xdp.data;
--			metasize = xdp.data - xdp.data_meta;
--			break;
--
--		case VIRTNET_XDP_RES_CONSUMED:
--			rcu_read_unlock();
--			goto xdp_xmit;
--
--		case VIRTNET_XDP_RES_DROP:
--			goto err_xdp;
--		}
-+		skb = receive_small_xdp(dev, vi, rq, xdp_prog, buf, ctx, len, xdp_xmit, stats);
-+		rcu_read_unlock();
-+		return skb;
- 	}
- 	rcu_read_unlock();
- 
-@@ -1035,25 +1076,16 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 	skb = build_skb(buf, buflen);
- 	if (!skb)
- 		goto err;
--	skb_reserve(skb, headroom - delta);
-+	skb_reserve(skb, headroom);
- 	skb_put(skb, len);
--	if (!xdp_prog) {
--		buf += header_offset;
--		memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
--	} /* keep zeroed vnet hdr since XDP is loaded */
--
--	if (metasize)
--		skb_metadata_set(skb, metasize);
- 
-+	buf += header_offset;
-+	memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
- 	return skb;
- 
--err_xdp:
--	rcu_read_unlock();
--	stats->xdp_drops++;
- err:
- 	stats->drops++;
- 	put_page(page);
--xdp_xmit:
- 	return NULL;
- }
- 
--- 
-2.32.0.3.g01195cf9f
+Nit: Comment syntax.
+
+>  					goto end;
+>  				}
+>  				/* Hard errors break pipe and stop xmit. */
+> @@ -733,7 +738,7 @@ struct sk_psock *sk_psock_init(struct sock *sk, int node)
+>  	INIT_LIST_HEAD(&psock->link);
+>  	spin_lock_init(&psock->link_lock);
+>  
+> -	INIT_WORK(&psock->work, sk_psock_backlog);
+> +	INIT_DELAYED_WORK(&psock->work, sk_psock_backlog);
+>  	mutex_init(&psock->work_mutex);
+>  	INIT_LIST_HEAD(&psock->ingress_msg);
+>  	spin_lock_init(&psock->ingress_lock);
+> @@ -822,7 +827,7 @@ static void sk_psock_destroy(struct work_struct *work)
+>  
+>  	sk_psock_done_strp(psock);
+>  
+> -	cancel_work_sync(&psock->work);
+> +	cancel_delayed_work_sync(&psock->work);
+>  	mutex_destroy(&psock->work_mutex);
+>  
+>  	psock_progs_drop(&psock->progs);
+> @@ -937,7 +942,7 @@ static int sk_psock_skb_redirect(struct sk_psock *from, struct sk_buff *skb)
+>  	}
+>  
+>  	skb_queue_tail(&psock_other->ingress_skb, skb);
+> -	schedule_work(&psock_other->work);
+> +	schedule_delayed_work(&psock_other->work, 0);
+>  	spin_unlock_bh(&psock_other->ingress_lock);
+>  	return 0;
+>  }
+> @@ -1017,7 +1022,7 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
+>  			spin_lock_bh(&psock->ingress_lock);
+>  			if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)) {
+>  				skb_queue_tail(&psock->ingress_skb, skb);
+> -				schedule_work(&psock->work);
+> +				schedule_delayed_work(&psock->work, 0);
+>  				err = 0;
+>  			}
+>  			spin_unlock_bh(&psock->ingress_lock);
+> @@ -1048,7 +1053,7 @@ static void sk_psock_write_space(struct sock *sk)
+>  	psock = sk_psock(sk);
+>  	if (likely(psock)) {
+>  		if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED))
+> -			schedule_work(&psock->work);
+> +			schedule_delayed_work(&psock->work, 0);
+>  		write_space = psock->saved_write_space;
+>  	}
+>  	rcu_read_unlock();
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index a68a7290a3b2..d38267201892 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -1624,9 +1624,10 @@ void sock_map_close(struct sock *sk, long timeout)
+>  		rcu_read_unlock();
+>  		sk_psock_stop(psock);
+>  		release_sock(sk);
+> -		cancel_work_sync(&psock->work);
+> +		cancel_delayed_work_sync(&psock->work);
+>  		sk_psock_put(sk, psock);
+>  	}
+> +
+>  	/* Make sure we do not recurse. This is a bug.
+>  	 * Leak the socket instead of crashing on a stack overflow.
+>  	 */
 
