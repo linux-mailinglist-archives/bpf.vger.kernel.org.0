@@ -2,559 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A210D6CC8CD
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 19:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7826D6CC8EF
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 19:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbjC1RG0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 13:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50910 "EHLO
+        id S229512AbjC1RPV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 13:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjC1RGZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 13:06:25 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE17426A1
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 10:06:23 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id k2so12322655pll.8
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 10:06:23 -0700 (PDT)
+        with ESMTP id S229493AbjC1RPU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 13:15:20 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7107AA6
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 10:15:19 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id a9-20020a170902b58900b0019e2eafafddso7915831pls.7
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 10:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680023183;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sxaIaUcEgCMD/Hz4U5tWJU0TDLilTa3EUf9tocaPD/Y=;
-        b=SBvw4sOYm/l9yjHc0tXvM45g/Pdvc89L1nOfM5eMckxftvZJK7xKSgCI0BzP2+5o0l
-         KE/vNM0gF1fZ7uOAFraIb/lsClhZv3fwKUMZtHJu3glTLVWGzPFlzNI2048sIET5DZFG
-         QT1BCyalpJSYoW9FAJO0nAsvB/LgKTqJtEUp8OcIbBnWcYcuv4xDC8fbYFWhr/NpKQin
-         K71yPiR/kuLVXvEau8a+lInGxwIJTc5bmoqcQ2xHY0QMhGsNza3GMt+Pu0sMz9hzZo9E
-         srAPgH9seOR4pV6N5qD7EA7buNnpGO+nEt0tMeQHtI0tLPD3ilk3yN7qgvbJUKIitU5K
-         V2OA==
+        d=google.com; s=20210112; t=1680023719;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+pBQEV4YUH7Haj6IRDt7ZXQzFb/Lwzc+HNbZTIhASOk=;
+        b=RcYuUcC6lut4RRlIzo3rrGz/yJqD4FUFCr4JZDX7ZzMLzNs99zljDyOtY6Fo/E4nOB
+         cGNLmHnbnV33/umimB+XRTpYkgxQ/u03JsNpkGH4d9II/EtUjo6166MMY+owRzD4qF8e
+         TySR5P4G2NCew7SXkPOkxSSt7MeAk+HKTYdI9XMoW8q4ylW0kl2/SLJdSSsxeAJxn4D6
+         IW8kHHKaH4bT9ev3PBxAt/pOkSyUbnM0oqpws8PdbcFuA0xeB1zahn4XMlYHVr3Q3ZY9
+         N+LHaKUMOKhCetuFVSvbxhYDJpOgSMnNf29dtYY2Hqym5c6dqndn5858GS8spLsBCoBO
+         1NJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680023183;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sxaIaUcEgCMD/Hz4U5tWJU0TDLilTa3EUf9tocaPD/Y=;
-        b=nOicuAnPbbQxPo1XKOrHCm9p7xED1rakg9+rr9SH2YZgoJFsYNxrfXkbyBpg/LXxIQ
-         j8GJyqu6iOJRJwcOj0n6kH4mMjzzd2AEX0WVC8JomWJVJbE4ZnlGUtkuMALrhN+ETcQi
-         jdQNOAoJD5g4Ep6aOnmvXk5Cq4YDse4se2d/nnnbm1B4/23o5ZC7YW3vtv170TGym6yw
-         oohUmJljJVHpMCgh8fUDsaK1a5WPy6MO3He+T6VdVmkQm+MD62w2Uq1QOfD1y6BWF40c
-         dypbKKwQ8/HR7dmv9EJ/qbXrNoIJJQFz225MQHHyjgVWzbyQdtYbtgdr/Cna54NOBTET
-         1QtQ==
-X-Gm-Message-State: AAQBX9f4V1Ll+7xnnIUJ/h2S/v4elF2qnjoykiGQ8sghL1To5kzumOEj
-        hcdUzSNQyeAfOS+TxNbwE2qwHw==
-X-Google-Smtp-Source: AKy350ZbsrIYqqKOlduAb/gmeOpqpE8xYCdXiE/mCIo5wspwjEZHLYajf76msPHxDPqIvWiE6DHIcQ==
-X-Received: by 2002:a17:90b:4c4a:b0:23b:bf03:397e with SMTP id np10-20020a17090b4c4a00b0023bbf03397emr18290766pjb.24.1680023182458;
-        Tue, 28 Mar 2023 10:06:22 -0700 (PDT)
-Received: from ?IPv6:2601:647:4900:1fbb:74d3:2bc6:6239:344c? ([2601:647:4900:1fbb:74d3:2bc6:6239:344c])
-        by smtp.gmail.com with ESMTPSA id j9-20020a632309000000b0050be4ff460esm19854118pgj.4.2023.03.28.10.06.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Mar 2023 10:06:21 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v4 bpf-next 1/4] bpf: Implement batching in UDP iterator
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <c77f069e-69a4-bc0a-dc92-c77cd0f7df08@linux.dev>
-Date:   Tue, 28 Mar 2023 10:06:19 -0700
-Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
-        Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <FF565E79-7C76-4525-8835-931146319F21@isovalent.com>
-References: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
- <20230323200633.3175753-2-aditi.ghag@isovalent.com>
- <c77f069e-69a4-bc0a-dc92-c77cd0f7df08@linux.dev>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20210112; t=1680023719;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+pBQEV4YUH7Haj6IRDt7ZXQzFb/Lwzc+HNbZTIhASOk=;
+        b=uuYhSBbOHqHo+J+0JTEqrnv2eC5LVXXx+zhNOaLyoW8v8QJyAquajVK9J+yofDp9pW
+         t95XL+8s7DGtDSL/Qo+qKf37CNezC1a+lgCD6wnGjMkkNBjZ55o6F4L1hHd1pkCQXyEx
+         /drgfQMyzVPvp5T4EJxeRi1mBHe+S4Qs9WCB+y6M/GZqqWM5+iTBhuXD3z3BikbgJw/u
+         FFF7TySnOe85wv53q1xR2WndT1IvXWdom0qHeiq04D1VtFXjILIrR5yIJz91pisy56TN
+         tFGqRwY6bfOXW2nAB8tJZpr57dlHZ/FwxgUG+02sO6Mghn8cryPV06pB6W/6bWKd3J27
+         ps6g==
+X-Gm-Message-State: AAQBX9f5gfYqIto3hnKrgZrk1PmA9omWabcQOKYE1u6/c1R7J28n6P7p
+        A7JO+b0IxVFWbGoIMuWvnbiMjH0=
+X-Google-Smtp-Source: AKy350bsqZyZ/Y3M0YYrPdaZCB2hLdoq2PVv5WxgY3qaWkTzVah1qrIHjC5M20WVfRtDq8vEE6+/UHM=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:bb8e:b0:23b:3d0b:f165 with SMTP id
+ v14-20020a17090abb8e00b0023b3d0bf165mr5156482pjr.5.1680023719200; Tue, 28 Mar
+ 2023 10:15:19 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 10:15:17 -0700
+In-Reply-To: <CALOAHbBJEXdR4Myk1zrgFDf9UJYu2-3tbjz0ETNvK3WamD5sFg@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230326092208.13613-1-laoar.shao@gmail.com> <ZCHSOxto9DlEzVy9@google.com>
+ <CALOAHbBJEXdR4Myk1zrgFDf9UJYu2-3tbjz0ETNvK3WamD5sFg@mail.gmail.com>
+Message-ID: <ZCMgpRtT6ywmtALi@google.com>
+Subject: Re: [RFC PATCH bpf-next 00/13] bpf: Introduce BPF namespace
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-> On Mar 27, 2023, at 3:28 PM, Martin KaFai Lau <martin.lau@linux.dev> =
-wrote:
->=20
-> On 3/23/23 1:06 PM, Aditi Ghag wrote:
->> Batch UDP sockets from BPF iterator that allows for overlapping =
-locking
->> semantics in BPF/kernel helpers executed in BPF programs.  This =
-facilitates
->> BPF socket destroy kfunc (introduced by follow-up patches) to execute =
-from
->> BPF iterator programs.
->> Previously, BPF iterators acquired the sock lock and sockets hash =
-table
->> bucket lock while executing BPF programs. This prevented BPF helpers =
-that
->> again acquire these locks to be executed from BPF iterators.  With =
-the
->> batching approach, we acquire a bucket lock, batch all the bucket =
-sockets,
->> and then release the bucket lock. This enables BPF or kernel helpers =
-to
->> skip sock locking when invoked in the supported BPF contexts.
->> The batching logic is similar to the logic implemented in TCP =
-iterator:
->> https://lore.kernel.org/bpf/20210701200613.1036157-1-kafai@fb.com/.
->> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
->> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
->> ---
->>  include/net/udp.h |   1 +
->>  net/ipv4/udp.c    | 255 =
-++++++++++++++++++++++++++++++++++++++++++++--
->>  2 files changed, 247 insertions(+), 9 deletions(-)
->> diff --git a/include/net/udp.h b/include/net/udp.h
->> index de4b528522bb..d2999447d3f2 100644
->> --- a/include/net/udp.h
->> +++ b/include/net/udp.h
->> @@ -437,6 +437,7 @@ struct udp_seq_afinfo {
->>  struct udp_iter_state {
->>  	struct seq_net_private  p;
->>  	int			bucket;
->> +	int			offset;
->=20
-> offset should be moved to 'struct bpf_udp_iter_state' instead. It is =
-specific to bpf_iter only.
-
-Sure, I'll move it.
-
->=20
->>  	struct udp_seq_afinfo	*bpf_seq_afinfo;
->>  };
->>  diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
->> index c605d171eb2d..58c620243e47 100644
->> --- a/net/ipv4/udp.c
->> +++ b/net/ipv4/udp.c
->> @@ -3152,6 +3152,171 @@ struct bpf_iter__udp {
->>  	int bucket __aligned(8);
->>  };
->>  +struct bpf_udp_iter_state {
->> +	struct udp_iter_state state;
->> +	unsigned int cur_sk;
->> +	unsigned int end_sk;
->> +	unsigned int max_sk;
->> +	struct sock **batch;
->> +	bool st_bucket_done;
->> +};
->> +
->> +static unsigned short seq_file_family(const struct seq_file *seq);
->> +static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state =
-*iter,
->> +				      unsigned int new_batch_sz);
->> +
->> +static inline bool seq_sk_match(struct seq_file *seq, const struct =
-sock *sk)
->> +{
->> +	unsigned short family =3D seq_file_family(seq);
->> +
->> +	/* AF_UNSPEC is used as a match all */
->> +	return ((family =3D=3D AF_UNSPEC || family =3D=3D sk->sk_family) =
-&&
->> +		net_eq(sock_net(sk), seq_file_net(seq)));
->> +}
->> +
->> +static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
->> +{
->> +	struct bpf_udp_iter_state *iter =3D seq->private;
->> +	struct udp_iter_state *state =3D &iter->state;
->> +	struct net *net =3D seq_file_net(seq);
->> +	struct udp_seq_afinfo *afinfo =3D state->bpf_seq_afinfo;
->> +	struct udp_table *udptable;
->> +	struct sock *first_sk =3D NULL;
->> +	struct sock *sk;
->> +	unsigned int bucket_sks =3D 0;
->> +	bool resized =3D false;
->> +	int offset =3D 0;
->> +	int new_offset;
->> +
->> +	/* The current batch is done, so advance the bucket. */
->> +	if (iter->st_bucket_done) {
->> +		state->bucket++;
->> +		state->offset =3D 0;
->> +	}
->> +
->> +	udptable =3D udp_get_table_afinfo(afinfo, net);
->> +
->> +	if (state->bucket > udptable->mask) {
->> +		state->bucket =3D 0;
->> +		state->offset =3D 0;
->> +		return NULL;
->> +	}
->> +
->> +again:
->> +	/* New batch for the next bucket.
->> +	 * Iterate over the hash table to find a bucket with sockets =
-matching
->> +	 * the iterator attributes, and return the first matching socket =
-from
->> +	 * the bucket. The remaining matched sockets from the bucket are =
-batched
->> +	 * before releasing the bucket lock. This allows BPF programs =
-that are
->> +	 * called in seq_show to acquire the bucket lock if needed.
->> +	 */
->> +	iter->cur_sk =3D 0;
->> +	iter->end_sk =3D 0;
->> +	iter->st_bucket_done =3D false;
->> +	first_sk =3D NULL;
->> +	bucket_sks =3D 0;
->> +	offset =3D state->offset;
->> +	new_offset =3D offset;
->> +
->> +	for (; state->bucket <=3D udptable->mask; state->bucket++) {
->> +		struct udp_hslot *hslot =3D =
-&udptable->hash[state->bucket];
->=20
-> Use udptable->hash"2" which is hashed by addr and port. It will help =
-to get a smaller batch. It was the comment given in v2.
-
-I thought I replied to your review comment, but looks like I didn't. My =
-bad!
-I already gave it a shot, and I'll need to understand better how =
-udptable->hash2 is populated. When I swapped hash with hash2, there were =
-no sockets to iterate. Am I missing something obvious?=20
-
->=20
->> +
->> +		if (hlist_empty(&hslot->head)) {
->> +			offset =3D 0;
->> +			continue;
->> +		}
->> +
->> +		spin_lock_bh(&hslot->lock);
->> +		/* Resume from the last saved position in a bucket =
-before
->> +		 * iterator was stopped.
->> +		 */
->> +		while (offset-- > 0) {
->> +			sk_for_each(sk, &hslot->head)
->> +				continue;
->> +		}
->=20
-> hmm... how does the above while loop and sk_for_each loop actually =
-work?
->=20
->> +		sk_for_each(sk, &hslot->head) {
->=20
-> Here starts from the beginning of the hslot->head again. doesn't look =
-right also.
->=20
-> Am I missing something here?
->=20
->> +			if (seq_sk_match(seq, sk)) {
->> +				if (!first_sk)
->> +					first_sk =3D sk;
->> +				if (iter->end_sk < iter->max_sk) {
->> +					sock_hold(sk);
->> +					iter->batch[iter->end_sk++] =3D =
-sk;
->> +				}
->> +				bucket_sks++;
->> +			}
->> +			new_offset++;
->=20
-> And this new_offset is outside of seq_sk_match, so it is not counting =
-for the seq_file_net(seq) netns alone.
-
-This logic to resume iterator is buggy, indeed! So I was trying to =
-account for the cases where the current bucket could've been updated =
-since we release the bucket lock.=20
-This is what I intended to do -
-
-+loop:
-                sk_for_each(sk, &hslot->head) {
-                        if (seq_sk_match(seq, sk)) {
-+                               /* Resume from the last saved position =
-in the
-+                                * bucket before iterator was stopped.
-+                                */
-+                               while (offset && offset-- > 0)
-+                                       goto loop;
-                                if (!first_sk)
-                                        first_sk =3D sk;
-                                if (iter->end_sk < iter->max_sk) {
-@@ -3245,8 +3244,8 @@ static struct sock *bpf_iter_udp_batch(struct =
-seq_file *seq)
-                                        iter->batch[iter->end_sk++] =3D =
-sk;
-                                }
-                                bucket_sks++;
-+                              new_offset++;
-                        }
-
-This handles the case when sockets that weren't iterated in the previous =
-round got deleted by the time iterator was resumed. But it's possible =
-that previously iterated sockets got deleted before the iterator was =
-later resumed, and the offset is now outdated. Ideally, iterator should =
-be invalidated in this case, but there is no way to track this, is =
-there? Any thoughts? =20
-
-
->=20
->> +		}
->> +		spin_unlock_bh(&hslot->lock);
->> +
->> +		if (first_sk)
->> +			break;
->> +
->> +		/* Reset the current bucket's offset before moving to =
-the next bucket. */
->> +		offset =3D 0;
->> +		new_offset =3D 0;
->> +	}
->> +
->> +	/* All done: no batch made. */
->> +	if (!first_sk)
->> +		goto ret;
->> +
->> +	if (iter->end_sk =3D=3D bucket_sks) {
->> +		/* Batching is done for the current bucket; return the =
-first
->> +		 * socket to be iterated from the batch.
->> +		 */
->> +		iter->st_bucket_done =3D true;
->> +		goto ret;
->> +	}
->> +	if (!resized && !bpf_iter_udp_realloc_batch(iter, bucket_sks * 3 =
-/ 2)) {
->> +		resized =3D true;
->> +		/* Go back to the previous bucket to resize its batch. =
-*/
->> +		state->bucket--;
->> +		goto again;
->> +	}
->> +ret:
->> +	state->offset =3D new_offset;
->> +	return first_sk;
->> +}
->> +
->> +static void *bpf_iter_udp_seq_next(struct seq_file *seq, void *v, =
-loff_t *pos)
->> +{
->> +	struct bpf_udp_iter_state *iter =3D seq->private;
->> +	struct udp_iter_state *state =3D &iter->state;
->> +	struct sock *sk;
->> +
->> +	/* Whenever seq_next() is called, the iter->cur_sk is
->> +	 * done with seq_show(), so unref the iter->cur_sk.
->> +	 */
->> +	if (iter->cur_sk < iter->end_sk) {
->> +		sock_put(iter->batch[iter->cur_sk++]);
->> +		++state->offset;
->=20
-> but then,
-> if I read it correctly, this offset counting is only for netns =
-specific to seq_file_net(seq) because batch is specific to =
-seq_file_net(net). Is it going to work?
->=20
->> +	}
->> +
->> +	/* After updating iter->cur_sk, check if there are more sockets
->> +	 * available in the current bucket batch.
->> +	 */
->> +	if (iter->cur_sk < iter->end_sk) {
->> +		sk =3D iter->batch[iter->cur_sk];
->> +	} else {
->> +		// Prepare a new batch.
->> +		sk =3D bpf_iter_udp_batch(seq);
->> +	}
->> +
->> +	++*pos;
->> +	return sk;
->> +}
->> +
->> +static void *bpf_iter_udp_seq_start(struct seq_file *seq, loff_t =
-*pos)
->> +{
->> +	/* bpf iter does not support lseek, so it always
->> +	 * continue from where it was stop()-ped.
->> +	 */
->> +	if (*pos)
->> +		return bpf_iter_udp_batch(seq);
->> +
->> +	return SEQ_START_TOKEN;
->> +}
->> +
->>  static int udp_prog_seq_show(struct bpf_prog *prog, struct =
-bpf_iter_meta *meta,
->>  			     struct udp_sock *udp_sk, uid_t uid, int =
-bucket)
->>  {
->> @@ -3172,18 +3337,38 @@ static int bpf_iter_udp_seq_show(struct =
-seq_file *seq, void *v)
->>  	struct bpf_prog *prog;
->>  	struct sock *sk =3D v;
->>  	uid_t uid;
->> +	bool slow;
->> +	int rc;
->>    	if (v =3D=3D SEQ_START_TOKEN)
->>  		return 0;
->>  +	slow =3D lock_sock_fast(sk);
->> +
->> +	if (unlikely(sk_unhashed(sk))) {
->> +		rc =3D SEQ_SKIP;
->> +		goto unlock;
->> +	}
->> +
->>  	uid =3D from_kuid_munged(seq_user_ns(seq), sock_i_uid(sk));
->>  	meta.seq =3D seq;
->>  	prog =3D bpf_iter_get_info(&meta, false);
->> -	return udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
->> +	rc =3D udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
->> +
->> +unlock:
->> +	unlock_sock_fast(sk, slow);
->> +	return rc;
->> +}
->> +
->> +static void bpf_iter_udp_unref_batch(struct bpf_udp_iter_state =
-*iter)
->=20
-> nit. Please use the same naming as in tcp-iter and unix-iter, so =
-bpf_iter_udp_put_batch().
-
-Ack
->=20
->> +{
->> +	while (iter->cur_sk < iter->end_sk)
->> +		sock_put(iter->batch[iter->cur_sk++]);
->>  }
->>    static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
->>  {
->> +	struct bpf_udp_iter_state *iter =3D seq->private;
->>  	struct bpf_iter_meta meta;
->>  	struct bpf_prog *prog;
->>  @@ -3194,15 +3379,31 @@ static void bpf_iter_udp_seq_stop(struct =
-seq_file *seq, void *v)
->>  			(void)udp_prog_seq_show(prog, &meta, v, 0, 0);
->>  	}
->>  -	udp_seq_stop(seq, v);
->> +	if (iter->cur_sk < iter->end_sk) {
->> +		bpf_iter_udp_unref_batch(iter);
->> +		iter->st_bucket_done =3D false;
->> +	}
->>  }
->>    static const struct seq_operations bpf_iter_udp_seq_ops =3D {
->> -	.start		=3D udp_seq_start,
->> -	.next		=3D udp_seq_next,
->> +	.start		=3D bpf_iter_udp_seq_start,
->> +	.next		=3D bpf_iter_udp_seq_next,
->>  	.stop		=3D bpf_iter_udp_seq_stop,
->>  	.show		=3D bpf_iter_udp_seq_show,
->>  };
->> +
->> +static unsigned short seq_file_family(const struct seq_file *seq)
->> +{
->> +	const struct udp_seq_afinfo *afinfo;
->> +
->> +	/* BPF iterator: bpf programs to filter sockets. */
->> +	if (seq->op =3D=3D &bpf_iter_udp_seq_ops)
->> +		return AF_UNSPEC;
->> +
->> +	/* Proc fs iterator */
->> +	afinfo =3D pde_data(file_inode(seq->file));
->> +	return afinfo->family;
->> +}
->>  #endif
->>    const struct seq_operations udp_seq_ops =3D {
->> @@ -3413,9 +3614,30 @@ static struct pernet_operations __net_initdata =
-udp_sysctl_ops =3D {
->>  DEFINE_BPF_ITER_FUNC(udp, struct bpf_iter_meta *meta,
->>  		     struct udp_sock *udp_sk, uid_t uid, int bucket)
->>  +static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state =
-*iter,
->> +				      unsigned int new_batch_sz)
->> +{
->> +	struct sock **new_batch;
->> +
->> +	new_batch =3D kvmalloc_array(new_batch_sz, sizeof(*new_batch),
->> +				   GFP_USER | __GFP_NOWARN);
->> +	if (!new_batch)
->> +		return -ENOMEM;
->> +
->> +	bpf_iter_udp_unref_batch(iter);
->> +	kvfree(iter->batch);
->> +	iter->batch =3D new_batch;
->> +	iter->max_sk =3D new_batch_sz;
->> +
->> +	return 0;
->> +}
->> +
->> +#define INIT_BATCH_SZ 16
->> +
->>  static int bpf_iter_init_udp(void *priv_data, struct =
-bpf_iter_aux_info *aux)
->>  {
->> -	struct udp_iter_state *st =3D priv_data;
->> +	struct bpf_udp_iter_state *iter =3D priv_data;
->> +	struct udp_iter_state *st =3D &iter->state;
->>  	struct udp_seq_afinfo *afinfo;
->>  	int ret;
->>  @@ -3427,24 +3649,39 @@ static int bpf_iter_init_udp(void =
-*priv_data, struct bpf_iter_aux_info *aux)
->>  	afinfo->udp_table =3D NULL;
->>  	st->bpf_seq_afinfo =3D afinfo;
->>  	ret =3D bpf_iter_init_seq_net(priv_data, aux);
->> -	if (ret)
->> +	if (ret) {
->>  		kfree(afinfo);
->> +		return ret;
->> +	}
->> +	ret =3D bpf_iter_udp_realloc_batch(iter, INIT_BATCH_SZ);
->> +	if (ret) {
->> +		bpf_iter_fini_seq_net(priv_data);
->> +		return ret;
->> +	}
->> +	iter->cur_sk =3D 0;
->> +	iter->end_sk =3D 0;
->> +	iter->st_bucket_done =3D false;
->> +	st->bucket =3D 0;
->> +	st->offset =3D 0;
->=20
-> =46rom looking at the tcp and unix counter part, I don't think this =
-zeroings is necessary.
-
-Ack
-
->=20
->> +
->>  	return ret;
->>  }
->>    static void bpf_iter_fini_udp(void *priv_data)
->>  {
->> -	struct udp_iter_state *st =3D priv_data;
->> +	struct bpf_udp_iter_state *iter =3D priv_data;
->> +	struct udp_iter_state *st =3D &iter->state;
->>  -	kfree(st->bpf_seq_afinfo);
->=20
-> The st->bpf_seq_afinfo should no longer be needed. Please remove it =
-from 'struct udp_iter_state'.
->=20
-> The other AF_UNSPEC test in the existing udp_get_{first,next,...} =
-should be cleaned up to use the refactored seq_sk_match() also.
->=20
-> These two changes should be done as the first one (or two?) cleanup =
-patches before the actual udp batching patch. The tcp-iter-batching =
-patch set could be a reference point on how the patch set could be =
-structured.
-
-Ack for both the clean-up and reshuffling.=20
-
->=20
->>  	bpf_iter_fini_seq_net(priv_data);
->> +	kfree(st->bpf_seq_afinfo);
->> +	kvfree(iter->batch);
->>  }
->>    static const struct bpf_iter_seq_info udp_seq_info =3D {
->>  	.seq_ops		=3D &bpf_iter_udp_seq_ops,
->>  	.init_seq_private	=3D bpf_iter_init_udp,
->>  	.fini_seq_private	=3D bpf_iter_fini_udp,
->> -	.seq_priv_size		=3D sizeof(struct udp_iter_state),
->> +	.seq_priv_size		=3D sizeof(struct bpf_udp_iter_state),
->>  };
->>    static struct bpf_iter_reg udp_reg_info =3D {
-
+T24gMDMvMjgsIFlhZmFuZyBTaGFvIHdyb3RlOg0KPiBPbiBUdWUsIE1hciAyOCwgMjAyMyBhdCAx
+OjI44oCvQU0gU3RhbmlzbGF2IEZvbWljaGV2IDxzZGZAZ29vZ2xlLmNvbT4gd3JvdGU6DQo+ID4N
+Cj4gPiBPbiAwMy8yNiwgWWFmYW5nIFNoYW8gd3JvdGU6DQo+ID4gPiBDdXJyZW50bHkgb25seSBD
+QVBfU1lTX0FETUlOIGNhbiBpdGVyYXRlIEJQRiBvYmplY3QgSURzIGFuZCBjb252ZXJ0ICANCj4g
+SURzDQo+ID4gPiB0byBGRHMsIHRoYXQncyBpbnRlbmRlZCBmb3IgQlBGJ3Mgc2VjdXJpdHkgbW9k
+ZWxbMV0uIE5vdCBvbmx5IGRvZXMgaXQNCj4gPiA+IHByZXZlbnQgbm9uLXByaXZpbGlkZ2VkIHVz
+ZXJzIGZyb20gZ2V0dGluZyBvdGhlciB1c2VycycgYnBmIHByb2dyYW0sICANCj4gYnV0DQo+ID4g
+PiBhbHNvIGl0IHByZXZlbnRzIHRoZSB1c2VyIGZyb20gaXRlcmF0aW5nIGhpcyBvd24gYnBmIG9i
+amVjdHMuDQo+ID4NCj4gPiA+IEluIGNvbnRhaW5lciBlbnZpcm9ubWVudCwgc29tZSB1c2VycyB3
+YW50IHRvIHJ1biBicGYgcHJvZ3JhbXMgaW4gdGhlaXINCj4gPiA+IGNvbnRhaW5lcnMuIFRoZXNl
+IHVzZXJzIGNhbiBydW4gdGhlaXIgYnBmIHByb2dyYW1zIHVuZGVyIENBUF9CUEYgYW5kDQo+ID4g
+PiBzb21lIG90aGVyIHNwZWNpZmljIENBUHMsIGJ1dCB0aGV5IGNhbid0IGluc3BlY3QgdGhlaXIg
+YnBmIHByb2dyYW1zICANCj4gaW4gYQ0KPiA+ID4gZ2VuZXJpYyB3YXkuIEZvciBleGFtcGxlLCB0
+aGUgYnBmdG9vbCBjYW4ndCBiZSB1c2VkIGFzIGl0IHJlcXVpcmVzDQo+ID4gPiBDQVBfU1lTX0FE
+TUlOLiBUaGF0IGlzIHZlcnkgaW5jb252ZW5pZW50Lg0KPiA+DQo+ID4gPiBXaXRob3V0IENBUF9T
+WVNfQURNSU4sIHRoZSBvbmx5IHdheSB0byBnZXQgdGhlIGluZm9ybWF0aW9uIG9mIGEgYnBmICAN
+Cj4gb2JqZWN0DQo+ID4gPiB3aGljaCBpcyBub3QgY3JlYXRlZCBieSB0aGUgcHJvY2VzcyBpdHNl
+bGYgaXMgd2l0aCBTQ01fUklHSFRTLCB0aGF0DQo+ID4gPiByZXF1aXJlcyBlYWNoIHByb2Nlc3Nl
+cyB3aGljaCBjcmVhdGVkIGJwZiBvYmplY3QgaGFzIHRvIGltcGxlbWVudCBhICANCj4gdW5peA0K
+PiA+ID4gZG9tYWluIHNvY2tldCB0byBzaGFyZSB0aGUgZmQgb2YgYSBicGYgb2JqZWN0IGJldHdl
+ZW4gZGlmZmVyZW50DQo+ID4gPiBwcm9jZXNzZXMsIHRoYXQgaXMgcmVhbGx5IHRyaXZpYWwgYW5k
+IHRyb3VibGVzb21lLg0KPiA+DQo+ID4gPiBIZW5jZSB3ZSBuZWVkIGEgYmV0dGVyIG1lY2hhbmlz
+bSB0byBnZXQgYnBmIG9iamVjdCBpbmZvIHdpdGhvdXQNCj4gPiA+IENBUF9TWVNfQURNSU4uDQo+
+ID4NCj4gPiBbLi5dDQo+ID4NCj4gPiA+IEJQRiBuYW1lc3BhY2UgaXMgaW50cm9kdWNlZCBpbiB0
+aGlzIHBhdGNoc2V0IHdpdGggYW4gYXR0ZW1wdCB0byByZW1vdmUNCj4gPiA+IHRoZSBDQVBfU1lT
+X0FETUlOIHJlcXVpcmVtZW50LiBUaGUgdXNlciBjYW4gY3JlYXRlIGJwZiBtYXAsIHByb2cgYW5k
+DQo+ID4gPiBsaW5rIGluIGEgc3BlY2lmaWMgYnBmIG5hbWVzcGFjZSwgdGhlbiB0aGVzZSBicGYg
+b2JqZWN0cyB3aWxsIG5vdCBiZQ0KPiA+ID4gdmlzaWJsZSB0byB0aGUgdXNlcnMgaW4gYSBkaWZm
+ZXJlbnQgYnBmIG5hbWVzcGFjZS4gQnV0IHRoZXNlIGJwZg0KPiA+ID4gb2JqZWN0cyBhcmUgdmlz
+aWJsZSB0byBpdHMgcGFyZW50IGJwZiBuYW1lc3BhY2UsIHNvIHRoZSBzeXMgYWRtaW4gY2FuDQo+
+ID4gPiBzdGlsbCBpdGVyYXRlIGFuZCBpbnNwZWN0IHRoZW0uDQo+ID4NCj4gPiBEb2VzIGl0IGVz
+c2VudGlhbGx5IG1lYW4gdW5wcml2IGJwZj8NCg0KPiBSaWdodC4gV2l0aCBDQVBfQlBGIGFuZCBz
+b21lIG90aGVyIENBUHMgZW5hYmxlZC4NCg0KPiA+IENhbiBJLCBhcyBhIG5vbi1yb290LCBjcmVh
+dGUNCj4gPiBhIG5ldyBicGYgbmFtZXNwYWNlIGFuZCBzdGFydCBsb2FkaW5nL2F0dGFjaGluZyBw
+cm9ncz8NCg0KPiBObywgeW91IGNhbid0IGNyZWF0ZSBhIG5ldyBicGYgbmFtZXNwYWNlIGFzIGEg
+bm9uLXJvb3QsIHNlZSBhbHNvDQo+IGNvcHlfbmFtZXNwYWNlcygpLg0KPiBJbiB0aGUgY29udGFp
+bmVyIGVudmlyb25tZW50LCBuZXcgbmFtZXNwYWNlcyBhcmUgYWx3YXlzIGNyZWF0ZWQgYnkNCj4g
+Y29udGFpbmVyZWQsIHdoaWNoIGlzIHN0YXJ0ZWQgYnkgcm9vdC4NCg0KQXJlIHlvdSB0YWxraW5n
+IGFib3V0ICJpZiAoIW5zX2NhcGFibGUodXNlcl9ucywgQ0FQX1NZU19BRE1JTikpIiBwYXJ0DQpm
+cm9tIGNvcHlfbmFtZXNwYWNlcz8gSXNuJ3QgaXQgdHJpdmlhbGx5IGJ5cGFzc2VkIHdpdGggYSBu
+ZXcgdXNlcg0KbmFtZXNwYWNlPw0KDQpJSVVDLCBJIGNhbiBjcmVhdGUgYSBuZXcgdXNlciBuYW1l
+c3BhY2Ugd2hpY2ggZ2l2ZXMgbWUgQ0FQX1NZU19BRE1JTg0KaW4gdGhpcyBwYXJ0aWN1bGFyIHVz
+ZXItbnMuIFRoZW4gSSBjYW4gZ28gb24gYW5kIGNyZWF0ZSBhIG5ldyBicGYNCm5hbWVzcGFjZSAo
+d2l0aCBDQVBfQlBGKSBhbmQgZ28gd2lsZD8gSSB3b24ndCBzZWUgYW55dGhpbmcgZnJvbSB0aGUN
+Cm90aGVyIG5hbWVzcGFjZXMsIGJ1dCBJJ2xsIGJlIGFibGUgdG8gbG9hZC9hdHRhY2ggYnBmIHBy
+b2dyYW1zPw0KDQo+ID4gTWF5YmUgYWRkIGEgcGFyYWdyYXBoIGFib3V0IG5vdyB2cyB3aGF0ZXZl
+ciB5b3UncmUgcHJvcG9zaW5nLg0KDQo+IFdoYXQgSSdtIHByb3Bvc2luZyBpbiB0aGlzIHBhdGNo
+c2V0IGlzIHRvIHB1dCBicGYgb2JqZWN0cyAobWFwLCBwcm9nLA0KPiBsaW5rLCBhbmQgYnRmKSBp
+bnRvIHRoZSBicGYgbmFtZXNwYWNlLiBOZXh0IHN0ZXAgSSB3aWxsIHB1dCBicGZmcyBpbnRvDQo+
+IHRoZSBicGYgbmFtZXNwYWNlIGFzIHdlbGwuDQo+IFRoYXQgc2FpZCwgSSdtIHRyeWluZyB0byBw
+dXQgIGFsbCB0aGUgb2JqZWN0cyBjcmVhdGVkIGluIGJwZiBpbnRvIHRoZQ0KPiBicGYgbmFtZXNw
+YWNlLiBCZWxvdyBpcyBhIHNpbXBsZSBwYXJhZ3JhcGggdG8gaWxsdXN0cmF0ZSBpdC4NCg0KPiBS
+ZWdhcmRpbmcgdGhlIHVucHJpdiB1c2VyIHdpdGggQ0FQX0JQRiBlbmFibGVkLA0KPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE5v
+dyB8IEZ1dHVyZQ0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gSXRlcmF0ZSBoaXMgQlBGIElEcyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOICAgfCAgWSAgfA0KPiBJdGVyYXRlIG90aGVy
+cycgQlBGIElEcyAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOICAgfCAgTiAgfA0KPiBDb252
+ZXJ0IGhpcyBCUEYgSURzIHRvIEZEcyAgICAgICAgICAgICAgICAgIHwgTiAgIHwgIFkgIHwNCj4g
+Q29udmVydCBvdGhlcnMnIEJQRiBJRHMgdG8gRkRzICAgICAgICAgICAgfCBOICAgfCAgTiAgfA0K
+PiBHZXQgb3RoZXJzJyBvYmplY3QgaW5mbyBmcm9tIHBpbm5lZCBmaWxlICB8IFkoKikgfCBOICB8
+DQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQo+ICgqKSBJdCBjYW4gYmUgaW1wcm92ZWQgYnksDQo+ICAg
+ICAgIDEpLiBEaWZmZXJlbnQgY29udGFpbmVycyBoYXMgZGlmZmVyZW50IGJwZmZzDQo+ICAgICAg
+IDIpLiBTZXR0aW5nIGZpbGUgcGVybWlzc2lvbg0KPiAgICAgICBUaGF0J3Mgbm90IHBlcmZlY3Qs
+IGZvciBleGFtcGxlLCBpZiBvbmUgc2luZ2xlIHVzZXIgaGFzIHR3byBicGYNCj4gaW5zdGFuY2Vz
+LCBidXQgd2UgZG9uJ3Qgd2FudCB0aGVtIHRvIGluc3BlY3QgZWFjaCBvdGhlci4NCg0KSSB0aGlu
+ayB0aGUgcXVlc3Rpb24gaGVyZSBpcyB3aGF0IGhhcHBlbnMgdG8gdGhlIGV4aXN0aW5nDQpjYXBh
+YmxlKENBUF9CUEYpIGNoZWNrcz8gRG8gdGhleSBiZWNvbWUgbnNfY2FwYWJsZShDQVBfQlBGKSBl
+dmVudHVhbGx5Pw0KDQpBbmQgaWYgbm90LCBJIGRvbid0IHRoaW5rIGl0IGludGVncmF0ZXMgd2Vs
+bCB3aXRoIHRoZSB1c2VyIG5hbWVzcGFjZXM/DQoNCj4gPiBPdGhlcndpc2UgaXQncyBub3QgdmVy
+eSBjbGVhciB3aGF0J3MgdGhlIHNlY3VyaXR5IHN0b3J5Lg0KPiA+IChoYXZlbid0IGxvb2tlZCBh
+dCB0aGUgd2hvbGUgc2VyaWVzLCBzbyBtYXliZSBpdCdzIGFuc3dlcmVkIHNvbWV3aGVyZSAgDQo+
+IGVsc2U/KQ0KPiA+DQoNCg0KPiAtLQ0KPiBSZWdhcmRzDQo+IFlhZmFuZw0K
