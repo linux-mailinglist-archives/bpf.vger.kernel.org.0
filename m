@@ -2,115 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E73516CCA0A
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 20:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2926CCA15
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 20:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjC1Sbc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 14:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
+        id S229782AbjC1Sfv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 14:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjC1Sbb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 14:31:31 -0400
-Received: from out-38.mta0.migadu.com (out-38.mta0.migadu.com [IPv6:2001:41d0:1004:224b::26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638A419A0
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 11:31:30 -0700 (PDT)
-Message-ID: <1dab862d-7070-2529-ba88-22cf73b2126a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1680028288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y28tvYq4TZpbwgBtKY3fsSmMyGufMkjleI7RFB0Fi8g=;
-        b=igP9hH2I1beex6LjZaM6BDm/LMIPda9YnfVoLp8s2WEF6oZzeFqcWPl3REvIVBKnqtuckW
-        clHbnKFV/E785++bt8v99+1AMCYQpJTJ7je8xNZtEd9ioZOyB3+IPJZ7yDXagRmW174YcD
-        3l5z9JnvpkRdjiJMHT9XT5rXACpodYo=
-Date:   Tue, 28 Mar 2023 11:31:24 -0700
-MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] selftests/bpf: test a BPF CC writing app_limited
-Content-Language: en-US
-To:     Yixin Shen <bobankhshen@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, song@kernel.org, yhs@fb.com,
+        with ESMTP id S229778AbjC1Sfr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 14:35:47 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ED31BF0
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 11:35:44 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id ew6so53477184edb.7
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 11:35:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112; t=1680028543;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o2hU/6GK4yHeI2E04kJ+wsLD2zzLn1ZOn5QkCTAS5dA=;
+        b=s0OoCPYdYEkWiMM8TXR/F3G9QugCTOtdgkWp/fAicaUkKXgp2XFtYk3zAUJDnqMevi
+         Xf3+4b4fd5Hu48QoqkKSoCVZsT/Yu/N42Wa9Xnu6CA1219jcL+oRyO5XLEoidveTUKxo
+         n9LN1JGvmoY8hBOw5A5+2YwYwtSgihqAfZHA/SSCzYsNIbb59Gr3mxUyfBoQLyigm3lG
+         H5c/SlIDP4jZ6S555S4kX6KlRLshghyMMwqgBANA/rYnynD/kB+E28gcQIpx3ZCw4xvH
+         0Ozo6mqt8M0TtOo4/jZmtibYgtdp6nIfHpBDsPH0Xk+R5aSBpV0qEeiqa9Sdjd6u/uQ6
+         FU2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680028543;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o2hU/6GK4yHeI2E04kJ+wsLD2zzLn1ZOn5QkCTAS5dA=;
+        b=b9VNNhcLJ317PkkbXsIIaTmls44V6n7WiEw2TgsfLkwRXZtA+xPdUisEUX1pbGgosn
+         5ro29RVe3r5xVKZntHSrNtOYsPBg2/Zi6LqUwrLO5/zJ2mG42XzoyEU9+paY7bWj/9iG
+         bB6Y2IG9O5H8XbQtIpJynF8D95nceQfMDIA/EakOtYdXtEZVSjkFq+r7wSqHZp6AVwnT
+         FsIOGXYCsNQmJm82kLSUSDnGg9VLVfbWqhz9edLlEtD96RXdseNjb0e3B1B+VAC55Q5A
+         TA2DIH0bbdU6asjNKaopgWRTacD1BamLfjjh7RXXJKGY+O41VWADQPEcb+dLwYAGHwTm
+         J8eA==
+X-Gm-Message-State: AAQBX9e5LuNcSHIuWhpdUD3OkT79UevJ+oo3rLBIdJe/Yyx0GxpC9rWy
+        QVn7zjSjLk2Ag7GQH16XNWRV+w==
+X-Google-Smtp-Source: AKy350bYttSe2oGRVQfhpmdTk3tJEKqV5AnnS8nas8nc2Mr9yRQPwSpOo1ua8Z0xDEcEaG7DPr+yeQ==
+X-Received: by 2002:a17:907:7e8e:b0:932:dae5:2af9 with SMTP id qb14-20020a1709077e8e00b00932dae52af9mr22308243ejc.51.1680028543196;
+        Tue, 28 Mar 2023 11:35:43 -0700 (PDT)
+Received: from localhost ([2a02:8070:6387:ab20:5139:4abd:1194:8f0e])
+        by smtp.gmail.com with ESMTPSA id xh1-20020a170906da8100b0093f83562f09sm4460301ejb.87.2023.03.28.11.35.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Mar 2023 11:35:43 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 14:35:41 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         bpf@vger.kernel.org
-References: <20230328132035.50839-1-bobankhshen@gmail.com>
- <20230328132035.50839-3-bobankhshen@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230328132035.50839-3-bobankhshen@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v1 6/9] memcg: sleep during flushing stats in safe
+ contexts
+Message-ID: <ZCMzfQuo9IhWVzRA@cmpxchg.org>
+References: <20230328061638.203420-1-yosryahmed@google.com>
+ <20230328061638.203420-7-yosryahmed@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230328061638.203420-7-yosryahmed@google.com>
+X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/28/23 6:20 AM, Yixin Shen wrote:
-> diff --git a/tools/testing/selftests/bpf/progs/tcp_ca_write_app_limited.c b/tools/testing/selftests/bpf/progs/tcp_ca_write_app_limited.c
-> new file mode 100644
-> index 000000000000..de5c9b5045a1
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/tcp_ca_write_app_limited.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define USEC_PER_SEC 1000000UL
-> +
-> +#define min(a, b) ((a) < (b) ? (a) : (b))
-> +
-> +static inline struct tcp_sock *tcp_sk(const struct sock *sk)
-> +{
-> +	return (struct tcp_sock *)sk;
+On Tue, Mar 28, 2023 at 06:16:35AM +0000, Yosry Ahmed wrote:
+> @@ -642,24 +642,57 @@ static void __mem_cgroup_flush_stats(void)
+>  	 * from memcg flushers (e.g. reclaim, refault, etc).
+>  	 */
+>  	if (atomic_xchg(&stats_flush_ongoing, 1))
+> -		return;
+> +		return false;
+>  
+>  	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+> -	cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
+> +	return true;
 > +}
 > +
-> +static inline unsigned int tcp_left_out(const struct tcp_sock *tp)
+> +static void mem_cgroup_post_stats_flush(void)
 > +{
-> +	return tp->sacked_out + tp->lost_out;
+>  	atomic_set(&stats_flush_threshold, 0);
+>  	atomic_set(&stats_flush_ongoing, 0);
+>  }
+>  
+> -void mem_cgroup_flush_stats(void)
+> +static bool mem_cgroup_should_flush_stats(void)
+>  {
+> -	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
+> -		__mem_cgroup_flush_stats();
+> +	return atomic_read(&stats_flush_threshold) > num_online_cpus();
 > +}
 > +
-> +static inline unsigned int tcp_packets_in_flight(const struct tcp_sock *tp)
+> +/* atomic functions, safe to call from any context */
+> +static void __mem_cgroup_flush_stats_atomic(void)
 > +{
-> +	return tp->packets_out - tcp_left_out(tp) + tp->retrans_out;
+> +	if (mem_cgroup_pre_stats_flush()) {
+> +		cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
+> +		mem_cgroup_post_stats_flush();
+> +	}
 > +}
-> +
-> +SEC("struct_ops/write_app_limited_init")
-> +void BPF_PROG(write_app_limited_init, struct sock *sk)
-> +{
-> +#ifdef ENABLE_ATOMICS_TESTS
-> +	__sync_bool_compare_and_swap(&sk->sk_pacing_status, SK_PACING_NONE,
-> +				     SK_PACING_NEEDED);
-> +#else
-> +	sk->sk_pacing_status = SK_PACING_NEEDED;
-> +#endif
+
+I'm afraid I wasn't very nuanced with my complaint about the bool
+parameter in the previous version. In this case, when you can do a
+common helper for a couple of API functions defined right below it,
+and the callers don't spread throughout the codebase, using bools
+makes things simpler while still being easily understandable:
+
+static void do_flush_stats(bool may_sleep)
+{
+	if (atomic_xchg(&stats_flush_ongoing, 1))
+		return;
+
+	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+	atomic_set(&stats_flush_threshold, 0);
+
+	if (!may_sleep)
+		cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
+	else
+		cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+
+	atomic_set(&stats_flush_ongoing, 0);
+}
+
+void mem_cgroup_flush_stats(void)
+{
+	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
+		do_flush_stats(true);
+}
+
+void mem_cgroup_flush_stats_atomic(void)
+{
+	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
+		do_flush_stats(false);
+}
+
+>  void mem_cgroup_flush_stats_ratelimited(void)
+>  {
+>  	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
+> -		mem_cgroup_flush_stats();
+> +		mem_cgroup_flush_stats_atomic();
 > +}
-> +
-> +SEC("struct_ops/write_app_limited_cong_control")
-> +void BPF_PROG(write_app_limited_cong_control, struct sock *sk,
-> +	      const struct rate_sample *rs)
-> +{
-> +	struct tcp_sock *tp = tcp_sk(sk);
-> +	unsigned long rate =
-> +		((tp->snd_cwnd * tp->mss_cache * USEC_PER_SEC) << 3) /
-> +		(tp->srtt_us ?: 1U << 3);
-> +	sk->sk_pacing_rate = min(rate, sk->sk_max_pacing_rate);
-> +	tp->app_limited = (tp->delivered + tcp_packets_in_flight(tp)) ?: 1;
 
-Please add this line testing tp->app_limited to tcp_ca_write_sk_pacing.c instead 
-of creating a new bpf prog that looks pretty much the same.
+This should probably be mem_cgroup_flush_stats_atomic_ratelimited().
 
-Also tag the subject with bpf-next in v2.
+(Whee, kinda long, but that's alright. Very specialized caller...)
 
-Others lgtm.
+Btw, can you guys think of a reason against moving the threshold check
+into the common function? It would then apply to the time-limited
+flushes as well, but that shouldn't hurt anything. This would make the
+code even simpler:
 
+static void do_flush_stats(bool may_sleep)
+{
+	if (atomic_read(&stats_flush_threshold) <= num_online_cpus())
+		return;
+
+	if (atomic_xchg(&stats_flush_ongoing, 1))
+		return;
+
+	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+	atomic_set(&stats_flush_threshold, 0);
+
+	if (!may_sleep)
+		cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
+	else
+		cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+
+	atomic_set(&stats_flush_ongoing, 0);
+}
+
+void mem_cgroup_flush_stats(void)
+{
+	do_flush_stats(true);
+}
+
+void mem_cgroup_flush_stats_atomic(void)
+{
+	do_flush_stats(false);
+}
+
+void mem_cgroup_flush_stats_atomic_ratelimited(void)
+{
+	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
+		do_flush_stats(false);
+}
+
+> @@ -2845,7 +2845,7 @@ static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
+>  	 * Flush the memory cgroup stats, so that we read accurate per-memcg
+>  	 * lruvec stats for heuristics.
+>  	 */
+> -	mem_cgroup_flush_stats();
+> +	mem_cgroup_flush_stats_atomic();
+
+I'm thinking this one could be non-atomic as well. It's called fairly
+high up in reclaim without any locks held.
