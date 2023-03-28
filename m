@@ -2,125 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EB06CB937
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 10:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3A96CB946
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 10:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbjC1IVC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 04:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
+        id S230263AbjC1IXd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 04:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbjC1IU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 04:20:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784B01700
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 01:20:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679991612;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q3X0O+/TM7LVotJgrmc2xoQ/T0kA0UQLhsWOW/x515A=;
-        b=RzcuhHor46+fs9wiO9GR7qynLKoFSYx6Gf33Y5qrck2xPn5bhkBPwLouM6p4DxViUEGEi2
-        EHXmm9K2/hAv8nQVr8JdbDcsofJiarvibfgdjasHMQ5FpLuo2O5n6ZsuVp7EkQhf6Alcql
-        t3wUp1ki5vjaNlEUxE1Ln7kW9WjsdJM=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-656-LJblApRsNb6SBhMrS_whDQ-1; Tue, 28 Mar 2023 04:20:11 -0400
-X-MC-Unique: LJblApRsNb6SBhMrS_whDQ-1
-Received: by mail-qk1-f198.google.com with SMTP id r70-20020a374449000000b00746c31401f0so5208176qka.6
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 01:20:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679991611;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q3X0O+/TM7LVotJgrmc2xoQ/T0kA0UQLhsWOW/x515A=;
-        b=2WZbHeLSduuWwgr9YPXXiwz5uvDgSnVQ/atcG8n5DmirdvdeWORRmR5dloYVG9jLN6
-         Bt2fxZ3MJiMnTCOTkhjV7lngVxT5NNC6dWl7q7IeC2uW0IKDk6nET3I17KzIaAP1YUgR
-         zI6FL7qoxoh4pDnH128kurlXcXcUelzyZoYjnxFZFyyI8DrObLvwnFuzJtUWZ3N1EXdv
-         GKUy+nT3nApXBv5DAMurHZix6qSnGaH6NxjGb4+fNYRf4e1JJsPwO1rrF0zoPUQVLRYE
-         jrVcIBB/UYAzSEeGtTMlAQJhPkgSB9iia8WpteUdYg3xUMhY79hdt4kT/bsomO9dMi9e
-         LCeg==
-X-Gm-Message-State: AAQBX9ffDB6Qd8qiWPZkPKD9S5qxbcZVURl1xQVY3no52ZEi+kvZVUMG
-        jhjId/w0eDk5qo/X57GXYpS4nAW7qHGhJDMOJLKZH5ApC2k5QT7PVhge0NCDCrugfTN1QdF2Ggf
-        ZBp+xHFZd/oL3
-X-Received: by 2002:a05:622a:118a:b0:3e4:dcb4:162 with SMTP id m10-20020a05622a118a00b003e4dcb40162mr17628923qtk.4.1679991610939;
-        Tue, 28 Mar 2023 01:20:10 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bNpzeZ7gjbtIL2Ka8dMo1Bzn5V8O4UfVAoHsG5EFh/3BhzXlyah+r/S5EZ4D3ccfOazp/h+A==
-X-Received: by 2002:a05:622a:118a:b0:3e4:dcb4:162 with SMTP id m10-20020a05622a118a00b003e4dcb40162mr17628888qtk.4.1679991610700;
-        Tue, 28 Mar 2023 01:20:10 -0700 (PDT)
-Received: from sgarzare-redhat (host-82-53-134-98.retail.telecomitalia.it. [82.53.134.98])
-        by smtp.gmail.com with ESMTPSA id 4-20020a05620a048400b007468bf8362esm11708565qkr.66.2023.03.28.01.20.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Mar 2023 01:20:09 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 10:20:01 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        with ESMTP id S229459AbjC1IXc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 04:23:32 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EF744A2;
+        Tue, 28 Mar 2023 01:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=v68PtqY53cBqGu08f6wYN/a5E1D7BK1+ERrIL89e9Js=; b=GbzzZs6uNlXrSFOYAe5eE8kg4X
+        PT3e/Xrq11Ey3IcSRBPJF1Gr+tuVeflaCKoReFgRrF3w3LyS8ig+UCcVGtOuz2O21ciwyFhuF0RVX
+        p53vHw9evnXen+EgEdwXqMqXSf1gM3U43TmDLkxOVf9lX8adKyF0AC4hDmqsKDm/YwaM6dHs4147+
+        OnOmpKb98HaowZkXQyj4XMxb8opZLCuQfVelgfALrq8k+tQapRW/EjenboHNmhLy21NHQkfbXbs/v
+        hMCbw2ORmnzAtwzyfwJlKGVjS7jiw9JKo5VdBWmxAQM48E2Tt6do/z2OZZUMp54Gsms7SM4YirbH0
+        7MUhS+mg==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ph4bz-000DfI-25; Tue, 28 Mar 2023 10:23:23 +0200
+Received: from [219.59.88.22] (helo=localhost.localdomain)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ph4by-000EJ3-3o; Tue, 28 Mar 2023 10:23:22 +0200
+Subject: Re: [PATCH bpf-next] kallsyms: move module-related functions under
+ correct configs
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Viktor Malik <vmalik@redhat.com>
+Cc:     bpf@vger.kernel.org, linux-modules@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH net-next v4 1/3] vsock: support sockmap
-Message-ID: <6eyspnma2esx4nzi2kszxkbuvh3xjb2g4nuhvng6tkvtp3whn6@hpyehyt6imdn>
-References: <20230327-vsock-sockmap-v4-0-c62b7cd92a85@bytedance.com>
- <20230327-vsock-sockmap-v4-1-c62b7cd92a85@bytedance.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, kernel test robot <lkp@intel.com>
+References: <20230327161251.1129511-1-vmalik@redhat.com>
+ <ZCHWtptOwPPtUe+u@bombadil.infradead.org>
+ <c076e249-705a-e1bb-c657-f80cd4f2145b@redhat.com>
+ <ZCHuU4Wui7Dwmdm2@bombadil.infradead.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <bfaefad6-692f-e687-ad55-05a43aa54883@iogearbox.net>
+Date:   Tue, 28 Mar 2023 10:23:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230327-vsock-sockmap-v4-1-c62b7cd92a85@bytedance.com>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZCHuU4Wui7Dwmdm2@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26857/Tue Mar 28 09:23:39 2023)
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 27, 2023 at 07:11:51PM +0000, Bobby Eshleman wrote:
->This patch adds sockmap support for vsock sockets. It is intended to be
->usable by all transports, but only the virtio and loopback transports
->are implemented.
->
->SOCK_STREAM, SOCK_DGRAM, and SOCK_SEQPACKET are all supported.
->
->Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
->Acked-by: Michael S. Tsirkin <mst@redhat.com>
->---
-> drivers/vhost/vsock.c                   |   1 +
-> include/linux/virtio_vsock.h            |   1 +
-> include/net/af_vsock.h                  |  17 ++++
-> net/vmw_vsock/Makefile                  |   1 +
-> net/vmw_vsock/af_vsock.c                |  64 ++++++++++--
-> net/vmw_vsock/virtio_transport.c        |   2 +
-> net/vmw_vsock/virtio_transport_common.c |  25 +++++
-> net/vmw_vsock/vsock_bpf.c               | 174 ++++++++++++++++++++++++++++++++
-> net/vmw_vsock/vsock_loopback.c          |   2 +
-> 9 files changed, 281 insertions(+), 6 deletions(-)
+On 3/27/23 9:28 PM, Luis Chamberlain wrote:
+> On Mon, Mar 27, 2023 at 08:20:56PM +0200, Viktor Malik wrote:
+>> On 3/27/23 19:47, Luis Chamberlain wrote:
+>>> On Mon, Mar 27, 2023 at 06:12:51PM +0200, Viktor Malik wrote:
+>>>> Functions for searching module kallsyms should have non-empty
+>>>> definitions only if CONFIG_MODULES=y and CONFIG_KALLSYMS=y. Until now,
+>>>> only CONFIG_MODULES check was used for many of these, which may have
+>>>> caused complilation errors on some configs.
+>>>>
+>>>> This patch moves all relevant functions under the correct configs.
+>>>>
+>>>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>> Link: https://lore.kernel.org/oe-kbuild-all/202303181535.RFDCnz3E-lkp@intel.com/
+>>>
+>>> Thanks Viktor!  Does this fix something from an existing commit? If so
+>>> which one?  The commit log should mention it.
+>>
+>> Ah, right, I forgot about that. The commit log is missing:
+>>
+>> Fixes: bd5314f8dd2d ("kallsyms, bpf: Move find_kallsyms_symbol_value out of internal header")
+>>
+>> I can post v2 but I'm also fine with maintainers applying the tag.
+> 
+> That patch went through the bpf tree so its fix can go throug that tree.
+> So up to Daniel if he wants a new patch.
 
-LGTM!
+Fixing up is fine with me. Viktor, which config combinations did you test for this
+patch and under which architectures?
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+I suspect kbuild bot might still complain. For example, your patch moves
+dereference_module_function_descriptor() stub definition under !CONFIG_MODULES ||
+!CONFIG_KALLSYMS. Looking at ppc's dereference_module_function_descriptor()
+implementation (!CONFIG_PPC64_ELF_ABI_V2 case), it's build under CONFIG_MODULES,
+so you'll have two different implementations of the functions, the generic one
+then w/o __weak attribute.
+
+Also small nit, please fix the patch up wrt indentation to align with kernel coding
+style.
 
 Thanks,
-Stefano
-
+Daniel
