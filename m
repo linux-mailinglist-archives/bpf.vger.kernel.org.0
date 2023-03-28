@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8716CB6DF
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 08:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862656CB6E5
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 08:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbjC1GRn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 02:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        id S232692AbjC1GRq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 02:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbjC1GRR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 02:17:17 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF8435A7
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 23:16:53 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id b8-20020a17090a488800b0023d1bf65c7eso2972471pjh.3
-        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 23:16:53 -0700 (PDT)
+        with ESMTP id S232573AbjC1GRX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 02:17:23 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272363AAB
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 23:16:55 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id h4-20020a170902f54400b001a1f5f00f3fso7039788plf.2
+        for <bpf@vger.kernel.org>; Mon, 27 Mar 2023 23:16:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679984213;
+        d=google.com; s=20210112; t=1679984214;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9IOPAG+bqxWxKt0wdRgDKHhdCXWwpmJ9UigZO44sKyE=;
-        b=ntB4QsMVT8Fqv0//N2SyNJC8TO+SF5Nd//5MMCXPuMIlVWZztrbNiDvPnYTm36PsVJ
-         0K9UDAdVpl/jKPNVqGESnlXBby6gGh6KP9olFVGSWL7LZjX9hTDyTd2rcdVRYaALTq3d
-         Svdw5D9xcS6f+R64pTOq4hP3DTwLDxc7s6WmPqIXIzObjUGQ7BCksYYcDbsn8CMNCe4l
-         XYGLULvlYDvGRGQwaFkUUkpNiN3oSuW1tCmNSMxILm7ttbjB9+T2xkgSS2wr2ydIjDg8
-         ulb0ThWq/NbS6X5lqaGmn6zu6IKbfwWSX3vLp0eLAeAr3Ue3Dif4Fen7adboVvdM5kPM
-         ZMpA==
+        bh=0xrFtgulASYXrMO3GaE6CpeYp9Puj0hiviKaUT94oIg=;
+        b=qIxeFfAv7LZhUaMY9U0TvTtrAPX4wRqNbnIeY0Yrn/RnFRGntBTlu0hfuIAsMfAy2n
+         1P28EpdkOB3njh6q599A6aRPcbQ+/6Ngp2xMzs6rBLHlr6vd8s4xgEvIn8RMUD6Mze8g
+         o6DwJQ//Mohpbdf8YD2EiOxbMyBh8HdrF+/Yzlad7E0D+Fg0j+P6NKtF5T845D/HLRrp
+         rP0WF5ztka030C2opL/oGdjy+y9vRWrHiXRiQXH/e0QgpKRtMDaGNueTHyNdIDcH2xFM
+         Q3P8IwnLdzShQrK/qG/mnGtQghgE6XGNQRvgt1djyelN/qv5GiJdyRld4l0gXlsYj6Rl
+         orEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679984213;
+        d=1e100.net; s=20210112; t=1679984214;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9IOPAG+bqxWxKt0wdRgDKHhdCXWwpmJ9UigZO44sKyE=;
-        b=FTOsBoz8Tx2Qx6wddpFihCG/g/SQJ++qzq1L6QrPXxCyC3bmnGkH2iQMxk0ucwKSBs
-         KJND7RocvFNEkpWTJ0EyO1mQr/Yn9accKHVoKwrq3oAosRbiiujjqwHWoyGXp02vlymJ
-         Hdsu/bad8Z/Ftl/DE8GYvzXX4guebSHK0ZP691xA4lSUeoI6Bv9npTwyV50CCfFRBneI
-         kEWGrKy2tU5Cm2wiOwAQrJ98ekf8Ks1ic4LWj6IsUSVoYA9NiJxkAkthQLyTS7H148bP
-         qXCue4RJunWtUJLukRfcx6ZRoRESPnbvytl70JH3uoYhT0/QbKuv4NzErG4ePk4SjjKp
-         Wptg==
-X-Gm-Message-State: AAQBX9eBRtWXXcZh/qQgfv3kqagFbdAEV5mq7oadtYgPo4qRxU0Wi4b6
-        nPiCr/EoYScBKWAmGKwUlxyhL9fAAFwgQx+7
-X-Google-Smtp-Source: AKy350aQyFDG3vc2bblz86MnnpZXVqNeZCl/Rb1kLJ1qs2lbXDpCUugeQMSOiQHvyL07sX6z7bmDfgTHunmuYJ4D
+        bh=0xrFtgulASYXrMO3GaE6CpeYp9Puj0hiviKaUT94oIg=;
+        b=Kzdv5SiN4xHHxeZOKzC/32LQ2S2lGFf19H7RvkIARmSvHevTnBzJ3N0ur/xUGlc+ht
+         +o/xvsEF+XAxVHi5pTxVwSA6FIIIfoDV0w0Wp/Z/SWZCvlchxMDLgPdmk7+3liLFk0SO
+         h1tX4kV1UeCWHB/qKAPhhx7G2uuSE48Pj8kk6xX00N2PiNUNyo+/DfA8vKXEZ7mduT7H
+         ru8Rla+DJuKZc6HWriCO2s43QWLhQLqfmKNpvvw4xzCgDsvSUVuixVz6wUuguDXBE3GR
+         6dVTfj4jtsfAlekbxQ0y4EJORQ8NcJD4JcrINiOQuSF2ZBpX4/q4uWDMEiQyhSbeaGkN
+         qGPQ==
+X-Gm-Message-State: AAQBX9fXS3tgKN0q9ZJcUWaqQjUDiLWkdRjYYVR1+089JAWy0o7FXT1u
+        zSMkr+iEHKazkDvrVe5LiI8qgD99/sEk1AqJ
+X-Google-Smtp-Source: AKy350aBuKbfjhOAuCJYm2iwk4HKu8S/jfcCuw8uP63TY3FEEFp0rTq/+r6BOwoVOwDyCp4xkVINZeVu5jFTXH9F
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a63:4a41:0:b0:507:46cb:f45b with SMTP
- id j1-20020a634a41000000b0050746cbf45bmr3969874pgl.1.1679984212630; Mon, 27
- Mar 2023 23:16:52 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 06:16:35 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a63:115a:0:b0:50b:dfd4:b56f with SMTP
+ id 26-20020a63115a000000b0050bdfd4b56fmr3747909pgr.5.1679984214584; Mon, 27
+ Mar 2023 23:16:54 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 06:16:36 +0000
 In-Reply-To: <20230328061638.203420-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20230328061638.203420-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-Message-ID: <20230328061638.203420-7-yosryahmed@google.com>
-Subject: [PATCH v1 6/9] memcg: sleep during flushing stats in safe contexts
+Message-ID: <20230328061638.203420-8-yosryahmed@google.com>
+Subject: [PATCH v1 7/9] workingset: memcg: sleep when flushing stats in workingset_refault()
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
@@ -78,169 +78,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, all contexts that flush memcg stats do so with sleeping not
-allowed. Some of these contexts are perfectly safe to sleep in, such as
-reading cgroup files from userspace or the background periodic flusher.
+In workingset_refault(), we call mem_cgroup_flush_stats_ratelimited()
+to flush stats within an RCU read section and with sleeping disallowed.
+Move the call to mem_cgroup_flush_stats_ratelimited() above the RCU read
+section and allow sleeping to avoid unnecessarily performing a lot of
+work without sleeping.
 
-Refactor the code to make mem_cgroup_flush_stats() non-atomic (aka
-sleepable), and provide a separate atomic version. The atomic version is
-used in reclaim, refault, writeback, and in mem_cgroup_usage(). All
-other code paths are left to use the non-atomic version. This includes
-callbacks for userspace reads and the periodic flusher.
-
-Since refault is the only caller of mem_cgroup_flush_stats_ratelimited(),
-this function is changed to call the atomic version of
-mem_cgroup_flush_stats(). Reclaim and refault code paths are modified
-to do non-atomic flushing in separate later patches -- so
-mem_cgroup_flush_stats_ratelimited() will eventually become non-atomic.
+Since workingset_refault() is the only caller of
+mem_cgroup_flush_stats_ratelimited(), just make it call the non-atomic
+mem_cgroup_flush_stats().
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- include/linux/memcontrol.h |  5 ++++
- mm/memcontrol.c            | 58 ++++++++++++++++++++++++++++++++------
- mm/vmscan.c                |  2 +-
- 3 files changed, 55 insertions(+), 10 deletions(-)
+ mm/memcontrol.c | 12 ++++++------
+ mm/workingset.c |  4 ++--
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index ac3f3b3a45e2..a4bc3910a2eb 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1037,6 +1037,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- }
- 
- void mem_cgroup_flush_stats(void);
-+void mem_cgroup_flush_stats_atomic(void);
- void mem_cgroup_flush_stats_ratelimited(void);
- 
- void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-@@ -1535,6 +1536,10 @@ static inline void mem_cgroup_flush_stats(void)
- {
- }
- 
-+static inline void mem_cgroup_flush_stats_atomic(void)
-+{
-+}
-+
- static inline void mem_cgroup_flush_stats_ratelimited(void)
- {
- }
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 64ff33e02c96..57e8cbf701f3 100644
+index 57e8cbf701f3..0c0e74188e90 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -634,7 +634,7 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 	}
+@@ -674,12 +674,6 @@ void mem_cgroup_flush_stats_atomic(void)
+ 		__mem_cgroup_flush_stats_atomic();
  }
  
--static void __mem_cgroup_flush_stats(void)
-+static bool mem_cgroup_pre_stats_flush(void)
+-void mem_cgroup_flush_stats_ratelimited(void)
+-{
+-	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
+-		mem_cgroup_flush_stats_atomic();
+-}
+-
+ /* non-atomic functions, only safe from sleepable contexts */
+ static void __mem_cgroup_flush_stats(void)
  {
- 	/*
- 	 * We always flush the entire tree, so concurrent flushers can just
-@@ -642,24 +642,57 @@ static void __mem_cgroup_flush_stats(void)
- 	 * from memcg flushers (e.g. reclaim, refault, etc).
- 	 */
- 	if (atomic_xchg(&stats_flush_ongoing, 1))
--		return;
-+		return false;
- 
- 	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
--	cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
-+	return true;
-+}
-+
-+static void mem_cgroup_post_stats_flush(void)
-+{
- 	atomic_set(&stats_flush_threshold, 0);
- 	atomic_set(&stats_flush_ongoing, 0);
+@@ -695,6 +689,12 @@ void mem_cgroup_flush_stats(void)
+ 		__mem_cgroup_flush_stats();
  }
  
--void mem_cgroup_flush_stats(void)
-+static bool mem_cgroup_should_flush_stats(void)
- {
--	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
--		__mem_cgroup_flush_stats();
-+	return atomic_read(&stats_flush_threshold) > num_online_cpus();
++void mem_cgroup_flush_stats_ratelimited(void)
++{
++	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
++		mem_cgroup_flush_stats();
 +}
 +
-+/* atomic functions, safe to call from any context */
-+static void __mem_cgroup_flush_stats_atomic(void)
-+{
-+	if (mem_cgroup_pre_stats_flush()) {
-+		cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
-+		mem_cgroup_post_stats_flush();
-+	}
-+}
-+
-+void mem_cgroup_flush_stats_atomic(void)
-+{
-+	if (mem_cgroup_should_flush_stats())
-+		__mem_cgroup_flush_stats_atomic();
- }
- 
- void mem_cgroup_flush_stats_ratelimited(void)
- {
- 	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
--		mem_cgroup_flush_stats();
-+		mem_cgroup_flush_stats_atomic();
-+}
-+
-+/* non-atomic functions, only safe from sleepable contexts */
-+static void __mem_cgroup_flush_stats(void)
-+{
-+	if (mem_cgroup_pre_stats_flush()) {
-+		cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-+		mem_cgroup_post_stats_flush();
-+	}
-+}
-+
-+void mem_cgroup_flush_stats(void)
-+{
-+	if (mem_cgroup_should_flush_stats())
-+		__mem_cgroup_flush_stats();
- }
- 
  static void flush_memcg_stats_dwork(struct work_struct *w)
-@@ -3684,9 +3717,12 @@ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
- 		 * done from irq context; use stale stats in this case.
- 		 * Arguably, usage threshold events are not reliable on the root
- 		 * memcg anyway since its usage is ill-defined.
-+		 *
-+		 * Additionally, other call paths through memcg_check_events()
-+		 * disable irqs, so make sure we are flushing stats atomically.
- 		 */
- 		if (in_task())
--			mem_cgroup_flush_stats();
-+			mem_cgroup_flush_stats_atomic();
- 		val = memcg_page_state(memcg, NR_FILE_PAGES) +
- 			memcg_page_state(memcg, NR_ANON_MAPPED);
- 		if (swap)
-@@ -4609,7 +4645,11 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
- 	struct mem_cgroup *parent;
+ {
+ 	__mem_cgroup_flush_stats();
+diff --git a/mm/workingset.c b/mm/workingset.c
+index af862c6738c3..7d7ecc46521c 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -406,6 +406,8 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 	unpack_shadow(shadow, &memcgid, &pgdat, &eviction, &workingset);
+ 	eviction <<= bucket_order;
  
--	mem_cgroup_flush_stats();
-+	/*
-+	 * wb_writeback() takes a spinlock and calls
-+	 * wb_over_bg_thresh()->mem_cgroup_wb_stats(). Do not sleep.
-+	 */
-+	mem_cgroup_flush_stats_atomic();
- 
- 	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
- 	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 9c1c5e8b24b8..a9511ccb936f 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2845,7 +2845,7 @@ static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
- 	 * Flush the memory cgroup stats, so that we read accurate per-memcg
- 	 * lruvec stats for heuristics.
- 	 */
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats_atomic();
- 
++	/* Flush stats (and potentially sleep) before holding RCU read lock */
++	mem_cgroup_flush_stats_ratelimited();
+ 	rcu_read_lock();
  	/*
- 	 * Determine the scan balance between anon and file LRUs.
+ 	 * Look up the memcg associated with the stored ID. It might
+@@ -461,8 +463,6 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+ 
+ 	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
+-
+-	mem_cgroup_flush_stats_ratelimited();
+ 	/*
+ 	 * Compare the distance to the existing workingset size. We
+ 	 * don't activate pages that couldn't stay resident even if
 -- 
 2.40.0.348.gf938b09366-goog
 
