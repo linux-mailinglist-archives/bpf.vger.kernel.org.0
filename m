@@ -2,66 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B46F6CCC75
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 23:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4CB6CCCE6
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 00:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbjC1V64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 17:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        id S229531AbjC1WRA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 18:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbjC1V6z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 17:58:55 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E999D
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 14:58:54 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id m12-20020a62f20c000000b0062612a76a08so6311637pfh.2
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 14:58:54 -0700 (PDT)
+        with ESMTP id S229708AbjC1WQ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 18:16:59 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977F72D56
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:16:51 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id e5-20020a17090301c500b001a1aa687e4bso8380298plh.17
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 15:16:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680040734;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8yYfTRlVy8+a3jmgxVqWb3McvAzlOI0eWzfqMDXbjb8=;
-        b=lQWr9ruWMNQzFwN+NqZhX+ZsQWL/uLkGdtGW//t2mxE5ASz7x0PvQ2GqN8PtUnIYTi
-         LisiskLnzotzHe2F6xJD5Rr2Tl1ymDuahcNDHi33lsFk1p+7Rf8iRzRM20VEreK5MVhO
-         lOkTGxRbesKwLf1dV1fwYPNJp00cmV10bDcZQncPTL7hyy7th2Ukcvbks8ju/7eHY0XV
-         joBA0mxBfn7WhixeqYWCwXMons8geOV7uCMeYFI9bwv8GxIUUGi7ltjPouJiyyks/fZB
-         2OeVe0TN0eMB9dj2Ty6mrYZFIHX4udnYHVvpWFEaaNcVOMB2A+p/MNIf5xA6MnfRsMaQ
-         v3WQ==
+        d=google.com; s=20210112; t=1680041811;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cwQWCEo9ePRYrBfd54RTGHI4ReD6zTB2CQA9ky8D7Xo=;
+        b=ckuVrFZpRMbKkYaT641zugwGgqS/ki1HcHRGVRwRjkqbpYmJn53n3BJxlm4PtefNMZ
+         V7Lx0t0VCx9xJbkbk0054d9U/+6MMsQejk2NSwnt5D35xCm5Hq5pZm5SJK5CIZfjCnht
+         V0pY409txNDdSi4+78Xf8fYrfgteKRSatE0Yv5rBDd+5j6WpeDHZJpDO5IiqBfLgwy3G
+         9G3wSwe0z1jWNeULV+cFUkJOWs1knwD7pW4WcXwfaanarWpk2Ozk+fACPDNx1NcCWRdH
+         tAvDGN/2QSuKylRwD/br3VcJA7SF9Tuz8RLoH1VBIr+l7Bie6Py+vND+8JOUEY43Ncvz
+         wX4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680040734;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8yYfTRlVy8+a3jmgxVqWb3McvAzlOI0eWzfqMDXbjb8=;
-        b=JLBhZvfJ0OMxOoxfMd/xjLHZF5HpFSBab6NMh9OdGfwjMTvM21xLA9jIuqH9ciMgeF
-         FdP9nnGZCAnPILpXi4iODFpstS/k4jc14nkGMfxZL0R1Y1gLPQfyyuL/EL86fJIBu25n
-         dCW2RFwDNeCFZHFvEJIba+DWZ/jx0GJ1W6PRRMJqnBJKhQeIMfCPVMZq1jEMFDZDS73E
-         ZPjDElVPLGZtzYvEsNQpQNbXaIb8/C0mIrhCydVhHmTBpDqU4yOwBrIwoo6IcRadqdua
-         4zcYj/+Gcwkc6sTwg4La+tDK0PqfBtWBlNTCs1MwnLfsjhzHx6MPSozihmU6vKH4fzfP
-         R2Xw==
-X-Gm-Message-State: AAQBX9eZFEDPfIJBGPquxe2oDMbf2fMDmA8WQC8rNHGV3NGQ7YrnxmsT
-        DjgAFnF4YM9o3KrzdsKMJ7/luzw=
-X-Google-Smtp-Source: AKy350aeM1DJXTixgfwMy9Tmk+d6l64HsTntHsGf93MuO5cskm0HFqWDJcVdNNqftsvPIS5nvLMBCfg=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:1414:b0:625:96ce:f774 with SMTP id
- l20-20020a056a00141400b0062596cef774mr9000445pfu.0.1680040733979; Tue, 28 Mar
- 2023 14:58:53 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 14:58:52 -0700
-In-Reply-To: <168003455815.3027256.7575362149566382055.stgit@firesoul>
+        d=1e100.net; s=20210112; t=1680041811;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cwQWCEo9ePRYrBfd54RTGHI4ReD6zTB2CQA9ky8D7Xo=;
+        b=nio8nMGyeLu8ec9bO5DAczSomr4TSzywtP9FH8OHIHly4c6KpkBNtsgOhdsklASOAS
+         HGBvkJfg3zOpWJ9JtM5IxL6R2pbQWc5ajUH31HIN7svaImCK6RIsQC3BnuxZE7P5TnGN
+         Kt+Eg1ksjcibu0tVD4innGXc6RuBkGam4o1NdY3SsaluAR27I6s4MIt1LRPYsKJd6nhy
+         lgaxJddZibZ3+1t3fHgK+B8tjHtuANHKMB4faM2j9WW6T5GLMTeFgQH4OUws12y4ubAP
+         PvaVfrN/NZwVuJ8oiSOqFDw81odpPs62pZaaS9v/2ZfP2Iy1dyaPd7XHEHE3YdvFPEzn
+         1VXQ==
+X-Gm-Message-State: AAQBX9fvWhanHvVGB2X/LUG5nnPAg3FHt9Ij8ZZRGz30d8tfQrHa8KXx
+        /1M/WlrapAWHxdqXLT2gZNyMDve9mwjjNjAw
+X-Google-Smtp-Source: AKy350a0LftA8+YBeO7HxI5a3hE9RhuyDxnrWJZbioOsZo1jxLgNNr2gQblYzMvl1vhkIgmDGcTTrBWiLU1iOxlk
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a63:d34e:0:b0:50f:8c32:79ee with SMTP
+ id u14-20020a63d34e000000b0050f8c3279eemr4775173pgi.4.1680041810879; Tue, 28
+ Mar 2023 15:16:50 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 22:16:35 +0000
 Mime-Version: 1.0
-References: <168003451121.3027256.13000250073816770554.stgit@firesoul> <168003455815.3027256.7575362149566382055.stgit@firesoul>
-Message-ID: <ZCNjHAY81gS02FVW@google.com>
-Subject: Re: [PATCH bpf RFC 1/4] xdp: rss hash types representation
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
-        davem@davemloft.net
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
+Message-ID: <20230328221644.803272-1-yosryahmed@google.com>
+Subject: [PATCH v2 0/9] memcg: make rstat flushing irq and sleep
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>
+Cc:     Vasily Averin <vasily.averin@linux.dev>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, bpf@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
@@ -72,147 +76,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/28, Jesper Dangaard Brouer wrote:
-> The RSS hash type specifies what portion of packet data NIC hardware used
-> when calculating RSS hash value. The RSS types are focused on Internet
-> traffic protocols at OSI layers L3 and L4. L2 (e.g. ARP) often get hash
-> value zero and no RSS type. For L3 focused on IPv4 vs. IPv6, and L4
-> primarily TCP vs UDP, but some hardware supports SCTP.
+Patches 1 and 2 are cleanups requested during reviews of prior versions
+of this series.
 
-> Hardware RSS types are differently encoded for each hardware NIC. Most
-> hardware represent RSS hash type as a number. Determining L3 vs L4 often
-> requires a mapping table as there often isn't a pattern or sorting
-> according to ISO layer.
+Patch 3 makes sure we never try to flush from within an irq context, and
+patch 4 adds a WARN_ON_ONCE() to make sure we catch any violations.
 
-> The patch introduce a XDP RSS hash type (xdp_rss_hash_type) that can both
-> be seen as a number that is ordered according by ISO layer, and can be bit
-> masked to separate IPv4 and IPv6 types for L4 protocols. Room is available
-> for extending later while keeping these properties. This maps and unifies
-> difference to hardware specific hashes.
+Patches 5 to 8 introduce separate variants of mem_cgroup_flush_stats()
+for atomic and non-atomic flushing, and make sure we only flush the
+stats atomically when necessary.
 
-Looks good overall. Any reason we're making this specific layout?
-Why not simply the following?
+Patch 9 is a slightly tangential optimization that limits the work done
+by rstat flushing in some scenarios.
 
-enum {
-	XDP_RSS_TYPE_NONE = 0,
-	XDP_RSS_TYPE_IPV4 = BIT(0),
-	XDP_RSS_TYPE_IPV6 = BIT(1),
-	/* IPv6 with extension header. */
-	/* let's note ^^^ it in the UAPI? */
-	XDP_RSS_TYPE_IPV6_EX = BIT(2),
-	XDP_RSS_TYPE_UDP = BIT(3),
-	XDP_RSS_TYPE_TCP = BIT(4),
-	XDP_RSS_TYPE_SCTP = BIT(5),
-}
+v1 -> v2:
+- Added more context in patch 4's commit log.
+- Added atomic_read() before atomic_xchg() in patch 5 to avoid
+  needlessly locking the cache line (Shakeel).
+- Refactored patch 6: added a common helper, do_flush_stats(), for
+  mem_cgroup_flush_stats{_atomic}() (Johannes).
+- Renamed mem_cgroup_flush_stats_ratelimited() to
+  mem_cgroup_flush_stats_atomic_ratelimited() in patch 6. It is restored
+  in patch 7, but this maintains consistency (Johannes).
+- Added line break to keep the lock section visually separated in patch
+  7 (Johannes).
 
-And then using XDP_RSS_TYPE_IPV4|XDP_RSS_TYPE_UDP vs XDP_RSS_TYPE_IPV6|XXX ?
+RFC -> v1:
+- Dropped patch 1 that attempted to make the global rstat lock a non-irq
+  lock, will follow up on that separetly (Shakeel).
+- Dropped stats_flush_lock entirely, replaced by an atomic (Johannes).
+- Renamed cgroup_rstat_flush_irqsafe() to cgroup_rstat_flush_atomic()
+  instead of removing it (Johannes).
+- Added a patch to rename mem_cgroup_flush_stats_delayed() to
+  mem_cgroup_flush_stats_ratelimited() (Johannes).
+- Separate APIs for flushing memcg stats in atomic and non-atomic
+  contexts instead of a boolean argument (Johannes).
+- Added patches 3 & 4 to make sure we never flush from irq context
+  (Shakeel & Johannes).
 
-> This proposal change the kfunc API bpf_xdp_metadata_rx_hash() to return
-> this RSS hash type on success.
+Yosry Ahmed (9):
+  cgroup: rename cgroup_rstat_flush_"irqsafe" to "atomic"
+  memcg: rename mem_cgroup_flush_stats_"delayed" to "ratelimited"
+  memcg: do not flush stats in irq context
+  cgroup: rstat: add WARN_ON_ONCE() if flushing outside task context
+  memcg: replace stats_flush_lock with an atomic
+  memcg: sleep during flushing stats in safe contexts
+  workingset: memcg: sleep when flushing stats in workingset_refault()
+  vmscan: memcg: sleep when flushing stats during reclaim
+  memcg: do not modify rstat tree for zero updates
 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->   include/net/xdp.h |   51  
-> +++++++++++++++++++++++++++++++++++++++++++++++++++
->   net/core/xdp.c    |    4 +++-
->   2 files changed, 54 insertions(+), 1 deletion(-)
+ include/linux/cgroup.h     |  2 +-
+ include/linux/memcontrol.h |  9 ++++-
+ kernel/cgroup/rstat.c      |  6 ++-
+ mm/memcontrol.c            | 78 ++++++++++++++++++++++++++++++--------
+ mm/workingset.c            |  5 ++-
+ 5 files changed, 78 insertions(+), 22 deletions(-)
 
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index 5393b3ebe56e..63f462f5ea7f 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -8,6 +8,7 @@
-
->   #include <linux/skbuff.h> /* skb_shared_info */
->   #include <uapi/linux/netdev.h>
-> +#include <linux/bitfield.h>
-
->   /**
->    * DOC: XDP RX-queue information
-> @@ -396,6 +397,56 @@ XDP_METADATA_KFUNC_xxx
->   MAX_XDP_METADATA_KFUNC,
->   };
-
-> +/* For partitioning of xdp_rss_hash_type */
-> +#define RSS_L3		GENMASK(2,0) /* 3-bits = values between 1-7 */
-> +#define L4_BIT		BIT(3)       /* 1-bit - L4 indication */
-> +#define RSS_L4_IPV4	GENMASK(6,4) /* 3-bits */
-> +#define RSS_L4_IPV6	GENMASK(9,7) /* 3-bits */
-> +#define RSS_L4		GENMASK(9,3) /* = 7-bits - covering L4 IPV4+IPV6 */
-> +#define L4_IPV6_EX_BIT	BIT(9)       /* 1-bit - L4 IPv6 with Extension  
-> hdr */
-> +				     /* 11-bits in total */
-> +
-> +/* The XDP RSS hash type (xdp_rss_hash_type) can both be seen as a  
-> number that
-> + * is ordered according by ISO layer, and can be bit masked to separate  
-> IPv4 and
-> + * IPv6 types for L4 protocols. Room is available for extending later  
-> while
-> + * keeping above properties, as this need to cover NIC hardware RSS  
-> types.
-> + */
-> +enum xdp_rss_hash_type {
-> +	XDP_RSS_TYPE_NONE            = 0,
-> +	XDP_RSS_TYPE_L2              = XDP_RSS_TYPE_NONE,
-> +
-> +	XDP_RSS_TYPE_L3_MASK         = RSS_L3,
-> +	XDP_RSS_TYPE_L3_IPV4         = FIELD_PREP_CONST(RSS_L3, 1),
-> +	XDP_RSS_TYPE_L3_IPV6         = FIELD_PREP_CONST(RSS_L3, 2),
-> +	XDP_RSS_TYPE_L3_IPV6_EX      = FIELD_PREP_CONST(RSS_L3, 4),
-> +
-> +	XDP_RSS_TYPE_L4_MASK         = RSS_L4,
-> +	XDP_RSS_TYPE_L4_SHIFT        = __bf_shf(RSS_L4),
-> +	XDP_RSS_TYPE_L4_MASK_EX      = RSS_L4 | L4_IPV6_EX_BIT,
-> +
-> +	XDP_RSS_TYPE_L4_IPV4_MASK    = RSS_L4_IPV4,
-> +	XDP_RSS_TYPE_L4_BIT          = L4_BIT,
-> +	XDP_RSS_TYPE_L4_IPV4_TCP     = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV4, 1),
-> +	XDP_RSS_TYPE_L4_IPV4_UDP     = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV4, 2),
-> +	XDP_RSS_TYPE_L4_IPV4_SCTP    = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV4, 3),
-> +
-> +	XDP_RSS_TYPE_L4_IPV6_MASK    = RSS_L4_IPV6,
-> +	XDP_RSS_TYPE_L4_IPV6_TCP     = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV6, 1),
-> +	XDP_RSS_TYPE_L4_IPV6_UDP     = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV6, 2),
-> +	XDP_RSS_TYPE_L4_IPV6_SCTP    = L4_BIT|FIELD_PREP_CONST(RSS_L4_IPV6, 3),
-> +
-> +	XDP_RSS_TYPE_L4_IPV6_EX_MASK = L4_IPV6_EX_BIT,
-> +	XDP_RSS_TYPE_L4_IPV6_TCP_EX  = XDP_RSS_TYPE_L4_IPV6_TCP |L4_IPV6_EX_BIT,
-> +	XDP_RSS_TYPE_L4_IPV6_UDP_EX  = XDP_RSS_TYPE_L4_IPV6_UDP |L4_IPV6_EX_BIT,
-> +	XDP_RSS_TYPE_L4_IPV6_SCTP_EX = XDP_RSS_TYPE_L4_IPV6_SCTP|L4_IPV6_EX_BIT,
-> +};
-> +#undef RSS_L3
-> +#undef L4_BIT
-> +#undef RSS_L4_IPV4
-> +#undef RSS_L4_IPV6
-> +#undef RSS_L4
-> +#undef L4_IPV6_EX_BIT
-> +
->   #ifdef CONFIG_NET
->   u32 bpf_xdp_metadata_kfunc_id(int id);
->   bool bpf_dev_bound_kfunc_id(u32 btf_id);
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 7133017bcd74..81d41df30695 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -721,12 +721,14 @@ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const  
-> struct xdp_md *ctx, u64 *tim
->    * @hash: Return value pointer.
->    *
->    * Return:
-> - * * Returns 0 on success or ``-errno`` on error.
-> + * * Returns (positive) RSS hash **type** on success or ``-errno`` on  
-> error.
-> + * * ``enum xdp_rss_hash_type`` : RSS hash type
->    * * ``-EOPNOTSUPP`` : means device driver doesn't implement kfunc
->    * * ``-ENODATA``    : means no RX-hash available for this frame
->    */
->   __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32  
-> *hash)
->   {
-> +	BTF_TYPE_EMIT(enum xdp_rss_hash_type);
->   	return -EOPNOTSUPP;
->   }
-
-
+-- 
+2.40.0.348.gf938b09366-goog
 
