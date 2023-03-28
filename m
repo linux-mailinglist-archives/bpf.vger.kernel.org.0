@@ -2,89 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE436CB918
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 10:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EB06CB937
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 10:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbjC1IM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 04:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59802 "EHLO
+        id S230054AbjC1IVC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 04:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjC1IM0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 04:12:26 -0400
-X-Greylist: delayed 382 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Mar 2023 01:12:24 PDT
-Received: from mail.simsborovin.com (mail.simsborovin.com [89.40.118.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87A3B1
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 01:12:24 -0700 (PDT)
-Received: by mail.simsborovin.com (Postfix, from userid 1001)
-        id 3DF6685BC8; Tue, 28 Mar 2023 09:05:58 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=simsborovin.com;
-        s=mail; t=1679990763;
-        bh=so3xiFooQ9N0D/cd/+ivPaO6nnHsd9cY/G2xa/w5Tfg=;
-        h=Date:From:To:Subject:From;
-        b=UaVw3/g4eaN6lXsPrcyhs6PA3oG+K74fPebGmQuBA9kqEDbzpqfEPmlAkz06mDs1L
-         ZJSFdNOBR9/vgnnz7es4Ujvz8vH+R827a7rHFHaPOC1sz0J8mfWnUz0PPVFQv4wYCb
-         bM/1P0n8l5dOCYP6Wfz3XTR/3uSBL3xPUpIDBGRyMfRUssUNfCoFGiQKNwRAwH7lxF
-         rHH4ERLTuSTQ1jm2xxDUNnwhLeRgoSfGRuwXizIdR6EXdZxz0kzJ3kyiKTuHJKmHdF
-         2eULbBC2diwbB6NmmNRzK6p7eOuaFpLtyYX39ITJsKvnT4z8xtsrxSZZUZ7tGauABt
-         ZVwvNd5hWovKw==
-Received: by mail.simsborovin.com for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 08:05:53 GMT
-Message-ID: <20230328074502-0.1.2m.3lgx.0.04lhejbol8@simsborovin.com>
-Date:   Tue, 28 Mar 2023 08:05:53 GMT
-From:   "Konrad Trojanowski" <konrad.trojanowski@simsborovin.com>
-To:     <bpf@vger.kernel.org>
-Subject: W sprawie samochodu
-X-Mailer: mail.simsborovin.com
+        with ESMTP id S230284AbjC1IU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 04:20:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784B01700
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 01:20:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1679991612;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q3X0O+/TM7LVotJgrmc2xoQ/T0kA0UQLhsWOW/x515A=;
+        b=RzcuhHor46+fs9wiO9GR7qynLKoFSYx6Gf33Y5qrck2xPn5bhkBPwLouM6p4DxViUEGEi2
+        EHXmm9K2/hAv8nQVr8JdbDcsofJiarvibfgdjasHMQ5FpLuo2O5n6ZsuVp7EkQhf6Alcql
+        t3wUp1ki5vjaNlEUxE1Ln7kW9WjsdJM=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-656-LJblApRsNb6SBhMrS_whDQ-1; Tue, 28 Mar 2023 04:20:11 -0400
+X-MC-Unique: LJblApRsNb6SBhMrS_whDQ-1
+Received: by mail-qk1-f198.google.com with SMTP id r70-20020a374449000000b00746c31401f0so5208176qka.6
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 01:20:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679991611;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q3X0O+/TM7LVotJgrmc2xoQ/T0kA0UQLhsWOW/x515A=;
+        b=2WZbHeLSduuWwgr9YPXXiwz5uvDgSnVQ/atcG8n5DmirdvdeWORRmR5dloYVG9jLN6
+         Bt2fxZ3MJiMnTCOTkhjV7lngVxT5NNC6dWl7q7IeC2uW0IKDk6nET3I17KzIaAP1YUgR
+         zI6FL7qoxoh4pDnH128kurlXcXcUelzyZoYjnxFZFyyI8DrObLvwnFuzJtUWZ3N1EXdv
+         GKUy+nT3nApXBv5DAMurHZix6qSnGaH6NxjGb4+fNYRf4e1JJsPwO1rrF0zoPUQVLRYE
+         jrVcIBB/UYAzSEeGtTMlAQJhPkgSB9iia8WpteUdYg3xUMhY79hdt4kT/bsomO9dMi9e
+         LCeg==
+X-Gm-Message-State: AAQBX9ffDB6Qd8qiWPZkPKD9S5qxbcZVURl1xQVY3no52ZEi+kvZVUMG
+        jhjId/w0eDk5qo/X57GXYpS4nAW7qHGhJDMOJLKZH5ApC2k5QT7PVhge0NCDCrugfTN1QdF2Ggf
+        ZBp+xHFZd/oL3
+X-Received: by 2002:a05:622a:118a:b0:3e4:dcb4:162 with SMTP id m10-20020a05622a118a00b003e4dcb40162mr17628923qtk.4.1679991610939;
+        Tue, 28 Mar 2023 01:20:10 -0700 (PDT)
+X-Google-Smtp-Source: AKy350bNpzeZ7gjbtIL2Ka8dMo1Bzn5V8O4UfVAoHsG5EFh/3BhzXlyah+r/S5EZ4D3ccfOazp/h+A==
+X-Received: by 2002:a05:622a:118a:b0:3e4:dcb4:162 with SMTP id m10-20020a05622a118a00b003e4dcb40162mr17628888qtk.4.1679991610700;
+        Tue, 28 Mar 2023 01:20:10 -0700 (PDT)
+Received: from sgarzare-redhat (host-82-53-134-98.retail.telecomitalia.it. [82.53.134.98])
+        by smtp.gmail.com with ESMTPSA id 4-20020a05620a048400b007468bf8362esm11708565qkr.66.2023.03.28.01.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Mar 2023 01:20:09 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 10:20:01 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Bobby Eshleman <bobby.eshleman@bytedance.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net-next v4 1/3] vsock: support sockmap
+Message-ID: <6eyspnma2esx4nzi2kszxkbuvh3xjb2g4nuhvng6tkvtp3whn6@hpyehyt6imdn>
+References: <20230327-vsock-sockmap-v4-0-c62b7cd92a85@bytedance.com>
+ <20230327-vsock-sockmap-v4-1-c62b7cd92a85@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=7.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230327-vsock-sockmap-v4-1-c62b7cd92a85@bytedance.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: simsborovin.com]
-        *  3.6 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [89.40.118.18 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: simsborovin.com]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [89.40.118.18 listed in bl.score.senderscore.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Mon, Mar 27, 2023 at 07:11:51PM +0000, Bobby Eshleman wrote:
+>This patch adds sockmap support for vsock sockets. It is intended to be
+>usable by all transports, but only the virtio and loopback transports
+>are implemented.
+>
+>SOCK_STREAM, SOCK_DGRAM, and SOCK_SEQPACKET are all supported.
+>
+>Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+>Acked-by: Michael S. Tsirkin <mst@redhat.com>
+>---
+> drivers/vhost/vsock.c                   |   1 +
+> include/linux/virtio_vsock.h            |   1 +
+> include/net/af_vsock.h                  |  17 ++++
+> net/vmw_vsock/Makefile                  |   1 +
+> net/vmw_vsock/af_vsock.c                |  64 ++++++++++--
+> net/vmw_vsock/virtio_transport.c        |   2 +
+> net/vmw_vsock/virtio_transport_common.c |  25 +++++
+> net/vmw_vsock/vsock_bpf.c               | 174 ++++++++++++++++++++++++++++++++
+> net/vmw_vsock/vsock_loopback.c          |   2 +
+> 9 files changed, 281 insertions(+), 6 deletions(-)
 
-chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
-, je=C5=9Bli chodzi o system monitoringu GPS.
+LGTM!
 
-Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
-e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
-a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
-dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
-szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
-mne znaczenie.
+Thanks,
+Stefano
 
-Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
-b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
-
-
-Pozdrawiam
-Konrad Trojanowski
