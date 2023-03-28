@@ -2,146 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D776CBEC0
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 14:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6164C6CC1BE
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 16:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjC1MLq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 08:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
+        id S230326AbjC1OLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 10:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjC1MLp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 08:11:45 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDCB7EFD;
-        Tue, 28 Mar 2023 05:11:44 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Pm7p346xvz4f3mWd;
-        Tue, 28 Mar 2023 20:11:39 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-        by APP1 (Coremail) with SMTP id cCh0CgAHcix72SJkruJiFw--.58388S2;
-        Tue, 28 Mar 2023 20:11:40 +0800 (CST)
-From:   Xu Kuohai <xukuohai@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v2] selftests/bpf: Rewrite two infinite loops in bound check cases
-Date:   Tue, 28 Mar 2023 21:10:48 -0400
-Message-Id: <20230329011048.1721937-1-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229620AbjC1OLn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 10:11:43 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFE6D31F;
+        Tue, 28 Mar 2023 07:10:45 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id y4so50353507edo.2;
+        Tue, 28 Mar 2023 07:10:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680012531;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JxjxIn6uTGCid5Tn6gTErmlOp11kE1tyo4BMGqcacrk=;
+        b=i+2XwD5LYMIBoslfhXQbrqyyN0vqQ5h1khRv1thI8i/Isv96t95v3Y2060d6bbTQjp
+         2q8F6kDLtET3igjgJTtHRebW897OCZMjP+iMwUEc7TJgp0VafM6ihYE9FL2DMljsxsT0
+         XLHxkr53vZsFVxSA7Szwc9xVVtcBinvzIUThKh6hqkND0+pzYgU60rqx8yyJk+/t3Yke
+         AvXcuzfvygjgtpW4lU9HpNTvfPiijHnUAj7VBGgvFCJArFZiIeeCw1R/Th5UDYUatPFF
+         XuJxvH9EF09nWDT8dWbhTRIEqz0BmCYPaMjlegPpaUmvacDEMbL5LemlnSp2M1N0XM39
+         ZwKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680012531;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JxjxIn6uTGCid5Tn6gTErmlOp11kE1tyo4BMGqcacrk=;
+        b=onrlnjp8O30gFMxQTkfxvMBZhG5lFWMwnTDz3csvrhlJ6LjekLUBT3ulX1/EHYtyTA
+         kB4vxcPi4wyM6oVFXn7M5U4MlY4r22F+yzSiNZOpTYicoZ3To0uaiecM5JqH+wSK/imE
+         7Pm4dos8hyVdwPYpoqVr2MzS4KV8K3b9NPw1BGrvsziKZmYgtdF1P2o4i+w3fHWFEDoa
+         FEzGKn5jR3ewica00OnUOA000Do58BszHdsZ4V164HIsRJwSY3C2YIbrLXUeas7NYmlq
+         rJ+PLqKr+t2iP80x2bGhPDGtj2v9o+9R0NO2gJ1McsXeuS8Z1q8TSRZAWTqqxxdp3390
+         F61g==
+X-Gm-Message-State: AAQBX9f+yQr+tjsVYu3tCHmPPzl7opACBTMNuaN74TMsjq1hErc+j4yB
+        dbuOonwlmtQ5Yy7Sd4jQzMk=
+X-Google-Smtp-Source: AKy350aTBndb7keVeOJzuElxeuH3lp9ccjiRMl0tvR1wc4OcRNEcGBZANwIo2dCWjdPrgD3sNT2Hlw==
+X-Received: by 2002:a17:906:cb87:b0:931:8ad4:a586 with SMTP id mf7-20020a170906cb8700b009318ad4a586mr16138861ejb.30.1680012530977;
+        Tue, 28 Mar 2023 07:08:50 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id z8-20020a17090655c800b00930569e6910sm15556587ejp.16.2023.03.28.07.08.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Mar 2023 07:08:50 -0700 (PDT)
+Message-ID: <f4803213ab27c65517eea19a12be78dd4ec9f6b0.camel@gmail.com>
+Subject: Re: [PATCH dwarves v2 1/5] fprintf: Correct names for types with
+ btf_type_tag attribute
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, jose.marchesi@oracle.com, david.faust@oracle.com,
+        alan.maguire@oracle.com
+Date:   Tue, 28 Mar 2023 17:08:48 +0300
+In-Reply-To: <ZCLy0hjyR3KuYy3e@kernel.org>
+References: <20230314230417.1507266-1-eddyz87@gmail.com>
+         <20230314230417.1507266-2-eddyz87@gmail.com> <ZCLy0hjyR3KuYy3e@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgAHcix72SJkruJiFw--.58388S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw4rZw13tF1xtr18ZrWUurg_yoW5CF1xp3
-        4rX3WDGrW8Jw45Za4kKFy2qr13Kr4kAwsrC3s2gr17ArW7J3W3W34Utw45AwnxJr1rJrZI
-        vr1UC3s7tayUuaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r4Y6ry7M2
-        8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_
-        tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r
-        xl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
-        0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z2
-        80aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUx89NDUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=2.5 required=5.0 tests=DATE_IN_FUTURE_12_24,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xu Kuohai <xukuohai@huawei.com>
+On Tue, 2023-03-28 at 10:59 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Mar 15, 2023 at 01:04:13AM +0200, Eduard Zingerman escreveu:
+> > The following example contains a structure field annotated with
+> > btf_type_tag attribute:
+> >=20
+> >     #define __tag1 __attribute__((btf_type_tag("tag1")))
+> >=20
+> >     struct st {
+> >       int __tag1 *a;
+> >     } g;
+> >=20
+> > It is not printed correctly by `pahole -F dwarf` command:
+> >=20
+> >     $ clang -g -c test.c -o test.o
+> >     pahole -F dwarf test.o
+> >     struct st {
+> >     	tag1 *                     a;                    /*     0     8 */
+> >     	...
+> >     };
+> >=20
+> > Note the type for variable `a`: `tag1` is printed instead of `int`.
+> > This commit teaches `type__fprintf()` and `__tag_name()` logic to skip
+> > `DW_TAG_LLVM_annotation` objects that are used to encode type tags.
+>=20
+> I noticed this:
+>=20
+> =E2=AC=A2[acme@toolbox pahole]$ pahole --sort -F btf ../vmlinux-clang-pah=
+ole-1.25+rust > /tmp/clang
+> =E2=AC=A2[acme@toolbox pahole]$ pahole --sort -F btf ../vmlinux-gcc-pahol=
+e-1.25+rust > /tmp/gcc
+>=20
+>=20
+> --- /tmp/gcc    2023-03-28 10:55:37.075999474 -0300
+> +++ /tmp/clang  2023-03-28 10:55:53.324436319 -0300
+> @@ -70,21 +70,21 @@
+>  struct Qdisc {
+>         int                        (*enqueue)(struct sk_buff *, struct Qd=
+isc *, struct sk_buff * *); /*     0     8 */
+>         struct sk_buff *           (*dequeue)(struct Qdisc *); /*     8  =
+   8 */
+>         unsigned int               flags;                /*    16     4 *=
+/
+>         u32                        limit;                /*    20     4 *=
+/
+>         const struct Qdisc_ops  *  ops;                  /*    24     8 *=
+/
+> -       struct qdisc_size_table *  stab;                 /*    32     8 *=
+/
+> +       struct qdisc_size_table    stab;                 /*    32     8 *=
+/
+>         struct hlist_node          hash;                 /*    40    16 *=
+/
+>         u32                        handle;               /*    56     4 *=
+/
+>         u32                        parent;               /*    60     4 *=
+/
+>         /* --- cacheline 1 boundary (64 bytes) --- */
+>         struct netdev_queue *      dev_queue;            /*    64     8 *=
+/
+> -       struct net_rate_estimator * rate_est;            /*    72     8 *=
+/
+> -       struct gnet_stats_basic_sync * cpu_bstats;       /*    80     8 *=
+/
+> -       struct gnet_stats_queue *  cpu_qstats;           /*    88     8 *=
+/
+> +       struct net_rate_estimator  rate_est;             /*    72     8 *=
+/
+> +       struct gnet_stats_basic_sync cpu_bstats;         /*    80     8 *=
+/
+> +       struct gnet_stats_queue    cpu_qstats;           /*    88     8 *=
+/
+>         int                        pad;                  /*    96     4 *=
+/
+>         refcount_t                 refcnt;               /*   100     4 *=
+/
+>=20
+>         /* XXX 24 bytes hole, try to pack */
+>=20
+>         /* --- cacheline 2 boundary (128 bytes) --- */
+>=20
+> And:
+>=20
+> struct Qdisc {
+>         int                     (*enqueue)(struct sk_buff *skb,
+>                                            struct Qdisc *sch,
+>                                            struct sk_buff **to_free);
+>         struct sk_buff *        (*dequeue)(struct Qdisc *sch);
+>         unsigned int            flags;
+> #define TCQ_F_BUILTIN           1
+> #define TCQ_F_INGRESS           2
+> #define TCQ_F_CAN_BYPASS        4
+> #define TCQ_F_MQROOT            8
+> #define TCQ_F_ONETXQUEUE        0x10 /* dequeue_skb() can assume all skbs=
+ are for
+>                                       * q->dev_queue : It can test
+>                                       * netif_xmit_frozen_or_stopped() be=
+fore
+>                                       * dequeueing next packet.
+>                                       * Its true for MQ/MQPRIO slaves, or=
+ non
+>                                       * multiqueue device.
+>                                       */
+> #define TCQ_F_WARN_NONWC        (1 << 16)
+> #define TCQ_F_CPUSTATS          0x20 /* run using percpu statistics */
+> #define TCQ_F_NOPARENT          0x40 /* root of its hierarchy :
+>                                       * qdisc_tree_decrease_qlen() should=
+ stop.
+>                                       */
+> #define TCQ_F_INVISIBLE         0x80 /* invisible by default in dump */
+> #define TCQ_F_NOLOCK            0x100 /* qdisc does not require locking *=
+/
+> #define TCQ_F_OFFLOADED         0x200 /* qdisc is offloaded to HW */
+>         u32                     limit;
+>         const struct Qdisc_ops  *ops;
+>         struct qdisc_size_table __rcu *stab;
+>         struct hlist_node       hash;
+>         u32                     handle;
+>         u32                     parent;
+>=20
+>         struct netdev_queue     *dev_queue;
+>=20
+>         struct net_rate_estimator __rcu *rate_est;
+>         struct gnet_stats_basic_sync __percpu *cpu_bstats;
+>         struct gnet_stats_queue __percpu *cpu_qstats;
+>         int                     pad;
+>         refcount_t              refcnt;
+>=20
+>=20
+> I'll try to fix now.
 
-The two infinite loops in bound check cases added by commit
-1a3148fc171f ("selftests/bpf: Check when bounds are not in the 32-bit range")
-increased the execution time of test_verifier from about 6 seconds to
-about 9 seconds. Rewrite these two infinite loops to finite loops to get
-rid of this extra time cost.
+Ouch. The fields are annotated with type tags, which are ignored by gcc.
+If this is not urgent I can debug it either later today or tomorrow.
 
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
-v2:
- - rewrite the infinite loops to finite loops instead of removing the
-   test cases
-
-v1: https://lore.kernel.org/bpf/20230327153538.850440-1-xukuohai@huaweicloud.com/
----
- tools/testing/selftests/bpf/verifier/bounds.c | 24 ++++++++++++-------
- 1 file changed, 16 insertions(+), 8 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/verifier/bounds.c b/tools/testing/selftests/bpf/verifier/bounds.c
-index 74b1917d4208..43942ce8cf15 100644
---- a/tools/testing/selftests/bpf/verifier/bounds.c
-+++ b/tools/testing/selftests/bpf/verifier/bounds.c
-@@ -784,22 +784,26 @@
- 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data_end)),
- 	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
- 	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
--	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 8),
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 13),
- 
- 	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
- 	BPF_LD_IMM64(BPF_REG_0, 0x7fffffffffffff10),
- 	BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
- 
-+	BPF_LD_IMM64(BPF_REG_2, 0x8000000000000fff),
- 	BPF_LD_IMM64(BPF_REG_0, 0x8000000000000000),
- 	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
-+	BPF_JMP_REG(BPF_JSGT, BPF_REG_0, BPF_REG_2, 3),
- 	/* r1 signed range is [S64_MIN, S64_MAX] */
--	BPF_JMP_REG(BPF_JSLT, BPF_REG_0, BPF_REG_1, -2),
-+	BPF_JMP_REG(BPF_JSLT, BPF_REG_0, BPF_REG_1, -3),
-+
-+	BPF_MOV64_IMM(BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
- 
- 	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_EXIT_INSN(),
- 	},
--	.errstr = "BPF program is too large",
--	.result = REJECT,
-+	.result = ACCEPT,
- 	.prog_type = BPF_PROG_TYPE_XDP,
- },
- {
-@@ -856,21 +860,25 @@
- 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data_end)),
- 	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
- 	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
--	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 6),
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 10),
- 
- 	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
- 	BPF_MOV32_IMM(BPF_REG_0, 0x7fffff10),
- 	BPF_ALU32_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
- 
-+	BPF_MOV32_IMM(BPF_REG_2, 0x80000fff),
- 	BPF_MOV32_IMM(BPF_REG_0, 0x80000000),
- 	BPF_ALU32_IMM(BPF_ADD, BPF_REG_0, 1),
-+	BPF_JMP32_REG(BPF_JSGT, BPF_REG_0, BPF_REG_2, 3),
- 	/* r1 signed range is [S32_MIN, S32_MAX] */
--	BPF_JMP32_REG(BPF_JSLT, BPF_REG_0, BPF_REG_1, -2),
-+	BPF_JMP32_REG(BPF_JSLT, BPF_REG_0, BPF_REG_1, -3),
-+
-+	BPF_MOV64_IMM(BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
- 
- 	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_EXIT_INSN(),
- 	},
--	.errstr = "BPF program is too large",
--	.result = REJECT,
-+	.result = ACCEPT,
- 	.prog_type = BPF_PROG_TYPE_XDP,
- },
--- 
-2.30.2
+>=20
+> - Arnaldo
+>=20
+> =20
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > ---
+> >  dwarves_fprintf.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> >=20
+> > diff --git a/dwarves_fprintf.c b/dwarves_fprintf.c
+> > index e8399e7..1e6147a 100644
+> > --- a/dwarves_fprintf.c
+> > +++ b/dwarves_fprintf.c
+> > @@ -572,6 +572,7 @@ static const char *__tag__name(const struct tag *ta=
+g, const struct cu *cu,
+> >  	case DW_TAG_restrict_type:
+> >  	case DW_TAG_atomic_type:
+> >  	case DW_TAG_unspecified_type:
+> > +	case DW_TAG_LLVM_annotation:
+> >  		type =3D cu__type(cu, tag->type);
+> >  		if (type =3D=3D NULL && tag->type !=3D 0)
+> >  			tag__id_not_found_snprintf(bf, len, tag->type);
+> > @@ -786,6 +787,10 @@ next_type:
+> >  			n =3D tag__has_type_loop(type, ptype, NULL, 0, fp);
+> >  			if (n)
+> >  				return printed + n;
+> > +			if (ptype->tag =3D=3D DW_TAG_LLVM_annotation) {
+> > +				type =3D ptype;
+> > +				goto next_type;
+> > +			}
+> >  			if (ptype->tag =3D=3D DW_TAG_subroutine_type) {
+> >  				printed +=3D ftype__fprintf(tag__ftype(ptype),
+> >  							  cu, name, 0, 1,
+> > @@ -880,6 +885,14 @@ print_modifier: {
+> >  		else
+> >  			printed +=3D enumeration__fprintf(type, &tconf, fp);
+> >  		break;
+> > +	case DW_TAG_LLVM_annotation: {
+> > +		struct tag *ttype =3D cu__type(cu, type->type);
+> > +		if (ttype) {
+> > +			type =3D ttype;
+> > +			goto next_type;
+> > +		}
+> > +		goto out_type_not_found;
+> > +	}
+> >  	}
+> >  out:
+> >  	if (type_expanded)
+> > --=20
+> > 2.39.1
+> >=20
+>=20
 
