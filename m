@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BC36CC40B
-	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 16:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E336CC525
+	for <lists+bpf@lfdr.de>; Tue, 28 Mar 2023 17:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbjC1O7k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 10:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
+        id S232647AbjC1PMf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 11:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbjC1O7d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 10:59:33 -0400
+        with ESMTP id S231591AbjC1PMc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 11:12:32 -0400
 Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA09E3AC
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 07:59:20 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id cf7so15434887ybb.5
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 07:59:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56671EB50
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 08:12:05 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id cf7so15488018ybb.5
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 08:12:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680015555;
+        d=google.com; s=20210112; t=1680016194;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n/Tr76xWiRdPhCzh2iAIz1ngMVJemqmUsrV57MPqNeE=;
-        b=Tt1MpwBCckGfBRJPyJn7mnYIufUfVxu0osm9Xuq8gDBzp9Zl5SijHD6x4KQjbrMWEh
-         cR4itExVYXUY8HTQuYCWuV5Rg6H125SdaHSCPAvUlKamplxStCH4rjE2/WcnHTjKhjrt
-         038rfwwfndQ2ou7fJtK3qBflN/A1iDRlkq81JX+Z7insN5nb1uTL0Uo01n0XraIao7M2
-         Fdp9ucU3Ljn6qpuDyKhjPEtSctWImYf+1VP6nPOE2U4SSXgKWYIn4QDlVxtNK1zY5mgr
-         bLTFWCgmCGlE6IuJslMe1IS18hr0AuFjkuVwxblk3dP0+AkaQl8W95dVHmZXdHKaN7fx
-         PZeg==
+        bh=g+YmdZ2KifzhfvJEdg7p7f3TJNPgCoNZqPs2Cx2ndxo=;
+        b=QxwODGEreqDxcIBzupdiBDMaDhVMLLzdv5CfZ77spG0lhFRud2y5nLrWzzAe/C6t7j
+         ZOeI1MwZhgbHKufRmNFroSj3WemqRteMnB4I3zgWlrAqlMt2LkDL2uFa+Q4rzDU1486c
+         dNNfXBmijmlYD705lBNf01BTyrCyDOrSF9RzPetnYAB3AYPpNLJYWV3MaUX8PnUEt/zX
+         ZWmL0MYGGLpvauhUzo75H6kPcjwi3fp70mN3e4rJpmVhTv/25ZngEpNST6bZiJzZmjXl
+         eT2y5J/uzC+53+JC7JZ5kq/eruzL0a+NXlhHEm6lqmXJr8zdho9ORG1Eq0Et9AmoG2T8
+         Vnpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680015555;
+        d=1e100.net; s=20210112; t=1680016194;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n/Tr76xWiRdPhCzh2iAIz1ngMVJemqmUsrV57MPqNeE=;
-        b=RT4SFIPAPxWL85knHld5OYwKn8LBiKptdzGJvH/mXcHYFEopIt4PWfobLg3wa1AgBz
-         KaD0vQl6bsLzQ6FMom6zimHARRYG7vO6Rj2EUyXBq3QyRTx6MWSetz1ErVmKrc4upbo0
-         qZUmejDvhhgXN7z7aAFqsm3Lf8qvspwP1v1YmRPCS0JFdKt+q8d0KzAZVxKAyXJRpNhm
-         U5ZUzkhg0QfUgbomNfg4KTonoT/qg775uGAxUqQK5Y2NEacyxkQU7k0eyNIsKowt+qQa
-         9d0tOTQHvMavmLM4AG7tBiXO5ztesvN8gS+LrtRzo9yfSmW58BrCEIYIwUe4r1fh5/cH
-         jsiA==
-X-Gm-Message-State: AAQBX9fB5ZoSlzsefbvBZNKbBFqre+YKX8LNVZXNiKLuI9lgphbfAYS0
-        ZhUfLFW7roWtz5GIXHZ7k7h7jgeHo7q1nPAOaFDWUA==
-X-Google-Smtp-Source: AKy350aNQtresOYs68OKsUS0vcF2N6XmOyJ60HmYb6YXhXcoQU+dKlCLTm68Gcz+3vaqlOs4fNhYSgxXyk+d8mzAE3I=
-X-Received: by 2002:a05:6902:1108:b0:b6d:fc53:c5c0 with SMTP id
- o8-20020a056902110800b00b6dfc53c5c0mr13259448ybu.1.1680015555044; Tue, 28 Mar
- 2023 07:59:15 -0700 (PDT)
+        bh=g+YmdZ2KifzhfvJEdg7p7f3TJNPgCoNZqPs2Cx2ndxo=;
+        b=BZl5UFc9atvvCXbUDh7Q+xVPyfBAjcuiZ1FpVd9CvcqcfPUjypzwQjav4T8xLcsypI
+         ScaZ50PHHFru2BfhylI2qfGoJMAV7H2/Tg0ePs6bC57uiJcjHGOtabWNMVvjLWvKv8BX
+         NsDvXTu7/u9OzsHJXtgX5/HTj/A2VcDT0ylcEvKl2KJinGXPiFVQZFSQG3hddcyihTw7
+         iPRlAqoreo96cD6pZCplj/sFJMvHsqJLgHZVmO95SzzitJuxo7suslAkyovt4w33NTyQ
+         E3DfspWmN6Q/S9poaQc7t/aALFCj1KIdwDup+4ee+J4nrF9xTolduR1f1SEY/KcZ420w
+         +2pg==
+X-Gm-Message-State: AAQBX9d9yqR23zaRTzA5yYYRrd4hw7zXP0qyUyYhLRbfIVNSLZIprC2Y
+        bqR4GuZwDKxS2a+eYaTQO9vdDVPmwIC8MFrd3SwUFA==
+X-Google-Smtp-Source: AKy350Zye7Uz+A9wXvm0bc/VbyhY+/GQhhowJbGOvGnmquTK5nbpQG/LFKJZLvFUfYERcKgtllJiz9XGHkAhkgNpcPs=
+X-Received: by 2002:a25:2749:0:b0:a99:de9d:d504 with SMTP id
+ n70-20020a252749000000b00a99de9dd504mr10160590ybn.12.1680016193782; Tue, 28
+ Mar 2023 08:09:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230328061638.203420-1-yosryahmed@google.com> <20230328061638.203420-5-yosryahmed@google.com>
-In-Reply-To: <20230328061638.203420-5-yosryahmed@google.com>
+References: <20230328061638.203420-1-yosryahmed@google.com> <20230328061638.203420-7-yosryahmed@google.com>
+In-Reply-To: <20230328061638.203420-7-yosryahmed@google.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 28 Mar 2023 07:59:04 -0700
-Message-ID: <CALvZod4zLhgjd3Tr5Qauz+OwF7Gj-NwDZPMpYAsxaMSUvu3F4g@mail.gmail.com>
-Subject: Re: [PATCH v1 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
- outside task context
+Date:   Tue, 28 Mar 2023 08:09:43 -0700
+Message-ID: <CALvZod7ekQD-ygrv2M-QZzDFVTj7O-v7iCYOHKp3iqG6c-Rt1g@mail.gmail.com>
+Subject: Re: [PATCH v1 6/9] memcg: sleep during flushing stats in safe contexts
 To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
@@ -84,11 +83,22 @@ X-Mailing-List: bpf@vger.kernel.org
 On Mon, Mar 27, 2023 at 11:16=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
 > wrote:
 >
-> rstat flushing is too expensive to perform in irq context.
-> The previous patch removed the only context that may invoke an rstat
-> flush from irq context, add a WARN_ON_ONCE() to detect future
-> violations, or those that we are not aware of.
+> Currently, all contexts that flush memcg stats do so with sleeping not
+> allowed. Some of these contexts are perfectly safe to sleep in, such as
+> reading cgroup files from userspace or the background periodic flusher.
+>
+> Refactor the code to make mem_cgroup_flush_stats() non-atomic (aka
+> sleepable), and provide a separate atomic version. The atomic version is
+> used in reclaim, refault, writeback, and in mem_cgroup_usage(). All
+> other code paths are left to use the non-atomic version. This includes
+> callbacks for userspace reads and the periodic flusher.
+>
+> Since refault is the only caller of mem_cgroup_flush_stats_ratelimited(),
+> this function is changed to call the atomic version of
+> mem_cgroup_flush_stats(). Reclaim and refault code paths are modified
+> to do non-atomic flushing in separate later patches -- so
+> mem_cgroup_flush_stats_ratelimited() will eventually become non-atomic.
 >
 > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Shakeel Butt <shakeelb@google.com>
