@@ -2,134 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E75576CCE08
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 01:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FDF6CCE6D
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 01:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbjC1XbS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 19:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
+        id S229950AbjC1X7j convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 28 Mar 2023 19:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjC1XbP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 19:31:15 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA4130E8
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 16:31:14 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id t10so56176216edd.12
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 16:31:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680046273; x=1682638273;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sXmwc8t7ikSkf6ahxjLbISqioESLK/kYDUK1ZXp3QJM=;
-        b=YMg0+knSFT9Vf3RayOE8hLNfmpuOfmEw2qYQq+fHxpLhe6QRJtiK0wbTYdHHgUhjiH
-         v/USw2/a9rCUz1Ujm4VLJTJoFQNipw74Vf/9r3EP9FI0l7YkpczpGoU6I4X+ns+DmOT2
-         zWKjHQGp0xWdoikbe/P/E6pgRs73JeaI/znH08SAPrCqoGzdXtjkcGmZzMCiIS+jrC4W
-         asAVzmwel8Dfz76aj5weDSEWlT4WZyn3z9A9NNytw4srcUiJvICTWHA7aYgVQS9SeMpa
-         JU4bPQUZKpA5TMkPZ7YDVuqywZLb81kKtufmoDGdF8IaoLr9+Ig29S/dr4L7Umsro4yY
-         uh/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680046273; x=1682638273;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sXmwc8t7ikSkf6ahxjLbISqioESLK/kYDUK1ZXp3QJM=;
-        b=YFxt7PnxSpkimKd0mZ57lwfnNS2VcA2xgJZN4+TYaxW1mBgzmIvzMjqWgD3HtcXvpy
-         IiHEFLU+mlrx9jO2dZvj/QHEp1M8bgomqdBnq1ZRn1T7x57qLhDEgy7DOC+egunXkwUf
-         ErY/2hQAwPgS6R8+P7y0w/xxEKOM64LOu4NXuNdlM4ahYUG8CJ/Y50+OIZiQ0p7+H+fe
-         sNbQ737jdJ6T3Tju6+wErWdVHZZteIXls2zeiX8R3U6bwBg9fQ82sntl5Z6BiB8v5s/G
-         JKQgtkEiGr/tQX63evH0wE0u5f6K3/IceQYU+WWS7mfbxVx0lK8TTNdBPMIl/5AC1+82
-         xFOA==
-X-Gm-Message-State: AAQBX9c3N/HAi6Ns9Uu7JTSHtRDlArvOaUy1b/BZ0CnSIcKh7CgYv7at
-        SADUv68MGt4TQm053lj/4e6r0dh4tgMlpk1VdZI=
-X-Google-Smtp-Source: AKy350Y/MrP0Jenrp5rKkQTs8mbLRVSRltN11I1dGIgSAg5nC94lAilGivpvK4sILOSVVOdp3McBEhcN0L06jF2z6e8=
-X-Received: by 2002:a17:907:7f19:b0:926:8f9:735d with SMTP id
- qf25-20020a1709077f1900b0092608f9735dmr9533859ejc.3.1680046272695; Tue, 28
- Mar 2023 16:31:12 -0700 (PDT)
+        with ESMTP id S229452AbjC1X7i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 19:59:38 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9590830DD
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 16:59:14 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32SJUKWJ026929
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 16:58:30 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pkxwuw9n5-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 16:58:30 -0700
+Received: from twshared52565.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Tue, 28 Mar 2023 16:58:29 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 74EDA2C40021B; Tue, 28 Mar 2023 16:56:12 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>, <lmb@isovalent.com>, <timo@incline.eu>,
+        <robin.goegge@isovalent.com>
+CC:     <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH v2 bpf-next 0/6] BPF verifier rotating log
+Date:   Tue, 28 Mar 2023 16:56:03 -0700
+Message-ID: <20230328235610.3159943-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230325025524.144043-1-eddyz87@gmail.com> <359ea18b-5996-afea-b81e-32f13f134852@iogearbox.net>
- <b69f211724dd9d1acdb896ca1b97109065ab28b0.camel@gmail.com>
- <CAEf4BzZtC88nCXvBBdd-6dox1rDMfwqKZBY2CtON05fi0fGzFQ@mail.gmail.com> <bd3389fcad0dc8555ed3cf42b69f717cbea380b6.camel@gmail.com>
-In-Reply-To: <bd3389fcad0dc8555ed3cf42b69f717cbea380b6.camel@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 28 Mar 2023 16:31:01 -0700
-Message-ID: <CAADnVQK6XVzNmjbY9wO4tve_93je7zvGUHHVX3EsYQpo4CFGiw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/43] First set of verifier/*.c migrated to
- inline assembly
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: k8R_V8IaIPao_eef5b0_bDsIpew56B2w
+X-Proofpoint-GUID: k8R_V8IaIPao_eef5b0_bDsIpew56B2w
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-24_11,2023-03-28_02,2023-02-09_01
+X-Spam-Status: No, score=-0.5 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 3:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2023-03-28 at 15:24 -0700, Andrii Nakryiko wrote:
-> [...]
-> >
-> > > # Simplistic tests (14 files)
-> > >
-> > > Some tests are just simplistic and it is not clear if moving those to=
- inline
-> > > assembly really makes sense, for example, here is `basic_call.c`:
-> > >
-> > >     {
-> > >         "invalid call insn1",
-> > >         .insns =3D {
-> > >         BPF_RAW_INSN(BPF_JMP | BPF_CALL | BPF_X, 0, 0, 0, 0),
-> > >         BPF_EXIT_INSN(),
-> > >         },
-> > >         .errstr =3D "unknown opcode 8d",
-> > >         .result =3D REJECT,
-> > >     },
-> > >
-> >
-> > For tests like this we can have a simple ELF parser/loader that
-> > doesn't use bpf_object__open() functionality. It's not too hard to
-> > just find all the FUNC ELF symbols and fetch corresponding raw
-> > instructions. Assumption here is that we can take those assembly
-> > instructions as is, of course. If there are some map references and
-> > such, this won't work.
->
-> Custom elf parser/loader is interesting.
-> However, also consider how such tests look in assembly:
->
->     SEC("socket")
->     __description("invalid call insn1")
->     __failure __msg("unknown opcode 8d")
->     __failure_unpriv
->     __naked void invalid_call_insn1(void)
->     {
->             asm volatile ("                                 \
->             .8byte %[raw_insn];                             \
->             exit;                                           \
->     "       :
->             : __imm_insn(raw_insn, BPF_RAW_INSN(BPF_JMP | BPF_CALL | BPF_=
-X, 0, 0, 0, 0))
->             : __clobber_all);
->     }
->
-> I'd say that original is better.
+This patch set changes BPF verifier log behavior to behave as a rotating log,
+by default. If user-supplied log buffer is big enough to contain entire
+verifier log output, there is no effective difference. But where previously
+user supplied too small log buffer and would get -ENOSPC error result and the
+beginning part of the verifier log, now there will be no error and user will
+get ending part of verifier log filling up user-supplied log buffer.  Which
+is, in absolute majority of cases, is exactly what's useful, relevant, and
+what users want and need, as the ending of the verifier log is containing
+details of verifier failure and relevant state that got us to that failure. So
+this rotating mode is made default, but for some niche advanced debugging
+scenarios it's possible to request old behavior by specifying additional
+BPF_LOG_FIXED (8) flag.
 
-+1
+This patch set adjusts libbpf to allow specifying flags beyond 1 | 2 | 4. We
+also add --log-size and --log-fixed options to veristat to be able to both
+test this functionality manually, but also to be used in various debugging
+scenarios. We also add selftests that tries many variants of log buffer size
+to stress-test correctness of internal verifier log bookkeeping code.
 
-> Do you want to get rid of ./test_verifier binary?
+v1->v2:
+  - return -ENOSPC even in rotating log mode for preserving backwards
+    compatibility (Lorenz);
 
-All this work looks like a diminishing return.
-It's ok to keep test_verifier around.
-All new asm test can already go into test_progs and in some rare cases
-test_verifier will be a better home for them.
+Andrii Nakryiko (6):
+  bpf: split off basic BPF verifier log into separate file
+  bpf: remove minimum size restrictions on verifier log buffer
+  bpf: switch BPF verifier log to be a rotating log by default
+  libbpf: don't enforce verifier log levels on libbpf side
+  selftests/bpf: add more veristat control over verifier log options
+  selftests/bpf: add fixed vs rotating verifier log tests
+
+ include/linux/bpf_verifier.h                  |  48 ++--
+ kernel/bpf/Makefile                           |   3 +-
+ kernel/bpf/btf.c                              |   3 +-
+ kernel/bpf/log.c                              | 262 ++++++++++++++++++
+ kernel/bpf/verifier.c                         |  88 +-----
+ tools/lib/bpf/bpf.c                           |   2 -
+ .../selftests/bpf/prog_tests/log_fixup.c      |   1 +
+ .../selftests/bpf/prog_tests/verifier_log.c   | 164 +++++++++++
+ tools/testing/selftests/bpf/veristat.c        |  42 ++-
+ 9 files changed, 506 insertions(+), 107 deletions(-)
+ create mode 100644 kernel/bpf/log.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier_log.c
+
+-- 
+2.34.1
+
