@@ -2,158 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62FD6CF1DB
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 20:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C586CF20E
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 20:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbjC2SIv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 14:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
+        id S229495AbjC2SVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 14:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbjC2SIV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 14:08:21 -0400
-Received: from mail-ed1-x562.google.com (mail-ed1-x562.google.com [IPv6:2a00:1450:4864:20::562])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B4D65B8
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:08:11 -0700 (PDT)
-Received: by mail-ed1-x562.google.com with SMTP id ek18so66807744edb.6
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680113291;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PPoyIAdL7R3dFOvlNYTf6qBsx+voZAd+nmyiSJz/hmk=;
-        b=iNQKUbUQv4rmNqH8vbFGuMkYVHzB8ujbeimo9lcg0Az7EyrB4qgnb7XilOT1DDchLc
-         EdokyaKindLWKbyYSvJQ7AvPuU2muF1ShsPqgqMvJad6ioy93reX3YZnxHDCtX7k6pi+
-         MaIwjg3GMpKAP8DSMYACvTdfiVekzB4Of66oM=
+        with ESMTP id S229436AbjC2SUz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 14:20:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F1959E5
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:20:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680114007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gQJesUxnFKqgiarOkDz2JwDNpFkGj1zpEAjUJlQpgaY=;
+        b=HnJJMwwdGTlnCEayTR5U+CZJjDAXebX8iyWaoV/4LNaGWI7e0I+ZFDdOAjTWZbknRwFpyf
+        7FtpeONZNHi/qcpiC78y5g4fpQeHq512jlFmzQmmpbM+UR3rs9MZTNJjk4yMfYKR/pSIEj
+        xnwaxZEpfWmAOfwqocmJa4FQy7ckF7Y=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-601-m87s52VjOeqAvfHPlvmaYQ-1; Wed, 29 Mar 2023 14:20:03 -0400
+X-MC-Unique: m87s52VjOeqAvfHPlvmaYQ-1
+Received: by mail-ed1-f71.google.com with SMTP id i42-20020a0564020f2a00b004fd23c238beso23511197eda.0
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:20:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680113291;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PPoyIAdL7R3dFOvlNYTf6qBsx+voZAd+nmyiSJz/hmk=;
-        b=7GuLigDqcgo8z3i9uUKocT+O1gtF57+OJlQb8MZ0kO7O4GY0ZxKKPDPIJcITbbmXDW
-         4wJ0dnaZTsSO6KrtW6ElPtaqRX86L4uyAeToWGMbUDYTMJ55CAvH3+MzM4HfC/PRqYyE
-         C33nYtT6CyQgk0mY7kDh5eQNq6afHCsQLKGTmoKb9/vH/l3gAhRh4tgiXojot6Bs2UOi
-         arecRlOLopi2u0LezZ7qd+c8wWH7hETxTmyeFK4C6MO/zWopdskeMMKKSbE/LF4HD6vE
-         fgnHMyFthQw4+HrRKlUMmauHnJ0WJrFbaLBjhGjoiakdO4SNAXCc3+yj6CFVqRRPXE8h
-         VDXQ==
-X-Gm-Message-State: AAQBX9dlkBz8NWrDPlfk1wjmnrF7th/Azt7E9cMcEHH6CwxLsvLusySH
-        Bqaz3BPov3zihXjU0I5othb+uo/VyLhEM2hG1UKpXuOmyr/e
-X-Google-Smtp-Source: AKy350ZQMWCGePKnVaO5B7F0bPYL4LdNVb+jsAYGhBNUPtXHcN9KN5VYh5ajl9dihSeTQKLUlVpPrE2PSGNc
-X-Received: by 2002:a17:907:7fa3:b0:8f0:143d:ee34 with SMTP id qk35-20020a1709077fa300b008f0143dee34mr3429202ejc.1.1680113291130;
-        Wed, 29 Mar 2023 11:08:11 -0700 (PDT)
-Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
-        by smtp-relay.gmail.com with ESMTPS id m10-20020a1709066d0a00b00920438f59b3sm12072998ejr.154.2023.03.29.11.08.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 11:08:11 -0700 (PDT)
-X-Relaying-Domain: dectris.com
-From:   Kal Conley <kal.conley@dectris.com>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 10/10] selftests: xsk: Add tests for 8K and 9K frame sizes
-Date:   Wed, 29 Mar 2023 20:05:02 +0200
-Message-Id: <20230329180502.1884307-11-kal.conley@dectris.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230329180502.1884307-1-kal.conley@dectris.com>
-References: <20230329180502.1884307-1-kal.conley@dectris.com>
+        d=1e100.net; s=20210112; t=1680114001;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gQJesUxnFKqgiarOkDz2JwDNpFkGj1zpEAjUJlQpgaY=;
+        b=5Euvxq5VAT3RCHvIlWQ61QSqx1OxIQvSsTLBuFaYR4mYmVoQWgH2Hux0wlgYWk8tVe
+         hSodm3Cnl9Xxm5rPnq8rtvuSZ4GGb59g2B71dBga010OvCqQp/KD0QMVZiFRK3kvu6GF
+         40JEG2OGLTsIbSPs9lLVf5q6CnE2JjGHtxJElTvAvOB/JL9X+SSiEaEqBs7G3O3cI3Is
+         JjAFPqR1l7qXd+0snUFDP7YcyTGWgC3MPbNpOZ93GJcehH/GMtzvzOuzrN16lnkJIhJz
+         jT7SRsZcZE0f+5cPoFWyGKlpHIFNJLJVzyvzuLHoswEYBI2hbBSabelrKcehEqGt4cQs
+         +5hw==
+X-Gm-Message-State: AAQBX9e4jdpXb43fLm2as1rb8/g/pjqg+QC+O/UYJARgl8jcI5ajsjsf
+        b2MmB4YgLzhkMKIJZdhMKo6o2CLVlW24Uv7LMbIPT+8YDDDUU8h4H0vjCMd3GLIWeablVaEQdn2
+        yaZTC8Bkf7UyU+UXfauHo
+X-Received: by 2002:a17:906:d117:b0:93b:a0c8:1cec with SMTP id b23-20020a170906d11700b0093ba0c81cecmr22268594ejz.32.1680114001210;
+        Wed, 29 Mar 2023 11:20:01 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZUWaOjgV1IE1t9AH5dAFmEEVhMdzH2/G4HwhCRXgJx0Hh4qa1/fFlOoCH37s5FCywLH99t6w==
+X-Received: by 2002:a17:906:d117:b0:93b:a0c8:1cec with SMTP id b23-20020a170906d11700b0093ba0c81cecmr22268560ejz.32.1680114000870;
+        Wed, 29 Mar 2023 11:20:00 -0700 (PDT)
+Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id gx24-20020a170906f1d800b0092d16623eeasm16798089ejb.138.2023.03.29.11.19.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Mar 2023 11:20:00 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <b9e5077f-fbc4-8904-74a8-cda94d91cfbf@redhat.com>
+Date:   Wed, 29 Mar 2023 20:19:59 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net
+Subject: Re: [PATCH bpf RFC 1/4] xdp: rss hash types representation
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <168003451121.3027256.13000250073816770554.stgit@firesoul>
+ <168003455815.3027256.7575362149566382055.stgit@firesoul>
+ <ZCNjHAY81gS02FVW@google.com>
+ <811724e2-cdd6-15fe-b176-9dfcdbd98bad@redhat.com>
+ <ZCRy2f170FQ+fXsp@google.com>
+In-Reply-To: <ZCRy2f170FQ+fXsp@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests:
-- RUN_TO_COMPLETION_8K_FRAME_SIZE: frame_size=8192 (aligned)
-- UNALIGNED_9K_FRAME_SIZE: frame_size=9000 (unaligned)
 
-Signed-off-by: Kal Conley <kal.conley@dectris.com>
----
- tools/testing/selftests/bpf/xskxceiver.c | 25 ++++++++++++++++++++++++
- tools/testing/selftests/bpf/xskxceiver.h |  2 ++
- 2 files changed, 27 insertions(+)
+On 29/03/2023 19.18, Stanislav Fomichev wrote:
+> On 03/29, Jesper Dangaard Brouer wrote:
+> 
+>> On 28/03/2023 23.58, Stanislav Fomichev wrote:
+>> > On 03/28, Jesper Dangaard Brouer wrote:
+>> > > The RSS hash type specifies what portion of packet data NIC hardware used
+>> > > when calculating RSS hash value. The RSS types are focused on Internet
+>> > > traffic protocols at OSI layers L3 and L4. L2 (e.g. ARP) often get hash
+>> > > value zero and no RSS type. For L3 focused on IPv4 vs. IPv6, and L4
+>> > > primarily TCP vs UDP, but some hardware supports SCTP.
+>> >
+>> > > Hardware RSS types are differently encoded for each hardware NIC. Most
+>> > > hardware represent RSS hash type as a number. Determining L3 vs L4 often
+>> > > requires a mapping table as there often isn't a pattern or sorting
+>> > > according to ISO layer.
+>> >
+>> > > The patch introduce a XDP RSS hash type (xdp_rss_hash_type) that can both
+>> > > be seen as a number that is ordered according by ISO layer, and can be bit
+>> > > masked to separate IPv4 and IPv6 types for L4 protocols. Room is available
+>> > > for extending later while keeping these properties. This maps and unifies
+>> > > difference to hardware specific hashes.
+>> >
+>> > Looks good overall. Any reason we're making this specific layout?
+> 
+>> One important goal is to have a simple/fast way to determining L3 vs L4,
+>> because a L4 hash can be used for flow handling (e.g. load-balancing).
+> 
+>> We below layout you can:
+> 
+>>   if (rss_type & XDP_RSS_TYPE_L4_MASK)
+>>     bool hw_hash_do_LB = true;
+> 
+>> Or using it as a number:
+> 
+>>   if (rss_type > XDP_RSS_TYPE_L4)
+>>     bool hw_hash_do_LB = true;
+> 
+> Why is it strictly better then the following?
+> 
+> if (rss_type & (TYPE_UDP | TYPE_TCP | TYPE_SCTP)) {}
+> 
 
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index f73bc6ff5c3d..fb5ba225b652 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -1841,6 +1841,17 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
- 		testapp_validate_traffic(test);
- 		break;
-+	case TEST_TYPE_RUN_TO_COMPLETION_8K_FRAME:
-+		if (!hugepages_present(test->ifobj_tx)) {
-+			ksft_test_result_skip("No 2M huge pages present.\n");
-+			return;
-+		}
-+		test_spec_set_name(test, "RUN_TO_COMPLETION_8K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 8192;
-+		test->ifobj_rx->umem->frame_size = 8192;
-+		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
-+		testapp_validate_traffic(test);
-+		break;
- 	case TEST_TYPE_RX_POLL:
- 		test->ifobj_rx->use_poll = true;
- 		test_spec_set_name(test, "POLL_RX");
-@@ -1905,6 +1916,20 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 		if (!testapp_unaligned(test))
- 			return;
- 		break;
-+	case TEST_TYPE_UNALIGNED_9K_FRAME:
-+		if (!hugepages_present(test->ifobj_tx)) {
-+			ksft_test_result_skip("No 2M huge pages present.\n");
-+			return;
-+		}
-+		test_spec_set_name(test, "UNALIGNED_9K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 9000;
-+		test->ifobj_rx->umem->frame_size = 9000;
-+		test->ifobj_tx->umem->unaligned_mode = true;
-+		test->ifobj_rx->umem->unaligned_mode = true;
-+		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
-+		test->ifobj_rx->pkt_stream->use_addr_for_fill = true;
-+		testapp_validate_traffic(test);
-+		break;
- 	case TEST_TYPE_HEADROOM:
- 		testapp_headroom(test);
- 		break;
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 919327807a4e..7f52f737f5e9 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -69,12 +69,14 @@ enum test_mode {
- enum test_type {
- 	TEST_TYPE_RUN_TO_COMPLETION,
- 	TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME,
-+	TEST_TYPE_RUN_TO_COMPLETION_8K_FRAME,
- 	TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT,
- 	TEST_TYPE_RX_POLL,
- 	TEST_TYPE_TX_POLL,
- 	TEST_TYPE_POLL_RXQ_TMOUT,
- 	TEST_TYPE_POLL_TXQ_TMOUT,
- 	TEST_TYPE_UNALIGNED,
-+	TEST_TYPE_UNALIGNED_9K_FRAME,
- 	TEST_TYPE_ALIGNED_INV_DESC,
- 	TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME,
- 	TEST_TYPE_UNALIGNED_INV_DESC,
--- 
-2.39.2
+See V2 I dropped the idea of this being a number (that idea was not a
+good idea).
+
+> If we add some new L4 format, the bpf programs can be updated to support
+> it?
+> 
+>> I'm very open to changes to my "specific" layout.  I am in doubt if
+>> using it as a number is the right approach and worth the trouble.
+> 
+>> > Why not simply the following?
+>> >
+>> > enum {
+>> >  ����XDP_RSS_TYPE_NONE = 0,
+>> >  ����XDP_RSS_TYPE_IPV4 = BIT(0),
+>> >  ����XDP_RSS_TYPE_IPV6 = BIT(1),
+>> >  ����/* IPv6 with extension header. */
+>> >  ����/* let's note ^^^ it in the UAPI? */
+>> >  ����XDP_RSS_TYPE_IPV6_EX = BIT(2),
+>> >  ����XDP_RSS_TYPE_UDP = BIT(3),
+>> >  ����XDP_RSS_TYPE_TCP = BIT(4),
+>> >  ����XDP_RSS_TYPE_SCTP = BIT(5),
+> 
+>> We know these bits for UDP, TCP, SCTP (and IPSEC) are exclusive, they
+>> cannot be set at the same time, e.g. as a packet cannot both be UDP and
+>> TCP.  Thus, using these bits as a number make sense to me, and is more
+>> compact.
+> 
+> [..]
+> 
+>> This BIT() approach also have the issue of extending it later (forward
+>> compatibility).  As mentioned a common task will be to check if
+>> hash-type is a L4 type.  See mlx5 [patch 4/4] needed to extend with
+>> IPSEC. Notice how my XDP_RSS_TYPE_L4_MASK covers all the bits that this
+>> can be extended with new L4 types, such that existing progs will still
+>> work checking for L4 check.  It can of-cause be solved in the same way
+>> for this BIT() approach by reserving some bits upfront in a mask.
+> 
+> We're using 6 bits out of 64, we should be good for awhile? If there
+> is ever a forward compatibility issue, we can always come up with
+> a new kfunc.
+
+I want/need store the RSS-type in the xdp_frame, for XDP_REDIRECT and
+SKB use-cases.  Thus, I don't want to use 64-bit/8-bytes, as xdp_frame
+size is limited (given it reduces headroom expansion).
+
+> 
+> One other related question I have is: should we export the type
+> over some additional new kfunc argument? (instead of abusing the return
+> type) 
+
+Good question. I was also wondering if it wouldn't be better to add
+another kfunc argument with the rss_hash_type?
+
+That will change the call signature, so that will not be easy to handle
+between kernel releases.
+
+
+> Maybe that will let us drop the explicit BTF_TYPE_EMIT as well?
+
+Sure, if we define it as an argument, then it will automatically
+exported as BTF.
+
+>> > }
+>> >
+>> > And then using XDP_RSS_TYPE_IPV4|XDP_RSS_TYPE_UDP vs
+>> > XDP_RSS_TYPE_IPV6|XXX ?
+> 
+>> Do notice, that I already does some level of or'ing ("|") in this
+>> proposal.  The main difference is that I hide this from the driver, and
+>> kind of pre-combine the valid combination (enum's) drivers can select
+>> from. I do get the point, and I think I will come up with a combined
+>> solution based on your input.
+> 
+> 
+>> The RSS hashing types and combinations comes from M$ standards:
+>>   [1] 
+>> https://learn.microsoft.com/en-us/windows-hardware/drivers/network/rss-hashing-types#ipv4-hash-type-combinations
+> 
+> My main concern here is that we're over-complicating it with the masks
+> and the format. With the explicit bits we can easily map to that
+> spec you mention.
+
+See if you like my RFC-V2 proposal better.
+It should go more in your direction.
+
+> 
+> For example, for forward compat, I'm not sure we can assume that the people
+> will do:
+>      "rss_type & XDP_RSS_TYPE_L4_MASK"
+> instead of something like:
+>      "rss_type & (XDP_RSS_TYPE_L4_IPV4_TCP|XDP_RSS_TYPE_L4_IPV4_UDP)"
+> 
+
+This code is allowed in V2 and should be. It is a choice of
+BPF-programmer in line-2 to not be forward compatible with newer L4 types.
+
+>> > > This proposal change the kfunc API bpf_xdp_metadata_rx_hash() to  return
+>> > > this RSS hash type on success.
+
+This is the real question (as also raised above)...
+Should we use return value or add an argument for type?
+
+--Jesper
 
