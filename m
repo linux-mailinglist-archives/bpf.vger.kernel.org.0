@@ -2,179 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F262D6CD84B
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 13:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6A06CD85B
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 13:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjC2LSd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 07:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
+        id S229694AbjC2LWQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 07:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjC2LSc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 07:18:32 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEED34233
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 04:18:25 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id cn12so61709527edb.4
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 04:18:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1680088704;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=N5CohG6Xp3aoYNlsfgUXnFLV896u1ewiB5jAiiO+FJI=;
-        b=NWYnam7DcNtw+KI6l5gg8Ud/Yu9CFRMEP0PF6Iy98lYqzSE1EUw5UaPkZbZpgjxGgM
-         n6Ai2XaI2pV8Yf3EtpHZJkS5qnXrhwjzFqze03qbK5fJ3idyYjff17V8KcePJvTEcpum
-         BB4QF6iWL7Zb6hhzH0SKunYUmM8ygzj2d35M4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680088704;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N5CohG6Xp3aoYNlsfgUXnFLV896u1ewiB5jAiiO+FJI=;
-        b=sIrT0WPHKGTZ8re2HlpE03bOxQeax7W3TjQCAadReNLR0EuID5fTuTd2bduF47Zhqi
-         L1MTKSj9ExnxvmZ1IbF5J74cagWGpkr4ySI8PFpxhbd1cynq4kZIcQ5M0jDmUBEOXI4t
-         hXNc4YXneeatJ7audNq5hTX0UmpfviYSVagFqB/a5Gd/ZLwfZI2L93ao5malVnhlZXZ+
-         lVOz/yoxnWjIy99dmGSSgZ8gXkm7sobmXufRCQQW0/G3HewjjxT027GBESr7u9FfbLu+
-         YrkIBJsNrr5sptIhwrRhghYYpiAvHUoNxJntHtiR7QIwf9mFVKutIabnCF8KSiUCne5W
-         Jm+Q==
-X-Gm-Message-State: AAQBX9epOpn/W1SxIOvmrVE2/+th7VOQHVEGC/B4QfruAGmaXdcAlaJm
-        KihdEGWueh1EvQJKtglgNqOdHg==
-X-Google-Smtp-Source: AKy350YwT5vle5IWLw83lYuPTrwS8zEFnWxmq0FTdED5tmddZp6tIA0UGpb6cy5lLMplk79JOA55Bw==
-X-Received: by 2002:a17:907:8a08:b0:944:44d:c736 with SMTP id sc8-20020a1709078a0800b00944044dc736mr16272991ejc.64.1680088704277;
-        Wed, 29 Mar 2023 04:18:24 -0700 (PDT)
-Received: from cloudflare.com (79.184.147.137.ipv4.supernova.orange.pl. [79.184.147.137])
-        by smtp.gmail.com with ESMTPSA id ch19-20020a170906c2d300b00933d64cd447sm13723918ejb.121.2023.03.29.04.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 04:18:23 -0700 (PDT)
-References: <20230327175446.98151-1-john.fastabend@gmail.com>
- <20230327175446.98151-3-john.fastabend@gmail.com>
- <87tty55aou.fsf@cloudflare.com> <642362a1403ee_286af20850@john.notmuch>
-User-agent: mu4e 1.6.10; emacs 28.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     cong.wang@bytedance.com, daniel@iogearbox.net, lmb@isovalent.com,
-        edumazet@google.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, will@isovalent.com
-Subject: Re: [PATCH bpf v2 02/12] bpf: sockmap, convert schedule_work into
- delayed_work
-Date:   Wed, 29 Mar 2023 13:09:37 +0200
-In-reply-to: <642362a1403ee_286af20850@john.notmuch>
-Message-ID: <874jq3dcw1.fsf@cloudflare.com>
+        with ESMTP id S229477AbjC2LWQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 07:22:16 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9718133;
+        Wed, 29 Mar 2023 04:22:14 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8D56F1F7AB;
+        Wed, 29 Mar 2023 11:22:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680088933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gebdMLUhhGELLLVSbQbSg6v4/rJOoLd9eRIXmlgXsio=;
+        b=vXmcD7WVZBRtIF0QTHnyV0Rs4Utot99+8SQdPpEeQgdw9Nt9PPFDXEaDiGG07RKvkX9o4l
+        lGXnaYncs8HwoSJ4MiI1vkPA5f/VJ3GJlKnBIUWk10zdR5ivx8u3vsRJi+RTJsPs0Xg3tS
+        /x3S3AGVNCHDf2wdcfpAeE+BafyyrcY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EBF7138FF;
+        Wed, 29 Mar 2023 11:22:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QbCbGWUfJGSgSQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 29 Mar 2023 11:22:13 +0000
+Date:   Wed, 29 Mar 2023 13:22:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+Message-ID: <ZCQfZJFufkJ10o01@dhcp22.suse.cz>
+References: <20230328221644.803272-1-yosryahmed@google.com>
+ <20230328221644.803272-5-yosryahmed@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230328221644.803272-5-yosryahmed@google.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 02:56 PM -07, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> On Mon, Mar 27, 2023 at 10:54 AM -07, John Fastabend wrote:
->> > Sk_buffs are fed into sockmap verdict programs either from a strparser
->> > (when the user might want to decide how framing of skb is done by attaching
->> > another parser program) or directly through tcp_read_sock. The
->> > tcp_read_sock is the preferred method for performance when the BPF logic is
->> > a stream parser.
->> >
->> > The flow for Cilium's common use case with a stream parser is,
->> >
->> >  tcp_read_sock()
->> >   sk_psock_verdict_recv
->> >     ret = bpf_prog_run_pin_on_cpu()
->> >     sk_psock_verdict_apply(sock, skb, ret)
->> >      // if system is under memory pressure or app is slow we may
->> >      // need to queue skb. Do this queuing through ingress_skb and
->> >      // then kick timer to wake up handler
->> >      skb_queue_tail(ingress_skb, skb)
->> >      schedule_work(work);
->> >
->> >
->> > The work queue is wired up to sk_psock_backlog(). This will then walk the
->> > ingress_skb skb list that holds our sk_buffs that could not be handled,
->> > but should be OK to run at some later point. However, its possible that
->> > the workqueue doing this work still hits an error when sending the skb.
->> > When this happens the skbuff is requeued on a temporary 'state' struct
->> > kept with the workqueue. This is necessary because its possible to
->> > partially send an skbuff before hitting an error and we need to know how
->> > and where to restart when the workqueue runs next.
->> >
->> > Now for the trouble, we don't rekick the workqueue. This can cause a
->> > stall where the skbuff we just cached on the state variable might never
->> > be sent. This happens when its the last packet in a flow and no further
->> > packets come along that would cause the system to kick the workqueue from
->> > that side.
->> >
->> > To fix we could do simple schedule_work(), but while under memory pressure
->> > it makes sense to back off some instead of continue to retry repeatedly. So
->> > instead to fix convert schedule_work to schedule_delayed_work and add
->> > backoff logic to reschedule from backlog queue on errors. Its not obvious
->> > though what a good backoff is so use '1'.
->> >
->> > To test we observed some flakes whil running NGINX compliance test with
->> > sockmap we attributed these failed test to this bug and subsequent issue.
->> >
->> > Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
->> > Tested-by: William Findlay <will@isovalent.com>
->> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
->> > ---
->
-> [...]
->
->> > --- a/net/core/skmsg.c
->> > +++ b/net/core/skmsg.c
->> > @@ -481,7 +481,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
->> >  	}
->> >  out:
->> >  	if (psock->work_state.skb && copied > 0)
->> > -		schedule_work(&psock->work);
->> > +		schedule_delayed_work(&psock->work, 0);
->> >  	return copied;
->> >  }
->> >  EXPORT_SYMBOL_GPL(sk_msg_recvmsg);
->> > @@ -639,7 +639,8 @@ static void sk_psock_skb_state(struct sk_psock *psock,
->> >  
->> >  static void sk_psock_backlog(struct work_struct *work)
->> >  {
->> > -	struct sk_psock *psock = container_of(work, struct sk_psock, work);
->> > +	struct delayed_work *dwork = to_delayed_work(work);
->> > +	struct sk_psock *psock = container_of(dwork, struct sk_psock, work);
->> >  	struct sk_psock_work_state *state = &psock->work_state;
->> >  	struct sk_buff *skb = NULL;
->> >  	bool ingress;
->> > @@ -679,6 +680,10 @@ static void sk_psock_backlog(struct work_struct *work)
->> >  				if (ret == -EAGAIN) {
->> >  					sk_psock_skb_state(psock, state, skb,
->> >  							   len, off);
->> > +
->> > +					// Delay slightly to prioritize any
->> > +					// other work that might be here.
->> > +					schedule_delayed_work(&psock->work, 1);
->> 
->> Do IIUC that this means we can back out changes from commit bec217197b41
->> ("skmsg: Schedule psock work if the cached skb exists on the psock")?
->
-> Yeah I think so this is a more direct way to get the same result. I'm also
-> thinking this check,
->
->        if (psock->work_state.skb && copied > 0)
->                schedule_work(&psock->work)
->
-> is not correct copied=0 which could happen on empty queue could be the
-> result of a skb stuck from this eagain error in backlog.
+On Tue 28-03-23 22:16:39, Yosry Ahmed wrote:
+> rstat flushing is too expensive to perform in irq context.
+> The previous patch removed the only context that may invoke an rstat
+> flush from irq context, add a WARN_ON_ONCE() to detect future
+> violations, or those that we are not aware of.
+> 
+> Ideally, we wouldn't flush with irqs disabled either, but we have one
+> context today that does so in mem_cgroup_usage(). Forbid callers from
+> irq context for now, and hopefully we can also forbid callers with irqs
+> disabled in the future when we can get rid of this callsite.
 
-I suspect the 'copied > 0' check is there to handle the 0-length read
-scenario. But I think you're right, that the empty queue scenario is not
-being handled properly.
+I am sorry to be late to the discussion. I wanted to follow up on
+Johannes reply in the previous version but you are too fast ;)
 
-> I think its OK to revert that patch in a separate patch. And ideally we
-> could get some way to load up the stack to hit these corner cases without
-> running long stress tests.
->
-> WDYT?
+I do agree that this looks rather arbitrary. You do not explain how the
+warning actually helps. Is the intention to be really verbose to the
+kernel log when somebody uses this interface from the IRQ context and
+get bug reports? What about configurations with panic on warn? Do we
+really want to crash their systems for something like that?
 
-Yeah, the revert can wait. I was just curious if my thinking was
-right. There is plenty of material in this series as is :-)
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> ---
+>  kernel/cgroup/rstat.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> index d3252b0416b6..c2571939139f 100644
+> --- a/kernel/cgroup/rstat.c
+> +++ b/kernel/cgroup/rstat.c
+> @@ -176,6 +176,8 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
+>  {
+>  	int cpu;
+>  
+> +	/* rstat flushing is too expensive for irq context */
+> +	WARN_ON_ONCE(!in_task());
+>  	lockdep_assert_held(&cgroup_rstat_lock);
+>  
+>  	for_each_possible_cpu(cpu) {
+> -- 
+> 2.40.0.348.gf938b09366-goog
+
+-- 
+Michal Hocko
+SUSE Labs
