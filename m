@@ -2,127 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BD56CD8F7
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 13:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9986CD918
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 14:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjC2L6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 07:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35852 "EHLO
+        id S229671AbjC2MHH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 08:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjC2L6u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 07:58:50 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7ADEA;
-        Wed, 29 Mar 2023 04:58:44 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229623AbjC2MHF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 08:07:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD03A4C3B;
+        Wed, 29 Mar 2023 05:06:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 89907219D6;
-        Wed, 29 Mar 2023 11:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1680091123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yUxNSXHNGER+MCVZDyDV8l5ua3h1BaSz76WjsL0+L3s=;
-        b=Y9IuGtiVAXDxMAHsM6cj7w2mYq2eAbOAWUcGbhruEFj1/tTjy0ED7NrMdnGwksKxLWnPdS
-        2XErqMm71eFEKSjeeww8JCt/gvAo3MxStIDeQ1v26jeQkUL5w58Wj50wWGD35gsly/pJ7o
-        eNf2oLyQeU11xKNm9lcEWC8qojyK8Qs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6F463138FF;
-        Wed, 29 Mar 2023 11:58:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ecknG/MnJGRBXwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 29 Mar 2023 11:58:43 +0000
-Date:   Wed, 29 Mar 2023 13:58:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 3/9] memcg: do not flush stats in irq context
-Message-ID: <ZCQn86f7sxBt6tyN@dhcp22.suse.cz>
-References: <20230328221644.803272-1-yosryahmed@google.com>
- <20230328221644.803272-4-yosryahmed@google.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C69961CE6;
+        Wed, 29 Mar 2023 12:06:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E07C433D2;
+        Wed, 29 Mar 2023 12:06:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680091609;
+        bh=KoCRrZdqWqbYBk9rH55JCrfMS8Ge4UtvpbUnC+we0mc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F522+9zlj70x0f1QAoWxdLXjyYpewXusBjcA09CnjRNDMcCrsu8pCpJ1kWVM5jc7i
+         9eBWQykT+4N9onR5r3dUrnQTNfqRvC1Ztzlhfz7Cbtj6pQSZb6Afq0W3mchWKMxQGY
+         fJuZph6zGh0gdYlQuTUFLMBQikfGVIh53GAN60Xu6O24PTSjp0jy/MPUjX/aUa36k0
+         PTqtkNo29oAFhyHWnqGDkQMEh8XxNgy683oQQtYYCAJxWLHUjKxm32SltsM6hAXX/x
+         YnnH+ECmmcVBRcecyysMxV0NfZrgAZIvWo7B3QVf6p889Upg5bsfq5rCWUC+tc1cu3
+         XSz6uGZZrTQjQ==
+Date:   Wed, 29 Mar 2023 15:06:44 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, netdev@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org,
+        Piotr Raczynski <piotr.raczynski@intel.com>
+Subject: Re: [PATCH net 1/4] ice: fix W=1 headers mismatch
+Message-ID: <20230329120644.GP831478@unreal>
+References: <20230328172035.3904953-1-anthony.l.nguyen@intel.com>
+ <20230328172035.3904953-2-anthony.l.nguyen@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230328221644.803272-4-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230328172035.3904953-2-anthony.l.nguyen@intel.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue 28-03-23 22:16:38, Yosry Ahmed wrote:
-> Currently, the only context in which we can invoke an rstat flush from
-> irq context is through mem_cgroup_usage() on the root memcg when called
-> from memcg_check_events(). An rstat flush is an expensive operation that
-> should not be done in irq context, so do not flush stats and use the
-> stale stats in this case.
+On Tue, Mar 28, 2023 at 10:20:32AM -0700, Tony Nguyen wrote:
+> From: Jesse Brandeburg <jesse.brandeburg@intel.com>
 > 
-> Arguably, usage threshold events are not reliable on the root memcg
-> anyway since its usage is ill-defined.
+> make modules W=1 returns:
+> .../ice/ice_txrx_lib.c:448: warning: Function parameter or member 'first_idx' not described in 'ice_finalize_xdp_rx'
+> .../ice/ice_txrx.c:948: warning: Function parameter or member 'ntc' not described in 'ice_get_rx_buf'
+> .../ice/ice_txrx.c:1038: warning: Excess function parameter 'rx_buf' description in 'ice_construct_skb'
 > 
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Suggested-by: Shakeel Butt <shakeelb@google.com>
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Acked-by: Shakeel Butt <shakeelb@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
+> Fix these warnings by adding and deleting the deviant arguments.
+> 
+> Fixes: 2fba7dc5157b ("ice: Add support for XDP multi-buffer on Rx side")
+> Fixes: d7956d81f150 ("ice: Pull out next_to_clean bump out of ice_put_rx_buf()")
+> CC: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> Reviewed-by: Piotr Raczynski <piotr.raczynski@intel.com>
+> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 > ---
->  mm/memcontrol.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
+>  drivers/net/ethernet/intel/ice/ice_txrx.c     | 2 +-
+>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c3b6aae78901..ff39f78f962e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3669,7 +3669,21 @@ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
->  	unsigned long val;
->  
->  	if (mem_cgroup_is_root(memcg)) {
-> -		mem_cgroup_flush_stats();
-> +		/*
-> +		 * We can reach here from irq context through:
-> +		 * uncharge_batch()
-> +		 * |--memcg_check_events()
-> +		 *    |--mem_cgroup_threshold()
-> +		 *       |--__mem_cgroup_threshold()
-> +		 *          |--mem_cgroup_usage
-> +		 *
-> +		 * rstat flushing is an expensive operation that should not be
-> +		 * done from irq context; use stale stats in this case.
-> +		 * Arguably, usage threshold events are not reliable on the root
-> +		 * memcg anyway since its usage is ill-defined.
-> +		 */
-> +		if (in_task())
-> +			mem_cgroup_flush_stats();
->  		val = memcg_page_state(memcg, NR_FILE_PAGES) +
->  			memcg_page_state(memcg, NR_ANON_MAPPED);
->  		if (swap)
-> -- 
-> 2.40.0.348.gf938b09366-goog
 
--- 
-Michal Hocko
-SUSE Labs
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
