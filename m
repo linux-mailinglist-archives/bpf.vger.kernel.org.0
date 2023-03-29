@@ -2,183 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 611A26CEE58
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 18:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFBB6CEE9F
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 18:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbjC2QAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 12:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
+        id S231561AbjC2QF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 12:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbjC2P7i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 11:59:38 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B532D61A1
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 08:59:02 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id er13so24304990edb.9
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 08:59:02 -0700 (PDT)
+        with ESMTP id S231373AbjC2QEo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 12:04:44 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CDA65A7;
+        Wed, 29 Mar 2023 09:03:54 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id b20so65428273edd.1;
+        Wed, 29 Mar 2023 09:03:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680105541;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=O9rVM+TyMjTEamPO1YLxI72VkrMEpvNCPXT/D1jIETM=;
-        b=XElgWmxaLhWe5F03cqiSoKI5bsUuTFyQ+Omq+unoOkkS+T83i7Pjlb4L8E3+ae9LnX
-         FmEl9W3QfJ+4JLTMi2uGEKY4oZYK3OWdsd4EzdiU9RAOcJgrr4KVwihtVUD1H95qPzjz
-         BQl6Y6HRA0H+bj9LIN7FpbHJPOb6pZ9HmVQ2g=
+        d=gmail.com; s=20210112; t=1680105772; x=1682697772;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9+PTMgMb1uDuXcr/T04yJ3YfU4pZJmc2CjMbSMMWPRk=;
+        b=UuiB6j8IliGHFkVWqIs5A505BUdSmCNcLut8okEq8ZZD66vBD0fVpBTX/RJjX5iLRR
+         8AZFXXAPyyRbOkW3iu/OgIkgamyGC7rpVC1X8fKA5VQNCnxi9cjJAmif0YezujgFJflI
+         WeabZrugdrrLMiSH56Z48zsFnd0wml2VU7UZt3hWunlwx6l97qVWrPnOy6ESncqbYwZF
+         ih61QOYFuUVskv+qstGaMEjsOV+FLg1+1+hUIiTK8xRQJL6f3SJ84y3VMD8mR5shyWg+
+         Ji6V/aBy9E5pz7iL0wld2kVvtL3GiEcR4FIp5/Lq2h1EyzG+geMYNkfGEjsAReN9x3OZ
+         n9vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680105541;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O9rVM+TyMjTEamPO1YLxI72VkrMEpvNCPXT/D1jIETM=;
-        b=PxnQlJovN5JrQpSNSWk5q28BFFf5iFgnd25cawsvpVfAc9U01cpoHPAh2MRHFIPk66
-         ABgwajYbNCqPar2dNk0D+sjDGDPx8zmVAWgkri94wSeRBOZMBi/244TZkT6iKsfVZCLb
-         /HiUPvHdhJUwrQyR4gkGzyREaropgGGmoLgCrfMo/VkWnBj+3jlzj4I0U87Mr4c1WoOm
-         dW6CxjX/1TyOE5vMJhIdvCBnHKdMGUv1BAOIJS5nqrDdoRhfQEWkuwbBiQh/p1za6d6O
-         KDuGtS8ArSWs9/f2IotgJlt1CLRk3MRyzAP7rPJ4OSs+AmbaYTSFbZwJ6RiOXaKLMhRM
-         c35Q==
-X-Gm-Message-State: AAQBX9ft2pAucQ+m7hiwvnrpbZeafuxAV1KIecsbR6ApMrF4hFfmpjr6
-        xvppOVtGy/9cA8ZTuwzfJO0zDeYEwrZdryHQluBbQQ==
-X-Google-Smtp-Source: AKy350Zsj7496tj4JV/et0FhpoM2AUiFOnO2pMRSyzkfT3qLg0ZXJJR+WBgcmP04Czf7BiQbP518zk4JdiFw8TQBcvI=
-X-Received: by 2002:a17:907:a49:b0:931:6f5b:d27d with SMTP id
- be9-20020a1709070a4900b009316f5bd27dmr10361097ejc.0.1680105540984; Wed, 29
- Mar 2023 08:59:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230319195656.326701-1-kal.conley@dectris.com>
- <20230319195656.326701-2-kal.conley@dectris.com> <CAJ8uoz2d9cSvLeguJ+5KenCqibxpshCiAKms4c75mGgzJVmkBA@mail.gmail.com>
-In-Reply-To: <CAJ8uoz2d9cSvLeguJ+5KenCqibxpshCiAKms4c75mGgzJVmkBA@mail.gmail.com>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Wed, 29 Mar 2023 18:03:35 +0200
-Message-ID: <CAHApi-mEwbAcYzHHTR0QMSA8EqByvmwzLCBkMw2_6hxqkiCBmQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
+        d=1e100.net; s=20210112; t=1680105772; x=1682697772;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9+PTMgMb1uDuXcr/T04yJ3YfU4pZJmc2CjMbSMMWPRk=;
+        b=McwHzS4ZSXvWSbW7IEkesMKquyb/hRR34DJfuuKjmsmHsd+1DjOc71HE9RI7/AtNtr
+         7iBDzvXx8KG6YmCGqOJsnoXUV/jT1TLnSV+DzAd0YYZJirYOkqpg/X4aOWHJ7VPVJTZu
+         qXSTMbQR96rWSzyR8Gozkgppte9WLAfPBKZsqI4gTWvxZNoSES6B1YGBNEXf9MBPR4vy
+         vihhNgCho6vBulFhT10CQbLCeiQdOQHRrW1uO3baHcnPF7/P8QRUofswd+2u1J6pbtdM
+         gE7l9P0ZZ/aCd6aiTO2NQMX3zf5H6ABPB9yf/RONBmgxHvnga9ZXIlZ76Yu+YpIDw0Dp
+         5IXw==
+X-Gm-Message-State: AAQBX9fNjBZfS9EJjYIELowGmuO9pr5KK6Y5WiUW3kH3DSE84ZQXUh5N
+        YCCA05gxjnCCxAKDzk/0LKWX6ED/rxaYwQ==
+X-Google-Smtp-Source: AKy350bVpNijXnnSOg+agaEisC/QGGLGzKtFpzZyo4diLmUkLhVXE656ZR1ns5KxBKW+wDeNsO9Pdg==
+X-Received: by 2002:a17:907:1706:b0:946:c033:4d18 with SMTP id le6-20020a170907170600b00946c0334d18mr7751622ejc.13.1680105772583;
+        Wed, 29 Mar 2023 09:02:52 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id rk28-20020a170907215c00b00933b38505f9sm14083064ejb.152.2023.03.29.09.02.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Mar 2023 09:02:50 -0700 (PDT)
+Message-ID: <f9664121426c5665ff0fc8cb61c466689beadd36.camel@gmail.com>
+Subject: Re: [PATCH dwarves v2 1/5] fprintf: Correct names for types with
+ btf_type_tag attribute
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, jose.marchesi@oracle.com, david.faust@oracle.com,
+        alan.maguire@oracle.com
+Date:   Wed, 29 Mar 2023 19:02:45 +0300
+In-Reply-To: <ZCRctmB2yrwgsNMh@kernel.org>
+References: <20230314230417.1507266-1-eddyz87@gmail.com>
+         <20230314230417.1507266-2-eddyz87@gmail.com> <ZCLy0hjyR3KuYy3e@kernel.org>
+         <f4803213ab27c65517eea19a12be78dd4ec9f6b0.camel@gmail.com>
+         <ZCMHKFdmjVpOSNsJ@kernel.org>
+         <50a160d802ad3f84e91cf05c8f541e0c2e388fc8.camel@gmail.com>
+         <ZCNZcl1mkC9yhwDD@kernel.org>
+         <fabfc71fd43be48f68019c911c6a3af1412f4635.camel@gmail.com>
+         <ZCRctmB2yrwgsNMh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > Add core AF_XDP support for chunk sizes larger than PAGE_SIZE. This
-> > enables sending/receiving jumbo ethernet frames up to the theoretical
-> > maxiumum of 64 KiB. For chunk sizes > PAGE_SIZE, the UMEM is required
-> > to consist of HugeTLB VMAs (and be hugepage aligned). Initially, only
-> > XDP_COPY mode is usuable pending future driver work.
->
-> nit: useable
+On Wed, 2023-03-29 at 12:43 -0300, Arnaldo Carvalho de Melo wrote:
+[...]
+> > > diff --git a/dwarves_fprintf.c b/dwarves_fprintf.c
+> > > index 1e6147a82056c188..1ecc24321bf8f975 100644
+> > > --- a/dwarves_fprintf.c
+> > > +++ b/dwarves_fprintf.c
+> > > @@ -788,8 +788,15 @@ next_type:
+> > >  			if (n)
+> > >  				return printed + n;
+> > >  			if (ptype->tag =3D=3D DW_TAG_LLVM_annotation) {
+> > > -				type =3D ptype;
+> > > -				goto next_type;
+> > > +				// FIXME: Just skip this for now, we need to print this annotati=
+on
+> > > +				// to match the original source code.
+> > > +
+> > > +				if (ptype->type =3D=3D 0) {
+> > > +					printed +=3D fprintf(fp, "%-*s %s", tconf.type_spacing, "void *=
+", name);
+> > > +					break;
+> > > +				}
+> > > +
+> > > +				ptype =3D cu__type(cu, ptype->type);
+> > >  			}
+> > >  			if (ptype->tag =3D=3D DW_TAG_subroutine_type) {
+> > >  				printed +=3D ftype__fprintf(tag__ftype(ptype),
+> >=20
+> > This explains why '*' was missing, but unfortunately it breaks apart
+> > when there are multiple type tags, e.g.:
+> >=20
+> >=20
+> >     $ cat tag-test.c
+> >     #define __t __attribute__((btf_type_tag("t1")))
+> >    =20
+> >     struct foo {
+> >       int  (__t __t *a)(void);
+> >     } g;
+> >     $ clang -g -c tag-test.c -o tag-test.o && pahole -J tag-test.o && p=
+ahole --sort -F dwarf tag-test.o
+> >     struct foo {
+> >     	int ()(void)   *           a;                    /*     0     8 */
+> >    =20
+> >     	/* size: 8, cachelines: 1, members: 1 */
+> >     	/* last cacheline: 8 bytes */
+> >     };
+> >     $ clang -g -c tag-test.c -o tag-test.o && pahole -J tag-test.o && p=
+ahole --sort -F btf tag-test.o
+> >     struct foo {
+> >     	int ()(void)   *           a;                    /*     0     8 */
+> >    =20
+> >     	/* size: 8, cachelines: 1, members: 1 */
+> >     	/* last cacheline: 8 bytes */
+> >     };
+> >    =20
+> > What I don't understand is why pointer's type is LLVM_annotation.
+>=20
+> Well, that is how it is encoded in BTF and then you supported it in:
+>=20
+> Author: Eduard Zingerman <eddyz87@gmail.com>
+> Date:   Wed Mar 15 01:04:14 2023 +0200
+>=20
+>     btf_loader: A hack for BTF import of btf_type_tag attributes`
 
-Fixed in v2.
+To be honest, I was under impression that I add a workaround and the
+preferred way is to do what dwarf loader does with
+btf_type_tag_ptr_type::annots.
+=20
+> I find it natural, and think that annots thing is a variation on how to
+> store modifiers for types, see, this DW_TAG_LLVM_annotation is in the
+> same class as 'restrict', 'const', 'volatile', "atomic", etc
+>=20
+> I understand that for encoding _DWARF_ people preferred to make it as a
+> child DIE to avoid breaking existing DWARF consumers, but in
+> pahole's dwarf_loader.c we can just make it work like BTF and insert the
+> btf_type_tag in the chain, just like 'const', etc, no?
+>=20
+> pahole wants to print those annotation just like it prints 'const',
+> 'volatile', etc.
 
->
-> > For consistency, check for HugeTLB pages during UMEM registration. This
-> > implies that hugepages are required for XDP_COPY mode despite DMA not
-> > being used. This restriction is desirable since it ensures user software
-> > can take advantage of future driver support.
-> >
-> > Even in HugeTLB mode, continue to do page accounting using order-0
-> > (4 KiB) pages. This minimizes the size of this change and reduces the
-> > risk of impacting driver code. Taking full advantage of hugepages for
-> > accounting should improve XDP performance in the general case.
->
-> Thank you Kal for working on this. Interesting stuff.
->
-> First some general comments and questions on the patch set:
->
-> * Please document this new feature in Documentation/networking/af_xdp.rst
+Actually, if reflecting physical structure of the DWARF is not a goal,
+forgoing "annots" fields altogether and treating type tags as derived
+types should make support for btf:type_tag (the v2 version) simpler.
 
-Fixed in v2.
+Then, getting back to the current issue, I need to add
+skip_llvm_annotations function with a loop inside, right?
 
-> * Have you verified the SKB path for Rx? Tx was exercised by running l2fwd.
+> > Probably, the cleanest solution would be to make DWARF and BTF loaders
+> > work in a similar way and attach LLVM_annotation as `annots` field of
+> > the `struct btf_type_tag_ptr_type`. Thus, avoiding 'LLVM_annotation's
+> > in the middle of type chains. I'll work on this.
+>=20
 
-This patchset allows sending/receiving 9000 MTU packets with xdpsock
-(slightly modified). The benchmark numbers show the results for rxdrop
-(-r).
-
-> * Have you checked that an XDP program can access the full >4K packet?
-> The xdp_buff has no problem with this as the buffer is consecutive,
-> but just wondering if there is some other check or limit in there?
-> Jesper and Toke will likely know, so roping them in.
-
-Yes, the full packet can be accessed from a SEC("xdp") BPF program
-(only tested in SKB mode).
-
-> * Would be interesting to know your thoughts about taking this to
-> zero-copy mode too. It would be good if you could support all modes
-> from the get go, instead of partial support for some unknown amount of
-> time and then zero-copy support. Partial support makes using the
-> feature more cumbersome when an app is deployed on various systems.
-> The continuity checking code you have at the end of the patch is a
-> step in the direction of zero-copy support, it seems.
-
-I think this patchset is enough to support zero-copy as long as the
-driver allows it. Currently, no drivers will work out of the box AFAIK
-since they all validate the chunk_size or the MTU size. I would
-absolutely love for drivers to support this. Hopefully this patchset
-is enough inspiration? :-) Do you think it's absolutely necessary to
-have driver ZC support ready to land this?
-
-> * What happens if I try to run this in zero-copy mode with a chunk_size > 4K?
-
-AFAIK drivers check for this and throw an error. Maybe there are some
-drivers that don't check this properly?
-
-> * There are some compilation errors to fix from the kernel test robot
-
-Fixed in v2.
-
->
-> require_hugetlb would be a clearer name
-
-Fixed in v2. Renamed to `need_hugetlb`.
-
->
-> next_mapping? n as a name is not very descriptive.
-
-Fixed in v2. Renamed to `stride`.
-
->
-> >         u32 i;
-> >
-> > -       for (i = 0; i < dma_map->dma_pages_cnt - 1; i++) {
-> > -               if (dma_map->dma_pages[i] + PAGE_SIZE == dma_map->dma_pages[i + 1])
-> > +       for (i = 0; i + n < dma_map->dma_pages_cnt; i++) {
-> > +               if (dma_map->dma_pages[i] + page_size == dma_map->dma_pages[i + n])
-> >                         dma_map->dma_pages[i] |= XSK_NEXT_PG_CONTIG_MASK;
-> >                 else
-> >                         dma_map->dma_pages[i] &= ~XSK_NEXT_PG_CONTIG_MASK;
-> >         }
-> > +       for (; i < dma_map->dma_pages_cnt; i++)
-> > +               dma_map->dma_pages[i] &= ~XSK_NEXT_PG_CONTIG_MASK;
->
-> Is this not too conservative? If your umem consists of two huge pages
-> mappings but they are not mapped consecutively in physical memory, you
-> are going to mark all the chunks as non-consecutive. Would it not be
-> better to just look chunk_size ahead of you instead of page_size
-> above? The only thing you care about is that the chunk you are in is
-> in consecutive physical memory, and that is strictly only true for
-> zero-copy mode. So this seems to be in preparation for zero-copy mode.
->
-
-It is slightly too conservative. I have updated the logic a bit in v2.
-If the packet doesn't cross a page boundary, then this array is not
-read anyway.
-
-Thanks!
-Kal
