@@ -2,76 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCBA6CF405
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 22:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218206CF49A
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 22:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjC2UHT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 16:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
+        id S229647AbjC2UjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 16:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjC2UHS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 16:07:18 -0400
-Received: from out-20.mta0.migadu.com (out-20.mta0.migadu.com [91.218.175.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D3F1FDA
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 13:07:17 -0700 (PDT)
-Message-ID: <a34687f7-e2eb-3e4d-a123-f47fef6444b0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1680120435;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V88upOL5uB/zBX+8ETdfVoRpvOXNSd17Gj0OIK8P+Zo=;
-        b=Zuy5z31Nzx6mUtBtGmkN5NpSmLuS0lPCPAIhm0cRkdKtyhXFy3Qvms7RF2sn+qcyjGszw7
-        Q6lp3PLdk/1UGhLpuLdUtPO9LkuY+e9cb531BO/lWxBrqViZczL/oeZFw8BuwUTCXt+rCh
-        OsXKiL0XuHfhuH7/a41wIlydVr2SQtA=
-Date:   Wed, 29 Mar 2023 13:07:11 -0700
+        with ESMTP id S229682AbjC2UjB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 16:39:01 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261165FF9
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 13:38:59 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id f188so2571330ybb.3
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 13:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1680122338;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=roQ4I8SfNlurAVA2gUW8YNCdvD/U9UP1h39JPEDCNrw=;
+        b=NU/yfcrc8ryHQhIAObFNbURZYYwBhWTiQcib7OVvY/80Set4ojSk/egyVrcxg9WBQ1
+         8yqI244zT3XrggWqoMHveuVVPk8Z2LeSgnN6ROSj4fKFcZHCArk6iGNr7q9j5X17Ny23
+         gmo9mEp/to3tEwTte/8Z7bDTyJtCMtNYFbADW39rzX3kLuRLCJcFYk0CzDahs3JND0r7
+         f96lCJylAr51Qw4wmj36DwO90YcGV7yvS8D1S6nqpocow0tu6wu3TqawKx9gnwEmZBip
+         jOPhjsfHq3YLAiBGrnnBXaxJLVQ+N5Er/HmS5eE2sSr/k3DgDVkRF8MlpE+6XIDw6pC4
+         ZMew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680122338;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=roQ4I8SfNlurAVA2gUW8YNCdvD/U9UP1h39JPEDCNrw=;
+        b=Tsx1tE8vPbrNeM7XAT3UmvPU3N/Np6uIcuPh4Z7FnL7yf6ffhUqXDp8V3h8P0fu/yA
+         4lraWGuJNv8rF8lxuj3zlYDMGCHBD+DIGUwQcSio6aXpAkkTCsp7xWVIc0LiJn9WuBEN
+         56II2oyd0KmnPWa41Th/e0sd1qvdhOzOp9IsZW4hnNZmWYoySk1e1EbBvKIkqYRElweC
+         /aux5Wf6Wtvk2MnFTFerjq0tKQvuXfZuSzdMZ8gHBfVX+6gq+eThTKdvuQdTlk71PKjC
+         QHKzanzwu7KJ8otXVcqFpaHMH63BK8oF0kDcMFOLMwpqCZXTbbrYaMsnHo0U53njdxya
+         8Z5w==
+X-Gm-Message-State: AAQBX9d4C0glk/4oEeujntsgoMTQWaix7qGuExtnv+NoetlG3oOWwASP
+        M6liwQmyhHCj0jGXyrc+GqRIoA==
+X-Google-Smtp-Source: AKy350awy+iqFFLhoWPnPqScJw2eCrMSToUYrqptA8NQ5i6yrQSWWA49k/VEwxmPQNxTIvIjhwOwcA==
+X-Received: by 2002:a25:6d08:0:b0:a8a:4380:e073 with SMTP id i8-20020a256d08000000b00a8a4380e073mr17114309ybc.53.1680122338180;
+        Wed, 29 Mar 2023 13:38:58 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id b125-20020a256783000000b00b7767ca748dsm3732036ybc.42.2023.03.29.13.38.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Mar 2023 13:38:57 -0700 (PDT)
+Date:   Wed, 29 Mar 2023 13:38:48 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Tejun Heo <tj@kernel.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
+ percpu lock
+In-Reply-To: <ZCSY8l/jVwszF6iA@slm.duckdns.org>
+Message-ID: <98cb3ce-7ed9-3d17-9015-ef7193d6627@google.com>
+References: <ZBz/V5a7/6PZeM7S@slm.duckdns.org> <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com> <ZB5UalkjGngcBDEJ@slm.duckdns.org> <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com> <CALvZod6rF0D21hcV7xnqD+oRkn=x5NLi5GOkPpyaPa859uDH+Q@mail.gmail.com>
+ <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com> <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com> <CAJD7tkZrp=4zWvjE9_010TAG1T_crCbf9P64UzJABspgcrGPKg@mail.gmail.com> <ZCSJDpPPOVvBYfOy@slm.duckdns.org>
+ <f9b6410-ee17-635f-a35d-559fa0191dc3@google.com> <ZCSY8l/jVwszF6iA@slm.duckdns.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 bpf-next 5/5] selftests/bpf: Add bench for task storage
- creation
-Content-Language: en-US
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        David Faust <david.faust@oracle.com>
-References: <20230322215246.1675516-1-martin.lau@linux.dev>
- <20230322215246.1675516-6-martin.lau@linux.dev>
- <CADvTj4rP3kPODxARVTEs2HsNFOof-BZtr8OsEKdjgcGVOTqKaA@mail.gmail.com>
- <456bcd47-efa2-7e3d-78c0-5f41ecba477c@linux.dev>
- <CADvTj4ouGHvPHEgZobUewY2ZjHZhTzJ96oCBAV8VO2xT2bPC0Q@mail.gmail.com>
- <2b5b56bb-7160-41ac-1fb8-4dbc6ad67d9f@linux.dev>
- <CADvTj4pctyvU+9wQ3T+jq49NAxMV89eOFfj3bp3_GfFuJ99opA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CADvTj4pctyvU+9wQ3T+jq49NAxMV89eOFfj3bp3_GfFuJ99opA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/29/23 1:03 PM, James Hilliard wrote:
->>> So it looks like fork is translated to __gcov_fork when -std=gnu* is set which
->>> is why we get this error.
->>>
->>> As this appears to be intended behavior for gcc I think the best option is
->>> to just rename the function so that we don't run into issues when building
->>> with gnu extensions like -std=gnu11.
->> Is it sure 'fork' is the only culprit? If not, it is better to address it
->> properly because this unnecessary name change is annoying when switching bpf
->> prog from clang to gcc. Like changing the name in this .c here has to make
->> another change to the .c in the prog_tests/ directory.
-> We've fixed a similar issue in the past by renaming to avoid a
-> conflict with the builtin:
-> https://github.com/torvalds/linux/commit/ab0350c743d5c93fd88742f02b3dff12168ab435
-> 
+On Wed, 29 Mar 2023, Tejun Heo wrote:
 
-Fair enough. Please post a patch for the name change.
+> Hello, Hugh. How have you been?
+> 
+> On Wed, Mar 29, 2023 at 12:22:24PM -0700, Hugh Dickins wrote:
+> > Hi Tejun,
+> > Butting in here, I'm fascinated.  This is certainly not my area, I know
+> > nothing about rstat, but this is the first time I ever heard someone
+> > arguing for more disabling of interrupts rather than less.
+> > 
+> > An interrupt coming in while holding a contended resource can certainly
+> > add to latencies, that I accept of course.  But until now, I thought it
+> > was agreed best practice to disable irqs only regretfully, when strictly
+> > necessary.
+> > 
+> > If that has changed, I for one want to know about it.  How should we
+> > now judge which spinlocks should disable interrupts and which should not?
+> > Page table locks are currently my main interest - should those be changed?
+> 
+> For rstat, it's a simple case because the global lock here wraps around
+> per-cpu locks which have to be irq-safe, so the only difference we get
+> between making the global irq-unsafe and keeping it so but releasing
+> inbetween is:
+> 
+>  Global lock held: G
+>  IRQ disabled: I
+>  Percpu lock held: P
+>  
+> 1. IRQ unsafe
+> 
+>  GGGGGGGGGGGGGGG~~GGGGG
+>  IIII IIII IIII ~~ IIII
+>  PPPP PPPP PPPP ~~ PPPP
+> 
+> 2. IRQ safe released inbetween cpus
+> 
+>  GGGG GGGG GGGG ~~ GGGG
+>  IIII IIII IIII ~~ IIII
+>  PPPP PPPP PPPP ~~ PPPP
+> 
+> #2 seems like the obvious thing to do here given how the lock is used and
+> each P section may take a bit of time.
+
+Many thanks for the detailed response.  I'll leave it to the rstat folks,
+to agree or disagree with your analysis there.
+
+> 
+> So, in the rstat case, the choice is, at least to me, obvious, but even for
+> more generic cases where the bulk of actual work isn't done w/ irq disabled,
+> I don't think the picture is as simple as "use the least protected variant
+> possible" anymore because the underlying hardware changed.
+> 
+> For an SMP kernel running on an UP system, "the least protected variant" is
+> the obvious choice to make because you don't lose anything by holding a
+> spinlock longer than necessary. However, as you increase the number of CPUs,
+> there rises a tradeoff between local irq servicing latency and global lock
+> contention.
+> 
+> Imagine a, say, 128 cpu system with a few cores servicing relatively high
+> frequency interrupts. Let's say there's a mildly hot lock. Usually, it shows
+> up in the system profile but only just. Let's say something happens and the
+> irq rate on those cores went up for some reason to the point where it
+> becomes a rather common occurrence when the lock is held on one of those
+> cpus, irqs are likely to intervene lengthening how long the lock is held,
+> sometimes, signficantly. Now because the lock is on average held for much
+> longer, it become a lot hotter as more CPUs would stall on it and depending
+> on luck or lack thereof these stalls can span many CPUs on the system for
+> quite a while. This is actually something we saw in production.
+> 
+> So, in general, there's a trade off between local irq service latency and
+> inducing global lock contention when using unprotected locks. With more and
+> more CPUs, the balance keeps shifting. The balance still very much depends
+> on the specifics of a given lock but yeah I think it's something we need to
+> be a lot more careful about now.
+
+And this looks a very plausible argument to me: I'll let it sink in.
+
+But I hadn't heard that the RT folks were clamouring for more irq disabling:
+perhaps they partition their machines with more care, and are not devotees
+of high CPU counts.
+
+What I hope is that others will chime in one way or the other -
+it does sound as if a reappraisal of the balances is overdue.
+
+Thanks,
+Hugh (disabling interrupts for as long as he can)
