@@ -2,117 +2,628 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E524E6CF586
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 23:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702926CF6BF
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 01:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbjC2Vq6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 17:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        id S229563AbjC2XNp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 19:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjC2Vq5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 17:46:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF9140F4
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 14:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680126373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TLdrrjYrVuiWJorDb/815Wq1wAW83zbfu/IRhqAaimY=;
-        b=GDWEDXH8T0x7ENDjBWHR/dFjf0YudTt1/scSY26fC56uJvp1t7/n4pi9Bq/fo43+07hXyK
-        Qk9NcvX7+t/SUEuP5C5zS3bZIwRQ+SdKbUyNGUciOELWy0LVb77rNTTOf6d88eArraUQyi
-        ClWbbsNLWjhMdNCvvXA0fnoiYKLU6bQ=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-570-hbb_pSN-PZGW1WcfYh03Rg-1; Wed, 29 Mar 2023 17:46:11 -0400
-X-MC-Unique: hbb_pSN-PZGW1WcfYh03Rg-1
-Received: by mail-ed1-f72.google.com with SMTP id c1-20020a0564021f8100b004acbe232c03so23781525edc.9
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 14:46:11 -0700 (PDT)
+        with ESMTP id S229531AbjC2XNo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 19:13:44 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1114C13
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 16:13:35 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id kc4so16410189plb.10
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 16:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1680131615;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ii/OPf6S6yx9j6l0QkubpjQkCeOFYIwJazTVsxemcAI=;
+        b=dNBpf1j1O6RnleFqTRIiLfXW1LQRwQI0Ih+12XxybLpHNSlIZTUxjm1PLQdiVKWobO
+         hlZDKxe8/z0oocVtBudXzkBPmafrXemc5Y9yEJBWe5GR0BqTwxpJ8oFsunp3C+8N6tgS
+         5y5E9HtEC3yRD6DTDjpnjMf45/4pZpoBfdE4C6ue26U2z4ZEQqsduGBThyZ96gkuKkis
+         fG3/cCrtAaDvtixrgyR2ewWb8MPJ7kKGD692INUFD8pYUHDIwHqMmlidIsaX9IX4ehbc
+         3ZBA1aDecn30cy5pQx/S7FsMUVy58JW4qYk7ZHLuXR2jyi7RIrvvATqF0PCQaknk8+9i
+         5w+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680126370;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TLdrrjYrVuiWJorDb/815Wq1wAW83zbfu/IRhqAaimY=;
-        b=XDlJzD+jAjeZmhYXM4VUjLuBflO6G1iVJJ7GWMuITQcRExqh8ZbkE4POOHBj8niNi5
-         HwV+S27Inht/bJMxy3kJHKLCHkWXVw9t9YoyrMc0Dxe0WdHaEpJQBnAA/LsTHp/9Q1Fx
-         nZPu+HQhAYmXQIP4V2LktFmWkGpB5lv3wAVH+u3F02FFncRSg+o/KVj2ukNeJdKKNZWc
-         QZ9fxdggouAppb+n52leExix48dIC3RVryidSKTlHUp9c7rFEDjYPgjhauX3uKhCHqSs
-         SPJmpbh7qvO0r2HtkPos3ihMtL3yY931YRuPeIYd14fmlQFwIFLdrUwC1GjLC3LKehPC
-         lELQ==
-X-Gm-Message-State: AAQBX9ejn5P2WqGqQePLRoFkgl/mAkCEli/qI4Taamer/YzC0x1UpOvM
-        6o7rJSgueBXIJNuXyoQYyBwyTx5wO6knkQo1Tu1Xdg4+yRlRuIUGDt6mogpKfg/zBPBI6+1m456
-        K4KHqskODymGa
-X-Received: by 2002:a17:907:7f86:b0:926:9c33:ea4 with SMTP id qk6-20020a1709077f8600b009269c330ea4mr23062345ejc.27.1680126370364;
-        Wed, 29 Mar 2023 14:46:10 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ZGQUYQJeTXwnRV15le8g2e5F6QxBAZ5bivkYpLnhuEBXno6vpJg9RQt0C5heMRA6NQh8z/2A==
-X-Received: by 2002:a17:907:7f86:b0:926:9c33:ea4 with SMTP id qk6-20020a1709077f8600b009269c330ea4mr23062308ejc.27.1680126369951;
-        Wed, 29 Mar 2023 14:46:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z26-20020a17090674da00b009310d4dece9sm16869157ejl.62.2023.03.29.14.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 14:46:09 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 974C8A22B54; Wed, 29 Mar 2023 23:46:08 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
-        davem@davemloft.net
-Subject: Re: [xdp-hints] [PATCH bpf RFC-V2 1/5] xdp: rss hash types
- representation
-In-Reply-To: <168010734324.3039990.16454026957159811204.stgit@firesoul>
-References: <168010726310.3039990.2753040700813178259.stgit@firesoul>
- <168010734324.3039990.16454026957159811204.stgit@firesoul>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 29 Mar 2023 23:46:08 +0200
-Message-ID: <87355nnsdb.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20210112; t=1680131615;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ii/OPf6S6yx9j6l0QkubpjQkCeOFYIwJazTVsxemcAI=;
+        b=xCu6KyPEhcZJQrEoaRdwdtQZvgXBcB/ja3j6y67lTE+KZt+DGwiY7Sh0vm8GXoPdiM
+         WtkyAhZXNgss1n+7l533yRycmuzCWJT+l7Hwe/jIaPyhfID4hrgrgxKpAkwyfZ01VV0r
+         0XQHvqhvrWxxANmx1GBmEwNtaUoy4aS5eGiY1pGrv2B9VhE54c8aCuqCejozjGqzHZap
+         mV5LroPxxShKGcNjwayDx5ktfjzutk0w3oO62QQm4Iu7MRWeF9mz+hKCfw/L+LLkxr8w
+         SiltSOp3c5nQvHyCY9p4DPETcGSmezjJ0Vv3k709BMcCsXNKJjed94Gr8SPqq5HJapxW
+         +WVA==
+X-Gm-Message-State: AAQBX9cD30Yx86elC946HQw7S3qllMbqegF44F0pj2LPBszC30DfFM2Y
+        rlzTGciQWefi6Wur3zAgxpYoXg==
+X-Google-Smtp-Source: AKy350ZZ5heCJQWgu/L11ZGe8sgxgjM5kcnqyIfWxv1SpXZNN0qsdKW6uUmyxh5kM7iu94hHCYWLOg==
+X-Received: by 2002:a17:902:da8e:b0:1a1:a273:1812 with SMTP id j14-20020a170902da8e00b001a1a2731812mr27310772plx.45.1680131614696;
+        Wed, 29 Mar 2023 16:13:34 -0700 (PDT)
+Received: from ?IPv6:2601:647:4900:1fbb:cd81:c42c:e36a:c000? ([2601:647:4900:1fbb:cd81:c42c:e36a:c000])
+        by smtp.gmail.com with ESMTPSA id h21-20020a170902f7d500b001a21b871824sm10475364plw.119.2023.03.29.16.13.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 29 Mar 2023 16:13:34 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
+Subject: Re: [PATCH v4 bpf-next 4/4] selftests/bpf: Add tests for
+ bpf_sock_destroy
+From:   Aditi Ghag <aditi.ghag@isovalent.com>
+In-Reply-To: <CAKH8qBtYvsvjruNdznYq-Bkr-FjJoazx71_f=hph21B6_09-oA@mail.gmail.com>
+Date:   Wed, 29 Mar 2023 16:13:32 -0700
+Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <30733F2E-2CEB-4004-9970-FA791988F887@isovalent.com>
+References: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
+ <20230323200633.3175753-5-aditi.ghag@isovalent.com>
+ <ZB4btVWyDjjdIqhV@google.com>
+ <DD6B5D46-CDA5-4510-8647-28445AD92DE1@isovalent.com>
+ <ZCHKY4Bmb6mgc8ea@google.com>
+ <F3202D0D-A607-4B66-86B1-2CA1ED67E0BB@isovalent.com>
+ <CAKH8qBtYvsvjruNdznYq-Bkr-FjJoazx71_f=hph21B6_09-oA@mail.gmail.com>
+To:     Stanislav Fomichev <sdf@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.7)
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jesper Dangaard Brouer <brouer@redhat.com> writes:
-
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 7133017bcd74..81d41df30695 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -721,12 +721,14 @@ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *tim
->   * @hash: Return value pointer.
->   *
->   * Return:
-> - * * Returns 0 on success or ``-errno`` on error.
-> + * * Returns (positive) RSS hash **type** on success or ``-errno`` on error.
-
-This change is going to break any BPF program that does:
-
-if (!bpf_xdp_metadata_rx_hash(ctx, &hash))
-  /* do something with hash */
 
 
-so I think adding a second argument is better; that way, at least
-breakage will be explicit instead of being a hidden change in semantics
-(and the CO-RE style checking for kfuncs Alexei introduced should
-trigger correctly).
+> On Mar 28, 2023, at 11:35 AM, Stanislav Fomichev <sdf@google.com> =
+wrote:
+>=20
+> On Tue, Mar 28, 2023 at 10:51=E2=80=AFAM Aditi Ghag =
+<aditi.ghag@isovalent.com> wrote:
+>>=20
+>>=20
+>>=20
+>>> On Mar 27, 2023, at 9:54 AM, Stanislav Fomichev <sdf@google.com> =
+wrote:
+>>>=20
+>>> On 03/27, Aditi Ghag wrote:
+>>>=20
+>>>=20
+>>>>> On Mar 24, 2023, at 2:52 PM, Stanislav Fomichev <sdf@google.com> =
+wrote:
+>>>>>=20
+>>>>> On 03/23, Aditi Ghag wrote:
+>>>>>> The test cases for destroying sockets mirror the intended usages =
+of the
+>>>>>> bpf_sock_destroy kfunc using iterators.
+>>>>>=20
+>>>>>> The destroy helpers set `ECONNABORTED` error code that we can =
+validate in
+>>>>>> the test code with client sockets. But UDP sockets have an =
+overriding error
+>>>>>> code from the disconnect called during abort, so the error code =
+the
+>>>>>> validation is only done for TCP sockets.
+>>>>>=20
+>>>>>> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+>>>>>> ---
+>>>>>> .../selftests/bpf/prog_tests/sock_destroy.c   | 195 =
+++++++++++++++++++
+>>>>>> .../selftests/bpf/progs/sock_destroy_prog.c   | 151 =
+++++++++++++++
+>>>>>> 2 files changed, 346 insertions(+)
+>>>>>> create mode 100644 =
+tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+>>>>>> create mode 100644 =
+tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+>>>>>=20
+>>>>>> diff --git =
+a/tools/testing/selftests/bpf/prog_tests/sock_destroy.c =
+b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..cbce966af568
+>>>>>> --- /dev/null
+>>>>>> +++ b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+>>>>>> @@ -0,0 +1,195 @@
+>>>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>>>> +#include <test_progs.h>
+>>>>>> +
+>>>>>> +#include "sock_destroy_prog.skel.h"
+>>>>>> +#include "network_helpers.h"
+>>>>>> +
+>>>>>> +#define SERVER_PORT 6062
+>>>>>> +
+>>>>>> +static void start_iter_sockets(struct bpf_program *prog)
+>>>>>> +{
+>>>>>> + struct bpf_link *link;
+>>>>>> + char buf[50] =3D {};
+>>>>>> + int iter_fd, len;
+>>>>>> +
+>>>>>> + link =3D bpf_program__attach_iter(prog, NULL);
+>>>>>> + if (!ASSERT_OK_PTR(link, "attach_iter"))
+>>>>>> +         return;
+>>>>>> +
+>>>>>> + iter_fd =3D bpf_iter_create(bpf_link__fd(link));
+>>>>>> + if (!ASSERT_GE(iter_fd, 0, "create_iter"))
+>>>>>> +         goto free_link;
+>>>>>> +
+>>>>>> + while ((len =3D read(iter_fd, buf, sizeof(buf))) > 0)
+>>>>>> +         ;
+>>>>>> + ASSERT_GE(len, 0, "read");
+>>>>>> +
+>>>>>> + close(iter_fd);
+>>>>>> +
+>>>>>> +free_link:
+>>>>>> + bpf_link__destroy(link);
+>>>>>> +}
+>>>>>> +
+>>>>>> +static void test_tcp_client(struct sock_destroy_prog *skel)
+>>>>>> +{
+>>>>>> + int serv =3D -1, clien =3D -1, n =3D 0;
+>>>>>> +
+>>>>>> + serv =3D start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
+>>>>>> + if (!ASSERT_GE(serv, 0, "start_server"))
+>>>>>> +         goto cleanup_serv;
+>>>>>> +
+>>>>>> + clien =3D connect_to_fd(serv, 0);
+>>>>>> + if (!ASSERT_GE(clien, 0, "connect_to_fd"))
+>>>>>> +         goto cleanup_serv;
+>>>>>> +
+>>>>>> + serv =3D accept(serv, NULL, NULL);
+>>>>>> + if (!ASSERT_GE(serv, 0, "serv accept"))
+>>>>>> +         goto cleanup;
+>>>>>> +
+>>>>>> + n =3D send(clien, "t", 1, 0);
+>>>>>> + if (!ASSERT_GE(n, 0, "client send"))
+>>>>>> +         goto cleanup;
+>>>>>> +
+>>>>>> + /* Run iterator program that destroys connected client sockets. =
+*/
+>>>>>> + start_iter_sockets(skel->progs.iter_tcp6_client);
+>>>>>> +
+>>>>>> + n =3D send(clien, "t", 1, 0);
+>>>>>> + if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
+>>>>>> +         goto cleanup;
+>>>>>> + ASSERT_EQ(errno, ECONNABORTED, "error code on destroyed =
+socket");
+>>>>>> +
+>>>>>> +
+>>>>>> +cleanup:
+>>>>>> + close(clien);
+>>>>>> +cleanup_serv:
+>>>>>> + close(serv);
+>>>>>> +}
+>>>>>> +
+>>>>>> +static void test_tcp_server(struct sock_destroy_prog *skel)
+>>>>>> +{
+>>>>>> + int serv =3D -1, clien =3D -1, n =3D 0;
+>>>>>> +
+>>>>>> + serv =3D start_server(AF_INET6, SOCK_STREAM, NULL, SERVER_PORT, =
+0);
+>>>>>> + if (!ASSERT_GE(serv, 0, "start_server"))
+>>>>>> +         goto cleanup_serv;
+>>>>>> +
+>>>>>> + clien =3D connect_to_fd(serv, 0);
+>>>>>> + if (!ASSERT_GE(clien, 0, "connect_to_fd"))
+>>>>>> +         goto cleanup_serv;
+>>>>>> +
+>>>>>> + serv =3D accept(serv, NULL, NULL);
+>>>>>> + if (!ASSERT_GE(serv, 0, "serv accept"))
+>>>>>> +         goto cleanup;
+>>>>>> +
+>>>>>> + n =3D send(clien, "t", 1, 0);
+>>>>>> + if (!ASSERT_GE(n, 0, "client send"))
+>>>>>> +         goto cleanup;
+>>>>>> +
+>>>>>> + /* Run iterator program that destroys server sockets. */
+>>>>>> + start_iter_sockets(skel->progs.iter_tcp6_server);
+>>>>>> +
+>>>>>> + n =3D send(clien, "t", 1, 0);
+>>>>>> + if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
+>>>>>> +         goto cleanup;
+>>>>>> + ASSERT_EQ(errno, ECONNRESET, "error code on destroyed socket");
+>>>>>> +
+>>>>>> +
+>>>>>> +cleanup:
+>>>>>> + close(clien);
+>>>>>> +cleanup_serv:
+>>>>>> + close(serv);
+>>>>>> +}
+>>>>>> +
+>>>>>> +
+>>>>>> +static void test_udp_client(struct sock_destroy_prog *skel)
+>>>>>> +{
+>>>>>> + int serv =3D -1, clien =3D -1, n =3D 0;
+>>>>>> +
+>>>>>> + serv =3D start_server(AF_INET6, SOCK_DGRAM, NULL, 6161, 0);
+>>>>>> + if (!ASSERT_GE(serv, 0, "start_server"))
+>>>>>> +         goto cleanup_serv;
+>>>>>> +
+>>>>>> + clien =3D connect_to_fd(serv, 0);
+>>>>>> + if (!ASSERT_GE(clien, 0, "connect_to_fd"))
+>>>>>> +         goto cleanup_serv;
+>>>>>> +
+>>>>>> + n =3D send(clien, "t", 1, 0);
+>>>>>> + if (!ASSERT_GE(n, 0, "client send"))
+>>>>>> +         goto cleanup;
+>>>>>> +
+>>>>>> + /* Run iterator program that destroys sockets. */
+>>>>>> + start_iter_sockets(skel->progs.iter_udp6_client);
+>>>>>> +
+>>>>>> + n =3D send(clien, "t", 1, 0);
+>>>>>> + if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
+>>>>>> +         goto cleanup;
+>>>>>> + /* UDP sockets have an overriding error code after they are =
+disconnected,
+>>>>>> +  * so we don't check for ECONNABORTED error code.
+>>>>>> +  */
+>>>>>> +
+>>>>>> +cleanup:
+>>>>>> + close(clien);
+>>>>>> +cleanup_serv:
+>>>>>> + close(serv);
+>>>>>> +}
+>>>>>> +
+>>>>>> +static void test_udp_server(struct sock_destroy_prog *skel)
+>>>>>> +{
+>>>>>> + int *listen_fds =3D NULL, n, i;
+>>>>>> + unsigned int num_listens =3D 5;
+>>>>>> + char buf[1];
+>>>>>> +
+>>>>>> + /* Start reuseport servers. */
+>>>>>> + listen_fds =3D start_reuseport_server(AF_INET6, SOCK_DGRAM,
+>>>>>> +                                     "::1", SERVER_PORT, 0,
+>>>>>> +                                     num_listens);
+>>>>>> + if (!ASSERT_OK_PTR(listen_fds, "start_reuseport_server"))
+>>>>>> +         goto cleanup;
+>>>>>> +
+>>>>>> + /* Run iterator program that destroys server sockets. */
+>>>>>> + start_iter_sockets(skel->progs.iter_udp6_server);
+>>>>>> +
+>>>>>> + for (i =3D 0; i < num_listens; ++i) {
+>>>>>> +         n =3D read(listen_fds[i], buf, sizeof(buf));
+>>>>>> +         if (!ASSERT_EQ(n, -1, "read") ||
+>>>>>> +             !ASSERT_EQ(errno, ECONNABORTED, "error code on =
+destroyed socket"))
+>>>>>> +                 break;
+>>>>>> + }
+>>>>>> + ASSERT_EQ(i, num_listens, "server socket");
+>>>>>> +
+>>>>>> +cleanup:
+>>>>>> + free_fds(listen_fds, num_listens);
+>>>>>> +}
+>>>>>> +
+>>>>>> +void test_sock_destroy(void)
+>>>>>> +{
+>>>>>> + int cgroup_fd =3D 0;
+>>>>>> + struct sock_destroy_prog *skel;
+>>>>>> +
+>>>>>> + skel =3D sock_destroy_prog__open_and_load();
+>>>>>> + if (!ASSERT_OK_PTR(skel, "skel_open"))
+>>>>>> +         return;
+>>>>>> +
+>>>>>> + cgroup_fd =3D test__join_cgroup("/sock_destroy");
+>>>>>> + if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
+>>>>>> +         goto close_cgroup_fd;
+>>>>>> +
+>>>>>> + skel->links.sock_connect =3D bpf_program__attach_cgroup(
+>>>>>> +         skel->progs.sock_connect, cgroup_fd);
+>>>>>> + if (!ASSERT_OK_PTR(skel->links.sock_connect, "prog_attach"))
+>>>>>> +         goto close_cgroup_fd;
+>>>>>> +
+>>>>>> + if (test__start_subtest("tcp_client"))
+>>>>>> +         test_tcp_client(skel);
+>>>>>> + if (test__start_subtest("tcp_server"))
+>>>>>> +         test_tcp_server(skel);
+>>>>>> + if (test__start_subtest("udp_client"))
+>>>>>> +         test_udp_client(skel);
+>>>>>> + if (test__start_subtest("udp_server"))
+>>>>>> +         test_udp_server(skel);
+>>>>>> +
+>>>>>> +
+>>>>>> +close_cgroup_fd:
+>>>>>> + close(cgroup_fd);
+>>>>>> + sock_destroy_prog__destroy(skel);
+>>>>>> +}
+>>>>>> diff --git =
+a/tools/testing/selftests/bpf/progs/sock_destroy_prog.c =
+b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..8e09d82c50f3
+>>>>>> --- /dev/null
+>>>>>> +++ b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+>>>>>> @@ -0,0 +1,151 @@
+>>>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>>>> +
+>>>>>> +#include "vmlinux.h"
+>>>>>> +
+>>>>>> +#include "bpf_tracing_net.h"
+>>>>>> +#include <bpf/bpf_helpers.h>
+>>>>>> +#include <bpf/bpf_endian.h>
+>>>>>> +
+>>>>>> +#define AF_INET6 10
+>>>>>=20
+>>>>> [..]
+>>>>>=20
+>>>>>> +/* Keep it in sync with prog_test/sock_destroy. */
+>>>>>> +#define SERVER_PORT 6062
+>>>>>=20
+>>>>> The test looks good, one optional unrelated nit maybe:
+>>>>>=20
+>>>>> I've been guilty of these hard-coded ports in the past, but maybe
+>>>>> we should stop hard-coding them? Getting the address of the =
+listener (bound to
+>>>>> port 0) and passing it to the bpf program via global variable =
+should be super
+>>>>> easy now (with the skeletons and network_helpers).
+>>>=20
+>>>=20
+>>>> I briefly considered adding the ports in a map, and retrieving them =
+in the test. But it didn't seem worthwhile as the tests should fail =
+clearly when there is a mismatch.
+>>>=20
+>>> My worry is that the amount of those tests that have a hard-coded =
+port
+>>> grows and at some point somebody will clash with somebody else.
+>>> And it might not be 100% apparent because test_progs is now =
+multi-threaded
+>>> and racy..
+>>>=20
+>>=20
+>> So you would like the ports to be unique across all the tests.
+>=20
+> Yeah, but it's hard without having some kind of global registry. Take
+> a look at the following:
+>=20
+> $ grep -Iri _port tools/testing/selftests/bpf/ | grep -P '\d{4}'
+>=20
+> tools/testing/selftests/bpf/progs/connect_force_port4.c:
+> sa.sin_port =3D bpf_htons(22222);
+> tools/testing/selftests/bpf/progs/connect_force_port4.c:        if
+> (ctx->user_port =3D=3D bpf_htons(60000)) {
+> tools/testing/selftests/bpf/progs/connect_force_port4.c:
+> ctx->user_port =3D bpf_htons(60123);
+> tools/testing/selftests/bpf/progs/connect_force_port4.c:        if
+> (ctx->user_port =3D=3D bpf_htons(60123)) {
+> tools/testing/selftests/bpf/progs/connect_force_port4.c:
+> ctx->user_port =3D bpf_htons(60000);
+> tools/testing/selftests/bpf/progs/connect_force_port4.c:        if
+> (ctx->user_port =3D=3D bpf_htons(60123)) {
+> tools/testing/selftests/bpf/progs/connect6_prog.c:#define
+> DST_REWRITE_PORT6     6666
+> tools/testing/selftests/bpf/progs/test_sk_lookup.c:static const __u16
+> SRC_PORT =3D bpf_htons(8008);
+> tools/testing/selftests/bpf/progs/test_sk_lookup.c:static const __u16
+> DST_PORT =3D 7007; /* Host byte order */
+> tools/testing/selftests/bpf/progs/test_tc_dtime.c:      __u16
+> dst_ns_port =3D __bpf_htons(50000 + test);
+> tools/testing/selftests/bpf/progs/connect4_dropper.c:   if
+> (ctx->user_port =3D=3D bpf_htons(60120))
+> tools/testing/selftests/bpf/progs/connect_force_port6.c:
+> sa.sin6_port =3D bpf_htons(22223);
+> tools/testing/selftests/bpf/progs/connect_force_port6.c:        if
+> (ctx->user_port =3D=3D bpf_htons(60000)) {
+> tools/testing/selftests/bpf/progs/connect_force_port6.c:
+> ctx->user_port =3D bpf_htons(60124);
+> tools/testing/selftests/bpf/progs/connect_force_port6.c:        if
+> (ctx->user_port =3D=3D bpf_htons(60124)) {
+> tools/testing/selftests/bpf/progs/connect_force_port6.c:
+> ctx->user_port =3D bpf_htons(60000);
+> tools/testing/selftests/bpf/progs/connect_force_port6.c:        if
+> (ctx->user_port =3D=3D bpf_htons(60124)) {
+> tools/testing/selftests/bpf/progs/test_tunnel_kern.c:#define
+> VXLAN_UDP_PORT 4789
+> tools/testing/selftests/bpf/progs/sendmsg4_prog.c:#define DST_PORT
+>         4040
+> tools/testing/selftests/bpf/progs/sendmsg4_prog.c:#define
+> DST_REWRITE_PORT4     4444
+> tools/testing/selftests/bpf/progs/connect4_prog.c:#define
+> DST_REWRITE_PORT4     4444
+> tools/testing/selftests/bpf/progs/bind6_prog.c:#define SERV6_PORT
+>         6060
+> tools/testing/selftests/bpf/progs/bind6_prog.c:#define
+> SERV6_REWRITE_PORT       6666
+> tools/testing/selftests/bpf/progs/sendmsg6_prog.c:#define
+> DST_REWRITE_PORT6     6666
+> tools/testing/selftests/bpf/progs/recvmsg4_prog.c:#define SERV4_PORT
+>         4040
+> <cut>
+>=20
+> .... there is much more ...
+>=20
+>>> Getting the address of the listener (bound to
+>>> port 0) and passing it to the bpf program via global variable should =
+be super
+>>> easy now (with the skeletons and network_helpers).
+>>=20
+>> Just so that we are on the same page, could you point to which =
+network helpers are you referring to here for passing global variables?
+>=20
+> Take a look at the following existing tests:
+> * prog_tests/cgroup_skb_sk_lookup.c
+>  * run_lookup_test(&skel->bss->g_serv_port, out_sk);
+> * progs/cgroup_skb_sk_lookup_kern.c
+>  * g_serv_port
+>=20
+> Fundamentally, here is what's preferable to have:
+>=20
+> fd =3D start_server(..., port=3D0, ...);
+> listener_port =3D get_port(fd); /* new network_helpers.h helper that
+> calls getsockname */
+> obj->bss->port =3D listener_port; /* populate the port in the BPF =
+program */
+>=20
+> Does it make sense?
 
-But really, what we should do anyway is merge this during the -rc phase
-to minimise any breakage :)
+That makes sense. Good to know for future references. The client tests =
+don't have hard-coded ports anyway, only the server tests do as they are =
+using the so_resuseport option. You did mention that this was an =
+optional nit, so I'll leave the hard-coded ports for the server tests =
+for now. Hope that's reasonable.
 
--Toke
+>=20
+>>>>>=20
+>>>>> And, unrelated, maybe also fix a bunch of places where the reverse =
+christmas
+>>>>> tree doesn't look reverse anymore?
+>>>=20
+>>>> Ok. The checks should be part of tooling (e.g., checkpatch) though =
+if they are meant to be enforced consistently, no?
+>>>=20
+>>> They are networking specific, so they are not part of a checkpath =
+:-(
+>>> I won't say they are consistently enforced, but we try to keep then
+>>> whenever possible.
+>>>=20
+>>>>>=20
+>>>>>> +
+>>>>>> +int bpf_sock_destroy(struct sock_common *sk) __ksym;
+>>>>>> +
+>>>>>> +struct {
+>>>>>> + __uint(type, BPF_MAP_TYPE_ARRAY);
+>>>>>> + __uint(max_entries, 1);
+>>>>>> + __type(key, __u32);
+>>>>>> + __type(value, __u64);
+>>>>>> +} tcp_conn_sockets SEC(".maps");
+>>>>>> +
+>>>>>> +struct {
+>>>>>> + __uint(type, BPF_MAP_TYPE_ARRAY);
+>>>>>> + __uint(max_entries, 1);
+>>>>>> + __type(key, __u32);
+>>>>>> + __type(value, __u64);
+>>>>>> +} udp_conn_sockets SEC(".maps");
+>>>>>> +
+>>>>>> +SEC("cgroup/connect6")
+>>>>>> +int sock_connect(struct bpf_sock_addr *ctx)
+>>>>>> +{
+>>>>>> + int key =3D 0;
+>>>>>> + __u64 sock_cookie =3D 0;
+>>>>>> + __u32 keyc =3D 0;
+>>>>>> +
+>>>>>> + if (ctx->family !=3D AF_INET6 || ctx->user_family !=3D =
+AF_INET6)
+>>>>>> +         return 1;
+>>>>>> +
+>>>>>> + sock_cookie =3D bpf_get_socket_cookie(ctx);
+>>>>>> + if (ctx->protocol =3D=3D IPPROTO_TCP)
+>>>>>> +         bpf_map_update_elem(&tcp_conn_sockets, &key, =
+&sock_cookie, 0);
+>>>>>> + else if (ctx->protocol =3D=3D IPPROTO_UDP)
+>>>>>> +         bpf_map_update_elem(&udp_conn_sockets, &keyc, =
+&sock_cookie, 0);
+>>>>>> + else
+>>>>>> +         return 1;
+>>>>>> +
+>>>>>> + return 1;
+>>>>>> +}
+>>>>>> +
+>>>>>> +SEC("iter/tcp")
+>>>>>> +int iter_tcp6_client(struct bpf_iter__tcp *ctx)
+>>>>>> +{
+>>>>>> + struct sock_common *sk_common =3D ctx->sk_common;
+>>>>>> + struct seq_file *seq =3D ctx->meta->seq;
+>>>>>> + __u64 sock_cookie =3D 0;
+>>>>>> + __u64 *val;
+>>>>>> + int key =3D 0;
+>>>>>> +
+>>>>>> + if (!sk_common)
+>>>>>> +         return 0;
+>>>>>> +
+>>>>>> + if (sk_common->skc_family !=3D AF_INET6)
+>>>>>> +         return 0;
+>>>>>> +
+>>>>>> + sock_cookie  =3D bpf_get_socket_cookie(sk_common);
+>>>>>> + val =3D bpf_map_lookup_elem(&tcp_conn_sockets, &key);
+>>>>>> + if (!val)
+>>>>>> +         return 0;
+>>>>>> + /* Destroy connected client sockets. */
+>>>>>> + if (sock_cookie =3D=3D *val)
+>>>>>> +         bpf_sock_destroy(sk_common);
+>>>>>> +
+>>>>>> + return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +SEC("iter/tcp")
+>>>>>> +int iter_tcp6_server(struct bpf_iter__tcp *ctx)
+>>>>>> +{
+>>>>>> + struct sock_common *sk_common =3D ctx->sk_common;
+>>>>>> + struct seq_file *seq =3D ctx->meta->seq;
+>>>>>> + struct tcp6_sock *tcp_sk;
+>>>>>> + const struct inet_connection_sock *icsk;
+>>>>>> + const struct inet_sock *inet;
+>>>>>> + __u16 srcp;
+>>>>>> +
+>>>>>> + if (!sk_common)
+>>>>>> +         return 0;
+>>>>>> +
+>>>>>> + if (sk_common->skc_family !=3D AF_INET6)
+>>>>>> +         return 0;
+>>>>>> +
+>>>>>> + tcp_sk =3D bpf_skc_to_tcp6_sock(sk_common);
+>>>>>> + if (!tcp_sk)
+>>>>>> +         return 0;
+>>>>>> +
+>>>>>> + icsk =3D &tcp_sk->tcp.inet_conn;
+>>>>>> + inet =3D &icsk->icsk_inet;
+>>>>>> + srcp =3D bpf_ntohs(inet->inet_sport);
+>>>>>> +
+>>>>>> + /* Destroy server sockets. */
+>>>>>> + if (srcp =3D=3D SERVER_PORT)
+>>>>>> +         bpf_sock_destroy(sk_common);
+>>>>>> +
+>>>>>> + return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +
+>>>>>> +SEC("iter/udp")
+>>>>>> +int iter_udp6_client(struct bpf_iter__udp *ctx)
+>>>>>> +{
+>>>>>> + struct seq_file *seq =3D ctx->meta->seq;
+>>>>>> + struct udp_sock *udp_sk =3D ctx->udp_sk;
+>>>>>> + struct sock *sk =3D (struct sock *) udp_sk;
+>>>>>> + __u64 sock_cookie =3D 0, *val;
+>>>>>> + int key =3D 0;
+>>>>>> +
+>>>>>> + if (!sk)
+>>>>>> +         return 0;
+>>>>>> +
+>>>>>> + sock_cookie  =3D bpf_get_socket_cookie(sk);
+>>>>>> + val =3D bpf_map_lookup_elem(&udp_conn_sockets, &key);
+>>>>>> + if (!val)
+>>>>>> +         return 0;
+>>>>>> + /* Destroy connected client sockets. */
+>>>>>> + if (sock_cookie =3D=3D *val)
+>>>>>> +         bpf_sock_destroy((struct sock_common *)sk);
+>>>>>> +
+>>>>>> + return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +SEC("iter/udp")
+>>>>>> +int iter_udp6_server(struct bpf_iter__udp *ctx)
+>>>>>> +{
+>>>>>> + struct seq_file *seq =3D ctx->meta->seq;
+>>>>>> + struct udp_sock *udp_sk =3D ctx->udp_sk;
+>>>>>> + struct sock *sk =3D (struct sock *) udp_sk;
+>>>>>> + __u16 srcp;
+>>>>>> + struct inet_sock *inet;
+>>>>>> +
+>>>>>> + if (!sk)
+>>>>>> +         return 0;
+>>>>>> +
+>>>>>> + inet =3D &udp_sk->inet;
+>>>>>> + srcp =3D bpf_ntohs(inet->inet_sport);
+>>>>>> + if (srcp =3D=3D SERVER_PORT)
+>>>>>> +         bpf_sock_destroy((struct sock_common *)sk);
+>>>>>> +
+>>>>>> + return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +char _license[] SEC("license") =3D "GPL";
+>>>>>> --
+>>>>>> 2.34.1
 
