@@ -2,70 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A49136CF2D2
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 21:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5276CF30B
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 21:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjC2TMk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 15:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        id S230074AbjC2TVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 15:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbjC2TMi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 15:12:38 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C95A1FCA
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 12:12:37 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-17aa62d0a4aso17311955fac.4
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 12:12:37 -0700 (PDT)
+        with ESMTP id S229951AbjC2TVI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 15:21:08 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB9B1FC8
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 12:21:01 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id e5-20020a17090301c500b001a1aa687e4bso9928722plh.17
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 12:21:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680117156; x=1682709156;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KK3Hbe6ZOWNwRuLRvmcB9jLheqbEaFgANrmxSq5mlDo=;
-        b=cO0Ufh5sYVYzZ/xBvrm4GT+6o8yZCCesi+70ZMBj/C162M/iXmts14QYBYbKvKuYpO
-         j7Xrg0WSU54gMM27wNHrCpRaUvmXchikXz+63GtjRqnM/4wu7UY3RziFXQFltNAhLEd0
-         HhbfP5Uc3Rv4O5msNdEZfkl9EgF2odI3dtWGf8k7BOV5uFNeFIyXNB03MrxZ9BKhHL3B
-         NYrevjpwMQW2VTR5VnctGuSuE4FLtb+8SbSrgDMSBLpgLrlhEk9X6YFwNMM8g9EuDqbb
-         1VxAI6G6pqwrb3dgR2Xfu8ZMYlTGojMf/1tgTIErva6b616zosuR1BaSvvlJKXg7OBuR
-         Za2g==
+        d=google.com; s=20210112; t=1680117661;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rfZvqShst60fq0wp5Hd6CWbOA4VhTmutSDYPExlyEXg=;
+        b=H0HTcxi+11KbmtI0NnZKken4gqGU30NVBIOXe5Ym+r94WHMk+Wdg4ZxVSslfqZDErA
+         p1CffdA6GETpLvX14PamFdnEKbV9xc3/VVsGzXgOubwToOv1z9fKxdR258oxXyb1Hn+S
+         PW255z7NeXKDaFqo1ZagUjan2SrzuPb1Hr4g+mCEJtrRouWKHIYvoBp7Q8iAwOZtRKxL
+         WFy2wa6Ok5Amur24xaFxfEG41hDISgvMkbUR4OCW+qFTXIlmEqGHLlju9y5VD9RmOA7R
+         2HrEviyteTp8gt3HE9qsKY0Fnvecb9R5YTTkbYtJvpDt4JanY8H9F9bnOgWPzZMZLKdf
+         Gb/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680117156; x=1682709156;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KK3Hbe6ZOWNwRuLRvmcB9jLheqbEaFgANrmxSq5mlDo=;
-        b=F8EWhEwved9LNyVj1+CV6gdlbHDHPUVy+I9Y1XYiuLlpoO6zVr+BB5/hhDLh6R05qU
-         d5R1AYKgrh0Hhpjj+acPuK+cMm4h38TePX5te6aqX8IDHWYX1qdCK2nfh01ZhVm1rNCw
-         rOyltiEV++rYOLYZq1ZOaLDB8QxoTnXHwFAqlw21cklLE1Z+gY7Q18hi+B/fSl8i0OIZ
-         1533s4aU5iSb1bkW2fK50lNT+e2DrvPDubklJaNlmDQLSr0/LNirHHbLNZkCPGj0j2/y
-         F4Q5xTVf9U+0+NY0iQeBGJL3yrHYJ3U9QWzk7AwsjVFgD/F6Cb0BGME5cpmcZlXSq8S6
-         gKQg==
-X-Gm-Message-State: AAQBX9dKYwbEp35JD0tD+VFQJeCbsSY8uTulH0zdSRnpFa4OPWGuMVgl
-        FP/PI+o1KAPeBMf/aUlyLZsKjQs03o2oBxcHEnk=
-X-Google-Smtp-Source: AKy350Z7l8VFXNllT0zrTEOfrokyOgVFpNOtl8dzdhDVFLDUniLGxnzIuw4X7uWX8DTuany2PLmf/78BZlSNm9gdu48=
-X-Received: by 2002:a05:6870:1258:b0:17e:a9eb:196b with SMTP id
- 24-20020a056870125800b0017ea9eb196bmr5209842oao.4.1680117156404; Wed, 29 Mar
- 2023 12:12:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230322215246.1675516-1-martin.lau@linux.dev>
- <20230322215246.1675516-6-martin.lau@linux.dev> <CADvTj4rP3kPODxARVTEs2HsNFOof-BZtr8OsEKdjgcGVOTqKaA@mail.gmail.com>
- <456bcd47-efa2-7e3d-78c0-5f41ecba477c@linux.dev>
-In-Reply-To: <456bcd47-efa2-7e3d-78c0-5f41ecba477c@linux.dev>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Wed, 29 Mar 2023 13:12:24 -0600
-Message-ID: <CADvTj4ouGHvPHEgZobUewY2ZjHZhTzJ96oCBAV8VO2xT2bPC0Q@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 5/5] selftests/bpf: Add bench for task storage creation
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        David Faust <david.faust@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20210112; t=1680117661;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rfZvqShst60fq0wp5Hd6CWbOA4VhTmutSDYPExlyEXg=;
+        b=W0QKwIfAnmcX/8dKigznVR1xJE/BhgiEBhDc8sVFK0aTCL6W18uXGNcSQzURKXmPed
+         b9/nVuabHGgN8/ahnrVMq3sRoICn5RJho7kvz2/lxzrinb3teRASVHF59BwACBeKYVrX
+         Za+woznYzH9DF49r/Dsc7hzJdB5vJ47ItD3zUpRyyz5t0qkDdmP6VIZi5ux+agdR609x
+         BWefJlFIlmhuV4TIQeWxSRE2wSovv5DU49AVIxAzB+R8XWKc50R7+VA+pn/ddD5iSoc7
+         ylHr/IDe4xHxvcqvMi1LfUIPUo1STx8PZ2LY9xdwCe6sbqJWS87NsZlKjOp/xwveMJe9
+         4sFQ==
+X-Gm-Message-State: AAQBX9f+RdUePwfMFUIEMmlZNQphnbbfghpiJhaJR0d60r7aub8TXaW4
+        LEI8+ZCuqjTJpw5Z8ni9HPJhjfGxuX0LLw==
+X-Google-Smtp-Source: AKy350aWkfrvyoLQhQjt4Tg+Y9288yGqHXK9dFGy7vkq1HDy0mf04gx38HhyneMLDblIphokIDYOq6dlg8qWIQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a65:5c47:0:b0:513:3def:2c6d with SMTP id
+ v7-20020a655c47000000b005133def2c6dmr4478026pgr.4.1680117661176; Wed, 29 Mar
+ 2023 12:21:01 -0700 (PDT)
+Date:   Wed, 29 Mar 2023 19:20:59 +0000
+In-Reply-To: <CAJD7tkb-UpKm2QbjYzB=B=oGk6Hyj9cbUviZUPC+7VsvBecH7g@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230328221644.803272-1-yosryahmed@google.com>
+ <20230328221644.803272-5-yosryahmed@google.com> <ZCQfZJFufkJ10o01@dhcp22.suse.cz>
+ <CAJD7tkb-UpKm2QbjYzB=B=oGk6Hyj9cbUviZUPC+7VsvBecH7g@mail.gmail.com>
+Message-ID: <20230329192059.2nlme5ubshzdbpg6@google.com>
+Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,100 +83,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 29, 2023 at 11:03=E2=80=AFAM Martin KaFai Lau <martin.lau@linux=
-.dev> wrote:
->
-> On 3/27/23 8:51 PM, James Hilliard wrote:
-> >> diff --git a/tools/testing/selftests/bpf/progs/bench_local_storage_cre=
-ate.c b/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
-> >> index 2814bab54d28..7c851c9d5e47 100644
-> >> --- a/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
-> >> +++ b/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
-> >> @@ -22,6 +22,13 @@ struct {
-> >>          __type(value, struct storage);
-> >>   } sk_storage_map SEC(".maps");
-> >>
-> >> +struct {
-> >> +       __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-> >> +       __uint(map_flags, BPF_F_NO_PREALLOC);
-> >> +       __type(key, int);
-> >> +       __type(value, struct storage);
-> >> +} task_storage_map SEC(".maps");
-> >> +
-> >>   SEC("raw_tp/kmalloc")
-> >>   int BPF_PROG(kmalloc, unsigned long call_site, const void *ptr,
-> >>               size_t bytes_req, size_t bytes_alloc, gfp_t gfp_flags,
-> >> @@ -32,6 +39,24 @@ int BPF_PROG(kmalloc, unsigned long call_site, cons=
-t void *ptr,
-> >>          return 0;
-> >>   }
-> >>
-> >> +SEC("tp_btf/sched_process_fork")
-> >> +int BPF_PROG(fork, struct task_struct *parent, struct task_struct *ch=
-ild)
+On Wed, Mar 29, 2023 at 11:41:39AM -0700, Yosry Ahmed wrote:
+> On Wed, Mar 29, 2023 at 4:22=E2=80=AFAM Michal Hocko <mhocko@suse.com> wr=
+ote:
 > >
-> > Apparently fork is a built-in function in bpf-gcc:
->
-> It is also failing in a plain C program
->
-> #>  gcc -Werror=3Dbuiltin-declaration-mismatch -o test test.c
-> test.c:14:35: error: conflicting types for built-in function =E2=80=98for=
-k=E2=80=99; expected
-> =E2=80=98int(void)=E2=80=99 [-Werror=3Dbuiltin-declaration-mismatch]
->     14 | int __attribute__((__noinline__)) fork(long x, long y)
->        |                                   ^~~~
-> cc1: some warnings being treated as errors
->
-> #> clang -o test test.c
-> succeed
->
-> I am not too attached to the name but it seems something should be addres=
-sed in
-> the gcc instead.
-
-Hmm, so it looks like it's marked as a builtin here:
-https://github.com/gcc-mirror/gcc/blob/releases/gcc-12.1.0/gcc/builtins.def=
-#L875
-
-The macro for that is here:
-https://github.com/gcc-mirror/gcc/blob/releases/gcc-12.1.0/gcc/builtins.def=
-#L104-L111
-
-Which has this comment:
-/* Like DEF_LIB_BUILTIN, except that the function is not one that is
-specified by ANSI/ISO C. So, when we're being fully conformant we
-ignore the version of these builtins that does not begin with
-__builtin. */
-
-Looks like this builtin was originally added here:
-https://github.com/gcc-mirror/gcc/commit/d1c38823924506d389ca58d02926ace21b=
-df82fa
-
-Based on this issue it looks like fork is treated as a builtin for
-libgcov support:
-https://gcc.gnu.org/bugzilla//show_bug.cgi?id=3D82457
-
-So from my understanding fork is a gcc builtin when building with -std=3Dgn=
-u11
-but is not a builtin when building with -std=3Dc11.
-
-So it looks like fork is translated to __gcov_fork when -std=3Dgnu* is set =
-which
-is why we get this error.
-
-As this appears to be intended behavior for gcc I think the best option is
-to just rename the function so that we don't run into issues when building
-with gnu extensions like -std=3Dgnu11.
-
->
+> > On Tue 28-03-23 22:16:39, Yosry Ahmed wrote:
+> > > rstat flushing is too expensive to perform in irq context.
+> > > The previous patch removed the only context that may invoke an rstat
+> > > flush from irq context, add a WARN_ON_ONCE() to detect future
+> > > violations, or those that we are not aware of.
+> > >
+> > > Ideally, we wouldn't flush with irqs disabled either, but we have one
+> > > context today that does so in mem_cgroup_usage(). Forbid callers from
+> > > irq context for now, and hopefully we can also forbid callers with ir=
+qs
+> > > disabled in the future when we can get rid of this callsite.
 > >
-> > In file included from progs/bench_local_storage_create.c:6:
-> > progs/bench_local_storage_create.c:43:14: error: conflicting types for
-> > built-in function 'fork'; expected 'int(void)'
-> > [-Werror=3Dbuiltin-declaration-mismatch]
-> >     43 | int BPF_PROG(fork, struct task_struct *parent, struct
-> > task_struct *child)
-> >        |              ^~~~
+> > I am sorry to be late to the discussion. I wanted to follow up on
+> > Johannes reply in the previous version but you are too fast ;)
 > >
-> > I haven't been able to find this documented anywhere however.
->
+> > I do agree that this looks rather arbitrary. You do not explain how the
+> > warning actually helps. Is the intention to be really verbose to the
+> > kernel log when somebody uses this interface from the IRQ context and
+> > get bug reports? What about configurations with panic on warn? Do we
+> > really want to crash their systems for something like that?
+>=20
+> Thanks for taking a look, Michal!
+>=20
+> The ultimate goal is not to flush in irq context or with irqs
+> disabled, as in some cases it causes irqs to be disabled for a long
+> time, as flushing is an expensive operation. The previous patch in the
+> series should have removed the only context that flushes in irq
+> context, and the purpose of the WARN_ON_ONCE() is to catch future uses
+> or uses that we might have missed.
+>=20
+> There is still one code path that flushes with irqs disabled (also
+> mem_cgroup_usage()), and we cannot remove this just yet; we need to
+> deprecate usage threshold events for root to do that. So we cannot
+> enforce not flushing with irqs disabled yet.
+>=20
+> So basically the patch is trying to enforce what we have now, not
+> flushing in irq context, and hopefully at some point we will also be
+> able to enforce not flushing with irqs disabled.
+>=20
+> If WARN_ON_ONCE() is the wrong tool for this, please let me know.
+>=20
+
+If I understand Michal's concern, the question is should be start with
+pr_warn_once() instead of WARN_ON_ONCE() and I think yes we should start
+with pr_warn_once().
+
