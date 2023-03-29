@@ -2,168 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A33306CF3F5
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 22:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EE96CF3FF
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 22:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjC2UBB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 16:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
+        id S229950AbjC2UDV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 16:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjC2UAz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 16:00:55 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209D42697;
-        Wed, 29 Mar 2023 13:00:53 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id l7so15138324pjg.5;
-        Wed, 29 Mar 2023 13:00:53 -0700 (PDT)
+        with ESMTP id S230201AbjC2UDS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 16:03:18 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20674EE3
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 13:03:16 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id q27so11797005oiw.0
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 13:03:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680120052;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lwysfnQkAd80wlNyJ6XzThTPiLtn2B/tyA3fjQAFkXU=;
-        b=VhGF9AnSesD95PbIw4HKQtmtguZMl7HEDnjXJr5VTDVRIevs+1HBUeQ5jfnJOor6Uk
-         VGnu7EvlPqhvNxv8RZkHktwn+oBeH+Pnnf1g3tb+S0UFbD5H/EVLQ7WSVvtpCJlJD4qF
-         7WQdVImaam9FqrqmDuRw2Sq3cKQbxxS8w6lkd/SzoMxPwFfREAwPn8bPp7a3XoFqAWFt
-         Hd9WBZMtBQzMHWAZlCrnKrd5hwd48+xbCLXjnP7LePyuuo/yjboiAxWuCKIOggXKhNC+
-         AAs/7O15Dtlcb5z865sBl3TbnMRLyLavIcjyeMqUHVcD8RPDq2PxXPvBzBprp/8JgpoG
-         Fulw==
+        d=gmail.com; s=20210112; t=1680120196; x=1682712196;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4zUxVz1Quf/wwaC4Az7rB3yNXnpX0SUpoRreER7n7PU=;
+        b=qdO3PmDavk21uIgP8fNjUYHtz+Eow3WW+F4NIbC8qJD+VagxAIQjWN9IvkS5d5wnSA
+         zgC6u4IZYuY3WkbLUdEV5eDwcjtni8qdIPaaJpLfw/bJlZUMurQAfNRmnAl9lWHJE2Su
+         IkJ/9U2s9jqymrRBCOTZpSOcKVSi26Jq2J8f8pVyw/6D9jnbNJoqPpMblZjlHcmKMXJX
+         +0UDMoeG2YopFnGd4r6fxpc00P7fUj2GJmjhxS021YPG6VPUrVHj+z/vjitmaz+yy1pO
+         gki1a115udjxVXnJRxg0BgrL2JifF2O/P14XlTCUppdwl/wPTJxmfJrVumFkcX0YKymg
+         VknQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680120052;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1680120196; x=1682712196;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lwysfnQkAd80wlNyJ6XzThTPiLtn2B/tyA3fjQAFkXU=;
-        b=u8hBHtpYjVs47hCk+1LVfuJnuKsWOLcTNPUrAbIopRGXluDWKZKbGYuRQ0NyXPRTKG
-         He21GhvuYcS5Dsjct0mKw0nlUGv59/eJ4E+yVwjwav0VR8zI8wZeIu6TKxqm0tPx3Ds3
-         SpZcYCqjCDPCvrP0DIMdISdvQU3LjqHWWke+zQtU/vAMjhN3VU+2E6wo1cWoxNsRBd1K
-         VbXlIuOTvUFkjKWLluX5WO+QGtShOfz2jOJtBk//7FYkkskoJxB+csbvQoM2VAd5M/uI
-         owIoNkqhCXPeq0AwXXUjMzWe10Ku+nqR6e/Q0YmONJhwP3mjzfSZkLZfztGIOEwHEUgg
-         N5ng==
-X-Gm-Message-State: AO0yUKWjOOKMQoo0555W3wulzD9HEDKZRQeEXmJHh53Tc1xSzPYMIr8o
-        JnFop5H8ZoP5AXP8QaoYs7Y=
-X-Google-Smtp-Source: AK7set/hUGyEZjDACyGqVfdIw/bpUvUdmMhhbxm3aUkYiMQ4iG1YGdBAY5KP8EqrQQnHaA6jV87MwA==
-X-Received: by 2002:a05:6a20:1321:b0:d4:fd7e:c8b0 with SMTP id g33-20020a056a20132100b000d4fd7ec8b0mr16282702pzh.7.1680120052315;
-        Wed, 29 Mar 2023 13:00:52 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id 23-20020aa79117000000b005a8173829d5sm21406589pfh.66.2023.03.29.13.00.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 13:00:51 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 29 Mar 2023 10:00:50 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-Message-ID: <ZCSY8l/jVwszF6iA@slm.duckdns.org>
-References: <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
- <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
- <ZB5UalkjGngcBDEJ@slm.duckdns.org>
- <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com>
- <CALvZod6rF0D21hcV7xnqD+oRkn=x5NLi5GOkPpyaPa859uDH+Q@mail.gmail.com>
- <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com>
- <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com>
- <CAJD7tkZrp=4zWvjE9_010TAG1T_crCbf9P64UzJABspgcrGPKg@mail.gmail.com>
- <ZCSJDpPPOVvBYfOy@slm.duckdns.org>
- <f9b6410-ee17-635f-a35d-559fa0191dc3@google.com>
+        bh=4zUxVz1Quf/wwaC4Az7rB3yNXnpX0SUpoRreER7n7PU=;
+        b=Qf2hmUQYHM536GlT5RWLb9aW/AM1O913HfN2K84huKb7lJyikgR/F7RSnyRc5bW22X
+         p0g+pjp4+Hj/1OroJdM01B5WAxRD7WqAxcIFbHAtnbVd15U1rntIfx2SXoYPYBP+ss1B
+         kyNLJpd68RzN+QyNP0Fs5HIeOHm4/aXToOb2qTJPD0FHn7SicNFLmN5MMLhC4v0lZzwp
+         QvANfdAcDw14AMLsj/05M2fwdqIXUtpYbBzdn0UOJTxB0UYH/Prg9kfHmp/tRgz3EQ5u
+         PzmplKZIGIrdeFOkh4CLsRI1U4H9fIviPfrqWKHA9B1/US9rommHppMzD4oo/M26Ojgn
+         eCiQ==
+X-Gm-Message-State: AO0yUKWxdcz/+C4/TraB+idxDQhKEW9caHNado/5HT2uta5MzaCuwfRm
+        kUyUD4DYad7JNyUFIPK0dYfo1eRx5bR1ppunhIKR48bddF0QEg==
+X-Google-Smtp-Source: AK7set8U/xwUbdwdJXYMOivAJjqhPCVW0x7998wg8rfZtoyoAXq2NusBl4WNX0PLs07/ND7U9y0pLvFw3K0fYXuTdB0=
+X-Received: by 2002:aca:916:0:b0:386:d8a5:d80b with SMTP id
+ 22-20020aca0916000000b00386d8a5d80bmr5351340oij.4.1680120196076; Wed, 29 Mar
+ 2023 13:03:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9b6410-ee17-635f-a35d-559fa0191dc3@google.com>
-X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230322215246.1675516-1-martin.lau@linux.dev>
+ <20230322215246.1675516-6-martin.lau@linux.dev> <CADvTj4rP3kPODxARVTEs2HsNFOof-BZtr8OsEKdjgcGVOTqKaA@mail.gmail.com>
+ <456bcd47-efa2-7e3d-78c0-5f41ecba477c@linux.dev> <CADvTj4ouGHvPHEgZobUewY2ZjHZhTzJ96oCBAV8VO2xT2bPC0Q@mail.gmail.com>
+ <2b5b56bb-7160-41ac-1fb8-4dbc6ad67d9f@linux.dev>
+In-Reply-To: <2b5b56bb-7160-41ac-1fb8-4dbc6ad67d9f@linux.dev>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Wed, 29 Mar 2023 14:03:04 -0600
+Message-ID: <CADvTj4pctyvU+9wQ3T+jq49NAxMV89eOFfj3bp3_GfFuJ99opA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 5/5] selftests/bpf: Add bench for task storage creation
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com,
+        "Jose E. Marchesi" <jemarch@gnu.org>,
+        David Faust <david.faust@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, Hugh. How have you been?
+On Wed, Mar 29, 2023 at 1:59=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 3/29/23 12:12 PM, James Hilliard wrote:
+> > On Wed, Mar 29, 2023 at 11:03=E2=80=AFAM Martin KaFai Lau <martin.lau@l=
+inux.dev> wrote:
+> >>
+> >> On 3/27/23 8:51 PM, James Hilliard wrote:
+> >>>> diff --git a/tools/testing/selftests/bpf/progs/bench_local_storage_c=
+reate.c b/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
+> >>>> index 2814bab54d28..7c851c9d5e47 100644
+> >>>> --- a/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
+> >>>> +++ b/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
+> >>>> @@ -22,6 +22,13 @@ struct {
+> >>>>           __type(value, struct storage);
+> >>>>    } sk_storage_map SEC(".maps");
+> >>>>
+> >>>> +struct {
+> >>>> +       __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+> >>>> +       __uint(map_flags, BPF_F_NO_PREALLOC);
+> >>>> +       __type(key, int);
+> >>>> +       __type(value, struct storage);
+> >>>> +} task_storage_map SEC(".maps");
+> >>>> +
+> >>>>    SEC("raw_tp/kmalloc")
+> >>>>    int BPF_PROG(kmalloc, unsigned long call_site, const void *ptr,
+> >>>>                size_t bytes_req, size_t bytes_alloc, gfp_t gfp_flags=
+,
+> >>>> @@ -32,6 +39,24 @@ int BPF_PROG(kmalloc, unsigned long call_site, co=
+nst void *ptr,
+> >>>>           return 0;
+> >>>>    }
+> >>>>
+> >>>> +SEC("tp_btf/sched_process_fork")
+> >>>> +int BPF_PROG(fork, struct task_struct *parent, struct task_struct *=
+child)
+> >>>
+> >>> Apparently fork is a built-in function in bpf-gcc:
+> >>
+> >> It is also failing in a plain C program
+> >>
+> >> #>  gcc -Werror=3Dbuiltin-declaration-mismatch -o test test.c
+> >> test.c:14:35: error: conflicting types for built-in function =E2=80=98=
+fork=E2=80=99; expected
+> >> =E2=80=98int(void)=E2=80=99 [-Werror=3Dbuiltin-declaration-mismatch]
+> >>      14 | int __attribute__((__noinline__)) fork(long x, long y)
+> >>         |                                   ^~~~
+> >> cc1: some warnings being treated as errors
+> >>
+> >> #> clang -o test test.c
+> >> succeed
+> >>
+> >> I am not too attached to the name but it seems something should be add=
+ressed in
+> >> the gcc instead.
+> >
+> > Hmm, so it looks like it's marked as a builtin here:
+> > https://github.com/gcc-mirror/gcc/blob/releases/gcc-12.1.0/gcc/builtins=
+.def#L875
+> >
+> > The macro for that is here:
+> > https://github.com/gcc-mirror/gcc/blob/releases/gcc-12.1.0/gcc/builtins=
+.def#L104-L111
+> >
+> > Which has this comment:
+> > /* Like DEF_LIB_BUILTIN, except that the function is not one that is
+> > specified by ANSI/ISO C. So, when we're being fully conformant we
+> > ignore the version of these builtins that does not begin with
+> > __builtin. */
+> >
+> > Looks like this builtin was originally added here:
+> > https://github.com/gcc-mirror/gcc/commit/d1c38823924506d389ca58d02926ac=
+e21bdf82fa
+> >
+> > Based on this issue it looks like fork is treated as a builtin for
+> > libgcov support:
+> > https://gcc.gnu.org/bugzilla//show_bug.cgi?id=3D82457
+> >
+> > So from my understanding fork is a gcc builtin when building with -std=
+=3Dgnu11
+> > but is not a builtin when building with -std=3Dc11.
+>
+> That sounds like there is a knob to turn this behavior on and off. Do the=
+ same
+> for the bpf target?
 
-On Wed, Mar 29, 2023 at 12:22:24PM -0700, Hugh Dickins wrote:
-> Hi Tejun,
-> Butting in here, I'm fascinated.  This is certainly not my area, I know
-> nothing about rstat, but this is the first time I ever heard someone
-> arguing for more disabling of interrupts rather than less.
-> 
-> An interrupt coming in while holding a contended resource can certainly
-> add to latencies, that I accept of course.  But until now, I thought it
-> was agreed best practice to disable irqs only regretfully, when strictly
-> necessary.
-> 
-> If that has changed, I for one want to know about it.  How should we
-> now judge which spinlocks should disable interrupts and which should not?
-> Page table locks are currently my main interest - should those be changed?
+I don't think we want to have to do that.
 
-For rstat, it's a simple case because the global lock here wraps around
-per-cpu locks which have to be irq-safe, so the only difference we get
-between making the global irq-unsafe and keeping it so but releasing
-inbetween is:
+>
+> >
+> > So it looks like fork is translated to __gcov_fork when -std=3Dgnu* is =
+set which
+> > is why we get this error.
+> >
+> > As this appears to be intended behavior for gcc I think the best option=
+ is
+> > to just rename the function so that we don't run into issues when build=
+ing
+> > with gnu extensions like -std=3Dgnu11.
+>
+> Is it sure 'fork' is the only culprit? If not, it is better to address it
+> properly because this unnecessary name change is annoying when switching =
+bpf
+> prog from clang to gcc. Like changing the name in this .c here has to mak=
+e
+> another change to the .c in the prog_tests/ directory.
 
- Global lock held: G
- IRQ disabled: I
- Percpu lock held: P
- 
-1. IRQ unsafe
+We've fixed a similar issue in the past by renaming to avoid a
+conflict with the builtin:
+https://github.com/torvalds/linux/commit/ab0350c743d5c93fd88742f02b3dff1216=
+8ab435
 
- GGGGGGGGGGGGGGG~~GGGGG
- IIII IIII IIII ~~ IIII
- PPPP PPPP PPPP ~~ PPPP
-
-2. IRQ safe released inbetween cpus
-
- GGGG GGGG GGGG ~~ GGGG
- IIII IIII IIII ~~ IIII
- PPPP PPPP PPPP ~~ PPPP
-
-#2 seems like the obvious thing to do here given how the lock is used and
-each P section may take a bit of time.
-
-So, in the rstat case, the choice is, at least to me, obvious, but even for
-more generic cases where the bulk of actual work isn't done w/ irq disabled,
-I don't think the picture is as simple as "use the least protected variant
-possible" anymore because the underlying hardware changed.
-
-For an SMP kernel running on an UP system, "the least protected variant" is
-the obvious choice to make because you don't lose anything by holding a
-spinlock longer than necessary. However, as you increase the number of CPUs,
-there rises a tradeoff between local irq servicing latency and global lock
-contention.
-
-Imagine a, say, 128 cpu system with a few cores servicing relatively high
-frequency interrupts. Let's say there's a mildly hot lock. Usually, it shows
-up in the system profile but only just. Let's say something happens and the
-irq rate on those cores went up for some reason to the point where it
-becomes a rather common occurrence when the lock is held on one of those
-cpus, irqs are likely to intervene lengthening how long the lock is held,
-sometimes, signficantly. Now because the lock is on average held for much
-longer, it become a lot hotter as more CPUs would stall on it and depending
-on luck or lack thereof these stalls can span many CPUs on the system for
-quite a while. This is actually something we saw in production.
-
-So, in general, there's a trade off between local irq service latency and
-inducing global lock contention when using unprotected locks. With more and
-more CPUs, the balance keeps shifting. The balance still very much depends
-on the specifics of a given lock but yeah I think it's something we need to
-be a lot more careful about now.
-
-Thanks.
-
--- 
-tejun
+>
+> >
+> >>
+> >>>
+> >>> In file included from progs/bench_local_storage_create.c:6:
+> >>> progs/bench_local_storage_create.c:43:14: error: conflicting types fo=
+r
+> >>> built-in function 'fork'; expected 'int(void)'
+> >>> [-Werror=3Dbuiltin-declaration-mismatch]
+> >>>      43 | int BPF_PROG(fork, struct task_struct *parent, struct
+> >>> task_struct *child)
+> >>>         |              ^~~~
+> >>>
+> >>> I haven't been able to find this documented anywhere however.
+> >>
+>
