@@ -2,118 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A779C6CEF72
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 18:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7B86CF00B
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 19:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjC2Qaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 12:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57838 "EHLO
+        id S229563AbjC2RAZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 13:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjC2QaU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 12:30:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F0385B8F
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 09:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680107368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R04Vq+TEHO0b9S0yy8Ip00yZxPQlDgdJbbW0Gf6DdUk=;
-        b=YyvZcTzRizcMH3cwfMxCh+itp9uHZlmXMXnMzheyAXi20ARWfzbZmxmABOSXmQQQpIJnom
-        kSfyCxAWO018DESSfzv9lDRFpjxYpmN5gfjRuMWpnZNCgOUPAMZyG4Bb67oVSHmhRcgsVe
-        X51xxvGuy7ulFeek0QpPiIQR4sLvP40=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-12-58AnzNzGPmqO-eeEuGEBpA-1; Wed, 29 Mar 2023 12:29:25 -0400
-X-MC-Unique: 58AnzNzGPmqO-eeEuGEBpA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S230501AbjC2RAW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 13:00:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182DC59EA
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 10:00:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9D546885622;
-        Wed, 29 Mar 2023 16:29:24 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.45.242.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 60F541121330;
-        Wed, 29 Mar 2023 16:29:24 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 8349430736C72;
-        Wed, 29 Mar 2023 18:29:23 +0200 (CEST)
-Subject: [PATCH bpf RFC-V2 5/5] mlx4: bpf_xdp_metadata_rx_hash return xdp rss
- hash type
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
-        davem@davemloft.net
-Date:   Wed, 29 Mar 2023 18:29:23 +0200
-Message-ID: <168010736349.3039990.15736472596192726923.stgit@firesoul>
-In-Reply-To: <168010726310.3039990.2753040700813178259.stgit@firesoul>
-References: <168010726310.3039990.2753040700813178259.stgit@firesoul>
-User-Agent: StGit/1.4
-MIME-Version: 1.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A580061DD0
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 17:00:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 06E3BC433EF;
+        Wed, 29 Mar 2023 17:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680109219;
+        bh=6DsPdjzgW7SFZeyKQdoAv2oPO8Fa0Y5hIW/Ct0l8DLs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=kVV1VX2+QViYKLlM5ekWR5H2Q7/pBVmqFSMNXELPWEeCFNWb6EVE/Ht0suk21Uh2S
+         Z2frczW9YCfxG2pvAySvnMi4PPHW0RQWjN3gpV9ZRJObnhzYUQ3gawYcTp8n2uqXXe
+         OvJu4UJvDphRFAcMUEX9RZ7ZkuCWdpxuqlObFnGSUE6atw4QUfEcREK3oJwjsoPf1S
+         SHguhLz+sWaRW63551sGa9QoAtM+WqHnzRgcve/j6yKrPtB+Hm/HYPdKz5ZdfFdnMn
+         NJwExaxi5b5vlcdXqna/JAFIqaHZ7pKnux9onP9KbZYykpzN5VsdQotCqF09I9BfD3
+         lJOdxDdtHGbrw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D6BA9E4F0DB;
+        Wed, 29 Mar 2023 17:00:18 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] tools: bpftool: json: fix backslash escape typo in jsonw_puts
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168010921886.11984.9423876652769169602.git-patchwork-notify@kernel.org>
+Date:   Wed, 29 Mar 2023 17:00:18 +0000
+References: <20230329073002.2026563-1-chantr4@gmail.com>
+In-Reply-To: <20230329073002.2026563-1-chantr4@gmail.com>
+To:     Manu Bretelle <chantr4@gmail.com>
+Cc:     quentin@isovalent.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Update API for bpf_xdp_metadata_rx_hash() by returning xdp rss hash type
-via matching indiviual Completion Queue Entry (CQE) status bits.
+Hello:
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- drivers/net/ethernet/mellanox/mlx4/en_rx.c |   20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-index 4b5e459b6d49..f3b7351daa05 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-@@ -684,12 +684,28 @@ int mlx4_en_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
- int mlx4_en_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
- {
- 	struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
-+	struct mlx4_cqe *cqe = _ctx->cqe;
-+	enum xdp_rss_hash_type xht = 0;
-+	__be16 status;
- 
- 	if (unlikely(!(_ctx->dev->features & NETIF_F_RXHASH)))
- 		return -ENODATA;
- 
--	*hash = be32_to_cpu(_ctx->cqe->immed_rss_invalid);
--	return 0;
-+	status = cqe->status;
-+	if (status & cpu_to_be16(MLX4_CQE_STATUS_TCP))
-+		xht = XDP_RSS_L4_TCP;
-+	if (status & cpu_to_be16(MLX4_CQE_STATUS_UDP))
-+		xht = XDP_RSS_L4_UDP;
-+	if (status & cpu_to_be16(MLX4_CQE_STATUS_IPV4|MLX4_CQE_STATUS_IPV4F))
-+		xht |= XDP_RSS_L3_IPV4;
-+	if (status & cpu_to_be16(MLX4_CQE_STATUS_IPV6)) {
-+		xht |= XDP_RSS_L3_IPV6;
-+		if (cqe->ipv6_ext_mask)
-+			xht |= XDP_RSS_BIT_EX;
-+	}
-+
-+	*hash = be32_to_cpu(cqe->immed_rss_invalid);
-+	return xht;
- }
- 
- int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int budget)
+On Wed, 29 Mar 2023 00:30:02 -0700 you wrote:
+> This is essentially a backport of iproute2's
+> commit ed54f76484b5 ("json: fix backslash escape typo in jsonw_puts")
+> 
+> Also added the stdio.h include in json_writer.h to be able to compile
+> and run the json_writer test as used below).
+> 
+> Before this fix:
+> 
+> [...]
+
+Here is the summary with links:
+  - tools: bpftool: json: fix backslash escape typo in jsonw_puts
+    https://git.kernel.org/bpf/bpf-next/c/d8d8b008629f
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
