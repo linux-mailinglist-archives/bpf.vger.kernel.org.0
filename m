@@ -2,68 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D8E6CEE54
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 18:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611A26CEE58
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 18:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjC2QAI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 12:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        id S229906AbjC2QAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 12:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbjC2P7b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 11:59:31 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D066585;
-        Wed, 29 Mar 2023 08:58:58 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2CBDA219FB;
-        Wed, 29 Mar 2023 15:58:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1680105537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=laCTMVv10tir+5LCK7bZIg6RxS0xYCgupvb50S/b4XY=;
-        b=Vl2TDvex2fX+V/qOfl0Xk9vDM3ikifOzUk6sEr0WIzpohvYYkvFLW+6qBu+RlI035Az2QO
-        Bg4vs8RqNGMdJ7g7ivHKAcgIhtsY1zKezQDQyUbKkOeL8fq/lKChGvk9VCPFR40TGr8YMU
-        k0NaJphuGjbyfnmWQTPsdyb4/FmBbbU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 00BBA138FF;
-        Wed, 29 Mar 2023 15:58:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id qZMgAEFgJGQEaAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 29 Mar 2023 15:58:56 +0000
-Date:   Wed, 29 Mar 2023 17:58:56 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 5/9] memcg: replace stats_flush_lock with an atomic
-Message-ID: <ZCRgQHtDuWN6xp7z@dhcp22.suse.cz>
-References: <20230328221644.803272-1-yosryahmed@google.com>
- <20230328221644.803272-6-yosryahmed@google.com>
+        with ESMTP id S231293AbjC2P7i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 11:59:38 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B532D61A1
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 08:59:02 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id er13so24304990edb.9
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 08:59:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dectris.com; s=google; t=1680105541;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9rVM+TyMjTEamPO1YLxI72VkrMEpvNCPXT/D1jIETM=;
+        b=XElgWmxaLhWe5F03cqiSoKI5bsUuTFyQ+Omq+unoOkkS+T83i7Pjlb4L8E3+ae9LnX
+         FmEl9W3QfJ+4JLTMi2uGEKY4oZYK3OWdsd4EzdiU9RAOcJgrr4KVwihtVUD1H95qPzjz
+         BQl6Y6HRA0H+bj9LIN7FpbHJPOb6pZ9HmVQ2g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680105541;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O9rVM+TyMjTEamPO1YLxI72VkrMEpvNCPXT/D1jIETM=;
+        b=PxnQlJovN5JrQpSNSWk5q28BFFf5iFgnd25cawsvpVfAc9U01cpoHPAh2MRHFIPk66
+         ABgwajYbNCqPar2dNk0D+sjDGDPx8zmVAWgkri94wSeRBOZMBi/244TZkT6iKsfVZCLb
+         /HiUPvHdhJUwrQyR4gkGzyREaropgGGmoLgCrfMo/VkWnBj+3jlzj4I0U87Mr4c1WoOm
+         dW6CxjX/1TyOE5vMJhIdvCBnHKdMGUv1BAOIJS5nqrDdoRhfQEWkuwbBiQh/p1za6d6O
+         KDuGtS8ArSWs9/f2IotgJlt1CLRk3MRyzAP7rPJ4OSs+AmbaYTSFbZwJ6RiOXaKLMhRM
+         c35Q==
+X-Gm-Message-State: AAQBX9ft2pAucQ+m7hiwvnrpbZeafuxAV1KIecsbR6ApMrF4hFfmpjr6
+        xvppOVtGy/9cA8ZTuwzfJO0zDeYEwrZdryHQluBbQQ==
+X-Google-Smtp-Source: AKy350Zsj7496tj4JV/et0FhpoM2AUiFOnO2pMRSyzkfT3qLg0ZXJJR+WBgcmP04Czf7BiQbP518zk4JdiFw8TQBcvI=
+X-Received: by 2002:a17:907:a49:b0:931:6f5b:d27d with SMTP id
+ be9-20020a1709070a4900b009316f5bd27dmr10361097ejc.0.1680105540984; Wed, 29
+ Mar 2023 08:59:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230328221644.803272-6-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+References: <20230319195656.326701-1-kal.conley@dectris.com>
+ <20230319195656.326701-2-kal.conley@dectris.com> <CAJ8uoz2d9cSvLeguJ+5KenCqibxpshCiAKms4c75mGgzJVmkBA@mail.gmail.com>
+In-Reply-To: <CAJ8uoz2d9cSvLeguJ+5KenCqibxpshCiAKms4c75mGgzJVmkBA@mail.gmail.com>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Wed, 29 Mar 2023 18:03:35 +0200
+Message-ID: <CAHApi-mEwbAcYzHHTR0QMSA8EqByvmwzLCBkMw2_6hxqkiCBmQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,112 +76,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue 28-03-23 22:16:40, Yosry Ahmed wrote:
-> As Johannes notes in [1], stats_flush_lock is currently used to:
-> (a) Protect updated to stats_flush_threshold.
-> (b) Protect updates to flush_next_time.
-> (c) Serializes calls to cgroup_rstat_flush() based on those ratelimits.
-> 
-> However:
-> 
-> 1. stats_flush_threshold is already an atomic
-> 
-> 2. flush_next_time is not atomic. The writer is locked, but the reader
->    is lockless. If the reader races with a flush, you could see this:
-> 
->                                         if (time_after(jiffies, flush_next_time))
->         spin_trylock()
->         flush_next_time = now + delay
->         flush()
->         spin_unlock()
->                                         spin_trylock()
->                                         flush_next_time = now + delay
->                                         flush()
->                                         spin_unlock()
-> 
->    which means we already can get flushes at a higher frequency than
->    FLUSH_TIME during races. But it isn't really a problem.
-> 
->    The reader could also see garbled partial updates, so it needs at
->    least READ_ONCE and WRITE_ONCE protection.
+> > Add core AF_XDP support for chunk sizes larger than PAGE_SIZE. This
+> > enables sending/receiving jumbo ethernet frames up to the theoretical
+> > maxiumum of 64 KiB. For chunk sizes > PAGE_SIZE, the UMEM is required
+> > to consist of HugeTLB VMAs (and be hugepage aligned). Initially, only
+> > XDP_COPY mode is usuable pending future driver work.
+>
+> nit: useable
 
-Just a nit. Sounds more serious than it is actually. This would only
-happen if compiler decides to split the write.
+Fixed in v2.
 
-> 3. Serializing cgroup_rstat_flush() calls against the ratelimit
->    factors is currently broken because of the race in 2. But the race
->    is actually harmless, all we might get is the occasional earlier
->    flush. If there is no delta, the flush won't do much. And if there
->    is, the flush is justified.
-> 
-> So the lock can be removed all together. However, the lock also served
-> the purpose of preventing a thundering herd problem for concurrent
-> flushers, see [2]. Use an atomic instead to serve the purpose of
-> unifying concurrent flushers.
-> 
-> [1]https://lore.kernel.org/lkml/20230323172732.GE739026@cmpxchg.org/
-> [2]https://lore.kernel.org/lkml/20210716212137.1391164-2-shakeelb@google.com/
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> > For consistency, check for HugeTLB pages during UMEM registration. This
+> > implies that hugepages are required for XDP_COPY mode despite DMA not
+> > being used. This restriction is desirable since it ensures user software
+> > can take advantage of future driver support.
+> >
+> > Even in HugeTLB mode, continue to do page accounting using order-0
+> > (4 KiB) pages. This minimizes the size of this change and reduces the
+> > risk of impacting driver code. Taking full advantage of hugepages for
+> > accounting should improve XDP performance in the general case.
+>
+> Thank you Kal for working on this. Interesting stuff.
+>
+> First some general comments and questions on the patch set:
+>
+> * Please document this new feature in Documentation/networking/af_xdp.rst
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Fixed in v2.
 
-> ---
->  mm/memcontrol.c | 18 +++++++++++-------
->  1 file changed, 11 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index ff39f78f962e..65750f8b8259 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -585,8 +585,8 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
->   */
->  static void flush_memcg_stats_dwork(struct work_struct *w);
->  static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
-> -static DEFINE_SPINLOCK(stats_flush_lock);
->  static DEFINE_PER_CPU(unsigned int, stats_updates);
-> +static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
->  static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
->  static u64 flush_next_time;
->  
-> @@ -636,15 +636,19 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  
->  static void __mem_cgroup_flush_stats(void)
->  {
-> -	unsigned long flag;
-> -
-> -	if (!spin_trylock_irqsave(&stats_flush_lock, flag))
-> +	/*
-> +	 * We always flush the entire tree, so concurrent flushers can just
-> +	 * skip. This avoids a thundering herd problem on the rstat global lock
-> +	 * from memcg flushers (e.g. reclaim, refault, etc).
-> +	 */
-> +	if (atomic_read(&stats_flush_ongoing) ||
-> +	    atomic_xchg(&stats_flush_ongoing, 1))
->  		return;
->  
-> -	flush_next_time = jiffies_64 + 2*FLUSH_TIME;
-> +	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
->  	cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
->  	atomic_set(&stats_flush_threshold, 0);
-> -	spin_unlock_irqrestore(&stats_flush_lock, flag);
-> +	atomic_set(&stats_flush_ongoing, 0);
->  }
->  
->  void mem_cgroup_flush_stats(void)
-> @@ -655,7 +659,7 @@ void mem_cgroup_flush_stats(void)
->  
->  void mem_cgroup_flush_stats_ratelimited(void)
->  {
-> -	if (time_after64(jiffies_64, flush_next_time))
-> +	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
->  		mem_cgroup_flush_stats();
->  }
->  
-> -- 
-> 2.40.0.348.gf938b09366-goog
+> * Have you verified the SKB path for Rx? Tx was exercised by running l2fwd.
 
--- 
-Michal Hocko
-SUSE Labs
+This patchset allows sending/receiving 9000 MTU packets with xdpsock
+(slightly modified). The benchmark numbers show the results for rxdrop
+(-r).
+
+> * Have you checked that an XDP program can access the full >4K packet?
+> The xdp_buff has no problem with this as the buffer is consecutive,
+> but just wondering if there is some other check or limit in there?
+> Jesper and Toke will likely know, so roping them in.
+
+Yes, the full packet can be accessed from a SEC("xdp") BPF program
+(only tested in SKB mode).
+
+> * Would be interesting to know your thoughts about taking this to
+> zero-copy mode too. It would be good if you could support all modes
+> from the get go, instead of partial support for some unknown amount of
+> time and then zero-copy support. Partial support makes using the
+> feature more cumbersome when an app is deployed on various systems.
+> The continuity checking code you have at the end of the patch is a
+> step in the direction of zero-copy support, it seems.
+
+I think this patchset is enough to support zero-copy as long as the
+driver allows it. Currently, no drivers will work out of the box AFAIK
+since they all validate the chunk_size or the MTU size. I would
+absolutely love for drivers to support this. Hopefully this patchset
+is enough inspiration? :-) Do you think it's absolutely necessary to
+have driver ZC support ready to land this?
+
+> * What happens if I try to run this in zero-copy mode with a chunk_size > 4K?
+
+AFAIK drivers check for this and throw an error. Maybe there are some
+drivers that don't check this properly?
+
+> * There are some compilation errors to fix from the kernel test robot
+
+Fixed in v2.
+
+>
+> require_hugetlb would be a clearer name
+
+Fixed in v2. Renamed to `need_hugetlb`.
+
+>
+> next_mapping? n as a name is not very descriptive.
+
+Fixed in v2. Renamed to `stride`.
+
+>
+> >         u32 i;
+> >
+> > -       for (i = 0; i < dma_map->dma_pages_cnt - 1; i++) {
+> > -               if (dma_map->dma_pages[i] + PAGE_SIZE == dma_map->dma_pages[i + 1])
+> > +       for (i = 0; i + n < dma_map->dma_pages_cnt; i++) {
+> > +               if (dma_map->dma_pages[i] + page_size == dma_map->dma_pages[i + n])
+> >                         dma_map->dma_pages[i] |= XSK_NEXT_PG_CONTIG_MASK;
+> >                 else
+> >                         dma_map->dma_pages[i] &= ~XSK_NEXT_PG_CONTIG_MASK;
+> >         }
+> > +       for (; i < dma_map->dma_pages_cnt; i++)
+> > +               dma_map->dma_pages[i] &= ~XSK_NEXT_PG_CONTIG_MASK;
+>
+> Is this not too conservative? If your umem consists of two huge pages
+> mappings but they are not mapped consecutively in physical memory, you
+> are going to mark all the chunks as non-consecutive. Would it not be
+> better to just look chunk_size ahead of you instead of page_size
+> above? The only thing you care about is that the chunk you are in is
+> in consecutive physical memory, and that is strictly only true for
+> zero-copy mode. So this seems to be in preparation for zero-copy mode.
+>
+
+It is slightly too conservative. I have updated the logic a bit in v2.
+If the packet doesn't cross a page boundary, then this array is not
+read anyway.
+
+Thanks!
+Kal
