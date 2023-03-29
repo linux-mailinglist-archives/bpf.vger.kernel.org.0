@@ -2,93 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA456CD3DC
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 10:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D886CD40A
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 10:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjC2IAb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 04:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
+        id S229783AbjC2IIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 04:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjC2IA3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 04:00:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B752103;
-        Wed, 29 Mar 2023 01:00:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 32151B820FD;
-        Wed, 29 Mar 2023 08:00:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B4975C433EF;
-        Wed, 29 Mar 2023 08:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680076825;
-        bh=jsONW2bbKso3jFbuEI4vaV+27HAPUxIXLM70AQoX3gg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lLQxL0maR8V5vSL9YIIslrgcRLvDWgqnNv2IOBSjBhDFTsOV8vSY8CZTrdeCp8z9f
-         Wr99F72Lcsc7xZVnGj8u+FYvPqMPed/O2wDf1xC2sF7dGsLfo2kb6Dd6AOJsQpsEhc
-         3uxJsu2DvaqdR3mHcnQPF7DdWyFzq9fPp6kVplrp6yvsa2fNfEM+2nK2vlqjVohxEg
-         XXgKH0CBXOzZPvzMPyH+ri//deE6fHuYlu3Klk6QxQHsjt93eUgr2TPKW/GvI8Bkf1
-         0ppw8wkZGE8CJmGJl6uNLkgpUFMP6oKenmndodf55K78jSax/AYeJfYzucsAvz/vj/
-         O38DY/C9uuYfw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9079CE4F0DB;
-        Wed, 29 Mar 2023 08:00:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229750AbjC2IIj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 04:08:39 -0400
+X-Greylist: delayed 928 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Mar 2023 01:08:38 PDT
+Received: from mail.arnisdale.pl (mail.arnisdale.pl [151.80.133.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3831BD8
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 01:08:38 -0700 (PDT)
+Received: by mail.arnisdale.pl (Postfix, from userid 1002)
+        id 1035027475; Wed, 29 Mar 2023 07:48:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=arnisdale.pl; s=mail;
+        t=1680076143; bh=6DhEsVYOGxxfetVY3oiVeew+7Cm34ArcvgDq2WQYIRw=;
+        h=Date:From:To:Subject:From;
+        b=vgUimLH0zYjWZgFXfjt8I+GAALyut0fdFJEzCuzqw6Q6OMTIjC6O+UPB89XO+S8fy
+         4UnmTZcE1fpSuo3pGA1We/+FwhjZV91zqzoK+K5Dt4tzKhre/Yfvua2tT+fo6QWlxA
+         AaDErGfH/BzDx3ijUzROocUlZgjTpvxLrv/nOIsEB2OoEIiZ0kAiszaGpdKBv9dXYc
+         wXtTs2PKD7wC0RUmA5HGJt6H21BPkfChuCAgmEfrzpXCHN5Glm5NxOVUAqDzloAnFN
+         XwC2bVrW0k2pwqpzoUtUovOHv0J3B3lR2lYEDDPE0YSXbufk1ii73ASxFiB8barELx
+         pVhbap1vx6NEQ==
+Received: by mail.arnisdale.pl for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 07:48:01 GMT
+Message-ID: <20230329063000-0.1.3m.1710h.0.j5e67pjoxi@arnisdale.pl>
+Date:   Wed, 29 Mar 2023 07:48:01 GMT
+From:   "Maciej Telka" <maciej.telka@arnisdale.pl>
+To:     <bpf@vger.kernel.org>
+Subject: =?UTF-8?Q?Nawi=C4=85zanie_wsp=C3=B3=C5=82pracy?=
+X-Mailer: mail.arnisdale.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v4 0/3] Add support for sockmap to vsock.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168007682558.9659.6900016248016625386.git-patchwork-notify@kernel.org>
-Date:   Wed, 29 Mar 2023 08:00:25 +0000
-References: <20230327-vsock-sockmap-v4-0-c62b7cd92a85@bytedance.com>
-In-Reply-To: <20230327-vsock-sockmap-v4-0-c62b7cd92a85@bytedance.com>
-To:     Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc:     stefanha@redhat.com, sgarzare@redhat.com, mst@redhat.com,
-        jasowang@redhat.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, andrii@kernel.org,
-        mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
+        *      blocklist
+        *      [URIs: arnisdale.pl]
+        *  3.6 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [151.80.133.87 listed in zen.spamhaus.org]
+        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
+        *      blocklist
+        *      [URIs: arnisdale.pl]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Dzie=C5=84 dobry,
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Czy jest mo=C5=BCliwo=C5=9B=C4=87 nawi=C4=85zania wsp=C3=B3=C5=82pracy z =
+Pa=C5=84stwem?
 
-On Mon, 27 Mar 2023 19:11:50 +0000 you wrote:
-> We're testing usage of vsock as a way to redirect guest-local UDS
-> requests to the host and this patch series greatly improves the
-> performance of such a setup.
-> 
-> Compared to copying packets via userspace, this improves throughput by
-> 121% in basic testing.
-> 
-> [...]
+Z ch=C4=99ci=C4=85 porozmawiam z osob=C4=85 zajmuj=C4=85c=C4=85 si=C4=99 =
+dzia=C5=82aniami zwi=C4=85zanymi ze sprzeda=C5=BC=C4=85.
 
-Here is the summary with links:
-  - [net-next,v4,1/3] vsock: support sockmap
-    https://git.kernel.org/netdev/net-next/c/634f1a7110b4
-  - [net-next,v4,2/3] selftests/bpf: add vsock to vmtest.sh
-    https://git.kernel.org/netdev/net-next/c/c7c605c982d6
-  - [net-next,v4,3/3] selftests/bpf: add a test case for vsock sockmap
-    https://git.kernel.org/netdev/net-next/c/d61bd8c1fd02
+Pomagamy skutecznie pozyskiwa=C4=87 nowych klient=C3=B3w.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Zapraszam do kontaktu.
 
 
+Pozdrawiam serdecznie
+Maciej Telka
