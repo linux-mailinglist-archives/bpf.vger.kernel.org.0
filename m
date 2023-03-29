@@ -2,74 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B04CE6CF23F
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 20:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885CE6CF262
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 20:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjC2SiB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 14:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        id S229815AbjC2SmU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 14:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjC2Shy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 14:37:54 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D33D5B81
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:37:48 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id t14so17174433ljd.5
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:37:48 -0700 (PDT)
+        with ESMTP id S229801AbjC2SmT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 14:42:19 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5451459F3
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:42:17 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id y4so67224978edo.2
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:42:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680115066; x=1682707066;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/rL+TycpMQLfB5P4Zn9xgGfUWg8yPCNTwrE46ZNldMM=;
-        b=RJSeC/2y2qkppfBW09GE8UOxZSPzbdYIny2ryywCTuK4vX4TBxGzGOvOeZu10KNpkj
-         JabgDGbFBeBqEAamsSaiutBPfFH/ukcQ5gcmVsl+qzCoo3IX2+mz55K40mQSfDmROl3q
-         ft392EItvlBGPsHYqiqCnxBv90UjNgwURx/ytndNU1K5pFZM3uTtG1bGcwWtJ/P1fp9Z
-         WFb5Y65jIaFq+GIBo3p1dF8zbYmlg1I4d9xeC7cXn742Iat8m0VA9nZa5GzfLiSvN0Jb
-         U+d/4OLfJpF/fDe/lLS5ISLIgzT4rJN1ImZqHw6BRSK9T/mpv0k5G5lpA3rH0tLmzIFy
-         gjvA==
+        d=google.com; s=20210112; t=1680115336;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eIBZAFv2wQMorQ5lc8tGcKMX+DgU71oiqiwG/4lRhic=;
+        b=aPynEkp0gt2yrrh6KFRsPFu4+QI+22LUjC71jLtYRdPz3tvtiYrWpQlMXP+93X3yGB
+         FiYhI/lB1nm7o983gXqChQwZJgo7TUHZHozyA54eTsiL7qEpKTDtVNZjtT5OnUGO3FcT
+         /Ghx5u5imvI3Gsd9iJAQJreaU9lhZCpMwvKLL4xwq3MEiupMjCgS2J6LanHI7FZzdNHE
+         DD5BkwhMH87ZYXPw7tl2iLTM3LS+8SO6AidoBxBPFw0iS+D9jzkDX1w9ejhJCbS882ck
+         3Y9hQaaQPnDbj315Xgi6CAnGj+I61uN4wFCd/FWxc6pmq9vBaD7hAvSlXrhKcXQw6j9r
+         0zJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680115066; x=1682707066;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/rL+TycpMQLfB5P4Zn9xgGfUWg8yPCNTwrE46ZNldMM=;
-        b=AI70VC6GKJLJYJ1nnGNlNyn9pAxo/pvrZmqCaqj/WCicM/rywx4vfmjTeCLtUyJRUU
-         zOpih29ld20/+qrnh6twEqBo4/pLvkj3lIjeXtSd2IrCpRsHh6VoHpdOzeoY5xbQQonz
-         UxmG5QTUW7fFYNAwjrAhUWskcjefVvAReXrZZUOjH5S0HYzuKahbF/O8eJ+hSKy8ihJe
-         ncwPcQHRoC+N2NQPBG3//QwmWcf/B8jDBGwVyCQm5yNO0YZQLqN+6nSWf0CgKrr0pl9R
-         TegOYEK6e6a6AiYpkkaiPkxBp2qEY7lWXpgJKZtiKRR5pc0JuCMNXamRFAnnfMRQzAjM
-         S9hQ==
-X-Gm-Message-State: AAQBX9c69wpa6i76pRMmy8lVURLTYj32XIf4fiiBTDIRx7nskt4tkVjx
-        Tsy3Bn/uk8GmvbEeaqVvV3lGEJZRZKw0AXUNgB0=
-X-Google-Smtp-Source: AKy350aupUB33hSF1wGQo1yMdmnTKaXmF5STPKqaLqGSpa6+EcFuhwJpCQecC9rJXxEnefN4Wq6QbxB+8OhC8d7v5tM=
-X-Received: by 2002:a2e:9c19:0:b0:2a2:ab76:c367 with SMTP id
- s25-20020a2e9c19000000b002a2ab76c367mr6152394lji.6.1680115066026; Wed, 29 Mar
- 2023 11:37:46 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680115336;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eIBZAFv2wQMorQ5lc8tGcKMX+DgU71oiqiwG/4lRhic=;
+        b=3BQyFjxRsGgW6k3oOipXTMMnBeL7JHhxG9X7UqR2k6GGbIhxOOPLIEyHhrzteTmO02
+         mryPnrROJMJJ3IkGpmH0Vmzy2Er5v+5PKxS6HSXDnqXI8Pq1TBhvqtuw/KrDKeW2y1kQ
+         mETUAY/K9pinHthZ4FTReyxvgRYigKdcq3s4p0JKf+wcrHNcWSVhgaNAHk+yOtiQf/vX
+         I0XXmcPv1ICKkDPgSp9y3jxIQQVhKfyGezGSMWW1aErigE58UMg18ZtqK6Q7NN5RvlOq
+         1FUJM0cybtmhmKIjzZZySgEMq+rS2xurr/PZEGm1Vm3q66hkxqdzkzp27ThTXrYuaXiU
+         UaPA==
+X-Gm-Message-State: AAQBX9c928fMKPaQquuTxRwidsbROLSToOKEo4WQ9HfGIFQ3X035dYCS
+        bByAEVaNHaTrL6iyAGW9UgYxuoolB9+EQG0nTTF+vA==
+X-Google-Smtp-Source: AKy350ZwxdVpDFdjfiQjd2T1+2RQI0O05U4sIZAUQmMvbedjibegmVGA6poPnWutEDJaZTCc4OE/bJRiTbzJipp2VXo=
+X-Received: by 2002:a17:906:81da:b0:92f:b329:cb75 with SMTP id
+ e26-20020a17090681da00b0092fb329cb75mr2122145ejx.5.1680115335713; Wed, 29 Mar
+ 2023 11:42:15 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6520:4a4:b0:23d:475c:cd6c with HTTP; Wed, 29 Mar 2023
- 11:37:45 -0700 (PDT)
-Reply-To: dravasmith27@gmail.com
-From:   Dr Ava Smith <teewe45@gmail.com>
-Date:   Wed, 29 Mar 2023 11:37:45 -0700
-Message-ID: <CAEPmxYdnC+k0Mub8KdbvnhUq_4W3EdqyyM3Sa0Ge6qFNiysSng@mail.gmail.com>
-Subject: GREETINGS FROM DR AVA SMITH
-To:     undisclosed-recipients:;
+References: <20230328221644.803272-1-yosryahmed@google.com>
+ <20230328221644.803272-5-yosryahmed@google.com> <ZCQfZJFufkJ10o01@dhcp22.suse.cz>
+In-Reply-To: <ZCQfZJFufkJ10o01@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 29 Mar 2023 11:41:39 -0700
+Message-ID: <CAJD7tkb-UpKm2QbjYzB=B=oGk6Hyj9cbUviZUPC+7VsvBecH7g@mail.gmail.com>
+Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.7 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Hello Dear,
-how are you today?hope you are fine
-My name is Dr Ava Smith ,Am an English and French nationalities.
-I will give you pictures and more details about me as soon as i hear from you
-Thanks
-Ava
+On Wed, Mar 29, 2023 at 4:22=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Tue 28-03-23 22:16:39, Yosry Ahmed wrote:
+> > rstat flushing is too expensive to perform in irq context.
+> > The previous patch removed the only context that may invoke an rstat
+> > flush from irq context, add a WARN_ON_ONCE() to detect future
+> > violations, or those that we are not aware of.
+> >
+> > Ideally, we wouldn't flush with irqs disabled either, but we have one
+> > context today that does so in mem_cgroup_usage(). Forbid callers from
+> > irq context for now, and hopefully we can also forbid callers with irqs
+> > disabled in the future when we can get rid of this callsite.
+>
+> I am sorry to be late to the discussion. I wanted to follow up on
+> Johannes reply in the previous version but you are too fast ;)
+>
+> I do agree that this looks rather arbitrary. You do not explain how the
+> warning actually helps. Is the intention to be really verbose to the
+> kernel log when somebody uses this interface from the IRQ context and
+> get bug reports? What about configurations with panic on warn? Do we
+> really want to crash their systems for something like that?
+
+Thanks for taking a look, Michal!
+
+The ultimate goal is not to flush in irq context or with irqs
+disabled, as in some cases it causes irqs to be disabled for a long
+time, as flushing is an expensive operation. The previous patch in the
+series should have removed the only context that flushes in irq
+context, and the purpose of the WARN_ON_ONCE() is to catch future uses
+or uses that we might have missed.
+
+There is still one code path that flushes with irqs disabled (also
+mem_cgroup_usage()), and we cannot remove this just yet; we need to
+deprecate usage threshold events for root to do that. So we cannot
+enforce not flushing with irqs disabled yet.
+
+So basically the patch is trying to enforce what we have now, not
+flushing in irq context, and hopefully at some point we will also be
+able to enforce not flushing with irqs disabled.
+
+If WARN_ON_ONCE() is the wrong tool for this, please let me know.
+
+>
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> > ---
+> >  kernel/cgroup/rstat.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> > index d3252b0416b6..c2571939139f 100644
+> > --- a/kernel/cgroup/rstat.c
+> > +++ b/kernel/cgroup/rstat.c
+> > @@ -176,6 +176,8 @@ static void cgroup_rstat_flush_locked(struct cgroup=
+ *cgrp, bool may_sleep)
+> >  {
+> >       int cpu;
+> >
+> > +     /* rstat flushing is too expensive for irq context */
+> > +     WARN_ON_ONCE(!in_task());
+> >       lockdep_assert_held(&cgroup_rstat_lock);
+> >
+> >       for_each_possible_cpu(cpu) {
+> > --
+> > 2.40.0.348.gf938b09366-goog
+>
+> --
+> Michal Hocko
+> SUSE Labs
