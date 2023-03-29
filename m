@@ -2,134 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5276CF30B
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 21:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827C56CF313
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 21:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbjC2TVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 15:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59688 "EHLO
+        id S230302AbjC2TWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 15:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbjC2TVI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 15:21:08 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB9B1FC8
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 12:21:01 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id e5-20020a17090301c500b001a1aa687e4bso9928722plh.17
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 12:21:01 -0700 (PDT)
+        with ESMTP id S229951AbjC2TWl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 15:22:41 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95CE12E
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 12:22:37 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-54601d90118so156650597b3.12
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 12:22:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680117661;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rfZvqShst60fq0wp5Hd6CWbOA4VhTmutSDYPExlyEXg=;
-        b=H0HTcxi+11KbmtI0NnZKken4gqGU30NVBIOXe5Ym+r94WHMk+Wdg4ZxVSslfqZDErA
-         p1CffdA6GETpLvX14PamFdnEKbV9xc3/VVsGzXgOubwToOv1z9fKxdR258oxXyb1Hn+S
-         PW255z7NeXKDaFqo1ZagUjan2SrzuPb1Hr4g+mCEJtrRouWKHIYvoBp7Q8iAwOZtRKxL
-         WFy2wa6Ok5Amur24xaFxfEG41hDISgvMkbUR4OCW+qFTXIlmEqGHLlju9y5VD9RmOA7R
-         2HrEviyteTp8gt3HE9qsKY0Fnvecb9R5YTTkbYtJvpDt4JanY8H9F9bnOgWPzZMZLKdf
-         Gb/A==
+        d=google.com; s=20210112; t=1680117757;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MD5vx/bj0saF4TqNG1nIF/YU28Jg42gUeejN+X2NCpY=;
+        b=jT/j7PjxyG20P2CKl37aHA/z29PlP5r8hnouR7V1cEBZfIyQle/ffgyZ7SeY8TFDTN
+         LriKUchyJMzRZTZfx2Ra1tFVLAY+IMhcDrjzjdXPhFcyX9wQ7Iq+ch1Lp8XCUn+PP+XT
+         mDo99xFXTYufeJOx6O5lkcrR1KnrVe7fdgkK5wdj2U9WZ56B4j+7MKNJrYUu3YvPOJMS
+         ddD10ubhfVeY9zNjMGsO05U3lUzlkLtHm4GWbA1tvIzVEXeRefinLhNUJ5Dyd+qyBevy
+         Xp/QTExSKgMNuwRvOPQ7LHvWnn4acK885eIH7mW88e7D4Z3v4p2DeFo9+nXpGm8NXh8t
+         I/VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680117661;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rfZvqShst60fq0wp5Hd6CWbOA4VhTmutSDYPExlyEXg=;
-        b=W0QKwIfAnmcX/8dKigznVR1xJE/BhgiEBhDc8sVFK0aTCL6W18uXGNcSQzURKXmPed
-         b9/nVuabHGgN8/ahnrVMq3sRoICn5RJho7kvz2/lxzrinb3teRASVHF59BwACBeKYVrX
-         Za+woznYzH9DF49r/Dsc7hzJdB5vJ47ItD3zUpRyyz5t0qkDdmP6VIZi5ux+agdR609x
-         BWefJlFIlmhuV4TIQeWxSRE2wSovv5DU49AVIxAzB+R8XWKc50R7+VA+pn/ddD5iSoc7
-         ylHr/IDe4xHxvcqvMi1LfUIPUo1STx8PZ2LY9xdwCe6sbqJWS87NsZlKjOp/xwveMJe9
-         4sFQ==
-X-Gm-Message-State: AAQBX9f+RdUePwfMFUIEMmlZNQphnbbfghpiJhaJR0d60r7aub8TXaW4
-        LEI8+ZCuqjTJpw5Z8ni9HPJhjfGxuX0LLw==
-X-Google-Smtp-Source: AKy350aWkfrvyoLQhQjt4Tg+Y9288yGqHXK9dFGy7vkq1HDy0mf04gx38HhyneMLDblIphokIDYOq6dlg8qWIQ==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a65:5c47:0:b0:513:3def:2c6d with SMTP id
- v7-20020a655c47000000b005133def2c6dmr4478026pgr.4.1680117661176; Wed, 29 Mar
- 2023 12:21:01 -0700 (PDT)
-Date:   Wed, 29 Mar 2023 19:20:59 +0000
-In-Reply-To: <CAJD7tkb-UpKm2QbjYzB=B=oGk6Hyj9cbUviZUPC+7VsvBecH7g@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230328221644.803272-1-yosryahmed@google.com>
- <20230328221644.803272-5-yosryahmed@google.com> <ZCQfZJFufkJ10o01@dhcp22.suse.cz>
- <CAJD7tkb-UpKm2QbjYzB=B=oGk6Hyj9cbUviZUPC+7VsvBecH7g@mail.gmail.com>
-Message-ID: <20230329192059.2nlme5ubshzdbpg6@google.com>
-Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
- outside task context
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
+        d=1e100.net; s=20210112; t=1680117757;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MD5vx/bj0saF4TqNG1nIF/YU28Jg42gUeejN+X2NCpY=;
+        b=rc+pH/JbqwUEUNpSL6y1+ChkGUgg8sQnr9I98bqDuSEbIyjI3kFx04ZMsyFGZKq2rp
+         WiOY7Q69d93rO/nipos037eZrL5vrUCPZbSZCFbyyF6y3egNwfCIxASd+81WDEzR34ml
+         5gF2qL4EDDPugRus4+YgwBZwWQxve+SFS6fUgjcryC60/mJ1k/fjvjAXUhutLPq0olDu
+         5tayGRL/xC8EYMY19XgrGZM1PYgXia4yzpse57Ns18o2qS3QO3vKN2wWzfcmYEoGR00l
+         /Qsuz4V0swS0GitSJGwK5AseP6ZxQ/u0QmuC8JDQOKd9QhfxyjKyE44DL6D/sUmK+IAI
+         GKtQ==
+X-Gm-Message-State: AAQBX9f62qQEnzoQc4MmapXv2qeo1mz57xKEZHy8uUQeNRtBWkRjri+/
+        6L/WKWquci/q4SZgKHecjrUnZA==
+X-Google-Smtp-Source: AKy350aGXqku0wFHBwnbv0ayIqkfKZQbDVwnxlDtv6ud72FCuk4s6YtJqZ1NSL1cWoc/4AVWoTxyWQ==
+X-Received: by 2002:a81:920c:0:b0:52e:e095:3a00 with SMTP id j12-20020a81920c000000b0052ee0953a00mr21208691ywg.25.1680117756881;
+        Wed, 29 Mar 2023 12:22:36 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id d8-20020a81d808000000b00545a08184dcsm3092357ywj.108.2023.03.29.12.22.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Mar 2023 12:22:35 -0700 (PDT)
+Date:   Wed, 29 Mar 2023 12:22:24 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Tejun Heo <tj@kernel.org>
+cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
         Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Muchun Song <muchun.song@linux.dev>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>,
         Vasily Averin <vasily.averin@linux.dev>,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         bpf@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
+ percpu lock
+In-Reply-To: <ZCSJDpPPOVvBYfOy@slm.duckdns.org>
+Message-ID: <f9b6410-ee17-635f-a35d-559fa0191dc3@google.com>
+References: <20230323040037.2389095-1-yosryahmed@google.com> <20230323040037.2389095-2-yosryahmed@google.com> <ZBz/V5a7/6PZeM7S@slm.duckdns.org> <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com> <ZB5UalkjGngcBDEJ@slm.duckdns.org>
+ <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com> <CALvZod6rF0D21hcV7xnqD+oRkn=x5NLi5GOkPpyaPa859uDH+Q@mail.gmail.com> <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com> <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com>
+ <CAJD7tkZrp=4zWvjE9_010TAG1T_crCbf9P64UzJABspgcrGPKg@mail.gmail.com> <ZCSJDpPPOVvBYfOy@slm.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 29, 2023 at 11:41:39AM -0700, Yosry Ahmed wrote:
-> On Wed, Mar 29, 2023 at 4:22=E2=80=AFAM Michal Hocko <mhocko@suse.com> wr=
-ote:
-> >
-> > On Tue 28-03-23 22:16:39, Yosry Ahmed wrote:
-> > > rstat flushing is too expensive to perform in irq context.
-> > > The previous patch removed the only context that may invoke an rstat
-> > > flush from irq context, add a WARN_ON_ONCE() to detect future
-> > > violations, or those that we are not aware of.
-> > >
-> > > Ideally, we wouldn't flush with irqs disabled either, but we have one
-> > > context today that does so in mem_cgroup_usage(). Forbid callers from
-> > > irq context for now, and hopefully we can also forbid callers with ir=
-qs
-> > > disabled in the future when we can get rid of this callsite.
-> >
-> > I am sorry to be late to the discussion. I wanted to follow up on
-> > Johannes reply in the previous version but you are too fast ;)
-> >
-> > I do agree that this looks rather arbitrary. You do not explain how the
-> > warning actually helps. Is the intention to be really verbose to the
-> > kernel log when somebody uses this interface from the IRQ context and
-> > get bug reports? What about configurations with panic on warn? Do we
-> > really want to crash their systems for something like that?
->=20
-> Thanks for taking a look, Michal!
->=20
-> The ultimate goal is not to flush in irq context or with irqs
-> disabled, as in some cases it causes irqs to be disabled for a long
-> time, as flushing is an expensive operation. The previous patch in the
-> series should have removed the only context that flushes in irq
-> context, and the purpose of the WARN_ON_ONCE() is to catch future uses
-> or uses that we might have missed.
->=20
-> There is still one code path that flushes with irqs disabled (also
-> mem_cgroup_usage()), and we cannot remove this just yet; we need to
-> deprecate usage threshold events for root to do that. So we cannot
-> enforce not flushing with irqs disabled yet.
->=20
-> So basically the patch is trying to enforce what we have now, not
-> flushing in irq context, and hopefully at some point we will also be
-> able to enforce not flushing with irqs disabled.
->=20
-> If WARN_ON_ONCE() is the wrong tool for this, please let me know.
->=20
+Hi Tejun,
 
-If I understand Michal's concern, the question is should be start with
-pr_warn_once() instead of WARN_ON_ONCE() and I think yes we should start
-with pr_warn_once().
+On Wed, 29 Mar 2023, Tejun Heo wrote:
+> On Mon, Mar 27, 2023 at 04:23:13PM -0700, Yosry Ahmed wrote:
+> > Tejun, if having the lock be non-irq is a non-starter for you, I can
+> 
+> This is an actual hazard. We see in prod these unprotected locks causing
+> very big spikes in tail latencies and they can be tricky to root cause too
+> and given the way rstat lock is used it's highly likely to be involved in
+> those scenarios with the proposed change, so it's gonna be a nack from my
+> end.
 
+Butting in here, I'm fascinated.  This is certainly not my area, I know
+nothing about rstat, but this is the first time I ever heard someone
+arguing for more disabling of interrupts rather than less.
+
+An interrupt coming in while holding a contended resource can certainly
+add to latencies, that I accept of course.  But until now, I thought it
+was agreed best practice to disable irqs only regretfully, when strictly
+necessary.
+
+If that has changed, I for one want to know about it.  How should we
+now judge which spinlocks should disable interrupts and which should not?
+Page table locks are currently my main interest - should those be changed?
+
+Thanks,
+Hugh
