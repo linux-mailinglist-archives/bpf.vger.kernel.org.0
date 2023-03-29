@@ -2,243 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F23CD6CF19C
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 20:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963386CF1B9
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 20:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbjC2SBD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 14:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54440 "EHLO
+        id S229974AbjC2SHl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 14:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbjC2SA7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 14:00:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727ED59F8
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680112804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Ex4qAQI8jFlphiortwiuaSdJ0uJRftZB4Xwk8I+YtM=;
-        b=OnXosqnl/tNZmACEOX1MxKj+67S9sw37Y1aclccjI3GRXmIcvsNLJMDUIL4vIealiugKzI
-        ISCKsU4CrLh0Xk8TyfPDeRryNt2aQAgYRq5S8uU1YHLi09Z4FvaRFJ8Xo2SQzIOcLIZ8T1
-        cbJiUByyeQoVV3SpUbhb9avNSWPEVuo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-625-oD-L2aSgMrm4LdmIgNNbvA-1; Wed, 29 Mar 2023 14:00:02 -0400
-X-MC-Unique: oD-L2aSgMrm4LdmIgNNbvA-1
-Received: by mail-ed1-f69.google.com with SMTP id h11-20020a0564020e8b00b004e59d4722a3so23357856eda.6
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:00:02 -0700 (PDT)
+        with ESMTP id S229618AbjC2SHl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 14:07:41 -0400
+Received: from mail-ed1-x564.google.com (mail-ed1-x564.google.com [IPv6:2a00:1450:4864:20::564])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7F84202
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:07:39 -0700 (PDT)
+Received: by mail-ed1-x564.google.com with SMTP id eg48so66687806edb.13
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:07:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dectris.com; s=google; t=1680113258;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eW8cixxE4mCH2k16m1Z6ulTnFQEPlmr5i1F469P39mc=;
+        b=ZDpNlD1h58yVtYr/IQiNAT6g38PhKD5dcW0/mO9gAymHD4WqC6eMQFqMujX4oFEH5u
+         wwo5lMWHIs8CrWmkzq/7GlXqjl4SWHUJKokl2hFBXV53/zsloMY4DjJ7lY94wlKCTf4L
+         yOqrWQjQoE2aIhITmMQevmCm3zJPaQYs85IEw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680112801;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Ex4qAQI8jFlphiortwiuaSdJ0uJRftZB4Xwk8I+YtM=;
-        b=7UuscBJLhUhmRALl9DPmbQh2keLAWs5AS/PVsD066lmE/+PupCP12LZ0eRLrzc++Fb
-         eYZbwo2FEst7MFH94VYBdokZD1TPMTaz2CJOXckP9IOiJ9VDsux/xgUUY+n6kElHIw/r
-         2gAMR7nTrL3+GA4WbiqbTuSTATook2WZFAbglrq1+QDozyuEhQ/rbEYsYZhXX7R7PXNC
-         kCezg9Ju8W0pSAGBTYfQ3TNjDveZHFZND3wHuXvBIYWlgomyWKP3I9EBgv41WDazfcIp
-         /jL6TFXo0u0mMsZet0GvyVjfeS8ycWfq1lJjvX+fa+oqtZADsL4C+uNytRaOKO4PlFZM
-         tJAg==
-X-Gm-Message-State: AAQBX9f693/ajm7Ok9SbFbf8Skfjtktq9Zi8+jomfGvdz8VAqRp88ODs
-        f0VT1RPQxfQ/aSDyMTeJbl0ZVeY1v4DFpeaaoC2kyH1gsGLuhDe2Qd6VArkeXWGUMCL/FRNm5b3
-        LY+1lCp7l6w1B9fZsY6z2s+cd2cAKsb1T0MjJJpg9U5+VqBZ9Z80vhuxQROkBe0MYLbXnMXI=
-X-Received: by 2002:a05:6402:1841:b0:4fc:782c:dca3 with SMTP id v1-20020a056402184100b004fc782cdca3mr20131466edy.28.1680112801339;
-        Wed, 29 Mar 2023 11:00:01 -0700 (PDT)
-X-Google-Smtp-Source: AKy350Y43ETxBXALjoHl1MnyGSZbIV9TyYcmvZo2zPeWa/8U1bkANiEzdQlN1uO708Vi3zg4Z4PtFg==
-X-Received: by 2002:a05:6402:1841:b0:4fc:782c:dca3 with SMTP id v1-20020a056402184100b004fc782cdca3mr20131432edy.28.1680112800940;
-        Wed, 29 Mar 2023 11:00:00 -0700 (PDT)
-Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id u2-20020a50a402000000b004c4eed3fe20sm17426270edb.5.2023.03.29.10.59.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Mar 2023 11:00:00 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <e0363f67-34d9-103f-eac7-e3ab71f87c0b@redhat.com>
-Date:   Wed, 29 Mar 2023 19:59:59 +0200
+        d=1e100.net; s=20210112; t=1680113258;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eW8cixxE4mCH2k16m1Z6ulTnFQEPlmr5i1F469P39mc=;
+        b=emHp7CxRxfM54fwEbSW8zvfrsms04ez9UIL7b7jrkWUKdXGGWi/v2rchbmvLLUsyfC
+         3TujGfrePj+WBgPBNEURrZtboAJVW/+8QWe4U4AA0aHBc5NK3moYHnLaIH+bfL3sMnMP
+         VNtdEw7NfGhfAHubV20WrtXFbJVBJqOyQ2uWpQhLdxOWPhE2EkPcsTAKXReU5gvb3L6n
+         izc5fuF6+S8NdMHoMqQXHjLPhasd7BC+WRL7CK4djYs7rg6jKL0s6PZbIR7l5THabQkP
+         U33Z73BPPi+1p3QT/shtme9a173jgcccPnUiaKPYoQN2wNDnkXcV8nDawHtcpfB5F56o
+         AsMg==
+X-Gm-Message-State: AAQBX9egs0D2VAaxeF5VKteaM/9Cmea85MDE113S8ECjovX7U655TDO1
+        Ruh0OYVu4nAskiubRnmNeHTk2mB/PxkMCy32sxZEu5MFKvAX
+X-Google-Smtp-Source: AKy350bpuNnR9jzhvkniiSlXw5ZyNHh4pc81Zx+/fobNXo8UNzgBD0QNe7u7QOk/eRjiTe3d6sDNFoy9lyAy
+X-Received: by 2002:a17:907:7ba1:b0:8b1:820a:7b60 with SMTP id ne33-20020a1709077ba100b008b1820a7b60mr26288171ejc.6.1680113258051;
+        Wed, 29 Mar 2023 11:07:38 -0700 (PDT)
+Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
+        by smtp-relay.gmail.com with ESMTPS id m10-20020a1709066d0a00b00920438f59b3sm12072998ejr.154.2023.03.29.11.07.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Mar 2023 11:07:38 -0700 (PDT)
+X-Relaying-Domain: dectris.com
+From:   Kal Conley <kal.conley@dectris.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2 00/10] xsk: Support UMEM chunk_size > PAGE_SIZE
+Date:   Wed, 29 Mar 2023 20:04:52 +0200
+Message-Id: <20230329180502.1884307-1-kal.conley@dectris.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Cc:     brouer@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
-        davem@davemloft.net
-Subject: Re: [PATCH bpf RFC-V2 1/5] xdp: rss hash types representation
-Content-Language: en-US
-To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>
-References: <168010726310.3039990.2753040700813178259.stgit@firesoul>
- <168010734324.3039990.16454026957159811204.stgit@firesoul>
-In-Reply-To: <168010734324.3039990.16454026957159811204.stgit@firesoul>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The main purpose of this patchset is to add AF_XDP support for UMEM
+chunk sizes > PAGE_SIZE. This is enabled for UMEMs backed by HugeTLB
+pages.
 
+The patchset starts off with many fixes and improvements to the XSK
+selftests. Next, an existing issue is fixed whereby unaligned
+descriptors may overrun the end of the UMEM in certain cases. Finally,
+AF_XDP support for UMEM chunk_size > PAGE_SIZE is added.
 
-On 29/03/2023 18.29, Jesper Dangaard Brouer wrote:
-> The RSS hash type specifies what portion of packet data NIC hardware used
-> when calculating RSS hash value. The RSS types are focused on Internet
-> traffic protocols at OSI layers L3 and L4. L2 (e.g. ARP) often get hash
-> value zero and no RSS type. For L3 focused on IPv4 vs. IPv6, and L4
-> primarily TCP vs UDP, but some hardware supports SCTP.
-> 
-> Hardware RSS types are differently encoded for each hardware NIC. Most
-> hardware represent RSS hash type as a number. Determining L3 vs L4 often
-> requires a mapping table as there often isn't a pattern or sorting
-> according to ISO layer.
-> 
-> The patch introduce a XDP RSS hash type (xdp_rss_hash_type) that can both
-> be seen as a number that is ordered according by ISO layer, and can be bit
-> masked to separate IPv4 and IPv6 types for L4 protocols. Room is available
-> for extending later while keeping these properties. This maps and unifies
-> difference to hardware specific hashes.
-> 
-> This proposal change the kfunc API bpf_xdp_metadata_rx_hash() to return
-> this RSS hash type on success.
-> 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->   include/net/xdp.h |   76 +++++++++++++++++++++++++++++++++++++++++++++++++++++
->   net/core/xdp.c    |    4 ++-
->   2 files changed, 79 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index 5393b3ebe56e..1b2b17625c26 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -8,6 +8,7 @@
->   
->   #include <linux/skbuff.h> /* skb_shared_info */
->   #include <uapi/linux/netdev.h>
-> +#include <linux/bitfield.h>
->   
->   /**
->    * DOC: XDP RX-queue information
-> @@ -396,6 +397,81 @@ XDP_METADATA_KFUNC_xxx
->   MAX_XDP_METADATA_KFUNC,
->   };
->   
-> +/* For partitioning of xdp_rss_hash_type */
-> +#define RSS_L3		GENMASK(2,0) /* 3-bits = values between 1-7 */
-> +#define L4_BIT		BIT(3)       /* 1-bit - L4 indication */
-> +#define RSS_L4_IPV4	GENMASK(6,4) /* 3-bits */
-> +#define RSS_L4_IPV6	GENMASK(9,7) /* 3-bits */
-> +#define RSS_L4		GENMASK(9,3) /* = 7-bits - covering L4 IPV4+IPV6 */
-> +#define L4_IPV6_EX_BIT	BIT(9)       /* 1-bit - L4 IPv6 with Extension hdr */
-> +				     /* 11-bits in total */
+v2 contains major improvements over v1. It should be both a joy to read
+and review. :-)
 
-Please ignore above lines in review ... they should have been deleted,
-the new partitioning uses the enum/defines below.
+Changes since v1:
+  * Add many fixes/improvements to the XSK selftests.
+  * Add check for unaligned descriptors that overrun UMEM.
+  * Fix compile errors when CONFIG_HUGETLB_PAGE is not set.
+  * Fix incorrect use of _Static_assert.
+  * Update AF_XDP documentation.
+  * Rename unaligned 9K frame size test.
+  * Make xp_check_dma_contiguity less conservative.
+  * Add more information to benchmark table.
 
-> +
-> +/* Lower 4-bits value of xdp_rss_hash_type */
-> +enum xdp_rss_L4 {
-> +	XDP_RSS_L4_MASK		= GENMASK(3,0), /* 4-bits = values between 0-15 */
-> +	XDP_RSS_L4_NONE		= 0, /* Not L4 based hash */
-> +	XDP_RSS_L4_ANY		= 1, /* L4 based hash but protocol unknown */
-> +	XDP_RSS_L4_TCP		= 2,
-> +	XDP_RSS_L4_UDP		= 3,
-> +	XDP_RSS_L4_SCTP		= 4,
-> +	XDP_RSS_L4_IPSEC	= 5, /* L4 based hash include IPSEC SPI */
-> +/*
-> + RFC: We don't care about vasting space, then we could just store the
-> + protocol number (8-bits) directly. See /etc/protocols
-> +	XDP_RSS_L4_TCP		= 6,
-> +	XDP_RSS_L4_UDP		= 17,
-> +	XDP_RSS_L4_SCTP		= 132,
-> +	XDP_RSS_L4_IPSEC_ESP	= 50, // Issue: mlx5 didn't say ESP or AH
-> +	XDP_RSS_L4_IPSEC_AH	= 51, // both ESP+AH just include SPI in hash
-> + */
-> +};
-> +
-> +/* Values shifted for use in xdp_rss_hash_type */
-> +enum xdp_rss_L3 {
-> +	XDP_RSS_L3_MASK		= GENMASK(5,4), /* 2-bits = values between 1-3 */
-> +	XDP_RSS_L3_IPV4		= FIELD_PREP_CONST(XDP_RSS_L3_MASK, 1),
-> +	XDP_RSS_L3_IPV6		= FIELD_PREP_CONST(XDP_RSS_L3_MASK, 2),
-> +};
-> +
-> +/* Bits shifted for use in xdp_rss_hash_type */
-> +enum xdp_rss_bit {
-> +	XDP_RSS_BIT_MASK	= GENMASK(7,6), /* 2-bits */
-> +	/* IPv6 Extension Hdr */
-> +	XDP_RSS_BIT_EX = FIELD_PREP_CONST(XDP_RSS_BIT_MASK, BIT(0)),
-> +	/* XDP_RSS_BIT_VLAN ??? = FIELD_PREP_CONST(XDP_RSS_BIT_MASK, BIT(1)), */
-> +};
-> +
-> +/* RSS hash type combinations used for driver HW mapping */
-> +enum xdp_rss_hash_type {
-> +	XDP_RSS_TYPE_NONE            = 0,
-> +	XDP_RSS_TYPE_L2              = XDP_RSS_TYPE_NONE,
-> +
-> +	XDP_RSS_TYPE_L3_MASK         = XDP_RSS_L3_MASK,
-> +	XDP_RSS_TYPE_L3_IPV4         = XDP_RSS_L3_IPV4,
-> +	XDP_RSS_TYPE_L3_IPV6         = XDP_RSS_L3_IPV6,
-> +	XDP_RSS_TYPE_L3_IPV6_EX      = XDP_RSS_L3_IPV6 | XDP_RSS_BIT_EX,
-> +
-> +	XDP_RSS_TYPE_L4_MASK         = XDP_RSS_L4_MASK,
-> +	XDP_RSS_TYPE_L4_ANY          = XDP_RSS_L4_ANY,
-> +	XDP_RSS_TYPE_L4_IPV4_TCP     = XDP_RSS_L3_IPV4 | XDP_RSS_L4_TCP,
-> +	XDP_RSS_TYPE_L4_IPV4_UDP     = XDP_RSS_L3_IPV4 | XDP_RSS_L4_UDP,
-> +	XDP_RSS_TYPE_L4_IPV4_SCTP    = XDP_RSS_L3_IPV4 | XDP_RSS_L4_SCTP,
-> +
-> +	XDP_RSS_TYPE_L4_IPV6_TCP     = XDP_RSS_L3_IPV6 | XDP_RSS_L4_TCP,
-> +	XDP_RSS_TYPE_L4_IPV6_UDP     = XDP_RSS_L3_IPV6 | XDP_RSS_L4_UDP,
-> +	XDP_RSS_TYPE_L4_IPV6_SCTP    = XDP_RSS_L3_IPV6 | XDP_RSS_L4_UDP,
-> +
-> +	XDP_RSS_TYPE_L4_IPV6_TCP_EX  = XDP_RSS_TYPE_L4_IPV6_TCP |XDP_RSS_BIT_EX,
-> +	XDP_RSS_TYPE_L4_IPV6_UDP_EX  = XDP_RSS_TYPE_L4_IPV6_UDP |XDP_RSS_BIT_EX,
-> +	XDP_RSS_TYPE_L4_IPV6_SCTP_EX = XDP_RSS_TYPE_L4_IPV6_SCTP|XDP_RSS_BIT_EX,
-> +};
-> +#undef RSS_L3
-> +#undef L4_BIT
-> +#undef RSS_L4_IPV4
-> +#undef RSS_L4_IPV6
-> +#undef RSS_L4
-> +#undef L4_IPV6_EX_BIT
+Thanks to Magnus Karlsson for his initial feedback!
 
-All the undef's are also unncecessary now.
+Kal Conley (10):
+  selftests: xsk: Add xskxceiver.h dependency to Makefile
+  selftests: xsk: Use correct UMEM size in testapp_invalid_desc
+  selftests: xsk: Add test case for packets at end of UMEM
+  selftests: xsk: Deflakify STATS_RX_DROPPED test
+  selftests: xsk: Disable IPv6 on VETH1
+  xsk: Add check for unaligned descriptors that overrun UMEM
+  selftests: xsk: Add test UNALIGNED_INV_DESC_4K1_FRAME_SIZE
+  xsk: Support UMEM chunk_size > PAGE_SIZE
+  selftests: xsk: Use hugepages when umem->frame_size > PAGE_SIZE
+  selftests: xsk: Add tests for 8K and 9K frame sizes
 
-> +
->   #ifdef CONFIG_NET
->   u32 bpf_xdp_metadata_kfunc_id(int id);
->   bool bpf_dev_bound_kfunc_id(u32 btf_id);
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 7133017bcd74..81d41df30695 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -721,12 +721,14 @@ __bpf_kfunc int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *tim
->    * @hash: Return value pointer.
->    *
->    * Return:
-> - * * Returns 0 on success or ``-errno`` on error.
-> + * * Returns (positive) RSS hash **type** on success or ``-errno`` on error.
-> + * * ``enum xdp_rss_hash_type`` : RSS hash type
->    * * ``-EOPNOTSUPP`` : means device driver doesn't implement kfunc
->    * * ``-ENODATA``    : means no RX-hash available for this frame
->    */
->   __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash)
->   {
-> +	BTF_TYPE_EMIT(enum xdp_rss_hash_type);
->   	return -EOPNOTSUPP;
->   }
->   
-> 
-> 
+ Documentation/networking/af_xdp.rst      | 19 ++++--
+ include/net/xdp_sock.h                   |  3 +
+ include/net/xdp_sock_drv.h               | 12 ++++
+ include/net/xsk_buff_pool.h              | 24 +++++---
+ net/xdp/xdp_umem.c                       | 50 ++++++++++++---
+ net/xdp/xsk_buff_pool.c                  | 34 +++++++----
+ net/xdp/xsk_queue.h                      |  1 +
+ tools/testing/selftests/bpf/Makefile     |  2 +-
+ tools/testing/selftests/bpf/test_xsk.sh  |  1 +
+ tools/testing/selftests/bpf/xskxceiver.c | 77 +++++++++++++++++++++---
+ tools/testing/selftests/bpf/xskxceiver.h |  4 +-
+ 11 files changed, 183 insertions(+), 44 deletions(-)
+
+-- 
+2.39.2
 
