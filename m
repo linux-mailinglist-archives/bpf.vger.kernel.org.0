@@ -2,80 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D886CD40A
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 10:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C756CD420
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 10:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjC2IIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 04:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
+        id S229911AbjC2ILd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 04:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjC2IIj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 04:08:39 -0400
-X-Greylist: delayed 928 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Mar 2023 01:08:38 PDT
-Received: from mail.arnisdale.pl (mail.arnisdale.pl [151.80.133.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3831BD8
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 01:08:38 -0700 (PDT)
-Received: by mail.arnisdale.pl (Postfix, from userid 1002)
-        id 1035027475; Wed, 29 Mar 2023 07:48:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=arnisdale.pl; s=mail;
-        t=1680076143; bh=6DhEsVYOGxxfetVY3oiVeew+7Cm34ArcvgDq2WQYIRw=;
-        h=Date:From:To:Subject:From;
-        b=vgUimLH0zYjWZgFXfjt8I+GAALyut0fdFJEzCuzqw6Q6OMTIjC6O+UPB89XO+S8fy
-         4UnmTZcE1fpSuo3pGA1We/+FwhjZV91zqzoK+K5Dt4tzKhre/Yfvua2tT+fo6QWlxA
-         AaDErGfH/BzDx3ijUzROocUlZgjTpvxLrv/nOIsEB2OoEIiZ0kAiszaGpdKBv9dXYc
-         wXtTs2PKD7wC0RUmA5HGJt6H21BPkfChuCAgmEfrzpXCHN5Glm5NxOVUAqDzloAnFN
-         XwC2bVrW0k2pwqpzoUtUovOHv0J3B3lR2lYEDDPE0YSXbufk1ii73ASxFiB8barELx
-         pVhbap1vx6NEQ==
-Received: by mail.arnisdale.pl for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 07:48:01 GMT
-Message-ID: <20230329063000-0.1.3m.1710h.0.j5e67pjoxi@arnisdale.pl>
-Date:   Wed, 29 Mar 2023 07:48:01 GMT
-From:   "Maciej Telka" <maciej.telka@arnisdale.pl>
-To:     <bpf@vger.kernel.org>
-Subject: =?UTF-8?Q?Nawi=C4=85zanie_wsp=C3=B3=C5=82pracy?=
-X-Mailer: mail.arnisdale.pl
+        with ESMTP id S230293AbjC2ILS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 04:11:18 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B2A35B5;
+        Wed, 29 Mar 2023 01:10:59 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id bg16-20020a05600c3c9000b003eb34e21bdfso10909957wmb.0;
+        Wed, 29 Mar 2023 01:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680077458;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M/4t4OvCQjo33JGjobittaaxVDDegfvrkYrLpIGC83o=;
+        b=hc+I7GgxDJExRVT0qlKTaDwMBbzUxEWpa2RNLp2ERtN3JnGBdLEc4s2KKx10imXy7T
+         84biQJEVomdzXbuWYOqtylvbdglKk/PurgFmvuvRi+AzonLKfjTNGTzl8Q2Tl/YyY2jX
+         gEKsd49ue3Q7WYjLNmwQO1AFMFXXaoXZOXXuaeCETn4MFeHwaFGy/ujWpJ+F1TCpxo3y
+         S2S/WJMXl6mta4slX9JM5KeDEPbb3mNDEOEl39fgJblRKIGEHMlx7Ui2g9anMzdNbRIL
+         wvtOs/VJpCiDiGqFXvkIz1MYsHTjCVOVdbRKhgm1NZKM7c6xQxQo2tGXhbmubxbAjGes
+         HRVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680077458;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=M/4t4OvCQjo33JGjobittaaxVDDegfvrkYrLpIGC83o=;
+        b=GE2zVHYDYcf9f1frZ+hoRSUM/XMTXdTjGnNiYriiBGeFFbP2/NaK0kf2H5ug2oSurn
+         oaiTOALKab0v98J+8skcdBucc9XrPuhwDVus1TMsnHxdM4ZWKKe4geziuDhc7XrufXnx
+         cZemQjV2ButLgSC/AGchjYit0stAEphdZon2FEyusqzhWqLIrL/iatZkp/d0h0Q50Y90
+         PUgWUGOByxpudQXm8dpeFd/lVBzs7qeEUsJa7AEaV/5Mdm/FVzRz6l47GEFojZ15B33j
+         tGALoc6Jm2C2tb6CGodpEvqHXpe/s6jgYXWwHw3+u+F9KHZPzJTeN3T77XG4J+lAU3Er
+         5G3A==
+X-Gm-Message-State: AO0yUKUfWO6viMafh5UfBvzGVRFGDW1mvTH4r7noBqRR3c/J1Xavntsp
+        z+wltbE5fjmW832TuKgYrcs=
+X-Google-Smtp-Source: AK7set9x9jFN4Plu2UmMtpejEnFrvn6a6z16+v/aEEdxK2Y8krzFM/wAHnT+KxPR01RzEqUm2SqdVg==
+X-Received: by 2002:a7b:ce08:0:b0:3ed:9a37:acbf with SMTP id m8-20020a7bce08000000b003ed9a37acbfmr14013889wmc.31.1680077457916;
+        Wed, 29 Mar 2023 01:10:57 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id s17-20020a7bc391000000b003edd1c44b57sm1323559wmj.27.2023.03.29.01.10.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Mar 2023 01:10:57 -0700 (PDT)
+Subject: Re: [PATCH bpf RFC 1/4] xdp: rss hash types representation
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net
+References: <168003451121.3027256.13000250073816770554.stgit@firesoul>
+ <168003455815.3027256.7575362149566382055.stgit@firesoul>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <39543d22-4e71-9696-17f8-5ae22728aa25@gmail.com>
+Date:   Wed, 29 Mar 2023 09:10:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: arnisdale.pl]
-        *  3.6 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [151.80.133.87 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: arnisdale.pl]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-X-Spam-Level: *****
+In-Reply-To: <168003455815.3027256.7575362149566382055.stgit@firesoul>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On 28/03/2023 21:15, Jesper Dangaard Brouer wrote:
+> Hardware RSS types are differently encoded for each hardware NIC. Most
+> hardware represent RSS hash type as a number. Determining L3 vs L4 often
+> requires a mapping table as there often isn't a pattern or sorting
+> according to ISO layer.
+> 
+> The patch introduce a XDP RSS hash type (xdp_rss_hash_type) that can both
+> be seen as a number that is ordered according by ISO layer, and can be bit
+> masked to separate IPv4 and IPv6 types for L4 protocols. Room is available
+> for extending later while keeping these properties. This maps and unifies
+> difference to hardware specific hashes.
 
-Czy jest mo=C5=BCliwo=C5=9B=C4=87 nawi=C4=85zania wsp=C3=B3=C5=82pracy z =
-Pa=C5=84stwem?
-
-Z ch=C4=99ci=C4=85 porozmawiam z osob=C4=85 zajmuj=C4=85c=C4=85 si=C4=99 =
-dzia=C5=82aniami zwi=C4=85zanymi ze sprzeda=C5=BC=C4=85.
-
-Pomagamy skutecznie pozyskiwa=C4=87 nowych klient=C3=B3w.
-
-Zapraszam do kontaktu.
-
-
-Pozdrawiam serdecznie
-Maciej Telka
+Would it be better to make use of the ETHTOOL_GRXFH defines (stuff
+ like UDP_V6_FLOW, RXH_L4_B_0_1 etc.)?  Seems like that could allow
+ for some code reuse in drivers.
