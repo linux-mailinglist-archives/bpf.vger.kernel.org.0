@@ -2,96 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A9F6CD77E
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 12:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F262D6CD84B
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 13:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbjC2KRl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 06:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54090 "EHLO
+        id S229743AbjC2LSd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 07:18:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjC2KRk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 06:17:40 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41A140E4
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 03:17:38 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id er13so20064869edb.9
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 03:17:38 -0700 (PDT)
+        with ESMTP id S229519AbjC2LSc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 07:18:32 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEED34233
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 04:18:25 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id cn12so61709527edb.4
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 04:18:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680085057;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FUsoW3RlDeSmLirfd4zdIVDvyInwt676ScrlQB20LgM=;
-        b=D0V5ovhW7UgHFZJCKb6bYyN5Ue78NZfgYtdfyz/eRNneexCP31KbyRThWngrOxky+u
-         JzI49xkHy81UT43remlwGKInYAfwE9fzlkWEIyfGtlurom98KkTjuICCq3xA+xWVPZxt
-         O2Iyfe0C1Tk6VOYd6oghst8CaRYpvwTPvaBN8=
+        d=cloudflare.com; s=google; t=1680088704;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=N5CohG6Xp3aoYNlsfgUXnFLV896u1ewiB5jAiiO+FJI=;
+        b=NWYnam7DcNtw+KI6l5gg8Ud/Yu9CFRMEP0PF6Iy98lYqzSE1EUw5UaPkZbZpgjxGgM
+         n6Ai2XaI2pV8Yf3EtpHZJkS5qnXrhwjzFqze03qbK5fJ3idyYjff17V8KcePJvTEcpum
+         BB4QF6iWL7Zb6hhzH0SKunYUmM8ygzj2d35M4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680085057;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FUsoW3RlDeSmLirfd4zdIVDvyInwt676ScrlQB20LgM=;
-        b=A5aYDoUD49bh3460NGGDBvjp8I/BABrlPEPn8OJ+uLGKSxTO8o4kY1dPoJUfT3rqju
-         YtmfCLXy3pX2oyhcmvCZmvvD83DPn1/TH4yyEPYd9ow5rDBvtuOfISUAN7qqaWTAkYHb
-         euigzovAXSridLNsXCILx4rfmaIFytZotKgAqCdr3t7WmRG2xwJ8KU47Q59hBC+VXrU7
-         UYlaRoJPAz3tD0rCy+Kpj0+p5sTNsoJ2hE1Ngglu6+pYbRGDs4VOyfcksbrlAtiRfxoa
-         YDlJVnLpk1itrcM3AAOdzbnRfPNCPhisB4NR5IgEIJvzRX0aARPoN6kFu0x7yrul4TY5
-         vchw==
-X-Gm-Message-State: AAQBX9c7lre+Vhfk1FjeOpcBotC+O3NRczuizUe+bFp51mQ6eL6+g5YZ
-        +rHsOfqOXh2cvNTx5s4N8tAULCNW779dmZdBjMIfow==
-X-Google-Smtp-Source: AKy350Y8NG0s5Z/5d9gdlVxvU7Msgnu2oy2gX5boMxVFrPZW86La0+oZ0FsIORIVfSj4lMWGgAmC5+ikl/rBxMM1x7s=
-X-Received: by 2002:a17:907:3f96:b0:8f1:4cc5:f14c with SMTP id
- hr22-20020a1709073f9600b008f14cc5f14cmr10512672ejc.0.1680085057245; Wed, 29
- Mar 2023 03:17:37 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680088704;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N5CohG6Xp3aoYNlsfgUXnFLV896u1ewiB5jAiiO+FJI=;
+        b=sIrT0WPHKGTZ8re2HlpE03bOxQeax7W3TjQCAadReNLR0EuID5fTuTd2bduF47Zhqi
+         L1MTKSj9ExnxvmZ1IbF5J74cagWGpkr4ySI8PFpxhbd1cynq4kZIcQ5M0jDmUBEOXI4t
+         hXNc4YXneeatJ7audNq5hTX0UmpfviYSVagFqB/a5Gd/ZLwfZI2L93ao5malVnhlZXZ+
+         lVOz/yoxnWjIy99dmGSSgZ8gXkm7sobmXufRCQQW0/G3HewjjxT027GBESr7u9FfbLu+
+         YrkIBJsNrr5sptIhwrRhghYYpiAvHUoNxJntHtiR7QIwf9mFVKutIabnCF8KSiUCne5W
+         Jm+Q==
+X-Gm-Message-State: AAQBX9epOpn/W1SxIOvmrVE2/+th7VOQHVEGC/B4QfruAGmaXdcAlaJm
+        KihdEGWueh1EvQJKtglgNqOdHg==
+X-Google-Smtp-Source: AKy350YwT5vle5IWLw83lYuPTrwS8zEFnWxmq0FTdED5tmddZp6tIA0UGpb6cy5lLMplk79JOA55Bw==
+X-Received: by 2002:a17:907:8a08:b0:944:44d:c736 with SMTP id sc8-20020a1709078a0800b00944044dc736mr16272991ejc.64.1680088704277;
+        Wed, 29 Mar 2023 04:18:24 -0700 (PDT)
+Received: from cloudflare.com (79.184.147.137.ipv4.supernova.orange.pl. [79.184.147.137])
+        by smtp.gmail.com with ESMTPSA id ch19-20020a170906c2d300b00933d64cd447sm13723918ejb.121.2023.03.29.04.18.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Mar 2023 04:18:23 -0700 (PDT)
+References: <20230327175446.98151-1-john.fastabend@gmail.com>
+ <20230327175446.98151-3-john.fastabend@gmail.com>
+ <87tty55aou.fsf@cloudflare.com> <642362a1403ee_286af20850@john.notmuch>
+User-agent: mu4e 1.6.10; emacs 28.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     cong.wang@bytedance.com, daniel@iogearbox.net, lmb@isovalent.com,
+        edumazet@google.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, will@isovalent.com
+Subject: Re: [PATCH bpf v2 02/12] bpf: sockmap, convert schedule_work into
+ delayed_work
+Date:   Wed, 29 Mar 2023 13:09:37 +0200
+In-reply-to: <642362a1403ee_286af20850@john.notmuch>
+Message-ID: <874jq3dcw1.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <20230319195656.326701-1-kal.conley@dectris.com>
- <20230319195656.326701-4-kal.conley@dectris.com> <CAJ8uoz3F-gWzB9vYm-8MtonAv3aBcerJDxPpEDCNfmNkwJFY=A@mail.gmail.com>
- <CAJ8uoz2LU14oCAGSmUMfxMytF0KsiBGK55n+A7qPBuxpXBz6gA@mail.gmail.com>
-In-Reply-To: <CAJ8uoz2LU14oCAGSmUMfxMytF0KsiBGK55n+A7qPBuxpXBz6gA@mail.gmail.com>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Wed, 29 Mar 2023 12:22:12 +0200
-Message-ID: <CAHApi-n8UKmM4kkbS8QQnwiqdKSKTYNpHwZ4eS=HCVMnGeZNTA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests: xsk: Add tests for 8K and 9K
- frame sizes
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > TEST_TYPE_UNALIGNED_9K_FRAME
-> >
-> > > +               if (!hugepages_present(test->ifobj_tx)) {
-> > > +                       ksft_test_result_skip("No 2M huge pages present.\n");
-> > > +                       return;
-> > > +               }
-> > > +               test_spec_set_name(test, "RUN_TO_COMPLETION_9K_FRAME_SIZE");
-> >
-> > UNALIGNED_MODE_9K
+On Tue, Mar 28, 2023 at 02:56 PM -07, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> On Mon, Mar 27, 2023 at 10:54 AM -07, John Fastabend wrote:
+>> > Sk_buffs are fed into sockmap verdict programs either from a strparser
+>> > (when the user might want to decide how framing of skb is done by attaching
+>> > another parser program) or directly through tcp_read_sock. The
+>> > tcp_read_sock is the preferred method for performance when the BPF logic is
+>> > a stream parser.
+>> >
+>> > The flow for Cilium's common use case with a stream parser is,
+>> >
+>> >  tcp_read_sock()
+>> >   sk_psock_verdict_recv
+>> >     ret = bpf_prog_run_pin_on_cpu()
+>> >     sk_psock_verdict_apply(sock, skb, ret)
+>> >      // if system is under memory pressure or app is slow we may
+>> >      // need to queue skb. Do this queuing through ingress_skb and
+>> >      // then kick timer to wake up handler
+>> >      skb_queue_tail(ingress_skb, skb)
+>> >      schedule_work(work);
+>> >
+>> >
+>> > The work queue is wired up to sk_psock_backlog(). This will then walk the
+>> > ingress_skb skb list that holds our sk_buffs that could not be handled,
+>> > but should be OK to run at some later point. However, its possible that
+>> > the workqueue doing this work still hits an error when sending the skb.
+>> > When this happens the skbuff is requeued on a temporary 'state' struct
+>> > kept with the workqueue. This is necessary because its possible to
+>> > partially send an skbuff before hitting an error and we need to know how
+>> > and where to restart when the workqueue runs next.
+>> >
+>> > Now for the trouble, we don't rekick the workqueue. This can cause a
+>> > stall where the skbuff we just cached on the state variable might never
+>> > be sent. This happens when its the last packet in a flow and no further
+>> > packets come along that would cause the system to kick the workqueue from
+>> > that side.
+>> >
+>> > To fix we could do simple schedule_work(), but while under memory pressure
+>> > it makes sense to back off some instead of continue to retry repeatedly. So
+>> > instead to fix convert schedule_work to schedule_delayed_work and add
+>> > backoff logic to reschedule from backlog queue on errors. Its not obvious
+>> > though what a good backoff is so use '1'.
+>> >
+>> > To test we observed some flakes whil running NGINX compliance test with
+>> > sockmap we attributed these failed test to this bug and subsequent issue.
+>> >
+>> > Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
+>> > Tested-by: William Findlay <will@isovalent.com>
+>> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+>> > ---
 >
-> _9K_FRAME_SIZE it should have been. Hit send too early.
+> [...]
 >
+>> > --- a/net/core/skmsg.c
+>> > +++ b/net/core/skmsg.c
+>> > @@ -481,7 +481,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+>> >  	}
+>> >  out:
+>> >  	if (psock->work_state.skb && copied > 0)
+>> > -		schedule_work(&psock->work);
+>> > +		schedule_delayed_work(&psock->work, 0);
+>> >  	return copied;
+>> >  }
+>> >  EXPORT_SYMBOL_GPL(sk_msg_recvmsg);
+>> > @@ -639,7 +639,8 @@ static void sk_psock_skb_state(struct sk_psock *psock,
+>> >  
+>> >  static void sk_psock_backlog(struct work_struct *work)
+>> >  {
+>> > -	struct sk_psock *psock = container_of(work, struct sk_psock, work);
+>> > +	struct delayed_work *dwork = to_delayed_work(work);
+>> > +	struct sk_psock *psock = container_of(dwork, struct sk_psock, work);
+>> >  	struct sk_psock_work_state *state = &psock->work_state;
+>> >  	struct sk_buff *skb = NULL;
+>> >  	bool ingress;
+>> > @@ -679,6 +680,10 @@ static void sk_psock_backlog(struct work_struct *work)
+>> >  				if (ret == -EAGAIN) {
+>> >  					sk_psock_skb_state(psock, state, skb,
+>> >  							   len, off);
+>> > +
+>> > +					// Delay slightly to prioritize any
+>> > +					// other work that might be here.
+>> > +					schedule_delayed_work(&psock->work, 1);
+>> 
+>> Do IIUC that this means we can back out changes from commit bec217197b41
+>> ("skmsg: Schedule psock work if the cached skb exists on the psock")?
+>
+> Yeah I think so this is a more direct way to get the same result. I'm also
+> thinking this check,
+>
+>        if (psock->work_state.skb && copied > 0)
+>                schedule_work(&psock->work)
+>
+> is not correct copied=0 which could happen on empty queue could be the
+> result of a skb stuck from this eagain error in backlog.
 
-Fixed in the v2 patchset (coming soon).
+I suspect the 'copied > 0' check is there to handle the 0-length read
+scenario. But I think you're right, that the empty queue scenario is not
+being handled properly.
 
-Kal
+> I think its OK to revert that patch in a separate patch. And ideally we
+> could get some way to load up the stack to hit these corner cases without
+> running long stress tests.
+>
+> WDYT?
+
+Yeah, the revert can wait. I was just curious if my thinking was
+right. There is plenty of material in this series as is :-)
