@@ -2,61 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FE66CCE71
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 02:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FAB6CCE7C
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 02:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbjC2AAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Mar 2023 20:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
+        id S229722AbjC2AIL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Mar 2023 20:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjC2AAI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Mar 2023 20:00:08 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E6F3AAA
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 16:59:46 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id x3so56435182edb.10
-        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 16:59:46 -0700 (PDT)
+        with ESMTP id S229668AbjC2AIL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Mar 2023 20:08:11 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC6410F5
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 17:08:09 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id eh3so56501371edb.11
+        for <bpf@vger.kernel.org>; Tue, 28 Mar 2023 17:08:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680047985;
+        d=gmail.com; s=20210112; t=1680048488;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EedOomMuIt6s4Fkf7a6Vl0lEdMcGDJH13sQKjuGj35g=;
-        b=GzWkTCLzf4tW2FHQX3RtNNiFwxf39lSXnfkRv618w7YfD7N5OeSqvnZ32LgP8LcIX9
-         o29XGGpjMebDes+d+FrDvoHwvMiTWTUAxwKPtcOn+upAF01tZbSyp+xupMtC8bKUhJIo
-         rFNX6bCh9TnjRrEmjzgVqNOh+Ye8GcAe56bqon39IKOlSR0gLeJRYlRjpeWMGEeu3k8o
-         34T91o+BXIUcDD9B87o5Cii06Or42GPykQNj0cLoRkSw7YipDFwu1yC67T1GzWG+iaGA
-         JU1klef+QC/qT/HqfEISkel/S3G1gTPU2nwr4ixbb79V96AjAuUTFQBVAdrwKxgSyYrP
-         km5Q==
+        bh=+Zl/jYh9C5G5fQVe6bm1MFDnLMe4wsi9oWQhAlApUbY=;
+        b=kOIJWsgsnKJim+BGry+rsyo8DWLZAJWzQUfYiD0Q/wyy+/vpWWTWGRBy0vk+bV4qA6
+         kXuMf29ujSOt/pz/Hm85vtL9i2VU8pty+E2K/HjPgHYPo2dvM4tUuPPwB6BKFO5XvhiZ
+         TNBTmCvpRhyI6We8jgWmc0YnYQinfhDF6BIfybuN7uyn94vwPihBCvkC+kWslkhmwW0c
+         wV/apzl9q1hiACaWG9IsG8E1x0EUUOjh2PnkcCJ/o6N/qPTmQg2dk1Kr8BvDvZ/h+3Nw
+         iNKhK9SJyMzNA9yr4iCQD2OjsGUs4ZIwYJLatGqYP4pifDYmGk6t36TNaNFa5AYm4jzd
+         ohsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680047985;
+        d=1e100.net; s=20210112; t=1680048488;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EedOomMuIt6s4Fkf7a6Vl0lEdMcGDJH13sQKjuGj35g=;
-        b=5cqitVsQBrlx1Vquy39AQIh6i9rzoAXyDOTphkSM4LyFfxnILev5M8msSvIDEWl7Zd
-         Cn/YxdVYbbQNEiT6G0eYcGOfxKi+TjJjUmoEl50irnY2fVA0szLwJ8mB0FLjzdVn8nnD
-         e9e1J2dRbN3/kNkY1EXOzID3Q5uCcvZuew58uR/Boe/Q07NoQOsdvN8n4uZgq+5VvQO5
-         ezpPmySw+IKdtCaWi/9/LrlHbsE6c7JHakHlj924LoRRsLtGeMrPjtTaCgiDE8QLq0CZ
-         Wrm7kMMe9j/00rSyrD00dRFufA+uyDd1u9ZcfEOiWuncPcVF9nNu7stY2FJsXDVULViV
-         DDlw==
-X-Gm-Message-State: AAQBX9cDOggBvKZk+2WH1w/xl6PLZ1q04KqRV9sblaL3s4/TMg3dHFgD
-        4d7W5CBFHspN63xFUVRNi4hQfOzdyUYhvcCb6LtwQUsr
-X-Google-Smtp-Source: AKy350asP/P2gYtOohQXV8fwavfgL5qqpKgdOFDCmTdsjUECINsurpkbaxHoZbrzgceYxzjE/jSbOLdsFBwPqyEMft0=
-X-Received: by 2002:a50:9fef:0:b0:4fc:2096:b15c with SMTP id
- c102-20020a509fef000000b004fc2096b15cmr8991257edf.1.1680047984852; Tue, 28
- Mar 2023 16:59:44 -0700 (PDT)
+        bh=+Zl/jYh9C5G5fQVe6bm1MFDnLMe4wsi9oWQhAlApUbY=;
+        b=IgJ71LfdlSXThxRDzrloBbCp6AX2Aif2YpI84oEZ+oIThQRaXmW6inv0WvKGpTVQva
+         qSsJVJ2k9rGXj/MOnxqLZ1AO6WpFpeRh/cYWCVzJhwjshvMgOdisbJQjUhyRC2UYjras
+         1Dy10sM6Qai1/lebsJZxC77mABE8RkypW2xgft+5SDtrF5xG9VlVPc7UqBrE15j27671
+         eHnVfAuAzdSlYTtuwxkK0OCgtnYFQhKuJpjdnBmB09JgRJ+QdUBwtki2WWkMVFF2yFiA
+         PVmYy9GqoP8Ud24Plt+nxiV9aqwEGfoKCbV6ltLm8JZ7kvtP/C7MwwmtYPD9sXzcrraY
+         LpTw==
+X-Gm-Message-State: AAQBX9fKlGepp0DHa1p8GKvAmXp4+MwNqWIMT/eRzfplt2R/qNB2DbdJ
+        rduQPU4GFeB1R9wyIh625VnkDUzXa/+kQYG6liN1ixsV
+X-Google-Smtp-Source: AKy350bYybnvnVFHftQy3addNEKxnh4jsN31ZRgkjKBANBg7zvRCZk3xudyoElXjQ7JjVfGCKqTFSKuZKZRDbABvckU=
+X-Received: by 2002:a17:906:6692:b0:944:70f7:6fae with SMTP id
+ z18-20020a170906669200b0094470f76faemr4381762ejo.5.1680048487888; Tue, 28 Mar
+ 2023 17:08:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230328235610.3159943-1-andrii@kernel.org>
-In-Reply-To: <20230328235610.3159943-1-andrii@kernel.org>
+References: <20230325025524.144043-1-eddyz87@gmail.com> <359ea18b-5996-afea-b81e-32f13f134852@iogearbox.net>
+ <b69f211724dd9d1acdb896ca1b97109065ab28b0.camel@gmail.com>
+ <CAEf4BzZtC88nCXvBBdd-6dox1rDMfwqKZBY2CtON05fi0fGzFQ@mail.gmail.com> <bd3389fcad0dc8555ed3cf42b69f717cbea380b6.camel@gmail.com>
+In-Reply-To: <bd3389fcad0dc8555ed3cf42b69f717cbea380b6.camel@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Mar 2023 16:59:32 -0700
-Message-ID: <CAEf4BzaAcD0HEgJzQH4NTWAzkTXHLS7T-eGGxxhHm2ADROTRrg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/6] BPF verifier rotating log
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@kernel.org, lmb@isovalent.com, timo@incline.eu,
-        robin.goegge@isovalent.com, kernel-team@meta.com
+Date:   Tue, 28 Mar 2023 17:07:55 -0700
+Message-ID: <CAEf4BzbSgsat0K3fUw9wej2THmGY6J4x4R_riPqVPD8kccGQqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/43] First set of verifier/*.c migrated to
+ inline assembly
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+        kernel-team@fb.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -69,76 +72,194 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 4:56=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
- wrote:
+On Tue, Mar 28, 2023 at 3:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> This patch set changes BPF verifier log behavior to behave as a rotating =
-log,
-> by default. If user-supplied log buffer is big enough to contain entire
-> verifier log output, there is no effective difference. But where previous=
-ly
-> user supplied too small log buffer and would get -ENOSPC error result and=
- the
-> beginning part of the verifier log, now there will be no error and user w=
-ill
-> get ending part of verifier log filling up user-supplied log buffer.  Whi=
-ch
-> is, in absolute majority of cases, is exactly what's useful, relevant, an=
-d
-> what users want and need, as the ending of the verifier log is containing
-> details of verifier failure and relevant state that got us to that failur=
-e. So
-> this rotating mode is made default, but for some niche advanced debugging
-> scenarios it's possible to request old behavior by specifying additional
-> BPF_LOG_FIXED (8) flag.
+> On Tue, 2023-03-28 at 15:24 -0700, Andrii Nakryiko wrote:
+> [...]
+> >
+> > > # Simplistic tests (14 files)
+> > >
+> > > Some tests are just simplistic and it is not clear if moving those to=
+ inline
+> > > assembly really makes sense, for example, here is `basic_call.c`:
+> > >
+> > >     {
+> > >         "invalid call insn1",
+> > >         .insns =3D {
+> > >         BPF_RAW_INSN(BPF_JMP | BPF_CALL | BPF_X, 0, 0, 0, 0),
+> > >         BPF_EXIT_INSN(),
+> > >         },
+> > >         .errstr =3D "unknown opcode 8d",
+> > >         .result =3D REJECT,
+> > >     },
+> > >
+> >
+> > For tests like this we can have a simple ELF parser/loader that
+> > doesn't use bpf_object__open() functionality. It's not too hard to
+> > just find all the FUNC ELF symbols and fetch corresponding raw
+> > instructions. Assumption here is that we can take those assembly
+> > instructions as is, of course. If there are some map references and
+> > such, this won't work.
 >
-> This patch set adjusts libbpf to allow specifying flags beyond 1 | 2 | 4.=
- We
-> also add --log-size and --log-fixed options to veristat to be able to bot=
-h
-> test this functionality manually, but also to be used in various debuggin=
-g
-> scenarios. We also add selftests that tries many variants of log buffer s=
-ize
-> to stress-test correctness of internal verifier log bookkeeping code.
+> Custom elf parser/loader is interesting.
+> However, also consider how such tests look in assembly:
 >
-> v1->v2:
->   - return -ENOSPC even in rotating log mode for preserving backwards
->     compatibility (Lorenz);
+>     SEC("socket")
+>     __description("invalid call insn1")
+>     __failure __msg("unknown opcode 8d")
+>     __failure_unpriv
+>     __naked void invalid_call_insn1(void)
+>     {
+>             asm volatile ("                                 \
+>             .8byte %[raw_insn];                             \
+>             exit;                                           \
+>     "       :
+>             : __imm_insn(raw_insn, BPF_RAW_INSN(BPF_JMP | BPF_CALL | BPF_=
+X, 0, 0, 0, 0))
+>             : __clobber_all);
+>     }
+>
+> I'd say that original is better.
+> Do you want to get rid of ./test_verifier binary?
+> If so, we can move such tests under ./test_progs w/o converting to
+> inline assembly.
 
-I haven't implemented the feature we discussed, where the
-BPF_PROG_LOAD (and BPF_BTF_LOAD) command will return back the full
-size of the buffer that's necessary to contain the complete log
-buffer. I'm building it on top of this patch set and would like to
-send it separately as a follow up, as it touches UAPI some more, and I
-feel like we'll have few revisions just for this. So I didn't want to
-delay these changes. Plus, I think to add this even for BPF_LOG_FIXED
-mode, so it's provided consistently. So I need a bit more time to
-implement this. Hopefully this version will work for everyone and can
-go in sooner.
+Ideally, both test_verifier as a separate test runner to unify
+everything in test_progs "framework", which is much better integrated
+into BPF CI. But it would also be nice to get rid of almost 2k lines
+of code in test_verifier.c. But it's "ideally", it depends on how much
+new hacky code would be necessary to achieve this. No strong feelings
+here.
 
 >
-> Andrii Nakryiko (6):
->   bpf: split off basic BPF verifier log into separate file
->   bpf: remove minimum size restrictions on verifier log buffer
->   bpf: switch BPF verifier log to be a rotating log by default
->   libbpf: don't enforce verifier log levels on libbpf side
->   selftests/bpf: add more veristat control over verifier log options
->   selftests/bpf: add fixed vs rotating verifier log tests
+> [...]
+> >
+> > > # Pseudo-call instructions (9 files)
+> > >
+> > > An object file might contain several BPF programs plus some functions=
+ used from
+> > > different programs. In order to load a program from such file, `libbp=
+f` creates
+> > > a buffer and copies the program and all functions called from this pr=
+ogram into
+> > > that buffer. For each visited pseudo-call instruction `libbpf` requir=
+es it to
+> > > point to a valid function described in ELF header.
+> > >
+> > > However, this is not how `verifier/*.c` tests are written, for exampl=
+e here is a
+> > > translated fragment from `verifier/loops1.c`:
+> > >
+> > >     SEC("tracepoint")
+> > >     __description("bounded recursion")
+> > >     __failure __msg("back-edge")
+> > >     __naked void bounded_recursion(void)
+> > >     {
+> > >             asm volatile ("                                 \
+> > >             r1 =3D 0;                                         \
+> > >             call l0_%=3D;                                     \
+> > >             exit;                                           \
+> > >     l0_%=3D:  r1 +=3D 1;                                        \
+> > >             r0 =3D r1;                                        \
+> > >             if r1 < 4 goto l1_%=3D;                           \
+> > >             exit;                                           \
+> > >     l1_%=3D:  call l0_%=3D;                                     \
+> > >             exit;                                           \
+> > >     "       ::: __clobber_all);
+> > >     }
+> > >
+> > > There are several possibilities here:
+> > > - split such tests into several functions during migration;
+> > > - add a special flag for `libbpf` asking to allow such calls;
+> > > - Andrii also suggested to try using `.section` directives inside inl=
+ine
+> > >   assembly block.
+> > >
+> > > This requires further investigation, I'll discuss it with Andrii some=
+ time later
+> > > this week or on Monday.
+> >
+> > So I did try this a few weeks ago, and yes, you can make this work
+> > with assembly directives. Except that DWARF (and thus .BTF and
+> > .BTF.ext) information won't be emitted, as it is emitted very
+> > painfully and manually by C compiler as explicit assembly directives.
+> > But we might work around that by clearing .BTF and .BTF.ext
+> > information for such object files, perhaps. So tentatively this should
+> > be doable.
 >
->  include/linux/bpf_verifier.h                  |  48 ++--
->  kernel/bpf/Makefile                           |   3 +-
->  kernel/bpf/btf.c                              |   3 +-
->  kernel/bpf/log.c                              | 262 ++++++++++++++++++
->  kernel/bpf/verifier.c                         |  88 +-----
->  tools/lib/bpf/bpf.c                           |   2 -
->  .../selftests/bpf/prog_tests/log_fixup.c      |   1 +
->  .../selftests/bpf/prog_tests/verifier_log.c   | 164 +++++++++++
->  tools/testing/selftests/bpf/veristat.c        |  42 ++-
->  9 files changed, 506 insertions(+), 107 deletions(-)
->  create mode 100644 kernel/bpf/log.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier_log.c
+> Could you please share an example?
+
+I don't think I saved that. But I just looked at what asm Clang
+produces from C code with -S argument.
+
 >
-> --
-> 2.34.1
+> [...]
+> > > # `.fill_helper` (5 files)
+> > >
+> > > Programs for some tests are generated programmatically by specifying
+> > > `.fill_helper` function in the test description, e.g. `verifier/scale=
+.c`:
+> > >
+> > >     {
+> > >         "scale: scale test 1",
+> > >         .insns =3D { },
+> > >         .data =3D { },
+> > >         .fill_helper =3D bpf_fill_scale,
+> > >         .prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
+> > >         .result =3D ACCEPT,
+> > >         .retval =3D 1,
+> > >     },
+> > >
+> > > Such tests cannot be migrated
+> > > (but sometimes these are not the only tests in the file).
+> >
+> > We can just write these as explicitly programmatically generated
+> > programs, probably. There are just a few of these, shouldn't be a big
+> > deal.
 >
+> You mean move the generating function from test_verifier.c to some
+> test under prog_tests/whatever.c, right?
+
+yes, generating function + add bpf_prog_load()-based test around them
+
+>
+> > > # libbpf does not like some junk code (3 files)
+> > >
+> > > `libbpf` (and bpftool) reject some junk instructions intentionally en=
+coded in
+> > > the tests, e.g. empty program from `verifier/basic.c`:
+> > >
+> > >     SEC("socket")
+> > >     __description("empty prog")
+> > >     __failure __msg("last insn is not an exit or jmp")
+> > >     __failure_unpriv
+> > >     __naked void empty_prog(void)
+> > >     {
+> >
+> > even if you add some random "r0 =3D 0" instruction? It won't change the
+> > meaning of the test, but should work with libbpf.
+>
+> Random instruction should work.
+>
+> >
+> > >             asm volatile ("" ::: __clobber_all);
+> > >     }
+> > >
+> > > # Small log buffer (2 files)
+> > >
+> > > Currently `test_loader.c` uses 1Mb log buffer, while `test_verifier.c=
+` uses 16Mb
+> > > log buffer. There are a few tests (like in `verifier/bounds.c`) that =
+exit with
+> > > `-ESPC` for 1Mb buffer.
+> > >
+> > > I can either bump log buffer size for `test_loader.c` or wait until A=
+ndrii's
+> > > rotating log implementation lands.
+> >
+> > Just bump to 16MB, no need to wait on anything.
+>
+> Will do.
+>
+> [...]
