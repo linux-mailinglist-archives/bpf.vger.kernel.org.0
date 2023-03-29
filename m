@@ -2,79 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C28F6CEBFA
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 16:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D5A6CED1B
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 17:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjC2Ono (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 10:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
+        id S229902AbjC2PhM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 11:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbjC2OnR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 10:43:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9F5CA
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 07:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680100784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eOGvCBK3xTc7UhN8iQW8f99rBt5fCj0lar0/GGKSAUo=;
-        b=aP124Yejpz1QELZiLro/EoDC2jD7s9HnnAl1GIOiy/RsOvZXFO3ybz5Yh6fxbW4ey+y2aZ
-        6hq3Hr7dlkjMA08ujg0U2ONMJftq3Xwc57iics6EwU2G9xzSqwgZbHhlmzxxLfbsFWI7Y2
-        6UIVQ8ic7CsDllaCdKrqKswv1UTDazo=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-586-OX_M3mnhOyOLIjTwhOpgsw-1; Wed, 29 Mar 2023 10:39:40 -0400
-X-MC-Unique: OX_M3mnhOyOLIjTwhOpgsw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 52F783C10ED2;
-        Wed, 29 Mar 2023 14:39:38 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 900FA2166B33;
-        Wed, 29 Mar 2023 14:39:34 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <e128356a-f56f-4c02-7437-dfea38e4194b@suse.de>
-References: <e128356a-f56f-4c02-7437-dfea38e4194b@suse.de> <20230329141354.516864-1-dhowells@redhat.com> <20230329141354.516864-49-dhowells@redhat.com>
-To:     Hannes Reinecke <hare@suse.de>
-cc:     David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-sctp@vger.kernel.org, linux-afs@lists.infradead.org,
-        rds-devel@oss.oracle.com, linux-x25@vger.kernel.org,
-        dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-wpan@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-hams@vger.kernel.org,
-        mptcp@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <brauner@kernel.org>, netdev@vger.kernel.org,
-        Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        tipc-discussion@lists.sourceforge.net,
-        linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        bpf@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [RFC PATCH v2 48/48] sock: Remove ->sendpage*() in favour of sendmsg(MSG_SPLICE_PAGES)
+        with ESMTP id S229974AbjC2PhC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 11:37:02 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9876187;
+        Wed, 29 Mar 2023 08:36:38 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id er13so24014628edb.9;
+        Wed, 29 Mar 2023 08:36:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680104196; x=1682696196;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KcfyeLkPAysA08Ie1X3d8H/w5HiXpM/sGxEjOMYO/Y8=;
+        b=SGehPbVc2uFx6vW1FvGIYSJTVvrc4eX8rAQ+GLtFeQJKN5pBwYvz/mH1+nBETmpRBb
+         e6wG3YrgCq1k5/RUbU0rXnICjMdicSIcJWhj4NZwpWIocmSikcv3M5JrLlMIGnBc/zKW
+         Bgu0NkQmIb0FXAuuprfZXK62bRY5h6FHODeJ4hWDeU7sXwU0sgXqOeluBPPwbec4UyCK
+         mNMoTH9ziHQDwy1bQvGfiXc6SixbmrDIYUtm3v+3b4eJ6uCaJyORAV0awkz4bA6f9Z+h
+         EnJTX3FxjtrAtgHhhA7YkLJROeqS+mnDNEG21AOYiYEcgtTNjMjuJJN3+UV673B9K4gk
+         OOeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680104196; x=1682696196;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KcfyeLkPAysA08Ie1X3d8H/w5HiXpM/sGxEjOMYO/Y8=;
+        b=BPuk3w79n2O714cwrI5o2bJVOwt4Qb2aTIKA3GRqkvfH9DG8hszs4VcFttMRbnRGVh
+         gB1QTFdLsEjgScjI6YJAV38ww6m9e9Er4l3nDb1kySWgM6AAROruDk/3qu9+1Sy0LndW
+         flj0QiScdFPbxzWIW5RIEG4qjxUnGtIOgNUjw/R54H6Vktw5gr5+s8bhMRPXZj3qOi3G
+         TuIE+VYVn/DmOLtVBAsXwhCCL5a94SCxeZgYsjmsP5WjnIjFl3FDdbJmWw6WArJnfl74
+         i5nvLXqJawbkuou0zTNYvreZqs8A/Tp6oS9ansZbWMq9JeB33Sw0UAc+Lwyo1PAQ/Xpd
+         aJCw==
+X-Gm-Message-State: AAQBX9cnGKp60cNbYa5oW0nBvrz80823K6MPMQGbJVxd2jmYbm0RIUDG
+        SUJZ0iYO/E8iGOGAojCqnBA=
+X-Google-Smtp-Source: AKy350Yp6WikHvwKHEi5T0y14BchdijUUlyJkzuWvA7OSNBbGwNB0SbC5wEzdRK3NFvGWKkqFfBASQ==
+X-Received: by 2002:aa7:db94:0:b0:4bb:e80c:5667 with SMTP id u20-20020aa7db94000000b004bbe80c5667mr19914351edt.10.1680104196481;
+        Wed, 29 Mar 2023 08:36:36 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id u6-20020a50d506000000b004fd2aab4953sm17206673edi.45.2023.03.29.08.36.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Mar 2023 08:36:35 -0700 (PDT)
+Message-ID: <fabfc71fd43be48f68019c911c6a3af1412f4635.camel@gmail.com>
+Subject: Re: [PATCH dwarves v2 1/5] fprintf: Correct names for types with
+ btf_type_tag attribute
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, jose.marchesi@oracle.com, david.faust@oracle.com,
+        alan.maguire@oracle.com
+Date:   Wed, 29 Mar 2023 18:36:34 +0300
+In-Reply-To: <ZCNZcl1mkC9yhwDD@kernel.org>
+References: <20230314230417.1507266-1-eddyz87@gmail.com>
+         <20230314230417.1507266-2-eddyz87@gmail.com> <ZCLy0hjyR3KuYy3e@kernel.org>
+         <f4803213ab27c65517eea19a12be78dd4ec9f6b0.camel@gmail.com>
+         <ZCMHKFdmjVpOSNsJ@kernel.org>
+         <50a160d802ad3f84e91cf05c8f541e0c2e388fc8.camel@gmail.com>
+         <ZCNZcl1mkC9yhwDD@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <518630.1680100773.1@warthog.procyon.org.uk>
-Date:   Wed, 29 Mar 2023 15:39:33 +0100
-Message-ID: <518631.1680100773@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,35 +80,243 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hannes Reinecke <hare@suse.de> wrote:
+On Tue, 2023-03-28 at 18:17 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Mar 28, 2023 at 06:30:05PM +0300, Eduard Zingerman escreveu:
+> > On Tue, 2023-03-28 at 12:26 -0300, Arnaldo Carvalho de Melo wrote:
+> > [...]=20
+> > > Sure, but look:
+> > >=20
+> > > > > -       struct qdisc_size_table *  stab;                 /*    32=
+     8 */
+> > > > > +       struct qdisc_size_table    stab;                 /*    32=
+     8 */
+> > >=20
+> > > Its the DW_TAG_pointer_type that is getting lost somehow:
+> > >=20
+> > >  <1><b0af32>: Abbrev Number: 81 (DW_TAG_structure_type)
+> > >     <b0af33>   DW_AT_name        : (indirect string, offset: 0xe825):=
+ Qdisc
+> > >     <b0af37>   DW_AT_byte_size   : 384
+> > >     <b0af39>   DW_AT_decl_file   : 223
+> > >     <b0af3a>   DW_AT_decl_line   : 72
+> > >=20
+> > > <SNIP>
+> > >=20
+> > >  <2><b0af77>: Abbrev Number: 65 (DW_TAG_member)
+> > >     <b0af78>   DW_AT_name        : (indirect string, offset: 0x4745ff=
+): stab
+> > >     <b0af7c>   DW_AT_type        : <0xb0b76b>
+> > >     <b0af80>   DW_AT_decl_file   : 223
+> > >     <b0af81>   DW_AT_decl_line   : 99
+> > >     <b0af82>   DW_AT_data_member_location: 32
+> > >=20
+> > > <SNIP>
+> > >=20
+> > > <1><b0b76b>: Abbrev Number: 61 (DW_TAG_pointer_type)
+> > >     <b0b76c>   DW_AT_type        : <0xb0b77a>
+> > >  <2><b0b770>: Abbrev Number: 62 (User TAG value: 0x6000)
+> > >     <b0b771>   DW_AT_name        : (indirect string, offset: 0x378): =
+btf_type_tag
+> > >     <b0b775>   DW_AT_const_value : (indirect string, offset: 0x6e93):=
+ rcu
+> > >  <2><b0b779>: Abbrev Number: 0
+> > >  <1><b0b77a>: Abbrev Number: 69 (DW_TAG_structure_type)
+> > >     <b0b77b>   DW_AT_name        : (indirect string, offset: 0x6e5ed)=
+: qdisc_size_table
+> > >     <b0b77f>   DW_AT_byte_size   : 64
+> > >     <b0b780>   DW_AT_decl_file   : 223
+> > >     <b0b781>   DW_AT_decl_line   : 56
+> > >=20
+> > > =20
+> > > So it's all there in the DWARF info:
+> > >=20
+> > >    b0af77 has type 0xb0b76b which is a DW_TAG_pointer_type that has t=
+ype
+> > >    0xb0b77a, that is DW_TAG_structure_type.
+> > >=20
+> > > Now lets see how this was encoded into BTF:
+> > >=20
+> > > [4725] STRUCT 'Qdisc' size=3D384 vlen=3D28
+> > > <SNIP>
+> > >         'stab' type_id=3D4790 bits_offset=3D256
+> > > <SNIP>
+> > > [4790] PTR '(anon)' type_id=3D4789
+> > > <SNIP>
+> > > [4789] TYPE_TAG 'rcu' type_id=3D4791
+> > > <SNIP>
+> > > [4791] STRUCT 'qdisc_size_table' size=3D64 vlen=3D5
+> > >         'rcu' type_id=3D320 bits_offset=3D0
+> > >         'list' type_id=3D87 bits_offset=3D128
+> > >         'szopts' type_id=3D4792 bits_offset=3D256
+> > >         'refcnt' type_id=3D16 bits_offset=3D448
+> > >         'data' type_id=3D4659 bits_offset=3D480
+> > >=20
+> > > So it all seems ok, we should keep all the info and teach fprintf to
+> > > handle TYPE_TAG.
+> > >=20
+> > > Which you tried, but somehow the '*' link is missing.
+> >=20
+> > Yep, thanks a lot for the analysis, I will take a look.
+> > Hopefully will send v2 tomorrow.
+>=20
+> So, with the patch below it gets equivalent, but some more tweaking is
+> needed to make the output completely match (spaces, "long usigned" ->
+> "unsigned long", which seems to be all equivalent):
+>=20
+> --- /tmp/gcc    2023-03-28 18:13:42.022385428 -0300
+> +++ /tmp/clang  2023-03-28 18:13:45.854486885 -0300
+> @@ -73,15 +73,15 @@
+>         unsigned int               flags;                /*    16     4 *=
+/
+>         u32                        limit;                /*    20     4 *=
+/
+>         const struct Qdisc_ops  *  ops;                  /*    24     8 *=
+/
+> -       struct qdisc_size_table *  stab;                 /*    32     8 *=
+/
+> +       struct qdisc_size_table  * stab;                 /*    32     8 *=
+/
+>         struct hlist_node          hash;                 /*    40    16 *=
+/
+>         u32                        handle;               /*    56     4 *=
+/
+>         u32                        parent;               /*    60     4 *=
+/
+>         /* --- cacheline 1 boundary (64 bytes) --- */
+>         struct netdev_queue *      dev_queue;            /*    64     8 *=
+/
+> -       struct net_rate_estimator * rate_est;            /*    72     8 *=
+/
+> -       struct gnet_stats_basic_sync * cpu_bstats;       /*    80     8 *=
+/
+> -       struct gnet_stats_queue *  cpu_qstats;           /*    88     8 *=
+/
+> +       struct net_rate_estimator  * rate_est;           /*    72     8 *=
+/
+> +       struct gnet_stats_basic_sync  * cpu_bstats;      /*    80     8 *=
+/
+> +       struct gnet_stats_queue  * cpu_qstats;           /*    88     8 *=
+/
+>         int                        pad;                  /*    96     4 *=
+/
+>         refcount_t                 refcnt;               /*   100     4 *=
+/
+>=20
+> @@ -96,8 +96,8 @@
+>=20
+>         /* XXX 4 bytes hole, try to pack */
+>=20
+> -       long unsigned int          state;                /*   216     8 *=
+/
+> -       long unsigned int          state2;               /*   224     8 *=
+/
+> +       unsigned long              state;                /*   216     8 *=
+/
+> +       unsigned long              state2;               /*   224     8 *=
+/
+>         struct Qdisc *             next_sched;           /*   232     8 *=
+/
+>         struct sk_buff_head        skb_bad_txq;          /*   240    24 *=
+/
+>=20
+> @@ -112,7 +112,7 @@
+>         /* XXX 40 bytes hole, try to pack */
+>=20
+>         /* --- cacheline 6 boundary (384 bytes) --- */
+> -       long int                   privdata[];           /*   384     0 *=
+/
+> +       long                       privdata[];           /*   384     0 *=
+/
+>=20
+>         /* size: 384, cachelines: 6, members: 28 */
+>         /* sum members: 260, holes: 4, sum holes: 124 */
+> @@ -145,19 +145,19 @@
+>         /* XXX 4 bytes hole, try to pack */
+>=20
+>         struct netdev_queue *      (*select_queue)(struct Qdisc *, struct=
+ tcmsg *); /*     8     8 */
+> -       int                        (*graft)(struct Qdisc *, long unsigned=
+ int, struct Qdisc *, struct Qdisc * *, struct netlink_ext_ack *); /*    16=
+     8 */
+> +       int                        (*graft)(struct Qdisc *, unsigned long=
+, struct Qdisc *, struct Qdisc * *, struct netlink_ext_ack *); /*    16    =
+ 8 */
+> -       struct Qdisc *             (*leaf)(struct Qdisc *, long unsigned =
+int); /*    24     8 */
+> +       struct Qdisc *             (*leaf)(struct Qdisc *, unsigned long)=
+; /*    24     8 */
+> -       void                       (*qlen_notify)(struct Qdisc *, long un=
+signed int); /*    32     8 */
+> +       void                       (*qlen_notify)(struct Qdisc *, unsigne=
+d long); /*    32     8 */
+> -       long unsigned int          (*find)(struct Qdisc *, u32); /*    40=
+     8 */
+> +       unsigned long              (*find)(struct Qdisc *, u32); /*    40=
+     8 */
+> -       int                        (*change)(struct Qdisc *, u32, u32, st=
+ruct nlattr * *, long unsigned int *, struct netlink_ext_ack *); /*    48  =
+   8 */
+> +       int                        (*change)(struct Qdisc *, u32, u32, st=
+ruct nlattr * *, unsigned long *, struct netlink_ext_ack *); /*    48     8=
+ */
+> -       int                        (*delete)(struct Qdisc *, long unsigne=
+d int, struct netlink_ext_ack *); /*    56     8 */
+> +       int                        (*delete)(struct Qdisc *, unsigned lon=
+g, struct netlink_ext_ack *); /*    56     8 */
+>=20
+> diff --git a/dwarves_fprintf.c b/dwarves_fprintf.c
+> index 1e6147a82056c188..1ecc24321bf8f975 100644
+> --- a/dwarves_fprintf.c
+> +++ b/dwarves_fprintf.c
+> @@ -788,8 +788,15 @@ next_type:
+>  			if (n)
+>  				return printed + n;
+>  			if (ptype->tag =3D=3D DW_TAG_LLVM_annotation) {
+> -				type =3D ptype;
+> -				goto next_type;
+> +				// FIXME: Just skip this for now, we need to print this annotation
+> +				// to match the original source code.
+> +
+> +				if (ptype->type =3D=3D 0) {
+> +					printed +=3D fprintf(fp, "%-*s %s", tconf.type_spacing, "void *", n=
+ame);
+> +					break;
+> +				}
+> +
+> +				ptype =3D cu__type(cu, ptype->type);
+>  			}
+>  			if (ptype->tag =3D=3D DW_TAG_subroutine_type) {
+>  				printed +=3D ftype__fprintf(tag__ftype(ptype),
 
-> > [!] Note: This is a work in progress.  At the moment, some things won't
-> >      build if this patch is applied.  nvme, kcm, smc, tls.
+This explains why '*' was missing, but unfortunately it breaks apart
+when there are multiple type tags, e.g.:
 
-Actually, that needs updating.  nvme and smc now build.
 
-> Weelll ... what happens to consumers of kernel_sendpage()?
-> (Let's call them nvme ...)
-> Should they be moved over, too?
-
-Patch 42 should address NVMe, I think.  I can't test it, though, as I don't
-have hardware.
-
-There should be no callers of kernel_sendmsg() by the end of this patchset,
-and the only remaining implementors of sendpage are Chelsio-TLS, AF_TLS and
-AF_KCM, which as stated in the cover, aren't yet converted and won't build.
-
-> Or what is the general consensus here?
-> 
-> (And what do we do with TLS? It does have a ->sendpage() version, too ...)
-
-I know.  There are three things left that I need to tackle, but I'd like to
-get opinions on some of the other bits and I might need some help with AF_TLS
-and AF_KCM.
-
-That said, should I just remove tls_sw_do_sendpage() since presumably the data
-is going to get copied(?) and encrypted and the source pages aren't going to
-be held onto?
-
-David
-
+    $ cat tag-test.c
+    #define __t __attribute__((btf_type_tag("t1")))
+   =20
+    struct foo {
+      int  (__t __t *a)(void);
+    } g;
+    $ clang -g -c tag-test.c -o tag-test.o && pahole -J tag-test.o && pahol=
+e --sort -F dwarf tag-test.o
+    struct foo {
+    	int ()(void)   *           a;                    /*     0     8 */
+   =20
+    	/* size: 8, cachelines: 1, members: 1 */
+    	/* last cacheline: 8 bytes */
+    };
+    $ clang -g -c tag-test.c -o tag-test.o && pahole -J tag-test.o && pahol=
+e --sort -F btf tag-test.o
+    struct foo {
+    	int ()(void)   *           a;                    /*     0     8 */
+   =20
+    	/* size: 8, cachelines: 1, members: 1 */
+    	/* last cacheline: 8 bytes */
+    };
+   =20
+What I don't understand is why pointer's type is LLVM_annotation.
+Probably, the cleanest solution would be to make DWARF and BTF loaders
+work in a similar way and attach LLVM_annotation as `annots` field of
+the `struct btf_type_tag_ptr_type`. Thus, avoiding 'LLVM_annotation's
+in the middle of type chains. I'll work on this.
