@@ -2,628 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 702926CF6BF
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 01:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16746CF6CE
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 01:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbjC2XNp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 19:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
+        id S230482AbjC2XTX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 19:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjC2XNo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 19:13:44 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1114C13
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 16:13:35 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id kc4so16410189plb.10
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 16:13:35 -0700 (PDT)
+        with ESMTP id S230179AbjC2XTV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 19:19:21 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3314E11A
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 16:19:17 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id d5-20020a17090ac24500b0023cb04ec86fso4616011pjx.7
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 16:19:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680131615;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ii/OPf6S6yx9j6l0QkubpjQkCeOFYIwJazTVsxemcAI=;
-        b=dNBpf1j1O6RnleFqTRIiLfXW1LQRwQI0Ih+12XxybLpHNSlIZTUxjm1PLQdiVKWobO
-         hlZDKxe8/z0oocVtBudXzkBPmafrXemc5Y9yEJBWe5GR0BqTwxpJ8oFsunp3C+8N6tgS
-         5y5E9HtEC3yRD6DTDjpnjMf45/4pZpoBfdE4C6ue26U2z4ZEQqsduGBThyZ96gkuKkis
-         fG3/cCrtAaDvtixrgyR2ewWb8MPJ7kKGD692INUFD8pYUHDIwHqMmlidIsaX9IX4ehbc
-         3ZBA1aDecn30cy5pQx/S7FsMUVy58JW4qYk7ZHLuXR2jyi7RIrvvATqF0PCQaknk8+9i
-         5w+Q==
+        d=google.com; s=20210112; t=1680131956;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gihxk+7No2scFLMLBpp+6wyoNPNP1GnRy6PfH0IiWEM=;
+        b=Tr9XXbhuifWlXfUlhy27lp7/3dU3BTkeG87rqjP79pDAydC7BA/vng0N1y0arfOkXL
+         NH2arXYY0PaMGLhSGBLOh/COvPilLQ0BDMxkMgAmWqJJsMRbB3jGCYmJHcAex8WjhIYC
+         xgs43qaUYx0Frwsk+E2SetSLamNfnzLABUPW1YD1TvUTzhK+8EhBW/5Hbr6g3yToPb+f
+         JHwQ2v7RGe0CcQuqvidLMbUux/0XvTIu5oS1ICrf8I9LBsSgaDvYYs1OeIddbDCM1oYE
+         ekBP2ocRhXD/Za0wl8ps8NW+42jdMKg+IAjxowEqREPiokx6mUI/wPx8o9yrV2Y2aZhn
+         1npg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680131615;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ii/OPf6S6yx9j6l0QkubpjQkCeOFYIwJazTVsxemcAI=;
-        b=xCu6KyPEhcZJQrEoaRdwdtQZvgXBcB/ja3j6y67lTE+KZt+DGwiY7Sh0vm8GXoPdiM
-         WtkyAhZXNgss1n+7l533yRycmuzCWJT+l7Hwe/jIaPyhfID4hrgrgxKpAkwyfZ01VV0r
-         0XQHvqhvrWxxANmx1GBmEwNtaUoy4aS5eGiY1pGrv2B9VhE54c8aCuqCejozjGqzHZap
-         mV5LroPxxShKGcNjwayDx5ktfjzutk0w3oO62QQm4Iu7MRWeF9mz+hKCfw/L+LLkxr8w
-         SiltSOp3c5nQvHyCY9p4DPETcGSmezjJ0Vv3k709BMcCsXNKJjed94Gr8SPqq5HJapxW
-         +WVA==
-X-Gm-Message-State: AAQBX9cD30Yx86elC946HQw7S3qllMbqegF44F0pj2LPBszC30DfFM2Y
-        rlzTGciQWefi6Wur3zAgxpYoXg==
-X-Google-Smtp-Source: AKy350ZZ5heCJQWgu/L11ZGe8sgxgjM5kcnqyIfWxv1SpXZNN0qsdKW6uUmyxh5kM7iu94hHCYWLOg==
-X-Received: by 2002:a17:902:da8e:b0:1a1:a273:1812 with SMTP id j14-20020a170902da8e00b001a1a2731812mr27310772plx.45.1680131614696;
-        Wed, 29 Mar 2023 16:13:34 -0700 (PDT)
-Received: from ?IPv6:2601:647:4900:1fbb:cd81:c42c:e36a:c000? ([2601:647:4900:1fbb:cd81:c42c:e36a:c000])
-        by smtp.gmail.com with ESMTPSA id h21-20020a170902f7d500b001a21b871824sm10475364plw.119.2023.03.29.16.13.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 29 Mar 2023 16:13:34 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v4 bpf-next 4/4] selftests/bpf: Add tests for
- bpf_sock_destroy
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <CAKH8qBtYvsvjruNdznYq-Bkr-FjJoazx71_f=hph21B6_09-oA@mail.gmail.com>
-Date:   Wed, 29 Mar 2023 16:13:32 -0700
-Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <30733F2E-2CEB-4004-9970-FA791988F887@isovalent.com>
-References: <20230323200633.3175753-1-aditi.ghag@isovalent.com>
- <20230323200633.3175753-5-aditi.ghag@isovalent.com>
- <ZB4btVWyDjjdIqhV@google.com>
- <DD6B5D46-CDA5-4510-8647-28445AD92DE1@isovalent.com>
- <ZCHKY4Bmb6mgc8ea@google.com>
- <F3202D0D-A607-4B66-86B1-2CA1ED67E0BB@isovalent.com>
- <CAKH8qBtYvsvjruNdznYq-Bkr-FjJoazx71_f=hph21B6_09-oA@mail.gmail.com>
-To:     Stanislav Fomichev <sdf@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20210112; t=1680131956;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gihxk+7No2scFLMLBpp+6wyoNPNP1GnRy6PfH0IiWEM=;
+        b=mK8FkJ7n8f9lZKE0stxoZaxto1pcaNXhJFMhTG6SaD1xlFNMnVeuFVw/A8VVzqdRBs
+         d/tD0ktJ8nG8ZdfOWasgi10Bw1Yl6621x/cJgzVDitQCvflqFlWgKDSmjNwidHFiqI2/
+         GajtDMwTMBdsT+AMYmylYBnHxEyBHT/SetAtskFRgD7BfrD7HYebJ1ymMuhFTypMbzt+
+         x+/l8k3n32YW29dXsnibywzMDKvJabZv3smGKg1N0bXFdCkf9O4Gdb57iQ3mDJNopkFB
+         kkPQvxP+JAx4p2m6t1OJDHHuekK604MoOeNEsfglLW351SGcBS/8a6fbszXH3ztOXhuY
+         SuKg==
+X-Gm-Message-State: AAQBX9fYjkEmGuSCxxdUz3T7Dmea5l5ymV5to/WwFK0wbPoR4ZY4bpnv
+        X6EfihdADCLdE6UyRE5F6GPFig4=
+X-Google-Smtp-Source: AKy350ZVTSK9qGKwnEiYmz1DKrOYDBf7pVA2Lq3qWisrqZK/uAWx9h3eARPGxDMmvPCESi7n/Ardgkw=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:a09:b0:625:dc5b:9d1d with SMTP id
+ p9-20020a056a000a0900b00625dc5b9d1dmr11263039pfh.0.1680131956699; Wed, 29 Mar
+ 2023 16:19:16 -0700 (PDT)
+Date:   Wed, 29 Mar 2023 16:19:15 -0700
+In-Reply-To: <b9e5077f-fbc4-8904-74a8-cda94d91cfbf@redhat.com>
+Mime-Version: 1.0
+References: <168003451121.3027256.13000250073816770554.stgit@firesoul>
+ <168003455815.3027256.7575362149566382055.stgit@firesoul> <ZCNjHAY81gS02FVW@google.com>
+ <811724e2-cdd6-15fe-b176-9dfcdbd98bad@redhat.com> <ZCRy2f170FQ+fXsp@google.com>
+ <b9e5077f-fbc4-8904-74a8-cda94d91cfbf@redhat.com>
+Message-ID: <ZCTHc6Dp4RMi1YZ6@google.com>
+Subject: Re: [PATCH bpf RFC 1/4] xdp: rss hash types representation
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-> On Mar 28, 2023, at 11:35 AM, Stanislav Fomichev <sdf@google.com> =
-wrote:
->=20
-> On Tue, Mar 28, 2023 at 10:51=E2=80=AFAM Aditi Ghag =
-<aditi.ghag@isovalent.com> wrote:
->>=20
->>=20
->>=20
->>> On Mar 27, 2023, at 9:54 AM, Stanislav Fomichev <sdf@google.com> =
-wrote:
->>>=20
->>> On 03/27, Aditi Ghag wrote:
->>>=20
->>>=20
->>>>> On Mar 24, 2023, at 2:52 PM, Stanislav Fomichev <sdf@google.com> =
-wrote:
->>>>>=20
->>>>> On 03/23, Aditi Ghag wrote:
->>>>>> The test cases for destroying sockets mirror the intended usages =
-of the
->>>>>> bpf_sock_destroy kfunc using iterators.
->>>>>=20
->>>>>> The destroy helpers set `ECONNABORTED` error code that we can =
-validate in
->>>>>> the test code with client sockets. But UDP sockets have an =
-overriding error
->>>>>> code from the disconnect called during abort, so the error code =
-the
->>>>>> validation is only done for TCP sockets.
->>>>>=20
->>>>>> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
->>>>>> ---
->>>>>> .../selftests/bpf/prog_tests/sock_destroy.c   | 195 =
-++++++++++++++++++
->>>>>> .../selftests/bpf/progs/sock_destroy_prog.c   | 151 =
-++++++++++++++
->>>>>> 2 files changed, 346 insertions(+)
->>>>>> create mode 100644 =
-tools/testing/selftests/bpf/prog_tests/sock_destroy.c
->>>>>> create mode 100644 =
-tools/testing/selftests/bpf/progs/sock_destroy_prog.c
->>>>>=20
->>>>>> diff --git =
-a/tools/testing/selftests/bpf/prog_tests/sock_destroy.c =
-b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
->>>>>> new file mode 100644
->>>>>> index 000000000000..cbce966af568
->>>>>> --- /dev/null
->>>>>> +++ b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
->>>>>> @@ -0,0 +1,195 @@
->>>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>>> +#include <test_progs.h>
->>>>>> +
->>>>>> +#include "sock_destroy_prog.skel.h"
->>>>>> +#include "network_helpers.h"
->>>>>> +
->>>>>> +#define SERVER_PORT 6062
->>>>>> +
->>>>>> +static void start_iter_sockets(struct bpf_program *prog)
->>>>>> +{
->>>>>> + struct bpf_link *link;
->>>>>> + char buf[50] =3D {};
->>>>>> + int iter_fd, len;
->>>>>> +
->>>>>> + link =3D bpf_program__attach_iter(prog, NULL);
->>>>>> + if (!ASSERT_OK_PTR(link, "attach_iter"))
->>>>>> +         return;
->>>>>> +
->>>>>> + iter_fd =3D bpf_iter_create(bpf_link__fd(link));
->>>>>> + if (!ASSERT_GE(iter_fd, 0, "create_iter"))
->>>>>> +         goto free_link;
->>>>>> +
->>>>>> + while ((len =3D read(iter_fd, buf, sizeof(buf))) > 0)
->>>>>> +         ;
->>>>>> + ASSERT_GE(len, 0, "read");
->>>>>> +
->>>>>> + close(iter_fd);
->>>>>> +
->>>>>> +free_link:
->>>>>> + bpf_link__destroy(link);
->>>>>> +}
->>>>>> +
->>>>>> +static void test_tcp_client(struct sock_destroy_prog *skel)
->>>>>> +{
->>>>>> + int serv =3D -1, clien =3D -1, n =3D 0;
->>>>>> +
->>>>>> + serv =3D start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
->>>>>> + if (!ASSERT_GE(serv, 0, "start_server"))
->>>>>> +         goto cleanup_serv;
->>>>>> +
->>>>>> + clien =3D connect_to_fd(serv, 0);
->>>>>> + if (!ASSERT_GE(clien, 0, "connect_to_fd"))
->>>>>> +         goto cleanup_serv;
->>>>>> +
->>>>>> + serv =3D accept(serv, NULL, NULL);
->>>>>> + if (!ASSERT_GE(serv, 0, "serv accept"))
->>>>>> +         goto cleanup;
->>>>>> +
->>>>>> + n =3D send(clien, "t", 1, 0);
->>>>>> + if (!ASSERT_GE(n, 0, "client send"))
->>>>>> +         goto cleanup;
->>>>>> +
->>>>>> + /* Run iterator program that destroys connected client sockets. =
-*/
->>>>>> + start_iter_sockets(skel->progs.iter_tcp6_client);
->>>>>> +
->>>>>> + n =3D send(clien, "t", 1, 0);
->>>>>> + if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
->>>>>> +         goto cleanup;
->>>>>> + ASSERT_EQ(errno, ECONNABORTED, "error code on destroyed =
-socket");
->>>>>> +
->>>>>> +
->>>>>> +cleanup:
->>>>>> + close(clien);
->>>>>> +cleanup_serv:
->>>>>> + close(serv);
->>>>>> +}
->>>>>> +
->>>>>> +static void test_tcp_server(struct sock_destroy_prog *skel)
->>>>>> +{
->>>>>> + int serv =3D -1, clien =3D -1, n =3D 0;
->>>>>> +
->>>>>> + serv =3D start_server(AF_INET6, SOCK_STREAM, NULL, SERVER_PORT, =
-0);
->>>>>> + if (!ASSERT_GE(serv, 0, "start_server"))
->>>>>> +         goto cleanup_serv;
->>>>>> +
->>>>>> + clien =3D connect_to_fd(serv, 0);
->>>>>> + if (!ASSERT_GE(clien, 0, "connect_to_fd"))
->>>>>> +         goto cleanup_serv;
->>>>>> +
->>>>>> + serv =3D accept(serv, NULL, NULL);
->>>>>> + if (!ASSERT_GE(serv, 0, "serv accept"))
->>>>>> +         goto cleanup;
->>>>>> +
->>>>>> + n =3D send(clien, "t", 1, 0);
->>>>>> + if (!ASSERT_GE(n, 0, "client send"))
->>>>>> +         goto cleanup;
->>>>>> +
->>>>>> + /* Run iterator program that destroys server sockets. */
->>>>>> + start_iter_sockets(skel->progs.iter_tcp6_server);
->>>>>> +
->>>>>> + n =3D send(clien, "t", 1, 0);
->>>>>> + if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
->>>>>> +         goto cleanup;
->>>>>> + ASSERT_EQ(errno, ECONNRESET, "error code on destroyed socket");
->>>>>> +
->>>>>> +
->>>>>> +cleanup:
->>>>>> + close(clien);
->>>>>> +cleanup_serv:
->>>>>> + close(serv);
->>>>>> +}
->>>>>> +
->>>>>> +
->>>>>> +static void test_udp_client(struct sock_destroy_prog *skel)
->>>>>> +{
->>>>>> + int serv =3D -1, clien =3D -1, n =3D 0;
->>>>>> +
->>>>>> + serv =3D start_server(AF_INET6, SOCK_DGRAM, NULL, 6161, 0);
->>>>>> + if (!ASSERT_GE(serv, 0, "start_server"))
->>>>>> +         goto cleanup_serv;
->>>>>> +
->>>>>> + clien =3D connect_to_fd(serv, 0);
->>>>>> + if (!ASSERT_GE(clien, 0, "connect_to_fd"))
->>>>>> +         goto cleanup_serv;
->>>>>> +
->>>>>> + n =3D send(clien, "t", 1, 0);
->>>>>> + if (!ASSERT_GE(n, 0, "client send"))
->>>>>> +         goto cleanup;
->>>>>> +
->>>>>> + /* Run iterator program that destroys sockets. */
->>>>>> + start_iter_sockets(skel->progs.iter_udp6_client);
->>>>>> +
->>>>>> + n =3D send(clien, "t", 1, 0);
->>>>>> + if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
->>>>>> +         goto cleanup;
->>>>>> + /* UDP sockets have an overriding error code after they are =
-disconnected,
->>>>>> +  * so we don't check for ECONNABORTED error code.
->>>>>> +  */
->>>>>> +
->>>>>> +cleanup:
->>>>>> + close(clien);
->>>>>> +cleanup_serv:
->>>>>> + close(serv);
->>>>>> +}
->>>>>> +
->>>>>> +static void test_udp_server(struct sock_destroy_prog *skel)
->>>>>> +{
->>>>>> + int *listen_fds =3D NULL, n, i;
->>>>>> + unsigned int num_listens =3D 5;
->>>>>> + char buf[1];
->>>>>> +
->>>>>> + /* Start reuseport servers. */
->>>>>> + listen_fds =3D start_reuseport_server(AF_INET6, SOCK_DGRAM,
->>>>>> +                                     "::1", SERVER_PORT, 0,
->>>>>> +                                     num_listens);
->>>>>> + if (!ASSERT_OK_PTR(listen_fds, "start_reuseport_server"))
->>>>>> +         goto cleanup;
->>>>>> +
->>>>>> + /* Run iterator program that destroys server sockets. */
->>>>>> + start_iter_sockets(skel->progs.iter_udp6_server);
->>>>>> +
->>>>>> + for (i =3D 0; i < num_listens; ++i) {
->>>>>> +         n =3D read(listen_fds[i], buf, sizeof(buf));
->>>>>> +         if (!ASSERT_EQ(n, -1, "read") ||
->>>>>> +             !ASSERT_EQ(errno, ECONNABORTED, "error code on =
-destroyed socket"))
->>>>>> +                 break;
->>>>>> + }
->>>>>> + ASSERT_EQ(i, num_listens, "server socket");
->>>>>> +
->>>>>> +cleanup:
->>>>>> + free_fds(listen_fds, num_listens);
->>>>>> +}
->>>>>> +
->>>>>> +void test_sock_destroy(void)
->>>>>> +{
->>>>>> + int cgroup_fd =3D 0;
->>>>>> + struct sock_destroy_prog *skel;
->>>>>> +
->>>>>> + skel =3D sock_destroy_prog__open_and_load();
->>>>>> + if (!ASSERT_OK_PTR(skel, "skel_open"))
->>>>>> +         return;
->>>>>> +
->>>>>> + cgroup_fd =3D test__join_cgroup("/sock_destroy");
->>>>>> + if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
->>>>>> +         goto close_cgroup_fd;
->>>>>> +
->>>>>> + skel->links.sock_connect =3D bpf_program__attach_cgroup(
->>>>>> +         skel->progs.sock_connect, cgroup_fd);
->>>>>> + if (!ASSERT_OK_PTR(skel->links.sock_connect, "prog_attach"))
->>>>>> +         goto close_cgroup_fd;
->>>>>> +
->>>>>> + if (test__start_subtest("tcp_client"))
->>>>>> +         test_tcp_client(skel);
->>>>>> + if (test__start_subtest("tcp_server"))
->>>>>> +         test_tcp_server(skel);
->>>>>> + if (test__start_subtest("udp_client"))
->>>>>> +         test_udp_client(skel);
->>>>>> + if (test__start_subtest("udp_server"))
->>>>>> +         test_udp_server(skel);
->>>>>> +
->>>>>> +
->>>>>> +close_cgroup_fd:
->>>>>> + close(cgroup_fd);
->>>>>> + sock_destroy_prog__destroy(skel);
->>>>>> +}
->>>>>> diff --git =
-a/tools/testing/selftests/bpf/progs/sock_destroy_prog.c =
-b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
->>>>>> new file mode 100644
->>>>>> index 000000000000..8e09d82c50f3
->>>>>> --- /dev/null
->>>>>> +++ b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
->>>>>> @@ -0,0 +1,151 @@
->>>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>>> +
->>>>>> +#include "vmlinux.h"
->>>>>> +
->>>>>> +#include "bpf_tracing_net.h"
->>>>>> +#include <bpf/bpf_helpers.h>
->>>>>> +#include <bpf/bpf_endian.h>
->>>>>> +
->>>>>> +#define AF_INET6 10
->>>>>=20
->>>>> [..]
->>>>>=20
->>>>>> +/* Keep it in sync with prog_test/sock_destroy. */
->>>>>> +#define SERVER_PORT 6062
->>>>>=20
->>>>> The test looks good, one optional unrelated nit maybe:
->>>>>=20
->>>>> I've been guilty of these hard-coded ports in the past, but maybe
->>>>> we should stop hard-coding them? Getting the address of the =
-listener (bound to
->>>>> port 0) and passing it to the bpf program via global variable =
-should be super
->>>>> easy now (with the skeletons and network_helpers).
->>>=20
->>>=20
->>>> I briefly considered adding the ports in a map, and retrieving them =
-in the test. But it didn't seem worthwhile as the tests should fail =
-clearly when there is a mismatch.
->>>=20
->>> My worry is that the amount of those tests that have a hard-coded =
-port
->>> grows and at some point somebody will clash with somebody else.
->>> And it might not be 100% apparent because test_progs is now =
-multi-threaded
->>> and racy..
->>>=20
->>=20
->> So you would like the ports to be unique across all the tests.
->=20
-> Yeah, but it's hard without having some kind of global registry. Take
-> a look at the following:
->=20
-> $ grep -Iri _port tools/testing/selftests/bpf/ | grep -P '\d{4}'
->=20
-> tools/testing/selftests/bpf/progs/connect_force_port4.c:
-> sa.sin_port =3D bpf_htons(22222);
-> tools/testing/selftests/bpf/progs/connect_force_port4.c:        if
-> (ctx->user_port =3D=3D bpf_htons(60000)) {
-> tools/testing/selftests/bpf/progs/connect_force_port4.c:
-> ctx->user_port =3D bpf_htons(60123);
-> tools/testing/selftests/bpf/progs/connect_force_port4.c:        if
-> (ctx->user_port =3D=3D bpf_htons(60123)) {
-> tools/testing/selftests/bpf/progs/connect_force_port4.c:
-> ctx->user_port =3D bpf_htons(60000);
-> tools/testing/selftests/bpf/progs/connect_force_port4.c:        if
-> (ctx->user_port =3D=3D bpf_htons(60123)) {
-> tools/testing/selftests/bpf/progs/connect6_prog.c:#define
-> DST_REWRITE_PORT6     6666
-> tools/testing/selftests/bpf/progs/test_sk_lookup.c:static const __u16
-> SRC_PORT =3D bpf_htons(8008);
-> tools/testing/selftests/bpf/progs/test_sk_lookup.c:static const __u16
-> DST_PORT =3D 7007; /* Host byte order */
-> tools/testing/selftests/bpf/progs/test_tc_dtime.c:      __u16
-> dst_ns_port =3D __bpf_htons(50000 + test);
-> tools/testing/selftests/bpf/progs/connect4_dropper.c:   if
-> (ctx->user_port =3D=3D bpf_htons(60120))
-> tools/testing/selftests/bpf/progs/connect_force_port6.c:
-> sa.sin6_port =3D bpf_htons(22223);
-> tools/testing/selftests/bpf/progs/connect_force_port6.c:        if
-> (ctx->user_port =3D=3D bpf_htons(60000)) {
-> tools/testing/selftests/bpf/progs/connect_force_port6.c:
-> ctx->user_port =3D bpf_htons(60124);
-> tools/testing/selftests/bpf/progs/connect_force_port6.c:        if
-> (ctx->user_port =3D=3D bpf_htons(60124)) {
-> tools/testing/selftests/bpf/progs/connect_force_port6.c:
-> ctx->user_port =3D bpf_htons(60000);
-> tools/testing/selftests/bpf/progs/connect_force_port6.c:        if
-> (ctx->user_port =3D=3D bpf_htons(60124)) {
-> tools/testing/selftests/bpf/progs/test_tunnel_kern.c:#define
-> VXLAN_UDP_PORT 4789
-> tools/testing/selftests/bpf/progs/sendmsg4_prog.c:#define DST_PORT
->         4040
-> tools/testing/selftests/bpf/progs/sendmsg4_prog.c:#define
-> DST_REWRITE_PORT4     4444
-> tools/testing/selftests/bpf/progs/connect4_prog.c:#define
-> DST_REWRITE_PORT4     4444
-> tools/testing/selftests/bpf/progs/bind6_prog.c:#define SERV6_PORT
->         6060
-> tools/testing/selftests/bpf/progs/bind6_prog.c:#define
-> SERV6_REWRITE_PORT       6666
-> tools/testing/selftests/bpf/progs/sendmsg6_prog.c:#define
-> DST_REWRITE_PORT6     6666
-> tools/testing/selftests/bpf/progs/recvmsg4_prog.c:#define SERV4_PORT
->         4040
-> <cut>
->=20
-> .... there is much more ...
->=20
->>> Getting the address of the listener (bound to
->>> port 0) and passing it to the bpf program via global variable should =
-be super
->>> easy now (with the skeletons and network_helpers).
->>=20
->> Just so that we are on the same page, could you point to which =
-network helpers are you referring to here for passing global variables?
->=20
-> Take a look at the following existing tests:
-> * prog_tests/cgroup_skb_sk_lookup.c
->  * run_lookup_test(&skel->bss->g_serv_port, out_sk);
-> * progs/cgroup_skb_sk_lookup_kern.c
->  * g_serv_port
->=20
-> Fundamentally, here is what's preferable to have:
->=20
-> fd =3D start_server(..., port=3D0, ...);
-> listener_port =3D get_port(fd); /* new network_helpers.h helper that
-> calls getsockname */
-> obj->bss->port =3D listener_port; /* populate the port in the BPF =
-program */
->=20
-> Does it make sense?
-
-That makes sense. Good to know for future references. The client tests =
-don't have hard-coded ports anyway, only the server tests do as they are =
-using the so_resuseport option. You did mention that this was an =
-optional nit, so I'll leave the hard-coded ports for the server tests =
-for now. Hope that's reasonable.
-
->=20
->>>>>=20
->>>>> And, unrelated, maybe also fix a bunch of places where the reverse =
-christmas
->>>>> tree doesn't look reverse anymore?
->>>=20
->>>> Ok. The checks should be part of tooling (e.g., checkpatch) though =
-if they are meant to be enforced consistently, no?
->>>=20
->>> They are networking specific, so they are not part of a checkpath =
-:-(
->>> I won't say they are consistently enforced, but we try to keep then
->>> whenever possible.
->>>=20
->>>>>=20
->>>>>> +
->>>>>> +int bpf_sock_destroy(struct sock_common *sk) __ksym;
->>>>>> +
->>>>>> +struct {
->>>>>> + __uint(type, BPF_MAP_TYPE_ARRAY);
->>>>>> + __uint(max_entries, 1);
->>>>>> + __type(key, __u32);
->>>>>> + __type(value, __u64);
->>>>>> +} tcp_conn_sockets SEC(".maps");
->>>>>> +
->>>>>> +struct {
->>>>>> + __uint(type, BPF_MAP_TYPE_ARRAY);
->>>>>> + __uint(max_entries, 1);
->>>>>> + __type(key, __u32);
->>>>>> + __type(value, __u64);
->>>>>> +} udp_conn_sockets SEC(".maps");
->>>>>> +
->>>>>> +SEC("cgroup/connect6")
->>>>>> +int sock_connect(struct bpf_sock_addr *ctx)
->>>>>> +{
->>>>>> + int key =3D 0;
->>>>>> + __u64 sock_cookie =3D 0;
->>>>>> + __u32 keyc =3D 0;
->>>>>> +
->>>>>> + if (ctx->family !=3D AF_INET6 || ctx->user_family !=3D =
-AF_INET6)
->>>>>> +         return 1;
->>>>>> +
->>>>>> + sock_cookie =3D bpf_get_socket_cookie(ctx);
->>>>>> + if (ctx->protocol =3D=3D IPPROTO_TCP)
->>>>>> +         bpf_map_update_elem(&tcp_conn_sockets, &key, =
-&sock_cookie, 0);
->>>>>> + else if (ctx->protocol =3D=3D IPPROTO_UDP)
->>>>>> +         bpf_map_update_elem(&udp_conn_sockets, &keyc, =
-&sock_cookie, 0);
->>>>>> + else
->>>>>> +         return 1;
->>>>>> +
->>>>>> + return 1;
->>>>>> +}
->>>>>> +
->>>>>> +SEC("iter/tcp")
->>>>>> +int iter_tcp6_client(struct bpf_iter__tcp *ctx)
->>>>>> +{
->>>>>> + struct sock_common *sk_common =3D ctx->sk_common;
->>>>>> + struct seq_file *seq =3D ctx->meta->seq;
->>>>>> + __u64 sock_cookie =3D 0;
->>>>>> + __u64 *val;
->>>>>> + int key =3D 0;
->>>>>> +
->>>>>> + if (!sk_common)
->>>>>> +         return 0;
->>>>>> +
->>>>>> + if (sk_common->skc_family !=3D AF_INET6)
->>>>>> +         return 0;
->>>>>> +
->>>>>> + sock_cookie  =3D bpf_get_socket_cookie(sk_common);
->>>>>> + val =3D bpf_map_lookup_elem(&tcp_conn_sockets, &key);
->>>>>> + if (!val)
->>>>>> +         return 0;
->>>>>> + /* Destroy connected client sockets. */
->>>>>> + if (sock_cookie =3D=3D *val)
->>>>>> +         bpf_sock_destroy(sk_common);
->>>>>> +
->>>>>> + return 0;
->>>>>> +}
->>>>>> +
->>>>>> +SEC("iter/tcp")
->>>>>> +int iter_tcp6_server(struct bpf_iter__tcp *ctx)
->>>>>> +{
->>>>>> + struct sock_common *sk_common =3D ctx->sk_common;
->>>>>> + struct seq_file *seq =3D ctx->meta->seq;
->>>>>> + struct tcp6_sock *tcp_sk;
->>>>>> + const struct inet_connection_sock *icsk;
->>>>>> + const struct inet_sock *inet;
->>>>>> + __u16 srcp;
->>>>>> +
->>>>>> + if (!sk_common)
->>>>>> +         return 0;
->>>>>> +
->>>>>> + if (sk_common->skc_family !=3D AF_INET6)
->>>>>> +         return 0;
->>>>>> +
->>>>>> + tcp_sk =3D bpf_skc_to_tcp6_sock(sk_common);
->>>>>> + if (!tcp_sk)
->>>>>> +         return 0;
->>>>>> +
->>>>>> + icsk =3D &tcp_sk->tcp.inet_conn;
->>>>>> + inet =3D &icsk->icsk_inet;
->>>>>> + srcp =3D bpf_ntohs(inet->inet_sport);
->>>>>> +
->>>>>> + /* Destroy server sockets. */
->>>>>> + if (srcp =3D=3D SERVER_PORT)
->>>>>> +         bpf_sock_destroy(sk_common);
->>>>>> +
->>>>>> + return 0;
->>>>>> +}
->>>>>> +
->>>>>> +
->>>>>> +SEC("iter/udp")
->>>>>> +int iter_udp6_client(struct bpf_iter__udp *ctx)
->>>>>> +{
->>>>>> + struct seq_file *seq =3D ctx->meta->seq;
->>>>>> + struct udp_sock *udp_sk =3D ctx->udp_sk;
->>>>>> + struct sock *sk =3D (struct sock *) udp_sk;
->>>>>> + __u64 sock_cookie =3D 0, *val;
->>>>>> + int key =3D 0;
->>>>>> +
->>>>>> + if (!sk)
->>>>>> +         return 0;
->>>>>> +
->>>>>> + sock_cookie  =3D bpf_get_socket_cookie(sk);
->>>>>> + val =3D bpf_map_lookup_elem(&udp_conn_sockets, &key);
->>>>>> + if (!val)
->>>>>> +         return 0;
->>>>>> + /* Destroy connected client sockets. */
->>>>>> + if (sock_cookie =3D=3D *val)
->>>>>> +         bpf_sock_destroy((struct sock_common *)sk);
->>>>>> +
->>>>>> + return 0;
->>>>>> +}
->>>>>> +
->>>>>> +SEC("iter/udp")
->>>>>> +int iter_udp6_server(struct bpf_iter__udp *ctx)
->>>>>> +{
->>>>>> + struct seq_file *seq =3D ctx->meta->seq;
->>>>>> + struct udp_sock *udp_sk =3D ctx->udp_sk;
->>>>>> + struct sock *sk =3D (struct sock *) udp_sk;
->>>>>> + __u16 srcp;
->>>>>> + struct inet_sock *inet;
->>>>>> +
->>>>>> + if (!sk)
->>>>>> +         return 0;
->>>>>> +
->>>>>> + inet =3D &udp_sk->inet;
->>>>>> + srcp =3D bpf_ntohs(inet->inet_sport);
->>>>>> + if (srcp =3D=3D SERVER_PORT)
->>>>>> +         bpf_sock_destroy((struct sock_common *)sk);
->>>>>> +
->>>>>> + return 0;
->>>>>> +}
->>>>>> +
->>>>>> +char _license[] SEC("license") =3D "GPL";
->>>>>> --
->>>>>> 2.34.1
-
+T24gMDMvMjksIEplc3BlciBEYW5nYWFyZCBCcm91ZXIgd3JvdGU6DQoNCj4gT24gMjkvMDMvMjAy
+MyAxOS4xOCwgU3RhbmlzbGF2IEZvbWljaGV2IHdyb3RlOg0KPiA+IE9uIDAzLzI5LCBKZXNwZXIg
+RGFuZ2FhcmQgQnJvdWVyIHdyb3RlOg0KPiA+DQo+ID4gPiBPbiAyOC8wMy8yMDIzIDIzLjU4LCBT
+dGFuaXNsYXYgRm9taWNoZXYgd3JvdGU6DQo+ID4gPiA+IE9uIDAzLzI4LCBKZXNwZXIgRGFuZ2Fh
+cmQgQnJvdWVyIHdyb3RlOg0KPiA+ID4gPiA+IFRoZSBSU1MgaGFzaCB0eXBlIHNwZWNpZmllcyB3
+aGF0IHBvcnRpb24gb2YgcGFja2V0IGRhdGEgTklDICANCj4gaGFyZHdhcmUgdXNlZA0KPiA+ID4g
+PiA+IHdoZW4gY2FsY3VsYXRpbmcgUlNTIGhhc2ggdmFsdWUuIFRoZSBSU1MgdHlwZXMgYXJlIGZv
+Y3VzZWQgb24gIA0KPiBJbnRlcm5ldA0KPiA+ID4gPiA+IHRyYWZmaWMgcHJvdG9jb2xzIGF0IE9T
+SSBsYXllcnMgTDMgYW5kIEw0LiBMMiAoZS5nLiBBUlApIG9mdGVuICANCj4gZ2V0IGhhc2gNCj4g
+PiA+ID4gPiB2YWx1ZSB6ZXJvIGFuZCBubyBSU1MgdHlwZS4gRm9yIEwzIGZvY3VzZWQgb24gSVB2
+NCB2cy4gSVB2NiwgYW5kICANCj4gTDQNCj4gPiA+ID4gPiBwcmltYXJpbHkgVENQIHZzIFVEUCwg
+YnV0IHNvbWUgaGFyZHdhcmUgc3VwcG9ydHMgU0NUUC4NCj4gPiA+ID4NCj4gPiA+ID4gPiBIYXJk
+d2FyZSBSU1MgdHlwZXMgYXJlIGRpZmZlcmVudGx5IGVuY29kZWQgZm9yIGVhY2ggaGFyZHdhcmUg
+TklDLiAgDQo+IE1vc3QNCj4gPiA+ID4gPiBoYXJkd2FyZSByZXByZXNlbnQgUlNTIGhhc2ggdHlw
+ZSBhcyBhIG51bWJlci4gRGV0ZXJtaW5pbmcgTDMgdnMgIA0KPiBMNCBvZnRlbg0KPiA+ID4gPiA+
+IHJlcXVpcmVzIGEgbWFwcGluZyB0YWJsZSBhcyB0aGVyZSBvZnRlbiBpc24ndCBhIHBhdHRlcm4g
+b3Igc29ydGluZw0KPiA+ID4gPiA+IGFjY29yZGluZyB0byBJU08gbGF5ZXIuDQo+ID4gPiA+DQo+
+ID4gPiA+ID4gVGhlIHBhdGNoIGludHJvZHVjZSBhIFhEUCBSU1MgaGFzaCB0eXBlICh4ZHBfcnNz
+X2hhc2hfdHlwZSkgdGhhdCAgDQo+IGNhbiBib3RoDQo+ID4gPiA+ID4gYmUgc2VlbiBhcyBhIG51
+bWJlciB0aGF0IGlzIG9yZGVyZWQgYWNjb3JkaW5nIGJ5IElTTyBsYXllciwgYW5kICANCj4gY2Fu
+IGJlIGJpdA0KPiA+ID4gPiA+IG1hc2tlZCB0byBzZXBhcmF0ZSBJUHY0IGFuZCBJUHY2IHR5cGVz
+IGZvciBMNCBwcm90b2NvbHMuIFJvb20gaXMgIA0KPiBhdmFpbGFibGUNCj4gPiA+ID4gPiBmb3Ig
+ZXh0ZW5kaW5nIGxhdGVyIHdoaWxlIGtlZXBpbmcgdGhlc2UgcHJvcGVydGllcy4gVGhpcyBtYXBz
+IGFuZCAgDQo+IHVuaWZpZXMNCj4gPiA+ID4gPiBkaWZmZXJlbmNlIHRvIGhhcmR3YXJlIHNwZWNp
+ZmljIGhhc2hlcy4NCj4gPiA+ID4NCj4gPiA+ID4gTG9va3MgZ29vZCBvdmVyYWxsLiBBbnkgcmVh
+c29uIHdlJ3JlIG1ha2luZyB0aGlzIHNwZWNpZmljIGxheW91dD8NCj4gPg0KPiA+ID4gT25lIGlt
+cG9ydGFudCBnb2FsIGlzIHRvIGhhdmUgYSBzaW1wbGUvZmFzdCB3YXkgdG8gZGV0ZXJtaW5pbmcg
+TDMgdnMgIA0KPiBMNCwNCj4gPiA+IGJlY2F1c2UgYSBMNCBoYXNoIGNhbiBiZSB1c2VkIGZvciBm
+bG93IGhhbmRsaW5nIChlLmcuIGxvYWQtYmFsYW5jaW5nKS4NCj4gPg0KPiA+ID4gV2UgYmVsb3cg
+bGF5b3V0IHlvdSBjYW46DQo+ID4NCj4gPiA+IMKgIGlmIChyc3NfdHlwZSAmIFhEUF9SU1NfVFlQ
+RV9MNF9NQVNLKQ0KPiA+ID4gwqDCoMKgwqBib29sIGh3X2hhc2hfZG9fTEIgPSB0cnVlOw0KPiA+
+DQo+ID4gPiBPciB1c2luZyBpdCBhcyBhIG51bWJlcjoNCj4gPg0KPiA+ID4gwqAgaWYgKHJzc190
+eXBlID4gWERQX1JTU19UWVBFX0w0KQ0KPiA+ID4gwqDCoMKgwqBib29sIGh3X2hhc2hfZG9fTEIg
+PSB0cnVlOw0KPiA+DQo+ID4gV2h5IGlzIGl0IHN0cmljdGx5IGJldHRlciB0aGVuIHRoZSBmb2xs
+b3dpbmc/DQo+ID4NCj4gPiBpZiAocnNzX3R5cGUgJiAoVFlQRV9VRFAgfCBUWVBFX1RDUCB8IFRZ
+UEVfU0NUUCkpIHt9DQo+ID4NCg0KPiBTZWUgVjIgSSBkcm9wcGVkIHRoZSBpZGVhIG9mIHRoaXMg
+YmVpbmcgYSBudW1iZXIgKHRoYXQgaWRlYSB3YXMgbm90IGENCj4gZ29vZCBpZGVhKS4NCg0K8J+R
+jQ0KDQo+ID4gSWYgd2UgYWRkIHNvbWUgbmV3IEw0IGZvcm1hdCwgdGhlIGJwZiBwcm9ncmFtcyBj
+YW4gYmUgdXBkYXRlZCB0byBzdXBwb3J0DQo+ID4gaXQ/DQo+ID4NCj4gPiA+IEknbSB2ZXJ5IG9w
+ZW4gdG8gY2hhbmdlcyB0byBteSAic3BlY2lmaWMiIGxheW91dC7CoCBJIGFtIGluIGRvdWJ0IGlm
+DQo+ID4gPiB1c2luZyBpdCBhcyBhIG51bWJlciBpcyB0aGUgcmlnaHQgYXBwcm9hY2ggYW5kIHdv
+cnRoIHRoZSB0cm91YmxlLg0KPiA+DQo+ID4gPiA+IFdoeSBub3Qgc2ltcGx5IHRoZSBmb2xsb3dp
+bmc/DQo+ID4gPiA+DQo+ID4gPiA+IGVudW0gew0KPiA+ID4gPsKgIO+/ve+/ve+/ve+/vVhEUF9S
+U1NfVFlQRV9OT05FID0gMCwNCj4gPiA+ID7CoCDvv73vv73vv73vv71YRFBfUlNTX1RZUEVfSVBW
+NCA9IEJJVCgwKSwNCj4gPiA+ID7CoCDvv73vv73vv73vv71YRFBfUlNTX1RZUEVfSVBWNiA9IEJJ
+VCgxKSwNCj4gPiA+ID7CoCDvv73vv73vv73vv70vKiBJUHY2IHdpdGggZXh0ZW5zaW9uIGhlYWRl
+ci4gKi8NCj4gPiA+ID7CoCDvv73vv73vv73vv70vKiBsZXQncyBub3RlIF5eXiBpdCBpbiB0aGUg
+VUFQST8gKi8NCj4gPiA+ID7CoCDvv73vv73vv73vv71YRFBfUlNTX1RZUEVfSVBWNl9FWCA9IEJJ
+VCgyKSwNCj4gPiA+ID7CoCDvv73vv73vv73vv71YRFBfUlNTX1RZUEVfVURQID0gQklUKDMpLA0K
+PiA+ID4gPsKgIO+/ve+/ve+/ve+/vVhEUF9SU1NfVFlQRV9UQ1AgPSBCSVQoNCksDQo+ID4gPiA+
+wqAg77+977+977+977+9WERQX1JTU19UWVBFX1NDVFAgPSBCSVQoNSksDQo+ID4NCj4gPiA+IFdl
+IGtub3cgdGhlc2UgYml0cyBmb3IgVURQLCBUQ1AsIFNDVFAgKGFuZCBJUFNFQykgYXJlIGV4Y2x1
+c2l2ZSwgdGhleQ0KPiA+ID4gY2Fubm90IGJlIHNldCBhdCB0aGUgc2FtZSB0aW1lLCBlLmcuIGFz
+IGEgcGFja2V0IGNhbm5vdCBib3RoIGJlIFVEUCAgDQo+IGFuZA0KPiA+ID4gVENQLsKgIFRodXMs
+IHVzaW5nIHRoZXNlIGJpdHMgYXMgYSBudW1iZXIgbWFrZSBzZW5zZSB0byBtZSwgYW5kIGlzIG1v
+cmUNCj4gPiA+IGNvbXBhY3QuDQo+ID4NCj4gPiBbLi5dDQo+ID4NCj4gPiA+IFRoaXMgQklUKCkg
+YXBwcm9hY2ggYWxzbyBoYXZlIHRoZSBpc3N1ZSBvZiBleHRlbmRpbmcgaXQgbGF0ZXIgKGZvcndh
+cmQNCj4gPiA+IGNvbXBhdGliaWxpdHkpLsKgIEFzIG1lbnRpb25lZCBhIGNvbW1vbiB0YXNrIHdp
+bGwgYmUgdG8gY2hlY2sgaWYNCj4gPiA+IGhhc2gtdHlwZSBpcyBhIEw0IHR5cGUuwqAgU2VlIG1s
+eDUgW3BhdGNoIDQvNF0gbmVlZGVkIHRvIGV4dGVuZCB3aXRoDQo+ID4gPiBJUFNFQy4gTm90aWNl
+IGhvdyBteSBYRFBfUlNTX1RZUEVfTDRfTUFTSyBjb3ZlcnMgYWxsIHRoZSBiaXRzIHRoYXQgIA0K
+PiB0aGlzDQo+ID4gPiBjYW4gYmUgZXh0ZW5kZWQgd2l0aCBuZXcgTDQgdHlwZXMsIHN1Y2ggdGhh
+dCBleGlzdGluZyBwcm9ncyB3aWxsIHN0aWxsDQo+ID4gPiB3b3JrIGNoZWNraW5nIGZvciBMNCBj
+aGVjay7CoCBJdCBjYW4gb2YtY2F1c2UgYmUgc29sdmVkIGluIHRoZSBzYW1lIHdheQ0KPiA+ID4g
+Zm9yIHRoaXMgQklUKCkgYXBwcm9hY2ggYnkgcmVzZXJ2aW5nIHNvbWUgYml0cyB1cGZyb250IGlu
+IGEgbWFzay4NCj4gPg0KPiA+IFdlJ3JlIHVzaW5nIDYgYml0cyBvdXQgb2YgNjQsIHdlIHNob3Vs
+ZCBiZSBnb29kIGZvciBhd2hpbGU/IElmIHRoZXJlDQo+ID4gaXMgZXZlciBhIGZvcndhcmQgY29t
+cGF0aWJpbGl0eSBpc3N1ZSwgd2UgY2FuIGFsd2F5cyBjb21lIHVwIHdpdGgNCj4gPiBhIG5ldyBr
+ZnVuYy4NCg0KPiBJIHdhbnQvbmVlZCBzdG9yZSB0aGUgUlNTLXR5cGUgaW4gdGhlIHhkcF9mcmFt
+ZSwgZm9yIFhEUF9SRURJUkVDVCBhbmQNCj4gU0tCIHVzZS1jYXNlcy4gIFRodXMsIEkgZG9uJ3Qg
+d2FudCB0byB1c2UgNjQtYml0LzgtYnl0ZXMsIGFzIHhkcF9mcmFtZQ0KPiBzaXplIGlzIGxpbWl0
+ZWQgKGdpdmVuIGl0IHJlZHVjZXMgaGVhZHJvb20gZXhwYW5zaW9uKS4NCg0KPiA+DQo+ID4gT25l
+IG90aGVyIHJlbGF0ZWQgcXVlc3Rpb24gSSBoYXZlIGlzOiBzaG91bGQgd2UgZXhwb3J0IHRoZSB0
+eXBlDQo+ID4gb3ZlciBzb21lIGFkZGl0aW9uYWwgbmV3IGtmdW5jIGFyZ3VtZW50PyAoaW5zdGVh
+ZCBvZiBhYnVzaW5nIHRoZSByZXR1cm4NCj4gPiB0eXBlKQ0KDQo+IEdvb2QgcXVlc3Rpb24uIEkg
+d2FzIGFsc28gd29uZGVyaW5nIGlmIGl0IHdvdWxkbid0IGJlIGJldHRlciB0byBhZGQNCj4gYW5v
+dGhlciBrZnVuYyBhcmd1bWVudCB3aXRoIHRoZSByc3NfaGFzaF90eXBlPw0KDQo+IFRoYXQgd2ls
+bCBjaGFuZ2UgdGhlIGNhbGwgc2lnbmF0dXJlLCBzbyB0aGF0IHdpbGwgbm90IGJlIGVhc3kgdG8g
+aGFuZGxlDQo+IGJldHdlZW4ga2VybmVsIHJlbGVhc2VzLg0KDQpBZ3JlZSB3aXRoIFRva2Ugb24g
+YSBzZXBhcmF0ZSB0aHJlYWQ7IG1pZ2h0IG5vdCBiZSB0b28gbGF0ZSB0byBmaXQgaXQNCmludG8g
+YW4gcmMuLg0KDQo+ID4gTWF5YmUgdGhhdCB3aWxsIGxldCB1cyBkcm9wIHRoZSBleHBsaWNpdCBC
+VEZfVFlQRV9FTUlUIGFzIHdlbGw/DQoNCj4gU3VyZSwgaWYgd2UgZGVmaW5lIGl0IGFzIGFuIGFy
+Z3VtZW50LCB0aGVuIGl0IHdpbGwgYXV0b21hdGljYWxseQ0KPiBleHBvcnRlZCBhcyBCVEYuDQoN
+Cj4gPiA+ID4gfQ0KPiA+ID4gPg0KPiA+ID4gPiBBbmQgdGhlbiB1c2luZyBYRFBfUlNTX1RZUEVf
+SVBWNHxYRFBfUlNTX1RZUEVfVURQIHZzDQo+ID4gPiA+IFhEUF9SU1NfVFlQRV9JUFY2fFhYWCA/
+DQo+ID4NCj4gPiA+IERvIG5vdGljZSwgdGhhdCBJIGFscmVhZHkgZG9lcyBzb21lIGxldmVsIG9m
+IG9yJ2luZyAoInwiKSBpbiB0aGlzDQo+ID4gPiBwcm9wb3NhbC7CoCBUaGUgbWFpbiBkaWZmZXJl
+bmNlIGlzIHRoYXQgSSBoaWRlIHRoaXMgZnJvbSB0aGUgZHJpdmVyLCAgDQo+IGFuZA0KPiA+ID4g
+a2luZCBvZiBwcmUtY29tYmluZSB0aGUgdmFsaWQgY29tYmluYXRpb24gKGVudW0ncykgZHJpdmVy
+cyBjYW4gc2VsZWN0DQo+ID4gPiBmcm9tLiBJIGRvIGdldCB0aGUgcG9pbnQsIGFuZCBJIHRoaW5r
+IEkgd2lsbCBjb21lIHVwIHdpdGggYSBjb21iaW5lZA0KPiA+ID4gc29sdXRpb24gYmFzZWQgb24g
+eW91ciBpbnB1dC4NCj4gPg0KPiA+DQo+ID4gPiBUaGUgUlNTIGhhc2hpbmcgdHlwZXMgYW5kIGNv
+bWJpbmF0aW9ucyBjb21lcyBmcm9tIE0kIHN0YW5kYXJkczoNCj4gPiA+IMKgIFsxXSAgDQo+IGh0
+dHBzOi8vbGVhcm4ubWljcm9zb2Z0LmNvbS9lbi11cy93aW5kb3dzLWhhcmR3YXJlL2RyaXZlcnMv
+bmV0d29yay9yc3MtaGFzaGluZy10eXBlcyNpcHY0LWhhc2gtdHlwZS1jb21iaW5hdGlvbnMNCj4g
+Pg0KPiA+IE15IG1haW4gY29uY2VybiBoZXJlIGlzIHRoYXQgd2UncmUgb3Zlci1jb21wbGljYXRp
+bmcgaXQgd2l0aCB0aGUgbWFza3MNCj4gPiBhbmQgdGhlIGZvcm1hdC4gV2l0aCB0aGUgZXhwbGlj
+aXQgYml0cyB3ZSBjYW4gZWFzaWx5IG1hcCB0byB0aGF0DQo+ID4gc3BlYyB5b3UgbWVudGlvbi4N
+Cg0KPiBTZWUgaWYgeW91IGxpa2UgbXkgUkZDLVYyIHByb3Bvc2FsIGJldHRlci4NCj4gSXQgc2hv
+dWxkIGdvIG1vcmUgaW4geW91ciBkaXJlY3Rpb24uDQoNClllYWgsIEkgbGlrZSBpdCBiZXR0ZXIu
+IEJ0dywgd2h5IGhhdmUgYSBzZXBhcmF0ZSBiaXQgZm9yIFhEUF9SU1NfQklUX0VYPw0KQW55IHJl
+YXNvbiBpdCdzIG5vdCBhIFhEUF9SU1NfTDNfSVBWNl9FWCB3aXRoaW4gWERQX1JTU19MM19NQVNL
+Pw0KDQpBbmQgdGhlIGZvbGxvd2luZyBwYXJ0IHNlZW1zIGxpa2UgYSBsZWZ0b3ZlciBmcm9tIHRo
+ZSBlYXJsaWVyIHZlcnNpb246DQoNCisvKiBGb3IgcGFydGl0aW9uaW5nIG9mIHhkcF9yc3NfaGFz
+aF90eXBlICovDQorI2RlZmluZSBSU1NfTDMJCUdFTk1BU0soMiwwKSAvKiAzLWJpdHMgPSB2YWx1
+ZXMgYmV0d2VlbiAxLTcgKi8NCisjZGVmaW5lIEw0X0JJVAkJQklUKDMpICAgICAgIC8qIDEtYml0
+IC0gTDQgaW5kaWNhdGlvbiAqLw0KKyNkZWZpbmUgUlNTX0w0X0lQVjQJR0VOTUFTSyg2LDQpIC8q
+IDMtYml0cyAqLw0KKyNkZWZpbmUgUlNTX0w0X0lQVjYJR0VOTUFTSyg5LDcpIC8qIDMtYml0cyAq
+Lw0KKyNkZWZpbmUgUlNTX0w0CQlHRU5NQVNLKDksMykgLyogPSA3LWJpdHMgLSBjb3ZlcmluZyBM
+NCBJUFY0K0lQVjYgKi8NCisjZGVmaW5lIEw0X0lQVjZfRVhfQklUCUJJVCg5KSAgICAgICAvKiAx
+LWJpdCAtIEw0IElQdjYgd2l0aCBFeHRlbnNpb24gaGRyICANCiovDQorCQkJCSAgICAgLyogMTEt
+Yml0cyBpbiB0b3RhbCAqLw0KDQo+ID4gRm9yIGV4YW1wbGUsIGZvciBmb3J3YXJkIGNvbXBhdCwg
+SSdtIG5vdCBzdXJlIHdlIGNhbiBhc3N1bWUgdGhhdCB0aGUgIA0KPiBwZW9wbGUNCj4gPiB3aWxs
+IGRvOg0KPiA+ICDCoMKgwqDCoCJyc3NfdHlwZSAmIFhEUF9SU1NfVFlQRV9MNF9NQVNLIg0KPiA+
+IGluc3RlYWQgb2Ygc29tZXRoaW5nIGxpa2U6DQo+ID4gIMKgwqDCoMKgInJzc190eXBlICYgKFhE
+UF9SU1NfVFlQRV9MNF9JUFY0X1RDUHxYRFBfUlNTX1RZUEVfTDRfSVBWNF9VRFApIg0KPiA+DQoN
+Cj4gVGhpcyBjb2RlIGlzIGFsbG93ZWQgaW4gVjIgYW5kIHNob3VsZCBiZS4gSXQgaXMgYSBjaG9p
+Y2Ugb2YNCj4gQlBGLXByb2dyYW1tZXIgaW4gbGluZS0yIHRvIG5vdCBiZSBmb3J3YXJkIGNvbXBh
+dGlibGUgd2l0aCBuZXdlciBMNCB0eXBlcy4NCg0KPiA+ID4gPiA+IFRoaXMgcHJvcG9zYWwgY2hh
+bmdlIHRoZSBrZnVuYyBBUEkgYnBmX3hkcF9tZXRhZGF0YV9yeF9oYXNoKCkgdG8gICANCj4gcmV0
+dXJuDQo+ID4gPiA+ID4gdGhpcyBSU1MgaGFzaCB0eXBlIG9uIHN1Y2Nlc3MuDQoNCj4gVGhpcyBp
+cyB0aGUgcmVhbCBxdWVzdGlvbiAoYXMgYWxzbyByYWlzZWQgYWJvdmUpLi4uDQo+IFNob3VsZCB3
+ZSB1c2UgcmV0dXJuIHZhbHVlIG9yIGFkZCBhbiBhcmd1bWVudCBmb3IgdHlwZT8NCg0KTGV0J3Mg
+Zml4IHRoZSBwcm90b3R5cGUgd2hpbGUgaXQncyBzdGlsbCBlYXJseSBpbiB0aGUgcmM/DQpNYXli
+ZSBhbHNvIGV4dGVuZCB0aGUgdGVzdHMgdG8gZHJvcC9kZWNvZGUvdmVyaWZ5IHRoZSBtYXNrPw0K
+DQo+IC0tSmVzcGVyDQoNCg==
