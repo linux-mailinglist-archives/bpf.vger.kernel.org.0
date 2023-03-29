@@ -2,240 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C586CF20E
-	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 20:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94686CF230
+	for <lists+bpf@lfdr.de>; Wed, 29 Mar 2023 20:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbjC2SVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Mar 2023 14:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
+        id S229436AbjC2Sf7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Mar 2023 14:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjC2SUz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Mar 2023 14:20:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F1959E5
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:20:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680114007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gQJesUxnFKqgiarOkDz2JwDNpFkGj1zpEAjUJlQpgaY=;
-        b=HnJJMwwdGTlnCEayTR5U+CZJjDAXebX8iyWaoV/4LNaGWI7e0I+ZFDdOAjTWZbknRwFpyf
-        7FtpeONZNHi/qcpiC78y5g4fpQeHq512jlFmzQmmpbM+UR3rs9MZTNJjk4yMfYKR/pSIEj
-        xnwaxZEpfWmAOfwqocmJa4FQy7ckF7Y=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-601-m87s52VjOeqAvfHPlvmaYQ-1; Wed, 29 Mar 2023 14:20:03 -0400
-X-MC-Unique: m87s52VjOeqAvfHPlvmaYQ-1
-Received: by mail-ed1-f71.google.com with SMTP id i42-20020a0564020f2a00b004fd23c238beso23511197eda.0
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:20:02 -0700 (PDT)
+        with ESMTP id S229448AbjC2Sf6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Mar 2023 14:35:58 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9001FDA
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:35:57 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id y4so67159816edo.2
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 11:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680114956;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=074Y6a1LOZyvJ0HpDP0R80x1CPITuTgLuzL4FbpLXG4=;
+        b=Q3XcwcBsTUyIC0Ud2Jt1CBbZW8TJRh7iOQJBI/1gOAr7h3Pn4n+2wZlhqtc/eaMbzB
+         Hm1X86IBAV2AY7GPMNsAKRpoEm3DbAUhNBWi0ym66OeTB6BQcUM/+Skj9EONo3U2wSSl
+         5sX66LKzXuSxUaOJd6C1nOee+Nz2WWRiWJOZSKKxnA66r1rj15KblXkYT0KVzDwoGy4E
+         urE4fYYRos/G+BOZueIxZzKmen+fi8pXlr0c9M8yHkXSesHKKCKxyGR5CFruXzRLsG5Q
+         7BxZIO4WxHALWdZN9n1VR74tRFohq9qMR436joG4xFST+W0RIFlDyGpfBdg+ttz4FDY6
+         CILg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680114001;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gQJesUxnFKqgiarOkDz2JwDNpFkGj1zpEAjUJlQpgaY=;
-        b=5Euvxq5VAT3RCHvIlWQ61QSqx1OxIQvSsTLBuFaYR4mYmVoQWgH2Hux0wlgYWk8tVe
-         hSodm3Cnl9Xxm5rPnq8rtvuSZ4GGb59g2B71dBga010OvCqQp/KD0QMVZiFRK3kvu6GF
-         40JEG2OGLTsIbSPs9lLVf5q6CnE2JjGHtxJElTvAvOB/JL9X+SSiEaEqBs7G3O3cI3Is
-         JjAFPqR1l7qXd+0snUFDP7YcyTGWgC3MPbNpOZ93GJcehH/GMtzvzOuzrN16lnkJIhJz
-         jT7SRsZcZE0f+5cPoFWyGKlpHIFNJLJVzyvzuLHoswEYBI2hbBSabelrKcehEqGt4cQs
-         +5hw==
-X-Gm-Message-State: AAQBX9e4jdpXb43fLm2as1rb8/g/pjqg+QC+O/UYJARgl8jcI5ajsjsf
-        b2MmB4YgLzhkMKIJZdhMKo6o2CLVlW24Uv7LMbIPT+8YDDDUU8h4H0vjCMd3GLIWeablVaEQdn2
-        yaZTC8Bkf7UyU+UXfauHo
-X-Received: by 2002:a17:906:d117:b0:93b:a0c8:1cec with SMTP id b23-20020a170906d11700b0093ba0c81cecmr22268594ejz.32.1680114001210;
-        Wed, 29 Mar 2023 11:20:01 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ZUWaOjgV1IE1t9AH5dAFmEEVhMdzH2/G4HwhCRXgJx0Hh4qa1/fFlOoCH37s5FCywLH99t6w==
-X-Received: by 2002:a17:906:d117:b0:93b:a0c8:1cec with SMTP id b23-20020a170906d11700b0093ba0c81cecmr22268560ejz.32.1680114000870;
-        Wed, 29 Mar 2023 11:20:00 -0700 (PDT)
-Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id gx24-20020a170906f1d800b0092d16623eeasm16798089ejb.138.2023.03.29.11.19.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Mar 2023 11:20:00 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <b9e5077f-fbc4-8904-74a8-cda94d91cfbf@redhat.com>
-Date:   Wed, 29 Mar 2023 20:19:59 +0200
+        d=1e100.net; s=20210112; t=1680114956;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=074Y6a1LOZyvJ0HpDP0R80x1CPITuTgLuzL4FbpLXG4=;
+        b=zRU9Er94aIDirQ2EGdan93uulhOsIAWF8OJWR39UG2c+dALxHX6h80BtJeEZlNRlFI
+         UKI8gG1N8zgHcm8CZOK4VyfqEEM5aNwpkUmdO77aDRACdIsvWcbSKWtfMeAFHgbW9pNn
+         Q3yiQKOkYj1lxfs8VVW2KfOp4jllY+G6iS5eqDIRPXDc6ZIMksGgSP+F68NIjToplhwS
+         6QEPXCgu44bs/yO2+03F1tx5VgRFpQyUecBYuWtlqgxh980XAOjLY0t6jBHSxpWzt2M4
+         yh67b/OevMi4XKLthGzHxdpU1VdZDXsquv0vX+zRA2Bgm4cn3qsLaWDl105b0mdn34vu
+         rlVw==
+X-Gm-Message-State: AAQBX9fYAwpi8su37v24Fo94er8qyfrxreOe6yTSXfoW7N9teaCI0Em+
+        3TU+JAQIfskN/A8A1KXXOPQKmPxZ44NXxtCJQ4s=
+X-Google-Smtp-Source: AKy350YX84lZie+ZERVUjirwfZi73jBnOYvOyq2eP81TdJGgPidfGCXIfYZYF0S8OJnkqKFqli2xZcg5cI6b9rpcG0g=
+X-Received: by 2002:a17:906:a146:b0:931:fb3c:f88d with SMTP id
+ bu6-20020a170906a14600b00931fb3cf88dmr10167622ejb.5.1680114955724; Wed, 29
+ Mar 2023 11:35:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
-        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
-        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
-        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net
-Subject: Re: [PATCH bpf RFC 1/4] xdp: rss hash types representation
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-References: <168003451121.3027256.13000250073816770554.stgit@firesoul>
- <168003455815.3027256.7575362149566382055.stgit@firesoul>
- <ZCNjHAY81gS02FVW@google.com>
- <811724e2-cdd6-15fe-b176-9dfcdbd98bad@redhat.com>
- <ZCRy2f170FQ+fXsp@google.com>
-In-Reply-To: <ZCRy2f170FQ+fXsp@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230327185202.1929145-1-andrii@kernel.org> <20230327185202.1929145-3-andrii@kernel.org>
+ <4dfb40c14e1ad9fb2d7903236d0a19bb6b14f06e.camel@gmail.com>
+In-Reply-To: <4dfb40c14e1ad9fb2d7903236d0a19bb6b14f06e.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 29 Mar 2023 11:35:43 -0700
+Message-ID: <CAEf4Bzbe8v8AHgKXq_T_M4cTOUEJuYGL2bvASdnkpFugWVLS6g@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/3] veristat: add -d debug mode option to see
+ debug libbpf log
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+        kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Mar 29, 2023 at 10:37=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Mon, 2023-03-27 at 11:52 -0700, Andrii Nakryiko wrote:
+> > Add -d option to allow requesting libbpf debug logs from veristat.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/veristat.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/sel=
+ftests/bpf/veristat.c
+> > index 83231456d3c5..263df32fbda8 100644
+> > --- a/tools/testing/selftests/bpf/veristat.c
+> > +++ b/tools/testing/selftests/bpf/veristat.c
+> > @@ -135,6 +135,7 @@ static struct env {
+> >       char **filenames;
+> >       int filename_cnt;
+> >       bool verbose;
+> > +     bool debug;
+> >       bool quiet;
+> >       int log_level;
+>
+> Nitpick:
+>   it is now three booleans that control verbosity level, would it be
+>   better to use numerical level instead?
+>
 
-On 29/03/2023 19.18, Stanislav Fomichev wrote:
-> On 03/29, Jesper Dangaard Brouer wrote:
-> 
->> On 28/03/2023 23.58, Stanislav Fomichev wrote:
->> > On 03/28, Jesper Dangaard Brouer wrote:
->> > > The RSS hash type specifies what portion of packet data NIC hardware used
->> > > when calculating RSS hash value. The RSS types are focused on Internet
->> > > traffic protocols at OSI layers L3 and L4. L2 (e.g. ARP) often get hash
->> > > value zero and no RSS type. For L3 focused on IPv4 vs. IPv6, and L4
->> > > primarily TCP vs UDP, but some hardware supports SCTP.
->> >
->> > > Hardware RSS types are differently encoded for each hardware NIC. Most
->> > > hardware represent RSS hash type as a number. Determining L3 vs L4 often
->> > > requires a mapping table as there often isn't a pattern or sorting
->> > > according to ISO layer.
->> >
->> > > The patch introduce a XDP RSS hash type (xdp_rss_hash_type) that can both
->> > > be seen as a number that is ordered according by ISO layer, and can be bit
->> > > masked to separate IPv4 and IPv6 types for L4 protocols. Room is available
->> > > for extending later while keeping these properties. This maps and unifies
->> > > difference to hardware specific hashes.
->> >
->> > Looks good overall. Any reason we're making this specific layout?
-> 
->> One important goal is to have a simple/fast way to determining L3 vs L4,
->> because a L4 hash can be used for flow handling (e.g. load-balancing).
-> 
->> We below layout you can:
-> 
->>   if (rss_type & XDP_RSS_TYPE_L4_MASK)
->>     bool hw_hash_do_LB = true;
-> 
->> Or using it as a number:
-> 
->>   if (rss_type > XDP_RSS_TYPE_L4)
->>     bool hw_hash_do_LB = true;
-> 
-> Why is it strictly better then the following?
-> 
-> if (rss_type & (TYPE_UDP | TYPE_TCP | TYPE_SCTP)) {}
-> 
+I don't think so, because bool fields make checks cleaner in specific
+places in the code.
 
-See V2 I dropped the idea of this being a number (that idea was not a
-good idea).
-
-> If we add some new L4 format, the bpf programs can be updated to support
-> it?
-> 
->> I'm very open to changes to my "specific" layout.  I am in doubt if
->> using it as a number is the right approach and worth the trouble.
-> 
->> > Why not simply the following?
->> >
->> > enum {
->> >  ����XDP_RSS_TYPE_NONE = 0,
->> >  ����XDP_RSS_TYPE_IPV4 = BIT(0),
->> >  ����XDP_RSS_TYPE_IPV6 = BIT(1),
->> >  ����/* IPv6 with extension header. */
->> >  ����/* let's note ^^^ it in the UAPI? */
->> >  ����XDP_RSS_TYPE_IPV6_EX = BIT(2),
->> >  ����XDP_RSS_TYPE_UDP = BIT(3),
->> >  ����XDP_RSS_TYPE_TCP = BIT(4),
->> >  ����XDP_RSS_TYPE_SCTP = BIT(5),
-> 
->> We know these bits for UDP, TCP, SCTP (and IPSEC) are exclusive, they
->> cannot be set at the same time, e.g. as a packet cannot both be UDP and
->> TCP.  Thus, using these bits as a number make sense to me, and is more
->> compact.
-> 
-> [..]
-> 
->> This BIT() approach also have the issue of extending it later (forward
->> compatibility).  As mentioned a common task will be to check if
->> hash-type is a L4 type.  See mlx5 [patch 4/4] needed to extend with
->> IPSEC. Notice how my XDP_RSS_TYPE_L4_MASK covers all the bits that this
->> can be extended with new L4 types, such that existing progs will still
->> work checking for L4 check.  It can of-cause be solved in the same way
->> for this BIT() approach by reserving some bits upfront in a mask.
-> 
-> We're using 6 bits out of 64, we should be good for awhile? If there
-> is ever a forward compatibility issue, we can always come up with
-> a new kfunc.
-
-I want/need store the RSS-type in the xdp_frame, for XDP_REDIRECT and
-SKB use-cases.  Thus, I don't want to use 64-bit/8-bytes, as xdp_frame
-size is limited (given it reduces headroom expansion).
-
-> 
-> One other related question I have is: should we export the type
-> over some additional new kfunc argument? (instead of abusing the return
-> type) 
-
-Good question. I was also wondering if it wouldn't be better to add
-another kfunc argument with the rss_hash_type?
-
-That will change the call signature, so that will not be easy to handle
-between kernel releases.
-
-
-> Maybe that will let us drop the explicit BTF_TYPE_EMIT as well?
-
-Sure, if we define it as an argument, then it will automatically
-exported as BTF.
-
->> > }
->> >
->> > And then using XDP_RSS_TYPE_IPV4|XDP_RSS_TYPE_UDP vs
->> > XDP_RSS_TYPE_IPV6|XXX ?
-> 
->> Do notice, that I already does some level of or'ing ("|") in this
->> proposal.  The main difference is that I hide this from the driver, and
->> kind of pre-combine the valid combination (enum's) drivers can select
->> from. I do get the point, and I think I will come up with a combined
->> solution based on your input.
-> 
-> 
->> The RSS hashing types and combinations comes from M$ standards:
->>   [1] 
->> https://learn.microsoft.com/en-us/windows-hardware/drivers/network/rss-hashing-types#ipv4-hash-type-combinations
-> 
-> My main concern here is that we're over-complicating it with the masks
-> and the format. With the explicit bits we can easily map to that
-> spec you mention.
-
-See if you like my RFC-V2 proposal better.
-It should go more in your direction.
-
-> 
-> For example, for forward compat, I'm not sure we can assume that the people
-> will do:
->      "rss_type & XDP_RSS_TYPE_L4_MASK"
-> instead of something like:
->      "rss_type & (XDP_RSS_TYPE_L4_IPV4_TCP|XDP_RSS_TYPE_L4_IPV4_UDP)"
-> 
-
-This code is allowed in V2 and should be. It is a choice of
-BPF-programmer in line-2 to not be forward compatible with newer L4 types.
-
->> > > This proposal change the kfunc API bpf_xdp_metadata_rx_hash() to  return
->> > > this RSS hash type on success.
-
-This is the real question (as also raised above)...
-Should we use return value or add an argument for type?
-
---Jesper
-
+> >       enum resfmt out_fmt;
+> > @@ -169,7 +170,7 @@ static int libbpf_print_fn(enum libbpf_print_level =
+level, const char *format, va
+> >  {
+> >       if (!env.verbose)
+> >               return 0;
+> > -     if (level =3D=3D LIBBPF_DEBUG /* && !env.verbose */)
+> > +     if (level =3D=3D LIBBPF_DEBUG  && !env.debug)
+> >               return 0;
+> >       return vfprintf(stderr, format, args);
+> >  }
+> > @@ -186,6 +187,7 @@ static const struct argp_option opts[] =3D {
+> >       { NULL, 'h', NULL, OPTION_HIDDEN, "Show the full help" },
+> >       { "verbose", 'v', NULL, 0, "Verbose mode" },
+> >       { "log-level", 'l', "LEVEL", 0, "Verifier log level (default 0 fo=
+r normal mode, 1 for verbose mode)" },
+> > +     { "debug", 'd', NULL, 0, "Debug mode (turns on libbpf debug loggi=
+ng)" },
+> >       { "quiet", 'q', NULL, 0, "Quiet mode" },
+> >       { "emit", 'e', "SPEC", 0, "Specify stats to be emitted" },
+> >       { "sort", 's', "SPEC", 0, "Specify sort order" },
+> > @@ -212,6 +214,10 @@ static error_t parse_arg(int key, char *arg, struc=
+t argp_state *state)
+> >       case 'v':
+> >               env.verbose =3D true;
+> >               break;
+> > +     case 'd':
+> > +             env.debug =3D true;
+> > +             env.verbose =3D true;
+> > +             break;
+> >       case 'q':
+> >               env.quiet =3D true;
+> >               break;
+>
