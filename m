@@ -2,228 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 058486D0E23
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 20:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAB36D0E2B
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 20:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjC3SxV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 14:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
+        id S231487AbjC3S4V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 14:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbjC3SxU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 14:53:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012B1FF3B
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 11:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680202340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4YBDK9oa7IRSnGDsV6eC1sZG+Y0J3aQFUW2e3I1262Q=;
-        b=TPyzlF64SKTrVky1PJygK378xFWnbmVFgsJKp9p3R86VL61AX3C+9APFPPGTd4Wywk4K46
-        mmYA0flS1oZxYOJzDQqE1P4V0EK0B802He7d84nchAw7VhB01yC4vRVTE9uXr1CO+sGTNf
-        pelfoo++NYy4Cst2y1Z+e6kaVoEl7bg=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-572-vzgihu7SM4OIi-hGib-gHA-1; Thu, 30 Mar 2023 14:52:19 -0400
-X-MC-Unique: vzgihu7SM4OIi-hGib-gHA-1
-Received: by mail-lf1-f71.google.com with SMTP id b10-20020a056512060a00b004eaf5a72b99so7739293lfe.17
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 11:52:19 -0700 (PDT)
+        with ESMTP id S229505AbjC3S4U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 14:56:20 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6C3DE
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 11:56:19 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id w9so80439659edc.3
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 11:56:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680202577;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eijfFPguX21UNYKpLWiyGkk35z+meeZkeTwfQFE+RQ4=;
+        b=jqC23eEg7spm1+720I7ZHQ9UR+0ILuU3th27dpppy/1nW1YtjsFY+e7o3K7BkXJ5eQ
+         bGR7gGrSLZL7wBw5tpJ8mHGF7XzA6gLpndtViQ+uuk2pg4Bn5Wba2Po1y61qbLfa/x2u
+         DL3ggyMkiu6S0WwgScHfhwJZzH2KIMqKyt7T+TCM/MFcqms6+9cEMCEBKt7oS1/k+vBB
+         MyqMy5a2ZMIEMLtMvVZtozTY0KM9vXgg0SF6sxYdH/grfo/GhcEDv8uJ44UlW5EqwlFt
+         uNpFaI7c+4d/debOksvSiOoNoZL1jQ5bPWKgHXJJhki5AU89Vy3piMELNZ4u9+rjnYUK
+         cuDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680202338;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4YBDK9oa7IRSnGDsV6eC1sZG+Y0J3aQFUW2e3I1262Q=;
-        b=5naasA59ko3G2ydEakz6nORUTt+qyCWhyVClyoOfB+PRN3NyozMEOWFDFdX36tpxAc
-         ObVKaRpO7oYoyFqP/FN9yXRgbbFL84EiNHP2G3J+fTyeRfR9KOk/09E9E6hBpI5IftlY
-         NBhG0kfrX9m1C86++pdxb1D3wSWuZchUsANB0NpDo8cMza1lOOPVTsNSRfCpxmvPUCvS
-         rABSMqMlrUmkatmvsZcAzk7ORFO/rg5DxV38q0tB/+fPxRyuJmNfFo+ne/W1eVeumORa
-         Slye577kM0HCt50g5C88/l3+OTElTa4fzfMW8x84JEI9ohShs6W40RKtGXo+r2Tpfr0+
-         WXaw==
-X-Gm-Message-State: AAQBX9fGRNAXTQnqeZN6uNnnsNshNgjNf//O+WXBXhpFLUB+A60SvLiY
-        v4qfTSBgRMFCDKYfMFayxwi7U5sZMLI6ubPq22pNHdYmXAf0WD5vedWdfyMUH6yDTyjpO+saf67
-        TZxEpdloWeaMA
-X-Received: by 2002:ac2:4219:0:b0:4db:28ce:e5ef with SMTP id y25-20020ac24219000000b004db28cee5efmr6695647lfh.0.1680202337876;
-        Thu, 30 Mar 2023 11:52:17 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ZEG6X1LBEENo7FPVYgXURXiHltW2Oz5D1+hNuhYNjG0DAXLBytpTSBkNusr0t4A1SO/5Oneg==
-X-Received: by 2002:ac2:4219:0:b0:4db:28ce:e5ef with SMTP id y25-20020ac24219000000b004db28cee5efmr6695639lfh.0.1680202337545;
-        Thu, 30 Mar 2023 11:52:17 -0700 (PDT)
-Received: from [192.168.42.100] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id d1-20020ac24c81000000b004d85789cef1sm53324lfl.49.2023.03.30.11.52.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Mar 2023 11:52:16 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <d34fe8e9-39de-2b6b-3cce-fe6bc339eb0b@redhat.com>
-Date:   Thu, 30 Mar 2023 20:52:15 +0200
+        d=1e100.net; s=20210112; t=1680202577;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eijfFPguX21UNYKpLWiyGkk35z+meeZkeTwfQFE+RQ4=;
+        b=OdI/lvvohI8cm3lHjRMCkfjt1gz1iiN4CfHC0uTVfQVEASLHzr6JhgoRBiSBOnuuHH
+         agigVJCfwOp0ivr7RiZ46X3dww+9OKIcunmQEZc2Z3N2jDWwUfevg90J/pY9T1KZPefO
+         8VNyLCjOWcV715Q3ecp3Y0Gwo5Y98OAuwL8vbiIKKUtc0tMwcu/IwpOIWMTtJ4XsS+h8
+         GeCTdaVn1ty3lSCh9/ummxs3IZe4L+fw5Fl4s9gbR4B9BQsQRf2zm5UKZdoclV6kyQew
+         kOvOQdzKLB24yh2uMsNtBaoPVGq3U/OL6J4v3m7HkbI7ISwXMO8QactnieC2sHLgJxGx
+         owdA==
+X-Gm-Message-State: AAQBX9c4PRqquMe5/Dg683p8c5QlJblQIrLzMRFGGcqUy+x0KTi7dDvb
+        fh4QEL1ZnPgsGKGqNoZ5bX2BxN93FOMDnJMTnXazGIGb
+X-Google-Smtp-Source: AKy350bDFebzjKoXt4fD6BzLrkO8bRH7/xCuzR3vZaCUyoHnAHYD+n6dXnhCBJpheRlT2DmQ/SdeI9efZKdpwhvFOXQ=
+X-Received: by 2002:a17:906:2303:b0:930:310:abf1 with SMTP id
+ l3-20020a170906230300b009300310abf1mr12579743eja.5.1680202577485; Thu, 30 Mar
+ 2023 11:56:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
-        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
-        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
-        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net
-Subject: Re: [PATCH bpf RFC 1/4] xdp: rss hash types representation
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-References: <168003451121.3027256.13000250073816770554.stgit@firesoul>
- <168003455815.3027256.7575362149566382055.stgit@firesoul>
- <ZCNjHAY81gS02FVW@google.com>
- <811724e2-cdd6-15fe-b176-9dfcdbd98bad@redhat.com>
- <ZCRy2f170FQ+fXsp@google.com>
- <b9e5077f-fbc4-8904-74a8-cda94d91cfbf@redhat.com>
- <ZCTHc6Dp4RMi1YZ6@google.com>
- <7ce10be6-bda2-74fc-371b-9791558af5b5@redhat.com>
- <ZCXCrWhJqXjHTV54@google.com>
-In-Reply-To: <ZCXCrWhJqXjHTV54@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230327185202.1929145-1-andrii@kernel.org> <20230327185202.1929145-4-andrii@kernel.org>
+ <09709d267f92856f5fd5293bd81bbe1ada4b41bc.camel@gmail.com>
+In-Reply-To: <09709d267f92856f5fd5293bd81bbe1ada4b41bc.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 30 Mar 2023 11:56:05 -0700
+Message-ID: <CAEf4BzZ-QC7eFwLn3dEdPHQ8szxc4fRYbo0iV2VPTDCVy0k1wA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 3/3] veristat: guess and substitue underlying
+ program type for freplace (EXT) progs
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+        kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Mar 29, 2023 at 11:36=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Mon, 2023-03-27 at 11:52 -0700, Andrii Nakryiko wrote:
+> > SEC("freplace") (i.e., BPF_PROG_TYPE_EXT) programs are not loadable as
+> > is through veristat, as kernel expects actual program's FD during
+> > BPF_PROG_LOAD time, which veristat has no way of knowing.
+> >
+> > Unfortunately, freplace programs are a pretty important class of
+> > programs, especially when dealing with XDP chaining solutions, which
+> > rely on EXT programs.
+> >
+> > So let's do our best and teach veristat to try to guess the original
+> > program type, based on program's context argument type. And if guessing
+> > process succeeds, we manually override freplace/EXT with guessed progra=
+m
+> > type using bpf_program__set_type() setter to increase chances of proper
+> > BPF verification.
+> >
+> > We rely on BTF and maintain a simple lookup table. This process is
+> > obviously not 100% bulletproof, as valid program might not use context
+> > and thus wouldn't have to specify correct type. Also, __sk_buff is very
+> > ambiguous and is the context type across many different program types.
+> > We pick BPF_PROG_TYPE_CGROUP_SKB for now, which seems to work fine in
+> > practice so far. Similarly, some program types require specifying attac=
+h
+> > type, and so we pick one out of possible few variants.
+> >
+> > Best effort at its best. But this makes veristat even more widely
+> > applicable.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> I left one nitpick below, otherwise looks good.
+>
+> I tried in on freplace programs from selftests and only 3 out 18
+> programs verified correctly, others complained about unavailable
+> functions or exit code not in range [0, 1], etc.
+> Not sure, if it's possible to select more permissive attachment kinds, th=
+ough.
+>
+> Tested-by: Eduard Zingerman <eddyz87@gmail.com>
+>
+> > ---
+> >  tools/testing/selftests/bpf/veristat.c | 121 ++++++++++++++++++++++++-
+> >  1 file changed, 117 insertions(+), 4 deletions(-)
+> >
 
-
-On 30/03/2023 19.11, Stanislav Fomichev wrote:
-> On 03/30, Jesper Dangaard Brouer wrote:
-> 
->> On 30/03/2023 01.19, Stanislav Fomichev wrote:
->> > On 03/29, Jesper Dangaard Brouer wrote:
->> >
->> > > On 29/03/2023 19.18, Stanislav Fomichev wrote:
->> > > > On 03/29, Jesper Dangaard Brouer wrote:
->> > > >
->> > > > > On 28/03/2023 23.58, Stanislav Fomichev wrote:
->> > > > > > On 03/28, Jesper Dangaard Brouer wrote:
->> > > > > > > The RSS hash type specifies what portion of packet data  NIC hardware used
->> > > > > > > when calculating RSS hash value. The RSS types are focused on Internet
->> > > > > > > traffic protocols at OSI layers L3 and L4. L2 (e.g. ARP) often get hash
->> > > > > > > value zero and no RSS type. For L3 focused on IPv4 vs. IPv6, and L4
->> > > > > > > primarily TCP vs UDP, but some hardware supports SCTP.
->> > > > > >
->> > > > > > > Hardware RSS types are differently encoded for each  hardware NIC. Most
->> > > > > > > hardware represent RSS hash type as a number. Determining L3 vs L4 often
->> > > > > > > requires a mapping table as there often isn't a pattern or sorting
->> > > > > > > according to ISO layer.
->> > > > > >
 [...]
->> > Any reason it's not a XDP_RSS_L3_IPV6_EX within XDP_RSS_L3_MASK?
->> >
-> 
->> Hmm... I guess it belongs with L3.
-> 
->> Do notice that both IPv4 and IPv6 have a flexible header called either
->> options/extensions headers, after their fixed header. (Mlx4 HW contains this
->> info for IPv4, but I didn't extend xdp_rss_hash_type in that patch).
->> Thus, we could have a single BIT that is valid for both IPv4 and IPv6.
->> (This can help speedup packet parsing having this info).
-> 
-> A separate bit for both v4/v6 sounds good. But thinking more about it,
-> not sure what the users are supposed to do with it. Whether the flow is 
-> hashed over the extension header should a config option, not a per-packet signal?
-> 
 
-Microsoft defines which part of the IPv6 Extensions headers will be used 
-for replacing either the Source (Home address) and Dest 
-(Routing-Header-Type-2) IPv6 Addresses, in the hash calc, here[1]:
+> > +
+> > +             /* context argument is a pointer to a struct/typedef */
+> > +             t =3D btf__type_by_id(btf, btf_params(t)[0].type);
+> > +             while (t && btf_is_mod(t))
+> > +                     t =3D btf__type_by_id(btf, t->type);
+> > +             if (!t || !btf_is_ptr(t))
+> > +                     goto skip_freplace_fixup;
+> > +             t =3D btf__type_by_id(btf, t->type);
+> > +             while (t && btf_is_mod(t))
+> > +                     t =3D btf__type_by_id(btf, t->type);
+> > +             if (!t)
+> > +                     goto skip_freplace_fixup;
+>
+> Nitpick:
+>   In case if something goes wrong with BTF there is no "Failed to guess .=
+.." message.
 
-  [1] 
-https://learn.microsoft.com/en-us/windows-hardware/drivers/network/rss-hashing-types#ndis_hash_ipv6_ex
+I had a strong expectation that BTF is not malformed, which seems
+pretty reasonable and common case (you will also get kernel errors
+when you attempt to load this program with bad BTF anyways). So it
+felt like extra warnings for such an unlikely scenario isn't
+necessary.
 
-The igc/i225 chip returns per-packet the RSS Type's with _EX added.
-Thus, I implemented this per-packet basis.
-
-
->> [...]
->> >
->> > > > For example, for forward compat, I'm not sure we can assume that 
->> the people
->> > > > will do:
->> > > >      "rss_type & XDP_RSS_TYPE_L4_MASK"
->> > > > instead of something like:
->> > > >      "rss_type & 
->> (XDP_RSS_TYPE_L4_IPV4_TCP|XDP_RSS_TYPE_L4_IPV4_UDP)"
->> > > >
->> >
->> > > This code is allowed in V2 and should be. It is a choice of
->> > > BPF-programmer in line-2 to not be forward compatible with newer L4
->> > > types.
->> >
-> 
->> The above code made me realize, I was wrong and you are right, we should
->> represent the L4 types as BITs (and not as numbers).
->> Even-though a single packet cannot be both UDP and TCP at the same time,
->> then it is reasonable to have a code path that want to match both UDP
->> and TCP.  If L4 types are BITs then code can do a single compare (via
->> ORing), while if they are numbers then we need more compares.
->> Thus, I'll change scheme in V3 to use BITs.
-> 
-> So you are saying that the following:
->      if (rss_type & (TCP|UDP)
-> 
-> is much faster than the following:
->      proto = rss_type & L4_MASK;
->      if (proto == TCP || proto == UDP)
-> 
-> ?
-
-For XDP every instruction/cycle counts.
-Just to make sure, I tested it with godbolt.org, 3 vs 4 inst.
-
-> 
-> idk, as long as we have enough bits to represent everything, I'm fine
-> with either way, up to you. (not sure how much you want to constrain the 
-> data
-> to fit it into xdp_frame; assuming u16 is fine?)
-
-Yes, u16 is fine.
-
-> 
-> 
->> > > > > > > This proposal change the kfunc API
->> > > bpf_xdp_metadata_rx_hash() > > > > to  return this RSS hash type on
->> > > success.
->> >
->> > > This is the real question (as also raised above)...
->> > > Should we use return value or add an argument for type?
->> >
->> > Let's fix the prototype while it's still early in the rc?
-> 
->> Okay, in V3 I will propose adding an argument for the type then.
-> 
-> SG, thx!
-
-> 
->> > Maybe also extend the tests to drop/decode/verify the mask?
-> 
->> Yes, I/we obviously need to update the selftests.
-> 
->> One problem with selftests is that it's using veth SKB-based mode, and
->> SKB's have lost the RSS hash info and converted this into a single BIT
->> telling us if this was L4 based.  Thus, its hard to do some e.g. UDP
->> type verification, but I guess we can check if expected UDP packet is
->> RSS type L4.
-> 
-> Yeah, sounds fair.
-> 
->> In xdp_hw_metadata, I will add something that uses the RSS type bits.  I
->> was thinking to match against L4-UDP RSS type as program only AF_XDP
->> redirect UDP packets, so we can verify it was a UDP packet by HW info.
-> 
-> Or maybe just dump it, idk.
-
-
+>
+> > +
+> > +             ctx_name =3D btf__name_by_offset(btf, t->name_off);
+> > +
+> > +             if (guess_prog_type_by_ctx_name(ctx_name, &prog_type, &at=
+tach_type) =3D=3D 0) {
+> > +                     bpf_program__set_type(prog, prog_type);
+> > +                     bpf_program__set_expected_attach_type(prog, attac=
+h_type);
+> > +
+> > +                     if (!env.quiet) {
+> > +                             printf("Using guessed program type '%s' f=
+or %s/%s...\n",
+> > +                                     libbpf_bpf_prog_type_str(prog_typ=
+e),
+> > +                                     filename, prog_name);
+> > +                     }
+> > +             } else {
+> > +                     if (!env.quiet) {
+> > +                             printf("Failed to guess program type for =
+freplace program with context type name '%s' for %s/%s. Consider using cano=
+nical type names to help veristat...\n",
+> > +                                     ctx_name, filename, prog_name);
+> > +                     }
+> > +             }
+> > +     }
+> > +skip_freplace_fixup:
+> > +     return;
+> >  }
+> >
+> >  static int process_prog(const char *filename, struct bpf_object *obj, =
+struct bpf_program *prog)
+> >  {
+> >       const char *prog_name =3D bpf_program__name(prog);
+> > +     const char *base_filename =3D basename(filename);
+> >       size_t buf_sz =3D sizeof(verif_log_buf);
+> >       char *buf =3D verif_log_buf;
+> >       struct verif_stats *stats;
+> >       int err =3D 0;
+> >       void *tmp;
+> >
+> > -     if (!should_process_file_prog(basename(filename), bpf_program__na=
+me(prog))) {
+> > +     if (!should_process_file_prog(base_filename, bpf_program__name(pr=
+og))) {
+> >               env.progs_skipped++;
+> >               return 0;
+> >       }
+> > @@ -835,12 +948,12 @@ static int process_prog(const char *filename, str=
+uct bpf_object *obj, struct bpf
+> >       verif_log_buf[0] =3D '\0';
+> >
+> >       /* increase chances of successful BPF object loading */
+> > -     fixup_obj(obj);
+> > +     fixup_obj(obj, prog, base_filename);
+> >
+> >       err =3D bpf_object__load(obj);
+> >       env.progs_processed++;
+> >
+> > -     stats->file_name =3D strdup(basename(filename));
+> > +     stats->file_name =3D strdup(base_filename);
+> >       stats->prog_name =3D strdup(bpf_program__name(prog));
+> >       stats->stats[VERDICT] =3D err =3D=3D 0; /* 1 - success, 0 - failu=
+re */
+> >       parse_verif_log(buf, buf_sz, stats);
+>
