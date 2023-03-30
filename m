@@ -2,90 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0C66D0E59
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 21:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E136D0E68
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 21:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbjC3TJ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 15:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
+        id S231596AbjC3TSG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 15:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231986AbjC3TJY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 15:09:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CE1F768
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 12:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680203313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QIyaaupty9iH5e8okKyS4faQPVv+h3/KYTHOe9P8lNM=;
-        b=VThSusUP+pS4Zr3Own4DRkZ+Xb/nPdLDsKfpsxuk28kLfXHhOkHNy3oA9fScuoihZEhiVa
-        b+ELLFcIO7z89SUerBk5gQQKzRbo1AQP60z/FoXdR0pXfhpuCcsw9BsEtKqwHi9NPmrtmQ
-        xkalDTANBWSZpbh9suLlNPaArMFz3n8=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-497-kckywEErPlGdZ8FbledyKA-1; Thu, 30 Mar 2023 15:08:31 -0400
-X-MC-Unique: kckywEErPlGdZ8FbledyKA-1
-Received: by mail-lj1-f198.google.com with SMTP id f12-20020a05651c02cc00b002a61d5315c7so637827ljo.17
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 12:08:31 -0700 (PDT)
+        with ESMTP id S229475AbjC3TSG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 15:18:06 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A1EE1A4
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 12:18:04 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id i192-20020a6287c9000000b0062a43acb7faso9110849pfe.8
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 12:18:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1680203884;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lrEZYZAprkJkjo6nuInD9+WtSSeLrA1vEvWYswR6SSY=;
+        b=lNkrtIAGQghUwPzFiHMiZzA3Dj60iiJHRGbQtataV8UD8wLWTyWKOGxG8u3BZQmZqh
+         5yBxB5KPXBynvEz4Q8DwJ48f04q5ziCKK5w2421MfdnykM7hZYTD7QE3qTovUgTB10rE
+         /OdTkB3vbZ9H6A+1KcS+Dt8UCQ5k6ylxqWC7L4UhAwDP+Zclc2vMHiXrKe42d7O3O4e9
+         yMvq13mWuAkYQrH23Ii0S8JTYXEyLwOzzS6RVCfoQRjcbgjsxO6V7FRVf/WhFXr1IBp2
+         ogNqPXtjlpJKSx4pNT1Fg/IoYhT5iC8WlEOAjIe+2CAkukUXdOx4ot3VDqnrD4ezj2KP
+         WfrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680203310;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QIyaaupty9iH5e8okKyS4faQPVv+h3/KYTHOe9P8lNM=;
-        b=GkgfPpvuNOnvga343h07U9Mc2u/KXFZBS6+sjWvB8H56PRav5fA5HBh+OCDlwM2GuY
-         sXB0nZ0Jl8npyO/SYBFFuMb3vJ2qZXiydIf6p38RX/IOdLkkvTMM2zIzzslZAgeXwaAi
-         3+39T9RFs2VBxkryQsMvGKVBnsofNN6BangAawlBn9VRIqZ9lIWYnnsNE81B6PL6hr/n
-         XlWTsjxMK+R+xYpXWIUGFk/ZYMMDiLBoQ1om4hYQnKimZPZQjDJUWEBKVOpZbS3jNESr
-         +A6JCgRGekxjzqD0D5dMxWcYSdYX2BZOR63DaqNqhhxCzcVEfwaD27NbTx+cbSpl42xk
-         jOsg==
-X-Gm-Message-State: AAQBX9fSU8lrS1GY7adJq97zhXP8pQVEat5n0/cRmWn507PjYIkOwq3y
-        OpLqJfwq+Q76MScJIa7zvKhjnOQAT5twpnf/UBYC/wMCjlxFvQBp0E6pXoJDCJdetO7AOP/zARi
-        yC6esrk6cB2VI
-X-Received: by 2002:ac2:52a7:0:b0:4e9:67ee:6383 with SMTP id r7-20020ac252a7000000b004e967ee6383mr7447708lfm.2.1680203310053;
-        Thu, 30 Mar 2023 12:08:30 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bKvSvkdF6fNAH+wrbQaLQufyKmJaCZnmEVpXJ2b/BW3Wbguqu1eLX/GMUXXgVjiD0k4RvRbw==
-X-Received: by 2002:ac2:52a7:0:b0:4e9:67ee:6383 with SMTP id r7-20020ac252a7000000b004e967ee6383mr7447700lfm.2.1680203309722;
-        Thu, 30 Mar 2023 12:08:29 -0700 (PDT)
-Received: from [192.168.42.100] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id h3-20020a2e9ec3000000b00293d7c95df1sm33830ljk.78.2023.03.30.12.08.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Mar 2023 12:08:29 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <c305e8ed-bd2c-3301-3a19-c983ff14a3ed@redhat.com>
-Date:   Thu, 30 Mar 2023 21:08:27 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
-        davem@davemloft.net
-Subject: Re: [PATCH bpf RFC-V3 1/5] xdp: rss hash types representation
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-References: <168019602958.3557870.9960387532660882277.stgit@firesoul>
- <168019606574.3557870.15629824904085210321.stgit@firesoul>
- <ZCXWerysZL1XwVfX@google.com>
- <04256caf-aa28-7e0a-59b1-ecf2b237c96f@redhat.com>
- <CAKH8qBv9QngYcMjcL=sZR8wVCufPSAv-ZW72OJB-LhZF5a_DrQ@mail.gmail.com>
-In-Reply-To: <CAKH8qBv9QngYcMjcL=sZR8wVCufPSAv-ZW72OJB-LhZF5a_DrQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        d=1e100.net; s=20210112; t=1680203884;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lrEZYZAprkJkjo6nuInD9+WtSSeLrA1vEvWYswR6SSY=;
+        b=fg08ysUcaXH/00j0R3WlXUjwuqtm4gw/tiqsCS0T/FjT7uoppsf8qhJxORNb9fMZOe
+         xFh+94QjSHQjWZmXypH2ID+BZnUPGDLNEM6Hu2cLYDCxcWps9wqh7LEV36Wk8yxD32a0
+         xqTvoHj+rl+bSViMPpXnQ7BgYZuLxTwWzT8cCDYwkm1rNGNSPJFLx2QY8ajnl2UKR4bR
+         4vR6k3BMrPSo9qC4c73aLpKgBBbKPOcTnSMNnS2VQg5SQzpmsEq6OJ5r0lgAwXJniHRC
+         GwDT/VN8ZZyMCQ+dqUTlFzxatF6QyZcxAY+XjEUVF/e2MHbCnxaD9e0CGo1ttdWY0cTh
+         FVZA==
+X-Gm-Message-State: AAQBX9dbhTsAxu+V5od+5lX+rkhQfyWfwkjLgHWSdUK/KXxp51uxwTvQ
+        w8dFgs2DttexA+sYRdib9gofL7AdBnmvXbuE
+X-Google-Smtp-Source: AKy350YB83aSAlfHtZ1brNy8tK94TomVrO/ck654euHQoNAhGyGIzRBJ8LL3uL8MDTRbXOo6aA3Aj9bt+0RVTLSh
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:aa7:9285:0:b0:626:1710:9b7d with SMTP
+ id j5-20020aa79285000000b0062617109b7dmr3161728pfa.0.1680203883841; Thu, 30
+ Mar 2023 12:18:03 -0700 (PDT)
+Date:   Thu, 30 Mar 2023 19:17:53 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
+Message-ID: <20230330191801.1967435-1-yosryahmed@google.com>
+Subject: [PATCH v3 0/8] memcg: avoid flushing stats atomically where possible
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>
+Cc:     Vasily Averin <vasily.averin@linux.dev>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, bpf@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,58 +76,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+rstat flushing is an expensive operation that scales with the number of
+cpus and the number of cgroups in the system. The purpose of this series
+is to minimize the contexts where we flush stats atomically.
 
-On 30/03/2023 21.02, Stanislav Fomichev wrote:
-> On Thu, Mar 30, 2023 at 11:56 AM Jesper Dangaard Brouer
->>
->> On 30/03/2023 20.35, Stanislav Fomichev wrote:
->>> On 03/30, Jesper Dangaard Brouer wrote:
-[...]
->> [...]
->>>> diff --git a/net/core/xdp.c b/net/core/xdp.c
->>>> index 528d4b37983d..38d2dee16b47 100644
->>>> --- a/net/core/xdp.c
->>>> +++ b/net/core/xdp.c
->>>> @@ -734,14 +734,22 @@ __bpf_kfunc int
->>>> bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *tim
->>>>     * bpf_xdp_metadata_rx_hash - Read XDP frame RX hash.
->>>>     * @ctx: XDP context pointer.
->>>>     * @hash: Return value pointer.
->>>> + * @rss_type: Return value pointer for RSS type.
->>>> + *
->>>> + * The RSS hash type (@rss_type) specifies what portion of packet headers NIC
->>>> + * hardware were used when calculating RSS hash value.  The type combinations
->>>> + * are defined via &enum xdp_rss_hash_type and individual bits can be decoded
->>>> + * via &enum xdp_rss_type_bits.
->>>>     *
->>>>     * Return:
->>>>     * * Returns 0 on success or ``-errno`` on error.
->>>>     * * ``-EOPNOTSUPP`` : means device driver doesn't implement kfunc
->>>>     * * ``-ENODATA``    : means no RX-hash available for this frame
->>>>     */
->>>> -__bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
->>>> u32 *hash)
->>>> +__bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
->>>> u32 *hash,
->>>> +                     enum xdp_rss_hash_type *rss_type)
->>>>    {
->>> [..]
->>>
->>>> +    BTF_TYPE_EMIT(enum xdp_rss_type_bits);
->>> nit: Do we still need this with an extra argument?
->>>
->> Yes, unfortunately (compiler optimizes out enum xdp_rss_type_bits).
->> Do notice the difference xdp_rss_type_bits vs xdp_rss_hash_type.
->> We don't need it for "xdp_rss_hash_type" but need it for
->> "xdp_rss_type_bits".
- >
-> Ah, I missed that. Then why not expose xdp_rss_type_bits?
-> Keep xdp_rss_hash_type for internal drivers' tables, and export the
-> enum with the bits?
+Patches 1 and 2 are cleanups requested during reviews of prior versions
+of this series.
 
-Great suggestion, xdp_rss_hash_type will be internal for drivers.
-I will do that in V4.
+Patch 3 makes sure we never try to flush from within an irq context.
 
---Jesper
+Patches 4 to 7 introduce separate variants of mem_cgroup_flush_stats()
+for atomic and non-atomic flushing, and make sure we only flush the
+stats atomically when necessary.
 
+Patch 8 is a slightly tangential optimization that limits the work done
+by rstat flushing in some scenarios.
+
+v2 -> v3:
+- Collected more Acks (thanks everyone!).
+- Dropped controversial patch 4 from v2.
+- Improved commit logs and cover letter (Michal).
+v2: https://lore.kernel.org/linux-mm/20230328221644.803272-1-yosryahmed@google.com/
+
+v1 -> v2:
+- Added more context in patch 4's commit log.
+- Added atomic_read() before atomic_xchg() in patch 5 to avoid
+  needlessly locking the cache line (Shakeel).
+- Refactored patch 6: added a common helper, do_flush_stats(), for
+  mem_cgroup_flush_stats{_atomic}() (Johannes).
+- Renamed mem_cgroup_flush_stats_ratelimited() to
+  mem_cgroup_flush_stats_atomic_ratelimited() in patch 6. It is restored
+  in patch 7, but this maintains consistency (Johannes).
+- Added line break to keep the lock section visually separated in patch
+  7 (Johannes).
+v1: https://lore.kernel.org/lkml/20230328061638.203420-1-yosryahmed@google.com/
+
+RFC -> v1:
+- Dropped patch 1 that attempted to make the global rstat lock a non-irq
+  lock, will follow up on that separetly (Shakeel).
+- Dropped stats_flush_lock entirely, replaced by an atomic (Johannes).
+- Renamed cgroup_rstat_flush_irqsafe() to cgroup_rstat_flush_atomic()
+  instead of removing it (Johannes).
+- Added a patch to rename mem_cgroup_flush_stats_delayed() to
+  mem_cgroup_flush_stats_ratelimited() (Johannes).
+- Separate APIs for flushing memcg stats in atomic and non-atomic
+  contexts instead of a boolean argument (Johannes).
+- Added patches 3 & 4 to make sure we never flush from irq context
+  (Shakeel & Johannes).
+RFC: https://lore.kernel.org/lkml/20230323040037.2389095-1-yosryahmed@google.com/
+
+Yosry Ahmed (8):
+  cgroup: rename cgroup_rstat_flush_"irqsafe" to "atomic"
+  memcg: rename mem_cgroup_flush_stats_"delayed" to "ratelimited"
+  memcg: do not flush stats in irq context
+  memcg: replace stats_flush_lock with an atomic
+  memcg: sleep during flushing stats in safe contexts
+  workingset: memcg: sleep when flushing stats in workingset_refault()
+  vmscan: memcg: sleep when flushing stats during reclaim
+  memcg: do not modify rstat tree for zero updates
+
+ include/linux/cgroup.h     |  2 +-
+ include/linux/memcontrol.h |  9 ++++-
+ kernel/cgroup/rstat.c      |  4 +-
+ mm/memcontrol.c            | 78 ++++++++++++++++++++++++++++++--------
+ mm/workingset.c            |  5 ++-
+ 5 files changed, 76 insertions(+), 22 deletions(-)
+
+-- 
+2.40.0.348.gf938b09366-goog
 
