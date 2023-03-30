@@ -2,82 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE9A6D00FC
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 12:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BDF6D010A
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 12:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbjC3KT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 06:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
+        id S231305AbjC3KVB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 06:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjC3KTZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 06:19:25 -0400
+        with ESMTP id S231289AbjC3KU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 06:20:59 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC058A51
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 03:18:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FE27289
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 03:20:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680171501;
+        s=mimecast20190719; t=1680171615;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5G4KlQgalZLZCJDa8edjfg+cOTUz1wNZ1RGVK9EOjxg=;
-        b=GQpYV71nkcsOOCZQ/91FMHhhnuDQk8cpiSfdMyaKXI0c2e7TG6b0+VLC618d7LhwH3P2NH
-        6Sb17nMXYyQfnYzRD90OnM0eEZPynMegiJFkguckvnnkPJ00NC954nRj4NaAleL2bYm8h1
-        sBjrclE8sejZn0uLB4nyQn9hOBFZRFU=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-668-DwIOMLIyNaK5OKolr7ypQg-1; Thu, 30 Mar 2023 06:18:20 -0400
-X-MC-Unique: DwIOMLIyNaK5OKolr7ypQg-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-5aae34d87f7so12391566d6.0
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 03:18:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680171499;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5G4KlQgalZLZCJDa8edjfg+cOTUz1wNZ1RGVK9EOjxg=;
-        b=sTr8zQ/Lm1Qly9kLJSv+QisP3iwQWTouNIv6YYqIDlxQBTuUa2eV92jNBjRvzs/knB
-         1c9vYB98eMQN8kiVp0kvEuCaKWIB/uthLIVqKj7jVaWlr6KONKqwE/5t+59+aP2xS4UR
-         zHoRQjHYMTy1jhBLAGL5jPjVawESq2yrZg/cQ5BUQxmJwlObbaD99PfUw+TRiOkloGdw
-         5wEFYzJFujaFpyIsDGHcVTXYSByOHeOlkN+ZlIdqJJP76niLyVtFvTbOkVKkvwHQe8si
-         xmb+S0i0lNpqwAlmvmC1yZ1Otf0ZB8cibxsGFQRCl0aZDSdDHfecg7Jp8Ep9OoLXi2HB
-         QDmg==
-X-Gm-Message-State: AAQBX9eNPwvvH+iplHAVrd/0A4XIQXisuKHiPWw+IT4DerE23aZQrimc
-        TT6efuODFn85lOOA6JlvcuWrWh1a6+N1fT3TgieH0N/tgb0ir/iBbQlLb6+INjbbKeCysBbFBLM
-        PsxhUJ4T2rXaS
-X-Received: by 2002:a05:6214:5089:b0:57d:747b:1f7 with SMTP id kk9-20020a056214508900b0057d747b01f7mr1974018qvb.1.1680171499607;
-        Thu, 30 Mar 2023 03:18:19 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bvx8K/owgkDcL8x2YcXmXFmidn7E2vZNaiTvyyPaK6M4yc/CbTywaTxcrJm2j30ZXWyITBOQ==
-X-Received: by 2002:a05:6214:5089:b0:57d:747b:1f7 with SMTP id kk9-20020a056214508900b0057d747b01f7mr1973988qvb.1.1680171499214;
-        Thu, 30 Mar 2023 03:18:19 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-228-125.dyn.eolo.it. [146.241.228.125])
-        by smtp.gmail.com with ESMTPSA id f17-20020ac84711000000b003e635f0fdb4sm169635qtp.53.2023.03.30.03.18.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 03:18:18 -0700 (PDT)
-Message-ID: <3155cdb517e0db77d8664e5623c9d39e437fd796.camel@redhat.com>
-Subject: Re: [PATCH net-next 7/8] virtio_net: introduce
- receive_mergeable_xdp()
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Pfge3RhdSXeiKxAh+OaaSFWWizy9sFj72RKo7NiLqdc=;
+        b=fYP6dpsm8jZ53skArRSNhbNv5b9CXAGsqVkbPaCnwpaVJ0JL9b+BrmTk7p8E5efy1VFEaf
+        cSXDyKyRjSTh4NdEfVbvk+zLHq86LSKYMd8K3bjcpAQPgk5dwCVRZ1UbBhgOG3PZ4NbI7H
+        aktcMJP5YQMpfJBdK1xS+7/j2DHXRr4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-546-JqmxZjgbOpW7pxXpy1e5Ww-1; Thu, 30 Mar 2023 06:20:13 -0400
+X-MC-Unique: JqmxZjgbOpW7pxXpy1e5Ww-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 83B0A886461;
+        Thu, 30 Mar 2023 10:20:12 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.45.225.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1BDD12166B34;
+        Thu, 30 Mar 2023 10:20:07 +0000 (UTC)
+From:   Viktor Malik <vmalik@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Viktor Malik <vmalik@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Date:   Thu, 30 Mar 2023 12:18:15 +0200
-In-Reply-To: <20230328120412.110114-8-xuanzhuo@linux.alibaba.com>
-References: <20230328120412.110114-1-xuanzhuo@linux.alibaba.com>
-         <20230328120412.110114-8-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, kernel test robot <lkp@intel.com>
+Subject: [PATCH bpf-next v2] kallsyms: move module-related functions under correct configs
+Date:   Thu, 30 Mar 2023 12:20:01 +0200
+Message-Id: <20230330102001.2183693-1-vmalik@redhat.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
@@ -88,170 +72,201 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Functions for searching module kallsyms should have non-empty
+definitions only if CONFIG_MODULES=y and CONFIG_KALLSYMS=y. Until now,
+only CONFIG_MODULES check was used for many of these, which may have
+caused complilation errors on some configs.
 
-On Tue, 2023-03-28 at 20:04 +0800, Xuan Zhuo wrote:
-> The purpose of this patch is to simplify the receive_mergeable().
-> Separate all the logic of XDP into a function.
->=20
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 128 +++++++++++++++++++++++----------------
->  1 file changed, 76 insertions(+), 52 deletions(-)
->=20
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 136131a7868a..c8978d8d8adb 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1316,6 +1316,63 @@ static void *mergeable_xdp_prepare(struct virtnet_=
-info *vi,
->  	return page_address(xdp_page) + VIRTIO_XDP_HEADROOM;
->  }
-> =20
-> +static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
-> +					     struct virtnet_info *vi,
-> +					     struct receive_queue *rq,
-> +					     struct bpf_prog *xdp_prog,
-> +					     void *buf,
-> +					     void *ctx,
-> +					     unsigned int len,
-> +					     unsigned int *xdp_xmit,
-> +					     struct virtnet_rq_stats *stats)
-> +{
-> +	struct virtio_net_hdr_mrg_rxbuf *hdr =3D buf;
-> +	int num_buf =3D virtio16_to_cpu(vi->vdev, hdr->num_buffers);
-> +	struct page *page =3D virt_to_head_page(buf);
-> +	int offset =3D buf - page_address(page);
-> +	unsigned int xdp_frags_truesz =3D 0;
-> +	struct sk_buff *head_skb;
-> +	unsigned int frame_sz;
-> +	struct xdp_buff xdp;
-> +	void *data;
-> +	u32 act;
-> +	int err;
-> +
-> +	data =3D mergeable_xdp_prepare(vi, rq, xdp_prog, ctx, &frame_sz, &num_b=
-uf, &page,
-> +				     offset, &len, hdr);
-> +	if (!data)
-> +		goto err_xdp;
-> +
-> +	err =3D virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, frame_=
-sz,
-> +					 &num_buf, &xdp_frags_truesz, stats);
-> +	if (unlikely(err))
-> +		goto err_xdp;
-> +
-> +	act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
-> +
-> +	switch (act) {
-> +	case VIRTNET_XDP_RES_PASS:
-> +		head_skb =3D build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
-> +		if (unlikely(!head_skb))
-> +			goto err_xdp;
-> +		return head_skb;
-> +
-> +	case VIRTNET_XDP_RES_CONSUMED:
-> +		return NULL;
-> +
-> +	case VIRTNET_XDP_RES_DROP:
-> +		break;
-> +	}
-> +
-> +err_xdp:
-> +	put_page(page);
-> +	mergeable_buf_free(rq, num_buf, dev, stats);
-> +
-> +	stats->xdp_drops++;
-> +	stats->drops++;
-> +	return NULL;
-> +}
-> +
->  static struct sk_buff *receive_mergeable(struct net_device *dev,
->  					 struct virtnet_info *vi,
->  					 struct receive_queue *rq,
-> @@ -1325,21 +1382,22 @@ static struct sk_buff *receive_mergeable(struct n=
-et_device *dev,
->  					 unsigned int *xdp_xmit,
->  					 struct virtnet_rq_stats *stats)
->  {
-> -	struct virtio_net_hdr_mrg_rxbuf *hdr =3D buf;
-> -	int num_buf =3D virtio16_to_cpu(vi->vdev, hdr->num_buffers);
-> -	struct page *page =3D virt_to_head_page(buf);
-> -	int offset =3D buf - page_address(page);
-> -	struct sk_buff *head_skb, *curr_skb;
-> -	struct bpf_prog *xdp_prog;
->  	unsigned int truesize =3D mergeable_ctx_to_truesize(ctx);
->  	unsigned int headroom =3D mergeable_ctx_to_headroom(ctx);
->  	unsigned int tailroom =3D headroom ? sizeof(struct skb_shared_info) : 0=
-;
->  	unsigned int room =3D SKB_DATA_ALIGN(headroom + tailroom);
-> -	unsigned int frame_sz;
-> -	int err;
-> +	struct virtio_net_hdr_mrg_rxbuf *hdr;
-> +	struct sk_buff *head_skb, *curr_skb;
-> +	struct bpf_prog *xdp_prog;
-> +	struct page *page;
-> +	int num_buf;
-> +	int offset;
-> =20
->  	head_skb =3D NULL;
->  	stats->bytes +=3D len - vi->hdr_len;
-> +	hdr =3D buf;
-> +	num_buf =3D virtio16_to_cpu(vi->vdev, hdr->num_buffers);
-> +	page =3D virt_to_head_page(buf);
-> =20
->  	if (unlikely(len > truesize - room)) {
->  		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
-> @@ -1348,51 +1406,21 @@ static struct sk_buff *receive_mergeable(struct n=
-et_device *dev,
->  		goto err_skb;
->  	}
-> =20
-> -	if (likely(!vi->xdp_enabled)) {
-> -		xdp_prog =3D NULL;
-> -		goto skip_xdp;
-> -	}
-> -
-> -	rcu_read_lock();
-> -	xdp_prog =3D rcu_dereference(rq->xdp_prog);
-> -	if (xdp_prog) {
-> -		unsigned int xdp_frags_truesz =3D 0;
-> -		struct xdp_buff xdp;
-> -		void *data;
-> -		u32 act;
-> -
-> -		data =3D mergeable_xdp_prepare(vi, rq, xdp_prog, ctx, &frame_sz, &num_=
-buf, &page,
-> -					     offset, &len, hdr);
-> -		if (!data)
-> -			goto err_xdp;
-> -
-> -		err =3D virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, frame=
-_sz,
-> -						 &num_buf, &xdp_frags_truesz, stats);
-> -		if (unlikely(err))
-> -			goto err_xdp;
-> -
-> -		act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
-> -
-> -		switch (act) {
-> -		case VIRTNET_XDP_RES_PASS:
-> -			head_skb =3D build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz)=
-;
-> -			if (unlikely(!head_skb))
-> -				goto err_xdp;
-> -
-> +	if (likely(vi->xdp_enabled)) {
+This patch moves all relevant functions under the correct configs.
 
-This changes the branch prediction hint compared to the existing code;
-as we currently have:
-	if (likely(!vi->xdp_enabled)) {
+Fixes: bd5314f8dd2d ("kallsyms, bpf: Move find_kallsyms_symbol_value out of internal header")
+Signed-off-by: Viktor Malik <vmalik@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/oe-kbuild-all/202303181535.RFDCnz3E-lkp@intel.com/
+---
+v2:
+- keep dereference_module_function_descriptor() in original place to
+  avoid compilation errors
+- fix indentation
+- add the "Fixes" tag
 
+ include/linux/module.h | 135 ++++++++++++++++++++++-------------------
+ 1 file changed, 74 insertions(+), 61 deletions(-)
 
-and I think it would be better avoid such change.
-
-Thanks,
-
-Paolo
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 41cfd3be57e5..886d24877c7c 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -608,16 +608,6 @@ static inline bool within_module(unsigned long addr, const struct module *mod)
+ /* Search for module by name: must be in a RCU-sched critical section. */
+ struct module *find_module(const char *name);
+ 
+-/* Returns 0 and fills in value, defined and namebuf, or -ERANGE if
+-   symnum out of range. */
+-int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
+-			char *name, char *module_name, int *exported);
+-
+-/* Look for this name: can be of form module:name. */
+-unsigned long module_kallsyms_lookup_name(const char *name);
+-
+-unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name);
+-
+ extern void __noreturn __module_put_and_kthread_exit(struct module *mod,
+ 			long code);
+ #define module_put_and_kthread_exit(code) __module_put_and_kthread_exit(THIS_MODULE, code)
+@@ -664,17 +654,6 @@ static inline void __module_get(struct module *module)
+ /* Dereference module function descriptor */
+ void *dereference_module_function_descriptor(struct module *mod, void *ptr);
+ 
+-/* For kallsyms to ask for address resolution.  namebuf should be at
+- * least KSYM_NAME_LEN long: a pointer to namebuf is returned if
+- * found, otherwise NULL. */
+-const char *module_address_lookup(unsigned long addr,
+-			    unsigned long *symbolsize,
+-			    unsigned long *offset,
+-			    char **modname, const unsigned char **modbuildid,
+-			    char *namebuf);
+-int lookup_module_symbol_name(unsigned long addr, char *symname);
+-int lookup_module_symbol_attrs(unsigned long addr, unsigned long *size, unsigned long *offset, char *modname, char *name);
+-
+ int register_module_notifier(struct notifier_block *nb);
+ int unregister_module_notifier(struct notifier_block *nb);
+ 
+@@ -765,45 +744,6 @@ static inline void module_put(struct module *module)
+ 
+ #define module_name(mod) "kernel"
+ 
+-/* For kallsyms to ask for address resolution.  NULL means not found. */
+-static inline const char *module_address_lookup(unsigned long addr,
+-					  unsigned long *symbolsize,
+-					  unsigned long *offset,
+-					  char **modname,
+-					  const unsigned char **modbuildid,
+-					  char *namebuf)
+-{
+-	return NULL;
+-}
+-
+-static inline int lookup_module_symbol_name(unsigned long addr, char *symname)
+-{
+-	return -ERANGE;
+-}
+-
+-static inline int lookup_module_symbol_attrs(unsigned long addr, unsigned long *size, unsigned long *offset, char *modname, char *name)
+-{
+-	return -ERANGE;
+-}
+-
+-static inline int module_get_kallsym(unsigned int symnum, unsigned long *value,
+-					char *type, char *name,
+-					char *module_name, int *exported)
+-{
+-	return -ERANGE;
+-}
+-
+-static inline unsigned long module_kallsyms_lookup_name(const char *name)
+-{
+-	return 0;
+-}
+-
+-static inline unsigned long find_kallsyms_symbol_value(struct module *mod,
+-						       const char *name)
+-{
+-	return 0;
+-}
+-
+ static inline int register_module_notifier(struct notifier_block *nb)
+ {
+ 	/* no events will happen anyway, so this can always succeed */
+@@ -899,7 +839,36 @@ int module_kallsyms_on_each_symbol(const char *modname,
+ 				   int (*fn)(void *, const char *,
+ 					     struct module *, unsigned long),
+ 				   void *data);
+-#else
++
++/* For kallsyms to ask for address resolution.  namebuf should be at
++ * least KSYM_NAME_LEN long: a pointer to namebuf is returned if
++ * found, otherwise NULL.
++ */
++const char *module_address_lookup(unsigned long addr,
++				  unsigned long *symbolsize,
++				  unsigned long *offset,
++				  char **modname, const unsigned char **modbuildid,
++				  char *namebuf);
++int lookup_module_symbol_name(unsigned long addr, char *symname);
++int lookup_module_symbol_attrs(unsigned long addr,
++			       unsigned long *size,
++			       unsigned long *offset,
++			       char *modname,
++			       char *name);
++
++/* Returns 0 and fills in value, defined and namebuf, or -ERANGE if
++ * symnum out of range.
++ */
++int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
++		       char *name, char *module_name, int *exported);
++
++/* Look for this name: can be of form module:name. */
++unsigned long module_kallsyms_lookup_name(const char *name);
++
++unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name);
++
++#else	/* CONFIG_MODULES && CONFIG_KALLSYMS */
++
+ static inline int module_kallsyms_on_each_symbol(const char *modname,
+ 						 int (*fn)(void *, const char *,
+ 						 struct module *, unsigned long),
+@@ -907,6 +876,50 @@ static inline int module_kallsyms_on_each_symbol(const char *modname,
+ {
+ 	return -EOPNOTSUPP;
+ }
++
++/* For kallsyms to ask for address resolution.  NULL means not found. */
++static inline const char *module_address_lookup(unsigned long addr,
++						unsigned long *symbolsize,
++						unsigned long *offset,
++						char **modname,
++						const unsigned char **modbuildid,
++						char *namebuf)
++{
++	return NULL;
++}
++
++static inline int lookup_module_symbol_name(unsigned long addr, char *symname)
++{
++	return -ERANGE;
++}
++
++static inline int lookup_module_symbol_attrs(unsigned long addr,
++					     unsigned long *size,
++					     unsigned long *offset,
++					     char *modname,
++					     char *name)
++{
++	return -ERANGE;
++}
++
++static inline int module_get_kallsym(unsigned int symnum, unsigned long *value,
++				     char *type, char *name,
++				     char *module_name, int *exported)
++{
++	return -ERANGE;
++}
++
++static inline unsigned long module_kallsyms_lookup_name(const char *name)
++{
++	return 0;
++}
++
++static inline unsigned long find_kallsyms_symbol_value(struct module *mod,
++						       const char *name)
++{
++	return 0;
++}
++
+ #endif  /* CONFIG_MODULES && CONFIG_KALLSYMS */
+ 
+ #endif /* _LINUX_MODULE_H */
+-- 
+2.39.2
 
