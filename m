@@ -2,196 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A816D08AA
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 16:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D167B6D08B5
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 16:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbjC3OtC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 10:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
+        id S231693AbjC3OwL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 10:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbjC3OtA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 10:49:00 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB9A1FE8
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 07:48:58 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id q16so24834643lfe.10
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 07:48:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680187736; x=1682779736;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=bT9/KweIFxMOi9SPU4gCo6npfpog5ox2uB4T4GUBbNA=;
-        b=jwAOIKyu2d/Asp8txUD2Xe7+ez4MNYflVXd+IxpMcJ8MZMTitXaN1QQgqlnMJeQIxf
-         gg6eR0N95COEQnGbkSnPR1p5SaBL47jlVvF6MOhannAUgmr9q/y+l1FLflgA56evMckB
-         zgfsuL2IqmRu3vruz+qX6cGPsQRWOdNQ0iPM/B8KgcNm0zZ6tlxhTDzJj370lVlgnXJJ
-         GjN4Q/KYINKaypiKmLXrT+w+kYqtgaauI522EjBnKDVb81PXvcPP/DgwJqKwjjfzCuqg
-         WK+PK0gQVBPUrncwXkvvMTYHyulYXEUEKKxsNzvBPfGtXYd2Z4MDvKjyiaH66eGoc3QB
-         MohA==
+        with ESMTP id S231377AbjC3OwK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 10:52:10 -0400
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BF58A7B;
+        Thu, 30 Mar 2023 07:52:08 -0700 (PDT)
+Received: by mail-qt1-f182.google.com with SMTP id n14so18660012qta.10;
+        Thu, 30 Mar 2023 07:52:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680187736; x=1682779736;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bT9/KweIFxMOi9SPU4gCo6npfpog5ox2uB4T4GUBbNA=;
-        b=ySqn7dbKje0zoU61v6BJQHmTIbZ44KPIIozzbnAFwxE9wVHMXiZxHcZeOhkj8/+9ji
-         EN7GVeYHpyH3GuQychFKXEjVENGJxoLW6Lltm104kodxljNiimqDWPsiATs25CwnpzUl
-         9G5vt6CvbNq9H9mnhS+qRN7lSbKqlTmG+sTSJczMyE6J3O+M8vZCaFuwMlVyRHC/R0cb
-         hePoYftoS6Jf0BAx5PTKlepzNd5TWf9qHzXsDoxq5uU5T+CBsOD3udfkKPzKy1oyoQAY
-         mPtiW/7lqh8LgE9wFXTQ6lZgB+J0WDPNTNpZhW7p5/kkmIZTpDDcFdtfz2G/b2jEHCEx
-         g7EA==
-X-Gm-Message-State: AAQBX9dkl0mppmj0OJEvJanoVe52SYShcn3mXhKOENn3uIaspbGAaxIf
-        TUVlhvpRGiNbzLm5gC3UJG0=
-X-Google-Smtp-Source: AKy350aadBSAV6+q+vAuuVZVb6KIepMCBMfO0Cx6NsCaarYrBb7SYmiyR62XFDvNSvUc8NKl51yNpw==
-X-Received: by 2002:a05:6512:991:b0:4eb:29b0:1ca3 with SMTP id w17-20020a056512099100b004eb29b01ca3mr792849lft.6.1680187736203;
-        Thu, 30 Mar 2023 07:48:56 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id q28-20020ac25a1c000000b004d85789cef1sm5937290lfn.49.2023.03.30.07.48.54
+        d=1e100.net; s=20210112; t=1680187927; x=1682779927;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/ZYKdU7edcggf788yfZLdWl4nPAu93UTKZlfVfQz6qs=;
+        b=6XV0z3nB2pOP2OTNQRoT/aYjiiC/Hqvhma5qewRtLM3nwcS0CNXIcdeX2ub3XK/KV2
+         O85MU/8yRpNtr4DmHZgcfnwqlAwfG8hiVM3xVRfPupDYfjynSV5wadO70mA2hVF2pErY
+         xS30DGBnEFffXhAr4Mll5MP1Y93RskOQHkeDBt5orKsBdle1AFyNU6TKGLef16b/jcld
+         T3hbdITmHbh8/wTtiY1lj6QlSlOcCQprnavlgsuioTH+0aia+l9I3CXlalNyUiVhcKJG
+         g2bK1eSpg+RGsM4V0cGxlxuOkZQ2G50qOZXmBX/8pQl9PmeuKbhQPu1nY87JsLt0iYL1
+         lm7A==
+X-Gm-Message-State: AO0yUKUT5mIdlT6L/acgai7rqDj6oZ9pSxuiKQuW3ZcM/ROQHaVMszyK
+        57HJRP/UV/SOhzAZgpWjlnG8CJu1yHAfLGis
+X-Google-Smtp-Source: AK7set9sAe+QCJglmayBw/dL9L3tcWOIWQy2pxPF9gTB0sEc+xfGPKoKyZpa9DYRCESi+9Ou5dkChw==
+X-Received: by 2002:a05:622a:4c:b0:3e3:7d6d:f5 with SMTP id y12-20020a05622a004c00b003e37d6d00f5mr36619507qtw.29.1680187927141;
+        Thu, 30 Mar 2023 07:52:07 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:d9ee])
+        by smtp.gmail.com with ESMTPSA id h22-20020ac85056000000b003d5aae2182dsm9301250qtm.29.2023.03.30.07.52.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 07:48:55 -0700 (PDT)
-Message-ID: <b4b8406f9a08283308d4c3d597db158319801aff.camel@gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/3] veristat: guess and substitue
- underlying program type for freplace (EXT) progs
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Kernel Team <kernel-team@meta.com>
-Date:   Thu, 30 Mar 2023 17:48:53 +0300
-In-Reply-To: <CAADnVQ+hSFfkcJ=Ni_4UnW5sx93GdBMKSGcT1RujWkaonZN-OQ@mail.gmail.com>
-References: <20230327185202.1929145-1-andrii@kernel.org>
-         <20230327185202.1929145-4-andrii@kernel.org>
-         <09709d267f92856f5fd5293bd81bbe1ada4b41bc.camel@gmail.com>
-         <CAADnVQ+hSFfkcJ=Ni_4UnW5sx93GdBMKSGcT1RujWkaonZN-OQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Thu, 30 Mar 2023 07:52:06 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, memxor@gmail.com
+Subject: [PATCH bpf-next 1/2] bpf: Handle PTR_MAYBE_NULL case in PTR_TO_BTF_ID helper call arg
+Date:   Thu, 30 Mar 2023 09:52:02 -0500
+Message-Id: <20230330145203.80506-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.5 required=5.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2023-03-29 at 22:38 -0700, Alexei Starovoitov wrote:
-> On Wed, Mar 29, 2023 at 11:36=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.=
-com> wrote:
-> >=20
-> > On Mon, 2023-03-27 at 11:52 -0700, Andrii Nakryiko wrote:
-> > > SEC("freplace") (i.e., BPF_PROG_TYPE_EXT) programs are not loadable a=
-s
-> > > is through veristat, as kernel expects actual program's FD during
-> > > BPF_PROG_LOAD time, which veristat has no way of knowing.
-> > >=20
-> > > Unfortunately, freplace programs are a pretty important class of
-> > > programs, especially when dealing with XDP chaining solutions, which
-> > > rely on EXT programs.
-> > >=20
-> > > So let's do our best and teach veristat to try to guess the original
-> > > program type, based on program's context argument type. And if guessi=
-ng
-> > > process succeeds, we manually override freplace/EXT with guessed prog=
-ram
-> > > type using bpf_program__set_type() setter to increase chances of prop=
-er
-> > > BPF verification.
-> > >=20
-> > > We rely on BTF and maintain a simple lookup table. This process is
-> > > obviously not 100% bulletproof, as valid program might not use contex=
-t
-> > > and thus wouldn't have to specify correct type. Also, __sk_buff is ve=
-ry
-> > > ambiguous and is the context type across many different program types=
-.
-> > > We pick BPF_PROG_TYPE_CGROUP_SKB for now, which seems to work fine in
-> > > practice so far. Similarly, some program types require specifying att=
-ach
-> > > type, and so we pick one out of possible few variants.
-> > >=20
-> > > Best effort at its best. But this makes veristat even more widely
-> > > applicable.
-> > >=20
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >=20
-> > I left one nitpick below, otherwise looks good.
-> >=20
-> > I tried in on freplace programs from selftests and only 3 out 18
-> > programs verified correctly, others complained about unavailable
-> > functions or exit code not in range [0, 1], etc.
-> > Not sure, if it's possible to select more permissive attachment kinds, =
-though.
-> >=20
-> > Tested-by: Eduard Zingerman <eddyz87@gmail.com>
->=20
-> Thanks for testing and important feedback.
-> I've applied the set. The nits can be addressed in the follow up.
->=20
-> What do you have in mind as 'more permissive attach' ?
-> What are those 15 out of 18 with invalid exit code?
-> What kind of attach_type will help?
+When validating a helper function argument, we use check_reg_type() to
+ensure that the register containing the argument is of the correct type.
+When the register's base type is PTR_TO_BTF_ID, there is some
+supplemental logic where we do extra checks for various combinations of
+PTR_TO_BTF_ID type modifiers. For example, for PTR_TO_BTF_ID,
+PTR_TO_BTF_ID | PTR_TRUSTED, and PTR_TO_BTF_ID | MEM_RCU, we call
+map_kptr_match_type() for bpf_kptr_xchg() calls, and
+btf_struct_ids_match() for other helper calls.
 
-TLDR: I apologize, it was a bad comment.
-      Should have done more analysis yesterday and withheld from commenting=
-.
+When an unhandled PTR_TO_BTF_ID type modifier combination is passed to
+check_reg_type(), the verifier fails with an internal verifier error
+message. This can currently be triggered by passing a PTR_MAYBE_NULL
+pointer to helper functions (currently just bpf_kptr_xchg()) with an
+ARG_PTR_TO_BTF_ID_OR_NULL arg type. For example, by callin
+bpf_kptr_xchg(&v->kptr, bpf_cpumask_create()).
 
+Whether or not passing a PTR_MAYBE_NULL arg to an
+ARG_PTR_TO_BTF_ID_OR_NULL argument is valid is an interesting question.
+In a vacuum, it seems fine. A helper function with an
+ARG_PTR_TO_BTF_ID_OR_NULL arg would seem to be implying that it can
+handle either a NULL or non-NULL arg, and has logic in place to detect
+and gracefully handle each. This is the case for bpf_kptr_xchg(), which
+of course simply does an xchg(). On the other hand, bpf_kptr_xchg() also
+specifies OBJ_RELEASE, and refcounting semantics for a PTR_MAYBE_NULL
+pointer is different than handling it for a NULL _OR_ non-NULL pointer.
+For example, with a non-NULL arg, we should always fail if there was not
+a nonzero refcount for the value in the register being passed to the
+helper. For PTR_MAYBE_NULL on the other hand, it's unclear. If the
+pointer is NULL it would be fine, but if it's not NULL, it would be
+incorrect to load the program.
+
+The current solution to this is to just fail if PTR_MAYBE_NULL is
+passed, and to instead require programs to have a NULL check to
+explicitly handle the NULL and non-NULL cases. This seems reasonable.
+Not only would it possibly be quite complicated to correctly handle
+PTR_MAYBE_NULL refcounting in the verifier, but it's also an arguably
+odd programming pattern in general to not explicitly handle the NULL
+case anyways. For example, it seems odd to not care about whether a
+pointer you're passing to bpf_kptr_xchg() was successfully allocated in
+a program such as the following:
+
+private(MASK) static struct bpf_cpumask __kptr * global_mask;
+
+SEC("tp_btf/task_newtask")
+int BPF_PROG(example, struct task_struct *task, u64 clone_flags)
+{
+        struct bpf_cpumask *prev;
+
+	/* bpf_cpumask_create() returns PTR_MAYBE_NULL */
+	prev = bpf_kptr_xchg(&global_mask, bpf_cpumask_create());
+	if (prev)
+		bpf_cpumask_release(prev);
+
+	return 0;
+}
+
+This patch therefore updates the verifier to explicitly check for
+PTR_MAYBE_NULL in check_reg_type(), and fail gracefully if it's
+observed. This isn't really "fixing" anything unsafe or incorrect. We're
+just updating the verifier to fail gracefully, and explicitly handle
+this pattern rather than unintentionally falling back to an internal
+verifier error path. A subsequent patch will update selftests.
+
+Signed-off-by: David Vernet <void@manifault.com>
 ---
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Inspected each program and it turned out that most of the failing ones
-are either not programs but separate functions, or have __skb_buf parameter=
-.
-The summary table is at the end of the email, here is the list of those
-that should load but fail:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 20eb2015842f..52738f9dcb15 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7204,6 +7204,10 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+ 		}
+ 		break;
+ 	}
++	case PTR_TO_BTF_ID | PTR_MAYBE_NULL:
++	case PTR_TO_BTF_ID | PTR_MAYBE_NULL | MEM_RCU:
++		verbose(env, "Possibly NULL pointer passed to helper arg%d\n", regno);
++		return -EACCES;
+ 	case PTR_TO_BTF_ID | MEM_ALLOC:
+ 		if (meta->func_id != BPF_FUNC_spin_lock && meta->func_id != BPF_FUNC_spin_unlock &&
+ 		    meta->func_id != BPF_FUNC_kptr_xchg) {
+-- 
+2.39.0
 
-- Have __skb_buf parameter and attach to SEC("tc")
-  - fexit_bpf2bpf.bpf.o:new_get_skb_len
-  - freplace_cls_redirect.bpf.o:freplace_cls_redirect_test
-  - freplace_global_func.bpf.o:new_test_pkt_access
-- Need ifindex to be specified prior loading:
-  - xdp_metadata2.bpf.o:freplace_rx
-                                                                           =
- Should
-File                            Program                            Verdict =
- fail?   Reason
-------------------------------  ---------------------------------  ------- =
- ------  -----------------------
-fexit_bpf2bpf.bpf.o             new_get_constant                   failure =
-     no  Function, not a program
-fexit_bpf2bpf.bpf.o             new_get_skb_ifindex                failure =
-     no  Function, not a program
-fexit_bpf2bpf.bpf.o             new_get_skb_len                    failure =
-     no  __sk_buff parameter
-fexit_bpf2bpf.bpf.o             new_test_pkt_write_access_subprog  failure =
-     no  Function, not a program
-fexit_bpf2bpf.bpf.o             test_main                          failure =
-     no  Function, not a program
-fexit_bpf2bpf.bpf.o             test_subprog1                      failure =
-     no  Function, not a program
-fexit_bpf2bpf.bpf.o             test_subprog2                      failure =
-     no  Function, not a program
-fexit_bpf2bpf.bpf.o             test_subprog3                      failure =
-     no  Function, not a program
-freplace_attach_probe.bpf.o     new_handle_kprobe                  failure =
-    yes
-freplace_cls_redirect.bpf.o     freplace_cls_redirect_test         failure =
-     no  __sk_buff parameter
-freplace_connect4.bpf.o         new_do_bind                        failure =
-    yes=20
-freplace_connect_v4_prog.bpf.o  new_connect_v4_prog                failure =
-    yes
-freplace_get_constant.bpf.o     security_new_get_constant          failure =
-     no  Function, not a program
-freplace_global_func.bpf.o      new_test_pkt_access                failure =
-     no  __sk_buff parameter
-freplace_progmap.bpf.o          xdp_cpumap_prog                    success
-freplace_progmap.bpf.o          xdp_drop_prog                      success
-test_trace_ext.bpf.o            test_pkt_md_access_new             success
-xdp_metadata2.bpf.o             freplace_rx                        failure =
-     no  needs ifindex
-------------------------------  ---------------------------------  ------- =
- ------- -----------------------
