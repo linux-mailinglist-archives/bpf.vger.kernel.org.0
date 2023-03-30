@@ -2,80 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 300D96D0E47
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 21:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA6F6D0E43
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 21:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbjC3TET convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 30 Mar 2023 15:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
+        id S229521AbjC3TDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 15:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbjC3TEP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 15:04:15 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7471B1FEC
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 12:04:14 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32UChLw1029559
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 12:04:14 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pmvrhptj0-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 12:04:14 -0700
-Received: from twshared30317.05.prn5.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 30 Mar 2023 12:04:11 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 256992C7B7F7A; Thu, 30 Mar 2023 12:01:16 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC:     <andrii@kernel.org>, <kernel-team@meta.com>,
-        Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next] veristat: change guess for __sk_buff from CGROUP_SKB to SCHED_CLS
-Date:   Thu, 30 Mar 2023 12:01:15 -0700
-Message-ID: <20230330190115.3942962-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S231853AbjC3TDA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 15:03:00 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF93A170A
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 12:02:55 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id fy10-20020a17090b020a00b0023b4bcf0727so20801023pjb.0
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 12:02:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1680202975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p2UKzHLw5AMRHbJxUqeu6Kh29H/LxajcGBLc6kBn8NM=;
+        b=jfxxG+wlfnmoC+ExMU9oSM4vowDpE80ayaaX0O2aBGqC2elIvYflpzHBV9g0BvsEZY
+         xy6wYhpi53/pArSydRtmoRVAkpJ47+6HOoJ/ys8DqhLR0XEPWl1geCfVLPnO86XM/QRs
+         5M5lmSeM47SYVWpnHWtSjh92WtSPWEMrmBsN0ndbnr4svt5eEX/U9eifrPjCFUjKDWxF
+         6VgrxjuOvQCwWy7y7Gx4PeORHJ+Umqiq9RGATMWBwQNFyL5cTxzzB86fQGpO0r+Bf6Lx
+         E6Jkc/UAy5cdsW4StBgbk+kOUz91yWbobl/7E3Nh9H7TljwvXrNPn+Bvi2+tZGoOavcs
+         9qkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680202975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p2UKzHLw5AMRHbJxUqeu6Kh29H/LxajcGBLc6kBn8NM=;
+        b=r6LIm08dDM+BFqWC0dpeVGlrLEJiDPm/8zLMDQdedkpJj+MHPRzoJNPXyzWnfUpg6u
+         v9F9rxMHSuNcp3VEo+ByjWTI5e+2BRbJobtLcMmlnCj8I1RFKQ9WIu48FuQ7xN7w92n4
+         EEelAWSxBpRKaIxm+a8oHxUzX6tYoQrdRkdLUnRXLXAA7Qce+htj1mF/2E0yZGevFFss
+         ogJLBeuppHWV6wY0gFPlnYjthvoKGuzwaP/5tJlUu9rOMtKoAxWDZ3Jnk2UIElUn7nBN
+         ozbykkBkjyL5hCuZ93p1Ezvpl1BjviuZxiIqJhvJBjYxEjFT97YBtGEFY7o/Xex+M8qy
+         NP/A==
+X-Gm-Message-State: AAQBX9cx6OG/lsq47a0lSFiLVei4En+X/LHUqpoQPHArjEAdM4SOYdiu
+        6Kz0Ita5rxPqdVFLP+sja89r0KiN2OZP4Mb+lgO4ww==
+X-Google-Smtp-Source: AKy350YBv3YNxpoBUla7d5uX/Fr+RDrmMNEjWWjz/UysSH7sQgDbddbgiZwEfCWc8HIRLF59xwmJH1bCBsEZ2qXR3hE=
+X-Received: by 2002:a17:902:7b89:b0:19f:2c5a:5786 with SMTP id
+ w9-20020a1709027b8900b0019f2c5a5786mr8632202pll.8.1680202974843; Thu, 30 Mar
+ 2023 12:02:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: zeen1DurULiLlxZvDAxDpVarkBs1Vx3k
-X-Proofpoint-GUID: zeen1DurULiLlxZvDAxDpVarkBs1Vx3k
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-30_12,2023-03-30_03,2023-02-09_01
-X-Spam-Status: No, score=-0.5 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <168019602958.3557870.9960387532660882277.stgit@firesoul>
+ <168019606574.3557870.15629824904085210321.stgit@firesoul>
+ <ZCXWerysZL1XwVfX@google.com> <04256caf-aa28-7e0a-59b1-ecf2b237c96f@redhat.com>
+In-Reply-To: <04256caf-aa28-7e0a-59b1-ecf2b237c96f@redhat.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 30 Mar 2023 12:02:43 -0700
+Message-ID: <CAKH8qBv9QngYcMjcL=sZR8wVCufPSAv-ZW72OJB-LhZF5a_DrQ@mail.gmail.com>
+Subject: Re: [PATCH bpf RFC-V3 1/5] xdp: rss hash types representation
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
+        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SCHED_CLS seems to be a better option as a default guess for freplace
-programs that have __sk_buff as a context type.
+On Thu, Mar 30, 2023 at 11:56=E2=80=AFAM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
+>
+>
+> On 30/03/2023 20.35, Stanislav Fomichev wrote:
+> > On 03/30, Jesper Dangaard Brouer wrote:
+> >> The RSS hash type specifies what portion of packet data NIC hardware u=
+sed
+> >> when calculating RSS hash value. The RSS types are focused on Internet
+> >> traffic protocols at OSI layers L3 and L4. L2 (e.g. ARP) often get has=
+h
+> >> value zero and no RSS type. For L3 focused on IPv4 vs. IPv6, and L4
+> >> primarily TCP vs UDP, but some hardware supports SCTP.
+> >
+> >> Hardware RSS types are differently encoded for each hardware NIC. Most
+> >> hardware represent RSS hash type as a number. Determining L3 vs L4 oft=
+en
+> >> requires a mapping table as there often isn't a pattern or sorting
+> >> according to ISO layer.
+> >
+> >> The patch introduce a XDP RSS hash type (enum xdp_rss_hash_type) that
+> >> contain combinations to be used by drivers, which gets build up with b=
+its
+> >> from enum xdp_rss_type_bits. Both enum xdp_rss_type_bits and
+> >> xdp_rss_hash_type get exposed to BPF via BTF, and it is up to the
+> >> BPF-programmer to match using these defines.
+> >
+> >> This proposal change the kfunc API bpf_xdp_metadata_rx_hash() adding
+> >> a pointer value argument for provide the RSS hash type.
+> >
+> >> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> >> ---
+> >>   include/linux/netdevice.h |    3 ++-
+> >>   include/net/xdp.h         |   46 +++++++++++++++++++++++++++++++++++=
+++++++++++
+> >>   net/core/xdp.c            |   10 +++++++++-
+> >>   3 files changed, 57 insertions(+), 2 deletions(-)
+> >
+>
+> [...]
+> >> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> >> index 528d4b37983d..38d2dee16b47 100644
+> >> --- a/net/core/xdp.c
+> >> +++ b/net/core/xdp.c
+> >> @@ -734,14 +734,22 @@ __bpf_kfunc int
+> >> bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *tim
+> >>    * bpf_xdp_metadata_rx_hash - Read XDP frame RX hash.
+> >>    * @ctx: XDP context pointer.
+> >>    * @hash: Return value pointer.
+> >> + * @rss_type: Return value pointer for RSS type.
+> >> + *
+> >> + * The RSS hash type (@rss_type) specifies what portion of packet hea=
+ders NIC
+> >> + * hardware were used when calculating RSS hash value.  The type comb=
+inations
+> >> + * are defined via &enum xdp_rss_hash_type and individual bits can be=
+ decoded
+> >> + * via &enum xdp_rss_type_bits.
+> >>    *
+> >>    * Return:
+> >>    * * Returns 0 on success or ``-errno`` on error.
+> >>    * * ``-EOPNOTSUPP`` : means device driver doesn't implement kfunc
+> >>    * * ``-ENODATA``    : means no RX-hash available for this frame
+> >>    */
+> >> -__bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
+> >> u32 *hash)
+> >> +__bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
+> >> u32 *hash,
+> >> +                     enum xdp_rss_hash_type *rss_type)
+> >>   {
+> >
+> > [..]
+> >
+> >> +    BTF_TYPE_EMIT(enum xdp_rss_type_bits);
+> >
+> > nit: Do we still need this with an extra argument?
+> >
+>
+> Yes, unfortunately (compiler optimizes out enum xdp_rss_type_bits).
+> Do notice the difference xdp_rss_type_bits vs xdp_rss_hash_type.
+> We don't need it for "xdp_rss_hash_type" but need it for
+> "xdp_rss_type_bits".
 
-Reported-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/veristat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ah, I missed that. Then why not expose xdp_rss_type_bits?
+Keep xdp_rss_hash_type for internal drivers' tables, and export the
+enum with the bits?
 
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index 055df1abd7ca..7888c03ba631 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -798,7 +798,7 @@ static int guess_prog_type_by_ctx_name(const char *ctx_name,
- 		enum bpf_attach_type attach_type;
- 	} ctx_map[] = {
- 		/* __sk_buff is most ambiguous, for now we assume cgroup_skb */
--		{ "__sk_buff", "sk_buff", BPF_PROG_TYPE_CGROUP_SKB, BPF_CGROUP_INET_INGRESS },
-+		{ "__sk_buff", "sk_buff", BPF_PROG_TYPE_SCHED_CLS },
- 		{ "bpf_sock", "sock", BPF_PROG_TYPE_CGROUP_SOCK, BPF_CGROUP_INET4_POST_BIND },
- 		{ "bpf_sock_addr", "bpf_sock_addr_kern",  BPF_PROG_TYPE_CGROUP_SOCK_ADDR, BPF_CGROUP_INET4_BIND },
- 		{ "bpf_sock_ops", "bpf_sock_ops_kern", BPF_PROG_TYPE_SOCK_OPS, BPF_CGROUP_SOCK_OPS },
--- 
-2.34.1
-
+> --Jesper
+>
