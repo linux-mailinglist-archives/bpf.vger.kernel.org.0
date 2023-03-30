@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC186D0C6B
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 19:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912E56D0C6C
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 19:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbjC3RNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 13:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43762 "EHLO
+        id S229609AbjC3RNM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 13:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjC3RNJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 13:13:09 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4DFE04A
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 10:13:02 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id eg48so79159080edb.13
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 10:13:02 -0700 (PDT)
+        with ESMTP id S231585AbjC3RNL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 13:13:11 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B6B199E
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 10:13:09 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id y4so79330106edo.2
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 10:13:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680196380;
+        d=isovalent.com; s=google; t=1680196388;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1qClcTc4BeYeX/LOwQFbM/YP0DBK0rhoxHWEcQHAmZQ=;
-        b=YclsK9AcoFz8Cl4PbUOz9fK3bCYd5NTTCQizSz0o9nKACalWG2NKp68dS064Outs9N
-         KKKnDb+qa5jBO0czUJyNCWrf7XCgMtFrJ8vbrKUPSVl/KizOnOrv+54kB3O4yboGP8Rw
-         jpTgzPmKF8wsRYU8jRo3Q9t1lQAik+6Q/Y8ySWNH9VOsNSjYSM9FCVFl056n8IXqrABv
-         iJZJl2Sn1CuaTT+FR4HupDE2pm9545CGPS1fwE8axx05eIUDMpwL27th+2iTDMGZI2Sx
-         dzS/yF2Kt7cVJAALyhBWNLdvpPU+Hy3CrFFe9wL9efjw2JAWlZHQU9aAoXDtWHQG1aPW
-         sJHg==
+        bh=y1GOkiH/468oWJCMYLq2Pa9NWkVDgZmfd5RY3W8RTPg=;
+        b=LcoN0ebBaskVXRdh9D5WR6y2BuxPfK25XshENFAxItLw/fjzdmvF5xbqXvGDIVy7ab
+         QrxnpFlydDvSnid7r9MfjyHPJnudIVSAQ3RPtCceVt929a6r9iPbzXKzekofcNB9lgoW
+         UBru4ejydfbzfyQW8/AYd7RXW/wf7BhOTgclbaLqtEiRoxdEfx8al3dxEjq3t3AHFm/X
+         34c857Vf+s81eolPmnpjFXaXd8D2XttDoBDjw9xw6quxyt5Gg0caROrvsaet0DdOy73a
+         7rnHYSWvbhnmXfdevt3koHmsNzx1og3vUMwyyW2dKeR732zrtjfNOupC0G613lb44jRz
+         T4ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680196380;
+        d=1e100.net; s=20210112; t=1680196388;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1qClcTc4BeYeX/LOwQFbM/YP0DBK0rhoxHWEcQHAmZQ=;
-        b=bld6LUr2xtvgnv9VvBySSwfJEHw/Q/6ljy5+RcRo/IEWJRn7wxnft0j+JnbJfr0frz
-         +GqKbDpZyyjz/gj+zqSWxZiSaRdOlqHhRWpKnOA+FOjyg/i/6R/3cpOk3qWv0MSIBjrp
-         UQnu/ZUpn01LFA0Q+78WZQLJd5dZX/sIzFq8BV+D1+lVTx7YzM7Ar6G3Jjh0gzy7OB/Q
-         rlgHYYRJxeDn4kBboUNBLMp04XF9ED912VigMjsJfYPEDaz7kkPFBSrF4mE/NoVv78FE
-         3CxLvj58xapdqkvEncGPVN10cqb7qdEG7FYBuyCGOmtz6QNzcrq/mx0AYPZazONoAXfz
-         kv2w==
-X-Gm-Message-State: AAQBX9fsZT3PMFQL4YazE0DF99fglINeHjqABGWYWkhBBuI0f1L8XdSH
-        I5UAt5dLDMH7Yx4gA2F6R2bX0qyDR6/SJtnsN4InRg==
-X-Google-Smtp-Source: AKy350a9nrws9VUYALTPg4FQn2cWsHUI4amsy+REcIgtmalorZ5Cg1Jd2/tRkK+2UFj9HDIYmH2SiFHCXm7+mWbdKUU=
-X-Received: by 2002:a17:906:7217:b0:932:6a2:ba19 with SMTP id
- m23-20020a170906721700b0093206a2ba19mr12410652ejk.14.1680196380751; Thu, 30
- Mar 2023 10:13:00 -0700 (PDT)
+        bh=y1GOkiH/468oWJCMYLq2Pa9NWkVDgZmfd5RY3W8RTPg=;
+        b=wooGXkF8KHz+ZagODQBVpobPOxQf0KnXNbZgT1UTTvq2kIlvDexTrKykYdc/UsEXUH
+         /X3WmewY2DOI0ZWxGpZPZVpzNq3Xe7THfLO+2TjKZKd05euSR5ej+f9dC9IJ0LuPjmbf
+         +szlI3Aqud8WxxjfIV9wqI/roOnuoo/l6YxScIQQrRd1pkNMuAoIvC9KC83ZgBa5rhwr
+         JbSoD+cGD+UEqB/od2Bd3YLyvHSR/o3TX4p9SmUG5L95R0KojHsOlNmILyMdNKcjGJGO
+         FziAtcPJbpFSqKDZ3HbsIpybpb/ebeyXO7eKPW6EO+K95i9vjoyMcgK1+P/00vRnJZtO
+         W/Cw==
+X-Gm-Message-State: AAQBX9d5q4+3Z0IFI3mTygU5o09aZD63OHTQcN20Nin6xLv146mgCY8J
+        FXKNG1Kb52NN/sruQFaVAwp5z7JATl5sU0Ly73+o0Q==
+X-Google-Smtp-Source: AKy350YUp5GLaFM7rCi79e1v+WawWIMM55M1FI7n6iKRxZ3jZN6WhVWa4X7u8EXr4BthGR0Zzdxm8J5iDD9hpVrG8bM=
+X-Received: by 2002:a17:906:1185:b0:92b:ec37:e4b7 with SMTP id
+ n5-20020a170906118500b0092bec37e4b7mr12100943eja.14.1680196388043; Thu, 30
+ Mar 2023 10:13:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230328235610.3159943-1-andrii@kernel.org> <20230328235610.3159943-5-andrii@kernel.org>
-In-Reply-To: <20230328235610.3159943-5-andrii@kernel.org>
+References: <20230328235610.3159943-1-andrii@kernel.org> <20230328235610.3159943-8-andrii@kernel.org>
+In-Reply-To: <20230328235610.3159943-8-andrii@kernel.org>
 From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Thu, 30 Mar 2023 18:12:49 +0100
-Message-ID: <CAN+4W8h4QwvVcKkfTGOKAug2wnbZi5t5GyXXK0VWoobrNo1jpA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/6] libbpf: don't enforce verifier log levels
- on libbpf side
+Date:   Thu, 30 Mar 2023 18:12:57 +0100
+Message-ID: <CAN+4W8ju8Bdqe59QXbX+eQWARfiy2-zqgkD5N0rMpmRn9-W4Vg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 6/6] selftests/bpf: add fixed vs rotating
+ verifier log tests
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         martin.lau@kernel.org, timo@incline.eu, robin.goegge@isovalent.com,
@@ -72,15 +72,35 @@ X-Mailing-List: bpf@vger.kernel.org
 On Wed, Mar 29, 2023 at 12:56=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org=
 > wrote:
 >
-> This basically prevents any forward compatibility. And we either way
-> just return -EINVAL, which would otherwise be returned from bpf()
-> syscall anyways.
+> Add selftests validating BPF_LOG_FIXED behavior, which used to be the
+> only behavior, and now default rotating BPF verifier log, which returns
+> just up to last N bytes of full verifier log, instead of returning
+> -ENOSPC.
+>
+> To stress test correctness of in-kernel verifier log logic, we force it
+> to truncate program's verifier log to all lengths from 1 all the way to
+> its full size (about 450 bytes today). This was a useful stress test
+> while developing the feature.
+>
+> For both fixed and rotating log modes we expect -ENOSPC if log contents
+> doesn't fit in user-supplied log buffer.
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-In your cover letter you make the argument that applications can opt
-out of the behaviour, but I think shows that this isn't entirely true.
-Apps linking old libbpf won't be able to fix their breakage without
-updating libbpf. This is especially annoying when you have to support
-multiple old versions where doing this isn't straightforward.
+Acked-by: Lorenz Bauer <lmb@isovalent.com>
 
-Take this as another plea to make this opt in and instead work
-together to make this a default on the lib side. :)
+> +       /* validate BPF_LOG_FIXED works as verifier log used to work, tha=
+t is:
+> +        * we get -ENOSPC and beginning of the full verifier log. This on=
+ly
+> +        * works for log_level 2 and log_level 1 + failed program. For lo=
+g
+> +        * level 2 we don't reset log at all. For log_level 1 + failed pr=
+ogram
+> +        * we don't get to verification stats output. With log level 1
+> +        * for successful program  final result will be just verifier sta=
+ts.
+> +        * But if provided too short log buf, kernel will NULL-out log->u=
+buf
+
+Out of curiousity: why is ubuf NULLed? Is that something we could change?
