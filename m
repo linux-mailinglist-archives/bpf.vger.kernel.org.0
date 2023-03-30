@@ -2,167 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF856D08B7
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 16:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252AE6D0946
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 17:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbjC3OwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 10:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        id S232847AbjC3PTk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 11:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbjC3OwK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 10:52:10 -0400
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6C91FE8;
-        Thu, 30 Mar 2023 07:52:09 -0700 (PDT)
-Received: by mail-qv1-f41.google.com with SMTP id o44so14203242qvo.4;
-        Thu, 30 Mar 2023 07:52:09 -0700 (PDT)
+        with ESMTP id S232841AbjC3PTj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 11:19:39 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B37BCC36
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 08:18:32 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id qe8-20020a17090b4f8800b0023f07253a2cso19944407pjb.3
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 08:18:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1680189494;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZFKfcwfWFwx7skGE0Rxm6dEGji3nQu77Efov4tDzlv4=;
+        b=JUltwBBqOol8AjZOiUbzaPfGl7C7ESTGcCayAdwyAzOw1zniUQQ9BwL6PezIvIiRuJ
+         fMzwyar1UEZ7HxOJelAClH7Ba2JFll3AsKezGirW54w+xBZrBUHCE2R/wSFo4XjZS2VF
+         sZulJ5PzCkbb6jFMYbHMz/W5mK1k/J/OXgTHYvpBhfi+csfFrH7Pt/kStL56/bGKPnwM
+         9ft11JHvTo6l2IfufdXm1jZ7w0h1m7Ni+d9O50niimlTIDNf8N6oEGE4ZEgbsC5i6yk9
+         /Y3bfiHpDQsH26WnyjfQGmrPS8ZyHOYPqISN/vNBRj8IIDJ3Pjcal2uAeow8iMfLU7PP
+         i7zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680187928; x=1682779928;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9hN4YpD3U3sRZPulOttvL6oVrqEryb/pVBJ8w7pJKAg=;
-        b=EXnDaT/dFZV4LQ+PtQX1xCezzJhjEcJwUwekjb4T1czTVuhXPdqe4vSK4KW2huj94p
-         Wt7AHOKXHOFQfaVD3SVSHf1fuOFa04BrcSK6lOpeWmexQWPd3kQLFc2l1HDqsVOrWnNb
-         /ct72PYixjUeQusyU2iuucWj4aOXv7pkLxYTj13mJNzdn+lXASD6f+B23hvI3ZNz5YbM
-         oWP7eAp4QUufHQrc3pdf4Edbr7LsA5KtSQxs/MQ5EYlTga8DSKHUeEHHONrTHeUYJAH3
-         uQ2H8MYz3GdKgc35oNpCo5jb60I3Pbd1H4BNSVAghM3PbPLDfrAlePaUp4tKU5DLHa5a
-         hBUg==
-X-Gm-Message-State: AAQBX9flgsZuhueeepe8w7Wf7QXmTEIJ8+WVtSHTL9xB9N/kBy5+anW1
-        6FGa/V0/oryxztcX8uOd3jipAfyTL6aNx9CK
-X-Google-Smtp-Source: AKy350bUImW3YQRiXc0ZivxPhjvV5wcP7dHaEwn3ZVeNgZicsadVYsu3ifvTiFEubWvYRRW3EUJdSA==
-X-Received: by 2002:a05:6214:f22:b0:5df:5167:c420 with SMTP id iw2-20020a0562140f2200b005df5167c420mr11051724qvb.38.1680187928464;
-        Thu, 30 Mar 2023 07:52:08 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:d9ee])
-        by smtp.gmail.com with ESMTPSA id dm4-20020ad44e24000000b005dd8b934569sm5530533qvb.1.2023.03.30.07.52.07
+        d=1e100.net; s=20210112; t=1680189494;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZFKfcwfWFwx7skGE0Rxm6dEGji3nQu77Efov4tDzlv4=;
+        b=Fea9tQy3+WqDFZQJC5abPp+vUHABhwxLCLATRdDLahnR1uCTm/4rBlWQDsf98jBGtR
+         M2ogURWB6rmVfs/UBlXitOUssEFDqNvx/ucE2lCD3u5b65cpfgV7/RKiL46NLC1yUhRd
+         HED/5QKOUKapVRTIo6fL/s3WlRC0i9EjwJ86b6nuKBgkwG92RhHln9IPjCmA3o059hRz
+         4+HyLhoaar80kNFLz+KHiCBqe1lAKjfgMR93V0J789Vsaq9LKEA2J5l5xgwspYxeO0mz
+         CwsN4CxeN3h17rSjqiE3g1GBnXlzkHW6ihag2OTbARG74gxWhAFGfCP/a+tzyucItl+C
+         arxw==
+X-Gm-Message-State: AO0yUKVDolFC9bkTUPDTol46jlF7r2jpFPhhSuZQu/9cII5s7BKnbxt/
+        W9+kdDtzU0E0+GKvsVfg4mjVqlV9ubkuDs+4Zm0=
+X-Google-Smtp-Source: AK7set/2FWBJ1KFe8vjVCdzLAEfvKj9KXJu0omab4TsnvIrX1ZifDTOZbkiTuBknpzeeMwP+adMuPQ==
+X-Received: by 2002:a05:6a20:6597:b0:da:eebd:7f6c with SMTP id p23-20020a056a20659700b000daeebd7f6cmr19312813pzh.56.1680189493529;
+        Thu, 30 Mar 2023 08:18:13 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4611:8100::1])
+        by smtp.gmail.com with ESMTPSA id f17-20020a63de11000000b004fc1d91e695sm23401177pgg.79.2023.03.30.08.18.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 07:52:08 -0700 (PDT)
-From:   David Vernet <void@manifault.com>
+        Thu, 30 Mar 2023 08:18:12 -0700 (PDT)
+From:   Aditi Ghag <aditi.ghag@isovalent.com>
 To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, memxor@gmail.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add testcases for ptr_*_or_null_ in bpf_kptr_xchg
-Date:   Thu, 30 Mar 2023 09:52:03 -0500
-Message-Id: <20230330145203.80506-2-void@manifault.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230330145203.80506-1-void@manifault.com>
-References: <20230330145203.80506-1-void@manifault.com>
+Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
+        aditi.ghag@isovalent.com
+Subject: [PATCH v5 bpf-next 0/7] bpf: Add socket destroy capability
+Date:   Thu, 30 Mar 2023 15:17:51 +0000
+Message-Id: <20230330151758.531170-1-aditi.ghag@isovalent.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.5 required=5.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The second argument of the bpf_kptr_xchg() helper function is
-ARG_PTR_TO_BTF_ID_OR_NULL. A recent patch fixed a bug whereby the
-verifier would fail with an internal error message if a program invoked
-the helper with a PTR_TO_BTF_ID | PTR_MAYBE_NULL register. This testcase
-adds some testcases to ensure that it fails gracefully moving forward.
+This patch adds the capability to destroy sockets in BPF. We plan to use
+the capability in Cilium to force client sockets to reconnect when their
+remote load-balancing backends are deleted. The other use case is
+on-the-fly policy enforcement where existing socket connections prevented
+by policies need to be terminated.
 
-Before the fix, these testcases would have failed an error resembling
-the following:
+The use cases, and more details around
+the selected approach were presented at LPC 2022 -
+https://lpc.events/event/16/contributions/1358/.
+RFC discussion -
+https://lore.kernel.org/netdev/CABG=zsBEh-P4NXk23eBJw7eajB5YJeRS7oPXnTAzs=yob4EMoQ@mail.gmail.com/T/#u.
+v4 patch series -
+https://lore.kernel.org/bpf/20230323200633.3175753-1-aditi.ghag@isovalent.com/T/#t
 
-; p = bpf_kfunc_call_test_acquire(&(unsigned long){0});
-99: (7b) *(u64 *)(r10 -16) = r7       ; frame1: ...
-100: (bf) r1 = r10                    ; frame1: ...
-101: (07) r1 += -16                   ; frame1: ...
-; p = bpf_kfunc_call_test_acquire(&(unsigned long){0});
-102: (85) call bpf_kfunc_call_test_acquire#13908
-; frame1: R0_w=ptr_or_null_prog_test_ref_kfunc...
-; p = bpf_kptr_xchg(&v->ref_ptr, p);
-103: (bf) r1 = r6                     ; frame1: ...
-104: (bf) r2 = r0
-; frame1: R0_w=ptr_or_null_prog_test_ref_kfunc...
-105: (85) call bpf_kptr_xchg#194
-verifier internal error: invalid PTR_TO_BTF_ID register for type match
+v5 highlights:
+Address review comments:
+Martin:
+- Fixed bugs in the resume operation for UDP iterator.
+- Added clean-up preparatory commits prior to the batching commit.
+Stan:
+- Programmatically retrieve and share server port in the selftests.
+- Acquire slow sock lock in UDP iterator to be consistent with TCP.
+- Addressed formatting nits.
 
-Signed-off-by: David Vernet <void@manifault.com>
----
- .../selftests/bpf/progs/cpumask_failure.c     | 25 +++++++++++++++++++
- .../selftests/bpf/progs/map_kptr_fail.c       | 23 +++++++++++++++++
- 2 files changed, 48 insertions(+)
+(Below notes are same as v2 patch series that are still relevant. Refer to
+earlier patch series for other notes.)
+- I hit a snag while writing the kfunc where verifier complained about the
+  `sock_common` type passed from TCP iterator. With kfuncs, there don't
+  seem to be any options available to pass BTF type hints to the verifier
+  (equivalent of `ARG_PTR_TO_BTF_ID_SOCK_COMMON`, as was the case with the
+  helper).  As a result, I changed the argument type of the sock_destory
+  kfunc to `sock_common`.
 
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_failure.c b/tools/testing/selftests/bpf/progs/cpumask_failure.c
-index db4f94e72b61..a9bf6ea336cf 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_failure.c
-+++ b/tools/testing/selftests/bpf/progs/cpumask_failure.c
-@@ -165,3 +165,28 @@ int BPF_PROG(test_global_mask_no_null_check, struct task_struct *task, u64 clone
- 
- 	return 0;
- }
-+
-+SEC("tp_btf/task_newtask")
-+__failure __msg("Possibly NULL pointer passed to helper arg2")
-+int BPF_PROG(test_global_mask_rcu_no_null_check, struct task_struct *task, u64 clone_flags)
-+{
-+	struct bpf_cpumask *prev, *curr;
-+
-+	curr = bpf_cpumask_create();
-+	if (!curr)
-+		return 0;
-+
-+	prev = bpf_kptr_xchg(&global_mask, curr);
-+	if (prev)
-+		bpf_cpumask_release(prev);
-+
-+	bpf_rcu_read_lock();
-+	curr = global_mask;
-+	/* PTR_TO_BTF_ID | PTR_MAYBE_NULL | MEM_RCU passed to bpf_kptr_xchg() */
-+	prev = bpf_kptr_xchg(&global_mask, curr);
-+	bpf_rcu_read_unlock();
-+	if (prev)
-+		bpf_cpumask_release(prev);
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/map_kptr_fail.c b/tools/testing/selftests/bpf/progs/map_kptr_fail.c
-index 08f9ec18c345..15bf3127dba3 100644
---- a/tools/testing/selftests/bpf/progs/map_kptr_fail.c
-+++ b/tools/testing/selftests/bpf/progs/map_kptr_fail.c
-@@ -20,6 +20,7 @@ struct array_map {
- } array_map SEC(".maps");
- 
- extern struct prog_test_ref_kfunc *bpf_kfunc_call_test_acquire(unsigned long *sp) __ksym;
-+extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
- extern struct prog_test_ref_kfunc *
- bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b) __ksym;
- 
-@@ -442,4 +443,26 @@ int kptr_get_ref_state(struct __sk_buff *ctx)
- 	return 0;
- }
- 
-+SEC("?tc")
-+__failure __msg("Possibly NULL pointer passed to helper arg2")
-+int kptr_xchg_possibly_null(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *p;
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	p = bpf_kfunc_call_test_acquire(&(unsigned long){0});
-+
-+	/* PTR_TO_BTF_ID | PTR_MAYBE_NULL passed to bpf_kptr_xchg() */
-+	p = bpf_kptr_xchg(&v->ref_ptr, p);
-+	if (p)
-+		bpf_kfunc_call_test_release(p);
-+
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
+Aditi Ghag (7):
+  bpf: tcp: Avoid taking fast sock lock in iterator
+  udp: seq_file: Remove bpf_seq_afinfo from udp_iter_state
+  udp: seq_file: Helper function to match socket attributes
+  bpf: udp: Implement batching for sockets iterator
+  bpf: Add bpf_sock_destroy kfunc
+  selftests/bpf: Add helper to get port using getsockname
+  selftests/bpf: Test bpf_sock_destroy
+
+ include/net/udp.h                             |   1 -
+ net/core/filter.c                             |  54 ++++
+ net/ipv4/tcp.c                                |  10 +-
+ net/ipv4/tcp_ipv4.c                           |   5 +-
+ net/ipv4/udp.c                                | 286 +++++++++++++++---
+ tools/testing/selftests/bpf/network_helpers.c |  14 +
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../selftests/bpf/prog_tests/sock_destroy.c   | 203 +++++++++++++
+ .../selftests/bpf/progs/sock_destroy_prog.c   | 147 +++++++++
+ 9 files changed, 676 insertions(+), 45 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+
 -- 
-2.39.0
+2.34.1
 
