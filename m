@@ -2,128 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC44A6CFAD6
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 07:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 360486CFB01
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 07:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbjC3FjO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 01:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43478 "EHLO
+        id S229919AbjC3F4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 01:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbjC3FjN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 01:39:13 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2D75B8A
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 22:39:05 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id er13so30994498edb.9
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 22:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680154744; x=1682746744;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l575AqULl23Ia0mKgXsYaqdBK5jpiypuDbQJC/LWzUQ=;
-        b=b8TA2Xa9TV8Kg2zh47Nbt1yzXbV8IFp06c9QJ9KBMPNc9GSyVu3et6HpY+bxSNzUgs
-         V3ItD89xGn7crz6o1pyNTGVIkQ2237hBwHXZy7dPCiEbaiQRj+Jf5Ya3wJ305cQpwXh4
-         Oe3vwFif4WxeLd7Jbxl0HaSp7RJumVSRAnYpT+qyv4RvMycykiTVLVPBQXmNI8Als12y
-         EP8Xw6nKR/dqmcvDqf/yv8a7NGx5rSsSXBgs3otbshRIIGXiVD7shvxhlNry5Yd2mOIb
-         wXSLzVKIA1izLtJyd+osImUnYlYny4X5hZr3SGQj/LFD3huKo+hqN2FK+LWbr1tAJA6N
-         cMKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680154744; x=1682746744;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l575AqULl23Ia0mKgXsYaqdBK5jpiypuDbQJC/LWzUQ=;
-        b=SEK64K3/Q7FBZ3PU4Ay1XisRU6B50h1np390B1rJ4Et3U5WVUeAWoEAFjGfWt4By5E
-         EKyq4pWNBXuMLB0kx+LFEzUfHuG9O804+bnFEzgLMBzhslfcy0UaCXX+eJ9ZEkTanhZS
-         BpwVdL8U9TFmrbH2il9wRF2D2XqHuY1KGyQ2gzgVP467mc6GWCedqwkNbK9IiJybA+Ts
-         BkIMyw6UyhNxpgi1naiFp7ccMONxxuQql7pb6m6Kz4tvTglchiD2BboQh8cHKRVKwEbY
-         3sLmsg/6tIQ+zNjIwDAFjbk1+orhAjXJ0XX0qCHjdECWEVRThfUPB1o7wYvvEbimngR5
-         wbtQ==
-X-Gm-Message-State: AAQBX9e/SNX7kXAsvYT9HLVNGS3t6/6fDV9y4D6iOquf7lqvVF2vV/4X
-        a/mR7MTSAr15uhdKxtyKKS3eYcJ0FYMRKjZ55TA=
-X-Google-Smtp-Source: AKy350Z2/mjIRJ23ycKJxGF7wnDqkz4WTm/2T+K3PdYeK71PYJhPPAG2sLQc2rpY4ZOeHrDP3BjTykyPHS5gwQUfHts=
-X-Received: by 2002:a17:907:7f19:b0:926:8f9:735d with SMTP id
- qf25-20020a1709077f1900b0092608f9735dmr12132594ejc.3.1680154744335; Wed, 29
- Mar 2023 22:39:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230328235610.3159943-1-andrii@kernel.org> <CAEf4BzaAcD0HEgJzQH4NTWAzkTXHLS7T-eGGxxhHm2ADROTRrg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaAcD0HEgJzQH4NTWAzkTXHLS7T-eGGxxhHm2ADROTRrg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 29 Mar 2023 22:38:53 -0700
-Message-ID: <CAADnVQKT7Hifb=vV1yu8orgPMkRynNLZykCPKanRqDigE8xVEA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/6] BPF verifier rotating log
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>, lmb@isovalent.com,
-        Timo Beckers <timo@incline.eu>, robin.goegge@isovalent.com,
-        Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S229925AbjC3F4S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 01:56:18 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC935B8E
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 22:56:09 -0700 (PDT)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32U0B3Ju003930
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 22:56:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=goFsdJ5l/64dPrBtRd9UXqUAtaNzQVbA2rVQ/PAQceo=;
+ b=k8U+NcIlwVDFc8nTU5HB6oLu35d7FnFcBc8YgIE/IgnWsj4t+L9lbzWVDrb/+X3r3/il
+ iwPTflDTd1n9hoeiYkD+0yRnq+vZ8f/nKMFLi8/tF4tlCmEKnJ87GL2jkWMnNDFk5xKi
+ Yw+uP4zu57HNvRF+O+o4kGyXNXM+OaFa0/M= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pmyn5sgub-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 22:56:09 -0700
+Received: from twshared8568.05.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Wed, 29 Mar 2023 22:56:08 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id 17DA51BA2D6F8; Wed, 29 Mar 2023 22:56:00 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next 0/7] bpf: Improve verifier for cond_op and spilled loop index variables
+Date:   Wed, 29 Mar 2023 22:56:00 -0700
+Message-ID: <20230330055600.86870-1-yhs@fb.com>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: O-knJl57xAYpfeJWDR1VDiAhZcauxJWp
+X-Proofpoint-ORIG-GUID: O-knJl57xAYpfeJWDR1VDiAhZcauxJWp
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-30_02,2023-03-30_01,2023-02-09_01
+X-Spam-Status: No, score=-0.6 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 4:59=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Mar 28, 2023 at 4:56=E2=80=AFPM Andrii Nakryiko <andrii@kernel.or=
-g> wrote:
-> >
-> > This patch set changes BPF verifier log behavior to behave as a rotatin=
-g log,
-> > by default. If user-supplied log buffer is big enough to contain entire
-> > verifier log output, there is no effective difference. But where previo=
-usly
-> > user supplied too small log buffer and would get -ENOSPC error result a=
-nd the
-> > beginning part of the verifier log, now there will be no error and user=
- will
-> > get ending part of verifier log filling up user-supplied log buffer.  W=
-hich
-> > is, in absolute majority of cases, is exactly what's useful, relevant, =
-and
-> > what users want and need, as the ending of the verifier log is containi=
-ng
-> > details of verifier failure and relevant state that got us to that fail=
-ure. So
-> > this rotating mode is made default, but for some niche advanced debuggi=
-ng
-> > scenarios it's possible to request old behavior by specifying additiona=
-l
-> > BPF_LOG_FIXED (8) flag.
-> >
-> > This patch set adjusts libbpf to allow specifying flags beyond 1 | 2 | =
-4. We
-> > also add --log-size and --log-fixed options to veristat to be able to b=
-oth
-> > test this functionality manually, but also to be used in various debugg=
-ing
-> > scenarios. We also add selftests that tries many variants of log buffer=
- size
-> > to stress-test correctness of internal verifier log bookkeeping code.
-> >
-> > v1->v2:
-> >   - return -ENOSPC even in rotating log mode for preserving backwards
-> >     compatibility (Lorenz);
->
-> I haven't implemented the feature we discussed, where the
-> BPF_PROG_LOAD (and BPF_BTF_LOAD) command will return back the full
-> size of the buffer that's necessary to contain the complete log
-> buffer. I'm building it on top of this patch set and would like to
-> send it separately as a follow up, as it touches UAPI some more, and I
-> feel like we'll have few revisions just for this. So I didn't want to
-> delay these changes. Plus, I think to add this even for BPF_LOG_FIXED
-> mode, so it's provided consistently. So I need a bit more time to
-> implement this. Hopefully this version will work for everyone and can
-> go in sooner.
+LLVM commit [1] introduced hoistMinMax optimization like
+  (i < VIRTIO_MAX_SGS) && (i < out_sgs)
+to
+  upper =3D MIN(VIRTIO_MAX_SGS, out_sgs)
+  ... i < upper ...
+and caused the verification failure. Commit [2] workarounded the issue by
+adding some bpf assembly code to prohibit the above optimization.
+This patch improved verifier such that verification can succeed without
+the above workaround.
 
-Lorenz, ping.
+Without [2], the current verifier will hit the following failures:
+  ...
+  119: (15) if r1 =3D=3D 0x0 goto pc+1=20=20=20=20=20=20
+  The sequence of 8193 jumps is too complex.
+  verification time 525829 usec
+  stack depth 64
+  processed 156616 insns (limit 1000000) max_states_per_insn 8 total_states=
+ 1754 peak_states 1712 mark_read 12
+  -- END PROG LOAD LOG --
+  libbpf: prog 'trace_virtqueue_add_sgs': failed to load: -14
+  libbpf: failed to load object 'loop6.bpf.o'
+  ...
+The failure is due to verifier inadequately handling '<const> <cond_op> <no=
+n_const>' which will
+go through both pathes and generate the following verificaiton states:
+  ...
+  89: (07) r2 +=3D 1                      ; R2_w=3D5
+  90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Dfp0
+  91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,var_off=
+=3D(0x0; 0x7)) R10=3Dfp0
+  92: (ad) if r2 < r1 goto pc+41        ; R0_w=3Dscalar() R1_w=3Dscalar(umi=
+n=3D6,umax=3D5,var_off=3D(0x4; 0x3))
+      R2_w=3D5 R6_w=3Dscalar(id=3D385) R7_w=3D0 R8_w=3Dscalar() R9_w=3Dscal=
+ar(umax=3D21474836475,var_off=3D(0x0; 0x7ffffffff))
+      R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? fp-32=3D =
+fp-40_w=3D4 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm=20=20=20=20
+  ...
+  89: (07) r2 +=3D 1                      ; R2_w=3D6
+  90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Dfp0
+  91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,var_off=
+=3D(0x0; 0x7)) R10=3Dfp0
+  92: (ad) if r2 < r1 goto pc+41        ; R0_w=3Dscalar() R1_w=3Dscalar(umi=
+n=3D7,umax=3D5,var_off=3D(0x4; 0x3))
+      R2_w=3D6 R6=3Dscalar(id=3D388) R7=3D0 R8_w=3Dscalar() R9_w=3Dscalar(u=
+max=3D25769803770,var_off=3D(0x0; 0x7ffffffff))
+      R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? fp-32=3D =
+fp-40=3D5 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
+    ...
+  89: (07) r2 +=3D 1                      ; R2_w=3D4088
+  90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Dfp0
+  91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,var_off=
+=3D(0x0; 0x7)) R10=3Dfp0
+  92: (ad) if r2 < r1 goto pc+41        ; R0=3Dscalar() R1=3Dscalar(umin=3D=
+4089,umax=3D5,var_off=3D(0x0; 0x7))
+      R2=3D4088 R6=3Dscalar(id=3D12634) R7=3D0 R8=3Dscalar() R9=3Dscalar(um=
+ax=3D17557826301960,var_off=3D(0x0; 0xfffffffffff))
+      R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? fp-32=3D =
+fp-40=3D4087 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
+
+Patch 3 fixed the above issue by handling '<const> <cond_op> <non_const>' p=
+roperly.
+During developing selftests for Patch 3, I found some issues with bound ded=
+uction with
+BPF_EQ/BPF_NE and fixed the issue in Patch 1.
+
+After the above issue is fixed, the second issue shows up.
+  ...
+  67: (07) r1 +=3D -16                    ; R1_w=3Dfp-16
+  ; bpf_probe_read_kernel(&sgp, sizeof(sgp), sgs + i);
+  68: (b4) w2 =3D 8                       ; R2_w=3D8
+  69: (85) call bpf_probe_read_kernel#113       ; R0_w=3Dscalar() fp-16=3Dm=
+mmmmmmm
+  ; return sgp;
+  70: (79) r6 =3D *(u64 *)(r10 -16)       ; R6=3Dscalar() R10=3Dfp0
+  ; for (n =3D 0, sgp =3D get_sgp(sgs, i); sgp && (n < SG_MAX);
+  71: (15) if r6 =3D=3D 0x0 goto pc-49      ; R6=3Dscalar()
+  72: (b4) w1 =3D 0                       ; R1_w=3D0
+  73: (05) goto pc-46
+  ; for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < out_sgs); i++) {
+  28: (bc) w7 =3D w1                      ; R1_w=3D0 R7_w=3D0
+  ; bpf_probe_read_kernel(&len, sizeof(len), &sgp->length);
+  ...
+  23: (79) r3 =3D *(u64 *)(r10 -40)       ; R3_w=3D2 R10=3Dfp0
+  ; for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < out_sgs); i++) {
+  24: (07) r3 +=3D 1                      ; R3_w=3D3
+  ; for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < out_sgs); i++) {
+  25: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,var_off=
+=3D(0x0; 0x7)) R10=3Dfp0
+  26: (ad) if r3 < r1 goto pc+34 61: R0=3Dscalar() R1_w=3Dscalar(umin=3D4,u=
+max=3D5,var_off=3D(0x4; 0x1)) R3_w=3D3 R6=3Dscalar(id=3D1658)
+     R7=3D0 R8=3Dscalar(id=3D1653) R9=3Dscalar(umax=3D4294967295,var_off=3D=
+(0x0; 0xffffffff)) R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm
+     fp-24=3Dmmmm???? fp-32=3D fp-40=3D2 fp-56=3D fp-64=3Dmmmmmmmm
+  ; if (sg_is_chain(&sg))=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+  61: (7b) *(u64 *)(r10 -40) =3D r3       ; R3_w=3D3 R10=3Dfp0 fp-40_w=3D3
+    ...
+  67: (07) r1 +=3D -16                    ; R1_w=3Dfp-16
+  ; bpf_probe_read_kernel(&sgp, sizeof(sgp), sgs + i);
+  68: (b4) w2 =3D 8                       ; R2_w=3D8
+  69: (85) call bpf_probe_read_kernel#113       ; R0_w=3Dscalar() fp-16=3Dm=
+mmmmmmm
+  ; return sgp;
+  70: (79) r6 =3D *(u64 *)(r10 -16)=20=20=20=20=20=20=20
+  ; for (n =3D 0, sgp =3D get_sgp(sgs, i); sgp && (n < SG_MAX);
+  infinite loop detected at insn 71=20=20=20=20=20
+  verification time 90800 usec
+  stack depth 64
+  processed 25017 insns (limit 1000000) max_states_per_insn 20 total_states=
+ 491 peak_states 169 mark_read 12
+  -- END PROG LOAD LOG --
+  libbpf: prog 'trace_virtqueue_add_sgs': failed to load: -22
+
+Further analysis found the index variable 'i' is spilled but since it is no=
+t marked as precise, regsafe will ignore
+comparison since they are scalar values.
+
+Since it is hard for verifier to determine whether a particular scalar is i=
+ndex variable or not, Patch 5 implemented
+a heuristic such that if both old and new reg states are constant, mark the=
+ old one as precise to force scalar value
+comparison and this fixed the problem.
+
+The rest of patches are selftests related.
+
+  [1] https://reviews.llvm.org/D143726
+  [2] Commit 3c2611bac08a ("selftests/bpf: Fix trace_virtqueue_add_sgs test=
+ issue with LLVM 17.")
+
+Yonghong Song (7):
+  bpf: Improve verifier JEQ/JNE insn branch taken checking
+  selftests/bpf: Add tests for non-constant cond_op NE/EQ bound
+    deduction
+  bpf: Improve handling of pattern '<const> <cond_op> <non_const>' in
+    verifier
+  selftests/bpf: Add verifier tests for code pattern '<const> <cond_op>
+    <non_const>'
+  bpf: Mark potential spilled loop index variable as precise
+  selftests/bpf: Remove previous workaround for test verif_scale_loop6
+  selftests/bpf: Add a new test based on loop6.c
+
+ kernel/bpf/verifier.c                         |  40 +-
+ .../bpf/prog_tests/bpf_verif_scale.c          |   5 +
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ tools/testing/selftests/bpf/progs/loop6.c     |   2 -
+ tools/testing/selftests/bpf/progs/loop7.c     | 102 ++++
+ .../verifier_bounds_deduction_non_const.c     | 553 ++++++++++++++++++
+ .../progs/verifier_bounds_mix_sign_unsign.c   |   2 +-
+ 7 files changed, 701 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/loop7.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_bounds_deduc=
+tion_non_const.c
+
+--=20
+2.34.1
+
