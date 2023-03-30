@@ -2,186 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 341B46CFB65
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 08:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44BF6CFC36
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 09:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbjC3GSm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 02:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
+        id S230346AbjC3HGw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 03:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjC3GSg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 02:18:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3581E40DD
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 23:17:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680157070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        with ESMTP id S230091AbjC3HGt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 03:06:49 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08D365B5;
+        Thu, 30 Mar 2023 00:06:48 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 654981FE87;
+        Thu, 30 Mar 2023 07:06:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680160007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6xBOVpWxCK25mn4qE7KBnQ/szJiPX1gzHnLt3zUuvz0=;
-        b=GV1MPYkFfsw8qsREHk4oGncGXP26DjHi4EuRG5W0mibcdssCuW9oooHGXSp5YPzD3l5mg/
-        mw0/M0Mhfh2ygkbmKyw6Ogz3O79LHxuV7fWOaf6ep3Lb4ZH7OY3ee2dDEEoDSrSBJQuw5R
-        PCWEXdd4f80Fd3MrxRMmicLpnEmfq58=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-377-dQn_rV75On-xQghm4w1a1g-1; Thu, 30 Mar 2023 02:17:48 -0400
-X-MC-Unique: dQn_rV75On-xQghm4w1a1g-1
-Received: by mail-wr1-f72.google.com with SMTP id p1-20020a5d6381000000b002cea6b2d5a9so1774053wru.14
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 23:17:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680157067;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6xBOVpWxCK25mn4qE7KBnQ/szJiPX1gzHnLt3zUuvz0=;
-        b=R84tLdOmeE7r31y4To2bslJ/+Ks9vHf1/1FFHjDpExe6NZukt5dv7q2eQoarfgD2gP
-         qHfQW+fsvtyJ52OyDDzP/5rHR7uDa1EE1wJFmfkUdt04urRpzvj2Ty4MwnO4lNGTr9LU
-         mw5JsU4ZftX5szfVrDLRPTqV9LcyfpvFzD2wU2uW+VeUZ1lN4y5eReSsFr2QowGvu+1A
-         CYdOwxjvEAEoaDFy1Gvq3lq7t8btvySMRJzI3CyGkLn2RtYnWD28kbjJ4ucrGYDKFFY2
-         BSn/Brz2SA9i+C1+6bsj9XCaqlaLH8pMQdzYN6ZxwKcjhxUZprC7ofpR12LPeyw1o7Xa
-         jUjQ==
-X-Gm-Message-State: AAQBX9eiOw5mF/IkDwA42rYwPHqAip3vjpi2Jc/NU59JOoaY+QkcKjl8
-        OxjVuz2Z2yf7yeUKDPX0q4HWU6P54ov70a7Qmy2ZFNteHvZkEqWdUdb26pjv63V+IkMg6hABzFD
-        /+amcOt9oaUHw
-X-Received: by 2002:adf:e401:0:b0:2d4:896:a204 with SMTP id g1-20020adfe401000000b002d40896a204mr16043755wrm.60.1680157067617;
-        Wed, 29 Mar 2023 23:17:47 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ZWrzkHbAP6BkiUUe9yyebCiunrV4M5BvT7N+wH2ZkjcjHW/6tNcTYFjDHgUDimgRCyWS3QsQ==
-X-Received: by 2002:adf:e401:0:b0:2d4:896:a204 with SMTP id g1-20020adfe401000000b002d40896a204mr16043735wrm.60.1680157067244;
-        Wed, 29 Mar 2023 23:17:47 -0700 (PDT)
-Received: from redhat.com ([2.52.159.107])
-        by smtp.gmail.com with ESMTPSA id p5-20020adfce05000000b002d64fcb362dsm26643606wrn.111.2023.03.29.23.17.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 23:17:46 -0700 (PDT)
-Date:   Thu, 30 Mar 2023 02:17:43 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 00/16] virtio-net: split virtio-net.c
-Message-ID: <20230330015412-mutt-send-email-mst@kernel.org>
-References: <20230328092847.91643-1-xuanzhuo@linux.alibaba.com>
+        bh=QLfYeLt+TXwV+pwToLzrHHrJTaYboOCW9UaiwVxS7lA=;
+        b=mAI7MPiHSl8rJ93izo+zY41ldY7Q5UIHq3cnqnGtElFi7az9dtYt0NrZYGnhHulCp4xuiB
+        tCKde3AIvlhN6fTukiLKYF3ViOCSzqBHTGWpE8aQCHMCXW6+8GcWX7Keeil3ozJ3OOGTHK
+        IGmmNg/5vANvb4KhA3aiQh5XlXtsXR4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4169A1348E;
+        Thu, 30 Mar 2023 07:06:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yVwIDQc1JWR+bAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 30 Mar 2023 07:06:47 +0000
+Date:   Thu, 30 Mar 2023 09:06:46 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+Message-ID: <ZCU1Bp+5bKNJzWIu@dhcp22.suse.cz>
+References: <20230328221644.803272-1-yosryahmed@google.com>
+ <20230328221644.803272-5-yosryahmed@google.com>
+ <ZCQfZJFufkJ10o01@dhcp22.suse.cz>
+ <CAJD7tkb-UpKm2QbjYzB=B=oGk6Hyj9cbUviZUPC+7VsvBecH7g@mail.gmail.com>
+ <20230329192059.2nlme5ubshzdbpg6@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230328092847.91643-1-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230329192059.2nlme5ubshzdbpg6@google.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 05:28:31PM +0800, Xuan Zhuo wrote:
-> Considering the complexity of virtio-net.c and the new features we want
-> to add, it is time to split virtio-net.c into multiple independent
-> module files.
+On Wed 29-03-23 19:20:59, Shakeel Butt wrote:
+> On Wed, Mar 29, 2023 at 11:41:39AM -0700, Yosry Ahmed wrote:
+> > On Wed, Mar 29, 2023 at 4:22 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Tue 28-03-23 22:16:39, Yosry Ahmed wrote:
+> > > > rstat flushing is too expensive to perform in irq context.
+> > > > The previous patch removed the only context that may invoke an rstat
+> > > > flush from irq context, add a WARN_ON_ONCE() to detect future
+> > > > violations, or those that we are not aware of.
+> > > >
+> > > > Ideally, we wouldn't flush with irqs disabled either, but we have one
+> > > > context today that does so in mem_cgroup_usage(). Forbid callers from
+> > > > irq context for now, and hopefully we can also forbid callers with irqs
+> > > > disabled in the future when we can get rid of this callsite.
+> > >
+> > > I am sorry to be late to the discussion. I wanted to follow up on
+> > > Johannes reply in the previous version but you are too fast ;)
+> > >
+> > > I do agree that this looks rather arbitrary. You do not explain how the
+> > > warning actually helps. Is the intention to be really verbose to the
+> > > kernel log when somebody uses this interface from the IRQ context and
+> > > get bug reports? What about configurations with panic on warn? Do we
+> > > really want to crash their systems for something like that?
+> > 
+> > Thanks for taking a look, Michal!
+> > 
+> > The ultimate goal is not to flush in irq context or with irqs
+> > disabled, as in some cases it causes irqs to be disabled for a long
+> > time, as flushing is an expensive operation. The previous patch in the
+> > series should have removed the only context that flushes in irq
+> > context, and the purpose of the WARN_ON_ONCE() is to catch future uses
+> > or uses that we might have missed.
+> > 
+> > There is still one code path that flushes with irqs disabled (also
+> > mem_cgroup_usage()), and we cannot remove this just yet; we need to
+> > deprecate usage threshold events for root to do that. So we cannot
+> > enforce not flushing with irqs disabled yet.
+> > 
+> > So basically the patch is trying to enforce what we have now, not
+> > flushing in irq context, and hopefully at some point we will also be
+> > able to enforce not flushing with irqs disabled.
+> > 
+> > If WARN_ON_ONCE() is the wrong tool for this, please let me know.
+> > 
 > 
-> This is beneficial to the maintenance and adding new functions.
-> 
-> And AF_XDP support will be added later, then a separate xsk.c file will
-> be added.
-> 
-> This patchset split virtio-net.c into these parts:
-> 
-> * virtnet.c:         virtio net device ops (napi, tx, rx, device ops, ...)
-> * virtnet_common.c:  virtio net common code
-> * virtnet_ethtool.c: virtio net ethtool callbacks
-> * virtnet_ctrl.c:    virtio net ctrl queue command APIs
-> * virtnet_virtio.c:  virtio net virtio callbacks/ops (driver register, virtio probe, virtio free, ...)
-> 
-> Please review.
-> 
-> Thanks.
+> If I understand Michal's concern, the question is should be start with
+> pr_warn_once() instead of WARN_ON_ONCE() and I think yes we should start
+> with pr_warn_once().
 
+Yes, I do not really like the WARN_ON here. It is an overkill. pr_warn
+would much less intrusive but potentially incomplete because you won't
+know who that offender is. So if you really care about those then you
+would need to call dump_stack as well.
 
-I don't feel this is an improvement as presented, will need more work
-to make code placement more logical.
-
-For example where do I find code to update rq stats?
-Rx data path should be virtnet.c?
-No it's in virtnet_ethtool.c because rq stats can be
-accessed by ethtool.
-A bunch of stuff seems to be in headers just because of technicalities.
-virtio common seems to be a dumping ground with no guiding principle at
-all.
-drivers/net/virtio/virtnet_virtio.c is weird with
-virt repeated three times in the path.
-
-These things only get murkier with time, at the point of reorg
-I would expect very logical placement, since
-without clear guiding rule finding where something is becomes harder but
-more importantly we'll now get endless heartburn about where does each new
-function go.
-
-
-The reorg is unfortunately not free - for example git log --follow will
-no longer easily match virtio because --follow works with exactly one
-path.  It's now also extra work to keep headers self-consistent.
-So it better be a big improvement to be worth it.
-
-
-
-
-> Xuan Zhuo (16):
->   virtio_net: add a separate directory for virtio-net
->   virtio_net: move struct to header file
->   virtio_net: add prefix to the struct inside header file
->   virtio_net: separating cpu-related funs
->   virtio_net: separate virtnet_ctrl_set_queues()
->   virtio_net: separate virtnet_ctrl_set_mac_address()
->   virtio_net: remove lock from virtnet_ack_link_announce()
->   virtio_net: separating the APIs of cq
->   virtio_net: introduce virtnet_rq_update_stats()
->   virtio_net: separating the funcs of ethtool
->   virtio_net: introduce virtnet_dev_rx_queue_group()
->   virtio_net: introduce virtnet_get_netdev()
->   virtio_net: prepare for virtio
->   virtio_net: move virtnet_[en/dis]able_delayed_refill to header file
->   virtio_net: add APIs to register/unregister virtio driver
->   virtio_net: separating the virtio code
-> 
->  MAINTAINERS                                   |    2 +-
->  drivers/net/Kconfig                           |    8 +-
->  drivers/net/Makefile                          |    2 +-
->  drivers/net/virtio/Kconfig                    |   11 +
->  drivers/net/virtio/Makefile                   |   10 +
->  .../net/{virtio_net.c => virtio/virtnet.c}    | 2368 ++---------------
->  drivers/net/virtio/virtnet.h                  |  213 ++
->  drivers/net/virtio/virtnet_common.c           |  138 +
->  drivers/net/virtio/virtnet_common.h           |   14 +
->  drivers/net/virtio/virtnet_ctrl.c             |  272 ++
->  drivers/net/virtio/virtnet_ctrl.h             |   45 +
->  drivers/net/virtio/virtnet_ethtool.c          |  578 ++++
->  drivers/net/virtio/virtnet_ethtool.h          |    8 +
->  drivers/net/virtio/virtnet_virtio.c           |  880 ++++++
->  drivers/net/virtio/virtnet_virtio.h           |    8 +
->  15 files changed, 2366 insertions(+), 2191 deletions(-)
->  create mode 100644 drivers/net/virtio/Kconfig
->  create mode 100644 drivers/net/virtio/Makefile
->  rename drivers/net/{virtio_net.c => virtio/virtnet.c} (50%)
->  create mode 100644 drivers/net/virtio/virtnet.h
->  create mode 100644 drivers/net/virtio/virtnet_common.c
->  create mode 100644 drivers/net/virtio/virtnet_common.h
->  create mode 100644 drivers/net/virtio/virtnet_ctrl.c
->  create mode 100644 drivers/net/virtio/virtnet_ctrl.h
->  create mode 100644 drivers/net/virtio/virtnet_ethtool.c
->  create mode 100644 drivers/net/virtio/virtnet_ethtool.h
->  create mode 100644 drivers/net/virtio/virtnet_virtio.c
->  create mode 100644 drivers/net/virtio/virtnet_virtio.h
-> 
-> --
-> 2.32.0.3.g01195cf9f
-
+So the real question is. Do we really care so deeply? After all somebody
+might be calling this from within a spin lock or irq disabled section
+resulting in a similar situation without noticing.
+-- 
+Michal Hocko
+SUSE Labs
