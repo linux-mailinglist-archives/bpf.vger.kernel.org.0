@@ -2,147 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 311136D10A5
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 23:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D087C6D10B4
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 23:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbjC3VQF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 17:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
+        id S230000AbjC3VUl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 17:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbjC3VPy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 17:15:54 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA344EF80
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 14:15:51 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id k17so25228643ybm.11
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 14:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1680210951;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qF+oDwPkmVm7Qzdori7BA3QXVGteSFkr5JVJlHDMV5M=;
-        b=Uyr/tXATNpJkiRXDw5jPhZvgg3yTmAqevZZQdIgzznbFGsdDGcvLYswsrKbDTlEbMp
-         0LSn4lVMaDd0wz6FRdC83zkC9WXvs5MZLt8Ezz/yEAUr5XD9sPPFK9RjoAgsIn3U0h4I
-         gYuL5Ayy9wn8jZjai/fRYcKSYspooI5ovRLEaMHzzo8NCkszVDJxZmVNhxkVp7ZPUAYe
-         6X+7REVFzscjLqZp5XXx+ntsKfb1TTkOJgq8WTSlHnLpbq6nMEoKVm3W8LmnAyFmswVt
-         km2jGPsYbdVJAS1gD6b2EUDdbT8pq8TG2onjt1eCr+gUVqqUdyce819NSJz/07NP0ZIj
-         4YDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680210951;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qF+oDwPkmVm7Qzdori7BA3QXVGteSFkr5JVJlHDMV5M=;
-        b=kfn4PHPgGt8w0y7njx3ucANpXFL0BGYi1bndkUZ+6hEazxnTM07g+mE0vioKHPEf/M
-         vgg2Idf11uONCxEO/Sf+hdkpv8N1GbQUESORy29BUiGNZU0SMsAbxMwMcKq+oYNlm2KK
-         iax0ilyglyGUpb/4ev039MrGtcshP1UcKMl3t+xo80TeHWApvr87Np5ALlbZ1WQN/jFd
-         S9mrhI4yss2kNrC/n+XjSeiFYbBME8hy+n7jWL9n1vZUq3DAe+wg1/TCKuC5McyuzMyq
-         GmDu74ZCTZajKWSbfT1tkPAscLQ/x6rMBbyJI9IXdyaKZWke1dgB/v54vcucbEo2k6yn
-         jS6g==
-X-Gm-Message-State: AAQBX9csBVW1GtANhvC5kQFh9yud6KwXHeKlJMckuwcygWQN5HVxOOwj
-        vxTMWX7jq8wyJgP1kx/k4CwCNCo1pbuq7cDtQyFN
-X-Google-Smtp-Source: AKy350bjJ+D3+gXwrEw2lcCPM+Y4L8ToBkt7wQW0VhUQUCBX571TFxcGzOeeLA6px4laNdFZKwMWsEs+KGpCrB5zv1s=
-X-Received: by 2002:a05:6902:70a:b0:b6e:361a:c86 with SMTP id
- k10-20020a056902070a00b00b6e361a0c86mr13662579ybt.3.1680210950900; Thu, 30
- Mar 2023 14:15:50 -0700 (PDT)
+        with ESMTP id S229579AbjC3VUk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 17:20:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1801727;
+        Thu, 30 Mar 2023 14:20:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9F652B82A41;
+        Thu, 30 Mar 2023 21:20:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5B99BC4339B;
+        Thu, 30 Mar 2023 21:20:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680211237;
+        bh=IkCYM13B50/wAM8vMkg9yJvVMrO3qig8JpAg9+sKiqY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Sv4JassikkVbOff48J/iFOIXFclC6ZzRgv96cAucgQXnkrOl9R1zx5xy0Qt0+5cyP
+         mn2j7xI++YeYcb1/j0zbf73MhJBsc0lAZTd1PosfAEQ1TNf7iUA8JxsNtvOUpXVyOp
+         tGaUMuAAhY0Ml7TqysfLbms/z6Uk2SqfFuolFHxfNhoT9MO9AluQ63fybTbwejCFXb
+         gteOdPXCZBttJNkRmmgAd/ik8yvUrE7qUWUsuTSyjrQiiLJboO5eBpBZlHGiMbLWHV
+         /ETfSV2CMUfcC5h9Tnqlv4lWHxdJpVq559SsMW/lvmLh6HDZRDvE1msU4IQy37wbfg
+         70WAxTDPhhJdQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3DCDAE49FA8;
+        Thu, 30 Mar 2023 21:20:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230329130415.2312521-1-roberto.sassu@huaweicloud.com> <20230329130415.2312521-2-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20230329130415.2312521-2-roberto.sassu@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 30 Mar 2023 17:15:40 -0400
-Message-ID: <CAHC9VhRg7twUWXLH0xTaWc2MeSFExkGr9tJztYopzD0JEM-npw@mail.gmail.com>
-Subject: Re: [PATCH v9 1/4] reiserfs: Add security prefix to xattr name in reiserfs_security_write()
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, casey@schaufler-ca.com,
-        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
-        nicolas.bouchinet@clip-os.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 1/2] bpf: Handle PTR_MAYBE_NULL case in PTR_TO_BTF_ID
+ helper call arg
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168021123724.16527.2802678466803935794.git-patchwork-notify@kernel.org>
+Date:   Thu, 30 Mar 2023 21:20:37 +0000
+References: <20230330145203.80506-1-void@manifault.com>
+In-Reply-To: <20230330145203.80506-1-void@manifault.com>
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        memxor@gmail.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 29, 2023 at 9:05=E2=80=AFAM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Reiserfs sets a security xattr at inode creation time in two stages: firs=
-t,
-> it calls reiserfs_security_init() to obtain the xattr from active LSMs;
-> then, it calls reiserfs_security_write() to actually write that xattr.
->
-> Unfortunately, it seems there is a wrong expectation that LSMs provide th=
-e
-> full xattr name in the form 'security.<suffix>'. However, LSMs always
-> provided just the suffix, causing reiserfs to not write the xattr at all
-> (if the suffix is shorter than the prefix), or to write an xattr with the
-> wrong name.
->
-> Add a temporary buffer in reiserfs_security_write(), and write to it the
-> full xattr name, before passing it to reiserfs_xattr_set_handle().
->
-> Since the 'security.' prefix is always prepended, remove the name length
-> check.
->
-> Cc: stable@vger.kernel.org # v2.6.x
-> Fixes: 57fe60df6241 ("reiserfs: add atomic addition of selinux attributes=
- during inode creation")
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  fs/reiserfs/xattr_security.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/reiserfs/xattr_security.c b/fs/reiserfs/xattr_security.c
-> index 6bffdf9a4fd..b0c354ab113 100644
-> --- a/fs/reiserfs/xattr_security.c
-> +++ b/fs/reiserfs/xattr_security.c
-> @@ -95,11 +95,13 @@ int reiserfs_security_write(struct reiserfs_transacti=
-on_handle *th,
->                             struct inode *inode,
->                             struct reiserfs_security_handle *sec)
->  {
-> +       char xattr_name[XATTR_NAME_MAX + 1];
->         int error;
-> -       if (strlen(sec->name) < sizeof(XATTR_SECURITY_PREFIX))
-> -               return -EINVAL;
+Hello:
 
-If one really wanted to be paranoid they could verify that
-'XATTR_SECURITY_PREFIX_LEN + strlen(sec->name) <=3D XATTR_NAME_MAX' and
-return EINVAL, but that really shouldn't be an issue and if the
-concatenation does result in a xattr name that is too big, the
-snprintf() will safely truncate/managle it.
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Regardless, this patch is fine with me, but it would be nice if at
-least of the reiserfs/VFS folks could provide an ACK/Reviewed-by tag,
-although I think we can still move forward on this without one of
-those.
+On Thu, 30 Mar 2023 09:52:02 -0500 you wrote:
+> When validating a helper function argument, we use check_reg_type() to
+> ensure that the register containing the argument is of the correct type.
+> When the register's base type is PTR_TO_BTF_ID, there is some
+> supplemental logic where we do extra checks for various combinations of
+> PTR_TO_BTF_ID type modifiers. For example, for PTR_TO_BTF_ID,
+> PTR_TO_BTF_ID | PTR_TRUSTED, and PTR_TO_BTF_ID | MEM_RCU, we call
+> map_kptr_match_type() for bpf_kptr_xchg() calls, and
+> btf_struct_ids_match() for other helper calls.
+> 
+> [...]
 
-> -       error =3D reiserfs_xattr_set_handle(th, inode, sec->name, sec->va=
-lue,
-> +       snprintf(xattr_name, sizeof(xattr_name), "%s%s", XATTR_SECURITY_P=
-REFIX,
-> +                sec->name);
-> +
-> +       error =3D reiserfs_xattr_set_handle(th, inode, xattr_name, sec->v=
-alue,
->                                           sec->length, XATTR_CREATE);
->         if (error =3D=3D -ENODATA || error =3D=3D -EOPNOTSUPP)
->                 error =3D 0;
-> --
-> 2.25.1
+Here is the summary with links:
+  - [bpf-next,1/2] bpf: Handle PTR_MAYBE_NULL case in PTR_TO_BTF_ID helper call arg
+    https://git.kernel.org/bpf/bpf-next/c/e4c2acab95a5
+  - [bpf-next,2/2] selftests/bpf: Add testcases for ptr_*_or_null_ in bpf_kptr_xchg
+    https://git.kernel.org/bpf/bpf-next/c/67efbd57bc6e
 
---=20
-paul-moore.com
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
