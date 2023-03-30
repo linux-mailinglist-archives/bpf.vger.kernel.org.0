@@ -2,452 +2,265 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3B76D094D
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 17:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F026D0AD3
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 18:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbjC3PTs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 11:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
+        id S230152AbjC3QOw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 12:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232853AbjC3PTq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 11:19:46 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982BCC655
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 08:18:36 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id o11so18408187ple.1
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 08:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680189507;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z6cujn8BtwtRa4nxKrYRIGxiq36LBqfHbyeHAKJRSJ4=;
-        b=KFLE/vZ3GIeUHewjpt9OXD3x43ZX/2yWL92Y6Ea7ohwDU7nq4Sn4P3VlZQIPAk/rNe
-         4wwchwhbgKvbSiiTQMZI8Sg9YckgBIkMIxJPwhsSt5Ex5sT2Ph6Qe+q5fUD/u3BILu11
-         Qht+wC+r3IV4Fv8IeAtxKFkjhful7Y2WSTGLPd8a1mx95zM2HDbxKb7WmO4hgJs+V2Gz
-         wmCYNwmM4cQ2hzf4ovE1mvoIPbUVJnsyxk1bFocgzD3vY1E0C3zDqBc+P9pwSn0B4I7G
-         DN2n2hBucsJuwYwqi6xz+BC5N+r1FV2FpvfwPR2p8D+ZcZFJ1M7CXsuORHZNCOsvBpjC
-         pqVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680189507;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z6cujn8BtwtRa4nxKrYRIGxiq36LBqfHbyeHAKJRSJ4=;
-        b=biuajNDC+bv8lMoANxG8iNuxFFtwcWmtrEusE+51KdWWZgND8YQ7MgCZ9sFzFsx1BZ
-         YZLvlLjOlgSNxJh/0cy7DDWPmJCTy5RJAS20Kx0LLBx6ry4cDcSBOLK2uPjfa/0dVCqN
-         k3p7vmrIvbaSWYTOs6USJG/7M4YPeXatufivCRNmt6KOq2cF4lHo4/+cEHD9LXIl3vPy
-         JbEp/vNtjpawDWfZjOLsnkoLwMJ7TiByUn4T3MEfJiYJaL7zuYDwnr+z9y6HbIaMdLVX
-         9950wz5eNxX6XEItrvF+fV+hfXxGMzWKO4xqspa273H3VAQ00aJDxZJ6kDqz3xJQT8eO
-         GSmQ==
-X-Gm-Message-State: AO0yUKUoWx74cmqasQJRRvjIAFo1XXy5D+CVyC6Kwl+Uko4R7QzITjsB
-        GNF/jpVT4nb4Xe69uvM1zojS336dlPCdDWZsjHw=
-X-Google-Smtp-Source: AK7set8axsEUUGtFVzvO7R5ObYH9yuBjobq3qm6WtEA3H/QcGPtswlQ9rNA9GRDgtwt9KJixYZCX/Q==
-X-Received: by 2002:a05:6a20:19a:b0:cb:f5ab:3bd0 with SMTP id 26-20020a056a20019a00b000cbf5ab3bd0mr18720918pzy.59.1680189507156;
-        Thu, 30 Mar 2023 08:18:27 -0700 (PDT)
-Received: from localhost.localdomain ([2604:1380:4611:8100::1])
-        by smtp.gmail.com with ESMTPSA id f17-20020a63de11000000b004fc1d91e695sm23401177pgg.79.2023.03.30.08.18.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 08:18:26 -0700 (PDT)
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-To:     bpf@vger.kernel.org
-Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
-        aditi.ghag@isovalent.com
-Subject: [PATCH v5 bpf-next 7/7] selftests/bpf: Test bpf_sock_destroy
-Date:   Thu, 30 Mar 2023 15:17:58 +0000
-Message-Id: <20230330151758.531170-8-aditi.ghag@isovalent.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230330151758.531170-1-aditi.ghag@isovalent.com>
-References: <20230330151758.531170-1-aditi.ghag@isovalent.com>
+        with ESMTP id S231565AbjC3QOk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 12:14:40 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA94693DD;
+        Thu, 30 Mar 2023 09:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680192864; x=1711728864;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7ElYsMNT+HJxJYO4GGzC6zAdpQ1oT6NK5jOdZEm5or4=;
+  b=S/9hDV7XWHadTo9n4LVeHRADhjnpUO60hKXS10B1nW4biEKJF3xqcX4N
+   f435TuQSXDko6idG2vuMSc6+Ba2cltjqxLo8sX5I+Wust3NewLZwVrfJx
+   mbQJ318Lfl7okPu9VpJClyN9ZOburkSUYlXdOPBE9XxofFfMmOlB2iWKg
+   q1a0UdMWjLw9K1rcPBHYtwZglNCac54hhCbS+xgGHGfYE4QbgEhHURyUu
+   0x5xAi300E9hI+aS7i3qYuhTOmIkVZVevKJQijRZrkJjRLS0+ROlgYuef
+   BcaD19IMeRVaf1pChl5UTv78clqltaXeSm6pRkGPUPhD+0/qK3O97STm2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="427491643"
+X-IronPort-AV: E=Sophos;i="5.98,305,1673942400"; 
+   d="scan'208";a="427491643"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2023 09:14:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="795715444"
+X-IronPort-AV: E=Sophos;i="5.98,305,1673942400"; 
+   d="scan'208";a="795715444"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Mar 2023 09:14:00 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1phuuV-000KzO-3D;
+        Thu, 30 Mar 2023 16:13:59 +0000
+Date:   Fri, 31 Mar 2023 00:13:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-wireless@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+        io-uring@vger.kernel.org, bpf@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ a6d9e3034536ba4b68ac34490c02267e6eec9c05
+Message-ID: <6425b53f.mjvjApBCFlusUbza%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The test cases for destroying sockets mirror the intended usages of the
-bpf_sock_destroy kfunc using iterators.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: a6d9e3034536ba4b68ac34490c02267e6eec9c05  Add linux-next specific files for 20230330
 
-The destroy helpers set `ECONNABORTED` error code that we can validate in
-the test code with client sockets. But UDP sockets have an overriding error
-code from the disconnect called during abort, so the error code the
-validation is only done for TCP sockets.
+Error/Warning reports:
 
-Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
----
- .../selftests/bpf/prog_tests/sock_destroy.c   | 203 ++++++++++++++++++
- .../selftests/bpf/progs/sock_destroy_prog.c   | 147 +++++++++++++
- 2 files changed, 350 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_destroy.c
- create mode 100644 tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+https://lore.kernel.org/oe-kbuild-all/202303161521.jbGbaFjJ-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202303301712.i4ddVa9j-lkp@intel.com
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sock_destroy.c b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
-new file mode 100644
-index 000000000000..d5d16fabac48
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
-@@ -0,0 +1,203 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <bpf/bpf_endian.h>
-+
-+#include "sock_destroy_prog.skel.h"
-+#include "network_helpers.h"
-+
-+static void start_iter_sockets(struct bpf_program *prog)
-+{
-+	struct bpf_link *link;
-+	char buf[50] = {};
-+	int iter_fd, len;
-+
-+	link = bpf_program__attach_iter(prog, NULL);
-+	if (!ASSERT_OK_PTR(link, "attach_iter"))
-+		return;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (!ASSERT_GE(iter_fd, 0, "create_iter"))
-+		goto free_link;
-+
-+	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
-+		;
-+	ASSERT_GE(len, 0, "read");
-+
-+	close(iter_fd);
-+
-+free_link:
-+	bpf_link__destroy(link);
-+}
-+
-+static void test_tcp_client(struct sock_destroy_prog *skel)
-+{
-+	int serv = -1, clien = -1, n = 0;
-+
-+	serv = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-+	if (!ASSERT_GE(serv, 0, "start_server"))
-+		goto cleanup_serv;
-+
-+	clien = connect_to_fd(serv, 0);
-+	if (!ASSERT_GE(clien, 0, "connect_to_fd"))
-+		goto cleanup_serv;
-+
-+	serv = accept(serv, NULL, NULL);
-+	if (!ASSERT_GE(serv, 0, "serv accept"))
-+		goto cleanup;
-+
-+	n = send(clien, "t", 1, 0);
-+	if (!ASSERT_GE(n, 0, "client send"))
-+		goto cleanup;
-+
-+	/* Run iterator program that destroys connected client sockets. */
-+	start_iter_sockets(skel->progs.iter_tcp6_client);
-+
-+	n = send(clien, "t", 1, 0);
-+	if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
-+		goto cleanup;
-+	ASSERT_EQ(errno, ECONNABORTED, "error code on destroyed socket");
-+
-+
-+cleanup:
-+	close(clien);
-+cleanup_serv:
-+	close(serv);
-+}
-+
-+static void test_tcp_server(struct sock_destroy_prog *skel)
-+{
-+	int serv = -1, clien = -1, n = 0, err;
-+	__u16 serv_port = 0;
-+
-+	serv = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-+	if (!ASSERT_GE(serv, 0, "start_server"))
-+		goto cleanup_serv;
-+	err = get_sock_port6(serv, &serv_port);
-+	if (!ASSERT_EQ(err, 0, "get_sock_port6"))
-+		goto cleanup;
-+	skel->bss->serv_port = ntohs(serv_port);
-+
-+	clien = connect_to_fd(serv, 0);
-+	if (!ASSERT_GE(clien, 0, "connect_to_fd"))
-+		goto cleanup_serv;
-+
-+	serv = accept(serv, NULL, NULL);
-+	if (!ASSERT_GE(serv, 0, "serv accept"))
-+		goto cleanup;
-+
-+	n = send(clien, "t", 1, 0);
-+	if (!ASSERT_GE(n, 0, "client send"))
-+		goto cleanup;
-+
-+	/* Run iterator program that destroys server sockets. */
-+	start_iter_sockets(skel->progs.iter_tcp6_server);
-+
-+	n = send(clien, "t", 1, 0);
-+	if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
-+		goto cleanup;
-+	ASSERT_EQ(errno, ECONNRESET, "error code on destroyed socket");
-+
-+
-+cleanup:
-+	close(clien);
-+cleanup_serv:
-+	close(serv);
-+}
-+
-+
-+static void test_udp_client(struct sock_destroy_prog *skel)
-+{
-+	int serv = -1, clien = -1, n = 0;
-+
-+	serv = start_server(AF_INET6, SOCK_DGRAM, NULL, 0, 0);
-+	if (!ASSERT_GE(serv, 0, "start_server"))
-+		goto cleanup_serv;
-+
-+	clien = connect_to_fd(serv, 0);
-+	if (!ASSERT_GE(clien, 0, "connect_to_fd"))
-+		goto cleanup_serv;
-+
-+	n = send(clien, "t", 1, 0);
-+	if (!ASSERT_GE(n, 0, "client send"))
-+		goto cleanup;
-+
-+	/* Run iterator program that destroys sockets. */
-+	start_iter_sockets(skel->progs.iter_udp6_client);
-+
-+	n = send(clien, "t", 1, 0);
-+	if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
-+		goto cleanup;
-+	/* UDP sockets have an overriding error code after they are disconnected,
-+	 * so we don't check for ECONNABORTED error code.
-+	 */
-+
-+cleanup:
-+	close(clien);
-+cleanup_serv:
-+	close(serv);
-+}
-+
-+static void test_udp_server(struct sock_destroy_prog *skel)
-+{
-+	int *listen_fds = NULL, n, i, err;
-+	unsigned int num_listens = 5;
-+	char buf[1];
-+	__u16 serv_port;
-+
-+	/* Start reuseport servers. */
-+	listen_fds = start_reuseport_server(AF_INET6, SOCK_DGRAM,
-+					    "::1", 0, 0, num_listens);
-+	if (!ASSERT_OK_PTR(listen_fds, "start_reuseport_server"))
-+		goto cleanup;
-+	err = get_sock_port6(listen_fds[0], &serv_port);
-+	if (!ASSERT_EQ(err, 0, "get_sock_port6"))
-+		goto cleanup;
-+	skel->bss->serv_port = ntohs(serv_port);
-+
-+	/* Run iterator program that destroys server sockets. */
-+	start_iter_sockets(skel->progs.iter_udp6_server);
-+
-+	for (i = 0; i < num_listens; ++i) {
-+		n = read(listen_fds[i], buf, sizeof(buf));
-+		if (!ASSERT_EQ(n, -1, "read") ||
-+		    !ASSERT_EQ(errno, ECONNABORTED, "error code on destroyed socket"))
-+			break;
-+	}
-+	ASSERT_EQ(i, num_listens, "server socket");
-+
-+cleanup:
-+	free_fds(listen_fds, num_listens);
-+}
-+
-+void test_sock_destroy(void)
-+{
-+	struct sock_destroy_prog *skel;
-+	int cgroup_fd = 0;
-+
-+	skel = sock_destroy_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	cgroup_fd = test__join_cgroup("/sock_destroy");
-+	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
-+		goto close_cgroup_fd;
-+
-+	skel->links.sock_connect = bpf_program__attach_cgroup(
-+		skel->progs.sock_connect, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links.sock_connect, "prog_attach"))
-+		goto close_cgroup_fd;
-+
-+	if (test__start_subtest("tcp_client"))
-+		test_tcp_client(skel);
-+	if (test__start_subtest("tcp_server"))
-+		test_tcp_server(skel);
-+	if (test__start_subtest("udp_client"))
-+		test_udp_client(skel);
-+	if (test__start_subtest("udp_server"))
-+		test_udp_server(skel);
-+
-+
-+close_cgroup_fd:
-+	close(cgroup_fd);
-+	sock_destroy_prog__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/sock_destroy_prog.c b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
-new file mode 100644
-index 000000000000..5c1e65d50598
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
-@@ -0,0 +1,147 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+#include "bpf_tracing_net.h"
-+
-+#define AF_INET6 10
-+
-+__u16 serv_port = 0;
-+
-+int bpf_sock_destroy(struct sock_common *sk) __ksym;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} tcp_conn_sockets SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} udp_conn_sockets SEC(".maps");
-+
-+SEC("cgroup/connect6")
-+int sock_connect(struct bpf_sock_addr *ctx)
-+{
-+	int key = 0;
-+	__u64 sock_cookie = 0;
-+	__u32 keyc = 0;
-+
-+	if (ctx->family != AF_INET6 || ctx->user_family != AF_INET6)
-+		return 1;
-+
-+	sock_cookie = bpf_get_socket_cookie(ctx);
-+	if (ctx->protocol == IPPROTO_TCP)
-+		bpf_map_update_elem(&tcp_conn_sockets, &key, &sock_cookie, 0);
-+	else if (ctx->protocol == IPPROTO_UDP)
-+		bpf_map_update_elem(&udp_conn_sockets, &keyc, &sock_cookie, 0);
-+	else
-+		return 1;
-+
-+	return 1;
-+}
-+
-+SEC("iter/tcp")
-+int iter_tcp6_client(struct bpf_iter__tcp *ctx)
-+{
-+	struct sock_common *sk_common = ctx->sk_common;
-+	__u64 sock_cookie = 0;
-+	__u64 *val;
-+	int key = 0;
-+
-+	if (!sk_common)
-+		return 0;
-+
-+	if (sk_common->skc_family != AF_INET6)
-+		return 0;
-+
-+	sock_cookie  = bpf_get_socket_cookie(sk_common);
-+	val = bpf_map_lookup_elem(&tcp_conn_sockets, &key);
-+	if (!val)
-+		return 0;
-+	/* Destroy connected client sockets. */
-+	if (sock_cookie == *val)
-+		bpf_sock_destroy(sk_common);
-+
-+	return 0;
-+}
-+
-+SEC("iter/tcp")
-+int iter_tcp6_server(struct bpf_iter__tcp *ctx)
-+{
-+	struct sock_common *sk_common = ctx->sk_common;
-+	struct tcp6_sock *tcp_sk;
-+	const struct inet_connection_sock *icsk;
-+	const struct inet_sock *inet;
-+	__u16 srcp;
-+
-+	if (!sk_common)
-+		return 0;
-+
-+	if (sk_common->skc_family != AF_INET6)
-+		return 0;
-+
-+	tcp_sk = bpf_skc_to_tcp6_sock(sk_common);
-+	if (!tcp_sk)
-+		return 0;
-+
-+	icsk = &tcp_sk->tcp.inet_conn;
-+	inet = &icsk->icsk_inet;
-+	srcp = bpf_ntohs(inet->inet_sport);
-+
-+	/* Destroy server sockets. */
-+	if (srcp == serv_port)
-+		bpf_sock_destroy(sk_common);
-+
-+	return 0;
-+}
-+
-+
-+SEC("iter/udp")
-+int iter_udp6_client(struct bpf_iter__udp *ctx)
-+{
-+	struct udp_sock *udp_sk = ctx->udp_sk;
-+	struct sock *sk = (struct sock *) udp_sk;
-+	__u64 sock_cookie = 0, *val;
-+	int key = 0;
-+
-+	if (!sk)
-+		return 0;
-+
-+	sock_cookie  = bpf_get_socket_cookie(sk);
-+	val = bpf_map_lookup_elem(&udp_conn_sockets, &key);
-+	if (!val)
-+		return 0;
-+	/* Destroy connected client sockets. */
-+	if (sock_cookie == *val)
-+		bpf_sock_destroy((struct sock_common *)sk);
-+
-+	return 0;
-+}
-+
-+SEC("iter/udp")
-+int iter_udp6_server(struct bpf_iter__udp *ctx)
-+{
-+	struct udp_sock *udp_sk = ctx->udp_sk;
-+	struct sock *sk = (struct sock *) udp_sk;
-+	__u16 srcp;
-+	struct inet_sock *inet;
-+
-+	if (!sk)
-+		return 0;
-+
-+	inet = &udp_sk->inet;
-+	srcp = bpf_ntohs(inet->inet_sport);
-+	if (srcp == serv_port)
-+		bpf_sock_destroy((struct sock_common *)sk);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+Error/Warning: (recently discovered and may have been fixed)
+
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_validation.c:351:13: warning: variable 'bw_needed' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_validation.c:352:25: warning: variable 'link' set but not used [-Wunused-but-set-variable]
+drivers/net/wireless/legacy/ray_cs.c:628:17: warning: 'strncpy' specified bound 32 equals destination size [-Wstringop-truncation]
+kernel/bpf/verifier.c:18485: undefined reference to `find_kallsyms_symbol_value'
+sound/pci/ymfpci/ymfpci_main.c:2259:9: error: implicit declaration of function 'snd_ac97_suspend'; did you mean 'snd_ac97_reset'? [-Werror=implicit-function-declaration]
+sound/pci/ymfpci/ymfpci_main.c:2288:9: error: implicit declaration of function 'snd_ac97_resume'; did you mean 'snd_ac97_reset'? [-Werror=implicit-function-declaration]
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+drivers/acpi/property.c:985 acpi_data_prop_read_single() error: potentially dereferencing uninitialized 'obj'.
+drivers/pinctrl/pinctrl-mlxbf3.c:162:20: sparse: sparse: symbol 'mlxbf3_pmx_funcs' was not declared. Should it be static?
+drivers/watchdog/imx2_wdt.c:442:22: sparse: sparse: symbol 'imx_wdt' was not declared. Should it be static?
+drivers/watchdog/imx2_wdt.c:446:22: sparse: sparse: symbol 'imx_wdt_legacy' was not declared. Should it be static?
+io_uring/io_uring.c:432 io_prep_async_work() error: we previously assumed 'req->file' could be null (see line 425)
+io_uring/kbuf.c:221 __io_remove_buffers() warn: variable dereferenced before check 'bl->buf_ring' (see line 219)
+net/mac80211/mesh_pathtbl.c:616:24: warning: Value stored to 'cache' during its initialization is never read [clang-analyzer-deadcode.DeadStores]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|   `-- drivers-net-wireless-legacy-ray_cs.c:warning:strncpy-specified-bound-equals-destination-size
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm-randconfig-r024-20230329
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm-randconfig-s031-20230329
+|   `-- drivers-pinctrl-pinctrl-mlxbf3.c:sparse:sparse:symbol-mlxbf3_pmx_funcs-was-not-declared.-Should-it-be-static
+|-- arm64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- i386-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- ia64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|   `-- drivers-net-wireless-legacy-ray_cs.c:warning:strncpy-specified-bound-equals-destination-size
+|-- loongarch-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- loongarch-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- loongarch-defconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- microblaze-buildonly-randconfig-r001-20230329
+|   |-- sound-pci-ymfpci-ymfpci_main.c:error:implicit-declaration-of-function-snd_ac97_resume
+|   `-- sound-pci-ymfpci-ymfpci_main.c:error:implicit-declaration-of-function-snd_ac97_suspend
+|-- mips-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- mips-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- mips-randconfig-s032-20230329
+|   |-- drivers-watchdog-imx2_wdt.c:sparse:sparse:symbol-imx_wdt-was-not-declared.-Should-it-be-static
+|   `-- drivers-watchdog-imx2_wdt.c:sparse:sparse:symbol-imx_wdt_legacy-was-not-declared.-Should-it-be-static
+|-- nios2-buildonly-randconfig-r005-20230329
+clang_recent_errors
+`-- riscv-randconfig-c006-20230326
+    `-- net-mac80211-mesh_pathtbl.c:warning:Value-stored-to-cache-during-its-initialization-is-never-read-clang-analyzer-deadcode.DeadStores
+
+elapsed time: 722m
+
+configs tested: 104
+configs skipped: 7
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc          buildonly-randconfig-r002-20230329   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r013-20230329   gcc  
+arc                  randconfig-r043-20230329   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         axm55xx_defconfig   gcc  
+arm                                 defconfig   gcc  
+arm                         lpc18xx_defconfig   gcc  
+arm                  randconfig-r003-20230329   clang
+arm                  randconfig-r024-20230329   gcc  
+arm                  randconfig-r046-20230329   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r026-20230329   gcc  
+hexagon              randconfig-r033-20230329   clang
+hexagon              randconfig-r041-20230329   clang
+hexagon              randconfig-r045-20230329   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                          randconfig-a001   gcc  
+i386                          randconfig-a002   clang
+i386                          randconfig-a003   gcc  
+i386                          randconfig-a004   clang
+i386                          randconfig-a005   gcc  
+i386                          randconfig-a006   clang
+i386                          randconfig-a011   clang
+i386                          randconfig-a012   gcc  
+i386                          randconfig-a013   clang
+i386                          randconfig-a014   gcc  
+i386                          randconfig-a015   clang
+i386                          randconfig-a016   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r005-20230329   gcc  
+ia64                 randconfig-r016-20230329   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch    buildonly-randconfig-r003-20230329   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r006-20230329   gcc  
+loongarch            randconfig-r011-20230329   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r004-20230329   gcc  
+microblaze   buildonly-randconfig-r004-20230329   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r012-20230329   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r015-20230329   gcc  
+openrisc             randconfig-r032-20230329   gcc  
+parisc       buildonly-randconfig-r005-20230329   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r021-20230329   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                       holly_defconfig   gcc  
+powerpc              randconfig-r031-20230329   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r022-20230329   clang
+riscv                randconfig-r036-20230329   gcc  
+riscv                randconfig-r042-20230329   clang
+riscv                          rv32_defconfig   gcc  
+s390                             alldefconfig   clang
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r014-20230329   clang
+s390                 randconfig-r023-20230329   clang
+s390                 randconfig-r034-20230329   gcc  
+s390                 randconfig-r044-20230329   clang
+sh                               allmodconfig   gcc  
+sh                         microdev_defconfig   gcc  
+sparc        buildonly-randconfig-r006-20230329   gcc  
+sparc                               defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                        randconfig-a001   clang
+x86_64                        randconfig-a002   gcc  
+x86_64                        randconfig-a003   clang
+x86_64                        randconfig-a004   gcc  
+x86_64                        randconfig-a005   clang
+x86_64                        randconfig-a006   gcc  
+x86_64                        randconfig-a011   gcc  
+x86_64                        randconfig-a012   clang
+x86_64                        randconfig-a013   gcc  
+x86_64                        randconfig-a014   clang
+x86_64                        randconfig-a015   gcc  
+x86_64                        randconfig-a016   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r025-20230329   gcc  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
