@@ -2,223 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 484AC6D04A3
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 14:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BC36D04CC
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 14:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjC3M0s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 08:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
+        id S229685AbjC3Me1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 08:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjC3M0q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 08:26:46 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE695FB
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 05:26:44 -0700 (PDT)
-Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PnMyj5WWJz17QW7;
-        Thu, 30 Mar 2023 20:23:25 +0800 (CST)
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 30 Mar 2023 20:26:42 +0800
-Subject: Re: [PATCH bpf-next v6 1/2] bpf: Fix attaching
- fentry/fexit/fmod_ret/lsm to modules
-To:     Jiri Olsa <olsajiri@gmail.com>, Petr Mladek <pmladek@suse.com>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Viktor Malik <vmalik@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-References: <cover.1676542796.git.vmalik@redhat.com>
- <e627742ab86ed28632bc9b6c56ef65d7f98eadbc.1676542796.git.vmalik@redhat.com>
- <Y+40os27pQ8det/o@krava> <1992d09a-0ef8-66e3-1da0-5d13c2fecc3d@redhat.com>
- <Y+5Q0UK09HsxM4ht@krava> <ZBrPMkv8YVRiWwCR@samus.usersys.redhat.com>
- <ZBrxMWfmE/1RG/u0@krava>
- <CAADnVQLwvZyQXyRNn_oaBKx-EH_NauZHTg8+-MOMXo91MibX=A@mail.gmail.com>
- <ZBxbeYZ/+tOtEiNB@krava> <ZCU6dPDXZ0h7hT4w@krava>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <98077109-02be-a708-cde7-5dc827e1f3ea@huawei.com>
-Date:   Thu, 30 Mar 2023 20:26:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S229661AbjC3Me1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 08:34:27 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD10E273C;
+        Thu, 30 Mar 2023 05:34:25 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id g17so24322319lfv.4;
+        Thu, 30 Mar 2023 05:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680179664; x=1682771664;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ggXhUKUwm9DY9z4cWjwYTXxx4kU0AoG0OBgXPBVx/Mo=;
+        b=kQ+2tbXuhdvsGmzgwSS7I3vkL9lqxuoTLN6DyGLHhkC8ZGeAz7+iNseKOq5zHNA94w
+         KPOLvYztHs8Akce6JlGwibLYuyHj3pIx86IOJRbeVfscpd2FQIyl/smHZfKyVhG3K0+N
+         LUKUlz0CDLqg8/CD5HKIxko3hGXFbdRqVNvRK2sZfW7pi9NCjIRjj6HQEInaIVdwBOed
+         RzPRWY58MhMmbPdlV1RUerk8tt1hjb2ErXz95Tn9UeMREVobjtwGnhfk8+glVfHX6PlI
+         rQu/b8d0JI7rdYawT2O9Qi5D7EEt9ik3bAnm5ltO533lH/i95T/uwkER1qrtRvd+Ko8f
+         hCng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680179664; x=1682771664;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ggXhUKUwm9DY9z4cWjwYTXxx4kU0AoG0OBgXPBVx/Mo=;
+        b=Q9E4RhaNXupIrwU7S+InCOVm2ahqKUfx9kknQ/WID1RkB9n+OcbIWyiIn9Ucm/N+qi
+         qr6G2IRY6T0YUdZq7y2gTBlYUDqOsLn/Eyg9NDEciiItJHRQlnuOCYSipGw7TFMEfwaW
+         cJnnVlF4UISUl1K0IFs5SwThBadrEEPOlxY1ExGR4GL03Svsf7r6z0j0L0taiH8BHnrM
+         c0wNnm6KFGmWAMY7SXpA+yAih7J8HpH8eZcNJmEBgQJ5YFIrYJK7V/uKPMLOIu452zsC
+         unDOYh1YHUbhxIyNSiguv64o6tyS747X2VXAYNbCfVfUhE3Pm5U9o9bV1tqb5HB2pJ73
+         x3/g==
+X-Gm-Message-State: AAQBX9e057lGOElysq2tuJ6+cvRLTalfPjuujLSDO92Gk5X0Tl3zQJ3P
+        MSiyVJEf/QRHirmBrfA5KF8=
+X-Google-Smtp-Source: AKy350ZBMuyOHLR1mXFvyhzq2G/qKc1BKt+uQahAq1TgMisujfBZOl6IuvyOzBzUa7DzUGw7KJrNVQ==
+X-Received: by 2002:ac2:4352:0:b0:4d5:8f3e:7852 with SMTP id o18-20020ac24352000000b004d58f3e7852mr6752642lfl.49.1680179663888;
+        Thu, 30 Mar 2023 05:34:23 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id d7-20020ac25ec7000000b004e887fd71acsm5783091lfq.236.2023.03.30.05.34.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Mar 2023 05:34:23 -0700 (PDT)
+Message-ID: <4bf1422bf63f9d3fe9b22ab3befa04ed072af9b4.camel@gmail.com>
+Subject: Re: [PATCH dwarves v2 1/5] fprintf: Correct names for types with
+ btf_type_tag attribute
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, jose.marchesi@oracle.com, david.faust@oracle.com,
+        alan.maguire@oracle.com
+Date:   Thu, 30 Mar 2023 15:34:21 +0300
+In-Reply-To: <ZCVygOn0+zKFEqW2@kernel.org>
+References: <20230314230417.1507266-1-eddyz87@gmail.com>
+         <20230314230417.1507266-2-eddyz87@gmail.com> <ZCLy0hjyR3KuYy3e@kernel.org>
+         <f4803213ab27c65517eea19a12be78dd4ec9f6b0.camel@gmail.com>
+         <ZCMHKFdmjVpOSNsJ@kernel.org>
+         <50a160d802ad3f84e91cf05c8f541e0c2e388fc8.camel@gmail.com>
+         <ZCNZcl1mkC9yhwDD@kernel.org>
+         <fabfc71fd43be48f68019c911c6a3af1412f4635.camel@gmail.com>
+         <ZCRctmB2yrwgsNMh@kernel.org>
+         <f9664121426c5665ff0fc8cb61c466689beadd36.camel@gmail.com>
+         <ZCVygOn0+zKFEqW2@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <ZCU6dPDXZ0h7hT4w@krava>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.3 required=5.0 tests=NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, 2023-03-30 at 08:29 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Mar 29, 2023 at 07:02:45PM +0300, Eduard Zingerman escreveu:
+> > On Wed, 2023-03-29 at 12:43 -0300, Arnaldo Carvalho de Melo wrote:
+> > [...]
+> > > > > diff --git a/dwarves_fprintf.c b/dwarves_fprintf.c
+> > > > > index 1e6147a82056c188..1ecc24321bf8f975 100644
+> > > > > --- a/dwarves_fprintf.c
+> > > > > +++ b/dwarves_fprintf.c
+> > > > > @@ -788,8 +788,15 @@ next_type:
+> > > > >  			if (n)
+> > > > >  				return printed + n;
+> > > > >  			if (ptype->tag =3D=3D DW_TAG_LLVM_annotation) {
+> > > > > -				type =3D ptype;
+> > > > > -				goto next_type;
+> > > > > +				// FIXME: Just skip this for now, we need to print this anno=
+tation
+> > > > > +				// to match the original source code.
+> > > > > +
+> > > > > +				if (ptype->type =3D=3D 0) {
+> > > > > +					printed +=3D fprintf(fp, "%-*s %s", tconf.type_spacing, "vo=
+id *", name);
+> > > > > +					break;
+> > > > > +				}
+> > > > > +
+> > > > > +				ptype =3D cu__type(cu, ptype->type);
+> > > > >  			}
+> > > > >  			if (ptype->tag =3D=3D DW_TAG_subroutine_type) {
+> > > > >  				printed +=3D ftype__fprintf(tag__ftype(ptype),
+> > > >=20
+> > > > This explains why '*' was missing, but unfortunately it breaks apar=
+t
+> > > > when there are multiple type tags, e.g.:
+> > > >=20
+> > > >=20
+> > > >     $ cat tag-test.c
+> > > >     #define __t __attribute__((btf_type_tag("t1")))
+> > > >    =20
+> > > >     struct foo {
+> > > >       int  (__t __t *a)(void);
+> > > >     } g;
+> > > >     $ clang -g -c tag-test.c -o tag-test.o && pahole -J tag-test.o =
+&& pahole --sort -F dwarf tag-test.o
+> > > >     struct foo {
+> > > >     	int ()(void)   *           a;                    /*     0     =
+8 */
+> > > >    =20
+> > > >     	/* size: 8, cachelines: 1, members: 1 */
+> > > >     	/* last cacheline: 8 bytes */
+> > > >     };
+> > > >     $ clang -g -c tag-test.c -o tag-test.o && pahole -J tag-test.o =
+&& pahole --sort -F btf tag-test.o
+> > > >     struct foo {
+> > > >     	int ()(void)   *           a;                    /*     0     =
+8 */
+> > > >    =20
+> > > >     	/* size: 8, cachelines: 1, members: 1 */
+> > > >     	/* last cacheline: 8 bytes */
+> > > >     };
+> > > >    =20
+> > > > What I don't understand is why pointer's type is LLVM_annotation.
+> > >=20
+> > > Well, that is how it is encoded in BTF and then you supported it in:
+> > >=20
+> > > Author: Eduard Zingerman <eddyz87@gmail.com>
+> > > Date:   Wed Mar 15 01:04:14 2023 +0200
+> > >=20
+> > >     btf_loader: A hack for BTF import of btf_type_tag attributes`
+> >=20
+> > To be honest, I was under impression that I add a workaround and the
+> > preferred way is to do what dwarf loader does with
+> > btf_type_tag_ptr_type::annots.
+> > =20
+> > > I find it natural, and think that annots thing is a variation on how =
+to
+> > > store modifiers for types, see, this DW_TAG_LLVM_annotation is in the
+> > > same class as 'restrict', 'const', 'volatile', "atomic", etc
+> > >=20
+> > > I understand that for encoding _DWARF_ people preferred to make it as=
+ a
+> > > child DIE to avoid breaking existing DWARF consumers, but in
+> > > pahole's dwarf_loader.c we can just make it work like BTF and insert =
+the
+> > > btf_type_tag in the chain, just like 'const', etc, no?
+> > >=20
+> > > pahole wants to print those annotation just like it prints 'const',
+> > > 'volatile', etc.
+> >=20
+> > Actually, if reflecting physical structure of the DWARF is not a goal,
+>=20
+> Well reflecting the physical structure of DWARF _pre_
+> DW_TAG_llvm_annotation was the goal, but now, since this was done
+> differently of DW_TAG_const_type, DW_TAG_pointer_type, etc, as one link
+> in the chain, to avoid breaking existing DWARF consumers, we ended up
+> with this annot thing, but the internal representation in pahole can
+> continue being as a chain, as BTF does, right?
+=20
+Ok, I'll rework the patch-set and we'll see, my expectation is that
+working with BTF style structure would be simpler.
 
+> > forgoing "annots" fields altogether and treating type tags as derived
+> > types should make support for btf:type_tag (the v2 version) simpler.
+>=20
+> I think it should simplify as we're used to these chains.
+> =20
+> > Then, getting back to the current issue, I need to add
+> > skip_llvm_annotations function with a loop inside, right?
+>=20
+> You can, to remove them completely and its like they don't exist for
+> dwarf_fprintf.c, but what I think should be done is to actually print
+> them, to reconstruct the original source code.
+>=20
+> You can start removing them and we can work later on properly printing
+> it, so that we can get 1.25 out of the door as there are multiple
+> requests for it to be released to solve other problems with using 1.24.
 
-On 2023/3/30 15:29, Jiri Olsa wrote:
-> ping,
-> 
-> Petr, Zhen, any comment on discussion below?
-> 
-> thanks,
-> jirka
-> 
-> On Thu, Mar 23, 2023 at 03:00:25PM +0100, Jiri Olsa wrote:
->> On Wed, Mar 22, 2023 at 09:03:46AM -0700, Alexei Starovoitov wrote:
->>> On Wed, Mar 22, 2023 at 5:14 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->>>>
->>>> On Wed, Mar 22, 2023 at 10:49:38AM +0100, Artem Savkov wrote:
->>>>
->>>> SNIP
->>>>
->>>>>>> Hm, do we even need to preempt_disable? IIUC, preempt_disable is used
->>>>>>> in module kallsyms to prevent taking the module lock b/c kallsyms are
->>>>>>> used in the oops path. That shouldn't be an issue here, is that correct?
->>>>>>
->>>>>> btf_try_get_module calls try_module_get which disables the preemption,
->>>>>> so no need to call it in here
->>>>>
->>>>> It does, but it reenables preemption right away so it is enabled by the
->>>>> time we call find_kallsyms_symbol_value(). I am getting the following
->>>>> lockdep splat while running module_fentry_shadow test from test_progs.
->>>>>
->>>>> [   12.017973][  T488] =============================
->>>>> [   12.018529][  T488] WARNING: suspicious RCU usage
->>>>> [   12.018987][  T488] 6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804 Tainted: G           OE
->>>>> [   12.019898][  T488] -----------------------------
->>>>> [   12.020391][  T488] kernel/module/kallsyms.c:448 suspicious rcu_dereference_check() usage!
->>>>> [   12.021335][  T488]
->>>>> [   12.021335][  T488] other info that might help us debug this:
->>>>> [   12.021335][  T488]
->>>>> [   12.022416][  T488]
->>>>> [   12.022416][  T488] rcu_scheduler_active = 2, debug_locks = 1
->>>>> [   12.023297][  T488] no locks held by test_progs/488.
->>>>> [   12.023854][  T488]
->>>>> [   12.023854][  T488] stack backtrace:
->>>>> [   12.024336][  T488] CPU: 0 PID: 488 Comm: test_progs Tainted: G           OE      6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804
->>>>> [   12.025290][  T488] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.1-2.fc37 04/01/2014
->>>>> [   12.026108][  T488] Call Trace:
->>>>> [   12.026381][  T488]  <TASK>
->>>>> [   12.026649][  T488]  dump_stack_lvl+0xb4/0x110
->>>>> [   12.027060][  T488]  lockdep_rcu_suspicious+0x158/0x1f0
->>>>> [   12.027541][  T488]  find_kallsyms_symbol_value+0xe8/0x110
->>>>> [   12.028028][  T488]  bpf_check_attach_target+0x838/0xa20
->>>>> [   12.028511][  T488]  check_attach_btf_id+0x144/0x3f0
->>>>> [   12.028957][  T488]  ? __pfx_cmp_subprogs+0x10/0x10
->>>>> [   12.029408][  T488]  bpf_check+0xeec/0x1850
->>>>> [   12.029799][  T488]  ? ktime_get_with_offset+0x124/0x1d0
->>>>> [   12.030247][  T488]  bpf_prog_load+0x87a/0xed0
->>>>> [   12.030627][  T488]  ? __lock_release+0x5f/0x160
->>>>> [   12.031010][  T488]  ? __might_fault+0x53/0xb0
->>>>> [   12.031394][  T488]  ? selinux_bpf+0x6c/0xa0
->>>>> [   12.031756][  T488]  __sys_bpf+0x53c/0x1240
->>>>> [   12.032115][  T488]  __x64_sys_bpf+0x27/0x40
->>>>> [   12.032476][  T488]  do_syscall_64+0x3e/0x90
->>>>> [   12.032835][  T488]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
->>>>
->>>>
->>>> hum, for some reason I can't reproduce, but looks like we need to disable
->>>> preemption for find_kallsyms_symbol_value.. could you please check with
->>>> patch below?
->>>>
->>>> also could you please share your .config? not sure why I can't reproduce
->>>>
->>>> thanks,
->>>> jirka
->>>>
->>>>
->>>> ---
->>>> diff --git a/kernel/module/kallsyms.c b/kernel/module/kallsyms.c
->>>> index ab2376a1be88..bdc911dbcde5 100644
->>>> --- a/kernel/module/kallsyms.c
->>>> +++ b/kernel/module/kallsyms.c
->>>> @@ -442,7 +442,7 @@ int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
->>>>  }
->>>>
->>>>  /* Given a module and name of symbol, find and return the symbol's value */
->>>> -unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
->>>> +static unsigned long __find_kallsyms_symbol_value(struct module *mod, const char *name)
->>>>  {
->>>>         unsigned int i;
->>>>         struct mod_kallsyms *kallsyms = rcu_dereference_sched(mod->kallsyms);
->>>> @@ -466,7 +466,7 @@ static unsigned long __module_kallsyms_lookup_name(const char *name)
->>>>         if (colon) {
->>>>                 mod = find_module_all(name, colon - name, false);
->>>>                 if (mod)
->>>> -                       return find_kallsyms_symbol_value(mod, colon + 1);
->>>> +                       return __find_kallsyms_symbol_value(mod, colon + 1);
->>>>                 return 0;
->>>>         }
->>>>
->>>> @@ -475,7 +475,7 @@ static unsigned long __module_kallsyms_lookup_name(const char *name)
->>>>
->>>>                 if (mod->state == MODULE_STATE_UNFORMED)
->>>>                         continue;
->>>> -               ret = find_kallsyms_symbol_value(mod, name);
->>>> +               ret = __find_kallsyms_symbol_value(mod, name);
->>>>                 if (ret)
->>>>                         return ret;
->>>>         }
->>>> @@ -494,6 +494,16 @@ unsigned long module_kallsyms_lookup_name(const char *name)
->>>>         return ret;
->>>>  }
->>>>
->>>> +unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
->>>> +{
->>>> +       unsigned long ret;
->>>> +
->>>> +       preempt_disable();
->>>> +       ret = __find_kallsyms_symbol_value(mod, name);
->>>> +       preempt_enable();
->>>> +       return ret;
->>>> +}
->>>
->>> That doesn't look right.
->>> I think the issue is misuse of rcu_dereference_sched in
->>> find_kallsyms_symbol_value.
->>
->> it seems to be using rcu pointer to keep symbols for module init time and
->> then core symbols for after init.. and switch between them when module is
->> loaded, hence the strange rcu usage I think
->>
->> Petr, Zhen, any idea/insight?
+Understood, I'll send an update that ignores type tags properly today,
+after some testing, and add printing as a follow-up.
 
-Commit 91fb02f31505 ("module: Move kallsyms support into a separate file") hides
-the answer. find_kallsyms_symbol_value() was originally a static function, and it
-is only called by module_kallsyms_lookup_name() and is preemptive-protected.
+>=20
+> - Arnaldo
+> =20
+> > > > Probably, the cleanest solution would be to make DWARF and BTF load=
+ers
+> > > > work in a similar way and attach LLVM_annotation as `annots` field =
+of
+> > > > the `struct btf_type_tag_ptr_type`. Thus, avoiding 'LLVM_annotation=
+'s
+> > > > in the middle of type chains. I'll work on this.
 
-Now that we've added a call to function find_kallsyms_symbol_value(), it seems like
-we should do the same thing as function module_kallsyms_lookup_name().
-
-Like this?
-+				mod = btf_try_get_module(btf);
-+				if (mod) {
-+					preempt_disable();
-+					addr = find_kallsyms_symbol_value(mod, tname);
-+					preempt_enable();
-+				} else
-+					addr = 0;
-
-
->>
->> thanks,
->> jirka
-> .
-> 
-
--- 
-Regards,
-  Zhen Lei
