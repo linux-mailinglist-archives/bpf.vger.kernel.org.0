@@ -2,162 +2,256 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9821B6D007B
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 12:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE9A6D00FC
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 12:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbjC3KBD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 06:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36818 "EHLO
+        id S230401AbjC3KT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 06:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbjC3KAu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 06:00:50 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37570869A;
-        Thu, 30 Mar 2023 03:00:29 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id y4so74305236edo.2;
-        Thu, 30 Mar 2023 03:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680170423; x=1682762423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0EJhMz0vwwp9QLyvz78L2XADYLmd3+FXYQHpMYatqBE=;
-        b=XTqPnuIv87oa6/kVHy9Pie002BcsnzZ6j4Q9wJBmlO84pDGIfpkN+1zQ/OgFzYtHR5
-         NK0ybuglHr0dKT5GilASgcVs1pa9H78o2brK6qi+NSy5mLIMEoBlSzjVVI/KGToKIOLh
-         H+cptOsh9fUDA1ycDhULb0q0wLVk6j8Btc3d4EdGrQTKcZxO38iNyOv/shdZGuwsEHsR
-         NhGFxrRdUWWxjhG35PpBAexV2NxczglQCw8/WnNq3byEb5AvfB7uGRd7aEjHCqVzoFSl
-         YyYOsGYs7eush3fWssW1Cq7N6/3WPcqWDy1R7ZhQoEjJIdRpTyf494G02gmEnKq19QhS
-         JuvQ==
+        with ESMTP id S230285AbjC3KTZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 06:19:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC058A51
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 03:18:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680171501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5G4KlQgalZLZCJDa8edjfg+cOTUz1wNZ1RGVK9EOjxg=;
+        b=GQpYV71nkcsOOCZQ/91FMHhhnuDQk8cpiSfdMyaKXI0c2e7TG6b0+VLC618d7LhwH3P2NH
+        6Sb17nMXYyQfnYzRD90OnM0eEZPynMegiJFkguckvnnkPJ00NC954nRj4NaAleL2bYm8h1
+        sBjrclE8sejZn0uLB4nyQn9hOBFZRFU=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-668-DwIOMLIyNaK5OKolr7ypQg-1; Thu, 30 Mar 2023 06:18:20 -0400
+X-MC-Unique: DwIOMLIyNaK5OKolr7ypQg-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-5aae34d87f7so12391566d6.0
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 03:18:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680170423; x=1682762423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0EJhMz0vwwp9QLyvz78L2XADYLmd3+FXYQHpMYatqBE=;
-        b=HDQQsOJpYrCvSmiX/zEgmVX+QfykMEn2lVEDwV2Es7QuIKHbt2zwYGk7OTd/gWldqI
-         vjnw/PO3HaDrpBA3tIQf/5Kit8IQ/8A5f2qbYpSUTSpqs6R3xVJjQ5rx5Xcw2Ln4vofR
-         7cxgOLtZfq8WXdA8yrrCwrEh+gVREnYpdB5J0vn/riWLnk04AXAsx3chxVZ8EKMX/MT5
-         Bjq9VdckAHucaMobQzi3UXcBPdA9roMfwk8rBxQ6MdxykFUu/CmhPW36n+Q52OHk6c1w
-         dZhbrMmgg4F/keSdkcfyXfdSUXetpUWrBfWAhlb8HMG5+vqTj0f9MOh0F5X9txnx+U/n
-         l2bA==
-X-Gm-Message-State: AAQBX9foAc99pZy7jUEa6Qgk2HUSdag4I4FMhWYd2AZ7iFIdqpjmqam5
-        KT87+gAseSZZH7LKZiGkZ7w9ZIsWmEKIYpga5fg=
-X-Google-Smtp-Source: AKy350ZdnbDuO6+ZkJyDZ9ab1XF4mQQMjXviHEIohQ4mjWCZtLCM/OCXsW5CXAP4vVYef9E8Eot2tBTpP+t0P1438bE=
-X-Received: by 2002:a50:c055:0:b0:502:227a:d0dc with SMTP id
- u21-20020a50c055000000b00502227ad0dcmr10554560edd.4.1680170423098; Thu, 30
- Mar 2023 03:00:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230315092041.35482-1-kerneljasonxing@gmail.com>
- <20230315092041.35482-3-kerneljasonxing@gmail.com> <20230316172020.5af40fe8@kernel.org>
- <CAL+tcoDNvMUenwNEH2QByEY7cS1qycTSw1TLFSnNKt4Q0dCJUw@mail.gmail.com> <20230316202648.1f8c2f80@kernel.org>
-In-Reply-To: <20230316202648.1f8c2f80@kernel.org>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Thu, 30 Mar 2023 17:59:46 +0800
-Message-ID: <CAL+tcoCRn7RfzgrODp+qGv_sYEfv+=1G0Jm=yEoCoi5K8NfSSA@mail.gmail.com>
-Subject: Re: [PATCH v4 net-next 2/2] net: introduce budget_squeeze to help us
- tune rx behavior
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     jbrouer@redhat.com, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        stephen@networkplumber.org, simon.horman@corigine.com,
-        sinquersw@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
+        d=1e100.net; s=20210112; t=1680171499;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5G4KlQgalZLZCJDa8edjfg+cOTUz1wNZ1RGVK9EOjxg=;
+        b=sTr8zQ/Lm1Qly9kLJSv+QisP3iwQWTouNIv6YYqIDlxQBTuUa2eV92jNBjRvzs/knB
+         1c9vYB98eMQN8kiVp0kvEuCaKWIB/uthLIVqKj7jVaWlr6KONKqwE/5t+59+aP2xS4UR
+         zHoRQjHYMTy1jhBLAGL5jPjVawESq2yrZg/cQ5BUQxmJwlObbaD99PfUw+TRiOkloGdw
+         5wEFYzJFujaFpyIsDGHcVTXYSByOHeOlkN+ZlIdqJJP76niLyVtFvTbOkVKkvwHQe8si
+         xmb+S0i0lNpqwAlmvmC1yZ1Otf0ZB8cibxsGFQRCl0aZDSdDHfecg7Jp8Ep9OoLXi2HB
+         QDmg==
+X-Gm-Message-State: AAQBX9eNPwvvH+iplHAVrd/0A4XIQXisuKHiPWw+IT4DerE23aZQrimc
+        TT6efuODFn85lOOA6JlvcuWrWh1a6+N1fT3TgieH0N/tgb0ir/iBbQlLb6+INjbbKeCysBbFBLM
+        PsxhUJ4T2rXaS
+X-Received: by 2002:a05:6214:5089:b0:57d:747b:1f7 with SMTP id kk9-20020a056214508900b0057d747b01f7mr1974018qvb.1.1680171499607;
+        Thu, 30 Mar 2023 03:18:19 -0700 (PDT)
+X-Google-Smtp-Source: AKy350bvx8K/owgkDcL8x2YcXmXFmidn7E2vZNaiTvyyPaK6M4yc/CbTywaTxcrJm2j30ZXWyITBOQ==
+X-Received: by 2002:a05:6214:5089:b0:57d:747b:1f7 with SMTP id kk9-20020a056214508900b0057d747b01f7mr1973988qvb.1.1680171499214;
+        Thu, 30 Mar 2023 03:18:19 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-228-125.dyn.eolo.it. [146.241.228.125])
+        by smtp.gmail.com with ESMTPSA id f17-20020ac84711000000b003e635f0fdb4sm169635qtp.53.2023.03.30.03.18.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Mar 2023 03:18:18 -0700 (PDT)
+Message-ID: <3155cdb517e0db77d8664e5623c9d39e437fd796.camel@redhat.com>
+Subject: Re: [PATCH net-next 7/8] virtio_net: introduce
+ receive_mergeable_xdp()
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Date:   Thu, 30 Mar 2023 12:18:15 +0200
+In-Reply-To: <20230328120412.110114-8-xuanzhuo@linux.alibaba.com>
+References: <20230328120412.110114-1-xuanzhuo@linux.alibaba.com>
+         <20230328120412.110114-8-xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 17, 2023 at 11:26=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
-rote:
->
-> On Fri, 17 Mar 2023 10:27:11 +0800 Jason Xing wrote:
-> > > That is the common case, and can be understood from the napi trace
-> >
-> > Thanks for your reply. It is commonly happening every day on many serve=
-rs.
->
-> Right but the common issue is the time squeeze, not budget squeeze,
-> and either way the budget squeeze doesn't really matter because
-> the softirq loop will call us again soon, if softirq itself is
-> not scheduled out.
->
-> So if you want to monitor a meaningful event in your fleet, I think
-> a better event to monitor is the number of times ksoftirqd was woken
-> up and latency of it getting onto the CPU.
->
-> Did you try to measure that?
->
-[...]
-> (Please do *not* send patches to touch softirq code right now, just
-> measure first. We are trying to improve the situation but the core
-> kernel maintainers are weary of changes:
-> https://lwn.net/Articles/925540/
-> so if both of us start sending code they will probably take neither
-> patches :()
+Hi,
 
-Hello Jakub,
+On Tue, 2023-03-28 at 20:04 +0800, Xuan Zhuo wrote:
+> The purpose of this patch is to simplify the receive_mergeable().
+> Separate all the logic of XDP into a function.
+>=20
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c | 128 +++++++++++++++++++++++----------------
+>  1 file changed, 76 insertions(+), 52 deletions(-)
+>=20
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 136131a7868a..c8978d8d8adb 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1316,6 +1316,63 @@ static void *mergeable_xdp_prepare(struct virtnet_=
+info *vi,
+>  	return page_address(xdp_page) + VIRTIO_XDP_HEADROOM;
+>  }
+> =20
+> +static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
+> +					     struct virtnet_info *vi,
+> +					     struct receive_queue *rq,
+> +					     struct bpf_prog *xdp_prog,
+> +					     void *buf,
+> +					     void *ctx,
+> +					     unsigned int len,
+> +					     unsigned int *xdp_xmit,
+> +					     struct virtnet_rq_stats *stats)
+> +{
+> +	struct virtio_net_hdr_mrg_rxbuf *hdr =3D buf;
+> +	int num_buf =3D virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+> +	struct page *page =3D virt_to_head_page(buf);
+> +	int offset =3D buf - page_address(page);
+> +	unsigned int xdp_frags_truesz =3D 0;
+> +	struct sk_buff *head_skb;
+> +	unsigned int frame_sz;
+> +	struct xdp_buff xdp;
+> +	void *data;
+> +	u32 act;
+> +	int err;
+> +
+> +	data =3D mergeable_xdp_prepare(vi, rq, xdp_prog, ctx, &frame_sz, &num_b=
+uf, &page,
+> +				     offset, &len, hdr);
+> +	if (!data)
+> +		goto err_xdp;
+> +
+> +	err =3D virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, frame_=
+sz,
+> +					 &num_buf, &xdp_frags_truesz, stats);
+> +	if (unlikely(err))
+> +		goto err_xdp;
+> +
+> +	act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
+> +
+> +	switch (act) {
+> +	case VIRTNET_XDP_RES_PASS:
+> +		head_skb =3D build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
+> +		if (unlikely(!head_skb))
+> +			goto err_xdp;
+> +		return head_skb;
+> +
+> +	case VIRTNET_XDP_RES_CONSUMED:
+> +		return NULL;
+> +
+> +	case VIRTNET_XDP_RES_DROP:
+> +		break;
+> +	}
+> +
+> +err_xdp:
+> +	put_page(page);
+> +	mergeable_buf_free(rq, num_buf, dev, stats);
+> +
+> +	stats->xdp_drops++;
+> +	stats->drops++;
+> +	return NULL;
+> +}
+> +
+>  static struct sk_buff *receive_mergeable(struct net_device *dev,
+>  					 struct virtnet_info *vi,
+>  					 struct receive_queue *rq,
+> @@ -1325,21 +1382,22 @@ static struct sk_buff *receive_mergeable(struct n=
+et_device *dev,
+>  					 unsigned int *xdp_xmit,
+>  					 struct virtnet_rq_stats *stats)
+>  {
+> -	struct virtio_net_hdr_mrg_rxbuf *hdr =3D buf;
+> -	int num_buf =3D virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+> -	struct page *page =3D virt_to_head_page(buf);
+> -	int offset =3D buf - page_address(page);
+> -	struct sk_buff *head_skb, *curr_skb;
+> -	struct bpf_prog *xdp_prog;
+>  	unsigned int truesize =3D mergeable_ctx_to_truesize(ctx);
+>  	unsigned int headroom =3D mergeable_ctx_to_headroom(ctx);
+>  	unsigned int tailroom =3D headroom ? sizeof(struct skb_shared_info) : 0=
+;
+>  	unsigned int room =3D SKB_DATA_ALIGN(headroom + tailroom);
+> -	unsigned int frame_sz;
+> -	int err;
+> +	struct virtio_net_hdr_mrg_rxbuf *hdr;
+> +	struct sk_buff *head_skb, *curr_skb;
+> +	struct bpf_prog *xdp_prog;
+> +	struct page *page;
+> +	int num_buf;
+> +	int offset;
+> =20
+>  	head_skb =3D NULL;
+>  	stats->bytes +=3D len - vi->hdr_len;
+> +	hdr =3D buf;
+> +	num_buf =3D virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+> +	page =3D virt_to_head_page(buf);
+> =20
+>  	if (unlikely(len > truesize - room)) {
+>  		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+> @@ -1348,51 +1406,21 @@ static struct sk_buff *receive_mergeable(struct n=
+et_device *dev,
+>  		goto err_skb;
+>  	}
+> =20
+> -	if (likely(!vi->xdp_enabled)) {
+> -		xdp_prog =3D NULL;
+> -		goto skip_xdp;
+> -	}
+> -
+> -	rcu_read_lock();
+> -	xdp_prog =3D rcu_dereference(rq->xdp_prog);
+> -	if (xdp_prog) {
+> -		unsigned int xdp_frags_truesz =3D 0;
+> -		struct xdp_buff xdp;
+> -		void *data;
+> -		u32 act;
+> -
+> -		data =3D mergeable_xdp_prepare(vi, rq, xdp_prog, ctx, &frame_sz, &num_=
+buf, &page,
+> -					     offset, &len, hdr);
+> -		if (!data)
+> -			goto err_xdp;
+> -
+> -		err =3D virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, frame=
+_sz,
+> -						 &num_buf, &xdp_frags_truesz, stats);
+> -		if (unlikely(err))
+> -			goto err_xdp;
+> -
+> -		act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
+> -
+> -		switch (act) {
+> -		case VIRTNET_XDP_RES_PASS:
+> -			head_skb =3D build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz)=
+;
+> -			if (unlikely(!head_skb))
+> -				goto err_xdp;
+> -
+> +	if (likely(vi->xdp_enabled)) {
 
-I'm wondering for now if I can update and resend this patch to have a
-better monitor (actually we do need one) on this part since we have
-touched the net_rx_action() in the rps optimization patch series?
-Also, just like Jesper mentioned before, it can be considered as one
-'fix' to a old problem but targetting to net-next is just fine. What
-do you think about it ?
+This changes the branch prediction hint compared to the existing code;
+as we currently have:
+	if (likely(!vi->xdp_enabled)) {
+
+
+and I think it would be better avoid such change.
 
 Thanks,
-Jason
 
->
-> > > point and probing the kernel with bpftrace. We should only add
-> >
-> > We probably can deduce (or guess) which one causes the latency because
-> > trace_napi_poll() only counts the budget consumed per poll.
-> >
-> > Besides, tracing napi poll is totally ok with the testbed but not ok
-> > with those servers with heavy load which bpftrace related tools
-> > capturing the data from the hot path may cause some bad impact,
-> > especially with special cards equipped, say, 100G nic card. Resorting
-> > to legacy file softnet_stat is relatively feasible based on my limited
-> > knowledge.
->
-> Right, but we're still measuring something relatively irrelevant.
-> As I said the softirq loop will call us again. In my experience
-> network queues get long when ksoftirqd is woken up but not scheduled
-> for a long time. That is the source of latency. You may have the same
-> problem (high latency) without consuming the entire budget.
->
-> I think if we wanna make new stats we should try to come up with a way
-> of capturing the problem rather than one of the symptoms.
->
-> > Paolo also added backlog queues into this file in 2020 (see commit:
-> > 7d58e6555870d). I believe that after this patch, there are few or no
-> > more new data that is needed to print for the next few years.
-> >
-> > > uAPI for statistics which must be maintained contiguously. For
-> >
-> > In this patch, I didn't touch the old data as suggested in the
-> > previous emails and only separated the old way of counting
-> > @time_squeeze into two parts (time_squeeze and budget_squeeze). Using
-> > budget_squeeze can help us profile the server and tune it more
-> > usefully.
-> >
-> > > investigations tracing will always be orders of magnitude more
-> > > powerful :(
-> >
-> > > On the time squeeze BTW, have you found out what the problem was?
-> > > In workloads I've seen the time problems are often because of noise
-> > > in how jiffies are accounted (cgroup code disables interrupts
-> > > for long periods of time, for example, making jiffies increment
-> > > by 2, 3 or 4 rather than by 1).
-> >
-> > Yes ! The issue of jiffies increment troubles those servers more often
-> > than not. For a small group of servers, budget limit is also a
-> > problem. Sometimes we might treat guest OS differently.
+Paolo
+
