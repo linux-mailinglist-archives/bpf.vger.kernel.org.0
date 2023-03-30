@@ -2,53 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6C86CFA11
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 06:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4816CFA12
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 06:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjC3ESg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 30 Mar 2023 00:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
+        id S229906AbjC3ESy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 00:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjC3ESa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 00:18:30 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341F75B92
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 21:18:22 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32TKr0h6029689
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 21:18:22 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pmvrhj45q-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 29 Mar 2023 21:18:21 -0700
-Received: from twshared38955.16.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 29 Mar 2023 21:18:19 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 679662C6768D5; Wed, 29 Mar 2023 21:18:10 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>, <lmb@isovalent.com>, <timo@incline.eu>,
-        <robin.goegge@isovalent.com>
-CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 8/8] selftests/bpf: add tests to validate log_size_actual feature
-Date:   Wed, 29 Mar 2023 21:16:42 -0700
-Message-ID: <20230330041642.1118787-9-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230330041642.1118787-1-andrii@kernel.org>
-References: <20230330041642.1118787-1-andrii@kernel.org>
+        with ESMTP id S229840AbjC3ESi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 00:18:38 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F51859FD;
+        Wed, 29 Mar 2023 21:18:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7EB54B81E4A;
+        Thu, 30 Mar 2023 04:18:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A42D6C433EF;
+        Thu, 30 Mar 2023 04:18:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680149908;
+        bh=A3OE1fMs/XU35BYBG6uCfPnuEYKxavSEaRQvNf7OjwU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=a555VP3j+/IIpmuAZEv0I0CF6txP232GoRYTgzmyPbGMVyrJm38366WPT8USNaHDk
+         OLss2aNaDtH9lL7jIH6uEb3F674qtbQNOUBPFcoxcPfO/+zDpcAcsNnO1Q8NLORdy8
+         rFZPZLd99GGh6KD0SIkf3u4WCHxwmll+QLytD3neP3uHKGj2TSDHGNy3E0FGirf7Z4
+         KheLbkMwNBZKr6jc9f+4+VP9GRS65HtWg/SFaQC/+bmRpR8H7I/ID3yLEXyAT5M7qG
+         ktguB56CWftQ0SOqAu+DX4tWG5Ocj0k/lt7asiDLQfEBEban3eLYUaLQHcjQN/gR9I
+         h6JTT5jU/rjsA==
+Date:   Wed, 29 Mar 2023 21:18:26 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 02/16] virtio_net: move struct to header file
+Message-ID: <20230329211826.0657f947@kernel.org>
+In-Reply-To: <20230328092847.91643-3-xuanzhuo@linux.alibaba.com>
+References: <20230328092847.91643-1-xuanzhuo@linux.alibaba.com>
+        <20230328092847.91643-3-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: c8cmmou3ie4etfLeWiSo1mzy_DkJv-bM
-X-Proofpoint-GUID: c8cmmou3ie4etfLeWiSo1mzy_DkJv-bM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-29_16,2023-03-28_02,2023-02-09_01
-X-Spam-Status: No, score=-0.5 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,149 +61,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add additional test cases validating that log_size_actual is consistent
-between fixed and rotating log modes, and that log_size_actual can be
-used *exactly* without causing -ENOSPC, while using just 1 byte shorter
-log buffer would cause -ENOSPC.
+On Tue, 28 Mar 2023 17:28:33 +0800 Xuan Zhuo wrote:
+> diff --git a/drivers/net/virtio/virtnet.h b/drivers/net/virtio/virtnet.h
+> new file mode 100644
+> index 000000000000..778a0e6af869
+> --- /dev/null
+> +++ b/drivers/net/virtio/virtnet.h
+> @@ -0,0 +1,184 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __VIRTNET_H__
+> +#define __VIRTNET_H__
+> +
+> +#include <linux/ethtool.h>
+> +#include <linux/average.h>
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/verifier_log.c   | 92 +++++++++++++++----
- 1 file changed, 76 insertions(+), 16 deletions(-)
+I don't want to nit pick too much but this header is missing a lot of
+includes / forward declarations. At the same time on a quick look I
+didn't spot anything that'd require linux/ethtool.h
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier_log.c b/tools/testing/selftests/bpf/prog_tests/verifier_log.c
-index afe9e0384055..410bab151f1b 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier_log.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier_log.c
-@@ -18,25 +18,41 @@ static bool check_prog_load(int prog_fd, bool expect_err, const char *tag)
- 		if (!ASSERT_GT(prog_fd, 0, tag))
- 			return false;
- 	}
-+	if (prog_fd >= 0)
-+		close(prog_fd);
- 	return true;
- }
- 
-+static struct {
-+	/* strategically placed before others to avoid accidental modification by kernel */
-+	char filler[1024];
-+	char buf[1024];
-+	/* strategically placed after buf[] to catch more accidental corruptions */
-+	char reference[1024];
-+} logs;
-+static const struct bpf_insn *insns;
-+static size_t insn_cnt;
-+
-+static int load_prog(struct bpf_prog_load_opts *opts, bool expect_load_error)
-+{
-+	int prog_fd;
-+
-+	prog_fd = bpf_prog_load(BPF_PROG_TYPE_RAW_TRACEPOINT, "log_prog",
-+				"GPL", insns, insn_cnt, opts);
-+	check_prog_load(prog_fd, expect_load_error, "prog_load");
-+
-+	return prog_fd;
-+}
-+
- static void verif_log_subtest(const char *name, bool expect_load_error, int log_level)
- {
- 	LIBBPF_OPTS(bpf_prog_load_opts, opts);
--	struct {
--		/* strategically placed before others to avoid accidental modification by kernel */
--		char filler[1024];
--		char buf[1024];
--		/* strategically placed after buf[] to catch more accidental corruptions */
--		char reference[1024];
--	} logs;
- 	char *exp_log, prog_name[16], op_name[32];
- 	struct test_log_buf *skel;
- 	struct bpf_program *prog;
--	const struct bpf_insn *insns;
--	size_t insn_cnt, fixed_log_sz;
--	int i, err, prog_fd;
-+	size_t fixed_log_sz;
-+	__u32 log_sz_actual_fixed, log_sz_actual_rolling;
-+	int i, err, prog_fd, res;
- 
- 	skel = test_log_buf__open();
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
-@@ -61,11 +77,7 @@ static void verif_log_subtest(const char *name, bool expect_load_error, int log_
- 	opts.log_buf = logs.reference;
- 	opts.log_size = sizeof(logs.reference);
- 	opts.log_level = log_level | 8 /* BPF_LOG_FIXED */;
--	prog_fd = bpf_prog_load(BPF_PROG_TYPE_RAW_TRACEPOINT, "log_fixed",
--				"GPL", insns, insn_cnt, &opts);
--	if (!check_prog_load(prog_fd, expect_load_error, "fixed_buf_prog_load"))
--		goto cleanup;
--	close(prog_fd);
-+	load_prog(&opts, expect_load_error);
- 
- 	fixed_log_sz = strlen(logs.reference) + 1;
- 	if (!ASSERT_GT(fixed_log_sz, 50, "fixed_log_sz"))
-@@ -89,7 +101,7 @@ static void verif_log_subtest(const char *name, bool expect_load_error, int log_
- 		opts.log_level = log_level | 8; /* fixed-length log */
- 		opts.log_size = 25;
- 
--		prog_fd = bpf_prog_load(BPF_PROG_TYPE_RAW_TRACEPOINT, "log_fixed50",
-+		prog_fd = bpf_prog_load(BPF_PROG_TYPE_RAW_TRACEPOINT, "log_fixed25",
- 					"GPL", insns, insn_cnt, &opts);
- 		if (!ASSERT_EQ(prog_fd, -ENOSPC, "unexpected_log_fixed_prog_load_result")) {
- 			if (prog_fd >= 0)
-@@ -147,6 +159,54 @@ static void verif_log_subtest(const char *name, bool expect_load_error, int log_
- 		}
- 	}
- 
-+	/* (FIXED) get actual log size */
-+	opts.log_buf = logs.buf;
-+	opts.log_level = log_level | 8; /* BPF_LOG_FIXED */
-+	opts.log_size = sizeof(logs.buf);
-+	res = load_prog(&opts, expect_load_error);
-+	ASSERT_NEQ(res, -ENOSPC, "prog_load_res_fixed");
-+
-+	log_sz_actual_fixed = opts.log_size_actual;
-+	ASSERT_GT(log_sz_actual_fixed, 0, "log_sz_actual_fixed");
-+
-+	/* (ROLLING) get actual log size */
-+	opts.log_buf = logs.buf;
-+	opts.log_level = log_level;
-+	opts.log_size = sizeof(logs.buf);
-+	res = load_prog(&opts, expect_load_error);
-+	ASSERT_NEQ(res, -ENOSPC, "prog_load_res_rolling");
-+
-+	log_sz_actual_rolling = opts.log_size_actual;
-+	ASSERT_EQ(log_sz_actual_rolling, log_sz_actual_fixed, "log_sz_actual_eq");
-+
-+	/* (FIXED) expect -ENOSPC for one byte short log */
-+	opts.log_buf = logs.buf;
-+	opts.log_level = log_level | 8; /* BPF_LOG_FIXED */
-+	opts.log_size = log_sz_actual_fixed - 1;
-+	res = load_prog(&opts, true /* should fail */);
-+	ASSERT_EQ(res, -ENOSPC, "prog_load_res_too_short_fixed");
-+
-+	/* (FIXED) expect *not* -ENOSPC with exact log_size_actual buffer */
-+	opts.log_buf = logs.buf;
-+	opts.log_level = log_level | 8; /* BPF_LOG_FIXED */
-+	opts.log_size = log_sz_actual_fixed;
-+	res = load_prog(&opts, expect_load_error);
-+	ASSERT_NEQ(res, -ENOSPC, "prog_load_res_just_right_fixed");
-+
-+	/* (ROLLING) expect -ENOSPC for one byte short log */
-+	opts.log_buf = logs.buf;
-+	opts.log_level = log_level;
-+	opts.log_size = log_sz_actual_rolling - 1;
-+	res = load_prog(&opts, true /* should fail */);
-+	ASSERT_EQ(res, -ENOSPC, "prog_load_res_too_short_rolling");
-+
-+	/* (ROLLING) expect *not* -ENOSPC with exact log_size_actual buffer */
-+	opts.log_buf = logs.buf;
-+	opts.log_level = log_level;
-+	opts.log_size = log_sz_actual_rolling;
-+	res = load_prog(&opts, expect_load_error);
-+	ASSERT_NEQ(res, -ENOSPC, "prog_load_res_just_right_rolling");
-+
- cleanup:
- 	test_log_buf__destroy(skel);
- }
--- 
-2.34.1
+> diff --git a/drivers/net/virtio/virtnet.c b/drivers/net/virtio/virtnet.c
+> index e2560b6f7980..5ca354e29483 100644
+> --- a/drivers/net/virtio/virtnet.c
+> +++ b/drivers/net/virtio/virtnet.c
+> @@ -6,7 +6,6 @@
+>  //#define DEBUG
+>  #include <linux/netdevice.h>
+>  #include <linux/etherdevice.h>
+> -#include <linux/ethtool.h>
+>  #include <linux/module.h>
+>  #include <linux/virtio.h>
+>  #include <linux/virtio_net.h>
+> @@ -16,13 +15,14 @@
+>  #include <linux/if_vlan.h>
+>  #include <linux/slab.h>
+>  #include <linux/cpu.h>
+> -#include <linux/average.h>
+>  #include <linux/filter.h>
+>  #include <linux/kernel.h>
+>  #include <net/route.h>
+>  #include <net/xdp.h>
+>  #include <net/net_failover.h>
 
+And you shouldn't remove includes if the code needs them just because
+they get pulled in indirectly.
