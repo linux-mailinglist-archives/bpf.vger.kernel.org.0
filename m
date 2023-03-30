@@ -2,60 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 252AE6D0946
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 17:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D12E6D0947
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 17:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbjC3PTk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 11:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        id S232849AbjC3PTl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 11:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbjC3PTj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 11:19:39 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B37BCC36
+        with ESMTP id S232841AbjC3PTl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 11:19:41 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA858D321
         for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 08:18:32 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id qe8-20020a17090b4f8800b0023f07253a2cso19944407pjb.3
+Received: by mail-pl1-x62d.google.com with SMTP id le6so18359042plb.12
         for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 08:18:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680189494;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZFKfcwfWFwx7skGE0Rxm6dEGji3nQu77Efov4tDzlv4=;
-        b=JUltwBBqOol8AjZOiUbzaPfGl7C7ESTGcCayAdwyAzOw1zniUQQ9BwL6PezIvIiRuJ
-         fMzwyar1UEZ7HxOJelAClH7Ba2JFll3AsKezGirW54w+xBZrBUHCE2R/wSFo4XjZS2VF
-         sZulJ5PzCkbb6jFMYbHMz/W5mK1k/J/OXgTHYvpBhfi+csfFrH7Pt/kStL56/bGKPnwM
-         9ft11JHvTo6l2IfufdXm1jZ7w0h1m7Ni+d9O50niimlTIDNf8N6oEGE4ZEgbsC5i6yk9
-         /Y3bfiHpDQsH26WnyjfQGmrPS8ZyHOYPqISN/vNBRj8IIDJ3Pjcal2uAeow8iMfLU7PP
-         i7zw==
+        d=isovalent.com; s=google; t=1680189495;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MfYJYnl0Heey6FS2EwHdEmVSHYV5GV5CMBukfM7CZco=;
+        b=G1uq2MRc9yjupxXARmLcuBek5Hg2bm4sXA0E2d8Ii3tF9LADjKu93mvPVID/9BXgqw
+         B2GDNgHcS4zV6k0HEM+iNJzWibohdAzaUeE6xy8d+jwvSp6CFxJqxfkp+eMcSjyoQDOS
+         cjBN4DXu53/wvvYsoScxpCc/S+KAn9cy8QgCJYWp7dDA3zmebHbx9Yz1GvJUt+KL8H11
+         fsUaWSiECWn1aQpeT0Ea79OjT4pMqlkd4B07FhTJbuwEz3R+v4EVuzxdhCUChGR5Dquy
+         XBdFTvbfAR4rFXUFDr/18wDnznvTKa2afjQXSQwTV2n1surFLNRE/HvZN+ou3vDAVXdT
+         dp9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680189494;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZFKfcwfWFwx7skGE0Rxm6dEGji3nQu77Efov4tDzlv4=;
-        b=Fea9tQy3+WqDFZQJC5abPp+vUHABhwxLCLATRdDLahnR1uCTm/4rBlWQDsf98jBGtR
-         M2ogURWB6rmVfs/UBlXitOUssEFDqNvx/ucE2lCD3u5b65cpfgV7/RKiL46NLC1yUhRd
-         HED/5QKOUKapVRTIo6fL/s3WlRC0i9EjwJ86b6nuKBgkwG92RhHln9IPjCmA3o059hRz
-         4+HyLhoaar80kNFLz+KHiCBqe1lAKjfgMR93V0J789Vsaq9LKEA2J5l5xgwspYxeO0mz
-         CwsN4CxeN3h17rSjqiE3g1GBnXlzkHW6ihag2OTbARG74gxWhAFGfCP/a+tzyucItl+C
-         arxw==
-X-Gm-Message-State: AO0yUKVDolFC9bkTUPDTol46jlF7r2jpFPhhSuZQu/9cII5s7BKnbxt/
-        W9+kdDtzU0E0+GKvsVfg4mjVqlV9ubkuDs+4Zm0=
-X-Google-Smtp-Source: AK7set/2FWBJ1KFe8vjVCdzLAEfvKj9KXJu0omab4TsnvIrX1ZifDTOZbkiTuBknpzeeMwP+adMuPQ==
-X-Received: by 2002:a05:6a20:6597:b0:da:eebd:7f6c with SMTP id p23-20020a056a20659700b000daeebd7f6cmr19312813pzh.56.1680189493529;
-        Thu, 30 Mar 2023 08:18:13 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680189495;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MfYJYnl0Heey6FS2EwHdEmVSHYV5GV5CMBukfM7CZco=;
+        b=6WLb+axM/9u8Aa2ZVzes6BWzMdEpRH/wpNnYLh4GeZ+sjM7WBCYb17Z3y5H/Bnf5kM
+         +8kq+i7WYM/IAvsyRBv8hnU6US0z58HhokX1Apwt3XrxH38Ksgf7D8JEi8aQC3t/0n/g
+         rUUM9y8CNxuRBPeNqQzg1J+9BX7A/e+wtCxEGKIOh3kATf8UhJRipPD31m/mSXA8h2y1
+         5dNSXVudGtM7y5+c1LfLaWuLk8H7l76bN2vg31NXzPVTwECyYT1OLyj4j0a/+ITtWZ/2
+         TCgVQ+eVY2jCzku+MDVXXVoGJ/nw5lgoO/k54gfyklcSfqWgKUkqWSiolOX6PYZDIg49
+         gHuA==
+X-Gm-Message-State: AAQBX9f6ED7vQujo7ST6V2TuClEW9w3rq8GYseI9GazEa97Thf2eAv/c
+        uCDY7/AwtacPhm5LhXFOBUjoELbaAH0yVECqt58=
+X-Google-Smtp-Source: AKy350bnmzaGnqWjigYq8IFee8gaikToSb1uWywU73iuZEay7jMQPAI5fRto5XMHCI1iyymV2GJgqg==
+X-Received: by 2002:a17:903:410c:b0:1a1:f0ce:bb8f with SMTP id r12-20020a170903410c00b001a1f0cebb8fmr18495480pld.65.1680189495257;
+        Thu, 30 Mar 2023 08:18:15 -0700 (PDT)
 Received: from localhost.localdomain ([2604:1380:4611:8100::1])
-        by smtp.gmail.com with ESMTPSA id f17-20020a63de11000000b004fc1d91e695sm23401177pgg.79.2023.03.30.08.18.12
+        by smtp.gmail.com with ESMTPSA id f17-20020a63de11000000b004fc1d91e695sm23401177pgg.79.2023.03.30.08.18.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 08:18:12 -0700 (PDT)
+        Thu, 30 Mar 2023 08:18:14 -0700 (PDT)
 From:   Aditi Ghag <aditi.ghag@isovalent.com>
 To:     bpf@vger.kernel.org
 Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
         aditi.ghag@isovalent.com
-Subject: [PATCH v5 bpf-next 0/7] bpf: Add socket destroy capability
-Date:   Thu, 30 Mar 2023 15:17:51 +0000
-Message-Id: <20230330151758.531170-1-aditi.ghag@isovalent.com>
+Subject: [PATCH v5 bpf-next 1/7] bpf: tcp: Avoid taking fast sock lock in iterator
+Date:   Thu, 30 Mar 2023 15:17:52 +0000
+Message-Id: <20230330151758.531170-2-aditi.ghag@isovalent.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230330151758.531170-1-aditi.ghag@isovalent.com>
+References: <20230330151758.531170-1-aditi.ghag@isovalent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -67,61 +70,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds the capability to destroy sockets in BPF. We plan to use
-the capability in Cilium to force client sockets to reconnect when their
-remote load-balancing backends are deleted. The other use case is
-on-the-fly policy enforcement where existing socket connections prevented
-by policies need to be terminated.
+Previously, BPF TCP iterator was acquiring fast version of sock lock that
+disables the BH. This introduced a circular dependency with code paths that
+later acquire sockets hash table bucket lock.
+Replace the fast version of sock lock with slow that faciliates BPF
+programs executed from the iterator to destroy TCP listening sockets
+using the bpf_sock_destroy kfunc (implemened in follow-up commits).
 
-The use cases, and more details around
-the selected approach were presented at LPC 2022 -
-https://lpc.events/event/16/contributions/1358/.
-RFC discussion -
-https://lore.kernel.org/netdev/CABG=zsBEh-P4NXk23eBJw7eajB5YJeRS7oPXnTAzs=yob4EMoQ@mail.gmail.com/T/#u.
-v4 patch series -
-https://lore.kernel.org/bpf/20230323200633.3175753-1-aditi.ghag@isovalent.com/T/#t
+Here is a stack trace that motivated this change:
 
-v5 highlights:
-Address review comments:
-Martin:
-- Fixed bugs in the resume operation for UDP iterator.
-- Added clean-up preparatory commits prior to the batching commit.
-Stan:
-- Programmatically retrieve and share server port in the selftests.
-- Acquire slow sock lock in UDP iterator to be consistent with TCP.
-- Addressed formatting nits.
+```
+1) sock_lock with BH disabled + bucket lock
 
-(Below notes are same as v2 patch series that are still relevant. Refer to
-earlier patch series for other notes.)
-- I hit a snag while writing the kfunc where verifier complained about the
-  `sock_common` type passed from TCP iterator. With kfuncs, there don't
-  seem to be any options available to pass BTF type hints to the verifier
-  (equivalent of `ARG_PTR_TO_BTF_ID_SOCK_COMMON`, as was the case with the
-  helper).  As a result, I changed the argument type of the sock_destory
-  kfunc to `sock_common`.
+lock_acquire+0xcd/0x330
+_raw_spin_lock_bh+0x38/0x50
+inet_unhash+0x96/0xd0
+tcp_set_state+0x6a/0x210
+tcp_abort+0x12b/0x230
+bpf_prog_f4110fb1100e26b5_iter_tcp6_server+0xa3/0xaa
+bpf_iter_run_prog+0x1ff/0x340
+bpf_iter_tcp_seq_show+0xca/0x190
+bpf_seq_read+0x177/0x450
+vfs_read+0xc6/0x300
+ksys_read+0x69/0xf0
+do_syscall_64+0x3c/0x90
+entry_SYSCALL_64_after_hwframe+0x72/0xdc
 
-Aditi Ghag (7):
-  bpf: tcp: Avoid taking fast sock lock in iterator
-  udp: seq_file: Remove bpf_seq_afinfo from udp_iter_state
-  udp: seq_file: Helper function to match socket attributes
-  bpf: udp: Implement batching for sockets iterator
-  bpf: Add bpf_sock_destroy kfunc
-  selftests/bpf: Add helper to get port using getsockname
-  selftests/bpf: Test bpf_sock_destroy
+2) sock lock with BH enable
 
- include/net/udp.h                             |   1 -
- net/core/filter.c                             |  54 ++++
- net/ipv4/tcp.c                                |  10 +-
- net/ipv4/tcp_ipv4.c                           |   5 +-
- net/ipv4/udp.c                                | 286 +++++++++++++++---
- tools/testing/selftests/bpf/network_helpers.c |  14 +
- tools/testing/selftests/bpf/network_helpers.h |   1 +
- .../selftests/bpf/prog_tests/sock_destroy.c   | 203 +++++++++++++
- .../selftests/bpf/progs/sock_destroy_prog.c   | 147 +++++++++
- 9 files changed, 676 insertions(+), 45 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_destroy.c
- create mode 100644 tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+[    1.499968]   lock_acquire+0xcd/0x330
+[    1.500316]   _raw_spin_lock+0x33/0x40
+[    1.500670]   sk_clone_lock+0x146/0x520
+[    1.501030]   inet_csk_clone_lock+0x1b/0x110
+[    1.501433]   tcp_create_openreq_child+0x22/0x3f0
+[    1.501873]   tcp_v6_syn_recv_sock+0x96/0x940
+[    1.502284]   tcp_check_req+0x137/0x660
+[    1.502646]   tcp_v6_rcv+0xa63/0xe80
+[    1.502994]   ip6_protocol_deliver_rcu+0x78/0x590
+[    1.503434]   ip6_input_finish+0x72/0x140
+[    1.503818]   __netif_receive_skb_one_core+0x63/0xa0
+[    1.504281]   process_backlog+0x79/0x260
+[    1.504668]   __napi_poll.constprop.0+0x27/0x170
+[    1.505104]   net_rx_action+0x14a/0x2a0
+[    1.505469]   __do_softirq+0x165/0x510
+[    1.505842]   do_softirq+0xcd/0x100
+[    1.506172]   __local_bh_enable_ip+0xcc/0xf0
+[    1.506588]   ip6_finish_output2+0x2a8/0xb00
+[    1.506988]   ip6_finish_output+0x274/0x510
+[    1.507377]   ip6_xmit+0x319/0x9b0
+[    1.507726]   inet6_csk_xmit+0x12b/0x2b0
+[    1.508096]   __tcp_transmit_skb+0x549/0xc40
+[    1.508498]   tcp_rcv_state_process+0x362/0x1180
 
+```
+
+Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+---
+ net/ipv4/tcp_ipv4.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index ea370afa70ed..f2d370a9450f 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -2962,7 +2962,6 @@ static int bpf_iter_tcp_seq_show(struct seq_file *seq, void *v)
+ 	struct bpf_iter_meta meta;
+ 	struct bpf_prog *prog;
+ 	struct sock *sk = v;
+-	bool slow;
+ 	uid_t uid;
+ 	int ret;
+ 
+@@ -2970,7 +2969,7 @@ static int bpf_iter_tcp_seq_show(struct seq_file *seq, void *v)
+ 		return 0;
+ 
+ 	if (sk_fullsock(sk))
+-		slow = lock_sock_fast(sk);
++		lock_sock(sk);
+ 
+ 	if (unlikely(sk_unhashed(sk))) {
+ 		ret = SEQ_SKIP;
+@@ -2994,7 +2993,7 @@ static int bpf_iter_tcp_seq_show(struct seq_file *seq, void *v)
+ 
+ unlock:
+ 	if (sk_fullsock(sk))
+-		unlock_sock_fast(sk, slow);
++		release_sock(sk);
+ 	return ret;
+ 
+ }
 -- 
 2.34.1
 
