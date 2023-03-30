@@ -2,88 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A216D106B
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 22:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04956D107E
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 23:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229379AbjC3U7T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 16:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
+        id S230006AbjC3VFm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 17:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjC3U7S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 16:59:18 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E05CDFD
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 13:59:16 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id r19-20020a05600c459300b003eb3e2a5e7bso12643192wmo.0
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 13:59:16 -0700 (PDT)
+        with ESMTP id S229827AbjC3VFl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 17:05:41 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3295AD51E
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 14:05:40 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id i5so81952368eda.0
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 14:05:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680209955;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z62lhEF812RohRzl6GrU0HNPBWyCyWRe9LiASd6oZeA=;
-        b=mwbdV5XakQ1KlY/hO03ePyXVOQtX332dOXXB7aJ8qumnoTvc031k6maYPQWaK/681Y
-         aP8TCGjv7Ns9+PpR8J006Ug1eaAbZrKy4cD0FJIs20axh0xd8gjLnmNdl5jpCHE3eDGw
-         l0AbZR9i53s3x9UIbX39oRBwYljfbvylfkkSwhswujFeW7Dj5EP/lLiQlYZQfZ3Vur1h
-         1OwOPuh/hY89Z2soxNWvCJTCJOIJyc1BaNc6fxNBSq+d6nXJmGO2OxEaYyRlTJewwO9m
-         b0CzqjJXjO3/YIBjWdZuL3r2PesYxz6OHsE7nAI+/5qN+M/5g5Q0WZi/r5aXHHIHKtAm
-         EBQw==
+        d=gmail.com; s=20210112; t=1680210338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oRM7i+zuBG70GjHM4+VVi/mvC+BB62bOQ1P0caN6Rkk=;
+        b=EljU7tgr+ROXV7EYyXXcRiuTzBdPQSijQQauGW6VSvndigUihEPa1UDK8gXMVFDzke
+         moOgA1M4ATCy6pQQLvu/WfNMG2yaOEQvqlH/zr1R7+Hc4KPblB9ImQsSGWXkLZOaeiVA
+         MFxPXTwgFG92vfPHtaM/ECXD38wJZSo3So5BBwA9ltJdwO6APqlOIOb7S7/uh0/DXWUk
+         hOgDvz/nWkDie7GmHdy3Rt+hHOS3reIkGl3Y496EEKpFnY44DzpVIX66rAgQEKa0LvDE
+         JrVjZrmPzXp85ZoRRPQrw+B+5EeeWfELaGgEe+jelODlgAoWWI4l++r6LSXhwM8viT2E
+         Ji8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680209955;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z62lhEF812RohRzl6GrU0HNPBWyCyWRe9LiASd6oZeA=;
-        b=ieMVoZNSwMNAIBqsxQ21r6tpZ7UB8VY5HRzJ+cCU74NXWiOTseriXUad5MjLicrdcj
-         jqavDrS1cu1jrVrk9OguCXd+OHib5e6122FdO7ZtWxLk1Wh50tN8kXLYFvHPRipYbxli
-         WrQp8TIHgN1JnvKT24HnTcSBGVYOj62XSfVbBW6Eb963Vs2uhxoqYsos8+HKnib76JPZ
-         lUQlxGWxM/4S8FKqKiuf9oVBfgIRf4MVn2Wp9vYu6EpTHgqoyiXjYCykVPyjM5FNjv2z
-         UWtEh3VS9SvmCQJGjmtH1yk341MRAam7Gi34foA5whpXnnxnL+u6JnVtYLYqi82w2LU0
-         0diQ==
-X-Gm-Message-State: AAQBX9eYLJCn5Y5P/0+vcxlfRXAW2rqYClUxF+C4AHb4nlvdniSZBaFY
-        TWSGiQJpi7rBwvRjtLA1pFI=
-X-Google-Smtp-Source: AKy350b3JtUS12VUMrmNruLN8ShxX5HPpISyhCo8ZfbCMtKbK5NEM1QViiyzDlGbUztF/Ucofv8JSA==
-X-Received: by 2002:a05:600c:2313:b0:3eb:2e27:2d0c with SMTP id 19-20020a05600c231300b003eb2e272d0cmr5751604wmo.1.1680209955076;
-        Thu, 30 Mar 2023 13:59:15 -0700 (PDT)
-Received: from krava ([83.240.63.154])
-        by smtp.gmail.com with ESMTPSA id s17-20020a05600c45d100b003ed51cdb94csm7448340wmo.26.2023.03.30.13.59.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 13:59:14 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 30 Mar 2023 22:59:12 +0200
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Petr Mladek <pmladek@suse.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Viktor Malik <vmalik@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH bpf-next v6 1/2] bpf: Fix attaching
- fentry/fexit/fmod_ret/lsm to modules
-Message-ID: <ZCX4IMGp/aalXHSL@krava>
-References: <e627742ab86ed28632bc9b6c56ef65d7f98eadbc.1676542796.git.vmalik@redhat.com>
- <Y+40os27pQ8det/o@krava>
- <1992d09a-0ef8-66e3-1da0-5d13c2fecc3d@redhat.com>
- <Y+5Q0UK09HsxM4ht@krava>
- <ZBrPMkv8YVRiWwCR@samus.usersys.redhat.com>
- <ZBrxMWfmE/1RG/u0@krava>
- <CAADnVQLwvZyQXyRNn_oaBKx-EH_NauZHTg8+-MOMXo91MibX=A@mail.gmail.com>
- <ZBxbeYZ/+tOtEiNB@krava>
- <ZCU6dPDXZ0h7hT4w@krava>
- <98077109-02be-a708-cde7-5dc827e1f3ea@huawei.com>
+        d=1e100.net; s=20210112; t=1680210338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oRM7i+zuBG70GjHM4+VVi/mvC+BB62bOQ1P0caN6Rkk=;
+        b=ZtWRgq53BK4ZwxJQ3w4+a/8eB6ZNconOqcXEL+OcuF/5EF/Dy5/y9zMjPWdbENDmTC
+         7hA2dKH2ui28/L+PxGYJJmsjFabGklquhDUoxaj5B+6SWWsrlOM6qGYIEw9eT31F8nQN
+         NsK+0IfaHfnfIneX0gpvNdKGaGJ1RNLyDfbSL9kLAoLKtBV+Hh3rM6COuWbn4JIM0q70
+         j4vjV8xrMc0ldSU9q/vX/dp4syV54sMzopMX9CkaVQ4tXBN1URghFqR3Nzjp2YApUgjo
+         kRmd+Lc9OtuCNIuTCyv8G/RIAS4HZdr7th52tZqVD4i6vWyGn9jI3+/pUrvMNYjdukTo
+         mBrg==
+X-Gm-Message-State: AAQBX9eiRAQEbzoYWoThJ0Bogghi1m3jLv5bNUNoNSOz35QjNfsdak7s
+        d2UlMo80Ni4MWkpnxj8dWs5ph7egD5jhQaAwqzg=
+X-Google-Smtp-Source: AKy350YQo6QQFc7KoBm7QjlVEc7DNv7ulikaWUW/sAzkyIUODI63reEnOGJom2rWv+bHe4GilmQEhXY0burNa1LUbWE=
+X-Received: by 2002:a17:907:8688:b0:931:c1a:b526 with SMTP id
+ qa8-20020a170907868800b009310c1ab526mr12631200ejc.5.1680210338481; Thu, 30
+ Mar 2023 14:05:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <98077109-02be-a708-cde7-5dc827e1f3ea@huawei.com>
+References: <20230328235610.3159943-1-andrii@kernel.org> <20230328235610.3159943-5-andrii@kernel.org>
+ <CAN+4W8h4QwvVcKkfTGOKAug2wnbZi5t5GyXXK0VWoobrNo1jpA@mail.gmail.com>
+In-Reply-To: <CAN+4W8h4QwvVcKkfTGOKAug2wnbZi5t5GyXXK0VWoobrNo1jpA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 30 Mar 2023 14:05:26 -0700
+Message-ID: <CAEf4BzbH7tB+zaK=DJtpR+SXqhNqwYMwiru9xpuAhGpaaFrJsg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/6] libbpf: don't enforce verifier log levels
+ on libbpf side
+To:     Lorenz Bauer <lmb@isovalent.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+        timo@incline.eu, robin.goegge@isovalent.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -94,175 +71,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 30, 2023 at 08:26:41PM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2023/3/30 15:29, Jiri Olsa wrote:
-> > ping,
-> > 
-> > Petr, Zhen, any comment on discussion below?
-> > 
-> > thanks,
-> > jirka
-> > 
-> > On Thu, Mar 23, 2023 at 03:00:25PM +0100, Jiri Olsa wrote:
-> >> On Wed, Mar 22, 2023 at 09:03:46AM -0700, Alexei Starovoitov wrote:
-> >>> On Wed, Mar 22, 2023 at 5:14 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >>>>
-> >>>> On Wed, Mar 22, 2023 at 10:49:38AM +0100, Artem Savkov wrote:
-> >>>>
-> >>>> SNIP
-> >>>>
-> >>>>>>> Hm, do we even need to preempt_disable? IIUC, preempt_disable is used
-> >>>>>>> in module kallsyms to prevent taking the module lock b/c kallsyms are
-> >>>>>>> used in the oops path. That shouldn't be an issue here, is that correct?
-> >>>>>>
-> >>>>>> btf_try_get_module calls try_module_get which disables the preemption,
-> >>>>>> so no need to call it in here
-> >>>>>
-> >>>>> It does, but it reenables preemption right away so it is enabled by the
-> >>>>> time we call find_kallsyms_symbol_value(). I am getting the following
-> >>>>> lockdep splat while running module_fentry_shadow test from test_progs.
-> >>>>>
-> >>>>> [   12.017973][  T488] =============================
-> >>>>> [   12.018529][  T488] WARNING: suspicious RCU usage
-> >>>>> [   12.018987][  T488] 6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804 Tainted: G           OE
-> >>>>> [   12.019898][  T488] -----------------------------
-> >>>>> [   12.020391][  T488] kernel/module/kallsyms.c:448 suspicious rcu_dereference_check() usage!
-> >>>>> [   12.021335][  T488]
-> >>>>> [   12.021335][  T488] other info that might help us debug this:
-> >>>>> [   12.021335][  T488]
-> >>>>> [   12.022416][  T488]
-> >>>>> [   12.022416][  T488] rcu_scheduler_active = 2, debug_locks = 1
-> >>>>> [   12.023297][  T488] no locks held by test_progs/488.
-> >>>>> [   12.023854][  T488]
-> >>>>> [   12.023854][  T488] stack backtrace:
-> >>>>> [   12.024336][  T488] CPU: 0 PID: 488 Comm: test_progs Tainted: G           OE      6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804
-> >>>>> [   12.025290][  T488] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.1-2.fc37 04/01/2014
-> >>>>> [   12.026108][  T488] Call Trace:
-> >>>>> [   12.026381][  T488]  <TASK>
-> >>>>> [   12.026649][  T488]  dump_stack_lvl+0xb4/0x110
-> >>>>> [   12.027060][  T488]  lockdep_rcu_suspicious+0x158/0x1f0
-> >>>>> [   12.027541][  T488]  find_kallsyms_symbol_value+0xe8/0x110
-> >>>>> [   12.028028][  T488]  bpf_check_attach_target+0x838/0xa20
-> >>>>> [   12.028511][  T488]  check_attach_btf_id+0x144/0x3f0
-> >>>>> [   12.028957][  T488]  ? __pfx_cmp_subprogs+0x10/0x10
-> >>>>> [   12.029408][  T488]  bpf_check+0xeec/0x1850
-> >>>>> [   12.029799][  T488]  ? ktime_get_with_offset+0x124/0x1d0
-> >>>>> [   12.030247][  T488]  bpf_prog_load+0x87a/0xed0
-> >>>>> [   12.030627][  T488]  ? __lock_release+0x5f/0x160
-> >>>>> [   12.031010][  T488]  ? __might_fault+0x53/0xb0
-> >>>>> [   12.031394][  T488]  ? selinux_bpf+0x6c/0xa0
-> >>>>> [   12.031756][  T488]  __sys_bpf+0x53c/0x1240
-> >>>>> [   12.032115][  T488]  __x64_sys_bpf+0x27/0x40
-> >>>>> [   12.032476][  T488]  do_syscall_64+0x3e/0x90
-> >>>>> [   12.032835][  T488]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> >>>>
-> >>>>
-> >>>> hum, for some reason I can't reproduce, but looks like we need to disable
-> >>>> preemption for find_kallsyms_symbol_value.. could you please check with
-> >>>> patch below?
-> >>>>
-> >>>> also could you please share your .config? not sure why I can't reproduce
-> >>>>
-> >>>> thanks,
-> >>>> jirka
-> >>>>
-> >>>>
-> >>>> ---
-> >>>> diff --git a/kernel/module/kallsyms.c b/kernel/module/kallsyms.c
-> >>>> index ab2376a1be88..bdc911dbcde5 100644
-> >>>> --- a/kernel/module/kallsyms.c
-> >>>> +++ b/kernel/module/kallsyms.c
-> >>>> @@ -442,7 +442,7 @@ int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
-> >>>>  }
-> >>>>
-> >>>>  /* Given a module and name of symbol, find and return the symbol's value */
-> >>>> -unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
-> >>>> +static unsigned long __find_kallsyms_symbol_value(struct module *mod, const char *name)
-> >>>>  {
-> >>>>         unsigned int i;
-> >>>>         struct mod_kallsyms *kallsyms = rcu_dereference_sched(mod->kallsyms);
-> >>>> @@ -466,7 +466,7 @@ static unsigned long __module_kallsyms_lookup_name(const char *name)
-> >>>>         if (colon) {
-> >>>>                 mod = find_module_all(name, colon - name, false);
-> >>>>                 if (mod)
-> >>>> -                       return find_kallsyms_symbol_value(mod, colon + 1);
-> >>>> +                       return __find_kallsyms_symbol_value(mod, colon + 1);
-> >>>>                 return 0;
-> >>>>         }
-> >>>>
-> >>>> @@ -475,7 +475,7 @@ static unsigned long __module_kallsyms_lookup_name(const char *name)
-> >>>>
-> >>>>                 if (mod->state == MODULE_STATE_UNFORMED)
-> >>>>                         continue;
-> >>>> -               ret = find_kallsyms_symbol_value(mod, name);
-> >>>> +               ret = __find_kallsyms_symbol_value(mod, name);
-> >>>>                 if (ret)
-> >>>>                         return ret;
-> >>>>         }
-> >>>> @@ -494,6 +494,16 @@ unsigned long module_kallsyms_lookup_name(const char *name)
-> >>>>         return ret;
-> >>>>  }
-> >>>>
-> >>>> +unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
-> >>>> +{
-> >>>> +       unsigned long ret;
-> >>>> +
-> >>>> +       preempt_disable();
-> >>>> +       ret = __find_kallsyms_symbol_value(mod, name);
-> >>>> +       preempt_enable();
-> >>>> +       return ret;
-> >>>> +}
-> >>>
-> >>> That doesn't look right.
-> >>> I think the issue is misuse of rcu_dereference_sched in
-> >>> find_kallsyms_symbol_value.
-> >>
-> >> it seems to be using rcu pointer to keep symbols for module init time and
-> >> then core symbols for after init.. and switch between them when module is
-> >> loaded, hence the strange rcu usage I think
-> >>
-> >> Petr, Zhen, any idea/insight?
-> 
-> Commit 91fb02f31505 ("module: Move kallsyms support into a separate file") hides
-> the answer. find_kallsyms_symbol_value() was originally a static function, and it
-> is only called by module_kallsyms_lookup_name() and is preemptive-protected.
-> 
-> Now that we've added a call to function find_kallsyms_symbol_value(), it seems like
-> we should do the same thing as function module_kallsyms_lookup_name().
-> 
-> Like this?
-> +				mod = btf_try_get_module(btf);
-> +				if (mod) {
-> +					preempt_disable();
-> +					addr = find_kallsyms_symbol_value(mod, tname);
-> +					preempt_enable();
-> +				} else
-> +					addr = 0;
+On Thu, Mar 30, 2023 at 10:13=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> w=
+rote:
+>
+> On Wed, Mar 29, 2023 at 12:56=E2=80=AFAM Andrii Nakryiko <andrii@kernel.o=
+rg> wrote:
+> >
+> > This basically prevents any forward compatibility. And we either way
+> > just return -EINVAL, which would otherwise be returned from bpf()
+> > syscall anyways.
+>
+> In your cover letter you make the argument that applications can opt
+> out of the behaviour, but I think shows that this isn't entirely true.
+> Apps linking old libbpf won't be able to fix their breakage without
+> updating libbpf. This is especially annoying when you have to support
+> multiple old versions where doing this isn't straightforward.
+>
 
-yes, that's what I did above, but I was just curious about the strange
-RCU usage Alexei commented on earlier:
+Ok, technically, you are correct. If you somehow managed to get a
+bleeding edge kernel, but outdated libbpf, you won't be able to
+specify log_level =3D 8. This is not the only place where too old libbpf
+would limit you from using bleeding edge kernel features, though, and
+we have to live with that (though try our best to avoid such
+dependencies, of course).
 
-	>>> +unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
-	>>> +{
-	>>> +       unsigned long ret;
-	>>> +
-	>>> +       preempt_disable();
-	>>> +       ret = __find_kallsyms_symbol_value(mod, name);
-	>>> +       preempt_enable();
-	>>> +       return ret;
-	>>> +}
-	>>
-	>> That doesn't look right.
-	>> I think the issue is misuse of rcu_dereference_sched in
-	>> find_kallsyms_symbol_value.
-	>
-	> it seems to be using rcu pointer to keep symbols for module init time and
-	> then core symbols for after init.. and switch between them when module is
-	> loaded, hence the strange rcu usage I think
-	>
-	> Petr, Zhen, any idea/insight?
+But in practice you get the freshest libbpf way before your kernel
+becomes the freshest one, so I don't think this is a big deal in
+practice.
 
-thanks,
-jirka
+> Take this as another plea to make this opt in and instead work
+> together to make this a default on the lib side. :)
+
+Please, help me understand the arguments against making rotating mode
+a default, now that we return -ENOSPC on truncation. In which scenario
+this difference matters?
+
+1. If there is no truncation and the user provides a big enough buffer
+(which my second patch set makes it even easier to do for libraries),
+there is no difference, they get identical log contents and behavior.
+
+2. If there was truncation, in both cases we get -ENOSPC. The contents
+will differ. In one case we get the beginning of a long log with no
+details about what actually caused the failure (useless in pretty much
+any circumstances) versus you get the last N bytes of log, all the way
+to actual error and some history leading towards it. Which is what we
+used to debug and understand verification issues.
+
+What is the situation where the beginning of the log is preferable? I
+had exactly one case where I actually wanted the beginning of the log,
+that was when I was debugging some bug in the verifier when
+implementing open-coded iterators. This bug was happening early and
+causing an infinite loop, so I wanted to see the first few pages of
+the output to catch how it all started. But that was a development bug
+of a tricky feature, definitely not something we expect for end users
+to deal with. And it was literally *once* that I needed this.
+
+Why are we fighting to preserve this much less useful behavior as a
+default, if there is no reduction of functionality for end-users?
+Library writers have full access to union bpf_attr and can opt-out
+easily (though again, why?). Normal end users will never have to ask
+for BPF_LOG_FIXED behavior. Maybe some advanced tool-building users
+will want BPF_LOG_FIXED (like veristat, for example), but then it's in
+their best interest to have fresh enough libbpf anyways.
+
+So instead of "I want X over Y", let's discuss "*why* X is better than Y"?
+
+> Apps linking old libbpf won't be able to fix their breakage without
+> updating libbpf. This is especially annoying when you have to support
+
+What sort of breakage would be there to fix?
+
+Also keep in mind that not all use cases use BPF library's high-level
+code that does all this fancy log buf manipulations. There are
+legitimate cases where tools/applications want direct access to
+log_buf, so needing to do extra feature detection to get rotating mode
+(but falling back without failing to fixed mode on the old kernel) is
+just an unnecessary nuisance.
