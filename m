@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C04956D107E
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 23:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4536D1081
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 23:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjC3VFm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 17:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
+        id S229808AbjC3VHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 17:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbjC3VFl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 17:05:41 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3295AD51E
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 14:05:40 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id i5so81952368eda.0
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 14:05:40 -0700 (PDT)
+        with ESMTP id S229458AbjC3VHp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 17:07:45 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C7DD51E
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 14:07:43 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id er13so40771761edb.9
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 14:07:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680210338;
+        d=gmail.com; s=20210112; t=1680210461;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oRM7i+zuBG70GjHM4+VVi/mvC+BB62bOQ1P0caN6Rkk=;
-        b=EljU7tgr+ROXV7EYyXXcRiuTzBdPQSijQQauGW6VSvndigUihEPa1UDK8gXMVFDzke
-         moOgA1M4ATCy6pQQLvu/WfNMG2yaOEQvqlH/zr1R7+Hc4KPblB9ImQsSGWXkLZOaeiVA
-         MFxPXTwgFG92vfPHtaM/ECXD38wJZSo3So5BBwA9ltJdwO6APqlOIOb7S7/uh0/DXWUk
-         hOgDvz/nWkDie7GmHdy3Rt+hHOS3reIkGl3Y496EEKpFnY44DzpVIX66rAgQEKa0LvDE
-         JrVjZrmPzXp85ZoRRPQrw+B+5EeeWfELaGgEe+jelODlgAoWWI4l++r6LSXhwM8viT2E
-         Ji8g==
+        bh=zSx9PvMhmvzLcQqJ7QOmAjp5Bx1EivO/8KKgVUMZJN8=;
+        b=fZtYUEvVbaRH3fbLkxFMUAJYHdbP2hjYa1ZMFsnxu+HPL48vus5fyIKY6KYmonz1RS
+         p+6m45PYfNmgK+HxKfNRe9BaHN39SagCuojUeM9cwSZT7TEGLs6OhzpdrNsn2iHcBVdD
+         WNmnBPPQDeUpQ8tyYC4/NJVwAJ0qsVgxcMaO1gtE4rgFPuRA+gMRKkfYLE+o7RUvRi88
+         lxBbVaPBhxChxkQO8qzhRgA6GaKgz40AQwXguhusajdqkun56tFI/GmuAfWf+pM/X/rM
+         BuL2GQpQAPzVWeMizC1tDCxtRPW6CxqwSuf0u7rigsT0E4u/nCnhG9QDtGtDTCVeKdil
+         Vrxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680210338;
+        d=1e100.net; s=20210112; t=1680210461;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oRM7i+zuBG70GjHM4+VVi/mvC+BB62bOQ1P0caN6Rkk=;
-        b=ZtWRgq53BK4ZwxJQ3w4+a/8eB6ZNconOqcXEL+OcuF/5EF/Dy5/y9zMjPWdbENDmTC
-         7hA2dKH2ui28/L+PxGYJJmsjFabGklquhDUoxaj5B+6SWWsrlOM6qGYIEw9eT31F8nQN
-         NsK+0IfaHfnfIneX0gpvNdKGaGJ1RNLyDfbSL9kLAoLKtBV+Hh3rM6COuWbn4JIM0q70
-         j4vjV8xrMc0ldSU9q/vX/dp4syV54sMzopMX9CkaVQ4tXBN1URghFqR3Nzjp2YApUgjo
-         kRmd+Lc9OtuCNIuTCyv8G/RIAS4HZdr7th52tZqVD4i6vWyGn9jI3+/pUrvMNYjdukTo
-         mBrg==
-X-Gm-Message-State: AAQBX9eiRAQEbzoYWoThJ0Bogghi1m3jLv5bNUNoNSOz35QjNfsdak7s
-        d2UlMo80Ni4MWkpnxj8dWs5ph7egD5jhQaAwqzg=
-X-Google-Smtp-Source: AKy350YQo6QQFc7KoBm7QjlVEc7DNv7ulikaWUW/sAzkyIUODI63reEnOGJom2rWv+bHe4GilmQEhXY0burNa1LUbWE=
+        bh=zSx9PvMhmvzLcQqJ7QOmAjp5Bx1EivO/8KKgVUMZJN8=;
+        b=r56mQaRJIbyZRyNPDZCV8SulFOCYnzauCRpATYujZ7Drx1FZjR272eNmRyIFZm/+TM
+         x11FcZHusIJorGChOgpTLARNhayrxfHG8aHBhUYASLmO+/SXyPvj/PrSxiAauvy+qsGO
+         LthxqaDG0P9/ZIV+GBxlhS/ifC4C+wEHWvtjYR2IzPln1dBsOXjfaHX/IQcWXfKbkaQU
+         n05pKZyi6qZU5cd0ey3qGH+gPCYBaJq4lqd5RXrb/2LQdLhA7G7gY/v0AewP2u83MMnE
+         FKFukwyO1h6n8A6kvVEYIw2IGTJVv+X+VDsthhYlGAou2EYy5qKMOugXzIt1+mjETF28
+         HoYg==
+X-Gm-Message-State: AAQBX9dACuALwB6ru/6iwYe+Ual2H6Zq101N4T2vVmAyRHRKwlu/CSbM
+        UaGkXjh1CX5dijeXmwTnPjBooeqQsBYBc29kURZEE8wT
+X-Google-Smtp-Source: AKy350bkGwUnoiyan1lTfW4HmSwMCdSNV+j//NG3s+m4rGLE2qEU/Wad1FEuz8NyeZFiRGnVJuHn90qPl8t3mPmZRHc=
 X-Received: by 2002:a17:907:8688:b0:931:c1a:b526 with SMTP id
- qa8-20020a170907868800b009310c1ab526mr12631200ejc.5.1680210338481; Thu, 30
- Mar 2023 14:05:38 -0700 (PDT)
+ qa8-20020a170907868800b009310c1ab526mr12634283ejc.5.1680210461562; Thu, 30
+ Mar 2023 14:07:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230328235610.3159943-1-andrii@kernel.org> <20230328235610.3159943-5-andrii@kernel.org>
- <CAN+4W8h4QwvVcKkfTGOKAug2wnbZi5t5GyXXK0VWoobrNo1jpA@mail.gmail.com>
-In-Reply-To: <CAN+4W8h4QwvVcKkfTGOKAug2wnbZi5t5GyXXK0VWoobrNo1jpA@mail.gmail.com>
+References: <20230328235610.3159943-1-andrii@kernel.org> <20230328235610.3159943-8-andrii@kernel.org>
+ <CAN+4W8ju8Bdqe59QXbX+eQWARfiy2-zqgkD5N0rMpmRn9-W4Vg@mail.gmail.com>
+In-Reply-To: <CAN+4W8ju8Bdqe59QXbX+eQWARfiy2-zqgkD5N0rMpmRn9-W4Vg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 30 Mar 2023 14:05:26 -0700
-Message-ID: <CAEf4BzbH7tB+zaK=DJtpR+SXqhNqwYMwiru9xpuAhGpaaFrJsg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/6] libbpf: don't enforce verifier log levels
- on libbpf side
+Date:   Thu, 30 Mar 2023 14:07:29 -0700
+Message-ID: <CAEf4BzYwW1eswz_H0NDm9s=TxLTgkPsgTMp28XOrmsrbnXWkVg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 6/6] selftests/bpf: add fixed vs rotating
+ verifier log tests
 To:     Lorenz Bauer <lmb@isovalent.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
@@ -77,73 +77,41 @@ rote:
 > On Wed, Mar 29, 2023 at 12:56=E2=80=AFAM Andrii Nakryiko <andrii@kernel.o=
 rg> wrote:
 > >
-> > This basically prevents any forward compatibility. And we either way
-> > just return -EINVAL, which would otherwise be returned from bpf()
-> > syscall anyways.
+> > Add selftests validating BPF_LOG_FIXED behavior, which used to be the
+> > only behavior, and now default rotating BPF verifier log, which returns
+> > just up to last N bytes of full verifier log, instead of returning
+> > -ENOSPC.
+> >
+> > To stress test correctness of in-kernel verifier log logic, we force it
+> > to truncate program's verifier log to all lengths from 1 all the way to
+> > its full size (about 450 bytes today). This was a useful stress test
+> > while developing the feature.
+> >
+> > For both fixed and rotating log modes we expect -ENOSPC if log contents
+> > doesn't fit in user-supplied log buffer.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 >
-> In your cover letter you make the argument that applications can opt
-> out of the behaviour, but I think shows that this isn't entirely true.
-> Apps linking old libbpf won't be able to fix their breakage without
-> updating libbpf. This is especially annoying when you have to support
-> multiple old versions where doing this isn't straightforward.
+> Acked-by: Lorenz Bauer <lmb@isovalent.com>
 >
+> > +       /* validate BPF_LOG_FIXED works as verifier log used to work, t=
+hat is:
+> > +        * we get -ENOSPC and beginning of the full verifier log. This =
+only
+> > +        * works for log_level 2 and log_level 1 + failed program. For =
+log
+> > +        * level 2 we don't reset log at all. For log_level 1 + failed =
+program
+> > +        * we don't get to verification stats output. With log level 1
+> > +        * for successful program  final result will be just verifier s=
+tats.
+> > +        * But if provided too short log buf, kernel will NULL-out log-=
+>ubuf
+>
+> Out of curiousity: why is ubuf NULLed? Is that something we could change?
 
-Ok, technically, you are correct. If you somehow managed to get a
-bleeding edge kernel, but outdated libbpf, you won't be able to
-specify log_level =3D 8. This is not the only place where too old libbpf
-would limit you from using bleeding edge kernel features, though, and
-we have to live with that (though try our best to avoid such
-dependencies, of course).
-
-But in practice you get the freshest libbpf way before your kernel
-becomes the freshest one, so I don't think this is a big deal in
-practice.
-
-> Take this as another plea to make this opt in and instead work
-> together to make this a default on the lib side. :)
-
-Please, help me understand the arguments against making rotating mode
-a default, now that we return -ENOSPC on truncation. In which scenario
-this difference matters?
-
-1. If there is no truncation and the user provides a big enough buffer
-(which my second patch set makes it even easier to do for libraries),
-there is no difference, they get identical log contents and behavior.
-
-2. If there was truncation, in both cases we get -ENOSPC. The contents
-will differ. In one case we get the beginning of a long log with no
-details about what actually caused the failure (useless in pretty much
-any circumstances) versus you get the last N bytes of log, all the way
-to actual error and some history leading towards it. Which is what we
-used to debug and understand verification issues.
-
-What is the situation where the beginning of the log is preferable? I
-had exactly one case where I actually wanted the beginning of the log,
-that was when I was debugging some bug in the verifier when
-implementing open-coded iterators. This bug was happening early and
-causing an infinite loop, so I wanted to see the first few pages of
-the output to catch how it all started. But that was a development bug
-of a tricky feature, definitely not something we expect for end users
-to deal with. And it was literally *once* that I needed this.
-
-Why are we fighting to preserve this much less useful behavior as a
-default, if there is no reduction of functionality for end-users?
-Library writers have full access to union bpf_attr and can opt-out
-easily (though again, why?). Normal end users will never have to ask
-for BPF_LOG_FIXED behavior. Maybe some advanced tool-building users
-will want BPF_LOG_FIXED (like veristat, for example), but then it's in
-their best interest to have fresh enough libbpf anyways.
-
-So instead of "I want X over Y", let's discuss "*why* X is better than Y"?
-
-> Apps linking old libbpf won't be able to fix their breakage without
-> updating libbpf. This is especially annoying when you have to support
-
-What sort of breakage would be there to fix?
-
-Also keep in mind that not all use cases use BPF library's high-level
-code that does all this fancy log buf manipulations. There are
-legitimate cases where tools/applications want direct access to
-log_buf, so needing to do extra feature detection to get rotating mode
-(but falling back without failing to fixed mode on the old kernel) is
-just an unnecessary nuisance.
+This is internal kernel implementation detail. That's how the verifier
+signals that there was an error during copy_to_user(). This is
+behavior not observable from user space at all. Why would you like to
+change that? bpf_attr's log_buf field will never be NULLed out, if
+that's what you are worried about.
