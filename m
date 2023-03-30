@@ -2,25 +2,25 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1341F6CFB1B
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 08:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910DC6CFB23
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 08:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbjC3GBN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 02:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S230018AbjC3GB4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 02:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjC3GBM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 02:01:12 -0400
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D6749D8;
-        Wed, 29 Mar 2023 23:01:10 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VezRvjN_1680156065;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VezRvjN_1680156065)
+        with ESMTP id S230037AbjC3GBk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 02:01:40 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C71A6A54;
+        Wed, 29 Mar 2023 23:01:26 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VezSI9h_1680156082;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VezSI9h_1680156082)
           by smtp.aliyun-inc.com;
-          Thu, 30 Mar 2023 14:01:06 +0800
-Message-ID: <1680156056.4424767-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH 16/16] virtio_net: separating the virtio code
-Date:   Thu, 30 Mar 2023 14:00:56 +0800
+          Thu, 30 Mar 2023 14:01:23 +0800
+Message-ID: <1680156071.4256074-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH 12/16] virtio_net: introduce virtnet_get_netdev()
+Date:   Thu, 30 Mar 2023 14:01:11 +0800
 From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
@@ -34,32 +34,33 @@ Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         John Fastabend <john.fastabend@gmail.com>,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
 References: <20230328092847.91643-1-xuanzhuo@linux.alibaba.com>
- <20230328092847.91643-17-xuanzhuo@linux.alibaba.com>
- <20230329211552.27efa412@kernel.org>
-In-Reply-To: <20230329211552.27efa412@kernel.org>
+ <20230328092847.91643-13-xuanzhuo@linux.alibaba.com>
+ <20230329212203.3c3bf199@kernel.org>
+In-Reply-To: <20230329212203.3c3bf199@kernel.org>
 X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 29 Mar 2023 21:15:52 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
-> On Tue, 28 Mar 2023 17:28:47 +0800 Xuan Zhuo wrote:
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +
-> > +#ifndef __VIRTNET_VIRTIO_H__
-> > +#define __VIRTNET_VIRTIO_H__
-> > +
-> > +int virtnet_register_virtio_driver(void);
-> > +void virtnet_unregister_virtio_driver(void);
-> > +#endif
+On Wed, 29 Mar 2023 21:22:03 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
+> On Tue, 28 Mar 2023 17:28:43 +0800 Xuan Zhuo wrote:
+> > +const struct net_device_ops *virtnet_get_netdev(void)
+> > +{
+> > +	return &virtnet_netdev;
+> > +}
 >
-> nit: this header needs to be added in the previous patch,
-> otherwise there is a transient build warning there.
+> Why not just make the virtnet_netdev symbol visible?
+> Many drivers do that.
+>
+> If you prefer the function maybe virtnet_get_ndos() would be a better
+> name for example? The current name sounds like it will get a... well..
+> a netdev. And it gets ops.
+
 
 Will fix.
 
