@@ -2,107 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D386D0E1C
-	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 20:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058486D0E23
+	for <lists+bpf@lfdr.de>; Thu, 30 Mar 2023 20:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbjC3SwX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 14:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
+        id S230245AbjC3SxV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 14:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbjC3SwU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 14:52:20 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BE1DBF7
-        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 11:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680202328; x=1711738328;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SGVvbTSTSllsWzUf3VAifeGyEjQUaxhqlzVmZb4zA70=;
-  b=UBTM5pK38Vn7EFW3MXqOo1SlrseWR0s8RdNCX6ntDc3Y3PDmDY1hfuHR
-   lyngRxG8S55Il8HgrI9ObKWXoAIDmLia9vgqqywC9/W2W69Xgy7mFomGC
-   u+B4ru6ct23RdPjyxAyF0BwNuCyyKnbTBvpEgrATH4COsy/vqoYoZBJdC
-   IEg8GO+OeUW5XrzHmRPqKfDqKVmYSb/+z3eWDgMKpfoIOFhYwYtNmoQd7
-   hFDCrCXhwXnVsVvczAKnSgPwjsc2yWH1p3mnRGKi6JiD67RSRwQwAsazo
-   1ca30i+8qhTSR8645DMjAD3U5/Sbp6lcOzXoLvMxX3EAjuAsdjV25c3my
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="403954576"
-X-IronPort-AV: E=Sophos;i="5.98,305,1673942400"; 
-   d="scan'208";a="403954576"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2023 11:52:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="687367957"
-X-IronPort-AV: E=Sophos;i="5.98,305,1673942400"; 
-   d="scan'208";a="687367957"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Mar 2023 11:52:06 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1phxNV-000L76-27;
-        Thu, 30 Mar 2023 18:52:05 +0000
-Date:   Fri, 31 Mar 2023 02:51:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Aditi Ghag <aditi.ghag@isovalent.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, kafai@fb.com, sdf@google.com,
-        edumazet@google.com, aditi.ghag@isovalent.com
-Subject: Re: [PATCH v5 bpf-next 3/7] udp: seq_file: Helper function to match
- socket attributes
-Message-ID: <202303310242.QYEDFSaE-lkp@intel.com>
-References: <20230330151758.531170-4-aditi.ghag@isovalent.com>
+        with ESMTP id S231356AbjC3SxU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 14:53:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012B1FF3B
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 11:52:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680202340;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4YBDK9oa7IRSnGDsV6eC1sZG+Y0J3aQFUW2e3I1262Q=;
+        b=TPyzlF64SKTrVky1PJygK378xFWnbmVFgsJKp9p3R86VL61AX3C+9APFPPGTd4Wywk4K46
+        mmYA0flS1oZxYOJzDQqE1P4V0EK0B802He7d84nchAw7VhB01yC4vRVTE9uXr1CO+sGTNf
+        pelfoo++NYy4Cst2y1Z+e6kaVoEl7bg=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-572-vzgihu7SM4OIi-hGib-gHA-1; Thu, 30 Mar 2023 14:52:19 -0400
+X-MC-Unique: vzgihu7SM4OIi-hGib-gHA-1
+Received: by mail-lf1-f71.google.com with SMTP id b10-20020a056512060a00b004eaf5a72b99so7739293lfe.17
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 11:52:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680202338;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4YBDK9oa7IRSnGDsV6eC1sZG+Y0J3aQFUW2e3I1262Q=;
+        b=5naasA59ko3G2ydEakz6nORUTt+qyCWhyVClyoOfB+PRN3NyozMEOWFDFdX36tpxAc
+         ObVKaRpO7oYoyFqP/FN9yXRgbbFL84EiNHP2G3J+fTyeRfR9KOk/09E9E6hBpI5IftlY
+         NBhG0kfrX9m1C86++pdxb1D3wSWuZchUsANB0NpDo8cMza1lOOPVTsNSRfCpxmvPUCvS
+         rABSMqMlrUmkatmvsZcAzk7ORFO/rg5DxV38q0tB/+fPxRyuJmNfFo+ne/W1eVeumORa
+         Slye577kM0HCt50g5C88/l3+OTElTa4fzfMW8x84JEI9ohShs6W40RKtGXo+r2Tpfr0+
+         WXaw==
+X-Gm-Message-State: AAQBX9fGRNAXTQnqeZN6uNnnsNshNgjNf//O+WXBXhpFLUB+A60SvLiY
+        v4qfTSBgRMFCDKYfMFayxwi7U5sZMLI6ubPq22pNHdYmXAf0WD5vedWdfyMUH6yDTyjpO+saf67
+        TZxEpdloWeaMA
+X-Received: by 2002:ac2:4219:0:b0:4db:28ce:e5ef with SMTP id y25-20020ac24219000000b004db28cee5efmr6695647lfh.0.1680202337876;
+        Thu, 30 Mar 2023 11:52:17 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZEG6X1LBEENo7FPVYgXURXiHltW2Oz5D1+hNuhYNjG0DAXLBytpTSBkNusr0t4A1SO/5Oneg==
+X-Received: by 2002:ac2:4219:0:b0:4db:28ce:e5ef with SMTP id y25-20020ac24219000000b004db28cee5efmr6695639lfh.0.1680202337545;
+        Thu, 30 Mar 2023 11:52:17 -0700 (PDT)
+Received: from [192.168.42.100] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id d1-20020ac24c81000000b004d85789cef1sm53324lfl.49.2023.03.30.11.52.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Mar 2023 11:52:16 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <d34fe8e9-39de-2b6b-3cce-fe6bc339eb0b@redhat.com>
+Date:   Thu, 30 Mar 2023 20:52:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230330151758.531170-4-aditi.ghag@isovalent.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net
+Subject: Re: [PATCH bpf RFC 1/4] xdp: rss hash types representation
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <168003451121.3027256.13000250073816770554.stgit@firesoul>
+ <168003455815.3027256.7575362149566382055.stgit@firesoul>
+ <ZCNjHAY81gS02FVW@google.com>
+ <811724e2-cdd6-15fe-b176-9dfcdbd98bad@redhat.com>
+ <ZCRy2f170FQ+fXsp@google.com>
+ <b9e5077f-fbc4-8904-74a8-cda94d91cfbf@redhat.com>
+ <ZCTHc6Dp4RMi1YZ6@google.com>
+ <7ce10be6-bda2-74fc-371b-9791558af5b5@redhat.com>
+ <ZCXCrWhJqXjHTV54@google.com>
+In-Reply-To: <ZCXCrWhJqXjHTV54@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Aditi,
 
-Thank you for the patch! Yet something to improve:
 
-[auto build test ERROR on bpf-next/master]
+On 30/03/2023 19.11, Stanislav Fomichev wrote:
+> On 03/30, Jesper Dangaard Brouer wrote:
+> 
+>> On 30/03/2023 01.19, Stanislav Fomichev wrote:
+>> > On 03/29, Jesper Dangaard Brouer wrote:
+>> >
+>> > > On 29/03/2023 19.18, Stanislav Fomichev wrote:
+>> > > > On 03/29, Jesper Dangaard Brouer wrote:
+>> > > >
+>> > > > > On 28/03/2023 23.58, Stanislav Fomichev wrote:
+>> > > > > > On 03/28, Jesper Dangaard Brouer wrote:
+>> > > > > > > The RSS hash type specifies what portion of packet data  NIC hardware used
+>> > > > > > > when calculating RSS hash value. The RSS types are focused on Internet
+>> > > > > > > traffic protocols at OSI layers L3 and L4. L2 (e.g. ARP) often get hash
+>> > > > > > > value zero and no RSS type. For L3 focused on IPv4 vs. IPv6, and L4
+>> > > > > > > primarily TCP vs UDP, but some hardware supports SCTP.
+>> > > > > >
+>> > > > > > > Hardware RSS types are differently encoded for each  hardware NIC. Most
+>> > > > > > > hardware represent RSS hash type as a number. Determining L3 vs L4 often
+>> > > > > > > requires a mapping table as there often isn't a pattern or sorting
+>> > > > > > > according to ISO layer.
+>> > > > > >
+[...]
+>> > Any reason it's not a XDP_RSS_L3_IPV6_EX within XDP_RSS_L3_MASK?
+>> >
+> 
+>> Hmm... I guess it belongs with L3.
+> 
+>> Do notice that both IPv4 and IPv6 have a flexible header called either
+>> options/extensions headers, after their fixed header. (Mlx4 HW contains this
+>> info for IPv4, but I didn't extend xdp_rss_hash_type in that patch).
+>> Thus, we could have a single BIT that is valid for both IPv4 and IPv6.
+>> (This can help speedup packet parsing having this info).
+> 
+> A separate bit for both v4/v6 sounds good. But thinking more about it,
+> not sure what the users are supposed to do with it. Whether the flow is 
+> hashed over the extension header should a config option, not a per-packet signal?
+> 
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Aditi-Ghag/bpf-tcp-Avoid-taking-fast-sock-lock-in-iterator/20230330-232137
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230330151758.531170-4-aditi.ghag%40isovalent.com
-patch subject: [PATCH v5 bpf-next 3/7] udp: seq_file: Helper function to match socket attributes
-config: parisc-defconfig (https://download.01.org/0day-ci/archive/20230331/202303310242.QYEDFSaE-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/66cc617bebf6cb3d2162587d6e248d86bc59c1c2
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Aditi-Ghag/bpf-tcp-Avoid-taking-fast-sock-lock-in-iterator/20230330-232137
-        git checkout 66cc617bebf6cb3d2162587d6e248d86bc59c1c2
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=parisc olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=parisc SHELL=/bin/bash
+Microsoft defines which part of the IPv6 Extensions headers will be used 
+for replacing either the Source (Home address) and Dest 
+(Routing-Header-Type-2) IPv6 Addresses, in the hash calc, here[1]:
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303310242.QYEDFSaE-lkp@intel.com/
+  [1] 
+https://learn.microsoft.com/en-us/windows-hardware/drivers/network/rss-hashing-types#ndis_hash_ipv6_ex
 
-All error/warnings (new ones prefixed by >>):
+The igc/i225 chip returns per-packet the RSS Type's with _EX added.
+Thus, I implemented this per-packet basis.
 
->> net/ipv4/udp.c:2986:20: warning: 'seq_sk_match' used but never defined
-    2986 | static inline bool seq_sk_match(struct seq_file *seq, const struct sock *sk);
-         |                    ^~~~~~~~~~~~
---
-   hppa-linux-ld: net/ipv4/udp.o: in function `udp_get_first':
->> (.text+0x11b0): undefined reference to `seq_sk_match'
-   hppa-linux-ld: net/ipv4/udp.o: in function `udp_get_next':
-   (.text+0x123c): undefined reference to `seq_sk_match'
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+>> [...]
+>> >
+>> > > > For example, for forward compat, I'm not sure we can assume that 
+>> the people
+>> > > > will do:
+>> > > >      "rss_type & XDP_RSS_TYPE_L4_MASK"
+>> > > > instead of something like:
+>> > > >      "rss_type & 
+>> (XDP_RSS_TYPE_L4_IPV4_TCP|XDP_RSS_TYPE_L4_IPV4_UDP)"
+>> > > >
+>> >
+>> > > This code is allowed in V2 and should be. It is a choice of
+>> > > BPF-programmer in line-2 to not be forward compatible with newer L4
+>> > > types.
+>> >
+> 
+>> The above code made me realize, I was wrong and you are right, we should
+>> represent the L4 types as BITs (and not as numbers).
+>> Even-though a single packet cannot be both UDP and TCP at the same time,
+>> then it is reasonable to have a code path that want to match both UDP
+>> and TCP.  If L4 types are BITs then code can do a single compare (via
+>> ORing), while if they are numbers then we need more compares.
+>> Thus, I'll change scheme in V3 to use BITs.
+> 
+> So you are saying that the following:
+>      if (rss_type & (TCP|UDP)
+> 
+> is much faster than the following:
+>      proto = rss_type & L4_MASK;
+>      if (proto == TCP || proto == UDP)
+> 
+> ?
+
+For XDP every instruction/cycle counts.
+Just to make sure, I tested it with godbolt.org, 3 vs 4 inst.
+
+> 
+> idk, as long as we have enough bits to represent everything, I'm fine
+> with either way, up to you. (not sure how much you want to constrain the 
+> data
+> to fit it into xdp_frame; assuming u16 is fine?)
+
+Yes, u16 is fine.
+
+> 
+> 
+>> > > > > > > This proposal change the kfunc API
+>> > > bpf_xdp_metadata_rx_hash() > > > > to  return this RSS hash type on
+>> > > success.
+>> >
+>> > > This is the real question (as also raised above)...
+>> > > Should we use return value or add an argument for type?
+>> >
+>> > Let's fix the prototype while it's still early in the rc?
+> 
+>> Okay, in V3 I will propose adding an argument for the type then.
+> 
+> SG, thx!
+
+> 
+>> > Maybe also extend the tests to drop/decode/verify the mask?
+> 
+>> Yes, I/we obviously need to update the selftests.
+> 
+>> One problem with selftests is that it's using veth SKB-based mode, and
+>> SKB's have lost the RSS hash info and converted this into a single BIT
+>> telling us if this was L4 based.  Thus, its hard to do some e.g. UDP
+>> type verification, but I guess we can check if expected UDP packet is
+>> RSS type L4.
+> 
+> Yeah, sounds fair.
+> 
+>> In xdp_hw_metadata, I will add something that uses the RSS type bits.  I
+>> was thinking to match against L4-UDP RSS type as program only AF_XDP
+>> redirect UDP packets, so we can verify it was a UDP packet by HW info.
+> 
+> Or maybe just dump it, idk.
+
+
