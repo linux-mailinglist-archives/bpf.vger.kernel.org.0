@@ -2,45 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8686D2B42
-	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 00:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922126D2B44
+	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 00:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbjCaWYR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 31 Mar 2023 18:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
+        id S231879AbjCaWYT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 31 Mar 2023 18:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231945AbjCaWYQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 18:24:16 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB381EA23
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 15:24:15 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 32VIipBB007829
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 15:24:14 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3pns0qwrvw-1
+        with ESMTP id S233342AbjCaWYR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 18:24:17 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEB41EA3D
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 15:24:16 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32VIjn5I013192
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 15:24:16 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pnr76wwwd-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 15:24:14 -0700
-Received: from twshared38955.16.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 15:24:16 -0700
+Received: from twshared52232.38.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 31 Mar 2023 15:24:12 -0700
+ 15.1.2507.17; Fri, 31 Mar 2023 15:24:15 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 2F7562CA0A1AA; Fri, 31 Mar 2023 15:24:06 -0700 (PDT)
+        id 67F942CA0A219; Fri, 31 Mar 2023 15:24:08 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v3 bpf-next 0/4] Prepare veristat for packaging
-Date:   Fri, 31 Mar 2023 15:24:01 -0700
-Message-ID: <20230331222405.3468634-1-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 1/4] veristat: relicense veristat.c as dual GPL-2.0-only or BSD-2-Clause licensed
+Date:   Fri, 31 Mar 2023 15:24:02 -0700
+Message-ID: <20230331222405.3468634-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230331222405.3468634-1-andrii@kernel.org>
+References: <20230331222405.3468634-1-andrii@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 5vxfcE5zd9-R76thfLgmzwjVEx-Uuiul
-X-Proofpoint-ORIG-GUID: 5vxfcE5zd9-R76thfLgmzwjVEx-Uuiul
+X-Proofpoint-GUID: ilDrHI4o5jZv-gRapX5pKYOv1tortMJ2
+X-Proofpoint-ORIG-GUID: ilDrHI4o5jZv-gRapX5pKYOv1tortMJ2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-31_07,2023-03-31_01,2023-02-09_01
@@ -53,27 +55,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set relicenses veristat.c to dual GPL-2.0/BSD-2 license and
-prepares it to be mirrored to Github at libbpf/veristat repo.
+Dual-license veristat.c to dual GPL-2.0-only or BSD-2-Clause license.
+This is needed to mirror it to Github to make it convenient for distro
+packagers to package veristat as a separate package.
 
-Few small issues in the source code are fixed, found during Github sync
-preparetion.
+Veristat grew into a useful tool by itself, and there are already
+a bunch of users relying on veristat as generic BPF loading and
+verification helper tool. So making it easy to packagers by providing
+Github mirror just like we do for bpftool and libbpf is the next step to
+get veristat into the hands of users.
 
-v2->v3:
-  - fix few warnings about uninitialized variable uses;
-v1->v2:
-  - drop linux/compiler.h and define own ARRAY_SIZE macro;
+Apart from few typo fixes, I'm the sole contributor to veristat.c so
+far, so no extra Acks should be needed for relicensing.
 
-Andrii Nakryiko (4):
-  veristat: relicense veristat.c as dual GPL-2.0-only or BSD-2-Clause
-    licensed
-  veristat: improve version reporting
-  veristat: avoid using kernel-internal headers
-  veristat: small fixed found in -O2 mode
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/testing/selftests/bpf/veristat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- tools/testing/selftests/bpf/veristat.c | 30 +++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
-
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+index 7888c03ba631..612ca52c6fba 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ /* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+ #define _GNU_SOURCE
+ #include <argp.h>
 -- 
 2.34.1
 
