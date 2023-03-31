@@ -2,126 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3356D285F
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 20:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C776D2866
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 21:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbjCaS6s convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 31 Mar 2023 14:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
+        id S231241AbjCaTE2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 15:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjCaS6q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 14:58:46 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E051022206
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 11:58:24 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32VIj2CB009060
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 11:57:41 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pnx3ju3f6-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 11:57:41 -0700
-Received: from twshared38955.16.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 31 Mar 2023 11:57:40 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 734792C9C1922; Fri, 31 Mar 2023 11:57:23 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 2/2] veristat: improve version reporting
-Date:   Fri, 31 Mar 2023 11:56:37 -0700
-Message-ID: <20230331185637.2026519-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230331185637.2026519-1-andrii@kernel.org>
-References: <20230331185637.2026519-1-andrii@kernel.org>
+        with ESMTP id S229441AbjCaTE0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 15:04:26 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B461622933
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 12:04:25 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id eh3so93496869edb.11
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 12:04:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1680289464;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CBgtdWro37xy0xED7gYpWdnIpcRD6CvxaVJDB91GKvs=;
+        b=fL6JQwfkCzg5k8MIp2yW1eevTYpumo4axpAUWjeQVnxZ023oShCKTwLmnAc/fye6xx
+         neR98ZJVj6piv4J9ecd7xjjIQYyACuTq59qmaCS3yTQOGPhA91OF92s4v9CkBWSpvvKM
+         rz65GCEGOOJ8yjBjMqwAS3b3tgCOZKNxFJajWQaJRjRdc4CSg/cA57O8D+Oq6Oe1LAJ4
+         2mVn/cvkii1QVT3GcQW/mRwIrCzXmOwHpOMN8C/onm9XRgMZ288OdnZgwdQUr7MMj8+8
+         RRbSZfC/Y3QYlXMJZsdEzOOnNaU20+AvLyLZyFhObvmRedEK5bFf9W0VpJPo3NjJ/PlU
+         ADqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680289464;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CBgtdWro37xy0xED7gYpWdnIpcRD6CvxaVJDB91GKvs=;
+        b=RPYLxO0OMBMyBky+A8ZicibI9Y0eUh6Gia8Y3U3LlGN9SQmQz/JgjG4RbOyB0kXtH1
+         lmu+fMSCtCN9IS6/4NZqaf/eqlbwtBJAqXWPhL2Nl6tC0zMvrjGL7rOspUHIk70Z5iMe
+         mOvnkbm4yOnlMsR90GaqPrRcdtn6tii4YracbyvR2dVGhvkeRP/ML087bnb+oXSCQzn3
+         eR+b5v7ZOHbFBs1h13KPgesPEpQTAWX22OFso9h9qSp1aL/FfPV5PkbfRKcia8Zy+cqs
+         NA61Y5OvWFMAB6HglfV9a92N/7/E/Ozei4SMU7iyoc057TE7yUoBO6wK+S/Ajng2jTIH
+         xMCA==
+X-Gm-Message-State: AAQBX9dGm0C3mtR5BtWenwxQ8LnsXMlucLqNZW1pHaVenxF0kknkwenm
+        H+R7G/xuBsLKsHHVygyFmFLWiY6TM8i3jmaiDfP5Vg==
+X-Google-Smtp-Source: AKy350Zu5bBwTsywOca+UGIcS/HARlLbeBWAVVNB4lZtMspaiROXuzs3nwneenpby7qGskVTJooNUd+2uG/N2dk1CQM=
+X-Received: by 2002:a17:906:2456:b0:8e5:411d:4d09 with SMTP id
+ a22-20020a170906245600b008e5411d4d09mr14495139ejb.15.1680289464033; Fri, 31
+ Mar 2023 12:04:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: dddi0bNUZaKcoIiZQYucgPBNlg3ucq_R
-X-Proofpoint-GUID: dddi0bNUZaKcoIiZQYucgPBNlg3ucq_R
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-31_07,2023-03-31_01,2023-02-09_01
-X-Spam-Status: No, score=-0.5 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <CAJD7tkb-UpKm2QbjYzB=B=oGk6Hyj9cbUviZUPC+7VsvBecH7g@mail.gmail.com>
+ <20230329192059.2nlme5ubshzdbpg6@google.com> <ZCU1Bp+5bKNJzWIu@dhcp22.suse.cz>
+ <CAJD7tka0CmRvcvB0k8DZuid1vC9OK_mFriHHbXNTUkVE7OjaTA@mail.gmail.com>
+ <ZCU+8lSi+e4WgT3F@dhcp22.suse.cz> <CAJD7tkaKd9Bcb2-e83Q-kzF7G+crr1U+7uqUPBARXWq-LpyKvw@mail.gmail.com>
+ <ZCVFA78lDj2/Uy0C@dhcp22.suse.cz> <CAJD7tkbjmBaXghQ+14Hy28r2LoWSim+LEjOPxaamYeA_kr2uVw@mail.gmail.com>
+ <ZCVKqN2nDkkQFvO0@dhcp22.suse.cz> <CAJD7tkYEOVRcXs-Ag3mWn69EwE4rjFt9j5MAcTGCNE8BuhTd+A@mail.gmail.com>
+ <ZCa9sixp3GJcjf8Y@dhcp22.suse.cz>
+In-Reply-To: <ZCa9sixp3GJcjf8Y@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 31 Mar 2023 12:03:47 -0700
+Message-ID: <CAJD7tka-2vNn25=NdrKQoMf4ntdbWtojY0k4eAa-c9D+v7J=HQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For packaging version of the tool is important, so add a simple way to
-specify veristat version for upstream mirror at Github.
+On Fri, Mar 31, 2023 at 4:02=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Thu 30-03-23 01:53:38, Yosry Ahmed wrote:
+> [...]
+> > Maybe we can add a primitive like might_sleep() for this, just food for=
+ thought.
+>
+> I do not think it is the correct to abuse might_sleep if the function
+> itself doesn't sleep. If it does might_sleep is already involved.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/veristat.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+Oh, sorry if I wasn't clear, I did not mean to reuse might_sleep() --
+I meant introducing a new similar debug primitive that shouts if irqs
+are disabled.
 
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index 612ca52c6fba..daac72b76508 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -140,6 +140,7 @@ static struct env {
- 	bool quiet;
- 	int log_level;
- 	enum resfmt out_fmt;
-+	bool show_version;
- 	bool comparison_mode;
- 	bool replay_mode;
- 
-@@ -176,16 +177,22 @@ static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va
- 	return vfprintf(stderr, format, args);
- }
- 
--const char *argp_program_version = "veristat";
-+#ifndef VERISTAT_VERSION
-+#define VERISTAT_VERSION "<kernel>"
-+#endif
-+
-+const char *argp_program_version = "veristat v" VERISTAT_VERSION;
- const char *argp_program_bug_address = "<bpf@vger.kernel.org>";
- const char argp_program_doc[] =
- "veristat    BPF verifier stats collection and comparison tool.\n"
- "\n"
- "USAGE: veristat <obj-file> [<obj-file>...]\n"
--"   OR: veristat -C <baseline.csv> <comparison.csv>\n";
-+"   OR: veristat -C <baseline.csv> <comparison.csv>\n"
-+"   OR: veristat -R <results.csv>\n";
- 
- static const struct argp_option opts[] = {
- 	{ NULL, 'h', NULL, OPTION_HIDDEN, "Show the full help" },
-+	{ "version", 'V', NULL, 0, "Print version" },
- 	{ "verbose", 'v', NULL, 0, "Verbose mode" },
- 	{ "log-level", 'l', "LEVEL", 0, "Verifier log level (default 0 for normal mode, 1 for verbose mode)" },
- 	{ "debug", 'd', NULL, 0, "Debug mode (turns on libbpf debug logging)" },
-@@ -212,6 +219,9 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
- 	case 'h':
- 		argp_state_help(state, stderr, ARGP_HELP_STD_HELP);
- 		break;
-+	case 'V':
-+		env.show_version = true;
-+		break;
- 	case 'v':
- 		env.verbose = true;
- 		break;
-@@ -1991,6 +2001,11 @@ int main(int argc, char **argv)
- 	if (argp_parse(&argp, argc, argv, 0, NULL, NULL))
- 		return 1;
- 
-+	if (env.show_version) {
-+		printf("%s\n", argp_program_version);
-+		return 0;
-+	}
-+
- 	if (env.verbose && env.quiet) {
- 		fprintf(stderr, "Verbose and quiet modes are incompatible, please specify just one or neither!\n\n");
- 		argp_help(&argp, stderr, ARGP_HELP_USAGE, "veristat");
--- 
-2.34.1
-
+> --
+> Michal Hocko
+> SUSE Labs
