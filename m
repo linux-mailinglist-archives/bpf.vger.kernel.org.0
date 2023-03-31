@@ -2,87 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D486D1BC8
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 11:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D536D1BBE
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 11:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbjCaJQu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 05:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
+        id S230500AbjCaJQ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 05:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbjCaJQ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 05:16:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D55B1204C
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 02:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680254084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/JS/osSA5h7igfJZxqOSBjqf6v2ujYGgr3ycuj9xUb4=;
-        b=eQ+nXHPYofuqYel/hWVuXBODSsJD1a++0uAiaHtJeYWBG/YpkuvlUf1WUvrXJ9KPs+5Fml
-        WP4Iu/1HIoJcGb2DOO8K1XnlWUT//gbgR0kK+BrL2m6OS1LYX2a1CVN1B2f/M1uREp8WOL
-        ou2225aucWWxuQWmJe3LBSJX9X+DqWs=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-438-xNwqle6QPU2uiQuovClJgg-1; Fri, 31 Mar 2023 05:14:42 -0400
-X-MC-Unique: xNwqle6QPU2uiQuovClJgg-1
-Received: by mail-pf1-f197.google.com with SMTP id o188-20020a62cdc5000000b0062be61a5e48so8346131pfg.22
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 02:14:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680254081; x=1682846081;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/JS/osSA5h7igfJZxqOSBjqf6v2ujYGgr3ycuj9xUb4=;
-        b=JlS9mfXzNvf2L2UkB0/dUl5Gd9jDHmSciSHg9bDJrX+5v0+f1q0mndJqKT+hNHNgG3
-         uYvAJubCksRzlcnE4H/Y9inAEqga7IX6BUrYGz046C1rK/VEnB9rpgbuuQ9ziDPnbVkv
-         lb3lWhEity4zm10c+CY9VE9Xojq1s/hsdpdhLQiPNgTiiuqmJQE9jp0PXx74Y7n5zfJD
-         hW4sSf4vMDdsCdiObEOVmTojH57BECabo1mQjcqaAwkKGvwjKAXX/w3IQTLz5IH3vRMi
-         pY2g9+XMFDfhdVfZzPLyyOXbLRbVN883FZ6/nr+jsPrg7ifRIRpMEay2/Q3IFYDWKOYz
-         6uMw==
-X-Gm-Message-State: AAQBX9cmvaMIakeqcFj7I2OVG2P+ugKTUieOivdn+nyGYkDo4bRT+iIq
-        E/EbYSPoo2rsROoGsMgBnLouFgJxBrCLMGi1c+rhXgngdWHf+Z6J3Nz8Q9ohE/Yvs4+sgLoeI0D
-        fAaEwYSe6AOcf
-X-Received: by 2002:a17:90b:1d09:b0:240:5397:bd91 with SMTP id on9-20020a17090b1d0900b002405397bd91mr29295209pjb.4.1680254081367;
-        Fri, 31 Mar 2023 02:14:41 -0700 (PDT)
-X-Google-Smtp-Source: AKy350azVcu+SuzZYBuZrGYsfh+gJoBAdGdFAR0ZndpXH0PoLcS0dzSktKrdCcUjh9hiMfgdfnHQVw==
-X-Received: by 2002:a17:90b:1d09:b0:240:5397:bd91 with SMTP id on9-20020a17090b1d0900b002405397bd91mr29295183pjb.4.1680254081048;
-        Fri, 31 Mar 2023 02:14:41 -0700 (PDT)
-Received: from [10.72.13.208] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id jh5-20020a170903328500b0019f892dc696sm1077019plb.229.2023.03.31.02.14.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Mar 2023 02:14:40 -0700 (PDT)
-Message-ID: <a5b743d1-37d1-1225-c1cb-62cd23d26aef@redhat.com>
-Date:   Fri, 31 Mar 2023 17:14:33 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.1
-Subject: Re: [PATCH net-next 2/8] virtio_net: mergeable xdp: introduce
- mergeable_xdp_prepare
-Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        with ESMTP id S231721AbjCaJQN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 05:16:13 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B78530ED
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 02:16:00 -0700 (PDT)
+Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PnvlL1QbczKq7P;
+        Fri, 31 Mar 2023 17:15:26 +0800 (CST)
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 31 Mar 2023 17:15:56 +0800
+Subject: Re: [PATCH bpf-next v6 1/2] bpf: Fix attaching
+ fentry/fexit/fmod_ret/lsm to modules
+To:     Petr Mladek <pmladek@suse.com>, Jiri Olsa <olsajiri@gmail.com>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Viktor Malik <vmalik@redhat.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-References: <20230328120412.110114-1-xuanzhuo@linux.alibaba.com>
- <20230328120412.110114-3-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20230328120412.110114-3-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+References: <Y+40os27pQ8det/o@krava>
+ <1992d09a-0ef8-66e3-1da0-5d13c2fecc3d@redhat.com> <Y+5Q0UK09HsxM4ht@krava>
+ <ZBrPMkv8YVRiWwCR@samus.usersys.redhat.com> <ZBrxMWfmE/1RG/u0@krava>
+ <CAADnVQLwvZyQXyRNn_oaBKx-EH_NauZHTg8+-MOMXo91MibX=A@mail.gmail.com>
+ <ZBxbeYZ/+tOtEiNB@krava> <ZCU6dPDXZ0h7hT4w@krava>
+ <98077109-02be-a708-cde7-5dc827e1f3ea@huawei.com> <ZCX4IMGp/aalXHSL@krava>
+ <ZCaaWgmooVh2M/EC@alley>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <7b396cbb-f977-0fa0-f5a9-0b16cef418b9@huawei.com>
+Date:   Fri, 31 Mar 2023 17:15:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <ZCaaWgmooVh2M/EC@alley>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.3 required=5.0 tests=NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,190 +67,153 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-在 2023/3/28 20:04, Xuan Zhuo 写道:
-> Separating the logic of preparation for xdp from receive_mergeable.
->
-> The purpose of this is to simplify the logic of execution of XDP.
->
-> The main logic here is that when headroom is insufficient, we need to
-> allocate a new page and calculate offset. It should be noted that if
-> there is new page, the variable page will refer to the new page.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->   drivers/net/virtio_net.c | 135 ++++++++++++++++++++++-----------------
->   1 file changed, 77 insertions(+), 58 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 4d2bf1ce0730..bb426958cdd4 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1162,6 +1162,79 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
->   	return 0;
->   }
->   
-> +static void *mergeable_xdp_prepare(struct virtnet_info *vi,
-> +				   struct receive_queue *rq,
-> +				   struct bpf_prog *xdp_prog,
-> +				   void *ctx,
-> +				   unsigned int *frame_sz,
-> +				   int *num_buf,
-> +				   struct page **page,
-> +				   int offset,
-> +				   unsigned int *len,
-> +				   struct virtio_net_hdr_mrg_rxbuf *hdr)
-> +{
-> +	unsigned int truesize = mergeable_ctx_to_truesize(ctx);
-> +	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
-> +	struct page *xdp_page;
-> +	unsigned int xdp_room;
-> +
-> +	/* Transient failure which in theory could occur if
-> +	 * in-flight packets from before XDP was enabled reach
-> +	 * the receive path after XDP is loaded.
-> +	 */
-> +	if (unlikely(hdr->hdr.gso_type))
-> +		return NULL;
-> +
-> +	/* Now XDP core assumes frag size is PAGE_SIZE, but buffers
-> +	 * with headroom may add hole in truesize, which
-> +	 * make their length exceed PAGE_SIZE. So we disabled the
-> +	 * hole mechanism for xdp. See add_recvbuf_mergeable().
-> +	 */
-> +	*frame_sz = truesize;
-> +
-> +	/* This happens when headroom is not enough because
-> +	 * of the buffer was prefilled before XDP is set.
-> +	 * This should only happen for the first several packets.
-> +	 * In fact, vq reset can be used here to help us clean up
-> +	 * the prefilled buffers, but many existing devices do not
-> +	 * support it, and we don't want to bother users who are
-> +	 * using xdp normally.
-> +	 */
-> +	if (!xdp_prog->aux->xdp_has_frags &&
-> +	    (*num_buf > 1 || headroom < virtnet_get_headroom(vi))) {
-> +		/* linearize data for XDP */
-> +		xdp_page = xdp_linearize_page(rq, num_buf,
-> +					      *page, offset,
-> +					      VIRTIO_XDP_HEADROOM,
-> +					      len);
-> +
-> +		if (!xdp_page)
-> +			return NULL;
-> +	} else if (unlikely(headroom < virtnet_get_headroom(vi))) {
-> +		xdp_room = SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM +
-> +					  sizeof(struct skb_shared_info));
-> +		if (*len + xdp_room > PAGE_SIZE)
-> +			return NULL;
-> +
-> +		xdp_page = alloc_page(GFP_ATOMIC);
-> +		if (!xdp_page)
-> +			return NULL;
-> +
-> +		memcpy(page_address(xdp_page) + VIRTIO_XDP_HEADROOM,
-> +		       page_address(*page) + offset, *len);
-> +	} else {
-> +		return page_address(*page) + offset;
 
+On 2023/3/31 16:31, Petr Mladek wrote:
+> On Thu 2023-03-30 22:59:12, Jiri Olsa wrote:
+>> On Thu, Mar 30, 2023 at 08:26:41PM +0800, Leizhen (ThunderTown) wrote:
+>>>
+>>>
+>>> On 2023/3/30 15:29, Jiri Olsa wrote:
+>>>> ping,
+>>>>
+>>>> Petr, Zhen, any comment on discussion below?
+>>>>
+>>>> thanks,
+>>>> jirka
+>>>>
+>>>> On Thu, Mar 23, 2023 at 03:00:25PM +0100, Jiri Olsa wrote:
+>>>>> On Wed, Mar 22, 2023 at 09:03:46AM -0700, Alexei Starovoitov wrote:
+>>>>>> On Wed, Mar 22, 2023 at 5:14 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+>>>>>>>
+>>>>>>> On Wed, Mar 22, 2023 at 10:49:38AM +0100, Artem Savkov wrote:
+>>>>>>>
+>>>>>>> SNIP
+>>>>>>>
+>>>>>>>>>> Hm, do we even need to preempt_disable? IIUC, preempt_disable is used
+>>>>>>>>>> in module kallsyms to prevent taking the module lock b/c kallsyms are
+>>>>>>>>>> used in the oops path. That shouldn't be an issue here, is that correct?
+>>>>>>>>>
+>>>>>>>>> btf_try_get_module calls try_module_get which disables the preemption,
+>>>>>>>>> so no need to call it in here
+>>>>>>>>
+>>>>>>>> It does, but it reenables preemption right away so it is enabled by the
+>>>>>>>> time we call find_kallsyms_symbol_value(). I am getting the following
+>>>>>>>> lockdep splat while running module_fentry_shadow test from test_progs.
+>>>>>>>>
+>>>>>>>> [   12.017973][  T488] =============================
+>>>>>>>> [   12.018529][  T488] WARNING: suspicious RCU usage
+>>>>>>>> [   12.018987][  T488] 6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804 Tainted: G           OE
+>>>>>>>> [   12.019898][  T488] -----------------------------
+>>>>>>>> [   12.020391][  T488] kernel/module/kallsyms.c:448 suspicious rcu_dereference_check() usage!
+>>>>>>>> [   12.021335][  T488]
+>>>>>>>> [   12.021335][  T488] other info that might help us debug this:
+>>>>>>>> [   12.021335][  T488]
+>>>>>>>> [   12.022416][  T488]
+>>>>>>>> [   12.022416][  T488] rcu_scheduler_active = 2, debug_locks = 1
+>>>>>>>> [   12.023297][  T488] no locks held by test_progs/488.
+>>>>>>>> [   12.023854][  T488]
+>>>>>>>> [   12.023854][  T488] stack backtrace:
+>>>>>>>> [   12.024336][  T488] CPU: 0 PID: 488 Comm: test_progs Tainted: G           OE      6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804
+>>>>>>>> [   12.025290][  T488] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.1-2.fc37 04/01/2014
+>>>>>>>> [   12.026108][  T488] Call Trace:
+>>>>>>>> [   12.026381][  T488]  <TASK>
+>>>>>>>> [   12.026649][  T488]  dump_stack_lvl+0xb4/0x110
+>>>>>>>> [   12.027060][  T488]  lockdep_rcu_suspicious+0x158/0x1f0
+>>>>>>>> [   12.027541][  T488]  find_kallsyms_symbol_value+0xe8/0x110
+>>>>>>>> [   12.028028][  T488]  bpf_check_attach_target+0x838/0xa20
+>>>>>>>> [   12.028511][  T488]  check_attach_btf_id+0x144/0x3f0
+>>>>>>>> [   12.028957][  T488]  ? __pfx_cmp_subprogs+0x10/0x10
+>>>>>>>> [   12.029408][  T488]  bpf_check+0xeec/0x1850
+>>>>>>>> [   12.029799][  T488]  ? ktime_get_with_offset+0x124/0x1d0
+>>>>>>>> [   12.030247][  T488]  bpf_prog_load+0x87a/0xed0
+>>>>>>>> [   12.030627][  T488]  ? __lock_release+0x5f/0x160
+>>>>>>>> [   12.031010][  T488]  ? __might_fault+0x53/0xb0
+>>>>>>>> [   12.031394][  T488]  ? selinux_bpf+0x6c/0xa0
+>>>>>>>> [   12.031756][  T488]  __sys_bpf+0x53c/0x1240
+>>>>>>>> [   12.032115][  T488]  __x64_sys_bpf+0x27/0x40
+>>>>>>>> [   12.032476][  T488]  do_syscall_64+0x3e/0x90
+>>>>>>>> [   12.032835][  T488]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+>>>>>>>
+>>>>>>> --- a/kernel/module/kallsyms.c
+>>>>>>> +++ b/kernel/module/kallsyms.c
+>>> Commit 91fb02f31505 ("module: Move kallsyms support into a separate file") hides
+>>> the answer. find_kallsyms_symbol_value() was originally a static function, and it
+>>> is only called by module_kallsyms_lookup_name() and is preemptive-protected.
+>>>
+>>> Now that we've added a call to function find_kallsyms_symbol_value(), it seems like
+>>> we should do the same thing as function module_kallsyms_lookup_name().
+>>>
+>>> Like this?
+>>> +				mod = btf_try_get_module(btf);
+>>> +				if (mod) {
+>>> +					preempt_disable();
+>>> +					addr = find_kallsyms_symbol_value(mod, tname);
+>>> +					preempt_enable();
+>>> +				} else
+>>> +					addr = 0;
+>>
+>> yes, that's what I did above, but I was just curious about the strange
+>> RCU usage Alexei commented on earlier:
+>>
+>> 	>>> +unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
+>> 	>>> +{
+>> 	>>> +       unsigned long ret;
+>> 	>>> +
+>> 	>>> +       preempt_disable();
+>> 	>>> +       ret = __find_kallsyms_symbol_value(mod, name);
+>> 	>>> +       preempt_enable();
+>> 	>>> +       return ret;
+>> 	>>> +}
+>> 	>>
+>> 	>> That doesn't look right.
+>> 	>> I think the issue is misuse of rcu_dereference_sched in
+>> 	>> find_kallsyms_symbol_value.
+>> 	>
+>> 	> it seems to be using rcu pointer to keep symbols for module init time and
+>> 	> then core symbols for after init.. and switch between them when module is
+>> 	> loaded, hence the strange rcu usage I think
 
-This makes the code a little harder to be read than the original code.
+load_module
+	post_relocation
+		add_kallsyms
+			mod->kallsyms = (void __rcu *)mod->init_layout.base + info->mod_kallsyms_init_off;   (1)
+	do_init_module
+		freeinit->module_init = mod->init_layout.base;
+		rcu_assign_pointer(mod->kallsyms, &mod->core_kallsyms);                                      (2)
+		if (llist_add(&freeinit->node, &init_free_list))
+			schedule_work(&init_free_wq);
 
-Why not do a verbatim moving without introducing new logic? (Or 
-introducing new logic on top?)
+do_free_init
+	synchronize_rcu();
+	module_memfree(initfree->module_init);
 
-Thanks
+IIUC, the RCU can help synchronize_rcu() in do_free_init() to make sure that no one
+is still using the first mod->kallsyms (1). If find_kallsyms_symbol_value() is executed
+between (1) and (2).
 
+> 
+> My understanding is that rcu is needed to prevent module from being freed.
+> It should be related to:
+> 
+> static void free_module(struct module *mod)
+> {
+> [...]
+> 	/* Now we can delete it from the lists */
+> 	mutex_lock(&module_mutex);
+> 	/* Unlink carefully: kallsyms could be walking list. */
+> 	list_del_rcu(&mod->list);
+> [...]
+> }
+> 
+> I am sorry for the late reply. I was busy and I thought that it was
+> related to the refactoring. I hoped that peopled doing the refactoring
+> would answer.
+> 
+> Best Regards,
+> Petr
+> .
+> 
 
-> +	}
-> +
-> +	*frame_sz = PAGE_SIZE;
-> +
-> +	put_page(*page);
-> +
-> +	*page = xdp_page;
-> +
-> +	return page_address(xdp_page) + VIRTIO_XDP_HEADROOM;
-> +}
-> +
->   static struct sk_buff *receive_mergeable(struct net_device *dev,
->   					 struct virtnet_info *vi,
->   					 struct receive_queue *rq,
-> @@ -1181,7 +1254,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->   	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
->   	unsigned int tailroom = headroom ? sizeof(struct skb_shared_info) : 0;
->   	unsigned int room = SKB_DATA_ALIGN(headroom + tailroom);
-> -	unsigned int frame_sz, xdp_room;
-> +	unsigned int frame_sz;
->   	int err;
->   
->   	head_skb = NULL;
-> @@ -1211,65 +1284,11 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->   		u32 act;
->   		int i;
->   
-> -		/* Transient failure which in theory could occur if
-> -		 * in-flight packets from before XDP was enabled reach
-> -		 * the receive path after XDP is loaded.
-> -		 */
-> -		if (unlikely(hdr->hdr.gso_type))
-> +		data = mergeable_xdp_prepare(vi, rq, xdp_prog, ctx, &frame_sz, &num_buf, &page,
-> +					     offset, &len, hdr);
-> +		if (!data)
->   			goto err_xdp;
->   
-> -		/* Now XDP core assumes frag size is PAGE_SIZE, but buffers
-> -		 * with headroom may add hole in truesize, which
-> -		 * make their length exceed PAGE_SIZE. So we disabled the
-> -		 * hole mechanism for xdp. See add_recvbuf_mergeable().
-> -		 */
-> -		frame_sz = truesize;
-> -
-> -		/* This happens when headroom is not enough because
-> -		 * of the buffer was prefilled before XDP is set.
-> -		 * This should only happen for the first several packets.
-> -		 * In fact, vq reset can be used here to help us clean up
-> -		 * the prefilled buffers, but many existing devices do not
-> -		 * support it, and we don't want to bother users who are
-> -		 * using xdp normally.
-> -		 */
-> -		if (!xdp_prog->aux->xdp_has_frags &&
-> -		    (num_buf > 1 || headroom < virtnet_get_headroom(vi))) {
-> -			/* linearize data for XDP */
-> -			xdp_page = xdp_linearize_page(rq, &num_buf,
-> -						      page, offset,
-> -						      VIRTIO_XDP_HEADROOM,
-> -						      &len);
-> -			frame_sz = PAGE_SIZE;
-> -
-> -			if (!xdp_page)
-> -				goto err_xdp;
-> -			offset = VIRTIO_XDP_HEADROOM;
-> -
-> -			put_page(page);
-> -			page = xdp_page;
-> -		} else if (unlikely(headroom < virtnet_get_headroom(vi))) {
-> -			xdp_room = SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM +
-> -						  sizeof(struct skb_shared_info));
-> -			if (len + xdp_room > PAGE_SIZE)
-> -				goto err_xdp;
-> -
-> -			xdp_page = alloc_page(GFP_ATOMIC);
-> -			if (!xdp_page)
-> -				goto err_xdp;
-> -
-> -			memcpy(page_address(xdp_page) + VIRTIO_XDP_HEADROOM,
-> -			       page_address(page) + offset, len);
-> -			frame_sz = PAGE_SIZE;
-> -			offset = VIRTIO_XDP_HEADROOM;
-> -
-> -			put_page(page);
-> -			page = xdp_page;
-> -		} else {
-> -			xdp_page = page;
-> -		}
-> -
-> -		data = page_address(xdp_page) + offset;
->   		err = virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, frame_sz,
->   						 &num_buf, &xdp_frags_truesz, stats);
->   		if (unlikely(err))
-
+-- 
+Regards,
+  Zhen Lei
