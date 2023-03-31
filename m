@@ -2,47 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1986D1902
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 09:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DC46D1922
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 09:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbjCaHvb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 03:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
+        id S231276AbjCaH7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 03:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbjCaHvF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 03:51:05 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFF712D;
-        Fri, 31 Mar 2023 00:49:58 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vf1TRG3_1680248994;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vf1TRG3_1680248994)
-          by smtp.aliyun-inc.com;
-          Fri, 31 Mar 2023 15:49:55 +0800
-Message-ID: <1680248880.8897254-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH 00/16] virtio-net: split virtio-net.c
-Date:   Fri, 31 Mar 2023 15:48:00 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
+        with ESMTP id S231250AbjCaH7D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 03:59:03 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C79DEB75;
+        Fri, 31 Mar 2023 00:59:01 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id h7so11138265ila.5;
+        Fri, 31 Mar 2023 00:59:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680249540; x=1682841540;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=q5KGlHi5wnLx2SIZLoystkSne8tLI4F5rVbfhqJXGD4=;
+        b=PRSnrgJgt1InfsExYjToiiyuB8zlta3OrV8Xnqg4qHLhj0TFtI0Wyuk4w92SB6sPUo
+         7V5PAyFOYM9pOXL1aABslzPiA8aR6JA2Bz91IpxH8UhTjr5ldvtKiyFjcXwwB3gTfsHd
+         dkmgCYgSJaI6N1IKTR3MTvSHNLteqfCmd5Lw38BxaqGpirV0JFPBbAcU/OWdJZVas31u
+         hxqRXtFdJWZME2rqiu8tramRi9FNKR4JJtLYZ+vB1qxaZSCnYYpnfz/a5QdRXEkEAOFu
+         qYFOXRAgoDNbsAyejZ598bWQVEnF4GfDDAXdzpUcpDhBPTzsbVWVWZ3T2QvheUUsXWOW
+         CVoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680249540; x=1682841540;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q5KGlHi5wnLx2SIZLoystkSne8tLI4F5rVbfhqJXGD4=;
+        b=e5ZFWO3QetPX6ikwc6cDhGkRIiQMQH7MphKsxTJCV7RaSWcyc9N29PAm9djudkYUO3
+         jmdTuqfWS2vfRRi22ajucYZdX1njf38BIija8Ch2JQphAwwrBbcz/9veW5mUnQU6QvwX
+         dNoKCLcrjWGHiRSXW92TTf2XeGC4HCzj4w4tXvG6LoIUgGnmMVnA1NHPt8zsoimHKRrL
+         0PYt9fSazD/fWLf6yl3TIxoaeiNbG16Hc11nwPViQQ5c9mkUJIT8Fr7vz5T9/1mdz5Eg
+         xBWL86RG7BJ5nbEea7jektWYkLLlpqZgBUYJdScJ7Otj/mwFtwgQr8xSlMtDwp9BkaR0
+         BiKQ==
+X-Gm-Message-State: AAQBX9cheZVGydzh/IgPdurxDTpshzEUo+OqRP/gMpO6Gnj3194EHc+t
+        DPetDHQ7e7B+t6GOUYwnDctKutoYjZ4EGDxk
+X-Google-Smtp-Source: AKy350b81uKbmsgB8Rii3gKqpRAIaooWoURBrhmC3x+6idvr2wVrYBAHCk93aTRV5aDP28niNHIzDQ==
+X-Received: by 2002:a92:c90a:0:b0:325:ea77:e882 with SMTP id t10-20020a92c90a000000b00325ea77e882mr16576938ilp.29.1680249540184;
+        Fri, 31 Mar 2023 00:59:00 -0700 (PDT)
+Received: from james-x399.localdomain (97-118-150-219.hlrn.qwest.net. [97.118.150.219])
+        by smtp.gmail.com with ESMTPSA id o6-20020a92c046000000b0032628feb0bcsm470561ilf.11.2023.03.31.00.58.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Mar 2023 00:58:59 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20230328092847.91643-1-xuanzhuo@linux.alibaba.com>
- <20230330015412-mutt-send-email-mst@kernel.org>
- <1680247317.9193828-3-xuanzhuo@linux.alibaba.com>
- <CACGkMEt2M3zaytjOmhTuSx6wnerZBrVoQxgbUuAv0WmUu50Hiw@mail.gmail.com>
-In-Reply-To: <CACGkMEt2M3zaytjOmhTuSx6wnerZBrVoQxgbUuAv0WmUu50Hiw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] selftests/bpf: Fix conflicts with built-in functions in bench_local_storage_create
+Date:   Fri, 31 Mar 2023 01:58:42 -0600
+Message-Id: <20230331075848.1642814-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,177 +80,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 31 Mar 2023 15:35:14 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Fri, Mar 31, 2023 at 3:31=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
-.com> wrote:
-> >
-> > On Thu, 30 Mar 2023 02:17:43 -0400, "Michael S. Tsirkin" <mst@redhat.co=
-m> wrote:
-> > > On Tue, Mar 28, 2023 at 05:28:31PM +0800, Xuan Zhuo wrote:
-> > > > Considering the complexity of virtio-net.c and the new features we =
-want
-> > > > to add, it is time to split virtio-net.c into multiple independent
-> > > > module files.
-> > > >
-> > > > This is beneficial to the maintenance and adding new functions.
-> > > >
-> > > > And AF_XDP support will be added later, then a separate xsk.c file =
-will
-> > > > be added.
-> > > >
-> > > > This patchset split virtio-net.c into these parts:
-> > > >
-> > > > * virtnet.c:         virtio net device ops (napi, tx, rx, device op=
-s, ...)
-> > > > * virtnet_common.c:  virtio net common code
-> > > > * virtnet_ethtool.c: virtio net ethtool callbacks
-> > > > * virtnet_ctrl.c:    virtio net ctrl queue command APIs
-> > > > * virtnet_virtio.c:  virtio net virtio callbacks/ops (driver regist=
-er, virtio probe, virtio free, ...)
-> > > >
-> > > > Please review.
-> > > >
-> > > > Thanks.
-> > >
-> > >
-> > > I don't feel this is an improvement as presented, will need more work
-> > > to make code placement more logical.
-> >
-> > Yes, this does need some time and energy. But I think this always need =
-to do,
-> > just when to do it. I think it is currently an opportunity.
-> >
-> >
-> > >
-> > > For example where do I find code to update rq stats?
-> > > Rx data path should be virtnet.c?
-> > > No it's in virtnet_ethtool.c because rq stats can be
-> > > accessed by ethtool.
-> >
-> > That's what I do.
-> >
-> > > A bunch of stuff seems to be in headers just because of technicalitie=
-s.
-> > > virtio common seems to be a dumping ground with no guiding principle =
-at
-> > > all.
-> >
-> > Yes, I agree, with the development of time, common will indeed become a=
- dumping
-> > group. This is something we should pay attention to after this.
-> >
-> >
-> > > drivers/net/virtio/virtnet_virtio.c is weird with
-> > > virt repeated three times in the path.
-> >
-> > Any good idea.
-> >
-> > >
-> > > These things only get murkier with time, at the point of reorg
-> > > I would expect very logical placement, since
-> > > without clear guiding rule finding where something is becomes harder =
-but
-> > > more importantly we'll now get endless heartburn about where does eac=
-h new
-> > > function go.
-> > >
-> > >
-> > > The reorg is unfortunately not free - for example git log --follow wi=
-ll
-> > > no longer easily match virtio because --follow works with exactly one
-> > > path.
-> >
-> > One day we will face this problem.
-> >
-> > > It's now also extra work to keep headers self-consistent.
-> >
-> > Can we make it simpler, first complete the split.
-> >
-> >
-> > > So it better be a big improvement to be worth it.
-> >
-> >
-> > Or about split, do you have any better thoughts? Or do you think we hav=
-e always
-> > been like this and make Virtio-Net more and more complicated?
->
-> My feeling is that maybe it's worth it to start using a separate file
-> for xsk support.
+The fork function in gcc is considered a built in function due to
+being used by libgcov when building with gnu extensions.
 
-I agree.
+Rename fork to sched_process_fork to prevent this conflict.
 
-@Michael at this point, what is your thought?
+See details:
+https://github.com/gcc-mirror/gcc/commit/d1c38823924506d389ca58d02926ace21bdf82fa
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82457
 
+Fixes the following error:
 
-Thanks.
+In file included from progs/bench_local_storage_create.c:6:
+progs/bench_local_storage_create.c:43:14: error: conflicting types for
+built-in function 'fork'; expected 'int(void)'
+[-Werror=builtin-declaration-mismatch]
+   43 | int BPF_PROG(fork, struct task_struct *parent, struct
+task_struct *child)
+      |              ^~~~
 
+Fixes: cbe9d93d58b1 ("selftests/bpf: Add bench for task storage creation")
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@kernel.org>
+---
+ tools/testing/selftests/bpf/benchs/bench_local_storage_create.c | 2 +-
+ tools/testing/selftests/bpf/progs/bench_local_storage_create.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
->
-> Thanks
->
-> >
-> >
-> > Thanks.
-> >
-> > >
-> > >
-> > >
-> > >
-> > > > Xuan Zhuo (16):
-> > > >   virtio_net: add a separate directory for virtio-net
-> > > >   virtio_net: move struct to header file
-> > > >   virtio_net: add prefix to the struct inside header file
-> > > >   virtio_net: separating cpu-related funs
-> > > >   virtio_net: separate virtnet_ctrl_set_queues()
-> > > >   virtio_net: separate virtnet_ctrl_set_mac_address()
-> > > >   virtio_net: remove lock from virtnet_ack_link_announce()
-> > > >   virtio_net: separating the APIs of cq
-> > > >   virtio_net: introduce virtnet_rq_update_stats()
-> > > >   virtio_net: separating the funcs of ethtool
-> > > >   virtio_net: introduce virtnet_dev_rx_queue_group()
-> > > >   virtio_net: introduce virtnet_get_netdev()
-> > > >   virtio_net: prepare for virtio
-> > > >   virtio_net: move virtnet_[en/dis]able_delayed_refill to header fi=
-le
-> > > >   virtio_net: add APIs to register/unregister virtio driver
-> > > >   virtio_net: separating the virtio code
-> > > >
-> > > >  MAINTAINERS                                   |    2 +-
-> > > >  drivers/net/Kconfig                           |    8 +-
-> > > >  drivers/net/Makefile                          |    2 +-
-> > > >  drivers/net/virtio/Kconfig                    |   11 +
-> > > >  drivers/net/virtio/Makefile                   |   10 +
-> > > >  .../net/{virtio_net.c =3D> virtio/virtnet.c}    | 2368 ++---------=
-------
-> > > >  drivers/net/virtio/virtnet.h                  |  213 ++
-> > > >  drivers/net/virtio/virtnet_common.c           |  138 +
-> > > >  drivers/net/virtio/virtnet_common.h           |   14 +
-> > > >  drivers/net/virtio/virtnet_ctrl.c             |  272 ++
-> > > >  drivers/net/virtio/virtnet_ctrl.h             |   45 +
-> > > >  drivers/net/virtio/virtnet_ethtool.c          |  578 ++++
-> > > >  drivers/net/virtio/virtnet_ethtool.h          |    8 +
-> > > >  drivers/net/virtio/virtnet_virtio.c           |  880 ++++++
-> > > >  drivers/net/virtio/virtnet_virtio.h           |    8 +
-> > > >  15 files changed, 2366 insertions(+), 2191 deletions(-)
-> > > >  create mode 100644 drivers/net/virtio/Kconfig
-> > > >  create mode 100644 drivers/net/virtio/Makefile
-> > > >  rename drivers/net/{virtio_net.c =3D> virtio/virtnet.c} (50%)
-> > > >  create mode 100644 drivers/net/virtio/virtnet.h
-> > > >  create mode 100644 drivers/net/virtio/virtnet_common.c
-> > > >  create mode 100644 drivers/net/virtio/virtnet_common.h
-> > > >  create mode 100644 drivers/net/virtio/virtnet_ctrl.c
-> > > >  create mode 100644 drivers/net/virtio/virtnet_ctrl.h
-> > > >  create mode 100644 drivers/net/virtio/virtnet_ethtool.c
-> > > >  create mode 100644 drivers/net/virtio/virtnet_ethtool.h
-> > > >  create mode 100644 drivers/net/virtio/virtnet_virtio.c
-> > > >  create mode 100644 drivers/net/virtio/virtnet_virtio.h
-> > > >
-> > > > --
-> > > > 2.32.0.3.g01195cf9f
-> > >
-> >
->
-> _______________________________________________
-> Virtualization mailing list
-> Virtualization@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+diff --git a/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c b/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
+index abb0321d4f34..cff703f90e95 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
++++ b/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
+@@ -95,7 +95,7 @@ static void setup(void)
+ 			exit(1);
+ 		}
+ 	} else {
+-		if (!bpf_program__attach(skel->progs.fork)) {
++		if (!bpf_program__attach(skel->progs.sched_process_fork)) {
+ 			fprintf(stderr, "Error attaching bpf program\n");
+ 			exit(1);
+ 		}
+diff --git a/tools/testing/selftests/bpf/progs/bench_local_storage_create.c b/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
+index 7c851c9d5e47..e4bfbba6c193 100644
+--- a/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
++++ b/tools/testing/selftests/bpf/progs/bench_local_storage_create.c
+@@ -40,7 +40,7 @@ int BPF_PROG(kmalloc, unsigned long call_site, const void *ptr,
+ }
+ 
+ SEC("tp_btf/sched_process_fork")
+-int BPF_PROG(fork, struct task_struct *parent, struct task_struct *child)
++int BPF_PROG(sched_process_fork, struct task_struct *parent, struct task_struct *child)
+ {
+ 	struct storage *stg;
+ 
+-- 
+2.34.1
+
