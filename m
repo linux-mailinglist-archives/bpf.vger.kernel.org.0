@@ -2,125 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0106D27BD
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 20:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706E96D27E3
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 20:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbjCaSX7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 14:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
+        id S231751AbjCaSdg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 14:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232048AbjCaSX6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 14:23:58 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585321D2DD;
-        Fri, 31 Mar 2023 11:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680287036; x=1711823036;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RfULin+IQkEIXF2U8/tMLOvTdsd0rNfXguvY06ABEEY=;
-  b=OlehgERxMqxiKS5DrK+I39W5yfZEY268Gx8vnQJlmUSXHr4A4wkI1trj
-   Ra0NEfY5yxj5E6uhskqiTZNvHyDLKcMyVftElSSj3MSzzmNT5ClIMWGsV
-   kr1IYuZTAkF22kXOUfqsR5UiAyNRSWSpMmeqZ0KvlYM5kL2+rlHAvFi79
-   0ljUGd1+Rjq9GKen/RHLrUWSGqiFt85tXyqKGfTrzlUr0apoXxsO5Hd+a
-   1TWVh0d4NwJFrDYLn9ZMNV26k9Q4XDXQhCjflUlYO58Qy3DL7PJWe2OPT
-   X0UQ9jB/JSENgZGVPK+2dglrdEUqo8/FB7xNaibgybBTzaDyNVp7kPaXB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10666"; a="406551718"
-X-IronPort-AV: E=Sophos;i="5.98,307,1673942400"; 
-   d="scan'208";a="406551718"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2023 11:23:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10666"; a="717827064"
-X-IronPort-AV: E=Sophos;i="5.98,307,1673942400"; 
-   d="scan'208";a="717827064"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 31 Mar 2023 11:23:50 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1piJPh-000M2G-1G;
-        Fri, 31 Mar 2023 18:23:49 +0000
-Date:   Sat, 1 Apr 2023 02:23:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
-        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
-        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
-        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
-        tariqt@nvidia.com
-Subject: Re: [PATCH bpf V4 1/5] xdp: rss hash types representation
-Message-ID: <202304010239.Jw6bKkWC-lkp@intel.com>
-References: <168027498690.3941176.99100635661990098.stgit@firesoul>
+        with ESMTP id S230064AbjCaSdf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 14:33:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1EF22225;
+        Fri, 31 Mar 2023 11:33:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 99AFDB83178;
+        Fri, 31 Mar 2023 18:33:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10286C433EF;
+        Fri, 31 Mar 2023 18:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680287608;
+        bh=cdFn6TaWj35ikXCjd2E20Kx3QiQjP05Y+AIr3+gd0/g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DYsdUnvxpvigPnDjGCqSnNS37ItsQZcgKQ2Qd+whEyJ/R25oX/mgHGJfmH9H6lN+g
+         PXjTL7xsbAcwbvmCDYFTmTmYyBs/bG4Q79lBxsAuatMU6bpe7vwoweG7MaScYQpZnt
+         KTbYzuV5fMuSyvK4DfXkWL95VEkACtiVxYcBi9DpTJmV3nCv2JzaiETbHamYVTY2j2
+         OW/Hwm52CVrF5o8ucNzbutPkB/VazE+NpgjhwcgL2VQVnbX+YtvVJBryw1JhL9kQeJ
+         TnD00VPB/y2B6m8ctd9rzdX5tgKXczAmURxRWEJGn3yeCBN8dhpl5P8ckrKtihNmeO
+         lI3EIiYWpmWcg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 998964052D; Fri, 31 Mar 2023 15:33:25 -0300 (-03)
+Date:   Fri, 31 Mar 2023 15:33:25 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com
+Subject: Re: [PATCH dwarves] fprintf: Fix `*` not being printed for pointers
+ with btf_type_tag
+Message-ID: <ZCcndelzoRrKSg/Q@kernel.org>
+References: <20230330212700.697124-1-eddyz87@gmail.com>
+ <ZCbOdWCKKzLlprIs@kernel.org>
+ <ZCbOr4pwrX7JVnCZ@kernel.org>
+ <ZCbQGhtWWJ5q2P+a@kernel.org>
+ <7728af3d77339ea4a333ca4ad9654953c4c2c5cd.camel@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <168027498690.3941176.99100635661990098.stgit@firesoul>
+In-Reply-To: <7728af3d77339ea4a333ca4ad9654953c4c2c5cd.camel@gmail.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jesper,
+Em Fri, Mar 31, 2023 at 05:12:31PM +0300, Eduard Zingerman escreveu:
+> On Fri, 2023-03-31 at 09:20 -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Fri, Mar 31, 2023 at 09:14:39AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > > This part I didn't understand, do you see any possibility of a
+> > > > DW_TAG_LLVM_annotation pointing to another DW_TAG_LLVM_annotation?
+> > > 
+> > > I _think_ its a noop, so will test your patch as-is, thanks!
+> > 
+> > Tested, now we're left with normalizing base type names generated by
+> > clang and gcc, things like:
+> > 
+> > --- /tmp/gcc    2023-03-31 09:16:34.100006650 -0300
+> > +++ /tmp/clang  2023-03-31 09:16:26.211789489 -0300
+> > @@ -96,8 +96,8 @@
+> > 
+> >         /* XXX 4 bytes hole, try to pack */
+> > 
+> > -       long unsigned int          state;                /*   216     8 */
+> > -       long unsigned int          state2;               /*   224     8 */
+> > +       unsigned long              state;                /*   216     8 */
+> > +       unsigned long              state2;               /*   224     8 */
+> >         struct Qdisc *             next_sched;           /*   232     8 */
+> >         struct sk_buff_head        skb_bad_txq;          /*   240    24 */
+> > 
+> > @@ -112,7 +112,7 @@
+> >         /* XXX 40 bytes hole, try to pack */
+> > 
+> >         /* --- cacheline 6 boundary (384 bytes) --- */
+> > -       long int                   privdata[];           /*   384     0 */
+> > +       long                       privdata[];           /*   384     0 */
+> > 
+> >         /* size: 384, cachelines: 6, members: 28 */
+> >         /* sum members: 260, holes: 4, sum holes: 124 */
+> > @@ -145,19 +145,19 @@
+> >         /* XXX 4 bytes hole, try to pack */
+> > 
+> >         struct netdev_queue *      (*select_queue)(struct Qdisc *, struct tcmsg *); /*     8     8 */
+> > -       int                        (*graft)(struct Qdisc *, long unsigned int, struct Qdisc *, struct Qdisc * *, struct netlink_ext_ack *); /*    16     8 */
+> > +       int                        (*graft)(struct Qdisc *, unsigned long, struct Qdisc *, struct Qdisc * *, struct netlink_ext_ack *); /*    16     8 */
+> > -       struct Qdisc *             (*leaf)(struct Qdisc *, long unsigned int); /*    24     8 */
+> > +       struct Qdisc *             (*leaf)(struct Qdisc *, unsigned long); /*    24     8 */
+> > -       void                       (*qlen_notify)(struct Qdisc *, long unsigned int); /*    32     8 */
+> > +       void                       (*qlen_notify)(struct Qdisc *, unsigned long); /*    32     8 */
+> > -       long unsigned int          (*find)(struct Qdisc *, u32); /*    40     8 */
+> > +       unsigned long              (*find)(struct Qdisc *, u32); /*    40     8 */
+> > -       int                        (*change)(struct Qdisc *, u32, u32, struct nlattr * *, long unsigned int *, struct netlink_ext_ack *); /*    48     8 */
+> > +       int                        (*change)(struct Qdisc *, u32, u32, struct nlattr * *, unsigned long *, struct netlink_ext_ack *); /*    48     8 */
+> > -       int                        (*delete)(struct Qdisc *, long unsigned int, struct netlink_ext_ack *); /*    56     8 */
+> > +       int                        (*delete)(struct Qdisc *, unsigned long, struct netlink_ext_ack *); /*    56     8 */
+> >         /* --- cacheline 1 boundary (64 bytes) --- */
+> >         void                       (*walk)(struct Qdisc *, struct qdisc_walker *); /*    64     8 */
+> > -       struct tcf_block *         (*tcf_block)(struct Qdisc *, long unsigned int, struct netlink_ext_ack *); /*    72     8 */
+> > +       struct tcf_block *         (*tcf_block)(struct Qdisc *, unsigned long, struct netlink_ext_ack *); /*    72     8 */
+> > -       long unsigned int          (*bind_tcf)(struct Qdisc *, long unsigned int, u32); /*    80     8 */
+> > +       unsigned long              (*bind_tcf)(struct Qdisc *, unsigned long, u32); /*    80     8 */
+> > -       void                       (*unbind_tcf)(struct Qdisc *, long unsigned int); /*    88     8 */
+> > +       void                       (*unbind_tcf)(struct Qdisc *, unsigned long); /*    88     8 */
+> > -       int                        (*dump)(struct Qdisc *, long unsigned int, struct sk_buff *, struct tcmsg *); /*    96     8 */
+> > +       int                        (*dump)(struct Qdisc *, unsigned long, struct sk_buff *, struct tcmsg *); /*    96     8 */
+> > -       int                        (*dump_stats)(struct Qdisc *, long unsigned int, struct gnet_dump *); /*   104     8 */
+> > +       int                        (*dump_stats)(struct Qdisc *, unsigned long, struct gnet_dump *); /*   104     8 */
+> > 
+> >         /* size: 112, cachelines: 2, members: 14 */
+> >         /* sum members: 108, holes: 1, sum holes: 4 */
+> > @@ -227,21 +227,21 @@
+> > 
+> > This was affected somehow by these LLVM_annotation patches, I'll try to
+> > handle this later. 
+> 
+> Are you sure it is related to LLVM_annotation patches?
 
-I love your patch! Yet something to improve:
+My bad, was just a hunch, this is not btfdiff, where it uses just one
+vmlinux, comparing its DWARF and BTF infos, this is a diff for two
+vmlinux produced by different compilers (gcc and clang) for a mostly
+equal .config file (modulo the ones that depend on being built by clang,
+etc).
 
-[auto build test ERROR on bpf/master]
+So a normalization or names is interesting, but has to be opt in, when
+someone wants to do what I did, compare BTF or DWARF from produced by
+different compilers, which is useful, like in this case, where I noticed
+the problem by using this technique.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jesper-Dangaard-Brouer/xdp-rss-hash-types-representation/20230331-230552
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
-patch link:    https://lore.kernel.org/r/168027498690.3941176.99100635661990098.stgit%40firesoul
-patch subject: [PATCH bpf V4 1/5] xdp: rss hash types representation
-config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20230401/202304010239.Jw6bKkWC-lkp@intel.com/config)
-compiler: ia64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/9fcbbefa76e6e88a86426d13ed79ea24aacffe76
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Jesper-Dangaard-Brouer/xdp-rss-hash-types-representation/20230331-230552
-        git checkout 9fcbbefa76e6e88a86426d13ed79ea24aacffe76
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash drivers/
+I'll queue this up for after 1.25 is produced.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304010239.Jw6bKkWC-lkp@intel.com/
+- Arnaldo
 
-All errors (new ones prefixed by >>):
-
->> drivers/net/veth.c:1685:43: error: initialization of 'int (*)(const struct xdp_md *, u32 *, enum xdp_rss_hash_type *)' {aka 'int (*)(const struct xdp_md *, unsigned int *, enum xdp_rss_hash_type *)'} from incompatible pointer type 'int (*)(const struct xdp_md *, u32 *)' {aka 'int (*)(const struct xdp_md *, unsigned int *)'} [-Werror=incompatible-pointer-types]
-    1685 |         .xmo_rx_hash                    = veth_xdp_rx_hash,
-         |                                           ^~~~~~~~~~~~~~~~
-   drivers/net/veth.c:1685:43: note: (near initialization for 'veth_xdp_metadata_ops.xmo_rx_hash')
-   cc1: some warnings being treated as errors
-
-
-vim +1685 drivers/net/veth.c
-
-4456e7bdf74c9f Stephen Hemminger  2008-11-19  1682  
-306531f0249f4e Stanislav Fomichev 2023-01-19  1683  static const struct xdp_metadata_ops veth_xdp_metadata_ops = {
-306531f0249f4e Stanislav Fomichev 2023-01-19  1684  	.xmo_rx_timestamp		= veth_xdp_rx_timestamp,
-306531f0249f4e Stanislav Fomichev 2023-01-19 @1685  	.xmo_rx_hash			= veth_xdp_rx_hash,
-306531f0249f4e Stanislav Fomichev 2023-01-19  1686  };
-306531f0249f4e Stanislav Fomichev 2023-01-19  1687  
+> I tried (4d17096 "btf_encoder: Compare functions via prototypes not parameter names")
+> and see the same behavior.
+> 
+> Looking at the DWARF, itself gcc and clang use different names for these types:
+> 
+> gcc:
+> 0x0000002b:   DW_TAG_base_type
+>                 DW_AT_byte_size (0x08)
+>                 DW_AT_encoding  (DW_ATE_unsigned)
+>                 DW_AT_name      ("long unsigned int")
+> 
+> clang:
+> 0x000000f7:   DW_TAG_base_type
+>                 DW_AT_name      ("unsigned long")
+>                 DW_AT_encoding  (DW_ATE_unsigned)
+>                 DW_AT_byte_size (0x08)
+> 
+> And the base type names are copied to BTF as is. Looks like some
+> normalization is necessary either in dwarf_loader.c:base_type__new()
+> or in fprintf.
+> 
+> Thanks,
+> Eduard
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+
+- Arnaldo
