@@ -2,88 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB806D27FB
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 20:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFAA66D2846
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 20:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232930AbjCaSk3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 14:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
+        id S232933AbjCaSzy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 14:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233100AbjCaSkZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 14:40:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B5F23B49;
-        Fri, 31 Mar 2023 11:40:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S232656AbjCaSzx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 14:55:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83531236B5
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 11:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680288905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Kblsxn2I4uj63CCZ5lvLbiV5TyyMA+h7P/LAJWAO5eg=;
+        b=fvrZD0rv++jQ15Jy7jfUQUL5dj9ygIQ4XPinNIoUENWKkEcg4qYtnIUyn4rcc2q/KHNE0v
+        0kSphK1pt8OA3LSDH0bHwYltx6t806A7wPV84SRnPCc4L4ey61vQanCc/aUycrfHYAkKHf
+        ihwqF9rfzu5Iob9VCT9H0U37tO5KIqU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-558-6ST_aE1BN5izY1S-rDCwaQ-1; Fri, 31 Mar 2023 14:55:02 -0400
+X-MC-Unique: 6ST_aE1BN5izY1S-rDCwaQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F32B62B45;
-        Fri, 31 Mar 2023 18:40:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 89109C4339B;
-        Fri, 31 Mar 2023 18:40:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680288018;
-        bh=TeiPgG/Ac++b/fUfLweTsTZbOpAdJsIOEZbjjLeegfY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GCdJiW2xyd1XErg5bi9MEQyRwRu+vg63PB1fNHhogAt12ifffAVj/z2Fbm4PAZn0e
-         rXockBLm+Z122BZ2VhvwxFMnVSYebHfGoRP68hqKZY6YIjQjYNk5tHl9UUqyPMzccQ
-         8VC+uyoqqGtdayLcke/glNEYVDjpkPAN0gOjwS4Wzqzhln6VNQlKgdoixbwm1MIhM/
-         p0JoRXutKi6NtAs17yTk6E5pkLCRAwFOg0WPKTWy2Cb4LMOm7NEzgXYc4VogsjCwmR
-         ZzitmtxM182ZiO9+2+14LDVV7XP9Ue9Mhi9R/TNde4Xtfko1lW/NyNgkFTTU9XDJMa
-         w+hirzYHJkG1A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6D6FBC73FE2;
-        Fri, 31 Mar 2023 18:40:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8BA6A85A5B1;
+        Fri, 31 Mar 2023 18:55:00 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.45.242.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E737492C3E;
+        Fri, 31 Mar 2023 18:55:00 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id F282330736C72;
+        Fri, 31 Mar 2023 20:54:58 +0200 (CEST)
+Subject: [PATCH bpf V5 0/5] XDP-hints: API change for RX-hash kfunc
+ bpf_xdp_metadata_rx_hash
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
+        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
+        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net, tariqt@nvidia.com
+Date:   Fri, 31 Mar 2023 20:54:58 +0200
+Message-ID: <168028882260.4030852.1100965689789226162.stgit@firesoul>
+User-Agent: StGit/1.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix conflicts with built-in functions
- in bench_local_storage_create
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168028801844.10530.9317186144237248044.git-patchwork-notify@kernel.org>
-Date:   Fri, 31 Mar 2023 18:40:18 +0000
-References: <20230331075848.1642814-1-james.hilliard1@gmail.com>
-In-Reply-To: <20230331075848.1642814-1-james.hilliard1@gmail.com>
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     bpf@vger.kernel.org, martin.lau@kernel.org, andrii@kernel.org,
-        mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Current API for bpf_xdp_metadata_rx_hash() returns the raw RSS hash value,
+but doesn't provide information on the RSS hash type (part of 6.3-rc).
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+This patchset proposal is to change the function call signature via adding
+a pointer value argument for providing the RSS hash type.
 
-On Fri, 31 Mar 2023 01:58:42 -0600 you wrote:
-> The fork function in gcc is considered a built in function due to
-> being used by libgcov when building with gnu extensions.
-> 
-> Rename fork to sched_process_fork to prevent this conflict.
-> 
-> See details:
-> https://github.com/gcc-mirror/gcc/commit/d1c38823924506d389ca58d02926ace21bdf82fa
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82457
-> 
-> [...]
+---
+V5:
+ - Fixes for checkpatch.pl
+ - Change function signature for all xmo_rx_hash calls in patch1
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Fix conflicts with built-in functions in bench_local_storage_create
-    https://git.kernel.org/bpf/bpf-next/c/9af0f555ae4a
+Jesper Dangaard Brouer (5):
+      xdp: rss hash types representation
+      mlx5: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      veth: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      mlx4: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      selftests/bpf: Adjust bpf_xdp_metadata_rx_hash for new arg
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    | 22 ++++++-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 63 ++++++++++++++++++-
+ drivers/net/veth.c                            | 10 ++-
+ include/linux/mlx5/device.h                   | 14 ++++-
+ include/linux/netdevice.h                     |  3 +-
+ include/net/xdp.h                             | 47 ++++++++++++++
+ net/core/xdp.c                                | 10 ++-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   |  2 +
+ .../selftests/bpf/progs/xdp_hw_metadata.c     | 14 +++--
+ .../selftests/bpf/progs/xdp_metadata.c        |  6 +-
+ .../selftests/bpf/progs/xdp_metadata2.c       |  7 ++-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c |  2 +-
+ tools/testing/selftests/bpf/xdp_metadata.h    |  1 +
+ 14 files changed, 180 insertions(+), 24 deletions(-)
+
+--
 
