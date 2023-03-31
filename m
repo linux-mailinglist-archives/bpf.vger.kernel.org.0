@@ -2,222 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B986D1FD2
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 14:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7336D2004
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 14:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbjCaMOp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 08:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54640 "EHLO
+        id S232349AbjCaMVQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 08:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232098AbjCaMOn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 08:14:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE681DFB2;
-        Fri, 31 Mar 2023 05:14:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8562F6287A;
-        Fri, 31 Mar 2023 12:14:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 855E4C433D2;
-        Fri, 31 Mar 2023 12:14:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680264881;
-        bh=aVZf/XrJJHV2m+r63DZrMTx0gyiGjL25k+dDKUwAHkg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aE922uonF/7WRWrJeKn6iKOvlCfXRfex9uaJGpuAkyvwmTJRjsQ6i7d/nci30QGnm
-         VNT53NrL4vBcOxeu6CNj7NU6LBuTmzTvUO0MXi87TlXI4iI3iZL/2c32j26M4ZCca5
-         c2Wa/03xxVZnqDxPGJvYY3q8BisavVMuvSBMuYL2w/kOOP3smZf1ElCNuGhVmftymb
-         DAnmTeGHNOFkF6otRnHIDpKOd7s3Sibm9roAy4mZHJhl1f5poX4LENQG6pNAR9AEP7
-         04pDqrYSyq5SEZCAUTpbzvXmUEIstkJsTx/UxqSypafvc6togrYQHNDjP8kX/Cf3rg
-         2U0pNbSrzMbWg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 50EE24052D; Fri, 31 Mar 2023 09:14:39 -0300 (-03)
-Date:   Fri, 31 Mar 2023 09:14:39 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     dwarves@vger.kernel.org, arnaldo.melo@gmail.com,
-        bpf@vger.kernel.org, kernel-team@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com
-Subject: Re: [PATCH dwarves] fprintf: Fix `*` not being printed for pointers
- with btf_type_tag
-Message-ID: <ZCbOr4pwrX7JVnCZ@kernel.org>
-References: <20230330212700.697124-1-eddyz87@gmail.com>
- <ZCbOdWCKKzLlprIs@kernel.org>
+        with ESMTP id S230331AbjCaMU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 08:20:59 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7584B1F788;
+        Fri, 31 Mar 2023 05:20:13 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4Pnzct19HTz9v7gV;
+        Fri, 31 Mar 2023 20:10:06 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwAn+V+lzyZkRqPiAQ--.4795S2;
+        Fri, 31 Mar 2023 13:18:56 +0100 (CET)
+Message-ID: <ca6d4080b0f234b5321d965fb1350bfcd291646e.camel@huaweicloud.com>
+Subject: Re: [PATCH v9 3/4] evm: Align evm_inode_init_security() definition
+ with LSM infrastructure
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, casey@schaufler-ca.com,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
+        nicolas.bouchinet@clip-os.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Fri, 31 Mar 2023 14:18:42 +0200
+In-Reply-To: <bfe74fff24a5a7a8059acc00c29ac957bf0b7880.camel@huaweicloud.com>
+References: <20230329130415.2312521-1-roberto.sassu@huaweicloud.com>
+         <20230329130415.2312521-4-roberto.sassu@huaweicloud.com>
+         <CAHC9VhSDVv30ce2652kridRU7iaQQ19tiGubWpyP0mi7pf+JJw@mail.gmail.com>
+         <bfe74fff24a5a7a8059acc00c29ac957bf0b7880.camel@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZCbOdWCKKzLlprIs@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GxC2BwAn+V+lzyZkRqPiAQ--.4795S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3GF4rurWrtr1Uuw1kurykXwb_yoWxGF4DpF
+        WDta1Uurs8JFy5WryFvF4Uu3WS93yrGr4jqr93G34jyF1Dtrn7try0yr15uFyrWrW8Gr1v
+        qw42vF4furn8t3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgANBF1jj4dr6AABs-
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Mar 31, 2023 at 09:13:41AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Mar 31, 2023 at 12:27:00AM +0300, Eduard Zingerman escreveu:
-> > Recent change to fprintf (see below) causes incorrect `type_fprintf()`
-> > behavior for pointers annotated with btf_type_tag, for example:
+On Fri, 2023-03-31 at 09:32 +0200, Roberto Sassu wrote:
+> On Thu, 2023-03-30 at 18:55 -0400, Paul Moore wrote:
+> > On Wed, Mar 29, 2023 at 9:05 AM Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > 
+> > > Change the evm_inode_init_security() definition to align with the LSM
+> > > infrastructure. Keep the existing behavior of including in the HMAC
+> > > calculation only the first xattr provided by LSMs.
+> > > 
+> > > Changing the evm_inode_init_security() definition requires passing the
+> > > xattr array allocated by security_inode_init_security(), and the number of
+> > > xattrs filled by previously invoked LSMs.
+> > > 
+> > > Use the newly introduced lsm_find_xattr_slot() to position EVM correctly in
+> > > the xattrs array, like a regular LSM, and to increment the number of filled
+> > > slots. For now, the LSM infrastructure allocates enough xattrs slots to
+> > > store the EVM xattr, without using the reservation mechanism.
+> > > 
+> > > Finally, make evm_inode_init_security() return value compatible with the
+> > > inode_init_security hook conventions, i.e. return -EOPNOTSUPP if it is not
+> > > setting an xattr.
+> > > 
+> > > EVM is a bit tricky, because xattrs is both an input and an output. If it
+> > > was just output, EVM should have returned zero if xattrs is NULL. But,
+> > > since xattrs is also input, EVM is unable to do its calculations, so return
+> > > -EOPNOTSUPP and handle this error in security_inode_init_security().
 > > 
-> >     $ cat tag-test.c
-> >     #define __t __attribute__((btf_type_tag("t1")))
-> > 
-> >     struct foo {
-> >       int __t *a;
-> >     } g;
-> > 
-> >     $ clang -g -c tag-test.c -o tag-test.o && \
-> >       pahole -J tag-test.o && pahole --sort -F dwarf tag-test.o
-> >     struct foo {
-> >     	int                        a;                    /*     0     8 */
-> >     	...
-> >     };
-> > 
-> > Note that `*` is missing in the pahole output.
-> > The issue is caused by `goto next_type` that jumps over the
-> > `tag__name()` that is responsible for pointer printing.
-> > 
-> > As agreed in [1] `type__fprintf()` is modified to skip type tags for
-> > now and would be modified to emit type tags later.
-> > 
-> > The change in `__tag__name()` is necessary to avoid the following behavior:
-> > 
-> >     $ cat tag-test.c
-> >     #define __t __attribute__((btf_type_tag("t1")))
-> > 
-> >     struct foo {
-> >       int __t *a;
-> >       int __t __t *b;
-> >     } g;
-> > 
-> >     $ clang -g -c tag-test.c -o tag-test.o && \
-> >       pahole -J tag-test.o && pahole --sort -F dwarf tag-test.o
-> >     struct foo {
-> >     	int  *                     a;                    /*     0     8 */
-> >     	int   *                    b;                    /*     8     8 */
-> >             ...
-> >     };
-> > 
-> > Note the extra space before `*` for field `b`.
-> > 
-> > The issue was reported and tracked down to the root cause by
-> > Arnaldo Carvalho de Melo.
-> > 
-> > Links:
-> > [1] https://lore.kernel.org/dwarves/20230314230417.1507266-1-eddyz87@gmail.com/T/#md82b04f66867434524beec746138951f26a3977e
-> > 
-> > Fixes: e7fb771f2649 ("fprintf: Correct names for types with btf_type_tag attribute")
-> > Reported-by: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Link: https://lore.kernel.org/dwarves/20230314230417.1507266-1-eddyz87@gmail.com/T/#mc630bcd474ddd64c70d237edd4e0590dc048d63d
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >  dwarves_fprintf.c | 37 +++++++++++++++++++++++++++++--------
-> >  1 file changed, 29 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/dwarves_fprintf.c b/dwarves_fprintf.c
-> > index 1e6147a..818db2d 100644
-> > --- a/dwarves_fprintf.c
-> > +++ b/dwarves_fprintf.c
-> > @@ -572,7 +572,6 @@ static const char *__tag__name(const struct tag *tag, const struct cu *cu,
-> >  	case DW_TAG_restrict_type:
-> >  	case DW_TAG_atomic_type:
-> >  	case DW_TAG_unspecified_type:
-> > -	case DW_TAG_LLVM_annotation:
-> >  		type = cu__type(cu, tag->type);
-> >  		if (type == NULL && tag->type != 0)
-> >  			tag__id_not_found_snprintf(bf, len, tag->type);
-> > @@ -618,6 +617,13 @@ static const char *__tag__name(const struct tag *tag, const struct cu *cu,
-> >  	case DW_TAG_variable:
-> >  		snprintf(bf, len, "%s", variable__name(tag__variable(tag)));
-> >  		break;
-> > +	case DW_TAG_LLVM_annotation:
-> > +		type = cu__type(cu, tag->type);
-> > +		if (type == NULL && tag->type != 0)
-> > +			tag__id_not_found_snprintf(bf, len, tag->type);
-> > +		else if (!tag__has_type_loop(tag, type, bf, len, NULL))
-> > +			__tag__name(type, cu, bf, len, conf);
-> > +		break;
-> >  	default:
-> >  		snprintf(bf, len, "%s%s", tag__prefix(cu, tag->tag, pconf),
-> >  			 type__name(tag__type(tag)) ?: "");
-> > @@ -677,6 +683,22 @@ static size_t type__fprintf_stats(struct type *type, const struct cu *cu,
-> >  	return printed;
-> >  }
-> >  
-> > +static type_id_t skip_llvm_annotations(const struct cu *cu, type_id_t id)
-> > +{
-> > +	struct tag *type;
-> > +
-> > +	for (;;) {
-> > +		if (id == 0)
-> > +			break;
-> > +		type = cu__type(cu, id);
-> > +		if (type == NULL || type->tag != DW_TAG_LLVM_annotation || type->type == id)
-> > +			break;
-> > +		id = type->type;
-> > +	}
-> > +
-> > +	return id;
-> > +}
+> > I don't quite understand why EVM would return EOPNOTSUPP if it is
+> > enabled but there are not xattrs to measure.  It seems like EVM should
+> > return success/0 in the no-xattr case; there were no xattrs to
+> > measure, so it succeeded in measuring nothing.  Am I missing
+> > something?
 > 
-> This part I didn't understand, do you see any possibility of a
-> DW_TAG_LLVM_annotation pointing to another DW_TAG_LLVM_annotation?
-
-I _think_ its a noop, so will test your patch as-is, thanks!
-
-- Arnaldo
- 
-> - Arnaldo
+> From a very quick look at what other LSMs do, it seems that they return
+> zero even if they are not initialized.
 > 
-> > +
-> >  static size_t union__fprintf(struct type *type, const struct cu *cu,
-> >  			     const struct conf_fprintf *conf, FILE *fp);
-> >  
-> > @@ -778,19 +800,17 @@ inner_struct:
-> >  
-> >  next_type:
-> >  	switch (type->tag) {
-> > -	case DW_TAG_pointer_type:
-> > -		if (type->type != 0) {
-> > +	case DW_TAG_pointer_type: {
-> > +		type_id_t ptype_id = skip_llvm_annotations(cu, type->type);
-> > +
-> > +		if (ptype_id != 0) {
-> >  			int n;
-> > -			struct tag *ptype = cu__type(cu, type->type);
-> > +			struct tag *ptype = cu__type(cu, ptype_id);
-> >  			if (ptype == NULL)
-> >  				goto out_type_not_found;
-> >  			n = tag__has_type_loop(type, ptype, NULL, 0, fp);
-> >  			if (n)
-> >  				return printed + n;
-> > -			if (ptype->tag == DW_TAG_LLVM_annotation) {
-> > -				type = ptype;
-> > -				goto next_type;
-> > -			}
-> >  			if (ptype->tag == DW_TAG_subroutine_type) {
-> >  				printed += ftype__fprintf(tag__ftype(ptype),
-> >  							  cu, name, 0, 1,
-> > @@ -811,6 +831,7 @@ next_type:
-> >  			}
-> >  		}
-> >  		/* Fall Thru */
-> > +	}
-> >  	default:
-> >  print_default:
-> >  		printed += fprintf(fp, "%-*s %s", tconf.type_spacing,
-> > -- 
-> > 2.40.0
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
+> So, it makes sense to return zero also here.
 
--- 
+Oh, actually there was a reason to do that. If an LSM does not wish to
+provide an xattr, it should return -EOPNOTSUPP.
 
-- Arnaldo
+As we are not checking this convention anymore, it is probably fine to
+return zero. I already made the change, will send the new version
+shortly.
+
+Thanks
+
+Roberto
+
+> Thanks
+> 
+> Roberto
+> 
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > ---
+> > >  include/linux/evm.h               | 14 ++++++++------
+> > >  security/integrity/evm/evm_main.c | 18 +++++++++++-------
+> > >  security/security.c               |  6 +++---
+> > >  3 files changed, 22 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/include/linux/evm.h b/include/linux/evm.h
+> > > index 7dc1ee74169..3c0e8591b69 100644
+> > > --- a/include/linux/evm.h
+> > > +++ b/include/linux/evm.h
+> > > @@ -56,9 +56,10 @@ static inline void evm_inode_post_set_acl(struct dentry *dentry,
+> > >  {
+> > >         return evm_inode_post_setxattr(dentry, acl_name, NULL, 0);
+> > >  }
+> > > -extern int evm_inode_init_security(struct inode *inode,
+> > > -                                  const struct xattr *xattr_array,
+> > > -                                  struct xattr *evm);
+> > > +extern int evm_inode_init_security(struct inode *inode, struct inode *dir,
+> > > +                                  const struct qstr *qstr,
+> > > +                                  struct xattr *xattrs,
+> > > +                                  int *num_filled_xattrs);
+> > >  extern bool evm_revalidate_status(const char *xattr_name);
+> > >  extern int evm_protected_xattr_if_enabled(const char *req_xattr_name);
+> > >  extern int evm_read_protected_xattrs(struct dentry *dentry, u8 *buffer,
+> > > @@ -157,9 +158,10 @@ static inline void evm_inode_post_set_acl(struct dentry *dentry,
+> > >         return;
+> > >  }
+> > > 
+> > > -static inline int evm_inode_init_security(struct inode *inode,
+> > > -                                         const struct xattr *xattr_array,
+> > > -                                         struct xattr *evm)
+> > > +static inline int evm_inode_init_security(struct inode *inode, struct inode *dir,
+> > > +                                         const struct qstr *qstr,
+> > > +                                         struct xattr *xattrs,
+> > > +                                         int *num_filled_xattrs)
+> > >  {
+> > >         return 0;
+> > >  }
+> > > diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+> > > index cf24c525558..9e75759150c 100644
+> > > --- a/security/integrity/evm/evm_main.c
+> > > +++ b/security/integrity/evm/evm_main.c
+> > > @@ -21,6 +21,7 @@
+> > >  #include <linux/evm.h>
+> > >  #include <linux/magic.h>
+> > >  #include <linux/posix_acl_xattr.h>
+> > > +#include <linux/lsm_hooks.h>
+> > > 
+> > >  #include <crypto/hash.h>
+> > >  #include <crypto/hash_info.h>
+> > > @@ -864,23 +865,26 @@ void evm_inode_post_setattr(struct dentry *dentry, int ia_valid)
+> > >  /*
+> > >   * evm_inode_init_security - initializes security.evm HMAC value
+> > >   */
+> > > -int evm_inode_init_security(struct inode *inode,
+> > > -                                const struct xattr *lsm_xattr,
+> > > -                                struct xattr *evm_xattr)
+> > > +int evm_inode_init_security(struct inode *inode, struct inode *dir,
+> > > +                           const struct qstr *qstr, struct xattr *xattrs,
+> > > +                           int *num_filled_xattrs)
+> > >  {
+> > >         struct evm_xattr *xattr_data;
+> > > +       struct xattr *evm_xattr;
+> > >         int rc;
+> > > 
+> > > -       if (!(evm_initialized & EVM_INIT_HMAC) ||
+> > > -           !evm_protected_xattr(lsm_xattr->name))
+> > > -               return 0;
+> > > +       if (!(evm_initialized & EVM_INIT_HMAC) || !xattrs ||
+> > > +           !evm_protected_xattr(xattrs->name))
+> > > +               return -EOPNOTSUPP;
+> > > +
+> > > +       evm_xattr = lsm_find_xattr_slot(xattrs, num_filled_xattrs);
+> > > 
+> > >         xattr_data = kzalloc(sizeof(*xattr_data), GFP_NOFS);
+> > >         if (!xattr_data)
+> > >                 return -ENOMEM;
+> > > 
+> > >         xattr_data->data.type = EVM_XATTR_HMAC;
+> > > -       rc = evm_init_hmac(inode, lsm_xattr, xattr_data->digest);
+> > > +       rc = evm_init_hmac(inode, xattrs, xattr_data->digest);
+> > >         if (rc < 0)
+> > >                 goto out;
+> > > 
+> > > diff --git a/security/security.c b/security/security.c
+> > > index be33d643a81..22ab4fb7ebf 100644
+> > > --- a/security/security.c
+> > > +++ b/security/security.c
+> > > @@ -1674,9 +1674,9 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
+> > >         if (!num_filled_xattrs)
+> > >                 goto out;
+> > > 
+> > > -       ret = evm_inode_init_security(inode, new_xattrs,
+> > > -                                     new_xattrs + num_filled_xattrs);
+> > > -       if (ret)
+> > > +       ret = evm_inode_init_security(inode, dir, qstr, new_xattrs,
+> > > +                                     &num_filled_xattrs);
+> > > +       if (ret && ret != -EOPNOTSUPP)
+> > >                 goto out;
+> > >         ret = initxattrs(inode, new_xattrs, fs_data);
+> > >  out:
+> > > --
+> > > 2.25.1
+> > > 
+
