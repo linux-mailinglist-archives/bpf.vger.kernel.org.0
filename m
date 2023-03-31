@@ -2,89 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5946D27EB
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 20:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB806D27FB
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 20:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbjCaSgp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 14:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
+        id S232930AbjCaSk3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 14:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjCaSgo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 14:36:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFD51CBA0;
-        Fri, 31 Mar 2023 11:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=YE7GfOrERWcu2MD4hsCVsKkg8asC+YWQG3+Pv6uwbqk=; b=uEqp76fQYC/dZmRiYmKKO0zAom
-        ZoB3UFNy+UtNl5yJRIrqU/CTlfpVSM+gJ7zG/HAQIPWEJKwiQZp9pVmGtTigRksP0GieeeGZa5Xd+
-        HCDdjUd8/Wpi0h5ogPOJYaVs9rCqika3mc+IAnnS4JggKcEso9vLel1P3BD3jTBu4lZJsmnoaxqhr
-        UiKc4Zy8F9bFcGyS0KOp7N/uzpEcu9BMY20AwDyBb7iRwvwqd294PwuxZkNc1AeDT3zidgzxhYbl6
-        sXNyqw9Z0s1kSTtkYMbGBS/3WhW2jrgyMQEUtJSVcZ9uuH/76BKCypqP1kwXRA9aZ6NiYJKUcVe7w
-        ow6TpxuQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1piJbx-00BfMF-56; Fri, 31 Mar 2023 18:36:29 +0000
-Date:   Fri, 31 Mar 2023 19:36:29 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Namhyung Kim <namhyung@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
-Message-ID: <ZCcoLcncAVeKOZRL@casper.infradead.org>
-References: <20230316170149.4106586-1-jolsa@kernel.org>
- <ZBNTMZjEoETU9d8N@casper.infradead.org>
- <ZBV3beyxYhKv/kMp@krava>
- <ZBXV3crf/wX5D9lo@casper.infradead.org>
- <ZBsihOYrMCILT2cI@kernel.org>
- <CAEf4BzakHh3qm2JBsWE8qnMmZMeM7w5vZGneKAsLM_vktPbc9g@mail.gmail.com>
+        with ESMTP id S233100AbjCaSkZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 14:40:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B5F23B49;
+        Fri, 31 Mar 2023 11:40:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F32B62B45;
+        Fri, 31 Mar 2023 18:40:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 89109C4339B;
+        Fri, 31 Mar 2023 18:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680288018;
+        bh=TeiPgG/Ac++b/fUfLweTsTZbOpAdJsIOEZbjjLeegfY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GCdJiW2xyd1XErg5bi9MEQyRwRu+vg63PB1fNHhogAt12ifffAVj/z2Fbm4PAZn0e
+         rXockBLm+Z122BZ2VhvwxFMnVSYebHfGoRP68hqKZY6YIjQjYNk5tHl9UUqyPMzccQ
+         8VC+uyoqqGtdayLcke/glNEYVDjpkPAN0gOjwS4Wzqzhln6VNQlKgdoixbwm1MIhM/
+         p0JoRXutKi6NtAs17yTk6E5pkLCRAwFOg0WPKTWy2Cb4LMOm7NEzgXYc4VogsjCwmR
+         ZzitmtxM182ZiO9+2+14LDVV7XP9Ue9Mhi9R/TNde4Xtfko1lW/NyNgkFTTU9XDJMa
+         w+hirzYHJkG1A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6D6FBC73FE2;
+        Fri, 31 Mar 2023 18:40:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzakHh3qm2JBsWE8qnMmZMeM7w5vZGneKAsLM_vktPbc9g@mail.gmail.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix conflicts with built-in functions
+ in bench_local_storage_create
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168028801844.10530.9317186144237248044.git-patchwork-notify@kernel.org>
+Date:   Fri, 31 Mar 2023 18:40:18 +0000
+References: <20230331075848.1642814-1-james.hilliard1@gmail.com>
+In-Reply-To: <20230331075848.1642814-1-james.hilliard1@gmail.com>
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf@vger.kernel.org, martin.lau@kernel.org, andrii@kernel.org,
+        mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 11:19:45AM -0700, Andrii Nakryiko wrote:
-> On Wed, Mar 22, 2023 at 8:45 AM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> > Having said that, it seems there will be no extra memory overhead at
-> > least for a fedora:36 x86_64 kernel:
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Fri, 31 Mar 2023 01:58:42 -0600 you wrote:
+> The fork function in gcc is considered a built in function due to
+> being used by libgcov when building with gnu extensions.
 > 
-> Makes sense to me as well. Whatever the solution, as long as it's
-> usable from NMI contexts would be fine for the purposes of fetching
-> build ID. It would be good to hear from folks that are opposing adding
-> a pointer field to struct file whether they prefer this way instead?
+> Rename fork to sched_process_fork to prevent this conflict.
+> 
+> See details:
+> https://github.com/gcc-mirror/gcc/commit/d1c38823924506d389ca58d02926ace21bdf82fa
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82457
+> 
+> [...]
 
-Still no.  While it may not take up any room right now, this will
-surely not be the last thing added to struct file.  When something
-which is genuinely useful needs to be added, that person should
-not have to sort out your mess first,
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Fix conflicts with built-in functions in bench_local_storage_create
+    https://git.kernel.org/bpf/bpf-next/c/9af0f555ae4a
 
-NAK now, NAK tomorrow, NAK forever.  Al told you how you could do it
-without trampling on core data structures.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
