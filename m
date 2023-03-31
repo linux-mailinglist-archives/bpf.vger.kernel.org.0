@@ -2,120 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C546D15A7
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 04:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBD46D15BF
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 04:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjCaCe1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 22:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        id S229475AbjCaCxZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 22:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjCaCe0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 22:34:26 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561C761B7;
-        Thu, 30 Mar 2023 19:34:25 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id r11so84247414edd.5;
-        Thu, 30 Mar 2023 19:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680230064; x=1682822064;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vcs8c2BEfAg672V0yocp3KLubt3IJ7dsRgOCNV149Ug=;
-        b=QpBZVsU95jX3aZbO3OsYIk19lIKzbzZC4Vvd5dwFMZ+gUJpGN6pwcbxmsqCZx/6Dry
-         K865IBiuFhkv2DLasa7bsbZ3sP6KtwvKp1IxhBun8jppXI7E3tIpKJYUTTTs+GjqjHGL
-         AV9dVdJfNjGZG8o4a9I95t/j4S+R1nVT9mLPQaIiowGSIKmaTZV/qxTqIe17XS1mUmlI
-         kt+Xn4Vmx8GOTknUONEIFjx+YFUR/uDAHeHyElbqQ/zucbMpEpJgSQbPD8bbu+FjuUop
-         IH2GUHwuICvF8HpTeCh+zaDN4520yy/RE6N/oUhxi150DA8Jjy+4UfBGhTl+9NpRTpLP
-         33tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680230064; x=1682822064;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vcs8c2BEfAg672V0yocp3KLubt3IJ7dsRgOCNV149Ug=;
-        b=UgBYzJhATteNNe9WIAFkPLkvOGaGkMdU8cWjoey473NmPqoEY/s2c8iQnyka1uiHND
-         VLhndJur/swkxBOaz9G2eq6guZL0D/9X48PUDw4bp3yp/xv9fmXxf2SBvVyTueox1IGK
-         zvFT8+A60IkPKmxPVJfv390vfJG9t0eNUJwUaIvbnlB1KjoYNgdHZLpDjkM3UIG8YUtu
-         ADLCb20yU3thF1YGtL89iEhFt01gU66YStugMiQZ2vGmSZneTDPZbM9+QI+/xVM+VC8r
-         uga5h2A6jFPWc/veU7tFpQIZY0XgOMwgXU+FTz3Jyzp/7WnKM2o2saASQWDpJN1kIihC
-         TOKg==
-X-Gm-Message-State: AAQBX9ectZMtE+LcRDddy+bzIiRIhsaLHG4QIlANgnOBGY7i42lMCWAP
-        OxYA/eexZCela+fJ7TGYlzf0NN4VC9sZvxGVb/Q=
-X-Google-Smtp-Source: AKy350Zb65WfoEVijwKalbM5ODB2ISBZEuPtmp93KTO9gTV3zgm+MDVN95+bdXUfQS6b6Lf+FRSpF+vGeipjXUftAd8=
-X-Received: by 2002:a17:907:d412:b0:930:310:abbf with SMTP id
- vi18-20020a170907d41200b009300310abbfmr12636671ejc.11.1680230063707; Thu, 30
- Mar 2023 19:34:23 -0700 (PDT)
+        with ESMTP id S229452AbjCaCxY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 22:53:24 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F801116F
+        for <bpf@vger.kernel.org>; Thu, 30 Mar 2023 19:53:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680231204; x=1711767204;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vwqZAqAZoSYXFCqKevohRNTUhZWRXAV9uVnJi7jz5vQ=;
+  b=EZcNvUHMGmaAbsH5xM7Q/95o5MbZ3mPKkcRit9bOv+aV/+sOw+XAE7UC
+   lb/xLSTNDomFLNLFtsJmScs6Nhxf/So4dTafXdluFJzd7G7C9nYDoPCiY
+   BB0LPHzrU/VJEmOfIGwuIafj4n9G1PhqkX/Y/Z5ko/vvtqqP2BtyOJWSi
+   YVilfkSl0S0ipu43Usau+5w4n8gNT1ldUnO2zFlpWn2/YaGX356hTDgZe
+   8L8SGaLGWoOy/NPPOggzTmqTLEe+JgbHwP9WEUZDcyeoSVwjmkUebPpWE
+   YxtFb7VxKK6BuzIew4dVuMnIpeD14Mh7NXt3GwQRcTUWSYwiyqxdnDQ4t
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="320990724"
+X-IronPort-AV: E=Sophos;i="5.98,306,1673942400"; 
+   d="scan'208";a="320990724"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2023 19:53:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="684933787"
+X-IronPort-AV: E=Sophos;i="5.98,306,1673942400"; 
+   d="scan'208";a="684933787"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 30 Mar 2023 19:53:21 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pi4tE-000LRQ-10;
+        Fri, 31 Mar 2023 02:53:20 +0000
+Date:   Fri, 31 Mar 2023 10:52:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Aditi Ghag <aditi.ghag@isovalent.com>, bpf@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, kafai@fb.com,
+        sdf@google.com, edumazet@google.com, aditi.ghag@isovalent.com
+Subject: Re: [PATCH v5 bpf-next 3/7] udp: seq_file: Helper function to match
+ socket attributes
+Message-ID: <202303311022.2GVz6yAt-lkp@intel.com>
+References: <20230330151758.531170-4-aditi.ghag@isovalent.com>
 MIME-Version: 1.0
-References: <20230315092041.35482-1-kerneljasonxing@gmail.com>
- <20230315092041.35482-3-kerneljasonxing@gmail.com> <20230316172020.5af40fe8@kernel.org>
- <CAL+tcoDNvMUenwNEH2QByEY7cS1qycTSw1TLFSnNKt4Q0dCJUw@mail.gmail.com>
- <20230316202648.1f8c2f80@kernel.org> <CAL+tcoCRn7RfzgrODp+qGv_sYEfv+=1G0Jm=yEoCoi5K8NfSSA@mail.gmail.com>
- <20230330092316.52bb7d6b@kernel.org> <CAL+tcoBKiVqETEAPPawLbS_OF0Eb6HgZRHe-=W81bVKCkpr4Rg@mail.gmail.com>
- <20230330192050.1e057776@kernel.org>
-In-Reply-To: <20230330192050.1e057776@kernel.org>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Fri, 31 Mar 2023 10:33:47 +0800
-Message-ID: <CAL+tcoC=YU7DT0KAeZ-Kw==jvhBsMDpnXxUsAsCtuPttzedNgg@mail.gmail.com>
-Subject: Re: [PATCH v4 net-next 2/2] net: introduce budget_squeeze to help us
- tune rx behavior
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     jbrouer@redhat.com, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        stephen@networkplumber.org, simon.horman@corigine.com,
-        sinquersw@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230330151758.531170-4-aditi.ghag@isovalent.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 10:20=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
-rote:
->
-> On Fri, 31 Mar 2023 08:48:07 +0800 Jason Xing wrote:
-> > On Fri, Mar 31, 2023 at 12:23=E2=80=AFAM Jakub Kicinski <kuba@kernel.or=
-g> wrote:
-> > > On Thu, 30 Mar 2023 17:59:46 +0800 Jason Xing wrote:
-> > > > I'm wondering for now if I can update and resend this patch to have=
- a
-> > > > better monitor (actually we do need one) on this part since we have
-> > > > touched the net_rx_action() in the rps optimization patch series?
-> > > > Also, just like Jesper mentioned before, it can be considered as on=
-e
-> > > > 'fix' to a old problem but targetting to net-next is just fine. Wha=
-t
-> > > > do you think about it ?
-> > >
-> > > Sorry, I don't understand what you're trying to say :(
-> >
-> > Previously this patch was not accepted because we do not want to touch
-> > softirqs (actually which is net_rx_action()). Since it is touched in
-> > the commit [1] in recent days, I would like to ask your permission:
-> > could I resend this patch to the mailing list? I hope we can get it
-> > merged.
-> >
-> > This patch can be considered as a 'fix' to the old problem. It's
-> > beneficial and harmless, I think :)
->
-> The not touching part was about softirqs which is kernel/softirq.c,
-> this patch was rejected because it's not useful.
+Hi Aditi,
 
-But...but time_squeeze here is really vague and it doesn't provide any
-useful information to those user-side tools, which means we cannot
-conclude anything from this output if we have to trace back to the
-history of servers.
+Thank you for the patch! Perhaps something to improve:
 
-Right now, time_squeeze looks abandoned but many applications still
-rely on it. It's not proper :(
+[auto build test WARNING on bpf-next/master]
 
-Thanks,
-Jason
+url:    https://github.com/intel-lab-lkp/linux/commits/Aditi-Ghag/bpf-tcp-Avoid-taking-fast-sock-lock-in-iterator/20230330-232137
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230330151758.531170-4-aditi.ghag%40isovalent.com
+patch subject: [PATCH v5 bpf-next 3/7] udp: seq_file: Helper function to match socket attributes
+config: i386-randconfig-a006 (https://download.01.org/0day-ci/archive/20230331/202303311022.2GVz6yAt-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/66cc617bebf6cb3d2162587d6e248d86bc59c1c2
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Aditi-Ghag/bpf-tcp-Avoid-taking-fast-sock-lock-in-iterator/20230330-232137
+        git checkout 66cc617bebf6cb3d2162587d6e248d86bc59c1c2
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash net/ipv4/
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303311022.2GVz6yAt-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> net/ipv4/udp.c:2986:20: warning: function 'seq_sk_match' has internal linkage but is not defined [-Wundefined-internal]
+   static inline bool seq_sk_match(struct seq_file *seq, const struct sock *sk);
+                      ^
+   net/ipv4/udp.c:3015:8: note: used here
+                           if (seq_sk_match(seq, sk))
+                               ^
+   1 warning generated.
+
+
+vim +/seq_sk_match +2986 net/ipv4/udp.c
+
+  2985	
+> 2986	static inline bool seq_sk_match(struct seq_file *seq, const struct sock *sk);
+  2987	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
