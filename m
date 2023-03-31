@@ -2,183 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E012D6D27A9
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 20:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0106D27BD
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 20:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbjCaSUB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 14:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
+        id S232901AbjCaSX7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 14:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjCaSUA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 14:20:00 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039D449CD;
-        Fri, 31 Mar 2023 11:19:59 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id ek18so93152982edb.6;
-        Fri, 31 Mar 2023 11:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680286797;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ptCDsCZ9M1AP2auqMhwxD2e0Wct9w+HUGpQl1ZXGBuE=;
-        b=Gw584kuBZB4NgIUzfMojlADjttI/sZS9NQ+lUHsKb0GpFWzrCiX5KxgPEM6YM3wfKb
-         L7qyK+P8fd+4VG+CXmujXlxC7BXlewyQ8+k2Te9ebzk+rMzpahTWnav1kHCwZ0u4nDMK
-         qSYzdA+/2PNTicJltJMZRFMjFud3XUTM6iTecSpNvUfmcC4NBDmoiTEsW6VNG4voh0Pl
-         Dd3fimhzfdzOlXUg1Eycw8horsLfQpEwQdTlxhLhd1mTanssQvPjrFvkfEsYOGyq/O+I
-         O9I5u9eAGOgFNajpeowt/EpJIH9cYLLO3sQlQulNKMqZZ9G9hP2k4+Rc4AmRLMzBFnll
-         /QuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680286797;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ptCDsCZ9M1AP2auqMhwxD2e0Wct9w+HUGpQl1ZXGBuE=;
-        b=jCSBCXIgL9Z7jCOL+IrNjMh758tclOOq7YbFS2e0VQCIo9OgvfpMjyNFxbIdAZqOrH
-         Aq2yG2FiAKm7dkV7N/lLYy3cg+7qH9W1mdIMuE2Yra8d/89yH9UgIKxAikL5VDNijpTd
-         r4mTgPIFfyZKjX1ObirgAhmsTTToKGBb7IBnbY52kYgP02TTbbvi/IFn1MnzTvB2RNaj
-         dFyDj8NpED4wnh3mz0AT/CyBYGmz+FXiF1UjfZ+I+zyoZVhK/DdusjohaXmuh6mvJ61P
-         S6NwpDd1d7wPQbSi0uUvbw0IjJ+iXYxRHH7Ngl5bKd3FnvGHq6jw/fQmHgsc/uk1BsyY
-         6rsA==
-X-Gm-Message-State: AAQBX9dUGj5lfghSVmNDTzUVVushyj7o6Hwh/PU18TtK5KJJpPJl4rSS
-        +cSQGFPXjsUJ92G7clq/5IWRBv9FGjU+QSosiFtoYRHR
-X-Google-Smtp-Source: AKy350Yj+IgRzl/cUwZ8ZsG3CzqlZxtGxVHdl50ppqglRAoEyoUXrbm8X7qBqemI62LpK7yLYFn/NsSgTus1uzv5ngw=
-X-Received: by 2002:a50:d694:0:b0:4fc:f0b8:7da0 with SMTP id
- r20-20020a50d694000000b004fcf0b87da0mr14424020edi.1.1680286797322; Fri, 31
- Mar 2023 11:19:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230316170149.4106586-1-jolsa@kernel.org> <ZBNTMZjEoETU9d8N@casper.infradead.org>
- <ZBV3beyxYhKv/kMp@krava> <ZBXV3crf/wX5D9lo@casper.infradead.org> <ZBsihOYrMCILT2cI@kernel.org>
-In-Reply-To: <ZBsihOYrMCILT2cI@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 31 Mar 2023 11:19:45 -0700
-Message-ID: <CAEf4BzakHh3qm2JBsWE8qnMmZMeM7w5vZGneKAsLM_vktPbc9g@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 0/9] mm/bpf/perf: Store build id in file object
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        with ESMTP id S232048AbjCaSX6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 14:23:58 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585321D2DD;
+        Fri, 31 Mar 2023 11:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680287036; x=1711823036;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RfULin+IQkEIXF2U8/tMLOvTdsd0rNfXguvY06ABEEY=;
+  b=OlehgERxMqxiKS5DrK+I39W5yfZEY268Gx8vnQJlmUSXHr4A4wkI1trj
+   Ra0NEfY5yxj5E6uhskqiTZNvHyDLKcMyVftElSSj3MSzzmNT5ClIMWGsV
+   kr1IYuZTAkF22kXOUfqsR5UiAyNRSWSpMmeqZ0KvlYM5kL2+rlHAvFi79
+   0ljUGd1+Rjq9GKen/RHLrUWSGqiFt85tXyqKGfTrzlUr0apoXxsO5Hd+a
+   1TWVh0d4NwJFrDYLn9ZMNV26k9Q4XDXQhCjflUlYO58Qy3DL7PJWe2OPT
+   X0UQ9jB/JSENgZGVPK+2dglrdEUqo8/FB7xNaibgybBTzaDyNVp7kPaXB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10666"; a="406551718"
+X-IronPort-AV: E=Sophos;i="5.98,307,1673942400"; 
+   d="scan'208";a="406551718"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2023 11:23:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10666"; a="717827064"
+X-IronPort-AV: E=Sophos;i="5.98,307,1673942400"; 
+   d="scan'208";a="717827064"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 31 Mar 2023 11:23:50 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1piJPh-000M2G-1G;
+        Fri, 31 Mar 2023 18:23:49 +0000
+Date:   Sat, 1 Apr 2023 02:23:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
         Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Namhyung Kim <namhyung@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
+        tariqt@nvidia.com
+Subject: Re: [PATCH bpf V4 1/5] xdp: rss hash types representation
+Message-ID: <202304010239.Jw6bKkWC-lkp@intel.com>
+References: <168027498690.3941176.99100635661990098.stgit@firesoul>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <168027498690.3941176.99100635661990098.stgit@firesoul>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 22, 2023 at 8:45=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Sat, Mar 18, 2023 at 03:16:45PM +0000, Matthew Wilcox escreveu:
-> > On Sat, Mar 18, 2023 at 09:33:49AM +0100, Jiri Olsa wrote:
-> > > On Thu, Mar 16, 2023 at 05:34:41PM +0000, Matthew Wilcox wrote:
-> > > > On Thu, Mar 16, 2023 at 06:01:40PM +0100, Jiri Olsa wrote:
-> > > > > hi,
-> > > > > this patchset adds build id object pointer to struct file object.
-> > > > >
-> > > > > We have several use cases for build id to be used in BPF programs
-> > > > > [2][3].
-> > > >
-> > > > Yes, you have use cases, but you never answered the question I aske=
-d:
-> > > >
-> > > > Is this going to be enabled by every distro kernel, or is it for sp=
-ecial
-> > > > use-cases where only people doing a very specialised thing who are
-> > > > willing to build their own kernels will use it?
-> > >
-> > > I hope so, but I guess only time tell.. given the response by Ian and=
- Andrii
-> > > there are 3 big users already
-> >
-> > So the whole "There's a config option to turn it off" shtick is just a
-> > fig-leaf.  I won't ever see it turned off.  You're imposing the cost of
-> > this on EVERYONE who runs a distro kernel.  And almost nobody will see
-> > any benefits from it.  Thanks for admitting that.
->
-> I agree that build-ids are not useful for all 'struct file' uses, just
-> for executable files and for people wanting to have better observability
-> capabilities.
->
-> Having said that, it seems there will be no extra memory overhead at
-> least for a fedora:36 x86_64 kernel:
->
-> void __init files_init(void)
-> {
->         filp_cachep =3D kmem_cache_create("filp", sizeof(struct file), 0,
->                         SLAB_HWCACHE_ALIGN | SLAB_PANIC | SLAB_ACCOUNT, N=
-ULL);
->         percpu_counter_init(&nr_files, 0, GFP_KERNEL);
-> }
->
-> [root@quaco ~]# pahole file | grep size: -A2
->         /* size: 232, cachelines: 4, members: 20 */
->         /* sum members: 228, holes: 1, sum holes: 4 */
->         /* last cacheline: 40 bytes */
-> [acme@quaco perf-tools]$ uname -a
-> Linux quaco 6.1.11-100.fc36.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Feb  9 20:3=
-6:30 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
-> [root@quaco ~]# head -2 /proc/slabinfo
-> slabinfo - version: 2.1
-> # name            <active_objs> <num_objs> <objsize> <objperslab> <pagesp=
-erslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_s=
-labs> <num_slabs> <sharedavail>
-> [root@quaco ~]# grep -w filp /proc/slabinfo
-> filp               12452  13056    256   32    2 : tunables    0    0    =
-0 : slabdata    408    408      0
-> [root@quaco ~]#
->
-> so there are 24 bytes on the 4th cacheline that are not being used,
-> right?
+Hi Jesper,
 
-Well, even better then!
+I love your patch! Yet something to improve:
 
->
-> One other observation is that maybe we could do it as the 'struct sock'
-> hierachy in networking, where we would have a 'struct exec_file' that
-> would be:
->
->         struct exec_file {
->                 struct file file;
->                 char build_id[20];
->         }
->
-> say, and then when we create the 'struct file' in __alloc_file() we
-> could check some bit in 'flags' like Al Viro suggested and pick a
-> different slab than 'filp_cachep', that has that extra space for the
-> build_id (and whatever else exec related state we may end up wanting, if
-> ever).
->
-> No core fs will need to know about that except when we go free it, to
-> free from the right slab cache.
->
-> In current distro configs, no overhead would take place if I read that
-> SLAB_HWCACHE_ALIGN thing right, no?
+[auto build test ERROR on bpf/master]
 
-Makes sense to me as well. Whatever the solution, as long as it's
-usable from NMI contexts would be fine for the purposes of fetching
-build ID. It would be good to hear from folks that are opposing adding
-a pointer field to struct file whether they prefer this way instead?
+url:    https://github.com/intel-lab-lkp/linux/commits/Jesper-Dangaard-Brouer/xdp-rss-hash-types-representation/20230331-230552
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+patch link:    https://lore.kernel.org/r/168027498690.3941176.99100635661990098.stgit%40firesoul
+patch subject: [PATCH bpf V4 1/5] xdp: rss hash types representation
+config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20230401/202304010239.Jw6bKkWC-lkp@intel.com/config)
+compiler: ia64-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/9fcbbefa76e6e88a86426d13ed79ea24aacffe76
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Jesper-Dangaard-Brouer/xdp-rss-hash-types-representation/20230331-230552
+        git checkout 9fcbbefa76e6e88a86426d13ed79ea24aacffe76
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash drivers/
 
->
-> - Arnaldo
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202304010239.Jw6bKkWC-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/net/veth.c:1685:43: error: initialization of 'int (*)(const struct xdp_md *, u32 *, enum xdp_rss_hash_type *)' {aka 'int (*)(const struct xdp_md *, unsigned int *, enum xdp_rss_hash_type *)'} from incompatible pointer type 'int (*)(const struct xdp_md *, u32 *)' {aka 'int (*)(const struct xdp_md *, unsigned int *)'} [-Werror=incompatible-pointer-types]
+    1685 |         .xmo_rx_hash                    = veth_xdp_rx_hash,
+         |                                           ^~~~~~~~~~~~~~~~
+   drivers/net/veth.c:1685:43: note: (near initialization for 'veth_xdp_metadata_ops.xmo_rx_hash')
+   cc1: some warnings being treated as errors
+
+
+vim +1685 drivers/net/veth.c
+
+4456e7bdf74c9f Stephen Hemminger  2008-11-19  1682  
+306531f0249f4e Stanislav Fomichev 2023-01-19  1683  static const struct xdp_metadata_ops veth_xdp_metadata_ops = {
+306531f0249f4e Stanislav Fomichev 2023-01-19  1684  	.xmo_rx_timestamp		= veth_xdp_rx_timestamp,
+306531f0249f4e Stanislav Fomichev 2023-01-19 @1685  	.xmo_rx_hash			= veth_xdp_rx_hash,
+306531f0249f4e Stanislav Fomichev 2023-01-19  1686  };
+306531f0249f4e Stanislav Fomichev 2023-01-19  1687  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
