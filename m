@@ -2,92 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A294E6D263E
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 18:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031A66D2666
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 19:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbjCaQxG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 12:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
+        id S231952AbjCaRFj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 13:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232848AbjCaQww (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 12:52:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083DB22932
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 09:50:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C77962AB4
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 16:50:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9977EC4339B;
-        Fri, 31 Mar 2023 16:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680281419;
-        bh=8oakKGZGDH8Tqv36JzYyk0tCz2iH5u4PXW82xXMWQG4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qDNU4NQyk63cNsri4vTlR9ItAyXkgR/f6prLQvbbAFkzdnvNpw6Gaf3ok2g77Ia1G
-         pWZ2mrvOHFZIWF4vhdXa6q2aixSqKXOCrwCP+Ro6vxqp4rMdz/Z5QFJug47zDbc9UU
-         LeVwfEczlmkrYppnUoThvwr9u7ZVXQs4c3pK7urA9AKYOvgSYctw/EEU3UZ5Shqll2
-         Vjt4w3b9bjQ8wP50lfR27j0rBQS5UkKOx9lCmEd/2YOlFbpB6zWvELtv5S58LDLL3t
-         QNn2OhZKk0BVXQpx84swmH4M/ib+IJZgRLUzRYi8D/SyxG3glmDIQbsUAHRepwNVV7
-         zncWZ6r5sFI0Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7995FC43157;
-        Fri, 31 Mar 2023 16:50:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229523AbjCaRFK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 13:05:10 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61CCE38A;
+        Fri, 31 Mar 2023 10:05:08 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id q102so21069417pjq.3;
+        Fri, 31 Mar 2023 10:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680282308; x=1682874308;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XKD3afd/dAGXfiCR1cGKCTKOhGubTZfFsF8fCBghIoQ=;
+        b=WkH4rDy+elmsZkRjR7g8zey1NIy7ZCJWDApx9dSlPTYVKX+mTOvVxAWYj/tcyPKtkH
+         IbpPGB1UrPPXg8elixNNZ3W68PDdqrPhH86l+75XXbb88tJPCGLCodgUQO+gyTsvyw9l
+         RzVKG2YPiJjbmQKfKqlCzoMkQdGsZ1bU1Es15hV9iwk0lo+TGfwi4DKnlUpm5SNKlzlf
+         m2bS7cep6+VESbbcPae5fid0UY1yWo9uL9mPLYGPUgokKHnOEClDTYDQTdJy5JYc7jza
+         DcqPqLPa7o/D7nQFKRZuECQNF5syZ6btfe7AchWdWTkmvXeSJdF2iQcC0Kkeyj4fYrL2
+         F5AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680282308; x=1682874308;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XKD3afd/dAGXfiCR1cGKCTKOhGubTZfFsF8fCBghIoQ=;
+        b=g7IIVw5mpZul53Zs3hdJ3thmimGNpX0RXR4W1LrDgxryey3fjapL4cMmaE0sIt84H1
+         x6cejBvmUUCHnj/OsTk8fkR+13sLsQBY3TeI3M9fM97OHp20X11vS7eDLC1snS+XpKs5
+         RvbhqhwOclPQUX0ZKTjqlMCgGcw9qSZ8BGgPOx+B3YORPa3r9n/tyXex0AAz0QkRvk52
+         cWK+oZH8HX199tAycKWgU4P+2Wde9gDY80GQfy9L8lF19Qa2HrPzlC1P/YUMBWWR9mfA
+         jeRVjWTRuvkH+yHK+p1VrJY0hUW2enuzzE+AG8XoquS7ZXZJIkqUtW+MuoXgznDxzv7h
+         gJCg==
+X-Gm-Message-State: AAQBX9diWXL8QczGeBswpzKpUt+2S1eyqutXyF8cwAp3ixnzMlZcGj/t
+        rUpgn6eLDWmrt9EzWzBinKY=
+X-Google-Smtp-Source: AKy350azQ89UZLvaddm6Z3VDyst1zflox4clYw4rnfSFxuzoRDeuuV/3Zd6lllztvql9crLxl5/cXg==
+X-Received: by 2002:a17:903:22cd:b0:1a1:bcf:db5f with SMTP id y13-20020a17090322cd00b001a10bcfdb5fmr36504598plg.25.1680282308139;
+        Fri, 31 Mar 2023 10:05:08 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:3c8])
+        by smtp.gmail.com with ESMTPSA id jw18-20020a170903279200b0019e88d9bed3sm1798093plb.210.2023.03.31.10.05.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Mar 2023 10:05:07 -0700 (PDT)
+Date:   Fri, 31 Mar 2023 10:05:04 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 1/3] bpf: Make struct task_struct an RCU-safe
+ type
+Message-ID: <20230331170504.umr5zmcraburmtkg@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230331005733.406202-1-void@manifault.com>
+ <20230331005733.406202-2-void@manifault.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCHv4 bpf-next 0/3] selftests/bpf: Add read_build_id function
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168028141949.20294.2685025381154219952.git-patchwork-notify@kernel.org>
-Date:   Fri, 31 Mar 2023 16:50:19 +0000
-References: <20230331093157.1749137-1-jolsa@kernel.org>
-In-Reply-To: <20230331093157.1749137-1-jolsa@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        sdf@google.com, haoluo@google.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230331005733.406202-2-void@manifault.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Mar 30, 2023 at 07:57:31PM -0500, David Vernet wrote:
+>  kernel/bpf/helpers.c                          | 11 ++-
+>  kernel/bpf/verifier.c                         |  1 +
+>  .../selftests/bpf/prog_tests/task_kfunc.c     |  2 +
+>  .../selftests/bpf/progs/task_kfunc_common.h   |  5 +
+>  .../selftests/bpf/progs/task_kfunc_failure.c  | 98 +++++++++++++++++--
+>  .../selftests/bpf/progs/task_kfunc_success.c  | 52 +++++++++-
+>  6 files changed, 153 insertions(+), 16 deletions(-)
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+See CI failures on gcc compiled kernel:
+https://github.com/kernel-patches/bpf/actions/runs/4570493668/jobs/8068004031
 
-On Fri, 31 Mar 2023 11:31:54 +0200 you wrote:
-> hi,
-> this selftests cleanup was previously posted as part of file build id changes [1],
-> which might take more time, so I'm sending the selftests changes separately so it
-> won't get stuck.
-> 
-> v4 changes:
->   - added size argument to read_build_id [Andrii]
->   - condition changes in parse_build_id_buf [Andrii]
->   - use ELF_C_READ_MMAP in elf_begin [Andrii]
->   - return -ENOENT in read_build_id if build id is not found [Andrii]
->   - dropped elf class check [Andrii]
-> 
-> [...]
+>  __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
+>  {
+> -	return get_task_struct(p);
+> +	if (refcount_inc_not_zero(&p->rcu_users))
+> +		return p;
+> +	return NULL;
+>  }
 
-Here is the summary with links:
-  - [PATCHv4,bpf-next,1/3] selftests/bpf: Add err.h header
-    https://git.kernel.org/bpf/bpf-next/c/328bafc9a373
-  - [PATCHv4,bpf-next,2/3] selftests/bpf: Add read_build_id function
-    https://git.kernel.org/bpf/bpf-next/c/88dc8b3605b3
-  - [PATCHv4,bpf-next,3/3] selftests/bpf: Replace extract_build_id with read_build_id
-    https://git.kernel.org/bpf/bpf-next/c/dcc46f51d770
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I wonder whether we should add a bit of safety net here.
+Like do not allow acquire of tasks with PF_KTHREAD | PF_EXITING
+or at least is_idle_task ?
