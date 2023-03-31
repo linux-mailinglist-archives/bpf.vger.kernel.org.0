@@ -2,121 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F94A6D1558
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 03:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813516D1589
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 04:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbjCaBvk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 21:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
+        id S229487AbjCaCU4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 22:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjCaBvj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 21:51:39 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D663C4;
-        Thu, 30 Mar 2023 18:51:38 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id l9-20020a17090a3f0900b0023d32684e7fso7327637pjc.1;
-        Thu, 30 Mar 2023 18:51:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680227498; x=1682819498;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6XM31ZrRumkictGFOXR0ExRhhRTlkDKTwiG7dCR1Fgc=;
-        b=JBYKiS094xTcv4zZS7qtqmMLeJJI3CBby4kLAUuMziXHD4GQX8kl0rVXktvDBOeoyg
-         kE039cqtRpT4ykTduffb4U40BvtNgW7zV0FAZz2WV0BqlSt5QYJpN8xupFHalEgYBWe2
-         Mcsh414OYAuBY4FJEwUvve3aBfy2EszbwJEObj//xKUmnHYc/UwK6WW03t6iLjufAyn2
-         ssTRNhrXIek059u92KiSZc+dkINIxwv0V3n+b0U3qPZgOYecnTJr8KDPd568UBe+Om+Y
-         JRzenMRK0Ov48J93rRexsFGKtXgwJ4lg877M0D9vxz9Zn9cUrB6aoYizchAGUP6OU+k8
-         mySQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680227498; x=1682819498;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6XM31ZrRumkictGFOXR0ExRhhRTlkDKTwiG7dCR1Fgc=;
-        b=Uu4kLQFVfW8/YOQHC61hjDkn8UFrpE091wKQ8D/5jl8vfA4afcDiJQwh1o007IN0Oj
-         13Q0/7/kLaaVqpuUlRT1yka8IblIyILK7ooQiHGSSYCIO1MjkdWFq933Phi5ABpzzpSj
-         bbwOXUYKPkIlg/8SHIWnhOsli5l/8gavcdvm1W+BrnT+fU5lABOxHVVRsZ/JkSugUJJj
-         iWXNYxDazy0zl9VSkW2vnLbJEr4v7Dud2BlJzqN0l4bzepWBU4cyzmPt12yhesdygC0b
-         rJ/gt9osChXO19nNEsGrfzVXXyr0YLdgTloFFdmUEGw79PalB+20xTRttiIHKp1UX8I6
-         dGcw==
-X-Gm-Message-State: AO0yUKWB8Ii21XFQ7+0jCC+/PAJCJ0uDtPzEUm3eZLkDDo+ag5E9uSxk
-        za1SquZxFXX1L6kEPBJe8K8=
-X-Google-Smtp-Source: AK7set+UsxaaL85PLpysrGl07KRn5Za7qkDJ8HMzgvL3jq6cxWJYGFqxj4m0ugsbcUIAh+0HWFj1QQ==
-X-Received: by 2002:a05:6a20:b291:b0:ce:ca9:ab56 with SMTP id ei17-20020a056a20b29100b000ce0ca9ab56mr23322786pzb.34.1680227497775;
-        Thu, 30 Mar 2023 18:51:37 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id i17-20020aa787d1000000b00627ed4e23e0sm497016pfo.101.2023.03.30.18.51.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 18:51:37 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 30 Mar 2023 15:51:35 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-Message-ID: <ZCY8p/i6DR2tXPLP@slm.duckdns.org>
-References: <ZB5UalkjGngcBDEJ@slm.duckdns.org>
- <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com>
- <CALvZod6rF0D21hcV7xnqD+oRkn=x5NLi5GOkPpyaPa859uDH+Q@mail.gmail.com>
- <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com>
- <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com>
- <CAJD7tkZrp=4zWvjE9_010TAG1T_crCbf9P64UzJABspgcrGPKg@mail.gmail.com>
- <ZCSJDpPPOVvBYfOy@slm.duckdns.org>
- <f9b6410-ee17-635f-a35d-559fa0191dc3@google.com>
- <ZCSY8l/jVwszF6iA@slm.duckdns.org>
- <98cb3ce-7ed9-3d17-9015-ef7193d6627@google.com>
+        with ESMTP id S229475AbjCaCUz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 22:20:55 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682BDDBF7;
+        Thu, 30 Mar 2023 19:20:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F09CAB82B88;
+        Fri, 31 Mar 2023 02:20:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FCC5C433EF;
+        Fri, 31 Mar 2023 02:20:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680229251;
+        bh=Qs7l3Yz/B132+q5vXSX799s84Z+/P4SKudvR3kuc+jY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M7C6XBh0tsPTaKgSFEDTq4hyjnyEuChLRkqo8iJntADvfQjLtSFy71wTsjCnEx6VZ
+         jZwXXhG0RZY7+vaCvAQ8TCUFAV3lyBYwZmMv+ggT3fY6XDpPOTX53jom4koI+Wqx6Y
+         BlbCFlEo1cUyyS7QEgdQZKfU+Fm+K0NDkWm4dkFsB4ukBvdLGyNLt1K8OphJ+U8RFg
+         J/lhjgh4kl11LGyPr2zrrgu9qUGIImoJWMgXsvjK1dnPlriUr1phn8m8YJ3pFoefAf
+         WmVKQI3ANJHoqpW4hN3EkVGde1m5KWXGeg76r8R338qVVOx6MMzcLQzG87XcN+2Kat
+         p9XgvnK6nUHpQ==
+Date:   Thu, 30 Mar 2023 19:20:50 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jason Xing <kerneljasonxing@gmail.com>
+Cc:     jbrouer@redhat.com, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        stephen@networkplumber.org, simon.horman@corigine.com,
+        sinquersw@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jason Xing <kernelxing@tencent.com>
+Subject: Re: [PATCH v4 net-next 2/2] net: introduce budget_squeeze to help
+ us tune rx behavior
+Message-ID: <20230330192050.1e057776@kernel.org>
+In-Reply-To: <CAL+tcoBKiVqETEAPPawLbS_OF0Eb6HgZRHe-=W81bVKCkpr4Rg@mail.gmail.com>
+References: <20230315092041.35482-1-kerneljasonxing@gmail.com>
+        <20230315092041.35482-3-kerneljasonxing@gmail.com>
+        <20230316172020.5af40fe8@kernel.org>
+        <CAL+tcoDNvMUenwNEH2QByEY7cS1qycTSw1TLFSnNKt4Q0dCJUw@mail.gmail.com>
+        <20230316202648.1f8c2f80@kernel.org>
+        <CAL+tcoCRn7RfzgrODp+qGv_sYEfv+=1G0Jm=yEoCoi5K8NfSSA@mail.gmail.com>
+        <20230330092316.52bb7d6b@kernel.org>
+        <CAL+tcoBKiVqETEAPPawLbS_OF0Eb6HgZRHe-=W81bVKCkpr4Rg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98cb3ce-7ed9-3d17-9015-ef7193d6627@google.com>
-X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, Hugh.
+On Fri, 31 Mar 2023 08:48:07 +0800 Jason Xing wrote:
+> On Fri, Mar 31, 2023 at 12:23=E2=80=AFAM Jakub Kicinski <kuba@kernel.org>=
+ wrote:
+> > On Thu, 30 Mar 2023 17:59:46 +0800 Jason Xing wrote: =20
+> > > I'm wondering for now if I can update and resend this patch to have a
+> > > better monitor (actually we do need one) on this part since we have
+> > > touched the net_rx_action() in the rps optimization patch series?
+> > > Also, just like Jesper mentioned before, it can be considered as one
+> > > 'fix' to a old problem but targetting to net-next is just fine. What
+> > > do you think about it ? =20
+> >
+> > Sorry, I don't understand what you're trying to say :( =20
+>=20
+> Previously this patch was not accepted because we do not want to touch
+> softirqs (actually which is net_rx_action()). Since it is touched in
+> the commit [1] in recent days, I would like to ask your permission:
+> could I resend this patch to the mailing list? I hope we can get it
+> merged.
+>=20
+> This patch can be considered as a 'fix' to the old problem. It's
+> beneficial and harmless, I think :)
 
-On Wed, Mar 29, 2023 at 01:38:48PM -0700, Hugh Dickins wrote:
-> > So, in general, there's a trade off between local irq service latency and
-> > inducing global lock contention when using unprotected locks. With more and
-> > more CPUs, the balance keeps shifting. The balance still very much depends
-> > on the specifics of a given lock but yeah I think it's something we need to
-> > be a lot more careful about now.
-> 
-> And this looks a very plausible argument to me: I'll let it sink in.
-
-Another somewhat relevant change is that flipping irq on/off used to be
-relatively expensive on older x86 cpus. I forget all details about when and
-how much but they should be a lot cheaper now. No idea about !x86 cpus tho.
-
-> But I hadn't heard that the RT folks were clamouring for more irq disabling:
-> perhaps they partition their machines with more care, and are not devotees
-> of high CPU counts.
-
-I think RT folks care a lot more about raw IRQ disables. These shouldn't
-actually disable IRQs on RT kernels.
-
-Thanks.
-
--- 
-tejun
+The not touching part was about softirqs which is kernel/softirq.c,
+this patch was rejected because it's not useful.
