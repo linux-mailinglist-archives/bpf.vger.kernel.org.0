@@ -2,136 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3806D1488
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 02:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F94A6D1558
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 03:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjCaA54 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 20:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
+        id S229646AbjCaBvk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 21:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbjCaA5v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 20:57:51 -0400
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0E21287A;
-        Thu, 30 Mar 2023 17:57:42 -0700 (PDT)
-Received: by mail-qv1-f54.google.com with SMTP id on15so2200994qvb.7;
-        Thu, 30 Mar 2023 17:57:42 -0700 (PDT)
+        with ESMTP id S229475AbjCaBvj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 21:51:39 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D663C4;
+        Thu, 30 Mar 2023 18:51:38 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id l9-20020a17090a3f0900b0023d32684e7fso7327637pjc.1;
+        Thu, 30 Mar 2023 18:51:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680227498; x=1682819498;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6XM31ZrRumkictGFOXR0ExRhhRTlkDKTwiG7dCR1Fgc=;
+        b=JBYKiS094xTcv4zZS7qtqmMLeJJI3CBby4kLAUuMziXHD4GQX8kl0rVXktvDBOeoyg
+         kE039cqtRpT4ykTduffb4U40BvtNgW7zV0FAZz2WV0BqlSt5QYJpN8xupFHalEgYBWe2
+         Mcsh414OYAuBY4FJEwUvve3aBfy2EszbwJEObj//xKUmnHYc/UwK6WW03t6iLjufAyn2
+         ssTRNhrXIek059u92KiSZc+dkINIxwv0V3n+b0U3qPZgOYecnTJr8KDPd568UBe+Om+Y
+         JRzenMRK0Ov48J93rRexsFGKtXgwJ4lg877M0D9vxz9Zn9cUrB6aoYizchAGUP6OU+k8
+         mySQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680224262; x=1682816262;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1680227498; x=1682819498;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a2HAELiYxMwO28bC3+J9qfIMUXe3QPmftJ2DsQn4LZo=;
-        b=TfD18HyLQtJeiv2iyc29Hb1AFGuW4AL1/YrVXkw6jjWgkUHaOG6ETfAYM3h/CmIz5G
-         iregs9hK02ZpTGmFFBd57trMDHqxtwWLRzYYD6gjAg7d09TTIx7FBLXK6Qf1LI2/x6st
-         KQuO7IqNIHTDxRVEbbGA3kdW/ZlbI/3AuL/XBG3bGSqTIV0Doke61eASSkutPZJDBrg1
-         xGBSMuXBZEGm9KKpZ58QWaEWRDZdA5nqXwFn6IHF4hePMVrdVgbP4XE4iqvLySYmTR3r
-         oP8YtDd4MiGvxRA9KMxvI1rZT0ppEGk6y1G7MilJH3Tu1Jv61+xD/A67POAwOJ0shH0x
-         ftSw==
-X-Gm-Message-State: AAQBX9flZfg+yb44vLzpe4uqGbqu64z5pOp9RuAVima6rW8qOmrjJN+f
-        Dz4HvbGseik+re5djvMBqTDs8DEjDdREvblG
-X-Google-Smtp-Source: AKy350bFoDhg0ywndRPXD1hgcLcVwfLGZIutGa9huWRoKqjC2CVyzg+C465z9zYd6rzX7TJswPmGfA==
-X-Received: by 2002:ad4:5d6d:0:b0:5a6:1571:1eb with SMTP id fn13-20020ad45d6d000000b005a6157101ebmr46195371qvb.27.1680224261529;
-        Thu, 30 Mar 2023 17:57:41 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:d9ee])
-        by smtp.gmail.com with ESMTPSA id mh10-20020a056214564a00b005dd8b9345d7sm221514qvb.111.2023.03.30.17.57.40
+        bh=6XM31ZrRumkictGFOXR0ExRhhRTlkDKTwiG7dCR1Fgc=;
+        b=Uu4kLQFVfW8/YOQHC61hjDkn8UFrpE091wKQ8D/5jl8vfA4afcDiJQwh1o007IN0Oj
+         13Q0/7/kLaaVqpuUlRT1yka8IblIyILK7ooQiHGSSYCIO1MjkdWFq933Phi5ABpzzpSj
+         bbwOXUYKPkIlg/8SHIWnhOsli5l/8gavcdvm1W+BrnT+fU5lABOxHVVRsZ/JkSugUJJj
+         iWXNYxDazy0zl9VSkW2vnLbJEr4v7Dud2BlJzqN0l4bzepWBU4cyzmPt12yhesdygC0b
+         rJ/gt9osChXO19nNEsGrfzVXXyr0YLdgTloFFdmUEGw79PalB+20xTRttiIHKp1UX8I6
+         dGcw==
+X-Gm-Message-State: AO0yUKWB8Ii21XFQ7+0jCC+/PAJCJ0uDtPzEUm3eZLkDDo+ag5E9uSxk
+        za1SquZxFXX1L6kEPBJe8K8=
+X-Google-Smtp-Source: AK7set+UsxaaL85PLpysrGl07KRn5Za7qkDJ8HMzgvL3jq6cxWJYGFqxj4m0ugsbcUIAh+0HWFj1QQ==
+X-Received: by 2002:a05:6a20:b291:b0:ce:ca9:ab56 with SMTP id ei17-20020a056a20b29100b000ce0ca9ab56mr23322786pzb.34.1680227497775;
+        Thu, 30 Mar 2023 18:51:37 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id i17-20020aa787d1000000b00627ed4e23e0sm497016pfo.101.2023.03.30.18.51.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 17:57:40 -0700 (PDT)
-From:   David Vernet <void@manifault.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com
-Subject: [PATCH bpf-next 3/3] bpf,docs: Update documentation to reflect new task kfuncs
-Date:   Thu, 30 Mar 2023 19:57:33 -0500
-Message-Id: <20230331005733.406202-4-void@manifault.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230331005733.406202-1-void@manifault.com>
-References: <20230331005733.406202-1-void@manifault.com>
+        Thu, 30 Mar 2023 18:51:37 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 30 Mar 2023 15:51:35 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
+ percpu lock
+Message-ID: <ZCY8p/i6DR2tXPLP@slm.duckdns.org>
+References: <ZB5UalkjGngcBDEJ@slm.duckdns.org>
+ <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com>
+ <CALvZod6rF0D21hcV7xnqD+oRkn=x5NLi5GOkPpyaPa859uDH+Q@mail.gmail.com>
+ <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com>
+ <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com>
+ <CAJD7tkZrp=4zWvjE9_010TAG1T_crCbf9P64UzJABspgcrGPKg@mail.gmail.com>
+ <ZCSJDpPPOVvBYfOy@slm.duckdns.org>
+ <f9b6410-ee17-635f-a35d-559fa0191dc3@google.com>
+ <ZCSY8l/jVwszF6iA@slm.duckdns.org>
+ <98cb3ce-7ed9-3d17-9015-ef7193d6627@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.5 required=5.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98cb3ce-7ed9-3d17-9015-ef7193d6627@google.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that struct task_struct objects are RCU safe, and bpf_task_acquire()
-can return NULL, we should update the BPF task kfunc documentation to
-reflect the current state of the API.
+Hello, Hugh.
 
-Signed-off-by: David Vernet <void@manifault.com>
----
- Documentation/bpf/kfuncs.rst | 49 +++++++++++++++++++++++++++++++-----
- 1 file changed, 43 insertions(+), 6 deletions(-)
+On Wed, Mar 29, 2023 at 01:38:48PM -0700, Hugh Dickins wrote:
+> > So, in general, there's a trade off between local irq service latency and
+> > inducing global lock contention when using unprotected locks. With more and
+> > more CPUs, the balance keeps shifting. The balance still very much depends
+> > on the specifics of a given lock but yeah I think it's something we need to
+> > be a lot more careful about now.
+> 
+> And this looks a very plausible argument to me: I'll let it sink in.
 
-diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-index bf1b85941452..d8a16c4bef7f 100644
---- a/Documentation/bpf/kfuncs.rst
-+++ b/Documentation/bpf/kfuncs.rst
-@@ -471,13 +471,50 @@ struct_ops callback arg. For example:
- 		struct task_struct *acquired;
- 
- 		acquired = bpf_task_acquire(task);
-+		if (acquired)
-+			/*
-+			 * In a typical program you'd do something like store
-+			 * the task in a map, and the map will automatically
-+			 * release it later. Here, we release it manually.
-+			 */
-+			bpf_task_release(acquired);
-+		return 0;
-+	}
-+
-+
-+References acquired on ``struct task_struct *`` objects are RCU protected.
-+Therefore, when in an RCU read region, you can obtain a pointer to a task
-+embedded in a map value without having to acquire a reference:
-+
-+.. code-block:: c
-+
-+	#define private(name) SEC(".data." #name) __hidden __attribute__((aligned(8)))
-+	private(TASK) static struct task_struct *global;
-+
-+	/**
-+	 * A trivial example showing how to access a task stored
-+	 * in a map using RCU.
-+	 */
-+	SEC("tp_btf/task_newtask")
-+	int BPF_PROG(task_rcu_read_example, struct task_struct *task, u64 clone_flags)
-+	{
-+		struct task_struct *local_copy;
-+
-+		bpf_rcu_read_lock();
-+		local_copy = global;
-+		if (local_copy)
-+			/*
-+			 * We could also pass local_copy to kfuncs or helper functions here,
-+			 * as we're guaranteed that local_copy will be valid until we exit
-+			 * the RCU read region below.
-+			 */
-+			bpf_printk("Global task %s is valid", local_copy->comm);
-+		else
-+			bpf_printk("No global task found");
-+		bpf_rcu_read_unlock();
-+
-+		/* At this point we can no longer reference local_copy. */
- 
--		/*
--		 * In a typical program you'd do something like store
--		 * the task in a map, and the map will automatically
--		 * release it later. Here, we release it manually.
--		 */
--		bpf_task_release(acquired);
- 		return 0;
- 	}
- 
+Another somewhat relevant change is that flipping irq on/off used to be
+relatively expensive on older x86 cpus. I forget all details about when and
+how much but they should be a lot cheaper now. No idea about !x86 cpus tho.
+
+> But I hadn't heard that the RT folks were clamouring for more irq disabling:
+> perhaps they partition their machines with more care, and are not devotees
+> of high CPU counts.
+
+I think RT folks care a lot more about raw IRQ disables. These shouldn't
+actually disable IRQs on RT kernels.
+
+Thanks.
+
 -- 
-2.39.0
-
+tejun
