@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 980D16D2319
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 16:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAE76D2326
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 16:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbjCaOxD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 10:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
+        id S233036AbjCaOx2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 10:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbjCaOw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 10:52:58 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FF51E718
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 07:52:36 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id l27so22709554wrb.2
-        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 07:52:36 -0700 (PDT)
+        with ESMTP id S233035AbjCaOxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 10:53:09 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DB71DF9A
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 07:52:53 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id s13so13031965wmr.4
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 07:52:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680274355;
+        d=isovalent.com; s=google; t=1680274372;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ktIwYpxO1Lv0ZMglh5zUQer4d6hi6iZqSeZEBlXZU5I=;
-        b=JqJheeHYv9GsLix14aRCaepqaY+tAomVOEmGlJg/8G0Dhw+9k1ht9iK3fKtQKIdaRe
-         PPFrb/oI//LUDCrW6e8yDtcQJXGevFIvcsRT1vmDBxJ7F8cEnM9vZ0MwmH31/2TPLHr6
-         Q/gmFdhRMQUVbWZo5ft7USXDGSwFxh+L3H0SVRlS2FNatu9yoM7Uz0JpQD0p6kJXAfsK
-         oK93TwyJetUjtK4P1wJ+8KueLj2nRpeNN8lgDTfZrYAK0IazTYog+kfljnugBQ6JMJyj
-         NtfTFTi+87OZGCZ04VS8HnnWMPfW2YaqdcJCFyUiIBbLtLJ9+arEjFdOdByjG7ByipSa
-         6KDQ==
+        bh=wG8mJy96PY4usBRIGUsanQ5FkXRUkj23SFXfIcJ+Wv8=;
+        b=RgMZFuQmKolmBFm2j2eRnu1i8D8CwBkLfg6nRE2NKV0d3ASERRHrlQMAMwyhx1BaRf
+         xzuQCmV2XCZXTFrW9dTDIzOyy+FrXbc53SUo2qlNAQ5rDdyfRHS7ZpYx9efABuhUfMBG
+         2D0N9y9XSXFbj6uJUMEHKN85hXgnvjBhorOzrm3ubbFezhWYs1iPl9Jh8lm5ySfw6HE2
+         cCwGazF0116IvleXsdH557XU1kRYj+lmxThkMNMJ0exBfVQYvX1Txrnoo5HQqd1JQFnE
+         mNKjE6fYJb1aEjcFv5ghr6Z7BLBcpZD0zJ596W5VIvB85TCXMffJzd15S3jr8rRN2hxl
+         4Xvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680274355;
+        d=1e100.net; s=20210112; t=1680274372;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ktIwYpxO1Lv0ZMglh5zUQer4d6hi6iZqSeZEBlXZU5I=;
-        b=Ub0I/XOyORVrGCrbKLRXOfGepHrTzyhrVJEPigROi2ktyEbfAKN4SbRRnLq+0WhMN9
-         FCw/ZViSCUOBg+u+Tsk7H7t5/WLGftsoz0Swewp8VEGAxN3VHGOVkRLiiDV+Ld68+zIY
-         NG4AnAUiHSmn3M1N0FDG8o30F1MK2+dI9ZSbCYmT9CAWD7LqeiY57cFskcBeshCX9VmB
-         yj4MYDQkWhts75e9Ij92AtKuIn2ruQy1bBQaBG2gn71DB/iZLGVqOJtRUY6fYi7xFISV
-         R0y+bu/xvu2JMuyv1mtDgwvx6P/j/zzUMfO9lSeF3R4m0z788nFGc/U51qs0ouRcfIq9
-         Kmxg==
-X-Gm-Message-State: AAQBX9cdTMdeP6rBQsJm6nrhBIJWyQU7BS9WJXzjVPhSkWHHRMSiRJya
-        /gP1xSIzRzRDnh1mkgv3XHsPLQbxMfHYWhR14XaWqw==
-X-Google-Smtp-Source: AKy350Zu9S8iSj/EX3EBHNKU7k+uJcwRtVJkkIYmDeWfWPT4vIRVTIms5K4W9chRB0d2iIisCJGBMA==
-X-Received: by 2002:a05:6000:50b:b0:2db:bca:ac7d with SMTP id a11-20020a056000050b00b002db0bcaac7dmr20811502wrf.67.1680274354843;
-        Fri, 31 Mar 2023 07:52:34 -0700 (PDT)
+        bh=wG8mJy96PY4usBRIGUsanQ5FkXRUkj23SFXfIcJ+Wv8=;
+        b=IugwxrSOuLMGYVoyQXpwKSZ4IImKuk8JrmPq4dSEhv96ug9bUDRSCyFpEEGAfgX3fK
+         lXtBfWeeuiZbr5u0ULX8SOZKrsEzc15ty1XmulLBPUr+omyLYZfMfTMH5+Rk6aDyVa20
+         L8Ud19TvqGQvvkApseiOhlDHvwS3VN7f04CdcSRC+zo9eht44O22OIqbs9qDAmEr/Dch
+         rkvXDmhosC87AjjUmtfv1vnRENbtCD5bSmAGNdsnMPWpN8VShT78K0GFcP0oy3A+0QKu
+         oDPRsRiQwcUzOlpPQJAHtV2EV/MCCoSOo62uhFi4zM1Kci83BrcnctGnQRdMufu2un33
+         Jnfg==
+X-Gm-Message-State: AO0yUKUp0dCHsvxnO5ha7AF46vJs8KKA4hThAszipS87Bz2yj1WLXvQA
+        yADb9mDParvR17+cO0dq4svPaAIBAyt+5JGYSUd6vQ==
+X-Google-Smtp-Source: AK7set9YaXLoAZH8XmSaYn3KQWHTuJKG0U199djrZZYEfnOwNxguRF0oROHO5JZ4JowlKDq5QIM+TA==
+X-Received: by 2002:a05:600c:204:b0:3ea:d620:57a7 with SMTP id 4-20020a05600c020400b003ead62057a7mr21400080wmi.8.1680274371702;
+        Fri, 31 Mar 2023 07:52:51 -0700 (PDT)
 Received: from ?IPV6:2a02:8011:e80c:0:2132:91fa:4658:d135? ([2a02:8011:e80c:0:2132:91fa:4658:d135])
-        by smtp.gmail.com with ESMTPSA id w18-20020a5d6812000000b002cde25fba30sm2428422wru.1.2023.03.31.07.52.34
+        by smtp.gmail.com with ESMTPSA id m9-20020a7bcb89000000b003ed4f6c6234sm2911107wmi.23.2023.03.31.07.52.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Mar 2023 07:52:34 -0700 (PDT)
-Message-ID: <7f785b9b-7e61-2b05-1170-64bcb2fd44c4@isovalent.com>
-Date:   Fri, 31 Mar 2023 15:52:33 +0100
+        Fri, 31 Mar 2023 07:52:51 -0700 (PDT)
+Message-ID: <899fb41c-2bc4-c60f-c83b-4eb5c348e711@isovalent.com>
+Date:   Fri, 31 Mar 2023 15:52:50 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.0
-Subject: Re: [PATCH bpf-next v2 3/5] bpftool: Support inline annotations when
- dumping the CFG of a program
+Subject: Re: [PATCH bpf-next v2 5/5] bpftool: Support printing opcodes and
+ source file references in CFG
 Content-Language: en-GB
 To:     Eduard Zingerman <eddyz87@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -69,10 +69,10 @@ Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         bpf@vger.kernel.org
 References: <20230327110655.58363-1-quentin@isovalent.com>
- <20230327110655.58363-4-quentin@isovalent.com>
- <288e8ccf770d28d47f26d31c989d65ab29fdf05c.camel@gmail.com>
+ <20230327110655.58363-6-quentin@isovalent.com>
+ <fa28d05a6a123aea329a02ac666dbb18e7c5f519.camel@gmail.com>
 From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <288e8ccf770d28d47f26d31c989d65ab29fdf05c.camel@gmail.com>
+In-Reply-To: <fa28d05a6a123aea329a02ac666dbb18e7c5f519.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -85,252 +85,239 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Eduard, apologies for the slow answer
-
-2023-03-27 20:02 UTC+0300 ~ Eduard Zingerman <eddyz87@gmail.com>
+2023-03-27 20:04 UTC+0300 ~ Eduard Zingerman <eddyz87@gmail.com>
 > On Mon, 2023-03-27 at 12:06 +0100, Quentin Monnet wrote:
->> We support dumping the control flow graph of loaded programs to the DOT
->> format with bpftool, but so far this feature wouldn't display the source
->> code lines available through BTF along with the eBPF bytecode. Let's add
->> support for these annotations, to make it easier to read the graph.
->>
->> In prog.c, we move the call to dump_xlated_cfg() in order to pass and
->> use the full struct dump_data, instead of creating a minimal one in
->> draw_bb_node().
->>
->> We pass the pointer to this struct down to dump_xlated_for_graph() in
->> xlated_dumper.c, where most of the logics is added. We deal with BTF
->> mostly like we do for plain or JSON output, except that we cannot use a
->> "nr_skip" value to skip a given number of linfo records (we don't
->> process the BPF instructions linearly, and apart from the root of the
->> graph we don't know how many records we should skip, so we just store
->> the last linfo and make sure the new one we find is different before
->> printing it).
->>
->> When printing the source instructions to the label of a DOT graph node,
->> there are a few subtleties to address. We want some special newline
->> markers, and there are some characters that we must escape. To deal with
->> them, we introduce a new dedicated function btf_dump_linfo_dotlabel() in
->> btf_dumper.c. We'll reuse this function in a later commit to format the
->> filepath, line, and column references as well.
+>> Add support for displaying opcodes or/and file references (filepath,
+>> line and column numbers) when dumping the control flow graphs of loaded
+>> BPF programs with bpftool.
 >>
 >> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 >> Acked-by: Stanislav Fomichev <sdf@google.com>
 >> ---
->>  tools/bpf/bpftool/btf_dumper.c    | 32 +++++++++++++++++++++++++++++++
->>  tools/bpf/bpftool/cfg.c           | 23 ++++++++++------------
->>  tools/bpf/bpftool/cfg.h           |  4 +++-
->>  tools/bpf/bpftool/main.h          |  2 ++
->>  tools/bpf/bpftool/prog.c          | 17 +++++++---------
->>  tools/bpf/bpftool/xlated_dumper.c | 32 ++++++++++++++++++++++++++++++-
->>  6 files changed, 85 insertions(+), 25 deletions(-)
+>>  tools/bpf/bpftool/btf_dumper.c    | 19 ++++++++++++++++++-
+>>  tools/bpf/bpftool/cfg.c           | 22 ++++++++++++++--------
+>>  tools/bpf/bpftool/cfg.h           |  3 ++-
+>>  tools/bpf/bpftool/main.h          |  2 +-
+>>  tools/bpf/bpftool/prog.c          |  2 +-
+>>  tools/bpf/bpftool/xlated_dumper.c | 15 +++++++++++++--
+>>  tools/bpf/bpftool/xlated_dumper.h |  3 ++-
+>>  7 files changed, 51 insertions(+), 15 deletions(-)
 >>
 >> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
->> index e7f6ec3a8f35..8bfc1b69497d 100644
+>> index 8bfc1b69497d..24835c3f9a1c 100644
 >> --- a/tools/bpf/bpftool/btf_dumper.c
 >> +++ b/tools/bpf/bpftool/btf_dumper.c
->> @@ -821,3 +821,35 @@ void btf_dump_linfo_json(const struct btf *btf,
->>  					BPF_LINE_INFO_LINE_COL(linfo->line_col));
->>  	}
->>  }
->> +
->> +static void dotlabel_puts(const char *s)
->> +{
->> +	for (; *s; ++s) {
->> +		switch (*s) {
->> +		case '\\':
->> +		case '"':
->> +		case '{':
->> +		case '}':
->> +		case '>':
-> 
-> The "case '<':" is missing, w/o it dot reports warnings as follows:
-> 
->   Error: bad label format {; if (hdr + hdr_size <= data_end)...
-
-Good catch, thank you!
-
-> 
-> I used existing bpt testcase for testing:
-> 
->   $ cd <kernel>/tools/testing/selftests/bpf
->   $ bpftool prog load bpf_flow.bpf.o /sys/fs/bpf/test-prog
->   $ prog dump xlated pinned /sys/fs/bpf/test-prog visual > test.cfg
->   $ dot -Tpng -O test.cfg
->   
-> Also [1] says the following:
-> 
->> Braces, vertical bars and angle brackets must be escaped with a
->> backslash character if you wish them to appear as a literal
->> character. Spaces are interpreted as separators between tokens, so
->> they must be escaped if you want spaces in the text.
-> 
-> So, maybe escape spaces as well?
-> 
-> [1] https://graphviz.org/doc/info/shapes.html#record
-
-I hesitated a little, because we risk getting a wider output if we
-preserve spaces. But it's maybe better to preserve the initial line
-rather than to decide we can get rid of sequences with multiple
-spaces... OK I'll escape them, too.
-
-> 
->> +		case '|':
->> +			putchar('\\');
->> +			__fallthrough;
->> +		default:
->> +			putchar(*s);
->> +		}
->> +	}
->> +}
->> +
->> +void btf_dump_linfo_dotlabel(const struct btf *btf,
->> +			     const struct bpf_line_info *linfo)
->> +{
->> +	const char *line = btf__name_by_offset(btf, linfo->line_off);
->> +
->> +	if (!line)
->> +		return;
->> +	line = ltrim(line);
->> +
->> +	printf("; ");
->> +	dotlabel_puts(line);
->> +	printf("\\l\\\n");
->> +}
->> diff --git a/tools/bpf/bpftool/cfg.c b/tools/bpf/bpftool/cfg.c
->> index 1951219a9af7..9fdc1f0cdd6e 100644
->> --- a/tools/bpf/bpftool/cfg.c
->> +++ b/tools/bpf/bpftool/cfg.c
->> @@ -380,7 +380,8 @@ static void cfg_destroy(struct cfg *cfg)
->>  	}
+>> @@ -841,7 +841,7 @@ static void dotlabel_puts(const char *s)
 >>  }
 >>  
->> -static void draw_bb_node(struct func_node *func, struct bb_node *bb)
->> +static void
->> +draw_bb_node(struct func_node *func, struct bb_node *bb, struct dump_data *dd)
+>>  void btf_dump_linfo_dotlabel(const struct btf *btf,
+>> -			     const struct bpf_line_info *linfo)
+>> +			     const struct bpf_line_info *linfo, bool linum)
+>>  {
+>>  	const char *line = btf__name_by_offset(btf, linfo->line_off);
+>>  
+>> @@ -849,6 +849,23 @@ void btf_dump_linfo_dotlabel(const struct btf *btf,
+>>  		return;
+>>  	line = ltrim(line);
+>>  
+>> +	if (linum) {
+>> +		const char *file = btf__name_by_offset(btf, linfo->file_name_off);
+>> +
+>> +		/* More forgiving on file because linum option is
+>> +		 * expected to provide more info than the already
+>> +		 * available src line.
+>> +		 */
+>> +		if (!file)
+>> +			file = "";
+>> +
+>> +		printf("; [file:");
+>> +		dotlabel_puts(file);
+>> +		printf("line_num:%u line_col:%u]\\l\\\n",
+> 
+> Space between file name and 'line_num' is missing.
+
+My bad, thanks!
+
+> 
+> Also, at-least for BPF test-cases the labels might become quite long,
+> which makes graph unnecessarily wide, e.g.:
+> 
+>   ; [file:/home/eddy/work/bpf-next/tools/testing/selftests/bpf/progs/bpf_flow.cline_num:97 line_col:34]\l\
+> 
+> The file names are encoded in full during compilation, but maybe
+> shorten long file names by removing some preceding levels
+> (and use shorter tags 'line:', 'col:', is 'file:' tag necessary at all?).
+> For example:
+> 
+>   ; [.../progs/bpf_flow.c line:97 col:34]\l\.
+
+I thought about that but was unsure. But yeah, I suppose the risk of
+users getting confused about where the file is located is limited,
+especially given that we still have regular program dump that will keep
+the full path. OK I'll look into that for the next version.
+
+> 
+>> +		       BPF_LINE_INFO_LINE_NUM(linfo->line_col),
+>> +		       BPF_LINE_INFO_LINE_COL(linfo->line_col));
+>> +	}
+>> +
+>>  	printf("; ");
+>>  	dotlabel_puts(line);
+>>  	printf("\\l\\\n");
+>> diff --git a/tools/bpf/bpftool/cfg.c b/tools/bpf/bpftool/cfg.c
+>> index 9fdc1f0cdd6e..eec437cca2ea 100644
+>> --- a/tools/bpf/bpftool/cfg.c
+>> +++ b/tools/bpf/bpftool/cfg.c
+>> @@ -381,7 +381,8 @@ static void cfg_destroy(struct cfg *cfg)
+>>  }
+>>  
+>>  static void
+>> -draw_bb_node(struct func_node *func, struct bb_node *bb, struct dump_data *dd)
+>> +draw_bb_node(struct func_node *func, struct bb_node *bb, struct dump_data *dd,
+>> +	     bool opcodes, bool linum)
 >>  {
 >>  	const char *shape;
 >>  
->> @@ -398,13 +399,9 @@ static void draw_bb_node(struct func_node *func, struct bb_node *bb)
->>  		printf("EXIT");
->>  	} else {
+>> @@ -401,7 +402,8 @@ draw_bb_node(struct func_node *func, struct bb_node *bb, struct dump_data *dd)
 >>  		unsigned int start_idx;
->> -		struct dump_data dd = {};
->> -
->> -		printf("{");
->> -		kernel_syms_load(&dd);
->> +		printf("{\\\n");
+>>  		printf("{\\\n");
 >>  		start_idx = bb->head - func->start;
->> -		dump_xlated_for_graph(&dd, bb->head, bb->tail, start_idx);
->> -		kernel_syms_destroy(&dd);
->> +		dump_xlated_for_graph(dd, bb->head, bb->tail, start_idx);
+>> -		dump_xlated_for_graph(dd, bb->head, bb->tail, start_idx);
+>> +		dump_xlated_for_graph(dd, bb->head, bb->tail, start_idx,
+>> +				      opcodes, linum);
 >>  		printf("}");
 >>  	}
 >>  
->> @@ -430,12 +427,12 @@ static void draw_bb_succ_edges(struct func_node *func, struct bb_node *bb)
+>> @@ -427,12 +429,14 @@ static void draw_bb_succ_edges(struct func_node *func, struct bb_node *bb)
 >>  	}
 >>  }
 >>  
->> -static void func_output_bb_def(struct func_node *func)
->> +static void func_output_bb_def(struct func_node *func, struct dump_data *dd)
+>> -static void func_output_bb_def(struct func_node *func, struct dump_data *dd)
+>> +static void
+>> +func_output_bb_def(struct func_node *func, struct dump_data *dd,
+>> +		   bool opcodes, bool linum)
 >>  {
 >>  	struct bb_node *bb;
 >>  
 >>  	list_for_each_entry(bb, &func->bbs, l) {
->> -		draw_bb_node(func, bb);
->> +		draw_bb_node(func, bb, dd);
+>> -		draw_bb_node(func, bb, dd);
+>> +		draw_bb_node(func, bb, dd, opcodes, linum);
 >>  	}
 >>  }
 >>  
->> @@ -455,7 +452,7 @@ static void func_output_edges(struct func_node *func)
+>> @@ -452,7 +456,8 @@ static void func_output_edges(struct func_node *func)
 >>  	       func_idx, ENTRY_BLOCK_INDEX, func_idx, EXIT_BLOCK_INDEX);
 >>  }
 >>  
->> -static void cfg_dump(struct cfg *cfg)
->> +static void cfg_dump(struct cfg *cfg, struct dump_data *dd)
+>> -static void cfg_dump(struct cfg *cfg, struct dump_data *dd)
+>> +static void
+>> +cfg_dump(struct cfg *cfg, struct dump_data *dd, bool opcodes, bool linum)
 >>  {
 >>  	struct func_node *func;
 >>  
->> @@ -463,14 +460,14 @@ static void cfg_dump(struct cfg *cfg)
+>> @@ -460,14 +465,15 @@ static void cfg_dump(struct cfg *cfg, struct dump_data *dd)
 >>  	list_for_each_entry(func, &cfg->funcs, l) {
 >>  		printf("subgraph \"cluster_%d\" {\n\tstyle=\"dashed\";\n\tcolor=\"black\";\n\tlabel=\"func_%d ()\";\n",
 >>  		       func->idx, func->idx);
->> -		func_output_bb_def(func);
->> +		func_output_bb_def(func, dd);
+>> -		func_output_bb_def(func, dd);
+>> +		func_output_bb_def(func, dd, opcodes, linum);
 >>  		func_output_edges(func);
 >>  		printf("}\n");
 >>  	}
 >>  	printf("}\n");
 >>  }
 >>  
->> -void dump_xlated_cfg(void *buf, unsigned int len)
->> +void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len)
+>> -void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len)
+>> +void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len,
+>> +		     bool opcodes, bool linum)
 >>  {
 >>  	struct bpf_insn *insn = buf;
 >>  	struct cfg cfg;
->> @@ -479,7 +476,7 @@ void dump_xlated_cfg(void *buf, unsigned int len)
+>> @@ -476,7 +482,7 @@ void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len)
 >>  	if (cfg_build(&cfg, insn, len))
 >>  		return;
 >>  
->> -	cfg_dump(&cfg);
->> +	cfg_dump(&cfg, dd);
+>> -	cfg_dump(&cfg, dd);
+>> +	cfg_dump(&cfg, dd, opcodes, linum);
 >>  
 >>  	cfg_destroy(&cfg);
 >>  }
 >> diff --git a/tools/bpf/bpftool/cfg.h b/tools/bpf/bpftool/cfg.h
->> index e144257ea6d2..909d17e6d4c2 100644
+>> index 909d17e6d4c2..b3793f4e1783 100644
 >> --- a/tools/bpf/bpftool/cfg.h
 >> +++ b/tools/bpf/bpftool/cfg.h
->> @@ -4,6 +4,8 @@
->>  #ifndef __BPF_TOOL_CFG_H
->>  #define __BPF_TOOL_CFG_H
+>> @@ -6,6 +6,7 @@
 >>  
->> -void dump_xlated_cfg(void *buf, unsigned int len);
->> +#include "xlated_dumper.h"
->> +
->> +void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len);
+>>  #include "xlated_dumper.h"
+>>  
+>> -void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len);
+>> +void dump_xlated_cfg(struct dump_data *dd, void *buf, unsigned int len,
+>> +		     bool opcodes, bool linum);
 >>  
 >>  #endif /* __BPF_TOOL_CFG_H */
 >> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
->> index 0ef373cef4c7..e9ee514b22d4 100644
+>> index e9ee514b22d4..00d11ca6d3f2 100644
 >> --- a/tools/bpf/bpftool/main.h
 >> +++ b/tools/bpf/bpftool/main.h
->> @@ -229,6 +229,8 @@ void btf_dump_linfo_plain(const struct btf *btf,
->>  			  const char *prefix, bool linum);
+>> @@ -230,7 +230,7 @@ void btf_dump_linfo_plain(const struct btf *btf,
 >>  void btf_dump_linfo_json(const struct btf *btf,
 >>  			 const struct bpf_line_info *linfo, bool linum);
->> +void btf_dump_linfo_dotlabel(const struct btf *btf,
->> +			     const struct bpf_line_info *linfo);
+>>  void btf_dump_linfo_dotlabel(const struct btf *btf,
+>> -			     const struct bpf_line_info *linfo);
+>> +			     const struct bpf_line_info *linfo, bool linum);
 >>  
 >>  struct nlattr;
 >>  struct ifinfomsg;
 >> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
->> index afbe3ec342c8..d855118f0d96 100644
+>> index 567ac37dbd86..848f57a7d762 100644
 >> --- a/tools/bpf/bpftool/prog.c
 >> +++ b/tools/bpf/bpftool/prog.c
->> @@ -840,11 +840,6 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
->>  					      false))
->>  				goto exit_free;
->>  		}
->> -	} else if (visual) {
->> -		if (json_output)
->> -			jsonw_null(json_wtr);
->> -		else
->> -			dump_xlated_cfg(buf, member_len);
->>  	} else {
->>  		kernel_syms_load(&dd);
->>  		dd.nr_jited_ksyms = info->nr_jited_ksyms;
->> @@ -854,12 +849,14 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
->>  		dd.finfo_rec_size = info->func_info_rec_size;
->>  		dd.prog_linfo = prog_linfo;
+>> @@ -854,7 +854,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+>>  		else if (json_output)
+>>  			dump_xlated_json(&dd, buf, member_len, opcodes, linum);
+>>  		else if (visual)
+>> -			dump_xlated_cfg(&dd, buf, member_len);
+>> +			dump_xlated_cfg(&dd, buf, member_len, opcodes, linum);
+>>  		else
+>>  			dump_xlated_plain(&dd, buf, member_len, opcodes, linum);
+>>  		kernel_syms_destroy(&dd);
+>> diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
+>> index 5fbe94aa8589..c5e03833fadf 100644
+>> --- a/tools/bpf/bpftool/xlated_dumper.c
+>> +++ b/tools/bpf/bpftool/xlated_dumper.c
+>> @@ -361,7 +361,8 @@ void dump_xlated_plain(struct dump_data *dd, void *buf, unsigned int len,
+>>  }
 >>  
->> -		if (json_output)
->> -			dump_xlated_json(&dd, buf, member_len, opcodes,
->> -					 linum);
->> +		if (json_output && visual)
->> +			jsonw_null(json_wtr);
+>>  void dump_xlated_for_graph(struct dump_data *dd, void *buf_start, void *buf_end,
+>> -			   unsigned int start_idx)
+>> +			   unsigned int start_idx,
+>> +			   bool opcodes, bool linum)
+>>  {
+>>  	const struct bpf_insn_cbs cbs = {
+>>  		.cb_print	= print_insn_for_graph,
+>> @@ -405,7 +406,7 @@ void dump_xlated_for_graph(struct dump_data *dd, void *buf_start, void *buf_end,
+>>  
+>>  			linfo = bpf_prog_linfo__lfind(prog_linfo, insn_off, 0);
+>>  			if (linfo && linfo != last_linfo) {
+>> -				btf_dump_linfo_dotlabel(btf, linfo);
+>> +				btf_dump_linfo_dotlabel(btf, linfo, linum);
+>>  				last_linfo = linfo;
+>>  			}
+>>  		}
+>> @@ -413,6 +414,16 @@ void dump_xlated_for_graph(struct dump_data *dd, void *buf_start, void *buf_end,
+>>  		printf("%d: ", insn_off);
+>>  		print_bpf_insn(&cbs, cur, true);
+>>  
+>> +		if (opcodes) {
+>> +			printf("       ");
 > 
-> Should this be an error? Maybe check that json_output is false when
-> arguments are parsed and 'visual' is specified?
+> These spaces are treated as a single space by the dot renderer, as [1]
+> says: "Spaces are interpreted as separators between tokens, so they
+> must be escaped if you want spaces in the text."
+> 
+> [1] https://graphviz.org/doc/info/shapes.html#record
 
-Right, makes sense to turn this into an error.
+I noticed, I kept the multiple spaces to make the DOT output slightly
+more readable. But it would maybe make sense to indent more in the graph
+as well, if it doesn't make opcode sequences wider than instructions.
+I'll have a look at this.
