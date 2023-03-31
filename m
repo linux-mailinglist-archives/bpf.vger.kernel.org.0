@@ -2,105 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B56D16D1452
-	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 02:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912666D1485
+	for <lists+bpf@lfdr.de>; Fri, 31 Mar 2023 02:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbjCaAsr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Mar 2023 20:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
+        id S229905AbjCaA5x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Mar 2023 20:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjCaAsq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Mar 2023 20:48:46 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F625C15B;
-        Thu, 30 Mar 2023 17:48:45 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id x3so83491886edb.10;
-        Thu, 30 Mar 2023 17:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680223723; x=1682815723;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nxHd84F2YH6oOwsy7pHR9az94Ed8YsAsJQFPynfdEj0=;
-        b=oq4fk0yCNhZEmVxXW478SNrK3s6VHVNaDGFVaSi2MrBL3kcngpprw7+EaNhYcsM8ZG
-         SlYV6Y8n5JlCsEmv1RZu4QFpMo/0n2iKDIuGKWxbLbmpWwWb1vVzSFafsjUXJtxJ+b/F
-         lzo4PFCygxjf83IdkfN485CKTmiiK2uxblne1zWs3oziefsHFdDL5dL/QGJukElBxpdm
-         5cFTKITVbUaxQrweJCrbc3UxGFA1y5eWp4PTVOQR73jUOwmEUpB0lMXYrM72X1IH9i7J
-         MLf4oJVqK2FklC5857nhFehFQpsR6e+lkVV7grix+yzFSp3vBKB2gruuQmirZVP/GOHJ
-         SB9g==
+        with ESMTP id S229902AbjCaA5s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Mar 2023 20:57:48 -0400
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC46C11EBA;
+        Thu, 30 Mar 2023 17:57:37 -0700 (PDT)
+Received: by mail-qt1-f170.google.com with SMTP id p2so15227046qtw.13;
+        Thu, 30 Mar 2023 17:57:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680223723; x=1682815723;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nxHd84F2YH6oOwsy7pHR9az94Ed8YsAsJQFPynfdEj0=;
-        b=X1qyQd0QTJud3t/VPwH/CFLInksTIyrlUcSuQs+orP4cXKE6y0AzBBX69c/r8zE1Di
-         yc5A+5B0VjWmiqafooe3JY5vT+USGUzG3AGldw/qt+kWE0qxBFYT09laQvPQPHJr9mUK
-         otT80uRSORsO5P8eRXAKWvcWs+Rk5uPh6e3jGFRMFO946+kwRfKcn3YSPFyxi2UBA34M
-         IoRPHcGlS+kgw9paQzOF9wKl0nZoJZ2kbclQos2Zu2nCJyyzBVwUIzxKzXOu0y/JSvoe
-         /9csssm0Ils1kCvBZkJDLV4Il6A5WbSAcyjW6X+QBBRJXDnxOc/ZNQdEZfxhQQ/ouTuR
-         +6MQ==
-X-Gm-Message-State: AAQBX9fPK/emuCwpVkJz4LhnR/prHTVjuHAW7GiQKR7n8/pcOiY7F85L
-        u1tt659xqekW/mhkvxbU9Rq2Vmqm5S+gnFpf6/9EoSl/iqU=
-X-Google-Smtp-Source: AKy350a58GhEasY6NBm5jpQpEPK92a6/P1D+P/Rc6xbWllvA2TDH/OTjFwDpvFKW+Et+k04vlDvO4BEfKy0DwYA/ego=
-X-Received: by 2002:a17:907:cb86:b0:930:42bd:ef1d with SMTP id
- un6-20020a170907cb8600b0093042bdef1dmr12997961ejc.11.1680223723470; Thu, 30
- Mar 2023 17:48:43 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680224256; x=1682816256;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KJ1dpMPje81BSTbH4meHXMrj3lRV6Nvccz4UL4mrSY4=;
+        b=aBCBzBD7+sN6opFiwlYmd2tLXBC9WRxUnRDSg7CAZ3q+UhzujzH/OYCSC1aFLhjnU8
+         Mugq6pGToAkvlO/i7T6WJJ9QJB7OoLR0mSWVz32skX4LopU5tONYvBFr7sG1o5suL6rQ
+         YaJLvsLq0qaTJT+ER/csXHAjvwGuEbapXSnBR4hhNojZvwBltkKKfGh/ILlGTK0TzvOK
+         7Jz731yxkIf2yCPXC2DJNxXzi4FU8dSepdnzINKVyay1rzm6oADtglI00mwwwVcbEBKr
+         W2ur5/cik+J3Nc8/Dt0dOS8Qx8BiMMyrTU0xWrDWRUe8ElDopl7aJOcJvcIsHrBVuCrc
+         +5NQ==
+X-Gm-Message-State: AO0yUKW0H+N9vJ+xY/iya6c4AVL0NWXPRHMVRmxQp7TMm46jWs6hFFGU
+        9C6FMmIHJ+nRoeWKXOQG97Nkn26eoxEsw9eA
+X-Google-Smtp-Source: AK7set8cdqCl1Ccbi6bY6IHStv1RYhtQbV93P49J9OOELuKGOafR5weHiW8S5clqOLZANC0VWpKc7g==
+X-Received: by 2002:ac8:5cd2:0:b0:3bf:a061:6cb1 with SMTP id s18-20020ac85cd2000000b003bfa0616cb1mr43945071qta.46.1680224256505;
+        Thu, 30 Mar 2023 17:57:36 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:d9ee])
+        by smtp.gmail.com with ESMTPSA id bn29-20020a05620a2add00b007441b675e81sm283005qkb.22.2023.03.30.17.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Mar 2023 17:57:35 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: [PATCH bpf-next 0/3] Enable RCU semantics for task kptrs
+Date:   Thu, 30 Mar 2023 19:57:30 -0500
+Message-Id: <20230331005733.406202-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-References: <20230315092041.35482-1-kerneljasonxing@gmail.com>
- <20230315092041.35482-3-kerneljasonxing@gmail.com> <20230316172020.5af40fe8@kernel.org>
- <CAL+tcoDNvMUenwNEH2QByEY7cS1qycTSw1TLFSnNKt4Q0dCJUw@mail.gmail.com>
- <20230316202648.1f8c2f80@kernel.org> <CAL+tcoCRn7RfzgrODp+qGv_sYEfv+=1G0Jm=yEoCoi5K8NfSSA@mail.gmail.com>
- <20230330092316.52bb7d6b@kernel.org>
-In-Reply-To: <20230330092316.52bb7d6b@kernel.org>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Fri, 31 Mar 2023 08:48:07 +0800
-Message-ID: <CAL+tcoBKiVqETEAPPawLbS_OF0Eb6HgZRHe-=W81bVKCkpr4Rg@mail.gmail.com>
-Subject: Re: [PATCH v4 net-next 2/2] net: introduce budget_squeeze to help us
- tune rx behavior
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     jbrouer@redhat.com, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        stephen@networkplumber.org, simon.horman@corigine.com,
-        sinquersw@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.5 required=5.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 12:23=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
-rote:
->
-> On Thu, 30 Mar 2023 17:59:46 +0800 Jason Xing wrote:
-> > I'm wondering for now if I can update and resend this patch to have a
-> > better monitor (actually we do need one) on this part since we have
-> > touched the net_rx_action() in the rps optimization patch series?
-> > Also, just like Jesper mentioned before, it can be considered as one
-> > 'fix' to a old problem but targetting to net-next is just fine. What
-> > do you think about it ?
->
-> Sorry, I don't understand what you're trying to say :(
+In commit 22df776a9a86 ("tasks: Extract rcu_users out of union"), the
+'refcount_t rcu_users' field was extracted out of a union with the
+'struct rcu_head rcu' field. This allows us to use the field for
+refcounting struct task_struct with RCU protection, as the RCU callback
+no longer flips rcu_users to be nonzero after the callback is scheduled.
 
-Previously this patch was not accepted because we do not want to touch
-softirqs (actually which is net_rx_action()). Since it is touched in
-the commit [1] in recent days, I would like to ask your permission:
-could I resend this patch to the mailing list? I hope we can get it
-merged.
+This patch set leverages this to do a few things:
 
-This patch can be considered as a 'fix' to the old problem. It's
-beneficial and harmless, I think :)
+1. Marks struct task_struct as RCU safe in the verifier, allowing
+   referenced kptr tasks stored in maps to be accessed in an RCU
+   read region without acquiring a reference (with just a NULL check).
+2. Makes bpf_task_acquire() a KF_ACQUIRE | KF_RCU | KF_RET_NULL kfunc.
+3. Removes bpf_task_kptr_get() and bpf_task_acquire_not_zero(), as
+   they're now redundant with the above two changes.
+4. Updates selftests and documentation accordingly.
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/co=
-mmit/?id=3D8b43fd3d1d7d
+David Vernet (3):
+  bpf: Make struct task_struct an RCU-safe type
+  bpf: Remove now-defunct task kfuncs
+  bpf,docs: Update documentation to reflect new task kfuncs
 
-Thanks,
-Jason
+ Documentation/bpf/kfuncs.rst                  |  49 ++++++-
+ kernel/bpf/helpers.c                          |  78 +----------
+ kernel/bpf/verifier.c                         |   1 +
+ .../selftests/bpf/prog_tests/task_kfunc.c     |   4 +-
+ .../selftests/bpf/progs/rcu_read_lock.c       |   9 +-
+ .../selftests/bpf/progs/task_kfunc_common.h   |   6 +-
+ .../selftests/bpf/progs/task_kfunc_failure.c  | 126 ++++++++----------
+ .../selftests/bpf/progs/task_kfunc_success.c  |  76 +++++++++--
+ 8 files changed, 174 insertions(+), 175 deletions(-)
+
+-- 
+2.39.0
+
