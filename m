@@ -2,64 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB326D3344
-	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 20:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FC16D337E
+	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 21:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbjDAS5n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 Apr 2023 14:57:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
+        id S229787AbjDATZC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Apr 2023 15:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjDAS5l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 1 Apr 2023 14:57:41 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E133B768
-        for <bpf@vger.kernel.org>; Sat,  1 Apr 2023 11:57:40 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id cn12so102426621edb.4
-        for <bpf@vger.kernel.org>; Sat, 01 Apr 2023 11:57:39 -0700 (PDT)
+        with ESMTP id S229719AbjDATZA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Apr 2023 15:25:00 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A3C19A2
+        for <bpf@vger.kernel.org>; Sat,  1 Apr 2023 12:24:58 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id eh3so102448305edb.11
+        for <bpf@vger.kernel.org>; Sat, 01 Apr 2023 12:24:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680375458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=My4yZEK4wuSxu8Jk+/UqTrS9THhHNLMaLTOPMBmPHqs=;
-        b=GaBK0ipbYbTo2UODUiseCzN3dZs+3tDP4in+noPZSkfsaFTSdo+nJfi8p5Ky/BwsFU
-         ZdlBb6628F9KP5b5s5QAI7D3CPzeJLFF3+8GDnRY4P++w79E6jPS3LY42EDdPRDePRs1
-         cRPiANpA3BihTHm5XGm9my5b0TWejO0LZL54FKt7AhN7d015pRmKQvS6KviQPYSe642y
-         6e58+NqvGF8OUdugPIFWjQSyuhw7yO8n14J4OHqaN507lZMBQOK3si9RyKHqjj4GlAf6
-         dehbhrPjTyStvfPtuSfAXoO52vGZTqi/67Y3o3Z+EsCX9DB1j3v/42W2gEJnMdLGeMDZ
-         aJaw==
+        d=isovalent.com; s=google; t=1680377097;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O+N/EpzsdTPxcyDpyJRX7yyKNkXJHGOOkcVPrBrJfZA=;
+        b=Tp3844jrEGFhz9wct96kM6r51oVbbWQURJjUJdq9uN03EPjs3V1BSgANpfBjMCEwoi
+         HxNxbxuFWydn1A3ag2KITHAC87SkXnzMT0L+04K1CpTIEszjLIhp/CeRsh45n72saqVk
+         z6gRzMW3pcSX0+D0SR+IsBSc2McfUFFTZtycEOmOzKgocTRrewpX+D4avo6L2Yq3gaho
+         13GDs04qhlqMKZynarLAJwPPh7ap7okMpzFY9haP/uTF5k/1VJQfkl4C8K/j9d/uNVuc
+         TLQT5N28bmcMhP8GlGba6Xsj90Ki/OBxJPH0/YmLpfycp9GBkdqJ70Q1iV+GtsgIKZSX
+         cIDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680375458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=My4yZEK4wuSxu8Jk+/UqTrS9THhHNLMaLTOPMBmPHqs=;
-        b=N7jCIjpKCRpkx6TPgRESxYQoOJ322903oz5Z66D/1bo/4RQGW9p/LsjpKzWhWmJJul
-         UbWjDGXmTAju8yjJvK0iMlbHqHXVQNp6HTx/WkIvm/Qa0W0vUdLfHDpt8+jhRAVIGxYY
-         vvZHUqShB1uLLttv35sjhbVRij1OZRtzB7DPJ0DvrCTG+AW7SG1r+JJjuVpK47WsRI2y
-         Becpt02I11wK4Uit9+EumeQZuB5dmIS4f8U4MWOh+GOVTF9kIY+yxxBxmWCEkGUS9n5V
-         2/W5fN0iT/0P/tbNFQCfQTmcETWGCVOrdlxl42x2aN4jMEz9PwgcilbqxtFBKLnjGnxX
-         IUhw==
-X-Gm-Message-State: AAQBX9fopjKrGawHv1cqDT+hAs2a9yqCmFXx/tuXnN3YEe4vf87P4/dU
-        NW7hHicSzg36znUrRIaE7ks05IB3h9v3UkowvlUfO7ptu8ad6+pumAA=
-X-Google-Smtp-Source: AKy350b3LmD0KkPjiYnMBe3RHbw0DtmKzlEMl4bSIZQXjD0jCkkJeHk9EyuSRLHgBEfVWswN2fd0AZJYhep6qCdGosQ=
-X-Received: by 2002:a50:a444:0:b0:502:4f7:d286 with SMTP id
- v4-20020a50a444000000b0050204f7d286mr15086280edb.4.1680375458506; Sat, 01 Apr
- 2023 11:57:38 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680377097;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O+N/EpzsdTPxcyDpyJRX7yyKNkXJHGOOkcVPrBrJfZA=;
+        b=ySGChtyqv1Xfr7mfGjbHfuw7MTNPy2KbAIL5MG8F8yucOaEZNMhyle/rxG1KI6OwmV
+         O0nPDIDiVxel89ouIUKw60PMicav/1zYz2BNrJLjVPQQ0l5M2lEVRzuIWm7DI06vPgMv
+         4UZSpf+RGo53qfdB8eS2Nw2bZrpnYsaST2umL2hYYSeyxIRfL0MpTLEZ33pdL4jv1hiN
+         YyQWj6DZ+0i2mcCe3DAqeOlMx8J9JnU+ZUYe2NTj1kqRMopYw/QdfXvyjsrrBntQuo+/
+         xMhzu/Rzq31oOf6nJzhwy2f0CqKR6PgjsXpMxJ72DUh7PhsKRF2NTTIWRtOCgf/iEsjB
+         6mUg==
+X-Gm-Message-State: AAQBX9fzG53xFWlhxHwgPK5EfHML9G5gsutit03SHP1LN7gg8V9974uh
+        vbewG0ob6+Ad4Fxu4sYuAJ7Jdg==
+X-Google-Smtp-Source: AKy350YvhQUGyxOo85MV64oETAJ6hMLWRh78Nu+D56l9l4lVlm1t8e8tDLS2zu6bgAmlrnBvgYjhaw==
+X-Received: by 2002:a17:907:9627:b0:947:40e6:fde4 with SMTP id gb39-20020a170907962700b0094740e6fde4mr13137509ejc.2.1680377097113;
+        Sat, 01 Apr 2023 12:24:57 -0700 (PDT)
+Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id gx20-20020a1709068a5400b00931faf03db0sm2392703ejc.27.2023.04.01.12.24.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Apr 2023 12:24:56 -0700 (PDT)
+Date:   Sat, 1 Apr 2023 19:25:44 +0000
+From:   Anton Protopopov <aspsk@isovalent.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: optimize hashmap lookups when key_size is
+ divisible by 4
+Message-ID: <ZCiFONQVTvRia3nY@zh-lab-node-5>
+References: <20230401101050.358342-1-aspsk@isovalent.com>
+ <20230401162003.kkkx7ynlu7a2msn6@dhcp-172-26-102-232.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20230312190600.324573-1-joe@isovalent.com> <c6172fe2-7d88-f9f8-e19a-47c232f9cb75@linux.dev>
- <CADa=RyxDHp5x0iCcfgiCDuM68we=dTAmVBvx1hgrRLBbN27rdw@mail.gmail.com> <f015a098-1e17-b503-a098-b3d1adbe4ce8@linux.dev>
-In-Reply-To: <f015a098-1e17-b503-a098-b3d1adbe4ce8@linux.dev>
-From:   Joe Stringer <joe@isovalent.com>
-Date:   Sat, 1 Apr 2023 11:57:27 -0700
-Message-ID: <CADa=RywTEdbTdHHi=Qh6MRrHRUDUKZfPGU---Ea+-RF7+t+o+A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] docs/bpf: Add LRU internals description and graph
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ast@kernel.org, corbet@lwn.net, bagasdotme@gmail.com,
-        maxtram95@gmail.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230401162003.kkkx7ynlu7a2msn6@dhcp-172-26-102-232.dhcp.thefacebook.com>
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -69,46 +74,127 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 11:05=E2=80=AFPM Martin KaFai Lau <martin.lau@linux=
-.dev> wrote:
->
-> On 3/15/23 6:54 PM, Joe Stringer wrote:
-> > On Tue, Mar 14, 2023 at 12:31=E2=80=AFPM Martin KaFai Lau <martin.lau@l=
-inux.dev> wrote:
-> >>
-> >> Maybe a note somewhere to mention why it will still fail to
-> >> shrink the list because the htab_lock_bucket() have detected potential
-> >> deadlock/recursion which is a very unlikely case.
-> >
-> > I missed the "shrink the list" link here since it seems like this
-> > could happen for any combination of update or delete elems for the
-> > same bucket. But yeah given that also needs to happen on the same CPU,
-> > it does seem very unlikely...
->
-> shrink should try to shrink a couple of stale elems which are likely hash=
-ed to
-> different buckets. If shrink hits htab_lock_bucket() EBUSY on all stale e=
-lems,
-> shrink could fail but unlikely.
+On Sat, Apr 01, 2023 at 09:20:03AM -0700, Alexei Starovoitov wrote:
+> On Sat, Apr 01, 2023 at 10:10:50AM +0000, Anton Protopopov wrote:
+> > The BPF hashmap uses the jhash() hash function. There is an optimized version
+> > of this hash function which may be used if hash size is a multiple of 4. Apply
+> > this optimization to the hashmap in a similar way as it is done in the bloom
+> > filter map.
+> > 
+> > On practice the optimization is only noticeable for smaller key sizes, which,
+> > however, is sufficient for many applications. An example is listed in the
+> > following table of measurements (a hashmap of 65536 elements was used):
+> > 
+> >     --------------------------------------------------------------------
+> >     | key_size | fullness | lookups /sec | lookups (opt) /sec |   gain |
+> >     --------------------------------------------------------------------
+> >     |        4 |      25% |      42.990M |            46.000M |   7.0% |
+> >     |        4 |      50% |      37.910M |            39.094M |   3.1% |
+> >     |        4 |      75% |      34.486M |            36.124M |   4.7% |
+> >     |        4 |     100% |      31.760M |            32.719M |   3.0% |
+> >     --------------------------------------------------------------------
+> >     |        8 |      25% |      43.855M |            49.626M |  13.2% |
+> >     |        8 |      50% |      38.328M |            42.152M |  10.0% |
+> >     |        8 |      75% |      34.483M |            38.088M |  10.5% |
+> >     |        8 |     100% |      31.306M |            34.686M |  10.8% |
+> >     --------------------------------------------------------------------
+> >     |       12 |      25% |      38.398M |            43.770M |  14.0% |
+> >     |       12 |      50% |      33.336M |            37.712M |  13.1% |
+> >     |       12 |      75% |      29.917M |            34.440M |  15.1% |
+> >     |       12 |     100% |      27.322M |            30.480M |  11.6% |
+> >     --------------------------------------------------------------------
+> >     |       16 |      25% |      41.491M |            41.921M |   1.0% |
+> >     |       16 |      50% |      36.206M |            36.474M |   0.7% |
+> >     |       16 |      75% |      32.529M |            33.027M |   1.5% |
+> >     |       16 |     100% |      29.581M |            30.325M |   2.5% |
+> >     --------------------------------------------------------------------
+> >     |       20 |      25% |      34.240M |            36.787M |   7.4% |
+> >     |       20 |      50% |      30.328M |            32.663M |   7.7% |
+> >     |       20 |      75% |      27.536M |            29.354M |   6.6% |
+> >     |       20 |     100% |      24.847M |            26.505M |   6.7% |
+> >     --------------------------------------------------------------------
+> >     |       24 |      25% |      36.329M |            40.608M |  11.8% |
+> >     |       24 |      50% |      31.444M |            35.059M |  11.5% |
+> >     |       24 |      75% |      28.426M |            31.452M |  10.6% |
+> >     |       24 |     100% |      26.278M |            28.741M |   9.4% |
+> >     --------------------------------------------------------------------
+> >     |       28 |      25% |      31.540M |            31.944M |   1.3% |
+> >     |       28 |      50% |      27.739M |            28.063M |   1.2% |
+> >     |       28 |      75% |      24.993M |            25.814M |   3.3% |
+> >     |       28 |     100% |      23.513M |            23.500M |  -0.1% |
+> >     --------------------------------------------------------------------
+> >     |       32 |      25% |      32.116M |            33.953M |   5.7% |
+> >     |       32 |      50% |      28.879M |            29.859M |   3.4% |
+> >     |       32 |      75% |      26.227M |            26.948M |   2.7% |
+> >     |       32 |     100% |      23.829M |            24.613M |   3.3% |
+> >     --------------------------------------------------------------------
+> >     |       64 |      25% |      22.535M |            22.554M |   0.1% |
+> >     |       64 |      50% |      20.471M |            20.675M |   1.0% |
+> >     |       64 |      75% |      19.077M |            19.146M |   0.4% |
+> >     |       64 |     100% |      17.710M |            18.131M |   2.4% |
+> >     --------------------------------------------------------------------
+> > 
+> > The following script was used to gather the results (SMT & frequency off):
+> > 
+> >     cd tools/testing/selftests/bpf
+> >     for key_size in 4 8 12 16 20 24 28 32 64; do
+> >             for nr_entries in `seq 16384 16384 65536`; do
+> >                     fullness=$(printf '%3s' $((nr_entries*100/65536)))
+> >                     echo -n "key_size=$key_size: $fullness% full: "
+> >                     sudo ./bench -d2 -a bpf-hashmap-lookup --key_size=$key_size --nr_entries=$nr_entries --max_entries=65536 --nr_loops=2000000 --map_flags=0x40 | grep cpu
+> >             done
+> >             echo
+> >     done
+> > 
+> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > ---
+> >  kernel/bpf/hashtab.c | 29 ++++++++++++++++++-----------
+> >  1 file changed, 18 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > index 96b645bba3a4..eb804815f7c3 100644
+> > --- a/kernel/bpf/hashtab.c
+> > +++ b/kernel/bpf/hashtab.c
+> > @@ -103,6 +103,7 @@ struct bpf_htab {
+> >  	u32 n_buckets;	/* number of hash buckets */
+> >  	u32 elem_size;	/* size of each element in bytes */
+> >  	u32 hashrnd;
+> > +	u32 key_size_u32;
+> >  	struct lock_class_key lockdep_key;
+> >  	int __percpu *map_locked[HASHTAB_MAP_LOCK_COUNT];
+> >  };
+> > @@ -510,6 +511,10 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> >  	else
+> >  		htab->elem_size += round_up(htab->map.value_size, 8);
+> >  
+> > +	/* optimize hash computations if key_size is divisible by 4 */
+> > +	if ((attr->key_size & (sizeof(u32) - 1)) == 0)
+> > +		htab->key_size_u32 = attr->key_size / sizeof(u32);
+> 
+> Please use & 3 and / 4.
+> sizeof(u32) is not going to change.
 
-The failure case I had in mind for this is to assume that shrinking
-succeeds and we find an LRU node during the htab_map_update_elem()
-call through prealloc_lru_pop(), but then immediately afterwards it
-makes a direct htab_lock_bucket() call which has just one chance to
-succeed based on whether this CPU races against some other user of the
-bucket lock. Still seems somewhat rare, but feasible to hit.
+Yes, sure
 
-> > Could there be a case something like "userspace process is touching tha=
-t bucket,
-> > gets interrupted, then the same CPU runs an eBPF program that attempts =
-to
-> > update/delete elements in the same bucket"?
->
-> raw_spin_lock_irqsave() is done after the percpu counter, so there is a g=
-ap but
-> not sure if it matters though unless the production use case can really h=
-it it.
+> > +
+> >  	err = -E2BIG;
+> >  	/* prevent zero size kmalloc and check for u32 overflow */
+> >  	if (htab->n_buckets == 0 ||
+> > @@ -605,9 +610,11 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> >  	return ERR_PTR(err);
+> >  }
+> >  
+> > -static inline u32 htab_map_hash(const void *key, u32 key_len, u32 hashrnd)
+> > +static inline u32 htab_map_hash(const struct bpf_htab *htab, const void *key, u32 key_len)
+> >  {
+> > -	return jhash(key, key_len, hashrnd);
+> > +	if (likely(htab->key_size_u32))
+> > +		return jhash2(key, htab->key_size_u32, htab->hashrnd);
+> > +	return jhash(key, key_len, htab->hashrnd);
+> 
+> Could you measure the speed when &3 and /4 is done in the hot path ?
+> I would expect the performance to be the same or faster,
+> since extra load is gone.
 
-Yeah unfortunately I'm going off an incident from last year and I
-don't have this level of visibility into the failure scenario in a
-prod-like environment today.
+I don't see any visible difference (I've tested "&3 and /4" and "%4==0 and /4"
+variants). Do you still prefer division in favor of using htab->key_size_u32?
