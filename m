@@ -2,70 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFA66D338F
-	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 21:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE18F6D3392
+	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 21:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjDATeK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 Apr 2023 15:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
+        id S230062AbjDATec (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Apr 2023 15:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjDATeH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 1 Apr 2023 15:34:07 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A03B1BF76
-        for <bpf@vger.kernel.org>; Sat,  1 Apr 2023 12:34:05 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id i9so25574397wrp.3
-        for <bpf@vger.kernel.org>; Sat, 01 Apr 2023 12:34:05 -0700 (PDT)
+        with ESMTP id S230021AbjDATeb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Apr 2023 15:34:31 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423F927013
+        for <bpf@vger.kernel.org>; Sat,  1 Apr 2023 12:34:23 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id y14so25586284wrq.4
+        for <bpf@vger.kernel.org>; Sat, 01 Apr 2023 12:34:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1680377643;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=T8nk4QZgWJg4nXeLh4FKwCEMlZL89Q2/gxR+wnUlYKE=;
-        b=HGKGh54YFhrvPb37yH8hOS5CsqeTujyV4VL3WbkXqVVrUDuuVS7v90zKoJMmRRdeaa
-         eGde5sjydMFGflefdX1gjRpbpA8Ef5k8g5MedMHSnytb2/pU57TWhqccC0lzljcR7jyT
-         hu9oW2uNzKlsPDcK8AX+juNDSJKqo4W4DS0RE=
+        d=cloudflare.com; s=google; t=1680377661;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=27+VlMXdPLvzXSnUrwJm9nakvNajqVTiP7Ug38TY9fM=;
+        b=gF/dDLjmzRf/B4AYCkH1SMmSmsCn8hgXT+YXcnfAo6MW0g3W9bgpnVbKBmOQuGviq6
+         9da8vTRag1Fq9mCrrCXY70mjLCfAGWTmHT2gjLSHZPSVvgtLiKc9iMocCbezFhwCyMNr
+         +RZSyxnI0QQ4tZReKoWLohtz5yz80LKuDuyWA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680377643;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T8nk4QZgWJg4nXeLh4FKwCEMlZL89Q2/gxR+wnUlYKE=;
-        b=SLYjDs73W55e1XMIIV2SfMqLGogJGDrY15z9/kaSU1sXziOv2zwHWq+Gz3YYZBZVgY
-         DtAfne9cJvi7CaHnS6EEAs3WOGni9RB1Qaa+4pV/CDm/pLnFXMjFv2Hn3PS8FZsHjm72
-         fK38zTzxyILUXckCTTGUKyEkTmy52z1X7cML6cO3NrYpethIi6vt8Rz4msFYphGT7oOs
-         vuQfkY3cmhjO+byoKccvtnpahc5O3PjNyO5TSoVyfTm8qkLMffWWnoSHXRr5UA48Y7Yb
-         X1znx6imvIk6+1gU5kD/yUZvxbc9CT85ONJO9KzRx0MRaIquYj3KeOcWbYxyJe6+e+gP
-         It0A==
-X-Gm-Message-State: AAQBX9eYyYMe2LF0fFxOUt0VzfIhSmOMJcvQ4eosNuPR6kX+bOyd8ujE
-        d1cR7JT5ODX0rqHUTaYNmxwd0BIx9SSKTW8Kh1mmwmFM
-X-Google-Smtp-Source: AKy350Y5D0ExAXEkg5rfqePCtbRp8sfXIZ7hSLc+dGA9E1RgAyvEH+GV0tJZXYvCamlzuZrbySxjjw==
-X-Received: by 2002:a5d:538d:0:b0:2cf:e023:5915 with SMTP id d13-20020a5d538d000000b002cfe0235915mr21430570wrv.61.1680377643121;
-        Sat, 01 Apr 2023 12:34:03 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680377661;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=27+VlMXdPLvzXSnUrwJm9nakvNajqVTiP7Ug38TY9fM=;
+        b=nl8CdalwokNBNBQwx/ZDqMGW4U1b8HpkBaa/G2yjfOHocVV9O00V8bGHxzYLWBIEpw
+         v/KO88Y735WyN5tc5qSl4HLRq8L8fb2/v0s+4j2nZHQPiERQjyVpEtqv2nZC51pDBfNP
+         jaWazQCCeBsn7yK0qEtaMZZTILeWiIDVme6K5TtxdIirxyYO4ov4gdh2IscDz8Q8z2xi
+         iLeDBTptVg98ROGHS/PEZs1qMwW2YHt+fQlPvsAm0EPc6oKlC4pGAXSHeujN70IYndTR
+         4SUWf6G/3aw5gGrBfMXtq+qDqEestehNgq/Op6Le024DdBnpJTbO1kbKR9QpZAXCyRT/
+         E8Hw==
+X-Gm-Message-State: AAQBX9fLQ8pYWvhcNZeWGCYg16CqkrlQg/OfMqtEVx7kmFpotu4BGE+c
+        yVf/qEqFqKsQDxWsqgfPbagLTpwP8J5ZrAwVW7qTjA==
+X-Google-Smtp-Source: AKy350b0uzzkUf1GjJtfYEVarZBBt6RIy6RpbOxrSxeOgkiPQLY+/b7i+RoQI6qZspMkVo13Lmsiag==
+X-Received: by 2002:a5d:6243:0:b0:2d8:708a:d84 with SMTP id m3-20020a5d6243000000b002d8708a0d84mr24990840wrv.19.1680377661262;
+        Sat, 01 Apr 2023 12:34:21 -0700 (PDT)
 Received: from workstation.ehrig.io (tmo-065-106.customers.d1-online.com. [80.187.65.106])
-        by smtp.gmail.com with ESMTPSA id b5-20020a5d4b85000000b002c559843748sm5600416wrt.10.2023.04.01.12.34.00
+        by smtp.gmail.com with ESMTPSA id b5-20020a5d4b85000000b002c559843748sm5600416wrt.10.2023.04.01.12.34.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Apr 2023 12:34:02 -0700 (PDT)
+        Sat, 01 Apr 2023 12:34:20 -0700 (PDT)
 From:   Christian Ehrig <cehrig@cloudflare.com>
 To:     bpf@vger.kernel.org
-Cc:     cehrig@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kaixi Fan <fankaixi.li@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Mykola Lysenko <mykolal@fb.com>, netdev@vger.kernel.org,
-        Paul Chaignon <paul@isovalent.com>,
-        Shmulik Ladkani <shmulik@metanetworks.com>,
-        Song Liu <song@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf-next 0/3] Add FOU support for externally controlled ipip devices
-Date:   Sat,  1 Apr 2023 22:33:25 +0200
-Message-Id: <cover.1680379518.git.cehrig@cloudflare.com>
+Cc:     cehrig@cloudflare.com, "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 1/3] ipip,ip_tunnel,sit: Add FOU support for externally controlled ipip devices
+Date:   Sat,  1 Apr 2023 22:33:26 +0200
+Message-Id: <29b21ba7f3b465caad22ac6369c50cabc622e19d.1680379518.git.cehrig@cloudflare.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <cover.1680379518.git.cehrig@cloudflare.com>
+References: <cover.1680379518.git.cehrig@cloudflare.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
@@ -78,56 +72,184 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set adds support for using FOU or GUE encapsulation with
-an ipip device operating in collect-metadata mode and a set of kfuncs
-for controlling encap parameters exposed to a BPF tc-hook.
+Today ipip devices in collect-metadata mode don't allow for sending FOU
+or GUE encapsulated packets. This patch lifts the restriction by adding
+a struct ip_tunnel_encap to the tunnel metadata.
 
-BPF tc-hooks allow us to read tunnel metadata (like remote IP addresses)
-in the ingress path of an externally controlled tunnel interface via
-the bpf_skb_get_tunnel_{key,opt} bpf-helpers. Packets can then be
-redirected to the same or a different externally controlled tunnel
-interface by overwriting metadata via the bpf_skb_set_tunnel_{key,opt}
-helpers and a call to bpf_redirect. This enables us to redirect packets
-between tunnel interfaces - and potentially change the encapsulation
-type - using only a single BPF program.
+On the egress path, the members of this struct can be set by the
+bpf_skb_set_fou_encap kfunc via a BPF tc-hook. Instead of dropping packets
+wishing to use additional UDP encapsulation, ip_md_tunnel_xmit now
+evaluates the contents of this struct and adds the corresponding FOU or
+GUE header. Furthermore, it is making sure that additional header bytes
+are taken into account for PMTU discovery.
 
-Today this approach works fine for a couple of tunnel combinations.
-For example: redirecting packets between Geneve and GRE interfaces or
-GRE and plain ipip interfaces. However, redirecting using FOU or GUE is
-not supported today. The ip_tunnel module does not allow us to egress
-packets using additional UDP encapsulation from an ipip device in
-collect-metadata mode.
+On the ingress path, an ipip device in collect-metadata mode will fill this
+struct and a BPF tc-hook can obtain the information via a call to the
+bpf_skb_get_fou_encap kfunc.
 
-Patch 1 lifts this restriction by adding a struct ip_tunnel_encap to
-the tunnel metadata. It can be filled by a new BPF kfunc introduced
-in Patch 2 and evaluated by the ip_tunnel egress path. This will allow
-us to use FOU and GUE encap with externally controlled ipip devices.
+The minor change to ip_tunnel_encap, which now takes a pointer to
+struct ip_tunnel_encap instead of struct ip_tunnel, allows us to control
+FOU encap type and parameters on a per packet-level.
 
-Patch 2 introduces two new BPF kfuncs: bpf_skb_{set,get}_fou_encap.
-These helpers can be used to set and get UDP encap parameters from the
-BPF tc-hook doing the packet redirect.
+Signed-off-by: Christian Ehrig <cehrig@cloudflare.com>
+---
+ include/net/ip_tunnels.h | 27 ++++++++++++++-------------
+ net/ipv4/ip_tunnel.c     | 22 ++++++++++++++++++++--
+ net/ipv4/ipip.c          |  1 +
+ net/ipv6/sit.c           |  2 +-
+ 4 files changed, 36 insertions(+), 16 deletions(-)
 
-Patch 3 adds BPF tunnel selftests using the two kfuncs.
-
-Christian Ehrig (3):
-  ipip,ip_tunnel,sit: Add FOU support for externally controlled ipip
-    devices
-  bpf,fou: Add bpf_skb_{set,get}_fou_encap kfuncs
-  selftests/bpf: Test FOU kfuncs for externally controlled ipip devices
-
- include/net/fou.h                             |   2 +
- include/net/ip_tunnels.h                      |  27 ++--
- net/ipv4/Makefile                             |   2 +-
- net/ipv4/fou_bpf.c                            | 118 ++++++++++++++++++
- net/ipv4/fou_core.c                           |   5 +
- net/ipv4/ip_tunnel.c                          |  22 +++-
- net/ipv4/ipip.c                               |   1 +
- net/ipv6/sit.c                                |   2 +-
- .../selftests/bpf/progs/test_tunnel_kern.c    | 117 +++++++++++++++++
- tools/testing/selftests/bpf/test_tunnel.sh    |  81 ++++++++++++
- 10 files changed, 360 insertions(+), 17 deletions(-)
- create mode 100644 net/ipv4/fou_bpf.c
-
+diff --git a/include/net/ip_tunnels.h b/include/net/ip_tunnels.h
+index fca357679816..ce091a3c257f 100644
+--- a/include/net/ip_tunnels.h
++++ b/include/net/ip_tunnels.h
+@@ -57,6 +57,13 @@ struct ip_tunnel_key {
+ 	__u8			flow_flags;
+ };
+ 
++struct ip_tunnel_encap {
++	u16			type;
++	u16			flags;
++	__be16			sport;
++	__be16			dport;
++};
++
+ /* Flags for ip_tunnel_info mode. */
+ #define IP_TUNNEL_INFO_TX	0x01	/* represents tx tunnel parameters */
+ #define IP_TUNNEL_INFO_IPV6	0x02	/* key contains IPv6 addresses */
+@@ -66,9 +73,9 @@ struct ip_tunnel_key {
+ #define IP_TUNNEL_OPTS_MAX					\
+ 	GENMASK((sizeof_field(struct ip_tunnel_info,		\
+ 			      options_len) * BITS_PER_BYTE) - 1, 0)
+-
+ struct ip_tunnel_info {
+ 	struct ip_tunnel_key	key;
++	struct ip_tunnel_encap	encap;
+ #ifdef CONFIG_DST_CACHE
+ 	struct dst_cache	dst_cache;
+ #endif
+@@ -86,13 +93,6 @@ struct ip_tunnel_6rd_parm {
+ };
+ #endif
+ 
+-struct ip_tunnel_encap {
+-	u16			type;
+-	u16			flags;
+-	__be16			sport;
+-	__be16			dport;
+-};
+-
+ struct ip_tunnel_prl_entry {
+ 	struct ip_tunnel_prl_entry __rcu *next;
+ 	__be32				addr;
+@@ -293,6 +293,7 @@ struct ip_tunnel *ip_tunnel_lookup(struct ip_tunnel_net *itn,
+ 				   __be32 remote, __be32 local,
+ 				   __be32 key);
+ 
++void ip_tunnel_md_udp_encap(struct sk_buff *skb, struct ip_tunnel_info *info);
+ int ip_tunnel_rcv(struct ip_tunnel *tunnel, struct sk_buff *skb,
+ 		  const struct tnl_ptk_info *tpi, struct metadata_dst *tun_dst,
+ 		  bool log_ecn_error);
+@@ -371,22 +372,22 @@ static inline int ip_encap_hlen(struct ip_tunnel_encap *e)
+ 	return hlen;
+ }
+ 
+-static inline int ip_tunnel_encap(struct sk_buff *skb, struct ip_tunnel *t,
++static inline int ip_tunnel_encap(struct sk_buff *skb, struct ip_tunnel_encap *e,
+ 				  u8 *protocol, struct flowi4 *fl4)
+ {
+ 	const struct ip_tunnel_encap_ops *ops;
+ 	int ret = -EINVAL;
+ 
+-	if (t->encap.type == TUNNEL_ENCAP_NONE)
++	if (e->type == TUNNEL_ENCAP_NONE)
+ 		return 0;
+ 
+-	if (t->encap.type >= MAX_IPTUN_ENCAP_OPS)
++	if (e->type >= MAX_IPTUN_ENCAP_OPS)
+ 		return -EINVAL;
+ 
+ 	rcu_read_lock();
+-	ops = rcu_dereference(iptun_encaps[t->encap.type]);
++	ops = rcu_dereference(iptun_encaps[e->type]);
+ 	if (likely(ops && ops->build_header))
+-		ret = ops->build_header(skb, &t->encap, protocol, fl4);
++		ret = ops->build_header(skb, e, protocol, fl4);
+ 	rcu_read_unlock();
+ 
+ 	return ret;
+diff --git a/net/ipv4/ip_tunnel.c b/net/ipv4/ip_tunnel.c
+index de90b09dfe78..add437f710fc 100644
+--- a/net/ipv4/ip_tunnel.c
++++ b/net/ipv4/ip_tunnel.c
+@@ -359,6 +359,20 @@ static struct ip_tunnel *ip_tunnel_create(struct net *net,
+ 	return ERR_PTR(err);
+ }
+ 
++void ip_tunnel_md_udp_encap(struct sk_buff *skb, struct ip_tunnel_info *info)
++{
++	const struct iphdr *iph = ip_hdr(skb);
++	const struct udphdr *udph;
++
++	if (iph->protocol != IPPROTO_UDP)
++		return;
++
++	udph = (struct udphdr *)((__u8 *)iph + (iph->ihl << 2));
++	info->encap.sport = udph->source;
++	info->encap.dport = udph->dest;
++}
++EXPORT_SYMBOL(ip_tunnel_md_udp_encap);
++
+ int ip_tunnel_rcv(struct ip_tunnel *tunnel, struct sk_buff *skb,
+ 		  const struct tnl_ptk_info *tpi, struct metadata_dst *tun_dst,
+ 		  bool log_ecn_error)
+@@ -572,7 +586,11 @@ void ip_md_tunnel_xmit(struct sk_buff *skb, struct net_device *dev,
+ 			    tunnel_id_to_key32(key->tun_id), RT_TOS(tos),
+ 			    dev_net(dev), 0, skb->mark, skb_get_hash(skb),
+ 			    key->flow_flags);
+-	if (tunnel->encap.type != TUNNEL_ENCAP_NONE)
++
++	if (!tunnel_hlen)
++		tunnel_hlen = ip_encap_hlen(&tun_info->encap);
++
++	if (ip_tunnel_encap(skb, &tun_info->encap, &proto, &fl4) < 0)
+ 		goto tx_error;
+ 
+ 	use_cache = ip_tunnel_dst_cache_usable(skb, tun_info);
+@@ -732,7 +750,7 @@ void ip_tunnel_xmit(struct sk_buff *skb, struct net_device *dev,
+ 			    dev_net(dev), tunnel->parms.link,
+ 			    tunnel->fwmark, skb_get_hash(skb), 0);
+ 
+-	if (ip_tunnel_encap(skb, tunnel, &protocol, &fl4) < 0)
++	if (ip_tunnel_encap(skb, &tunnel->encap, &protocol, &fl4) < 0)
+ 		goto tx_error;
+ 
+ 	if (connected && md) {
+diff --git a/net/ipv4/ipip.c b/net/ipv4/ipip.c
+index abea77759b7e..27b8f83c6ea2 100644
+--- a/net/ipv4/ipip.c
++++ b/net/ipv4/ipip.c
+@@ -241,6 +241,7 @@ static int ipip_tunnel_rcv(struct sk_buff *skb, u8 ipproto)
+ 			tun_dst = ip_tun_rx_dst(skb, 0, 0, 0);
+ 			if (!tun_dst)
+ 				return 0;
++			ip_tunnel_md_udp_encap(skb, &tun_dst->u.tun_info);
+ 		}
+ 		skb_reset_mac_header(skb);
+ 
+diff --git a/net/ipv6/sit.c b/net/ipv6/sit.c
+index 70d81bba5093..063560e2cb1a 100644
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -1024,7 +1024,7 @@ static netdev_tx_t ipip6_tunnel_xmit(struct sk_buff *skb,
+ 		ttl = iph6->hop_limit;
+ 	tos = INET_ECN_encapsulate(tos, ipv6_get_dsfield(iph6));
+ 
+-	if (ip_tunnel_encap(skb, tunnel, &protocol, &fl4) < 0) {
++	if (ip_tunnel_encap(skb, &tunnel->encap, &protocol, &fl4) < 0) {
+ 		ip_rt_put(rt);
+ 		goto tx_error;
+ 	}
 -- 
 2.39.2
 
