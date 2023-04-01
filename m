@@ -2,89 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A88076D3292
-	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 18:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BB36D329E
+	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 18:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbjDAQUV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 Apr 2023 12:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        id S229574AbjDAQc7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Apr 2023 12:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjDAQUV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 1 Apr 2023 12:20:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D46AA5E1;
-        Sat,  1 Apr 2023 09:20:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B81FEB80B53;
-        Sat,  1 Apr 2023 16:20:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 71EC2C433EF;
-        Sat,  1 Apr 2023 16:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680366017;
-        bh=TfVkFAQrZRqszfcTd87B057fpnS2YlPX9AigM3sNpBk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=q0GXdfjk6CWtoXshR7/w9bTKsQqNd4ubmlT83L/igTvIwO8uc/6pf599oJkz4UmFr
-         Dx35ia2gZEkuBlSVZ7G4Gbstk7RI3mM3roMPPuckEnONe0ke9hIJUeq+uQYNtGoFTS
-         D0iQcCaF/1RnPzQbTGVUvOocv0ZicUa0ukS+RMDpMZB5mLb7Maa9EVk2TsEHJxmpyu
-         ORjwHvCs2XrpMSteibrC1ZV2j/+OpDIxyUt0WxeYS9VyPX1JahD4Cz3Q9Kz/K4xQMa
-         pbZrfzGG+x7BDanUOprgtszG726+Q6YdNAhef9KNpjVO3QbWJbMThJkDLMxHJJR42L
-         bcnZ50JQfyZ0A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4B207E21EDD;
-        Sat,  1 Apr 2023 16:20:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229529AbjDAQc6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Apr 2023 12:32:58 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23708199E;
+        Sat,  1 Apr 2023 09:32:57 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id bm1so7798074qkb.13;
+        Sat, 01 Apr 2023 09:32:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680366776;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Es44EFEzf2PvUY8cLNSkgWEMnfW2iicQU8LTy598v64=;
+        b=LjR06tAz6vYsVkEz8p7DJj3aBN15H099rcfDdrJQ7kYK3j029lQ9hFErrwpo5sswzj
+         GNxwNXkUVICZXyHU2RK0UgdGs3SkN34BHAA8BgSsPpC19e8MtyZfvJDfT0pL/bsAMttC
+         fHrpOR1b9FmkGGK5yH8ih/o1cE3XvxN04bwDIduEfjYJSKMT+OzeFwAg7IfHORqKVYg2
+         g82tv5Rfpe3OPQlrF/YZZdlgQ1dSDrmQvfJfj2Ei8VlN65k+0aiPp8AI3teYrMQq/laO
+         5hFePLMIcDZqb0AZnVhNymNGuyhBMBA2ojbXXR4TRlDZCVkmuX1trqo2Sl7yxqZhv67K
+         7OBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680366776;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Es44EFEzf2PvUY8cLNSkgWEMnfW2iicQU8LTy598v64=;
+        b=YujaKqa+ZOmovNps6AG5r10D3Rvd3w4W5H8nuFHVU0o8syODjrcqXOagsdjO/4jfOd
+         cpdWgW6xxC5CHsgwKGCXoN77uYV8ZOP/WJMpnB4jr9hcNI4OUY1s7x5NZnXq+wPvvPeP
+         FbMJpwG8zzn27DtBuOPmAF22Jrt//5Q4ygTU5HT6bw2unwt7HXLJcYElvlQaB/XCLKIt
+         j1qCOqvhjGRDKjue/53XNMNIk5mFPiKFXuMoue7Yml1A/YlklxHTweVsPh94csZT0fHZ
+         avZzikTm5e/nAWs3vPEzUnaoVmDZ4O/oB+D9Qw6Axv6Cqylpr+SwpiMmnif+TdfKw3fm
+         I7wQ==
+X-Gm-Message-State: AO0yUKWXMHTMAVsHX91mSaWAuOc3zKp6Za7yyYhqUHahqshSumXaYc9I
+        omE8QCXWfX6cPrPeiJoao87m+0aM233yrah1Y6O4G/c5DoY=
+X-Google-Smtp-Source: AK7set+o7sqQk0FKhQaFl3wQ6wPAREfl/ZYcLO6zVd/LeEMxwXmkOn2e7b0hhuIby/f/bPub4vKlUl5OiYOHjQrHXAM=
+X-Received: by 2002:a37:6801:0:b0:746:7857:d28b with SMTP id
+ d1-20020a376801000000b007467857d28bmr7995445qkc.14.1680366776224; Sat, 01 Apr
+ 2023 09:32:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/3] Enable RCU semantics for task kptrs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168036601729.14852.14484701453991641814.git-patchwork-notify@kernel.org>
-Date:   Sat, 01 Apr 2023 16:20:17 +0000
-References: <20230331195733.699708-1-void@manifault.com>
-In-Reply-To: <20230331195733.699708-1-void@manifault.com>
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230326092208.13613-1-laoar.shao@gmail.com> <CA+khW7ggt9f3U0zTQdneyxDOPGZC8fLc1aE4kS_12p_Qvhdqkw@mail.gmail.com>
+In-Reply-To: <CA+khW7ggt9f3U0zTQdneyxDOPGZC8fLc1aE4kS_12p_Qvhdqkw@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sun, 2 Apr 2023 00:32:20 +0800
+Message-ID: <CALOAHbDccCiOt6mHnLd6fqJzBF-R5b-0HOY76sbQTGV8u8oe1A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 00/13] bpf: Introduce BPF namespace
+To:     Hao Luo <haoluo@google.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Mar 31, 2023 at 1:52=E2=80=AFPM Hao Luo <haoluo@google.com> wrote:
+>
+> On Sun, Mar 26, 2023 at 2:22=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> >
+> <...>
+> >
+> > BPF namespace is introduced in this patchset with an attempt to remove
+> > the CAP_SYS_ADMIN requirement. The user can create bpf map, prog and
+> > link in a specific bpf namespace, then these bpf objects will not be
+> > visible to the users in a different bpf namespace. But these bpf
+> > objects are visible to its parent bpf namespace, so the sys admin can
+> > still iterate and inspect them.
+> >
+> > BPF namespace is similar to PID namespace, and the bpf objects are
+> > similar to tasks, so BPF namespace is very easy to understand. These
+> > patchset only implements BPF namespace for bpf map, prog and link. In t=
+he
+> > future we may extend it to other bpf objects like btf, bpffs and etc.
+> > For example, we can allow some of the BTF objects to be used in
+> > non-init bpf namespace, then the container user can only trace the
+> > processes running in his container, but can't get the information of
+> > tasks running in other containers.
+> >
+>
+> Hi Yafang,
+>
+> Thanks for putting effort toward enabling BPF for container users!
+>
+> However, I think the cover letter can be improved. It's unclear to me
+> what exactly is BPF namespace, what exactly it tries to achieve and
+> what is its behavior. If you look at the manpage of pid namespace [1],
+> cgroup namespace[2], and namespace[3], they all have a very precise
+> definition, their goals and explain the intended behaviors well.
+>
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Thanks for your suggestion. The covetter should be improved. I will
+read the man pages of these namespaces and improve it as you
+suggested.
 
-On Fri, 31 Mar 2023 14:57:30 -0500 you wrote:
-> In commit 22df776a9a86 ("tasks: Extract rcu_users out of union"), the
-> 'refcount_t rcu_users' field was extracted out of a union with the
-> 'struct rcu_head rcu' field. This allows us to use the field for
-> refcounting struct task_struct with RCU protection, as the RCU callback
-> no longer flips rcu_users to be nonzero after the callback is scheduled.
-> 
-> This patch set leverages this to do a few things:
-> 
-> [...]
+> I felt you intended the BPF namespace to provide isolation of object
+> ids. That is, different views of the bpf object ids for different
+> processes. This is like the PID namespace. But somehow, you also
+> attach CAPs on top of that. That, I think, is not a namespace's job.
+>
 
-Here is the summary with links:
-  - [bpf-next,v2,1/3] bpf: Make struct task_struct an RCU-safe type
-    https://git.kernel.org/bpf/bpf-next/c/d02c48fa1139
-  - [bpf-next,v2,2/3] bpf: Remove now-defunct task kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/f85671c6ef46
-  - [bpf-next,v2,3/3] bpf,docs: Update documentation to reflect new task kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/db9d479ab59b
+Agree with you that it should be independent of CAPs.
+After the bpf namespace is introduced, actually we don't need the CAPs
+when the user iterates IDs or converts IDs to FDs in his bpf namespace
+(except in the init bpf namespace), because these are all readonly
+operations and the user can only read the bpf objects created by
+himself. While the CAPs should be required when the user wants to
+write something, e.g. creating a map, loading a prog. They are really
+different things. I will change it in the next version.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Well, I could be wrong, but would appreciate you adding more details
+> as follow-up.
+>
+> Hao
+>
+> [1] https://man7.org/linux/man-pages/man7/pid_namespaces.7.html
+> [2] https://man7.org/linux/man-pages/man7/cgroup_namespaces.7.html
+> [3] https://man7.org/linux/man-pages/man7/namespaces.7.html
 
 
+
+--=20
+Regards
+Yafang
