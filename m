@@ -2,345 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9086D3397
-	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 21:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946E96D33F1
+	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 22:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjDATes (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 Apr 2023 15:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
+        id S230014AbjDAUvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Apr 2023 16:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjDATek (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 1 Apr 2023 15:34:40 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D22265A5
-        for <bpf@vger.kernel.org>; Sat,  1 Apr 2023 12:34:32 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id n10-20020a05600c4f8a00b003ee93d2c914so17078924wmq.2
-        for <bpf@vger.kernel.org>; Sat, 01 Apr 2023 12:34:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1680377670;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JJGK6+z2A0j3BXRQbw4triQYURy3/oqOBEOPJiYTwI4=;
-        b=fUuzcCs0NUU3SF2RUYCuNn0Oiw2gCmHfvbhb1BD0pbWHICjCtDnjAa7+y6w73qRq72
-         mltQJK0qPM/N6qSKeoiMDhQB+qitpwsUynr1O0OegqaW2bYknXOl9fuGKnt/5rWK5HcN
-         RXZ1NARlPOdxDC8ynDFmoLr4BpKVznv8DWJyo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680377670;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JJGK6+z2A0j3BXRQbw4triQYURy3/oqOBEOPJiYTwI4=;
-        b=Lz3rM9MNOnVpGAvl2L1TXF+Z9y4gLY3BhRjvX+gtqMtz3qR6wczSTrz+CdzN4P2frs
-         c98ifKtG0Jrw2Sr7LphSsaxgSk+oMzQiJhoHxvIMhDWDp7inbS5XAasChTQsn7TTUDhg
-         dfh4WHhvlopi+8jlzFeNCfonVYgn7/t/38heP2uFLMKXLnVKe9eNgRiSnEYLmXXZ4Cgj
-         2g3ShNA1Hd/ovlhwuAK4j3cUtemxnDGdo55cXCw76t0cxdxtQa7BvB7OpsKKLdkFPLdI
-         jRjUB4hJp2C63GV8XoCRSFC0SeCRboLD491zbkZsRhEGp/z5tSoeMHARJJlMS6zoRcCq
-         yHYg==
-X-Gm-Message-State: AAQBX9d2MgFCcheEEvG+l7+oMbcYeDCsrY3Na2IN6n95mixS2JbcJVog
-        o3f0LquHoOiiZzJ6rbCOHbrXj0bzr5ealg57SJg46lSw
-X-Google-Smtp-Source: AKy350YrXN4Lsh7rTurigCkf4XLICVCHCRcuzwpOC4+RdNQ72wWylG4jPAt/uABsVHthrKbbpu2tmg==
-X-Received: by 2002:a05:600c:2242:b0:3eb:3998:8c05 with SMTP id a2-20020a05600c224200b003eb39988c05mr9843697wmm.6.1680377670553;
-        Sat, 01 Apr 2023 12:34:30 -0700 (PDT)
-Received: from workstation.ehrig.io (tmo-065-106.customers.d1-online.com. [80.187.65.106])
-        by smtp.gmail.com with ESMTPSA id b5-20020a5d4b85000000b002c559843748sm5600416wrt.10.2023.04.01.12.34.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Apr 2023 12:34:30 -0700 (PDT)
-From:   Christian Ehrig <cehrig@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     cehrig@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Kaixi Fan <fankaixi.li@bytedance.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Paul Chaignon <paul@isovalent.com>,
-        Shmulik Ladkani <shmulik@metanetworks.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Test FOU kfuncs for externally controlled ipip devices
-Date:   Sat,  1 Apr 2023 22:33:28 +0200
-Message-Id: <3501bec71e3b50c59b4c6caa16906fb56168828b.1680379518.git.cehrig@cloudflare.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <cover.1680379518.git.cehrig@cloudflare.com>
-References: <cover.1680379518.git.cehrig@cloudflare.com>
+        with ESMTP id S229890AbjDAUvr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Apr 2023 16:51:47 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3802700F;
+        Sat,  1 Apr 2023 13:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680382306; x=1711918306;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=N23LrCmIXbWTc0I8sjnRDXdeh+BfnU52W2myvp+hnDQ=;
+  b=Bls3hMtseBK23gNL59IbrLd4AuWf/BNtwWMU1WZGDJhuYcmN7N6TbEtn
+   InWrCdtT/BeprOOwDFzqOfspgA4U4ZzeN2XCzgMvQRAje7TUq31kk81kQ
+   4J/ApWthIH1wx64+vVMQjsi05MKUBvcx3w98QDd5Dy4qBn+AFPII+wT1f
+   jHIPwFGrTf9r0ONAXu+T6QD0552LHphT3BAnJ4s6Fcr3YQRRU/cW0BtKs
+   vbVmMF3kSR48Mhto1fR864zYL5W8JPnLInH0XERy04ZRgV73fLRhOkyWu
+   mfCWLPLjoLaXTN1LXOetxd0SUGwPtVAUyUdrPAs2KdSx0d93kE/+hwIGy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="369481158"
+X-IronPort-AV: E=Sophos;i="5.98,311,1673942400"; 
+   d="scan'208";a="369481158"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2023 13:51:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="1015229352"
+X-IronPort-AV: E=Sophos;i="5.98,311,1673942400"; 
+   d="scan'208";a="1015229352"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Apr 2023 13:51:39 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1piiCI-000N29-1n;
+        Sat, 01 Apr 2023 20:51:38 +0000
+Date:   Sun, 2 Apr 2023 04:51:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christian Ehrig <cehrig@cloudflare.com>, bpf@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, cehrig@cloudflare.com,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/3] bpf,fou: Add bpf_skb_{set,get}_fou_encap
+ kfuncs
+Message-ID: <202304020425.L8MwfV5h-lkp@intel.com>
+References: <65b05e447b28d32fb0e07275dc988989f358da2c.1680379518.git.cehrig@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65b05e447b28d32fb0e07275dc988989f358da2c.1680379518.git.cehrig@cloudflare.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests for FOU and GUE encapsulation via the bpf_skb_{set,get}_fou_encap
-kfuncs, using ipip devices in collect-metadata mode.
+Hi Christian,
 
-These tests make sure that we can successfully set and obtain FOU and GUE
-encap parameters using ingress / egress BPF tc-hooks.
+Thank you for the patch! Perhaps something to improve:
 
-Signed-off-by: Christian Ehrig <cehrig@cloudflare.com>
----
- .../selftests/bpf/progs/test_tunnel_kern.c    | 117 ++++++++++++++++++
- tools/testing/selftests/bpf/test_tunnel.sh    |  81 ++++++++++++
- 2 files changed, 198 insertions(+)
+[auto build test WARNING on bpf-next/master]
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 9ab2d55ab7c0..f66af753bbbb 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -52,6 +52,21 @@ struct vxlan_metadata {
- 	__u32     gbp;
- };
- 
-+struct bpf_fou_encap {
-+	__be16 sport;
-+	__be16 dport;
-+};
-+
-+enum bpf_fou_encap_type {
-+	FOU_BPF_ENCAP_FOU,
-+	FOU_BPF_ENCAP_GUE,
-+};
-+
-+int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
-+			  struct bpf_fou_encap *encap, int type) __ksym;
-+int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-+			  struct bpf_fou_encap *encap) __ksym;
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
- 	__uint(max_entries, 1);
-@@ -749,6 +764,108 @@ int ipip_get_tunnel(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+SEC("tc")
-+int ipip_gue_set_tunnel(struct __sk_buff *skb)
-+{
-+	struct bpf_tunnel_key key = {};
-+	struct bpf_fou_encap encap = {};
-+	void *data = (void *)(long)skb->data;
-+	struct iphdr *iph = data;
-+	void *data_end = (void *)(long)skb->data_end;
-+	int ret;
-+
-+	if (data + sizeof(*iph) > data_end) {
-+		log_err(1);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	key.tunnel_ttl = 64;
-+	if (iph->protocol == IPPROTO_ICMP)
-+		key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
-+
-+	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key), 0);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	encap.sport = 0;
-+	encap.dport = bpf_htons(5555);
-+
-+	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_GUE);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	return TC_ACT_OK;
-+}
-+
-+SEC("tc")
-+int ipip_fou_set_tunnel(struct __sk_buff *skb)
-+{
-+	struct bpf_tunnel_key key = {};
-+	struct bpf_fou_encap encap = {};
-+	void *data = (void *)(long)skb->data;
-+	struct iphdr *iph = data;
-+	void *data_end = (void *)(long)skb->data_end;
-+	int ret;
-+
-+	if (data + sizeof(*iph) > data_end) {
-+		log_err(1);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	key.tunnel_ttl = 64;
-+	if (iph->protocol == IPPROTO_ICMP)
-+		key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
-+
-+	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key), 0);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	encap.sport = 0;
-+	encap.dport = bpf_htons(5555);
-+
-+	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_FOU);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	return TC_ACT_OK;
-+}
-+
-+SEC("tc")
-+int ipip_encap_get_tunnel(struct __sk_buff *skb)
-+{
-+	int ret;
-+	struct bpf_tunnel_key key = {};
-+	struct bpf_fou_encap encap = {};
-+
-+	ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	ret = bpf_skb_get_fou_encap(skb, &encap);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	if (bpf_ntohs(encap.dport) != 5555)
-+		return TC_ACT_SHOT;
-+
-+	bpf_printk("%d remote ip 0x%x, sport %d, dport %d\n", ret,
-+		   key.remote_ipv4, bpf_ntohs(encap.sport),
-+		   bpf_ntohs(encap.dport));
-+	return TC_ACT_OK;
-+}
-+
- SEC("tc")
- int ipip6_set_tunnel(struct __sk_buff *skb)
- {
-diff --git a/tools/testing/selftests/bpf/test_tunnel.sh b/tools/testing/selftests/bpf/test_tunnel.sh
-index 2dec7dbf29a2..f2379414a887 100755
---- a/tools/testing/selftests/bpf/test_tunnel.sh
-+++ b/tools/testing/selftests/bpf/test_tunnel.sh
-@@ -212,6 +212,24 @@ add_ipip_tunnel()
- 	ip addr add dev $DEV 10.1.1.200/24
- }
- 
-+add_ipip_encap_tunnel()
-+{
-+	# at_ns0 namespace
-+  ip netns exec at_ns0 ip fou add port 5555 $IPPROTO
-+  ip netns exec at_ns0 \
-+  	ip link add dev $DEV_NS type $TYPE \
-+  	local 172.16.1.100 remote 172.16.1.200 \
-+  	encap $ENCAP encap-sport auto encap-dport 5555 noencap-csum
-+  ip netns exec at_ns0 ip link set dev $DEV_NS up
-+  ip netns exec at_ns0 ip addr add dev $DEV_NS 10.1.1.100/24
-+
-+  # root namespace
-+  ip fou add port 5555 $IPPROTO
-+  ip link add dev $DEV type $TYPE external
-+  ip link set dev $DEV up
-+  ip addr add dev $DEV 10.1.1.200/24
-+}
-+
- add_ip6tnl_tunnel()
- {
- 	ip netns exec at_ns0 ip addr add ::11/96 dev veth0
-@@ -461,6 +479,60 @@ test_ipip()
-         echo -e ${GREEN}"PASS: $TYPE"${NC}
- }
- 
-+test_ipip_gue()
-+{
-+	TYPE=ipip
-+	DEV_NS=ipip00
-+	DEV=ipip11
-+	ret=0
-+	ENCAP=gue
-+	IPPROTO=$ENCAP
-+
-+	check $TYPE
-+	config_device
-+	add_ipip_encap_tunnel
-+	ip link set dev veth1 mtu 1500
-+	attach_bpf $DEV ipip_gue_set_tunnel ipip_encap_get_tunnel
-+	ping $PING_ARG 10.1.1.100
-+	check_err $?
-+	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
-+	check_err $?
-+	cleanup
-+
-+	if [ $ret -ne 0 ]; then
-+                echo -e ${RED}"FAIL: $TYPE (GUE)"${NC}
-+                return 1
-+        fi
-+        echo -e ${GREEN}"PASS: $TYPE (GUE)"${NC}
-+}
-+
-+test_ipip_fou()
-+{
-+	TYPE=ipip
-+	DEV_NS=ipip00
-+	DEV=ipip11
-+	ret=0
-+	ENCAP=fou
-+	IPPROTO="ipproto 4"
-+
-+	check $TYPE
-+	config_device
-+	add_ipip_encap_tunnel
-+	ip link set dev veth1 mtu 1500
-+	attach_bpf $DEV ipip_fou_set_tunnel ipip_encap_get_tunnel
-+	ping $PING_ARG 10.1.1.100
-+	check_err $?
-+	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
-+	check_err $?
-+	cleanup
-+
-+	if [ $ret -ne 0 ]; then
-+                echo -e ${RED}"FAIL: $TYPE (FOU)"${NC}
-+                return 1
-+        fi
-+        echo -e ${GREEN}"PASS: $TYPE (FOU)"${NC}
-+}
-+
- test_ipip6()
- {
- 	TYPE=ip6tnl
-@@ -634,6 +706,7 @@ cleanup()
- 	ip xfrm policy delete dir in src 10.1.1.100/32 dst 10.1.1.200/32 2> /dev/null
- 	ip xfrm state delete src 172.16.1.100 dst 172.16.1.200 proto esp spi 0x1 2> /dev/null
- 	ip xfrm state delete src 172.16.1.200 dst 172.16.1.100 proto esp spi 0x2 2> /dev/null
-+	ip fou del port 5555 gue 2> /dev/null
- }
- 
- cleanup_exit()
-@@ -708,6 +781,14 @@ bpf_tunnel_test()
- 	test_ipip
- 	errors=$(( $errors + $? ))
- 
-+	echo "Testing IPIP (GUE) tunnel..."
-+  test_ipip_gue
-+  errors=$(( $errors + $? ))
-+
-+	echo "Testing IPIP (FOU) tunnel..."
-+  test_ipip_fou
-+  errors=$(( $errors + $? ))
-+
- 	echo "Testing IPIP6 tunnel..."
- 	test_ipip6
- 	errors=$(( $errors + $? ))
+url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Ehrig/ipip-ip_tunnel-sit-Add-FOU-support-for-externally-controlled-ipip-devices/20230402-033512
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/65b05e447b28d32fb0e07275dc988989f358da2c.1680379518.git.cehrig%40cloudflare.com
+patch subject: [PATCH bpf-next 2/3] bpf,fou: Add bpf_skb_{set,get}_fou_encap kfuncs
+config: microblaze-randconfig-r021-20230402 (https://download.01.org/0day-ci/archive/20230402/202304020425.L8MwfV5h-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/111ef54093a724110ca63e6a6279e60dd669094b
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Christian-Ehrig/ipip-ip_tunnel-sit-Add-FOU-support-for-externally-controlled-ipip-devices/20230402-033512
+        git checkout 111ef54093a724110ca63e6a6279e60dd669094b
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=microblaze olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=microblaze SHELL=/bin/bash net/ipv4/
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202304020425.L8MwfV5h-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> net/ipv4/fou_bpf.c:114:5: warning: no previous prototype for 'register_fou_bpf' [-Wmissing-prototypes]
+     114 | int register_fou_bpf(void)
+         |     ^~~~~~~~~~~~~~~~
+
+
+vim +/register_fou_bpf +114 net/ipv4/fou_bpf.c
+
+   113	
+ > 114	int register_fou_bpf(void)
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
