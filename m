@@ -2,66 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A4B6D2C2F
-	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 02:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF566D2C49
+	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 03:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbjDAA7w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 20:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
+        id S233321AbjDABGS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 21:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjDAA7v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 20:59:51 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5781B7D5;
-        Fri, 31 Mar 2023 17:59:50 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id e15-20020a17090ac20f00b0023d1b009f52so27237307pjt.2;
-        Fri, 31 Mar 2023 17:59:50 -0700 (PDT)
+        with ESMTP id S233286AbjDABGR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 21:06:17 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612711D861;
+        Fri, 31 Mar 2023 18:06:12 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id o11so22981375ple.1;
+        Fri, 31 Mar 2023 18:06:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680310790;
+        d=gmail.com; s=20210112; t=1680311172;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AS/BPE64oP8UzI/jVCx4ABuYeNDgELL8aYJAuds5G/U=;
-        b=FijOoNPtMDFRoF77ieBKgmcs7bHxbmk72RJ/agf6zZIAxmKhAYQKBcdWUdN05N1kZI
-         2PiZmPsYDfV6tvOuoIvq/2A33lQifH5+FXO08sOaxNbSj2Aw7NUycJPHxef6vMFrwiCx
-         I7aCdzEifhfR2m8EwbaNtNseYMF9VUNlT/obh2K28ufqEsdvx8ANJ7EnhvL1OK9pK09Z
-         gsOOyZ/bOWrAd11S84YOdUCMetK2ZqpxnLxyHFJhPTVu4UBTk6p9OXUuUgHk+amLgljS
-         XImjbp5LYIupzZdJYabVSov8PPES7z2pnPNJB4bwq+pr3m0g/Jlz34era6btcQ2ZIj0Q
-         NsLg==
+        bh=lptAq23Bhxck5w4z/rG8RS6tmRRir3me5yWghBfZL5w=;
+        b=RciMOpzWuO92XZZ491w3Y2DRYMTk1B/OuOYYEgSqs4w2yJ0FKDEx4PyPOdLPXVASLH
+         HeNugxvV6lVKFtQbAgjusSVnN9Qa3BspUavTeWaWlaIeltduRQTJSlUHWifbYgZmKH3c
+         1ajobv052ByD1ZxgrIGtq1u2IKSDh1m7NdRJVyBf1RS+Ruf1FQ9wFDfES6V9whcJkHrz
+         kZXHZypSh4qPhO6ZOH9F3jdQjxnrIc5h1CQas2SI7zzvi6FwmjJ87DDlt09VxHlmKZXT
+         TQ5TZsq3YlPOqJ01h6OlRLwQ5bduGep0FyhfMuRNKh9+q3jDIOFIZUfrx3mzt2PnP7VJ
+         5Ifg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680310790;
+        d=1e100.net; s=20210112; t=1680311172;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=AS/BPE64oP8UzI/jVCx4ABuYeNDgELL8aYJAuds5G/U=;
-        b=glNhACOcIBzgoaxai5aNxCKsPWpDutwtvm/DYM2SjhGQb8LZxTW9L8giI2xKLZuqWt
-         +n5bml/evCM1pj+kfiHlm09MPdmpIqtkzyfxejc8jeCKPWjkxLtgyx61AafEOLXqd8+x
-         9YDqSamDiEJnEnCinLuT0UVsBFPkVCiWnEHKZVJT28l/ipeAh+uwfRfTCC4Ot4StwdIE
-         DRNSs3aXpDoosn9MNzu9wa5ZapifyQeAPGRGyona2i+4ce4+q0WmiYG6OHJkfAl/q3Vp
-         igdDHo0MsWmLFfo5zftOhIfnjqKkpyLQFFKNZ40TfzVvfekTGIsj15B7uWtN9ho0TwtV
-         LiXg==
-X-Gm-Message-State: AAQBX9cDXx3s9aUWieKPNIsaD8o8f9K53ldoSDCveI8K3OgYnx7EjFqB
-        5H+3TzRRsQ2tnqhg7wXHIQ4=
-X-Google-Smtp-Source: AKy350aQVRvJtGKnT/aYeQcEVO/NCQ3gQTzxO6AZrtSud0ggIuO6b/ntFYFkkV48SvIQIvNhVxOikA==
-X-Received: by 2002:a17:903:188:b0:19c:f096:bbef with SMTP id z8-20020a170903018800b0019cf096bbefmr36994360plg.49.1680310790332;
-        Fri, 31 Mar 2023 17:59:50 -0700 (PDT)
+        bh=lptAq23Bhxck5w4z/rG8RS6tmRRir3me5yWghBfZL5w=;
+        b=66Kfz8TJk1gS6wOEGBMVeetRDpKMuzMUabbEpy6qUDe9J6OCemfoGi5UKdcXoYhCQ0
+         2mVqd6kLREwAK18QSREAuD9Av+xnbD9O9596PcmEgnnwgigNu5t8jLDmwpEZPbGkkAGL
+         8G4Ch2GGfIoSwTwo+TEO3raLEs0eLXrbttE2oCrUr0+w3LUTFzqsbBoFjQVRxA9kN4gw
+         EEf1LbOjyOPviGTeVj5tseVyTRjAPyNBHE4kLw2Z9+ucLNPVjHigcE3f9d+2X62VrMlC
+         2Jx0pJiNfPlUPtLwDXjcGyhkfyDR4wOuq+y2G8ThXDL1Sp3phmcisWSH2liBM7gUJyUj
+         QKbg==
+X-Gm-Message-State: AAQBX9cZZTPALNrjmdCbeBHjAMrGoIGwzwypOQSjS+Pt/QmRU85k+eXV
+        xQvzK2VfCEy/ieXqwj8OYps=
+X-Google-Smtp-Source: AKy350Z8u3DIY9zOK2GGbRh+IzTtZrAQZu687R480OVrDZT6cATs8RfxE2bQUMA6S8EqfzHYuLBzNA==
+X-Received: by 2002:a17:902:fa04:b0:1a2:85f0:e747 with SMTP id la4-20020a170902fa0400b001a285f0e747mr8814999plb.41.1680311171897;
+        Fri, 31 Mar 2023 18:06:11 -0700 (PDT)
 Received: from localhost ([98.97.116.12])
-        by smtp.gmail.com with ESMTPSA id a12-20020a1709027d8c00b001a19b6ccdd4sm2174366plm.84.2023.03.31.17.59.49
+        by smtp.gmail.com with ESMTPSA id w16-20020a63c110000000b0050f6add54fcsm2204421pgf.44.2023.03.31.18.06.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 17:59:49 -0700 (PDT)
-Date:   Fri, 31 Mar 2023 17:59:48 -0700
+        Fri, 31 Mar 2023 18:06:11 -0700 (PDT)
+Date:   Fri, 31 Mar 2023 18:06:10 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     cong.wang@bytedance.com, daniel@iogearbox.net, lmb@isovalent.com,
-        edumazet@google.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, will@isovalent.com
-Message-ID: <642782044cf76_c503a208d5@john.notmuch>
-In-Reply-To: <87zg7vbu60.fsf@cloudflare.com>
-References: <20230327175446.98151-1-john.fastabend@gmail.com>
- <20230327175446.98151-4-john.fastabend@gmail.com>
- <87zg7vbu60.fsf@cloudflare.com>
-Subject: Re: [PATCH bpf v2 03/12] bpf: sockmap, improved check for empty queue
+To:     Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+Message-ID: <6427838247d16_c503a2087e@john.notmuch>
+In-Reply-To: <20230327-vsock-sockmap-v4-0-c62b7cd92a85@bytedance.com>
+References: <20230327-vsock-sockmap-v4-0-c62b7cd92a85@bytedance.com>
+Subject: RE: [PATCH net-next v4 0/3] Add support for sockmap to vsock.
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -76,77 +93,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Mon, Mar 27, 2023 at 10:54 AM -07, John Fastabend wrote:
-> > We noticed some rare sk_buffs were stepping past the queue when system was
-> > under memory pressure. The general theory is to skip enqueueing
-> > sk_buffs when its not necessary which is the normal case with a system
-> > that is properly provisioned for the task, no memory pressure and enough
-> > cpu assigned.
-> >
-> > But, if we can't allocate memory due to an ENOMEM error when enqueueing
-> > the sk_buff into the sockmap receive queue we push it onto a delayed
-> > workqueue to retry later. When a new sk_buff is received we then check
-> > if that queue is empty. However, there is a problem with simply checking
-> > the queue length. When a sk_buff is being processed from the ingress queue
-> > but not yet on the sockmap msg receive queue its possible to also recv
-> > a sk_buff through normal path. It will check the ingress queue which is
-> > zero and then skip ahead of the pkt being processed.
-> >
-> > Previously we used sock lock from both contexts which made the problem
-> > harder to hit, but not impossible.
-> >
-> > To fix also check the 'state' variable where we would cache partially
-> > processed sk_buff. This catches the majority of cases. But, we also
-> > need to use the mutex lock around this check because we can't have both
-> > codes running and check sensibly. We could perhaps do this with atomic
-> > bit checks, but we are already here due to memory pressure so slowing
-> > things down a bit seems OK and simpler to just grab a lock.
-> >
-> > To reproduce issue we run NGINX compliance test with sockmap running and
-> > observe some flakes in our testing that we attributed to this issue.
-> >
-> > Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
-> > Tested-by: William Findlay <will@isovalent.com>
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
+Bobby Eshleman wrote:
+> We're testing usage of vsock as a way to redirect guest-local UDS
+> requests to the host and this patch series greatly improves the
+> performance of such a setup.
 > 
-> I've got an idea to try, but it'd a bigger change.
+> Compared to copying packets via userspace, this improves throughput by
+> 121% in basic testing.
 > 
-> skb_dequeue is lock, skb_peek, skb_unlink, unlock, right?
+> Tested as follows.
 > 
-> What if we split up the skb_dequeue in sk_psock_backlog to publish the
-> change to the ingress_skb queue only once an skb has been processed?
-
-I think this works now. Early on we tried to run backlog without locking
-but given this is now locked by mutex I think it works out.
-
-We have a few places that work on ingress_skb but those are all enqueue
-on tail so should be fine to peek here.
-
+> Setup: guest unix dgram sender -> guest vsock redirector -> host vsock
+>        server
+> Threads: 1
+> Payload: 64k
+> No sockmap:
+> - 76.3 MB/s
+> - The guest vsock redirector was
+>   "socat VSOCK-CONNECT:2:1234 UNIX-RECV:/path/to/sock"
+> Using sockmap (this patch):
+> - 168.8 MB/s (+121%)
+> - The guest redirector was a simple sockmap echo server,
+>   redirecting unix ingress to vsock 2:1234 egress.
+> - Same sender and server programs
 > 
-> static void sk_psock_backlog(struct work_struct *work)
-> {
->         ...
->         while ((skb = skb_peek_locked(&psock->ingress_skb))) {
->                 ...
->                 skb_unlink(skb, &psock->ingress_skb);
->         }
->         ...
-> }
+> *Note: these numbers are from RFC v1
 > 
-> Even more - if we hold off the unlinking until an skb has been fully
-> processed, that perhaps opens up the way to get rid of keeping state in
-> sk_psock_work_state. We could just skb_pull the processed data instead.
-
-Yep.
-
+> Only the virtio transport has been tested. The loopback transport was
+> used in writing bpf/selftests, but not thoroughly tested otherwise.
 > 
-> It's just an idea and I don't want to block a tested fix that LGTM so
-> consider this:
+> This series requires the skb patch.
 
-Did you get a chance to try this? Otherwise I can also give the idea
-a try next week.
+Appears reasonable to me although I didn't review internals of all
+the af_vsock stuff. I see it got merged great.
 
-> 
-> Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+One nit, I have a series coming shortly to pull the tests out of
+the sockmap_listen and into a sockmap_vsock because I don't think they
+belong in _listen but that is just a refactor.
