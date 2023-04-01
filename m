@@ -2,111 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BCC6D33EF
-	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 22:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEBD6D34C6
+	for <lists+bpf@lfdr.de>; Sun,  2 Apr 2023 00:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbjDAUvq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 Apr 2023 16:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
+        id S229459AbjDAWLB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Apr 2023 18:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjDAUvq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 1 Apr 2023 16:51:46 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4493827020;
-        Sat,  1 Apr 2023 13:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680382302; x=1711918302;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PhC0D/MVKAqAm8d7dc7D/3KzxIe4Z5ITGL1DVWTuTTw=;
-  b=RSkXAlp1oG3dxc3QyMH2dD/ET+zZUiU4ACkv1+QsR+mHs11icKBdcty5
-   1dh1Bd0HiSOUelOgCRE/LUOPxWPe1m0zlCmLbz1HJuJHg8y6XMdpj8oa6
-   QSmYTPp6wgDNOfynwp7RlbcyXV3tyFFylq4lHAFkl/7jiHoLZ/EUzZTJQ
-   ppV9Rqg6vCxZueZg2QDKuyNPIY3ILvBwm1g2/GITKm18XQo2wgYMQKnCA
-   AK4Xo8dFyXCJqp2EJ0eL5zUGuUhIbzwMS0sG8Msoqv9idTDf7lEW+AkFR
-   BsgH0x2LO4JrkeEc+BWHkai/qea1RWxf6yeH3AMeRxx9RBCtZEnEgll+W
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="369481170"
-X-IronPort-AV: E=Sophos;i="5.98,311,1673942400"; 
-   d="scan'208";a="369481170"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2023 13:51:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="1015229353"
-X-IronPort-AV: E=Sophos;i="5.98,311,1673942400"; 
-   d="scan'208";a="1015229353"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Apr 2023 13:51:39 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1piiCI-000N2B-1r;
-        Sat, 01 Apr 2023 20:51:38 +0000
-Date:   Sun, 2 Apr 2023 04:51:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christian Ehrig <cehrig@cloudflare.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, cehrig@cloudflare.com,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/3] bpf,fou: Add bpf_skb_{set,get}_fou_encap
- kfuncs
-Message-ID: <202304020430.KvQEwmII-lkp@intel.com>
-References: <65b05e447b28d32fb0e07275dc988989f358da2c.1680379518.git.cehrig@cloudflare.com>
+        with ESMTP id S229448AbjDAWLA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Apr 2023 18:11:00 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C38F7AB6
+        for <bpf@vger.kernel.org>; Sat,  1 Apr 2023 15:10:59 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id eh3so103307287edb.11
+        for <bpf@vger.kernel.org>; Sat, 01 Apr 2023 15:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680387058; x=1682979058;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IjGKY67SRGtqSj1G77HxZ5+rLXp/TJLxNZYjr1mCBqI=;
+        b=ga+lWRSJeGzNU0Csh9vFMBXYn+H6tgdT0vm6ybQ1SiJGSWR+dxS7z8L+9nN4Doa1/o
+         WqJ+3cmQtmQ/82voBZ6OKEB5qZV13B6PIpSCWeBYfCUu2IECwki/3uCLU5EV2TsS7Gp6
+         4RkedMfRT3Kkcy6gjGUIYWJGWFdlbfvvGIt11+NvSqIdTTWu6906vmeyvy0WJXmFUIJx
+         LTKPWvBw9dK/ycsxlNBFd9tB7lM9Vg0ydM5H6wyB6ailKn/hw7vrhuUnFhRxnrXcVtDC
+         LpdxG+ojmgBCoURegauZ4OtUqYBsTWTTBMMISiOuIpbHokS9OKz0O0l20FmiJSDNB76W
+         8s7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680387058; x=1682979058;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IjGKY67SRGtqSj1G77HxZ5+rLXp/TJLxNZYjr1mCBqI=;
+        b=hVU5s13S7SNGQKjbMnNW1flIGxHXikQJ0/7VmKIM6DI+Yf5SExSLYsxWRMMYftduzX
+         5CHkCsoo8EEHRQxPJKzEuFkA6FN8ttDl7z52wzlw10vzgE2zMJZXmSSilBdCeTfGf6JI
+         zIw0fw7zz5S6+nNvPyXuMEX8GOif+8Hh8pwa6g+50TJCAjzOr7ntBBuq9VcW7NK9X4Da
+         pL36fT0F4F02j4rgLMrZnOg38Ir1v6u2h2Wk97zM+DyNhKar2Z9zi/dsiiCArOIfck5A
+         K5trz2qaQ7BCt5ZUwoARKdkX1eZb1T6T4QEM88xUfFx57bGqrQ4Z6iJzXJaJorqjlC1t
+         W33A==
+X-Gm-Message-State: AAQBX9eTCOyKz/lgJl9NsVT2t2APNG5MjAFV/bZG6hkjxXMltuZ4CqSU
+        bdbGdH+C0Oe1GJKuHwQB1smoAuzqOPfBytd3ZI8=
+X-Google-Smtp-Source: AKy350aNfbrtcQnDWTOv8bxZJO8G1wC3CvkLrpsH6rXSWRO6JD0fZcEpOdxNE6WmrzfD7iic/4PI22Z92rDWJts+gD4=
+X-Received: by 2002:a50:f69e:0:b0:4fc:8749:cd77 with SMTP id
+ d30-20020a50f69e000000b004fc8749cd77mr15755400edn.3.1680387057670; Sat, 01
+ Apr 2023 15:10:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65b05e447b28d32fb0e07275dc988989f358da2c.1680379518.git.cehrig@cloudflare.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230401200602.3275-1-aspsk@isovalent.com>
+In-Reply-To: <20230401200602.3275-1-aspsk@isovalent.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 1 Apr 2023 15:10:46 -0700
+Message-ID: <CAADnVQJpF+rYo969niqpPPh_=Sv-2jztA0GpRYBfi-jPE65ZyQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: optimize hashmap lookups when key_size
+ is divisible by 4
+To:     Anton Protopopov <aspsk@isovalent.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Christian,
+On Sat, Apr 1, 2023 at 1:05=E2=80=AFPM Anton Protopopov <aspsk@isovalent.co=
+m> wrote:
+>
+> The BPF hashmap uses the jhash() hash function. There is an optimized ver=
+sion
+> of this hash function which may be used if hash size is a multiple of 4. =
+Apply
+> this optimization to the hashmap in a similar way as it is done in the bl=
+oom
+> filter map.
+>
+> On practice the optimization is only noticeable for smaller key sizes, wh=
+ich,
+> however, is sufficient for many applications. An example is listed in the
+> following table of measurements (a hashmap of 65536 elements was used):
+>
+>     --------------------------------------------------------------------
+>     | key_size | fullness | lookups /sec | lookups (opt) /sec |   gain |
+>     --------------------------------------------------------------------
+>     |        4 |      25% |      42.990M |            46.000M |   7.0% |
+>     |        4 |      50% |      37.910M |            39.094M |   3.1% |
+>     |        4 |      75% |      34.486M |            36.124M |   4.7% |
+>     |        4 |     100% |      31.760M |            32.719M |   3.0% |
+>     --------------------------------------------------------------------
+>     |        8 |      25% |      43.855M |            49.626M |  13.2% |
+>     |        8 |      50% |      38.328M |            42.152M |  10.0% |
+>     |        8 |      75% |      34.483M |            38.088M |  10.5% |
+>     |        8 |     100% |      31.306M |            34.686M |  10.8% |
+>     --------------------------------------------------------------------
+>     |       12 |      25% |      38.398M |            43.770M |  14.0% |
+>     |       12 |      50% |      33.336M |            37.712M |  13.1% |
+>     |       12 |      75% |      29.917M |            34.440M |  15.1% |
+>     |       12 |     100% |      27.322M |            30.480M |  11.6% |
+>     --------------------------------------------------------------------
+>     |       16 |      25% |      41.491M |            41.921M |   1.0% |
+>     |       16 |      50% |      36.206M |            36.474M |   0.7% |
+>     |       16 |      75% |      32.529M |            33.027M |   1.5% |
+>     |       16 |     100% |      29.581M |            30.325M |   2.5% |
+>     --------------------------------------------------------------------
+>     |       20 |      25% |      34.240M |            36.787M |   7.4% |
+>     |       20 |      50% |      30.328M |            32.663M |   7.7% |
+>     |       20 |      75% |      27.536M |            29.354M |   6.6% |
+>     |       20 |     100% |      24.847M |            26.505M |   6.7% |
+>     --------------------------------------------------------------------
+>     |       24 |      25% |      36.329M |            40.608M |  11.8% |
+>     |       24 |      50% |      31.444M |            35.059M |  11.5% |
+>     |       24 |      75% |      28.426M |            31.452M |  10.6% |
+>     |       24 |     100% |      26.278M |            28.741M |   9.4% |
+>     --------------------------------------------------------------------
+>     |       28 |      25% |      31.540M |            31.944M |   1.3% |
+>     |       28 |      50% |      27.739M |            28.063M |   1.2% |
+>     |       28 |      75% |      24.993M |            25.814M |   3.3% |
+>     |       28 |     100% |      23.513M |            23.500M |  -0.1% |
+>     --------------------------------------------------------------------
+>     |       32 |      25% |      32.116M |            33.953M |   5.7% |
+>     |       32 |      50% |      28.879M |            29.859M |   3.4% |
+>     |       32 |      75% |      26.227M |            26.948M |   2.7% |
+>     |       32 |     100% |      23.829M |            24.613M |   3.3% |
+>     --------------------------------------------------------------------
+>     |       64 |      25% |      22.535M |            22.554M |   0.1% |
+>     |       64 |      50% |      20.471M |            20.675M |   1.0% |
+>     |       64 |      75% |      19.077M |            19.146M |   0.4% |
+>     |       64 |     100% |      17.710M |            18.131M |   2.4% |
+>     --------------------------------------------------------------------
+>
+> The following script was used to gather the results (SMT & frequency off)=
+:
+>
+>     cd tools/testing/selftests/bpf
+>     for key_size in 4 8 12 16 20 24 28 32 64; do
+>             for nr_entries in `seq 16384 16384 65536`; do
+>                     fullness=3D$(printf '%3s' $((nr_entries*100/65536)))
+>                     echo -n "key_size=3D$key_size: $fullness% full: "
+>                     sudo ./bench -d2 -a bpf-hashmap-lookup --key_size=3D$=
+key_size --nr_entries=3D$nr_entries --max_entries=3D65536 --nr_loops=3D2000=
+000 --map_flags=3D0x40 | grep cpu
+>             done
+>             echo
+>     done
+>
+> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> ---
+>
+> v1->v2:
+>   - simplify/optimize code by just testing the (key_len%4 =3D=3D 0) in ho=
+t path (Alexei)
+>
+>  kernel/bpf/hashtab.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 96b645bba3a4..00c253b84bf5 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -607,6 +607,8 @@ static struct bpf_map *htab_map_alloc(union bpf_attr =
+*attr)
+>
+>  static inline u32 htab_map_hash(const void *key, u32 key_len, u32 hashrn=
+d)
+>  {
+> +       if (likely(key_len % 4 =3D=3D 0))
+> +               return jhash2(key, key_len / 4, hashrnd);
+>         return jhash(key, key_len, hashrnd);
+>  }
 
-Thank you for the patch! Perhaps something to improve:
+This looks much cleaner than v1. Applied.
 
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Ehrig/ipip-ip_tunnel-sit-Add-FOU-support-for-externally-controlled-ipip-devices/20230402-033512
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/65b05e447b28d32fb0e07275dc988989f358da2c.1680379518.git.cehrig%40cloudflare.com
-patch subject: [PATCH bpf-next 2/3] bpf,fou: Add bpf_skb_{set,get}_fou_encap kfuncs
-config: i386-randconfig-a005 (https://download.01.org/0day-ci/archive/20230402/202304020430.KvQEwmII-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/111ef54093a724110ca63e6a6279e60dd669094b
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Christian-Ehrig/ipip-ip_tunnel-sit-Add-FOU-support-for-externally-controlled-ipip-devices/20230402-033512
-        git checkout 111ef54093a724110ca63e6a6279e60dd669094b
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 olddefconfig
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash net/ipv4/
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304020430.KvQEwmII-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> net/ipv4/fou_bpf.c:114:5: warning: no previous prototype for 'register_fou_bpf' [-Wmissing-prototypes]
-     114 | int register_fou_bpf(void)
-         |     ^~~~~~~~~~~~~~~~
-
-
-vim +/register_fou_bpf +114 net/ipv4/fou_bpf.c
-
-   113	
- > 114	int register_fou_bpf(void)
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Do you mind doing similar patch for bloomfilter?
+(removing aligned_u32_count variable)
