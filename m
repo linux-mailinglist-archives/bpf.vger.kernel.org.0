@@ -2,174 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B0E6D2C5A
-	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 03:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AA56D2C93
+	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 03:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233375AbjDABJ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 21:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
+        id S233272AbjDABl6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Mar 2023 21:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbjDABJZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 21:09:25 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DFF1D869;
-        Fri, 31 Mar 2023 18:09:23 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id h14so14460265pgj.7;
-        Fri, 31 Mar 2023 18:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680311363;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cUN8WvczuQXpCgMPQnBz+ElNsxpaR9j0Hx9WkE+k5t4=;
-        b=GlRUUXup8p2ycO4vuBSCG3aDKHl6BzkEOWMlmVvx3Nkn1AQoXzmDEtsB+acBUSITXr
-         oBDvk/MlwQn1PrU/AkO4Ng0m0hrNC59FlNYT9LFyQGibGJd7l6xwUlA6NUl5HCopcKCz
-         REHHsf8r0G2UzI/C0Yz0aGIBgd4XwfSCDg6PkngkDFHkIdtRxdAAqud2CeuptACtFIhZ
-         h3I7c20r6bvq1gVKsaTAPmfGsBWi4xHtkfY0JG6x2WopAdRyQBjfjotolUyOvlO5+tt8
-         QRIRBWN/+ti6FdjxSgXCy/1FD85Q/RoaPkhp/aPxzypYDlLfZjt2/dOwZiFS0ZQZnkgi
-         vEog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680311363;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cUN8WvczuQXpCgMPQnBz+ElNsxpaR9j0Hx9WkE+k5t4=;
-        b=ZQTm5+wIefaHUe4lc/HZGgRX6HYeEdWOvCQeNkzB1fCdd95AQPHYy/pvSX/0+djhQG
-         QcCRzsh3YPVsuAgV2SMvcnzqrLO0zRXq3zkrwqmRdAVUVqweiExUHOa/KmPEC6hnyuJT
-         86Y4PqkIR2DztEWpjC1duP83si2d9L218IJT1zh7rgor+xtPHSj7d4k4W49EWjjeYFOe
-         qlF8oRjHMXqj2S1etOrQ01X3qBpFgAw9BWGj8g0RHf/1ZNMokYuulHB/glAz5mKwqu94
-         yq0w7cmC1Lnp7AwVKe3sBX+umoWfacmxwp3ZwrPZu6liTuNCNxl1IUaPsDVGw5+pYW7I
-         LGvg==
-X-Gm-Message-State: AAQBX9dBo4WzfkNbkaybeHU++nKTVEd9qqGIlr9LpOSH7fi6aBFpT7i8
-        rjMECl9s1rqUjhM22CI0Ax4=
-X-Google-Smtp-Source: AKy350YGJQEHDwSrG5wusbTZWUYMAKY+9JwSacuZukV0ZOT9ZlXSFjwfMFCld/vEe0862VEPE6+vrQ==
-X-Received: by 2002:a62:1811:0:b0:62a:4503:53ba with SMTP id 17-20020a621811000000b0062a450353bamr26539907pfy.26.1680311363072;
-        Fri, 31 Mar 2023 18:09:23 -0700 (PDT)
-Received: from localhost ([98.97.116.12])
-        by smtp.gmail.com with ESMTPSA id 13-20020aa7924d000000b006262520ac59sm2382826pfp.127.2023.03.31.18.09.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 18:09:22 -0700 (PDT)
-Date:   Fri, 31 Mar 2023 18:09:21 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Yafang Shao <laoar.shao@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Message-ID: <6427844176538_c503a208e4@john.notmuch>
-In-Reply-To: <CALOAHbCyGJzp1yH2NTsikre0RuQ+4WoZCsAc110_+tW=L8FgQg@mail.gmail.com>
-References: <20230326221612.169289-1-xiyou.wangcong@gmail.com>
- <CALOAHbCyGJzp1yH2NTsikre0RuQ+4WoZCsAc110_+tW=L8FgQg@mail.gmail.com>
-Subject: Re: [Patch bpf-next] sock_map: include sk_psock memory overhead too
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        with ESMTP id S233495AbjDABly (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Mar 2023 21:41:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FF320C05;
+        Fri, 31 Mar 2023 18:41:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B73BAB832F5;
+        Sat,  1 Apr 2023 01:41:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77F0FC43442;
+        Sat,  1 Apr 2023 01:41:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680313301;
+        bh=JegotNx5fBXykk8QkNgylxdkaBH7T4nUuNR8kI4BsII=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cRZ6z4eKTJf7e8eRthistVDOYIIuhACxg+8s0kfqGFqpRoZyFNX40VSUvWarZYH3Y
+         Cbon/tAQK4hN0fhWCiFq8KDKOnarJxeQYsWUUUpzo6eFChCcXbqond9Jsktc9IlNqu
+         uypiJOzmhLJ6c19FZRFbrjcM8o4fzz1qyx0EEkYI1+16cUV6igsDEQLX1ZzUFnKDpE
+         hFq5mJYZ6u1HkYFl/e6ULwWE5qG3vCyPAxgLRKKUiaHNrjlyRVToSRkuc+t+lVeQ2U
+         v6uCDN2ZyzuOHPK1LPNxyZn43wEP0KWOGLRfWP48aKTTQiDQWn/gbzdEMkaIg/NdFI
+         l/BnwR/rO6aJA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, andrii@kernel.org,
+        daniel@iogearbox.net, shuah@kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.2 07/25] selftests/bpf: Fix progs/find_vma_fail1.c build error.
+Date:   Fri, 31 Mar 2023 21:41:05 -0400
+Message-Id: <20230401014126.3356410-7-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230401014126.3356410-1-sashal@kernel.org>
+References: <20230401014126.3356410-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yafang Shao wrote:
-> On Mon, Mar 27, 2023 at 6:16=E2=80=AFAM Cong Wang <xiyou.wangcong@gmail=
-.com> wrote:
-> >
-> > From: Cong Wang <cong.wang@bytedance.com>
-> >
-> > When a socket is added to a sockmap, sk_psock is allocated too as its=
+From: Alexei Starovoitov <ast@kernel.org>
 
-> > sk_user_data, therefore it should be consider as an overhead of sockm=
-ap
-> > memory usage.
-> >
-> > Before this patch:
-> >
-> > 1: sockmap  flags 0x0
-> >         key 4B  value 4B  max_entries 2  memlock 656B
-> >         pids echo-sockmap(549)
-> >
-> > After this patch:
-> >
-> > 9: sockmap  flags 0x0
-> >         key 4B  value 4B  max_entries 2  memlock 1824B
-> >         pids echo-sockmap(568)
-> >
-> > Fixes: 73d2c61919e9 ("bpf, net: sock_map memory usage")
-> > Cc: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > ---
-> >  net/core/sock_map.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> > index 7c189c2e2fbf..22197e565ece 100644
-> > --- a/net/core/sock_map.c
-> > +++ b/net/core/sock_map.c
-> > @@ -799,9 +799,17 @@ static void sock_map_fini_seq_private(void *priv=
-_data)
-> >
-> >  static u64 sock_map_mem_usage(const struct bpf_map *map)
-> >  {
-> > +       struct bpf_stab *stab =3D container_of(map, struct bpf_stab, =
-map);
-> >         u64 usage =3D sizeof(struct bpf_stab);
-> > +       int i;
-> >
-> >         usage +=3D (u64)map->max_entries * sizeof(struct sock *);
-> > +
-> > +       for (i =3D 0; i < stab->map.max_entries; i++) {
-> =
+[ Upstream commit 32513d40d908b267508d37994753d9bd1600914b ]
 
-> Although it adds a for-loop, the operation below is quite light. So it
-> looks good to me.
+The commit 11e456cae91e ("selftests/bpf: Fix compilation errors: Assign a value to a constant")
+fixed the issue cleanly in bpf-next.
+This is an alternative fix in bpf tree to avoid merge conflict between bpf and bpf-next.
 
-We could track a count from update to avoid the loop?
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/testing/selftests/bpf/progs/find_vma_fail1.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> =
-
-> > +               if (stab->sks[i])
-> =
-
-> Nit, stab->sks[i] can be modified in the delete path in parallel, so
-> there should be a READ_ONCE() here.
-> =
-
-> > +                       usage +=3D sizeof(struct sk_psock);
-> > +       }
-> > +
-> >         return usage;
-> >  }
-> >
-> > @@ -1412,7 +1420,7 @@ static u64 sock_hash_mem_usage(const struct bpf=
-_map *map)
-> >         u64 usage =3D sizeof(*htab);
-> >
-> >         usage +=3D htab->buckets_num * sizeof(struct bpf_shtab_bucket=
-);
-> > -       usage +=3D atomic_read(&htab->count) * (u64)htab->elem_size;
-> > +       usage +=3D atomic_read(&htab->count) * ((u64)htab->elem_size =
-+ sizeof(struct sk_psock));
-> >         return usage;
-> >  }
-> >
-> > --
-> > 2.34.1
-> >
-> =
-
-> =
-
-> -- =
-
-> Regards
-> Yafang
-
+diff --git a/tools/testing/selftests/bpf/progs/find_vma_fail1.c b/tools/testing/selftests/bpf/progs/find_vma_fail1.c
+index b3b326b8e2d1c..6dab9cffda132 100644
+--- a/tools/testing/selftests/bpf/progs/find_vma_fail1.c
++++ b/tools/testing/selftests/bpf/progs/find_vma_fail1.c
+@@ -2,6 +2,7 @@
+ /* Copyright (c) 2021 Facebook */
+ #include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
++#define vm_flags vm_start
+ 
+ char _license[] SEC("license") = "GPL";
+ 
+-- 
+2.39.2
 
