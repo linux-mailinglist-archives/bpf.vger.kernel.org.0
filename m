@@ -2,86 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBA66D2CEA
-	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 03:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE826D2E7A
+	for <lists+bpf@lfdr.de>; Sat,  1 Apr 2023 08:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbjDABoh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Mar 2023 21:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49648 "EHLO
+        id S233250AbjDAGCk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Apr 2023 02:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbjDABn4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Mar 2023 21:43:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FE123B5E;
-        Fri, 31 Mar 2023 18:43:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F086662CEE;
-        Sat,  1 Apr 2023 01:42:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85A97C433D2;
-        Sat,  1 Apr 2023 01:42:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680313373;
-        bh=JegotNx5fBXykk8QkNgylxdkaBH7T4nUuNR8kI4BsII=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=raRDkaY4zQoWHLoI5oe7keHDPfdQij6NHAhcyU/QFdOYZVU4j9RKZreENoCY6VyJt
-         R5NUVqHUoFooWDPo1tiLo+0vfkrn2z1adLeI/wrAx32DXCb9Cqk6ZOO5XcsyAJu6Q5
-         GmM7Eh7ffB4c2Y26HqZZSR2U2FwwYDD4QegrgBvpfGI8EFBYkoXAIlYJ0W/CklVs3q
-         unty1nDjtHbhq0Qzmx5zT1hkME7UL52ndJWSfW9MgR7Km3ksFVx2r/SId/YwuZimNL
-         ncOXOufu/6i9YY2I8wSZT0cTCUaBnXszMEfz72b/wiz5uE0BIvkzQcrqDSyyj4lsi0
-         BMvuS5UzsAWSQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, andrii@kernel.org,
-        daniel@iogearbox.net, shuah@kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 06/24] selftests/bpf: Fix progs/find_vma_fail1.c build error.
-Date:   Fri, 31 Mar 2023 21:42:22 -0400
-Message-Id: <20230401014242.3356780-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230401014242.3356780-1-sashal@kernel.org>
-References: <20230401014242.3356780-1-sashal@kernel.org>
+        with ESMTP id S232822AbjDAGCj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Apr 2023 02:02:39 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83869CC3A
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 23:02:38 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id cr18so19853964qtb.0
+        for <bpf@vger.kernel.org>; Fri, 31 Mar 2023 23:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680328957;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=v7MwNEQgoLr1DsIfUSRAVJWR1UtEIkQfpF6+DRE0NHU=;
+        b=BmuJwSXCeu7WvOEoh8CCJmkUoFhsbCuw1jI08FDZPLqf3tmB6XR4Y3Z3yS3bBPDhMe
+         XE6SaOg0JMzxgMnTkcWmqUxDjCO2D8CaZRwCuuwT7vwtKvO5SC5VBYVTdOCQq2gEaTz6
+         yCNQ10X3AarGaX3l4dMFriwQrmaM1piGfyOGsq88Be8odE5KEY3sTsljptvy0cOvkbYP
+         bKZzGLpCOnPCHuwNKseXacqPO8ygN6iTscjLsO53yguBHIjMFHP08lASQKncHj5kH0zf
+         lrGvg+vd6ODUiNRgZEaJv8RIW+0YHi2iVJarqm+HlPweIx7o6QxkYTqQJxn1h9htMSqv
+         x9tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680328957;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v7MwNEQgoLr1DsIfUSRAVJWR1UtEIkQfpF6+DRE0NHU=;
+        b=BVjlhE53HCl7V2vAfU8Dyh5pFcHCJHZeiSS8lTVnHbFWKFjhBH6nPfClhzg5QPkBuv
+         Wn43crL7RgWRz7d0JsJmIkVK/MJIn0yOWoDSd3ZPBDFCu7x/262q6CwogRRuQVcJJQzD
+         w0CVBX38LQHL/2+Kmb91fm3dfAZA+9rykN4YN8QetjxysBChGzJLw36IOK5L7OCd375+
+         WnTz0g2UKxtrrY3TqwbNpjY3CFy4ExhAtIVSmF8Ax1n+TEAl71z87tmaCnl8IVoUPJAW
+         Zyuan4phdLm09VRWdqKgMbg8lSLIsji7TBSOyjLPlYAObpYEzJSJ0H6wna9NJ7M5pHNm
+         kkvQ==
+X-Gm-Message-State: AAQBX9dTKo/EyCsWyj96+bt5TxE32mR4Ekx8DeXtq4uH/lSnrxHyj9uk
+        10ru2vZINlj2YCwE7/5dN3zEE4935oAoJI0FUv4=
+X-Google-Smtp-Source: AKy350bz7hyy33xOQXkVa6CVuAWDrYxfyDuqR/VvpXhFJcvagEeQNlcEcHH/M0JLX8y/knAnkri8M2i5wIOhSt/JIAE=
+X-Received: by 2002:a05:622a:1ba7:b0:3e6:2fab:675 with SMTP id
+ bp39-20020a05622a1ba700b003e62fab0675mr3261127qtb.9.1680328957669; Fri, 31
+ Mar 2023 23:02:37 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Sender: mmrskish@gmail.com
+Received: by 2002:a0c:8f1a:0:b0:5b4:bd23:6916 with HTTP; Fri, 31 Mar 2023
+ 23:02:37 -0700 (PDT)
+From:   Ibrahim Idewu <ibrahimidewu4@gmail.com>
+Date:   Sat, 1 Apr 2023 07:02:37 +0100
+X-Google-Sender-Auth: DpXzzJlOGy2ZJgcsih12vLgziUs
+Message-ID: <CAF2A5Bd2T+N_mA7WLP8-xVZBKa+-k9UoDa1kcH0bNhQNYDpvkA@mail.gmail.com>
+Subject: OPPORTUNITY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=4.9 required=5.0 tests=ADVANCE_FEE_3_NEW_FRM_MNY,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FILL_THIS_FORM,
+        FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_USD,MONEY_FORM,MONEY_FRAUD_3,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_MONEY_PERCENT,UNDISC_MONEY
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+I have a business proposal in the region of $19.3million USD for you to han=
+dle
+with me. I have the opportunity to transfer this abandoned fund to your ban=
+k
+account in your country which belongs to our client.
 
-[ Upstream commit 32513d40d908b267508d37994753d9bd1600914b ]
+I am inviting you in this transaction where this money can be shared
+between us at the ratio of 50/50% and help the needy around us don=E2=80=99=
+t be
+afraid of anything I am with you and will instruct you what you will do
+to maintain this fund.
 
-The commit 11e456cae91e ("selftests/bpf: Fix compilation errors: Assign a value to a constant")
-fixed the issue cleanly in bpf-next.
-This is an alternative fix in bpf tree to avoid merge conflict between bpf and bpf-next.
+Please kindly contact me with your information if you are interested
+in this transaction for more details(ibrahimidewu4@gmail.com)
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/bpf/progs/find_vma_fail1.c | 1 +
- 1 file changed, 1 insertion(+)
+1. Full Name:
+2. Your direct mobile number:
+3. Your contact address:
+4. Your job:
+5. Your nationality:
+6. Your gender / age
 
-diff --git a/tools/testing/selftests/bpf/progs/find_vma_fail1.c b/tools/testing/selftests/bpf/progs/find_vma_fail1.c
-index b3b326b8e2d1c..6dab9cffda132 100644
---- a/tools/testing/selftests/bpf/progs/find_vma_fail1.c
-+++ b/tools/testing/selftests/bpf/progs/find_vma_fail1.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2021 Facebook */
- #include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
-+#define vm_flags vm_start
- 
- char _license[] SEC("license") = "GPL";
- 
--- 
-2.39.2
-
+Best regards,
+Mr.Ibrahim idewu.
