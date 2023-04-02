@@ -2,97 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF996D3821
-	for <lists+bpf@lfdr.de>; Sun,  2 Apr 2023 15:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110AF6D38E0
+	for <lists+bpf@lfdr.de>; Sun,  2 Apr 2023 17:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbjDBNsI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Apr 2023 09:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
+        id S231271AbjDBPuD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Apr 2023 11:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjDBNsH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Apr 2023 09:48:07 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D165A7DBB;
-        Sun,  2 Apr 2023 06:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680443285; x=1711979285;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=x8IrL2VmEc7QY4rRQiZNQOAy6BijstVun0yp4vULcF8=;
-  b=j0wexA6wXbvn76SykgDQaJkJLUPdR8G70yg3Ppfqp9uMxjjesfeyHZHq
-   mkYBdk9zkyqKnDoz7L0myWSJDKwELuTj6lUvFh+D/cQl8rDisJnwaA6st
-   SODe8NtbFJ4GISiwC+Rhn5BvTIAKU6nnveiv7F8Qr68IYaSzZscEeVFbz
-   bZ3wkevcP01CjL5BI2nppB1Tem1eLbGA+6xi33GdWlGO/MwFDsc6KrVmy
-   RqWcOMxbC13zhn/XVT8X2IKBJLQxyDzQVethEWPrMcMNFS3EJOnla7qz3
-   TuSIUhPwgUTT18sH2AV5QyS+D/Z0lNntBidNPF28luqgPAijQqyZfKHg+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10668"; a="325731176"
-X-IronPort-AV: E=Sophos;i="5.98,312,1673942400"; 
-   d="scan'208";a="325731176"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2023 06:48:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10668"; a="774892544"
-X-IronPort-AV: E=Sophos;i="5.98,312,1673942400"; 
-   d="scan'208";a="774892544"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Apr 2023 06:48:02 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1piy3t-000NQT-1O;
-        Sun, 02 Apr 2023 13:48:01 +0000
-Date:   Sun, 2 Apr 2023 21:47:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joe Stringer <joe@isovalent.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ast@kernel.org, corbet@lwn.net,
-        martin.lau@linux.dev, bagasdotme@gmail.com, maxtram95@gmail.com,
-        john.fastabend@gmail.com
-Subject: Re: [PATCH bpf-next v4 2/2] docs/bpf: Add LRU internals description
- and graph
-Message-ID: <202304022107.IwHc05cs-lkp@intel.com>
-References: <20230401200651.1022113-2-joe@isovalent.com>
+        with ESMTP id S230283AbjDBPuD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Apr 2023 11:50:03 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCD7E042;
+        Sun,  2 Apr 2023 08:50:01 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id cn12so108143938edb.4;
+        Sun, 02 Apr 2023 08:50:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680450600; x=1683042600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A3H+yKErz+asdo8QewHRhcyQgjCu7p9+bA2Tn/wzQyc=;
+        b=AXrfuLSQ2rAeeY46rK+Ifd00OqdmfpQpSBpyMtqEIYfzKeOIpil2Yr1FMG4TG2kyIU
+         sM2807/dLEcUCCq7F3iTsJjroIsEdp3/6uyqKLWztzzZPmFHAeYTkclQizNuFjxOO2L2
+         MLCoOPenyvuv9yxgFCMU9dbt+OCF4E5KvvHWZonDhVPBxWmin07ve190M9A0/w60VcUn
+         n+EY/QLp3zkRDIAYQnnlXVZeCRw6E3ZVBWwV1EvPae2AA/s4jIjc9IAuMI01l4WhLSj4
+         72QguFFCOrWWAkczf5Jz0ihnb5MMLHh9vPHB4eiUjQCVqBWEYuYDBTVMf7tLx4wteBdx
+         RGxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680450600; x=1683042600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A3H+yKErz+asdo8QewHRhcyQgjCu7p9+bA2Tn/wzQyc=;
+        b=v/Bkafwi6LXLqc5SCQD5meFY3poQdNfODp16mbKszdcimcVROhT6onqjMsB/6lfWzG
+         Lhb99pTsHkG8iVwRI7EtWQlV7BXJUoLw/nUr9DIQE/kZPCTi/quf+eXNIC0zCcFcBg7w
+         Xd0L2eZGUSSkQe9mz+xX2i7OGBoKn20HDhOjhW8gLg8abTaC4ZlY5shf0XAEZ/G79YZ9
+         POWMZS/eWTS0iOFtLEHKnV/TTX0Gl7/nzdreYeZ+pEffrs1u9DWlfF6Gp42FEDr9Cj3T
+         9mSzxTsIbtzBIqnEQoZ7AMgO4Y1F9+hvlkglAxEwJuPE1UbdmSmr75jJuRdH+bbK2u5t
+         z+OA==
+X-Gm-Message-State: AAQBX9ff6imp1hwK6b6bUsdSiF2JvwiNPStLxCG77OxsvXnGB3I9wjIj
+        zUwgct3wjUqjuK7yHFlz1fUEdbiHus8ZbHWu3H4=
+X-Google-Smtp-Source: AKy350ax2HWtO6rXgzdemCo1alFkS8HV4Clz+W1EVu6BR1XzxsyNuc7e1sTnlgfbloPRYVtbjT3fruEPtP2eFcoMP5Y=
+X-Received: by 2002:a50:9502:0:b0:4fb:2593:846 with SMTP id
+ u2-20020a509502000000b004fb25930846mr3463253eda.3.1680450600264; Sun, 02 Apr
+ 2023 08:50:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230401200651.1022113-2-joe@isovalent.com>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <168042409059.4051476.8176861613304493950.stgit@firesoul> <168042420344.4051476.9107061652824513113.stgit@firesoul>
+In-Reply-To: <168042420344.4051476.9107061652824513113.stgit@firesoul>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 2 Apr 2023 08:49:49 -0700
+Message-ID: <CAADnVQ+JEP0sOyOOWbYKHackb4PmNYYcDGXnksucJt2mQGwi7g@mail.gmail.com>
+Subject: Re: [PATCH bpf V6 5/5] selftests/bpf: Adjust bpf_xdp_metadata_rx_hash
+ for new arg
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Joe,
+On Sun, Apr 2, 2023 at 1:30=E2=80=AFAM Jesper Dangaard Brouer <brouer@redha=
+t.com> wrote:
+>
+> Update BPF selftests to use the new RSS type argument for kfunc
+> bpf_xdp_metadata_rx_hash.
+>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Acked-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  .../selftests/bpf/prog_tests/xdp_metadata.c        |    2 ++
+>  .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   14 +++++++++-----
+>  tools/testing/selftests/bpf/progs/xdp_metadata.c   |    6 +++---
+>  tools/testing/selftests/bpf/progs/xdp_metadata2.c  |    7 ++++---
+>  tools/testing/selftests/bpf/xdp_hw_metadata.c      |    2 +-
+>  tools/testing/selftests/bpf/xdp_metadata.h         |    1 +
+>  6 files changed, 20 insertions(+), 12 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tool=
+s/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> index aa4beae99f4f..8c5e98da9ae9 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> @@ -273,6 +273,8 @@ static int verify_xsk_metadata(struct xsk *xsk)
+>         if (!ASSERT_NEQ(meta->rx_hash, 0, "rx_hash"))
+>                 return -1;
+>
+> +       ASSERT_EQ(meta->rx_hash_type, 0, "rx_hash_type");
+> +
+>         xsk_ring_cons__release(&xsk->rx, 1);
+>         refill_rx(xsk, comp_addr);
+>
+> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/=
+testing/selftests/bpf/progs/xdp_hw_metadata.c
+> index 4c55b4d79d3d..7b3fc12e96d6 100644
+> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> @@ -14,8 +14,8 @@ struct {
+>
+>  extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
+>                                          __u64 *timestamp) __ksym;
+> -extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
+> -                                   __u32 *hash) __ksym;
+> +extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *has=
+h,
+> +                                   enum xdp_rss_hash_type *rss_type) __k=
+sym;
+>
+>  SEC("xdp")
+>  int rx(struct xdp_md *ctx)
+> @@ -74,10 +74,14 @@ int rx(struct xdp_md *ctx)
+>         else
+>                 meta->rx_timestamp =3D 0; /* Used by AF_XDP as not avail =
+signal */
+>
+> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+> -               bpf_printk("populated rx_hash with %u", meta->rx_hash);
+> -       else
+> +       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash=
+_type)) {
+> +               bpf_printk("populated rx_hash:0x%X type:0x%X",
+> +                          meta->rx_hash, meta->rx_hash_type);
+> +               if (!(meta->rx_hash_type & XDP_RSS_L4))
+> +                       bpf_printk("rx_hash low quality L3 hash type");
+> +       } else {
+>                 meta->rx_hash =3D 0; /* Used by AF_XDP as not avail signa=
+l */
+> +       }
 
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Joe-Stringer/docs-bpf-Add-LRU-internals-description-and-graph/20230402-040757
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230401200651.1022113-2-joe%40isovalent.com
-patch subject: [PATCH bpf-next v4 2/2] docs/bpf: Add LRU internals description and graph
-reproduce:
-        # https://github.com/intel-lab-lkp/linux/commit/0c42be421b73fffe9160867ac673ea9841982ece
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Joe-Stringer/docs-bpf-Add-LRU-internals-description-and-graph/20230402-040757
-        git checkout 0c42be421b73fffe9160867ac673ea9841982ece
-        make menuconfig
-        # enable CONFIG_COMPILE_TEST, CONFIG_WARN_MISSING_DOCUMENTS, CONFIG_WARN_ABI_ERRORS
-        make htmldocs
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304022107.IwHc05cs-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Warning: Orthogonal edges do not currently handle edge labels. Try using xlabels.
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Didn't we agree in the previous thread to remove these printks and
+replace them with actual stats that user space can see?
