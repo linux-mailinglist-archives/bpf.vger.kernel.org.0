@@ -2,83 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AB06D38E5
-	for <lists+bpf@lfdr.de>; Sun,  2 Apr 2023 17:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674F86D3A06
+	for <lists+bpf@lfdr.de>; Sun,  2 Apr 2023 21:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjDBPuV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Apr 2023 11:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46458 "EHLO
+        id S229498AbjDBTiw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Apr 2023 15:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230418AbjDBPuV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Apr 2023 11:50:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70A2191F6
-        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 08:50:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 374DE61268
-        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 15:50:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 89E13C433EF;
-        Sun,  2 Apr 2023 15:50:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680450616;
-        bh=NlgVCKdwY5JKc05sXI6QrRlrHwLKy1BhIdw+w44eVa4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cHj0ifdZBjQ/gN/AdWuIcOYG+mRkJJAdncNjHsm171ah7pz30NGiqcaNo7IN2arAy
-         UPHtyhtc12oIL4CLMCFLyLpqtGZYFIofty60QrjgG1OQznHZBevBYRNRdlIZ9XWlme
-         TQVdvAHLBOHvkBYQZX8Vg5Kjcw7Mle5nIXLaJfcEu6CFSVnMg/cXWKCF2QJmldWqa4
-         LTfLqadnk8KEbL12y8zkkqw6G1uV1eDaJX1n3khwKi7Z6ArFegR8GZXb/LiP9G1ZzW
-         4pmNeuCZW3XbxiQOjfENmC1VaT6e6/zIPtONFi8TEeFNFvc8mA0SUzoLsPaQbjIIeK
-         HULArxEA9JbMg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 74B6CE2A035;
-        Sun,  2 Apr 2023 15:50:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229448AbjDBTiw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Apr 2023 15:38:52 -0400
+Received: from mx12lb.world4you.com (mx12lb.world4you.com [81.19.149.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F398A26C;
+        Sun,  2 Apr 2023 12:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=rotj83wze4t1sbbS+I3e4YBLaI6HPS7zMBZwoW6zk/0=; b=KGLPjsiz+ywD3mCYn53avmOOqZ
+        g44VjzjY8EWruO0egdQMCJLShDMhiEFnNw2U/vJpDq+d/hJFDJpVcsO/hyPOWtZWu/BByhjSadViQ
+        hjGVYayjhm0KK9nO0fSJpRy2lC+s5wZ7PrvZUjxI1hhfFtSyVSySsf8k0fjGTAX/QQio=;
+Received: from [88.117.56.218] (helo=hornet.engleder.at)
+        by mx12lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <gerhard@engleder-embedded.com>)
+        id 1pj3XK-0007Gn-MY; Sun, 02 Apr 2023 21:38:46 +0200
+From:   Gerhard Engleder <gerhard@engleder-embedded.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        Gerhard Engleder <gerhard@engleder-embedded.com>
+Subject: [PATCH net-next 0/5] tsnep: XDP socket zero-copy support
+Date:   Sun,  2 Apr 2023 21:38:33 +0200
+Message-Id: <20230402193838.54474-1-gerhard@engleder-embedded.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: compute hashes in bloom filter similar to
- hashmap
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168045061647.22275.9880533946456398482.git-patchwork-notify@kernel.org>
-Date:   Sun, 02 Apr 2023 15:50:16 +0000
-References: <20230402114340.3441-1-aspsk@isovalent.com>
-In-Reply-To: <20230402114340.3441-1-aspsk@isovalent.com>
-To:     Anton Protopopov <aspsk@isovalent.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, john.fastabend@gmail.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-AV-Do-Run: Yes
+X-ACL-Warn: X-W4Y-Internal
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Implement XDP socket zero-copy support for tsnep driver. I tried to
+follow existing drivers like igc as far as possible. But one main
+difference is that tsnep does not need any reconfiguration for XDP BPF
+program setup. So I decided to keep this behavior no matter if a XSK
+pool is used or not. As a result, tsnep starts using the XSK pool even
+if no XDP BPF program is available.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Another difference is that I tried to prevent potentially failing
+allocations during XSK pool setup. E.g. both memory models for page pool
+and XSK pool are registered all the time. Thus, XSK pool setup cannot
+end up with not working queues.
 
-On Sun,  2 Apr 2023 11:43:40 +0000 you wrote:
-> If the value size in a bloom filter is a multiple of 4, then the jhash2()
-> function is used to compute hashes. The length parameter of this function
-> equals to the number of 32-bit words in input. Compute it in the hot path
-> instead of pre-computing it, as this is translated to one extra shift to
-> divide the length by four vs. one extra memory load of a pre-computed length.
-> 
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> 
-> [...]
+Some prework is done to reduce the last two XSK commits to actual XSK
+changes.
 
-Here is the summary with links:
-  - [bpf-next] bpf: compute hashes in bloom filter similar to hashmap
-    https://git.kernel.org/bpf/bpf-next/c/92b2e810f0d3
+Gerhard Engleder (5):
+  tsnep: Rework TX/RX queue initialization
+  tsnep: Add functions for queue enable/disable
+  tsnep: Move skb receive action to separate function
+  tsnep: Add XDP socket zero-copy RX support
+  tsnep: Add XDP socket zero-copy TX support
 
-You are awesome, thank you!
+ drivers/net/ethernet/engleder/tsnep.h      |   9 +
+ drivers/net/ethernet/engleder/tsnep_main.c | 770 ++++++++++++++++++---
+ drivers/net/ethernet/engleder/tsnep_xdp.c  |  67 ++
+ 3 files changed, 738 insertions(+), 108 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.30.2
 
