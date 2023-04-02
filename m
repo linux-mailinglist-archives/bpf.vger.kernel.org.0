@@ -2,110 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CC16D35C7
-	for <lists+bpf@lfdr.de>; Sun,  2 Apr 2023 08:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC096D363B
+	for <lists+bpf@lfdr.de>; Sun,  2 Apr 2023 10:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbjDBGS4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Apr 2023 02:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
+        id S229503AbjDBIa3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Apr 2023 04:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjDBGSz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Apr 2023 02:18:55 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74F92D41
-        for <bpf@vger.kernel.org>; Sat,  1 Apr 2023 23:18:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680416333; x=1711952333;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Np+gEOwOm/rfEcRXcmPVfhSGIs/kFLqBSqz8TTtlT8s=;
-  b=Cg2Mfduuuqr8RzB33MMscX1ytPBwgSqSx0JxMFdq32ATWRKrFkg/0r60
-   3EVi8HZ172HA5k5JOzBeiIXTyOKJmkIquHWVDl/ymyWj8OwxJqV7I4CLU
-   UIDHdVPSc0kejADbQ0qGq5j973l0wwCY0t8Kz0JxJeWB0JtAeX3rrxWPM
-   +rLXUennMSAtbK1r3mdl0XgzjodG2bSNDQ99IyKgjFHT0dIaLv0UW4laE
-   /LCACsu1R8n9nB/TVN1WBWMP5xMOlckGkWh+5A32N7X88IzI94YlTslAr
-   IpAa9MT1rw49qj9PC4M2swmOWdGdMOpm7WQeUysPcivFIZVESf+XMJBHj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="330272260"
-X-IronPort-AV: E=Sophos;i="5.98,312,1673942400"; 
-   d="scan'208";a="330272260"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2023 23:18:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10667"; a="859803287"
-X-IronPort-AV: E=Sophos;i="5.98,312,1673942400"; 
-   d="scan'208";a="859803287"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 01 Apr 2023 23:18:51 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pir3C-000NGz-32;
-        Sun, 02 Apr 2023 06:18:50 +0000
-Date:   Sun, 2 Apr 2023 14:18:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Aditi Ghag <aditi.ghag@isovalent.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, kafai@fb.com, sdf@google.com,
-        edumazet@google.com, aditi.ghag@isovalent.com
-Subject: Re: [PATCH v5 bpf-next 3/7] udp: seq_file: Helper function to match
- socket attributes
-Message-ID: <202304021454.snASElSi-lkp@intel.com>
-References: <20230330151758.531170-4-aditi.ghag@isovalent.com>
+        with ESMTP id S229379AbjDBIa2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Apr 2023 04:30:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDB5EC6A
+        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 01:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680424184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fjMU4p9+DXZHNmOHLlNl/8Bfex0ApnD0yNYoZFOYHXs=;
+        b=OHGqFfDD8k1/QCR16zT4wwLFn9RocYL5ecElMK0NIv8QxRfMpPNuPWopk1RnaAaVv12k0q
+        uDsGPEkHtKHEjChv6rsiAHPL/YS7Ql05Ppe3cy02TbrFPODiwjxe2/ss80Wt6Pn0dJ3aQm
+        KnnNixCluuJswZeCbtdx4Mnmvf/2644=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-497-pC-a7scgODqWaQKYKe72UQ-1; Sun, 02 Apr 2023 04:29:40 -0400
+X-MC-Unique: pC-a7scgODqWaQKYKe72UQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BC516811E7C;
+        Sun,  2 Apr 2023 08:29:39 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.45.242.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 26D1E175AD;
+        Sun,  2 Apr 2023 08:29:39 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 2459830736C72;
+        Sun,  2 Apr 2023 10:29:38 +0200 (CEST)
+Subject: [PATCH bpf V6 0/5] XDP-hints: API change for RX-hash kfunc
+ bpf_xdp_metadata_rx_hash
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
+        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
+        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net, tariqt@nvidia.com, saeedm@nvidia.com,
+        leon@kernel.org, linux-rdma@vger.kernel.org
+Date:   Sun, 02 Apr 2023 10:29:38 +0200
+Message-ID: <168042409059.4051476.8176861613304493950.stgit@firesoul>
+User-Agent: StGit/1.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230330151758.531170-4-aditi.ghag@isovalent.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Aditi,
+Current API for bpf_xdp_metadata_rx_hash() returns the raw RSS hash value,
+but doesn't provide information on the RSS hash type (part of 6.3-rc).
 
-Thank you for the patch! Perhaps something to improve:
+This patchset proposal is to change the function call signature via adding
+a pointer value argument for providing the RSS hash type. 
 
-[auto build test WARNING on bpf-next/master]
+---
+V6:
+ - Resend: selftest failure is unrelated (in xdp_do_redirect)
+   Issue in fccca038f300 ("veth: take into account device reconfiguration for xdp_features flag")
+V5:
+ - Fixes for checkpatch.pl
+ - Change function signature for all xmo_rx_hash calls
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Aditi-Ghag/bpf-tcp-Avoid-taking-fast-sock-lock-in-iterator/20230330-232137
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230330151758.531170-4-aditi.ghag%40isovalent.com
-patch subject: [PATCH v5 bpf-next 3/7] udp: seq_file: Helper function to match socket attributes
-config: i386-randconfig-s001 (https://download.01.org/0day-ci/archive/20230402/202304021454.snASElSi-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-39-gce1a6720-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/66cc617bebf6cb3d2162587d6e248d86bc59c1c2
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Aditi-Ghag/bpf-tcp-Avoid-taking-fast-sock-lock-in-iterator/20230330-232137
-        git checkout 66cc617bebf6cb3d2162587d6e248d86bc59c1c2
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 olddefconfig
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 SHELL=/bin/bash net/ipv4/
+Jesper Dangaard Brouer (5):
+      xdp: rss hash types representation
+      mlx5: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      veth: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      mlx4: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      selftests/bpf: Adjust bpf_xdp_metadata_rx_hash for new arg
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304021454.snASElSi-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
-   net/ipv4/udp.c:1487:28: sparse: sparse: context imbalance in 'udp_rmem_release' - unexpected unlock
-   net/ipv4/udp.c:1519:19: sparse: sparse: context imbalance in 'busylock_acquire' - wrong count at exit
-   net/ipv4/udp.c:1531:28: sparse: sparse: context imbalance in 'busylock_release' - unexpected unlock
->> net/ipv4/udp.c:2986:32: sparse: sparse: marked inline, but without a definition
->> net/ipv4/udp.c:2986:32: sparse: sparse: marked inline, but without a definition
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    | 22 ++++++-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 63 ++++++++++++++++++-
+ drivers/net/veth.c                            | 10 ++-
+ include/linux/mlx5/device.h                   | 14 ++++-
+ include/linux/netdevice.h                     |  3 +-
+ include/net/xdp.h                             | 47 ++++++++++++++
+ net/core/xdp.c                                | 10 ++-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   |  2 +
+ .../selftests/bpf/progs/xdp_hw_metadata.c     | 14 +++--
+ .../selftests/bpf/progs/xdp_metadata.c        |  6 +-
+ .../selftests/bpf/progs/xdp_metadata2.c       |  7 ++-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c |  2 +-
+ tools/testing/selftests/bpf/xdp_metadata.h    |  1 +
+ 14 files changed, 180 insertions(+), 24 deletions(-)
 
-vim +2986 net/ipv4/udp.c
+--
 
-  2985	
-> 2986	static inline bool seq_sk_match(struct seq_file *seq, const struct sock *sk);
-  2987	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
