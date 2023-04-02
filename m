@@ -2,109 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 697346D3655
-	for <lists+bpf@lfdr.de>; Sun,  2 Apr 2023 10:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500F66D375B
+	for <lists+bpf@lfdr.de>; Sun,  2 Apr 2023 12:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjDBIi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Apr 2023 04:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S230246AbjDBKlu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Apr 2023 06:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjDBIiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Apr 2023 04:38:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FABFA
-        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 01:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680424657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i924t6g/U8Sz5oZNi8eHpwH9+wgHgEL8rUIeN7Yevhk=;
-        b=eeYaqUv8N3TVdc6WHbiEqDq9YegCHTUXEvsWbIKD9m2zR8GMJGUIJAiW+QQc1xlpTnZm3A
-        VvQO0sZJ2O8z6VqUFiGYgVGCoC62Xm61LqFTdaYwtOyGor4RGOWjEH3Jb1mz+ErjUoHuqo
-        PSjQ+5HSwWhPR77P43blndAoXF1lzLE=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-395-NQ7Aol_jP8G42-Whuys-3g-1; Sun, 02 Apr 2023 04:37:36 -0400
-X-MC-Unique: NQ7Aol_jP8G42-Whuys-3g-1
-Received: by mail-lf1-f72.google.com with SMTP id b10-20020a056512060a00b004eaf5a72b99so10429786lfe.17
-        for <bpf@vger.kernel.org>; Sun, 02 Apr 2023 01:37:36 -0700 (PDT)
+        with ESMTP id S229492AbjDBKlt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Apr 2023 06:41:49 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E091311EBA;
+        Sun,  2 Apr 2023 03:41:47 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id p2so20698070qtw.13;
+        Sun, 02 Apr 2023 03:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680432107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PYiHPvxkJqdldllj/O9cu/4mZjCb2J8H635dPazE8S8=;
+        b=HTtxKL7atbG37OEGnzXegASPeJg/gzzvy6NOehVplC9SZeLGzGRnW+laT5PgQ7Q8HB
+         kdKEPWZ5k7OnWXVxfoTb0Tfb96n6jWo0lfHujVX45qchw09Lc00pig9btnTSmAIPBflI
+         ejkNJhYT+zcactwoIKXp2VtImu5QY/66DKZlRBDzW4r7/seOm0h0yos6mF9CmUIwGbWK
+         Z62I3+5asVTcLcokGzy+aXafP2bWPY6FELQYtq6p8ClRDt9loUcCeFUkqJ+RMMm59puR
+         vRjW+/6I2J+iGmFzMhiwPRUYTtnVj4D05IYcHWAYWV8cN/kbWpqOLXlv4Temjg04Few2
+         jhxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680424654;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i924t6g/U8Sz5oZNi8eHpwH9+wgHgEL8rUIeN7Yevhk=;
-        b=lcJvqEMUbp01l9BODAkGNgvTFi+dIno31Ol3HaappJgEXRt9q95mkWTuG6tDj0hcpm
-         bakNyelRwnTKww4d+LAoQYyQboUbYD0bViR6kz3o0A49icxPIOjsehCUZ72wOVLk6WGw
-         iyrqr4mlAL0V/oMLmA6mnnjwDNfWVomIpHrgpGoK0o7OLmKzRThI8E/L10uGPVZiqsMY
-         BDBr8R74DizlAtfcmGvekxm10jz0qB3U36RYe/jMRTF4dAIAjCGypEfGscUFpIHZluUt
-         AHL7+mUx06KihBOTBcNQ26XHxvnNJBX8LbmgOI2M12ca19uqrDbkh/pYn9GKLN1p9NqS
-         Bbgw==
-X-Gm-Message-State: AAQBX9cq3PKZ4UcNIus4v7mHyiAqoqMnR/rzWOMy+uefpsuleyk3m+IX
-        PAh8qHPvAn68h+Df3yIgBMcZaCK+yEQ6gbKACC3we6wr+0UHY5czeGHjLpm/AHS6oInDhypluEJ
-        Omiu9W7S0L1lowOFhhcjUD+eGF6DS7y1Ax/CtlLUKQhJqGdEsD+jNNLnD2SFh+5FOkzpm628=
-X-Received: by 2002:a19:7613:0:b0:4db:3e56:55c8 with SMTP id c19-20020a197613000000b004db3e5655c8mr9495438lff.59.1680424654752;
-        Sun, 02 Apr 2023 01:37:34 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YT4NdKfptHbUEwzqYe1WUNC6ROtPlFgUhwZhzhr8UJaaCb11s1bFmgFwrE8lhNBuBu1uo19g==
-X-Received: by 2002:a19:7613:0:b0:4db:3e56:55c8 with SMTP id c19-20020a197613000000b004db3e5655c8mr9495407lff.59.1680424654319;
-        Sun, 02 Apr 2023 01:37:34 -0700 (PDT)
-Received: from [192.168.42.100] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id j18-20020a19f512000000b004eb2eb63144sm1114728lfb.120.2023.04.02.01.37.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Apr 2023 01:37:33 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <df64f630-93e6-1ec3-83bc-4584f2856acb@redhat.com>
-Date:   Sun, 2 Apr 2023 10:37:31 +0200
+        d=1e100.net; s=20210112; t=1680432107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PYiHPvxkJqdldllj/O9cu/4mZjCb2J8H635dPazE8S8=;
+        b=HSMALwM2aA108pYFd0EddG7TjjPOhM2Ds9dNuVoqXp5ZMRGPy0LxmBX8F5zTIpie7l
+         yGHg4HQUR7uChSH0jvES6lGphAgOQ/7UtLqvutSHPl12fvqchRBk232jsiTNGnhTJuoj
+         qEG74qsSnZQjjeQpd/bYDbGbJ/pBnrGDgEtXgX5DDQm9+cOEygGqYvmtDVhQ2uEaCOTi
+         tN2Fxr5Yyv69I94GPnKdPmlqXTOc6YikOAvEpsHjVl0c0i9mOANRoOH9V+6PHw7IdgsX
+         ABKni7XDVB0Cw7EiMUn0+AsFjreAFllp25XhcE/lSe2HDEeRSZJ5eedzvrCd5kGQjIfm
+         F02g==
+X-Gm-Message-State: AO0yUKVB4BPv+RB1R7xGUDCQ0Xwj66r/vA9CSsax+jsA+64QCqjH0ji6
+        wAu94T9DpkW019Oqr0qCQw9CIOKkxeumqc8/etU=
+X-Google-Smtp-Source: AKy350beh9Rw0Gwj3MwIuXWgy1KwchjXrfwJ6XH3/Yjht3aIlPzyGRyzfd86F4EwA+a+ZcY58W6kqM9ql44zDm9D/oA=
+X-Received: by 2002:a05:622a:199a:b0:3db:c138:ae87 with SMTP id
+ u26-20020a05622a199a00b003dbc138ae87mr12616783qtc.6.1680432107082; Sun, 02
+ Apr 2023 03:41:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Cc:     brouer@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
-        davem@davemloft.net, tariqt@nvidia.com
-Subject: Re: [PATCH bpf V5 0/5] XDP-hints: API change for RX-hash kfunc
- bpf_xdp_metadata_rx_hash
-Content-Language: en-US
-To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-References: <168028882260.4030852.1100965689789226162.stgit@firesoul>
- <d4b3a22a-c815-a337-29b1-737efd9a7494@redhat.com>
-In-Reply-To: <d4b3a22a-c815-a337-29b1-737efd9a7494@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230326221612.169289-1-xiyou.wangcong@gmail.com>
+ <CALOAHbCyGJzp1yH2NTsikre0RuQ+4WoZCsAc110_+tW=L8FgQg@mail.gmail.com> <6427844176538_c503a208e4@john.notmuch>
+In-Reply-To: <6427844176538_c503a208e4@john.notmuch>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sun, 2 Apr 2023 18:41:08 +0800
+Message-ID: <CALOAHbAtUUs7OOEyj+-o_wfLo1P9Yf1tab9k61wCrP0tv15gUQ@mail.gmail.com>
+Subject: Re: [Patch bpf-next] sock_map: include sk_psock memory overhead too
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, Apr 1, 2023 at 9:09=E2=80=AFAM John Fastabend <john.fastabend@gmail=
+.com> wrote:
+>
+> Yafang Shao wrote:
+> > On Mon, Mar 27, 2023 at 6:16=E2=80=AFAM Cong Wang <xiyou.wangcong@gmail=
+.com> wrote:
+> > >
+> > > From: Cong Wang <cong.wang@bytedance.com>
+> > >
+> > > When a socket is added to a sockmap, sk_psock is allocated too as its
+> > > sk_user_data, therefore it should be consider as an overhead of sockm=
+ap
+> > > memory usage.
+> > >
+> > > Before this patch:
+> > >
+> > > 1: sockmap  flags 0x0
+> > >         key 4B  value 4B  max_entries 2  memlock 656B
+> > >         pids echo-sockmap(549)
+> > >
+> > > After this patch:
+> > >
+> > > 9: sockmap  flags 0x0
+> > >         key 4B  value 4B  max_entries 2  memlock 1824B
+> > >         pids echo-sockmap(568)
+> > >
+> > > Fixes: 73d2c61919e9 ("bpf, net: sock_map memory usage")
+> > > Cc: Yafang Shao <laoar.shao@gmail.com>
+> > > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > > ---
+> > >  net/core/sock_map.c | 10 +++++++++-
+> > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > > index 7c189c2e2fbf..22197e565ece 100644
+> > > --- a/net/core/sock_map.c
+> > > +++ b/net/core/sock_map.c
+> > > @@ -799,9 +799,17 @@ static void sock_map_fini_seq_private(void *priv=
+_data)
+> > >
+> > >  static u64 sock_map_mem_usage(const struct bpf_map *map)
+> > >  {
+> > > +       struct bpf_stab *stab =3D container_of(map, struct bpf_stab, =
+map);
+> > >         u64 usage =3D sizeof(struct bpf_stab);
+> > > +       int i;
+> > >
+> > >         usage +=3D (u64)map->max_entries * sizeof(struct sock *);
+> > > +
+> > > +       for (i =3D 0; i < stab->map.max_entries; i++) {
+> >
+> > Although it adds a for-loop, the operation below is quite light. So it
+> > looks good to me.
+>
+> We could track a count from update to avoid the loop?
+>
 
-On 01/04/2023 18.47, Jesper Dangaard Brouer wrote:
-> 
-> Why have this patchset[1] been marked "Changes Requested" ?
-> 
-> Notice: The BPF test_progs are failing on "xdp_do_redirect", but that is
-> not related to this patchset as it already happens on a clean bpf-tree.
-> 
-> [1] https://patchwork.kernel.org/project/netdevbpf/list/?series=735957&state=%2A
+I prefer adding a count into struct bpf_stab. We can also get the
+number of socks easily with this new count, and it should be
+acceptable to modify this count in the update/delete paths.
 
-I've now sent V6:
-
-  [2] 
-https://patchwork.kernel.org/project/netdevbpf/list/?series=736141&state=%2A
-
---Jesper
-
+--=20
+Regards
+Yafang
