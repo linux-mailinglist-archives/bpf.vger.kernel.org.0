@@ -2,184 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 181326D3B09
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 02:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10626D3B0A
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 02:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbjDCAF3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Apr 2023 20:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54068 "EHLO
+        id S229503AbjDCAKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Apr 2023 20:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjDCAF2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Apr 2023 20:05:28 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C295FC5
-        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 17:05:27 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id eh3so110667390edb.11
-        for <bpf@vger.kernel.org>; Sun, 02 Apr 2023 17:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680480326; x=1683072326;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F5Z7iFY+51eP7rfwplrTUpwUsDxzkwULtfio6Pn36s4=;
-        b=bCplw1uEdDYF/8vixtzXjjnfd1Rzy52I5T4HpWgiZVDwEDqaAdfyzT+/AYNzvg/fpX
-         7glGu1++Z2102KLzzbdNqZ9mBM7r7ZoakjzP5dP0ncXuv9xUvPZbr3Ej+hInKjwWEuB/
-         IribAxsuDPu4uNAhU8u9k0euQuRddlRf5s2HvQw67pxO+qEvQNqVE8ExJd37l+yeJpiZ
-         kE7yOUm7shC+gMXdUMvv0LyW8cLfp9LqzvughDD0qzsSTwAR7IyBMH+onjedC7VX1Qr9
-         0Cibt6fnwihnbGSI6r0fonU/TRCb7+mrcgAJ1MGUiTUEkHRPICotlPPgoCCeD+HLjOoh
-         iI4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680480326; x=1683072326;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F5Z7iFY+51eP7rfwplrTUpwUsDxzkwULtfio6Pn36s4=;
-        b=TqrutwkF4GSbqZqlBmfNi1fRLA/Y177BnvHfnVVMqu6a0pToqaSUEX5Ax1JZ4QKAlk
-         iz5xKIlxs+1pPNPo4stNk7FgJYS+ymGRmQdbGCz7rGHbX46f1UZ+FqKBMXQoX6iU0LZT
-         E4KGtEZswOCpB+noFvkLBVczMZTLV8+CvIDJO0xpTaTO3Lrtscyk9sMNkElTIpmPddJ6
-         d1IodKePJiEYyNZDrnnkNjEwSw9m4KQ1eDLMnyNW/3NOHWZ3q6b6XesJ8MnhhR/tdp/f
-         RDSZT4Bqzs4oFLDfNx4SqKe5dWdY+dzS9BSUale4y9lhpaHdfwroF2B8wRfW8Det6Dku
-         s18w==
-X-Gm-Message-State: AAQBX9cMlXf34HSG8KgPdrPih++YbX+LItY+FbGcL6QdPlYlnHCTuWTA
-        ACV7oiEw0/5kHwkpPojr0GvJxLuPvQkIWXMe+/w=
-X-Google-Smtp-Source: AKy350bZQ/vvfdt0muxFgu389fVUQgZSe29TuxC0Ti3YKnKnCqhtq76E68h0ZZF4iR5Jfy5yazc83a+IY32hP8eGfUs=
-X-Received: by 2002:a17:907:7f19:b0:926:8f9:735d with SMTP id
- qf25-20020a1709077f1900b0092608f9735dmr18630973ejc.3.1680480325764; Sun, 02
- Apr 2023 17:05:25 -0700 (PDT)
+        with ESMTP id S229498AbjDCAKT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Apr 2023 20:10:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F665658E
+        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 17:10:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D639C61338
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 00:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 49E22C4339B;
+        Mon,  3 Apr 2023 00:10:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680480617;
+        bh=EIl6/yPEfXCdDogC7703xIS/HvUPM/78su1MkRgyfDQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uxW7V3cgYvoN3517/RqDiUUCzdzmfJ9xw8+hzu22bM2dS/WBrXowoSMU1wxN1XcO3
+         AxBZLOaW6UwA2z/HJpF8C9RKWZzF0XE/qvEKEcV2F7XXGL1Dk55LdC5SqlGLuxDf1g
+         0BbnO7GFaiHW+zcO6/LmqN/0H0AeE7NQMYy+bEQN37S4OkLGXa/yWksAmrtBUCePAp
+         86mCUmT5IGnme7G0aSz/o1ZPoR/fjNA3nexU6UVBNkS40kbRUGLo4dhvZBkFw524MT
+         +dEOIRwOfpnPnACvHHI67EaY155dPUzY1LxD/RRYsy1T8nFhpuL2aRlG4wnfT/aXOJ
+         iBUqAFN09fWRg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 30C07E5EA82;
+        Mon,  3 Apr 2023 00:10:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v4] bpf,
+ docs: Add docs on extended 64-bit immediate instructions
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168048061719.20527.3312123090672462351.git-patchwork-notify@kernel.org>
+Date:   Mon, 03 Apr 2023 00:10:17 +0000
 References: <20230326054946.2331-1-dthaler1968@googlemail.com>
 In-Reply-To: <20230326054946.2331-1-dthaler1968@googlemail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 2 Apr 2023 17:05:14 -0700
-Message-ID: <CAADnVQKZMHW9e+BaAiPUMXnKFba5WgtSJYkKYbhNRJ-JpgQ2ZA@mail.gmail.com>
-Subject: Re: [Bpf] [PATCH bpf-next v4] bpf, docs: Add docs on extended 64-bit
- immediate instructions
-To:     Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
-Cc:     bpf <bpf@vger.kernel.org>, bpf@ietf.org,
-        Dave Thaler <dthaler@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+To:     Dave Thaler <dthaler1968@googlemail.com>
+Cc:     bpf@vger.kernel.org, bpf@ietf.org, dthaler@microsoft.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 25, 2023 at 10:49=E2=80=AFPM Dave Thaler
-<dthaler1968=3D40googlemail.com@dmarc.ietf.org> wrote:
->
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Sun, 26 Mar 2023 05:49:46 +0000 you wrote:
 > From: Dave Thaler <dthaler@microsoft.com>
->
-> Add docs on extended 64-bit immediate instructions, including six instruc=
-tions
-> previously undocumented.  Include a brief description of maps and variabl=
-es,
+> 
+> Add docs on extended 64-bit immediate instructions, including six instructions
+> previously undocumented.  Include a brief description of maps and variables,
 > as used by those instructions.
->
+> 
 > V1 -> V2: rebased on top of latest master
->
-> V2 -> V3: addressed comments from Alexei
->
-> V3 -> V4: addressed comments from David Vernet
->
-> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
-> ---
->  Documentation/bpf/instruction-set.rst | 57 +++++++++++++++++++++++----
->  Documentation/bpf/linux-notes.rst     | 22 +++++++++++
->  2 files changed, 71 insertions(+), 8 deletions(-)
->
-> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/in=
-struction-set.rst
-> index b4464058905..b3efa4b74ec 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -401,14 +401,55 @@ and loaded back to ``R0``.
->  -----------------------------
->
->  Instructions with the ``BPF_IMM`` 'mode' modifier use the wide instructi=
-on
-> -encoding for an extra imm64 value.
-> -
-> -There is currently only one such instruction.
-> -
-> -``BPF_LD | BPF_DW | BPF_IMM`` means::
-> -
-> -  dst =3D imm64
-> -
-> +encoding defined in `Instruction encoding`_, and use the 'src' field of =
-the
-> +basic instruction to hold an opcode subtype.
-> +
-> +The following table defines a set of ``BPF_IMM | BPF_DW | BPF_LD`` instr=
-uctions
-> +with opcode subtypes in the 'src' field, using new terms such as "map"
-> +defined further below:
-> +
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D  =3D=3D=3D=3D=3D=3D  =3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> +opcode construction        opcode  src  pseudocode                      =
-           imm type     dst type
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D  =3D=3D=3D=3D=3D=3D  =3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> +BPF_IMM | BPF_DW | BPF_LD  0x18    0x0  dst =3D imm64                   =
-             integer      integer
-> +BPF_IMM | BPF_DW | BPF_LD  0x18    0x1  dst =3D map_by_fd(imm)          =
-             map fd       map
-> +BPF_IMM | BPF_DW | BPF_LD  0x18    0x2  dst =3D map_val(map_by_fd(imm)) =
-+ next_imm   map fd       data pointer
-> +BPF_IMM | BPF_DW | BPF_LD  0x18    0x3  dst =3D var_addr(imm)           =
-             variable id  data pointer
-> +BPF_IMM | BPF_DW | BPF_LD  0x18    0x4  dst =3D code_addr(imm)          =
-             integer      code pointer
-> +BPF_IMM | BPF_DW | BPF_LD  0x18    0x5  dst =3D map_by_idx(imm)         =
-             map index    map
-> +BPF_IMM | BPF_DW | BPF_LD  0x18    0x6  dst =3D map_val(map_by_idx(imm))=
- + next_imm  map index    data pointer
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D  =3D=3D=3D=3D=3D=3D  =3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> +
-> +where
-> +
-> +* map_by_fd(imm) means to convert a 32-bit POSIX file descriptor into an=
- address of a map (see `Maps`_)
+> 
+> [...]
 
-I removed the screaming "POSIX" word, since "file descriptor" is
-descriptive enough.
+Here is the summary with links:
+  - [bpf-next,v4] bpf, docs: Add docs on extended 64-bit immediate instructions
+    https://git.kernel.org/bpf/bpf-next/c/16b7c970cc81
 
-> +* map_by_idx(imm) means to convert a 32-bit index into an address of a m=
-ap
-> +* map_val(map) gets the address of the first value in a given map
-> +* var_addr(imm) gets the address of a platform variable (see `Platform V=
-ariables`_) with a given id
-> +* code_addr(imm) gets the address of the instruction at a specified rela=
-tive offset in number of (64-bit) instructions
-> +* the 'imm type' can be used by disassemblers for display
-> +* the 'dst type' can be used for verification and JIT compilation purpos=
-es
-> +
-> +Maps
-> +~~~~
-> +
-> +Maps are shared memory regions accessible by eBPF programs on some platf=
-orms.
-> +A map can have various semantics as defined in a separate document, and =
-may or may not have a single
-> +contiguous memory region, but the 'map_val(map)' is currently only defin=
-ed for maps that do have a single
-> +contiguous memory region.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Reformatted these sections to fit 80 char.
-And applied.
+
