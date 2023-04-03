@@ -2,131 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CFA6D540F
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 23:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23B86D5461
+	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 00:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbjDCV7u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 17:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54194 "EHLO
+        id S233424AbjDCWDE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 18:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbjDCV7t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 17:59:49 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7174026A2
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 14:59:48 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5458201ab8cso309019917b3.23
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 14:59:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680559187;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Bmrk7dYxkwQ5TK9pzLGQaHk+Oh8ppPjY2AwOTGU6a28=;
-        b=KcG/ghnkBXvL/0Op8KVOA6oJ1P1SA4V3ZMlhrI2iUUCFLGXwGGv16lgvoNKr8kKen8
-         XjUOlxIG6JkM+0XJIb/H4U3HIiQIe8NDPZgxjJ1HVCeFmSqOFuUXJL3njyRl/M/toAcz
-         nlSI7eArgDTCjFw5H3OcQcwoVIeuZF/NAvZs9q3sVPRu8JeVG+z0i3J9SLyDmpRXETzi
-         XdlCmt/IVfUZMXdkOQN3NiQR492ghWze1/nc2Qxyxs8fMAyjfS6A4rtkZsM9Ulg8f4mu
-         Xe5IuyBGOHi2LsgdAQeDpjPrLE+rWxewwukS7qd4oPw6euHqaCFgFpFXR9FilbRLwZKv
-         ldTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680559187;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Bmrk7dYxkwQ5TK9pzLGQaHk+Oh8ppPjY2AwOTGU6a28=;
-        b=tBYp6t20i65K4cMEbwfwkotwJtQMK75ftiOaqsnBTh50ABfa1JMt8YjMyE3mG46Jei
-         zkidBiT2u4AkO1JYr3W16GMCwJC3OEBf8i87Q5yzZL55jZKO3LlPs+46P0VCjIe5I3sx
-         bGIPvmrkyN7Sb7PMkLUcZ7Sr5YQCVuYRqwGnGUrTfMZKntKVRWQ/kIvZtfOKeWR2TiFG
-         3jtq0txGT2ZbRvA0bpp48fJLbGGtHnRTNqG6mVN9DH1RwUzLjm+0HSwy6kzqI7ZosKCH
-         E853Kz7uN0mwMUzvFkk3p90WReQxJNA3DgUKzRjApQSb8w9pzinsR3wCwLCmnRxcy1eQ
-         aJrg==
-X-Gm-Message-State: AAQBX9dO5sxJ+tJz95eBkYYeQuena0QJfBYinU28TCfmjx05B9YmcA++
-        MCBnwZCNAFi7qiisSSx6v70uY79j7GdCekbh3jAhAPBMFa8dbj6HKwfpo1uC4SSnXiUnb24cjWn
-        2xEmh3b/i+kQ8TsSwWEWaBtVgzyJP2yyvq8gxDMQTE7jgXgpzalP0W1hC+hTYsuE=
-X-Google-Smtp-Source: AKy350bTzFPTFBitM1W9oVLLa6ILNe3PpRMZQ8zO4fbNIvXRQfi3kuQwbK4xXLR2L6JtKnaJro/XvWDUjsgAKA==
-X-Received: from zhuyifei-kvm.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2edc])
- (user=zhuyifei job=sendgmr) by 2002:a05:690c:dd0:b0:533:a15a:d33e with SMTP
- id db16-20020a05690c0dd000b00533a15ad33emr11441457ywb.5.1680559187662; Mon,
- 03 Apr 2023 14:59:47 -0700 (PDT)
-Date:   Mon,  3 Apr 2023 21:58:34 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-Message-ID: <20230403215834.26675-1-zhuyifei@google.com>
-Subject: [PATCH bpf] selftests/bpf: Poll for receive in cg_storage_multi test
-From:   YiFei Zhu <zhuyifei@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S232923AbjDCWDD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 18:03:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2551BF3;
+        Mon,  3 Apr 2023 15:03:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA4C162D1C;
+        Mon,  3 Apr 2023 22:03:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32DBBC433D2;
+        Mon,  3 Apr 2023 22:02:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680559381;
+        bh=E+J++Ja453WekURa/wOhcsyf4PVCNOpn1MEHhpca8zk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RewR5IfvGqVZuwU9TjmhMmOMXhm4RivCQkRakbBeB6/eYdRd11AV9bVGBRguvh+TK
+         oZRH6AmThzgzK86LkXaV9E4RldjPxBagsNOYXmurDHJkOCx0myGE9H+wNdm08VQLrP
+         R/L+ko9KttNkmR5RB6a1j5flY0BhtZrY75x8X3Eq1eb1HyySe4ENu9exxBKdupIhDo
+         qQ2fupFjrjCZilZ539sSQeVheDdOWFak0+qFHnZborD15tw7+krhtPbK1q17detcOm
+         XCqcE5MpeYrnTBYXWbmn7pAUKfnOeCQpnz2eUJZPZjezm0Lv6HvSvW1oFOX5lEJkSc
+         N//V/7Dl0YtZQ==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
         Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Cc:     Artem Savkov <asavkov@redhat.com>, bpf@vger.kernel.org,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Petr Mladek <pmladek@suse.com>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: [PATCH bpf-next] kallsyms: Disable preemption for find_kallsyms_symbol_value
+Date:   Tue,  4 Apr 2023 00:02:54 +0200
+Message-Id: <20230403220254.2191240-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In some cases the loopback latency might be large enough, causing
-the assertion on invocations to be run before ingress prog getting
-executed. The assertion would fail and the test would flake.
+Artem reported suspicious RCU usage [1]. The reason is that verifier
+calls find_kallsyms_symbol_value with preemption enabled which will
+trigger suspicious RCU usage warning in rcu_dereference_sched call.
 
-This can be reliably reproduced by arbitrarily increaing the loopback
-latency (thanks to [1]):
-  tc qdisc add dev lo root handle 1: htb default 12
-  tc class add dev lo parent 1:1 classid 1:12 htb rate 20kbps ceil 20kbps
-  tc qdisc add dev lo parent 1:12 netem delay 100ms
+Disabling preemption in find_kallsyms_symbol_value and adding
+__find_kallsyms_symbol_value function.
 
-Fix this by polling on the receive end and waiting for up to a
-second, instead of instantly returning to the assert.
-
-[1] https://gist.github.com/kstevens715/4598301
-
-Reported-by: Martin KaFai Lau <martin.lau@linux.dev>
-Link: https://lore.kernel.org/bpf/9c5c8b7e-1d89-a3af-5400-14fde81f4429@linux.dev/
-Fixes: 3573f384014f ("selftests/bpf: Test CGROUP_STORAGE behavior on shared egress + ingress")
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+Fixes: 31bf1dbccfb0 ("bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules")
+[1] https://lore.kernel.org/bpf/ZBrPMkv8YVRiWwCR@samus.usersys.redhat.com/
+Reported-by: Artem Savkov <asavkov@redhat.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../testing/selftests/bpf/prog_tests/cg_storage_multi.c  | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ kernel/module/kallsyms.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c b/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
-index 621c57222191..3b0094a2a353 100644
---- a/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
-@@ -7,6 +7,7 @@
- #include <test_progs.h>
- #include <cgroup_helpers.h>
- #include <network_helpers.h>
-+#include <poll.h>
+diff --git a/kernel/module/kallsyms.c b/kernel/module/kallsyms.c
+index ab2376a1be88..bdc911dbcde5 100644
+--- a/kernel/module/kallsyms.c
++++ b/kernel/module/kallsyms.c
+@@ -442,7 +442,7 @@ int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
+ }
  
- #include "progs/cg_storage_multi.h"
- 
-@@ -56,8 +57,9 @@ static bool assert_storage_noexist(struct bpf_map *map, const void *key)
- 
- static bool connect_send(const char *cgroup_path)
+ /* Given a module and name of symbol, find and return the symbol's value */
+-unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
++static unsigned long __find_kallsyms_symbol_value(struct module *mod, const char *name)
  {
--	bool res = true;
- 	int server_fd = -1, client_fd = -1;
-+	struct pollfd pollfd;
-+	bool res = true;
+ 	unsigned int i;
+ 	struct mod_kallsyms *kallsyms = rcu_dereference_sched(mod->kallsyms);
+@@ -466,7 +466,7 @@ static unsigned long __module_kallsyms_lookup_name(const char *name)
+ 	if (colon) {
+ 		mod = find_module_all(name, colon - name, false);
+ 		if (mod)
+-			return find_kallsyms_symbol_value(mod, colon + 1);
++			return __find_kallsyms_symbol_value(mod, colon + 1);
+ 		return 0;
+ 	}
  
- 	if (join_cgroup(cgroup_path))
- 		goto out_clean;
-@@ -73,6 +75,11 @@ static bool connect_send(const char *cgroup_path)
- 	if (send(client_fd, "message", strlen("message"), 0) < 0)
- 		goto out_clean;
+@@ -475,7 +475,7 @@ static unsigned long __module_kallsyms_lookup_name(const char *name)
  
-+	pollfd.fd = server_fd;
-+	pollfd.events = POLLIN;
-+	if (poll(&pollfd, 1, 1000) != 1)
-+		goto out_clean;
+ 		if (mod->state == MODULE_STATE_UNFORMED)
+ 			continue;
+-		ret = find_kallsyms_symbol_value(mod, name);
++		ret = __find_kallsyms_symbol_value(mod, name);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -494,6 +494,16 @@ unsigned long module_kallsyms_lookup_name(const char *name)
+ 	return ret;
+ }
+ 
++unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
++{
++	unsigned long ret;
 +
- 	res = false;
- 
- out_clean:
++	preempt_disable();
++	ret = __find_kallsyms_symbol_value(mod, name);
++	preempt_enable();
++	return ret;
++}
++
+ int module_kallsyms_on_each_symbol(const char *modname,
+ 				   int (*fn)(void *, const char *,
+ 					     struct module *, unsigned long),
 -- 
-2.40.0.348.gf938b09366-goog
+2.39.2
 
