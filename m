@@ -2,196 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A8F6D3C5F
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 06:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5FA6D3CE1
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 07:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjDCESb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 00:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
+        id S231516AbjDCF2P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 01:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjDCESa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 00:18:30 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C951FC8;
-        Sun,  2 Apr 2023 21:18:28 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VfBvNta_1680495504;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VfBvNta_1680495504)
-          by smtp.aliyun-inc.com;
-          Mon, 03 Apr 2023 12:18:24 +0800
-Message-ID: <1680495473.7526932-4-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next 6/8] virtio_net: auto release xdp shinfo
-Date:   Mon, 3 Apr 2023 12:17:53 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20230328120412.110114-1-xuanzhuo@linux.alibaba.com>
- <20230328120412.110114-7-xuanzhuo@linux.alibaba.com>
- <5f48c497-1831-40cf-a4b5-5d283204d7a6@redhat.com>
-In-Reply-To: <5f48c497-1831-40cf-a4b5-5d283204d7a6@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S231571AbjDCF16 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 01:27:58 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB55440F7;
+        Sun,  2 Apr 2023 22:27:43 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id v6-20020a05600c470600b003f034269c96so7062142wmo.4;
+        Sun, 02 Apr 2023 22:27:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680499662;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5fQdRTEI1i8/F4l3pJ8SBHj1sLBRQlwnHuZ8xOhP44I=;
+        b=TIglhxIpebXZKT6rL4LQTq5HsDv03JONAyMgWy9XZNkV1VUf9Qh5B+n9utRT3wQ+kw
+         0sP5zV7R4AKhNuOKsnr+U23AvAIeZLgyf/LnyR9/I7wyMT3MCvg4ycIw48NxPuJmb5yZ
+         YAEIHH8LR7wNBRPtgFnCKIzVh8WAWE11FL7dUr+MsgzUqYlUo5tMIz2eI3F7P1l9JJ8p
+         V0odtRkHiB6/qUb/FA6JyKAsVUUnbO2PT5wXECY8i9eGUBHJsQeSdSnwwWU5mSQT1F4w
+         cg3XFZLnqr/Oa4HLJclyHncuYX28NSjGhhMCyI2CN9CPD7D4GM32tHoy/KXplcYevlqg
+         oy1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680499662;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5fQdRTEI1i8/F4l3pJ8SBHj1sLBRQlwnHuZ8xOhP44I=;
+        b=LCEiVtvlYaNeWwX68UD8ZGr4MwgZb7bn+TkvAmP2ejDdvQlHmL9RtbGRBvjEZYrD4b
+         GkIk3i0H+ygRTz4mX3seF4c10jM2NeLd2rNQjpXguE/DEgI6PpIO/8ChDRHo4iqA3xDh
+         CGmPoFYeUt5nZxSONvrbID4iK5K7mz1pAyER/N2YJ6+qQU3cKUK3I+6u1XzCk9x/d14G
+         HkyLDKJH5E0AfD6JdqdmTJFIkwgTyK06/kbK0BgIkaOXg5Txv97+L1N9iI68yhHBVpBn
+         me9VRZbusdZMapzFvjEWPW+V3ctXuIa2/AsSvwY3GjyxjtHyAaFxjqFqwFlMwiS2DVNa
+         3bUQ==
+X-Gm-Message-State: AO0yUKXYXME/sXZErD1K3bVj11ylSiqSPUQG194YK8Yu4jg/ViMt3rQp
+        t29D2FGuBegyMaU1XzFRhgvHhflrkGI=
+X-Google-Smtp-Source: AK7set8wruzbw7XZm5BzWXX0HKa/kqpWbZicQqXA7UuELODsirJ2CN85ygt8t+pdeS9ydO2HttcS5Q==
+X-Received: by 2002:a7b:c448:0:b0:3ed:2e02:1c02 with SMTP id l8-20020a7bc448000000b003ed2e021c02mr25804276wmi.23.1680499662120;
+        Sun, 02 Apr 2023 22:27:42 -0700 (PDT)
+Received: from suse.localnet (a-pi8-84.tin.it. [212.216.222.51])
+        by smtp.gmail.com with ESMTPSA id g25-20020a7bc4d9000000b003eae73f0fc1sm10817348wmk.18.2023.04.02.22.27.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Apr 2023 22:27:41 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Evgeniy Dushistov <dushistov@mail.ru>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 0/4] fs/ufs: Replace kmap() with kmap_local_page
+Date:   Mon, 03 Apr 2023 07:27:40 +0200
+Message-ID: <10129918.0AQdONaE2F@suse>
+In-Reply-To: <ZCGY3c5avRefahms@casper.infradead.org>
+References: <20221229225100.22141-1-fmdefrancesco@gmail.com> <11383508.F0gNSz5aLb@suse>
+ <ZCGY3c5avRefahms@casper.infradead.org>
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 3 Apr 2023 11:18:02 +0800, Jason Wang <jasowang@redhat.com> wrote:
->
-> =E5=9C=A8 2023/3/28 20:04, Xuan Zhuo =E5=86=99=E9=81=93:
-> > virtnet_build_xdp_buff_mrg() and virtnet_xdp_handler() auto
->
->
-> I think you meant virtnet_xdp_handler() actually?
->
->
-> > release xdp shinfo then the caller no need to careful the xdp shinfo.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >   drivers/net/virtio_net.c | 29 +++++++++++++++++------------
-> >   1 file changed, 17 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index a3f2bcb3db27..136131a7868a 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -833,14 +833,14 @@ static int virtnet_xdp_handler(struct bpf_prog *x=
-dp_prog, struct xdp_buff *xdp,
-> >   		stats->xdp_tx++;
-> >   		xdpf =3D xdp_convert_buff_to_frame(xdp);
-> >   		if (unlikely(!xdpf))
-> > -			return VIRTNET_XDP_RES_DROP;
-> > +			goto drop;
-> >
-> >   		err =3D virtnet_xdp_xmit(dev, 1, &xdpf, 0);
-> >   		if (unlikely(!err)) {
-> >   			xdp_return_frame_rx_napi(xdpf);
-> >   		} else if (unlikely(err < 0)) {
-> >   			trace_xdp_exception(dev, xdp_prog, act);
-> > -			return VIRTNET_XDP_RES_DROP;
-> > +			goto drop;
-> >   		}
-> >
-> >   		*xdp_xmit |=3D VIRTIO_XDP_TX;
-> > @@ -850,7 +850,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp=
-_prog, struct xdp_buff *xdp,
-> >   		stats->xdp_redirects++;
-> >   		err =3D xdp_do_redirect(dev, xdp, xdp_prog);
-> >   		if (err)
-> > -			return VIRTNET_XDP_RES_DROP;
-> > +			goto drop;
-> >
-> >   		*xdp_xmit |=3D VIRTIO_XDP_REDIR;
-> >   		return VIRTNET_XDP_RES_CONSUMED;
-> > @@ -862,8 +862,12 @@ static int virtnet_xdp_handler(struct bpf_prog *xd=
-p_prog, struct xdp_buff *xdp,
-> >   		trace_xdp_exception(dev, xdp_prog, act);
-> >   		fallthrough;
-> >   	case XDP_DROP:
-> > -		return VIRTNET_XDP_RES_DROP;
-> > +		goto drop;
->
->
-> This goto is kind of meaningless.
+On luned=C3=AC 27 marzo 2023 15:23:41 CEST Matthew Wilcox wrote:
+> On Mon, Mar 27, 2023 at 12:13:08PM +0200, Fabio M. De Francesco wrote:
+> > On gioved=C3=AC 29 dicembre 2022 23:50:56 CEST Fabio M. De Francesco wr=
+ote:
+> > > kmap() is being deprecated in favor of kmap_local_page().
+> > >=20
+> > > There are two main problems with kmap(): (1) It comes with an overhea=
+d=20
+as
+> > > the mapping space is restricted and protected by a global lock for
+> > > synchronization and (2) it also requires global TLB invalidation when=
+=20
+the
+> > > kmap=E2=80=99s pool wraps and it might block when the mapping space i=
+s fully
+> > > utilized until a slot becomes available.
+> > >=20
+> > > With kmap_local_page() the mappings are per thread, CPU local, can ta=
+ke
+> > > page faults, and can be called from any context (including interrupts=
+).
+> > > It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
+> > > the tasks can be preempted and, when they are scheduled to run again,=
+=20
+the
+> > > kernel virtual addresses are restored and still valid.
+> > >=20
+> > > Since its use in fs/ufs is safe everywhere, it should be preferred.
+> > >=20
+> > > Therefore, replace kmap() with kmap_local_page() in fs/ufs.=20
+kunmap_local()
+> > > requires the mapping address, so return that address from ufs_get_pag=
+e()
+> > > to be used in ufs_put_page().
+> >=20
+> > Hi Al,
+> >=20
+> > I see that this series is here since Dec 29, 2022.
+> > Is there anything that prevents its merging?
+> > Can you please its four patches in your tree?
+>=20
+> I'm pretty sure UFS directories should simply be allocated from lowmem.
+> There's really no reason to put them in highmem these days.
 
-Will fix.
+Matthew,
 
-Thanks.
+It's been a few days since you wrote but I still haven't done anything or=20
+replied. For now, I just want you to know that it's not my intention to ign=
+ore=20
+your comment.
+
+The only reasons I hesitate to follow your directions are that I built this=
+=20
+series based on specific suggestions from Al.=20
+
+While I understand and, for sure, heed what you said, I also think I should=
+=20
+wait for Al to chime in with what he thinks about all this before taking a=
+=20
+different route for removing kmap() from fs/ufs.
+
+Thanks for looking at this series.
+
+=46abio=20
 
 
->
-> Thanks
->
->
-> >   	}
-> > +
-> > +drop:
-> > +	put_xdp_frags(xdp);
-> > +	return VIRTNET_XDP_RES_DROP;
-> >   }
-> >
-> >   static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
-> > @@ -1199,7 +1203,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_=
-device *dev,
-> >   				 dev->name, *num_buf,
-> >   				 virtio16_to_cpu(vi->vdev, hdr->num_buffers));
-> >   			dev->stats.rx_length_errors++;
-> > -			return -EINVAL;
-> > +			goto err;
-> >   		}
-> >
-> >   		stats->bytes +=3D len;
-> > @@ -1218,7 +1222,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_=
-device *dev,
-> >   			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
-> >   				 dev->name, len, (unsigned long)(truesize - room));
-> >   			dev->stats.rx_length_errors++;
-> > -			return -EINVAL;
-> > +			goto err;
-> >   		}
-> >
-> >   		frag =3D &shinfo->frags[shinfo->nr_frags++];
-> > @@ -1233,6 +1237,10 @@ static int virtnet_build_xdp_buff_mrg(struct net=
-_device *dev,
-> >
-> >   	*xdp_frags_truesize =3D xdp_frags_truesz;
-> >   	return 0;
-> > +
-> > +err:
-> > +	put_xdp_frags(xdp);
-> > +	return -EINVAL;
-> >   }
-> >
-> >   static void *mergeable_xdp_prepare(struct virtnet_info *vi,
-> > @@ -1361,7 +1369,7 @@ static struct sk_buff *receive_mergeable(struct n=
-et_device *dev,
-> >   		err =3D virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, fr=
-ame_sz,
-> >   						 &num_buf, &xdp_frags_truesz, stats);
-> >   		if (unlikely(err))
-> > -			goto err_xdp_frags;
-> > +			goto err_xdp;
-> >
-> >   		act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
-> >
-> > @@ -1369,7 +1377,7 @@ static struct sk_buff *receive_mergeable(struct n=
-et_device *dev,
-> >   		case VIRTNET_XDP_RES_PASS:
-> >   			head_skb =3D build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_true=
-sz);
-> >   			if (unlikely(!head_skb))
-> > -				goto err_xdp_frags;
-> > +				goto err_xdp;
-> >
-> >   			rcu_read_unlock();
-> >   			return head_skb;
-> > @@ -1379,11 +1387,8 @@ static struct sk_buff *receive_mergeable(struct =
-net_device *dev,
-> >   			goto xdp_xmit;
-> >
-> >   		case VIRTNET_XDP_RES_DROP:
-> > -			goto err_xdp_frags;
-> > +			goto err_xdp;
-> >   		}
-> > -err_xdp_frags:
-> > -		put_xdp_frags(&xdp);
-> > -		goto err_xdp;
-> >   	}
-> >   	rcu_read_unlock();
-> >
->
+
