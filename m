@@ -2,70 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0066D5302
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 23:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4AB56D5375
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 23:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbjDCVF2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 17:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
+        id S233767AbjDCVZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 17:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbjDCVF2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 17:05:28 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AB51990;
-        Mon,  3 Apr 2023 14:05:27 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id z18so18341537pgj.13;
-        Mon, 03 Apr 2023 14:05:27 -0700 (PDT)
+        with ESMTP id S233330AbjDCVZC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 17:25:02 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70FD49C9
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 14:24:27 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id ek18so122773830edb.6
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 14:24:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680555926;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tbm/1Z7pscrBG0ZZhn1hbEou8eY1g5LF47B9DlKafFI=;
-        b=LUb4aRBx/1cQAXYbj6jJH8rVYd62Hn/D67ltQAVDOHDepio3qyEhuwpgSlF2Cp+2/y
-         /AetyTGyl/dgvyjzwnqFb1FbfXLAYoGUHquuJSYgByhG3Ue+fd1JUHOidYdvcLWJcm95
-         8GeNerJ7dQxkMNw4KAZ+XGGc9YuVlZnZGiWK6+Sjr0LU06lQJOSOkDvrVgEzOxHfKSEA
-         tpV6M5VHcweZI8mOZ7EQuVSrlLqGCqvAzIE99CC4uVWpLT/Rc1sN6YKaTydEk2WhaFyE
-         4geToD+fe2gZ5Lrs+rNHiXET5/HXQFdUvF8/+UagUrZEwSJ4fMpHOz0DbYgGe66rWZ4z
-         wDSA==
+        d=gmail.com; s=20210112; t=1680557066;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/AU3aKj8KY9i7lO9JxfTf4VhUDMjVTY2SaeW4vbU2Bk=;
+        b=YnDGvAZOhkhCG7ploAB3QhjASi9uzK8yTwEevWmL7AQwxKBnT3j6mRaJLYxsr/8vAe
+         YIZxBLk/oIuT/ZgPzEtvG1C/Z+nMttSkFBrKpe5u6zg+sl7JTh3KvVWbwXs/3PHSDcA3
+         9EncD47hU3mCxOmieqvF1+6zkb+RgoGHOPwKg4EU41eg1r/dNy8kXt0JVhDRw5pq8vSv
+         z1j2gLfnmaFe3GD/ALgBRF8KLQPuFKPVS+OggHoLQ2z9tM3oLRPocd+M8Qwr586Gnb/8
+         GdoUXReyp+YglcZmJtjOnmN6XvOxCaLihf9/8t3iX0IG8rDpNIEAnBkxAOPd9BqjoMuz
+         rTYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680555927;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Tbm/1Z7pscrBG0ZZhn1hbEou8eY1g5LF47B9DlKafFI=;
-        b=7gNFL9Kmoglru/irI4DVOLa4A/3vG0eSr+kSj+5nWLdIiOWC/CoakcVatSEZhloT7m
-         i3YNgnKfEoXQz+fZK8B3xgm4XXM9Xm9+USME+adUf8K4o3l7jWiklYZgqTu9TF4Gbp0o
-         13dZZ1WvM9vpJLY2KhCHMjF3Y6IORmMUYte87tx1MhfmUtZd0qFiAfYmo0vowAxAxJT+
-         NFCWhaTcOvwgOtaJrQy8Tx//q07LnrQy9ZA/Ku/1nYcWEM3DiS8cCRrJYlxrL89TX0DI
-         SHdW0z0t63r1G6XUe497HaWX856ULJBYergc2+0okMnKmpi34xl4xZaRUT6RfipeHWgr
-         aIcw==
-X-Gm-Message-State: AAQBX9eFlcr1kyvDU8lZ/205VyFbMyjqGpVfBBBEuYPPh2yzb8V/4+il
-        t+KJKS3738Lr+WbLzVjS/hE=
-X-Google-Smtp-Source: AKy350atusfAtVwRYzds1wLB2Qf94oSUsoqAp9rWmwhdmQprXnxWNmrvkXCiXS9bTyy7NiBAPVszyQ==
-X-Received: by 2002:a62:19c8:0:b0:625:9055:3bc9 with SMTP id 191-20020a6219c8000000b0062590553bc9mr31773061pfz.27.1680555926586;
-        Mon, 03 Apr 2023 14:05:26 -0700 (PDT)
-Received: from localhost ([2605:59c8:4c5:7110:3da7:5d97:f465:5e01])
-        by smtp.gmail.com with ESMTPSA id z8-20020aa791c8000000b005a8dcd32851sm7586895pfa.11.2023.04.03.14.05.25
+        d=1e100.net; s=20210112; t=1680557066;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/AU3aKj8KY9i7lO9JxfTf4VhUDMjVTY2SaeW4vbU2Bk=;
+        b=ITSaunSD+ptc3/qSsSh0FwhlH2q34a8uAFdYi0KHa7pYUep7ZfY6t1F2UZE9nNW+m9
+         DPGyouGYBZw1l7iyzasYY8BprqQUx99mAUR7T5nMZoUPT9MDMp0u1+6LChfmn2DY9ujA
+         YZa2HqFmauYA0CgzCii4cprNoNNHaH9dFJ853MR40I/y19eqIOaN8d9ww0Y0++1lFCXT
+         YgdtQ7BVsDNc8MfA5kY3W5CuOMFcMDn9DNyt6WkVFQaBR7nO2h0pDZMvR2r17vQia740
+         zQrgrWYl8MOrgs4bt8pKi5BSzgnt5R0ZpM1oG8w/2fm5MHupunGjmAiID3+CtkX5BrDQ
+         tyAA==
+X-Gm-Message-State: AAQBX9dvAYpGqzdzjdbiLgYm17Obn4qKW/fLUjHxPuYVGoaDCZ1xLLxh
+        Bie0psWryHRoU9uUiB7nD8cZuBt8dNPdoA==
+X-Google-Smtp-Source: AKy350ajTEgq2vk9IgEjx1SJhGntIogRYz5mxnjTy6lemxBgf70g5ZldfXQJ8KBodEOSIInl0xZlIw==
+X-Received: by 2002:a17:906:b42:b0:947:726e:f43a with SMTP id v2-20020a1709060b4200b00947726ef43amr86263ejg.23.1680557065798;
+        Mon, 03 Apr 2023 14:24:25 -0700 (PDT)
+Received: from krava ([83.240.62.56])
+        by smtp.gmail.com with ESMTPSA id g19-20020a170906c19300b0093313f4fc3csm5045791ejz.70.2023.04.03.14.24.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Apr 2023 14:05:26 -0700 (PDT)
-Date:   Mon, 03 Apr 2023 14:05:24 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     cong.wang@bytedance.com, daniel@iogearbox.net, lmb@isovalent.com,
-        edumazet@google.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, will@isovalent.com
-Message-ID: <642b3f94f13df_e67b72086@john.notmuch>
-In-Reply-To: <87a5zpdxu7.fsf@cloudflare.com>
-References: <20230327175446.98151-1-john.fastabend@gmail.com>
- <20230327175446.98151-5-john.fastabend@gmail.com>
- <87a5zpdxu7.fsf@cloudflare.com>
-Subject: Re: [PATCH bpf v2 04/12] bpf: sockmap, handle fin correctly
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Mon, 03 Apr 2023 14:24:25 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 3 Apr 2023 23:24:22 +0200
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add RESOLVE_BTFIDS dependency to
+ bpf_testmod.ko
+Message-ID: <ZCtEBsPMj48Wwfc/@krava>
+References: <20230403172935.1553022-1-iii@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230403172935.1553022-1-iii@linux.ibm.com>
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -76,61 +76,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Mon, Mar 27, 2023 at 10:54 AM -07, John Fastabend wrote:
-> > The sockmap code is returning EAGAIN after a FIN packet is received and no
-> > more data is on the receive queue. Correct behavior is to return 0 to the
-> > user and the user can then close the socket. The EAGAIN causes many apps
-> > to retry which masks the problem. Eventually the socket is evicted from
-> > the sockmap because its released from sockmap sock free handling. The
-> > issue creates a delay and can cause some errors on application side.
-> >
-> > To fix this check on sk_msg_recvmsg side if length is zero and FIN flag
-> > is set then set return to zero. A selftest will be added to check this
-> > condition.
-> >
-> > Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
-> > Tested-by: William Findlay <will@isovalent.com>
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
-> >  net/ipv4/tcp_bpf.c | 31 +++++++++++++++++++++++++++++++
-> >  1 file changed, 31 insertions(+)
-> >
-> > diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> > index cf26d65ca389..3a0f43f3afd8 100644
-> > --- a/net/ipv4/tcp_bpf.c
-> > +++ b/net/ipv4/tcp_bpf.c
+On Mon, Apr 03, 2023 at 07:29:35PM +0200, Ilya Leoshkevich wrote:
+> bpf_testmod.ko sometimes fails to build from a clean checkout:
 > 
-> [...]
+>     BTF [M] linux/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.ko
+>     /bin/sh: 1: linux-build//tools/build/resolve_btfids/resolve_btfids: not found
 > 
-> > @@ -193,6 +211,19 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
-> >  	lock_sock(sk);
-> >  msg_bytes_ready:
-> >  	copied = sk_msg_recvmsg(sk, psock, msg, len, flags);
-> > +	/* The typical case for EFAULT is the socket was gracefully
-> > +	 * shutdown with a FIN pkt. So check here the other case is
-> > +	 * some error on copy_page_to_iter which would be unexpected.
-> > +	 * On fin return correct return code to zero.
-> > +	 */
-> > +	if (copied == -EFAULT) {
-> > +		bool is_fin = is_next_msg_fin(psock);
-> > +
-> > +		if (is_fin) {
-> > +			copied = 0;
-> > +			goto out;
-> > +		}
-> > +	}
-> >  	if (!copied) {
-> >  		long timeo;
-> >  		int data;
+> The reason is that RESOLVE_BTFIDS may not yet be built. Fix by adding a
+> dependency.
 > 
-> tcp_bpf_recvmsg needs a similar fix, no?
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-Yes, I had lumped it in with follow up fixes needed for the
-stream parser case but your right its not related.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-Mind if I do it in a follow up? Or if I need to do a v4 I'll
-roll it in there.
+jirka
 
-Thanks!
-John
+> ---
+>  tools/testing/selftests/bpf/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 4a8ef118fd9d..febd1dae6c88 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -201,7 +201,7 @@ $(OUTPUT)/sign-file: ../../../../scripts/sign-file.c
+>  		  $< -o $@ \
+>  		  $(shell $(HOSTPKG_CONFIG) --libs libcrypto 2> /dev/null || echo -lcrypto)
+>  
+> -$(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
+> +$(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
+>  	$(call msg,MOD,,$@)
+>  	$(Q)$(RM) bpf_testmod/bpf_testmod.ko # force re-compilation
+>  	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_testmod
+> -- 
+> 2.39.2
+> 
