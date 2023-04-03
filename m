@@ -2,78 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E786D4320
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 13:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7736D4447
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 14:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbjDCLN1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 07:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
+        id S231849AbjDCMX2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 08:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjDCLNN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 07:13:13 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE17FF09
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 04:12:45 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id y14so28948334wrq.4
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 04:12:45 -0700 (PDT)
+        with ESMTP id S231886AbjDCMX0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 08:23:26 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427F311643;
+        Mon,  3 Apr 2023 05:23:21 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id j7so34508999ybg.4;
+        Mon, 03 Apr 2023 05:23:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1680520363;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JJGK6+z2A0j3BXRQbw4triQYURy3/oqOBEOPJiYTwI4=;
-        b=tpFFS4UnM3prfzvnWok4lKRG4k267cw8oCzicAYmRl1H6CB6VSOmte/empqxGvcWy7
-         Moqy9a1QyOZJ+XDWTAYRrDqM8ZZJZSxJG2WHAKEPIcRN2W2/t0mIggTKqDNFn6iAhKUd
-         khD3w7P4NcOnjfp3u7S5/YNSB+jEavbx+NV+Y=
+        d=gmail.com; s=20210112; t=1680524600;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CV4hHC1sA+rpldeBpV1/b7vAGylUfHwT+E3ZkcI7AzQ=;
+        b=XeY0WrqhUZ/g4ek0FdjnYgmHtmbG3qzJaYZhjQVJ+o4apLcLXmBZIgDwVfoD9nsCcR
+         W9eqXIWeT0u/Ju66kuEfhNKS5YuYZ6gTBUoWdf1tda8Aohjhs3tMB1MX23u+Glj/6HIA
+         nntCLT+9O5By/sSUimOneh0Yi+cPcWi/mMArl44T61hPh3hugZa4QwammMMwkGtBAShY
+         5fyJU4xFw2F/Jwr3qQg10NHA3UyAsS3h7z+HH4MWN+Np/6laneGn5JcnBK8x4wRJQduc
+         QbuAv+mm5RHdwkoPewL7wlEMTfJceKqukF6qvVs84j9YFSpo8KNA5ImkRkB+p7IgH+fF
+         adXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680520363;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JJGK6+z2A0j3BXRQbw4triQYURy3/oqOBEOPJiYTwI4=;
-        b=HtjL1g2YeNhho6ZTUrdK0NOssm2xGhW9M0/Mj40gjXziOxTiv9XpX5Yeg98RLAIJxA
-         RODOrFlbWHrhPnJY8RvgROhqoM9ARoVhC3ousQISdAAnfG1TnqcbsfnBBMqYNT+/zqfC
-         AXatJk1KQ9hyt2FGB1dFe9v0albc/P5cd08R4VQokHC5ONGsUjPEK0UoOEkedidZyt1u
-         LQhYGEano6qxNhqioOVYYWv1DDON6HhrZB4c6kWTHJHbX7fBZ8BRlb3VfFaZI8Hmr4Ct
-         mk6WC9SkjpfhZCeZ9g8pBGKKIY/dSxJ5FeezmF0gxrhryqvOlHc3N7AHRcr2eF2aevmm
-         b2RA==
-X-Gm-Message-State: AAQBX9f48HCGDUzMLPco0737MffflRZHFzEEZemzxTN91AGzYS1xtOwD
-        zrQknKd0JKh9Ipo+3Zyryxbr6pGWzpuOYt4Rp3Q1avdT
-X-Google-Smtp-Source: AKy350bcITxGCnkiMeQi5Vz8Ia9/Zlb9CV3ZkbXUJUt3e/Xz42s2EhmH92FXuuBHO4CBhxxI/xNO2g==
-X-Received: by 2002:adf:fccc:0:b0:2cf:e868:f789 with SMTP id f12-20020adffccc000000b002cfe868f789mr25909194wrs.48.1680520362592;
-        Mon, 03 Apr 2023 04:12:42 -0700 (PDT)
-Received: from workstation.ehrig.io (tmo-066-125.customers.d1-online.com. [80.187.66.125])
-        by smtp.gmail.com with ESMTPSA id y11-20020adffa4b000000b002c7066a6f77sm9505517wrr.31.2023.04.03.04.12.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Apr 2023 04:12:42 -0700 (PDT)
-From:   Christian Ehrig <cehrig@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     cehrig@cloudflare.com, kernel-team@cloudflare.com,
+        d=1e100.net; s=20210112; t=1680524600;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CV4hHC1sA+rpldeBpV1/b7vAGylUfHwT+E3ZkcI7AzQ=;
+        b=JBNy0zr1uv9+tA0lv+ww/RoBlLjWhJVcalDs9prU+Gsbg8tjHGi9OzbPgu6STI2umG
+         idl95Agho6NhfO/J3MBlC945cfKBAz1RTLRedxOYTJkLsiyjjiSyrDhunI3hX3PYCW2a
+         EBm254XtOfrzHwe4+dB4c3u5odM0GGagMXwjkyYO+JmdwQIhv9Zk48DjbpEyo3QKbIv7
+         JtylNNylD7iVkFQnsMocE7KAlueIzcd3aLqQDHRwWG+ezWsWI4q1hCm/amPe6ICHgKQH
+         fbtit1r1gqRZSj0dXHJYgDVEn+PQTUjZj9rs4366Rtite75dAJeW9Q/nvoaNLmzxoRTv
+         8m7A==
+X-Gm-Message-State: AAQBX9f1thS8SEP5cEfbUlb5SpypOlDIYE8Bx2w9si/auN/x+c7n5yKL
+        74QJB4Jfe98CWAkqmd7iaX1Ibn6w/NiZMLG9ALE=
+X-Google-Smtp-Source: AKy350ZR8wMNk5BPNSKULI1BOgMr9PfQo/lOb8oFr5/gsE836uLouUYLoDYaRgjlrDPjkrz5SCNytqcHsm4bIec2wlM=
+X-Received: by 2002:a05:6902:154a:b0:b3c:637f:ad00 with SMTP id
+ r10-20020a056902154a00b00b3c637fad00mr23972399ybu.5.1680524600282; Mon, 03
+ Apr 2023 05:23:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230329180502.1884307-1-kal.conley@dectris.com> <20230329180502.1884307-7-kal.conley@dectris.com>
+In-Reply-To: <20230329180502.1884307-7-kal.conley@dectris.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 3 Apr 2023 14:23:09 +0200
+Message-ID: <CAJ8uoz0a3gJgWDxP0zPLsiWzUZHmGqRbrumdRq2Gv1HdVm4ObQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 06/10] xsk: Add check for unaligned
+ descriptors that overrun UMEM
+To:     Kal Conley <kal.conley@dectris.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Kaixi Fan <fankaixi.li@bytedance.com>,
-        Paul Chaignon <paul@isovalent.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Test FOU kfuncs for externally controlled ipip devices
-Date:   Mon,  3 Apr 2023 14:12:09 +0200
-Message-Id: <528a824713c1545839d870eaad84d87749a23371.1680520500.git.cehrig@cloudflare.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <cover.1680520500.git.cehrig@cloudflare.com>
-References: <cover.1680520500.git.cehrig@cloudflare.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,266 +80,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests for FOU and GUE encapsulation via the bpf_skb_{set,get}_fou_encap
-kfuncs, using ipip devices in collect-metadata mode.
+On Wed, 29 Mar 2023 at 20:11, Kal Conley <kal.conley@dectris.com> wrote:
+>
+> Make sure unaligned descriptors that straddle the end of the UMEM are
+> considered invalid. This check needs to happen before the page boundary
+> and contiguity checks in xp_desc_crosses_non_contig_pg(). Check this in
+> xp_unaligned_validate_desc() instead like xp_check_unaligned() already
+> does.
+>
+> Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
+> Signed-off-by: Kal Conley <kal.conley@dectris.com>
+> ---
+>  include/net/xsk_buff_pool.h | 9 ++-------
+>  net/xdp/xsk_queue.h         | 1 +
+>  2 files changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+> index 3e952e569418..d318c769b445 100644
+> --- a/include/net/xsk_buff_pool.h
+> +++ b/include/net/xsk_buff_pool.h
+> @@ -180,13 +180,8 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
+>         if (likely(!cross_pg))
+>                 return false;
+>
+> -       if (pool->dma_pages_cnt) {
+> -               return !(pool->dma_pages[addr >> PAGE_SHIFT] &
+> -                        XSK_NEXT_PG_CONTIG_MASK);
+> -       }
+> -
+> -       /* skb path */
+> -       return addr + len > pool->addrs_cnt;
+> +       return pool->dma_pages_cnt &&
+> +              !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
+>  }
+>
+>  static inline u64 xp_aligned_extract_addr(struct xsk_buff_pool *pool, u64 addr)
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index bfb2a7e50c26..66c6f57c9c44 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -162,6 +162,7 @@ static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool,
+>                 return false;
+>
+>         if (base_addr >= pool->addrs_cnt || addr >= pool->addrs_cnt ||
+> +           addr + desc->len > pool->addrs_cnt ||
+>             xp_desc_crosses_non_contig_pg(pool, addr, desc->len))
+>                 return false;
+>
 
-These tests make sure that we can successfully set and obtain FOU and GUE
-encap parameters using ingress / egress BPF tc-hooks.
+Let me just check that I understand the conditions under which this
+occurs. When selecting unaligned mode, there is no check that the size
+is divisible by the chunk_size as is the case in aligned mode. So we
+can register a umem that is for example 15 4K pages plus 100 bytes and
+in this case the second to last page will be marked as contiguous
+(with the CONTIG_MASK) and a packet of length 300 starting at 15*4K -
+100 will be marked as valid even though it extends 100 bytes outside
+the umem which ends at 15*4K + 100. Did I get this correctly? If so,
+some more color in the commit message would be highly appreciated.
 
-Signed-off-by: Christian Ehrig <cehrig@cloudflare.com>
----
- .../selftests/bpf/progs/test_tunnel_kern.c    | 117 ++++++++++++++++++
- tools/testing/selftests/bpf/test_tunnel.sh    |  81 ++++++++++++
- 2 files changed, 198 insertions(+)
+The best way around this would have been if we made sure that the umem
+size was always divisible by PAGE_SIZE, but as there are users out
+there that might have an unaligned umem of an slightly odd size, we
+cannot risk breaking their program. PAGE_SIZE is also architecture
+dependent and even configurable within some. So I think your solution
+here is the right one.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 9ab2d55ab7c0..f66af753bbbb 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -52,6 +52,21 @@ struct vxlan_metadata {
- 	__u32     gbp;
- };
- 
-+struct bpf_fou_encap {
-+	__be16 sport;
-+	__be16 dport;
-+};
-+
-+enum bpf_fou_encap_type {
-+	FOU_BPF_ENCAP_FOU,
-+	FOU_BPF_ENCAP_GUE,
-+};
-+
-+int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
-+			  struct bpf_fou_encap *encap, int type) __ksym;
-+int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-+			  struct bpf_fou_encap *encap) __ksym;
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
- 	__uint(max_entries, 1);
-@@ -749,6 +764,108 @@ int ipip_get_tunnel(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+SEC("tc")
-+int ipip_gue_set_tunnel(struct __sk_buff *skb)
-+{
-+	struct bpf_tunnel_key key = {};
-+	struct bpf_fou_encap encap = {};
-+	void *data = (void *)(long)skb->data;
-+	struct iphdr *iph = data;
-+	void *data_end = (void *)(long)skb->data_end;
-+	int ret;
-+
-+	if (data + sizeof(*iph) > data_end) {
-+		log_err(1);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	key.tunnel_ttl = 64;
-+	if (iph->protocol == IPPROTO_ICMP)
-+		key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
-+
-+	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key), 0);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	encap.sport = 0;
-+	encap.dport = bpf_htons(5555);
-+
-+	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_GUE);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	return TC_ACT_OK;
-+}
-+
-+SEC("tc")
-+int ipip_fou_set_tunnel(struct __sk_buff *skb)
-+{
-+	struct bpf_tunnel_key key = {};
-+	struct bpf_fou_encap encap = {};
-+	void *data = (void *)(long)skb->data;
-+	struct iphdr *iph = data;
-+	void *data_end = (void *)(long)skb->data_end;
-+	int ret;
-+
-+	if (data + sizeof(*iph) > data_end) {
-+		log_err(1);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	key.tunnel_ttl = 64;
-+	if (iph->protocol == IPPROTO_ICMP)
-+		key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
-+
-+	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key), 0);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	encap.sport = 0;
-+	encap.dport = bpf_htons(5555);
-+
-+	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_FOU);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	return TC_ACT_OK;
-+}
-+
-+SEC("tc")
-+int ipip_encap_get_tunnel(struct __sk_buff *skb)
-+{
-+	int ret;
-+	struct bpf_tunnel_key key = {};
-+	struct bpf_fou_encap encap = {};
-+
-+	ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	ret = bpf_skb_get_fou_encap(skb, &encap);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	if (bpf_ntohs(encap.dport) != 5555)
-+		return TC_ACT_SHOT;
-+
-+	bpf_printk("%d remote ip 0x%x, sport %d, dport %d\n", ret,
-+		   key.remote_ipv4, bpf_ntohs(encap.sport),
-+		   bpf_ntohs(encap.dport));
-+	return TC_ACT_OK;
-+}
-+
- SEC("tc")
- int ipip6_set_tunnel(struct __sk_buff *skb)
- {
-diff --git a/tools/testing/selftests/bpf/test_tunnel.sh b/tools/testing/selftests/bpf/test_tunnel.sh
-index 2dec7dbf29a2..f2379414a887 100755
---- a/tools/testing/selftests/bpf/test_tunnel.sh
-+++ b/tools/testing/selftests/bpf/test_tunnel.sh
-@@ -212,6 +212,24 @@ add_ipip_tunnel()
- 	ip addr add dev $DEV 10.1.1.200/24
- }
- 
-+add_ipip_encap_tunnel()
-+{
-+	# at_ns0 namespace
-+  ip netns exec at_ns0 ip fou add port 5555 $IPPROTO
-+  ip netns exec at_ns0 \
-+  	ip link add dev $DEV_NS type $TYPE \
-+  	local 172.16.1.100 remote 172.16.1.200 \
-+  	encap $ENCAP encap-sport auto encap-dport 5555 noencap-csum
-+  ip netns exec at_ns0 ip link set dev $DEV_NS up
-+  ip netns exec at_ns0 ip addr add dev $DEV_NS 10.1.1.100/24
-+
-+  # root namespace
-+  ip fou add port 5555 $IPPROTO
-+  ip link add dev $DEV type $TYPE external
-+  ip link set dev $DEV up
-+  ip addr add dev $DEV 10.1.1.200/24
-+}
-+
- add_ip6tnl_tunnel()
- {
- 	ip netns exec at_ns0 ip addr add ::11/96 dev veth0
-@@ -461,6 +479,60 @@ test_ipip()
-         echo -e ${GREEN}"PASS: $TYPE"${NC}
- }
- 
-+test_ipip_gue()
-+{
-+	TYPE=ipip
-+	DEV_NS=ipip00
-+	DEV=ipip11
-+	ret=0
-+	ENCAP=gue
-+	IPPROTO=$ENCAP
-+
-+	check $TYPE
-+	config_device
-+	add_ipip_encap_tunnel
-+	ip link set dev veth1 mtu 1500
-+	attach_bpf $DEV ipip_gue_set_tunnel ipip_encap_get_tunnel
-+	ping $PING_ARG 10.1.1.100
-+	check_err $?
-+	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
-+	check_err $?
-+	cleanup
-+
-+	if [ $ret -ne 0 ]; then
-+                echo -e ${RED}"FAIL: $TYPE (GUE)"${NC}
-+                return 1
-+        fi
-+        echo -e ${GREEN}"PASS: $TYPE (GUE)"${NC}
-+}
-+
-+test_ipip_fou()
-+{
-+	TYPE=ipip
-+	DEV_NS=ipip00
-+	DEV=ipip11
-+	ret=0
-+	ENCAP=fou
-+	IPPROTO="ipproto 4"
-+
-+	check $TYPE
-+	config_device
-+	add_ipip_encap_tunnel
-+	ip link set dev veth1 mtu 1500
-+	attach_bpf $DEV ipip_fou_set_tunnel ipip_encap_get_tunnel
-+	ping $PING_ARG 10.1.1.100
-+	check_err $?
-+	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
-+	check_err $?
-+	cleanup
-+
-+	if [ $ret -ne 0 ]; then
-+                echo -e ${RED}"FAIL: $TYPE (FOU)"${NC}
-+                return 1
-+        fi
-+        echo -e ${GREEN}"PASS: $TYPE (FOU)"${NC}
-+}
-+
- test_ipip6()
- {
- 	TYPE=ip6tnl
-@@ -634,6 +706,7 @@ cleanup()
- 	ip xfrm policy delete dir in src 10.1.1.100/32 dst 10.1.1.200/32 2> /dev/null
- 	ip xfrm state delete src 172.16.1.100 dst 172.16.1.200 proto esp spi 0x1 2> /dev/null
- 	ip xfrm state delete src 172.16.1.200 dst 172.16.1.100 proto esp spi 0x2 2> /dev/null
-+	ip fou del port 5555 gue 2> /dev/null
- }
- 
- cleanup_exit()
-@@ -708,6 +781,14 @@ bpf_tunnel_test()
- 	test_ipip
- 	errors=$(( $errors + $? ))
- 
-+	echo "Testing IPIP (GUE) tunnel..."
-+  test_ipip_gue
-+  errors=$(( $errors + $? ))
-+
-+	echo "Testing IPIP (FOU) tunnel..."
-+  test_ipip_fou
-+  errors=$(( $errors + $? ))
-+
- 	echo "Testing IPIP6 tunnel..."
- 	test_ipip6
- 	errors=$(( $errors + $? ))
--- 
-2.39.2
+This one should be considered a bug fix to and go to bpf. Good catch
+if I understood the problem correctly above.
 
+
+
+> --
+> 2.39.2
+>
