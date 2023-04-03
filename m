@@ -2,138 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D65F46D51B5
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 22:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE256D51B6
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 22:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbjDCUB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 16:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
+        id S232235AbjDCUBn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 16:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231906AbjDCUB2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 16:01:28 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE54D7
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 13:01:27 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 333HMhEV019878
-        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 13:01:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=2Ta2dU20vaOM41HbzD0uPtCkl5UZZ1mOElaAunpyGKY=;
- b=jvvc4smdXLerDInT5p/LNZzDQfafhikSXr9JISuoflw0mpm0A7R1Jmerz/W8Uu5EYmyo
- Wv7zQcsTjm8gWpJSz2EccuQf4PCi2C8W2KVqOq3BzI4Ynpyt5+9C8/eCWoPNMvCVqNVr
- PSi6VSaDHF8gRsRW+q2tMVcvn9z/8T2w1Z0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pqxk23136-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 13:01:27 -0700
-Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
- ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 3 Apr 2023 13:00:33 -0700
-Received: from twshared8568.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 3 Apr 2023 13:00:32 -0700
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id 839B51B13701E; Mon,  3 Apr 2023 13:00:28 -0700 (PDT)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH bpf-next] bpf: Fix struct_meta lookup for bpf_obj_free_fields kfunc call
-Date:   Mon, 3 Apr 2023 13:00:27 -0700
-Message-ID: <20230403200027.2271029-1-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.34.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: eHXoWJY1BDcI_q9f0w6RFz9baJRcCU74
-X-Proofpoint-ORIG-GUID: eHXoWJY1BDcI_q9f0w6RFz9baJRcCU74
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S232135AbjDCUBm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 16:01:42 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14012105;
+        Mon,  3 Apr 2023 13:01:41 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id d13so28347367pjh.0;
+        Mon, 03 Apr 2023 13:01:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680552101;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qOThgaaa7S8qO3VwVDyKmqLOKj0S6AZVxif7/iapvH0=;
+        b=fjtPuA2ADhsAl+aqIS24eIFPpSc8R0tZSVGMumA+DnBaPeKc5NuBvnodD0TCrvvU7p
+         2Lxs3RX+6rKVfRAaOZBbVbSuM0dLdfI3KA1ayQbi8I+yh96qBQgw+EsvlJPQWhZ0o9eo
+         vImLnZsYJqnu8gcusQoT9Yq8z97MYiJ5K4lFmKPT9dK65vKPIwJRwj9YHbbAD0buTdj0
+         /IMK98M/wEEfwqfU/fodgNMdUyobOPzDoR7ZEYP+kb6Rr/h3OQbunXt+4Jt+CHZWdXtG
+         1CzZDgSWx339hYDM348zsDtN4CMl3W0XFIk/6uxlKdBIV0dh2UdnlNl3dBNC5xnbzIPp
+         RC0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680552101;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qOThgaaa7S8qO3VwVDyKmqLOKj0S6AZVxif7/iapvH0=;
+        b=EwHc8KCc/eo4MYbC7kj0F9f2Ce7fuB90decGbT6ZY86zB13FOZtqDI7DcPkGDRxrk/
+         LstmuawUTbEI6fP0qNaz+lr7DqCCxdIiU21on4KEJjLgC0fkPE7tPsz0+uvg3PfL6KV5
+         slekzKYGCB16b/I7c1PAisSRpXMYjvrM31wmjuhkM8Lt1WxmFA8WuhRn5hAUoNVMrb6F
+         ktWgnO46hDSPvFQMjCzt78ULpzxaxBrJ+YLAe1b2Skm82OGf5zfU/xUrxp+FedwWpxie
+         Nz3/uYYHGSqYIvQMa4aSXGBij1pTxht4DMbVoEVLeAvsUokv9rTIGzKI9x0Y9Jy9+NbC
+         FYzg==
+X-Gm-Message-State: AAQBX9ff+HLBZ+YEJ0UGaZs3s8XCQCd3msLgvz0UrdjeOBVd1JHGWSJR
+        li8D6hPkEh0DeFTWYOxQqFU=
+X-Google-Smtp-Source: AKy350Y/kf+sDc+jZy+4/K4/aJ9BCk96JCWCx+Pz0dWPltGO5nSPIBRtos8wBAFQTnnTDIT48W6DkA==
+X-Received: by 2002:a17:902:e5c2:b0:19d:1674:c04d with SMTP id u2-20020a170902e5c200b0019d1674c04dmr158870plf.61.1680552100979;
+        Mon, 03 Apr 2023 13:01:40 -0700 (PDT)
+Received: from localhost.localdomain ([2605:59c8:4c5:7110:3da7:5d97:f465:5e01])
+        by smtp.gmail.com with ESMTPSA id t18-20020a1709028c9200b0019c2b1c4db1sm6948835plo.239.2023.04.03.13.01.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Apr 2023 13:01:40 -0700 (PDT)
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     cong.wang@bytedance.com, jakub@cloudflare.com,
+        daniel@iogearbox.net, lmb@isovalent.com, edumazet@google.com
+Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        will@isovalent.com
+Subject: [PATCH bpf v3 00/12] bpf sockmap fixes
+Date:   Mon,  3 Apr 2023 13:01:26 -0700
+Message-Id: <20230403200138.937569-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-03_15,2023-04-03_03,2023-02-09_01
-X-Spam-Status: No, score=-0.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_obj_drop_impl has a void return type. In check_kfunc_call, the "else
-if" which sets insn_aux->kptr_struct_meta for bpf_obj_drop_impl is
-surrounded by a larger if statement which checks btf_type_is_ptr. As a
-result:
+Fixes for sockmap running against NGINX TCP tests and also on an
+underprovisioned VM so that we hit error (ENOMEM) cases regularly.
 
-  * The bpf_obj_drop_impl-specific code will never execute
-  * The btf_struct_meta input to bpf_obj_drop is always NULL
-  * __bpf_obj_drop_impl will always see a NULL btf_record when called
-    from BPF program, and won't call bpf_obj_free_fields
-  * program-allocated kptrs which have fields that should be cleaned up
-    by bpf_obj_free_fields may instead leak resources
+The first 3 patches fix cases related to ENOMEM that were either
+causing splats or data hangs.
 
-This patch adds a btf_type_is_void branch to the larger if and moves
-special handling for bpf_obj_drop_impl there, fixing the issue.
+Then 4-7 resolved cases found when running NGINX with its sockets
+assigned to sockmap. These mostly have to do with handling fin/shutdown
+incorrectly and ensuring epoll_wait works as expected.
 
-Fixes: ac9f06050a35 ("bpf: Introduce bpf_obj_drop")
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
-This was previously sent to apply against bpf tree
-(https://lore.kernel.org/bpf/20230403173125.1056883-1-davemarchevsky@fb.com=
-/),
-but we decided to go through bpf-next instead.
+Patches 8 and 9 extract some of the logic used for sockmap_listen tests
+so that we can use it in other tests because it didn't make much
+sense to me to add tests to the sockmap_listen cases when here we
+are testing send/recv *basic* cases.
 
- kernel/bpf/verifier.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+Finally patches 10, 11 and 12 add the new tests to ensure we handle
+ioctl(FIONREAD) and shutdown correctly.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 92ae4e8ab87b..eaf9c5291cf0 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10743,10 +10743,6 @@ static int check_kfunc_call(struct bpf_verifier_en=
-v *env, struct bpf_insn *insn,
- 				insn_aux->obj_new_size =3D ret_t->size;
- 				insn_aux->kptr_struct_meta =3D
- 					btf_find_struct_meta(ret_btf, ret_btf_id);
--			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_drop_impl]=
-) {
--				insn_aux->kptr_struct_meta =3D
--					btf_find_struct_meta(meta.arg_obj_drop.btf,
--							     meta.arg_obj_drop.btf_id);
- 			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_pop_front=
-] ||
- 				   meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_pop_back]) {
- 				struct btf_field *field =3D meta.arg_list_head.field;
-@@ -10875,7 +10871,15 @@ static int check_kfunc_call(struct bpf_verifier_en=
-v *env, struct bpf_insn *insn,
-=20
- 		if (reg_may_point_to_spin_lock(&regs[BPF_REG_0]) && !regs[BPF_REG_0].id)
- 			regs[BPF_REG_0].id =3D ++env->id_gen;
--	} /* else { add_kfunc_call() ensures it is btf_type_is_void(t) } */
-+	} else if (btf_type_is_void(t)) {
-+		if (meta.btf =3D=3D btf_vmlinux && btf_id_set_contains(&special_kfunc_se=
-t, meta.func_id)) {
-+			if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_drop_impl]) {
-+				insn_aux->kptr_struct_meta =3D
-+					btf_find_struct_meta(meta.arg_obj_drop.btf,
-+							     meta.arg_obj_drop.btf_id);
-+			}
-+		}
-+	}
-=20
- 	nargs =3D btf_type_vlen(meta.func_proto);
- 	args =3D (const struct btf_param *)(meta.func_proto + 1);
---=20
-2.34.1
+To test the series I ran the NGINX compliance tests and the sockmap
+selftests. For now our compliance test just runs with SK_PASS.
+
+There are some more things to be done here, but these 11 patches
+stand on their own in my opionion and fix issues we are having in
+CI now. For bpf-next we can fixup/improve selftests to use the
+ASSERT_* in sockmap_helpers, streamline some of the testing, and
+add more tests. We also still are debugging a few additional flakes
+patches coming soon.
+
+v2: use skb_queue_empty instead of *_empty_lockless (Eric)
+    oops incorrectly updated copied_seq on DROP case (Eric)
+    added test for drop case copied_seq update
+
+v3: Fix up comment to use /**/ formatting and update commit
+    message to capture discussion about previous fix attempt
+    for hanging backlog being imcomplete.
+
+John Fastabend (11):
+  bpf: sockmap, pass skb ownership through read_skb
+  bpf: sockmap, convert schedule_work into delayed_work
+  bpf: sockmap, improved check for empty queue
+  bpf: sockmap, handle fin correctly
+  bpf: sockmap, TCP data stall on recv before accept
+  bpf: sockmap, wake up polling after data copy
+  bpf: sockmap incorrectly handling copied_seq
+  bpf: sockmap, pull socket helpers out of listen test for general use
+  bpf: sockmap, build helper to create connected socket pair
+  bpf: sockmap, test shutdown() correctly exits epoll and recv()=0
+  bpf: sockmap, test FIONREAD returns correct bytes in rx buffer
+
+ include/linux/skmsg.h                         |   2 +-
+ include/net/tcp.h                             |   1 +
+ net/core/skmsg.c                              |  58 ++-
+ net/core/sock_map.c                           |   3 +-
+ net/ipv4/tcp.c                                |   9 -
+ net/ipv4/tcp_bpf.c                            |  81 +++-
+ net/ipv4/udp.c                                |   5 +-
+ net/unix/af_unix.c                            |   5 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 119 +++++-
+ .../bpf/prog_tests/sockmap_helpers.h          | 374 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 352 +----------------
+ .../bpf/progs/test_sockmap_pass_prog.c        |  32 ++
+ 12 files changed, 659 insertions(+), 382 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
+
+-- 
+2.33.0
 
