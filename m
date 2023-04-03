@@ -2,158 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 686A16D3C00
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 05:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D366D3C17
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 05:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjDCDGI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Apr 2023 23:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
+        id S230293AbjDCDTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Apr 2023 23:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjDCDGH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Apr 2023 23:06:07 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D86C659D;
-        Sun,  2 Apr 2023 20:06:02 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id n14so27030311qta.10;
-        Sun, 02 Apr 2023 20:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680491161;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MVpHSWVPXPhCwMSet+5Qdfvz4A3AKximww2ubzxMDls=;
-        b=NCEPTZzp7vT2RjILBwPZ851j1Z87CT9aGjL5VIUzghm3DTaDr06vg9TsQ46OM8Yvst
-         eV2TNhziUC9veM8Bo+VY9ih7tx2q2oVKwTauiKQVtfrDRnLtX8jGLDe+p03VVRtENDFq
-         5N7wiXi+8RJ4YqmPZXGDZZhmGfm+Xj7Gpw4l9QwK6et/NHiG5MOwOHkrLBvAjBzb/9vi
-         cYi3XYdz5uNenMAu3JfXr+X1ENUvfukTEfVf2QPMcIZj9n5XNHTNNW5kWEaygwYZLqJ1
-         zAoOcJPCXxNE5fpEgU4WHCScABiutyzpkqdbIDiEdRH49cTtjSnMJuwYXX7yR7f4yw3o
-         gqZQ==
+        with ESMTP id S229492AbjDCDTL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Apr 2023 23:19:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A759719BD
+        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 20:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680491895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0a2YoCPqdvT7sap4ltftxMthrEI89W8IvG18MozfGLE=;
+        b=QNJXyIXmcZyEgZTJy+1pk4nythFVrlwyeEacQjZE7mOgK7J/plIzz3HUozUNAnXuqThyZG
+        LzgEtVqqrQY/mi9oQ2TmN9hPpnlYLheBgTpaYHKdYyy6FmOrAAdd4clMCTmhr+0sQDjhzr
+        /Q4o8yEa0GGzuPrPwfaYSzUcnrG2sTM=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-210-teNTaEciNsi9wWmFP1OD6A-1; Sun, 02 Apr 2023 23:18:14 -0400
+X-MC-Unique: teNTaEciNsi9wWmFP1OD6A-1
+Received: by mail-pl1-f200.google.com with SMTP id d2-20020a170902cec200b001a1e8390831so16691708plg.5
+        for <bpf@vger.kernel.org>; Sun, 02 Apr 2023 20:18:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680491161;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MVpHSWVPXPhCwMSet+5Qdfvz4A3AKximww2ubzxMDls=;
-        b=A/PWRHnezP2zgqhPF83UBot1b2uKvSY7sIgGhYa6l/ZWyPHWWWglYbgVC2+trUb3pU
-         XgiQWav1gjP2K7XhUuvFz0vTh/f0QehfF+vDJ4ojJN/krkEzIVNZYTyLqQuy01N4yvHF
-         E6/HtdfSgn6SruEap/dmEUUtGgNHQ4N9Big1hhjevCvHQg3QevGilngVJwHl7t2+lvVf
-         lNPFty4OHTZN25NOnrLrJB7BwaBt2/pxPC/2ubi3/TVv1EPJdqE77Tke6mwgSFrqljWt
-         SlNdam3TkZoPSJOaDUC6ZmtiUamrZrTjWAUJ34b1S1h2oOSyOyBuE6BumvhekqhMGkze
-         aetg==
-X-Gm-Message-State: AO0yUKW4UOCgRpQ9OemeOkDw4pLqcFYngVDRxLWLKSMjpPOLYXQ37qk8
-        YajhZAq+Zg1e3FKZW+ei0mZHtZ3hWy+3QMGEbVM=
-X-Google-Smtp-Source: AK7set/5mrV03m94+BlvYg6XHx+gP0ePwpQMiR7cBCL5RAycNI0TGe1Sqm2+ZsRCG7/zvMEzmxG3BBUc6BLS7VWgZKI=
-X-Received: by 2002:a05:622a:1a02:b0:3e3:f70f:fb13 with SMTP id
- f2-20020a05622a1a0200b003e3f70ffb13mr12426978qtb.6.1680491161713; Sun, 02 Apr
- 2023 20:06:01 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680491892; x=1683083892;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0a2YoCPqdvT7sap4ltftxMthrEI89W8IvG18MozfGLE=;
+        b=6HTViEWhCOb3uRHt8oSme3c+TRZxuxhIqHl5LftknFadLamFz8eg+LLxA4oFSs8XNP
+         yJunWO819TgQKgSXgCWg8mI/JvcjVXdc3CSwLtyahE7Y5hs09Ikj+4p64RoFqtYKx/O0
+         uVlv34mCX+JZHdRyKooy7S1qJLUMNKULqx3tEGFrdSWnJ/LNZ/Wm7SrmrEUXy51XktI/
+         Hjx3ISu3jxtIs3nF1gbRV18fZeRC1Fnlu1e3KCmUmUUL5SHtNXzJWNgU50nZKiffNt3k
+         RvJLfrS1JyARA55u0fCPHlREQ1spUVQpMs1KvRYIo8i0jyUEBFUv58StVrPUTvkMRJeu
+         hJ/Q==
+X-Gm-Message-State: AAQBX9cJKXl3WiKmePhjlnDpUI4+fYp+lzY8W6Ud7qIdS8P6m7ZN4ynO
+        II9pENlHQUV00zn6QFd+yQ+gfhSlYHxFRghP55h0ApZQVNA8AosEOrarm+LRdJkxOnhD9sk8ppi
+        XiAs5VH/SQfxv
+X-Received: by 2002:a17:902:f906:b0:1a1:a7b6:e31e with SMTP id kw6-20020a170902f90600b001a1a7b6e31emr31254015plb.7.1680491892427;
+        Sun, 02 Apr 2023 20:18:12 -0700 (PDT)
+X-Google-Smtp-Source: AKy350YbGd0sV+9U72JXcUwXqsN0jZa3s1ooFR42QP8dDULUBD9CwCn5QOxWu4o+ScWQuzO1C6pkRQ==
+X-Received: by 2002:a17:902:f906:b0:1a1:a7b6:e31e with SMTP id kw6-20020a170902f90600b001a1a7b6e31emr31254003plb.7.1680491892099;
+        Sun, 02 Apr 2023 20:18:12 -0700 (PDT)
+Received: from [10.72.13.175] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id p10-20020a170902a40a00b001a01bb92273sm5388287plq.279.2023.04.02.20.18.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 02 Apr 2023 20:18:11 -0700 (PDT)
+Message-ID: <5f48c497-1831-40cf-a4b5-5d283204d7a6@redhat.com>
+Date:   Mon, 3 Apr 2023 11:18:02 +0800
 MIME-Version: 1.0
-References: <20230326092208.13613-1-laoar.shao@gmail.com> <CAPhsuW43EiH0tVKU8s+JwV_V6EBETTDyXsAmMzAftpVtcgLHag@mail.gmail.com>
- <CALOAHbCqCb3xmSpNe1Qvm75GBY4ZEGrAOHfVJvpZV5t=akTTgQ@mail.gmail.com> <20230402233740.haxb7lgfavcoe27f@dhcp-172-26-102-232.dhcp.thefacebook.com>
-In-Reply-To: <20230402233740.haxb7lgfavcoe27f@dhcp-172-26-102-232.dhcp.thefacebook.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Mon, 3 Apr 2023 11:05:25 +0800
-Message-ID: <CALOAHbBj-+xY5jGLynUrg1GfSftZ+LT5DkADKz_+8+tL2kWMSw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 00/13] bpf: Introduce BPF namespace
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Song Liu <song@kernel.org>, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.1
+Subject: Re: [PATCH net-next 6/8] virtio_net: auto release xdp shinfo
+Content-Language: en-US
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+References: <20230328120412.110114-1-xuanzhuo@linux.alibaba.com>
+ <20230328120412.110114-7-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20230328120412.110114-7-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 3, 2023 at 7:37=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+
+在 2023/3/28 20:04, Xuan Zhuo 写道:
+> virtnet_build_xdp_buff_mrg() and virtnet_xdp_handler() auto
+
+
+I think you meant virtnet_xdp_handler() actually?
+
+
+> release xdp shinfo then the caller no need to careful the xdp shinfo.
 >
-> On Tue, Mar 28, 2023 at 11:47:31AM +0800, Yafang Shao wrote:
-> > On Tue, Mar 28, 2023 at 3:04=E2=80=AFAM Song Liu <song@kernel.org> wrot=
-e:
-> > >
-> > > On Sun, Mar 26, 2023 at 2:22=E2=80=AFAM Yafang Shao <laoar.shao@gmail=
-.com> wrote:
-> > > >
-> > > > Currently only CAP_SYS_ADMIN can iterate BPF object IDs and convert=
- IDs
-> > > > to FDs, that's intended for BPF's security model[1]. Not only does =
-it
-> > > > prevent non-privilidged users from getting other users' bpf program=
-, but
-> > > > also it prevents the user from iterating his own bpf objects.
-> > > >
-> > > > In container environment, some users want to run bpf programs in th=
-eir
-> > > > containers. These users can run their bpf programs under CAP_BPF an=
-d
-> > > > some other specific CAPs, but they can't inspect their bpf programs=
- in a
-> > > > generic way. For example, the bpftool can't be used as it requires
-> > > > CAP_SYS_ADMIN. That is very inconvenient.
-> > >
-> > > Agreed that it is important to enable tools like bpftool without
-> > > CAP_SYS_ADMIN. However, I am not sure whether we need a new
-> > > namespace for this. Can we reuse some existing namespace for this?
-> > >
-> >
-> > It seems we can't.
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>   drivers/net/virtio_net.c | 29 +++++++++++++++++------------
+>   1 file changed, 17 insertions(+), 12 deletions(-)
 >
-> Yafang,
->
-> It's a Nack.
->
-> The only thing you've been trying to "solve" with bpf namespace is to
-> allow 'bpftool prog show' iterate progs in the "namespace" without CAP_SY=
-S_ADMIN.
-> The concept of bpf namespace is not even close to be thought through.
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index a3f2bcb3db27..136131a7868a 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -833,14 +833,14 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
+>   		stats->xdp_tx++;
+>   		xdpf = xdp_convert_buff_to_frame(xdp);
+>   		if (unlikely(!xdpf))
+> -			return VIRTNET_XDP_RES_DROP;
+> +			goto drop;
+>   
+>   		err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
+>   		if (unlikely(!err)) {
+>   			xdp_return_frame_rx_napi(xdpf);
+>   		} else if (unlikely(err < 0)) {
+>   			trace_xdp_exception(dev, xdp_prog, act);
+> -			return VIRTNET_XDP_RES_DROP;
+> +			goto drop;
+>   		}
+>   
+>   		*xdp_xmit |= VIRTIO_XDP_TX;
+> @@ -850,7 +850,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
+>   		stats->xdp_redirects++;
+>   		err = xdp_do_redirect(dev, xdp, xdp_prog);
+>   		if (err)
+> -			return VIRTNET_XDP_RES_DROP;
+> +			goto drop;
+>   
+>   		*xdp_xmit |= VIRTIO_XDP_REDIR;
+>   		return VIRTNET_XDP_RES_CONSUMED;
+> @@ -862,8 +862,12 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
+>   		trace_xdp_exception(dev, xdp_prog, act);
+>   		fallthrough;
+>   	case XDP_DROP:
+> -		return VIRTNET_XDP_RES_DROP;
+> +		goto drop;
 
-Right, it is more likely a PoC in its current state.
 
-> Others pointed out the gaps in the design. Like bpffs. There are plenty.
-> Please do not send patches like this in the future.
+This goto is kind of meaningless.
 
-The reason I sent it with an early state is that I want to get some
-early feedback from the community ahead of the LSF/MM/BPF workshop,
-then I can improve it based on these feedbacks and present it more
-specifically at the workshop. Then the discussion will be more
-effective.
+Thanks
 
-> You need to start with describing the problem you want to solve,
-> then propose _several_ solutions, describe their pros and cons,
-> solicit feedback, present at the conferences (like LSFMMBPF or LPC),
-> and when the community agrees that 1. problem is worth solving,
-> 2. the solution makes sense, only then work on patches.
->
 
-I would like to give a short discussion on the BPF namespace if
-everything goes fine.
+>   	}
+> +
+> +drop:
+> +	put_xdp_frags(xdp);
+> +	return VIRTNET_XDP_RES_DROP;
+>   }
+>   
+>   static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+> @@ -1199,7 +1203,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>   				 dev->name, *num_buf,
+>   				 virtio16_to_cpu(vi->vdev, hdr->num_buffers));
+>   			dev->stats.rx_length_errors++;
+> -			return -EINVAL;
+> +			goto err;
+>   		}
+>   
+>   		stats->bytes += len;
+> @@ -1218,7 +1222,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>   			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+>   				 dev->name, len, (unsigned long)(truesize - room));
+>   			dev->stats.rx_length_errors++;
+> -			return -EINVAL;
+> +			goto err;
+>   		}
+>   
+>   		frag = &shinfo->frags[shinfo->nr_frags++];
+> @@ -1233,6 +1237,10 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>   
+>   	*xdp_frags_truesize = xdp_frags_truesz;
+>   	return 0;
+> +
+> +err:
+> +	put_xdp_frags(xdp);
+> +	return -EINVAL;
+>   }
+>   
+>   static void *mergeable_xdp_prepare(struct virtnet_info *vi,
+> @@ -1361,7 +1369,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>   		err = virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, frame_sz,
+>   						 &num_buf, &xdp_frags_truesz, stats);
+>   		if (unlikely(err))
+> -			goto err_xdp_frags;
+> +			goto err_xdp;
+>   
+>   		act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
+>   
+> @@ -1369,7 +1377,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>   		case VIRTNET_XDP_RES_PASS:
+>   			head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
+>   			if (unlikely(!head_skb))
+> -				goto err_xdp_frags;
+> +				goto err_xdp;
+>   
+>   			rcu_read_unlock();
+>   			return head_skb;
+> @@ -1379,11 +1387,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>   			goto xdp_xmit;
+>   
+>   		case VIRTNET_XDP_RES_DROP:
+> -			goto err_xdp_frags;
+> +			goto err_xdp;
+>   		}
+> -err_xdp_frags:
+> -		put_xdp_frags(&xdp);
+> -		goto err_xdp;
+>   	}
+>   	rcu_read_unlock();
+>   
 
-> "In container environment, some users want to run bpf programs in their c=
-ontainers."
-> is something Song brought up at LSFMMBPF a year ago.
-> At that meeting most of the folks agreed that there is a need to run bpf
-> in containers and make sure that the effect of bpf prog is limited to a c=
-ontainer.
-> This new namespace that creates virtual IDs for progs and maps doesn't co=
-me
-> close in solving this task.
-
-Currently in our production environment, all the containers running
-bpf programs are privileged, that is risky. So actually the goal of
-the BPF namespace is to make them (or part of them) non-privileged.
-But some of the abilities of these bpf programs will be lost in this
-procedure, like the debug-bility with bpftool, so we need to fix it.
-Agree with you that this goal is far from making bpf programs safely
-running in a container environment.
-
---=20
-Regards
-Yafang
