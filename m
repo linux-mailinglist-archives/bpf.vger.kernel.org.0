@@ -2,87 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D366D3C17
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 05:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1586D3C2F
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 05:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjDCDTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Apr 2023 23:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
+        id S231181AbjDCDlf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Apr 2023 23:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjDCDTL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Apr 2023 23:19:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A759719BD
-        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 20:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680491895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0a2YoCPqdvT7sap4ltftxMthrEI89W8IvG18MozfGLE=;
-        b=QNJXyIXmcZyEgZTJy+1pk4nythFVrlwyeEacQjZE7mOgK7J/plIzz3HUozUNAnXuqThyZG
-        LzgEtVqqrQY/mi9oQ2TmN9hPpnlYLheBgTpaYHKdYyy6FmOrAAdd4clMCTmhr+0sQDjhzr
-        /Q4o8yEa0GGzuPrPwfaYSzUcnrG2sTM=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-210-teNTaEciNsi9wWmFP1OD6A-1; Sun, 02 Apr 2023 23:18:14 -0400
-X-MC-Unique: teNTaEciNsi9wWmFP1OD6A-1
-Received: by mail-pl1-f200.google.com with SMTP id d2-20020a170902cec200b001a1e8390831so16691708plg.5
-        for <bpf@vger.kernel.org>; Sun, 02 Apr 2023 20:18:14 -0700 (PDT)
+        with ESMTP id S230192AbjDCDld (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Apr 2023 23:41:33 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75778A55;
+        Sun,  2 Apr 2023 20:41:32 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id fy10-20020a17090b020a00b0023b4bcf0727so29108921pjb.0;
+        Sun, 02 Apr 2023 20:41:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680493292;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FXg7HFo8IGOwcXz+xhhxTe6e3AAoC5T1g7VGxj4ZrTU=;
+        b=GQMh9Mc66DJQmu3ozynlsyvpfEs2UHpQQq3PLKnmT5DOBz73qqb2LSX9XWX8O9sNOk
+         LVF7JaOsCdxo4lB8gW09vEx411Dh8psSegvwjBc0H1QBD6TsX1fAm4zbhDfqYdsXrlGO
+         ugeUsJ4Ah/04bj/Tye0jIXFl47Y5UsDp/Iab6YNi2L21rLEMOfUZpGdSRZEYs8+6Wluj
+         lUEqJDdkp8n8fXf/4wIDaRjQdVZGKipQEnBJVDdEENGgEljZCE/chAFyN0b7+pxWqv+j
+         pA+mi6PxK+w72E6M/T0XHUraXxJJKjMQHYpVbXKAQKS56rb/QdhvI9qU3PBez8yLdasw
+         NR2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680491892; x=1683083892;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0a2YoCPqdvT7sap4ltftxMthrEI89W8IvG18MozfGLE=;
-        b=6HTViEWhCOb3uRHt8oSme3c+TRZxuxhIqHl5LftknFadLamFz8eg+LLxA4oFSs8XNP
-         yJunWO819TgQKgSXgCWg8mI/JvcjVXdc3CSwLtyahE7Y5hs09Ikj+4p64RoFqtYKx/O0
-         uVlv34mCX+JZHdRyKooy7S1qJLUMNKULqx3tEGFrdSWnJ/LNZ/Wm7SrmrEUXy51XktI/
-         Hjx3ISu3jxtIs3nF1gbRV18fZeRC1Fnlu1e3KCmUmUUL5SHtNXzJWNgU50nZKiffNt3k
-         RvJLfrS1JyARA55u0fCPHlREQ1spUVQpMs1KvRYIo8i0jyUEBFUv58StVrPUTvkMRJeu
-         hJ/Q==
-X-Gm-Message-State: AAQBX9cJKXl3WiKmePhjlnDpUI4+fYp+lzY8W6Ud7qIdS8P6m7ZN4ynO
-        II9pENlHQUV00zn6QFd+yQ+gfhSlYHxFRghP55h0ApZQVNA8AosEOrarm+LRdJkxOnhD9sk8ppi
-        XiAs5VH/SQfxv
-X-Received: by 2002:a17:902:f906:b0:1a1:a7b6:e31e with SMTP id kw6-20020a170902f90600b001a1a7b6e31emr31254015plb.7.1680491892427;
-        Sun, 02 Apr 2023 20:18:12 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YbGd0sV+9U72JXcUwXqsN0jZa3s1ooFR42QP8dDULUBD9CwCn5QOxWu4o+ScWQuzO1C6pkRQ==
-X-Received: by 2002:a17:902:f906:b0:1a1:a7b6:e31e with SMTP id kw6-20020a170902f90600b001a1a7b6e31emr31254003plb.7.1680491892099;
-        Sun, 02 Apr 2023 20:18:12 -0700 (PDT)
-Received: from [10.72.13.175] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id p10-20020a170902a40a00b001a01bb92273sm5388287plq.279.2023.04.02.20.18.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Apr 2023 20:18:11 -0700 (PDT)
-Message-ID: <5f48c497-1831-40cf-a4b5-5d283204d7a6@redhat.com>
-Date:   Mon, 3 Apr 2023 11:18:02 +0800
+        d=1e100.net; s=20210112; t=1680493292;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FXg7HFo8IGOwcXz+xhhxTe6e3AAoC5T1g7VGxj4ZrTU=;
+        b=A0OkkuyJltpFR9naf2X1HK74OiJlTscY6Mrd2eJLls+xdGWIGZ4stS8T0caaE3HFpC
+         mf5uFAbJQ8eIslHwNRjNuorfwGWgdLpCFsizPB8EcJcjfDUps20skLPugjOOATgO2DsH
+         rjr2SBRu/AeR+OjH1MW9sJM52ibPQ2D+EkXWLc+/EuHN0W9nbA3Y2onLq6SHpUtZgihn
+         vjr0F26Csb39Xlm9HWI8AD6Agvt99M3o75hNJt4Jbv6qbEORh+uYIcmKWIEHTL7bFrMe
+         xOHgjBZeKwSJfS5HZP6JmIxEfvmil+J1/yYK0apbTGVAi6C/6No77+0MIoOOmoIgzGrS
+         mUNg==
+X-Gm-Message-State: AAQBX9dm3+INJ/mLNe8SUNvxdicBbBuAgSg1/22ru1hGaCgOrVrbFxG0
+        JJ1ZrinCgbxXmqQsefkZEID1Q2VP97c=
+X-Google-Smtp-Source: AKy350Zj8qEaJ+ZabiLCgRpf2zuuu+PDP+ydP0Spb/wnTC7MJGQSvPJqCeW61Xy8SbFBrmDX/0gbIQ==
+X-Received: by 2002:a17:902:f785:b0:19e:2860:3ae8 with SMTP id q5-20020a170902f78500b0019e28603ae8mr39191402pln.33.1680493292013;
+        Sun, 02 Apr 2023 20:41:32 -0700 (PDT)
+Received: from debian.me (subs32-116-206-28-12.three.co.id. [116.206.28.12])
+        by smtp.gmail.com with ESMTPSA id v19-20020a1709028d9300b0019d397b0f18sm5455896plo.214.2023.04.02.20.41.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Apr 2023 20:41:31 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 5795110679D; Mon,  3 Apr 2023 10:41:27 +0700 (WIB)
+Date:   Mon, 3 Apr 2023 10:41:27 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     kernel test robot <lkp@intel.com>,
+        Joe Stringer <joe@isovalent.com>, bpf@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ast@kernel.org, corbet@lwn.net,
+        martin.lau@linux.dev, maxtram95@gmail.com, john.fastabend@gmail.com
+Subject: Re: [PATCH bpf-next v4 2/2] docs/bpf: Add LRU internals description
+ and graph
+Message-ID: <ZCpK5wOI0ZEedhrr@debian.me>
+References: <20230401200651.1022113-2-joe@isovalent.com>
+ <202304022107.IwHc05cs-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.1
-Subject: Re: [PATCH net-next 6/8] virtio_net: auto release xdp shinfo
-Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-References: <20230328120412.110114-1-xuanzhuo@linux.alibaba.com>
- <20230328120412.110114-7-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20230328120412.110114-7-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ilTwJv3f+pqw84Rg"
+Content-Disposition: inline
+In-Reply-To: <202304022107.IwHc05cs-lkp@intel.com>
+X-Spam-Status: No, score=1.3 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -90,129 +79,36 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-在 2023/3/28 20:04, Xuan Zhuo 写道:
-> virtnet_build_xdp_buff_mrg() and virtnet_xdp_handler() auto
+--ilTwJv3f+pqw84Rg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Sun, Apr 02, 2023 at 09:47:49PM +0800, kernel test robot wrote:
+> All warnings (new ones prefixed by >>):
+>=20
+> >> Warning: Orthogonal edges do not currently handle edge labels. Try usi=
+ng xlabels.
+>=20
 
-I think you meant virtnet_xdp_handler() actually?
+Hi,
 
+I can't reproduce the warning above. My system has graphviz 2.42.2
+installed (via Debian package). What graphviz version do kernel test
+robot have?
 
-> release xdp shinfo then the caller no need to careful the xdp shinfo.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->   drivers/net/virtio_net.c | 29 +++++++++++++++++------------
->   1 file changed, 17 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index a3f2bcb3db27..136131a7868a 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -833,14 +833,14 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
->   		stats->xdp_tx++;
->   		xdpf = xdp_convert_buff_to_frame(xdp);
->   		if (unlikely(!xdpf))
-> -			return VIRTNET_XDP_RES_DROP;
-> +			goto drop;
->   
->   		err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
->   		if (unlikely(!err)) {
->   			xdp_return_frame_rx_napi(xdpf);
->   		} else if (unlikely(err < 0)) {
->   			trace_xdp_exception(dev, xdp_prog, act);
-> -			return VIRTNET_XDP_RES_DROP;
-> +			goto drop;
->   		}
->   
->   		*xdp_xmit |= VIRTIO_XDP_TX;
-> @@ -850,7 +850,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
->   		stats->xdp_redirects++;
->   		err = xdp_do_redirect(dev, xdp, xdp_prog);
->   		if (err)
-> -			return VIRTNET_XDP_RES_DROP;
-> +			goto drop;
->   
->   		*xdp_xmit |= VIRTIO_XDP_REDIR;
->   		return VIRTNET_XDP_RES_CONSUMED;
-> @@ -862,8 +862,12 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
->   		trace_xdp_exception(dev, xdp_prog, act);
->   		fallthrough;
->   	case XDP_DROP:
-> -		return VIRTNET_XDP_RES_DROP;
-> +		goto drop;
+--=20
+An old man doll... just what I always wanted! - Clara
 
+--ilTwJv3f+pqw84Rg
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This goto is kind of meaningless.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZCpK4wAKCRD2uYlJVVFO
+ozQcAQCj8UTVKu5oY+LWQWX0nnujGgsrcAZl1lt6077X3AedOAEAgYGC9Us8sPRg
+ZPi23Z3f3810sBuRzxVOC9SzIa6oqwc=
+=bziQ
+-----END PGP SIGNATURE-----
 
-
->   	}
-> +
-> +drop:
-> +	put_xdp_frags(xdp);
-> +	return VIRTNET_XDP_RES_DROP;
->   }
->   
->   static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
-> @@ -1199,7 +1203,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
->   				 dev->name, *num_buf,
->   				 virtio16_to_cpu(vi->vdev, hdr->num_buffers));
->   			dev->stats.rx_length_errors++;
-> -			return -EINVAL;
-> +			goto err;
->   		}
->   
->   		stats->bytes += len;
-> @@ -1218,7 +1222,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
->   			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
->   				 dev->name, len, (unsigned long)(truesize - room));
->   			dev->stats.rx_length_errors++;
-> -			return -EINVAL;
-> +			goto err;
->   		}
->   
->   		frag = &shinfo->frags[shinfo->nr_frags++];
-> @@ -1233,6 +1237,10 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
->   
->   	*xdp_frags_truesize = xdp_frags_truesz;
->   	return 0;
-> +
-> +err:
-> +	put_xdp_frags(xdp);
-> +	return -EINVAL;
->   }
->   
->   static void *mergeable_xdp_prepare(struct virtnet_info *vi,
-> @@ -1361,7 +1369,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->   		err = virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, frame_sz,
->   						 &num_buf, &xdp_frags_truesz, stats);
->   		if (unlikely(err))
-> -			goto err_xdp_frags;
-> +			goto err_xdp;
->   
->   		act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
->   
-> @@ -1369,7 +1377,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->   		case VIRTNET_XDP_RES_PASS:
->   			head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
->   			if (unlikely(!head_skb))
-> -				goto err_xdp_frags;
-> +				goto err_xdp;
->   
->   			rcu_read_unlock();
->   			return head_skb;
-> @@ -1379,11 +1387,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->   			goto xdp_xmit;
->   
->   		case VIRTNET_XDP_RES_DROP:
-> -			goto err_xdp_frags;
-> +			goto err_xdp;
->   		}
-> -err_xdp_frags:
-> -		put_xdp_frags(&xdp);
-> -		goto err_xdp;
->   	}
->   	rcu_read_unlock();
->   
-
+--ilTwJv3f+pqw84Rg--
