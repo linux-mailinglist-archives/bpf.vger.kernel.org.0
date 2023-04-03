@@ -2,69 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA406D4943
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 16:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580BD6D4B02
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 16:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbjDCOgX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 10:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
+        id S234204AbjDCOvw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 10:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjDCOgW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 10:36:22 -0400
-Received: from mail-ed1-x564.google.com (mail-ed1-x564.google.com [IPv6:2a00:1450:4864:20::564])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B8217671
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 07:36:13 -0700 (PDT)
-Received: by mail-ed1-x564.google.com with SMTP id b20so118240510edd.1
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 07:36:13 -0700 (PDT)
+        with ESMTP id S234005AbjDCOvi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 10:51:38 -0400
+Received: from mail-ed1-x562.google.com (mail-ed1-x562.google.com [IPv6:2a00:1450:4864:20::562])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A249618244
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 07:51:12 -0700 (PDT)
+Received: by mail-ed1-x562.google.com with SMTP id er13so77420079edb.9
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 07:51:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680532572;
+        d=dectris.com; s=google; t=1680533471;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U5r7YRW0ZNQYQAUWUSjjSl8/aBINAbtHL/3e+twmpks=;
-        b=r9QrjT90BPkxKRltjojacHRrzBGVAyjMvPlwDhL7hO3+MhZunGBQH16KYfsoQWb8UT
-         Nndx/n9S8RG17b8ls9oB7tYUKQIHRSQng5VaC9NU2wfOrLjI06fONzYAMLCY+UAv0/0q
-         df9M4hXqP+nHHYYLwkoLfc31ZkdgVrE7/RY+8=
+        bh=tpQAyPLn90OluU+IePtUkRJyq+TL+h1VEGWV01w/GTM=;
+        b=VJ9ZUx2nEg6JutLgbrgD+T/bzO5r9GVVfiBBA6STBZVJspcMtTB+c/fX/RD4dn5s9Q
+         KpqDNJYSVusML3gZ60WtrkHvq4q2I44FBAfn0FfH3M4n8ScKW06sw+s3Z9FgolF4PDSg
+         a2k9GrKGm9JlsslNqM+MdYf1ZG9y6RQTzZQk0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680532572;
+        d=1e100.net; s=20210112; t=1680533471;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=U5r7YRW0ZNQYQAUWUSjjSl8/aBINAbtHL/3e+twmpks=;
-        b=R92a8EOSBXjVrPFN+GMh46XQoj/wb0OMRgsJwODvOgEeafUjgfX8HVYSHYc0/Y61As
-         PUw7ZKKaTYL0NexLpLhitvICnoKLzjYxi7igpQBi4B3LPIdaRWqJIAKOFq6jZ0jt4e34
-         wGVHUHB7x836p+XhxEaE2yIsnAwcRsVry0BG9TOdU5tOg9gl+LYCS3L9ASkslN22wk7l
-         EwnVqjHK7VN2F5HhYlrDAugyxFHkXsI1t6CdnPdFsfLpP193wrMCHqU9jqNd9BH9xSAq
-         MzjIJMLbgvDCDokfTJSGOGxwhk6fh7dFW+9CQUZG08pSnxnAEXB6StT4Ds9pjjwisvBf
-         gsVw==
-X-Gm-Message-State: AAQBX9fJIjCQS6txUgN2INisuEvF6kqtCA3imj6K/VKRxRLFzYxZm4tV
-        jVZKKUnTOkVOa+cgFsUnk7tyoeNq8PcviGUrtrDyy+RFbzR1
-X-Google-Smtp-Source: AKy350Y8nj7Dmf0M2lIbht8Tt1l0YyX9VpNsVwlG4YnyGlwJGE6ARk5FVdaHVaOvwOjGn9wi3uLrSq5aEun0
-X-Received: by 2002:a17:906:4990:b0:932:20a5:5b with SMTP id p16-20020a170906499000b0093220a5005bmr17548153eju.23.1680532572026;
-        Mon, 03 Apr 2023 07:36:12 -0700 (PDT)
+        bh=tpQAyPLn90OluU+IePtUkRJyq+TL+h1VEGWV01w/GTM=;
+        b=jB5aR38EXttEVPaW8XaYU/wHvdRAVmsF9JNCZXWyrdJntnFVmSZChIYOTNF83CXN/2
+         jVru3PFGW18nL51lz2LBas6pK4M0zx7LLHW4Wac7LGhODAvF34UlIbeWQvOFDHoT5A9c
+         DwJvtC9U7vsEdcNC1w87aC1FeNv83hXM1InY5qIh4vlfDgMqdNBn4OIBIEpTxRE6ZGVG
+         ebd85lnbA9t8c1vbsH0UjvvRmGpXNQJWZTmxCqv3Sp7NusS45P4eo1WQ8qAtqS9sxH8x
+         5VVlRfrslikidJ4EgchwuWU1PbIgsRh/4l9IUNEyqCOb61oWAFEDCwRIW6Isr6+zPvEO
+         MrNw==
+X-Gm-Message-State: AAQBX9fW7iBYr6a5WMHjsvLzW9sEvHaS/gUXis1NU4KFz6OuYQGrz7KA
+        EN77vUPUoX+9tj3xIrHdvCJ+rCfRGiFmbTtn8wmUMrOjONr/
+X-Google-Smtp-Source: AKy350a+ciSASMqZpj4hW3RskuhiweVuANyWfnb9JUO4CPFmhfKCAizGlxFdFtb6z/jUOa6EdlbOfbBsULZo
+X-Received: by 2002:a17:906:85c2:b0:88d:ba89:1837 with SMTP id i2-20020a17090685c200b0088dba891837mr17657125ejy.8.1680533471087;
+        Mon, 03 Apr 2023 07:51:11 -0700 (PDT)
 Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
-        by smtp-relay.gmail.com with ESMTPS id r6-20020a1709064d0600b008b25260a59dsm3079775eju.290.2023.04.03.07.36.11
+        by smtp-relay.gmail.com with ESMTPS id i25-20020a17090685d900b00944010e0472sm3146122ejy.236.2023.04.03.07.51.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Apr 2023 07:36:12 -0700 (PDT)
+        Mon, 03 Apr 2023 07:51:11 -0700 (PDT)
 X-Relaying-Domain: dectris.com
 From:   Kal Conley <kal.conley@dectris.com>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] xsk: Fix unaligned descriptor validation
-Date:   Mon,  3 Apr 2023 16:36:01 +0200
-Message-Id: <20230403143601.32168-1-kal.conley@dectris.com>
+Cc:     Kal Conley <kal.conley@dectris.com>, bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] selftests: xsk: Add test case for packets at end of UMEM
+Date:   Mon,  3 Apr 2023 16:50:45 +0200
+Message-Id: <20230403145047.33065-1-kal.conley@dectris.com>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -73,58 +59,22 @@ X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make sure unaligned descriptors that straddle the end of the UMEM are
-considered invalid. Currently, descriptor validation is broken for
-zero-copy mode which only checks descriptors at page granularity.
-Descriptors that cross the end of the UMEM but not a page boundary may
-be therefore incorrectly considered valid. The check needs to happen
-before the page boundary and contiguity checks in
-xp_desc_crosses_non_contig_pg. Do this check in
-xp_unaligned_validate_desc instead like xp_check_unaligned already does.
+This patchset fixes a minor bug in xskxceiver.c then adds a test case
+for valid packets at the end of the UMEM.
 
-Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
-Signed-off-by: Kal Conley <kal.conley@dectris.com>
----
- include/net/xsk_buff_pool.h | 9 ++-------
- net/xdp/xsk_queue.h         | 1 +
- 2 files changed, 3 insertions(+), 7 deletions(-)
+Kal Conley (2):
+  selftests: xsk: Use correct UMEM size in testapp_invalid_desc
+  selftests: xsk: Add test case for packets at end of UMEM
 
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index 3e952e569418..d318c769b445 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -180,13 +180,8 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
- 	if (likely(!cross_pg))
- 		return false;
- 
--	if (pool->dma_pages_cnt) {
--		return !(pool->dma_pages[addr >> PAGE_SHIFT] &
--			 XSK_NEXT_PG_CONTIG_MASK);
--	}
--
--	/* skb path */
--	return addr + len > pool->addrs_cnt;
-+	return pool->dma_pages_cnt &&
-+	       !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
- }
- 
- static inline u64 xp_aligned_extract_addr(struct xsk_buff_pool *pool, u64 addr)
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index bfb2a7e50c26..66c6f57c9c44 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -162,6 +162,7 @@ static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool,
- 		return false;
- 
- 	if (base_addr >= pool->addrs_cnt || addr >= pool->addrs_cnt ||
-+	    addr + desc->len > pool->addrs_cnt ||
- 	    xp_desc_crosses_non_contig_pg(pool, addr, desc->len))
- 		return false;
- 
+ tools/testing/selftests/bpf/xskxceiver.c | 16 ++++++++++------
+ tools/testing/selftests/bpf/xskxceiver.h |  1 -
+ 2 files changed, 10 insertions(+), 7 deletions(-)
+
 -- 
 2.39.2
 
