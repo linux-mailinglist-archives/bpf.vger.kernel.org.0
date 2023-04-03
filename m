@@ -2,132 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D9B6D4F01
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 19:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8976D4F04
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 19:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229379AbjDCRbp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 13:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
+        id S230080AbjDCRfw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 13:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbjDCRbp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 13:31:45 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEC81BE3
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 10:31:43 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 333HKheB031098
-        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 10:31:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=aQVGZe4fmLrrAgHbNPdkCK1YuzoboeyDuCUqRyRT6NE=;
- b=opr/oI3yv83kO/j2HY1iT36Ar9UHtLY03SLMgWbJ0p/B3bUifGHkTQDuGbrU9L5t3Buc
- MKdZ9uFQqj7PnHUviAZLKJgR3KMt5jKpGBcAyjsnPNM0SL4+Asaf9JCdXP3KucbvrhWU
- G4kUi0zJ7yz1bdnV/Z43FUDAgjtk5qVn51A= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pr0m71995-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 10:31:42 -0700
-Received: from twshared21709.17.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 3 Apr 2023 10:31:35 -0700
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id 4EC381B111653; Mon,  3 Apr 2023 10:31:26 -0700 (PDT)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH bpf] bpf: Fix struct_meta lookup for bpf_obj_free_fields kfunc call
-Date:   Mon, 3 Apr 2023 10:31:25 -0700
-Message-ID: <20230403173125.1056883-1-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229603AbjDCRfv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 13:35:51 -0400
+Received: from out-28.mta0.migadu.com (out-28.mta0.migadu.com [91.218.175.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FCA1BE4
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 10:35:50 -0700 (PDT)
+Message-ID: <1cad9be4-6c72-0520-8b5b-f6f5222a581b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1680543349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BaZluLBsHFjfz/5d5tpViu0WbBGDADGWfA/quCL5+Cs=;
+        b=abfItFQBU/GSv6FXc+xMMDFW9KOrQl1gWmvDZ0Xw7/rRQ/kpep3xQ2DIAhClO54Xi9fXWN
+        MuNaLby5wngdOhNzyO3B6jKsMM3XZCIc9mMzAmEeV34XOpc8ntRpkgxPX0or2m6D07APfP
+        fRKHVNCM+ecEug/PV8E+4ao/B3XqYFU=
+Date:   Mon, 3 Apr 2023 10:35:46 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: To4_Yymd6SDWgplaKJHqtTpfDIqkOxO9
-X-Proofpoint-ORIG-GUID: To4_Yymd6SDWgplaKJHqtTpfDIqkOxO9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-03_14,2023-04-03_03,2023-02-09_01
-X-Spam-Status: No, score=-0.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v5 bpf-next 7/7] selftests/bpf: Test bpf_sock_destroy
+Content-Language: en-US
+To:     Aditi Ghag <aditi.ghag@isovalent.com>
+Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com,
+        Stanislav Fomichev <sdf@google.com>
+References: <20230330151758.531170-1-aditi.ghag@isovalent.com>
+ <20230330151758.531170-8-aditi.ghag@isovalent.com>
+ <ZCXY6mOY8pPLhdBF@google.com>
+ <869f0a0f-0f43-73fb-a361-76009a21b81d@linux.dev>
+ <B7A26EB4-55F4-4FAB-B7A2-D7EC37E1E0DC@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <B7A26EB4-55F4-4FAB-B7A2-D7EC37E1E0DC@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_obj_drop_impl has a void return type. In check_kfunc_call, the "else
-if" which sets kptr_struct_meta for bpf_obj_drop_impl is
-surrounded by a larger if statement which checks btf_type_is_ptr. As a
-result:
+On 4/3/23 8:55 AM, Aditi Ghag wrote:
+> 
+> 
+>> On Mar 31, 2023, at 3:32 PM, Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 3/30/23 11:46 AM, Stanislav Fomichev wrote:
+>>>> +void test_sock_destroy(void)
+>>>> +{
+>>>> +    struct sock_destroy_prog *skel;
+>>>> +    int cgroup_fd = 0;
+>>>> +
+>>>> +    skel = sock_destroy_prog__open_and_load();
+>>>> +    if (!ASSERT_OK_PTR(skel, "skel_open"))
+>>>> +        return;
+>>>> +
+>>>> +    cgroup_fd = test__join_cgroup("/sock_destroy");
+>>
+>> Please run this test in its own netns also to avoid affecting other tests as much as possible.
+> 
+> Is it okay if I defer this nit to a follow-up patch? It's not conflicting with other tests at the moment.
 
-  * The bpf_obj_drop_impl-specific code will never execute
-  * The btf_struct_meta input to bpf_obj_drop is always NULL
-  * bpf_obj_drop_impl will always see a NULL btf_record when called
-    from BPF program, and won't call bpf_obj_free_fields
-  * program-allocated kptrs which have fields that should be cleaned up
-    by bpf_obj_free_fields may instead leak resources
+Is it sure it won't affect other tests when running in parallel (test -j)?
+This test is iterating all in the current netns and only checks for port before 
+aborting.
 
-This patch adds a btf_type_is_void branch to the larger if and moves
-special handling for bpf_obj_drop_impl there, fixing the issue.
-
-Fixes: ac9f06050a35 ("bpf: Introduce bpf_obj_drop")
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
-I can send a version of this patch which applies on bpf-next as well,
-but think this makes sense in bpf as the issue exists there too.
-
- kernel/bpf/verifier.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d517d13878cf..753f652914da 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9965,10 +9965,6 @@ static int check_kfunc_call(struct bpf_verifier_en=
-v *env, struct bpf_insn *insn,
- 				env->insn_aux_data[insn_idx].obj_new_size =3D ret_t->size;
- 				env->insn_aux_data[insn_idx].kptr_struct_meta =3D
- 					btf_find_struct_meta(ret_btf, ret_btf_id);
--			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_drop_imp=
-l]) {
--				env->insn_aux_data[insn_idx].kptr_struct_meta =3D
--					btf_find_struct_meta(meta.arg_obj_drop.btf,
--							     meta.arg_obj_drop.btf_id);
- 			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_pop_fro=
-nt] ||
- 				   meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_pop_back]) {
- 				struct btf_field *field =3D meta.arg_list_head.field;
-@@ -10053,7 +10049,15 @@ static int check_kfunc_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn,
-=20
- 		if (reg_may_point_to_spin_lock(&regs[BPF_REG_0]) && !regs[BPF_REG_0].i=
-d)
- 			regs[BPF_REG_0].id =3D ++env->id_gen;
--	} /* else { add_kfunc_call() ensures it is btf_type_is_void(t) } */
-+	} else if (btf_type_is_void(t)) {
-+		if (meta.btf =3D=3D btf_vmlinux && btf_id_set_contains(&special_kfunc_=
-set, meta.func_id)) {
-+			if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_drop_impl]) {
-+				env->insn_aux_data[insn_idx].kptr_struct_meta =3D
-+					btf_find_struct_meta(meta.arg_obj_drop.btf,
-+							     meta.arg_obj_drop.btf_id);
-+			}
-+		}
-+	}
-=20
- 	nargs =3D btf_type_vlen(func_proto);
- 	args =3D (const struct btf_param *)(func_proto + 1);
---=20
-2.34.1
+It is easy to add. eg. ~10 lines of codes can be borrowed from 
+prog_tests/mptcp.c which has recently done the same in commit 02d6a057c7be to 
+run the test in its own netns to set a sysctl.
 
