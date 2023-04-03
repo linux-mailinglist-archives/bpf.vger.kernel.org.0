@@ -2,94 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD986D44BD
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 14:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6B16D44F2
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 14:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231995AbjDCMp7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 08:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
+        id S232435AbjDCMx6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 08:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbjDCMp6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 08:45:58 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584266A7F
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 05:45:56 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id cn12so116861781edb.4
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 05:45:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680525954;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=riaahXQBertKmx+xq8cDyjwCTBDh/mDGE8BYFdxvDOM=;
-        b=AeSvW6k+w78JQQFr9P84dSFQCVc5yWUTGPRgEnDHdFwlVw9CYaiBmcDl62NmVB2m+P
-         q+wT/xqMJAOOqGvy4SL9Dnl6o8rkx79ToJ8CGJwSjyLEDHJwnID7BQmCiq3QOUFdDqu2
-         dO8LrYKTbRXrjZiyz6EIV2UCzBJDpu3oCb9pA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680525954;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=riaahXQBertKmx+xq8cDyjwCTBDh/mDGE8BYFdxvDOM=;
-        b=lIFAHZDaUx7mQ4KcDWUgvdyyqc/f23t+glKZxPCRjZj3oaDohWxHxRzw/XgDNXEakt
-         gvx73vdgCzVruux3aDtb6Z9YRmUEUQxUXyBLkJGGqGA8X2NYB8VAhlIpTBUQ8Y4okDTk
-         PyAv5lKg+6rQ/xhSNk+NU213P9YTzF1WqtEfQ05xBBKSdv9ETjGv1Uc+b3yHbfBdd7GY
-         +5+JQSR3XUUgUDX4JQ7GyKGRU6zNCT4ptfVZ5192uE6G0QzV9nOdrYfFZf7aDB3FC3gx
-         q8W37QsuiTLq1HRcJtfTnUqYcrZvWZTTcK3AELOKnqp5vgEGGdW+g4o6GNk5qjXakKI+
-         +GMw==
-X-Gm-Message-State: AAQBX9cZbgl/Idjfom7XHKeoc/tJ4cMGNM4kQFkQ8HW1bCBr2R6MbDVO
-        UX+O4PhjPkFBZVBh4WTCiEJn0piyQcluigk81M1Fdg==
-X-Google-Smtp-Source: AKy350aP1ukG9/ndrpQD+GGShI9OQ5v16FM6kUzhb3kdhVgjodsHmgZPsLsStm33czUEzkZ7t/sTNPgmYme8DnWkACI=
-X-Received: by 2002:a50:cd47:0:b0:4fc:532e:215d with SMTP id
- d7-20020a50cd47000000b004fc532e215dmr18039003edj.6.1680525954661; Mon, 03 Apr
- 2023 05:45:54 -0700 (PDT)
+        with ESMTP id S232440AbjDCMx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 08:53:57 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A002910A8E;
+        Mon,  3 Apr 2023 05:53:54 -0700 (PDT)
+Received: from dggpemm500013.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PqrN45NjmznZyj;
+        Mon,  3 Apr 2023 20:50:28 +0800 (CST)
+Received: from [10.67.108.67] (10.67.108.67) by dggpemm500013.china.huawei.com
+ (7.185.36.172) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 3 Apr
+ 2023 20:53:51 +0800
+Message-ID: <7029502b-f048-88f8-5c6a-f3bc397b979c@huawei.com>
+Date:   Mon, 3 Apr 2023 20:53:51 +0800
 MIME-Version: 1.0
-References: <20230329180502.1884307-1-kal.conley@dectris.com>
- <20230329180502.1884307-7-kal.conley@dectris.com> <CAJ8uoz0a3gJgWDxP0zPLsiWzUZHmGqRbrumdRq2Gv1HdVm4ObQ@mail.gmail.com>
-In-Reply-To: <CAJ8uoz0a3gJgWDxP0zPLsiWzUZHmGqRbrumdRq2Gv1HdVm4ObQ@mail.gmail.com>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Mon, 3 Apr 2023 14:50:34 +0200
-Message-ID: <CAHApi-mCm1hWyc1jfB3isPqWqaJUuqn7vN1hfSgPb741ngJK9g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 06/10] xsk: Add check for unaligned
- descriptors that overrun UMEM
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0
+Content-Language: en-US
+From:   Chen Zhongjin <chenzhongjin@huawei.com>
+Subject: Syzkaller reported fail of bpf_trampoline_unlink_prog
+CC:     Xu Kuohai <xukuohai@huawei.com>,
+        Zhangjinhao <zhangjinhao2@huawei.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>
+To:     bpf <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.108.67]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500013.china.huawei.com (7.185.36.172)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.3 required=5.0 tests=RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->
-> Let me just check that I understand the conditions under which this
-> occurs. When selecting unaligned mode, there is no check that the size
-> is divisible by the chunk_size as is the case in aligned mode. So we
-> can register a umem that is for example 15 4K pages plus 100 bytes and
-> in this case the second to last page will be marked as contiguous
-> (with the CONTIG_MASK) and a packet of length 300 starting at 15*4K -
-> 100 will be marked as valid even though it extends 100 bytes outside
-> the umem which ends at 15*4K + 100. Did I get this correctly? If so,
-> some more color in the commit message would be highly appreciated.
+Syzkaller reported follow WARNING:
 
-Yes. You don't even need to cross the page. For example, if you have a
-packet length of 300 _within_ the final page then it could go past the
-end of the umem. In this case, the CONTIG_MASK would not even be
-looked at. The explanation is in the next commit message with the
-test. I will improve the commit message here though.
+WARNING: CPU: 0 PID: 17072 at bpf_tracing_link_release+0x88/0x90
+Modules linked in:
+CPU: 0 PID: 17072 Comm: syz-executor.1
+RIP: 0010:bpf_tracing_link_release+0x88/0x90
+Call Trace:
+  bpf_link_free+0x98/0xe0
+  bpf_link_put+0xd9/0xf0
+  bpf_link_release+0x26/0x30
+  __fput+0x219/0x560
+  task_work_run+0xbb/0x120
+  exit_to_user_mode_prepare+0x12f/0x140
+  syscall_exit_to_user_mode+0x23/0x80
+  entry_SYSCALL_64_after_hwframe+0x61/0xc6
+
+This is simply caused by fault injection which makes memory allocation fail in
+bpf_trampoline_unlink_prog->bpf_trampoline_update
+Then bpf_trampoline_unlink_prog returns error and triggers WARN_ON in bpf_tracing_link_relaese.
+
+At first I though it is a false positive report as bpf_trampoline_unlink_prog says
+it should never fail. But actually it is possible.
+When the bpf_trampoline_update is added at first, there is a "half page" optimization
+to promise there is no memory allocation in the unlink path
+But 88fd9e5352fe ("bpf: Refactor trampoline update code") added bpf_trampoline_get_progs,
+which broke this.
+Then the "half page" part was also removed in e21aa341785c ("bpf: Fix fexit trampoline.").
+Besides, as I know the relied ftrace interface is not promised to success as well.
+
+In bpf_trampoline_link_prog it will handle these error, but unlink_prog
+just reports the warning once and continue to put tr_link->trampoline and link->prog.
+Sorry for that I have not fully tested this but I guess this could cause some bad
+consequence such as memory leak or null pointer reference.
+
+Anyway, now the interface to detach bpf link is not 100% safe, and because of
+the complex logic in bpf_trampoline_update, I think this can't be avoided.
+Because now these release ops return void, we cannot just simply keep these resources
+and have another try.
+
+I just want to know does anyone has plan or advice to handle these error scenarios gracefully?
+
+Thanks for your help!
+
+Best,
+Chen
+
