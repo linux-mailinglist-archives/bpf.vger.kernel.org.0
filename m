@@ -2,113 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1076D4EF8
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 19:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748C46D4F03
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 19:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbjDCRaK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 13:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
+        id S229981AbjDCRel (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 13:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233097AbjDCRaJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 13:30:09 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCAAB4
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 10:30:08 -0700 (PDT)
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 333Gpkip004370;
-        Mon, 3 Apr 2023 17:29:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=5AQDdRk3WbCReW6p3tXW6JbAc/IYKgfsgoFJabXq6bk=;
- b=B4rJMaQh7fJTXN0tMaS6FDJNi3zHNirE67C+UOjo/i9tz9VqOa9WKf7EL5CFhOEhiYQJ
- 0HMc4WvWvoomOShG4RjBfWlNtZPmLqm7Fn6PKT383lqQ9hXTVWucxVcCnGaUWRXjiDv5
- 6adkMewyHBer3pPo5vRFKI4S53xhnCRmCnvU6gtyGHMX8FBNWENtx2XxjkpRsvcaE0DA
- X0/C7e0QCKeD81ZTQxA+9Q0dLImojGvy5Y0995G9dc2Fi62KdSi/wg1C04sUaU2naN6r
- l5JOwdIqPAKse5zfexXCfO03W0AtCHSCH0QTFTvd3lYyO5BWiB00pFi9TLWQFlW0k5uZ 7w== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ppxern97s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 Apr 2023 17:29:52 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3331H6w0005343;
-        Mon, 3 Apr 2023 17:29:50 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3ppc871vwb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 Apr 2023 17:29:50 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 333HTkbj51773948
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 3 Apr 2023 17:29:46 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 869BE20043;
-        Mon,  3 Apr 2023 17:29:46 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F0C7420040;
-        Mon,  3 Apr 2023 17:29:45 +0000 (GMT)
-Received: from heavy.boeblingen.de.ibm.com (unknown [9.171.72.121])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  3 Apr 2023 17:29:45 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229603AbjDCRek (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 13:34:40 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944861BE4
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 10:34:39 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 333HLmen024234
+        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 10:34:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=aQVGZe4fmLrrAgHbNPdkCK1YuzoboeyDuCUqRyRT6NE=;
+ b=opr/oI3yv83kO/j2HY1iT36Ar9UHtLY03SLMgWbJ0p/B3bUifGHkTQDuGbrU9L5t3Buc
+ MKdZ9uFQqj7PnHUviAZLKJgR3KMt5jKpGBcAyjsnPNM0SL4+Asaf9JCdXP3KucbvrhWU
+ G4kUi0zJ7yz1bdnV/Z43FUDAgjtk5qVn51A= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pqvjgjmss-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 10:34:38 -0700
+Received: from twshared7147.05.ash9.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Mon, 3 Apr 2023 10:34:21 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id 4EC381B111653; Mon,  3 Apr 2023 10:31:26 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] selftests/bpf: Add RESOLVE_BTFIDS dependency to bpf_testmod.ko
-Date:   Mon,  3 Apr 2023 19:29:35 +0200
-Message-Id: <20230403172935.1553022-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: [PATCH bpf] bpf: Fix struct_meta lookup for bpf_obj_free_fields kfunc call
+Date:   Mon, 3 Apr 2023 10:31:25 -0700
+Message-ID: <20230403173125.1056883-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XS4Hfy62W2X3H5-dTa_V8wnvoV1nvoC3
-X-Proofpoint-GUID: XS4Hfy62W2X3H5-dTa_V8wnvoV1nvoC3
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: bnaNwGtoC_i9znST143nUmYl7hVycRkV
+X-Proofpoint-ORIG-GUID: bnaNwGtoC_i9znST143nUmYl7hVycRkV
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-04-03_14,2023-04-03_03,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- clxscore=1015 suspectscore=0 bulkscore=0 malwarescore=0 impostorscore=0
- mlxscore=0 adultscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2303200000
- definitions=main-2304030123
-X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_testmod.ko sometimes fails to build from a clean checkout:
+bpf_obj_drop_impl has a void return type. In check_kfunc_call, the "else
+if" which sets kptr_struct_meta for bpf_obj_drop_impl is
+surrounded by a larger if statement which checks btf_type_is_ptr. As a
+result:
 
-    BTF [M] linux/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.ko
-    /bin/sh: 1: linux-build//tools/build/resolve_btfids/resolve_btfids: not found
+  * The bpf_obj_drop_impl-specific code will never execute
+  * The btf_struct_meta input to bpf_obj_drop is always NULL
+  * bpf_obj_drop_impl will always see a NULL btf_record when called
+    from BPF program, and won't call bpf_obj_free_fields
+  * program-allocated kptrs which have fields that should be cleaned up
+    by bpf_obj_free_fields may instead leak resources
 
-The reason is that RESOLVE_BTFIDS may not yet be built. Fix by adding a
-dependency.
+This patch adds a btf_type_is_void branch to the larger if and moves
+special handling for bpf_obj_drop_impl there, fixing the issue.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Fixes: ac9f06050a35 ("bpf: Introduce bpf_obj_drop")
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- tools/testing/selftests/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I can send a version of this patch which applies on bpf-next as well,
+but think this makes sense in bpf as the issue exists there too.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 4a8ef118fd9d..febd1dae6c88 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -201,7 +201,7 @@ $(OUTPUT)/sign-file: ../../../../scripts/sign-file.c
- 		  $< -o $@ \
- 		  $(shell $(HOSTPKG_CONFIG) --libs libcrypto 2> /dev/null || echo -lcrypto)
- 
--$(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
-+$(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
- 	$(call msg,MOD,,$@)
- 	$(Q)$(RM) bpf_testmod/bpf_testmod.ko # force re-compilation
- 	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_testmod
--- 
-2.39.2
+ kernel/bpf/verifier.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d517d13878cf..753f652914da 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9965,10 +9965,6 @@ static int check_kfunc_call(struct bpf_verifier_en=
+v *env, struct bpf_insn *insn,
+ 				env->insn_aux_data[insn_idx].obj_new_size =3D ret_t->size;
+ 				env->insn_aux_data[insn_idx].kptr_struct_meta =3D
+ 					btf_find_struct_meta(ret_btf, ret_btf_id);
+-			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_drop_imp=
+l]) {
+-				env->insn_aux_data[insn_idx].kptr_struct_meta =3D
+-					btf_find_struct_meta(meta.arg_obj_drop.btf,
+-							     meta.arg_obj_drop.btf_id);
+ 			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_pop_fro=
+nt] ||
+ 				   meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_pop_back]) {
+ 				struct btf_field *field =3D meta.arg_list_head.field;
+@@ -10053,7 +10049,15 @@ static int check_kfunc_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn,
+=20
+ 		if (reg_may_point_to_spin_lock(&regs[BPF_REG_0]) && !regs[BPF_REG_0].i=
+d)
+ 			regs[BPF_REG_0].id =3D ++env->id_gen;
+-	} /* else { add_kfunc_call() ensures it is btf_type_is_void(t) } */
++	} else if (btf_type_is_void(t)) {
++		if (meta.btf =3D=3D btf_vmlinux && btf_id_set_contains(&special_kfunc_=
+set, meta.func_id)) {
++			if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_drop_impl]) {
++				env->insn_aux_data[insn_idx].kptr_struct_meta =3D
++					btf_find_struct_meta(meta.arg_obj_drop.btf,
++							     meta.arg_obj_drop.btf_id);
++			}
++		}
++	}
+=20
+ 	nargs =3D btf_type_vlen(func_proto);
+ 	args =3D (const struct btf_param *)(func_proto + 1);
+--=20
+2.34.1
 
