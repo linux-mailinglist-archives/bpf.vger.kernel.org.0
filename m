@@ -2,52 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05626D4407
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 14:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAAA6D4410
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 14:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbjDCMDu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 08:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
+        id S232269AbjDCMEV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 08:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjDCMDs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 08:03:48 -0400
-Received: from mail-ed1-x563.google.com (mail-ed1-x563.google.com [IPv6:2a00:1450:4864:20::563])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2727F10DA
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 05:03:42 -0700 (PDT)
-Received: by mail-ed1-x563.google.com with SMTP id b20so116362913edd.1
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 05:03:42 -0700 (PDT)
+        with ESMTP id S232195AbjDCMEQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 08:04:16 -0400
+Received: from mail-ed1-x564.google.com (mail-ed1-x564.google.com [IPv6:2a00:1450:4864:20::564])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B9BC145
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 05:04:09 -0700 (PDT)
+Received: by mail-ed1-x564.google.com with SMTP id ew6so116278005edb.7
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 05:04:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680523420;
+        d=dectris.com; s=google; t=1680523448;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vEhFH3i/UwokEBWEnFizsJMKXzUUnazCcIuMHjSUIWg=;
-        b=JRKD7i5ofEBBBwN1rr9ZJ4rltMmLTN5+N90B72SQpxTxcUzm5QYxPCLA8g5znY3GDM
-         X/Ftqt2CtQcAGU7lczGyi2Ueo2UdoH7SPD+WaYDJqT/2qcWuPtLhvc+rONta0VIjNaiY
-         gYQC4Nvfx/gORPLjADX6rboXcSQlg0YcJeQRA=
+        bh=Mv9eSPw2NYDm+zLdn/0KIdtGuLd5MVBc/kA1IEA/9U8=;
+        b=qeLcnaJvpGzxzC9i2/5UzqXUn0aCH0vyWkKClH/xO2mw5d0sxsfOU84hGlNAlIyj3T
+         HM5N0+wtUwVioRD56uqOqHHmo+V2eV35THsxuTTiMOn0pLREW5D21VnQ7UXTW/RlSEm0
+         achUFDrhpgjMzG1xbdweAPoGwdzCbh75n2gi0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680523420;
+        d=1e100.net; s=20210112; t=1680523448;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vEhFH3i/UwokEBWEnFizsJMKXzUUnazCcIuMHjSUIWg=;
-        b=IQFGzrjQyA7z7AnaD1Qp92uAn2Xh2v3FYOdFyekQA+OkMCK1MO5fbR7/2P6j20SoHs
-         0rZMDPT3ETHLFQOICiOqLbxBodhJ7q7d58tv5tH6d9ZwlGLCH/l6QM+8htahq4SgFAW1
-         p1Tc07cRa0DL0DFD3usiQ98WIG7pWVoMjgPeP39KkWhbaj7dc79clXwvftRr1YpXGY9M
-         EOSSfS9+5jQzYiYEtFr4uwAq05ZOHtUf1O8HZvndFuNJkY1PhjvP59FHo1C8QffCSVxP
-         +1yIJ8L1qm2ntk52cgqtteEn07266lOSpTAIxH5CtbrDMfaxFdg/SCl6fVThCCF7YbMO
-         2VRQ==
-X-Gm-Message-State: AAQBX9eZwDQPTSA3i8ufV3y6YSCjzB5k/3AtxEwMlJr+i+ZXKvU4yCmo
-        hjO9PPsWE1miTPpVwosbFaywwE5KZvEZeehd2UlsQ9x7yFoL
-X-Google-Smtp-Source: AKy350aC1Z27TBWahgyLAlPNFOQN0NGQ3GkcUo5C3SCWAMWPZr8GlCYzTmvwNXxNefVb8BmPmUJNxXXz/OAa
-X-Received: by 2002:a17:906:9f19:b0:93c:847d:a456 with SMTP id fy25-20020a1709069f1900b0093c847da456mr39125962ejc.22.1680523420485;
-        Mon, 03 Apr 2023 05:03:40 -0700 (PDT)
+        bh=Mv9eSPw2NYDm+zLdn/0KIdtGuLd5MVBc/kA1IEA/9U8=;
+        b=wX6Neic87WiTewoa3SMKCTfIasPBaoEIuF3VZ1YbZx4aFZJoPAnGtlMBiSKPdSedD2
+         TBp8JBGV+cpOFuG2Posc2xL6yr0/Sq9Elg49+STDIU4iYjPcGrj1PRCEZd2R4jkJHkqw
+         zM8mc6rP3scSdQA7Rf8IHKEZWGVn50PlNzaLfmZVwcMwYLsCVkGFI134UlKYb/UT+Os9
+         EqDuWlPdKOEWFgqf5CZnw/WQ+07OL3/V61ABk9/QnAhZPPDbWupXdCfh17ahzz84MDzD
+         luC469sQxfkaQHM9I+EUL1D6+Ib8m5ykzKMQrf5u125xAN7wKqdkMi6z1aqVDDWRFKm8
+         pfMw==
+X-Gm-Message-State: AAQBX9dFnEK3rsdXvt1rJlZBIxdXnyHnC4KbwK5/REPvGGMTu34a0tT/
+        zxxRajjMOAq8qoePONUArxhUgeoq6nlRqQ6HlScSvZ5n/ddK
+X-Google-Smtp-Source: AKy350bUU6hMTd1TMujkpxpKhnxiqLj2cfko1OJLyNg9wh5tN+dyqD8vkd+4SwQbNePb4gRX6VT7DZ+TD912
+X-Received: by 2002:a17:907:a0b:b0:93e:739f:b0b3 with SMTP id bb11-20020a1709070a0b00b0093e739fb0b3mr46736265ejc.50.1680523448055;
+        Mon, 03 Apr 2023 05:04:08 -0700 (PDT)
 Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
-        by smtp-relay.gmail.com with ESMTPS id bn13-20020a170906c0cd00b009307ed403b0sm3213731ejb.176.2023.04.03.05.03.40
+        by smtp-relay.gmail.com with ESMTPS id g26-20020a17090613da00b0093d0d964affsm3174279ejc.73.2023.04.03.05.04.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Apr 2023 05:03:40 -0700 (PDT)
+        Mon, 03 Apr 2023 05:04:08 -0700 (PDT)
 X-Relaying-Domain: dectris.com
 From:   Kal Conley <kal.conley@dectris.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -56,16 +60,13 @@ To:     Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Cc:     Kal Conley <kal.conley@dectris.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf] selftests: xsk: Add xskxceiver.h dependency to Makefile
-Date:   Mon,  3 Apr 2023 14:03:18 +0200
-Message-Id: <20230403120318.30992-1-kal.conley@dectris.com>
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] selftests: xsk: Deflakify STATS_RX_DROPPED test
+Date:   Mon,  3 Apr 2023 14:03:59 +0200
+Message-Id: <20230403120400.31018-1-kal.conley@dectris.com>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -78,26 +79,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-xskxceiver depends on xskxceiver.h so tell make about it.
+Fix flaky STATS_RX_DROPPED test. The receiver calls getsockopt after
+receiving the last (valid) packet which is not the final packet sent in
+the test (valid and invalid packets are sent in alternating fashion with
+the final packet being invalid). Since the last packet may or may not
+have been dropped already, both outcomes must be allowed.
 
+This issue could also be fixed by making sure the last packet sent is
+valid. This alternative is left as an exercise to the reader (or the
+benevolent maintainers of this file).
+
+This problem was quite visible on certain setups. On one machine this
+failure was observed 50% of the time.
+
+Also, remove a redundant assignment of pkt_stream->nb_pkts. This field
+is already initialized by __pkt_stream_alloc.
+
+Fixes: 27e934bec35b ("selftests: xsk: make stat tests not spin on getsockopt")
 Signed-off-by: Kal Conley <kal.conley@dectris.com>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- tools/testing/selftests/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/xskxceiver.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index b677dcd0b77a..b55d828911d5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -607,7 +607,7 @@ $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index a17655107a94..30a364283542 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -631,7 +631,6 @@ static struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem, u32 nb
+ 	if (!pkt_stream)
+ 		exit_with_error(ENOMEM);
  
--$(OUTPUT)/xskxceiver: xskxceiver.c $(OUTPUT)/xsk.o $(OUTPUT)/xsk_xdp_progs.skel.h $(BPFOBJ) | $(OUTPUT)
-+$(OUTPUT)/xskxceiver: xskxceiver.c xskxceiver.h $(OUTPUT)/xsk.o $(OUTPUT)/xsk_xdp_progs.skel.h $(BPFOBJ) | $(OUTPUT)
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
+-	pkt_stream->nb_pkts = nb_pkts;
+ 	for (i = 0; i < nb_pkts; i++) {
+ 		pkt_set(umem, &pkt_stream->pkts[i], (i % umem->num_frames) * umem->frame_size,
+ 			pkt_len);
+@@ -1124,7 +1123,14 @@ static int validate_rx_dropped(struct ifobject *ifobject)
+ 	if (err)
+ 		return TEST_FAILURE;
  
+-	if (stats.rx_dropped == ifobject->pkt_stream->nb_pkts / 2)
++	/* The receiver calls getsockopt after receiving the last (valid)
++	 * packet which is not the final packet sent in this test (valid and
++	 * invalid packets are sent in alternating fashion with the final
++	 * packet being invalid). Since the last packet may or may not have
++	 * been dropped already, both outcomes must be allowed.
++	 */
++	if (stats.rx_dropped == ifobject->pkt_stream->nb_pkts / 2 ||
++	    stats.rx_dropped == ifobject->pkt_stream->nb_pkts / 2 - 1)
+ 		return TEST_PASS;
+ 
+ 	return TEST_FAILURE;
 -- 
 2.39.2
 
