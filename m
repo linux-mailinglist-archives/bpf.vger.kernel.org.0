@@ -2,166 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA88D6D445A
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 14:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD986D44BD
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 14:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbjDCMZm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 08:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
+        id S231995AbjDCMp7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 08:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232066AbjDCMZf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 08:25:35 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F80F11669;
-        Mon,  3 Apr 2023 05:25:30 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5463fa0c2bfso217654617b3.1;
-        Mon, 03 Apr 2023 05:25:30 -0700 (PDT)
+        with ESMTP id S232341AbjDCMp6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 08:45:58 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584266A7F
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 05:45:56 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id cn12so116861781edb.4
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 05:45:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680524729;
+        d=dectris.com; s=google; t=1680525954;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wrxNT3T7Ko3Ffo0om2m2atTAcgZ2iipxGV6gZ7LmlEM=;
-        b=TRPqrm31yGQxx6HqvbPpJ/mjZckDgoUJnRqoZ9+eXYRshO+N/uP7/N1+sHDDMqyEpr
-         9ppAdiHfDdNgNj8UmiFr27EbhQ9DSNYyT4QjzlT20wNCEwWTzjgGy7vpRSP2Czuh+B96
-         NFm2QJbZVNHLrcwV1mNW5OC8NrfpM5dr1HftMvnR4DiZA4fmbwi3Sh424Pa6jIktqMCv
-         CAxqJcoVyE0chK3VFSjFeYfKhp+jF9Rvn37+kKfYXaci9FI6gXgPYQO/dWUsKURdLIaT
-         FL0tmTbpdCDQIL+CWZXcFGNNQE2ihfiHb+mJoxrmSGcavoIMcU57ra08VypRxsIGyXHP
-         MxTw==
+        bh=riaahXQBertKmx+xq8cDyjwCTBDh/mDGE8BYFdxvDOM=;
+        b=AeSvW6k+w78JQQFr9P84dSFQCVc5yWUTGPRgEnDHdFwlVw9CYaiBmcDl62NmVB2m+P
+         q+wT/xqMJAOOqGvy4SL9Dnl6o8rkx79ToJ8CGJwSjyLEDHJwnID7BQmCiq3QOUFdDqu2
+         dO8LrYKTbRXrjZiyz6EIV2UCzBJDpu3oCb9pA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680524729;
+        d=1e100.net; s=20210112; t=1680525954;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wrxNT3T7Ko3Ffo0om2m2atTAcgZ2iipxGV6gZ7LmlEM=;
-        b=HBlRz9TYW6EgHiWLvyXMAZsJ+abBfaAR7f6rnn6ESayoMFP7ryyl/cv5GC4hD1t/dN
-         8l/kx/Voo1xf0YJoN6AgGpQ2KaZFmip1BoiArxkRPDuHMzX82CaYTQ9AWiHHayFLz9pI
-         /wtIRFgpJmOeDtaTuKuN+H6Umy9Csb3mqc2r18TVuy/rIFyAeRIh27W4aIAbbuYgCriI
-         ZiNTlSoErd5ehEEIWFVI8e8EV6a0LSYsXVcbw2RtN18rXzm1f2+aQz3ILQWfG6lue6d3
-         qDpEqtSEKjKw8kpVS0Ofn5O8faEsP4/A7mOQI9t1IuRw0Xfkp5eue/nP3gcW/gG68DM7
-         raYg==
-X-Gm-Message-State: AAQBX9fUNsFZQ0BbzjaSpiji9xScvfLoy7NpjId6ZwktEK3LDkzXYw88
-        0kxL0AfOVpVGlm2IAi1W06K9k+oi95kr7/C7+khmsQJzNh8KmxEq
-X-Google-Smtp-Source: AKy350bgo3DeUzBwHQucu8jAnInJaNAqvFim+1vy82DIp2k3HaY0dRNVy3D+izvuXktB0K9yMx3dGYUwBk6g2sgx4N4=
-X-Received: by 2002:a81:ae60:0:b0:546:5f4d:c002 with SMTP id
- g32-20020a81ae60000000b005465f4dc002mr4303907ywk.10.1680524729206; Mon, 03
- Apr 2023 05:25:29 -0700 (PDT)
+        bh=riaahXQBertKmx+xq8cDyjwCTBDh/mDGE8BYFdxvDOM=;
+        b=lIFAHZDaUx7mQ4KcDWUgvdyyqc/f23t+glKZxPCRjZj3oaDohWxHxRzw/XgDNXEakt
+         gvx73vdgCzVruux3aDtb6Z9YRmUEUQxUXyBLkJGGqGA8X2NYB8VAhlIpTBUQ8Y4okDTk
+         PyAv5lKg+6rQ/xhSNk+NU213P9YTzF1WqtEfQ05xBBKSdv9ETjGv1Uc+b3yHbfBdd7GY
+         +5+JQSR3XUUgUDX4JQ7GyKGRU6zNCT4ptfVZ5192uE6G0QzV9nOdrYfFZf7aDB3FC3gx
+         q8W37QsuiTLq1HRcJtfTnUqYcrZvWZTTcK3AELOKnqp5vgEGGdW+g4o6GNk5qjXakKI+
+         +GMw==
+X-Gm-Message-State: AAQBX9cZbgl/Idjfom7XHKeoc/tJ4cMGNM4kQFkQ8HW1bCBr2R6MbDVO
+        UX+O4PhjPkFBZVBh4WTCiEJn0piyQcluigk81M1Fdg==
+X-Google-Smtp-Source: AKy350aP1ukG9/ndrpQD+GGShI9OQ5v16FM6kUzhb3kdhVgjodsHmgZPsLsStm33czUEzkZ7t/sTNPgmYme8DnWkACI=
+X-Received: by 2002:a50:cd47:0:b0:4fc:532e:215d with SMTP id
+ d7-20020a50cd47000000b004fc532e215dmr18039003edj.6.1680525954661; Mon, 03 Apr
+ 2023 05:45:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230329180502.1884307-1-kal.conley@dectris.com> <20230329180502.1884307-8-kal.conley@dectris.com>
-In-Reply-To: <20230329180502.1884307-8-kal.conley@dectris.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 3 Apr 2023 14:25:18 +0200
-Message-ID: <CAJ8uoz2crsRkuCNPxrpBc0oZwgeprboVQW8Zxh-9CWHb_Ze4Hw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 07/10] selftests: xsk: Add test UNALIGNED_INV_DESC_4K1_FRAME_SIZE
-To:     Kal Conley <kal.conley@dectris.com>
+References: <20230329180502.1884307-1-kal.conley@dectris.com>
+ <20230329180502.1884307-7-kal.conley@dectris.com> <CAJ8uoz0a3gJgWDxP0zPLsiWzUZHmGqRbrumdRq2Gv1HdVm4ObQ@mail.gmail.com>
+In-Reply-To: <CAJ8uoz0a3gJgWDxP0zPLsiWzUZHmGqRbrumdRq2Gv1HdVm4ObQ@mail.gmail.com>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Mon, 3 Apr 2023 14:50:34 +0200
+Message-ID: <CAHApi-mCm1hWyc1jfB3isPqWqaJUuqn7vN1hfSgPb741ngJK9g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 06/10] xsk: Add check for unaligned
+ descriptors that overrun UMEM
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
 Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 29 Mar 2023 at 20:12, Kal Conley <kal.conley@dectris.com> wrote:
 >
-> Add unaligned descriptor test for frame size of 4001. Using an odd frame
-> size ensures that the end of the UMEM is not near a page boundary. This
-> allows testing descriptors that staddle the end of the UMEM but not a
+> Let me just check that I understand the conditions under which this
+> occurs. When selecting unaligned mode, there is no check that the size
+> is divisible by the chunk_size as is the case in aligned mode. So we
+> can register a umem that is for example 15 4K pages plus 100 bytes and
+> in this case the second to last page will be marked as contiguous
+> (with the CONTIG_MASK) and a packet of length 300 starting at 15*4K -
+> 100 will be marked as valid even though it extends 100 bytes outside
+> the umem which ends at 15*4K + 100. Did I get this correctly? If so,
+> some more color in the commit message would be highly appreciated.
 
-nit: straddle
-
-> page.
->
-> This test used to fail without the previous commit ("xsk: Add check for
-> unaligned descriptors that overrun UMEM").
->
-> Signed-off-by: Kal Conley <kal.conley@dectris.com>
-> ---
->  tools/testing/selftests/bpf/xskxceiver.c | 25 ++++++++++++++++++++++++
->  tools/testing/selftests/bpf/xskxceiver.h |  1 +
->  2 files changed, 26 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-> index 1a4bdd5aa78c..9b9efd0e0a4c 100644
-> --- a/tools/testing/selftests/bpf/xskxceiver.c
-> +++ b/tools/testing/selftests/bpf/xskxceiver.c
-> @@ -69,6 +69,7 @@
->   */
->
->  #define _GNU_SOURCE
-> +#include <assert.h>
->  #include <fcntl.h>
->  #include <errno.h>
->  #include <getopt.h>
-> @@ -1876,6 +1877,30 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
->                 test->ifobj_rx->umem->unaligned_mode = true;
->                 testapp_invalid_desc(test);
->                 break;
-> +       case TEST_TYPE_UNALIGNED_INV_DESC_4K1_FRAME:
-> +               if (!hugepages_present(test->ifobj_tx)) {
-> +                       ksft_test_result_skip("No 2M huge pages present.\n");
-> +                       return;
-> +               }
-> +               test_spec_set_name(test, "UNALIGNED_INV_DESC_4K1_FRAME_SIZE");
-> +               /* Odd frame size so the UMEM doesn't end near a page boundary. */
-> +               test->ifobj_tx->umem->frame_size = 4001;
-> +               test->ifobj_rx->umem->frame_size = 4001;
-> +               test->ifobj_tx->umem->unaligned_mode = true;
-> +               test->ifobj_rx->umem->unaligned_mode = true;
-> +               /* This test exists to test descriptors that staddle the end of
-
-nit: straddle
-
-> +                * the UMEM but not a page.
-> +                */
-> +               {
-> +                       u64 umem_size = test->ifobj_tx->umem->num_frames *
-> +                                       test->ifobj_tx->umem->frame_size;
-> +                       u64 page_size = sysconf(_SC_PAGESIZE);
-> +
-> +                       assert(umem_size % page_size > PKT_SIZE);
-> +                       assert(umem_size % page_size < page_size - PKT_SIZE);
-> +               }
-> +               testapp_invalid_desc(test);
-
-Please put this code in a function that you call. Declare your local
-variables in the beginning of that function.
-
-> +               break;
->         case TEST_TYPE_UNALIGNED:
->                 if (!testapp_unaligned(test))
->                         return;
-> diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-> index cc24ab72f3ff..919327807a4e 100644
-> --- a/tools/testing/selftests/bpf/xskxceiver.h
-> +++ b/tools/testing/selftests/bpf/xskxceiver.h
-> @@ -78,6 +78,7 @@ enum test_type {
->         TEST_TYPE_ALIGNED_INV_DESC,
->         TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME,
->         TEST_TYPE_UNALIGNED_INV_DESC,
-> +       TEST_TYPE_UNALIGNED_INV_DESC_4K1_FRAME,
->         TEST_TYPE_HEADROOM,
->         TEST_TYPE_TEARDOWN,
->         TEST_TYPE_BIDI,
-> --
-> 2.39.2
->
+Yes. You don't even need to cross the page. For example, if you have a
+packet length of 300 _within_ the final page then it could go past the
+end of the umem. In this case, the CONTIG_MASK would not even be
+looked at. The explanation is in the next commit message with the
+test. I will improve the commit message here though.
