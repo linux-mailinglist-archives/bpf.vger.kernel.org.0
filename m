@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE2D6D4358
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 13:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E5D6D435B
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 13:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbjDCLVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 07:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        id S232447AbjDCLVp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 07:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232413AbjDCLVe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 07:21:34 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE39B1165A
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 04:21:27 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id r29so28914939wra.13
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 04:21:27 -0700 (PDT)
+        with ESMTP id S232425AbjDCLVf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 07:21:35 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C416611E8D
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 04:21:28 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id m2so28954628wrh.6
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 04:21:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1680520886;
+        d=chromium.org; s=google; t=1680520887;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Aq5x86tVtWv9CUhJrZoYIW4Kchuy5NaR+pC4E8FDtAo=;
-        b=dKIh+gFbz3U1lN2WVs7SpMMcM4hKKGWQIiHX5vyplIj6iEX3sD/3dlBnaeT3tN/f1M
-         BOQGBSIQrpAp1eRpdzKomeZ2rN4trB87k68rKOJGJboYXk1r2zevH9tw0O9GMCrpoqOs
-         JpHjB2hT8+r8OG/DEjND6Ataf4Rltn5BWXcWo=
+        bh=/34U5w6a3JKdMgsQ09Wne6ydaZba+c6CDLo9FrBXL10=;
+        b=AQn4oXrKDhWTYlxGBxTFX0Q+vMChCIhEebDBe0XjsbzHfyjEvz8exynlQdH0m3wqBv
+         QPlBux/2wlbiesiXphcymPAnwSRfQBQq8ynwcv7gupjLtq+03rpwU/dUJl76QXXY8yDt
+         s0Xuio4WdOGuH9ZdAevdk0s1pbE1UCJVkKqaU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680520886;
+        d=1e100.net; s=20210112; t=1680520887;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Aq5x86tVtWv9CUhJrZoYIW4Kchuy5NaR+pC4E8FDtAo=;
-        b=1MmY1k8AJ4T4rvbKs7y/2ahDiQf/Lp9gR4sBi1gMCpWPVjhHwC2WdNmVFWMbl2v1O2
-         80Fs5N8Yh+u87zGnv+WWUZomDybZT/wuIY2N7ZLQpwVCvqtCY3X94NTYPSgCSjibgV31
-         xb9eK0JKSnTeVa/FnORiODInKXd5Xr9lblZ/zyuBajlqL9NpPEo792csH+fXt2Aux7/Z
-         /G9iHD+RMuXOZr9Cu4nnz2OEfGRVu4yP5KN2tSOWkQwYL0dgA8jO1pI6zEEJVZoqUEPV
-         oR34w/mxC6Dabe4aaVZBGEY+vmooPulYe27mjMpherqd1gdrQpg+T5dEZfYioSw3GUp7
-         22gQ==
-X-Gm-Message-State: AAQBX9dMmzE7lhhApsmEqKcMDCx7ZaaAv7yOjxaiN8b5J/VvfDudR4QA
-        SicSydowfCEdjhhTWNthtlMAGg==
-X-Google-Smtp-Source: AKy350bqXIWWAZ7kAZuV8YL1a1EGm9Vm2reN1PAKAhf6LZsCQUy5JwJbkErX9cYXTp6Da/MEnbhaYg==
-X-Received: by 2002:a5d:4fd0:0:b0:2cc:459b:8bc8 with SMTP id h16-20020a5d4fd0000000b002cc459b8bc8mr25844059wrw.6.1680520885849;
-        Mon, 03 Apr 2023 04:21:25 -0700 (PDT)
+        bh=/34U5w6a3JKdMgsQ09Wne6ydaZba+c6CDLo9FrBXL10=;
+        b=J+2DFPCOm+Ypxh7mJzFySp3yPcUWcqyIlT+DrCFgOMkshg0fMB/VyZxxIsxvWJAWIE
+         wmUwaR7QFSavRIUWgMpWPft40iiN/YlQcyv1xVPla3Wqi2CM2q6Kq9aN+d3x5OhRYI/p
+         G3v1CyZNsbS5/q3wsOQJI6m9HSDZlDAQniyEpmF77m2Ddgc0VpXWzKfjYGhnmhEd2rrT
+         vk0gfR3XmV6np/9+Lw5V7xzsU+/AhDXcHqAZFh/QrHV1z1VMXIvag9RP/m3RnVahjBJ1
+         mtjbFqn6XWHhFd9gxooy2dJuAq2Gpf/s6egdjJ1LKfX92yPw4Vp9qE/xlrGIXTWztqTP
+         Ir0Q==
+X-Gm-Message-State: AAQBX9fjuIwcVyIrl722p2CG31xeyk9UVw2AD3bc92lYOQ5bdppvvb+y
+        M7d05YD1KzvJZmakHWZNulPAIw==
+X-Google-Smtp-Source: AKy350ZiF5SR9ReuHwI6BkNg39+D3lDi6IP4vzY6V6YKr7LgC65RzZTXjwmb1f1lSf0nf3FsqEWeKA==
+X-Received: by 2002:a5d:6e90:0:b0:2ce:a0c1:bcaa with SMTP id k16-20020a5d6e90000000b002cea0c1bcaamr14177647wrz.9.1680520887246;
+        Mon, 03 Apr 2023 04:21:27 -0700 (PDT)
 Received: from revest.zrh.corp.google.com ([2a00:79e0:9d:6:b5a2:4ffd:8524:ac1])
-        by smtp.gmail.com with ESMTPSA id u13-20020adfeb4d000000b002daeb108304sm9510031wrn.33.2023.04.03.04.21.24
+        by smtp.gmail.com with ESMTPSA id u13-20020adfeb4d000000b002daeb108304sm9510031wrn.33.2023.04.03.04.21.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Apr 2023 04:21:25 -0700 (PDT)
+        Mon, 03 Apr 2023 04:21:26 -0700 (PDT)
 From:   Florent Revest <revest@chromium.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
@@ -54,9 +54,9 @@ Cc:     catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
         daniel@iogearbox.net, andrii@kernel.org, kpsingh@kernel.org,
         jolsa@kernel.org, xukuohai@huaweicloud.com, lihuafei1@huawei.com,
         Florent Revest <revest@chromium.org>
-Subject: [PATCH v4 3/4] arm64: ftrace: Add direct call trampoline samples support
-Date:   Mon,  3 Apr 2023 13:20:58 +0200
-Message-Id: <20230403112059.2749695-4-revest@chromium.org>
+Subject: [PATCH v4 4/4] selftests/bpf: Update the tests deny list on aarch64
+Date:   Mon,  3 Apr 2023 13:20:59 +0200
+Message-Id: <20230403112059.2749695-5-revest@chromium.org>
 X-Mailer: git-send-email 2.40.0.423.gd6c402a77b-goog
 In-Reply-To: <20230403112059.2749695-1-revest@chromium.org>
 References: <20230403112059.2749695-1-revest@chromium.org>
@@ -72,270 +72,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The ftrace samples need per-architecture trampoline implementations
-to save and restore argument registers around the calls to
-my_direct_func* and to restore polluted registers (eg: x30).
+Now that ftrace supports direct call on arm64, BPF tracing programs work
+on that architecture. This fixes the vast majority of BPF selftests
+except for:
 
-These samples also include <asm/asm-offsets.h> which, on arm64, is not
-necessary and redefines previously defined macros (resulting in
-warnings) so these includes are guarded by !CONFIG_ARM64.
+- multi_kprobe programs which require fprobe, not available on arm64 yet
+- tracing_struct which requires trampoline support to access struct args
+
+This patch updates the list of BPF selftests which are known to fail so
+the BPF CI can validate the tests which pass now.
 
 Signed-off-by: Florent Revest <revest@chromium.org>
 ---
- arch/arm64/Kconfig                          |  2 ++
- samples/ftrace/ftrace-direct-modify.c       | 32 ++++++++++++++++++
- samples/ftrace/ftrace-direct-multi-modify.c | 36 +++++++++++++++++++++
- samples/ftrace/ftrace-direct-multi.c        | 22 +++++++++++++
- samples/ftrace/ftrace-direct-too.c          | 25 ++++++++++++++
- samples/ftrace/ftrace-direct.c              | 23 +++++++++++++
- 6 files changed, 140 insertions(+)
+ tools/testing/selftests/bpf/DENYLIST.aarch64 | 82 ++------------------
+ 1 file changed, 5 insertions(+), 77 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index f3503d0cc1b8..c2bf28099abd 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -194,6 +194,8 @@ config ARM64
- 		    !CC_OPTIMIZE_FOR_SIZE)
- 	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
- 		if DYNAMIC_FTRACE_WITH_ARGS
-+	select HAVE_SAMPLE_FTRACE_DIRECT
-+	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	select HAVE_FAST_GUP
- 	select HAVE_FTRACE_MCOUNT_RECORD
-diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
-index 25fba66f61c0..32ed0e1f8699 100644
---- a/samples/ftrace/ftrace-direct-modify.c
-+++ b/samples/ftrace/ftrace-direct-modify.c
-@@ -2,7 +2,9 @@
- #include <linux/module.h>
- #include <linux/kthread.h>
- #include <linux/ftrace.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
- extern void my_direct_func1(void);
- extern void my_direct_func2(void);
-@@ -96,6 +98,36 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection    .text, \"ax\", @progbits\n"
-+"	.type		my_tramp1, @function\n"
-+"	.globl		my_tramp1\n"
-+"   my_tramp1:"
-+"	sub	sp, sp, #16\n"
-+"	stp	x9, x30, [sp]\n"
-+"	bl	my_direct_func1\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	add	sp, sp, #16\n"
-+"	ret	x9\n"
-+"	.size		my_tramp1, .-my_tramp1\n"
-+
-+"	.type		my_tramp2, @function\n"
-+"	.globl		my_tramp2\n"
-+"   my_tramp2:"
-+"	sub	sp, sp, #16\n"
-+"	stp	x9, x30, [sp]\n"
-+"	bl	my_direct_func2\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	add	sp, sp, #16\n"
-+"	ret	x9\n"
-+"	.size		my_tramp2, .-my_tramp2\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
-+
- static struct ftrace_ops direct;
- 
- static unsigned long my_tramp = (unsigned long)my_tramp1;
-diff --git a/samples/ftrace/ftrace-direct-multi-modify.c b/samples/ftrace/ftrace-direct-multi-modify.c
-index f72623899602..0ba40891d43e 100644
---- a/samples/ftrace/ftrace-direct-multi-modify.c
-+++ b/samples/ftrace/ftrace-direct-multi-modify.c
-@@ -2,7 +2,9 @@
- #include <linux/module.h>
- #include <linux/kthread.h>
- #include <linux/ftrace.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
- extern void my_direct_func1(unsigned long ip);
- extern void my_direct_func2(unsigned long ip);
-@@ -103,6 +105,40 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection    .text, \"ax\", @progbits\n"
-+"	.type		my_tramp1, @function\n"
-+"	.globl		my_tramp1\n"
-+"   my_tramp1:"
-+"	sub	sp, sp, #32\n"
-+"	stp	x9, x30, [sp]\n"
-+"	str	x0, [sp, #16]\n"
-+"	bl	my_direct_func1\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldr	x0, [sp, #16]\n"
-+"	add	sp, sp, #32\n"
-+"	ret	x9\n"
-+"	.size		my_tramp1, .-my_tramp1\n"
-+
-+"	.type		my_tramp2, @function\n"
-+"	.globl		my_tramp2\n"
-+"   my_tramp2:"
-+"	sub	sp, sp, #32\n"
-+"	stp	x9, x30, [sp]\n"
-+"	str	x0, [sp, #16]\n"
-+"	bl	my_direct_func2\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldr	x0, [sp, #16]\n"
-+"	add	sp, sp, #32\n"
-+"	ret	x9\n"
-+"	.size		my_tramp2, .-my_tramp2\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
-+
- static unsigned long my_tramp = (unsigned long)my_tramp1;
- static unsigned long tramps[2] = {
- 	(unsigned long)my_tramp1,
-diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
-index 1547c2c6be02..0b072e763c97 100644
---- a/samples/ftrace/ftrace-direct-multi.c
-+++ b/samples/ftrace/ftrace-direct-multi.c
-@@ -4,7 +4,9 @@
- #include <linux/mm.h> /* for handle_mm_fault() */
- #include <linux/ftrace.h>
- #include <linux/sched/stat.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
- extern void my_direct_func(unsigned long ip);
- 
-@@ -66,6 +68,26 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	sub	sp, sp, #32\n"
-+"	stp	x9, x30, [sp]\n"
-+"	str	x0, [sp, #16]\n"
-+"	bl	my_direct_func\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldr	x0, [sp, #16]\n"
-+"	add	sp, sp, #32\n"
-+"	ret	x9\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
- static struct ftrace_ops direct;
- 
- static int __init ftrace_direct_multi_init(void)
-diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
-index f28e7b99840f..5606b7ad1950 100644
---- a/samples/ftrace/ftrace-direct-too.c
-+++ b/samples/ftrace/ftrace-direct-too.c
-@@ -3,7 +3,9 @@
- 
- #include <linux/mm.h> /* for handle_mm_fault() */
- #include <linux/ftrace.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
- extern void my_direct_func(struct vm_area_struct *vma,
- 			   unsigned long address, unsigned int flags);
-@@ -70,6 +72,29 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	sub	sp, sp, #48\n"
-+"	stp	x9, x30, [sp]\n"
-+"	stp	x0, x1, [sp, #16]\n"
-+"	str	x2, [sp, #32]\n"
-+"	bl	my_direct_func\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldp	x0, x1, [sp, #16]\n"
-+"	ldr	x2, [sp, #32]\n"
-+"	add	sp, sp, #48\n"
-+"	ret	x9\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
-+
- static struct ftrace_ops direct;
- 
- static int __init ftrace_direct_init(void)
-diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
-index d81a9473b585..7e20529ef132 100644
---- a/samples/ftrace/ftrace-direct.c
-+++ b/samples/ftrace/ftrace-direct.c
-@@ -3,7 +3,9 @@
- 
- #include <linux/sched.h> /* for wake_up_process() */
- #include <linux/ftrace.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
- extern void my_direct_func(struct task_struct *p);
- 
-@@ -63,6 +65,27 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	sub	sp, sp, #32\n"
-+"	stp	x9, x30, [sp]\n"
-+"	str	x0, [sp, #16]\n"
-+"	bl	my_direct_func\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldr	x0, [sp, #16]\n"
-+"	add	sp, sp, #32\n"
-+"	ret	x9\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
-+
- static struct ftrace_ops direct;
- 
- static int __init ftrace_direct_init(void)
+diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+index 99cc33c51eaa..6b95cb544094 100644
+--- a/tools/testing/selftests/bpf/DENYLIST.aarch64
++++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+@@ -1,33 +1,5 @@
+-bloom_filter_map                                 # libbpf: prog 'check_bloom': failed to attach: ERROR: strerror_r(-524)=22
+-bpf_cookie/lsm
+-bpf_cookie/multi_kprobe_attach_api
+-bpf_cookie/multi_kprobe_link_api
+-bpf_cookie/trampoline
+-bpf_loop/check_callback_fn_stop                  # link unexpected error: -524
+-bpf_loop/check_invalid_flags
+-bpf_loop/check_nested_calls
+-bpf_loop/check_non_constant_callback
+-bpf_loop/check_nr_loops
+-bpf_loop/check_null_callback_ctx
+-bpf_loop/check_stack
+-bpf_mod_race                                     # bpf_mod_kfunc_race__attach unexpected error: -524 (errno 524)
+-bpf_tcp_ca/dctcp_fallback
+-btf_dump/btf_dump: var_data                      # find type id unexpected find type id: actual -2 < expected 0
+-cgroup_hierarchical_stats                        # attach unexpected error: -524 (errno 524)
+-d_path/basic                                     # setup attach failed: -524
+-deny_namespace                                   # attach unexpected error: -524 (errno 524)
+-fentry_fexit                                     # fentry_attach unexpected error: -1 (errno 524)
+-fentry_test                                      # fentry_attach unexpected error: -1 (errno 524)
+-fexit_sleep                                      # fexit_attach fexit attach failed: -1
+-fexit_stress                                     # fexit attach unexpected fexit attach: actual -524 < expected 0
+-fexit_test                                       # fexit_attach unexpected error: -1 (errno 524)
+-get_func_args_test                               # get_func_args_test__attach unexpected error: -524 (errno 524) (trampoline)
+-get_func_ip_test                                 # get_func_ip_test__attach unexpected error: -524 (errno 524) (trampoline)
+-htab_update/reenter_update
+-kfree_skb                                        # attach fentry unexpected error: -524 (trampoline)
+-kfunc_call/subprog                               # extern (var ksym) 'bpf_prog_active': not found in kernel BTF
+-kfunc_call/subprog_lskel                         # skel unexpected error: -2
+-kfunc_dynptr_param/dynptr_data_null              # libbpf: prog 'dynptr_data_null': failed to attach: ERROR: strerror_r(-524)=22
++bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
++bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+ kprobe_multi_bench_attach                        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+ kprobe_multi_test/attach_api_addrs               # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+ kprobe_multi_test/attach_api_pattern             # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+@@ -35,50 +7,6 @@ kprobe_multi_test/attach_api_syms                # bpf_program__attach_kprobe_mu
+ kprobe_multi_test/bench_attach                   # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+ kprobe_multi_test/link_api_addrs                 # link_fd unexpected link_fd: actual -95 < expected 0
+ kprobe_multi_test/link_api_syms                  # link_fd unexpected link_fd: actual -95 < expected 0
+-kprobe_multi_test/skel_api                       # kprobe_multi__attach unexpected error: -524 (errno 524)
+-ksyms_module/libbpf                              # 'bpf_testmod_ksym_percpu': not found in kernel BTF
+-ksyms_module/lskel                               # test_ksyms_module_lskel__open_and_load unexpected error: -2
+-libbpf_get_fd_by_id_opts                         # test_libbpf_get_fd_by_id_opts__attach unexpected error: -524 (errno 524)
+-linked_list
+-lookup_key                                       # test_lookup_key__attach unexpected error: -524 (errno 524)
+-lru_bug                                          # lru_bug__attach unexpected error: -524 (errno 524)
+-modify_return                                    # modify_return__attach failed unexpected error: -524 (errno 524)
+-module_attach                                    # skel_attach skeleton attach failed: -524
+-mptcp/base                                       # run_test mptcp unexpected error: -524 (errno 524)
+-netcnt                                           # packets unexpected packets: actual 10001 != expected 10000
+-rcu_read_lock                                    # failed to attach: ERROR: strerror_r(-524)=22
+-recursion                                        # skel_attach unexpected error: -524 (errno 524)
+-ringbuf                                          # skel_attach skeleton attachment failed: -1
+-setget_sockopt                                   # attach_cgroup unexpected error: -524
+-sk_storage_tracing                               # test_sk_storage_tracing__attach unexpected error: -524 (errno 524)
+-skc_to_unix_sock                                 # could not attach BPF object unexpected error: -524 (errno 524)
+-socket_cookie                                    # prog_attach unexpected error: -524
+-stacktrace_build_id                              # compare_stack_ips stackmap vs. stack_amap err -1 errno 2
+-task_local_storage/exit_creds                    # skel_attach unexpected error: -524 (errno 524)
+-task_local_storage/recursion                     # skel_attach unexpected error: -524 (errno 524)
+-test_bprm_opts                                   # attach attach failed: -524
+-test_ima                                         # attach attach failed: -524
+-test_local_storage                               # attach lsm attach failed: -524
+-test_lsm                                         # test_lsm_first_attach unexpected error: -524 (errno 524)
+-test_overhead                                    # attach_fentry unexpected error: -524
+-timer                                            # timer unexpected error: -524 (errno 524)
+-timer_crash                                      # timer_crash__attach unexpected error: -524 (errno 524)
+-timer_mim                                        # timer_mim unexpected error: -524 (errno 524)
+-trace_printk                                     # trace_printk__attach unexpected error: -1 (errno 524)
+-trace_vprintk                                    # trace_vprintk__attach unexpected error: -1 (errno 524)
+-tracing_struct                                   # tracing_struct__attach unexpected error: -524 (errno 524)
+-trampoline_count                                 # attach_prog unexpected error: -524
+-unpriv_bpf_disabled                              # skel_attach unexpected error: -524 (errno 524)
+-user_ringbuf/test_user_ringbuf_post_misaligned   # misaligned_skel unexpected error: -524 (errno 524)
+-user_ringbuf/test_user_ringbuf_post_producer_wrong_offset
+-user_ringbuf/test_user_ringbuf_post_larger_than_ringbuf_sz
+-user_ringbuf/test_user_ringbuf_basic             # ringbuf_basic_skel unexpected error: -524 (errno 524)
+-user_ringbuf/test_user_ringbuf_sample_full_ring_buffer
+-user_ringbuf/test_user_ringbuf_post_alignment_autoadjust
+-user_ringbuf/test_user_ringbuf_overfill
+-user_ringbuf/test_user_ringbuf_discards_properly_ignored
+-user_ringbuf/test_user_ringbuf_loop
+-user_ringbuf/test_user_ringbuf_msg_protocol
+-user_ringbuf/test_user_ringbuf_blocking_reserve
+-verify_pkcs7_sig                                 # test_verify_pkcs7_sig__attach unexpected error: -524 (errno 524)
+-vmlinux                                          # skel_attach skeleton attach failed: -524
++kprobe_multi_test/skel_api                       # libbpf: failed to load BPF skeleton 'kprobe_multi': -3
++module_attach                                    # prog 'kprobe_multi': failed to auto-attach: -95
++tracing_struct                                   # tracing_struct__attach unexpected error: -524 (errno 524)
+\ No newline at end of file
 -- 
 2.40.0.423.gd6c402a77b-goog
 
