@@ -2,90 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 105546D42D4
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 13:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D446D430C
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 13:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbjDCLC7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 07:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
+        id S231859AbjDCLLO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 07:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232095AbjDCLCx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 07:02:53 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A1112BE5
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 04:02:20 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id t10so115502904edd.12
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 04:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680519737;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0A9cBUe1CIhDzuQx2yGzHPxbDSN2uhcwM/gtEXwXGpQ=;
-        b=MJ1S6YAr0p1+c2LTdnZvvwoMbkTpnzogcae4lkhzx2gf8L3f56zzQQwG1QWrzpcoRq
-         FW1JQJF+XtT0V6/RzptZHqmbcMJa0PUc+eJg+SxYDoLb4cG8KIMhhFrX3msHleRkdH0/
-         O23Cgt2jZJD5kZRvLh0hQYfM60GpTxxxqaS/I=
+        with ESMTP id S232123AbjDCLLL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 07:11:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C982D4A
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 04:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680520223;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2LyTXIwTIB/nVxYXSDDIz7jSdM+ZVkfbUtijN6RN/W0=;
+        b=eQOzxIBmubDrJygysoibgT0Ehz51RvK/34tapLj2paIGkGtcgT8gWjchdCXaUA6TNkOO+5
+        INNgYdmAgzNLaVTGFgtxintov3Cxx176WTWNeBWDZJ0Kbpq9+mE4ueDJoGaKvzORhyzSRg
+        MkU4A3PFDGA/qrwH5i1DWKXTQs0uJSc=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-134-HujMAXrVMIS5Y5mEEsQkJA-1; Mon, 03 Apr 2023 07:10:22 -0400
+X-MC-Unique: HujMAXrVMIS5Y5mEEsQkJA-1
+Received: by mail-qv1-f71.google.com with SMTP id w2-20020a0cc242000000b00583d8e55181so12870021qvh.23
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 04:10:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680519737;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0A9cBUe1CIhDzuQx2yGzHPxbDSN2uhcwM/gtEXwXGpQ=;
-        b=OPdnqdUUZwXsGyNn4/7P+YVqHNHLP9rp6nJt/3mjFlCN+T5AU5kViCN7uMNcAKobyN
-         eXCgEH6yPv276otmooHfqEjEAB8ZvbG9tuIbGaA1Mn/gk3UOqFiiTktwRCGWjgsEyXX2
-         aIlezRL8np1IcK4AkZja6NGNDmECArULcbCzOTNN+5zykify0E1i9isUAEXVlxYIYsQQ
-         wN3Z2PZjKwrsJQXvuDwJzeaUICt+VmcO6nDVzi9hn59UU+FQEfI6m30v8DWEr6TzGxUT
-         EVYsGwQTha1iwSa4/qPR6y5nlMFi0fSPewnA/Bwd28vjHUge1q1nvWTsjli0LUt+KWcY
-         FYMA==
-X-Gm-Message-State: AAQBX9cGqeRkyzMC9zdGC+U9VrOaHCLxn60f2u8zYqbLb+meCvCSS7pO
-        tTV8LqKJzFUXnciVLJWY8986sMQHwT5S/aCcn0nf2g==
-X-Google-Smtp-Source: AKy350a3CTDjvcE2j8ryyIGM7DAKEbV0Sa+8uvmTWhEPaKIjaoFbiqMUyLp4ecWNx1G7nx8HHCZ3848IOEne7HHt71o=
-X-Received: by 2002:a50:f692:0:b0:4fc:fc86:5f76 with SMTP id
- d18-20020a50f692000000b004fcfc865f76mr17913135edn.6.1680519737334; Mon, 03
- Apr 2023 04:02:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230329180502.1884307-1-kal.conley@dectris.com>
- <20230329180502.1884307-5-kal.conley@dectris.com> <CAJ8uoz1cGV1_3HQQddbkExVnm=wngP3ECJZNS5gOtQtfi=mPnA@mail.gmail.com>
-In-Reply-To: <CAJ8uoz1cGV1_3HQQddbkExVnm=wngP3ECJZNS5gOtQtfi=mPnA@mail.gmail.com>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Mon, 3 Apr 2023 13:06:57 +0200
-Message-ID: <CAHApi-kV_c-z1zf9M_XyR_Wa=4xi-Cpk1FZT7BFTYQHgU1Bdqg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 04/10] selftests: xsk: Deflakify
- STATS_RX_DROPPED test
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        d=1e100.net; s=20210112; t=1680520222;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2LyTXIwTIB/nVxYXSDDIz7jSdM+ZVkfbUtijN6RN/W0=;
+        b=hz2AIs8iq20goFbT1uRtd6auqmiqd6zjbKmg3w2sJpMWQwBB9pYXyKglzhzuSZIM8B
+         Pj4WHluOydfr5sWyqjsEGD0ulPUifVczbvQm23t3hLOliWDHYM7XIBQV9t1BOz9si3Pm
+         4aWooBcc1UKAdzRIp/+sAsry9NrwBkANHI34QiQ2lhIFMpBGHpnp2yK8Zb8THhaehhSe
+         evNCHVrYFRrroB7fkJYWXB+X5PaRopB6GmkK2dMUwqb0Oz5c89Y2G/mMyoa4fJ0iDZNW
+         CvZCm5N4ZPlb+hrC32yUjOy3L6mk4V0hnjOJppNBQir6zRJ/4K6QyC7OKWZ59dLUesBJ
+         NfYg==
+X-Gm-Message-State: AAQBX9eUllkIjqloGmURJHD6xBAcmQqVu/wa8uLWWz3Y2eGg/gP5EJmL
+        rw9DR5ofjIIYpJbwjhmZDv4MvDO4mV3bfjJzoCFmLOtGbgG+E0OUqLHDB1b+H1Tx2EzhX86fwG2
+        ACdonixORaaSd
+X-Received: by 2002:a05:6214:20af:b0:5b7:fc3f:627c with SMTP id 15-20020a05621420af00b005b7fc3f627cmr56199445qvd.41.1680520222091;
+        Mon, 03 Apr 2023 04:10:22 -0700 (PDT)
+X-Google-Smtp-Source: AKy350anlnRjskidVzUxw4lC24jdLIo1HJimHkPD2ABe7fU37aXmhofK7QF06gaCIs48vZzsoFlAZQ==
+X-Received: by 2002:a05:6214:20af:b0:5b7:fc3f:627c with SMTP id 15-20020a05621420af00b005b7fc3f627cmr56199409qvd.41.1680520221837;
+        Mon, 03 Apr 2023 04:10:21 -0700 (PDT)
+Received: from sgarzare-redhat (host-82-57-51-130.retail.telecomitalia.it. [82.57.51.130])
+        by smtp.gmail.com with ESMTPSA id di15-20020ad458ef000000b005e13c17dcb8sm2536442qvb.79.2023.04.03.04.10.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Apr 2023 04:10:21 -0700 (PDT)
+Date:   Mon, 3 Apr 2023 13:10:14 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Mykola Lysenko <mykolal@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net-next v4 0/3] Add support for sockmap to vsock.
+Message-ID: <u3azhe3tsae6c3h2hbhzypvcxbjsostqple3wkqtplvdhtadkf@5posaldst7ec>
+References: <20230327-vsock-sockmap-v4-0-c62b7cd92a85@bytedance.com>
+ <6427838247d16_c503a2087e@john.notmuch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <6427838247d16_c503a2087e@john.notmuch>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> This has been bugging me for a while so thanks for fixing this. Please
-> break this commit out of this patch set and send it as a separate bug
-> fix.
+On Fri, Mar 31, 2023 at 06:06:10PM -0700, John Fastabend wrote:
+>Bobby Eshleman wrote:
+>> We're testing usage of vsock as a way to redirect guest-local UDS
+>> requests to the host and this patch series greatly improves the
+>> performance of such a setup.
+>>
+>> Compared to copying packets via userspace, this improves throughput by
+>> 121% in basic testing.
+>>
+>> Tested as follows.
+>>
+>> Setup: guest unix dgram sender -> guest vsock redirector -> host vsock
+>>        server
+>> Threads: 1
+>> Payload: 64k
+>> No sockmap:
+>> - 76.3 MB/s
+>> - The guest vsock redirector was
+>>   "socat VSOCK-CONNECT:2:1234 UNIX-RECV:/path/to/sock"
+>> Using sockmap (this patch):
+>> - 168.8 MB/s (+121%)
+>> - The guest redirector was a simple sockmap echo server,
+>>   redirecting unix ingress to vsock 2:1234 egress.
+>> - Same sender and server programs
+>>
+>> *Note: these numbers are from RFC v1
+>>
+>> Only the virtio transport has been tested. The loopback transport was
+>> used in writing bpf/selftests, but not thoroughly tested otherwise.
+>>
+>> This series requires the skb patch.
 >
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+>Appears reasonable to me although I didn't review internals of all
+>the af_vsock stuff. I see it got merged great.
+
+Thanks for checking!
+
+>
+>One nit, I have a series coming shortly to pull the tests out of
+>the sockmap_listen and into a sockmap_vsock because I don't think they
+>belong in _listen but that is just a refactor.
 >
 
-Can I send patches 01-05 all together as one patchset?
+LGTM!
 
-Kal
+Thanks,
+Stefano
+
