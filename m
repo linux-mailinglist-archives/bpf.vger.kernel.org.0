@@ -2,292 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 995D76D3B93
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 03:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9D86D3B98
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 03:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbjDCBqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Apr 2023 21:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
+        id S230204AbjDCBso (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Apr 2023 21:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbjDCBqQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Apr 2023 21:46:16 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE05903C
-        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 18:46:15 -0700 (PDT)
-Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PqYYk6rFMz17PrK;
-        Mon,  3 Apr 2023 09:42:50 +0800 (CST)
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 3 Apr 2023 09:46:11 +0800
-Subject: Re: [PATCH bpf-next v6 1/2] bpf: Fix attaching
- fentry/fexit/fmod_ret/lsm to modules
-To:     Jiri Olsa <olsajiri@gmail.com>, Petr Mladek <pmladek@suse.com>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Viktor Malik <vmalik@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
+        with ESMTP id S229492AbjDCBsn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Apr 2023 21:48:43 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9772D6E86
+        for <bpf@vger.kernel.org>; Sun,  2 Apr 2023 18:48:41 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id iw3so26551992plb.6
+        for <bpf@vger.kernel.org>; Sun, 02 Apr 2023 18:48:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680486521; x=1683078521;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xEfuOZqUioaUNjpYH146oBmHEwYliPKQXkMHIAaZDWY=;
+        b=TpCNhGt7GkIYr6YQXefLCU7EYG7dhZonsD0JCG/HQbrwrWUeUZ2XbdCOP/+92vtz4m
+         tjZcM2l/Kmcp4wCej33nvryUF69lRKsievF8ViV+MkyFkSMDtXDshxRZ3S1cnGkt++wQ
+         OFHwN5FjCeFrY5wIokp7klfAYuCVj3E6VyoKydMgG3B4sLcU8c4tBe1vHBdswdetuJKi
+         wlheIagY1mg5cQvwQdNhtpDMuOA7rYMem59/ChvZ4C70U/1lQusTlRXiao24fVUaNWvq
+         b88eMYSEcsXFw7zK1Xx3eFZ6XdMv4iIfPUkbWL6XJL6Qm/pGMg98j9CZQ/54uW9yrXOq
+         ZL2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680486521; x=1683078521;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xEfuOZqUioaUNjpYH146oBmHEwYliPKQXkMHIAaZDWY=;
+        b=ywQKxj55wxVu3FGyun/HCP1VbOZGQOGZjOTzbomPKfpb4j6rxDL3HU/mervqO5FsE+
+         B4RcDYwZg+VXp4Ds7dftzZ/8fI7wgB1rcwz/hUq1Y28Kf0XlqBbrAxyEjieZZDYkJ5os
+         Gg3GimobfJaxeFFEg9/w0w3AyPtJZ43SOI6xr4IuPYhlTEiWztC7+Zap81IRMlpqx8B5
+         r2M+HvHBl03wj6UplsILDv9sYayIEAZHiEm+20VHaNna2ch3z+eIAaPbeJqgSauW9aje
+         DiLIeFQWHer7X0aVgs9hIQOFZ16LTK9Ix78ixqjFUvB8JfNhpwT2+cyXFUsUYTtbj1kY
+         mS6A==
+X-Gm-Message-State: AAQBX9dsYq8iJbZV6oMIM8qFdCb5xyHDzITTrNRQuHe2/IMtXajekn4J
+        BQSyhe61QmsdZnRDmK7H+BU=
+X-Google-Smtp-Source: AKy350bNiK3YYJupgEBrHqQWxDR4bx/cin2hivcMEDzDTAERf1GjqUAf6nOqNaSc+DzuELP38r6BfA==
+X-Received: by 2002:a17:903:1106:b0:1a2:7afc:7cd with SMTP id n6-20020a170903110600b001a27afc07cdmr20638676plh.22.1680486520903;
+        Sun, 02 Apr 2023 18:48:40 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:3c8])
+        by smtp.gmail.com with ESMTPSA id s9-20020a170902988900b001a1dc2be791sm1408312plp.259.2023.04.02.18.48.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Apr 2023 18:48:40 -0700 (PDT)
+Date:   Sun, 2 Apr 2023 18:48:38 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-References: <ZBrPMkv8YVRiWwCR@samus.usersys.redhat.com>
- <ZBrxMWfmE/1RG/u0@krava>
- <CAADnVQLwvZyQXyRNn_oaBKx-EH_NauZHTg8+-MOMXo91MibX=A@mail.gmail.com>
- <ZBxbeYZ/+tOtEiNB@krava> <ZCU6dPDXZ0h7hT4w@krava>
- <98077109-02be-a708-cde7-5dc827e1f3ea@huawei.com> <ZCX4IMGp/aalXHSL@krava>
- <ZCaaWgmooVh2M/EC@alley> <7b396cbb-f977-0fa0-f5a9-0b16cef418b9@huawei.com>
- <ZCa/OgipCAqQmHhF@alley> <ZCdP5eJJ0hTNoamJ@krava>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <0a3db73b-e133-50f0-b248-8d725ea53d92@huawei.com>
-Date:   Mon, 3 Apr 2023 09:46:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: Re: [PATCH bpf-next 5/7] bpf: Mark potential spilled loop index
+ variable as precise
+Message-ID: <20230403014838.vzkfeq7qjqrp2rbr@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230330055600.86870-1-yhs@fb.com>
+ <20230330055625.92148-1-yhs@fb.com>
+ <7a5563bbbb29288588413c551effa6bca90e0670.camel@gmail.com>
+ <8adcc374-8128-501a-555c-5f26f7e44746@meta.com>
 MIME-Version: 1.0
-In-Reply-To: <ZCdP5eJJ0hTNoamJ@krava>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.7 required=5.0 tests=NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8adcc374-8128-501a-555c-5f26f7e44746@meta.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 2023/4/1 5:25, Jiri Olsa wrote:
-> On Fri, Mar 31, 2023 at 01:08:42PM +0200, Petr Mladek wrote:
->> On Fri 2023-03-31 17:15:56, Leizhen (ThunderTown) wrote:
->>>
->>>
->>> On 2023/3/31 16:31, Petr Mladek wrote:
->>>> On Thu 2023-03-30 22:59:12, Jiri Olsa wrote:
->>>>> On Thu, Mar 30, 2023 at 08:26:41PM +0800, Leizhen (ThunderTown) wrote:
->>>>>>
->>>>>>
->>>>>> On 2023/3/30 15:29, Jiri Olsa wrote:
->>>>>>> ping,
->>>>>>>
->>>>>>> Petr, Zhen, any comment on discussion below?
->>>>>>>
->>>>>>> thanks,
->>>>>>> jirka
->>>>>>>
->>>>>>> On Thu, Mar 23, 2023 at 03:00:25PM +0100, Jiri Olsa wrote:
->>>>>>>> On Wed, Mar 22, 2023 at 09:03:46AM -0700, Alexei Starovoitov wrote:
->>>>>>>>> On Wed, Mar 22, 2023 at 5:14 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->>>>>>>>>>
->>>>>>>>>> On Wed, Mar 22, 2023 at 10:49:38AM +0100, Artem Savkov wrote:
->>>>>>>>>>
->>>>>>>>>> SNIP
->>>>>>>>>>
->>>>>>>>>>>>> Hm, do we even need to preempt_disable? IIUC, preempt_disable is used
->>>>>>>>>>>>> in module kallsyms to prevent taking the module lock b/c kallsyms are
->>>>>>>>>>>>> used in the oops path. That shouldn't be an issue here, is that correct?
->>>>>>>>>>>>
->>>>>>>>>>>> btf_try_get_module calls try_module_get which disables the preemption,
->>>>>>>>>>>> so no need to call it in here
->>>>>>>>>>>
->>>>>>>>>>> It does, but it reenables preemption right away so it is enabled by the
->>>>>>>>>>> time we call find_kallsyms_symbol_value(). I am getting the following
->>>>>>>>>>> lockdep splat while running module_fentry_shadow test from test_progs.
->>>>>>>>>>>
->>>>>>>>>>> [   12.017973][  T488] =============================
->>>>>>>>>>> [   12.018529][  T488] WARNING: suspicious RCU usage
->>>>>>>>>>> [   12.018987][  T488] 6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804 Tainted: G           OE
->>>>>>>>>>> [   12.019898][  T488] -----------------------------
->>>>>>>>>>> [   12.020391][  T488] kernel/module/kallsyms.c:448 suspicious rcu_dereference_check() usage!
->>>>>>>>>>> [   12.021335][  T488]
->>>>>>>>>>> [   12.021335][  T488] other info that might help us debug this:
->>>>>>>>>>> [   12.021335][  T488]
->>>>>>>>>>> [   12.022416][  T488]
->>>>>>>>>>> [   12.022416][  T488] rcu_scheduler_active = 2, debug_locks = 1
->>>>>>>>>>> [   12.023297][  T488] no locks held by test_progs/488.
->>>>>>>>>>> [   12.023854][  T488]
->>>>>>>>>>> [   12.023854][  T488] stack backtrace:
->>>>>>>>>>> [   12.024336][  T488] CPU: 0 PID: 488 Comm: test_progs Tainted: G           OE      6.2.0.bpf-test-13063-g6a9f5cdba3c5 #804
->>>>>>>>>>> [   12.025290][  T488] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.1-2.fc37 04/01/2014
->>>>>>>>>>> [   12.026108][  T488] Call Trace:
->>>>>>>>>>> [   12.026381][  T488]  <TASK>
->>>>>>>>>>> [   12.026649][  T488]  dump_stack_lvl+0xb4/0x110
->>>>>>>>>>> [   12.027060][  T488]  lockdep_rcu_suspicious+0x158/0x1f0
->>>>>>>>>>> [   12.027541][  T488]  find_kallsyms_symbol_value+0xe8/0x110
->>>>>>>>>>> [   12.028028][  T488]  bpf_check_attach_target+0x838/0xa20
->>>>>>>>>>> [   12.028511][  T488]  check_attach_btf_id+0x144/0x3f0
->>>>>>>>>>> [   12.028957][  T488]  ? __pfx_cmp_subprogs+0x10/0x10
->>>>>>>>>>> [   12.029408][  T488]  bpf_check+0xeec/0x1850
->>>>>>>>>>> [   12.029799][  T488]  ? ktime_get_with_offset+0x124/0x1d0
->>>>>>>>>>> [   12.030247][  T488]  bpf_prog_load+0x87a/0xed0
->>>>>>>>>>> [   12.030627][  T488]  ? __lock_release+0x5f/0x160
->>>>>>>>>>> [   12.031010][  T488]  ? __might_fault+0x53/0xb0
->>>>>>>>>>> [   12.031394][  T488]  ? selinux_bpf+0x6c/0xa0
->>>>>>>>>>> [   12.031756][  T488]  __sys_bpf+0x53c/0x1240
->>>>>>>>>>> [   12.032115][  T488]  __x64_sys_bpf+0x27/0x40
->>>>>>>>>>> [   12.032476][  T488]  do_syscall_64+0x3e/0x90
->>>>>>>>>>> [   12.032835][  T488]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
->>>>>>>>>>
->>>>>>>>>> --- a/kernel/module/kallsyms.c
->>>>>>>>>> +++ b/kernel/module/kallsyms.c
->>>>>> Commit 91fb02f31505 ("module: Move kallsyms support into a separate file") hides
->>>>>> the answer. find_kallsyms_symbol_value() was originally a static function, and it
->>>>>> is only called by module_kallsyms_lookup_name() and is preemptive-protected.
->>>>>>
->>>>>> Now that we've added a call to function find_kallsyms_symbol_value(), it seems like
->>>>>> we should do the same thing as function module_kallsyms_lookup_name().
->>>>>>
->>>>>> Like this?
->>>>>> +				mod = btf_try_get_module(btf);
->>>>>> +				if (mod) {
->>>>>> +					preempt_disable();
->>>>>> +					addr = find_kallsyms_symbol_value(mod, tname);
->>>>>> +					preempt_enable();
->>>>>> +				} else
->>>>>> +					addr = 0;
->>>>>
->>>>> yes, that's what I did above, but I was just curious about the strange
->>>>> RCU usage Alexei commented on earlier:
->>>>>
->>>>> 	>>> +unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name)
->>>>> 	>>> +{
->>>>> 	>>> +       unsigned long ret;
->>>>> 	>>> +
->>>>> 	>>> +       preempt_disable();
->>>>> 	>>> +       ret = __find_kallsyms_symbol_value(mod, name);
->>>>> 	>>> +       preempt_enable();
->>>>> 	>>> +       return ret;
->>>>> 	>>> +}
->>>>> 	>>
->>>>> 	>> That doesn't look right.
->>>>> 	>> I think the issue is misuse of rcu_dereference_sched in
->>>>> 	>> find_kallsyms_symbol_value.
->>>>> 	>
->>>>> 	> it seems to be using rcu pointer to keep symbols for module init time and
->>>>> 	> then core symbols for after init.. and switch between them when module is
->>>>> 	> loaded, hence the strange rcu usage I think
->>>
->>> load_module
->>> 	post_relocation
->>> 		add_kallsyms
->>> 			mod->kallsyms = (void __rcu *)mod->init_layout.base + info->mod_kallsyms_init_off;   (1)
->>> 	do_init_module
->>> 		freeinit->module_init = mod->init_layout.base;
->>> 		rcu_assign_pointer(mod->kallsyms, &mod->core_kallsyms);                                      (2)
->>> 		if (llist_add(&freeinit->node, &init_free_list))
->>> 			schedule_work(&init_free_wq);
->>>
->>> do_free_init
->>> 	synchronize_rcu();
->>> 	module_memfree(initfree->module_init);
->>>
->>> IIUC, the RCU can help synchronize_rcu() in do_free_init() to make sure that no one
->>> is still using the first mod->kallsyms (1). If find_kallsyms_symbol_value() is executed
->>> between (1) and (2).
->>
->> Yes, this seems to be another scenario where the RCU synchronization/access
->> is needed.
-> 
-> thanks for the details
-> 
-> still curious.. confusing part for me is the use of rcu_dereference in
-> add_kallsyms IIUC there's no need for that because mod->kallsyms is not
-> exposed at that time? we could do without it like in patch below?
-
-Looks good to me. Prepare the data first, and then pointer to it.
-This is the standard operation procedure of the RCU. But there
-may be special considerations that we don't know about.
-
-
-> 
-> thanks,
-> jirka
+On Fri, Mar 31, 2023 at 04:39:29PM -0700, Yonghong Song wrote:
 > 
 > 
-> ---
-> diff --git a/kernel/module/kallsyms.c b/kernel/module/kallsyms.c
-> index bdc911dbcde5..bc1e748a1357 100644
-> --- a/kernel/module/kallsyms.c
-> +++ b/kernel/module/kallsyms.c
-> @@ -170,20 +170,18 @@ void add_kallsyms(struct module *mod, const struct load_info *info)
->  	Elf_Sym *dst;
->  	char *s;
->  	Elf_Shdr *symsec = &info->sechdrs[info->index.sym];
-> +	struct mod_kallsyms *kallsyms;
->  	unsigned long strtab_size;
->  
-> -	/* Set up to point into init section. */
-> -	mod->kallsyms = (void __rcu *)mod->init_layout.base +
-> -		info->mod_kallsyms_init_off;
-> +	kallsyms = mod->init_layout.base + info->mod_kallsyms_init_off;
->  
-> -	rcu_read_lock();
->  	/* The following is safe since this pointer cannot change */
-> -	rcu_dereference(mod->kallsyms)->symtab = (void *)symsec->sh_addr;
-> -	rcu_dereference(mod->kallsyms)->num_symtab = symsec->sh_size / sizeof(Elf_Sym);
-> +	kallsyms->symtab = (void *)symsec->sh_addr;
-> +	kallsyms->num_symtab = symsec->sh_size / sizeof(Elf_Sym);
->  	/* Make sure we get permanent strtab: don't use info->strtab. */
-> -	rcu_dereference(mod->kallsyms)->strtab =
-> +	kallsyms->strtab =
->  		(void *)info->sechdrs[info->index.str].sh_addr;
-> -	rcu_dereference(mod->kallsyms)->typetab = mod->init_layout.base + info->init_typeoffs;
-> +	kallsyms->typetab = mod->init_layout.base + info->init_typeoffs;
->  
->  	/*
->  	 * Now populate the cut down core kallsyms for after init
-> @@ -193,20 +191,20 @@ void add_kallsyms(struct module *mod, const struct load_info *info)
->  	mod->core_kallsyms.strtab = s = mod->data_layout.base + info->stroffs;
->  	mod->core_kallsyms.typetab = mod->data_layout.base + info->core_typeoffs;
->  	strtab_size = info->core_typeoffs - info->stroffs;
-> -	src = rcu_dereference(mod->kallsyms)->symtab;
-> -	for (ndst = i = 0; i < rcu_dereference(mod->kallsyms)->num_symtab; i++) {
-> -		rcu_dereference(mod->kallsyms)->typetab[i] = elf_type(src + i, info);
-> +	src = kallsyms->symtab;
-> +	for (ndst = i = 0; i < kallsyms->num_symtab; i++) {
-> +		kallsyms->typetab[i] = elf_type(src + i, info);
->  		if (i == 0 || is_livepatch_module(mod) ||
->  		    is_core_symbol(src + i, info->sechdrs, info->hdr->e_shnum,
->  				   info->index.pcpu)) {
->  			ssize_t ret;
->  
->  			mod->core_kallsyms.typetab[ndst] =
-> -			    rcu_dereference(mod->kallsyms)->typetab[i];
-> +			    kallsyms->typetab[i];
->  			dst[ndst] = src[i];
->  			dst[ndst++].st_name = s - mod->core_kallsyms.strtab;
->  			ret = strscpy(s,
-> -				      &rcu_dereference(mod->kallsyms)->strtab[src[i].st_name],
-> +				      &kallsyms->strtab[src[i].st_name],
->  				      strtab_size);
->  			if (ret < 0)
->  				break;
-> @@ -214,8 +212,10 @@ void add_kallsyms(struct module *mod, const struct load_info *info)
->  			strtab_size -= ret + 1;
->  		}
->  	}
-> -	rcu_read_unlock();
->  	mod->core_kallsyms.num_symtab = ndst;
-> +
-> +	/* Set up to point into init section. */
-> +	rcu_assign_pointer(mod->kallsyms, kallsyms);
->  }
->  
->  #if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
-> .
+> On 3/31/23 2:54 PM, Eduard Zingerman wrote:
+> > On Wed, 2023-03-29 at 22:56 -0700, Yonghong Song wrote:
+> > > For a loop, if loop index variable is spilled and between loop
+> > > iterations, the only reg/spill state difference is spilled loop
+> > > index variable, then verifier may assume an infinite loop which
+> > > cause verification failure. In such cases, we should mark
+> > > spilled loop index variable as precise to differentiate states
+> > > between loop iterations.
+> > > 
+> > > Since verifier is not able to accurately identify loop index
+> > > variable, add a heuristic such that if both old reg state and
+> > > new reg state are consts, mark old reg state as precise which
+> > > will trigger constant value comparison later.
+> > > 
+> > > Signed-off-by: Yonghong Song <yhs@fb.com>
+> > > ---
+> > >   kernel/bpf/verifier.c | 20 ++++++++++++++++++--
+> > >   1 file changed, 18 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index d070943a8ba1..d1aa2c7ae7c0 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -14850,6 +14850,23 @@ static bool stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old,
+> > >   		/* Both old and cur are having same slot_type */
+> > >   		switch (old->stack[spi].slot_type[BPF_REG_SIZE - 1]) {
+> > >   		case STACK_SPILL:
+> > > +			/* sometime loop index variable is spilled and the spill
+> > > +			 * is not marked as precise. If only state difference
+> > > +			 * between two iterations are spilled loop index, the
+> > > +			 * "infinite loop detected at insn" error will be hit.
+> > > +			 * Mark spilled constant as precise so it went through value
+> > > +			 * comparison.
+> > > +			 */
+> > > +			old_reg = &old->stack[spi].spilled_ptr;
+> > > +			cur_reg = &cur->stack[spi].spilled_ptr;
+> > > +			if (!old_reg->precise) {
+> > > +				if (old_reg->type == SCALAR_VALUE &&
+> > > +				    cur_reg->type == SCALAR_VALUE &&
+> > > +				    tnum_is_const(old_reg->var_off) &&
+> > > +				    tnum_is_const(cur_reg->var_off))
+> > > +					old_reg->precise = true;
+> > > +			}
+> > > +
+> > >   			/* when explored and current stack slot are both storing
+> > >   			 * spilled registers, check that stored pointers types
+> > >   			 * are the same as well.
+> > > @@ -14860,8 +14877,7 @@ static bool stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old,
+> > >   			 * such verifier states are not equivalent.
+> > >   			 * return false to continue verification of this path
+> > >   			 */
+> > > -			if (!regsafe(env, &old->stack[spi].spilled_ptr,
+> > > -				     &cur->stack[spi].spilled_ptr, idmap))
+> > > +			if (!regsafe(env, old_reg, cur_reg, idmap))
+> > >   				return false;
+> > >   			break;
+> > >   		case STACK_DYNPTR:
+> > 
+> > Hi Yonghong,
+> > 
+> > If you are going for v2 of this patch-set, could you please consider
+> > adding a parameter to regsafe() instead of modifying old state?
+> > Maybe it's just me, but having old state immutable seems simpler to understand.
+> > E.g., as in the patch in the end of this email (it's a patch on top of your series).
+> > 
+> > Interestingly, the version without old state modification also performs
+> > better in veristat, although I did not analyze the reasons for this.
 > 
+> Thanks for suggestion. Agree that my change may cause other side effects
+> as I explicit marked 'old_reg' as precise. Do not mark 'old_reg' with
+> precise should minimize the impact.
+> Will make the change in the next revision.
 
--- 
-Regards,
-  Zhen Lei
+Could you also post veristat before/after difference after patch 1, 3 and 5.
+I suspect there should be minimal delta for 1 and 3, but 5 can make both positive
+and negative effect.
+
+> > +		if (!rold->precise && !(force_precise_const &&
+> > +					tnum_is_const(rold->var_off) &&
+> > +					tnum_is_const(rcur->var_off)))
+
+... and if there are negative consequences for patch 5 we might tighten this heuristic.
+Like check that rcur->var_off.value - rold->var_off.value == 1 or -1 or bounded
+by some small number. If it's truly index var it shouldn't have enormous delta.
+But if patch 5 doesn't cause negative effect it would be better to keep it as-is.
