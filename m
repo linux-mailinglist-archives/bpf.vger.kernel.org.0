@@ -2,104 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B66DA6D3F26
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 10:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F776D3F56
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 10:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbjDCIib (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 04:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58888 "EHLO
+        id S231620AbjDCIpR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 04:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjDCIia (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 04:38:30 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF80C2D61;
-        Mon,  3 Apr 2023 01:38:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 943051F8D9;
-        Mon,  3 Apr 2023 08:38:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1680511103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZnIw06JprC7dy+OnhMRvOYKEzAkA2puzGDnOPlmZGCQ=;
-        b=LDAThqfAUeP8YfeXSMx0SCHxnohK7Gj/nCpVhVUNjqwdqETlqzrvBDKy6zQjJyHIXkNUrb
-        W6q2FQW0lYcUVVPC3UdRINlfnj6L5qLDp56/Q/IMjloPT68YokJAyiWkMM1I2SWlg8W3Ab
-        mdMS9LC6dZdFbLNpceTPxyFhjNTS7Bo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6879B1331A;
-        Mon,  3 Apr 2023 08:38:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id k4RGF3+QKmQQSAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 03 Apr 2023 08:38:23 +0000
-Date:   Mon, 3 Apr 2023 10:38:22 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
- outside task context
-Message-ID: <ZCqQfuprGreGYwFA@dhcp22.suse.cz>
-References: <ZCU1Bp+5bKNJzWIu@dhcp22.suse.cz>
- <CAJD7tka0CmRvcvB0k8DZuid1vC9OK_mFriHHbXNTUkVE7OjaTA@mail.gmail.com>
- <ZCU+8lSi+e4WgT3F@dhcp22.suse.cz>
- <CAJD7tkaKd9Bcb2-e83Q-kzF7G+crr1U+7uqUPBARXWq-LpyKvw@mail.gmail.com>
- <ZCVFA78lDj2/Uy0C@dhcp22.suse.cz>
- <CAJD7tkbjmBaXghQ+14Hy28r2LoWSim+LEjOPxaamYeA_kr2uVw@mail.gmail.com>
- <ZCVKqN2nDkkQFvO0@dhcp22.suse.cz>
- <CAJD7tkYEOVRcXs-Ag3mWn69EwE4rjFt9j5MAcTGCNE8BuhTd+A@mail.gmail.com>
- <ZCa9sixp3GJcjf8Y@dhcp22.suse.cz>
- <CAJD7tka-2vNn25=NdrKQoMf4ntdbWtojY0k4eAa-c9D+v7J=HQ@mail.gmail.com>
+        with ESMTP id S231834AbjDCIpM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 04:45:12 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608F640F7
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 01:45:08 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id r11so114177755edd.5
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 01:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1680511507;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=gls3PzAYkrjqLecU7D6fK2kYJv7shqoopRvlQDPgL3E=;
+        b=pHtBhCqR6ULW6wB+dbwdre+EP14JapbRBJyoy1SWol6oyWNlm3jpd3Tm3AoVi/z4gl
+         K5q6vI0TWGBqadYNSuQ3pkwxGBjRdyOqn4vF/VPHjhLA5leUdiqA9NuttL8Nv8h3aFu2
+         /mU/UeqgO8sPecCkL/BGXxXNcI5xJOek54JQ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680511507;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gls3PzAYkrjqLecU7D6fK2kYJv7shqoopRvlQDPgL3E=;
+        b=eoa2UyatkjhVYM9g38TuhG0TzTsIumXUMwPQcj0ai/Cxpt9Mtedy6BNBA5qYnKGRXg
+         eJt35DJ3kCZ+VpT14p9NpfbWgas9mFoM45j7o2tgyMZ+G/NVikiD/c8ptLBh5hIGC30R
+         UjmsfYWL8y54JU9ZVHaaT+drLu4cBz0631LqoI0MFNZpfYNHndgy+CGGsfr48TkfQ3C7
+         yME7rzYeTWUcy6WIpB1rZUgMWU0hsliGuM/TlmofabogATxPYbJluU4ju3bIUrJaPQ7d
+         RaUMOwjHOmLw0XXXTCC5BfKrI9pKrIIxTt2wYOKBsahMdMT1KREUwBBK4Y+3UtZSprgJ
+         MtYw==
+X-Gm-Message-State: AAQBX9fXAq2Szk0o17pJGbTwsky1r/b0PiZF+pev/n7JMdSFMLfqu/f7
+        LekyXSbuzcc4ANvxhz2Rugbi9A==
+X-Google-Smtp-Source: AKy350bFHkDO2VkvPa70FYS4i3I6JoMsXr3EW5Bxu9gfdRI2FSKC3rLrjdGd+X0wCXTUIPnfIEjQUw==
+X-Received: by 2002:aa7:d74b:0:b0:4fb:5607:6a24 with SMTP id a11-20020aa7d74b000000b004fb56076a24mr33712857eds.8.1680511506914;
+        Mon, 03 Apr 2023 01:45:06 -0700 (PDT)
+Received: from cloudflare.com (79.184.147.137.ipv4.supernova.orange.pl. [79.184.147.137])
+        by smtp.gmail.com with ESMTPSA id z21-20020a056402275500b00501d73cfc86sm4223679edd.9.2023.04.03.01.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Apr 2023 01:45:06 -0700 (PDT)
+References: <20230327175446.98151-1-john.fastabend@gmail.com>
+ <20230327175446.98151-4-john.fastabend@gmail.com>
+ <87zg7vbu60.fsf@cloudflare.com> <642782044cf76_c503a208d5@john.notmuch>
+User-agent: mu4e 1.6.10; emacs 28.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     cong.wang@bytedance.com, daniel@iogearbox.net, lmb@isovalent.com,
+        edumazet@google.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, will@isovalent.com
+Subject: Re: [PATCH bpf v2 03/12] bpf: sockmap, improved check for empty queue
+Date:   Mon, 03 Apr 2023 10:42:32 +0200
+In-reply-to: <642782044cf76_c503a208d5@john.notmuch>
+Message-ID: <87edp1e4mm.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tka-2vNn25=NdrKQoMf4ntdbWtojY0k4eAa-c9D+v7J=HQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri 31-03-23 12:03:47, Yosry Ahmed wrote:
-> On Fri, Mar 31, 2023 at 4:02 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 30-03-23 01:53:38, Yosry Ahmed wrote:
-> > [...]
-> > > Maybe we can add a primitive like might_sleep() for this, just food for thought.
-> >
-> > I do not think it is the correct to abuse might_sleep if the function
-> > itself doesn't sleep. If it does might_sleep is already involved.
-> 
-> Oh, sorry if I wasn't clear, I did not mean to reuse might_sleep() --
-> I meant introducing a new similar debug primitive that shouts if irqs
-> are disabled.
+On Fri, Mar 31, 2023 at 05:59 PM -07, John Fastabend wrote:
+> Jakub Sitnicki wrote:
 
-This is circling back to original concerns about arbitrary decision to
-care about IRQs. Is this really any different from spin locks or preempt
-disabled critical sections preventing any scheduling and potentially
-triggereing soft lockups?
--- 
-Michal Hocko
-SUSE Labs
+[...]
+
+>> It's just an idea and I don't want to block a tested fix that LGTM so
+>> consider this:
+>
+> Did you get a chance to try this? Otherwise I can also give the idea
+> a try next week.
+
+No. By all means, feel free. You caught me at a busy time. That's also
+why the review has been going so slow.
