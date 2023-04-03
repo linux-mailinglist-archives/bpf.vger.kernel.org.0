@@ -2,95 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3097D6D3F6A
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 10:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A3C6D4246
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 12:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbjDCIuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 04:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
+        id S231548AbjDCKjT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 06:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbjDCIuG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 04:50:06 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3208A50;
-        Mon,  3 Apr 2023 01:50:00 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id y4so114284523edo.2;
-        Mon, 03 Apr 2023 01:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680511798;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F1csYuc8Du+yp6knHrKqTSIkRPNcCOVusY7pemIXMNI=;
-        b=NR0lUwCqM13kiX4Ei0Wpeh4pxSI8UQQzUXYoO85m56tZ2rNpR1aa5TKAHjt6qmiHgx
-         41akPXEgY+X2SDyOEJiV0xvN9/iNkHrmJxMQe+NDfGAd1Rbl7gXNMRQG2YEpWPcQobuk
-         RSoM965Jaa+wOVGjbxkuKhXvExt1k2x1i/d2I5s8/8/fRFDEJFTC7M8EZ7jIZ7U5c3UG
-         1mkZeaP1mnib6E9SDioYTvhE+3mEiJmGd5P3TCyInLeE5P6hK1ksukbP2VYTQ/7v8bbk
-         AwZ5TlxOv+yjLUOw8GfcU1yraGmY56PT+vfAdkZdXmwM1MBRI0jPvMPWKo8pGZXUCo94
-         IlPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680511798;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F1csYuc8Du+yp6knHrKqTSIkRPNcCOVusY7pemIXMNI=;
-        b=sqD2rxEckzdcagh0VFV11zr3Hc3FjXap7e03FKxcI/Z3wfaAd/89vgrZITZU2VT9fO
-         Zy2lWDpW2cCeljw4JKrHwDOZxjt/BfLbrb9M3w2wZaHgONfSkE/w31YKq008y85CKkXo
-         cupDfUMpVKaCBVnCQxrNJVRpEB75dYzyto7UOHpM1ScS/wd4PtmlzU/Y2STNUzRX5KYb
-         xPEdw29kWu590T+56qGk9DPgvVDxnquRLqjoer3KX7K7pDOXtex3Enn5oZ7NJsNXrAU5
-         sxeDKW+suvzWNQDUlaOGdAhrAvdvoJUY0YerWNAOclqKmuXJKgmHkGs9zGyEKhbDmTOx
-         BCyw==
-X-Gm-Message-State: AAQBX9cBw1b5SFvh/HxC/F5GiHyB6DWaX7/Nm26QgzMus6k9klAS1ys8
-        ek81oBmQ5nYTM4jXlfZaaQ9En3an1uMKSvlq
-X-Google-Smtp-Source: AKy350YKFA2hrAAFD23ldjQlNISQa4Kzn5iawZXIIDNQdadr6n/MRqHG6wssuEkw6iEjd1oZcfXysA==
-X-Received: by 2002:a17:906:4786:b0:946:a1c8:e000 with SMTP id cw6-20020a170906478600b00946a1c8e000mr26881504ejc.44.1680511798526;
-        Mon, 03 Apr 2023 01:49:58 -0700 (PDT)
-Received: from localhost (tor-exit-relay-8.anonymizing-proxy.digitalcourage.de. [185.220.102.254])
-        by smtp.gmail.com with ESMTPSA id t6-20020a170906608600b0094863433fdcsm1679976ejj.51.2023.04.03.01.49.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Apr 2023 01:49:58 -0700 (PDT)
-Date:   Mon, 3 Apr 2023 11:49:54 +0300
-From:   Maxim Mikityanskiy <maxtram95@gmail.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Joe Stringer <joe@isovalent.com>, bpf@vger.kernel.org,
-        oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ast@kernel.org, corbet@lwn.net,
-        martin.lau@linux.dev, john.fastabend@gmail.com
-Subject: Re: [PATCH bpf-next v4 2/2] docs/bpf: Add LRU internals description
- and graph
-Message-ID: <ZCqTMq3sHMrx2boI@mail.gmail.com>
-References: <20230401200651.1022113-2-joe@isovalent.com>
- <202304022107.IwHc05cs-lkp@intel.com>
- <ZCpK5wOI0ZEedhrr@debian.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZCpK5wOI0ZEedhrr@debian.me>
-X-Spam-Status: No, score=3.6 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+        with ESMTP id S229509AbjDCKjR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 06:39:17 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09918113FD;
+        Mon,  3 Apr 2023 03:38:41 -0700 (PDT)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33390Miu029440;
+        Mon, 3 Apr 2023 10:36:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=6Znlgc7WgH1YZnYgmuzPeUYORB1yzDqcHa2rVABuxc4=;
+ b=IUYkLbtVR7usaQuKXuG914mA0g/1veQghrL12MU8R3zQaCrcNzfisFbQlAuWLfDsp277
+ G50YhmEr4jviXpf3hHMoPzTFGWXEu2u7rjSFTaJ0NA5U3F8amhqLSdwaaN1k+nQqRW/J
+ V9RSL9OAsCX3SVYu+k56mVQzJi1cfUlmcdLZfA81+x54ZnbnazUJ0Q9fxyh9tXXCgHbw
+ O49BSpBBeaD8YulWRdokV46Dq2+BxsG3CpHgaz42v7tgWqjPlQgmZcyQIXsRlw+lvQfG
+ TtvMGGt3nlWDEngOR2NQP+Xv9OgdnED7glvQfMv1eXuuhN+VxqpCxiigrZZzZvvMdfxS 7Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ppxfpmdve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Apr 2023 10:36:42 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3339xDUV039018;
+        Mon, 3 Apr 2023 10:36:42 GMT
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ppxfpmduv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Apr 2023 10:36:42 +0000
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3339ESW0024232;
+        Mon, 3 Apr 2023 10:36:41 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([9.208.130.98])
+        by ppma02wdc.us.ibm.com (PPS) with ESMTPS id 3ppc882t8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Apr 2023 10:36:41 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 333Aae4t6816460
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 Apr 2023 10:36:40 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 64C1658084;
+        Mon,  3 Apr 2023 10:36:40 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2CA1D58073;
+        Mon,  3 Apr 2023 10:36:35 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.66.117])
+        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  3 Apr 2023 10:36:34 +0000 (GMT)
+Message-ID: <3b6c773045d73ba1dcdb80dd9c6b7afcbd62cc42.camel@linux.ibm.com>
+Subject: Re: [PATCH v10 0/4] evm: Do HMAC of multiple per LSM xattrs for new
+ inodes
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, casey@schaufler-ca.com
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
+        nicolas.bouchinet@clip-os.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Mon, 03 Apr 2023 06:36:33 -0400
+In-Reply-To: <20230331123221.3273328-1-roberto.sassu@huaweicloud.com>
+References: <20230331123221.3273328-1-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: sxJ74yMfVWLH41Y5N-hjWHNpZVqNXdwZ
+X-Proofpoint-GUID: IA7nyyfi-xTkiObYp5aOGV0h4F5zZvU5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-03_06,2023-04-03_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 bulkscore=0 clxscore=1011 mlxscore=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=587 spamscore=0 malwarescore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2304030080
+X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 03 Apr 2023 at 10:41:27 +0700, Bagas Sanjaya wrote:
-> On Sun, Apr 02, 2023 at 09:47:49PM +0800, kernel test robot wrote:
-> > All warnings (new ones prefixed by >>):
-> > 
-> > >> Warning: Orthogonal edges do not currently handle edge labels. Try using xlabels.
-> > 
-> 
-> Hi,
-> 
-> I can't reproduce the warning above. My system has graphviz 2.42.2
-> installed (via Debian package). What graphviz version do kernel test
-> robot have?
+On Fri, 2023-03-31 at 14:32 +0200, Roberto Sassu wrote:
 
-I have the same warning on Arch Linux.
+> Changelog
+> 
+> v9:
+> - Ensure in reiserfs_security_write() that the full xattr name is not
+>   larger than XATTR_NAME_MAX
+> - Rename num_filled_xattrs to xattr_count everywhere (suggested by Paul)
+> - Rename lsm_find_xattr_slot() to lsm_get_xattr_slot() and add a proper
+>   documentation (suggested by Paul)
+> - Return zero instead of -EOPNOTSUPP in evm_inode_init_security()
+>   (suggested by Paul)
+> - Remove additional checks of new_xattrs array in
+>   security_inode_init_security() (suggested by Paul)
+> - Handle the !initxattrs case similarly to the initxattrs case, except for
+>   not allocating the new_xattrs array in the former (suggested by Paul)
+> - Remove local variable xattr in security_inode_init_security(), and use
+>   xattr_count instead for loop termination (suggested by Paul)
+> 
+> v8:
+> - Add a new reiserfs patch to write the full xattr name
+> - Add num_filled_xattrs parameter to inode_init_security hook (suggested by
+>   Paul) and evm_inode_init_security()
+> - Change default return value of inode_init_security hook to -EOPNOTSUPP
+> - Rename lbs_xattr field of lsm_blob_sizes to lbs_xattr_count
+> - Introduce lsm_find_xattr_slot() helper
+> - Rename lsm_xattr parameter of evm_init_hmac() to xattrs
+> - Retrieve the EVM xattr slot with lsm_find_xattr_slot() and double check
+>   with the xattr array terminator
+> - Remove security_check_compact_filled_xattrs() (suggested by Paul)
 
-$ dot --version
-dot - graphviz version 7.1.0 (0)
+Much better without security_check_compact_filled_xattrs().  Thank you!
+
+> - Update security_inode_init_security() documentation
+> - Ensure that inode_init_security hook incremented the number of filled
+>   slots if it returned zero
+> - Ensure that xattr name and value are non-NULL in the filled slots
+> - Add the xattr name assignment after the xattr value one (suggested by
+>   Paul)
+> - Drop patches 1 - 3 (already in lsm/next)
+> 
+
+-- 
+thanks,
+
+Mimi
+
