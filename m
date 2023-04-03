@@ -2,122 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2F56D3ED6
-	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 10:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66DA6D3F26
+	for <lists+bpf@lfdr.de>; Mon,  3 Apr 2023 10:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231661AbjDCIVi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Apr 2023 04:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
+        id S231629AbjDCIib (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Apr 2023 04:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbjDCIVc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Apr 2023 04:21:32 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2897CEC6E;
-        Mon,  3 Apr 2023 01:21:21 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VfFpMZ3_1680510077;
-Received: from 30.221.149.127(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VfFpMZ3_1680510077)
-          by smtp.aliyun-inc.com;
-          Mon, 03 Apr 2023 16:21:18 +0800
-Message-ID: <ee61468e-8eb3-3949-1a82-0eb2e0b6a279@linux.alibaba.com>
-Date:   Mon, 3 Apr 2023 16:21:16 +0800
+        with ESMTP id S230052AbjDCIia (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Apr 2023 04:38:30 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF80C2D61;
+        Mon,  3 Apr 2023 01:38:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 943051F8D9;
+        Mon,  3 Apr 2023 08:38:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680511103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZnIw06JprC7dy+OnhMRvOYKEzAkA2puzGDnOPlmZGCQ=;
+        b=LDAThqfAUeP8YfeXSMx0SCHxnohK7Gj/nCpVhVUNjqwdqETlqzrvBDKy6zQjJyHIXkNUrb
+        W6q2FQW0lYcUVVPC3UdRINlfnj6L5qLDp56/Q/IMjloPT68YokJAyiWkMM1I2SWlg8W3Ab
+        mdMS9LC6dZdFbLNpceTPxyFhjNTS7Bo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6879B1331A;
+        Mon,  3 Apr 2023 08:38:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id k4RGF3+QKmQQSAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 03 Apr 2023 08:38:23 +0000
+Date:   Mon, 3 Apr 2023 10:38:22 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+Message-ID: <ZCqQfuprGreGYwFA@dhcp22.suse.cz>
+References: <ZCU1Bp+5bKNJzWIu@dhcp22.suse.cz>
+ <CAJD7tka0CmRvcvB0k8DZuid1vC9OK_mFriHHbXNTUkVE7OjaTA@mail.gmail.com>
+ <ZCU+8lSi+e4WgT3F@dhcp22.suse.cz>
+ <CAJD7tkaKd9Bcb2-e83Q-kzF7G+crr1U+7uqUPBARXWq-LpyKvw@mail.gmail.com>
+ <ZCVFA78lDj2/Uy0C@dhcp22.suse.cz>
+ <CAJD7tkbjmBaXghQ+14Hy28r2LoWSim+LEjOPxaamYeA_kr2uVw@mail.gmail.com>
+ <ZCVKqN2nDkkQFvO0@dhcp22.suse.cz>
+ <CAJD7tkYEOVRcXs-Ag3mWn69EwE4rjFt9j5MAcTGCNE8BuhTd+A@mail.gmail.com>
+ <ZCa9sixp3GJcjf8Y@dhcp22.suse.cz>
+ <CAJD7tka-2vNn25=NdrKQoMf4ntdbWtojY0k4eAa-c9D+v7J=HQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v2 1/2] net/smc: Introduce BPF injection
- capability for SMC
-Content-Language: en-US
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, kgraul@linux.ibm.com, wenjia@linux.ibm.com,
-        jaka@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-References: <1676981919-64884-1-git-send-email-alibuda@linux.alibaba.com>
- <1676981919-64884-2-git-send-email-alibuda@linux.alibaba.com>
- <76e226e6-f3bf-f740-c86c-6ee214aff07d@linux.dev>
- <72030784-451a-2042-cbb7-98e1f9a544d5@linux.alibaba.com>
- <366b9486-9a00-6add-d54b-5c3f4d35afe9@linux.dev>
- <6b4728e0-dfb7-ec7b-630f-87ee42233fe8@linux.alibaba.com>
- <fe3db636-2f89-3175-a605-2124b43ae4fa@linux.dev>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <fe3db636-2f89-3175-a605-2124b43ae4fa@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.4 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tka-2vNn25=NdrKQoMf4ntdbWtojY0k4eAa-c9D+v7J=HQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri 31-03-23 12:03:47, Yosry Ahmed wrote:
+> On Fri, Mar 31, 2023 at 4:02 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 30-03-23 01:53:38, Yosry Ahmed wrote:
+> > [...]
+> > > Maybe we can add a primitive like might_sleep() for this, just food for thought.
+> >
+> > I do not think it is the correct to abuse might_sleep if the function
+> > itself doesn't sleep. If it does might_sleep is already involved.
+> 
+> Oh, sorry if I wasn't clear, I did not mean to reuse might_sleep() --
+> I meant introducing a new similar debug primitive that shouts if irqs
+> are disabled.
 
-Hi Martin,
-
-Sorry to have been responding so late,  I've been working on the 
-link_update you mentioned in last week,
-I have completed the support and testing of the related functions of it. 
-and it is expected to be released in the
-next few days.
-
-As you mentioned, I do have much experience in kernel network 
-development, so I plan to resend the PATCH in the form of RFC.
-I really hope to receive your suggestions in next serials. Thank you.😉
-
-Best wishes.
-D. Wythe
-
-
-On 3/25/23 7:27 AM, Martin KaFai Lau wrote:
-> On 3/23/23 9:08 PM, D. Wythe wrote:
->>
->> The latest design is that users can register a negotiator 
->> implementation indexed by name, smc_sock can use bpf_setsockopt to 
->> specify
->> whether a specific negotiation implementation is required via name. 
->> If there are no settings, there will be no negotiators.
->>
->> What do you think?
->
-> tbh, bpf_setsockopt is many steps away. It needs to begin with a 
-> syscall setsockopt first. There is little reason it can only be done 
-> with a bpf prog. and how does the user know which negotiator a smc 
-> sock is using? Currently, ss can learn the tcp-cc of a sk.
->
-> ~~~~~~~~
->
-> If this effort is serious, the code quality has to be much improved. 
-> The obvious bug and unused variables make this set at most a RFC.
->
-> From the bpf perspective, it is ok-ish to start with a global 
-> negotiator first and skip the setsockopt details for now. However, it 
-> needs to be have a name. The new link_update 
-> (https://lore.kernel.org/bpf/20230323032405.3735486-1-kuifeng@meta.com/) 
-> has to work also. The struct_ops is rcu reader safe, so leverage it 
-> whenever it can instead of the read/write lock. It is how struct_ops 
-> work for tcp, so try to stay consistent as much as possible in the 
-> networking stack.
->
->>
->> In addition, I am very sorry that I have not issued my implementation 
->> for such a long time, and I have encountered some problems with the 
->> implementation because
->> the SMC needs to be built as kernel module, I have struggled with the 
->> bpf_setsockopt implementation, and there are some new self-testes 
->> that need to be written.
->>
->
-> Regarding compiling as module,
->
-> +ifneq ($(CONFIG_SMC),)
-> +ifeq ($(CONFIG_BPF_SYSCALL),y)
-> +obj-y                += smc/bpf_smc_struct_ops.o
-> +endif
->
-> struct_ops does not support module now. It is on the todo list. The 
-> bpf_smc_struct_ops.o above can only be used when CONFIG_SMC=y. 
-> Otherwise, the bpf_smc_struct_ops is always built in while most users 
-> will never load the smc module.
-
+This is circling back to original concerns about arbitrary decision to
+care about IRQs. Is this really any different from spin locks or preempt
+disabled critical sections preventing any scheduling and potentially
+triggereing soft lockups?
+-- 
+Michal Hocko
+SUSE Labs
