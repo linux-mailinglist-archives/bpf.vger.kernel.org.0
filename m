@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0236D579E
-	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 06:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74176D579B
+	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 06:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbjDDEiQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Apr 2023 00:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35560 "EHLO
+        id S231906AbjDDEhz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Apr 2023 00:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbjDDEiP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 00:38:15 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB61C2
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 21:38:14 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 333NLdkc006259
-        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 21:38:13 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pqytf50dk-6
+        with ESMTP id S233072AbjDDEhv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 00:37:51 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33AD1FFB
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 21:37:47 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 333NLgZ1021928
+        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 21:37:46 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pqsw1xhga-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 21:38:13 -0700
-Received: from twshared21709.17.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 21:37:46 -0700
+Received: from twshared38955.16.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 3 Apr 2023 21:37:50 -0700
+ 15.1.2507.17; Mon, 3 Apr 2023 21:37:45 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 9FA532D051ADB; Mon,  3 Apr 2023 21:37:33 -0700 (PDT)
+        id AE0822D051B21; Mon,  3 Apr 2023 21:37:35 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>, <lmb@isovalent.com>, <timo@incline.eu>,
         <robin.goegge@isovalent.com>
 CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v3 bpf-next 16/19] libbpf: wire through log_size_actual for bpf_btf_load() API
-Date:   Mon, 3 Apr 2023 21:36:56 -0700
-Message-ID: <20230404043659.2282536-17-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 17/19] selftests/bpf: add tests to validate log_size_actual feature
+Date:   Mon, 3 Apr 2023 21:36:57 -0700
+Message-ID: <20230404043659.2282536-18-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230404043659.2282536-1-andrii@kernel.org>
 References: <20230404043659.2282536-1-andrii@kernel.org>
@@ -42,8 +42,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: aBTEc5Owl5ZV1OrJtppy-7AY9hbHU5Jd
-X-Proofpoint-GUID: aBTEc5Owl5ZV1OrJtppy-7AY9hbHU5Jd
+X-Proofpoint-GUID: NytqR2le_cmZWzDESxUbmIdtTKppvhY0
+X-Proofpoint-ORIG-GUID: NytqR2le_cmZWzDESxUbmIdtTKppvhY0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-04-03_19,2023-04-03_03,2023-02-09_01
@@ -56,66 +56,149 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Similar to what we did for bpf_prog_load() in previous patch, wire
-returning of log_size_actual value from kernel back to the user through
-OPTS out field.
+Add additional test cases validating that log_size_actual is consistent
+between fixed and rotating log modes, and that log_size_actual can be
+used *exactly* without causing -ENOSPC, while using just 1 byte shorter
+log buffer would cause -ENOSPC.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/bpf.c |  6 ++++--
- tools/lib/bpf/bpf.h | 11 +++++++++--
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ .../selftests/bpf/prog_tests/verifier_log.c   | 92 +++++++++++++++----
+ 1 file changed, 76 insertions(+), 16 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index cfe79d441c65..586776315afe 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -1083,9 +1083,9 @@ int bpf_raw_tracepoint_open(const char *name, int prog_fd)
- 	return libbpf_err_errno(fd);
- }
- 
--int bpf_btf_load(const void *btf_data, size_t btf_size, const struct bpf_btf_load_opts *opts)
-+int bpf_btf_load(const void *btf_data, size_t btf_size, struct bpf_btf_load_opts *opts)
- {
--	const size_t attr_sz = offsetofend(union bpf_attr, btf_log_level);
-+	const size_t attr_sz = offsetofend(union bpf_attr, btf_log_size_actual);
- 	union bpf_attr attr;
- 	char *log_buf;
- 	size_t log_size;
-@@ -1128,6 +1128,8 @@ int bpf_btf_load(const void *btf_data, size_t btf_size, const struct bpf_btf_loa
- 		attr.btf_log_level = 1;
- 		fd = sys_bpf_fd(BPF_BTF_LOAD, &attr, attr_sz);
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier_log.c b/tools/testing/selftests/bpf/prog_tests/verifier_log.c
+index afe9e0384055..410bab151f1b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier_log.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier_log.c
+@@ -18,25 +18,41 @@ static bool check_prog_load(int prog_fd, bool expect_err, const char *tag)
+ 		if (!ASSERT_GT(prog_fd, 0, tag))
+ 			return false;
  	}
-+
-+	OPTS_SET(opts, log_size_actual, attr.btf_log_size_actual);
- 	return libbpf_err_errno(fd);
++	if (prog_fd >= 0)
++		close(prog_fd);
+ 	return true;
  }
  
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 45a967e65165..fd45b70b9ea8 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -124,11 +124,18 @@ struct bpf_btf_load_opts {
- 	char *log_buf;
- 	__u32 log_level;
- 	__u32 log_size;
-+	/* output: actual total log contents size (including termintaing zero).
-+	 * It could be both larger than original log_size (if log was
-+	 * truncated), or smaller (if log buffer wasn't filled completely).
-+	 * If kernel doesn't support this feature, log_size is left unchanged.
-+	 */
-+	__u32 log_size_actual;
-+	size_t :0;
- };
--#define bpf_btf_load_opts__last_field log_size
-+#define bpf_btf_load_opts__last_field log_size_actual
++static struct {
++	/* strategically placed before others to avoid accidental modification by kernel */
++	char filler[1024];
++	char buf[1024];
++	/* strategically placed after buf[] to catch more accidental corruptions */
++	char reference[1024];
++} logs;
++static const struct bpf_insn *insns;
++static size_t insn_cnt;
++
++static int load_prog(struct bpf_prog_load_opts *opts, bool expect_load_error)
++{
++	int prog_fd;
++
++	prog_fd = bpf_prog_load(BPF_PROG_TYPE_RAW_TRACEPOINT, "log_prog",
++				"GPL", insns, insn_cnt, opts);
++	check_prog_load(prog_fd, expect_load_error, "prog_load");
++
++	return prog_fd;
++}
++
+ static void verif_log_subtest(const char *name, bool expect_load_error, int log_level)
+ {
+ 	LIBBPF_OPTS(bpf_prog_load_opts, opts);
+-	struct {
+-		/* strategically placed before others to avoid accidental modification by kernel */
+-		char filler[1024];
+-		char buf[1024];
+-		/* strategically placed after buf[] to catch more accidental corruptions */
+-		char reference[1024];
+-	} logs;
+ 	char *exp_log, prog_name[16], op_name[32];
+ 	struct test_log_buf *skel;
+ 	struct bpf_program *prog;
+-	const struct bpf_insn *insns;
+-	size_t insn_cnt, fixed_log_sz;
+-	int i, err, prog_fd;
++	size_t fixed_log_sz;
++	__u32 log_sz_actual_fixed, log_sz_actual_rolling;
++	int i, err, prog_fd, res;
  
- LIBBPF_API int bpf_btf_load(const void *btf_data, size_t btf_size,
--			    const struct bpf_btf_load_opts *opts);
-+			    struct bpf_btf_load_opts *opts);
+ 	skel = test_log_buf__open();
+ 	if (!ASSERT_OK_PTR(skel, "skel_open"))
+@@ -61,11 +77,7 @@ static void verif_log_subtest(const char *name, bool expect_load_error, int log_
+ 	opts.log_buf = logs.reference;
+ 	opts.log_size = sizeof(logs.reference);
+ 	opts.log_level = log_level | 8 /* BPF_LOG_FIXED */;
+-	prog_fd = bpf_prog_load(BPF_PROG_TYPE_RAW_TRACEPOINT, "log_fixed",
+-				"GPL", insns, insn_cnt, &opts);
+-	if (!check_prog_load(prog_fd, expect_load_error, "fixed_buf_prog_load"))
+-		goto cleanup;
+-	close(prog_fd);
++	load_prog(&opts, expect_load_error);
  
- LIBBPF_API int bpf_map_update_elem(int fd, const void *key, const void *value,
- 				   __u64 flags);
+ 	fixed_log_sz = strlen(logs.reference) + 1;
+ 	if (!ASSERT_GT(fixed_log_sz, 50, "fixed_log_sz"))
+@@ -89,7 +101,7 @@ static void verif_log_subtest(const char *name, bool expect_load_error, int log_
+ 		opts.log_level = log_level | 8; /* fixed-length log */
+ 		opts.log_size = 25;
+ 
+-		prog_fd = bpf_prog_load(BPF_PROG_TYPE_RAW_TRACEPOINT, "log_fixed50",
++		prog_fd = bpf_prog_load(BPF_PROG_TYPE_RAW_TRACEPOINT, "log_fixed25",
+ 					"GPL", insns, insn_cnt, &opts);
+ 		if (!ASSERT_EQ(prog_fd, -ENOSPC, "unexpected_log_fixed_prog_load_result")) {
+ 			if (prog_fd >= 0)
+@@ -147,6 +159,54 @@ static void verif_log_subtest(const char *name, bool expect_load_error, int log_
+ 		}
+ 	}
+ 
++	/* (FIXED) get actual log size */
++	opts.log_buf = logs.buf;
++	opts.log_level = log_level | 8; /* BPF_LOG_FIXED */
++	opts.log_size = sizeof(logs.buf);
++	res = load_prog(&opts, expect_load_error);
++	ASSERT_NEQ(res, -ENOSPC, "prog_load_res_fixed");
++
++	log_sz_actual_fixed = opts.log_size_actual;
++	ASSERT_GT(log_sz_actual_fixed, 0, "log_sz_actual_fixed");
++
++	/* (ROLLING) get actual log size */
++	opts.log_buf = logs.buf;
++	opts.log_level = log_level;
++	opts.log_size = sizeof(logs.buf);
++	res = load_prog(&opts, expect_load_error);
++	ASSERT_NEQ(res, -ENOSPC, "prog_load_res_rolling");
++
++	log_sz_actual_rolling = opts.log_size_actual;
++	ASSERT_EQ(log_sz_actual_rolling, log_sz_actual_fixed, "log_sz_actual_eq");
++
++	/* (FIXED) expect -ENOSPC for one byte short log */
++	opts.log_buf = logs.buf;
++	opts.log_level = log_level | 8; /* BPF_LOG_FIXED */
++	opts.log_size = log_sz_actual_fixed - 1;
++	res = load_prog(&opts, true /* should fail */);
++	ASSERT_EQ(res, -ENOSPC, "prog_load_res_too_short_fixed");
++
++	/* (FIXED) expect *not* -ENOSPC with exact log_size_actual buffer */
++	opts.log_buf = logs.buf;
++	opts.log_level = log_level | 8; /* BPF_LOG_FIXED */
++	opts.log_size = log_sz_actual_fixed;
++	res = load_prog(&opts, expect_load_error);
++	ASSERT_NEQ(res, -ENOSPC, "prog_load_res_just_right_fixed");
++
++	/* (ROLLING) expect -ENOSPC for one byte short log */
++	opts.log_buf = logs.buf;
++	opts.log_level = log_level;
++	opts.log_size = log_sz_actual_rolling - 1;
++	res = load_prog(&opts, true /* should fail */);
++	ASSERT_EQ(res, -ENOSPC, "prog_load_res_too_short_rolling");
++
++	/* (ROLLING) expect *not* -ENOSPC with exact log_size_actual buffer */
++	opts.log_buf = logs.buf;
++	opts.log_level = log_level;
++	opts.log_size = log_sz_actual_rolling;
++	res = load_prog(&opts, expect_load_error);
++	ASSERT_NEQ(res, -ENOSPC, "prog_load_res_just_right_rolling");
++
+ cleanup:
+ 	test_log_buf__destroy(skel);
+ }
 -- 
 2.34.1
 
