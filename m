@@ -2,84 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB706D7077
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 01:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DC36D70AE
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 01:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbjDDXUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Apr 2023 19:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
+        id S231750AbjDDX34 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Apr 2023 19:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbjDDXUS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 19:20:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B433C06
-        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 16:20:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4271863A54
-        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 23:20:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 93A61C4339B;
-        Tue,  4 Apr 2023 23:20:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680650416;
-        bh=Pf8uoTf/VzYOcIWhfC5pIdbt0W5+9/nM0gvM0o7i+1I=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DLxOY6H44DlU9KgL58D7+2vOrgQpUwhrgBYcSYGt/6EttaH77Ls2Za7tUSpHZ2Xuc
-         c+i5Ris2yTe/pyxthqaHdi/9K4w2+0dFS6qnit2eWWqUYvaE2xS5sZJDNzXYPS6n15
-         Xie7PtB2ui89n6wwUSMoWnlEdFL/eFveu1MTd5vhsjpnOwn03CJnyyWrJUz15xxaap
-         gDVJBeeEGXrUjFmQdR0qwWFUsb491VZFfiX5zyIzIRxxRGFaUzvzMUmTJHsql9zcVp
-         72prVPKIeR+VltlWMO/UonSBQOGFsVFwcyDfF0Yn7kTZQ3b8sM8cSVzmNPAma9oI99
-         Z+Vejos5nzs+g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7DA3BC395D8;
-        Tue,  4 Apr 2023 23:20:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229973AbjDDX3z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 19:29:55 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AD1171A;
+        Tue,  4 Apr 2023 16:29:54 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id eh3so136728303edb.11;
+        Tue, 04 Apr 2023 16:29:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680650993;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lyNm5fRe9Qqf1NA929EHONgNw/nkK0iIgK/vHWE7UNk=;
+        b=hr7G0Y0TLoHW+82443tb1U4UmTX1f1J/QBUNLR4xLR0sQUkAek+0PMQTAfMLdfsCbP
+         8Rb/qS5R9VYknRXFqDeCZqqo/2U7MDQIaDnDdpY8Nuv7cUdCXM7GDwdTWyHMSqm62gah
+         6YHBMfyR5MSwR3a0bbZOti+SG7VNNZ5nW5229rEMek+r35cP9ufCdbq8kQ0D8pLOd9+g
+         yoyCYJ9Q2txkIPLAb6F6opoWfkcgCb6uSrMMzEAXoFQyc9EhvujUKtNK8kZY5rGPYSuA
+         HPiZ6SGC0BjnO4SNFcgx+gQFT4DxFXrXVYkUCXsuHF9Nf8gCMZb8H7yvrVvGYsGRsU4k
+         yYtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680650993;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lyNm5fRe9Qqf1NA929EHONgNw/nkK0iIgK/vHWE7UNk=;
+        b=OKp9/mmiyxDWBIPqaIWt0/IauWLZ1gTkS3aQLl+dgRypASmMetoUnlk+OcsFgI4p0b
+         iPlVuXCcHh/v4tGPqRzn6rS7b//sagfjR2BO2aI/e4Y+qKfdB0bO0hOe5WckvcRGUCEu
+         sCiwHq828METzTXSfrs0/kw8VdmxkFfTdwkIlRXI7CTeQju84u3SoaY89MVSW+EhRHm3
+         /lZeY71IzHsj+12wrGvDMm5kj4oGKuAu79mp5/ceM8WgqnOM+59ZSBvxiTa7Bv2s0uM9
+         dT9RfZ42gdeKkvIx5oMA8Y8+zlAE3/wPLlhGX34X+LEm1OXDq9ITRubsuuE92HhtK7CK
+         iYxQ==
+X-Gm-Message-State: AAQBX9dx+JxBTNUiHI2/mIpF3LMuCSNAYHsYa7XZBpq1Z/JyWnplvHid
+        GeQgDIVylkrXcP3p53InmuUWB8mZdvUu1L4XFm2IUiDg
+X-Google-Smtp-Source: AKy350Zysgg1QayCEws6Upa/1W3EAm4WWjRLW3O2LcNREc1vC903Bdk4aC8Z6UFK4BnCPGBSF+1XApOfAtuCsEeNXbc=
+X-Received: by 2002:a17:906:25d9:b0:931:fb3c:f88d with SMTP id
+ n25-20020a17090625d900b00931fb3cf88dmr627000ejb.5.1680650993177; Tue, 04 Apr
+ 2023 16:29:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add RESOLVE_BTFIDS dependency to
- bpf_testmod.ko
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168065041651.3814.372124093195611012.git-patchwork-notify@kernel.org>
-Date:   Tue, 04 Apr 2023 23:20:16 +0000
-References: <20230403172935.1553022-1-iii@linux.ibm.com>
-In-Reply-To: <20230403172935.1553022-1-iii@linux.ibm.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230404045029.82870-1-alexei.starovoitov@gmail.com> <20230404045029.82870-2-alexei.starovoitov@gmail.com>
+In-Reply-To: <20230404045029.82870-2-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 4 Apr 2023 16:29:41 -0700
+Message-ID: <CAEf4BzY8nbE70EqKXn4A9p8b_oCW1UaaifOu6xAyqbN-usLYYA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/8] bpf: Invoke btf_struct_access() callback
+ only for writes.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, void@manifault.com, davemarchevsky@meta.com,
+        tj@kernel.org, memxor@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, Apr 3, 2023 at 9:50=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Remove duplicated if (atype =3D=3D BPF_READ) btf_struct_access() from
+> btf_struct_access() callback and invoke it only for writes.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+It would be nice to elaborate a bit why this is ok. As far as I can
+tell, it's because custom btf_struct_access() callbacks are only
+checking and overriding write accesses, delegating reads to generic
+btf_struct_access(). Is that right? If so, can you please note it down
+in the commit message?
 
-On Mon,  3 Apr 2023 19:29:35 +0200 you wrote:
-> bpf_testmod.ko sometimes fails to build from a clean checkout:
-> 
->     BTF [M] linux/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.ko
->     /bin/sh: 1: linux-build//tools/build/resolve_btfids/resolve_btfids: not found
-> 
-> The reason is that RESOLVE_BTFIDS may not yet be built. Fix by adding a
-> dependency.
-> 
-> [...]
+Further, given btf_struct_access *callbacks* are now write-only, while
+we still keep generic btf_struct_access for reads, should we
+distinguish callback's write-only nature by renaming it to something
+like "btf_struct_write_access"?
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Add RESOLVE_BTFIDS dependency to bpf_testmod.ko
-    https://git.kernel.org/bpf/bpf-next/c/8fc59c26d212
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  kernel/bpf/verifier.c          | 2 +-
+>  net/bpf/bpf_dummy_struct_ops.c | 2 +-
+>  net/core/filter.c              | 6 ------
+>  net/ipv4/bpf_tcp_ca.c          | 3 ---
+>  4 files changed, 2 insertions(+), 11 deletions(-)
+>
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+[...]
