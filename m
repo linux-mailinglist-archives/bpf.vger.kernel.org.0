@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2206D702E
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 00:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907876D702F
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 00:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236064AbjDDWc5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Apr 2023 18:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57686 "EHLO
+        id S229608AbjDDWd6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Apr 2023 18:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjDDWc5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 18:32:57 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E764209
-        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 15:32:55 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-4fb22f1f91eso24435a12.1
-        for <bpf@vger.kernel.org>; Tue, 04 Apr 2023 15:32:55 -0700 (PDT)
+        with ESMTP id S236464AbjDDWd5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 18:33:57 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA55113
+        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 15:33:54 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id fi11so13013205edb.10
+        for <bpf@vger.kernel.org>; Tue, 04 Apr 2023 15:33:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680647574;
+        d=gmail.com; s=20210112; t=1680647633;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RPeeJZLR+A+7aPRJqsRvtyrtol69yWcoEEwycnFnIxE=;
-        b=FnGJzNHWyUdoDps49Doy5ZXFzy8FhMAIrGWqhdYoEvagy8fYz5exURitTimTUBuKgV
-         eaysCll1+Eeb3yQASWHsGV0d9C7y6jol3JkUTD4tiBF5v6YBoWPjD5VBIHQt+9JIrU/d
-         lSZKuU97vOuulF5bkL6EmmPaFeeO1HHhBDBVHYG5bSE/gEcr3awUa973CKq6OI3R1JYG
-         bXwgAaRgUKHwu0qU28MSYq2DhF024nh6ILD8jEacjuoU0SR/u1waL9OTo6XLF+3Sbxf8
-         108AJHKl74aaJVdkhp9igoBL8/a6txYDvnf4IKhHH8q6KtjMRlbnhN1/ddF/8kV3Hek0
-         azfA==
+        bh=sFjJTFlkjW54kUOOYNHqlXkwvf3bK1+zTG09/BAVOIk=;
+        b=aXeDTGS8vDXCkDmHROiHFNo+BP+M71XabdmRO775qzO/Ik1N4QeaLb86hzrFRtx4IS
+         gFzA1CowctSdjnwHvn8IMxgEH42cmtQzBwhW8QIj5a0KpB75VxN5Ln6oeFl9QNCgPW2A
+         YdFea7nHVDwSeh/AuDk2MIyZyAtkd/5NqgTzdmAZ688N0ms5DSOZD5VpUvNVFlIZj9/i
+         Ax9KhHJ1gHLfI7c1v0Xk2fQrpEkmOc36H2DNi0mHs44YqynNEU6NPW623jYatsRihHVo
+         rZF8EQrFATz2BAw/wVk+UtelInn0xyogSWS37rDdoyrZ9tYKcQXAkpAHG+nUr0lBcQZp
+         52Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680647574;
+        d=1e100.net; s=20210112; t=1680647633;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RPeeJZLR+A+7aPRJqsRvtyrtol69yWcoEEwycnFnIxE=;
-        b=Hk3T462JIaIjSI8BPLJuK/2TMfQrmiIKpKREnnH1dXYFoDI7+1oCQnrCCiIRC59OyS
-         1k1Hw7CU9x248SXnmmwplXCCQbldsJ+R12gk58fILWnmW5fKZE5avVLDmMvDWP465iM+
-         GnHI8WlIiCyLRyLW/CTDZ852R0QDIYuKAzcZ31mljzhYze5RcNXIPO1gF0vu/0Jq+Yit
-         JlL25gAoVaIOSseSO59Sll+RaPfDneBLMh3XzzyU983rYe/89p9Cdeh09CXtwetcyBmg
-         ahlYB33c5AiUfvtVus0V9fUFlzGnvWqYZAWu2uIU2QQmmf8RvoGm8tr0kRMVGfkzVw8m
-         GxYg==
-X-Gm-Message-State: AAQBX9eFlEQJ3SI6wb9CoLt0Ygvp7aOlwXmRI0x6y2/CST7odw8/fO2S
-        qClXnC380kmoER1ZAKgBm9ADmAlX3Cw64ghyiZ+7aukJo3A=
-X-Google-Smtp-Source: AKy350Ye3kP7zzGFcDeRcE08DI3PdAdVYoCTqDPW8GP30MJR1Y9IKT8ohqSo3CCRF7Y+d4Wrx/88Ob7hMB7yMhbcLAs=
-X-Received: by 2002:a50:9556:0:b0:4fc:1608:68c8 with SMTP id
- v22-20020a509556000000b004fc160868c8mr91317eda.1.1680647574233; Tue, 04 Apr
- 2023 15:32:54 -0700 (PDT)
+        bh=sFjJTFlkjW54kUOOYNHqlXkwvf3bK1+zTG09/BAVOIk=;
+        b=079frD4YVLgMm5Y5yCJbZ0/cn9if13OPD05V0bjClB0FsxdfvDYeiLevTw7NjVz//Q
+         7JMScG62JbymenA56n/O5KpH8cCLu/dqs/oq8o9i6Sl+R5mqU/JO9Y417N78Ch77DxId
+         pgtixbfTJ14cPtHcBIlH2KB4Q0Z9d1pgaRTrR6WVriHvn7PiMChgd+xy0cOLZC2W4yBF
+         HGEk3oFETu7xCFADCN5eFBn0CoT8U0KEEwI7rjpmLUHeEQboal9iaR9LtynEN9jETBGS
+         0HXxJTJZr/WcmPeeUVZPY/9JMsBbsGfOoUpDM5Pijg6BdcUMW1EIAsVBP3aLX/+Z8Qfr
+         jiGg==
+X-Gm-Message-State: AAQBX9c6MbbkKBKiUPE9d6oQVR1ZbCf0aAuI3LZtrIMlJZRow+52ifQs
+        eojIvqOObo+MQk7rE0MX8vnNQdLrILVNtF+1Oq77HiNwU9Q=
+X-Google-Smtp-Source: AKy350ZXR/E2mYwzhHlVy6irer4Q9M7xZe9qEvRRmyAqeXJbklipTgtCZWIDVyJ7ng6M2PEGerechgnQ3QM5a6QtgiE=
+X-Received: by 2002:a17:906:25d9:b0:931:fb3c:f88d with SMTP id
+ n25-20020a17090625d900b00931fb3cf88dmr571784ejb.5.1680647633110; Tue, 04 Apr
+ 2023 15:33:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGQdkDvyUu2ZDDdRmb4YhDzB96hS1NPW=ju=_Y_C+6nyA6xVGw@mail.gmail.com>
-In-Reply-To: <CAGQdkDvyUu2ZDDdRmb4YhDzB96hS1NPW=ju=_Y_C+6nyA6xVGw@mail.gmail.com>
+References: <CAGQdkDuC9Cu2tvy1nnnaDvEhuE7c68KUUr+t8xi5BzipKis8_g@mail.gmail.com>
+In-Reply-To: <CAGQdkDuC9Cu2tvy1nnnaDvEhuE7c68KUUr+t8xi5BzipKis8_g@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 Apr 2023 15:32:42 -0700
-Message-ID: <CAEf4BzbauKucsr-e4GigvrdYy2S9XNQQ6YW0xZ3ocJVcGpR7Ow@mail.gmail.com>
-Subject: Re: [QUESTION] usage of libbpf_probe_bpf_prog_type API
+Date:   Tue, 4 Apr 2023 15:33:41 -0700
+Message-ID: <CAEf4BzZvDfyYQb+h09V-PAgc_5mT-TKVH0uqNiJL6y0eoFcBHQ@mail.gmail.com>
+Subject: Re: [QUESTION] BPF trampoline limits
 To:     andrea terzolo <andreaterzolo3@gmail.com>
 Cc:     bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -67,52 +67,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 30, 2023 at 10:21=E2=80=AFAM andrea terzolo
-<andreaterzolo3@gmail.com> wrote:
+On Fri, Mar 31, 2023 at 4:32=E2=80=AFAM andrea terzolo <andreaterzolo3@gmai=
+l.com> wrote:
 >
-> Hi all!
+> Hello! If I can I would like to ask one question about the BPF
+> trampoline. Reading the description of this commit [0] I noticed the
+> following statement:
 >
-> If I can I would like to ask one question about the
-> `libbpf_probe_bpf_prog_type` API. The idea is to use `fentry/fexit`
-> bpf progs only if they are available and fall back to simple `kprobes`
-> when they are not. Is there a way to probe `BPF_TRACE_FENTRY` support
-> with `libbpf` APIs? I was looking at `libbpf_probe_bpf_prog_type` API
-> but it seems to check the `prog_type` rather than the `attach_type`,
-> when I call it `libbpf_probe_bpf_prog_type(BPF_PROG_TYPE_TRACING,
-> NULL);` it returns `1` even if `fentry/fexit` progs are not supported
-> on my machine. Is there a way to probe this feature with other
-> `libbpf` APIs?
+> - Detach of a BPF program from the trampoline should not fail. To avoid m=
+emory
+> allocation in detach path the half of the page is used as a reserve and f=
+lipped
+> after each attach/detach. 2k bytes is enough to call 40+ BPF programs dir=
+ectly
+> which is enough for BPF tracing use cases. This limit can be increased in=
+ the
+> future.
 >
+> Looking at the kernel code, I found only this limit
+> BPF_MAX_TRAMP_LINKS. If I understood correctly, this limit denies us
+> the use of the same trampoline for more than 38 bpf programs. So my
+> question is, does the commit description refer to another limit or
+> does this "call 40+ BPF programs" refer to the BPF_MAX_TRAMP_LINKS
+> macro?
 
-looking at libbpf probing code, for BPF_PROG_TYPE_TRACING we choose
-BPF_TRACE_FENTRY attach type automatically (because it doesn't really
-matter whether its BPF_TRACE_FEXIT or BPF_MODIFY_RETURN, they all are
-either supported or none is). We then expect that verifier will
-complain with "attach_btf_id 1 is not a function" error. If we do see
-that error, we know that verifier supports fentry/fexit programs *in
-principle*, which is what we are checking with
-libbpf_probe_bpf_prog_type().
-
-If kernel doesn't support fentry/fexit attachment for some specific
-function you'd like to attach to, that's a different matter. This
-would be equivalent to BPF_PROG_TYPE_KPROBE check -- we check if
-kprobes in general are supported, but not whether kprobing specific
-kernel function works.
-
-I assume by "not supported on my machine" you mean that you can't
-attach fentry/fexit to some function? If not, let me know, and we'd
-have to debug this further.
-
-If you want to know if some function can be traced with fentry/fexit,
-check below helper function from libbpf-tools ([0])
-
-bool fentry_can_attach(const char *name, const char *mod)
+No, it's BPF_MAX_TRAMP_LINKS, which got reduced a bit down from its
+40+ limit to current 38.
 
 
-  [0] https://github.com/iovisor/bcc/blob/master/libbpf-tools/trace_helpers=
-.c#LL1043-L1043C58
-
-
-
+>
 > Thank you in advance for your time,
 > Andrea
+>
+> 0: https://github.com/torvalds/linux/commit/fec56f5890d93fc2ed74166c397dc=
+186b1c25951
