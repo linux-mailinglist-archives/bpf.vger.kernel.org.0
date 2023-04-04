@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B210E6D69F7
-	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 19:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C516D6A54
+	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 19:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbjDDROF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Apr 2023 13:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
+        id S235925AbjDDRV4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Apr 2023 13:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234566AbjDDROA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 13:14:00 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A63710E6
-        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 10:13:59 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5463fa0c2bfso296543527b3.1
-        for <bpf@vger.kernel.org>; Tue, 04 Apr 2023 10:13:59 -0700 (PDT)
+        with ESMTP id S235938AbjDDRVt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 13:21:49 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662DE1B8
+        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 10:21:45 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id p15so39568845ybl.9
+        for <bpf@vger.kernel.org>; Tue, 04 Apr 2023 10:21:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680628438;
+        d=google.com; s=20210112; t=1680628904;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jB81HM7QxwklDvE39D9zGEd7EL3RK9tGsVExEctIF9g=;
-        b=RTE9uUoI7XQ8R2+nrWW7Yx58+ErEPGeeDfqbJ/xGvvaIQ77F/wmkQ1JiRiLzfMk3ds
-         aGgu1IiS++nn+phVSuzWXmhmnnCR/c6rjOJll7kCeyjgPiFt1rAHATUDSo6RV05Qzvc2
-         xUkU5W+YitmDn4UuYTkJUwt6iLG7fqJ2JdKIaUoaN4I5bJucmRLBWHWQyYSLVRgj5Kb9
-         YYRNr9aHII9yl6U38B61zDPm53mjPR6kWofIAAjQ+MEUUeIyy/AFwTH+9VuLtJzwYqJj
-         tf1x0gtzBFYsSXZzhLN/ugTsZ4z2Nt+9QfJqs8jO0/JRmH/lPnHVRTX2DCl54PANUWGW
-         Ny3g==
+        bh=H/6nWpG035DFCd1KL6TSDLFyH9kaDtT1tj9RQy6j89U=;
+        b=PKraOirR2pRBA2DBW/b33pTm+8HXjKvpeNeRzehm9FD9V7XXtodyrrySXy1qTEBZQr
+         KFtO6wcuZl5I0TAgoLpYtumb2AXH1YDSl7tNZVF0teic9sNmnZ5Au1/xUa9gyEVdQLdV
+         AY7qyFZ1dPyPFa1UUhVHvv8/mO0zS1TBX7chxj/oUPivbEu361UcjMNugE1rCkF2gF0Q
+         67lgHtBl39eyST0OLIFXiGODcqI2+588kxayaRE7NbbqOro+EqNNKkmqAeeBCCR7SquS
+         F31eMziiL3Tu2fHhzHuplp2dE7AYSjVVNkuvNqRVoXYN2Tei1Q9gxYr8f2pGG+ajomnQ
+         hbug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680628438;
+        d=1e100.net; s=20210112; t=1680628904;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jB81HM7QxwklDvE39D9zGEd7EL3RK9tGsVExEctIF9g=;
-        b=NUxz/UvxZa6cgN/uB/BWSVnhEP/y/CSAAzuJ89yRcQOggt1S5zTjOqNH1vn+FHGnG9
-         DnXCq3lc92H8UqjeS5lygotxndamzQg4ZgdrPUG4Z1+EszMmk/1mjSYEOGu+GS3pFAYa
-         yr5e3R9YGhqV8koc9/3vin+8l0zWb5qPM2rITKmVPAGRtxikX7sGtCpv6qNTyMrTKIxY
-         12Fik6X8MvYHxBG9u0DNCrWRanXgSRtY9HZuCVwXBlTcphufJv9DCZqQ3zVHs85uBYEp
-         cpEQACkoIwyB0vK7zvulC6WhqlyzbQRxKEShrvyZG8ULMhj9OjC+5MVOPB0B13cEDlz2
-         +fTw==
-X-Gm-Message-State: AAQBX9dpKk6jfjlMgFnFHxNO/xMFiPx1jtS/a20eZ7EEpCwuSQrJDYo1
-        zW2b4pfrlW7Fdv5R48OpMc7uucArfsGnse0zjHLU1g==
-X-Google-Smtp-Source: AKy350YfkE1yBZsZo/vuErzxwl0ifJq9+FUSZScFb3AOn/d315UWmv+qL4nxuP4OOnhzt5F3cFDZLFK9czXb9I4PiPQ=
-X-Received: by 2002:a81:ac0d:0:b0:52b:fd10:4809 with SMTP id
- k13-20020a81ac0d000000b0052bfd104809mr1973994ywh.0.1680628438438; Tue, 04 Apr
- 2023 10:13:58 -0700 (PDT)
+        bh=H/6nWpG035DFCd1KL6TSDLFyH9kaDtT1tj9RQy6j89U=;
+        b=hWlaNsCtFF4o8vjp4GwMUfwGjypJUiiVa3nm1yjXMkhsDgz+aOJlk3Fc2zZzj7rNMB
+         Y2h4TXWLQ4ShvgTQ5V2lO4tB/FVaqiU2qN36PpNo1qv8/ZUQDzT0Kq8oRli9uHpWTZ29
+         DA9Q0UOI9qgLTIWffAewCvGgFT7pCOEdjk6yVcVGYmN3Tn8Nmt/C3jWYdJZ3iR+RZ8Tp
+         D+9KJZkOI9FvQTWWn4+yNHWN2uAba3jthoBrW7AKWJyasFKXip8MoLlZX9e9CVNmcYRj
+         Xtz2FzApDPxy99Rgh3WmCaHK2DH/nf7Br4+jHd3aZcW/IwEOcU4MPnEiZCqI2rL0y345
+         DzxA==
+X-Gm-Message-State: AAQBX9c2A96Of71zgwYcSd6MjZnA5yyHSr4exLSBb31ruRY8xQ8EobHq
+        +qneoFOL0C8Xwg3fnebSYfnakQJeyHmdG4SY9Dgevg==
+X-Google-Smtp-Source: AKy350YO1gXKrbjU1BYPifCphoRiUxy1FvIjM90AQwLqo17M47gxr8jXro28tsqB3CbSgypd8zH6KOlbq2rBGIO2s70=
+X-Received: by 2002:a25:ca4b:0:b0:b77:d2db:5f8f with SMTP id
+ a72-20020a25ca4b000000b00b77d2db5f8fmr2305401ybg.12.1680628904510; Tue, 04
+ Apr 2023 10:21:44 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230330191801.1967435-1-yosryahmed@google.com>
  <20230330191801.1967435-5-yosryahmed@google.com> <20230404165258.ie6ttxobbmgn62hs@blackpad>
-In-Reply-To: <20230404165258.ie6ttxobbmgn62hs@blackpad>
+ <CALvZod5Y+quOS1XQvVBTvv7FRs3455j_79f0GoR+FqCFzbwkuA@mail.gmail.com>
+In-Reply-To: <CALvZod5Y+quOS1XQvVBTvv7FRs3455j_79f0GoR+FqCFzbwkuA@mail.gmail.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 4 Apr 2023 10:13:47 -0700
-Message-ID: <CALvZod5Y+quOS1XQvVBTvv7FRs3455j_79f0GoR+FqCFzbwkuA@mail.gmail.com>
+Date:   Tue, 4 Apr 2023 10:21:33 -0700
+Message-ID: <CALvZod7Ao-VmB4as+VHsR+awW1jmOA18uVM7qk21mVsXTOYC2A@mail.gmail.com>
 Subject: Re: [PATCH v3 4/8] memcg: replace stats_flush_lock with an atomic
 To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
 Cc:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>,
@@ -81,37 +82,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 4, 2023 at 9:53=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.com=
-> wrote:
+On Tue, Apr 4, 2023 at 10:13=E2=80=AFAM Shakeel Butt <shakeelb@google.com> =
+wrote:
 >
-> Hello.
+> On Tue, Apr 4, 2023 at 9:53=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.c=
+om> wrote:
+> >
+> > Hello.
+> >
+> > On Thu, Mar 30, 2023 at 07:17:57PM +0000, Yosry Ahmed <yosryahmed@googl=
+e.com> wrote:
+> > >  static void __mem_cgroup_flush_stats(void)
+> > >  {
+> > > -     unsigned long flag;
+> > > -
+> > > -     if (!spin_trylock_irqsave(&stats_flush_lock, flag))
+> > > +     /*
+> > > +      * We always flush the entire tree, so concurrent flushers can =
+just
+> > > +      * skip. This avoids a thundering herd problem on the rstat glo=
+bal lock
+> > > +      * from memcg flushers (e.g. reclaim, refault, etc).
+> > > +      */
+> > > +     if (atomic_read(&stats_flush_ongoing) ||
+> > > +         atomic_xchg(&stats_flush_ongoing, 1))
+> > >               return;
+> >
+> > I'm curious about why this instead of
+> >
+> >         if (atomic_xchg(&stats_flush_ongoing, 1))
+> >                 return;
+> >
+> > Is that some microarchitectural cleverness?
+> >
 >
-> On Thu, Mar 30, 2023 at 07:17:57PM +0000, Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> >  static void __mem_cgroup_flush_stats(void)
-> >  {
-> > -     unsigned long flag;
-> > -
-> > -     if (!spin_trylock_irqsave(&stats_flush_lock, flag))
-> > +     /*
-> > +      * We always flush the entire tree, so concurrent flushers can ju=
-st
-> > +      * skip. This avoids a thundering herd problem on the rstat globa=
-l lock
-> > +      * from memcg flushers (e.g. reclaim, refault, etc).
-> > +      */
-> > +     if (atomic_read(&stats_flush_ongoing) ||
-> > +         atomic_xchg(&stats_flush_ongoing, 1))
-> >               return;
->
-> I'm curious about why this instead of
->
->         if (atomic_xchg(&stats_flush_ongoing, 1))
->                 return;
->
-> Is that some microarchitectural cleverness?
->
+> Yes indeed it is. Basically we want to avoid unconditional cache
+> dirtying. This pattern is also used at other places in the kernel like
+> qspinlock.
 
-Yes indeed it is. Basically we want to avoid unconditional cache
-dirtying. This pattern is also used at other places in the kernel like
-qspinlock.
+Oh also take a look at
+https://lore.kernel.org/all/20230404052228.15788-1-feng.tang@intel.com/
