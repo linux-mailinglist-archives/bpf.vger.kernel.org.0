@@ -2,153 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9DB6D5C5A
-	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 11:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFF16D5CCD
+	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 12:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbjDDJwQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Apr 2023 05:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51590 "EHLO
+        id S234402AbjDDKNV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Apr 2023 06:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbjDDJwQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 05:52:16 -0400
-Received: from smtpbgeu2.qq.com (smtpbgeu2.qq.com [18.194.254.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289611FF6
-        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 02:52:08 -0700 (PDT)
-X-QQ-mid: bizesmtp71t1680601923twvpnkb4
-Received: from localhost.localdomain ( [110.191.179.216])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 04 Apr 2023 17:52:02 +0800 (CST)
-X-QQ-SSF: 01400000002000H0W000B00A0000000
-X-QQ-FEAT: CR3LFp2JE4kWq2tSbErzX1tlnfIyRbai3jSZCB/wT/04uRgoi+9FY+mZwDAwJ
-        Yj+pEKiLJDQlZmbrq5INxE23rtXQf122BjUxppK/yR4IHmihS3kSRoAeWjGNzDLqEGqFhuI
-        BOZ238jo/CboqiMyo4XG0e/MdHaQoo0YAnvID4pG5eQVE5H6r4XLmCXP/1Lol4rKNVzEKjz
-        CyKhJZKalhk7zSUw2PjWmP4zqK9VbTnSWs20Fg9S1KjwTP2i70KIqu3rGTac3w1zrVXldmT
-        tzoXHGuJmoNpCplDCD7MG36u1V8nrKfeeGbNv9FOInMxVHs4Lleov0JOn9P+iBLsuDXEQ22
-        PUbB6A2mMpT8qhv09ynh3+5BGPLR+lp6nJh3JadHwDOEbg9SnEGTVu69ZNj+jfE8UEPjqap
-        qnumi8WhCE4=
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 9185986044343273289
-From:   zhongjun@uniontech.com
-To:     bpf@vger.kernel.org
-Cc:     zhongjun <zhongjun@uniontech.com>
-Subject: [PATCH] BPF: make verifier 'misconfigured' errors more meaningful
-Date:   Tue,  4 Apr 2023 17:52:02 +0800
-Message-Id: <20230404095202.30408-1-zhongjun@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        with ESMTP id S234413AbjDDKNK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 06:13:10 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9157D30C7
+        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 03:12:47 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id b20so128408267edd.1
+        for <bpf@vger.kernel.org>; Tue, 04 Apr 2023 03:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1680603158;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=MsABVrreatlMEIk5ifFYOGlU/Qa3W4KtZtzz73o+Deo=;
+        b=esaFaSMcMzQaTfsN3nuStmY6blStob9qtYeGECCmqrIM2P/hYCBSAPCU+iLe/3eoz8
+         y2ZyKrS8szTi1ddlaKgIKwtSPQEUFxYblDLq5LcYk2cmJVJo3f+Rxd/YJ3i53VlfeKih
+         OMSWNdwq2tuijCldGNWdYMRuSldPgDG0U52HY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680603158;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MsABVrreatlMEIk5ifFYOGlU/Qa3W4KtZtzz73o+Deo=;
+        b=f65GBGPRgq+wM/Qn2yFSu4ftW1IAXikzGgeTovh586oeSG02Ze/E1fjEyvYO4sFjuU
+         bdldrhn1KkIZGWXxzmM1CQ4nWkT7nkN/nQcy9HH7+a1NujLues0+WukkNJDk91idGJi2
+         MfGQb0bBE2xWd7vWZ4zoRdD3AUmGHN1uiflDcmQhWf1VBqYs5qmc1nrzyekszeFO0HA3
+         KjoU3vmjpMM8vdwTMqThm6vHxNJOeLpF0OyQkIQXWa74di5pA5ZQu1zfuAsj5QFYo0DP
+         hZvXwMfd3Mf6stgQeUc/P2SHvs1GWtJG/b11Fh1RoijUBCSmzg2n1e+qoSmmEoh1z/XX
+         xbPg==
+X-Gm-Message-State: AAQBX9eQj+dVQDRdUN7maat6LsIGoxeyHgWlmhxN4/jXGTx4etckiNZR
+        oyPzZZeqHW4GaT+UdQZ8I5I/NQ==
+X-Google-Smtp-Source: AKy350ZovQlnVF9nduapVqvOrfjrblcJjX+y6nb41zSmImnDp5S5FPLoq8TLD0+1uvgxCMPdGQqvMQ==
+X-Received: by 2002:a17:907:b60e:b0:930:d17b:959b with SMTP id vl14-20020a170907b60e00b00930d17b959bmr2578146ejc.22.1680603157945;
+        Tue, 04 Apr 2023 03:12:37 -0700 (PDT)
+Received: from cloudflare.com (79.184.147.137.ipv4.supernova.orange.pl. [79.184.147.137])
+        by smtp.gmail.com with ESMTPSA id o12-20020a170906600c00b0092bea699124sm5723973ejj.106.2023.04.04.03.12.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Apr 2023 03:12:33 -0700 (PDT)
+References: <20230327175446.98151-1-john.fastabend@gmail.com>
+ <20230327175446.98151-5-john.fastabend@gmail.com>
+ <87a5zpdxu7.fsf@cloudflare.com> <642b3f94f13df_e67b72086@john.notmuch>
+User-agent: mu4e 1.6.10; emacs 28.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     cong.wang@bytedance.com, daniel@iogearbox.net, lmb@isovalent.com,
+        edumazet@google.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, will@isovalent.com
+Subject: Re: [PATCH bpf v2 04/12] bpf: sockmap, handle fin correctly
+Date:   Tue, 04 Apr 2023 12:11:32 +0200
+In-reply-to: <642b3f94f13df_e67b72086@john.notmuch>
+Message-ID: <875yacdkhf.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvr:qybglogicsvr2
-X-Spam-Status: No, score=0.0 required=5.0 tests=RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_PASS,T_SPF_HELO_TEMPERROR autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: zhongjun <zhongjun@uniontech.com>
+On Mon, Apr 03, 2023 at 02:05 PM -07, John Fastabend wrote:
+> Jakub Sitnicki wrote:
 
-There are too many so-called 'misconfigured' errors potentially
-feed back to user-space, that make it very hard to judge on
-a glance the reason a verification failure occurred.
-This patch make those similar error outputs more sensitive and readible.
+[...]
 
-base-commit: 738a96c4a8c36950803fdd27e7c30aca92dccefd
----
- kernel/bpf/verifier.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+>> tcp_bpf_recvmsg needs a similar fix, no?
+>
+> Yes, I had lumped it in with follow up fixes needed for the
+> stream parser case but your right its not related.
+>
+> Mind if I do it in a follow up? Or if I need to do a v4 I'll
+> roll it in there.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d517d13878cf..f19534f919c2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12684,7 +12684,8 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 			dst_reg->btf_id = aux->btf_var.btf_id;
- 			break;
- 		default:
--			verbose(env, "bpf verifier is misconfigured\n");
-+			verbose(env, "bpf verifier is misconfigured: dst_reg->type = %d\n",
-+					dst_reg->type);
- 			return -EFAULT;
- 		}
- 		return 0;
-@@ -12722,7 +12723,8 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 		   insn->src_reg == BPF_PSEUDO_MAP_IDX) {
- 		dst_reg->type = CONST_PTR_TO_MAP;
- 	} else {
--		verbose(env, "bpf verifier is misconfigured\n");
-+		verbose(env, "bpf verifier is misconfigured: insn->src_reg = %d\n",
-+				(int)insn->src_reg);
- 		return -EINVAL;
- 	}
- 
-@@ -12769,7 +12771,7 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 	}
- 
- 	if (!env->ops->gen_ld_abs) {
--		verbose(env, "bpf verifier is misconfigured\n");
-+		verbose(env, "bpf verifier is misconfigured: gen_ld_abs is NULL\n");
- 		return -EINVAL;
- 	}
- 
-@@ -15814,13 +15816,14 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 
- 	if (ops->gen_prologue || env->seen_direct_write) {
- 		if (!ops->gen_prologue) {
--			verbose(env, "bpf verifier is misconfigured\n");
-+			verbose(env, "bpf verifier is misconfigured: gen_prologue is NULL\n");
- 			return -EINVAL;
- 		}
- 		cnt = ops->gen_prologue(insn_buf, env->seen_direct_write,
- 					env->prog);
- 		if (cnt >= ARRAY_SIZE(insn_buf)) {
--			verbose(env, "bpf verifier is misconfigured\n");
-+			verbose(env, "bpf verifier is misconfigured: cnt=%d exceeds limit@%lu\n",
-+					cnt, ARRAY_SIZE(insn_buf));
- 			return -EINVAL;
- 		} else if (cnt) {
- 			new_prog = bpf_patch_insn_data(env, 0, insn_buf, cnt);
-@@ -15951,7 +15954,8 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 					 &target_size);
- 		if (cnt == 0 || cnt >= ARRAY_SIZE(insn_buf) ||
- 		    (ctx_field_size && !target_size)) {
--			verbose(env, "bpf verifier is misconfigured\n");
-+			verbose(env, "bpf verifier is misconfigured: ins[%d] cnt=%d ctx_s=%u tg_s=%u\n",
-+					i, cnt, ctx_field_size, target_size);
- 			return -EINVAL;
- 		}
- 
-@@ -16400,7 +16404,8 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 		     BPF_MODE(insn->code) == BPF_IND)) {
- 			cnt = env->ops->gen_ld_abs(insn, insn_buf);
- 			if (cnt == 0 || cnt >= ARRAY_SIZE(insn_buf)) {
--				verbose(env, "bpf verifier is misconfigured\n");
-+				verbose(env, "bpf verifier is misconfigured: cnt=%d exceeds limit@%lu\n",
-+						cnt, ARRAY_SIZE(insn_buf));
- 				return -EINVAL;
- 			}
- 
-@@ -16647,7 +16652,8 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 				if (cnt == -EOPNOTSUPP)
- 					goto patch_map_ops_generic;
- 				if (cnt <= 0 || cnt >= ARRAY_SIZE(insn_buf)) {
--					verbose(env, "bpf verifier is misconfigured\n");
-+					verbose(env, "bpf verifier is misconfigured: cnt=%d exceeds limit@%lu\n",
-+							cnt, ARRAY_SIZE(insn_buf));
- 					return -EINVAL;
- 				}
- 
-@@ -16848,7 +16854,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 		if (!map_ptr->ops->map_poke_track ||
- 		    !map_ptr->ops->map_poke_untrack ||
- 		    !map_ptr->ops->map_poke_run) {
--			verbose(env, "bpf verifier is misconfigured\n");
-+			verbose(env, "bpf verifier is misconfigured: map_poke_xxx is NULL\n");
- 			return -EINVAL;
- 		}
- 
--- 
-2.20.1
-
+That works. Totally your call.
