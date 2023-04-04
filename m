@@ -2,44 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C98166D578C
-	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 06:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957186D578E
+	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 06:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbjDDEhN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Apr 2023 00:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33874 "EHLO
+        id S231468AbjDDEhR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Apr 2023 00:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbjDDEhM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 00:37:12 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909801BEB
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 21:37:11 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 333NLVxg024026
-        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 21:37:11 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pqytan04y-8
+        with ESMTP id S232518AbjDDEhQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 00:37:16 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6982D1BF5
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 21:37:14 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 333NLc8Z005287
+        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 21:37:13 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3pqvc1dyqs-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 21:37:11 -0700
-Received: from twshared38955.16.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 21:37:13 -0700
+Received: from twshared29091.48.prn1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 3 Apr 2023 21:37:06 -0700
+ 15.1.2507.17; Mon, 3 Apr 2023 21:37:11 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id AD2A92D051870; Mon,  3 Apr 2023 21:37:00 -0700 (PDT)
+        id C204C2D05189C; Mon,  3 Apr 2023 21:37:02 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>, <lmb@isovalent.com>, <timo@incline.eu>,
         <robin.goegge@isovalent.com>
 CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v3 bpf-next 00/19] BPF verifier rotating log
-Date:   Mon, 3 Apr 2023 21:36:40 -0700
-Message-ID: <20230404043659.2282536-1-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 01/19] bpf: split off basic BPF verifier log into separate file
+Date:   Mon, 3 Apr 2023 21:36:41 -0700
+Message-ID: <20230404043659.2282536-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230404043659.2282536-1-andrii@kernel.org>
+References: <20230404043659.2282536-1-andrii@kernel.org>
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 0H6iycfCovnbZ9P0s33YEVyMWipcjwSq
-X-Proofpoint-GUID: 0H6iycfCovnbZ9P0s33YEVyMWipcjwSq
+X-Proofpoint-ORIG-GUID: csIi-y623VLG_56pQZsap7OqUE4zj7Gk
+X-Proofpoint-GUID: csIi-y623VLG_56pQZsap7OqUE4zj7Gk
 Content-Transfer-Encoding: 8BIT
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
@@ -55,106 +57,280 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set changes BPF verifier log behavior to behave as a rotating log,
-by default. If user-supplied log buffer is big enough to contain entire
-verifier log output, there is no effective difference. But where previously
-user supplied too small log buffer and would get -ENOSPC error result and the
-beginning part of the verifier log, now there will be no error and user will
-get ending part of verifier log filling up user-supplied log buffer.  Which
-is, in absolute majority of cases, is exactly what's useful, relevant, and
-what users want and need, as the ending of the verifier log is containing
-details of verifier failure and relevant state that got us to that failure. So
-this rotating mode is made default, but for some niche advanced debugging
-scenarios it's possible to request old behavior by specifying additional
-BPF_LOG_FIXED (8) flag.
+kernel/bpf/verifier.c file is large and growing larger all the time. So
+it's good to start splitting off more or less self-contained parts into
+separate files to keep source code size (somewhat) somewhat under
+control.
 
-This patch set adjusts libbpf to allow specifying flags beyond 1 | 2 | 4. We
-also add --log-size and --log-fixed options to veristat to be able to both
-test this functionality manually, but also to be used in various debugging
-scenarios. We also add selftests that tries many variants of log buffer size
-to stress-test correctness of internal verifier log bookkeeping code.
+This patch is a one step in this direction, moving some of BPF verifier log
+routines into a separate kernel/bpf/log.c. Right now it's most low-level
+and isolated routines to append data to log, reset log to previous
+position, etc. Eventually we could probably move verifier state
+printing logic here as well, but this patch doesn't attempt to do that
+yet.
 
-Further, this patch set is merged with log_size_actual v1 patchset ([0]),
-which adds ability to get required log buffer size to fit entire verifier log
-output. 
+Subsequent patches will add more logic to verifier log management, so
+having basics in a separate file will make sure verifier.c doesn't grow
+more with new changes.
 
-This addresses a long-standing limitation, which causes users and BPF loader
-library writers to guess and pre-size log buffer, often allocating unnecessary
-extra memory for this or doing extra program verifications just to size logs
-better, ultimately wasting resources. This was requested most recently by Go
-BPF library maintainers ([1]). 
-
-See respective patches for details. A bunch of them some drive-by fixes
-detecting during working with the code. Some other further refactor and
-compratmentalize verifier log handling code into kernel/bpf/log.c, which
-should also make it simpler to integrate such verbose log for other
-complicated bpf() syscall commands, if necessary. The rest are actual logic to
-calculate maximum log buffer size needed and return it to user-space. Few
-patches wire this on libbpf side, and the rest add selftests to test proper
-log truncation and log_buf==NULL handling.
-
-This turned into a pretty sizable patch set with lots of arithmetics, but
-hopefully the set of features added to verifier log in this patch set are both
-useful for BPF users and are self-contained and isolated enough to not cause
-troubles going forward.
-
-v2->v3:
-  - typos and comment improvement (Lorenz);
-  - merged with log_size_actual v1 ([0]) patch set (Alexei);
-  - added log_buf==NULL condition allowed (Lorenz);
-  - added BPF_BTF_LOAD logs tests (Lorenz);
-  - more clean up and refactoring of internal verifier log API;
-v1->v2:
-  - return -ENOSPC even in rotating log mode for preserving backwards
-    compatibility (Lorenz);
-
-  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=735213&state=*
-  [1] https://lore.kernel.org/bpf/CAN+4W8iNoEbQzQVbB_o1W0MWBDV4xCJAq7K3f6psVE-kkCfMqg@mail.gmail.com/
-
-Andrii Nakryiko (19):
-  bpf: split off basic BPF verifier log into separate file
-  bpf: remove minimum size restrictions on verifier log buffer
-  bpf: switch BPF verifier log to be a rotating log by default
-  libbpf: don't enforce unnecessary verifier log restrictions on libbpf
-    side
-  veristat: add more veristat control over verifier log options
-  selftests/bpf: add fixed vs rotating verifier log tests
-  bpf: ignore verifier log reset in BPF_LOG_KERNEL mode
-  bpf: fix missing -EFAULT return on user log buf error in btf_parse()
-  bpf: avoid incorrect -EFAULT error in BPF_LOG_KERNEL mode
-  bpf: simplify logging-related error conditions handling
-  bpf: keep track of total log content size in both fixed and rolling
-    modes
-  bpf: add log_size_actual output field to return log contents size
-  bpf: simplify internal verifier log interface
-  bpf: relax log_buf NULL conditions when log_level>0 is requested
-  libbpf: wire through log_size_actual returned from kernel for
-    BPF_PROG_LOAD
-  libbpf: wire through log_size_actual for bpf_btf_load() API
-  selftests/bpf: add tests to validate log_size_actual feature
-  selftests/bpf: add testing of log_buf==NULL condition for
-    BPF_PROG_LOAD
-  selftests/bpf: add verifier log tests for BPF_BTF_LOAD command
-
- include/linux/bpf.h                           |   2 +-
- include/linux/bpf_verifier.h                  |  41 +-
- include/linux/btf.h                           |   2 +-
- include/uapi/linux/bpf.h                      |  10 +
- kernel/bpf/Makefile                           |   3 +-
- kernel/bpf/btf.c                              |  74 +--
- kernel/bpf/log.c                              | 332 +++++++++++++
- kernel/bpf/syscall.c                          |  16 +-
- kernel/bpf/verifier.c                         | 125 ++---
- tools/include/uapi/linux/bpf.h                |  12 +-
- tools/lib/bpf/bpf.c                           |  17 +-
- tools/lib/bpf/bpf.h                           |  22 +-
- .../selftests/bpf/prog_tests/log_fixup.c      |   1 +
- .../selftests/bpf/prog_tests/verifier_log.c   | 437 ++++++++++++++++++
- tools/testing/selftests/bpf/veristat.c        |  44 +-
- 15 files changed, 954 insertions(+), 184 deletions(-)
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ include/linux/bpf_verifier.h | 19 +++-----
+ kernel/bpf/Makefile          |  3 +-
+ kernel/bpf/log.c             | 85 ++++++++++++++++++++++++++++++++++++
+ kernel/bpf/verifier.c        | 69 -----------------------------
+ 4 files changed, 94 insertions(+), 82 deletions(-)
  create mode 100644 kernel/bpf/log.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier_log.c
 
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 81d525d057c7..83dff25545ee 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -498,11 +498,6 @@ struct bpf_verifier_log {
+ 	u32 len_total;
+ };
+ 
+-static inline bool bpf_verifier_log_full(const struct bpf_verifier_log *log)
+-{
+-	return log->len_used >= log->len_total - 1;
+-}
+-
+ #define BPF_LOG_LEVEL1	1
+ #define BPF_LOG_LEVEL2	2
+ #define BPF_LOG_STATS	4
+@@ -512,6 +507,11 @@ static inline bool bpf_verifier_log_full(const struct bpf_verifier_log *log)
+ #define BPF_LOG_MIN_ALIGNMENT 8U
+ #define BPF_LOG_ALIGNMENT 40U
+ 
++static inline bool bpf_verifier_log_full(const struct bpf_verifier_log *log)
++{
++	return log->len_used >= log->len_total - 1;
++}
++
+ static inline bool bpf_verifier_log_needed(const struct bpf_verifier_log *log)
+ {
+ 	return log &&
+@@ -519,13 +519,6 @@ static inline bool bpf_verifier_log_needed(const struct bpf_verifier_log *log)
+ 		 log->level == BPF_LOG_KERNEL);
+ }
+ 
+-static inline bool
+-bpf_verifier_log_attr_valid(const struct bpf_verifier_log *log)
+-{
+-	return log->len_total >= 128 && log->len_total <= UINT_MAX >> 2 &&
+-	       log->level && log->ubuf && !(log->level & ~BPF_LOG_MASK);
+-}
+-
+ #define BPF_MAX_SUBPROGS 256
+ 
+ struct bpf_subprog_info {
+@@ -608,12 +601,14 @@ struct bpf_verifier_env {
+ 	char type_str_buf[TYPE_STR_BUF_LEN];
+ };
+ 
++bool bpf_verifier_log_attr_valid(const struct bpf_verifier_log *log);
+ __printf(2, 0) void bpf_verifier_vlog(struct bpf_verifier_log *log,
+ 				      const char *fmt, va_list args);
+ __printf(2, 3) void bpf_verifier_log_write(struct bpf_verifier_env *env,
+ 					   const char *fmt, ...);
+ __printf(2, 3) void bpf_log(struct bpf_verifier_log *log,
+ 			    const char *fmt, ...);
++void bpf_vlog_reset(struct bpf_verifier_log *log, u32 new_pos);
+ 
+ static inline struct bpf_func_state *cur_func(struct bpf_verifier_env *env)
+ {
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index 02242614dcc7..1d3892168d32 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -6,7 +6,8 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
+ endif
+ CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
+ 
+-obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o link_iter.o
++obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o log.o
++obj-$(CONFIG_BPF_SYSCALL) += bpf_iter.o map_iter.o task_iter.o prog_iter.o link_iter.o
+ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
+ obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
+ obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
+diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
+new file mode 100644
+index 000000000000..920061e38d2e
+--- /dev/null
++++ b/kernel/bpf/log.c
+@@ -0,0 +1,85 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++ * Copyright (c) 2016 Facebook
++ * Copyright (c) 2018 Covalent IO, Inc. http://covalent.io
++ */
++#include <uapi/linux/btf.h>
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/bpf.h>
++#include <linux/bpf_verifier.h>
++
++bool bpf_verifier_log_attr_valid(const struct bpf_verifier_log *log)
++{
++	return log->len_total >= 128 && log->len_total <= UINT_MAX >> 2 &&
++	       log->level && log->ubuf && !(log->level & ~BPF_LOG_MASK);
++}
++
++void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *fmt,
++		       va_list args)
++{
++	unsigned int n;
++
++	n = vscnprintf(log->kbuf, BPF_VERIFIER_TMP_LOG_SIZE, fmt, args);
++
++	WARN_ONCE(n >= BPF_VERIFIER_TMP_LOG_SIZE - 1,
++		  "verifier log line truncated - local buffer too short\n");
++
++	if (log->level == BPF_LOG_KERNEL) {
++		bool newline = n > 0 && log->kbuf[n - 1] == '\n';
++
++		pr_err("BPF: %s%s", log->kbuf, newline ? "" : "\n");
++		return;
++	}
++
++	n = min(log->len_total - log->len_used - 1, n);
++	log->kbuf[n] = '\0';
++	if (!copy_to_user(log->ubuf + log->len_used, log->kbuf, n + 1))
++		log->len_used += n;
++	else
++		log->ubuf = NULL;
++}
++
++void bpf_vlog_reset(struct bpf_verifier_log *log, u32 new_pos)
++{
++	char zero = 0;
++
++	if (!bpf_verifier_log_needed(log))
++		return;
++
++	log->len_used = new_pos;
++	if (put_user(zero, log->ubuf + new_pos))
++		log->ubuf = NULL;
++}
++
++/* log_level controls verbosity level of eBPF verifier.
++ * bpf_verifier_log_write() is used to dump the verification trace to the log,
++ * so the user can figure out what's wrong with the program
++ */
++__printf(2, 3) void bpf_verifier_log_write(struct bpf_verifier_env *env,
++					   const char *fmt, ...)
++{
++	va_list args;
++
++	if (!bpf_verifier_log_needed(&env->log))
++		return;
++
++	va_start(args, fmt);
++	bpf_verifier_vlog(&env->log, fmt, args);
++	va_end(args);
++}
++EXPORT_SYMBOL_GPL(bpf_verifier_log_write);
++
++__printf(2, 3) void bpf_log(struct bpf_verifier_log *log,
++			    const char *fmt, ...)
++{
++	va_list args;
++
++	if (!bpf_verifier_log_needed(log))
++		return;
++
++	va_start(args, fmt);
++	bpf_verifier_vlog(log, fmt, args);
++	va_end(args);
++}
++EXPORT_SYMBOL_GPL(bpf_log);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 92ae4e8ab87b..c5d1ce01b164 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -335,61 +335,6 @@ find_linfo(const struct bpf_verifier_env *env, u32 insn_off)
+ 	return &linfo[i - 1];
+ }
+ 
+-void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *fmt,
+-		       va_list args)
+-{
+-	unsigned int n;
+-
+-	n = vscnprintf(log->kbuf, BPF_VERIFIER_TMP_LOG_SIZE, fmt, args);
+-
+-	WARN_ONCE(n >= BPF_VERIFIER_TMP_LOG_SIZE - 1,
+-		  "verifier log line truncated - local buffer too short\n");
+-
+-	if (log->level == BPF_LOG_KERNEL) {
+-		bool newline = n > 0 && log->kbuf[n - 1] == '\n';
+-
+-		pr_err("BPF: %s%s", log->kbuf, newline ? "" : "\n");
+-		return;
+-	}
+-
+-	n = min(log->len_total - log->len_used - 1, n);
+-	log->kbuf[n] = '\0';
+-	if (!copy_to_user(log->ubuf + log->len_used, log->kbuf, n + 1))
+-		log->len_used += n;
+-	else
+-		log->ubuf = NULL;
+-}
+-
+-static void bpf_vlog_reset(struct bpf_verifier_log *log, u32 new_pos)
+-{
+-	char zero = 0;
+-
+-	if (!bpf_verifier_log_needed(log))
+-		return;
+-
+-	log->len_used = new_pos;
+-	if (put_user(zero, log->ubuf + new_pos))
+-		log->ubuf = NULL;
+-}
+-
+-/* log_level controls verbosity level of eBPF verifier.
+- * bpf_verifier_log_write() is used to dump the verification trace to the log,
+- * so the user can figure out what's wrong with the program
+- */
+-__printf(2, 3) void bpf_verifier_log_write(struct bpf_verifier_env *env,
+-					   const char *fmt, ...)
+-{
+-	va_list args;
+-
+-	if (!bpf_verifier_log_needed(&env->log))
+-		return;
+-
+-	va_start(args, fmt);
+-	bpf_verifier_vlog(&env->log, fmt, args);
+-	va_end(args);
+-}
+-EXPORT_SYMBOL_GPL(bpf_verifier_log_write);
+-
+ __printf(2, 3) static void verbose(void *private_data, const char *fmt, ...)
+ {
+ 	struct bpf_verifier_env *env = private_data;
+@@ -403,20 +348,6 @@ __printf(2, 3) static void verbose(void *private_data, const char *fmt, ...)
+ 	va_end(args);
+ }
+ 
+-__printf(2, 3) void bpf_log(struct bpf_verifier_log *log,
+-			    const char *fmt, ...)
+-{
+-	va_list args;
+-
+-	if (!bpf_verifier_log_needed(log))
+-		return;
+-
+-	va_start(args, fmt);
+-	bpf_verifier_vlog(log, fmt, args);
+-	va_end(args);
+-}
+-EXPORT_SYMBOL_GPL(bpf_log);
+-
+ static const char *ltrim(const char *s)
+ {
+ 	while (isspace(*s))
 -- 
 2.34.1
 
