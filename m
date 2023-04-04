@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 444B26D579A
-	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 06:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6636D579D
+	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 06:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbjDDEhy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Apr 2023 00:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
+        id S232776AbjDDEiP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Apr 2023 00:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233027AbjDDEht (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 00:37:49 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C811E1FFA
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 21:37:47 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 33449kEU006408
-        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 21:37:47 -0700
+        with ESMTP id S231208AbjDDEiO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 00:38:14 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B24C10F9
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 21:38:13 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 333NLdkb006259
+        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 21:38:13 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3prcme0343-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pqytf50dk-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 21:37:46 -0700
-Received: from twshared52232.38.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 21:38:13 -0700
+Received: from twshared29091.48.prn1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2507.17; Mon, 3 Apr 2023 21:37:45 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 86FA02D051A3B; Mon,  3 Apr 2023 21:37:29 -0700 (PDT)
+        id 935672D051AA8; Mon,  3 Apr 2023 21:37:31 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>, <lmb@isovalent.com>, <timo@incline.eu>,
         <robin.goegge@isovalent.com>
 CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v3 bpf-next 14/19] bpf: relax log_buf NULL conditions when log_level>0 is requested
-Date:   Mon, 3 Apr 2023 21:36:54 -0700
-Message-ID: <20230404043659.2282536-15-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 15/19] libbpf: wire through log_size_actual returned from kernel for BPF_PROG_LOAD
+Date:   Mon, 3 Apr 2023 21:36:55 -0700
+Message-ID: <20230404043659.2282536-16-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230404043659.2282536-1-andrii@kernel.org>
 References: <20230404043659.2282536-1-andrii@kernel.org>
@@ -42,8 +42,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: _ExHI_AxUgt9NhwevQtXQVDSs4mXXkAN
-X-Proofpoint-GUID: _ExHI_AxUgt9NhwevQtXQVDSs4mXXkAN
+X-Proofpoint-ORIG-GUID: VQWZuX2QwhifZvVcgmWTTvais2rGykYv
+X-Proofpoint-GUID: VQWZuX2QwhifZvVcgmWTTvais2rGykYv
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-04-03_19,2023-04-03_03,2023-02-09_01
@@ -56,117 +56,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Drop the log_size>0 and log_buf!=NULL condition when log_level>0. This
-allows users to request log_size_actual of a full log without providing
-actual (even if small) log buffer. Verifier log handling code was mostly ready to handle NULL log->ubuf, so only few small changes were necessary to prevent NULL log->ubuf from causing problems.
+Add output-only log_size_actual field to bpf_prog_load_opts to return
+bpf_attr->log_size_actual value back from bpf() syscall.
 
-Note, that user is basically guaranteed to receive -ENOSPC when
-providing log_level>0 and log_buf==NULL. We also still enforce that
-either (log_buf==NULL && log_size==0) or (log_buf!=NULL && log_size>0).
+Note, that we have to drop const modifier from opts in bpf_prog_load().
+This could potentially cause compilation error for some users. But
+the usual practice is to define bpf_prog_load_ops
+as a local variable next to bpf_prog_load() call and pass pointer to it,
+so const vs non-const makes no difference and won't even come up in most
+(if not all) cases.
 
-Suggested-by: Lorenz Bauer <lmb@isovalent.com>
+There are no runtime and ABI backwards/forward compatibility issues at all.
+If user provides old struct bpf_prog_load_opts, libbpf won't set new
+fields. If old libbpf is provided new bpf_prog_load_opts, nothing will
+happen either as old libbpf doesn't yet know about this new field.
+
+Adding a new variant of bpf_prog_load() just for this seems like a big
+and unnecessary overkill. As a corroborating evidence is the fact that
+entire selftests/bpf code base required not adjustment whatsoever.
+
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/log.c | 39 +++++++++++++++++++++++++--------------
- 1 file changed, 25 insertions(+), 14 deletions(-)
+ tools/lib/bpf/bpf.c |  7 +++++--
+ tools/lib/bpf/bpf.h | 11 +++++++++--
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
-index 1198b6ad235a..ab8149448724 100644
---- a/kernel/bpf/log.c
-+++ b/kernel/bpf/log.c
-@@ -12,8 +12,17 @@
- 
- static bool bpf_verifier_log_attr_valid(const struct bpf_verifier_log *log)
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index f1d04ee14d83..cfe79d441c65 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -230,9 +230,9 @@ alloc_zero_tailing_info(const void *orecord, __u32 cnt,
+ int bpf_prog_load(enum bpf_prog_type prog_type,
+ 		  const char *prog_name, const char *license,
+ 		  const struct bpf_insn *insns, size_t insn_cnt,
+-		  const struct bpf_prog_load_opts *opts)
++		  struct bpf_prog_load_opts *opts)
  {
--	return log->len_total > 0 && log->len_total <= UINT_MAX >> 2 &&
--	       log->level && log->ubuf && !(log->level & ~BPF_LOG_MASK);
-+	/* ubuf and len_total should both be specified (or not) together */
-+	if (!!log->ubuf != !!log->len_total)
-+		return false;
-+	/* log buf without log_level is meaningless */
-+	if (log->ubuf && log->level == 0)
-+		return false;
-+	if (log->level & ~BPF_LOG_MASK)
-+		return false;
-+	if (log->len_total > UINT_MAX >> 2)
-+		return false;
-+	return true;
- }
- 
- int bpf_vlog_init(struct bpf_verifier_log *log, u32 log_level,
-@@ -64,15 +73,15 @@ void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *fmt,
+-	const size_t attr_sz = offsetofend(union bpf_attr, fd_array);
++	const size_t attr_sz = offsetofend(union bpf_attr, log_size_actual);
+ 	void *finfo = NULL, *linfo = NULL;
+ 	const char *func_info, *line_info;
+ 	__u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
+@@ -312,6 +312,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
  	}
  
- 	n += 1; /* include terminating zero */
-+	bpf_vlog_update_len_max(log, n);
-+
- 	if (log->level & BPF_LOG_FIXED) {
- 		/* check if we have at least something to put into user buf */
- 		new_n = 0;
--		if (log->end_pos < log->len_total - 1) {
-+		if (log->end_pos + 1 < log->len_total) {
- 			new_n = min_t(u32, log->len_total - log->end_pos, n);
- 			log->kbuf[new_n - 1] = '\0';
+ 	fd = sys_bpf_prog_load(&attr, attr_sz, attempts);
++	OPTS_SET(opts, log_size_actual, attr.log_size_actual);
+ 	if (fd >= 0)
+ 		return fd;
+ 
+@@ -352,6 +353,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
  		}
--
--		bpf_vlog_update_len_max(log, n);
- 		cur_pos = log->end_pos;
- 		log->end_pos += n - 1; /* don't count terminating '\0' */
  
-@@ -84,16 +93,21 @@ void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *fmt,
- 		u32 buf_start, buf_end, new_n;
+ 		fd = sys_bpf_prog_load(&attr, attr_sz, attempts);
++		OPTS_SET(opts, log_size_actual, attr.log_size_actual);
+ 		if (fd >= 0)
+ 			goto done;
+ 	}
+@@ -366,6 +368,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+ 		attr.log_level = 1;
  
- 		log->kbuf[n - 1] = '\0';
--		bpf_vlog_update_len_max(log, n);
+ 		fd = sys_bpf_prog_load(&attr, attr_sz, attempts);
++		OPTS_SET(opts, log_size_actual, attr.log_size_actual);
+ 	}
+ done:
+ 	/* free() doesn't affect errno, so we don't need to restore it */
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index b073e73439ef..45a967e65165 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -96,13 +96,20 @@ struct bpf_prog_load_opts {
+ 	__u32 log_level;
+ 	__u32 log_size;
+ 	char *log_buf;
++	/* output: actual total log contents size (including termintaing zero).
++	 * It could be both larger than original log_size (if log was
++	 * truncated), or smaller (if log buffer wasn't filled completely).
++	 * If kernel doesn't support this feature, log_size is left unchanged.
++	 */
++	__u32 log_size_actual;
++	size_t :0;
+ };
+-#define bpf_prog_load_opts__last_field log_buf
++#define bpf_prog_load_opts__last_field log_size_actual
  
- 		new_end = log->end_pos + n;
- 		if (new_end - log->start_pos >= log->len_total)
- 			new_start = new_end - log->len_total;
- 		else
- 			new_start = log->start_pos;
-+
-+		log->start_pos = new_start;
-+		log->end_pos = new_end - 1; /* don't count terminating '\0' */
-+
-+		if (!log->ubuf)
-+			return;
-+
- 		new_n = min(n, log->len_total);
- 		cur_pos = new_end - new_n;
--
- 		div_u64_rem(cur_pos, log->len_total, &buf_start);
- 		div_u64_rem(new_end, log->len_total, &buf_end);
- 		/* new_end and buf_end are exclusive indices, so if buf_end is
-@@ -103,12 +117,6 @@ void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *fmt,
- 		if (buf_end == 0)
- 			buf_end = log->len_total;
+ LIBBPF_API int bpf_prog_load(enum bpf_prog_type prog_type,
+ 			     const char *prog_name, const char *license,
+ 			     const struct bpf_insn *insns, size_t insn_cnt,
+-			     const struct bpf_prog_load_opts *opts);
++			     struct bpf_prog_load_opts *opts);
  
--		log->start_pos = new_start;
--		log->end_pos = new_end - 1; /* don't count terminating '\0' */
--
--		if (!log->ubuf)
--			return;
--
- 		/* if buf_start > buf_end, we wrapped around;
- 		 * if buf_start == buf_end, then we fill ubuf completely; we
- 		 * can't have buf_start == buf_end to mean that there is
-@@ -155,12 +163,15 @@ void bpf_vlog_reset(struct bpf_verifier_log *log, u64 new_pos)
- 	if (log->end_pos < log->start_pos)
- 		log->start_pos = log->end_pos;
- 
-+	if (!log->ubuf)
-+		return;
-+
- 	if (log->level & BPF_LOG_FIXED)
- 		pos = log->end_pos + 1;
- 	else
- 		div_u64_rem(new_pos, log->len_total, &pos);
- 
--	if (log->ubuf && pos < log->len_total && put_user(zero, log->ubuf + pos))
-+	if (pos < log->len_total && put_user(zero, log->ubuf + pos))
- 		log->ubuf = NULL;
- }
- 
+ /* Flags to direct loading requirements */
+ #define MAPS_RELAX_COMPAT	0x01
 -- 
 2.34.1
 
