@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1847C6D5797
-	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 06:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CED66D5799
+	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 06:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbjDDEhi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Apr 2023 00:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
+        id S232489AbjDDEho convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Apr 2023 00:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbjDDEhh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 00:37:37 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBD91FEE
-        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 21:37:36 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33436tAE022523
-        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 21:37:36 -0700
+        with ESMTP id S232776AbjDDEhn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 00:37:43 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37AB1BEB
+        for <bpf@vger.kernel.org>; Mon,  3 Apr 2023 21:37:41 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 33449inW006285
+        for <bpf@vger.kernel.org>; Mon, 3 Apr 2023 21:37:41 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3prbpw8b46-3
+        by m0001303.ppops.net (PPS) with ESMTPS id 3prcme033r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 21:37:35 -0700
-Received: from twshared52232.38.frc1.facebook.com (2620:10d:c085:208::f) by
+        for <bpf@vger.kernel.org>; Mon, 03 Apr 2023 21:37:40 -0700
+Received: from twshared21709.17.frc2.facebook.com (2620:10d:c085:208::11) by
  mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 3 Apr 2023 21:37:34 -0700
+ 15.1.2507.17; Mon, 3 Apr 2023 21:37:39 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 6A2E12D0519FA; Mon,  3 Apr 2023 21:37:25 -0700 (PDT)
+        id 7894F2D051A02; Mon,  3 Apr 2023 21:37:27 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>, <lmb@isovalent.com>, <timo@incline.eu>,
         <robin.goegge@isovalent.com>
 CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v3 bpf-next 12/19] bpf: add log_size_actual output field to return log contents size
-Date:   Mon, 3 Apr 2023 21:36:52 -0700
-Message-ID: <20230404043659.2282536-13-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 13/19] bpf: simplify internal verifier log interface
+Date:   Mon, 3 Apr 2023 21:36:53 -0700
+Message-ID: <20230404043659.2282536-14-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230404043659.2282536-1-andrii@kernel.org>
 References: <20230404043659.2282536-1-andrii@kernel.org>
@@ -42,8 +42,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: v6Fs19_hHOyubJLJxKJzHKpKV1IFUCfg
-X-Proofpoint-GUID: v6Fs19_hHOyubJLJxKJzHKpKV1IFUCfg
+X-Proofpoint-ORIG-GUID: -NppxROPdnN2zuSv8Uqfh5xCouOb4hbt
+X-Proofpoint-GUID: -NppxROPdnN2zuSv8Uqfh5xCouOb4hbt
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-04-03_19,2023-04-03_03,2023-02-09_01
@@ -56,308 +56,338 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add output-only log_size_actual/btf_log_size_actual field to
-BPF_PROG_LOAD and BPF_BTF_LOAD commands, respectively. It will return
-the size of log buffer necessary to fit in all the log contents at
-specified log_level. This is very useful for BPF loader libraries like
-libbpf to be able to size log buffer correctly, but could be used by
-users directly, if necessary, as well.
+Simplify internal verifier log API down to bpf_vlog_init() and
+bpf_vlog_finalize(). The former handles input arguments validation in
+one place and makes it easier to change it. The latter subsumes -ENOSPC
+(truncation) and -EFAULT handling and simplifies both caller's code
+(bpf_check() and btf_parse()).
 
-This patch plumbs all this through the code, taking into account actual
-bpf_attr size provided by user to determine if these new fields are
-expected by users. And if they are, set them from kernel on return.
-
-We refactory btf_parse() function to accommodate this, moving attr and
-uattr handling inside it. The rest is very straightforward code, which
-is split from the logging accounting changes in the previous patch to
-make it simpler to review logic vs UAPI changes.
+For btf_parse(), this patch also makes sure that verifier log
+finalization happens even if there is some error condition during BTF
+verification process prior to normal finalization step.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/bpf.h            |  2 +-
- include/linux/btf.h            |  2 +-
- include/uapi/linux/bpf.h       | 10 ++++++++++
- kernel/bpf/btf.c               | 32 ++++++++++++++++++--------------
- kernel/bpf/syscall.c           | 16 ++++++++--------
- kernel/bpf/verifier.c          |  8 +++++++-
- tools/include/uapi/linux/bpf.h | 12 +++++++++++-
- 7 files changed, 56 insertions(+), 26 deletions(-)
+ include/linux/bpf_verifier.h | 13 ++------
+ kernel/bpf/btf.c             | 65 ++++++++++++++++++------------------
+ kernel/bpf/log.c             | 48 +++++++++++++++++++++-----
+ kernel/bpf/verifier.c        | 39 +++++++++-------------
+ 4 files changed, 90 insertions(+), 75 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 2d8f3f639e68..57507a2fcc8d 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2176,7 +2176,7 @@ int bpf_check_uarg_tail_zero(bpfptr_t uaddr, size_t expected_size,
- 			     size_t actual_size);
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 98d2eb382dbb..f03852b89d28 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -518,13 +518,6 @@ struct bpf_verifier_log {
+ #define BPF_LOG_MIN_ALIGNMENT 8U
+ #define BPF_LOG_ALIGNMENT 40U
  
- /* verify correctness of eBPF program */
--int bpf_check(struct bpf_prog **fp, union bpf_attr *attr, bpfptr_t uattr);
-+int bpf_check(struct bpf_prog **fp, union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size);
+-static inline bool bpf_verifier_log_full(const struct bpf_verifier_log *log)
+-{
+-	if (log->level & BPF_LOG_FIXED)
+-		return log->end_pos >= log->len_total;
+-	return false;
+-}
+-
+ static inline bool bpf_verifier_log_needed(const struct bpf_verifier_log *log)
+ {
+ 	return log && log->level;
+@@ -612,16 +605,16 @@ struct bpf_verifier_env {
+ 	char type_str_buf[TYPE_STR_BUF_LEN];
+ };
  
- #ifndef CONFIG_BPF_JIT_ALWAYS_ON
- void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth);
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index d53b10cc55f2..495250162422 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -125,7 +125,7 @@ extern const struct file_operations btf_fops;
+-bool bpf_verifier_log_attr_valid(const struct bpf_verifier_log *log);
+ __printf(2, 0) void bpf_verifier_vlog(struct bpf_verifier_log *log,
+ 				      const char *fmt, va_list args);
+ __printf(2, 3) void bpf_verifier_log_write(struct bpf_verifier_env *env,
+ 					   const char *fmt, ...);
+ __printf(2, 3) void bpf_log(struct bpf_verifier_log *log,
+ 			    const char *fmt, ...);
++int bpf_vlog_init(struct bpf_verifier_log *log, u32 log_level,
++		  char __user *log_buf, u32 log_size);
+ void bpf_vlog_reset(struct bpf_verifier_log *log, u64 new_pos);
+-void bpf_vlog_finalize(struct bpf_verifier_log *log);
+-bool bpf_vlog_truncated(const struct bpf_verifier_log *log);
++int bpf_vlog_finalize(struct bpf_verifier_log *log, u32 *log_size_actual);
  
- void btf_get(struct btf *btf);
- void btf_put(struct btf *btf);
--int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr);
-+int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr_sz);
- struct btf *btf_get_by_fd(int fd);
- int btf_get_info_by_fd(const struct btf *btf,
- 		       const union bpf_attr *attr,
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index e3d3b5160d26..2d90b820ba1e 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1407,6 +1407,11 @@ union bpf_attr {
- 		__aligned_u64	fd_array;	/* array of FDs */
- 		__aligned_u64	core_relos;
- 		__u32		core_relo_rec_size; /* sizeof(struct bpf_core_relo) */
-+		/* output: actual total log contents size (including termintaing zero).
-+		 * It could be both larger than original log_size (if log was
-+		 * truncated), or smaller (if log buffer wasn't filled completely).
-+		 */
-+		__u32		log_size_actual;
- 	};
- 
- 	struct { /* anonymous struct used by BPF_OBJ_* commands */
-@@ -1492,6 +1497,11 @@ union bpf_attr {
- 		__u32		btf_size;
- 		__u32		btf_log_size;
- 		__u32		btf_log_level;
-+		/* output: actual total log contents size (including termintaing zero).
-+		 * It could be both larger than original log_size (if log was
-+		 * truncated), or smaller (if log buffer wasn't filled completely).
-+		 */
-+		__u32		btf_log_size_actual;
- 	};
- 
- 	struct {
+ static inline struct bpf_func_state *cur_func(struct bpf_verifier_env *env)
+ {
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 36e3c25bdca5..1e974383f0e6 100644
+index 1e974383f0e6..9aeac68ae7ea 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -5504,9 +5504,10 @@ static int btf_check_type_tags(struct btf_verifier_env *env,
+@@ -5504,16 +5504,30 @@ static int btf_check_type_tags(struct btf_verifier_env *env,
  	return 0;
  }
  
--static struct btf *btf_parse(bpfptr_t btf_data, u32 btf_data_size,
--			     u32 log_level, char __user *log_ubuf, u32 log_size)
-+static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
- {
-+	bpfptr_t btf_data = make_bpfptr(attr->btf, uattr.is_kernel);
-+	char __user *log_ubuf = u64_to_user_ptr(attr->btf_log_buf);
- 	struct btf_struct_metas *struct_meta_tab;
- 	struct btf_verifier_env *env = NULL;
- 	struct bpf_verifier_log *log;
-@@ -5514,7 +5515,7 @@ static struct btf *btf_parse(bpfptr_t btf_data, u32 btf_data_size,
- 	u8 *data;
- 	int err;
- 
--	if (btf_data_size > BTF_MAX_SIZE)
-+	if (attr->btf_size > BTF_MAX_SIZE)
- 		return ERR_PTR(-E2BIG);
- 
- 	env = kzalloc(sizeof(*env), GFP_KERNEL | __GFP_NOWARN);
-@@ -5522,13 +5523,13 @@ static struct btf *btf_parse(bpfptr_t btf_data, u32 btf_data_size,
- 		return ERR_PTR(-ENOMEM);
- 
- 	log = &env->log;
--	if (log_level || log_ubuf || log_size) {
-+	if (attr->btf_log_level || log_ubuf || attr->btf_log_size) {
- 		/* user requested verbose verifier output
- 		 * and supplied buffer to store the verification trace
- 		 */
--		log->level = log_level;
-+		log->level = attr->btf_log_level;
- 		log->ubuf = log_ubuf;
--		log->len_total = log_size;
-+		log->len_total = attr->btf_log_size;
- 
- 		/* log attributes have to be sane */
- 		if (!bpf_verifier_log_attr_valid(log)) {
-@@ -5544,16 +5545,16 @@ static struct btf *btf_parse(bpfptr_t btf_data, u32 btf_data_size,
- 	}
- 	env->btf = btf;
- 
--	data = kvmalloc(btf_data_size, GFP_KERNEL | __GFP_NOWARN);
-+	data = kvmalloc(attr->btf_size, GFP_KERNEL | __GFP_NOWARN);
- 	if (!data) {
- 		err = -ENOMEM;
- 		goto errout;
- 	}
- 
- 	btf->data = data;
--	btf->data_size = btf_data_size;
-+	btf->data_size = attr->btf_size;
- 
--	if (copy_from_bpfptr(data, btf_data, btf_data_size)) {
-+	if (copy_from_bpfptr(data, btf_data, attr->btf_size)) {
- 		err = -EFAULT;
- 		goto errout;
- 	}
-@@ -5594,6 +5595,12 @@ static struct btf *btf_parse(bpfptr_t btf_data, u32 btf_data_size,
- 	}
- 
- 	bpf_vlog_finalize(log);
++static int finalize_log(struct bpf_verifier_log *log, bpfptr_t uattr, u32 uattr_size)
++{
++	u32 log_size_actual;
++	int err;
++
++	err = bpf_vlog_finalize(log, &log_size_actual);
++
 +	if (uattr_size >= offsetofend(union bpf_attr, btf_log_size_actual) &&
 +	    copy_to_bpfptr_offset(uattr, offsetof(union bpf_attr, btf_log_size_actual),
-+				  &log->len_max, sizeof(log->len_max))) {
++				  &log_size_actual, sizeof(log_size_actual)))
 +		err = -EFAULT;
-+		goto errout_meta;
-+	}
- 	if (bpf_vlog_truncated(log)) {
- 		err = -ENOSPC;
- 		goto errout_meta;
-@@ -7214,15 +7221,12 @@ static int __btf_new_fd(struct btf *btf)
- 	return anon_inode_getfd("btf", &btf_fops, btf, O_RDONLY | O_CLOEXEC);
- }
- 
--int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr)
-+int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
++
++	return err;
++}
++
+ static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
  {
- 	struct btf *btf;
- 	int ret;
+ 	bpfptr_t btf_data = make_bpfptr(attr->btf, uattr.is_kernel);
+ 	char __user *log_ubuf = u64_to_user_ptr(attr->btf_log_buf);
+ 	struct btf_struct_metas *struct_meta_tab;
+ 	struct btf_verifier_env *env = NULL;
+-	struct bpf_verifier_log *log;
+ 	struct btf *btf = NULL;
+ 	u8 *data;
+-	int err;
++	int err, ret;
  
--	btf = btf_parse(make_bpfptr(attr->btf, uattr.is_kernel),
--			attr->btf_size, attr->btf_log_level,
--			u64_to_user_ptr(attr->btf_log_buf),
--			attr->btf_log_size);
-+	btf = btf_parse(attr, uattr, uattr_size);
- 	if (IS_ERR(btf))
- 		return PTR_ERR(btf);
+ 	if (attr->btf_size > BTF_MAX_SIZE)
+ 		return ERR_PTR(-E2BIG);
+@@ -5522,21 +5536,13 @@ static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uat
+ 	if (!env)
+ 		return ERR_PTR(-ENOMEM);
  
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index e18ac7fdc210..fe2411a0d68e 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2501,9 +2501,9 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
- }
+-	log = &env->log;
+-	if (attr->btf_log_level || log_ubuf || attr->btf_log_size) {
+-		/* user requested verbose verifier output
+-		 * and supplied buffer to store the verification trace
+-		 */
+-		log->level = attr->btf_log_level;
+-		log->ubuf = log_ubuf;
+-		log->len_total = attr->btf_log_size;
+-
+-		/* log attributes have to be sane */
+-		if (!bpf_verifier_log_attr_valid(log)) {
+-			err = -EINVAL;
+-			goto errout;
+-		}
+-	}
++	/* user could have requested verbose verifier output
++	 * and supplied buffer to store the verification trace
++	 */
++	err = bpf_vlog_init(&env->log, attr->btf_log_level,
++			    log_ubuf, attr->btf_log_size);
++	if (err)
++		goto errout_free;
  
- /* last field in 'union bpf_attr' used by this command */
--#define	BPF_PROG_LOAD_LAST_FIELD core_relo_rec_size
-+#define	BPF_PROG_LOAD_LAST_FIELD log_size_actual
+ 	btf = kzalloc(sizeof(*btf), GFP_KERNEL | __GFP_NOWARN);
+ 	if (!btf) {
+@@ -5577,7 +5583,7 @@ static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uat
+ 	if (err)
+ 		goto errout;
  
--static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
-+static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+-	struct_meta_tab = btf_parse_struct_metas(log, btf);
++	struct_meta_tab = btf_parse_struct_metas(&env->log, btf);
+ 	if (IS_ERR(struct_meta_tab)) {
+ 		err = PTR_ERR(struct_meta_tab);
+ 		goto errout;
+@@ -5594,21 +5600,9 @@ static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uat
+ 		}
+ 	}
+ 
+-	bpf_vlog_finalize(log);
+-	if (uattr_size >= offsetofend(union bpf_attr, btf_log_size_actual) &&
+-	    copy_to_bpfptr_offset(uattr, offsetof(union bpf_attr, btf_log_size_actual),
+-				  &log->len_max, sizeof(log->len_max))) {
+-		err = -EFAULT;
+-		goto errout_meta;
+-	}
+-	if (bpf_vlog_truncated(log)) {
+-		err = -ENOSPC;
+-		goto errout_meta;
+-	}
+-	if (log->level && log->level != BPF_LOG_KERNEL && !log->ubuf) {
+-		err = -EFAULT;
+-		goto errout_meta;
+-	}
++	err = finalize_log(&env->log, uattr, uattr_size);
++	if (err)
++		goto errout_free;
+ 
+ 	btf_verifier_env_free(env);
+ 	refcount_set(&btf->refcnt, 1);
+@@ -5617,6 +5611,11 @@ static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uat
+ errout_meta:
+ 	btf_free_struct_meta_tab(btf);
+ errout:
++	/* overwrite err with -ENOSPC or -EFAULT */
++	ret = finalize_log(&env->log, uattr, uattr_size);
++	if (ret)
++		err = ret;
++errout_free:
+ 	btf_verifier_env_free(env);
+ 	if (btf)
+ 		btf_free(btf);
+diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
+index acfe8f5d340a..1198b6ad235a 100644
+--- a/kernel/bpf/log.c
++++ b/kernel/bpf/log.c
+@@ -10,12 +10,26 @@
+ #include <linux/bpf_verifier.h>
+ #include <linux/math64.h>
+ 
+-bool bpf_verifier_log_attr_valid(const struct bpf_verifier_log *log)
++static bool bpf_verifier_log_attr_valid(const struct bpf_verifier_log *log)
  {
- 	enum bpf_prog_type type = attr->prog_type;
- 	struct bpf_prog *prog, *dst_prog = NULL;
-@@ -2653,7 +2653,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
- 		goto free_prog_sec;
- 
- 	/* run eBPF verifier */
--	err = bpf_check(&prog, attr, uattr);
-+	err = bpf_check(&prog, attr, uattr, uattr_size);
- 	if (err < 0)
- 		goto free_used_maps;
- 
-@@ -4371,9 +4371,9 @@ static int bpf_obj_get_info_by_fd(const union bpf_attr *attr,
- 	return err;
+ 	return log->len_total > 0 && log->len_total <= UINT_MAX >> 2 &&
+ 	       log->level && log->ubuf && !(log->level & ~BPF_LOG_MASK);
  }
  
--#define BPF_BTF_LOAD_LAST_FIELD btf_log_level
-+#define BPF_BTF_LOAD_LAST_FIELD btf_log_size_actual
- 
--static int bpf_btf_load(const union bpf_attr *attr, bpfptr_t uattr)
-+static int bpf_btf_load(const union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_size)
++int bpf_vlog_init(struct bpf_verifier_log *log, u32 log_level,
++		  char __user *log_buf, u32 log_size)
++{
++	log->level = log_level;
++	log->ubuf = log_buf;
++	log->len_total = log_size;
++
++	/* log attributes have to be sane */
++	if (!bpf_verifier_log_attr_valid(log))
++		return -EINVAL;
++
++	return 0;
++}
++
+ static void bpf_vlog_update_len_max(struct bpf_verifier_log *log, u32 add_len)
  {
- 	if (CHECK_ATTR(BPF_BTF_LOAD))
- 		return -EINVAL;
-@@ -4381,7 +4381,7 @@ static int bpf_btf_load(const union bpf_attr *attr, bpfptr_t uattr)
- 	if (!bpf_capable())
- 		return -EPERM;
- 
--	return btf_new_fd(attr, uattr);
-+	return btf_new_fd(attr, uattr, uattr_size);
+ 	/* add_len includes terminal \0, so no need for +1. */
+@@ -196,24 +210,25 @@ static int bpf_vlog_reverse_ubuf(struct bpf_verifier_log *log, int start, int en
+ 	return 0;
  }
  
- #define BPF_BTF_GET_FD_BY_ID_LAST_FIELD btf_id
-@@ -5059,7 +5059,7 @@ static int __sys_bpf(int cmd, bpfptr_t uattr, unsigned int size)
- 		err = map_freeze(&attr);
- 		break;
- 	case BPF_PROG_LOAD:
--		err = bpf_prog_load(&attr, uattr);
-+		err = bpf_prog_load(&attr, uattr, size);
- 		break;
- 	case BPF_OBJ_PIN:
- 		err = bpf_obj_pin(&attr);
-@@ -5104,7 +5104,7 @@ static int __sys_bpf(int cmd, bpfptr_t uattr, unsigned int size)
- 		err = bpf_raw_tracepoint_open(&attr);
- 		break;
- 	case BPF_BTF_LOAD:
--		err = bpf_btf_load(&attr, uattr);
-+		err = bpf_btf_load(&attr, uattr, size);
- 		break;
- 	case BPF_BTF_GET_FD_BY_ID:
- 		err = bpf_btf_get_fd_by_id(&attr);
+-bool bpf_vlog_truncated(const struct bpf_verifier_log *log)
++static bool bpf_vlog_truncated(const struct bpf_verifier_log *log)
+ {
+ 	return log->len_max > log->len_total;
+ }
+ 
+-void bpf_vlog_finalize(struct bpf_verifier_log *log)
++int bpf_vlog_finalize(struct bpf_verifier_log *log, u32 *log_size_actual)
+ {
+ 	u32 sublen;
+ 	int err;
+ 
+-	if (!log || !log->level || !log->ubuf)
+-		return;
+-	if ((log->level & BPF_LOG_FIXED) || log->level == BPF_LOG_KERNEL)
+-		return;
++	*log_size_actual = 0;
++	if (!log || log->level == 0 || log->level == BPF_LOG_KERNEL)
++		return 0;
+ 
++	if (!log->ubuf)
++		goto skip_log_rotate;
+ 	/* If we never truncated log, there is nothing to move around. */
+-	if (log->start_pos == 0)
+-		return;
++	if ((log->level & BPF_LOG_FIXED) || log->start_pos == 0)
++		goto skip_log_rotate;
+ 
+ 	/* Otherwise we need to rotate log contents to make it start from the
+ 	 * buffer beginning and be a continuous zero-terminated string. Note
+@@ -256,6 +271,21 @@ void bpf_vlog_finalize(struct bpf_verifier_log *log)
+ 	err = err ?: bpf_vlog_reverse_ubuf(log, sublen, log->len_total);
+ 	if (err)
+ 		log->ubuf = NULL;
++
++skip_log_rotate:
++	*log_size_actual = log->len_max;
++
++	/* properly initialized log has either both ubuf!=NULL and len_total>0
++	 * or ubuf==NULL and len_total==0, so if this condition doesn't hold,
++	 * we got a fault somewhere along the way, so report it back
++	 */
++	if (!!log->ubuf != !!log->len_total)
++		return -EFAULT;
++
++	if (bpf_vlog_truncated(log))
++		return -ENOSPC;
++
++	return 0;
+ }
+ 
+ /* log_level controls verbosity level of eBPF verifier.
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2188d405d8c4..2dd933015c35 100644
+index 2dd933015c35..52ede52ab46d 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -18625,7 +18625,7 @@ struct btf *bpf_get_btf_vmlinux(void)
- 	return btf_vmlinux;
- }
- 
--int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
-+int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_size)
+@@ -18629,8 +18629,8 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
  {
  	u64 start_time = ktime_get_ns();
  	struct bpf_verifier_env *env;
-@@ -18792,6 +18792,12 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
+-	struct bpf_verifier_log *log;
+-	int i, len, ret = -EINVAL;
++	int i, len, ret = -EINVAL, err;
++	u32 log_size_actual;
+ 	bool is_priv;
+ 
+ 	/* no program is valid */
+@@ -18643,7 +18643,6 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 	env = kzalloc(sizeof(struct bpf_verifier_env), GFP_KERNEL);
+ 	if (!env)
+ 		return -ENOMEM;
+-	log = &env->log;
+ 
+ 	len = (*prog)->len;
+ 	env->insn_aux_data =
+@@ -18664,20 +18663,14 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 	if (!is_priv)
+ 		mutex_lock(&bpf_verifier_lock);
+ 
+-	if (attr->log_level || attr->log_buf || attr->log_size) {
+-		/* user requested verbose verifier output
+-		 * and supplied buffer to store the verification trace
+-		 */
+-		log->level = attr->log_level;
+-		log->ubuf = (char __user *) (unsigned long) attr->log_buf;
+-		log->len_total = attr->log_size;
+-
+-		/* log attributes have to be sane */
+-		if (!bpf_verifier_log_attr_valid(log)) {
+-			ret = -EINVAL;
+-			goto err_unlock;
+-		}
+-	}
++	/* user could have requested verbose verifier output
++	 * and supplied buffer to store the verification trace
++	 */
++	ret = bpf_vlog_init(&env->log, attr->log_level,
++			    (char __user *) (unsigned long) attr->log_buf,
++			    attr->log_size);
++	if (ret)
++		goto err_unlock;
+ 
+ 	mark_verifier_state_clean(env);
+ 
+@@ -18791,17 +18784,17 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 	print_verification_stats(env);
  	env->prog->aux->verified_insns = env->insn_processed;
  
- 	bpf_vlog_finalize(log);
-+	if (uattr_size >= offsetofend(union bpf_attr, log_size_actual) &&
-+	    copy_to_bpfptr_offset(uattr, offsetof(union bpf_attr, log_size_actual),
-+				  &log->len_max, sizeof(log->len_max))) {
-+		ret = -EFAULT;
-+		goto err_release_maps;
-+	}
- 	if (bpf_vlog_truncated(log))
- 		ret = -ENOSPC;
- 	if (log->level && log->level != BPF_LOG_KERNEL && !log->ubuf)
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index d6c5a022ae28..2d90b820ba1e 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1407,6 +1407,11 @@ union bpf_attr {
- 		__aligned_u64	fd_array;	/* array of FDs */
- 		__aligned_u64	core_relos;
- 		__u32		core_relo_rec_size; /* sizeof(struct bpf_core_relo) */
-+		/* output: actual total log contents size (including termintaing zero).
-+		 * It could be both larger than original log_size (if log was
-+		 * truncated), or smaller (if log buffer wasn't filled completely).
-+		 */
-+		__u32		log_size_actual;
- 	};
+-	bpf_vlog_finalize(log);
++	/* preserve original error even if log finalization is successful */
++	err = bpf_vlog_finalize(&env->log, &log_size_actual);
++	if (err)
++		ret = err;
++
+ 	if (uattr_size >= offsetofend(union bpf_attr, log_size_actual) &&
+ 	    copy_to_bpfptr_offset(uattr, offsetof(union bpf_attr, log_size_actual),
+-				  &log->len_max, sizeof(log->len_max))) {
++				  &log_size_actual, sizeof(log_size_actual))) {
+ 		ret = -EFAULT;
+ 		goto err_release_maps;
+ 	}
+-	if (bpf_vlog_truncated(log))
+-		ret = -ENOSPC;
+-	if (log->level && log->level != BPF_LOG_KERNEL && !log->ubuf)
+-		ret = -EFAULT;
  
- 	struct { /* anonymous struct used by BPF_OBJ_* commands */
-@@ -1492,6 +1497,11 @@ union bpf_attr {
- 		__u32		btf_size;
- 		__u32		btf_log_size;
- 		__u32		btf_log_level;
-+		/* output: actual total log contents size (including termintaing zero).
-+		 * It could be both larger than original log_size (if log was
-+		 * truncated), or smaller (if log buffer wasn't filled completely).
-+		 */
-+		__u32		btf_log_size_actual;
- 	};
- 
- 	struct {
-@@ -1513,7 +1523,7 @@ union bpf_attr {
- 	struct { /* struct used by BPF_LINK_CREATE command */
- 		union {
- 			__u32		prog_fd;	/* eBPF program to attach */
--			__u32		map_fd;		/* eBPF struct_ops to attach */
-+			__u32		map_fd;		/* struct_ops to attach */
- 		};
- 		union {
- 			__u32		target_fd;	/* object to attach to */
+ 	if (ret)
+ 		goto err_release_maps;
 -- 
 2.34.1
 
