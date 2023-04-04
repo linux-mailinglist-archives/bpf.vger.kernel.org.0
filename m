@@ -2,60 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A12B66D6F3A
-	for <lists+bpf@lfdr.de>; Tue,  4 Apr 2023 23:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87F06D6FD6
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 00:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236342AbjDDVrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Apr 2023 17:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
+        id S234499AbjDDWEy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Apr 2023 18:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236450AbjDDVrG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 17:47:06 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A63710CA
-        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 14:47:05 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id y4so136317163edo.2
-        for <bpf@vger.kernel.org>; Tue, 04 Apr 2023 14:47:04 -0700 (PDT)
+        with ESMTP id S236633AbjDDWEv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 18:04:51 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C8D3C0E
+        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 15:04:49 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id cn12so136395461edb.4
+        for <bpf@vger.kernel.org>; Tue, 04 Apr 2023 15:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680644823;
+        d=gmail.com; s=20210112; t=1680645888;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oDz97oD/l+Yzo4p+FCVD5RcNYfUIsM7Fwvipfrywsj0=;
-        b=bIt3yd6DAx6DrahQGpNUm6rlBXSHSe1jaWv9q7gXJfuHEXCIvetsALu+PwNYb26UAv
-         +utPJaIRToNqPPAbLs3yKj4NdYfOfwe3rbXCx1hOE2ZQpK165T2unNJQlDb354dcQ2h5
-         KByI1250p29e/vTE0iSF+hG938ipZwnMMZQuGtZDbiaDuGNxEKwhpDUomwEQDPrtr9yi
-         1yQaJIkvsBjqNK1m6BDFyZFbX6hPD0WJVH9gzi6Zb2vaRz8jVsioAWlaG9DRuLwNEMQy
-         LPTn0qgydj9wWW/uI/CFyXpmfMS2zBTEkxQGQF/zEODjNtoLjU48zHPyvOFj0DBYl6R0
-         e+kw==
+        bh=0ca1cC/rljsajQmShol/TXskYPCQzZo8VonqeqmFzC8=;
+        b=SfCitx+rBqVCT0csmo+lY7ONT4MDrDBb6rjtNxD4kXdEyo1rviWBTFbfJ3gBV+wqy7
+         NEmUyx0rpT5V4rK55Wge6afUqdJndFvvru4xlr3vgj2Qyldiy6iJGaZlYJpk5pj9Lf8h
+         QmWVFZnSWPYKp/7wP8jcT6H5cctEx/lYFhajhAnGrtR7Es92lW95AsBKyHx1cxvd+uMu
+         TGpr6WywcR4Jwg5kE5l4rnC6dzDFYhaibXtINLX+M6ILyqFHSGGdIGW8Fq7kAy9snDKc
+         DBw7Ii4oRtgZC4ZfqMm3YniDRuswvwpPjUYW/dGPh4EaB5Or+QsHOkWS+0FPnTiD5x76
+         QqAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680644823;
+        d=1e100.net; s=20210112; t=1680645888;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oDz97oD/l+Yzo4p+FCVD5RcNYfUIsM7Fwvipfrywsj0=;
-        b=eLQy/l7/oO2hqCdF5fOniLMG0Dyz8uZmjyEDY2RRiTsytBlTnaU6XqA2Sl2x/j+jA/
-         sNzCse8OdmhjM7GszxW2Yg++/uBQYOCe0k0xbX4+F+Lc9prMDJ4hmRh/6E47X4m5ldaX
-         Bz7wbBuWarZiUwgr2jw6XXvEc6Fxp579PVQZg5uaHbN+6t6328+0kLSMEz8W1uj0Hn6M
-         HopHiE1THZIa0BWCBVplCmn5d8Voncc24UxqwveGgKq/KzJNVBtqFSugUphMxJaYC39x
-         LdOO62t8TA5u1eEr/Z5boE3Ey1ouc9TzMxok1HpBKHBqLaiTmJpH3k8gllcPRGK2D3+I
-         xaKg==
-X-Gm-Message-State: AAQBX9ft8RKmkS0GPYrQhDq72Pe5K0msjBH7DirTusYYkRLSFE9kC8Mb
-        E/flvc4VwVcHWxF2VCM8yrJmFT6uLWN2MRCPf+M=
-X-Google-Smtp-Source: AKy350YG6JJqqacfKTM6lMNwWcz44r3jv8YLZtGIoN1Xvzh3q1sinyeWDTwo95O6Oso52hhvMukqUyxOBQoHL9cY/QY=
-X-Received: by 2002:a17:906:f850:b0:948:5b2a:7841 with SMTP id
- ks16-20020a170906f85000b009485b2a7841mr558720ejb.5.1680644823309; Tue, 04 Apr
- 2023 14:47:03 -0700 (PDT)
+        bh=0ca1cC/rljsajQmShol/TXskYPCQzZo8VonqeqmFzC8=;
+        b=zq9e2VedDXCSJMnR0ANc8KZetAD3ybrvONT6a0UsFNoo/MmaT/u+6evtnbpAu06MSd
+         PtzgzeDdCE0fiOkqIDZGBUsCtMuDC9gwaYBHEHbahZL9cfi13B9bS6x5xtAeJSyDBtVK
+         C3PzLV1SoYnrFYONGG7HZjecgCEkO7J7Z1pt6ymWTG4jkB21/e9/S4OYUOj36A8VRmGE
+         MoEb2DpQsuuoY334lZPhz9AGDyL6NAy6vJ74HbBjRbHCbu5eOgHqQdh2nwuC0F+wEBD/
+         vztbHcbPTytxg9gMfizFUKboSj7i7Yk46VN72QVNBuhZA7LhM2NAwq5nlxMXg3qY4/+o
+         AaYQ==
+X-Gm-Message-State: AAQBX9ceQ9j5csEE3R3v7vjiQqSZNuc1UAWXtKB5YrSqU0BCxd5inD/a
+        bXSZmkozV0wU0tVSP0kjtclRcDcqA41ryagrk1pB+FIz
+X-Google-Smtp-Source: AKy350afc/ZNUlwzsT13eVWQ+N0TugSOP8/ph77Gm0QnnBm7V9xz1Jq+dlN3sPgYvKOPpYhZMQqSC1PItoe4VYpWhNA=
+X-Received: by 2002:a17:907:2112:b0:8ab:b606:9728 with SMTP id
+ qn18-20020a170907211200b008abb6069728mr543545ejb.5.1680645887982; Tue, 04 Apr
+ 2023 15:04:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230330055600.86870-1-yhs@fb.com>
-In-Reply-To: <20230330055600.86870-1-yhs@fb.com>
+References: <20230330055600.86870-1-yhs@fb.com> <20230330055615.89935-1-yhs@fb.com>
+ <57694299-9960-0ab7-be61-4f6ba903b72b@meta.com>
+In-Reply-To: <57694299-9960-0ab7-be61-4f6ba903b72b@meta.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 Apr 2023 14:46:51 -0700
-Message-ID: <CAEf4Bzayt_FUG6JyMzU060swqP_w=W9TFJOKD15ux6GNDm3qSg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/7] bpf: Improve verifier for cond_op and
- spilled loop index variables
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 4 Apr 2023 15:04:35 -0700
+Message-ID: <CAEf4BzYLchw-SKxStofoq0bZYAHwGxrOXO-YY17UOMXZW41yeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/7] bpf: Improve handling of pattern '<const>
+ <cond_op> <non_const>' in verifier
+To:     Dave Marchevsky <davemarchevsky@meta.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         Martin KaFai Lau <martin.lau@kernel.org>
@@ -71,167 +73,143 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 29, 2023 at 10:56=E2=80=AFPM Yonghong Song <yhs@fb.com> wrote:
+On Thu, Mar 30, 2023 at 3:55=E2=80=AFPM Dave Marchevsky <davemarchevsky@met=
+a.com> wrote:
 >
-> LLVM commit [1] introduced hoistMinMax optimization like
->   (i < VIRTIO_MAX_SGS) && (i < out_sgs)
-> to
->   upper =3D MIN(VIRTIO_MAX_SGS, out_sgs)
->   ... i < upper ...
-> and caused the verification failure. Commit [2] workarounded the issue by
-> adding some bpf assembly code to prohibit the above optimization.
-> This patch improved verifier such that verification can succeed without
-> the above workaround.
+> On 3/30/23 1:56 AM, Yonghong Song wrote:
+> > Currently, the verifier does not handle '<const> <cond_op> <non_const>'=
+ well.
+> > For example,
+> >   ...
+> >   10: (79) r1 =3D *(u64 *)(r10 -16)       ; R1_w=3Dscalar() R10=3Dfp0
+> >   11: (b7) r2 =3D 0                       ; R2_w=3D0
+> >   12: (2d) if r2 > r1 goto pc+2
+> >   13: (b7) r0 =3D 0
+> >   14: (95) exit
+> >   15: (65) if r1 s> 0x1 goto pc+3
+> >   16: (0f) r0 +=3D r1
+> >   ...
+> > At insn 12, verifier decides both true and false branch are possible, b=
+ut
+> > actually only false branch is possible.
+> >
+> > Currently, the verifier already supports patterns '<non_const> <cond_op=
+> <const>.
+> > Add support for patterns '<const> <cond_op> <non_const>' in a similar w=
+ay.
+> >
+> > Also fix selftest 'verifier_bounds_mix_sign_unsign/bounds checks mixing=
+ signed and unsigned, variant 10'
+> > due to this change.
+> >
+> > Signed-off-by: Yonghong Song <yhs@fb.com>
+> > ---
+> >  kernel/bpf/verifier.c                                | 12 ++++++++++++
+> >  .../bpf/progs/verifier_bounds_mix_sign_unsign.c      |  2 +-
+> >  2 files changed, 13 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 90bb6d25bc9c..d070943a8ba1 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -13302,6 +13302,18 @@ static int check_cond_jmp_op(struct bpf_verifi=
+er_env *env,
+> >                                      src_reg->var_off.value,
+> >                                      opcode,
+> >                                      is_jmp32);
+> > +     } else if (dst_reg->type =3D=3D SCALAR_VALUE &&
+> > +                is_jmp32 && tnum_is_const(tnum_subreg(dst_reg->var_off=
+))) {
+> > +             pred =3D is_branch_taken(src_reg,
+> > +                                    tnum_subreg(dst_reg->var_off).valu=
+e,
+> > +                                    flip_opcode(opcode),
+> > +                                    is_jmp32);
+> > +     } else if (dst_reg->type =3D=3D SCALAR_VALUE &&
+> > +                !is_jmp32 && tnum_is_const(dst_reg->var_off)) {
+> > +             pred =3D is_branch_taken(src_reg,
+> > +                                    dst_reg->var_off.value,
+> > +                                    flip_opcode(opcode),
+> > +                                    is_jmp32);
+> >       } else if (reg_is_pkt_pointer_any(dst_reg) &&
+> >                  reg_is_pkt_pointer_any(src_reg) &&
+> >                  !is_jmp32) {
 >
-> Without [2], the current verifier will hit the following failures:
->   ...
->   119: (15) if r1 =3D=3D 0x0 goto pc+1
->   The sequence of 8193 jumps is too complex.
->   verification time 525829 usec
->   stack depth 64
->   processed 156616 insns (limit 1000000) max_states_per_insn 8 total_stat=
-es 1754 peak_states 1712 mark_read 12
->   -- END PROG LOAD LOG --
->   libbpf: prog 'trace_virtqueue_add_sgs': failed to load: -14
->   libbpf: failed to load object 'loop6.bpf.o'
->   ...
-> The failure is due to verifier inadequately handling '<const> <cond_op> <=
-non_const>' which will
-> go through both pathes and generate the following verificaiton states:
->   ...
->   89: (07) r2 +=3D 1                      ; R2_w=3D5
->   90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Dfp0
->   91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,var_of=
-f=3D(0x0; 0x7)) R10=3Dfp0
->   92: (ad) if r2 < r1 goto pc+41        ; R0_w=3Dscalar() R1_w=3Dscalar(u=
-min=3D6,umax=3D5,var_off=3D(0x4; 0x3))
+> Looking at the two SCALAR_VALUE 'else if's above these added lines, these
+> additions make sense. Having four separate 'else if' checks for essential=
+ly
+> similar logic makes this hard to read, though, maybe it's an opportunity =
+to
+> refactor a bit.
+>
+> While trying to make sense of the logic here I attempted to simplify with
+> a helper:
+>
+> @@ -13234,6 +13234,21 @@ static void find_equal_scalars(struct bpf_verifi=
+er_state *vstate,
+>         }));
+>  }
+>
+> +static int maybe_const_operand_branch(struct tnum maybe_const_op,
+> +                                     struct bpf_reg_state *other_op_reg,
+> +                                     u8 opcode, bool is_jmp32)
+> +{
+> +       struct tnum jmp_tnum =3D is_jmp32 ? tnum_subreg(maybe_const_op) :
+> +                                         maybe_const_op;
+> +       if (!tnum_is_const(jmp_tnum))
+> +               return -1;
+> +
+> +       return is_branch_taken(other_op_reg,
+> +                              jmp_tnum.value,
+> +                              opcode,
+> +                              is_jmp32);
+> +}
+> +
+>  static int check_cond_jmp_op(struct bpf_verifier_env *env,
+>                              struct bpf_insn *insn, int *insn_idx)
+>  {
+> @@ -13287,18 +13302,12 @@ static int check_cond_jmp_op(struct bpf_verifie=
+r_env *env,
+>
+>         if (BPF_SRC(insn->code) =3D=3D BPF_K) {
+>                 pred =3D is_branch_taken(dst_reg, insn->imm, opcode, is_j=
+mp32);
+> -       } else if (src_reg->type =3D=3D SCALAR_VALUE &&
+> -                  is_jmp32 && tnum_is_const(tnum_subreg(src_reg->var_off=
+))) {
+> -               pred =3D is_branch_taken(dst_reg,
+> -                                      tnum_subreg(src_reg->var_off).valu=
+e,
+> -                                      opcode,
+> -                                      is_jmp32);
+> -       } else if (src_reg->type =3D=3D SCALAR_VALUE &&
+> -                  !is_jmp32 && tnum_is_const(src_reg->var_off)) {
+> -               pred =3D is_branch_taken(dst_reg,
+> -                                      src_reg->var_off.value,
+> -                                      opcode,
+> -                                      is_jmp32);
+> +       } else if (src_reg->type =3D=3D SCALAR_VALUE) {
+> +               pred =3D maybe_const_operand_branch(src_reg->var_off, dst=
+_reg,
+> +                                                 opcode, is_jmp32);
+> +       } else if (dst_reg->type =3D=3D SCALAR_VALUE) {
+> +               pred =3D maybe_const_operand_branch(dst_reg->var_off, src=
+_reg,
+> +                                                 flip_opcode(opcode), is=
+_jmp32);
+>         } else if (reg_is_pkt_pointer_any(dst_reg) &&
+>                    reg_is_pkt_pointer_any(src_reg) &&
+>                    !is_jmp32) {
+>
+>
+> I think the resultant logic is the same as your patch, but it's easier to
+> understand, for me at least. Note that I didn't test the above.
 
-offtopic, but if this is a real output, then something is wrong with
-scratching register logic for conditional, it should have emitted
-states of R1 and R2, maybe you can take a look while working on this
-patch set?
+should we push it half a step further and have
 
->       R2_w=3D5 R6_w=3Dscalar(id=3D385) R7_w=3D0 R8_w=3Dscalar() R9_w=3Dsc=
-alar(umax=3D21474836475,var_off=3D(0x0; 0x7ffffffff))
->       R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? fp-32=
-=3D fp-40_w=3D4 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
->   ...
->   89: (07) r2 +=3D 1                      ; R2_w=3D6
->   90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Dfp0
->   91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,var_of=
-f=3D(0x0; 0x7)) R10=3Dfp0
->   92: (ad) if r2 < r1 goto pc+41        ; R0_w=3Dscalar() R1_w=3Dscalar(u=
-min=3D7,umax=3D5,var_off=3D(0x4; 0x3))
->       R2_w=3D6 R6=3Dscalar(id=3D388) R7=3D0 R8_w=3Dscalar() R9_w=3Dscalar=
-(umax=3D25769803770,var_off=3D(0x0; 0x7ffffffff))
->       R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? fp-32=
-=3D fp-40=3D5 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
->     ...
->   89: (07) r2 +=3D 1                      ; R2_w=3D4088
->   90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Dfp0
->   91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,var_of=
-f=3D(0x0; 0x7)) R10=3Dfp0
->   92: (ad) if r2 < r1 goto pc+41        ; R0=3Dscalar() R1=3Dscalar(umin=
-=3D4089,umax=3D5,var_off=3D(0x0; 0x7))
->       R2=3D4088 R6=3Dscalar(id=3D12634) R7=3D0 R8=3Dscalar() R9=3Dscalar(=
-umax=3D17557826301960,var_off=3D(0x0; 0xfffffffffff))
->       R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? fp-32=
-=3D fp-40=3D4087 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
->
-> Patch 3 fixed the above issue by handling '<const> <cond_op> <non_const>'=
- properly.
-> During developing selftests for Patch 3, I found some issues with bound d=
-eduction with
-> BPF_EQ/BPF_NE and fixed the issue in Patch 1.
->
-> After the above issue is fixed, the second issue shows up.
->   ...
->   67: (07) r1 +=3D -16                    ; R1_w=3Dfp-16
->   ; bpf_probe_read_kernel(&sgp, sizeof(sgp), sgs + i);
->   68: (b4) w2 =3D 8                       ; R2_w=3D8
->   69: (85) call bpf_probe_read_kernel#113       ; R0_w=3Dscalar() fp-16=
-=3Dmmmmmmmm
->   ; return sgp;
->   70: (79) r6 =3D *(u64 *)(r10 -16)       ; R6=3Dscalar() R10=3Dfp0
->   ; for (n =3D 0, sgp =3D get_sgp(sgs, i); sgp && (n < SG_MAX);
->   71: (15) if r6 =3D=3D 0x0 goto pc-49      ; R6=3Dscalar()
->   72: (b4) w1 =3D 0                       ; R1_w=3D0
->   73: (05) goto pc-46
->   ; for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < out_sgs); i++) {
->   28: (bc) w7 =3D w1                      ; R1_w=3D0 R7_w=3D0
->   ; bpf_probe_read_kernel(&len, sizeof(len), &sgp->length);
->   ...
->   23: (79) r3 =3D *(u64 *)(r10 -40)       ; R3_w=3D2 R10=3Dfp0
->   ; for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < out_sgs); i++) {
->   24: (07) r3 +=3D 1                      ; R3_w=3D3
->   ; for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < out_sgs); i++) {
->   25: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,var_of=
-f=3D(0x0; 0x7)) R10=3Dfp0
->   26: (ad) if r3 < r1 goto pc+34 61: R0=3Dscalar() R1_w=3Dscalar(umin=3D4=
-,umax=3D5,var_off=3D(0x4; 0x1)) R3_w=3D3 R6=3Dscalar(id=3D1658)
->      R7=3D0 R8=3Dscalar(id=3D1653) R9=3Dscalar(umax=3D4294967295,var_off=
-=3D(0x0; 0xffffffff)) R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm
->      fp-24=3Dmmmm???? fp-32=3D fp-40=3D2 fp-56=3D fp-64=3Dmmmmmmmm
->   ; if (sg_is_chain(&sg))
->   61: (7b) *(u64 *)(r10 -40) =3D r3       ; R3_w=3D3 R10=3Dfp0 fp-40_w=3D=
-3
->     ...
->   67: (07) r1 +=3D -16                    ; R1_w=3Dfp-16
->   ; bpf_probe_read_kernel(&sgp, sizeof(sgp), sgs + i);
->   68: (b4) w2 =3D 8                       ; R2_w=3D8
->   69: (85) call bpf_probe_read_kernel#113       ; R0_w=3Dscalar() fp-16=
-=3Dmmmmmmmm
->   ; return sgp;
->   70: (79) r6 =3D *(u64 *)(r10 -16)
->   ; for (n =3D 0, sgp =3D get_sgp(sgs, i); sgp && (n < SG_MAX);
->   infinite loop detected at insn 71
->   verification time 90800 usec
->   stack depth 64
->   processed 25017 insns (limit 1000000) max_states_per_insn 20 total_stat=
-es 491 peak_states 169 mark_read 12
->   -- END PROG LOAD LOG --
->   libbpf: prog 'trace_virtqueue_add_sgs': failed to load: -22
->
-> Further analysis found the index variable 'i' is spilled but since it is =
-not marked as precise, regsafe will ignore
-> comparison since they are scalar values.
->
-> Since it is hard for verifier to determine whether a particular scalar is=
- index variable or not, Patch 5 implemented
-> a heuristic such that if both old and new reg states are constant, mark t=
-he old one as precise to force scalar value
-> comparison and this fixed the problem.
->
-> The rest of patches are selftests related.
->
->   [1] https://reviews.llvm.org/D143726
->   [2] Commit 3c2611bac08a ("selftests/bpf: Fix trace_virtqueue_add_sgs te=
-st issue with LLVM 17.")
->
-> Yonghong Song (7):
->   bpf: Improve verifier JEQ/JNE insn branch taken checking
->   selftests/bpf: Add tests for non-constant cond_op NE/EQ bound
->     deduction
->   bpf: Improve handling of pattern '<const> <cond_op> <non_const>' in
->     verifier
->   selftests/bpf: Add verifier tests for code pattern '<const> <cond_op>
->     <non_const>'
->   bpf: Mark potential spilled loop index variable as precise
->   selftests/bpf: Remove previous workaround for test verif_scale_loop6
->   selftests/bpf: Add a new test based on loop6.c
->
->  kernel/bpf/verifier.c                         |  40 +-
->  .../bpf/prog_tests/bpf_verif_scale.c          |   5 +
->  .../selftests/bpf/prog_tests/verifier.c       |   2 +
->  tools/testing/selftests/bpf/progs/loop6.c     |   2 -
->  tools/testing/selftests/bpf/progs/loop7.c     | 102 ++++
->  .../verifier_bounds_deduction_non_const.c     | 553 ++++++++++++++++++
->  .../progs/verifier_bounds_mix_sign_unsign.c   |   2 +-
->  7 files changed, 701 insertions(+), 5 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/loop7.c
->  create mode 100644 tools/testing/selftests/bpf/progs/verifier_bounds_ded=
-uction_non_const.c
->
-> --
-> 2.34.1
->
+if (src_reg->type =3D=3D SCALAR_VALUE || dst_reg->type =3D=3D SCALAR_VALUE)
+  pred =3D is_branch_taken_regs(src_reg, dst_reg, opcode, is_jmp32)
+
+seems even clearer like that. All the tnum subreg, const vs non-const,
+and dst/src flip can be handled internally in one nicely isolated
+place.
