@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A806B6D84F0
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 19:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7571B6D84F1
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 19:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbjDER3X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 13:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
+        id S230100AbjDER30 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 13:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbjDER3S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 13:29:18 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4626E87
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 10:29:08 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id fi11so19439016edb.10
-        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 10:29:08 -0700 (PDT)
+        with ESMTP id S229578AbjDER3Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 13:29:25 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E0F5FFE
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 10:29:13 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id h8so142965229ede.8
+        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 10:29:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680715747;
+        d=isovalent.com; s=google; t=1680715752;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ccLL8M+0hPzYrg5qhosh7fO169Jvu+ep5EJTY2rQgxw=;
-        b=P8aQurvtozunUg89IZPAfiGjzEWdfmpcjDwaLrqcWvF/WofumD6YEeAQDSkDJN1KRA
-         lmR6fFRnz0gD3FiYK8wd41XCiv5h/24xK9nPgDcB7/g1BZL8fEYHINFTpEhfED5Ej2u3
-         gnpgwh7U5xkPtKxAylOvUhc2b85qmGdJ1N2sgOaTgkJ4FNrV80dCjmVIzqJX3aT2CfW9
-         46ZR004sH97dLSTiV/2LhXsRsXE/twieP3c2v88OJr+VczoHoeGrFyicIGvax6JOPUxb
-         +O8QQUTIBD4CKl5OZjpwbMNxtnDTI6XN0GEUCcnHUYyVPAzA9AhcO6m0v5xqNXb2KBQ6
-         moHQ==
+        bh=Wlr9GDY/QYZYreh5jTzGEQjIFHbYFG6xwUSey6+e7+8=;
+        b=ZU5oq3gde2Cf7f1d3N+o6gvZtHkQduptCqlU46dQ35bZ060JLYw07YFDiaHVgeGJ83
+         w3tO0jTKi2k8jm+OlJUz9IZDgDS4A2iVb8traj9xrsVWkt6PLT9p2r4xcVFqU/9k3zgX
+         vpRRwOfZKIfMdV/R66zqfrIW+zPtJ0zmJUpDdJ2Rf/xBuMdyiKBKA97xjHBK2apze1H/
+         6bGqbWyeHjHS4/Zy0sgEAPeeKi79S6a+uc/JFFrm5N/B7xK7vjy1MXLpudaBSFcyfN8J
+         raFxThcVckOYiQUrjNtbeXb0aOc72z7uVIiiDTCtxGkh0z5hF9nW2d9Ah9FNspgiQybK
+         obbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680715747;
+        d=1e100.net; s=20210112; t=1680715752;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ccLL8M+0hPzYrg5qhosh7fO169Jvu+ep5EJTY2rQgxw=;
-        b=PAHrdc+hqwrwZbIB/ghJlYztSjBz9Y0JjmKEy6NqiT0Soo3M9i8jSKDebAbxV5pa/n
-         7B2rc1c3tavrnYLZgL0CYnnwXfmsnd20Zl8K2Td11bi9mYqRx/9VIM5hMElXECJw6Obo
-         FxSAQVDHHVgAjsmSseYBkzhfbAU8ExRsNwQsiZTE73e10vmOfAJGIktmll5BzH7iUxnI
-         W6ERJ1l/5XFelIXSyiGeEKs+TguqugjtR/ijDKnCYeEPOIXonR+eGwP031zjL9pKIVfc
-         vl37azLvLJInW8vD2rZkBRMr0FS8QoKnAI72QKgLz9P9n/u8W9MrsN0p1QBl5sBMj/mG
-         HM6Q==
-X-Gm-Message-State: AAQBX9fZYK7iQ+p0uZ/b694NHJwhQ3RNQJSP5MX+mKlRXoftyPw3U8Ke
-        rXUuYAeVq1ywHV4m7Sx97BaI+2KcB0ys1Kiykpwz0Q==
-X-Google-Smtp-Source: AKy350arGw5VqovSMQHoUWc+dteIxIgt11PMwY17PpD6nYcVkOgHJTX6Q2DaWX372cYHEDRZZ7l1a9ODGXNXaKXUp2g=
-X-Received: by 2002:a17:906:dcf:b0:932:6a2:ba19 with SMTP id
- p15-20020a1709060dcf00b0093206a2ba19mr1983960eji.14.1680715746762; Wed, 05
- Apr 2023 10:29:06 -0700 (PDT)
+        bh=Wlr9GDY/QYZYreh5jTzGEQjIFHbYFG6xwUSey6+e7+8=;
+        b=wGn7TjD07s1TOC6a09zwTj6B9t0RWlKaCJ1ga/EwMlAD7ACMMttNqMxtrEKeb2LegR
+         Aky8z0eO5efuoJ4QfudImsLVtgZXT0Xzj4qvAbgPeF+Y4wPwNV4XFJ4cPF44I2X0xgAr
+         HScv8KRcZlpsCfKBgrNq3JwgVAmLIeWB/jBt0XcJ+3z+Cd+0IZFUvyixV4IA+PihzH9M
+         OAInzYici3zWAqyaxwgemiajHcT9DB4vU4X9rHKhZ0MFSmfQHG6jTAwpx08GR0+4v4W6
+         7TDXj80ZS0TJ5khM2QyzzayONRz64Qbwkn2E+VrDlHnI88cLHDDcE5w2ahFwS92x+B3z
+         glOg==
+X-Gm-Message-State: AAQBX9euBF2Uf4hvSfmGVQe4lD3sdv0CfuLXyQhQq9dzOgH5YliFwRYC
+        m0ILc/0KTpHagdvtRbYYNMeqIxmUc5BBYduEanfFeg==
+X-Google-Smtp-Source: AKy350aj5674HwS7wW9ccS9xIEn5IfuSXxiAq7vXZ47UeZvkjx1qrZI7AOR0OIJThWqMle7GwpVD1/WXqtF7DosohLc=
+X-Received: by 2002:a17:906:950a:b0:8e6:266c:c75e with SMTP id
+ u10-20020a170906950a00b008e6266cc75emr2085771ejx.14.1680715752149; Wed, 05
+ Apr 2023 10:29:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230404043659.2282536-1-andrii@kernel.org> <20230404043659.2282536-14-andrii@kernel.org>
-In-Reply-To: <20230404043659.2282536-14-andrii@kernel.org>
+References: <20230404043659.2282536-1-andrii@kernel.org> <20230404043659.2282536-15-andrii@kernel.org>
+In-Reply-To: <20230404043659.2282536-15-andrii@kernel.org>
 From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Wed, 5 Apr 2023 18:28:55 +0100
-Message-ID: <CAN+4W8gxKYN=hpSgZ7UWuEBpx_XTHEgsNhhf+znQgnCzM6K5XQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 13/19] bpf: simplify internal verifier log interface
+Date:   Wed, 5 Apr 2023 18:29:01 +0100
+Message-ID: <CAN+4W8hdeEVb=Rs-T+E7QtF++fKYObjb--KmCqqOFg8gL+kocQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 14/19] bpf: relax log_buf NULL conditions when
+ log_level>0 is requested
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         martin.lau@kernel.org, timo@incline.eu, robin.goegge@isovalent.com,
@@ -71,42 +72,34 @@ X-Mailing-List: bpf@vger.kernel.org
 On Tue, Apr 4, 2023 at 5:37=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org> =
 wrote:
 >
-> Simplify internal verifier log API down to bpf_vlog_init() and
-> bpf_vlog_finalize(). The former handles input arguments validation in
-> one place and makes it easier to change it. The latter subsumes -ENOSPC
-> (truncation) and -EFAULT handling and simplifies both caller's code
-> (bpf_check() and btf_parse()).
+> Drop the log_size>0 and log_buf!=3DNULL condition when log_level>0. This
+> allows users to request log_size_actual of a full log without providing
+> actual (even if small) log buffer. Verifier log handling code was mostly =
+ready to handle NULL log->ubuf, so only few small changes were necessary to=
+ prevent NULL log->ubuf from causing problems.
 >
-> For btf_parse(), this patch also makes sure that verifier log
-> finalization happens even if there is some error condition during BTF
-> verification process prior to normal finalization step.
->
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> Note, that user is basically guaranteed to receive -ENOSPC when
+> providing log_level>0 and log_buf=3D=3DNULL. We also still enforce that
+> either (log_buf=3D=3DNULL && log_size=3D=3D0) or (log_buf!=3DNULL && log_=
+size>0).
 
-Acked-by: Lorenz Bauer <lmb@isovalent.com>
+Is it possible to change it so that log_buf =3D=3D NULL && log_size =3D=3D =
+0
+&& log_level > 0 only fills in log_size_actual and doesn't return
+ENOSPC? Otherwise we can't do oneshot loading.
 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 1e974383f0e6..9aeac68ae7ea 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -5504,16 +5504,30 @@ static int btf_check_type_tags(struct btf_verifie=
-r_env *env,
->         return 0;
->  }
->
-> +static int finalize_log(struct bpf_verifier_log *log, bpfptr_t uattr, u3=
-2 uattr_size)
-> +{
-> +       u32 log_size_actual;
-> +       int err;
-> +
-> +       err =3D bpf_vlog_finalize(log, &log_size_actual);
-> +
-> +       if (uattr_size >=3D offsetofend(union bpf_attr, btf_log_size_actu=
-al) &&
-> +           copy_to_bpfptr_offset(uattr, offsetof(union bpf_attr, btf_log=
-_size_actual),
-> +                                 &log_size_actual, sizeof(log_size_actua=
-l)))
+  if PROG_LOAD(buf=3DNULL, size=3D0, level=3D1) >=3D 0:
+    return fd
+  else
+    retry PROG_LOAD(buf!=3DNULL, size=3Dlog_size_actual, level=3D1)
 
-Why not share this with the verifier as well?
+If the first PROG_LOAD returned ENOSPC we'd have to re-run it without
+the log enabled to see whether ENOSPC is masking a real verification
+error. With the current semantics we can work around this with three
+syscalls, but that seems wasteful?
+
+  if PROG_LOAD(buf=3DNULL, size=3D0, level=3D0) >=3D 0:
+    return fd
+
+  PROG_LOAD(buf=3DNULL, size=3D0, level=3D1) =3D=3D ENOSPC
+  PROG_LOAD(buf!=3DNULL, size=3Dlog_size_actual, level=3D1)
