@@ -2,75 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B30B06D86D8
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBB26D86EB
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbjDET1g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 15:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S230511AbjDETec (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 15:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjDET1f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 15:27:35 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC734EFF
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 12:27:21 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-94771f05e20so65803766b.1
-        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 12:27:21 -0700 (PDT)
+        with ESMTP id S229446AbjDETec (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 15:34:32 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C45459FF
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 12:34:31 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id y15-20020a62f24f000000b00627dd180a30so16489674pfl.6
+        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 12:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680722840;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YKUi+6U31NWDl/h+zd8ELO7SVaeoFAksVrDxS1TyObI=;
-        b=htMzbCx9nAgMwyR2yAtuRvfOIyKC4VN7Q0TiHrLMfwJj/bAnl6DpdsPh9tbfrKLpU5
-         soSfe0cRLo79AwBDWcnJpSCFRF77fEztAQTfU1vd2izkgvhCAMVYhs1bmjqgIdW+nId5
-         UeEPrL5LuMCZa0HmJqY44GNZgX47DwYhpqExQ=
+        d=google.com; s=20210112; t=1680723270;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3rfk6WecjFSy5WzvUIqzt2J+eTO4uhJqP4G3dOBpq2w=;
+        b=UT48W1Nb0NKV/d5jIrlmhQnU/FKgNd5MiYNtxnV6n74FiAOQbHM3pPvzs7ddVNAxAN
+         fJ53qgjhq6TH0jGqQaWOsEyvZ/NI2p8q8+gg/kDOaVSh/OcwF+GpAvQ0FAwnXSEFnRZI
+         7ICawzM6Qlsxoomjeq4u995hitiyVTtNP/RXGNL4zWTTjDr3WIQ0lMlsYQ6Kl8buXot8
+         5WdGjpwiiYg3U4288tOlJKcvTcDWsH1J5m5F2tmcmmipVi/NgF/BGLo42VvjWl8ZllSz
+         BSt/7dcSlFVay6JGdPafy2SqkArk8VUR90a5iTGtYLsRQRor2uqn9kUyHQiIYfXEY0Eh
+         C81w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680722840;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YKUi+6U31NWDl/h+zd8ELO7SVaeoFAksVrDxS1TyObI=;
-        b=w/imTIW6ALoSBKylyik21vEsoW/vE2+5phe968Ny7BWi5lA4DdZa/mOCI8bbqWbifT
-         aa0n1mAH3XERphMTyNnU6zKnX1ZZXvX6ElF7ctDz05IzH+N8+SS0oT//cuk+aJ2KZs+B
-         8yDu3rBi3SUxKLDayBdjLpQ4TOHFvMv5Yq6YYkIDt2+1bi/tW1M/Dv3Bz3n+r3AjQJ6w
-         9oxDr9IQKR++mY+BVFviKh0r4f3ChVMwmLL8mcyrysvupl1KKq26TbKHW4EG9+93qFJv
-         tgEnbzEF8TxSq55o6O1ZDgoiekdgFl501u10fJQ/UtZS216olLXEqns98jPCnOL+riAC
-         71Fg==
-X-Gm-Message-State: AAQBX9cUtbOq3HkEjk6Uz99MSfUFviDp/9Ikynr3rmCJ5dKekGvDj9tC
-        fs4QiGeIIkJJMDTBH7TX4MCUGyDWsD0fbpMMs7XLh2CS3MjlY9oKDuk=
-X-Google-Smtp-Source: AKy350ZHbkMIltRN+83h/42CNtWHk1qgcCeOXN0WyGcCXMcdodPfRJOeSrPwuLOkX0/Q5UYoVmN1OTjHAtD6C19pyBE=
-X-Received: by 2002:a50:874f:0:b0:4fb:e0e8:5140 with SMTP id
- 15-20020a50874f000000b004fbe0e85140mr1700321edv.6.1680722839818; Wed, 05 Apr
- 2023 12:27:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230403145047.33065-1-kal.conley@dectris.com> <00f36cce-f186-2d39-ae5c-67da3f43129b@linux.dev>
-In-Reply-To: <00f36cce-f186-2d39-ae5c-67da3f43129b@linux.dev>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Wed, 5 Apr 2023 21:31:59 +0200
-Message-ID: <CAHApi-k9G6o_Xf9piDKRPLGTMa+CD-1F2-aDqth-dz0_yoYZfg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] selftests: xsk: Add test case for packets at
- end of UMEM
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>, bpf@vger.kernel.org
+        d=1e100.net; s=20210112; t=1680723270;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3rfk6WecjFSy5WzvUIqzt2J+eTO4uhJqP4G3dOBpq2w=;
+        b=iqm07FccIA1eUbmtrFBfM5mCB67l/1XgXvsx45bcwTpahkAoX8r/bnfYp/nl1YNhNd
+         6ObyKyNDPPn3G9UGFuv7T6xTzBgyzwbgBdgvZ5W1RzAvYeoG/i3aQSbEQh0uzlZAF4ce
+         eKW4xe3LgoEFuX26JvH2SQ+6je4wG735zQGh75GIGQi7Mw5trw7+7ztF+1L63FwBaSRk
+         KuVLWwifeVDOuWAWnPyeSdaxoEPUe1LVqDE+YtLNnaTe1XKOtbbhCuqU9c8+7netd+8b
+         f5xYqXYxi9yjZkOZFXN0/HYUOOGVE8glmrD6+SVo0ZkKa3te/J/1bWxG43GKzqokuo6e
+         ltSA==
+X-Gm-Message-State: AAQBX9dcj6GJKgjJRt9PQeXfROblWGlQ8Y9M2lJEz/YM8ZhWLnbd5DMK
+        zrLWqfsoiyzFQ5ssmhNI+/knb8lL7WelhPasL5OWUAhZKFD/JSpfvgBcsb+Kw/kUOrD0+GyvgUa
+        wpzg6dlNqdM+/RkazDMZ1Hbqxp7xNNiGGkCDhmO58Z1CiwPaamRTSlU2nxhkoVNk=
+X-Google-Smtp-Source: AKy350ac+p1ua3Cv1sHgdOTIxiB7D7eldB7VN1KwUdVxu5aV619GxUvqs9TbZ1TKC8TQ73Krf/gbEGsf9HyeAw==
+X-Received: from zhuyifei-kvm.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2edc])
+ (user=zhuyifei job=sendgmr) by 2002:a17:90a:4591:b0:234:acfd:c8da with SMTP
+ id v17-20020a17090a459100b00234acfdc8damr2691320pjg.2.1680723270131; Wed, 05
+ Apr 2023 12:34:30 -0700 (PDT)
+Date:   Wed,  5 Apr 2023 19:33:54 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
+Message-ID: <20230405193354.1956209-1-zhuyifei@google.com>
+Subject: [PATCH v2 bpf] selftests/bpf: Wait for receive in cg_storage_multi test
+From:   YiFei Zhu <zhuyifei@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> I tried test_xsk.sh. The changed subtest runs ok, so applied.
->
-> I got failures from test_xsk.sh (even before this set) though. Are these
-> expected or something missing in the environment like kconfig?
+In some cases the loopback latency might be large enough, causing
+the assertion on invocations to be run before ingress prog getting
+executed. The assertion would fail and the test would flake.
 
-I fixed the other errors here and here (please apply those):
-https://patchwork.kernel.org/project/netdevbpf/patch/20230403120400.31018-1-kal.conley@dectris.com/
-https://patchwork.kernel.org/project/netdevbpf/patch/20230405082905.6303-1-kal.conley@dectris.com/
+This can be reliably reproduced by arbitrarily increasing the
+loopback latency (thanks to [1]):
+  tc qdisc add dev lo root handle 1: htb default 12
+  tc class add dev lo parent 1:1 classid 1:12 htb rate 20kbps ceil 20kbps
+  tc qdisc add dev lo parent 1:12 netem delay 100ms
 
-One is against bpf and one is against bpf-next (because someone told
-me to move it). I guess they should both be applied to the same
-branch, probably bpf?
+Fix this by waiting on the receive end, instead of instantly
+returning to the assert. The call to read() will wait for the
+default SO_RCVTIMEO timeout of 3 seconds provided by
+start_server().
+
+[1] https://gist.github.com/kstevens715/4598301
+
+Reported-by: Martin KaFai Lau <martin.lau@linux.dev>
+Link: https://lore.kernel.org/bpf/9c5c8b7e-1d89-a3af-5400-14fde81f4429@linux.dev/
+Fixes: 3573f384014f ("selftests/bpf: Test CGROUP_STORAGE behavior on shared egress + ingress")
+Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+---
+v1 -> v2:
+- Changed from a call to poll() to a call to read() (Martin)
+
+ tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c b/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
+index 621c57222191..63ee892bc757 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
++++ b/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
+@@ -56,8 +56,9 @@ static bool assert_storage_noexist(struct bpf_map *map, const void *key)
+ 
+ static bool connect_send(const char *cgroup_path)
+ {
+-	bool res = true;
+ 	int server_fd = -1, client_fd = -1;
++	char message[] = "message";
++	bool res = true;
+ 
+ 	if (join_cgroup(cgroup_path))
+ 		goto out_clean;
+@@ -70,7 +71,10 @@ static bool connect_send(const char *cgroup_path)
+ 	if (client_fd < 0)
+ 		goto out_clean;
+ 
+-	if (send(client_fd, "message", strlen("message"), 0) < 0)
++	if (send(client_fd, &message, sizeof(message), 0) < 0)
++		goto out_clean;
++
++	if (read(server_fd, &message, sizeof(message)) < 0)
+ 		goto out_clean;
+ 
+ 	res = false;
+-- 
+2.40.0.348.gf938b09366-goog
+
