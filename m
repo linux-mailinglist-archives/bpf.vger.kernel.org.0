@@ -2,90 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F7B6D8751
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B059E6D876F
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbjDETu6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 15:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50654 "EHLO
+        id S229492AbjDETzC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 15:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbjDETuj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 15:50:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9637A96;
-        Wed,  5 Apr 2023 12:50:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C667B640E8;
-        Wed,  5 Apr 2023 19:50:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 117CAC4339B;
-        Wed,  5 Apr 2023 19:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680724219;
-        bh=C2JZKsWWj3Lk4gHlvzP56MFwzu9QP4vVz64o99qXE54=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=HmnEib3n+9AJTSeAllh6ljIfZDRl+CJsFJ5MYKYAezCHCTOCV39ELj2QaGW6TMGlT
-         lm1yJXhUFo7yi4vKzewrkp40zSdKvIlGOee0lU99yaQqOIeOy4c2eXAY2aUo4/z0O8
-         SS5DnamGrcFqYIjWIzAf5ok7rr+Ew9dReLfaznTJTNoP4cq3gaoaY+YJVyMpqhhGJW
-         4qHLDwJVp3FwOeWPcrXHsK9F/aa2yCr86ppnDZ8uAli7V9mRgh8vInjwEpCfSUhJkQ
-         lbaQ+7O1G79wlhai1swhnSUf6QaNm/8MNLYj8GToWjxrkGFXl2ATV0wmoycCEDdeJq
-         BQDrG3YKda08Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E7674C395D8;
-        Wed,  5 Apr 2023 19:50:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S233742AbjDETy7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 15:54:59 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF6592
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 12:54:58 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id 82so2530579iou.2
+        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 12:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1680724497;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZcYjART6vOTXgshTS0uLbmOyompGa7/lXpaivlpY/VA=;
+        b=Q5pH8VZulJ+C6K7kJgwa8mvOZ9ZrOOAVLsmxUjEBWvSwXZS2eYxnn+3CNEFDsgl/FB
+         PjfOUoveEnD9PSu/Eywba4OUlZTADegV9S/hQ9fnBWU5k74/LBMblU+lOZZKTg++slTD
+         03UU0BISn96pJcY7cmEh/5YQiID+BNXZbn/LtyNdhSCUTcnPySOohUPn1SFbS9xrnAho
+         y8FwD0YOjPOgKVlGfYrC+svNxrZfTOuh21opeEKDfTzKowlJOJ6wZADntkTgf6er0ndr
+         WzczKJPJqJUu2H5QfN0VjxK2pU1vYQG2Hc0FVxsHg0Zw13iPCjmyqdvSgOMHi62oz+x6
+         iUzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680724497;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZcYjART6vOTXgshTS0uLbmOyompGa7/lXpaivlpY/VA=;
+        b=alznPmjkQQSPRhXanMa+VhuXXBWm9qE02ITDWiB2sv1USV6wUPwWptjW6D3Xzs338E
+         Q5wNBqdy1D4ZZIsc+YQpvSoyultN8kaZlIohksM0vY7bfhMxsiopaW3q5yct+AHYBIei
+         LbXkUQT6pxioXc103cMVm8SiHfLJT8T6v7DXcytiVaFiKqJRcEI3cXBSg5KBZAOdGVvl
+         LDysUcZPl1EtIo74RL0r0aTX0bHdiwPXugPtavitgxaMpfzrIXkTqjbFdn7V3mo1RWbQ
+         X+aq0iZf32vmfRFd2ylo51mhPCForY6GHaCYiQaD/hlavmTCnBHuK8elhK2zBrjFoaYL
+         T2ug==
+X-Gm-Message-State: AAQBX9fz8GlYRAU0caVFqdmwIAK1eF+UDoIVb7I+1wuIpLnxhncryjBA
+        r9ITt06ib61Oe6hOHotpk/0VQDOL9xpo1Lnvxi1iFQ==
+X-Google-Smtp-Source: AKy350aQGUhRBR9nlxvbezaz/UrkSAWRI9gjznAzUIFBqGpVkijBgUKrfga8wmafgeF9lt6YkUUxmVhABC3COYaTN2I=
+X-Received: by 2002:a5e:df47:0:b0:74c:7ea1:4f05 with SMTP id
+ g7-20020a5edf47000000b0074c7ea14f05mr5543603ioq.2.1680724497235; Wed, 05 Apr
+ 2023 12:54:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] selftests: xsk: Deflakify STATS_RX_DROPPED test
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168072421894.28321.18230230316101507233.git-patchwork-notify@kernel.org>
-Date:   Wed, 05 Apr 2023 19:50:18 +0000
-References: <20230403120400.31018-1-kal.conley@dectris.com>
-In-Reply-To: <20230403120400.31018-1-kal.conley@dectris.com>
-To:     Kal Cutter Conley <kal.conley@dectris.com>
-Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        shuah@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz> <CAANmLtwGS75WJ9AXfmqZv73pNdHJn6zfrrCCWjKK_6jPk9pWRg@mail.gmail.com>
+ <951d364a-05c0-b290-8abe-7cbfcaeb2df7@suse.cz>
+In-Reply-To: <951d364a-05c0-b290-8abe-7cbfcaeb2df7@suse.cz>
+From:   Binder Makin <merimus@google.com>
+Date:   Wed, 5 Apr 2023 15:54:45 -0400
+Message-ID: <CAANmLtzQmVN_EWLv1UxXwZu5X=TwpcMQMYArKNUxAJL3PnfO2Q@mail.gmail.com>
+Subject: Re: [LSF/MM/BPF TOPIC] SLOB+SLAB allocators removal and future SLUB improvements
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-block@vger.kernel.org,
+        bpf@vger.kernel.org, linux-xfs@vger.kernel.org,
+        David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+I'm still running tests to explore some of these questions.
+The machines I am using are roughly as follows.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+Intel dual socket 56 total cores
+192-384GB ram
+LEVEL1_ICACHE_SIZE                 32768
+LEVEL1_DCACHE_SIZE                 32768
+LEVEL2_CACHE_SIZE                  1048576
+LEVEL3_CACHE_SIZE                  40370176
 
-On Mon,  3 Apr 2023 14:03:59 +0200 you wrote:
-> Fix flaky STATS_RX_DROPPED test. The receiver calls getsockopt after
-> receiving the last (valid) packet which is not the final packet sent in
-> the test (valid and invalid packets are sent in alternating fashion with
-> the final packet being invalid). Since the last packet may or may not
-> have been dropped already, both outcomes must be allowed.
-> 
-> This issue could also be fixed by making sure the last packet sent is
-> valid. This alternative is left as an exercise to the reader (or the
-> benevolent maintainers of this file).
-> 
-> [...]
+Amd dual socket 128 total cores
+1TB ram
+LEVEL1_ICACHE_SIZE                 32768
+LEVEL1_DCACHE_SIZE                 32768
+LEVEL2_CACHE_SIZE                  524288
+LEVEL3_CACHE_SIZE                  268435456
 
-Here is the summary with links:
-  - [bpf] selftests: xsk: Deflakify STATS_RX_DROPPED test
-    https://git.kernel.org/bpf/bpf-next/c/68e7322142f5
+Arm single socket 64 total cores
+256GB rma
+LEVEL1_ICACHE_SIZE                 65536
+LEVEL1_DCACHE_SIZE                 65536
+LEVEL2_CACHE_SIZE                  1048576
+LEVEL3_CACHE_SIZE                  33554432
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+On Tue, Apr 4, 2023 at 12:03=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 3/22/23 13:30, Binder Makin wrote:
+> > Was looking at SLAB removal and started by running A/B tests of SLAB
+> > vs SLUB.  Please note these are only preliminary results.
+>
+> Thanks, that's very useful.
+>
+> > These were run using 6.1.13 configured for SLAB/SLUB.
+> > Machines were standard datacenter servers.
+> >
+> > Hackbench shows completion time, so smaller is better.
+> > On all others larger is better.
+> > https://docs.google.com/spreadsheets/d/e/2PACX-1vQ47Mekl8BOp3ekCefwL6wL=
+8SQiv6Qvp5avkU2ssQSh41gntjivE-aKM4PkwzkC4N_s_MxUdcsokhhz/pubhtml
+> >
+> > Some notes:
+> > SUnreclaim and SReclaimable shows unreclaimable and reclaimable memory.
+> > Substantially higher with SLUB, but I believe that is to be expected.
+> >
+> > Various results showing a 5-10% degradation with SLUB.  That feels
+> > concerning to me, but I'm not sure what others' tolerance would be.
+> >
+> > redis results on AMD show some pretty bad degredations.  10-20% range
+> > netpipe on Intel also has issues.. 10-17%
+>
+> I guess one question is which ones are genuine SLAB/SLUB differences and =
+not
+> e.g. some artifact of different cache layout or something. For example it
+> seems suspicious if results are widely different between architectures.
+>
+> E.g. will-it-scale writeseek3_scalability regresses on arm64 and amd, but
+> improves on intel? Or is something wrong with the data, all columns for t=
+hat
+> whole benchmark suite are identical.
+>
+> hackbench ("smaller is better") seems drastically better on arm64 (30%
+> median time reduction?) and amd (80% reduction?!?), but 10% slower intel?
+>
+> redis seems a bit improved on arm64, slightly worse on intel but much wor=
+se
+> on amd.
+>
+> specjbb similar story, also I thought it was a java focused benchmark,
+> should it really be exercising kernel slab allocators in such notable way=
+?
+>
+> I guess netpipe is the least surprising as networking was always mentione=
+d
+> in SLAB vs SLUB discussions.
+>
+> > On Tue, Mar 14, 2023 at 4:05=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
+> wrote:
+> >>
+> >> As you're probably aware, my plan is to get rid of SLOB and SLAB, leav=
+ing
+> >> only SLUB going forward. The removal of SLOB seems to be going well, t=
+here
+> >> were no objections to the deprecation and I've posted v1 of the remova=
+l
+> >> itself [1] so it could be in -next soon.
+> >>
+> >> The immediate benefit of that is that we can allow kfree() (and kfree_=
+rcu())
+> >> to free objects from kmem_cache_alloc() - something that IIRC at least=
+ xfs
+> >> people wanted in the past, and SLOB was incompatible with that.
+> >>
+> >> For SLAB removal I haven't yet heard any objections (but also didn't
+> >> deprecate it yet) but if there are any users due to particular workloa=
+ds
+> >> doing better with SLAB than SLUB, we can discuss why those would regre=
+ss and
+> >> what can be done about that in SLUB.
+> >>
+> >> Once we have just one slab allocator in the kernel, we can take a clos=
+er
+> >> look at what the users are missing from it that forces them to create =
+own
+> >> allocators (e.g. BPF), and could be considered to be added as a generi=
+c
+> >> implementation to SLUB.
+> >>
+> >> Thanks,
+> >> Vlastimil
+> >>
+> >> [1] https://lore.kernel.org/all/20230310103210.22372-1-vbabka@suse.cz/
+> >>
+>
