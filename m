@@ -2,68 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 539C66D859F
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 20:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9DA6D85A1
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 20:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbjDESE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 14:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        id S234036AbjDESE3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 14:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjDESEL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S234033AbjDESEL (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 5 Apr 2023 14:04:11 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDC96A4E
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 11:03:29 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id j18-20020a05600c1c1200b003ee5157346cso24243520wms.1
-        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 11:03:29 -0700 (PDT)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D2872B6
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 11:03:38 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-500349a5139so3292469a12.1
+        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 11:03:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1680717782;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20210112; t=1680717792;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TQdcTlDGXvPRJ4m15hfcne85GRNuWqVXBxpqryUgNqc=;
-        b=DzGA6NL7PFjpkBNgTxQ8fPF/wI6uojo5o+hoBkP00PtSFDftbFN10OBnm60fqSjHfY
-         RoDRjnCTLB3EDE4JQG0YC/TkNNT2GbF3+Ie2TIcX0ylQ8d55buoS3o8udqunISyH1JX8
-         HxsvCvbxk9syy6I7b4xrXC36+6yxsYeXfYA5Y=
+        bh=cpHAcs27Ve484lak5oLy20kAuFVSzKVSzNbCBJeOX60=;
+        b=mKjwIREtHBsNCDOBhb/4/dCRQzhPrOOUbkWBd+Kh0/u1J7+OYcB2YhT00wYdzn8ITu
+         L3EnoTUg2cLRqpew1YcFjqBMK/zgfXcNvok3XD8qSazQ+Ykf5Ie/nLVkT1Pow0V4b6PX
+         PJzRQq0mftA/3j4yBYl2h5ei2QpQdDBTkwla4QC1SAkYncAYjJmmqHgWgljZw1la6P/b
+         TTELvdLFqPAFCm3XM3Hq6p2UHjQxP6mrn6+lm3WRCuZWlaeDvEIfVVQfDBTQQatPUt7p
+         CKnqFaK1YXKOYtGGAGyEmq23OZ8mX8+Lb1FMw3P/o4mD4e4VzJDWVXvZG+x4uF4oW4ml
+         ESsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680717782;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1680717792;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TQdcTlDGXvPRJ4m15hfcne85GRNuWqVXBxpqryUgNqc=;
-        b=HFbpa0d7lmH268k1VtBJZ2s7XrDXOKlikKiU7nEPM954tG1jKZbJzzRnWtDMt78m5C
-         j+RQ4rc6o63eCu9Lu20OK2neV9MMUHu7dwH9PZt4SPY031XU0D2Z4uJfeKayBQQvbJBg
-         uZX7DpyWTC4QB77EZIjIjKG28dyqRmyh/mK4jhlQdE1T1vKOdpukZSlMXz/5kAoQvRvt
-         PgSuCI1D7u/BNANN+Tt5P0e7msYYRSBej/NInl81INoxoOipUqcnFXc6+qnXK0aNF7Nx
-         Q6x+yyI9OcR4F16OZteKKYqALDBlN34aZwcxKptRR9d4KvQVjaA7Vg1aNUtm9I8IBT3g
-         VmXw==
-X-Gm-Message-State: AAQBX9e7tZ8f9NtC5tx7Lgsz2tJGLzVP7UmETdeTEXJZRo/LbFo0Y/FT
-        mUyTNh/5YM9XlUol5qxwgLnb5Q==
-X-Google-Smtp-Source: AKy350atwB7m2uAvdLkAs0GkN4WMx7NuiwMzD0Tg6MaI9xhXWQOqFnENfLJpeMTEz25CAljjq65WsQ==
-X-Received: by 2002:a05:600c:21ca:b0:3eb:3104:efef with SMTP id x10-20020a05600c21ca00b003eb3104efefmr5464126wmj.31.1680717781652;
-        Wed, 05 Apr 2023 11:03:01 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:9d:6:cf6a:9ae6:15f1:4213])
-        by smtp.gmail.com with ESMTPSA id bd5-20020a05600c1f0500b003f0472ffc7csm2913233wmb.11.2023.04.05.11.03.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 11:03:01 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, mark.rutland@arm.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kpsingh@kernel.org,
-        jolsa@kernel.org, xukuohai@huaweicloud.com, lihuafei1@huawei.com,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH v6 5/5] selftests/bpf: Update the tests deny list on aarch64
-Date:   Wed,  5 Apr 2023 20:02:50 +0200
-Message-Id: <20230405180250.2046566-6-revest@chromium.org>
-X-Mailer: git-send-email 2.40.0.577.gac1e443424-goog
-In-Reply-To: <20230405180250.2046566-1-revest@chromium.org>
-References: <20230405180250.2046566-1-revest@chromium.org>
+        bh=cpHAcs27Ve484lak5oLy20kAuFVSzKVSzNbCBJeOX60=;
+        b=o2r6byripcuieAPf0PTsvRshF5UlGsAjaes2P8SuteN+wc3o60ow820f3xZyAOIdTg
+         Q6dFioQ9QNweIcVtBACnxrzX260TRg0VyBRH9Himh10vUfRV6gXjVte+RzUn7nZ7hRyM
+         gIb3bWCWiqggAy4jjLZ2WMW6aCleleqEGu36CJFuSc4P4PNPt9KiUzXU2Gz3IwC3Tysr
+         B8+qjEY7zlYR/+tQZQAT9CUvNsh/1voD7KU+lk+X+WxKhZk/qp4jwCAyCL0qgXxaElNA
+         hgq9yD+j4it9x6manPfx0FKQmDJsRWvafsvbHb1s8kqsA/EJPamghcqHYRpmxFq4pE9i
+         3jDA==
+X-Gm-Message-State: AAQBX9cafstivoSWeG1mJdcBhoNBD53jboBBhYAHe+khuygfuijFlN1h
+        rlNEoX1OEt3aGnjaCX+MYTt72xqtRi/4mN27qi8=
+X-Google-Smtp-Source: AKy350b1JqLdoAmYMIQLzU+15eVOnfK0pnGi7wOJW63vdZ9WKuvlNP+8wXqap9Y7Jc8axElsc7B3dOKwwp1iQ9VXJck=
+X-Received: by 2002:a05:6402:2744:b0:502:6e58:c820 with SMTP id
+ z4-20020a056402274400b005026e58c820mr1946706edd.1.1680717792458; Wed, 05 Apr
+ 2023 11:03:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+References: <20230328235610.3159943-1-andrii@kernel.org> <20230328235610.3159943-4-andrii@kernel.org>
+ <CAN+4W8jj9AJ785pO3zPh7_n7USdDjvjLgW1EgQ39MBpx08M_1w@mail.gmail.com>
+ <CAEf4BzYOYVF1PZYnZUvTWkKTXVChvOjt6jCRBFBWhMDP4f295w@mail.gmail.com> <CAN+4W8hNvpuw-DhF5Eg+ZA98JwA6jGa9mGwUv9cUb+30M=GbOA@mail.gmail.com>
+In-Reply-To: <CAN+4W8hNvpuw-DhF5Eg+ZA98JwA6jGa9mGwUv9cUb+30M=GbOA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 Apr 2023 11:03:00 -0700
+Message-ID: <CAEf4BzZBK_0V-djZBP=4nOmd6YmoEKwaHDAHWvzTJGGJ8RS-vw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/6] bpf: switch BPF verifier log to be a
+ rotating log by default
+To:     Lorenz Bauer <lmb@isovalent.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+        timo@incline.eu, robin.goegge@isovalent.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,116 +72,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that ftrace supports direct call on arm64, BPF tracing programs work
-on that architecture. This fixes the vast majority of BPF selftests
-except for:
+On Wed, Apr 5, 2023 at 10:29=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> wr=
+ote:
+>
+> On Thu, Mar 30, 2023 at 9:48=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > So I'm preserving the original behavior, but I also think the original
+> > behavior makes sense, as it tries to keep valid string contents at all
+> > times. At least I don't really see much problem with it, do you?
+>
+> Like I said I find offset calculations hard to follow and they are a
+> great source of bugs, especially in C. I believe terminating at the
+> end of the syscall would be easier to understand and less bug prone.
 
-- multi_kprobe programs which require fprobe, not available on arm64 yet
-- tracing_struct which requires trampoline support to access struct args
+I mean, form my POV there are no complications to always sending full
+strings with zero termination. But I'll check your code and see where
+the simplification comes from.
 
-This patch updates the list of BPF selftests which are known to fail so
-the BPF CI can validate the tests which pass now.
+>
+> What is the argument for keeping valid string contents during the
+> syscall? Peeking at the buffer while the syscall is ongoing? How would
 
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- tools/testing/selftests/bpf/DENYLIST.aarch64 | 82 ++------------------
- 1 file changed, 5 insertions(+), 77 deletions(-)
+I don't know. This actually helps during debugging kernel itself, as
+we know that contents forms valid C string, so debug-dumping this
+would be a bit easier. I'm past that point, thankfully, but still.
 
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-index 99cc33c51eaa..6b95cb544094 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -1,33 +1,5 @@
--bloom_filter_map                                 # libbpf: prog 'check_bloom': failed to attach: ERROR: strerror_r(-524)=22
--bpf_cookie/lsm
--bpf_cookie/multi_kprobe_attach_api
--bpf_cookie/multi_kprobe_link_api
--bpf_cookie/trampoline
--bpf_loop/check_callback_fn_stop                  # link unexpected error: -524
--bpf_loop/check_invalid_flags
--bpf_loop/check_nested_calls
--bpf_loop/check_non_constant_callback
--bpf_loop/check_nr_loops
--bpf_loop/check_null_callback_ctx
--bpf_loop/check_stack
--bpf_mod_race                                     # bpf_mod_kfunc_race__attach unexpected error: -524 (errno 524)
--bpf_tcp_ca/dctcp_fallback
--btf_dump/btf_dump: var_data                      # find type id unexpected find type id: actual -2 < expected 0
--cgroup_hierarchical_stats                        # attach unexpected error: -524 (errno 524)
--d_path/basic                                     # setup attach failed: -524
--deny_namespace                                   # attach unexpected error: -524 (errno 524)
--fentry_fexit                                     # fentry_attach unexpected error: -1 (errno 524)
--fentry_test                                      # fentry_attach unexpected error: -1 (errno 524)
--fexit_sleep                                      # fexit_attach fexit attach failed: -1
--fexit_stress                                     # fexit attach unexpected fexit attach: actual -524 < expected 0
--fexit_test                                       # fexit_attach unexpected error: -1 (errno 524)
--get_func_args_test                               # get_func_args_test__attach unexpected error: -524 (errno 524) (trampoline)
--get_func_ip_test                                 # get_func_ip_test__attach unexpected error: -524 (errno 524) (trampoline)
--htab_update/reenter_update
--kfree_skb                                        # attach fentry unexpected error: -524 (trampoline)
--kfunc_call/subprog                               # extern (var ksym) 'bpf_prog_active': not found in kernel BTF
--kfunc_call/subprog_lskel                         # skel unexpected error: -2
--kfunc_dynptr_param/dynptr_data_null              # libbpf: prog 'dynptr_data_null': failed to attach: ERROR: strerror_r(-524)=22
-+bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
-+bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
- kprobe_multi_bench_attach                        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
- kprobe_multi_test/attach_api_addrs               # bpf_program__attach_kprobe_multi_opts unexpected error: -95
- kprobe_multi_test/attach_api_pattern             # bpf_program__attach_kprobe_multi_opts unexpected error: -95
-@@ -35,50 +7,6 @@ kprobe_multi_test/attach_api_syms                # bpf_program__attach_kprobe_mu
- kprobe_multi_test/bench_attach                   # bpf_program__attach_kprobe_multi_opts unexpected error: -95
- kprobe_multi_test/link_api_addrs                 # link_fd unexpected link_fd: actual -95 < expected 0
- kprobe_multi_test/link_api_syms                  # link_fd unexpected link_fd: actual -95 < expected 0
--kprobe_multi_test/skel_api                       # kprobe_multi__attach unexpected error: -524 (errno 524)
--ksyms_module/libbpf                              # 'bpf_testmod_ksym_percpu': not found in kernel BTF
--ksyms_module/lskel                               # test_ksyms_module_lskel__open_and_load unexpected error: -2
--libbpf_get_fd_by_id_opts                         # test_libbpf_get_fd_by_id_opts__attach unexpected error: -524 (errno 524)
--linked_list
--lookup_key                                       # test_lookup_key__attach unexpected error: -524 (errno 524)
--lru_bug                                          # lru_bug__attach unexpected error: -524 (errno 524)
--modify_return                                    # modify_return__attach failed unexpected error: -524 (errno 524)
--module_attach                                    # skel_attach skeleton attach failed: -524
--mptcp/base                                       # run_test mptcp unexpected error: -524 (errno 524)
--netcnt                                           # packets unexpected packets: actual 10001 != expected 10000
--rcu_read_lock                                    # failed to attach: ERROR: strerror_r(-524)=22
--recursion                                        # skel_attach unexpected error: -524 (errno 524)
--ringbuf                                          # skel_attach skeleton attachment failed: -1
--setget_sockopt                                   # attach_cgroup unexpected error: -524
--sk_storage_tracing                               # test_sk_storage_tracing__attach unexpected error: -524 (errno 524)
--skc_to_unix_sock                                 # could not attach BPF object unexpected error: -524 (errno 524)
--socket_cookie                                    # prog_attach unexpected error: -524
--stacktrace_build_id                              # compare_stack_ips stackmap vs. stack_amap err -1 errno 2
--task_local_storage/exit_creds                    # skel_attach unexpected error: -524 (errno 524)
--task_local_storage/recursion                     # skel_attach unexpected error: -524 (errno 524)
--test_bprm_opts                                   # attach attach failed: -524
--test_ima                                         # attach attach failed: -524
--test_local_storage                               # attach lsm attach failed: -524
--test_lsm                                         # test_lsm_first_attach unexpected error: -524 (errno 524)
--test_overhead                                    # attach_fentry unexpected error: -524
--timer                                            # timer unexpected error: -524 (errno 524)
--timer_crash                                      # timer_crash__attach unexpected error: -524 (errno 524)
--timer_mim                                        # timer_mim unexpected error: -524 (errno 524)
--trace_printk                                     # trace_printk__attach unexpected error: -1 (errno 524)
--trace_vprintk                                    # trace_vprintk__attach unexpected error: -1 (errno 524)
--tracing_struct                                   # tracing_struct__attach unexpected error: -524 (errno 524)
--trampoline_count                                 # attach_prog unexpected error: -524
--unpriv_bpf_disabled                              # skel_attach unexpected error: -524 (errno 524)
--user_ringbuf/test_user_ringbuf_post_misaligned   # misaligned_skel unexpected error: -524 (errno 524)
--user_ringbuf/test_user_ringbuf_post_producer_wrong_offset
--user_ringbuf/test_user_ringbuf_post_larger_than_ringbuf_sz
--user_ringbuf/test_user_ringbuf_basic             # ringbuf_basic_skel unexpected error: -524 (errno 524)
--user_ringbuf/test_user_ringbuf_sample_full_ring_buffer
--user_ringbuf/test_user_ringbuf_post_alignment_autoadjust
--user_ringbuf/test_user_ringbuf_overfill
--user_ringbuf/test_user_ringbuf_discards_properly_ignored
--user_ringbuf/test_user_ringbuf_loop
--user_ringbuf/test_user_ringbuf_msg_protocol
--user_ringbuf/test_user_ringbuf_blocking_reserve
--verify_pkcs7_sig                                 # test_verify_pkcs7_sig__attach unexpected error: -524 (errno 524)
--vmlinux                                          # skel_attach skeleton attach failed: -524
-+kprobe_multi_test/skel_api                       # libbpf: failed to load BPF skeleton 'kprobe_multi': -3
-+module_attach                                    # prog 'kprobe_multi': failed to auto-attach: -95
-+tracing_struct                                   # tracing_struct__attach unexpected error: -524 (errno 524)
-\ No newline at end of file
--- 
-2.40.0.577.gac1e443424-goog
+Another benefit is that even if we forget to finalize properly in one
+of the error handling code paths, we still end up with valid C string.
+But again, I'll take a look at your code.
 
+> that work with a rotating log, where it's not clear where the start
+> and the end is? Another observation is that during finalization the
+> buffer is going to be in all sorts of wonky states due to the shuffle
+> trick, so we're really not losing much. I'll send a prototype of what
+> I mean.
+
+I'll take a look at your prototype, thanks. Not that I'm looking
+forward to redoing this part of the code, of course, but oh well, have
+to do my due diligence.
+
+>
+> > Hm... start_pos definitely is necessary due to bpf_vlog_reset() at
+> > least. Similarly, end_pos can go back on log reset. But second patch
+> > set simplifies this further, as we keep track of maximum log content
+> > size we ever reach, and that could be straightforwardly compared to
+> > log->len_total.
+>
+> Now that I fiddled with the code more I understand start_pos, sorry
+> for the noise.
+>
+
+No worries, this is part of the reviewing process.
+
+> > I'm not following. bpf_vlog_append() would have to distinguish between
+> > BPF_LOG_FIXED and rotating mode, because in rotating mode you have to
+> > wrap around the physical end of the buffer.
+>
+> My idea is to prevent rotation by never appending more than what is
+> "unused". This means you have to deal with signalling truncation
+> separately, but your max_len makes that nice. Again I'll try and send
+> something to illustrate what I mean.
+>
+
+Ok.
+
+> > It's more verbose, so BPF_LOG_FIXED seems more in line with existing
+> > constants names. But note that this is not part of UAPI, user-space
+> > won't see/have "BPF_LOG_FIXED" constant.
+>
+> Ah! How come we don't have UAPI?
+>
+
+Historical reasons? I'm the wrong person to ask.
+
+
+> > > This isn't really kbuf specific, how about just reverse_buf?
+> >
+> > kbuf as opposed to ubuf. Kernel-space manipulations, which don't
+> > require copy_from_user. I wanted to emphasize this distinction and
+> > keep symmetry with bpf_vlog_reverse_ubuf().
+>
+> Ah, right. I think due to naming I assumed that it reverses log->kbuf,
+> due to symmetry with bpf_vlog_reverse_ubuf.
+>
+> > Hm.. no, it is the rotation in place. Even if it was in the kernel
+> > buffer and we wanted to rotate this without creating a second large
+> > copy of the buffer, we'd have to do this double rotation.
+>
+> I said that because in kernel space we could do
+> https://cplusplus.com/reference/algorithm/rotate/
+
+Yep, byte-by-byte makes it easier. Blocks make it significantly harder
+due to no common alignment.
+
+>
+> > So each rotation reads each byte once and writes each byte once. So
+> > two copies. And then the entire buffer is rotated twice (three
+> > rotating steps, but overall contents is rotated twice), so two reads
+> > and two writes for each byte, 4 memory copies altogether. Would you
+> > like me to clarify this some more?
+>
+> I think explaining it in terms of copies (instead of read / write)
+> would make it easier to understand!
+
+Yep, I adjusted this comment in last version, mentioning number of
+copies, thanks.
