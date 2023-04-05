@@ -2,192 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B059E6D876F
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDDF6D878B
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbjDETzC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 15:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
+        id S232850AbjDET7w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 15:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbjDETy7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 15:54:59 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF6592
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 12:54:58 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id 82so2530579iou.2
-        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 12:54:58 -0700 (PDT)
+        with ESMTP id S233862AbjDET7u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 15:59:50 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7C34C15
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 12:59:47 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id n125so43912745ybg.7
+        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 12:59:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680724497;
+        d=paul-moore.com; s=google; t=1680724787;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZcYjART6vOTXgshTS0uLbmOyompGa7/lXpaivlpY/VA=;
-        b=Q5pH8VZulJ+C6K7kJgwa8mvOZ9ZrOOAVLsmxUjEBWvSwXZS2eYxnn+3CNEFDsgl/FB
-         PjfOUoveEnD9PSu/Eywba4OUlZTADegV9S/hQ9fnBWU5k74/LBMblU+lOZZKTg++slTD
-         03UU0BISn96pJcY7cmEh/5YQiID+BNXZbn/LtyNdhSCUTcnPySOohUPn1SFbS9xrnAho
-         y8FwD0YOjPOgKVlGfYrC+svNxrZfTOuh21opeEKDfTzKowlJOJ6wZADntkTgf6er0ndr
-         WzczKJPJqJUu2H5QfN0VjxK2pU1vYQG2Hc0FVxsHg0Zw13iPCjmyqdvSgOMHi62oz+x6
-         iUzQ==
+        bh=16oMn1NNzoMGhRBfxhPQbT5X5eCgj0j1VfPTFGPRXYA=;
+        b=M6bRM2KlH9Lx5lsl1rif9t0ScqLJIdivfDowNos4t0MnSqxdPlWxdu1CtgPNVsf6PQ
+         8U5VUfoOsmfJmq2XRa8ctGuBct1KIf4mat5CVl4r9vCtgWvPc73og4XPAPJKiOsAPB+Q
+         TzbfcFogPV6U8zGTa4ijQ6IBjmsU6UYaRrrgV+MOlHiWQwISa6b0bt+EsHa7MUmooDWm
+         1rx7Y/edmVIxZTJxu4jBKhmeO+u5C9tr4U0UPwgtrDnUgxq6zmZDc1w3LPqaQTij0hMF
+         tRaNkccvCmTc4mjM2PROEHzoz75i9wuaWNb56YFKuf2qr5UxdsWp10j3px0yPT+mbFd2
+         LPNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680724497;
+        d=1e100.net; s=20210112; t=1680724787;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZcYjART6vOTXgshTS0uLbmOyompGa7/lXpaivlpY/VA=;
-        b=alznPmjkQQSPRhXanMa+VhuXXBWm9qE02ITDWiB2sv1USV6wUPwWptjW6D3Xzs338E
-         Q5wNBqdy1D4ZZIsc+YQpvSoyultN8kaZlIohksM0vY7bfhMxsiopaW3q5yct+AHYBIei
-         LbXkUQT6pxioXc103cMVm8SiHfLJT8T6v7DXcytiVaFiKqJRcEI3cXBSg5KBZAOdGVvl
-         LDysUcZPl1EtIo74RL0r0aTX0bHdiwPXugPtavitgxaMpfzrIXkTqjbFdn7V3mo1RWbQ
-         X+aq0iZf32vmfRFd2ylo51mhPCForY6GHaCYiQaD/hlavmTCnBHuK8elhK2zBrjFoaYL
-         T2ug==
-X-Gm-Message-State: AAQBX9fz8GlYRAU0caVFqdmwIAK1eF+UDoIVb7I+1wuIpLnxhncryjBA
-        r9ITt06ib61Oe6hOHotpk/0VQDOL9xpo1Lnvxi1iFQ==
-X-Google-Smtp-Source: AKy350aQGUhRBR9nlxvbezaz/UrkSAWRI9gjznAzUIFBqGpVkijBgUKrfga8wmafgeF9lt6YkUUxmVhABC3COYaTN2I=
-X-Received: by 2002:a5e:df47:0:b0:74c:7ea1:4f05 with SMTP id
- g7-20020a5edf47000000b0074c7ea14f05mr5543603ioq.2.1680724497235; Wed, 05 Apr
- 2023 12:54:57 -0700 (PDT)
+        bh=16oMn1NNzoMGhRBfxhPQbT5X5eCgj0j1VfPTFGPRXYA=;
+        b=7b7NYjl6Tp+oWkkLj2cDMZOtf6iUyn5XFsW/uL6lDn1FKFydxU8+Ti91TxSHnwT+bf
+         xDGzS5ueLCj6Lfh3oMsDLCbGo69T24d4CRH1YNNtNwn8yICgvi6PW4cWXtRERbpxDOLD
+         3bfhqhOYZrCNjIm+YS9rsP320YvDmwWf7dPMwXEQlDCGgQGTNBIA/LGPAiWyIBrdxmiT
+         XX8Tb9UGKc8w6OXIlh1GVkJ4JWQ8C/cHR2TR9NdhbAJAZUwJaY5ou7o/cADw+ehW01Gp
+         BIW1zz7mh46vgdP0DFRpF9S2RYqVLfOuw/H7rkKeSq7cne5lxSJOZCl3kDxg/r/eHju8
+         Zi4w==
+X-Gm-Message-State: AAQBX9dB8WQTbTjOedduL1zvCA7RRL97+NsDIEOCv3c8nal2nP87wR+s
+        FNyhttJ1fxyzKSfo1+JhqIEcZB3gZyFT/auGN3wi
+X-Google-Smtp-Source: AKy350Z4agPWqKP3S9SXcOAMKHENY/iZ5KsoGSPHS8QSL3pWzVPqwyrXG0+vzOYZvsNJa9+F9yj3Fqs4TEDZfwYCMxc=
+X-Received: by 2002:a25:d707:0:b0:b68:7a4a:5258 with SMTP id
+ o7-20020a25d707000000b00b687a4a5258mr390159ybg.3.1680724786891; Wed, 05 Apr
+ 2023 12:59:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz> <CAANmLtwGS75WJ9AXfmqZv73pNdHJn6zfrrCCWjKK_6jPk9pWRg@mail.gmail.com>
- <951d364a-05c0-b290-8abe-7cbfcaeb2df7@suse.cz>
-In-Reply-To: <951d364a-05c0-b290-8abe-7cbfcaeb2df7@suse.cz>
-From:   Binder Makin <merimus@google.com>
-Date:   Wed, 5 Apr 2023 15:54:45 -0400
-Message-ID: <CAANmLtzQmVN_EWLv1UxXwZu5X=TwpcMQMYArKNUxAJL3PnfO2Q@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] SLOB+SLAB allocators removal and future SLUB improvements
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-block@vger.kernel.org,
-        bpf@vger.kernel.org, linux-xfs@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
+References: <20230331123221.3273328-1-roberto.sassu@huaweicloud.com>
+ <20230331123221.3273328-3-roberto.sassu@huaweicloud.com> <CAHC9VhSbGdij6xz9D49my37kD9qYrBmh2x7=cNFFDL2dZ=EZTw@mail.gmail.com>
+ <5dbb9430-1e26-ec12-26a2-3718c84e33c2@schaufler-ca.com> <7549b624-421e-30b9-ca99-de42929354c7@huaweicloud.com>
+In-Reply-To: <7549b624-421e-30b9-ca99-de42929354c7@huaweicloud.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 5 Apr 2023 15:59:36 -0400
+Message-ID: <CAHC9VhTsSUM6_g5+ZOqZ=P6307hCAJW+-xEc4fKQcymPs5pYjQ@mail.gmail.com>
+Subject: Re: [PATCH v10 2/4] security: Allow all LSMs to provide xattrs for
+ inode_init_security hook
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
+        nicolas.bouchinet@clip-os.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm still running tests to explore some of these questions.
-The machines I am using are roughly as follows.
+On Wed, Apr 5, 2023 at 5:44=E2=80=AFAM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> On 4/5/2023 4:08 AM, Casey Schaufler wrote:
+> > On 4/4/2023 11:54 AM, Paul Moore wrote:
+> >> On Fri, Mar 31, 2023 at 8:33=E2=80=AFAM Roberto Sassu
+> >> <roberto.sassu@huaweicloud.com> wrote:
 
-Intel dual socket 56 total cores
-192-384GB ram
-LEVEL1_ICACHE_SIZE                 32768
-LEVEL1_DCACHE_SIZE                 32768
-LEVEL2_CACHE_SIZE                  1048576
-LEVEL3_CACHE_SIZE                  40370176
+...
 
-Amd dual socket 128 total cores
-1TB ram
-LEVEL1_ICACHE_SIZE                 32768
-LEVEL1_DCACHE_SIZE                 32768
-LEVEL2_CACHE_SIZE                  524288
-LEVEL3_CACHE_SIZE                  268435456
+> >>> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> >>> index cfcbb748da2..8392983334b 100644
+> >>> --- a/security/smack/smack_lsm.c
+> >>> +++ b/security/smack/smack_lsm.c
+> >>> @@ -52,6 +52,15 @@
+> >>>   #define SMK_RECEIVING  1
+> >>>   #define SMK_SENDING    2
+> >>>
+> >>> +/*
+> >>> + * Smack uses multiple xattrs.
+> >>> + * SMACK64 - for access control, SMACK64EXEC - label for the program=
+,
+> >> I think it would be good to move SMACK64EXEC to its own line; it took
+> >> me a minute to figure out why SMACK_INODE_INIT_XATTRS was set to '4'
+> >> when I only say three comment lines ... ;)
+> >>
+> >>> + * SMACK64MMAP - controls library loading,
+> >>> + * SMACK64TRANSMUTE - label initialization,
+> >>> + * Not saved on files - SMACK64IPIN and SMACK64IPOUT
+> >>> + */
+> >>> +#define SMACK_INODE_INIT_XATTRS 4
+> >>
+> >> If smack_inode_init_security() only ever populates a single xattr, and
+> >> that is the only current user of SMACK_INODE_INIT_XATTRS, can we make
+> >> this '1' and shrink the xattr allocation a bit?
+> >
+> > If the parent directory is marked with SMACK64_TRANSMUTE, the access
+> > rule allowing the access has the "t" mode, and the object being initial=
+ized
+> > is a directory, the new inode should get the SMACK64_TRANSMUTE attribut=
+e.
+> > The callers of security_inode_init_security() don't seem to care.
+> > I can't say if the evm code is getting SMACK64_TRANSMUTE or, for that
+> > matter, SMACK64_EXEC and SMACK64_MMAP, some other way. The older system
+> > allowed for multiple Smack xattrs, but I'm not clear on exactly how.
+>
+> If you like to set an additional xattr, that would be possible now.
+> Since we reserve multiple xattrs, we can call lsm_get_xattr_slot()
+> another time and set SMACK64_TRANSMUTE.
+>
+> I think, if the kernel config has CONFIG_EVM_EXTRA_SMACK_XATTRS set,
+> EVM would protect SMACK64_TRANSMUTE too.
 
-Arm single socket 64 total cores
-256GB rma
-LEVEL1_ICACHE_SIZE                 65536
-LEVEL1_DCACHE_SIZE                 65536
-LEVEL2_CACHE_SIZE                  1048576
-LEVEL3_CACHE_SIZE                  33554432
+Ooookay, but can someone explain to me how either the current, or
+patched, smack_inode_init_security() function can return multiple
+xattrs via the security_inode_init_security() LSM hook?  I'm hoping
+I'm missing something really obvious, but I can only see a single
+Smack xattr being returned ...
 
-On Tue, Apr 4, 2023 at 12:03=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 3/22/23 13:30, Binder Makin wrote:
-> > Was looking at SLAB removal and started by running A/B tests of SLAB
-> > vs SLUB.  Please note these are only preliminary results.
->
-> Thanks, that's very useful.
->
-> > These were run using 6.1.13 configured for SLAB/SLUB.
-> > Machines were standard datacenter servers.
-> >
-> > Hackbench shows completion time, so smaller is better.
-> > On all others larger is better.
-> > https://docs.google.com/spreadsheets/d/e/2PACX-1vQ47Mekl8BOp3ekCefwL6wL=
-8SQiv6Qvp5avkU2ssQSh41gntjivE-aKM4PkwzkC4N_s_MxUdcsokhhz/pubhtml
-> >
-> > Some notes:
-> > SUnreclaim and SReclaimable shows unreclaimable and reclaimable memory.
-> > Substantially higher with SLUB, but I believe that is to be expected.
-> >
-> > Various results showing a 5-10% degradation with SLUB.  That feels
-> > concerning to me, but I'm not sure what others' tolerance would be.
-> >
-> > redis results on AMD show some pretty bad degredations.  10-20% range
-> > netpipe on Intel also has issues.. 10-17%
->
-> I guess one question is which ones are genuine SLAB/SLUB differences and =
-not
-> e.g. some artifact of different cache layout or something. For example it
-> seems suspicious if results are widely different between architectures.
->
-> E.g. will-it-scale writeseek3_scalability regresses on arm64 and amd, but
-> improves on intel? Or is something wrong with the data, all columns for t=
-hat
-> whole benchmark suite are identical.
->
-> hackbench ("smaller is better") seems drastically better on arm64 (30%
-> median time reduction?) and amd (80% reduction?!?), but 10% slower intel?
->
-> redis seems a bit improved on arm64, slightly worse on intel but much wor=
-se
-> on amd.
->
-> specjbb similar story, also I thought it was a java focused benchmark,
-> should it really be exercising kernel slab allocators in such notable way=
-?
->
-> I guess netpipe is the least surprising as networking was always mentione=
-d
-> in SLAB vs SLUB discussions.
->
-> > On Tue, Mar 14, 2023 at 4:05=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
-> wrote:
-> >>
-> >> As you're probably aware, my plan is to get rid of SLOB and SLAB, leav=
-ing
-> >> only SLUB going forward. The removal of SLOB seems to be going well, t=
-here
-> >> were no objections to the deprecation and I've posted v1 of the remova=
-l
-> >> itself [1] so it could be in -next soon.
-> >>
-> >> The immediate benefit of that is that we can allow kfree() (and kfree_=
-rcu())
-> >> to free objects from kmem_cache_alloc() - something that IIRC at least=
- xfs
-> >> people wanted in the past, and SLOB was incompatible with that.
-> >>
-> >> For SLAB removal I haven't yet heard any objections (but also didn't
-> >> deprecate it yet) but if there are any users due to particular workloa=
-ds
-> >> doing better with SLAB than SLUB, we can discuss why those would regre=
-ss and
-> >> what can be done about that in SLUB.
-> >>
-> >> Once we have just one slab allocator in the kernel, we can take a clos=
-er
-> >> look at what the users are missing from it that forces them to create =
-own
-> >> allocators (e.g. BPF), and could be considered to be added as a generi=
-c
-> >> implementation to SLUB.
-> >>
-> >> Thanks,
-> >> Vlastimil
-> >>
-> >> [1] https://lore.kernel.org/all/20230310103210.22372-1-vbabka@suse.cz/
-> >>
->
+--=20
+paul-moore.com
