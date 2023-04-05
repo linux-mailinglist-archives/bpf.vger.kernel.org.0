@@ -2,83 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 283516D871F
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEC86D874F
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbjDEToI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 15:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40778 "EHLO
+        id S233773AbjDETua (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 15:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjDEToG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 15:44:06 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE6DEC
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 12:44:05 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-947cd8b2de3so85741766b.0
-        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 12:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680723844;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GlttmAhfT5tfz8lSYZXT2wZbb4L2id7GE8MRRXSka3I=;
-        b=kox1NmeppAO+btjdlcJRvX4LHERbmW9X6UNWU2fGJfXgDKwvYrXLaAtDKKOi9/ZHmG
-         FaQUiR0OxXA3TwoYJDfOc0qxo+meoNoTW6q224GBmZuV0Tt/s/wm3YC7uj1TNdOGtvpY
-         GOkt9UZsSRQ51GE6GE6MwqI5r33C3BpQ+C7BE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680723844;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GlttmAhfT5tfz8lSYZXT2wZbb4L2id7GE8MRRXSka3I=;
-        b=tKl1vMgmKX4i1YOp6eGecIrGO9q6vwGfyUnsfJN9WAp5F4JQyY96D7g3cx6rrCJ37Q
-         ZLiDepQeA2zzvIBKjVL9hrbPPArKiGRLuxZTrNnEIpbcAYjVestDB7FCScpvKs5yUj5C
-         Jorncx7uc3tXqrVUpfdcLUhMaAQx/nNBid6plIPTihLiVYyZJKOr7h9dkO4lGTEkmfgV
-         w1hvt8jjOU+S7kytjTm2ggFUhFhgr8TKyMOhcgMOL30KLSuWqjinCl21LRwEFLM0row7
-         Oo2GTrQXYZohj6pUvNHQj09f0KMSBrwiw2JiEeZ+BDWzNoXfOIpm0mHwaGIIMhsBfR88
-         TJqA==
-X-Gm-Message-State: AAQBX9fd/KPpcItEh/NAHjhIsaymFigOwZY4oBUvNRCLuTq7TliUWrCm
-        0+42QbvTBiXD36cuLhbGk/ctgqebHoG/2aic4+Nq5w==
-X-Google-Smtp-Source: AKy350YvVUUbriDswTxaE8pZKoKOQAtkJat3YNNaD6oYPXNTWkSmq9GFochAcswbb1rGrRQF8fxEKjZzfjR/m5YE4xc=
-X-Received: by 2002:a50:d781:0:b0:500:547b:4e1b with SMTP id
- w1-20020a50d781000000b00500547b4e1bmr1853965edi.6.1680723843878; Wed, 05 Apr
- 2023 12:44:03 -0700 (PDT)
+        with ESMTP id S234096AbjDETuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 15:50:16 -0400
+Received: from out-60.mta1.migadu.com (out-60.mta1.migadu.com [IPv6:2001:41d0:203:375::3c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF4A83E6
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 12:49:51 -0700 (PDT)
+Message-ID: <1ec1178e-7a7a-d49c-ba3d-fb2349a55c24@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1680724190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jcwcfq1HabL06YWO4RYJWNsbg0LRNmnhjGzEhY3v8ro=;
+        b=DZ69gwEDf0j5AmC9Cl+z0KORJM6Mhc+EukY91YY2oUECbUcFGKMdpXllJtXwp0+rwe0oBU
+        zCrkQIkdG4dLMwfm1roSyC3kdrAUiw0IaTmF528P4LGU6bAkzpL8WzqgKAWWyMWA7nRBUo
+        R4DBbBltODJG7SHW8YsvC9hTzn6gmGI=
+Date:   Wed, 5 Apr 2023 12:49:47 -0700
 MIME-Version: 1.0
-References: <20230403143601.32168-1-kal.conley@dectris.com>
- <CAJ8uoz1BKJ1_jq6Sum-OkZQTR_ftmr5Enj+Cmn4Qsi15_jOpbQ@mail.gmail.com> <c0596a62-0873-5638-920b-235c55ff33a2@linux.dev>
-In-Reply-To: <c0596a62-0873-5638-920b-235c55ff33a2@linux.dev>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Wed, 5 Apr 2023 21:48:43 +0200
-Message-ID: <CAHApi-mzLH7yVOT0cM03yafzTJJqfGwOBTa3q5U6jBdWnAx3VQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] xsk: Fix unaligned descriptor validation
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next 0/2] selftests: xsk: Add test case for packets at
+ end of UMEM
+Content-Language: en-US
+To:     Kal Cutter Conley <kal.conley@dectris.com>
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>, bpf@vger.kernel.org
+References: <20230403145047.33065-1-kal.conley@dectris.com>
+ <00f36cce-f186-2d39-ae5c-67da3f43129b@linux.dev>
+ <CAHApi-k9G6o_Xf9piDKRPLGTMa+CD-1F2-aDqth-dz0_yoYZfg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAHApi-k9G6o_Xf9piDKRPLGTMa+CD-1F2-aDqth-dz0_yoYZfg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=0.6 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Is this case covered by an existing test?
->
+On 4/5/23 12:31 PM, Kal Cutter Conley wrote:
+>> I tried test_xsk.sh. The changed subtest runs ok, so applied.
+>>
+>> I got failures from test_xsk.sh (even before this set) though. Are these
+>> expected or something missing in the environment like kconfig?
+> 
+> I fixed the other errors here and here (please apply those):
+> https://patchwork.kernel.org/project/netdevbpf/patch/20230403120400.31018-1-kal.conley@dectris.com/
+> https://patchwork.kernel.org/project/netdevbpf/patch/20230405082905.6303-1-kal.conley@dectris.com/
+> 
+> One is against bpf and one is against bpf-next (because someone told
+> me to move it). I guess they should both be applied to the same
+> branch, probably bpf?
 
-No. I submitted a test but I was asked to make minor changes to it. I
-plan to submit the test once this gets picked up on bpf-next.
+They are all fixing a selftests, so applied both to bpf-next also. better but 
+still has errors. The errors are down to 'fail:2' now:
+
+./test_xsk.sh
+PREREQUISITES: [ PASS ]
+1..42
+ok 1 PASS: SKB RUN_TO_COMPLETION
+ok 2 PASS: SKB RUN_TO_COMPLETION_2K_FRAME_SIZE
+ok 3 PASS: SKB RUN_TO_COMPLETION_SINGLE_PKT
+ok 4 PASS: SKB POLL_RX
+ok 5 PASS: SKB POLL_TX
+ok 6 PASS: SKB POLL_RXQ_EMPTY
+ok 7 PASS: SKB POLL_TXQ_FULL
+ok 8 # SKIP No 2M huge pages present.
+ok 9 PASS: SKB ALIGNED_INV_DESC
+ok 10 PASS: SKB ALIGNED_INV_DESC_2K_FRAME_SIZE
+ok 11 # SKIP No 2M huge pages present.
+ok 12 PASS: SKB UMEM_HEADROOM
+ok 13 PASS: SKB TEARDOWN
+ok 14 PASS: SKB BIDIRECTIONAL
+ok 15 PASS: SKB STAT_RX_DROPPED
+ok 16 PASS: SKB STAT_TX_INVALID
+ok 17 PASS: SKB STAT_RX_FULL
+ok 18 PASS: SKB STAT_RX_FILL_EMPTY
+ok 19 PASS: SKB BPF_RES
+ok 20 PASS: SKB XDP_DROP_HALF
+ok 21 PASS: SKB XDP_METADATA_COUNT
+ok 22 PASS: DRV RUN_TO_COMPLETION
+ok 23 PASS: DRV RUN_TO_COMPLETION_2K_FRAME_SIZE
+ok 24 PASS: DRV RUN_TO_COMPLETION_SINGLE_PKT
+ok 25 PASS: DRV POLL_RX
+ok 26 PASS: DRV POLL_TX
+ok 27 PASS: DRV POLL_RXQ_EMPTY
+ok 28 PASS: DRV POLL_TXQ_FULL
+ok 29 # SKIP No 2M huge pages present.
+ok 30 PASS: DRV ALIGNED_INV_DESC
+ok 31 PASS: DRV ALIGNED_INV_DESC_2K_FRAME_SIZE
+ok 32 # SKIP No 2M huge pages present.
+ok 33 PASS: DRV UMEM_HEADROOM
+ok 34 PASS: DRV TEARDOWN
+ok 35 PASS: DRV BIDIRECTIONAL
+ok 36 PASS: DRV STAT_RX_DROPPED
+ok 37 PASS: DRV STAT_TX_INVALID
+ok 38 PASS: DRV STAT_RX_FULL
+ok 39 PASS: DRV STAT_RX_FILL_EMPTY
+ok 40 PASS: DRV BPF_RES
+ok 41 PASS: DRV XDP_DROP_HALF
+ok 42 PASS: DRV XDP_METADATA_COUNT
+# Totals: pass:38 fail:0 xfail:0 xpass:0 skip:4 error:0
+XSK_SELFTESTS_ve5350_SOFTIRQ: [ PASS ]
+1..42
+ok 1 PASS: SKB BUSY-POLL RUN_TO_COMPLETION
+ok 2 PASS: SKB BUSY-POLL RUN_TO_COMPLETION_2K_FRAME_SIZE
+ok 3 PASS: SKB BUSY-POLL RUN_TO_COMPLETION_SINGLE_PKT
+ok 4 PASS: SKB BUSY-POLL POLL_RX
+ok 5 PASS: SKB BUSY-POLL POLL_TX
+ok 6 PASS: SKB BUSY-POLL POLL_RXQ_EMPTY
+ok 7 PASS: SKB BUSY-POLL POLL_TXQ_FULL
+ok 8 # SKIP No 2M huge pages present.
+ok 9 PASS: SKB BUSY-POLL ALIGNED_INV_DESC
+ok 10 PASS: SKB BUSY-POLL ALIGNED_INV_DESC_2K_FRAME_SIZE
+ok 11 # SKIP No 2M huge pages present.
+ok 12 PASS: SKB BUSY-POLL UMEM_HEADROOM
+ok 13 PASS: SKB BUSY-POLL TEARDOWN
+ok 14 PASS: SKB BUSY-POLL BIDIRECTIONAL
+ok 15 PASS: SKB BUSY-POLL STAT_RX_DROPPED
+ok 16 PASS: SKB BUSY-POLL STAT_TX_INVALID
+ok 17 PASS: SKB BUSY-POLL STAT_RX_FULL
+ok 18 PASS: SKB BUSY-POLL STAT_RX_FILL_EMPTY
+ok 19 PASS: SKB BUSY-POLL BPF_RES
+ok 20 PASS: SKB BUSY-POLL XDP_DROP_HALF
+ok 21 PASS: SKB BUSY-POLL XDP_METADATA_COUNT
+ok 22 PASS: DRV BUSY-POLL RUN_TO_COMPLETION
+ok 23 PASS: DRV BUSY-POLL RUN_TO_COMPLETION_2K_FRAME_SIZE
+ok 24 PASS: DRV BUSY-POLL RUN_TO_COMPLETION_SINGLE_PKT
+ok 25 PASS: DRV BUSY-POLL POLL_RX
+# [is_pkt_valid] expected seqnum [703], got seqnum [704]
+not ok 26 FAIL: DRV BUSY-POLL POLL_TX
+ok 27 PASS: DRV BUSY-POLL POLL_RXQ_EMPTY
+ok 28 PASS: DRV BUSY-POLL POLL_TXQ_FULL
+ok 29 # SKIP No 2M huge pages present.
+not ok 30 [xskxceiver.c:xsk_configure_socket:1236]: ERROR: 16/"Device or 
+resource busy"
+# Planned tests != run tests (42 != 30)
+# Totals: pass:25 fail:2 xfail:0 xpass:0 skip:3 error:0
+
