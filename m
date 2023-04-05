@@ -2,147 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C07B6D843F
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 18:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4823C6D84CC
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 19:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbjDEQ42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 12:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
+        id S232783AbjDERWm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 13:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbjDEQ4L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 12:56:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94A96192
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 09:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680713657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LU+EuI1w95foBpvL+MnfTRdJBoeqcZi7esoiDYFHUqg=;
-        b=QejeTNge9D8ptm7U98n1WuZoVuxTK8PO5PUU6W145NXM2guh41Ab3geQ/cpEEQ8ESr2kb3
-        gdd2vkFxUEd3BmA7riwk3VhzLcWiAgTZAfrdqt3j23uvLsx9U6mjIxNVcsIdg1YNGAxYrm
-        PBNwhz0bwtPCMBjaKmGdhQb/XoWuS7M=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-256-Ory9MB64PridaGhduckyKQ-1; Wed, 05 Apr 2023 12:54:12 -0400
-X-MC-Unique: Ory9MB64PridaGhduckyKQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 95935885620;
-        Wed,  5 Apr 2023 16:54:11 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A2CDC1602A;
-        Wed,  5 Apr 2023 16:54:09 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Subject: [PATCH net-next v4 09/20] tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around tcp_sendmsg
-Date:   Wed,  5 Apr 2023 17:53:28 +0100
-Message-Id: <20230405165339.3468808-10-dhowells@redhat.com>
-In-Reply-To: <20230405165339.3468808-1-dhowells@redhat.com>
-References: <20230405165339.3468808-1-dhowells@redhat.com>
+        with ESMTP id S232696AbjDERWl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 13:22:41 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3A459E6;
+        Wed,  5 Apr 2023 10:22:31 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-946a769ae5cso57922166b.1;
+        Wed, 05 Apr 2023 10:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680715349;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qudjHEfwZN2ELTS5uL0dbGd2njDQoDIllVRSFmZf91w=;
+        b=pQd8omNiHGbe69W3r4RWtZbX1dS4H8lNwaGQ59NIJzC+zxvDCBDY73YiP51VPWnGuM
+         AU+AfrzuScmL6CQk4Vob1cwXbMMjvXSby4qzfrIYUH1w+YHiIxw7DiX/SKiTKd/DsHrN
+         HjC6thTdZDXvU7/1IHDxh7Jr4c1xJtsycc2D4YmIQRiB43vw5a8u0atQIPqwgcghsa3Y
+         R4pGpQSWYGgdRF2LpF1sAsQnjUwugZfYOJfmmtJOmPy/hJi4g2f+5WmxnVUxPfbDpTAc
+         QuzofrHDZJL7zi9PQwWXoeoMnGtSxFZwsYJVhLKEFOHITMaFUIT3X+TcRd66I67+Hh5o
+         KuDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680715349;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qudjHEfwZN2ELTS5uL0dbGd2njDQoDIllVRSFmZf91w=;
+        b=fJ/s3WSgZ1aVwyHsg7d8+5wxQt118FBIV1VaoiTWriVMvZJsVQRs7XCEtBl1eQs0q0
+         n93Q+NLHaERsce+yQg5soflGcrXRQHvgwbIZyq/4CPFGcuIby+natqfizBzNQS3s/SwT
+         4CbqYeiod+2XTPCCuUigIk7RvVdvOS99DtsX8vnkK0ZZ2iskL0EJ+4KX6Ev1veA9ovDC
+         9lurIzsWL8vxvdS33fS/TE0rZjdrVfUi7l8EUIWmLG0Lzcc2NFNJulj8iDfzAGgZjSwV
+         8yqvqubISKMLQzWJ+g5sUfZEiEOR/n4n8zZcb7CF43UkZ3zIX3CRUrq8QvmwDn6DjQiZ
+         FWjw==
+X-Gm-Message-State: AAQBX9cY1FbgIiiddCSU57kaSX/0CM6IKEf3FV2zeCpwxGbs6e5pc8Nu
+        mQEIPwTOYEjn9OvUirEZdym+qLO0R7IWRlI0AEraXgPoSzk=
+X-Google-Smtp-Source: AKy350aJRbu5NiZ90m6GXPJ7LXg82miPFAUuzYzMhf/xsH4Vf1FM0wA53TwtvvJDOvTMUmkoHUSS3Y67P58vi9Hcaho=
+X-Received: by 2002:a50:aa93:0:b0:4c0:71e6:9dc5 with SMTP id
+ q19-20020a50aa93000000b004c071e69dc5mr1566796edc.1.1680715349174; Wed, 05 Apr
+ 2023 10:22:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230404045029.82870-1-alexei.starovoitov@gmail.com>
+ <20230404145131.GB3896@maniforge> <CAEf4BzYXpHMNDTCrBTjwvj3UU5xhS9mAKLx152NniKO27Rdbeg@mail.gmail.com>
+ <CAADnVQKLe8+zJ0sMEOsh74EHhV+wkg0k7uQqbTkB3THx1CUyqw@mail.gmail.com> <20230404185147.17bf217a@kernel.org>
+In-Reply-To: <20230404185147.17bf217a@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 Apr 2023 10:22:16 -0700
+Message-ID: <CAEf4BzY3-pXiM861OkqZ6eciBJnZS8gsBL2Le2rGiSU64GKYcg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/8] bpf: Follow up to RCU enforcement in the verifier.
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Vernet <void@manifault.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Tejun Heo <tj@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Yonghong Song <yhs@meta.com>, Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-do_tcp_sendpages() is now just a small wrapper around tcp_sendmsg_locked(),
-so inline it.  This is part of replacing ->sendpage() with a call to
-sendmsg() with MSG_SPLICE_PAGES set.
+On Tue, Apr 4, 2023 at 6:51=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
+te:
+>
+> On Tue, 4 Apr 2023 17:16:27 -0700 Alexei Starovoitov wrote:
+> > > Added David's acks manually (we really need to teach pw-apply to do
+> > > this automatically...) and applied.
+> >
+> > +1
+> > I was hoping that patchwork will add this feature eventually,
+> > but it seems faster to hack the pw-apply script instead.
+>
+> pw-apply can kind of do it. It exports an env variable called ADD_TAGS
+> if it spots any tags in reply to the cover letter.
+>
+> You need to add a snippet like this to your .git/hooks/applypatch-msg:
+>
+>   while IFS=3D read -r tag; do
+>     echo -e Adding tag: '\e[35m'$tag'\e[0m'
+>       git interpret-trailers --in-place \
+>           --if-exists=3DaddIfDifferent \
+>           --trailer "$tag" \
+>           "$1"
+>   done <<< "$ADD_TAGS"
+>
+> to transfer those tags onto the commits.
+>
+> Looking at the code you may also need to use -M to get ADD_TAGS
+> exported. I'm guessing I put this code under -M so that the extra curl
+> requests don't slow down the script for everyone. But we can probably
+> "graduate" that into the main body if you find it useful and hate -M :)
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: John Fastabend <john.fastabend@gmail.com>
-cc: Jakub Sitnicki <jakub@cloudflare.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: netdev@vger.kernel.org
-cc: bpf@vger.kernel.org
----
- net/ipv4/tcp_bpf.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+So I'm exclusively using `pw-apply -c <patchworks-url>` to apply
+everything locally. I'd expect that at this time the script would
+detect any Acked-by replies on *cover letter patch*, and apply them
+across all patches in the series. Such that we (humans) can look at
+them, fix them, add them, etc. Doing something like this in git hook
+seems unnecessary?
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index ebf917511937..24bfb885777e 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -72,11 +72,13 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
- {
- 	bool apply = apply_bytes;
- 	struct scatterlist *sge;
-+	struct msghdr msghdr = { .msg_flags = flags | MSG_SPLICE_PAGES, };
- 	struct page *page;
- 	int size, ret = 0;
- 	u32 off;
- 
- 	while (1) {
-+		struct bio_vec bvec;
- 		bool has_tx_ulp;
- 
- 		sge = sk_msg_elem(msg, msg->sg.start);
-@@ -88,16 +90,18 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
- 		tcp_rate_check_app_limited(sk);
- retry:
- 		has_tx_ulp = tls_sw_has_ctx_tx(sk);
--		if (has_tx_ulp) {
--			flags |= MSG_SENDPAGE_NOPOLICY;
--			ret = kernel_sendpage_locked(sk,
--						     page, off, size, flags);
--		} else {
--			ret = do_tcp_sendpages(sk, page, off, size, flags);
--		}
-+		if (has_tx_ulp)
-+			msghdr.msg_flags |= MSG_SENDPAGE_NOPOLICY;
- 
-+		if (flags & MSG_SENDPAGE_NOTLAST)
-+			msghdr.msg_flags |= MSG_MORE;
-+
-+		bvec_set_page(&bvec, page, size, off);
-+		iov_iter_bvec(&msghdr.msg_iter, ITER_SOURCE, &bvec, 1, size);
-+		ret = tcp_sendmsg_locked(sk, &msghdr, size);
- 		if (ret <= 0)
- 			return ret;
-+
- 		if (apply)
- 			apply_bytes -= ret;
- 		msg->sg.size -= ret;
-@@ -404,7 +408,7 @@ static int tcp_bpf_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 	long timeo;
- 	int flags;
- 
--	/* Don't let internal do_tcp_sendpages() flags through */
-+	/* Don't let internal sendpage flags through */
- 	flags = (msg->msg_flags & ~MSG_SENDPAGE_DECRYPTED);
- 	flags |= MSG_NO_SHARED_FRAGS;
- 
+So I think the only thing that's missing is the code that would fetch
+all replies on the cover letter "patch" (e.g., like on [0]) and just
+apply it across everything. We must be doing something like this for
+acks on individual patches, so I imagine we are not far off to make
+this work, but I haven't looked at pw-apply carefully enough to know
+for sure.
 
+  [0] https://patchwork.kernel.org/project/netdevbpf/cover/20230404045029.8=
+2870-1-alexei.starovoitov@gmail.com/
