@@ -2,62 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DEA6D70B5
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 01:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803FC6D7116
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 02:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbjDDXb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Apr 2023 19:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
+        id S236424AbjDEACs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Apr 2023 20:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236497AbjDDXb3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 19:31:29 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2AB171C;
-        Tue,  4 Apr 2023 16:31:28 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id y4so136841589edo.2;
-        Tue, 04 Apr 2023 16:31:27 -0700 (PDT)
+        with ESMTP id S235153AbjDEACr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 20:02:47 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576574225;
+        Tue,  4 Apr 2023 17:02:42 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id h8so136952214ede.8;
+        Tue, 04 Apr 2023 17:02:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680651086;
+        d=gmail.com; s=20210112; t=1680652961;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9yNhIi8mY0TFnAPxh5RCm+XcoQvTMOi9OM34elDPUxo=;
-        b=TitKMC54JSn+ZiL+Cnl8EompZaGDs6Xd49peTs8Me5tVO6jmi7hYc5Md6294YlKlAG
-         H80cF32L92QUVBGAK7ePfzcUeu/o8CPyBCYlqvX2v4SVLQ7B2ZB333v4OhHeyTaNtR1M
-         O+tFVVnUTZjiB9ecceIF1PG2J7cGSGuDPr2e4AGnvfn9HePk6ej8vkHm7OS3n5VxwZSE
-         ZkFoW16XogJjuIGU7j12Z9zlU9sfdEg4fAWnCkrPX8yv4ghKaYgJBWS/CuF5VvLadFQ5
-         y5SEmyx9ucbVeBL0ixmc0HaavKMwKcdAyEsxI2bLfw9MxdK2Kb2CtFmTAr/bXm34hPji
-         7rjw==
+        bh=sajaxmMahmXJsqBBidZXJtFL+zJtBXJ0j2OvCE7uZXQ=;
+        b=kBSRVNMf8stDpKpnB2IbLzb9rAupVEjZ0NeQkFfvRsJ4vqSmLMSRRpKa5k1ujKZR2J
+         rDoLZ/ZfJ0JH+J51uKeFcgTnbsR0ZW0sn+QT6fa33s0z+8SD3I7NaWihPw7RzPthPYbs
+         J91pi2+JXfiY8j4cdHpLv8qfPZ2vdyLN13RuS9o+Jy8Mil36UE1H/pCS5MAk1YafAjYN
+         +Q92rFoFnoggauCs6uVOhSgfy6M5V1zhrzcZTmqjv9wWEnZxK6QQ3ywQzXxPd8EmtZPM
+         v1sGA1O63yMo6bEnpGmbGly9x1g5CE0NU4h8KOk1mMQ4WY23zCIZGzLiJ4uX9OoTGwND
+         +2kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680651086;
+        d=1e100.net; s=20210112; t=1680652961;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9yNhIi8mY0TFnAPxh5RCm+XcoQvTMOi9OM34elDPUxo=;
-        b=uKcKJIL81HSWZBJEdF1Rl69ZcOrtmTcSP7H4YDHWzs5GSvcWkhQOD//wFRh5jl5EpO
-         7TP2HRN9LWiMGgp6B1YbcwCbDc1Ni9gqp76gxXXFLa7wlCGNA8r6Tdgogqn1paRK8ELB
-         J/KS/3q3hqc/Y3EJANqZUSrDCyh6DpvXYIFQ+Qn5olnA3y//2pvAgikgfggftxREQAoD
-         hHEeGyhLxNZDNaQrzU/hTKMlSKkxqIe00+tijYrISBRVe8nfdQkkaEp06W752zkdwgUW
-         8gX75gS1DHvVwfOEZ2C3qyn+KieMxpv2eJCzYmUEaCivcM9RY9pCpSSXk4Lbin06lcT4
-         gUiA==
-X-Gm-Message-State: AAQBX9dp/O0A+rmN/cl6PjZZWCEn+G0xrNJKr3rynWEwwOw8cj5iBhy3
-        lo55dprinIekAY58WgiohYtoWVmGFlt3d4UUYx4=
-X-Google-Smtp-Source: AKy350bdN/3bHb5oY0KHIZX8+Gxpp6Ts8Vl+rAwng+9sfJOrllko+jw/+/G2Eb3reaxLCuabaKn7ZuVdLfjYAJ1mylc=
-X-Received: by 2002:a17:906:25d9:b0:931:fb3c:f88d with SMTP id
- n25-20020a17090625d900b00931fb3cf88dmr628644ejb.5.1680651086339; Tue, 04 Apr
- 2023 16:31:26 -0700 (PDT)
+        bh=sajaxmMahmXJsqBBidZXJtFL+zJtBXJ0j2OvCE7uZXQ=;
+        b=wVJOc8XUJzyX3ZKoy7IoJ5FE5d6+xrtgQXj1igCmwwXr4fJNBJBdb74PHVIKcX5O6V
+         RZ/61ZkYhYaDLmwcuGE3O1NM3fZoizM9amrGvUbjdUvhpfzZ0H6y3DDsY8ZkuatPA3ps
+         0Eku/KCFWEyzVq+nOwkaFWUQd65g5JMzTrIw9IorFXPYz640Y9tv/A0QTiRyNPP35mar
+         tQXM+koQADLYmDdGUiV+aiSyzapr3SdJwu1Q05wjPSi7JbIP0WY0jTtTsfxeijrp7LUe
+         1DNWxPyqK2gh/8H90snSnVC6neFwW9J31fxQojo4lpgSjfSmmx1lhoJVyxAPxvRyHz2h
+         k94g==
+X-Gm-Message-State: AAQBX9cixUySW5MyeESrvET6HcFe6V1sf6g5RBibXurtPie+C2gw8boD
+        d01yFM4TlL3a5H4NYYGaiZUQLxe9Scl4EWILj0M=
+X-Google-Smtp-Source: AKy350aUupLMnziCVWDpLtzONYiliywjFtW0gweshuvMpDMV6WC+b3jxqeWB2CQGMUvVHD8pOlWp1E5BNCrlnPP5HWQ=
+X-Received: by 2002:a17:906:fada:b0:932:38d5:ff86 with SMTP id
+ lu26-20020a170906fada00b0093238d5ff86mr722684ejb.5.1680652960642; Tue, 04 Apr
+ 2023 17:02:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230404045029.82870-1-alexei.starovoitov@gmail.com> <20230404045029.82870-3-alexei.starovoitov@gmail.com>
-In-Reply-To: <20230404045029.82870-3-alexei.starovoitov@gmail.com>
+References: <20230404045029.82870-1-alexei.starovoitov@gmail.com> <20230404145131.GB3896@maniforge>
+In-Reply-To: <20230404145131.GB3896@maniforge>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 Apr 2023 16:31:14 -0700
-Message-ID: <CAEf4Bzb30F_zJOd0s35YMLVs+LQ4k5o33YsQb_qY=KFmJiKZ0Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/8] bpf: Remove unused arguments from btf_struct_access().
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, void@manifault.com, davemarchevsky@meta.com,
-        tj@kernel.org, memxor@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
+Date:   Tue, 4 Apr 2023 17:02:28 -0700
+Message-ID: <CAEf4BzYXpHMNDTCrBTjwvj3UU5xhS9mAKLx152NniKO27Rdbeg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/8] bpf: Follow up to RCU enforcement in the verifier.
+To:     David Vernet <void@manifault.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, davemarchevsky@meta.com, tj@kernel.org,
+        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -70,30 +71,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 3, 2023 at 9:50=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Apr 4, 2023 at 7:51=E2=80=AFAM David Vernet <void@manifault.com> wr=
+ote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> On Mon, Apr 03, 2023 at 09:50:21PM -0700, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > The patch set is addressing a fallout from
+> > commit 6fcd486b3a0a ("bpf: Refactor RCU enforcement in the verifier.")
+> > It was too aggressive with PTR_UNTRUSTED marks.
+> > Patches 1-6 are cleanup and adding verifier smartness to address real
+> > use cases in bpf programs that broke with too aggressive PTR_UNTRUSTED.
+> > The partial revert is done in patch 7 anyway.
+> >
+> > Alexei Starovoitov (8):
+> >   bpf: Invoke btf_struct_access() callback only for writes.
+> >   bpf: Remove unused arguments from btf_struct_access().
+> >   bpf: Refactor btf_nested_type_is_trusted().
+> >   bpf: Teach verifier that certain helpers accept NULL pointer.
+> >   bpf: Refactor NULL-ness check in check_reg_type().
+> >   bpf: Allowlist few fields similar to __rcu tag.
+> >   bpf: Undo strict enforcement for walking untagged fields.
+> >   selftests/bpf: Add tracing tests for walking skb and req.
 >
-> Remove unused arguments from btf_struct_access() callback.
+> For whole series:
 >
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+> Acked-by: David Vernet <void@manifault.com>
 
-expected this change in patch #1, tbh, even wrote a comment about
-dropping enum bpf_access_type, but then guessed to check next patch.
-Anyways, I'm fine either way, but patch 1 and 2 together make for much
-less confusing change, IMO. See also my note about renaming *callback*
-to make its write access nature clear.
+Added David's acks manually (we really need to teach pw-apply to do
+this automatically...) and applied. I've added a single sentence to
+patch #1 with why (I think) btf_struct_access() callback
+simplification was done, I didn't want to hold the patch set just due
+to that, as the rest looked good. But please do consider renaming the
+callback to more write-access implying name as a follow up, as current
+situation with the same name but different semantics is confusing.
 
->  include/linux/bpf.h              |  3 +--
->  include/linux/filter.h           |  3 +--
->  kernel/bpf/verifier.c            |  4 ++--
->  net/bpf/bpf_dummy_struct_ops.c   | 12 +++++-------
->  net/core/filter.c                | 13 +++++--------
->  net/ipv4/bpf_tcp_ca.c            |  3 +--
->  net/netfilter/nf_conntrack_bpf.c |  3 +--
->  7 files changed, 16 insertions(+), 25 deletions(-)
+Applied to bpf-next, thanks.
+
 >
-
-[...]
+> I left one comment on 4/8 in [0], but it's not a blocker and everything
+> else LGTM.
+>
+> [0]: https://lore.kernel.org/all/20230404144652.GA3896@maniforge/
