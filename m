@@ -2,83 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4041D6D86BD
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906FB6D86C8
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 21:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjDETUj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 15:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
+        id S234481AbjDETZG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 15:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjDETUi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 15:20:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E8F527F
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 12:20:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DA7063F12
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 19:20:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B1B8DC433D2;
-        Wed,  5 Apr 2023 19:20:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680722418;
-        bh=liiFugCEvqMx+FR/82jWqy4SHHT/j7+iJBAjE789VbM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=awkb9ryZY6ZH38uK5jkh9lfwwnE1XELVFyyJHZ0j+Ijs9K/5z9bwcyWn6Nrgkg6iY
-         5XKgYlLj1AJxtuZmxDlyLhtnviie3zVNKEoyaYh+KFLeO/kXPWAdSAFvTMabEXyK02
-         wOBbBJThS3FmfIV+ClVyu3ZmDBLmbn+ELSiXE0r8Pfp2xhx1dqLjox38HrMVQzQ7IQ
-         24yajfvBfx28RreIP1KaxM5V4nOBZXDDNdRRBjTaybj15/hXIfHqbiLNBIIfzScaZ6
-         /yPGIDoUk2Aqncwqw6GsgI/f3wNMGtX5q62F6BmwzEZNfDINEXGqFPSDGikehBRJBr
-         gdjgHipEYmc7Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8F01AE29F4E;
-        Wed,  5 Apr 2023 19:20:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229473AbjDETZE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 15:25:04 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6244C12;
+        Wed,  5 Apr 2023 12:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=wMrpySGpngdxkYZFUvmKAfkjwxHnSqapRJ0yQFW05PI=; b=SR5z0ngxJZJsujL19KJfQh9GnC
+        48uiadhsREvn/30irELw1zqI6nLCzAOjDKaQLTnzBxVTMZmE5uTkKkxpU3Ur9YHza/8NYUTp6FQQ+
+        kMCXcA6fhsXeM2ZKPzDy/5M0+cDB7UGqgZBNWh7upiItRxkili5T8X25TAd6Ci3p258wzbTZ5rCZC
+        e/MeZHiyGGVxOWVSHban5xgUKxzQZHtN6K11gy4R858E5V/KOZFUiz5rMAEg8pg4DvA5ntoMvqUOa
+        0JrDmR/ROerzQX7IqmOS14hE7Qagrf8XyEhunINqqIX/8b2jF2+Z6TzcRdsKs4u2zxT381IufPZNN
+        793EOsQQ==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pk8kW-000J2D-Eg; Wed, 05 Apr 2023 21:24:52 +0200
+Received: from [81.6.34.132] (helo=localhost.localdomain)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pk8kV-0003L2-Vo; Wed, 05 Apr 2023 21:24:52 +0200
+Subject: Re: [PATCH bpf-next 0/8] bpf: Follow up to RCU enforcement in the
+ verifier.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Vernet <void@manifault.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Tejun Heo <tj@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Yonghong Song <yhs@meta.com>, Song Liu <song@kernel.org>
+References: <20230404045029.82870-1-alexei.starovoitov@gmail.com>
+ <20230404145131.GB3896@maniforge>
+ <CAEf4BzYXpHMNDTCrBTjwvj3UU5xhS9mAKLx152NniKO27Rdbeg@mail.gmail.com>
+ <CAADnVQKLe8+zJ0sMEOsh74EHhV+wkg0k7uQqbTkB3THx1CUyqw@mail.gmail.com>
+ <20230404185147.17bf217a@kernel.org>
+ <CAEf4BzY3-pXiM861OkqZ6eciBJnZS8gsBL2Le2rGiSU64GKYcg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1e0a055f-072e-d151-e063-06e9628debb4@iogearbox.net>
+Date:   Wed, 5 Apr 2023 21:24:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <CAEf4BzY3-pXiM861OkqZ6eciBJnZS8gsBL2Le2rGiSU64GKYcg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/2] selftests: xsk: Add test case for packets at end
- of UMEM
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168072241858.12939.4882404272620837331.git-patchwork-notify@kernel.org>
-Date:   Wed, 05 Apr 2023 19:20:18 +0000
-References: <20230403145047.33065-1-kal.conley@dectris.com>
-In-Reply-To: <20230403145047.33065-1-kal.conley@dectris.com>
-To:     Kal Conley <kal.conley@dectris.com>
-Cc:     bpf@vger.kernel.org
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26866/Wed Apr  5 09:23:41 2023)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Mon,  3 Apr 2023 16:50:45 +0200 you wrote:
-> This patchset fixes a minor bug in xskxceiver.c then adds a test case
-> for valid packets at the end of the UMEM.
+On 4/5/23 7:22 PM, Andrii Nakryiko wrote:
+> On Tue, Apr 4, 2023 at 6:51 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>> On Tue, 4 Apr 2023 17:16:27 -0700 Alexei Starovoitov wrote:
+>>>> Added David's acks manually (we really need to teach pw-apply to do
+>>>> this automatically...) and applied.
+>>>
+>>> +1
+>>> I was hoping that patchwork will add this feature eventually,
+>>> but it seems faster to hack the pw-apply script instead.
+>>
+>> pw-apply can kind of do it. It exports an env variable called ADD_TAGS
+>> if it spots any tags in reply to the cover letter.
+>>
+>> You need to add a snippet like this to your .git/hooks/applypatch-msg:
+>>
+>>    while IFS= read -r tag; do
+>>      echo -e Adding tag: '\e[35m'$tag'\e[0m'
+>>        git interpret-trailers --in-place \
+>>            --if-exists=addIfDifferent \
+>>            --trailer "$tag" \
+>>            "$1"
+>>    done <<< "$ADD_TAGS"
+>>
+>> to transfer those tags onto the commits.
+>>
+>> Looking at the code you may also need to use -M to get ADD_TAGS
+>> exported. I'm guessing I put this code under -M so that the extra curl
+>> requests don't slow down the script for everyone. But we can probably
+>> "graduate" that into the main body if you find it useful and hate -M :)
 > 
-> Kal Conley (2):
->   selftests: xsk: Use correct UMEM size in testapp_invalid_desc
->   selftests: xsk: Add test case for packets at end of UMEM
+> So I'm exclusively using `pw-apply -c <patchworks-url>` to apply
+> everything locally. I'd expect that at this time the script would
+> detect any Acked-by replies on *cover letter patch*, and apply them
+> across all patches in the series. Such that we (humans) can look at
+> them, fix them, add them, etc. Doing something like this in git hook
+> seems unnecessary?
 > 
-> [...]
+> So I think the only thing that's missing is the code that would fetch
+> all replies on the cover letter "patch" (e.g., like on [0]) and just
+> apply it across everything. We must be doing something like this for
+> acks on individual patches, so I imagine we are not far off to make
+> this work, but I haven't looked at pw-apply carefully enough to know
+> for sure.
 
-Here is the summary with links:
-  - [bpf-next,1/2] selftests: xsk: Use correct UMEM size in testapp_invalid_desc
-    https://git.kernel.org/bpf/bpf-next/c/7a2050df244e
-  - [bpf-next,2/2] selftests: xsk: Add test case for packets at end of UMEM
-    https://git.kernel.org/bpf/bpf-next/c/ccd1b2933f8c
+I always use pw-apply based on the mbox, e.g. ...
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+   pw-apply -b https://patchwork.kernel.org/[...]/mbox/ -m <branch-name> -- -a "Foo Bar <foo@bar.com>"
 
+... still manual, but it will propagate the -a (Acked-by) / -r (Reviewed-by) /
+-t (Tested-by) to the individual patches.
 
+Thanks,
+Daniel
