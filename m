@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD7E6D7194
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 02:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E596D7195
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 02:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236690AbjDEAnC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Apr 2023 20:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54894 "EHLO
+        id S236686AbjDEAnD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Apr 2023 20:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236698AbjDEAnB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S236699AbjDEAnB (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 4 Apr 2023 20:43:01 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441CB49C0
-        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 17:42:51 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id n10-20020a05600c4f8a00b003ee93d2c914so22438382wmq.2
-        for <bpf@vger.kernel.org>; Tue, 04 Apr 2023 17:42:51 -0700 (PDT)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC7249F5
+        for <bpf@vger.kernel.org>; Tue,  4 Apr 2023 17:42:52 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id j18-20020a05600c1c1200b003ee5157346cso22774408wms.1
+        for <bpf@vger.kernel.org>; Tue, 04 Apr 2023 17:42:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680655369;
+        d=gmail.com; s=20210112; t=1680655370;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H1lUqsIAEYTJ8ZnNXnHCoXIx40Afuu8M4s/AS5zPZxs=;
-        b=n9rKi81dJIEnQxjT+iWnPvvFtEvxNiEYKC3FayDx9fz1+wesBCNiaeHqwiQNkXMElM
-         76GdA+qoQbBqQ1VIdJH2yiIQzlw3tfS25Mp1y4qTFi9GX8wp4YQvyIb+y+Tc50rIL0X1
-         3crpb5/qCvACAxdEilONrJ4sl53qFKVJIhJi02O50ibk5T/ht62wpJ1s2gpzifeVP4l7
-         5IEVnoXIxxsIy0hVEPM7rxf7Wvo+1bWY0ZUPQUntT7asz+UqqdPmeFqJZn0f7Dtq8WCh
-         h9BsxjsT1pyVZX08fvjXYhG4efQ/yhvvgeCCPKPLGEDrpgbenk+xQ1A7eKC4Wls497oY
-         RMFQ==
+        bh=57iumcasqknZOnjXenM7MimJ0hLapVG9R2csE8pbamw=;
+        b=ONrh4LSJTrBNUxjC3GV834atMrI4V5CdcsaxhFKKWHNVAV8visvmJmujGs1VyWEgEb
+         KUjLooib4nc2NYSQHn2YmIbQ79/NLYzBDWel5ba2nLXXGUO1gvlGnfd37FxHQVgtJG+/
+         OrojL3SVx8POuNOCzriGqcBUPYa19rjuPTAGTwDzVLeTCcdMsxBvJkTYIg1fByyy241P
+         JV/JrewPwz9IiqlQkh8YnZaHIagPf7vvxQKjsDa6MVbmt4p0BV7nKMgE028I+l+d7TGR
+         U9eOiCrtkUJ58pjKkvVcpQ6ARUe7Q/dLY8rNW6XnTCQjqEiKDcBXjFnWIltA+6IRmc2f
+         8rbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680655369;
+        d=1e100.net; s=20210112; t=1680655370;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H1lUqsIAEYTJ8ZnNXnHCoXIx40Afuu8M4s/AS5zPZxs=;
-        b=zdMLG4O+/t779Vgsss5ZbvdPp/X9NHb62lV+/Za4H/yjCXpHYZPkQhfRZUoPDWA9Rr
-         LZEwyTyR/WkZqTC11/ZT1dFQ4LCuJqgZOtJWXB5M3BtRIaWlcHN50jxzPDWJfUYftJhd
-         XWbtW4uPFI6CKiLI7IrAaMPgu5I9njicuroopTRA1Fo+fWXec5MLWOe+MsIC1AdWkDBB
-         z4IJmM4ONesethA8i09TChUwvndvvqr9dNaH4aUYHJCetGeqmOnPGPDjBTRaLamGqoxZ
-         XKLm72eqOmi0NJClwhgVC5PB6yjKQHNe3GG4ST+tA1BChTw/Lu/3rs1wZbf7RwxGRDoq
-         /U3w==
-X-Gm-Message-State: AAQBX9efrLBCaU6q1GCoumigvB4HcbfcYdyhW3gzXmPd+3PAcHGLy14H
-        afRgZgeYUpKDwp6B5zFju9H8fB8xsd15dQ==
-X-Google-Smtp-Source: AKy350Y8f9ZegmcAiuEI2Vu1lje7/hVrnIMSR7Tl0rzs6Ut499iFMJH6UuvVxr64V/Ycxsi2U20vJg==
-X-Received: by 2002:a05:600c:2312:b0:3ed:2b27:5bcc with SMTP id 18-20020a05600c231200b003ed2b275bccmr3482145wmo.38.1680655369176;
-        Tue, 04 Apr 2023 17:42:49 -0700 (PDT)
+        bh=57iumcasqknZOnjXenM7MimJ0hLapVG9R2csE8pbamw=;
+        b=3KoPrEU5OTB90+dgkcSVGwn0tGQcgX8/SmV+ZmtsZD/1wLRe37a/VvTUbZ5NKTIuTd
+         CrsyYcy2TpCDd98toHoTu1TZNrT7h9Z3P2hpuBhQ10LBXgLYNReveUS6wtbRSDtVzmC9
+         OZ3r3YTVhdhjBeEISkxp+fnFc92YXwNeo8TZk+WEb38dpndcclaI+DaOU2qgdlIQzq/+
+         wCoANuBwAQCsxnYCY8iMfb93yhLp4Mv0PKLfkOJXg8GG1K5MEbKMjYtn59xzwJg/+VoY
+         uHikhVZ0DJfT5MJUJJovi7nZmWrNWyuDbU3I95joUAy6/J6zkZf6ExiUVe6kwsWzXXdZ
+         rhlg==
+X-Gm-Message-State: AAQBX9ciIDp5PJs1kPDVYY9f2CS4TngO7s0YiyWFQEWhATA/5xP93Sf2
+        bdFk3BcPQUrs/VYexd0MOVNDQaGq3QHaDQ==
+X-Google-Smtp-Source: AKy350bdOVfHrZ8LqGI5Qs5hBLWTUVqvBqUp99aorK9/qelOKyZraLtH5jJqtouIrW21yaXsueLs6g==
+X-Received: by 2002:a1c:f617:0:b0:3ee:672d:caae with SMTP id w23-20020a1cf617000000b003ee672dcaaemr3277684wmc.36.1680655370519;
+        Tue, 04 Apr 2023 17:42:50 -0700 (PDT)
 Received: from localhost ([2a02:1210:74a0:3200:2fc:d4f0:c121:5e8b])
-        by smtp.gmail.com with ESMTPSA id u11-20020a05600c19cb00b003ede3f5c81fsm414809wmq.41.2023.04.04.17.42.48
+        by smtp.gmail.com with ESMTPSA id d21-20020a1c7315000000b003ed1f6878a5sm473434wmb.5.2023.04.04.17.42.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Apr 2023 17:42:48 -0700 (PDT)
+        Tue, 04 Apr 2023 17:42:50 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -56,14 +56,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         David Vernet <void@manifault.com>
-Subject: [PATCH RFC bpf-next v1 5/9] bpf: Add pass to fixup global function throw information
-Date:   Wed,  5 Apr 2023 02:42:35 +0200
-Message-Id: <20230405004239.1375399-6-memxor@gmail.com>
+Subject: [PATCH RFC bpf-next v1 6/9] bpf: Add KF_THROW annotation for kfuncs
+Date:   Wed,  5 Apr 2023 02:42:36 +0200
+Message-Id: <20230405004239.1375399-7-memxor@gmail.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230405004239.1375399-1-memxor@gmail.com>
 References: <20230405004239.1375399-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6079; i=memxor@gmail.com; h=from:subject; bh=9fnVPcXRP2rJGjCXRNDjXVXazYSKBKpnCXL81OBR0y4=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBkLMPw3oQxJbuK+1n53nZMocqhCaTStWwXZxl1V vGcpgw5GM+JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZCzD8AAKCRBM4MiGSL8R ynZRD/9qH0LfWsr8kAmWMKaGXzcHZmnoU35xqakTdgDV26Xxg49K+lRGqY6FtYHIm6h0atLCz9I sDIDKsM7j8DJOHbJJAGHMsyjI+Rv9a3r0PhcsEnM3ttXzt4n5TZrZQrVC97NgyVY3iUuKpVXVod W9G4cJ7bpYSdjkvBex7n5Fjyv1IvGxnatqjsshS9t96rAujEdc2PlGzCfpZjoZAUyO8pU3t0Vyn KWFiZGVENXK4Wu88kmNcaV5kgsBA/gdTNaClva4wNU5L36q8BBycskATKTbtb3vjQdHGY95ZGAx RqXL8LuFmo/ieMzn/xsU2F55r+sYdm7TeJHn4PUiuBYZT6Zbhbs/On6mV3jFx8zDPa4Zx6J4Sas Gaad5B63v2zHcZpX+HaEY7AldYtR4RM23GN17kSA2jAab5l6bfAvbGy3hSJBxbMvQ+0XbYDVP+w 0QM6LYtxzo/JFkoqLM51RuB8JCvL5L1LSscqYyq5cfkoWW4BeQJDI7mvc70HJePfdx64CqcwaKv c55A/vTNY/1Gk9AE9Hpa2wT8Lc1lHyKfOOEsUerrpWUaajAZu2rX59sLl39tQvF8ZOvJ4UcbVvi dYoaRX8agmVTjpWYAkTgnomC1IyFSUIGJOwoYayscAM+4AzynTlxHX13cu5XITLZAcTPROnDU+c +kfDJsrzkHOBKpg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3408; i=memxor@gmail.com; h=from:subject; bh=BkopB9cnZ0lcE2FeE9hPW8L26C85kzTNg+WjrB34Loo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBkLMPwRHycp93QQgjY7UWoeAZzPtGFXrfSHYmFP wL/QgfXu3uJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZCzD8AAKCRBM4MiGSL8R ypOwEAC+vqNRgFBs6+kUnWd41XtEnvSKdtUFsM1YrQBD66cgBWH/ILsM8SI3gr43XfCAe9P8O96 8Yz2gW3Sah0Tud84huzNmnlxoAY4ky1CaIrD1HrmElG1dVJxEb7cBrErznmzJyGTDe6KIEZqb/1 ItsvO0haAHzrneTlBSFXcXrC6vMkv/XKbkZ1y68ZTLP7bKVQhB5IaExuQtg1gKIP98eX4VU7qCE Va4qjSkHz0y72vngAaMuZvPBRwYeZtQIZYCf4ubDHpDWWWLjQk+saBzDc1K3MkKDAU36XyH1V1R sP+batOJfdmUOxPUxs8Pt4pVqVu+M/Dl/WtkF15BORAoraeDMYehPobQCju+yQ61nrhBiwMpAJ/ ZslMrNQ87z/RMRuaewnlvnm+NdjdRiBtTda8J+/D5W3W0okNqUi+sWoQI/MVJaQ3/uk6P7R3+0q WhJqxyLM225YYNPd8WmiRaXvzNevCZYUQIVjHguxAXoTqJH8MccWTD8HIdvLBMbUFHWioK6FsOJ QW3C9qdT7m9ztCuNm2tfUKwaPSQXz9EmcqEHJ2xnJ6OjGouAfRmT12u5kSjziDQ8aPh1exGRIZL xvvz2mtYBybul4N4J7xCbL5VZ9chSucF3d7+TTERuKRGl2yn8BiYOyM1Op89i1aDzT0gzPJRng9 DNPaPplb+ghozRg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -76,175 +76,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Within the do_check pass, we made a core assumption that we have correct
-can_throw info about all global subprogs and simply used
-mark_chain_throw without entering them to mark callsites leading up to
-their call. However, the do_check_subprogs pass of verifier is iterative
-and does not propagate can_throw information across global subprogs
-which call into each other. We need an extra pass through all of them to
-propagate can_throw information visibility throwing global subprogs into
-global subprogs that call into them.
-
-After doing this pass, do_check_main will directly use mark_chain_throw
-again and have the correct information about all global subprogs which
-are called by it.
+Add KF_THROW annotation to kfuncs to indicate that they may throw. This
+is mostly for testing for now, but in the future it could be used by
+kfuncs to throw on invalid arguments or invalid conditions based on
+their input arguments, causing the program to abort, and simplify the
+overall user experience of kfuncs for the happy case, without having to
+deal with corner cases that never occur at runtime.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/verifier.c | 118 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 117 insertions(+), 1 deletion(-)
+ include/linux/btf.h   |  1 +
+ kernel/bpf/verifier.c | 12 ++++++++++--
+ net/bpf/test_run.c    | 12 ++++++++++++
+ 3 files changed, 23 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index d53b10cc55f2..8dfa4113822b 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -75,6 +75,7 @@
+ #define KF_ITER_NEW     (1 << 8) /* kfunc implements BPF iter constructor */
+ #define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next method */
+ #define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructor */
++#define KF_THROW	(1 << 11) /* kfunc may throw a BPF exception */
+ 
+ /*
+  * Tag marking a kernel function as a kfunc. This is meant to minimize the
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 07d808b05044..acfcaadca3b6 100644
+index acfcaadca3b6..b9f4b1849647 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -13664,6 +13664,12 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 			verbose(env, "missing btf func_info\n");
- 			return -EINVAL;
- 		}
-+		/* NOTE: Do not change this directly, as we rely on only
-+		 * BPF_FUNC_STATIC allowed as BPF_PSEUDO_FUNC targets in
-+		 * do_check_subprogs, see comment about propagating exception
-+		 * information across global functions. When changing this, add
-+		 * bpf_pseudo_func handling to the propagating loop as well.
-+		 */
- 		if (aux->func_info_aux[subprogno].linkage != BTF_FUNC_STATIC) {
- 			verbose(env, "callback function not static\n");
- 			return -EINVAL;
-@@ -18491,6 +18497,110 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
- 	return ret;
+@@ -9454,6 +9454,11 @@ static bool is_kfunc_arg_kptr_get(struct bpf_kfunc_call_arg_meta *meta, int arg)
+ 	return arg == 0 && (meta->kfunc_flags & KF_KPTR_GET);
  }
  
-+/* We have gone through all global subprogs, and we know which ones were seen as
-+ * throwing exceptions. Since calls to other global functions are not explored
-+ * and we simply continue exploration at the next instruction, we may have not
-+ * fully propagated can_throw information. E.g. consider the case below, where 1
-+ * and 2 are verified in order.
-+ *
-+ * gfunc 1:
-+ *	call gfunc2
-+ *	exit
-+ * gfunc 2:
-+ *	call bpf_throw
-+ *
-+ * At this point, gfunc1 is not marked as throwing, but it calls gfunc2 which
-+ * actually throws. The only thing we need to do is go through every global
-+ * function, and propagate the information back to their callers. We only care
-+ * about BPF_PSEUDO_CALL, as BPF_PSEUDO_FUNC loads cannot have global functions
-+ * as targets
-+ *
-+ * Logic mostly mimics check_max_stack_depth, but adjusted and simplified for
-+ * our use case.
-+ */
-+static int fixup_global_subprog_throw_info(struct bpf_verifier_env *env)
++static bool is_kfunc_throwing(struct bpf_kfunc_call_arg_meta *meta)
 +{
-+	struct bpf_func_info_aux *func_info_aux = env->prog->aux->func_info_aux;
-+	struct bpf_subprog_info *subprog = env->subprog_info;
-+	int frame = 0, idx = 0, i = 0, subprog_end;
-+	struct bpf_insn *insn = env->prog->insnsi;
-+	int ret_insn[MAX_CALL_FRAMES];
-+	int ret_prog[MAX_CALL_FRAMES];
-+	bool can_throw;
-+	int j, ret;
-+
-+	/* Start at first global subprog */
-+	for (int s = 1; s < env->subprog_cnt; s++) {
-+		if (func_info_aux[s].linkage != BTF_FUNC_GLOBAL)
-+			continue;
-+		idx = s;
-+		break;
-+	}
-+	if (!idx)
-+		return -EFAULT;
-+	i = subprog[idx].start;
-+continue_func:
-+	can_throw = false;
-+	subprog_end = subprog[idx + 1].start;
-+	for (; i < subprog_end; i++) {
-+		int next_insn;
-+
-+		if (!bpf_pseudo_call(insn + i))
-+			continue;
-+		/* remember insn and function to return to */
-+		ret_insn[frame] = i + 1;
-+		ret_prog[frame] = idx;
-+
-+		/* find the callee */
-+		next_insn = i + insn[i].imm + 1;
-+		idx = find_subprog(env, next_insn);
-+		if (idx < 0) {
-+			WARN_ONCE(1, "verifier bug. No program starts at insn %d\n", next_insn);
-+			return -EFAULT;
-+		}
-+
-+		/* Only follow global subprog calls */
-+		if (func_info_aux[idx].linkage != BTF_FUNC_GLOBAL)
-+			continue;
-+		/* If this subprog already throws, mark all callers and continue
-+		 * with next instruction in current subprog.
-+		 */
-+		if (subprog[idx].can_throw) {
-+			/* Include current frame info when marking */
-+			for (j = frame; j >= 0; j--) {
-+				func_info_aux[ret_prog[j]].throws_exception = subprog[ret_prog[j]].can_throw = true;
-+				/* Exception subprog cannot be set in global
-+				 * function context, so set_throw_state_type
-+				 * will always mark type as BPF_THROW_INNER
-+				 * and subprog as -1.
-+				 */
-+				ret = set_throw_state_type(env, ret_insn[j] - 1, j, ret_prog[j]);
-+				if (ret < 0)
-+					return ret;
-+			}
-+			continue;
-+		}
-+
-+		i = next_insn;
-+		frame++;
-+		if (frame >= MAX_CALL_FRAMES) {
-+			verbose(env, "the call stack of %d frames is too deep !\n",
-+				frame);
-+			return -E2BIG;
-+		}
-+		goto continue_func;
-+	}
-+	/* end of for() loop means the last insn of the 'subprog'
-+	 * was reached. Doesn't matter whether it was JA or EXIT
-+	 */
-+	if (frame == 0)
-+		return 0;
-+	frame--;
-+	i = ret_insn[frame];
-+	idx = ret_prog[frame];
-+	goto continue_func;
++	return meta->kfunc_flags & KF_THROW;
 +}
 +
- /* Verify all global functions in a BPF program one by one based on their BTF.
-  * All global functions must pass verification. Otherwise the whole program is rejected.
-  * Consider:
-@@ -18511,6 +18621,7 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
- static int do_check_subprogs(struct bpf_verifier_env *env)
- {
- 	struct bpf_prog_aux *aux = env->prog->aux;
-+	bool does_anyone_throw = false;
- 	int i, ret;
- 
- 	if (!aux->func_info)
-@@ -18535,8 +18646,13 @@ static int do_check_subprogs(struct bpf_verifier_env *env)
- 		 * opposite is fine though.
- 		 */
- 		aux->func_info_aux[i].throws_exception = env->subprog_info[i].can_throw;
-+		if (!does_anyone_throw && env->subprog_info[i].can_throw)
-+			does_anyone_throw = true;
+ static bool __kfunc_param_match_suffix(const struct btf *btf,
+ 				       const struct btf_param *arg,
+ 				       const char *suffix)
+@@ -10813,11 +10818,14 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 		}
  	}
--	return 0;
-+
-+	if (!does_anyone_throw)
-+		return 0;
-+	return fixup_global_subprog_throw_info(env);
+ 
+-	if (meta.btf == btf_vmlinux && meta.func_id == special_kfunc_list[KF_bpf_throw]) {
++	if (is_kfunc_throwing(&meta) ||
++	    (meta.btf == btf_vmlinux && meta.func_id == special_kfunc_list[KF_bpf_throw])) {
+ 		err = mark_chain_throw(env, insn_idx);
+ 		if (err < 0)
+ 			return err;
+-		return 1;
++		/* Halt exploration only for bpf_throw */
++		if (!is_kfunc_throwing(&meta))
++			return 1;
+ 	}
+ 
+ 	for (i = 0; i < CALLER_SAVED_REGS; i++)
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index f1652f5fbd2e..31f76ee4218b 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -766,6 +766,16 @@ __bpf_kfunc static u32 bpf_kfunc_call_test_static_unused_arg(u32 arg, u32 unused
+ 	return arg;
  }
  
- static int do_check_main(struct bpf_verifier_env *env)
++__bpf_kfunc notrace void bpf_kfunc_call_test_always_throws(void)
++{
++	bpf_throw();
++}
++
++__bpf_kfunc notrace void bpf_kfunc_call_test_never_throws(void)
++{
++	return;
++}
++
+ __diag_pop();
+ 
+ BTF_SET8_START(bpf_test_modify_return_ids)
+@@ -806,6 +816,8 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS | KF_RCU)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
++BTF_ID_FLAGS(func, bpf_kfunc_call_test_always_throws, KF_THROW)
++BTF_ID_FLAGS(func, bpf_kfunc_call_test_never_throws, KF_THROW)
+ BTF_SET8_END(test_sk_check_kfunc_ids)
+ 
+ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
 -- 
 2.40.0
 
