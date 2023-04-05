@@ -2,35 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7586D833C
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 18:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C07B6D843F
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 18:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbjDEQMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 12:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        id S233299AbjDEQ42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 12:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233855AbjDEQMA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 12:12:00 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0A26E90;
-        Wed,  5 Apr 2023 09:11:54 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1pk5jl-0007mc-31; Wed, 05 Apr 2023 18:11:53 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netdev@vger.kernel.org>
-Cc:     netfilter-devel@vger.kernel.org, bpf@vger.kernel.org,
-        dxu@dxuuu.xyz, qde@naccy.de, Florian Westphal <fw@strlen.de>
-Subject: [PATCH bpf-next 6/6] bpf: add test_run support for netfilter program type
-Date:   Wed,  5 Apr 2023 18:11:16 +0200
-Message-Id: <20230405161116.13565-7-fw@strlen.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230405161116.13565-1-fw@strlen.de>
-References: <20230405161116.13565-1-fw@strlen.de>
+        with ESMTP id S229911AbjDEQ4L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 12:56:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94A96192
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 09:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680713657;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LU+EuI1w95foBpvL+MnfTRdJBoeqcZi7esoiDYFHUqg=;
+        b=QejeTNge9D8ptm7U98n1WuZoVuxTK8PO5PUU6W145NXM2guh41Ab3geQ/cpEEQ8ESr2kb3
+        gdd2vkFxUEd3BmA7riwk3VhzLcWiAgTZAfrdqt3j23uvLsx9U6mjIxNVcsIdg1YNGAxYrm
+        PBNwhz0bwtPCMBjaKmGdhQb/XoWuS7M=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-256-Ory9MB64PridaGhduckyKQ-1; Wed, 05 Apr 2023 12:54:12 -0400
+X-MC-Unique: Ory9MB64PridaGhduckyKQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 95935885620;
+        Wed,  5 Apr 2023 16:54:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A2CDC1602A;
+        Wed,  5 Apr 2023 16:54:09 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
+Subject: [PATCH net-next v4 09/20] tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around tcp_sendmsg
+Date:   Wed,  5 Apr 2023 17:53:28 +0100
+Message-Id: <20230405165339.3468808-10-dhowells@redhat.com>
+In-Reply-To: <20230405165339.3468808-1-dhowells@redhat.com>
+References: <20230405165339.3468808-1-dhowells@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -38,242 +73,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-also add two simple retval tests: as-is, a return value other
-than accept or drop will cause issues.
+do_tcp_sendpages() is now just a small wrapper around tcp_sendmsg_locked(),
+so inline it.  This is part of replacing ->sendpage() with a call to
+sendmsg() with MSG_SPLICE_PAGES set.
 
-NF_QUEUE could be implemented later IFF we can guarantee that
-attachment of such programs can be rejected if they get attached
-to a pf/hook that doesn't support async reinjection.
-
-NF_STOLEN could be implemented via trusted helpers that will eventually
-free the skb, else this would leak the skb reference.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: John Fastabend <john.fastabend@gmail.com>
+cc: Jakub Sitnicki <jakub@cloudflare.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: netdev@vger.kernel.org
+cc: bpf@vger.kernel.org
 ---
- include/linux/bpf.h                           |   3 +
- net/bpf/test_run.c                            | 143 ++++++++++++++++++
- net/netfilter/nf_bpf_link.c                   |   1 +
- .../selftests/bpf/verifier/netfilter.c        |  23 +++
- 4 files changed, 170 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/verifier/netfilter.c
+ net/ipv4/tcp_bpf.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 2d8f3f639e68..453cee1efdd3 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2235,6 +2235,9 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
- int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog,
- 				const union bpf_attr *kattr,
- 				union bpf_attr __user *uattr);
-+int bpf_prog_test_run_nf(struct bpf_prog *prog,
-+			 const union bpf_attr *kattr,
-+			 union bpf_attr __user *uattr);
- bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 		    const struct bpf_prog *prog,
- 		    struct bpf_insn_access_aux *info);
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index f1652f5fbd2e..c14f577fd987 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -19,7 +19,9 @@
- #include <linux/error-injection.h>
- #include <linux/smp.h>
- #include <linux/sock_diag.h>
-+#include <linux/netfilter.h>
- #include <net/xdp.h>
-+#include <net/netfilter/nf_bpf_link.h>
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index ebf917511937..24bfb885777e 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -72,11 +72,13 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+ {
+ 	bool apply = apply_bytes;
+ 	struct scatterlist *sge;
++	struct msghdr msghdr = { .msg_flags = flags | MSG_SPLICE_PAGES, };
+ 	struct page *page;
+ 	int size, ret = 0;
+ 	u32 off;
  
- #define CREATE_TRACE_POINTS
- #include <trace/events/bpf_test_run.h>
-@@ -1690,6 +1692,147 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- 	return err;
- }
+ 	while (1) {
++		struct bio_vec bvec;
+ 		bool has_tx_ulp;
  
-+static int verify_and_copy_hook_state(struct nf_hook_state *state,
-+				      const struct nf_hook_state *user,
-+				      struct net_device *dev)
-+{
-+	if (user->in || user->out)
-+		return -EINVAL;
-+
-+	if (user->net || user->sk || user->okfn)
-+		return -EINVAL;
-+
-+	switch (user->pf) {
-+	case NFPROTO_IPV4:
-+	case NFPROTO_IPV6:
-+		switch (state->hook) {
-+		case NF_INET_PRE_ROUTING:
-+			state->in = dev;
-+			break;
-+		case NF_INET_LOCAL_IN:
-+			state->in = dev;
-+			break;
-+		case NF_INET_FORWARD:
-+			state->in = dev;
-+			state->out = dev;
-+			break;
-+		case NF_INET_LOCAL_OUT:
-+			state->out = dev;
-+			break;
-+		case NF_INET_POST_ROUTING:
-+			state->out = dev;
-+			break;
-+		}
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	state->pf = user->pf;
-+	state->hook = user->hook;
-+
-+	return 0;
-+}
-+
-+int bpf_prog_test_run_nf(struct bpf_prog *prog,
-+			 const union bpf_attr *kattr,
-+			 union bpf_attr __user *uattr)
-+{
-+	struct net *net = current->nsproxy->net_ns;
-+	struct net_device *dev = net->loopback_dev;
-+	struct nf_hook_state *user_ctx, hook_state = {
-+		.pf = NFPROTO_IPV4,
-+		.hook = NF_INET_PRE_ROUTING,
-+	};
-+	u32 size = kattr->test.data_size_in;
-+	u32 repeat = kattr->test.repeat;
-+	const struct ethhdr *eth;
-+	struct bpf_nf_ctx ctx = {
-+		.state = &hook_state,
-+	};
-+	struct sk_buff *skb = NULL;
-+	u32 retval, duration;
-+	void *data;
-+	int ret;
-+
-+	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
-+		return -EINVAL;
-+
-+	if (size < ETH_HLEN + sizeof(struct iphdr))
-+		return -EINVAL;
-+
-+	data = bpf_test_init(kattr, kattr->test.data_size_in, size,
-+			     NET_SKB_PAD + NET_IP_ALIGN,
-+			     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
-+	if (IS_ERR(data))
-+		return PTR_ERR(data);
-+
-+	eth = (struct ethhdr *)data;
-+
-+	if (!repeat)
-+		repeat = 1;
-+
-+	user_ctx = bpf_ctx_init(kattr, sizeof(struct nf_hook_state));
-+	if (IS_ERR(user_ctx)) {
-+		kfree(data);
-+		return PTR_ERR(user_ctx);
-+	}
-+
-+	if (user_ctx) {
-+		ret = verify_and_copy_hook_state(&hook_state, user_ctx, dev);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	skb = slab_build_skb(data);
-+	if (!skb) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	data = NULL; /* data released via kfree_skb */
-+
-+	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
-+	__skb_put(skb, size);
-+
-+	skb->protocol = eth_type_trans(skb, dev);
-+
-+	skb_reset_network_header(skb);
-+
-+	ret = -EINVAL;
-+
-+	switch (skb->protocol) {
-+	case htons(ETH_P_IP):
-+		if (hook_state.pf == NFPROTO_IPV4)
-+			break;
-+		goto out;
-+	case htons(ETH_P_IPV6):
-+		if (size < ETH_HLEN + sizeof(struct ipv6hdr))
-+			goto out;
-+		if (hook_state.pf == NFPROTO_IPV6)
-+			break;
-+		goto out;
-+	default:
-+		ret = -EPROTO;
-+		goto out;
-+	}
-+
-+	ctx.skb = skb;
-+
-+	ret = bpf_test_run(prog, &ctx, repeat, &retval, &duration, false);
-+	if (ret)
-+		goto out;
-+
-+	ret = bpf_test_finish(kattr, uattr, NULL, NULL, 0, retval, duration);
-+
-+out:
-+	kfree(user_ctx);
-+	kfree_skb(skb);
-+	kfree(data);
-+	return ret;
-+}
-+
- static const struct btf_kfunc_id_set bpf_prog_test_kfunc_set = {
- 	.owner = THIS_MODULE,
- 	.set   = &test_sk_check_kfunc_ids,
-diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-index 4b22a31d6df5..c27fd569adf1 100644
---- a/net/netfilter/nf_bpf_link.c
-+++ b/net/netfilter/nf_bpf_link.c
-@@ -128,6 +128,7 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- }
+ 		sge = sk_msg_elem(msg, msg->sg.start);
+@@ -88,16 +90,18 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+ 		tcp_rate_check_app_limited(sk);
+ retry:
+ 		has_tx_ulp = tls_sw_has_ctx_tx(sk);
+-		if (has_tx_ulp) {
+-			flags |= MSG_SENDPAGE_NOPOLICY;
+-			ret = kernel_sendpage_locked(sk,
+-						     page, off, size, flags);
+-		} else {
+-			ret = do_tcp_sendpages(sk, page, off, size, flags);
+-		}
++		if (has_tx_ulp)
++			msghdr.msg_flags |= MSG_SENDPAGE_NOPOLICY;
  
- const struct bpf_prog_ops netfilter_prog_ops = {
-+	.test_run = bpf_prog_test_run_nf,
- };
++		if (flags & MSG_SENDPAGE_NOTLAST)
++			msghdr.msg_flags |= MSG_MORE;
++
++		bvec_set_page(&bvec, page, size, off);
++		iov_iter_bvec(&msghdr.msg_iter, ITER_SOURCE, &bvec, 1, size);
++		ret = tcp_sendmsg_locked(sk, &msghdr, size);
+ 		if (ret <= 0)
+ 			return ret;
++
+ 		if (apply)
+ 			apply_bytes -= ret;
+ 		msg->sg.size -= ret;
+@@ -404,7 +408,7 @@ static int tcp_bpf_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ 	long timeo;
+ 	int flags;
  
- static bool nf_ptr_to_btf_id(struct bpf_insn_access_aux *info, const char *name)
-diff --git a/tools/testing/selftests/bpf/verifier/netfilter.c b/tools/testing/selftests/bpf/verifier/netfilter.c
-new file mode 100644
-index 000000000000..deeb87afdf50
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/netfilter.c
-@@ -0,0 +1,23 @@
-+{
-+	"netfilter, accept all",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_NETFILTER,
-+	.retval = 1,
-+	.data = {
-+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x08, 0x00,
-+	},
-+},
-+{
-+	"netfilter, stolen verdict",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = REJECT,
-+	.errstr = "At program exit the register R0 has value (0x2; 0x0) should have been in (0x0; 0x1)",
-+	.prog_type = BPF_PROG_TYPE_NETFILTER,
-+},
--- 
-2.39.2
+-	/* Don't let internal do_tcp_sendpages() flags through */
++	/* Don't let internal sendpage flags through */
+ 	flags = (msg->msg_flags & ~MSG_SENDPAGE_DECRYPTED);
+ 	flags |= MSG_NO_SHARED_FRAGS;
+ 
 
