@@ -2,85 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2C06D89CC
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 23:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBE46D8A48
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 00:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbjDEVuV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 17:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
+        id S233326AbjDEWJK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 18:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjDEVuU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 17:50:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8AC44B6
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 14:50:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EDFD662AB3
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 21:50:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5527EC433D2;
-        Wed,  5 Apr 2023 21:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680731418;
-        bh=b9rLa4ivJfl7VQxHWk6azzNo04MOo33Q8HkJRGwGMro=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=aR0cw9Ttkwp15jU1ioZkd+zcqq4n4sTt7OxNITsL5OueIpV1Ts7kKtHVVtt6hghi9
-         9OSDEpBydOq2f/ycPpuMc8zXJvBQ3i/BqZtmQ5ANcdfHkYAIZy6Pn3kBq8bGy6ulHe
-         0gCO0RduKru9FOfXYGm7owV0sNbeiLGIByKxTDVJvtzLGTLXE/UATolGGRw2pPb3si
-         uvtrmngzZOf6C5ia3B6XbIR13V6VJ0TY196ZmZJUZknnem2JCARVLjNGhq1HBxCDT9
-         MHb8ln/5rza7nN9bpJFUFF32awmKB/s2HuVSVQTUsDcw0vxaqid+5M87uN1iXToqV4
-         oRRTAkFNbJFKg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3185AC4167B;
-        Wed,  5 Apr 2023 21:50:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231880AbjDEWJJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 18:09:09 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD68D59D5;
+        Wed,  5 Apr 2023 15:09:07 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id kc4so35723579plb.10;
+        Wed, 05 Apr 2023 15:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680732547; x=1683324547;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2kwNwGAgyjtt7uSKc/qEWdyaie8OB2blRY1cHaNlDYM=;
+        b=Uhpxl8+qcMGMTDdpRvFp8IAnq9VzjJ27H8jxStR0sVTfSPW8F597li4sDsM7hqQ3H3
+         v83WSN0HN+vprRYYRvJSPzwX6aCGkCSvJ+/QRkuJGoMEy7uhp/uFV51fWDv9iPjIvcRQ
+         PIPCx6SkB44bkR/R9+jTd+oCIpxP+7Y7ET6tGiTJuooOKEKHxk9N+5hNM1x1Up5HFw8J
+         OB+GEACjwSdjNeNsQCS+FiIp1WSsf428uG+5227sFtX4RcatZYz3+S7cvBdwg77pnKlZ
+         QociCiQ2p8mSPsACqVF1SSF3UT6SQmRPQKxuPsmio3NatagzrXdm4lnhXJ88iQmPMqDX
+         Z34w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680732547; x=1683324547;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2kwNwGAgyjtt7uSKc/qEWdyaie8OB2blRY1cHaNlDYM=;
+        b=rLn/fV56aHjHymyMpjwsxlQDlJYltfpCKS3smCuMZcRAZBZbEZGHwOcJVnm9aFIHKz
+         CDFhU4DXES/5VbYGeEWoLE1y+39aZR8pkI190EknmTIuHs77fbyTJF90JYw1wPrLyrcO
+         BJI1LHLW3gUyUkGssOew90okr2UwExv58Zi5wOKTqaDRIWilPj9Vo9KVQ5GpIDbDdRpt
+         Nxt4k1CvVLrIpeys9kybEDaZSFbq2fUhOU72NAO08SXCqKheVCo5G6NK4lxfXDfoHWlb
+         +suc0VEUA5H9rCqjrJIHrOxYmynFOfpJgtrJKUQxxJgLWoan4Cl5MZMh7iuzN8s6J1Jx
+         dbQA==
+X-Gm-Message-State: AAQBX9f1+vRSIPhaBK3yM5thcdvtUvhhghnBCVAu/yBve8aw3ZVq5VPs
+        GJGOAfJ+1rCL1GJ73ep8ysQ=
+X-Google-Smtp-Source: AKy350brYknTuIpCp90yKCr/ngb9oj7Xhuce+35iLwMQ7BUF5PbGTwhDDUX+m2TlTxNZFn3VlYHnfA==
+X-Received: by 2002:a17:90b:4b84:b0:234:bf0:86b9 with SMTP id lr4-20020a17090b4b8400b002340bf086b9mr7871589pjb.25.1680732547060;
+        Wed, 05 Apr 2023 15:09:07 -0700 (PDT)
+Received: from john.lan ([2605:59c8:4c5:7110:5120:4bff:95ea:9ce0])
+        by smtp.gmail.com with ESMTPSA id gz11-20020a17090b0ecb00b00230ffcb2e24sm1865697pjb.13.2023.04.05.15.09.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Apr 2023 15:09:06 -0700 (PDT)
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     jakub@cloudflare.com, daniel@iogearbox.net, edumazet@google.com,
+        cong.wang@bytedance.com, lmb@isovalent.com
+Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        will@isovalent.com
+Subject: [PATCH bpf v4 00/12] bpf sockmap fixes
+Date:   Wed,  5 Apr 2023 15:08:52 -0700
+Message-Id: <20230405220904.153149-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf] selftests/bpf: Wait for receive in cg_storage_multi
- test
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168073141817.26121.10974496798503990696.git-patchwork-notify@kernel.org>
-Date:   Wed, 05 Apr 2023 21:50:18 +0000
-References: <20230405193354.1956209-1-zhuyifei@google.com>
-In-Reply-To: <20230405193354.1956209-1-zhuyifei@google.com>
-To:     YiFei Zhu <zhuyifei@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        sdf@google.com, martin.lau@linux.dev, andrii@kernel.org
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Fixes for sockmap running against NGINX TCP tests and also on an
+underprovisioned VM so that we hit error (ENOMEM) cases regularly.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+The first 3 patches fix cases related to ENOMEM that were either
+causing splats or data hangs.
 
-On Wed,  5 Apr 2023 19:33:54 +0000 you wrote:
-> In some cases the loopback latency might be large enough, causing
-> the assertion on invocations to be run before ingress prog getting
-> executed. The assertion would fail and the test would flake.
-> 
-> This can be reliably reproduced by arbitrarily increasing the
-> loopback latency (thanks to [1]):
->   tc qdisc add dev lo root handle 1: htb default 12
->   tc class add dev lo parent 1:1 classid 1:12 htb rate 20kbps ceil 20kbps
->   tc qdisc add dev lo parent 1:12 netem delay 100ms
-> 
-> [...]
+Then 4-7 resolved cases found when running NGINX with its sockets
+assigned to sockmap. These mostly have to do with handling fin/shutdown
+incorrectly and ensuring epoll_wait works as expected.
 
-Here is the summary with links:
-  - [v2,bpf] selftests/bpf: Wait for receive in cg_storage_multi test
-    https://git.kernel.org/bpf/bpf-next/c/5af607a861d4
+Patches 8 and 9 extract some of the logic used for sockmap_listen tests
+so that we can use it in other tests because it didn't make much
+sense to me to add tests to the sockmap_listen cases when here we
+are testing send/recv *basic* cases.
 
-You are awesome, thank you!
+Finally patches 10, 11 and 12 add the new tests to ensure we handle
+ioctl(FIONREAD) and shutdown correctly.
+
+To test the series I ran the NGINX compliance tests and the sockmap
+selftests. For now our compliance test just runs with SK_PASS.
+
+There are some more things to be done here, but these 11 patches
+stand on their own in my opionion and fix issues we are having in
+CI now. For bpf-next we can fixup/improve selftests to use the
+ASSERT_* in sockmap_helpers, streamline some of the testing, and
+add more tests. We also still are debugging a few additional flakes
+patches coming soon.
+
+v2: use skb_queue_empty instead of *_empty_lockless (Eric)
+    oops incorrectly updated copied_seq on DROP case (Eric)
+    added test for drop case copied_seq update
+
+v3: Fix up comment to use /**/ formatting and update commit
+    message to capture discussion about previous fix attempt
+    for hanging backlog being imcomplete.
+
+v4: build error sockmap things are behind NET_SKMSG not in
+    BPF_SYSCALL otherwise you can build the .c file but not
+    have correct headers.
+
+John Fastabend (11):
+  bpf: sockmap, pass skb ownership through read_skb
+  bpf: sockmap, convert schedule_work into delayed_work
+  bpf: sockmap, improved check for empty queue
+  bpf: sockmap, handle fin correctly
+  bpf: sockmap, TCP data stall on recv before accept
+  bpf: sockmap, wake up polling after data copy
+  bpf: sockmap incorrectly handling copied_seq
+  bpf: sockmap, pull socket helpers out of listen test for general use
+  bpf: sockmap, build helper to create connected socket pair
+  bpf: sockmap, test shutdown() correctly exits epoll and recv()=0
+  bpf: sockmap, test FIONREAD returns correct bytes in rx buffer
+
+ include/linux/skmsg.h                         |   2 +-
+ include/net/tcp.h                             |   1 +
+ net/core/skmsg.c                              |  58 ++-
+ net/core/sock_map.c                           |   3 +-
+ net/ipv4/tcp.c                                |   9 -
+ net/ipv4/tcp_bpf.c                            |  81 +++-
+ net/ipv4/udp.c                                |   5 +-
+ net/unix/af_unix.c                            |   5 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 119 +++++-
+ .../bpf/prog_tests/sockmap_helpers.h          | 374 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 352 +----------------
+ .../bpf/progs/test_sockmap_pass_prog.c        |  32 ++
+ 12 files changed, 659 insertions(+), 382 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.33.0
 
