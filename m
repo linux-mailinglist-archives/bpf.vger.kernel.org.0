@@ -2,103 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7974D6D712B
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 02:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDDC6D7133
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 02:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235877AbjDEARZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Apr 2023 20:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
+        id S235981AbjDEAUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Apr 2023 20:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234086AbjDEARY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Apr 2023 20:17:24 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441D044A8;
-        Tue,  4 Apr 2023 17:17:23 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id h8so137014070ede.8;
-        Tue, 04 Apr 2023 17:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680653842; x=1683245842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YBQuZ6cO4NqY3NwYWWJVtGbrQabyGh82co3p2xzwZi0=;
-        b=JS0d3mSkT+PTeY8hdM8VYfm38Z3pU3M+ONW09aFWXqiYZ89KXTRUDJqTxzdCTDn2l/
-         3Rdt/9zF+oHXj4Mos1sZZBY5aXLUWi5bc8Y5rNT+RXgW23Jj8wED1yVren2xSN2vGXqk
-         3TLa3vR3p5Ox2byh+gUWT2f3/39X+jt4Yg1UfWi+1Obt0Qn/lwfDbfbWqk/VTawGNkXF
-         1pbqzDoXb/N8LLoH2llPPlMdTcXyVvpq+HSjsfKB+Xrif6bMhG7v25GiWdezfGXLrotZ
-         ompQmFIKGUdsVQ45YNOnqDLYdkoynWKhCWGO+XlsSg7mxs4V2jXFATJgtUHEM2Gn+Tb9
-         nujA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680653842; x=1683245842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YBQuZ6cO4NqY3NwYWWJVtGbrQabyGh82co3p2xzwZi0=;
-        b=jzsvjrNIgiiWk/KmJ6+qTbWUkgxibW8JxOgR4XLqPszoyGcpoiNJNOsep7rBwPM0fR
-         HSsfMzHVwQOpGOuO1Jk2AX75UEpQxmllSRfPdEdr448AAC7ed//yNgLYcBdsizQCDhhj
-         kBK03oOEUCeAgi+NFhqzH/r3cTdx88msU+gz4EFkWMaxRQCnp7JJ7O9wPO19X45b6hm8
-         py/5Gls1GNRBk2rA/AhyeiTY6Xv5fP963RYQoKjPrmRBQHbPu5/Jf2JmkrC2TLFsFv/E
-         GnYV/FAsdyY9/Lu7HAjYh260rkqcEmnyHsONnpis5HIg+3dSvZpH2pk189B4OPicfhMP
-         o5ng==
-X-Gm-Message-State: AAQBX9dFe8yFJpUFkzS5+xyPZyoaocTKJiO+7ijOIMzM2IRLIpthgSZD
-        j+z8kqkmyXYtEumXX7FvO/4ZQm7eK4mwSFG3ATc=
-X-Google-Smtp-Source: AKy350avomeUafV60ijc8SGUwOyEkPbz/jsL6d3G/T6tWKQ8iFlL9zCEJNZJie8BSTsK/yPIX2dskG4Sp6Yp449OOEE=
-X-Received: by 2002:a17:906:3716:b0:93e:739f:b0b8 with SMTP id
- d22-20020a170906371600b0093e739fb0b8mr691617ejc.3.1680653841499; Tue, 04 Apr
- 2023 17:17:21 -0700 (PDT)
+        with ESMTP id S229748AbjDEAUS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Apr 2023 20:20:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387A33AA5;
+        Tue,  4 Apr 2023 17:20:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CB12263AB2;
+        Wed,  5 Apr 2023 00:20:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 25176C4339C;
+        Wed,  5 Apr 2023 00:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680654017;
+        bh=RCqjBwlDw+GoZaYu/kwObCxusUPUKeiFEtjTeqty5Tc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=oBS0AOkUNEeUG3o9FQLIk9SRZTX5k2JVwZD+GO8w+hlmWaO44ib+/DsFdN0Mxl4NM
+         HqD3vyaOjb1ozI+Gm/FrXy/ivTFoQm6E92rOm4cyJ9TEiRqFj0Bc9LZDTrf9qNBqkP
+         B0OChkdc3GoIV2ud8qCdxO/GW7Hj7jKs2LooMVfE7PR4KGy+JXdHCw5za2ZUBM9Rk2
+         tcZPgL4zyAYFv2IwuemxF03dFeu9vMWyg0qtx4IcUMr5kZHEsqlDFCcPTtcui/RZwV
+         yUgDtM3diHLJ2tnJcVnBmSxg9SOL93keMShfzLrOr3t+g6SX4OhHlIRha/AdeZJkVD
+         G+UaloMqpI84A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 02E85C395C5;
+        Wed,  5 Apr 2023 00:20:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230404045029.82870-1-alexei.starovoitov@gmail.com>
- <20230404045029.82870-5-alexei.starovoitov@gmail.com> <eb07aa5a-e44c-67b7-e9c9-bd65602680ae@linux.dev>
-In-Reply-To: <eb07aa5a-e44c-67b7-e9c9-bd65602680ae@linux.dev>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 4 Apr 2023 17:17:10 -0700
-Message-ID: <CAADnVQ+z0ZLwo=rCSa=TrS-NFkgHy8r=nK38wgA5vmz4u2iyUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/8] bpf: Teach verifier that certain helpers
- accept NULL pointer.
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        David Vernet <void@manifault.com>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Tejun Heo <tj@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] kallsyms: Disable preemption for
+ find_kallsyms_symbol_value
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168065401700.950.3027124778713262383.git-patchwork-notify@kernel.org>
+Date:   Wed, 05 Apr 2023 00:20:17 +0000
+References: <20230403220254.2191240-1-jolsa@kernel.org>
+In-Reply-To: <20230403220254.2191240-1-jolsa@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     mcgrof@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, asavkov@redhat.com, bpf@vger.kernel.org,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
+        haoluo@google.com, pmladek@suse.com, thunder.leizhen@huawei.com,
+        vmalik@redhat.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 4, 2023 at 5:10=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.d=
-ev> wrote:
->
-> On 4/3/23 9:50 PM, Alexei Starovoitov wrote:
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 1f2abf0f60e6..727c5269867d 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -4998,7 +4998,7 @@ const struct bpf_func_proto bpf_get_socket_ptr_co=
-okie_proto =3D {
-> >       .func           =3D bpf_get_socket_ptr_cookie,
-> >       .gpl_only       =3D false,
-> >       .ret_type       =3D RET_INTEGER,
-> > -     .arg1_type      =3D ARG_PTR_TO_BTF_ID_SOCK_COMMON,
-> > +     .arg1_type      =3D ARG_PTR_TO_BTF_ID_SOCK_COMMON | PTR_MAYBE_NUL=
-L,
->
-> I think the bpf_skc_to_* helpers (eg. bpf_skc_to_tcp_sock) also need simi=
-lar
-> change. They are available to tracing also. It can be a follow-up. The pa=
-tch set
-> lgtm.
+Hello:
 
-Ok. I'll take a look.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Tue,  4 Apr 2023 00:02:54 +0200 you wrote:
+> Artem reported suspicious RCU usage [1]. The reason is that verifier
+> calls find_kallsyms_symbol_value with preemption enabled which will
+> trigger suspicious RCU usage warning in rcu_dereference_sched call.
+> 
+> Disabling preemption in find_kallsyms_symbol_value and adding
+> __find_kallsyms_symbol_value function.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] kallsyms: Disable preemption for find_kallsyms_symbol_value
+    https://git.kernel.org/bpf/bpf-next/c/d099f594ad56
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
