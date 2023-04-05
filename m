@@ -2,415 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7B36D78B5
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 11:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 525E36D7A01
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 12:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237548AbjDEJpS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 05:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55554 "EHLO
+        id S237654AbjDEKlq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 06:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237507AbjDEJpR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 05:45:17 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949C94EFF;
-        Wed,  5 Apr 2023 02:45:00 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4PrzyP5P3rz9v7gQ;
-        Wed,  5 Apr 2023 17:35:41 +0800 (CST)
-Received: from [10.45.157.196] (unknown [10.45.157.196])
-        by APP1 (Coremail) with SMTP id LxC2BwC3QAzdQi1kU735AQ--.16062S2;
-        Wed, 05 Apr 2023 10:44:36 +0100 (CET)
-Message-ID: <7549b624-421e-30b9-ca99-de42929354c7@huaweicloud.com>
-Date:   Wed, 5 Apr 2023 11:43:53 +0200
+        with ESMTP id S237609AbjDEKlq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 06:41:46 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD1219B2;
+        Wed,  5 Apr 2023 03:41:44 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id o11so34043361ple.1;
+        Wed, 05 Apr 2023 03:41:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680691304;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lo9jlTt/toUd3tf7+uDu7pd2Sw+5W5ATKqjU1x0yOyQ=;
+        b=HxqwWw/w1HMbxsd+g0e0CpSCum0ASQQO9ZkxxnKUbwEkZGMtxOzDOdZT2+SIRDU8Ur
+         LzHIvUS7S4+1WjTjHctPDFiT2/mLRm1tA69nmOMfAirsHuHvJ2YF6uv9ywsa6dzbz8ru
+         kd80MHCZoUiGcxHJRzX9nHrBrjoG962y3FYOJn7CAuh0ipIZ40PoOdsPJg43cdGKcDpc
+         hDoXKylrmpyh3T1iSQNHm0/W5RMeU9SFE6lE3+pzx0ac31JAIdePZFFcN8sPOf3/t6Bh
+         xqIVbv6GCyrQLwND8HbqOANSJBPsbQD5pZPyPpBwuSLuN3yOyHGEvZrqta4wx//Pf7KD
+         Fr/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680691304;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lo9jlTt/toUd3tf7+uDu7pd2Sw+5W5ATKqjU1x0yOyQ=;
+        b=wKDzDUz1xwToGCAu7fuu7WK/v2zIrZbjHcMQ81OF/VmJL1qxmBocLyyZpQlaRB8dem
+         VQI9V6f74Wh97jjLDzK94x9Sv6ppyp+IcFGZdYx+clgjDKDdhLdg4cxAORkC2cjunnbj
+         sOehbcRzKkXRLJpbgaMaZPv7bb3lVdTsByb9BXmA/6IrfNk3Nee8pKMxELvFTH0Lk0OZ
+         YoxXDfjyghqk9eEyZl3yJb7Eqxiuf9HWd4gMN7xdS6X21JlMXIV4CiM0LmONlkgqrYSk
+         kUzHFRmX3aqyM6RahYZLFBvBOvcLl6j4HnuvMCOKVg3vx+1o5ZvhUg5o6WaAIj+bzCUt
+         m5WA==
+X-Gm-Message-State: AAQBX9fM83bb+qYoA22Rrf8iYvi2DnJbqQt6QVjr7x8LGXbd4n3ZI5Dw
+        NWKiJuBkh/KMf3P89v+dTWZppCWftNEoHQ==
+X-Google-Smtp-Source: AKy350aG8e+53is+5uZyxt2TB9f95bS6GLgAKr6AouAW7AD0W3/OMNWynZ5RW+jMlHHzVHtp7GtGRg==
+X-Received: by 2002:a17:903:2452:b0:19f:3b86:4710 with SMTP id l18-20020a170903245200b0019f3b864710mr6579759pls.49.1680691303810;
+        Wed, 05 Apr 2023 03:41:43 -0700 (PDT)
+Received: from dragonet (dragonet.kaist.ac.kr. [143.248.133.220])
+        by smtp.gmail.com with ESMTPSA id i14-20020a63d44e000000b004fb8732a2f9sm8881729pgj.88.2023.04.05.03.41.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Apr 2023 03:41:43 -0700 (PDT)
+Date:   Wed, 5 Apr 2023 19:41:38 +0900
+From:   "Dae R. Jeong" <threeearcat@gmail.com>
+To:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: KASAN: use-after-free Read in tcp_write_timer_handler
+Message-ID: <ZC1QYuhDz-woPxGH@dragonet>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH v10 2/4] security: Allow all LSMs to provide xattrs for
- inode_init_security hook
-Content-Language: en-US
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, reiserfs-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
-        nicolas.bouchinet@clip-os.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20230331123221.3273328-1-roberto.sassu@huaweicloud.com>
- <20230331123221.3273328-3-roberto.sassu@huaweicloud.com>
- <CAHC9VhSbGdij6xz9D49my37kD9qYrBmh2x7=cNFFDL2dZ=EZTw@mail.gmail.com>
- <5dbb9430-1e26-ec12-26a2-3718c84e33c2@schaufler-ca.com>
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <5dbb9430-1e26-ec12-26a2-3718c84e33c2@schaufler-ca.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwC3QAzdQi1kU735AQ--.16062S2
-X-Coremail-Antispam: 1UD129KBjvAXoW3KrWrurW7GFW8GF1DCrW8Xrb_yoW8XF18Ao
-        WfJwsrAw40gry3JrW5uas7JFZruayruw48ArWYvr4UAFy3t34UCw13Xay8Xay3GryrKr48
-        K34xJayFvFW2qas8n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUUYx7kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
-        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF
-        7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgASBF1jj4ef0QABst
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.4 required=5.0 tests=NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/5/2023 4:08 AM, Casey Schaufler wrote:
-> On 4/4/2023 11:54 AM, Paul Moore wrote:
->> On Fri, Mar 31, 2023 at 8:33 AM Roberto Sassu
->> <roberto.sassu@huaweicloud.com> wrote:
->>> From: Roberto Sassu <roberto.sassu@huawei.com>
->>>
->>> Currently, security_inode_init_security() supports only one LSM providing
->>> an xattr and EVM calculating the HMAC on that xattr, plus other inode
->>> metadata.
->>>
->>> Allow all LSMs to provide one or multiple xattrs, by extending the security
->>> blob reservation mechanism. Introduce the new lbs_xattr_count field of the
->>> lsm_blob_sizes structure, so that each LSM can specify how many xattrs it
->>> needs, and the LSM infrastructure knows how many xattr slots it should
->>> allocate.
->>>
->>> Dynamically allocate the new_xattrs array to be populated by LSMs with the
->>> inode_init_security hook, and pass it to the latter instead of the
->>> name/value/len triple. Unify the !initxattrs and initxattrs case, simply
->>> don't allocate the new_xattrs array in the former.
->>>
->>> Also, pass to the hook the number of xattrs filled by each LSM, so that
->>> there are no gaps when the next LSM fills the array. Gaps might occur
->>> because an LSM can legitimately request xattrs to the LSM infrastructure,
->>> but not fill the reserved slots, if it was not initialized.
->>>
->>> Update the documentation of security_inode_init_security() to reflect the
->>> changes, and fix the description of the xattr name, as it is not allocated
->>> anymore.
->>>
->>> Finally, adapt both SELinux and Smack to use the new definition of the
->>> inode_init_security hook, and to fill the reserved slots in the xattr
->>> array. Introduce the lsm_get_xattr_slot() helper to retrieve an available
->>> slot to fill, and to increment the number of filled slots.
->>>
->>> Move the xattr->name assignment after the xattr->value one, so that it is
->>> done only in case of successful memory allocation. For Smack, also reserve
->>> space for the other defined xattrs although they are not set yet in
->>> smack_inode_init_security().
->>>
->>> Reported-by: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org> (EVM crash)
->>> Link: https://lore.kernel.org/linux-integrity/Y1FTSIo+1x+4X0LS@archlinux/
->>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
->>> ---
->>>   include/linux/lsm_hook_defs.h |  6 +--
->>>   include/linux/lsm_hooks.h     | 20 ++++++++++
->>>   security/security.c           | 71 +++++++++++++++++++++++------------
->>>   security/selinux/hooks.c      | 17 +++++----
->>>   security/smack/smack_lsm.c    | 32 ++++++++++------
->>>   5 files changed, 99 insertions(+), 47 deletions(-)
->> This looks good aside from a few small things (below).  From what I
->> can see, there are only two outstanding issues to answer: the number
->> of Smack xattrs, sign-off from Casey for the Smack bits.
->>
->>> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
->>> index 6bb55e61e8e..a1896f90089 100644
->>> --- a/include/linux/lsm_hook_defs.h
->>> +++ b/include/linux/lsm_hook_defs.h
->>> @@ -111,9 +111,9 @@ LSM_HOOK(int, 0, path_notify, const struct path *path, u64 mask,
->>>           unsigned int obj_type)
->>>   LSM_HOOK(int, 0, inode_alloc_security, struct inode *inode)
->>>   LSM_HOOK(void, LSM_RET_VOID, inode_free_security, struct inode *inode)
->>> -LSM_HOOK(int, 0, inode_init_security, struct inode *inode,
->>> -        struct inode *dir, const struct qstr *qstr, const char **name,
->>> -        void **value, size_t *len)
->>> +LSM_HOOK(int, -EOPNOTSUPP, inode_init_security, struct inode *inode,
->>> +        struct inode *dir, const struct qstr *qstr, struct xattr *xattrs,
->>> +        int *xattr_count)
->>>   LSM_HOOK(int, 0, inode_init_security_anon, struct inode *inode,
->>>           const struct qstr *name, const struct inode *context_inode)
->>>   LSM_HOOK(int, 0, inode_create, struct inode *dir, struct dentry *dentry,
->>> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
->>> index c2be66c669a..9eb9b686493 100644
->>> --- a/include/linux/lsm_hooks.h
->>> +++ b/include/linux/lsm_hooks.h
->>> @@ -28,6 +28,7 @@
->>>   #include <linux/security.h>
->>>   #include <linux/init.h>
->>>   #include <linux/rculist.h>
->>> +#include <linux/xattr.h>
->>>
->>>   union security_list_options {
->>>          #define LSM_HOOK(RET, DEFAULT, NAME, ...) RET (*NAME)(__VA_ARGS__);
->>> @@ -63,8 +64,27 @@ struct lsm_blob_sizes {
->>>          int     lbs_ipc;
->>>          int     lbs_msg_msg;
->>>          int     lbs_task;
->>> +       int     lbs_xattr_count; /* number of xattr slots in new_xattrs array */
->>>   };
->>>
->>> +/**
->>> + * lsm_get_xattr_slot - Return the next available slot and increment the index
->>> + * @xattrs: array storing LSM-provided xattrs
->>> + * @xattr_count: number of already stored xattrs (updated)
->>> + *
->>> + * Retrieve the first available slot in the @xattrs array to fill with an xattr,
->>> + * and increment @xattr_count.
->>> + *
->>> + * Return: The slot to fill in @xattrs if non-NULL, NULL otherwise.
->>> + */
->>> +static inline struct xattr *lsm_get_xattr_slot(struct xattr *xattrs,
->>> +                                              int *xattr_count)
->>> +{
->>> +       if (unlikely(!xattrs))
->>> +               return NULL;
->>> +       return xattrs + (*xattr_count)++;
->>> +}
->>> +
->>>   /*
->>>    * LSM_RET_VOID is used as the default value in LSM_HOOK definitions for void
->>>    * LSM hooks (in include/linux/lsm_hook_defs.h).
->>> diff --git a/security/security.c b/security/security.c
->>> index f4170efcddd..1aeaa8ce449 100644
->>> --- a/security/security.c
->>> +++ b/security/security.c
->>> @@ -31,8 +31,6 @@
->>>   #include <linux/msg.h>
->>>   #include <net/flow.h>
->>>
->>> -#define MAX_LSM_EVM_XATTR      2
->>> -
->>>   /* How many LSMs were built into the kernel? */
->>>   #define LSM_COUNT (__end_lsm_info - __start_lsm_info)
->>>
->>> @@ -212,6 +210,8 @@ static void __init lsm_set_blob_sizes(struct lsm_blob_sizes *needed)
->>>          lsm_set_blob_size(&needed->lbs_msg_msg, &blob_sizes.lbs_msg_msg);
->>>          lsm_set_blob_size(&needed->lbs_superblock, &blob_sizes.lbs_superblock);
->>>          lsm_set_blob_size(&needed->lbs_task, &blob_sizes.lbs_task);
->>> +       lsm_set_blob_size(&needed->lbs_xattr_count,
->>> +                         &blob_sizes.lbs_xattr_count);
->>>   }
->>>
->>>   /* Prepare LSM for initialization. */
->>> @@ -378,6 +378,7 @@ static void __init ordered_lsm_init(void)
->>>          init_debug("msg_msg blob size    = %d\n", blob_sizes.lbs_msg_msg);
->>>          init_debug("superblock blob size = %d\n", blob_sizes.lbs_superblock);
->>>          init_debug("task blob size       = %d\n", blob_sizes.lbs_task);
->>> +       init_debug("xattr slots          = %d\n", blob_sizes.lbs_xattr_count);
->>>
->>>          /*
->>>           * Create any kmem_caches needed for blobs
->>> @@ -1591,11 +1592,15 @@ EXPORT_SYMBOL(security_dentry_create_files_as);
->>>    * created inode and set up the incore security field for the new inode.  This
->>>    * hook is called by the fs code as part of the inode creation transaction and
->>>    * provides for atomic labeling of the inode, unlike the post_create/mkdir/...
->>> - * hooks called by the VFS.  The hook function is expected to allocate the name
->>> - * and value via kmalloc, with the caller being responsible for calling kfree
->>> - * after using them.  If the security module does not use security attributes
->>> - * or does not wish to put a security attribute on this particular inode, then
->>> - * it should return -EOPNOTSUPP to skip this processing.
->>> + * hooks called by the VFS.  The hook function is expected to populate the
->>> + * @xattrs array, by calling lsm_get_xattr_slot() to retrieve the slots
->>> + * reserved by the security module with the lbs_xattr_count field of the
->>> + * lsm_blob_sizes structure.  For each slot, the hook function should set ->name
->>> + * to the attribute name suffix (e.g. selinux), to allocate ->value (will be
->>> + * freed by the caller) and set it to the attribute value, to set ->value_len to
->>> + * the length of the value.  If the security module does not use security
->>> + * attributes or does not wish to put a security attribute on this particular
->>> + * inode, then it should return -EOPNOTSUPP to skip this processing.
->>>    *
->>>    * Return: Returns 0 on success, -EOPNOTSUPP if no security attribute is
->>>    * needed, or -ENOMEM on memory allocation failure.
->>> @@ -1604,33 +1609,51 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
->>>                                   const struct qstr *qstr,
->>>                                   const initxattrs initxattrs, void *fs_data)
->>>   {
->>> -       struct xattr new_xattrs[MAX_LSM_EVM_XATTR + 1];
->>> -       struct xattr *lsm_xattr, *evm_xattr, *xattr;
->>> -       int ret;
->>> +       struct security_hook_list *P;
->>> +       struct xattr *new_xattrs = NULL;
->>> +       int ret = -EOPNOTSUPP, xattr_count = 0;
->>>
->>>          if (unlikely(IS_PRIVATE(inode)))
->>>                  return 0;
->>>
->>> -       if (!initxattrs)
->>> -               return call_int_hook(inode_init_security, -EOPNOTSUPP, inode,
->>> -                                    dir, qstr, NULL, NULL, NULL);
->>> -       memset(new_xattrs, 0, sizeof(new_xattrs));
->>> -       lsm_xattr = new_xattrs;
->>> -       ret = call_int_hook(inode_init_security, -EOPNOTSUPP, inode, dir, qstr,
->>> -                           &lsm_xattr->name,
->>> -                           &lsm_xattr->value,
->>> -                           &lsm_xattr->value_len);
->>> -       if (ret)
->>> +       if (!blob_sizes.lbs_xattr_count)
->>> +               return 0;
->>> +
->>> +       if (initxattrs) {
->>> +               /* Allocate +1 for EVM and +1 as terminator. */
->>> +               new_xattrs = kcalloc(blob_sizes.lbs_xattr_count + 2,
->>> +                                    sizeof(*new_xattrs), GFP_NOFS);
->>> +               if (!new_xattrs)
->>> +                       return -ENOMEM;
->>> +       }
->>> +
->>> +       hlist_for_each_entry(P, &security_hook_heads.inode_init_security,
->>> +                            list) {
->>> +               ret = P->hook.inode_init_security(inode, dir, qstr, new_xattrs,
->>> +                                                 &xattr_count);
->>> +               if (ret && ret != -EOPNOTSUPP)
->>> +                       goto out;
->>> +               /*
->>> +                * As documented in lsm_hooks.h, -EOPNOTSUPP in this context
->>> +                * means that the LSM is not willing to provide an xattr, not
->>> +                * that it wants to signal an error. Thus, continue to invoke
->>> +                * the remaining LSMs.
->>> +                */
->>> +       }
->>> +
->>> +       /* If initxattrs() is NULL, xattr_count is zero, skip the call. */
->>> +       if (!xattr_count)
->>>                  goto out;
->>>
->>> -       evm_xattr = lsm_xattr + 1;
->>> -       ret = evm_inode_init_security(inode, lsm_xattr, evm_xattr);
->>> +       ret = evm_inode_init_security(inode, new_xattrs,
->>> +                                     new_xattrs + xattr_count);
->> I think it's cleaner to write '&new_xattrs[xattr_count]' for the third
->> parameter above (no concerns around pointer math), and stylistically
->> it matches better with the for-kfree loop below.
->>
->>>          if (ret)
->>>                  goto out;
->>>          ret = initxattrs(inode, new_xattrs, fs_data);
->>>   out:
->>> -       for (xattr = new_xattrs; xattr->value != NULL; xattr++)
->>> -               kfree(xattr->value);
->>> +       for (; xattr_count > 0; xattr_count--)
->>> +               kfree(new_xattrs[xattr_count - 1].value);
->>> +       kfree(new_xattrs);
->>>          return (ret == -EOPNOTSUPP) ? 0 : ret;
->>>   }
->>>   EXPORT_SYMBOL(security_inode_init_security);
->> ..
->>
->>> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
->>> index cfcbb748da2..8392983334b 100644
->>> --- a/security/smack/smack_lsm.c
->>> +++ b/security/smack/smack_lsm.c
->>> @@ -52,6 +52,15 @@
->>>   #define SMK_RECEIVING  1
->>>   #define SMK_SENDING    2
->>>
->>> +/*
->>> + * Smack uses multiple xattrs.
->>> + * SMACK64 - for access control, SMACK64EXEC - label for the program,
->> I think it would be good to move SMACK64EXEC to its own line; it took
->> me a minute to figure out why SMACK_INODE_INIT_XATTRS was set to '4'
->> when I only say three comment lines ... ;)
->>
->>> + * SMACK64MMAP - controls library loading,
->>> + * SMACK64TRANSMUTE - label initialization,
->>> + * Not saved on files - SMACK64IPIN and SMACK64IPOUT
->>> + */
->>> +#define SMACK_INODE_INIT_XATTRS 4
->> If smack_inode_init_security() only ever populates a single xattr, and
->> that is the only current user of SMACK_INODE_INIT_XATTRS, can we make
->> this '1' and shrink the xattr allocation a bit?
-> 
-> If the parent directory is marked with SMACK64_TRANSMUTE, the access
-> rule allowing the access has the "t" mode, and the object being initialized
-> is a directory, the new inode should get the SMACK64_TRANSMUTE attribute.
-> The callers of security_inode_init_security() don't seem to care.
-> I can't say if the evm code is getting SMACK64_TRANSMUTE or, for that
-> matter, SMACK64_EXEC and SMACK64_MMAP, some other way. The older system
-> allowed for multiple Smack xattrs, but I'm not clear on exactly how.
+Hi,
 
-If you like to set an additional xattr, that would be possible now. 
-Since we reserve multiple xattrs, we can call lsm_get_xattr_slot() 
-another time and set SMACK64_TRANSMUTE.
+We observed an issue "KASAN: use-after-free Read in tcp_write_timer_handler" during fuzzing.
 
-I think, if the kernel config has CONFIG_EVM_EXTRA_SMACK_XATTRS set,
-EVM would protect SMACK64_TRANSMUTE too.
+Unfortunately, we have not found a reproducer for the crash yet. We
+will inform you if we have any update on this crash.  Detailed crash
+information is attached below.
 
-Roberto
+Best regards,
+Dae R. Jeong
 
->>>   #ifdef SMACK_IPV6_PORT_LABELING
->>>   static DEFINE_MUTEX(smack_ipv6_lock);
->>>   static LIST_HEAD(smk_ipv6_port_list);
->>> @@ -939,26 +948,23 @@ static int smack_inode_alloc_security(struct inode *inode)
->>>    * @inode: the newly created inode
->>>    * @dir: containing directory object
->>>    * @qstr: unused
->>> - * @name: where to put the attribute name
->>> - * @value: where to put the attribute value
->>> - * @len: where to put the length of the attribute
->>> + * @xattrs: where to put the attributes
->>> + * @xattr_count: current number of LSM-provided xattrs (updated)
->>>    *
->>>    * Returns 0 if it all works out, -ENOMEM if there's no memory
->>>    */
->>>   static int smack_inode_init_security(struct inode *inode, struct inode *dir,
->>> -                                    const struct qstr *qstr, const char **name,
->>> -                                    void **value, size_t *len)
->>> +                                    const struct qstr *qstr,
->>> +                                    struct xattr *xattrs, int *xattr_count)
->>>   {
->>>          struct inode_smack *issp = smack_inode(inode);
->>>          struct smack_known *skp = smk_of_current();
->>>          struct smack_known *isp = smk_of_inode(inode);
->>>          struct smack_known *dsp = smk_of_inode(dir);
->>> +       struct xattr *xattr = lsm_get_xattr_slot(xattrs, xattr_count);
->>>          int may;
->>>
->>> -       if (name)
->>> -               *name = XATTR_SMACK_SUFFIX;
->>> -
->>> -       if (value && len) {
->>> +       if (xattr) {
->>>                  rcu_read_lock();
->>>                  may = smk_access_entry(skp->smk_known, dsp->smk_known,
->>>                                         &skp->smk_rules);
->>> @@ -976,11 +982,12 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
->>>                          issp->smk_flags |= SMK_INODE_CHANGED;
->>>                  }
->>>
->>> -               *value = kstrdup(isp->smk_known, GFP_NOFS);
->>> -               if (*value == NULL)
->>> +               xattr->value = kstrdup(isp->smk_known, GFP_NOFS);
->>> +               if (xattr->value == NULL)
->>>                          return -ENOMEM;
->>>
->>> -               *len = strlen(isp->smk_known);
->>> +               xattr->value_len = strlen(isp->smk_known);
->>> +               xattr->name = XATTR_SMACK_SUFFIX;
->>>          }
->>>
->>>          return 0;
->>> @@ -4854,6 +4861,7 @@ struct lsm_blob_sizes smack_blob_sizes __lsm_ro_after_init = {
->>>          .lbs_ipc = sizeof(struct smack_known *),
->>>          .lbs_msg_msg = sizeof(struct smack_known *),
->>>          .lbs_superblock = sizeof(struct superblock_smack),
->>> +       .lbs_xattr_count = SMACK_INODE_INIT_XATTRS,
->>>   };
->>>
->>>   static struct security_hook_list smack_hooks[] __lsm_ro_after_init = {
->>> --
->>> 2.25.1
+-----
+- Kernel version:
+6.0-rc7
 
+- Crash report:
+==================================================================
+BUG: KASAN: use-after-free in tcp_probe_timer net/ipv4/tcp_timer.c:378 [inline]
+BUG: KASAN: use-after-free in tcp_write_timer_handler+0x921/0xa60 net/ipv4/tcp_timer.c:624
+Read of size 1 at addr ffff888046bc86a5 by task syz-fuzzer/6625
+
+CPU: 0 PID: 6625 Comm: syz-fuzzer Not tainted 6.0.0-rc7-00167-g92162e4a9862 #2
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1cf/0x2b7 lib/dump_stack.c:106
+ print_address_description+0x21/0x470 mm/kasan/report.c:317
+ print_report+0x108/0x1f0 mm/kasan/report.c:433
+ kasan_report+0xe5/0x110 mm/kasan/report.c:495
+ tcp_probe_timer net/ipv4/tcp_timer.c:378 [inline]
+ tcp_write_timer_handler+0x921/0xa60 net/ipv4/tcp_timer.c:624
+ tcp_write_timer+0x1a5/0x2c0 net/ipv4/tcp_timer.c:637
+ call_timer_fn+0xf6/0x220 kernel/time/timer.c:1474
+ expire_timers kernel/time/timer.c:1519 [inline]
+ __run_timers+0x76f/0x980 kernel/time/timer.c:1790
+ run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1803
+ __do_softirq+0x372/0x783 kernel/softirq.c:571
+ __irq_exit_rcu+0xcf/0x160 kernel/softirq.c:650
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:662
+ sysvec_apic_timer_interrupt+0x43/0xb0 arch/x86/kernel/apic/apic.c:1106
+ asm_sysvec_apic_timer_interrupt+0x16/0x20 arch/x86/include/asm/idtentry.h:649
+RIP: 0033:0x421fb1
+Code: 90 48 8b 4f 18 90 49 b8 00 00 00 00 00 80 00 00 49 01 c8 49 c1 e8 1a 66 90 49 81 f8 00 00 40 00 0f 83 e2 00 00 00 4a 8b 14 c2 <84> 02 49 89 c8 48 c1 e9 10 81 e1 ff 03 00 00 44 0f b6 8c 0a 00 04
+RSP: 002b:00007f3d50bebd38 EFLAGS: 00000287
+RAX: 000000c001a0d140 RBX: 000000c001bba000 RCX: 000000c001a0c000
+RDX: 00007f3d51bef000 RSI: 000000c000025240 RDI: 00007f3d791daa28
+RBP: 00007f3d50bebd78 R08: 0000000000203000 R09: 00007f3d4c2f6001
+R10: 000000000000008a R11: 0000000000004048 R12: 0000000000000004
+R13: 000000c001a0d140 R14: 000000c000007520 R15: 0000000000000180
+ </TASK>
+
+Allocated by task 6664:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track mm/kasan/common.c:45 [inline]
+ set_alloc_info mm/kasan/common.c:437 [inline]
+ __kasan_slab_alloc+0xa3/0xd0 mm/kasan/common.c:470
+ kasan_slab_alloc include/linux/kasan.h:224 [inline]
+ slab_post_alloc_hook mm/slab.h:727 [inline]
+ slab_alloc_node mm/slub.c:3248 [inline]
+ slab_alloc mm/slub.c:3256 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3263 [inline]
+ kmem_cache_alloc+0x2e6/0x450 mm/slub.c:3273
+ kmem_cache_zalloc include/linux/slab.h:723 [inline]
+ net_alloc net/core/net_namespace.c:404 [inline]
+ copy_net_ns+0x193/0x6d0 net/core/net_namespace.c:459
+ create_new_namespaces+0x4db/0xa40 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0x11e/0x180 kernel/nsproxy.c:226
+ ksys_unshare+0x5a9/0xbc0 kernel/fork.c:3183
+ __do_sys_unshare kernel/fork.c:3254 [inline]
+ __se_sys_unshare kernel/fork.c:3252 [inline]
+ __x64_sys_unshare+0x34/0x40 kernel/fork.c:3252
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x4e/0xa0 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 6874:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track+0x3d/0x60 mm/kasan/common.c:45
+ kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:370
+ ____kasan_slab_free+0x134/0x1c0 mm/kasan/common.c:367
+ kasan_slab_free include/linux/kasan.h:200 [inline]
+ slab_free_hook mm/slub.c:1759 [inline]
+ slab_free_freelist_hook+0x278/0x370 mm/slub.c:1785
+ slab_free mm/slub.c:3539 [inline]
+ kmem_cache_free+0x11a/0x310 mm/slub.c:3556
+ net_free net/core/net_namespace.c:433 [inline]
+ cleanup_net+0xd68/0xe20 net/core/net_namespace.c:616
+ process_one_work+0x83f/0x11a0 kernel/workqueue.c:2289
+ worker_thread+0xa6c/0x1290 kernel/workqueue.c:2436
+ kthread+0x28a/0x320 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+
+Last potentially related work creation:
+ kasan_save_stack+0x2b/0x50 mm/kasan/common.c:38
+ __kasan_record_aux_stack+0xac/0xc0 mm/kasan/generic.c:348
+ insert_work+0x54/0x400 kernel/workqueue.c:1358
+ __queue_work+0xa95/0xe00 kernel/workqueue.c:1517
+ call_timer_fn+0xf6/0x220 kernel/time/timer.c:1474
+ expire_timers kernel/time/timer.c:1514 [inline]
+ __run_timers+0x7a2/0x980 kernel/time/timer.c:1790
+ __do_softirq+0x372/0x783 kernel/softirq.c:571
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x2b/0x50 mm/kasan/common.c:38
+ __kasan_record_aux_stack+0xac/0xc0 mm/kasan/generic.c:348
+ insert_work+0x54/0x400 kernel/workqueue.c:1358
+ __queue_work+0xa95/0xe00 kernel/workqueue.c:1517
+ call_timer_fn+0xf6/0x220 kernel/time/timer.c:1474
+ expire_timers kernel/time/timer.c:1514 [inline]
+ __run_timers+0x7a2/0x980 kernel/time/timer.c:1790
+ __do_softirq+0x372/0x783 kernel/softirq.c:571
+
+The buggy address belongs to the object at ffff888046bc8000
+ which belongs to the cache net_namespace of size 6784
+The buggy address is located 1701 bytes inside of
+ 6784-byte region [ffff888046bc8000, ffff888046bc9a80)
+
+The buggy address belongs to the physical page:
+page:ffffea00011af200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x46bc8
+head:ffffea00011af200 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 0000000000000000 dead000000000122 ffff888013618f00
+raw: 0000000000000000 0000000080040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 6664, tgid 6664 (syz-executor.0), ts 88505587135, free_ts 0
+ prep_new_page mm/page_alloc.c:2532 [inline]
+ get_page_from_freelist+0x800/0xc10 mm/page_alloc.c:4283
+ __alloc_pages+0x2f0/0x650 mm/page_alloc.c:5549
+ alloc_slab_page mm/slub.c:1829 [inline]
+ allocate_slab+0x1eb/0xc00 mm/slub.c:1974
+ new_slab mm/slub.c:2034 [inline]
+ ___slab_alloc+0x581/0xff0 mm/slub.c:3036
+ __slab_alloc mm/slub.c:3123 [inline]
+ slab_alloc_node mm/slub.c:3214 [inline]
+ slab_alloc mm/slub.c:3256 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3263 [inline]
+ kmem_cache_alloc+0x386/0x450 mm/slub.c:3273
+ kmem_cache_zalloc include/linux/slab.h:723 [inline]
+ net_alloc net/core/net_namespace.c:404 [inline]
+ copy_net_ns+0x193/0x6d0 net/core/net_namespace.c:459
+ create_new_namespaces+0x4db/0xa40 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0x11e/0x180 kernel/nsproxy.c:226
+ ksys_unshare+0x5a9/0xbc0 kernel/fork.c:3183
+ __do_sys_unshare kernel/fork.c:3254 [inline]
+ __se_sys_unshare kernel/fork.c:3252 [inline]
+ __x64_sys_unshare+0x34/0x40 kernel/fork.c:3252
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x4e/0xa0 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888046bc8580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888046bc8600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888046bc8680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff888046bc8700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888046bc8780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
