@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A54756D84EB
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 19:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5A66D84EC
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 19:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbjDER2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 13:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
+        id S231132AbjDER2y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 13:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233513AbjDER2p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 13:28:45 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE046A5A
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 10:28:37 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-947abd74b10so71845566b.2
-        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 10:28:37 -0700 (PDT)
+        with ESMTP id S230465AbjDER2x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 13:28:53 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D165FDC
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 10:28:42 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id w9so142956266edc.3
+        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 10:28:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1680715715;
+        d=isovalent.com; s=google; t=1680715720;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pDKUsKUYjfYOoIc8O/wHcpOCzt3XdNEubRKo0HbBpFA=;
-        b=AHLHLuunzTs8/08hfvNnrP6uafGAxr+xegGw6YanYYz9/h3IZ+Vlj4Nl+u9zC87Ngl
-         0aNby7RMZO5lLkJ/suhxfVltBGRXq18ZXpEGCKpKojrM53Kq2SFmzmCH6vzD5yrp3jr0
-         EgtCmW9OeHAk8V209gtgw17qGWLvk7GHhkx9b78Et/VvxK9+zL5c8Cay2mFi15hlwKYH
-         Rr2sA7m3Mgo3ERDgEQlLeoIJW7pAU7SipBp2u6U4He3Csu3JQZzC3DiiJgIVnn8uaFgn
-         5a73HQfeyI1Xgi3KOAwPLSeHWFvIRssyOdi9aEwXiBJChxedr6C+ySf18UKb7S+a9qki
-         s1bg==
+        bh=mRowmXI2gUxOwnPkTg6fsw+cfqZmEfJOVr05BgfR1pQ=;
+        b=f4pPlQsrWYdNcx2a0HcXvGST9LKiRaK/Kg1RFFEn36oCh7BEQWj9b0srzw8K5t7zGS
+         dG2D5h+H3Q6n055HcCo/yOdfwwCBMyw4m6UL6uTSEVvN5h2ArgK+uG/WltFOHYDGfEjX
+         KdiRi9MY3BZKkfsym0hkz1CmWHG+uq3SXwyCGumMXEuDVEryS0u3yHZdDAaRzsqAr3Mw
+         yQ6FU0CApeNwzv2vfa4ujlVYsQWcqXNJ7mSVKnwjNgkWAsVzDBKJEmy5RrMZJ+1KhRH3
+         /qwn4fUTQWpoanpQn5kKW4JRS5KCfzIPSDlx5ZP4xIrG0bly1Pfznw7jfmEJthkkIutk
+         iHPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680715716;
+        d=1e100.net; s=20210112; t=1680715720;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pDKUsKUYjfYOoIc8O/wHcpOCzt3XdNEubRKo0HbBpFA=;
-        b=ZOmL2i4ao8QtyyJ1cNvE+Sh2NmbN7BNox+VuwRNprpDRnfM1HegRjA2ahp6cC150k4
-         wpRJGhHiZSNZN+3N/Z8jkbAxKTl2pBn06NyEI9zGnUyrmwWzceHKUoBvLudMwlE0L2N7
-         p62gdEC+nux0P22zr6IFxsxemyZ3/0wksdamUwFvgH+Muv9D/EOwfn06vrBuwtDXV4pI
-         4gRm1bbZ8UhVuilK58ev3zYsPNCItIJDEwy3I85GVBvoG8AV4bxOlRgTTssHQMB0tyWt
-         eTYrDQczfLpgcai2RorBFK/m9d0a+b/8NEfq/n/JEwkbooS2qSO0ngrp8DFjvf6jlwTn
-         Wx3Q==
-X-Gm-Message-State: AAQBX9eOMlsNkobEonaSOVg59scUxTxbD4euEHO6L/7d9hxbDPqSMh5a
-        IKTFTlkBCtxjF9TrUuEYINPu3Q9WeCl+fj9tTBvS3w==
-X-Google-Smtp-Source: AKy350aLXrOGq+bewuvndkswquGMYOiwwoT3OaYApBhlnPVcnktyNXK++2UGtfziEKH8tR86UABJgCW9o0q0UPEcfpw=
-X-Received: by 2002:a50:8a91:0:b0:4fc:a484:c6ed with SMTP id
- j17-20020a508a91000000b004fca484c6edmr1606839edj.2.1680715715786; Wed, 05 Apr
- 2023 10:28:35 -0700 (PDT)
+        bh=mRowmXI2gUxOwnPkTg6fsw+cfqZmEfJOVr05BgfR1pQ=;
+        b=ZuEyZhZaKsTCBg2xy5fUtPVFXp8ijengDXy1lQ8J3FoWYiBcsJ00G0CUnFOCACIUjr
+         ufGpo15WXuaCWcB7mgYQLPMMxwuFbsChhz/lfY7XxBlZ2me07e0Kbsuzu7CU4hW6ioXu
+         ffgfJ/hxD8RDpx4dxqSlyL3dfkHTox/gB4E3lggqBZHBig84atNvRcziPVxEs7x2J5E0
+         e/HounKsrrNwcrdGIJDFHWQZBqc6Vp778fugMgW/9Bx6hI6jFgFWFR9Kxv+v3xrHcaS3
+         YZ3YoXkqbTjaZnsQ0bl21+bFQmiFVF7pFp7CUUvj0AorlNqN+YuuTjJHfhNdci/Vfpz8
+         8fiw==
+X-Gm-Message-State: AAQBX9fqq9tzS5JCvZvpq0/zd07gLW8YPy+zCsnlQVTz85sdcbcTjJda
+        eCbhCd2JCGZiKMtr+w1DMt2Bw7JSOLAi/kG6l70+ew==
+X-Google-Smtp-Source: AKy350ZEzcXS9UcYiENZTx4HlhxAzybrxx3GNzgc2qXDaeJmhCHu0j8BL7l3Ql5S4riwJq4R7wbBOU2C1ZYTCy78CP8=
+X-Received: by 2002:a17:906:3b4f:b0:932:4d97:a370 with SMTP id
+ h15-20020a1709063b4f00b009324d97a370mr1808584ejf.14.1680715720212; Wed, 05
+ Apr 2023 10:28:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230404043659.2282536-1-andrii@kernel.org> <20230404043659.2282536-9-andrii@kernel.org>
-In-Reply-To: <20230404043659.2282536-9-andrii@kernel.org>
+References: <20230404043659.2282536-1-andrii@kernel.org> <20230404043659.2282536-10-andrii@kernel.org>
+In-Reply-To: <20230404043659.2282536-10-andrii@kernel.org>
 From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Wed, 5 Apr 2023 18:28:24 +0100
-Message-ID: <CAN+4W8gme3i+0KKc4rug8E9NVOmggABCDVZF2VU2dYVpyLMm0Q@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 08/19] bpf: fix missing -EFAULT return on user
- log buf error in btf_parse()
+Date:   Wed, 5 Apr 2023 18:28:28 +0100
+Message-ID: <CAN+4W8gx-OZtj6kHWnxxyxpfVJgGHKSybg64dffuG5PTb4xOfg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 09/19] bpf: avoid incorrect -EFAULT error in
+ BPF_LOG_KERNEL mode
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         martin.lau@kernel.org, timo@incline.eu, robin.goegge@isovalent.com,
@@ -72,10 +72,9 @@ X-Mailing-List: bpf@vger.kernel.org
 On Tue, Apr 4, 2023 at 5:37=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org> =
 wrote:
 >
-> btf_parse() is missing -EFAULT error return if log->ubuf was NULL-ed out
-> due to error while copying data into user-provided buffer. Add it, but
-> handle a special case of BPF_LOG_KERNEL in which log->ubuf is always NULL=
-.
+> If verifier log is in BPF_LOG_KERNEL mode, no log->ubuf is expected and
+> it stays NULL throughout entire verification process. Don't erroneously
+> return -EFAULT in such case.
 >
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
