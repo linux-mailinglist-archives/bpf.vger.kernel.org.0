@@ -2,96 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5A76D85D8
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 20:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A276D85E1
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 20:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbjDESTa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 14:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
+        id S231167AbjDESXZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 14:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjDEST3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 14:19:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4E95FD4;
-        Wed,  5 Apr 2023 11:19:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 482D1628B6;
-        Wed,  5 Apr 2023 18:19:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32D83C4339E;
-        Wed,  5 Apr 2023 18:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680718767;
-        bh=ltcRjzdGmjNXGEWJl/BooIeS7nLENBrFKJLG6Y5huOs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Rof4iplmdm6LS8gZFFtPkv+WWg2r511NloWG9UpdytcmLlTi9ZWefU/bSNuGeYWhP
-         UkKnK68QxnLTpdk8BsDhiKrbG61FNCu1eu5Ke/zVi68dMpjKBPNAqoetCnADJJypzr
-         tuHVZ2y56ppzCVWUHteUx48D1b8bE8iyB4rzgxugQSbVHjZAuBSHfViAUC51BW9zpk
-         pd8m44EmC2A7LFQtS44voYcoolYADQii7YALs3R5A6tUyspVrjqZMqJHLHVIKi3R+7
-         GPBe09IgRPYKlHn9jWoG7AV3jYXJobyRgvTNaRdnqMStqOBgWEGEKFSmPKczH5k6kL
-         G8uXYybArQBJg==
-Date:   Wed, 5 Apr 2023 11:19:26 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        David Vernet <void@manifault.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Tejun Heo <tj@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Yonghong Song <yhs@meta.com>, Song Liu <song@kernel.org>
-Subject: Re: [PATCH bpf-next 0/8] bpf: Follow up to RCU enforcement in the
- verifier.
-Message-ID: <20230405111926.7930dbcc@kernel.org>
-In-Reply-To: <CAEf4BzY3-pXiM861OkqZ6eciBJnZS8gsBL2Le2rGiSU64GKYcg@mail.gmail.com>
-References: <20230404045029.82870-1-alexei.starovoitov@gmail.com>
-        <20230404145131.GB3896@maniforge>
-        <CAEf4BzYXpHMNDTCrBTjwvj3UU5xhS9mAKLx152NniKO27Rdbeg@mail.gmail.com>
-        <CAADnVQKLe8+zJ0sMEOsh74EHhV+wkg0k7uQqbTkB3THx1CUyqw@mail.gmail.com>
-        <20230404185147.17bf217a@kernel.org>
-        <CAEf4BzY3-pXiM861OkqZ6eciBJnZS8gsBL2Le2rGiSU64GKYcg@mail.gmail.com>
+        with ESMTP id S229623AbjDESXZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 14:23:25 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFBA35A1;
+        Wed,  5 Apr 2023 11:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680719003; x=1712255003;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HSYygrAqQxExjf3K2A9u5AAu8i1ksBGRjV4gbq51MQg=;
+  b=CxeYBhxJZhsSZonudJDndeDxllq5xjfGhaVIknrAzLZPlpK/zu/6Gq0K
+   O0YYT/0CdN937C2bFqdLL5SdKzvRlxZqR/RzYRMiYuDe/Qv6gd8ii2rY+
+   c4Fs0yAHHC1ij+uMBW7lW8qbadJd2/70G6igq9UkGqsVwP0hIRaOnPRKf
+   iwRpMnWL0N3yTeBItCLElxEPC437GjbBQDsqmp+AOa7yLo5G+A7J2XUgp
+   p8QgwKIkWvNivYvDMLfoV3BthTDRlPniyr8T8RTT+RvvF9wedlYNQQoJR
+   ModsgtZyfayY7hH8q14lYGW6Rtf4cmp8SDZym9uyNCjEI8YASU9asPvgl
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10671"; a="322184632"
+X-IronPort-AV: E=Sophos;i="5.98,321,1673942400"; 
+   d="scan'208";a="322184632"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2023 11:23:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10671"; a="751356623"
+X-IronPort-AV: E=Sophos;i="5.98,321,1673942400"; 
+   d="scan'208";a="751356623"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 05 Apr 2023 11:23:21 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pk7my-000QhW-1M;
+        Wed, 05 Apr 2023 18:23:20 +0000
+Date:   Thu, 6 Apr 2023 02:22:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, netfilter-devel@vger.kernel.org,
+        bpf@vger.kernel.org, dxu@dxuuu.xyz, qde@naccy.de,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: [PATCH bpf-next 6/6] bpf: add test_run support for netfilter
+ program type
+Message-ID: <202304060207.JawhnyR9-lkp@intel.com>
+References: <20230405161116.13565-7-fw@strlen.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230405161116.13565-7-fw@strlen.de>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 5 Apr 2023 10:22:16 -0700 Andrii Nakryiko wrote:
-> So I'm exclusively using `pw-apply -c <patchworks-url>` to apply
-> everything locally.
+Hi Florian,
 
-I think you can throw -M after -c $url? It can only help... :)
+kernel test robot noticed the following build warnings:
 
-> I'd expect that at this time the script would
-> detect any Acked-by replies on *cover letter patch*, and apply them
-> across all patches in the series. Such that we (humans) can look at
-> them, fix them, add them, etc. Doing something like this in git hook
-> seems unnecessary?
+[auto build test WARNING on bpf-next/master]
 
-Maybe mb2q can do it, IDK. I don't use the mb2q thing.
-I don't think git has a way of doing git am and insert these tags if
-they don't exist, in a single command.
+url:    https://github.com/intel-lab-lkp/linux/commits/Florian-Westphal/bpf-add-bpf_link-support-for-BPF_NETFILTER-programs/20230406-001447
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230405161116.13565-7-fw%40strlen.de
+patch subject: [PATCH bpf-next 6/6] bpf: add test_run support for netfilter program type
+config: s390-allyesconfig (https://download.01.org/0day-ci/archive/20230406/202304060207.JawhnyR9-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/7fba218dfc4942aa6781f4d1b5c475a0569cfd2e
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Florian-Westphal/bpf-add-bpf_link-support-for-BPF_NETFILTER-programs/20230406-001447
+        git checkout 7fba218dfc4942aa6781f4d1b5c475a0569cfd2e
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=s390 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash net/
 
-> So I think the only thing that's missing is the code that would fetch
-> all replies on the cover letter "patch" (e.g., like on [0]) and just
-> apply it across everything. We must be doing something like this for
-> acks on individual patches, so I imagine we are not far off to make
-> this work, but I haven't looked at pw-apply carefully enough to know
-> for sure.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202304060207.JawhnyR9-lkp@intel.com/
 
-The individual patches are handled by patchwork.
+All warnings (new ones prefixed by >>):
 
-Don't get me wrong, I'm not disagreeing with you. Just trying to help
-and point out existing workarounds..
+   net/bpf/test_run.c: In function 'bpf_prog_test_run_nf':
+>> net/bpf/test_run.c:1750:30: warning: variable 'eth' set but not used [-Wunused-but-set-variable]
+    1750 |         const struct ethhdr *eth;
+         |                              ^~~
+
+
+vim +/eth +1750 net/bpf/test_run.c
+
+  1737	
+  1738	int bpf_prog_test_run_nf(struct bpf_prog *prog,
+  1739				 const union bpf_attr *kattr,
+  1740				 union bpf_attr __user *uattr)
+  1741	{
+  1742		struct net *net = current->nsproxy->net_ns;
+  1743		struct net_device *dev = net->loopback_dev;
+  1744		struct nf_hook_state *user_ctx, hook_state = {
+  1745			.pf = NFPROTO_IPV4,
+  1746			.hook = NF_INET_PRE_ROUTING,
+  1747		};
+  1748		u32 size = kattr->test.data_size_in;
+  1749		u32 repeat = kattr->test.repeat;
+> 1750		const struct ethhdr *eth;
+  1751		struct bpf_nf_ctx ctx = {
+  1752			.state = &hook_state,
+  1753		};
+  1754		struct sk_buff *skb = NULL;
+  1755		u32 retval, duration;
+  1756		void *data;
+  1757		int ret;
+  1758	
+  1759		if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
+  1760			return -EINVAL;
+  1761	
+  1762		if (size < ETH_HLEN + sizeof(struct iphdr))
+  1763			return -EINVAL;
+  1764	
+  1765		data = bpf_test_init(kattr, kattr->test.data_size_in, size,
+  1766				     NET_SKB_PAD + NET_IP_ALIGN,
+  1767				     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
+  1768		if (IS_ERR(data))
+  1769			return PTR_ERR(data);
+  1770	
+  1771		eth = (struct ethhdr *)data;
+  1772	
+  1773		if (!repeat)
+  1774			repeat = 1;
+  1775	
+  1776		user_ctx = bpf_ctx_init(kattr, sizeof(struct nf_hook_state));
+  1777		if (IS_ERR(user_ctx)) {
+  1778			kfree(data);
+  1779			return PTR_ERR(user_ctx);
+  1780		}
+  1781	
+  1782		if (user_ctx) {
+  1783			ret = verify_and_copy_hook_state(&hook_state, user_ctx, dev);
+  1784			if (ret)
+  1785				goto out;
+  1786		}
+  1787	
+  1788		skb = slab_build_skb(data);
+  1789		if (!skb) {
+  1790			ret = -ENOMEM;
+  1791			goto out;
+  1792		}
+  1793	
+  1794		data = NULL; /* data released via kfree_skb */
+  1795	
+  1796		skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
+  1797		__skb_put(skb, size);
+  1798	
+  1799		skb->protocol = eth_type_trans(skb, dev);
+  1800	
+  1801		skb_reset_network_header(skb);
+  1802	
+  1803		ret = -EINVAL;
+  1804	
+  1805		switch (skb->protocol) {
+  1806		case htons(ETH_P_IP):
+  1807			if (hook_state.pf == NFPROTO_IPV4)
+  1808				break;
+  1809			goto out;
+  1810		case htons(ETH_P_IPV6):
+  1811			if (size < ETH_HLEN + sizeof(struct ipv6hdr))
+  1812				goto out;
+  1813			if (hook_state.pf == NFPROTO_IPV6)
+  1814				break;
+  1815			goto out;
+  1816		default:
+  1817			ret = -EPROTO;
+  1818			goto out;
+  1819		}
+  1820	
+  1821		ctx.skb = skb;
+  1822	
+  1823		ret = bpf_test_run(prog, &ctx, repeat, &retval, &duration, false);
+  1824		if (ret)
+  1825			goto out;
+  1826	
+  1827		ret = bpf_test_finish(kattr, uattr, NULL, NULL, 0, retval, duration);
+  1828	
+  1829	out:
+  1830		kfree(user_ctx);
+  1831		kfree_skb(skb);
+  1832		kfree(data);
+  1833		return ret;
+  1834	}
+  1835	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
