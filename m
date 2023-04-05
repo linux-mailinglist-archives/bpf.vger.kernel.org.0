@@ -2,108 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33156D84D7
-	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 19:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573D66D84D8
+	for <lists+bpf@lfdr.de>; Wed,  5 Apr 2023 19:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbjDERZq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 13:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44076 "EHLO
+        id S232696AbjDER0M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 13:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbjDERZp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 13:25:45 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D303559E6
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 10:25:44 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-947cd8b2de3so75007466b.0
-        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 10:25:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680715543;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o+2RSIkiPIp4EaMGOsGWYGENd1oT1YPqzzMXhyq+Rfg=;
-        b=hEVnQ6pMTcqMQW4yRbk3qJ5sSqWqTmBbc4AWDtQiauAUEM/ThwStswAt+qOFXC+2+N
-         PpCoimdyT3NobKQP77YnMTilJ97csWVra01jD71A1AYJKOgmHM/YCxAG9cf/HA5sZVer
-         DSmhWDc9YSE1TUM3i++D1i3v4H8/STD/dGOjXUJ7oI6PEltIihReuaSl/trhLkZrlOpI
-         t+9tNbmExx9bJ7vnAdASjNcZMzuZBqRtmqPdgBGTm3+mg6XNUQLwUznJZQISfRBOd2DT
-         v8OQWC1Ubr9aU5Hi7R1Gc/dah5RDjarWbTrOoFuvMFFJrhwJ9in2qF6b9CLBp5FsHCmq
-         JY9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680715543;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o+2RSIkiPIp4EaMGOsGWYGENd1oT1YPqzzMXhyq+Rfg=;
-        b=6IYV9HWtrfAcpZ6sUDeZdOsYG9mjkKgw5cBifjomRyyultzYUt1Pg+aGvOEyPXT8NI
-         P2h4hvOJpoai8J9GsVTbE6zO8Z6GcWV/hrJo8yfeBxX8ukiaxuGuTHM53z2eQ/waMoSw
-         tHfLaHg9TUbREiexr6dOA6X8uWskRd3drS1rgAXtnjInD2h0yUMZIc1AHNxGXftqn4PD
-         NRkvHqSQ8rnPdeZX6Ngm6+yWb4OhZKvn2svFRFMOAQSR/88RBmfruzydKvYP6rLKtIyL
-         U6H4Vk0quUKPrgn7rNGAGu14+kbPlxdkVHzLk/YalxH2NExehjXTBxuyxk6o7jcTUzrd
-         yWhQ==
-X-Gm-Message-State: AAQBX9cJyNSBy5OpkH5Zx1zkAmvzrjdS26e5t/ZXRmImOAVvOm/0Gqdw
-        slQ7gyNC9Ng40RCNuXUlkg5hduNZEqtR8XTcslFpOR/J
-X-Google-Smtp-Source: AKy350YqfnmDOHGXbRPUB3u9e5WYPH92nVGz30fK5NmxmRXLAT1Tq33UARt0913ifhaTFhj6GiN8U4ORHWAUoYfKMZM=
-X-Received: by 2002:a50:8e02:0:b0:4fb:f19:883 with SMTP id 2-20020a508e02000000b004fb0f190883mr1642677edw.1.1680715543241;
- Wed, 05 Apr 2023 10:25:43 -0700 (PDT)
+        with ESMTP id S231167AbjDER0L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 13:26:11 -0400
+Received: from out-40.mta1.migadu.com (out-40.mta1.migadu.com [95.215.58.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA8C55A2
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 10:26:09 -0700 (PDT)
+Message-ID: <a77e697d-6067-b1f8-a0f3-95a7e7ed067d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1680715567;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DLDUCAEQqIeAg2vzA1waJegqNulGmGeppk7uCmqRS+c=;
+        b=nJIQJ/yGTMD9V11G3Y/VMU8JHc6/bDGCiijGGnsp2E+twMjBpubcni+T2va30SnKeq/B05
+        tCzZLTbct8Eo/uSjEXJKv5bTSF56jEU2bl7+1nqwoxWfW5fVfVLcdxEfXmf0oL5ciJSXP1
+        HXv9N7RE8TdiqqbCfYnWaFWgVPs9zK4=
+Date:   Wed, 5 Apr 2023 10:26:02 -0700
 MIME-Version: 1.0
-References: <20230404043659.2282536-1-andrii@kernel.org> <20230404043659.2282536-13-andrii@kernel.org>
- <20230405032443.tcfnfjsp4jko4gek@macbook-pro-6.dhcp.thefacebook.com>
-In-Reply-To: <20230405032443.tcfnfjsp4jko4gek@macbook-pro-6.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Apr 2023 10:25:31 -0700
-Message-ID: <CAEf4BzaLL+KFyha8nsi-gRyC2E68EF7c25AghCmdocbLHF90CA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 12/19] bpf: add log_size_actual output field
- to return log contents size
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-        lmb@isovalent.com, timo@incline.eu, robin.goegge@isovalent.com,
-        kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH bpf-next] bpf: Add a kfunc filter function to 'struct
+ btf_kfunc_id_set'.
+Content-Language: en-US
+To:     Aditi Ghag <aditi.ghag@isovalent.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com,
+        David Vernet <void@manifault.com>
+References: <500d452b-f9d5-d01f-d365-2949c4fd37ab@linux.dev>
+ <20230404060959.2259448-1-martin.lau@linux.dev>
+ <BCD96FC5-9926-49F6-B56D-FAFB65A2FEE4@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <BCD96FC5-9926-49F6-B56D-FAFB65A2FEE4@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 4, 2023 at 8:24=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Apr 03, 2023 at 09:36:52PM -0700, Andrii Nakryiko wrote:
-> > @@ -1407,6 +1407,11 @@ union bpf_attr {
-> >               __aligned_u64   fd_array;       /* array of FDs */
-> >               __aligned_u64   core_relos;
-> >               __u32           core_relo_rec_size; /* sizeof(struct bpf_=
-core_relo) */
-> > +             /* output: actual total log contents size (including term=
-intaing zero).
-> > +              * It could be both larger than original log_size (if log=
- was
-> > +              * truncated), or smaller (if log buffer wasn't filled co=
-mpletely).
-> > +              */
-> > +             __u32           log_size_actual;
->
-> Naming nit..
-> In the networking subsystem there is skb->truesize.
-> The concept is exposed to user space through tracepoints and well underst=
-ood in networking.
-> May be call this field 'log_truesize' ?
-> With or without underscore.
+On 4/5/23 8:05 AM, Aditi Ghag wrote:
+> Looks quite promising for the sock_destroy use case, and also as a generic filtering mechanism, but I'm not aware of other use cases. I haven't had a chance to apply this patch locally, but I'm planning to do it soon. Thanks!
 
-Sounds good, naming pretty much the only part I wasn't sure about.
-log_size_true or log_true_size, any preference? Latter reads more
-naturally, so I'm guessing you'll prefer that one? Unless naming
-"regularity" of log_size_true is preferred?
+Please don't top post.
 
->
-> Other than this the rest looks good and I believe it addresses Lorenz and=
- Timo concerns.
-> Would be good to hear from them.
+Other use case is to allow different sets of kfuncs to struct_ops programs from 
+David: https://lore.kernel.org/bpf/Y9KLHZ1TNXVHdVKm@maniforge/
 
-+1, yep. I'll wait a bit more before resubmitting.
+>> From: Martin KaFai Lau <martin.lau@kernel.org>
+>>
+>> This set (https://lore.kernel.org/bpf/https://lore.kernel.org/bpf/500d452b-f9d5-d01f-d365-2949c4fd37ab@linux.dev/)
+>> needs to limit bpf_sock_destroy kfunc to BPF_TRACE_ITER.
+>> In the earlier reply, I thought of adding a BTF_KFUNC_HOOK_TRACING_ITER.
+>>
+>> Instead of adding BTF_KFUNC_HOOK_TRACING_ITER, I quickly hacked something
+>> that added a callback filter to 'struct btf_kfunc_id_set'. The filter has
+>> access to the prog such that it can filter by other properties of a prog.
+>> The prog->expected_attached_type is used in the tracing_iter_filter().
+>> It is mostly compiler tested only, so it is still very rough but should
+>> be good enough to show the idea.
+>>
+>> would like to hear how others think. It is pretty much the only
+>> piece left for the above mentioned set.
+
