@@ -2,69 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF426DA4A6
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 23:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EEC6DA59F
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 00:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbjDFVZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 17:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S231154AbjDFWNY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 18:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232461AbjDFVZU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 17:25:20 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7B810E5;
-        Thu,  6 Apr 2023 14:25:19 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id v9so2368654pjk.0;
-        Thu, 06 Apr 2023 14:25:19 -0700 (PDT)
+        with ESMTP id S229848AbjDFWNX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 18:13:23 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A8D5243;
+        Thu,  6 Apr 2023 15:13:21 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id cw23so4685698ejb.12;
+        Thu, 06 Apr 2023 15:13:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680816319; x=1683408319;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20210112; t=1680819200; x=1683411200;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jVlOlkoXNAtZlrEiaIusqat9aNgJfbSvvGWuZy6PpLM=;
-        b=lBLBoW0dYYKV3gmElyZfVwV7tiEbKOjqAkHnuLeFzlDudSKS4xPjI+Yo1MRbwAZ/YX
-         JGCcenM5TsOFzNuG2NDGPYFsVmRa2YLte5byyJlxE74/lsrQvcJ0O/ebU54XMjJ+6y5j
-         izDvJIJZb9zQQ+S5Dc8RwvR+hmPKBk97Oj3ZYY41aldHyvTCmCh1r0tVTidsF+Fm7TlQ
-         C7tYyxz2ac49oR2jLYlOMBs1FUQD1aDyeicWxvA2tEF0WFyoA88a4yKCTh8pyH5z4r/u
-         Ln+qn2eYHutwKEp3J4VPaRrWzeYh6hEoGKRmbV36KuieRivsG8MtDyzXpc/dSD2nSGyE
-         Y6BA==
+        bh=LR838qn5ojTxvte1z440mNOMaVbvtK1CNLDQN93r+0Q=;
+        b=YpwuY6e5l56eHE2e8U0yGmlSOzu99EGm937lDzi7An3yJ4XEFzkcYygz3arY0oVMXY
+         csaE77AaXI2TkIk02KiWY+G4dl56eFrH2MpsjJFJdZVcNyrhLhKPZRn0A91yfY24YYts
+         p1lzCf1JVazl6Ij56fDZymyvDdLjAnDkAoQo6sQOZGN0DSLQt4hlHUUajrAGTJBwa0Em
+         DST57BRWU8U5K+/aM8OBGskCsoh3zGNrVSimGTI8/I9bfKTqchEr7EAIJgoeROCLRGfv
+         dfb5EKA8VbatCI8amqYbDkv6R1Ab/0K+pI9ee5pRh3hPAMr0cl+rx+eU4g+J4NY00a71
+         6EZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680816319; x=1683408319;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jVlOlkoXNAtZlrEiaIusqat9aNgJfbSvvGWuZy6PpLM=;
-        b=SmWBcEXadokjIawPhsDXtJ1/+WzJ5ZMTBhmvbC9dhNTROe9kJhtSiwMAR1kFSXTDTy
-         Kusst/Z+b7wrh2IFzbPZ0sXaZVYqC58U3N2UO5N7eZIYZphh2GposmCGi59obw25IT6X
-         JSkWn0K4rNpyvhBVx/5pkjNKSABykLvYjZf0Fe4Wl2E6kn2suC9VIOKjQV3ljo+XjDHJ
-         IJ8QTQTb3eNCBfm2ifNKS6Xx7vdy7XZri04rUgG5vHfxOfC+PE6NpBwGEZnrTJ7DWDKr
-         Dm+aOMxlPlHi22IJ5ZOkMuxVfxR74Z90URsbcGBVeRxn/hNQrW8smHHA1CUYIADdI9G8
-         TYsQ==
-X-Gm-Message-State: AAQBX9fqBdcCucAVC0zRYtOk0SMn/OGLYlPdpio7G0b25w9vy6+5hUDJ
-        FjPM1o7PEYNobmv2AaI4/h0=
-X-Google-Smtp-Source: AKy350aFX3Jnil974ISMRxBWnDWUfrQcQntiN20c67FNwf3zF7DQspOer8zH0Jsl0FYhRUSqt7xpGw==
-X-Received: by 2002:a17:902:e752:b0:1a1:cae6:cfd with SMTP id p18-20020a170902e75200b001a1cae60cfdmr7814151plf.34.1680816318763;
-        Thu, 06 Apr 2023 14:25:18 -0700 (PDT)
-Received: from localhost ([67.170.148.130])
-        by smtp.gmail.com with ESMTPSA id y5-20020a170902700500b001a1c2ee06e0sm1803889plk.15.2023.04.06.14.25.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 14:25:18 -0700 (PDT)
-Date:   Thu, 06 Apr 2023 14:25:17 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>, jakub@cloudflare.com,
-        daniel@iogearbox.net, edumazet@google.com, cong.wang@bytedance.com,
-        lmb@isovalent.com
-Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        will@isovalent.com
-Message-ID: <642f38bd52cac_10ba920879@john.notmuch>
-In-Reply-To: <20230406010031.3354-1-john.fastabend@gmail.com>
-References: <20230406010031.3354-1-john.fastabend@gmail.com>
-Subject: RE: [PATCH bpf v5 00/12] bpf sockmap fixes
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        d=1e100.net; s=20210112; t=1680819200; x=1683411200;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LR838qn5ojTxvte1z440mNOMaVbvtK1CNLDQN93r+0Q=;
+        b=48r1BpoqZC9BAQOvmBbdG/ES/lfb1zY1Qulkl1CD5miIrdZ50XnojL6cnJLLHkXbHZ
+         id63nN5bri2Umtcm/QsqCozzp9dclX1pdWklxwsxzwBUP38NUTjcJrtNozWMmYZA9dpE
+         svzmWTY5P+j/5Eq7wHxrGivOPOAuC/QTQ5tLqwYT0Z8h89H8wjpORoUgiLfvLKm+b1d1
+         uIPwvqDz78TgJ1N2mWOzIa/owtJH779a+lWbPLZTet3ojn8ATAW18dHzL+8JsTK+WfAL
+         9VL/MWCirYrMuOF01x4C6aCLJtkznrQZ5aIDsOJ/Z3bPR4XfOEDqpAos07dlLZfo/3Ht
+         BUcQ==
+X-Gm-Message-State: AAQBX9cVpy4t1WdPiyhq77Z1CfJwcqGHaPTan3T0X+KldqyqsHvLfltU
+        Ep5fqrIaYu6cVCvngHqrdcwaVsPbA31bgv91/No=
+X-Google-Smtp-Source: AKy350bGHFTcvlgl4c1fEe9+sVRUEwan9gMUZ8FtCLnfntaacVK4sQsNsIGVLx5EZruDK74J2ez9SQqP8QD7Vd7uyFY=
+X-Received: by 2002:a17:906:55d5:b0:88d:ba79:4317 with SMTP id
+ z21-20020a17090655d500b0088dba794317mr5418820ejp.7.1680819200222; Thu, 06 Apr
+ 2023 15:13:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230406004018.1439952-1-drosen@google.com> <20230406004018.1439952-2-drosen@google.com>
+ <CAEf4BzbyX3i6k5eL6D-5enU+u58nVn_fK28zNBJ4w_Vm-+RiMQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbyX3i6k5eL6D-5enU+u58nVn_fK28zNBJ4w_Vm-+RiMQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 6 Apr 2023 15:13:09 -0700
+Message-ID: <CAADnVQ+jQG95kVqkajr=zz2-vs24XedEXcBgSx29oAjqUsFn2g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] bpf: verifier: Accept dynptr mem as mem in helpers
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -75,51 +85,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend wrote:
-> Fixes for sockmap running against NGINX TCP tests and also on an
-> underprovisioned VM so that we hit error (ENOMEM) cases regularly.
-> 
-> The first 3 patches fix cases related to ENOMEM that were either
-> causing splats or data hangs.
-> 
-> Then 4-7 resolved cases found when running NGINX with its sockets
-> assigned to sockmap. These mostly have to do with handling fin/shutdown
-> incorrectly and ensuring epoll_wait works as expected.
-> 
-> Patches 8 and 9 extract some of the logic used for sockmap_listen tests
-> so that we can use it in other tests because it didn't make much
-> sense to me to add tests to the sockmap_listen cases when here we
-> are testing send/recv *basic* cases.
-> 
-> Finally patches 10, 11 and 12 add the new tests to ensure we handle
-> ioctl(FIONREAD) and shutdown correctly.
-> 
-> To test the series I ran the NGINX compliance tests and the sockmap
-> selftests. For now our compliance test just runs with SK_PASS.
-> 
-> There are some more things to be done here, but these 11 patches
-> stand on their own in my opionion and fix issues we are having in
-> CI now. For bpf-next we can fixup/improve selftests to use the
-> ASSERT_* in sockmap_helpers, streamline some of the testing, and
-> add more tests. We also still are debugging a few additional flakes
-> patches coming soon.
-> 
-> v2: use skb_queue_empty instead of *_empty_lockless (Eric)
->     oops incorrectly updated copied_seq on DROP case (Eric)
->     added test for drop case copied_seq update
-> 
-> v3: Fix up comment to use /**/ formatting and update commit
->     message to capture discussion about previous fix attempt
->     for hanging backlog being imcomplete.
-> 
-> v4: build error sockmap things are behind NET_SKMSG not in
->     BPF_SYSCALL otherwise you can build the .c file but not
->     have correct headers.
-> 
-> v5: typo with mispelled SOCKMAP_HELPERS
-> 
+On Thu, Apr 6, 2023 at 1:55=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Apr 5, 2023 at 5:40=E2=80=AFPM Daniel Rosenberg <drosen@google.co=
+m> wrote:
+> >
+> > This allows using memory retrieved from dynptrs with helper functions
+> > that accept ARG_PTR_TO_MEM. For instance, results from bpf_dynptr_data
+> > can be passed along to bpf_strncmp.
+> >
+> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> > ---
+>
+> I think patches like this should be targeted against bpf-next, so for
+> next revision please send them against bpf-next tree.
+>
+> >  kernel/bpf/verifier.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 56f569811f70..20beab52812a 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -7164,12 +7164,16 @@ static int check_reg_type(struct bpf_verifier_e=
+nv *env, u32 regno,
+> >          * ARG_PTR_TO_MEM + MAYBE_NULL is compatible with PTR_TO_MEM an=
+d PTR_TO_MEM + MAYBE_NULL,
+> >          * but ARG_PTR_TO_MEM is compatible only with PTR_TO_MEM but NO=
+T with PTR_TO_MEM + MAYBE_NULL
+> >          *
+> > +        * ARG_PTR_TO_MEM is compatible with PTR_TO_MEM that is tagged =
+with a dynptr type.
+> > +        *
+> >          * Therefore we fold these flags depending on the arg_type befo=
+re comparison.
+> >          */
+> >         if (arg_type & MEM_RDONLY)
+> >                 type &=3D ~MEM_RDONLY;
+> >         if (arg_type & PTR_MAYBE_NULL)
+> >                 type &=3D ~PTR_MAYBE_NULL;
+> > +       if (base_type(arg_type) =3D=3D ARG_PTR_TO_MEM)
+> > +               type &=3D ~DYNPTR_TYPE_FLAG_MASK;
+>
+> Something feels off here. Can you paste a bit of verifier log for the
+> failure you were getting. And let's have a selftest for this situation
+> as well.
+>
+> ARG_PTR_TO_MEM shouldn't be qualified with the DYNPTR_TYPE flag, it's
+> just memory, there is no need to know what type of dynptr it was
+> derived from. So if that happens, the problem is somewhere else. Let's
+> root cause and fix that. Having a selftest that demonstrates the
+> problem will help with that.
 
-Still another build problem apparently we can have the
-CONFIG_NET_SOCK_MSG option set with CONFIG_INET disabled.
-OK I can fix it but seems a bit strange to me a sockmap
-deployment without inet is mostly useless I suspect.
++1
+All of the DYNPTR_TYPE_FLAG_MASK flags cannot appear in type =3D=3D reg->ty=
+pe
+here.
+They are either dynamic flags inside bpf_dynptr_kern->size
+or in arg_type.
+Like in bpf_dynptr_from_mem_proto.
