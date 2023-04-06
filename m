@@ -2,66 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156FA6DA225
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 22:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDE56DA256
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 22:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237744AbjDFUDS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 16:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
+        id S229773AbjDFUKb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 16:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238087AbjDFUDR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 16:03:17 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C725D9033
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 13:03:15 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-932277e003cso133340766b.3
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 13:03:15 -0700 (PDT)
+        with ESMTP id S229741AbjDFUKb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 16:10:31 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C7C9B
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 13:10:29 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id g18so4109190ejx.7
+        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 13:10:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680811394; x=1683403394;
+        d=gmail.com; s=20210112; t=1680811828;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M3je9yarvK+0HYdVu4thcLJxFZ0H/sLuYdimSj8MuCg=;
-        b=VKGDdikXtY3g3SMhpWfzkfODV1WBapVeW/gEIOPpu25gol69+/jVugrhZGO/qxYaBE
-         qAI3UAy/d+TEXJ/eFavrJuxLawMnwnybS6t8RZN5wfR5YMx+hPM4PouSLP/kEj+otAnr
-         zDfcwBkklGsBY7o8Yu3ggMffgQCObCsd2T4FyePXXPupK9sNxKHxShiSi8r25qH76Gkc
-         uoRTWP09neo4ZidGG2IX649DJDTQywSlPP7C1AI3oztsF8+oxvnsrQI3yrFeAUGkfZM2
-         E+0LJDge2MuhnWu/50cLLzgwCVFlR8a2rAwVvs0Mq5vcJiPbg4zPnLn7j8H2pWVvEyb3
-         hqfw==
+        bh=r37JApaSbAXGk90moymoaBbG16PqeLkTyY+IhuquG2E=;
+        b=HE+xZwSYqk46cjwwz5im+3I3ghYSjtwmmMtBBwHbaIVsBNMgB9uwtwCUTjC8TXhkwx
+         P5aNBCWwC73NyhaB9oFS+I20If5vakwi3ShHLN/wtqy6OicnR+BBZcftmwnIUGdLTqOv
+         HltprFPckHe9YAbfNB8ORq5J4qwS6IPQX7wrXC8KVO5t6dVph2+SgDZzeeC93dUtpzOf
+         M6+HDi2mUDpr1zIdL7is56/2zy7M8MaT+Zvqf9ei1oBc+oc6D+D+bz5u1xBQ9VVCwMLK
+         lmQSBpsJWfpLZtq6/a4HEqHurhkZxk1rBuH3Tg/KoqnEoAbViIwOaMzYCyHMDJrRU6PX
+         QmYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680811394; x=1683403394;
+        d=1e100.net; s=20210112; t=1680811828;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=M3je9yarvK+0HYdVu4thcLJxFZ0H/sLuYdimSj8MuCg=;
-        b=FHYwSK6S+w9oWkv+oNLn8vh68qbu4iv5EQ7aAyi69UnNWKFVNtyCWM4hGxCinF3mcL
-         UfeXt/4e4SZt2PTz55FmhPF+Rpkjo34xZmC334+sTXUXa0D/H12JE/noJBKi1/w6WEqe
-         8ly4Wkpr1MfsPxpbQRhkTVl3rKEY19RdRImLTAW+ZXgBA5+OjfXNmoxK64ceXpmbAxrx
-         6vKT9zoj0iR8RaC2GxkTEo/HmARCDX+GmFN+uC1OaoB4tVs1ujX7PGXVGGka4e15B9Cx
-         SGAnei3c18Azi9H/MSXCZ+FI1aG0Gl7vcNwjG3oXZfyjWfF85olJMYrXEf4ageoJQhTy
-         sCbg==
-X-Gm-Message-State: AAQBX9d7uetsGaLEnY/UvitU1/ymp4x6cXtq3fiDVxDdnbva6nAr/tbD
-        McOls2P5FBQxAx1MYJqj/O+glKaqUhEjv+kqglE=
-X-Google-Smtp-Source: AKy350Zz1d25GKLCmkJKsNALYXLNG9I7m4OUWSwkOsH8KoimlWExQpfuohB5ywFHKwTBziqqeGLhfw8aTcLiP8pwmqE=
-X-Received: by 2002:a50:d6da:0:b0:4fc:ebe2:2fc9 with SMTP id
- l26-20020a50d6da000000b004fcebe22fc9mr368024edj.3.1680811394000; Thu, 06 Apr
- 2023 13:03:14 -0700 (PDT)
+        bh=r37JApaSbAXGk90moymoaBbG16PqeLkTyY+IhuquG2E=;
+        b=norKCtSh//aEB1E07YPHgsFEhU32oESEWgQVYlYWo/LToDyOV0vbiNjkJUBYdQVAVJ
+         8CtVUQSgGUmTIVbuUFkNaKM2bBVU1miEXELDbv+qunWOBPzGhw+UpHI/tkVJz+/89jiA
+         TxVUWhLLM1EIumz5MnuO5dB2ZFom2X5xoRQz7tEXfkWZ1zLJd1RNHEANHBHGlUdtEBgJ
+         DMSkW/2M/syc5KK+2Lw3fhhpPBtY8/bJ+dnf/yWCuz/Q67dES89lg9C3OiUxidd022vK
+         mNuIMRsAiBpAVXcKnhVMt9cANibsXV4DgqBlBUdrcEkVhbXW+QP2RprG7TGPFhYd0jbN
+         aZHg==
+X-Gm-Message-State: AAQBX9dh6du0WZ/I9697K0XYMRfe5xta7xbvWaXppV4rxBrLvWEED+1j
+        4x8Bo08vZRupQPUhxBbomSZQmZ3C6b9ByFAVeUI=
+X-Google-Smtp-Source: AKy350bgBiYHcRoDKXzkTC1bl/XCPuPYdC+1GoCjPGxqTSkrq8qsMJ0wxT/yHdJZqs93Sp+IJ5l/omzVws7h8DQm3Do=
+X-Received: by 2002:a17:907:7638:b0:931:ce20:db96 with SMTP id
+ jy24-20020a170907763800b00931ce20db96mr48276ejc.5.1680811827863; Thu, 06 Apr
+ 2023 13:10:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230406164450.1044952-1-yhs@fb.com> <20230406164455.1045294-1-yhs@fb.com>
- <bcdb8bde-6aa2-5f01-f03d-53498330f623@meta.com>
-In-Reply-To: <bcdb8bde-6aa2-5f01-f03d-53498330f623@meta.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 6 Apr 2023 13:03:02 -0700
-Message-ID: <CAADnVQJQ=oJDb8+SQ9R-dNC9irgZRUYLKFFg+VfXRwBCXNS1Rw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/4] bpf: Improve verifier JEQ/JNE insn branch
- taken checking
-To:     Dave Marchevsky <davemarchevsky@meta.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+References: <20230404043659.2282536-1-andrii@kernel.org> <20230404043659.2282536-15-andrii@kernel.org>
+ <CAN+4W8hdeEVb=Rs-T+E7QtF++fKYObjb--KmCqqOFg8gL+kocQ@mail.gmail.com>
+ <CAEf4Bzbv25n_d3-aCgLMNTu0ZwF2J4srp02QMj0Hs3gh-sGobA@mail.gmail.com>
+ <CAN+4W8hFPwekddJ3TKxy3usdSXA-utYpFsqUVduR4ny=qQX+yg@mail.gmail.com>
+ <CAEf4BzaJTCNZFx_H3GhDmhR7peWTjray+w4V9mNKNR1_L0v8BQ@mail.gmail.com> <CAADnVQLoNky_OULJgyzsB1aFY+zFPpJrYRC6gRDZxfMarzhaxw@mail.gmail.com>
+In-Reply-To: <CAADnVQLoNky_OULJgyzsB1aFY+zFPpJrYRC6gRDZxfMarzhaxw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 6 Apr 2023 13:10:15 -0700
+Message-ID: <CAEf4BzaJFwCh_E+Vg-_fWfKg+uQkQ7qBG_gvoEovUaF+uhyk0Q@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 14/19] bpf: relax log_buf NULL conditions when
+ log_level>0 is requested
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Lorenz Bauer <lmb@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Timo Beckers <timo@incline.eu>, robin.goegge@isovalent.com,
+        Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -74,75 +78,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 10:49=E2=80=AFAM Dave Marchevsky <davemarchevsky@met=
-a.com> wrote:
+On Thu, Apr 6, 2023 at 12:46=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
+> On Thu, Apr 6, 2023 at 11:43=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Apr 6, 2023 at 9:15=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com>=
+ wrote:
+> > >
+> > > On Wed, Apr 5, 2023 at 6:44=E2=80=AFPM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:>
+> > > > We could and I thought about this, but verifier logging is quite an
+> > > > expensive operation due to all the extra formatting and reporting, =
+so
+> > > > it's not advised to have log_level=3D1 permanently enabled for
+> > > > production BPF program loading.
+> > >
+> > > Any idea how expensive this is?
+> > >
+> >
+> > It will depend on the specific program, of course. But just to
+> > estimate, here's pyperf100 selftests with log_level=3D1 and log_level=
+=3D4
+> > (just stats, basically free).
+> >
+> > [vmuser@archvm bpf]$ time sudo ./veristat pyperf100.bpf.o -v >/dev/null
+> >
+> > real    0m1.761s
+> > user    0m0.008s
+> > sys     0m1.743s
+> > [vmuser@archvm bpf]$ time sudo ./veristat pyperf100.bpf.o >/dev/null
+> >
+> > real    0m0.869s
+> > user    0m0.009s
+> > sys     0m0.846s
+> >
+> > 2x difference. So I'd definitely not recommend running with
+> > log_level=3D1 by default.
+> >
+> > > > Note that even if log_buf=3D=3DNULL when log_level>0 we'd be
+> > > > doing printf()-ing everything, which is the expensive part. So do y=
+ou
+> > > > really want to add all this extra overhead *constantly* to all
+> > > > production BPF programs?
+> > >
+> > > No, I'm just going off of what UAPI I would like to use. Keeping
+> > > semantics as they are is fine if it's too slow. We could always use a
+> > > small-ish buffer for the first retry and hope things fit.
+> >
+> > It's easy for me to implement it either way, Alexei and Daniel, any
+> > thoughts on this?
 >
+> I like this part of the idea:
 >
-> On 4/6/23 12:44 PM, Yonghong Song wrote:
-> > Currently, for BPF_JEQ/BPF_JNE insn, verifier determines
-> > whether the branch is taken or not only if both operands
-> > are constants. Therefore, for the following code snippet,
-> >   0: (85) call bpf_ktime_get_ns#5       ; R0_w=3Dscalar()
-> >   1: (a5) if r0 < 0x3 goto pc+2         ; R0_w=3Dscalar(umin=3D3)
-> >   2: (b7) r2 =3D 2                        ; R2_w=3D2
-> >   3: (1d) if r0 =3D=3D r2 goto pc+2 6
-> >
-> > At insn 3, since r0 is not a constant, verifier assumes both branch
-> > can be taken which may lead inproper verification failure.
-> >
-> > Add comparing umin/umax value and the constant. If the umin value
-> > is greater than the constant, or umax value is smaller than the constan=
-t,
-> > for JEQ the branch must be not-taken, and for JNE the branch must be ta=
-ken.
-> > The jmp32 mode JEQ/JNE branch taken checking is also handled similarly.
-> >
-> > The following lists the veristat result w.r.t. changed number
-> > of processes insns during verification:
-> >
-> > File                                                   Program         =
-                                      Insns (A)  Insns (B)  Insns    (DIFF)
-> > -----------------------------------------------------  ----------------=
-------------------------------------  ---------  ---------  ---------------
-> > test_cls_redirect.bpf.linked3.o                        cls_redirect    =
-                                          64980      73472  +8492 (+13.07%)
-> > test_seg6_loop.bpf.linked3.o                           __add_egr_x     =
-                                          12425      12423      -2 (-0.02%)
-> > test_tcp_hdr_options.bpf.linked3.o                     estab           =
-                                           2634       2558     -76 (-2.89%)
-> > test_parse_tcp_hdr_opt.bpf.linked3.o                   xdp_ingress_v6  =
-                                           1421       1420      -1 (-0.07%)
-> > test_parse_tcp_hdr_opt_dynptr.bpf.linked3.o            xdp_ingress_v6  =
-                                           1238       1237      -1 (-0.08%)
-> > test_tc_dtime.bpf.linked3.o                            egress_fwdns_pri=
-o100                                        414        411      -3 (-0.72%)
-> >
-> > Mostly a small improvement but test_cls_redirect.bpf.linked3.o has a 13=
-% regression.
-> > I checked with verifier log and found it this is due to pruning.
-> > For some JEQ/JNE branches impacted by this patch,
-> > one branch is explored and the other has state equivalence and
-> > pruned.
+> > Is it possible to change it so that log_buf =3D=3D NULL && log_size =3D=
+=3D 0
+> > && log_level > 0 only fills in log_size_actual and doesn't return
+> > ENOSPC? Otherwise we can't do oneshot loading.
+> >  if PROG_LOAD(buf=3DNULL, size=3D0, level=3D1) >=3D 0:
+> >    return fd
+> >  else
+> >    retry PROG_LOAD(buf!=3DNULL, size=3Dlog_size_actual, level=3D1)
 >
-> Can you elaborate a bit on this insn increase caused by pruning?
->
-> My naive reading of this: there was some state exploration that was
-> previously pruned due to is_branch_taken returning indeterminate
-> value (-1), and now that it can concretely say branch is/isn't taken,
-> states which would've been considered equivalent no longer are.
-> Is that accurate?
+> libbpf shouldn't be doing it by default, since load time matters,
+> but it could be useful in other scenarios.
+> Like central bpf loading daemon can use (buf=3DNULL, size=3D0, level=3D(1=
+ | 4))
+> every 100th prog_load as part of stats collection.
+> veristat can do it by default.
 
-Pretty much. It's because when is_branch_taken() is certain on the directio=
-n
-of the branch it marks register as precise and it hurts state equivalence
-later.
+makes sense, then no -ENOSPC for log_buf=3D=3DNULL, will do in next version
 
 >
-> >
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
->
-> Regardless,
->
-> Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+> log_true_size should more or less align with verified_insns uapi number,
+> but still interesting to see and track over time.
