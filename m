@@ -2,62 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A016DA3D8
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 22:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95736DA400
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 22:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240469AbjDFUna (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 16:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
+        id S240435AbjDFUtM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 16:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240476AbjDFUmv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 16:42:51 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885B4AF24
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 13:40:48 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-4fa3c48480fso1580612a12.2
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 13:40:48 -0700 (PDT)
+        with ESMTP id S240586AbjDFUsx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 16:48:53 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F91EC65A
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 13:46:11 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id qb20so4293627ejc.6
+        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 13:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680813647;
+        d=gmail.com; s=20210112; t=1680813969;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V29RjRfUD79nvg7DQknYm7femdg0VnD/aba75rgMKfw=;
-        b=X2/xDG0qRu18aQtcxxnP6CCglRBRwqmsm6FKsaQVnJVh+5OueEe/zdnsrgpxJp+T1Y
-         nPwWbNWdpH6DATfBcSISTzf6Q21oOSYptqqtul1kEtFUGk5Pt3dxNEd90AmX2sj0jTVx
-         mGDbac58tjuI9J+lrFeqeI23WNvY6bQtnGEvvIl6mUyK7BnvenL0cqqY17BbyECtbnsJ
-         AUBru2CGUhOyT14s/sMiB1WIPPl0PjNkB4MqGmnKdFDljKMyj/ViLWTxZH+4E8b13RQo
-         M1R6r/RNOuRTCRZf5+JTtsYecHR6ti4H9/tagXxm5LC5o+N36vDB568qtMRKAhWJ6fQG
-         JvHw==
+        bh=PAUkMZtbWU10gbUkI3iK59xPc1ucDHVNy1qNLYV8+Eo=;
+        b=UTw57zRIf2byFfEVSp3s5Re8KGbQYV+OSB/AxPz632zg8e+LiFycnmoBNF7gmM3V46
+         3X104uPlQRNSpXtswq57VfZqwTpFUwXJ2iWhlcwQ5P2aJTTALRrxxyCieGo1VyV3yLfY
+         b/U7dNmAIbitII6B++8TZaZNF8bOQHe7rstTMPevYRv3Qm10LLP3j7N6iWmWky9K6+Qi
+         Mlxe1u7/Yyx2iaSK9NHAgMV6QYA2fDz3Vd1pKV2PBoXKyIMlCEUDBqNN+o2T1BF9ZKKR
+         clvU5eTWi2SP1mzg4P7+KEdOrRRtKHxOEk0N86FH31Cetm2uO/OKEQd/vMxQZ8VnTPdm
+         22mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680813647;
+        d=1e100.net; s=20210112; t=1680813969;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V29RjRfUD79nvg7DQknYm7femdg0VnD/aba75rgMKfw=;
-        b=iCW3kRJpspXE47rQyDQJfpv8H4f26MA6qDr5oFbosulMVYxtpYsfVm6DLqs3nJ2fzn
-         HH61YoEdmYFHLjAwFchUiey1tZIUxnFJZ08iy74uZtTMVbmj7m3EKvMHIXMGMZO90u4f
-         onHHKERLGi7Vcab6Xu7pSsvpQ7N24usiEK9vKei+D62kYeDMLtG/OaZy2qJvK5Rv6rx2
-         POsZXV42jkj5ThAYOT13giGrxgcPGZOr2M7sDF7JtGM2NET3cUM9fjTf1/la3thZlzIm
-         zFS9rJvwt9oV6pIHoFiPujvetkhT8XqJixk0AAoXBgRl+kvU4RenvIVP3s6b+fawekx4
-         L82w==
-X-Gm-Message-State: AAQBX9fpqTz3FyKy8bUCuaZbxh7eySetAail6/Uf1KFH9SBa+7Hm9L7F
-        YmATysDlM1G67jljkYOEI0DIBjGQIMnHGLOEPGg=
-X-Google-Smtp-Source: AKy350ZSDhiWxsjm0mnaDH1Npc7/dLZGDTahfLlmR8jnIoVXaxLMsaCJx6ZpyEhC8x7uaBSfCgovlhUshcb2zv8nSK8=
-X-Received: by 2002:a50:bae9:0:b0:4fc:6494:81c3 with SMTP id
- x96-20020a50bae9000000b004fc649481c3mr444390ede.1.1680813646909; Thu, 06 Apr
- 2023 13:40:46 -0700 (PDT)
+        bh=PAUkMZtbWU10gbUkI3iK59xPc1ucDHVNy1qNLYV8+Eo=;
+        b=Dhn8npj2lqCMMMKvPJmUbHGSq44nNSUmQupL/ZjU7KkXS8bRxPH3HDfbwEHxtrhWMa
+         sNIli3XejPcGQm79E2zjzq1gU4yFZNP179IEpJJA6LRmAM64XrLcXNGth8IhVeiKUBgw
+         8MxtwbxxptsMMMnzvLLNrRHBBaxMT4n8XW6IbEDjCMGZGDo2iJ/5wIn7mkyWDWmMlGZ/
+         ftKJ9gHbPUxgU7eOgzshmki8R1+8yaJEQ9xZg1kdevpRA+bn7UA0remoSFOT+RRcNJfc
+         dVO7joYDeZjvsSQRFFv4oU0AGZ5Qj4VahT4noF60QM9UKmd4PrGUZmSlDV1xUauSyxeW
+         iYYg==
+X-Gm-Message-State: AAQBX9fBCpKPTYTJiiJ6o7P/3sqSg2VI9cbuDUs05P7NZIbrwOBfMRf+
+        jYsfsxnTaVmIc9zBGrX23bn2i9mWnvZVAclg/8Wa5B2S+q0=
+X-Google-Smtp-Source: AKy350YdRFScZwplFYidFemumA9qGA1X5uE5mI8/P/GieKRB9HlAZm2S3jSy16Gi6w52tHc25Jt8iRN4T4BpAJ2uudw=
+X-Received: by 2002:a17:906:80c5:b0:931:fb3c:f88d with SMTP id
+ a5-20020a17090680c500b00931fb3cf88dmr99052ejx.5.1680813969307; Thu, 06 Apr
+ 2023 13:46:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230406164450.1044952-1-yhs@fb.com> <20230406164505.1046801-1-yhs@fb.com>
- <97ba28ef-b825-94d2-e90f-89969160a86d@meta.com>
-In-Reply-To: <97ba28ef-b825-94d2-e90f-89969160a86d@meta.com>
+References: <20230406164450.1044952-1-yhs@fb.com> <20230406164510.1047757-1-yhs@fb.com>
+In-Reply-To: <20230406164510.1047757-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 6 Apr 2023 13:40:35 -0700
-Message-ID: <CAEf4BzY6MiwzJe8OVAsfESV6f1qB4DTCR_tB+EbMaE6Rs15wxg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] bpf: Improve handling of pattern '<const>
- <cond_op> <non_const>' in verifier
-To:     Dave Marchevsky <davemarchevsky@meta.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 6 Apr 2023 13:45:57 -0700
+Message-ID: <CAEf4BzYDiG0xiE-DnBomOr_Jj6S_QyEZNJwaZmzCCdF7suqG2Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: Add verifier tests for
+ code pattern '<const> <cond_op> <non_const>'
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         Martin KaFai Lau <martin.lau@kernel.org>
@@ -73,47 +71,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 11:10=E2=80=AFAM Dave Marchevsky <davemarchevsky@met=
-a.com> wrote:
+On Thu, Apr 6, 2023 at 9:45=E2=80=AFAM Yonghong Song <yhs@fb.com> wrote:
 >
-> On 4/6/23 12:45 PM, Yonghong Song wrote:
-> > Currently, the verifier does not handle '<const> <cond_op> <non_const>'=
- well.
-> > For example,
-> >   ...
-> >   10: (79) r1 =3D *(u64 *)(r10 -16)       ; R1_w=3Dscalar() R10=3Dfp0
-> >   11: (b7) r2 =3D 0                       ; R2_w=3D0
-> >   12: (2d) if r2 > r1 goto pc+2
-> >   13: (b7) r0 =3D 0
-> >   14: (95) exit
-> >   15: (65) if r1 s> 0x1 goto pc+3
-> >   16: (0f) r0 +=3D r1
-> >   ...
-> > At insn 12, verifier decides both true and false branch are possible, b=
-ut
-> > actually only false branch is possible.
-> >
-> > Currently, the verifier already supports patterns '<non_const> <cond_op=
-> <const>.
-> > Add support for patterns '<const> <cond_op> <non_const>' in a similar w=
-ay.
-> >
-> > Also fix selftest 'verifier_bounds_mix_sign_unsign/bounds checks mixing=
- signed and unsigned, variant 10'
-> > due to this change.
-> >
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
+> Add various tests for code pattern '<const> <cond_op> <non_const>' to
+> exercise the previous verifier patch.
 >
-> I still think there's a refactoring opportunity here, but I see your comm=
-ents
-> on the related thread in v1 of this series, and don't think it's a blocke=
-r
-> to find cleanest refactor.
+> The following are veristat changed number of processed insns stat
+> comparing the previous patch vs. this patch:
+>
+> File                                                   Program           =
+                                    Insns (A)  Insns (B)  Insns  (DIFF)
+> -----------------------------------------------------  ------------------=
+----------------------------------  ---------  ---------  -------------
+> test_seg6_loop.bpf.linked3.o                           __add_egr_x       =
+                                        12423      12314  -109 (-0.88%)
+>
 
-Agreed, but current implementation is not wrong, so:
+nit: a bit of veristat trivia for future uses. If you specify filters
+properly, it will size the width of columns more tightly and you
+wouldn't have to trim only relevant rows. The above would do,
+probably:
+
+sudo ./veristat *.linked3.o -e file,prog,insns -f 'insns_diff!=3D0'
+
+> Only one program is affected with minor change.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  .../verifier_bounds_deduction_non_const.c     | 460 ++++++++++++++++++
+>  1 file changed, 460 insertions(+)
+>
+
+Nice set of tests!
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
+
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction_=
+non_const.c b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction_n=
+on_const.c
+> index fe570d866139..823f727cf210 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction_non_con=
+st.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction_non_con=
+st.c
+> @@ -176,4 +176,464 @@ l1_%=3D:                                           =
+         \
+>         : __clobber_all);
+>  }
 >
-> Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+
+[...]
