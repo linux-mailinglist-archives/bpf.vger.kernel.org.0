@@ -2,63 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B95736DA400
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 22:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632F56DA40C
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 22:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240435AbjDFUtM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 16:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
+        id S229947AbjDFUu2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 16:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240586AbjDFUsx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 16:48:53 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F91EC65A
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 13:46:11 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id qb20so4293627ejc.6
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 13:46:10 -0700 (PDT)
+        with ESMTP id S240461AbjDFUt1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 16:49:27 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F419AF3B;
+        Thu,  6 Apr 2023 13:49:06 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id cw23so4306703ejb.12;
+        Thu, 06 Apr 2023 13:49:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680813969;
+        d=gmail.com; s=20210112; t=1680814145;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PAUkMZtbWU10gbUkI3iK59xPc1ucDHVNy1qNLYV8+Eo=;
-        b=UTw57zRIf2byFfEVSp3s5Re8KGbQYV+OSB/AxPz632zg8e+LiFycnmoBNF7gmM3V46
-         3X104uPlQRNSpXtswq57VfZqwTpFUwXJ2iWhlcwQ5P2aJTTALRrxxyCieGo1VyV3yLfY
-         b/U7dNmAIbitII6B++8TZaZNF8bOQHe7rstTMPevYRv3Qm10LLP3j7N6iWmWky9K6+Qi
-         Mlxe1u7/Yyx2iaSK9NHAgMV6QYA2fDz3Vd1pKV2PBoXKyIMlCEUDBqNN+o2T1BF9ZKKR
-         clvU5eTWi2SP1mzg4P7+KEdOrRRtKHxOEk0N86FH31Cetm2uO/OKEQd/vMxQZ8VnTPdm
-         22mQ==
+        bh=sCN3GrtUpZ+xlqLWoh1ipqXhNvsLB+QwAGX3mur1Ixw=;
+        b=BheOjBuvTUebB1RMkj1YW3umEPmVi/BcbcP+0jtpeESNYpRR8Yl8k+uiONH0r63VV3
+         eLI5F0XCCBnAYdVUzcwSMAWRlk8DK7PBsC4qnTmci86zrXDBhYQDZPEfDEPuAZc0dyXH
+         11ICDipD3giRMUtmkVlg0WvJ5NYR2RD2k+EBuLGoaWtLIAjexGU2EwiHUuuPxf7yfDqf
+         ojHj5ASivTPF7vEgnbewW+8JvcD+DAFzEFJWJxPuei/QR7ukrM6vFWSGZO9HNZon4IhV
+         sHC9IR1oxXn6YHrcuj89H4netNP7I3DTUyeBoDhQKhzXcHjaYUbaWBIy8+KXB4povH0B
+         sxZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680813969;
+        d=1e100.net; s=20210112; t=1680814145;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PAUkMZtbWU10gbUkI3iK59xPc1ucDHVNy1qNLYV8+Eo=;
-        b=Dhn8npj2lqCMMMKvPJmUbHGSq44nNSUmQupL/ZjU7KkXS8bRxPH3HDfbwEHxtrhWMa
-         sNIli3XejPcGQm79E2zjzq1gU4yFZNP179IEpJJA6LRmAM64XrLcXNGth8IhVeiKUBgw
-         8MxtwbxxptsMMMnzvLLNrRHBBaxMT4n8XW6IbEDjCMGZGDo2iJ/5wIn7mkyWDWmMlGZ/
-         ftKJ9gHbPUxgU7eOgzshmki8R1+8yaJEQ9xZg1kdevpRA+bn7UA0remoSFOT+RRcNJfc
-         dVO7joYDeZjvsSQRFFv4oU0AGZ5Qj4VahT4noF60QM9UKmd4PrGUZmSlDV1xUauSyxeW
-         iYYg==
-X-Gm-Message-State: AAQBX9fBCpKPTYTJiiJ6o7P/3sqSg2VI9cbuDUs05P7NZIbrwOBfMRf+
-        jYsfsxnTaVmIc9zBGrX23bn2i9mWnvZVAclg/8Wa5B2S+q0=
-X-Google-Smtp-Source: AKy350YdRFScZwplFYidFemumA9qGA1X5uE5mI8/P/GieKRB9HlAZm2S3jSy16Gi6w52tHc25Jt8iRN4T4BpAJ2uudw=
-X-Received: by 2002:a17:906:80c5:b0:931:fb3c:f88d with SMTP id
- a5-20020a17090680c500b00931fb3cf88dmr99052ejx.5.1680813969307; Thu, 06 Apr
- 2023 13:46:09 -0700 (PDT)
+        bh=sCN3GrtUpZ+xlqLWoh1ipqXhNvsLB+QwAGX3mur1Ixw=;
+        b=MibWoPf+U4T1ChU1mbTPCyzqcnv397fsyaF6WdSni8T9qxyJZ4aVka61c+024LfjsW
+         TIsG6nzfaWV8rAzOSe3vS6KV4MZrZ/Nh9Na7/hoRKwhsfD7jMPCNGWFiDjj9pvprcB6w
+         RGMPl1fQM94cgQN0bdawMLK4RbYScHyGjfWK/8BfFj57hdvgUhMa6WxDPslcpzI/Hzpj
+         +xBJ+awnPMUT+73yeuFmUA+WVIic0dUcqlEnNAo2LyU1MaeyX3kofwIAxIpAP6lukVzC
+         +o3sQhTjS2yhSQMuEqGSeq9zpHlsGz4ufC2QTIFYqRTpUdAwvIixfaWR/wltdvGZ28js
+         HRoQ==
+X-Gm-Message-State: AAQBX9cEDUV1lhD74yNiXaZ5wZWXcua+UI111NfKeNlU8YqG632WIQ6y
+        i2KfdO7k7m1kDzaBLoYqfGHWTO6PxTvZ9b+ei/c=
+X-Google-Smtp-Source: AKy350bdBu7n5Th/kqT8+7RBE/AT/rIWP9xCgcx5DFhwuUvg6zhZOXPsuHZQB996csS4YTIEwvLnsWGP6ovbuYNO9mY=
+X-Received: by 2002:a17:907:78d7:b0:8ab:b606:9728 with SMTP id
+ kv23-20020a17090778d700b008abb6069728mr106389ejc.5.1680814144828; Thu, 06 Apr
+ 2023 13:49:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230406164450.1044952-1-yhs@fb.com> <20230406164510.1047757-1-yhs@fb.com>
-In-Reply-To: <20230406164510.1047757-1-yhs@fb.com>
+References: <20230406004018.1439952-1-drosen@google.com>
+In-Reply-To: <20230406004018.1439952-1-drosen@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 6 Apr 2023 13:45:57 -0700
-Message-ID: <CAEf4BzYDiG0xiE-DnBomOr_Jj6S_QyEZNJwaZmzCCdF7suqG2Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: Add verifier tests for
- code pattern '<const> <cond_op> <non_const>'
-To:     Yonghong Song <yhs@fb.com>
+Date:   Thu, 6 Apr 2023 13:48:52 -0700
+Message-ID: <CAEf4BzZ2zjJKhyUtZKUxbNXJMggcot4MyNEeg6n4Lho-EVbBbg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Dynptr Verifier Adjustments
+To:     Daniel Rosenberg <drosen@google.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Martin KaFai Lau <martin.lau@kernel.org>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -71,54 +80,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 9:45=E2=80=AFAM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Apr 5, 2023 at 5:40=E2=80=AFPM Daniel Rosenberg <drosen@google.com>=
+ wrote:
 >
-> Add various tests for code pattern '<const> <cond_op> <non_const>' to
-> exercise the previous verifier patch.
+> These patches relax a few verifier requirements around dynptrs.
 >
-> The following are veristat changed number of processed insns stat
-> comparing the previous patch vs. this patch:
+> I was unable to test the patch in 0003 due to unrelated issues compiling =
+the
+> bpf selftests, but did run an equivalent local test program.
 >
-> File                                                   Program           =
-                                    Insns (A)  Insns (B)  Insns  (DIFF)
-> -----------------------------------------------------  ------------------=
-----------------------------------  ---------  ---------  -------------
-> test_seg6_loop.bpf.linked3.o                           __add_egr_x       =
-                                        12423      12314  -109 (-0.88%)
+> This is the issue I was running into:
+> progs/cgrp_ls_attach_cgroup.c:17:15: error: use of undeclared identifier =
+'BPF_MAP_TYPE_CGRP_STORAGE'; did you mean 'BPF_MAP_TYPE_CGROUP_STORAGE'?
+>         __uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
+>                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+>                      BPF_MAP_TYPE_CGROUP_STORAGE
+> /ssd/kernel/fuse-bpf/tools/testing/selftests/bpf/tools/include/bpf/bpf_he=
+lpers.h:13:39: note: expanded from macro '__uint'
+> #define __uint(name, val) int (*name)[val]
+>                                       ^
+> /ssd/kernel/fuse-bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:=
+27892:2: note: 'BPF_MAP_TYPE_CGROUP_STORAGE' declared here
+>         BPF_MAP_TYPE_CGROUP_STORAGE =3D 19,
+>         ^
+> 1 error generated.
+
+It is expected that you build the freshest vmlinux image before
+building selftests, because we generate vmlinux.h from it. In your
+case we generated vmlinux.h from your system-wide
+/sys/kernel/btf/vmlinux BTF information, which doesn't yet have latest
+UAPI enums.
+
 >
-
-nit: a bit of veristat trivia for future uses. If you specify filters
-properly, it will size the width of columns more tightly and you
-wouldn't have to trim only relevant rows. The above would do,
-probably:
-
-sudo ./veristat *.linked3.o -e file,prog,insns -f 'insns_diff!=3D0'
-
-> Only one program is affected with minor change.
+> Daniel Rosenberg (3):
+>   bpf: verifier: Accept dynptr mem as mem in helpers
+>   bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+>   selftests/bpf: Test allowing NULL buffer in dynptr slice
 >
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  .../verifier_bounds_deduction_non_const.c     | 460 ++++++++++++++++++
->  1 file changed, 460 insertions(+)
+>  Documentation/bpf/kfuncs.rst                  | 23 ++++++++++++-
+>  kernel/bpf/helpers.c                          | 32 ++++++++++++-------
+>  kernel/bpf/verifier.c                         | 21 ++++++++++++
+>  .../testing/selftests/bpf/prog_tests/dynptr.c |  1 +
+>  .../selftests/bpf/progs/dynptr_success.c      | 21 ++++++++++++
+>  5 files changed, 85 insertions(+), 13 deletions(-)
 >
-
-Nice set of tests!
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction_=
-non_const.c b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction_n=
-on_const.c
-> index fe570d866139..823f727cf210 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction_non_con=
-st.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction_non_con=
-st.c
-> @@ -176,4 +176,464 @@ l1_%=3D:                                           =
-         \
->         : __clobber_all);
->  }
 >
-
-[...]
+> base-commit: 5af607a861d43ffff830fc1890033e579ec44799
+> --
+> 2.40.0.577.gac1e443424-goog
+>
