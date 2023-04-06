@@ -2,105 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0244F6D9FFB
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 20:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D5B6D9FFC
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 20:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240255AbjDFSi6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 14:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56508 "EHLO
+        id S229845AbjDFSjP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 14:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240243AbjDFSi5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 14:38:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C885BA9
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 11:38:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680806290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cL0xEv36os7K6igc2mQAflPTjWsCcGWjiQ4JpavLjnU=;
-        b=Cr8tLDK55u7GUqpdvXiBhkvjbDO5OMjA5SMh3GQmkiH1pvjQ9WCa6xg0edmV6AeFgjDZXU
-        Kbp2bC55KQ9Qd7QSUhasUlCVFCe2VCFmOEIhAQ+6b9umkctQo9OzqjYzCrUEbi07yrMkSM
-        kc2irYiN8DCIWYvXs68yqoCBJ90Hpfc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-138-vMqSGRm6MtObFWHAlcBI4w-1; Thu, 06 Apr 2023 14:38:08 -0400
-X-MC-Unique: vMqSGRm6MtObFWHAlcBI4w-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-50270e74786so759590a12.0
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 11:38:08 -0700 (PDT)
+        with ESMTP id S238918AbjDFSjO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 14:39:14 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D0A6A6B
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 11:39:08 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-93071f06a9fso156022766b.2
+        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 11:39:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680806347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QHiTp8DnIBGB/h72sM/MF4yy5jsb0805GAFrcL4yuvY=;
+        b=S8EsrlRlTqcoDfRQJQzb5f6azcu+HtM27bkXacenQ66RraJzz7XMi8ZzUr29C+AwcV
+         cppueIIu9N9ufareib0luGzmUi/Wb+j2TkpGcSOxs2+YN9J3LVkpDmj1Brc3Hh5uvg+x
+         nH/GtzLPeL08zRRRlbKcDvnZR+BtjhCy1w9N3UddX4qvSIoE6qLNKar5MfWSzlyPkeih
+         SVgcE1ZJzdMs81MuKAfYc3/yjeFmMhsd3kEiSGUjOfORWPPHO5thbbZXn5Q21lcfnlRn
+         +JBWFAp84s6lEu8QUTjod4yZI3WCWTvhAqxhTD8M5V52eqvzwdBZj+M74PCP87xgf66y
+         Q6og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680806287;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cL0xEv36os7K6igc2mQAflPTjWsCcGWjiQ4JpavLjnU=;
-        b=EJ/bqKNcJAj0X+P0VoDj9DpLWLMdhZNDo3rHvf1z9ooDWtt3qyA5rpE/ErJKgtUnTG
-         Hbd91G4zB21cfx4wU+Tz8RFkBrF6X5MUnMMKImnLWMIoaPLAnzW7m63nVfFDu/DpeG08
-         UFe5TQ0tosWJT/hVp+rRkJ4zZnXWpw1iExmjFlvvdKBku8twQ7DOgWRONI3afb6aye1w
-         Ag5gDY2n0NCAX9RqDlkMW2yF3OoK764u+ouYd833tRJ9UbgDQwbmjK42u1vkr0e9ucSJ
-         Pt/DN5mTa5gihT7pq0eCkvo0qJL14uuwvcpDCQxm/PElx0IvHrT7KFCfjcH9M5fyKVR/
-         RrlQ==
-X-Gm-Message-State: AAQBX9fZtTxeRia7apIx1NHvTYtTSAhM7PsGI7kODfB0ojaMXPJyrKFE
-        0eGm3+Y7Im9fJS1avHbknC/9ljRhlSWujy11qsBs/DkRYAfzhuR/fFByescmmMGUSLPMvisCg6T
-        LZbS+ONRo9Yhz
-X-Received: by 2002:a05:6402:70e:b0:4fc:535c:3aa1 with SMTP id w14-20020a056402070e00b004fc535c3aa1mr475744edx.10.1680806287233;
-        Thu, 06 Apr 2023 11:38:07 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bn8KXU73iNBODtP7YbUGAxE1utUCnkQ8ktBabX2iMDmsXj0FzDJn95e86pszBxnyLCKIdpYQ==
-X-Received: by 2002:a05:6402:70e:b0:4fc:535c:3aa1 with SMTP id w14-20020a056402070e00b004fc535c3aa1mr475715edx.10.1680806286873;
-        Thu, 06 Apr 2023 11:38:06 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id x102-20020a50baef000000b004af73333d6esm1047561ede.53.2023.04.06.11.38.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 11:38:06 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3FD93A746CA; Thu,  6 Apr 2023 20:38:05 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kal Conley <kal.conley@dectris.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-In-Reply-To: <20230406130205.49996-2-kal.conley@dectris.com>
-References: <20230406130205.49996-1-kal.conley@dectris.com>
- <20230406130205.49996-2-kal.conley@dectris.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 06 Apr 2023 20:38:05 +0200
-Message-ID: <87sfdckgaa.fsf@toke.dk>
+        d=1e100.net; s=20210112; t=1680806347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QHiTp8DnIBGB/h72sM/MF4yy5jsb0805GAFrcL4yuvY=;
+        b=lR9qLrYryyxLjSmSvB4InAR6xa8FAxYHi5ygbj6GbVtLZH3YT3Dw4QR/HPdaJgf0b9
+         W5cH61ihr8JXJeizWCfihiVllaHjNVjFUfLER8rKDQurvcpCCu/wn/R13OeIxVI1bGBD
+         IM2r/YZkBz7EeEV4VS95t7qYTpMP+YgHK/GMQCEH95AnO9sYmBlit1QKPymhfadLqllQ
+         qLQWRnRAZRN2KMCizY0HhH/zUzeicr0rsVV8ySeQb/PknVPi+4uruDlY19NXYpqESzWZ
+         KD/SnYaMWASrMQYrMmJ6yw4lVucJhOF8WZzArcCIlra1tFHPaKs+qVwZMHQzBBeInS4h
+         +0FA==
+X-Gm-Message-State: AAQBX9e5CNJfcUW0E534aWCG+jaTTHatkCgZRsqdeKlf+rtc3qPogAkq
+        UZVFy2432bIX7EdAntVRlDsFgt1Im/+JkDQL1Bk=
+X-Google-Smtp-Source: AKy350ZRds2XVS3Io9PEvCL2TznXDX5BOo/nkAxBKweAplO++IXu957zGoGb8L5BhKXNzA4m01JArVN+1UQtzrrDQ6M=
+X-Received: by 2002:a50:bb43:0:b0:4fc:f0b8:7da0 with SMTP id
+ y61-20020a50bb43000000b004fcf0b87da0mr295778ede.1.1680806346742; Thu, 06 Apr
+ 2023 11:39:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230330055600.86870-1-yhs@fb.com> <CAEf4Bzayt_FUG6JyMzU060swqP_w=W9TFJOKD15ux6GNDm3qSg@mail.gmail.com>
+ <b73075cb-67c4-2144-64f9-fc564eb00833@meta.com>
+In-Reply-To: <b73075cb-67c4-2144-64f9-fc564eb00833@meta.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 6 Apr 2023 11:38:54 -0700
+Message-ID: <CAEf4BzYOqGVac3QDMD3LGVBS9tj56PQaZjxh+1FzVSYrx1=TSA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/7] bpf: Improve verifier for cond_op and
+ spilled loop index variables
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kal Conley <kal.conley@dectris.com> writes:
+On Thu, Apr 6, 2023 at 9:49=E2=80=AFAM Yonghong Song <yhs@meta.com> wrote:
+>
+>
+>
+> On 4/4/23 2:46 PM, Andrii Nakryiko wrote:
+> > On Wed, Mar 29, 2023 at 10:56=E2=80=AFPM Yonghong Song <yhs@fb.com> wro=
+te:
+> >>
+> >> LLVM commit [1] introduced hoistMinMax optimization like
+> >>    (i < VIRTIO_MAX_SGS) && (i < out_sgs)
+> >> to
+> >>    upper =3D MIN(VIRTIO_MAX_SGS, out_sgs)
+> >>    ... i < upper ...
+> >> and caused the verification failure. Commit [2] workarounded the issue=
+ by
+> >> adding some bpf assembly code to prohibit the above optimization.
+> >> This patch improved verifier such that verification can succeed withou=
+t
+> >> the above workaround.
+> >>
+> >> Without [2], the current verifier will hit the following failures:
+> >>    ...
+> >>    119: (15) if r1 =3D=3D 0x0 goto pc+1
+> >>    The sequence of 8193 jumps is too complex.
+> >>    verification time 525829 usec
+> >>    stack depth 64
+> >>    processed 156616 insns (limit 1000000) max_states_per_insn 8 total_=
+states 1754 peak_states 1712 mark_read 12
+> >>    -- END PROG LOAD LOG --
+> >>    libbpf: prog 'trace_virtqueue_add_sgs': failed to load: -14
+> >>    libbpf: failed to load object 'loop6.bpf.o'
+> >>    ...
+> >> The failure is due to verifier inadequately handling '<const> <cond_op=
+> <non_const>' which will
+> >> go through both pathes and generate the following verificaiton states:
+> >>    ...
+> >>    89: (07) r2 +=3D 1                      ; R2_w=3D5
+> >>    90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Dfp0
+> >>    91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,va=
+r_off=3D(0x0; 0x7)) R10=3Dfp0
+> >>    92: (ad) if r2 < r1 goto pc+41        ; R0_w=3Dscalar() R1_w=3Dscal=
+ar(umin=3D6,umax=3D5,var_off=3D(0x4; 0x3))
+> >
+> > offtopic, but if this is a real output, then something is wrong with
+> > scratching register logic for conditional, it should have emitted
+> > states of R1 and R2, maybe you can take a look while working on this
+> > patch set?
+>
+> Yes, this is the real output. Yes, the above R1_w should be an
+> impossible state. This is what this patch tries to fix.
+> I am not what verifier should do if this state indeed happens,
+> return an -EFAULT or something?
 
-> Add core AF_XDP support for chunk sizes larger than PAGE_SIZE. This
-> enables sending/receiving jumbo ethernet frames up to the theoretical
-> maxiumum of 64 KiB. For chunk sizes > PAGE_SIZE, the UMEM is required
-> to consist of HugeTLB VMAs (and be hugepage aligned). Initially, only
-> SKB mode is usable pending future driver work.
+no-no, that's not what I'm talking about. Look at the instruction, it
+compares R1 and R2, yet we print the state of R0 and R1, as if that
+instruction worked with R0 and R1 instead. That's confusing and wrong.
+There is some off-by-one error in mark_register_scratched() call, or
+something like that.
 
-Hmm, interesting. So how does this interact with XDP multibuf?
-
--Toke
-
+>
+> >
+> >>        R2_w=3D5 R6_w=3Dscalar(id=3D385) R7_w=3D0 R8_w=3Dscalar() R9_w=
+=3Dscalar(umax=3D21474836475,var_off=3D(0x0; 0x7ffffffff))
+> >>        R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? fp-=
+32=3D fp-40_w=3D4 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
+> >>    ...
+> >>    89: (07) r2 +=3D 1                      ; R2_w=3D6
+> >>    90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Dfp0
+> >>    91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,va=
+r_off=3D(0x0; 0x7)) R10=3Dfp0
+> >>    92: (ad) if r2 < r1 goto pc+41        ; R0_w=3Dscalar() R1_w=3Dscal=
+ar(umin=3D7,umax=3D5,var_off=3D(0x4; 0x3))
+> >>        R2_w=3D6 R6=3Dscalar(id=3D388) R7=3D0 R8_w=3Dscalar() R9_w=3Dsc=
+alar(umax=3D25769803770,var_off=3D(0x0; 0x7ffffffff))
+> >>        R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? fp-=
+32=3D fp-40=3D5 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
+> >>      ...
+> >>    89: (07) r2 +=3D 1                      ; R2_w=3D4088
+> >>    90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Dfp0
+> >>    91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,va=
+r_off=3D(0x0; 0x7)) R10=3Dfp0
+> >>    92: (ad) if r2 < r1 goto pc+41        ; R0=3Dscalar() R1=3Dscalar(u=
+min=3D4089,umax=3D5,var_off=3D(0x0; 0x7))
+> >>        R2=3D4088 R6=3Dscalar(id=3D12634) R7=3D0 R8=3Dscalar() R9=3Dsca=
+lar(umax=3D17557826301960,var_off=3D(0x0; 0xfffffffffff))
+> >>        R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? fp-=
+32=3D fp-40=3D4087 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
+> >>
+> >> Patch 3 fixed the above issue by handling '<const> <cond_op> <non_cons=
+t>' properly.
+> >> During developing selftests for Patch 3, I found some issues with boun=
+d deduction with
+> >> BPF_EQ/BPF_NE and fixed the issue in Patch 1.
+> [...]
