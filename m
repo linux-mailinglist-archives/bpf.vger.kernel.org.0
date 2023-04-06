@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AE06D8D64
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 04:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7325B6D8D8E
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 04:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbjDFCVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 22:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        id S234901AbjDFCic (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 22:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjDFCVn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 22:21:43 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12476E88
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 19:21:42 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id c18so36205222ple.11
-        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 19:21:42 -0700 (PDT)
+        with ESMTP id S233973AbjDFCi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 22:38:28 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6AB900E
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 19:38:13 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 185so11777863pgc.10
+        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 19:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680747702; x=1683339702;
+        d=gmail.com; s=20210112; t=1680748692; x=1683340692;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5eJk2CWqkHXNgp2U19DHK07M3KAxmLzB3PNq1IBndbI=;
-        b=f05yQ3O4R5fNJpG4Eg0U2ZkugtL6yBl/vgXePTYP8VLIF6uQb130HRIBRcrYHQ0Ab5
-         +unhpuNnSqehXgiEuzW0lEtZMaCdQL5LJW3S6SuVNARlNCzW9W8i5diXsdcY9c1LVJzL
-         j71s/atP5yVeMCXIrnNFJ0/hb3/l+jQrJkc0/eyym3mlEWO/4b8RvzSimngfDTKQTeWw
-         vxvfMqCd3z/3TZboc9l1lPPNlP7bhi1jQTw9DbuEJkMNveR8lFF9z/w5uCi4GZcB68zc
-         dDj54yEqipdBEsoQtYG4P8XQtYiUuDGyF0H2EQMiMQVO7JdYjAOLYpyjni8YcVdgaR96
-         wzmA==
+        bh=o2z5djl8yfqEWItHw+eyjZTY3s6jQlRhlJ81Q1eQELo=;
+        b=iNgByrJy9o/0N0Q7jSDRlcjhBhoV5zpBv0dUgRwDpcUNmDAMakjtLxgQoM16LNFuAF
+         1KjNVoX5KfbAOE2TKmCq2spXqz2GOJK0fqXHAa3JYd+RHgxv2GK9n+1zkzXVs7zHdZeP
+         PiCT8Hk0ghQ1vuwufx0DudJGEjXFNp+Oe14HmgIPr3JPhxoS1t4LTtfmkxFBtuV2bYnR
+         nsScu8Hqhebf2TKLNvQGMj0OMq3VUVG76U/VSRJL3GYMYlZFhexd3QVAUGwZOmDH2xR0
+         2qYqEayw08oEVDBGpM2PKASF9FHosI/d+KD0cV/IHGmn0iufmX+xVSJb/rr35vY4LZlk
+         gZVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680747702; x=1683339702;
+        d=1e100.net; s=20210112; t=1680748692; x=1683340692;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5eJk2CWqkHXNgp2U19DHK07M3KAxmLzB3PNq1IBndbI=;
-        b=VJ51fTbHYYrmW+pvoznb8XGtqxAN+xMJgSBtGQW7Nd4qQEsfc3dDsK0vpgl/jDhU7A
-         Xh0M40U74gdE2PlhH1utWrzPjZeYu4n08FxOfMJ3B8GVbBEQ5+7dK6LeQBzHxCiYF91H
-         Mv5F8yCDoJAhe7M6h6P00ST5TVbUlHKCnfQhut5mpYHtD3gDKYAjAwBWKMZa1XPFp+/p
-         4REZFbVY2GDUNOlLQ88DuE0GVgM0zdBMfF4gaLrIeOc3Sx8T4Mc8dlJNNrK7u0jk2oU4
-         cAJlmKldkceVcfcWke1irxMsXOSUaIRJh9MmdZ4kIXjHaBD83ESmaonowA5c4UEEgYMq
-         S7IQ==
-X-Gm-Message-State: AAQBX9dS23ok2Qv4EBNtZa5YtDC9dKJCRAc6egXjRRtNdH741aNzPW+d
-        068PIytKIGdQSFktp/aEQg5qdiWQZ6w=
-X-Google-Smtp-Source: AKy350YkXC3w9+51Yo29jOKgtuJlRPVQS5TnnoTcuw4DvCRg/639K4dImkdULRQgiW7TAWRMJyzTyQ==
-X-Received: by 2002:a05:6a20:7b2a:b0:e7:c39a:8826 with SMTP id s42-20020a056a207b2a00b000e7c39a8826mr1276585pzh.10.1680747702023;
-        Wed, 05 Apr 2023 19:21:42 -0700 (PDT)
+        bh=o2z5djl8yfqEWItHw+eyjZTY3s6jQlRhlJ81Q1eQELo=;
+        b=C/Ldl/zGMXK9nZyIBdmnhY9nnREJeR3XaTeNIBZbj7QzK2prUCnDXWTJv0RiSsrQYb
+         2vDUNkHt7G67+XSU+jBDlbaSeogoR05Q2bdiDZxe5UmGSd9QZYFxKwUgQdZqc6mmbTQs
+         FR8SLw6Et5SaViSMIlrN6UHG7ST0WQGF1/hdJAXnXTjWIH6JUc/IeD5IW4Sw5ApkvGA6
+         ww8o/bsW4nVoqIYTGtlfhWMnl7EDAEG2n7HlAhgRXMdAW9zthAHUK184r6baGY15kJfc
+         G3GEdWmW77xeGG99/i9hXmhg5AftlvAvI8lYbQyjUvwG81VA+9bXzHfydSvAkfXPdDCL
+         ycIw==
+X-Gm-Message-State: AAQBX9czJWcW3AQq3z9zP/TmFPKOCTOhvQNCUqU5Q3zvOipbLGX0DqkZ
+        aM3P5huA+qFpg8CPqv8ly9E=
+X-Google-Smtp-Source: AKy350YAaeVw5hYbYBYAq03Aqr2XTJfsqMkYmCoHI++p5M3LdjKCiclWS07dc6ODjIxSGIYEtd6CgQ==
+X-Received: by 2002:aa7:9505:0:b0:62a:4503:53a8 with SMTP id b5-20020aa79505000000b0062a450353a8mr4901918pfp.12.1680748692459;
+        Wed, 05 Apr 2023 19:38:12 -0700 (PDT)
 Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:f79f])
-        by smtp.gmail.com with ESMTPSA id 3-20020aa79243000000b0062e12f945adsm67036pfp.135.2023.04.05.19.21.40
+        by smtp.gmail.com with ESMTPSA id k10-20020aa7820a000000b0062db3444281sm84047pfi.125.2023.04.05.19.38.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 19:21:41 -0700 (PDT)
-Date:   Wed, 5 Apr 2023 19:21:39 -0700
+        Wed, 05 Apr 2023 19:38:11 -0700 (PDT)
+Date:   Wed, 5 Apr 2023 19:38:09 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -56,15 +56,15 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         David Vernet <void@manifault.com>
-Subject: Re: [PATCH RFC bpf-next v1 4/9] bpf: Handle throwing BPF callbacks
- in helpers and kfuncs
-Message-ID: <20230406022139.75rkbl4xbwpn4qmp@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Subject: Re: [PATCH RFC bpf-next v1 9/9] selftests/bpf: Add tests for BPF
+ exceptions
+Message-ID: <20230406023809.jffvgx5r7eyjw24g@dhcp-172-26-102-232.dhcp.thefacebook.com>
 References: <20230405004239.1375399-1-memxor@gmail.com>
- <20230405004239.1375399-5-memxor@gmail.com>
+ <20230405004239.1375399-10-memxor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230405004239.1375399-5-memxor@gmail.com>
+In-Reply-To: <20230405004239.1375399-10-memxor@gmail.com>
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -75,23 +75,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 02:42:34AM +0200, Kumar Kartikeya Dwivedi wrote:
-> @@ -759,6 +759,8 @@ BPF_CALL_4(bpf_loop, u32, nr_loops, void *, callback_fn, void *, callback_ctx,
->  
->  	for (i = 0; i < nr_loops; i++) {
->  		ret = callback((u64)i, (u64)(long)callback_ctx, 0, 0, 0);
-> +		if (bpf_get_exception())
-> +			return -EJUKEBOX;
+On Wed, Apr 05, 2023 at 02:42:39AM +0200, Kumar Kartikeya Dwivedi wrote:
+> +static __noinline int throwing_subprog(struct __sk_buff *ctx)
+> +{
+> +	if (ctx)
+> +		bpf_throw();
+> +	return 0;
+> +}
+> +
+> +__noinline int global_subprog(struct __sk_buff *ctx)
+> +{
+> +	return subprog(ctx) + 1;
+> +}
+> +
+> +__noinline int throwing_global_subprog(struct __sk_buff *ctx)
+> +{
+> +	if (ctx)
+> +		bpf_throw();
+> +	return 0;
+> +}
+> +
+> +static __noinline int exception_cb(void)
+> +{
+> +	return 16;
+> +}
+> +
+> +SEC("tc")
+> +int exception_throw_subprog(struct __sk_buff *ctx)
+> +{
+> +	volatile int i;
+> +
+> +	exception_cb();
+> +	bpf_set_exception_callback(exception_cb);
+> +	i = subprog(ctx);
+> +	i += global_subprog(ctx) - 1;
+> +	if (!i)
+> +		return throwing_global_subprog(ctx);
+> +	else
+> +		return throwing_subprog(ctx);
+> +	bpf_throw();
+> +	return 0;
+> +}
+> +
+> +__noinline int throwing_gfunc(volatile int i)
+> +{
+> +	bpf_assert_eq(i, 0);
+> +	return 1;
+> +}
+> +
+> +__noinline static int throwing_func(volatile int i)
+> +{
+> +	bpf_assert_lt(i, 1);
+> +	return 1;
+> +}
 
-This is too slow.
-We cannot afford a call and conditional here.
-Some time ago folks tried bpf_loop() and went back to bounded loop, because
-the overhead of indirect call was not acceptable.
-After that we've added inlining of bpf_loop() to make overhead to the minimum.
-With prog->aux->exception[] approach it might be ok-ish,
-but my preference would be to disallow throw in callbacks.
-timer cb, rbtree_add cb are typically small.
-bpf_loop cb can be big, but we have open coded iterators now.
-So disabling asserts in cb-s is probably acceptable trade-off.
+exception_cb() has no way of knowning which assert statement threw the exception.
+How about extending a macro:
+bpf_assert_eq(i, 0, MY_INT_ERR);
+or
+bpf_assert_eq(i, 0) {bpf_throw(MY_INT_ERR);}
 
-The choice of error name is odd, tbh.
+bpf_throw can store it in prog->aux->exception pass the address to cb.
+
+Also I think we shouldn't complicate the verifier with auto release of resources.
+If the user really wants to assert when spin_lock is held it should be user's
+job to specify what resources should be released.
+Can we make it look like:
+
+bpf_spin_lock(&lock);
+bpf_assert_eq(i, 0) {
+  bpf_spin_unlock(&lock);
+  bpf_throw(MY_INT_ERR);
+}
