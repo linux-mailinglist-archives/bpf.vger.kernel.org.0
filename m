@@ -2,65 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 953556DA64B
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 01:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2036DA656
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 01:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239569AbjDFXnW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 19:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
+        id S230341AbjDFXyM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 19:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238357AbjDFXmd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 19:42:33 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AA793E4
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 16:42:31 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id cw23so5017367ejb.12
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 16:42:31 -0700 (PDT)
+        with ESMTP id S231867AbjDFXyI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 19:54:08 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2806A9748
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 16:54:07 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e18so41004481wra.9
+        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 16:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680824549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h1YtO/T+eCLwayKGzZHGfHtpn7fHSmAJSK3qRI39+U8=;
-        b=l0WGXJ13/CZk17VXc/Ad/aIzAoyeIlLP52IHszb9u6GJOMBtTgAd29iKdE0wrYxoFK
-         sJMjOVJk3n7Iis49uZTA2c1tdPxep159F2ZV1AoDH8OBEwCZ2U4Nr0B06gfkvu8ZqpNr
-         zsomX8Tz3NjAkxKBz8hGGG2fkU9MdgcJSav6/+I5P2PpPI0mIYemGR2ZCmMRV2J2e+AF
-         qfYucYkPtsOGR66oYBKnXRbfJPFtXsiP69syqvPEAjjLQ5Q1hYGr0YSrqTw7c9DnPXY9
-         kHO2h6+S6t3APocjMAyqXOS9RK+KuDHhybfKHap8lo4PWcGa/E+d/nP8qU8dka2e6Hyw
-         pP8g==
+        d=gmail.com; s=20210112; t=1680825245;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OpgIrgXDKr7mYg657t1IZTUwOa1v/O9NHLLvRs1T5EE=;
+        b=XGw0NFEjCUWYQ8Pl3k09rGtpOhBQ1j9EYPBoDuH/ey4Uv4mABaPLARUOLV57QEfOyC
+         hmcf/+/xa1/olflr0nFEn0YgxzwQv28Eft+fNmkv+y8xRsXrfcvxJxRH1tQj84eQpF/n
+         OctUWf/ECKAln/KX/AyC1KdIDU4goZOpYD+5TMkhUhG5hlRZ9YGR+PouPV0CallTs8wT
+         UnCAUKD9zhzO/ByAPCC/53DVfUPtjD7mYX0ZDCvyY3y6CerCGNtEx8d56Yv/u7JUbwIb
+         LWIAbnFrsu2finCvgv4RWKgSx4GK09sODz0qavz3Jfo3nEYMs7hvWtOI38FdJxw82CG9
+         Hprg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680824549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h1YtO/T+eCLwayKGzZHGfHtpn7fHSmAJSK3qRI39+U8=;
-        b=GVqIQZcx9zCF6y59gtvfBZtl3mltUnfhjwfY5kAYQecBcpkjQY1x2kAZCxwKwPxri5
-         ytsx60+7UMY6XtWDatyql0UMjdtZI3GTtrIF17c0vpKOfBeM9jKoM3YfW39ZG4Dsr5/J
-         xCVGpWDAECg0H74v3nxgD+T/ApCPvv9a4+C+rdMPSMQNR/VWKs7oha2iXh3xeAxFOG7F
-         pak5aLDmSJtb4/QQmzdP9WB/TqzPNcoQNe9hK3FR2veZISHyVOIBhh4fXd8u7RQLjOiZ
-         93V3WcyVFHyU/Wwm9EWJ8r6ab5GaSws/7F+Rais06uXGWf2SwkMZ2XJidLF+isSAs0kR
-         S0mw==
-X-Gm-Message-State: AAQBX9cM+uOmyC8fOJnNmcn0l+w3ztW9ITgS3jSKQqaOvnCv55gvSyXg
-        KPRtfDNfDTMVuny4Y4LomnCeNkidMS+Bz0P411yYCcjk
-X-Google-Smtp-Source: AKy350aYbC05A4axkI0K7z++rvOFz+YNJ0clBxa5EAwhZAyHKGCNunbwSsMVQNfU38oRNtTApIP+Xq5KPmpQukJB7Qc=
-X-Received: by 2002:a17:907:1c83:b0:947:9d85:30c9 with SMTP id
- nb3-20020a1709071c8300b009479d8530c9mr5650419ejc.5.1680824549294; Thu, 06 Apr
- 2023 16:42:29 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680825245;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OpgIrgXDKr7mYg657t1IZTUwOa1v/O9NHLLvRs1T5EE=;
+        b=XzZ+aQ8lF/L2VZ3YykWBSNm6V1yWjagVrgpgS6sWzhQZQRZgVH1DMKeCy4DUO/BsT+
+         JbLerxM1WnJLQSiDqbI/q7q/lFGWlFB8fec8WcpfrflHdI4UIvK9qgvffZsIurkBTv4T
+         5y7SGQcUc7JaE4tMkVHkgRTlKu2mYuG6HHo/PgddAEKiFcuptz+eLj9ZmUbKnKhxUj+W
+         XSdsbkdOKjz29wY0EhuAokk+Kr6K/PC+EOENPdWFcto+s78HotD4U3qyQcHNQqF24nEh
+         UrSh9bpTMyAwLCB0lQh4mcdJs+YohhWdPrT5I6/zDkSOFK0MGVA35f6zPtJdrac5oUHD
+         I0wQ==
+X-Gm-Message-State: AAQBX9fkSPjm3rsHtQ0Cxi1iMuGZSSNY0DIBxzSpeA/nViNJfxCuh89T
+        QHHKBu7CfxMgKpBq4rlIsEiOZ665hxU2/Q==
+X-Google-Smtp-Source: AKy350a9hSZN1y0YBUJrCuhM4ty/IcPPvyI8+R6kMe+CQQjOhGZJ8vPkZmHeE/ZeWTy8WqTlZi9D2w==
+X-Received: by 2002:a05:6000:1b81:b0:2d7:3d7c:19cb with SMTP id r1-20020a0560001b8100b002d73d7c19cbmr126353wru.4.1680825245334;
+        Thu, 06 Apr 2023 16:54:05 -0700 (PDT)
+Received: from localhost ([2a02:1210:74a0:3200:2fc:d4f0:c121:5e8b])
+        by smtp.gmail.com with ESMTPSA id x13-20020a5d60cd000000b002efabde5609sm904956wrt.92.2023.04.06.16.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Apr 2023 16:54:04 -0700 (PDT)
+Date:   Fri, 7 Apr 2023 01:54:03 +0200
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>
+Subject: Re: [PATCH RFC bpf-next v1 3/9] bpf: Implement bpf_throw kfunc
+Message-ID: <xmehxhdk4ba2j75ltdygzi2b56aftcei36dndptg3v6gdumrh2@zadr5xdn5g3m>
+References: <20230405004239.1375399-1-memxor@gmail.com>
+ <20230405004239.1375399-4-memxor@gmail.com>
+ <20230406021622.xbgzrmfjxli6dkpt@dhcp-172-26-102-232.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20230404043659.2282536-1-andrii@kernel.org> <CAN+4W8hptrrVjQ+-=otz_FPb2uL4E4bgzNRzp3pOh4=hWgeA+A@mail.gmail.com>
- <CAEf4BzYRc+ppyvbYy39FLPLGL41kPSV8xVSbJ_4Mha_shRCNHw@mail.gmail.com>
- <CAN+4W8gDS=8Kew42VM-PdqU1uXNZpaHq7wO8KEHQFhDDRBEWxA@mail.gmail.com> <CAEf4BzYfvzY9fFwAZ2fCGaPM2_RX_qM_SDb1zm8j7Vyd922jyQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYfvzY9fFwAZ2fCGaPM2_RX_qM_SDb1zm8j7Vyd922jyQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 6 Apr 2023 16:42:17 -0700
-Message-ID: <CAEf4BzYRO3e-ktbjyDujk0yjFG2fkR6OkC=WsdtoT_fm6FX_dw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 00/19] BPF verifier rotating log
-To:     Lorenz Bauer <lmb@isovalent.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-        timo@incline.eu, robin.goegge@isovalent.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230406021622.xbgzrmfjxli6dkpt@dhcp-172-26-102-232.dhcp.thefacebook.com>
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -71,143 +75,122 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 11:53=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Apr 6, 2023 at 10:30=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> =
-wrote:
+On Thu, Apr 06, 2023 at 04:16:22AM CEST, Alexei Starovoitov wrote:
+> On Wed, Apr 05, 2023 at 02:42:33AM +0200, Kumar Kartikeya Dwivedi wrote:
 > >
-> > On Wed, Apr 5, 2023 at 7:35=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >
-> > > So all in all, looking at stats, I don't really see a big
-> > > simplification. On the other hand, I spent a considerable time
-> > > thinking, debugging, and testing my existing implementation
-> > > thoroughly. Then there is also interaction with log_buf=3D=3DNULL &&
-> > > log_size=3D=3D0 case, I'd need to re-analyze everything again.
-> > >
-> > > How strong do you feel the need for me to redo this tricky part to
-> > > save a few lines of C code (and lose easy debuggability at least of
-> > > kbuf contents)? I'm a bit on the fence. I noted a few things I would
-> > > add (or remove) even to existing code and I'll apply that. But unless
-> > > someone comes out and says "let's do it this way", I'd rather not
-> > > waste half a day on debugging some random off-by-one error again.
-> >
-> > Well, what are you optimising for? Is it getting the code in or is it
-> > ease of understanding for future readers (including you in a year or
-> > so?)
+> > - The exception state is represented using four booleans in the
+> >   task_struct of current task. Each boolean corresponds to the exception
+> >   state for each kernel context. This allows BPF programs to be
+> >   interrupted and still not clobber the other's exception state.
 >
-> I'm just saying that ease of understanding is subjective. So given I'm
-> not convinced that your approach is simpler, I'd avoid unnecessary
-> extra changes to the code that I've spent a lot of time testing and
-> debugging and am pretty confident about.
->
-> The point of code review is not to satisfy every nit, but to see if
-> there are problems with the proposed solution and if something can be
-> done better. Not *different*, but *better*.
+> that doesn't work for sleepable bpf progs and in RT for regular progs too.
 >
 
-So, I did an honest attempt to implement the idea of BPF_LOG_FIXED
-being just a partial case of rotating mode by just adjusting N. And
-this breaks down once we start calculating len_max and using
-log->end_pos as logical position that can go beyond log->len_total. I
-had to abandon this idea, sorry. As I mentioned before, interactions
-with log_size=3D=3D0 are not obvious and straightforward.
+Can you elaborate? If a sleepable program blocks, that means the task is
+scheduled out, so the next program will use the other task's task_struct.
+Same for preemption for normal progs (under RT or not).
 
-I did more testing, though, verifying fixed mode truncation. That
-actually caught a corner case when len_total =3D 1, in which case buffer
-wasn't zero-terminated. So at least that's the payoff. :)
+Is there something else that I'm missing?
 
+> > - The other vexing case is of recursion. If a program calls into another
+> >   program (e.g. call into helper which invokes tracing program
+> >   eventually), it may throw and clobber the current exception state. To
+> >   avoid this, an invariant is maintained across the implementation:
+> > 	Exception state is always cleared on entry and exit of the main
+> > 	BPF program.
+> >   This implies that if recursion occurs, the BPF program will clear the
+> >   current exception state on entry and exit. However, callbacks do not
+> >   do the same, because they are subprograms. The case for propagating
+> >   exceptions of callbacks invoked by the kernel back to the BPF program
+> >   is handled in the next commit. This is also the main reason to clear
+> >   exception state on entry, asynchronous callbacks can clobber exception
+> >   state even though we make sure it's always set to be 0 within the
+> >   kernel.
+> >   Anyhow, the only other thing to be kept in mind is to never allow a
+> >   BPF program to execute when the program is being unwinded. This
+> >   implies that every function involved in this path must be notrace,
+> >   which is the case for bpf_throw, bpf_get_exception and
+> >   bpf_reset_exception.
+>
+> ...
+>
+> > +			struct bpf_insn entry_insns[] = {
+> > +				BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+> > +				BPF_EMIT_CALL(bpf_reset_exception),
+> > +				BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
+> > +				insn[i],
+> > +			};
+>
+> Is not correct in global bpf progs that take more than 1 argument.
+>
 
-> One of the things I wanted to hear feedback on was if the overall UAPI
-> behavior makes sense. You had concerns about enabling rotating log
-> mode by default, which I believe are addressed by returning -ENOSPC.
-> Can you please confirm that this approach is acceptable now? Thanks!
+But this is not done for global subprogs, only for the main subprog, it only
+needs to be done when we enter the program from the kernel.
+
+> How about using a scratch space in prog->aux->exception[] instead of current task?
 >
-> >
-> > Feel free to submit it as it is, maybe I can trim down my solution
-> > some more to get rid of some more special cases ;)
-> >
-> > > > -            new_n =3D min_t(u32, log->len_total - log->end_pos, n)=
-;
-> > > > -            log->kbuf[new_n - 1] =3D '\0';
-> > >
-> > > without this part I can't debug what kernel is actually emitting into
-> > > user-space with a simple printk()...
-> >
-> > As I just learned, vscnprintf always null terminates so log->kbuf can
-> > always be printed?
+
+I actually had this thought. It's even better because we can hardcode the
+address of the exception state right in the program (since prog->aux remains
+stable during bpf_patch_insn_data). However, concurrent program invocations on
+multiple CPUs doesn't work well with this. It's like, one program sets the state
+while the other tries to check it. It can be per-CPU but then we have to disable
+preemption (which cannot be done).
+
+Unfortunately per-task state seemed like the only choice which works without
+complicating things too much.
+
+> > +notrace u64 bpf_get_exception(void)
+> > +{
+> > +	int i = interrupt_context_level();
+> > +
+> > +	return current->bpf_exception_thrown[i];
+> > +}
 >
-> aren't we adjusting n in this branch and would need to zero-terminate
-> anew? Yes we can safely print it, it just won't be the contents we are
-> putting into the user buffer.
+> this is too slow to be acceptable.
+
+I agree, also partly why I still marked this an RFC.
+
+> it needs to be single load plus branch.
+> with prog->aux->exception approach we can achieve that.
+> Instead of inserting a call to bpf_get_exception() we can do load+cmp.
+> We probably should pass prog->aux into exception callback, so it
+> can know where throw came from.
 >
-> >
-> > > > +void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *f=
-mt,
-> > > > +               va_list args)
-> > > > +{
-> > > > +    /* NB: contrary to vsnprintf n can't be larger than sizeof(log=
-->kbuf) */
-> > >
-> > > it can't be even equal to sizeof(log->kbuf)
-> >
-> > Yes... C string functions are the worst.
-> >
-> > >
-> > > > +    u32 n =3D vscnprintf(log->kbuf, sizeof(log->kbuf), fmt, args);
-> > > > +
-> > > > +    if (log->level =3D=3D BPF_LOG_KERNEL) {
-> > > > +        bool newline =3D n > 0 && log->kbuf[n - 1] =3D=3D '\n';
-> > > > +
-> > > > +        pr_err("BPF: %s%s", log->kbuf, newline ? "" : "\n");
-> > > > +        return;
-> > > > +    }
-> > > >
-> > > > +    if (log->level & BPF_LOG_FIXED) {
-> > > > +        bpf_vlog_update_len_max(log, n);
-> > >
-> > > this made me pause for a second to prove we are not double-accounting
-> > > something. We don't, but I find the argument of a simplification a bi=
-t
-> > > weaker due to this :)
-> >
-> > Yeah. I found a way to get rid of this, I might submit that as a follow=
- up.
-> >
-> > > > -    if (log->level & BPF_LOG_FIXED)
-> > > > -        pos =3D log->end_pos + 1;
-> > > > -    else
-> > > > -        div_u64_rem(new_pos, log->len_total, &pos);
-> > > > -
-> > > > -    if (pos < log->len_total && put_user(zero, log->ubuf + pos))
-> > > > -        log->ubuf =3D NULL;
-> > >
-> > > equivalent to what you do in vlog_finalize, right?
-> >
-> > Yep
-> >
-> > > > @@ -237,8 +220,20 @@ int bpf_vlog_finalize(struct bpf_verifier_log
-> > > > *log, u32 *log_size_actual)
-> > > >
-> > > >      if (!log->ubuf)
-> > > >          goto skip_log_rotate;
-> > > > +
-> > > > +    if (log->level & BPF_LOG_FIXED) {
-> > > > +        bpf_vlog_update_len_max(log, 1);
-> > > > +
-> > > > +        /* terminate by (potentially) overwriting the last byte */
-> > > > +        if (put_user(zero, log->ubuf + min_t(u32, log->end_pos,
-> > > > log->len_total-1))
-> > > > +            return -EFAULT;
-> > > > +    } else {
-> > > > +        /* terminate by (potentially) rotating out the first byte =
-*/
-> > > > +        bpf_vlog_emit(log, &zero, 1);
-> > > > +    }
-> > >
-> > > not a big fan of this part where we still do two separate handlings
-> > > for two modes
-> >
-> > Agreed, but I'm not sure it can be avoided at all since we need to
-> > clamp different parts of the buffer depending on which mode we are in.
+
+IMO prog->aux->exception won't work either (unless I'm missing some way which
+you can point out). The other option would be that we spill pointer to the
+per-task exception state to the program's stack on entry, and then every check
+loads the value and performs the check. It will be a load from stack, load from
+memory and then a jump instruction. Still not as good as a direct load though,
+which we'd have with prog->aux, but much better than the current state.
+
+> > - Rewrites happen for bpf_throw and call instructions to subprogs.
+> >   The instructions which are executed in the main frame of the main
+> >   program (thus, not global functions and extension programs, which end
+> >   up executing in frame > 0) need to be rewritten differently. This is
+> >   tracked using BPF_THROW_OUTER vs BPF_THROW_INNER. If not done, a
+>
+> how about BPF_THROW_OUTER vs BPF_THROW_ANY_INNER ?
+> would it be more precise ?
+
+I'm fine with the renaming. The only thing the type signifies is if we need to
+do the rewrite for frame 0 vs frame N.
+
+>
+> > +__bpf_kfunc notrace void bpf_throw(void)
+> > +{
+> > +	int i = interrupt_context_level();
+> > +
+> > +	current->bpf_exception_thrown[i] = true;
+> > +}
+>
+> I think this needs to take u64 or couple u64 args and store them
+> in the scratch area.
+> bpf_assert* macros also need a way for bpf prog to specify
+> the reason for the assertion.
+> Otherwise there won't be any way to debug what happened.
+
+I agree. Should we force it to be a constant value? Then we can hardcode it in
+the .text without having to save and restore it, but that might end up being a
+little too restrictive?
