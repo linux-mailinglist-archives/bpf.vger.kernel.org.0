@@ -2,111 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B3B6D93E3
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 12:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212526D9448
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 12:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbjDFKXZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 06:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
+        id S237301AbjDFKkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 06:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237047AbjDFKXI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 06:23:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 295848A48;
-        Thu,  6 Apr 2023 03:22:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBCA516F8;
-        Thu,  6 Apr 2023 03:23:01 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.20.171])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 42B2E3F762;
-        Thu,  6 Apr 2023 03:22:15 -0700 (PDT)
-Date:   Thu, 6 Apr 2023 11:22:09 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Florent Revest <revest@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com, lihuafei1@huawei.com
-Subject: Re: [PATCH v6 3/5] samples: ftrace: Save required argument registers
- in sample trampolines
-Message-ID: <ZC6dUacJjFVDyDGz@FVFF77S0Q05N>
-References: <20230405180250.2046566-1-revest@chromium.org>
- <20230405180250.2046566-4-revest@chromium.org>
+        with ESMTP id S229820AbjDFKk3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 06:40:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFD555A6;
+        Thu,  6 Apr 2023 03:40:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D99B644CD;
+        Thu,  6 Apr 2023 10:40:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30974C433D2;
+        Thu,  6 Apr 2023 10:40:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680777627;
+        bh=12VeyPDe+foPT2W8xQk6q7Ek5sPvYoGsogLUhvcCStg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ach5uNTOd/eHW/9O0UqJwlinYtGIxLA84ajugKUUa84tKnxGvgxbXX72JqyRVF5o1
+         rVW83AES62pxtLMJe2gCinG9igzL9oNuaQAmsqQEupVM0YbUor1fsevyyibyeJwuz+
+         wYaK1QIhWxmB+MlSUTOMViL1v6WlSrTO851qbNlnC7gi80qvYTPwfhWF9V/9ePCOm/
+         ZltvZWkNrgE5GXCLKulW8WBnk+gI1J8KVFH+Zb2kdmglITkj2Bb5w+RwPIH/uqoOq0
+         7LxvFK7fiEIBvGqGpwBaQbpteTk33Z7W9Lb0VcCd/IVWrJkRAnQ1BiIf/Kg2oZ9r77
+         NKBd9mWgHny6g==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, lorenzo.bianconi@redhat.com,
+        andrii@kernel.org
+Subject: [PATCH bpf] selftests/bpf: fix xdp_redirect xdp-features selftest for veth driver
+Date:   Thu,  6 Apr 2023 12:40:19 +0200
+Message-Id: <bc35455cfbb1d4f7f52536955ded81ad47d8dc54.1680777371.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230405180250.2046566-4-revest@chromium.org>
-X-Spam-Status: No, score=-2.3 required=5.0 tests=RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 08:02:48PM +0200, Florent Revest wrote:
-> The ftrace-direct-too sample traces the handle_mm_fault function whose
-> signature changed since the introduction of the sample. Since:
-> commit bce617edecad ("mm: do page fault accounting in handle_mm_fault")
-> handle_mm_fault now has 4 arguments. Therefore, the sample trampoline
-> should save 4 argument registers.
-> 
-> s390 saves all argument registers already so it does not need a change
-> but x86_64 needs an extra push and pop.
-> 
-> This also evolves the signature of the tracing function to make it
-> mirror the signature of the traced function.
-> 
-> Signed-off-by: Florent Revest <revest@chromium.org>
+xdp-features supported by veth driver are no more static, but they
+depends on veth configuration (e.g. if GRO is enabled/disabled or
+TX/RX queue configuration). Take it into account in xdp_redirect
+xdp-features selftest for veth driver.
 
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+Fixes: fccca038f300 ("veth: take into account device reconfiguration for xdp_features flag")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ .../bpf/prog_tests/xdp_do_redirect.c          | 30 +++++++++++++++++--
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-Thanks for this!
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+index 7271a18ab3e2..8251a0fc6ee9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+@@ -167,8 +167,7 @@ void test_xdp_do_redirect(void)
+ 
+ 	if (!ASSERT_EQ(query_opts.feature_flags,
+ 		       NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
+-		       NETDEV_XDP_ACT_NDO_XMIT | NETDEV_XDP_ACT_RX_SG |
+-		       NETDEV_XDP_ACT_NDO_XMIT_SG,
++		       NETDEV_XDP_ACT_RX_SG,
+ 		       "veth_src query_opts.feature_flags"))
+ 		goto out;
+ 
+@@ -176,11 +175,36 @@ void test_xdp_do_redirect(void)
+ 	if (!ASSERT_OK(err, "veth_dst bpf_xdp_query"))
+ 		goto out;
+ 
++	if (!ASSERT_EQ(query_opts.feature_flags,
++		       NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
++		       NETDEV_XDP_ACT_RX_SG,
++		       "veth_dst query_opts.feature_flags"))
++		goto out;
++
++	/* Enable GRO */
++	SYS("ethtool -K veth_src gro on");
++	SYS("ethtool -K veth_dst gro on");
++
++	err = bpf_xdp_query(ifindex_src, XDP_FLAGS_DRV_MODE, &query_opts);
++	if (!ASSERT_OK(err, "veth_src bpf_xdp_query gro on"))
++		goto out;
++
+ 	if (!ASSERT_EQ(query_opts.feature_flags,
+ 		       NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
+ 		       NETDEV_XDP_ACT_NDO_XMIT | NETDEV_XDP_ACT_RX_SG |
+ 		       NETDEV_XDP_ACT_NDO_XMIT_SG,
+-		       "veth_dst query_opts.feature_flags"))
++		       "veth_src query_opts.feature_flags gro on"))
++		goto out;
++
++	err = bpf_xdp_query(ifindex_dst, XDP_FLAGS_DRV_MODE, &query_opts);
++	if (!ASSERT_OK(err, "veth_dst bpf_xdp_query gro on"))
++		goto out;
++
++	if (!ASSERT_EQ(query_opts.feature_flags,
++		       NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
++		       NETDEV_XDP_ACT_NDO_XMIT | NETDEV_XDP_ACT_RX_SG |
++		       NETDEV_XDP_ACT_NDO_XMIT_SG,
++		       "veth_dst query_opts.feature_flags gro on"))
+ 		goto out;
+ 
+ 	memcpy(skel->rodata->expect_dst, &pkt_udp.eth.h_dest, ETH_ALEN);
+-- 
+2.39.2
 
-Mark.
-
-> ---
->  samples/ftrace/ftrace-direct-too.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
-> index f28e7b99840f..71ed4ee8cb4a 100644
-> --- a/samples/ftrace/ftrace-direct-too.c
-> +++ b/samples/ftrace/ftrace-direct-too.c
-> @@ -5,14 +5,14 @@
->  #include <linux/ftrace.h>
->  #include <asm/asm-offsets.h>
->  
-> -extern void my_direct_func(struct vm_area_struct *vma,
-> -			   unsigned long address, unsigned int flags);
-> +extern void my_direct_func(struct vm_area_struct *vma, unsigned long address,
-> +			   unsigned int flags, struct pt_regs *regs);
->  
-> -void my_direct_func(struct vm_area_struct *vma,
-> -			unsigned long address, unsigned int flags)
-> +void my_direct_func(struct vm_area_struct *vma, unsigned long address,
-> +		    unsigned int flags, struct pt_regs *regs)
->  {
-> -	trace_printk("handle mm fault vma=%p address=%lx flags=%x\n",
-> -		     vma, address, flags);
-> +	trace_printk("handle mm fault vma=%p address=%lx flags=%x regs=%p\n",
-> +		     vma, address, flags, regs);
->  }
->  
->  extern void my_tramp(void *);
-> @@ -34,7 +34,9 @@ asm (
->  "	pushq %rdi\n"
->  "	pushq %rsi\n"
->  "	pushq %rdx\n"
-> +"	pushq %rcx\n"
->  "	call my_direct_func\n"
-> +"	popq %rcx\n"
->  "	popq %rdx\n"
->  "	popq %rsi\n"
->  "	popq %rdi\n"
-> -- 
-> 2.40.0.577.gac1e443424-goog
-> 
