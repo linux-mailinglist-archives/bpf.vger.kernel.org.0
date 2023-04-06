@@ -2,149 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AA76D9C90
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 17:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB4D6D9D3D
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 18:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjDFPmW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 11:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
+        id S239687AbjDFQJa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 12:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjDFPmV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 11:42:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CC212E;
-        Thu,  6 Apr 2023 08:42:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 17E5264969;
-        Thu,  6 Apr 2023 15:42:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4438C433EF;
-        Thu,  6 Apr 2023 15:42:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680795739;
-        bh=0rP+btQt9/KN1Mx9paUelvp606aFxYbSoZghoDoq1H4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AnKzCJXZBQ+rUdAxMp1hybL8+phnHiu+OVmBUUCFnjaaFhe3+JBjd9o4VRS+GFJN5
-         0ly1kVhxI2roMjWYQf2+y5dMUvv1Ci2GTB8X6niozwhaxs1fWG7/KuVTMCenbUs5xJ
-         R8hXBtyUSFnoU+CNCYwYm25JwnlAIBSzxJdnDB+2hCq3SOx7fwcXDY8zsCk14N9qoq
-         cO6tIQNLWF5gMXxvCymTVgRxpzqnxdep0YsXGAt8iSW0KNea1/dVI1nKiiV2A6tVBN
-         xZtV/Jig2E6z6EErWTaAiJWQujsjky70lsqYCoWXhW8RYF7/gAmGPfUx9p2iEz7+sS
-         fW0nGSTlmCNtg==
-Date:   Thu, 6 Apr 2023 08:42:17 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Vernet <void@manifault.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Tejun Heo <tj@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Yonghong Song <yhs@meta.com>, Song Liu <song@kernel.org>
-Subject: Re: [PATCH bpf-next 0/8] bpf: Follow up to RCU enforcement in the
- verifier.
-Message-ID: <20230406084217.44fff254@kernel.org>
-In-Reply-To: <CAADnVQLhLuB2HG4WqQk6T=oOq2dtXkwy0TjQbnxa4cVDLHq7bg@mail.gmail.com>
-References: <20230404045029.82870-1-alexei.starovoitov@gmail.com>
-        <20230404145131.GB3896@maniforge>
-        <CAEf4BzYXpHMNDTCrBTjwvj3UU5xhS9mAKLx152NniKO27Rdbeg@mail.gmail.com>
-        <CAADnVQKLe8+zJ0sMEOsh74EHhV+wkg0k7uQqbTkB3THx1CUyqw@mail.gmail.com>
-        <20230404185147.17bf217a@kernel.org>
-        <CAEf4BzY3-pXiM861OkqZ6eciBJnZS8gsBL2Le2rGiSU64GKYcg@mail.gmail.com>
-        <20230405111926.7930dbcc@kernel.org>
-        <CAADnVQLhLuB2HG4WqQk6T=oOq2dtXkwy0TjQbnxa4cVDLHq7bg@mail.gmail.com>
+        with ESMTP id S239892AbjDFQJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 12:09:29 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A8F93EF
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 09:09:08 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id l15so2621149ejq.10
+        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 09:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1680797346;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JdkjuJE1elUB43CchYEctgbx3o25Rv2AshR1jqOdy1w=;
+        b=dmU2u9dBbtcCNcM8LlQLmmjleUNYI0++ejRBd5fcsfxU394VZ6ydE8jyT1gTrrqG9Q
+         lhwGUutJEHWe09e8LYmIgoy58mycJURUoWFrz4SO1RktU4tkpwoK4wDhaCukb4h0QLpn
+         BODr1CIojc3vIvhy0stb18G1bNxuWpbywSZtYpXmbuHT8JvGLjS81QgUt717ObcNAU2t
+         el+8bmOjmjcYMjecf9fZZ6jWQ/LEgt6qk6OCu5i7ichA3bPHkv8+bmx7G/8nk7l5yDS7
+         47d1T1qu5iBlJNjbbNEPXsrXhG5tojQ6dVb8HQz/BG8KC5c9FEwL0e+2Cy1I3GaC3lIV
+         48Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680797346;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JdkjuJE1elUB43CchYEctgbx3o25Rv2AshR1jqOdy1w=;
+        b=Ie7xFu3Ag03tzyscQUnHiAIuAmZTqExOeyTsZ2FeFZ5SoL4lnerPCLUf+fd/Xj2AVw
+         ejbbVgU/e95vnU7+6PQCSkmnkvx0TuEppPtSvonND8QH3MDSX1P3XMdXhjzUQKgfqbJW
+         zKdB8HyBEYe1l+etsqk3QDp1SoNAXq5xxW0cyC2JU+I3k+Yblt0Ipa/ZoLxhoSwUM2ur
+         BO0s6z8IIx3sWQehjRKkUT+Q0dtotjS09eA4x9MsJs2WPMHmap8BaB/c6OD28NVP91hb
+         XNAqQgtr5/RcZHOA4P6FO4WSBWkhDtzHaVre2oausRlSnD+SYblZ5xwgwbB3DcyBpxRi
+         UMWA==
+X-Gm-Message-State: AAQBX9dkzTZ5/fV6aT+OsxYGjDxHIGlzBZoOu7/07cEmLsN6cKWHrLD8
+        1sSbElq4/uClOPZ/v2RaKs/a+0Q9POYinCRaTiGp+Q==
+X-Google-Smtp-Source: AKy350aebKRH5tIWrLGwY4zcuYm3COjZ+ZgjHreiMx6kmQQeruHL4N4CjAZcD6OsEs9Nnn39CFHwu2E8Ud9clTjONk0=
+X-Received: by 2002:a17:906:dcf:b0:932:6a2:ba19 with SMTP id
+ p15-20020a1709060dcf00b0093206a2ba19mr3620124eji.14.1680797346160; Thu, 06
+ Apr 2023 09:09:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20230404043659.2282536-1-andrii@kernel.org> <20230404043659.2282536-13-andrii@kernel.org>
+ <CAN+4W8gtHrWt_XQBTSvkMxmeuLT4hcUtYMaFRdeZfKyJ_s2QJA@mail.gmail.com> <CAEf4BzaKwrLhyk-Hon9Hi4aZhVrnU-OS-7-jHdd9uMzUnjRKZA@mail.gmail.com>
+In-Reply-To: <CAEf4BzaKwrLhyk-Hon9Hi4aZhVrnU-OS-7-jHdd9uMzUnjRKZA@mail.gmail.com>
+From:   Lorenz Bauer <lmb@isovalent.com>
+Date:   Thu, 6 Apr 2023 17:08:54 +0100
+Message-ID: <CAN+4W8jp=G-WaNxUaXAmwi8ofH+GxuW=7_3iMfueF+SDi9U=Nw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 12/19] bpf: add log_size_actual output field
+ to return log contents size
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+        timo@incline.eu, robin.goegge@isovalent.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 5 Apr 2023 22:13:26 -0700 Alexei Starovoitov wrote:
-> On Wed, Apr 5, 2023 at 11:19=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> =
-wrote:
-> >
-> > On Wed, 5 Apr 2023 10:22:16 -0700 Andrii Nakryiko wrote: =20
-> > > So I'm exclusively using `pw-apply -c <patchworks-url>` to apply
-> > > everything locally. =20
-> >
-> > I think you can throw -M after -c $url? It can only help... :) =20
->=20
-> Yeah. If only...
-> I'm exclusively using -c.
-> -M only works with -s, but I couldn't make -s -M work either.
-> Do you pass the series as a number?
+On Wed, Apr 5, 2023 at 6:40=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> > Can we check that both fields are zero when entering the syscall?
+>
+> Yep, it already happens and is done by generic
+> bpf_check_uarg_tail_zero() check in __sys_bpf.
 
-Yes, it copy just the numerical ID into the terminal.
-
-> but then series_json=3D$(curl -s $srv/series/$1/) line
-> doesn't look right, since it's missing "/mbox/" ?
-
-That's loading JSON from the patchwork's REST API.
-
-> User error on my side, I guess.
-> My bash skills were too weak to make -c and -M work,
-> but .git/hooks tip is great!
-> Thank you.
-
-FWIW I think the below may work for using -c instead of -s.
-But it is mixing "Daniel paths" and "Jakub paths" in the script.
-The output is still a bit different than when using -s.
-
-diff --git a/pw-apply b/pw-apply
-index 5fc37a24b027..c9cec94a4a8c 100755
---- a/pw-apply
-+++ b/pw-apply
-@@ -81,17 +81,15 @@ accept_series()
- }
-=20
- cover_from_url()
- {
-   curl -s $1 | gunzip -f -c > tmp.i
--  series_num=3D`grep "href=3D\"/series" tmp.i|cut -d/ -f3|head -1`
-+  series=3D`grep "href=3D\"/series" tmp.i|cut -d/ -f3|head -1`
-   cover_url=3D`grep "href=3D\"/project/netdevbpf/cover" tmp.i|cut -d\" -f2`
-   if [ ! -z "$cover_url" ]; then
--    curl -s https://patchwork.kernel.org${cover_url}mbox/ | gunzip -f -c >=
- cover.i
-     merge=3D"1"
-   fi
--  curl -s https://patchwork.kernel.org/series/$series_num/mbox/ | gunzip -=
-f -c > mbox.i
- }
-=20
- edits=3D""
- am_flags=3D""
- branch=3D"mbox"
-@@ -118,18 +116,20 @@ while true; do
-     -h | --help ) usage; break ;;
-     -- ) shift; break ;;
-     * )  break ;;
-   esac
- done
-+# Load the info from cover first, it may will populate $series and $merge
-+[ ! -z "$cover" ]  && cover_from_url $cover
-+
- [ ! -z "$auto_branch" ] && [ -z "$series" ] && usage
- [ ! -z "$mbox" ]   && [ ! -z "$series" ] && usage
- [   -z "$mbox" ]   && [   -z "$series" ] && [ -z "$cover" ] && usage
- [ ! -z "$accept" ] && [ ! -z "$mbox" ]   && usage
- [ ! -z "$series" ] && mbox_from_series $series
- [ ! -z "$mbox" ]   && mbox_from_url $mbox
- [ ! -z "$accept" ] && accept_series $series
--[ ! -z "$cover" ]  && cover_from_url $cover
-=20
- target=3D$(git branch --show-current)
-=20
- body=3D
- author=3DXYZ
+I thought that check only happens if expected_size > actual_size? I'm
+thinking of the actual_size =3D=3D expected_size case, what prevents user
+space from setting log_size_actual to a non-zero value?
