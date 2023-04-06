@@ -2,91 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E996DA5EC
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 00:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 420D96DA60B
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 01:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236901AbjDFWkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 18:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
+        id S231598AbjDFXAo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 19:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbjDFWkX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 18:40:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0A59EED
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 15:40:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D723064CEC
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 22:40:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 36A1BC4339B;
-        Thu,  6 Apr 2023 22:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680820821;
-        bh=vQYqtGRcOjekwPiK2jUvcZ6VCR9c9zo7Z0V4udu5A70=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bo9+nXcoQmx452yScOrTB94mgfewS57wELp2JcMGerb0LdG7FmLSsbskZljZZLRZE
-         0HGYQN2whCRszdMWh5A87RTW21gsLyJ0YXggh8n8szvS18GPneO9fFdR5P6G81EW/D
-         t5GplJm6p6SebYAS7L5wTJJXfcloHjiJK6FbSOj82XCtRIhTM2YYuS0S4oEKeK8uRE
-         vkdYwSNIjdcFPPh1J4GJ0/FzH65WT2lh9vhhJP8gTI8zXdM/Rm+2RsiS93mA6veqSk
-         GhB03UEaYBROhlsgm+HOlmcEszr5Z48vtBQoxV2Z3gPikFUvKnGJB2JIPiOG5SXasa
-         tDhrMZ/3qQzlg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0F9A9E4F14C;
-        Thu,  6 Apr 2023 22:40:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229732AbjDFXAn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 19:00:43 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82669213D;
+        Thu,  6 Apr 2023 16:00:42 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-944bd1d58easo143596666b.0;
+        Thu, 06 Apr 2023 16:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680822041; x=1683414041;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pi05o+/wIqfjwsC6Ux6SGoxSck3jhlcodGAJhg+oXBk=;
+        b=JSziECDRBB8uStmFPZbr/gNNDgw3wZBhvaXD14g6jmvJLfOmDr8Dm34YnGR6LHzx1f
+         ntG9Rwg5k4ZEKxdwadSN4L+qQcTkRUNU68kn9tN1F2OcKtHjPtitYGQR2qsN56DM40J/
+         jejCtQtuoVnVgoDRauMOX5lFMOmJNNnT/BWSP1uSMrMeN6ybkIYu8AqV5kpLNrCyHum5
+         SDPYYdJSKxWe7ZoW8O18D0QlDmqPrnIIPYitH9P/PLXVmGsek389cp0b3p/JnjMylu7r
+         SQfIO2vVx/Kr9Eo/4cCcU8rcGSYXKpn4VT5J35yxuzS+DWO/t2JOBk/E8IjZ+lSXnJmB
+         fcjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680822041; x=1683414041;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pi05o+/wIqfjwsC6Ux6SGoxSck3jhlcodGAJhg+oXBk=;
+        b=10Rc2nZnuBHEQ8r7OaB3QDVuX0yTognNqNungQmWo2u809v0xZ2X0IMbDM3Vfqq6U2
+         gscQzuQ/VPZNrt7d5TjINKEo+vGns4RiTcfmTCx1Zvl2VlKWWGvUCQgu2cmnRM1ZwpcY
+         4M43RTGGx1oBwLCbT+GTvmhyqgc8YAToIdQ71AaJ1cgQzI/BQOs7J4vo10ZokCW3yJgN
+         L9GHvRinOHRZedvOEF34+w4jxOHsIYxaTFdPKuoGAYJNLwmSUL4Qkolps1tJ3DYy9kUg
+         GzNZruV76+wJr3nSxC4cNW0Sy9CBFufVYiOWQbdiNrye9BVM5EodBOGuTKF86LxOiK50
+         p8XA==
+X-Gm-Message-State: AAQBX9ct7jiyqoLRfDw65M8DIMqbz/YhlFPvyEnpLu0MRiC+YEoX+fiM
+        0eRvznFZms6SN6lk1/wsezqaZPuCMsVNgwQWUXLFnSpMzyc=
+X-Google-Smtp-Source: AKy350bh45yYwqVphkeJknQlcNpvKbWeT11aOvhLw9J5VHA3SrUw/lO64P13Dl9Eo7kpYpBL/zD+0J3JKoF48QwyqNc=
+X-Received: by 2002:a50:d6da:0:b0:502:148d:9e1e with SMTP id
+ l26-20020a50d6da000000b00502148d9e1emr550905edj.3.1680822040777; Thu, 06 Apr
+ 2023 16:00:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/4] bpf: Improve verifier for cond_op and spilled
- loop index variables
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168082082105.20613.30150261767059616.git-patchwork-notify@kernel.org>
-Date:   Thu, 06 Apr 2023 22:40:21 +0000
-References: <20230406164450.1044952-1-yhs@fb.com>
-In-Reply-To: <20230406164450.1044952-1-yhs@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230405225246.1327344-1-brho@google.com>
+In-Reply-To: <20230405225246.1327344-1-brho@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 6 Apr 2023 16:00:29 -0700
+Message-ID: <CAADnVQJ7tG-b_+F7HnrhJ0e-p=PkvymHfQPWybVO2icSiV84aw@mail.gmail.com>
+Subject: Re: bpf: ensure all memory is initialized in bpf_get_current_comm
+To:     Barret Rhoden <brho@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Apr 5, 2023 at 3:53=E2=80=AFPM Barret Rhoden <brho@google.com> wrot=
+e:
+>
+> BPF helpers that take an ARG_PTR_TO_UNINIT_MEM must ensure that all of
+> the memory is set, including beyond the end of the string.
+>
+> Signed-off-by: Barret Rhoden <brho@google.com>
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+The patch looks fine, but please rebase to bpf-next and resubmit
+with [PATCH bpf-next] subj, so it goes through BPF CI.
 
-On Thu, 6 Apr 2023 09:44:50 -0700 you wrote:
-> LLVM commit [1] introduced hoistMinMax optimization like
->   (i < VIRTIO_MAX_SGS) && (i < out_sgs)
-> to
->   upper = MIN(VIRTIO_MAX_SGS, out_sgs)
->   ... i < upper ...
-> and caused the verification failure. Commit [2] workarounded the issue by
-> adding some bpf assembly code to prohibit the above optimization.
-> This patch improved verifier such that verification can succeed without
-> the above workaround.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v2,1/4] bpf: Improve verifier JEQ/JNE insn branch taken checking
-    https://git.kernel.org/bpf/bpf-next/c/13fbcee55706
-  - [bpf-next,v2,2/4] selftests/bpf: Add tests for non-constant cond_op NE/EQ bound deduction
-    https://git.kernel.org/bpf/bpf-next/c/aec08d677b4d
-  - [bpf-next,v2,3/4] bpf: Improve handling of pattern '<const> <cond_op> <non_const>' in verifier
-    https://git.kernel.org/bpf/bpf-next/c/953d9f5beaf7
-  - [bpf-next,v2,4/4] selftests/bpf: Add verifier tests for code pattern '<const> <cond_op> <non_const>'
-    https://git.kernel.org/bpf/bpf-next/c/23a88fae9f20
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+See Documentation/bpf/bpf_devel_QA.rst
