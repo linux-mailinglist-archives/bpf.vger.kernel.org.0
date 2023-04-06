@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF096D8DF5
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 05:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCF26D8E4D
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 06:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbjDFDWs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 23:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
+        id S234712AbjDFEYU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 00:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbjDFDWo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 23:22:44 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61F293ED;
-        Wed,  5 Apr 2023 20:22:38 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id g19so36942044qts.9;
-        Wed, 05 Apr 2023 20:22:38 -0700 (PDT)
+        with ESMTP id S234244AbjDFEYT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 00:24:19 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2B07AAC;
+        Wed,  5 Apr 2023 21:24:13 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id ew6so146141989edb.7;
+        Wed, 05 Apr 2023 21:24:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680751357;
+        d=gmail.com; s=20210112; t=1680755052; x=1683347052;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R5XC3ufD+Qey01Z2ErPpFvERrSWVVhTft+yj5CoTEmQ=;
-        b=JCYDeRwzlodAgahW3ub028888bjpfqFV0nWtKmFA0xOwM90pdsB5XjeJ/J6mcwGW6R
-         1KSUneDFUHVh5p+DPb2KV1LzFSo3Cp65KBvUeYzzo5mD17JHV9NV85MudpNoAN+JPWbn
-         SRIyihCsSFqHwMJm608Us5iFmuPuxv/YHZpAfOr0lqznC6JuCgHog2prD19wMrMQ7+Jl
-         ifPTLFeP4Nvrkpm71icVA+RQvxw2WPIuvTHCf0wtTNFcHOYzc8nVuuGFqUh17WOPI7Ec
-         Hky+yWduHkk5S9QoJhRKgaDC9w8r9t9BGusjQhxiC/p98kdKGzeRulvykOXB8w31bEBT
-         m6IA==
+        bh=RXsgvmzHukaaTecEY3Yt625/lLug2G4Dbez5De3xAOM=;
+        b=Fdz+ZTUWOR98kFskw8WAXK8kkfJhEe1LRWVhn2tWMXz1ZAIrrAcpvrkN85FHGGEQCf
+         V7LKb0DctSR2FCqZURuIwXiJ35yX98y/2K2ImkeD87WatEVmaJClsAYU6c5MwSInz2ed
+         hNXO5GgM4v9qo6J7azUzy7TI1Ctc9tRJEo022aqC6epZK6uI03Z2N3mlaFau0UT1qFkA
+         Ae8/wk3H3GGGDAIgYXt9PgKDQEU6T50qtNBU6oa5KDNYbougxMTd83LLMhci+5z4u3Vs
+         5wsmFCiPxBbnDqFBg4JPZuBRnjnGqs4ZKchKcEmC5baRiE5HgMJjpJ3onSLdjF35jxWF
+         qRxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680751357;
+        d=1e100.net; s=20210112; t=1680755052; x=1683347052;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R5XC3ufD+Qey01Z2ErPpFvERrSWVVhTft+yj5CoTEmQ=;
-        b=TunW3xWsH+E9ndVOB+2f+Fnz/TfzoGS7UNGgY6Jvh4hzxnf/I7ekG3Ov7V06NEs/+M
-         cAWqtqpF0hchkm43CS8oFMdAjhRFza2p/fXRDBDeCRinN3aVzwdCXlIsjsGXnNn+FOlU
-         bEGwyzZmwf6WZ7YHI3d7BmLv7hWCy5UlBub2KBFJsSnsI8rrFAUy5HY5YZkb6RwaWc4i
-         VXZwu4n5JSKVYF82KC5PvopGqcBk7x4gfBeybCwUXQWebRGGanc7sPMm1fDeu23oLk77
-         dty4NYyc6PcRpk0WOFZL1ayR/+0/bX49tTl9um8PVf8cl/0IOjWWlgn00+uo1zuMGtoX
-         Bb+w==
-X-Gm-Message-State: AAQBX9cpOo3PDQtg/noabxmBDt0Gp3Zm24/aire8s2kboOpQxLBfaUgh
-        s145Xw+IPm3XAPB6vVd5AXszDK4hmfjbxdRMiWI=
-X-Google-Smtp-Source: AKy350apODNUvFl5sd7P4hCOZsg+D+cBfXJSmY7zBhM53Yk0HzF27LnuIXES1FZDWWRVhzg+OAp5lxKxEtYMmZlVdKQ=
-X-Received: by 2002:a05:622a:1815:b0:3df:4392:1aff with SMTP id
- t21-20020a05622a181500b003df43921affmr2103282qtc.6.1680751357446; Wed, 05 Apr
- 2023 20:22:37 -0700 (PDT)
+        bh=RXsgvmzHukaaTecEY3Yt625/lLug2G4Dbez5De3xAOM=;
+        b=Hl2udt4tznJff8pt3E2JalpNwbpiUzdjshGE1Noek6Wiu8yg72sUGZ/5FQU/HdhbSo
+         oNRJiqxcPGM01gcWiFhryLPwEKLnNHjjpM4JBmhfrm5SCHiWVsWDoQniY43BcKyFEfhV
+         0lVL1ujMLr9zBpC6WcwF5laElxEnJpDMmabEL9TREIpeIHJYRapiWxFt9KKmBv5hf9KI
+         gGbXFfcvfX0U40ivBOkjJSCsywyuuSWSEzHVax3JaG+wTKNkFNuoRK7bEAl6WIoHJ1TB
+         1Tq6eseDZSNM3KVCTYB5VU9Jk8G/glrgNlCCM/2OLQSKmurIeTCrDTQyMVifNzWeSktK
+         z33g==
+X-Gm-Message-State: AAQBX9e4nKlsCVx3mdx9At8xdv1IwGtidQn6/U1iwomaW4l1L4c2Ej1Z
+        njg4l3g9E3aX5zLipkg7Q49AevoRdL9KL7H36quaq2lP
+X-Google-Smtp-Source: AKy350a9wYLbU5oSTk06jkpVn/2X4h/tjTlb5DJoEV6xT+TELnb0TC1J749GC+pE/8aOtz4ULJnFzbBUyZHCvVM8gFI=
+X-Received: by 2002:a17:907:8a07:b0:924:32b2:e3d1 with SMTP id
+ sc7-20020a1709078a0700b0092432b2e3d1mr2786379ejc.3.1680755052190; Wed, 05 Apr
+ 2023 21:24:12 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230326092208.13613-1-laoar.shao@gmail.com> <CAPhsuW43EiH0tVKU8s+JwV_V6EBETTDyXsAmMzAftpVtcgLHag@mail.gmail.com>
  <CALOAHbCqCb3xmSpNe1Qvm75GBY4ZEGrAOHfVJvpZV5t=akTTgQ@mail.gmail.com>
@@ -54,13 +54,14 @@ References: <20230326092208.13613-1-laoar.shao@gmail.com> <CAPhsuW43EiH0tVKU8s+J
  <20230403225017.onl5pbp7h2ugclbk@dhcp-172-26-102-232.dhcp.thefacebook.com>
  <CALOAHbDQROKrWe732Qv1CsZwr6nMJN-2y77JW3EuT53D8At+Ow@mail.gmail.com>
  <20230406020656.7v5ongxyon5fr4s7@dhcp-172-26-102-232.dhcp.thefacebook.com>
- <CALOAHbCEsucGRB+n5hTnPm-HssmB91HD4PFVRhdO=CZnJXfR6A@mail.gmail.com> <CAADnVQ+1VEBHTM5Rm-gx8-bg=tfv=4x+aONhF0bAmBFZG3W8Qg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+1VEBHTM5Rm-gx8-bg=tfv=4x+aONhF0bAmBFZG3W8Qg@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 6 Apr 2023 11:22:01 +0800
-Message-ID: <CALOAHbAorooyteDjgs82TtujP4Fwo5hSkh-Z5QhxhV9p7_2mfw@mail.gmail.com>
+ <CALOAHbCEsucGRB+n5hTnPm-HssmB91HD4PFVRhdO=CZnJXfR6A@mail.gmail.com>
+ <CAADnVQ+1VEBHTM5Rm-gx8-bg=tfv=4x+aONhF0bAmBFZG3W8Qg@mail.gmail.com> <CALOAHbAorooyteDjgs82TtujP4Fwo5hSkh-Z5QhxhV9p7_2mfw@mail.gmail.com>
+In-Reply-To: <CALOAHbAorooyteDjgs82TtujP4Fwo5hSkh-Z5QhxhV9p7_2mfw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 5 Apr 2023 21:24:00 -0700
+Message-ID: <CAADnVQKr5Y3z9f_Vv49DvRFcN+OF3JaFx_9NgBL58pz+TLq8ig@mail.gmail.com>
 Subject: Re: [RFC PATCH bpf-next 00/13] bpf: Introduce BPF namespace
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
 Cc:     Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -83,122 +84,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 11:06=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Apr 5, 2023 at 8:22=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> w=
+rote:
 >
-> On Wed, Apr 5, 2023 at 7:55=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
- wrote:
+> On Thu, Apr 6, 2023 at 11:06=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > It seems that I didn't describe the issue clearly.
-> > The container doesn't have CAP_SYS_ADMIN, but the CAP_SYS_ADMIN is
-> > required to run bpftool,  so the bpftool running in the container
-> > can't get the ID of bpf objects or convert IDs to FDs.
-> > Is there something that I missed ?
->
-> Nothing. This is by design. bpftool needs sudo. That's all.
->
-
-Hmm, what I'm trying to do is make bpftool run without sudo.
-
->
+> > On Wed, Apr 5, 2023 at 7:55=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
+m> wrote:
+> > >
+> > > It seems that I didn't describe the issue clearly.
+> > > The container doesn't have CAP_SYS_ADMIN, but the CAP_SYS_ADMIN is
+> > > required to run bpftool,  so the bpftool running in the container
+> > > can't get the ID of bpf objects or convert IDs to FDs.
+> > > Is there something that I missed ?
 > >
-> > > > --- a/kernel/bpf/syscall.c
-> > > > +++ b/kernel/bpf/syscall.c
-> > > > @@ -3705,9 +3705,6 @@ static int bpf_obj_get_next_id(const union bp=
-f_attr *attr,
-> > > >         if (CHECK_ATTR(BPF_OBJ_GET_NEXT_ID) || next_id >=3D INT_MAX=
-)
-> > > >                 return -EINVAL;
-> > > >
-> > > > -       if (!capable(CAP_SYS_ADMIN))
-> > > > -               return -EPERM;
-> > > > -
-> > > >         next_id++;
-> > > >         spin_lock_bh(lock);
-> > > >         if (!idr_get_next(idr, &next_id))
-> > > >
-> > > > Because the container doesn't have CAP_SYS_ADMIN enabled, while the=
-y
-> > > > only have CAP_BPF and other required CAPs.
-> > > >
-> > > > Another possible solution is that we run an agent in the host, and =
-the
-> > > > user in the container who wants to get the bpf objects info in his
-> > > > container should send a request to this agent via unix domain socke=
-t.
-> > > > That is what we are doing now in our production environment.  That
-> > > > said, each container has to run a client to get the bpf object fd.
-> > >
-> > > None of such hacks are necessary. People that debug bpf setups with b=
-pftool
-> > > can always sudo.
-> > >
-> > > > There are some downsides,
-> > > > -  It can't handle pinned bpf programs
-> > > >    For pinned programs, the user can get them from the pinned files
-> > > > directly, so he can use bpftool in his case, only with some
-> > > > complaints.
-> > > > -  If the user attached the bpf prog, and then removed the pinned
-> > > > file, but didn't detach it.
-> > > >    That happened. But this error case can't be handled.
-> > > > - There may be other corner cases that it can't fit.
-> > > >
-> > > > There's a solution to improve it, but we also need to change the
-> > > > kernel. That is, we can use the wasted space btf->name.
-> > > >
-> > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > > index b7e5a55..59d73a3 100644
-> > > > --- a/kernel/bpf/btf.c
-> > > > +++ b/kernel/bpf/btf.c
-> > > > @@ -5542,6 +5542,8 @@ static struct btf *btf_parse(bpfptr_t btf_dat=
-a,
-> > > > u32 btf_data_size,
-> > > >                 err =3D -ENOMEM;
-> > > >                 goto errout;
-> > > >         }
-> > > > +       snprintf(btf->name, sizeof(btf->name), "%s-%d-%d", current-=
->comm,
-> > > > +                        current->pid, cgroup_id(task_cgroup(p, cpu=
-_cgrp_id)));
-> > >
-> > > Unnecessary.
-> > > comm, pid, cgroup can be printed by bpftool without changing the kern=
-el.
+> > Nothing. This is by design. bpftool needs sudo. That's all.
 > >
-> > Some questions,
-> > - What if the process exits after attaching the bpf prog and the prog
-> > is not auto-detachable?
-> >   For example, the reuserport bpf prog is not auto-detachable. After
-> > pins the reuserport bpf prog, a task can attach it through the pinned
-> > bpf file, but if the task forgets to detach it and the pinned file is
-> > removed, then it seems there's no way to figure out which task or
-> > cgroup this prog belongs to...
 >
-> you're saying that there is a bpf prog in the kernel without
-> corresponding user space ?
+> Hmm, what I'm trying to do is make bpftool run without sudo.
 
-No, it is corresponding to user space. For example, it may be
-corresponding to a socket fd, or a cgroup fd.
+This is not a task that is worth solving.
 
-> Meaning no user space process has an FD
-> that points to this prog or FD to a map that this prog is using?
-> In such a case this is truly kernel bpf prog. It doesn't belong to cgroup=
-.
+> > > Some questions,
+> > > - What if the process exits after attaching the bpf prog and the prog
+> > > is not auto-detachable?
+> > >   For example, the reuserport bpf prog is not auto-detachable. After
+> > > pins the reuserport bpf prog, a task can attach it through the pinned
+> > > bpf file, but if the task forgets to detach it and the pinned file is
+> > > removed, then it seems there's no way to figure out which task or
+> > > cgroup this prog belongs to...
+> >
+> > you're saying that there is a bpf prog in the kernel without
+> > corresponding user space ?
 >
-
-Even if it is kernel bpf prog, it is created by a process. The user
-needs to know which one created it.
-
-> > - Could you pls. explain in detail how to get comm, pid, or cgroup
-> > from a pinned bpffs file?
+> No, it is corresponding to user space. For example, it may be
+> corresponding to a socket fd, or a cgroup fd.
 >
-> pinned bpf prog and no user space holds FD to it?
-> It's not part of any cgroup. Nothing to print.
+> > Meaning no user space process has an FD
+> > that points to this prog or FD to a map that this prog is using?
+> > In such a case this is truly kernel bpf prog. It doesn't belong to cgro=
+up.
+> >
+>
+> Even if it is kernel bpf prog, it is created by a process. The user
+> needs to know which one created it.
 
-As I explained above, even if it holds nothing, the user needs to know
-the information from it. For example, if it is expected, which one
-created it?
+In some situations it's certainly interesting to know which process
+loaded a particular program.
+In many other situations it's irrelevant.
+For example, the process that loaded a prog could have been moved to a
+different cgroup.
+If you want to track the loading you need to install bpf_lsm
+that monitors prog_load hook and collect that info.
+It's not the job of the kernel to do it.
 
---=20
-Regards
-Yafang
+> > > - Could you pls. explain in detail how to get comm, pid, or cgroup
+> > > from a pinned bpffs file?
+> >
+> > pinned bpf prog and no user space holds FD to it?
+> > It's not part of any cgroup. Nothing to print.
+>
+> As I explained above, even if it holds nothing, the user needs to know
+> the information from it. For example, if it is expected, which one
+> created it?
+
+See the answer above. The kernel has enough hooks already to provide
+this information to user space. No kernel changes necessary.
