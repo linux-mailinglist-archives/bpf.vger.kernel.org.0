@@ -2,55 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 083236D8C0A
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 02:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28B86D8C0D
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 02:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233726AbjDFAkp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 20:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S234623AbjDFAkw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 20:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233940AbjDFAkn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 20:40:43 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF6D76AA
-        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 17:40:39 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id j11-20020a25230b000000b00b6871c296bdso36880134ybj.5
-        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 17:40:39 -0700 (PDT)
+        with ESMTP id S234523AbjDFAku (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 20:40:50 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3E17A9A
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 17:40:41 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b124-20020a253482000000b00b72947f6a54so37424548yba.14
+        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 17:40:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680741638;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=f8wJOETfMk5LbkAt5hTIIj7SEycwbAoJf/W25gr+5f8=;
-        b=X/Cr1dJYDVkTN7ZvVGGMWTGTPtx3tU0OJHVzAf+vzbi5Ai/vsm2qgnCLrIgHDlYgFY
-         Nxy8ZU/49Bz9yxHGc+Dj5IqZ1g8DRbmgUUaqUs+uW+gHXqmWIcqYmcmx44zAzS/G7Nmt
-         0xcUbqZPWofWsTH8IIkTL70sXGu2k6KPvZOzapVGTI8s0Dss1lnxrlfXgsICZL5AURrl
-         TMm4m/R8RSFUbb8ZbaEIpuWxFz4ns/RpD4gIzMATa8MSLzhc6cWsUNDhM5YLxp6WoZvj
-         +gIbhUhacuZ60SXdzI7qwxYCEYrhtSGchiQ5hGFlK9eFrpVRcExBjmKQITlJkI4EbGRR
-         bPrg==
+        d=google.com; s=20210112; t=1680741640;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=McDcXFBeTpRROxQUqMA2pgjkFzg3DM0Jer8s1DpCFu0=;
+        b=k6n8mW0A9t/ctuMHEzGCgb/5wxgpyQ5jaCdkYx8TZ1jyPWjcmMfd4/5a7xdPJ7enxv
+         i6p2+isHp8Qg0KGWx3DnJa0nLQYm67mK4V+T+/O2O8Jw4X04X0osjYtQZhCU08gXjXCk
+         rNfSEiCcH5hxmP3Okc/9TNGb7EbYdpnTgsgC8rOB5fsWJe86pmDimQ4/JHFfmt2JWfIT
+         4+w0KwFg97MC7sTzOC2YFeE/SaejQBNBB5gDhyf0sIpuKngXGnqbp3Vms59AB6YDcSz7
+         +bbmEnegVj8U592jfJ8TMuMw1MuZwJaGllugkf5y692Kw8YYrTXZJuDKUmdg9D9nBWcd
+         0WnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680741638;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f8wJOETfMk5LbkAt5hTIIj7SEycwbAoJf/W25gr+5f8=;
-        b=xEFQFcuIccHjyOP/mYOr99gRszcVn3NJEgcDqk67hGUPf2HDARWN+CMT2cKZVrVZCk
-         V1LFyvYy00NFSa86r474xzRMaTDOiT7zhgd3KdbvSKqQ76AX/p5HTQaEb7Z6FCk0G01M
-         o6GzKzMbkhXLF9Sjh3JQ7FCaZEYLsRygG/lKRI+/eNN098xkxwEWGWxq44F80yyvpHeh
-         Rx38+njfaExqZAXIY7yaa7mWT8DCHreklwAOVsfj3SbxwwmsdQAtlZImHW2VRNbEBF3R
-         nLKvzjh7K0pB8kcw3Pq8Ggavbp/Fy3rFP0qGjIKR8gkJdOFe8lICjCh3IT17fPCJ1r/O
-         eeSg==
-X-Gm-Message-State: AAQBX9ctHGjnZ6JKyAlM1xxSR1OE4EFOXSd6IMxWwOAO1/HVsT8TJczX
-        +weYYzmFiGa4QLAqsInL8DR4gCRZkwAZXLvjhRA6ryg1Cma0Z6pvb0LnwQWLCYvCKZVM8ofnAmd
-        rkoafx4auiZ6IZ+fGvlntyvoGI4SFcvv/+kbZjf+XuGDTwZ+nSjGBNvo+TQ==
-X-Google-Smtp-Source: AKy350Y5s7wagCr2uOBka7VpOa5phS+wwbaNaXpFuChbYAP5L74Oi6tc7dDQxdsiKbYC5BJLLm9qAExTIvw=
+        d=1e100.net; s=20210112; t=1680741640;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=McDcXFBeTpRROxQUqMA2pgjkFzg3DM0Jer8s1DpCFu0=;
+        b=w4JKA/iBDw4vUNY/ZSB+AWTOJqDUDfxbt1nxpZSATPtpchbVyrDlfBVPUZszvog+tq
+         ijOMY26Bw7SK2zpzTO2yNqUpMp8eZ0WunqJdQh7z/Tw5DcYnKc+ajV1FNezWUmf96nmC
+         WTCq9Klt/nDozYkW4nYkcIt7laJA+YVPnRHyG/4gwHaM0+nym1DmnkGz5Rv9kW4HcMIr
+         DG5/plvenZCwZ3Me8Faju+TmS3YpVpawIjakUuVKvFZRfe5dMcI8trSnRZTgkcd44Cxb
+         bPSMeJgwQU7CUFtrjufzAdo6TFRKD4J/0FW/ZWZSuJEJ0oPNoVngKbI+hZxtIhHEGJAR
+         wf9A==
+X-Gm-Message-State: AAQBX9dGHllC6gQ6a+yUuiq2QWT6Sp5WigMNqv6bxk6HHpgY2bdkayx+
+        h0/FHWnatJEqtG0XsDEqhrKy+NLXD6BlGg+GHPhWtk09nGcsbIQAmS4pwap71QBfAHOMiXYMAou
+        YJr9IjW/zswylTApxCo3NOwhDZjov5Dn16s1e/TvHa6cUnZp+WFcOhSDovg==
+X-Google-Smtp-Source: AKy350bPNIOIE//zV7JizIt83+G0W/fEKuaqLntA2Yk+VZnnixxP6m5jp+KnUzV7Yr3N1wuiNhnbMicZVAs=
 X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:694f:f21b:c6de:aead])
- (user=drosen job=sendgmr) by 2002:a81:af42:0:b0:546:8e4:703f with SMTP id
- x2-20020a81af42000000b0054608e4703fmr4898774ywj.8.1680741638313; Wed, 05 Apr
- 2023 17:40:38 -0700 (PDT)
-Date:   Wed,  5 Apr 2023 17:40:15 -0700
+ (user=drosen job=sendgmr) by 2002:a81:b609:0:b0:541:8995:5334 with SMTP id
+ u9-20020a81b609000000b0054189955334mr4835018ywh.3.1680741640430; Wed, 05 Apr
+ 2023 17:40:40 -0700 (PDT)
+Date:   Wed,  5 Apr 2023 17:40:16 -0700
+In-Reply-To: <20230406004018.1439952-1-drosen@google.com>
 Mime-Version: 1.0
+References: <20230406004018.1439952-1-drosen@google.com>
 X-Mailer: git-send-email 2.40.0.577.gac1e443424-goog
-Message-ID: <20230406004018.1439952-1-drosen@google.com>
-Subject: [PATCH 0/3] Dynptr Verifier Adjustments
+Message-ID: <20230406004018.1439952-2-drosen@google.com>
+Subject: [PATCH 1/3] bpf: verifier: Accept dynptr mem as mem in helpers
 From:   Daniel Rosenberg <drosen@google.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -79,38 +81,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-These patches relax a few verifier requirements around dynptrs.
+This allows using memory retrieved from dynptrs with helper functions
+that accept ARG_PTR_TO_MEM. For instance, results from bpf_dynptr_data
+can be passed along to bpf_strncmp.
 
-I was unable to test the patch in 0003 due to unrelated issues compiling the
-bpf selftests, but did run an equivalent local test program.
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
+---
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-This is the issue I was running into:
-progs/cgrp_ls_attach_cgroup.c:17:15: error: use of undeclared identifier 'BPF_MAP_TYPE_CGRP_STORAGE'; did you mean 'BPF_MAP_TYPE_CGROUP_STORAGE'?
-        __uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-                     BPF_MAP_TYPE_CGROUP_STORAGE
-/ssd/kernel/fuse-bpf/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:13:39: note: expanded from macro '__uint'
-#define __uint(name, val) int (*name)[val]
-                                      ^
-/ssd/kernel/fuse-bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:27892:2: note: 'BPF_MAP_TYPE_CGROUP_STORAGE' declared here
-        BPF_MAP_TYPE_CGROUP_STORAGE = 19,
-        ^
-1 error generated.
-
-Daniel Rosenberg (3):
-  bpf: verifier: Accept dynptr mem as mem in helpers
-  bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
-  selftests/bpf: Test allowing NULL buffer in dynptr slice
-
- Documentation/bpf/kfuncs.rst                  | 23 ++++++++++++-
- kernel/bpf/helpers.c                          | 32 ++++++++++++-------
- kernel/bpf/verifier.c                         | 21 ++++++++++++
- .../testing/selftests/bpf/prog_tests/dynptr.c |  1 +
- .../selftests/bpf/progs/dynptr_success.c      | 21 ++++++++++++
- 5 files changed, 85 insertions(+), 13 deletions(-)
-
-
-base-commit: 5af607a861d43ffff830fc1890033e579ec44799
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 56f569811f70..20beab52812a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7164,12 +7164,16 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+ 	 * ARG_PTR_TO_MEM + MAYBE_NULL is compatible with PTR_TO_MEM and PTR_TO_MEM + MAYBE_NULL,
+ 	 * but ARG_PTR_TO_MEM is compatible only with PTR_TO_MEM but NOT with PTR_TO_MEM + MAYBE_NULL
+ 	 *
++	 * ARG_PTR_TO_MEM is compatible with PTR_TO_MEM that is tagged with a dynptr type.
++	 *
+ 	 * Therefore we fold these flags depending on the arg_type before comparison.
+ 	 */
+ 	if (arg_type & MEM_RDONLY)
+ 		type &= ~MEM_RDONLY;
+ 	if (arg_type & PTR_MAYBE_NULL)
+ 		type &= ~PTR_MAYBE_NULL;
++	if (base_type(arg_type) == ARG_PTR_TO_MEM)
++		type &= ~DYNPTR_TYPE_FLAG_MASK;
+ 
+ 	if (meta->func_id == BPF_FUNC_kptr_xchg && type & MEM_ALLOC)
+ 		type &= ~MEM_ALLOC;
 -- 
 2.40.0.577.gac1e443424-goog
 
