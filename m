@@ -2,221 +2,344 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C74B6DA467
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 23:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BFD6DA472
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 23:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239878AbjDFVGq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 17:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
+        id S238906AbjDFVJb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 17:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237801AbjDFVGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 17:06:33 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779E39753;
-        Thu,  6 Apr 2023 14:06:23 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id v9so2339243pjk.0;
-        Thu, 06 Apr 2023 14:06:23 -0700 (PDT)
+        with ESMTP id S238304AbjDFVJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 17:09:29 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C67F7ECB;
+        Thu,  6 Apr 2023 14:09:27 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id g18so4399719ejj.5;
+        Thu, 06 Apr 2023 14:09:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680815182; x=1683407182;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+        d=gmail.com; s=20210112; t=1680815366;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7I+ZTLBAAWmNlN+JBk4TipMBC8vuk1wOji+jyAsKtTA=;
-        b=g4JIygxRKGw+RQeL1AkR1lDj7TucctKNv+PWq71gm17icpuIeT3xmoTuugrHOLcNr0
-         ORQKJuJ2IVmfYcVCXque1deeq+sB83xaNjsybbNsXrMaGS8MT5otHkBuREnwaW3Y2BPp
-         IEYNGklF4PxLGGX26J+uBP+kmBL5dbuxPTudwSIDknQ0AFQrgzl9UKVP8+xdx23dCTo7
-         2Z6etn1aXcN6VKa8s1Sw1XMy/aQZE6lp/tWtioVC3FOx5JoS+nhGVJZepj3hhskselX0
-         Zs4WbVQz24EsYhJXDzcjngDMH3hqMGXGNwItuHOaVg6eTgkhu6zHcUleKquXWZ7+NOqJ
-         vHYQ==
+        bh=7IMYxeiTkHkUnkag6hCenfbg4myfMEKIz109nk2UMqI=;
+        b=WXYYDnt7D3I2S52tUDwZehAKPr9B1cxcK+D1iGSFpHuF43/C3/wWQuzObNf+NNnZym
+         0CIjLsCLjgxyMqs12yamE3w9S1qYCX9l60Vo3+brHHJcXXYPHlWyuyNT5Mdtq6PSUqJz
+         vRTUD5oCtzhqXv1Cg72mqJBp6EBqc4aIGf64c/GY3jvRJBI4sXC0ayi8dpQDaj57KkJF
+         xc4ucUs4FtawC4fiSCuela/WdQmOHvOTZ0lXeItf+TXfoJbcv7E3Gu5dx2Bwv/9jHOrg
+         C/tQZqsYPoO368x2pI0VVU2x5dgXPCcI+bzaK1SzUBIjoC1QAql57Tzube1WpXtmGxow
+         cbgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680815182; x=1683407182;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=7I+ZTLBAAWmNlN+JBk4TipMBC8vuk1wOji+jyAsKtTA=;
-        b=SPSjbwSpKUSkkAvJoCHSLmgCfV72gPBXWX8o1ZQUbscxf7LIp4MpPZZ0kr7aBZPUfu
-         iFyDthWqyWYxwvpiWBV91c8S3hKHfQaxnTQnyi+JpXk7xYv/D/JpNJv0/mop9puF/x8+
-         88OwTkXwZb67Aq4clgILA+Mz4gcC/XQ92ph/h5DtbGTQ1ZP9SPt9/+LguYOfvKd9MFTX
-         qxX2WaXMDSDOguihiQBu/j9kl80WWBYGkAnC/W7iJVvCHwHN9DX+5KCtXaFrmpprYFF1
-         +4Ktr5Kq5YtNJlbz8ntrjYoXQ0Xsp6pVeRNcIWvGz4Mn8bSe5Tv+nSzqy0/rSrpruZLo
-         MW5A==
-X-Gm-Message-State: AAQBX9c96CYVtNcIytT9ChVWetMs7Ph77rORX/160MMUQCljM64clDJ6
-        DrBMjccMjvhXrYo7Mr6/Cug=
-X-Google-Smtp-Source: AKy350b/GP3jdpKFEr7S9KLbbSe9aStLqLmug61iMLgZK620loW/KsTQWHA0VyNjlF5dIGCgY0lrDQ==
-X-Received: by 2002:a17:903:64c:b0:1a4:fcc9:ec61 with SMTP id kh12-20020a170903064c00b001a4fcc9ec61mr479341plb.5.1680815182514;
-        Thu, 06 Apr 2023 14:06:22 -0700 (PDT)
-Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:3301:38fe:e39e:3d51])
-        by smtp.gmail.com with ESMTPSA id g5-20020a170902868500b001a0667822c8sm1777837plo.94.2023.04.06.14.06.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 14:06:22 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH 7/7] perf lock contention: Do not try to update if hash map is full
-Date:   Thu,  6 Apr 2023 14:06:11 -0700
-Message-Id: <20230406210611.1622492-8-namhyung@kernel.org>
-X-Mailer: git-send-email 2.40.0.577.gac1e443424-goog
-In-Reply-To: <20230406210611.1622492-1-namhyung@kernel.org>
-References: <20230406210611.1622492-1-namhyung@kernel.org>
+        d=1e100.net; s=20210112; t=1680815366;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7IMYxeiTkHkUnkag6hCenfbg4myfMEKIz109nk2UMqI=;
+        b=KuwFO5nP67z+5z2oPpALKoa2oeUDXzRSTgaFq7eeeWZt5M2bnqs4XGYTMI8oROr3e2
+         aiEGqieK1PwH3fxz/2YxswI2ulDgqDW/4CA8u5n/Lxz7KGoVYnViQ8JlmOWFlpFyOAAk
+         mXdiGwYshi7mKmOWhLPt/wNMn23PQ0b22D+afnz9wwF5dxbiKysxMW88G6PJS4U1T/mS
+         /OoRLkhBGd1ZvbUnrb4MKbcZzBRSw1zpO35JPB2T4OI30rb1d+1thrMURmGQvRYz3/63
+         XGGZKYfBy1pNL8gKC98Ok0+47Ev7mJz10MFBZ3h4khpqBFKmAH+E7gChLdhwXexvd+eI
+         bP1g==
+X-Gm-Message-State: AAQBX9d1c60/5DIJKss1b5Mfuimu8P0rRx3WpE2lNGRVufctsFlwNiP7
+        O3mXA1sZIcZlXUFJtMG4w3ivLch+YKTIkiKMlfk=
+X-Google-Smtp-Source: AKy350bTvCR3TUWc6oqucssQTixUjIphJrw/gv6Lfi7PWl7ORkEXxu9N3J33NB8doGgi6ir7CRr45VkZpLP0ZfqyQ+I=
+X-Received: by 2002:a17:907:1c83:b0:947:9d85:30c9 with SMTP id
+ nb3-20020a1709071c8300b009479d8530c9mr5488338ejc.5.1680815365676; Thu, 06 Apr
+ 2023 14:09:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230406004018.1439952-1-drosen@google.com> <20230406004018.1439952-3-drosen@google.com>
+In-Reply-To: <20230406004018.1439952-3-drosen@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 6 Apr 2023 14:09:13 -0700
+Message-ID: <CAEf4BzakRfffU9+wLBNfhBi1dKxs03ibopJsMyEF6JAM-QJWjw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It doesn't delete data in the task_data and lock_stat maps.  The data
-is kept there until it's consumed by userspace at the end.  But it calls
-bpf_map_update_elem() again and again, and the data will be discarded if
-the map is full.  This is not good.
+On Wed, Apr 5, 2023 at 5:40=E2=80=AFPM Daniel Rosenberg <drosen@google.com>=
+ wrote:
+>
+> bpf_dynptr_slice(_rw) uses a user provided buffer if it can not provide
+> a pointer to a block of contiguous memory. This buffer is unused in the
+> case of local dynptrs, and may be unused in other cases as well. There
+> is no need to require the buffer, as the kfunc can just return NULL if
+> it was needed and not provided.
+>
+> This adds another kfunc annotation, __opt, which combines with __sz and
+> __szk to allow the buffer associated with the size to be NULL. If the
+> buffer is NULL, the verifier does not check that the buffer is of
+> sufficient size.
+>
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> ---
+>  Documentation/bpf/kfuncs.rst | 23 ++++++++++++++++++++++-
+>  kernel/bpf/helpers.c         | 32 ++++++++++++++++++++------------
+>  kernel/bpf/verifier.c        | 17 +++++++++++++++++
+>  3 files changed, 59 insertions(+), 13 deletions(-)
+>
+> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> index d8a16c4bef7f..69573b511233 100644
+> --- a/Documentation/bpf/kfuncs.rst
+> +++ b/Documentation/bpf/kfuncs.rst
+> @@ -100,7 +100,7 @@ Hence, whenever a constant scalar argument is accepte=
+d by a kfunc which is not a
+>  size parameter, and the value of the constant matters for program safety=
+, __k
+>  suffix should be used.
+>
+> -2.2.2 __uninit Annotation
+> +2.2.3 __uninit Annotation
+>  -------------------------
+>
+>  This annotation is used to indicate that the argument will be treated as
+> @@ -117,6 +117,27 @@ Here, the dynptr will be treated as an uninitialized=
+ dynptr. Without this
+>  annotation, the verifier will reject the program if the dynptr passed in=
+ is
+>  not initialized.
+>
+> +2.2.4 __opt Annotation
+> +-------------------------
+> +
+> +This annotation is used to indicate that the buffer associated with an _=
+_sz or __szk
+> +argument may be null. If the function is passed a nullptr in place of th=
+e buffer,
+> +the verifier will not check that length is appropriate for the buffer. T=
+he kfunc is
+> +responsible for checking if this buffer is null before using it.
+> +
+> +An example is given below::
+> +
+> +        __bpf_kfunc void *bpf_dynptr_slice(..., void *buffer__opt, u32 b=
+uffer__szk)
+> +        {
+> +        ...
+> +        }
+> +
+> +Here, the buffer may be null. If buffer is not null, it at least of size=
+ buffer_szk.
+> +Either way, the returned buffer is either NULL, or of size buffer_szk. W=
+ithout this
+> +annotation, the verifier will reject the program if a null pointer is pa=
+ssed in with
+> +a nonzero size.
+> +
+> +
+>  .. _BPF_kfunc_nodef:
+>
+>  2.3 Using an existing kernel function
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 6be16db9f188..f08556fd8b96 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2145,13 +2145,15 @@ __bpf_kfunc struct task_struct *bpf_task_from_pid=
+(s32 pid)
+>   * bpf_dynptr_slice() - Obtain a read-only pointer to the dynptr data.
+>   * @ptr: The dynptr whose data slice to retrieve
+>   * @offset: Offset into the dynptr
+> - * @buffer: User-provided buffer to copy contents into
+> - * @buffer__szk: Size (in bytes) of the buffer. This is the length of th=
+e
+> - *              requested slice. This must be a constant.
+> + * @buffer__opt: User-provided buffer to copy contents into.  May be NUL=
+L
+> + * @buffer__szk: Size (in bytes) of the buffer if present. This is the
+> + *               length of the requested slice. This must be a constant.
+>   *
+>   * For non-skb and non-xdp type dynptrs, there is no difference between
+>   * bpf_dynptr_slice and bpf_dynptr_data.
+>   *
+> + *  If buffer__opt is NULL, the call will fail if buffer_opt was needed.
+> + *
+>   * If the intention is to write to the data slice, please use
+>   * bpf_dynptr_slice_rdwr.
+>   *
+> @@ -2168,7 +2170,7 @@ __bpf_kfunc struct task_struct *bpf_task_from_pid(s=
+32 pid)
+>   * direct pointer)
+>   */
+>  __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u3=
+2 offset,
+> -                                  void *buffer, u32 buffer__szk)
+> +                                  void *buffer__opt, u32 buffer__szk)
+>  {
+>         enum bpf_dynptr_type type;
+>         u32 len =3D buffer__szk;
+> @@ -2188,15 +2190,19 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct b=
+pf_dynptr_kern *ptr, u32 offset
+>         case BPF_DYNPTR_TYPE_RINGBUF:
+>                 return ptr->data + ptr->offset + offset;
+>         case BPF_DYNPTR_TYPE_SKB:
+> -               return skb_header_pointer(ptr->data, ptr->offset + offset=
+, len, buffer);
+> +               if (!buffer__opt)
+> +                       return NULL;
 
-Worse, in the bpf_map_update_elem(), it keeps trying to get a new node
-even if the map was full.  I guess it makes sense if it deletes some node
-like in the tstamp map (that's why I didn't make the change there).
+should we always reject NULL even for SKB/XDP or only when the buffer
+*would be* required? If the latter, we could use bpf_dynptr_slice()
+with NULL buf to say "only return pointer if no byte copying is
+required". As opposed to bpf_dynptr_data(), where I think we always
+fail for SKB/XDP, because we are not sure whether users are aware of
+this need to copy bytes. Here, users are aware, but chose to prevent
+copying.
 
-In a pre-allocated hash map, that means it'd iterate all CPU to check the
-freelist.  And it has a bad performance impact on large machines.
+WDYT?
 
-I've checked it on my 64 CPU machine with this.
+> +               return skb_header_pointer(ptr->data, ptr->offset + offset=
+, len, buffer__opt);
+>         case BPF_DYNPTR_TYPE_XDP:
+>         {
+>                 void *xdp_ptr =3D bpf_xdp_pointer(ptr->data, ptr->offset =
++ offset, len);
+>                 if (xdp_ptr)
+>                         return xdp_ptr;
+>
+> -               bpf_xdp_copy_buf(ptr->data, ptr->offset + offset, buffer,=
+ len, false);
+> -               return buffer;
+> +               if (!buffer__opt)
+> +                       return NULL;
+> +               bpf_xdp_copy_buf(ptr->data, ptr->offset + offset, buffer_=
+_opt, len, false);
+> +               return buffer__opt;
+>         }
+>         default:
+>                 WARN_ONCE(true, "unknown dynptr type %d\n", type);
+> @@ -2208,13 +2214,15 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct b=
+pf_dynptr_kern *ptr, u32 offset
+>   * bpf_dynptr_slice_rdwr() - Obtain a writable pointer to the dynptr dat=
+a.
+>   * @ptr: The dynptr whose data slice to retrieve
+>   * @offset: Offset into the dynptr
+> - * @buffer: User-provided buffer to copy contents into
+> - * @buffer__szk: Size (in bytes) of the buffer. This is the length of th=
+e
+> - *              requested slice. This must be a constant.
+> + * @buffer__opt: User-provided buffer to copy contents into. May be NULL
+> + * @buffer__szk: Size (in bytes) of the buffer if present. This is the
+> + *               length of the requested slice. This must be a constant.
+>   *
+>   * For non-skb and non-xdp type dynptrs, there is no difference between
+>   * bpf_dynptr_slice and bpf_dynptr_data.
+>   *
+> + * If buffer__opt is NULL, the call will fail if buffer_opt was needed.
+> + *
+>   * The returned pointer is writable and may point to either directly the=
+ dynptr
+>   * data at the requested offset or to the buffer if unable to obtain a d=
+irect
+>   * data pointer to (example: the requested slice is to the paged area of=
+ an skb
+> @@ -2245,7 +2253,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf=
+_dynptr_kern *ptr, u32 offset
+>   * direct pointer)
+>   */
+>  __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *pt=
+r, u32 offset,
+> -                                       void *buffer, u32 buffer__szk)
+> +                                       void *buffer__opt, u32 buffer__sz=
+k)
+>  {
+>         if (!ptr->data || bpf_dynptr_is_rdonly(ptr))
+>                 return NULL;
+> @@ -2272,7 +2280,7 @@ __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struc=
+t bpf_dynptr_kern *ptr, u32 o
+>          * will be copied out into the buffer and the user will need to c=
+all
+>          * bpf_dynptr_write() to commit changes.
+>          */
+> -       return bpf_dynptr_slice(ptr, offset, buffer, buffer__szk);
+> +       return bpf_dynptr_slice(ptr, offset, buffer__opt, buffer__szk);
+>  }
+>
+>  __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 20beab52812a..b82faef389b1 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9428,6 +9428,19 @@ static bool is_kfunc_arg_const_mem_size(const stru=
+ct btf *btf,
+>         return __kfunc_param_match_suffix(btf, arg, "__szk");
+>  }
+>
+> +static bool is_kfunc_arg_optional(const struct btf *btf,
+> +                 const struct btf_param *arg,
+> +                 const struct bpf_reg_state *reg)
+> +{
+> +       const struct btf_type *t;
+> +
+> +       t =3D btf_type_skip_modifiers(btf, arg->type, NULL);
+> +       if (!btf_type_is_ptr(t) || reg->type !=3D SCALAR_VALUE || reg->um=
+ax_value > 0)
+> +               return false;
+> +
+> +       return __kfunc_param_match_suffix(btf, arg, "__opt");
+> +}
+> +
+>  static bool is_kfunc_arg_constant(const struct btf *btf, const struct bt=
+f_param *arg)
+>  {
+>         return __kfunc_param_match_suffix(btf, arg, "__k");
+> @@ -10539,10 +10552,14 @@ static int check_kfunc_args(struct bpf_verifier=
+_env *env, struct bpf_kfunc_call_
+>                         break;
+>                 case KF_ARG_PTR_TO_MEM_SIZE:
+>                 {
+> +                       struct bpf_reg_state *buff_reg =3D &regs[regno];
+> +                       const struct btf_param *buff_arg =3D &args[i];
+>                         struct bpf_reg_state *size_reg =3D &regs[regno + =
+1];
+>                         const struct btf_param *size_arg =3D &args[i + 1]=
+;
+>
+>                         ret =3D check_kfunc_mem_size_reg(env, size_reg, r=
+egno + 1);
+> +                       if (ret < 0 && is_kfunc_arg_optional(meta->btf, b=
+uff_arg, buff_reg))
+> +                               ret =3D 0;
 
-  $ perf bench sched messaging -g 1000
-  # Running 'sched/messaging' benchmark:
-  # 20 sender and receiver processes per group
-  # 1000 groups == 40000 processes run
+would this work correctly if someone passes a non-null buffer with too
+small size? Can you please add a test for this use case.
 
-       Total time: 2.825 [sec]
+Also, I feel like for cases where we allow a NULL buffer, we need to
+explicitly check that the register is a *known* NULL (SCALAR=3D0
+basically). And also in that case the size of the buffer probably
+should be enforced to zero, not just be allowed to be any value.
 
-And I used the task mode, so that it can guarantee the map is full.
-The default map entry size is 16K and this workload has 40K tasks.
+it's scary to just ignore some error, tbh, the number of error
+conditions can grow overtime and we'll be masking them with this
+is_kfunc_arg_optional() override. Let's be strict and explicit here.
 
-Before:
-  $ sudo ./perf lock con -abt -E3 -- perf bench sched messaging -g 1000
-  # Running 'sched/messaging' benchmark:
-  # 20 sender and receiver processes per group
-  # 1000 groups == 40000 processes run
 
-       Total time: 11.299 [sec]
-   contended   total wait     max wait     avg wait          pid   comm
-
-       19284      3.51 s       3.70 ms    181.91 us      1305863   sched-messaging
-         243     84.09 ms    466.67 us    346.04 us      1336608   sched-messaging
-         177     66.35 ms     12.08 ms    374.88 us      1220416   node
-
-For some reason, it didn't report the data failures.  But you can see the
-total time in the workload is increased a lot (2.8 -> 11.3).  If it fails
-early when the map is full, it goes back to normal.
-
-After:
-  $ sudo ./perf lock con -abt -E3 -- perf bench sched messaging -g 1000
-  # Running 'sched/messaging' benchmark:
-  # 20 sender and receiver processes per group
-  # 1000 groups == 40000 processes run
-
-       Total time: 3.044 [sec]
-   contended   total wait     max wait     avg wait          pid   comm
-
-       18743    591.92 ms    442.96 us     31.58 us      1431454   sched-messaging
-          51    210.64 ms    207.45 ms      4.13 ms      1468724   sched-messaging
-          81     68.61 ms     65.79 ms    847.07 us      1463183   sched-messaging
-
-  === output for debug ===
-
-  bad: 1164137, total: 2253341
-  bad rate: 51.66 %
-  histogram of failure reasons
-         task: 0
-        stack: 0
-         time: 0
-         data: 1164137
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 22 ++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index cb87c98e5340..23f6e63544ed 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -4,6 +4,7 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_core_read.h>
-+#include <asm-generic/errno-base.h>
- 
- #include "lock_data.h"
- 
-@@ -126,6 +127,9 @@ int stack_fail;
- int time_fail;
- int data_fail;
- 
-+int task_map_full;
-+int data_map_full;
-+
- static inline int can_record(u64 *ctx)
- {
- 	if (has_cpu) {
-@@ -177,11 +181,12 @@ static inline int update_task_data(struct task_struct *task)
- 		return -1;
- 
- 	p = bpf_map_lookup_elem(&task_data, &pid);
--	if (p == NULL) {
-+	if (p == NULL && !task_map_full) {
- 		struct contention_task_data data = {};
- 
- 		BPF_CORE_READ_STR_INTO(&data.comm, task, comm);
--		bpf_map_update_elem(&task_data, &pid, &data, BPF_NOEXIST);
-+		if (bpf_map_update_elem(&task_data, &pid, &data, BPF_NOEXIST) == -E2BIG)
-+			task_map_full = 1;
- 	}
- 
- 	return 0;
-@@ -370,6 +375,12 @@ int contention_end(u64 *ctx)
- 
- 	data = bpf_map_lookup_elem(&lock_stat, &key);
- 	if (!data) {
-+		if (data_map_full) {
-+			bpf_map_delete_elem(&tstamp, &pid);
-+			__sync_fetch_and_add(&data_fail, 1);
-+			return 0;
-+		}
-+
- 		struct contention_data first = {
- 			.total_time = duration,
- 			.max_time = duration,
-@@ -377,12 +388,17 @@ int contention_end(u64 *ctx)
- 			.count = 1,
- 			.flags = pelem->flags,
- 		};
-+		int err;
- 
- 		if (aggr_mode == LOCK_AGGR_ADDR)
- 			first.flags |= check_lock_type(pelem->lock, pelem->flags);
- 
--		if (bpf_map_update_elem(&lock_stat, &key, &first, BPF_NOEXIST) < 0)
-+		err = bpf_map_update_elem(&lock_stat, &key, &first, BPF_NOEXIST);
-+		if (err < 0) {
-+			if (err == -E2BIG)
-+				data_map_full = 1;
- 			__sync_fetch_and_add(&data_fail, 1);
-+		}
- 		bpf_map_delete_elem(&tstamp, &pid);
- 		return 0;
- 	}
--- 
-2.40.0.577.gac1e443424-goog
-
+>                         if (ret < 0) {
+>                                 verbose(env, "arg#%d arg#%d memory, len p=
+air leads to invalid memory access\n", i, i + 1);
+>                                 return ret;
+> --
+> 2.40.0.577.gac1e443424-goog
+>
