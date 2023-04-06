@@ -2,159 +2,264 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA316D9791
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 15:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910E16D979C
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 15:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236863AbjDFNCv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 09:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
+        id S237316AbjDFNGg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 09:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237218AbjDFNCq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 09:02:46 -0400
-Received: from mail-wr1-x462.google.com (mail-wr1-x462.google.com [IPv6:2a00:1450:4864:20::462])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB51B8A6D
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 06:02:38 -0700 (PDT)
-Received: by mail-wr1-x462.google.com with SMTP id q19so36375712wrc.5
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 06:02:38 -0700 (PDT)
+        with ESMTP id S236863AbjDFNGg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 09:06:36 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF2FF4
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 06:06:34 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id hg25-20020a05600c539900b003f05a99a841so5772987wmb.3
+        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 06:06:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1680786158;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OurEHAluO0z0/iX0xySpGmAc9WM9TpIWEufWnTv6GLE=;
-        b=nINqXF48TmWh8tUDIa9jsFNlnAshXBVNu6+nFuoPBC32YqKpMNMC7ls2YFFOmEkaXw
-         akdcSOvhOtuymRuQc30aqFrkB1YVDbPeN1cGn36igFJrYri9D1652SMD15zhKPzJtfl8
-         Vj5+fz1doXqLs4MeJpGtXLSdll14RWHnGYOvw=
+        d=gmail.com; s=20210112; t=1680786393;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KWnOYOOmJ2+Hsz2+ql2JlR9/kav8s50+fNDjDb4rgd0=;
+        b=eUrkKxWmpxjrGDFwl2JcYQECtemk+qA6M3NDKMBpyP7BQwcVk3cEdBz/G+ri8Teuni
+         +y+/33S+RN/gWJVrtEKaHwMEXFqNRP+2a9y+QKKMIEDBbGga5K0P/5ddZJmg3Xs1o8fj
+         FZXkcyX7r8WFe07w0D1nmJpHZf8OkE8J7m7MOVLfsvdBJ8EsRouzuolCcLS6lePZAnbg
+         jIHYNGBL2pZdQ78iwlE5/91AhWZ0JJ0TBUkqXNxUKUK77Vbpksx3JNO5QOZHvp3NWqZX
+         anHI7umDVBQbE4nJFA3/aMLYXoVhgFhp3zWedmckeO7Ocx2A/vbHGIYhf1qfDuAVq4gX
+         +fLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680786158;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OurEHAluO0z0/iX0xySpGmAc9WM9TpIWEufWnTv6GLE=;
-        b=tOmi1HT9tC33KTr9bN3V2RRxm1DMX+QWd5HjGlEOKp+1iQxsNiRMpSyVaM/ICM4ce5
-         xbIlfb6ghE2GXHfoPJU6P4Jqvkdln8AzoDQKXC2FaFrCIfGk+Cq/qGSMoCugKLNpKw2o
-         LefWSNJVM0NdzRM1O0ukvySiCZWB3aMWvhZXq+1/dFMY8MyFOu+0BVxT+wc9FmVyWHXO
-         k1LcFpjP1YvR0wbL6IIABp4aMdjNY8P2Tv4HrwV8IyD1kVAQ9HUroT06UCZI9AqklqDt
-         Pp9w2beYDsWE9SgzOMZBLr9JLmCH+FrDTdY12od/E/QpZSYADrrCkDCxGIqJKuZJegPe
-         BjzQ==
-X-Gm-Message-State: AAQBX9c2tX8iJ+QyIvr061dar+SaMC4RgTWB5Mf6/WRsiWuC4/U41RnT
-        nYV9RsXC/00OGiGOeY7vxnIiBjatXWSdmiqGs6Pdhc5U5LvJ
-X-Google-Smtp-Source: AKy350amCx/ZHN/ecGGK/EGkFHzUbsahyywUB+wgapgCN80VOuOIxFCr8iRxuHuNXV6z4WWbWZU0PIJfcs6h
-X-Received: by 2002:adf:cd82:0:b0:2d8:908c:8fa0 with SMTP id q2-20020adfcd82000000b002d8908c8fa0mr7080509wrj.9.1680786157994;
-        Thu, 06 Apr 2023 06:02:37 -0700 (PDT)
-Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
-        by smtp-relay.gmail.com with ESMTPS id s3-20020adfeb03000000b002e62dd5b3d6sm65625wrn.3.2023.04.06.06.02.37
+        d=1e100.net; s=20210112; t=1680786393;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KWnOYOOmJ2+Hsz2+ql2JlR9/kav8s50+fNDjDb4rgd0=;
+        b=KS9wKzP4GfUi0b3pHvTZSGLscQejaJM59ZspiVOv96G7JC43Dn2RBzNg+jtkLmnLx/
+         46p8qGUtTmOXF24/OzzYkB1sDhuIIExuQ/nea88zzAGR0uGz4wi6PeEXuM22qYgY/1XI
+         jbHkdEwr6E1CwN3sT/DI8HYSNZpbxBPrLgc87ItDeKVjWaUfofzB6eO2cTZ3Dk4bnTBk
+         ZVqjLEeGHqnfDDLc1m5zg9b4Fir3YwLUXgTWEGUaZmSBHbkSMjYfviuHLqnpcwgRLt2V
+         9wd5FeIiTxgHGDiyyivqWc1VevR/xmSESQdAwc2H9qGITNYSUQjM68W0M0WePC528+aL
+         wLzA==
+X-Gm-Message-State: AAQBX9dMrXAvuY189SsziD30cOCJu9qb9qHX/o3KHIOKr0edTD++uk1B
+        CiNn7ReOunVSo2vZ86CXtnE=
+X-Google-Smtp-Source: AKy350aIftk1R/RisvIXv3W1CPDCnCOqodVGJCPEYvAvvJHqB2jjo1R7FB0iLmbGMwHLJy0b+qIg0Q==
+X-Received: by 2002:a1c:7211:0:b0:3ef:7584:9896 with SMTP id n17-20020a1c7211000000b003ef75849896mr7085193wmc.26.1680786392837;
+        Thu, 06 Apr 2023 06:06:32 -0700 (PDT)
+Received: from krava (cpc137424-wilm3-2-0-cust276.1-4.cable.virginm.net. [82.23.5.21])
+        by smtp.gmail.com with ESMTPSA id d4-20020a05600c3ac400b003ee8a1bc220sm5303062wms.1.2023.04.06.06.06.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 06:02:37 -0700 (PDT)
-X-Relaying-Domain: dectris.com
-From:   Kal Conley <kal.conley@dectris.com>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
+        Thu, 06 Apr 2023 06:06:32 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 6 Apr 2023 15:06:29 +0200
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3 3/3] selftests: xsk: Add tests for 8K and 9K frame sizes
-Date:   Thu,  6 Apr 2023 15:02:05 +0200
-Message-Id: <20230406130205.49996-4-kal.conley@dectris.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230406130205.49996-1-kal.conley@dectris.com>
-References: <20230406130205.49996-1-kal.conley@dectris.com>
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH bpf-next v6] bpf: Support 64-bit pointers to kfuncs
+Message-ID: <ZC7D1bH8zK7vDChQ@krava>
+References: <20230405213453.49756-1-iii@linux.ibm.com>
+ <ZC6UgfMdSZJ8BCT8@krava>
+ <62501084abbb6cc9492df60ff4d427a17e731fe4.camel@linux.ibm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <62501084abbb6cc9492df60ff4d427a17e731fe4.camel@linux.ibm.com>
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests:
-- RUN_TO_COMPLETION_8K_FRAME_SIZE: frame_size=8192 (aligned)
-- UNALIGNED_9K_FRAME_SIZE: frame_size=9000 (unaligned)
+On Thu, Apr 06, 2023 at 02:31:06PM +0200, Ilya Leoshkevich wrote:
+> On Thu, 2023-04-06 at 11:44 +0200, Jiri Olsa wrote:
+> > On Wed, Apr 05, 2023 at 11:34:53PM +0200, Ilya Leoshkevich wrote:
+> > 
+> > SNIP
+> > 
+> > >  
+> > > +int bpf_get_kfunc_addr(const struct bpf_prog *prog, u32 func_id,
+> > > +                      u16 btf_fd_idx, u8 **func_addr)
+> > > +{
+> > > +       const struct bpf_kfunc_desc *desc;
+> > > +
+> > > +       desc = find_kfunc_desc(prog, func_id, btf_fd_idx);
+> > > +       if (!desc)
+> > > +               return -EFAULT;
+> > > +
+> > > +       *func_addr = (u8 *)desc->addr;
+> > > +       return 0;
+> > > +}
+> > > +
+> > >  static struct btf *__find_kfunc_desc_btf(struct bpf_verifier_env
+> > > *env,
+> > >                                          s16 offset)
+> > >  {
+> > > @@ -2672,14 +2691,19 @@ static int add_kfunc_call(struct
+> > > bpf_verifier_env *env, u32 func_id, s16 offset)
+> > >                 return -EINVAL;
+> > >         }
+> > >  
+> > > -       call_imm = BPF_CALL_IMM(addr);
+> > > -       /* Check whether or not the relative offset overflows desc-
+> > > >imm */
+> > > -       if ((unsigned long)(s32)call_imm != call_imm) {
+> > > -               verbose(env, "address of kernel function %s is out
+> > > of range\n",
+> > > -                       func_name);
+> > > -               return -EINVAL;
+> > > +       if (bpf_jit_supports_far_kfunc_call()) {
+> > > +               call_imm = func_id;
+> > > +       } else {
+> > > +               call_imm = BPF_CALL_IMM(addr);
+> > 
+> > we compute call_imm again in fixup_kfunc_call, seems like we could
+> > store
+> > the address and the func_id in desc and have fixup_kfunc_call do the
+> > insn->imm setup
+> 
+> We can drop this diff in fixup_kfunc_call():
+> 
+> -       insn->imm = desc->imm;
+> +       if (!bpf_jit_supports_far_kfunc_call())
+> +               insn->imm = BPF_CALL_IMM(desc->addr);
+> 
+> in order to avoid duplicating the imm calculation logic, but I'm not
+> sure if we want to move the entire desc->imm setup there.
+> 
+> For example, fixup_kfunc_call() considers kfunc_tab const, which is a
+> nice property that I think is worth keeping.
+> 
+> Another option would be to drop desc->imm, but having it is very
+> convenient for doing lookups the same way on all architectures. 
 
-Signed-off-by: Kal Conley <kal.conley@dectris.com>
----
- tools/testing/selftests/bpf/xskxceiver.c | 25 ++++++++++++++++++++++++
- tools/testing/selftests/bpf/xskxceiver.h |  2 ++
- 2 files changed, 27 insertions(+)
+ok, I see..  so should we do following in fixup_kfunc_call:
 
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 7eccf57a0ccc..86797de7fc50 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -1841,6 +1841,17 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
- 		testapp_validate_traffic(test);
- 		break;
-+	case TEST_TYPE_RUN_TO_COMPLETION_8K_FRAME:
-+		if (!hugepages_present(test->ifobj_tx)) {
-+			ksft_test_result_skip("No 2M huge pages present.\n");
-+			return;
-+		}
-+		test_spec_set_name(test, "RUN_TO_COMPLETION_8K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 8192;
-+		test->ifobj_rx->umem->frame_size = 8192;
-+		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
-+		testapp_validate_traffic(test);
-+		break;
- 	case TEST_TYPE_RX_POLL:
- 		test->ifobj_rx->use_poll = true;
- 		test_spec_set_name(test, "POLL_RX");
-@@ -1904,6 +1915,20 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 		if (!testapp_unaligned(test))
- 			return;
- 		break;
-+	case TEST_TYPE_UNALIGNED_9K_FRAME:
-+		if (!hugepages_present(test->ifobj_tx)) {
-+			ksft_test_result_skip("No 2M huge pages present.\n");
-+			return;
-+		}
-+		test_spec_set_name(test, "UNALIGNED_9K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 9000;
-+		test->ifobj_rx->umem->frame_size = 9000;
-+		test->ifobj_tx->umem->unaligned_mode = true;
-+		test->ifobj_rx->umem->unaligned_mode = true;
-+		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
-+		test->ifobj_rx->pkt_stream->use_addr_for_fill = true;
-+		testapp_validate_traffic(test);
-+		break;
- 	case TEST_TYPE_HEADROOM:
- 		testapp_headroom(test);
- 		break;
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 919327807a4e..7f52f737f5e9 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -69,12 +69,14 @@ enum test_mode {
- enum test_type {
- 	TEST_TYPE_RUN_TO_COMPLETION,
- 	TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME,
-+	TEST_TYPE_RUN_TO_COMPLETION_8K_FRAME,
- 	TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT,
- 	TEST_TYPE_RX_POLL,
- 	TEST_TYPE_TX_POLL,
- 	TEST_TYPE_POLL_RXQ_TMOUT,
- 	TEST_TYPE_POLL_TXQ_TMOUT,
- 	TEST_TYPE_UNALIGNED,
-+	TEST_TYPE_UNALIGNED_9K_FRAME,
- 	TEST_TYPE_ALIGNED_INV_DESC,
- 	TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME,
- 	TEST_TYPE_UNALIGNED_INV_DESC,
--- 
-2.39.2
+	if (!bpf_jit_supports_far_kfunc_call())
+		insn->imm = desc->imm;
 
+by default there's func_id in insn->imm
+
+jirka
+
+> 
+> > > +               /* Check whether the relative offset overflows
+> > > desc->imm */
+> > > +               if ((unsigned long)(s32)call_imm != call_imm) {
+> > > +                       verbose(env, "address of kernel function %s
+> > > is out of range\n",
+> > > +                               func_name);
+> > > +                       return -EINVAL;
+> > > +               }
+> > >         }
+> > >  
+> > > +
+> > 
+> > nit, extra line
+> 
+> Ouch. Thanks for spotting this.
+> 
+> > 
+> > >         if (bpf_dev_bound_kfunc_id(func_id)) {
+> > >                 err = bpf_dev_bound_kfunc_check(&env->log,
+> > > prog_aux);
+> > >                 if (err)
+> > > @@ -2690,6 +2714,7 @@ static int add_kfunc_call(struct
+> > > bpf_verifier_env *env, u32 func_id, s16 offset)
+> > >         desc->func_id = func_id;
+> > >         desc->imm = call_imm;
+> > >         desc->offset = offset;
+> > > +       desc->addr = addr;
+> > >         err = btf_distill_func_proto(&env->log, desc_btf,
+> > >                                      func_proto, func_name,
+> > >                                      &desc->func_model);
+> > > @@ -2699,19 +2724,19 @@ static int add_kfunc_call(struct
+> > > bpf_verifier_env *env, u32 func_id, s16 offset)
+> > >         return err;
+> > >  }
+> > >  
+> > > -static int kfunc_desc_cmp_by_imm(const void *a, const void *b)
+> > > +static int kfunc_desc_cmp_by_imm_off(const void *a, const void *b)
+> > >  {
+> > >         const struct bpf_kfunc_desc *d0 = a;
+> > >         const struct bpf_kfunc_desc *d1 = b;
+> > >  
+> > > -       if (d0->imm > d1->imm)
+> > > -               return 1;
+> > > -       else if (d0->imm < d1->imm)
+> > > -               return -1;
+> > > +       if (d0->imm != d1->imm)
+> > > +               return d0->imm < d1->imm ? -1 : 1;
+> > > +       if (d0->offset != d1->offset)
+> > > +               return d0->offset < d1->offset ? -1 : 1;
+> > >         return 0;
+> > >  }
+> > >  
+> > 
+> > SNIP
+> > 
+> > > +/* replace a generic kfunc with a specialized version if necessary
+> > > */
+> > > +static void fixup_kfunc_desc(struct bpf_verifier_env *env,
+> > > +                            struct bpf_kfunc_desc *desc)
+> > > +{
+> > > +       struct bpf_prog *prog = env->prog;
+> > > +       u32 func_id = desc->func_id;
+> > > +       u16 offset = desc->offset;
+> > > +       bool seen_direct_write;
+> > > +       void *xdp_kfunc;
+> > > +       bool is_rdonly;
+> > > +
+> > > +       if (bpf_dev_bound_kfunc_id(func_id)) {
+> > > +               xdp_kfunc = bpf_dev_bound_resolve_kfunc(prog,
+> > > func_id);
+> > > +               if (xdp_kfunc) {
+> > > +                       desc->addr = (unsigned long)xdp_kfunc;
+> > > +                       return;
+> > > +               }
+> > > +               /* fallback to default kfunc when not supported by
+> > > netdev */
+> > > +       }
+> > > +
+> > > +       if (offset)
+> > > +               return;
+> > > +
+> > > +       if (func_id == special_kfunc_list[KF_bpf_dynptr_from_skb])
+> > > {
+> > > +               seen_direct_write = env->seen_direct_write;
+> > > +               is_rdonly = !may_access_direct_pkt_data(env, NULL,
+> > > BPF_WRITE);
+> > > +
+> > > +               if (is_rdonly)
+> > > +                       desc->addr = (unsigned
+> > > long)bpf_dynptr_from_skb_rdonly;
+> > > +
+> > > +               /* restore env->seen_direct_write to its original
+> > > value, since
+> > > +                * may_access_direct_pkt_data mutates it
+> > > +                */
+> > > +               env->seen_direct_write = seen_direct_write;
+> > > +       }
+> > 
+> > could we do this directly in add_kfunc_call?
+> 
+> Initially I thought that it wasn't possible, because
+> may_access_direct_pkt_data() may depend on data gathered during
+> verification. But on a second look that's simply not the case, so this
+> code can indeed be moved to add_kfunc_call().
+> 
+> > 
+> > thanks,
+> > jirka
+> 
+> [...]
