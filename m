@@ -2,139 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9074E6D9DF9
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 18:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC7D6D9E03
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 18:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239751AbjDFQwY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 12:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        id S239680AbjDFQ4C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 12:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239925AbjDFQwR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 12:52:17 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471D583E2
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 09:52:04 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 336EEk6t032694;
-        Thu, 6 Apr 2023 09:51:50 -0700
+        with ESMTP id S239655AbjDFQ4B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 12:56:01 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EBA35B1
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 09:55:59 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 336EB2S1020855;
+        Thu, 6 Apr 2023 09:55:45 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=42Qv5AE7/phnGNBTLZW2Uq49M16xc86s975R3YkXUk4=;
- b=KIJ2CeKLJjn0FGWEVydA1ZyNo4ghuGYd/jbj7yMhcNinDHDtw87RQlLcnJyZp81hLEw2
- 6rkMTdYJLvDfgXYfguOKPX/q4DsFXo18vG65UZ8ciJrGwX0EqmxWbIi5ATtX+gGjsU03
- OrIWswtSppo3GrO51Ac54rpoQsb0TTX7yx1pXo/+eCMAu0Ed+eMsNdsWCQ/Cf41m8l+b
- CxcuplV3YlMbEX8errhwD1e3Dsdw1jpDHolNZ5iUi9ohFJ8MhKMvAuuTp7c55ssxloUf
- HSQhrnU8MZzcaamln7tE7NSn4M9l4BTp+MQnzKtXWGLWrgiFPT7sqrsm/+7BLJJEDyhT 1Q== 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3psynn151m-1
+ bh=ZYIyGhXHXTuxyCS6yZ30mhaTg2zIOOh3hC55ZLKg9wk=;
+ b=hfj5NiS+NWB3V3N3OPDhXC/Ba9KJnfwyDBTtRzRco0i0NGwUzPoe31y35uXU22ud9CIj
+ 0+7Z4AQMGEjW51oNbIeI/Oll7TvGXvUkClfczS3XLlT6T1kOrLoaLqKzp7Aa73bFiYIs
+ BSPiC6LkCtf/RjBb7/LHnpPiBoC79ezYh8A5WbQnESMZC+00K46f86Xnj4lG5xYc1Kog
+ iO5iU2KfOB9nopz7qPl242s7qmHPz8nnksBiwqnoAoRmPYnwKuwKtzXZCrI9ZinUYrP5
+ ThPAm3RZObBgW4v2+QbVypi37uc7vSYkHvK0D8sNbk7TW/PwQwYsnlcRLK/XxFsTE5Zt EA== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2177.outbound.protection.outlook.com [104.47.56.177])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3psym6h7k4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 Apr 2023 09:51:50 -0700
+        Thu, 06 Apr 2023 09:55:45 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iOyQOk4rwruJVCESF4fHGhEf0qnB28EJeTGonuByA7DiBZ8GdZ1whWbt0lEaLo0bTYu79GGg1Kc0wqBTug2O2O0JaEAeJkWJ7W03AfunxUKy0y7Zmc67dsVxak0bxxaBmHpqa0cu08TePXe4kPEQr6W7xtb1oOJQCrcXYI5d03ToOIAkuUX4MMeap4Z9gWDoCjMwARNekk5VHkMuDOVaMEltPkS6l6YLmk3VrbAzXzGQIoRgiP+tH6pHAWDtWzdOKnBVJsOoylFXBkPYOn6iBNLjIEXn+VtrBqmgeUGgxojBius1+Mf9EekoXdtBv5YsogfPaRaDxrrfLJMef59rnQ==
+ b=TkpWhTLhIQh6ZnUmZmtdHPD5jVhGClt839rw6Ft6KCVbD+gAaq6iaaCSYY80ASl5SJTQstIV0lg8DGj8Hq9UWJ7GNNlp5OAGQEp/k1RzJjQbeLjGjsz+Kqj169RwTYXoonv5Tb9XThMd3IL11Yg/50iC+oQv7tfbYhmMF/UOTdmZWsaprFllK93/kH23fPflu0eVf8hJSZYampuEscA+ZPGqc9Ixi3bdOz+CwyoRWTZfDGf7I8wy+IgkqHSqVPHNZk/GyZ/pYD5kbVY6qfmgvOPtUSUlmtaMqcV5kxVTRSHowTHno2wdk4Ceiyuewglf3tEVNQOAL+DHBYE6GMUpMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=42Qv5AE7/phnGNBTLZW2Uq49M16xc86s975R3YkXUk4=;
- b=DDdHyexlM19QWm9hDhoypxjx1dkCWqh5sSvGGh8Lfuh3dQiblLeiVKbVcI1BXzf2x2YDJofn7fpUxrs7ukgXFrJwos1De1aWDIF4/jhWcen56/1BN5W0fASywj91tKlPWnO/ypXXH7CW4o5528sFQHPKU3C/zNW6+AkZbcmKHW26d0IptocXSdb8VptG6/xAUwcwmJHY8c6P+UJ7/zCcYIaYy+owE4ddJoB80ARgGyz7ubWUhRx9DBtsnVVYPhwWGX4cBHhnrAS8jWbTtYLlejVzOvuyGaGycUUPsuD8N+zNQwJ6NcNdMiun2vYatCwSQGSh9ue34tcH7bMqak4X4g==
+ bh=ZYIyGhXHXTuxyCS6yZ30mhaTg2zIOOh3hC55ZLKg9wk=;
+ b=IuKLHJ28s2r4uX9qufN1kzKZh/SOXdgD4jUBG9vlds1GxYPXi76SP7298pDLn9hWNaUX0HNOlAKkAFKjNqNWeFAgLXdSEOFPOf92f9ImpafN22uT8OdjmsBUzShuH3vQK1LLa1omuTLAyfhGK3Q72FgvBMesyE9Xv0owT4h24gSfEkvpIe9qkhOh2trVBO8B1N7AheniRjaMzF6VumkP0czw2PMsWfaTx8fd5wa90Fk7YNi50kehjzXGIKObT0yW3Z7g2V7v4MmiPjGmDGXVsJC32YnqCCHfleSd4mx+buVw7eSQaxm5UG5gE6/yJZs0gPSw7NPKvwQHE6TSrOUGWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MW4PR15MB5269.namprd15.prod.outlook.com (2603:10b6:303:16a::9) with
+ by MW3PR15MB3882.namprd15.prod.outlook.com (2603:10b6:303:49::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.27; Thu, 6 Apr
- 2023 16:51:47 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6277.30; Thu, 6 Apr
+ 2023 16:55:42 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6254.035; Thu, 6 Apr 2023
- 16:51:47 +0000
-Message-ID: <88ef7544-31ea-4d37-a145-375812657aab@meta.com>
-Date:   Thu, 6 Apr 2023 09:51:44 -0700
+ 16:55:42 +0000
+Message-ID: <4cd6c1b2-5e6a-1655-ab3d-1eda84aa4cbb@meta.com>
+Date:   Thu, 6 Apr 2023 09:55:37 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.9.1
-Subject: Re: [PATCH bpf-next 3/7] bpf: Improve handling of pattern '<const>
- <cond_op> <non_const>' in verifier
+Subject: Re: [PATCH bpf-next 5/7] bpf: Mark potential spilled loop index
+ variable as precise
 Content-Language: en-US
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Dave Marchevsky <davemarchevsky@meta.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         Martin KaFai Lau <martin.lau@kernel.org>
 References: <20230330055600.86870-1-yhs@fb.com>
- <20230330055615.89935-1-yhs@fb.com>
- <57694299-9960-0ab7-be61-4f6ba903b72b@meta.com>
- <CAEf4BzYLchw-SKxStofoq0bZYAHwGxrOXO-YY17UOMXZW41yeA@mail.gmail.com>
+ <20230330055625.92148-1-yhs@fb.com>
+ <CAEf4BzbhsWVK45OXBSY4tz9v-z-8j7ndMT=3BK4aDvza8FVnkA@mail.gmail.com>
 From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <CAEf4BzYLchw-SKxStofoq0bZYAHwGxrOXO-YY17UOMXZW41yeA@mail.gmail.com>
+In-Reply-To: <CAEf4BzbhsWVK45OXBSY4tz9v-z-8j7ndMT=3BK4aDvza8FVnkA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0P220CA0024.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:a03:41b::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: BYAPR05CA0016.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::29) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MW4PR15MB5269:EE_
-X-MS-Office365-Filtering-Correlation-Id: 821a5e98-83f6-4e89-c398-08db36bf35ea
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MW3PR15MB3882:EE_
+X-MS-Office365-Filtering-Correlation-Id: ac4e5152-df4e-460d-7ed8-08db36bfc1e7
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d1w9SNbSvyDlEywuwB2jrqGI572eRqeNwXlAsYqKOB6q9bTsMCpjB+ofzjeTJbUv0bsJRrn3gKF3zeyN3lhx5wnoZUBwf4mSXfjlfS1L5k963X19e2aqnj7ayeM4HtElEmv9GFpeXX+u1Zv73n7SiWw4dN9JzcXzZWV5QwMlJg023lIG06SsG0PIDLzSP54UAmJ3+0s9sBGJSlTTPt/FTIP6X4nUKMd9yY1cUjmKjgxp/ou+fRkos7l9YosWtCTrD4sM/FR8bV3JxpQ6p9X11haQt8NPOUk+JYYEfJ6UJoOtjpLCnylhru/M0RmdA+HksHYEg8osmthG7UCxYdqNhgI1JR9P86R/zcGwH8puAaI02hnlbLqtfffPDNXV107XqkI6YEiwGTOKh1EGRGiGDWEwVXcDL6X9ZbW9FjqktKxXAw7bAb7IyA4GRxbjYUyjil8Sl8FTzmzTTDP9z68cxt9RC8oB4UJ9iOlW2zOgvEq27yhOP+27zlilD4LkDIa1Zlga/J/nNbLyGgjqKDxkmQqbahlPFL1CNkz3mti9Ujd4YAfy+L1crCDPd+69dYs9iW3e6H7lfMkbeQh1W73Hgv1PLAEAuj62WpGvQdIYptlBcBlkv8SIb4kjJZjIhWBucjhY2h1N3a3dHEz0yjQNRQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(366004)(346002)(396003)(136003)(451199021)(31686004)(478600001)(6486002)(110136005)(36756003)(31696002)(38100700002)(6636002)(5660300002)(316002)(86362001)(2906002)(8936002)(41300700001)(66476007)(66946007)(6666004)(2616005)(66556008)(53546011)(8676002)(6512007)(54906003)(83380400001)(6506007)(4326008)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: TuW+lR5JdctLPu0z1JZ4Jc6as8H6B/IN9FG+Rhs/nL+0tGwWk2Ng2UDFa53IEA7ubeg/xjG/bnXYIy7zofI/JcIYUxHSpaIeFe2CumVcps8lfY3V7xGhrM7/RDMg4C7W/hviWAcnDUOegDLwXSO1XTTxgi5C/mKjs7GJaU8//xzpH7SxBjknvy8si0zBW8E1SNFCio80u/IHqnP26sLYuWrtqW2RS9d4ipMEBkqky3qqt0KTAMebk8maMumrd3y3j2bvPSDqwninyLcewty9gBIYoNDUNnak9fU7e+Us8NkkA+ew2VJRGITkcuV/v5dWi93q63bT6wBcRMDxQi+ezAh/TqGnOYYIgfDRRohe2K+GK+mt+it9pCqMFkovbJwnl9CH1kzRbrIiqRB0IosD8rIRt7PdEz9jCj2tq90G228Oi1NkpnYJA0GRINpqQDJfCFGyDxorINnHXv5rEtVD8UJnoCMCctXqYHGTfKYNMlwf/jsbnyqzC9sOqc4xvR6+qDhUStRH3v2HuT3N8mRMIU8CaEev7atTdfLp8erqfhlWLgjBh6SOLPzJ61hg6Fg9LpP1IVVFdh7P/uq6/YezeIRAJ0UG207d3swNr55qYGONMnhX4d2kbud5BNdkVBNx8DE2M4XAcXVQYCEIxUGQmw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(136003)(376002)(396003)(346002)(451199021)(54906003)(478600001)(110136005)(186003)(2616005)(83380400001)(6506007)(6512007)(53546011)(36756003)(31696002)(38100700002)(86362001)(6666004)(6486002)(4326008)(66476007)(8676002)(66946007)(66556008)(8936002)(31686004)(2906002)(41300700001)(5660300002)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ckFQOW1qQm0wdjNDRjJLQ3E2YzhBbldCMkVpbk8xMXdjM25NenRqVE5tZWF5?=
- =?utf-8?B?RjBUa0pNT3lyKzd6Ykt1MnlaNjh4Y0R5cjhvWENnaVJ4T2poRWk3dWtrTksr?=
- =?utf-8?B?QXJmSUJzWFJTYktxTENHWGdXOFBXNDZnbzVueTRUTlBDR0kxa0FLTXhIV1FK?=
- =?utf-8?B?VlZyY3BzQ3lqK2tYUTBMcnRieVlZUFJBSlhvWnRCV3V6L0V3VGZjcHN3UUVK?=
- =?utf-8?B?WXhTOGRQMGpzSHFRUXNwZUU1UFM1VStOSWdaSkkwOVBnUWhnNU9MSTFDakp1?=
- =?utf-8?B?U08wWkZQcFdSNmJiNE9CWGt4eXBPaWQyWlUzM2h0UUgzY2VibUVnYXFiQnF0?=
- =?utf-8?B?dzBJQm82VnZTZ1A0dW1NV1dqbzdnL3BxQ3lIanFSZlN6RTJqNllDWEZYb0Fs?=
- =?utf-8?B?K2loMHFxMVdDM3pMZUk1RG1yOFQ4SEhRWnhSQzRiaktWSlV5RUJraW1OZ1ph?=
- =?utf-8?B?U3lVMUNFcHEvUzhkWmE2aWh1UGcxMEdjVkRQZzJ6M0tVSktMbVlFcnlnYXp5?=
- =?utf-8?B?azhEYjZZaThGbUpUS1kwaElFLzNaOVdESTI0MWU2RTU4RWhqYWFhNWNyOGNi?=
- =?utf-8?B?M3hWdFRyRFgxYnV5dEhIaElwendKSmxQeU5Xd2FudUlUREpjVW85TVhRUmF3?=
- =?utf-8?B?c3ByTGNnT0FHbkhVR1dMVWJrMlUyUnY5aWRtUStTNTZBa3RoY3B0S3MzQS92?=
- =?utf-8?B?bmQ2SnFkZXVzZWVPM0hBeHdBMDh1RXNxaUNmazZSb2tlQitTZmt6dTgvRkhP?=
- =?utf-8?B?NDJZdjlVSnhNRnZOUWswNzJDMTVXRFFKTVVOUHJzWUJwbmxWamlMTTFiYnZY?=
- =?utf-8?B?ZmFDRER4STJhT1NuMDVsZHIyVm9kWTZKbkoxMEMxNTlZd1g0ZFdOYjBNbjI3?=
- =?utf-8?B?OE52YzJ2aE1LTThLQ29rRG9QaUo0N0NCVm1LVUp0elg4TUJWbzhBeXJrNU5W?=
- =?utf-8?B?TVZVOTRvWVZzTUNhSTVBbXRDMHJ5OExxUFlCamNHdCsva01OQTFmZmZqcUpV?=
- =?utf-8?B?ZksxK3kvc3Y2Wk5peWozZ21aS2xoa01tZ3VPeGZXekc1Kzh3NGRMbHBWV1d0?=
- =?utf-8?B?OStlbmZaMExXS0FUNHZ5ZXpyUG94dG54dmw4N0dkTU5NZHlRZTNjSzE5Z2xM?=
- =?utf-8?B?aTBYVFZHK2E2bEVHVkt4V0Z2dlgvZHZuZG1aSUVuWnF2R3lWcTVVNjJKeGxr?=
- =?utf-8?B?b2dHeUtsQVR6bDZuVmFwSTUvbEF4dCtOeG05SjAvbUpQQ3FUZnA4Y0R3UVlX?=
- =?utf-8?B?QnM4cjlhTUViU3grOFZpeUk1MmNrVXJRTnYxOTlEdXVxYmJDRGxxWTU0YldN?=
- =?utf-8?B?blR1aW9ERXV6OVkrU2I1THJnNWp4VzBvSnluaHNZSzJ0VWd0K3JjRUtiWmg0?=
- =?utf-8?B?Z2VkejBybFJQekY2L25yTitkTFp3RHpRSU01czYzdVZmbHlRMDlUM1lwZjZE?=
- =?utf-8?B?T3R1M0lsaVhYQm5jWlVKRk5XN1hNMjBUMGJkN0MvN3ZnWW5FYXByUE55K2tn?=
- =?utf-8?B?cDJQUG0zakJtZ3RTYVFIMWZCeE9rVU0waGtmN0g2YXZCQ0VTNDkrU1daVTZr?=
- =?utf-8?B?WTVaN3dieEJZcU8yTFJlTkFwaHJwS0E5dHY3Vm1yQURWQmNURXFIZ2xyZ1h4?=
- =?utf-8?B?eE1tbnJySk15WGZodEp2bGlqRGVrbUlxajBVeCtQQXovUWFVcGMxSmZ1ck5S?=
- =?utf-8?B?WWNSUnFFdEZYcnpLbnJzUlp4YjQyOWxRTVdBRDhUVmdpSmwveThwWTZkTzBy?=
- =?utf-8?B?YkF2WWpld3JqaG5LT2FRM1had2FUbXIvTnZUWnJtaXdNRHZGUVRvWWZ3UXRG?=
- =?utf-8?B?TlVFRFZwUVllRW80MzEyZVFPc2xGVnZoS2d2VXVDcVJLZWhnTmNqNnhvYzB2?=
- =?utf-8?B?UU5KYlcyMlhFR1E0UTdmRWR2RFZKSlAzNVhCOW1wdzlsQ0RMaFVtSVM3TlRM?=
- =?utf-8?B?NytGdUsvaHNwODNyOWUweGdNQTF1TEQ0SSs4OTRqL0c1WUxCZFpnY3RZSkg3?=
- =?utf-8?B?WHY5aFZ3MzV0dTYxOHVDRXRyWlhqODY0RHpHQnVKODYzWGQ0UjJYWE5HWHJu?=
- =?utf-8?B?VnB3UWgra1hsR2Z2WVE3eEVMZFFyTW1vRDk5MjA3NG1RMlVKcWlNdTlCb1VO?=
- =?utf-8?B?blBEcjlaNUlRUXBvcDBxNVI5WlBUU0JHVzdlWEJhQzlFQ2FMd09kV3k0UkNG?=
- =?utf-8?B?L1E9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RUF4TyszUTcrdXo1L21hVTdyb3NPOE1xWnZLVjRidTRoemkzU2JNNlArN0RX?=
+ =?utf-8?B?WStBbTIyT2lnV1ZQVEl0SWFvWG1oakFveFB5UlJQOFhxcW9Bd2VVeEJsQTlJ?=
+ =?utf-8?B?TkFUZndXRlpiOUIwM0dsUGxBRlZQS3V6cm1sN0ltbXlQZDVoMjZCdThlaU5K?=
+ =?utf-8?B?Nnp3bjVYV0Q5a3JPcWFTVXZZU21ybGlXakJxSFY1TzI0TDZWZ1Nhbk5LcGN5?=
+ =?utf-8?B?VlJMdHdBT2d0RjRIUmgvYlFFNGVoaTZlUm9UcjY5cmlCbWJLdlVWbkhoYTNP?=
+ =?utf-8?B?Z21mdXFhRllBRkxiS29BZGJ5WjVOaFZtY1l2T1ZGWUsycWgwcEs4STRNY1RT?=
+ =?utf-8?B?VVRPbmV4TXM1K25wZSszNjhvSVlLK29nR1BYQnQ0Nnh3RmhXY2cyL3VnOWow?=
+ =?utf-8?B?bHloVWk2YTBSUnN3K25nWWJJcmo4aDA3Tncxa1JYMGFlTWFlVXJJZTN4cG9k?=
+ =?utf-8?B?aEQ0MExhbXdjMzNVbUtMWnN5TlBhRmxNU0RUcUtqVmh5QkZNWk0vOXVqcUdW?=
+ =?utf-8?B?b1pwMjJ3K0tmK2d1VSt2cGFlV2FzcDRLc0g4M3haNmxBVm9SeWt0Y3ZpL2lr?=
+ =?utf-8?B?NTRmRE1oTU15aWFDSkFXMDFoWEM1VG9waFhxRlR3NUwxL0RybjlOUE5abStm?=
+ =?utf-8?B?NXprNDFJOE9xSDAyc0NERlZORFN5ekdiUVNVU0FOVENDYmZKTHNOVlRmQ1N4?=
+ =?utf-8?B?Q1ZpWkdjU1J1eGQrWTBoSXhxcEp5SjJ1MDlxWVVBY3k2S2t5ei9SQzNvQkpF?=
+ =?utf-8?B?NEM5NUhrVW94V04vVkhQTHFLdi9qZGZPSW5KTXNzdGVRaU1aOW9RNUkwa1hn?=
+ =?utf-8?B?VmtIR1c3Rk1UdkEyMTdERURrWEQzb28vUk00OFNpMFZKUkVEU1JiSFc1SGpQ?=
+ =?utf-8?B?Vk9yZzRrVXJQN09uclVyRHk5NFlQUzZCbFBRb1RLZXhud2dUU0tOM2FReGQy?=
+ =?utf-8?B?OXlvL0t0dmNDbGNSTm00eHEyRDM2SHVNdUJvRzUrSFcyY0RyZlFPNC9FRjJz?=
+ =?utf-8?B?WkZkUmNIV3pjZkc1V21ldzd6dEVmOEZTMXo2SXJnbXZ6N0cxb1BpYmkvTXVs?=
+ =?utf-8?B?dExPa3lOOUFLeE9HRCtxZGhwS09VOWJub2tsNDBuOXR4REp6Z293Y00vb3Vm?=
+ =?utf-8?B?elJCQmhjQnZkUGgwaHp3NW5YRTBtV0ZhVjMwc0pDVitrU2c0MmNsUEVhOXNZ?=
+ =?utf-8?B?OXJ6S3FvMW1lUTVXUm1SbzFQZ3BMbkRqWmVENm95aDl2R1JScDRmUkk3MlNJ?=
+ =?utf-8?B?NUJaTHVRRGxNY0phMUZoM2JpUEZPRUxINTlBR3ppUmpta3hYRWh6Mk5wRFA1?=
+ =?utf-8?B?eG9ST2I4a3hocDFvaWhUT244TVBVNzJHUmU2WWRyY3h3clVJaEkrNHJ6SHEw?=
+ =?utf-8?B?Q1RwajRuY25Fd2pmRXFkZ1RORXExRjcxWHJjdnZQL1NpQm1NYzNQLzA2SGtG?=
+ =?utf-8?B?RFJqOG1oT2M4emFMZU1XeXF0ck92NWFPOGFnaGF6eEEzbVkzYkVSTXhLSFVx?=
+ =?utf-8?B?b3ZCS3ZnakxxWWFHaXc1MWsyKzkrSVM4czlYRm5PTmlWYkYxK2M1QVZGWkJE?=
+ =?utf-8?B?S0hWaklBcEVtVXV2U0ZCVjBtS1NYd2Qxa3BEclo1dkxYTlhDSUJkMlc2a1Vs?=
+ =?utf-8?B?cnhpYnBMdlZuakoxc0pzUWNHWnhUeUV3NFNHbUw1MWkrQXpvSWx2TExEMFBZ?=
+ =?utf-8?B?QmdKbmcrZjhkUWV4QUN1dWF3V0dXVFZLWVpCQTlYNVVFQ3hnNmdGWWU0a0dT?=
+ =?utf-8?B?ekVuRkYyNHhlNGVrbVk3K1hZY09TZXpWSUpYM05ueGNPcmdDVUJFUzVPZk81?=
+ =?utf-8?B?RXVDS25abmRGTkFLTVJvVms4ak1KSzlOanlRbkNDUWpHRlVuajgyRHNSeWJ5?=
+ =?utf-8?B?aFFEMlhPZFo0bVI4dzlIZEFDTms3WFdnQ2V1bkNXMlF4N2pJTDFZUWFpVUtI?=
+ =?utf-8?B?VFc0VGp3UnRKVEJnTFRCOVNHOWRFZWZIVHMydTU3T0Y2RnZaeitUbmRheTFC?=
+ =?utf-8?B?THlldGN2cTlwYmw2UGQ1RWdWNHF5NjNBQUlIRXNNY3UraWttZlh4NTFxdHo4?=
+ =?utf-8?B?Vi96N2gyVnRNR3lhTkRnYm45MXZ1WXBqK2FCSmYwUDFEalhUcWFlN0NpOTcr?=
+ =?utf-8?B?TkVZS1phSzRUZHhPTDJrdUJRZmRsdHZQaysrNkJERGttK3dOM2NXbCt4dUdF?=
+ =?utf-8?B?Z3c9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 821a5e98-83f6-4e89-c398-08db36bf35ea
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac4e5152-df4e-460d-7ed8-08db36bfc1e7
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2023 16:51:47.5496
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2023 16:55:42.4159
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 843FlEpy4RNm+jYUZ1Y97pDY2v9p/4YgnKjfGbCH9GCOS0BJvP+h3Jjm/cu0o3Qe
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB5269
-X-Proofpoint-ORIG-GUID: MaSYcj0fK6ItII40gBbZzCiTIPHSq00h
-X-Proofpoint-GUID: MaSYcj0fK6ItII40gBbZzCiTIPHSq00h
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2coNhD7kkIcgd3ig2LUKN6HT7cvP5Eo1xKEgxqEL9hUC6e45HajpSfHRRhoLOfHA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3882
+X-Proofpoint-GUID: UmDLMf-Fwx8PVPwHLa8bYWdDik4DsFXf
+X-Proofpoint-ORIG-GUID: UmDLMf-Fwx8PVPwHLa8bYWdDik4DsFXf
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-04-06_10,2023-04-06_03,2023-02-09_01
@@ -150,131 +148,85 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 4/4/23 3:04 PM, Andrii Nakryiko wrote:
-> On Thu, Mar 30, 2023 at 3:55 PM Dave Marchevsky <davemarchevsky@meta.com> wrote:
+On 4/4/23 3:09 PM, Andrii Nakryiko wrote:
+> On Wed, Mar 29, 2023 at 10:56 PM Yonghong Song <yhs@fb.com> wrote:
 >>
->> On 3/30/23 1:56 AM, Yonghong Song wrote:
->>> Currently, the verifier does not handle '<const> <cond_op> <non_const>' well.
->>> For example,
->>>    ...
->>>    10: (79) r1 = *(u64 *)(r10 -16)       ; R1_w=scalar() R10=fp0
->>>    11: (b7) r2 = 0                       ; R2_w=0
->>>    12: (2d) if r2 > r1 goto pc+2
->>>    13: (b7) r0 = 0
->>>    14: (95) exit
->>>    15: (65) if r1 s> 0x1 goto pc+3
->>>    16: (0f) r0 += r1
->>>    ...
->>> At insn 12, verifier decides both true and false branch are possible, but
->>> actually only false branch is possible.
->>>
->>> Currently, the verifier already supports patterns '<non_const> <cond_op> <const>.
->>> Add support for patterns '<const> <cond_op> <non_const>' in a similar way.
->>>
->>> Also fix selftest 'verifier_bounds_mix_sign_unsign/bounds checks mixing signed and unsigned, variant 10'
->>> due to this change.
->>>
->>> Signed-off-by: Yonghong Song <yhs@fb.com>
->>> ---
->>>   kernel/bpf/verifier.c                                | 12 ++++++++++++
->>>   .../bpf/progs/verifier_bounds_mix_sign_unsign.c      |  2 +-
->>>   2 files changed, 13 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index 90bb6d25bc9c..d070943a8ba1 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -13302,6 +13302,18 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
->>>                                       src_reg->var_off.value,
->>>                                       opcode,
->>>                                       is_jmp32);
->>> +     } else if (dst_reg->type == SCALAR_VALUE &&
->>> +                is_jmp32 && tnum_is_const(tnum_subreg(dst_reg->var_off))) {
->>> +             pred = is_branch_taken(src_reg,
->>> +                                    tnum_subreg(dst_reg->var_off).value,
->>> +                                    flip_opcode(opcode),
->>> +                                    is_jmp32);
->>> +     } else if (dst_reg->type == SCALAR_VALUE &&
->>> +                !is_jmp32 && tnum_is_const(dst_reg->var_off)) {
->>> +             pred = is_branch_taken(src_reg,
->>> +                                    dst_reg->var_off.value,
->>> +                                    flip_opcode(opcode),
->>> +                                    is_jmp32);
->>>        } else if (reg_is_pkt_pointer_any(dst_reg) &&
->>>                   reg_is_pkt_pointer_any(src_reg) &&
->>>                   !is_jmp32) {
+>> For a loop, if loop index variable is spilled and between loop
+>> iterations, the only reg/spill state difference is spilled loop
+>> index variable, then verifier may assume an infinite loop which
+>> cause verification failure. In such cases, we should mark
+>> spilled loop index variable as precise to differentiate states
+>> between loop iterations.
 >>
->> Looking at the two SCALAR_VALUE 'else if's above these added lines, these
->> additions make sense. Having four separate 'else if' checks for essentially
->> similar logic makes this hard to read, though, maybe it's an opportunity to
->> refactor a bit.
+>> Since verifier is not able to accurately identify loop index
+>> variable, add a heuristic such that if both old reg state and
+>> new reg state are consts, mark old reg state as precise which
+>> will trigger constant value comparison later.
 >>
->> While trying to make sense of the logic here I attempted to simplify with
->> a helper:
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+>>   kernel/bpf/verifier.c | 20 ++++++++++++++++++--
+>>   1 file changed, 18 insertions(+), 2 deletions(-)
 >>
->> @@ -13234,6 +13234,21 @@ static void find_equal_scalars(struct bpf_verifier_state *vstate,
->>          }));
->>   }
->>
->> +static int maybe_const_operand_branch(struct tnum maybe_const_op,
->> +                                     struct bpf_reg_state *other_op_reg,
->> +                                     u8 opcode, bool is_jmp32)
->> +{
->> +       struct tnum jmp_tnum = is_jmp32 ? tnum_subreg(maybe_const_op) :
->> +                                         maybe_const_op;
->> +       if (!tnum_is_const(jmp_tnum))
->> +               return -1;
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index d070943a8ba1..d1aa2c7ae7c0 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -14850,6 +14850,23 @@ static bool stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old,
+>>                  /* Both old and cur are having same slot_type */
+>>                  switch (old->stack[spi].slot_type[BPF_REG_SIZE - 1]) {
+>>                  case STACK_SPILL:
+>> +                       /* sometime loop index variable is spilled and the spill
+>> +                        * is not marked as precise. If only state difference
+>> +                        * between two iterations are spilled loop index, the
+>> +                        * "infinite loop detected at insn" error will be hit.
+>> +                        * Mark spilled constant as precise so it went through value
+>> +                        * comparison.
+>> +                        */
+>> +                       old_reg = &old->stack[spi].spilled_ptr;
+>> +                       cur_reg = &cur->stack[spi].spilled_ptr;
+>> +                       if (!old_reg->precise) {
+>> +                               if (old_reg->type == SCALAR_VALUE &&
+>> +                                   cur_reg->type == SCALAR_VALUE &&
+>> +                                   tnum_is_const(old_reg->var_off) &&
+>> +                                   tnum_is_const(cur_reg->var_off))
+>> +                                       old_reg->precise = true;
+>> +                       }
 >> +
->> +       return is_branch_taken(other_op_reg,
->> +                              jmp_tnum.value,
->> +                              opcode,
->> +                              is_jmp32);
->> +}
->> +
->>   static int check_cond_jmp_op(struct bpf_verifier_env *env,
->>                               struct bpf_insn *insn, int *insn_idx)
->>   {
->> @@ -13287,18 +13302,12 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
->>
->>          if (BPF_SRC(insn->code) == BPF_K) {
->>                  pred = is_branch_taken(dst_reg, insn->imm, opcode, is_jmp32);
->> -       } else if (src_reg->type == SCALAR_VALUE &&
->> -                  is_jmp32 && tnum_is_const(tnum_subreg(src_reg->var_off))) {
->> -               pred = is_branch_taken(dst_reg,
->> -                                      tnum_subreg(src_reg->var_off).value,
->> -                                      opcode,
->> -                                      is_jmp32);
->> -       } else if (src_reg->type == SCALAR_VALUE &&
->> -                  !is_jmp32 && tnum_is_const(src_reg->var_off)) {
->> -               pred = is_branch_taken(dst_reg,
->> -                                      src_reg->var_off.value,
->> -                                      opcode,
->> -                                      is_jmp32);
->> +       } else if (src_reg->type == SCALAR_VALUE) {
->> +               pred = maybe_const_operand_branch(src_reg->var_off, dst_reg,
->> +                                                 opcode, is_jmp32);
->> +       } else if (dst_reg->type == SCALAR_VALUE) {
->> +               pred = maybe_const_operand_branch(dst_reg->var_off, src_reg,
->> +                                                 flip_opcode(opcode), is_jmp32);
->>          } else if (reg_is_pkt_pointer_any(dst_reg) &&
->>                     reg_is_pkt_pointer_any(src_reg) &&
->>                     !is_jmp32) {
->>
->>
->> I think the resultant logic is the same as your patch, but it's easier to
->> understand, for me at least. Note that I didn't test the above.
 > 
-> should we push it half a step further and have
+> I'm very worried about heuristics like this. Thinking in abstract, if
+> scalar's value is important for some loop invariant and would
+> guarantee some jump to be always taken or not taken, then jump
+> instruction prediction logic should mark register (and then by
+> precision backtrack stack slot) as precise. But if precise values
+> don't guarantee only one branch being taken, then marking the slot as
+> precise makes no sense.
 > 
-> if (src_reg->type == SCALAR_VALUE || dst_reg->type == SCALAR_VALUE)
->    pred = is_branch_taken_regs(src_reg, dst_reg, opcode, is_jmp32)
-> 
-> seems even clearer like that. All the tnum subreg, const vs non-const,
-> and dst/src flip can be handled internally in one nicely isolated
-> place.
+> Let's be very diligent with changes like this. I think your other
+> patches should help already with marking necessary slots as precise,
+> can you double check that this issue still happens. And if yes, let's
+> address them as a separate feature. The rest of verifier logic changes
+> in this patch set look good to me and make total sense.
 
-I kept my original logic. I think it is more clean. In many cases,
-both src_reg and dst_reg are scalar values. What we really want is to
-test whether src_reg or dst_reg are constant or not and act
-accordingly.
+Yes, this is a heuristic so it will mark precise for non-induction 
+variables as well. Let me do a little more study on this. Just posted v2 
+without this patch and its corresponding tests.
 
+> 
+> 
+>>                          /* when explored and current stack slot are both storing
+>>                           * spilled registers, check that stored pointers types
+>>                           * are the same as well.
+>> @@ -14860,8 +14877,7 @@ static bool stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old,
+>>                           * such verifier states are not equivalent.
+>>                           * return false to continue verification of this path
+>>                           */
+>> -                       if (!regsafe(env, &old->stack[spi].spilled_ptr,
+>> -                                    &cur->stack[spi].spilled_ptr, idmap))
+>> +                       if (!regsafe(env, old_reg, cur_reg, idmap))
+>>                                  return false;
+>>                          break;
+>>                  case STACK_DYNPTR:
+>> --
+>> 2.34.1
+>>
