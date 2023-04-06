@@ -2,108 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC88F6DA5DC
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 00:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E996DA5EC
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 00:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbjDFWf3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 18:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
+        id S236901AbjDFWkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 18:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjDFWf2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 18:35:28 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745717ED0
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 15:35:27 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id o2so38748320plg.4
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 15:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680820527; x=1683412527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q2S3D1pZbFjzSQGr6ymBjndZ14Ty5JYYwZq/s9YKUYw=;
-        b=NC/P+NUjLIH9ceTT5aAOEi4oKo521K55RNY3eFC1ntQyuCPpqCbfOPkdSm9tjhUjmo
-         a3Br3WG0YiOIMINK170lf0Szcn+iT324gVFvydToNPxee1A+ug6gigKmLyG8XF6E72ll
-         xJ1m8oJzEuToFZvcVhlMMlwz1sxmQd4wgxcqL9LTWf4E/Rag6Th1DMqV0bjP8ld/M55r
-         SpEiNoOst7nyscQYC/8DrrUXoeRvF7qIKTEcOXs7z/FYkIIrUx/LvkoVxsBw+CZxh+c7
-         /uGWbsjECm913JmXGBkgenfkpjw5t/YW2bqnZ6vJXQ7awkoXgBDuOyzPs1DCAIUWVnCL
-         LUHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680820527; x=1683412527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q2S3D1pZbFjzSQGr6ymBjndZ14Ty5JYYwZq/s9YKUYw=;
-        b=nIVSev+3nd9UDscXQN6QbueF0Cp8Zmer4v9P+vSlvPx6VR0kgxzaaPlkteBFhsb4Uz
-         LsYev7HU+8gXFseNl6asZhsZMrfWqnMKAG9drfHdptBB3/W802bw/BIL+/dvbRBXh6rk
-         AIrDamFlU6rNSMp/ACROCUw7RoBl6uVSeDlrcJJkQ7Bq7ZUVOox/9xzadWd8lXYV1q56
-         sm0YMqH4Hj/7E/toy4+ReWm5K5Frj1r2nT1DqXMKEKuWb0y0FloKsWoa5U+YFl37inYw
-         Xf8zEHEZp+y6T4qr9G9qjPn96k63XTW8HnO1Qm1q0DZBQx6FId2zsf8wSVwjjvMTKBw2
-         Luig==
-X-Gm-Message-State: AAQBX9fD4ZYzAr/bnE+Cs61k5iZRD9kyogkI2Qn4ppwmMf9Bp3Ut7z2J
-        bboDzg3uOqCQHufO881dCA7khArfGozrL9Sj/rTj6A==
-X-Google-Smtp-Source: AKy350ah2O8qYURR1sUGonwB93ZBhpzt1TblHI7jb/4F+Y4ShGWiAjdHhab88q75Bq27Kx1cNZs015oX4B64nE556dE=
-X-Received: by 2002:a17:902:ab93:b0:19a:7bd4:5b0d with SMTP id
- f19-20020a170902ab9300b0019a7bd45b0dmr262103plr.8.1680820526770; Thu, 06 Apr
- 2023 15:35:26 -0700 (PDT)
+        with ESMTP id S230098AbjDFWkX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 18:40:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0A59EED
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 15:40:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D723064CEC
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 22:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 36A1BC4339B;
+        Thu,  6 Apr 2023 22:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680820821;
+        bh=vQYqtGRcOjekwPiK2jUvcZ6VCR9c9zo7Z0V4udu5A70=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bo9+nXcoQmx452yScOrTB94mgfewS57wELp2JcMGerb0LdG7FmLSsbskZljZZLRZE
+         0HGYQN2whCRszdMWh5A87RTW21gsLyJ0YXggh8n8szvS18GPneO9fFdR5P6G81EW/D
+         t5GplJm6p6SebYAS7L5wTJJXfcloHjiJK6FbSOj82XCtRIhTM2YYuS0S4oEKeK8uRE
+         vkdYwSNIjdcFPPh1J4GJ0/FzH65WT2lh9vhhJP8gTI8zXdM/Rm+2RsiS93mA6veqSk
+         GhB03UEaYBROhlsgm+HOlmcEszr5Z48vtBQoxV2Z3gPikFUvKnGJB2JIPiOG5SXasa
+         tDhrMZ/3qQzlg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0F9A9E4F14C;
+        Thu,  6 Apr 2023 22:40:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230406004018.1439952-1-drosen@google.com> <20230406004018.1439952-2-drosen@google.com>
- <CAEf4BzbyX3i6k5eL6D-5enU+u58nVn_fK28zNBJ4w_Vm-+RiMQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbyX3i6k5eL6D-5enU+u58nVn_fK28zNBJ4w_Vm-+RiMQ@mail.gmail.com>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Thu, 6 Apr 2023 15:35:15 -0700
-Message-ID: <CA+PiJmQXcgWD3Uu-pRCU6OfkRepeqwr7qi1uO2rfmy0FPm_sOQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] bpf: verifier: Accept dynptr mem as mem in helpers
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/4] bpf: Improve verifier for cond_op and spilled
+ loop index variables
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168082082105.20613.30150261767059616.git-patchwork-notify@kernel.org>
+Date:   Thu, 06 Apr 2023 22:40:21 +0000
+References: <20230406164450.1044952-1-yhs@fb.com>
+In-Reply-To: <20230406164450.1044952-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 1:55=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> Something feels off here. Can you paste a bit of verifier log for the
-> failure you were getting. And let's have a selftest for this situation
-> as well.
->
-> ARG_PTR_TO_MEM shouldn't be qualified with the DYNPTR_TYPE flag, it's
-> just memory, there is no need to know what type of dynptr it was
-> derived from. So if that happens, the problem is somewhere else. Let's
-> root cause and fix that. Having a selftest that demonstrates the
-> problem will help with that.
->
->
-This label is added by dynptr_slice(_rdwr)
+Hello:
 
-if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_dynptr_slice] ||
-   meta.func_id =3D=3D special_kfunc_list[KF_bpf_dynptr_slice_rdwr]) {
-enum bpf_type_flag type_flag =3D
-get_dynptr_type_flag(meta.initialized_dynptr.type);
-...
-regs[BPF_REG_0].type =3D PTR_TO_MEM | type_flag;
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-That extra flag was causing the type to be unexpected later on.
-I'll add a selftest for this as well.
+On Thu, 6 Apr 2023 09:44:50 -0700 you wrote:
+> LLVM commit [1] introduced hoistMinMax optimization like
+>   (i < VIRTIO_MAX_SGS) && (i < out_sgs)
+> to
+>   upper = MIN(VIRTIO_MAX_SGS, out_sgs)
+>   ... i < upper ...
+> and caused the verification failure. Commit [2] workarounded the issue by
+> adding some bpf assembly code to prohibit the above optimization.
+> This patch improved verifier such that verification can succeed without
+> the above workaround.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2,1/4] bpf: Improve verifier JEQ/JNE insn branch taken checking
+    https://git.kernel.org/bpf/bpf-next/c/13fbcee55706
+  - [bpf-next,v2,2/4] selftests/bpf: Add tests for non-constant cond_op NE/EQ bound deduction
+    https://git.kernel.org/bpf/bpf-next/c/aec08d677b4d
+  - [bpf-next,v2,3/4] bpf: Improve handling of pattern '<const> <cond_op> <non_const>' in verifier
+    https://git.kernel.org/bpf/bpf-next/c/953d9f5beaf7
+  - [bpf-next,v2,4/4] selftests/bpf: Add verifier tests for code pattern '<const> <cond_op> <non_const>'
+    https://git.kernel.org/bpf/bpf-next/c/23a88fae9f20
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
