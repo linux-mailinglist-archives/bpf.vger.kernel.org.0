@@ -2,69 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2036DA656
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 01:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77586DA65A
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 01:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbjDFXyM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 19:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
+        id S229783AbjDFXyp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 19:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbjDFXyI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 19:54:08 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2806A9748
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 16:54:07 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e18so41004481wra.9
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 16:54:07 -0700 (PDT)
+        with ESMTP id S237261AbjDFXyh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 19:54:37 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4667ED3;
+        Thu,  6 Apr 2023 16:54:36 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id g18so5062492ejx.7;
+        Thu, 06 Apr 2023 16:54:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680825245;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OpgIrgXDKr7mYg657t1IZTUwOa1v/O9NHLLvRs1T5EE=;
-        b=XGw0NFEjCUWYQ8Pl3k09rGtpOhBQ1j9EYPBoDuH/ey4Uv4mABaPLARUOLV57QEfOyC
-         hmcf/+/xa1/olflr0nFEn0YgxzwQv28Eft+fNmkv+y8xRsXrfcvxJxRH1tQj84eQpF/n
-         OctUWf/ECKAln/KX/AyC1KdIDU4goZOpYD+5TMkhUhG5hlRZ9YGR+PouPV0CallTs8wT
-         UnCAUKD9zhzO/ByAPCC/53DVfUPtjD7mYX0ZDCvyY3y6CerCGNtEx8d56Yv/u7JUbwIb
-         LWIAbnFrsu2finCvgv4RWKgSx4GK09sODz0qavz3Jfo3nEYMs7hvWtOI38FdJxw82CG9
-         Hprg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680825245;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20210112; t=1680825275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OpgIrgXDKr7mYg657t1IZTUwOa1v/O9NHLLvRs1T5EE=;
-        b=XzZ+aQ8lF/L2VZ3YykWBSNm6V1yWjagVrgpgS6sWzhQZQRZgVH1DMKeCy4DUO/BsT+
-         JbLerxM1WnJLQSiDqbI/q7q/lFGWlFB8fec8WcpfrflHdI4UIvK9qgvffZsIurkBTv4T
-         5y7SGQcUc7JaE4tMkVHkgRTlKu2mYuG6HHo/PgddAEKiFcuptz+eLj9ZmUbKnKhxUj+W
-         XSdsbkdOKjz29wY0EhuAokk+Kr6K/PC+EOENPdWFcto+s78HotD4U3qyQcHNQqF24nEh
-         UrSh9bpTMyAwLCB0lQh4mcdJs+YohhWdPrT5I6/zDkSOFK0MGVA35f6zPtJdrac5oUHD
-         I0wQ==
-X-Gm-Message-State: AAQBX9fkSPjm3rsHtQ0Cxi1iMuGZSSNY0DIBxzSpeA/nViNJfxCuh89T
-        QHHKBu7CfxMgKpBq4rlIsEiOZ665hxU2/Q==
-X-Google-Smtp-Source: AKy350a9hSZN1y0YBUJrCuhM4ty/IcPPvyI8+R6kMe+CQQjOhGZJ8vPkZmHeE/ZeWTy8WqTlZi9D2w==
-X-Received: by 2002:a05:6000:1b81:b0:2d7:3d7c:19cb with SMTP id r1-20020a0560001b8100b002d73d7c19cbmr126353wru.4.1680825245334;
-        Thu, 06 Apr 2023 16:54:05 -0700 (PDT)
-Received: from localhost ([2a02:1210:74a0:3200:2fc:d4f0:c121:5e8b])
-        by smtp.gmail.com with ESMTPSA id x13-20020a5d60cd000000b002efabde5609sm904956wrt.92.2023.04.06.16.54.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 16:54:04 -0700 (PDT)
-Date:   Fri, 7 Apr 2023 01:54:03 +0200
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        David Vernet <void@manifault.com>
-Subject: Re: [PATCH RFC bpf-next v1 3/9] bpf: Implement bpf_throw kfunc
-Message-ID: <xmehxhdk4ba2j75ltdygzi2b56aftcei36dndptg3v6gdumrh2@zadr5xdn5g3m>
-References: <20230405004239.1375399-1-memxor@gmail.com>
- <20230405004239.1375399-4-memxor@gmail.com>
- <20230406021622.xbgzrmfjxli6dkpt@dhcp-172-26-102-232.dhcp.thefacebook.com>
+        bh=CikBPbUxVUuJ7IrbUQ9wU1KffUTIqbzP3eb0rXcRUkg=;
+        b=HzkmRvtxMm4P83iWhZXWYnREh/Aw63gNTIRiYPPczkXDk+XvTAZffm2WgzmunJabVv
+         I+fCneguVvtcsSVm6MNOSxeX25kPF26kuP4fapvf9l6yFUQgMKeGp5yjVgMo/WnDwNWd
+         zxE2Q5sGiF5H8cBmAowJH/PZoUs79TBYs2HPLoT8Arthat0AFIvIE9YDXrw3y2j84HnX
+         DulZMUwCs09JwEtM23hpbXjQ/5LIAXKkgx6ij/6CLvGpLEjNCAboFL2IHqpngEnrX1OW
+         z0ApFH7PqH5lqeY80VFtow6u1DCKjaIjAuTIcfCRmwVRWx+ZJxTmxOHZEmeArCUL5T34
+         mqpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680825275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CikBPbUxVUuJ7IrbUQ9wU1KffUTIqbzP3eb0rXcRUkg=;
+        b=HayTHKlNKIOQCdtpQTy594ER9rU3EueV4Q2wMSpdbfSqF8gNtzWj5+y5TB6jPAGB3g
+         4BhSh35nOgKIeL0kOeossWMZhk/vqT6wui3m+5gGiPWsuaJp/V8Ww4ymP2qctKHviBZz
+         1VmjfRX1niaU3/h5HC/9m4EFSnxO6H1QxISYXrigjRSRthplI30Qmas7eoa38BXGH2zU
+         LdxeR2H4kDABM10iOsbCl+ioEBBJfTX79OEHgkps8CNuKff9n6tLxa/X7GqRaA+KNY9j
+         b7t96i5SWEJLvnUURewMmz6lLs2q9HStsTR9xbc5g2NkijLLcTDnwDQg2yQepr+xVKZL
+         1gxw==
+X-Gm-Message-State: AAQBX9faTDD6I2LL4id+3fRDs5cRdgQBUp89GYSRNEhJ5dPTm9GaKn/S
+        SSfrWBto0A1m1m1/buuxqQ66k8kjfsVBGmgwLKU=
+X-Google-Smtp-Source: AKy350aP3LAuRE4kHXafIyRhhTeGu1zIiVG/9F6cl2mx5fdZ4PtKm+tbFi0lQ64c0i0cHxRXAMG3vZrkyM+RDT4IpYE=
+X-Received: by 2002:a17:906:82cd:b0:932:38d5:ff86 with SMTP id
+ a13-20020a17090682cd00b0093238d5ff86mr299666ejy.5.1680825275137; Thu, 06 Apr
+ 2023 16:54:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230406021622.xbgzrmfjxli6dkpt@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230406004018.1439952-1-drosen@google.com> <20230406004018.1439952-3-drosen@google.com>
+ <CAEf4BzakRfffU9+wLBNfhBi1dKxs03ibopJsMyEF6JAM-QJWjw@mail.gmail.com> <CA+PiJmRZHKn4GyDu7NbWc612=ovgM7jODKSD76CSW0gbjzDfzg@mail.gmail.com>
+In-Reply-To: <CA+PiJmRZHKn4GyDu7NbWc612=ovgM7jODKSD76CSW0gbjzDfzg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 6 Apr 2023 16:54:22 -0700
+Message-ID: <CAEf4BzbnYM+=W3N9mun24v0QbCDTbm5rnpGAwxD4xat297+XZg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -75,122 +81,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 06, 2023 at 04:16:22AM CEST, Alexei Starovoitov wrote:
-> On Wed, Apr 05, 2023 at 02:42:33AM +0200, Kumar Kartikeya Dwivedi wrote:
+On Thu, Apr 6, 2023 at 3:25=E2=80=AFPM Daniel Rosenberg <drosen@google.com>=
+ wrote:
+>
+> On Thu, Apr 6, 2023 at 2:09=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > - The exception state is represented using four booleans in the
-> >   task_struct of current task. Each boolean corresponds to the exception
-> >   state for each kernel context. This allows BPF programs to be
-> >   interrupted and still not clobber the other's exception state.
+> > should we always reject NULL even for SKB/XDP or only when the buffer
+> > *would be* required? If the latter, we could use bpf_dynptr_slice()
+> > with NULL buf to say "only return pointer if no byte copying is
+> > required". As opposed to bpf_dynptr_data(), where I think we always
+> > fail for SKB/XDP, because we are not sure whether users are aware of
+> > this need to copy bytes. Here, users are aware, but chose to prevent
+> > copying.
+> >
+> > WDYT?
+> >
 >
-> that doesn't work for sleepable bpf progs and in RT for regular progs too.
+> I think Passing NULL here should signal that you're quite okay with it
+> failing instead of copying. We could limit this to just local/ringbuf
+> types, but that seems like an unneeded restriction, particularly if
+> you're operating on some section of an skb/xdp buffer that you know
+> will always be contiguous.
+> I adjusted xdp for that. The adjustment would be similar for skb, I
+> just didn't do that since it was another layer of indirection deep and
+> hadn't looked through all of those use cases. Though it should be fine
+> to just reject when the buffer would have been needed, since all users
+> currently provide one.
+> I agree that allowing that same behavior for dnyptr_data would be more
+> likely to cause confusion. Blocking the copy on dynprt_slice is much
+> more explicit.
 >
-
-Can you elaborate? If a sleepable program blocks, that means the task is
-scheduled out, so the next program will use the other task's task_struct.
-Same for preemption for normal progs (under RT or not).
-
-Is there something else that I'm missing?
-
-> > - The other vexing case is of recursion. If a program calls into another
-> >   program (e.g. call into helper which invokes tracing program
-> >   eventually), it may throw and clobber the current exception state. To
-> >   avoid this, an invariant is maintained across the implementation:
-> > 	Exception state is always cleared on entry and exit of the main
-> > 	BPF program.
-> >   This implies that if recursion occurs, the BPF program will clear the
-> >   current exception state on entry and exit. However, callbacks do not
-> >   do the same, because they are subprograms. The case for propagating
-> >   exceptions of callbacks invoked by the kernel back to the BPF program
-> >   is handled in the next commit. This is also the main reason to clear
-> >   exception state on entry, asynchronous callbacks can clobber exception
-> >   state even though we make sure it's always set to be 0 within the
-> >   kernel.
-> >   Anyhow, the only other thing to be kept in mind is to never allow a
-> >   BPF program to execute when the program is being unwinded. This
-> >   implies that every function involved in this path must be notrace,
-> >   which is the case for bpf_throw, bpf_get_exception and
-> >   bpf_reset_exception.
+> >
+> > would this work correctly if someone passes a non-null buffer with too
+> > small size? Can you please add a test for this use case.
+> >
 >
-> ...
->
-> > +			struct bpf_insn entry_insns[] = {
-> > +				BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
-> > +				BPF_EMIT_CALL(bpf_reset_exception),
-> > +				BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
-> > +				insn[i],
-> > +			};
->
-> Is not correct in global bpf progs that take more than 1 argument.
->
+> Yes, that's one of the tests that's missing there. Once I get my build
+> situation sorted I'll add more tests. The behavior for a non-null
+> buffer should be unchanged by this patch.
 
-But this is not done for global subprogs, only for the main subprog, it only
-needs to be done when we enter the program from the kernel.
-
-> How about using a scratch space in prog->aux->exception[] instead of current task?
->
-
-I actually had this thought. It's even better because we can hardcode the
-address of the exception state right in the program (since prog->aux remains
-stable during bpf_patch_insn_data). However, concurrent program invocations on
-multiple CPUs doesn't work well with this. It's like, one program sets the state
-while the other tries to check it. It can be per-CPU but then we have to disable
-preemption (which cannot be done).
-
-Unfortunately per-task state seemed like the only choice which works without
-complicating things too much.
-
-> > +notrace u64 bpf_get_exception(void)
-> > +{
-> > +	int i = interrupt_context_level();
-> > +
-> > +	return current->bpf_exception_thrown[i];
-> > +}
->
-> this is too slow to be acceptable.
-
-I agree, also partly why I still marked this an RFC.
-
-> it needs to be single load plus branch.
-> with prog->aux->exception approach we can achieve that.
-> Instead of inserting a call to bpf_get_exception() we can do load+cmp.
-> We probably should pass prog->aux into exception callback, so it
-> can know where throw came from.
->
-
-IMO prog->aux->exception won't work either (unless I'm missing some way which
-you can point out). The other option would be that we spill pointer to the
-per-task exception state to the program's stack on entry, and then every check
-loads the value and performs the check. It will be a load from stack, load from
-memory and then a jump instruction. Still not as good as a direct load though,
-which we'd have with prog->aux, but much better than the current state.
-
-> > - Rewrites happen for bpf_throw and call instructions to subprogs.
-> >   The instructions which are executed in the main frame of the main
-> >   program (thus, not global functions and extension programs, which end
-> >   up executing in frame > 0) need to be rewritten differently. This is
-> >   tracked using BPF_THROW_OUTER vs BPF_THROW_INNER. If not done, a
->
-> how about BPF_THROW_OUTER vs BPF_THROW_ANY_INNER ?
-> would it be more precise ?
-
-I'm fine with the renaming. The only thing the type signifies is if we need to
-do the rewrite for frame 0 vs frame N.
+cool, sounds good
 
 >
-> > +__bpf_kfunc notrace void bpf_throw(void)
-> > +{
-> > +	int i = interrupt_context_level();
-> > +
-> > +	current->bpf_exception_thrown[i] = true;
-> > +}
+> > Also, I feel like for cases where we allow a NULL buffer, we need to
+> > explicitly check that the register is a *known* NULL (SCALAR=3D0
+> > basically). And also in that case the size of the buffer probably
+> > should be enforced to zero, not just be allowed to be any value.
+> >
 >
-> I think this needs to take u64 or couple u64 args and store them
-> in the scratch area.
-> bpf_assert* macros also need a way for bpf prog to specify
-> the reason for the assertion.
-> Otherwise there won't be any way to debug what happened.
+> We absolutely should check that the pointer in question is NULL before
+> ignoring the size check. I think I'm accomplishing that by ignoring
+> __opt when reg->umax_value > 0 in is_kfunc_arg_optional. Is that the
+> wrong check? Perhaps I should check var_off =3D=3D tnum_const(0) instead.
 
-I agree. Should we force it to be a constant value? Then we can hardcode it in
-the .text without having to save and restore it, but that might end up being a
-little too restrictive?
+yeah, umax_value is probably wrong check, use register_is_null()
+
+but this approach, even if correct, is a bit too subtle. I'd code it explic=
+itly:
+
+  - if __opt, then we know it *can be NULL*
+  - if so, we need to consider two situations
+    - it is NULL, then don't enforce buffer size
+    - it is not NULL (or may be not NULL), then enforce buffer size
+
+Basically, conflating check whether argument is marked as opt with
+enforcement of all the implied conditions seems very error-prone.
+
+>
+> We can't enforce the size being zero in this case because the size is
+> doing double duty. It's both the length of the requested area of
+> access into the dnyptr, and the size of the buffer that it might copy
+
+yep, completely missed this double use of that constant, ignore my
+point about enforcing sz=3D=3D0 then
+
+> that data into. If we don't provide a buffer, then it doesn't make
+> sense to check that buffer's size. The size does still apply to the
+> returned pointer though. Within the kfunc, it just needs to check for
+
+yep
+
+> null before copying dynptr data, as well as the regular enforcement of
+> length against the dynprt/offset.
+>
+> > it's scary to just ignore some error, tbh, the number of error
+> > conditions can grow overtime and we'll be masking them with this
+> > is_kfunc_arg_optional() override. Let's be strict and explicit here.
+> >
+> It would probably make more sense to check is_kfunc_arg_optional and
+> skip the size check altogether. Either way we're just relying on
+> runtime checks against the dynptr at that point. If the buffer is
+> known null and optional, we don't care what the relationship between
+> the buffer and the size is, just that size and the dynptr. __szk
+> already takes care of it being a constant. This doesn't affect the
+> return buffer size.
+
+yep, I agree about the logic, I'm concerned with the conflated
+implementation, as I tried to explain above
