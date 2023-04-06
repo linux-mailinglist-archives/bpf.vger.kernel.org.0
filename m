@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5316DA205
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 21:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156FA6DA225
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 22:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238562AbjDFTzH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 15:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
+        id S237744AbjDFUDS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 16:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238546AbjDFTzG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 15:55:06 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0F45253
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 12:55:05 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-4fa3c857b08so1364360a12.2
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 12:55:05 -0700 (PDT)
+        with ESMTP id S238087AbjDFUDR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 16:03:17 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C725D9033
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 13:03:15 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-932277e003cso133340766b.3
+        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 13:03:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680810904; x=1683402904;
+        d=gmail.com; s=20210112; t=1680811394; x=1683403394;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sZZNsZ3DWMuiHlELXUK2J9R2t7D0fCcQShC9Jx+sysI=;
-        b=bYwlQUxUk7yIH3ok9B7IB2RK3crwZ4aNGMXkLeHcr9sTYzncBZMVZHvXIbpjXBFDlg
-         BqXyW3ETA3s2R0FNduPFMaflvlpiOTuopzqARqiq1jtAFN/XEGmOTs/aFo3z5GzYsglY
-         BKes1mPcaar0GaKLiXirTmytwzXl3x7kjUfUwglwqEZGZmwb4ixxFoehBz5yD8YUYNyl
-         6lFHv+rc9ZZWv4WCZnRLin65XkkgcDzIztw/WjAvbK5hNQzx1s6XAXOj5UcfSpk4IT8a
-         lvfV0v4ChdhjVK44iCX3uvIg9fkANJZfVMuFm8XOa/+1T7vOOnFoxyHaSC4zP0yRnCZa
-         Fz+g==
+        bh=M3je9yarvK+0HYdVu4thcLJxFZ0H/sLuYdimSj8MuCg=;
+        b=VKGDdikXtY3g3SMhpWfzkfODV1WBapVeW/gEIOPpu25gol69+/jVugrhZGO/qxYaBE
+         qAI3UAy/d+TEXJ/eFavrJuxLawMnwnybS6t8RZN5wfR5YMx+hPM4PouSLP/kEj+otAnr
+         zDfcwBkklGsBY7o8Yu3ggMffgQCObCsd2T4FyePXXPupK9sNxKHxShiSi8r25qH76Gkc
+         uoRTWP09neo4ZidGG2IX649DJDTQywSlPP7C1AI3oztsF8+oxvnsrQI3yrFeAUGkfZM2
+         E+0LJDge2MuhnWu/50cLLzgwCVFlR8a2rAwVvs0Mq5vcJiPbg4zPnLn7j8H2pWVvEyb3
+         hqfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680810904; x=1683402904;
+        d=1e100.net; s=20210112; t=1680811394; x=1683403394;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sZZNsZ3DWMuiHlELXUK2J9R2t7D0fCcQShC9Jx+sysI=;
-        b=bZ9p9Kw8J3Ggrcvsvk7q8w5argn5i1J9e3yYaBdOHDkywVz8Xynt9STnMSYVMBhMz9
-         x+tJyHtc8QasblB51U4ApL8IIoXi8IAiRgiyXZ48vq4oQvEFWUacUQpiMOTQ01zGEa5G
-         lT8eZTkyWTEM1JEIzX1d13PBiBYX6K2sTif9NvwpOuNmk0GK84hqs+NDxBBx84jxey08
-         q3ydLFmcZZmBZN0A/+/LoDqeTIKZouT7fAAEkAntOjX99BC6UeB8wMmcPCnIHwi7A/7v
-         slDfm0UPbLDv4+kFgukQhpVrc6n1gmsDdY5HkRapDmdcLLST6f/vU7Td0+ev+FK8Y/QB
-         ZEog==
-X-Gm-Message-State: AAQBX9c+h0u8jSwFwXw1U9FDkHdD7ROt4JVSUH/ARK8y7eMdM/FvMrgq
-        4CRrOnqvUASr3qJt+YRboJW6ddI5I+or/7GEXUc=
-X-Google-Smtp-Source: AKy350Y4YvZcs9vWepIoY5YVssak2mu/pb6clNRY7bDS4xvBSeva12YnBNuPc9+gXWQVE4yHHrNT3JwzHCQzppvy3H8=
-X-Received: by 2002:a50:9b5b:0:b0:4fb:c8e3:1adb with SMTP id
- a27-20020a509b5b000000b004fbc8e31adbmr381318edj.3.1680810903521; Thu, 06 Apr
- 2023 12:55:03 -0700 (PDT)
+        bh=M3je9yarvK+0HYdVu4thcLJxFZ0H/sLuYdimSj8MuCg=;
+        b=FHYwSK6S+w9oWkv+oNLn8vh68qbu4iv5EQ7aAyi69UnNWKFVNtyCWM4hGxCinF3mcL
+         UfeXt/4e4SZt2PTz55FmhPF+Rpkjo34xZmC334+sTXUXa0D/H12JE/noJBKi1/w6WEqe
+         8ly4Wkpr1MfsPxpbQRhkTVl3rKEY19RdRImLTAW+ZXgBA5+OjfXNmoxK64ceXpmbAxrx
+         6vKT9zoj0iR8RaC2GxkTEo/HmARCDX+GmFN+uC1OaoB4tVs1ujX7PGXVGGka4e15B9Cx
+         SGAnei3c18Azi9H/MSXCZ+FI1aG0Gl7vcNwjG3oXZfyjWfF85olJMYrXEf4ageoJQhTy
+         sCbg==
+X-Gm-Message-State: AAQBX9d7uetsGaLEnY/UvitU1/ymp4x6cXtq3fiDVxDdnbva6nAr/tbD
+        McOls2P5FBQxAx1MYJqj/O+glKaqUhEjv+kqglE=
+X-Google-Smtp-Source: AKy350Zz1d25GKLCmkJKsNALYXLNG9I7m4OUWSwkOsH8KoimlWExQpfuohB5ywFHKwTBziqqeGLhfw8aTcLiP8pwmqE=
+X-Received: by 2002:a50:d6da:0:b0:4fc:ebe2:2fc9 with SMTP id
+ l26-20020a50d6da000000b004fcebe22fc9mr368024edj.3.1680811394000; Thu, 06 Apr
+ 2023 13:03:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230330055600.86870-1-yhs@fb.com> <CAEf4Bzayt_FUG6JyMzU060swqP_w=W9TFJOKD15ux6GNDm3qSg@mail.gmail.com>
- <b73075cb-67c4-2144-64f9-fc564eb00833@meta.com> <CAEf4BzYOqGVac3QDMD3LGVBS9tj56PQaZjxh+1FzVSYrx1=TSA@mail.gmail.com>
-In-Reply-To: <CAEf4BzYOqGVac3QDMD3LGVBS9tj56PQaZjxh+1FzVSYrx1=TSA@mail.gmail.com>
+References: <20230406164450.1044952-1-yhs@fb.com> <20230406164455.1045294-1-yhs@fb.com>
+ <bcdb8bde-6aa2-5f01-f03d-53498330f623@meta.com>
+In-Reply-To: <bcdb8bde-6aa2-5f01-f03d-53498330f623@meta.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 6 Apr 2023 12:54:52 -0700
-Message-ID: <CAADnVQ+dnqrNEchHyTCkzNs+v-0CrpWePBA012oG6MgHkw7KJw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/7] bpf: Improve verifier for cond_op and
- spilled loop index variables
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@meta.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 6 Apr 2023 13:03:02 -0700
+Message-ID: <CAADnVQJQ=oJDb8+SQ9R-dNC9irgZRUYLKFFg+VfXRwBCXNS1Rw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/4] bpf: Improve verifier JEQ/JNE insn branch
+ taken checking
+To:     Dave Marchevsky <davemarchevsky@meta.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>,
@@ -74,111 +74,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 11:39=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Apr 6, 2023 at 10:49=E2=80=AFAM Dave Marchevsky <davemarchevsky@met=
+a.com> wrote:
 >
-> On Thu, Apr 6, 2023 at 9:49=E2=80=AFAM Yonghong Song <yhs@meta.com> wrote=
-:
-> >
-> >
-> >
-> > On 4/4/23 2:46 PM, Andrii Nakryiko wrote:
-> > > On Wed, Mar 29, 2023 at 10:56=E2=80=AFPM Yonghong Song <yhs@fb.com> w=
-rote:
-> > >>
-> > >> LLVM commit [1] introduced hoistMinMax optimization like
-> > >>    (i < VIRTIO_MAX_SGS) && (i < out_sgs)
-> > >> to
-> > >>    upper =3D MIN(VIRTIO_MAX_SGS, out_sgs)
-> > >>    ... i < upper ...
-> > >> and caused the verification failure. Commit [2] workarounded the iss=
-ue by
-> > >> adding some bpf assembly code to prohibit the above optimization.
-> > >> This patch improved verifier such that verification can succeed with=
-out
-> > >> the above workaround.
-> > >>
-> > >> Without [2], the current verifier will hit the following failures:
-> > >>    ...
-> > >>    119: (15) if r1 =3D=3D 0x0 goto pc+1
-> > >>    The sequence of 8193 jumps is too complex.
-> > >>    verification time 525829 usec
-> > >>    stack depth 64
-> > >>    processed 156616 insns (limit 1000000) max_states_per_insn 8 tota=
-l_states 1754 peak_states 1712 mark_read 12
-> > >>    -- END PROG LOAD LOG --
-> > >>    libbpf: prog 'trace_virtqueue_add_sgs': failed to load: -14
-> > >>    libbpf: failed to load object 'loop6.bpf.o'
-> > >>    ...
-> > >> The failure is due to verifier inadequately handling '<const> <cond_=
-op> <non_const>' which will
-> > >> go through both pathes and generate the following verificaiton state=
-s:
-> > >>    ...
-> > >>    89: (07) r2 +=3D 1                      ; R2_w=3D5
-> > >>    90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Df=
-p0
-> > >>    91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,=
-var_off=3D(0x0; 0x7)) R10=3Dfp0
-> > >>    92: (ad) if r2 < r1 goto pc+41        ; R0_w=3Dscalar() R1_w=3Dsc=
-alar(umin=3D6,umax=3D5,var_off=3D(0x4; 0x3))
-> > >
-> > > offtopic, but if this is a real output, then something is wrong with
-> > > scratching register logic for conditional, it should have emitted
-> > > states of R1 and R2, maybe you can take a look while working on this
-> > > patch set?
-> >
-> > Yes, this is the real output. Yes, the above R1_w should be an
-> > impossible state. This is what this patch tries to fix.
-> > I am not what verifier should do if this state indeed happens,
-> > return an -EFAULT or something?
 >
-> no-no, that's not what I'm talking about. Look at the instruction, it
-> compares R1 and R2, yet we print the state of R0 and R1, as if that
-> instruction worked with R0 and R1 instead. That's confusing and wrong.
-> There is some off-by-one error in mark_register_scratched() call, or
-> something like that.
-
-I suspect Yonghong just trimmed the output.
-Line 92 has both R1 and R2 below.
-Why R0, R6, R7, R8 are also there... is indeed wrong.
-I've looked at scratch marking logic and don't an obvious bug.
-Something to investigate.
-
+>
+> On 4/6/23 12:44 PM, Yonghong Song wrote:
+> > Currently, for BPF_JEQ/BPF_JNE insn, verifier determines
+> > whether the branch is taken or not only if both operands
+> > are constants. Therefore, for the following code snippet,
+> >   0: (85) call bpf_ktime_get_ns#5       ; R0_w=3Dscalar()
+> >   1: (a5) if r0 < 0x3 goto pc+2         ; R0_w=3Dscalar(umin=3D3)
+> >   2: (b7) r2 =3D 2                        ; R2_w=3D2
+> >   3: (1d) if r0 =3D=3D r2 goto pc+2 6
 > >
-> > >
-> > >>        R2_w=3D5 R6_w=3Dscalar(id=3D385) R7_w=3D0 R8_w=3Dscalar() R9_=
-w=3Dscalar(umax=3D21474836475,var_off=3D(0x0; 0x7ffffffff))
-> > >>        R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? f=
-p-32=3D fp-40_w=3D4 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
-> > >>    ...
-> > >>    89: (07) r2 +=3D 1                      ; R2_w=3D6
-> > >>    90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Df=
-p0
-> > >>    91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,=
-var_off=3D(0x0; 0x7)) R10=3Dfp0
-> > >>    92: (ad) if r2 < r1 goto pc+41        ; R0_w=3Dscalar() R1_w=3Dsc=
-alar(umin=3D7,umax=3D5,var_off=3D(0x4; 0x3))
-> > >>        R2_w=3D6 R6=3Dscalar(id=3D388) R7=3D0 R8_w=3Dscalar() R9_w=3D=
-scalar(umax=3D25769803770,var_off=3D(0x0; 0x7ffffffff))
-> > >>        R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? f=
-p-32=3D fp-40=3D5 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
-> > >>      ...
-> > >>    89: (07) r2 +=3D 1                      ; R2_w=3D4088
-> > >>    90: (79) r8 =3D *(u64 *)(r10 -48)       ; R8_w=3Dscalar() R10=3Df=
-p0
-> > >>    91: (79) r1 =3D *(u64 *)(r10 -56)       ; R1_w=3Dscalar(umax=3D5,=
-var_off=3D(0x0; 0x7)) R10=3Dfp0
-> > >>    92: (ad) if r2 < r1 goto pc+41        ; R0=3Dscalar() R1=3Dscalar=
-(umin=3D4089,umax=3D5,var_off=3D(0x0; 0x7))
-> > >>        R2=3D4088 R6=3Dscalar(id=3D12634) R7=3D0 R8=3Dscalar() R9=3Ds=
-calar(umax=3D17557826301960,var_off=3D(0x0; 0xfffffffffff))
-> > >>        R10=3Dfp0 fp-8=3Dmmmmmmmm fp-16=3Dmmmmmmmm fp-24=3Dmmmm???? f=
-p-32=3D fp-40=3D4087 fp-48=3Dmmmmmmmm fp-56=3D fp-64=3Dmmmmmmmm
-> > >>
-> > >> Patch 3 fixed the above issue by handling '<const> <cond_op> <non_co=
-nst>' properly.
-> > >> During developing selftests for Patch 3, I found some issues with bo=
-und deduction with
-> > >> BPF_EQ/BPF_NE and fixed the issue in Patch 1.
-> > [...]
+> > At insn 3, since r0 is not a constant, verifier assumes both branch
+> > can be taken which may lead inproper verification failure.
+> >
+> > Add comparing umin/umax value and the constant. If the umin value
+> > is greater than the constant, or umax value is smaller than the constan=
+t,
+> > for JEQ the branch must be not-taken, and for JNE the branch must be ta=
+ken.
+> > The jmp32 mode JEQ/JNE branch taken checking is also handled similarly.
+> >
+> > The following lists the veristat result w.r.t. changed number
+> > of processes insns during verification:
+> >
+> > File                                                   Program         =
+                                      Insns (A)  Insns (B)  Insns    (DIFF)
+> > -----------------------------------------------------  ----------------=
+------------------------------------  ---------  ---------  ---------------
+> > test_cls_redirect.bpf.linked3.o                        cls_redirect    =
+                                          64980      73472  +8492 (+13.07%)
+> > test_seg6_loop.bpf.linked3.o                           __add_egr_x     =
+                                          12425      12423      -2 (-0.02%)
+> > test_tcp_hdr_options.bpf.linked3.o                     estab           =
+                                           2634       2558     -76 (-2.89%)
+> > test_parse_tcp_hdr_opt.bpf.linked3.o                   xdp_ingress_v6  =
+                                           1421       1420      -1 (-0.07%)
+> > test_parse_tcp_hdr_opt_dynptr.bpf.linked3.o            xdp_ingress_v6  =
+                                           1238       1237      -1 (-0.08%)
+> > test_tc_dtime.bpf.linked3.o                            egress_fwdns_pri=
+o100                                        414        411      -3 (-0.72%)
+> >
+> > Mostly a small improvement but test_cls_redirect.bpf.linked3.o has a 13=
+% regression.
+> > I checked with verifier log and found it this is due to pruning.
+> > For some JEQ/JNE branches impacted by this patch,
+> > one branch is explored and the other has state equivalence and
+> > pruned.
+>
+> Can you elaborate a bit on this insn increase caused by pruning?
+>
+> My naive reading of this: there was some state exploration that was
+> previously pruned due to is_branch_taken returning indeterminate
+> value (-1), and now that it can concretely say branch is/isn't taken,
+> states which would've been considered equivalent no longer are.
+> Is that accurate?
+
+Pretty much. It's because when is_branch_taken() is certain on the directio=
+n
+of the branch it marks register as precise and it hurts state equivalence
+later.
+
+>
+> >
+> > Signed-off-by: Yonghong Song <yhs@fb.com>
+> > ---
+>
+> Regardless,
+>
+> Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
