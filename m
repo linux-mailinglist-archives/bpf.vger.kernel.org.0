@@ -2,119 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F716D8B87
-	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 02:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394F66D8B80
+	for <lists+bpf@lfdr.de>; Thu,  6 Apr 2023 02:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjDFAOS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Apr 2023 20:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
+        id S232063AbjDFAMi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Apr 2023 20:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232656AbjDFAOR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Apr 2023 20:14:17 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365115B9A;
-        Wed,  5 Apr 2023 17:14:16 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id kq3so35949697plb.13;
-        Wed, 05 Apr 2023 17:14:16 -0700 (PDT)
+        with ESMTP id S233370AbjDFAMg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Apr 2023 20:12:36 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204A56E82
+        for <bpf@vger.kernel.org>; Wed,  5 Apr 2023 17:12:35 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-948a1aec279so77399766b.2
+        for <bpf@vger.kernel.org>; Wed, 05 Apr 2023 17:12:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680740056; x=1683332056;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qInFTMVuma/1U/ExvGc6BZLbekGojBtLyDDjkV4HnlU=;
-        b=QbcFAsF0nJsFYsGxawligS9Oggy4lOA3uZwDLUK4pDRBpVCrmUNvSHb9UtvZWn3U73
-         7GdsQPwxyDwuQ5/4MvwXlIUzJpjUtMKikozJe1x8LhaVkaGrj8INWgDP/revaC8sNanA
-         +djKmXrx3rdcqYiB0nz8xnxQZBhIRLP2ll8C9BPWhzdt5j4YlGDr5r2o99o6b5q2WMUf
-         T8Om2PhZJlVtqcwiHkQz8bvn6hq/a3T0bA38g4O4I2AyrfC8gUPmifmiBSWGk59Q8Qbw
-         Wn4cyi2PijH4BStkoDs/wyK336eI/YQZdxWrjzfSy+uQvWXTe1fpSKDpM1wKUOk3NwKB
-         PIKg==
+        d=dectris.com; s=google; t=1680739953;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QWqojSp8qeBF+mnrDb0v8Y1VEeoiQlSQ1yGGpxufYDs=;
+        b=mmtf2AayBWm/z9sUCranjsDtUq8AxYpmX4yPfK4znmF2gMIODJ7tf13ZcvRf7XB84K
+         AgOJLhfcSJpYEPHYwm5X0Fu3pt6ZBax5QjRsO69RzY2rTbyqiLNyDuId8qaErMGe3LMS
+         iWF5PYWGarqFRVHJNktro71deVYVccaeWoaJw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680740056; x=1683332056;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qInFTMVuma/1U/ExvGc6BZLbekGojBtLyDDjkV4HnlU=;
-        b=fDQD78DuVMTrSg6NQlFXD2jFIq9eJG4t3JIFWvKpOG8Lkq2R0/vrwioGN6gH/pEFXH
-         ih3i97+piTEt313RsGHDG5dch3mrrkYlOua6mYJMHtjyn3aPNSiv/EfdMr+kGEe6vGkD
-         HpUXkfo3lzwGOfH/Sqx808Wt42MEKTtAtV42m9adBbs1X/0hSwA8ZgpZgTBQcNaEFMLk
-         urmzuZl5WdTtLKrpFKe1ae/CcUXo9Msk6UO4maBG3MRiBs6AVGzNOCZQ4E2pXP4oGrRe
-         iEUqHsxHteNBz8He3ByjYwaw1zoDZ2BnlzUNXTLWOyjaK5QcOH1e800FhMCWrzbLNu2a
-         wo4w==
-X-Gm-Message-State: AAQBX9cADk/dSVG85uJgQzd+WwUfjjAYlgeXhh27YqpBNSRdeZb1nI+q
-        ZfgMMCrCwFb/WN7pa2NZ/ek=
-X-Google-Smtp-Source: AKy350YFdh/WfNfq5FSxt7gKSoI4EMNZOfE9joSY9SydyNN/tHC+wUOdluIJyggg0fRXYDfEeMJW+A==
-X-Received: by 2002:a17:902:fa87:b0:1a1:7899:f001 with SMTP id lc7-20020a170902fa8700b001a17899f001mr7523281plb.42.1680740055651;
-        Wed, 05 Apr 2023 17:14:15 -0700 (PDT)
-Received: from localhost ([98.97.117.85])
-        by smtp.gmail.com with ESMTPSA id bf2-20020a170902b90200b00186cf82717fsm93926plb.165.2023.04.05.17.14.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 17:14:15 -0700 (PDT)
-Date:   Wed, 05 Apr 2023 17:14:13 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>, jakub@cloudflare.com,
-        daniel@iogearbox.net, edumazet@google.com, cong.wang@bytedance.com,
-        lmb@isovalent.com
-Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        will@isovalent.com
-Message-ID: <642e0ed567494_37d6a208a5@john.notmuch>
-In-Reply-To: <20230405220904.153149-1-john.fastabend@gmail.com>
-References: <20230405220904.153149-1-john.fastabend@gmail.com>
-Subject: RE: [PATCH bpf v4 00/12] bpf sockmap fixes
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        d=1e100.net; s=20210112; t=1680739953;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QWqojSp8qeBF+mnrDb0v8Y1VEeoiQlSQ1yGGpxufYDs=;
+        b=6PnLCwJrcCOFKrvXcT2tYGFBKcEHhxeNqisSdvESTuDNpdIebvJxwV/Md+WD/QImeN
+         LbFZnUYbMPjuauMBc3X/nm6/C/AEYOLxtIhjmYL0r6cBnLRtaE2KRaLRG0ft8KxCtTpn
+         UO1vzMb9sKI+dAZOd2y0qPzZQNCilhFyCI5pfTZoCncbyvFfSu90DVgXOKR9UOwc+QL6
+         gW7qSgXifTuWA2uci1RZoNozbtaXZP3sOHt+R85AYUMml7Qc45P2CfhOI5CLbESk51Mq
+         qPN5ZHGvMgQMsFOZACJsWPTvpBZCmA6Wy9sTMBu4McUxFyBJv/bEwBblgvBMB0lNG+5J
+         Cwgw==
+X-Gm-Message-State: AAQBX9c+v/PK3Vl1WwhraNB7R2p2Qr+PbnVnBaj8SG3le1VxhM0S8X9h
+        QybqUS9CDH3xoMA2+EzZqk08qa0aK4j95LryfJMZBw==
+X-Google-Smtp-Source: AKy350bSg5cQf76vayF8cuTHt7hGbMj/aBgU/6HTmDSPmn/KXvw21Y1A4RFFgZK1jB9dW9Ud6Cu2kqEjEDgC+YjCXjw=
+X-Received: by 2002:a50:8adc:0:b0:502:3c99:417f with SMTP id
+ k28-20020a508adc000000b005023c99417fmr2041304edk.6.1680739953661; Wed, 05 Apr
+ 2023 17:12:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230405235920.7305-1-kal.conley@dectris.com> <20230405235920.7305-3-kal.conley@dectris.com>
+In-Reply-To: <20230405235920.7305-3-kal.conley@dectris.com>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Thu, 6 Apr 2023 02:17:13 +0200
+Message-ID: <CAHApi-kRav_7jpkyTf+Ko7LJwx6_UO+1QydoAr-fMqeyBE=OYw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests: xsk: Add test UNALIGNED_INV_DESC_4K1_FRAME_SIZE
+To:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend wrote:
-> Fixes for sockmap running against NGINX TCP tests and also on an
-> underprovisioned VM so that we hit error (ENOMEM) cases regularly.
-> 
-> The first 3 patches fix cases related to ENOMEM that were either
-> causing splats or data hangs.
-> 
-> Then 4-7 resolved cases found when running NGINX with its sockets
-> assigned to sockmap. These mostly have to do with handling fin/shutdown
-> incorrectly and ensuring epoll_wait works as expected.
-> 
-> Patches 8 and 9 extract some of the logic used for sockmap_listen tests
-> so that we can use it in other tests because it didn't make much
-> sense to me to add tests to the sockmap_listen cases when here we
-> are testing send/recv *basic* cases.
-> 
-> Finally patches 10, 11 and 12 add the new tests to ensure we handle
-> ioctl(FIONREAD) and shutdown correctly.
-> 
-> To test the series I ran the NGINX compliance tests and the sockmap
-> selftests. For now our compliance test just runs with SK_PASS.
-> 
-> There are some more things to be done here, but these 11 patches
-> stand on their own in my opionion and fix issues we are having in
-> CI now. For bpf-next we can fixup/improve selftests to use the
-> ASSERT_* in sockmap_helpers, streamline some of the testing, and
-> add more tests. We also still are debugging a few additional flakes
-> patches coming soon.
-> 
-> v2: use skb_queue_empty instead of *_empty_lockless (Eric)
->     oops incorrectly updated copied_seq on DROP case (Eric)
->     added test for drop case copied_seq update
-> 
-> v3: Fix up comment to use /**/ formatting and update commit
->     message to capture discussion about previous fix attempt
->     for hanging backlog being imcomplete.
-> 
-> v4: build error sockmap things are behind NET_SKMSG not in
->     BPF_SYSCALL otherwise you can build the .c file but not
->     have correct headers.
-> 
+> Add unaligned descriptor test for frame size of 4001. Using an odd frame
+> size ensures that the end of the UMEM is not near a page boundary. This
+> allows testing descriptors that staddle the end of the UMEM but not a
+> page.
+>
+> This test used to fail without the previous commit ("xsk: Add check for
+> unaligned descriptors that overrun UMEM").
 
-Will send a v5 with typo fix. Thanks.
+Sorry I forgot to update the commit message with the new commit label.
+If accepted, please change the second paragraph to :
+
+This test used to fail without the previous commit ("xsk: Fix unaligned
+descriptor validation").
