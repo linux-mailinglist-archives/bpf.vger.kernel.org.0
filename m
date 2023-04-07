@@ -2,120 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C7F6DAB7D
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 12:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115AB6DAC3A
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 13:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbjDGK1X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 06:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
+        id S240723AbjDGL3P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 07:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbjDGK1W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 06:27:22 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD084C05;
-        Fri,  7 Apr 2023 03:27:20 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id i9so41964924wrp.3;
-        Fri, 07 Apr 2023 03:27:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680863239; x=1683455239;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=45fvxnSeFr51avGPKhwK3t5ZbAaRZOEhoU45v/9aioU=;
-        b=MKcGhh/vH4fCViGjtz0AXhqBvfvPy7AEoeDFIFVPmcjIHWR1cvgdVq/fJPeQUT70lM
-         oCDAkQFjbGUVAylsz45DVubpYZ/7qcmcFIpP++L5z/D0xcc3zQYZk7YJt4kc6SJw+JUt
-         Naa62qBmlYGFgws9x6k9owJc2zCfZ03ZuZwLN863fhphOWvPeOSbK3A7uwc1cHA98A1c
-         1WrL7Q2r5YyyQwjf+itRmN9Ij78bb+ufTOzayTZNfaHe4nVkl0l11Q1h/ZnHfWWkndAl
-         4xYj0gNqAHKTqoqUuOiHRkbo6eWgtDr3dIwrv8ISoJjWBIntJ4NXX20Gu6C4lzEKd2Yj
-         dL3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680863239; x=1683455239;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=45fvxnSeFr51avGPKhwK3t5ZbAaRZOEhoU45v/9aioU=;
-        b=1LlQrK7HsuqXRzS8RmOiR8zwyKn3YHM0p5IDzpYCZJnLSssFEp8xJLDoHw1NSpqrW1
-         QFZL+SCvKOtYmaDDpuWM3KnanWHafPxFKwFiifGeBKSOtULKkVl8hcgd+N5DU4zD+FgC
-         3/ZopxQ4Cmnry0XR7eDOibY3L+mFT+DRt3l380xfrWV5rbmSkfzSkemRTH5Ur2Pifi2u
-         3iikLfJ39YkqNWriYT4GXyG6xsm6LiQd9S+dzlxyJ03jd1LRikbF5xXomem1Livi3LEj
-         zbwq+WbaEFPhxjaaeMQMY371EYXX7yQiKp4Q1ko65rCV58+m0Ulk5ofxkspMiJ/bNuqX
-         D7fQ==
-X-Gm-Message-State: AAQBX9cp2RaHvVOAQAkRrk+FQ8cNDIZrfxJLZK74vkmKlMUryBAUvO31
-        pgt25wy1W1EMTTgPDyGi+q4=
-X-Google-Smtp-Source: AKy350ZWeNWeTOaqH2zeUNWN2Xpa/uoOpT0bCwwEy7k+6VIJiD7TGUKi7oRxrUlrYcfTRUW26QhYZA==
-X-Received: by 2002:a5d:6607:0:b0:2cd:f2c6:5d37 with SMTP id n7-20020a5d6607000000b002cdf2c65d37mr935048wru.5.1680863238663;
-        Fri, 07 Apr 2023 03:27:18 -0700 (PDT)
-Received: from krava (cpc137424-wilm3-2-0-cust276.1-4.cable.virginm.net. [82.23.5.21])
-        by smtp.gmail.com with ESMTPSA id n5-20020adfe345000000b002efb139ce72sm1149970wrj.36.2023.04.07.03.27.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Apr 2023 03:27:18 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 7 Apr 2023 11:27:15 +0100
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH bpf-next] tools headers: Remove s390 ptrace.h in
- check-headers.sh
-Message-ID: <ZC/wA2NoO7yI/xNm@krava>
-References: <1680834090-2322-1-git-send-email-yangtiezhu@loongson.cn>
+        with ESMTP id S240454AbjDGL3O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 07:29:14 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD87976F
+        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 04:28:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680866933; x=1712402933;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3cd0xBqmZLwCm19Q3/0HNGu6ZRBFjmnCA9agGLJ4pq0=;
+  b=OabP5GTCvQKT+H0UQZ3Sacidk6PCtHUmzW8AT56MMEs8rdaNf+zHkLN0
+   bV4A9tkw7sQZRR3vr6Q7kclw7QQWA5bAL+jLDnlzym28qpiGGK15mdNMr
+   OuxVMezHdCiVtbUn8ucRUguCbeNTIovsbfjPGy+r5lxrM8Lho8AqfWlPu
+   KC6D2psbu8xYWrBLprC0mgDFs3xZLR9UzpAzXM0CF633kLoFGpqIZcowT
+   0OI+CoAuCmFeSZivOOCzgRI07g3Aqb5FvPwVoJz64UwVzMzpJw8Gu5IvL
+   rFjJzIc8gaqgT9pWCd5bnMdCllvqGtdVmPUOpd1thDD8rRL22HdPQnEpP
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="322612302"
+X-IronPort-AV: E=Sophos;i="5.98,326,1673942400"; 
+   d="scan'208";a="322612302"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2023 04:28:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="637676759"
+X-IronPort-AV: E=Sophos;i="5.98,326,1673942400"; 
+   d="scan'208";a="637676759"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 07 Apr 2023 04:28:48 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pkkGp-000SRY-0A;
+        Fri, 07 Apr 2023 11:28:43 +0000
+Date:   Fri, 7 Apr 2023 19:28:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     zhongjun@uniontech.com, bpf@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        zhongjun <zhongjun@uniontech.com>
+Subject: Re: [PATCH] BPF: replace low-entropy member with macro
+Message-ID: <202304071944.aYRCuc4u-lkp@intel.com>
+References: <20230407033418.2295-1-zhongjun@uniontech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1680834090-2322-1-git-send-email-yangtiezhu@loongson.cn>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230407033418.2295-1-zhongjun@uniontech.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 07, 2023 at 10:21:30AM +0800, Tiezhu Yang wrote:
-> After commit 1f265d2aea0d ("selftests/bpf: Remove not used headers"),
-> tools/arch/s390/include/uapi/asm/ptrace.h has been removed, so remove
-> it in check-headers.sh too, otherwise we can see the following build
-> warning:
-> 
->   diff: tools/arch/s390/include/uapi/asm/ptrace.h: No such file or directory
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/oe-kbuild-all/202304050029.38NdbQPf-lkp@intel.com/
-> Fixes: 1f265d2aea0d ("selftests/bpf: Remove not used headers")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Hi,
 
-not sure this should go through Arnaldo's tree instead,
-either way is fine with me
+kernel test robot noticed the following build errors:
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+[auto build test ERROR on 919e659ed12568b5b8ba6c2ffdd82d8d31fc28af]
 
-jirka
+url:    https://github.com/intel-lab-lkp/linux/commits/zhongjun-uniontech-com/BPF-replace-low-entropy-member-with-macro/20230407-113614
+base:   919e659ed12568b5b8ba6c2ffdd82d8d31fc28af
+patch link:    https://lore.kernel.org/r/20230407033418.2295-1-zhongjun%40uniontech.com
+patch subject: [PATCH] BPF: replace low-entropy member with macro
+config: x86_64-randconfig-a002-20230403 (https://download.01.org/0day-ci/archive/20230407/202304071944.aYRCuc4u-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/f8ee7d5ddcfe866f9b9b4f18dff368764ea854e5
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review zhongjun-uniontech-com/BPF-replace-low-entropy-member-with-macro/20230407-113614
+        git checkout f8ee7d5ddcfe866f9b9b4f18dff368764ea854e5
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/net/ethernet/netronome/nfp/
 
-> ---
-> 
-> commit 1f265d2aea0d ("selftests/bpf: Remove not used headers") is in
-> bpf-next tree, so I prefer this patch can be applied to bpf-next tree.
-> 
->  tools/perf/check-headers.sh | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-> index eacca9a..e4a8b53 100755
-> --- a/tools/perf/check-headers.sh
-> +++ b/tools/perf/check-headers.sh
-> @@ -52,7 +52,6 @@ arch/x86/include/uapi/asm/vmx.h
->  arch/powerpc/include/uapi/asm/kvm.h
->  arch/s390/include/uapi/asm/kvm.h
->  arch/s390/include/uapi/asm/kvm_perf.h
-> -arch/s390/include/uapi/asm/ptrace.h
->  arch/s390/include/uapi/asm/sie.h
->  arch/arm/include/uapi/asm/kvm.h
->  arch/arm64/include/uapi/asm/kvm.h
-> -- 
-> 2.1.0
-> 
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202304071944.aYRCuc4u-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/net/ethernet/netronome/nfp/bpf/verifier.c:814:57: error: no member named 'orig_idx' in 'struct bpf_insn_aux_data'
+           meta = nfp_bpf_goto_meta(nfp_prog, meta, aux_data[off].orig_idx);
+                                                    ~~~~~~~~~~~~~ ^
+   drivers/net/ethernet/netronome/nfp/bpf/verifier.c:827:52: error: no member named 'orig_idx' in 'struct bpf_insn_aux_data'
+                   } else if (meta->jmp_dst->n != aux_data[tgt_off].orig_idx) {
+                                                  ~~~~~~~~~~~~~~~~~ ^
+   drivers/net/ethernet/netronome/nfp/bpf/verifier.c:830:23: error: no member named 'orig_idx' in 'struct bpf_insn_aux_data'
+                                   aux_data[tgt_off].orig_idx);
+                                   ~~~~~~~~~~~~~~~~~ ^
+   drivers/net/ethernet/netronome/nfp/bpf/verifier.c:17:46: note: expanded from macro 'pr_vlog'
+           bpf_verifier_log_write(env, "[nfp] " fmt, ##__VA_ARGS__)
+                                                       ^~~~~~~~~~~
+   drivers/net/ethernet/netronome/nfp/bpf/verifier.c:848:57: error: no member named 'orig_idx' in 'struct bpf_insn_aux_data'
+           meta = nfp_bpf_goto_meta(nfp_prog, meta, aux_data[off].orig_idx);
+                                                    ~~~~~~~~~~~~~ ^
+   4 errors generated.
+
+
+vim +814 drivers/net/ethernet/netronome/nfp/bpf/verifier.c
+
+a32014b351662f Jakub Kicinski 2019-01-22  806  
+a32014b351662f Jakub Kicinski 2019-01-22  807  int nfp_bpf_opt_replace_insn(struct bpf_verifier_env *env, u32 off,
+a32014b351662f Jakub Kicinski 2019-01-22  808  			     struct bpf_insn *insn)
+a32014b351662f Jakub Kicinski 2019-01-22  809  {
+a32014b351662f Jakub Kicinski 2019-01-22  810  	struct nfp_prog *nfp_prog = env->prog->aux->offload->dev_priv;
+a32014b351662f Jakub Kicinski 2019-01-22  811  	struct bpf_insn_aux_data *aux_data = env->insn_aux_data;
+a32014b351662f Jakub Kicinski 2019-01-22  812  	struct nfp_insn_meta *meta = nfp_prog->verifier_meta;
+a32014b351662f Jakub Kicinski 2019-01-22  813  
+a32014b351662f Jakub Kicinski 2019-01-22 @814  	meta = nfp_bpf_goto_meta(nfp_prog, meta, aux_data[off].orig_idx);
+a32014b351662f Jakub Kicinski 2019-01-22  815  	nfp_prog->verifier_meta = meta;
+a32014b351662f Jakub Kicinski 2019-01-22  816  
+a32014b351662f Jakub Kicinski 2019-01-22  817  	/* conditional jump to jump conversion */
+a32014b351662f Jakub Kicinski 2019-01-22  818  	if (is_mbpf_cond_jump(meta) &&
+a32014b351662f Jakub Kicinski 2019-01-22  819  	    insn->code == (BPF_JMP | BPF_JA | BPF_K)) {
+a32014b351662f Jakub Kicinski 2019-01-22  820  		unsigned int tgt_off;
+a32014b351662f Jakub Kicinski 2019-01-22  821  
+a32014b351662f Jakub Kicinski 2019-01-22  822  		tgt_off = off + insn->off + 1;
+a32014b351662f Jakub Kicinski 2019-01-22  823  
+a32014b351662f Jakub Kicinski 2019-01-22  824  		if (!insn->off) {
+a32014b351662f Jakub Kicinski 2019-01-22  825  			meta->jmp_dst = list_next_entry(meta, l);
+a32014b351662f Jakub Kicinski 2019-01-22  826  			meta->jump_neg_op = false;
+a32014b351662f Jakub Kicinski 2019-01-22  827  		} else if (meta->jmp_dst->n != aux_data[tgt_off].orig_idx) {
+a32014b351662f Jakub Kicinski 2019-01-22  828  			pr_vlog(env, "branch hard wire at %d changes target %d -> %d\n",
+a32014b351662f Jakub Kicinski 2019-01-22  829  				off, meta->jmp_dst->n,
+a32014b351662f Jakub Kicinski 2019-01-22  830  				aux_data[tgt_off].orig_idx);
+a32014b351662f Jakub Kicinski 2019-01-22  831  			return -EINVAL;
+a32014b351662f Jakub Kicinski 2019-01-22  832  		}
+a32014b351662f Jakub Kicinski 2019-01-22  833  		return 0;
+a32014b351662f Jakub Kicinski 2019-01-22  834  	}
+a32014b351662f Jakub Kicinski 2019-01-22  835  
+a32014b351662f Jakub Kicinski 2019-01-22  836  	pr_vlog(env, "unsupported instruction replacement %hhx -> %hhx\n",
+a32014b351662f Jakub Kicinski 2019-01-22  837  		meta->insn.code, insn->code);
+a32014b351662f Jakub Kicinski 2019-01-22  838  	return -EINVAL;
+a32014b351662f Jakub Kicinski 2019-01-22  839  }
+9a06927e778bc4 Jakub Kicinski 2019-01-22  840  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
