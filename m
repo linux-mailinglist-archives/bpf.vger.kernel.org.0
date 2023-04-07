@@ -2,107 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E5A6DB534
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 22:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49396DB592
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 23:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbjDGUbS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 16:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
+        id S230135AbjDGVAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 17:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjDGUbR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 16:31:17 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB3E7A83
-        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 13:31:16 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id j1so3814098wrb.0
-        for <bpf@vger.kernel.org>; Fri, 07 Apr 2023 13:31:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680899474; x=1683491474;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0qibfGmguJ4UfrBa5vhdJz7TU0Ic3a95y1BNUi4NdCA=;
-        b=APQmZXOFWZ5EEcZfHQqOhAvX+iKXBO4pPSDNvV86nkBTQWokDuApno+EbjCQyZ5m8d
-         lOi/dw/nVQwCwu35Z2nRs3kq3qbapXE6zgTQvX2t2mD8r5gJvFBOdjck0oMtOQE3Hamf
-         b8FWrjeZ0hhZLNt0WmEqaXf9+uLX+ID+HpJhvWHadH4Z85l0rCMfqV+ilHM6MOm3GXvr
-         REsEOGcqCloJkgw/VJ3A4HCBJ3+KmJpukKMSqAQE9M+PWrVm/p/ZwOyMfVgodCIF2B12
-         GUsThvOttv7bqfLylxOL2Rc9i65jSSeM82HJbWF6KXhG0hhyHHfEk2qwo39HfMGsXrD9
-         fwYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680899474; x=1683491474;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0qibfGmguJ4UfrBa5vhdJz7TU0Ic3a95y1BNUi4NdCA=;
-        b=32GZojnmEe3KNsWGO8TSMdes3yKVdrdzMyUYLs7d7Q5hmTSe2sHvPqI0/n1zrB3Gk1
-         A8/87HVEl1Wd0OQenlMBteayfeAU1UIxIBs8R+Si9QWgCbVbMfs4XAp0YJr3qxpBnYSg
-         5NEVJ3pKpU5yBEvQavNYB13zxfloCvWsZpO85XEY/oGqYIOlXJbLZ+t2DbzNBUpTssIp
-         smdPBSxgWCYIcNsGFiO1q9xUpZN+hNQWZOufMpY4uz5JsYczzT399CrpH+x6tPNEXMXl
-         IYju1MO/vM4iN1jgTMIqu7BDyZVgHYFTO7qmKgXctNtOrrcIE5K0m43vPzZF4fjGctBw
-         9yVQ==
-X-Gm-Message-State: AAQBX9c5rN8NRpt/y918CIqzJJ2jcOyxCldIgUs279zGAYNQf4gFXGu8
-        ynNiWV3oag4gj5pH3igygQaJoLHGtqd5H+JNqkk=
-X-Google-Smtp-Source: AKy350ZPXtkQEkwkuCizMe3J18x/9aJksTnPXroCHmzxor1W7GuBjbr592/0Q05TOyYAweLEaXcfZQ==
-X-Received: by 2002:adf:e882:0:b0:2e5:87cc:54b3 with SMTP id d2-20020adfe882000000b002e587cc54b3mr2112344wrm.54.1680899474359;
-        Fri, 07 Apr 2023 13:31:14 -0700 (PDT)
-Received: from krava (cpc137424-wilm3-2-0-cust276.1-4.cable.virginm.net. [82.23.5.21])
-        by smtp.gmail.com with ESMTPSA id m3-20020adfdc43000000b002c5691f13eesm5324450wrj.50.2023.04.07.13.31.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Apr 2023 13:31:13 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 7 Apr 2023 21:31:11 +0100
-To:     Song Liu <song@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next] selftests/bpf: Use PERF_COUNT_HW_CPU_CYCLES
- event for get_branch_snapshot
-Message-ID: <ZDB9j2G4pTtNDCJc@krava>
-References: <20230407190130.2093736-1-song@kernel.org>
+        with ESMTP id S229853AbjDGVAk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 17:00:40 -0400
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021025.outbound.protection.outlook.com [52.101.57.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AAD8A6B;
+        Fri,  7 Apr 2023 14:00:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KLoXAXVVUgKTVY5Larb9etG/rsQb9jtWMHDrzOy0DUVSKCZ8M7ueSkgZUbU2KWhk2Q5G1Kf7VB3epGRfEV2qa98CEgRWjIoXgEwD3OEUbmKECvH+2Auy4oDvoko7GC1Iz0xwlfFuh8XMxHPGL4YErbQOP4CRhdoob1TrT2L0c0W8ZQDflraUjmwzFun7DIXsRS4Z3TDcZj8L+XyvAa0jZx9Na6iejbMFnUp3dgFTIIH/R7I+/wQ4+dGskLaseNR42TRgLkr5/bGeSBcuwfQ/c4xmu0QtovL9KNguA8tAYJwkXqh+Jy96PVsH1xz/gk0vURYCLfWoqO/Q5fK9DKhmXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TufQZ6K/gOT/Ch/sTBms4so5EUcXvVR411OWR/FGhEs=;
+ b=Pn2tLxnNPR2fjdqMLfJ5lhs7crzivqKh5c7QPn9lqOhJkh/G+nbi9x0AP41+IU8c1NCSLr0gj6RUBSzOtYlRySK77u2nuET7bYRYbxDFRh4Ce5w9kXLytiW6W1u5aXSih9mlYqFUePS3sMv2Y531MZ9gxx9Gho3/gHkdwAxQyxKH9uXT/ClnHH55AeyKiUM1aT/frL9oME4NXerjVaRZAx1SKw9iyILCgMjZhflCGzbOmXLk9aiu6xbktw0lkAqICt5Fs1Dl407lA0JAmyhjOoYTHTk8agjXd70RNFDn82msyTrz08BsjOUI4A/ijqHkeSi1G+WTIDcabx2f+zhuVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TufQZ6K/gOT/Ch/sTBms4so5EUcXvVR411OWR/FGhEs=;
+ b=ENDolZDDfz3r70jbwpP0cePs/LMwllSXFT7yHWJu65oX7wOZxlZs/3loer8AJBTY0sKt2p/9yl0yeSZzCjEh7fsmQ8Ng0aLY2FsxDIu19xSOh84msJQQXJndmjazsZcogxka4s8PTN+fvW9hEid0wZNH3+1O/JMY0lyaiyDAZSA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
+ by PH0PR21MB1895.namprd21.prod.outlook.com (2603:10b6:510:1c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.20; Fri, 7 Apr
+ 2023 21:00:30 +0000
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::3e29:da85:120c:b968]) by BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::3e29:da85:120c:b968%6]) with mapi id 15.20.6298.018; Fri, 7 Apr 2023
+ 21:00:30 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
+Cc:     haiyangz@microsoft.com, decui@microsoft.com, kys@microsoft.com,
+        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+        longli@microsoft.com, ssengar@linux.microsoft.com,
+        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+        sharmaajay@microsoft.com, hawk@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2,net-next, 0/3] net: mana: Add support for jumbo frame
+Date:   Fri,  7 Apr 2023 13:59:53 -0700
+Message-Id: <1680901196-20643-1-git-send-email-haiyangz@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0137.namprd03.prod.outlook.com
+ (2603:10b6:303:8c::22) To BY5PR21MB1443.namprd21.prod.outlook.com
+ (2603:10b6:a03:21f::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230407190130.2093736-1-song@kernel.org>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+X-MS-Exchange-MessageSentRepresentingType: 2
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|PH0PR21MB1895:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11e2c967-fcdf-42ab-e59d-08db37ab1edb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UHyMUOq6BjMCy5QnMqUHjBQL1OIHJat735IRqtuFRQQ08T6uDTF79Rm+B9/1EHxngcwSx5PwS2RrpScEKx4/4V8h+MhZwMPtKC4uGqomSHkRMIcVTmNCmkUqfj0lgZ9lSoNfCMMGdKAsNn6zgz7J18+yX+Xf6WlX+araG366DR3YWk7SYOUUfEHftEeW0Kv/5K1hnptyg8cuoGEzn8SRXdtCC9als/52B240053rK0yyp3rUnCAuvZEend0O7UdTsnS72qbGRhcQXv9ugnEEOG98OnWDY7nqEEpgmTZrjtQL4UbxfvCLxciuArZZ66cKF10+NiqKfx/NLMnCzAcj9Qv7wqgU357ahtA+Iqg280Bm41Kd0Z6MGLlpZ0dKLSTi1NpJLt2cXj/eB8rN1tDWLUST7GlS6bmSWCqBLtabRi4z+chIt+MbI7akxuqStIIVaQAkhhuWWONogt+Fn/VkwRe4pHy2Dd2rOz4lA49V8mZUfdu158bc6o5lw8BwHv74ZVQM+x3ygAABeh2aQaGkZnyqirsfBVWC+70xPU8DHAiOkASkTiWB+jnG61zPpzvKsAVZaSibv2K95GOD/R7eTO3Heh8xmbwD+HUpTirsJ/jyCoilM+/+6Nlg9HSCJ7nCH+d2JYT74vTbw3pJuEF1LTsjmRn+r9MUZOPrk6jQnyw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(396003)(136003)(366004)(451199021)(66946007)(6486002)(66476007)(478600001)(8676002)(4326008)(7846003)(66556008)(41300700001)(786003)(316002)(52116002)(36756003)(83380400001)(2616005)(6512007)(26005)(6506007)(6666004)(8936002)(5660300002)(2906002)(7416002)(10290500003)(82960400001)(38350700002)(38100700002)(82950400001)(186003)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7NzF8OIVuzJr08djRz1zT5XZgNu3Dpg/WGOY3h6z2cfnRAkoRLSN3LnhghFl?=
+ =?us-ascii?Q?tNfIqdmOB2KuDCHI4P7kpBM/Up1u0zmWykEjZp3Y1TENk4O3+yZSsqXqqlFl?=
+ =?us-ascii?Q?Fzt3hp4ehSD1WxskcVpjnRqlwU/8NXVEHA4h34poRzD+LatrNpLuRMk3ZUbf?=
+ =?us-ascii?Q?5bIYLRqSIOXnrgGYY2PbY0Q/n3KVIgyrJGIApc1OdFF+GQ1rGrVS5YNiLZz8?=
+ =?us-ascii?Q?fP5LKFrlmc6MDbYyPJl1eJOiMn3XKjEgXrpuoF/WPMPojO9nPvCzS4tOQkZG?=
+ =?us-ascii?Q?gxf/Lh7chEo38Qnm3mT7m/yIPYCa9e1sCKV4t0avNY9SCi88z4l6k8TW1vi4?=
+ =?us-ascii?Q?wfqqdGUAiggOCud9XAwLlEvRMDFGJQ0+wqo3+15vmK3UmU6ByTyPE9NkWeqD?=
+ =?us-ascii?Q?O0ZIfsNAk1CcuUEHNET+GfwGJ8VkOX86zMtc7Fube+Xpi6eux8kNHslVI+F5?=
+ =?us-ascii?Q?Bnco3PIPSmvZe1UIVyKf789jX2WHCRhgI19IknLNQlvFLMQipbv499IvlR0m?=
+ =?us-ascii?Q?YHAvjKp45y0nqyWb2YPi9xsfCPjf3tPKN/aVbvkolZ7CdXeFJzdJnP/qCVBf?=
+ =?us-ascii?Q?tj9wYBXpJnZmVpE4gW3qN4rfvUxBSqcdk6Cyw8sH6Q0FVxM4tiw5MweXTFoi?=
+ =?us-ascii?Q?uHrWgufg/0pkHKgfayJuJxCeiBIUcz+pCw5EUnIMMO3Ew0zq54pdQ43rAXAC?=
+ =?us-ascii?Q?I5odELp+3yjUXhP0wOXf7r81ucDqaqkXmO51qspzpq2AlTpzWALg4VtsOywH?=
+ =?us-ascii?Q?ti4x6QeL6/wmYZ7v/ixMoE98t+A0oNdCs4Y34xVv+LzDfAFoHAcMNOTzGDfA?=
+ =?us-ascii?Q?sZZnOihpqAy2OdTW87pKf10f5V3o0xepmffSI3btQJ/0Ae66PbGhLyzZ6/Ia?=
+ =?us-ascii?Q?KmoxBFf5ok7uUwPconNHhY/bRxYo1wLvdmsEPA6zJa+uyB5ZcXXdWE3bfG1n?=
+ =?us-ascii?Q?WB6TsFT2mtVzVaEViWTRcTrMKdenfHH/DQCLTrAWvbEk2gwupy+oYiX+pbU1?=
+ =?us-ascii?Q?zzSMV2rWbMPI2j7o726jC+sKk6NrN4Fatt8SSwek2fUH6gLiLJpdikd7mJZL?=
+ =?us-ascii?Q?J6bU66hpY0Vo/n3QrEdWF6+U+28nZswtwSzdjPGWz6D88pS42Fm9umWvDUMO?=
+ =?us-ascii?Q?w3O9UEI6ofWWzGchwnSojcAxTndKNjrgBsIqbncRW5EUjNWWQDiHIZsGmeLn?=
+ =?us-ascii?Q?Nzn63distEUw8z3+OwPLvlEGZHjM1e6F2Jbhge62tIJ+eowLgnVcB8ksHDBS?=
+ =?us-ascii?Q?EPaoTpwFl+oy2VVZKQOi7CbJ43czjQb+EwFmZ+z6Z3NjvUYAxvsnSN19HFXx?=
+ =?us-ascii?Q?GyOtGgrp7cqlp+JUK1iWEJU7Neh3LorVRoURSG9UfFM65SdnCFVUTewq310p?=
+ =?us-ascii?Q?M1JgbQmlTBYnBbUtPYu0oA2J3nCd0/yi96Bsuf4ZyFBxoUQ6HvTGVyr2mCBk?=
+ =?us-ascii?Q?VjHfcTL0gEa9asOroIOQYNVQcwkQ1PkKAsAyvkEjlUhX5X8OTTHXKe4FN/dK?=
+ =?us-ascii?Q?hQiPkNCE6yH2idILdF62U8Zzzie1OcfPjBN+b6Yl2nTO/5KEg9gUuI8cskgF?=
+ =?us-ascii?Q?P0ci3667HFR01BpN6/J6nLnK119ViXP2gslV9Cik?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11e2c967-fcdf-42ab-e59d-08db37ab1edb
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2023 21:00:30.3581
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PAjhuru8Lfu6EFuM7S153EAGy/obyOw39W03qiNj8TS/a31mtveKQcVPSO6XNazzVHLOcbQNxIoE3hxF0rqybQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR21MB1895
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 07, 2023 at 12:01:30PM -0700, Song Liu wrote:
-> perf_event with type=PERF_TYPE_RAW and config=0x1b00 turned out to be not
-> reliable in ensuring LBR is active. Thus, test_progs:get_branch_snapshot is
-> not reliable in some systems. Replace it with PERF_COUNT_HW_CPU_CYCLES
-> event, which gives more consistent results.
-> 
-> Signed-off-by: Song Liu <song@kernel.org>
+The set adds support for jumbo frame,
+with some optimization for the RX path.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Haiyang Zhang (3):
+  net: mana: Use napi_build_skb in RX path
+  net: mana: Enable RX path to handle various MTU sizes
+  net: mana: Add support for jumbo frame
 
-jirka
+ .../net/ethernet/microsoft/mana/mana_bpf.c    |  22 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 383 ++++++++++++++----
+ include/net/mana/gdma.h                       |   4 +
+ include/net/mana/mana.h                       |  27 +-
+ 4 files changed, 346 insertions(+), 90 deletions(-)
 
-> ---
->  tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-> index 3948da12a528..0394a1156d99 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-> @@ -37,8 +37,8 @@ static int create_perf_events(void)
->  
->  	/* create perf event */
->  	attr.size = sizeof(attr);
-> -	attr.type = PERF_TYPE_RAW;
-> -	attr.config = 0x1b00;
-> +	attr.type = PERF_TYPE_HARDWARE;
-> +	attr.config = PERF_COUNT_HW_CPU_CYCLES;
->  	attr.sample_type = PERF_SAMPLE_BRANCH_STACK;
->  	attr.branch_sample_type = PERF_SAMPLE_BRANCH_KERNEL |
->  		PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
-> -- 
-> 2.34.1
-> 
+-- 
+2.25.1
+
