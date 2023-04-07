@@ -2,93 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AED6DA7AC
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 04:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063D26DA7B4
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 04:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240459AbjDGCVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 22:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
+        id S233135AbjDGCaN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 22:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239628AbjDGCVn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 22:21:43 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3223376BF;
-        Thu,  6 Apr 2023 19:21:40 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Bxedkzfi9kaKoXAA--.36673S3;
-        Fri, 07 Apr 2023 10:21:39 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxbb4vfi9ki8MXAA--.48021S2;
-        Fri, 07 Apr 2023 10:21:35 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S229933AbjDGCaM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 22:30:12 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DEA7281
+        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 19:30:11 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id q15-20020a17090a2dcf00b0023efab0e3bfso373837pjm.3
+        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 19:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680834610; x=1683426610;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0//pLs3q71Nu6UiuHi0ou6T3iRDnfPgTA2uioyNXv3s=;
+        b=UsU/HKANl2VEmyQTns21GFUeGh641QO6NFn7lSEP/f5V46qGlTjMv54XoMcDqaTaj0
+         dEGX1rhOe7sT3EPumYO5qsxYUwGKV62lirE0pD9NI5q4K0kkvFa4Xb9vsOQnCYw7tSm1
+         njAj5ejKE4KLPHvFl8hn3Wss1eUS9l4mmGoywgCOT/Azpvjl+re4z3OERBK1BBG3HaHI
+         41X5qzUPR+jLyeZ/TuztdvtVdwhj8Im/kgaBskMimdei17gdkjyQgJWVSkrjo02CaZ7l
+         9NSJLpAPyfdWrHFblv84CZfZaAgh9noC1BV8U0uewzHHZ4MRZnpsuM5hxPeMJe93YRHx
+         AEFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680834610; x=1683426610;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0//pLs3q71Nu6UiuHi0ou6T3iRDnfPgTA2uioyNXv3s=;
+        b=VeolLL6sUenePDMnPhmSNozV4LWUaPVHtJwkyadn5dIiJqeWtVX/mAFxXc6+UyMGe0
+         W7oQbjgYRhUJED/bR+qcr7gBy7Zjy6cqL+mb5kzVfMPcAvZQmVyoF2qg6UiiZKoWxu36
+         FvF48n/bpT6X9dsakXkFyenEFUDuY5jG/wcCJPq+ENHZ0QLGFCloDQwy890v5ZrehIRa
+         rtzPVGJFF1c8pX55BFj81IpT1tVCoC3Nc2/htc2osgyZRbiaZLan2ECjD9vKrOulk4uf
+         dAx+mdPfZPx67LUk4dJbXL75iY9qck0O2F3JlUwqC1rkWBkLq4W29EBZU/cfaAJoAAtK
+         TkiA==
+X-Gm-Message-State: AAQBX9c/Y+a+jImEjhLutnmsDcFqSuiIHdAFN47SS95ZqHC6Yd9CfHFA
+        xH4bWE7483bIV9/X5S5RBCUlfzWUtds=
+X-Google-Smtp-Source: AKy350a53mj/6UWrR+lx0vt02Qc4F7kxbi1T23ZsKvFBYzUSxmtJxNw7ZiL0z7cKFJD9LEzV6CG2pg==
+X-Received: by 2002:a17:902:da88:b0:1a0:6d9e:3c78 with SMTP id j8-20020a170902da8800b001a06d9e3c78mr1310513plx.53.1680834610308;
+        Thu, 06 Apr 2023 19:30:10 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:5abd])
+        by smtp.gmail.com with ESMTPSA id t16-20020a1709028c9000b001a279237e73sm1873554plo.152.2023.04.06.19.30.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Apr 2023 19:30:09 -0700 (PDT)
+Date:   Thu, 6 Apr 2023 19:30:07 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Subject: [PATCH bpf-next] tools headers: Remove s390 ptrace.h in check-headers.sh
-Date:   Fri,  7 Apr 2023 10:21:30 +0800
-Message-Id: <1680834090-2322-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8Bxbb4vfi9ki8MXAA--.48021S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjvJXoW7tr13WF15tw4rWFWrury7GFg_yoW8Gr1fp3
-        ZxCFs5Ww45Gr1FyF4UJanrXrWDJ3y8uFyYq347Kryjyrsa9F1kArWSkFn0krnIqFWDtF9x
-        WFy3Kry5J3WkXaUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        bSxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84
-        ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr0_GcWl
-        n4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
-        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E
-        87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxV
-        Aaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxY
-        O2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-        WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-        Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rV
-        WUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4U
-        JbIYCTnIWIevJa73UjIFyTuYvjxUxhiSDUUUU
-X-Spam-Status: No, score=-0.0 required=5.0 tests=SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>
+Subject: Re: [PATCH RFC bpf-next v1 9/9] selftests/bpf: Add tests for BPF
+ exceptions
+Message-ID: <20230407023007.uqito235y2aatfb2@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230405004239.1375399-1-memxor@gmail.com>
+ <20230405004239.1375399-10-memxor@gmail.com>
+ <20230406023809.jffvgx5r7eyjw24g@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <qcyhnf2nmjyb6yjaqpibv2q6m4tqr63ftxmwuua3k6efjpx77u@5gohye433ufp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <qcyhnf2nmjyb6yjaqpibv2q6m4tqr63ftxmwuua3k6efjpx77u@5gohye433ufp>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After commit 1f265d2aea0d ("selftests/bpf: Remove not used headers"),
-tools/arch/s390/include/uapi/asm/ptrace.h has been removed, so remove
-it in check-headers.sh too, otherwise we can see the following build
-warning:
+On Fri, Apr 07, 2023 at 02:42:14AM +0200, Kumar Kartikeya Dwivedi wrote:
+> On Thu, Apr 06, 2023 at 04:38:09AM CEST, Alexei Starovoitov wrote:
+> > On Wed, Apr 05, 2023 at 02:42:39AM +0200, Kumar Kartikeya Dwivedi wrote:
+> > > +static __noinline int throwing_subprog(struct __sk_buff *ctx)
+> > > +{
+> > > +	if (ctx)
+> > > +		bpf_throw();
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +__noinline int global_subprog(struct __sk_buff *ctx)
+> > > +{
+> > > +	return subprog(ctx) + 1;
+> > > +}
+> > > +
+> > > +__noinline int throwing_global_subprog(struct __sk_buff *ctx)
+> > > +{
+> > > +	if (ctx)
+> > > +		bpf_throw();
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static __noinline int exception_cb(void)
+> > > +{
+> > > +	return 16;
+> > > +}
+> > > +
+> > > +SEC("tc")
+> > > +int exception_throw_subprog(struct __sk_buff *ctx)
+> > > +{
+> > > +	volatile int i;
+> > > +
+> > > +	exception_cb();
+> > > +	bpf_set_exception_callback(exception_cb);
+> > > +	i = subprog(ctx);
+> > > +	i += global_subprog(ctx) - 1;
+> > > +	if (!i)
+> > > +		return throwing_global_subprog(ctx);
+> > > +	else
+> > > +		return throwing_subprog(ctx);
+> > > +	bpf_throw();
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +__noinline int throwing_gfunc(volatile int i)
+> > > +{
+> > > +	bpf_assert_eq(i, 0);
+> > > +	return 1;
+> > > +}
+> > > +
+> > > +__noinline static int throwing_func(volatile int i)
+> > > +{
+> > > +	bpf_assert_lt(i, 1);
+> > > +	return 1;
+> > > +}
+> >
+> > exception_cb() has no way of knowning which assert statement threw the exception.
+> > How about extending a macro:
+> > bpf_assert_eq(i, 0, MY_INT_ERR);
+> > or
+> > bpf_assert_eq(i, 0) {bpf_throw(MY_INT_ERR);}
+> >
+> > bpf_throw can store it in prog->aux->exception pass the address to cb.
+> >
+> 
+> I agree and will add passing of a value that gets passed to the callback
+> (probably just set it in the exception state), but I don't think prog->aux will
+> work, see previous mails.
+> 
+> > Also I think we shouldn't complicate the verifier with auto release of resources.
+> > If the user really wants to assert when spin_lock is held it should be user's
+> > job to specify what resources should be released.
+> > Can we make it look like:
+> >
+> > bpf_spin_lock(&lock);
+> > bpf_assert_eq(i, 0) {
+> >   bpf_spin_unlock(&lock);
+> >   bpf_throw(MY_INT_ERR);
+> > }
+> 
+> Do you mean just locks or all resources? Then it kind of undermines the point of
+> having something like bpf_throw IMO. Since it's easy to insert code from the
+> point of throw but it's not possible to do the same in callers (unless we add a
+> way to 'catch' throws), so it only works for some particular cases where callers
+> don't hold references (or in the main subprog).
 
-  diff: tools/arch/s390/include/uapi/asm/ptrace.h: No such file or directory
+That's a good point. This approach will force caller of functions that can
+throw not hold any referenced objects (spin_locks, sk_lookup, obj_new, etc)
+That indeed might be too restrictive.
+It would be great if we could come up with a way for bpf prog to release resources
+explicitly though. I'm not a fan of magic release of spin locks.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/oe-kbuild-all/202304050029.38NdbQPf-lkp@intel.com/
-Fixes: 1f265d2aea0d ("selftests/bpf: Remove not used headers")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
+> There are also other ways to go about this whole thing, like having the compiler
+> emit calls to instrinsics which the BPF runtime provides (or have the call
+> configurable through compiler switches), and it already emits the landing pad
+> code to release stuff and we simply receive the table of pads indexed by each
+> throwing instruction, perform necessary checks to ensure everything is actually
+> released correctly when control flow goes through them (e.g. when exploring
+> multiple paths through the same instruction), and unwind frame by frame. That
+> reduces the burden on both the verifier and user, but then it would be probably
+> need to be BPF C++, or have to be a new language extension for BPF C. E.g. there
+> was something about defer, panic, recover etc. in wg14
+> https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2542.pdf . Having the compiler
+> do it is also probably easier if we want 'catch' style handlers.
 
-commit 1f265d2aea0d ("selftests/bpf: Remove not used headers") is in
-bpf-next tree, so I prefer this patch can be applied to bpf-next tree.
-
- tools/perf/check-headers.sh | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-index eacca9a..e4a8b53 100755
---- a/tools/perf/check-headers.sh
-+++ b/tools/perf/check-headers.sh
-@@ -52,7 +52,6 @@ arch/x86/include/uapi/asm/vmx.h
- arch/powerpc/include/uapi/asm/kvm.h
- arch/s390/include/uapi/asm/kvm.h
- arch/s390/include/uapi/asm/kvm_perf.h
--arch/s390/include/uapi/asm/ptrace.h
- arch/s390/include/uapi/asm/sie.h
- arch/arm/include/uapi/asm/kvm.h
- arch/arm64/include/uapi/asm/kvm.h
--- 
-2.1.0
-
+Interesting idea. __attribute__((cleanup(..))) may be handy, but that's a ton of work.
+I'm in a camp of developers who enforce -fno-exceptions in C++ projects.
+bpf_assert is not analogous to C++ exceptions. It shouldn't be seen a mechanism
+to simplify control flow and error handling.
