@@ -2,70 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB566DA6AA
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 02:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532FE6DA6DC
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 03:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjDGAmT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 20:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        id S230243AbjDGBVQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 21:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbjDGAmT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 20:42:19 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D2C7ED5
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 17:42:17 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id i9so41089859wrp.3
-        for <bpf@vger.kernel.org>; Thu, 06 Apr 2023 17:42:17 -0700 (PDT)
+        with ESMTP id S231171AbjDGBVG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 21:21:06 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3BBA24C;
+        Thu,  6 Apr 2023 18:18:11 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id qb20so5346576ejc.6;
+        Thu, 06 Apr 2023 18:18:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680828136;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xv9/YkMS1Y89YBMKwXLS0dQH+hDDsRT1WZtJmMWtgxc=;
-        b=ormS9Py+VnsScer1pneIe6Za4gW7iKFTdXe120yIBe3C75SeiInTyu4/dbNOjSamBZ
-         Or6MXFeD026cHVoDtuNiij27AlBcnp92dT1RmuDQdKZ8NYbd0GzWXHe/3N3t2vH8ShCs
-         UsgRtS/+qFjsdCA4pt9WOliK2JrixAZ7JdkOMet2rcFt0x1djDWtHGWW7f1ieyAH+JG3
-         SVYbFD/3+L8WjTj0/AfX9DJ7TcUAceoo5TEjtbsrVdY5HSnkzqrsHsfrzMhoEkW/U4IS
-         lxvUCfatiAFHC2vFJZbl21yN9nxpJBHHKlzg9OiIX0pPZcwqVAkCOATMEbwmrMzBW6Ih
-         HzMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680828136;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20210112; t=1680830289; x=1683422289;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xv9/YkMS1Y89YBMKwXLS0dQH+hDDsRT1WZtJmMWtgxc=;
-        b=pPL1L5awqbijGboWfJlutb9iy531UDOBMua6ZK0jq44peOeLQ+wRw0idcbqrEJqdvd
-         47LdoZdtgaE9yarM6dJI/7YqiMX8IqQ2YJoe228mo7pGMlFH8ItXT3j9PZwDrMeXXBXh
-         ZUTm1teEjKFJq5gX7UGagLwDdQzXsvPOc1dO36SpuAg1f+VqhqmHahKeUyGD5KQei4bs
-         SCCPLWzhfx+sNszOOj/TFQNbZBqdH5YIVYLmg27hMBg7xKbSMRoG4XfLgt1j6tDD9Qrj
-         5uwsBVD9Z4nLYJsexxtTvscZuegvVv8P+l/0+RhvcPh6MfzkuybyqL0P6yk0ySpfEBfn
-         a3bg==
-X-Gm-Message-State: AAQBX9eHlhWvPNfOgkkJlEBOfsNcaVC5dJTnI7Jv4lxacD3x89mEz6Z2
-        jo8dgvc8jk3BwzlzL6BS81xhPvi95fERFg==
-X-Google-Smtp-Source: AKy350YFwuU2AmAKR9K+JuKzJLwAYgDhNFU75LXucMXRQ3KmIPg/JUeK7XohX9lcW7Rd6PFrFytX/g==
-X-Received: by 2002:a5d:40c3:0:b0:2c7:e5f:e0e0 with SMTP id b3-20020a5d40c3000000b002c70e5fe0e0mr34008wrq.65.1680828135953;
-        Thu, 06 Apr 2023 17:42:15 -0700 (PDT)
-Received: from localhost ([2a02:1210:74a0:3200:2fc:d4f0:c121:5e8b])
-        by smtp.gmail.com with ESMTPSA id t1-20020a05600001c100b002d51d10a3fasm3031567wrx.55.2023.04.06.17.42.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 17:42:15 -0700 (PDT)
-Date:   Fri, 7 Apr 2023 02:42:14 +0200
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        David Vernet <void@manifault.com>
-Subject: Re: [PATCH RFC bpf-next v1 9/9] selftests/bpf: Add tests for BPF
- exceptions
-Message-ID: <qcyhnf2nmjyb6yjaqpibv2q6m4tqr63ftxmwuua3k6efjpx77u@5gohye433ufp>
-References: <20230405004239.1375399-1-memxor@gmail.com>
- <20230405004239.1375399-10-memxor@gmail.com>
- <20230406023809.jffvgx5r7eyjw24g@dhcp-172-26-102-232.dhcp.thefacebook.com>
+        bh=XtUzcz/2Jv4qKihqjsOa4WaQ+Hj4yPYyZeo/umOh554=;
+        b=IfU491oXVxDi93JF9/TdQPjs06T2BgcG9r05v0xm/7L+qUPmbAhOdt26z0Z+oX0jhV
+         gcHlW5dpGtCmg9lTv184EgEb8uJ9we+rbvqY3sb+fqY5f7bqN1nr1oYvLrhh772x/ptV
+         X1VpR3EdfiJydYje02r1/G44sLxjg8V1p0WrIVW1H2jUVO9WunKXoGrOYs/oacWdrwW9
+         WhXxs0SSZgPuBsX2vbPzQqc2RKDc6KLQrZtPlo54YO1g3M6z5FaLh1/AYgkuNDbeBONy
+         MnIqk7BKL+VRcgHgUTPzwRWXXXP5Ks3f42qwOmWzaAaRgr1EX2lnXmTdDJt0P7MYHyGQ
+         UU8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680830289; x=1683422289;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XtUzcz/2Jv4qKihqjsOa4WaQ+Hj4yPYyZeo/umOh554=;
+        b=hg/j5iAQ+Q/6rJb8rFIVWIfk6It9Cj8Gwq16DDZi/CStZk0oITK8iH2pL+cu1zowHe
+         Yrf62BZpWRylcrruMEIWsPg8uZwgUKutA9sHe7wQOLtE7oGZh5hplIXLO3R6Nrmk9kAF
+         TH5swBNxOmvRSYxyDPCQUR0M4K6vbugO2rIiDKsqxvZIedbid7FG/Auzl1ocW8+t22lx
+         SRQ1Opfoq8d9/x7bzqLDdGZjWUMmGmjQiWincwgz2slkYmAQHctP3vfzjef9YnXOwg3L
+         wifIdTx/fl022VXVh4a4OzK06LSIhnYo/4Il1gOTnMRkemwdeUWiudfyt9fgK7liN7S+
+         YOZg==
+X-Gm-Message-State: AAQBX9chj0IY/Z71rYldG+zW9+fXggteCuGoh9bN4B0oyl82OMKdRJfW
+        EOpc7mjj5TwVf/P9URYQNuCx+jgwOwl2RiTeJwc=
+X-Google-Smtp-Source: AKy350bfqIXaAapNpfpsz6SjuLi+OUHZ09lcBLXRbRchaFNEwQZAu1wwHPdIp5ueq4ipE9fBdzaE9SnvM4DzAM6fdao=
+X-Received: by 2002:a17:907:20d5:b0:926:8f9:735d with SMTP id
+ qq21-20020a17090720d500b0092608f9735dmr367021ejb.3.1680830289076; Thu, 06 Apr
+ 2023 18:18:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230406023809.jffvgx5r7eyjw24g@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230404045029.82870-1-alexei.starovoitov@gmail.com>
+ <20230404145131.GB3896@maniforge> <CAEf4BzYXpHMNDTCrBTjwvj3UU5xhS9mAKLx152NniKO27Rdbeg@mail.gmail.com>
+ <CAADnVQKLe8+zJ0sMEOsh74EHhV+wkg0k7uQqbTkB3THx1CUyqw@mail.gmail.com>
+ <20230404185147.17bf217a@kernel.org> <CAEf4BzY3-pXiM861OkqZ6eciBJnZS8gsBL2Le2rGiSU64GKYcg@mail.gmail.com>
+ <20230405111926.7930dbcc@kernel.org> <CAADnVQLhLuB2HG4WqQk6T=oOq2dtXkwy0TjQbnxa4cVDLHq7bg@mail.gmail.com>
+ <20230406084217.44fff254@kernel.org>
+In-Reply-To: <20230406084217.44fff254@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 6 Apr 2023 18:17:57 -0700
+Message-ID: <CAADnVQLOMa=p2m++uTH1i5odXrO5mF9Y++dJZuZyL3gC3MEm0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/8] bpf: Follow up to RCU enforcement in the verifier.
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Vernet <void@manifault.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Dave Marchevsky <davemarchevsky@meta.com>,
+        Tejun Heo <tj@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Yonghong Song <yhs@meta.com>, Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -76,100 +83,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 06, 2023 at 04:38:09AM CEST, Alexei Starovoitov wrote:
-> On Wed, Apr 05, 2023 at 02:42:39AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > +static __noinline int throwing_subprog(struct __sk_buff *ctx)
-> > +{
-> > +	if (ctx)
-> > +		bpf_throw();
-> > +	return 0;
-> > +}
-> > +
-> > +__noinline int global_subprog(struct __sk_buff *ctx)
-> > +{
-> > +	return subprog(ctx) + 1;
-> > +}
-> > +
-> > +__noinline int throwing_global_subprog(struct __sk_buff *ctx)
-> > +{
-> > +	if (ctx)
-> > +		bpf_throw();
-> > +	return 0;
-> > +}
-> > +
-> > +static __noinline int exception_cb(void)
-> > +{
-> > +	return 16;
-> > +}
-> > +
-> > +SEC("tc")
-> > +int exception_throw_subprog(struct __sk_buff *ctx)
-> > +{
-> > +	volatile int i;
-> > +
-> > +	exception_cb();
-> > +	bpf_set_exception_callback(exception_cb);
-> > +	i = subprog(ctx);
-> > +	i += global_subprog(ctx) - 1;
-> > +	if (!i)
-> > +		return throwing_global_subprog(ctx);
-> > +	else
-> > +		return throwing_subprog(ctx);
-> > +	bpf_throw();
-> > +	return 0;
-> > +}
-> > +
-> > +__noinline int throwing_gfunc(volatile int i)
-> > +{
-> > +	bpf_assert_eq(i, 0);
-> > +	return 1;
-> > +}
-> > +
-> > +__noinline static int throwing_func(volatile int i)
-> > +{
-> > +	bpf_assert_lt(i, 1);
-> > +	return 1;
-> > +}
+On Thu, Apr 6, 2023 at 8:42=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wro=
+te:
 >
-> exception_cb() has no way of knowning which assert statement threw the exception.
-> How about extending a macro:
-> bpf_assert_eq(i, 0, MY_INT_ERR);
-> or
-> bpf_assert_eq(i, 0) {bpf_throw(MY_INT_ERR);}
+> On Wed, 5 Apr 2023 22:13:26 -0700 Alexei Starovoitov wrote:
+> > On Wed, Apr 5, 2023 at 11:19=E2=80=AFAM Jakub Kicinski <kuba@kernel.org=
+> wrote:
+> > >
+> > > On Wed, 5 Apr 2023 10:22:16 -0700 Andrii Nakryiko wrote:
+> > > > So I'm exclusively using `pw-apply -c <patchworks-url>` to apply
+> > > > everything locally.
+> > >
+> > > I think you can throw -M after -c $url? It can only help... :)
+> >
+> > Yeah. If only...
+> > I'm exclusively using -c.
+> > -M only works with -s, but I couldn't make -s -M work either.
+> > Do you pass the series as a number?
 >
-> bpf_throw can store it in prog->aux->exception pass the address to cb.
+> Yes, it copy just the numerical ID into the terminal.
 >
-
-I agree and will add passing of a value that gets passed to the callback
-(probably just set it in the exception state), but I don't think prog->aux will
-work, see previous mails.
-
-> Also I think we shouldn't complicate the verifier with auto release of resources.
-> If the user really wants to assert when spin_lock is held it should be user's
-> job to specify what resources should be released.
-> Can we make it look like:
+> > but then series_json=3D$(curl -s $srv/series/$1/) line
+> > doesn't look right, since it's missing "/mbox/" ?
 >
-> bpf_spin_lock(&lock);
-> bpf_assert_eq(i, 0) {
->   bpf_spin_unlock(&lock);
->   bpf_throw(MY_INT_ERR);
-> }
+> That's loading JSON from the patchwork's REST API.
 
-Do you mean just locks or all resources? Then it kind of undermines the point of
-having something like bpf_throw IMO. Since it's easy to insert code from the
-point of throw but it's not possible to do the same in callers (unless we add a
-way to 'catch' throws), so it only works for some particular cases where callers
-don't hold references (or in the main subprog).
+This line still doesn't work for me.
+curl -s https://patchwork.kernel.org/series/736654/
+returns:
+The page URL requested (<code>/series/736654/</code>) does not exist.
 
-There are also other ways to go about this whole thing, like having the compiler
-emit calls to instrinsics which the BPF runtime provides (or have the call
-configurable through compiler switches), and it already emits the landing pad
-code to release stuff and we simply receive the table of pads indexed by each
-throwing instruction, perform necessary checks to ensure everything is actually
-released correctly when control flow goes through them (e.g. when exploring
-multiple paths through the same instruction), and unwind frame by frame. That
-reduces the burden on both the verifier and user, but then it would be probably
-need to be BPF C++, or have to be a new language extension for BPF C. E.g. there
-was something about defer, panic, recover etc. in wg14
-https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2542.pdf . Having the compiler
-do it is also probably easier if we want 'catch' style handlers.
+while
+curl -s https://patchwork.kernel.org/series/736654/mbox/
+returns proper mbox format.
+
+> > User error on my side, I guess.
+> > My bash skills were too weak to make -c and -M work,
+> > but .git/hooks tip is great!
+> > Thank you.
+>
+> FWIW I think the below may work for using -c instead of -s.
+> But it is mixing "Daniel paths" and "Jakub paths" in the script.
+> The output is still a bit different than when using -s.
+>
+> diff --git a/pw-apply b/pw-apply
+> index 5fc37a24b027..c9cec94a4a8c 100755
+> --- a/pw-apply
+> +++ b/pw-apply
+> @@ -81,17 +81,15 @@ accept_series()
+>  }
+>
+>  cover_from_url()
+>  {
+>    curl -s $1 | gunzip -f -c > tmp.i
+> -  series_num=3D`grep "href=3D\"/series" tmp.i|cut -d/ -f3|head -1`
+> +  series=3D`grep "href=3D\"/series" tmp.i|cut -d/ -f3|head -1`
+>    cover_url=3D`grep "href=3D\"/project/netdevbpf/cover" tmp.i|cut -d\" -=
+f2`
+>    if [ ! -z "$cover_url" ]; then
+> -    curl -s https://patchwork.kernel.org${cover_url}mbox/ | gunzip -f -c=
+ > cover.i
+>      merge=3D"1"
+>    fi
+> -  curl -s https://patchwork.kernel.org/series/$series_num/mbox/ | gunzip=
+ -f -c > mbox.i
+>  }
+>
+>  edits=3D""
+>  am_flags=3D""
+>  branch=3D"mbox"
+> @@ -118,18 +116,20 @@ while true; do
+>      -h | --help ) usage; break ;;
+>      -- ) shift; break ;;
+>      * )  break ;;
+>    esac
+>  done
+> +# Load the info from cover first, it may will populate $series and $merg=
+e
+> +[ ! -z "$cover" ]  && cover_from_url $cover
+> +
+>  [ ! -z "$auto_branch" ] && [ -z "$series" ] && usage
+>  [ ! -z "$mbox" ]   && [ ! -z "$series" ] && usage
+>  [   -z "$mbox" ]   && [   -z "$series" ] && [ -z "$cover" ] && usage
+>  [ ! -z "$accept" ] && [ ! -z "$mbox" ]   && usage
+>  [ ! -z "$series" ] && mbox_from_series $series
+>  [ ! -z "$mbox" ]   && mbox_from_url $mbox
+>  [ ! -z "$accept" ] && accept_series $series
+> -[ ! -z "$cover" ]  && cover_from_url $cover
+
+This part completely makes sense! Would be great to converge
+on common usage, but json fetch doesn't work for me for some reason.
+While mbox via original -c works fine.
