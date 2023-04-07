@@ -2,62 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D9D6DADD8
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 15:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A3C6DADE9
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 15:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240879AbjDGNk1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 09:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
+        id S240872AbjDGNlJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 09:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbjDGNjt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 09:39:49 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF90B459
-        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 06:39:35 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id d17so42320127wrb.11
-        for <bpf@vger.kernel.org>; Fri, 07 Apr 2023 06:39:34 -0700 (PDT)
+        with ESMTP id S240904AbjDGNkj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 09:40:39 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E631BB8C
+        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 06:39:44 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id i8-20020a05600c354800b003ee93d2c914so597421wmq.2
+        for <bpf@vger.kernel.org>; Fri, 07 Apr 2023 06:39:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1680874774;
+        d=cloudflare.com; s=google; t=1680874782;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5LPyvnVqCbF95NepVnx3zVm2C/yWKyVrdCyI8GMkCuc=;
-        b=CTe7OpzV2+ze79n0AEuCN8lo03+S5mQ1MsKfU5eT2IDaPq87vAFdCWlR3snISha17Z
-         n8Naonauy+W7ijGWOu3GnsPH5g6+uXKC8Yj42Z4sG0A9zbjv5czrFgNeJM2jtwIab74R
-         fSQBre7O9gSF+CzFR7PUeeTzDpr5+aELtnIKk=
+        bh=nJ8dLEHPX/vr4lIC48z7xqsg6C5SdL9O7h1kkVcNjwE=;
+        b=dat8tlQQNEYeKcPPa4rPZfEzVIkFpNO3wu69pTNI1VUeM/BlvXYDmh30mk/uD65MoN
+         Wk/udCHifvXPO2KN3wvGa773A62VfcmAisVhgUEzSetZIrFcrY0NWTNrKFVcCWRMFngJ
+         sBLIW8A3dVMz0dfIWjAGWa9HV0x7pwr2efd2c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680874774;
+        d=1e100.net; s=20210112; t=1680874782;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5LPyvnVqCbF95NepVnx3zVm2C/yWKyVrdCyI8GMkCuc=;
-        b=h9BMO6i1K+AHMU8kINeCyysybdcc34It50rr1QfqfLWT4V1xFwO4TtPEMS8H2kEaf/
-         0nSfkmYsoS7vRJdVZFcALera8CDelXi9fZxLGjFDOgCot94i8skzns/n3ZyPUm/Me1wv
-         DAiCyq0ZlOou3GgavJ1WfwrleEs4fRJ/iDg5FzUk3mgK+TgY2GvNz2dgUlht9x6sN8xK
-         QyodOrpdJuzh1k5dV3vYc5W7F47UqRrs5XoI0j9pZ69M7LKiwjoIXqMZU9YczjaJ5a8S
-         AoQI2zb/LPwVH/7XqSOX69g/DvmSeTdXl1/Ri646qIyI79bd3n5tqMb+cX3E4PzMRmlp
-         M4MQ==
-X-Gm-Message-State: AAQBX9cz4+Zg3zTz54cU6fFCPW8/5gwDnvq5Zx3DSwcoQD1aMgfozjlS
-        NUkXsGzO6NE5RL5XKY2nRZuvdGBkcqFgRzjNGuMwFg==
-X-Google-Smtp-Source: AKy350bcLNnlU4uq5fBuz/SYUbuZAr4+j5omJe8R0MF7S4xthUZW1E5jV2la1ZKbak/SwDOrAhQ8Wg==
-X-Received: by 2002:a5d:4e0a:0:b0:2ee:687c:5252 with SMTP id p10-20020a5d4e0a000000b002ee687c5252mr1439252wrt.24.1680874773951;
-        Fri, 07 Apr 2023 06:39:33 -0700 (PDT)
+        bh=nJ8dLEHPX/vr4lIC48z7xqsg6C5SdL9O7h1kkVcNjwE=;
+        b=gT/COSLrFiOJ8r/qiB2qQxqrg+jmwBkcx3Jw8Qz5mI9XykCnV2wJKpGf9a8cBdUTTW
+         bxaO2LTUjxKDJV2AM+eEpYsHm0DE8ZEjFnVRkWAXF+zb79QPelI9qbgAOwa6abwuPRg8
+         2V7yhK3rCyqfcLpXX6Q/W3ZN3BF1zkQ8X/P9kE0kzZ3947Nn8SgoGiYH+pL++HuUd3U6
+         gWoeAM3X+Q2DQozANNN/oj7ANH/diebXNAVjGoH3n9YwF4lKNcY6FwwqneJlJw9U6cJ7
+         5XjZABuh5uh3rC7VPOigd/yPLHRCl1oC5Xs5mnJsCpR2+9s5a3R0G5KuMKqxyNLYZEQ6
+         eEJg==
+X-Gm-Message-State: AAQBX9dBxi+E6NMYiAJ4jSSlkJ9RgHlu238Hnuie2D5hW+KdkufAwEAi
+        6g8y4hf3/Kwe+Pt4S7KunRrNqU39BoQp6ZBeKRDGSRrn
+X-Google-Smtp-Source: AKy350Y+idqnCZ954OSR0g4+DBCHAEoN9t+h6JpFTDZ5xzN1cJMNLmvv0TaIFZP0DwjHQ0Viq/RPQQ==
+X-Received: by 2002:a1c:7312:0:b0:3ed:9b20:c7c1 with SMTP id d18-20020a1c7312000000b003ed9b20c7c1mr1239983wmb.20.1680874782396;
+        Fri, 07 Apr 2023 06:39:42 -0700 (PDT)
 Received: from workstation.ehrig.io (p4fdbfbb0.dip0.t-ipconnect.de. [79.219.251.176])
-        by smtp.gmail.com with ESMTPSA id m13-20020a056000180d00b002efac42ff35sm2380188wrh.37.2023.04.07.06.39.33
+        by smtp.gmail.com with ESMTPSA id m13-20020a056000180d00b002efac42ff35sm2380188wrh.37.2023.04.07.06.39.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Apr 2023 06:39:33 -0700 (PDT)
+        Fri, 07 Apr 2023 06:39:41 -0700 (PDT)
 From:   Christian Ehrig <cehrig@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     cehrig@cloudflare.com, kernel-team@cloudflare.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next v3 2/3] bpf,fou: Add bpf_skb_{set,get}_fou_encap kfuncs
-Date:   Fri,  7 Apr 2023 15:38:54 +0200
-Message-Id: <e17c94a646b63e78ce0dbf3f04b2c33dc948a32d.1680874078.git.cehrig@cloudflare.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Paul Chaignon <paul@isovalent.com>,
+        Kaixi Fan <fankaixi.li@bytedance.com>,
+        Shmulik Ladkani <shmulik@metanetworks.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Test FOU kfuncs for externally controlled ipip devices
+Date:   Fri,  7 Apr 2023 15:38:55 +0200
+Message-Id: <040193566ddbdb0b53eb359f7ac7bbd316f338b5.1680874078.git.cehrig@cloudflare.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1680874078.git.cehrig@cloudflare.com>
 References: <cover.1680874078.git.cehrig@cloudflare.com>
@@ -73,74 +82,213 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add two new kfuncs that allow a BPF tc-hook, installed on an ipip
-device in collect-metadata mode, to control FOU encap parameters on a
-per-packet level. The set of kfuncs is registered with the fou module.
+Add tests for FOU and GUE encapsulation via the bpf_skb_{set,get}_fou_encap
+kfuncs, using ipip devices in collect-metadata mode.
 
-The bpf_skb_set_fou_encap kfunc is supposed to be used in tandem and after
-a successful call to the bpf_skb_set_tunnel_key bpf-helper. UDP source and
-destination ports can be controlled by passing a struct bpf_fou_encap. A
-source port of zero will auto-assign a source port. enum bpf_fou_encap_type
-is used to specify if the egress path should FOU or GUE encap the packet.
-
-On the ingress path bpf_skb_get_fou_encap can be used to read UDP source
-and destination ports from the receiver's point of view and allows for
-packet multiplexing across different destination ports within a single
-BPF program and ipip device.
+These tests make sure that we can successfully set and obtain FOU and GUE
+encap parameters using ingress / egress BPF tc-hooks.
 
 Signed-off-by: Christian Ehrig <cehrig@cloudflare.com>
 ---
- include/net/fou.h   |   2 +
- net/ipv4/Makefile   |   2 +-
- net/ipv4/fou_bpf.c  | 119 ++++++++++++++++++++++++++++++++++++++++++++
- net/ipv4/fou_core.c |   5 ++
- 4 files changed, 127 insertions(+), 1 deletion(-)
- create mode 100644 net/ipv4/fou_bpf.c
+ .../selftests/bpf/prog_tests/test_tunnel.c    | 153 +++++++++++++++++-
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 117 ++++++++++++++
+ 2 files changed, 268 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/fou.h b/include/net/fou.h
-index 80f56e275b08..824eb4b231fd 100644
---- a/include/net/fou.h
-+++ b/include/net/fou.h
-@@ -17,4 +17,6 @@ int __fou_build_header(struct sk_buff *skb, struct ip_tunnel_encap *e,
- int __gue_build_header(struct sk_buff *skb, struct ip_tunnel_encap *e,
- 		       u8 *protocol, __be16 *sport, int type);
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+index 47f1d482fe39..d149ab98798d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+@@ -89,6 +89,9 @@
+ #define IP6VXLAN_TUNL_DEV0 "ip6vxlan00"
+ #define IP6VXLAN_TUNL_DEV1 "ip6vxlan11"
  
-+int register_fou_bpf(void);
++#define IPIP_TUNL_DEV0 "ipip00"
++#define IPIP_TUNL_DEV1 "ipip11"
 +
- #endif
-diff --git a/net/ipv4/Makefile b/net/ipv4/Makefile
-index 880277c9fd07..b18ba8ef93ad 100644
---- a/net/ipv4/Makefile
-+++ b/net/ipv4/Makefile
-@@ -26,7 +26,7 @@ obj-$(CONFIG_IP_MROUTE) += ipmr.o
- obj-$(CONFIG_IP_MROUTE_COMMON) += ipmr_base.o
- obj-$(CONFIG_NET_IPIP) += ipip.o
- gre-y := gre_demux.o
--fou-y := fou_core.o fou_nl.o
-+fou-y := fou_core.o fou_nl.o fou_bpf.o
- obj-$(CONFIG_NET_FOU) += fou.o
- obj-$(CONFIG_NET_IPGRE_DEMUX) += gre.o
- obj-$(CONFIG_NET_IPGRE) += ip_gre.o
-diff --git a/net/ipv4/fou_bpf.c b/net/ipv4/fou_bpf.c
-new file mode 100644
-index 000000000000..3760a14b6b57
---- /dev/null
-+++ b/net/ipv4/fou_bpf.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Unstable Fou Helpers for TC-BPF hook
-+ *
-+ * These are called from SCHED_CLS BPF programs. Note that it is
-+ * allowed to break compatibility for these functions since the interface they
-+ * are exposed through to BPF programs is explicitly unstable.
-+ */
+ #define PING_ARGS "-i 0.01 -c 3 -w 10 -q"
+ 
+ static int config_device(void)
+@@ -188,6 +191,79 @@ static void delete_ip6vxlan_tunnel(void)
+ 	SYS_NOFAIL("ip link delete dev %s", IP6VXLAN_TUNL_DEV1);
+ }
+ 
++enum ipip_encap {
++	NONE	= 0,
++	FOU	= 1,
++	GUE	= 2,
++};
 +
-+#include <linux/bpf.h>
-+#include <linux/btf_ids.h>
++static int set_ipip_encap(const char *ipproto, const char *type)
++{
++	SYS(fail, "ip -n at_ns0 fou add port 5555 %s", ipproto);
++	SYS(fail, "ip -n at_ns0 link set dev %s type ipip encap %s",
++	    IPIP_TUNL_DEV0, type);
++	SYS(fail, "ip -n at_ns0 link set dev %s type ipip encap-dport 5555",
++	    IPIP_TUNL_DEV0);
 +
-+#include <net/dst_metadata.h>
-+#include <net/fou.h>
++	return 0;
++fail:
++	return -1;
++}
 +
++static int add_ipip_tunnel(enum ipip_encap encap)
++{
++	int err;
++	const char *ipproto, *type;
++
++	switch (encap) {
++	case FOU:
++		ipproto = "ipproto 4";
++		type = "fou";
++		break;
++	case GUE:
++		ipproto = "gue";
++		type = ipproto;
++		break;
++	default:
++		ipproto = NULL;
++		type = ipproto;
++	}
++
++	/* at_ns0 namespace */
++	SYS(fail, "ip -n at_ns0 link add dev %s type ipip local %s remote %s",
++	    IPIP_TUNL_DEV0, IP4_ADDR_VETH0, IP4_ADDR1_VETH1);
++
++	if (type && ipproto) {
++		err = set_ipip_encap(ipproto, type);
++		if (!ASSERT_OK(err, "set_ipip_encap"))
++			goto fail;
++	}
++
++	SYS(fail, "ip -n at_ns0 link set dev %s up", IPIP_TUNL_DEV0);
++	SYS(fail, "ip -n at_ns0 addr add dev %s %s/24",
++	    IPIP_TUNL_DEV0, IP4_ADDR_TUNL_DEV0);
++
++	/* root namespace */
++	if (type && ipproto)
++		SYS(fail, "ip fou add port 5555 %s", ipproto);
++	SYS(fail, "ip link add dev %s type ipip external", IPIP_TUNL_DEV1);
++	SYS(fail, "ip link set dev %s up", IPIP_TUNL_DEV1);
++	SYS(fail, "ip addr add dev %s %s/24", IPIP_TUNL_DEV1,
++	    IP4_ADDR_TUNL_DEV1);
++
++	return 0;
++fail:
++	return -1;
++}
++
++static void delete_ipip_tunnel(void)
++{
++	SYS_NOFAIL("ip -n at_ns0 link delete dev %s", IPIP_TUNL_DEV0);
++	SYS_NOFAIL("ip -n at_ns0 fou del port 5555 2> /dev/null");
++	SYS_NOFAIL("ip link delete dev %s", IPIP_TUNL_DEV1);
++	SYS_NOFAIL("ip fou del port 5555 2> /dev/null");
++}
++
+ static int test_ping(int family, const char *addr)
+ {
+ 	SYS(fail, "%s %s %s > /dev/null", ping_command(family), PING_ARGS, addr);
+@@ -386,10 +462,80 @@ static void test_ip6vxlan_tunnel(void)
+ 		test_tunnel_kern__destroy(skel);
+ }
+ 
+-#define RUN_TEST(name)							\
++static void test_ipip_tunnel(enum ipip_encap encap)
++{
++	struct test_tunnel_kern *skel = NULL;
++	struct nstoken *nstoken;
++	int set_src_prog_fd, get_src_prog_fd;
++	int ifindex = -1;
++	int err;
++	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
++			    .attach_point = BPF_TC_INGRESS);
++
++	/* add ipip tunnel */
++	err = add_ipip_tunnel(encap);
++	if (!ASSERT_OK(err, "add_ipip_tunnel"))
++		goto done;
++
++	/* load and attach bpf prog to tunnel dev tc hook point */
++	skel = test_tunnel_kern__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_tunnel_kern__open_and_load"))
++		goto done;
++	ifindex = if_nametoindex(IPIP_TUNL_DEV1);
++	if (!ASSERT_NEQ(ifindex, 0, "ipip11 ifindex"))
++		goto done;
++	tc_hook.ifindex = ifindex;
++
++	switch (encap) {
++	case FOU:
++		get_src_prog_fd = bpf_program__fd(
++			skel->progs.ipip_encap_get_tunnel);
++		set_src_prog_fd = bpf_program__fd(
++			skel->progs.ipip_fou_set_tunnel);
++		break;
++	case GUE:
++		get_src_prog_fd = bpf_program__fd(
++			skel->progs.ipip_encap_get_tunnel);
++		set_src_prog_fd = bpf_program__fd(
++			skel->progs.ipip_gue_set_tunnel);
++		break;
++	default:
++		get_src_prog_fd = bpf_program__fd(
++			skel->progs.ipip_get_tunnel);
++		set_src_prog_fd = bpf_program__fd(
++			skel->progs.ipip_set_tunnel);
++	}
++
++	if (!ASSERT_GE(set_src_prog_fd, 0, "bpf_program__fd"))
++		goto done;
++	if (!ASSERT_GE(get_src_prog_fd, 0, "bpf_program__fd"))
++		goto done;
++	if (attach_tc_prog(&tc_hook, get_src_prog_fd, set_src_prog_fd))
++		goto done;
++
++	/* ping from root namespace test */
++	err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV0);
++	if (!ASSERT_OK(err, "test_ping"))
++		goto done;
++
++	/* ping from at_ns0 namespace test */
++	nstoken = open_netns("at_ns0");
++	err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
++	if (!ASSERT_OK(err, "test_ping"))
++		goto done;
++	close_netns(nstoken);
++
++done:
++	/* delete ipip tunnel */
++	delete_ipip_tunnel();
++	if (skel)
++		test_tunnel_kern__destroy(skel);
++}
++
++#define RUN_TEST(name, ...)						\
+ 	({								\
+ 		if (test__start_subtest(#name)) {			\
+-			test_ ## name();				\
++			test_ ## name(__VA_ARGS__);			\
+ 		}							\
+ 	})
+ 
+@@ -400,6 +546,9 @@ static void *test_tunnel_run_tests(void *arg)
+ 
+ 	RUN_TEST(vxlan_tunnel);
+ 	RUN_TEST(ip6vxlan_tunnel);
++	RUN_TEST(ipip_tunnel, NONE);
++	RUN_TEST(ipip_tunnel, FOU);
++	RUN_TEST(ipip_tunnel, GUE);
+ 
+ 	cleanup();
+ 
+diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+index 9ab2d55ab7c0..f66af753bbbb 100644
+--- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+@@ -52,6 +52,21 @@ struct vxlan_metadata {
+ 	__u32     gbp;
+ };
+ 
 +struct bpf_fou_encap {
 +	__be16 sport;
 +	__be16 dport;
@@ -151,121 +299,123 @@ index 000000000000..3760a14b6b57
 +	FOU_BPF_ENCAP_GUE,
 +};
 +
-+__diag_push();
-+__diag_ignore_all("-Wmissing-prototypes",
-+		  "Global functions as their definitions will be in BTF");
++int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
++			  struct bpf_fou_encap *encap, int type) __ksym;
++int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
++			  struct bpf_fou_encap *encap) __ksym;
 +
-+/* bpf_skb_set_fou_encap - Set FOU encap parameters
-+ *
-+ * This function allows for using GUE or FOU encapsulation together with an
-+ * ipip device in collect-metadata mode.
-+ *
-+ * It is meant to be used in BPF tc-hooks and after a call to the
-+ * bpf_skb_set_tunnel_key helper, responsible for setting IP addresses.
-+ *
-+ * Parameters:
-+ * @skb_ctx	Pointer to ctx (__sk_buff) in TC program. Cannot be NULL
-+ * @encap	Pointer to a `struct bpf_fou_encap` storing UDP src and
-+ * 		dst ports. If sport is set to 0 the kernel will auto-assign a
-+ * 		port. This is similar to using `encap-sport auto`.
-+ * 		Cannot be NULL
-+ * @type	Encapsulation type for the packet. Their definitions are
-+ * 		specified in `enum bpf_fou_encap_type`
-+ */
-+__bpf_kfunc int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
-+				      struct bpf_fou_encap *encap, int type)
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_ARRAY);
+ 	__uint(max_entries, 1);
+@@ -749,6 +764,108 @@ int ipip_get_tunnel(struct __sk_buff *skb)
+ 	return TC_ACT_OK;
+ }
+ 
++SEC("tc")
++int ipip_gue_set_tunnel(struct __sk_buff *skb)
 +{
-+	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
-+	struct ip_tunnel_info *info = skb_tunnel_info(skb);
++	struct bpf_tunnel_key key = {};
++	struct bpf_fou_encap encap = {};
++	void *data = (void *)(long)skb->data;
++	struct iphdr *iph = data;
++	void *data_end = (void *)(long)skb->data_end;
++	int ret;
 +
-+	if (unlikely(!encap))
-+		return -EINVAL;
-+
-+	if (unlikely(!info || !(info->mode & IP_TUNNEL_INFO_TX)))
-+		return -EINVAL;
-+
-+	switch (type) {
-+	case FOU_BPF_ENCAP_FOU:
-+		info->encap.type = TUNNEL_ENCAP_FOU;
-+		break;
-+	case FOU_BPF_ENCAP_GUE:
-+		info->encap.type = TUNNEL_ENCAP_GUE;
-+		break;
-+	default:
-+		info->encap.type = TUNNEL_ENCAP_NONE;
++	if (data + sizeof(*iph) > data_end) {
++		log_err(1);
++		return TC_ACT_SHOT;
 +	}
 +
-+	if (info->key.tun_flags & TUNNEL_CSUM)
-+		info->encap.flags |= TUNNEL_ENCAP_FLAG_CSUM;
++	key.tunnel_ttl = 64;
++	if (iph->protocol == IPPROTO_ICMP)
++		key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
 +
-+	info->encap.sport = encap->sport;
-+	info->encap.dport = encap->dport;
++	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key), 0);
++	if (ret < 0) {
++		log_err(ret);
++		return TC_ACT_SHOT;
++	}
 +
-+	return 0;
++	encap.sport = 0;
++	encap.dport = bpf_htons(5555);
++
++	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_GUE);
++	if (ret < 0) {
++		log_err(ret);
++		return TC_ACT_SHOT;
++	}
++
++	return TC_ACT_OK;
 +}
 +
-+/* bpf_skb_get_fou_encap - Get FOU encap parameters
-+ *
-+ * This function allows for reading encap metadata from a packet received
-+ * on an ipip device in collect-metadata mode.
-+ *
-+ * Parameters:
-+ * @skb_ctx	Pointer to ctx (__sk_buff) in TC program. Cannot be NULL
-+ * @encap	Pointer to a struct bpf_fou_encap storing UDP source and
-+ * 		destination port. Cannot be NULL
-+ */
-+__bpf_kfunc int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-+				      struct bpf_fou_encap *encap)
++SEC("tc")
++int ipip_fou_set_tunnel(struct __sk_buff *skb)
 +{
-+	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
-+	struct ip_tunnel_info *info = skb_tunnel_info(skb);
++	struct bpf_tunnel_key key = {};
++	struct bpf_fou_encap encap = {};
++	void *data = (void *)(long)skb->data;
++	struct iphdr *iph = data;
++	void *data_end = (void *)(long)skb->data_end;
++	int ret;
 +
-+	if (unlikely(!info))
-+		return -EINVAL;
++	if (data + sizeof(*iph) > data_end) {
++		log_err(1);
++		return TC_ACT_SHOT;
++	}
 +
-+	encap->sport = info->encap.sport;
-+	encap->dport = info->encap.dport;
++	key.tunnel_ttl = 64;
++	if (iph->protocol == IPPROTO_ICMP)
++		key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
 +
-+	return 0;
++	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key), 0);
++	if (ret < 0) {
++		log_err(ret);
++		return TC_ACT_SHOT;
++	}
++
++	encap.sport = 0;
++	encap.dport = bpf_htons(5555);
++
++	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_FOU);
++	if (ret < 0) {
++		log_err(ret);
++		return TC_ACT_SHOT;
++	}
++
++	return TC_ACT_OK;
 +}
 +
-+__diag_pop()
-+
-+BTF_SET8_START(fou_kfunc_set)
-+BTF_ID_FLAGS(func, bpf_skb_set_fou_encap)
-+BTF_ID_FLAGS(func, bpf_skb_get_fou_encap)
-+BTF_SET8_END(fou_kfunc_set)
-+
-+static const struct btf_kfunc_id_set fou_bpf_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.set   = &fou_kfunc_set,
-+};
-+
-+int register_fou_bpf(void)
++SEC("tc")
++int ipip_encap_get_tunnel(struct __sk_buff *skb)
 +{
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
-+					 &fou_bpf_kfunc_set);
-+}
-diff --git a/net/ipv4/fou_core.c b/net/ipv4/fou_core.c
-index cafec9b4eee0..0c41076e31ed 100644
---- a/net/ipv4/fou_core.c
-+++ b/net/ipv4/fou_core.c
-@@ -1236,10 +1236,15 @@ static int __init fou_init(void)
- 	if (ret < 0)
- 		goto unregister;
- 
-+	ret = register_fou_bpf();
-+	if (ret < 0)
-+		goto kfunc_failed;
++	int ret;
++	struct bpf_tunnel_key key = {};
++	struct bpf_fou_encap encap = {};
 +
- 	ret = ip_tunnel_encap_add_fou_ops();
- 	if (ret == 0)
- 		return 0;
- 
-+kfunc_failed:
- 	genl_unregister_family(&fou_nl_family);
- unregister:
- 	unregister_pernet_device(&fou_net_ops);
++	ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
++	if (ret < 0) {
++		log_err(ret);
++		return TC_ACT_SHOT;
++	}
++
++	ret = bpf_skb_get_fou_encap(skb, &encap);
++	if (ret < 0) {
++		log_err(ret);
++		return TC_ACT_SHOT;
++	}
++
++	if (bpf_ntohs(encap.dport) != 5555)
++		return TC_ACT_SHOT;
++
++	bpf_printk("%d remote ip 0x%x, sport %d, dport %d\n", ret,
++		   key.remote_ipv4, bpf_ntohs(encap.sport),
++		   bpf_ntohs(encap.dport));
++	return TC_ACT_OK;
++}
++
+ SEC("tc")
+ int ipip6_set_tunnel(struct __sk_buff *skb)
+ {
 -- 
 2.39.2
 
