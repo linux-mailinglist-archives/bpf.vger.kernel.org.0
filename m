@@ -2,113 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE1C6DA802
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 05:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756536DA813
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 05:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbjDGDez (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 23:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
+        id S230290AbjDGDod (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 23:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbjDGDey (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 23:34:54 -0400
-Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A3F9ECB
-        for <bpf@vger.kernel.org>; Thu,  6 Apr 2023 20:34:51 -0700 (PDT)
-X-QQ-mid: bizesmtp69t1680838484tkzkcago
-Received: from localhost.localdomain ( [110.191.179.216])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Fri, 07 Apr 2023 11:34:43 +0800 (CST)
-X-QQ-SSF: 01400000000000H0X000000A0000000
-X-QQ-FEAT: iDzLjIm7mlbckeejeb4AtnC8LRKmy5A1q+Ksy7J24PpBry6w8Xd/M+S9DQkuy
-        0+4rSduA6qVtljE6lvbsYRDP23vmTikoV1Dux/aZbe99ZImL1EUgmWKVj0IUzYxNbi0g9mo
-        21J1tK/PT+5QM+FGUKvQOEMl0HYGfmPANc/KqZ2l73IQwLippFo+56RIy0kxtN0LmsbY2mM
-        xp6fzMuQ+AGinJqCDKn8PW9ry0gYpX9+Jy8B1RX2S9KZPOzXcW5K89L1SjVenEn3SRyLgBJ
-        ty9KK9iEfEXyd1Ktb1k4X2fQTVfvPhqFy/6oF3u6aqBgE4z7sGSWPeHH/fP0uByTXUdIicY
-        VXrcPrxmTxRCh1jyQSOCdzmsgwYHmYK3CPYKqNdv9qcWJUekUhDKY3uzIGdFEP8Cevp/pBy
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 6385224584075172696
-From:   zhongjun@uniontech.com
-To:     bpf@vger.kernel.org
-Cc:     zhongjun <zhongjun@uniontech.com>
-Subject: [PATCH] BPF: replace low-entropy member with macro
-Date:   Fri,  7 Apr 2023 11:34:18 +0800
-Message-Id: <20230407033418.2295-1-zhongjun@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        with ESMTP id S229495AbjDGDoc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 23:44:32 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40E5E63;
+        Thu,  6 Apr 2023 20:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680839070; x=1712375070;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=PLs5JPDUHNYwfcnKHsSeZ6Vihp3GPVzFQtLqg/2mSy4=;
+  b=f1n1cbEeLfgPciWgtHj2H0+oXobsWkRsgA/4xYuCVERKeZbSm1ws4VZF
+   dadH7ybydCC1ZXK8ZuHzKjD2/BAjN3SNQGxVqJu0SqC1ZldRzRX1fq5qQ
+   4p/uTjtPmOv+w8NyPEeN2HUDTPPp4BqxiXpNOaPhadBtf1q79w0wWfgmQ
+   Bf+85VwH8Km21RjhIJ2dp4He/jxvutC1zfKKuYooo0uL/Bs1dd0S50jGB
+   AqEnDQXHdC98JyJQCtRJpSetH7le5XffGQ1rbcJ20Aq7Vk4kVt/e3hkw8
+   LaK/dD54+iid0RlMl3nK3l0kGsEFRwk63ChCTyix9IHcrAY9JhTsPB6pl
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="323290642"
+X-IronPort-AV: E=Sophos;i="5.98,324,1673942400"; 
+   d="scan'208";a="323290642"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2023 20:44:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="664757168"
+X-IronPort-AV: E=Sophos;i="5.98,324,1673942400"; 
+   d="scan'208";a="664757168"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 06 Apr 2023 20:44:26 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pkd1V-000S5o-1j;
+        Fri, 07 Apr 2023 03:44:25 +0000
+Date:   Fri, 07 Apr 2023 11:43:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     platform-driver-x86@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-acpi@vger.kernel.org,
+        io-uring@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        bpf@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ e134c93f788fb93fd6a3ec3af9af850a2048c7e6
+Message-ID: <642f916b.pPIKZ/l//bw8tvIH%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvr:qybglogicsvr2
-X-Spam-Status: No, score=-0.0 required=5.0 tests=RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: zhongjun <zhongjun@uniontech.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: e134c93f788fb93fd6a3ec3af9af850a2048c7e6  Add linux-next specific files for 20230406
 
-The member orig_idx is a low-entropy once-init invariable data
-member. It can be replace by a series of macros.
-Replace this member by macros can save memory and cpu-time.
+Error/Warning reports:
 
-Signed-off-by: Jun Zhong <zhongjun@uniontech.com>
-base-commit: 919e659ed12568b5b8ba6c2ffdd82d8d31fc28af
----
- include/linux/bpf_verifier.h | 3 ++-
- kernel/bpf/verifier.c        | 6 ++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+https://lore.kernel.org/oe-kbuild-all/202303082135.NjdX1Bij-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202303161521.jbGbaFjJ-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202304011449.XFV6lLwh-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202304040401.IMxt7Ubi-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202304061839.hi01VPl1-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202304070251.LY6c7kgm-lkp@intel.com
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index cf1bb1cf4a7b..8783d90a21bb 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -451,11 +451,12 @@ struct bpf_insn_aux_data {
- 	u8 alu_state; /* used in combination with alu_limit */
- 
- 	/* below fields are initialized once */
--	unsigned int orig_idx; /* original instruction index */
- 	bool prune_point;
- 	bool jmp_point;
- };
- 
-+#define ORIG_IDX_BY_OFF(head, off)	(off)
-+
- #define MAX_USED_MAPS 64 /* max number of maps accessed by one eBPF program */
- #define MAX_USED_BTFS 64 /* max number of BTFs accessed by one BPF program */
- 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d517d13878cf..e2545cd128d8 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15428,7 +15428,7 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
- 		if (PTR_ERR(new_prog) == -ERANGE)
- 			verbose(env,
- 				"insn %d cannot be patched due to 16-bit range\n",
--				env->insn_aux_data[off].orig_idx);
-+				ORIG_IDX_BY_OFF(env->insn_aux_data, off));
- 		vfree(new_data);
- 		return NULL;
- 	}
-@@ -17652,7 +17652,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
- 	u64 start_time = ktime_get_ns();
- 	struct bpf_verifier_env *env;
- 	struct bpf_verifier_log *log;
--	int i, len, ret = -EINVAL;
-+	int len, ret = -EINVAL;
- 	bool is_priv;
- 
- 	/* no program is valid */
-@@ -17673,8 +17673,6 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
- 	ret = -ENOMEM;
- 	if (!env->insn_aux_data)
- 		goto err_free_env;
--	for (i = 0; i < len; i++)
--		env->insn_aux_data[i].orig_idx = i;
- 	env->prog = *prog;
- 	env->ops = bpf_verifier_ops[env->prog->type];
- 	env->fd_array = make_bpfptr(attr->fd_array, uattr.is_kernel);
+Error/Warning: (recently discovered and may have been fixed)
+
+Warning: arch/x86/Kconfig references a file that doesn't exist: Documentation/x86/shstk.rst
+diff: tools/arch/s390/include/uapi/asm/ptrace.h: No such file or directory
+drivers/bluetooth/hci_qca.c:1894:37: warning: unused variable 'qca_soc_data_wcn6855' [-Wunused-const-variable]
+drivers/clk/clk-sp7021.c:316:8: warning: result of comparison of constant 18446744073709551615 with expression of type 'typeof (_Generic((_m), char: (unsigned char)0, unsigned char: (unsigned char)0, signed char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned long: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned long long)0, long long: (unsigned long long)0, default: (_m)))' (aka 'unsigned int') is always false [-Wtautological-constant-out-of-range-compare]
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_validation.c:351:13: warning: variable 'bw_needed' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_validation.c:352:25: warning: variable 'link' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu13/smu_v13_0_6_ppt.c:309:17: sparse:    int
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu13/smu_v13_0_6_ppt.c:309:17: sparse:    void
+drivers/net/wireless/legacy/ray_cs.c:628:17: warning: 'strncpy' specified bound 32 equals destination size [-Wstringop-truncation]
+kernel/bpf/verifier.c:18485: undefined reference to `find_kallsyms_symbol_value'
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+drivers/acpi/property.c:985 acpi_data_prop_read_single() error: potentially dereferencing uninitialized 'obj'.
+drivers/gpu/drm/i915/display/intel_tc.c:424 icl_tc_phy_hpd_live_status() error: uninitialized symbol 'fia_isr'.
+drivers/gpu/drm/i915/display/intel_tc.c:436 icl_tc_phy_hpd_live_status() error: uninitialized symbol 'pch_isr'.
+drivers/gpu/drm/i915/display/intel_tc.c:655 tgl_tc_phy_init() error: uninitialized symbol 'val'.
+drivers/gpu/drm/i915/display/intel_tc.c:709 adlp_tc_phy_hpd_live_status() error: uninitialized symbol 'cpu_isr'.
+drivers/gpu/drm/i915/display/intel_tc.c:714 adlp_tc_phy_hpd_live_status() error: uninitialized symbol 'pch_isr'.
+drivers/gpu/drm/i915/i915_hwmon.c:411 hwm_power_max_write() error: uninitialized symbol 'nval'.
+include/linux/gpio/consumer.h: linux/err.h is included more than once.
+include/linux/gpio/driver.h: asm/bug.h is included more than once.
+io_uring/io_uring.c:432 io_prep_async_work() error: we previously assumed 'req->file' could be null (see line 425)
+io_uring/kbuf.c:221 __io_remove_buffers() warn: variable dereferenced before check 'bl->buf_ring' (see line 219)
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|   `-- drivers-net-wireless-legacy-ray_cs.c:warning:strncpy-specified-bound-equals-destination-size
+|-- alpha-randconfig-m041-20230403
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arc-randconfig-r043-20230404
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm64-randconfig-s053-20230406
+|   |-- drivers-remoteproc-imx_dsp_rproc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-volatile-noderef-__iomem-addr-got-unsigned-int-usertype-assigned-tmp_dst
+|   |-- drivers-remoteproc-imx_dsp_rproc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-volatile-noderef-__iomem-addr-got-void
+|   |-- drivers-remoteproc-imx_dsp_rproc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-volatile-noderef-__iomem-addr-got-unsigned-int-usertype
+|   |-- drivers-remoteproc-imx_dsp_rproc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-volatile-noderef-__iomem-addr-got-unsigned-int-usertype-assigned-tmp_dst
+|   `-- drivers-remoteproc-imx_dsp_rproc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-volatile-noderef-__iomem-addr-got-void
+|-- csky-buildonly-randconfig-r002-20230403
+|   `-- drivers-net-wireless-legacy-ray_cs.c:warning:strncpy-specified-bound-equals-destination-size
+|-- csky-randconfig-r011-20230403
+|   `-- drivers-net-wireless-legacy-ray_cs.c:warning:strncpy-specified-bound-equals-destination-size
+|-- i386-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- i386-randconfig-m021-20230403
+|   |-- drivers-acpi-property.c-acpi_data_prop_read_single()-error:potentially-dereferencing-uninitialized-obj-.
+|   |-- io_uring-io_uring.c-io_prep_async_work()-error:we-previously-assumed-req-file-could-be-null-(see-line-)
+|   `-- io_uring-kbuf.c-__io_remove_buffers()-warn:variable-dereferenced-before-check-bl-buf_ring-(see-line-)
+|-- i386-randconfig-m031-20230403
+|   |-- drivers-acpi-property.c-acpi_data_prop_read_single()-error:potentially-dereferencing-uninitialized-obj-.
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c-adlp_tc_phy_hpd_live_status()-error:uninitialized-symbol-cpu_isr-.
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c-adlp_tc_phy_hpd_live_status()-error:uninitialized-symbol-pch_isr-.
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c-icl_tc_phy_hpd_live_status()-error:uninitialized-symbol-fia_isr-.
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c-icl_tc_phy_hpd_live_status()-error:uninitialized-symbol-pch_isr-.
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c-tgl_tc_phy_init()-error:uninitialized-symbol-val-.
+|   |-- drivers-gpu-drm-i915-i915_hwmon.c-hwm_power_max_write()-error:uninitialized-symbol-nval-.
+|   |-- io_uring-io_uring.c-io_prep_async_work()-error:we-previously-assumed-req-file-could-be-null-(see-line-)
+|   `-- io_uring-kbuf.c-__io_remove_buffers()-warn:variable-dereferenced-before-check-bl-buf_ring-(see-line-)
+|-- ia64-allmodconfig
+clang_recent_errors
+|-- hexagon-randconfig-r025-20230405
+|   `-- drivers-clk-clk-sp7021.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((_m)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-char)-unsigned-
+`-- hexagon-randconfig-r041-20230404
+    `-- drivers-bluetooth-hci_qca.c:warning:unused-variable-qca_soc_data_wcn6855
+
+elapsed time: 1262m
+
+configs tested: 100
+configs skipped: 6
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r026-20230405   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r043-20230404   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r002-20230405   gcc  
+arm                  randconfig-r046-20230404   gcc  
+arm64                            allyesconfig   gcc  
+arm64        buildonly-randconfig-r003-20230403   clang
+arm64                               defconfig   gcc  
+csky         buildonly-randconfig-r002-20230403   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r011-20230403   gcc  
+csky                 randconfig-r013-20230403   gcc  
+csky                 randconfig-r032-20230405   gcc  
+csky                 randconfig-r035-20230405   gcc  
+hexagon      buildonly-randconfig-r004-20230403   clang
+hexagon              randconfig-r025-20230405   clang
+hexagon              randconfig-r041-20230404   clang
+hexagon              randconfig-r045-20230404   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-a001-20230403   clang
+i386                 randconfig-a002-20230403   clang
+i386                 randconfig-a003-20230403   clang
+i386                 randconfig-a004-20230403   clang
+i386                 randconfig-a005-20230403   clang
+i386                 randconfig-a006-20230403   clang
+i386                 randconfig-a011-20230403   gcc  
+i386                 randconfig-a012-20230403   gcc  
+i386                 randconfig-a013-20230403   gcc  
+i386                 randconfig-a014-20230403   gcc  
+i386                 randconfig-a015-20230403   gcc  
+i386                 randconfig-a016-20230403   gcc  
+ia64                             allmodconfig   gcc  
+ia64         buildonly-randconfig-r006-20230403   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r001-20230405   gcc  
+ia64                 randconfig-r024-20230405   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k         buildonly-randconfig-r005-20230403   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r014-20230403   gcc  
+m68k                 randconfig-r031-20230405   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r033-20230405   gcc  
+nios2                               defconfig   gcc  
+openrisc             randconfig-r034-20230405   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r006-20230405   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r021-20230405   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r003-20230405   clang
+riscv                randconfig-r012-20230403   gcc  
+riscv                randconfig-r016-20230403   gcc  
+riscv                randconfig-r023-20230405   gcc  
+riscv                randconfig-r042-20230404   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r022-20230405   gcc  
+s390                 randconfig-r044-20230404   clang
+sh                               allmodconfig   gcc  
+sparc        buildonly-randconfig-r001-20230403   gcc  
+sparc                               defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                        randconfig-a001   clang
+x86_64                        randconfig-a002   gcc  
+x86_64                        randconfig-a003   clang
+x86_64                        randconfig-a004   gcc  
+x86_64                        randconfig-a005   clang
+x86_64                        randconfig-a006   gcc  
+x86_64               randconfig-a011-20230403   gcc  
+x86_64               randconfig-a012-20230403   gcc  
+x86_64               randconfig-a013-20230403   gcc  
+x86_64               randconfig-a014-20230403   gcc  
+x86_64               randconfig-a015-20230403   gcc  
+x86_64               randconfig-a016-20230403   gcc  
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r005-20230405   gcc  
+
 -- 
-2.20.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
