@@ -2,153 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 115AB6DAC3A
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 13:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1006DADC1
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 15:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240723AbjDGL3P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 07:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
+        id S240685AbjDGNjb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 09:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240454AbjDGL3O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 07:29:14 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD87976F
-        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 04:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680866933; x=1712402933;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3cd0xBqmZLwCm19Q3/0HNGu6ZRBFjmnCA9agGLJ4pq0=;
-  b=OabP5GTCvQKT+H0UQZ3Sacidk6PCtHUmzW8AT56MMEs8rdaNf+zHkLN0
-   bV4A9tkw7sQZRR3vr6Q7kclw7QQWA5bAL+jLDnlzym28qpiGGK15mdNMr
-   OuxVMezHdCiVtbUn8ucRUguCbeNTIovsbfjPGy+r5lxrM8Lho8AqfWlPu
-   KC6D2psbu8xYWrBLprC0mgDFs3xZLR9UzpAzXM0CF633kLoFGpqIZcowT
-   0OI+CoAuCmFeSZivOOCzgRI07g3Aqb5FvPwVoJz64UwVzMzpJw8Gu5IvL
-   rFjJzIc8gaqgT9pWCd5bnMdCllvqGtdVmPUOpd1thDD8rRL22HdPQnEpP
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="322612302"
-X-IronPort-AV: E=Sophos;i="5.98,326,1673942400"; 
-   d="scan'208";a="322612302"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2023 04:28:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="637676759"
-X-IronPort-AV: E=Sophos;i="5.98,326,1673942400"; 
-   d="scan'208";a="637676759"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 07 Apr 2023 04:28:48 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pkkGp-000SRY-0A;
-        Fri, 07 Apr 2023 11:28:43 +0000
-Date:   Fri, 7 Apr 2023 19:28:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     zhongjun@uniontech.com, bpf@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        zhongjun <zhongjun@uniontech.com>
-Subject: Re: [PATCH] BPF: replace low-entropy member with macro
-Message-ID: <202304071944.aYRCuc4u-lkp@intel.com>
-References: <20230407033418.2295-1-zhongjun@uniontech.com>
+        with ESMTP id S231178AbjDGNj1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 09:39:27 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0D1AD38
+        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 06:39:23 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id e18so42331133wra.9
+        for <bpf@vger.kernel.org>; Fri, 07 Apr 2023 06:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1680874761;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pox4hvdMwzxEobjiq290toIe3b0t8usEe650+0u+Rkg=;
+        b=ZELFjg9WHzt/arTjAjKKvyySu5ONgaSZ+0S3cyIQc2j4Qq/f0BLAAGclCrkCKlWlr2
+         hSz0peJcWTM/CkU4HKAQTSt77ObxTa3d4Ab0+WHo6+/3HzIyzVupEcPMfvrD6EPPD0jh
+         rWbtbQaOrSXfHdGkte1OpIX07IZGyQksPVW6A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680874761;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pox4hvdMwzxEobjiq290toIe3b0t8usEe650+0u+Rkg=;
+        b=FQDkMM08rtJ7NQX6+MoC7eD4TEXeyWzXZDAsYSHvxZmobG/oS4GsKjhS25G3u3LMNc
+         B0CZPm1XSaBR3wNFALNTQuDNV+AVGz4jUhDME1/Otee8eiUGQ9yJQZQ4e10KlG1/pMy2
+         N0t8Y0dtoULEFrf7nTklvr4/HmYyGtz47q4uy9MrIeKvWilAgEvOeblbtnCgVdDC5paH
+         CYUNnVBnxcMWvl1V91pBMrV7ESFfhI3KhsYao44aS040sO3/6MDxrBPcvmbc9ncsKUnw
+         JIUsk1OV7IyjOkOfhQndQPWxjJ6HvFosuOlB8Mgpkdmzt8LSfz80waItmCFGP58VmmdJ
+         eKNA==
+X-Gm-Message-State: AAQBX9evDTpv5YZ2pH3M+qP1TX1XhuPh+Da79xCT8E9l6+TDZBYkinr/
+        KTjWr7OuFROZy7RO1Fksa7OYFQ7LuKe23mvsZ3IZmZ7H
+X-Google-Smtp-Source: AKy350a0UCYaceM9euTsVoBonxjejDxiif/4/UKk8+FVs5IYVRLNpkmJw3Y3EugOWrGkfhUApH8PBg==
+X-Received: by 2002:a5d:494f:0:b0:2e4:e489:c679 with SMTP id r15-20020a5d494f000000b002e4e489c679mr1374917wrs.10.1680874761530;
+        Fri, 07 Apr 2023 06:39:21 -0700 (PDT)
+Received: from workstation.ehrig.io (p4fdbfbb0.dip0.t-ipconnect.de. [79.219.251.176])
+        by smtp.gmail.com with ESMTPSA id m13-20020a056000180d00b002efac42ff35sm2380188wrh.37.2023.04.07.06.39.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Apr 2023 06:39:20 -0700 (PDT)
+From:   Christian Ehrig <cehrig@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     cehrig@cloudflare.com, kernel-team@cloudflare.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        David Vernet <void@manifault.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Kaixi Fan <fankaixi.li@bytedance.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>, netdev@vger.kernel.org,
+        Paul Chaignon <paul@isovalent.com>, Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, Yonghong Song <yhs@fb.com>
+Subject: [PATCH bpf-next v3 0/3] Add FOU support for externally controlled ipip devices
+Date:   Fri,  7 Apr 2023 15:38:52 +0200
+Message-Id: <cover.1680874078.git.cehrig@cloudflare.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230407033418.2295-1-zhongjun@uniontech.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+This patch set adds support for using FOU or GUE encapsulation with
+an ipip device operating in collect-metadata mode and a set of kfuncs
+for controlling encap parameters exposed to a BPF tc-hook.
 
-kernel test robot noticed the following build errors:
+BPF tc-hooks allow us to read tunnel metadata (like remote IP addresses)
+in the ingress path of an externally controlled tunnel interface via
+the bpf_skb_get_tunnel_{key,opt} bpf-helpers. Packets can then be
+redirected to the same or a different externally controlled tunnel
+interface by overwriting metadata via the bpf_skb_set_tunnel_{key,opt}
+helpers and a call to bpf_redirect. This enables us to redirect packets
+between tunnel interfaces - and potentially change the encapsulation
+type - using only a single BPF program.
 
-[auto build test ERROR on 919e659ed12568b5b8ba6c2ffdd82d8d31fc28af]
+Today this approach works fine for a couple of tunnel combinations.
+For example: redirecting packets between Geneve and GRE interfaces or
+GRE and plain ipip interfaces. However, redirecting using FOU or GUE is
+not supported today. The ip_tunnel module does not allow us to egress
+packets using additional UDP encapsulation from an ipip device in
+collect-metadata mode.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/zhongjun-uniontech-com/BPF-replace-low-entropy-member-with-macro/20230407-113614
-base:   919e659ed12568b5b8ba6c2ffdd82d8d31fc28af
-patch link:    https://lore.kernel.org/r/20230407033418.2295-1-zhongjun%40uniontech.com
-patch subject: [PATCH] BPF: replace low-entropy member with macro
-config: x86_64-randconfig-a002-20230403 (https://download.01.org/0day-ci/archive/20230407/202304071944.aYRCuc4u-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/f8ee7d5ddcfe866f9b9b4f18dff368764ea854e5
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review zhongjun-uniontech-com/BPF-replace-low-entropy-member-with-macro/20230407-113614
-        git checkout f8ee7d5ddcfe866f9b9b4f18dff368764ea854e5
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/net/ethernet/netronome/nfp/
+Patch 1 lifts this restriction by adding a struct ip_tunnel_encap to
+the tunnel metadata. It can be filled by a new BPF kfunc introduced
+in Patch 2 and evaluated by the ip_tunnel egress path. This will allow
+us to use FOU and GUE encap with externally controlled ipip devices.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304071944.aYRCuc4u-lkp@intel.com/
+Patch 2 introduces two new BPF kfuncs: bpf_skb_{set,get}_fou_encap.
+These helpers can be used to set and get UDP encap parameters from the
+BPF tc-hook doing the packet redirect.
 
-All errors (new ones prefixed by >>):
+Patch 3 adds BPF tunnel selftests using the two kfuncs.
 
->> drivers/net/ethernet/netronome/nfp/bpf/verifier.c:814:57: error: no member named 'orig_idx' in 'struct bpf_insn_aux_data'
-           meta = nfp_bpf_goto_meta(nfp_prog, meta, aux_data[off].orig_idx);
-                                                    ~~~~~~~~~~~~~ ^
-   drivers/net/ethernet/netronome/nfp/bpf/verifier.c:827:52: error: no member named 'orig_idx' in 'struct bpf_insn_aux_data'
-                   } else if (meta->jmp_dst->n != aux_data[tgt_off].orig_idx) {
-                                                  ~~~~~~~~~~~~~~~~~ ^
-   drivers/net/ethernet/netronome/nfp/bpf/verifier.c:830:23: error: no member named 'orig_idx' in 'struct bpf_insn_aux_data'
-                                   aux_data[tgt_off].orig_idx);
-                                   ~~~~~~~~~~~~~~~~~ ^
-   drivers/net/ethernet/netronome/nfp/bpf/verifier.c:17:46: note: expanded from macro 'pr_vlog'
-           bpf_verifier_log_write(env, "[nfp] " fmt, ##__VA_ARGS__)
-                                                       ^~~~~~~~~~~
-   drivers/net/ethernet/netronome/nfp/bpf/verifier.c:848:57: error: no member named 'orig_idx' in 'struct bpf_insn_aux_data'
-           meta = nfp_bpf_goto_meta(nfp_prog, meta, aux_data[off].orig_idx);
-                                                    ~~~~~~~~~~~~~ ^
-   4 errors generated.
+---
+v3:
+ - Integrate selftest into test_progs (Alexei)
+v2:
+ - Fixes for checkpatch.pl
+ - Fixes for kernel test robot
 
+Christian Ehrig (3):
+  ipip,ip_tunnel,sit: Add FOU support for externally controlled ipip
+    devices
+  bpf,fou: Add bpf_skb_{set,get}_fou_encap kfuncs
+  selftests/bpf: Test FOU kfuncs for externally controlled ipip devices
 
-vim +814 drivers/net/ethernet/netronome/nfp/bpf/verifier.c
-
-a32014b351662f Jakub Kicinski 2019-01-22  806  
-a32014b351662f Jakub Kicinski 2019-01-22  807  int nfp_bpf_opt_replace_insn(struct bpf_verifier_env *env, u32 off,
-a32014b351662f Jakub Kicinski 2019-01-22  808  			     struct bpf_insn *insn)
-a32014b351662f Jakub Kicinski 2019-01-22  809  {
-a32014b351662f Jakub Kicinski 2019-01-22  810  	struct nfp_prog *nfp_prog = env->prog->aux->offload->dev_priv;
-a32014b351662f Jakub Kicinski 2019-01-22  811  	struct bpf_insn_aux_data *aux_data = env->insn_aux_data;
-a32014b351662f Jakub Kicinski 2019-01-22  812  	struct nfp_insn_meta *meta = nfp_prog->verifier_meta;
-a32014b351662f Jakub Kicinski 2019-01-22  813  
-a32014b351662f Jakub Kicinski 2019-01-22 @814  	meta = nfp_bpf_goto_meta(nfp_prog, meta, aux_data[off].orig_idx);
-a32014b351662f Jakub Kicinski 2019-01-22  815  	nfp_prog->verifier_meta = meta;
-a32014b351662f Jakub Kicinski 2019-01-22  816  
-a32014b351662f Jakub Kicinski 2019-01-22  817  	/* conditional jump to jump conversion */
-a32014b351662f Jakub Kicinski 2019-01-22  818  	if (is_mbpf_cond_jump(meta) &&
-a32014b351662f Jakub Kicinski 2019-01-22  819  	    insn->code == (BPF_JMP | BPF_JA | BPF_K)) {
-a32014b351662f Jakub Kicinski 2019-01-22  820  		unsigned int tgt_off;
-a32014b351662f Jakub Kicinski 2019-01-22  821  
-a32014b351662f Jakub Kicinski 2019-01-22  822  		tgt_off = off + insn->off + 1;
-a32014b351662f Jakub Kicinski 2019-01-22  823  
-a32014b351662f Jakub Kicinski 2019-01-22  824  		if (!insn->off) {
-a32014b351662f Jakub Kicinski 2019-01-22  825  			meta->jmp_dst = list_next_entry(meta, l);
-a32014b351662f Jakub Kicinski 2019-01-22  826  			meta->jump_neg_op = false;
-a32014b351662f Jakub Kicinski 2019-01-22  827  		} else if (meta->jmp_dst->n != aux_data[tgt_off].orig_idx) {
-a32014b351662f Jakub Kicinski 2019-01-22  828  			pr_vlog(env, "branch hard wire at %d changes target %d -> %d\n",
-a32014b351662f Jakub Kicinski 2019-01-22  829  				off, meta->jmp_dst->n,
-a32014b351662f Jakub Kicinski 2019-01-22  830  				aux_data[tgt_off].orig_idx);
-a32014b351662f Jakub Kicinski 2019-01-22  831  			return -EINVAL;
-a32014b351662f Jakub Kicinski 2019-01-22  832  		}
-a32014b351662f Jakub Kicinski 2019-01-22  833  		return 0;
-a32014b351662f Jakub Kicinski 2019-01-22  834  	}
-a32014b351662f Jakub Kicinski 2019-01-22  835  
-a32014b351662f Jakub Kicinski 2019-01-22  836  	pr_vlog(env, "unsupported instruction replacement %hhx -> %hhx\n",
-a32014b351662f Jakub Kicinski 2019-01-22  837  		meta->insn.code, insn->code);
-a32014b351662f Jakub Kicinski 2019-01-22  838  	return -EINVAL;
-a32014b351662f Jakub Kicinski 2019-01-22  839  }
-9a06927e778bc4 Jakub Kicinski 2019-01-22  840  
+ include/net/fou.h                             |   2 +
+ include/net/ip_tunnels.h                      |  28 ++--
+ net/ipv4/Makefile                             |   2 +-
+ net/ipv4/fou_bpf.c                            | 119 ++++++++++++++
+ net/ipv4/fou_core.c                           |   5 +
+ net/ipv4/ip_tunnel.c                          |  22 ++-
+ net/ipv4/ipip.c                               |   1 +
+ net/ipv6/sit.c                                |   2 +-
+ .../selftests/bpf/prog_tests/test_tunnel.c    | 153 +++++++++++++++++-
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 117 ++++++++++++++
+ 10 files changed, 432 insertions(+), 19 deletions(-)
+ create mode 100644 net/ipv4/fou_bpf.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.39.2
+
