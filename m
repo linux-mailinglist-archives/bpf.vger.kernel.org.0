@@ -2,66 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A296DA701
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 03:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F536DA70B
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 03:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239274AbjDGBgo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 21:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
+        id S231579AbjDGBoF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 21:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbjDGBgn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 21:36:43 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D5A26BC;
-        Thu,  6 Apr 2023 18:36:42 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id c18so38956248ple.11;
-        Thu, 06 Apr 2023 18:36:42 -0700 (PDT)
+        with ESMTP id S229892AbjDGBoE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 21:44:04 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97504618B;
+        Thu,  6 Apr 2023 18:44:03 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id l9-20020a17090a3f0900b0023d32684e7fso7146372pjc.1;
+        Thu, 06 Apr 2023 18:44:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680831402; x=1683423402;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I9YDMioh72y0Ct+xcPOrxHBVx5V7y8eDftq4hNHLa8A=;
-        b=osuk2aWLJNIdTD2oEL3mVDMzMfMyP/1Hj9UeuaiFScZw1UciE9NfKMgnypmkMgHfrv
-         eioDfMkmC3TVuEL4Z2bYA099YZauav8QDyrdzkDrSy5Y7GTpcqOR1uBKGwu2DjfB/qUC
-         ikbGmtsKlQhhaelD84xeUcD9kmDfzNeKNIezmDTdlXKswRuyoEx6sVUzBKU/NoqkHLRD
-         R6z/5KTIkjLluFEb3jQ+GTPiTN9vbagZPYsmF0FP++BMdgsNBviqNndjDpWa0wG1UtXo
-         NpJtaLKpZYEZcN/M81Pq+ErDbR/q6XnPyXgX2Fc3umkDGAJYyCVSrUv3IUlJAAV17yZH
-         UXmQ==
+        d=gmail.com; s=20210112; t=1680831843; x=1683423843;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3Of478TmHdbvGaBEH1hgy6xl4bV9ps/ooDVMDf4nzGk=;
+        b=Kp4CBd2MyaGDYTJU9pq487Ud4NQC6jUS0wYyrqeU8L6Q6YlQ9nGTZ4owUpsCkfB8E0
+         Ddszg7jyPrXnqGZgz+l/AP91uJrbtEkQQpyh9nopkSStktIi6nB2EyuaLPVJetHrdHEX
+         QLgt4+kXuO4XU7J5jsIHsc01cfDLdQ/yHxqhfjS3mVZp5DE3jxEhc2F4YAFOfqxnru01
+         Jn6CCQgrwRY56YHf8e5zs3Xg7hlkhc0lZaGQZ1HfscQw+S+nVtlJ9t2GPFAIT/3npipf
+         x3/laf6BEPR74w+0ZGV0n+C9Y/k0KIE/t+GEc6afrXlYwRxUE+9eCdeBLF1aqSUNcVq6
+         090g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680831402; x=1683423402;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I9YDMioh72y0Ct+xcPOrxHBVx5V7y8eDftq4hNHLa8A=;
-        b=wd2gt9nr1ZBhqKm+c/E6+puJD9MZWE2Oj0aWwhm6rvYRhT3Ib4sZOGi9aOtBpCQN2O
-         kDp0L1mHjwXrO/ToVZCoo/7E2eafaVDCJJswuXo1cIV/nh+3OgzmuWu7caOn6hPfJSh1
-         BBb7QYz+KJKbhQ4GdEjiJC3uVI+4xJCv4BSMpr1ZXqWbsiUdLw0uEAWqMH1mALmOm2VG
-         +yoMpR8aXhLDgc4elnuFapRlYMbBOGZrMDJ8Z9zOh7eP2jjIUb4Vo836l8FWSZqfk/YY
-         +8+y5uF3MRCsy1u5SF1ECkMLzoBfnh33t42xonPs8wRP9ju1/JLnqJJTk65C+RZuoHY8
-         v0XQ==
-X-Gm-Message-State: AAQBX9e6wuGe2tdxm1y+kDvZNQA9cZYIBWTrgcVtOnTpLmmyKqkHQ541
-        oIY90lRvVPPPha0UKhAmHrQI3cqInog=
-X-Google-Smtp-Source: AKy350bzsc0oH42YAlUsTSNMLXBiXNfn2eMgxfMRaENOsfCyODciiKTpmq785mF4lNlWzvsrCSKggA==
-X-Received: by 2002:a05:6a20:c521:b0:d9:7424:341b with SMTP id gm33-20020a056a20c52100b000d97424341bmr1389304pzb.9.1680831401447;
-        Thu, 06 Apr 2023 18:36:41 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680831843; x=1683423843;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Of478TmHdbvGaBEH1hgy6xl4bV9ps/ooDVMDf4nzGk=;
+        b=41cX+KXOxYofwF4NymfugsZu/X2bOso3p6Bl4YXEvDVCL2od1y6YlWcZf8bjcdioWM
+         qLvivOvplNoJOfDl8OpaMGUI/XfD522VJixuQHZ9Ti6ga6PWH2kK+MCv9hLABRK0djBL
+         JasxdbzgkL8woZeInDt5Edd37bWZKZXpnLGvGEQtU+A3K66rS1iNIC1NJ0ghWbdm/b9S
+         nZfCvBIrLFuv81+29iBruICN1fdQV/kfSN+wW1Dy6iiUC+VCJ41GsAU1VIc5W0ewqLj0
+         Sgsn1A2WKf8HVUu8t4zGJ2Oc3abH8765xQRsceiIEijvNS8k2lL9p1gfenI86fMbQ76C
+         HDIA==
+X-Gm-Message-State: AAQBX9cqv+oKAyTp/VDTluQ8HAAtHIgAI0Ig2bmgwxyBzjaKA5HXhJIp
+        AY0dcs8stxNf+FjacDIeVV+qSUrUPNM=
+X-Google-Smtp-Source: AKy350ZwVFBxUYtpec9tAEbQiWYXkZ983yORQ/50Jw3c8jyYwAgmLl+/ucoqJJKRJd/APAZeuaX4YA==
+X-Received: by 2002:a17:90b:388e:b0:23e:aba9:d51d with SMTP id mu14-20020a17090b388e00b0023eaba9d51dmr687840pjb.7.1680831842869;
+        Thu, 06 Apr 2023 18:44:02 -0700 (PDT)
 Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:5abd])
-        by smtp.gmail.com with ESMTPSA id 3-20020a630a03000000b00476d1385265sm1686852pgk.25.2023.04.06.18.36.40
+        by smtp.gmail.com with ESMTPSA id jx20-20020a17090b46d400b0023f355a0bb5sm1776242pjb.14.2023.04.06.18.44.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 18:36:41 -0700 (PDT)
-Date:   Thu, 6 Apr 2023 18:36:38 -0700
+        Thu, 06 Apr 2023 18:44:02 -0700 (PDT)
+Date:   Thu, 6 Apr 2023 18:43:59 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        bpf@vger.kernel.org, dxu@dxuuu.xyz, qde@naccy.de
-Subject: Re: [PATCH bpf-next 6/6] bpf: add test_run support for netfilter
- program type
-Message-ID: <20230407013638.iels3lvezufbrenr@dhcp-172-26-102-232.dhcp.thefacebook.com>
-References: <20230405161116.13565-1-fw@strlen.de>
- <20230405161116.13565-7-fw@strlen.de>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, Song Liu <song@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 00/13] bpf: Introduce BPF namespace
+Message-ID: <20230407014359.m6tff5ffemvrsyt3@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <CALOAHbBj-+xY5jGLynUrg1GfSftZ+LT5DkADKz_+8+tL2kWMSw@mail.gmail.com>
+ <20230403225017.onl5pbp7h2ugclbk@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <CALOAHbDQROKrWe732Qv1CsZwr6nMJN-2y77JW3EuT53D8At+Ow@mail.gmail.com>
+ <20230406020656.7v5ongxyon5fr4s7@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <CALOAHbCEsucGRB+n5hTnPm-HssmB91HD4PFVRhdO=CZnJXfR6A@mail.gmail.com>
+ <CAADnVQ+1VEBHTM5Rm-gx8-bg=tfv=4x+aONhF0bAmBFZG3W8Qg@mail.gmail.com>
+ <CALOAHbAorooyteDjgs82TtujP4Fwo5hSkh-Z5QhxhV9p7_2mfw@mail.gmail.com>
+ <CAADnVQKr5Y3z9f_Vv49DvRFcN+OF3JaFx_9NgBL58pz+TLq8ig@mail.gmail.com>
+ <CALOAHbDdtj1Qd0h1jzXKN4R=_webEVW=sqYfhSFXXsYftyvnKw@mail.gmail.com>
+ <CAEf4Bza_vM8HE5g+4ANW3NAAt8=+cn7Lw+DSkH42gimqzYxPdw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230405161116.13565-7-fw@strlen.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bza_vM8HE5g+4ANW3NAAt8=+cn7Lw+DSkH42gimqzYxPdw@mail.gmail.com>
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -72,243 +90,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 06:11:16PM +0200, Florian Westphal wrote:
-> also add two simple retval tests: as-is, a return value other
-> than accept or drop will cause issues.
+On Thu, Apr 06, 2023 at 01:22:26PM -0700, Andrii Nakryiko wrote:
+> On Wed, Apr 5, 2023 at 10:44 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+> >
+> > On Thu, Apr 6, 2023 at 12:24 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Apr 5, 2023 at 8:22 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > >
+> > > > On Thu, Apr 6, 2023 at 11:06 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Wed, Apr 5, 2023 at 7:55 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > > > >
+> > > > > > It seems that I didn't describe the issue clearly.
+> > > > > > The container doesn't have CAP_SYS_ADMIN, but the CAP_SYS_ADMIN is
+> > > > > > required to run bpftool,  so the bpftool running in the container
+> > > > > > can't get the ID of bpf objects or convert IDs to FDs.
+> > > > > > Is there something that I missed ?
+> > > > >
+> > > > > Nothing. This is by design. bpftool needs sudo. That's all.
+> > > > >
+> > > >
+> > > > Hmm, what I'm trying to do is make bpftool run without sudo.
+> > >
+> > > This is not a task that is worth solving.
+> > >
+> >
+> > Then the container with CAP_BPF enabled can't even iterate its bpf progs ...
 > 
-> NF_QUEUE could be implemented later IFF we can guarantee that
-> attachment of such programs can be rejected if they get attached
-> to a pf/hook that doesn't support async reinjection.
+> I'll leave the BPF namespace discussion aside (I agree that it needs
+> way more thought).
 > 
-> NF_STOLEN could be implemented via trusted helpers that will eventually
-> free the skb, else this would leak the skb reference.
+> I am a bit surprised that we require CAP_SYS_ADMIN for GET_NEXT_ID
+> operations. GET_FD_BY_ID is definitely CAP_SYS_ADMIN, as they allow
+> you to take over someone else's link and stuff like this. But just
+> iterating IDs seems like a pretty innocent functionality, so maybe we
+> should remove CAP_SYS_ADMIN for GET_NEXT_ID?
 > 
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  include/linux/bpf.h                           |   3 +
->  net/bpf/test_run.c                            | 143 ++++++++++++++++++
->  net/netfilter/nf_bpf_link.c                   |   1 +
->  .../selftests/bpf/verifier/netfilter.c        |  23 +++
->  4 files changed, 170 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/verifier/netfilter.c
+> By itself GET_NEXT_ID is relatively useless without capabilities, but
+> we've been floating the idea of providing GET_INFO_BY_ID (not by FD)
+> for a while now, and that seems useful in itself, as it would indeed
+> help tools like bpftool to get *some* information even without
+> privileges. Whether those GET_INFO_BY_ID operations should return same
+> full bpf_{prog,map,link,btf}_info or some trimmed down version of them
+> would be up to discussion, but I think getting some info without
+> creating an FD seems useful in itself.
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 2d8f3f639e68..453cee1efdd3 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2235,6 +2235,9 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
->  int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog,
->  				const union bpf_attr *kattr,
->  				union bpf_attr __user *uattr);
-> +int bpf_prog_test_run_nf(struct bpf_prog *prog,
-> +			 const union bpf_attr *kattr,
-> +			 union bpf_attr __user *uattr);
->  bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  		    const struct bpf_prog *prog,
->  		    struct bpf_insn_access_aux *info);
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index f1652f5fbd2e..c14f577fd987 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -19,7 +19,9 @@
->  #include <linux/error-injection.h>
->  #include <linux/smp.h>
->  #include <linux/sock_diag.h>
-> +#include <linux/netfilter.h>
->  #include <net/xdp.h>
-> +#include <net/netfilter/nf_bpf_link.h>
->  
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/bpf_test_run.h>
-> @@ -1690,6 +1692,147 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
->  	return err;
->  }
->  
-> +static int verify_and_copy_hook_state(struct nf_hook_state *state,
-> +				      const struct nf_hook_state *user,
-> +				      struct net_device *dev)
-> +{
-> +	if (user->in || user->out)
-> +		return -EINVAL;
-> +
-> +	if (user->net || user->sk || user->okfn)
-> +		return -EINVAL;
-> +
-> +	switch (user->pf) {
-> +	case NFPROTO_IPV4:
-> +	case NFPROTO_IPV6:
-> +		switch (state->hook) {
-> +		case NF_INET_PRE_ROUTING:
-> +			state->in = dev;
-> +			break;
-> +		case NF_INET_LOCAL_IN:
-> +			state->in = dev;
-> +			break;
-> +		case NF_INET_FORWARD:
-> +			state->in = dev;
-> +			state->out = dev;
-> +			break;
-> +		case NF_INET_LOCAL_OUT:
-> +			state->out = dev;
-> +			break;
-> +		case NF_INET_POST_ROUTING:
-> +			state->out = dev;
-> +			break;
-> +		}
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	state->pf = user->pf;
-> +	state->hook = user->hook;
-> +
-> +	return 0;
-> +}
-> +
-> +int bpf_prog_test_run_nf(struct bpf_prog *prog,
-> +			 const union bpf_attr *kattr,
-> +			 union bpf_attr __user *uattr)
-> +{
-> +	struct net *net = current->nsproxy->net_ns;
-> +	struct net_device *dev = net->loopback_dev;
-> +	struct nf_hook_state *user_ctx, hook_state = {
-> +		.pf = NFPROTO_IPV4,
-> +		.hook = NF_INET_PRE_ROUTING,
-> +	};
-> +	u32 size = kattr->test.data_size_in;
-> +	u32 repeat = kattr->test.repeat;
-> +	const struct ethhdr *eth;
-> +	struct bpf_nf_ctx ctx = {
-> +		.state = &hook_state,
-> +	};
-> +	struct sk_buff *skb = NULL;
-> +	u32 retval, duration;
-> +	void *data;
-> +	int ret;
-> +
-> +	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
-> +		return -EINVAL;
-> +
-> +	if (size < ETH_HLEN + sizeof(struct iphdr))
-> +		return -EINVAL;
-> +
-> +	data = bpf_test_init(kattr, kattr->test.data_size_in, size,
-> +			     NET_SKB_PAD + NET_IP_ALIGN,
-> +			     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
-> +	if (IS_ERR(data))
-> +		return PTR_ERR(data);
-> +
-> +	eth = (struct ethhdr *)data;
-> +
-> +	if (!repeat)
-> +		repeat = 1;
-> +
-> +	user_ctx = bpf_ctx_init(kattr, sizeof(struct nf_hook_state));
-> +	if (IS_ERR(user_ctx)) {
-> +		kfree(data);
-> +		return PTR_ERR(user_ctx);
-> +	}
-> +
-> +	if (user_ctx) {
-> +		ret = verify_and_copy_hook_state(&hook_state, user_ctx, dev);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
-> +	skb = slab_build_skb(data);
-> +	if (!skb) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	data = NULL; /* data released via kfree_skb */
-> +
-> +	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
-> +	__skb_put(skb, size);
-> +
-> +	skb->protocol = eth_type_trans(skb, dev);
-> +
-> +	skb_reset_network_header(skb);
-> +
-> +	ret = -EINVAL;
-> +
-> +	switch (skb->protocol) {
-> +	case htons(ETH_P_IP):
-> +		if (hook_state.pf == NFPROTO_IPV4)
-> +			break;
-> +		goto out;
-> +	case htons(ETH_P_IPV6):
-> +		if (size < ETH_HLEN + sizeof(struct ipv6hdr))
-> +			goto out;
-> +		if (hook_state.pf == NFPROTO_IPV6)
-> +			break;
-> +		goto out;
-> +	default:
-> +		ret = -EPROTO;
-> +		goto out;
-> +	}
-> +
-> +	ctx.skb = skb;
-> +
-> +	ret = bpf_test_run(prog, &ctx, repeat, &retval, &duration, false);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret = bpf_test_finish(kattr, uattr, NULL, NULL, 0, retval, duration);
-> +
-> +out:
-> +	kfree(user_ctx);
-> +	kfree_skb(skb);
-> +	kfree(data);
-> +	return ret;
-> +}
-> +
->  static const struct btf_kfunc_id_set bpf_prog_test_kfunc_set = {
->  	.owner = THIS_MODULE,
->  	.set   = &test_sk_check_kfunc_ids,
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> index 4b22a31d6df5..c27fd569adf1 100644
-> --- a/net/netfilter/nf_bpf_link.c
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -128,6 +128,7 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->  }
->  
->  const struct bpf_prog_ops netfilter_prog_ops = {
-> +	.test_run = bpf_prog_test_run_nf,
->  };
->  
->  static bool nf_ptr_to_btf_id(struct bpf_insn_access_aux *info, const char *name)
-> diff --git a/tools/testing/selftests/bpf/verifier/netfilter.c b/tools/testing/selftests/bpf/verifier/netfilter.c
-> new file mode 100644
-> index 000000000000..deeb87afdf50
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/verifier/netfilter.c
-> @@ -0,0 +1,23 @@
-> +{
-> +	"netfilter, accept all",
-> +	.insns = {
-> +	BPF_MOV64_IMM(BPF_REG_0, 1),
-> +	BPF_EXIT_INSN(),
-> +	},
-> +	.result = ACCEPT,
-> +	.prog_type = BPF_PROG_TYPE_NETFILTER,
-> +	.retval = 1,
-> +	.data = {
-> +		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x08, 0x00,
-> +	},
-> +},
-> +{
-> +	"netfilter, stolen verdict",
-> +	.insns = {
-> +	BPF_MOV64_IMM(BPF_REG_0, 2),
-> +	BPF_EXIT_INSN(),
-> +	},
-> +	.result = REJECT,
-> +	.errstr = "At program exit the register R0 has value (0x2; 0x0) should have been in (0x0; 0x1)",
-> +	.prog_type = BPF_PROG_TYPE_NETFILTER,
+> Would it be worth discussing and solving this separately from
+> namespacing issues?
 
-We're adding all new asm tests to test_progs now instead of test_verifier. See progs/verifier_*.c.
-
-Other than this nit and build bot complains it looks good to me.
+Iteration of IDs itself is fine. The set of IDs is not security sensitive,
+but GET_NEXT_BY_ID has to be carefully restricted.
+It returns xlated, jited, BTF, line info, etc
+and with all the restrictions it would need something like
+CAP_SYS_PTRACE and CAP_PERFMON to be useful.
+And with that we're not far from CAP_SYS_ADMIN.
+Why bother then?
