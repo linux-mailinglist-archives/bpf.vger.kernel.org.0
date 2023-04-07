@@ -2,69 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C77656DA720
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 03:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28E96DA73D
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 04:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239506AbjDGB5G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Apr 2023 21:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
+        id S239956AbjDGCAj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Apr 2023 22:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjDGB5F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Apr 2023 21:57:05 -0400
+        with ESMTP id S239719AbjDGCAW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Apr 2023 22:00:22 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA6D76A2;
-        Thu,  6 Apr 2023 18:57:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437FD7EDC;
+        Thu,  6 Apr 2023 19:00:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C005064D98;
-        Fri,  7 Apr 2023 01:57:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 640BFC433EF;
-        Fri,  7 Apr 2023 01:57:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C852E64E39;
+        Fri,  7 Apr 2023 02:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1FEDAC433A0;
+        Fri,  7 Apr 2023 02:00:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680832623;
-        bh=ZzGxI235rjV/nq6p6p1j5KBf5gZ8kyr7gt8ZhVBPgKs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kqRxnSIU0JMFy+2YfxoZJExrwJo2ZsVrump0w+1MbM3vJggg6pG+UscKnGsdgxEEY
-         jO+Jn4JTY1Mxi4snJxNhHHqs0+8ibJljEoAyYSWUGPB+6ZqcVb4CJEVlNfTqu5wQGd
-         5RqFMpg4WtnLxU9kzVR8C5cCmqcIsaBfX7q2L8hc8NPRFptRONiSSVwsiLHLI7pEQi
-         fZlwGkiOqgczuAj2WluJ7qwuH3SJbFMmd4IbEpgVYvN6EXO1tN99fcB6OanXmWfuAH
-         6ts5JMtnV63xMt9GdtQaE8eNo0cDAClu2KRnK9gJZMGRov0Irqzj9BjhGyW+xLLm2p
-         4THzWM82g3LAA==
-Date:   Thu, 6 Apr 2023 18:57:01 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Vernet <void@manifault.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Tejun Heo <tj@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Yonghong Song <yhs@meta.com>, Song Liu <song@kernel.org>
-Subject: Re: [PATCH bpf-next 0/8] bpf: Follow up to RCU enforcement in the
- verifier.
-Message-ID: <20230406185701.066c9243@kernel.org>
-In-Reply-To: <CAADnVQK8UH3Z8L9YckBXpPeeFTVFj0rn+widaEavfGDOEsiqmg@mail.gmail.com>
-References: <20230404045029.82870-1-alexei.starovoitov@gmail.com>
-        <20230404145131.GB3896@maniforge>
-        <CAEf4BzYXpHMNDTCrBTjwvj3UU5xhS9mAKLx152NniKO27Rdbeg@mail.gmail.com>
-        <CAADnVQKLe8+zJ0sMEOsh74EHhV+wkg0k7uQqbTkB3THx1CUyqw@mail.gmail.com>
-        <20230404185147.17bf217a@kernel.org>
-        <CAEf4BzY3-pXiM861OkqZ6eciBJnZS8gsBL2Le2rGiSU64GKYcg@mail.gmail.com>
-        <20230405111926.7930dbcc@kernel.org>
-        <CAADnVQLhLuB2HG4WqQk6T=oOq2dtXkwy0TjQbnxa4cVDLHq7bg@mail.gmail.com>
-        <20230406084217.44fff254@kernel.org>
-        <CAADnVQLOMa=p2m++uTH1i5odXrO5mF9Y++dJZuZyL3gC3MEm0w@mail.gmail.com>
-        <20230406182351.532edf53@kernel.org>
-        <CAADnVQK8UH3Z8L9YckBXpPeeFTVFj0rn+widaEavfGDOEsiqmg@mail.gmail.com>
+        s=k20201202; t=1680832818;
+        bh=yMPh6O0JgasZNRwSsmD4beCe3OsIB2hIUjABUM4+a3A=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=NCUSxKzMyY9l5vImpY/yRrhs+fYk/zJ6+zujuV5NbY1vHlAVHfnyQ6her+2uQMJ5M
+         D5P0mKZct7IrqM7ZcltqGE4Wp5XiaBWUnL9h7shUg1x4TjOedlJ0/jJShuVO8CcMtt
+         M590XISTbAINu3kXqkcfFEuxxbAEO3FD+iREjaVsRQGoim1U2LI6Ced8o3J5ZSdVYK
+         6NCyLNp7tybWAWhTAM3ZIDPxB4QLU/6pduig+JjhgOWpYg9oHboY0gtPsPR+F4mkIV
+         KLstE1RWYyB9w1ODMVWjvMi/G8QtrRk9JJMCIGV2P6CYDn68pdIzQjUTbNZsQ7EysB
+         PbLbZK2+8/eTQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E8A90C41671;
+        Fri,  7 Apr 2023 02:00:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: ensure all memory is initialized in
+ bpf_get_current_comm
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168083281794.8155.1614082065625431355.git-patchwork-notify@kernel.org>
+Date:   Fri, 07 Apr 2023 02:00:17 +0000
+References: <20230407001808.1622968-1-brho@google.com>
+In-Reply-To: <20230407001808.1622968-1-brho@google.com>
+To:     Barret Rhoden <brho@google.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
@@ -74,28 +59,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 6 Apr 2023 18:32:33 -0700 Alexei Starovoitov wrote:
-> > Check if your git config is right:
-> >
-> > $ git config --get pw.server
-> > https://patchwork.kernel.org/api/1.1/
-> >
-> > that's where $srv comes from  
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Thu,  6 Apr 2023 20:18:08 -0400 you wrote:
+> BPF helpers that take an ARG_PTR_TO_UNINIT_MEM must ensure that all of
+> the memory is set, including beyond the end of the string.
 > 
-> Ahh. All works now!
-> I like the new output.
-> I'll play with it more.
-> Should -M be a default? Any downside?
+> Signed-off-by: Barret Rhoden <brho@google.com>
+> ---
+>  kernel/bpf/helpers.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-There should be no difference, AFAICT. I'm happy with making it 
-the default.
+Here is the summary with links:
+  - [bpf-next] bpf: ensure all memory is initialized in bpf_get_current_comm
+    https://git.kernel.org/bpf/bpf-next/c/f3f213497797
 
-There's a minor difference in the merge-message formatting between
--c and -s we could possibly remove if we make -M the default. 
-Daniel uses the subject of the series as a fake branch name on the
- 
-  Merge branch '$branch_name'
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-line, while I convert the subject to a format which can be a real
-branch name in git (no spaces, special chars etc) and put the subject
-as the first line of the merge text.
+
