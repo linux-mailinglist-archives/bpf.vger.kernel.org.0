@@ -2,100 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE90B6DA98B
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 09:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E866DAA60
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 10:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbjDGHst (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 03:48:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
+        id S239421AbjDGIqm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 04:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbjDGHsr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 03:48:47 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F585B83
-        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 00:48:46 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Pt9V14TJzz4f3tps
-        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 15:48:41 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.102.38])
-        by APP4 (Coremail) with SMTP id gCh0CgAHvbDYyi9kCcuPGw--.24781S4;
-        Fri, 07 Apr 2023 15:48:42 +0800 (CST)
-From:   Wei Yongjun <weiyongjun@huaweicloud.com>
-To:     Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     Wei Yongjun <weiyongjun1@huawei.com>, bpf@vger.kernel.org
-Subject: [PATCH bpf-next] bpftool: set program type only if it differs from the desired one
-Date:   Fri,  7 Apr 2023 08:14:26 +0000
-Message-Id: <20230407081427.2621590-1-weiyongjun@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S230268AbjDGIql (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 04:46:41 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933FC976D
+        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 01:46:39 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id d22-20020a17090a111600b0023d1b009f52so864135pja.2
+        for <bpf@vger.kernel.org>; Fri, 07 Apr 2023 01:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1680857199;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5K1Y4OsJcJ4KwCwbQGTYT7oxVpnc4vIiM6hHQQ2APk8=;
+        b=L5z2G4SA6MyX2VTrvsYX7fiKhPZ2/afzXT4TdtYxOGCvS+0G5qtWQTdExLTDMrfWrD
+         DWgh14164S8R/xx+9veSlgxZn2Yk28Jm1lSUc9LGLnY0ZipjBaMRIVst29rQGP1CoGVP
+         VwF1lEebto5ctzHYyH5qzvT+jorn35mhxaFuBGtwR27EByDBB80hTDVKRhoSVvxnHzUw
+         0+dct90nfc2yu0mF9qpuNL7ibW50oIIqc8NkU+PKdFQn5qQpS1k3cFpZenfR5TIEFbpz
+         hJDctKGJS9ne515dXjQ2AxEAzE5QxmiPhp2Koh+FZ+t6UFfIM1YVOaVXLhlTMgLM6xZz
+         t9Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680857199;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5K1Y4OsJcJ4KwCwbQGTYT7oxVpnc4vIiM6hHQQ2APk8=;
+        b=34x7TEm3+plKuv3sRU5xL/BbVPAL8NWi5EuIzdqMkznr5GMPdQoHqXBLEq6nNvP+IR
+         Q8Q5evg8w5/VWYA4jupnK15KrrU67R/Up+nlvM2LnKGTBZy2+UMl/ZRr5S6QXMyEHVBQ
+         uXhaO13kU4WWkEtO5sNZgSScAWtBqwYoyvPfK0ENzdAgmxyYtt7ZKst1TSnpdzSr6DUW
+         o4qRNDbiKfRiktL7AW8VJrMO+EV49qMr5z2MfyM8vPFL8j2+6nrsqEH037p1Dp9cxFaF
+         OvajvAyo6Ln9BnNYpab4wCY3apD4Q8GbRCKIA2kjGuWrkTr27cZ3zL3OgBUgJUMIG1ry
+         /YkA==
+X-Gm-Message-State: AAQBX9caiaI8iSSoqcEo4vvzrIXOl3NF7ZKq0nCl1ZmpIPLoPcbxaK64
+        th9IhnwIr7AgiAhpjBAZo4x85LCsYwwz0tDTgFI=
+X-Google-Smtp-Source: AKy350Ye27QhQgOVdpS1rYrPSe1BiXyfbu4Zr6sUqaZRBP+AOWEFdGMdCVVGvgwJY46k2qIhuhp9Vg==
+X-Received: by 2002:a17:90a:f293:b0:234:2485:6743 with SMTP id fs19-20020a17090af29300b0023424856743mr1752040pjb.3.1680857199018;
+        Fri, 07 Apr 2023 01:46:39 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([139.177.225.238])
+        by smtp.gmail.com with ESMTPSA id s13-20020a17090a5d0d00b0023b3d80c76csm2333676pji.4.2023.04.07.01.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Apr 2023 01:46:38 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mykolal@fb.com, shuah@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        yangzhenze@bytedance.com, wangdongdong.6@bytedance.com,
+        zhouchengming@bytedance.com, zhoufeng.zf@bytedance.com
+Subject: [PATCH v2 0/2] Fix failure to access u32* argument of tracked function
+Date:   Fri,  7 Apr 2023 16:46:06 +0800
+Message-Id: <20230407084608.62296-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHvbDYyi9kCcuPGw--.24781S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF45Gw13GF1UZrWxJr1DJrb_yoW8GF45pa
-        yDX34UKry8Wry5A348A3yrXrW5KFs2gryUJrW8Xr1Y9F1kXrZYvFyfKF4jyr1Yg343ta4F
-        va1YkryrXw18ZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: 5zhl50pqjm3046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.0 required=5.0 tests=KHOP_HELO_FCRDNS,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-After commit d6e6286a12e7 ("libbpf: disassociate section handler on explicit
-bpf_program__set_type() call"), bpf_program__set_type() will force cleanup
-the program's SEC() definition, this commit fixed the test helper but missed
-the bpftool, which leads to bpftool prog autoattach broken as follows:
+When access traced function arguments with type is u32*, bpf verifier failed.
+Because u32 have typedef, needs to skip modifier. Add btf_type_is_modifier in
+is_int_ptr. Add a selftest to check it.
 
-  $ bpftool prog load spi-xfer-r1v1.o /sys/fs/bpf/test autoattach
-  Program spi_xfer_r1v1 does not support autoattach, falling back to pinning
+Feng Zhou (2):
+  bpf/btf: Fix is_int_ptr()
+  selftests/bpf: Add test to access u32 ptr argument in tracing program
 
-This patch fix bpftool to set program type only if it differs.
+Changelog:
+v1->v2: Addressed comments from Martin KaFai Lau
+- Add a selftest.
+- use btf_type_skip_modifiers.
+Some details in here:
+https://lore.kernel.org/all/20221012125815.76120-1-zhouchengming@bytedance.com/
 
-Fixes: d6e6286a12e7 ("libbpf: disassociate section handler on explicit bpf_program__set_type() call")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- tools/bpf/bpftool/prog.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/bpf/btf.c                                    |  5 ++---
+ net/bpf/test_run.c                                  |  8 +++++++-
+ .../testing/selftests/bpf/verifier/btf_ctx_access.c | 13 +++++++++++++
+ 3 files changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index afbe3ec342c8..9b377db08597 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1681,7 +1681,8 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 		}
- 
- 		bpf_program__set_ifindex(pos, ifindex);
--		bpf_program__set_type(pos, prog_type);
-+		if (bpf_program__type(pos) != prog_type)
-+			bpf_program__set_type(pos, prog_type);
- 		bpf_program__set_expected_attach_type(pos, expected_attach_type);
- 	}
- 
 -- 
-2.34.1
+2.20.1
 
