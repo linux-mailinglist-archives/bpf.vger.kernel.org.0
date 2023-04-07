@@ -2,70 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6769D6DB173
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 19:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BC26DB1A9
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 19:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjDGRSC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 13:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
+        id S229854AbjDGRe7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 13:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbjDGRRd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 13:17:33 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087A0C169;
-        Fri,  7 Apr 2023 10:17:19 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id d22-20020a17090a111600b0023d1b009f52so1887654pja.2;
-        Fri, 07 Apr 2023 10:17:18 -0700 (PDT)
+        with ESMTP id S229842AbjDGRe6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 13:34:58 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DB9B45E
+        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 10:34:57 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id lr16-20020a17090b4b9000b0023f187954acso43860937pjb.2
+        for <bpf@vger.kernel.org>; Fri, 07 Apr 2023 10:34:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680887838; x=1683479838;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20210112; t=1680888897; x=1683480897;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MpxzIylC0O+QIhlCGWKD1562wl2qGt79MOUaYG3771U=;
-        b=BDY4y3HwINEx2Pdpu+QdGYGUUa9y4UsEEJIEW/6YTYJE5dND5i8QIffNx5xXxuq8gn
-         G4Yp/tJ1UB+UAcGkHl4dHHpHzA09NZgKbQJ5pLUiDcPd0QxfIMmHyVqQt2u6SSw8vECo
-         CuOBBliUZAq6e8wnDfjmXN91Tx2r/zqzZnx2oczfkJMckALygm0TE/l9Z+jcITgZ7mAR
-         HwJfDfwwHJWFiN8+zB+CS3B2zL5T1Xurr+k2q46+ttgFcQX1UAjL9reVEv5Ctbh2lYWX
-         vlnbHQWMpkf/siQ7mDTt0DOR8AA0v5vmo1eKg3BaAgnna3Za4Tyv+jOK+LNCmWuMvFW5
-         SIFA==
+        bh=CL8XT2dmegghAeYpKyssd1/mU3F1iBt8lThUBp5c4gY=;
+        b=QWyy+rpanfpbOQipdK4S0IuAPz4YxLzjaGmsTfT+dojd/dx5oCHxpkZmWzrh3J93ZM
+         k896UTgn1JLv25w/ht3L4yDtHyRgX12VNGz2wet1zb1IyjvC48JIpm6YRR5zOHlvYpyp
+         vg/NuD08IwdhtiyPjudoTrzqBmmgyigyV8fDswWrB3eTk4f4yKz5fkjaUV4UlxdQd2z+
+         d4I7MvDi3NTWFDrNqDYA7oEL8CXAv9Lk67oe6OXhYYMzmBXuygmurYSrXIiZHSa/qbad
+         wgsPc6MG4Yg9DQdgn54u6IUkJeGPyHRBJmqz2mQbIV18xthIetTpt81WmwcUEFUMLDhN
+         wHJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680887838; x=1683479838;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1680888897; x=1683480897;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MpxzIylC0O+QIhlCGWKD1562wl2qGt79MOUaYG3771U=;
-        b=XS20RpeTSksuagSVWQnjblC4fMc/mWtFJvAhn7cYMaifHBB4RCfcN0LrMydtY/MT3y
-         fQpJnHjrMe4iSlSnW+2jvUlbKbAWNQYt92qyaeXJgg/CpZt3iYLYGGq0Z/JphQ2cOuVA
-         c/jbYR0/Hx7Np8f+frYrUg7fNofno0zYCH7UIpQai4bSgxchhMXwPa5ogmm39XufPAaU
-         ROKj4hwc4UpOD4UCQgkORqMOwcuBKASQLCCDjoC3l3ELyvIKX3NuXdlDjaqi6D7XKgJv
-         JyALvBolQWcBt08a3x0v2vwCs4e5ubihr2IGo8MGAbNDFG+pyGXB8jtKPbsRPBQa2pWA
-         qY3A==
-X-Gm-Message-State: AAQBX9eeYM0kn0NWrquIdKorHjgNsHWjg8U/MfgHD5SjTnn/j+fTD2ys
-        IO9V1tWVjfzkEmiADFniH2Cea9hPAOs=
-X-Google-Smtp-Source: AKy350YL1/DS/U7MJhYNU45ZSm573VqvccBYajbMWdAcOiaOa7hoVQ6XrOw+lLG8a1YsDMmorKD9ww==
-X-Received: by 2002:a17:902:f9c3:b0:1a1:a90f:6766 with SMTP id kz3-20020a170902f9c300b001a1a90f6766mr2704168plb.52.1680887838387;
-        Fri, 07 Apr 2023 10:17:18 -0700 (PDT)
-Received: from john.lan ([98.97.116.126])
-        by smtp.gmail.com with ESMTPSA id p1-20020a1709028a8100b0019b0937003esm3185425plo.150.2023.04.07.10.17.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Apr 2023 10:17:17 -0700 (PDT)
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     jakub@cloudflare.com, daniel@iogearbox.net, lmb@isovalent.com,
-        edumazet@google.com
-Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        will@isovalent.com
-Subject: [PATCH bpf v6 12/12] bpf: sockmap, test FIONREAD returns correct bytes in rx buffer with drops
-Date:   Fri,  7 Apr 2023 10:16:54 -0700
-Message-Id: <20230407171654.107311-13-john.fastabend@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230407171654.107311-1-john.fastabend@gmail.com>
-References: <20230407171654.107311-1-john.fastabend@gmail.com>
+        bh=CL8XT2dmegghAeYpKyssd1/mU3F1iBt8lThUBp5c4gY=;
+        b=HOu22Yfe34kQq43JBuF5fQc9XhFqBTHC21O/K1BhGowKbo8kuSoBKECt9ZKwt8giRY
+         eCfPuKOCFBvAuiE+zUG7YdMktIRRPICk2HYjlp36RKaCpM8DgbKB/rtatVfyvGyEwPeb
+         y0UgFQPN2wP1b3E5DlPnVqP5FSLc7X4vhXsf91CpIZL5CDQuJ/YN8zCY4UKfqhW4N7Ko
+         1rVevqSS+jFTJ3QoQLXAAVWGzvzQ4GCOCNMF1qlLp0Xd4McDBBLUMBM41TGrAS8k9zQY
+         ixfyidfAbXUCcCz0QTj0mGWqMx5ogVZ35rrfMB3sPxUNBuzXColteTXdTuNfZGYI/7yJ
+         Bwxw==
+X-Gm-Message-State: AAQBX9eAtfOaAXT50jCyi5ZLlEzbnxkexoMiUFNdDPzssKgDsRIF+D3h
+        b2aLaDyp9vJjEFMTl5QkX/UZA4od2eZ24cIG5+/Ddg==
+X-Google-Smtp-Source: AKy350Y3+tyc2y5AqmX+ezlQ/w8+BR5lVu9JAdgHFRIjCTIVUzXOhXQ3/IkTS6gnhNWCbqRBOnYyquPB8sl9mA83s1Y=
+X-Received: by 2002:a17:902:6b81:b0:1a0:4aa3:3a9a with SMTP id
+ p1-20020a1709026b8100b001a04aa33a9amr1129540plk.2.1680888896519; Fri, 07 Apr
+ 2023 10:34:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+References: <20230307151239.1994179-1-trix@redhat.com>
+In-Reply-To: <20230307151239.1994179-1-trix@redhat.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 7 Apr 2023 10:34:45 -0700
+Message-ID: <CAKwvOdnGnGVk21Yh2GsH-fNx_M48f9CU05nnHSbnJd_Zq3En2A@mail.gmail.com>
+Subject: Re: [PATCH] bpf: extend btf id list
+To:     Tom Rix <trix@redhat.com>
+Cc:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, nathan@kernel.org,
+        joannelkoong@gmail.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,156 +73,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When BPF program drops pkts the sockmap logic 'eats' the packet and
-updates copied_seq. In the PASS case where the sk_buff is accepted
-we update copied_seq from recvmsg path so we need a new test to
-handle the drop case.
+On Tue, Mar 7, 2023 at 7:13=E2=80=AFAM Tom Rix <trix@redhat.com> wrote:
+>
+> With clang and W=3D1, there is this error
+>
+> kernel/bpf/verifier.c:10298:24: error: array index 16 is past
+>  the end of the array (that has type 'u32[16]'
+>  (aka 'unsigned int[16]')) [-Werror,-Warray-bounds]
+>     meta.func_id =3D=3D special_kfunc_list[KF_bpf_dynptr_slice_rdwr]) {
+>                     ^                  ~~~~~~~~~~~~~~~~~~~~~~~~
+> kernel/bpf/verifier.c:9150:1: note: array 'special_kfunc_list' declared h=
+ere
+> BTF_ID_LIST(special_kfunc_list)
+> ^
+> ./include/linux/btf_ids.h:207:27: note: expanded from macro 'BTF_ID_LIST'
+>  #define BTF_ID_LIST(name) static u32 __maybe_unused name[16];
+>
+> When KF_bpf_dynptr_slice_rdwr was added to the enum special_kfunc_type
+> the total exceeded 16.  Increase the array size to 32.
+>
+> Fixes: 66e3a13e7c2c ("bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr=
+")
 
-Original patch series broke this resulting in
+Looks like Nathan's patch got picked up.
+commit 2d5bcdcda879 ("bpf: Increase size of BTF_ID_LIST without
+CONFIG_DEBUG_INFO_BTF again")
+https://lore.kernel.org/bpf/20230307-bpf-kfuncs-warray-bounds-v1-1-00ad3191=
+f3a6@kernel.org/
 
-test_sockmap_skb_verdict_fionread:PASS:ioctl(FIONREAD) error 0 nsec
-test_sockmap_skb_verdict_fionread:FAIL:ioctl(FIONREAD) unexpected ioctl(FIONREAD): actual 1503041772 != expected 256
-#176/17  sockmap_basic/sockmap skb_verdict fionread on drop:FAIL
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  include/linux/btf_ids.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index 3a4f7cd882ca..166c387b48f7 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -204,7 +204,7 @@ extern struct btf_id_set8 name;
+>
+>  #else
+>
+> -#define BTF_ID_LIST(name) static u32 __maybe_unused name[16];
+> +#define BTF_ID_LIST(name) static u32 __maybe_unused name[32];
+>  #define BTF_ID(prefix, name)
+>  #define BTF_ID_FLAGS(prefix, name, ...)
+>  #define BTF_ID_UNUSED
+> --
+> 2.27.0
+>
+>
 
-After updated patch with fix.
 
-#176/16  sockmap_basic/sockmap skb_verdict fionread:OK
-#176/17  sockmap_basic/sockmap skb_verdict fionread on drop:OK
-
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 47 ++++++++++++++-----
- .../bpf/progs/test_sockmap_drop_prog.c        | 32 +++++++++++++
- 2 files changed, 66 insertions(+), 13 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_drop_prog.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 322b5a135740..10112a1ab443 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -11,6 +11,7 @@
- #include "test_sockmap_skb_verdict_attach.skel.h"
- #include "test_sockmap_progs_query.skel.h"
- #include "test_sockmap_pass_prog.skel.h"
-+#include "test_sockmap_drop_prog.skel.h"
- #include "bpf_iter_sockmap.skel.h"
- 
- #include "sockmap_helpers.h"
-@@ -416,19 +417,31 @@ static void test_sockmap_skb_verdict_shutdown(void)
- 	test_sockmap_pass_prog__destroy(skel);
- }
- 
--static void test_sockmap_skb_verdict_fionread(void)
-+static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- {
-+	int expected, zero = 0, sent, recvd, avail;
- 	int err, map, verdict, s, c0, c1, p0, p1;
--	struct test_sockmap_pass_prog *skel;
--	int zero = 0, sent, recvd, avail;
-+	struct test_sockmap_pass_prog *pass;
-+	struct test_sockmap_drop_prog *drop;
- 	char buf[256] = "0123456789";
- 
--	skel = test_sockmap_pass_prog__open_and_load();
--	if (!ASSERT_OK_PTR(skel, "open_and_load"))
--		return;
-+	if (pass_prog) {
-+		pass = test_sockmap_pass_prog__open_and_load();
-+		if (!ASSERT_OK_PTR(pass, "open_and_load"))
-+			return;
-+		verdict = bpf_program__fd(pass->progs.prog_skb_verdict);
-+		map = bpf_map__fd(pass->maps.sock_map_rx);
-+		expected = sizeof(buf);
-+	} else {
-+		drop = test_sockmap_drop_prog__open_and_load();
-+		if (!ASSERT_OK_PTR(drop, "open_and_load"))
-+			return;
-+		verdict = bpf_program__fd(drop->progs.prog_skb_verdict);
-+		map = bpf_map__fd(drop->maps.sock_map_rx);
-+		/* On drop data is consumed immediately and copied_seq inc'd */
-+		expected = 0;
-+	}
- 
--	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
--	map = bpf_map__fd(skel->maps.sock_map_rx);
- 
- 	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
- 	if (!ASSERT_OK(err, "bpf_prog_attach"))
-@@ -449,9 +462,12 @@ static void test_sockmap_skb_verdict_fionread(void)
- 	ASSERT_EQ(sent, sizeof(buf), "xsend(p0)");
- 	err = ioctl(c1, FIONREAD, &avail);
- 	ASSERT_OK(err, "ioctl(FIONREAD) error");
--	ASSERT_EQ(avail, sizeof(buf), "ioctl(FIONREAD)");
--	recvd = recv_timeout(c1, &buf, sizeof(buf), SOCK_NONBLOCK, IO_TIMEOUT_SEC);
--	ASSERT_EQ(recvd, sizeof(buf), "recv_timeout(c0)");
-+	ASSERT_EQ(avail, expected, "ioctl(FIONREAD)");
-+	/* On DROP test there will be no data to read */
-+	if (pass_prog) {
-+		recvd = recv_timeout(c1, &buf, sizeof(buf), SOCK_NONBLOCK, IO_TIMEOUT_SEC);
-+		ASSERT_EQ(recvd, sizeof(buf), "recv_timeout(c0)");
-+	}
- 
- out_close:
- 	close(c0);
-@@ -459,7 +475,10 @@ static void test_sockmap_skb_verdict_fionread(void)
- 	close(c1);
- 	close(p1);
- out:
--	test_sockmap_pass_prog__destroy(skel);
-+	if (pass_prog)
-+		test_sockmap_pass_prog__destroy(pass);
-+	else
-+		test_sockmap_drop_prog__destroy(drop);
- }
- 
- void test_sockmap_basic(void)
-@@ -499,5 +518,7 @@ void test_sockmap_basic(void)
- 	if (test__start_subtest("sockmap skb_verdict shutdown"))
- 		test_sockmap_skb_verdict_shutdown();
- 	if (test__start_subtest("sockmap skb_verdict fionread"))
--		test_sockmap_skb_verdict_fionread();
-+		test_sockmap_skb_verdict_fionread(true);
-+	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
-+		test_sockmap_skb_verdict_fionread(false);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_drop_prog.c b/tools/testing/selftests/bpf/progs/test_sockmap_drop_prog.c
-new file mode 100644
-index 000000000000..29314805ce42
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_drop_prog.c
-@@ -0,0 +1,32 @@
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 20);
-+	__type(key, int);
-+	__type(value, int);
-+} sock_map_rx SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 20);
-+	__type(key, int);
-+	__type(value, int);
-+} sock_map_tx SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 20);
-+	__type(key, int);
-+	__type(value, int);
-+} sock_map_msg SEC(".maps");
-+
-+SEC("sk_skb")
-+int prog_skb_verdict(struct __sk_buff *skb)
-+{
-+	return SK_DROP;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.33.0
-
+--=20
+Thanks,
+~Nick Desaulniers
