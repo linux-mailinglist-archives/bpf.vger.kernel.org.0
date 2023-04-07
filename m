@@ -2,180 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B0F6DB08F
-	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 18:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124906DB097
+	for <lists+bpf@lfdr.de>; Fri,  7 Apr 2023 18:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbjDGQ2f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 12:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
+        id S229446AbjDGQcM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 12:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjDGQ2d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 12:28:33 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21AE211F;
-        Fri,  7 Apr 2023 09:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680884912; x=1712420912;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=cB2173ca4X/GtXZ/WZ0rofQS6TOtVBAO5xc9G9Bseq8=;
-  b=UHqLx2BanYUmI6Yh4Wx+IAXBZO/l5DpAS67CScjR3bGx94wpMc91bxwI
-   voJVRLmoyZqDC1oyd0jWYG7E9vGRfaC73VMOK+HuKWeioXGvOfmHGrDVt
-   aaM1layAp1XvJSulXeJjrX1/7OEPf+HBphDgNh1oeSIXHAA8d6fypK0Si
-   TYrGmgBy5xxcXRqHHTL8UT4bU5S2TB1/MFwWnmg2QY0J8K5GUkeK76ItG
-   /lbE+5X/v+se9/+nReeuUmTo3A168EKK56+xo+2cMiXqOgAbxUH72U1zZ
-   h6wNU40l+QXGBFSP8gD626c4hSSaPnJXiA1ZIi7GPzV5i8qiESDUmxjW0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10673"; a="429306096"
-X-IronPort-AV: E=Sophos;i="5.98,327,1673942400"; 
-   d="scan'208";a="429306096"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2023 09:28:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10673"; a="690108560"
-X-IronPort-AV: E=Sophos;i="5.98,327,1673942400"; 
-   d="scan'208";a="690108560"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga007.fm.intel.com with ESMTP; 07 Apr 2023 09:28:30 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 7 Apr 2023 09:28:30 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Fri, 7 Apr 2023 09:28:30 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Fri, 7 Apr 2023 09:28:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VZFViIHrQYe9047QfSaeCVYTuEQ0gRmQZipLcAr84lfi0XI2/u0o7+hdJGhZopD1H4HrQKyVLnnmvir9U4ZpDkSN2SEkUZ2cyBzGnFl0MwYmhgw01r+QP6NLYqO2anlklpdt8zWZa6vly5OvkBffslN4yntD/fhLK3zn4td46P1SalpSMVbdUZRUXor4Cs2mEiGnso4JSeoO3POgenBUMoE+2Jm5OCCYX1phhFJt0Qk6T1iqLTEWjWm9ouZrQHhbrBthe3pKFs+nnfftJgW5hrWfLCnCgnbx0gL4B7kI3kLgbr/q3RGSiNnbVZRoQhH1uLepcqIpe2RAXVmt664Mpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Pjp8PG5aHDsuWZooEVNsZ2WM6bfFTGJzzxgquoEKQ8w=;
- b=BYqLpZiecBGlIZJxiDbuJA0GGv+WWtrkMMe67VWJ7CrFKNNeps7yZMVefVarNs+1RAldAK0Qo/gPUU612AtTUMQfhJrtNAiTc8P5pWA/+MGxjCZIpLNr0ZzZ2iklJ2W55HmdSFhh1gy2U4k5Qo0MpR4NB6O0uao+zNPb/FzIzSzIRtuNLlZeCgVxGNyFo8Pq/BgsMR8mGo2VcnFl30wEgBH4NNaCySnPQoXhJHWmR60yFvAM8Spg98u1yrd/nk6k2uBwgG5h0KgQ7/AjVpdP8mLzYOLyEfsDMH7BcbMfwYwqxDYmV2rnoDPb/uw8pd5ZUA91aw0C59ZJHY7RdU0mdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- CO1PR11MB4865.namprd11.prod.outlook.com (2603:10b6:303:9c::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6277.35; Fri, 7 Apr 2023 16:28:28 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::9e4f:80cc:e0aa:6809]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::9e4f:80cc:e0aa:6809%3]) with mapi id 15.20.6277.031; Fri, 7 Apr 2023
- 16:28:28 +0000
-Date:   Fri, 7 Apr 2023 18:28:14 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-CC:     Kal Conley <kal.conley@dectris.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        "Jonathan Lemon" <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-Message-ID: <ZDBEng1KEEG5lOA6@boxer>
-References: <20230406130205.49996-1-kal.conley@dectris.com>
- <20230406130205.49996-2-kal.conley@dectris.com>
- <87sfdckgaa.fsf@toke.dk>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87sfdckgaa.fsf@toke.dk>
-X-ClientProxiedBy: FR2P281CA0158.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:99::11) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+        with ESMTP id S229560AbjDGQcK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 12:32:10 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8658693D9;
+        Fri,  7 Apr 2023 09:32:05 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id 11so9475248ejw.0;
+        Fri, 07 Apr 2023 09:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680885124; x=1683477124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9wShyoCzUX2pkgdUEYP9nvJsu/q2d8XCC5UAmzlPsR8=;
+        b=YPHB55u7U72f98h2EIQJ70rjET+g2aNNZRQ0oMvHs1YRzq+u9Rc1DTNgA0xVikbmb3
+         SfJxAXM+Pf1NgkIwImmqInLiWdjJfx5RdIxWPEvjAg2RNOTpVrmOTkRDna83+Quy0pI5
+         hYdjTeYJZYW0b1Y/rPCNxrY+CEsqH7I4XlontH3CodVznUTwhmiVbFTDAvBo7Arpjhx6
+         MdT0yLbU9YifZTKeB9K7wcA2mTPeEVkd08R7n8rlZi8ytVkhNhJgPE7rpMkCHMkz0+Kj
+         3PZOhHGQnkJcfQZ8Vu2iGIm6aJX/FP5fXYcg02qW3wZZbEb2eEUYLivpqSkwQc4iGVj4
+         0ofQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680885124; x=1683477124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9wShyoCzUX2pkgdUEYP9nvJsu/q2d8XCC5UAmzlPsR8=;
+        b=XUpPFr2EOZP9FiP7dhIs9PjcLeHpAkxTFBrR0ThS3GvpvB+2VOPAX+VVZih4ROw/Ft
+         OtYt2RIzADxPm9Tq1SptOBjfhmEM1TqG3xgqv8gx2lvsKuSIxSjcNIln68kqr5YezcAp
+         7B4xvXL5gzsKhGsiiv/AOU9heNnGJ3HXJZhiPTBRKxMH0fsMXN4COiUgUSFYrjqLd3sx
+         yNbmrv4dCfjyfSFNNe9vCMSdgRvzZrg979/nHXdtPkPfczOAhOUYgbMIH64PP54Vck2S
+         yO7oMeTUOmzBsP8fnXcfiDCMM37PUQC/EfyJ14WgiHrZFKZouzsBGyXJ3kq5hFcWC7FX
+         0fvg==
+X-Gm-Message-State: AAQBX9d8z9/dBOo51nd5MesKK3wX+CoRfiOvskMgcpRhcIqzCFPAO1Cq
+        sDnN0w2qAXiDyja28OFBlE4UUMIlv2A3qDPWoCA=
+X-Google-Smtp-Source: AKy350adf2sznWPOp2I9RzYmLoXrRRTL9cQP6hroP8WfHlF/zJV8vQhuSZqvFY97wh4+j02ISiod4lT/0xKnF+DlKO4=
+X-Received: by 2002:a17:906:804b:b0:8ae:9f1e:a1c5 with SMTP id
+ x11-20020a170906804b00b008ae9f1ea1c5mr42707ejw.3.1680885123817; Fri, 07 Apr
+ 2023 09:32:03 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|CO1PR11MB4865:EE_
-X-MS-Office365-Filtering-Correlation-Id: 276f776c-ea4f-4c64-6a94-08db37851e5a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ywyJbSSlTrAZQ9yxvmzAr6NSonXoxL0a+qgoYpdExr33wq8G1gi5CSD2OIWaygFtTyetWEvD6OeDJz1YOQvmd3bg6FHhJpyVjVM9ATn4MCoyn7QQukz1KYgFub2M4eLj8mtT2641vL2TAXVLNwDP8zcTInAPC3Pg4euYlDLAeJ+0+6VXzI50uUl6bW+oh77wZrlb5zUsV6OLSedtMZBcI/8W4xdxKTurbsK6sxaeuMjYV0lS6ClJNT/A/CR2Nr1RtsqH6OKmEBlQ3+v4Ar2ZNeB68OlAxz8vmQZ5Ca6SsaICNOj/K14xI7Lchcn5Cnp6v1wHbCEteaCpV6JjA7lB9OBxBZwo1ifMryzk1WBwTET0VXuue8VShiNGdRDa3thUB5ydPNKysGUnlStSgVOW4bnQuje/GgpczsqvJ1SwPsuE3ysOj/U/7UkiSfElBt/a+OcD5baDUpvwr1+QzWn1c+m226svgC4GB43dPW5G+io6PU2nt6FqjV0czBH19b0MIlQxRO9NxLmPUOwenx4/63B42HjFp+XxTajoTs1MLNCXwPGPJJFZgUPPXpVOGgIg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(366004)(346002)(39860400002)(396003)(136003)(376002)(451199021)(6486002)(66946007)(8676002)(66476007)(6916009)(4326008)(66556008)(54906003)(478600001)(41300700001)(316002)(86362001)(66574015)(6512007)(6506007)(9686003)(6666004)(26005)(2906002)(7416002)(8936002)(5660300002)(44832011)(4744005)(33716001)(38100700002)(186003)(82960400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?JbZfcXsKV38ShPiYD3VUsDaxOB5yFl8edvchsDzkVB3kkKaEF1tEPdJCyO?=
- =?iso-8859-1?Q?ZHTI5q8RuF4xcbPnrf9CYj8R9L4PoXlrnokAu6wn02S8IGiSR1nNwlfx8w?=
- =?iso-8859-1?Q?oKv03raWJrXdjf0JBp2YE8F4gM46QNSekSqRIe9Zj7LWu/3GIOW7ubeETu?=
- =?iso-8859-1?Q?tFKrfcaF4Rwi6jmmL0MbaM+Gaa022wejMJi+f8ijaLLzHk6wln/84j6rv2?=
- =?iso-8859-1?Q?qBXo9a0imca/kQUm9EDy9Arf2gPopZ8lpQZsTW0ri7MUzNi8bF5Ee3CNdW?=
- =?iso-8859-1?Q?PRMhXY6QCBY1jDgMgL+HMAt/hqGfvNJEyA9h8i92l45d7ySIwwuV1xzs88?=
- =?iso-8859-1?Q?0dVJiZhs7BpOk4IOMLK0sevzIM1NO4n3HIfgAEl6CL56kmmDwT9m56BxLy?=
- =?iso-8859-1?Q?RIB6zTW+wqhX+T17STYg+OPnMI/RqZsNsk65WYFU/1WrRzvVnPpCC36kWZ?=
- =?iso-8859-1?Q?wevoH8vXIaTMcJcsOzgBb/WWvgShcn2twYrLFk9PJ/eqjSlNC8v4N4DRb2?=
- =?iso-8859-1?Q?GEOMChE2wsh37jSLF0gc7l5Lb4cBvN4xjhQgY60SonWmJhH6C6ZDKfgmRd?=
- =?iso-8859-1?Q?eF16j/uXZLNtkgfVo1YmPUWwUp62+yuqBZfzHegpde6XG3jVvjCJ77Ipmr?=
- =?iso-8859-1?Q?OAPTaD1hb5DApGpyf6X+jBytnO/BrZe7EWg2xjtC9nPz5/DgwGS/jveV8d?=
- =?iso-8859-1?Q?dDZviGhxNOqDHwYZ1IpuBc72rb99q6Wr+GycfnHmdJ6I1xOVcwR+4ip5uD?=
- =?iso-8859-1?Q?WLrNBjNP7uHnRSIxafPlfCJhDUQx5SHINya5T1B9LQ4pAMlrWwctAaJKgJ?=
- =?iso-8859-1?Q?rpRTiAyiZdftJKjJC+9aGvjC+KnExCbj0Cm+ilGwxpKrv0DT7a0o8WzLT6?=
- =?iso-8859-1?Q?o6Y3FpD9KET0SoE/mLK74QReO/RbDCeZcmhAkUMSV1FB7leoeCirLncBE+?=
- =?iso-8859-1?Q?F20UFvF1N/xkHaOlOP8OOFCCrB05JOMC+mprKyGFmscyUUeWDk9SWOyY4I?=
- =?iso-8859-1?Q?VsW0olvTY3QMojJLUuzyCE4hMe6S4UhB8w4QX/xniW4gkvkfdIpf0WuT8R?=
- =?iso-8859-1?Q?uqfB68ABNuSiqeuzE3X4VYkE4PhJdEplMF1o2l4LECFiD9hYuzzXTULm2l?=
- =?iso-8859-1?Q?5e29nobXX2Hyd2/FiH720YOY5Huvz2n6MhaGhldAY9QlUld4EuGpr6e9As?=
- =?iso-8859-1?Q?YggXmnjnAOHJ0uIDxptrKT4EWfotTTq5QH3utvmfgy072awVov9VAY5UXr?=
- =?iso-8859-1?Q?WyMrrlP2Ymh2BDO9kzmSokHBBroAIaFLP9RFiUqJo6konjbdFmj/ILeL6p?=
- =?iso-8859-1?Q?eayq3L6cbVA052bB2Sp9O4LDWb4x0fT9jdtPWsevWUq5VIUXh46d6Ei347?=
- =?iso-8859-1?Q?BeeNy4amFRu9cBv0Q2bWr05QsPiSGn31v401Y3wGNc7jI6sbjJpNq2m5Se?=
- =?iso-8859-1?Q?77ybXphAalVlP5E60gzLZXt0Eg9R7BpXZIynfMaUPzTsksjt3wFH/OtuVv?=
- =?iso-8859-1?Q?7VA02kQqWYb3H/s3ZMi8lUuI3Jn+fZDX+GaOK7/WDVsL49YL7erdVrNYvS?=
- =?iso-8859-1?Q?Q1/ha3zdmPGsqjwXvcpXR/pt8gTRmT/dxQ6DaTBAErMpeNky9Img3hROZV?=
- =?iso-8859-1?Q?s78ZqbC68kViAU3FcoiLoldhIYIM4UhKmmJ/fcldn3Gi+PDhlbp9liLA?=
- =?iso-8859-1?Q?=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 276f776c-ea4f-4c64-6a94-08db37851e5a
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2023 16:28:28.4316
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IocsJhuaqeANvMlv6IAdiBS1OY0bSAQxatLAlrGFirDkauYiE7NJyOo8DauQlzyYpdfxAZ5F0TqJYbQFxzqIHhPaD8QNIPI+UwjLXLPWJ/8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4865
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+References: <CALOAHbBj-+xY5jGLynUrg1GfSftZ+LT5DkADKz_+8+tL2kWMSw@mail.gmail.com>
+ <20230403225017.onl5pbp7h2ugclbk@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <CALOAHbDQROKrWe732Qv1CsZwr6nMJN-2y77JW3EuT53D8At+Ow@mail.gmail.com>
+ <20230406020656.7v5ongxyon5fr4s7@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <CALOAHbCEsucGRB+n5hTnPm-HssmB91HD4PFVRhdO=CZnJXfR6A@mail.gmail.com>
+ <CAADnVQ+1VEBHTM5Rm-gx8-bg=tfv=4x+aONhF0bAmBFZG3W8Qg@mail.gmail.com>
+ <CALOAHbAorooyteDjgs82TtujP4Fwo5hSkh-Z5QhxhV9p7_2mfw@mail.gmail.com>
+ <CAADnVQKr5Y3z9f_Vv49DvRFcN+OF3JaFx_9NgBL58pz+TLq8ig@mail.gmail.com>
+ <CALOAHbDdtj1Qd0h1jzXKN4R=_webEVW=sqYfhSFXXsYftyvnKw@mail.gmail.com>
+ <CAEf4Bza_vM8HE5g+4ANW3NAAt8=+cn7Lw+DSkH42gimqzYxPdw@mail.gmail.com>
+ <20230407014359.m6tff5ffemvrsyt3@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <CAEf4BzaBd9y1O_u-ixr+OGiKarHfX95iHUSGtpSbGnrayg7=zQ@mail.gmail.com>
+ <CAADnVQJ6LSxZ3=x9AnqiYObYaSnKQj1mWB0CzSn2c4PGRmSUSw@mail.gmail.com> <CALOAHbCwqV2x-HPcq5nr8W_xEKyJMHO6N7TbtDdWfqkC9fsSaw@mail.gmail.com>
+In-Reply-To: <CALOAHbCwqV2x-HPcq5nr8W_xEKyJMHO6N7TbtDdWfqkC9fsSaw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 7 Apr 2023 09:31:52 -0700
+Message-ID: <CAADnVQKwqM6Fnbf+nQetpsoVY8NamQMMhshuAX7tGeHbrHPO_g@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 00/13] bpf: Introduce BPF namespace
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Song Liu <song@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 06, 2023 at 08:38:05PM +0200, Toke Høiland-Jørgensen wrote:
-> Kal Conley <kal.conley@dectris.com> writes:
-> 
-> > Add core AF_XDP support for chunk sizes larger than PAGE_SIZE. This
-> > enables sending/receiving jumbo ethernet frames up to the theoretical
-> > maxiumum of 64 KiB. For chunk sizes > PAGE_SIZE, the UMEM is required
-> > to consist of HugeTLB VMAs (and be hugepage aligned). Initially, only
-> > SKB mode is usable pending future driver work.
-> 
-> Hmm, interesting. So how does this interact with XDP multibuf?
+On Fri, Apr 7, 2023 at 9:22=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> w=
+rote:
+>
+> On Sat, Apr 8, 2023 at 12:05=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Apr 7, 2023 at 8:59=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, Apr 6, 2023 at 6:44=E2=80=AFPM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Thu, Apr 06, 2023 at 01:22:26PM -0700, Andrii Nakryiko wrote:
+> > > > > On Wed, Apr 5, 2023 at 10:44=E2=80=AFPM Yafang Shao <laoar.shao@g=
+mail.com> wrote:
+> > > > > >
+> > > > > > On Thu, Apr 6, 2023 at 12:24=E2=80=AFPM Alexei Starovoitov
+> > > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Wed, Apr 5, 2023 at 8:22=E2=80=AFPM Yafang Shao <laoar.sha=
+o@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > On Thu, Apr 6, 2023 at 11:06=E2=80=AFAM Alexei Starovoitov
+> > > > > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Wed, Apr 5, 2023 at 7:55=E2=80=AFPM Yafang Shao <laoar=
+.shao@gmail.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > It seems that I didn't describe the issue clearly.
+> > > > > > > > > > The container doesn't have CAP_SYS_ADMIN, but the CAP_S=
+YS_ADMIN is
+> > > > > > > > > > required to run bpftool,  so the bpftool running in the=
+ container
+> > > > > > > > > > can't get the ID of bpf objects or convert IDs to FDs.
+> > > > > > > > > > Is there something that I missed ?
+> > > > > > > > >
+> > > > > > > > > Nothing. This is by design. bpftool needs sudo. That's al=
+l.
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > Hmm, what I'm trying to do is make bpftool run without sudo=
+.
+> > > > > > >
+> > > > > > > This is not a task that is worth solving.
+> > > > > > >
+> > > > > >
+> > > > > > Then the container with CAP_BPF enabled can't even iterate its =
+bpf progs ...
+> > > > >
+> > > > > I'll leave the BPF namespace discussion aside (I agree that it ne=
+eds
+> > > > > way more thought).
+> > > > >
+> > > > > I am a bit surprised that we require CAP_SYS_ADMIN for GET_NEXT_I=
+D
+> > > > > operations. GET_FD_BY_ID is definitely CAP_SYS_ADMIN, as they all=
+ow
+> > > > > you to take over someone else's link and stuff like this. But jus=
+t
+> > > > > iterating IDs seems like a pretty innocent functionality, so mayb=
+e we
+> > > > > should remove CAP_SYS_ADMIN for GET_NEXT_ID?
+> > > > >
+> > > > > By itself GET_NEXT_ID is relatively useless without capabilities,=
+ but
+> > > > > we've been floating the idea of providing GET_INFO_BY_ID (not by =
+FD)
+> > > > > for a while now, and that seems useful in itself, as it would ind=
+eed
+> > > > > help tools like bpftool to get *some* information even without
+> > > > > privileges. Whether those GET_INFO_BY_ID operations should return=
+ same
+> > > > > full bpf_{prog,map,link,btf}_info or some trimmed down version of=
+ them
+> > > > > would be up to discussion, but I think getting some info without
+> > > > > creating an FD seems useful in itself.
+> > > > >
+> > > > > Would it be worth discussing and solving this separately from
+> > > > > namespacing issues?
+> > > >
+> > > > Iteration of IDs itself is fine. The set of IDs is not security sen=
+sitive,
+> > > > but GET_NEXT_BY_ID has to be carefully restricted.
+> > > > It returns xlated, jited, BTF, line info, etc
+> > > > and with all the restrictions it would need something like
+> > > > CAP_SYS_PTRACE and CAP_PERFMON to be useful.
+> > > > And with that we're not far from CAP_SYS_ADMIN.
+> > > > Why bother then?
+> > >
+> > > You probably meant that GET_INFO_BY_ID should be carefully restricted=
+?
+> >
+> > yes.
+> >
+> > > So yeah, that's what I said that this would have to be discussed
+> > > further. I agree that returning func/line info, program dump, etc is
+> > > probably a privileged part. But there is plenty of useful info beside=
+s
+> > > that (e.g., prog name, insns cnt, run stats, etc) that would be usefu=
+l
+> > > for unpriv applications to monitor their own apps that they opened
+> > > from BPF FS, or just some observability daemons.
+> > >
+> > > There is a lot of useful information in bpf_map_info and bpf_link_inf=
+o
+> > > that's way less privileged. I think bpf_link_info is good as is. Same
+> > > for bpf_map_info.
+> > >
+> > > Either way, I'm not insisting, just something that seems pretty simpl=
+e
+> > > to add and useful in some scenarios. We can reuse existing code and
+> > > types for GET_INFO_BY_FD and just zero-out (or prevent filling out)
+> > > those privileged fields you mentioned. Anyway, something to put on th=
+e
+> > > backburner, perhaps.
+> >
+> > Sorry, but I only see negatives. It's an extra code in the kernel
+> > that has to be carefully reviewed when initially submitted and
+> > then every patch that touches get_info_by_id would have to go
+> > through a microscope every time to avoid introducing a security issue.
+> > And for what? So that CAP_BPF application can read prog name and run st=
+ats?
+>
+> Per my experience, observability is a very important part for a
+> project. If the user can't observe the object directly created by it,
+> he will worry about or even mistrust it.
 
-To me it currently does not interact with mbuf in any way as it is enabled
-only for skb mode which linearizes the skb from what i see.
-
-I'd like to hear more about Kal's use case - Kal do you use AF_XDP in SKB
-mode on your side?
-
-> 
-> -Toke
-> 
+The user can observe the objects just fine. That's what get_info_by_fd is f=
+or.
+But the kernel will not report JITed instructions to unpriv user who
+just loaded a prog and a sole owner of it.
+By your definition such a user should not trust the kernel. So be it.
