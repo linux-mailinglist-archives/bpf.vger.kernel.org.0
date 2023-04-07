@@ -2,83 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E90A66DB696
-	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 00:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695D36DB6A6
+	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 00:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbjDGWkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 18:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
+        id S229753AbjDGWqs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 18:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjDGWkm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 18:40:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C2BD53B
-        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 15:40:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 44C7F653ED
-        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 22:40:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A2183C4339B;
-        Fri,  7 Apr 2023 22:40:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680907218;
-        bh=Sd6UYj2CnllXy2TiY6fYpSSvSB9oRyv9W55lNXyekLA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=P3TX5yitkK/Fipb3npOrWebY7iqW6+D2OXPv2SSpKzquawbq/CPy2z0fjyAYDzOGa
-         rjIDUpi9aE8dFqXTutrRWyFuGO478KpPZhaZnWcRsJJt2h7WjP2SYvkmNwefad1F05
-         hrtZP/qJyqTQIc9HOYsC7g6Wthj4vrLk1uwEDUf5W8s8q+ibxmYoH7imqaKrO1gemg
-         vUjkyoFIypgl7itK3+rSU4zQiaVhr4H5OgSHv8AV0l3Tg1Ef34yXW39V1HJwwlxnro
-         m31Ry9nLKtzzlEQVSsAOwNvoGMdp8SRuz4zj8zPBiQRbGtUbMpN2FvsDvei2r/u3ZB
-         gskpfsRcI6eTw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 86D81C395C5;
-        Fri,  7 Apr 2023 22:40:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229562AbjDGWqs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 18:46:48 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817C15594;
+        Fri,  7 Apr 2023 15:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References;
+        bh=01xCP2CTTDste1h5LyPhN95Z2+Nr+MZPOa+ogV6/F7U=; b=Q1cDslzgDOojo0eNo9JxJwb4GK
+        YkpeFjsNcacts5zoqJgEYYR8DRRwoj/O0yX8Nq0yAROfT2q4L9urrwq7NXHV1RiBw2a29Y9n6pGeC
+        //HFB2LOrHPvBQtbUUjTegQ+iZNWhC+hHXz0z9WlDqgRMwYEP3P5tNpKTRSPCwR64pyKlXWrULOtc
+        gDb0+dTt7uZsnHhl+eMDsfm94GRWNcan7DVoQzrI3x4aKNMRnkoKQtyrvBfH3QGwRnAZkBOiJN6tB
+        HSNW2oEI8GT5bh9f/kvo0+Ue1TAY6xDxKPHmZefHKyp3J4AqnpikjwVL/MZbmavimEBQm2KheXw4N
+        6UND1V+A==;
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pkuqw-0007JA-PT; Sat, 08 Apr 2023 00:46:42 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2023-04-08
+Date:   Sat,  8 Apr 2023 00:46:42 +0200
+Message-Id: <20230407224642.30906-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Prevent infinite loop in veristat
- when base file is too short
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168090721854.5568.4906476351301381423.git-patchwork-notify@kernel.org>
-Date:   Fri, 07 Apr 2023 22:40:18 +0000
-References: <20230407154125.896927-1-eddyz87@gmail.com>
-In-Reply-To: <20230407154125.896927-1-eddyz87@gmail.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
-        yhs@fb.com
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26868/Fri Apr  7 09:23:08 2023)
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+The following pull-request contains BPF updates for your *net* tree.
 
-On Fri,  7 Apr 2023 18:41:25 +0300 you wrote:
-> The following example forces veristat to loop indefinitely:
-> 
-> $ cat two-ok
-> file_name,prog_name,verdict,total_states
-> file-a,a,success,12
-> file-b,b,success,67
-> 
-> [...]
+We've added 4 non-merge commits during the last 11 day(s) which contain
+a total of 5 files changed, 39 insertions(+), 6 deletions(-).
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Prevent infinite loop in veristat when base file is too short
-    https://git.kernel.org/bpf/bpf-next/c/5855b0999de4
+The main changes are:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+1) Fix BPF TCP socket iterator to use correct helper for dropping socket's refcount,
+   that is, sock_gen_put instead of sock_put, from Martin KaFai Lau.
 
+2) Fix a BTI exception splat in BPF trampoline-generated code on arm64, from Xu Kuohai.
 
+3) Fix a LongArch JIT error from missing BPF_NOSPEC no-op, from George Guo.
+
+4) Fix dynamic XDP feature detection of veth in xdp_redirect selftest, from Lorenzo Bianconi.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Florent Revest, WANG Xuerui
+
+----------------------------------------------------------------
+
+The following changes since commit 45977e58ce65ed0459edc9a0466d9dfea09463f5:
+
+  net: dsa: b53: mmap: add phy ops (2023-03-27 08:31:34 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+for you to fetch changes up to 919e659ed12568b5b8ba6c2ffdd82d8d31fc28af:
+
+  selftests/bpf: fix xdp_redirect xdp-features selftest for veth driver (2023-04-06 09:35:09 -0700)
+
+----------------------------------------------------------------
+bpf-for-netdev
+
+----------------------------------------------------------------
+George Guo (1):
+      LoongArch, bpf: Fix jit to skip speculation barrier opcode
+
+Lorenzo Bianconi (1):
+      selftests/bpf: fix xdp_redirect xdp-features selftest for veth driver
+
+Martin KaFai Lau (1):
+      bpf: tcp: Use sock_gen_put instead of sock_put in bpf_iter_tcp
+
+Xu Kuohai (1):
+      bpf, arm64: Fixed a BTI error on returning to patched function
+
+ arch/arm64/net/bpf_jit.h                           |  4 +++
+ arch/arm64/net/bpf_jit_comp.c                      |  3 ++-
+ arch/loongarch/net/bpf_jit.c                       |  4 +++
+ net/ipv4/tcp_ipv4.c                                |  4 +--
+ .../selftests/bpf/prog_tests/xdp_do_redirect.c     | 30 +++++++++++++++++++---
+ 5 files changed, 39 insertions(+), 6 deletions(-)
