@@ -2,67 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A3A6DB825
-	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 04:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BD46DB91E
+	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 07:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbjDHC3r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 22:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
+        id S229812AbjDHFwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Apr 2023 01:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjDHC3r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 22:29:47 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE36C65D
-        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 19:29:46 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id 20so2165154plk.10
-        for <bpf@vger.kernel.org>; Fri, 07 Apr 2023 19:29:46 -0700 (PDT)
+        with ESMTP id S229592AbjDHFwN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Apr 2023 01:52:13 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49D17ED0
+        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 22:52:12 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-54c01480e3cso84811517b3.1
+        for <bpf@vger.kernel.org>; Fri, 07 Apr 2023 22:52:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680920985;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KhhCJ3JagFk6aPxuLlvnrcDSjcQ4v6yptvfivQV5v5Q=;
-        b=lgKKCCn3xtbqCgLareUd1pq7KzScWsMcltlrK+3CpGEaawqAOC3cBKzxLjCcWYUMAj
-         sYopE4kIkL+DgPf5BErDbVcUd46FC38q3NaTvnybyMnmjOZl55a0EPFuo85OAQ7F7AZP
-         7oAbc3NHpYyrD600oo2odjyPYq5tmYlC2gQND0WJOHnICX4GgRz7xC8LBQfDAJVF1+VE
-         P58a5+6CU3+0+CPZa9zK5hPmHwrSqR9UlpLUIheBe9M5chfYRnAsM1TICUbPnWolPFRo
-         8yDbPlbImxIL+GGv24rov6VfEF56p20Vn4+rwoDsZoeckfrVXkm8aluB4HZ1oDTjnvDE
-         6itQ==
+        d=google.com; s=20210112; t=1680933132;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PaCuvDcWhP2cDa4Q6QNDOLtZbZ3fUX/ydwsiXo8AOEQ=;
+        b=ghgDlhmdSf6EDth7OpctKVg9Yoh/tWaSiBhrYQowh9CR2mGkgYU4wXv/JxQMz+2UAs
+         k2Iy4NThdkqwxSfTl7Md3HV/bPw3onn85xQI6OYPoJ3+pdLl3HOB95QIoZSGKnBPoLR1
+         7ASdrjtPr77+nOaXcInGpEoKonO52742HQoL3ExF9xHpa6N7HqK0ZaLIG8QqF3e71Eu9
+         QCPJXi5gmrXPhlQOrR9hxlzXeorK1/ZsLGpSTH/TpVgj1FPaBKrXlCGcqXlMAiSITqiI
+         0M/d+q3EOhjhyuiUurzSzlLz11xfyl8yly8AvBRomw0oi1dkalAd9Xvo7+tOn7uS/yBB
+         zvMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680920985;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KhhCJ3JagFk6aPxuLlvnrcDSjcQ4v6yptvfivQV5v5Q=;
-        b=Z9rcIAJxpwRJcTA6Sdj0FqKpFVBlaPPNym+IbUjIIKfOXuxY2Sar+DI6mFmwEYOb8x
-         G8kFi04ADRVVW2RQAelqZV6TYZVnL24KgQuaftjmrnWI45r7oorPELcSRzvh3Ud6KXVN
-         LAlvGb3mIONZHJ2J5bRGcQnRWtLi840HHVe35gJhM56/lT0Jod5q1uxI4o/oDdp9EsSC
-         5OeDOLL4rURm04Tcpb2g0k5Wr88DKKLu+NccRhskFc6gMGDH2UIRQHNXWU4joJavnDK9
-         5iMQorP3CBi33PJYWGEXoBl0XTEnYITA51cWZZ6Y1PVY0eq+5D4W39EzvJoFboz51Gm2
-         3JLw==
-X-Gm-Message-State: AAQBX9fVrxjrYlNqKGlpiQRP0xdwxpnEvghU46EY8NR2gu22fE9aMDbp
-        G96E3AF2shkPE1k3GMQ9Kj8=
-X-Google-Smtp-Source: AKy350YUNtYz7hPmWPtxJLpjGVI9YW6wJfAP4fE3OVtSDoht5sx4jxyaoOTzlCe/WQY0bobsILbgJw==
-X-Received: by 2002:a17:903:308a:b0:1a2:1513:44bf with SMTP id u10-20020a170903308a00b001a2151344bfmr513454plc.1.1680920985209;
-        Fri, 07 Apr 2023 19:29:45 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-003.fbsv.net. [2a03:2880:ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id i19-20020a170902eb5300b001a01bb92273sm3517296pli.279.2023.04.07.19.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Apr 2023 19:29:44 -0700 (PDT)
-From:   Manu Bretelle <chantr4@gmail.com>
-To:     chantr4@gmail.com, mykolal@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, shuah@kernel.org, xukuohai@huawei.com,
-        eddyz87@gmail.com, bpf@vger.kernel.org
-Subject: [PATCH] selftests/bpf: Reset err when symbol name already exist in kprobe_multi_test
-Date:   Fri,  7 Apr 2023 19:29:19 -0700
-Message-Id: <20230408022919.54601-1-chantr4@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        d=1e100.net; s=20210112; t=1680933132;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PaCuvDcWhP2cDa4Q6QNDOLtZbZ3fUX/ydwsiXo8AOEQ=;
+        b=pZHIUOmPv5AE7tfKeLmxOrQdyj38VoMLPJQ8sPbLi5LwlrMtuIxCe9ixLoYnBcVNcM
+         j80Jp8uXSWxVnYp/Qfm3ehaWLjiUlwTPbCowwDNpTgNE43nW3UK9temAS33F7hErNUXK
+         fLwB5oGttC4cWrbhZN/ukubzEjgDVHO/8cVaB4ye8vZ3rLOz7BPKoQF1fhzMyMLIf/+K
+         4Ick5R0iR442pqFEiGhsU4bCh8wmZN5u0LsmCO0nezJzk8o0edIgXc2uvPRdLEVfV1PI
+         OUuqBSJYh0HVlg+hV4fHcmQ1ISs9UB4g1ar7EhgcEhV73TN+q2mXZKEhVk2CIJkps+/7
+         trlw==
+X-Gm-Message-State: AAQBX9efQwPLtM52SqIT85xPlcByHgKuOHoUByeIVuPSyr4eLq9JRY8x
+        envHpbumqMkp9635AYROdvIrXfbdYrFM
+X-Google-Smtp-Source: AKy350YOn6EDZcM6g2K/kJ64r7qb7nb1g6AqbF0ZKf3EWu7T9j29NGNrPc5tNzDCHvyOPDHJbuy1IbcWjKVf
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:b240:9cdf:7861:b23e])
+ (user=irogers job=sendgmr) by 2002:a81:af5d:0:b0:52e:e095:d840 with SMTP id
+ x29-20020a81af5d000000b0052ee095d840mr2334348ywj.0.1680933132008; Fri, 07 Apr
+ 2023 22:52:12 -0700 (PDT)
+Date:   Fri,  7 Apr 2023 22:52:07 -0700
+Message-Id: <20230408055208.1283832-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.577.gac1e443424-goog
+Subject: [PATCH v1 1/2] perf lock contention: Support pre-5.14 kernels
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,56 +73,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When trying to add a name to the hashmap, an error code of EEXIST is
-returned and we continue as names are possibly duplicated in the sys
-file.
+struct rq's variable __lock was renamed from lock in 5.14.
 
-If the last name in the file is a duplicate, we will continue to the
-next iteration of the while loop, and exit the loop with a value of err
-set to EEXIST and enter the error label with err set, which causes the
-test to fail when it should not.
-
-This change reset err to 0 before continue-ing into the next iteration,
-this way, if there is no more data to read from the file we iterate
-through, err will be set to 0.
-
-Behaviour prior to this change:
-```
-test_kprobe_multi_bench_attach:FAIL:get_syms unexpected error: -17
-(errno 2)
-
-All error logs:
-test_kprobe_multi_bench_attach:FAIL:get_syms unexpected error: -17
-(errno 2)
-Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
-```
-
-After this change:
-```
-Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-```
-
-Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index 22be0a9a5a0a..2173c4bb555e 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -381,8 +381,10 @@ static int get_syms(char ***symsp, size_t *cntp, bool kernel)
- 			continue;
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 23f6e63544ed..8911e2a077d8 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -418,6 +418,14 @@ int contention_end(u64 *ctx)
  
- 		err = hashmap__add(map, name, 0);
--		if (err == -EEXIST)
-+		if (err == -EEXIST) {
-+			err = 0;
- 			continue;
-+		}
- 		if (err)
- 			goto error;
+ extern struct rq runqueues __ksym;
  
++struct rq__old {
++	raw_spinlock_t lock;
++} __attribute__((preserve_access_index));
++
++struct rq__new {
++	raw_spinlock_t __lock;
++} __attribute__((preserve_access_index));
++
+ SEC("raw_tp/bpf_test_finish")
+ int BPF_PROG(collect_lock_syms)
+ {
+@@ -426,11 +434,16 @@ int BPF_PROG(collect_lock_syms)
+ 
+ 	for (int i = 0; i < MAX_CPUS; i++) {
+ 		struct rq *rq = bpf_per_cpu_ptr(&runqueues, i);
++		struct rq__new *rq_new = (void *)rq;
++		struct rq__old *rq_old = (void *)rq;
+ 
+ 		if (rq == NULL)
+ 			break;
+ 
+-		lock_addr = (__u64)&rq->__lock;
++		if (bpf_core_field_exists(rq_new->__lock))
++			lock_addr = (__u64)&rq_new->__lock;
++		else
++			lock_addr = (__u64)&rq_old->lock;
+ 		lock_flag = LOCK_CLASS_RQLOCK;
+ 		bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
+ 	}
 -- 
-2.34.1
+2.40.0.577.gac1e443424-goog
 
