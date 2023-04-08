@@ -2,106 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6636DBB8D
-	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 16:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA006DBC5C
+	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 19:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbjDHOXd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Apr 2023 10:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48038 "EHLO
+        id S229724AbjDHRdg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Apr 2023 13:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjDHOXb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Apr 2023 10:23:31 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2DCC148
-        for <bpf@vger.kernel.org>; Sat,  8 Apr 2023 07:23:30 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id g18so14309241ejj.5
-        for <bpf@vger.kernel.org>; Sat, 08 Apr 2023 07:23:30 -0700 (PDT)
+        with ESMTP id S229899AbjDHRde (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Apr 2023 13:33:34 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC20B76F
+        for <bpf@vger.kernel.org>; Sat,  8 Apr 2023 10:33:30 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-94a34c2bc67so30604566b.2
+        for <bpf@vger.kernel.org>; Sat, 08 Apr 2023 10:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680963809; x=1683555809;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P/3BCEZA9eTx8N47TMw8V79/mrf/b8ewnS3dR3GQxIQ=;
-        b=kN6BndqwsJspxAnHXikxRayITMbmayhXFEmrOhY/sgRFKn85i+GJ40bj+TfdBDwPUU
-         1npf4w0nXL6JU1BssCIe9y/6CGuwGasQR1std83FrrdhPLErzLM9Bvs8VK2uYNDsvJuF
-         kKo3s1zvOum9pNUDyLZJAdT+EdynBHeDe9qO0jo3N8SVOpFCEvAI5reDRH/pI6BQjD2a
-         3C3i3NDiMGFEn+Py/Z2rJLwpFUAC+BlsCzX0Xt6e5uP9bZ9VYWsMBn5WxtUUI0NCResT
-         DnYZWTJzK78MTeCEXwysXA8usw+JHPP2mKJnW5zqKxm/2OAJ64jubwD3ar21CMA7kAIN
-         zIwA==
+        d=dectris.com; s=google; t=1680975209;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RWnk3r/ZKxNzmFwcfRG9jBXukIQvdhKh3XXK8OCGzWM=;
+        b=hxNr1hoZmnIwnoHDVcv2GhaPllcDjvLoN2jZN8CM1AHISKYHraI4fV2JwMFp4ynCkn
+         xaN5OlVRG1OxJF8YhhLjWK72UFhQ4xF9KAOtxG2eTTTUnY5ZFWLUt1D+01uZOa++Rb8J
+         PNd8doDgVbKoUmFfFD9gE0gQM8aBb/wHYeqKw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680963809; x=1683555809;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P/3BCEZA9eTx8N47TMw8V79/mrf/b8ewnS3dR3GQxIQ=;
-        b=Pi6xZ3bNVy+QgJV03DbnyKWp/6CzYnkVnErZRZ8ktLxw3lhikopKnCORVsNuBHE1dM
-         0GsYBUoNZsqrqSzQxM5yHpFS4bHr9TxZil+2KZIZbVwsXsjxTBL8xyfdNchaim0u30XT
-         EoaLzNVl6vUxmP/B4bp41soRcktrhmajDBTKbZHoytb0O+B86QQe/XJHGuOGSoR+CUiu
-         iEu+jDCaWDjPeco3F0txTW5EgibGI6dnBPHq4I3AitL1cZp7IRndbmf0PNc7W/Wm+zVH
-         uXXLm92hW8hCvjx2GrjP2PCCOR7RQu716CBJIkwQHGsc49yvCS33TVItrLaNpprjL/a9
-         DljA==
-X-Gm-Message-State: AAQBX9cwMG+aJlOQPT3wnp0QIw8MPNQ+F7bflV5uT4tombXDHmzhzHd3
-        2SA+0C37GCV8MdVCaRW7Y5TaSP10dFjNHyrXKT5M8dfq
-X-Google-Smtp-Source: AKy350YEusPxZWIIRKxqFfcqFUo368VlB8eocEEHdZmEiEenrbWxvSlGiiTiDWX9BwgW/1qCXm86AaSuwg9zSSg0i00=
-X-Received: by 2002:a17:907:7f0c:b0:94a:5b44:e645 with SMTP id
- qf12-20020a1709077f0c00b0094a5b44e645mr5585ejc.13.1680963808896; Sat, 08 Apr
- 2023 07:23:28 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680975209;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RWnk3r/ZKxNzmFwcfRG9jBXukIQvdhKh3XXK8OCGzWM=;
+        b=TrKOwRbZfkwzEmmvJr8qLa35UKQeRgmLEHMpNrmSAcFvLBuBxA+15BaB7DMP9xzKcL
+         SuhmqN3UZ6J3mYtJVHeCSlQl4MWQLaqehW4cGxNVf4GGBdk0XVN67PJhYghpIhETvwrr
+         ptK5jCV5K5Wkd1aZBOfqbpLcUYbhhdyJo4U/6mH6xhq6UxlH/M+3uzxSeUsn/fqYyx+R
+         cDzFD1DHliWp9P+3LuE4unvMpqZ1yXUlnp/8QJjjONRdnj1feaVSBE0hKamM7prLWwHD
+         n1BqRHT9sU6lzzNx7lHkCbW27Tjzjuc8+c+cHQYcgFD3+wQQPAgt+O4pTg5X8hprgrq0
+         gadQ==
+X-Gm-Message-State: AAQBX9cclHqJXHFmHzlIP/8QKvbeKG6gCwzwNGQhRvHZrIzSek55FrR0
+        jNlp+PzwJYCpXTNa1Az6bRr+TVvV0FmG25GB95pqLw==
+X-Google-Smtp-Source: AKy350atVtpuKNWtfg0ZdhZlaFfElzRQx9WPR6dWwTp9mdeMFEkeyxQpxNMihhgd8gBTYuzKpf+5tRgA65ek5/plImk=
+X-Received: by 2002:a50:ba8d:0:b0:4fb:e0e8:5140 with SMTP id
+ x13-20020a50ba8d000000b004fbe0e85140mr3140178ede.6.1680975209172; Sat, 08 Apr
+ 2023 10:33:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGQdkDuC9Cu2tvy1nnnaDvEhuE7c68KUUr+t8xi5BzipKis8_g@mail.gmail.com>
- <CAEf4BzZvDfyYQb+h09V-PAgc_5mT-TKVH0uqNiJL6y0eoFcBHQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZvDfyYQb+h09V-PAgc_5mT-TKVH0uqNiJL6y0eoFcBHQ@mail.gmail.com>
-From:   andrea terzolo <andreaterzolo3@gmail.com>
-Date:   Sat, 8 Apr 2023 16:23:17 +0200
-Message-ID: <CAGQdkDs8e0_o0uHpcUF_ZbG=isa_GjJcTr8=Ykwy0jJek=e=4w@mail.gmail.com>
-Subject: Re: [QUESTION] BPF trampoline limits
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org
+References: <20230406130205.49996-1-kal.conley@dectris.com>
+ <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk> <ZDBEng1KEEG5lOA6@boxer>
+In-Reply-To: <ZDBEng1KEEG5lOA6@boxer>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Sat, 8 Apr 2023 19:38:09 +0200
+Message-ID: <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 5 Apr 2023 at 00:33, Andrii Nakryiko <andrii.nakryiko@gmail.com> wr=
-ote:
+> > > Add core AF_XDP support for chunk sizes larger than PAGE_SIZE. This
+> > > enables sending/receiving jumbo ethernet frames up to the theoretical
+> > > maxiumum of 64 KiB. For chunk sizes > PAGE_SIZE, the UMEM is required
+> > > to consist of HugeTLB VMAs (and be hugepage aligned). Initially, only
+> > > SKB mode is usable pending future driver work.
+> >
+> > Hmm, interesting. So how does this interact with XDP multibuf?
 >
-> On Fri, Mar 31, 2023 at 4:32=E2=80=AFAM andrea terzolo <andreaterzolo3@gm=
-ail.com> wrote:
-> >
-> > Hello! If I can I would like to ask one question about the BPF
-> > trampoline. Reading the description of this commit [0] I noticed the
-> > following statement:
-> >
-> > - Detach of a BPF program from the trampoline should not fail. To avoid=
- memory
-> > allocation in detach path the half of the page is used as a reserve and=
- flipped
-> > after each attach/detach. 2k bytes is enough to call 40+ BPF programs d=
-irectly
-> > which is enough for BPF tracing use cases. This limit can be increased =
-in the
-> > future.
-> >
-> > Looking at the kernel code, I found only this limit
-> > BPF_MAX_TRAMP_LINKS. If I understood correctly, this limit denies us
-> > the use of the same trampoline for more than 38 bpf programs. So my
-> > question is, does the commit description refer to another limit or
-> > does this "call 40+ BPF programs" refer to the BPF_MAX_TRAMP_LINKS
-> > macro?
+> To me it currently does not interact with mbuf in any way as it is enabled
+> only for skb mode which linearizes the skb from what i see.
 >
-> No, it's BPF_MAX_TRAMP_LINKS, which got reduced a bit down from its
-> 40+ limit to current 38.
->
-Thank you very much for the quick answer!
-> >
-> > Thank you in advance for your time,
-> > Andrea
-> >
-> > 0: https://github.com/torvalds/linux/commit/fec56f5890d93fc2ed74166c397=
-dc186b1c25951
+> I'd like to hear more about Kal's use case - Kal do you use AF_XDP in SKB
+> mode on your side?
+
+Our use-case is to receive jumbo Ethernet frames up to 9000 bytes with
+AF_XDP in zero-copy mode. This patchset is a step in this direction.
+At the very least, it lets you test out the feature in SKB mode
+pending future driver support. Currently, XDP multi-buffer does not
+support AF_XDP at all. It could support it in theory, but I think it
+would need some UAPI design work and a bit of implementation work.
+
+Also, I think that the approach taken in this patchset has some
+advantages over XDP multi-buffer:
+    (1) It should be possible to achieve higher performance
+        (a) because the packet data is kept together
+        (b) because you need to acquire and validate less descriptors
+and touch the queue pointers less often.
+    (2) It is a nicer user-space API.
+        (a) Since the packet data is all available in one linear
+buffer. This may even be a requirement to avoid an extra copy if the
+data must be handed off contiguously to other code.
+
+The disadvantage of this patchset is requiring the user to allocate
+HugeTLB pages which is an extra complication.
+
+I am not sure if this patchset would need to interact with XDP
+multi-buffer at all directly. Does anyone have anything to add here?
+
+What other intermediate steps are needed to get to ZC? I think drivers
+would already be able to support this now?
+
+Kal
