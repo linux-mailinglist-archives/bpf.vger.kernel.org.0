@@ -2,82 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFFD6DB7FA
-	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 03:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A3A6DB825
+	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 04:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229448AbjDHBaW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 21:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
+        id S229475AbjDHC3r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 22:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjDHBaV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 21:30:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02393113C3;
-        Fri,  7 Apr 2023 18:30:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 858DD64F11;
-        Sat,  8 Apr 2023 01:30:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CDB2DC4339B;
-        Sat,  8 Apr 2023 01:30:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680917418;
-        bh=ST49drH5XE8wAGGKdEej2JeiagrxN7qoOaHr8ZCDhFE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=P8nd8wivEaDG7a0Y6pCE0becZHlwy9Ggr5nXPTqVpTIzQkEtCgN6sQ4LVqRv2I307
-         bjKKGfRyYppeFAisp3o3DcGLPPAFjMxNIn5vra3tzUf5XBtA0vm92uQPCrB8kIjK2y
-         EaUq/3myyMCWl39+FvMleZ/qbbQee6APg157E5rOBDMB3kkY+2UnMQuXR3a00AnXUD
-         Xhb0NXaxGNynj9UdCBBs3gTjZMssG0FWoI/CBcqfkDzBX7CgDQe+qXvhPH19UQLpyE
-         yJUgJt+IyFNa+jRCeIrzF2CTTepVPRQAaIyuOc8N7LyRIsZy7PxDpRoG1aAqa6ydsF
-         t80RtBmDClXOg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B1BFAC4167B;
-        Sat,  8 Apr 2023 01:30:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229448AbjDHC3r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 22:29:47 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE36C65D
+        for <bpf@vger.kernel.org>; Fri,  7 Apr 2023 19:29:46 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id 20so2165154plk.10
+        for <bpf@vger.kernel.org>; Fri, 07 Apr 2023 19:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680920985;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KhhCJ3JagFk6aPxuLlvnrcDSjcQ4v6yptvfivQV5v5Q=;
+        b=lgKKCCn3xtbqCgLareUd1pq7KzScWsMcltlrK+3CpGEaawqAOC3cBKzxLjCcWYUMAj
+         sYopE4kIkL+DgPf5BErDbVcUd46FC38q3NaTvnybyMnmjOZl55a0EPFuo85OAQ7F7AZP
+         7oAbc3NHpYyrD600oo2odjyPYq5tmYlC2gQND0WJOHnICX4GgRz7xC8LBQfDAJVF1+VE
+         P58a5+6CU3+0+CPZa9zK5hPmHwrSqR9UlpLUIheBe9M5chfYRnAsM1TICUbPnWolPFRo
+         8yDbPlbImxIL+GGv24rov6VfEF56p20Vn4+rwoDsZoeckfrVXkm8aluB4HZ1oDTjnvDE
+         6itQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680920985;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KhhCJ3JagFk6aPxuLlvnrcDSjcQ4v6yptvfivQV5v5Q=;
+        b=Z9rcIAJxpwRJcTA6Sdj0FqKpFVBlaPPNym+IbUjIIKfOXuxY2Sar+DI6mFmwEYOb8x
+         G8kFi04ADRVVW2RQAelqZV6TYZVnL24KgQuaftjmrnWI45r7oorPELcSRzvh3Ud6KXVN
+         LAlvGb3mIONZHJ2J5bRGcQnRWtLi840HHVe35gJhM56/lT0Jod5q1uxI4o/oDdp9EsSC
+         5OeDOLL4rURm04Tcpb2g0k5Wr88DKKLu+NccRhskFc6gMGDH2UIRQHNXWU4joJavnDK9
+         5iMQorP3CBi33PJYWGEXoBl0XTEnYITA51cWZZ6Y1PVY0eq+5D4W39EzvJoFboz51Gm2
+         3JLw==
+X-Gm-Message-State: AAQBX9fVrxjrYlNqKGlpiQRP0xdwxpnEvghU46EY8NR2gu22fE9aMDbp
+        G96E3AF2shkPE1k3GMQ9Kj8=
+X-Google-Smtp-Source: AKy350YUNtYz7hPmWPtxJLpjGVI9YW6wJfAP4fE3OVtSDoht5sx4jxyaoOTzlCe/WQY0bobsILbgJw==
+X-Received: by 2002:a17:903:308a:b0:1a2:1513:44bf with SMTP id u10-20020a170903308a00b001a2151344bfmr513454plc.1.1680920985209;
+        Fri, 07 Apr 2023 19:29:45 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-003.fbsv.net. [2a03:2880:ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id i19-20020a170902eb5300b001a01bb92273sm3517296pli.279.2023.04.07.19.29.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Apr 2023 19:29:44 -0700 (PDT)
+From:   Manu Bretelle <chantr4@gmail.com>
+To:     chantr4@gmail.com, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org, xukuohai@huawei.com,
+        eddyz87@gmail.com, bpf@vger.kernel.org
+Subject: [PATCH] selftests/bpf: Reset err when symbol name already exist in kprobe_multi_test
+Date:   Fri,  7 Apr 2023 19:29:19 -0700
+Message-Id: <20230408022919.54601-1-chantr4@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf 2023-04-08
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168091741872.13847.5359569013775020600.git-patchwork-notify@kernel.org>
-Date:   Sat, 08 Apr 2023 01:30:18 +0000
-References: <20230407224642.30906-1-daniel@iogearbox.net>
-In-Reply-To: <20230407224642.30906-1-daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+When trying to add a name to the hashmap, an error code of EEXIST is
+returned and we continue as names are possibly duplicated in the sys
+file.
 
-This pull request was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+If the last name in the file is a duplicate, we will continue to the
+next iteration of the while loop, and exit the loop with a value of err
+set to EEXIST and enter the error label with err set, which causes the
+test to fail when it should not.
 
-On Sat,  8 Apr 2023 00:46:42 +0200 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
-> 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 4 non-merge commits during the last 11 day(s) which contain
-> a total of 5 files changed, 39 insertions(+), 6 deletions(-).
-> 
-> [...]
+This change reset err to 0 before continue-ing into the next iteration,
+this way, if there is no more data to read from the file we iterate
+through, err will be set to 0.
 
-Here is the summary with links:
-  - pull-request: bpf 2023-04-08
-    https://git.kernel.org/netdev/net/c/029294d01907
+Behaviour prior to this change:
+```
+test_kprobe_multi_bench_attach:FAIL:get_syms unexpected error: -17
+(errno 2)
 
-You are awesome, thank you!
+All error logs:
+test_kprobe_multi_bench_attach:FAIL:get_syms unexpected error: -17
+(errno 2)
+Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
+```
+
+After this change:
+```
+Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+```
+
+Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+---
+ tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+index 22be0a9a5a0a..2173c4bb555e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+@@ -381,8 +381,10 @@ static int get_syms(char ***symsp, size_t *cntp, bool kernel)
+ 			continue;
+ 
+ 		err = hashmap__add(map, name, 0);
+-		if (err == -EEXIST)
++		if (err == -EEXIST) {
++			err = 0;
+ 			continue;
++		}
+ 		if (err)
+ 			goto error;
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
