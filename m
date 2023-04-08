@@ -2,160 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 753386DBB32
-	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 15:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D6B6DBB39
+	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 15:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjDHNeU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Apr 2023 09:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
+        id S229659AbjDHNry (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Apr 2023 09:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbjDHNeT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Apr 2023 09:34:19 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA3DD53E
-        for <bpf@vger.kernel.org>; Sat,  8 Apr 2023 06:34:17 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id sb12so2564419ejc.11
-        for <bpf@vger.kernel.org>; Sat, 08 Apr 2023 06:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680960856; x=1683552856;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oO++ZBpcZxlp6v1ZbzNsWvaLPYErAkpFnwutuBeJz7U=;
-        b=Fcp1cRMintcUm2vG2CFFMqVc6mOLUMnsInCB228okkTD0GC3gLiOHsGhsRZbSzJdRD
-         Tlx58x77GFmYrrmCgxhYT8YIPndLyPP1XQ2gWump0UG7W3K20xgWovB2iPY8LmXgcrZq
-         VwxBf1Lq6BnBnsOu+6ZGCGvQsAvSYLIXWUau/XnJCy/NffQTHkPgwDPLPLmT1w1UCSD7
-         fJ3gwW67mUomTBMvVQXPiDHy7q1kSpjBgFL4XAyW4KQ0r57vW7Yud/uzCnR2qM60qPQ4
-         aWjCXGjYASOoUAjeUTwWz/EfFRFLN3NxnVrwQaJVxNWfR+GiNfuyFo8U8SGDuLNkolQ3
-         FibQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680960856; x=1683552856;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oO++ZBpcZxlp6v1ZbzNsWvaLPYErAkpFnwutuBeJz7U=;
-        b=05yz4WEA75Soi/KDoCC/NdnNAp2ZXaG33TLqXVuv940XDQIPTwXw9cflaC0Bl84RQq
-         8cPQHz41Aop553X1UKMZZGbYqFgFLPIDlKCdhby1YzQ8bdAuPw1yK/k7Ax/EEYy7YzIh
-         1bV6KTRgzp5gz/hmEfoonB9iMfrYoKC9cNXBZvcV9hB3urMCvC1ipl3Sji0C0hclGVoX
-         RuUXj/UeuXH8Vgfqz6iqFF7pPG9U66W6qDgcVDaT2TwxJC8kgsh1Im//K93YOUmRcNWg
-         SYuA3OysU9fEHbBEyeueNiE0auggjiHwqxxUC/Wv+GZ7eu/bPc6usZShdTjhmHDKuA6K
-         y4zw==
-X-Gm-Message-State: AAQBX9e1xmLMnBxTdmodQPfDV/41KU8UIrnPsgsiyYwe3GBh9ptl/op1
-        pCEYD+4EnjFjf1ytmbUsdG5Mdw5CuwAwceUObsHVLecYiSg=
-X-Google-Smtp-Source: AKy350YdWGDzkynJlwbD/1Qea6mUlPSETQHfxsrwzOtamtCuBpEj7SRn37smB0htpV7F07Avw1mDbE48sfseUh3kjsU=
-X-Received: by 2002:a17:906:264c:b0:94a:469e:3558 with SMTP id
- i12-20020a170906264c00b0094a469e3558mr392066ejc.13.1680960855671; Sat, 08 Apr
- 2023 06:34:15 -0700 (PDT)
+        with ESMTP id S229451AbjDHNrx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Apr 2023 09:47:53 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32DACA03;
+        Sat,  8 Apr 2023 06:47:51 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PtxPt40n5z4f3xbq;
+        Sat,  8 Apr 2023 21:47:46 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgCH77J_cDFk6gboGw--.47910S4;
+        Sat, 08 Apr 2023 21:47:45 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: [RFC bpf-next v2 0/4] Introduce BPF_MA_REUSE_AFTER_RCU_GP
+Date:   Sat,  8 Apr 2023 22:18:42 +0800
+Message-Id: <20230408141846.1878768-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <CAGQdkDvyUu2ZDDdRmb4YhDzB96hS1NPW=ju=_Y_C+6nyA6xVGw@mail.gmail.com>
- <CAEf4BzbauKucsr-e4GigvrdYy2S9XNQQ6YW0xZ3ocJVcGpR7Ow@mail.gmail.com>
-In-Reply-To: <CAEf4BzbauKucsr-e4GigvrdYy2S9XNQQ6YW0xZ3ocJVcGpR7Ow@mail.gmail.com>
-From:   andrea terzolo <andreaterzolo3@gmail.com>
-Date:   Sat, 8 Apr 2023 15:34:04 +0200
-Message-ID: <CAGQdkDsBb=M+MD=B_MBCt4E0MpnP15Ls7Xja_Ow-5bvUCqe-AQ@mail.gmail.com>
-Subject: Re: [QUESTION] usage of libbpf_probe_bpf_prog_type API
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCH77J_cDFk6gboGw--.47910S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF4DXrWktFW8Ww1rArykGrg_yoW5ZrWkpF
+        WfGw45Jr1kXrnFkwn7Aw17Ga4rJws5W345GF4Svr1Duw4fXry29r1IyF4YvFy3CrW8JFyY
+        qrykKwn3Wa4kZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=KHOP_HELO_FCRDNS,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Il giorno mer 5 apr 2023 alle ore 00:32 Andrii Nakryiko
-<andrii.nakryiko@gmail.com> ha scritto:
->
-> On Thu, Mar 30, 2023 at 10:21=E2=80=AFAM andrea terzolo
-> <andreaterzolo3@gmail.com> wrote:
-> >
-> > Hi all!
-> >
-> > If I can I would like to ask one question about the
-> > `libbpf_probe_bpf_prog_type` API. The idea is to use `fentry/fexit`
-> > bpf progs only if they are available and fall back to simple `kprobes`
-> > when they are not. Is there a way to probe `BPF_TRACE_FENTRY` support
-> > with `libbpf` APIs? I was looking at `libbpf_probe_bpf_prog_type` API
-> > but it seems to check the `prog_type` rather than the `attach_type`,
-> > when I call it `libbpf_probe_bpf_prog_type(BPF_PROG_TYPE_TRACING,
-> > NULL);` it returns `1` even if `fentry/fexit` progs are not supported
-> > on my machine. Is there a way to probe this feature with other
-> > `libbpf` APIs?
-> >
->
-> looking at libbpf probing code, for BPF_PROG_TYPE_TRACING we choose
-> BPF_TRACE_FENTRY attach type automatically (because it doesn't really
-> matter whether its BPF_TRACE_FEXIT or BPF_MODIFY_RETURN, they all are
-> either supported or none is). We then expect that verifier will
-> complain with "attach_btf_id 1 is not a function" error. If we do see
-> that error, we know that verifier supports fentry/fexit programs *in
-> principle*, which is what we are checking with
-> libbpf_probe_bpf_prog_type().
+From: Hou Tao <houtao1@huawei.com>
 
-Ok got it, thank you. My issue is that in my project I need to use
-BPF_TRACE_RAW_TP programs that AFAIK don't require the support for bpf
-trampoline, so they could be supported even if
-BPF_TRACE_FENTRY/BPF_MODIFY_RETURN are not supported. This is what
-happens on arm64 kernels where we have BPF_TRACE_RAW_TP but
-BPF_TRACE_FENTRY/BPF_MODIFY_RETURN are still not supported... Right
-now I'm using libbpf_probe_bpf_prog_type() to check the support for
-BPF_TRACE_RAW_TP but this is just an approximation, probably the best
-way to do that is to inject a small
-BPF_TRACE_RAW_TP prog and check that it is correctly loaded. It seems
-that libbpf doesn't provide APIs to do that, is it right?
+Hi,
 
-> If kernel doesn't support fentry/fexit attachment for some specific
-> function you'd like to attach to, that's a different matter. This
-> would be equivalent to BPF_PROG_TYPE_KPROBE check -- we check if
-> kprobes in general are supported, but not whether kprobing specific
-> kernel function works.
->
-> I assume by "not supported on my machine" you mean that you can't
-> attach fentry/fexit to some function? If not, let me know, and we'd
-> have to debug this further.
+As discussed in v1, currently the freed objects in bpf memory allocator
+may be reused immediately by the new allocation, it introduces
+use-after-bpf-ma-free problem for non-preallocated hash map and makes
+lookup procedure return incorrect result. The immediate reuse also makes
+introducing new use case more difficult (e.g. qp-trie).
 
-Sorry, probably I was not so clear, with this statement I mean that
-libbpf_probe_bpf_prog_type() returns 1 even if BPF_TRACE_FENTRY progs
-cannot be attached into the kernel. [0] is an example of what I'm
-doing.
-1. Check fentry support with libbpf_probe_bpf_prog_type
-2. Check fentry support with an approach similar to libbpf-tools (as
-you suggested)
-3. Try to inject my real BPF programs.
+The patch series tries to introduce BPF_MA_REUSE_AFTER_RCU_GP to solve
+these problems. For BPF_MA_REUSE_AFTER_GP, the freed objects are reused
+only after one RCU grace period and may be freed by bpf memory allocator
+after another RCU-tasks-trace grace period. So for bpf programs which
+care about reuse problem, these programs can use
+bpf_rcu_read_{lock,unlock}() to access these freed objects safely and
+for those which doesn't care, there will be safely use-after-bpf-ma-free
+because these objects have not been freed by bpf memory allocator.
 
-(2) (libbpf-tool check) is correctly able to detect that
-BPF_TRACE_FENTRY progs are not supported, when we call
-`bpf_raw_tracepoint_open` to attach the fentry prog, `524` is returned
-so we understand that this program is not supported. On the other
-side, (1) is not able to detect that programs are not supported, the
-API returns `1` as if they were supported. Now I have to highlight
-that this API is called libbpf_probe_bpf_prog_type and not
-libbpf_probe_bpf_attach_type, so 1 could be the right return value
-since BPF_PROG_TYPE_TRACING progs are effectively supported, for
-example, attach_type  BPF_TRACE_RAW_TP is supported, but some other
-attach types like BPF_TRACE_FENTRY/BPF_MODIFY_RETURN  are not. If this
-API just checks for BPF_PROG_TYPE_TRACING support, probably the best
-way I have to check if a specific attach type is supported is to
-directly inject a small prog of this type, as libbpf-tool does. WDYT?
+The current implementation is far from perfect, but I think it is ready
+for get some feedbacks before putting in more effort. The implementation
+mainly focus on how to speed up the transition from freed elements to
+reusable elements and try to reduce the risk of OOM.
 
-[0]: https://github.com/Andreagit97/BPF-perf-tests/blob/main/templates/fent=
-ry_attach.c
+To accelerate the transition, it dynamically allocates rcu_head and call
+call_rcu() in a kworker to do the transition. The frequency of call_rcu()
+invocation could be improved by calling call_rcu() in irq work, but after
+did that, I found the RCU grace period increased a lot and I still could
+not figure out why. To reduce the risk of OOM, these reusable elements need
+to be free as well, but we can not dynamically allocate rcu_head to do
+that, because compared with RCU grace period RCU-tasks-trace grace
+period is slower, so the freeing of reusable elements is just like the
+freeing in normal bpf memory allocator, but these is one difference: for
+BPF_MA_REUSE_AFTER_GP bpf ma these freeing elements are still available
+for reuse in unit_alloc(). Please see individual patches for more details.
 
-> If you want to know if some function can be traced with fentry/fexit,
-> check below helper function from libbpf-tools ([0])
->
-> bool fentry_can_attach(const char *name, const char *mod)
->
->
->   [0] https://github.com/iovisor/bcc/blob/master/libbpf-tools/trace_helpe=
-rs.c#LL1043-L1043C58
->
-Thank you for the pointer!
->
-> > Thank you in advance for your time,
-> > Andrea
+Comments and suggestions are always welcome.
+
+Change Log:
+v2:
+ * add a benchmark for bpf memory allocator to compare between different
+   flavor of bpf memory allocator.
+ * implement BPF_MA_REUSE_AFTER_RCU_GP for bpf memory allocator.
+v1: https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
+
+Hou Tao (4):
+  selftests/bpf: Add benchmark for bpf memory allocator
+  bpf: Factor out a common helper free_all()
+  bpf: Pass bitwise flags to bpf_mem_alloc_init()
+  bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+
+ include/linux/bpf_mem_alloc.h                 |   9 +-
+ kernel/bpf/core.c                             |   2 +-
+ kernel/bpf/cpumask.c                          |   2 +-
+ kernel/bpf/hashtab.c                          |   5 +-
+ kernel/bpf/memalloc.c                         | 390 ++++++++++++++++--
+ tools/testing/selftests/bpf/Makefile          |   3 +
+ tools/testing/selftests/bpf/bench.c           |   4 +
+ .../selftests/bpf/benchs/bench_htab_mem.c     | 273 ++++++++++++
+ .../selftests/bpf/progs/htab_mem_bench.c      | 145 +++++++
+ 9 files changed, 785 insertions(+), 48 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
+
+-- 
+2.29.2
+
