@@ -2,117 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695D36DB6A6
-	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 00:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFFD6DB7FA
+	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 03:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjDGWqs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Apr 2023 18:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
+        id S229448AbjDHBaW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Apr 2023 21:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjDGWqs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Apr 2023 18:46:48 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817C15594;
-        Fri,  7 Apr 2023 15:46:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References;
-        bh=01xCP2CTTDste1h5LyPhN95Z2+Nr+MZPOa+ogV6/F7U=; b=Q1cDslzgDOojo0eNo9JxJwb4GK
-        YkpeFjsNcacts5zoqJgEYYR8DRRwoj/O0yX8Nq0yAROfT2q4L9urrwq7NXHV1RiBw2a29Y9n6pGeC
-        //HFB2LOrHPvBQtbUUjTegQ+iZNWhC+hHXz0z9WlDqgRMwYEP3P5tNpKTRSPCwR64pyKlXWrULOtc
-        gDb0+dTt7uZsnHhl+eMDsfm94GRWNcan7DVoQzrI3x4aKNMRnkoKQtyrvBfH3QGwRnAZkBOiJN6tB
-        HSNW2oEI8GT5bh9f/kvo0+Ue1TAY6xDxKPHmZefHKyp3J4AqnpikjwVL/MZbmavimEBQm2KheXw4N
-        6UND1V+A==;
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pkuqw-0007JA-PT; Sat, 08 Apr 2023 00:46:42 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2023-04-08
-Date:   Sat,  8 Apr 2023 00:46:42 +0200
-Message-Id: <20230407224642.30906-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        with ESMTP id S229437AbjDHBaV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Apr 2023 21:30:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02393113C3;
+        Fri,  7 Apr 2023 18:30:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 858DD64F11;
+        Sat,  8 Apr 2023 01:30:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CDB2DC4339B;
+        Sat,  8 Apr 2023 01:30:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680917418;
+        bh=ST49drH5XE8wAGGKdEej2JeiagrxN7qoOaHr8ZCDhFE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=P8nd8wivEaDG7a0Y6pCE0becZHlwy9Ggr5nXPTqVpTIzQkEtCgN6sQ4LVqRv2I307
+         bjKKGfRyYppeFAisp3o3DcGLPPAFjMxNIn5vra3tzUf5XBtA0vm92uQPCrB8kIjK2y
+         EaUq/3myyMCWl39+FvMleZ/qbbQee6APg157E5rOBDMB3kkY+2UnMQuXR3a00AnXUD
+         Xhb0NXaxGNynj9UdCBBs3gTjZMssG0FWoI/CBcqfkDzBX7CgDQe+qXvhPH19UQLpyE
+         yJUgJt+IyFNa+jRCeIrzF2CTTepVPRQAaIyuOc8N7LyRIsZy7PxDpRoG1aAqa6ydsF
+         t80RtBmDClXOg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B1BFAC4167B;
+        Sat,  8 Apr 2023 01:30:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26868/Fri Apr  7 09:23:08 2023)
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: pull-request: bpf 2023-04-08
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168091741872.13847.5359569013775020600.git-patchwork-notify@kernel.org>
+Date:   Sat, 08 Apr 2023 01:30:18 +0000
+References: <20230407224642.30906-1-daniel@iogearbox.net>
+In-Reply-To: <20230407224642.30906-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+Hello:
 
-The following pull-request contains BPF updates for your *net* tree.
+This pull request was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-We've added 4 non-merge commits during the last 11 day(s) which contain
-a total of 5 files changed, 39 insertions(+), 6 deletions(-).
+On Sat,  8 Apr 2023 00:46:42 +0200 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+> 
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> We've added 4 non-merge commits during the last 11 day(s) which contain
+> a total of 5 files changed, 39 insertions(+), 6 deletions(-).
+> 
+> [...]
 
-The main changes are:
+Here is the summary with links:
+  - pull-request: bpf 2023-04-08
+    https://git.kernel.org/netdev/net/c/029294d01907
 
-1) Fix BPF TCP socket iterator to use correct helper for dropping socket's refcount,
-   that is, sock_gen_put instead of sock_put, from Martin KaFai Lau.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-2) Fix a BTI exception splat in BPF trampoline-generated code on arm64, from Xu Kuohai.
 
-3) Fix a LongArch JIT error from missing BPF_NOSPEC no-op, from George Guo.
-
-4) Fix dynamic XDP feature detection of veth in xdp_redirect selftest, from Lorenzo Bianconi.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Florent Revest, WANG Xuerui
-
-----------------------------------------------------------------
-
-The following changes since commit 45977e58ce65ed0459edc9a0466d9dfea09463f5:
-
-  net: dsa: b53: mmap: add phy ops (2023-03-27 08:31:34 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-for you to fetch changes up to 919e659ed12568b5b8ba6c2ffdd82d8d31fc28af:
-
-  selftests/bpf: fix xdp_redirect xdp-features selftest for veth driver (2023-04-06 09:35:09 -0700)
-
-----------------------------------------------------------------
-bpf-for-netdev
-
-----------------------------------------------------------------
-George Guo (1):
-      LoongArch, bpf: Fix jit to skip speculation barrier opcode
-
-Lorenzo Bianconi (1):
-      selftests/bpf: fix xdp_redirect xdp-features selftest for veth driver
-
-Martin KaFai Lau (1):
-      bpf: tcp: Use sock_gen_put instead of sock_put in bpf_iter_tcp
-
-Xu Kuohai (1):
-      bpf, arm64: Fixed a BTI error on returning to patched function
-
- arch/arm64/net/bpf_jit.h                           |  4 +++
- arch/arm64/net/bpf_jit_comp.c                      |  3 ++-
- arch/loongarch/net/bpf_jit.c                       |  4 +++
- net/ipv4/tcp_ipv4.c                                |  4 +--
- .../selftests/bpf/prog_tests/xdp_do_redirect.c     | 30 +++++++++++++++++++---
- 5 files changed, 39 insertions(+), 6 deletions(-)
