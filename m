@@ -2,45 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 049466DBCA1
-	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 21:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011EC6DBCAE
+	for <lists+bpf@lfdr.de>; Sat,  8 Apr 2023 21:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjDHTZY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Apr 2023 15:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        id S229583AbjDHT0M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Apr 2023 15:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjDHTZX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Apr 2023 15:25:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0507CB47A
-        for <bpf@vger.kernel.org>; Sat,  8 Apr 2023 12:24:41 -0700 (PDT)
+        with ESMTP id S229519AbjDHT0K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Apr 2023 15:26:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989D5B754
+        for <bpf@vger.kernel.org>; Sat,  8 Apr 2023 12:24:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680981880;
+        s=mimecast20190719; t=1680981889;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WHos8LM0VawSvsV7ilkV4J+3kFj+NjV9a1WkRGl+L9k=;
-        b=Aqs9B/jXSbiXQn5cxT4nEycnPPB7x5fQIVhZ3W++yhs1/WIEcFmmjBtLvxIrvBapubbwpo
-        0IPsBrfKSFCPIOb31ce91N78m1Qgmhm8pyTkzu4+yympKCjsRmYXMVI1xBl1oHKLQO5qak
-        b3idr8wNFY4JNAOabAGUsvTpN7NT/xg=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+TaSHMvwM09VD5vY0j30SG5yCXiQxaklbNl6ijmKOnE=;
+        b=ZhA5G2yZsHWCGSOpjwQIDzPqdBZsskXeROrVsdP9NU4ToOkC+vig3NJHzy2fuSgVFAOFwG
+        cPhOIn7tIukUd6+dvYLhc6oP8yTpLm/xeYE4D56HD/LzAN0j86XSYnjaHFGXHHr5tnD8In
+        i/xLO48t5eb9jks1qQCfdKgrEEAio6Y=
 Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
  [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-170-eMMT_24CMTGEkuTyNfCu2g-1; Sat, 08 Apr 2023 15:24:39 -0400
-X-MC-Unique: eMMT_24CMTGEkuTyNfCu2g-1
+ us-mta-167-P2_bZ6THPmCcPhtHfVUSpg-1; Sat, 08 Apr 2023 15:24:43 -0400
+X-MC-Unique: P2_bZ6THPmCcPhtHfVUSpg-1
 Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C8BE029AA2E7;
-        Sat,  8 Apr 2023 19:24:37 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96F7C3C0C88C;
+        Sat,  8 Apr 2023 19:24:42 +0000 (UTC)
 Received: from firesoul.localdomain (unknown [10.45.242.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E273492C14;
-        Sat,  8 Apr 2023 19:24:37 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E508492C14;
+        Sat,  8 Apr 2023 19:24:42 +0000 (UTC)
 Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 4ED6B307372E8;
-        Sat,  8 Apr 2023 21:24:36 +0200 (CEST)
-Subject: [PATCH bpf V7 0/7] XDP-hints: API change for RX-hash kfunc
- bpf_xdp_metadata_rx_hash
+        by firesoul.localdomain (Postfix) with ESMTP id 641AB307372E8;
+        Sat,  8 Apr 2023 21:24:41 +0200 (CEST)
+Subject: [PATCH bpf V7 1/7] selftests/bpf: xdp_hw_metadata default disable
+ bpf_printk
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
 To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
         =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
@@ -54,8 +55,10 @@ Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
         edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
         davem@davemloft.net, tariqt@nvidia.com, saeedm@nvidia.com,
         leon@kernel.org, linux-rdma@vger.kernel.org
-Date:   Sat, 08 Apr 2023 21:24:36 +0200
-Message-ID: <168098183268.96582.7852359418481981062.stgit@firesoul>
+Date:   Sat, 08 Apr 2023 21:24:41 +0200
+Message-ID: <168098188134.96582.7870014252568928901.stgit@firesoul>
+In-Reply-To: <168098183268.96582.7852359418481981062.stgit@firesoul>
+References: <168098183268.96582.7852359418481981062.stgit@firesoul>
 User-Agent: StGit/1.4
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -71,42 +74,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Current API for bpf_xdp_metadata_rx_hash() returns the raw RSS hash value,
-but doesn't provide information on the RSS hash type (part of 6.3-rc).
+The tool xdp_hw_metadata can be used by driver developers
+implementing XDP-hints kfuncs.  The tool transfers the
+XDP-hints via metadata information to an AF_XDP userspace
+process. When everything works the bpf_printk calls are
+unncesssary.  Thus, disable bpf_printk by default, but
+make it easy to reenable for driver developers to use
+when debugging their driver implementation.
 
-This patchset proposal is to change the function call signature via adding
-a pointer value argument for providing the RSS hash type.
+This also converts bpf_printk "forwarding UDP:9091 to AF_XDP"
+into a code comment.  The bpf_printk's that are important
+to the driver developers is when bpf_xdp_adjust_meta fails.
+The likely mistake from driver developers is expected to
+be that they didn't implement XDP metadata adjust support.
 
-Patchset also disables all bpf_printk's from xdp_hw_metadata program
-that we expect driver developers to use.
-
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 ---
+ .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-Jesper Dangaard Brouer (7):
-      selftests/bpf: xdp_hw_metadata default disable bpf_printk
-      selftests/bpf: Add counters to xdp_hw_metadata
-      xdp: rss hash types representation
-      mlx5: bpf_xdp_metadata_rx_hash add xdp rss hash type
-      veth: bpf_xdp_metadata_rx_hash add xdp rss hash type
-      mlx4: bpf_xdp_metadata_rx_hash add xdp rss hash type
-      selftests/bpf: Adjust bpf_xdp_metadata_rx_hash for new arg
+diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+index 4c55b4d79d3d..980eb60d8e5b 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+@@ -5,6 +5,19 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
+ 
++/* Per default below bpf_printk() calls are disabled.  Can be
++ * reenabled manually for convenience by XDP-hints driver developer,
++ * when troublshooting the drivers kfuncs implementation details.
++ *
++ * Remember BPF-prog bpf_printk info output can be access via:
++ *  /sys/kernel/debug/tracing/trace_pipe
++ */
++//#define DEBUG	1
++#ifndef DEBUG
++#undef  bpf_printk
++#define bpf_printk(fmt, ...) ({})
++#endif
++
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_XSKMAP);
+ 	__uint(max_entries, 256);
+@@ -49,11 +62,10 @@ int rx(struct xdp_md *ctx)
+ 	if (!udp)
+ 		return XDP_PASS;
+ 
++	/* Forwarding UDP:9091 to AF_XDP */
+ 	if (udp->dest != bpf_htons(9091))
+ 		return XDP_PASS;
+ 
+-	bpf_printk("forwarding UDP:9091 to AF_XDP");
+-
+ 	ret = bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
+ 	if (ret != 0) {
+ 		bpf_printk("bpf_xdp_adjust_meta returned %d", ret);
 
-
- drivers/net/ethernet/mellanox/mlx4/en_rx.c    | 22 ++++++-
- drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  3 +-
- .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 63 ++++++++++++++++++-
- drivers/net/veth.c                            | 10 ++-
- include/linux/mlx5/device.h                   | 14 ++++-
- include/linux/netdevice.h                     |  3 +-
- include/net/xdp.h                             | 47 ++++++++++++++
- net/core/xdp.c                                | 10 ++-
- .../selftests/bpf/prog_tests/xdp_metadata.c   |  2 +
- .../selftests/bpf/progs/xdp_hw_metadata.c     | 42 ++++++++++---
- .../selftests/bpf/progs/xdp_metadata.c        |  6 +-
- .../selftests/bpf/progs/xdp_metadata2.c       |  7 ++-
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 10 ++-
- tools/testing/selftests/bpf/xdp_metadata.h    |  4 ++
- 14 files changed, 213 insertions(+), 30 deletions(-)
-
---
 
