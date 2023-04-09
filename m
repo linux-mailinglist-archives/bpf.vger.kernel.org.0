@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C0C6DBE69
-	for <lists+bpf@lfdr.de>; Sun,  9 Apr 2023 05:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A876DBE6A
+	for <lists+bpf@lfdr.de>; Sun,  9 Apr 2023 05:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjDIDet (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Apr 2023 23:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
+        id S229516AbjDIDeu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Apr 2023 23:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjDIDer (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Apr 2023 23:34:47 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FC74EDC
-        for <bpf@vger.kernel.org>; Sat,  8 Apr 2023 20:34:46 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id w11so2068159plp.13
-        for <bpf@vger.kernel.org>; Sat, 08 Apr 2023 20:34:46 -0700 (PDT)
+        with ESMTP id S229544AbjDIDet (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Apr 2023 23:34:49 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411EC5BB9
+        for <bpf@vger.kernel.org>; Sat,  8 Apr 2023 20:34:48 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id pc4-20020a17090b3b8400b0024676052044so1931159pjb.1
+        for <bpf@vger.kernel.org>; Sat, 08 Apr 2023 20:34:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1681011286; x=1683603286;
+        d=gmail.com; s=20210112; t=1681011287; x=1683603287;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cmHAmUMzUYEeB3nfvemfvISCtgRUqRW78d11epxTKNM=;
-        b=GCaxeNkfxoBgyscuKnWbpwRHEhygbxXFpwbF150cYRNj9U5orbflkC3Ul/N3qTtbmS
-         7Mg2x+7L8IoA0FsudN55XWLSjlTi8jQsIYydMcwJtr8fFtzos6Lrr7bnaTwsYIXkQ1Tk
-         QHEYmmKoeBhSaQnmGbZh7wxpUvZ8m3S7qZZhakCtlvc09cBzKgo5iKAd38UXtkghH+hz
-         U/+WxgbNTLw/pKjs1ZOp6ajDh7RSB30X+im9kBhILMrojEv0TGKtObczCRbjYi9AVvvO
-         wD7Et0BosvqKkRPq3/TQGz8z8MtQ99sa+35xzy5/Ozo7jJbiZx6jVr+B7Ocx0gEj8lXR
-         1H9A==
+        bh=DlLYW47o9VHsQgVu1dp+JqdiOZLMyMbCaE7IZrC/EGI=;
+        b=O4MJIq49pGRVurldvZC8CagOF5y8ieHu0rd4c0yoNjW+S3clN9cOUkQK2GRJ3hqCSN
+         8VMgwn1Q+uFIraTKfT9OqETwpvcz7l82Q34od2Q/254pv/HttUREXFdO+gK7i3RJAwo6
+         ZTywQpELge+SSxSaZQzhcW0oGWdoVL8y5tHHBXeMX44u7a3IIirGDhATZeHjGtATgV46
+         jZO+T57oFH8B1KhrBNbI8t1SDL7foZYJqlwB6CSd4Fxc8lzPNh5R/3nNn7o7i/IiVbJg
+         JGav6dp7QuFSe+ngVd03R9u+KDS2qwsDpNZOmBSQo6owiucNt2zYvXWGGFNT7j9uVorr
+         uxoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681011286; x=1683603286;
+        d=1e100.net; s=20210112; t=1681011287; x=1683603287;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cmHAmUMzUYEeB3nfvemfvISCtgRUqRW78d11epxTKNM=;
-        b=2bDbIU2LgkiIQ6FrU6Bj9G7ymeHLm/qoR2w6vGtaecLeYmzF5FynjhiMxzM34COBfz
-         5NgdIyLtZpBV53nGv083qBKV9d/7aLoPjzsMo8Kd0eOia+XPwMk7GqRCh98psQbxzF4D
-         LIQNRNlJcqgOGLv42P8C2I/Rk0J2ss+x3XsfTLZgUnIIAo46F9qH/gH5/lpXBoQMWUmm
-         Wr2LXKLaSShfdE9uTAtfyfX6lS1juaKCt1koebBqVV5ZjjBcLDo9jUwrjxWeq8jhGoFo
-         wNMO4RN1bs+wJstTqHITJfeLO8b+2PH1l6IRi213IopsfQnQqo6ojX03hohImR3/4OHT
-         KRAQ==
-X-Gm-Message-State: AAQBX9ff1QYgquaSnUwkdeviFDQM8HMeHGVdEY2cxR7DGuQvpmfnueic
-        TPx9zZMpep7dlTLhcefEPUP94a7wKyDf/w==
-X-Google-Smtp-Source: AKy350atIiGWPYoUdOo1IbLjiQgko/0Bg0/MbyY0b4KLR1Ifu0PidtYjnc64khp0cUVgC5hJkKBxeA==
-X-Received: by 2002:a17:903:124d:b0:1a1:ca37:525a with SMTP id u13-20020a170903124d00b001a1ca37525amr5005454plh.36.1681011285932;
-        Sat, 08 Apr 2023 20:34:45 -0700 (PDT)
+        bh=DlLYW47o9VHsQgVu1dp+JqdiOZLMyMbCaE7IZrC/EGI=;
+        b=1MovGM8ntQxbdx9rx/kt7YUkZDgcgNL6Yki5SphYwxjYkQnWHkIS6A4zs/w6SKavGI
+         u+pMpFIaGCrQkYeethe4S8CL1PwvnaTR9J1DjUmuL7fU6dqynEOI6B7UVqD8KxrbFsLp
+         dyhOVZqckoXPwnvipfBI3qBJXVT+loMbRIIuYqR/71cls0WkpiRX4yCaZDeauDTVy37O
+         K8EwZP7aDQq0dXxqwQeNvZmD4eKLxulAZ66T7J+gL5uyYo5P2SX9ufJOYrf7+Oq7WBVw
+         iiwkThkmx5Jifod2aq7XfxpPzabHHl7cU6Z8oQ4xPXqovax5u6qg4oavoU4l2y+I4is5
+         BvLA==
+X-Gm-Message-State: AAQBX9c44Mvg0ayMC0uDvaZzWLTCwlaOPGSvZ5tMOHTFZyZnkK3TvJ1E
+        SgzDF509ndJcGLsVHPkJi1RZKdJvuTtPIg==
+X-Google-Smtp-Source: AKy350bchrxnrH8/FS991XNypMTq+HUE7e5lzlUpn5GVaCE6J7f1yt75QI5RUHqAntNybDQ8LCzEfQ==
+X-Received: by 2002:a17:903:3093:b0:1a2:ca:c6cd with SMTP id u19-20020a170903309300b001a200cac6cdmr7122304plc.43.1681011287597;
+        Sat, 08 Apr 2023 20:34:47 -0700 (PDT)
 Received: from gatsby.corp.tfbnw.net (75-172-126-232.tukw.qwest.net. [75.172.126.232])
-        by smtp.gmail.com with ESMTPSA id x2-20020a170902fe8200b001a212a93295sm5185877plm.189.2023.04.08.20.34.45
+        by smtp.gmail.com with ESMTPSA id x2-20020a170902fe8200b001a212a93295sm5185877plm.189.2023.04.08.20.34.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Apr 2023 20:34:45 -0700 (PDT)
+        Sat, 08 Apr 2023 20:34:47 -0700 (PDT)
 From:   Joanne Koong <joannelkoong@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH v1 bpf-next 2/5] bpf: Add bpf_dynptr_is_null and bpf_dynptr_is_rdonly
-Date:   Sat,  8 Apr 2023 20:34:28 -0700
-Message-Id: <20230409033431.3992432-3-joannelkoong@gmail.com>
+Subject: [PATCH v1 bpf-next 3/5] bpf: Add bpf_dynptr_get_size and bpf_dynptr_get_offset
+Date:   Sat,  8 Apr 2023 20:34:29 -0700
+Message-Id: <20230409033431.3992432-4-joannelkoong@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230409033431.3992432-1-joannelkoong@gmail.com>
 References: <20230409033431.3992432-1-joannelkoong@gmail.com>
@@ -71,87 +71,108 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_dynptr_is_null returns true if the dynptr is null / invalid
-(determined by whether ptr->data is NULL), else false if
-the dynptr is a valid dynptr.
-
-bpf_dynptr_is_rdonly returns true if the dynptr is read-only,
-else false if the dynptr is read-writable.
+bpf_dynptr_get_size returns the number of useable bytes in a dynptr and
+bpf_dynptr_get_offset returns the current offset into the dynptr.
 
 Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 ---
- kernel/bpf/helpers.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ include/linux/bpf.h      |  2 +-
+ kernel/bpf/helpers.c     | 24 +++++++++++++++++++++---
+ kernel/trace/bpf_trace.c |  4 ++--
+ 3 files changed, 24 insertions(+), 6 deletions(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 002a811b6b90..2a73ddd06e55 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1167,7 +1167,7 @@ enum bpf_dynptr_type {
+ };
+ 
+ int bpf_dynptr_check_size(u32 size);
+-u32 bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr);
++u32 __bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr);
+ 
+ #ifdef CONFIG_BPF_JIT
+ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
 diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 51b4c4b5dbed..e4e84e92a4c6 100644
+index e4e84e92a4c6..bac4c6fe49f0 100644
 --- a/kernel/bpf/helpers.c
 +++ b/kernel/bpf/helpers.c
-@@ -1423,7 +1423,7 @@ static const struct bpf_func_proto bpf_kptr_xchg_proto = {
- #define DYNPTR_SIZE_MASK	0xFFFFFF
- #define DYNPTR_RDONLY_BIT	BIT(31)
- 
--static bool bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
-+static bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
- {
- 	return ptr->size & DYNPTR_RDONLY_BIT;
+@@ -1443,7 +1443,7 @@ static enum bpf_dynptr_type bpf_dynptr_get_type(const struct bpf_dynptr_kern *pt
+ 	return (ptr->size & ~(DYNPTR_RDONLY_BIT)) >> DYNPTR_TYPE_SHIFT;
  }
-@@ -1570,7 +1570,7 @@ BPF_CALL_5(bpf_dynptr_write, const struct bpf_dynptr_kern *, dst, u32, offset, v
- 	enum bpf_dynptr_type type;
- 	int err;
  
--	if (!dst->data || bpf_dynptr_is_rdonly(dst))
-+	if (!dst->data || __bpf_dynptr_is_rdonly(dst))
+-u32 bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr)
++u32 __bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr)
+ {
+ 	return ptr->size & DYNPTR_SIZE_MASK;
+ }
+@@ -1476,7 +1476,7 @@ void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr)
+ 
+ static int bpf_dynptr_check_off_len(const struct bpf_dynptr_kern *ptr, u32 offset, u32 len)
+ {
+-	u32 size = bpf_dynptr_get_size(ptr);
++	u32 size = __bpf_dynptr_get_size(ptr);
+ 
+ 	if (len > size || offset > size - len)
+ 		return -E2BIG;
+@@ -2290,7 +2290,7 @@ static int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 off_inc, u32 sz_de
+ 	if (!ptr->data)
  		return -EINVAL;
  
- 	err = bpf_dynptr_check_off_len(dst, offset, len);
-@@ -1626,7 +1626,7 @@ BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u32, offset, u3
- 	if (err)
- 		return 0;
+-	size = bpf_dynptr_get_size(ptr);
++	size = __bpf_dynptr_get_size(ptr);
  
--	if (bpf_dynptr_is_rdonly(ptr))
-+	if (__bpf_dynptr_is_rdonly(ptr))
- 		return 0;
- 
- 	type = bpf_dynptr_get_type(ptr);
-@@ -2254,7 +2254,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset
- __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
- 					void *buffer, u32 buffer__szk)
- {
--	if (!ptr->data || bpf_dynptr_is_rdonly(ptr))
-+	if (!ptr->data || __bpf_dynptr_is_rdonly(ptr))
- 		return NULL;
- 
- 	/* bpf_dynptr_slice_rdwr is the same logic as bpf_dynptr_slice.
-@@ -2322,6 +2322,19 @@ __bpf_kfunc int bpf_dynptr_trim(struct bpf_dynptr_kern *ptr, u32 len)
- 	return bpf_dynptr_adjust(ptr, 0, len);
+ 	if (sz_dec > size)
+ 		return -ERANGE;
+@@ -2335,6 +2335,22 @@ __bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
+ 	return __bpf_dynptr_is_rdonly(ptr);
  }
  
-+__bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
-+{
-+	return !ptr->data;
-+}
-+
-+__bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
++__bpf_kfunc __u32 bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr)
 +{
 +	if (!ptr->data)
-+		return false;
++		return -EINVAL;
 +
-+	return __bpf_dynptr_is_rdonly(ptr);
++	return __bpf_dynptr_get_size(ptr);
++}
++
++__bpf_kfunc __u32 bpf_dynptr_get_offset(const struct bpf_dynptr_kern *ptr)
++{
++	if (!ptr->data)
++		return -EINVAL;
++
++	return ptr->offset;
 +}
 +
  __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
  {
  	return obj;
-@@ -2396,6 +2409,8 @@ BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_dynptr_trim)
+@@ -2411,6 +2427,8 @@ BTF_ID_FLAGS(func, bpf_dynptr_trim)
  BTF_ID_FLAGS(func, bpf_dynptr_advance)
-+BTF_ID_FLAGS(func, bpf_dynptr_is_null)
-+BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+ BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
++BTF_ID_FLAGS(func, bpf_dynptr_get_size)
++BTF_ID_FLAGS(func, bpf_dynptr_get_offset)
  BTF_SET8_END(common_btf_ids)
  
  static const struct btf_kfunc_id_set common_kfunc_set = {
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index bcf91bc7bf71..f30bdc72d26c 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1349,9 +1349,9 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
+ 	}
+ 
+ 	return verify_pkcs7_signature(data_ptr->data,
+-				      bpf_dynptr_get_size(data_ptr),
++				      __bpf_dynptr_get_size(data_ptr),
+ 				      sig_ptr->data,
+-				      bpf_dynptr_get_size(sig_ptr),
++				      __bpf_dynptr_get_size(sig_ptr),
+ 				      trusted_keyring->key,
+ 				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
+ 				      NULL);
 -- 
 2.34.1
 
