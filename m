@@ -2,134 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21296DBF2F
-	for <lists+bpf@lfdr.de>; Sun,  9 Apr 2023 10:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7781B6DBFB0
+	for <lists+bpf@lfdr.de>; Sun,  9 Apr 2023 13:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjDIIVq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 Apr 2023 04:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
+        id S229516AbjDILtn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 Apr 2023 07:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjDIIVo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 Apr 2023 04:21:44 -0400
-Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E62D618A
-        for <bpf@vger.kernel.org>; Sun,  9 Apr 2023 01:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1681028501;
-        bh=1BlGx1afgSOPlmGiINyQ3UClfYQu3kEy3LXJFKQ8+FY=;
-        h=From:To:Cc:Subject:Date;
-        b=nSrz1K/IBvtzLTlOv40KNAvXjGKkERmbzm60Wwt715e9/uW89FrnBKD/dlQsLNRst
-         gTJi4TgiMQ08yn4HIKmRACROSAiPm+Il141ish/6wKzROLo0rK1fO7fsJn1sWgodsr
-         OKtvVW4buS1wUeFEduE0VxdG7OhoOj7e4HzyNIXM=
-Received: from rtoax.. ([111.199.190.121])
-        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-        id 3DB170ED; Sun, 09 Apr 2023 16:15:27 +0800
-X-QQ-mid: xmsmtpt1681028127ta0a5h3cn
-Message-ID: <tencent_0D62BF818D106C96C26594CAC76BF3281306@qq.com>
-X-QQ-XMAILINFO: Mi0NhBPPe/4R2b23CkWNOcjl6/zGeo8g7OI8JOhvvNufzVBxQ0jK6neRCgu1m5
-         aBnJqPQx16B8w2KUDIsUycPw/kqP+Zm8ZL4x6kXtwmon0hzTcQ1RI2oAEc0bJ5KdwFRRu+0dlkEo
-         txb/5ZSo7AWb7j9O3jgNMMUHK22+83SvlRZ0djb05mP2txPDS/YcGvlr/8aLHEaljN25aUtdBM7t
-         ltlZVinkp4vcedUcCPsRfk1aSgYoJtLinSQmLB09/0RKM3ZJYXpuY1XJiXu4DKbtuIYQrqvceal/
-         D6MCY8Ir3GLHImrbvdZnzNXtUoQQOpyxlmJM91me/zteJVt8uYnhSsEvYlB8snxXWEZyX1Ijcwbi
-         B2EQPW+GWob2hme/A5+2HYyHVXVCrXaFD4thxhY+k/eSUXER5TlLgdKRgaye0ZIoTylhQGho9HRw
-         cftPcqzFQRpiM3OBt7trUa5sEnfo5Z/ufymc+uzcyrQgERSY3VOH4E6dSA5cJAMcsQX4M9nUN7Dg
-         XOYp6x3evulsK3uhcc1r1zBRyFi/TJjCVENFY6wU3ZCpBWJ3rmCn6erq2IK64FVrrrf7vldwv/r2
-         P68uCwlEQGLc/so809fCD3GSh37P0kWIus5dPAIdDMBkVf3UazfwwdotVd2YY5iL5vOFtBxUTfj5
-         q4DPpluLl5acQ67ZcG/TahwibDVyiQAKKLb64GDt6iu/JpcBwcmCi7oh5yFOlqlEr8lzz0+ovyhH
-         EpHWM7hkewFeoZAeHCc19Vhi47Vm8chNOd43rIz8WBMktSjVG2X62i1Aek8BLnKRtXkUNG1CaANH
-         vydtQ5HnxMdHeMFcmD/Q0Cfeuz2FEthh7sB4naa5n3j5TgpKVY5pjuGl2hBQLl1pAGhW38FhAXx5
-         vRc5voteBdRR/ZHv3cY7cKi5RQThSTojAOQRFcNJEedX5pwSOK9S/kvWaeMv19hhuElGhyth8+ld
-         yZAG19VhsFpNqeYNwc+LzKwzW3szYEmCm8goERRJ2C6UI++iXBQA==
-From:   Rong Tao <rtoax@foxmail.com>
-To:     ast@kernel.org
-Cc:     rongtao@cestc.cn, Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next] selftests/bpf: trace_helpers.c: Fix segfault
-Date:   Sun,  9 Apr 2023 16:15:25 +0800
-X-OQ-MSGID: <20230409081525.182264-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S229445AbjDILtm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 9 Apr 2023 07:49:42 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE4C1FF5;
+        Sun,  9 Apr 2023 04:49:39 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 94521604F5;
+        Sun,  9 Apr 2023 13:49:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1681040975; bh=DV8lfbN8orBSN2EV7jaFfHBhHenYpFwH3F86YqW+Gfs=;
+        h=Date:To:Cc:From:Subject:From;
+        b=cWmlYxLDUsS41T0VIi3hk8hglIJKZMn8O5J4LKv+fQ30Ado3UiI/0l2SBLAVRykv6
+         2MPfAEiAVPQhp6IbeBVaZpJ6bkFDvQ3XFdnIrKGo7HgEs/+H242BFMwFzPcCi4lmUq
+         xsvyk6Xzck5UvPLtePXpHjaQxChGLdJLrvVy1FvJlLpCwNHc2xP4RLf1mYPyTUewzo
+         nUrlD23EB39E/oqbDmILZRMpO65jp7Bnl4s8tcEneuvnQPXxHf7VUOvw+CqUO04gWS
+         MmG7xUvnZDICFnBHR8453W8lwD6cV/liQWJgrCMwcvK5rxFtN40ORFZAEZJVy/w90e
+         2WEuvLc2MdufA==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7EreKA9QbWnR; Sun,  9 Apr 2023 13:49:32 +0200 (CEST)
+Received: from [192.168.1.4] (unknown [94.250.188.177])
+        by domac.alu.hr (Postfix) with ESMTPSA id AFB7F604ED;
+        Sun,  9 Apr 2023 13:49:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1681040972; bh=DV8lfbN8orBSN2EV7jaFfHBhHenYpFwH3F86YqW+Gfs=;
+        h=Date:To:Cc:From:Subject:From;
+        b=hFp/owszAMPVP+Qr+iD/1gOpGn51CHlepX1oq6NvK6OnzHHOSr/hiTWjSnlURa7sl
+         JhWdcjLG42y08EMxectlTrf7O/UZlNu8YIxlnYb386hzQlDaB2rwZMomeaZj/zJQOI
+         xJn5Azy4atbeuIhIThfz36UndNbGH+BkQ4V0nzjvOsTrP1lSCSnJB2lBd+2eq9V3BZ
+         teYCy99G6E3Bj/HePNv9wn39W6OUHUyWg7r+s4bRydWP6CIZXgr8ZxOb8BIWA8xj0z
+         pTJeERzQihLJK3jQfBAAZAXix9UetgviICrn0WfTgqu5PgxcqKbKZPMMJHllSSDeCB
+         fDCscc9YtlqWg==
+Message-ID: <78a8a03b-6070-3e6b-5042-f848dab16fb8@alu.unizg.hr>
+Date:   Sun, 9 Apr 2023 13:49:30 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Content-Language: en-US, hr
+To:     netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Florent Fourcot <florent.fourcot@wifirst.fr>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Petr Machata <petrm@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
+        Xin Long <lucien.xin@gmail.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Subject: [BUG] kmemleak in rtnetlink_rcv() triggered by
+ selftests/drivers/net/team in build cdc9718d5e59
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=3.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,
-        RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
-X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+Hi all,
 
-When the number of symbols is greater than MAX_SYMS (300000), the access
-array struct ksym syms[MAX_SYMS] goes out of bounds, which will result in
-a segfault.
+There appears to be a memleak triggered by the selftest drivers/net/team.
 
-Resolve this issue by judging the maximum number and exiting the loop, and
-increasing the default size appropriately. (6.2.9 = 329839 below)
+# cat /sys/kernel/debug/kmemleak
+unreferenced object 0xffff8c18def8ee00 (size 256):
+  comm "ip", pid 5727, jiffies 4294961159 (age 954.244s)
+  hex dump (first 32 bytes):
+    00 20 09 de 18 8c ff ff 00 00 00 00 00 00 00 00  . ..............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffffb60fb25c>] slab_post_alloc_hook+0x8c/0x3e0
+    [<ffffffffb6102b39>] __kmem_cache_alloc_node+0x1d9/0x2a0
+    [<ffffffffb607684e>] kmalloc_trace+0x2e/0xc0
+    [<ffffffffb6dbc00b>] vlan_vid_add+0x11b/0x290
+    [<ffffffffb6dbcffc>] vlan_device_event+0x19c/0x880
+    [<ffffffffb5dde4d7>] raw_notifier_call_chain+0x47/0x70
+    [<ffffffffb6ab6940>] call_netdevice_notifiers_info+0x50/0xa0
+    [<ffffffffb6ac7574>] dev_open+0x94/0xa0
+    [<ffffffffc176515e>] 0xffffffffc176515e
+    [<ffffffffb6ada6b0>] do_set_master+0x90/0xb0
+    [<ffffffffb6adc5f4>] do_setlink+0x514/0x11f0
+    [<ffffffffb6ae4507>] __rtnl_newlink+0x4e7/0xa10
+    [<ffffffffb6ae4a8c>] rtnl_newlink+0x4c/0x70
+    [<ffffffffb6adf334>] rtnetlink_rcv_msg+0x184/0x5d0
+    [<ffffffffb6b6ad1e>] netlink_rcv_skb+0x5e/0x110
+    [<ffffffffb6ada0e9>] rtnetlink_rcv+0x19/0x20
+unreferenced object 0xffff8c18250d3700 (size 32):
+  comm "ip", pid 5727, jiffies 4294961159 (age 954.244s)
+  hex dump (first 32 bytes):
+    a0 ee f8 de 18 8c ff ff a0 ee f8 de 18 8c ff ff  ................
+    81 00 00 00 01 00 00 00 cc cc cc cc cc cc cc cc  ................
+  backtrace:
+    [<ffffffffb60fb25c>] slab_post_alloc_hook+0x8c/0x3e0
+    [<ffffffffb6102b39>] __kmem_cache_alloc_node+0x1d9/0x2a0
+    [<ffffffffb607684e>] kmalloc_trace+0x2e/0xc0
+    [<ffffffffb6dbc064>] vlan_vid_add+0x174/0x290
+    [<ffffffffb6dbcffc>] vlan_device_event+0x19c/0x880
+    [<ffffffffb5dde4d7>] raw_notifier_call_chain+0x47/0x70
+    [<ffffffffb6ab6940>] call_netdevice_notifiers_info+0x50/0xa0
+    [<ffffffffb6ac7574>] dev_open+0x94/0xa0
+    [<ffffffffc176515e>] 0xffffffffc176515e
+    [<ffffffffb6ada6b0>] do_set_master+0x90/0xb0
+    [<ffffffffb6adc5f4>] do_setlink+0x514/0x11f0
+    [<ffffffffb6ae4507>] __rtnl_newlink+0x4e7/0xa10
+    [<ffffffffb6ae4a8c>] rtnl_newlink+0x4c/0x70
+    [<ffffffffb6adf334>] rtnetlink_rcv_msg+0x184/0x5d0
+    [<ffffffffb6b6ad1e>] netlink_rcv_skb+0x5e/0x110
+    [<ffffffffb6ada0e9>] rtnetlink_rcv+0x19/0x20
+unreferenced object 0xffff8c1846e16800 (size 256):
+  comm "ip", pid 7837, jiffies 4295135225 (age 258.160s)
+  hex dump (first 32 bytes):
+    00 20 f7 de 18 8c ff ff 00 00 00 00 00 00 00 00  . ..............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffffb60fb25c>] slab_post_alloc_hook+0x8c/0x3e0
+    [<ffffffffb6102b39>] __kmem_cache_alloc_node+0x1d9/0x2a0
+    [<ffffffffb607684e>] kmalloc_trace+0x2e/0xc0
+    [<ffffffffb6dbc00b>] vlan_vid_add+0x11b/0x290
+    [<ffffffffb6dbcffc>] vlan_device_event+0x19c/0x880
+    [<ffffffffb5dde4d7>] raw_notifier_call_chain+0x47/0x70
+    [<ffffffffb6ab6940>] call_netdevice_notifiers_info+0x50/0xa0
+    [<ffffffffb6ac7574>] dev_open+0x94/0xa0
+    [<ffffffffc177115e>] bond_enslave+0x34e/0x1840 [bonding]
+    [<ffffffffb6ada6b0>] do_set_master+0x90/0xb0
+    [<ffffffffb6adc5f4>] do_setlink+0x514/0x11f0
+    [<ffffffffb6ae4507>] __rtnl_newlink+0x4e7/0xa10
+    [<ffffffffb6ae4a8c>] rtnl_newlink+0x4c/0x70
+    [<ffffffffb6adf334>] rtnetlink_rcv_msg+0x184/0x5d0
+    [<ffffffffb6b6ad1e>] netlink_rcv_skb+0x5e/0x110
+    [<ffffffffb6ada0e9>] rtnetlink_rcv+0x19/0x20
+unreferenced object 0xffff8c184c5ff2a0 (size 32):
+  comm "ip", pid 7837, jiffies 4295135225 (age 258.160s)
+  hex dump (first 32 bytes):
+    a0 68 e1 46 18 8c ff ff a0 68 e1 46 18 8c ff ff  .h.F.....h.F....
+    81 00 00 00 01 00 00 00 cc cc cc cc cc cc cc cc  ................
+  backtrace:
+    [<ffffffffb60fb25c>] slab_post_alloc_hook+0x8c/0x3e0
+    [<ffffffffb6102b39>] __kmem_cache_alloc_node+0x1d9/0x2a0
+    [<ffffffffb607684e>] kmalloc_trace+0x2e/0xc0
+    [<ffffffffb6dbc064>] vlan_vid_add+0x174/0x290
+    [<ffffffffb6dbcffc>] vlan_device_event+0x19c/0x880
+    [<ffffffffb5dde4d7>] raw_notifier_call_chain+0x47/0x70
+    [<ffffffffb6ab6940>] call_netdevice_notifiers_info+0x50/0xa0
+    [<ffffffffb6ac7574>] dev_open+0x94/0xa0
+    [<ffffffffc177115e>] bond_enslave+0x34e/0x1840 [bonding]
+    [<ffffffffb6ada6b0>] do_set_master+0x90/0xb0
+    [<ffffffffb6adc5f4>] do_setlink+0x514/0x11f0
+    [<ffffffffb6ae4507>] __rtnl_newlink+0x4e7/0xa10
+    [<ffffffffb6ae4a8c>] rtnl_newlink+0x4c/0x70
+    [<ffffffffb6adf334>] rtnetlink_rcv_msg+0x184/0x5d0
+    [<ffffffffb6b6ad1e>] netlink_rcv_skb+0x5e/0x110
+    [<ffffffffb6ada0e9>] rtnetlink_rcv+0x19/0x20
 
-    $ cat /proc/kallsyms | wc -l
-    329839
+The platform is Ubuntu 22.10 with the latest Torvalds tree 6.3-rc5+ build commit cdc9718d5e59
+on a Lenovo Ideapad 3 15ITL6.
 
-    GDB debugging:
-    $ cd linux/samples/bpf
-    $ sudo gdb ./sampleip
-    ...
-    (gdb) r
-    ...
-    Program received signal SIGSEGV, Segmentation fault.
-    0x00007ffff7e2debf in malloc () from /lib64/libc.so.6
-    Missing separate debuginfos, use: dnf debuginfo-install
-    elfutils-libelf-0.189-1.fc37.x86_64 glibc-2.36-9.fc37.x86_64
-    libzstd-1.5.4-1.fc37.x86_64 zlib-1.2.12-5.fc37.x86_64
-    (gdb) bt
-    #0  0x00007ffff7e2debf in malloc () from /lib64/libc.so.6
-    #1  0x00007ffff7e33f8e in strdup () from /lib64/libc.so.6
-    #2  0x0000000000403fb0 in load_kallsyms_refresh() from trace_helpers.c
-    #3  0x00000000004038b2 in main ()
+The minimum reproducing tools/testing/selftest/Makefile is provided here:
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- tools/testing/selftests/bpf/trace_helpers.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+→ https://domac.alu.unizg.hr/~mtodorov/linux/bugreports/drivers_net/
 
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 09a16a77bae4..a9d589c560d2 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -14,7 +14,7 @@
- 
- #define DEBUGFS "/sys/kernel/debug/tracing/"
- 
--#define MAX_SYMS 300000
-+#define MAX_SYMS 400000
- static struct ksym syms[MAX_SYMS];
- static int sym_cnt;
- 
-@@ -44,7 +44,8 @@ int load_kallsyms_refresh(void)
- 			continue;
- 		syms[i].addr = (long) addr;
- 		syms[i].name = strdup(func);
--		i++;
-+		if (++i >= MAX_SYMS)
-+			break;
- 	}
- 	fclose(f);
- 	sym_cnt = i;
+leaving only two test suites:
+
+# TARGETS += drivers/s390x/uvdevice
+TARGETS += drivers/net/bonding
+TARGETS += drivers/net/team
+# TARGETS += efivarfs
+
+(Smaller one won't run, missing prerequisites.)
+
+Please find the config, complete kmemleak and lshw output.
+
+I am available for further data required.
+
+(The Cc: list is from scripts/get_maintainers on net/core/rtnetlink.c).
+
+Best regards,
+Mirsad
+
 -- 
-2.39.2
+Mirsad Goran Todorovac
+Sistem inženjer
+Grafički fakultet | Akademija likovnih umjetnosti
+Sveučilište u Zagrebu
+ 
+System engineer
+Faculty of Graphic Arts | Academy of Fine Arts
+University of Zagreb, Republic of Croatia
+The European Union
 
+"I see something approaching fast ... Will it be friends with me?"
