@@ -2,169 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F02F6DC7AF
-	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 16:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7DC6DC7C6
+	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 16:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbjDJONg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Apr 2023 10:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
+        id S229698AbjDJOVN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Apr 2023 10:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjDJONf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Apr 2023 10:13:35 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2103.outbound.protection.outlook.com [40.107.237.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FDF6A72;
-        Mon, 10 Apr 2023 07:13:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N0EKJqqSY/d/tFojcVVqIeBhhqArzgqQFwKLCm5Ac6/r7oaItzhSFsPxJmJ8rr066p5xBClHczOrh5ioWlkefha5HidEXXmlQZB2mooSYKP9RF8H9oJ38qC+3c2u+OrJXZD6QnsxFwxIM1/ZlZ5YSOd8S+7fzVogruwWvO4ZspG/JEkVp6wD4U8VMHePXE6aWX8s8cDmKsRSup8B4WsVG3q41Jv00nIIy2JaJQ5nicpB4IvNy2YjXUAcyXOf9Z9JorJ9NiGKe9p2vsf+r8JINJSUcTdoExyGhXjqOanH2u4SfroGKRoA0FfA8m/kquW5jZMzMHYjVnrcxrT0o/o9Sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kmfdLidm0/nrlfK0nxbDZEJwC3S3tjicBpsu7E8BDdo=;
- b=V8NIBa4LsyLQhf/TfSGSUcaP1unXSHgMkiuhbBkQ19lbvNy4tewbU81DEdEZP7pbiOsrVbs+VY0Crk3h+kB3rPmE30zE7sajJfjs/VCa4KadarFp26gxmdAUnqIv9hntRJTAEdHU8AbfhzY3DdghoUnj0dRw6r4v9HmQoGpHVe9ithbOcyhHVww1h4myqL8hNRcEZOMbrNh1imzaKoyL/eA9QQwHsP7oRlxAx+SY7JTcxk1ZW1RzkMIVW0jfzHS8uUhrGPUvkYdMnFRhr6aRsEfdXTawwRzRGfcgqnRzDssj4g+oNYuiByoB9JdZkAxHHMCqQdr8WznhDcYRKG76IQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
+        with ESMTP id S229656AbjDJOVM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Apr 2023 10:21:12 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02582689;
+        Mon, 10 Apr 2023 07:21:08 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id a23so2408081qtj.8;
+        Mon, 10 Apr 2023 07:21:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kmfdLidm0/nrlfK0nxbDZEJwC3S3tjicBpsu7E8BDdo=;
- b=hDe/2S10JvvVN/zcNpqGvgIXHPwevKHRvbRfHcUmX78n2CUmjVsPKZE2cEHBzwZEd0J6GWZJgD+ewcwtlwzEMzjiqnjHFwiqnH6AdgAAmR31O1HE23gsCM2HFeWcsyPNwN9aqAuQX5jRXtw2ebS/OThbjuOaTclMAYFWwpSXPxg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by DM8PR13MB5221.namprd13.prod.outlook.com (2603:10b6:8:f::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6277.36; Mon, 10 Apr 2023 14:13:22 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::89d1:63f2:2ed4:9169]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::89d1:63f2:2ed4:9169%5]) with mapi id 15.20.6277.038; Mon, 10 Apr 2023
- 14:13:21 +0000
-Date:   Mon, 10 Apr 2023 16:13:13 +0200
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Song Yoong Siang <yoong.siang.song@intel.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-hints@xdp-project.net
-Subject: Re: [PATCH net-next 3/4] net: stmmac: add Rx HWTS metadata to XDP
- receive pkt
-Message-ID: <ZDQZeSe5OaFlNKso@corigine.com>
-References: <20230410100939.331833-1-yoong.siang.song@intel.com>
- <20230410100939.331833-4-yoong.siang.song@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230410100939.331833-4-yoong.siang.song@intel.com>
-X-ClientProxiedBy: AS4PR09CA0011.eurprd09.prod.outlook.com
- (2603:10a6:20b:5e0::13) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+        d=gmail.com; s=20210112; t=1681136468; x=1683728468;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A/Fq/yKIs0iQAr8ZRwfV3iDlhYubImU1PFv9x+tMmVU=;
+        b=QfcxCkqI96cHCtJKL0ZqxMSFCGHymGJpuhYI4SR/5oIhk7E1Z8HdBqmbnYWySGWBoA
+         slUJHTawTuKmaGZKPQvefnuAFPcRKnBCKgX0c4dXZGxUaJE+wA9I5r+LRQU4R/VuSyC8
+         jXzqkp6zivMbrMsNSNS/Dmbq9q0+ryFjOt9VR2jWz1ljlYgpB22D4WgP0jxHAbpVrJdq
+         VNORNVQCw87F0LcILH4cw0yVM7THErlUe73JmbjI2TM7pzKYTJA8fmFni1qlpPNc0Pbe
+         p1awasAYryCX9fALMxxxcgkuhALUlAFGcsM2WWZ4sy0ZKGOPIWzf9pnvRQflKc4e9NAA
+         8kRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681136468; x=1683728468;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A/Fq/yKIs0iQAr8ZRwfV3iDlhYubImU1PFv9x+tMmVU=;
+        b=Hn400ssVaLs6v4np4jjimPRfWgCb6HpZA1wyWNbdYNs7AitkjOWAwZyQbK2K0vCdNP
+         C7b/ZfGoAhRpXc8pzHv0hWdNQ4uGczhDPAse9YdXwu/HGigr6OwgOJhudbqWJ9f+92UW
+         hu54t0Qvu51OYh4v5vrcLTk3/8sLlhmCwCaHKa1LJwnqYYlL+wEpGPWrVxwpY0UjcLet
+         N9Hx3ZC6V8i6YLzpbxWtKROdrTLgdjEmgGvHBknAZNb98YSSol+LUM3pGPJFQOmtib0I
+         SYbf3FYQ3l035kIHh2v4keBqX1oeB81+j8Pk9jS7HLYQYfzqRepUFzZHk2q+wPWn2+HL
+         Qcwg==
+X-Gm-Message-State: AAQBX9dkKpNttfirWAGyiVMRZyehcIhDWuUJALoPIx6H9DFHymwNHsSi
+        Z/MRd2xLYS/7vVP4zEJtwn35pKabqSy4jokZDzo=
+X-Google-Smtp-Source: AKy350ZPALEOMPQtKFPhFCRRZX0LiMDYqBd8b/cekgqqWTmFOH9rpLaKHfoQI8ZpFBcWBg0cL8ncayDx+s+AlcazCV4=
+X-Received: by 2002:a05:622a:1994:b0:3db:c138:ae87 with SMTP id
+ u20-20020a05622a199400b003dbc138ae87mr4107811qtc.6.1681136467922; Mon, 10 Apr
+ 2023 07:21:07 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|DM8PR13MB5221:EE_
-X-MS-Office365-Filtering-Correlation-Id: bb5c147e-6a57-4913-758c-08db39cdbd76
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1d19VGzlKgSvqxIH5GMEwmkZR1UlFaaa1fdgQDB39wleX01ksnXxqx5gll7aTOg3d3+E9aoBuAeL0If6ULvmY/8FauduUUFhngq2PDGdFJMy5svP4eXQ24cO1DwzJ8y6H5QmEY/Mr0BWoDlxOHpjSqs4oOvCSa+TbISxztwlUbiurZXccj1WrLzdtHXPDyHC9OeUq4cnE3oeeyhUGqxkYAh92HBkTLbZdVXYvywVUvoUjZrbQLDlp8kKSAVQnW+COp8ti9s5V7/9TqnyTyBwATKd3LZ/RSKJugwzbIdySA14PX6A8WHEd44hwtR00bkD9kEh/h65t24WT7R9IX5pJaRelq/AZMtUWKNr7u/OduBelOZ7sMtNYSxswSEzX519kZf82+Y9Nes/ZvUJq0ZPUlrEy02FxrCCUK6TH2pkuV12s4xcgqUm+IGhXhBumf6KC+qA9L/ZLRMbCS+GTA8KkneSGznsFvllCT8L74rLPl/h2nCaACj9Rbg5Aa2uLA7wm7zPX6/nG4+rUAsGlFNv0yA2U60Ho/jtUIS+oGKZniU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39840400004)(366004)(396003)(136003)(376002)(346002)(451199021)(36756003)(86362001)(2906002)(2616005)(6486002)(6666004)(83380400001)(186003)(6506007)(6512007)(966005)(478600001)(66476007)(6916009)(4326008)(66556008)(66946007)(7416002)(41300700001)(8936002)(8676002)(38100700002)(54906003)(316002)(5660300002)(44832011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xJRnTfKZ7BOPkU4S4XOU4oOV4YTsq6nCmxyIAwQVBPwkUy4u+AMvlP7HNbjp?=
- =?us-ascii?Q?/k7amDg9z5Lb/ZNfkVANCJkRo+C7BRdLXKVmH1Xv5XsoC0J2VkXaGxXWHmRh?=
- =?us-ascii?Q?/QlEJ2ghY1SaEsr2jT0ArnmKSMWaxtNP29aJ4LU5InhIn0hFpG6YQNsZn391?=
- =?us-ascii?Q?SO8VxEpBoEvAgJSx8lp/mLzFGpKXSHlsEzCt7fb0ENr5GlFWR6NpZOml+gUW?=
- =?us-ascii?Q?nUP9AUm3aUV0J2JKvErctklo2jmT0C/Wg3n7Og+bipoXT0R6oKGOmSVYqiCL?=
- =?us-ascii?Q?gIlt911cAc72bIYFyYIsoY8eBX5dlPQ34RjV7SXl0Ykhwgo1esz9yvFrJ1VZ?=
- =?us-ascii?Q?kYDlywnmmbqI0nM9o2EFILgvFnkHGylpaAL2+f2mba6YUYBgX9fzRtboJmcs?=
- =?us-ascii?Q?jmeHZ1kDt3cU7ernhufS8GOo6vDvVRrMwW7WFzT2M8VgAAgXrKkU0xv5EOEZ?=
- =?us-ascii?Q?QISOGR46mt6ek3jHo43+gExtmU9KN1aR5vVgT2HghrAGcYNUe97IdEhKAPYu?=
- =?us-ascii?Q?mNlr+amNKVftgASWNuZjtr5vhZEQwIE1LvINB2T/f1QhcEQSwhjj28ccNLGZ?=
- =?us-ascii?Q?45EqsNCB7WlPUUS0B5swlWdWrnIOG41jpzxtn8wBohsK7Htme3hQG6YB6avk?=
- =?us-ascii?Q?bc+95ezxYm6SNRIgi7taUadVPZKFiM3rPVj13Gmqr/gM+JDd8K8lOTmMjwe6?=
- =?us-ascii?Q?xvFBwtgdtZwSuWwVeLP+b0GTLsg/5g36ERlJJhlTpq2bJS8oo1oQPc+QpXq6?=
- =?us-ascii?Q?4Hqpk1B9odeGHs2VRJkoYI6XVXL97E6uCtrxT/+JnEVN+kuBrwHCWcZ9Yz8e?=
- =?us-ascii?Q?pQxMnK6x1PscuaLlAf0ViKWwLm2jFhNW99wPwglUrMzH4/XLnbhSWoz0T2+p?=
- =?us-ascii?Q?0IT7gvBVnw2v5eL1BvmeJ+6zuKchfflxrxKzEIsAWSU2+8qe3UmQVThR5cAJ?=
- =?us-ascii?Q?2GxW1eSZuCwNrrN96rRVaw+SD74hCuBmqNKHp8iO61mdZvUJtb5rqDSFVWQT?=
- =?us-ascii?Q?TPDYOsH0LFSPPKEUGEHYUrH6oU9rOG0k4SnivduhwniUFhq5n/s0/2ddsGtj?=
- =?us-ascii?Q?7xq8q1eL+wCQEajOgAPZk7GYo+7QYKoVq05CxWt+RAjBIctEUN/zTjZeINwo?=
- =?us-ascii?Q?VNr/mz5L6OVgrpDbnNCtxzVCKkncCSY6CdH6ha2biXBNlGBQILNr6JHpFzJA?=
- =?us-ascii?Q?vm+jLwKg+3csFQgjC8Ou16R8pRpXRQqSKN+aYzMxuucRn7MIl/lyeymy/k46?=
- =?us-ascii?Q?DOMUm7ZmB7JyOgUBroUtcR2w2ySjFc1ryuTRaupveU/HQfqjo1JzfQjnHkHE?=
- =?us-ascii?Q?q+lJ4T3NFY3Wdys5DA0Y4c+vwZSXWrUSuYjBTpn7TnNgBxV/NxzYVeLkLFi6?=
- =?us-ascii?Q?luebG+oDNyI572xQnNYlwlQLQjfhzMRpBRpitaeVf/UQNCdmIgBEgufQhlrh?=
- =?us-ascii?Q?kfOxwDCslSZG0g39g53pNmChbUVIja1i0lZUH3G5vJUWcFrVgMM6fVAVelC3?=
- =?us-ascii?Q?gSFf3WpIY8DavwdxzVxrgTMQzr4N82TIeHH5hMhwsBgIbfY7zVxt/YCPWiZF?=
- =?us-ascii?Q?SUbde6jtfUS6cSNS9Bc8WpakPdXUNgWEuocbT0FXbIn+QTowDKBl/Z+SLFvB?=
- =?us-ascii?Q?PIaD/eSjkIkuQ48ZY9QThTsGjSgsAT1GxPgXMtqya7Ct3ldhBmDS7XxN06MU?=
- =?us-ascii?Q?GUxwug=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb5c147e-6a57-4913-758c-08db39cdbd76
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2023 14:13:21.7920
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fKzvJzoTSgyJPdxw1Dz7TwggdzrlkOCKvYjbc/VQf1oF+wdkpGX1uhgso2oH5tQ/HyytWlqkyG51M5w3lg99vS5oWV8sqJEDDEjmHrJBIIg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR13MB5221
-X-Spam-Status: No, score=-0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230321020103.13494-1-laoar.shao@gmail.com> <20230321101711.625d0ccb@gandalf.local.home>
+ <CALOAHbAfQxAMQTwDHnMOLHDfz=Mo0gFwu9i3bS0emttUTodA4g@mail.gmail.com>
+ <20230323083914.31f76c2b@gandalf.local.home> <CALOAHbDtM7KuiRn1n9EBYrSGqJmOYcY6voVRfF+QGN510W_OtQ@mail.gmail.com>
+ <20230323230105.57c40232@rorschach.local.home> <CALOAHbCZSY2XJpzJ+AxSrRLbMqyoJjcaXeof-xMLN8y+uB7PJg@mail.gmail.com>
+ <20230409075515.2504db78@rorschach.local.home> <CALOAHbBALsJrkO-tPKoEtrdm42fLnRoYs-46tz0J7yDwrxC0Tg@mail.gmail.com>
+ <20230409225414.2b66610f4145ade7b09339bb@kernel.org> <CALOAHbBQFSm=rXvzJJnOqrK04f9j1opbgRoYKwSUAd5g64r-jA@mail.gmail.com>
+ <20230409220239.0fcf6738@rorschach.local.home> <CALOAHbC5UvoU2EUM+YzNSaJyNNq_OOXYZYcqXu6nUfB0AyX0bA@mail.gmail.com>
+ <20230410063046.391dd2bd@rorschach.local.home> <CALOAHbCXgksmdYRRxrjVrW1-AWiTr1u24yJAdh2+0ou15vvKiA@mail.gmail.com>
+ <20230410101224.7e3b238c@gandalf.local.home>
+In-Reply-To: <20230410101224.7e3b238c@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Mon, 10 Apr 2023 22:20:31 +0800
+Message-ID: <CALOAHbBQgPqhBhOVukWG9FNL23m3EOFm1QN6+pi5SN8cP2ztBw@mail.gmail.com>
+Subject: Re: [PATCH] tracing: Refuse fprobe if RCU is not watching
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        alexei.starovoitov@gmail.com, linux-trace-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 10, 2023 at 06:09:38PM +0800, Song Yoong Siang wrote:
-> Add receive hardware timestamp metadata support via kfunc to XDP receive
-> packets.
-> 
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+On Mon, Apr 10, 2023 at 10:12=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
+g> wrote:
+>
+> On Mon, 10 Apr 2023 21:56:16 +0800
+> Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> > Thanks for your explanation again.
+> > BPF trampoline is a little special. It includes three parts, as follows=
+,
+> >
+> >     ret =3D __bpf_prog_enter();
+> >     if (ret)
+> >         prog->bpf_func();
+> >      __bpf_prog_exit();
+> >
+> > migrate_disable() is called in __bpf_prog_enter() and migrate_enable()
+> > in __bpf_prog_exit():
+> >
+> >     ret =3D __bpf_prog_enter();
+> >                 migrate_disable();
+> >     if (ret)
+> >         prog->bpf_func();
+> >      __bpf_prog_exit();
+> >           migrate_enable();
+> >
+> > That said, if we haven't executed migrate_disable() in
+> > __bpf_prog_enter(), we shouldn't execute migrate_enable() in
+> > __bpf_prog_exit().
+> > Can ftrace_test_recursion_trylock() be applied to this pattern ?
+>
+> Yes, it can! And in this you would need to not call migrate_enable()
+> because if the trace_recursion_trylock() failed, it would prevent
+> migrate_disable() from being called (and should not let the bpf_func() fr=
+om
+> being called either. And then the migrate_enable in __bpf_prog_exit() wou=
+ld
+> need to know not to call migrate_enable() which checking the return value
+> of ftrace_test_recursion_trylock() would give the same value as what the
+> one before migrate_disable() had.
+>
 
-...
+That needs some changes in invoke_bpf_prog() in files
+arch/${ARCH}/net/bpf_jit_comp.c.
+But I will have a try. We can then remove the bpf_prog->active, that
+will be a good cleanup as well.
 
-> @@ -7071,6 +7073,22 @@ void stmmac_fpe_handshake(struct stmmac_priv *priv, bool enable)
->  	}
->  }
->  
-> +static int stmmac_xdp_rx_timestamp(const struct xdp_md *_ctx, u64 *timestamp)
-> +{
-> +	const struct stmmac_xdp_buff *ctx = (void *)_ctx;
-> +
-> +	if (ctx->rx_hwts) {
-> +		*timestamp = ctx->rx_hwts;
-> +		return 0;
-> +	}
-> +
-> +	return -ENODATA;
-> +}
-> +
-> +const struct xdp_metadata_ops stmmac_xdp_metadata_ops = {
-> +	.xmo_rx_timestamp		= stmmac_xdp_rx_timestamp,
-> +};
+>
+> >
+> > > Note, the ftrace_test_recursion_*() code needs to be updated because =
+it
+> > > currently does disable preemption, which it doesn't have to. And that
+> > > can cause migrate_disable() to do something different. It only disabl=
+ed
+> > > preemption, as there was a time that it needed to, but now it doesn't=
+.
+> > > But the users of it will need to be audited to make sure that they
+> > > don't need the side effect of it disabling preemption.
+> > >
+> >
+> > disabling preemption is not expected by bpf prog, so I think we should
+> > change it.
+>
+> The disabling of preemption was just done because every place that used i=
+t
+> happened to also disable preemption. So it was just a clean up, not a
+> requirement. Although the documentation said it did disable preemption :-=
+/
+>
+>  See ce5e48036c9e7 ("ftrace: disable preemption when recursion locked")
+>
+> I think I can add a ftrace_test_recursion_try_aquire() and release() that
+> is does the same thing without preemption. That way, we don't need to
+> revert that patch, and use that instead.
+>
+> -- Steve
 
-sparse seems to think this should be static.
 
-drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:7082:31: warning: symbol 'stmmac_xdp_metadata_ops' was not declared. Should it be static?
 
-Link: https://patchwork.kernel.org/project/netdevbpf/patch/20230410100939.331833-4-yoong.siang.song@intel.com/
-
-> +
->  /**
->   * stmmac_dvr_probe
->   * @device: device pointer
+--=20
+Regards
+Yafang
