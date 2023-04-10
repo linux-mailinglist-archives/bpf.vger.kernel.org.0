@@ -2,171 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 672E56DC8E9
-	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 18:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D979E6DC90A
+	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 18:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbjDJP7M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Apr 2023 11:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
+        id S230193AbjDJQF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Apr 2023 12:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjDJP7E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Apr 2023 11:59:04 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102A62D5A;
-        Mon, 10 Apr 2023 08:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681142329; x=1712678329;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=7CyX8+iAb3kw4nJuS0qncc4N2aFERAptrvfH4AgZhAg=;
-  b=MDo8sR+TGFjPyXw33RNAlhuj24FtjqmdBI/4Rj+t0Uj0aUvKynmN4Fin
-   ulLDzaIhaVSNZ3Qc7g6aD+AkVUrAvRmQDKkDbfwT+HUIqyt6k+9egcJCS
-   jlLsyB8QuUA7Mtld3o4DRd4WUrUMIR6KKbojB2DbbUzNlQUyBDl2z8TRy
-   OouEJs37EhVhjkjHQndO4w31a5gkwj8DjL01J0o+ZLLRrXR7LvBuQkYa9
-   nkAhquMtvg8T2XcD3JUjXOIgvXM/qrsBMV+4cTvGmoDZaCO+lJCYv/51Z
-   W40cD/EtR5iIjLqG5swIpi2f3RiGIiqijMlZ5AZgfdiB9ijXyvN2dj8kv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10676"; a="343391855"
-X-IronPort-AV: E=Sophos;i="5.98,333,1673942400"; 
-   d="scan'208";a="343391855"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2023 08:58:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10676"; a="777601811"
-X-IronPort-AV: E=Sophos;i="5.98,333,1673942400"; 
-   d="scan'208";a="777601811"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 Apr 2023 08:58:22 -0700
-From:   Song Yoong Siang <yoong.siang.song@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230139AbjDJQFZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Apr 2023 12:05:25 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C580A7;
+        Mon, 10 Apr 2023 09:05:24 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id f26so7419448ejb.1;
+        Mon, 10 Apr 2023 09:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1681142723; x=1683734723;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GVjLfNtBrKxtCcfxvBYkIZ+9NrsFrjbA5yaTUpDWRqk=;
+        b=dNNEZ+J9y8fxGs583ZvtpMBFduZpF+gGXd85xKDJxb+cu8M0rETW02Opeu9Elvr0Q6
+         oH8W82+ioklpFCgZs8zhTOwIi8DiC101XQOtSlVAIt3j2fW9V5udYVwGsimO3tTEIqff
+         50vnLioJYOO59Y0ZqEis07iQ9m6tnQqy6NTB8GJoDCz0R0CoL/FB06F0yLaOq44Um1gl
+         DcBt78mm4lxvA5AHylFXAPtzuOkwpzJptNC/br1JM5iJmQ2uqUpWSLmI8o4VGHoi4b36
+         O8CSEQtYsE3tfZKW9LclU/OBjQzjzJhJ2sdx0UE8Oiq5bQ7yYou0jl+vaNBxCAtMSji7
+         Gzow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681142723; x=1683734723;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GVjLfNtBrKxtCcfxvBYkIZ+9NrsFrjbA5yaTUpDWRqk=;
+        b=h2rut+nnJdlSGft/uZpFuPMFQ1NNzgAObGYhrhkzTL/LtIN2XRQCjEW5ZdP/ozRBM0
+         VqWri53ve9VhEmis0TmalBvV+OHN8s2vCxT49wwGqoYFbUKYgIKeHpMdbSAa0nn9te15
+         HatBC8XtTmVdRAP2zNLqW0VOt+xHOVHx5KLQYeRp+45vIeY2S7OMRSnPV+u2PjAYE1+b
+         xuXEVHWS6Uq4zDnuKfvBtAKO/RT0XXaWV9hPaNo/7kvidSarJOCYOks0iAGy/Z2vWqwH
+         2EjJNue7pRH0bw9ZJ6UiSQ2n2/3KKjRq3Am7lILttj/rwxLQlyzeidJAYDVMxtyKIgdr
+         VRTA==
+X-Gm-Message-State: AAQBX9fNqYbmwfB2mLlyI6RlKwzIZ6q99qLZ9yqF7uwCe5nBIufo+JAM
+        2q18hoJ21h6CIWVDGFhBebY=
+X-Google-Smtp-Source: AKy350ZvJSA1nnzosjr5bhvvnr+1442VxjKvMzCAiyfLNjv0iIKyccNtq0yNenUUNRmcYEQFfkjimg==
+X-Received: by 2002:a17:907:78ce:b0:94a:7d5c:2fab with SMTP id kv14-20020a17090778ce00b0094a7d5c2fabmr4064919ejc.72.1681142722963;
+        Mon, 10 Apr 2023 09:05:22 -0700 (PDT)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id rn5-20020a170906d92500b0094d69608f5fsm281387ejb.97.2023.04.10.09.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Apr 2023 09:05:22 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 10 Apr 2023 17:05:20 +0100
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     ast@kernel.org, rongtao@cestc.cn,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-hints@xdp-project.net,
-        Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: [PATCH net-next v2 4/4] net: stmmac: add Rx HWTS metadata to XDP ZC receive pkt
-Date:   Mon, 10 Apr 2023 23:57:22 +0800
-Message-Id: <20230410155722.335908-5-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230410155722.335908-1-yoong.siang.song@intel.com>
-References: <20230410155722.335908-1-yoong.siang.song@intel.com>
+        Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>, Nick Terrell <terrelln@fb.com>,
+        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
+        <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: trace_helpers.c: Fix segfault
+Message-ID: <ZDQzwP3K8WOImluJ@krava>
+References: <tencent_0D62BF818D106C96C26594CAC76BF3281306@qq.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_0D62BF818D106C96C26594CAC76BF3281306@qq.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add receive hardware timestamp metadata support via kfunc to XDP Zero Copy
-receive packets.
+On Sun, Apr 09, 2023 at 04:15:25PM +0800, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
+> 
+> When the number of symbols is greater than MAX_SYMS (300000), the access
+> array struct ksym syms[MAX_SYMS] goes out of bounds, which will result in
+> a segfault.
+> 
+> Resolve this issue by judging the maximum number and exiting the loop, and
+> increasing the default size appropriately. (6.2.9 = 329839 below)
+> 
+>     $ cat /proc/kallsyms | wc -l
+>     329839
+> 
+>     GDB debugging:
+>     $ cd linux/samples/bpf
+>     $ sudo gdb ./sampleip
+>     ...
+>     (gdb) r
+>     ...
+>     Program received signal SIGSEGV, Segmentation fault.
+>     0x00007ffff7e2debf in malloc () from /lib64/libc.so.6
+>     Missing separate debuginfos, use: dnf debuginfo-install
+>     elfutils-libelf-0.189-1.fc37.x86_64 glibc-2.36-9.fc37.x86_64
+>     libzstd-1.5.4-1.fc37.x86_64 zlib-1.2.12-5.fc37.x86_64
+>     (gdb) bt
+>     #0  0x00007ffff7e2debf in malloc () from /lib64/libc.so.6
+>     #1  0x00007ffff7e33f8e in strdup () from /lib64/libc.so.6
+>     #2  0x0000000000403fb0 in load_kallsyms_refresh() from trace_helpers.c
+>     #3  0x00000000004038b2 in main ()
+> 
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
 
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
----
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 29 +++++++++++++++++--
- 1 file changed, 26 insertions(+), 3 deletions(-)
+I had to apply by hand, there was some fuzz:
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 7f1c0c36de8c..bcaafeea118b 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1611,6 +1611,12 @@ static int stmmac_alloc_rx_buffers_zc(struct stmmac_priv *priv,
- 	struct stmmac_rx_queue *rx_q = &dma_conf->rx_queue[queue];
- 	int i;
- 
-+	/* struct stmmac_xdp_buff is using cb field (maximum size of 24 bytes)
-+	 * in struct xdp_buff_xsk to stash driver specific information. Thus,
-+	 * use this macro to make sure no size violations.
-+	 */
-+	XSK_CHECK_PRIV_TYPE(struct stmmac_xdp_buff);
-+
- 	for (i = 0; i < dma_conf->dma_rx_size; i++) {
- 		struct stmmac_rx_buffer *buf;
- 		dma_addr_t dma_addr;
-@@ -4903,7 +4909,7 @@ static struct sk_buff *stmmac_construct_skb_zc(struct stmmac_channel *ch,
- 
- static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
- 				   struct dma_desc *p, struct dma_desc *np,
--				   struct xdp_buff *xdp)
-+				   struct xdp_buff *xdp, ktime_t rx_hwts)
- {
- 	struct stmmac_channel *ch = &priv->channel[queue];
- 	struct skb_shared_hwtstamps *shhwtstamp = NULL;
-@@ -4921,7 +4927,7 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
- 
- 	shhwtstamp = skb_hwtstamps(skb);
- 	memset(shhwtstamp, 0, sizeof(struct skb_shared_hwtstamps));
--	stmmac_get_rx_hwtstamp(priv, p, np, &shhwtstamp->hwtstamp);
-+	shhwtstamp->hwtstamp = rx_hwts;
- 
- 	stmmac_rx_vlan(priv->dev, skb);
- 	skb->protocol = eth_type_trans(skb, priv->dev);
-@@ -4999,6 +5005,16 @@ static bool stmmac_rx_refill_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
- 	return ret;
- }
- 
-+static struct stmmac_xdp_buff *xsk_buff_to_stmmac_ctx(struct xdp_buff *xdp)
-+{
-+	/* In XDP zero copy data path, xdp field in struct xdp_buff_xsk is used
-+	 * to represent incoming packet, whereas cb field in the same structure
-+	 * is used to store driver specific info. Thus, struct stmmac_xdp_buff
-+	 * is laid on top of xdp and cb fields of struct xdp_buff_xsk.
-+	 */
-+	return (struct stmmac_xdp_buff *)xdp;
-+}
-+
- static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- {
- 	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[queue];
-@@ -5028,8 +5044,10 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 	}
- 	while (count < limit) {
- 		struct stmmac_rx_buffer *buf;
-+		struct stmmac_xdp_buff *ctx;
- 		unsigned int buf1_len = 0;
- 		struct dma_desc *np, *p;
-+		ktime_t rx_hwts = 0;
- 		int entry;
- 		int res;
- 
-@@ -5113,6 +5131,10 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 			goto read_again;
- 		}
- 
-+		stmmac_get_rx_hwtstamp(priv, p, np, &rx_hwts);
-+		ctx = xsk_buff_to_stmmac_ctx(buf->xdp);
-+		ctx->rx_hwts = rx_hwts;
-+
- 		/* XDP ZC Frame only support primary buffers for now */
- 		buf1_len = stmmac_rx_buf1_len(priv, p, status, len);
- 		len += buf1_len;
-@@ -5132,7 +5154,8 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 
- 		switch (res) {
- 		case STMMAC_XDP_PASS:
--			stmmac_dispatch_skb_zc(priv, queue, p, np, buf->xdp);
-+			stmmac_dispatch_skb_zc(priv, queue, p, np, buf->xdp,
-+					       rx_hwts);
- 			xsk_buff_free(buf->xdp);
- 			break;
- 		case STMMAC_XDP_CONSUMED:
--- 
-2.34.1
+  patching file tools/testing/selftests/bpf/trace_helpers.c
+  Hunk #1 succeeded at 18 with fuzz 2 (offset 4 lines).
+  Hunk #2 succeeded at 48 (offset 4 lines).
 
+but other than that looks good
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> ---
+>  tools/testing/selftests/bpf/trace_helpers.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+> index 09a16a77bae4..a9d589c560d2 100644
+> --- a/tools/testing/selftests/bpf/trace_helpers.c
+> +++ b/tools/testing/selftests/bpf/trace_helpers.c
+> @@ -14,7 +14,7 @@
+>  
+>  #define DEBUGFS "/sys/kernel/debug/tracing/"
+>  
+> -#define MAX_SYMS 300000
+> +#define MAX_SYMS 400000
+>  static struct ksym syms[MAX_SYMS];
+>  static int sym_cnt;
+>  
+> @@ -44,7 +44,8 @@ int load_kallsyms_refresh(void)
+>  			continue;
+>  		syms[i].addr = (long) addr;
+>  		syms[i].name = strdup(func);
+> -		i++;
+> +		if (++i >= MAX_SYMS)
+> +			break;
+>  	}
+>  	fclose(f);
+>  	sym_cnt = i;
+> -- 
+> 2.39.2
+> 
