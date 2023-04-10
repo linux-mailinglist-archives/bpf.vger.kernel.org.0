@@ -2,171 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5AA6DC5A1
-	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 12:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386CF6DC5C1
+	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 12:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbjDJKLl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Apr 2023 06:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
+        id S229577AbjDJKaw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Apr 2023 06:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbjDJKLh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Apr 2023 06:11:37 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8A659E3;
-        Mon, 10 Apr 2023 03:11:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681121477; x=1712657477;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Bc+nspG2xkjaRPTpa9y3nJcvI9rS5o1YkarF2xS12Dk=;
-  b=IFcOeWPXAPUs9y/KbdCM6kQRjvxEbiYmDylNZnCaMygB7NnqBr7NGEzA
-   oOGzrESufaveYVnJzNUi9g/FESgUrmeqiS9TTkWQnBeMfkjY7/wG5LjXJ
-   4D8+seLZatIV53IXEaSzTQkO3vnonyE5zQkT3ZpC3dE2li3SQeCAnLQtI
-   jeWidoji5f/ZrLVwN4eqT800QaJcU7zZ51dE2EYPJHH0NYrpp4V+Bgjy2
-   Rz0oDPZUDD31pscJ7LtRGHj6B68M87O/GpHeF2NSrLjPASwpnjWCiQrrN
-   6lXeRRpn+vJqLYHyBcFkCzyG2ffgJFCSgX/zUJcAUI2pp/gxRpTlQrqhQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10675"; a="340815413"
-X-IronPort-AV: E=Sophos;i="5.98,333,1673942400"; 
-   d="scan'208";a="340815413"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2023 03:11:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10675"; a="752716209"
-X-IronPort-AV: E=Sophos;i="5.98,333,1673942400"; 
-   d="scan'208";a="752716209"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Apr 2023 03:11:00 -0700
-From:   Song Yoong Siang <yoong.siang.song@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-hints@xdp-project.net,
-        Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: [PATCH net-next 4/4] net: stmmac: add Rx HWTS metadata to XDP ZC receive pkt
-Date:   Mon, 10 Apr 2023 18:09:39 +0800
-Message-Id: <20230410100939.331833-5-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230410100939.331833-1-yoong.siang.song@intel.com>
-References: <20230410100939.331833-1-yoong.siang.song@intel.com>
+        with ESMTP id S229536AbjDJKav (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Apr 2023 06:30:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8D61FF0;
+        Mon, 10 Apr 2023 03:30:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D7ACF60DDE;
+        Mon, 10 Apr 2023 10:30:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DF07C433D2;
+        Mon, 10 Apr 2023 10:30:48 +0000 (UTC)
+Date:   Mon, 10 Apr 2023 06:30:46 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        alexei.starovoitov@gmail.com, linux-trace-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH] tracing: Refuse fprobe if RCU is not watching
+Message-ID: <20230410063046.391dd2bd@rorschach.local.home>
+In-Reply-To: <CALOAHbC5UvoU2EUM+YzNSaJyNNq_OOXYZYcqXu6nUfB0AyX0bA@mail.gmail.com>
+References: <20230321020103.13494-1-laoar.shao@gmail.com>
+        <20230321101711.625d0ccb@gandalf.local.home>
+        <CALOAHbAfQxAMQTwDHnMOLHDfz=Mo0gFwu9i3bS0emttUTodA4g@mail.gmail.com>
+        <20230323083914.31f76c2b@gandalf.local.home>
+        <CALOAHbDtM7KuiRn1n9EBYrSGqJmOYcY6voVRfF+QGN510W_OtQ@mail.gmail.com>
+        <20230323230105.57c40232@rorschach.local.home>
+        <CALOAHbCZSY2XJpzJ+AxSrRLbMqyoJjcaXeof-xMLN8y+uB7PJg@mail.gmail.com>
+        <20230409075515.2504db78@rorschach.local.home>
+        <CALOAHbBALsJrkO-tPKoEtrdm42fLnRoYs-46tz0J7yDwrxC0Tg@mail.gmail.com>
+        <20230409225414.2b66610f4145ade7b09339bb@kernel.org>
+        <CALOAHbBQFSm=rXvzJJnOqrK04f9j1opbgRoYKwSUAd5g64r-jA@mail.gmail.com>
+        <20230409220239.0fcf6738@rorschach.local.home>
+        <CALOAHbC5UvoU2EUM+YzNSaJyNNq_OOXYZYcqXu6nUfB0AyX0bA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add receive hardware timestamp metadata support via kfunc to XDP Zero Copy
-receive packets.
+On Mon, 10 Apr 2023 13:36:32 +0800
+Yafang Shao <laoar.shao@gmail.com> wrote:
 
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
----
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 29 +++++++++++++++++--
- 1 file changed, 26 insertions(+), 3 deletions(-)
+> Many thanks for the detailed explanation.
+> I think ftrace_test_recursion_trylock() can't apply to migreate_enable().
+> If we change as follows to prevent migrate_enable() from recursing,
+> 
+>          bit = ftrace_test_recursion_trylock();
+>          if (bit < 0)
+>                  return;
+>          migrate_enable();
+>          ftrace_test_recursion_unlock(bit);
+> 
+> We have called migrate_disable() before, so if we don't call
+> migrate_enable() it will cause other issues.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index ca183fbfde85..a4545e9eb8fd 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1611,6 +1611,12 @@ static int stmmac_alloc_rx_buffers_zc(struct stmmac_priv *priv,
- 	struct stmmac_rx_queue *rx_q = &dma_conf->rx_queue[queue];
- 	int i;
- 
-+	/* struct stmmac_xdp_buff is using cb field (maximum size of 24 bytes)
-+	 * in struct xdp_buff_xsk to stash driver specific information. Thus,
-+	 * use this macro to make sure no size violations.
-+	 */
-+	XSK_CHECK_PRIV_TYPE(struct stmmac_xdp_buff);
-+
- 	for (i = 0; i < dma_conf->dma_rx_size; i++) {
- 		struct stmmac_rx_buffer *buf;
- 		dma_addr_t dma_addr;
-@@ -4903,7 +4909,7 @@ static struct sk_buff *stmmac_construct_skb_zc(struct stmmac_channel *ch,
- 
- static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
- 				   struct dma_desc *p, struct dma_desc *np,
--				   struct xdp_buff *xdp)
-+				   struct xdp_buff *xdp, ktime_t rx_hwts)
- {
- 	struct stmmac_channel *ch = &priv->channel[queue];
- 	struct skb_shared_hwtstamps *shhwtstamp = NULL;
-@@ -4921,7 +4927,7 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
- 
- 	shhwtstamp = skb_hwtstamps(skb);
- 	memset(shhwtstamp, 0, sizeof(struct skb_shared_hwtstamps));
--	stmmac_get_rx_hwtstamp(priv, p, np, &shhwtstamp->hwtstamp);
-+	shhwtstamp->hwtstamp = rx_hwts;
- 
- 	stmmac_rx_vlan(priv->dev, skb);
- 	skb->protocol = eth_type_trans(skb, priv->dev);
-@@ -4999,6 +5005,16 @@ static bool stmmac_rx_refill_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
- 	return ret;
- }
- 
-+static struct stmmac_xdp_buff *xsk_buff_to_stmmac_ctx(struct xdp_buff *xdp)
-+{
-+	/* In XDP zero copy data path, xdp field in struct xdp_buff_xsk is used
-+	 * to represent incoming packet, whereas cb field in the same structure
-+	 * is used to store driver specific info. Thus, struct stmmac_xdp_buff
-+	 * is laid on top of xdp and cb fields of struct xdp_buff_xsk.
-+	 */
-+	return (struct stmmac_xdp_buff *)xdp;
-+}
-+
- static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- {
- 	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[queue];
-@@ -5028,8 +5044,10 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 	}
- 	while (count < limit) {
- 		struct stmmac_rx_buffer *buf;
-+		struct stmmac_xdp_buff *ctx;
- 		unsigned int buf1_len = 0;
- 		struct dma_desc *np, *p;
-+		ktime_t rx_hwts = 0;
- 		int entry;
- 		int res;
- 
-@@ -5113,6 +5131,10 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 			goto read_again;
- 		}
- 
-+		stmmac_get_rx_hwtstamp(priv, p, np, &rx_hwts);
-+		ctx = xsk_buff_to_stmmac_ctx(buf->xdp);
-+		ctx->rx_hwts = rx_hwts;
-+
- 		/* XDP ZC Frame only support primary buffers for now */
- 		buf1_len = stmmac_rx_buf1_len(priv, p, status, len);
- 		len += buf1_len;
-@@ -5132,7 +5154,8 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 
- 		switch (res) {
- 		case STMMAC_XDP_PASS:
--			stmmac_dispatch_skb_zc(priv, queue, p, np, buf->xdp);
-+			stmmac_dispatch_skb_zc(priv, queue, p, np, buf->xdp,
-+					       rx_hwts);
- 			xsk_buff_free(buf->xdp);
- 			break;
- 		case STMMAC_XDP_CONSUMED:
--- 
-2.34.1
+Right. Because you called migrate_disable() before (and protected it
+with the ftrace_test_recursion_trylock(), the second call is guaranteed
+to succeed!
 
+[1]	bit = ftrace_test_recursion_trylock();
+	if (bit < 0)
+		return;
+	migrate_disable();
+	ftrace_test_recursion_trylock(bit);
+
+	[..]
+
+[2]	ftrace_test_recursion_trylock();
+	migrate_enable();
+	ftrace_test_recursion_trylock(bit);
+
+You don't even need to read the bit again, because it will be the same
+as the first call [1]. That's because it returns the recursion level
+you are in. A function will have the same recursion level through out
+the function (as long as it always calls ftrace_test_recursion_unlock()
+between them).
+
+	bpf_func()
+	    bit = ftrace_test_recursion_trylock(); <-- OK
+	    migrate_disable();
+	    ftrace_test_recursion_unlock(bit);
+
+	    [..]
+
+	    ftrace_test_recursion_trylock(); <<-- guaranteed to be OK
+	    migrate_enable() <<<-- gets traced
+
+		bpf_func()
+		    bit = ftrace_test_recursion_trylock() <-- FAILED
+		    if (bit < 0)
+			return;
+
+	    ftrace_test_recursion_unlock(bit);
+
+
+See, still works!
+
+The migrate_enable() will never be called without the migrate_disable()
+as the migrate_disable() only gets called when not being recursed.
+
+Note, the ftrace_test_recursion_*() code needs to be updated because it
+currently does disable preemption, which it doesn't have to. And that
+can cause migrate_disable() to do something different. It only disabled
+preemption, as there was a time that it needed to, but now it doesn't.
+But the users of it will need to be audited to make sure that they
+don't need the side effect of it disabling preemption.
+
+-- Steve
