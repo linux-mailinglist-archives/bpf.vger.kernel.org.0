@@ -2,129 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 386CF6DC5C1
-	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 12:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78FC6DC688
+	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 14:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjDJKaw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Apr 2023 06:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
+        id S229827AbjDJMH7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Apr 2023 08:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjDJKav (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Apr 2023 06:30:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8D61FF0;
-        Mon, 10 Apr 2023 03:30:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D7ACF60DDE;
-        Mon, 10 Apr 2023 10:30:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DF07C433D2;
-        Mon, 10 Apr 2023 10:30:48 +0000 (UTC)
-Date:   Mon, 10 Apr 2023 06:30:46 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        alexei.starovoitov@gmail.com, linux-trace-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <olsajiri@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH] tracing: Refuse fprobe if RCU is not watching
-Message-ID: <20230410063046.391dd2bd@rorschach.local.home>
-In-Reply-To: <CALOAHbC5UvoU2EUM+YzNSaJyNNq_OOXYZYcqXu6nUfB0AyX0bA@mail.gmail.com>
-References: <20230321020103.13494-1-laoar.shao@gmail.com>
-        <20230321101711.625d0ccb@gandalf.local.home>
-        <CALOAHbAfQxAMQTwDHnMOLHDfz=Mo0gFwu9i3bS0emttUTodA4g@mail.gmail.com>
-        <20230323083914.31f76c2b@gandalf.local.home>
-        <CALOAHbDtM7KuiRn1n9EBYrSGqJmOYcY6voVRfF+QGN510W_OtQ@mail.gmail.com>
-        <20230323230105.57c40232@rorschach.local.home>
-        <CALOAHbCZSY2XJpzJ+AxSrRLbMqyoJjcaXeof-xMLN8y+uB7PJg@mail.gmail.com>
-        <20230409075515.2504db78@rorschach.local.home>
-        <CALOAHbBALsJrkO-tPKoEtrdm42fLnRoYs-46tz0J7yDwrxC0Tg@mail.gmail.com>
-        <20230409225414.2b66610f4145ade7b09339bb@kernel.org>
-        <CALOAHbBQFSm=rXvzJJnOqrK04f9j1opbgRoYKwSUAd5g64r-jA@mail.gmail.com>
-        <20230409220239.0fcf6738@rorschach.local.home>
-        <CALOAHbC5UvoU2EUM+YzNSaJyNNq_OOXYZYcqXu6nUfB0AyX0bA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229535AbjDJMH6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Apr 2023 08:07:58 -0400
+Received: from mail-ej1-x661.google.com (mail-ej1-x661.google.com [IPv6:2a00:1450:4864:20::661])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDC05595
+        for <bpf@vger.kernel.org>; Mon, 10 Apr 2023 05:07:55 -0700 (PDT)
+Received: by mail-ej1-x661.google.com with SMTP id qb20so11566761ejc.6
+        for <bpf@vger.kernel.org>; Mon, 10 Apr 2023 05:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dectris.com; s=google; t=1681128474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7v43Rq8QtIQVPlLmfhiMAiQGZl0bJiLYuxpdQdVU7Bw=;
+        b=JJ3EQf9KhNA390dNwa7lrAMTXl3bXlDJd5BuVZeFF/lu1wJZeg/d717gHaZICPwW2l
+         Gcl+oN+gkHN3qIOvAop0432cyEvtWglv02ExiF69RsKjdk2LBP+wkEKFGhPU1O4RzD15
+         ELSRBk2Sl6qZlQK+tocc+CJw805Z/QfXpbkBE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681128474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7v43Rq8QtIQVPlLmfhiMAiQGZl0bJiLYuxpdQdVU7Bw=;
+        b=nMYrMyYcNFKRHXN1Vokf3uxJXOxmECi2TDz22fQ7sEPSZMGF4fKtOnC79s5DaGQNCF
+         SVtDSO4HpuRSixBgYdb4qjFcGQHzvph8qpQzP0xKkmOC1dZktGhcc5yCi1U5jm27wTNW
+         wBaMFvWYVuCSpj5ki7UAqOejKGev5eOc4ZJ8Gts0rwmeIz57biz3m2wvBtlRGzpT6fOW
+         fSg1GZtJfJY4cURMrgQfz0NZUFH4rQSlZCTwbm06sXUMJrTqRJK7H0MXb5WQXzOKk/NW
+         eW5cbbzK94MRL1YKXZ8NtfSFTxCqJ0dJ+rMgAewJeCaMBl5yhWnMDlFyXxGdSYhocqDH
+         bHZA==
+X-Gm-Message-State: AAQBX9dMI3b/56y3+rHVZQoUvrbZuMgNEs7GCHs7q7haeNqL6k9CL1Ya
+        PlBfIdnelbRjFlhzplk074JjW/cRfJTr1cxELEBVWHsYt/RW
+X-Google-Smtp-Source: AKy350aU8co7KQVqsL+B7ABmpTXsAasYQbNi1uG8xMgjlcVqfUW+N7iY/c+WT8w3uzURTvL+O2vVxvekCSMr
+X-Received: by 2002:a17:906:2605:b0:8aa:a9fe:a3fc with SMTP id h5-20020a170906260500b008aaa9fea3fcmr7848556ejc.8.1681128474126;
+        Mon, 10 Apr 2023 05:07:54 -0700 (PDT)
+Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
+        by smtp-relay.gmail.com with ESMTPS id nb39-20020a1709071ca700b008b1fc5abd08sm2089769ejc.56.2023.04.10.05.07.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Apr 2023 05:07:54 -0700 (PDT)
+X-Relaying-Domain: dectris.com
+From:   Kal Conley <kal.conley@dectris.com>
+To:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next v5 0/4] xsk: Support UMEM chunk_size > PAGE_SIZE
+Date:   Mon, 10 Apr 2023 14:06:25 +0200
+Message-Id: <20230410120629.642955-1-kal.conley@dectris.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 10 Apr 2023 13:36:32 +0800
-Yafang Shao <laoar.shao@gmail.com> wrote:
+The main purpose of this patchset is to add AF_XDP support for UMEM
+chunk sizes > PAGE_SIZE. This is enabled for UMEMs backed by HugeTLB
+pages.
 
-> Many thanks for the detailed explanation.
-> I think ftrace_test_recursion_trylock() can't apply to migreate_enable().
-> If we change as follows to prevent migrate_enable() from recursing,
-> 
->          bit = ftrace_test_recursion_trylock();
->          if (bit < 0)
->                  return;
->          migrate_enable();
->          ftrace_test_recursion_unlock(bit);
-> 
-> We have called migrate_disable() before, so if we don't call
-> migrate_enable() it will cause other issues.
+Note, v5 fixes a major bug in previous versions of this patchset.
+In particular, dma_map_page_attrs used to be called once for each
+order-0 page in a hugepage with the assumption that returned I/O
+addresses are contiguous within a hugepage. This assumption is incorrect
+when an IOMMU is enabled. To fix this, v5 does DMA page accounting
+accounting at hugepage granularity.
 
-Right. Because you called migrate_disable() before (and protected it
-with the ftrace_test_recursion_trylock(), the second call is guaranteed
-to succeed!
+Changes since v4:
+  * Use hugepages in DMA map (fixes zero-copy mode with IOMMU).
+  * Use pool->dma_pages to check for DMA. This change is needed to avoid
+    performance regressions).
+  * Update commit message and benchmark table.
 
-[1]	bit = ftrace_test_recursion_trylock();
-	if (bit < 0)
-		return;
-	migrate_disable();
-	ftrace_test_recursion_trylock(bit);
+Changes since v3:
+  * Fix checkpatch.pl whitespace error.
 
-	[..]
+Changes since v2:
+  * Related fixes/improvements included with v2 have been removed. These
+    changes have all been resubmitted as standalone patchsets.
+  * Minimize uses of #ifdef CONFIG_HUGETLB_PAGE.
+  * Improve AF_XDP documentation.
+  * Update benchmark table in commit message.
 
-[2]	ftrace_test_recursion_trylock();
-	migrate_enable();
-	ftrace_test_recursion_trylock(bit);
+Changes since v1:
+  * Add many fixes/improvements to the XSK selftests.
+  * Add check for unaligned descriptors that overrun UMEM.
+  * Fix compile errors when CONFIG_HUGETLB_PAGE is not set.
+  * Fix incorrect use of _Static_assert.
+  * Update AF_XDP documentation.
+  * Rename unaligned 9K frame size test.
+  * Make xp_check_dma_contiguity less conservative.
+  * Add more information to benchmark table.
 
-You don't even need to read the bit again, because it will be the same
-as the first call [1]. That's because it returns the recursion level
-you are in. A function will have the same recursion level through out
-the function (as long as it always calls ftrace_test_recursion_unlock()
-between them).
+Thanks to Magnus Karlsson for all his support!
 
-	bpf_func()
-	    bit = ftrace_test_recursion_trylock(); <-- OK
-	    migrate_disable();
-	    ftrace_test_recursion_unlock(bit);
+Happy Easter!
 
-	    [..]
+Kal Conley (4):
+  xsk: Use pool->dma_pages to check for DMA
+  xsk: Support UMEM chunk_size > PAGE_SIZE
+  selftests: xsk: Use hugepages when umem->frame_size > PAGE_SIZE
+  selftests: xsk: Add tests for 8K and 9K frame sizes
 
-	    ftrace_test_recursion_trylock(); <<-- guaranteed to be OK
-	    migrate_enable() <<<-- gets traced
+ Documentation/networking/af_xdp.rst      | 36 ++++++++++------
+ include/net/xdp_sock.h                   |  2 +
+ include/net/xdp_sock_drv.h               | 12 ++++++
+ include/net/xsk_buff_pool.h              | 12 +++---
+ net/xdp/xdp_umem.c                       | 55 +++++++++++++++++++-----
+ net/xdp/xsk_buff_pool.c                  | 43 ++++++++++--------
+ tools/testing/selftests/bpf/xskxceiver.c | 27 +++++++++++-
+ tools/testing/selftests/bpf/xskxceiver.h |  2 +
+ 8 files changed, 142 insertions(+), 47 deletions(-)
 
-		bpf_func()
-		    bit = ftrace_test_recursion_trylock() <-- FAILED
-		    if (bit < 0)
-			return;
+-- 
+2.39.2
 
-	    ftrace_test_recursion_unlock(bit);
-
-
-See, still works!
-
-The migrate_enable() will never be called without the migrate_disable()
-as the migrate_disable() only gets called when not being recursed.
-
-Note, the ftrace_test_recursion_*() code needs to be updated because it
-currently does disable preemption, which it doesn't have to. And that
-can cause migrate_disable() to do something different. It only disabled
-preemption, as there was a time that it needed to, but now it doesn't.
-But the users of it will need to be audited to make sure that they
-don't need the side effect of it disabling preemption.
-
--- Steve
