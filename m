@@ -2,252 +2,420 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09896DC9AB
-	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 19:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7F56DCA0D
+	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 19:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbjDJRBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Apr 2023 13:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
+        id S230333AbjDJRef (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Apr 2023 13:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjDJRB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Apr 2023 13:01:29 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A46B1BF2
-        for <bpf@vger.kernel.org>; Mon, 10 Apr 2023 10:01:28 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id kt17so1707826ejb.11
-        for <bpf@vger.kernel.org>; Mon, 10 Apr 2023 10:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1681146087;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lt2KV6lKophxHEHu2Q4gBf9vT+Lj2+YhOQxG8TKhnJw=;
-        b=C97G2wyoIFklXi98Zkq85LP4wFnojto2PG5zZQq7V3/BNEQsZKSzMhXveXkq3S4Ktf
-         01QZNOhMHVfLGLkUK0l5gWKWBvoQmFphfZspcNkcqvo9nddx5mm9gcDRfJnYgr9IUgEI
-         IvkEHyIVAoWVgh4WBU7fr+Myedl0jwPTzHoAqumEF90kIEzNJQ6Hh34XcVxGplLPapfy
-         Mx8yIMku9opDEqtzVbznnA9Rya506pwZEuDK0XPgcpKFjGlyvVxLW+fXJ5V0Qsxcikzb
-         Z8FX3rK6I11fIIWCLaA2SLr/26KVQTBtKtOTCgBpd5TWxmlJdtLu/8L27EboLn27T2bu
-         cLQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681146087;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lt2KV6lKophxHEHu2Q4gBf9vT+Lj2+YhOQxG8TKhnJw=;
-        b=yLZqDhkuuSYd/ijh8/+ZhqV56lb1/q2cpFEXzpMs+DbxOxYoFcqLz+dcGfOzTNYN2v
-         9uLdrOTonSkIuP+NuVRXsQO6CkH62TPrl6JX+dhc/gCVd3Kzy6l+iO7k9aVP8HaxygjU
-         ImYJxtAbtZ8KkTLebLqmAnQsVodDRbKIg8ZezYXtdszCy7Q5fbb//UMQE35bnYug2nIX
-         Z5LoLF0DFfBV5fEUqIdwiE9y6n0mjQ4xPlpJCtJ5gHV8El9RQs3cXfJzbhBnJMmSMxiY
-         sbf4mMbxQdJfWcfVnLTVnjLKVzPEtGw/1IKSED/ehTGDadeiS0hVW70mD+yhBQhGHytx
-         IGYA==
-X-Gm-Message-State: AAQBX9dwSYzbz+KQakf2RAdrBpf8hpYKBzwUBpGP3aLn9/fxypsEi276
-        BCAUzshUGRLmdbQCadgp0Q7nYGdtqixm6vqG6M/6+jChwgw=
-X-Google-Smtp-Source: AKy350bnyJmufjjahH+ON8VAJmOI0LUI+t5G0qzhai3P5FfJUrN9dmtQ23VungMjSBkbB0QolBSXZwTDmtXujz9ysMA=
-X-Received: by 2002:a17:906:830c:b0:94a:7c21:6ade with SMTP id
- j12-20020a170906830c00b0094a7c216ademr1885053ejx.5.1681146086834; Mon, 10 Apr
- 2023 10:01:26 -0700 (PDT)
+        with ESMTP id S230316AbjDJRed (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Apr 2023 13:34:33 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F52212B;
+        Mon, 10 Apr 2023 10:34:22 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 703EF604ED;
+        Mon, 10 Apr 2023 19:34:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1681148059; bh=q2v0ptTDj156LcDeCyn8w8H/tdTIqyuL5BCBqmUEdRE=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=jL7QL8k2CjiI30QCPlaoOhfhzPbxiSecthfToL392FhtLcXG1kMOngbacK9Pc0nW4
+         o0N4Ez+Y4eSEp6JEWA4vqDRMmYuT4M6rfWujRHs3224PcQ2u8WNnmQpjeShZ3yM0L2
+         3GhItSlvMvJinfgVVEBLW1fV25TgScaKri+1A5A6CKvbXg6MVfU841KDmEchfwiEz2
+         Utb3sHgzui5jr2Pk7lTUEMbCRUJL/Wpe5Qf338OMRerQeRIjEATzhaW7/Kj6yvdoxK
+         5QuoI6Qocx0ye/4YPzUUloF9coAQiZYkEx/tXLJ6vcNp6bb6gC8jum4+/jw2k19UGR
+         mb3hGJ30+br0A==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8GmTCmkQFnk8; Mon, 10 Apr 2023 19:34:16 +0200 (CEST)
+Received: from [192.168.1.4] (unknown [94.250.188.177])
+        by domac.alu.hr (Postfix) with ESMTPSA id 973FB604F6;
+        Mon, 10 Apr 2023 19:34:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1681148056; bh=q2v0ptTDj156LcDeCyn8w8H/tdTIqyuL5BCBqmUEdRE=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=D1YA9sSRWvqUWYlwm2S7BrPv9g+d2clCtXJE/z5vKdFErVKKa670qyBQvwQrGtxoL
+         28TpH3YiG3ObeEE3vkJn8VMQuyP0K1NhRnfqKNT6GuVp93osXxkpRqlIPFX26Z0OvC
+         Z5Ff4Qa+dWCLy8TOxDnKAkNYV+wqvTkcYD1w+rhKABv/OtzHSz+EIIjVJwYqA8G0cP
+         AvnQfJfyg3HjlPM5JLWHKGCsFbdEoqlbbfNBME1sBEV9WW2Eehb8cQ8NNW27qkwD+9
+         qI3kqYutJ+V1JqV3J8zUR3WofiJ8gM/VBCVS+irhBDQEr9ClLqRNcc/ACnzxN49N5q
+         4cBgLNSXgxDaw==
+Message-ID: <7650b2eb-0aee-a2b0-2e64-c9bc63210f67@alu.unizg.hr>
+Date:   Mon, 10 Apr 2023 19:34:09 +0200
 MIME-Version: 1.0
-References: <CA+PiJmRwv8UTyQuEBmn1aHg5mXGqHSpAiOJF0Xo9SwZLfW623A@mail.gmail.com>
- <CAEf4BzZntoM0fHzgBuGiqiTNkq=jT-f09nwub-MHyguJCfLeNA@mail.gmail.com>
- <CA+PiJmSNnQ9DD+JVc9hG7iEj5ZDZfhOhYAMKs+f=kXs=DZxuAA@mail.gmail.com>
- <CAADnVQKMrsc+Dxz3uWeKzCPDfr0XKWaWsbn3AeEm+RCmp-apUQ@mail.gmail.com>
- <CA+PiJmT4KyWAAEbYWggOLdy-WR=m1D+EO3j1+=UbY-wVUpzYDA@mail.gmail.com>
- <20230405025726.nesfo5rwuiqnzgqc@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzaD+8tStmJ4i5TeSNpCMhwZ4CkTYMYf+N9YHwK46EtCcA@mail.gmail.com> <CA+PiJmQ8_uVczuHTrOz9uJh2z2Ywf0HVNttbKMVPLF59oSQ4XQ@mail.gmail.com>
-In-Reply-To: <CA+PiJmQ8_uVczuHTrOz9uJh2z2Ywf0HVNttbKMVPLF59oSQ4XQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 10 Apr 2023 10:01:14 -0700
-Message-ID: <CAEf4BzawdCjhrb=ksvofJ0LAPen1nnVWSYPEC1pE=Bcmv_6yYg@mail.gmail.com>
-Subject: Re: Dynptrs and Strings
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Paul Lawrence <paullawrence@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [BUG] [FIXED: TESTED] kmemleak in rtnetlink_rcv() triggered by
+ selftests/drivers/net/team in build cdc9718d5e59
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Florent Fourcot <florent.fourcot@wifirst.fr>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Petr Machata <petrm@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
+        Xin Long <lucien.xin@gmail.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>
+References: <78a8a03b-6070-3e6b-5042-f848dab16fb8@alu.unizg.hr>
+ <ZDLyZX545Cw+aLhE@shredder>
+ <67b3fa90-ad29-29f1-e6f3-fb674d255a1e@alu.unizg.hr>
+Content-Language: en-US, hr
+In-Reply-To: <67b3fa90-ad29-29f1-e6f3-fb674d255a1e@alu.unizg.hr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 2:05=E2=80=AFPM Daniel Rosenberg <drosen@google.com>=
- wrote:
->
-> On Tue, Apr 4, 2023 at 7:57=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > so the idea that bpf prog will see opaque ctx =3D=3D name and a set
-> > of kfuncs will extract different things from ctx into local dynptrs ?
-> >
-> > Have you considered passing dynptr-s directly into bpf progs
-> > as arguments of struct_ops callbacks?
-> > That would be faster or slower performance wise?
-> >
->
-> The kfunc records data that fuse then uses to clean up afterwards.
-> That opaque struct seemed like the best place for it to live.
-> Alternatively, I could provide dynpointers up front, but those are
-> read only or read/write up front based on which operation they're
-> dealing with, and may or may not be promotable to read/write, which
-> involves creating a new dynpointer anyways. If I took that approach,
-> I'd likely present a read-only dynpointer, and wrap it in a larger
-> struct that contains the needed meta information. I'd definitely need
-> to ensure that only fuse-bpf can call those kfuncs in that case.
->
-> >
-> > yep. Don't be shy from improving the verifier to your needs.
-> >
->
-> Uploaded a couple patches yesterday :)
-> A patch to remove the buffer requirement for the slice functions, and
-> another to accept dynpointer tagged mem as mem in helper functions.
->
->
-> On Wed, Apr 5, 2023 at 11:49=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > note that even if bpf_dynptr_slice() accepts a buffer, it won't ever
-> > touch it for LOCAL dynptrs, as the data is already linear in memory.
-> > This buffer is filled out only for skb/xdp **and** only if requested
-> > memory range can't be accessed as sequential memory. So you won't be
-> > copying data.
-> >
->
-> I added an '__opt' tag annotation for this, so I can avoid needing to
-> supply the buffer in those cases.
->
-> > For bpf_dynptr_read(), yep, it will copy data. Regardless if you are
-> > going to use it or not, we should relax the condition that final
-> > buffer should be smaller or equal to dynptr actual size, it should be
-> > bigger and we should just write to first N bytes of it.
-> >
->
-> Should dynptr_read return the length read? Otherwise you need to get
-> the dynpointer length and adjust for all the offsets to figure out how
-> much was probably read. But returning the length read would break
-> existing programs.
+On 09. 04. 2023. 20:47, Mirsad Goran Todorovac wrote:
+> On 09. 04. 2023. 19:14, Ido Schimmel wrote:
+>> On Sun, Apr 09, 2023 at 01:49:30PM +0200, Mirsad Goran Todorovac wrote:
+>>> Hi all,
+>>>
+>>> There appears to be a memleak triggered by the selftest drivers/net/team.
+>>
+>> Thanks for the report. Not sure it's related to team, see below.
+> 
+> Not at all, I'm really encouraged that this leak is fixed so quickly and neatly.
+> 
+> Now it isn't clear to me why I did not cut the possibility in half,
+> but I assumed that it was the drivers/net/team, and it wouldn't work
+> for me without the former.
+> 
+> They say that the assumption is the mother of all blunders :-)
+> 
+> I was lucky to choose the right entry function and the maintainers,
+> at least I hope so.
+> 
+> (Additionally, I saw that bond_enslave() is Jay and Andy's support, so
+> I added them to Cc:, if that's not a problem.)
+> 
+>>> # cat /sys/kernel/debug/kmemleak
+>>> unreferenced object 0xffff8c18def8ee00 (size 256):
+>>>   comm "ip", pid 5727, jiffies 4294961159 (age 954.244s)
+>>>   hex dump (first 32 bytes):
+>>>     00 20 09 de 18 8c ff ff 00 00 00 00 00 00 00 00  . ..............
+>>>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>>>   backtrace:
+>>>     [<ffffffffb60fb25c>] slab_post_alloc_hook+0x8c/0x3e0
+>>>     [<ffffffffb6102b39>] __kmem_cache_alloc_node+0x1d9/0x2a0
+>>>     [<ffffffffb607684e>] kmalloc_trace+0x2e/0xc0
+>>>     [<ffffffffb6dbc00b>] vlan_vid_add+0x11b/0x290
+>>>     [<ffffffffb6dbcffc>] vlan_device_event+0x19c/0x880
+>>>     [<ffffffffb5dde4d7>] raw_notifier_call_chain+0x47/0x70
+>>>     [<ffffffffb6ab6940>] call_netdevice_notifiers_info+0x50/0xa0
+>>>     [<ffffffffb6ac7574>] dev_open+0x94/0xa0
+>>>     [<ffffffffc176515e>] 0xffffffffc176515e
+>>
+>> Don't know what this is. Might be another issue.
+> 
+> I really couldn't tell.
+> 
+>>>     [<ffffffffb6ada6b0>] do_set_master+0x90/0xb0
+>>>     [<ffffffffb6adc5f4>] do_setlink+0x514/0x11f0
+>>>     [<ffffffffb6ae4507>] __rtnl_newlink+0x4e7/0xa10
+>>>     [<ffffffffb6ae4a8c>] rtnl_newlink+0x4c/0x70
+>>>     [<ffffffffb6adf334>] rtnetlink_rcv_msg+0x184/0x5d0
+>>>     [<ffffffffb6b6ad1e>] netlink_rcv_skb+0x5e/0x110
+>>>     [<ffffffffb6ada0e9>] rtnetlink_rcv+0x19/0x20
+>>> unreferenced object 0xffff8c18250d3700 (size 32):
+>>>   comm "ip", pid 5727, jiffies 4294961159 (age 954.244s)
+>>>   hex dump (first 32 bytes):
+>>>     a0 ee f8 de 18 8c ff ff a0 ee f8 de 18 8c ff ff  ................
+>>>     81 00 00 00 01 00 00 00 cc cc cc cc cc cc cc cc  ................
+>>>   backtrace:
+>>>     [<ffffffffb60fb25c>] slab_post_alloc_hook+0x8c/0x3e0
+>>>     [<ffffffffb6102b39>] __kmem_cache_alloc_node+0x1d9/0x2a0
+>>>     [<ffffffffb607684e>] kmalloc_trace+0x2e/0xc0
+>>>     [<ffffffffb6dbc064>] vlan_vid_add+0x174/0x290
+>>>     [<ffffffffb6dbcffc>] vlan_device_event+0x19c/0x880
+>>>     [<ffffffffb5dde4d7>] raw_notifier_call_chain+0x47/0x70
+>>>     [<ffffffffb6ab6940>] call_netdevice_notifiers_info+0x50/0xa0
+>>>     [<ffffffffb6ac7574>] dev_open+0x94/0xa0
+>>>     [<ffffffffc176515e>] 0xffffffffc176515e
+>>>     [<ffffffffb6ada6b0>] do_set_master+0x90/0xb0
+>>>     [<ffffffffb6adc5f4>] do_setlink+0x514/0x11f0
+>>>     [<ffffffffb6ae4507>] __rtnl_newlink+0x4e7/0xa10
+>>>     [<ffffffffb6ae4a8c>] rtnl_newlink+0x4c/0x70
+>>>     [<ffffffffb6adf334>] rtnetlink_rcv_msg+0x184/0x5d0
+>>>     [<ffffffffb6b6ad1e>] netlink_rcv_skb+0x5e/0x110
+>>>     [<ffffffffb6ada0e9>] rtnetlink_rcv+0x19/0x20
+>>> unreferenced object 0xffff8c1846e16800 (size 256):
+>>>   comm "ip", pid 7837, jiffies 4295135225 (age 258.160s)
+>>>   hex dump (first 32 bytes):
+>>>     00 20 f7 de 18 8c ff ff 00 00 00 00 00 00 00 00  . ..............
+>>>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>>>   backtrace:
+>>>     [<ffffffffb60fb25c>] slab_post_alloc_hook+0x8c/0x3e0
+>>>     [<ffffffffb6102b39>] __kmem_cache_alloc_node+0x1d9/0x2a0
+>>>     [<ffffffffb607684e>] kmalloc_trace+0x2e/0xc0
+>>>     [<ffffffffb6dbc00b>] vlan_vid_add+0x11b/0x290
+>>>     [<ffffffffb6dbcffc>] vlan_device_event+0x19c/0x880
+>>>     [<ffffffffb5dde4d7>] raw_notifier_call_chain+0x47/0x70
+>>>     [<ffffffffb6ab6940>] call_netdevice_notifiers_info+0x50/0xa0
+>>>     [<ffffffffb6ac7574>] dev_open+0x94/0xa0
+>>>     [<ffffffffc177115e>] bond_enslave+0x34e/0x1840 [bonding]
+>>
+>> This shows that the issue is related to the bond driver, not team.
+> 
+> Now it seems obvious. But I am not that deep into the bond and team drivers
+> to tell without your help.
+> 
+>>>     [<ffffffffb6ada6b0>] do_set_master+0x90/0xb0
+>>>     [<ffffffffb6adc5f4>] do_setlink+0x514/0x11f0
+>>>     [<ffffffffb6ae4507>] __rtnl_newlink+0x4e7/0xa10
+>>>     [<ffffffffb6ae4a8c>] rtnl_newlink+0x4c/0x70
+>>>     [<ffffffffb6adf334>] rtnetlink_rcv_msg+0x184/0x5d0
+>>>     [<ffffffffb6b6ad1e>] netlink_rcv_skb+0x5e/0x110
+>>>     [<ffffffffb6ada0e9>] rtnetlink_rcv+0x19/0x20
+>>> unreferenced object 0xffff8c184c5ff2a0 (size 32):
+>>
+>> This is 'struct vlan_vid_info'
+>>
+>>>   comm "ip", pid 7837, jiffies 4295135225 (age 258.160s)
+>>>   hex dump (first 32 bytes):
+>>>     a0 68 e1 46 18 8c ff ff a0 68 e1 46 18 8c ff ff  .h.F.....h.F....
+>>>     81 00 00 00 01 00 00 00 cc cc cc cc cc cc cc cc  ................
+>>             ^ VLAN ID 0
+> 
+> This is expert insight. Looks all Greek to me.
+> 
+>>>   backtrace:
+>>>     [<ffffffffb60fb25c>] slab_post_alloc_hook+0x8c/0x3e0
+>>>     [<ffffffffb6102b39>] __kmem_cache_alloc_node+0x1d9/0x2a0
+>>>     [<ffffffffb607684e>] kmalloc_trace+0x2e/0xc0
+>>>     [<ffffffffb6dbc064>] vlan_vid_add+0x174/0x290
+>>>     [<ffffffffb6dbcffc>] vlan_device_event+0x19c/0x880
+>>>     [<ffffffffb5dde4d7>] raw_notifier_call_chain+0x47/0x70
+>>>     [<ffffffffb6ab6940>] call_netdevice_notifiers_info+0x50/0xa0
+>>>     [<ffffffffb6ac7574>] dev_open+0x94/0xa0
+>>>     [<ffffffffc177115e>] bond_enslave+0x34e/0x1840 [bonding]
+>>>     [<ffffffffb6ada6b0>] do_set_master+0x90/0xb0
+>>>     [<ffffffffb6adc5f4>] do_setlink+0x514/0x11f0
+>>>     [<ffffffffb6ae4507>] __rtnl_newlink+0x4e7/0xa10
+>>>     [<ffffffffb6ae4a8c>] rtnl_newlink+0x4c/0x70
+>>>     [<ffffffffb6adf334>] rtnetlink_rcv_msg+0x184/0x5d0
+>>>     [<ffffffffb6b6ad1e>] netlink_rcv_skb+0x5e/0x110
+>>>     [<ffffffffb6ada0e9>] rtnetlink_rcv+0x19/0x20
+>>
+>> VLAN ID 0 is automatically added by the 8021q driver when a net device
+>> is opened. In this case it's a device being enslaved to a bond. I
+>> believe the issue was exposed by the new bond test that was added in
+>> commit 222c94ec0ad4 ("selftests: bonding: add tests for ether type
+>> changes") as part of v6.3-rc3.
+>>
+>> The VLAN is supposed to be removed by the 8021q driver when a net device
+>> is closed and the bond driver indeed calls dev_close() when a slave is
+>> removed. However, this function is a NOP when 'IFF_UP' is not set.
+>> Unfortunately, when a bond changes its type to Ethernet this flag is
+>> incorrectly cleared in bond_ether_setup(), causing this VLAN to linger.
+>> As far as I can tell, it's not a new issue.
+>>
+>> Temporary fix is [1]. Please test it although we might end up with a
+>> different fix (needs more thinking and it's already late here).
+> 
+> This fix worked.
+> 
+> In case you submit a formal temporary patch, please add
+> 
+> Tested-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+> 
+> at your convenience.
+> 
+> The issue doesn't seem exploitable without proper privileges, but it is a nice fix
+> nevertheless.
+> 
+>> Reproduced using [2]. You can see in the before/after output how the
+>> flag is cleared/retained [3].
+>>
+>> [1]
+>> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>> index 236e5219c811..50dc068dc259 100644
+>> --- a/drivers/net/bonding/bond_main.c
+>> +++ b/drivers/net/bonding/bond_main.c
+>> @@ -1777,14 +1777,15 @@ void bond_lower_state_changed(struct slave *slave)
+>>  
+>>  /* The bonding driver uses ether_setup() to convert a master bond device
+>>   * to ARPHRD_ETHER, that resets the target netdevice's flags so we always
+>> - * have to restore the IFF_MASTER flag, and only restore IFF_SLAVE if it was set
+>> + * have to restore the IFF_MASTER flag, and only restore IFF_SLAVE and IFF_UP
+>> + * if they were set
+>>   */
+>>  static void bond_ether_setup(struct net_device *bond_dev)
+>>  {
+>> -	unsigned int slave_flag = bond_dev->flags & IFF_SLAVE;
+>> +	unsigned int flags = bond_dev->flags & (IFF_SLAVE | IFF_UP);
+>>  
+>>  	ether_setup(bond_dev);
+>> -	bond_dev->flags |= IFF_MASTER | slave_flag;
+>> +	bond_dev->flags |= IFF_MASTER | flags;
+>>  	bond_dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+>>  }
+>>  
+>> [2]
+>> #!/bin/bash
+>>
+>> ip link add name t-nlmon type nlmon
+>> ip link add name t-dummy type dummy
+>> ip link add name t-bond type bond mode active-backup
+>>
+>> ip link set dev t-bond up
+>> ip link set dev t-nlmon master t-bond
+>> ip link set dev t-nlmon nomaster
+>> ip link show dev t-bond
+>> ip link set dev t-dummy master t-bond
+>> ip link show dev t-bond
+>>
+>> ip link del dev t-bond
+>> ip link del dev t-dummy
+>> ip link del dev t-nlmon
+>>
+>> [3]
+>> Before:
+>>
+>> 12: t-bond: <NO-CARRIER,BROADCAST,MULTICAST,MASTER,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>     link/netlink
+>> 12: t-bond: <BROADCAST,MULTICAST,MASTER,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+>>     link/ether ce:b2:31:0a:53:83 brd ff:ff:ff:ff:ff:ff
+>>
+>> After:
+>>
+>> 12: t-bond: <NO-CARRIER,BROADCAST,MULTICAST,MASTER,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>     link/netlink
+>> 12: t-bond: <BROADCAST,MULTICAST,MASTER,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+>>     link/ether 5a:18:e7:85:11:73 brd ff:ff:ff:ff:ff:ff
+> 
+> Thank you once again for your patch and your quick response!
+> 
+> Please consider Cc:-ing me for testing the official patch in the original environment.
+> 
+> (Though it is a known HW, there might be BIOS update and fw issues.)
 
-You are right, that's a pretty big change in semantics. I take it
-back, let's keep bpf_dynptr_read() as is. As it is currently, it
-matches bpf_probe_read_{kernel,user} behavior and return semantics, so
-it's good to keep all that consistent.
+Hi, Ido,
 
-But I think that's ok, because your use case is solvable once we land
-Joanne's bpf_dynptr_get_size() helper from her latest dynptr patch
-set. Just to test, here's what I tried, and it works, so I think it
-will also for for you with bpf_dynptr_get_size() to get a minimum of
-your fixed buffer size and actual dynptr content size:
+I've ran "make kselftest" with vanilla torvalds tree 6.3-rc5 + your patch.
 
-$ git diff
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c
-b/tools/testing/selftests/bpf/progs/dynptr_success.c
-index b2fa6c47ecc0..4e0172156cc9 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_success.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-@@ -37,7 +37,7 @@ int test_read_write(void *ctx)
-        char write_data[64] =3D "hello there, world!!";
-        char read_data[64] =3D {};
-        struct bpf_dynptr ptr;
--       int i;
-+       int n, i;
+It failed two lines after "enslaved device client - ns-A IP" which passed OK.
 
-        if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
-                return 0;
-@@ -46,9 +46,15 @@ int test_read_write(void *ctx)
+Is this hang for 5 hours in selftests: net: fcnal-test.sh test, at the line
+(please see to the end):
 
-        /* Write data into the dynptr */
-        err =3D bpf_dynptr_write(&ptr, 0, write_data, sizeof(write_data), 0=
-);
-+       if (err)
-+               goto cleanup;
-+
-+       n =3D bpf_get_prandom_u32();
-+       if (n >=3D sizeof(read_data))
-+               n =3D sizeof(read_data);
+# ###########################################################################
+# IPv4 address binds
+# ###########################################################################
+# 
+# 
+# #################################################################
+# No VRF
+# 
+# SYSCTL: net.ipv4.ping_group_range=0 2147483647
+# 
+# TEST: Raw socket bind to local address - ns-A IP                              [ OK ]
+# TEST: Raw socket bind to local address after device bind - ns-A IP            [ OK ]
+# TEST: Raw socket bind to local address - ns-A loopback IP                     [ OK ]
+# TEST: Raw socket bind to local address after device bind - ns-A loopback IP   [ OK ]
+# TEST: Raw socket bind to nonlocal address - nonlocal IP                       [ OK ]
+# TEST: TCP socket bind to nonlocal address - nonlocal IP                       [ OK ]
+# TEST: ICMP socket bind to nonlocal address - nonlocal IP                      [ OK ]
+# TEST: ICMP socket bind to broadcast address - broadcast                       [ OK ]
+# TEST: ICMP socket bind to multicast address - multicast                       [ OK ]
+# TEST: TCP socket bind to local address - ns-A IP                              [ OK ]
+# TEST: TCP socket bind to local address after device bind - ns-A IP            [ OK ]
+# 
+# #################################################################
+# With VRF
+# 
+# SYSCTL: net.ipv4.ping_group_range=0 2147483647
+# 
+# TEST: Raw socket bind to local address - ns-A IP                              [ OK ]
+# TEST: Raw socket bind to local address after device bind - ns-A IP            [ OK ]
+# TEST: Raw socket bind to local address after VRF bind - ns-A IP               [ OK ]
+# TEST: Raw socket bind to local address - VRF IP                               [ OK ]
+# TEST: Raw socket bind to local address after device bind - VRF IP             [ OK ]
+# TEST: Raw socket bind to local address after VRF bind - VRF IP                [ OK ]
+# TEST: Raw socket bind to out of scope address after VRF bind - ns-A loopback IP  [ OK ]
+# TEST: Raw socket bind to nonlocal address after VRF bind - nonlocal IP        [ OK ]
+# TEST: TCP socket bind to nonlocal address after VRF bind - nonlocal IP        [ OK ]
+# TEST: ICMP socket bind to nonlocal address after VRF bind - nonlocal IP       [ OK ]
+# TEST: ICMP socket bind to broadcast address after VRF bind - broadcast        [ OK ]
+# TEST: ICMP socket bind to multicast address after VRF bind - multicast        [ OK ]
+# TEST: TCP socket bind to local address - ns-A IP                              [ OK ]
+# TEST: TCP socket bind to local address after device bind - ns-A IP            [ OK ]
+# TEST: TCP socket bind to local address - VRF IP                               [ OK ]
+# TEST: TCP socket bind to local address after device bind - VRF IP             [ OK ]
+# TEST: TCP socket bind to invalid local address for VRF - ns-A loopback IP     [ OK ]
+# TEST: TCP socket bind to invalid local address for device bind - ns-A loopback IP  [ OK ]
+# 
+# ###########################################################################
+# Run time tests - ipv4
+# ###########################################################################
+# 
+# TEST: Device delete with active traffic - ping in - ns-A IP                   [ OK ]
+# TEST: Device delete with active traffic - ping in - VRF IP                    [ OK ]
+# TEST: Device delete with active traffic - ping out - ns-B IP                  [ OK ]
+# TEST: TCP active socket, global server - ns-A IP                              [ OK ]
+# TEST: TCP active socket, global server - VRF IP                               [ OK ]
+# TEST: TCP active socket, VRF server - ns-A IP                                 [ OK ]
+# TEST: TCP active socket, VRF server - VRF IP                                  [ OK ]
+# TEST: TCP active socket, enslaved device server - ns-A IP                     [ OK ]
+# TEST: TCP active socket, VRF client - ns-A IP                                 [ OK ]
+# TEST: TCP active socket, enslaved device client - ns-A IP                     [ OK ]
+# TEST: TCP active socket, global server, VRF client, local - ns-A IP           [ OK ]
+# TEST: TCP active socket, global server, VRF client, local - VRF IP            [ OK ]
+# TEST: TCP active socket, VRF server and client, local - ns-A IP               [ OK ]
+# TEST: TCP active socket, VRF server and client, local - VRF IP                [ OK ]
+# TEST: TCP active socket, global server, enslaved device client, local - ns-A IP  [ OK ]
+# TEST: TCP active socket, VRF server, enslaved device client, local - ns-A IP  [ OK ]
+# TEST: TCP active socket, enslaved device server and client, local - ns-A IP   [ OK ]
+# TEST: TCP passive socket, global server - ns-A IP                             [ OK ]
+# TEST: TCP passive socket, global server - VRF IP                              [ OK ]
+# TEST: TCP passive socket, VRF server - ns-A IP                                [ OK ]
+# TEST: TCP passive socket, VRF server - VRF IP                                 [ OK ]
+# TEST: TCP passive socket, enslaved device server - ns-A IP                    [ OK ]
+# TEST: TCP passive socket, VRF client - ns-A IP                                [ OK ]
+# TEST: TCP passive socket, enslaved device client - ns-A IP                    [ OK ]
+# TEST: TCP passive socket, global server, VRF client, local - ns-A IP          [ OK ]
 
-        /* Read the data that was written into the dynptr */
--       err =3D err ?: bpf_dynptr_read(read_data, sizeof(read_data), &ptr, =
-0, 0);
-+       err =3D bpf_dynptr_read(read_data, n, &ptr, 0, 0);
+Hope this helps.
 
-        /* Ensure the data we read matches the data we wrote */
-        for (i =3D 0; i < sizeof(read_data); i++) {
-@@ -58,6 +64,7 @@ int test_read_write(void *ctx)
-                }
-        }
+I also have a iwlwifi DEADLOCK and I don't know if these should be reported independently.
+(I don't think it is related to the patch.)
 
-+cleanup:
-        bpf_ringbuf_discard_dynptr(&ptr, 0);
-        return 0;
- }
+The iwlwifi team probably has Easter Monday, so there is no rush whatsoever.
 
+I may try to rebuild w/o the patch and re-run the tests, but now I need to do something
+for my day job.
 
-> I also noticed that the various dynpointer offset/length checks don't
-> seem to account for both the dynpointer offset and the read/write etc
-> offset. All of the bounds checking there could use another pass.
+No need to thank, this is what kernel testers are for ;-)
 
-If there are bugs, then yeah, let's definitely fix all of them. I
-think offset problems are not noticeable right now, because we haven't
-yet added the bpf_dynptr_advance() API, so currently offset is always
-zero. So nothing should be broken right now, but please send fixes if
-you've spotted issues.
+Best regards,
+Mirsad
 
->
-> > >
-> > > > At the moment I'm using bpf_dynptr_slice and declaring an empty and
-> > > > unused buffer. I'm then hitting an issue with bpf_strncmp not
-> > > > expecting mem that's tagged as being associated with a dynptr. I'm
-> > > > currently working around that by adjusting check_reg_type to be les=
-s
-> > > > picky, stripping away DYNPTR_TYPE_LOCAL if we're looking at an
-> > > > ARG_PTR_TO_MEM. I suspect that would also be the case for other dyn=
-ptr
-> > > > types.
-> >
-> > So this seems unintended (or there is some unintentional misuse of
-> > memory vs dynptr itself), we might be missing something in how we
-> > handle arguments right now. It would be nice if you can send a patch
-> > with a small selftest demonstrating this (and maybe a fix :) ).
-> >
->
-> Done :) Though not sure if the selftests I added are sufficient.
-> https://lore.kernel.org/bpf/20230406004018.1439952-1-drosen@google.com/
+-- 
+Mirsad Goran Todorovac
+Sistem inženjer
+Grafički fakultet | Akademija likovnih umjetnosti
+Sveučilište u Zagrebu
+ 
+System engineer
+Faculty of Graphic Arts | Academy of Fine Arts
+University of Zagreb, Republic of Croatia
+The European Union
 
-Yep, thanks! Already reviewed, let's iterate on respective patch set.
+"I see something approaching fast ... Will it be friends with me?"
 
->
-> >
-> > We had previous discussions about whether to treat read-only as a
-> > runtime-only or statically known attribute. There were pros and cons,
-> > I don't remember what we ended up deciding. We do some custom handling
-> > for some SKB programs, but it would be good to handle this
-> > universally, yep.
-> >
->
-> I think it's currently not tracked, although the read only tag was
-> being used for the dynptr itself. Almost tricked me there. In that
-> case it'd probably be easier to add dynptr_data_ro than to add that
-> information everywhere.
->
-
-Not sure how hard it is to add static tracking of r/o vs r/w, but a
-separate helper for read-only data probably makes sense anyways.
-
-> >
-> > +1. I feel like we are just missing a few helpers to help extract
-> > and/or compare variable-sized strings (like bpf_dynptr_strncmp
-> > mentioned earlier) for all this to work well. But a concrete use case
-> > would allow us to design a coherent set of APIs to help with this.
->
-> Should be able to get that patch set together soon. I'm reworking the
-> test code with the verifier changes I mentioned above, and then will
-> be doing a round of cleanup to make it a bit more possible to see
-> what's actually in use now.
-
-Nice.
