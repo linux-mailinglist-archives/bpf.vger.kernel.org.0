@@ -2,159 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D979E6DC90A
-	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 18:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50766DC93B
+	for <lists+bpf@lfdr.de>; Mon, 10 Apr 2023 18:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjDJQF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Apr 2023 12:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S229963AbjDJQZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Apr 2023 12:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbjDJQFZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Apr 2023 12:05:25 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C580A7;
-        Mon, 10 Apr 2023 09:05:24 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id f26so7419448ejb.1;
-        Mon, 10 Apr 2023 09:05:24 -0700 (PDT)
+        with ESMTP id S229692AbjDJQZU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Apr 2023 12:25:20 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F6E171E
+        for <bpf@vger.kernel.org>; Mon, 10 Apr 2023 09:25:17 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-54ee3b24196so58160507b3.12
+        for <bpf@vger.kernel.org>; Mon, 10 Apr 2023 09:25:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1681142723; x=1683734723;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GVjLfNtBrKxtCcfxvBYkIZ+9NrsFrjbA5yaTUpDWRqk=;
-        b=dNNEZ+J9y8fxGs583ZvtpMBFduZpF+gGXd85xKDJxb+cu8M0rETW02Opeu9Elvr0Q6
-         oH8W82+ioklpFCgZs8zhTOwIi8DiC101XQOtSlVAIt3j2fW9V5udYVwGsimO3tTEIqff
-         50vnLioJYOO59Y0ZqEis07iQ9m6tnQqy6NTB8GJoDCz0R0CoL/FB06F0yLaOq44Um1gl
-         DcBt78mm4lxvA5AHylFXAPtzuOkwpzJptNC/br1JM5iJmQ2uqUpWSLmI8o4VGHoi4b36
-         O8CSEQtYsE3tfZKW9LclU/OBjQzjzJhJ2sdx0UE8Oiq5bQ7yYou0jl+vaNBxCAtMSji7
-         Gzow==
+        d=google.com; s=20210112; t=1681143917;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zJZt4cv250ETxOLYWhNXH5O28WLGu+lq/P9MQwXS1vc=;
+        b=Q38PWrtfrWbIykKvRvvBdbu2xEQ65qR53Fa294q6h9fTzpEgUOChCN6gZzA6J/2Jrr
+         oqqSni32vEWVPYCbg0h6jm4fUOjfjFak24TvaaKhhhzysF17g2T81sIMcNE/NB6iEZfy
+         +JAuyYt2ZIkrpatZUEADvUNtPERwhA5h4EJXJKEds3rQ3lUQshZ+PSpMj9wQN087+Ou9
+         FPqzzKvhqvM3NpQ0KRI+2RbokVotgwcuON+I3/gS46uHJ5RfnNczmlNKsnPDqRFen6K/
+         toC13G+9g8xUr2c5Iins+M2UhJTrM19tEpB1/wsJwf04OBfN3YoQtNyJepOI8VsojJVK
+         Mzyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681142723; x=1683734723;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GVjLfNtBrKxtCcfxvBYkIZ+9NrsFrjbA5yaTUpDWRqk=;
-        b=h2rut+nnJdlSGft/uZpFuPMFQ1NNzgAObGYhrhkzTL/LtIN2XRQCjEW5ZdP/ozRBM0
-         VqWri53ve9VhEmis0TmalBvV+OHN8s2vCxT49wwGqoYFbUKYgIKeHpMdbSAa0nn9te15
-         HatBC8XtTmVdRAP2zNLqW0VOt+xHOVHx5KLQYeRp+45vIeY2S7OMRSnPV+u2PjAYE1+b
-         xuXEVHWS6Uq4zDnuKfvBtAKO/RT0XXaWV9hPaNo/7kvidSarJOCYOks0iAGy/Z2vWqwH
-         2EjJNue7pRH0bw9ZJ6UiSQ2n2/3KKjRq3Am7lILttj/rwxLQlyzeidJAYDVMxtyKIgdr
-         VRTA==
-X-Gm-Message-State: AAQBX9fNqYbmwfB2mLlyI6RlKwzIZ6q99qLZ9yqF7uwCe5nBIufo+JAM
-        2q18hoJ21h6CIWVDGFhBebY=
-X-Google-Smtp-Source: AKy350ZvJSA1nnzosjr5bhvvnr+1442VxjKvMzCAiyfLNjv0iIKyccNtq0yNenUUNRmcYEQFfkjimg==
-X-Received: by 2002:a17:907:78ce:b0:94a:7d5c:2fab with SMTP id kv14-20020a17090778ce00b0094a7d5c2fabmr4064919ejc.72.1681142722963;
-        Mon, 10 Apr 2023 09:05:22 -0700 (PDT)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id rn5-20020a170906d92500b0094d69608f5fsm281387ejb.97.2023.04.10.09.05.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Apr 2023 09:05:22 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 10 Apr 2023 17:05:20 +0100
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     ast@kernel.org, rongtao@cestc.cn,
+        d=1e100.net; s=20210112; t=1681143917;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zJZt4cv250ETxOLYWhNXH5O28WLGu+lq/P9MQwXS1vc=;
+        b=UTywgIOIN4Ala/xcuMhGyaIpSJRgL73QTr/JTdEya3PF5n2UvDz5Jxm++sfKWYLpDX
+         RGkxQ1vcBJ7tgjIDJw3k192Ra/WufGtooen0FrWgfn09z25PReKJ4FHSWGeJomCDU2Sc
+         SxkISEa2R0RP9T/PcBAJxADQxryDuWx4GotEu6IwNWfqyCq43GGQg1IIum4xYaO39gyX
+         y8VMIxT99lxiCjt649OhYG8yoXvZ9Tq6rs/Kc9C4BbwYbFCN9rCPOuiOg9yU83U3GZO2
+         jmPVreSpZUJDjVnxWCGhND/WYBNfsiYxIslrRLEokgbYIgxpQLndJI+lJCxKYL4Sc43t
+         6rHQ==
+X-Gm-Message-State: AAQBX9dPs9mcBvZ6iAVYrSDTLb5xnDd9CdmweRHEX6bhYJCgSujHnPRl
+        8Q3QF1K7er95/i8+SB++1toY96s=
+X-Google-Smtp-Source: AKy350Yza28bnGsHoOQVOcw77cb7JSctAnu5UcsxyRZ6i3OPX41XxJItWn69Z01NRHFpS7EVaLNUCGM=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a25:cb52:0:b0:a02:a3a6:78fa with SMTP id
+ b79-20020a25cb52000000b00a02a3a678famr5422814ybg.12.1681143917218; Mon, 10
+ Apr 2023 09:25:17 -0700 (PDT)
+Date:   Mon, 10 Apr 2023 09:25:15 -0700
+In-Reply-To: <20230410100939.331833-4-yoong.siang.song@intel.com>
+Mime-Version: 1.0
+References: <20230410100939.331833-1-yoong.siang.song@intel.com> <20230410100939.331833-4-yoong.siang.song@intel.com>
+Message-ID: <ZDQ4a9UIVysA6hgd@google.com>
+Subject: Re: [PATCH net-next 3/4] net: stmmac: add Rx HWTS metadata to XDP
+ receive pkt
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Song Yoong Siang <yoong.siang.song@intel.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>, Nick Terrell <terrelln@fb.com>,
-        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
-        <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: trace_helpers.c: Fix segfault
-Message-ID: <ZDQzwP3K8WOImluJ@krava>
-References: <tencent_0D62BF818D106C96C26594CAC76BF3281306@qq.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_0D62BF818D106C96C26594CAC76BF3281306@qq.com>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 09, 2023 at 04:15:25PM +0800, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
+On 04/10, Song Yoong Siang wrote:
+> Add receive hardware timestamp metadata support via kfunc to XDP receive
+> packets.
 > 
-> When the number of symbols is greater than MAX_SYMS (300000), the access
-> array struct ksym syms[MAX_SYMS] goes out of bounds, which will result in
-> a segfault.
-> 
-> Resolve this issue by judging the maximum number and exiting the loop, and
-> increasing the default size appropriately. (6.2.9 = 329839 below)
-> 
->     $ cat /proc/kallsyms | wc -l
->     329839
-> 
->     GDB debugging:
->     $ cd linux/samples/bpf
->     $ sudo gdb ./sampleip
->     ...
->     (gdb) r
->     ...
->     Program received signal SIGSEGV, Segmentation fault.
->     0x00007ffff7e2debf in malloc () from /lib64/libc.so.6
->     Missing separate debuginfos, use: dnf debuginfo-install
->     elfutils-libelf-0.189-1.fc37.x86_64 glibc-2.36-9.fc37.x86_64
->     libzstd-1.5.4-1.fc37.x86_64 zlib-1.2.12-5.fc37.x86_64
->     (gdb) bt
->     #0  0x00007ffff7e2debf in malloc () from /lib64/libc.so.6
->     #1  0x00007ffff7e33f8e in strdup () from /lib64/libc.so.6
->     #2  0x0000000000403fb0 in load_kallsyms_refresh() from trace_helpers.c
->     #3  0x00000000004038b2 in main ()
-> 
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-
-I had to apply by hand, there was some fuzz:
-
-  patching file tools/testing/selftests/bpf/trace_helpers.c
-  Hunk #1 succeeded at 18 with fuzz 2 (offset 4 lines).
-  Hunk #2 succeeded at 48 (offset 4 lines).
-
-but other than that looks good
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
 > ---
->  tools/testing/selftests/bpf/trace_helpers.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  1 +
+>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 24 +++++++++++++++++--
+>  2 files changed, 23 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-> index 09a16a77bae4..a9d589c560d2 100644
-> --- a/tools/testing/selftests/bpf/trace_helpers.c
-> +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> @@ -14,7 +14,7 @@
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> index ac8ccf851708..760445275da8 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> @@ -94,6 +94,7 @@ struct stmmac_rx_buffer {
 >  
->  #define DEBUGFS "/sys/kernel/debug/tracing/"
+>  struct stmmac_xdp_buff {
+>  	struct xdp_buff xdp;
+> +	ktime_t rx_hwts;
+>  };
 >  
-> -#define MAX_SYMS 300000
-> +#define MAX_SYMS 400000
->  static struct ksym syms[MAX_SYMS];
->  static int sym_cnt;
+>  struct stmmac_rx_queue {
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index f7bbdf04d20c..ca183fbfde85 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -5307,6 +5307,8 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+>  			}
+>  		}
 >  
-> @@ -44,7 +44,8 @@ int load_kallsyms_refresh(void)
->  			continue;
->  		syms[i].addr = (long) addr;
->  		syms[i].name = strdup(func);
-> -		i++;
-> +		if (++i >= MAX_SYMS)
-> +			break;
+
+[..]
+
+> +		stmmac_get_rx_hwtstamp(priv, p, np, &ctx.rx_hwts);
+
+Do we want to pay this cost for every packet?
+
+The preferred alternative is to store enough state in the
+stmmac_xdp_buff so we can get to this data from stmmac_xdp_rx_timestamp.
+
+I haven't read this code, but tentatively:
+- move priv, p, np into stmmac_xdp_buff, assign them here instead of
+  calling stmmac_get_rx_hwtstamp
+- call stmmac_get_rx_hwtstamp from stmmac_xdp_rx_timestamp with the
+  stored priv, p, np
+
+That would ensure that we won't waste the cycles pulling out the rx
+timestamp for every packet if the higher levels / users don't care.
+
+Would something like this work?
+
+> +
+>  		if (!skb) {
+>  			unsigned int pre_len, sync_len;
+>  
+> @@ -5315,7 +5317,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+>  
+>  			xdp_init_buff(&ctx.xdp, buf_sz, &rx_q->xdp_rxq);
+>  			xdp_prepare_buff(&ctx.xdp, page_address(buf->page),
+> -					 buf->page_offset, buf1_len, false);
+> +					 buf->page_offset, buf1_len, true);
+>  
+>  			pre_len = ctx.xdp.data_end - ctx.xdp.data_hard_start -
+>  				  buf->page_offset;
+> @@ -5411,7 +5413,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+>  
+>  		shhwtstamp = skb_hwtstamps(skb);
+>  		memset(shhwtstamp, 0, sizeof(struct skb_shared_hwtstamps));
+> -		stmmac_get_rx_hwtstamp(priv, p, np, &shhwtstamp->hwtstamp);
+> +		shhwtstamp->hwtstamp = ctx.rx_hwts;
+>  
+>  		stmmac_rx_vlan(priv->dev, skb);
+>  		skb->protocol = eth_type_trans(skb, priv->dev);
+> @@ -7071,6 +7073,22 @@ void stmmac_fpe_handshake(struct stmmac_priv *priv, bool enable)
 >  	}
->  	fclose(f);
->  	sym_cnt = i;
+>  }
+>  
+> +static int stmmac_xdp_rx_timestamp(const struct xdp_md *_ctx, u64 *timestamp)
+> +{
+> +	const struct stmmac_xdp_buff *ctx = (void *)_ctx;
+> +
+> +	if (ctx->rx_hwts) {
+> +		*timestamp = ctx->rx_hwts;
+> +		return 0;
+> +	}
+> +
+> +	return -ENODATA;
+> +}
+> +
+> +const struct xdp_metadata_ops stmmac_xdp_metadata_ops = {
+> +	.xmo_rx_timestamp		= stmmac_xdp_rx_timestamp,
+> +};
+> +
+>  /**
+>   * stmmac_dvr_probe
+>   * @device: device pointer
+> @@ -7178,6 +7196,8 @@ int stmmac_dvr_probe(struct device *device,
+>  
+>  	ndev->netdev_ops = &stmmac_netdev_ops;
+>  
+> +	ndev->xdp_metadata_ops = &stmmac_xdp_metadata_ops;
+> +
+>  	ndev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
+>  			    NETIF_F_RXCSUM;
+>  	ndev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
 > -- 
-> 2.39.2
+> 2.34.1
 > 
