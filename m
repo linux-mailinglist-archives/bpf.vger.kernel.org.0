@@ -2,149 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B96066DE0EB
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 18:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3716DE129
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 18:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbjDKQZP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 12:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+        id S229521AbjDKQnL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 12:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjDKQZN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 12:25:13 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985544212;
-        Tue, 11 Apr 2023 09:25:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681230308; x=1712766308;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=n/L0Jy4AhmVgEjZFX+juVF0IeJDhEVPTzsUKWBulBUk=;
-  b=jYVahZmInnqfb+agSrm3g9WrIybVt/xPdn/8g8QRr2pP0fp2GCDR2yYO
-   BTATgWCWve5qEIi3fOfYfczFAeHj8DvSovveOjZD9xuBBOMmYHHNn9eHm
-   +jt5/G575lkB8FEXqBPWOn63TmAimkxwrD+76iMFUgYnevPGvcW/MKgW1
-   cmrFTIUcknnjYTZHhecxtnoQ8pKTYx+fVLh6Z7ON7fDXlizoD7jlFoqhr
-   kd93Im13qINyKWx0KFo59mCDcM1m7H2XX5tnMM/dj3LO8ycIeWai3vgD+
-   JHVj+aGwL5OsDbSZ8qnp09CFz8fPDhQKL5fYAq2puTA3UE9tGFC4w+TSy
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10677"; a="327769981"
-X-IronPort-AV: E=Sophos;i="5.98,336,1673942400"; 
-   d="scan'208";a="327769981"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2023 09:25:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10677"; a="721246767"
-X-IronPort-AV: E=Sophos;i="5.98,336,1673942400"; 
-   d="scan'208";a="721246767"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga001.jf.intel.com with ESMTP; 11 Apr 2023 09:25:07 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Tue, 11 Apr 2023 09:25:07 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Tue, 11 Apr 2023 09:25:07 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Tue, 11 Apr 2023 09:25:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PEWfKL0J9yLFPr38jtx0O5VucOdFWyd8Cyq7BHupi1wEpybsaUqq2szIqiWXAHz87oOXMcknz3K1gVlhea+4VDXNASfjIYX1WY4hglDBKnEuCX6hqYSdrxqHr6fbzFkj8iAsUv0Qa4nLiv1D9THfIVgYrWFLnZLm4znE5ytwI9CCq0CHvfsiF7O+Zy2XzBXdZ39/gHGv3G6Sg1LTvb0SuK4uB+fgpaKs6znszCsFem9rEMPTX2ydp02TDfVztWIJmfDgDNsbsbdyQzEJj96rioDmH14sUag1jFVzHetA6SESLR3YYrM5W9SH/Ib7uBsOpUa3s+FUoP0/tJ0txltFkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TFDltTv99Sz3XFEdmzs9awb/g4ySnnJPqd0Cbqx+Sr8=;
- b=jKXeFIydX/mG6LekhA/F1yAhFWmhTPUR2stgetJ/URV0W6GOZsfH6VkNwmCbPH7234JyrOjk18fqBzVRhH//RMqk+UgK68FaOyQoGzHIVB6Haul3TKyRdO9mW1aLsenhp7W7twwYek1Ah1MAevKZLjc9z5rZiPE0QWHO+qJGx9PY9Npm43nQUgU5/T62ghtsRbmYu4jkWQC9DrsEPy2WFmEkVYV9GTo9MEAGE4Ppl5ZadP3utN37vUwSLI5WzdQAv/k6rNcAh7lKmglsjH2ptxm6T7VoakBmTU/D0bbEGgO6dQhVNry5auO2GnVLsscyqdsJloTxtcDoC8FktaYMBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- PH8PR11MB7968.namprd11.prod.outlook.com (2603:10b6:510:25f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6277.38; Tue, 11 Apr
- 2023 16:25:03 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::9e4f:80cc:e0aa:6809]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::9e4f:80cc:e0aa:6809%3]) with mapi id 15.20.6277.031; Tue, 11 Apr 2023
- 16:25:03 +0000
-Date:   Tue, 11 Apr 2023 18:24:49 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <netdev@vger.kernel.org>,
-        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-        <magnus.karlsson@intel.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <bpf@vger.kernel.org>,
-        Piotr Raczynski <piotr.raczynski@intel.com>,
-        Andrii Staikov <andrii.staikov@intel.com>,
-        "Kamil Maziarz" <kamil.maziarz@intel.com>,
-        George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
-Subject: Re: [PATCH net 1/1] i40e: Fix crash when rebuild fails in
- i40e_xdp_setup
-Message-ID: <ZDWJ0QklJ+bwmY0/@boxer>
-References: <20230407210918.3046293-1-anthony.l.nguyen@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230407210918.3046293-1-anthony.l.nguyen@intel.com>
-X-ClientProxiedBy: FR3P281CA0153.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a2::11) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+        with ESMTP id S229660AbjDKQnK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 12:43:10 -0400
+Received: from sonic310-30.consmr.mail.ne1.yahoo.com (sonic310-30.consmr.mail.ne1.yahoo.com [66.163.186.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946E6199C
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 09:43:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1681231386; bh=kbuXP04/d4J/zBFq0sBCEVloCxLuyRQ6S4W2lvhk08Q=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=XUC+Tw12UuxdrOm5IZzAsF0iK4GJtUGCj39gBNERGOG85X5/mA2XtSaazKxlD1NPtfXzsj8ATMQhryEPH5hvRzptf92BUWoPbwFx1W3ujZ98Q/lQ1EhtlB9glOWUD7sY18YkncFCG9KpUz88bRb8u+LKS4EohL29coKA1rCXmLU+WHrKB/JFKWxChxlyScweQkmwV1LLEkcfWRARTMyC/3iTfxjukaYP4dBuvhhDVFxwb7VOcxKnwwKIaB7eT5BcCH+05aXJXejJJ0SJo5gy03q151BN4sot415xO6BCb4uCHPIJDiiLIeMpUpcGqHfhprWQ6WjUGI/xFcVOZ2vyVA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1681231386; bh=pxmLraZoweNJqwnhja7+1CJL1iL0dqvd27PaPEyV2FE=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=O1xgW+kymxFGs1Jdol2N1TSy8bOYsU71i3HX5OEHEM0CqwFka5tRff8pYgJOLH/aMt7sb8h7KMGY+KlYRjQ8k6FVmaVPthJXI6oyODtOCzvALxXhfEQ+xofqhlDnPHlqIz0U6VffMEFm8yHvutwP24Hvi/06cKdLkulwpp79eOZUoAFh417CxFWHbjqq8cWNsOMN1C5kJ2OoyNIKHbbJT6XIvuThc0PbaAaulLGGXI4dL1ZCgPEupFU/fqE3H60c8oU4x0H1+zpsJRkpdQucOPPYDiwujs3sZGmH++pYVJheMvdR/JJfzyGHrplWhpKowdlPzL31OeS36zpgO0f9Lg==
+X-YMail-OSG: MQ885NoVM1mxebdkX9ARxQfN_PRBiYbQY7GKOz8bdf9fejqh.xBhuX6JVzs7Amf
+ ZTZ8lwcxqSPIX2Nagi6Kq630_TAImvS2h9LZsONcg8ZlqSrjIg9RLvz_C533rpNUL5IQqc1ygVU8
+ unUXWdsRpfcKxlSGQFBfaRXR1u5XXVcY9DTyC1cDVsP1fPChp7XKlZotVym0ehkNWVW1lqjA.8yS
+ FbFBv9LSG9igJn29Y3p8OMjNZOv97cZxDWJymWhiJEoJL5YE3pPwPM84TRfgF3GqWzmpLNEEBQh9
+ _l4RtqhOSYqWhD5_QjSYsMhxoAPf9HnLJTYU6_H4sjS861JCmKYz1BVe5Ia4lzRSiStzymJ5on4K
+ sVOhEEPlKzOh_kIVuA8rEX.UiOnF2vdO1QdmJOamIUmESWhGuBEbwCOrR.CMPZDA301Ss.Xx9FOx
+ _rmYXwcdPnxCveTwUeBw78dMu7HABfBvIJzJICDh4GD7PhDauc4IcX5cVQmofj9EUYr4MgzQNFK7
+ Q1TxYDWbuf_ygNxg9oAZj3_yE9rFCBdAHfJ7gQP7WyBwNNF.VAffFa76P0.RYsW8HXqRsGcxdLxz
+ 3M_EQAiU.nL2RSwP7Z8bbU8JDUecQPQNxYYi6jBpNEeY1QwYsdBtSDxPHAmZl5H1ByNVN7gj0kQL
+ f4nrIOfKEyG1raDfOb2Kd021Gmi_H3hVQWrgxNmzNTO90DlrME.ou0.8CJLJPav_GtxXkIV4BRYD
+ gDipSU6OK5th9nFx_TyzosXhMBrtYNTJS4B1NXkqpknwhobhLl_Hvy8GRhOqjU_Udw2.5.s.uXDc
+ SmTr8aokXIbp1LZVVA4EcmeeQIYXjI5VW2QyMGNoGMRhL0ADu.Q2Y5O9SD6DWC7uW_tecIKRFEvk
+ YBKaMpr4QPrZFQcyzxrPhZfHBdn.TYCSnxoNcOqI5Zl6zrnCM4lG9dRl7V.KeBVbWUDDCUrj84mj
+ x8hrCCiMOUjxU9FVEc8yrHPTrS1uQo1pryyDm4HF3eHwG_TwAV20zENMGrins6rl2LDKHyAghZtL
+ 3sEL7rzc9FCmpzsU9xt8dwoNPCLoc5EC_.F6wV_VCctnDfmNih67ci4F3f65xivR_LWmO24Neu31
+ og.6u7iVevtjviuvnDfXXlEyLRiTKPmfv5SDH5.ZKXRd2EEbk8350Xf2lMGrdUw3Ql4hk2rs4vyb
+ aSph67ESHrxRROWtNd85c7ql7JvQ4Zn8_jssD4HqE_E0LDYBgVNonLa.EQui3t6cJm9eJK2pyeGj
+ f3rSC8BqBicUVjvOqUSmTt2U0XlNJ.jqhKhFDmoYsXGixKJoxTXjX_rh4X3cjeW1bHVLQQjGadGS
+ Hmo2bEs4.F0XEFr7JaYktx0wznIB6RVzmygvzxqGtea94SHpKzslbDmHn.4esrThUHhN6oe2aTT8
+ tBgSm0ZmU5pjF7PMH2knR5AYpHTYXC_QXPHiGn2mnGBrRehQ.KDYHfH0tWYhxIw95PlLSUMc6sFV
+ HHq2OXni8OBUFeywlZvb8evZ60Zj0wgVoMKIRrpx_MPD7z2A70nR4L20lh_mbqQRakH0.vM6KFQL
+ 15TrxlZ17bNfJbpic4ESEug74WD9vrfsXn9AEEo7ZnxZMRcjbvPTpyJ435ZccaW.7vSyBbFDmijj
+ EX6NiSmaLmdmpbDwO7Qonqf_6W5OlL3L6QQ49EGlCvWvxGfCyai5BbuUy_c.RBzG2hAzH.7Z_4tb
+ ZVhica_wKjpVLopMAIzaNShrbBhEo6FH410u5h9movye0IE6kDHUZpSRMH4alCTCZjNR4hA1YaAr
+ xqLdiwBaxM3NTFiYVaCMHEw5DvOVAUAA3rq17Dwqhvj2H6p3.tzCa7YBXvCMgsF0gP84QVk0cPib
+ La4WPOV4Skpzrs6Ex5KcU2.7xPPJ2YihgDzpNVJQZOjMBSl9clzy6pxMr_dXRBFzA.q7r0_oswcY
+ E8H60FtP5CU61lrLSMaGQ1nQmzPOIq8JreBCRgIhcTrISYwOqCyjaZzPtZUL1Pz1AsNS49BeLSRZ
+ g1tT9Fgp4SqLjADtqwqg9EvFab3DyPuVoP0zk1F49Op.dRoVXSmIERkRHC.Itn9ColKerh86ddfG
+ kgvTirRpSktuhsjURt0G72jvWi2S9jUQofM3dPNNMO72XCdbjUiywZtCUjv5sRHyHwY9k94JdrIB
+ DE3RMDLdVORBVi1V6MlgxHyZXgSUi8YIvGt4L5JA.R6nQ7XI29gbeYhc2BRdrofdMVK8m35mCyF2
+ 8Y49ne7MtRMZxbvPc1qtFxC7WyNuRQsOwZ7CLLZ1dL9dwfMxFEQUJLhB3QdOtqXkvcgfA8c28XLn
+ SgkJkUAgz8a34deYqXSySRwKoxm11623A
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 3f153f18-f280-4344-9673-aa6e14977376
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ne1.yahoo.com with HTTP; Tue, 11 Apr 2023 16:43:06 +0000
+Received: by hermes--production-ne1-7dbd98dd99-7dkf6 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID caefbefbe2cac6bdb238356981a38ca4;
+          Tue, 11 Apr 2023 16:43:02 +0000 (UTC)
+Message-ID: <c7f38789-fe47-8289-e73a-4d07fbaf791d@schaufler-ca.com>
+Date:   Tue, 11 Apr 2023 09:42:59 -0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|PH8PR11MB7968:EE_
-X-MS-Office365-Filtering-Correlation-Id: f082c733-2204-4cdf-cf2a-08db3aa94db1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0b2fCd6ym812CVmWtoM9kOGU6v6P/+r6WuTkLMVDIvngq5O9Yql0CzJyTqy1YIy+jR221DwgRC+0ZT7oMLM+sHGQKUFOBsOyvllPlZJKyrKmPGG5P3Hfk/Ml0PwcIoCHPnf7UqIlCfr7wZPakVRHF3coau1EmpvNosP134A3ax8nb3UMVplJd3SJiKGI5V/3niVg31rV+pd174+MclIY3ssm2NrG/A6Zp4Th8WZbztKOC5tXMkzWgI7xbeyeoGQ/Ptnw6Iol+To3ZaqQ0r0HtXAb3xn2erPMfyZ8fPkvUkUZHsH0Ij7HVUR45IQoHmKiCnQMWKvIoeuXC8Wf2jFkheGpL4FsRoY6EUgBQRMaTABAzJpmhUN+AoItbJAuHrIPJsW/M58hkcVS4aC2X9K+8RLdHSMTIpk4f0Iyg6d+rfLrHExfubyO1hFNAZpsjuIguW16OYdplso6IGu6fXBMtMnHMGhmXvtEMhie8l3ZRIIXV0JvkbIamtHMeun2CDV4m3/OFCdehkyItSAfSezN0kZoIWyMEog6i0aLyD1qrjW1tLqiktmRog2zsPvMYM2Dt0kUWuILv1QfcEWc11ANXtHT54OOu8RPVFIM1ZPc32TSUG3hEYYoUqhMfj1/A0pP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(136003)(396003)(366004)(39860400002)(346002)(376002)(451199021)(6486002)(66476007)(54906003)(8676002)(66556008)(4326008)(6636002)(478600001)(66946007)(41300700001)(316002)(86362001)(83380400001)(6506007)(26005)(6512007)(9686003)(107886003)(6666004)(8936002)(2906002)(6862004)(44832011)(30864003)(33716001)(5660300002)(7416002)(38100700002)(82960400001)(186003)(309714004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?74EbXsDBcT66CqU2eSspNwl//XjW3+i0K2yAdqWh0jdlnzUUWh++Je4eaPRQ?=
- =?us-ascii?Q?xpHtCOuIatbmqEFATgGqFl2Y1nDWaJX19oOyhNHtyns37J3VC2RTsySR4AfL?=
- =?us-ascii?Q?zxwpaE4BCzCPQ3+/0KgzEZXMSPkFBzQcjSbR8rNIH2VPamt1Br1Zil1sMAZK?=
- =?us-ascii?Q?5cbqypaogw32Zuw9JkLQ+kfK+E+A/G3LAoLHjbd+ZuYxHDm9C4bDzeKPy1en?=
- =?us-ascii?Q?F3cn38tSNKUsVA581gjW/fsdj6rSNs8Fj71dDkUcuTEF+WBMZJAEvp24aFXZ?=
- =?us-ascii?Q?Zab7TlKJlpT1j68CEKQaA975AwPhah3qv/fJRDAO7DD02ME6jAHhhvqOypeB?=
- =?us-ascii?Q?nsO4OcmNgOu2leR1oIejV9fkpV5hIrOT5N/pAajuBfoXZplg2JjAgt76ySdS?=
- =?us-ascii?Q?EOmZ5+0i84XFYPJHojjHcvgCkvh1oBIJg+EJpdENat/Iupw4IYBNK6eiNcs/?=
- =?us-ascii?Q?CQ6G2ERDBcDu5ycQq7MoHILFPrENZIuQEnugs+9NoNU19Ptz9R9gb0EyMNvl?=
- =?us-ascii?Q?yVln0PcsqNJAvolruSxQdKxD0bedRiTPeDJSn+dOs9at6NOcDspYuvdDrv8L?=
- =?us-ascii?Q?GhX22nALgiMXdEBRqlzORgehfPZHxnm1OjyyOsbbWHVlZfvRH4XKL+AVcv5t?=
- =?us-ascii?Q?qLlyMHbCLj1qcqAFuhbQHo7yxAhfZLJQVW78uK/XshFdEQ2VdgJPnq563T36?=
- =?us-ascii?Q?O1a0dS4tLz1cJzNEl0yK4m/IFE4evP6VsEVTjGcJIF4pHwFPmFrJTVAs4UNU?=
- =?us-ascii?Q?cqjVnwMJSA0XQ4POgUWikIWVBlZKoGwBBh5hIZus+FiPMgBPxPDZgzrApgX9?=
- =?us-ascii?Q?1qbmGGkwib6Kau4GizfFCMGxt505KhDBTy4ND4nHT0OFhMVNmLDmML5aChos?=
- =?us-ascii?Q?1DgIztajHD0N+ZaO0zDoBjPE5CsRarx6uNyFMdG5CCLBmdSOf5OUYSIKIilc?=
- =?us-ascii?Q?ZZALa8UnfWN1xft3jTWHmwXr2exfur2CWeW9p/hPhx5sSVFtYotityAenWyw?=
- =?us-ascii?Q?u4TUfM01wI2226pzT4FQd5gowRmsrTiI5XvsApbqMqQHzlKJl5K/jS0gLlO3?=
- =?us-ascii?Q?7ov6VofA3ScAtYcnhMQg3C/VdXSmS21G5yZi3MDF8jXZ/ppZYfJWNWuYhaV3?=
- =?us-ascii?Q?QrTH/0OP785LJdmafCXSxPcSKcmYJHeuIkU1eNv214JbEtC/w6G7rX6ganAa?=
- =?us-ascii?Q?VeWCrsB6G0aUt38TmjGDe4rBtScT/BArk8igsXMiRwEl6dt5bA3xsx+0sdbe?=
- =?us-ascii?Q?NFhiTDF3KWFc3FhbMkWqa4Kc4S5P6rx8h00YRemXCPY0WUesHsvO49obYDxN?=
- =?us-ascii?Q?hItp8sFDFE5v94dTBW4qn6tCZPkHpB8T2IFkRqX5K01Gm9mgZblzEtESa8UW?=
- =?us-ascii?Q?73a+YTC1RsokN+6F5YqabvdNwLujeNT9zLEtZUlrRzyADGlvQbZkVI5NOqP2?=
- =?us-ascii?Q?c/R/6qBmod9gDmUVijSER0rGBjFQBKkC2EhT1T++XQzJwF84sRjy0KsnVe5c?=
- =?us-ascii?Q?JD8xy/4cwuW+Hn9P56nDe1PfI4DfunRnIwFUBvebl8dVk5YUQJWtJnPL+mdZ?=
- =?us-ascii?Q?bHIcMacL1m3I57wsonl3eYvuB9WfaBGC10/U5AnUZPWRmsOjG5un/rJz54Q3?=
- =?us-ascii?Q?fg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f082c733-2204-4cdf-cf2a-08db3aa94db1
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2023 16:25:03.2464
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dBbVWcp+0+Omrop5u6UYQRcXQ8mKrYypPEzyl7LhgignuavHjflbXpkSgtvsHgmn9hrfawxhB44lcqT7vzH2pCXMr3PzDDrjfZw1Nsv/gjQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7968
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH v10 2/4] security: Allow all LSMs to provide xattrs for
+ inode_init_security hook
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Mimi Zohar <zohar@linux.ibm.com>, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
+        nicolas.bouchinet@clip-os.org,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20230331123221.3273328-1-roberto.sassu@huaweicloud.com>
+ <20230331123221.3273328-3-roberto.sassu@huaweicloud.com>
+ <e65b6ea91d66b78c382acdec14003d3665fcfd3e.camel@linux.ibm.com>
+ <64d8dcae509beca4cd763acb148d2665b805ee6e.camel@huaweicloud.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <64d8dcae509beca4cd763acb148d2665b805ee6e.camel@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21365 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-2.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -152,340 +90,134 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 07, 2023 at 02:09:18PM -0700, Tony Nguyen wrote:
-> From: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-> 
-> When attaching XDP program on i40e driver there was a reset and rebuild
-> of the interface to reconfigure the queues for XDP operation.
-> If one of the steps of rebuild failed then the interface was left
-> in incorrect state that could lead to a crash. If rebuild failed while
-> getting capabilities from HW such crash occurs:
-> 
-> capability discovery failed, err I40E_ERR_ADMIN_QUEUE_TIMEOUT aq_err OK
-> BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
-> Call Trace:
-> ? i40e_reconfig_rss_queues+0x120/0x120 [i40e]
->   dev_xdp_install+0x70/0x100
->   dev_xdp_attach+0x1d7/0x530
->   dev_change_xdp_fd+0x1f4/0x230
->   do_setlink+0x45f/0xf30
->   ? irq_work_interrupt+0xa/0x20
->   ? __nla_validate_parse+0x12d/0x1a0
->   rtnl_setlink+0xb5/0x120
->   rtnetlink_rcv_msg+0x2b1/0x360
->   ? sock_has_perm+0x80/0xa0
->   ? rtnl_calcit.isra.42+0x120/0x120
->   netlink_rcv_skb+0x4c/0x120
->   netlink_unicast+0x196/0x230
->   netlink_sendmsg+0x204/0x3d0
->   sock_sendmsg+0x4c/0x50
->   __sys_sendto+0xee/0x160
->   ? handle_mm_fault+0xc1/0x1e0
->   ? syscall_trace_enter+0x1fb/0x2c0
->   ? __sys_setsockopt+0xd6/0x1d0
->   __x64_sys_sendto+0x24/0x30
->   do_syscall_64+0x5b/0x1a0
->   entry_SYSCALL_64_after_hwframe+0x65/0xca
->   RIP: 0033:0x7f3535d99781
-> 
-> Fix this by removing reset and rebuild from i40e_xdp_setup and replace it
-> by interface down, reconfigure queues and interface up. This way if any
-> step fails the interface will remain in a correct state.
-> 
-> Fixes: 0c8493d90b6b ("i40e: add XDP support for pass and drop actions")
+On 4/11/2023 12:53 AM, Roberto Sassu wrote:
+> On Tue, 2023-04-11 at 03:22 -0400, Mimi Zohar wrote:
+>> Hi Roberto,
+>>
+>> Sorry for the delay in responding...
+> Hi Mimi
+>
+> no worries!
+>
+>> The patch description reads as though support for per LSM multiple
+>> xattrs is being added in this patch, though lsm_get_xattr_slot() only
+>> ever is incremented once for each LSM.  To simplify review, it would be
+>> nice to mention that lsm_get_xattr_slot() would be called multiple
+>> times per LSM xattr.
+> Ok, I will mention it.
+>
+>> On Fri, 2023-03-31 at 14:32 +0200, Roberto Sassu wrote:
+>>> From: Roberto Sassu <roberto.sassu@huawei.com>
+>>>
+>>> Currently, security_inode_init_security() supports only one LSM providing
+>>> an xattr and EVM calculating the HMAC on that xattr, plus other inode
+>>> metadata.
+>>>
+>>> Allow all LSMs to provide one or multiple xattrs, by extending the security
+>>> blob reservation mechanism. Introduce the new lbs_xattr_count field of the
+>>> lsm_blob_sizes structure, so that each LSM can specify how many xattrs it
+>>> needs, and the LSM infrastructure knows how many xattr slots it should
+>>> allocate.
+>>>
+>>> Dynamically allocate the new_xattrs array to be populated by LSMs with the
+>>> inode_init_security hook, and pass it to the latter instead of the
+>>> name/value/len triple. Unify the !initxattrs and initxattrs case, simply
+>>> don't allocate the new_xattrs array in the former.
+>>>
+>>> Also, pass to the hook the number of xattrs filled by each LSM, so that
+>>> there are no gaps when the next LSM fills the array. Gaps might occur
+>>> because an LSM can legitimately request xattrs to the LSM infrastructure,
+>>> but not fill the reserved slots, if it was not initialized.
+>> The number of security xattrs permitted per LSM was discussed in the
+>> second paragraph.  The first line of this paragraph needs to be updated
+>> to reflect the current number of security xattrs used, though that is
+>> more related to the new lsm_get_xattr_slot().  Or perhaps the entire
+>> paragraph is unnecessary, a remnant from
+>> security_check_compact_filled_xattrs(), and should be removed.  
+> I would probably say in that paragraph that the number specified for
+> the lbs_xattr_count field determines how many times an LSM can call
+> lsm_get_xattr_slot().
+>
+>>> Update the documentation of security_inode_init_security() to reflect the
+>>> changes, and fix the description of the xattr name, as it is not allocated
+>>> anymore.
+>>>
+>>> Finally, adapt both SELinux and Smack to use the new definition of the
+>>> inode_init_security hook, and to fill the reserved slots in the xattr
+>>> array. Introduce the lsm_get_xattr_slot() helper to retrieve an available
+>>> slot to fill, and to increment the number of filled slots.
+>>>
+>>> Move the xattr->name assignment after the xattr->value one, so that it is
+>>> done only in case of successful memory allocation. For Smack, also reserve
+>>> space for the other defined xattrs although they are not set yet in
+>>> smack_inode_init_security().
+>> This Smack comment should be moved to the previous paragraph and even
+>> expanded explaining that lsm_get_xattr_slot() will be called for each
+>> additional security xattr.
+> >From previous Paul's and Casey's comments, Smack will have just two
+> xattrs, assuming that security.SMACK_TRASMUTE64 can be set in
+> smack_inode_init_security(). I will change this part accordingly once
+> Casey can have a look at the function.
 
-While I do agree with the overall concept of removing reset logic from XDP
-control path here I feel that change is, as Jesse also wrote, rather too
-big for a -net candidate. It also feels like real issue was not resolved
-and removing reset path from XDP has a positive side effect of XDP not
-being exposed to real issue.
+To be clear, Smack may use two xattrs from smack_inode_init_security(),
+SMACK64 and SMACK64_TRANSMUTE. SMACK64_TRANSMUTE is only set on directories.
+SMACK64_MMAP and SMACK64_EXEC can be set on files, but they have to be
+set explicitly. A file may have three xattrs, but only one from
+smack_inode_init_security().
 
-What if I would do the rebuild via ethtool -L? There is a non-zero chance
-that I would get the splat above again.
+I'm looking at the existing Smack function, and it includes checking for
+the transmute attribute. Your patch seems to have dropped this important
+behavior. That needs to be restored in any case. You can tell that you need
+to include the SMACK64_TRANSMUTE xattr if setting it is detected.
 
-So I'd rather get this patch via -next and try harder to isolate the NULL
-ptr deref and address that.
-
-Note that I'm only sharing my thoughts here, other people can disagree and
-proceed with this as is.
-
-> Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-> Signed-off-by: Piotr Raczynski <piotr.raczynski@intel.com>
-> Signed-off-by: Andrii Staikov <andrii.staikov@intel.com>
-> Signed-off-by: Kamil Maziarz <kamil.maziarz@intel.com>
-> Tested-by: George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
-
-George, can you tell us how was this tested?
-
-> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-> ---
-> Note: This will conflict when merging with net-next.
-> 
-> Resolution:
-> static int i40e_xdp_setup(struct i40e_vsi *vsi, struct bpf_prog *prog,
->                           struct netlink_ext_ack *extack)
->   {
->  -      int frame_size = vsi->netdev->mtu + ETH_HLEN + ETH_FCS_LEN + VLAN_HLEN;
->  +      int frame_size = i40e_max_vsi_frame_size(vsi, prog);
-> 
->  drivers/net/ethernet/intel/i40e/i40e_main.c | 159 +++++++++++++++-----
->  1 file changed, 118 insertions(+), 41 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> index 228cd502bb48..5c424f6af834 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> @@ -50,6 +50,8 @@ static int i40e_veb_get_bw_info(struct i40e_veb *veb);
->  static int i40e_get_capabilities(struct i40e_pf *pf,
->  				 enum i40e_admin_queue_opc list_type);
->  static bool i40e_is_total_port_shutdown_enabled(struct i40e_pf *pf);
-> +static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi,
-> +					      bool is_xdp);
->  
->  /* i40e_pci_tbl - PCI Device ID Table
->   *
-> @@ -3563,11 +3565,16 @@ static int i40e_configure_rx_ring(struct i40e_ring *ring)
->  	/* clear the context structure first */
->  	memset(&rx_ctx, 0, sizeof(rx_ctx));
->  
-> -	if (ring->vsi->type == I40E_VSI_MAIN)
-> -		xdp_rxq_info_unreg_mem_model(&ring->xdp_rxq);
-> +	if (ring->vsi->type == I40E_VSI_MAIN &&
-> +	    !xdp_rxq_info_is_reg(&ring->xdp_rxq))
-> +		xdp_rxq_info_reg(&ring->xdp_rxq, ring->netdev,
-> +				 ring->queue_index,
-> +				 ring->q_vector->napi.napi_id);
->  
->  	ring->xsk_pool = i40e_xsk_pool(ring);
->  	if (ring->xsk_pool) {
-> +		xdp_rxq_info_unreg_mem_model(&ring->xdp_rxq);
-> +
->  		ring->rx_buf_len =
->  		  xsk_pool_get_rx_frame_size(ring->xsk_pool);
->  		/* For AF_XDP ZC, we disallow packets to span on
-> @@ -13307,6 +13314,39 @@ static netdev_features_t i40e_features_check(struct sk_buff *skb,
->  	return features & ~(NETIF_F_CSUM_MASK | NETIF_F_GSO_MASK);
->  }
->  
-> +/**
-> + * i40e_vsi_assign_bpf_prog - set or clear bpf prog pointer on VSI
-> + * @vsi: VSI to changed
-> + * @prog: XDP program
-> + **/
-> +static void i40e_vsi_assign_bpf_prog(struct i40e_vsi *vsi,
-> +				     struct bpf_prog *prog)
-> +{
-> +	struct bpf_prog *old_prog;
-> +	int i;
-> +
-> +	old_prog = xchg(&vsi->xdp_prog, prog);
-> +	if (old_prog)
-> +		bpf_prog_put(old_prog);
-> +
-> +	for (i = 0; i < vsi->num_queue_pairs; i++)
-> +		WRITE_ONCE(vsi->rx_rings[i]->xdp_prog, vsi->xdp_prog);
-> +}
-> +
-> +/**
-> + * i40e_vsi_rx_napi_schedule - Schedule napi on RX queues from VSI
-> + * @vsi: VSI to schedule napi on
-> + */
-> +static void i40e_vsi_rx_napi_schedule(struct i40e_vsi *vsi)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < vsi->num_queue_pairs; i++)
-> +		if (vsi->xdp_rings[i]->xsk_pool)
-> +			(void)i40e_xsk_wakeup(vsi->netdev, i,
-> +					      XDP_WAKEUP_RX);
-> +}
-> +
->  /**
->   * i40e_xdp_setup - add/remove an XDP program
->   * @vsi: VSI to changed
-> @@ -13317,10 +13357,12 @@ static int i40e_xdp_setup(struct i40e_vsi *vsi, struct bpf_prog *prog,
->  			  struct netlink_ext_ack *extack)
->  {
->  	int frame_size = vsi->netdev->mtu + ETH_HLEN + ETH_FCS_LEN + VLAN_HLEN;
-> +	bool is_xdp_enabled = i40e_enabled_xdp_vsi(vsi);
-> +	bool if_running = netif_running(vsi->netdev);
-> +	bool need_reinit = is_xdp_enabled != !!prog;
->  	struct i40e_pf *pf = vsi->back;
->  	struct bpf_prog *old_prog;
-> -	bool need_reset;
-> -	int i;
-> +	int ret = 0;
->  
->  	/* Don't allow frames that span over multiple buffers */
->  	if (frame_size > i40e_calculate_vsi_rx_buf_len(vsi)) {
-> @@ -13328,53 +13370,84 @@ static int i40e_xdp_setup(struct i40e_vsi *vsi, struct bpf_prog *prog,
->  		return -EINVAL;
->  	}
->  
-> -	/* When turning XDP on->off/off->on we reset and rebuild the rings. */
-> -	need_reset = (i40e_enabled_xdp_vsi(vsi) != !!prog);
-> -
-> -	if (need_reset)
-> -		i40e_prep_for_reset(pf);
-> -
->  	/* VSI shall be deleted in a moment, just return EINVAL */
->  	if (test_bit(__I40E_IN_REMOVE, pf->state))
->  		return -EINVAL;
->  
-> -	old_prog = xchg(&vsi->xdp_prog, prog);
-> +	if (!need_reinit)
-> +		goto assign_prog;
->  
-> -	if (need_reset) {
-> -		if (!prog) {
-> -			xdp_features_clear_redirect_target(vsi->netdev);
-> -			/* Wait until ndo_xsk_wakeup completes. */
-> -			synchronize_rcu();
-> -		}
-> -		i40e_reset_and_rebuild(pf, true, true);
-> +	if (if_running && !test_and_set_bit(__I40E_VSI_DOWN, vsi->state))
-> +		i40e_down(vsi);
-> +
-> +	i40e_vsi_assign_bpf_prog(vsi, prog);
-> +
-> +	vsi = i40e_vsi_reinit_setup(vsi, true);
-> +
-> +	if (!vsi) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Failed to reinitialize VSI during XDP setup");
-> +		ret = -EIO;
-> +		goto err_vsi_setup;
->  	}
->  
-> -	if (!i40e_enabled_xdp_vsi(vsi) && prog) {
-> -		if (i40e_realloc_rx_bi_zc(vsi, true))
-> -			return -ENOMEM;
-> -	} else if (i40e_enabled_xdp_vsi(vsi) && !prog) {
-> -		if (i40e_realloc_rx_bi_zc(vsi, false))
-> -			return -ENOMEM;
-> +	/* allocate descriptors */
-> +	ret = i40e_vsi_setup_tx_resources(vsi);
-> +	if (ret) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Failed to configure TX resources during XDP setup");
-> +		goto err_vsi_setup;
-> +	}
-> +	ret = i40e_vsi_setup_rx_resources(vsi);
-> +	if (ret) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Failed to configure RX resources during XDP setup");
-> +		goto err_setup_tx;
->  	}
->  
-> -	for (i = 0; i < vsi->num_queue_pairs; i++)
-> -		WRITE_ONCE(vsi->rx_rings[i]->xdp_prog, vsi->xdp_prog);
-> +	if (!is_xdp_enabled && prog)
-> +		ret = i40e_realloc_rx_bi_zc(vsi, true);
-> +	else if (is_xdp_enabled && !prog)
-> +		ret = i40e_realloc_rx_bi_zc(vsi, false);
->  
-> -	if (old_prog)
-> -		bpf_prog_put(old_prog);
-> +	if (ret) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Failed to reallocate RX resources during XDP setup");
-> +		goto err_setup_rx;
-> +	}
-> +
-> +	if (if_running) {
-> +		ret = i40e_up(vsi);
-> +
-> +		if (ret) {
-> +			NL_SET_ERR_MSG_MOD(extack, "Failed to open VSI during XDP setup");
-> +			goto err_setup_rx;
-> +		}
-> +	}
-> +	return 0;
-> +
-> +assign_prog:
-> +	i40e_vsi_assign_bpf_prog(vsi, prog);
-> +
-> +	if (need_reinit && !prog)
-> +		xdp_features_clear_redirect_target(vsi->netdev);
->  
->  	/* Kick start the NAPI context if there is an AF_XDP socket open
->  	 * on that queue id. This so that receiving will start.
->  	 */
-> -	if (need_reset && prog) {
-> -		for (i = 0; i < vsi->num_queue_pairs; i++)
-> -			if (vsi->xdp_rings[i]->xsk_pool)
-> -				(void)i40e_xsk_wakeup(vsi->netdev, i,
-> -						      XDP_WAKEUP_RX);
-> +	if (need_reinit && prog) {
-> +		i40e_vsi_rx_napi_schedule(vsi);
->  		xdp_features_set_redirect_target(vsi->netdev, true);
->  	}
->  
->  	return 0;
-> +
-> +err_setup_rx:
-> +	i40e_vsi_free_rx_resources(vsi);
-> +err_setup_tx:
-> +	i40e_vsi_free_tx_resources(vsi);
-> +err_vsi_setup:
-> +	i40e_do_reset(pf, I40E_PF_RESET_FLAG, true);
-> +	old_prog = xchg(&vsi->xdp_prog, prog);
-> +	i40e_vsi_assign_bpf_prog(vsi, old_prog);
-
-wouldn't this be simpler to
-	i40e_vsi_assign_bpf_prog(vsi, NULL);
-
-and avoid xchg above? then old_prog can be removed altogether from this
-func.
-
-> +
-> +	return ret;
->  }
->  
->  /**
-> @@ -14320,13 +14393,14 @@ static int i40e_vsi_setup_vectors(struct i40e_vsi *vsi)
->  /**
->   * i40e_vsi_reinit_setup - return and reallocate resources for a VSI
->   * @vsi: pointer to the vsi.
-> + * @is_xdp: flag indicating if this is reinit during XDP setup
->   *
->   * This re-allocates a vsi's queue resources.
->   *
->   * Returns pointer to the successfully allocated and configured VSI sw struct
->   * on success, otherwise returns NULL on failure.
->   **/
-> -static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
-> +static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi, bool is_xdp)
->  {
->  	u16 alloc_queue_pairs;
->  	struct i40e_pf *pf;
-> @@ -14362,12 +14436,14 @@ static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
->  	/* Update the FW view of the VSI. Force a reset of TC and queue
->  	 * layout configurations.
->  	 */
-> -	enabled_tc = pf->vsi[pf->lan_vsi]->tc_config.enabled_tc;
-> -	pf->vsi[pf->lan_vsi]->tc_config.enabled_tc = 0;
-> -	pf->vsi[pf->lan_vsi]->seid = pf->main_vsi_seid;
-> -	i40e_vsi_config_tc(pf->vsi[pf->lan_vsi], enabled_tc);
-> -	if (vsi->type == I40E_VSI_MAIN)
-> -		i40e_rm_default_mac_filter(vsi, pf->hw.mac.perm_addr);
-> +	if (!is_xdp) {
-> +		enabled_tc = pf->vsi[pf->lan_vsi]->tc_config.enabled_tc;
-> +		pf->vsi[pf->lan_vsi]->tc_config.enabled_tc = 0;
-> +		pf->vsi[pf->lan_vsi]->seid = pf->main_vsi_seid;
-> +		i40e_vsi_config_tc(pf->vsi[pf->lan_vsi], enabled_tc);
-> +		if (vsi->type == I40E_VSI_MAIN)
-> +			i40e_rm_default_mac_filter(vsi, pf->hw.mac.perm_addr);
-> +	}
->  
->  	/* assign it some queues */
->  	ret = i40e_alloc_rings(vsi);
-> @@ -15133,7 +15209,8 @@ static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acqui
->  		if (pf->lan_vsi == I40E_NO_VSI)
->  			vsi = i40e_vsi_setup(pf, I40E_VSI_MAIN, uplink_seid, 0);
->  		else if (reinit)
-> -			vsi = i40e_vsi_reinit_setup(pf->vsi[pf->lan_vsi]);
-> +			vsi = i40e_vsi_reinit_setup(pf->vsi[pf->lan_vsi],
-> +						    false);
->  		if (!vsi) {
->  			dev_info(&pf->pdev->dev, "setup of MAIN VSI failed\n");
->  			i40e_cloud_filter_exit(pf);
-> -- 
-> 2.38.1
-> 
+>
+>>> Reported-by: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org> (EVM crash)
+>>> Link: https://lore.kernel.org/linux-integrity/Y1FTSIo+1x+4X0LS@archlinux/
+>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+>>> ---
+>>> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+>>> index c2be66c669a..9eb9b686493 100644
+>>> --- a/include/linux/lsm_hooks.h
+>>> +++ b/include/linux/lsm_hooks.h
+>>> @@ -28,6 +28,7 @@
+>>>  #include <linux/security.h>
+>>>  #include <linux/init.h>
+>>>  #include <linux/rculist.h>
+>>> +#include <linux/xattr.h>
+>>>  
+>>>  union security_list_options {
+>>>  	#define LSM_HOOK(RET, DEFAULT, NAME, ...) RET (*NAME)(__VA_ARGS__);
+>>> @@ -63,8 +64,27 @@ struct lsm_blob_sizes {
+>>>  	int	lbs_ipc;
+>>>  	int	lbs_msg_msg;
+>>>  	int	lbs_task;
+>>> +	int	lbs_xattr_count; /* number of xattr slots in new_xattrs array */
+>>>  };
+>>>  
+>>> +/**
+>>> + * lsm_get_xattr_slot - Return the next available slot and increment the index
+>>> + * @xattrs: array storing LSM-provided xattrs
+>>> + * @xattr_count: number of already stored xattrs (updated)
+>>> + *
+>>> + * Retrieve the first available slot in the @xattrs array to fill with an xattr,
+>>> + * and increment @xattr_count.
+>>> + *
+>>> + * Return: The slot to fill in @xattrs if non-NULL, NULL otherwise.
+>>> + */
+>>> +static inline struct xattr *lsm_get_xattr_slot(struct xattr *xattrs,
+>>> +					       int *xattr_count)
+>>> +{
+>>> +	if (unlikely(!xattrs))
+>>> +		return NULL;
+>>> +	return xattrs + (*xattr_count)++;
+>> At some point, since lsm_get_xattr_slot() could be called multiple
+>> times from the same LSM, shouldn't there be some sort of bounds
+>> checking?
+> >From previous Paul's comments, I understood that he prefers to avoid
+> extra checks. It will be up to LSM developers to ensure that the API is
+> used correctly.
+>
+> Thanks
+>
+> Roberto
+>
