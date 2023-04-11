@@ -2,63 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 334066DDD31
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 16:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14AB6DDE6F
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 16:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjDKOEN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 10:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
+        id S229687AbjDKOsB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 10:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbjDKOEM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 10:04:12 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FF7359D
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 07:04:05 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id ga37so21007262ejc.0
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 07:04:05 -0700 (PDT)
+        with ESMTP id S229809AbjDKOr5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 10:47:57 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CDF30D0
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 07:47:55 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id q5so4689746wmo.4
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 07:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1681221844;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oQ7v5B5nqoReNp8o9tUc2wF/l3h68/qE8V0/+aroSHk=;
-        b=FIIpa5w8jthE1CIeiWjffna630LVfTr1m4Lohb6pX40/UC5OALt+cin71ujNeQ25ND
-         UIbm4tV9aC7Oy/uXm6f9y3nYLF9Zy5n9GCn6zbe/uLgPExoxduCedQNkQgd2co4uW99W
-         0WRhVVH/9FfUYiStdMuzMERfuJPf0F0TrbHgFg9tlIFwAyf7biIk0y3zxxZOrNc65pkC
-         7hXfs7UHez0sVuxX35jcafkwn5Gjw6YacEqwSQ6oF9lvvaeR0gcvGc8Co2JQQkwei2g3
-         jvqbMxgRcKVgxs7r7X/7Wc/1YICAB+b+tXKFi6qmjX6q6q/KWe9mOpRVJFZPP3CvVCGF
-         PZyg==
+        d=isovalent.com; s=google; t=1681224474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vci6wYH1qpvqDyqvyJ5tBJwpJDfjIpIyLWu7Z9afXNk=;
+        b=QoO5b1cJnkJvvRmy4V16A+6mkiI5Yrq0X+5jYhsFWl552sw49Kfu5xe8xGlOflTgVQ
+         ZWeQDnJgcpFZmLgWEqh1rPmnH8UarzwDwm37q2gl1+p/0UmFxeKdHxF2LLZ7yUYToSde
+         2jDZgIF4v1vgW3XkW6GYYHVglkf1yr0Uifyv1KYz/EnKJPIcYV+0bdmZl89Q82q9oH9P
+         JKQwL9rANGie8eQnizltaUgml7qaRB+1lA8VFNWbGvY3NNVFmI/m4IGrz9cjy8O2ocA0
+         nTt/gv+7tAdFiebEZ1vrJopBto+ECm3FaciYZCWei4WiqrE8ooHVX1wLab69ALv2BTto
+         DUHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681221844;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oQ7v5B5nqoReNp8o9tUc2wF/l3h68/qE8V0/+aroSHk=;
-        b=rRdsJovHJ/6TGD7xOsSC8rQYI5igiESPJn6EkeHAesGILGSM6oSda5ZrpJKW/I1VjE
-         qiy64F18ndps+CTWOtEOVPd9BfJKIYQE+BgJpxvEf2hMQjNsGVneyKt9plVT3m8pOscp
-         wnrPCecaupWMwnjnjNCru1d7DFQrYTASQWPcy2dYjs5Jd4qJK3WbBysZEyKFZYvzELYD
-         AKREGYzjWhz9ytTqNZLAYwxFbGu+MR7FSp/llraeSMp/QnPf49RkUTAeuikL8ipKJU4X
-         v9GdqaRJvSnWqWP6l6YA5DpG6+dnWaR84AbYsJWRQNoqFJc7shyNawwKBcZ4BGV9cqLl
-         aqiQ==
-X-Gm-Message-State: AAQBX9eGTbrDbRHrFD+/8ofoqQTpClupFAHbM7cALFLr415R+/RM39k7
-        fYRqN7P+JYlpTrkocadTDfcyKZ7ZehpU3WnQbSMNSrMAXY0Nl2lgqevXQg==
-X-Google-Smtp-Source: AKy350aR9njkjyVZGK03yvdpyUDS6OZyRb/TkJZSk6TYTzKLXqpjSR/B0hZsFkGKhUfaq2hyIv+M/uAXXutwizDwRnQ=
-X-Received: by 2002:a17:907:7f23:b0:94a:8300:7246 with SMTP id
- qf35-20020a1709077f2300b0094a83007246mr3353222ejc.14.1681221843857; Tue, 11
- Apr 2023 07:04:03 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1681224474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vci6wYH1qpvqDyqvyJ5tBJwpJDfjIpIyLWu7Z9afXNk=;
+        b=y15RzWGkFVhSOCmqRkvFw2OJAB8N5+skjD6xpBGXteN8Jsh5SbqPBQvAFubRdKcUQ3
+         f7+JWbY60eJI9piegxKFi/Ju/QUlLJUl44ncrbpDg+qdf2rnVvgQNVlGnLKENWKwU6yg
+         WhJJkIapw2zii3USzG9gfDBzsyjJ3nbxf100o+xV097J9+dIATNVtFCeRCykGKKRfjc9
+         QIzY41yZw5Z857erJ8oXm7S1Hn2dcJURV84xzohS86P0WHPKlxMTQny8YhHdh9In/rZm
+         a6M0y0jz1CdWcN+GkC5Nd6wlGX7Obag0KL3h+Z5nZeFZ/MBUaf85w7D8bJ5+ao6CmwIH
+         IwHw==
+X-Gm-Message-State: AAQBX9f+mps47Ggaz3V8ShyCLnbggfe2T+WYIikg/x7v/Oyk8JoeUgrc
+        2yKcng0fPqieloIjoKrNCRzcnw==
+X-Google-Smtp-Source: AKy350biM3Lrn2RQxZckEPb8zmIrhsoRpx9EId/WTKaUDlt4aVjbA55UGkPQI2PsAoLMb+yTG2v0IA==
+X-Received: by 2002:a05:600c:21da:b0:3ed:2619:6485 with SMTP id x26-20020a05600c21da00b003ed26196485mr10179840wmj.3.1681224474316;
+        Tue, 11 Apr 2023 07:47:54 -0700 (PDT)
+Received: from harfang.fritz.box ([2a02:8011:e80c:0:3de0:2d5:e172:b2a3])
+        by smtp.gmail.com with ESMTPSA id o19-20020a05600c4fd300b003ef7058ea02sm21282794wmq.29.2023.04.11.07.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Apr 2023 07:47:53 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, Alejandro Colomar <alx@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next] bpf: Remove extra whitespace in SPDX tag for syscall/helpers man pages
+Date:   Tue, 11 Apr 2023 15:47:47 +0100
+Message-Id: <20230411144747.66734-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230406234205.323208-1-andrii@kernel.org>
-In-Reply-To: <20230406234205.323208-1-andrii@kernel.org>
-From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Tue, 11 Apr 2023 15:03:52 +0100
-Message-ID: <CAN+4W8jdCiRXRLWrnEdGPg-o5fpYe0=ZmK6P=EL1CBbkfMCayA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/19] BPF verifier rotating log
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@kernel.org, timo@incline.eu, robin.goegge@isovalent.com,
-        kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -68,27 +75,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 7, 2023 at 12:42=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org>=
- wrote:
->
-> This patch set changes BPF verifier log behavior to behave as a rotating =
-log,
-> by default. If user-supplied log buffer is big enough to contain entire
-> verifier log output, there is no effective difference. But where previous=
-ly
-> user supplied too small log buffer and would get -ENOSPC error result and=
- the
-> beginning part of the verifier log, now there will be no error and user w=
-ill
-> get ending part of verifier log filling up user-supplied log buffer.  Whi=
-ch
-> is, in absolute majority of cases, is exactly what's useful, relevant, an=
-d
-> what users want and need, as the ending of the verifier log is containing
-> details of verifier failure and relevant state that got us to that failur=
-e. So
-> this rotating mode is made default, but for some niche advanced debugging
-> scenarios it's possible to request old behavior by specifying additional
-> BPF_LOG_FIXED (8) flag.
+From: Alejandro Colomar <alx@kernel.org>
 
-Thanks for your work, this is really nice!
+There is an extra whitespace in the SPDX tag, before the license name,
+in the script for generating man pages for the bpf() syscall and the
+helpers. It has caused problems in Debian packaging, in the tool that
+autodetects licenses. Let's clean it up.
+
+Fixes: 5cb62b7598f2 ("bpf, docs: Use SPDX license identifier in bpf_doc.py")
+Signed-off-by: Alejandro Colomar <alx@kernel.org>
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ scripts/bpf_doc.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index 38d51e05c7a2..eaae2ce78381 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -383,7 +383,7 @@ class PrinterRST(Printer):
+ .. Copyright (C) All BPF authors and contributors from 2014 to present.
+ .. See git log include/uapi/linux/bpf.h in kernel tree for details.
+ .. 
+-.. SPDX-License-Identifier:  Linux-man-pages-copyleft
++.. SPDX-License-Identifier: Linux-man-pages-copyleft
+ .. 
+ .. Please do not edit this file. It was generated from the documentation
+ .. located in file include/uapi/linux/bpf.h of the Linux kernel sources
+-- 
+2.34.1
+
