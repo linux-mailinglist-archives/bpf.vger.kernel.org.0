@@ -2,90 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C256DD617
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 11:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38806DD669
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 11:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbjDKJAe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 05:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
+        id S229572AbjDKJR3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 05:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjDKJAd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 05:00:33 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53374F2
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 02:00:32 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5049a1085c8so1491637a12.1
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 02:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1681203631;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ffNIN2JQQqIvfvN4iIWwGnXifObJJMjn7+pXPeTaYgs=;
-        b=ECh+Lq/uyNmKNlmE80eS65tqoqpomtSCTDJ7JVz7jkaskHXqfoqY7o7IESsdW9p1Sz
-         Hz67jp/tTFXYjU2aCTfXdD85dDx04nOaZ3r5f6gefsfA5GZvtDpP9BVuPKKlEn36zNyD
-         uYSC35BQ2UZeu6bRRGVr5qgmZE/m3q+PeorTS3+y39VTELCeGzIOP2a6dyhjJNSHs8xG
-         aIQGxT5LTUqbu5pVGQNkft3ecjJ0g0bMgLKLvhH573OmVBCsROHOMAohfHZMnsrBxhHx
-         FUZ1IMo5BSENdNyTu1dInSjxHPWpHCEetIbeIb+u5qpZjsjJRM7Ag0sqVpoZh7XLXaVC
-         OLng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681203631;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ffNIN2JQQqIvfvN4iIWwGnXifObJJMjn7+pXPeTaYgs=;
-        b=x89cktdGYFToocyrq6UJ7DdTLW8s2M0v0jkZeDwzfTSr8jnmbV0Juq3g6R+OytI+yw
-         GmUAQ+tqQRjMuO3x62SoX9m3EIo+hMORsqR1gWMd8X11YHVx0kgzuHga1HalBAwEsIqC
-         wPv89H7Gagy8zIwBRwZCxQsTYgwo1AyK3s8U3KzOUBJO+tZZu637ATuT+vnUJepMzcRa
-         V0lO0zPCZfamsfeinQqdO9zhbHm/evCZEvsalHZLMrhj4RMzhA6JmC8gPvubN9tF5zTk
-         GIsNhioQXnWH9fWnUf6X1fBwoRgEFV5tjMaVI0754WjyAl7Ulsp0SqNwCxgF2kOnHS4A
-         AblA==
-X-Gm-Message-State: AAQBX9f7CqUkACT06xVeBt36l4tNvsSt5IactU9FESqrE4C9zoH2oJTm
-        Q15tqcwQEEcpy2WNj5L2JGNCI0mFFNrxntD7Lh4IeA==
-X-Google-Smtp-Source: AKy350Y1EpiHnltNcvZP5c0KesdBHQQLX97V4sSbDFaZStZl+T+Psr0+W8cNnwOaAPIZKqYCl03zRuiFTleMz4oj+PQ=
-X-Received: by 2002:a50:bb04:0:b0:4fb:4a9f:eb95 with SMTP id
- y4-20020a50bb04000000b004fb4a9feb95mr4609090ede.2.1681203630792; Tue, 11 Apr
- 2023 02:00:30 -0700 (PDT)
+        with ESMTP id S229459AbjDKJR2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 05:17:28 -0400
+Received: from out203-205-221-190.mail.qq.com (out203-205-221-190.mail.qq.com [203.205.221.190])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD9C194;
+        Tue, 11 Apr 2023 02:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1681204643;
+        bh=ZbpCl+2ZgUHnd9+0Me6gjNslrGQh7vZFQlRigMsJyVM=;
+        h=From:To:Cc:Subject:Date;
+        b=UykTkiIIrS+4x29TOv8dssKfquzfuTn3gIj3ggm4IqdUMf+oxWHt9R6QM93En1fUQ
+         NgKAq8Gb8cYtb0lg2JfVRGARnWC85VgZNj7vs08m0LQRUopSH0R7E02RrT1dm+pUHK
+         GPcLCpFp7AF3Ex9Gk3poR8+U/44zlDBoafd9UB4A=
+Received: from localhost.localdomain ([39.156.73.13])
+        by newxmesmtplogicsvrszc1-0.qq.com (NewEsmtp) with SMTP
+        id 450BDE4B; Tue, 11 Apr 2023 17:17:16 +0800
+X-QQ-mid: xmsmtpt1681204636tu8cf9s6r
+Message-ID: <tencent_D5422A55AFF3A307880D06AD42D559739708@qq.com>
+X-QQ-XMAILINFO: MBA0Q7b4Uo1hMxwf75/oZLtFjoneMCOVW5xBoUCz5xX3DxltsR/2EYvBHKPsyA
+         EbVg7mWm/IvElGfyAB5cqlBFMzSF+Eg7DGItbQ8pCAvQ4uJzUThRRXnImcUeIJtCBrvro4Fv08mZ
+         /ab+G9HjT/VVltVz5NQfr01efADV44kQqN1IS3dWWb5UJC7a48Vsm4mzVloIaN+HyuapNVCI+xHP
+         d6PiMMmppoOK76EvvhqZZurkuKIhTCug97qGG9DH/mZp0MJ8+xYZeX6BvDGHO3sdTePOLo2Z6lGr
+         AN2v2Nxsu52JC4ymenFKetGWuz00PBdtsaaUuF3uED57foc4xp7cHdCWOlfiGa5fdeDeRDtSX7eQ
+         zIxLrPKnFN9WSn833oU/sVOcPUigO5zn//XS9pVq/cXT++SgSbBSAERiKwaonsVRP4t6/OGBjUd1
+         ijlHobRwU16meta0kxOp4au6OppiC+CIHrQm4LMpph+qwXtfFZL7wxI/I5ce2AAZMZmMkWJXveNh
+         M4QDYncgjsBk0ZpwLWq+k3MBSQxb0dPCq72AG3UMV1TJFL3ApWVcuyfkUuMt3SljWsxVsoCFQkeE
+         lW+3CJOOAoeKz7bVkG45ot7Qu0iWvjrHGrq52LAJh/2Bj1mFPpLXj0XNc5e40J8jcC3he2D/QB7U
+         g0Hn9lwvnl3szPui1z0fZ/ezM8agsTNMs5BzLn2yug1gTtJZGMTR+6Bda3HQwru94esolJnjOqJW
+         TGcqH/dM8ETemd/rzScfgpfGYoFtKM7OvHspzNyzFMDWcU5tHBei0nx8hTwoLxhM+nSMvlM9YPAg
+         LS+doIms3Mmf9XHF+OFeL2QLQCnZj1Di7XFU3FekQ4Ch1lkYkTN88Sjhav3ETm1K8S0erKV1rXWl
+         O7W1elUIadYi47DKZoTRQcfDEgpbluNoFO1eKK24bNwH/D5zRGcqmKbGKoJc+vqEdnfiRc+XLDWW
+         mhxYcnXi2+GFMTgxiKPruJu2opFmw6Xyl5P8TTa1w=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     ast@kernel.org
+Cc:     rongtao@cestc.cn, Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
+        Tools)), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next] tools/resolve_btfids: Ignore libsubcmd
+Date:   Tue, 11 Apr 2023 17:17:14 +0800
+X-OQ-MSGID: <20230411091715.148124-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-References: <20230404043659.2282536-1-andrii@kernel.org> <20230404043659.2282536-13-andrii@kernel.org>
- <CAN+4W8gtHrWt_XQBTSvkMxmeuLT4hcUtYMaFRdeZfKyJ_s2QJA@mail.gmail.com>
- <CAEf4BzaKwrLhyk-Hon9Hi4aZhVrnU-OS-7-jHdd9uMzUnjRKZA@mail.gmail.com>
- <CAN+4W8jp=G-WaNxUaXAmwi8ofH+GxuW=7_3iMfueF+SDi9U=Nw@mail.gmail.com> <CAEf4BzZZsqo5T+S9g9ZV0QpMC_L_kagrS7vTSOMdCpb+Oe9GEg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZZsqo5T+S9g9ZV0QpMC_L_kagrS7vTSOMdCpb+Oe9GEg@mail.gmail.com>
-From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Tue, 11 Apr 2023 10:00:19 +0100
-Message-ID: <CAN+4W8j4eyk3Gb-ZjLGcSqVXE3fCR=3+3YZS1HbmioRifgA8Pw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 12/19] bpf: add log_size_actual output field
- to return log contents size
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-        timo@incline.eu, robin.goegge@isovalent.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=3.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 7:35=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> ah, in that sense... What's the reasoning for this enforcement? I'm
-> just afraid that it will complicate applications that don't care and
-> are not aware of this field and do retries with the same attribute. On
-> first try, the kernel fills out log_true_size, application retries and
-> doesn't clear log_true_size (because it was written a while ago, but
-> compiled against latest kernel UAPI, so passes sizeof(union bpf_attr)
-> that includes new field). And that suddenly starts failing with
-> -EINVAL.
->
-> Seems like an unfortunate side effect, no? What's the harm in not
-> validating this field, if it's an output-only parameter?
+From: Rong Tao <rongtao@cestc.cn>
 
-Hmm good point. Just abundance of caution, but in this case it doesn't
-make sense.
+Since commit af03299d8536("tools/resolve_btfids: Install subcmd headers")
+introduce subcmd headers directory, we should ignore it.
+
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ tools/bpf/resolve_btfids/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/bpf/resolve_btfids/.gitignore b/tools/bpf/resolve_btfids/.gitignore
+index 16913fffc985..52d5e9721d92 100644
+--- a/tools/bpf/resolve_btfids/.gitignore
++++ b/tools/bpf/resolve_btfids/.gitignore
+@@ -1,3 +1,4 @@
+ /fixdep
+ /resolve_btfids
+ /libbpf/
++/libsubcmd/
+-- 
+2.39.1
+
