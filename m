@@ -2,149 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0A56DE0A2
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 18:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6A76DE0B4
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 18:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbjDKQLg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 12:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
+        id S231313AbjDKQMr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 12:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbjDKQLI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 12:11:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B254C3C
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 09:09:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681229381;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rjJlYTxOmtT7wdKdf7S5Ju9QN7AtCPTA0VxjqyvYpeA=;
-        b=gxt3E0KIBiwrDUUY8hgqEwa2qsA34USWlgsQ6rWjyicSzrfgHSNu95v5zSgK5jDM/jQ+TU
-        naMg3uDDR+660QWCCEJBkqxYNqxJ74p48KsSvjXoXWrp+OCFR1q2/oVRP9DdrrxEh486nm
-        2VwOixnwWoKJt8i5HQCYPJWzGFKXQSY=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-548-cmT0nmxaN_-wKHRfTU4xrw-1; Tue, 11 Apr 2023 12:09:39 -0400
-X-MC-Unique: cmT0nmxaN_-wKHRfTU4xrw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S231233AbjDKQLj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 12:11:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFA9658C
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 09:10:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ABF7538149AF;
-        Tue, 11 Apr 2023 16:09:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 47A44C15BBA;
-        Tue, 11 Apr 2023 16:09:35 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Subject: [PATCH net-next v6 09/18] tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around tcp_sendmsg
-Date:   Tue, 11 Apr 2023 17:08:53 +0100
-Message-Id: <20230411160902.4134381-10-dhowells@redhat.com>
-In-Reply-To: <20230411160902.4134381-1-dhowells@redhat.com>
-References: <20230411160902.4134381-1-dhowells@redhat.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 29F0A6290C
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 16:10:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7E8ABC4339B;
+        Tue, 11 Apr 2023 16:10:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681229421;
+        bh=fyGGzkoZlolcX1ptvVdOE8vddsm6aIHwJIQadtwU7y8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uDTePWDDCYPqdsIEZrbemZmJ+u7xm2BMgP/8No1n2xJ2/XuedGB5VtnX5Nyw7d660
+         u3yZIYyXZJk+0LFOnNHr93u5zuiZWuL73pmqJnCENaWxu8/SRh9ZUC8F4kNgnFll/+
+         zc2oDQnm7mlOYwzUqWAHpjFCc7w47b2zxGyb8Ai55vpFRBTWZ9ZFtDf8YGEuL+xa4D
+         3rFr1kBo6eWI9URPoJIknYwrXHP/ak9l6TvnTvqnvIb1/+9Xk9h6E1sn+tYduIjGaU
+         72/DzXG7A3YgkiPrn2qXaLNpcH5G9J2j1ewvuMvP2u3wP4ybUbKDan1wDWzUTwECql
+         m76MjQa2fQOZg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 626BAE52446;
+        Tue, 11 Apr 2023 16:10:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v4 bpf-next 00/19] BPF verifier rotating log
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168122942139.10317.9668007640331547908.git-patchwork-notify@kernel.org>
+Date:   Tue, 11 Apr 2023 16:10:21 +0000
+References: <20230406234205.323208-1-andrii@kernel.org>
+In-Reply-To: <20230406234205.323208-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@kernel.org, lmb@isovalent.com, timo@incline.eu,
+        robin.goegge@isovalent.com, kernel-team@meta.com
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-do_tcp_sendpages() is now just a small wrapper around tcp_sendmsg_locked(),
-so inline it.  This is part of replacing ->sendpage() with a call to
-sendmsg() with MSG_SPLICE_PAGES set.
+Hello:
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: John Fastabend <john.fastabend@gmail.com>
-cc: Jakub Sitnicki <jakub@cloudflare.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: David Ahern <dsahern@kernel.org>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: netdev@vger.kernel.org
-cc: bpf@vger.kernel.org
----
- net/ipv4/tcp_bpf.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index ebf917511937..24bfb885777e 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -72,11 +72,13 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
- {
- 	bool apply = apply_bytes;
- 	struct scatterlist *sge;
-+	struct msghdr msghdr = { .msg_flags = flags | MSG_SPLICE_PAGES, };
- 	struct page *page;
- 	int size, ret = 0;
- 	u32 off;
- 
- 	while (1) {
-+		struct bio_vec bvec;
- 		bool has_tx_ulp;
- 
- 		sge = sk_msg_elem(msg, msg->sg.start);
-@@ -88,16 +90,18 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
- 		tcp_rate_check_app_limited(sk);
- retry:
- 		has_tx_ulp = tls_sw_has_ctx_tx(sk);
--		if (has_tx_ulp) {
--			flags |= MSG_SENDPAGE_NOPOLICY;
--			ret = kernel_sendpage_locked(sk,
--						     page, off, size, flags);
--		} else {
--			ret = do_tcp_sendpages(sk, page, off, size, flags);
--		}
-+		if (has_tx_ulp)
-+			msghdr.msg_flags |= MSG_SENDPAGE_NOPOLICY;
- 
-+		if (flags & MSG_SENDPAGE_NOTLAST)
-+			msghdr.msg_flags |= MSG_MORE;
-+
-+		bvec_set_page(&bvec, page, size, off);
-+		iov_iter_bvec(&msghdr.msg_iter, ITER_SOURCE, &bvec, 1, size);
-+		ret = tcp_sendmsg_locked(sk, &msghdr, size);
- 		if (ret <= 0)
- 			return ret;
-+
- 		if (apply)
- 			apply_bytes -= ret;
- 		msg->sg.size -= ret;
-@@ -404,7 +408,7 @@ static int tcp_bpf_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 	long timeo;
- 	int flags;
- 
--	/* Don't let internal do_tcp_sendpages() flags through */
-+	/* Don't let internal sendpage flags through */
- 	flags = (msg->msg_flags & ~MSG_SENDPAGE_DECRYPTED);
- 	flags |= MSG_NO_SHARED_FRAGS;
- 
+On Thu, 6 Apr 2023 16:41:46 -0700 you wrote:
+> This patch set changes BPF verifier log behavior to behave as a rotating log,
+> by default. If user-supplied log buffer is big enough to contain entire
+> verifier log output, there is no effective difference. But where previously
+> user supplied too small log buffer and would get -ENOSPC error result and the
+> beginning part of the verifier log, now there will be no error and user will
+> get ending part of verifier log filling up user-supplied log buffer.  Which
+> is, in absolute majority of cases, is exactly what's useful, relevant, and
+> what users want and need, as the ending of the verifier log is containing
+> details of verifier failure and relevant state that got us to that failure. So
+> this rotating mode is made default, but for some niche advanced debugging
+> scenarios it's possible to request old behavior by specifying additional
+> BPF_LOG_FIXED (8) flag.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v4,bpf-next,01/19] bpf: split off basic BPF verifier log into separate file
+    https://git.kernel.org/bpf/bpf-next/c/4294a0a7ab62
+  - [v4,bpf-next,02/19] bpf: remove minimum size restrictions on verifier log buffer
+    https://git.kernel.org/bpf/bpf-next/c/03cc3aa6a533
+  - [v4,bpf-next,03/19] bpf: switch BPF verifier log to be a rotating log by default
+    https://git.kernel.org/bpf/bpf-next/c/121664093803
+  - [v4,bpf-next,04/19] libbpf: don't enforce unnecessary verifier log restrictions on libbpf side
+    https://git.kernel.org/bpf/bpf-next/c/e0aee1facccf
+  - [v4,bpf-next,05/19] veristat: add more veristat control over verifier log options
+    https://git.kernel.org/bpf/bpf-next/c/d0d75c67c45a
+  - [v4,bpf-next,06/19] selftests/bpf: add fixed vs rotating verifier log tests
+    https://git.kernel.org/bpf/bpf-next/c/b1a7a480a112
+  - [v4,bpf-next,07/19] bpf: ignore verifier log reset in BPF_LOG_KERNEL mode
+    https://git.kernel.org/bpf/bpf-next/c/24bc80887adb
+  - [v4,bpf-next,08/19] bpf: fix missing -EFAULT return on user log buf error in btf_parse()
+    https://git.kernel.org/bpf/bpf-next/c/971fb5057d78
+  - [v4,bpf-next,09/19] bpf: avoid incorrect -EFAULT error in BPF_LOG_KERNEL mode
+    https://git.kernel.org/bpf/bpf-next/c/cbedb42a0da3
+  - [v4,bpf-next,10/19] bpf: simplify logging-related error conditions handling
+    https://git.kernel.org/bpf/bpf-next/c/8a6ca6bc553e
+  - [v4,bpf-next,11/19] bpf: keep track of total log content size in both fixed and rolling modes
+    https://git.kernel.org/bpf/bpf-next/c/fa1c7d5cc404
+  - [v4,bpf-next,12/19] bpf: add log_true_size output field to return necessary log buffer size
+    https://git.kernel.org/bpf/bpf-next/c/47a71c1f9af0
+  - [v4,bpf-next,13/19] bpf: simplify internal verifier log interface
+    https://git.kernel.org/bpf/bpf-next/c/bdcab4144f5d
+  - [v4,bpf-next,14/19] bpf: relax log_buf NULL conditions when log_level>0 is requested
+    https://git.kernel.org/bpf/bpf-next/c/fac08d45e253
+  - [v4,bpf-next,15/19] libbpf: wire through log_true_size returned from kernel for BPF_PROG_LOAD
+    https://git.kernel.org/bpf/bpf-next/c/94e55c0fdaf4
+  - [v4,bpf-next,16/19] libbpf: wire through log_true_size for bpf_btf_load() API
+    https://git.kernel.org/bpf/bpf-next/c/097d8002b754
+  - [v4,bpf-next,17/19] selftests/bpf: add tests to validate log_true_size feature
+    https://git.kernel.org/bpf/bpf-next/c/5787540827a9
+  - [v4,bpf-next,18/19] selftests/bpf: add testing of log_buf==NULL condition for BPF_PROG_LOAD
+    https://git.kernel.org/bpf/bpf-next/c/be983f44274f
+  - [v4,bpf-next,19/19] selftests/bpf: add verifier log tests for BPF_BTF_LOAD command
+    https://git.kernel.org/bpf/bpf-next/c/054b6c7866c7
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
