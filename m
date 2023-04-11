@@ -2,97 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C06F6DDFF3
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 17:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D1A6DE01C
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 17:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjDKPvD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 11:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
+        id S231129AbjDKP44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 11:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjDKPvC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 11:51:02 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2282723;
-        Tue, 11 Apr 2023 08:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=qSaxyYQdKwgFEK0nqBsLj18c+ve44So2muQ8Wi6MeVs=; b=KsZCRkuppWJIR/T1aGry0SdCYQ
-        huSZJ0IZlIW2D26QHXeB7IdNI/RcbQ8qX+G+DnpjsL+Ahza1CHVxwK4y+myeWHSvRBhPRu2y1X0pc
-        uC264dEqBx/DV9bZ5EhA4nPsmvWK2+HlxeyCojKRL+wtGJvYtmsZVmYZI7F7aeHVxSXGW4s9Qb1Ye
-        lfSdCd4ShpTU7GdL+f7kHECRH947Lye0/lLJ/RvI2M2mLQySsD1NndfvzAyqPM1BS+6b0vPSZZzU6
-        45NX1w3Jjwk2VvLzhLV3SCeEhMtZNq1ssiGK2vL8W26p9kRP5/az0g3oiO5w5TaCOZXFnoz9Jcoxv
-        EMdu+Q/Q==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pmGGZ-00054z-Dk; Tue, 11 Apr 2023 17:50:43 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pmGGY-000HnH-Tk; Tue, 11 Apr 2023 17:50:42 +0200
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Ignore libsubcmd
-To:     Rong Tao <rtoax@foxmail.com>, ast@kernel.org
-Cc:     rongtao@cestc.cn, Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-References: <tencent_D5422A55AFF3A307880D06AD42D559739708@qq.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <211a783e-bd22-9e83-3622-0a83b0dd0002@iogearbox.net>
-Date:   Tue, 11 Apr 2023 17:50:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S231130AbjDKP4z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 11:56:55 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5CCA0E74;
+        Tue, 11 Apr 2023 08:56:54 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EB32D75;
+        Tue, 11 Apr 2023 08:57:38 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.20.166])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 994CF3F73F;
+        Tue, 11 Apr 2023 08:56:51 -0700 (PDT)
+Date:   Tue, 11 Apr 2023 16:56:45 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Florent Revest <revest@chromium.org>, catalin.marinas@arm.com,
+        will@kernel.org, rostedt@goodmis.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
+        xukuohai@huaweicloud.com, lihuafei1@huawei.com
+Subject: Re: [PATCH v6 0/5] Add ftrace direct call for arm64
+Message-ID: <ZDWDPUY2tZiMbk8V@FVFF77S0Q05N>
+References: <20230405180250.2046566-1-revest@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <tencent_D5422A55AFF3A307880D06AD42D559739708@qq.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26872/Tue Apr 11 09:26:30 2023)
-X-Spam-Status: No, score=-2.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230405180250.2046566-1-revest@chromium.org>
+X-Spam-Status: No, score=-2.3 required=5.0 tests=RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/11/23 11:17 AM, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
+On Wed, Apr 05, 2023 at 08:02:45PM +0200, Florent Revest wrote:
+> This series adds ftrace direct call support to arm64.
+> This makes BPF tracing programs (fentry/fexit/fmod_ret/lsm) work on arm64.
 > 
-> Since commit af03299d8536("tools/resolve_btfids: Install subcmd headers")
-> introduce subcmd headers directory, we should ignore it.
-> 
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
->   tools/bpf/resolve_btfids/.gitignore | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/bpf/resolve_btfids/.gitignore b/tools/bpf/resolve_btfids/.gitignore
-> index 16913fffc985..52d5e9721d92 100644
-> --- a/tools/bpf/resolve_btfids/.gitignore
-> +++ b/tools/bpf/resolve_btfids/.gitignore
-> @@ -1,3 +1,4 @@
->   /fixdep
->   /resolve_btfids
->   /libbpf/
-> +/libsubcmd/
-> 
+> It is meant to be taken by the arm64 tree but it depends on the
+> trace-direct-v6.3-rc3 tag of the linux-trace tree:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+> That tag was created by Steven Rostedt so the arm64 tree can pull the prior work
+> this depends on. [1]
 
-Please rebase, this has already been fixed in bpf-next:
+Catalin, Will, are you happy to pick this via the arm64 tree, or for it to go
+via the trace tree?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=fd4cb29f2a3d54ec7b4e012300321601af10bd68
+We'd been assuming the former, but it looks like there'll be a (simple) merge
+conflict with the series adding FUNCTION_GRAPH_RETVAL:
 
-Thanks,
-Daniel
+  https://lore.kernel.org/lkml/cover.1680954589.git.pengdonglin@sangfor.com.cn/
+
+... as both series add some definitions to arm64's asm-offsets.c in the same
+place, and all those additions need to be kept. Other than that, the two series
+are independent.
+
+IIUC Steve was hoping to take the FUNCTION_GRAPH_RETVAL series through the
+trace tree, and if that's still the plan, maybe both should go that way?
+
+Mark.
+
+> Thanks to the ftrace refactoring under that tag, an ftrace_ops backing a ftrace
+> direct call will only ever point to *one* direct call. This means we can look up
+> the direct called trampoline address stored in the ops from the ftrace_caller
+> trampoline in the case when the destination would be out of reach of a BL
+> instruction at the ftrace callsite. This fixes limitations of previous attempts
+> such as [2].
+> 
+> This series has been tested on arm64 with:
+> 1- CONFIG_FTRACE_SELFTEST
+> 2- samples/ftrace/*.ko (cf: patch 4)
+> 3- tools/testing/selftests/bpf/test_progs (cf: patch 5)
+> 
+> Changes since v5 [3]:
+> - Fixed saving the fourth argument of handle_mm_fault in both the x86 (patch 3)
+>   and arm64 (as part of patch 4) "ftrace-direct-too" sample trampolines
+> - Fixed the address of the traced function logged by some direct call samples
+>   (ftrace-direct-multi and ftrace-direct-multi-modify) by moving lr into x0
+> 
+> 1: https://lore.kernel.org/all/ZB2Nl7fzpHoq5V20@FVFF77S0Q05N/
+> 2: https://lore.kernel.org/all/20220913162732.163631-1-xukuohai@huaweicloud.com/
+> 3: https://lore.kernel.org/bpf/20230403113552.2857693-1-revest@chromium.org/
+> 
+> Florent Revest (5):
+>   arm64: ftrace: Add direct call support
+>   arm64: ftrace: Simplify get_ftrace_plt
+>   samples: ftrace: Save required argument registers in sample
+>     trampolines
+>   arm64: ftrace: Add direct call trampoline samples support
+>   selftests/bpf: Update the tests deny list on aarch64
+> 
+>  arch/arm64/Kconfig                           |  6 ++
+>  arch/arm64/include/asm/ftrace.h              | 22 +++++
+>  arch/arm64/kernel/asm-offsets.c              |  6 ++
+>  arch/arm64/kernel/entry-ftrace.S             | 90 ++++++++++++++++----
+>  arch/arm64/kernel/ftrace.c                   | 46 +++++++---
+>  samples/ftrace/ftrace-direct-modify.c        | 34 ++++++++
+>  samples/ftrace/ftrace-direct-multi-modify.c  | 40 +++++++++
+>  samples/ftrace/ftrace-direct-multi.c         | 24 ++++++
+>  samples/ftrace/ftrace-direct-too.c           | 40 +++++++--
+>  samples/ftrace/ftrace-direct.c               | 24 ++++++
+>  tools/testing/selftests/bpf/DENYLIST.aarch64 | 82 ++----------------
+>  11 files changed, 306 insertions(+), 108 deletions(-)
+> 
+> -- 
+> 2.40.0.577.gac1e443424-goog
+> 
