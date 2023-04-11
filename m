@@ -2,71 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 624EC6DDB84
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 15:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334066DDD31
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 16:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbjDKNBz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 09:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54306 "EHLO
+        id S230041AbjDKOEN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 10:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbjDKNBi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 09:01:38 -0400
-Received: from mail-ej1-x662.google.com (mail-ej1-x662.google.com [IPv6:2a00:1450:4864:20::662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A865248
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 06:01:10 -0700 (PDT)
-Received: by mail-ej1-x662.google.com with SMTP id a640c23a62f3a-94a34d34fcfso147275566b.2
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 06:01:09 -0700 (PDT)
+        with ESMTP id S229994AbjDKOEM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 10:04:12 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FF7359D
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 07:04:05 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id ga37so21007262ejc.0
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 07:04:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1681218042;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uro36Q9BxlPEIVH/KwpgPssMY18occbtTX2ic8QxRG4=;
-        b=UutsbkIucpDckiULFPkgVrSIzAcICeJRe1UxOAL+rkNvLGByoI71hUK4yIN4MIcafb
-         QHnKPy8ug7tUQU28mnS0fHazLKG9js/2nB7nt1grd0Qrzt+rzoMOxpB4yMX6GfPgv5ve
-         KRM/6UCRGmx5hmw1WsoboL7v/2OU/FXHNK0I8=
+        d=isovalent.com; s=google; t=1681221844;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oQ7v5B5nqoReNp8o9tUc2wF/l3h68/qE8V0/+aroSHk=;
+        b=FIIpa5w8jthE1CIeiWjffna630LVfTr1m4Lohb6pX40/UC5OALt+cin71ujNeQ25ND
+         UIbm4tV9aC7Oy/uXm6f9y3nYLF9Zy5n9GCn6zbe/uLgPExoxduCedQNkQgd2co4uW99W
+         0WRhVVH/9FfUYiStdMuzMERfuJPf0F0TrbHgFg9tlIFwAyf7biIk0y3zxxZOrNc65pkC
+         7hXfs7UHez0sVuxX35jcafkwn5Gjw6YacEqwSQ6oF9lvvaeR0gcvGc8Co2JQQkwei2g3
+         jvqbMxgRcKVgxs7r7X/7Wc/1YICAB+b+tXKFi6qmjX6q6q/KWe9mOpRVJFZPP3CvVCGF
+         PZyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681218042;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uro36Q9BxlPEIVH/KwpgPssMY18occbtTX2ic8QxRG4=;
-        b=1igOuTWc5nOZg+IJf3Yjj+P0oBKMkMw4JLB2EbNeahpGXQj9bH4xx3fmnKJZFe1Q82
-         ZN4AK45OAKP+U4trqmrxWqsZcMXvnWPwMSyGYqNhjtSOGJQp/St+fpVLNcIQAUJeqNrv
-         ZOv9HR4+4/XyvwVjOtbsgNPIslUOsEKtDil1pOPgjFbEZMbhzUzF3kR7bCwLFe5eXwdE
-         1C2av1aL89iC5Px3a+MPwvGGZXbcuIgffg1tvHffRXfLE1eNtrOCLwnL7zLf5RzeBS5P
-         h0bcU8weg7EDTiONPAOtK2leeN1zK289zLLnh78dJCe9o+YQYm1fZ+dHk6xjgyFrMrKL
-         xY8g==
-X-Gm-Message-State: AAQBX9c8bnzj20Ue8JpjvAHAWSm/TM+j2nD9hyVjVG8Y/J2c4nVVAKM5
-        iZQwkHU/KK4MWRE9ah0/SNhosIZSS72Eb7E2A53c1KGC7Aqm
-X-Google-Smtp-Source: AKy350ZncdrI3ZnMCD8zGcpJXYP6eBz0cUcf6rYABJiQtZbbScQg/7m7aQGJ/2rH9+EXIA+BDpC5PXlEPoes
-X-Received: by 2002:aa7:d3da:0:b0:504:b324:9eb6 with SMTP id o26-20020aa7d3da000000b00504b3249eb6mr4004684edr.29.1681218042329;
-        Tue, 11 Apr 2023 06:00:42 -0700 (PDT)
-Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
-        by smtp-relay.gmail.com with ESMTPS id xa10-20020a170906fd8a00b0094c9be3f56esm2457608ejb.166.2023.04.11.06.00.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Apr 2023 06:00:42 -0700 (PDT)
-X-Relaying-Domain: dectris.com
-From:   Kal Conley <kal.conley@dectris.com>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] xsk: Elide base_addr comparison in xp_unaligned_validate_desc
-Date:   Tue, 11 Apr 2023 15:00:25 +0200
-Message-Id: <20230411130025.19704-1-kal.conley@dectris.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20210112; t=1681221844;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oQ7v5B5nqoReNp8o9tUc2wF/l3h68/qE8V0/+aroSHk=;
+        b=rRdsJovHJ/6TGD7xOsSC8rQYI5igiESPJn6EkeHAesGILGSM6oSda5ZrpJKW/I1VjE
+         qiy64F18ndps+CTWOtEOVPd9BfJKIYQE+BgJpxvEf2hMQjNsGVneyKt9plVT3m8pOscp
+         wnrPCecaupWMwnjnjNCru1d7DFQrYTASQWPcy2dYjs5Jd4qJK3WbBysZEyKFZYvzELYD
+         AKREGYzjWhz9ytTqNZLAYwxFbGu+MR7FSp/llraeSMp/QnPf49RkUTAeuikL8ipKJU4X
+         v9GdqaRJvSnWqWP6l6YA5DpG6+dnWaR84AbYsJWRQNoqFJc7shyNawwKBcZ4BGV9cqLl
+         aqiQ==
+X-Gm-Message-State: AAQBX9eGTbrDbRHrFD+/8ofoqQTpClupFAHbM7cALFLr415R+/RM39k7
+        fYRqN7P+JYlpTrkocadTDfcyKZ7ZehpU3WnQbSMNSrMAXY0Nl2lgqevXQg==
+X-Google-Smtp-Source: AKy350aR9njkjyVZGK03yvdpyUDS6OZyRb/TkJZSk6TYTzKLXqpjSR/B0hZsFkGKhUfaq2hyIv+M/uAXXutwizDwRnQ=
+X-Received: by 2002:a17:907:7f23:b0:94a:8300:7246 with SMTP id
+ qf35-20020a1709077f2300b0094a83007246mr3353222ejc.14.1681221843857; Tue, 11
+ Apr 2023 07:04:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230406234205.323208-1-andrii@kernel.org>
+In-Reply-To: <20230406234205.323208-1-andrii@kernel.org>
+From:   Lorenz Bauer <lmb@isovalent.com>
+Date:   Tue, 11 Apr 2023 15:03:52 +0100
+Message-ID: <CAN+4W8jdCiRXRLWrnEdGPg-o5fpYe0=ZmK6P=EL1CBbkfMCayA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 00/19] BPF verifier rotating log
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@kernel.org, timo@incline.eu, robin.goegge@isovalent.com,
+        kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -76,57 +68,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove redundant (base_addr >= pool->addrs_cnt) comparison from the
-conditional.
+On Fri, Apr 7, 2023 at 12:42=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
+>
+> This patch set changes BPF verifier log behavior to behave as a rotating =
+log,
+> by default. If user-supplied log buffer is big enough to contain entire
+> verifier log output, there is no effective difference. But where previous=
+ly
+> user supplied too small log buffer and would get -ENOSPC error result and=
+ the
+> beginning part of the verifier log, now there will be no error and user w=
+ill
+> get ending part of verifier log filling up user-supplied log buffer.  Whi=
+ch
+> is, in absolute majority of cases, is exactly what's useful, relevant, an=
+d
+> what users want and need, as the ending of the verifier log is containing
+> details of verifier failure and relevant state that got us to that failur=
+e. So
+> this rotating mode is made default, but for some niche advanced debugging
+> scenarios it's possible to request old behavior by specifying additional
+> BPF_LOG_FIXED (8) flag.
 
-In particular, addr is computed as:
-
-    addr = base_addr + offset
-
-where base_addr and offset are stored as 48-bit and 16-bit unsigned
-integers, respectively. The above sum cannot overflow u64 since
-base_addr has a maximum value of 0x0000ffffffffffff and offset has a
-maximum value of 0xffff (implying a maximum sum of 0x000100000000fffe).
-Since overflow is impossible, it follows that addr >= base_addr.
-
-Now if (base_addr >= pool->addrs_cnt), then clearly:
-
-    addr >= base_addr
-         >= pool->addrs_cnt
-
-Thus, (base_addr >= pool->addrs_cnt) implies (addr >= pool->addrs_cnt).
-Subsequently, the former comparison is unnecessary in the conditional
-since for any boolean expressions A and B, (A || B) && (A -> B) is
-equivalent to B.
-
-Signed-off-by: Kal Conley <kal.conley@dectris.com>
----
- net/xdp/xsk_queue.h | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index 66c6f57c9c44..dea4f378327d 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -153,16 +153,12 @@ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool,
- 					      struct xdp_desc *desc)
- {
--	u64 addr, base_addr;
--
--	base_addr = xp_unaligned_extract_addr(desc->addr);
--	addr = xp_unaligned_add_offset_to_addr(desc->addr);
-+	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr);
- 
- 	if (desc->len > pool->chunk_size)
- 		return false;
- 
--	if (base_addr >= pool->addrs_cnt || addr >= pool->addrs_cnt ||
--	    addr + desc->len > pool->addrs_cnt ||
-+	if (addr >= pool->addrs_cnt || addr + desc->len > pool->addrs_cnt ||
- 	    xp_desc_crosses_non_contig_pg(pool, addr, desc->len))
- 		return false;
- 
--- 
-2.39.2
-
+Thanks for your work, this is really nice!
