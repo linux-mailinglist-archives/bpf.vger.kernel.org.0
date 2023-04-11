@@ -2,87 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A076DDF5E
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 17:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F0E6DE00B
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 17:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbjDKPQ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 11:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43070 "EHLO
+        id S231159AbjDKPxc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 11:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbjDKPQj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 11:16:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696A5619B;
-        Tue, 11 Apr 2023 08:15:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A39236285C;
-        Tue, 11 Apr 2023 15:14:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C7E3C433D2;
-        Tue, 11 Apr 2023 15:14:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1681226080;
-        bh=3YqIy9422W4j5TAiKhuwgA4sZIXX6+PQPhFS0rtef+I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cyirtFO/mCjXYL12aZzM/ARuJs3BAEh/6mAwWNpSNDiHwLJXFmMxnndVk0mdQJ94H
-         QbvIzQk6nPI866muT6LeB+lXXsPmNyqGIl+G/0x+s/OqrPMmyuZJ54cLd5gRwv7kTN
-         65zNRwUVN7eV+pjUA+OT/8qqLwlgWV3kOwHy1hZM=
-Date:   Tue, 11 Apr 2023 17:14:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lorenz Bauer <lmb@isovalent.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Martin KaFai Lau <martin.lau@kernel.org>,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        shuah@kernel.org, yhs@fb.com, eddyz87@gmail.com, sdf@google.com,
-        error27@gmail.com, iii@linux.ibm.com, memxor@gmail.com,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.2 08/30] selftests/bpf: check that modifier
- resolves after pointer
-Message-ID: <2023041100-oblong-enamel-5893@gregkh>
-References: <20230320005258.1428043-1-sashal@kernel.org>
- <20230320005258.1428043-8-sashal@kernel.org>
- <CAN+4W8g6AcQQWe7rrBVOFYoqeQA-1VbUP_W7DPS3q0k-czOLfg@mail.gmail.com>
- <ZBiAPngOtzSwDhFz@kroah.com>
- <CAN+4W8jAyJTdFL=tgp3wCpYAjGOs5ggo6vyOg8PbaW+tJP8TKA@mail.gmail.com>
- <CAN+4W8j5qe6p3YV90g-E0VhV7AmYyAvt0z50dfDSombbGghkww@mail.gmail.com>
+        with ESMTP id S231260AbjDKPxS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 11:53:18 -0400
+X-Greylist: delayed 488 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 11 Apr 2023 08:53:04 PDT
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A3D55AF
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 08:53:03 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id DB2D710006C; Tue, 11 Apr 2023 16:44:48 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1681227888; bh=gJjMJGahaI4tDqMGSnFJtVV+yhLoA/zGWC6OQiONgNs=;
+        h=Date:From:To:Subject:From;
+        b=itG1vCnoNZM1cPwHzAQ/prPhh0o9FtCqjcBroB54pY88YIaACXthSNmc4aAlzDsbn
+         mKLKdrbFbrmV7mOLUGPp5dqIXThEksK0JVCfaaewRSpFfn9v999gV7zjBnFPqMBGC6
+         /9EsJRam85qWDfBTmFgMTtE4HUaUuysWKI4DopmhYFJfh08vdFsWtFXej8W6PjfEqL
+         aXP37EerC23NVpAUbc3fTLGXPYeunMiwjDqZkc73AKYyIbeGVI63F0Xc45Ril37gRI
+         9T78F+525ATztbGjyD3qnraZe9zhj/xXtALX9CixGcgryzX0oBgbrgM5tPxiMiZPvV
+         pcJUiPK2a8GfA==
+Date:   Tue, 11 Apr 2023 16:44:48 +0100
+From:   Sean Young <sean@mess.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH] bpf: lirc program type should not require SYS_CAP_ADMIN
+Message-ID: <ZDWAcN6wfeXzipHz@gofer.mess.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN+4W8j5qe6p3YV90g-E0VhV7AmYyAvt0z50dfDSombbGghkww@mail.gmail.com>
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 04:08:32PM +0100, Lorenz Bauer wrote:
-> On Tue, Mar 28, 2023 at 11:18 AM Lorenz Bauer <lmb@isovalent.com> wrote:
-> >
-> > On Mon, Mar 20, 2023 at 3:48 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > Why would it break?  Is that because the test is buggy, or the kernel is
-> > > buggy?
-> >
-> > This test will be fine, but there have been several times when
-> > selftests/bpf for stable kernel releases didn't actually compile due
-> > to backported tests. This is because macros we're redefined, etc.
-> > Unless those also get picked (seems like a sisyphean task) we'll keep
-> > seeing broken selftests/bpf on stable.
-> 
-> Hi Greg, Sasha,
-> 
-> Following up on this since it seems to have fallen through the cracks.
+Make it possible to load lirc program type with just CAP_BPF.
 
-I didn't see anything to do here.
+Signed-off-by: Sean Young <sean@mess.org>
+---
+ kernel/bpf/syscall.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-And selftests should NOT be broken on stable releases, if so, something
-is wrong as no other subsystem has that happen.
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index adc83cb82f37..19d9265270b3 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2439,7 +2439,6 @@ static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
+ 	case BPF_PROG_TYPE_LWT_SEG6LOCAL:
+ 	case BPF_PROG_TYPE_SK_SKB:
+ 	case BPF_PROG_TYPE_SK_MSG:
+-	case BPF_PROG_TYPE_LIRC_MODE2:
+ 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
+ 	case BPF_PROG_TYPE_CGROUP_DEVICE:
+ 	case BPF_PROG_TYPE_CGROUP_SOCK:
+-- 
+2.39.2
 
-confused,
-
-greg k-h
