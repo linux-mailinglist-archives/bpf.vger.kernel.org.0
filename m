@@ -2,87 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 485C96DE1E0
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 19:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3336DE261
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 19:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbjDKRIR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 13:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
+        id S229980AbjDKRW4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 13:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjDKRIQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 13:08:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7DA4214;
-        Tue, 11 Apr 2023 10:08:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7FA136229A;
-        Tue, 11 Apr 2023 17:08:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC12FC433EF;
-        Tue, 11 Apr 2023 17:08:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681232894;
-        bh=3xl+XtZezdw4QpMyzTsLS/WvCzCf6vBV48z/ovOohUs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oeNbsTFchff9V07+7tRlWST/zDXWjpGlPgAiT/3o3TQt66nKuGSYYpPyh6ECcYcJP
-         yceYhlpxtGAt72MI0iClIXLFuW/Of9ZnkKoNMFjoMiDJ9jscomSbj3Ly5KcFZzA3XN
-         rdJv71G31aGVYwlnc1zLQdddPsHoFNZuMaS5RsoqHVot02YLBu/UDzMj2ppiMbPTlw
-         UnB613knpO85dSWd1hvf+6a2xVQwHP8oG4QLQEfIP5UjydR2Jc7RQXNB0yVdNScSpJ
-         WvmgTdhJymezaokv7Hf1jMZVIpOXgh0E3uODQC27LH6GJrKPeoOkoMem+qng8XF9WL
-         FdkqvcQdhcd9Q==
-Date:   Tue, 11 Apr 2023 18:08:08 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com, lihuafei1@huawei.com,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v6 0/5] Add ftrace direct call for arm64
-Message-ID: <20230411170807.GA23143@willie-the-truck>
-References: <20230405180250.2046566-1-revest@chromium.org>
- <ZDWDPUY2tZiMbk8V@FVFF77S0Q05N>
- <20230411124749.7aeea715@gandalf.local.home>
+        with ESMTP id S229499AbjDKRWz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 13:22:55 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8C7122;
+        Tue, 11 Apr 2023 10:22:53 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Pwsqt00lBz9v7Hv;
+        Wed, 12 Apr 2023 01:13:29 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwAHukBMlzVkOgEUAg--.766S2;
+        Tue, 11 Apr 2023 18:22:29 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
+        nicolas.bouchinet@clip-os.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH] Smack modifications for: security: Allow all LSMs to provide xattrs for inode_init_security hook
+Date:   Tue, 11 Apr 2023 19:23:37 +0200
+Message-Id: <20230411172337.340518-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <c7f38789-fe47-8289-e73a-4d07fbaf791d@schaufler-ca.com>
+References: <c7f38789-fe47-8289-e73a-4d07fbaf791d@schaufler-ca.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230411124749.7aeea715@gandalf.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GxC2BwAHukBMlzVkOgEUAg--.766S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF1fXF4DZrWxWFy5Ary3twb_yoW5KryDpF
+        W7K3ZxKF4rtF1DWryFyF4UW3yakan5WrWUWwnxXws3ZFnFqw1xKF95Xr1YkF1xXrykZr9Y
+        gF4qqr13WFn0y37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+        w2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU0bAw3UUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAEBF1jj4fclgACs8
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 12:47:49PM -0400, Steven Rostedt wrote:
-> On Tue, 11 Apr 2023 16:56:45 +0100
-> Mark Rutland <mark.rutland@arm.com> wrote:
-> 
-> > IIUC Steve was hoping to take the FUNCTION_GRAPH_RETVAL series through the
-> > trace tree, and if that's still the plan, maybe both should go that way?
-> 
-> The conflict is minor, and I think I prefer to still have the ARM64 bits go
-> through the arm64 tree, as it will get better testing, and I don't like to
-> merge branches ;-)
-> 
-> I've added Linus to the Cc so he knows that there will be conflicts, but as
-> long as we mention it in our pull request, with a branch that includes the
-> solution, it should be fine going through two different trees.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-If it's just the simple asm-offsets conflict that Mark mentioned, then that
-sounds fine to me. However, patches 3-5 don't seem to have anything to do
-with arm64 at all and I'd prefer those to go via other trees (esp. as patch
-3 is an independent -stable candidate and the last one is a bpf selftest
-change which conflicts in -next).
+Very very quick modification. Not tested.
 
-So I'll queue the first two in arm64 on a branch (or-next/ftrace) based
-on trace-direct-v6.3-rc3.
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ security/smack/smack.h     |  2 +-
+ security/smack/smack_lsm.c | 42 ++++++++++++++++++++------------------
+ 2 files changed, 23 insertions(+), 21 deletions(-)
 
-Will
+diff --git a/security/smack/smack.h b/security/smack/smack.h
+index e2239be7bd6..f00c8498c60 100644
+--- a/security/smack/smack.h
++++ b/security/smack/smack.h
+@@ -127,7 +127,7 @@ struct task_smack {
+ 
+ #define	SMK_INODE_INSTANT	0x01	/* inode is instantiated */
+ #define	SMK_INODE_TRANSMUTE	0x02	/* directory is transmuting */
+-#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted */
++#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted (unused) */
+ #define	SMK_INODE_IMPURE	0x08	/* involved in an impure transaction */
+ 
+ /*
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index 8392983334b..b43820bdbd0 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -54,12 +54,12 @@
+ 
+ /*
+  * Smack uses multiple xattrs.
+- * SMACK64 - for access control, SMACK64EXEC - label for the program,
+- * SMACK64MMAP - controls library loading,
++ * SMACK64 - for access control,
+  * SMACK64TRANSMUTE - label initialization,
+- * Not saved on files - SMACK64IPIN and SMACK64IPOUT
++ * Not saved on files - SMACK64IPIN and SMACK64IPOUT,
++ * Must be set explicitly - SMACK64EXEC and SMACK64MMAP
+  */
+-#define SMACK_INODE_INIT_XATTRS 4
++#define SMACK_INODE_INIT_XATTRS 2
+ 
+ #ifdef SMACK_IPV6_PORT_LABELING
+ static DEFINE_MUTEX(smack_ipv6_lock);
+@@ -957,11 +957,11 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
+ 				     const struct qstr *qstr,
+ 				     struct xattr *xattrs, int *xattr_count)
+ {
+-	struct inode_smack *issp = smack_inode(inode);
+ 	struct smack_known *skp = smk_of_current();
+ 	struct smack_known *isp = smk_of_inode(inode);
+ 	struct smack_known *dsp = smk_of_inode(dir);
+ 	struct xattr *xattr = lsm_get_xattr_slot(xattrs, xattr_count);
++	struct xattr *xattr2;
+ 	int may;
+ 
+ 	if (xattr) {
+@@ -979,7 +979,17 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
+ 		if (may > 0 && ((may & MAY_TRANSMUTE) != 0) &&
+ 		    smk_inode_transmutable(dir)) {
+ 			isp = dsp;
+-			issp->smk_flags |= SMK_INODE_CHANGED;
++			xattr2 = lsm_get_xattr_slot(xattrs, xattr_count);
++			if (xattr2) {
++				xattr2->value = kmemdup(TRANS_TRUE,
++							TRANS_TRUE_SIZE,
++							GFP_NOFS);
++				if (xattr2->value == NULL)
++					return -ENOMEM;
++
++				xattr2->value_len = TRANS_TRUE_SIZE;
++				xattr2->name = XATTR_NAME_SMACKTRANSMUTE;
++			}
+ 		}
+ 
+ 		xattr->value = kstrdup(isp->smk_known, GFP_NOFS);
+@@ -3512,20 +3522,12 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
+ 			 * If there is a transmute attribute on the
+ 			 * directory mark the inode.
+ 			 */
+-			if (isp->smk_flags & SMK_INODE_CHANGED) {
+-				isp->smk_flags &= ~SMK_INODE_CHANGED;
+-				rc = __vfs_setxattr(&nop_mnt_idmap, dp, inode,
+-					XATTR_NAME_SMACKTRANSMUTE,
+-					TRANS_TRUE, TRANS_TRUE_SIZE,
+-					0);
+-			} else {
+-				rc = __vfs_getxattr(dp, inode,
+-					XATTR_NAME_SMACKTRANSMUTE, trattr,
+-					TRANS_TRUE_SIZE);
+-				if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
+-						       TRANS_TRUE_SIZE) != 0)
+-					rc = -EINVAL;
+-			}
++			rc = __vfs_getxattr(dp, inode,
++					    XATTR_NAME_SMACKTRANSMUTE, trattr,
++					    TRANS_TRUE_SIZE);
++			if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
++					       TRANS_TRUE_SIZE) != 0)
++				rc = -EINVAL;
+ 			if (rc >= 0)
+ 				transflag = SMK_INODE_TRANSMUTE;
+ 		}
+-- 
+2.25.1
+
