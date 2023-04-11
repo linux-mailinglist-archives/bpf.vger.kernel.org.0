@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9AE66DD82E
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 12:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFFB6DD82F
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 12:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbjDKKpA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 06:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36152 "EHLO
+        id S229955AbjDKKpC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 06:45:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbjDKKoj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 06:44:39 -0400
+        with ESMTP id S229989AbjDKKon (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 06:44:43 -0400
 Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E05946A0
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:12 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id dm2so19250271ejc.8
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FB14691
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:17 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id f26so13028388ejb.1
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1681209850;
+        d=isovalent.com; s=google; t=1681209855;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X6JbtruesiP7BwQ58kqgU83OcGnUNXNnTbXchDf9Wuk=;
-        b=YT+RztS5s02tfjc3Xc95uvibedfXu+LCxRkwe92Ud4zmxdshukmzdgXynpFpQPwLWx
-         D9pFS6aCzdPwD6nqNLo+ZKrB9ezg/QzgwvF+s6KesBVob17+sBeHQ/MJ1bUKicchSnR3
-         AEF42FWvwiiFeYfhSnZGC0cP8ERthjrNJdb13JFuJJ3/ZKf1urBBjvrLvL6GWvKWljat
-         WXpTIpz2/5jNjDgwuuOp5VYGsBgew8QqNophxmf3adF+iPSoJMXTcTHxTCg8vNJy79m5
-         Qo01WYKD9EqllHGmYFL20lgTKwA/NeZq4TG6O0RnIUDNnifwTnMXqDK0reXY+bre2GVT
-         iiRw==
+        bh=vaNim1vkIq70qfok9J48U1lgUwBWuqXh+PidwyA+EeI=;
+        b=bjSUvquY3C9IhjkcolYeRiVvxpCdlGbE7EhbeSbdxT7spL7vAi33UMk2kVV3zjHrOf
+         ipSYO0F7VxpaHTO4Kr9JoutSV8LDcs0M2e5y+m5e6YVHuYStOxEwEKgnkUMhUt9Bk2Xv
+         rxwf63FDfVwZfRWZA/Y+7UDbG4tHEQoDMdmt0EeI20RJjDnhAEgF869sIRsRT9Ut+/q7
+         eIWCB+K21EUz5yhMpxcpagjdBFiigJCJ/pIRT0C/DBEOQhvNow2KkkiGtRHvA2jrYd3X
+         EJWLlu8Pe0wUyQhG3Q1MFJ4247F5zKQncnLajQkPVquJWPb0JQ54y00pmKO7v+0BrHNS
+         A7jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681209850;
+        d=1e100.net; s=20210112; t=1681209855;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X6JbtruesiP7BwQ58kqgU83OcGnUNXNnTbXchDf9Wuk=;
-        b=Tov1f0O21zhi+rQNMaM6alHHY45BOdxxuBbL15lhloMfQQfBQoYOtQ3gs0RIHBuqVf
-         9R/7DGHI+sLABzuo9q80dCOposjrNcEQ1CdVHfO6c1k5TD6wJRCRYC1qog86ZufJXDHx
-         SX+oQI4GNGBhULGumVTr9bZzqd4V1m/SZ75fBgaICOo3FHJ7jI/5nala1kCj1Foi0BxP
-         Q+RGUMDOP59vn1p2VF1JOZS7NVoDUTlhT7XWehdjGxWYablmBVJRd4rrtBlgnhKGKCn7
-         pGnWfc+YzHB+6VkU1LzG65zYLmRq07A2DzpnxRQFx8JdPOOevf7wxJ+336xOhuJAH0lD
-         TX/w==
-X-Gm-Message-State: AAQBX9cm3bLFnlgb1XA2/f3NVMPOeCyb3+uqpdWF5kGRcJUj8QsQEpHO
-        kqZE5RvYuYtOnHXbGJtxTDl0I1te5JPGTtRqRaezdw==
-X-Google-Smtp-Source: AKy350aCezmnMKe+0NNO4wEUhvyhARFIvgXinwSkwj9BNOs0xx6kU/Co0+NgC9WBgBGmRGylytFbx0KFWAo+0HVxrC0=
-X-Received: by 2002:a17:906:94c:b0:932:a33a:3754 with SMTP id
- j12-20020a170906094c00b00932a33a3754mr5168366ejd.14.1681209850517; Tue, 11
- Apr 2023 03:44:10 -0700 (PDT)
+        bh=vaNim1vkIq70qfok9J48U1lgUwBWuqXh+PidwyA+EeI=;
+        b=IaZEVL9q3Fno48thaTsxDMlZMN+4CM0np5atTtbrEXFipa3S4S8T+KV3oc/NYMYtrI
+         0+ERRUOtDfWl554KR/qqIZDjQxVZ41YzcUvCeKDUSekEEhBjPYYR0YMf9BC4qfmEY3D3
+         V+Flu1NLipOwt/4BVCQMkyJ0ipFhuKkUbRB0G2pJhGRN+1ueS2JYGkq11sfIlYlNPYEv
+         cJaFiBE+ywgYixmJ1VpQ5Yr2Kjm468fp68bFP9bpagDGZwc1eZwY3MMZpCSIJ5plVdmp
+         qjUdKWx9DTgqwwZSUpRN5db1gd3uZVR3dPez2QkfuVbWOVJpaRCA94ffJLPKmEska9BN
+         NKXw==
+X-Gm-Message-State: AAQBX9fHP1nyovbLi0cMbL8ijcdIQlm6hSWeaCcn3HjOP9kZk2lgT9Gi
+        +z/+Kv1izWiaFOzyWDTVG2FflaWLYipcsQG1kCr9kw==
+X-Google-Smtp-Source: AKy350Yv9Azwo2/6BouEnzoDykkakhn2acFaFmIRPdpvt9HXxNKRk6cFOu2pagxNd+6FExJLbAglWnDEJG7l91bEyZo=
+X-Received: by 2002:a17:907:7f23:b0:94a:8300:7246 with SMTP id
+ qf35-20020a1709077f2300b0094a83007246mr3032847ejc.14.1681209855418; Tue, 11
+ Apr 2023 03:44:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230406234205.323208-1-andrii@kernel.org> <20230406234205.323208-2-andrii@kernel.org>
-In-Reply-To: <20230406234205.323208-2-andrii@kernel.org>
+References: <20230406234205.323208-1-andrii@kernel.org> <20230406234205.323208-5-andrii@kernel.org>
+In-Reply-To: <20230406234205.323208-5-andrii@kernel.org>
 From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Tue, 11 Apr 2023 11:43:59 +0100
-Message-ID: <CAN+4W8j7sEaHbaFQsTHqD_wm_YvkxR8PHB0oGd3R2P5yg4Hg5g@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 01/19] bpf: split off basic BPF verifier log
- into separate file
+Date:   Tue, 11 Apr 2023 11:44:03 +0100
+Message-ID: <CAN+4W8jhOVSxO145mhk4Sf5wE=zGsP53tv2JA55apXDaELMJ-g@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 04/19] libbpf: don't enforce unnecessary
+ verifier log restrictions on libbpf side
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         martin.lau@kernel.org, timo@incline.eu, robin.goegge@isovalent.com,
@@ -72,22 +72,12 @@ X-Mailing-List: bpf@vger.kernel.org
 On Fri, Apr 7, 2023 at 12:42=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org>=
  wrote:
 >
-> kernel/bpf/verifier.c file is large and growing larger all the time. So
-> it's good to start splitting off more or less self-contained parts into
-> separate files to keep source code size (somewhat) somewhat under
-> control.
+> This basically prevents any forward compatibility. And we either way
+> just return -EINVAL, which would otherwise be returned from bpf()
+> syscall anyways.
 >
-> This patch is a one step in this direction, moving some of BPF verifier l=
-og
-> routines into a separate kernel/bpf/log.c. Right now it's most low-level
-> and isolated routines to append data to log, reset log to previous
-> position, etc. Eventually we could probably move verifier state
-> printing logic here as well, but this patch doesn't attempt to do that
-> yet.
->
-> Subsequent patches will add more logic to verifier log management, so
-> having basics in a separate file will make sure verifier.c doesn't grow
-> more with new changes.
+> Similarly, drop enforcement of non-NULL log_buf when log_level > 0. This
+> won't be true anymore soon.
 >
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
