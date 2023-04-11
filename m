@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5206DD84F
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 12:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82ADF6DD833
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 12:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbjDKKwJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 06:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44692 "EHLO
+        id S229920AbjDKKpX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 06:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbjDKKwI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 06:52:08 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C582D57
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:52:07 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id jg21so18858430ejc.2
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:52:07 -0700 (PDT)
+        with ESMTP id S229971AbjDKKpE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 06:45:04 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC0949C7
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:38 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id sh8so19079713ejc.10
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1681210326;
+        d=isovalent.com; s=google; t=1681209876;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iIneWuWqtNAcWU2RXauFR9ffbopRvSw0g0bao3/EIE4=;
-        b=Kf4Z06SYVLtsre+IVCn3Z0w/gc4cjIYLKxtnQpSur7ILDdAJ9vylZPT5XnBwx/GdSt
-         NkLyLzX+JdncHXcAGJBSKHVEbpTwgHFU7kRoMRirECwchBjpF2OOx2dLg+d4d4JUd3Om
-         RXf9avVf+g1kKDSqxnfLO18JGVqlfduDGSBeFvsJQAAKD5Wj+coyvfJPWwwoCmEEJjhC
-         /4G2Ry0lHg3aa2vYO4DPTa7I5tENdNCBCadF9UzfDTq/niHpgNIvTHE1LtCZdIyJ6/K8
-         7xkXCuuMwbk8x/3y/4aU5p7CK3DDx8BubA3lbCjrD68ozmOecVckVZA00xnOOV8i21NF
-         nifg==
+        bh=ZwARP1Iu2jTq2c5OHPjlyaEzWILtqkXBB6v2oSWp54M=;
+        b=Izr8W0PX8wjC+4CUMr1wYtz4OXFPYIuFNu8cLpN6goNlqphykLlZW9H6dQMYZIjshF
+         XdgvbqllqlNiw2dzKrcSBnbfJjKym691JJ1/S4/FA333+kTd4LtuiiTC3NOOv437UQ16
+         JI7hqfOa5imMxbNf0jYsDJtcMyHN1yK1XgGNgJRq3o7FnWydlezF+hGC90T9v3RK3Jvz
+         A+BuM/i/qS9S9SoPVkaEopeU5gEDRTHOz1NiZCdfie5yIj6HM6nsJ7fnjxomqYfz2PxE
+         xmPWWlnZ6Jtp5CfKHW0aiBy1k/4+/ZTkuqXkNUMPPoOBSn5GgjZHsW8EgElAcol5vRsg
+         Fi6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681210326;
+        d=1e100.net; s=20210112; t=1681209876;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iIneWuWqtNAcWU2RXauFR9ffbopRvSw0g0bao3/EIE4=;
-        b=j5v5LlsNThoapj9eGZKiqGOV1ia9o5aq6HOE8sG8URZF6Q+yS0BXl9NZJB8WN2L32I
-         h6tkiB8nY1nuwUCumosd71wg+XysEPdwAhxAcI3nPx+TIu6hSYzXQutv79yxQ5tpFoj0
-         gsaaNPvLtbtbZjy+btdBv0Ib5dZkmwFCRM7i9Rk/p7/4vR7Rnm5FQffQQDuj6K5yB8MX
-         ilVwCiMJ6F+sKfxQQmRaatY/KHbAf3zqA0FhmCw/F4p7tVjuNBXrzeX1HY2WClPXTYPI
-         mE2Lt1uikqgXyvpXFHJi7qMApCrIxQ8+1JYm9V4fL82U7JXCTDSS7ruJdtEjRNjdlUKw
-         AChw==
-X-Gm-Message-State: AAQBX9dSxwd2inSHKeok/nzh7i1Rdddf7wjr1onipBxeBbxpOEFObMmx
-        6ycDSECrTYP2XhzoD4sBxUdNij/mkQ4eKfB1ZrxmSg==
-X-Google-Smtp-Source: AKy350Z26lOw0uiG5GVM7W/bqUZz1i4Lf+EysXEq2/XnJUaf02aJaDCrLF7t7eYDrYairCRHXnW3IL/tCg5w/9aEU2I=
-X-Received: by 2002:a17:906:8491:b0:949:87f1:8129 with SMTP id
- m17-20020a170906849100b0094987f18129mr4471007ejx.14.1681209872161; Tue, 11
- Apr 2023 03:44:32 -0700 (PDT)
+        bh=ZwARP1Iu2jTq2c5OHPjlyaEzWILtqkXBB6v2oSWp54M=;
+        b=y4+vUZ8BTHTo8LOlQrl4BRHuDq/OgOoR6hp96KWbJNSm5O0qMdU1qBf6eiXLBtoCHR
+         A0yp5CYlT2AEqZ9dlGxRI3tIbgsJgvn/UQpCTTIYNKt/3MhoT3EklEgwMO9jLsDE7ARa
+         fQ0IgRPSWzKwuVKz2Qni3gyUzteR6sTfiUKfEWg67mf3h1sZwFE5UUivVwQxNz3g4t4X
+         A8ynUfE1iCMLcoWMbheZwuvOG+PR/r6eYZ5++W3AzhcdAGPd/yr7pdolhMHRXdPfGgw8
+         odaBRNDd8mJY29CaraIvWPV8mA4ZUXbIpA/rqh/e4ohWTgyd2jfluFaG1NfRIDlq4SeR
+         eEZg==
+X-Gm-Message-State: AAQBX9cgm+XfMgqP7M9L8VQk9ie2JUa7lOR1sNTDNQHIfNuSHYq+qSIL
+        56kRysUJ9FiEzrDrkn1wIe4CoVNo3pKsNuw/xrqqJA==
+X-Google-Smtp-Source: AKy350YkXX4/vtGNRfesveLS/iOFlRI2Ph/Vjy746UZf5X0PfwH1ihOfLppUxVMjHkHHMTjq+obmTlnGTNHZKurB6vc=
+X-Received: by 2002:a17:906:795:b0:94a:5e76:c76b with SMTP id
+ l21-20020a170906079500b0094a5e76c76bmr1094988ejc.14.1681209876717; Tue, 11
+ Apr 2023 03:44:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230406234205.323208-1-andrii@kernel.org> <20230406234205.323208-18-andrii@kernel.org>
-In-Reply-To: <20230406234205.323208-18-andrii@kernel.org>
+References: <20230406234205.323208-1-andrii@kernel.org> <20230406234205.323208-19-andrii@kernel.org>
+In-Reply-To: <20230406234205.323208-19-andrii@kernel.org>
 From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Tue, 11 Apr 2023 11:44:21 +0100
-Message-ID: <CAN+4W8ipTr8S=FYJD00iO5+b6MtM-EhivDmgeWtuWMXybN-77A@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 17/19] selftests/bpf: add tests to validate
- log_true_size feature
+Date:   Tue, 11 Apr 2023 11:44:25 +0100
+Message-ID: <CAN+4W8hcdjT+3sGUuaLATnqQGdsEBqoyA8GmzsENGbhcGj9M7A@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 18/19] selftests/bpf: add testing of
+ log_buf==NULL condition for BPF_PROG_LOAD
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         martin.lau@kernel.org, timo@incline.eu, robin.goegge@isovalent.com,
@@ -69,16 +69,16 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 7, 2023 at 12:43=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org>=
+On Fri, Apr 7, 2023 at 12:45=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org>=
  wrote:
 >
-> Add additional test cases validating that log_true_size is consistent
-> between fixed and rotating log modes, and that log_true_size can be
-> used *exactly* without causing -ENOSPC, while using just 1 byte shorter
-> log buffer would cause -ENOSPC.
+> Add few extra test conditions to validate that it's ok to pass
+> log_buf=3D=3DNULL and log_size=3D=3D0 to BPF_PROG_LOAD command with the i=
+ntent
+> to get log_true_size without providing a buffer.
+>
+> Test that log_buf=3D=3DNULL condition *does not* return -ENOSPC.
 >
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-
-Great idea to test the size - 1 case!
 
 Acked-by: Lorenz Bauer <lmb@isovalent.com>
