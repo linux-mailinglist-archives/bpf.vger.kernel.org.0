@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 507186DD831
-	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 12:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76786DD832
+	for <lists+bpf@lfdr.de>; Tue, 11 Apr 2023 12:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjDKKpK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Apr 2023 06:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
+        id S229711AbjDKKpT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Apr 2023 06:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbjDKKot (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Apr 2023 06:44:49 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044114218
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:25 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-504ae0a68e5so984042a12.3
-        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:25 -0700 (PDT)
+        with ESMTP id S229915AbjDKKo7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Apr 2023 06:44:59 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05AD4686
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:30 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id sh8so19078938ejc.10
+        for <bpf@vger.kernel.org>; Tue, 11 Apr 2023 03:44:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1681209864;
+        d=isovalent.com; s=google; t=1681209868;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hfVujZJMblmN4ROxQr7Njq2LGd6WAW8BGXNUP88pRwI=;
-        b=XZOXTGi9XvVmNZaC47byfuYlRSD10lOv9LUKbz0DUGJVd6ycaV72DNXI23tbga/nqG
-         d+o8li3uf5itxBHAy7xW8E5t+e06lV6YP5/uakqzLAOCyQIo1xSrZWL4RLzOYoge1Ttj
-         e68eX8gEwigUwRvAFISeI2L5z/oI84ferLTqHI7TKgkXwvbtL4qEkl3Whw49xfzSTZAW
-         SdC1CeqRIy0oQ9T5SuLSSULUlUjO7kaPCVb7HjYn7ic4fjz6KMfhfp59F0XlJIBjz+mv
-         uFqWdK/iyuFxwfqR3Y7YJxmydlWzTUKfT2oQT3D78P++DZKb7+lGF6vXQVXtjFb40rSc
-         9GHQ==
+        bh=tMmjC1vg/ynLy8n5f8ATDoFZJCYv2A+5Qju9ZmWdk/E=;
+        b=UckPRO3PhsyYeqpfXiufDJfoZGfRfVukdmXBWV4io2wvtL1srzZlcHzSjf6gAoA8g9
+         yeSEbZfXu422TFb0Ir7WK0TvzBIi7SkdNnCwK5O5S3FBWyy15IdEJbiIUT9C/p2dItPC
+         QEeBP9I4VBl16OI6jOiymYAH2/uDC5qAMyt5i90t4CN/Wbd7gnMZj+xeEdkYpp3sdgSD
+         Oy6B6ylcdWOJCG3e5bp6ucmXVfzli4UwOW6iwgdJ/42UHP/HqJF1KHjTHdftKzbyUcZW
+         dvE9fpHsaz9k2rejuNnWPExdD0CZrLltbB30myizEGnO+IfY5IbwTk5F90/zVRqpkA5n
+         3glg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681209864;
+        d=1e100.net; s=20210112; t=1681209868;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hfVujZJMblmN4ROxQr7Njq2LGd6WAW8BGXNUP88pRwI=;
-        b=hmpPVs66KxHEV/OB+JEjms+T/MNDR2zKJrWcs/XURh6e0aRulrs0PoVXn2h3uL26VS
-         KR4wc9+XEk/CesGiI3xrFAPzNNo7PN3kvMWqxVdkdeQrriuWTOCZxqTw7LHcfgpSQyWY
-         fV15u0azrxXcOWlXVGULCZFq0yYggXIyAFbAngt+BLcNFzNI9OLOf1G7TOZtUwu+2Lvs
-         /C7eVlYR0dKA6evZf0xa/+SE72yIwrAAqgeh/A042hMsWOEgCjkpORikwdZNKCyyFqdP
-         kG3jiUpDnozZh0i8usr3+ktffGs0VuOtB/u3wsZY+P96teVrZr1eIsqVYBB1vQN60rIU
-         CAGA==
-X-Gm-Message-State: AAQBX9eb3vy3VZSbUeAmgZU4Hnh/olEH8mRULYCWOmp0gGWBf7BRi7C4
-        3pG99G0xnKgj/FETy1bmhr7OsRMMQzMkP3hEmMh8aA==
-X-Google-Smtp-Source: AKy350bfQiFCZps0G0+yQUCKsrSHc9DQzSkwxVOLubja3zppoX1T+qspQLahNE4XJDDNbylao1O2EqeXGe1/gXODD9o=
-X-Received: by 2002:a50:9fa2:0:b0:504:81d3:48f with SMTP id
- c31-20020a509fa2000000b0050481d3048fmr966647edf.2.1681209864276; Tue, 11 Apr
- 2023 03:44:24 -0700 (PDT)
+        bh=tMmjC1vg/ynLy8n5f8ATDoFZJCYv2A+5Qju9ZmWdk/E=;
+        b=K+RI5ArQNrRg3uFCVMalyy3RJGediTIQc5y3YjAJnHkLz8gg++aGvjQI+C3XeSjl/8
+         yFX8el44GLkgr0HZzvBUd5lk1jztRhp3ggvwJhDt/fwmEnHms9y1dnY4lk8+8o5ngi4l
+         3ZLyEUOhyo3dSjjYUSh6nqBQa92Afj0rkp5fwhowpEilm6B1REeyEMAKiwkRziawtfiN
+         5pvdy8z4KMof3f4ATg0lbbi6E5Oc1smTLod2VgQjN1ABz20piU7MXb1NO3cxuCY9SUGY
+         EuBDJcwV0VgaYGU7cDnGLfa6F2fA5YnDoWq4SVEXv7S0CFfV1EGj9fJT/uNJewSlhzIQ
+         LNig==
+X-Gm-Message-State: AAQBX9d9jAFpucyMCE56bm2DTN924Lhih3Zen3YOr0PslVpenC7h6Rcj
+        e2FjuEMxM12F8BpRZddQmBaZOQEICQ2E6aRG/3BU7A==
+X-Google-Smtp-Source: AKy350YAOhQFPI08ljh2A2tqTYwiSNi2lodtum6HfqO6B41RRTNgeXC/FOXBtJD7CMJZ8gR5sqDyXbccod1hcpOfrDA=
+X-Received: by 2002:a17:906:795:b0:94a:5e76:c76b with SMTP id
+ l21-20020a170906079500b0094a5e76c76bmr1094807ejc.14.1681209868554; Tue, 11
+ Apr 2023 03:44:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230406234205.323208-1-andrii@kernel.org> <20230406234205.323208-13-andrii@kernel.org>
-In-Reply-To: <20230406234205.323208-13-andrii@kernel.org>
+References: <20230406234205.323208-1-andrii@kernel.org> <20230406234205.323208-15-andrii@kernel.org>
+In-Reply-To: <20230406234205.323208-15-andrii@kernel.org>
 From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Tue, 11 Apr 2023 11:44:13 +0100
-Message-ID: <CAN+4W8iGE-dap7FT=SbJ8r3+wn=0LB1forZ1_Ppvm8D0b0QC5w@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 12/19] bpf: add log_true_size output field to
- return necessary log buffer size
+Date:   Tue, 11 Apr 2023 11:44:17 +0100
+Message-ID: <CAN+4W8h8vGXTG1k7GO_6ZexOK3p3RDK0zwVg98vkRLcO0GvO7w@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 14/19] bpf: relax log_buf NULL conditions when
+ log_level>0 is requested
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         martin.lau@kernel.org, timo@incline.eu, robin.goegge@isovalent.com,
@@ -69,25 +69,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 7, 2023 at 12:43=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org>=
+On Fri, Apr 7, 2023 at 12:42=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org>=
  wrote:
 >
-> Add output-only log_true_size and btf_log_true_size field to
-> BPF_PROG_LOAD and BPF_BTF_LOAD commands, respectively. It will return
-> the size of log buffer necessary to fit in all the log contents at
-> specified log_level. This is very useful for BPF loader libraries like
-> libbpf to be able to size log buffer correctly, but could be used by
-> users directly, if necessary, as well.
+> Drop the log_size>0 and log_buf!=3DNULL condition when log_level>0. This
+> allows users to request log_true_size of a full log without providing
+> actual (even if small) log buffer. Verifier log handling code was mostly
+> ready to handle NULL log->ubuf, so only few small changes were necessary
+> to prevent NULL log->ubuf from causing problems.
 >
-> This patch plumbs all this through the code, taking into account actual
-> bpf_attr size provided by user to determine if these new fields are
-> expected by users. And if they are, set them from kernel on return.
+> Note, that if user provided NULL log_buf with log_level>0 we don't
+> consider this a log truncation, and thus won't return -ENOSPC.
 >
-> We refactory btf_parse() function to accommodate this, moving attr and
-> uattr handling inside it. The rest is very straightforward code, which
-> is split from the logging accounting changes in the previous patch to
-> make it simpler to review logic vs UAPI changes.
+> We also enforce that either (log_buf=3D=3DNULL && log_size=3D=3D0) or
+> (log_buf!=3DNULL && log_size>0).
 >
+> Suggested-by: Lorenz Bauer <lmb@isovalent.com>
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Acked-by: Lorenz Bauer <lmb@isovalent.com>
+Reviewed-by: Lorenz Bauer <lmb@isovalent.com>
